@@ -3,21 +3,21 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgburg import rangayyan_burg_method
-from morie.fn.rgcepsp import rangayyan_cepstrum_pitch
-from morie.fn.rgeegsp import rangayyan_eeg_spectral
-from morie.fn.rgelast import rangayyan_heart_elasticity
-from morie.fn.rgenvgm import rangayyan_envelogram
-from morie.fn.rgpdfest import rangayyan_pdf_estimate
-from morie.fn.rgrmsnw import rangayyan_rms_noise
-from morie.fn.rgtfe import rangayyan_transfer_func_est
-from morie.fn.rgtwamx import rangayyan_twa_spectral_mx
-from morie.fn.rng017 import rangayyan_ch3_acf_ensemble_estimate
-from morie.fn.rng018 import rangayyan_ch3_ensemble_average_function
-from morie.fn.rng019 import rangayyan_ch3_time_average_mean
-from morie.fn.rng020 import rangayyan_ch3_time_averaged_acf
-from morie.fn.rng190 import rangayyan_ch4_pan_tompkins_peak_classification
-from morie.fn.rng211 import rangayyan_ch4_average_output_noise_power
+from morie.fn.bsaar import rangayyan_burg_method
+from morie.fn.bsacep import rangayyan_cepstrum_pitch
+from morie.fn.bsacorr import rangayyan_eeg_spectral
+from morie.fn.bsaphys import rangayyan_heart_elasticity
+from morie.fn.bsatf import rangayyan_envelogram
+from morie.fn.bsastat import rangayyan_pdf_estimate
+from morie.fn.bsastat import rangayyan_rms_noise
+from morie.fn.bsafilt import rangayyan_transfer_func_est
+from morie.fn.bsaqrs import rangayyan_twa_spectral_mx
+from morie.fn.bsacorr import rangayyan_ch3_acf_ensemble_estimate
+from morie.fn.bsacorr import rangayyan_ch3_ensemble_average_function
+from morie.fn.bsastat import rangayyan_ch3_time_average_mean
+from morie.fn.bsacorr import rangayyan_ch3_time_averaged_acf
+from morie.fn.bsaclass import rangayyan_ch4_pan_tompkins_peak_classification
+from morie.fn.bsacorr import rangayyan_ch4_average_output_noise_power
 
 
 def test_ensemble_averaging_improves_snr_by_sqrt_M():

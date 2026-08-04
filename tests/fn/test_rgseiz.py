@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgseiz import rangayyan_seizure_detect
+from morie.fn.bsacorr import rangayyan_seizure_detect
 
 
 def test_rgseiz_basic():

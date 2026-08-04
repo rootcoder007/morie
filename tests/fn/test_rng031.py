@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng031 import rangayyan_ch3_continuous_convolution_alt
+from morie.fn.bsasig import rangayyan_ch3_continuous_convolution_alt
 
 
 def test_rng031_basic():

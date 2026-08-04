@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgfresp import rangayyan_freq_response
+from morie.fn.bsafilt import rangayyan_freq_response
 
 
 def test_rgfresp_basic():

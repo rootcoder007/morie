@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng006 import rangayyan_ch3_entropy_continuous
+from morie.fn.bsastat import rangayyan_ch3_entropy_continuous
 
 
 def test_rng006_basic():

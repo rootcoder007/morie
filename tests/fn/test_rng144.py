@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng144 import rangayyan_ch3_mse_gradient
+from morie.fn.bsaadapt import rangayyan_ch3_mse_gradient
 
 
 def test_rng144_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgbhatt import rangayyan_bhattacharyya
+from morie.fn.bsaclass import rangayyan_bhattacharyya
 
 
 def test_rgbhatt_basic():

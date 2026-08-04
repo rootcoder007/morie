@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng014 import rangayyan_ch3_variance_of_sum_uncorrelated as var_sum
+from morie.fn.bsastat import rangayyan_ch3_variance_of_sum_uncorrelated as var_sum
 
 
 def test_rng014_pythagorean_triple_is_exact():

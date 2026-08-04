@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgpcgar import rangayyan_pcg_ar_model
+from morie.fn.bsaar import rangayyan_pcg_ar_model
 
 
 def test_rgpcgar_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgann import rangayyan_ann_mlp
+from morie.fn.bsaclass import rangayyan_ann_mlp
 
 
 def test_rgann_basic():

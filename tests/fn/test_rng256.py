@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng256 import rangayyan_ch4_power_spectrum_signal_echo
+from morie.fn.bsatf import rangayyan_ch4_power_spectrum_signal_echo
 
 
 def test_rng256_basic():

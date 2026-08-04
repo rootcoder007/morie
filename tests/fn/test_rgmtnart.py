@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgmtnart import rangayyan_motion_artifact
+from morie.fn.bsaqrs import rangayyan_motion_artifact
 
 
 def test_rgmtnart_basic():

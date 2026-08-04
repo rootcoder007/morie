@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgsen import rangayyan_sensitivity
+from morie.fn.bsaclass import rangayyan_sensitivity
 
 
 def test_rgsen_basic():

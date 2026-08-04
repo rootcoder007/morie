@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng017 import rangayyan_ch3_acf_ensemble_estimate
+from morie.fn.bsacorr import rangayyan_ch3_acf_ensemble_estimate
 
 
 def test_rng017_basic():

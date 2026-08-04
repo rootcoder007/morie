@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgft import rangayyan_fourier_transform
+from morie.fn.bsaxfrm import rangayyan_fourier_transform
 
 
 def test_rgft_basic():

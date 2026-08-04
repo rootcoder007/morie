@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgpcgadp import rangayyan_pcg_adaptive_seg
+from morie.fn.bsaadapt import rangayyan_pcg_adaptive_seg
 
 
 def test_rgpcgadp_basic():

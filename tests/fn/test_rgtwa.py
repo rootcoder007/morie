@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgtwa import rangayyan_twave_alternans
+from morie.fn.bsaqrs import rangayyan_twave_alternans
 
 
 def test_rgtwa_basic():

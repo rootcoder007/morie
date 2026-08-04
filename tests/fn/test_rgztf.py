@@ -2,7 +2,7 @@
 
 import pytest
 
-from morie.fn.rgztf import rangayyan_z_transform
+from morie.fn.bsaxfrm import rangayyan_z_transform
 
 
 def test_rgztf_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng192 import rangayyan_ch4_pan_tompkins_searchback_update
+from morie.fn.bsaqrs import rangayyan_ch4_pan_tompkins_searchback_update
 
 
 def test_rng192_basic():

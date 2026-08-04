@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rghrvar import rangayyan_hrv_ar_ratio
+from morie.fn.bsaar import rangayyan_hrv_ar_ratio
 
 
 def test_rghrvar_basic():

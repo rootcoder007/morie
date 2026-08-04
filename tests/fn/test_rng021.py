@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng021 import rangayyan_ch3_covariance
+from morie.fn.bsastat import rangayyan_ch3_covariance
 
 
 def test_rng021_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng136 import rangayyan_ch3_notch_filter_60Hz
+from morie.fn.bsafilt import rangayyan_ch3_notch_filter_60Hz
 
 
 def test_rng136_basic():

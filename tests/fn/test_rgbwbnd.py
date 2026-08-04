@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgbwbnd import rangayyan_bandwidth
+from morie.fn.bsacorr import rangayyan_bandwidth
 
 
 def test_rgbwbnd_basic():

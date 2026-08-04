@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgcorad import rangayyan_coronary_ad
+from morie.fn.bsaphys import rangayyan_coronary_ad
 
 
 def test_rgcorad_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng095 import rangayyan_ch3_hann_magnitude_response
+from morie.fn.bsafilt import rangayyan_ch3_hann_magnitude_response
 
 
 def test_rng095_basic():

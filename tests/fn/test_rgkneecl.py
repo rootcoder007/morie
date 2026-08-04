@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgkneecl import rangayyan_knee_classify
+from morie.fn.bsaclass import rangayyan_knee_classify
 
 
 def test_rgkneecl_basic():

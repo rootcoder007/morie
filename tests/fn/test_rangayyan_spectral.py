@@ -6,13 +6,13 @@ AR spectrum of a known AR process) rather than on self-consistency."""
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgacf import rangayyan_acf_estimate
-from morie.fn.rgarsp import rangayyan_ar_spectrum
-from morie.fn.rgbwbnd import rangayyan_bandwidth
-from morie.fn.rgperio import rangayyan_periodogram
-from morie.fn.rgpsdacf import rangayyan_psd_to_acf
-from morie.fn.rgwelch import rangayyan_welch_psd
-from morie.fn.rgyw import rangayyan_yule_walker
+from morie.fn.bsacorr import rangayyan_acf_estimate
+from morie.fn.bsaar import rangayyan_ar_spectrum
+from morie.fn.bsacorr import rangayyan_bandwidth
+from morie.fn.bsacorr import rangayyan_periodogram
+from morie.fn.bsacorr import rangayyan_psd_to_acf
+from morie.fn.bsacorr import rangayyan_welch_psd
+from morie.fn.bsaar import rangayyan_yule_walker
 
 
 def test_acf_lag_zero_is_the_mean_square_and_divisors_differ():

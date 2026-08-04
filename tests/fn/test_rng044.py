@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng044 import rangayyan_ch3_lsi_parallel_branch_1
+from morie.fn.bsasig import rangayyan_ch3_lsi_parallel_branch_1
 
 
 def test_rng044_basic():

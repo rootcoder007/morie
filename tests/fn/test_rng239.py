@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng239 import rangayyan_ch4_rational_z_transform_form
+from morie.fn.bsacep import rangayyan_ch4_rational_z_transform_form
 
 
 def test_rng239_basic():

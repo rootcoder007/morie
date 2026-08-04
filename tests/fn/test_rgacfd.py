@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgacfd import rangayyan_acf_distance
+from morie.fn.bsaadapt import rangayyan_acf_distance
 
 
 def test_rgacfd_basic():

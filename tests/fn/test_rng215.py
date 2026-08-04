@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng215 import rangayyan_ch4_snr_normalized_ratio
+from morie.fn.bsacorr import rangayyan_ch4_snr_normalized_ratio
 
 
 def test_rng215_basic():

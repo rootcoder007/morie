@@ -2,7 +2,7 @@
 
 import pytest
 
-from morie.fn.rng053 import rangayyan_ch3_z_transform_fir
+from morie.fn.bsafilt import rangayyan_ch3_z_transform_fir
 
 
 def test_rng053_basic():

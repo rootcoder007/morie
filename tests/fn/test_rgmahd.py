@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgmahd import rangayyan_mahalanobis
+from morie.fn.bsaclass import rangayyan_mahalanobis
 
 
 def test_rgmahd_basic():

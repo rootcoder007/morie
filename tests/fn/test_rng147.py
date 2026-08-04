@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng147 import rangayyan_ch3_minimum_mse
+from morie.fn.bsaadapt import rangayyan_ch3_minimum_mse
 
 
 def test_rng147_basic():

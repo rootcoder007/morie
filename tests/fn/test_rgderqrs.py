@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgderqrs import rangayyan_deriv_qrs
+from morie.fn.bsaqrs import rangayyan_deriv_qrs
 
 
 def test_rgderqrs_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgmavg import rangayyan_moving_average
+from morie.fn.bsafilt import rangayyan_moving_average
 
 
 def test_rgmavg_basic():

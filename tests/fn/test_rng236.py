@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng236 import rangayyan_ch4_complex_cepstrum_definition
+from morie.fn.bsacep import rangayyan_ch4_complex_cepstrum_definition
 
 
 def test_rng236_basic():

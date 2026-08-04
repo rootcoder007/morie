@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng052 import rangayyan_ch3_z_transform_definition
+from morie.fn.bsaxfrm import rangayyan_ch3_z_transform_definition
 
 
 def test_rng052_basic():

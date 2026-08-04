@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgsnr import rangayyan_snr
+from morie.fn.bsastat import rangayyan_snr
 
 
 def test_rgsnr_basic():

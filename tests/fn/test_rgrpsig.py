@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgrpsig import rangayyan_resp_signal
+from morie.fn.bsaqrs import rangayyan_resp_signal
 
 
 def test_rgrpsig_basic():

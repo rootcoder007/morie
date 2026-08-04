@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgkatzfd import rangayyan_katz_fd
+from morie.fn.bsastat import rangayyan_katz_fd
 
 
 def test_rgkatzfd_basic():

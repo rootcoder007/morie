@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgfrqdom import rangayyan_freq_domain_feat
+from morie.fn.bsaphys import rangayyan_freq_domain_feat
 
 
 def test_rgfrqdom_basic():

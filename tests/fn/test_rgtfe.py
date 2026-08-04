@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgtfe import rangayyan_transfer_func_est
+from morie.fn.bsafilt import rangayyan_transfer_func_est
 
 
 def test_rgtfe_basic():

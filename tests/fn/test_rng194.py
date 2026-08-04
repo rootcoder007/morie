@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng194 import rangayyan_ch4_heart_rate_from_rr
+from morie.fn.bsaqrs import rangayyan_ch4_heart_rate_from_rr
 
 
 def test_rng194_basic():

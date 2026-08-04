@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgsapnmf import rangayyan_sleep_apnea_nmf
+from morie.fn.bsaclass import rangayyan_sleep_apnea_nmf
 
 
 def test_rgsapnmf_basic():

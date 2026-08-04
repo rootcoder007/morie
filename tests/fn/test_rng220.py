@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng220 import rangayyan_ch4_matched_filter_optimal_transfer_function
+from morie.fn.bsacorr import rangayyan_ch4_matched_filter_optimal_transfer_function
 
 
 def test_rng220_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng058 import rangayyan_ch3_pole_zero_factored_form
+from morie.fn.bsaar import rangayyan_ch3_pole_zero_factored_form
 
 
 def test_rng058_basic():

@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng223 import rangayyan_ch4_test_signal_three_events
+from morie.fn.bsasig import rangayyan_ch4_test_signal_three_events
 
 
 def test_rng223_matches_eq_4_51_sample_by_sample():

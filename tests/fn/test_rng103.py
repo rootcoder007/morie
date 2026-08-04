@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng103 import rangayyan_ch3_integral_causal
+from morie.fn.bsafilt import rangayyan_ch3_integral_causal
 
 
 def test_rng103_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng056 import rangayyan_ch3_iir_transfer_function
+from morie.fn.bsafilt import rangayyan_ch3_iir_transfer_function
 
 
 def test_rng056_basic():

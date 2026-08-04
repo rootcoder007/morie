@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng231 import rangayyan_ch4_homomorphic_log_separation
+from morie.fn.bsacep import rangayyan_ch4_homomorphic_log_separation
 
 
 def test_rng231_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng051 import rangayyan_ch3_lti_convolution_property
+from morie.fn.bsasig import rangayyan_ch3_lti_convolution_property
 
 
 def test_rng051_basic():

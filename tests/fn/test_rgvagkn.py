@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgvagkn import rangayyan_vag_knee_cartilage
+from morie.fn.bsaphys import rangayyan_vag_knee_cartilage
 
 
 def test_rgvagkn_basic():

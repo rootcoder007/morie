@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgmscart import rangayyan_muscle_artifact
+from morie.fn.bsaphys import rangayyan_muscle_artifact
 
 
 def test_rgmscart_basic():

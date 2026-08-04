@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng166 import rangayyan_ch3_rls_theta_vector
+from morie.fn.bsaadapt import rangayyan_ch3_rls_theta_vector
 
 
 def test_rng166_basic():

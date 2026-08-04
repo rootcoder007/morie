@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgnl import rangayyan_nonlinear_features
+from morie.fn.bsastat import rangayyan_nonlinear_features
 
 
 def test_rgnl_basic():

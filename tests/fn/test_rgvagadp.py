@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgvagadp import rangayyan_vag_adaptive_tfd
+from morie.fn.bsaclass import rangayyan_vag_adaptive_tfd
 
 
 def test_rgvagadp_basic():

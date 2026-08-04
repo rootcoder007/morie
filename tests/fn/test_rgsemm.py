@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgsemm import rangayyan_spec_error_meas
+from morie.fn.bsaadapt import rangayyan_spec_error_meas
 
 
 def test_rgsemm_basic():

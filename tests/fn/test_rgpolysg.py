@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgpolysg import rangayyan_polysomnography
+from morie.fn.bsaphys import rangayyan_polysomnography
 
 
 def test_rgpolysg_basic():

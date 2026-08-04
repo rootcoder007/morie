@@ -1,6 +1,6 @@
 """Tests for rng034.rangayyan_ch3_discrete_delta."""
 
-from morie.fn.rng034 import rangayyan_ch3_discrete_delta
+from morie.fn.bsasig import rangayyan_ch3_discrete_delta
 
 
 def test_rng034_basic():

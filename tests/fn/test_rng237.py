@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng237 import rangayyan_ch4_log_of_convolved_signals
+from morie.fn.bsaxfrm import rangayyan_ch4_log_of_convolved_signals
 
 
 def test_rng237_basic():

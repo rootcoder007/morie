@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgppt import rangayyan_point_process
+from morie.fn.bsaphys import rangayyan_point_process
 
 
 def test_rgppt_basic():

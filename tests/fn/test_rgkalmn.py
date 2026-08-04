@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgkalmn import rangayyan_kalman_filter
+from morie.fn.bsaadapt import rangayyan_kalman_filter
 
 
 def test_rgkalmn_basic():

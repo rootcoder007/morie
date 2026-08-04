@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng130 import rangayyan_ch3_bilinear_warping_Omega_to_omega
+from morie.fn.bsafilt import rangayyan_ch3_bilinear_warping_Omega_to_omega
 
 
 def test_rng130_basic():

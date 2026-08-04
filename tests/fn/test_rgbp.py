@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgbp import rangayyan_basis_pursuit
+from morie.fn.bsaclass import rangayyan_basis_pursuit
 
 
 def test_rgbp_basic():

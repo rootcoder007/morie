@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rglevd import rangayyan_levinson_durbin
+from morie.fn.bsaar import rangayyan_levinson_durbin
 
 
 def test_rglevd_basic():

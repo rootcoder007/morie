@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgwhop import rangayyan_wiener_hopf
+from morie.fn.bsaadapt import rangayyan_wiener_hopf
 
 
 def test_rgwhop_basic():

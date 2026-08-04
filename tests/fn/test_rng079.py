@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng079 import rangayyan_ch3_periodic_convolution
+from morie.fn.bsasig import rangayyan_ch3_periodic_convolution
 
 
 def test_rng079_basic():

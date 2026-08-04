@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgdwt import rangayyan_dwt
+from morie.fn.bsatf import rangayyan_dwt
 
 
 def test_rgdwt_basic():

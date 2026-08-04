@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgntch import rangayyan_notch_filter
+from morie.fn.bsafilt import rangayyan_notch_filter
 
 
 def test_rgntch_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgmra import rangayyan_mra
+from morie.fn.bsatf import rangayyan_mra
 
 
 def test_rgmra_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng029 import rangayyan_ch3_signal_as_delta_decomposition
+from morie.fn.bsaphys import rangayyan_ch3_signal_as_delta_decomposition
 
 
 def test_rng029_basic():

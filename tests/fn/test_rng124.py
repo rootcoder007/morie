@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng124 import rangayyan_ch3_butterworth_squared_laplace
+from morie.fn.bsafilt import rangayyan_ch3_butterworth_squared_laplace
 
 
 def test_rng124_basic():

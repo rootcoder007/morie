@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgoae import rangayyan_oae
+from morie.fn.bsaphys import rangayyan_oae
 
 
 def test_rgoae_basic():

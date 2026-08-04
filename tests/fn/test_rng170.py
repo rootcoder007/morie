@@ -7,8 +7,8 @@ check it is therefore to do the inversion it avoids and compare.
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng167 import rangayyan_ch3_rls_phi_recursion as phi_rec
-from morie.fn.rng170 import rangayyan_ch3_rls_inverse_recursion as inv_rec
+from morie.fn.bsaadapt import rangayyan_ch3_rls_phi_recursion as phi_rec
+from morie.fn.bsaadapt import rangayyan_ch3_rls_inverse_recursion as inv_rec
 
 
 def test_rng170_agrees_with_explicitly_inverting_the_Phi_recursion():

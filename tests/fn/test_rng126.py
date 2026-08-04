@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng126 import rangayyan_ch3_butterworth_analog_transfer_function
+from morie.fn.bsafilt import rangayyan_ch3_butterworth_analog_transfer_function
 
 
 def test_rng126_basic():

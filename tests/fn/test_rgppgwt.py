@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgppgwt import rangayyan_ppg_wavelet
+from morie.fn.bsatf import rangayyan_ppg_wavelet
 
 
 def test_rgppgwt_basic():

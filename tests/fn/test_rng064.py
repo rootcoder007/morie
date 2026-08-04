@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng064 import rangayyan_ch3_fourier_transform_omega
+from morie.fn.bsaxfrm import rangayyan_ch3_fourier_transform_omega
 
 
 def test_rng064_basic():

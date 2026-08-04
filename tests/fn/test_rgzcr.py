@@ -9,7 +9,7 @@ not read back from the implementation.
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgzcr import rangayyan_zero_crossing
+from morie.fn.bsastat import rangayyan_zero_crossing
 
 
 def test_rgzcr_counts_every_sign_change():

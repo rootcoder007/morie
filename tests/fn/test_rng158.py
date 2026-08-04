@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng158 import rangayyan_ch3_lms_steepest_descent
+from morie.fn.bsaadapt import rangayyan_ch3_lms_steepest_descent
 
 
 def test_rng158_basic():

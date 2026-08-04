@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgphas import rangayyan_phase_response
+from morie.fn.bsafilt import rangayyan_phase_response
 
 
 def test_rgphas_basic():

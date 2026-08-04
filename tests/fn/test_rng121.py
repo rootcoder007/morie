@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng121 import rangayyan_ch3_baseline_wander_filter_z_form_b
+from morie.fn.bsafilt import rangayyan_ch3_baseline_wander_filter_z_form_b
 
 
 def test_rng121_basic():

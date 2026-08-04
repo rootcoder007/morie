@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng168 import rangayyan_ch3_rls_theta_recursion as theta_rec
+from morie.fn.bsaadapt import rangayyan_ch3_rls_theta_recursion as theta_rec
 
 
 def test_rng168_recursion_reproduces_the_closed_form_sum():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng074 import rangayyan_ch3_dft_real_imag_decomposition
+from morie.fn.bsaxfrm import rangayyan_ch3_dft_real_imag_decomposition
 
 
 def test_rng074_basic():

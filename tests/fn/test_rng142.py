@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng142 import rangayyan_ch3_cross_correlation_vector as theta_vec
+from morie.fn.bsaadapt import rangayyan_ch3_cross_correlation_vector as theta_vec
 
 
 def test_rng142_matches_the_definition_computed_by_hand():

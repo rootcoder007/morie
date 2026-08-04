@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng115 import rangayyan_ch3_first_difference_phase
+from morie.fn.bsafilt import rangayyan_ch3_first_difference_phase
 
 
 def test_rng115_basic():

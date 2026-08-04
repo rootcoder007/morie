@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgwnr import rangayyan_wiener_filter
+from morie.fn.bsaadapt import rangayyan_wiener_filter
 
 
 def test_rgwnr_basic():

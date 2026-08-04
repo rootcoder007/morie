@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng160 import rangayyan_ch3_widrow_hoff_lms
+from morie.fn.bsaadapt import rangayyan_ch3_widrow_hoff_lms
 
 
 def test_rng160_basic():

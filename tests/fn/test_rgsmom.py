@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgsmom import rangayyan_spectral_moments
+from morie.fn.bsacorr import rangayyan_spectral_moments
 
 
 def test_rgsmom_basic():

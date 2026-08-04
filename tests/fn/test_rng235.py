@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng235 import rangayyan_ch4_complex_log_of_product
+from morie.fn.bsaphys import rangayyan_ch4_complex_log_of_product
 
 
 def test_rng235_basic():

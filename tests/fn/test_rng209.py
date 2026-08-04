@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng209 import rangayyan_ch4_white_noise_psd_input
+from morie.fn.bsacorr import rangayyan_ch4_white_noise_psd_input
 
 
 def test_rng209_basic():

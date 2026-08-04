@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng252 import rangayyan_ch4_complex_cepstrum_signal_with_echo
+from morie.fn.bsatf import rangayyan_ch4_complex_cepstrum_signal_with_echo
 
 
 def test_rng252_basic():

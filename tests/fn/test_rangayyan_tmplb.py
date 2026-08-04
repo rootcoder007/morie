@@ -8,21 +8,21 @@ against the closed form the docstring states."""
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgmavg import rangayyan_moving_average
-from morie.fn.rng007 import rangayyan_ch3_sample_mean
-from morie.fn.rng008 import rangayyan_ch3_sample_mean_squared
-from morie.fn.rng009 import rangayyan_ch3_sample_rms
-from morie.fn.rng010 import rangayyan_ch3_sample_std
-from morie.fn.rng039 import rangayyan_ch3_ma_filter_11pt
-from morie.fn.rng087 import rangayyan_ch3_ma_filter_general
-from morie.fn.rng097 import rangayyan_ch3_ma_8point
-from morie.fn.rng137 import rangayyan_ch3_estimation_error
-from morie.fn.rng140 import rangayyan_ch3_estimation_error_vector_form
-from morie.fn.rng156 import rangayyan_ch3_lms_estimation_error
-from morie.fn.rng159 import rangayyan_ch3_lms_gradient_estimate
-from morie.fn.rng165 import rangayyan_ch3_rls_phi_matrix
-from morie.fn.rng166 import rangayyan_ch3_rls_theta_vector
-from morie.fn.rng194 import rangayyan_ch4_heart_rate_from_rr
+from morie.fn.bsafilt import rangayyan_moving_average
+from morie.fn.bsastat import rangayyan_ch3_sample_mean
+from morie.fn.bsastat import rangayyan_ch3_sample_mean_squared
+from morie.fn.bsastat import rangayyan_ch3_sample_rms
+from morie.fn.bsastat import rangayyan_ch3_sample_std
+from morie.fn.bsafilt import rangayyan_ch3_ma_filter_11pt
+from morie.fn.bsafilt import rangayyan_ch3_ma_filter_general
+from morie.fn.bsafilt import rangayyan_ch3_ma_8point
+from morie.fn.bsaadapt import rangayyan_ch3_estimation_error
+from morie.fn.bsaadapt import rangayyan_ch3_estimation_error_vector_form
+from morie.fn.bsaadapt import rangayyan_ch3_lms_estimation_error
+from morie.fn.bsaadapt import rangayyan_ch3_lms_gradient_estimate
+from morie.fn.bsaadapt import rangayyan_ch3_rls_phi_matrix
+from morie.fn.bsaadapt import rangayyan_ch3_rls_theta_vector
+from morie.fn.bsaqrs import rangayyan_ch4_heart_rate_from_rr
 
 
 def test_basic_statistics_match_their_closed_forms():

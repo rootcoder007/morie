@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgff import rangayyan_form_factor
+from morie.fn.bsastat import rangayyan_form_factor
 
 
 def test_rgff_basic():
