@@ -1,55 +1,21 @@
-r"""Numbered display equation (9.12) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Wolfe dual of a constrained program -- re-export.
 
-from ._richresult import RichResult
+The generator emitted several modules for eq. (9.9), (9.12), (9.13), (9.14) p.346 of
+Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
+All of them are the same method, so the implementation lives once in
+morie.fn.msm184 and this module re-exports it.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_12"]
+from .msm184 import wolfedual
 
+__all__ = ["wolfedual", "mvsml_ridge_lasso_elastic_eq_9_12"]
 
-def mvsml_ridge_lasso_elastic_eq_9_12(optimization, problem, Xm, Xp, maximize, f):
-    r"""
-    Numbered display equation (9.12) from MVSML chapter 9.
-
-    Formula: optimization problem is Xm Xp maximize f x ( ) + i=1\lambdaihi x ( ) + i=1\alphaigi x ( )
-
-    Parameters
-    ----------
-    optimization : array-like
-        Input data.
-    problem : array-like
-        Input data.
-    Xm : array-like
-        Input data.
-    Xp : array-like
-        Input data.
-    maximize : array-like
-        Input data.
-    f : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.12) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    r"""
-    optimization = np.atleast_1d(np.asarray(optimization, dtype=float))
-    n = len(optimization)
-    result = float(np.mean(optimization))
-    se = float(np.std(optimization, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.12) from MVSML chapter 9.",
-        }
-    )
+mvsml_ridge_lasso_elastic_eq_9_12 = wolfedual
 
 
 def cheatsheet():
-    return "msm185: Numbered display equation (9.12) from MVSML chapter 9."
+    return "msm185: Wolfe dual of a constrained program (see msm184)"

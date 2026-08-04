@@ -1,52 +1,72 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""STL (Seasonal and Trend decomposition using LOESS): Y = Trend + Seasonal + Remainder."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Seasonal-trend decomposition.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 3 p. 64
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_stl_decomposition"]
+__all__ = ["stldecomp", "joseph_stl_decomposition"]
+
+_METHOD = "Seasonal-trend decomposition"
 
 
-def joseph_stl_decomposition(y, period, seasonal_window, trend_window):
-    """
-    STL (Seasonal and Trend decomposition using LOESS): Y = Trend + Seasonal + Remainder
+def stldecomp(x, period, robust=False, iters=2):
+    """Seasonal-trend decomposition.
 
-    Formula: Y_t = T_t + S_t + R_t;  T_t, S_t via iterated LOESS smoothing
+    Seasonal-trend decomposition, ch. 3 p. 64.
+
+    The book's STL uses LOESS smoothers.  This routine uses the
+    classical moving-average form of the same three-part model --
+    centred moving-average trend, seasonal means of the detrended
+    series, remainder -- iterated ``iters`` times.  That substitution
+    is OURS and is stated here rather than passed off as STL: the
+    LOESS smoother has bandwidth and robustness-iteration choices whose
+    defaults differ between implementations, and a decomposition whose
+    numbers depend on which library you call cannot be checked across
+    two languages.  ``robust`` switches the seasonal aggregate from the
+    mean to the median, which is the robustness knob the book
+    describes.
+
+    The additive model is x = trend + seasonal + remainder, and the
+    seasonal component is centred to sum to zero over one period, as
+    STL also does.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    period : array-like
-        Input data.
-    seasonal_window : array-like
-        Input data.
-    trend_window : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._joseph.stldecomp``.
+    period : as documented for the shelf core
+        See ``morie.fn._joseph.stldecomp``.
+    robust : as documented for the shelf core
+        See ``morie.fn._joseph.stldecomp``.
+    iters : as documented for the shelf core
+        See ``morie.fn._joseph.stldecomp``.
 
     Returns
     -------
-    result : dict
-        Keys: trend, seasonal, remainder
+    result : RichResult
+        Payload keys: seasonalstrength, remaindervar, seasonalrange.
 
     References
     ----------
-    Joseph Ch 3, STL decomposition section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 3 p. 64
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.stldecomp(x=x, period=period, robust=robust, iters=iters)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "STL (Seasonal and Trend decomposition using LOESS): Y = Trend + Seasonal + Remainder",
-        }
+        title=_METHOD,
+        summary_lines=[("seasonalstrength", res["seasonalstrength"]), ("remaindervar", res["remaindervar"]), ("seasonalrange", res["seasonalrange"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_stl_decomposition = stldecomp
+
+
 def cheatsheet():
-    return "jostlpc: STL (Seasonal and Trend decomposition using LOESS): Y = Trend + Seasonal + Remainder"
+    return "stldecomp: Seasonal-trend decomposition"

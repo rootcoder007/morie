@@ -1,76 +1,78 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Exceedance statistic: number of Y's exceeding the largest X or specific X order stat."""
+"""Null distribution of the placement/exceedance statistic P_(i)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_exceedance_stat"]
+__all__ = ['exceed', 'gibbons_exceedance_stat']
 
 
-def gibbons_exceedance_stat(x, y, cdf=None):
-    """
-    Exceedance statistic: number of Y's exceeding the largest X or specific X order stat
+def exceed(i, m, n, j=None):
+    """Exact null law of the placement P_(i) = m S_m(Y_(i)).
 
-    Formula: E = #{Y_j > X_(m)}: hypergeometric distribution under H0: F_X = F_Y
+    Problem 2.28(c) (book p. 70): with two independent samples of
+    sizes m (the X's) and n (the Y's) from the same continuous cdf,
+
+    .. math::
+        P[P_{(i)} = j] = \\frac{\\binom{m+n-i-j}{m-j}
+            \\binom{i+j-1}{j}}{\\binom{m+n}{n}},
+        \\qquad j = 0, 1, \\dots, m.
+
+    The exceedance statistic m - P_(i) counts the X's that exceed
+    Y_(i); its pmf is the same vector read backwards.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    i : int
+        Index of the Y order statistic, 1 <= i <= n.
+    m, n : int
+        Sizes of the X and Y samples.
+    j : int, optional
+        Placement value at which to report the pmf and cdf.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``pmf`` (list over j = 0..m), ``pmf_j``, ``cdf_j``,
+        ``mean``, ``var``, ``i``, ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Problem 2.28
+    Gibbons & Chakraborti (2011), Problem 2.28(c), p. 70.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Exceedance statistic: number of Y's exceeding the largest X or specific X order stat",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Exceedance statistic: number of Y's exceeding the largest X or specific X order stat",
-        }
-    )
+    i = int(i)
+    m = int(m)
+    n = int(n)
+    if not 1 <= i <= n:
+        raise ValueError("need 1 <= i <= n.")
+    if m < 1:
+        raise ValueError("m must be at least 1.")
+    den = math.comb(m + n, n)
+    pmf = [
+        math.comb(m + n - i - k, m - k) * math.comb(i + k - 1, k) / den
+        for k in range(m + 1)
+    ]
+    mean = sum(k * pk for k, pk in enumerate(pmf))
+    ex2 = sum(k * k * pk for k, pk in enumerate(pmf))
+    out = {
+        "pmf": pmf,
+        "pmf_j": float("nan"),
+        "cdf_j": float("nan"),
+        "mean": float(mean),
+        "var": float(ex2 - mean * mean),
+        "i": i,
+        "m": m,
+        "n": n,
+        "method": "P[P_(i)=j] = C(m+n-i-j, m-j) C(i+j-1, j) / C(m+n, n)",
+    }
+    if j is not None:
+        j = int(j)
+        if not 0 <= j <= m:
+            raise ValueError("j must lie in 0..m.")
+        out["pmf_j"] = pmf[j]
+        out["cdf_j"] = float(sum(pmf[: j + 1]))
+    return RichResult(payload=out)
 
 
-def cheatsheet():
-    return "gb_exc: Exceedance statistic: number of Y's exceeding the largest X or specific X order stat"
+gibbons_exceedance_stat = exceed

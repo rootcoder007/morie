@@ -1,78 +1,65 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Sample size formula for sign test based on normal approximation."""
+"""Two-sided sample size for the sign test (alpha replaced by alpha/2)."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_sign_sample_size_2"]
+__all__ = ['signnasy', 'gibbons_sign_sample_size_2']
 
 
-def gibbons_sign_sample_size_2(alpha, beta, p, cdf=None):
-    """
-    Sample size formula for sign test based on normal approximation
+def signnasy(theta, alpha=0.05, beta=0.10):
+    """Sample size for a two-sided sign test.
 
-    Formula: n approx (z_alpha + z_beta)^2 / (2*p - 1)^2 where p = P(X > M)
+    Book p. 179: "A sample size formula for the two-sided alternative
+    is the same as (5.4.9) with alpha replaced by alpha/2."  So
+
+    .. math:: N = \\left[\\frac{\\sqrt{\\theta(1-\\theta)}\\,z_\\beta
+        + 0.5 z_{\\alpha/2}}{0.5 - \\theta}\\right]^{2}.
 
     Parameters
     ----------
-    alpha : array-like
-        Input data.
-    beta : array-like
-        Input data.
-    p : array-like
-        Input data.
+    theta : float
+        P(X > M0) under the alternative, theta != 0.5.
+    alpha : float, optional
+        Two-sided size (default 0.05).
+    beta : float, optional
+        Type II error (default 0.10).
 
     Returns
     -------
-    result : dict
-        Keys: sample_size
+    RichResult
+        keys ``n``, ``n_raw``, ``root_n``, ``z_alpha``, ``z_beta``,
+        ``theta``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.4.6
+    Gibbons & Chakraborti (2011), eq. (5.4.9) two-sided form, p. 179.
     """
-    alpha = np.asarray(alpha, dtype=float)
-    n = int(alpha) if alpha.ndim == 0 else len(alpha)
-    if alpha.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Sample size formula for sign test based on normal approximation",
-            }
-        )
-    x_sorted = np.sort(alpha)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(alpha), scale=np.std(alpha, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    theta = float(theta)
+    alpha = float(alpha)
+    beta = float(beta)
+    if theta == 0.5:
+        raise ValueError("theta must differ from 0.5.")
+    if not 0.0 < theta < 1.0:
+        raise ValueError("theta must lie strictly inside (0, 1).")
+    za = stats.norm.ppf(1.0 - alpha / 2.0)
+    zb = stats.norm.ppf(1.0 - beta)
+    root = (math.sqrt(theta * (1.0 - theta)) * zb + 0.5 * za) / (0.5 - theta)
+    nraw = root * root
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Sample size formula for sign test based on normal approximation",
+            "n": int(math.ceil(nraw)),
+            "n_raw": float(nraw),
+            "root_n": float(abs(root)),
+            "z_alpha": float(za),
+            "z_beta": float(zb),
+            "theta": theta,
+            "method": "two-sided sign test sample size, eq. (5.4.9) with alpha/2",
         }
     )
 
 
-def cheatsheet():
-    return "gb_ssj: Sample size formula for sign test based on normal approximation"
+gibbons_sign_sample_size_2 = signnasy

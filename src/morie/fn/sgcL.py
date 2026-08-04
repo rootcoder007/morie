@@ -1,42 +1,33 @@
-"""Simplified GCN (no nonlinearity)."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Simplified graph convolution propagation."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["sgc"]
+__all__ = ["sgcprop", "sgc"]
 
 
-def sgc(A, X, K):
-    """
-    Simplified GCN (no nonlinearity)
+def sgcprop(A, X, K):
+    """Simplified graph convolution propagation.
 
-    Formula: Y = softmax(Â^K X W)
+    Simplified graph convolution: S^K X, S = D^-1/2 (A + I) D^-1/2.
 
-    Parameters
-    ----------
-    A : array-like
-        Input data.
-    X : array-like
-        Input data.
-    K : array-like
-        Input data.
+    Wu et al. (2019).  Collapsing the nonlinearities between graph
+    convolution layers leaves a fixed linear smoothing operator applied
+    K times, which can be precomputed once; the classifier that follows
+    is then an ordinary logistic regression.  The result is the
+    propagated feature matrix.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Wu et al (2019) SGC
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Simplified GCN (no nonlinearity)"})
+    return RichResult(title="Simplified graph convolution propagation", payload=_c.sgcprop(A=A, X=X, K=K))
+
+
+sgc = sgcprop
 
 
 def cheatsheet():
-    return "sgcL: Simplified GCN (no nonlinearity)"
+    return "sgcL: Simplified graph convolution propagation"

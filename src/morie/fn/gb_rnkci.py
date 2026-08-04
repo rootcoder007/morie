@@ -1,80 +1,65 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""General rank-based confidence interval construction via test inversion."""
+"""General rank-based confidence interval by test inversion."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_rank_ci"]
+__all__ = ['rankci', 'gibbons_rank_ci']
 
 
-def gibbons_rank_ci(x, alpha, cdf=None):
-    """
-    General rank-based confidence interval construction via test inversion
+def rankci(values, k, level=None):
+    """Interval (V_(k+1), V_(M-k)) from an inverted rank test.
 
-    Formula: theta in CI iff test of H0: theta = theta0 does not reject
+    Sections 5.7.5, 6.4.2 and 6.6.2 all use the same construction: the
+    acceptance region of a rank test is an interval of the parameter,
+    and its endpoints are order statistics of a derived set of
+    quantities -- Walsh averages for the one-sample signed-rank test,
+    pairwise differences for the two-sample rank tests, single
+    observations for the sign test.  Given that set and the critical
+    index k, the interval is the (k+1)-th value in from each end.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    values : sequence of float
+        The derived quantities, length M >= 2.
+    k : int
+        Critical index, 0 <= k < M/2.
+    level : float, optional
+        Confidence coefficient to record alongside, if the caller has
+        computed it from the relevant null distribution.
 
     Returns
     -------
-    result : dict
-        Keys: lower, upper
+    RichResult
+        keys ``lower``, ``upper``, ``estimate`` (median of the
+        values), ``k``, ``m`` (M), ``level``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5-9 general
+    Gibbons & Chakraborti (2011), Secs. 5.7.5 (p. 207), 6.4.2 (p. 251)
+    and 6.6.2 (p. 267).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "General rank-based confidence interval construction via test inversion",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    v = sorted(float(t) for t in values)
+    mm = len(v)
+    k = int(k)
+    if mm < 2:
+        raise ValueError("need at least 2 values.")
+    if not 0 <= k < mm:
+        raise ValueError("k must lie in 0..M-1.")
+    mid = mm // 2
+    est = v[mid] if mm % 2 else (v[mid - 1] + v[mid]) / 2.0
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "General rank-based confidence interval construction via test inversion",
+            "lower": float(v[k]),
+            "upper": float(v[mm - 1 - k]),
+            "estimate": float(est),
+            "k": k,
+            "m": int(mm),
+            "level": float("nan") if level is None else float(level),
+            "method": "rank-test inversion interval, (k+1)-th from each end",
         }
     )
 
 
-def cheatsheet():
-    return "gb_rnkci: General rank-based confidence interval construction via test inversion"
-
-
-# compact alias per ledger/NAMING.md
-gibbonsrankci = gibbons_rank_ci
+gibbons_rank_ci = rankci

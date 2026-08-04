@@ -1,50 +1,88 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""iTransformer: inverted attention -- variates as tokens, time as feature dim."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""iTransformer attention across variate tokens.
 
-from . import _array_core as np
+Liu et al. (2024) ICLR, arXiv:2310.06625, eqs. (1)-(2)
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_itransformer"]
+__all__ = ["itrans", "joseph_itransformer"]
+
+_METHOD = "iTransformer attention across variate tokens"
 
 
-def joseph_itransformer(X, n_variates, transformer):
-    """
-    iTransformer: inverted attention -- variates as tokens, time as feature dim
+def itrans(x, wembed, bembed, wq, wk, wv, wffn1, bffn1, wffn2, bffn2, wproj, bproj):
+    """iTransformer attention across variate tokens.
 
-    Formula: token_i = series_for_variate_i; MHA across variates; feed-forward along time
+    iTransformer: variates as tokens, attention across variates.
+
+    Quoted from the paper:
+        (1)  "h^0_n = Embedding(X_{:,n});
+              H^{l+1} = TrmBlock(H^l), l = 0..L-1;
+              Yhat_{:,n} = Projection(h^L_n)"
+        (2)  "LayerNorm(H) = {[h_n - Mean(h_n)]/sqrt(Var(h_n))
+                              | n = 1..N}"
+        attention scores "A_{i,j} = (Q K^T / sqrt(d_k))_{i,j}"
+
+    -- Liu, Y., Hu, T., Zhang, H., Wu, H., Wang, S., Ma, L. and Long,
+    M., "iTransformer: Inverted Transformers Are Effective for Time
+    Series Forecasting", ICLR 2024 (arXiv:2310.06625).
+
+    The inversion is the whole point: each VARIATE series becomes one
+    token, so the attention matrix is N x N over variates rather than
+    T x T over time steps.  All projections are caller-supplied.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    n_variates : array-like
-        Input data.
-    transformer : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._joseph.itrans``.
+    wembed : as documented for the shelf core
+        See ``morie.fn._joseph.itrans``.
+    bembed : as documented for the shelf core
+        See ``morie.fn._joseph.itrans``.
+    wq : as documented for the shelf core
+        See ``morie.fn._joseph.itrans``.
+    wk : as documented for the shelf core
+        See ``morie.fn._joseph.itrans``.
+    wv : as documented for the shelf core
+        See ``morie.fn._joseph.itrans``.
+    wffn1 : as documented for the shelf core
+        See ``morie.fn._joseph.itrans``.
+    bffn1 : as documented for the shelf core
+        See ``morie.fn._joseph.itrans``.
+    wffn2 : as documented for the shelf core
+        See ``morie.fn._joseph.itrans``.
+    bffn2 : as documented for the shelf core
+        See ``morie.fn._joseph.itrans``.
+    wproj : as documented for the shelf core
+        See ``morie.fn._joseph.itrans``.
+    bproj : as documented for the shelf core
+        See ``morie.fn._joseph.itrans``.
 
     Returns
     -------
-    result : dict
-        Keys: y_hat
+    result : RichResult
+        Payload keys: nvariates, T, D, attndiag, sumsq.
 
     References
     ----------
-    Joseph Ch 16, iTransformer section
+    Liu et al. (2024) ICLR, arXiv:2310.06625, eqs. (1)-(2)
     """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.itrans(x=x, wembed=wembed, bembed=bembed, wq=wq, wk=wk, wv=wv, wffn1=wffn1, bffn1=bffn1, wffn2=wffn2, bffn2=bffn2, wproj=wproj, bproj=bproj)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "iTransformer: inverted attention -- variates as tokens, time as feature dim",
-        }
+        title=_METHOD,
+        summary_lines=[("nvariates", res["nvariates"]), ("T", res["T"]), ("D", res["D"]), ("attndiag", res["attndiag"]), ("sumsq", res["sumsq"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_itransformer = itrans
+
+
 def cheatsheet():
-    return "joitran: iTransformer: inverted attention -- variates as tokens, time as feature dim"
+    return "itrans: iTransformer attention across variate tokens"

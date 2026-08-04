@@ -1,47 +1,59 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Symmetric Mean Absolute Percentage Error."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Symmetric mean absolute percentage error.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 19 p. 569
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_smape"]
+__all__ = ["smape", "joseph_smape"]
+
+_METHOD = "Symmetric mean absolute percentage error"
 
 
-def joseph_smape(y_true, y_pred):
-    """
-    Symmetric Mean Absolute Percentage Error
+def smape(y, yhat):
+    """Symmetric mean absolute percentage error.
 
-    Formula: sMAPE = (200/H) sum_h |y_h - y_hat_h| / (|y_h| + |y_hat_h|)
+    Symmetric MAPE, ch. 19 p. 569.
+
+    Quoted from p. 569:
+        sMAPE = (1/H) sum_t 200 |e_t| / (|y_t| + |yhat_t|)
+
+    Note the 200 in the numerator, which is the book's own convention:
+    the symmetric denominator is the SUM of the magnitudes, not their
+    average, so the factor is 200 rather than 100.
 
     Parameters
     ----------
-    y_true : array-like
-        Input data.
-    y_pred : array-like
-        Input data.
+    y : as documented for the shelf core
+        See ``morie.fn._joseph.smape``.
+    yhat : as documented for the shelf core
+        See ``morie.fn._joseph.smape``.
 
     Returns
     -------
-    result : dict
-        Keys: smape
+    result : RichResult
+        Payload keys: smape, smdape, n.
 
     References
     ----------
-    Joseph Ch 19, sMAPE section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 19 p. 569
     """
-    y_true = np.atleast_1d(np.asarray(y_true, dtype=float))
-    n = len(y_true)
-    result = float(np.mean(y_true))
-    se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.smape(y=y, yhat=yhat)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Symmetric Mean Absolute Percentage Error"}
+        title=_METHOD,
+        summary_lines=[("smape", res["smape"]), ("smdape", res["smdape"]), ("n", res["n"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_smape = smape
+
+
 def cheatsheet():
-    return "josmap: Symmetric Mean Absolute Percentage Error"
-
-
-# compact alias per ledger/NAMING.md
-josephsmape = joseph_smape
+    return "smape: Symmetric mean absolute percentage error"

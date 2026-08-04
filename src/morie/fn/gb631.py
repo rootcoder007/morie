@@ -1,80 +1,90 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Two-sample Kolmogorov-Smirnov test D_{m,n} = sup|S_m(x) - S_n(x)|."""
+"""Two-sample Kolmogorov-Smirnov test D_{m,n}."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_ks2"]
+__all__ = ['ks2', 'gibbons_ks2']
 
 
-def gibbons_ks2(x, y, cdf=None):
-    """
-    Two-sample Kolmogorov-Smirnov test D_{m,n} = sup|S_m(x) - S_n(x)|
+def _ks2count(m, n, d, onesided=False):
+    """Exact P(statistic >= d) by counting monotone lattice paths."""
+    # Number of paths from (0,0) to (m,n) that never violate the bound.
+    row = [0.0] * (n + 1)
+    prev = [0.0] * (n + 1)
+    lim = d - 1e-12
+    for i in range(m + 1):
+        for j in range(n + 1):
+            dev = i / m - j / n
+            if not onesided:
+                dev = abs(dev)
+            if dev >= lim:
+                row[j] = 0.0
+            elif i == 0 and j == 0:
+                row[j] = 1.0
+            else:
+                v = prev[j] if i > 0 else 0.0
+                v += row[j - 1] if j > 0 else 0.0
+                row[j] = v
+        prev = row[:]
+    total = math.comb(m + n, m)
+    inside = prev[n]
+    return max(0.0, min(1.0, 1.0 - inside / total))
 
-    Formula: D_{m,n} = sup|S_m(x) - S_n(x)|; reject H0 for large D
+
+def ks2(x, y):
+    """Two-sample KS statistic and its exact null tail probability.
+
+    Section 6.3 (book p. 239):
+
+    .. math:: D_{m,n} = \\sup_x |S_m(x) - S_n(x)|,
+
+    distribution-free under H0: F_X = F_Y.  The exact tail is obtained
+    by counting the monotone lattice paths from (0,0) to (m,n) that
+    stay strictly inside the band |i/m - j/n| < d and dividing by
+    C(m+n, m) -- the standard exact evaluation, with no simulation.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples, sizes m and n.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic``, ``p_value``, ``dplus``, ``dminus``,
+        ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 6.3
+    Gibbons & Chakraborti (2011), Sec. 6.3, p. 239.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Two-sample Kolmogorov-Smirnov test D_{m,n} = sup|S_m(x) - S_n(x)|",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = sorted(float(v) for v in x)
+    ys = sorted(float(v) for v in y)
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    pts = sorted(set(xs + ys))
+    dp = dm = 0.0
+    for t in pts:
+        sm = sum(1 for v in xs if v <= t) / m
+        sn = sum(1 for v in ys if v <= t) / n
+        dp = max(dp, sm - sn)
+        dm = max(dm, sn - sm)
+    d = max(dp, dm)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": float(d),
+            "p_value": float(_ks2count(m, n, d, False)),
+            "dplus": float(dp),
+            "dminus": float(dm),
+            "m": m,
             "n": n,
-            "method": "Two-sample Kolmogorov-Smirnov test D_{m,n} = sup|S_m(x) - S_n(x)|",
+            "method": "two-sample KS test, exact lattice-path tail",
         }
     )
 
 
-def cheatsheet():
-    return "gb631: Two-sample Kolmogorov-Smirnov test D_{m,n} = sup|S_m(x) - S_n(x)|"
-
-
-# compact alias per ledger/NAMING.md
-gibbonsks2 = gibbons_ks2
+gibbons_ks2 = ks2

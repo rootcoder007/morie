@@ -1,71 +1,87 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Cramer-von Mises test statistic."""
+"""Cramer-von Mises statistic against a fully specified distribution."""
 
 from . import _array_core as np
-from . import _stats_core as stats
-
 from ._richresult import RichResult
 
-__all__ = ["fauzi_cvm_statistic"]
+__all__ = ["cvmstat", "fauzi_cvm_statistic"]
 
 
-def fauzi_cvm_statistic(data, cdf):
-    """
-    Cramer-von Mises test statistic
+def cvmstat(x, cdf):
+    r"""Cramer-von Mises statistic against a fully specified distribution.
 
-    Formula: CvM_n = n * integral [F_n(data)-F(data)]^2 dF(data)
+    .. math:: CvM_n = n\!\int_{-\infty}^{\infty}[F_n(x)-F(x)]^2dF(x).
+
+    Evaluated by its exact closed form, not by quadrature: substituting
+    the empirical df and integrating gives
+
+    .. math:: CvM_n = \frac1{12n} + \sum_{i=1}^n
+              \Big(\frac{2i-1}{2n} - F(X_{(i)})\Big)^2,
+
+    which is a finite sum with no discretisation error at all.
+
+    This module previously carried a Kolmogorov-Smirnov body under the
+    Cramer-von Mises name -- one of six modules in this shelf sharing a
+    single copied KS implementation. It now computes what it says.
+
+    Where KS uses a supremum and so responds to the single worst point,
+    CvM integrates the squared discrepancy against ``dF`` and so responds
+    to sustained departure. That is why Theorems 5.1 and 5.7 have to be
+    proved separately: the two statistics are not functions of one
+    another, and smoothing affects them differently.
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    x : array-like
+        Sample.
+    cdf : callable
+        The fully specified null distribution ``F(t)``.
 
     Returns
     -------
-    result : dict
-        Keys: statistic
+    RichResult
+        Keys ``statistic``, ``p_value``, ``n``, ``method``.
 
     References
     ----------
-    Fauzi Ch 5, Eq 5.2
+    Fauzi and Maesono (2023), Eq. (5.2) and the display defining CvM_n in Sec. 5.1.
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    if data.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    xs = np.sort(np.asarray(x, dtype=float).ravel())
+    n = xs.size
     if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Cramer-von Mises test statistic"}
-        )
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError(f"need at least two observations, got {n}.")
+    if not callable(cdf):
+        raise ValueError("cdf must be a callable F(t).")
+    fv = np.asarray([float(cdf(float(t))) for t in xs], dtype=float)
+    target = (2.0 * np.arange(1, n + 1) - 1.0) / (2.0 * n)
+    stat = float(1.0 / (12.0 * n) + np.sum((target - fv) ** 2))
+    # Anderson-Darling-style asymptotic tail of the Cramer-von Mises law,
+    # summed over a FIXED 100 terms so the value is reproducible.
+    z = stat
+    pval = 1.0
+    if z > 0:
+        acc = 0.0
+        for k in range(100):
+            acc += float(np.exp(-((4.0 * k + 1.0) ** 2) * np.pi ** 2 / (8.0 * z)))
+        pval = max(0.0, min(1.0, 1.0 - acc * float(np.sqrt(2.0 / z))))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Cramer-von Mises test statistic",
+            "statistic": stat,
+            "p_value": float(pval),
+            "n": int(n),
+            "method": "Cramer-von Mises statistic against a specified F",
         }
     )
 
 
+fauzi_cvm_statistic = cvmstat
+
+
 def cheatsheet():
-    return "fzcvms: Cramer-von Mises test statistic"
+    return "fzcvms: CvM by its exact finite-sum form; previously this module held a copied KS body"
+
+
+# CANONICAL TEST
+# >>> r = cvmstat([0.1, 0.3, 0.5, 0.7, 0.9], cdf=lambda t: min(max(t, 0.0), 1.0))
+# >>> abs(r['statistic'] - 1 / 60) < 1e-12
+# True

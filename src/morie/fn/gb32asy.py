@@ -1,80 +1,79 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Asymptotic normality of standardized total runs statistic."""
+"""Asymptotic normality of the total number of runs -- eq. (3.2.9)."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_runs_asymp_normal"]
+__all__ = ['runsz', 'gibbons_runs_asymp_normal']
 
 
-def gibbons_runs_asymp_normal(R, n, n1, n2, cdf=None):
-    """
-    Asymptotic normality of standardized total runs statistic
+def runsz(r, n1, n2, correct=False):
+    """Standardised total-runs statistic for the Wald-Wolfowitz test.
 
-    Formula: Z = (R - 2nl(1-l)) / (2*sqrt(nl(1-l))) ->_d N(0,1)
+    Book p. 82, eq. (3.2.9): with lambda = n1/n and n = n1 + n2,
+
+    .. math:: Z = \\frac{R - 2n\\lambda(1-\\lambda)}
+        {2\\sqrt{n}\\,\\lambda(1-\\lambda)},
+
+    which tends to the standard normal.  The exact null moments,
+    E[R] = 2 n1 n2 / n + 1 and Var[R] = 2 n1 n2 (2 n1 n2 - n) /
+    (n^2 (n-1)), are returned alongside for comparison; ``correct``
+    applies a 0.5 continuity correction toward the mean.
 
     Parameters
     ----------
-    R : array-like
-        Input data.
-    n : array-like
-        Input data.
-    n1 : array-like
-        Input data.
-    n2 : array-like
-        Input data.
+    r : int
+        Observed total number of runs.
+    n1, n2 : int
+        Counts of the two element types.
+    correct : bool, optional
+        Apply the continuity correction (default False).
 
     Returns
     -------
-    result : dict
-        Keys: z_statistic
+    RichResult
+        keys ``z`` (eq. 3.2.9), ``z_exact`` (using the exact moments),
+        ``p_value``, ``mean``, ``var``, ``mean_exact``, ``var_exact``,
+        ``lam``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons eq 3.2.9
+    Gibbons & Chakraborti (2011), eq. (3.2.9), p. 82.
     """
-    R = np.asarray(R, dtype=float)
-    n = int(R) if R.ndim == 0 else len(R)
-    if R.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Asymptotic normality of standardized total runs statistic",
-            }
-        )
-    x_sorted = np.sort(R)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(R), scale=np.std(R, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    n1 = int(n1)
+    n2 = int(n2)
+    r = float(r)
+    if n1 < 1 or n2 < 1:
+        raise ValueError("n1 and n2 must be at least 1.")
+    n = n1 + n2
+    lam = n1 / float(n)
+    mean = 2.0 * n * lam * (1.0 - lam)
+    sd = 2.0 * math.sqrt(n) * lam * (1.0 - lam)
+    me = 2.0 * n1 * n2 / float(n) + 1.0
+    ve = 2.0 * n1 * n2 * (2.0 * n1 * n2 - n) / (float(n) ** 2 * (n - 1.0))
+    d = r - mean
+    de = r - me
+    if correct:
+        d = d - 0.5 if d > 0 else (d + 0.5 if d < 0 else d)
+        de = de - 0.5 if de > 0 else (de + 0.5 if de < 0 else de)
+    z = d / sd
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Asymptotic normality of standardized total runs statistic",
+            "z": float(z),
+            "z_exact": float(de / math.sqrt(ve)),
+            "p_value": float(2.0 * (1.0 - stats.norm.cdf(abs(z)))),
+            "mean": float(mean),
+            "var": float(sd * sd),
+            "mean_exact": float(me),
+            "var_exact": float(ve),
+            "lam": float(lam),
+            "n": int(n),
+            "method": "total runs asymptotic normality, eq. (3.2.9)",
         }
     )
 
 
-def cheatsheet():
-    return "gb32asy: Asymptotic normality of standardized total runs statistic"
+gibbons_runs_asymp_normal = runsz

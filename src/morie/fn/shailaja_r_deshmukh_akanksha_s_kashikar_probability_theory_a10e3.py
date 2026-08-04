@@ -1,54 +1,33 @@
-"""CentralTendency equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Degenerate limiting distribution of the sample mean."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_10_equation_3"]
+__all__ = ["degencdf", "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_10_equation_3"]
 
 
-def shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_10_equation_3(x):
-    """
-    CentralTendency equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.
+def degencdf(x, mu):
+    """Degenerate limiting distribution of the sample mean.
 
-    Formula: X n ≤ x] -> 0 if x < µ , P [X n ≤ x] -> 1 if x > µ , as shown in Equation
+    P[Xbar_n <= x] -> 0 if x < mu, 1 if x > mu   (Deshmukh eq. 10.3).
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Limiting distribution function of the sample mean of iid variables
+    with finite mean mu: by Khintchine's WLLN the sample mean converges
+    in probability, hence in law, to the degenerate law at mu.  The book
+    is explicit that the limit at x = mu is not determined by the given
+    information, so it is returned as NaN rather than guessed at 1/2.
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a10e3')`` for the full guide.
-
-    References
-    ----------
-    Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R, ch.10 eq.10.3
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="CentralTendency equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.",
-        },
-    )
+    return RichResult(title="Degenerate limiting distribution of the sample mean", payload=_c.degencdf(x=x, mu=mu))
+
+
+shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_10_equation_3 = degencdf
 
 
 def cheatsheet():
-    return "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a10e3: CentralTendency equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R."
+    return "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a10e3: Degenerate limiting distribution of the sample mean"

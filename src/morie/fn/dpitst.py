@@ -1,6 +1,7 @@
 """Data processing inequality test."""
 
 from . import _array_core as np
+from . import _big2 as _big2
 from . import _stats_core as stats
 
 from ._richresult import RichResult
@@ -8,56 +9,61 @@ from ._richresult import RichResult
 __all__ = ["data_processing_inequality"]
 
 
-def data_processing_inequality(pxyz, cdf=None):
+def data_processing_inequality(pxyz, cdf=None, base=2.0):
     """
-    Data processing inequality test
+    Data-processing inequality for a Markov chain X -> Y -> Z.
 
-    Formula: X->Y->Z: I(X;Z) <= I(X;Y)
+    Formula: X->Y->Z implies I(X;Y) >= I(X;Z)
+
+    Verified against Cover & Thomas (2006) Section 2.8, Theorem 2.8.1
+    p. 34 -- source consulted. This is a deterministic identity, not a
+    hypothesis test: it returns the two mutual informations, their gap,
+    and I(X;Z|Y), which is zero exactly when the joint is Markov.
 
     Parameters
     ----------
-    pxyz : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    pxyz : nested sequence
+        Joint pmf ``p[i][j][k]``; normalised internally.
+    cdf : callable, optional
+        Accepted and ignored, so older call sites keep working. The
+        data-processing inequality carries no sampling distribution.
+    base : float, optional
+        Log base; 2 gives bits.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        Keys: estimate (the gap I(X;Y)-I(X;Z)), ixy, ixz, markov_gap,
+        holds, n, method.
 
     References
     ----------
-    Cover-Thomas (2006)
+    Cover, T.M. & Thomas, J.A. (2006). Elements of Information Theory,
+    2nd ed. Wiley. Theorem 2.8.1.
     """
-    pxyz = np.asarray(pxyz, dtype=float)
-    n = len(pxyz)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Data processing inequality test"}
-        )
-    x_sorted = np.sort(pxyz)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(pxyz), scale=np.std(pxyz, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    nx, ny, nz = _big2.dims3(pxyz)
+    tot = float(sum(_big2.flat3(pxyz)))
+    if not (tot > 0.0):
+        raise ValueError("pxyz must have positive total mass")
+    p = [[[float(pxyz[i][j][k]) / tot for k in range(nz)] for j in range(ny)] for i in range(nx)]
+    hx = _big2.entropy(_big2.marg3(p, (0,)), base)
+    hy = _big2.entropy(_big2.marg3(p, (1,)), base)
+    hz = _big2.entropy(_big2.marg3(p, (2,)), base)
+    hxy = _big2.entropy(_big2.marg3(p, (0, 1)), base)
+    hxz = _big2.entropy(_big2.marg3(p, (0, 2)), base)
+    hyz = _big2.entropy(_big2.marg3(p, (1, 2)), base)
+    hxyz = _big2.entropy(_big2.flat3(p), base)
+    ixy = hx + hy - hxy
+    ixz = hx + hz - hxz
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Data processing inequality test",
+            "estimate": ixy - ixz,
+            "ixy": ixy,
+            "ixz": ixz,
+            "markov_gap": hxy + hyz - hxyz - hy,
+            "holds": bool(ixy - ixz >= -1e-12),
+            "n": nx * ny * nz,
+            "method": "Data-processing inequality I(X;Y) >= I(X;Z) -- Cover & Thomas (2006) Thm 2.8.1",
         }
     )
 

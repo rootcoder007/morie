@@ -1,76 +1,89 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Sukhatme scale test using squared deviations from grand median rank."""
+"""Sukhatme scale test for samples with a common median at zero."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_sukhatme"]
+__all__ = ['sukhatme', 'gibbons_sukhatme']
 
 
-def gibbons_sukhatme(x, y, cdf=None):
-    """
-    Sukhatme scale test using squared deviations from grand median rank
+def sukhatme(x, y, alternative="two-sided"):
+    """T counts pairs with X strictly between 0 and Y, eq. (9.7.1).
 
-    Formula: S = sum (R_i - (N+1)/2)^2 for X in first sample
+    Section 9.7 (book p. 323).  With both medians adjusted to zero,
+
+    .. math:: T = \\#\\{(i,j): y_j < x_i < 0 \\;\\text{or}\\;
+        0 < x_i < y_j\\},
+
+    so T counts the X's that fall inside the corresponding Y on the
+    same side of the origin.  Under H0, p = P(D_ij = 1) = 1/4, hence
+    E[T] = mn/4, and substituting p1 = p2 = 1/12 into eq. (9.7.5)
+    gives
+
+    .. math:: Var[T] = \\frac{mn(N+7)}{48},
+
+    the same variance the book uses in eq. (9.8.2) for the interval.
+    Small T (X's inside the Y's) indicates the Y sample is the more
+    dispersed one, i.e. theta > 1 in the scale model.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples, both centred at a common median of zero.
+    alternative : str, optional
+        ``"two-sided"``, ``"less"`` or ``"greater"``.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic``, ``mean``, ``var``, ``z``, ``p_value``,
+        ``phat`` (T/mn), ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 9.7
+    Gibbons & Chakraborti (2011), Sec. 9.7, eqs. (9.7.1)-(9.7.7),
+    pp. 323-327 (Sukhatme, 1957); variance confirmed by eq. (9.8.2),
+    p. 328.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Sukhatme scale test using squared deviations from grand median rank",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    t = 0
+    for xi in xs:
+        for yj in ys:
+            if (yj < xi < 0.0) or (0.0 < xi < yj):
+                t += 1
+    nn = m + n
+    mean = m * n / 4.0
+    var = m * n * (nn + 7.0) / 48.0
+    z = (t - mean) / math.sqrt(var)
+    if alternative == "less":
+        pv = stats.norm.cdf(z)
+    elif alternative == "greater":
+        pv = 1.0 - stats.norm.cdf(z)
+    elif alternative == "two-sided":
+        pv = 2.0 * (1.0 - stats.norm.cdf(abs(z)))
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("alternative must be two-sided, less or greater.")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": int(t),
+            "mean": float(mean),
+            "var": float(var),
+            "z": float(z),
+            "p_value": float(min(1.0, pv)),
+            "phat": float(t / (m * n)),
+            "m": m,
             "n": n,
-            "method": "Sukhatme scale test using squared deviations from grand median rank",
+            "method": "Sukhatme scale test, eq. (9.7.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb971: Sukhatme scale test using squared deviations from grand median rank"
+gibbons_sukhatme = sukhatme

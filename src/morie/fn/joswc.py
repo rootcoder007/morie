@@ -1,54 +1,60 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Sliding-window CV: fixed-size train + val, both slide forward each fold."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Sliding-window cross-validation.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 5 p. 128
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_sliding_window_cv"]
+__all__ = ["slidecv", "joseph_sliding_window_cv"]
+
+_METHOD = "Sliding-window cross-validation"
 
 
-def joseph_sliding_window_cv(y, T_w, step, H, K):
-    """
-    Sliding-window CV: fixed-size train + val, both slide forward each fold
+def slidecv(n, trainsize, testsize, step=None):
+    """Sliding-window cross-validation.
 
-    Formula: for i: train = y[i*step : i*step + T_w]; val = y[i*step + T_w : i*step + T_w + H]
+    Sliding-window cross-validation, ch. 5 p. 128.
+
+    A fixed-length training window slides forward, so old data drops
+    out.  Returns the fold boundaries as half-open [start, end) index
+    pairs; the caller fits whatever it likes on them.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    T_w : array-like
-        Input data.
-    step : array-like
-        Input data.
-    H : array-like
-        Input data.
-    K : array-like
-        Input data.
+    n : as documented for the shelf core
+        See ``morie.fn._joseph.slidecv``.
+    trainsize : as documented for the shelf core
+        See ``morie.fn._joseph.slidecv``.
+    testsize : as documented for the shelf core
+        See ``morie.fn._joseph.slidecv``.
+    step : as documented for the shelf core
+        See ``morie.fn._joseph.slidecv``.
 
     Returns
     -------
-    result : dict
-        Keys: folds
+    result : RichResult
+        Payload keys: nfolds, firsttest, lasttest.
 
     References
     ----------
-    Joseph Ch 20, Sliding Window CV section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 5 p. 128
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.slidecv(n=n, trainsize=trainsize, testsize=testsize, step=step)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Sliding-window CV: fixed-size train + val, both slide forward each fold",
-        }
+        title=_METHOD,
+        summary_lines=[("nfolds", res["nfolds"]), ("firsttest", res["firsttest"]), ("lasttest", res["lasttest"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_sliding_window_cv = slidecv
+
+
 def cheatsheet():
-    return "joswc: Sliding-window CV: fixed-size train + val, both slide forward each fold"
+    return "slidecv: Sliding-window cross-validation"

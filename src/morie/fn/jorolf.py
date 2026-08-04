@@ -1,45 +1,59 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Rolling-window aggregate feature over window W."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Rolling-window features.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 6 p. 176
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_rolling_window_feature"]
+__all__ = ["rollfeat", "joseph_rolling_window_feature"]
+
+_METHOD = "Rolling-window features"
 
 
-def joseph_rolling_window_feature(y, W, agg):
-    """
-    Rolling-window aggregate feature over window W
+def rollfeat(x, window, minperiods=None):
+    """Rolling-window features.
 
-    Formula: x_t^{(rollW_agg)} = agg(y_{t-W+1}, ..., y_t);  agg in {mean, std, min, max, ...}
+    Rolling-window features, ch. 6 p. 176.
+
+    Trailing mean, standard deviation, minimum and maximum over the
+    last ``window`` observations, computed only where at least
+    ``minperiods`` observations are available (default: the full
+    window, so no partial window ever leaks a shorter average).
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    W : array-like
-        Input data.
-    agg : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._joseph.rollfeat``.
+    window : as documented for the shelf core
+        See ``morie.fn._joseph.rollfeat``.
+    minperiods : as documented for the shelf core
+        See ``morie.fn._joseph.rollfeat``.
 
     Returns
     -------
-    result : dict
-        Keys: rolling_feature
+    result : RichResult
+        Payload keys: nrows, lastmean, meanofmeans.
 
     References
     ----------
-    Joseph Ch 6, Rolling Window Aggregates section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 6 p. 176
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.rollfeat(x=x, window=window, minperiods=minperiods)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Rolling-window aggregate feature over window W"}
+        title=_METHOD,
+        summary_lines=[("nrows", res["nrows"]), ("lastmean", res["lastmean"]), ("meanofmeans", res["meanofmeans"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_rolling_window_feature = rollfeat
+
+
 def cheatsheet():
-    return "jorolf: Rolling-window aggregate feature over window W"
+    return "rollfeat: Rolling-window features"

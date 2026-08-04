@@ -1,54 +1,58 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Frame TS forecasting as tabular regression via lag and window features."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Time series recast as a regression problem.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 5 p. 118
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_ts_as_regression"]
+__all__ = ["tsregmat", "joseph_ts_as_regression"]
+
+_METHOD = "Time series recast as a regression problem"
 
 
-def joseph_ts_as_regression(y, lags, rolling_windows, seasonal_m, fourier_K):
-    """
-    Frame TS forecasting as tabular regression via lag and window features
+def tsregmat(x, lags, horizon=1):
+    """Time series recast as a regression problem.
 
-    Formula: X_t = [y_{t-1}, y_{t-2}, ..., rolling_W(y_t), fourier(t), ...]; y_t = f(X_t)
+    Time series as a regression problem, ch. 5 p. 118.
+
+    Builds the supervised design: one row per usable time index, the
+    requested lags as columns, and the value ``horizon`` steps ahead as
+    the target.  Every multi-step strategy below consumes this.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    lags : array-like
-        Input data.
-    rolling_windows : array-like
-        Input data.
-    seasonal_m : array-like
-        Input data.
-    fourier_K : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._joseph.tsregmat``.
+    lags : as documented for the shelf core
+        See ``morie.fn._joseph.tsregmat``.
+    horizon : as documented for the shelf core
+        See ``morie.fn._joseph.tsregmat``.
 
     Returns
     -------
-    result : dict
-        Keys: X, y
+    result : RichResult
+        Payload keys: nrows, ncols, ymean, xmean.
 
     References
     ----------
-    Joseph Ch 5, Time Series as Regression section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 5 p. 118
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.tsregmat(x=x, lags=lags, horizon=horizon)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Frame TS forecasting as tabular regression via lag and window features",
-        }
+        title=_METHOD,
+        summary_lines=[("nrows", res["nrows"]), ("ncols", res["ncols"]), ("ymean", res["ymean"]), ("xmean", res["xmean"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_ts_as_regression = tsregmat
+
+
 def cheatsheet():
-    return "jotsrg: Frame TS forecasting as tabular regression via lag and window features"
+    return "tsregmat: Time series recast as a regression problem"

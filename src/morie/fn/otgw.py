@@ -1,53 +1,39 @@
-"""Gromov-Wasserstein distance between metric measure spaces."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Gromov-Wasserstein discrepancy."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["ot_gromov_wasserstein"]
+__all__ = ["gwdist", "ot_gromov_wasserstein"]
 
 
-def ot_gromov_wasserstein(Cx, Cy, a, b, max_iter):
-    """
-    Gromov-Wasserstein distance between metric measure spaces
+def gwdist(Cx, Cy, a, b, n_iter=50, epsilon=0.05, n_sinkhorn=50):
+    """Gromov-Wasserstein discrepancy.
 
-    Formula: min_T Σ |C^X_{ij}-C^Y_{kl}|² T_ik T_jl
+    min_T sum |C^X_ij - C^Y_kl|^2 T_ik T_jl   (Memoli 2011).
 
-    Parameters
-    ----------
-    Cx : array-like
-        Input data.
-    Cy : array-like
-        Input data.
-    a : array-like
-        Input data.
-    b : array-like
-        Input data.
-    max_iter : array-like
-        Input data.
+    Gromov-Wasserstein discrepancy between two metric measure spaces
+    given only their internal distance matrices -- no common ambient
+    space is needed, which is the point of the construction.
+
+    The objective is quartic and its exact minimisation is NP-hard, so
+    the coupling is refined by ``n_iter`` fixed entropic projected
+    gradient steps from the product coupling, each an inner Sinkhorn
+    loop of ``n_sinkhorn`` fixed iterations.  Iteration counts are fixed
+    rather than tolerance-driven, so the result is reproducible; the
+    value at the product coupling is returned alongside so the
+    improvement is visible.
 
     Returns
     -------
-    result : dict
-        Keys: T, cost
-
-    References
-    ----------
-    Mémoli (2011)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    Cx = np.atleast_1d(np.asarray(Cx, dtype=float))
-    n = len(Cx)
-    result = float(np.mean(Cx))
-    se = float(np.std(Cx, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Gromov-Wasserstein distance between metric measure spaces",
-        }
-    )
+    return RichResult(title="Gromov-Wasserstein discrepancy", payload=_c.gwdist(Cx=Cx, Cy=Cy, a=a, b=b, n_iter=n_iter, epsilon=epsilon, n_sinkhorn=n_sinkhorn))
+
+
+ot_gromov_wasserstein = gwdist
 
 
 def cheatsheet():
-    return "otgw: Gromov-Wasserstein distance between metric measure spaces"
+    return "otgw: Gromov-Wasserstein discrepancy"
