@@ -20,10 +20,12 @@ P_ij = integral_0^T phi_i^(p)(t) phi_j^(p)(t), i,j = 1,...,L1".  The
 chapter says "typical chosen values of p are 1 and 2"; p = 2 is the
 default here, which is the case the function's own docstring names.
 
-The derivatives are taken by the second central difference on the
-equally spaced grid and integrated by the trapezoid rule; both are exact
-for the quadratics the anchor uses, and the penalty of an affine
-function is exactly zero, as equation (14.11) requires.
+The derivatives are taken by central differences inside the grid and by
+one-sided differences at its two ends, so the trapezoid rule integrates
+over the whole of [a, b] rather than dropping the two end intervals.
+Both stencils are exact at the polynomial degree the order needs, so
+f(t) = t^2 integrates to exactly 4 and an affine function to exactly 0,
+as equation (14.11) requires.
 """
 
 from __future__ import annotations
@@ -69,8 +71,8 @@ def roughness_penalty(basis, lam, a=0.0, b=1.0, p=2):
     """
     B = _mat_or_col(basis)
     m = len(B)
-    if m < 3:
-        raise ValueError("roughness_penalty: need at least three grid points")
+    if m < 4:
+        raise ValueError("roughness_penalty: need at least four grid points")
     L = len(B[0])
     for r in B:
         if len(r) != L:
@@ -86,24 +88,37 @@ def roughness_penalty(basis, lam, a=0.0, b=1.0, p=2):
     if not b > a:
         raise ValueError("roughness_penalty: the grid must have positive width")
     h = (b - a) / (m - 1)
-    # derivative of order p at each interior grid point, central differences
+    # derivative of order p at EVERY grid point: central differences inside,
+    # one-sided differences at the two ends so that the quadrature covers the
+    # whole of [a, b].  Both stencils are exact for the polynomial degree the
+    # order needs, so an affine function still integrates to exactly zero.
     D = []
-    for i in range(1, m - 1):
+    for i in range(m):
         row = []
         for j in range(L):
             if pp == 1:
-                row.append((B[i + 1][j] - B[i - 1][j]) / (2.0 * h))
+                if i == 0:
+                    row.append((-3.0 * B[0][j] + 4.0 * B[1][j] - B[2][j]) / (2.0 * h))
+                elif i == m - 1:
+                    row.append((3.0 * B[m - 1][j] - 4.0 * B[m - 2][j] + B[m - 3][j]) / (2.0 * h))
+                else:
+                    row.append((B[i + 1][j] - B[i - 1][j]) / (2.0 * h))
             else:
-                row.append((B[i + 1][j] - 2.0 * B[i][j] + B[i - 1][j]) / (h * h))
+                if i == 0:
+                    row.append((2.0 * B[0][j] - 5.0 * B[1][j] + 4.0 * B[2][j] - B[3][j]) / (h * h))
+                elif i == m - 1:
+                    row.append((2.0 * B[m - 1][j] - 5.0 * B[m - 2][j]
+                                + 4.0 * B[m - 3][j] - B[m - 4][j]) / (h * h))
+                else:
+                    row.append((B[i + 1][j] - 2.0 * B[i][j] + B[i - 1][j]) / (h * h))
         D.append(row)
-    # P_ij = integral phi_i^(p) phi_j^(p) dt, trapezoid over the interior grid
-    nD = len(D)
+    # P_ij = integral phi_i^(p) phi_j^(p) dt, trapezoid over the full grid
     P = [[0.0] * L for _ in range(L)]
     for i in range(L):
         for j in range(L):
             s = 0.0
-            for r in range(nD):
-                wgt = 0.5 if (r == 0 or r == nD - 1) else 1.0
+            for r in range(m):
+                wgt = 0.5 if (r == 0 or r == m - 1) else 1.0
                 s += wgt * D[r][i] * D[r][j]
             P[i][j] = s * h
     J = 0.0
