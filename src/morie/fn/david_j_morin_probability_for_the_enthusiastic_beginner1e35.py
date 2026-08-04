@@ -1,37 +1,22 @@
-"""Committee assignments N!/(n1!...nk!), leftover people form an extra committee.
+"""Deprecated alias for :func:`morie.fn.multinom`.
 
-Implements eq (1.35) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .multinom import multinom as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_35"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_35(ns, N=None):
-    """Committee assignments N!/(n1!...nk!), leftover people form an extra committee.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (1.35).
-    """
-    value = _morin.multinomial_coefficient(ns, N)
-    payload = {"ns": [int(x) for x in np.atleast_1d(ns)],
-               "N": int(N) if N is not None else int(np.sum(ns)),
-               "assignments": value}
-    lines = [("committee assignments", value)]
-    return RichResult(
-        title="Committee assignments N!/(n1!...nk!), leftover people form an extra committee.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.multinom` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_35() is the book-coordinate name for multinom(); "
+        "it will be removed. Use morie.fn.multinom() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner1e35: Committee assignments N!/(n1!...nk!), leftover people form an extra committee. Morin (2016) eq (1.35)."
+    return _impl(ns, N)

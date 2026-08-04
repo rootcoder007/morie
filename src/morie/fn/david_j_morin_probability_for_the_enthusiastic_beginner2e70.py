@@ -1,35 +1,22 @@
-"""Summary and-rule for independent events.
+"""Deprecated alias for :func:`morie.fn.pandind`.
 
-Implements eq (2.70) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .pandind import pandind as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_70"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_70(p_a, p_b):
-    """Summary and-rule for independent events.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.70).
-    """
-    value = _morin.prob_and_independent([p_a, p_b])
-    payload = {"p_and": value}
-    lines = [("P(A and B)", value)]
-    return RichResult(
-        title="Summary and-rule for independent events.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.pandind` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_70() is the book-coordinate name for pandind(); "
+        "it will be removed. Use morie.fn.pandind() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner2e70: Summary and-rule for independent events. Morin (2016) eq (2.70)."
+    return _impl([p_a, p_b])
