@@ -982,32 +982,8 @@ def rangayyan_eeg_spectral(eeg, fs, n_ch=None):
 
 
 # -- rgemgpk: EMG mean/median frequency from power spectrum.
-def _dft(x):
-    n = len(x)
-    step = 2.0 * pi / n
-    re, im = [], []
-    for k in range(n):
-        re.append(fsum(v * cos(-step * i * k) for i, v in enumerate(x)))
-        im.append(fsum(v * sin(-step * i * k) for i, v in enumerate(x)))
-    return re, im
 
 
-def _xcorr(x, y, maxlag=None):
-    """CCF theta_xy(k) = sum_n x(n) y(n + k), eq. (4.28)."""
-    n, m = len(x), len(y)
-    lo = -(n - 1) if maxlag is None else -int(maxlag)
-    hi = (m - 1) if maxlag is None else int(maxlag)
-    lags, vals = [], []
-    for k in range(lo, hi + 1):
-        acc, cnt = 0.0, 0
-        for i in range(n):
-            j = i + k
-            if 0 <= j < m:
-                acc += x[i] * y[j]
-                cnt += 1
-        lags.append(k)
-        vals.append(acc)
-    return lags, vals
 
 
 def emgfreq(x, fs, nperseg=None):
@@ -1516,32 +1492,8 @@ def rangayyan_psd_to_acf(psd, freqs=None):
 
 
 # -- rgpsync: Synchronized averaging of PCG spectra for murmur analysis.
-def _dft(x):
-    n = len(x)
-    step = 2.0 * pi / n
-    re, im = [], []
-    for k in range(n):
-        re.append(fsum(v * cos(-step * i * k) for i, v in enumerate(x)))
-        im.append(fsum(v * sin(-step * i * k) for i, v in enumerate(x)))
-    return re, im
 
 
-def _xcorr(x, y, maxlag=None):
-    """CCF theta_xy(k) = sum_n x(n) y(n + k), eq. (4.28)."""
-    n, m = len(x), len(y)
-    lo = -(n - 1) if maxlag is None else -int(maxlag)
-    hi = (m - 1) if maxlag is None else int(maxlag)
-    lags, vals = [], []
-    for k in range(lo, hi + 1):
-        acc, cnt = 0.0, 0
-        for i in range(n):
-            j = i + k
-            if 0 <= j < m:
-                acc += x[i] * y[j]
-                cnt += 1
-        lags.append(k)
-        vals.append(acc)
-    return lags, vals
 
 
 def pcgsyncavg(cycles, fs=1.0):
@@ -2210,32 +2162,8 @@ rangayyan_ch3_idft_definition = idft  # pre-policy spelling
 
 
 # -- rng080: Parseval's theorem: total signal energy preserved under Fourier transform..
-def _dft(x):
-    n = len(x)
-    step = 2.0 * pi / n
-    re, im = [], []
-    for k in range(n):
-        re.append(fsum(v * cos(-step * i * k) for i, v in enumerate(x)))
-        im.append(fsum(v * sin(-step * i * k) for i, v in enumerate(x)))
-    return re, im
 
 
-def _xcorr(x, y, maxlag=None):
-    """CCF theta_xy(k) = sum_n x(n) y(n + k), eq. (4.28)."""
-    n, m = len(x), len(y)
-    lo = -(n - 1) if maxlag is None else -int(maxlag)
-    hi = (m - 1) if maxlag is None else int(maxlag)
-    lags, vals = [], []
-    for k in range(lo, hi + 1):
-        acc, cnt = 0.0, 0
-        for i in range(n):
-            j = i + k
-            if 0 <= j < m:
-                acc += x[i] * y[j]
-                cnt += 1
-        lags.append(k)
-        vals.append(acc)
-    return lags, vals
 
 
 def parseval(x):
@@ -2364,32 +2292,8 @@ def rangayyan_ch3_normalized_cross_correlation_template(x, y, k, N, x_bar, y_bar
 
 
 # -- rng198: Discrete-time dot product (inner product) of two N-sample signals..
-def _dft(x):
-    n = len(x)
-    step = 2.0 * pi / n
-    re, im = [], []
-    for k in range(n):
-        re.append(fsum(v * cos(-step * i * k) for i, v in enumerate(x)))
-        im.append(fsum(v * sin(-step * i * k) for i, v in enumerate(x)))
-    return re, im
 
 
-def _xcorr(x, y, maxlag=None):
-    """CCF theta_xy(k) = sum_n x(n) y(n + k), eq. (4.28)."""
-    n, m = len(x), len(y)
-    lo = -(n - 1) if maxlag is None else -int(maxlag)
-    hi = (m - 1) if maxlag is None else int(maxlag)
-    lags, vals = [], []
-    for k in range(lo, hi + 1):
-        acc, cnt = 0.0, 0
-        for i in range(n):
-            j = i + k
-            if 0 <= j < m:
-                acc += x[i] * y[j]
-                cnt += 1
-        lags.append(k)
-        vals.append(acc)
-    return lags, vals
 
 
 def dotprod(x, y, subtract_mean=False):
@@ -3347,32 +3251,8 @@ rangayyan_ch4_matched_filter_impulse_response = mfimpulse  # pre-policy spelling
 
 
 # -- rng222: Matched-filter output equals scaled, delayed ACF of the reference signal..
-def _dft(x):
-    n = len(x)
-    step = 2.0 * pi / n
-    re, im = [], []
-    for k in range(n):
-        re.append(fsum(v * cos(-step * i * k) for i, v in enumerate(x)))
-        im.append(fsum(v * sin(-step * i * k) for i, v in enumerate(x)))
-    return re, im
 
 
-def _xcorr(x, y, maxlag=None):
-    """CCF theta_xy(k) = sum_n x(n) y(n + k), eq. (4.28)."""
-    n, m = len(x), len(y)
-    lo = -(n - 1) if maxlag is None else -int(maxlag)
-    hi = (m - 1) if maxlag is None else int(maxlag)
-    lags, vals = [], []
-    for k in range(lo, hi + 1):
-        acc, cnt = 0.0, 0
-        for i in range(n):
-            j = i + k
-            if 0 <= j < m:
-                acc += x[i] * y[j]
-                cnt += 1
-        lags.append(k)
-        vals.append(acc)
-    return lags, vals
 
 
 def mfacf(x, gain=1.0, dt=1.0):
