@@ -1,68 +1,52 @@
-"""Phillips-Perron unit-root test."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Phillips-Perron unit-root test (trend-argument spelling)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+from __future__ import annotations
 
-from ._richresult import RichResult
+from .pptest import phillips_perron_unit_root
 
 __all__ = ["phillips_perron"]
 
 
-def phillips_perron(y, trend, cdf=None):
-    """
-    Phillips-Perron unit-root test
+def phillips_perron(y, trend=True, lags=None, kind="Z(t_alpha)"):
+    """Phillips-Perron unit-root test with an explicit trend switch.
 
-    Formula: non-parametric correction for AR errors
+    The implementation lives in
+    :func:`morie.fn.pptest.phillips_perron_unit_root`, whose auxiliary
+    regression always includes the linear trend -- that is the
+    ``tseries::pp.test`` specification and the one the tabulated
+    critical values belong to.  ``trend=False`` is therefore refused
+    rather than silently answered with trend-case critical values, which
+    would be the wrong table and a p-value that looks fine.
 
     Parameters
     ----------
     y : array-like
-        Input data.
-    trend : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+        Series in time order.
+    trend : bool
+        Must be ``True``; see above.
+    lags : int, optional
+        Bartlett truncation lag.
+    kind : {"Z(t_alpha)", "Z(alpha)"}
+        Which statistic to report.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        As :func:`phillips_perron_unit_root`.
 
     References
     ----------
-    Phillips-Perron (1988)
+    Phillips and Perron (1988), Biometrika 75:335-346; coded form from
+    ``tseries::pp.test``.  See ``morie.fn.pptest`` for the full note.
     """
-    y = np.asarray(y, dtype=float)
-    n = len(y)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Phillips-Perron unit-root test"}
+    if not trend:
+        raise ValueError(
+            "the tabulated critical values carried here are for the "
+            "trend-included regression; trend=False is not available"
         )
-    x_sorted = np.sort(y)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(y), scale=np.std(y, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Phillips-Perron unit-root test",
-        }
-    )
+    return phillips_perron_unit_root(y, lags=lags, kind=kind)
 
 
 def cheatsheet():
-    return "phpprn: Phillips-Perron unit-root test"
+    return "phillips_perron(y, trend=True, lags, kind): trend-argument spelling of the PP test."
