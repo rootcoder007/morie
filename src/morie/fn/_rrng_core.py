@@ -591,9 +591,20 @@ def pt(q, df, lower_tail=True):
 
 
 def qt(p, df):
+    # symmetric law: qt(p) = -qt(1 - p), qt(0.5) = 0 exactly.  betainc's
+    # 1 - xb underflows for |v| < ~1e-8, so the cdf plateaus at 0.5 there
+    # and root-finding is blind inside the plateau; symmetry removes it.
     def cdf(v):
         return pt(v, df)
-    return _elem(lambda pp: _bisect_q(cdf, float(pp), -1.0, 1.0), p)
+
+    def one(pp):
+        pp = float(pp)
+        if pp == 0.5:
+            return 0.0
+        if pp < 0.5:
+            return -_bisect_q(cdf, 1.0 - pp, -1.0, 1.0)
+        return _bisect_q(cdf, pp, -1.0, 1.0)
+    return _elem(one, p)
 
 
 # ---- F --------------------------------------------------------------
