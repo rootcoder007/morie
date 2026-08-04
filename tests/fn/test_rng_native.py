@@ -25,8 +25,7 @@ PHILOX_KAT = [
 
 @pytest.mark.parametrize("ctr,key,want", PHILOX_KAT)
 def test_philox_matches_the_published_known_answer_tests(ctr, key, want):
-    got = philox4x32(np.array([ctr], dtype=np.uint64), key)[0]
-    assert tuple(int(v) for v in got) == want
+    assert philox4x32(ctr, key) == want
 
 
 def test_as241_matches_published_normal_quantiles():
@@ -122,7 +121,7 @@ def test_multivariate_normal_reproduces_the_target_covariance():
     draws = np.array([random_multivariate_normal(mean, cov, seed=5, stream=s)
                       for s in range(4000)])
     assert np.allclose(draws.mean(axis=0), mean, atol=0.1)
-    assert np.allclose(np.cov(draws, rowvar=False), cov, atol=0.12)
+    assert np.allclose(np.cov(draws.T), cov, atol=0.12)
 
 
 def test_rejects_bad_input():
