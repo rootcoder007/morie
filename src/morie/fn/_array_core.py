@@ -1524,7 +1524,10 @@ def _pack_choice(vals):
     """marr for numeric draws, oarr for anything else -- numpy's choice
     keeps the pool's dtype (strings stay strings)."""
     try:
-        return marr([float(v) for v in vals])
+        # _num, not float: numpy's choice keeps the pool's dtype, so an
+        # integer pool must come back as integers or "%d" formatting of
+        # the result raises.
+        return marr([_num(v) for v in vals])
     except (TypeError, ValueError):
         return oarr(list(vals))
 
@@ -1552,15 +1555,18 @@ class _SplitMix64:
         """size = None -> scalar; int -> 1-D marr; (n, m) -> 2-D marr."""
         if size is None:
             return one()
+        # _num, not float: one() already returns the type the
+        # distribution should produce -- int for integers(), float for
+        # normal()/uniform() -- and numpy preserves that.
         if isinstance(size, (tuple, list)):
             if len(size) == 1:
-                return marr([float(one()) for _ in range(int(size[0]))])
+                return marr([_num(one()) for _ in range(int(size[0]))])
             if len(size) == 2:
                 n, m = int(size[0]), int(size[1])
-                return marr([[float(one()) for _ in range(m)]
+                return marr([[_num(one()) for _ in range(m)]
                              for _ in range(n)])
             raise ValueError("size ndim > 2 unsupported")
-        return marr([float(one()) for _ in range(int(size))])
+        return marr([_num(one()) for _ in range(int(size))])
 
     def uniform(self, low=0.0, high=1.0, size=None):
         def one():
@@ -1842,12 +1848,24 @@ class _SplitMix64:
         self.shuffle(idx)
         return _pack_choice([pool[i] for i in idx[:k]])
 
-    def integers(self, low, high=None, size=None):
+    def integers(self, low, high=None, size=None, dtype=None,
+                 endpoint=False):
+        """Integers in [low, high), or [low, high] with endpoint=True.
+
+        `dtype` is accepted for numpy call-compatibility; the draws are
+        Python ints either way, which is what every integer dtype means
+        here.
+        """
+        del dtype
         if high is None:
             low, high = 0, low
+        lo, hi = int(low), int(high) + (1 if endpoint else 0)
+        if hi <= lo:
+            raise ValueError("high must exceed low; got low=%r high=%r"
+                             % (low, high))
 
         def one():
-            return low + self._next() % (high - low)
+            return lo + self._next() % (hi - lo)
         return self._fill(one, size)
 
 
