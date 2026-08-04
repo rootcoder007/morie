@@ -1,40 +1,79 @@
-"""Functional integration."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Integral of a basis expansion.
 
-from . import _array_core as np
+Ramsay and Silverman (2005), *Functional Data Analysis*, 2nd ed.,
+Springer: for x(t) = sum_k c_k phi_k(t) the integral is linear in the
+coefficients,
+
+    integral x(t) dt = sum_k c_k integral phi_k(t) dt,
+
+so integrating a fitted curve reduces to integrating each basis
+function once.  That is the formula named in the stub docstring.
+
+The basis integrals are taken by the composite trapezoid rule over the
+WHOLE grid, end intervals included.
+"""
+
+from __future__ import annotations
+
+from . import _array_core as np  # noqa: F401
+from . import _fdacore as fda
+from . import _s03core as k
 
 from ._richresult import RichResult
 
 __all__ = ["integrate_function"]
 
 
-def integrate_function(coef, basis):
-    """
-    Functional integration
-
-    Formula: ∫ f(t) dt over basis
+def integrate_function(coef, basis, t=None):
+    """integral of sum_k coef[k] basis[:, k].
 
     Parameters
     ----------
     coef : array-like
-        Input data.
+        K coefficients.
     basis : array-like
-        Input data.
+        n-by-K matrix of basis functions evaluated on the grid.
+    t : array-like, optional
+        The grid.  Defaults to an equally spaced grid on [0, 1].
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ramsay-Silverman (2005)
+    estimate : the integral of the expansion
+    basis_integrals : the K individual basis integrals
     """
-    coef = np.atleast_1d(np.asarray(coef, dtype=float))
-    n = len(coef)
-    result = float(np.mean(coef))
-    se = float(np.std(coef, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Functional integration"})
+    c = k.vec(coef)
+    B = k.mat(basis)
+    n = k.nrow(B)
+    K = k.ncol(B)
+    if n < 2:
+        raise ValueError("integrate_function: need at least two grid points")
+    if len(c) != K:
+        raise ValueError("integrate_function: coef must have one entry per basis column")
+    if t is None:
+        tt = fda.grid(n)
+    else:
+        tt = k.vec(t)
+        if len(tt) != n:
+            raise ValueError("integrate_function: t must match the number of basis rows")
+    ints = []
+    for j in range(K):
+        ints.append(fda.trapz(tt, [B[i][j] for i in range(n)]))
+    total = 0.0
+    for j in range(K):
+        total += c[j] * ints[j]
+    return RichResult(
+        title="Integral of a basis expansion",
+        summary_lines=[("grid points", n), ("basis functions", K), ("integral", total)],
+        payload={
+            "estimate": total,
+            "basis_integrals": ints,
+            "n": n,
+            "nbasis": K,
+            "method": "Ramsay-Silverman (2005) linearity of the integral over a basis expansion, trapezoid over the whole grid",
+        },
+    )
 
 
 def cheatsheet():
-    return "intf: Functional integration"
+    return "intf: integral of a basis expansion"
