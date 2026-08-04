@@ -1,68 +1,86 @@
-"""Holm step-down test (multiple testing)."""
+# morie.fn -- slice k04 (rootcoder007/morie)
+"""Holm (1979) step-down multiple-testing procedure.
+
+Source: Holm, S. (1979).  A simple sequentially rejective multiple test
+procedure.  *Scandinavian Journal of Statistics* 6, 65-70.  The 1979
+paper is paywalled here; the procedure is quoted in its standard
+published form, which is unambiguous and is the form given in Hastie,
+Tibshirani and Friedman, *The Elements of Statistical Learning*
+(2nd ed., 2009), section 18.7:
+
+    order p_(1) <= p_(2) <= ... <= p_(m);
+    let L be the smallest j with p_(j) > alpha / (m - j + 1);
+    reject H_(1), ..., H_(L-1) and no others.
+
+The monotone step-down adjusted p-values follow from the same rule:
+
+    ptilde_(j) = max_{k <= j} min(1, (m - k + 1) p_(k)).
+
+The previous body of this module was a one-sample Kolmogorov-Smirnov
+test against a fitted normal, pasted by the stub generator.  Deleted.
+"""
+
+from __future__ import annotations
 
 from . import _array_core as np
-from . import _stats_core as stats
 
 from ._richresult import RichResult
 
 __all__ = ["esl_holm_bonferroni"]
 
 
-def esl_holm_bonferroni(pvalues, alpha, cdf=None):
-    """
-    Holm step-down test (multiple testing)
-
-    Formula: Reject H_(j) if p_(j) <= alpha/(m-j+1)
+def esl_holm_bonferroni(pvalues, alpha=0.05):
+    """Holm step-down rejections and adjusted p-values.
 
     Parameters
     ----------
     pvalues : array-like
-        Input data.
-    alpha : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+        The m raw p-values, in the caller own order.
+    alpha : float, default 0.05
+        Family-wise error rate.
 
     Returns
     -------
-    result : dict
-        Keys: rejected
-
-    References
-    ----------
-    Hastie ESL Ch 18
+    RichResult
+        keys: ``reject`` (bool array in input order), ``p_adjusted``
+        (in input order), ``n_reject``, ``alpha``, ``m``, ``method``.
     """
-    pvalues = np.asarray(pvalues, dtype=float)
-    n = len(pvalues)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Holm step-down test (multiple testing)"}
-        )
-    x_sorted = np.sort(pvalues)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(pvalues), scale=np.std(pvalues, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    p = np.asarray(pvalues, dtype=float).ravel()
+    m = int(p.size)
+    if m == 0:
+        raise ValueError("pvalues is empty")
+    alpha = float(alpha)
+    order = np.argsort(p)
+    ps = p[order]
+
+    k = m
+    for j in range(m):
+        if ps[j] > alpha / (m - j):
+            k = j
+            break
+    reject_sorted = np.array([j < k for j in range(m)], dtype=bool)
+
+    adj = np.empty(m, dtype=float)
+    run = 0.0
+    for j in range(m):
+        run = max(run, min(1.0, (m - j) * float(ps[j])))
+        adj[j] = run
+
+    reject = np.empty(m, dtype=bool)
+    p_adj = np.empty(m, dtype=float)
+    reject[order] = reject_sorted
+    p_adj[order] = adj
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Holm step-down test (multiple testing)",
+            "reject": reject,
+            "p_adjusted": p_adj,
+            "n_reject": int(k),
+            "alpha": alpha,
+            "m": m,
+            "method": "Holm (1979) step-down multiple test",
         }
     )
 
 
 def cheatsheet():
-    return "eslmht: Holm step-down test (multiple testing)"
+    return "eslmht: Holm step-down multiple testing (Holm 1979)"
