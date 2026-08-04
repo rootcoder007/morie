@@ -40,3 +40,7 @@ def lp_dual(c, A, b):
 
 def cheatsheet():
     return "lpdual: LP dual problem"
+
+
+# compact alias per ledger/NAMING.md
+lpdual = lp_dual

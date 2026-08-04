@@ -40,3 +40,7 @@ def clustered_crp(y, distances, alpha):
 
 def cheatsheet():
     return "clcrp: Clustered Chinese Restaurant Process"
+
+
+# compact alias per ledger/NAMING.md
+clusteredcrp = clustered_crp

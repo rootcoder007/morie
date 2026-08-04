@@ -37,3 +37,7 @@ mvsml_ann_output = mvsml_reproducing_kernel_eq_10_9
 
 def cheatsheet():
     return "msm248: Predicted output of the network"
+
+
+# compact alias per ledger/NAMING.md
+mvsmlannoutput = mvsml_ann_output

@@ -46,3 +46,7 @@ def tmle_inference(y, D, X, Q, g):
 
 def cheatsheet():
     return "tmlinf: Influence-curve based inference for TMLE"
+
+
+# compact alias per ledger/NAMING.md
+tmleinference = tmle_inference

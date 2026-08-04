@@ -31,3 +31,7 @@ rcov = rcov_fn
 
 def cheatsheet() -> str:
     return "rcov_fn({}) -> Riemannian covariance estimation."
+
+
+# compact alias per ledger/NAMING.md
+rcovfn = rcov_fn

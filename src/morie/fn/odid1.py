@@ -103,3 +103,7 @@ def otis_did_policy(
 
 def cheatsheet() -> str:
     return "otis_did_policy({}) -> Difference-in-Differences for policy change in OTIS data."
+
+
+# compact alias per ledger/NAMING.md
+otisdidpolicy = otis_did_policy

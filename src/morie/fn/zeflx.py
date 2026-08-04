@@ -29,3 +29,7 @@ flex = flexible_scan
 
 def cheatsheet() -> str:
     return "flexible_scan({}) -> Flexible spatial scan (Tango)"
+
+
+# compact alias per ledger/NAMING.md
+flexiblescan = flexible_scan

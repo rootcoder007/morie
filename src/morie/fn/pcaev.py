@@ -71,3 +71,7 @@ pcaev = pca_eigen
 
 def cheatsheet() -> str:
     return "pca_eigen({}) -> PCA via eigenvalue decomposition of covariance matrix."
+
+
+# compact alias per ledger/NAMING.md
+pcaeigen = pca_eigen

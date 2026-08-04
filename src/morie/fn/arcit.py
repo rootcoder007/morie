@@ -83,3 +83,7 @@ arcit = gauss_seidel
 
 def cheatsheet() -> str:
     return "gauss_seidel({}) -> System of equations solver (Gauss-Seidel)."
+
+
+# compact alias per ledger/NAMING.md
+gaussseidel = gauss_seidel

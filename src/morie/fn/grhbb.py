@@ -109,3 +109,7 @@ def geron_hebb_rule(x, y_true, y_pred, w, eta):
 
 def cheatsheet():
     return "grhbb: w += eta * outer(x, y_true - y_pred); no error, no update"
+
+
+# compact alias per ledger/NAMING.md
+geronhebbrule = geron_hebb_rule

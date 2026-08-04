@@ -64,3 +64,7 @@ def hardy_weinberg(genotypes, cdf=None):
 
 def cheatsheet():
     return "hwetst: Hardy-Weinberg equilibrium test"
+
+
+# compact alias per ledger/NAMING.md
+hardyweinberg = hardy_weinberg

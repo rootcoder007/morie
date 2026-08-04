@@ -38,3 +38,7 @@ def stahel_donoho(X, u_dirs):
 
 def cheatsheet():
     return "stahdo: Stahel-Donoho outlyingness"
+
+
+# compact alias per ledger/NAMING.md
+staheldonoho = stahel_donoho

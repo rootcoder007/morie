@@ -47,3 +47,7 @@ def pls_qsar(activities, descriptors, n_components):
 
 def cheatsheet():
     return "plsqs: PLS regression QSAR with cross-validated component count"
+
+
+# compact alias per ledger/NAMING.md
+plsqsar = pls_qsar

@@ -44,3 +44,7 @@ nympn = neyman_pearson
 
 def cheatsheet() -> str:
     return "neyman_pearson({}) -> Neyman-Pearson threshold."
+
+
+# compact alias per ledger/NAMING.md
+neymanpearson = neyman_pearson

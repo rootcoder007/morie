@@ -51,3 +51,7 @@ def cheatsheet() -> str:
 
 
 lrinf = lr_finder
+
+
+# compact alias per ledger/NAMING.md
+lrfinder = lr_finder

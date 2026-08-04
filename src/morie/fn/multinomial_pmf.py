@@ -42,3 +42,7 @@ def multinomial_pmf(counts, probs):
 
 def cheatsheet():
     return '3e1: P(N1 = n1, ..., NJ = nJ) = n!/(prod n_j!) prod pi_j^n_j [Bilder & Loughin 2025, eq. 3.1]'
+
+
+# compact alias per ledger/NAMING.md
+multinomialpmf = multinomial_pmf

@@ -29,3 +29,7 @@ circ = circular_mean_sp
 
 def cheatsheet() -> str:
     return "circular_mean_sp({}) -> Spatial circular mean"
+
+
+# compact alias per ledger/NAMING.md
+circularmeansp = circular_mean_sp

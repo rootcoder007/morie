@@ -77,3 +77,7 @@ mchfl = matched_filter
 
 def cheatsheet() -> str:
     return "matched_filter({}) -> Matched filter for template detection."
+
+
+# compact alias per ledger/NAMING.md
+matchedfilter = matched_filter

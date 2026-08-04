@@ -29,3 +29,7 @@ sepa = separating_hyp
 
 def cheatsheet() -> str:
     return "separating_hyp({}) -> Separating hyperplane"
+
+
+# compact alias per ledger/NAMING.md
+separatinghyp = separating_hyp

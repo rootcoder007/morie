@@ -66,3 +66,7 @@ def grubbs_test(x, alpha, cdf=None):
 
 def cheatsheet():
     return "grubbs: Grubbs' single-outlier test"
+
+
+# compact alias per ledger/NAMING.md
+grubbstest = grubbs_test

@@ -35,3 +35,7 @@ def pmf_sd(values, probs):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner5e31: Standard deviation of a discrete pmf (the OCR dropped the sqrt). Morin (2016) eq (5.31)."
+
+
+# compact alias per ledger/NAMING.md
+pmfsd = pmf_sd

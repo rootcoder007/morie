@@ -87,3 +87,7 @@ bundle_dif = dif_bundle
 
 def cheatsheet() -> str:
     return "dif_bundle({}) -> DIF bundle/testlet analysis."
+
+
+# compact alias per ledger/NAMING.md
+difbundle = dif_bundle

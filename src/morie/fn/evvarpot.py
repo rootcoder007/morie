@@ -44,3 +44,7 @@ def evt_pot_var(u, sigma, xi, zeta_u, p):
 
 def cheatsheet():
     return "evvarpot: Value-at-Risk via POT/GPD tail"
+
+
+# compact alias per ledger/NAMING.md
+evtpotvar = evt_pot_var

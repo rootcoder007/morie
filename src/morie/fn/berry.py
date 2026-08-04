@@ -71,3 +71,7 @@ def cheatsheet() -> str:
 
 
 berry = berry_phase
+
+
+# compact alias per ledger/NAMING.md
+berryphase = berry_phase

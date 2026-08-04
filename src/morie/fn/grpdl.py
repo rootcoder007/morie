@@ -43,3 +43,7 @@ grpdl = group_delay
 
 def cheatsheet() -> str:
     return "group_delay({}) -> Group delay of a digital filter."
+
+
+# compact alias per ledger/NAMING.md
+groupdelay = group_delay

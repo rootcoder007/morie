@@ -91,3 +91,7 @@ dblng = doubling_time
 
 def cheatsheet() -> str:
     return "doubling_time({}) -> Epidemic doubling time from growth rate."
+
+
+# compact alias per ledger/NAMING.md
+doublingtime = doubling_time

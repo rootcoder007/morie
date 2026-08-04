@@ -140,3 +140,7 @@ def esl_backprop(X, y, weights, task="regression"):
 
 def cheatsheet():
     return "eslbpr: returns gradients, not a step; validated against central differences to 1e-8"
+
+
+# compact alias per ledger/NAMING.md
+eslbackprop = esl_backprop

@@ -44,3 +44,7 @@ def particle_swarm(f, n_particles, w, c1, c2):
 
 def cheatsheet():
     return "pso_op: Particle swarm optimization"
+
+
+# compact alias per ledger/NAMING.md
+particleswarm = particle_swarm

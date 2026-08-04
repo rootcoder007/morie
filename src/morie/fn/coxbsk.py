@@ -104,3 +104,7 @@ def cox_breslow_step(time, event, X, beta=None, ties="efron"):
 
 def cheatsheet():
     return "coxbsk: puts lambda_0 back; 'baseline' means x=0, so CENTRE covariates or it is meaningless"
+
+
+# compact alias per ledger/NAMING.md
+coxbreslowstep = cox_breslow_step

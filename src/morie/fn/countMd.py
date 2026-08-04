@@ -112,3 +112,7 @@ def count_mediation(y, x, m, c=None):
 
 def cheatsheet():
     return "countMd: RR_NDE = exp(theta1), RR_NIE = exp(theta2*beta1), product = total RR"
+
+
+# compact alias per ledger/NAMING.md
+countmediation = count_mediation

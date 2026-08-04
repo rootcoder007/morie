@@ -62,3 +62,7 @@ def evt_bayes_gev(x, n_draws=2000, seed=42, prior_sd=(100.0, 10.0, 1.0)):
 
 def cheatsheet():
     return "evbgrev: Bayesian GEV via Metropolis with prior π(μ,σ,ξ)"
+
+
+# compact alias per ledger/NAMING.md
+evtbayesgev = evt_bayes_gev

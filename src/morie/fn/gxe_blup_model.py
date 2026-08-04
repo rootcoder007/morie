@@ -32,3 +32,7 @@ def gxe_blup_model(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e=1.0):
 
 def cheatsheet():
     return "msm018: Genotype-by-environment BLUP model"
+
+
+# compact alias per ledger/NAMING.md
+gxeblupmodel = gxe_blup_model

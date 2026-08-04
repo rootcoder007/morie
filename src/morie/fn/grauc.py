@@ -120,3 +120,7 @@ def geron_auc_roc(y_true, y_scores, pos_label=1):
 
 def cheatsheet():
     return "grauc: ROC curve + AUC by trapezoid rule over all thresholds"
+
+
+# compact alias per ledger/NAMING.md
+geronaucroc = geron_auc_roc

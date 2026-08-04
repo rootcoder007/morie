@@ -83,3 +83,7 @@ krus = kruskal_mst
 
 def cheatsheet() -> str:
     return "kruskal_mst({}) -> Kruskal minimum spanning tree."
+
+
+# compact alias per ledger/NAMING.md
+kruskalmst = kruskal_mst

@@ -48,3 +48,7 @@ ppint = pp_interval
 
 def cheatsheet() -> str:
     return "pp_interval({}) -> P-P interval computation."
+
+
+# compact alias per ledger/NAMING.md
+ppinterval = pp_interval

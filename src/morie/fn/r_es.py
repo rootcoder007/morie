@@ -50,3 +50,7 @@ r_es = r_effect_size
 
 def cheatsheet() -> str:
     return "r_effect_size({}) -> Pearson r as an effect size with Fisher z confidence interva"
+
+
+# compact alias per ledger/NAMING.md
+reffectsize = r_effect_size

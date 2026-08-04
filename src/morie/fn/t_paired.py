@@ -42,3 +42,7 @@ def t_paired(differences):
 
 def cheatsheet():
     return 'ca9e10: t = dbar / sqrt(s_d^2 / n); df = n_pairs - 1 [Weisburd et al. 2022, eq. 9.10]'
+
+
+# compact alias per ledger/NAMING.md
+tpaired = t_paired

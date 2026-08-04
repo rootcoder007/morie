@@ -57,3 +57,7 @@ def torus_voronoi(
 
 def cheatsheet() -> str:
     return "torus_voronoi(points, n, a, b) -> Voronoi cells on flat torus"
+
+
+# compact alias per ledger/NAMING.md
+torusvoronoi = torus_voronoi

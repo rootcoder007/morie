@@ -69,3 +69,7 @@ def cfa_fit(
 
 def cheatsheet() -> str:
     return "cfa_fit({}) -> Compute all fit indices for any CFA structure."
+
+
+# compact alias per ledger/NAMING.md
+cfafit = cfa_fit

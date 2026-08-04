@@ -99,3 +99,7 @@ def ipcw_estimator(time, event, tau=None, y=None):
 
 def cheatsheet():
     return "survipw: the weights blow up late in follow-up -- check effective_n, truncate at tau"
+
+
+# compact alias per ledger/NAMING.md
+ipcwestimator = ipcw_estimator

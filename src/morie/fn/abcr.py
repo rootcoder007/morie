@@ -69,3 +69,7 @@ abcr = abc_rejection
 
 def cheatsheet() -> str:
     return "abc_rejection({}) -> Approximate Bayesian computation (rejection)."
+
+
+# compact alias per ledger/NAMING.md
+abcrejection = abc_rejection

@@ -29,3 +29,7 @@ dim_ = dim_test
 
 def cheatsheet() -> str:
     return "dim_test({}) -> Dimensionality test for spatial data"
+
+
+# compact alias per ledger/NAMING.md
+dimtest = dim_test

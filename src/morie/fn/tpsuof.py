@@ -34,3 +34,7 @@ tpsuof = tps_use_of_force
 
 def cheatsheet() -> str:
     return "tpsuof() -> TPS use of force"
+
+
+# compact alias per ledger/NAMING.md
+tpsuseofforce = tps_use_of_force

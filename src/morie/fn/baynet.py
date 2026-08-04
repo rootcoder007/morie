@@ -44,3 +44,7 @@ def bayes_network(graph, cpts, evidence, query):
 
 def cheatsheet():
     return "baynet: Bayesian network inference (variable elimination)"
+
+
+# compact alias per ledger/NAMING.md
+bayesnetwork = bayes_network

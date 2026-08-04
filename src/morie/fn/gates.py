@@ -73,3 +73,7 @@ short = logic_gates
 
 def cheatsheet() -> str:
     return "logic_gates({}) -> Logic gate simulation."
+
+
+# compact alias per ledger/NAMING.md
+logicgates = logic_gates

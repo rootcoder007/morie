@@ -70,3 +70,7 @@ equating = irt_equating
 
 def cheatsheet() -> str:
     return "irt_equating({}) -> IRT true-score equating."
+
+
+# compact alias per ledger/NAMING.md
+irtequating = irt_equating

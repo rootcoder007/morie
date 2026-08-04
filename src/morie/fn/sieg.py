@@ -38,3 +38,7 @@ def siegel_repeated(x, y):
 
 def cheatsheet():
     return "sieg: Siegel repeated medians"
+
+
+# compact alias per ledger/NAMING.md
+siegelrepeated = siegel_repeated

@@ -29,3 +29,7 @@ rbf_ = rbf_thinplate
 
 def cheatsheet() -> str:
     return "rbf_thinplate({}) -> Thin plate spline RBF"
+
+
+# compact alias per ledger/NAMING.md
+rbfthinplate = rbf_thinplate

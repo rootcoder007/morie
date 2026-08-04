@@ -56,3 +56,7 @@ svdnt = svd_entropy
 
 def cheatsheet() -> str:
     return "svd_entropy(x, m=10) -> Normalised SVD entropy."
+
+
+# compact alias per ledger/NAMING.md
+svdentropy = svd_entropy

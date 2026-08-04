@@ -35,3 +35,7 @@ wienr = wiener_filter
 
 def cheatsheet() -> str:
     return "wiener_filter({}) -> Wiener filter."
+
+
+# compact alias per ledger/NAMING.md
+wienerfilter = wiener_filter

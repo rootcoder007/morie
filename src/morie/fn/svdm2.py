@@ -29,3 +29,7 @@ dim_ = dim_test_2
 
 def cheatsheet() -> str:
     return "dim_test_2({}) -> Second dimensionality test"
+
+
+# compact alias per ledger/NAMING.md
+dimtest2 = dim_test_2

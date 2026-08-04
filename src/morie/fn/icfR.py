@@ -42,3 +42,7 @@ def item_cf(R, u, i, k):
 
 def cheatsheet():
     return "icfR: Item-based CF"
+
+
+# compact alias per ledger/NAMING.md
+itemcf = item_cf

@@ -55,3 +55,7 @@ crtjr = court_jordan
 
 def cheatsheet() -> str:
     return "court_jordan({}) -> R v Jordan compliance (18/30 month ceiling)."
+
+
+# compact alias per ledger/NAMING.md
+courtjordan = court_jordan

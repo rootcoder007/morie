@@ -29,3 +29,7 @@ john = johnston_power
 
 def cheatsheet() -> str:
     return "johnston_power({}) -> Johnston power index"
+
+
+# compact alias per ledger/NAMING.md
+johnstonpower = johnston_power

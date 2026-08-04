@@ -82,3 +82,7 @@ def geron_tlu(x, w, b=0.0):
 
 def cheatsheet():
     return "hmtlu: Threshold logic unit: step activation of weighted sum"
+
+
+# compact alias per ledger/NAMING.md
+gerontlu = geron_tlu

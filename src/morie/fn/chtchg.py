@@ -42,3 +42,7 @@ def changeover_dr(y, D, period, unit):
 
 def cheatsheet():
     return "chtchg: DR for changeover designs"
+
+
+# compact alias per ledger/NAMING.md
+changeoverdr = changeover_dr

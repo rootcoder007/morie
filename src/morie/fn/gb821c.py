@@ -76,3 +76,7 @@ def gibbons_wrs_ci(x, y, alpha, cdf=None):
 
 def cheatsheet():
     return "gb821c: Confidence interval for location shift from Wilcoxon rank-sum test"
+
+
+# compact alias per ledger/NAMING.md
+gibbonswrsci = gibbons_wrs_ci

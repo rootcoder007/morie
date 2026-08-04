@@ -59,3 +59,7 @@ spflt = spatial_filter
 
 def cheatsheet() -> str:
     return "spatial_filter({}) -> Eigenvector spatial filtering."
+
+
+# compact alias per ledger/NAMING.md
+spatialfilter = spatial_filter

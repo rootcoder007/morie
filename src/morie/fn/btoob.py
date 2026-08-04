@@ -103,3 +103,7 @@ def boot_oob_error(x, y, fit_fn, predict_fn, B=100, loss=None, seed=0):
 
 def cheatsheet():
     return "btoob: score each point only with fits that never saw it -- honesty by construction"
+
+
+# compact alias per ledger/NAMING.md
+bootooberror = boot_oob_error

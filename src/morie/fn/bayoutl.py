@@ -38,3 +38,7 @@ def bayes_outlier(y, outlier_prior):
 
 def cheatsheet():
     return "bayoutl: Bayesian outlier detection"
+
+
+# compact alias per ledger/NAMING.md
+bayesoutlier = bayes_outlier

@@ -34,3 +34,7 @@ def ghosal_local_dp(x=0.3, bandwidth=0.25, n_atoms=200, alpha=2.0,
 
 def cheatsheet():
     return "gh_c14_19: Local Dirichlet process"
+
+
+# compact alias per ledger/NAMING.md
+ghosallocaldp = ghosal_local_dp

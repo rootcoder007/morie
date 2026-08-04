@@ -59,3 +59,7 @@ chaos = logistic_map
 
 def cheatsheet() -> str:
     return "logistic_map({}) -> Logistic map iterations."
+
+
+# compact alias per ledger/NAMING.md
+logisticmap = logistic_map

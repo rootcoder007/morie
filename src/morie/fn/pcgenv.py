@@ -41,3 +41,7 @@ pcgenv = pcg_envelope
 
 def cheatsheet() -> str:
     return "pcg_envelope({}) -> PCG Shannon-energy envelope."
+
+
+# compact alias per ledger/NAMING.md
+pcgenvelope = pcg_envelope

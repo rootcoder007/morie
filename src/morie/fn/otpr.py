@@ -44,3 +44,7 @@ def ot_partial_ot(a, b, C, m):
 
 def cheatsheet():
     return "otpr: Partial OT transporting only mass m <= min(|a|,|b|)"
+
+
+# compact alias per ledger/NAMING.md
+otpartialot = ot_partial_ot

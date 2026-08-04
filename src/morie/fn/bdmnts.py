@@ -44,3 +44,7 @@ def bound_monot_inst(y, D, Z, y_min, y_max):
 
 def cheatsheet():
     return "bdmnts: Bound under monotone IV"
+
+
+# compact alias per ledger/NAMING.md
+boundmonotinst = bound_monot_inst

@@ -34,3 +34,7 @@ sprto = spectral_ratio
 
 def cheatsheet() -> str:
     return "spectral_ratio({}) -> Spectral power ratio between two frequency bands."
+
+
+# compact alias per ledger/NAMING.md
+spectralratio = spectral_ratio

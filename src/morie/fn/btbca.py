@@ -44,3 +44,7 @@ def boot_bca_ci(theta_hat, theta_b, x, stat, alpha):
 
 def cheatsheet():
     return "btbca: Bias-corrected accelerated (BCa) CI"
+
+
+# compact alias per ledger/NAMING.md
+bootbcaci = boot_bca_ci

@@ -65,3 +65,7 @@ def ghosal_ep_gp(x=None, y=None, length=0.5):
 
 def cheatsheet():
     return "gh_c11_15: Expectation propagation for GPs"
+
+
+# compact alias per ledger/NAMING.md
+ghosalepgp = ghosal_ep_gp

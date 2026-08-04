@@ -82,3 +82,7 @@ tgtrl = target_trial
 
 def cheatsheet() -> str:
     return "target_trial({}) -> Target trial emulation framework."
+
+
+# compact alias per ledger/NAMING.md
+targettrial = target_trial

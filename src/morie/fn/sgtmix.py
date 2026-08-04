@@ -38,3 +38,7 @@ def sgt_mixing_time(A, epsilon):
 
 def cheatsheet():
     return "sgtmix: Mixing time from spectral gap of L_rw"
+
+
+# compact alias per ledger/NAMING.md
+sgtmixingtime = sgt_mixing_time

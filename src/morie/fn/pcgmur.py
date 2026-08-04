@@ -70,3 +70,7 @@ pcgmur = pcg_murmur_score
 
 def cheatsheet() -> str:
     return "pcg_murmur_score({}) -> PCG murmur detection score."
+
+
+# compact alias per ledger/NAMING.md
+pcgmurmurscore = pcg_murmur_score

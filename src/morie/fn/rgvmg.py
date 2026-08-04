@@ -26,3 +26,7 @@ def rangayyan_vmg(vmg, fs):
 
 def cheatsheet():
     return "rgvmg: Vibromyogram (VMG) signal characterization (lateral oscillation of contracting muscle)"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanvmg = rangayyan_vmg

@@ -44,3 +44,7 @@ mtord = mto_road_segment
 
 def cheatsheet() -> str:
     return "mto_road_segment({}) -> Per-road-segment crash rate."
+
+
+# compact alias per ledger/NAMING.md
+mtoroadsegment = mto_road_segment

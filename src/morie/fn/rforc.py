@@ -167,3 +167,7 @@ rforc = random_forest
 
 def cheatsheet() -> str:
     return "random_forest({}) -> Random forest classifier (pure NumPy, bootstrap + feature su"
+
+
+# compact alias per ledger/NAMING.md
+randomforest = random_forest

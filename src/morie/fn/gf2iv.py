@@ -36,3 +36,7 @@ gf2iv = gf2_matrix_inv
 
 def cheatsheet() -> str:
     return "gf2_matrix_inv({}) -> GF(2) matrix inverse."
+
+
+# compact alias per ledger/NAMING.md
+gf2matrixinv = gf2_matrix_inv

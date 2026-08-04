@@ -29,3 +29,7 @@ mult = multiparty_comp
 
 def cheatsheet() -> str:
     return "multiparty_comp({}) -> Multi-party spatial competition"
+
+
+# compact alias per ledger/NAMING.md
+multipartycomp = multiparty_comp

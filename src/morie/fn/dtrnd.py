@@ -43,3 +43,7 @@ dtrnd = detrend_signal
 
 def cheatsheet() -> str:
     return "detrend_signal({}) -> Polynomial detrending."
+
+
+# compact alias per ledger/NAMING.md
+detrendsignal = detrend_signal

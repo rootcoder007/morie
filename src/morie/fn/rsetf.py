@@ -321,3 +321,7 @@ def cheatsheet():
         "rsetf: Ramsey RESET F test for functional-form misspecification, "
         "regressing on powers of the fitted values"
     )
+
+
+# compact alias per ledger/NAMING.md
+resetcore = reset_core

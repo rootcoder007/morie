@@ -44,3 +44,7 @@ def r_learner(y, D, X, ml_outcome, ml_propensity):
 
 def cheatsheet():
     return "drlrnr: R-learner for CATE (Nie-Wager)"
+
+
+# compact alias per ledger/NAMING.md
+rlearner = r_learner

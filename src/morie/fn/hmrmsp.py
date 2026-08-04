@@ -92,3 +92,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`rmsprop`.
 geron_rmsprop = rmsprop
+
+
+# compact alias per ledger/NAMING.md
+geronrmsprop = geron_rmsprop

@@ -29,3 +29,7 @@ def ridge_fit(X, y, lam=1.0, add_intercept=True):
 
 def cheatsheet():
     return "msm258: Ridge regression, penalized least squares"
+
+
+# compact alias per ledger/NAMING.md
+ridgefit = ridge_fit

@@ -27,3 +27,7 @@ def hill_estimator(x, k=None):
 
 def cheatsheet():
     return "hillEst: same estimator as evhill, one implementation"
+
+
+# compact alias per ledger/NAMING.md
+hillestimator = hill_estimator

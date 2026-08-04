@@ -29,3 +29,7 @@ hote = hotelling_3cand
 
 def cheatsheet() -> str:
     return "hotelling_3cand({}) -> Three-candidate spatial equilibrium"
+
+
+# compact alias per ledger/NAMING.md
+hotelling3cand = hotelling_3cand

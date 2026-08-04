@@ -70,3 +70,7 @@ rprat = rplace_rate
 
 def cheatsheet() -> str:
     return "rplace_rate({}) -> Placement rate per 100,000 population."
+
+
+# compact alias per ledger/NAMING.md
+rplacerate = rplace_rate

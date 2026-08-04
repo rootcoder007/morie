@@ -38,3 +38,7 @@ def offline_rl_cql(dataset, alpha):
 
 def cheatsheet():
     return "offlrl: Conservative Q-learning (offline RL)"
+
+
+# compact alias per ledger/NAMING.md
+offlinerlcql = offline_rl_cql

@@ -36,3 +36,7 @@ def chain_rule(p_a, p_b_given_a, p_b, p_a_given_b):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner2e9: Both chain-rule factorizations of P(A and B) agree. Morin (2016) eq (2.9)."
+
+
+# compact alias per ledger/NAMING.md
+chainrule = chain_rule

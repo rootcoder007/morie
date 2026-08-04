@@ -29,3 +29,7 @@ mora = moran_resid
 
 def cheatsheet() -> str:
     return "moran_resid({}) -> Moran's I on regression residuals"
+
+
+# compact alias per ledger/NAMING.md
+moranresid = moran_resid

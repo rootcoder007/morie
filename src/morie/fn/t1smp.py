@@ -56,3 +56,7 @@ t1smp = one_sample_t_test
 
 def cheatsheet() -> str:
     return "one_sample_t_test({}) -> One-sample t-test against a specified null mean."
+
+
+# compact alias per ledger/NAMING.md
+onesamplettest = one_sample_t_test

@@ -70,3 +70,7 @@ def new_user_cohort(rx_start, drug_group, outcome_time, outcome_event, washout=1
 
 def cheatsheet() -> str:
     return "new_user_cohort({}) -> New-user/active-comparator cohort design for pharmacoepi."
+
+
+# compact alias per ledger/NAMING.md
+newusercohort = new_user_cohort

@@ -95,3 +95,7 @@ def esl_pcr(X, y, M):
 
 def cheatsheet():
     return "eslpcr: sum (z_m'y/z_m'z_m) v_m; ignores y when choosing directions"
+
+
+# compact alias per ledger/NAMING.md
+eslpcr = esl_pcr

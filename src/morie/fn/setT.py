@@ -38,3 +38,7 @@ def set_transformer(X, k):
 
 def cheatsheet():
     return "setT: Set transformer pooling"
+
+
+# compact alias per ledger/NAMING.md
+settransformer = set_transformer

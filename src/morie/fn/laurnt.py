@@ -40,3 +40,7 @@ def laurent_series(f, c, order):
 
 def cheatsheet():
     return "laurnt: Laurent series (with negative powers)"
+
+
+# compact alias per ledger/NAMING.md
+laurentseries = laurent_series

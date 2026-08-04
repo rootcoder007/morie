@@ -38,3 +38,7 @@ def deep_svdd(X, net):
 
 def cheatsheet():
     return "deepSVDD: Deep SVDD"
+
+
+# compact alias per ledger/NAMING.md
+deepsvdd = deep_svdd

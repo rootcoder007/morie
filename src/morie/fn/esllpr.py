@@ -96,3 +96,7 @@ def esl_local_linear(x0, x, y, lambda_, kernel="epanechnikov"):
 
 def cheatsheet():
     return "esllpr: WLS on centred x; exact on lines even at boundaries; slope = derivative"
+
+
+# compact alias per ledger/NAMING.md
+esllocallinear = esl_local_linear

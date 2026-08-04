@@ -71,3 +71,7 @@ def network_bridge(
 
 def cheatsheet() -> str:
     return "network_bridge({}) -> Bridge centrality between communities in a network."
+
+
+# compact alias per ledger/NAMING.md
+networkbridge = network_bridge

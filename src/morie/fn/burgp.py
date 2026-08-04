@@ -115,3 +115,7 @@ burgp = burg_psd
 
 def cheatsheet() -> str:
     return "burg_psd({}) -> Burg AR spectral estimation."
+
+
+# compact alias per ledger/NAMING.md
+burgpsd = burg_psd

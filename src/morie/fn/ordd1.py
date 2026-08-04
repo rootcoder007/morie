@@ -61,3 +61,7 @@ ordd1 = otis_rdd_age
 
 def cheatsheet() -> str:
     return "otis_rdd_age({}) -> Regression discontinuity at age cutoff."
+
+
+# compact alias per ledger/NAMING.md
+otisrddage = otis_rdd_age

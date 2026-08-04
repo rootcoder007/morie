@@ -42,3 +42,7 @@ def crp_gibbs(y, alpha, n_iter):
 
 def cheatsheet():
     return "crpgib: Gibbs sampler for CRP cluster assignments"
+
+
+# compact alias per ledger/NAMING.md
+crpgibbs = crp_gibbs

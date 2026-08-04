@@ -34,3 +34,7 @@ def block_maxima(x, block_size):
 
 def cheatsheet():
     return "blockMx: Block-maxima method"
+
+
+# compact alias per ledger/NAMING.md
+blockmaxima = block_maxima

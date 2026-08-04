@@ -38,3 +38,7 @@ def sgt_spectrum(M):
 
 def cheatsheet():
     return "sgtspc: Sorted eigenvalues of a symmetric matrix"
+
+
+# compact alias per ledger/NAMING.md
+sgtspectrum = sgt_spectrum

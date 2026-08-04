@@ -52,3 +52,7 @@ rdpil = red_pill_test
 
 def cheatsheet() -> str:
     return "rdpil() -> Red pill test"
+
+
+# compact alias per ledger/NAMING.md
+redpilltest = red_pill_test

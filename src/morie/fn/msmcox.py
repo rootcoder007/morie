@@ -38,3 +38,7 @@ def msm_cox_marginal(time, event, treatment_history, covariate_history=None,
 
 def cheatsheet():
     return "msmcox: Marginal structural Cox model"
+
+
+# compact alias per ledger/NAMING.md
+msmcoxmarginal = msm_cox_marginal

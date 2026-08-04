@@ -38,3 +38,7 @@ lll = lll_reduce
 
 def cheatsheet() -> str:
     return "lll_reduce({}) -> LLL lattice basis reduction."
+
+
+# compact alias per ledger/NAMING.md
+lllreduce = lll_reduce

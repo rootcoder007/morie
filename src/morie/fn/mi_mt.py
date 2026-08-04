@@ -110,3 +110,7 @@ def mi_metric(
 
 def cheatsheet() -> str:
     return "mi_metric({}) -> Metric (weak) invariance: constrain loadings equal across gr"
+
+
+# compact alias per ledger/NAMING.md
+mimetric = mi_metric

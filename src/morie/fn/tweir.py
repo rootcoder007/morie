@@ -41,3 +41,7 @@ def weierstrass_p(
 
 def cheatsheet() -> str:
     return "weierstrass_p(z, tau, terms) -> Weierstrass P-function"
+
+
+# compact alias per ledger/NAMING.md
+weierstrassp = weierstrass_p

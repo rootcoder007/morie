@@ -29,3 +29,7 @@ von_ = von_mises_sp
 
 def cheatsheet() -> str:
     return "von_mises_sp({}) -> Spatial von Mises distribution"
+
+
+# compact alias per ledger/NAMING.md
+vonmisessp = von_mises_sp

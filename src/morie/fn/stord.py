@@ -72,3 +72,7 @@ stord = stuart_ord
 
 def cheatsheet() -> str:
     return "stuart_ord({}) -> Stuart's tau-c for ordinal association."
+
+
+# compact alias per ledger/NAMING.md
+stuartord = stuart_ord

@@ -29,3 +29,7 @@ ldpcg = ldpc_generate
 
 def cheatsheet() -> str:
     return "ldpc_generate({}) -> LDPC parity-check matrix generation."
+
+
+# compact alias per ledger/NAMING.md
+ldpcgenerate = ldpc_generate

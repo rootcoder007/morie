@@ -38,3 +38,7 @@ def effective_srs(design, method):
 
 def cheatsheet():
     return "adjsrs: Effective SRS conversion"
+
+
+# compact alias per ledger/NAMING.md
+effectivesrs = effective_srs

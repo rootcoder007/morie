@@ -134,3 +134,11 @@ def esl_gbm_predict(model, X):
 
 def cheatsheet():
     return "eslgbm: residual-fitting trees shrunk by nu; small nu needs large M"
+
+
+# compact alias per ledger/NAMING.md
+eslgbm = esl_gbm
+
+
+# compact alias per ledger/NAMING.md
+eslgbmpredict = esl_gbm_predict

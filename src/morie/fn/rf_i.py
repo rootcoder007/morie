@@ -106,3 +106,7 @@ rf_i = rf_impute
 
 def cheatsheet() -> str:
     return "rf_impute({}) -> Iterative OLS regression imputation (simplified random-fores"
+
+
+# compact alias per ledger/NAMING.md
+rfimpute = rf_impute

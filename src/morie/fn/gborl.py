@@ -59,3 +59,7 @@ gborl = gabor_logon
 
 def cheatsheet() -> str:
     return "gabor_logon({}) -> Gabor logon (Gaussian-windowed sinusoid, TF atom)."
+
+
+# compact alias per ledger/NAMING.md
+gaborlogon = gabor_logon

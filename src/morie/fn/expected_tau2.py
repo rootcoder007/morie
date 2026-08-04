@@ -42,3 +42,7 @@ def expected_tau2(cov_theta, dlam_dtheta, a):
 
 def cheatsheet():
     return 'r24e5: E[tau2] = sum_ij Cov(th_i, th_j) dlam^T/dth_i A dlam/dth_j [Brus 2022, eq. 24.5]'
+
+
+# compact alias per ledger/NAMING.md
+expectedtau2 = expected_tau2

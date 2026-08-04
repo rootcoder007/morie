@@ -46,3 +46,7 @@ xpsd = cross_psd
 
 def cheatsheet() -> str:
     return "cross_psd({}) -> Cross power spectral density."
+
+
+# compact alias per ledger/NAMING.md
+crosspsd = cross_psd

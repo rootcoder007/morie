@@ -93,3 +93,7 @@ pidtun = pid_tune
 
 def cheatsheet() -> str:
     return "pid_tune({}) -> PID controller tuning."
+
+
+# compact alias per ledger/NAMING.md
+pidtune = pid_tune

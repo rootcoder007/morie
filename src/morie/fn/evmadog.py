@@ -101,3 +101,11 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`ev_madogram`.
 evt_madogram = ev_madogram
+
+
+# compact alias per ledger/NAMING.md
+evmadogram = ev_madogram
+
+
+# compact alias per ledger/NAMING.md
+evtmadogram = evt_madogram

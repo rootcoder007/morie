@@ -43,3 +43,7 @@ pwrdb = power_to_db
 
 def cheatsheet() -> str:
     return "power_to_db({}) -> Power to decibels."
+
+
+# compact alias per ledger/NAMING.md
+powertodb = power_to_db

@@ -137,3 +137,7 @@ gmm2s = gmm_twostep
 
 def cheatsheet() -> str:
     return "gmm_twostep({}) -> Two-step GMM estimator."
+
+
+# compact alias per ledger/NAMING.md
+gmmtwostep = gmm_twostep

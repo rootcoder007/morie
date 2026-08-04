@@ -67,3 +67,7 @@ def iv_conditions(dag, Z, X, Y):
 
 def cheatsheet():
     return "ivcrt: relevance + d-sep(Z, Y) in G_underline-X (Pearl Sec 7.4.1)"
+
+
+# compact alias per ledger/NAMING.md
+ivconditions = iv_conditions

@@ -60,3 +60,7 @@ def mi_by_gender(
 
 def cheatsheet() -> str:
     return "mi_by_gender({}) -> Full measurement invariance ladder by gender."
+
+
+# compact alias per ledger/NAMING.md
+mibygender = mi_by_gender

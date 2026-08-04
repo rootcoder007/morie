@@ -57,3 +57,7 @@ ovrla = overlap_weight
 
 def cheatsheet() -> str:
     return "overlap_weight({}) -> Overlap weighting for causal inference."
+
+
+# compact alias per ledger/NAMING.md
+overlapweight = overlap_weight

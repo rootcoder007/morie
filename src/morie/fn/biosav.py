@@ -71,3 +71,7 @@ biosav = biot_savart
 
 def cheatsheet() -> str:
     return "biot_savart({}) -> Biot-Savart magnetic field computation."
+
+
+# compact alias per ledger/NAMING.md
+biotsavart = biot_savart

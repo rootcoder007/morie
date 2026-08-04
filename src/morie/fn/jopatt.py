@@ -50,3 +50,7 @@ def joseph_patchtst(x, patch_len, stride, transformer):
 
 def cheatsheet():
     return "jopatt: PatchTST: patch-based channel-independent Transformer for TS"
+
+
+# compact alias per ledger/NAMING.md
+josephpatchtst = joseph_patchtst

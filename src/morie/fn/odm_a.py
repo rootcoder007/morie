@@ -52,3 +52,7 @@ def otis_demo_age(
 
 def cheatsheet() -> str:
     return "otis_demo_age({}) -> Demographic profile per age group for OTIS correctional data"
+
+
+# compact alias per ledger/NAMING.md
+otisdemoage = otis_demo_age

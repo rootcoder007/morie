@@ -38,3 +38,7 @@ def cwt_morlet(y, scales):
 
 def cheatsheet():
     return "cwwsym: Continuous wavelet transform (Morlet)"
+
+
+# compact alias per ledger/NAMING.md
+cwtmorlet = cwt_morlet

@@ -54,3 +54,7 @@ mdnvt = median_voter
 
 def cheatsheet() -> str:
     return "median_voter({}) -> Median voter theorem computation."
+
+
+# compact alias per ledger/NAMING.md
+medianvoter = median_voter

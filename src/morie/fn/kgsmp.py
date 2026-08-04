@@ -35,3 +35,7 @@ simp = simple_kriging
 
 def cheatsheet() -> str:
     return "simple_kriging({}) -> Simple kriging prediction"
+
+
+# compact alias per ledger/NAMING.md
+simplekriging = simple_kriging

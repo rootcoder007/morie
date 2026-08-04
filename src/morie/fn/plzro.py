@@ -41,3 +41,7 @@ plzro = poles_zeros
 
 def cheatsheet() -> str:
     return "poles_zeros({}) -> Poles and zeros of a transfer function."
+
+
+# compact alias per ledger/NAMING.md
+poleszeros = poles_zeros

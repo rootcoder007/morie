@@ -42,3 +42,7 @@ def icc_two_way_mixed(y, subject, rater):
 
 def cheatsheet():
     return "icc3: ICC(3,1) two-way mixed single rater (consistency)"
+
+
+# compact alias per ledger/NAMING.md
+icctwowaymixed = icc_two_way_mixed

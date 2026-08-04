@@ -153,3 +153,7 @@ def geron_blip(images, texts, temperature=1.0, caption_logprobs=None):
 
 def cheatsheet():
     return "hmblip: BLIP: bootstrapped language-image pretraining"
+
+
+# compact alias per ledger/NAMING.md
+geronblip = geron_blip

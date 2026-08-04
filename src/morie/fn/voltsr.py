@@ -73,3 +73,7 @@ def vol_two_scale_rv(r_intraday, K=5):
 
 def cheatsheet():
     return "voltsr: avg subsampled RV - (nbar/n) RV_all (ZMA 2005)"
+
+
+# compact alias per ledger/NAMING.md
+voltwoscalerv = vol_two_scale_rv

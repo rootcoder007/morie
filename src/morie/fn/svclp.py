@@ -29,3 +29,7 @@ cut_ = cut_plane
 
 def cheatsheet() -> str:
     return "cut_plane({}) -> Cutting plane in 3D"
+
+
+# compact alias per ledger/NAMING.md
+cutplane = cut_plane

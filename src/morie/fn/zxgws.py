@@ -29,3 +29,7 @@ gw_s = gw_summary
 
 def cheatsheet() -> str:
     return "gw_summary({}) -> Geographically weighted summary stats"
+
+
+# compact alias per ledger/NAMING.md
+gwsummary = gw_summary

@@ -62,3 +62,7 @@ def ghosal_vb_dpm(data, K=8, alpha=1.0, tau=1.0, sigma=0.5,
 
 def cheatsheet():
     return "gh_c5_6: Variational algorithm for DPM"
+
+
+# compact alias per ledger/NAMING.md
+ghosalvbdpm = ghosal_vb_dpm

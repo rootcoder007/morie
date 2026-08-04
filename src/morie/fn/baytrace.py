@@ -64,3 +64,7 @@ def trace_plot(chains, cdf=None):
 
 def cheatsheet():
     return "baytrace: MCMC trace plot statistics"
+
+
+# compact alias per ledger/NAMING.md
+traceplot = trace_plot

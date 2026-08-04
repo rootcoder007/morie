@@ -52,3 +52,7 @@ drvhz = derivative_hz
 
 def cheatsheet() -> str:
     return "derivative_hz({}) -> Signal derivative in Hz domain."
+
+
+# compact alias per ledger/NAMING.md
+derivativehz = derivative_hz

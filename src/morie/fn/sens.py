@@ -53,3 +53,7 @@ sens = sensitivity_dx
 
 def cheatsheet() -> str:
     return "sensitivity_dx({}) -> Sensitivity / recall."
+
+
+# compact alias per ledger/NAMING.md
+sensitivitydx = sensitivity_dx

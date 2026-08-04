@@ -49,3 +49,7 @@ def hlm_gamma_matrix(y, X, Z, cluster):
 
 def cheatsheet():
     return "hlmgr: HLM gamma covariance matrix for random effects (T matrix)"
+
+
+# compact alias per ledger/NAMING.md
+hlmgammamatrix = hlm_gamma_matrix

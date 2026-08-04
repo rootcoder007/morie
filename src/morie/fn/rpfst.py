@@ -65,3 +65,7 @@ rpfst = rplace_first
 
 def cheatsheet() -> str:
     return "rplace_first({}) -> Time to first placement for each individual."
+
+
+# compact alias per ledger/NAMING.md
+rplacefirst = rplace_first

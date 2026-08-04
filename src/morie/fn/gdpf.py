@@ -38,3 +38,7 @@ def gaussian_dp(mech, mu):
 
 def cheatsheet():
     return "gdpf: f-DP / Gaussian DP"
+
+
+# compact alias per ledger/NAMING.md
+gaussiandp = gaussian_dp

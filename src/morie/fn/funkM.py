@@ -42,3 +42,7 @@ def funk_svd(R, K, lr, reg):
 
 def cheatsheet():
     return "funkM: Funk SVD (matrix factorization)"
+
+
+# compact alias per ledger/NAMING.md
+funksvd = funk_svd

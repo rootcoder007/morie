@@ -85,3 +85,7 @@ if __name__ == "__main__":
     print("best params:", r.best_params)
     print("best CV score:", r.best_score)
     print("CV scores per setting:", r.cv_results_mean_score)
+
+
+# compact alias per ledger/NAMING.md
+gridsearchcv = grid_search_cv

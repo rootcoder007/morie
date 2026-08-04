@@ -170,3 +170,7 @@ evstd = event_study
 
 def cheatsheet() -> str:
     return "event_study({}) -> Event study design estimator."
+
+
+# compact alias per ledger/NAMING.md
+eventstudy = event_study

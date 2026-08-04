@@ -41,3 +41,7 @@ def cheatsheet() -> str:
 
 
 rmsnm = rms_norm
+
+
+# compact alias per ledger/NAMING.md
+rmsnorm = rms_norm

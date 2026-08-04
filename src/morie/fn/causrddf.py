@@ -44,3 +44,7 @@ def causal_rdd_fuzzy(x, y, treat, cutoff, h):
 
 def cheatsheet():
     return "causrddf: Fuzzy RDD via Wald ratio of jumps"
+
+
+# compact alias per ledger/NAMING.md
+causalrddfuzzy = causal_rdd_fuzzy

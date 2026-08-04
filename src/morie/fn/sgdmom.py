@@ -71,3 +71,7 @@ def sgd_momentum(g, mu=0.9, lr=0.01, state=None):
 
 def cheatsheet():
     return "sgdmom: heavy-ball momentum; steady-state step is -lr*g/(1-mu), so raise mu and lower lr together"
+
+
+# compact alias per ledger/NAMING.md
+sgdmomentum = sgd_momentum

@@ -43,3 +43,7 @@ cdfen = cdf_estimate
 
 def cheatsheet() -> str:
     return "cdf_estimate({}) -> Empirical CDF estimation."
+
+
+# compact alias per ledger/NAMING.md
+cdfestimate = cdf_estimate

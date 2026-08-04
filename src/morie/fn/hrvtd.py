@@ -46,3 +46,7 @@ hrvtd = hrv_time_domain
 
 def cheatsheet() -> str:
     return "hrv_time_domain({}) -> HRV time-domain metrics."
+
+
+# compact alias per ledger/NAMING.md
+hrvtimedomain = hrv_time_domain

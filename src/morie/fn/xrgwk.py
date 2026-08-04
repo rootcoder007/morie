@@ -29,3 +29,7 @@ gwr_ = gwr_kernel
 
 def cheatsheet() -> str:
     return "gwr_kernel({}) -> GWR kernel function"
+
+
+# compact alias per ledger/NAMING.md
+gwrkernel = gwr_kernel

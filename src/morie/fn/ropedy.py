@@ -48,3 +48,7 @@ def rope_ntk_dynamic(y, q, m, theta, L_new, L_train):
 
 def cheatsheet():
     return "ropedy: RoPE NTK-aware dynamic scaling for longer context"
+
+
+# compact alias per ledger/NAMING.md
+ropentkdynamic = rope_ntk_dynamic

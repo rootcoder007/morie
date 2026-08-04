@@ -38,3 +38,7 @@ def bpe_tokenizer(corpus, vocab_size):
 
 def cheatsheet():
     return "bpetk: Byte-pair encoding tokenizer"
+
+
+# compact alias per ledger/NAMING.md
+bpetokenizer = bpe_tokenizer

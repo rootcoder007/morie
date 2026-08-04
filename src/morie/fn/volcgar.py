@@ -46,3 +46,7 @@ def vol_cgarch_fit(r):
 
 def cheatsheet():
     return "volcgar: Component GARCH, spec 'cgarch'"
+
+
+# compact alias per ledger/NAMING.md
+volcgarchfit = vol_cgarch_fit

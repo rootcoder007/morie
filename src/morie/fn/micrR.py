@@ -36,3 +36,7 @@ def microsoft_sr(x):
 
 def cheatsheet():
     return "micrR: Microsoft SR-CNN"
+
+
+# compact alias per ledger/NAMING.md
+microsoftsr = microsoft_sr

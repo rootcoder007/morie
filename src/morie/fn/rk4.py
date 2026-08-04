@@ -78,3 +78,7 @@ rk4 = runge_kutta4
 
 def cheatsheet() -> str:
     return "runge_kutta4({}) -> Fourth-order Runge-Kutta ODE solver."
+
+
+# compact alias per ledger/NAMING.md
+rungekutta4 = runge_kutta4

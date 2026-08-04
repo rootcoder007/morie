@@ -37,3 +37,7 @@ def ghosal_pen_dp(p, alpha, lam, counts=None):
 
 def cheatsheet():
     return "gh_c4_23: Penalized Dirichlet process"
+
+
+# compact alias per ledger/NAMING.md
+ghosalpendp = ghosal_pen_dp

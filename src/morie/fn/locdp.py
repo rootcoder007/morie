@@ -40,3 +40,7 @@ def local_dp(x, mech, epsilon):
 
 def cheatsheet():
     return "locdp: Local DP (each user randomizes)"
+
+
+# compact alias per ledger/NAMING.md
+localdp = local_dp

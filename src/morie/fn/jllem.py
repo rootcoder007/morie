@@ -44,3 +44,7 @@ def cheatsheet() -> str:
 
 
 jllem = jl_lemma_bound
+
+
+# compact alias per ledger/NAMING.md
+jllemmabound = jl_lemma_bound

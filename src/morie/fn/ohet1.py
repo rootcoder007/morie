@@ -89,3 +89,7 @@ def otis_het_region(
 
 def cheatsheet() -> str:
     return "otis_het_region({}) -> Heterogeneous treatment effects test by region for OTIS data"
+
+
+# compact alias per ledger/NAMING.md
+otishetregion = otis_het_region

@@ -30,3 +30,7 @@ def evt_gev_pp_plot(x, mu, sigma, xi):
 
 def cheatsheet():
     return "evppgev: PP-plot diagnostic for a fitted GEV"
+
+
+# compact alias per ledger/NAMING.md
+evtgevppplot = evt_gev_pp_plot

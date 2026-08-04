@@ -87,3 +87,7 @@ naifor = naive_forecast
 
 def cheatsheet() -> str:
     return "naive_forecast({}) -> Naive time series forecasting."
+
+
+# compact alias per ledger/NAMING.md
+naiveforecast = naive_forecast

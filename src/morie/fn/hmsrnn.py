@@ -122,3 +122,7 @@ def geron_simple_rnn(X, Wx, Wh, b=None, h0=None):
 
 def cheatsheet():
     return "hmsrnn: Simple RNN forward pass over a sequence"
+
+
+# compact alias per ledger/NAMING.md
+geronsimplernn = geron_simple_rnn

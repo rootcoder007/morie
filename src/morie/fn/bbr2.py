@@ -41,3 +41,7 @@ bbr2 = bb_r2_per_issue
 
 def cheatsheet() -> str:
     return "bb_r2_per_issue({}) -> Blackbox R-squared per issue scale."
+
+
+# compact alias per ledger/NAMING.md
+bbr2perissue = bb_r2_per_issue

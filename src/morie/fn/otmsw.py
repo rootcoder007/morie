@@ -49,3 +49,7 @@ def ot_max_sliced_w(X, Y, p, n_proj):
 
 def cheatsheet():
     return "otmsw: Max-sliced Wasserstein distance over projection direction"
+
+
+# compact alias per ledger/NAMING.md
+otmaxslicedw = ot_max_sliced_w

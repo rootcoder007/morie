@@ -118,3 +118,7 @@ def dp_pca(X, k=2, epsilon=1.0, delta=1e-5, C=1.0, seed=None):
 
 def cheatsheet():
     return "dppca: post-processing is free, so downstream costs nothing; accuracy is set by the EIGENGAP"
+
+
+# compact alias per ledger/NAMING.md
+dppca = dp_pca

@@ -52,3 +52,7 @@ tpstrn = tps_crime_trend
 
 def cheatsheet() -> str:
     return "tps_crime_trend({}) -> Crime trend analysis."
+
+
+# compact alias per ledger/NAMING.md
+tpscrimetrend = tps_crime_trend

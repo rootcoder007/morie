@@ -44,3 +44,7 @@ def dcc_garch(X):
 
 def cheatsheet():
     return "dccgrch: DCC(1,1) GARCH (front-end to dccmd)"
+
+
+# compact alias per ledger/NAMING.md
+dccgarch = dcc_garch

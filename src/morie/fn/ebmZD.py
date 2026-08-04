@@ -162,3 +162,7 @@ def _solve(Sarr, Q, albedo, A, B, k, lat, max_iter, tol, ice_albedo,
 
 def cheatsheet():
     return "ebmZD: ice-albedo feedback gives TWO stable equilibria for one forcing; start decides which"
+
+
+# compact alias per ledger/NAMING.md
+zonalebm = zonal_ebm

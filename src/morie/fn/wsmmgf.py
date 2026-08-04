@@ -59,3 +59,7 @@ def wasserman_mgf(x, t):
 
 def cheatsheet():
     return "wsmmgf: M(t) = (1/n) sum e^{t X_i}; M(0) = 1"
+
+
+# compact alias per ledger/NAMING.md
+wassermanmgf = wasserman_mgf

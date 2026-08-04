@@ -38,3 +38,7 @@ def rna_velocity(spliced, unspliced):
 
 def cheatsheet():
     return "scvelo: scVelo RNA velocity"
+
+
+# compact alias per ledger/NAMING.md
+rnavelocity = rna_velocity

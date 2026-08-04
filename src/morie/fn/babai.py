@@ -38,3 +38,7 @@ babai = babai_cvp
 
 def cheatsheet() -> str:
     return "babai_cvp({}) -> Babai's nearest plane algorithm for CVP."
+
+
+# compact alias per ledger/NAMING.md
+babaicvp = babai_cvp

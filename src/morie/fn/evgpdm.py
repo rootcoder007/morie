@@ -28,3 +28,7 @@ def evt_gpd_mle(y):
 
 def cheatsheet():
     return "evgpdm: MLE of GPD parameters above threshold"
+
+
+# compact alias per ledger/NAMING.md
+evtgpdmle = evt_gpd_mle

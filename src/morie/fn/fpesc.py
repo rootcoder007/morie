@@ -37,3 +37,7 @@ fpesc = fpe_score_fn
 
 def cheatsheet() -> str:
     return "fpe_score_fn({}) -> Final Prediction Error for AR model order selection."
+
+
+# compact alias per ledger/NAMING.md
+fpescorefn = fpe_score_fn

@@ -111,3 +111,7 @@ def bayesian_omega(
 
 def cheatsheet() -> str:
     return "bayesian_omega({}) -> Bayesian McDonald's omega."
+
+
+# compact alias per ledger/NAMING.md
+bayesianomega = bayesian_omega

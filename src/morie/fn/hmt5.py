@@ -206,3 +206,11 @@ def geron_t5(src, tgt=None, noise_density=0.15, mean_span=3, seed=0, prefix="tra
 
 def cheatsheet():
     return "hmt5: T5: text-to-text transfer transformer (encoder-decoder)"
+
+
+# compact alias per ledger/NAMING.md
+geront5 = geron_t5
+
+
+# compact alias per ledger/NAMING.md
+spancorrupt = span_corrupt

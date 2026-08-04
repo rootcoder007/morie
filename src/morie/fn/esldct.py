@@ -174,3 +174,7 @@ def esl_tree_predict(tree, X):
 
 def cheatsheet():
     return "esldct: greedy SSE tree + esl_tree_predict; stopping rules, not cost-complexity pruning"
+
+
+# compact alias per ledger/NAMING.md
+esltreepredict = esl_tree_predict

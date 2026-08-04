@@ -60,3 +60,7 @@ def score_cutoffs(
 
 def cheatsheet() -> str:
     return "score_cutoffs({}) -> Score cut-offs (tercile, quartile, clinical)."
+
+
+# compact alias per ledger/NAMING.md
+scorecutoffs = score_cutoffs

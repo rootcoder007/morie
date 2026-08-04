@@ -112,3 +112,7 @@ varmd = var_model
 
 def cheatsheet() -> str:
     return "var_model(Y, p=1) -> VAR(p) model fit (OLS, equation-by-equation)."
+
+
+# compact alias per ledger/NAMING.md
+varmodel = var_model

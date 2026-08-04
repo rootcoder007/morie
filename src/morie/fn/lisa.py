@@ -91,3 +91,7 @@ lisa_fn = local_morans_i
 
 def cheatsheet() -> str:
     return "local_morans_i({}) -> Local Moran's I (LISA) statistic."
+
+
+# compact alias per ledger/NAMING.md
+localmoransi = local_morans_i

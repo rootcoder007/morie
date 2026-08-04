@@ -38,3 +38,7 @@ def kegg_pathway(genes, kegg_pathways):
 
 def cheatsheet():
     return "keggp: KEGG pathway enrichment"
+
+
+# compact alias per ledger/NAMING.md
+keggpathway = kegg_pathway

@@ -36,3 +36,7 @@ def muscle_msa(sequences):
 
 def cheatsheet():
     return "musclr: MUSCLE multiple sequence alignment"
+
+
+# compact alias per ledger/NAMING.md
+musclemsa = muscle_msa

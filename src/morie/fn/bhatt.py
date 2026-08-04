@@ -32,3 +32,7 @@ bhatt = bhatt_fn
 
 def cheatsheet() -> str:
     return "bhatt_fn({}) -> Bhattacharyya divergence between two distributions."
+
+
+# compact alias per ledger/NAMING.md
+bhattfn = bhatt_fn

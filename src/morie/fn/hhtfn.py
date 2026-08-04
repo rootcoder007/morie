@@ -93,3 +93,7 @@ hhtfn = hilbert_huang
 
 def cheatsheet() -> str:
     return "_sift({}) -> Hilbert-Huang Transform (EMD + Hilbert spectrum)."
+
+
+# compact alias per ledger/NAMING.md
+hilberthuang = hilbert_huang

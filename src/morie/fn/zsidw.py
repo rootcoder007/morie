@@ -29,3 +29,7 @@ idw_ = idw_interp
 
 def cheatsheet() -> str:
     return "idw_interp({}) -> IDW interpolation"
+
+
+# compact alias per ledger/NAMING.md
+idwinterp = idw_interp

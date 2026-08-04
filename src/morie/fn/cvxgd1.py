@@ -124,3 +124,7 @@ def boyd_grad_proj(f, grad_f, x0, C="ball", t=0.05, max_iter=500,
 
 def cheatsheet():
     return "cvxgd1: feasible at EVERY iterate; x = P_C(x - t grad f) IS the optimality condition"
+
+
+# compact alias per ledger/NAMING.md
+boydgradproj = boyd_grad_proj

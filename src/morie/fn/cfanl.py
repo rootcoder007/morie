@@ -106,3 +106,7 @@ cfanl = cfa_uls
 
 def cheatsheet() -> str:
     return "cfa_uls({}) -> Confirmatory factor analysis (ULS estimation)."
+
+
+# compact alias per ledger/NAMING.md
+cfauls = cfa_uls

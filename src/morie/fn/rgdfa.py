@@ -130,3 +130,7 @@ def rangayyan_dfa(x, scales=None, order=1):
 
 def cheatsheet():
     return "rgdfa: detrended fluctuation analysis α -- Peng et al. (1994)"
+
+
+# compact alias per ledger/NAMING.md
+rangayyandfa = rangayyan_dfa

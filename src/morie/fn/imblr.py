@@ -52,3 +52,7 @@ imblr = gaussian_blur
 
 def cheatsheet() -> str:
     return "gaussian_blur({}) -> Gaussian blur via convolution."
+
+
+# compact alias per ledger/NAMING.md
+gaussianblur = gaussian_blur

@@ -106,3 +106,7 @@ def placebo_dr_did(y_pre1, y_pre2, D, X, **kwargs):
 
 def cheatsheet():
     return "drpdid: tests parallel trends with the SAME machinery as the headline estimate; failure informative"
+
+
+# compact alias per ledger/NAMING.md
+placebodrdid = placebo_dr_did

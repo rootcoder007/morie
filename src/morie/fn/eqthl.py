@@ -39,3 +39,7 @@ eqthl = theil_index
 
 def cheatsheet() -> str:
     return "theil_index({}) -> Theil's entropy index."
+
+
+# compact alias per ledger/NAMING.md
+theilindex = theil_index

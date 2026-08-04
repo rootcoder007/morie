@@ -42,3 +42,7 @@ def x_learner(y, D, X):
 
 def cheatsheet():
     return "xlrnir: X-learner for CATE (Künzel-Sekhon-Bickel-Yu)"
+
+
+# compact alias per ledger/NAMING.md
+xlearner = x_learner

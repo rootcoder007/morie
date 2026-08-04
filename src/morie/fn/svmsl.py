@@ -42,3 +42,7 @@ def svm_soft_margin(X, y, C):
 
 def cheatsheet():
     return "svmsl: SVM soft margin with slack variables (C-SVM)"
+
+
+# compact alias per ledger/NAMING.md
+svmsoftmargin = svm_soft_margin

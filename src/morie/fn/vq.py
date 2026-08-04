@@ -44,3 +44,7 @@ def cheatsheet() -> str:
 
 
 vq = vector_quantize
+
+
+# compact alias per ledger/NAMING.md
+vectorquantize = vector_quantize

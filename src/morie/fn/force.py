@@ -47,3 +47,7 @@ force = ate_diff
 
 def cheatsheet() -> str:
     return "ate_diff({}) -> ATE difference-in-means."
+
+
+# compact alias per ledger/NAMING.md
+atediff = ate_diff

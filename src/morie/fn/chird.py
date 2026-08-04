@@ -57,3 +57,7 @@ chird = chirp_detect
 
 def cheatsheet() -> str:
     return "chirp_detect({}) -> Chirp (frequency sweep) detection via instantaneous frequenc"
+
+
+# compact alias per ledger/NAMING.md
+chirpdetect = chirp_detect

@@ -59,3 +59,7 @@ evtdn = event_density
 
 def cheatsheet() -> str:
     return "event_density({}) -> Kernel density estimate of event times."
+
+
+# compact alias per ledger/NAMING.md
+eventdensity = event_density

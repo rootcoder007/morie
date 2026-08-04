@@ -82,3 +82,7 @@ sarma = seasonal_arma
 
 def cheatsheet() -> str:
     return "seasonal_arma({}) -> Seasonal ARMA model."
+
+
+# compact alias per ledger/NAMING.md
+seasonalarma = seasonal_arma

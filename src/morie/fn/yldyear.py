@@ -40,3 +40,7 @@ def yld_calculation(prevalence, disability, duration):
 
 def cheatsheet():
     return "yldyear: Years lived with disability"
+
+
+# compact alias per ledger/NAMING.md
+yldcalculation = yld_calculation

@@ -52,3 +52,7 @@ def cheatsheet() -> str:
 
 
 chsim = chern_simons
+
+
+# compact alias per ledger/NAMING.md
+chernsimons = chern_simons

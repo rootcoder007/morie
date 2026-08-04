@@ -101,3 +101,7 @@ mmest = mm_estimator
 
 def cheatsheet() -> str:
     return "_tukey_bisquare({}) -> MM-estimator for robust regression."
+
+
+# compact alias per ledger/NAMING.md
+mmestimator = mm_estimator

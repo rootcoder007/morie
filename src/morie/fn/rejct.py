@@ -36,3 +36,7 @@ def rejection_point(psi):
 
 def cheatsheet():
     return "rejct: Rejection point of redescending ψ"
+
+
+# compact alias per ledger/NAMING.md
+rejectionpoint = rejection_point

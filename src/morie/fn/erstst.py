@@ -40,3 +40,7 @@ def ers_unit_root(x, lags):
 
 def cheatsheet():
     return "erstst: Elliott-Rothenberg-Stock GLS-detrended ADF"
+
+
+# compact alias per ledger/NAMING.md
+ersunitroot = ers_unit_root

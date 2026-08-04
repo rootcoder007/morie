@@ -42,3 +42,7 @@ def bayes_robust(y, X, nu_prior):
 
 def cheatsheet():
     return "bayreg2: Bayesian robust regression (Student-t)"
+
+
+# compact alias per ledger/NAMING.md
+bayesrobust = bayes_robust

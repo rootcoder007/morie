@@ -40,3 +40,7 @@ def forward_search(X, y, initial_h):
 
 def cheatsheet():
     return "forwsr: Forward search regression"
+
+
+# compact alias per ledger/NAMING.md
+forwardsearch = forward_search

@@ -75,3 +75,7 @@ def dp_median(x, epsilon=1.0, a=None, b=None, seed=None):
 
 def cheatsheet():
     return "dpmed: global sensitivity of a median is the whole domain -- select on rank, never add noise"
+
+
+# compact alias per ledger/NAMING.md
+dpmedian = dp_median

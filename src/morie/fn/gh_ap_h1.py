@@ -35,3 +35,7 @@ def ghosal_inv_gauss(x=1.0, alpha_loc=1.0, gamma_sh=2.0,
 
 def cheatsheet():
     return "gh_ap_h1: Inverse-Gaussian density"
+
+
+# compact alias per ledger/NAMING.md
+ghosalinvgauss = ghosal_inv_gauss

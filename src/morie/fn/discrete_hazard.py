@@ -24,3 +24,7 @@ def discrete_hazard(p):
 
 def cheatsheet():
     return "ghs010: Discrete hazard rate of weights"
+
+
+# compact alias per ledger/NAMING.md
+discretehazard = discrete_hazard

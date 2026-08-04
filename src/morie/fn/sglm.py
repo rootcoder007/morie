@@ -121,3 +121,7 @@ def cheatsheet():
 # X = column of ones + linear coord, y = 1 + 2*coord + small noise,
 # coords = [[0],[1],[2],[3],[4]]
 # Expect beta ~ [1.0, 2.0] (intercept and slope), small SE.
+
+
+# compact alias per ledger/NAMING.md
+spatialglm = spatial_glm

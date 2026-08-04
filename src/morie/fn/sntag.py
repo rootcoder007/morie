@@ -48,3 +48,7 @@ sntag = sentence_by_age
 
 def cheatsheet() -> str:
     return "sentence_by_age({}) -> Sentence length by age group."
+
+
+# compact alias per ledger/NAMING.md
+sentencebyage = sentence_by_age

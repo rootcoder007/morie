@@ -50,3 +50,7 @@ def ot_free_energy(T, C, a, b, f, g, epsilon):
 
 def cheatsheet():
     return "otentf: Free energy of an OT plan = primal - dual"
+
+
+# compact alias per ledger/NAMING.md
+otfreeenergy = ot_free_energy

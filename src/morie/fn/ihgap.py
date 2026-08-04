@@ -42,3 +42,7 @@ ihgap = health_gap
 
 def cheatsheet() -> str:
     return "health_gap({}) -> Health gap indicator (Indigenous vs general population)."
+
+
+# compact alias per ledger/NAMING.md
+healthgap = health_gap

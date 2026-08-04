@@ -46,3 +46,7 @@ gbdpr = gbd_projection
 
 def cheatsheet() -> str:
     return "gbd_projection({}) -> Project future disease burden."
+
+
+# compact alias per ledger/NAMING.md
+gbdprojection = gbd_projection

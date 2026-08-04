@@ -57,3 +57,7 @@ slopd = slope_detect
 
 def cheatsheet() -> str:
     return "slope_detect({}) -> Slope-based onset/offset detection."
+
+
+# compact alias per ledger/NAMING.md
+slopedetect = slope_detect

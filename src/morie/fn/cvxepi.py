@@ -93,3 +93,7 @@ def boyd_epigraph(f, x, t):
 
 def cheatsheet():
     return "cvxepi: f convex IFF epi f convex; min f(x) becomes min t s.t. f(x) <= t"
+
+
+# compact alias per ledger/NAMING.md
+boydepigraph = boyd_epigraph

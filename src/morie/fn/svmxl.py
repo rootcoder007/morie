@@ -29,3 +29,7 @@ mixe = mixed_logit_vote
 
 def cheatsheet() -> str:
     return "mixed_logit_vote({}) -> Mixed logit spatial vote"
+
+
+# compact alias per ledger/NAMING.md
+mixedlogitvote = mixed_logit_vote

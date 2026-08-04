@@ -40,3 +40,7 @@ def polyak_target(theta, theta_target, tau):
 
 def cheatsheet():
     return "polyak: Polyak averaging for target nets"
+
+
+# compact alias per ledger/NAMING.md
+polyaktarget = polyak_target

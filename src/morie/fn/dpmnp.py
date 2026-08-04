@@ -106,3 +106,7 @@ def dp_minmax(x, epsilon=1.0, a=None, b=None, alpha=0.01, seed=None):
 
 def cheatsheet():
     return "dpmnp: there is NO private max -- returns alpha/1-alpha quantiles and says so"
+
+
+# compact alias per ledger/NAMING.md
+dpminmax = dp_minmax

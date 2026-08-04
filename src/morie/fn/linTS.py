@@ -40,3 +40,7 @@ def lin_thompson(context, arms, beta):
 
 def cheatsheet():
     return "linTS: Linear Thompson sampling"
+
+
+# compact alias per ledger/NAMING.md
+linthompson = lin_thompson

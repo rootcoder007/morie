@@ -30,3 +30,7 @@ isot = isotropic_guard
 
 def cheatsheet() -> str:
     return "isotropic_guard({}) -> Isotropic edge correction"
+
+
+# compact alias per ledger/NAMING.md
+isotropicguard = isotropic_guard

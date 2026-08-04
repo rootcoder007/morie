@@ -80,3 +80,7 @@ ssfbk = state_feedback
 
 def cheatsheet() -> str:
     return "state_feedback({}) -> State feedback gain via pole placement."
+
+
+# compact alias per ledger/NAMING.md
+statefeedback = state_feedback

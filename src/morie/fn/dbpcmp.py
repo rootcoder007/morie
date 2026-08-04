@@ -143,3 +143,7 @@ dbpcmp = dbp_compliance
 
 def cheatsheet() -> str:
     return "dbpcmp({'tthm': x, 'haa5': y, ...}, country='us') -> DBP compliance."
+
+
+# compact alias per ledger/NAMING.md
+dbpcompliance = dbp_compliance

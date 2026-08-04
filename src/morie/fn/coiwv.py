@@ -81,3 +81,7 @@ coiwv = coiflet_wavelet
 
 def cheatsheet() -> str:
     return "coiflet_wavelet({}) -> Generate Coiflet wavelet filter coefficients."
+
+
+# compact alias per ledger/NAMING.md
+coifletwavelet = coiflet_wavelet

@@ -48,3 +48,7 @@ acfub = acf_unbiased
 
 def cheatsheet() -> str:
     return "acf_unbiased({}) -> Unbiased autocorrelation function."
+
+
+# compact alias per ledger/NAMING.md
+acfunbiased = acf_unbiased

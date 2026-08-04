@@ -73,3 +73,7 @@ sgacf = spatial_acf
 
 def cheatsheet() -> str:
     return "spatial_acf({}) -> Spatial autocorrelation function per lag."
+
+
+# compact alias per ledger/NAMING.md
+spatialacf = spatial_acf

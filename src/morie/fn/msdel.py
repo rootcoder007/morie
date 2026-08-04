@@ -30,3 +30,7 @@ dela = delaunay_2d
 
 def cheatsheet() -> str:
     return "delaunay_2d({}) -> 2D Delaunay triangulation"
+
+
+# compact alias per ledger/NAMING.md
+delaunay2d = delaunay_2d

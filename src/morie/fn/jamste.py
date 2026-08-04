@@ -62,3 +62,7 @@ jamste = james_stein
 
 def cheatsheet() -> str:
     return "james_stein({}) -> James-Stein shrinkage estimator."
+
+
+# compact alias per ledger/NAMING.md
+jamesstein = james_stein

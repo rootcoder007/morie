@@ -49,3 +49,7 @@ fltplt = plot_filter_io_fn
 
 def cheatsheet() -> str:
     return "plot_filter_io_fn({}) -> Filter input/output comparison plot."
+
+
+# compact alias per ledger/NAMING.md
+plotfilteriofn = plot_filter_io_fn

@@ -36,3 +36,7 @@ def egan_filter(smiles):
 
 def cheatsheet():
     return "egan2: Egan drug-like filter (PSA + LogP)"
+
+
+# compact alias per ledger/NAMING.md
+eganfilter = egan_filter

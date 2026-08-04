@@ -49,3 +49,7 @@ def ot_bregman_proj(K, a, b, max_iter):
 
 def cheatsheet():
     return "otbreg: Bregman alternating projections solver for entropic OT"
+
+
+# compact alias per ledger/NAMING.md
+otbregmanproj = ot_bregman_proj

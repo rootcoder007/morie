@@ -29,3 +29,7 @@ elbo = elbow_spatial
 
 def cheatsheet() -> str:
     return "elbow_spatial({}) -> Elbow method for dimensions"
+
+
+# compact alias per ledger/NAMING.md
+elbowspatial = elbow_spatial

@@ -34,3 +34,7 @@ plpty = plot_by_party
 
 def cheatsheet() -> str:
     return "plot_by_party({}) -> Plot coordinates by party."
+
+
+# compact alias per ledger/NAMING.md
+plotbyparty = plot_by_party

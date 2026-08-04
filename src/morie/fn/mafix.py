@@ -40,3 +40,7 @@ def ma_fixed_effect(yi, vi):
 
 def cheatsheet():
     return "mafix: Inverse-variance fixed-effect pooled mean"
+
+
+# compact alias per ledger/NAMING.md
+mafixedeffect = ma_fixed_effect

@@ -66,3 +66,7 @@ def _extract(data: Any, col: str) -> np.ndarray:
 
 def cheatsheet() -> str:
     return "holo_hist({}) -> Histogram visualization."
+
+
+# compact alias per ledger/NAMING.md
+holohist = holo_hist

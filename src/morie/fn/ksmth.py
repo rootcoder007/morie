@@ -74,3 +74,7 @@ ksmth = kernel_smooth
 
 def cheatsheet() -> str:
     return "kernel_smooth({}) -> Nadaraya-Watson kernel regression."
+
+
+# compact alias per ledger/NAMING.md
+kernelsmooth = kernel_smooth

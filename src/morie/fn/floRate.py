@@ -36,3 +36,7 @@ def flow_duration(Q):
 
 def cheatsheet():
     return "floRate: Flow-duration curve"
+
+
+# compact alias per ledger/NAMING.md
+flowduration = flow_duration

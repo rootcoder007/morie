@@ -38,3 +38,7 @@ def sum_pool(X, mode):
 
 def cheatsheet():
     return "sumP: Sum / mean / max graph pooling"
+
+
+# compact alias per ledger/NAMING.md
+sumpool = sum_pool

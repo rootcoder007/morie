@@ -97,3 +97,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`fauzi_boundary_free_kde`.
 fauzi_bdfree_kde = fauzi_boundary_free_kde
+
+
+# compact alias per ledger/NAMING.md
+fauzibdfreekde = fauzi_bdfree_kde

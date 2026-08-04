@@ -89,3 +89,7 @@ pcgseg = pcg_segment
 
 def cheatsheet() -> str:
     return "pcg_segment({}) -> S1/S2 heart sound segmentation from PCG envelope."
+
+
+# compact alias per ledger/NAMING.md
+pcgsegment = pcg_segment

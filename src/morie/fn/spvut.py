@@ -68,3 +68,7 @@ spvut = spatial_utility
 
 def cheatsheet() -> str:
     return "spatial_utility({}) -> General spatial voting utility computation."
+
+
+# compact alias per ledger/NAMING.md
+spatialutility = spatial_utility

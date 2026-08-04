@@ -42,3 +42,7 @@ def snm_linear(y, treatment_history, covariate_history, time):
 
 def cheatsheet():
     return "snmlin: Linear structural nested mean model"
+
+
+# compact alias per ledger/NAMING.md
+snmlinear = snm_linear

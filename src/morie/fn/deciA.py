@@ -110,3 +110,7 @@ def deci_model(data, treatment, outcome, names=None, alpha=0.01, dag=None):
 
 def cheatsheet():
     return "deciA: discover skeleton, adjust on the treatment's neighbours, OLS the effect"
+
+
+# compact alias per ledger/NAMING.md
+decimodel = deci_model

@@ -50,3 +50,7 @@ kdesm = kde_smooth
 
 def cheatsheet() -> str:
     return "kde_smooth({}) -> Kernel density estimation (Gaussian kernel)."
+
+
+# compact alias per ledger/NAMING.md
+kdesmooth = kde_smooth

@@ -87,3 +87,7 @@ winros = wind_rose
 
 def cheatsheet() -> str:
     return "wind_rose({}) -> Wind rose / rose plot construction."
+
+
+# compact alias per ledger/NAMING.md
+windrose = wind_rose

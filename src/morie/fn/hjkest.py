@@ -62,3 +62,7 @@ def hajek_estimator(y, pi):
 
 def cheatsheet():
     return "hjkest: trades O(1/n) bias for a first-order variance cut -- and the trade fails if y is unrelated to the weights"
+
+
+# compact alias per ledger/NAMING.md
+hajekestimator = hajek_estimator

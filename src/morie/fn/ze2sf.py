@@ -29,3 +29,7 @@ two_ = two_step_fca
 
 def cheatsheet() -> str:
     return "two_step_fca({}) -> Two-step floating catchment area"
+
+
+# compact alias per ledger/NAMING.md
+twostepfca = two_step_fca

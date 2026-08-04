@@ -91,3 +91,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`hrz_semiparametric_ls`.
 horowitz_nls_sim = hrz_semiparametric_ls
+
+
+# compact alias per ledger/NAMING.md
+horowitznlssim = horowitz_nls_sim

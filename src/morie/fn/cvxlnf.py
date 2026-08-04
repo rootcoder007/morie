@@ -99,3 +99,7 @@ def boyd_l1_fitting(A, b):
 
 def cheatsheet():
     return "cvxlnf: robust like a median; the fit passes EXACTLY through n points (LP vertex)"
+
+
+# compact alias per ledger/NAMING.md
+boydl1fitting = boyd_l1_fitting

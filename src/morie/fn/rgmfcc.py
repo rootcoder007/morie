@@ -50,3 +50,7 @@ def rangayyan_mfcc(x, fs, n_mfcc, n_filters):
 
 def cheatsheet():
     return "rgmfcc: Mel-frequency cepstral coefficients (MFCC) for speech/bioacoustic analysis"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanmfcc = rangayyan_mfcc

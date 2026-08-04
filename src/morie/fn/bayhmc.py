@@ -44,3 +44,7 @@ def hmc_dual_avg(log_p, grad, x0, target_accept):
 
 def cheatsheet():
     return "bayhmc: HMC with dual-averaging step-size adaptation"
+
+
+# compact alias per ledger/NAMING.md
+hmcdualavg = hmc_dual_avg

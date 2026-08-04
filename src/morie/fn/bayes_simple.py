@@ -33,3 +33,7 @@ def bayes_simple(p_z_given_a, p_a, p_z):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner2e51: Bayes' theorem, simple form: P(A|Z) = P(Z|A) P(A) / P(Z). Morin (2016) eq (2.51)."
+
+
+# compact alias per ledger/NAMING.md
+bayessimple = bayes_simple

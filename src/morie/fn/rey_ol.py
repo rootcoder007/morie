@@ -133,3 +133,7 @@ def rey_ol(df, y: str = "y", x: list | str = "x", alpha: float = 0.05, cdf=None)
 
 def cheatsheet() -> str:
     return "rey_ol({}) -> Ordinal logistic regression (proportional odds model)."
+
+
+# compact alias per ledger/NAMING.md
+reyol = rey_ol

@@ -75,3 +75,7 @@ def rice_index(votes, party_id):
 
 def cheatsheet():
     return "ricei: Rice_pj = |%yea - %nay| within party p on roll call j (Rice 1925)"
+
+
+# compact alias per ledger/NAMING.md
+riceindex = rice_index

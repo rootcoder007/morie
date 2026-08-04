@@ -98,3 +98,7 @@ def vol_garman_klass(open_, high, low, close, periods_per_year=None):
 
 def cheatsheet():
     return "volgkr: the open-close term is SUBTRACTED -- range minus trend, efficiency 7.4"
+
+
+# compact alias per ledger/NAMING.md
+volgarmanklass = vol_garman_klass

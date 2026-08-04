@@ -80,3 +80,7 @@ bcaci = bca_ci
 
 def cheatsheet() -> str:
     return "bca_ci({}) -> BCa bootstrap confidence interval."
+
+
+# compact alias per ledger/NAMING.md
+bcaci = bca_ci

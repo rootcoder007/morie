@@ -50,3 +50,7 @@ def vol_sabr_implied(F, K, T, alpha, beta, rho, nu):
 
 def cheatsheet():
     return "volsabr: SABR Hagan-Kumar-Lesniewski implied volatility"
+
+
+# compact alias per ledger/NAMING.md
+volsabrimplied = vol_sabr_implied

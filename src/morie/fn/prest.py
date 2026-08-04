@@ -36,3 +36,7 @@ prest = pre_statistic
 
 def cheatsheet() -> str:
     return "pre_statistic({}) -> Proportional reduction in error statistic."
+
+
+# compact alias per ledger/NAMING.md
+prestatistic = pre_statistic

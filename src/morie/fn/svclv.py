@@ -29,3 +29,7 @@ coal = coalition_value
 
 def cheatsheet() -> str:
     return "coalition_value({}) -> Coalition value in spatial game"
+
+
+# compact alias per ledger/NAMING.md
+coalitionvalue = coalition_value

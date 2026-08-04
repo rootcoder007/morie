@@ -60,3 +60,7 @@ clump = ld_clumping
 
 def cheatsheet() -> str:
     return "ld_clumping({}) -> LD-based clumping of significant SNPs."
+
+
+# compact alias per ledger/NAMING.md
+ldclumping = ld_clumping

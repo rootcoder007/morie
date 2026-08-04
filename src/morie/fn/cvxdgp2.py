@@ -96,3 +96,7 @@ def boyd_duality_gap(primal, dual, tol=1e-09):
 
 def cheatsheet():
     return "cvxdgp2: gap CERTIFIES near-optimality without knowing p*; a negative gap is an input error"
+
+
+# compact alias per ledger/NAMING.md
+boyddualitygap = boyd_duality_gap

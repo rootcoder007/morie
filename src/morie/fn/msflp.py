@@ -35,3 +35,7 @@ mds_ = mds_flip
 
 def cheatsheet() -> str:
     return "mds_flip({}) -> MDS configuration flip check"
+
+
+# compact alias per ledger/NAMING.md
+mdsflip = mds_flip

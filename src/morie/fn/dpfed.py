@@ -108,3 +108,7 @@ def dp_fedavg(client_updates, C=1.0, sigma=1.0, seed=None):
 
 def cheatsheet():
     return "dpfed: unit is the CLIENT; noise added once to the sum, so per-client noise falls as 1/m"
+
+
+# compact alias per ledger/NAMING.md
+dpfedavg = dp_fedavg

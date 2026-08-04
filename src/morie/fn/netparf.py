@@ -40,3 +40,7 @@ def network_paf(y, exposure, network):
 
 def cheatsheet():
     return "netparf: Network PAF accounting for spillover"
+
+
+# compact alias per ledger/NAMING.md
+networkpaf = network_paf

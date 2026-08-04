@@ -38,3 +38,7 @@ def symbolic_diff(expr, x):
 
 def cheatsheet():
     return "diffS: Symbolic differentiation"
+
+
+# compact alias per ledger/NAMING.md
+symbolicdiff = symbolic_diff

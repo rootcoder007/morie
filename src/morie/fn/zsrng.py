@@ -29,3 +29,7 @@ rand = random_nongauss
 
 def cheatsheet() -> str:
     return "random_nongauss({}) -> Random non-Gaussian field"
+
+
+# compact alias per ledger/NAMING.md
+randomnongauss = random_nongauss

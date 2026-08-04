@@ -146,3 +146,7 @@ lmrkt = local_markov
 
 def cheatsheet() -> str:
     return "local_markov({}) -> Local Markov transition matrices for spatial regime dynamics"
+
+
+# compact alias per ledger/NAMING.md
+localmarkov = local_markov

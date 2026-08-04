@@ -70,3 +70,7 @@ def otis_cate_risk(
 
 def cheatsheet() -> str:
     return "otis_cate_risk({}) -> CATE by risk score tercile for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otiscaterisk = otis_cate_risk

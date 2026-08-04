@@ -29,3 +29,7 @@ weig = weighted_vote
 
 def cheatsheet() -> str:
     return "weighted_vote({}) -> Weighted voting game value"
+
+
+# compact alias per ledger/NAMING.md
+weightedvote = weighted_vote

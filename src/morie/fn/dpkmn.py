@@ -146,3 +146,7 @@ def dp_kmeans(X, k=3, epsilon=1.0, n_iter=5, bounds=None, seed=None):
 
 def cheatsheet():
     return "dpkmn: budget splits across ITERATIONS too, so more passes make it worse -- keep n_iter small"
+
+
+# compact alias per ledger/NAMING.md
+dpkmeans = dp_kmeans

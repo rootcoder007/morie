@@ -123,3 +123,7 @@ def geron_nadam(grads, m=None, v=None, b1=0.9, b2=0.999, eta=0.001, t=1, eps=1e-
 
 def cheatsheet():
     return "hmnadm: NAdam, Adam with Nesterov momentum"
+
+
+# compact alias per ledger/NAMING.md
+geronnadam = geron_nadam

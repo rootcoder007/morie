@@ -38,3 +38,7 @@ def icc_one_way(y, cluster):
 
 def cheatsheet():
     return "icc1: ICC(1) one-way random-effects model"
+
+
+# compact alias per ledger/NAMING.md
+icconeway = icc_one_way

@@ -30,3 +30,7 @@ cros = cross_pp
 
 def cheatsheet() -> str:
     return "cross_pp({}) -> Cross-type point pattern"
+
+
+# compact alias per ledger/NAMING.md
+crosspp = cross_pp

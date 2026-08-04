@@ -33,3 +33,7 @@ ncfs = ncfs_fn
 
 def cheatsheet() -> str:
     return "ncfs_fn({}) -> Neighbourhood Component Feature Selection."
+
+
+# compact alias per ledger/NAMING.md
+ncfsfn = ncfs_fn

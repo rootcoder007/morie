@@ -40,3 +40,7 @@ amfit = am_fit_statistic
 
 def cheatsheet() -> str:
     return "am_fit_statistic({}) -> A-M fit statistic (normalized variance reduction)."
+
+
+# compact alias per ledger/NAMING.md
+amfitstatistic = am_fit_statistic

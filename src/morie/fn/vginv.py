@@ -49,3 +49,7 @@ indi = indicator_vario
 
 def cheatsheet() -> str:
     return "indicator_vario({}) -> Indicator variogram"
+
+
+# compact alias per ledger/NAMING.md
+indicatorvario = indicator_vario

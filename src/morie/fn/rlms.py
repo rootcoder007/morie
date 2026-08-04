@@ -73,3 +73,7 @@ rlms = lms_regression
 
 def cheatsheet() -> str:
     return "rlms() -> Least Median of Squares (LMS) regression"
+
+
+# compact alias per ledger/NAMING.md
+lmsregression = lms_regression

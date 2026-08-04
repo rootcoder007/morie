@@ -66,3 +66,7 @@ def kamath_q_former(queries, visual_features, W_out=None):
 
 def cheatsheet():
     return "kmqfrm: attsdp with Q = learned queries, K = V = patches"
+
+
+# compact alias per ledger/NAMING.md
+kamathqformer = kamath_q_former

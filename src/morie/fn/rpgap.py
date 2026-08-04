@@ -70,3 +70,7 @@ rpgap = rplace_gap
 
 def cheatsheet() -> str:
     return "rplace_gap({}) -> Mean gap between repeat placements."
+
+
+# compact alias per ledger/NAMING.md
+rplacegap = rplace_gap

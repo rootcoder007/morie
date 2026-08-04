@@ -109,3 +109,7 @@ def dr_learner(y, T, X, n_folds=5, seed=0, trunc=0.01):
 
 def cheatsheet():
     return "drlnr: psi = AIPW score; CATE = E[psi | X]; mean psi is the ATE"
+
+
+# compact alias per ledger/NAMING.md
+drlearner = dr_learner

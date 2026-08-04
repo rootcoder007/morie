@@ -46,3 +46,7 @@ def ghosal_nested_dp(n_groups=6, gamma=1.0, alpha=2.0, seed=42):
 
 def cheatsheet():
     return "gh_c14_22: Nested Dirichlet process"
+
+
+# compact alias per ledger/NAMING.md
+ghosalnesteddp = ghosal_nested_dp

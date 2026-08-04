@@ -30,3 +30,7 @@ pp_v = pp_voronoi
 
 def cheatsheet() -> str:
     return "pp_voronoi({}) -> Point pattern Voronoi intensities"
+
+
+# compact alias per ledger/NAMING.md
+ppvoronoi = pp_voronoi

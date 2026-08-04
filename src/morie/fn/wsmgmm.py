@@ -78,3 +78,7 @@ def wasserman_gmm_em(X, k):
 
 def cheatsheet():
     return "wsmgmm: delegates to wsmemt; init (0.5, q1, q3, s, s); k=2 only"
+
+
+# compact alias per ledger/NAMING.md
+wassermangmmem = wasserman_gmm_em

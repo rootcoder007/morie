@@ -73,3 +73,7 @@ short = xavier_init
 
 def cheatsheet() -> str:
     return "xavir() -> Generate Xavier/Glorot weight initialization matrix"
+
+
+# compact alias per ledger/NAMING.md
+xavierinit = xavier_init

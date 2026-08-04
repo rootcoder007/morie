@@ -37,3 +37,7 @@ welch = welch_psd
 
 def cheatsheet() -> str:
     return "welch_psd({}) -> Welch power spectral density estimation."
+
+
+# compact alias per ledger/NAMING.md
+welchpsd = welch_psd

@@ -150,3 +150,7 @@ heatwv = heat_wave_detect
 
 def cheatsheet() -> str:
     return "heatwv(Tmax, percentile=90, min_days=3) -> heat-wave episode stats."
+
+
+# compact alias per ledger/NAMING.md
+heatwavedetect = heat_wave_detect

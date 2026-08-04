@@ -72,3 +72,7 @@ stirn = stirling_number
 
 def cheatsheet() -> str:
     return "stirling_number({}) -> Stirling numbers of the first and second kind."
+
+
+# compact alias per ledger/NAMING.md
+stirlingnumber = stirling_number

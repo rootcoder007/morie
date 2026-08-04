@@ -34,3 +34,7 @@ qda = qda_fn
 
 def cheatsheet() -> str:
     return "qda_fn({}) -> Quadratic Discriminant Analysis classifier."
+
+
+# compact alias per ledger/NAMING.md
+qdafn = qda_fn

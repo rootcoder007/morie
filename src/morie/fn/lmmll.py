@@ -168,3 +168,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`lmm_loglik`.
 lmm_log_likelihood = lmm_loglik
+
+
+# compact alias per ledger/NAMING.md
+lmmloglik = lmm_loglik

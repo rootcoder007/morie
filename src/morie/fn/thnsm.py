@@ -84,3 +84,7 @@ thnsm = snap_estimator
 
 def cheatsheet() -> str:
     return "snap_estimator({}) -> Random half-sampling estimator."
+
+
+# compact alias per ledger/NAMING.md
+snapestimator = snap_estimator

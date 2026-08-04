@@ -40,3 +40,7 @@ def hitting_time(G, start, target):
 
 def cheatsheet():
     return "hittime: Random walk hitting time"
+
+
+# compact alias per ledger/NAMING.md
+hittingtime = hitting_time

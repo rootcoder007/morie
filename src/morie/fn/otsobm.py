@@ -42,3 +42,7 @@ def ot_sobolev_w1(mu, nu, Laplace_inv):
 
 def cheatsheet():
     return "otsobm: Sobolev (negative) form of W_1 via H^{-1} norm"
+
+
+# compact alias per ledger/NAMING.md
+otsobolevw1 = ot_sobolev_w1

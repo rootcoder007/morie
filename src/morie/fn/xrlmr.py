@@ -29,3 +29,7 @@ lm_r = lm_robust_lag
 
 def cheatsheet() -> str:
     return "lm_robust_lag({}) -> Robust LM test for lag"
+
+
+# compact alias per ledger/NAMING.md
+lmrobustlag = lm_robust_lag

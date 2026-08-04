@@ -209,3 +209,7 @@ def esl_neural_net(X, y, M=5, lambda_=0.0, lr=0.1, n_epochs=400, task="regressio
 
 def cheatsheet():
     return "eslnnt: 1 hidden layer; init small but NON-ZERO (zero is a symmetric saddle), standardise inputs"
+
+
+# compact alias per ledger/NAMING.md
+eslneuralnet = esl_neural_net

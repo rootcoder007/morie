@@ -40,3 +40,7 @@ def half_life(smiles, Vd, Cl):
 
 def cheatsheet():
     return "halft: Plasma half-life prediction"
+
+
+# compact alias per ledger/NAMING.md
+halflife = half_life

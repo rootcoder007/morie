@@ -92,3 +92,7 @@ tblxt = extract_tables_result
 
 def cheatsheet() -> str:
     return "tblxt() -> Parse all ``<table>`` elements from HTML into DataFrames"
+
+
+# compact alias per ledger/NAMING.md
+extracttables = extract_tables

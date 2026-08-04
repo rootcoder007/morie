@@ -202,3 +202,7 @@ def geron_mistral7b(
 
 def cheatsheet():
     return "hmmis7: Mistral-7B accounting -- GQA cache saving, SwiGLU width, banded sliding-window mask"
+
+
+# compact alias per ledger/NAMING.md
+geronmistral7b = geron_mistral7b

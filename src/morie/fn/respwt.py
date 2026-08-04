@@ -46,3 +46,7 @@ def response_weight(y, weights, cell, r_h, n_h):
 
 def cheatsheet():
     return "respwt: Response-rate weight adjustment per cell"
+
+
+# compact alias per ledger/NAMING.md
+responseweight = response_weight

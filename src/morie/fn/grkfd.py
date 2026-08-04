@@ -125,3 +125,7 @@ def geron_kfold_cv(n, K, shuffle=False, seed=0):
 
 def cheatsheet():
     return "grkfd: K folds, every instance validated exactly once; remainder spread over the first folds"
+
+
+# compact alias per ledger/NAMING.md
+geronkfoldcv = geron_kfold_cv

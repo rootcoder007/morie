@@ -145,3 +145,7 @@ def bayesian_cfa(
 
 def cheatsheet() -> str:
     return "bayesian_cfa({}) -> Bayesian Confirmatory Factor Analysis with posterior fit ind"
+
+
+# compact alias per ledger/NAMING.md
+bayesiancfa = bayesian_cfa

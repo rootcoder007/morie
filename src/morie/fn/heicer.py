@@ -52,3 +52,7 @@ heicer = incremental_cer
 
 def cheatsheet() -> str:
     return "incremental_cer({}) -> Incremental cost-effectiveness ratio (ICER)."
+
+
+# compact alias per ledger/NAMING.md
+incrementalcer = incremental_cer

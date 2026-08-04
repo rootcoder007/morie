@@ -61,3 +61,7 @@ def causal_bounds(y, treatment, p_upper=None, p_lower=None):
 
 def cheatsheet() -> str:
     return "causal_bounds({}) -> Causal bounds -- partial identification under unmeasured conf"
+
+
+# compact alias per ledger/NAMING.md
+causalbounds = causal_bounds

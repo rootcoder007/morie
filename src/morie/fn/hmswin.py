@@ -155,3 +155,7 @@ def geron_swin(image, window_size, n_layers=2, d_model=4, seed=0):
 
 def cheatsheet():
     return "hmswin: Swin Transformer: shifted-window attention"
+
+
+# compact alias per ledger/NAMING.md
+geronswin = geron_swin

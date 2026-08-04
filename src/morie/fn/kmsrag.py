@@ -96,3 +96,7 @@ def kamath_self_rag(context, reflection_model, question=None):
 
 def cheatsheet():
     return "kmsrag: closed reflection vocabulary; unknown or contradictory tokens refused"
+
+
+# compact alias per ledger/NAMING.md
+kamathselfrag = kamath_self_rag

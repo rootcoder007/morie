@@ -43,3 +43,7 @@ def vol_garch11_fit(r):
 
 def cheatsheet():
     return "volgar: GARCH(1,1) fit, spec 'garch'"
+
+
+# compact alias per ledger/NAMING.md
+volgarch11fit = vol_garch11_fit

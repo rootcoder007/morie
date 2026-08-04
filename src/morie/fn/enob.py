@@ -37,3 +37,7 @@ enob = enob_compute
 
 def cheatsheet() -> str:
     return "enob_compute({}) -> Effective number of bits."
+
+
+# compact alias per ledger/NAMING.md
+enobcompute = enob_compute

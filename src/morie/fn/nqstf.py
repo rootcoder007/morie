@@ -39,3 +39,7 @@ nqstf = nyquist_freq
 
 def cheatsheet() -> str:
     return "nyquist_freq({}) -> Nyquist frequency."
+
+
+# compact alias per ledger/NAMING.md
+nyquistfreq = nyquist_freq

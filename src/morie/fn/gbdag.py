@@ -37,3 +37,7 @@ gbdag = gbd_age_pattern
 
 def cheatsheet() -> str:
     return "gbd_age_pattern({}) -> Age pattern of disease burden (GBD-style)."
+
+
+# compact alias per ledger/NAMING.md
+gbdagepattern = gbd_age_pattern

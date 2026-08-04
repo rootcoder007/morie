@@ -45,3 +45,7 @@ def banded_solve(
 
 
 bndmt = banded_solve
+
+
+# compact alias per ledger/NAMING.md
+bandedsolve = banded_solve

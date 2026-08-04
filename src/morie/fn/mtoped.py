@@ -43,3 +43,7 @@ mtoped = mto_pedestrian
 
 def cheatsheet() -> str:
     return "mto_pedestrian({}) -> Pedestrian collision analysis."
+
+
+# compact alias per ledger/NAMING.md
+mtopedestrian = mto_pedestrian

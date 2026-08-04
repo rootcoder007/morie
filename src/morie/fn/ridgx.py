@@ -62,3 +62,7 @@ ridgx = ridge_extract
 
 def cheatsheet() -> str:
     return "ridge_extract({}) -> Ridge extraction from time-frequency representation."
+
+
+# compact alias per ledger/NAMING.md
+ridgeextract = ridge_extract

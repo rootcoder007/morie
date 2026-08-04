@@ -80,3 +80,7 @@ ocslt = oc_scaling
 
 def cheatsheet() -> str:
     return "oc_scaling({}) -> Optimal classification (OC) scaling."
+
+
+# compact alias per ledger/NAMING.md
+ocscaling = oc_scaling

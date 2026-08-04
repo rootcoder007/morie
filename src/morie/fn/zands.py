@@ -69,3 +69,7 @@ zands = za_test
 
 def cheatsheet() -> str:
     return "za_test({}) -> Zivot-Andrews structural break unit root test."
+
+
+# compact alias per ledger/NAMING.md
+zatest = za_test

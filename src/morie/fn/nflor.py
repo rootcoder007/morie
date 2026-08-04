@@ -46,3 +46,7 @@ nflor = noise_floor
 
 def cheatsheet() -> str:
     return "noise_floor({}) -> Noise floor estimation."
+
+
+# compact alias per ledger/NAMING.md
+noisefloor = noise_floor

@@ -46,3 +46,7 @@ dynrg = dynamic_range
 
 def cheatsheet() -> str:
     return "dynamic_range({}) -> Dynamic range."
+
+
+# compact alias per ledger/NAMING.md
+dynamicrange = dynamic_range

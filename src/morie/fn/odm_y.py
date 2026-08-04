@@ -52,3 +52,7 @@ def otis_demo_year(
 
 def cheatsheet() -> str:
     return "otis_demo_year({}) -> Demographic profile per fiscal year for OTIS correctional da"
+
+
+# compact alias per ledger/NAMING.md
+otisdemoyear = otis_demo_year

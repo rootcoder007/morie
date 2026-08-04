@@ -80,3 +80,7 @@ def geron_heaviside(z, at_zero=1.0):
 
 def cheatsheet():
     return "hmhev: Heaviside step -- 1 if z >= 0 else 0; derivative 0 a.e. (untrainable)"
+
+
+# compact alias per ledger/NAMING.md
+geronheaviside = geron_heaviside

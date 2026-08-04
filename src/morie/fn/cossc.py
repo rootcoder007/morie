@@ -66,3 +66,7 @@ cossc = cost_sensitive
 
 def cheatsheet() -> str:
     return "cost_sensitive({}) -> Cost-sensitive evaluation."
+
+
+# compact alias per ledger/NAMING.md
+costsensitive = cost_sensitive

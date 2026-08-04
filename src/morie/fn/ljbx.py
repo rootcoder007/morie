@@ -47,3 +47,7 @@ ljbx = ljung_box_test_fn
 
 def cheatsheet() -> str:
     return "ljung_box_test_fn({}) -> Ljung-Box test for white noise."
+
+
+# compact alias per ledger/NAMING.md
+ljungboxtestfn = ljung_box_test_fn

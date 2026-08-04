@@ -37,3 +37,7 @@ st_k = st_kriging
 
 def cheatsheet() -> str:
     return "st_kriging({}) -> Space-time kriging prediction"
+
+
+# compact alias per ledger/NAMING.md
+stkriging = st_kriging

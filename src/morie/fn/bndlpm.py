@@ -42,3 +42,7 @@ def bound_lp_method(y, D, Z, moment_eqs):
 
 def cheatsheet():
     return "bndlpm: Linear programming method for bounds"
+
+
+# compact alias per ledger/NAMING.md
+boundlpmethod = bound_lp_method

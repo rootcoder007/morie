@@ -96,3 +96,7 @@ def rangayyan_psd(x, fs=1.0, nperseg=None, noverlap=None, window="hann"):
 
 def cheatsheet():
     return "rgpsd: Welch power spectral density -- Rangayyan & Krishnan Sec 6.3.3"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanpsd = rangayyan_psd

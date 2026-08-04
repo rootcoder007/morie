@@ -168,3 +168,7 @@ def geron_fcn(image, model, upsample=1, activation="relu"):
 
 def cheatsheet():
     return "hmfcn: Fully convolutional network (FCN) for dense prediction"
+
+
+# compact alias per ledger/NAMING.md
+geronfcn = geron_fcn

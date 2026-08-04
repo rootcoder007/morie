@@ -49,3 +49,7 @@ def ghosal_fbm_prior(H=0.7, ts=(0.25, 0.5, 0.75)):
 
 def cheatsheet():
     return "gh_c11_8: Fractional Brownian motion prior"
+
+
+# compact alias per ledger/NAMING.md
+ghosalfbmprior = ghosal_fbm_prior

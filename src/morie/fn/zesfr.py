@@ -28,3 +28,7 @@ spat = spatial_frailty
 
 def cheatsheet() -> str:
     return "spatial_frailty({}) -> Spatial frailty survival model"
+
+
+# compact alias per ledger/NAMING.md
+spatialfrailty = spatial_frailty

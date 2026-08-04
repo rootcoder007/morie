@@ -45,3 +45,7 @@ def bmtme_model(Y, markers, env_labels, n_iter):
 
 def cheatsheet():
     return "bmtme: Bayesian multi-trait multi-environment model (BMTME)"
+
+
+# compact alias per ledger/NAMING.md
+bmtmemodel = bmtme_model

@@ -80,3 +80,7 @@ def geron_swish(z, beta=1.0):
 
 def cheatsheet():
     return "hmswi: Swish / SiLU activation"
+
+
+# compact alias per ledger/NAMING.md
+geronswish = geron_swish

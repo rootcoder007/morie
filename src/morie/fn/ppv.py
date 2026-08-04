@@ -50,3 +50,7 @@ ppv = ppv_npv
 
 def cheatsheet() -> str:
     return "ppv_npv({}) -> Positive and negative predictive values."
+
+
+# compact alias per ledger/NAMING.md
+ppvnpv = ppv_npv

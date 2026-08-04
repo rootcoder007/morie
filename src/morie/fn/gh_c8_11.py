@@ -48,3 +48,7 @@ def ghosal_ts_crt(ns=(256, 2048), n_bins=8, seed=42):
 
 def cheatsheet():
     return "gh_c8_11: Time-series (Whittle) contraction"
+
+
+# compact alias per ledger/NAMING.md
+ghosaltscrt = ghosal_ts_crt

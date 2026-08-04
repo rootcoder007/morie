@@ -42,3 +42,7 @@ def mcts_selection(Q, N, P, c):
 
 def cheatsheet():
     return "mctsel: MCTS selection phase via UCT or PUCT"
+
+
+# compact alias per ledger/NAMING.md
+mctsselection = mcts_selection

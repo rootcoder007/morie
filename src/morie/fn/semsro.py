@@ -38,3 +38,7 @@ def sem_residual(sample_cov, fitted_cov):
 
 def cheatsheet():
     return "semsro: SEM residual matrix"
+
+
+# compact alias per ledger/NAMING.md
+semresidual = sem_residual

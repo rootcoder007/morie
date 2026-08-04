@@ -166,3 +166,7 @@ def cheatsheet():
         "latbnd: no-assumption bounds against the instrumented LATE, showing "
         "what the identifying assumptions bought"
     )
+
+
+# compact alias per ledger/NAMING.md
+latebounds = late_bounds

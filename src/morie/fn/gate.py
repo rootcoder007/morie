@@ -109,3 +109,7 @@ gate = estimate_gate
 
 def cheatsheet() -> str:
     return "estimate_gate({}) -> Group Average Treatment Effect (GATE) via AIPW within strata"
+
+
+# compact alias per ledger/NAMING.md
+estimategate = estimate_gate

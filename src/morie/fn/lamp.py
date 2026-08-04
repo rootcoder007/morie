@@ -38,3 +38,7 @@ lamp = lamport_sign
 
 def cheatsheet() -> str:
     return "lamport_sign({}) -> Lamport one-time signature -- sign."
+
+
+# compact alias per ledger/NAMING.md
+lamportsign = lamport_sign

@@ -34,3 +34,7 @@ mvsml_zap_links = mvsml_functional_regression_eq_15_1
 
 def cheatsheet():
     return "msm323: Nonparametric links of the zero-altered Poisson forest"
+
+
+# compact alias per ledger/NAMING.md
+mvsmlzaplinks = mvsml_zap_links

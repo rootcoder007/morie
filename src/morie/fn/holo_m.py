@@ -91,3 +91,7 @@ def holo_mosaic(
 
 def cheatsheet() -> str:
     return "holo_mosaic({}) -> Mosaic plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holomosaic = holo_mosaic

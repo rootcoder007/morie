@@ -78,3 +78,7 @@ def tmle_truncation(y, D, X, eps_grid=(0.001, 0.01, 0.025, 0.05, 0.1)):
 
 def cheatsheet():
     return "tmltrt: sweep the g-truncation bound; a moving estimate = positivity trouble"
+
+
+# compact alias per ledger/NAMING.md
+tmletruncation = tmle_truncation

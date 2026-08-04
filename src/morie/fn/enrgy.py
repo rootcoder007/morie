@@ -46,3 +46,7 @@ enrgy = energy_density
 
 def cheatsheet() -> str:
     return "energy_density({}) -> Energy spectral density."
+
+
+# compact alias per ledger/NAMING.md
+energydensity = energy_density

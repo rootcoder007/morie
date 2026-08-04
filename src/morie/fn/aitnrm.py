@@ -36,3 +36,7 @@ def aitchison_norm(x):
 
 def cheatsheet():
     return "aitnrm: Aitchison norm of a composition"
+
+
+# compact alias per ledger/NAMING.md
+aitchisonnorm = aitchison_norm

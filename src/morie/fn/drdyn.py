@@ -48,3 +48,7 @@ def dr_dynamic_did(y, D, unit, time, cohort, horizon):
 
 def cheatsheet():
     return "drdyn: Dynamic DR-DiD over event-time horizon"
+
+
+# compact alias per ledger/NAMING.md
+drdynamicdid = dr_dynamic_did

@@ -38,3 +38,7 @@ def leiden_grph(A, resolution):
 
 def cheatsheet():
     return "lemR: Leiden refined community detection"
+
+
+# compact alias per ledger/NAMING.md
+leidengrph = leiden_grph

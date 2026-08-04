@@ -29,3 +29,7 @@ utm_ = utm_convert
 
 def cheatsheet() -> str:
     return "utm_convert({}) -> UTM coordinate conversion"
+
+
+# compact alias per ledger/NAMING.md
+utmconvert = utm_convert

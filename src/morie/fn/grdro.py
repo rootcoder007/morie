@@ -124,3 +124,7 @@ def geron_dropout(a, p, seed=0):
 
 def cheatsheet():
     return "grdro: a *= Bernoulli(1-p)/(1-p) -- inverted dropout, so inference needs no rescaling"
+
+
+# compact alias per ledger/NAMING.md
+gerondropout = geron_dropout

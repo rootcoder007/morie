@@ -44,3 +44,7 @@ def ma_glass_delta(m1, m2, s_ctrl, n1, n2):
 
 def cheatsheet():
     return "magsd: Glass's Δ using control SD only"
+
+
+# compact alias per ledger/NAMING.md
+maglassdelta = ma_glass_delta

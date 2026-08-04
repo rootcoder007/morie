@@ -36,3 +36,7 @@ def min_cut(A):
 
 def cheatsheet():
     return "flowmin: Stoer-Wagner min-cut"
+
+
+# compact alias per ledger/NAMING.md
+mincut = min_cut

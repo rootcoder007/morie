@@ -43,3 +43,7 @@ ocsvm = oc_svm_classify
 
 def cheatsheet() -> str:
     return "oc_svm_classify({}) -> OC SVM-like separating hyperplane."
+
+
+# compact alias per ledger/NAMING.md
+ocsvmclassify = oc_svm_classify

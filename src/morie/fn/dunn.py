@@ -82,3 +82,7 @@ dunn = dunn_test
 
 def cheatsheet() -> str:
     return "dunn_test({}) -> Dunn's post-hoc test."
+
+
+# compact alias per ledger/NAMING.md
+dunntest = dunn_test

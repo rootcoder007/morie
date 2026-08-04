@@ -29,3 +29,7 @@ ecol = ecological_zip
 
 def cheatsheet() -> str:
     return "ecological_zip({}) -> Ecological zero-inflated"
+
+
+# compact alias per ledger/NAMING.md
+ecologicalzip = ecological_zip

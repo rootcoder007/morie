@@ -35,3 +35,7 @@ krig = kriging_cv_kfold
 
 def cheatsheet() -> str:
     return "kriging_cv_kfold({}) -> Kriging k-fold cross-validation"
+
+
+# compact alias per ledger/NAMING.md
+krigingcvkfold = kriging_cv_kfold

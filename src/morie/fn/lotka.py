@@ -92,3 +92,7 @@ lotka = lotka_volterra
 
 def cheatsheet() -> str:
     return "lotka_volterra({}) -> Lotka-Volterra predator-prey model."
+
+
+# compact alias per ledger/NAMING.md
+lotkavolterra = lotka_volterra

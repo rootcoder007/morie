@@ -29,3 +29,7 @@ agen = agenda_2d
 
 def cheatsheet() -> str:
     return "agenda_2d({}) -> 2D amendment agenda"
+
+
+# compact alias per ledger/NAMING.md
+agenda2d = agenda_2d

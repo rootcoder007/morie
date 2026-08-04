@@ -103,3 +103,7 @@ def boyd_smooth_min(x, axis=None):
 
 def cheatsheet():
     return "cvxsmt: smooth MAX (not min); error <= log n whatever the values; gradient IS softmax"
+
+
+# compact alias per ledger/NAMING.md
+boydsmoothmin = boyd_smooth_min

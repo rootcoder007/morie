@@ -40,3 +40,7 @@ def bayes_logistic(y, X, prior_scale):
 
 def cheatsheet():
     return "baylog: Bayesian logistic regression"
+
+
+# compact alias per ledger/NAMING.md
+bayeslogistic = bayes_logistic

@@ -69,3 +69,7 @@ fst = fixation_index
 
 def cheatsheet() -> str:
     return "fixation_index({}) -> Fst fixation index (Weir-Cockerham estimator)."
+
+
+# compact alias per ledger/NAMING.md
+fixationindex = fixation_index

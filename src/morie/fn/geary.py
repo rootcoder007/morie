@@ -85,3 +85,7 @@ geary_fn = gearys_c
 
 def cheatsheet() -> str:
     return "gearys_c({}) -> Geary's C spatial autocorrelation statistic."
+
+
+# compact alias per ledger/NAMING.md
+gearysc = gearys_c

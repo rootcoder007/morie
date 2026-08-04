@@ -42,3 +42,7 @@ def reml_loglik(y, X, V):
 
 def cheatsheet():
     return "remlfn: REML log-likelihood evaluation for LMM"
+
+
+# compact alias per ledger/NAMING.md
+remlloglik = reml_loglik

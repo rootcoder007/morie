@@ -42,3 +42,7 @@ def sparse_vector(queries, threshold, c, epsilon):
 
 def cheatsheet():
     return "sparsv: Sparse vector technique"
+
+
+# compact alias per ledger/NAMING.md
+sparsevector = sparse_vector

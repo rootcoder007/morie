@@ -40,3 +40,7 @@ def unet_backbone(x, filters):
 
 def cheatsheet():
     return "unetbk: U-Net encoder-decoder skip connections"
+
+
+# compact alias per ledger/NAMING.md
+unetbackbone = unet_backbone

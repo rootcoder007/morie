@@ -68,3 +68,7 @@ evtcl = event_cluster
 
 def cheatsheet() -> str:
     return "event_cluster({}) -> Cluster detected events by morphological similarity."
+
+
+# compact alias per ledger/NAMING.md
+eventcluster = event_cluster

@@ -36,3 +36,7 @@ def sympy_factor(expr):
 
 def cheatsheet():
     return "sympFa: Polynomial factorization"
+
+
+# compact alias per ledger/NAMING.md
+sympyfactor = sympy_factor

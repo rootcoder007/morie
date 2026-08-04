@@ -64,3 +64,7 @@ mdist = model_distance
 
 def cheatsheet() -> str:
     return "model_distance({}) -> AR model distance."
+
+
+# compact alias per ledger/NAMING.md
+modeldistance = model_distance

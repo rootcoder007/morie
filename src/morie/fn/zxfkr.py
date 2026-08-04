@@ -37,3 +37,7 @@ func = func_kriging
 
 def cheatsheet() -> str:
     return "func_kriging({}) -> Functional kriging"
+
+
+# compact alias per ledger/NAMING.md
+funckriging = func_kriging

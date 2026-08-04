@@ -32,3 +32,7 @@ def ghosal_exp_link(x, psi=None):
 
 def cheatsheet():
     return "gh_c2_4: Exponential-link density prior"
+
+
+# compact alias per ledger/NAMING.md
+ghosalexplink = ghosal_exp_link

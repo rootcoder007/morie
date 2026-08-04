@@ -38,3 +38,7 @@ def chebyshev_basis(x, K):
 
 def cheatsheet():
     return "polyCh: Chebyshev polynomial basis"
+
+
+# compact alias per ledger/NAMING.md
+chebyshevbasis = chebyshev_basis

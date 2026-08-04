@@ -138,3 +138,7 @@ def geron_kfold(X, y, k, seed=None, fit=None, predict=None, score=None):
 
 def cheatsheet():
     return "hmkfd: K-fold partition (train/test indices) plus the CV score delegated to grcvs"
+
+
+# compact alias per ledger/NAMING.md
+geronkfold = geron_kfold

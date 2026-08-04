@@ -41,3 +41,7 @@ def ridge_solution(X, y, lam):
 
 def cheatsheet():
     return "ridgs: Ridge regression closed-form solution"
+
+
+# compact alias per ledger/NAMING.md
+ridgesolution = ridge_solution

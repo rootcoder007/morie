@@ -29,3 +29,7 @@ idea = ideal_point_mle
 
 def cheatsheet() -> str:
     return "ideal_point_mle({}) -> MLE ideal point estimation"
+
+
+# compact alias per ledger/NAMING.md
+idealpointmle = ideal_point_mle

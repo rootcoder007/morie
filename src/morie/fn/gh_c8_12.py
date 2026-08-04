@@ -32,3 +32,7 @@ def ghosal_crt_lower(smoothness, n):
 
 def cheatsheet():
     return "gh_c8_12: Minimax lower bound for the rate"
+
+
+# compact alias per ledger/NAMING.md
+ghosalcrtlower = ghosal_crt_lower

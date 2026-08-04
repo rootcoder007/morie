@@ -80,3 +80,7 @@ edtds = edit_distance
 
 def cheatsheet() -> str:
     return "edit_distance({}) -> Levenshtein edit distance."
+
+
+# compact alias per ledger/NAMING.md
+editdistance = edit_distance

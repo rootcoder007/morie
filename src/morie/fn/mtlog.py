@@ -65,3 +65,7 @@ def matrix_log(
 
 
 mtlog = matrix_log
+
+
+# compact alias per ledger/NAMING.md
+matrixlog = matrix_log

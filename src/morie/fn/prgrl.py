@@ -38,3 +38,7 @@ def prog_rl(env_factory, schedule):
 
 def cheatsheet():
     return "prgrl: Programmatic / curriculum RL"
+
+
+# compact alias per ledger/NAMING.md
+progrl = prog_rl

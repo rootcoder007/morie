@@ -29,3 +29,7 @@ sar_ = sar_impacts
 
 def cheatsheet() -> str:
     return "sar_impacts({}) -> SAR direct/indirect/total impacts"
+
+
+# compact alias per ledger/NAMING.md
+sarimpacts = sar_impacts

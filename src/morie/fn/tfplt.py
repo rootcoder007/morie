@@ -53,3 +53,7 @@ tfplt = plot_tfd_fn
 
 def cheatsheet() -> str:
     return "plot_tfd_fn({}) -> Time-frequency distribution plot."
+
+
+# compact alias per ledger/NAMING.md
+plottfdfn = plot_tfd_fn

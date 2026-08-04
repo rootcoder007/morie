@@ -38,3 +38,7 @@ def htmt_ratio(X, construct_assignment):
 
 def cheatsheet():
     return "hetero: HTMT heterotrait-monotrait ratio"
+
+
+# compact alias per ledger/NAMING.md
+htmtratio = htmt_ratio

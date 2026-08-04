@@ -70,3 +70,7 @@ def esl_bic_score(loglik, d, N):
 
 def cheatsheet():
     return "eslbic: BIC = -2 log L + d log N; harsher than AIC once N > e^2"
+
+
+# compact alias per ledger/NAMING.md
+eslbicscore = esl_bic_score

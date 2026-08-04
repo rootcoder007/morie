@@ -71,3 +71,7 @@ def cfa_bifactor(
 
 def cheatsheet() -> str:
     return "cfa_bifactor({}) -> Bifactor CFA model (general + 4 specific factors)."
+
+
+# compact alias per ledger/NAMING.md
+cfabifactor = cfa_bifactor

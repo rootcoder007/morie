@@ -42,3 +42,7 @@ def stratified_cost(c0, stratum_costs, stratum_sizes):
 
 def cheatsheet():
     return 'r4e18: C = c0 + sum_h n_h c_h [Brus 2022, eq. 4.18]'
+
+
+# compact alias per ledger/NAMING.md
+stratifiedcost = stratified_cost

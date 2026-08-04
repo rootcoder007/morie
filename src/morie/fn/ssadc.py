@@ -57,3 +57,7 @@ ssadc = ssa_decompose_fn
 
 def cheatsheet() -> str:
     return "ssa_decompose_fn({}) -> Singular Spectrum Analysis decomposition."
+
+
+# compact alias per ledger/NAMING.md
+ssadecomposefn = ssa_decompose_fn

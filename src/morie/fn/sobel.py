@@ -70,3 +70,7 @@ def sobel_test(a, b, sa, sb, cdf=None):
 
 def cheatsheet():
     return "sobel: Sobel test for indirect effect"
+
+
+# compact alias per ledger/NAMING.md
+sobeltest = sobel_test

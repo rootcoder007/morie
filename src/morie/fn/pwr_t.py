@@ -145,3 +145,7 @@ pwr_t = power_t_test
 
 def cheatsheet() -> str:
     return "power_t_test({}) -> Power analysis for t-tests."
+
+
+# compact alias per ledger/NAMING.md
+powerttest = power_t_test

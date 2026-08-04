@@ -124,3 +124,7 @@ ebal = entropy_balance
 
 def cheatsheet() -> str:
     return "entropy_balance({}) -> Entropy balancing weights (Hainmueller, 2012)."
+
+
+# compact alias per ledger/NAMING.md
+entropybalance = entropy_balance

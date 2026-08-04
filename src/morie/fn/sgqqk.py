@@ -49,3 +49,7 @@ sgqqk = qq_plot_kriging
 
 def cheatsheet() -> str:
     return "qq_plot_kriging({}) -> QQ plot data for kriging standardized errors."
+
+
+# compact alias per ledger/NAMING.md
+qqplotkriging = qq_plot_kriging

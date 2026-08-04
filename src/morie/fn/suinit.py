@@ -45,3 +45,7 @@ suinit = initiation_age
 
 def cheatsheet() -> str:
     return "initiation_age({}) -> Age of substance use initiation analysis."
+
+
+# compact alias per ledger/NAMING.md
+initiationage = initiation_age

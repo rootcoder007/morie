@@ -50,3 +50,7 @@ def gaussian_copula(u, v, rho):
 
 def cheatsheet():
     return "copgau: gaussian copula CDF + Kendall tau (-1 < rho < 1)"
+
+
+# compact alias per ledger/NAMING.md
+gaussiancopula = gaussian_copula

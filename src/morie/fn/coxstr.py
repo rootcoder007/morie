@@ -205,3 +205,7 @@ def _score_at(t, e, X, beta, ties):
 
 def cheatsheet():
     return "coxstr: separate baseline per stratum, shared beta; the STRATIFIER gets no hazard ratio"
+
+
+# compact alias per ledger/NAMING.md
+coxstratified = cox_stratified

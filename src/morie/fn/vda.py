@@ -52,3 +52,7 @@ vda = vargha_delaney_a
 
 def cheatsheet() -> str:
     return "vargha_delaney_a({}) -> Vargha-Delaney A statistic (non-parametric effect size)."
+
+
+# compact alias per ledger/NAMING.md
+varghadelaneya = vargha_delaney_a

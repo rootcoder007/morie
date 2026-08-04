@@ -35,3 +35,7 @@ nonm = nonmetric_mds
 
 def cheatsheet() -> str:
     return "nonmetric_mds({}) -> Nonmetric MDS (Kruskal)"
+
+
+# compact alias per ledger/NAMING.md
+nonmetricmds = nonmetric_mds

@@ -39,3 +39,7 @@ spp = peak_to_peak
 
 def cheatsheet() -> str:
     return "peak_to_peak({}) -> Peak-to-peak amplitude."
+
+
+# compact alias per ledger/NAMING.md
+peaktopeak = peak_to_peak

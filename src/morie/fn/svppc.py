@@ -29,3 +29,7 @@ part = party_congress
 
 def cheatsheet() -> str:
     return "party_congress({}) -> Congressional party position"
+
+
+# compact alias per ledger/NAMING.md
+partycongress = party_congress

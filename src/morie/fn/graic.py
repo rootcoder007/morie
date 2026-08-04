@@ -101,3 +101,11 @@ def geron_aic_gmm(log_likelihood, n_params):
 
 def cheatsheet():
     return "graic: AIC = 2p - 2*logL for GMM model selection"
+
+
+# compact alias per ledger/NAMING.md
+geronaicgmm = geron_aic_gmm
+
+
+# compact alias per ledger/NAMING.md
+gmmnparams = gmm_n_params

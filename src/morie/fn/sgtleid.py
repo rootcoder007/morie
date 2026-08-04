@@ -45,3 +45,7 @@ def sgt_leiden_step(A, labels):
 
 def cheatsheet():
     return "sgtleid: Leiden refinement after Louvain (Traag-Waltman-van Eck)"
+
+
+# compact alias per ledger/NAMING.md
+sgtleidenstep = sgt_leiden_step

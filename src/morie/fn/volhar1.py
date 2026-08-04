@@ -74,3 +74,7 @@ def vol_har_q(RV, RQ):
 
 def cheatsheet():
     return "volhar1: HAR + beta_q sqrt(RQ_{t-1}) RV_{t-1} (BPQ 2016)"
+
+
+# compact alias per ledger/NAMING.md
+volharq = vol_har_q

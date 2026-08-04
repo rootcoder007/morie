@@ -109,3 +109,7 @@ def esl_pls(X, y, M):
 
 def cheatsheet():
     return "eslpls: y-driven directions + deflation; M=p collapses to OLS"
+
+
+# compact alias per ledger/NAMING.md
+eslpls = esl_pls

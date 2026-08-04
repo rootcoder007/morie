@@ -38,3 +38,7 @@ def modularity_q(G, communities):
 
 def cheatsheet():
     return "modulq: Newman-Girvan modularity Q"
+
+
+# compact alias per ledger/NAMING.md
+modularityq = modularity_q

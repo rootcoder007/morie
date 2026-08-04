@@ -90,3 +90,7 @@ def fauzi_gamma_kde(x, grid=None, h=None, modified=False, a=2.0):
 
 def cheatsheet():
     return "fzgkde: the kernel's support matches the data's -- boundary bias never arises"
+
+
+# compact alias per ledger/NAMING.md
+fauzigammakde = fauzi_gamma_kde

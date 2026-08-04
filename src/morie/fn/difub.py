@@ -108,3 +108,7 @@ uniform_dif = dif_uniform
 
 def cheatsheet() -> str:
     return "dif_uniform({}) -> Uniform DIF detection via logistic regression."
+
+
+# compact alias per ledger/NAMING.md
+difuniform = dif_uniform

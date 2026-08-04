@@ -76,3 +76,7 @@ impene = impact_energy
 
 def cheatsheet() -> str:
     return "impact_energy({}) -> Impact testing energy (Charpy/Izod)."
+
+
+# compact alias per ledger/NAMING.md
+impactenergy = impact_energy

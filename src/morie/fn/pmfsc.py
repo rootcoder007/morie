@@ -38,3 +38,7 @@ def pmf_potential(receptor, ligand):
 
 def cheatsheet():
     return "pmfsc: Knowledge-based PMF scoring"
+
+
+# compact alias per ledger/NAMING.md
+pmfpotential = pmf_potential

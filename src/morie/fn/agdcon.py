@@ -46,3 +46,7 @@ def agd_constrained(f, grad_f, project, x0, steps):
 
 def cheatsheet():
     return "agdcon: Accelerated gradient descent (constrained)"
+
+
+# compact alias per ledger/NAMING.md
+agdconstrained = agd_constrained

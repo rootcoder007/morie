@@ -57,3 +57,7 @@ sqntz = quantize_signal
 
 def cheatsheet() -> str:
     return "quantize_signal({}) -> Uniform signal quantization."
+
+
+# compact alias per ledger/NAMING.md
+quantizesignal = quantize_signal

@@ -86,3 +86,7 @@ mg1q = mg1_queue
 
 def cheatsheet() -> str:
     return "mg1_queue({}) -> M/G/1 queue via Pollaczek-Khinchine formula."
+
+
+# compact alias per ledger/NAMING.md
+mg1queue = mg1_queue

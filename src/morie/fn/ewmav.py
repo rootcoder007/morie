@@ -76,3 +76,7 @@ ewmav = ewma_volatility
 
 def cheatsheet() -> str:
     return "ewma_volatility({}) -> EWMA volatility (RiskMetrics)."
+
+
+# compact alias per ledger/NAMING.md
+ewmavolatility = ewma_volatility

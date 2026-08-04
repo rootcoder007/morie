@@ -28,3 +28,7 @@ def evt_gev_qq_plot(x, mu, sigma, xi):
 
 def cheatsheet():
     return "evqqgev: QQ-plot diagnostic for a fitted GEV"
+
+
+# compact alias per ledger/NAMING.md
+evtgevqqplot = evt_gev_qq_plot

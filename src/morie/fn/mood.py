@@ -71,3 +71,7 @@ mood = mood_median_test
 
 def cheatsheet() -> str:
     return "mood_median_test({}) -> Mood's median test."
+
+
+# compact alias per ledger/NAMING.md
+moodmediantest = mood_median_test

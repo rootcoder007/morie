@@ -55,3 +55,7 @@ theil = theil_sen
 
 def cheatsheet() -> str:
     return "theil_sen({}) -> Theil-Sen robust trend estimator."
+
+
+# compact alias per ledger/NAMING.md
+theilsen = theil_sen

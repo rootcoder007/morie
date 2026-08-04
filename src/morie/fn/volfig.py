@@ -49,3 +49,7 @@ def vol_figarch_fit(r, p=1, q=1):
 
 def cheatsheet():
     return "volfig: Fractionally integrated GARCH, spec 'figarch'"
+
+
+# compact alias per ledger/NAMING.md
+volfigarchfit = vol_figarch_fit

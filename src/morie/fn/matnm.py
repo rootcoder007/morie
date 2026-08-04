@@ -38,3 +38,7 @@ def matrix_norms(
 
 
 matnm = matrix_norms
+
+
+# compact alias per ledger/NAMING.md
+matrixnorms = matrix_norms

@@ -146,3 +146,7 @@ def diffusion_forward(x0, t: int, betas=None, num_steps: int = 1000, noise=None,
 
 def cheatsheet() -> str:
     return "diffu: heat_diffusion(...) PDE / diffusion_forward(...) DDPM"
+
+
+# compact alias per ledger/NAMING.md
+heatdiffusion = heat_diffusion

@@ -38,3 +38,7 @@ def sgt_modularity_q(A, labels):
 
 def cheatsheet():
     return "sgtmodq: Newman-Girvan modularity score Q"
+
+
+# compact alias per ledger/NAMING.md
+sgtmodularityq = sgt_modularity_q

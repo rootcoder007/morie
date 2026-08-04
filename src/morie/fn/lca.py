@@ -85,3 +85,7 @@ lca = latent_class
 
 def cheatsheet() -> str:
     return "latent_class({}) -> Latent class analysis (EM for binary indicators)."
+
+
+# compact alias per ledger/NAMING.md
+latentclass = latent_class

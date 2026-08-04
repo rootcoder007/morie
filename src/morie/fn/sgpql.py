@@ -96,3 +96,7 @@ sgpql = pql_spatial_glmm
 
 def cheatsheet() -> str:
     return "pql_spatial_glmm({}) -> Penalized quasi-likelihood spatial GLMM."
+
+
+# compact alias per ledger/NAMING.md
+pqlspatialglmm = pql_spatial_glmm

@@ -42,3 +42,7 @@ def newton_raphson(f, grad_f, hess_f, x0):
 
 def cheatsheet():
     return "newraf: Newton-Raphson"
+
+
+# compact alias per ledger/NAMING.md
+newtonraphson = newton_raphson

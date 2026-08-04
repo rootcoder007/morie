@@ -38,3 +38,7 @@ def evt_record_count(x):
 
 def cheatsheet():
     return "evrec: Number of upper records in an iid sequence"
+
+
+# compact alias per ledger/NAMING.md
+evtrecordcount = evt_record_count

@@ -181,3 +181,7 @@ pmgbrd = pm_gemm_burden
 
 def cheatsheet() -> str:
     return "pmgbrd(C_ugm3, pop, rate, outcome='ncd_lri') -> PM2.5 attrib deaths via GEMM."
+
+
+# compact alias per ledger/NAMING.md
+pmgemmburden = pm_gemm_burden

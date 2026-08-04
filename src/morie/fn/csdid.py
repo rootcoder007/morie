@@ -131,3 +131,7 @@ csdid = cs_did
 
 def cheatsheet() -> str:
     return "cs_did({}) -> Callaway-Sant'Anna DiD estimator."
+
+
+# compact alias per ledger/NAMING.md
+csdid = cs_did

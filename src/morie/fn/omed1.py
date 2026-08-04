@@ -100,3 +100,7 @@ def otis_mediation(
 
 def cheatsheet() -> str:
     return "otis_mediation({}) -> Mediation analysis for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otismediation = otis_mediation

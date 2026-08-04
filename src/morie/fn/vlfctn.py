@@ -189,3 +189,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`regime_value`.
 value_function_eval = regime_value
+
+
+# compact alias per ledger/NAMING.md
+regimevalue = regime_value

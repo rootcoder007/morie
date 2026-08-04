@@ -47,3 +47,7 @@ spslp = spectral_slope
 
 def cheatsheet() -> str:
     return "spectral_slope({}) -> Spectral slope."
+
+
+# compact alias per ledger/NAMING.md
+spectralslope = spectral_slope

@@ -37,3 +37,7 @@ eps2 = epsilon_squared
 
 def cheatsheet() -> str:
     return "epsilon_squared({}) -> Epsilon-squared effect size (Kelley, 1935)."
+
+
+# compact alias per ledger/NAMING.md
+epsilonsquared = epsilon_squared

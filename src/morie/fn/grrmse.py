@@ -84,3 +84,7 @@ def geron_rmse(y_true, y_pred):
 
 def cheatsheet():
     return "grrmse: RMSE = sqrt(mean((y_hat - y)^2)); divides by m, reports MAE and max |residual| too"
+
+
+# compact alias per ledger/NAMING.md
+geronrmse = geron_rmse

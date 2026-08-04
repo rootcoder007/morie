@@ -42,3 +42,7 @@ hrvnl = hrv_nonlinear
 
 def cheatsheet() -> str:
     return "hrv_nonlinear({}) -> HRV nonlinear metrics."
+
+
+# compact alias per ledger/NAMING.md
+hrvnonlinear = hrv_nonlinear

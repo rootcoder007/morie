@@ -65,3 +65,7 @@ scree = scree_plot_data
 
 def cheatsheet() -> str:
     return "scree_plot_data({}) -> Scree plot data for MDS dimensionality."
+
+
+# compact alias per ledger/NAMING.md
+screeplotdata = scree_plot_data

@@ -30,3 +30,7 @@ oc_c = oc_coombs_mesh
 
 def cheatsheet() -> str:
     return "oc_coombs_mesh({}) -> OC Coombs mesh"
+
+
+# compact alias per ledger/NAMING.md
+occoombsmesh = oc_coombs_mesh

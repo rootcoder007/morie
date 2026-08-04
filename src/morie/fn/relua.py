@@ -39,3 +39,7 @@ def relu_activation(x):
 
 def cheatsheet():
     return "relua: ReLU activation function for neural networks"
+
+
+# compact alias per ledger/NAMING.md
+reluactivation = relu_activation

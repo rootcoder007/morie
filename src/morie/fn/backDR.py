@@ -19,3 +19,7 @@ def back_door(Y, X, C):
 
 def cheatsheet():
     return "backDR: back-door adjustment (front-end to bdrj)"
+
+
+# compact alias per ledger/NAMING.md
+backdoor = back_door

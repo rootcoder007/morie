@@ -112,3 +112,7 @@ def esl_gam(X, y, g=None, max_iter=100, tol=1e-10):
 
 def cheatsheet():
     return "eslgam: backfit partial residuals, re-centre each f_j; identity link only"
+
+
+# compact alias per ledger/NAMING.md
+eslgam = esl_gam

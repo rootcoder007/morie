@@ -114,3 +114,7 @@ def caliper_psm(e_score, T, caliper=None, y=None):
 
 def cheatsheet():
     return "cipsc: caliper PSM on logit(e), default 0.2*sd (Austin 2011)"
+
+
+# compact alias per ledger/NAMING.md
+caliperpsm = caliper_psm

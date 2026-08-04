@@ -97,3 +97,7 @@ r_t = realtime_rt
 
 def cheatsheet() -> str:
     return "realtime_rt({}) -> Real-time effective reproduction number (Rt) estimation."
+
+
+# compact alias per ledger/NAMING.md
+realtimert = realtime_rt

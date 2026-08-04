@@ -42,3 +42,7 @@ def sample_size_calc(p, e, z):
 
 def cheatsheet():
     return "smplsz: Sample-size calculation for proportion"
+
+
+# compact alias per ledger/NAMING.md
+samplesizecalc = sample_size_calc

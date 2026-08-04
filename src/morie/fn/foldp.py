@@ -80,3 +80,7 @@ def folding_problem(ratings, stimulus_order=None):
 
 def cheatsheet():
     return "foldp: ratings fold at the ideal point -- count single-peakedness violations"
+
+
+# compact alias per ledger/NAMING.md
+foldingproblem = folding_problem

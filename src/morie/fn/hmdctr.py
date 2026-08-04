@@ -192,3 +192,11 @@ def geron_decoder_only(X, n_layers=12, n_heads=12, d_model=768, vocab_size=50257
 
 def cheatsheet():
     return "hmdctr: Decoder-only transformer (GPT family)"
+
+
+# compact alias per ledger/NAMING.md
+blockparams = block_params
+
+
+# compact alias per ledger/NAMING.md
+causalmask = causal_mask

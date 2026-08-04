@@ -84,3 +84,7 @@ def validity_htmt(
 
 def cheatsheet() -> str:
     return "validity_htmt({}) -> Heterotrait-Monotrait ratio for discriminant validity."
+
+
+# compact alias per ledger/NAMING.md
+validityhtmt = validity_htmt

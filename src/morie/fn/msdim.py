@@ -35,3 +35,7 @@ mds_ = mds_dims
 
 def cheatsheet() -> str:
     return "mds_dims({}) -> MDS dimensionality selection"
+
+
+# compact alias per ledger/NAMING.md
+mdsdims = mds_dims

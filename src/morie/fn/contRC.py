@@ -38,3 +38,7 @@ def content_based(item_feat, user_profile):
 
 def cheatsheet():
     return "contRC: Content-based recommendation"
+
+
+# compact alias per ledger/NAMING.md
+contentbased = content_based

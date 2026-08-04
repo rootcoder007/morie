@@ -29,3 +29,7 @@ part = party_sorting
 
 def cheatsheet() -> str:
     return "party_sorting({}) -> Party sorting index (Levendusky)"
+
+
+# compact alias per ledger/NAMING.md
+partysorting = party_sorting

@@ -29,3 +29,7 @@ w_sy = w_symmetrize
 
 def cheatsheet() -> str:
     return "w_symmetrize({}) -> Weights symmetrization"
+
+
+# compact alias per ledger/NAMING.md
+wsymmetrize = w_symmetrize

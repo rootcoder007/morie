@@ -29,3 +29,7 @@ w_ad = w_adaptive
 
 def cheatsheet() -> str:
     return "w_adaptive({}) -> Adaptive bandwidth weights"
+
+
+# compact alias per ledger/NAMING.md
+wadaptive = w_adaptive

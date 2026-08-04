@@ -42,3 +42,7 @@ def bart_survival(time, event, X, n_trees):
 
 def cheatsheet():
     return "survbtr: BART for survival outcomes"
+
+
+# compact alias per ledger/NAMING.md
+bartsurvival = bart_survival

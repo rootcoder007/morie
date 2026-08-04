@@ -114,3 +114,7 @@ def bound_causal_rd(y, x, cutoff, observed=None, bandwidth=None, y_min=None, y_m
 
 def cheatsheet():
     return "bnscrd: local-linear RD at c; missing outcomes filled at y_min/y_max both ways"
+
+
+# compact alias per ledger/NAMING.md
+boundcausalrd = bound_causal_rd

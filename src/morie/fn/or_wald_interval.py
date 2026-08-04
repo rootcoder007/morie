@@ -42,3 +42,7 @@ def or_wald_interval(w1, n1, w2, n2, z):
 
 def cheatsheet():
     return '1e10: exp(log(OR_hat) +/- z sqrt(1/w1 + 1/(n1-w1) + 1/w2 + 1/(n2-w2))) [Bilder & Loughin 2025, eq. 1.10]'
+
+
+# compact alias per ledger/NAMING.md
+orwaldinterval = or_wald_interval

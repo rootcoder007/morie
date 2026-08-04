@@ -119,3 +119,7 @@ def bayesian_mds(D_matrix, n_dims=2, n_iter=3000, burnin=1000, seed=0, step=0.05
 
 def cheatsheet():
     return "bymds: d_ij ~ N(||x_i - x_j||, s^2); MH over X, align draws before summarising"
+
+
+# compact alias per ledger/NAMING.md
+bayesianmds = bayesian_mds

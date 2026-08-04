@@ -74,3 +74,7 @@ ivw = iv_wald
 
 def cheatsheet() -> str:
     return "iv_wald({}) -> Instrumental variable Wald estimate (MR-style)."
+
+
+# compact alias per ledger/NAMING.md
+ivwald = iv_wald

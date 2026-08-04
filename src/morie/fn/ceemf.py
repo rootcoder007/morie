@@ -101,3 +101,7 @@ ceemf = ceemd_decompose
 
 def cheatsheet() -> str:
     return "_sift({}) -> Complete Ensemble EMD (CEEMD) decomposition."
+
+
+# compact alias per ledger/NAMING.md
+ceemddecompose = ceemd_decompose

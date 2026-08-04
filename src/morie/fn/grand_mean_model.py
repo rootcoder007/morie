@@ -42,3 +42,7 @@ def grand_mean_model(y):
 
 def cheatsheet():
     return 'ca7e1: y_i = beta0 + e_i; beta0 = mean(y) [Weisburd et al. 2022, eq. 7.1]'
+
+
+# compact alias per ledger/NAMING.md
+grandmeanmodel = grand_mean_model

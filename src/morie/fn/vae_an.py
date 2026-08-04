@@ -38,3 +38,7 @@ def vae_anomaly(X, vae):
 
 def cheatsheet():
     return "vae_an: VAE reconstruction probability"
+
+
+# compact alias per ledger/NAMING.md
+vaeanomaly = vae_anomaly

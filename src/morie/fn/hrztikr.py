@@ -86,3 +86,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`hrz_tikhonov_iv`.
 horowitz_tikhonov_npiv = hrz_tikhonov_iv
+
+
+# compact alias per ledger/NAMING.md
+hrztikhonoviv = hrz_tikhonov_iv

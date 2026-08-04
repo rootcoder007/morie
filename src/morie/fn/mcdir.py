@@ -72,3 +72,7 @@ mcdir = mcdiarmid_bound
 
 def cheatsheet() -> str:
     return "mcdiarmid_bound(n, t) -> McDiarmid bounded-differences inequality."
+
+
+# compact alias per ledger/NAMING.md
+mcdiarmidbound = mcdiarmid_bound

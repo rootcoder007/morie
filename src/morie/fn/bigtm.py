@@ -38,3 +38,7 @@ def bigram_topic(docs, K):
 
 def cheatsheet():
     return "bigtm: Bigram topic model"
+
+
+# compact alias per ledger/NAMING.md
+bigramtopic = bigram_topic

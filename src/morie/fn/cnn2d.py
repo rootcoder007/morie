@@ -83,3 +83,7 @@ def conv2d_forward(x, w, b=0.0, stride: int = 1, padding: int = 0):
 
 def cheatsheet():
     return "cnn2d: 2D cross-correlation y[i,j] = sum_mn w[m,n]*x[i+m,j+n]"
+
+
+# compact alias per ledger/NAMING.md
+conv2dforward = conv2d_forward

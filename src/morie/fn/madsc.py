@@ -43,3 +43,7 @@ def mad_scale(y):
 
 def cheatsheet():
     return "madsc: Median absolute deviation scale (consistent for normal)"
+
+
+# compact alias per ledger/NAMING.md
+madscale = mad_scale

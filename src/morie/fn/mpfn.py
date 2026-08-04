@@ -40,3 +40,7 @@ def message_passing(G, h0, layers):
 
 def cheatsheet():
     return "mpfn: Message-passing framework"
+
+
+# compact alias per ledger/NAMING.md
+messagepassing = message_passing

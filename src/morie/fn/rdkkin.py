@@ -42,3 +42,7 @@ def kink_rdd(y, x, cutoff, bandwidth):
 
 def cheatsheet():
     return "rdkkin: Regression kink design (RKD)"
+
+
+# compact alias per ledger/NAMING.md
+kinkrdd = kink_rdd

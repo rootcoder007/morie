@@ -38,3 +38,7 @@ def genome_assembly(reads, k):
 
 def cheatsheet():
     return "asmnvr: De novo assembly (de Bruijn graph)"
+
+
+# compact alias per ledger/NAMING.md
+genomeassembly = genome_assembly

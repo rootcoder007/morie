@@ -41,3 +41,7 @@ sfrmf = form_factor
 
 def cheatsheet() -> str:
     return "form_factor({}) -> Form factor."
+
+
+# compact alias per ledger/NAMING.md
+formfactor = form_factor

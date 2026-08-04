@@ -44,3 +44,7 @@ def vit_forward(x, patch_size, embed_dim, num_heads, num_layers):
 
 def cheatsheet():
     return "vitfwd: Vision Transformer forward pass"
+
+
+# compact alias per ledger/NAMING.md
+vitforward = vit_forward

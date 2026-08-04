@@ -53,3 +53,7 @@ cdinc = incidence_rate
 
 def cheatsheet() -> str:
     return "incidence_rate({}) -> Person-time incidence rate with CI."
+
+
+# compact alias per ledger/NAMING.md
+incidencerate = incidence_rate

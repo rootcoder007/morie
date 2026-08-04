@@ -42,3 +42,7 @@ iirds = iir_design
 
 def cheatsheet() -> str:
     return "iir_design({}) -> IIR filter design."
+
+
+# compact alias per ledger/NAMING.md
+iirdesign = iir_design

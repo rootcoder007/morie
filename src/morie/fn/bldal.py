@@ -70,3 +70,7 @@ bldal = bland_altman
 
 def cheatsheet() -> str:
     return "bland_altman({}) -> Bland-Altman agreement analysis."
+
+
+# compact alias per ledger/NAMING.md
+blandaltman = bland_altman

@@ -142,3 +142,7 @@ def esl_svm_kernel(X, y, C=1.0, kernel="rbf", gamma=None, degree=3, coef0=1.0,
 
 def cheatsheet():
     return "eslsvm: SMO dual SVM, any of 4 kernels; check dual_gap_check ~ 0 and alpha <= C"
+
+
+# compact alias per ledger/NAMING.md
+eslsvmkernel = esl_svm_kernel

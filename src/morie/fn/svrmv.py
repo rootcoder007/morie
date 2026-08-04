@@ -29,3 +29,7 @@ rm_i = rm_intensity
 
 def cheatsheet() -> str:
     return "rm_intensity({}) -> Rabinowitz-Macdonald intensity component"
+
+
+# compact alias per ledger/NAMING.md
+rmintensity = rm_intensity

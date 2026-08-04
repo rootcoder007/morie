@@ -50,3 +50,7 @@ def frank_copula(u, v, theta):
 
 def cheatsheet():
     return "copfra: frank copula CDF + Kendall tau (theta != 0)"
+
+
+# compact alias per ledger/NAMING.md
+frankcopula = frank_copula

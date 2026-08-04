@@ -47,3 +47,7 @@ cw = cohens_w
 
 def cheatsheet() -> str:
     return "cohens_w({}) -> Cohen's w effect size for chi-squared."
+
+
+# compact alias per ledger/NAMING.md
+cohensw = cohens_w

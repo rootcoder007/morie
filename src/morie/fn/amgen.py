@@ -61,3 +61,7 @@ amgen = arma_generate_fn
 
 def cheatsheet() -> str:
     return "arma_generate_fn({}) -> Generate synthetic ARMA process."
+
+
+# compact alias per ledger/NAMING.md
+armageneratefn = arma_generate_fn

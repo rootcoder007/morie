@@ -38,3 +38,7 @@ def ll_parser(grammar, tokens):
 
 def cheatsheet():
     return "prsLL: LL(1) recursive descent"
+
+
+# compact alias per ledger/NAMING.md
+llparser = ll_parser

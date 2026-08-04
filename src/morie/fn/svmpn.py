@@ -29,3 +29,7 @@ mult = multiparty_nash
 
 def cheatsheet() -> str:
     return "multiparty_nash({}) -> Multi-party Nash equilibrium"
+
+
+# compact alias per ledger/NAMING.md
+multipartynash = multiparty_nash

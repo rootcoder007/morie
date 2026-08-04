@@ -38,3 +38,7 @@ def theta_function(
 
 def cheatsheet() -> str:
     return "theta_function(z, tau, terms) -> Jacobi theta_3"
+
+
+# compact alias per ledger/NAMING.md
+thetafunction = theta_function

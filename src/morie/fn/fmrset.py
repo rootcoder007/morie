@@ -63,3 +63,7 @@ def familial_mr_set(y, exposures, instruments, pedigree, cdf=None):
 
 def cheatsheet():
     return "fmrset: Familial MR set test"
+
+
+# compact alias per ledger/NAMING.md
+familialmrset = familial_mr_set

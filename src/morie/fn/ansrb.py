@@ -44,3 +44,7 @@ ansrb = ansari_bradley
 
 def cheatsheet() -> str:
     return "ansari_bradley({}) -> Ansari-Bradley test for scale."
+
+
+# compact alias per ledger/NAMING.md
+ansaribradley = ansari_bradley

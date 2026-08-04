@@ -113,3 +113,7 @@ gamra = aft_model
 
 def cheatsheet() -> str:
     return "aft_model({}) -> Accelerated failure time (AFT) model."
+
+
+# compact alias per ledger/NAMING.md
+aftmodel = aft_model

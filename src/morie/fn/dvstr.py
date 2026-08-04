@@ -97,3 +97,7 @@ dvstr = ensemble_stack
 
 def cheatsheet() -> str:
     return "ensemble_stack({}) -> Ensemble stacking."
+
+
+# compact alias per ledger/NAMING.md
+ensemblestack = ensemble_stack

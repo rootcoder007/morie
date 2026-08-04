@@ -48,3 +48,7 @@ def ot_mixture_w2(mus1, Sigmas1, w1, mus2, Sigmas2, w2):
 
 def cheatsheet():
     return "otmxh: W_2 between Gaussian mixtures via OT on components"
+
+
+# compact alias per ledger/NAMING.md
+otmixturew2 = ot_mixture_w2

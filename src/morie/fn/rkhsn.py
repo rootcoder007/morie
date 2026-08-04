@@ -39,3 +39,7 @@ def rkhs_norm(alpha, eigenvalues):
 
 def cheatsheet():
     return "rkhsn: RKHS norm and reproducing property"
+
+
+# compact alias per ledger/NAMING.md
+rkhsnorm = rkhs_norm

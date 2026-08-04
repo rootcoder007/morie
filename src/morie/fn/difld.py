@@ -70,3 +70,7 @@ lord_dif = dif_lord_chisq
 
 def cheatsheet() -> str:
     return "dif_lord_chisq({}) -> Lord's chi-square DIF detection."
+
+
+# compact alias per ledger/NAMING.md
+diflordchisq = dif_lord_chisq

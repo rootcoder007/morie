@@ -145,3 +145,7 @@ def spatial_did(
 
 def cheatsheet() -> str:
     return "spatial_did({}) -> Spatiotemporal difference-in-differences (spatial DiD)."
+
+
+# compact alias per ledger/NAMING.md
+spatialdid = spatial_did

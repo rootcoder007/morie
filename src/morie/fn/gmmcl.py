@@ -100,3 +100,7 @@ gmmcl = gmm_cluster
 
 def cheatsheet() -> str:
     return "gmm_cluster({}) -> Gaussian mixture model clustering (EM)."
+
+
+# compact alias per ledger/NAMING.md
+gmmcluster = gmm_cluster

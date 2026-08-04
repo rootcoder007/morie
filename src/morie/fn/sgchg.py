@@ -59,3 +59,7 @@ sgchg = sign_change_test
 
 def cheatsheet() -> str:
     return "sign_change_test(x, mu=0) -> Sign test for the median."
+
+
+# compact alias per ledger/NAMING.md
+signchangetest = sign_change_test

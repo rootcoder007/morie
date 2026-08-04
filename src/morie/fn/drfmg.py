@@ -52,3 +52,7 @@ drfmg = drift_magnitude
 
 def cheatsheet() -> str:
     return "drift_magnitude({}) -> Baseline drift magnitude estimation."
+
+
+# compact alias per ledger/NAMING.md
+driftmagnitude = drift_magnitude

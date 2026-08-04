@@ -42,3 +42,7 @@ def torus_curvature(
 
 def cheatsheet() -> str:
     return "torus_curvature(R, r, u, v) -> Gaussian & mean curvature"
+
+
+# compact alias per ledger/NAMING.md
+toruscurvature = torus_curvature

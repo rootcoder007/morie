@@ -37,3 +37,7 @@ rskbs = risk_brier
 
 def cheatsheet() -> str:
     return "risk_brier({}) -> Brier score for risk predictions."
+
+
+# compact alias per ledger/NAMING.md
+riskbrier = risk_brier

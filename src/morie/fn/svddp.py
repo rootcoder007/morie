@@ -44,3 +44,7 @@ svddp = svd_decompose
 
 def cheatsheet() -> str:
     return "svd_decompose({}) -> Singular Value Decomposition."
+
+
+# compact alias per ledger/NAMING.md
+svddecompose = svd_decompose

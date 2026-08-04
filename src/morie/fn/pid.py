@@ -97,3 +97,7 @@ pid = pid_controller
 
 def cheatsheet() -> str:
     return "pid_controller({}) -> PID controller simulation."
+
+
+# compact alias per ledger/NAMING.md
+pidcontroller = pid_controller

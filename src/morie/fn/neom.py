@@ -95,3 +95,7 @@ neom = decision_split
 
 def cheatsheet() -> str:
     return "decision_split({}) -> Decision tree split criterion."
+
+
+# compact alias per ledger/NAMING.md
+decisionsplit = decision_split

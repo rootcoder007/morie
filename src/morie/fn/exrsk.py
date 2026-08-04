@@ -69,3 +69,7 @@ exrsk = excess_risk
 
 def cheatsheet() -> str:
     return "excess_risk({}) -> Excess absolute risk."
+
+
+# compact alias per ledger/NAMING.md
+excessrisk = excess_risk

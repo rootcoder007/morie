@@ -21,3 +21,7 @@ alias = crest_factor_fn
 
 def cheatsheet() -> str:
     return "crest_factor_fn({}) -> Crest factor of a waveform."
+
+
+# compact alias per ledger/NAMING.md
+crestfactorfn = crest_factor_fn

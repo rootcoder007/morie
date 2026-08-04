@@ -40,3 +40,7 @@ def qtl_mapping(y, markers, positions):
 
 def cheatsheet():
     return "rqtmpl: QTL mapping (interval mapping)"
+
+
+# compact alias per ledger/NAMING.md
+qtlmapping = qtl_mapping

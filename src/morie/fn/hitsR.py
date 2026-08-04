@@ -40,3 +40,7 @@ def hits_at_k(pred_rank, relevant, k):
 
 def cheatsheet():
     return "hitsR: HitRate@k"
+
+
+# compact alias per ledger/NAMING.md
+hitsatk = hits_at_k

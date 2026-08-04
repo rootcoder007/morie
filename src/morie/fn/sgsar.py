@@ -100,3 +100,7 @@ sgsar = sar_lag_model
 
 def cheatsheet() -> str:
     return "sar_lag_model({}) -> Spatial autoregressive lag model (SAR)."
+
+
+# compact alias per ledger/NAMING.md
+sarlagmodel = sar_lag_model

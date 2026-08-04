@@ -44,3 +44,7 @@ def cheatsheet() -> str:
 
 
 stren = string_tension
+
+
+# compact alias per ledger/NAMING.md
+stringtension = string_tension

@@ -80,3 +80,7 @@ def irt_distractor(
 
 def cheatsheet() -> str:
     return "irt_distractor({}) -> IRT distractor analysis."
+
+
+# compact alias per ledger/NAMING.md
+irtdistractor = irt_distractor

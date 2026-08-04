@@ -42,3 +42,7 @@ def evt_pot_es(u, sigma, xi, VaR):
 
 def cheatsheet():
     return "evespot: Expected shortfall via POT/GPD tail"
+
+
+# compact alias per ledger/NAMING.md
+evtpotes = evt_pot_es

@@ -156,3 +156,7 @@ tsls = two_stage_ls
 
 def cheatsheet() -> str:
     return "two_stage_ls({}) -> Two-stage least squares with diagnostics."
+
+
+# compact alias per ledger/NAMING.md
+twostagels = two_stage_ls

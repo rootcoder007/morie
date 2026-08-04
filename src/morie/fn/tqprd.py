@@ -75,3 +75,7 @@ def cheatsheet() -> str:
 
 
 tqprd = turboquant_prod
+
+
+# compact alias per ledger/NAMING.md
+turboquantprod = turboquant_prod

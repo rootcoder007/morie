@@ -54,3 +54,7 @@ def rangayyan_vmd(x, K, alpha, tau, init, tol):
 
 def cheatsheet():
     return "rgvmd: Variational mode decomposition (VMD) into K band-limited modes"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanvmd = rangayyan_vmd

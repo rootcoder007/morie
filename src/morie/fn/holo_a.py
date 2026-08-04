@@ -104,3 +104,7 @@ def _compute_pacf(acf: np.ndarray, nlags: int) -> np.ndarray:
 
 def cheatsheet() -> str:
     return "holo_acf({}) -> ACF / PACF plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holoacf = holo_acf

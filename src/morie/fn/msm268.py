@@ -34,3 +34,7 @@ mvsml_fda_sigma2 = mvsml_convolutional_nn_eq_14_5
 
 def cheatsheet():
     return "msm268: Residual variance of the functional fit"
+
+
+# compact alias per ledger/NAMING.md
+mvsmlfdasigma2 = mvsml_fda_sigma2

@@ -38,3 +38,7 @@ def motif_fimo(sequence, pwm):
 
 def cheatsheet():
     return "motfom: FIMO motif scan with PWM"
+
+
+# compact alias per ledger/NAMING.md
+motiffimo = motif_fimo

@@ -107,3 +107,7 @@ def adamw_step(g, beta1=0.9, beta2=0.999, lr=1e-3, wd=0.01, eps=1e-8, theta=None
 
 def cheatsheet():
     return "adwopt: AdamW -- decay applied outside the 1/sqrt(v) scaling; pass `theta` or it is plain Adam"
+
+
+# compact alias per ledger/NAMING.md
+adamwstep = adamw_step

@@ -177,3 +177,7 @@ pmgemm = pm_gemm_rr
 
 def cheatsheet() -> str:
     return "pmgemm(C_ugm3, outcome='ncd_lri', reference_ugm3=2.4) -> PM2.5 GEMM RR."
+
+
+# compact alias per ledger/NAMING.md
+pmgemmrr = pm_gemm_rr

@@ -48,3 +48,7 @@ def ma_cohens_d(m1, m2, s1, s2, n1, n2):
 
 def cheatsheet():
     return "macohd: Cohen's d standardised mean difference"
+
+
+# compact alias per ledger/NAMING.md
+macohensd = ma_cohens_d

@@ -60,3 +60,7 @@ isisz = isi_analyze
 
 def cheatsheet() -> str:
     return "isi_analyze({}) -> Inter-spike interval analysis."
+
+
+# compact alias per ledger/NAMING.md
+isianalyze = isi_analyze

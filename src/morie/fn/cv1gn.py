@@ -48,3 +48,7 @@ def cv1_genomic(y, markers, n_folds):
 
 def cheatsheet():
     return "cv1gn: CV1 genomic cross-validation: train on observed, predict unobserved lines"
+
+
+# compact alias per ledger/NAMING.md
+cv1genomic = cv1_genomic

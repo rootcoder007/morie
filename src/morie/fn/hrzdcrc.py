@@ -67,3 +67,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`hrz_deconv_rate`.
 horowitz_deconv_rate = hrz_deconv_rate
+
+
+# compact alias per ledger/NAMING.md
+hrzdeconvrate = hrz_deconv_rate

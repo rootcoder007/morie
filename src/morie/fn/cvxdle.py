@@ -119,3 +119,7 @@ def boyd_dual_norm(norm, z):
 
 def cheatsheet():
     return "cvxdle: 1/p + 1/q = 1; l1 <-> l_inf, l2 self-dual. The LASSO's l_inf condition comes from here"
+
+
+# compact alias per ledger/NAMING.md
+boyddualnorm = boyd_dual_norm

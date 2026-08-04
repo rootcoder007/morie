@@ -42,3 +42,7 @@ def lrt_two_groups(w1, n1, w2, n2):
 
 def cheatsheet():
     return '1e8: -2 log(Lambda) = -2 sum_j [w_j log(pibar/pihat_j) + ...] [Bilder & Loughin 2025, eq. 1.8]'
+
+
+# compact alias per ledger/NAMING.md
+lrttwogroups = lrt_two_groups

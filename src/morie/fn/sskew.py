@@ -47,3 +47,7 @@ sskew = skewness_coeff
 
 def cheatsheet() -> str:
     return "skewness_coeff({}) -> Skewness coefficient."
+
+
+# compact alias per ledger/NAMING.md
+skewnesscoeff = skewness_coeff

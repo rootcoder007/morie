@@ -49,3 +49,7 @@ cmbfl = comb_filter
 
 def cheatsheet() -> str:
     return "comb_filter({}) -> Comb filter."
+
+
+# compact alias per ledger/NAMING.md
+combfilter = comb_filter

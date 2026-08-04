@@ -39,3 +39,7 @@ wnhmm = hamming_window
 
 def cheatsheet() -> str:
     return "hamming_window({}) -> Hamming window."
+
+
+# compact alias per ledger/NAMING.md
+hammingwindow = hamming_window

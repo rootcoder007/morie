@@ -204,3 +204,7 @@ def geron_gpt3(
 
 def cheatsheet():
     return "hmgpt3: GPT-3 decoder-only architecture -- exact parameter count, shape trace, KV-cache size"
+
+
+# compact alias per ledger/NAMING.md
+gerongpt3 = geron_gpt3

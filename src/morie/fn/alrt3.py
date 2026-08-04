@@ -59,3 +59,7 @@ short = alrt_sw
 
 def cheatsheet() -> str:
     return "alrt_sw({}) -> Suicide watch alert prevalence by year."
+
+
+# compact alias per ledger/NAMING.md
+alrtsw = alrt_sw

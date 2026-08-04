@@ -70,3 +70,7 @@ prc = pr_curve
 
 def cheatsheet() -> str:
     return "pr_curve({}) -> Precision-recall curve."
+
+
+# compact alias per ledger/NAMING.md
+prcurve = pr_curve

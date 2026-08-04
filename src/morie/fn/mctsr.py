@@ -38,3 +38,7 @@ def mcts_rollout(state, budget):
 
 def cheatsheet():
     return "mctsr: Vanilla MCTS with random rollouts"
+
+
+# compact alias per ledger/NAMING.md
+mctsrollout = mcts_rollout

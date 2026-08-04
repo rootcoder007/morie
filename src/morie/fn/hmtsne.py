@@ -215,3 +215,11 @@ def geron_tsne(X, n_components=2, perplexity=5.0, seed=0, n_iter=300, lr=None, m
 
 def cheatsheet():
     return "hmtsne: t-SNE: KL divergence between joint probabilities in high- and low-dim"
+
+
+# compact alias per ledger/NAMING.md
+conditionalp = conditional_p
+
+
+# compact alias per ledger/NAMING.md
+gerontsne = geron_tsne

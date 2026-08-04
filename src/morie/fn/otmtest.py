@@ -186,3 +186,7 @@ def ot_mmd_two_sample(X, Y, kernel="rbf", B=999, cdf=None, gamma=None, unbiased=
 
 def cheatsheet():
     return "otmtest: kernel two-sample test via maximum mean discrepancy"
+
+
+# compact alias per ledger/NAMING.md
+otmmdtwosample = ot_mmd_two_sample

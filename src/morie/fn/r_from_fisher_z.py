@@ -42,3 +42,7 @@ def r_from_fisher_z(z):
 
 def cheatsheet():
     return 'ca11e14: r = (e^{2Zr} - 1) / (e^{2Zr} + 1) [Weisburd et al. 2022, eq. 11.14]'
+
+
+# compact alias per ledger/NAMING.md
+rfromfisherz = r_from_fisher_z

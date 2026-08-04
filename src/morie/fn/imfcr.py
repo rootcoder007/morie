@@ -75,3 +75,7 @@ imfcr = imf_criteria
 
 def cheatsheet() -> str:
     return "imf_criteria({}) -> IMF stopping criteria check."
+
+
+# compact alias per ledger/NAMING.md
+imfcriteria = imf_criteria

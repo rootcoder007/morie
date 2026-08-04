@@ -31,3 +31,7 @@ def ghosal_pk_levy(u_grid_max=8.0, n_grid=4000):
 
 def cheatsheet():
     return "gh_c14_13: Poisson-Kingman Lévy intensity"
+
+
+# compact alias per ledger/NAMING.md
+ghosalpklevy = ghosal_pk_levy

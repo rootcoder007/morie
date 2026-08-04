@@ -28,3 +28,7 @@ spat = spatial_logit
 
 def cheatsheet() -> str:
     return "spatial_logit({}) -> Spatial logit model"
+
+
+# compact alias per ledger/NAMING.md
+spatiallogit = spatial_logit

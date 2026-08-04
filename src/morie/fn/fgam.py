@@ -40,3 +40,7 @@ def functional_gam(X, Y, basis):
 
 def cheatsheet():
     return "fgam: Functional GAM"
+
+
+# compact alias per ledger/NAMING.md
+functionalgam = functional_gam

@@ -131,3 +131,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`tau_regression`.
 tau_estimator_regression = tau_regression
+
+
+# compact alias per ledger/NAMING.md
+tauregression = tau_regression

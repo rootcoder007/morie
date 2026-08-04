@@ -53,3 +53,7 @@ semea = sem_measurement
 
 def cheatsheet() -> str:
     return "sem_measurement({}) -> Standard error of measurement."
+
+
+# compact alias per ledger/NAMING.md
+semmeasurement = sem_measurement

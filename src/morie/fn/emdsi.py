@@ -74,3 +74,7 @@ emdsi = emd_sifting
 
 def cheatsheet() -> str:
     return "emd_sifting({}) -> Single EMD sifting pass to extract one IMF."
+
+
+# compact alias per ledger/NAMING.md
+emdsifting = emd_sifting

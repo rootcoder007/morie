@@ -64,3 +64,7 @@ sglml = lm_test_spatial
 
 def cheatsheet() -> str:
     return "lm_test_spatial({}) -> Lagrange multiplier tests for spatial dependence."
+
+
+# compact alias per ledger/NAMING.md
+lmtestspatial = lm_test_spatial

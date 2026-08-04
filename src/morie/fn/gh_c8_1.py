@@ -46,3 +46,7 @@ def ghosal_crt_def(theta0=0.4, n=400, M_list=(1.0, 3.0, 9.0),
 
 def cheatsheet():
     return "gh_c8_1: Contraction-rate definition"
+
+
+# compact alias per ledger/NAMING.md
+ghosalcrtdef = ghosal_crt_def

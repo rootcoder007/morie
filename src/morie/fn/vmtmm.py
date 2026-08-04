@@ -109,3 +109,7 @@ def validity_mtmm(
 
 def cheatsheet() -> str:
     return "validity_mtmm({}) -> Multitrait-Multimethod (MTMM) matrix analysis."
+
+
+# compact alias per ledger/NAMING.md
+validitymtmm = validity_mtmm

@@ -30,3 +30,7 @@ f_fu = f_function
 
 def cheatsheet() -> str:
     return "f_function({}) -> Empty space F-function"
+
+
+# compact alias per ledger/NAMING.md
+ffunction = f_function

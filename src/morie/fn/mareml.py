@@ -111,3 +111,7 @@ def ma_random_reml(yi, vi, max_iter=200, tol=1e-12):
 
 def cheatsheet():
     return "mareml: the 1/sum(w) term IS the REML correction -- drop it and you have biased ML"
+
+
+# compact alias per ledger/NAMING.md
+marandomreml = ma_random_reml

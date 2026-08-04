@@ -111,3 +111,7 @@ dts = dip_test
 
 def cheatsheet() -> str:
     return "dip_test({}) -> Hartigan's dip test for unimodality."
+
+
+# compact alias per ledger/NAMING.md
+diptest = dip_test

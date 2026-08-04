@@ -139,3 +139,7 @@ def geron_elbo(x, mu, log_sigma, x_recon=None, likelihood="gaussian", sigma_x=1.
 
 def cheatsheet():
     return "hmelb: Evidence lower bound (ELBO) loss for VAE"
+
+
+# compact alias per ledger/NAMING.md
+geronelbo = geron_elbo

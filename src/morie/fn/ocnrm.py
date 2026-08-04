@@ -43,3 +43,7 @@ ocnrm = oc_normal_vector
 
 def cheatsheet() -> str:
     return "oc_normal_vector({}) -> OC normal vector for a single vote."
+
+
+# compact alias per ledger/NAMING.md
+ocnormalvector = oc_normal_vector

@@ -82,3 +82,7 @@ darks = dark_energy_eos
 
 def cheatsheet() -> str:
     return "dark_energy_eos({}) -> Dark energy equation of state."
+
+
+# compact alias per ledger/NAMING.md
+darkenergyeos = dark_energy_eos

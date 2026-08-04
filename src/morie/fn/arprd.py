@@ -33,3 +33,7 @@ arprd = ar_predict_fn
 
 def cheatsheet() -> str:
     return "ar_predict_fn({}) -> AR model multi-step ahead prediction."
+
+
+# compact alias per ledger/NAMING.md
+arpredictfn = ar_predict_fn

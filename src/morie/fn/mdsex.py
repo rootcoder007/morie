@@ -45,3 +45,7 @@ mdsex = convex_hull_mds
 
 def cheatsheet() -> str:
     return "convex_hull_mds({}) -> Convex hull per group in MDS space."
+
+
+# compact alias per ledger/NAMING.md
+convexhullmds = convex_hull_mds

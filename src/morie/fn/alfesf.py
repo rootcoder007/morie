@@ -40,3 +40,7 @@ def esmfold_lm_only(sequence, esm_model):
 
 def cheatsheet():
     return "alfesf: ESMFold language-model-only structure prediction"
+
+
+# compact alias per ledger/NAMING.md
+esmfoldlmonly = esmfold_lm_only

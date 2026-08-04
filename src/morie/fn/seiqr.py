@@ -108,3 +108,7 @@ seiqr = seiqr_model
 
 def cheatsheet() -> str:
     return "seiqr_model({}) -> SEIQR compartmental model with quarantine."
+
+
+# compact alias per ledger/NAMING.md
+seiqrmodel = seiqr_model

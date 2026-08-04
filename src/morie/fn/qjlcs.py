@@ -55,3 +55,7 @@ def cheatsheet() -> str:
 
 
 qjlcs = qjl_cosine_sim
+
+
+# compact alias per ledger/NAMING.md
+qjlcosinesim = qjl_cosine_sim

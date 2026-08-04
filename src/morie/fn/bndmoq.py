@@ -42,3 +42,7 @@ def bound_moment_qed(y, D, X, quantile):
 
 def cheatsheet():
     return "bndmoq: Quantile-equivariant bound"
+
+
+# compact alias per ledger/NAMING.md
+boundmomentqed = bound_moment_qed

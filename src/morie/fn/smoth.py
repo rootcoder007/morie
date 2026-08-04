@@ -101,3 +101,7 @@ smoth = epidemic_smooth
 
 def cheatsheet() -> str:
     return "epidemic_smooth({}) -> Smooth epidemic curve (SavGol/LOESS)."
+
+
+# compact alias per ledger/NAMING.md
+epidemicsmooth = epidemic_smooth

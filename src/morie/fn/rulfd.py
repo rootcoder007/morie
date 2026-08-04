@@ -25,3 +25,7 @@ rulfd = ruler_fd
 
 def cheatsheet() -> str:
     return "ruler_fd({}) -> Ruler fractal dimension."
+
+
+# compact alias per ledger/NAMING.md
+rulerfd = ruler_fd

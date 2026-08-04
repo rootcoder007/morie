@@ -99,3 +99,7 @@ def otis_dml_age(
 
 def cheatsheet() -> str:
     return "otis_dml_age({}) -> DML ATE by age group for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisdmlage = otis_dml_age

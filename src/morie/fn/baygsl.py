@@ -40,3 +40,7 @@ def gibbs_slice(model, x0, n_iter):
 
 def cheatsheet():
     return "baygsl: Hybrid Gibbs + slice sampler"
+
+
+# compact alias per ledger/NAMING.md
+gibbsslice = gibbs_slice

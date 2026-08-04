@@ -83,3 +83,7 @@ def am_bootstrap_se(survey_data, B=200, seed=0):
 
 def cheatsheet():
     return "ambtc: resample respondents, rerun A-M, normalise + sign-align, sd per stimulus"
+
+
+# compact alias per ledger/NAMING.md
+ambootstrapse = am_bootstrap_se

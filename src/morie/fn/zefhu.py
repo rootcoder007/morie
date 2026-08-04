@@ -29,3 +29,7 @@ fay_ = fay_herriot_unit
 
 def cheatsheet() -> str:
     return "fay_herriot_unit({}) -> Unit-level Fay-Herriot"
+
+
+# compact alias per ledger/NAMING.md
+fayherriotunit = fay_herriot_unit

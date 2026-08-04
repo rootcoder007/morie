@@ -40,3 +40,7 @@ def blip_qformer(image_features, queries, llm):
 
 def cheatsheet():
     return "blipqf: BLIP Q-Former bridge"
+
+
+# compact alias per ledger/NAMING.md
+blipqformer = blip_qformer

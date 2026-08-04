@@ -116,3 +116,7 @@ def rey_nb(
 
 def cheatsheet() -> str:
     return "rey_nb({}) -> Negative binomial regression (GLM) via IRLS."
+
+
+# compact alias per ledger/NAMING.md
+reynb = rey_nb

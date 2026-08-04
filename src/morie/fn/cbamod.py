@@ -36,3 +36,7 @@ def cbam_attention(x):
 
 def cheatsheet():
     return "cbamod: CBAM channel + spatial attention"
+
+
+# compact alias per ledger/NAMING.md
+cbamattention = cbam_attention

@@ -30,3 +30,7 @@ ok_v = ok_variance
 
 def cheatsheet() -> str:
     return "ok_variance({}) -> Ordinary kriging variance"
+
+
+# compact alias per ledger/NAMING.md
+okvariance = ok_variance

@@ -40,3 +40,7 @@ def ml_loglik(y, X, V):
 
 def cheatsheet():
     return "mlfit: ML log-likelihood evaluation for LMM"
+
+
+# compact alias per ledger/NAMING.md
+mlloglik = ml_loglik

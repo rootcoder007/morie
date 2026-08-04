@@ -40,3 +40,7 @@ def r_gcn(A_r, X, W_r):
 
 def cheatsheet():
     return "kgnn: R-GCN -- relational GCN"
+
+
+# compact alias per ledger/NAMING.md
+rgcn = r_gcn

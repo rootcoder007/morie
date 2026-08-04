@@ -40,3 +40,7 @@ def rao_scott_chisq(table, weights, design):
 
 def cheatsheet():
     return "raoscot: Rao-Scott corrected chi-square"
+
+
+# compact alias per ledger/NAMING.md
+raoscottchisq = rao_scott_chisq

@@ -35,3 +35,7 @@ krig = kriging_lambda
 
 def cheatsheet() -> str:
     return "kriging_lambda({}) -> Kriging weights (lambda)"
+
+
+# compact alias per ledger/NAMING.md
+kriginglambda = kriging_lambda

@@ -42,3 +42,7 @@ def beta_pdf(v, a, b):
 
 def cheatsheet():
     return '1e5: f(v; a, b) = Gamma(a+b)/(Gamma(a)Gamma(b)) v^(a-1)(1-v)^(b-1) [Bilder & Loughin 2025, eq. 1.5]'
+
+
+# compact alias per ledger/NAMING.md
+betapdf = beta_pdf

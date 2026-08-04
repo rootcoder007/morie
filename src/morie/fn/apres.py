@@ -33,3 +33,7 @@ apres = apre_statistic
 
 def cheatsheet() -> str:
     return "apre_statistic({}) -> Aggregate PRE across roll calls."
+
+
+# compact alias per ledger/NAMING.md
+aprestatistic = apre_statistic

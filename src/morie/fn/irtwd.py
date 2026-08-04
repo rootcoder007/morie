@@ -74,3 +74,7 @@ def irt_wright_map(
 
 def cheatsheet() -> str:
     return "irt_wright_map({}) -> Wright map data (item difficulty vs person ability)."
+
+
+# compact alias per ledger/NAMING.md
+irtwrightmap = irt_wright_map

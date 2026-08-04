@@ -42,3 +42,7 @@ vari = vario_circular
 
 def cheatsheet() -> str:
     return "vario_circular({}) -> Circular variogram model"
+
+
+# compact alias per ledger/NAMING.md
+variocircular = vario_circular

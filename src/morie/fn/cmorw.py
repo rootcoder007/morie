@@ -59,3 +59,7 @@ cmorw = cmor_wavelet
 
 def cheatsheet() -> str:
     return "cmor_wavelet({}) -> Complex Morlet wavelet."
+
+
+# compact alias per ledger/NAMING.md
+cmorwavelet = cmor_wavelet

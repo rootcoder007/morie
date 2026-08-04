@@ -102,3 +102,7 @@ olsrg = ols_regression
 
 def cheatsheet() -> str:
     return "ols_regression({}) -> OLS with full inference (coef, SE, t, p, R2, adj-R2)."
+
+
+# compact alias per ledger/NAMING.md
+olsregression = ols_regression

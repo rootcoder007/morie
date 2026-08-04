@@ -44,3 +44,7 @@ def maf_calculation(marker_matrix):
 
 def cheatsheet():
     return "mafcl: Minor allele frequency (MAF) calculation for SNP markers"
+
+
+# compact alias per ledger/NAMING.md
+mafcalculation = maf_calculation

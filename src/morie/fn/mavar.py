@@ -66,3 +66,7 @@ mavar = moving_average
 
 def cheatsheet() -> str:
     return "moving_average({}) -> Moving average smoother (simple/weighted/exponential)."
+
+
+# compact alias per ledger/NAMING.md
+movingaverage = moving_average

@@ -42,3 +42,7 @@ def pmp_fit(y, K, sigma_grid, alpha_grid):
 
 def cheatsheet():
     return "pmpfit: Mixture of Pitman-Yor processes"
+
+
+# compact alias per ledger/NAMING.md
+pmpfit = pmp_fit

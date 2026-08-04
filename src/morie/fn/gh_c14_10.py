@@ -36,3 +36,7 @@ def ghosal_py_eppf(block_sizes, d=0.5, theta=1.0):
 
 def cheatsheet():
     return "gh_c14_10: Pitman-Yor EPPF"
+
+
+# compact alias per ledger/NAMING.md
+ghosalpyeppf = ghosal_py_eppf

@@ -95,3 +95,7 @@ def wasserman_kde(x, data, h=None, rule="3.31"):
 
 def cheatsheet():
     return "wsmkdn: Silverman's rule is 0.9 A n^(-1/5), not 1.06 sigma n^(-1/5)"
+
+
+# compact alias per ledger/NAMING.md
+wassermankde = wasserman_kde

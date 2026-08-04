@@ -69,3 +69,7 @@ linit = line_intersect
 
 def cheatsheet() -> str:
     return "line_intersect({}) -> Line segment intersection."
+
+
+# compact alias per ledger/NAMING.md
+lineintersect = line_intersect

@@ -192,3 +192,7 @@ def geron_xlnet(X, n_layers=1, vocab_size=None, d_model=8, seed=0):
 
 def cheatsheet():
     return "hmxln: XLNet: permutation-based autoregressive pretraining"
+
+
+# compact alias per ledger/NAMING.md
+geronxlnet = geron_xlnet

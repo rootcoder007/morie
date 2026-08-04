@@ -46,3 +46,7 @@ def cheatsheet() -> str:
 
 
 prmsz = param_count
+
+
+# compact alias per ledger/NAMING.md
+paramcount = param_count

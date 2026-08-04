@@ -95,3 +95,7 @@ def wnominate_logit(votes, ideal_points, yea_nay_positions, beta=15.0):
 
 def cheatsheet():
     return "wnoml: sum y log P + (1-y) log(1-P); GMP = exp(logL/N)"
+
+
+# compact alias per ledger/NAMING.md
+wnominatelogit = wnominate_logit

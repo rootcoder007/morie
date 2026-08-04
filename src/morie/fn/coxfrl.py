@@ -204,3 +204,7 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
 
 def cheatsheet():
     return "coxfrl: gamma frailty per cluster; ignoring clustering leaves SEs too SMALL. tau = theta/(theta+2)"
+
+
+# compact alias per ledger/NAMING.md
+coxfrailty = cox_frailty

@@ -88,3 +88,7 @@ cspfn = csp_filter
 
 def cheatsheet() -> str:
     return "csp_filter({}) -> Common Spatial Patterns for EEG classification."
+
+
+# compact alias per ledger/NAMING.md
+cspfilter = csp_filter

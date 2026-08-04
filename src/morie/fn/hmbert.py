@@ -215,3 +215,7 @@ def geron_bert(X, n_layers=2, n_heads=2, d_model=8, vocab_size=None, d_ff=None, 
 
 def cheatsheet():
     return "hmbert: BERT: bidirectional encoder pretrained on MLM + NSP"
+
+
+# compact alias per ledger/NAMING.md
+geronbert = geron_bert

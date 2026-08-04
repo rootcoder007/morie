@@ -76,3 +76,7 @@ def cfa_loadings(
 
 def cheatsheet() -> str:
     return "cfa_loadings({}) -> Standardized factor loadings from CFA."
+
+
+# compact alias per ledger/NAMING.md
+cfaloadings = cfa_loadings

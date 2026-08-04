@@ -91,3 +91,7 @@ def kamath_pet_loss(verbalizer_logits, y_true, mlm_logits, mlm_targets,
 
 def cheatsheet():
     return "kmpet: CE(verbalizer) + alpha * km022's MLM loss"
+
+
+# compact alias per ledger/NAMING.md
+kamathpetloss = kamath_pet_loss

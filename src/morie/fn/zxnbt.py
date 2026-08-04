@@ -29,3 +29,7 @@ netw = network_between
 
 def cheatsheet() -> str:
     return "network_between({}) -> Network betweenness spatial"
+
+
+# compact alias per ledger/NAMING.md
+networkbetween = network_between

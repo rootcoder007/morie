@@ -157,3 +157,7 @@ def esl_ica(X, k=None, fun="logcosh", max_iter=500, tol=1e-8, seed=0):
 
 def cheatsheet():
     return "eslica: FastICA; sign and order of components are NOT identifiable -- compare up to permutation"
+
+
+# compact alias per ledger/NAMING.md
+eslica = esl_ica

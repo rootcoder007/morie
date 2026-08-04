@@ -38,3 +38,7 @@ def squeeze_excite(x, reduction):
 
 def cheatsheet():
     return "sqzext: Squeeze-and-Excitation block"
+
+
+# compact alias per ledger/NAMING.md
+squeezeexcite = squeeze_excite

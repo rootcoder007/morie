@@ -107,3 +107,7 @@ hmm = hidden_markov
 
 def cheatsheet() -> str:
     return "hidden_markov({}) -> Hidden Markov model (forward-backward for discrete obs)."
+
+
+# compact alias per ledger/NAMING.md
+hiddenmarkov = hidden_markov

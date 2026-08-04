@@ -65,3 +65,7 @@ def cfa_4factor(
 
 def cheatsheet() -> str:
     return "cfa_4factor({}) -> 4-factor CFA using MAPQ structure (EE/EA/UA/ER)."
+
+
+# compact alias per ledger/NAMING.md
+cfa4factor = cfa_4factor

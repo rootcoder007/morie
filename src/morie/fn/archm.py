@@ -95,3 +95,7 @@ def arch_in_mean(x):
 
 def cheatsheet():
     return "archm: ARCH-in-mean risk premium (Engle, Lilien & Robins 1987)."
+
+
+# compact alias per ledger/NAMING.md
+archinmean = arch_in_mean

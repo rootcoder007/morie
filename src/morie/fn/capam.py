@@ -85,3 +85,7 @@ capam = circular_mean
 
 def cheatsheet() -> str:
     return "circular_mean({}) -> Circular statistics -- mean direction and concentration."
+
+
+# compact alias per ledger/NAMING.md
+circularmean = circular_mean

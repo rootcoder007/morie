@@ -66,3 +66,7 @@ ftstf = f_test_features
 
 def cheatsheet() -> str:
     return "f_test_features({}) -> ANOVA F-test per feature for selection."
+
+
+# compact alias per ledger/NAMING.md
+ftestfeatures = f_test_features

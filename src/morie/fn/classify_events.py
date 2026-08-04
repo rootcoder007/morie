@@ -34,3 +34,7 @@ def classify_events(p_a, p_b, p_ab, tol=1e-12):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner2e24: Classify an event pair: independent and/or exclusive. Morin (2016) eq (2.24)."
+
+
+# compact alias per ledger/NAMING.md
+classifyevents = classify_events

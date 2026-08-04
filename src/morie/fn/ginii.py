@@ -39,3 +39,7 @@ def gini_impurity(class_probs):
 
 def cheatsheet():
     return "giniI: Gini impurity for classification tree splits"
+
+
+# compact alias per ledger/NAMING.md
+giniimpurity = gini_impurity

@@ -40,3 +40,7 @@ def open_clip(images, texts, batch):
 
 def cheatsheet():
     return "opnclp: OpenCLIP open-source training"
+
+
+# compact alias per ledger/NAMING.md
+openclip = open_clip

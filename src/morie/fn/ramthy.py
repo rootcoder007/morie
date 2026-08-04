@@ -565,3 +565,15 @@ def cheatsheet():
         "Goodman's monochromatic-triangle identity, the Erdos probabilistic "
         "lower bound, and witness verification. Not the RESET test."
     )
+
+
+# compact alias per ledger/NAMING.md
+goodmanminimum = goodman_minimum
+
+
+# compact alias per ledger/NAMING.md
+partyproblem = party_problem
+
+
+# compact alias per ledger/NAMING.md
+ramseynumber = ramsey_number

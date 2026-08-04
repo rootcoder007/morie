@@ -38,3 +38,7 @@ def ma_galbraith(yi, se_i):
 
 def cheatsheet():
     return "magal: Galbraith plot z_i vs 1/se_i"
+
+
+# compact alias per ledger/NAMING.md
+magalbraith = ma_galbraith

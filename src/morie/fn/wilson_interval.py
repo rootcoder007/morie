@@ -42,3 +42,7 @@ def wilson_interval(w, n, z):
 
 def cheatsheet():
     return '1e4: pi_tilde +/- (z sqrt(n)/(n+z^2)) sqrt(pi_hat(1-pi_hat) + z^2/4n) [Bilder & Loughin 2025, eq. 1.4]'
+
+
+# compact alias per ledger/NAMING.md
+wilsoninterval = wilson_interval

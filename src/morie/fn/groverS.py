@@ -38,3 +38,7 @@ def grover_search(oracle, N):
 
 def cheatsheet():
     return "groverS: Grover search"
+
+
+# compact alias per ledger/NAMING.md
+groversearch = grover_search

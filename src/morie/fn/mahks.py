@@ -42,3 +42,7 @@ def ma_hartung_knapp(yi, vi, tau2):
 
 def cheatsheet():
     return "mahks: Hartung-Knapp-Sidik-Jonkman variance correction"
+
+
+# compact alias per ledger/NAMING.md
+mahartungknapp = ma_hartung_knapp

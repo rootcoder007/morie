@@ -40,3 +40,7 @@ def pie_parameters(y, X, intervention_dist):
 
 def cheatsheet():
     return "piepar: Population intervention effect (PIE)"
+
+
+# compact alias per ledger/NAMING.md
+pieparameters = pie_parameters

@@ -106,3 +106,7 @@ alcov = alcove_model
 
 def cheatsheet() -> str:
     return "alcove_model({}) -> ALCOVE attention-learning model."
+
+
+# compact alias per ledger/NAMING.md
+alcovemodel = alcove_model

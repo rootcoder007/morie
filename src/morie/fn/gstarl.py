@@ -66,3 +66,7 @@ def local_g_star(x, W, cdf=None):
 
 def cheatsheet():
     return "gstarl: Local Getis-Ord G* hot-spot statistic"
+
+
+# compact alias per ledger/NAMING.md
+localgstar = local_g_star

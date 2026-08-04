@@ -55,3 +55,7 @@ rskpr = risk_profile
 
 def cheatsheet() -> str:
     return "risk_profile({}) -> Mean risk score profile by demographic subgroups."
+
+
+# compact alias per ledger/NAMING.md
+riskprofile = risk_profile

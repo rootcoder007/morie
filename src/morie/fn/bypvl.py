@@ -32,3 +32,7 @@ bypvl = bayesian_p_value
 
 def cheatsheet() -> str:
     return "bayesian_p_value({}) -> Bayesian p-value."
+
+
+# compact alias per ledger/NAMING.md
+bayesianpvalue = bayesian_p_value

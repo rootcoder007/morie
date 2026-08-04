@@ -72,3 +72,7 @@ def gibbons_rvn_test(x, cdf=None):
 
 def cheatsheet():
     return "gb35rvn: Rank von Neumann (RVN) test for randomness based on ranks of observations"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsrvntest = gibbons_rvn_test

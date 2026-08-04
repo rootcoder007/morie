@@ -50,3 +50,7 @@ def joseph_rmsse(y_true, y_pred, y_train, m):
 
 def cheatsheet():
     return "jormse2: Root Mean Squared Scaled Error -- scale by in-sample naive RMSE"
+
+
+# compact alias per ledger/NAMING.md
+josephrmsse = joseph_rmsse

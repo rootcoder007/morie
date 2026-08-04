@@ -34,3 +34,7 @@ rf = rf_dist
 
 def cheatsheet() -> str:
     return "rf_dist({}) -> F-distribution random variate generation."
+
+
+# compact alias per ledger/NAMING.md
+rfdist = rf_dist

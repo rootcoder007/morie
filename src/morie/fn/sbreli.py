@@ -38,3 +38,7 @@ def spearman_brown(r, k):
 
 def cheatsheet():
     return "sbreli: Spearman-Brown projected reliability"
+
+
+# compact alias per ledger/NAMING.md
+spearmanbrown = spearman_brown

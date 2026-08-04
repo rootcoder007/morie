@@ -36,3 +36,7 @@ bispc = bispectrum_fn
 
 def cheatsheet() -> str:
     return "bispectrum_fn({}) -> Bispectrum estimation for nonlinear coupling detection."
+
+
+# compact alias per ledger/NAMING.md
+bispectrumfn = bispectrum_fn

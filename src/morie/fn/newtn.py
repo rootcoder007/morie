@@ -75,3 +75,7 @@ newtn = newton_root
 
 def cheatsheet() -> str:
     return "newton_root({}) -> Newton-Raphson root finding."
+
+
+# compact alias per ledger/NAMING.md
+newtonroot = newton_root

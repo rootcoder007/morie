@@ -31,3 +31,7 @@ bbss = bb_sum_squares
 
 def cheatsheet() -> str:
     return "bb_sum_squares({}) -> Blackbox total sum of squares."
+
+
+# compact alias per ledger/NAMING.md
+bbsumsquares = bb_sum_squares

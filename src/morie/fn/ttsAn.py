@@ -40,3 +40,7 @@ def twitter_anomaly(y, period):
 
 def cheatsheet():
     return "ttsAn: Twitter AnomalyDetection (Seasonal Hybrid ESD)"
+
+
+# compact alias per ledger/NAMING.md
+twitteranomaly = twitter_anomaly

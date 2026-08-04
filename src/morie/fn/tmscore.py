@@ -40,3 +40,7 @@ def tm_score(coords1, coords2):
 
 def cheatsheet():
     return "tmscore: TM-score for protein structure similarity"
+
+
+# compact alias per ledger/NAMING.md
+tmscore = tm_score

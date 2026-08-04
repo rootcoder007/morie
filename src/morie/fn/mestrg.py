@@ -111,3 +111,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`m_regression`.
 m_estimator_regression = m_regression
+
+
+# compact alias per ledger/NAMING.md
+mregression = m_regression

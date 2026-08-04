@@ -42,3 +42,7 @@ def odds_ratio_2x2(a, b, c, d):
 
 def cheatsheet():
     return 'ca11e10: OR = (p1/(1-p1)) / (p2/(1-p2)) = ad/bc [Weisburd et al. 2022, eq. 11.10]'
+
+
+# compact alias per ledger/NAMING.md
+oddsratio2x2 = odds_ratio_2x2

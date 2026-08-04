@@ -146,3 +146,7 @@ def white_noise_test(X, lags=10, cdf=None, fitdf=0, modified=True):
 
 def cheatsheet():
     return "whtnse: Hosking multivariate portmanteau test for white noise"
+
+
+# compact alias per ledger/NAMING.md
+whitenoisetest = white_noise_test

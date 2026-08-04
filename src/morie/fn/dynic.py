@@ -78,3 +78,7 @@ dynic = dlm_fit
 
 def cheatsheet() -> str:
     return "dlm_fit({}) -> Dynamic linear model (local level/trend)."
+
+
+# compact alias per ledger/NAMING.md
+dlmfit = dlm_fit

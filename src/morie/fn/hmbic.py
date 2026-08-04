@@ -87,3 +87,7 @@ def geron_bic(log_lik, k, n):
 
 def cheatsheet():
     return "hmbic: Bayesian information criterion for cluster-number selection"
+
+
+# compact alias per ledger/NAMING.md
+geronbic = geron_bic

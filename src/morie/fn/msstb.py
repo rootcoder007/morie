@@ -35,3 +35,7 @@ stre = stress_s2
 
 def cheatsheet() -> str:
     return "stress_s2({}) -> Kruskal stress S2"
+
+
+# compact alias per ledger/NAMING.md
+stresss2 = stress_s2

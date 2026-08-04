@@ -63,3 +63,7 @@ def cheatsheet() -> str:
 
 
 pqcmp = polar_compress
+
+
+# compact alias per ledger/NAMING.md
+polarcompress = polar_compress

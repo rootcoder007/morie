@@ -88,3 +88,7 @@ dkwin = dkw_test
 
 def cheatsheet() -> str:
     return "dkw_test({x}) -> DKW inequality-based goodness-of-fit test."
+
+
+# compact alias per ledger/NAMING.md
+dkwtest = dkw_test

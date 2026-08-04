@@ -51,3 +51,7 @@ bic = cfa_bic
 
 def cheatsheet() -> str:
     return "cfa_bic({}) -> BIC for model comparison."
+
+
+# compact alias per ledger/NAMING.md
+cfabic = cfa_bic

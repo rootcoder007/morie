@@ -148,3 +148,7 @@ def esl_sparse_pca(X, k=2, lambda_=0.1, max_iter=500, tol=1e-8, center=True, sca
 
 def cheatsheet():
     return "eslscd: L1 sparse PCA; components are NOT orthogonal, so use adjusted_variance not raw sums"
+
+
+# compact alias per ledger/NAMING.md
+eslsparsepca = esl_sparse_pca

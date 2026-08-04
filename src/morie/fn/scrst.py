@@ -42,3 +42,7 @@ scrst = crest_factor
 
 def cheatsheet() -> str:
     return "crest_factor({}) -> Crest factor."
+
+
+# compact alias per ledger/NAMING.md
+crestfactor = crest_factor

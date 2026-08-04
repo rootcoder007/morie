@@ -40,3 +40,7 @@ def tmle_stabilized(y, D, X):
 
 def cheatsheet():
     return "tmlsta: TMLE with stabilized clever covariate"
+
+
+# compact alias per ledger/NAMING.md
+tmlestabilized = tmle_stabilized

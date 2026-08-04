@@ -42,3 +42,7 @@ def pooled_sd(s1, s2, n1, n2):
 
 def cheatsheet():
     return 'ca11e2: s_pooled = sqrt(((n1-1)s1^2 + (n2-1)s2^2)/(n1+n2-2)) [Weisburd et al. 2022, eq. 11.2]'
+
+
+# compact alias per ledger/NAMING.md
+pooledsd = pooled_sd

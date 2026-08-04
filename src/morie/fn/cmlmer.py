@@ -42,3 +42,7 @@ def compressed_lmm(y, M, K, clusters):
 
 def cheatsheet():
     return "cmlmer: Compressed LMM for fast GWAS"
+
+
+# compact alias per ledger/NAMING.md
+compressedlmm = compressed_lmm

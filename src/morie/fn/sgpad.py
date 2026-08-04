@@ -49,3 +49,7 @@ sgpad = pad_signal
 
 def cheatsheet() -> str:
     return "pad_signal({}) -> Signal padding."
+
+
+# compact alias per ledger/NAMING.md
+padsignal = pad_signal

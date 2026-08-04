@@ -42,3 +42,7 @@ def contingency_pmf(count_table, prob_table):
 
 def cheatsheet():
     return '3e2: P(N11 = n11, ..., NIJ = nIJ) over I x J cells [Bilder & Loughin 2025, eq. 3.2]'
+
+
+# compact alias per ledger/NAMING.md
+contingencypmf = contingency_pmf

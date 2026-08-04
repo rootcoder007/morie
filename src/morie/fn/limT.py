@@ -40,3 +40,7 @@ def symbolic_limit(expr, x, x0):
 
 def cheatsheet():
     return "limT: Symbolic limit"
+
+
+# compact alias per ledger/NAMING.md
+symboliclimit = symbolic_limit

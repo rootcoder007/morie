@@ -66,3 +66,7 @@ def ljung_box(y, lags, cdf=None):
 
 def cheatsheet():
     return "ljbox2: Ljung-Box Q-test for autocorrelation"
+
+
+# compact alias per ledger/NAMING.md
+ljungbox = ljung_box

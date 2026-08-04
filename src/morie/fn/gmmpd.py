@@ -51,3 +51,7 @@ gmmpd = gmm_pdf
 
 def cheatsheet() -> str:
     return "gmm_pdf({}) -> Gaussian Mixture Model PDF evaluation."
+
+
+# compact alias per ledger/NAMING.md
+gmmpdf = gmm_pdf

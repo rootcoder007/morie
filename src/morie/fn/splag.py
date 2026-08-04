@@ -73,3 +73,7 @@ splag = spatial_lag
 
 def cheatsheet() -> str:
     return "spatial_lag({}) -> Spatial lag model (SLM) estimation."
+
+
+# compact alias per ledger/NAMING.md
+spatiallag = spatial_lag

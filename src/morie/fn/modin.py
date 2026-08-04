@@ -58,3 +58,7 @@ modin = mod_inverse
 
 def cheatsheet() -> str:
     return "mod_inverse({}) -> Modular multiplicative inverse."
+
+
+# compact alias per ledger/NAMING.md
+modinverse = mod_inverse

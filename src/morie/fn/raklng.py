@@ -47,3 +47,7 @@ def raking_ratio(y, weights, margins):
 
 def cheatsheet():
     return "raklng: Raking ratio post-stratification (iterative proportional fitting)"
+
+
+# compact alias per ledger/NAMING.md
+rakingratio = raking_ratio

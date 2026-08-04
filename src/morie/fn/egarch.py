@@ -49,3 +49,7 @@ def egarch_model(y, p=1, q=1):
 
 def cheatsheet():
     return "egarch: Exponential GARCH, spec 'egarch'"
+
+
+# compact alias per ledger/NAMING.md
+egarchmodel = egarch_model

@@ -141,3 +141,7 @@ def esl_oob_632(err_train, err_loo_boot, gamma=None, y=None, y_pred=None,
 
 def cheatsheet():
     return "eslo63: .632 takes Err^(1) (7.56), not Err_boot (7.54) -- and .632+ handles overfit rules"
+
+
+# compact alias per ledger/NAMING.md
+esloob632 = esl_oob_632

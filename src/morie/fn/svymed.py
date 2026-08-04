@@ -38,3 +38,7 @@ def survey_median(y, weights):
 
 def cheatsheet():
     return "svymed: Survey-weighted median"
+
+
+# compact alias per ledger/NAMING.md
+surveymedian = survey_median

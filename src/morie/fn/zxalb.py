@@ -29,3 +29,7 @@ albe = albers_proj
 
 def cheatsheet() -> str:
     return "albers_proj({}) -> Albers equal-area projection"
+
+
+# compact alias per ledger/NAMING.md
+albersproj = albers_proj

@@ -73,3 +73,7 @@ def wasserman_wald(data, f, theta0, cdf=None):
 
 def cheatsheet():
     return "wsmwld: Wald test (theta_hat - theta_0)/se ~ N(0,1)"
+
+
+# compact alias per ledger/NAMING.md
+wassermanwald = wasserman_wald

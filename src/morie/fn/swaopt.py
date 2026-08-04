@@ -94,3 +94,7 @@ swaopt = swarm_optimize
 
 def cheatsheet() -> str:
     return "swarm_optimize({}) -> Particle swarm optimization."
+
+
+# compact alias per ledger/NAMING.md
+swarmoptimize = swarm_optimize

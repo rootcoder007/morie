@@ -37,3 +37,7 @@ armae = arma_estimate_fn
 
 def cheatsheet() -> str:
     return "arma_estimate_fn({}) -> ARMA coefficient estimation via modified Yule-Walker."
+
+
+# compact alias per ledger/NAMING.md
+armaestimatefn = arma_estimate_fn

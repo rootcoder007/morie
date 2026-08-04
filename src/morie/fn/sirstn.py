@@ -44,3 +44,7 @@ def sir_stochastic(S0, I0, beta, gamma, T):
 
 def cheatsheet():
     return "sirstn: Stochastic SIR (Gillespie)"
+
+
+# compact alias per ledger/NAMING.md
+sirstochastic = sir_stochastic

@@ -28,3 +28,7 @@ alias = hjorth_params
 
 def cheatsheet() -> str:
     return "hjorth_params({}) -> Hjorth parameters of a signal."
+
+
+# compact alias per ledger/NAMING.md
+hjorthparams = hjorth_params

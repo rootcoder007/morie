@@ -40,3 +40,7 @@ def multi_qtl(y, markers, positions):
 
 def cheatsheet():
     return "mqtmpl: Multi-QTL model selection"
+
+
+# compact alias per ledger/NAMING.md
+multiqtl = multi_qtl

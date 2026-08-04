@@ -114,3 +114,7 @@ pwr_av = power_anova
 
 def cheatsheet() -> str:
     return "power_anova({}) -> Power for one-way ANOVA."
+
+
+# compact alias per ledger/NAMING.md
+poweranova = power_anova

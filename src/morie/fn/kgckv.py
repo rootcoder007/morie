@@ -30,3 +30,7 @@ cok_ = cok_variance
 
 def cheatsheet() -> str:
     return "cok_variance({}) -> Co-kriging variance"
+
+
+# compact alias per ledger/NAMING.md
+cokvariance = cok_variance

@@ -44,3 +44,7 @@ rho = spearman_rho
 
 def cheatsheet() -> str:
     return "spearman_rho({}) -> Spearman rank correlation coefficient (rho)."
+
+
+# compact alias per ledger/NAMING.md
+spearmanrho = spearman_rho

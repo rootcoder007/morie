@@ -35,3 +35,7 @@ def kamath_ch8_smd(x, y, E=None):
 
 def cheatsheet():
     return "km126: sentence-level MoverScore = one L2 distance"
+
+
+# compact alias per ledger/NAMING.md
+kamathch8smd = kamath_ch8_smd

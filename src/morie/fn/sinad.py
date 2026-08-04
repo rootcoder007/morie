@@ -56,3 +56,7 @@ sinad = sinad_compute
 
 def cheatsheet() -> str:
     return "sinad_compute({}) -> SINAD (signal to noise and distortion)."
+
+
+# compact alias per ledger/NAMING.md
+sinadcompute = sinad_compute

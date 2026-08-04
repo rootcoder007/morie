@@ -98,3 +98,7 @@ mxflw = max_flow
 
 def cheatsheet() -> str:
     return "mxflw() -> Compute maximum flow using Edmonds-Karp (BFS-based Ford-Fulkerson)"
+
+
+# compact alias per ledger/NAMING.md
+maxflow = max_flow

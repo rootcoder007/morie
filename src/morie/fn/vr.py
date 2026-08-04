@@ -47,3 +47,7 @@ vr = variance_ratio
 
 def cheatsheet() -> str:
     return "variance_ratio({}) -> Variance ratio (F-test for equality of variances)."
+
+
+# compact alias per ledger/NAMING.md
+varianceratio = variance_ratio

@@ -74,3 +74,7 @@ def gibbons_fab_test(x, y, cdf=None):
 
 def cheatsheet():
     return "gb931: Freund-Ansari-Bradley-David-Barton scale test using folded ranks"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsfabtest = gibbons_fab_test

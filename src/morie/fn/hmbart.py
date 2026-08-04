@@ -196,3 +196,7 @@ def geron_bart(src, tgt, mask_ratio=0.3, mean_span=3.0, permute=False, model=Non
 
 def cheatsheet():
     return "hmbart: BART: denoising autoencoder pretraining for seq2seq"
+
+
+# compact alias per ledger/NAMING.md
+geronbart = geron_bart

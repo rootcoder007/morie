@@ -42,3 +42,7 @@ def adjusted_r2(r2, n, k):
 
 def cheatsheet():
     return 'ca2e15: Adj R^2 = 1 - (1-R^2)(n-1)/(n-k-1) [Weisburd et al. 2022, eq. 2.15]'
+
+
+# compact alias per ledger/NAMING.md
+adjustedr2 = adjusted_r2

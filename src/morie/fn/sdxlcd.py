@@ -40,3 +40,7 @@ def sdxl_unet(x, t, text_emb):
 
 def cheatsheet():
     return "sdxlcd: Stable Diffusion XL UNet"
+
+
+# compact alias per ledger/NAMING.md
+sdxlunet = sdxl_unet

@@ -59,3 +59,7 @@ def page_hinkley(x, threshold, cdf=None):
 
 def cheatsheet():
     return "pageH: Page-Hinkley statistic"
+
+
+# compact alias per ledger/NAMING.md
+pagehinkley = page_hinkley

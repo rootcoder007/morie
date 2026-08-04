@@ -46,3 +46,7 @@ def fuzzy_rdd(y, x, D, cutoff, bandwidth):
 
 def cheatsheet():
     return "rdfzzy: Fuzzy RDD (incomplete compliance at cutoff)"
+
+
+# compact alias per ledger/NAMING.md
+fuzzyrdd = fuzzy_rdd

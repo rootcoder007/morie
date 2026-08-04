@@ -29,3 +29,7 @@ part = party_position
 
 def cheatsheet() -> str:
     return "party_position({}) -> Party position estimation"
+
+
+# compact alias per ledger/NAMING.md
+partyposition = party_position

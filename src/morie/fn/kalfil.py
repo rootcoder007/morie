@@ -99,3 +99,7 @@ kalfil = kalman_filter
 
 def cheatsheet() -> str:
     return "kalman_filter({}) -> Kalman filter tracking."
+
+
+# compact alias per ledger/NAMING.md
+kalmanfilter = kalman_filter

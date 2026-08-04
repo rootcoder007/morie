@@ -132,3 +132,7 @@ def impala_vtrace(rewards, values, behavior_logp, target_logp, gamma=0.99,
 
 def cheatsheet():
     return "impala: rho_bar sets the FIXED POINT, c_bar sets the RATE -- not interchangeable"
+
+
+# compact alias per ledger/NAMING.md
+impalavtrace = impala_vtrace

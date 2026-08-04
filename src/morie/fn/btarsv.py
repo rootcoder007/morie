@@ -44,3 +44,7 @@ def boot_ar_sieve(x, p_max, stat, B):
 
 def cheatsheet():
     return "btarsv: AR-sieve bootstrap for stationary time series"
+
+
+# compact alias per ledger/NAMING.md
+bootarsieve = boot_ar_sieve

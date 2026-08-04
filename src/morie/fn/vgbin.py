@@ -42,3 +42,7 @@ vari = vario_binned
 
 def cheatsheet() -> str:
     return "vario_binned({}) -> Binned semivariogram"
+
+
+# compact alias per ledger/NAMING.md
+variobinned = vario_binned

@@ -41,3 +41,7 @@ buttlp = butter_lowpass
 
 def cheatsheet() -> str:
     return "butter_lowpass({}) -> Butterworth lowpass filter."
+
+
+# compact alias per ledger/NAMING.md
+butterlowpass = butter_lowpass

@@ -44,3 +44,7 @@ def ma_orwin_fsn(d_obs, d_crit, d_filldraw, k):
 
 def cheatsheet():
     return "maorw: Orwin's fail-safe N for trivial-effect target"
+
+
+# compact alias per ledger/NAMING.md
+maorwinfsn = ma_orwin_fsn

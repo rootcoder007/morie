@@ -30,3 +30,7 @@ pre_ = pre_stat
 
 def cheatsheet() -> str:
     return "pre_stat({}) -> Proportional Reduction in Error"
+
+
+# compact alias per ledger/NAMING.md
+prestat = pre_stat

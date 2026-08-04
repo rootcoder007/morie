@@ -28,3 +28,7 @@ hrvmt = hrv_metrics_fn
 
 def cheatsheet() -> str:
     return "hrv_metrics_fn({}) -> Heart rate variability metrics."
+
+
+# compact alias per ledger/NAMING.md
+hrvmetricsfn = hrv_metrics_fn

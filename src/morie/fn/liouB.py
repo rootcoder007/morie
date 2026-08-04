@@ -66,3 +66,7 @@ def liouville_test(expr, x, cdf=None):
 
 def cheatsheet():
     return "liouB: Liouville's elementary-integral test"
+
+
+# compact alias per ledger/NAMING.md
+liouvilletest = liouville_test

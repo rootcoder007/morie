@@ -38,3 +38,7 @@ arnrm = ar_normalize
 
 def cheatsheet() -> str:
     return "ar_normalize({}) -> Normalize AR coefficients."
+
+
+# compact alias per ledger/NAMING.md
+arnormalize = ar_normalize

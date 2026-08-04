@@ -97,3 +97,7 @@ def drift_forecast(y, h=1):
 
 def cheatsheet():
     return "driftF: line through the FIRST and LAST points only -- everything between is ignored"
+
+
+# compact alias per ledger/NAMING.md
+driftforecast = drift_forecast

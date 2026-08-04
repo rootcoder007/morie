@@ -47,3 +47,7 @@ def flat_torus(
 
 def cheatsheet() -> str:
     return "flat_torus(a, b, n) -> flat torus from rectangle identification"
+
+
+# compact alias per ledger/NAMING.md
+flattorus = flat_torus

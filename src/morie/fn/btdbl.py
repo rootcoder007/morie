@@ -46,3 +46,7 @@ def boot_double(x, stat, B, Bp, alpha):
 
 def cheatsheet():
     return "btdbl: Double bootstrap for calibrated CI coverage"
+
+
+# compact alias per ledger/NAMING.md
+bootdouble = boot_double

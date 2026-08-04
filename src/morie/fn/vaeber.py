@@ -40,3 +40,7 @@ def vae_elbo(x, encoder, decoder):
 
 def cheatsheet():
     return "vaeber: VAE evidence lower bound"
+
+
+# compact alias per ledger/NAMING.md
+vaeelbo = vae_elbo

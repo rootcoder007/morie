@@ -115,3 +115,7 @@ def boot_ci_ratio(x, y, stat_x=None, stat_y=None, B=2000, alpha=0.05,
 
 def cheatsheet():
     return "btciratio: percentile CI on resampled ratios -- and paired data resample as pairs"
+
+
+# compact alias per ledger/NAMING.md
+bootciratio = boot_ci_ratio

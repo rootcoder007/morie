@@ -30,3 +30,7 @@ firs = first_order_pp
 
 def cheatsheet() -> str:
     return "first_order_pp({}) -> First-order point pattern stats"
+
+
+# compact alias per ledger/NAMING.md
+firstorderpp = first_order_pp

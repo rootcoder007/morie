@@ -70,3 +70,7 @@ evtag = event_align
 
 def cheatsheet() -> str:
     return "event_align({}) -> Event alignment via cross-correlation."
+
+
+# compact alias per ledger/NAMING.md
+eventalign = event_align

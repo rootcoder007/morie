@@ -44,3 +44,7 @@ def prox_method(f, grad_f, prox_g, x0, lr):
 
 def cheatsheet():
     return "prdldm: Proximal gradient method"
+
+
+# compact alias per ledger/NAMING.md
+proxmethod = prox_method

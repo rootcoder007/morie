@@ -56,3 +56,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`hrz_kde`.
 horowitz_appendix_kde = hrz_kde
+
+
+# compact alias per ledger/NAMING.md
+hrzkde = hrz_kde

@@ -84,3 +84,7 @@ rskth = risk_threshold
 
 def cheatsheet() -> str:
     return "risk_threshold({}) -> Optimal risk classification threshold via Youden's J."
+
+
+# compact alias per ledger/NAMING.md
+riskthreshold = risk_threshold

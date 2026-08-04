@@ -45,3 +45,7 @@ aic = cfa_aic
 
 def cheatsheet() -> str:
     return "cfa_aic({}) -> AIC for model comparison."
+
+
+# compact alias per ledger/NAMING.md
+cfaaic = cfa_aic

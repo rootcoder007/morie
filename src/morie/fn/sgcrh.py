@@ -56,3 +56,7 @@ cressie_hawkins = cressie_hawkins
 
 def cheatsheet() -> str:
     return "cressie_hawkins({}) -> Cressie-Hawkins robust semivariogram estimator"
+
+
+# compact alias per ledger/NAMING.md
+cressiehawkins = cressie_hawkins

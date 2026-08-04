@@ -42,3 +42,7 @@ def se_log_or(a, b, c, d):
 
 def cheatsheet():
     return 'ca11e11: se_lnOR = sqrt(1/a + 1/b + 1/c + 1/d) [Weisburd et al. 2022, eq. 11.11]'
+
+
+# compact alias per ledger/NAMING.md
+selogor = se_log_or

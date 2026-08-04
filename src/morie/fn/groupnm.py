@@ -48,3 +48,7 @@ def group_norm(y, x, groups, g, b, eps):
 
 def cheatsheet():
     return "groupnm: GroupNorm -- per-group channel normalization"
+
+
+# compact alias per ledger/NAMING.md
+groupnorm = group_norm

@@ -133,3 +133,7 @@ def dp_quantile(x, q=0.5, epsilon=1.0, a=None, b=None, seed=None):
 
 def cheatsheet():
     return "dpqua: exponential mechanism on RANK gaps -- sensitivity 1 however extreme the values"
+
+
+# compact alias per ledger/NAMING.md
+dpquantile = dp_quantile

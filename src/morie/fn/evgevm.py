@@ -29,3 +29,7 @@ def evt_gev_mle(x):
 
 def cheatsheet():
     return "evgevm: MLE of GEV parameters from block maxima"
+
+
+# compact alias per ledger/NAMING.md
+evtgevmle = evt_gev_mle

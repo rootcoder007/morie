@@ -46,3 +46,7 @@ resac = residual_acf_fn
 
 def cheatsheet() -> str:
     return "residual_acf_fn({}) -> Autocorrelation function of residuals for whiteness testing."
+
+
+# compact alias per ledger/NAMING.md
+residualacffn = residual_acf_fn

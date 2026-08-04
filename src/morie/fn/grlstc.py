@@ -137,3 +137,7 @@ def geron_lstm_cell(x_t, h_prev, c_prev, Wf, Wi, Wg, Wo, bf, bi, bg, bo):
 
 def cheatsheet():
     return "grlstc: c = f*c_prev + i*g, h = o*tanh(c); additive cell path is why gradients survive"
+
+
+# compact alias per ledger/NAMING.md
+geronlstmcell = geron_lstm_cell

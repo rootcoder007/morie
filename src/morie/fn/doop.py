@@ -50,3 +50,7 @@ def do_operator(Y, X, x_val, model):
 
 def cheatsheet():
     return "doop: Pearl's do-operator: intervention by setting variable to value"
+
+
+# compact alias per ledger/NAMING.md
+dooperator = do_operator

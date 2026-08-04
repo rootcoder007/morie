@@ -87,3 +87,7 @@ smpbf = spatial_buffer
 
 def cheatsheet() -> str:
     return "spatial_buffer({}) -> Spatial distance buffer zones."
+
+
+# compact alias per ledger/NAMING.md
+spatialbuffer = spatial_buffer

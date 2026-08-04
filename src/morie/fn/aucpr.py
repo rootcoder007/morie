@@ -62,3 +62,7 @@ aucpr = auc_pr
 
 def cheatsheet() -> str:
     return "auc_pr({}) -> AUC-PR (area under precision-recall curve)."
+
+
+# compact alias per ledger/NAMING.md
+aucpr = auc_pr

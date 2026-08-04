@@ -29,3 +29,7 @@ coal = coalition_equil
 
 def cheatsheet() -> str:
     return "coalition_equil({}) -> Coalition equilibrium (Schofield)"
+
+
+# compact alias per ledger/NAMING.md
+coalitionequil = coalition_equil

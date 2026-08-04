@@ -153,3 +153,7 @@ def geron_vilbert(image, text, d_model=8, seed=0):
 
 def cheatsheet():
     return "hmvilb: ViLBERT: dual-stream vision-language transformer"
+
+
+# compact alias per ledger/NAMING.md
+geronvilbert = geron_vilbert

@@ -56,3 +56,7 @@ wnent = wiener_entropy
 
 def cheatsheet() -> str:
     return "wiener_entropy(x) -> Spectral flatness (Wiener entropy)."
+
+
+# compact alias per ledger/NAMING.md
+wienerentropy = wiener_entropy

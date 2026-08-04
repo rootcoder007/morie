@@ -90,3 +90,7 @@ wlsrg = wls_regression
 
 def cheatsheet() -> str:
     return "wls_regression({}) -> Weighted least squares regression."
+
+
+# compact alias per ledger/NAMING.md
+wlsregression = wls_regression

@@ -42,3 +42,7 @@ def pi_wald_interval(xb, var_xb, z):
 
 def cheatsheet():
     return '2e15: expit(Xb +/- z sqrt(Var(Xb))) [Bilder & Loughin 2025, eq. 2.15]'
+
+
+# compact alias per ledger/NAMING.md
+piwaldinterval = pi_wald_interval

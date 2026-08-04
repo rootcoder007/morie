@@ -50,3 +50,7 @@ eqatn = atkinson_index
 
 def cheatsheet() -> str:
     return "atkinson_index({}) -> Atkinson inequality index."
+
+
+# compact alias per ledger/NAMING.md
+atkinsonindex = atkinson_index

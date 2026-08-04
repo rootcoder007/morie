@@ -36,3 +36,7 @@ def berkeley_earth(stations):
 
 def cheatsheet():
     return "berkly: Berkeley Earth Kriging surface T"
+
+
+# compact alias per ledger/NAMING.md
+berkeleyearth = berkeley_earth

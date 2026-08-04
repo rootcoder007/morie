@@ -78,3 +78,7 @@ def copula_gauss_sp(data):
 
 def cheatsheet():
     return "zxcpg: gaussian copula fitted by pairwise Kendall-tau inversion"
+
+
+# compact alias per ledger/NAMING.md
+copulagausssp = copula_gauss_sp

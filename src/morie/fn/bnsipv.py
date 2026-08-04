@@ -42,3 +42,7 @@ def bound_iv_partial(y, D, Z):
 
 def cheatsheet():
     return "bnsipv: Partial IV bound under one-sided compliance"
+
+
+# compact alias per ledger/NAMING.md
+boundivpartial = bound_iv_partial

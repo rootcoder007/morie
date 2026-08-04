@@ -40,3 +40,7 @@ def e_gcn(G, X, coords):
 
 def cheatsheet():
     return "egcn: E(n)-equivariant GCN"
+
+
+# compact alias per ledger/NAMING.md
+egcn = e_gcn

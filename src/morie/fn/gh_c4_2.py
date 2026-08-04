@@ -24,3 +24,7 @@ def ghosal_dp_mean(G0_A):
 
 def cheatsheet():
     return "gh_c4_2: DP prior mean"
+
+
+# compact alias per ledger/NAMING.md
+ghosaldpmean = ghosal_dp_mean

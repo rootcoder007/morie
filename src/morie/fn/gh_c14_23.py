@@ -44,3 +44,7 @@ def ghosal_ibp_def(n_customers=30, alpha=3.0, seed=42):
 
 def cheatsheet():
     return "gh_c14_23: Indian buffet process"
+
+
+# compact alias per ledger/NAMING.md
+ghosalibpdef = ghosal_ibp_def

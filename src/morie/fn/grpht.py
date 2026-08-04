@@ -100,3 +100,7 @@ short = graph_from_edges
 
 def cheatsheet() -> str:
     return "graph_from_edges({}) -> Graph from edge list."
+
+
+# compact alias per ledger/NAMING.md
+graphfromedges = graph_from_edges

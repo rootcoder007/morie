@@ -46,3 +46,7 @@ def ot_sinkhorn_log(a, b, C, epsilon, max_iter):
 
 def cheatsheet():
     return "otsklog: Log-domain Sinkhorn for numerical stability"
+
+
+# compact alias per ledger/NAMING.md
+otsinkhornlog = ot_sinkhorn_log

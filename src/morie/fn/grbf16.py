@@ -127,3 +127,7 @@ def geron_bf16_range(x):
 
 def cheatsheet():
     return "grbf16: bf16 = fp32 exponent range with 7 mantissa bits; round-trip error report"
+
+
+# compact alias per ledger/NAMING.md
+geronbf16range = geron_bf16_range

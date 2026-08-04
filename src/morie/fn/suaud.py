@@ -60,3 +60,7 @@ suaud = audit_score
 
 def cheatsheet() -> str:
     return "audit_score({}) -> AUDIT alcohol screening score."
+
+
+# compact alias per ledger/NAMING.md
+auditscore = audit_score

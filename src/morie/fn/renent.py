@@ -40,3 +40,7 @@ def renyi_entropy(y, alpha, base):
 
 def cheatsheet():
     return "renent: Rényi entropy of order alpha"
+
+
+# compact alias per ledger/NAMING.md
+renyientropy = renyi_entropy

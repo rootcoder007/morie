@@ -40,3 +40,7 @@ def z_dp_mechanism(y, sensitivity, rho):
 
 def cheatsheet():
     return "zfmech: z-CDP mechanism noise calibration"
+
+
+# compact alias per ledger/NAMING.md
+zdpmechanism = z_dp_mechanism

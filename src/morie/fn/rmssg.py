@@ -24,3 +24,7 @@ alias = rms_signal
 
 def cheatsheet() -> str:
     return "rms_signal({}) -> Root-mean-square of a signal."
+
+
+# compact alias per ledger/NAMING.md
+rmssignal = rms_signal

@@ -49,3 +49,7 @@ vari = vario_nested_fit
 
 def cheatsheet() -> str:
     return "vario_nested_fit({}) -> Nested variogram fitting"
+
+
+# compact alias per ledger/NAMING.md
+varionestedfit = vario_nested_fit

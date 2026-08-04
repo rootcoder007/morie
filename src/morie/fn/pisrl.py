@@ -55,3 +55,7 @@ pisrl = pisarenko_fn
 
 def cheatsheet() -> str:
     return "pisarenko_fn({}) -> Pisarenko harmonic decomposition."
+
+
+# compact alias per ledger/NAMING.md
+pisarenkofn = pisarenko_fn

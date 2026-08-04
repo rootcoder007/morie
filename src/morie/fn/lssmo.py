@@ -92,3 +92,7 @@ lssmo = loess_smooth
 
 def cheatsheet() -> str:
     return "loess_smooth({}) -> LOESS/LOWESS smoother."
+
+
+# compact alias per ledger/NAMING.md
+loesssmooth = loess_smooth

@@ -24,3 +24,7 @@ def johansen_trace(X, lags=1, cdf=None):
 
 def cheatsheet():
     return "jhoint: Johansen trace cointegration test"
+
+
+# compact alias per ledger/NAMING.md
+johansentrace = johansen_trace

@@ -83,3 +83,7 @@ short = hermite_interp
 
 def cheatsheet() -> str:
     return "hermite_interp({}) -> Hermite interpolation."
+
+
+# compact alias per ledger/NAMING.md
+hermiteinterp = hermite_interp

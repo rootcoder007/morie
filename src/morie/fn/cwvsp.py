@@ -61,3 +61,7 @@ cwvsp = cwt_spectrum
 
 def cheatsheet() -> str:
     return "_morlet_wavelet({}) -> CWT scalogram/spectrum using Morlet wavelet."
+
+
+# compact alias per ledger/NAMING.md
+cwtspectrum = cwt_spectrum

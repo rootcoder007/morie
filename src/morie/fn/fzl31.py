@@ -104,3 +104,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`fauzi_lemma_3_1`.
 fauzi_lem3_1_asymp_rep = fauzi_lemma_3_1
+
+
+# compact alias per ledger/NAMING.md
+fauzilemma31 = fauzi_lemma_3_1

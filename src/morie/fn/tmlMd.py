@@ -42,3 +42,7 @@ def tmle_mediation(Y, X, M, C):
 
 def cheatsheet():
     return "tmlMd: Targeted MLE for NIE/NDE"
+
+
+# compact alias per ledger/NAMING.md
+tmlemediation = tmle_mediation

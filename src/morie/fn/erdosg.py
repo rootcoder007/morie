@@ -38,3 +38,7 @@ def erdos_renyi_gnp(n, p):
 
 def cheatsheet():
     return "erdosg: Erdős-Rényi G(n,p)"
+
+
+# compact alias per ledger/NAMING.md
+erdosrenyignp = erdos_renyi_gnp

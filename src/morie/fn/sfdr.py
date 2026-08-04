@@ -51,3 +51,7 @@ sfdr = sfdr_compute
 
 def cheatsheet() -> str:
     return "sfdr_compute({}) -> Spurious-free dynamic range."
+
+
+# compact alias per ledger/NAMING.md
+sfdrcompute = sfdr_compute

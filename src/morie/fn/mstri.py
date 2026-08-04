@@ -30,3 +30,7 @@ tria = triangle_ineq
 
 def cheatsheet() -> str:
     return "triangle_ineq({}) -> Triangle inequality check"
+
+
+# compact alias per ledger/NAMING.md
+triangleineq = triangle_ineq

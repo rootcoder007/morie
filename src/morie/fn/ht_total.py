@@ -42,3 +42,7 @@ def ht_total(z, pi):
 
 def cheatsheet():
     return 'r2e2: t_hat_pi(z) = sum_{k in S} w_k z_k with w_k = 1/pi_k [Brus 2022, eq. 2.2]'
+
+
+# compact alias per ledger/NAMING.md
+httotal = ht_total

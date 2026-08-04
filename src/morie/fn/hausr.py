@@ -110,3 +110,7 @@ hausr = hausman_test
 
 def cheatsheet() -> str:
     return "hausman_test({}) -> Hausman FE vs RE specification test."
+
+
+# compact alias per ledger/NAMING.md
+hausmantest = hausman_test

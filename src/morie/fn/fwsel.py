@@ -92,3 +92,7 @@ fwsel = forward_select
 
 def cheatsheet() -> str:
     return "forward_select({}) -> Sequential forward feature selection."
+
+
+# compact alias per ledger/NAMING.md
+forwardselect = forward_select

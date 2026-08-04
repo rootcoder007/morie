@@ -69,3 +69,7 @@ def geron_tanh(z):
 
 def cheatsheet():
     return "hmtanh: Hyperbolic tangent activation"
+
+
+# compact alias per ledger/NAMING.md
+gerontanh = geron_tanh

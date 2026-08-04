@@ -107,3 +107,7 @@ def msm_iv(y, treatment_history, instruments, covariate_history=None):
 
 def cheatsheet():
     return "msmiv2: 2SLS of Y on cumulative treatment instrumented by Z; F < 10 = weak"
+
+
+# compact alias per ledger/NAMING.md
+msmiv = msm_iv

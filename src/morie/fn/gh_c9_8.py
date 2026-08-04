@@ -47,3 +47,7 @@ def ghosal_nlar_crt(ns=(200, 800, 3200), seed=42):
 
 def cheatsheet():
     return "gh_c9_8: Nonlinear autoregression contraction"
+
+
+# compact alias per ledger/NAMING.md
+ghosalnlarcrt = ghosal_nlar_crt

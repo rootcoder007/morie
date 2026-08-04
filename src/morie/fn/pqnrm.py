@@ -36,3 +36,7 @@ def cheatsheet() -> str:
 
 
 pqnrm = polar_normalize
+
+
+# compact alias per ledger/NAMING.md
+polarnormalize = polar_normalize

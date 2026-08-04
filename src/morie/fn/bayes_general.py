@@ -34,3 +34,7 @@ def bayes_general(priors, likelihoods):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner2e74: Bayes' theorem, general form over a complete hypothesis set. Morin (2016) eq (2.74)."
+
+
+# compact alias per ledger/NAMING.md
+bayesgeneral = bayes_general

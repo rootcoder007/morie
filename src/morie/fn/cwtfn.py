@@ -38,3 +38,7 @@ cwtfn = cwt_compute_fn
 
 def cheatsheet() -> str:
     return "cwt_compute_fn({}) -> Continuous wavelet transform."
+
+
+# compact alias per ledger/NAMING.md
+cwtcomputefn = cwt_compute_fn

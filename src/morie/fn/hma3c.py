@@ -216,3 +216,7 @@ def geron_a3c(env, actor, critic, n_workers=4, lr=0.1, epochs=50, gamma=0.99, cr
 
 def cheatsheet():
     return "hma3c: Asynchronous advantage actor-critic (A3C)"
+
+
+# compact alias per ledger/NAMING.md
+gerona3c = geron_a3c

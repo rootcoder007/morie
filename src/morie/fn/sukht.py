@@ -74,3 +74,7 @@ def cheatsheet():
 # CANONICAL TEST
 # >>> sukhatme_test([0,0,0,0,0], [-10,-5,5,10,0])
 # X has zero spread, Y has large spread -> z strongly negative, small p
+
+
+# compact alias per ledger/NAMING.md
+sukhatmetest = sukhatme_test

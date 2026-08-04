@@ -42,3 +42,7 @@ def snm_cox(time, event, treatment_history, covariate_history):
 
 def cheatsheet():
     return "snmcox: Structural nested Cox model"
+
+
+# compact alias per ledger/NAMING.md
+snmcox = snm_cox

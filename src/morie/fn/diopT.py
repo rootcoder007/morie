@@ -36,3 +36,7 @@ def farey_seq(n):
 
 def cheatsheet():
     return "diopT: Farey sequence enumeration"
+
+
+# compact alias per ledger/NAMING.md
+fareyseq = farey_seq

@@ -35,3 +35,7 @@ krig = kriging_prob_map
 
 def cheatsheet() -> str:
     return "kriging_prob_map({}) -> Kriging probability map"
+
+
+# compact alias per ledger/NAMING.md
+krigingprobmap = kriging_prob_map

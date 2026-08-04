@@ -32,3 +32,7 @@ ldpcd = ldpc_decode
 
 def cheatsheet() -> str:
     return "ldpc_decode({}) -> LDPC bit-flipping decoder."
+
+
+# compact alias per ledger/NAMING.md
+ldpcdecode = ldpc_decode

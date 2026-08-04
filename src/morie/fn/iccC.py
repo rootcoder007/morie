@@ -40,3 +40,7 @@ def icc_consistency(y, subject, rater):
 
 def cheatsheet():
     return "iccC: ICC(C,1) consistency single rater"
+
+
+# compact alias per ledger/NAMING.md
+iccconsistency = icc_consistency

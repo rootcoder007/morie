@@ -29,3 +29,7 @@ bym2 = bym2_model
 
 def cheatsheet() -> str:
     return "bym2_model({}) -> BYM2 reparameterized model"
+
+
+# compact alias per ledger/NAMING.md
+bym2model = bym2_model

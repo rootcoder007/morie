@@ -143,3 +143,7 @@ def esl_markov_rf(graph, psi=None, states=2, normalize=True):
 
 def cheatsheet():
     return "eslmrf: exact Z by enumeration (capped at 2^22); potentials are NOT probabilities"
+
+
+# compact alias per ledger/NAMING.md
+eslmarkovrf = esl_markov_rf

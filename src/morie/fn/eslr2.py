@@ -63,3 +63,7 @@ def esl_r_squared(X, y, beta):
 
 def cheatsheet():
     return "eslr2: 1 - RSS/TSS; may be negative (arbitrary beta), nan if y constant"
+
+
+# compact alias per ledger/NAMING.md
+eslrsquared = esl_r_squared

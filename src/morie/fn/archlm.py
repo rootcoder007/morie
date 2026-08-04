@@ -71,3 +71,7 @@ def arch_lm_engle(x, lags, cdf=None):
 
 def cheatsheet():
     return "archlm: Engle ARCH-LM test for heteroscedasticity"
+
+
+# compact alias per ledger/NAMING.md
+archlmengle = arch_lm_engle

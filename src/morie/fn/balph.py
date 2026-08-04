@@ -102,3 +102,7 @@ def bayesian_alpha(
 
 def cheatsheet() -> str:
     return "bayesian_alpha({}) -> Bayesian Cronbach's alpha with posterior distribution."
+
+
+# compact alias per ledger/NAMING.md
+bayesianalpha = bayesian_alpha

@@ -49,3 +49,7 @@ citym = cityblock_model
 
 def cheatsheet() -> str:
     return "cityblock_model({}) -> City-block (Manhattan) spatial model."
+
+
+# compact alias per ledger/NAMING.md
+cityblockmodel = cityblock_model

@@ -42,3 +42,7 @@ def rr_blup(y, M, lam):
 
 def cheatsheet():
     return "rrblpr: Ridge-regression BLUP (markers as random)"
+
+
+# compact alias per ledger/NAMING.md
+rrblup = rr_blup

@@ -27,3 +27,7 @@ spat = spatial_bagging
 
 def cheatsheet() -> str:
     return "spatial_bagging({}) -> Spatial bagging"
+
+
+# compact alias per ledger/NAMING.md
+spatialbagging = spatial_bagging

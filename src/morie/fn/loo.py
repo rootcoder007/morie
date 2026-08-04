@@ -99,3 +99,7 @@ loo = compute_loo
 
 def cheatsheet() -> str:
     return "compute_loo({}) -> LOO-CV via Pareto Smoothed Importance Sampling (PSIS-LOO)."
+
+
+# compact alias per ledger/NAMING.md
+computeloo = compute_loo

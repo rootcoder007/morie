@@ -40,3 +40,7 @@ def hexagonal_grid(coords, values, cell_size):
 
 def cheatsheet():
     return "hexgrd: Hexagonal grid binning"
+
+
+# compact alias per ledger/NAMING.md
+hexagonalgrid = hexagonal_grid

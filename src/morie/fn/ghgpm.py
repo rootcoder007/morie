@@ -106,3 +106,7 @@ def cheatsheet():
 # >>> r = ghosal_gp_matern(x, y, nu=1.5)
 # >>> r["se"] >= 0
 # True
+
+
+# compact alias per ledger/NAMING.md
+ghosalgpmatern = ghosal_gp_matern

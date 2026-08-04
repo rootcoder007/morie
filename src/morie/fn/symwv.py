@@ -61,3 +61,7 @@ symwv = symlet_wavelet
 
 def cheatsheet() -> str:
     return "symlet_wavelet({}) -> Generate Symlet wavelet filter coefficients."
+
+
+# compact alias per ledger/NAMING.md
+symletwavelet = symlet_wavelet

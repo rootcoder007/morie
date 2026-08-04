@@ -82,3 +82,7 @@ ucr = ucr_classify
 
 def cheatsheet() -> str:
     return "ucr_classify({}) -> UCR offense classification."
+
+
+# compact alias per ledger/NAMING.md
+ucrclassify = ucr_classify

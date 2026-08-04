@@ -28,3 +28,7 @@ def gblup_gebv(X, y, G, sigma2_g, sigma2_e=1.0):
 
 def cheatsheet():
     return "msm242: GBLUP mixed model equation"
+
+
+# compact alias per ledger/NAMING.md
+gblupgebv = gblup_gebv

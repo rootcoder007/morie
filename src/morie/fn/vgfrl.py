@@ -42,3 +42,7 @@ vari = vario_fit_reml
 
 def cheatsheet() -> str:
     return "vario_fit_reml({}) -> Variogram REML fitting"
+
+
+# compact alias per ledger/NAMING.md
+variofitreml = vario_fit_reml

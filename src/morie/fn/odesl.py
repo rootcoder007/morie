@@ -36,3 +36,7 @@ def ode_symbolic(ode):
 
 def cheatsheet():
     return "odesl: Symbolic ODE solver"
+
+
+# compact alias per ledger/NAMING.md
+odesymbolic = ode_symbolic

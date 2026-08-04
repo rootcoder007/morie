@@ -38,3 +38,7 @@ def bpr_mf(pairs, K):
 
 def cheatsheet():
     return "bprMF: BPR -- Bayesian personalized ranking"
+
+
+# compact alias per ledger/NAMING.md
+bprmf = bpr_mf

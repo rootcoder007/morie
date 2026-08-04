@@ -135,3 +135,7 @@ def boyd_admm(prox_f, prox_g, A=None, B=None, c=None, rho=1.0, n=None,
 
 def cheatsheet():
     return "cvxadm: converges for ANY rho > 0; rho sets the primal/dual residual BALANCE, so watch both"
+
+
+# compact alias per ledger/NAMING.md
+boydadmm = boyd_admm

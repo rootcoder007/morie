@@ -38,3 +38,7 @@ def gat_v2(A, X):
 
 def cheatsheet():
     return "gatV2: GATv2 -- dynamic attention"
+
+
+# compact alias per ledger/NAMING.md
+gatv2 = gat_v2

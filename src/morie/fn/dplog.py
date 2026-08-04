@@ -175,3 +175,7 @@ def dp_logistic(X, y, epsilon=1.0, method="objective", lam=0.01, C=1.0,
 
 def cheatsheet():
     return "dplog: objective perturbation beats output perturbation; regularisation buys BOTH convexity and sensitivity"
+
+
+# compact alias per ledger/NAMING.md
+dplogistic = dp_logistic

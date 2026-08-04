@@ -42,3 +42,7 @@ def bayesian_glm(y, X, family, priors):
 
 def cheatsheet():
     return "glmbay: Bayesian GLM via Stan/JAGS"
+
+
+# compact alias per ledger/NAMING.md
+bayesianglm = bayesian_glm

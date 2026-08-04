@@ -74,3 +74,7 @@ rsk_ci = risk_ratio_ci
 
 def cheatsheet() -> str:
     return "risk_ratio_ci({}) -> Risk ratio (relative risk) with log-normal Wald confidence i"
+
+
+# compact alias per ledger/NAMING.md
+riskratioci = risk_ratio_ci

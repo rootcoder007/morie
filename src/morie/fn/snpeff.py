@@ -38,3 +38,7 @@ def variant_effect(variants, annotation):
 
 def cheatsheet():
     return "snpeff: SnpEff variant annotation"
+
+
+# compact alias per ledger/NAMING.md
+varianteffect = variant_effect

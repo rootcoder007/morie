@@ -45,3 +45,7 @@ def dnn_multitrait(X, Y, layers, heads):
 
 def cheatsheet():
     return "dnnmt: Multi-output DNN for multi-trait genomic prediction"
+
+
+# compact alias per ledger/NAMING.md
+dnnmultitrait = dnn_multitrait

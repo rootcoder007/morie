@@ -35,3 +35,7 @@ mds_ = mds_jackknife
 
 def cheatsheet() -> str:
     return "mds_jackknife({}) -> MDS jackknife stability"
+
+
+# compact alias per ledger/NAMING.md
+mdsjackknife = mds_jackknife

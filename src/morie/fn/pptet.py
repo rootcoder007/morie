@@ -79,3 +79,7 @@ pptet = pp_test
 
 def cheatsheet() -> str:
     return "pp_test({}) -> Phillips-Perron unit root test."
+
+
+# compact alias per ledger/NAMING.md
+pptest = pp_test

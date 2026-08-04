@@ -58,3 +58,7 @@ mcnmr = mcnemar_test
 
 def cheatsheet() -> str:
     return "mcnemar_test({}) -> McNemar's test for paired proportions."
+
+
+# compact alias per ledger/NAMING.md
+mcnemartest = mcnemar_test

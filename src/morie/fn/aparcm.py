@@ -38,3 +38,7 @@ def aparch_dge(x, delta):
 
 def cheatsheet():
     return "aparcm: Asymmetric power ARCH"
+
+
+# compact alias per ledger/NAMING.md
+aparchdge = aparch_dge

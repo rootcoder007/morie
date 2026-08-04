@@ -49,3 +49,7 @@ netdg = network_degree
 
 def cheatsheet() -> str:
     return "network_degree({}) -> Network degree distribution."
+
+
+# compact alias per ledger/NAMING.md
+networkdegree = network_degree

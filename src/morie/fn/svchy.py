@@ -29,3 +29,7 @@ cauc = cauchy_vote
 
 def cheatsheet() -> str:
     return "cauchy_vote({}) -> Cauchy kernel spatial voting"
+
+
+# compact alias per ledger/NAMING.md
+cauchyvote = cauchy_vote

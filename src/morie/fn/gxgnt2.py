@@ -68,3 +68,7 @@ def gxg_interaction(y, SNP1, SNP2, cdf=None):
 
 def cheatsheet():
     return "gxgnt2: Two-locus epistatic interaction test"
+
+
+# compact alias per ledger/NAMING.md
+gxginteraction = gxg_interaction

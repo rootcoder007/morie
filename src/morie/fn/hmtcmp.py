@@ -213,3 +213,7 @@ def geron_torch_compile(model, mode="default", example_inputs=None):
 
 def cheatsheet():
     return "hmtcmp: torch.compile: graph-capturing JIT for forward and backward passes"
+
+
+# compact alias per ledger/NAMING.md
+matmulorder = matmul_order

@@ -47,3 +47,7 @@ def flash_attention(Q, K, V):
 
 def cheatsheet():
     return "flsh2() -> FlashAttention IO-aware exact attention"
+
+
+# compact alias per ledger/NAMING.md
+flashattention = flash_attention

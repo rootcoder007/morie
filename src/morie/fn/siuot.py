@@ -41,3 +41,7 @@ siuot = siu_outcome
 
 def cheatsheet() -> str:
     return "siu_outcome({}) -> SIU case outcome distribution."
+
+
+# compact alias per ledger/NAMING.md
+siuoutcome = siu_outcome

@@ -53,3 +53,7 @@ glassd = glass_delta
 
 def cheatsheet() -> str:
     return "glass_delta({}) -> Glass's delta effect size (control-group SD denominator)."
+
+
+# compact alias per ledger/NAMING.md
+glassdelta = glass_delta

@@ -106,3 +106,7 @@ def geron_precision(y_true, y_pred, positive=1, average=None):
 
 def cheatsheet():
     return "grpre: precision = TP/(TP+FP); counts delegated to grcfm; raises when the class is never predicted"
+
+
+# compact alias per ledger/NAMING.md
+geronprecision = geron_precision

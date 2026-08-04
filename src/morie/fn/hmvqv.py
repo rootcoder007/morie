@@ -203,3 +203,7 @@ def geron_vq_vae(X, codebook_size=4, latent_dim=2, epochs=200, lr=0.05, beta=0.2
 
 def cheatsheet():
     return "hmvqv: Discrete VAE (VQ-VAE): vector-quantized latents with codebook"
+
+
+# compact alias per ledger/NAMING.md
+geronvqvae = geron_vq_vae

@@ -67,3 +67,7 @@ empby = empirical_bayes
 
 def cheatsheet() -> str:
     return "empirical_bayes({}) -> Empirical Bayes (parametric)."
+
+
+# compact alias per ledger/NAMING.md
+empiricalbayes = empirical_bayes

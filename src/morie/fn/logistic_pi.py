@@ -42,3 +42,7 @@ def logistic_pi(b0, bs, xs):
 
 def cheatsheet():
     return '2e2: pi = exp(b0 + b1 x1 + ... + bp xp)/(1 + exp(...)) [Bilder & Loughin 2025, eq. 2.2]'
+
+
+# compact alias per ledger/NAMING.md
+logisticpi = logistic_pi

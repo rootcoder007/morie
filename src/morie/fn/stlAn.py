@@ -38,3 +38,7 @@ def stl_anomaly(y, period):
 
 def cheatsheet():
     return "stlAn: STL decomposition + residual outliers"
+
+
+# compact alias per ledger/NAMING.md
+stlanomaly = stl_anomaly

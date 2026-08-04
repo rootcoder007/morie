@@ -29,3 +29,7 @@ loss = loss_function
 
 def cheatsheet() -> str:
     return "loss_function({}) -> Spatial loss function (quadratic/city-block)"
+
+
+# compact alias per ledger/NAMING.md
+lossfunction = loss_function

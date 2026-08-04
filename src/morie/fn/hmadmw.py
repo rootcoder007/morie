@@ -116,3 +116,7 @@ def geron_adamw(grads, m=None, v=None, b1=0.9, b2=0.999, eta=0.001, wd=0.01, eps
 
 def cheatsheet():
     return "hmadmw: AdamW: decoupled weight decay"
+
+
+# compact alias per ledger/NAMING.md
+geronadamw = geron_adamw

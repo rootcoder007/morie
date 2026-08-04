@@ -29,3 +29,7 @@ cut_ = cut_line
 
 def cheatsheet() -> str:
     return "cut_line({}) -> Optimal cutting line"
+
+
+# compact alias per ledger/NAMING.md
+cutline = cut_line

@@ -38,3 +38,7 @@ def robust_pca(X, k):
 
 def cheatsheet():
     return "robpca: ROBPCA (Hubert et al)"
+
+
+# compact alias per ledger/NAMING.md
+robustpca = robust_pca

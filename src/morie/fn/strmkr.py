@@ -40,3 +40,7 @@ def strauss_process(coords, r, gamma):
 
 def cheatsheet():
     return "strmkr: Strauss process inhibition model"
+
+
+# compact alias per ledger/NAMING.md
+straussprocess = strauss_process

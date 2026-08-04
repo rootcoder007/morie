@@ -36,3 +36,7 @@ def sympy_expand(expr):
 
 def cheatsheet():
     return "sympEx: Algebraic expansion"
+
+
+# compact alias per ledger/NAMING.md
+sympyexpand = sympy_expand

@@ -36,3 +36,7 @@ def msm_logistic(y, treatment_history, covariate_history=None, weights=None):
 
 def cheatsheet():
     return "msmlog: Logistic marginal structural model"
+
+
+# compact alias per ledger/NAMING.md
+msmlogistic = msm_logistic

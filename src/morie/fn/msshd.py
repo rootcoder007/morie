@@ -30,3 +30,7 @@ shep = shepard_dist
 
 def cheatsheet() -> str:
     return "shepard_dist({}) -> Shepard disparities"
+
+
+# compact alias per ledger/NAMING.md
+sheparddist = shepard_dist

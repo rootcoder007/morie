@@ -158,3 +158,7 @@ def geron_stacking(X, y, base_models, meta_model=None, k_folds=3):
 
 def cheatsheet():
     return "hmstk: Stacking (blending): meta-learner combines outputs of base learners"
+
+
+# compact alias per ledger/NAMING.md
+geronstacking = geron_stacking

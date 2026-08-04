@@ -44,3 +44,7 @@ lpcsp = lpc_spectrum_fn
 
 def cheatsheet() -> str:
     return "lpc_spectrum_fn({}) -> LPC-derived power spectrum."
+
+
+# compact alias per ledger/NAMING.md
+lpcspectrumfn = lpc_spectrum_fn

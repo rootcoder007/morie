@@ -87,3 +87,7 @@ bhpd = hpd_interval
 
 def cheatsheet() -> str:
     return "hpd_interval(samples) -> Highest Posterior Density interval."
+
+
+# compact alias per ledger/NAMING.md
+hpdinterval = hpd_interval

@@ -40,3 +40,7 @@ crent = cross_entropy
 
 def cheatsheet() -> str:
     return "cross_entropy({}) -> Cross-entropy."
+
+
+# compact alias per ledger/NAMING.md
+crossentropy = cross_entropy

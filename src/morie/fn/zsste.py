@@ -29,3 +29,7 @@ st_c = st_cressie_huang
 
 def cheatsheet() -> str:
     return "st_cressie_huang({}) -> Cressie-Huang space-time covariance"
+
+
+# compact alias per ledger/NAMING.md
+stcressiehuang = st_cressie_huang

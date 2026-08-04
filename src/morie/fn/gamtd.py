@@ -42,3 +42,7 @@ def n_step_td(traj, V, n, gamma):
 
 def cheatsheet():
     return "gamtd: n-step TD return"
+
+
+# compact alias per ledger/NAMING.md
+nsteptd = n_step_td

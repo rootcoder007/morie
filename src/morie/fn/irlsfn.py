@@ -47,3 +47,7 @@ def irls_solver(y, X, weights):
 
 def cheatsheet():
     return "irlsfn: Iteratively reweighted least squares (one outer iteration)"
+
+
+# compact alias per ledger/NAMING.md
+irlssolver = irls_solver

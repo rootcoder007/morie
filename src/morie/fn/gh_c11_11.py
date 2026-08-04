@@ -32,3 +32,7 @@ def ghosal_rescal_gp(lengths=(2.0, 1.0, 0.25), h=0.3):
 
 def cheatsheet():
     return "gh_c11_11: Rescaled Gaussian process"
+
+
+# compact alias per ledger/NAMING.md
+ghosalrescalgp = ghosal_rescal_gp

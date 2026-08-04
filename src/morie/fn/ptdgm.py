@@ -30,3 +30,7 @@ digg = diggle_test
 
 def cheatsheet() -> str:
     return "diggle_test({}) -> Diggle-Cressie-Loosmore test"
+
+
+# compact alias per ledger/NAMING.md
+diggletest = diggle_test

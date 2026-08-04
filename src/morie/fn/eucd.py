@@ -33,3 +33,7 @@ eucd = euclidean_dist
 
 def cheatsheet() -> str:
     return "euclidean_dist({}) -> Euclidean distance."
+
+
+# compact alias per ledger/NAMING.md
+euclideandist = euclidean_dist

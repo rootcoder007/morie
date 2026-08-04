@@ -48,3 +48,7 @@ def vol_garch_es_impl(mu, sigma_next, alpha=0.05, dist="normal", nu=8.0):
 
 def cheatsheet():
     return "volges: ES = mean loss beyond VaR; subadditive, always >= VaR"
+
+
+# compact alias per ledger/NAMING.md
+volgarchesimpl = vol_garch_es_impl

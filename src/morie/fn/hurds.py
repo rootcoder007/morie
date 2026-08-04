@@ -134,3 +134,7 @@ hurds = hurdle_model
 
 def cheatsheet() -> str:
     return "hurdle_model({}) -> Two-part hurdle model."
+
+
+# compact alias per ledger/NAMING.md
+hurdlemodel = hurdle_model

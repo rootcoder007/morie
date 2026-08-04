@@ -52,3 +52,7 @@ vachrd = vaccine_herd
 
 def cheatsheet() -> str:
     return "vaccine_herd({}) -> Herd immunity threshold for vaccination."
+
+
+# compact alias per ledger/NAMING.md
+vaccineherd = vaccine_herd

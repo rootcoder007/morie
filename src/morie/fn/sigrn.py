@@ -57,3 +57,7 @@ sigrn = sign_rank_test
 
 def cheatsheet() -> str:
     return "sign_rank_test(x, y) -> Wilcoxon signed-rank test."
+
+
+# compact alias per ledger/NAMING.md
+signranktest = sign_rank_test

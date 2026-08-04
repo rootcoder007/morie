@@ -36,3 +36,7 @@ def ghose_filter(smiles):
 
 def cheatsheet():
     return "ghoste: Ghose drug-like filter"
+
+
+# compact alias per ledger/NAMING.md
+ghosefilter = ghose_filter

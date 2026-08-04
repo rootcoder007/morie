@@ -40,3 +40,7 @@ def top_p_sampling(logits, p, temp):
 
 def cheatsheet():
     return "toppS: Nucleus (top-p) sampling"
+
+
+# compact alias per ledger/NAMING.md
+toppsampling = top_p_sampling

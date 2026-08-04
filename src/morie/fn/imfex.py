@@ -69,3 +69,7 @@ imfex = imf_extract
 
 def cheatsheet() -> str:
     return "_sift({}) -> Extract intrinsic mode functions via sifting."
+
+
+# compact alias per ledger/NAMING.md
+imfextract = imf_extract

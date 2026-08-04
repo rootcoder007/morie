@@ -157,3 +157,7 @@ rdopt = rd_bandwidth
 
 def cheatsheet() -> str:
     return "rd_bandwidth({}) -> RD optimal bandwidth (IK/CCT)."
+
+
+# compact alias per ledger/NAMING.md
+rdbandwidth = rd_bandwidth

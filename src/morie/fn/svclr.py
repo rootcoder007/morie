@@ -29,3 +29,7 @@ cond = condorcet_loser
 
 def cheatsheet() -> str:
     return "condorcet_loser({}) -> Condorcet loser identification"
+
+
+# compact alias per ledger/NAMING.md
+condorcetloser = condorcet_loser

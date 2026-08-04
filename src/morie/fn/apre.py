@@ -82,3 +82,7 @@ def oc_apre(votes, predictions):
 
 def cheatsheet():
     return "apre: sum(minority - errors) / sum(minority) across roll calls"
+
+
+# compact alias per ledger/NAMING.md
+ocapre = oc_apre

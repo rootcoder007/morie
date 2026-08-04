@@ -29,3 +29,7 @@ geti = getis_filter
 
 def cheatsheet() -> str:
     return "getis_filter({}) -> Getis spatial filtering"
+
+
+# compact alias per ledger/NAMING.md
+getisfilter = getis_filter

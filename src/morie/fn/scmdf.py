@@ -84,3 +84,7 @@ def scm_definition(exogenous, equations):
 
 def cheatsheet():
     return "scmdf: build (U, V, F), check recursive, solve V_i = f_i(pa, U) in topo order"
+
+
+# compact alias per ledger/NAMING.md
+scmdefinition = scm_definition

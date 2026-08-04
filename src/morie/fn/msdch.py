@@ -37,3 +37,7 @@ dist = dist_chebyshev
 
 def cheatsheet() -> str:
     return "dist_chebyshev({}) -> Chebyshev distance matrix"
+
+
+# compact alias per ledger/NAMING.md
+distchebyshev = dist_chebyshev

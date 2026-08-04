@@ -35,3 +35,7 @@ bf = brown_forsythe
 
 def cheatsheet() -> str:
     return "brown_forsythe({}) -> Brown-Forsythe test for equality of variances."
+
+
+# compact alias per ledger/NAMING.md
+brownforsythe = brown_forsythe

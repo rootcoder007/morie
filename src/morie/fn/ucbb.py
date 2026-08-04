@@ -38,3 +38,7 @@ def ucb_bandit(arms, T):
 
 def cheatsheet():
     return "ucbb: UCB1 bandit"
+
+
+# compact alias per ledger/NAMING.md
+ucbbandit = ucb_bandit

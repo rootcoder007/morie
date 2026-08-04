@@ -43,3 +43,7 @@ mexht = mexican_hat
 
 def cheatsheet() -> str:
     return "mexican_hat({}) -> Mexican hat (Ricker) wavelet."
+
+
+# compact alias per ledger/NAMING.md
+mexicanhat = mexican_hat

@@ -47,3 +47,7 @@ def cheatsheet() -> str:
 
 
 dbran = d_brane_tension
+
+
+# compact alias per ledger/NAMING.md
+dbranetension = d_brane_tension

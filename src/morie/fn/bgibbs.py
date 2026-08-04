@@ -85,3 +85,7 @@ bgibbs = gibbs_normal
 
 def cheatsheet() -> str:
     return "gibbs_normal({}) -> Gibbs sampler for normal mean and variance."
+
+
+# compact alias per ledger/NAMING.md
+gibbsnormal = gibbs_normal

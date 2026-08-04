@@ -38,3 +38,7 @@ def top_down(top, props):
 
 def cheatsheet():
     return "topDn: Top-down disaggregation"
+
+
+# compact alias per ledger/NAMING.md
+topdown = top_down

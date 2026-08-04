@@ -61,3 +61,7 @@ def cheatsheet():
 # >>> r = top_p_nucleus([0.0, 0.0, 5.0], p=0.5)
 # >>> int(r["n_kept"])
 # 1
+
+
+# compact alias per ledger/NAMING.md
+toppnucleus = top_p_nucleus

@@ -40,3 +40,7 @@ aicc = corrected_aic
 
 def cheatsheet() -> str:
     return "corrected_aic({}) -> Corrected AIC."
+
+
+# compact alias per ledger/NAMING.md
+correctedaic = corrected_aic

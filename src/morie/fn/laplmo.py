@@ -36,3 +36,7 @@ def laplacian_eigen(G):
 
 def cheatsheet():
     return "laplmo: Laplacian eigenvalues"
+
+
+# compact alias per ledger/NAMING.md
+laplacianeigen = laplacian_eigen

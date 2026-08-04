@@ -205,3 +205,7 @@ def geron_roberta(X, n_layers=2, n_heads=2, d_model=8, vocab_size=None, d_ff=Non
 
 def cheatsheet():
     return "hmbrob: RoBERTa: robustly-optimized BERT pretraining"
+
+
+# compact alias per ledger/NAMING.md
+geronroberta = geron_roberta

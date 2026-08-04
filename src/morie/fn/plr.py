@@ -132,3 +132,7 @@ plr_fn = estimate_plr
 def cheatsheet() -> str:
     return ("estimate_plr({}) -> Native double-ML PLR: cross-fitted "
             "ridge nuisances, partialling-out score.")
+
+
+# compact alias per ledger/NAMING.md
+estimateplr = estimate_plr

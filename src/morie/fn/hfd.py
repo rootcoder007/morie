@@ -69,3 +69,7 @@ hfd = higuchi_fd
 
 def cheatsheet() -> str:
     return "higuchi_fd({}) -> Higuchi fractal dimension."
+
+
+# compact alias per ledger/NAMING.md
+higuchifd = higuchi_fd

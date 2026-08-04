@@ -155,3 +155,7 @@ def _count_components(adj):
 
 def cheatsheet():
     return "eslism: MDS on graph geodesics; too-few neighbours disconnects (raises), too many short-circuit folds"
+
+
+# compact alias per ledger/NAMING.md
+eslisomap = esl_isomap

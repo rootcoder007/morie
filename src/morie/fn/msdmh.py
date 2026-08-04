@@ -37,3 +37,7 @@ dist = dist_manhattan
 
 def cheatsheet() -> str:
     return "dist_manhattan({}) -> Manhattan distance matrix"
+
+
+# compact alias per ledger/NAMING.md
+distmanhattan = dist_manhattan

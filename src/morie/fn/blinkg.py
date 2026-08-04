@@ -38,3 +38,7 @@ def blink_gwas(y, M):
 
 def cheatsheet():
     return "blinkg: BLINK fast GWAS"
+
+
+# compact alias per ledger/NAMING.md
+blinkgwas = blink_gwas

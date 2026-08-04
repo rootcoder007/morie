@@ -89,3 +89,7 @@ valfn = value_at_risk
 
 def cheatsheet() -> str:
     return "value_at_risk({}) -> Value at Risk (VaR)."
+
+
+# compact alias per ledger/NAMING.md
+valueatrisk = value_at_risk

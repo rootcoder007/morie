@@ -39,3 +39,7 @@ sgspl = split_signal
 
 def cheatsheet() -> str:
     return "split_signal({}) -> Split signal into non-overlapping segments."
+
+
+# compact alias per ledger/NAMING.md
+splitsignal = split_signal

@@ -59,3 +59,7 @@ neter = erdos_renyi
 
 def cheatsheet() -> str:
     return "erdos_renyi({}) -> Erdos-Renyi random graph generator."
+
+
+# compact alias per ledger/NAMING.md
+erdosrenyi = erdos_renyi

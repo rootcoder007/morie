@@ -38,3 +38,7 @@ def bayes_outlier_dp(y, alpha):
 
 def cheatsheet():
     return "bayocl: Bayesian outlier detection via DP"
+
+
+# compact alias per ledger/NAMING.md
+bayesoutlierdp = bayes_outlier_dp

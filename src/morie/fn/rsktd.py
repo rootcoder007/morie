@@ -49,3 +49,7 @@ rsktd = risk_trend
 
 def cheatsheet() -> str:
     return "risk_trend({}) -> Mean risk score trend over years."
+
+
+# compact alias per ledger/NAMING.md
+risktrend = risk_trend

@@ -42,3 +42,7 @@ vari = vario_fit_eval
 
 def cheatsheet() -> str:
     return "vario_fit_eval({}) -> Variogram fit evaluation"
+
+
+# compact alias per ledger/NAMING.md
+variofiteval = vario_fit_eval

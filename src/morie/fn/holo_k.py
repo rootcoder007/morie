@@ -86,3 +86,7 @@ def _draw_km(ax: Any, t: np.ndarray, e: np.ndarray, label: str | None = None) ->
 
 def cheatsheet() -> str:
     return "holo_km({}) -> Kaplan-Meier survival curve."
+
+
+# compact alias per ledger/NAMING.md
+holokm = holo_km

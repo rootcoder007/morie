@@ -52,3 +52,7 @@ spec = specificity_dx
 
 def cheatsheet() -> str:
     return "specificity_dx({}) -> Specificity."
+
+
+# compact alias per ledger/NAMING.md
+specificitydx = specificity_dx

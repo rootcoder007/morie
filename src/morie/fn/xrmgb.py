@@ -29,3 +29,7 @@ mgwr = mgwr_bandwidths
 
 def cheatsheet() -> str:
     return "mgwr_bandwidths({}) -> MGWR variable bandwidths"
+
+
+# compact alias per ledger/NAMING.md
+mgwrbandwidths = mgwr_bandwidths

@@ -125,3 +125,7 @@ gbcls = gbm_classify_bio
 
 def cheatsheet() -> str:
     return "gbm_classify_bio({}) -> Gradient boosting classifier (pure NumPy)."
+
+
+# compact alias per ledger/NAMING.md
+gbmclassifybio = gbm_classify_bio

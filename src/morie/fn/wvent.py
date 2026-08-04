@@ -52,3 +52,7 @@ wvent = wavelet_entropy
 
 def cheatsheet() -> str:
     return "wavelet_entropy({}) -> Wavelet entropy from subband energy distribution."
+
+
+# compact alias per ledger/NAMING.md
+waveletentropy = wavelet_entropy

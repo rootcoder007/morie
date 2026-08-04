@@ -62,3 +62,7 @@ pstrt = ps_stratify
 
 def cheatsheet() -> str:
     return "ps_stratify({}) -> Propensity score stratification."
+
+
+# compact alias per ledger/NAMING.md
+psstratify = ps_stratify

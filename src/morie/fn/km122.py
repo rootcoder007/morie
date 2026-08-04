@@ -188,3 +188,7 @@ def kamath_ch8_wmd(x_n, y_n, C, F=None):
 
 def cheatsheet():
     return "km122: exact min-cost transport <C,F>, duality-certified"
+
+
+# compact alias per ledger/NAMING.md
+kamathch8wmd = kamath_ch8_wmd

@@ -182,3 +182,7 @@ def geron_deep_rnn(X, hidden_sizes=(4,), n_layers=None, weights=None, seed=0, ac
 
 def cheatsheet():
     return "hmdrnn: Deep (stacked) RNN: multiple recurrent layers"
+
+
+# compact alias per ledger/NAMING.md
+gerondeeprnn = geron_deep_rnn

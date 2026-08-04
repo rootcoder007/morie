@@ -43,3 +43,7 @@ lfunc = ripley_l
 
 def cheatsheet() -> str:
     return "ripley_l({}) -> Ripley's L function for spatial point patterns."
+
+
+# compact alias per ledger/NAMING.md
+ripleyl = ripley_l

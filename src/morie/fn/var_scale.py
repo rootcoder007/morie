@@ -35,3 +35,7 @@ def var_scale(a, var_x):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner3e24: Var(aX) = a^2 Var(X). Morin (2016) eq (3.24)."
+
+
+# compact alias per ledger/NAMING.md
+varscale = var_scale

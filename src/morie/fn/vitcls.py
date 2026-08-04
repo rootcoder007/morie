@@ -38,3 +38,7 @@ def vit_cls_token(patches, n_patches):
 
 def cheatsheet():
     return "vitcls: ViT [CLS] token + position embedding"
+
+
+# compact alias per ledger/NAMING.md
+vitclstoken = vit_cls_token

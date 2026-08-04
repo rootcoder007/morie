@@ -29,3 +29,7 @@ ecol = ecological_nb
 
 def cheatsheet() -> str:
     return "ecological_nb({}) -> Ecological NB regression"
+
+
+# compact alias per ledger/NAMING.md
+ecologicalnb = ecological_nb

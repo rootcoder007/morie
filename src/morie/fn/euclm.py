@@ -34,3 +34,7 @@ euclm = euclidean_model
 
 def cheatsheet() -> str:
     return "euclidean_model({}) -> Euclidean spatial voting model."
+
+
+# compact alias per ledger/NAMING.md
+euclideanmodel = euclidean_model

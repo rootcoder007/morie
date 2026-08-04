@@ -29,3 +29,7 @@ pola = polarization_er
 
 def cheatsheet() -> str:
     return "polarization_er({}) -> Esteban-Ray polarization index"
+
+
+# compact alias per ledger/NAMING.md
+polarizationer = polarization_er

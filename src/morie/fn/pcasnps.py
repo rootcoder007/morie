@@ -38,3 +38,7 @@ def pca_snps(genotypes, n_components):
 
 def cheatsheet():
     return "pcasnps: PCA on genotype matrix"
+
+
+# compact alias per ledger/NAMING.md
+pcasnps = pca_snps

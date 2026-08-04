@@ -38,3 +38,7 @@ def z_transform(x, z):
 
 def cheatsheet():
     return "zfm: Z-transform"
+
+
+# compact alias per ledger/NAMING.md
+ztransform = z_transform

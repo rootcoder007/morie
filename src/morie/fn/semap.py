@@ -83,3 +83,7 @@ semap = sammon_mapping
 
 def cheatsheet() -> str:
     return "sammon_mapping({}) -> Sammon mapping dimensionality reduction."
+
+
+# compact alias per ledger/NAMING.md
+sammonmapping = sammon_mapping

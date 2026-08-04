@@ -48,3 +48,7 @@ def cheatsheet() -> str:
 
 
 gradc = gradient_clip
+
+
+# compact alias per ledger/NAMING.md
+gradientclip = gradient_clip

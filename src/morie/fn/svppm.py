@@ -29,3 +29,7 @@ part = party_manifesto
 
 def cheatsheet() -> str:
     return "party_manifesto({}) -> Party manifesto scaling (Wordscores)"
+
+
+# compact alias per ledger/NAMING.md
+partymanifesto = party_manifesto

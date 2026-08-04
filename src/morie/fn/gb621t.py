@@ -74,3 +74,7 @@ def gibbons_ww2_ties(x, y, cdf=None):
 
 def cheatsheet():
     return "gb621t: Wald-Wolfowitz runs test tie-handling: randomize tied observations"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsww2ties = gibbons_ww2_ties

@@ -96,3 +96,7 @@ clse = clustered_se
 
 def cheatsheet() -> str:
     return "clustered_se({}) -> OLS with cluster-robust standard errors."
+
+
+# compact alias per ledger/NAMING.md
+clusteredse = clustered_se

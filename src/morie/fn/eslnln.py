@@ -120,3 +120,7 @@ def esl_elastic_net(X, y, lambda_, alpha, max_iter=10000, tol=1e-12):
 
 def cheatsheet():
     return "eslnln: lambda(alpha L1 + (1-alpha)/2 L2); alpha=1 lasso, 0 ridge"
+
+
+# compact alias per ledger/NAMING.md
+eslelasticnet = esl_elastic_net

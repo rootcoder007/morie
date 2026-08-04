@@ -37,3 +37,7 @@ rcerr = roll_call_errors
 
 def cheatsheet() -> str:
     return "roll_call_errors({}) -> Roll-call classification errors."
+
+
+# compact alias per ledger/NAMING.md
+rollcallerrors = roll_call_errors

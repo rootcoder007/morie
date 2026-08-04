@@ -67,3 +67,7 @@ arclen = arc_length
 
 def cheatsheet() -> str:
     return "arc_length({}) -> Arc length computation."
+
+
+# compact alias per ledger/NAMING.md
+arclength = arc_length

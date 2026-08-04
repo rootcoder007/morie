@@ -55,3 +55,7 @@ bspwv = bspline_wavelet
 
 def cheatsheet() -> str:
     return "_bspline({}) -> B-spline wavelet construction."
+
+
+# compact alias per ledger/NAMING.md
+bsplinewavelet = bspline_wavelet

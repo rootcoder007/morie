@@ -86,3 +86,7 @@ def geron_softmax_cost_gradient(X, Y, theta):
 
 def cheatsheet():
     return "grxeng: grad_Theta J = (1/m) X^T (P_hat - Y); columns sum to zero"
+
+
+# compact alias per ledger/NAMING.md
+gradientmatrix = gradient_matrix

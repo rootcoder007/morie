@@ -68,3 +68,7 @@ bhdi = bayesian_hdi
 
 def cheatsheet() -> str:
     return "bayesian_hdi({}) -> Highest Density Interval (HDI)."
+
+
+# compact alias per ledger/NAMING.md
+bayesianhdi = bayesian_hdi

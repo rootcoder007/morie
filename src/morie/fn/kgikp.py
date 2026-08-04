@@ -30,3 +30,7 @@ ik_p = ik_probability
 
 def cheatsheet() -> str:
     return "ik_probability({}) -> Indicator kriging probability"
+
+
+# compact alias per ledger/NAMING.md
+ikprobability = ik_probability

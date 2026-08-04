@@ -54,3 +54,7 @@ hrmnc = harmonic_ratio
 
 def cheatsheet() -> str:
     return "harmonic_ratio({}) -> Harmonics-to-noise ratio."
+
+
+# compact alias per ledger/NAMING.md
+harmonicratio = harmonic_ratio

@@ -40,3 +40,7 @@ def egnn_layer(h, x, edges):
 
 def cheatsheet():
     return "egnnL: EGNN layer (equivariant graph NN)"
+
+
+# compact alias per ledger/NAMING.md
+egnnlayer = egnn_layer

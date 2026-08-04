@@ -51,3 +51,7 @@ snrth = snr_threshold
 
 def cheatsheet() -> str:
     return "snr_threshold({}) -> SNR threshold for target BER."
+
+
+# compact alias per ledger/NAMING.md
+snrthreshold = snr_threshold

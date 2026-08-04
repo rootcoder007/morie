@@ -28,3 +28,7 @@ def gblup_model(y, Z_L, G, sigma2_g, sigma2_e=1.0):
 
 def cheatsheet():
     return "msm015: GBLUP model for genomic prediction"
+
+
+# compact alias per ledger/NAMING.md
+gblupmodel = gblup_model

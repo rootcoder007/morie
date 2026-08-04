@@ -42,3 +42,7 @@ def abc_gp_emulator(sim, obs, X_grid, kernel):
 
 def cheatsheet():
     return "abcgp: ABC with GP emulator surrogate"
+
+
+# compact alias per ledger/NAMING.md
+abcgpemulator = abc_gp_emulator

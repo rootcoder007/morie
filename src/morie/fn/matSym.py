@@ -36,3 +36,7 @@ def matrix_symbolic(M):
 
 def cheatsheet():
     return "matSym: Symbolic matrix algebra"
+
+
+# compact alias per ledger/NAMING.md
+matrixsymbolic = matrix_symbolic

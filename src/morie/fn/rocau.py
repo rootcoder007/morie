@@ -72,3 +72,7 @@ if __name__ == "__main__":
     print("n_positive:", r.n_positive, "  n_negative:", r.n_negative)
     print("FPR[0:5]:", r.fpr[:5])
     print("TPR[0:5]:", r.tpr[:5])
+
+
+# compact alias per ledger/NAMING.md
+rocaucscore = roc_auc_score

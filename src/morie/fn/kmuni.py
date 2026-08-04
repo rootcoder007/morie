@@ -185,3 +185,11 @@ def kamath_unigram_lm_tokenizer(corpus, vocab, max_iter=100, tol=1e-12):
 
 def cheatsheet():
     return "kmuni: EM over piece probs; soft counts, monotone log-likelihood"
+
+
+# compact alias per ledger/NAMING.md
+unigramloglik = unigram_loglik
+
+
+# compact alias per ledger/NAMING.md
+viterbisegment = viterbi_segment

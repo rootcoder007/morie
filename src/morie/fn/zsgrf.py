@@ -29,3 +29,7 @@ grid = grid_focal
 
 def cheatsheet() -> str:
     return "grid_focal({}) -> Focal grid statistics"
+
+
+# compact alias per ledger/NAMING.md
+gridfocal = grid_focal

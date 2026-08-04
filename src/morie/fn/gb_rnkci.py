@@ -74,3 +74,7 @@ def gibbons_rank_ci(x, alpha, cdf=None):
 
 def cheatsheet():
     return "gb_rnkci: General rank-based confidence interval construction via test inversion"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsrankci = gibbons_rank_ci

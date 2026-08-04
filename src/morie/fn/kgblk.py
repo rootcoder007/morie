@@ -35,3 +35,7 @@ bloc = block_kriging
 
 def cheatsheet() -> str:
     return "block_kriging({}) -> Block kriging prediction"
+
+
+# compact alias per ledger/NAMING.md
+blockkriging = block_kriging

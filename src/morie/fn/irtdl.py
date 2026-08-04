@@ -40,3 +40,7 @@ def irt_difficulty(item_params: dict) -> pd.DataFrame:
 
 def cheatsheet() -> str:
     return "irt_difficulty({}) -> Extract IRT difficulty parameters."
+
+
+# compact alias per ledger/NAMING.md
+irtdifficulty = irt_difficulty

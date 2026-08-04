@@ -34,3 +34,7 @@ def ghosal_dp_post(G0_A, alpha, n_in_A, n):
 
 def cheatsheet():
     return "gh_c4_6: DP posterior (conjugacy)"
+
+
+# compact alias per ledger/NAMING.md
+ghosaldppost = ghosal_dp_post

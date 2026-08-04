@@ -105,3 +105,7 @@ def geron_recall(y_true, y_pred, positive=1, average=None):
 
 def cheatsheet():
     return "grrec: recall = TP/(TP+FN), a confusion-matrix row sum; counts delegated to grcfm"
+
+
+# compact alias per ledger/NAMING.md
+geronrecall = geron_recall

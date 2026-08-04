@@ -64,3 +64,7 @@ bwaic = compute_waic
 
 def cheatsheet() -> str:
     return "compute_waic({}) -> WAIC (widely applicable information criterion)."
+
+
+# compact alias per ledger/NAMING.md
+computewaic = compute_waic

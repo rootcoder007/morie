@@ -81,3 +81,7 @@ tobit = tobit_model
 
 def cheatsheet() -> str:
     return "tobit_model({}) -> Tobit censored regression."
+
+
+# compact alias per ledger/NAMING.md
+tobitmodel = tobit_model

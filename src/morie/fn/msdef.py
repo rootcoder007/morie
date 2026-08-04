@@ -39,3 +39,7 @@ def mse_metric(y_true, y_pred):
 
 def cheatsheet():
     return "msdef: Mean squared error prediction metric"
+
+
+# compact alias per ledger/NAMING.md
+msemetric = mse_metric

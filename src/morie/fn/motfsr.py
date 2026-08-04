@@ -38,3 +38,7 @@ def motif_meme(sequences, motif_length):
 
 def cheatsheet():
     return "motfsr: MEME motif discovery"
+
+
+# compact alias per ledger/NAMING.md
+motifmeme = motif_meme

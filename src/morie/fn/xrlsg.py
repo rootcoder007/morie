@@ -29,3 +29,7 @@ lisa = lisa_getis
 
 def cheatsheet() -> str:
     return "lisa_getis({}) -> Local Getis-Ord Gi*"
+
+
+# compact alias per ledger/NAMING.md
+lisagetis = lisa_getis

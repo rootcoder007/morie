@@ -40,3 +40,7 @@ def barabasi_albert(n, m):
 
 def cheatsheet():
     return "barabsi: Barabási-Albert preferential attachment"
+
+
+# compact alias per ledger/NAMING.md
+barabasialbert = barabasi_albert

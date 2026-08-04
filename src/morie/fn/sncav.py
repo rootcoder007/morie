@@ -36,3 +36,7 @@ sncav = sync_avg
 
 def cheatsheet() -> str:
     return "sync_avg({}) -> Synchronized (trigger-based) average filter."
+
+
+# compact alias per ledger/NAMING.md
+syncavg = sync_avg

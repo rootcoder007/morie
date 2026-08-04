@@ -44,3 +44,7 @@ def shrinkage_msm(y, treatment_history, covariate_history, lam):
 
 def cheatsheet():
     return "shdsmw: Shrinkage MSM with regularized weights"
+
+
+# compact alias per ledger/NAMING.md
+shrinkagemsm = shrinkage_msm

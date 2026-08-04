@@ -107,3 +107,7 @@ bgodf = bg_test
 
 def cheatsheet() -> str:
     return "bg_test(y, lags=1, x=None) -> Breusch-Godfrey serial correlation LM test."
+
+
+# compact alias per ledger/NAMING.md
+bgtest = bg_test

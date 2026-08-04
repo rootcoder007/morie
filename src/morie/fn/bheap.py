@@ -93,3 +93,7 @@ short = binary_heap
 
 def cheatsheet() -> str:
     return "binary_heap({}) -> Binary heap operations."
+
+
+# compact alias per ledger/NAMING.md
+binaryheap = binary_heap

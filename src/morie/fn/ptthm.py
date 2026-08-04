@@ -30,3 +30,7 @@ thom = thomas_process
 
 def cheatsheet() -> str:
     return "thomas_process({}) -> Thomas cluster process"
+
+
+# compact alias per ledger/NAMING.md
+thomasprocess = thomas_process

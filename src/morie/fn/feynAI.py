@@ -38,3 +38,7 @@ def ai_feynman(X, y):
 
 def cheatsheet():
     return "feynAI: AI Feynman symbolic regression"
+
+
+# compact alias per ledger/NAMING.md
+aifeynman = ai_feynman

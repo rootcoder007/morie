@@ -69,3 +69,7 @@ def kamath_dpo_loss(logp_w, logp_l, logp_ref_w, logp_ref_l, beta):
 
 def cheatsheet():
     return "kmdpok: BT loss on beta-scaled policy/reference log-ratios"
+
+
+# compact alias per ledger/NAMING.md
+kamathdpoloss = kamath_dpo_loss

@@ -112,3 +112,7 @@ def geron_max_pool(x, window=2, stride=None):
 
 def cheatsheet():
     return "hmmxp: Max pooling over a sliding window"
+
+
+# compact alias per ledger/NAMING.md
+geronmaxpool = geron_max_pool

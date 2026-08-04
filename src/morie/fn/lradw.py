@@ -56,3 +56,7 @@ def cheatsheet():
 # >>> r = lr_warmup(500, lr_target=1.0, warmup_steps=1000)
 # >>> bool(np.isclose(float(r["value"]), 0.5))
 # True
+
+
+# compact alias per ledger/NAMING.md
+lrwarmup = lr_warmup

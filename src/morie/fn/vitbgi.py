@@ -43,3 +43,7 @@ def vit_b16_init(model):
 
 def cheatsheet():
     return "vitbgi: ViT-B/16 initialization (768 dim, 12 heads, 12 layers)"
+
+
+# compact alias per ledger/NAMING.md
+vitb16init = vit_b16_init

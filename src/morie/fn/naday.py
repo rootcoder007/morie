@@ -40,3 +40,7 @@ def nadaraya_watson(x, y, h):
 
 def cheatsheet():
     return "naday: Nadaraya-Watson kernel regression"
+
+
+# compact alias per ledger/NAMING.md
+nadarayawatson = nadaraya_watson

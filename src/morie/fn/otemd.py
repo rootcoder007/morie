@@ -47,3 +47,7 @@ def ot_emd_solver(a, b, C):
 
 def cheatsheet():
     return "otemd: Earth Mover's Distance via LP between discrete measures"
+
+
+# compact alias per ledger/NAMING.md
+otemdsolver = ot_emd_solver

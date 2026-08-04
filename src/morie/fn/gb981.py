@@ -76,3 +76,7 @@ def gibbons_scale_ci(x, y, alpha, cdf=None):
 
 def cheatsheet():
     return "gb981: Confidence interval for scale ratio from scale rank tests"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsscaleci = gibbons_scale_ci

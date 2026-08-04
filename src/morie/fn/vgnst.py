@@ -42,3 +42,7 @@ vari = vario_nested
 
 def cheatsheet() -> str:
     return "vario_nested({}) -> Nested (composite) variogram"
+
+
+# compact alias per ledger/NAMING.md
+varionested = vario_nested

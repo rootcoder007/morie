@@ -60,3 +60,7 @@ def cheatsheet() -> str:
 
 
 modlr = modular_form
+
+
+# compact alias per ledger/NAMING.md
+modularform = modular_form

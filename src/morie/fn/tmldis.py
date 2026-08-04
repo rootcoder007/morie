@@ -44,3 +44,7 @@ def tmle_disparity(y, S, X, X_target):
 
 def cheatsheet():
     return "tmldis: TMLE for population-attributable disparity"
+
+
+# compact alias per ledger/NAMING.md
+tmledisparity = tmle_disparity

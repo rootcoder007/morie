@@ -64,3 +64,7 @@ fzand = fuzzy_and
 
 def cheatsheet() -> str:
     return "fuzzy_and({}) -> Fuzzy AND (t-norm) operation."
+
+
+# compact alias per ledger/NAMING.md
+fuzzyand = fuzzy_and

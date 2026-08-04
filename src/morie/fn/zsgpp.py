@@ -29,3 +29,7 @@ gp_p = gp_predict
 
 def cheatsheet() -> str:
     return "gp_predict({}) -> GP prediction"
+
+
+# compact alias per ledger/NAMING.md
+gppredict = gp_predict

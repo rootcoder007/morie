@@ -42,3 +42,7 @@ def dr_clustered_did(y, D, X, cluster):
 
 def cheatsheet():
     return "drclt: Cluster-robust DR-DiD"
+
+
+# compact alias per ledger/NAMING.md
+drclustereddid = dr_clustered_did

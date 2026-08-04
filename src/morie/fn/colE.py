@@ -38,3 +38,7 @@ def cold_start_user(user, mode):
 
 def cheatsheet():
     return "colE: Cold-start handling"
+
+
+# compact alias per ledger/NAMING.md
+coldstartuser = cold_start_user

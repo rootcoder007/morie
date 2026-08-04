@@ -128,3 +128,7 @@ def boyd_convex_hull(S, query=None, tol=1e-09):
 
 def cheatsheet():
     return "cvxhul: Caratheodory caps it at n+1 points however big S is -- so membership is a small LP"
+
+
+# compact alias per ledger/NAMING.md
+boydconvexhull = boyd_convex_hull

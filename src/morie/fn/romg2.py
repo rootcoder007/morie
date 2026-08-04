@@ -64,3 +64,7 @@ omega_sub = omega_subscale
 
 def cheatsheet() -> str:
     return "omega_subscale({}) -> Omega per subscale."
+
+
+# compact alias per ledger/NAMING.md
+omegasubscale = omega_subscale

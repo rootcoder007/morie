@@ -29,3 +29,7 @@ rbf_ = rbf_multiquad
 
 def cheatsheet() -> str:
     return "rbf_multiquad({}) -> Multiquadric RBF interpolation"
+
+
+# compact alias per ledger/NAMING.md
+rbfmultiquad = rbf_multiquad

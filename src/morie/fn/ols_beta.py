@@ -43,3 +43,7 @@ def ols_beta(x, z):
 
 def cheatsheet():
     return 'r20e2: beta_hat_OLS = (X^T X)^-1 X^T z [Brus 2022, eq. 20.2]'
+
+
+# compact alias per ledger/NAMING.md
+olsbeta = ols_beta

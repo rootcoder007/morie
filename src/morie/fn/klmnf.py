@@ -41,3 +41,7 @@ klmnf = kalman_fn
 
 def cheatsheet() -> str:
     return "kalman_fn({}) -> Kalman filter for state estimation."
+
+
+# compact alias per ledger/NAMING.md
+kalmanfn = kalman_fn

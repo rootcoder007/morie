@@ -41,3 +41,7 @@ def functional_pca(data_functions, n_components):
 
 def cheatsheet():
     return "fpca: Functional principal components analysis (FPCA)"
+
+
+# compact alias per ledger/NAMING.md
+functionalpca = functional_pca

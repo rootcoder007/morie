@@ -151,3 +151,7 @@ gee = gee_regression
 
 def cheatsheet() -> str:
     return "gee_regression({}) -> GEE with sandwich standard errors."
+
+
+# compact alias per ledger/NAMING.md
+geeregression = gee_regression

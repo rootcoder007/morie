@@ -105,3 +105,7 @@ if __name__ == "__main__":
     r = tsne_reduction(X, n_components=2, perplexity=10.0, n_iter=500, seed=0)
     print("embedding shape:", r.estimate)
     print("KL divergence:", r.kl_divergence)
+
+
+# compact alias per ledger/NAMING.md
+tsnereduction = tsne_reduction

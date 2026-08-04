@@ -44,3 +44,7 @@ def ma_hksj_t_pi(theta, se_hksj, tau2, k):
 
 def cheatsheet():
     return "mahsj: HKSJ-based t-distribution prediction interval"
+
+
+# compact alias per ledger/NAMING.md
+mahksjtpi = ma_hksj_t_pi

@@ -108,3 +108,7 @@ adbst = adaboost_bio
 
 def cheatsheet() -> str:
     return "adaboost_bio({}) -> AdaBoost classifier with decision stumps."
+
+
+# compact alias per ledger/NAMING.md
+adaboostbio = adaboost_bio

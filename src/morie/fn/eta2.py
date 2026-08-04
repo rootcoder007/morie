@@ -33,3 +33,7 @@ eta2 = eta_squared
 
 def cheatsheet() -> str:
     return "eta_squared({}) -> Eta-squared from ANOVA F-statistic."
+
+
+# compact alias per ledger/NAMING.md
+etasquared = eta_squared

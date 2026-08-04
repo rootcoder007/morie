@@ -31,3 +31,7 @@ emdfn = emd_fn
 
 def cheatsheet() -> str:
     return "emd_fn({}) -> Empirical Mode Decomposition into Intrinsic Mode Functions."
+
+
+# compact alias per ledger/NAMING.md
+emdfn = emd_fn

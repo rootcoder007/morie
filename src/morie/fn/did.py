@@ -68,3 +68,7 @@ did = diff_in_diff
 
 def cheatsheet() -> str:
     return "diff_in_diff({}) -> Difference-in-differences."
+
+
+# compact alias per ledger/NAMING.md
+diffindiff = diff_in_diff

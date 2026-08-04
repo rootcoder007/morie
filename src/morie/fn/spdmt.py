@@ -33,3 +33,7 @@ def sparse_diagonal(
 
 
 spdmt = sparse_diagonal
+
+
+# compact alias per ledger/NAMING.md
+sparsediagonal = sparse_diagonal

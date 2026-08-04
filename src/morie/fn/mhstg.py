@@ -46,3 +46,7 @@ mhstg = stigma_index
 
 def cheatsheet() -> str:
     return "stigma_index({}) -> Stigma composite score from survey responses."
+
+
+# compact alias per ledger/NAMING.md
+stigmaindex = stigma_index

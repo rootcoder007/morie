@@ -46,3 +46,7 @@ def torus_knot(
 
 def cheatsheet() -> str:
     return "torus_knot(p, q, n_points) -> (p,q)-torus knot xyz"
+
+
+# compact alias per ledger/NAMING.md
+torusknot = torus_knot

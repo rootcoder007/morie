@@ -98,3 +98,7 @@ elbo = compute_elbo
 
 def cheatsheet() -> str:
     return "compute_elbo(log_target, mean, std) -> Evidence Lower Bound (ELBO)."
+
+
+# compact alias per ledger/NAMING.md
+computeelbo = compute_elbo

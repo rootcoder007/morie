@@ -29,3 +29,7 @@ roll = roll_call_sim
 
 def cheatsheet() -> str:
     return "roll_call_sim({}) -> Roll call simulation"
+
+
+# compact alias per ledger/NAMING.md
+rollcallsim = roll_call_sim

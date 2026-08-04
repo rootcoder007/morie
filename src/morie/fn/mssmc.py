@@ -35,3 +35,7 @@ smac = smacof_mds
 
 def cheatsheet() -> str:
     return "smacof_mds({}) -> SMACOF iterative MDS"
+
+
+# compact alias per ledger/NAMING.md
+smacofmds = smacof_mds

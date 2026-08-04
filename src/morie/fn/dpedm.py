@@ -121,3 +121,7 @@ def approx_dp(mech, D, D_prime, epsilon=1.0, n_samples=20000, bins=50, seed=None
 
 def cheatsheet():
     return "dpedm: delta is the mass where the e^eps bound FAILS; keep delta << 1/n or a record can leak"
+
+
+# compact alias per ledger/NAMING.md
+approxdp = approx_dp

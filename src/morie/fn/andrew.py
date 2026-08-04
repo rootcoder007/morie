@@ -38,3 +38,7 @@ def andrews_sine(y, A):
 
 def cheatsheet():
     return "andrew: Andrews sine wave weight"
+
+
+# compact alias per ledger/NAMING.md
+andrewssine = andrews_sine

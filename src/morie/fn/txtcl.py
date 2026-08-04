@@ -86,3 +86,7 @@ def text_classify(
 
 def cheatsheet() -> str:
     return "text_classify({}) -> Naive Bayes text classifier."
+
+
+# compact alias per ledger/NAMING.md
+textclassify = text_classify

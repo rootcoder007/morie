@@ -61,3 +61,7 @@ liftw = lifting_dwt
 
 def cheatsheet() -> str:
     return "lifting_dwt({}) -> Lifting scheme DWT (in-place, memory efficient)."
+
+
+# compact alias per ledger/NAMING.md
+liftingdwt = lifting_dwt

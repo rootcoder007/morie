@@ -30,3 +30,7 @@ part = party_overlap
 
 def cheatsheet() -> str:
     return "party_overlap({}) -> Party overlap index"
+
+
+# compact alias per ledger/NAMING.md
+partyoverlap = party_overlap

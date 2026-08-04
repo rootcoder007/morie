@@ -29,3 +29,7 @@ coal = coalition_heart
 
 def cheatsheet() -> str:
     return "coalition_heart({}) -> Heart of spatial game"
+
+
+# compact alias per ledger/NAMING.md
+coalitionheart = coalition_heart

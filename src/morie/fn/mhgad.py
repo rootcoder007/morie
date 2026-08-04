@@ -56,3 +56,7 @@ mhgad = gad7_score
 
 def cheatsheet() -> str:
     return "gad7_score({}) -> GAD-7 anxiety screening score."
+
+
+# compact alias per ledger/NAMING.md
+gad7score = gad7_score

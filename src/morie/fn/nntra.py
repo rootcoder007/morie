@@ -110,3 +110,7 @@ nntra = nn_train
 
 def cheatsheet() -> str:
     return "nntra() -> Train a single-hidden-layer neural network (binary classification)"
+
+
+# compact alias per ledger/NAMING.md
+nntrain = nn_train

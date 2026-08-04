@@ -82,3 +82,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`fauzi_theorem_4_5`.
 fauzi_thm4_5_mrl_consistency = fauzi_theorem_4_5
+
+
+# compact alias per ledger/NAMING.md
+fauzitheorem45 = fauzi_theorem_4_5

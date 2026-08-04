@@ -51,3 +51,7 @@ irr = rate_ratio
 
 def cheatsheet() -> str:
     return "rate_ratio({}) -> Incidence rate ratio (IRR) effect size."
+
+
+# compact alias per ledger/NAMING.md
+rateratio = rate_ratio

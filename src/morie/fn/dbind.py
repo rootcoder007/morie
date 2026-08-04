@@ -69,3 +69,7 @@ dbind = davies_bouldin
 
 def cheatsheet() -> str:
     return "davies_bouldin({}) -> Davies-Bouldin cluster evaluation index."
+
+
+# compact alias per ledger/NAMING.md
+daviesbouldin = davies_bouldin

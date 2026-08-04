@@ -103,3 +103,7 @@ def dp_sum(x, a, b, epsilon=1.0, seed=None):
 
 def cheatsheet():
     return "dpsum: sensitivity = b - a, so bounds MUST come from outside the data or the guarantee is void"
+
+
+# compact alias per ledger/NAMING.md
+dpsum = dp_sum

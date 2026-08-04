@@ -76,3 +76,7 @@ rskau = risk_auc
 
 def cheatsheet() -> str:
     return "risk_auc({}) -> AUC for risk score discrimination."
+
+
+# compact alias per ledger/NAMING.md
+riskauc = risk_auc

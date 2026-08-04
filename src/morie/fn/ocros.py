@@ -43,3 +43,7 @@ def otis_crosstab(
 
 def cheatsheet() -> str:
     return "otis_crosstab({}) -> OTIS cross-tabulation with chi-square test."
+
+
+# compact alias per ledger/NAMING.md
+otiscrosstab = otis_crosstab

@@ -43,3 +43,7 @@ mle = mle_gaussian
 
 def cheatsheet() -> str:
     return "mle_gaussian({}) -> Maximum likelihood estimation for Gaussian."
+
+
+# compact alias per ledger/NAMING.md
+mlegaussian = mle_gaussian

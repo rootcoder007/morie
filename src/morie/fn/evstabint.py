@@ -77,3 +77,7 @@ def evt_xi_ci_profile(x, alpha=0.05, model="gev"):
 
 def cheatsheet():
     return "evstabint: Profile-likelihood CI for GEV/GPD shape ξ"
+
+
+# compact alias per ledger/NAMING.md
+evtxiciprofile = evt_xi_ci_profile

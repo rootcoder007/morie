@@ -49,3 +49,7 @@ mhsfr = sf12_mental
 
 def cheatsheet() -> str:
     return "sf12_mental({}) -> SF-12 mental component summary (simplified)."
+
+
+# compact alias per ledger/NAMING.md
+sf12mental = sf12_mental

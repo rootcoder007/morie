@@ -43,3 +43,7 @@ def rangayyan_cwt(x, fs, wavelet, scales):
 
 def cheatsheet():
     return "rgcwt: Continuous wavelet transform (CWT)"
+
+
+# compact alias per ledger/NAMING.md
+rangayyancwt = rangayyan_cwt

@@ -85,3 +85,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`vol_harmonic`.
 vol_harmonic_volatility = vol_harmonic
+
+
+# compact alias per ledger/NAMING.md
+volharmonic = vol_harmonic

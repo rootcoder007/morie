@@ -126,3 +126,7 @@ def geron_fp32(x):
 
 def cheatsheet():
     return "hmfp32: Single-precision (FP32) representation"
+
+
+# compact alias per ledger/NAMING.md
+geronfp32 = geron_fp32

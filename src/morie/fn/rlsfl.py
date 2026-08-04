@@ -62,3 +62,7 @@ rlsfl = rls_filter
 
 def cheatsheet() -> str:
     return "rls_filter({}) -> RLS adaptive filter."
+
+
+# compact alias per ledger/NAMING.md
+rlsfilter = rls_filter

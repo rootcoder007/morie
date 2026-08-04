@@ -45,3 +45,7 @@ def rangayyan_tvlsi(x, y, fs, window):
 
 def cheatsheet():
     return "rgstvar: Time-variant linear system (TV-LSI) characterization"
+
+
+# compact alias per ledger/NAMING.md
+rangayyantvlsi = rangayyan_tvlsi

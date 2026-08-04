@@ -82,3 +82,7 @@ sir_d = sir_demography
 
 def cheatsheet() -> str:
     return "sir_demography({}) -> SIR model with vital dynamics (birth/death)."
+
+
+# compact alias per ledger/NAMING.md
+sirdemography = sir_demography

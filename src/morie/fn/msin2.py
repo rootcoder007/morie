@@ -30,3 +30,7 @@ inds = indscal_weights
 
 def cheatsheet() -> str:
     return "indscal_weights({}) -> INDSCAL subject weights"
+
+
+# compact alias per ledger/NAMING.md
+indscalweights = indscal_weights

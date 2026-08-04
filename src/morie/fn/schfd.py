@@ -64,3 +64,7 @@ schfd = schoenfeld_test
 
 def cheatsheet() -> str:
     return "schoenfeld_test({}) -> Schoenfeld residuals test for PH assumption."
+
+
+# compact alias per ledger/NAMING.md
+schoenfeldtest = schoenfeld_test

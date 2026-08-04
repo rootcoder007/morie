@@ -27,3 +27,7 @@ def evt_return_level(mu, sigma, xi, T):
 
 def cheatsheet():
     return "evrl: T-year return level under GEV"
+
+
+# compact alias per ledger/NAMING.md
+evtreturnlevel = evt_return_level

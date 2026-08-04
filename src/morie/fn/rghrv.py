@@ -90,3 +90,7 @@ def rangayyan_hrv(rr_ms):
 
 def cheatsheet():
     return "rghrv: time-domain HRV (SDNN, RMSSD, pNN50) -- Task Force (1996)"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanhrv = rangayyan_hrv

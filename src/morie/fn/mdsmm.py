@@ -68,3 +68,7 @@ mdsmm = mds_missing_data
 
 def cheatsheet() -> str:
     return "mds_missing_data({}) -> MDS with missing data (weighted stress)."
+
+
+# compact alias per ledger/NAMING.md
+mdsmissingdata = mds_missing_data

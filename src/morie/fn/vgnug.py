@@ -49,3 +49,7 @@ nugg = nugget_est
 
 def cheatsheet() -> str:
     return "nugget_est({}) -> Nugget effect estimation"
+
+
+# compact alias per ledger/NAMING.md
+nuggetest = nugget_est

@@ -73,3 +73,7 @@ prop_ci = proportion_ci
 
 def cheatsheet() -> str:
     return "proportion_ci({}) -> Confidence interval for a single proportion."
+
+
+# compact alias per ledger/NAMING.md
+proportionci = proportion_ci

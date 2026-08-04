@@ -69,3 +69,7 @@ shang = ring_harmonics
 
 def cheatsheet() -> str:
     return "ring_harmonics({}) -> Circular harmonic analysis."
+
+
+# compact alias per ledger/NAMING.md
+ringharmonics = ring_harmonics

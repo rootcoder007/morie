@@ -146,3 +146,7 @@ def esl_pca_transform(model, X):
 
 def cheatsheet():
     return "eslpsv: SVD not eig(X'X); centre by default, scale when units differ"
+
+
+# compact alias per ledger/NAMING.md
+eslpcasvd = esl_pca_svd

@@ -29,3 +29,7 @@ migr = migration_flow
 
 def cheatsheet() -> str:
     return "migration_flow({}) -> Migration flow model"
+
+
+# compact alias per ledger/NAMING.md
+migrationflow = migration_flow

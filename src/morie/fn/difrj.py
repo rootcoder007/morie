@@ -86,3 +86,7 @@ raju_dif = dif_raju_area
 
 def cheatsheet() -> str:
     return "dif_raju_area({}) -> Raju's signed/unsigned area DIF measure."
+
+
+# compact alias per ledger/NAMING.md
+difrajuarea = dif_raju_area

@@ -40,3 +40,7 @@ def deformable_detr(x, queries, K):
 
 def cheatsheet():
     return "defdtr: Deformable DETR sparse attention"
+
+
+# compact alias per ledger/NAMING.md
+deformabledetr = deformable_detr

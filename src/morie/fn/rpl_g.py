@@ -40,3 +40,7 @@ rpl_g = rplace_by_gender
 
 def cheatsheet() -> str:
     return "rplace_by_gender({}) -> Placement counts by gender."
+
+
+# compact alias per ledger/NAMING.md
+rplacebygender = rplace_by_gender

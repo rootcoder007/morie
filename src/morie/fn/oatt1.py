@@ -100,3 +100,7 @@ def otis_att_region(
 
 def cheatsheet() -> str:
     return "otis_att_region({}) -> ATT by region via IPW for OTIS data."
+
+
+# compact alias per ledger/NAMING.md
+otisattregion = otis_att_region

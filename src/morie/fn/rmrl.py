@@ -40,3 +40,7 @@ def reward_machine(env, fsa):
 
 def cheatsheet():
     return "rmrl: Reward machine -- finite-state task spec"
+
+
+# compact alias per ledger/NAMING.md
+rewardmachine = reward_machine

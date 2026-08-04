@@ -40,3 +40,7 @@ def farm_cpu(y, M, K):
 
 def cheatsheet():
     return "farmlmm: FarmCPU iterative MLM + fixed-effect"
+
+
+# compact alias per ledger/NAMING.md
+farmcpu = farm_cpu

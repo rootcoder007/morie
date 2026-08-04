@@ -41,3 +41,7 @@ strpp = stress_per_point
 
 def cheatsheet() -> str:
     return "stress_per_point({}) -> Stress per point."
+
+
+# compact alias per ledger/NAMING.md
+stressperpoint = stress_per_point

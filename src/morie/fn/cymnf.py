@@ -46,3 +46,7 @@ def cheatsheet() -> str:
 
 
 cymnf = calabi_yau_hodge
+
+
+# compact alias per ledger/NAMING.md
+calabiyauhodge = calabi_yau_hodge

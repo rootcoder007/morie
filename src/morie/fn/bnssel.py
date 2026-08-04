@@ -42,3 +42,7 @@ def bound_selection(y, D, X):
 
 def cheatsheet():
     return "bnssel: Sample-selection bound (Heckman model)"
+
+
+# compact alias per ledger/NAMING.md
+boundselection = bound_selection

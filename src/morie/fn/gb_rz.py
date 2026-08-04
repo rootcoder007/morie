@@ -76,3 +76,7 @@ def gibbons_rz_test(statistic, null_dist, alpha, cdf=None):
 
 def cheatsheet():
     return "gb_rz: Randomized test procedure when exact size is unavailable at a discrete level"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsrztest = gibbons_rz_test

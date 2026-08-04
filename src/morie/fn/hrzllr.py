@@ -55,3 +55,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`hrz_local_linear`.
 horowitz_local_linear = hrz_local_linear
+
+
+# compact alias per ledger/NAMING.md
+hrzlocallinear = hrz_local_linear

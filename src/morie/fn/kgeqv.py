@@ -35,3 +35,7 @@ krig = kriging_equiv
 
 def cheatsheet() -> str:
     return "kriging_equiv({}) -> Kriging equivalence to GLS"
+
+
+# compact alias per ledger/NAMING.md
+krigingequiv = kriging_equiv

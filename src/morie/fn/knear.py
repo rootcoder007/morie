@@ -57,3 +57,7 @@ knear_fn = knn_weights
 
 def cheatsheet() -> str:
     return "knn_weights({}) -> K-nearest neighbors spatial weights matrix."
+
+
+# compact alias per ledger/NAMING.md
+knnweights = knn_weights

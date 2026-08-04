@@ -30,3 +30,7 @@ embe = embedding_qual
 
 def cheatsheet() -> str:
     return "embedding_qual({}) -> Embedding quality measure"
+
+
+# compact alias per ledger/NAMING.md
+embeddingqual = embedding_qual

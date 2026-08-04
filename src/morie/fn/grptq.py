@@ -135,3 +135,7 @@ def geron_static_ptq(model, calibration_data, bits=8, percentile=100.0):
 
 def cheatsheet():
     return "grptq: run calibration batch through the layers, s_act = calib(|a|)/qmax per tensor"
+
+
+# compact alias per ledger/NAMING.md
+geronstaticptq = geron_static_ptq

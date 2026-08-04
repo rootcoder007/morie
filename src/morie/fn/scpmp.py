@@ -54,3 +54,7 @@ def score_pmp(
 
 def cheatsheet() -> str:
     return "score_pmp({}) -> Percent of Maximum Possible (PMP) score."
+
+
+# compact alias per ledger/NAMING.md
+scorepmp = score_pmp

@@ -92,3 +92,7 @@ sgiso = isotropy_test
 
 def cheatsheet() -> str:
     return "isotropy_test({}) -> Isotropy test via directional variogram comparison."
+
+
+# compact alias per ledger/NAMING.md
+isotropytest = isotropy_test

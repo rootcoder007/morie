@@ -38,3 +38,7 @@ def ld_r2(geno1, geno2):
 
 def cheatsheet():
     return "ldcmpr: Linkage disequilibrium r^2"
+
+
+# compact alias per ledger/NAMING.md
+ldr2 = ld_r2

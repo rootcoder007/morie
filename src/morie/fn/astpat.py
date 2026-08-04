@@ -124,3 +124,7 @@ astpat = astar_path
 
 def cheatsheet() -> str:
     return "astar_path({}) -> A* pathfinding algorithm."
+
+
+# compact alias per ledger/NAMING.md
+astarpath = astar_path

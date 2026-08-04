@@ -116,3 +116,7 @@ nbglm = negbin_glm
 
 def cheatsheet() -> str:
     return "negbin_glm({}) -> Negative binomial GLM via IRLS."
+
+
+# compact alias per ledger/NAMING.md
+negbinglm = negbin_glm

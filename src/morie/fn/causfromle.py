@@ -19,3 +19,7 @@ def causal_e_value(RR):
 
 def cheatsheet():
     return "causfromle: E-value for a point RR (front-end to evalu)"
+
+
+# compact alias per ledger/NAMING.md
+causalevalue = causal_e_value

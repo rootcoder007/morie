@@ -51,3 +51,7 @@ def cheatsheet() -> str:
 
 
 rtn = round_to_nearest
+
+
+# compact alias per ledger/NAMING.md
+roundtonearest = round_to_nearest

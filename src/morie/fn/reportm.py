@@ -40,3 +40,7 @@ def report_noisy_max(utilities, sensitivity, epsilon):
 
 def cheatsheet():
     return "reportm: Report-noisy-max selection"
+
+
+# compact alias per ledger/NAMING.md
+reportnoisymax = report_noisy_max

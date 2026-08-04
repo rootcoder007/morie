@@ -37,3 +37,7 @@ dist = dist_matrix
 
 def cheatsheet() -> str:
     return "dist_matrix({}) -> Distance matrix computation"
+
+
+# compact alias per ledger/NAMING.md
+distmatrix = dist_matrix

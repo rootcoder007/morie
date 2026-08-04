@@ -218,3 +218,11 @@ def geron_umap(X, n_components=2, n_neighbors=3, min_dist=0.1, seed=0, n_iter=30
 
 def cheatsheet():
     return "hmumap: UMAP: uniform manifold approximation, preserves local and some global structure"
+
+
+# compact alias per ledger/NAMING.md
+fitab = fit_ab
+
+
+# compact alias per ledger/NAMING.md
+geronumap = geron_umap

@@ -129,3 +129,7 @@ def geron_dbscan(X, eps, min_samples, metric="euclidean"):
 
 def cheatsheet():
     return "hmdbs: Density-based spatial clustering (DBSCAN)"
+
+
+# compact alias per ledger/NAMING.md
+gerondbscan = geron_dbscan

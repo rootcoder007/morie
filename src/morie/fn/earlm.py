@@ -54,3 +54,7 @@ def cheatsheet() -> str:
 
 
 earlm = early_stopping
+
+
+# compact alias per ledger/NAMING.md
+earlystopping = early_stopping

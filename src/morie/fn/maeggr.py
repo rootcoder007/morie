@@ -71,3 +71,7 @@ def ma_egger_test(yi, se_i, cdf=None):
 
 def cheatsheet():
     return "maeggr: Egger's regression test for funnel asymmetry"
+
+
+# compact alias per ledger/NAMING.md
+maeggertest = ma_egger_test

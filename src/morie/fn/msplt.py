@@ -35,3 +35,7 @@ mds_ = mds_polarity
 
 def cheatsheet() -> str:
     return "mds_polarity({}) -> MDS polarity detection"
+
+
+# compact alias per ledger/NAMING.md
+mdspolarity = mds_polarity

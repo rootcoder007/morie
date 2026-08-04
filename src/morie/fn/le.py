@@ -93,3 +93,7 @@ le = life_expectancy
 
 def cheatsheet() -> str:
     return "life_expectancy({}) -> Life expectancy from an abridged life table."
+
+
+# compact alias per ledger/NAMING.md
+lifeexpectancy = life_expectancy

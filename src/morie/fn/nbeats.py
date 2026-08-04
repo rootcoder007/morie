@@ -40,3 +40,7 @@ def n_beats(y, stacks, blocks):
 
 def cheatsheet():
     return "nbeats: N-BEATS pure-DL forecasting"
+
+
+# compact alias per ledger/NAMING.md
+nbeats = n_beats

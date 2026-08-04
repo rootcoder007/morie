@@ -71,3 +71,7 @@ coiff = coiflet_coeffs
 
 def cheatsheet() -> str:
     return "coiflet_coeffs({}) -> Coiflet wavelet filter coefficients."
+
+
+# compact alias per ledger/NAMING.md
+coifletcoeffs = coiflet_coeffs

@@ -36,3 +36,7 @@ def tiktoken_bpe(corpus):
 
 def cheatsheet():
     return "tikto: tiktoken-style efficient BPE"
+
+
+# compact alias per ledger/NAMING.md
+tiktokenbpe = tiktoken_bpe

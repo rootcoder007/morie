@@ -38,3 +38,7 @@ def icar_prior(adjacency, tau):
 
 def cheatsheet():
     return "icarbm: Intrinsic CAR (ICAR) prior"
+
+
+# compact alias per ledger/NAMING.md
+icarprior = icar_prior

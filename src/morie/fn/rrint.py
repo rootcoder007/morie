@@ -46,3 +46,7 @@ rrint = rr_intervals
 
 def cheatsheet() -> str:
     return "rr_intervals({}) -> RR interval series from R-peak indices."
+
+
+# compact alias per ledger/NAMING.md
+rrintervals = rr_intervals

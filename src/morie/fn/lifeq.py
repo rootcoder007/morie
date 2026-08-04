@@ -116,3 +116,7 @@ lifeq = life_table_qx
 
 def cheatsheet() -> str:
     return "life_table_qx({}) -> Life table mortality rates qx."
+
+
+# compact alias per ledger/NAMING.md
+lifetableqx = life_table_qx

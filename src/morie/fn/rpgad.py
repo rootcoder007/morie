@@ -49,3 +49,7 @@ def rdp_to_eps_delta(y, alpha, epsilon_R, delta):
 
 def cheatsheet():
     return "rpgad: Convert Rényi DP (alpha, epsilon_R) to (epsilon, delta)"
+
+
+# compact alias per ledger/NAMING.md
+rdptoepsdelta = rdp_to_eps_delta

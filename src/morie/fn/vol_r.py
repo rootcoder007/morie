@@ -63,3 +63,7 @@ short = vol_reg
 
 def cheatsheet() -> str:
     return "vol_reg({}) -> Volatility by origin region."
+
+
+# compact alias per ledger/NAMING.md
+volreg = vol_reg

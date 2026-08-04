@@ -58,3 +58,7 @@ def rangayyan_ccf(x, y, max_lag):
 
 def cheatsheet():
     return "rgccf: Cross-correlation function (CCF) between two signals"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanccf = rangayyan_ccf

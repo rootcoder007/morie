@@ -77,3 +77,7 @@ h_mean_fn = hajek_mean
 
 def cheatsheet() -> str:
     return "hajek_mean({}) -> Hajek estimator for population mean."
+
+
+# compact alias per ledger/NAMING.md
+hajekmean = hajek_mean

@@ -32,3 +32,7 @@ linru = linear_utility
 
 def cheatsheet() -> str:
     return "linear_utility({}) -> Linear (city-block) utility function for spatial voting."
+
+
+# compact alias per ledger/NAMING.md
+linearutility = linear_utility

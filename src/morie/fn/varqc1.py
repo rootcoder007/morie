@@ -38,3 +38,7 @@ def vcf_filter(vcf, thresholds):
 
 def cheatsheet():
     return "varqc1: VCF variant quality filtering"
+
+
+# compact alias per ledger/NAMING.md
+vcffilter = vcf_filter

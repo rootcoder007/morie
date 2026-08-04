@@ -38,3 +38,7 @@ def prs_cs(sumstats, ld_ref):
 
 def cheatsheet():
     return "prsccs: Polygenic risk score (PRS-CS)"
+
+
+# compact alias per ledger/NAMING.md
+prscs = prs_cs

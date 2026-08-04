@@ -95,3 +95,7 @@ heatd = heat_density
 
 def cheatsheet() -> str:
     return "heat_density({}) -> 2D kernel density for heatmaps."
+
+
+# compact alias per ledger/NAMING.md
+heatdensity = heat_density

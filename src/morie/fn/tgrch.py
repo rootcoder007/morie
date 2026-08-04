@@ -90,3 +90,7 @@ def tgarch_model(x):
 
 def cheatsheet():
     return "tgrch: GJR-GARCH(1,1) threshold GARCH (Glosten et al. 1993)."
+
+
+# compact alias per ledger/NAMING.md
+tgarchmodel = tgarch_model

@@ -29,3 +29,7 @@ spec = spectral_sim
 
 def cheatsheet() -> str:
     return "spectral_sim({}) -> FFT-based spectral simulation"
+
+
+# compact alias per ledger/NAMING.md
+spectralsim = spectral_sim

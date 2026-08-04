@@ -41,3 +41,7 @@ iqr_ = iqr_statistic
 
 def cheatsheet() -> str:
     return "iqr_statistic({}) -> Interquartile range statistic."
+
+
+# compact alias per ledger/NAMING.md
+iqrstatistic = iqr_statistic

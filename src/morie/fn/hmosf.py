@@ -124,3 +124,7 @@ def geron_one_shot(model, example, query, verbalizer=None):
 
 def cheatsheet():
     return "hmosf: One-shot in-context prompting"
+
+
+# compact alias per ledger/NAMING.md
+gerononeshot = geron_one_shot

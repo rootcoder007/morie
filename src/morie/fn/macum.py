@@ -42,3 +42,7 @@ def ma_cumulative(yi, vi, order):
 
 def cheatsheet():
     return "macum: Cumulative meta-analysis ordered by some criterion"
+
+
+# compact alias per ledger/NAMING.md
+macumulative = ma_cumulative

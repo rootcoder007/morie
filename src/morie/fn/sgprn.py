@@ -58,3 +58,7 @@ sgprn = practical_range
 
 def cheatsheet() -> str:
     return "practical_range({}) -> Practical (effective) range estimation."
+
+
+# compact alias per ledger/NAMING.md
+practicalrange = practical_range

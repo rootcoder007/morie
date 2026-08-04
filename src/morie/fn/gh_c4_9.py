@@ -31,3 +31,7 @@ def ghosal_dp_gamma(base_masses, seed=42):
 
 def cheatsheet():
     return "gh_c4_9: DP by gamma-process normalization"
+
+
+# compact alias per ledger/NAMING.md
+ghosaldpgamma = ghosal_dp_gamma

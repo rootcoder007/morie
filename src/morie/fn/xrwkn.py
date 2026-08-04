@@ -29,3 +29,7 @@ w_k = w_knn
 
 def cheatsheet() -> str:
     return "w_knn({}) -> K-nearest neighbors weights"
+
+
+# compact alias per ledger/NAMING.md
+wknn = w_knn

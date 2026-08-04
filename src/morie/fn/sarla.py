@@ -90,3 +90,7 @@ def cheatsheet():
 # CANONICAL TEST
 # Same X, y, W as sarre canonical. Expect rho ~ small (data has no lag
 # structure) and beta ~ [intercept, slope].
+
+
+# compact alias per ledger/NAMING.md
+spatialarlag = spatial_ar_lag

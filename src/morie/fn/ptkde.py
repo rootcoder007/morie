@@ -36,3 +36,7 @@ spat = spatial_kde
 
 def cheatsheet() -> str:
     return "spatial_kde({}) -> Spatial kernel density estimation"
+
+
+# compact alias per ledger/NAMING.md
+spatialkde = spatial_kde

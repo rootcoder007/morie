@@ -39,3 +39,7 @@ def custody_readmit(
 
 def cheatsheet() -> str:
     return "custody_readmit({}) -> Custody readmission rate."
+
+
+# compact alias per ledger/NAMING.md
+custodyreadmit = custody_readmit

@@ -53,3 +53,7 @@ ntchf = notch_filter
 
 def cheatsheet() -> str:
     return "notch_filter({}) -> Notch (band-reject) filter."
+
+
+# compact alias per ledger/NAMING.md
+notchfilter = notch_filter

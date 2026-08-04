@@ -83,3 +83,7 @@ def holo_dag(
 
 def cheatsheet() -> str:
     return "holo_dag({}) -> DAG (Directed Acyclic Graph) diagram."
+
+
+# compact alias per ledger/NAMING.md
+holodag = holo_dag

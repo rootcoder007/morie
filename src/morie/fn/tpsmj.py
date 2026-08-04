@@ -50,3 +50,7 @@ tpsmj = tps_major_crime
 
 def cheatsheet() -> str:
     return "tps_major_crime({}) -> Major crime indicators summary."
+
+
+# compact alias per ledger/NAMING.md
+tpsmajorcrime = tps_major_crime

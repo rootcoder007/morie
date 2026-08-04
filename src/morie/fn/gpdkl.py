@@ -42,3 +42,7 @@ def deep_kernel_gp(X, y, X_test, nn):
 
 def cheatsheet():
     return "gpdkl: Deep kernel learning GP"
+
+
+# compact alias per ledger/NAMING.md
+deepkernelgp = deep_kernel_gp

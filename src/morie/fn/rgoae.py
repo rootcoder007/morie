@@ -41,3 +41,7 @@ def rangayyan_oae(oae, fs):
 
 def cheatsheet():
     return "rgoae: Otoacoustic emission (OAE) signal analysis"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanoae = rangayyan_oae

@@ -42,3 +42,7 @@ def t_closeness(X, quasi_ids, sensitive, t):
 
 def cheatsheet():
     return "tcls: t-closeness baseline"
+
+
+# compact alias per ledger/NAMING.md
+tcloseness = t_closeness

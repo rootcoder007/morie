@@ -44,3 +44,7 @@ def q_learning(env, alpha, gamma, epsilon, n_episodes):
 
 def cheatsheet():
     return "qlearn: Tabular Q-learning"
+
+
+# compact alias per ledger/NAMING.md
+qlearning = q_learning

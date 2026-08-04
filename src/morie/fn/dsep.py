@@ -52,3 +52,7 @@ def d_separation(dag, X, Y, Z):
 
 def cheatsheet():
     return "dsep: d-separation criterion for conditional independence in DAGs"
+
+
+# compact alias per ledger/NAMING.md
+dseparation = d_separation

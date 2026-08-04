@@ -28,3 +28,7 @@ psddb = psd_decibels
 
 def cheatsheet() -> str:
     return "psd_decibels({}) -> Convert PSD to decibels."
+
+
+# compact alias per ledger/NAMING.md
+psddecibels = psd_decibels

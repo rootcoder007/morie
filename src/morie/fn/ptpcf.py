@@ -30,3 +30,7 @@ pair = pair_corr_fn
 
 def cheatsheet() -> str:
     return "pair_corr_fn({}) -> Pair correlation function g(r)"
+
+
+# compact alias per ledger/NAMING.md
+paircorrfn = pair_corr_fn

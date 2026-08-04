@@ -43,3 +43,7 @@ def rangayyan_emd(x, max_imfs, tol):
 
 def cheatsheet():
     return "rgemd: Empirical mode decomposition (EMD) sifting algorithm"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanemd = rangayyan_emd

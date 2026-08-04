@@ -86,3 +86,7 @@ def geron_bic_gmm(log_likelihood, n, n_params):
 
 def cheatsheet():
     return "grbic: BIC = log(n)*p - 2*logL for GMM model selection"
+
+
+# compact alias per ledger/NAMING.md
+geronbicgmm = geron_bic_gmm

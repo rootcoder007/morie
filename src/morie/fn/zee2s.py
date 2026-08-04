@@ -29,3 +29,7 @@ enha = enhanced_2sfca
 
 def cheatsheet() -> str:
     return "enhanced_2sfca({}) -> Enhanced 2SFCA"
+
+
+# compact alias per ledger/NAMING.md
+enhanced2sfca = enhanced_2sfca

@@ -47,3 +47,7 @@ rpl_r = rplace_by_region
 
 def cheatsheet() -> str:
     return "rplace_by_region({}) -> Placement counts filtered to a single region."
+
+
+# compact alias per ledger/NAMING.md
+rplacebyregion = rplace_by_region

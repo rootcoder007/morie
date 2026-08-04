@@ -75,3 +75,7 @@ knn = knn_classify
 
 def cheatsheet() -> str:
     return "knn_classify({}) -> k-Nearest Neighbors classifier (pure NumPy)."
+
+
+# compact alias per ledger/NAMING.md
+knnclassify = knn_classify

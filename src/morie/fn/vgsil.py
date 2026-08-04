@@ -51,3 +51,7 @@ sill = sill_est
 
 def cheatsheet() -> str:
     return "sill_est({}) -> Sill estimation"
+
+
+# compact alias per ledger/NAMING.md
+sillest = sill_est

@@ -43,3 +43,7 @@ def ghosal_bm_prior(n_grid=200, n_sim=400, seed=42):
 
 def cheatsheet():
     return "gh_c11_6: Brownian-motion prior"
+
+
+# compact alias per ledger/NAMING.md
+ghosalbmprior = ghosal_bm_prior

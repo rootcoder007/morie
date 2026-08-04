@@ -42,3 +42,7 @@ def boot_ci_median(x, B, alpha):
 
 def cheatsheet():
     return "btcimed: Bootstrap percentile CI for the median"
+
+
+# compact alias per ledger/NAMING.md
+bootcimedian = boot_ci_median

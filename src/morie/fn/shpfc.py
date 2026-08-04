@@ -23,3 +23,7 @@ alias = shape_factor_fn
 
 def cheatsheet() -> str:
     return "shape_factor_fn({}) -> Shape factor of a waveform."
+
+
+# compact alias per ledger/NAMING.md
+shapefactorfn = shape_factor_fn

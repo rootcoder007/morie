@@ -254,3 +254,11 @@ def cheatsheet():
         "cssant: Callaway-Sant'Anna ATT(g,t) with clean controls, plus "
         "event-study, cohort and calendar aggregations and a pre-trend check"
     )
+
+
+# compact alias per ledger/NAMING.md
+aggregateatt = aggregate_att
+
+
+# compact alias per ledger/NAMING.md
+grouptimeatt = group_time_att

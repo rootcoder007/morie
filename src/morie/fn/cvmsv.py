@@ -68,3 +68,7 @@ cvmsv = cramer_von_mises
 
 def cheatsheet() -> str:
     return "cramer_von_mises({x}) -> Cramer-von Mises goodness-of-fit test."
+
+
+# compact alias per ledger/NAMING.md
+cramervonmises = cramer_von_mises

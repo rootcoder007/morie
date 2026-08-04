@@ -88,3 +88,7 @@ parzn = parzen_classify
 
 def cheatsheet() -> str:
     return "parzen_classify({}) -> Parzen window (kernel density) classifier."
+
+
+# compact alias per ledger/NAMING.md
+parzenclassify = parzen_classify

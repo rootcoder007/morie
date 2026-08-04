@@ -172,3 +172,7 @@ def geron_flamingo(images, text, latents=None, W_Q=None, W_K=None, W_V=None, gat
 
 def cheatsheet():
     return "hmflmg: Flamingo: visual dialogue with interleaved image and text"
+
+
+# compact alias per ledger/NAMING.md
+geronflamingo = geron_flamingo

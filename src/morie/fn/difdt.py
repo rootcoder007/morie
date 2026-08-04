@@ -80,3 +80,7 @@ delta_plot_dif = dif_delta_plot
 
 def cheatsheet() -> str:
     return "dif_delta_plot({}) -> Delta plot method for DIF detection."
+
+
+# compact alias per ledger/NAMING.md
+difdeltaplot = dif_delta_plot

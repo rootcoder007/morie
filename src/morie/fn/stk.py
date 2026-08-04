@@ -68,3 +68,7 @@ stk = space_time_k
 
 def cheatsheet() -> str:
     return "space_time_k({}) -> Space-time K function."
+
+
+# compact alias per ledger/NAMING.md
+spacetimek = space_time_k

@@ -30,3 +30,7 @@ apre = apre_stat
 
 def cheatsheet() -> str:
     return "apre_stat({}) -> Aggregate PRE"
+
+
+# compact alias per ledger/NAMING.md
+aprestat = apre_stat

@@ -38,3 +38,7 @@ def hmm_profile(seq, profile):
 
 def cheatsheet():
     return "hmmprf: Profile HMM scoring (HMMER-style)"
+
+
+# compact alias per ledger/NAMING.md
+hmmprofile = hmm_profile

@@ -29,3 +29,7 @@ prob = probit_vote
 
 def cheatsheet() -> str:
     return "probit_vote({}) -> Probit spatial voting probability"
+
+
+# compact alias per ledger/NAMING.md
+probitvote = probit_vote

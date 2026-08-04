@@ -95,3 +95,7 @@ vctrs = weight_init
 
 def cheatsheet() -> str:
     return "vctrs() -> Generate neural network weight initialization matrices"
+
+
+# compact alias per ledger/NAMING.md
+weightinit = weight_init

@@ -44,3 +44,7 @@ def tmle_spillover(y, D, X, network, exposure_summary):
 
 def cheatsheet():
     return "tmlspl: TMLE under interference / spillover"
+
+
+# compact alias per ledger/NAMING.md
+tmlespillover = tmle_spillover

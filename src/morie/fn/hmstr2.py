@@ -97,3 +97,7 @@ def geron_stride(in_dim, k, p=0, s=1):
 
 def cheatsheet():
     return "hmstr2: Stride: step size of kernel sliding over input"
+
+
+# compact alias per ledger/NAMING.md
+geronstride = geron_stride

@@ -76,3 +76,7 @@ box_m = box_m_test
 
 def cheatsheet() -> str:
     return "box_m_test({}) -> Box's M test for equality of covariance matrices."
+
+
+# compact alias per ledger/NAMING.md
+boxmtest = box_m_test

@@ -40,3 +40,7 @@ def fader_renewable(incidence, Rt, gen_int):
 
 def cheatsheet():
     return "ferror: Renewal-equation forecast"
+
+
+# compact alias per ledger/NAMING.md
+faderrenewable = fader_renewable

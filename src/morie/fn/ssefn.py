@@ -38,3 +38,7 @@ ssefn = sse_mds
 
 def cheatsheet() -> str:
     return "sse_mds({}) -> Sum of squared distance errors for MDS."
+
+
+# compact alias per ledger/NAMING.md
+ssemds = sse_mds

@@ -34,3 +34,7 @@ def ghosal_pt_kl_prop(a_exponent=2.0, m_max=200):
 
 def cheatsheet():
     return "gh_c7_1: Pólya tree KL property"
+
+
+# compact alias per ledger/NAMING.md
+ghosalptklprop = ghosal_pt_kl_prop

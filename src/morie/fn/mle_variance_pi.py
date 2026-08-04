@@ -42,3 +42,7 @@ def mle_variance_pi(pi_hat, n):
 
 def cheatsheet():
     return '1e3: Var(pi_hat) = pi_hat(1-pi_hat)/n [Bilder & Loughin 2025, eq. 1.3]'
+
+
+# compact alias per ledger/NAMING.md
+mlevariancepi = mle_variance_pi

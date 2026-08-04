@@ -28,3 +28,7 @@ spat = spatial_zip
 
 def cheatsheet() -> str:
     return "spatial_zip({}) -> Spatial zero-inflated Poisson"
+
+
+# compact alias per ledger/NAMING.md
+spatialzip = spatial_zip

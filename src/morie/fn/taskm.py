@@ -77,3 +77,7 @@ taskm = dtw_match
 
 def cheatsheet() -> str:
     return "dtw_match({}) -> Dynamic time warping pattern matching."
+
+
+# compact alias per ledger/NAMING.md
+dtwmatch = dtw_match

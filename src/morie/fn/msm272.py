@@ -33,3 +33,7 @@ mvsml_fda_design = mvsml_convolutional_nn_eq_14_9
 
 def cheatsheet():
     return "msm272: Design matrix of the functional regression"
+
+
+# compact alias per ledger/NAMING.md
+mvsmlfdadesign = mvsml_fda_design

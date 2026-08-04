@@ -81,3 +81,7 @@ def item_table(data: pd.DataFrame | np.ndarray) -> pd.DataFrame:
 
 def cheatsheet() -> str:
     return "item_table({}) -> Full item analysis table."
+
+
+# compact alias per ledger/NAMING.md
+itemtable = item_table

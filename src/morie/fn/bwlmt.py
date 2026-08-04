@@ -47,3 +47,7 @@ bwlmt = bandwidth_limit
 
 def cheatsheet() -> str:
     return "bandwidth_limit({}) -> Nyquist bandwidth limit analysis."
+
+
+# compact alias per ledger/NAMING.md
+bandwidthlimit = bandwidth_limit

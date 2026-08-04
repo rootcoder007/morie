@@ -46,3 +46,7 @@ def otis_quantiles(
 
 def cheatsheet() -> str:
     return "otis_quantiles({}) -> Quantiles for a numeric column in OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisquantiles = otis_quantiles

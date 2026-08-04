@@ -49,3 +49,7 @@ def ma_three_level(yi, vi, cluster_id, study_id):
 
 def cheatsheet():
     return "matrl: Three-level random-effects model (cluster within study)"
+
+
+# compact alias per ledger/NAMING.md
+mathreelevel = ma_three_level

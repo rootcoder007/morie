@@ -105,3 +105,7 @@ svm_ = svm_classify
 
 def cheatsheet() -> str:
     return "svm_classify({}) -> Support Vector Machine classifier wrapper."
+
+
+# compact alias per ledger/NAMING.md
+svmclassify = svm_classify

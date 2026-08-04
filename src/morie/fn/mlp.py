@@ -77,3 +77,7 @@ mlp = mlp_simple
 
 def cheatsheet() -> str:
     return "mlp_simple({}) -> Simple MLP (1 hidden layer, numpy)."
+
+
+# compact alias per ledger/NAMING.md
+mlpsimple = mlp_simple

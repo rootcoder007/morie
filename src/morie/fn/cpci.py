@@ -56,3 +56,7 @@ cpci = clopper_pearson
 
 def cheatsheet() -> str:
     return "clopper_pearson({}) -> Clopper-Pearson exact binomial CI."
+
+
+# compact alias per ledger/NAMING.md
+clopperpearson = clopper_pearson

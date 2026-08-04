@@ -60,3 +60,7 @@ def pscl_ideal(rollcall_obj, n_iter=2000, burnin=500, seed=0, polarity_idx=None,
 
 def cheatsheet():
     return "pscli: pscrc rollcall -> drop lopsided -> mcmpp Gibbs IRT"
+
+
+# compact alias per ledger/NAMING.md
+psclideal = pscl_ideal

@@ -35,3 +35,7 @@ mds_ = mds_iter
 
 def cheatsheet() -> str:
     return "mds_iter({}) -> MDS iteration convergence"
+
+
+# compact alias per ledger/NAMING.md
+mdsiter = mds_iter

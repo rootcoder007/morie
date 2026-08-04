@@ -42,3 +42,7 @@ kldiv = kl_divergence
 
 def cheatsheet() -> str:
     return "kl_divergence({}) -> Kullback-Leibler divergence."
+
+
+# compact alias per ledger/NAMING.md
+kldivergence = kl_divergence

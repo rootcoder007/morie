@@ -48,3 +48,7 @@ spcplt = plot_spectrum_fn
 
 def cheatsheet() -> str:
     return "plot_spectrum_fn({}) -> Power spectrum plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+plotspectrumfn = plot_spectrum_fn

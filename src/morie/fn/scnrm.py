@@ -48,3 +48,7 @@ def score_norms(
 
 def cheatsheet() -> str:
     return "score_norms({}) -> Score norms -- normative table from score distribution."
+
+
+# compact alias per ledger/NAMING.md
+scorenorms = score_norms

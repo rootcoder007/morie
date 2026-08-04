@@ -185,3 +185,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`causal_estimand`.
 estimand_framework = causal_estimand
+
+
+# compact alias per ledger/NAMING.md
+causalestimand = causal_estimand

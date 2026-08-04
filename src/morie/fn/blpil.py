@@ -84,3 +84,7 @@ blpil = naive_baseline
 
 def cheatsheet() -> str:
     return "blpil() -> Naive baseline predictor for benchmarking ML models"
+
+
+# compact alias per ledger/NAMING.md
+naivebaseline = naive_baseline

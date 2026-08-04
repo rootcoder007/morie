@@ -47,3 +47,7 @@ ssnr = snr_compute
 
 def cheatsheet() -> str:
     return "snr_compute({}) -> Signal-to-noise ratio."
+
+
+# compact alias per ledger/NAMING.md
+snrcompute = snr_compute

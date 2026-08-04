@@ -38,3 +38,7 @@ def l1_median(X, tol):
 
 def cheatsheet():
     return "l1med: Geometric (L1) median"
+
+
+# compact alias per ledger/NAMING.md
+l1median = l1_median

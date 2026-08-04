@@ -29,3 +29,7 @@ witt = wittman_2d
 
 def cheatsheet() -> str:
     return "wittman_2d({}) -> Wittman model in 2D space"
+
+
+# compact alias per ledger/NAMING.md
+wittman2d = wittman_2d

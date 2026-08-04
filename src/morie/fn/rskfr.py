@@ -68,3 +68,7 @@ rskfr = risk_fairness
 
 def cheatsheet() -> str:
     return "risk_fairness({}) -> Risk score fairness analysis by group."
+
+
+# compact alias per ledger/NAMING.md
+riskfairness = risk_fairness
