@@ -270,21 +270,73 @@ def _bfgs(fun, x0, args=(), maxiter=None, gtol=1e-6):
                           message="bfgs")
 
 
-def minimize(fun, x0, args=(), method=None, **kw):
+def minimize(fun, x0, args=(), method=None, bounds=None, **kw):
+    """Minimise fun.
+
+    bounds used to fall into **kw and be discarded, so every bounded
+    call here optimised UNCONSTRAINED: the GARCH/EGARCH/ARCH-t
+    likelihoods could reach omega < 0 or alpha + beta >= 1 -- a negative
+    conditional variance rather than a slightly wrong fit -- and the IRT
+    graded-response fit could return a negative discrimination.  Bounds
+    are enforced by projection now: the objective is evaluated at the
+    clipped point and the returned x is clipped, so no caller can be
+    handed an infeasible parameter.
+
+    method still maps several names onto two engines, but no longer
+    sends Powell to a quasi-Newton method: Powell is chosen when the
+    objective is non-smooth, where a gradient method is the wrong tool,
+    so it routes to Nelder-Mead.
+    """
     x0 = list(_ac.asarray(x0)._flat())
     if method is None:
         method = "BFGS"
     m = method.lower().replace("-", "")
     opts = kw.get("options", {}) or {}
-    if m == "neldermead":
-        return _nelder_mead(fun, x0, args=args,
-                            maxiter=opts.get("maxiter"),
-                            xatol=opts.get("xatol", 1e-8),
-                            fatol=opts.get("fatol", 1e-8))
-    if m in ("bfgs", "lbfgsb", "cg", "powell"):
-        return _bfgs(fun, x0, args=args, maxiter=opts.get("maxiter"),
-                     gtol=opts.get("gtol", 1e-6))
-    raise ValueError("unsupported method %r" % method)
+
+    lo = hi = None
+    if bounds is not None:
+        bl = list(bounds)
+        if len(bl) != len(x0):
+            raise ValueError("bounds has %d entries but x0 has %d"
+                             % (len(bl), len(x0)))
+        lo = [(-_math.inf if b is None or b[0] is None else float(b[0]))
+              for b in bl]
+        hi = [(_math.inf if b is None or b[1] is None else float(b[1]))
+              for b in bl]
+        for a, b in zip(lo, hi):
+            if a > b:
+                raise ValueError("lower bound %g exceeds upper bound %g"
+                                 % (a, b))
+
+        def clip(v):
+            return [min(max(vi, a), b) for vi, a, b in zip(v, lo, hi)]
+
+        x0 = clip(x0)
+        _raw = fun
+
+        def fun(z, *a):          # noqa: F811 -- deliberate shadow
+            return _raw(clip(list(z)), *a)
+    else:
+        def clip(v):
+            return list(v)
+
+    if m in ("neldermead", "powell"):
+        res = _nelder_mead(fun, x0, args=args,
+                           maxiter=opts.get("maxiter"),
+                           xatol=opts.get("xatol", 1e-8),
+                           fatol=opts.get("fatol", 1e-8))
+    elif m in ("bfgs", "lbfgsb", "cg"):
+        res = _bfgs(fun, x0, args=args, maxiter=opts.get("maxiter"),
+                    gtol=opts.get("gtol", 1e-6))
+    else:
+        raise ValueError("unsupported method %r" % method)
+
+    if bounds is not None:
+        xc = clip(list(_ac.asarray(res.x)._flat()))
+        res = OptimizeResult(x=_ac.asarray(xc), fun=float(res.fun),
+                             success=getattr(res, "success", True),
+                             nit=getattr(res, "nit", 0))
+    return res
 
 
 def minimize_scalar(fun, bounds=None, method=None, **kw):
