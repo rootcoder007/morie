@@ -1,76 +1,66 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Efficacy of Wilcoxon signed-rank test for location."""
+"""Efficacy of the Wilcoxon signed-rank test -- eq. (13.3.4)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_wsrt_efficacy"]
+__all__ = ['effwsr', 'gibbons_wsrt_efficacy']
 
 
-def gibbons_wsrt_efficacy(N, f, cdf=None):
-    """
-    Efficacy of Wilcoxon signed-rank test for location
+def effwsr(n, f0, integral):
+    """e(T+) for a parent symmetric about the median.
 
-    Formula: e(T+_N) = 12*N * [integral f^2(N) dx]^2
+    Book p. 490, eq. (13.3.4):
+
+    .. math:: e(T^+_N) = \\frac{24\\left[\\frac{f(0)}{N-1}
+        + I\\right]^2 N(N-1)^2}{(N+1)(2N+1)},
+        \\qquad I = \\int_{-\\infty}^{\\infty} f^2(y)\\,dy,
+
+    where f is the density of the symmetric parent centred at 0.  As
+    N grows the f(0)/(N-1) term vanishes and the efficacy approaches
+    12 N I^2, the familiar limiting form.
 
     Parameters
     ----------
-    N : array-like
-        Input data.
-    f : array-like
-        Input data.
+    n : int
+        Sample size, n >= 2.
+    f0 : float
+        The density at 0.
+    integral : float
+        I, the integral of the squared density.
 
     Returns
     -------
-    result : dict
-        Keys: efficacy
+    RichResult
+        keys ``efficacy``, ``limit`` (12 N I^2), ``integral``,
+        ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 13.3.1
+    Gibbons & Chakraborti (2011), eq. (13.3.4), p. 490.
     """
-    N = np.asarray(N, dtype=float)
-    n = int(N) if N.ndim == 0 else len(N)
-    if N.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    n = int(n)
+    f0 = float(f0)
+    ii = float(integral)
     if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Efficacy of Wilcoxon signed-rank test for location",
-            }
-        )
-    x_sorted = np.sort(N)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(N), scale=np.std(N, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("n must be at least 2.")
+    e = (
+        24.0
+        * (f0 / (n - 1.0) + ii) ** 2
+        * n
+        * (n - 1.0) ** 2
+        / ((n + 1.0) * (2.0 * n + 1.0))
+    )
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "efficacy": float(e),
+            "limit": float(12.0 * n * ii * ii),
+            "integral": ii,
             "n": n,
-            "method": "Efficacy of Wilcoxon signed-rank test for location",
+            "method": "signed-rank efficacy, eq. (13.3.4)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1331w: Efficacy of Wilcoxon signed-rank test for location"
+gibbons_wsrt_efficacy = effwsr

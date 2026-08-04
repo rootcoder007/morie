@@ -1,74 +1,79 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""One-sided Fisher exact test for 2x2 table."""
+"""One-sided Fisher exact test for a 2 x 2 table."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_fisher_one_sided"]
+__all__ = ['fisherex1', 'gibbons_fisher_one_sided']
 
 
-def gibbons_fisher_one_sided(table, cdf=None):
-    """
-    One-sided Fisher exact test for 2x2 table
+def fisherex1(table, alternative="greater"):
+    """The single-tail form of the exact conditional test, Sec. 14.4.
 
-    Formula: P = sum over tables with same marginals and more extreme cell count a
+    Book p. 517.  When the research hypothesis names a direction, the
+    p-value is one hypergeometric tail,
+
+    .. math:: P(A \\ge a) = \\sum_{j \\ge a}
+        \\frac{\\binom{r_1}{j}\\binom{r_2}{c_1-j}}
+             {\\binom{N}{c_1}},
+
+    or the corresponding lower tail.  Both tails and the point
+    probability are returned, so the various two-sided conventions can
+    be assembled by the caller rather than being fixed here.
 
     Parameters
     ----------
-    table : array-like
-        Input data.
+    table : sequence of sequence of float
+        The 2 x 2 table [[a, b], [c, d]].
+    alternative : str, optional
+        ``"greater"`` (default) or ``"less"``.
 
     Returns
     -------
-    result : dict
-        Keys: p_value
+    RichResult
+        keys ``p_value``, ``p_greater``, ``p_less``, ``prob``,
+        ``statistic``, ``mean``, ``method``.
 
     References
     ----------
-    Gibbons Ch 14.4
+    Gibbons & Chakraborti (2011), Sec. 14.4, p. 517.
     """
-    table = np.asarray(table, dtype=float)
-    n = int(table) if table.ndim == 0 else len(table)
-    if table.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "One-sided Fisher exact test for 2x2 table",
-            }
-        )
-    x_sorted = np.sort(table)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(table), scale=np.std(table, ddof=1))
+    from .gb1441 import _hyper
+
+    tb = [[int(round(float(v))) for v in row] for row in table]
+    if len(tb) != 2 or any(len(row) != 2 for row in tb):
+        raise ValueError("table must be 2 x 2.")
+    a, b = tb[0]
+    c, d = tb[1]
+    if min(a, b, c, d) < 0:
+        raise ValueError("counts must be non-negative.")
+    r1 = a + b
+    r2 = c + d
+    c1 = a + c
+    nn = r1 + r2
+    lo = max(0, c1 - r2)
+    hi = min(r1, c1)
+    probs = {k: _hyper(k, r1, r2, c1) for k in range(lo, hi + 1)}
+    pg = sum(p for k, p in probs.items() if k >= a)
+    pl = sum(p for k, p in probs.items() if k <= a)
+    if alternative == "greater":
+        pv = pg
+    elif alternative == "less":
+        pv = pl
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("alternative must be greater or less.")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "One-sided Fisher exact test for 2x2 table",
+            "p_value": float(min(1.0, pv)),
+            "p_greater": float(pg),
+            "p_less": float(pl),
+            "prob": float(probs[a]),
+            "statistic": int(a),
+            "mean": float(r1 * c1 / nn),
+            "method": "one-sided Fisher exact test (Sec. 14.4)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_fxe: One-sided Fisher exact test for 2x2 table"
+gibbons_fisher_one_sided = fisherex1

@@ -1,45 +1,46 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""RKHS norm and reproducing property."""
+"""Squared RKHS norm of a kernel expansion."""
 
-from . import _array_core as np
+import math
+
+from . import _gp_core as G
 
 from ._richresult import RichResult
 
-__all__ = ["rkhs_norm"]
+__all__ = ['rkhsnorm', 'rkhs_norm']
 
 
-def rkhs_norm(alpha, eigenvalues):
-    """
-    RKHS norm and reproducing property
+def rkhsnorm(beta, K):
+    """Squared RKHS norm of a kernel expansion.
 
-    Formula: <f,g>_H = sum_i lambda_i^{-1} alpha_i beta_i; ||f||_H^2 = sum_i alpha_i^2/lambda_i
+    Formula: ||f||_H^2 = sum_i sum_j beta_i beta_j K(x_i, x_j) = beta' K beta
 
     Parameters
     ----------
-    alpha : array-like
-        Input data.
-    eigenvalues : array-like
-        Input data.
+    beta : array-like
+        Kernel expansion coefficients, length n.
+    K : array-like, shape (n, n)
+        Gram matrix.
 
     Returns
     -------
-    result : dict
-        Keys: {'norm': 'float'}
+    RichResult
+        ``norm2``, ``norm``, ``n``.
 
     References
     ----------
-    Montesinos Lopez Ch 8
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 8, Eq. (8.2) p. 254: the squared norm of f in the reproducing kernel Hilbert space is beta'K beta.  Read from the chapter PDF, not recalled.
     """
-    alpha = np.asarray(alpha, dtype=float)
-    n = int(alpha) if alpha.ndim == 0 else len(alpha)
-    result = float(np.mean(alpha))
-    se = float(np.std(alpha, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "RKHS norm and reproducing property"})
+    n2 = G.rkhs_norm(beta, K)
+    if n2 < 0.0:
+        raise ValueError("beta'K beta is negative: K is not positive semi-definite")
+    return RichResult(payload={
+        "norm2": n2, "norm": math.sqrt(n2), "n": len(G._flat(beta)),
+        "method": "Squared RKHS norm, MVSML Eq. (8.2)"})
+
+
+rkhs_norm = rkhsnorm
 
 
 def cheatsheet():
-    return "rkhsn: RKHS norm and reproducing property"
-
-
-# compact alias per ledger/NAMING.md
-rkhsnorm = rkhs_norm
+    return 'rkhsn: Squared RKHS norm of a kernel expansion.'

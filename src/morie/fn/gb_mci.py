@@ -1,80 +1,73 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""McNemar test confidence interval for discordant proportion difference."""
+"""Confidence interval for the discordant proportion difference."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_mcnemar_ci"]
+__all__ = ['mcnemarci', 'gibbons_mcnemar_ci']
 
 
-def gibbons_mcnemar_ci(b, c, n, alpha, cdf=None):
-    """
-    McNemar test confidence interval for discordant proportion difference
+def mcnemarci(table, alpha=0.05):
+    """Interval for theta_12 - theta_21 from the McNemar variance.
 
-    Formula: CI for (b-c)/n using normal approximation
+    Book p. 523, eq. (14.5.2) and the derivation following it.  With
+    T = (X_12 - X_21)/N, the book derives E[T] = theta_12 - theta_21
+    and, from the multinomial covariance,
+
+    .. math:: Var[T] = \\frac{(\\theta_{12}+\\theta_{21})
+        - (\\theta_{12}-\\theta_{21})^2}{N},
+
+    which reduces to (theta_12 + theta_21)/N under H0 -- the variance
+    the chi-square form of eq. (14.5.1) uses.  Substituting the sample
+    proportions gives the Wald interval returned here.
 
     Parameters
     ----------
-    b : array-like
-        Input data.
-    c : array-like
-        Input data.
-    n : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    table : sequence of sequence of float
+        The 2 x 2 table of paired counts.
+    alpha : float, optional
+        Two-sided level (default 0.05).
 
     Returns
     -------
-    result : dict
-        Keys: lower, upper
+    RichResult
+        keys ``estimate``, ``lower``, ``upper``, ``se``,
+        ``se_null`` (the H0 standard error), ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 14.5
+    Gibbons & Chakraborti (2011), Sec. 14.5, eq. (14.5.2), p. 523.
     """
-    b = np.asarray(b, dtype=float)
-    n = int(b) if b.ndim == 0 else len(b)
-    if b.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "McNemar test confidence interval for discordant proportion difference",
-            }
-        )
-    x_sorted = np.sort(b)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(b), scale=np.std(b, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    tb = [[float(v) for v in row] for row in table]
+    if len(tb) != 2 or any(len(row) != 2 for row in tb):
+        raise ValueError("table must be 2 x 2.")
+    alpha = float(alpha)
+    if not 0.0 < alpha < 1.0:
+        raise ValueError("alpha must lie strictly inside (0, 1).")
+    nn = sum(sum(row) for row in tb)
+    if nn <= 0:
+        raise ValueError("the table must contain positive counts.")
+    p12 = tb[0][1] / nn
+    p21 = tb[1][0] / nn
+    est = p12 - p21
+    var = (p12 + p21 - est * est) / nn
+    se = math.sqrt(max(0.0, var))
+    sen = math.sqrt((p12 + p21) / nn)
+    z = stats.norm.ppf(1.0 - alpha / 2.0)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "McNemar test confidence interval for discordant proportion difference",
+            "estimate": float(est),
+            "lower": float(est - z * se),
+            "upper": float(est + z * se),
+            "se": float(se),
+            "se_null": float(sen),
+            "n": float(nn),
+            "method": "McNemar CI for theta_12 - theta_21 (Sec. 14.5)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_mci: McNemar test confidence interval for discordant proportion difference"
+gibbons_mcnemar_ci = mcnemarci

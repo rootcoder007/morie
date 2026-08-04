@@ -1,78 +1,58 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Efficacy of sign test for location parameter."""
+"""Efficacy of the sign test -- Gibbons eq. (13.3.3)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_sign_efficacy"]
+__all__ = ['effsign', 'gibbons_sign_efficacy']
 
 
-def gibbons_sign_efficacy(N, f, median, cdf=None):
-    """
-    Efficacy of sign test for location parameter
+def effsign(n, fmed):
+    """e(K_N) = 4 N f^2(theta) for the one-sample sign test.
 
-    Formula: e(K_N) = 4*N*f^2(median) = 4*N*f^2(F^{-1}(0.5))
+    Book p. 489, eq. (13.3.3): for N observations from any continuous
+    F_X with median theta,
+
+    .. math:: e(K_N) = 4N f_X^2(\\theta)
+        = 4N f^2[F^{-1}(0.5)].
+
+    Only the density at the median enters, which is why the sign test
+    can beat the t test for heavy-tailed parents.
 
     Parameters
     ----------
-    N : array-like
-        Input data.
-    f : array-like
-        Input data.
-    median : array-like
-        Input data.
+    n : int
+        Sample size.
+    fmed : float
+        The parent density at the median, strictly positive.
 
     Returns
     -------
-    result : dict
-        Keys: efficacy
+    RichResult
+        keys ``efficacy``, ``per_obs`` (efficacy / N), ``n``,
+        ``fmed``, ``method``.
 
     References
     ----------
-    Gibbons eq 13.3.3
+    Gibbons & Chakraborti (2011), eq. (13.3.3), p. 489.
     """
-    N = np.asarray(N, dtype=float)
-    n = int(N) if N.ndim == 0 else len(N)
-    if N.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Efficacy of sign test for location parameter",
-            }
-        )
-    x_sorted = np.sort(N)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(N), scale=np.std(N, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    n = int(n)
+    f = float(fmed)
+    if n < 1:
+        raise ValueError("n must be at least 1.")
+    if f <= 0.0:
+        raise ValueError("fmed must be strictly positive.")
+    e = 4.0 * n * f * f
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "efficacy": float(e),
+            "per_obs": float(e / n),
             "n": n,
-            "method": "Efficacy of sign test for location parameter",
+            "fmed": f,
+            "method": "sign test efficacy, eq. (13.3.3)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1331s: Efficacy of sign test for location parameter"
+gibbons_sign_efficacy = effsign

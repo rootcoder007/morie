@@ -1,74 +1,86 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Kendall tau as test against trend in time series."""
+"""Kendall's tau used as a test against trend in a time series."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_kendall_trend"]
+__all__ = ['tautrend', 'gibbons_kendall_trend']
 
 
-def gibbons_kendall_trend(x, cdf=None):
-    """
-    Kendall tau as test against trend in time series
+def tautrend(y, alternative="two-sided"):
+    """Trend test from the concordance of Y with its time index.
 
-    Formula: Use T statistic for ordered index vs variable to detect monotone trend
+    Section 11.2.5 (book p. 406).  A hypothesis of randomness in one
+    time-ordered sequence is the same as independence between the
+    sequence and the numbers 1, 2, ..., n, so with x_i = i the
+    indicators of eq. (11.2.3) become
+
+    .. math:: A_{ij} = \\mathrm{sgn}(j-i)\\,
+        \\mathrm{sgn}(Y_j - Y_i),
+
+    and tau over these pairs measures trend.  Unlike runs up and down,
+    tau compares every observation with every earlier one, not only
+    the immediately preceding one.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    y : sequence of float
+        Time-ordered observations, n >= 3.
+    alternative : str, optional
+        ``"two-sided"``, ``"greater"`` (upward trend) or ``"less"``.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``tau``, ``statistic`` (S = P - Q), ``P``, ``Q``, ``z``,
+        ``p_value``, ``var``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 11.2 trend
+    Gibbons & Chakraborti (2011), Sec. 11.2.5, p. 406, with
+    eq. (11.2.3), p. 391.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Kendall tau as test against trend in time series",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
+    ys = [float(v) for v in y]
+    n = len(ys)
+    if n < 3:
+        raise ValueError("need at least 3 observations.")
+    p = q = 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            d = ys[j] - ys[i]
+            if d > 0:
+                p += 1
+            elif d < 0:
+                q += 1
+    npairs = n * (n - 1) // 2
+    s = p - q
+    tau = s / float(npairs)
+    var = 2.0 * (2.0 * n + 5.0) / (9.0 * n * (n - 1.0))
+    z = tau / math.sqrt(var)
+    if alternative == "greater":
+        pv = 1.0 - stats.norm.cdf(z)
+    elif alternative == "less":
+        pv = stats.norm.cdf(z)
+    elif alternative == "two-sided":
+        pv = 2.0 * (1.0 - stats.norm.cdf(abs(z)))
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("alternative must be two-sided, greater or less.")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "tau": float(tau),
+            "statistic": int(s),
+            "P": int(p),
+            "Q": int(q),
+            "z": float(z),
+            "p_value": float(min(1.0, pv)),
+            "var": float(var),
             "n": n,
-            "method": "Kendall tau as test against trend in time series",
+            "method": "Kendall tau trend test (Sec. 11.2.5)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1122tr: Kendall tau as test against trend in time series"
+gibbons_kendall_trend = tautrend

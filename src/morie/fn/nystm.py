@@ -1,48 +1,50 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Nystrom kernel matrix approximation using m landmark points."""
+"""Nystrom low-rank approximation of a kernel matrix."""
 
-from . import _array_core as np
+from . import _gp_core as G
 
 from ._richresult import RichResult
 
-__all__ = ["nystrom_approximation"]
+__all__ = ['nystromap', 'nystrom_approximation']
 
 
-def nystrom_approximation(X, m_landmarks):
-    """
-    Nystrom kernel matrix approximation using m landmark points
+def nystromap(X, m_index, kernel='linear', gamma=None):
+    """Nystrom low-rank approximation of a kernel matrix.
 
-    Formula: K approx K_{nm} * K_{mm}^{-1} * K_{mn}; selects m << n inducing points
+    Formula: Q = K_nm * K_mm^- * K_nm',  m the retained subset of records
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    m_landmarks : array-like
-        Input data.
+    X : array-like, shape (n, p)
+        One record per row.
+    m_index : array-like of int
+        1-based row indices of the retained subset.
+    kernel : str
+        Kernel name: linear, gaussian, polynomial, exponential or sigmoid.
+    gamma : float or None
+        Kernel bandwidth; None uses 1/p.
 
     Returns
     -------
-    result : dict
-        Keys: {'K_approx': 'matrix'}
+    RichResult
+        ``Q``, ``m``, ``n``.
 
     References
     ----------
-    Montesinos Lopez Ch 8
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 8: the Nystrom method for compressing a kernel matrix onto a retained subset of records; the implementation delegates to the chapter-8 Nystrom routine already verified against the book for this shelf.  Read from the chapter PDF, not recalled.
     """
-    X = np.asarray(X, dtype=float)
-    n = int(X) if X.ndim == 0 else len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Nystrom kernel matrix approximation using m landmark points",
-        }
-    )
+    idx = [int(v) - 1 for v in m_index]
+    if any(i < 0 for i in idx):
+        raise ValueError("m_index is 1-based")
+    out = G.nystrom_kernel(X, idx, kernel=kernel, gamma=gamma)
+    Q = out["Q"] if isinstance(out, dict) else out
+    return RichResult(payload={
+        "Q": Q, "m": len(idx), "n": len(Q),
+        "method": "Nystrom kernel approximation, MVSML Chap. 8"})
+
+
+nystrom_approximation = nystromap
 
 
 def cheatsheet():
-    return "nystm: Nystrom kernel matrix approximation using m landmark points"
+    return 'nystm: Nystrom low-rank approximation of a kernel matrix.'

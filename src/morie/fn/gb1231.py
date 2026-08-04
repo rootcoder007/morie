@@ -1,76 +1,101 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Page's test for ordered alternatives in two-way layout."""
+"""Page's test for ordered alternatives in a two-way layout."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_page_test"]
+__all__ = ['pagel', 'gibbons_page_test']
 
 
-def gibbons_page_test(data, k, cdf=None):
-    """
-    Page's test for ordered alternatives in two-way layout
+def pagel(data, weights=None):
+    """L = sum of weighted treatment rank sums, eq. (12.3.1).
 
-    Formula: L = sum_j j * R_j; L is exact statistic for ordered k-group alternatives
+    Section 12.3 (book p. 448).  For the ordered alternative
+    theta_1 <= ... <= theta_n,
+
+    .. math:: L = \\sum_{j=1}^{n} Y_j R_j,
+
+    with Y_j the hypothesised ranking of treatment j (1, 2, ..., n by
+    default) and R_j its rank sum over the k blocks; H0 is rejected for
+    large L.  The large-sample form with continuity correction is
+    eq. (12.3.2),
+
+    .. math:: Z = \\frac{12(L - 0.5) - 3kn(n+1)^2}
+        {n(n+1)\\sqrt{k(n-1)}},
+
+    and the average rank correlation implied by L is
+    r_av = 12L/[k(n^3-n)] - 3(n+1)/(n-1).
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    k : array-like
-        Input data.
+    data : sequence of sequence of float
+        k blocks of n treatment observations, columns in the
+        hypothesised order.
+    weights : sequence of float, optional
+        The Y_j (defaults to 1, 2, ..., n).
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (L), ``z``, ``p_value``, ``rav``,
+        ``rank_sums``, ``k``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 12.3
+    Gibbons & Chakraborti (2011), Sec. 12.3, eqs. (12.3.1)-(12.3.2),
+    pp. 448-449 (Page, 1963); Table Q, p. 591.
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    if data.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    rows = [[float(v) for v in r] for r in data]
+    k = len(rows)
+    if k < 2:
+        raise ValueError("need at least 2 blocks.")
+    n = len(rows[0])
     if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Page's test for ordered alternatives in two-way layout",
-            }
-        )
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("need at least 2 treatments.")
+    w = (
+        [float(i + 1) for i in range(n)]
+        if weights is None
+        else [float(v) for v in weights]
+    )
+    if len(w) != n:
+        raise ValueError("weights must have length n.")
+    rsum = [0.0] * n
+    for r in rows:
+        if len(r) != n:
+            raise ValueError("every block must have n observations.")
+        order = sorted(range(n), key=lambda i: r[i])
+        rk = [0.0] * n
+        i = 0
+        while i < n:
+            j = i
+            while j + 1 < n and r[order[j + 1]] == r[order[i]]:
+                j += 1
+            mid = (i + j) / 2.0 + 1.0
+            for t in range(i, j + 1):
+                rk[order[t]] = mid
+            i = j + 1
+        for j in range(n):
+            rsum[j] += rk[j]
+    ell = sum(w[j] * rsum[j] for j in range(n))
+    z = (12.0 * (ell - 0.5) - 3.0 * k * n * (n + 1.0) ** 2) / (
+        n * (n + 1.0) * math.sqrt(k * (n - 1.0))
+    )
+    rav = 12.0 * ell / (k * (float(n) ** 3 - n)) - 3.0 * (n + 1.0) / (n - 1.0)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Page's test for ordered alternatives in two-way layout",
+            "statistic": float(ell),
+            "z": float(z),
+            "p_value": float(1.0 - stats.norm.cdf(z)),
+            "rav": float(rav),
+            "rank_sums": rsum,
+            "k": int(k),
+            "n": int(n),
+            "method": "Page's L test, eqs. (12.3.1)-(12.3.2)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1231: Page's test for ordered alternatives in two-way layout"
+gibbons_page_test = pagel

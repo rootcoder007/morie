@@ -1,78 +1,79 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""McNemar test for symmetry of paired binary data."""
+"""McNemar's test for symmetry in paired binary data."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_mcnemar"]
+__all__ = ['mcnemarq', 'gibbons_mcnemar']
 
 
-def gibbons_mcnemar(table, cdf=None):
-    """
-    McNemar test for symmetry of paired binary data
+def mcnemarq(table, correct=False):
+    """McNemar's chi-square on the discordant pairs, eq. (14.5.1).
 
-    Formula: Q = (b-c)^2/(b+c) ~ chi2(1); b,c = off-diagonal discordant pairs
+    Book p. 523.  For paired binary data the null hypothesis
+    H0: theta_{1.} = theta_{.1} concerns only the two discordant
+    cells, and
+
+    .. math:: Q = \\frac{(X_{12} - X_{21})^2}{X_{12} + X_{21}}
+
+    is approximately chi-square with 1 degree of freedom.  The book
+    warns explicitly about the accuracy of that approximation when the
+    expected discordant counts are small, so the exact binomial test
+    conditional on X12 + X21 is returned alongside as ``p_exact``.
 
     Parameters
     ----------
-    table : array-like
-        Input data.
+    table : sequence of sequence of float
+        The 2 x 2 table of paired counts.
+    correct : bool, optional
+        Apply a continuity correction of 1 to |X12 - X21| (default
+        False).
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic``, ``df``, ``p_value``, ``p_exact``,
+        ``x12``, ``x21``, ``ndisc``, ``method``.
 
     References
     ----------
-    Gibbons Ch 14.5
+    Gibbons & Chakraborti (2011), Sec. 14.5, eq. (14.5.1), p. 523.
     """
-    table = np.asarray(table, dtype=float)
-    n = int(table) if table.ndim == 0 else len(table)
-    if table.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "McNemar test for symmetry of paired binary data",
-            }
-        )
-    x_sorted = np.sort(table)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(table), scale=np.std(table, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    tb = [[float(v) for v in row] for row in table]
+    if len(tb) != 2 or any(len(row) != 2 for row in tb):
+        raise ValueError("table must be 2 x 2.")
+    x12 = tb[0][1]
+    x21 = tb[1][0]
+    nd = x12 + x21
+    if nd <= 0:
+        raise ValueError("there are no discordant pairs.")
+    d = abs(x12 - x21)
+    if correct:
+        d = max(0.0, d - 1.0)
+    q = d * d / nd
+    k = int(round(min(x12, x21)))
+    ni = int(round(nd))
+    pex = min(
+        1.0,
+        2.0
+        * sum(math.comb(ni, i) for i in range(k + 1))
+        * 0.5**ni,
+    )
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "McNemar test for symmetry of paired binary data",
+            "statistic": float(q),
+            "df": 1,
+            "p_value": float(stats.chi2.sf(q, 1)),
+            "p_exact": float(pex),
+            "x12": float(x12),
+            "x21": float(x21),
+            "ndisc": float(nd),
+            "method": "McNemar test, eq. (14.5.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1451: McNemar test for symmetry of paired binary data"
-
-
-# compact alias per ledger/NAMING.md
-gibbonsmcnemar = gibbons_mcnemar
+gibbons_mcnemar = mcnemarq

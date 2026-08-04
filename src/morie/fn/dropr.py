@@ -1,48 +1,55 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Dropout regularization: expected output under Bernoulli masking."""
+"""Apply a dropout mask with inverted scaling."""
 
-from . import _array_core as np
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["dropout_regularization"]
+__all__ = ['dropmask', 'dropout_regularization']
 
 
-def dropout_regularization(x, p):
-    """
-    Dropout regularization: expected output under Bernoulli masking
+def dropmask(x, mask, rate):
+    """Apply a dropout mask with inverted scaling.
 
-    Formula: E[f(x)] = f(x) * (1-p); mask each unit with prob p during training
+    Formula: a_i = x_i * m_i / (1 - rate),  m_i in {0, 1} supplied by the caller
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    p : array-like
-        Input data.
+        Activations of the layer being regularized.
+    mask : array-like
+        Keep/drop indicator per unit: 1 keeps, 0 drops.  Supplied by the caller so the result is reproducible.
+    rate : float
+        Dropout rate in [0, 1); the surviving activations are divided by 1 - rate.
 
     Returns
     -------
-    result : dict
-        Keys: {'masked_x': 'array'}
+    RichResult
+        ``activation``, ``kept``, ``dropped``, ``rate``, ``n``.
 
     References
     ----------
-    Montesinos Lopez Ch 11
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 10, Sect. 10.6 p. 404 describes dropout as setting a random fraction of the weights of the input or hidden neurons to zero, so their contribution is removed on the forward pass and they receive no update on the backward pass; it prints no formula and attributes the method to Srivastava, Hinton, Krizhevsky, Sutskever and Salakhutdinov (2014), Dropout: A Simple Way to Prevent Neural Networks from Overfitting, JMLR 15:1929-1958, which is where the 1/(1 - rate) inverted scaling comes from.  The mask is an argument rather than drawn internally so the function is deterministic.  Chapter read from the PDF; the scaling is from the paper the book names.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dropout regularization: expected output under Bernoulli masking",
-        }
-    )
+    x = C.vec(x)
+    m = C.vec(mask)
+    rate = float(rate)
+    if len(x) != len(m):
+        raise ValueError("x and mask must have the same length")
+    if not 0.0 <= rate < 1.0:
+        raise ValueError("rate must lie in [0, 1)")
+    if any(v not in (0.0, 1.0) for v in m):
+        raise ValueError("mask entries must be 0 or 1")
+    s = 1.0 / (1.0 - rate)
+    kept = int(sum(m))
+    return RichResult(payload={
+        "activation": [a * b * s for a, b in zip(x, m)],
+        "kept": kept, "dropped": len(x) - kept, "rate": rate, "n": len(x),
+        "method": "Inverted dropout, MVSML Sect. 10.6"})
+
+
+dropout_regularization = dropmask
 
 
 def cheatsheet():
-    return "dropr: Dropout regularization: expected output under Bernoulli masking"
+    return 'dropr: Apply a dropout mask with inverted scaling.'
