@@ -92,6 +92,10 @@ __all__ = [
     'rangayyan_ch4_complex_log_of_product',
     'clogpz',
     'rangayyan_ch4_complex_log_x_z',
+    'rangayyanegg',
+    'rangayyaneng',
+    'rangayyanmuap',
+    'rangayyanoae',
 ]
 
 # -- shared helpers for the biophysical signal-generation blocks --------------
@@ -4757,3 +4761,12 @@ _CHEATSHEET = [
 
 def cheatsheet():
     return "\n".join(_CHEATSHEET)
+
+# Pre-policy run-together spellings.  These were in the lazy
+# map but not in the module, so morie.fn.<name> raised
+# AttributeError.  Restored rather than dropped, because the
+# map is the public flat namespace.
+rangayyanegg = rangayyan_egg  # pre-policy spelling, kept live
+rangayyaneng = rangayyan_eng  # pre-policy spelling, kept live
+rangayyanmuap = rangayyan_muap  # pre-policy spelling, kept live
+rangayyanoae = rangayyan_oae  # pre-policy spelling, kept live

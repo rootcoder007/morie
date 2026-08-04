@@ -121,3 +121,7 @@ def schabenberger_pql(z, X, Sigma_S, family="poisson", link_kind=None,
 def cheatsheet():
     return ("sppql: pseudo-likelihood / penalized quasi-likelihood for spatial "
             "GLMMs (Sec. 6.3.5) -- eqs (6.78)-(6.85), six-step algorithm")
+
+# Names the lazy map still points at from before a rename.
+# Without these, morie.fn.<name> raises AttributeError.
+schabenberger_pql_glmm = schabenberger_pql  # pre-rename spelling, kept live

@@ -4,7 +4,6 @@ from . import _array_core as np
 
 from ._richresult import RichResult
 
-__all__ = ["Real knowledge is to know the extent of one's ignorance. -- Confucius"]
 
 
 def flash_attention(Q, K, V):

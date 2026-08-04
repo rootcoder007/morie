@@ -118,3 +118,7 @@ def schabenberger_glm_kriging(nu, Sigma_nu, sigma_0, X, x0, mu0,
 def cheatsheet():
     return ("spglmk: spatial prediction in GLMs (Sec. 6.3.6) -- eq (6.90) with "
             "its own MSPE (6.91), kept apart from the inverse-link (6.87)")
+
+# Names the lazy map still points at from before a rename.
+# Without these, morie.fn.<name> raises AttributeError.
+schabenberger_spatial_glm_kriging = schabenberger_glm_kriging  # pre-rename spelling, kept live

@@ -120,3 +120,7 @@ def schabenberger_glmm_conditional(X, beta, S, sigma2=1.0, family="poisson",
 def cheatsheet():
     return ("spglmm: conditional specification of a spatial GLMM (Sec. 6.3.4) "
             "-- eq (6.73) with the Example 6.6 marginal correction")
+
+# Names the lazy map still points at from before a rename.
+# Without these, morie.fn.<name> raises AttributeError.
+schabenberger_spatial_glmm = schabenberger_glmm_conditional  # pre-rename spelling, kept live
