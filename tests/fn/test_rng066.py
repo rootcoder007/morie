@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng066 import rangayyan_ch3_inverse_fourier_transform
+from morie.fn.bsaxfrm import rangayyan_ch3_inverse_fourier_transform
 
 
 def test_rng066_basic():

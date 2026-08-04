@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgwvth import rangayyan_wavelet_threshold
+from morie.fn.bsatf import rangayyan_wavelet_threshold
 
 
 def test_rgwvth_basic():

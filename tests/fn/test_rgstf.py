@@ -9,7 +9,7 @@ demonstration that it tracks a frequency that changes with time.
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgstf import rangayyan_stft
+from morie.fn.bsaxfrm import rangayyan_stft
 
 FS = 512.0
 

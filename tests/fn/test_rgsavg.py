@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgsavg import rangayyan_sync_average
+from morie.fn.bsastat import rangayyan_sync_average
 
 
 def test_rgsavg_basic():

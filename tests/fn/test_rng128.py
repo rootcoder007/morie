@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng128 import rangayyan_ch3_bilinear_unit_circle_relation
+from morie.fn.bsafilt import rangayyan_ch3_bilinear_unit_circle_relation
 
 
 def test_rng128_basic():

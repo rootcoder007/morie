@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgcfsle import rangayyan_coupled_freq_select
+from morie.fn.bsacorr import rangayyan_coupled_freq_select
 
 
 def test_rgcfsle_basic():

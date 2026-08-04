@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgeemd import rangayyan_eemd
+from morie.fn.bsatf import rangayyan_eemd
 
 
 def test_rgeemd_basic():

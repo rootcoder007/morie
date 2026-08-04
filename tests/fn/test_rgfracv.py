@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgfracv import rangayyan_fractal_vag
+from morie.fn.bsastat import rangayyan_fractal_vag
 
 
 def test_rgfracv_basic():

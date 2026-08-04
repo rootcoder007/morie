@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgppv import rangayyan_ppv
+from morie.fn.bsaclass import rangayyan_ppv
 
 
 def test_rgppv_basic():

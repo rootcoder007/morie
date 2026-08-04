@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgconv import rangayyan_linear_convolution
+from morie.fn.bsasig import rangayyan_linear_convolution
 
 
 def test_rgconv_basic():

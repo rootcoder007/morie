@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgstvar import rangayyan_tvlsi
+from morie.fn.bsasig import rangayyan_tvlsi
 
 
 def test_rgstvar_basic():

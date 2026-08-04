@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng011 import rangayyan_ch3_shannon_entropy_discrete
+from morie.fn.bsafilt import rangayyan_ch3_shannon_entropy_discrete
 
 
 def test_rng011_basic():

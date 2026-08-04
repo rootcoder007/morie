@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgpowerl import rangayyan_powerline_removal
+from morie.fn.bsaqrs import rangayyan_powerline_removal
 
 
 def test_rgpowerl_basic():

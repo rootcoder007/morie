@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgmfcc import rangayyan_mfcc
+from morie.fn.bsacep import rangayyan_mfcc
 
 
 def test_rgmfcc_basic():

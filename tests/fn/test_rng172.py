@@ -3,15 +3,15 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng167 import rangayyan_ch3_rls_phi_recursion as phi_rec
-from morie.fn.rng170 import rangayyan_ch3_rls_inverse_recursion as inv_rec
-from morie.fn.rng172 import rangayyan_ch3_rls_p_recursion as p_rec
+from morie.fn.bsaadapt import rangayyan_ch3_rls_phi_recursion as phi_rec
+from morie.fn.bsaadapt import rangayyan_ch3_rls_inverse_recursion as inv_rec
+from morie.fn.bsaadapt import rangayyan_ch3_rls_p_recursion as p_rec
 
 
 def _gain(P, r, lam):
     """Eq. (3.217): k(n) = lam^-1 P(n-1) r(n) / (1 + lam^-1 r'(n) P(n-1) r(n)).
 
-    Deliberately local, NOT imported from morie.fn.rng171. That module is named
+    Deliberately local, NOT imported from morie.fn.bsaadapt. That module is named
     for this equation and prints it correctly in its docstring, but its body is
     ``float(np.mean(P))`` -- the shared mean-and-standard-error stub. It is
     green in the suite only because its test asserts ``"estimate" in result``,

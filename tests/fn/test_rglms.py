@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rglms import rangayyan_lms_filter
+from morie.fn.bsaadapt import rangayyan_lms_filter
 
 
 def test_rglms_basic():

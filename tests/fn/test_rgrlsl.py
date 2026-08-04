@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgrlsl import rangayyan_rls_lattice
+from morie.fn.bsaadapt import rangayyan_rls_lattice
 
 
 def test_rgrlsl_basic():

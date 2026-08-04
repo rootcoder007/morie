@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng122 import rangayyan_ch3_baseline_wander_filter_difference_eq
+from morie.fn.bsafilt import rangayyan_ch3_baseline_wander_filter_difference_eq
 
 
 def test_rng122_basic():

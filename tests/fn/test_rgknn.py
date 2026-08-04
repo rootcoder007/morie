@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgknn import rangayyan_knn_classifier
+from morie.fn.bsaclass import rangayyan_knn_classifier
 
 
 def test_rgknn_basic():

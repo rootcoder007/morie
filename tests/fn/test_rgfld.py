@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgfld import rangayyan_fisher_lda
+from morie.fn.bsaclass import rangayyan_fisher_lda
 
 
 def test_rgfld_basic():

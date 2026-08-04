@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgcorec import rangayyan_correlation_coeff
+from morie.fn.bsastat import rangayyan_correlation_coeff
 
 
 def test_rgcorec_basic():

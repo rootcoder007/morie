@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rglpca import rangayyan_lpc_analysis
+from morie.fn.bsaar import rangayyan_lpc_analysis
 
 
 def test_rglpca_basic():

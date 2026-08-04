@@ -9,7 +9,7 @@ the modulator of an AM signal.
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgenv import rangayyan_envelope
+from morie.fn.bsatf import rangayyan_envelope
 
 
 def test_rgenv_envelope_bounds_the_signal():

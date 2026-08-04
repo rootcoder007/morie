@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng175 import rangayyan_ch3_rls_a_priori_error
+from morie.fn.bsaadapt import rangayyan_ch3_rls_a_priori_error
 
 
 def test_rng175_basic():

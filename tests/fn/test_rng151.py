@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng151 import rangayyan_ch3_wiener_optimal_for_noise_removal as wiener_o
+from morie.fn.bsaadapt import rangayyan_ch3_wiener_optimal_for_noise_removal as wiener_o
 
 
 def test_rng151_reduces_to_the_wiener_hopf_solution():

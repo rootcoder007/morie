@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng012 import rangayyan_ch3_signal_plus_noise_model
+from morie.fn.bsastat import rangayyan_ch3_signal_plus_noise_model
 
 
 def test_rng012_basic():

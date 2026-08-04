@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgfpe import rangayyan_ar_order_fpe
+from morie.fn.bsaar import rangayyan_ar_order_fpe
 
 
 def test_rgfpe_basic():

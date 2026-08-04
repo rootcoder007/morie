@@ -9,7 +9,7 @@ windows" p.326; Welch (1967). The identities pinned here are Parseval
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgpsd import rangayyan_psd
+from morie.fn.bsacorr import rangayyan_psd
 
 
 def test_rgpsd_peaks_at_the_sinusoid_frequency():

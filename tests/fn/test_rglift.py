@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rglift import rangayyan_liftering
+from morie.fn.bsacep import rangayyan_liftering
 
 
 def test_rglift_basic():

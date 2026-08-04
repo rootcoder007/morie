@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng072 import rangayyan_ch3_dft_via_twiddle
+from morie.fn.bsaxfrm import rangayyan_ch3_dft_via_twiddle
 
 
 def test_rng072_basic():

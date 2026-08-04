@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgsf import rangayyan_signal_features
+from morie.fn.bsastat import rangayyan_signal_features
 
 
 def test_rgsf_basic():

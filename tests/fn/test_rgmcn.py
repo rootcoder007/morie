@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgmcn import rangayyan_mcnemar_test
+from morie.fn.bsaclass import rangayyan_mcnemar_test
 
 
 def test_rgmcn_basic():

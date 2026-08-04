@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgdnot import rangayyan_dicrotic_notch
+from morie.fn.bsaqrs import rangayyan_dicrotic_notch
 
 
 def test_rgdnot_basic():

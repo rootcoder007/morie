@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgwhann import rangayyan_hann_window
+from morie.fn.bsafilt import rangayyan_hann_window
 
 
 def test_rgwhann_basic():

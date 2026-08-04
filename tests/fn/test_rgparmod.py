@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgparmod import rangayyan_parametric_sysid
+from morie.fn.bsaar import rangayyan_parametric_sysid
 
 
 def test_rgparmod_basic():

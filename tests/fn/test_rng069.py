@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng069 import rangayyan_ch3_dft_definition
+from morie.fn.bsaxfrm import rangayyan_ch3_dft_definition
 
 
 def test_rng069_basic():

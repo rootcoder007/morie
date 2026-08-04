@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng040 import rangayyan_ch3_linear_ramp_filter
+from morie.fn.bsafilt import rangayyan_ch3_linear_ramp_filter
 
 
 def test_rng040_basic():

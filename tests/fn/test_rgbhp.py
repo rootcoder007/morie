@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgbhp import rangayyan_butterworth_hp
+from morie.fn.bsafilt import rangayyan_butterworth_hp
 
 
 def test_rgbhp_basic():

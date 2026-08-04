@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng190 import rangayyan_ch4_pan_tompkins_peak_classification
+from morie.fn.bsaclass import rangayyan_ch4_pan_tompkins_peak_classification
 
 
 def test_rng190_basic():

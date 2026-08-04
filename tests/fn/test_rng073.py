@@ -1,6 +1,6 @@
 """Tests for rng073.rangayyan_ch3_twiddle_cos_sin."""
 
-from morie.fn.rng073 import rangayyan_ch3_twiddle_cos_sin
+from morie.fn.bsaxfrm import rangayyan_ch3_twiddle_cos_sin
 
 
 def test_rng073_basic():

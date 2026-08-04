@@ -16,7 +16,7 @@ values the method is defined by.
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rghfd import rangayyan_higuchi_fd
+from morie.fn.bsastat import rangayyan_higuchi_fd
 
 
 def _hfd_reference(x, kmax):

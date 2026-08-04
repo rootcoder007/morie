@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgvocal import rangayyan_vocal_tract
+from morie.fn.bsacep import rangayyan_vocal_tract
 
 
 def test_rgvocal_basic():

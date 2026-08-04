@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgricca import rangayyan_riccati_eq
+from morie.fn.bsaadapt import rangayyan_riccati_eq
 
 
 def test_rgricca_basic():

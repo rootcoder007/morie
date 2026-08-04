@@ -9,15 +9,15 @@ from morie.fn.hmc1d import geron_causal_1d_conv
 from morie.fn.kmclm import kamath_causal_lm_loss
 from morie.fn.kmprf import kamath_prefix_lm_mask
 from morie.fn.nchunk import causal_chunked_attention
-from morie.fn.rgztf import rangayyan_z_transform
-from morie.fn.rng032 import rangayyan_ch3_causal_convolution
-from morie.fn.rng033 import rangayyan_ch3_causal_convolution_alt
-from morie.fn.rng036 import rangayyan_ch3_discrete_convolution_causal
-from morie.fn.rng037 import rangayyan_ch3_discrete_convolution_causal_alt
-from morie.fn.rng049 import rangayyan_ch3_laplace_transform_causal_finite
-from morie.fn.rng053 import rangayyan_ch3_z_transform_fir
-from morie.fn.rng103 import rangayyan_ch3_integral_causal
-from morie.fn.rng196 import rangayyan_ch4_dicrotic_notch_second_derivative
+from morie.fn.bsaxfrm import rangayyan_z_transform
+from morie.fn.bsasig import rangayyan_ch3_causal_convolution
+from morie.fn.bsasig import rangayyan_ch3_causal_convolution_alt
+from morie.fn.bsasig import rangayyan_ch3_discrete_convolution_causal
+from morie.fn.bsasig import rangayyan_ch3_discrete_convolution_causal_alt
+from morie.fn.bsaxfrm import rangayyan_ch3_laplace_transform_causal_finite
+from morie.fn.bsafilt import rangayyan_ch3_z_transform_fir
+from morie.fn.bsafilt import rangayyan_ch3_integral_causal
+from morie.fn.bsaqrs import rangayyan_ch4_dicrotic_notch_second_derivative
 
 
 def test_rng036_hand_and_commutativity():

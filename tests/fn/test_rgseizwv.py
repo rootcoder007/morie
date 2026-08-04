@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgseizwv import rangayyan_seizure_wavelet
+from morie.fn.bsatf import rangayyan_seizure_wavelet
 
 
 def test_rgseizwv_basic():

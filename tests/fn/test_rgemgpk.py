@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgemgpk import rangayyan_emg_peak_freq
+from morie.fn.bsacorr import rangayyan_emg_peak_freq
 
 
 def test_rgemgpk_basic():

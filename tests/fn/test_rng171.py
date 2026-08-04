@@ -3,9 +3,9 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng171 import rangayyan_ch3_rls_kalman_gain as gain
-from morie.fn.rng172 import rangayyan_ch3_rls_p_recursion as p_rec
-from morie.fn.rng173 import rangayyan_ch3_rls_gain_identity as gain_id
+from morie.fn.bsaadapt import rangayyan_ch3_rls_kalman_gain as gain
+from morie.fn.bsaadapt import rangayyan_ch3_rls_p_recursion as p_rec
+from morie.fn.bsaadapt import rangayyan_ch3_rls_gain_identity as gain_id
 
 
 def test_rng171_satisfies_the_gain_identity_of_eq_3221():

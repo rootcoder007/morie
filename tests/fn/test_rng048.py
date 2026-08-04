@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng048 import rangayyan_ch3_laplace_transform
+from morie.fn.bsafilt import rangayyan_ch3_laplace_transform
 
 
 def test_rng048_basic():

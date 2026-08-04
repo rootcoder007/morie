@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgsig2n import rangayyan_signal_to_noise
+from morie.fn.bsastat import rangayyan_signal_to_noise
 
 
 def test_rgsig2n_basic():

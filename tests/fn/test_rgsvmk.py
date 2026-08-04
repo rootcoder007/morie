@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgsvmk import rangayyan_svm_kernel
+from morie.fn.bsaclass import rangayyan_svm_kernel
 
 
 def test_rgsvmk_basic():

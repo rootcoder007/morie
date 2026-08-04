@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng125 import rangayyan_ch3_butterworth_pole_positions
+from morie.fn.bsafilt import rangayyan_ch3_butterworth_pole_positions
 
 
 def test_rng125_basic():

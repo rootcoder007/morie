@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rghrvf import rangayyan_hrv_freq_domain
+from morie.fn.bsaqrs import rangayyan_hrv_freq_domain
 
 
 def test_rghrvf_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgwblkm import rangayyan_blackman_window
+from morie.fn.bsafilt import rangayyan_blackman_window
 
 
 def test_rgwblkm_basic():

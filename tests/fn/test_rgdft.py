@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgdft import rangayyan_dft
+from morie.fn.bsaxfrm import rangayyan_dft
 
 
 def test_rgdft_basic():

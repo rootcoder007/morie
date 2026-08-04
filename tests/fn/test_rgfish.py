@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgfish import rangayyan_fisher_criterion
+from morie.fn.bsaclass import rangayyan_fisher_criterion
 
 
 def test_rgfish_basic():

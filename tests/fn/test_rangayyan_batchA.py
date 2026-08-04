@@ -9,31 +9,31 @@ import math
 
 import pytest
 
-from morie.fn.rng001 import pdfmean
-from morie.fn.rng002 import pdfms
-from morie.fn.rng003 import pdfvar
-from morie.fn.rng004 import pdfskew
-from morie.fn.rng005 import pdfkurt
-from morie.fn.rng006 import diffent
-from morie.fn.rng007 import smean
-from morie.fn.rng009 import srms
-from morie.fn.rng011 import shannon
-from morie.fn.rng012 import noisemodel
-from morie.fn.rng013 import meansum
-from morie.fn.rng015 import ensmean
-from morie.fn.rng018 import ensavg
-from morie.fn.rng021 import covxy
-from morie.fn.rng024 import diracdelta
-from morie.fn.rng025 import deltaarea
-from morie.fn.rng026 import deltalim
-from morie.fn.rng027 import ustep
-from morie.fn.rng028 import sifting
-from morie.fn.rng029 import deltadecomp
-from morie.fn.rng030 import contconv
-from morie.fn.rng031 import contconvalt
-from morie.fn.rng034 import kdelta
-from morie.fn.rng035 import stepseq
-from morie.fn.rng040 import rampfilt
+from morie.fn.bsastat import pdfmean
+from morie.fn.bsastat import pdfms
+from morie.fn.bsastat import pdfvar
+from morie.fn.bsastat import pdfskew
+from morie.fn.bsastat import pdfkurt
+from morie.fn.bsastat import diffent
+from morie.fn.bsastat import smean
+from morie.fn.bsastat import srms
+from morie.fn.bsafilt import shannon
+from morie.fn.bsastat import noisemodel
+from morie.fn.bsastat import meansum
+from morie.fn.bsastat import ensmean
+from morie.fn.bsacorr import ensavg
+from morie.fn.bsastat import covxy
+from morie.fn.bsasig import diracdelta
+from morie.fn.bsasig import deltaarea
+from morie.fn.bsasig import deltalim
+from morie.fn.bsasig import ustep
+from morie.fn.bsasig import sifting
+from morie.fn.bsaphys import deltadecomp
+from morie.fn.bsasig import contconv
+from morie.fn.bsasig import contconvalt
+from morie.fn.bsasig import kdelta
+from morie.fn.bsasig import stepseq
+from morie.fn.bsafilt import rampfilt
 
 
 def gauss(mu=0.0, sd=1.0):

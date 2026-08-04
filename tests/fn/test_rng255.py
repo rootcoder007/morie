@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng255 import rangayyan_ch4_power_cepstrum_relation_to_complex
+from morie.fn.bsacep import rangayyan_ch4_power_cepstrum_relation_to_complex
 
 
 def test_rng255_basic():

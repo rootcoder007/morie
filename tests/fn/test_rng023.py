@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng023 import rangayyan_ch3_ccf_continuous
+from morie.fn.bsacorr import rangayyan_ch3_ccf_continuous
 
 
 def test_rng023_basic():

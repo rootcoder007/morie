@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng050 import rangayyan_ch3_frequency_response_from_laplace
+from morie.fn.bsafilt import rangayyan_ch3_frequency_response_from_laplace
 
 
 def test_rng050_basic():

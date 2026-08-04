@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng113 import rangayyan_ch3_first_difference_frequency_response
+from morie.fn.bsafilt import rangayyan_ch3_first_difference_frequency_response
 
 
 def test_rng113_basic():

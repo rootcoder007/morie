@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgturns import rangayyan_turns_count
+from morie.fn.bsastat import rangayyan_turns_count
 
 
 def test_rgturns_basic():

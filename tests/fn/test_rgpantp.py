@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgpantp import rangayyan_pan_tompkins
+from morie.fn.bsaqrs import rangayyan_pan_tompkins
 
 
 def test_rgpantp_basic():

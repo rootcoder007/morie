@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgswtden import rangayyan_swt_denoise
+from morie.fn.bsatf import rangayyan_swt_denoise
 
 
 def test_rgswtden_basic():

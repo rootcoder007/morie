@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng143 import rangayyan_ch3_autocorrelation_matrix as phi_mat
+from morie.fn.bsaadapt import rangayyan_ch3_autocorrelation_matrix as phi_mat
 
 
 def test_rng143_is_symmetric_toeplitz():

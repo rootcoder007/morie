@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng102 import rangayyan_ch3_integral_general
+from morie.fn.bsafilt import rangayyan_ch3_integral_general
 
 
 def test_rng102_basic():

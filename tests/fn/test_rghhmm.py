@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rghhmm import rangayyan_hodgkin_huxley
+from morie.fn.bsaphys import rangayyan_hodgkin_huxley
 
 
 def test_rghhmm_basic():

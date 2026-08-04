@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng232 import rangayyan_ch4_homomorphic_log_fourier
+from morie.fn.bsaxfrm import rangayyan_ch4_homomorphic_log_fourier
 
 
 def test_rng232_basic():

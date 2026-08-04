@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng238 import rangayyan_ch4_complex_cepstra_sum
+from morie.fn.bsacep import rangayyan_ch4_complex_cepstra_sum
 
 
 def test_rng238_basic():

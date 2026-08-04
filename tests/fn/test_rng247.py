@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng247 import rangayyan_ch4_signal_with_echo_output
+from morie.fn.bsatf import rangayyan_ch4_signal_with_echo_output
 
 
 def test_rng247_basic():

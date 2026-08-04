@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng096 import rangayyan_ch3_hann_phase_response
+from morie.fn.bsafilt import rangayyan_ch3_hann_phase_response
 
 
 def test_rng096_basic():

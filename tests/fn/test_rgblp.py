@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgblp import rangayyan_butterworth_lp
+from morie.fn.bsafilt import rangayyan_butterworth_lp
 
 
 def test_rgblp_basic():

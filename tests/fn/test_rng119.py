@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng119 import rangayyan_ch3_three_point_central_diff_phase
+from morie.fn.bsafilt import rangayyan_ch3_three_point_central_diff_phase
 
 
 def test_rng119_basic():

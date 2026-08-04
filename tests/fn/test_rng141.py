@@ -9,8 +9,8 @@ other w may beat it.
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng141 import rangayyan_ch3_mse_cost_function as mse
-from morie.fn.rng143 import rangayyan_ch3_autocorrelation_matrix as phi_mat
+from morie.fn.bsaadapt import rangayyan_ch3_mse_cost_function as mse
+from morie.fn.bsaadapt import rangayyan_ch3_autocorrelation_matrix as phi_mat
 
 
 def _problem(seed=17, M=4):

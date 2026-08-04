@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgemdimf import rangayyan_emd_imf
+from morie.fn.bsatf import rangayyan_emd_imf
 
 
 def test_rgemdimf_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng020 import rangayyan_ch3_time_averaged_acf
+from morie.fn.bsacorr import rangayyan_ch3_time_averaged_acf
 
 
 def test_rng020_basic():

@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
-from morie.fn.wvdst import wigner_ville
+from morie.fn.bsatf import wigner_ville
 
 
 def test_wvd_basic():

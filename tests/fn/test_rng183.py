@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng183 import rangayyan_ch4_pan_tompkins_highpass_lp_component
+from morie.fn.bsaqrs import rangayyan_ch4_pan_tompkins_highpass_lp_component
 
 
 def test_rng183_basic():

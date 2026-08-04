@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgampd import rangayyan_amplitude_demod
+from morie.fn.bsatf import rangayyan_amplitude_demod
 
 
 def test_rgampd_basic():

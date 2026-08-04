@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rghomdc import rangayyan_homomorphic_deconv
+from morie.fn.bsacep import rangayyan_homomorphic_deconv
 
 
 def test_rghomdc_basic():

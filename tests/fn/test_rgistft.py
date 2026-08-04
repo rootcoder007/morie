@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgistft import rangayyan_istft
+from morie.fn.bsatf import rangayyan_istft
 
 
 def test_rgistft_basic():

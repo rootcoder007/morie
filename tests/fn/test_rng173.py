@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng173 import rangayyan_ch3_rls_gain_identity as gain_id
+from morie.fn.bsaadapt import rangayyan_ch3_rls_gain_identity as gain_id
 
 
 def test_rng173_is_a_plain_matrix_vector_product():

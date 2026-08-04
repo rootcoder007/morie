@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng026 import rangayyan_ch3_dirac_delta_limit_form
+from morie.fn.bsasig import rangayyan_ch3_dirac_delta_limit_form
 
 
 def test_rng026_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgwavstr import rangayyan_wavelet_struct
+from morie.fn.bsatf import rangayyan_wavelet_struct
 
 
 def test_rgwavstr_basic():

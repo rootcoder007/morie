@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng005 import rangayyan_ch3_kurtosis
+from morie.fn.bsastat import rangayyan_ch3_kurtosis
 
 
 def test_rng005_basic():

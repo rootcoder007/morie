@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgcwvd import rangayyan_cohen_class
+from morie.fn.bsatf import rangayyan_cohen_class
 
 
 def test_rgcwvd_basic():

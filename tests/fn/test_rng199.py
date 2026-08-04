@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng199 import rangayyan_ch4_correlation_coefficient_normalized_dot
+from morie.fn.bsacorr import rangayyan_ch4_correlation_coefficient_normalized_dot
 
 
 def test_rng199_basic():

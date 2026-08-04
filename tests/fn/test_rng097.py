@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng097 import rangayyan_ch3_ma_8point
+from morie.fn.bsafilt import rangayyan_ch3_ma_8point
 
 
 def test_rng097_basic():

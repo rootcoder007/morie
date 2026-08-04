@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgepidet import rangayyan_epilepsy_detect
+from morie.fn.bsaphys import rangayyan_epilepsy_detect
 
 
 def test_rgepidet_basic():

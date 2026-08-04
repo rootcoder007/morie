@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgmdl import rangayyan_ar_order_mdl
+from morie.fn.bsaar import rangayyan_ar_order_mdl
 
 
 def test_rgmdl_basic():

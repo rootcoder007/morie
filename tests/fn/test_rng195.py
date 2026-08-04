@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng195 import rangayyan_ch4_length_transformation
+from morie.fn.bsaqrs import rangayyan_ch4_length_transformation
 
 
 def test_rng195_basic():

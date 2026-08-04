@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgcardep import rangayyan_cardiac_elecphys
+from morie.fn.bsaphys import rangayyan_cardiac_elecphys
 
 
 def test_rgcardep_basic():

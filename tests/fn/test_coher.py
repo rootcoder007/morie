@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
-from morie.fn.coher import coherence
+from morie.fn.bsacorr import coherence
 
 
 def test_coherence_identical_signals():

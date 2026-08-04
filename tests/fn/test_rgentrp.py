@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgentrp import rangayyan_spectral_entropy
+from morie.fn.bsastat import rangayyan_spectral_entropy
 
 
 def test_rgentrp_basic():

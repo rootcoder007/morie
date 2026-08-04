@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng196 import rangayyan_ch4_dicrotic_notch_second_derivative
+from morie.fn.bsaqrs import rangayyan_ch4_dicrotic_notch_second_derivative
 
 
 def test_rng196_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng028 import rangayyan_ch3_sifting_property
+from morie.fn.bsasig import rangayyan_ch3_sifting_property
 
 
 def test_rng028_basic():

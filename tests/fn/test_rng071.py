@@ -1,6 +1,6 @@
 """Tests for rng071.rangayyan_ch3_twiddle_factor."""
 
-from morie.fn.rng071 import rangayyan_ch3_twiddle_factor
+from morie.fn.bsaxfrm import rangayyan_ch3_twiddle_factor
 
 
 def test_rng071_basic():

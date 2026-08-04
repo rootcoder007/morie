@@ -1,6 +1,6 @@
 """Tests for rng098.rangayyan_ch3_ma_8point_impulse_response."""
 
-from morie.fn.rng098 import rangayyan_ch3_ma_8point_impulse_response
+from morie.fn.bsafilt import rangayyan_ch3_ma_8point_impulse_response
 
 
 def test_rng098_basic():

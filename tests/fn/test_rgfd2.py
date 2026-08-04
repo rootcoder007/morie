@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgfd2 import rangayyan_second_diff
+from morie.fn.bsafilt import rangayyan_second_diff
 
 
 def test_rgfd2_basic():

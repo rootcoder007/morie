@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng162 import rangayyan_ch3_lms_step_size_zhang
+from morie.fn.bsaadapt import rangayyan_ch3_lms_step_size_zhang
 
 
 def test_rng162_basic():
