@@ -65,3 +65,53 @@ def as_matrix(x, name):
         if len(r) != w:
             raise ValueError("%s has ragged rows." % name)
     return [[float(v) for v in r] for r in rows]
+
+
+def rsm_probs(theta, b, tau):
+    r"""Andrich rating scale category probabilities for one item.
+
+    Categories h = 0, ..., m with m = len(tau). With cumulative thresholds
+    :math:`T_h = \sum_{j\le h} \tau_j` (and :math:`T_0 = 0`),
+
+    .. math::
+        \eta_h = h(\theta - b) - T_h, \qquad
+        P(X = h) = \frac{e^{\eta_h}}{\sum_l e^{\eta_l}} .
+
+    Returns ``(probs, eta)``.
+    """
+    m = len(tau)
+    cum = 0.0
+    eta = [0.0]
+    for j in range(m):
+        cum += tau[j]
+        eta.append((j + 1) * (theta - b) - cum)
+    return softmax(eta), eta
+
+
+def nrm_probs(theta, a, c):
+    r"""Bock nominal response category probabilities for one item.
+
+    .. math::
+        \eta_r = a_r \theta + c_r, \qquad
+        P(X = r) = e^{\eta_r} / \sum_s e^{\eta_s}.
+
+    Returns ``(probs, eta)``.
+    """
+    eta = [a[r] * theta + c[r] for r in range(len(a))]
+    return softmax(eta), eta
+
+
+def cat_moments(probs, scores):
+    """Mean and variance of the category scores under ``probs``.
+
+    For any of these exponential-family category models the Fisher
+    information in one item is exactly the variance of the category score,
+    because the linear predictor is score * theta plus a constant.
+    """
+    mu = 0.0
+    for h in range(len(probs)):
+        mu += probs[h] * scores[h]
+    v = 0.0
+    for h in range(len(probs)):
+        v += probs[h] * (scores[h] - mu) ** 2
+    return mu, v
