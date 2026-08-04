@@ -1160,36 +1160,207 @@ def _ks_sf(d, n):
     return _bi.max(0.0, _bi.min(1.0, s))
 
 
-def ks_1samp(x, cdf, args=()):
+def _ks_pkolmogorov(d, n):
+    """P(D_n < d), exact, by Marsaglia, Tsang and Wang (2003).
+
+    Journal of Statistical Software 8(18), "Evaluating Kolmogorov's
+    Distribution".  The same algorithm R's ks.test uses for n < 100.
+    H is (2k-1) square with k = ceil(n d); the answer is n! / n^n times
+    the (k,k) entry of H^n, and the factorial is folded into the matrix
+    power in blocks so the intermediate entries cannot overflow.
+    """
+    d = float(d)
+    n = int(n)
+    if d <= 0.0:
+        return 0.0
+    if d >= 1.0:
+        return 1.0
+    k = int(n * d) + 1
+    m = 2 * k - 1
+    h = k - n * d
+    H = [[0.0] * m for _ in range(m)]
+    for i in range(m):
+        for j in range(m):
+            if i - j + 1 >= 0:
+                H[i][j] = 1.0
+    for i in range(m):
+        H[i][0] -= h ** (i + 1)
+        H[m - 1][i] -= h ** (m - i)
+    H[m - 1][0] += (2.0 * h - 1.0) ** m if 2.0 * h - 1.0 > 0.0 else 0.0
+    for i in range(m):
+        for j in range(m):
+            if i - j + 1 > 0:
+                for g in range(1, i - j + 2):
+                    H[i][j] /= g
+
+    def mul(A, B):
+        return [[_math.fsum(A[i][t] * B[t][j] for t in range(m))
+                 for j in range(m)] for i in range(m)]
+
+    # binary exponentiation, rescaling by 2^-128 whenever entries grow
+    eQ = 0
+    Q = [[1.0 if i == j else 0.0 for j in range(m)] for i in range(m)]
+    P = [row[:] for row in H]
+    eP = 0
+    e = n
+    while e > 0:
+        if e & 1:
+            Q = mul(Q, P)
+            eQ += eP
+            if Q[k - 1][k - 1] > 1e140:
+                Q = [[v * 1e-140 for v in row] for row in Q]
+                eQ += 140
+        e >>= 1
+        if e:
+            P = mul(P, P)
+            eP *= 2
+            if P[k - 1][k - 1] > 1e140:
+                P = [[v * 1e-140 for v in row] for row in P]
+                eP += 140
+    val = Q[k - 1][k - 1]
+    for i in range(1, n + 1):
+        val *= i / n
+        if val < 1e-140:
+            val *= 1e140
+            eQ -= 140
+    return val * 10.0 ** eQ
+
+
+def _ks_psmirnov(d, n1, n2, two_sided=True):
+    """P(D < d) for the two-sample statistic, exact, no ties.
+
+    The recursion R's ks.test uses (psmirnov2x): count the lattice paths
+    from (0,0) to (n1,n2) that never leave the band |i/n1 - j/n2| <= q,
+    carrying the hypergeometric weights along.  With ``two_sided`` off
+    only the upper edge of the band constrains the path, which is the
+    one-sided law of D+.
+    """
+    md, nd = float(n1), float(n2)
+    q = (0.5 + _math.floor(float(d) * md * nd - 1e-7)) / (md * nd)
+    u = [0.0] * (n2 + 1)
+    for j in range(n2 + 1):
+        u[j] = 0.0 if (two_sided and (j / nd) > q) else 1.0
+    for i in range(1, n1 + 1):
+        w = i / (i + nd)
+        u[0] = 0.0 if (i / md) > q else w * u[0]
+        for j in range(1, n2 + 1):
+            gap = i / md - j / nd
+            if (abs(gap) if two_sided else gap) > q:
+                u[j] = 0.0
+            else:
+                u[j] = w * u[j] + u[j - 1]
+    return u[n2]
+
+
+_KS_ALTERNATIVES = ("two-sided", "less", "greater")
+
+
+def _ks_check_alt(alternative):
+    if alternative not in _KS_ALTERNATIVES:
+        raise ValueError("alternative must be one of %s, got %r"
+                         % (", ".join(_KS_ALTERNATIVES), alternative))
+    return alternative
+
+
+def ks_1samp(x, cdf, args=(), alternative="two-sided"):
+    """One-sample Kolmogorov-Smirnov statistic and p-value.
+
+    ``alternative`` names the alternative hypothesis in terms of the
+    CDFs, the same convention R's ks.test uses:
+
+      "two-sided"  F != G, statistic D  = max(D+, D-)
+      "greater"    F >  G, statistic D+ = max(ECDF - CDF)
+      "less"       F <  G, statistic D- = max(CDF - ECDF)
+
+    The one-sided p-values are EXACT (Birnbaum-Tingey).  The two-sided
+    one is the asymptotic Kolmogorov series with Stephens' small-sample
+    correction, which is why ``exact`` is reported: at small n a
+    two-sided p-value near the decision boundary should not be leaned on.
+    """
+    _ks_check_alt(alternative)
     v = sorted(_flatten(x))
     n = len(v)
-    cdfv = [float(cdf(u, *args)) if callable(cdf) else u for u in v]
+    if n < 1:
+        raise ValueError("need at least one observation")
+    cdfv = [float(cdf(u, *args)) if callable(cdf) else float(u) for u in v]
     dplus = _bi.max((i + 1) / n - cdfv[i] for i in range(n))
     dminus = _bi.max(cdfv[i] - i / n for i in range(n))
-    d = _bi.max(dplus, dminus)
-    return _TestResult(d, _ks_sf(d, n))
+    dplus = _bi.max(0.0, dplus)
+    dminus = _bi.max(0.0, dminus)
+    if alternative == "greater":
+        d, pv, exact = dplus, _KSOne.sf(dplus, n), True
+    elif alternative == "less":
+        d, pv, exact = dminus, _KSOne.sf(dminus, n), True
+    else:
+        d = _bi.max(dplus, dminus)
+        if n < 100:
+            pv = _bi.max(0.0, _bi.min(1.0, 1.0 - _ks_pkolmogorov(d, n)))
+            exact = True
+        else:
+            pv, exact = _ks_sf(d, n), False
+    return _TestResult(d, pv, n=n, d_plus=dplus, d_minus=dminus,
+                       alternative=alternative, exact=exact)
 
 
-def kstest(rvs, cdf, args=()):
+def kstest(rvs, cdf, args=(), alternative="two-sided"):
+    _ks_check_alt(alternative)
     if isinstance(cdf, str):
-        dist = {"norm": norm, "uniform": uniform, "expon": expon}[cdf]
-        return ks_1samp(rvs, lambda u, *a: dist.cdf(u, *a), args)
+        try:
+            dist = {"norm": norm, "uniform": uniform, "expon": expon}[cdf]
+        except KeyError:
+            raise ValueError(
+                "unknown distribution %r; known: norm, uniform, expon"
+                % cdf) from None
+        return ks_1samp(rvs, lambda u, *a: dist.cdf(u, *a), args,
+                        alternative=alternative)
     if callable(cdf):
-        return ks_1samp(rvs, cdf, args)
-    return ks_2samp(rvs, cdf)
+        return ks_1samp(rvs, cdf, args, alternative=alternative)
+    return ks_2samp(rvs, cdf, alternative=alternative)
 
 
-def ks_2samp(a, b):
+def ks_2samp(a, b, alternative="two-sided"):
+    """Two-sample Kolmogorov-Smirnov (Smirnov) statistic and p-value.
+
+    The one-sided p-value is Smirnov's asymptotic exp(-2 n_e D^2); the
+    two-sided one is the Kolmogorov series in the effective sample size
+    n_e = n1 n2 / (n1 + n2).  Both are asymptotic, so ``exact`` is False
+    throughout -- with ties present no exact two-sample p-value is
+    available at all, and the number of ties is reported for that reason.
+    """
+    _ks_check_alt(alternative)
     x, y = sorted(_flatten(a)), sorted(_flatten(b))
     n1, n2 = len(x), len(y)
+    if n1 < 1 or n2 < 1:
+        raise ValueError("both samples need at least one observation")
     allv = sorted(set(x + y))
+    ties = (n1 + n2) - len(allv)
+    is_exact = False
 
     def ecdf(sorted_v, u):
         import bisect
         return bisect.bisect_right(sorted_v, u) / len(sorted_v)
-    d = _bi.max(abs(ecdf(x, u) - ecdf(y, u)) for u in allv)
+
+    diffs = [ecdf(x, u) - ecdf(y, u) for u in allv]
+    dplus = _bi.max(0.0, _bi.max(diffs))
+    dminus = _bi.max(0.0, -_bi.min(diffs))
     en = n1 * n2 / (n1 + n2)
-    return _TestResult(d, _ks_sf(d, en))
+    if alternative in ("greater", "less"):
+        d = dplus if alternative == "greater" else dminus
+        if n1 * n2 < 10000 and ties == 0:
+            pv = 1.0 - _ks_psmirnov(d, n1, n2, two_sided=False)
+            is_exact = True
+        else:
+            pv = _math.exp(-2.0 * en * d * d)
+    else:
+        d = _bi.max(dplus, dminus)
+        if n1 * n2 < 10000 and ties == 0:
+            pv = 1.0 - _ks_psmirnov(d, n1, n2)
+            is_exact = True
+        else:
+            pv = _ks_sf(d, en)
+    return _TestResult(d, _bi.max(0.0, _bi.min(1.0, pv)),
+                       n1=n1, n2=n2, d_plus=dplus, d_minus=dminus,
+                       alternative=alternative, exact=is_exact, n_ties=ties)
 
 
 class _KSOne:
