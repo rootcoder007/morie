@@ -1,76 +1,55 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Efficacy of Student's t test for location."""
+"""Efficacy of the one-sample Student t test -- Gibbons eq. (13.3.2)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_t_efficacy"]
+__all__ = ['efft', 'gibbons_t_efficacy']
 
 
-def gibbons_t_efficacy(N, sigma, cdf=None):
-    """
-    Efficacy of Student's t test for location
+def efft(n, sigma2):
+    """e(T*_N) = N / sigma^2 for the one-sample t test.
 
-    Formula: e(T*_N) = N/sigma^2
+    Book p. 488, eq. (13.3.2).  The classical test's efficacy depends
+    on the parent only through its variance, which is exactly why it
+    collapses relative to rank tests when the parent has heavy tails
+    but a finite variance.  For paired data (book p. 493) sigma^2 is
+    the variance of the differences,
+    sigma_D^2 = sigma_X^2 + sigma_Y^2 - 2 Cov(X, Y).
 
     Parameters
     ----------
-    N : array-like
-        Input data.
-    sigma : array-like
-        Input data.
+    n : int
+        Sample size.
+    sigma2 : float
+        Population variance, strictly positive.
 
     Returns
     -------
-    result : dict
-        Keys: efficacy
+    RichResult
+        keys ``efficacy``, ``per_obs``, ``n``, ``sigma2``, ``method``.
 
     References
     ----------
-    Gibbons eq 13.3.2
+    Gibbons & Chakraborti (2011), eq. (13.3.2), p. 488; paired case
+    p. 493.
     """
-    N = np.asarray(N, dtype=float)
-    n = int(N) if N.ndim == 0 else len(N)
-    if N.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Efficacy of Student's t test for location",
-            }
-        )
-    x_sorted = np.sort(N)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(N), scale=np.std(N, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    n = int(n)
+    s2 = float(sigma2)
+    if n < 1:
+        raise ValueError("n must be at least 1.")
+    if s2 <= 0.0:
+        raise ValueError("sigma2 must be strictly positive.")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "efficacy": float(n / s2),
+            "per_obs": float(1.0 / s2),
             "n": n,
-            "method": "Efficacy of Student's t test for location",
+            "sigma2": s2,
+            "method": "one-sample t efficacy, eq. (13.3.2)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1331t: Efficacy of Student's t test for location"
+gibbons_t_efficacy = efft
