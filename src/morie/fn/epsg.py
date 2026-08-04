@@ -101,3 +101,6 @@ def epsilon_greedy(arms, epsilon=0.1, T=100, rewards=None, q0=0.0):
 
 def cheatsheet():
     return "epsg: e-greedy exploration"
+
+
+epsilongreedy = epsilon_greedy

@@ -103,3 +103,6 @@ def actor_critic(env, actor=None, critic=None, rewards=None, values=None,
 
 def cheatsheet():
     return "acrt: Actor-critic with TD baseline"
+
+
+actorcritic = actor_critic

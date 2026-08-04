@@ -57,8 +57,14 @@ def sobol_indices(model, input_dist=None, N=64, d=None):
     """
     dd = int(d) if d is not None else (len(input_dist) if input_dist else 2)
     n = int(N)
+    # A and B must be INDEPENDENT samples.  Continuing one low-discrepancy
+    # sequence gives points that are not: with base 2 and n a power of two,
+    # vdc(j + n) and vdc(j) share their leading bits, the estimator's cross
+    # terms stop cancelling, and S_i comes out badly wrong.  A and B
+    # therefore use disjoint prime bases -- the standard split of a
+    # 2d-dimensional quasi-Monte Carlo design into its two halves.
     A = [[k.vdc(j, _PRIMES[a]) for a in range(dd)] for j in range(n)]
-    B = [[k.vdc(j + n, _PRIMES[a]) for a in range(dd)] for j in range(n)]
+    B = [[k.vdc(j, _PRIMES[dd + a]) for a in range(dd)] for j in range(n)]
 
     def tf(row):
         if input_dist is None:
