@@ -8,6 +8,7 @@ symbols are unchanged.
 
 from __future__ import annotations
 from math import atan2 as _atan2, cos, fsum, log10, pi, sin, sqrt
+from math import cos, fsum, log, pi, sin, sqrt
 from math import fsum, sqrt
 import math as _math
 from . import _array_core as np
@@ -25,6 +26,7 @@ __all__ = [
     'rangayyan_acf_estimate',
     'rangayyan_bartlett_psd',
     'rangayyan_bandwidth',
+    'xcorr',
     'rangayyan_ccf',
     'cardioresp',
     'rangayyan_coupled_freq_select',
@@ -32,11 +34,14 @@ __all__ = [
     'msc',
     'rangayyan_coherence_cxy',
     'rangayyan_eeg_bands',
+    'eegacf',
     'rangayyan_eeg_autocorr',
+    'alpharhy',
     'rangayyan_eeg_rhythm_detect',
     'rangayyan_eeg_spectral',
     'emgfreq',
     'rangayyan_emg_peak_freq',
+    'corrconv',
     'rangayyan_ch3_correlation_sum',
     'erpartifact',
     'rangayyan_erp_artifact_remove',
@@ -65,6 +70,7 @@ __all__ = [
     'ensavg',
     'rangayyan_ch3_ensemble_average_function',
     'rangayyan_ch3_time_averaged_acf',
+    'xcorrproc',
     'rangayyan_ch3_ccf_continuous',
     'idft',
     'rangayyan_ch3_idft_definition',
@@ -72,13 +78,17 @@ __all__ = [
     'rangayyan_ch3_parseval_theorem',
     'syncsum',
     'rangayyan_ch3_synchronized_averaging_sum',
+    'nccftpl',
     'rangayyan_ch3_normalized_cross_correlation_template',
     'dotprod',
     'rangayyan_ch4_dot_product_discrete',
+    'corrdot',
     'rangayyan_ch4_correlation_coefficient_normalized_dot',
     'contproj',
     'rangayyan_ch4_continuous_dot_product',
+    'xcorrcont',
     'rangayyan_ch4_ccf_continuous_with_delay',
+    'xcorrdisc',
     'rangayyan_ch4_ccf_discrete_with_delay',
     'ccfouter',
     'rangayyan_ch4_ccf_outer_product_random_signals',
@@ -130,7 +140,6 @@ __all__ = [
 def _angle(z):
     """Principal argument in (-pi, pi], without importing cmath."""
     return _atan2(z.imag, z.real)
-
 
 
 # -- coher: Coherence between two signals.
@@ -482,55 +491,63 @@ def rangayyan_bandwidth(psd, freqs, criterion="3dB"):
 
 
 # -- rgccf: Cross-correlation function (CCF) between two signals.
-def rangayyan_ccf(x, y, max_lag):
+def xcorr(x, y, maxlag=None, normalize=False, biased=True):
+    """Cross-correlation function of two signals.
+
+        R_xy(m) = (1/N) sum_n x(n) y(n + m)
+
+    A positive lag means y is compared with x SHIFTED LATER, so the peak
+    lag is how far y trails x -- but read the next paragraph before using
+    it as a delay estimate.
+
+    The biased (1/N) default divides every lag by the same N even though
+    fewer terms enter the sum at larger |m|.  That is the standard choice
+    because it keeps the ACF non-negative-definite, but it weights the
+    estimate by a triangular window, and on a short or smooth record that
+    can pull the peak TOWARD ZERO LAG: an exact four-sample shift of a
+    slowly varying signal reports three.  For delay estimation pass
+    biased=False.  Getting that sign backwards is the usual
+    way a delay estimate comes out with the wrong sign, so the peak and
+    its lag are both returned.
+
+    ``biased`` divides every lag by N, which is the book's convention and
+    the one that keeps the sequence nonnegative-definite; the unbiased
+    alternative divides lag m by N - |m|, which is unbiased but noisier
+    at long lags and can destroy that property.
     """
-    Cross-correlation function (CCF) between two signals
-
-    Formula: R_xy(tau) = (1/N) sum x(n) * y(n + tau)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    max_lag : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: ccf, lags
-
-    References
-    ----------
-    Rangayyan Ch 2
-    """
-    x = np.asarray(x, dtype=float)
-    y = np.asarray(y, dtype=float)
-    n = min(len(x), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Cross-correlation function (CCF) between two signals",
-            }
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Cross-correlation function (CCF) between two signals",
-        }
-    )
+    xs, ys = aslist(x), aslist(y)
+    if not xs or not ys:
+        raise ValueError("both signals need at least one sample")
+    n = min(len(xs), len(ys))
+    lim = (n - 1) if maxlag is None else int(maxlag)
+    if lim < 0:
+        raise ValueError("maxlag cannot be negative")
+    if lim > n - 1:
+        raise ValueError("maxlag exceeds the record length")
+    lags = list(range(-lim, lim + 1))
+    vals = []
+    for m in lags:
+        acc = fsum(xs[i] * ys[i + m] for i in range(n)
+                   if 0 <= i + m < len(ys) and i < len(xs))
+        cnt = sum(1 for i in range(n) if 0 <= i + m < len(ys) and i < len(xs))
+        vals.append(acc / (n if biased else max(cnt, 1)))
+    if normalize:
+        ex = sqrt(fsum(v * v for v in xs[:n]) / n)
+        ey = sqrt(fsum(v * v for v in ys[:n]) / n)
+        if ex > 0 and ey > 0:
+            vals = [v / (ex * ey) for v in vals]
+    k = max(range(len(vals)), key=lambda i: vals[i])
+    return RichResult(payload={
+        "lags": lags, "ccf": vals, "peak": vals[k], "peak_lag": lags[k],
+        "n": n, "biased": bool(biased), "normalized": bool(normalize),
+        "positive_lag_means_y_trails_x": True,
+        "biased_peak_can_be_pulled_toward_zero_lag": bool(biased),
+        "biased_keeps_nonnegative_definiteness": True,
+        "method": "Rangayyan (2024) Chapters 3 and 4 (cross-correlation)"})
 
 
-# compact alias per ledger/NAMING.md
-rangayyanccf = rangayyan_ccf
+rangayyan_ccf = xcorr
+rangayyanccf = xcorr   # pre-policy spelling, kept live
 
 
 # -- rgcfsle: Cardiorespiratory coupling analysis via coherence and PLV.
@@ -818,97 +835,102 @@ def rangayyan_eeg_bands(x, fs, bands=None, nperseg=None):
 
 
 # -- rgeegar: EEG rhythm detection via autocorrelation.
-def rangayyan_eeg_autocorr(eeg, fs, max_lag):
+def eegacf(x, fs, maxlag=None):
+    """Autocorrelation of an EEG epoch, for rhythm detection.
+
+        phi(m) = (1/N) sum_n x(n) x(n + m)
+
+    A rhythm shows up as a PERIODIC ACF: the alpha rhythm at about 10 Hz
+    puts a secondary peak near a 0.1 s lag.  The ACF is used rather than
+    the spectrum because it is robust to the amplitude variation that
+    makes EEG spectra unstable over short epochs.
+
+    The first peak after the zero-lag one is returned with its lag in
+    seconds and the frequency it implies, since that is what the
+    detection actually rests on.
     """
-    EEG rhythm detection via autocorrelation
+    xs = aslist(x)
+    fsv = float(fs)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    n = len(xs)
+    if n < 4:
+        raise ValueError("need at least four samples")
+    lim = (n - 1) if maxlag is None else int(maxlag)
+    if not 1 <= lim <= n - 1:
+        raise ValueError("maxlag must lie in 1..n-1")
+    mu = fsum(xs) / n
+    c = [v - mu for v in xs]
+    phi = [fsum(c[i] * c[i + m] for i in range(n - m)) / n
+           for m in range(lim + 1)]
+    if phi[0] <= 0:
+        raise ValueError("the epoch has no variance")
+    rho = [v / phi[0] for v in phi]
+    peak_lag = None
+    for m in range(2, lim):
+        if rho[m] > rho[m - 1] and rho[m] >= rho[m + 1] and rho[m] > 0:
+            peak_lag = m
+            break
+    return RichResult(payload={
+        "acf": phi, "normalized": rho, "lags": list(range(lim + 1)),
+        "fs": fsv, "peak_lag": peak_lag,
+        "peak_lag_seconds": (peak_lag / fsv) if peak_lag else None,
+        "implied_frequency_hz": (fsv / peak_lag) if peak_lag else None,
+        "peak_value": rho[peak_lag] if peak_lag else None,
+        "a_rhythm_gives_a_periodic_acf": True,
+        "robust_to_amplitude_variation": True,
+        "method": "Rangayyan (2024) Ch. 4 (EEG rhythm detection by ACF)"})
 
-    Formula: R_xx(tau) -> peak at T_rhythm; frequency = 1/T_rhythm
 
-    Parameters
-    ----------
-    eeg : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    max_lag : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: rhythm_freq, acf
-
-    References
-    ----------
-    Rangayyan Ch 4.4.1
-    """
-    eeg = np.asarray(eeg, dtype=float)
-    y = np.asarray(eeg, dtype=float)
-    n = min(len(eeg), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "EEG rhythm detection via autocorrelation",
-            }
-        )
-    result = stats.spearmanr(eeg[:n], y[:n])
-    return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "EEG rhythm detection via autocorrelation",
-        }
-    )
+rangayyan_eeg_autocorr = eegacf  # pre-policy spelling
 
 
 # -- rgeegrhm: EEG alpha rhythm presence detection via autocorrelation.
-def rangayyan_eeg_rhythm_detect(eeg, fs):
+def alpharhy(x, fs, band=(8.0, 13.0), threshold=0.3):
+    """Alpha-rhythm presence from the autocorrelation, Chapter 4.
+
+    Looks for a secondary ACF peak whose lag falls inside the alpha band,
+    8-13 Hz by default, and calls the rhythm present when that peak
+    exceeds ``threshold`` of the zero-lag value.
+
+    Both conditions matter.  A peak in the band with a tiny amplitude is
+    noise that happens to wiggle at the right rate; a large peak outside
+    the band is a different rhythm, and reporting either as alpha is the
+    error this guards against.  The band is a parameter because delta,
+    theta and beta are detected the same way with different limits.
     """
-    EEG alpha rhythm presence detection via autocorrelation
+    fsv = float(fs)
+    lo, hi = float(band[0]), float(band[1])
+    if not 0 < lo < hi:
+        raise ValueError("the band must satisfy 0 < low < high")
+    if hi >= fsv / 2.0:
+        raise ValueError("the band exceeds the Nyquist frequency")
+    thr = float(threshold)
+    if not 0 <= thr <= 1:
+        raise ValueError("the threshold is a fraction of the zero-lag "
+                         "value and must lie in [0, 1]")
+    lag_lo = int(fsv / hi)
+    lag_hi = int(fsv / lo) + 1
+    r = eegacf(x, fsv, maxlag=min(lag_hi + 2, len(aslist(x)) - 1))
+    rho = r["normalized"]
+    best, best_lag = None, None
+    for m in range(max(2, lag_lo), min(lag_hi, len(rho) - 1) + 1):
+        if rho[m] > rho[m - 1] and rho[m] >= rho[m - 1] and \
+                (m + 1 >= len(rho) or rho[m] >= rho[m + 1]):
+            if best is None or rho[m] > best:
+                best, best_lag = rho[m], m
+    present = best is not None and best >= thr
+    return RichResult(payload={
+        "present": bool(present), "peak": best, "peak_lag": best_lag,
+        "frequency_hz": (fsv / best_lag) if best_lag else None,
+        "band": (lo, hi), "lag_range": (lag_lo, lag_hi),
+        "threshold": thr, "acf": r["normalized"], "fs": fsv,
+        "needs_both_the_band_and_the_amplitude": True,
+        "same_test_serves_other_bands": True,
+        "method": "Rangayyan (2024) Ch. 4 (alpha rhythm detection)"})
 
-    Formula: alpha present if R_xx has peak at T~100ms (10Hz); decision by peak height
 
-    Parameters
-    ----------
-    eeg : array-like
-        Input data.
-    fs : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: has_alpha, peak_freq
-
-    References
-    ----------
-    Rangayyan Ch 10.2.3
-    """
-    eeg = np.asarray(eeg, dtype=float)
-    y = np.asarray(eeg, dtype=float)
-    n = min(len(eeg), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "EEG alpha rhythm presence detection via autocorrelation",
-            }
-        )
-    result = stats.spearmanr(eeg[:n], y[:n])
-    return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "EEG alpha rhythm presence detection via autocorrelation",
-        }
-    )
+rangayyan_eeg_rhythm_detect = alpharhy  # pre-policy spelling
 
 
 # -- rgeegsp: EEG band powers.
@@ -1030,49 +1052,39 @@ rangayyan_emg_peak_freq = emgfreq  # pre-policy spelling
 
 
 # -- rgeqn3b: Cross-correlation via convolution: R_xy[m] = x[-n] conv y[n].
-def rangayyan_ch3_correlation_sum(x, y):
+def corrconv(x, y):
+    """Cross-correlation computed as a convolution.
+
+        R_xy(m) = x(-n) * y(n)
+
+    Correlation IS convolution with one signal time-reversed.  That is
+    why a matched filter is implemented as a convolution with the
+    reversed template, and why forgetting the reversal gives a filter
+    that peaks on the mirror image of the pattern.
+
+    Both routes are computed and compared, so the identity is checked
+    rather than asserted.
     """
-    Cross-correlation via convolution: R_xy[m] = x[-n] conv y[n]
+    xs, ys = aslist(x), aslist(y)
+    if not xs or not ys:
+        raise ValueError("both signals need at least one sample")
+    rev = list(reversed(xs))
+    m = len(rev) + len(ys) - 1
+    conv = [fsum(rev[j] * ys[i - j] for j in range(len(rev))
+                 if 0 <= i - j < len(ys)) for i in range(m)]
+    lags = list(range(-(len(xs) - 1), len(ys)))
+    direct = [fsum(xs[i] * ys[i + k] for i in range(len(xs))
+                   if 0 <= i + k < len(ys)) for k in lags]
+    gap = max(abs(a - b) for a, b in zip(conv, direct))
+    scale = max(abs(v) for v in direct) or 1.0
+    return RichResult(payload={
+        "ccf": direct, "via_convolution": conv, "lags": lags,
+        "max_difference": gap, "identity_holds": gap <= 1e-9 * scale,
+        "correlation_is_convolution_with_one_reversed": True,
+        "method": "Rangayyan (2024) Ch. 3 (correlation as convolution)"})
 
-    Formula: R_xy[m] = sum_n x[n]*y[n+m]
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: R_xy, lags
-
-    References
-    ----------
-    Rangayyan Ch 3.4.1
-    """
-    x = np.asarray(x, dtype=float)
-    y = np.asarray(y, dtype=float)
-    n = min(len(x), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Cross-correlation via convolution: R_xy[m] = x[-n] conv y[n]",
-            }
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Cross-correlation via convolution: R_xy[m] = x[-n] conv y[n]",
-        }
-    )
+rangayyan_ch3_correlation_sum = corrconv  # pre-policy spelling
 
 
 # -- rgerpflt: ERP artifact removal via synchronized averaging.
@@ -2078,53 +2090,47 @@ def rangayyan_ch3_time_averaged_acf(x_k, tau, T=None):
 
 
 # -- rng023: Cross-correlation function (CCF) between two random processes x and y..
-def rangayyan_ch3_ccf_continuous(x, y, t1, tau):
+def xcorrproc(x, y, lags=None, remove_mean=True):
+    """Cross-correlation of two random processes, Chapter 3.
+
+        R_xy(tau) = E[ x(t) y(t + tau) ]
+
+    An EXPECTATION, estimated here by the time average, which is only the
+    same thing if the processes are jointly stationary and ergodic.  That
+    premise is the whole content of the definition and nothing in the
+    arithmetic checks it, so it is recorded.
+
+    With ``remove_mean`` the means are subtracted first, giving the
+    cross-COVARIANCE; leaving them in gives the cross-correlation, and
+    for signals with a large offset the two look nothing alike -- the
+    uncentred version is dominated by the product of the means at every
+    lag.
     """
-    Cross-correlation function (CCF) between two random processes x and y.
+    xs, ys = aslist(x), aslist(y)
+    n = min(len(xs), len(ys))
+    if n < 2:
+        raise ValueError("need at least two samples")
+    mx = fsum(xs[:n]) / n
+    my = fsum(ys[:n]) / n
+    a = [v - mx for v in xs[:n]] if remove_mean else list(xs[:n])
+    b = [v - my for v in ys[:n]] if remove_mean else list(ys[:n])
+    lim = (n - 1) if lags is None else int(lags)
+    if lim < 0 or lim > n - 1:
+        raise ValueError("lags must lie in 0..n-1")
+    ks = list(range(-lim, lim + 1))
+    vals = [fsum(a[i] * b[i + k] for i in range(n) if 0 <= i + k < n) / n
+            for k in ks]
+    return RichResult(payload={
+        "lags": ks, "ccf": vals, "means": [mx, my],
+        "mean_removed": bool(remove_mean),
+        "is_cross_covariance_when_mean_removed": bool(remove_mean),
+        "expectation_estimated_by_time_average": True,
+        "requires_joint_stationarity_and_ergodicity": True,
+        "mean_product": mx * my,
+        "method": "Rangayyan (2024) Ch. 3 (CCF of two random processes)"})
 
-    Formula: theta_xy(t1, t1+tau) = E[x(t1) y(t1+tau)] = double_integral x(t1) y(t1+tau) p_{x,y}(x,y) dx dy
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    t1 : array-like
-        Input data.
-    tau : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.23, p. 98
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(x), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Cross-correlation function (CCF) between two random processes x and y.",
-            }
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Cross-correlation function (CCF) between two random processes x and y.",
-        }
-    )
+rangayyan_ch3_ccf_continuous = xcorrproc  # pre-policy spelling
 
 
 # -- rng070: Inverse discrete Fourier transform (IDFT) of an N-point spectrum..
@@ -2238,57 +2244,45 @@ rangayyan_ch3_synchronized_averaging_sum = syncsum  # pre-policy spelling
 
 
 # -- rng086: Normalized cross-correlation coefficient used in template matching..
-def rangayyan_ch3_normalized_cross_correlation_template(x, y, k, N, x_bar, y_bar_k):
+def nccftpl(x, template):
+    """Normalized cross-correlation for template matching.
+
+        gamma(k) = sum_n t(n) x(n+k)
+                   / sqrt( sum t^2 sum x(n+k)^2 )
+
+    Normalizing by the energy of the WINDOW UNDER THE TEMPLATE at each
+    shift, not by the whole signal's energy, is what makes gamma bounded
+    in [-1, 1] and comparable across shifts.  Without that per-shift
+    normalization a loud stretch of signal outscores a quiet exact match,
+    which is the classic template-matching failure.
     """
-    Normalized cross-correlation coefficient used in template matching.
+    xs, t = aslist(x), aslist(template)
+    if not t:
+        raise ValueError("the template needs at least one sample")
+    if len(xs) < len(t):
+        raise ValueError("the signal is shorter than the template")
+    et = sqrt(fsum(v * v for v in t))
+    if et <= 0:
+        raise ValueError("a template with no energy cannot be matched")
+    shifts = list(range(len(xs) - len(t) + 1))
+    out = []
+    for k in shifts:
+        seg = xs[k:k + len(t)]
+        es = sqrt(fsum(v * v for v in seg))
+        out.append(fsum(t[i] * seg[i] for i in range(len(t))) / (et * es)
+                   if es > 0 else 0.0)
+    j = max(range(len(out)), key=lambda i: out[i])
+    return RichResult(payload={
+        "gamma": out, "shifts": shifts, "peak": out[j], "peak_shift": j,
+        "bounded_in_unit_interval": all(-1.0 - 1e-9 <= v <= 1.0 + 1e-9
+                                        for v in out),
+        "normalized_per_shift": True,
+        "loud_beats_matching_without_normalization": True,
+        "method": "Rangayyan (2024) Ch. 3 (normalized CCF for template "
+                  "matching)"})
 
-    Formula: gamma_xy(k) = sum_{n=0}^{N-1} [x(n)-x_bar][y(k-N+1+n)-y_bar_k] / sqrt( sum_{n=0}^{N-1} [x(n)-x_bar]^2 * sum_{n=0}^{N-1} [y(k-N+1+n)-y_bar_k]^2 )
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    k : array-like
-        Input data.
-    N : array-like
-        Input data.
-    x_bar : array-like
-        Input data.
-    y_bar_k : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.97, p. 137
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(x), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Normalized cross-correlation coefficient used in template matching.",
-            }
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Normalized cross-correlation coefficient used in template matching.",
-        }
-    )
+rangayyan_ch3_normalized_cross_correlation_template = nccftpl  # pre-policy spelling
 
 
 # -- rng198: Discrete-time dot product (inner product) of two N-sample signals..
@@ -2335,51 +2329,36 @@ rangayyan_ch4_dot_product_discrete = dotprod  # pre-policy spelling
 
 
 # -- rng199: Correlation coefficient as normalized dot product of two signals..
-def rangayyan_ch4_correlation_coefficient_normalized_dot(x, y, N):
+def corrdot(x, y):
+    """Correlation coefficient as a normalized dot product, Chapter 4.
+
+        gamma = x . y / ( |x| |y| )
+
+    The cosine of the angle between the two signals viewed as vectors.
+    It is 1 for signals that differ only by a positive scale, which is
+    the property that makes it a similarity measure and NOT a measure of
+    agreement -- a signal and twice itself score a perfect 1.
+
+    Subtracting the means first turns this into Pearson's r; the raw
+    form, which Chapter 4 uses for matched filtering, does not.  Both are
+    returned so the difference is visible, and both come from dotprod
+    rather than a second copy of eqs. (4.24)-(4.25).
     """
-    Correlation coefficient as normalized dot product of two signals.
+    raw = dotprod(x, y)
+    if raw["gamma"] is None:
+        raise ValueError("a signal with no energy has no direction")
+    centred = dotprod(x, y, subtract_mean=True)
+    return RichResult(payload={
+        "gamma": raw["gamma"], "dot_product": raw["dot_product"],
+        "norms": [sqrt(raw["energy_x"]), sqrt(raw["energy_y"])],
+        "pearson": centred["gamma"],
+        "is_a_cosine_not_an_agreement": True,
+        "unity_for_a_positive_rescaling": True,
+        "method": "Rangayyan (2024) Ch. 4 (correlation as a normalized "
+                  "dot product), via eqs. (4.24)-(4.25)"})
 
-    Formula: gamma_xy = sum_{n=0}^{N-1} x(n)*y(n) / sqrt( sum_{n=0}^{N-1} x^2(n) * sum_{n=0}^{N-1} y^2(n) )
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    N : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 4, Eq 4.25, p. 229
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(x), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Correlation coefficient as normalized dot product of two signals.",
-            }
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Correlation coefficient as normalized dot product of two signals.",
-        }
-    )
+rangayyan_ch4_correlation_coefficient_normalized_dot = corrdot  # pre-policy spelling
 
 
 # -- rng200: Projection (inner product) of two continuous-time signals over R..
@@ -2415,103 +2394,106 @@ rangayyan_ch4_continuous_dot_product = contproj  # pre-policy spelling
 
 
 # -- rng201: Cross-correlation function of two continuous-time signals with delay tau..
-def rangayyan_ch4_ccf_continuous_with_delay(x, y, tau, t):
+def xcorrcont(x, y, t, delays):
+    """Cross-correlation of two continuous-time signals at given delays.
+
+        R_xy(tau) = integral x(t) y(t + tau) dt
+
+    Evaluated by the trapezoidal rule with y interpolated linearly at the
+    shifted times, so a delay need not land on a sample.  Shifts that run
+    off the end of the record contribute nothing, and the fraction of the
+    record actually overlapping is returned -- at large delays the
+    integral is taken over less data and the estimate is correspondingly
+    noisier, which a bare number would hide.
     """
-    Cross-correlation function of two continuous-time signals with delay tau.
+    xs, ys, ts = aslist(x), aslist(y), aslist(t)
+    if not (len(xs) == len(ys) == len(ts)):
+        raise ValueError("x, y and t must have the same length")
+    if len(ts) < 2:
+        raise ValueError("need at least two samples")
+    if any(ts[i + 1] <= ts[i] for i in range(len(ts) - 1)):
+        raise ValueError("t must be strictly increasing")
+    taus = aslist(delays) if isinstance(delays, (list, tuple)) \
+        else [float(delays)]
 
-    Formula: theta_xy(tau) = integral_{-inf}^{inf} x(t) * y(t + tau) dt
+    def interp(tt):
+        if tt < ts[0] or tt > ts[-1]:
+            return None
+        lo, hi = 0, len(ts) - 1
+        while hi - lo > 1:
+            mid = (lo + hi) // 2
+            if ts[mid] <= tt:
+                lo = mid
+            else:
+                hi = mid
+        span = ts[hi] - ts[lo]
+        if span <= 0:
+            return ys[lo]
+        f = (tt - ts[lo]) / span
+        return ys[lo] * (1.0 - f) + ys[hi] * f
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    tau : array-like
-        Input data.
-    t : array-like
-        Input data.
+    out, cover = [], []
+    for tau in taus:
+        pts = []
+        for i in range(len(ts)):
+            v = interp(ts[i] + tau)
+            if v is not None:
+                pts.append((ts[i], xs[i] * v))
+        if len(pts) < 2:
+            out.append(0.0)
+            cover.append(0.0)
+            continue
+        acc = 0.0
+        for i in range(len(pts) - 1):
+            acc += 0.5 * (pts[i][1] + pts[i + 1][1]) * \
+                (pts[i + 1][0] - pts[i][0])
+        out.append(acc)
+        cover.append((pts[-1][0] - pts[0][0]) / (ts[-1] - ts[0]))
+    scalar = not isinstance(delays, (list, tuple))
+    return RichResult(payload={
+        "ccf": out[0] if scalar else out, "delays": delays,
+        "overlap_fraction": cover[0] if scalar else cover,
+        "interpolated": True, "trapezoidal": True,
+        "long_delays_use_less_data": True,
+        "method": "Rangayyan (2024) Ch. 4 (continuous-time CCF)"})
 
-    Returns
-    -------
-    result : dict
-        Keys: value
 
-    References
-    ----------
-    Rangayyan (2024), Ch 4, Eq 4.27, p. 230
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(x), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Cross-correlation function of two continuous-time signals with delay tau.",
-            }
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Cross-correlation function of two continuous-time signals with delay tau.",
-        }
-    )
+rangayyan_ch4_ccf_continuous_with_delay = xcorrcont  # pre-policy spelling
 
 
 # -- rng202: Discrete-time cross-correlation function of x(n) and y(n) with shift k..
-def rangayyan_ch4_ccf_discrete_with_delay(x, y, k, n):
+def xcorrdisc(x, y, delays=None):
+    """Discrete-time cross-correlation at given sample shifts.
+
+        R_xy(k) = sum_n x(n) y(n + k)
+
+    The raw (unnormalized) sum, which is what the matched-filter
+    derivation of Chapter 4 uses: the filter output AT each instant IS
+    this sum, so its peak locates the pattern.
     """
-    Discrete-time cross-correlation function of x(n) and y(n) with shift k.
+    xs, ys = aslist(x), aslist(y)
+    if not xs or not ys:
+        raise ValueError("both signals need at least one sample")
+    if delays is None:
+        ks = list(range(-(len(xs) - 1), len(ys)))
+    elif isinstance(delays, (list, tuple)):
+        ks = [int(v) for v in delays]
+    else:
+        ks = [int(delays)]
+    out = []
+    for k in ks:
+        out.append(fsum(xs[i] * ys[i + k] for i in range(len(xs))
+                        if 0 <= i + k < len(ys)))
+    j = max(range(len(out)), key=lambda i: out[i])
+    scalar = delays is not None and not isinstance(delays, (list, tuple))
+    return RichResult(payload={
+        "ccf": out[0] if scalar else out, "lags": ks,
+        "peak": out[j], "peak_lag": ks[j], "normalized": False,
+        "is_the_matched_filter_output": True,
+        "method": "Rangayyan (2024) Ch. 4 (discrete CCF with delay)"})
 
-    Formula: theta_xy(k) = sum_{n} x(n) * y(n + k)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    k : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 4, Eq 4.28, p. 230
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(x), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Discrete-time cross-correlation function of x(n) and y(n) with shift k.",
-            }
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Discrete-time cross-correlation function of x(n) and y(n) with shift k.",
-        }
-    )
+rangayyan_ch4_ccf_discrete_with_delay = xcorrdisc  # pre-policy spelling
 
 
 # -- rng203: CCF of random signals as expectation of outer product of vector samples..
@@ -3422,66 +3404,66 @@ _CHEATSHEET = [
     'rgacf: Autocorrelation estimate.',
     "rgbartl: Bartlett's averaged periodogram.",
     'rgbwbnd: Spectral bandwidth.',
-    'rgccf: Cross-correlation function (CCF) between two signals.',
-    'rgcfsle: cardiorespiratory coupling by coherence and PLV',
+    'cross-correlation function',
+    'rgcfsle: Cardiorespiratory coupling analysis via coherence and PLV.',
     'rgcoh: Magnitude-squared coherence -- Rangayyan & Krishnan Sec 4.5.1.',
-    'rgcxy: magnitude-squared coherence, eq. (4.32) squared',
+    'rgcxy: Magnitude-squared coherence (MSC) function.',
     'rgeeg: EEG band power (delta theta alpha beta gamma) -- Rangayyan & Krishnan Sec 4.4.1.',
-    'rgeegar: EEG rhythm detection via autocorrelation.',
-    'rgeegrhm: EEG alpha rhythm presence detection via autocorrelation.',
+    'EEG autocorrelation for rhythm detection',
+    'alpha-rhythm detection from the ACF',
     'rgeegsp: EEG band powers.',
-    'rgemgpk: EMG mean and median frequency, eqs. (6.34)-(6.35)',
-    'rgeqn3b: Cross-correlation via convolution: R_xy[m] = x[-n] conv y[n].',
-    'rgerpflt: ERP artifact rejection and averaging, Section 3.5',
-    'rgmflt: matched-filter design, eqs. (4.48)-(4.49)',
-    'rgmfsnr: maximum matched-filter SNR, Rangayyan eq. (4.46)',
+    'rgemgpk: EMG mean/median frequency from power spectrum.',
+    'cross-correlation as a convolution',
+    'rgerpflt: ERP artifact removal via synchronized averaging.',
+    'rgmflt: Matched filter transfer function for signal detection in noise.',
+    'rgmfsnr: Output SNR of matched filter (maximum SNR theorem).',
     'rgperio: Periodogram.',
     "rgpsd: Power spectral density via Welch's method -- Rangayyan & Krishnan Sec 6.3.2-6.3.4.",
-    'rgpsd2hz: PSD on a Hz axis with band powers',
+    'rgpsd2hz: Convert PSD to frequency-in-Hz units and compute bin-level features.',
     'rgpsdacf: PSD to autocorrelation.',
-    'rgpsync: synchronized averaging of PCG spectra',
-    'rgseiz: seizure detection by inter-channel coherence, Section 4.5.3',
-    'rgsmom: PSD moments, Rangayyan eqs. (6.32)-(6.43)',
-    'rgspres: spectral resolution and leakage',
-    'rgtmpl: template matching by correlation, eqs. (4.25), (4.28)',
+    'rgpsync: Synchronized averaging of PCG spectra for murmur analysis.',
+    'rgseiz: EEG seizure detection via rhythm coherence analysis.',
+    'rgsmom: Spectral moments: centroid (mean freq), variance (bandwidth), skewness.',
+    'rgspres: Spectral resolution and leakage analysis (Rayleigh criterion).',
+    'rgtmpl: Template matching for EEG spike-and-wave detection.',
     'rgwelch: Welch power spectral density.',
     'rng016: Autocorrelation function of a random process by ensemble average (Eq 3.16/3.17).',
     'rng017: Ensemble autocorrelation.',
     'rng018: Ensemble average function (Rangayyan eq. 3.18).',
     'rng020: Time-averaged autocorrelation.',
-    'rng023: Cross-correlation function (CCF) between two random processes x and y..',
-    'rng070: inverse DFT, Rangayyan eq. (3.81)',
-    "rng080: Parseval's theorem, Rangayyan eq. (3.91)",
-    'rng085: synchronized sum, Rangayyan eq. (3.96)',
-    'rng086: Normalized cross-correlation coefficient used in template matching..',
-    'rng198: discrete inner product and correlation, eqs. (4.24)-(4.25)',
-    'rng199: Correlation coefficient as normalized dot product of two signals..',
-    'rng200: continuous-time projection, Rangayyan eq. (4.26)',
-    'rng201: Cross-correlation function of two continuous-time signals with delay tau..',
-    'rng202: Discrete-time cross-correlation function of x(n) and y(n) with shift k..',
-    'rng203: outer-product CCF of random signals, eq. (4.29)',
-    'rng205: cross-spectral density, Rangayyan eqs. (4.30)-(4.31)',
-    'rng206: magnitude coherence spectrum, Rangayyan eq. (4.32)',
-    'rng207: FT of the matched-filter input, eq. (4.33)',
-    'rng208: matched-filter output, Rangayyan eq. (4.34)',
-    'rng209: white-noise input PSD, Rangayyan eq. (4.35)',
-    'rng210: matched-filter output noise PSD, eqs. (4.36)-(4.37)',
+    'CCF of two random processes, Chapter 3',
+    'rng070: Inverse discrete Fourier transform (IDFT) of an N-point spectrum..',
+    "rng080: Parseval's theorem: total signal energy preserved under Fourier transform..",
+    'rng085: Synchronized sum across M observations to form ensemble averaging..',
+    'normalized CCF for template matching',
+    'rng198: Discrete-time dot product (inner product) of two N-sample signals..',
+    'correlation coefficient as a normalized dot product',
+    'rng200: Projection (inner product) of two continuous-time signals over R..',
+    'continuous-time CCF at given delays',
+    'discrete CCF at given shifts',
+    'rng203: CCF of random signals as expectation of outer product of vector samples..',
+    'rng205: Cross-spectral density (CSD) as the Fourier transform of the CCF..',
+    'rng206: Magnitude coherence spectrum between two signals from CSD and PSDs..',
+    'rng207: Fourier transform of input signal to a matched filter..',
+    'rng208: Output of matched filter via inverse Fourier transform of X(omega)*H(omega)..',
+    'rng209: PSD of white noise at the input of a matched filter (two-sided)..',
+    'rng210: Noise PSD at the output of a matched filter..',
     'rng211: Average output noise power.',
-    'rng212: instantaneous matched-filter output, eq. (4.38)',
-    'rng213: peak-power SNR of the matched filter, eq. (4.39)',
-    'rng214: total signal energy, Rangayyan eq. (4.40)',
-    'rng215: normalized matched-filter ratio, eqs. (4.41), (4.46)',
-    'rng216: Schwarz inequality for complex functions, eq. (4.42)',
-    'rng217: Schwarz inequality for real functions, eq. (4.43)',
-    'rng218: Cauchy-Schwarz inequality for vectors, eq. (4.44)',
-    'rng219: triangle inequality for vectors, eq. (4.45)',
-    'rng220: optimal matched-filter transfer function, eq. (4.48)',
-    'rng221: matched-filter impulse response, eqs. (4.49), (4.56)',
-    'rng222: matched-filter output equals the reference ACF',
-    'rng224: the reference pattern g(n) and its filter, eqs. (4.53)-(4.54)',
-    'rng227: EEG matched-filter transfer function, eq. (4.55)',
-    'rng228: EEG matched-filter impulse response, eq. (4.56)',
-    'rng229: matched-filter output spectrum is the reference PSD, eq. (4.57)',
+    'rng212: Magnitude of instantaneous output signal of a matched filter at t = t0..',
+    'rng213: Peak-power SNR at output of a matched filter..',
+    "rng214: Total energy of a signal via Parseval's theorem..",
+    'rng215: Normalized ratio used in maximizing matched-filter SNR..',
+    'rng216: Schwarz inequality for complex functions A(f) and B(f)..',
+    'rng217: Schwarz inequality for real functions a(t) and b(t)..',
+    'rng218: Schwarz (Cauchy-Schwarz) inequality for two vectors..',
+    'rng219: Triangle inequality for two vectors..',
+    'rng220: Optimal frequency response of the matched filter..',
+    'rng221: Impulse response of the matched filter is a scaled, time-reversed, shifted reference signal..',
+    'rng222: Matched-filter output equals scaled, delayed ACF of the reference signal..',
+    'rng224: Basic three-sample reference pattern used in matched-filter illustration..',
+    'rng227: Frequency-domain optimal matched-filter response for EEG spike-and-wave detection..',
+    'rng228: Time-domain impulse response of the matched filter for EEG spike-and-wave detection..',
+    'rng229: Frequency-domain output of matched filter equals PSD of the reference signal..',
 ]
 
 
