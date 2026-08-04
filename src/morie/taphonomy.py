@@ -837,6 +837,20 @@ def _bhm_mcmc(X, y, terms, m0, s0, frame, group, chains, iter, seed):
             "conjugate backend." % (iter, max(1, chains))),
     }
 
+# Defaults for taphonomy_simulate_pxrf. Both names were referenced by that
+# function but never defined, so any call not passing `elements` and
+# `alpha` explicitly raised NameError. Transcribed from the R arm named in
+# its docstring as the parity contract, morie_taphonomy_simulate_pxrf in
+# taphonomy.R, which holds them as literal defaults:
+#     elements = c("Ca", "P", "Fe", "Sr", "Pb", "Zn")
+#     control   <- c(30, 15, 5, 1, 0.5, 0.5)   # natural soil/bone matrix
+#     treatment <- c(85, 5, 2, 0.5, 0.2, 0.2)  # quicklime: calcium spike
+_PXRF_ELEMENTS = ("Ca", "P", "Fe", "Sr", "Pb", "Zn")
+_PXRF_ALPHA = {
+    "control": (30.0, 15.0, 5.0, 1.0, 0.5, 0.5),
+    "treatment": (85.0, 5.0, 2.0, 0.5, 0.2, 0.2),
+}
+
 def taphonomy_simulate_pxrf(
     n: int,
     condition: str = "control",

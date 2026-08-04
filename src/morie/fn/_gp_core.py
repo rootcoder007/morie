@@ -2667,10 +2667,24 @@ def fda_basis_matrix(t, n_basis, kind="fourier", period=None):
     functions psi_1..psi_L2."""
     ts = _flat(t)
     m = len(ts)
+    if m == 0:
+        raise ValueError("t is empty.")
     L = int(n_basis)
+    if L < 1:
+        raise ValueError("n_basis must be a positive integer; got %r"
+                         % (n_basis,))
     lo, hi = min(ts), max(ts)
     span = (hi - lo) or 1.0
-    P = float(period) if period else span
+    if period is None:
+        P = span
+    else:
+        # `float(period) if period else span` treated an explicit 0 as
+        # "not supplied" and passed a negative period straight into the
+        # sine argument. R clamped non-positive to 1. Both now refuse it.
+        P = float(period)
+        if not (P > 0.0) or P != P or P in (float("inf"), float("-inf")):
+            raise ValueError("period must be a finite positive number; "
+                             "got %r" % (period,))
     out = []
     for tv in ts:
         row = []
@@ -2684,7 +2698,9 @@ def fda_basis_matrix(t, n_basis, kind="fourier", period=None):
                 else:
                     row.append(math.cos(2.0 * math.pi
                                         * (l // 2) * tv / P))
-            elif kind == "polynomial":
+            elif kind in ("poly", "polynomial"):
+                # "poly" is the spelling R's own @param documents; Python
+                # accepted only "polynomial" and raised on the other.
                 row.append(((tv - lo) / span) ** l)
             else:
                 raise ValueError("unknown basis: %s" % kind)
