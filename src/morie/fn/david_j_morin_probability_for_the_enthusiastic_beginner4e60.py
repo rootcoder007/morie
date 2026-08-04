@@ -1,37 +1,22 @@
-"""Binomial pmf restated for the mean derivation.
+"""Deprecated alias for :func:`morie.fn.binompmf`.
 
-Implements eq (4.60) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .binompmf import binompmf as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_60"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_60(k, n, p):
-    """Binomial pmf restated for the mean derivation.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (4.60).
-    """
-    value = _morin.binomial_pmf(k, n, p)
-    payload = {"probability": value}
-    lines = [("P(k)", value)]
-    return RichResult(
-        title="Binomial pmf restated for the mean derivation.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.binompmf` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_60() is the book-coordinate name for binompmf(); "
+        "it will be removed. Use morie.fn.binompmf() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner4e60: Binomial pmf restated for the mean derivation. Morin (2016) eq (4.60)."
+    return _impl(k, n, p)
