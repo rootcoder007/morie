@@ -1,42 +1,53 @@
-"""Perturbation (group operation on the simplex)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Perturbation, the group operation of the simplex."""
 
-from . import _array_core as np
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["aitchison_perturbation"]
+__all__ = ['compperturb', 'aitchison_perturbation']
 
 
-def aitchison_perturbation(x, y):
-    """
-    Perturbation (group operation on the simplex)
+def compperturb(x, y, total=1.0):
+    """Perturbation, the group operation of the simplex.
 
-    Formula: (x ⊕ y)_i = C(x_i * y_i)
+    Formula: x (+) y = C( x_1 y_1, x_2 y_2, ..., x_D y_D )
 
     Parameters
     ----------
     x : array-like
-        Input data.
+        Composition with strictly positive parts.
     y : array-like
-        Input data.
+        Second composition, same length as x, strictly positive.
+    total : float
+        Constant kappa the closure sums to.
 
     Returns
     -------
-    result : dict
-        Keys: z
+    RichResult
+        ``composition``, ``total``, ``D``.
 
     References
     ----------
-    Aitchison (1986)
+    Aitchison, J. (1986), The Statistical Analysis of Compositional Data, Chapman and Hall, is this shelf's primary book and is NOT in the reference library, so it could not be read.  The definitions below were taken instead from Mateu-Figueras, G., Pawlowsky-Glahn, V. and Egozcue, J. J., The normal distribution in some constrained sample spaces, arXiv:0802.2643 (published as SORT 37(1):29-56, 2013), Sect. 4.1, which prints them with equation numbers and attributes them to Aitchison (1982, 1986); that paper was FETCHED and is archived in the reference library with a row in EXTERNAL_SOURCES.md.  Perturbation is the inner sum of the simplex: componentwise multiplication followed by closure.  It plays the role that addition plays in real space, which is why translations of compositional data are perturbations.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Perturbation (group operation on the simplex)"}
-    )
+    x = C.vec(x); y = C.vec(y)
+    if len(x) != len(y):
+        raise ValueError("x and y must have the same number of parts")
+    if len(x) == 0:
+        raise ValueError("x must be non-empty")
+    if any(v <= 0.0 for v in x) or any(v <= 0.0 for v in y):
+        raise ValueError("compositions must be strictly positive")
+    p = [a * b for a, b in zip(x, y)]
+    s = sum(p)
+    k = float(total)
+    return RichResult(payload={
+        "composition": [k * v / s for v in p], "total": k, "D": len(x),
+        "method": "Perturbation on the simplex"})
+
+
+aitchison_perturbation = compperturb
 
 
 def cheatsheet():
-    return "aitprt: Perturbation (group operation on the simplex)"
+    return 'aitprt: Perturbation, the group operation of the simplex.'

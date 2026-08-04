@@ -1,42 +1,56 @@
-"""Aitchison inner product on the simplex."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Aitchison inner product of two compositions."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["aitchison_inner_product"]
+__all__ = ['compinner', 'aitchison_inner_product']
 
 
-def aitchison_inner_product(x, y):
-    """
-    Aitchison inner product on the simplex
+def compinner(x, y):
+    """Aitchison inner product of two compositions.
 
-    Formula: <x,y>_A = clr(x)^T clr(y)
+    Formula: <x, y>_a = (1/D) sum_{i<j} log(x_i/x_j) log(y_i/y_j)
 
     Parameters
     ----------
     x : array-like
-        Input data.
+        Composition with strictly positive parts.
     y : array-like
-        Input data.
+        Second composition, same length as x, strictly positive.
 
     Returns
     -------
-    result : dict
-        Keys: ip
+    RichResult
+        ``inner``, ``D``.
 
     References
     ----------
-    Aitchison (1986)
+    Aitchison, J. (1986), The Statistical Analysis of Compositional Data, Chapman and Hall, is this shelf's primary book and is NOT in the reference library, so it could not be read.  The definitions below were taken instead from Mateu-Figueras, G., Pawlowsky-Glahn, V. and Egozcue, J. J., The normal distribution in some constrained sample spaces, arXiv:0802.2643 (published as SORT 37(1):29-56, 2013), Sect. 4.1, which prints them with equation numbers and attributes them to Aitchison (1982, 1986); that paper was FETCHED and is archived in the reference library with a row in EXTERNAL_SOURCES.md.  Equation (10) of the retrieved paper.  Computed in the printed pairwise form rather than through clr, so the implementation matches the display it cites; the two are algebraically identical.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Aitchison inner product on the simplex"}
-    )
+    x = C.vec(x); y = C.vec(y)
+    D = len(x)
+    if D != len(y):
+        raise ValueError("x and y must have the same number of parts")
+    if D < 2:
+        raise ValueError("an inner product on the simplex needs at least two parts")
+    if any(v <= 0.0 for v in x) or any(v <= 0.0 for v in y):
+        raise ValueError("compositions must be strictly positive")
+    lx = [math.log(v) for v in x]
+    ly = [math.log(v) for v in y]
+    tot = 0.0
+    for i in range(D):
+        for j in range(i + 1, D):
+            tot += (lx[i] - lx[j]) * (ly[i] - ly[j])
+    return RichResult(payload={
+        "inner": tot / D, "D": D, "method": "Aitchison inner product"})
+
+
+aitchison_inner_product = compinner
 
 
 def cheatsheet():
-    return "aitip: Aitchison inner product on the simplex"
+    return 'aitip: Aitchison inner product of two compositions.'
