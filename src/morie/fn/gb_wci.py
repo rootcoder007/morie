@@ -1,78 +1,71 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Significance test for concordance W using chi-square approximation."""
+"""Significance test for the coefficient of concordance W."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_concordance_signif"]
+__all__ = ['wsignif', 'gibbons_concordance_signif']
 
 
-def gibbons_concordance_signif(W, k, b, cdf=None):
-    """
-    Significance test for concordance W using chi-square approximation
+def wsignif(w, k, n):
+    """Chi-square test of independence based on W, Sec. 12.4.2.
 
-    Formula: b*k*(k-1)*W ~ chi2(k-1) for large b
+    Book p. 455.  With k sets of rankings of n objects, the null
+    distribution of S (hence of W) is exactly that of Sec. 12.2, so
+    for large k
+
+    .. math:: Q = \\frac{12S}{kn(n+1)} = k(n-1)W
+
+    is approximately chi-square with n - 1 degrees of freedom, with
+    the rejection region in the upper tail (W = 0 under independence,
+    W = 1 under perfect agreement).  For small k Table N gives the
+    exact distribution.
 
     Parameters
     ----------
-    W : array-like
-        Input data.
-    k : array-like
-        Input data.
-    b : array-like
-        Input data.
+    w : float
+        Observed coefficient of concordance, 0 <= w <= 1.
+    k : int
+        Number of rankings (judges), k >= 2.
+    n : int
+        Number of objects ranked, n >= 2.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (Q), ``w``, ``df``, ``p_value``,
+        ``s`` (the implied sum of squares), ``table_n`` (1 when the
+        exact table should be preferred), ``k``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 12.4
+    Gibbons & Chakraborti (2011), Sec. 12.4.2, p. 455; Table N, p. 588.
     """
-    W = np.asarray(W, dtype=float)
-    n = int(W) if W.ndim == 0 else len(W)
-    if W.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Significance test for concordance W using chi-square approximation",
-            }
-        )
-    x_sorted = np.sort(W)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(W), scale=np.std(W, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    w = float(w)
+    k = int(k)
+    n = int(n)
+    if not 0.0 <= w <= 1.0:
+        raise ValueError("w must lie in [0, 1].")
+    if k < 2 or n < 2:
+        raise ValueError("need k >= 2 rankings of n >= 2 objects.")
+    q = k * (n - 1.0) * w
+    s = q * k * n * (n + 1.0) / 12.0
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": float(q),
+            "w": w,
+            "df": int(n - 1),
+            "p_value": float(stats.chi2.sf(q, n - 1)),
+            "s": float(s),
+            "table_n": int(k <= 5 or n <= 5),
+            "k": k,
             "n": n,
-            "method": "Significance test for concordance W using chi-square approximation",
+            "method": "concordance W significance test (Sec. 12.4.2)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_wci: Significance test for concordance W using chi-square approximation"
+gibbons_concordance_signif = wsignif

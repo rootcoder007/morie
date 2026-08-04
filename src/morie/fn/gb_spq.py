@@ -1,76 +1,85 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Spearman rho test against zero rank correlation."""
+"""Test of the null hypothesis of zero Spearman rank correlation."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_spearman_test"]
+__all__ = ['rhotest', 'gibbons_spearman_test']
 
 
-def gibbons_spearman_test(r_s, n, cdf=None):
-    """
-    Spearman rho test against zero rank correlation
+def rhotest(r, n, alternative="two-sided"):
+    """Both large-sample tests of H0: rho = 0 from Sec. 11.3.3.
 
-    Formula: t = r_s * sqrt(n-2) / sqrt(1-r_s^2) ~ t(n-2) approximately
+    Book p. 413.  Under independence E[R] = 0 and Var[R] = 1/(n-1)
+    (Sec. 11.3.2, p. 412), giving the normal statistic
+
+    .. math:: Z = R\\sqrt{n-1},
+
+    while the equivalent Student form, obtained by treating R as an
+    ordinary product-moment correlation of the ranks, is
+
+    .. math:: t = R\\sqrt{\\frac{n-2}{1-R^2}}
+
+    on n - 2 degrees of freedom.  Both are returned; for small n the
+    exact null distribution of Sec. 11.3.1 (Table M) should be used
+    instead of either.
 
     Parameters
     ----------
-    r_s : array-like
-        Input data.
-    n : array-like
-        Input data.
+    r : float
+        Observed Spearman coefficient, |r| <= 1.
+    n : int
+        Number of pairs, n >= 3.
+    alternative : str, optional
+        ``"two-sided"``, ``"greater"`` or ``"less"``.
 
     Returns
     -------
-    result : dict
-        Keys: t_statistic, p_value
+    RichResult
+        keys ``z``, ``p_normal``, ``t``, ``df``, ``p_value``
+        (the t-based value), ``var``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 11.3
+    Gibbons & Chakraborti (2011), Secs. 11.3.2-11.3.3, pp. 412-413.
     """
-    r_s = np.asarray(r_s, dtype=float)
-    n = int(r_s) if r_s.ndim == 0 else len(r_s)
-    if r_s.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Spearman rho test against zero rank correlation",
-            }
-        )
-    x_sorted = np.sort(r_s)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(r_s), scale=np.std(r_s, ddof=1))
+    r = float(r)
+    n = int(n)
+    if n < 3:
+        raise ValueError("n must be at least 3.")
+    if not -1.0 <= r <= 1.0:
+        raise ValueError("r must lie in [-1, 1].")
+    z = r * math.sqrt(n - 1.0)
+    if abs(r) >= 1.0:
+        t = math.inf if r > 0 else -math.inf
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
+        t = r * math.sqrt((n - 2.0) / (1.0 - r * r))
+    if alternative == "greater":
+        pn = 1.0 - stats.norm.cdf(z)
+        pt = stats.t.sf(t, n - 2)
+    elif alternative == "less":
+        pn = stats.norm.cdf(z)
+        pt = 1.0 - stats.t.sf(t, n - 2)
+    elif alternative == "two-sided":
+        pn = 2.0 * (1.0 - stats.norm.cdf(abs(z)))
+        pt = 2.0 * stats.t.sf(abs(t), n - 2)
     else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("alternative must be two-sided, greater or less.")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "z": float(z),
+            "p_normal": float(min(1.0, pn)),
+            "t": float(t),
+            "df": int(n - 2),
+            "p_value": float(min(1.0, pt)),
+            "var": 1.0 / (n - 1.0),
             "n": n,
-            "method": "Spearman rho test against zero rank correlation",
+            "method": "test of zero Spearman correlation (Sec. 11.3.3)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_spq: Spearman rho test against zero rank correlation"
+gibbons_spearman_test = rhotest

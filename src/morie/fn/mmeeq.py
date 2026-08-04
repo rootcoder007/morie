@@ -1,54 +1,52 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Henderson mixed model equations (Eq 2.2): joint BLUE/BLUP system."""
+"""Henderson's mixed model equations for the BLUE and the BLUP."""
 
-from . import _array_core as np
+from . import _tail1core as C
+from . import _gp_core as G
 
 from ._richresult import RichResult
 
-__all__ = ["henderson_mme_eq2_2"]
+__all__ = ['hendmme', 'henderson_mme_eq2_2']
 
 
-def henderson_mme_eq2_2(Y, X, Z, R, Sigma):
-    """
-    Henderson mixed model equations (Eq 2.2): joint BLUE/BLUP system
+def hendmme(X, Z, y, Sigma_inv, R_inv=None):
+    """Henderson's mixed model equations for the BLUE and the BLUP.
 
-    Formula: [[X'R^-1 X, X'R^-1 Z],[Z'R^-1 X, Z'R^-1 Z + Sigma^-1]] * [beta_hat, u_hat] = [X'R^-1 y, Z'R^-1 y]
+    Formula: [[X'R^-1 X, X'R^-1 Z], [Z'R^-1 X, Z'R^-1 Z + Sigma^-1]] [beta; u] = [X'R^-1 y; Z'R^-1 y]
 
     Parameters
     ----------
-    Y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    Z : array-like
-        Input data.
-    R : array-like
-        Input data.
-    Sigma : array-like
-        Input data.
+    X : array-like, shape (n, p)
+        Design matrix of fixed effects.
+    Z : array-like, shape (n, q)
+        Design matrix of random effects.
+    y : array-like
+        Response vector of length n.
+    Sigma_inv : array-like, shape (q, q)
+        Inverse of the random-effect variance-covariance matrix.
+    R_inv : array-like or None
+        Inverse residual variance-covariance matrix; None uses the identity.
 
     Returns
     -------
-    result : dict
-        Keys: {'beta_hat': 'array', 'u_hat': 'array'}
+    RichResult
+        ``beta``, ``u``, ``fitted``, ``n``, ``p``, ``q``.
 
     References
     ----------
-    Montesinos Lopez Ch 2 Eq 2.2
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 2, Eq. (2.2) p. 37: Henderson's mixed model equations, whose solution for beta is the BLUE and for u is the BLUP.  Delegates to the chapter-2 MME solver already verified against the book for this shelf.  Read from the chapter PDF, not recalled.
     """
-    Y = np.asarray(Y, dtype=float)
-    n = int(Y) if Y.ndim == 0 else len(Y)
-    result = float(np.mean(Y))
-    se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Henderson mixed model equations (Eq 2.2): joint BLUE/BLUP system",
-        }
-    )
+    b, uu = G.mme_solve(X, Z, y, Sigma_inv, R_inv=R_inv)
+    Xm = C.mat(X); Zm = C.mat(Z)
+    fit = [a + c for a, c in zip(C.matvec(Xm, b), C.matvec(Zm, uu))]
+    return RichResult(payload={
+        "beta": b, "u": uu, "fitted": fit,
+        "n": len(Xm), "p": len(Xm[0]), "q": len(Zm[0]),
+        "method": "Henderson mixed model equations, MVSML Eq. (2.2)"})
+
+
+henderson_mme_eq2_2 = hendmme
 
 
 def cheatsheet():
-    return "mmeeq: Henderson mixed model equations (Eq 2.2): joint BLUE/BLUP system"
+    return "mmeeq: Henderson's mixed model equations for the BLUE and the BLUP."
