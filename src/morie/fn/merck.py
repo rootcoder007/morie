@@ -1,50 +1,49 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Mercer's theorem: kernel expansion via eigenfunctions."""
+"""Mercer check: is a Gram matrix a valid kernel matrix?"""
 
-from . import _array_core as np
+from . import _gp_core as G
 
 from ._richresult import RichResult
 
-__all__ = ["mercer_theorem"]
+__all__ = ['mercerchk', 'mercer_theorem', 'mercertheorem']
 
 
-def mercer_theorem(K_matrix):
-    """
-    Mercer's theorem: kernel expansion via eigenfunctions
+def mercerchk(K, tol=1e-9):
+    """Mercer check: is a Gram matrix a valid kernel matrix?
 
-    Formula: K(K_matrix,z) = sum_i lambda_i * phi_i(K_matrix) * phi_i(z); K must be symmetric positive semi-definite
+    Formula: K is a kernel iff the Gram matrix is symmetric positive semi-definite: min eigenvalue(K) >= 0
 
     Parameters
     ----------
-    K_matrix : array-like
-        Input data.
+    K : array-like, shape (n, n)
+        Candidate Gram matrix.
+    tol : float
+        Negative eigenvalues larger in size than tol fail the check.
 
     Returns
     -------
-    result : dict
-        Keys: {'eigenvalues': 'array', 'eigenfunctions': 'array'}
+    RichResult
+        ``is_kernel``, ``min_eigenvalue``, ``eigenvalues``, ``symmetry_gap``, ``n``.
 
     References
     ----------
-    Montesinos Lopez Ch 8
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 8, Sect. 8.2.1 p. 255, property 2 and property 3: the Gram matrix K with entries K(x_i, x_j) must be positive semi-definite for every choice of x_1, ..., x_n, and the book states that Mercer's theorem -- the integral condition on square-integrable g -- is an equivalent formulation of that finitely positive semi-definite property.  The finite check is therefore the one implemented.  Read from the chapter PDF, not recalled.
     """
-    K_matrix = np.asarray(K_matrix, dtype=float)
-    n = int(K_matrix) if K_matrix.ndim == 0 else len(K_matrix)
-    result = float(np.mean(K_matrix))
-    se = float(np.std(K_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Mercer's theorem: kernel expansion via eigenfunctions",
-        }
-    )
+    Km = G._mat(K)
+    n = len(Km)
+    if n == 0 or len(Km[0]) != n:
+        raise ValueError("K must be a non-empty square matrix")
+    gap = max(abs(Km[i][j] - Km[j][i]) for i in range(n) for j in range(n))
+    ok, lam = G.is_positive_semidefinite(Km, tol=float(tol))
+    return RichResult(payload={
+        "is_kernel": bool(ok), "min_eigenvalue": min(lam), "eigenvalues": lam,
+        "symmetry_gap": gap, "n": n,
+        "method": "Mercer / positive semi-definiteness check, MVSML Sect. 8.2.1"})
+
+
+mercer_theorem = mercerchk
+mercertheorem = mercerchk
 
 
 def cheatsheet():
-    return "merck: Mercer's theorem: kernel expansion via eigenfunctions"
-
-
-# compact alias per ledger/NAMING.md
-mercertheorem = mercer_theorem
+    return 'merck: Mercer check: is a Gram matrix a valid kernel matrix?'

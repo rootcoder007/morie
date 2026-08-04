@@ -1,76 +1,99 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Linear-by-linear association test for ordered categorical data."""
+"""Linear rank test for ordered categorical data -- Section 14.6.1."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_ordered_categories"]
+__all__ = ['linbylin', 'gibbons_ordered_categories']
 
 
-def gibbons_ordered_categories(table, scores, cdf=None):
-    """
-    Linear-by-linear association test for ordered categorical data
+def linbylin(table, scores=None):
+    """T = sum_j w_j X_{1j} over ordered columns, Sec. 14.6.1.
 
-    Formula: M^2 = n*(sum rscn_ij / sqrt(row_sum*col_sum))^2 ~ chi2(1) for trend
+    Book p. 531.  When the columns of a 2 x c table are ordered, the
+    chi-square test of independence throws the ordering away; the book
+    instead uses a linear rank statistic
+
+    .. math:: T = \\sum_j w_j X_{1j},
+
+    with increasing scores w_j -- the column midranks give exactly the
+    Wilcoxon rank-sum test on the grouped data.  Under H0
+
+    .. math:: E[T] = n_1 \\bar w, \\qquad
+        Var[T] = \\frac{n_1 n_2}{N(N-1)}
+            \\sum_j c_j (w_j - \\bar w)^2.
+
+    The book's Example 14.6.2 -- the 2 x 3 table [[2, 3, 5],
+    [4, 5, 1]] -- gives T = 126, mean 105, sd 12.44 and z = 1.688 with
+    a one-sided asymptotic p-value of 0.0457.
 
     Parameters
     ----------
-    table : array-like
-        Input data.
-    scores : array-like
-        Input data.
+    table : sequence of sequence of float
+        A 2 x c table with ordered columns.
+    scores : sequence of float, optional
+        Column scores w_j (defaults to the column midranks).
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (T), ``mean``, ``var``, ``sd``, ``z``,
+        ``p_value`` (one-sided upper), ``p_twosided``, ``scores``,
+        ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 14.6.1
+    Gibbons & Chakraborti (2011), Sec. 14.6.1, p. 531, with
+    Example 14.6.2, pp. 531-532.
     """
-    table = np.asarray(table, dtype=float)
-    n = int(table) if table.ndim == 0 else len(table)
-    if table.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Linear-by-linear association test for ordered categorical data",
-            }
-        )
-    x_sorted = np.sort(table)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(table), scale=np.std(table, ddof=1))
+    tb = [[float(v) for v in row] for row in table]
+    if len(tb) != 2:
+        raise ValueError("table must have exactly 2 rows.")
+    c = len(tb[0])
+    if c < 2 or len(tb[1]) != c:
+        raise ValueError("both rows must have the same length, >= 2.")
+    cs = [tb[0][j] + tb[1][j] for j in range(c)]
+    n1 = sum(tb[0])
+    n2 = sum(tb[1])
+    nn = n1 + n2
+    if nn < 2:
+        raise ValueError("the table must contain at least 2 observations.")
+    if scores is None:
+        w = []
+        acc = 0.0
+        for j in range(c):
+            w.append(acc + (cs[j] + 1.0) / 2.0)
+            acc += cs[j]
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        w = [float(v) for v in scores]
+        if len(w) != c:
+            raise ValueError("scores must have length c.")
+    t = sum(w[j] * tb[0][j] for j in range(c))
+    wbar = sum(cs[j] * w[j] for j in range(c)) / nn
+    mean = n1 * wbar
+    var = (
+        n1 * n2 / (nn * (nn - 1.0))
+        * sum(cs[j] * (w[j] - wbar) ** 2 for j in range(c))
+    )
+    sd = math.sqrt(var) if var > 0 else float("nan")
+    z = (t - mean) / sd if var > 0 else float("nan")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Linear-by-linear association test for ordered categorical data",
+            "statistic": float(t),
+            "mean": float(mean),
+            "var": float(var),
+            "sd": float(sd),
+            "z": float(z),
+            "p_value": float(1.0 - stats.norm.cdf(z)),
+            "p_twosided": float(2.0 * (1.0 - stats.norm.cdf(abs(z)))),
+            "scores": w,
+            "n": float(nn),
+            "method": "linear rank test for ordered categories (Sec. 14.6.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1461o: Linear-by-linear association test for ordered categorical data"
+gibbons_ordered_categories = linbylin

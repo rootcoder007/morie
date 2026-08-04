@@ -1,78 +1,103 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Friedman two-way ANOVA by ranks chi-r^2 statistic."""
+"""Friedman two-way analysis of variance by ranks."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_friedman"]
+__all__ = ['friedq', 'gibbons_friedman']
 
 
-def gibbons_friedman(data, k, b, cdf=None):
-    """
-    Friedman two-way ANOVA by ranks chi-r^2 statistic
+def friedq(data, correct=True):
+    """Friedman's Q for a k x n table of blocks by treatments.
 
-    Formula: chi_r^2 = 12/(bk(k+1)) * sum_j (R_j)^2 - 3b(k+1); R_j = col rank sums
+    Section 12.2 (book p. 441), eq. (12.2.8):
+
+    .. math:: Q = \\frac{12 \\sum_{j=1}^{n} R_j^2}{kn(n+1)}
+        - 3k(n+1),
+
+    with k blocks (rows) and n treatments (columns) -- the book's
+    orientation.  Ranks run within each block.  Ties handled by
+    midranks use eq. (12.2.12),
+
+    .. math:: Q = \\frac{12(n-1)S}{kn(n^2-1)
+        - \\sum\\sum t(t^2-1)},
+        \\qquad S = \\sum_j \\left[R_j
+        - \\tfrac{k(n+1)}{2}\\right]^2,
+
+    the double sum running over all tied sets in every block.  Q is
+    asymptotically chi-square with n - 1 degrees of freedom.
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    k : array-like
-        Input data.
-    b : array-like
-        Input data.
+    data : sequence of sequence of float
+        k rows (blocks) of n observations (treatments).
+    correct : bool, optional
+        Apply the tie correction of eq. (12.2.12) (default True).
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (Q), ``q_raw``, ``s``, ``df``, ``p_value``,
+        ``rank_sums``, ``k`` (blocks), ``n`` (treatments), ``method``.
 
     References
     ----------
-    Gibbons Ch 12.2
+    Gibbons & Chakraborti (2011), Sec. 12.2, eqs. (12.2.8) and
+    (12.2.12), pp. 441-445 (Friedman, 1937, 1940).
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    if data.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    rows = [[float(v) for v in r] for r in data]
+    k = len(rows)
+    if k < 2:
+        raise ValueError("need at least 2 blocks.")
+    n = len(rows[0])
     if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Friedman two-way ANOVA by ranks chi-r^2 statistic",
-            }
+        raise ValueError("need at least 2 treatments.")
+    if any(len(r) != n for r in rows):
+        raise ValueError("every block must have n observations.")
+    rsum = [0.0] * n
+    tiesum = 0.0
+    for r in rows:
+        order = sorted(range(n), key=lambda i: r[i])
+        rk = [0.0] * n
+        i = 0
+        while i < n:
+            j = i
+            while j + 1 < n and r[order[j + 1]] == r[order[i]]:
+                j += 1
+            mid = (i + j) / 2.0 + 1.0
+            for t in range(i, j + 1):
+                rk[order[t]] = mid
+            tt = j - i + 1
+            if tt > 1:
+                tiesum += tt * (tt * tt - 1.0)
+            i = j + 1
+        for j in range(n):
+            rsum[j] += rk[j]
+    q = 12.0 / (k * n * (n + 1.0)) * sum(v * v for v in rsum) - 3.0 * k * (
+        n + 1.0
+    )
+    s = sum((v - k * (n + 1.0) / 2.0) ** 2 for v in rsum)
+    qc = q
+    if correct and tiesum > 0.0:
+        qc = 12.0 * (n - 1.0) * s / (
+            k * n * (float(n) ** 2 - 1.0) - tiesum
         )
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Friedman two-way ANOVA by ranks chi-r^2 statistic",
+            "statistic": float(qc),
+            "q_raw": float(q),
+            "s": float(s),
+            "df": int(n - 1),
+            "p_value": float(stats.chi2.sf(qc, n - 1)),
+            "rank_sums": rsum,
+            "k": int(k),
+            "n": int(n),
+            "method": "Friedman two-way ANOVA by ranks, eq. (12.2.8)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1221: Friedman two-way ANOVA by ranks chi-r^2 statistic"
+gibbons_friedman = friedq
