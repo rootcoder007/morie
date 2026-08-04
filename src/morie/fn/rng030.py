@@ -1,51 +1,54 @@
-"""Continuous-time linear convolution of input x(t) with impulse response h(t).."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Continuous-time convolution (Rangayyan eq. 3.30)."""
 
-from . import _array_core as np
 
+from ._rgcore import aslist, gridint
 from ._richresult import RichResult
 
-__all__ = ["rangayyan_ch3_continuous_convolution"]
+__all__ = ["contconv", "rangayyan_ch3_continuous_convolution"]
 
 
-def rangayyan_ch3_continuous_convolution(x, h, t, tau):
+def contconv(x, h, dt=1.0, t=None):
+    """Convolution of an input with an impulse response, tabulated form.
+
+    Rangayyan (2024) eq. (3.30):
+        y(t) = integral x(tau) h(t - tau) d tau.
+
+    Tabulated on a uniform grid of spacing dt this becomes the discrete
+    convolution scaled by dt -- the dt is what makes it an integral
+    rather than eq. (3.36)'s sum, and dropping it is the usual way a
+    continuous-time convolution comes out wrong by a factor of the
+    sampling interval.
     """
-    Continuous-time linear convolution of input x(t) with impulse response h(t).
+    xs, hs = aslist(x), aslist(h)
+    if not xs or not hs:
+        raise ValueError("both signals need at least one sample")
+    step = float(dt)
+    if t is not None:
+        ts = aslist(t)
+        if len(ts) != len(xs):
+            raise ValueError("t must match x in length")
+        if len(ts) > 1:
+            step = ts[1] - ts[0]
+    if step <= 0:
+        raise ValueError("dt must be positive")
+    n, m = len(xs), len(hs)
+    y = []
+    for k in range(n + m - 1):
+        lo = max(0, k - m + 1)
+        hi = min(k, n - 1)
+        y.append(sum(xs[i] * hs[k - i] for i in range(lo, hi + 1)) * step)
+    t_out = [i * step for i in range(len(y))]
+    if t is not None and len(ts):
+        t_out = [ts[0] + i * step for i in range(len(y))]
+    return RichResult(payload={
+        "y": y, "t": t_out, "dt": step, "n": n, "m": m,
+        "integral": gridint(y, t_out) if len(y) > 1 else 0.0,
+        "method": "Rangayyan (2024) eq. (3.30)"})
 
-    Formula: y(t) = integral_{-inf}^{inf} x(tau) h(t - tau) d(tau)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    h : array-like
-        Input data.
-    t : array-like
-        Input data.
-    tau : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.30, p. 108
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Continuous-time linear convolution of input x(t) with impulse response h(t).",
-        }
-    )
+rangayyan_ch3_continuous_convolution = contconv  # pre-policy spelling
 
 
 def cheatsheet():
-    return "rng030: Continuous-time linear convolution of input x(t) with impulse response h(t)."
+    return "rng030: continuous-time convolution, Rangayyan eq. (3.30)"

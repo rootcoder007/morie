@@ -1,51 +1,42 @@
-"""Kurtosis as the normalized fourth central moment of the PDF.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Kurtosis of a random process (Rangayyan eq. 3.5)."""
 
-from . import _array_core as np
 
+from math import inf, sqrt
+
+from ._rgcore import checkpdf, pdfint
 from ._richresult import RichResult
 
-__all__ = ["rangayyan_ch3_kurtosis"]
+__all__ = ["pdfkurt", "rangayyan_ch3_kurtosis"]
 
 
-def rangayyan_ch3_kurtosis(eta, mu_eta, sigma_eta, p_eta):
+def pdfkurt(pdf=None, x=None, lower=-inf, upper=inf):
+    """Normalized fourth central moment of a PDF.
+
+    Rangayyan (2024) eq. (3.5):
+        K = (1/sigma^4) integral (eta - mu)^4 p(eta) d eta.
+
+    The book states the Gaussian value is 3 and defines the kurtosis
+    excess K' = K - 3, positive for a strongly peaked heavy-tailed
+    density and negative for a near-uniform one; both are returned.
     """
-    Kurtosis as the normalized fourth central moment of the PDF.
+    mass = pdfint(lambda v: 1.0, pdf, x, lower, upper)
+    mu = pdfint(lambda v: v, pdf, x, lower, upper)
+    var = pdfint(lambda v: (v - mu) ** 2, pdf, x, lower, upper)
+    sd = sqrt(var)
+    if sd <= 0:
+        raise ValueError("kurtosis is undefined for a degenerate density")
+    m4 = pdfint(lambda v: (v - mu) ** 4, pdf, x, lower, upper)
+    k = float(m4 / sd ** 4)
+    out = {"kurtosis": k, "excess": k - 3.0, "m4": float(m4),
+           "sd": float(sd), "mean": float(mu),
+           "method": "Rangayyan (2024) eq. (3.5)"}
+    out.update(checkpdf(mass))
+    return RichResult(payload=out)
 
-    Formula: K_eta = (1/sigma_eta^4) * integral_{-inf}^{inf} (eta - mu_eta)^4 * p_eta(eta) d(eta)
 
-    Parameters
-    ----------
-    eta : array-like
-        Input data.
-    mu_eta : array-like
-        Input data.
-    sigma_eta : array-like
-        Input data.
-    p_eta : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.5, p. 94
-    """
-    eta = np.atleast_1d(np.asarray(eta, dtype=float))
-    n = len(eta)
-    result = float(np.mean(eta))
-    se = float(np.std(eta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Kurtosis as the normalized fourth central moment of the PDF.",
-        }
-    )
+rangayyan_ch3_kurtosis = pdfkurt  # pre-policy spelling
 
 
 def cheatsheet():
-    return "rng005: Kurtosis as the normalized fourth central moment of the PDF."
+    return "rng005: kurtosis of a PDF, Rangayyan eq. (3.5)"

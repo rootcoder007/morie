@@ -1,42 +1,33 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Sample mean."""
+"""Sample mean of an observed signal (Rangayyan eq. 3.7)."""
 
-from . import _array_core as np
 
+from math import fsum
+
+from ._rgcore import aslist
 from ._richresult import RichResult
 
-__all__ = ["rangayyan_ch3_sample_mean"]
+__all__ = ["smean", "rangayyan_ch3_sample_mean"]
 
 
-def rangayyan_ch3_sample_mean(eta, N=None):
-    r"""Sample mean of a noise process (Rangayyan Ch. 3):
+def smean(x):
+    """Sample mean of N observed values.
 
-    .. math:: \mu_\eta = \frac1N \sum_{n=0}^{N-1} \eta(n).
+    Rangayyan (2024) eq. (3.7):  mu = (1/N) sum_{n=0}^{N-1} eta(n).
 
-    Parameters
-    ----------
-    eta : array-like
-        Signal or noise samples.
-    N : int, optional
-        Length; taken from the data.
-
-    Returns
-    -------
-    RichResult
-        keys: ``mean``, ``N``, ``method``.
-    References
-    ----------
-    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
-    Wiley-IEEE Press. Ch. 3.
+    The book calls this the DC component of the signal.  Summed with
+    math.fsum so the result does not depend on the order of the samples.
     """
-    eta = np.asarray(eta, dtype=float).ravel()
-    if eta.size < 1:
-        raise ValueError("eta must be non-empty.")
-    if N is not None and int(N) != eta.size:
-        raise ValueError(f"N = {N} does not match len(eta) = {eta.size}.")
-    return RichResult(payload={"mean": float(np.mean(eta)), "N": int(eta.size),
-                               "method": "mu_eta = (1/N) sum eta(n)"})
+    xs = aslist(x)
+    n = len(xs)
+    if n == 0:
+        raise ValueError("need at least one sample")
+    return RichResult(payload={"mean": fsum(xs) / n, "n": n,
+                               "method": "Rangayyan (2024) eq. (3.7)"})
+
+
+rangayyan_ch3_sample_mean = smean  # pre-policy spelling
 
 
 def cheatsheet():
-    return "rng007: sample mean of the noise process"
+    return "rng007: sample mean, Rangayyan eq. (3.7)"
