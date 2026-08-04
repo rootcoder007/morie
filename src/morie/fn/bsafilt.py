@@ -7,9 +7,11 @@ symbols are unchanged.
 """
 
 from __future__ import annotations
+from math import atan, ceil, tan
 from math import atan2, cos, exp, fsum, pi, sin
 from math import fsum
 from math import fsum, log
+from math import log10
 from . import _array_core as np
 from . import _stats_core as stats
 from ._rgcore import aslist
@@ -18,25 +20,39 @@ from ._richresult import RichResult, with_describe_pointer
 from ._sci_core import integrate
 
 __all__ = [
+    'bwhp',
     'rangayyan_butterworth_hp',
+    'bwlp',
     'rangayyan_butterworth_lp',
+    'comb',
     'rangayyan_comb_filter',
+    'diff1',
     'rangayyan_first_diff',
+    'diff2',
     'rangayyan_second_diff',
     'rangayyan_fir_filter',
+    'freqresp',
     'rangayyan_freq_response',
+    'grpdelay',
     'rangayyan_group_delay',
     'rangayyan_iir_filter',
     'rangayyan_moving_average',
+    'notch',
     'rangayyan_notch_filter',
     'osfilt',
     'rangayyan_order_stat_flt',
+    'phaseresp',
     'rangayyan_phase_response',
+    'sinckern',
     'rangayyan_sinc_kernel',
     'rangayyan_transfer_func_est',
+    'blackman',
     'rangayyan_blackman_window',
+    'hamming',
     'rangayyan_hamming_window',
+    'hannwin',
     'rangayyan_hann_window',
+    'windowfn',
     'rangayyan_window_functions',
     'shannon',
     'rangayyan_ch3_shannon_entropy_discrete',
@@ -81,47 +97,97 @@ __all__ = [
     'hannph',
     'rangayyan_ch3_hann_phase_response',
     'rangayyan_ch3_ma_8point',
+    'ma8imp',
     'rangayyan_ch3_ma_8point_impulse_response',
+    'ma8tf',
     'rangayyan_ch3_ma_8point_transfer_function',
+    'ma8fr',
     'rangayyan_ch3_ma_8point_frequency_response',
+    'runint',
     'rangayyan_ch3_running_integral_window',
+    'runintall',
     'rangayyan_ch3_integral_general',
     'rangayyan_ch3_integral_causal',
+    'intft',
     'rangayyan_ch3_fourier_of_integral',
+    'intfr',
     'rangayyan_ch3_integrator_frequency_response',
+    'intmag',
     'rangayyan_ch3_integrator_magnitude_response',
+    'intph',
     'rangayyan_ch3_integrator_phase_response',
+    'ma8rec',
     'rangayyan_ch3_ma_8point_recursive',
+    'ma8rectf',
     'rangayyan_ch3_ma_8point_recursive_transfer_function',
+    'ma8sinc',
     'rangayyan_ch3_ma_8point_sinc_frequency_response',
+    'fdiff',
     'rangayyan_ch3_first_difference_operator',
+    'fdifftf',
     'rangayyan_ch3_first_difference_transfer_function',
+    'fdifffr',
     'rangayyan_ch3_first_difference_frequency_response',
+    'fdiffmag',
     'rangayyan_ch3_first_difference_magnitude',
+    'fdiffph',
     'rangayyan_ch3_first_difference_phase',
+    'cdiff3',
     'rangayyan_ch3_three_point_central_difference',
+    'cdiff3tf',
     'rangayyan_ch3_three_point_central_diff_transfer_function',
+    'cdiff3mag',
     'rangayyan_ch3_three_point_central_diff_magnitude',
+    'cdiff3ph',
     'rangayyan_ch3_three_point_central_diff_phase',
+    'bwander',
     'rangayyan_ch3_baseline_wander_filter_z_form_a',
+    'bwanderz',
     'rangayyan_ch3_baseline_wander_filter_z_form_b',
+    'bwandereq',
     'rangayyan_ch3_baseline_wander_filter_difference_eq',
+    'bwsqmag',
     'rangayyan_ch3_butterworth_lowpass_squared_magnitude',
+    'bwsqlap',
     'rangayyan_ch3_butterworth_squared_laplace',
+    'bwpoles',
     'rangayyan_ch3_butterworth_pole_positions',
+    'bwanalog',
     'rangayyan_ch3_butterworth_analog_transfer_function',
+    'bilinear',
     'rangayyan_ch3_bilinear_transformation',
+    'bilinunit',
     'rangayyan_ch3_bilinear_unit_circle_relation',
+    'bilinwarp',
     'rangayyan_ch3_bilinear_warping_omega_to_Omega',
+    'bilinunwarp',
     'rangayyan_ch3_bilinear_warping_Omega_to_omega',
+    'bwdigital',
     'rangayyan_ch3_butterworth_digital_transfer_function',
+    'iirdiffgen',
     'rangayyan_ch3_iir_difference_eq_general',
+    'bwdirect',
     'rangayyan_ch3_butterworth_lowpass_direct_specification',
+    'bwlpdft',
     'rangayyan_ch3_butterworth_lowpass_dft_indexed',
+    'bwhpdft',
     'rangayyan_ch3_butterworth_highpass_dft_indexed',
+    'notch60',
     'rangayyan_ch3_notch_filter_60Hz',
+    'mfilth',
     'rangayyan_ch4_matched_filter_h_example',
 ]
+
+def _poly_from_roots(roots):
+    """Expand prod (z - r_k) into ascending-power coefficients."""
+    coefs = [complex(1.0, 0.0)]
+    for r in roots:
+        nxt = [complex(0.0, 0.0)] * (len(coefs) + 1)
+        for i, c in enumerate(coefs):
+            nxt[i] += -complex(r) * c
+            nxt[i + 1] += c
+        coefs = nxt
+    return coefs
 
 def _cnum(v):
     """Accept a real or complex scalar and return a complex."""
@@ -144,169 +210,203 @@ def _polyz(coefs, z):
 
 
 # -- rgbhp: Butterworth highpass filter design.
-def rangayyan_butterworth_hp(cutoff_hz, order, fs):
+def bwhp(cutoff_hz, order=4, fs=1000.0, z=None):
+    """Butterworth highpass design.
+
+    The lowpass poles are reused -- a Butterworth highpass has the same
+    pole radius -- and the N zeros are moved from z = -1 to z = +1, which
+    is the lowpass-to-highpass reflection of the unit circle.  The gain is
+    then renormalized at NYQUIST rather than at DC, since a highpass has
+    no gain at DC to normalize against; normalizing at DC would divide by
+    zero.
     """
-    Butterworth highpass filter design
+    fsv = float(fs)
+    fcv = float(cutoff_hz)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    if not 0 < fcv < fsv / 2.0:
+        raise ValueError("the cutoff must lie strictly between 0 and the "
+                         "Nyquist frequency %g Hz" % (fsv / 2.0))
+    n = int(order)
+    lp = bwdigital(N=n, fc=fcv, fs=fsv)
+    a = list(lp["a"])
+    num = [c.real for c in _poly_from_roots([1.0] * n)]
+    b = list(reversed(num))
+    # normalize at z = -1, the Nyquist point
+    nyq_num = fsum(b[k] * ((-1.0) ** k) for k in range(len(b)))
+    nyq_den = fsum(a[k] * ((-1.0) ** k) for k in range(len(a)))
+    if abs(nyq_num) <= 1e-300:
+        raise ValueError("the numerator vanishes at Nyquist")
+    G = nyq_den / nyq_num
+    b = [G * v for v in b]
+    Hz = None
+    if z is not None:
+        scalar = not isinstance(z, (list, tuple))
+        zs = [z] if scalar else list(z)
+        vals = []
+        for zv in zs:
+            dd = _polyz(a, zv)
+            if abs(dd) <= 1e-300:
+                raise ValueError("z is a pole of H(z)")
+            vals.append(_polyz(b, zv) / dd)
+        Hz = vals[0] if scalar else vals
+    return RichResult(payload={
+        "b": b, "a": a, "gain": G, "H": Hz, "N": n,
+        "cutoff_hz": fcv, "fs": fsv, "order": n, "kind": "highpass",
+        "zeros_at_plus_one": n, "dc_gain": 0.0, "nyquist_gain": 1.0,
+        "prewarped": True, "normalized_at_nyquist": True,
+        "method": "Rangayyan (2024) Section 3.7; Butterworth highpass"})
 
-    Formula: LPF to HPF via spectral inversion: Omega -> Omega_c^2/Omega
 
-    Parameters
-    ----------
-    cutoff_hz : array-like
-        Input data.
-    order : array-like
-        Input data.
-    fs : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: b, a
-
-    References
-    ----------
-    Rangayyan Ch 3.7.2
-    """
-    cutoff_hz = np.asarray(cutoff_hz, dtype=float)
-    n = int(cutoff_hz) if cutoff_hz.ndim == 0 else len(cutoff_hz)
-    result = float(np.mean(cutoff_hz))
-    se = float(np.std(cutoff_hz, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Butterworth highpass filter design"})
+rangayyan_butterworth_hp = bwhp  # pre-policy spelling
 
 
 # -- rgblp: Butterworth lowpass filter design (analog prototype to digital).
-def rangayyan_butterworth_lp(cutoff_hz, order, fs):
+def bwlp(cutoff_hz, order=4, fs=1000.0, z=None):
+    """Butterworth lowpass design, analog prototype to digital.
+
+    Runs the book's route end to end: prewarp the cutoff by eq. (3.141),
+    place the poles by eq. (3.137), keep the left-half-plane ones by
+    eq. (3.138), and apply the bilinear transform of eq. (3.139) to reach
+    the digital form of eq. (3.143).
+
+    The prewarping is done here rather than left to the caller.  Without
+    it the realized cutoff sits below the one requested, and the error
+    grows as the cutoff approaches Nyquist -- at f_s/4 it is already
+    several per cent.
     """
-    Butterworth lowpass filter design (analog prototype to digital)
+    fsv = float(fs)
+    fcv = float(cutoff_hz)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    if not 0 < fcv < fsv / 2.0:
+        raise ValueError("the cutoff must lie strictly between 0 and the "
+                         "Nyquist frequency %g Hz" % (fsv / 2.0))
+    r = bwdigital(N=int(order), fc=fcv, fs=fsv, z=z)
+    out = dict(r)
+    out.update({
+        "cutoff_hz": fcv, "fs": fsv, "order": int(order),
+        "prewarped": True, "kind": "lowpass",
+        "method": "Rangayyan (2024) eqs. (3.135)-(3.143); Butterworth "
+                  "lowpass via the bilinear transform"})
+    return RichResult(payload=out)
 
-    Formula: |H(Omega)|^2 = 1 / (1 + (Omega/Omega_c)^{2N}); bilinear transform to digital
 
-    Parameters
-    ----------
-    cutoff_hz : array-like
-        Input data.
-    order : array-like
-        Input data.
-    fs : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: b, a
-
-    References
-    ----------
-    Rangayyan Ch 3.7.1
-    """
-    cutoff_hz = np.asarray(cutoff_hz, dtype=float)
-    n = int(cutoff_hz) if cutoff_hz.ndim == 0 else len(cutoff_hz)
-    result = float(np.mean(cutoff_hz))
-    se = float(np.std(cutoff_hz, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Butterworth lowpass filter design (analog prototype to digital)",
-        }
-    )
+rangayyan_butterworth_lp = bwlp  # pre-policy spelling
 
 
 # -- rgcomb: Comb filter for periodic artifact removal.
-def rangayyan_comb_filter(period_samples, fs):
+def comb(period_samples, fs=1000.0, z=None):
+    """Comb filter for periodic artifact removal.
+
+        H(z) = (1/2) ( 1 - z^-N )
+
+    N zeros spaced evenly round the unit circle, so the filter notches
+    DC AND every harmonic of f_s/N at once -- which is exactly what
+    powerline interference is, a fundamental plus its harmonics, and why
+    one comb does the work of a bank of notches.
+
+    The zero at DC is not optional: 1 - z^-N always vanishes at z = 1, so
+    a comb removes the mean along with the interference.  If the baseline
+    must be kept, the DC zero has to be cancelled by a pole.
     """
-    Comb filter for periodic artifact removal
+    N = int(period_samples)
+    if N < 1:
+        raise ValueError("the period must be at least one sample")
+    fsv = float(fs)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    b = [0.0] * (N + 1)
+    b[0] = 0.5
+    b[N] = -0.5
+    Hz = None
+    if z is not None:
+        scalar = not isinstance(z, (list, tuple))
+        zs = [z] if scalar else list(z)
+        vals = [_polyz(b, zv) for zv in zs]
+        Hz = vals[0] if scalar else vals
+    notches = [k * fsv / N for k in range(N // 2 + 1)]
+    return RichResult(payload={
+        "b": b, "a": [1.0], "H": Hz, "period_samples": N, "fs": fsv,
+        "notch_frequencies_hz": notches, "n_zeros": N,
+        "notch_spacing_hz": fsv / N, "dc_gain": 0.0,
+        "removes_dc_as_well": True, "fir": True, "linear_phase": True,
+        "method": "Rangayyan (2024) Section 3.7 (comb filter)"})
 
-    Formula: H(z) = 1 - z^{-N}; notches at multiples of fs/N
 
-    Parameters
-    ----------
-    period_samples : array-like
-        Input data.
-    fs : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: b, a
-
-    References
-    ----------
-    Rangayyan Ch 3.7.3
-    """
-    period_samples = np.asarray(period_samples, dtype=float)
-    n = int(period_samples) if period_samples.ndim == 0 else len(period_samples)
-    result = float(np.mean(period_samples))
-    se = float(np.std(period_samples, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Comb filter for periodic artifact removal"}
-    )
+rangayyan_comb_filter = comb  # pre-policy spelling
 
 
 # -- rgfd1: First-difference operator for baseline wander removal.
-def rangayyan_first_diff(x):
+def diff1(x, T=1.0):
+    """First difference applied to a record, for baseline removal.
+
+        y(n) = x(n) - x(n-1)
+
+    The operator of eq. (3.123) run over data, with the frequency
+    response reported alongside so its highpass character is visible:
+    it removes the wandering baseline, but it also boosts high-frequency
+    noise, and eq. (3.132) is the book's remedy for that.
     """
-    First-difference operator for baseline wander removal
+    r = fdiff(x, T=T)
+    out = dict(r)
+    out.update({
+        "b": [1.0 / float(T), -1.0 / float(T)], "a": [1.0],
+        "zeros": [1.0], "highpass": True,
+        "use_bwander_to_avoid_the_noise_boost": True,
+        "method": "Rangayyan (2024) eq. (3.123) applied to a record"})
+    return RichResult(payload=out)
 
-    Formula: y[n] = x[n] - x[n-1]; H(f) = 1 - exp(-j2*pi*f*T)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: y
-
-    References
-    ----------
-    Rangayyan Ch 3.6.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "First-difference operator for baseline wander removal",
-        }
-    )
+rangayyan_first_diff = diff1  # pre-policy spelling
 
 
 # -- rgfd2: Second-difference operator.
-def rangayyan_second_diff(x):
+def diff2(x, T=1.0, n=None):
+    """Second-order difference operator.
+
+        y(n) = x(n) - 2 x(n-1) + x(n-2)
+
+    The book notes the second-order derivative has frequency response
+    (jw)(jw) = -w^2, a QUADRATIC rise in gain with frequency, and that it
+    "may be realized as a cascade of two" first-order differences.  Both
+    the direct form and that cascade are computed here and compared.
+
+    The quadratic rise means it amplifies high-frequency noise far harder
+    than the first difference does -- useful only where the wanted
+    feature is itself sharp.
     """
-    Second-difference operator
+    xs = aslist(x)
+    if not xs:
+        raise ValueError("need at least one sample")
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    out = []
+    for i in range(len(xs)):
+        a = xs[i]
+        b = xs[i - 1] if i >= 1 else 0.0
+        c = xs[i - 2] if i >= 2 else 0.0
+        out.append((a - 2.0 * b + c) / (Tv * Tv))
+    cascade = fdiff(fdiff(xs, T=Tv)["y"], T=Tv)["y"]
+    gap = max(abs(p - q) for p, q in zip(out, cascade))
+    val = None
+    if n is not None:
+        idx = int(n)
+        if not 0 <= idx < len(out):
+            raise ValueError("n is outside the record")
+        val = out[idx]
+    return RichResult(payload={
+        "y": out, "value": val, "index": n, "T": Tv,
+        "as_cascaded_first_differences": cascade, "max_difference": gap,
+        "cascade_agrees": gap <= 1e-9,
+        "b": [1.0 / (Tv * Tv), -2.0 / (Tv * Tv), 1.0 / (Tv * Tv)],
+        "a": [1.0], "zeros": [1.0, 1.0], "double_zero_at_dc": True,
+        "gain_rises_quadratically": True,
+        "method": "Rangayyan (2024) Section 3.3.3 (second derivative)"})
 
-    Formula: y[n] = x[n] - 2*x[n-1] + x[n-2]
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: y
-
-    References
-    ----------
-    Rangayyan Ch 3.6.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Second-difference operator"})
+rangayyan_second_diff = diff2  # pre-policy spelling
 
 
 # -- rgfir: FIR filter design (windowed sinc) -- see rangayyan_fir_filter for sources.
@@ -433,76 +533,135 @@ def rangayyan_fir_filter(x, cutoff, order=51, fs=1.0, window="hamming"):
 
 
 # -- rgfresp: Frequency response H(f) of a digital filter from coefficients.
-def rangayyan_freq_response(b, a, fs, n_freqs):
+def freqresp(b, a=None, fs=1000.0, n_freqs=512):
+    """Frequency response of a digital filter from its coefficients.
+
+        H(f) = sum_k b_k exp(-j 2 pi f k / f_s)
+               / sum_k a_k exp(-j 2 pi f k / f_s)
+
+    Evaluated on a uniform grid from DC to NYQUIST inclusive -- the
+    one-sided response, since for real coefficients the other half is the
+    conjugate mirror and carries nothing new.
+
+    ``a`` follows the eq. (3.67) convention with a_0 = 1 included, which
+    is the form ``bwlp`` and ``bwhp`` return.
     """
-    Frequency response H(f) of a digital filter from coefficients
+    bs = aslist(b)
+    if not bs:
+        raise ValueError("need at least one numerator coefficient")
+    az = aslist(a) if a is not None else [1.0]
+    if not az:
+        raise ValueError("the denominator needs at least one coefficient")
+    if abs(az[0]) <= 1e-300:
+        raise ValueError("a_0 must not be zero")
+    fsv = float(fs)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    m = int(n_freqs)
+    if m < 2:
+        raise ValueError("need at least two frequency points")
+    freqs, H = [], []
+    for i in range(m):
+        f = 0.5 * fsv * i / (m - 1)
+        w = 2.0 * pi * f / fsv
+        num = sum(bs[k] * complex(cos(-w * k), sin(-w * k))
+                  for k in range(len(bs)))
+        den = sum(az[k] * complex(cos(-w * k), sin(-w * k))
+                  for k in range(len(az)))
+        if abs(den) <= 1e-300:
+            raise ValueError("the denominator vanishes at f = %g Hz; the "
+                             "filter has a pole on the unit circle" % f)
+        freqs.append(f)
+        H.append(num / den)
+    mag = [abs(v) for v in H]
+    return RichResult(payload={
+        "f": freqs, "H": H, "magnitude": mag,
+        "magnitude_db": [20.0 * log10(v) if v > 0 else float("-inf")
+                         for v in mag],
+        "phase": [atan2(v.imag, v.real) for v in H],
+        "fs": fsv, "n_freqs": m, "one_sided": True,
+        "includes_nyquist": True,
+        "method": "Rangayyan (2024) Section 3.5 (frequency response)"})
 
-    Formula: H(f) = sum b[k]*exp(-j2*pi*f*k) / sum a[k]*exp(-j2*pi*f*k)
 
-    Parameters
-    ----------
-    b : array-like
-        Input data.
-    a : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    n_freqs : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: H, freqs
-
-    References
-    ----------
-    Rangayyan Ch 3.4
-    """
-    b = np.asarray(b, dtype=float)
-    n = int(b) if b.ndim == 0 else len(b)
-    result = float(np.mean(b))
-    se = float(np.std(b, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Frequency response H(f) of a digital filter from coefficients",
-        }
-    )
+rangayyan_freq_response = freqresp  # pre-policy spelling
 
 
 # -- rggrpd: Group delay of a digital filter.
-def rangayyan_group_delay(b, a, fs):
+def grpdelay(b, a=None, fs=1000.0, n_freqs=512):
+    """Group delay of a digital filter.
+
+        tau_g(f) = - d(phase) / d(omega)
+
+    Computed from the COEFFICIENTS rather than by differentiating a
+    numerical phase curve:
+
+        tau_g = Re[ sum_k k b_k e^-jwk / sum_k b_k e^-jwk ]
+                - Re[ sum_k k a_k e^-jwk / sum_k a_k e^-jwk ]
+
+    Differentiating the phase is the obvious route and it is wrong at any
+    zero on the unit circle, where the phase steps by PI.  That step is
+    real, not a branch-cut artifact, so unwrapping -- which only ever
+    removes multiples of 2 pi -- leaves it in place and the derivative
+    reports a spike.  A three-point moving average has such a zero at
+    w = 2 pi / 3, and differentiating its phase gives a mean group delay
+    near zero instead of the correct 1.
+
+    The delay is undefined wherever the numerator or denominator
+    vanishes; those points are returned as None and marked, not filled
+    in.
     """
-    Group delay of a digital filter
+    bs = aslist(b)
+    if not bs:
+        raise ValueError("need at least one numerator coefficient")
+    az = aslist(a) if a is not None else [1.0]
+    if not az:
+        raise ValueError("the denominator needs at least one coefficient")
+    fsv = float(fs)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    m = int(n_freqs)
+    if m < 2:
+        raise ValueError("need at least two frequency points")
 
-    Formula: tau_g(f) = -d(angle(H(f)))/d(omega)
+    def ratio(coefs, w):
+        num = sum(k * coefs[k] * complex(cos(-w * k), sin(-w * k))
+                  for k in range(len(coefs)))
+        den = sum(coefs[k] * complex(cos(-w * k), sin(-w * k))
+                  for k in range(len(coefs)))
+        return num, den
 
-    Parameters
-    ----------
-    b : array-like
-        Input data.
-    a : array-like
-        Input data.
-    fs : array-like
-        Input data.
+    freqs, tau, defined = [], [], []
+    for i in range(m):
+        f = 0.5 * fsv * i / (m - 1)
+        w = 2.0 * pi * f / fsv
+        bn, bd = ratio(bs, w)
+        an, ad = ratio(az, w)
+        freqs.append(f)
+        if abs(bd) <= 1e-12 or abs(ad) <= 1e-12:
+            tau.append(None)
+            defined.append(False)
+        else:
+            tau.append((bn / bd).real - (an / ad).real)
+            defined.append(True)
+    good = [v for v in tau if v is not None]
+    if not good:
+        raise ValueError("the response vanishes at every frequency "
+                         "evaluated; the group delay is undefined")
+    mu = fsum(good) / len(good)
+    spread = max(abs(v - mu) for v in good)
+    return RichResult(payload={
+        "f": freqs, "group_delay": tau, "fs": fsv,
+        "mean": mu, "max_deviation": spread,
+        "approximately_constant": spread <= 1e-9 * max(1.0, abs(mu)),
+        "defined": defined,
+        "n_undefined": sum(1 for v in defined if not v),
+        "from_the_coefficients": True,
+        "phase_differentiation_breaks_at_unit_circle_zeros": True,
+        "method": "Rangayyan (2024) Section 3.5 (group delay)"})
 
-    Returns
-    -------
-    result : dict
-        Keys: group_delay, freqs
 
-    References
-    ----------
-    Rangayyan Ch 3.4
-    """
-    b = np.asarray(b, dtype=float)
-    n = int(b) if b.ndim == 0 else len(b)
-    result = float(np.mean(b))
-    se = float(np.std(b, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Group delay of a digital filter"})
+rangayyan_group_delay = grpdelay  # pre-policy spelling
 
 
 # -- rgiir: IIR Butterworth filter -- Rangayyan & Krishnan Sec 3.7.1 / 3.7.2.
@@ -630,42 +789,77 @@ def rangayyan_moving_average(x, M=8):
 
 
 # -- rgntch: Notch filter for powerline interference removal (50/60 Hz).
-def rangayyan_notch_filter(notch_freq, bandwidth, fs):
+def notch(notch_freq, bandwidth=None, fs=1000.0, r=None, z=None):
+    """Notch filter with two zeros and two poles.
+
+        H(z) = G (1 - 2cos(w_0) z^-1 + z^-2)
+                 / (1 - 2 r cos(w_0) z^-1 + r^2 z^-2)
+
+    The zeros sit ON the unit circle at the interference frequency and
+    the poles just inside at the same angle, radius r.  The poles are
+    what make the notch NARROW: without them the two zeros pull the
+    response down over a wide band, taking signal with them.
+
+    The bandwidth follows r as bw ~ (1 - r) f_s / pi, and either may be
+    given.  r must stay strictly inside the unit circle -- at r = 1 the
+    poles cancel the zeros and the filter does nothing at all.
     """
-    Notch filter for powerline interference removal (50/60 Hz)
+    fsv = float(fs)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    f0 = float(notch_freq)
+    if not 0 < f0 < fsv / 2.0:
+        raise ValueError("the notch frequency must lie strictly between 0 "
+                         "and the Nyquist frequency")
+    if (bandwidth is None) == (r is None):
+        raise ValueError("give either the bandwidth or the pole radius r, "
+                         "not both and not neither")
+    if bandwidth is not None:
+        bw = float(bandwidth)
+        if bw <= 0:
+            raise ValueError("the bandwidth must be positive")
+        rv = 1.0 - pi * bw / fsv
+        if rv <= 0:
+            raise ValueError("that bandwidth needs a pole radius <= 0; ask "
+                             "for a narrower notch")
+    else:
+        rv = float(r)
+        bw = (1.0 - rv) * fsv / pi
+    if not 0 < rv < 1:
+        raise ValueError("the pole radius must satisfy 0 < r < 1; at r = 1 "
+                         "the poles cancel the zeros")
+    w0 = 2.0 * pi * f0 / fsv
+    bb = [1.0, -2.0 * cos(w0), 1.0]
+    aa = [1.0, -2.0 * rv * cos(w0), rv * rv]
+    dcn = fsum(bb)
+    dcd = fsum(aa)
+    G = (dcd / dcn) if abs(dcn) > 1e-300 else 1.0
+    bb = [G * v for v in bb]
+    Hz = None
+    if z is not None:
+        scalar = not isinstance(z, (list, tuple))
+        zs = [z] if scalar else list(z)
+        vals = []
+        for zv in zs:
+            dd = _polyz(aa, zv)
+            if abs(dd) <= 1e-300:
+                raise ValueError("z is a pole of H(z)")
+            vals.append(_polyz(bb, zv) / dd)
+        Hz = vals[0] if scalar else vals
+    zc = complex(cos(w0), sin(w0))
+    return RichResult(payload={
+        "b": bb, "a": aa, "gain": G, "H": Hz,
+        "f0": f0, "fs": fsv, "r": rv, "bandwidth_hz": bw,
+        "omega_0": w0,
+        "zeros": [zc, zc.conjugate()],
+        "poles": [rv * zc, rv * zc.conjugate()],
+        "gain_at_the_notch": abs(_polyz(bb, zc)) / abs(_polyz(aa, zc)),
+        "dc_gain": 1.0, "iir": True,
+        "poles_narrow_the_notch": True,
+        "method": "Rangayyan (2024) Section 3.7 (notch filter with poles)"})
 
-    Formula: H(z) = (1 - 2cos(w0)*z^{-1} + z^{-2}) / (1 - 2*r*cos(w0)*z^{-1} + r^2*z^{-2})
 
-    Parameters
-    ----------
-    notch_freq : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
-    fs : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: b, a
-
-    References
-    ----------
-    Rangayyan Ch 3.7.3
-    """
-    notch_freq = np.asarray(notch_freq, dtype=float)
-    n = int(notch_freq) if notch_freq.ndim == 0 else len(notch_freq)
-    result = float(np.mean(notch_freq))
-    se = float(np.std(notch_freq, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Notch filter for powerline interference removal (50/60 Hz)",
-        }
-    )
+rangayyan_notch_filter = notch  # pre-policy spelling
 
 
 # -- rgosflt: Order-statistic (median) filter.
@@ -782,69 +976,106 @@ rangayyan_order_stat_flt = osfilt  # pre-policy spelling
 
 
 # -- rgphas: Phase response of a digital filter.
-def rangayyan_phase_response(b, a, fs):
+def phaseresp(b, a=None, fs=1000.0, n_freqs=512, unwrap=True):
+    """Phase response of a digital filter.
+
+        phi(f) = angle H(f)
+
+    The principal value jumps by 2 pi wherever it crosses the branch cut,
+    which is an artifact of the arctangent and not of the filter.  It is
+    unwrapped by default, because a wrapped phase makes a linear-phase
+    filter look nonlinear and makes the group delay meaningless.  Both
+    the wrapped and unwrapped curves are returned.
     """
-    Phase response of a digital filter
+    r = freqresp(b, a=a, fs=fs, n_freqs=n_freqs)
+    wrapped = list(r["phase"])
+    mag = r["magnitude"]
+    scale = max(mag) if mag else 0.0
+    # Where H vanishes the phase is undefined -- atan2(0, 0) returns 0,
+    # which is not a phase.  Those points are marked and skipped by the
+    # unwrap, which otherwise carries the bogus value into every later
+    # sample.  The Hann filter of eq. (3.100) hits this at Nyquist.
+    defined = [v > 1e-9 * scale for v in mag] if scale > 0 \
+        else [False] * len(mag)
+    unw, last = [], None
+    for i in range(len(wrapped)):
+        if not defined[i]:
+            unw.append(unw[-1] if unw else wrapped[i])
+            continue
+        if last is None:
+            unw.append(wrapped[i])
+        else:
+            d = wrapped[i] - wrapped[last]
+            while d > pi:
+                d -= 2.0 * pi
+            while d < -pi:
+                d += 2.0 * pi
+            unw.append(unw[last] + d)
+        last = i
+    return RichResult(payload={
+        "f": r["f"], "phase": unw if unwrap else wrapped,
+        "wrapped": wrapped, "unwrapped": unw, "unwrap": bool(unwrap),
+        "fs": r["fs"], "defined": defined,
+        "n_undefined": sum(1 for v in defined if not v),
+        "phase_undefined_where_the_response_vanishes": True,
+        "wrapping_is_an_arctangent_artifact": True,
+        "method": "Rangayyan (2024) Section 3.5 (phase response)"})
 
-    Formula: phi(f) = angle(H(f)) = arctan(Im(H)/Re(H))
 
-    Parameters
-    ----------
-    b : array-like
-        Input data.
-    a : array-like
-        Input data.
-    fs : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: phase, freqs
-
-    References
-    ----------
-    Rangayyan Ch 3.4
-    """
-    b = np.asarray(b, dtype=float)
-    n = int(b) if b.ndim == 0 else len(b)
-    result = float(np.mean(b))
-    se = float(np.std(b, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Phase response of a digital filter"})
+rangayyan_phase_response = phaseresp  # pre-policy spelling
 
 
 # -- rgsinc: Ideal sinc (low-pass) filter impulse response.
-def rangayyan_sinc_kernel(fc, fs, M):
+def sinckern(fc, fs=1000.0, M=64, window=None):
+    """Ideal lowpass (sinc) impulse response.
+
+        h(n) = 2 (f_c/f_s) sinc( 2 (f_c/f_s) (n - M/2) )
+
+    The inverse transform of a rectangular passband, truncated to M + 1
+    taps and delayed by M/2 to make it causal.  The truncation is the
+    catch: cutting a sinc off abruptly is multiplying it by a rectangle,
+    whose transform has slowly decaying sidelobes, so the realized
+    stopband ripples.  That is Gibbs' phenomenon and it does not improve
+    with M -- only the ripples' width shrinks, not their height.
+
+    Supplying a ``window`` tapers the truncation and fixes it, which is
+    what Section 3.4's windows are for.
     """
-    Ideal sinc (low-pass) filter impulse response
+    fsv = float(fs)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    fcv = float(fc)
+    if not 0 < fcv < fsv / 2.0:
+        raise ValueError("the cutoff must lie strictly between 0 and the "
+                         "Nyquist frequency")
+    m = int(M)
+    if m < 1:
+        raise ValueError("M must be at least 1")
+    ratio = 2.0 * fcv / fsv
+    h = []
+    for n in range(m + 1):
+        t = n - m / 2.0
+        if abs(t) <= 1e-12:
+            h.append(ratio)
+        else:
+            h.append(ratio * sin(pi * ratio * t) / (pi * ratio * t))
+    win = None
+    if window is not None:
+        win = windowfn(m + 1, window)["w"]
+        h = [a * b for a, b in zip(h, win)]
+    total = fsum(h)
+    if abs(total) > 1e-300:
+        h = [v / total for v in h]
+    return RichResult(payload={
+        "h": h, "n_taps": m + 1, "fc": fcv, "fs": fsv, "M": m,
+        "window": window, "window_values": win,
+        "delay_samples": m / 2.0, "dc_gain": 1.0,
+        "truncation_causes_gibbs_ripple": window is None,
+        "ripple_height_does_not_shrink_with_M": True,
+        "method": "Rangayyan (2024) Section 3.4 (windowed sinc)"})
 
-    Formula: h[n] = 2*fc/fs * sinc(2*pi*fc*(n-M/2)/fs)
 
-    Parameters
-    ----------
-    fc : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    M : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: h
-
-    References
-    ----------
-    Rangayyan Ch 3
-    """
-    fc = np.asarray(fc, dtype=float)
-    n = int(fc) if fc.ndim == 0 else len(fc)
-    result = float(np.mean(fc))
-    se = float(np.std(fc, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Ideal sinc (low-pass) filter impulse response"}
-    )
+rangayyan_sinc_kernel = sinckern  # pre-policy spelling
 
 
 # -- rgtfe: Transfer function estimate.
@@ -917,124 +1148,147 @@ def rangayyan_transfer_func_est(x, y, fs=1.0, nperseg=None):
 
 
 # -- rgwblkm: Blackman window function.
-def rangayyan_blackman_window(N):
+def blackman(N):
+    """Blackman window.
+
+        w(n) = 0.42 - 0.5 cos(2 pi n/(N-1)) + 0.08 cos(4 pi n/(N-1))
+
+    A third cosine term buys much deeper sidelobes than the Hamming --
+    about -58 dB -- at the cost of a main lobe half again as wide.  That
+    is the standing trade: resolution against leakage, and no window
+    escapes it.
     """
-    Blackman window function
+    n = int(N)
+    if n < 1:
+        raise ValueError("N must be at least 1")
+    if n == 1:
+        return RichResult(payload={
+            "w": [1.0], "N": 1, "sum": 1.0, "endpoints": [1.0, 1.0],
+            "method": "Rangayyan (2024) Section 3.4 (Blackman window)"})
+    w = [0.42 - 0.5 * cos(2.0 * pi * i / (n - 1))
+         + 0.08 * cos(4.0 * pi * i / (n - 1)) for i in range(n)]
+    return RichResult(payload={
+        "w": w, "N": n, "sum": fsum(w),
+        "endpoints": [w[0], w[-1]],
+        "coherent_gain": fsum(w) / n,
+        "widest_main_lobe_of_the_three": True,
+        "resolution_traded_for_leakage": True,
+        "symmetric": all(abs(w[i] - w[n - 1 - i]) < 1e-12
+                         for i in range(n)),
+        "method": "Rangayyan (2024) Section 3.4 (Blackman window)"})
 
-    Formula: w[n] = 0.42 - 0.5*cos(2*pi*n/(N-1)) + 0.08*cos(4*pi*n/(N-1))
 
-    Parameters
-    ----------
-    N : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: window
-
-    References
-    ----------
-    Rangayyan Ch 6.3.4
-    """
-    N = np.asarray(N, dtype=float)
-    n = int(N) if N.ndim == 0 else len(N)
-    result = float(np.mean(N))
-    se = float(np.std(N, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Blackman window function"})
+rangayyan_blackman_window = blackman  # pre-policy spelling
 
 
 # -- rgwhamp: Hamming window function.
-def rangayyan_hamming_window(N):
+def hamming(N):
+    """Hamming window.
+
+        w(n) = 0.54 - 0.46 cos( 2 pi n / (N-1) ),   0 <= n <= N-1
+
+    The 0.54/0.46 split is chosen to cancel the largest sidelobe of the
+    rectangle, which buys about -43 dB of sidelobe suppression at the
+    cost of a wider main lobe than the Hann.  It does NOT reach zero at
+    the ends -- w(0) = w(N-1) = 0.08 -- which is the difference from the
+    Hann and matters when windows are overlapped and added.
     """
-    Hamming window function
+    n = int(N)
+    if n < 1:
+        raise ValueError("N must be at least 1")
+    if n == 1:
+        return RichResult(payload={
+            "w": [1.0], "N": 1, "sum": 1.0, "endpoints": [1.0, 1.0],
+            "reaches_zero_at_the_ends": False,
+            "method": "Rangayyan (2024) Section 3.4 (Hamming window)"})
+    w = [0.54 - 0.46 * cos(2.0 * pi * i / (n - 1)) for i in range(n)]
+    return RichResult(payload={
+        "w": w, "N": n, "sum": fsum(w),
+        "endpoints": [w[0], w[-1]],
+        "reaches_zero_at_the_ends": False,
+        "coherent_gain": fsum(w) / n,
+        "symmetric": all(abs(w[i] - w[n - 1 - i]) < 1e-12
+                         for i in range(n)),
+        "method": "Rangayyan (2024) Section 3.4 (Hamming window)"})
 
-    Formula: w[n] = 0.54 - 0.46*cos(2*pi*n/(N-1)), 0 <= n <= N-1
 
-    Parameters
-    ----------
-    N : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: window
-
-    References
-    ----------
-    Rangayyan Ch 6.3.4
-    """
-    N = np.asarray(N, dtype=float)
-    n = int(N) if N.ndim == 0 else len(N)
-    result = float(np.mean(N))
-    se = float(np.std(N, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hamming window function"})
+rangayyan_hamming_window = hamming  # pre-policy spelling
 
 
 # -- rgwhann: Hann (Hanning) window function.
-def rangayyan_hann_window(N):
+def hannwin(N):
+    """Hann (Hanning) window.
+
+        w(n) = 0.5 [ 1 - cos( 2 pi n / (N-1) ) ]
+
+    Reaches exactly zero at both ends, so overlapped Hann windows add to
+    a constant at 50 per cent overlap -- the property that makes it the
+    default for overlap-add analysis.  Its sidelobes fall off faster than
+    the Hamming's even though the first one is higher.
+
+    Not to be confused with the Hann FILTER of eq. (3.100), which is a
+    three-tap 1:2:1 smoother; this is a taper applied to a data segment.
     """
-    Hann (Hanning) window function
+    n = int(N)
+    if n < 1:
+        raise ValueError("N must be at least 1")
+    if n == 1:
+        return RichResult(payload={
+            "w": [1.0], "N": 1, "sum": 1.0, "endpoints": [1.0, 1.0],
+            "reaches_zero_at_the_ends": False,
+            "method": "Rangayyan (2024) Section 3.4 (Hann window)"})
+    w = [0.5 * (1.0 - cos(2.0 * pi * i / (n - 1))) for i in range(n)]
+    return RichResult(payload={
+        "w": w, "N": n, "sum": fsum(w),
+        "endpoints": [w[0], w[-1]],
+        "reaches_zero_at_the_ends": True,
+        "coherent_gain": fsum(w) / n,
+        "not_the_hann_filter_of_eq_3_100": True,
+        "symmetric": all(abs(w[i] - w[n - 1 - i]) < 1e-12
+                         for i in range(n)),
+        "method": "Rangayyan (2024) Section 3.4 (Hann window)"})
 
-    Formula: w[n] = 0.5*(1 - cos(2*pi*n/(N-1)))
 
-    Parameters
-    ----------
-    N : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: window
-
-    References
-    ----------
-    Rangayyan Ch 6.3.4
-    """
-    N = np.asarray(N, dtype=float)
-    n = int(N) if N.ndim == 0 else len(N)
-    result = float(np.mean(N))
-    se = float(np.std(N, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hann (Hanning) window function"})
+rangayyan_hann_window = hannwin  # pre-policy spelling
 
 
 # -- rgwndw: Window functions: Hamming, Hann, Blackman for spectral leakage control.
-def rangayyan_window_functions(N, window_type):
+def windowfn(N, window_type="hamming"):
+    """Window functions for spectral leakage control, Section 3.4.
+
+    One entry point for the rectangular, Hann, Hamming and Blackman
+    windows.  Truncating a record is multiplying it by a rectangle, and
+    the rectangle's transform has sidelobes that leak energy from strong
+    components into neighbouring bins; a tapered window trades a wider
+    main lobe for lower sidelobes.
+
+    The rectangular window is included because it IS the default -- doing
+    nothing is choosing it -- and naming it makes that choice explicit.
     """
-    Window functions: Hamming, Hann, Blackman for spectral leakage control
+    n = int(N)
+    if n < 1:
+        raise ValueError("N must be at least 1")
+    kinds = ("rectangular", "hann", "hamming", "blackman")
+    if window_type not in kinds:
+        raise ValueError("window_type must be one of %s, got %r"
+                         % (", ".join(kinds), window_type))
+    if window_type == "rectangular":
+        w = [1.0] * n
+        r = {"w": w, "N": n, "sum": float(n), "endpoints": [1.0, 1.0],
+             "coherent_gain": 1.0, "symmetric": True}
+    elif window_type == "hann":
+        r = dict(hannwin(n))
+    elif window_type == "hamming":
+        r = dict(hamming(n))
+    else:
+        r = dict(blackman(n))
+    r["window_type"] = window_type
+    r["doing_nothing_is_the_rectangular_window"] = True
+    r["method"] = "Rangayyan (2024) Section 3.4 (window functions)"
+    return RichResult(payload=r)
 
-    Formula: Hamming: w[n]=0.54-0.46*cos(2*pi*n/(N-1)); Hann: 0.5-0.5*cos(...)
 
-    Parameters
-    ----------
-    N : array-like
-        Input data.
-    window_type : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: window
-
-    References
-    ----------
-    Rangayyan Ch 6.3.4
-    """
-    N = np.asarray(N, dtype=float)
-    n = int(N) if N.ndim == 0 else len(N)
-    result = float(np.mean(N))
-    se = float(np.std(N, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Window functions: Hamming, Hann, Blackman for spectral leakage control",
-        }
-    )
+rangayyan_window_functions = windowfn  # pre-policy spelling
 
 
 # -- rng011: Shannon entropy of a discrete process (Rangayyan eq. 3.11).
@@ -1900,174 +2154,181 @@ def rangayyan_ch3_ma_8point(x, n=None):
 
 
 # -- rng098: Impulse response of the 8-point MA filter as a sum of shifted deltas..
-def rangayyan_ch3_ma_8point_impulse_response(n):
+def ma8imp(n=None):
+    """Impulse response of the 8-point MA filter, eq. (3.109).
+
+        h(n) = (1/8) [ delta(n) + delta(n-1) + ... + delta(n-7) ]
+
+    Eight equal taps.  Equal weighting is what makes the stopband
+    attenuation poor: the book notes the filter gives no more than about
+    -20 dB at most frequencies, which is why its result on a noisy ECG
+    (Figure 3.53) is still visibly noisy.
     """
-    Impulse response of the 8-point MA filter as a sum of shifted deltas.
+    taps = [0.125] * 8
+    val = None
+    if n is not None:
+        idx = int(n)
+        val = taps[idx] if 0 <= idx < 8 else 0.0
+    return RichResult(payload={
+        "h": taps, "value": val, "index": n, "n_taps": 8,
+        "sum": 1.0, "finite": True, "equal_weights": True,
+        "attenuation_is_poor": True,
+        "method": "Rangayyan (2024) eq. (3.109)"})
 
-    Formula: h(n) = (1/8) * [delta(n) + delta(n-1) + ... + delta(n-7)]
 
-    Parameters
-    ----------
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.109, p. 142
-    """
-    n = np.atleast_1d(np.asarray(n, dtype=float))
-    n = len(n)
-    result = float(np.mean(n))
-    se = float(np.std(n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Impulse response of the 8-point MA filter as a sum of shifted deltas.",
-        }
-    )
+rangayyan_ch3_ma_8point_impulse_response = ma8imp  # pre-policy spelling
 
 
 # -- rng099: Transfer function of the 8-point MA filter..
-def rangayyan_ch3_ma_8point_transfer_function(z):
+def ma8tf(z):
+    """Transfer function of the 8-point MA filter, eq. (3.110).
+
+        H(z) = (1/8) sum_{k=0}^{7} z^-k
+
+    Seven zeros spaced evenly round the unit circle, at every multiple of
+    f_s/8 except DC.  For f_s = 1000 Hz the book puts them at 125, 250,
+    375 and 500 Hz (with the negative-frequency conjugates), which is
+    what the notches in Figure 3.50 are.
     """
-    Transfer function of the 8-point MA filter.
+    scalar = not isinstance(z, (list, tuple))
+    zs = [z] if scalar else list(z)
+    H = [_polyz([0.125] * 8, zv) for zv in zs]
+    return RichResult(payload={
+        "H": H[0] if scalar else H, "z": z, "n_taps": 8,
+        "n_zeros": 7, "zeros_at_multiples_of_fs_over_8": True,
+        "dc_gain": 1.0, "always_stable": True,
+        "method": "Rangayyan (2024) eq. (3.110)"})
 
-    Formula: H(z) = (1/8) * sum_{k=0}^{7} z^(-k)
 
-    Parameters
-    ----------
-    z : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.110, p. 142
-    """
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Transfer function of the 8-point MA filter."}
-    )
+rangayyan_ch3_ma_8point_transfer_function = ma8tf  # pre-policy spelling
 
 
 # -- rng100: Frequency response of the 8-point MA filter..
-def rangayyan_ch3_ma_8point_frequency_response(omega):
+def ma8fr(omega):
+    """Frequency response of the 8-point MA filter, eq. (3.111).
+
+        H(w) = (1/8) sum_{k=0}^{7} exp(-j w k)
+             = (1/8) { 1 + exp(-j4w) [ 1 + 2cos(w) + 2cos(2w)
+                                       + 2cos(3w) ] }
+
+    The book's factored form is EXACT: the bracket is the sum over lags
+    -3..3, and multiplying it by exp(-j4w) shifts that to lags 1..7,
+    which with the leading 1 is the whole sum.  (The placeholder
+    docstring rendered it as a product of two brackets; that is a
+    different function and does not agree with the sum.)  Both forms are
+    computed here and compared.
     """
-    Frequency response of the 8-point MA filter.
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    direct, factored = [], []
+    for w in ws:
+        direct.append(0.125 * sum(complex(cos(-w * k), sin(-w * k))
+                                  for k in range(8)))
+        brack = 1.0 + 2.0 * cos(w) + 2.0 * cos(2.0 * w) + 2.0 * cos(3.0 * w)
+        factored.append(0.125 * (1.0 + complex(cos(-4.0 * w),
+                                               sin(-4.0 * w)) * brack))
+    gap = max(abs(a - b) for a, b in zip(direct, factored))
+    return RichResult(payload={
+        "H": direct[0] if scalar else direct,
+        "factored": factored[0] if scalar else factored,
+        "omega": omega,
+        "magnitude": abs(direct[0]) if scalar else [abs(v) for v in direct],
+        "max_difference": gap, "factored_form_agrees": gap <= 1e-12,
+        "bracket_is_inside_the_product": True,
+        "method": "Rangayyan (2024) eq. (3.111)"})
 
-    Formula: H(omega) = (1/8) * sum_{k=0}^{7} exp(-j*omega*k) = (1/8) * {1 + exp(-j*4*omega)} * {1 + 2*cos(omega) + 2*cos(2*omega) + 2*cos(3*omega)}
 
-    Parameters
-    ----------
-    omega : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: spectrum
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.111, p. 143
-    """
-    omega = np.atleast_1d(np.asarray(omega, dtype=float))
-    n = len(omega)
-    result = float(np.mean(omega))
-    se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Frequency response of the 8-point MA filter."}
-    )
+rangayyan_ch3_ma_8point_frequency_response = ma8fr  # pre-policy spelling
 
 
 # -- rng101: Continuous-time integral over a sliding window of duration tau..
-def rangayyan_ch3_running_integral_window(x, t, tau):
+def runint(x, t, tau):
+    """Running integral over a sliding window, eq. (3.112).
+
+        y(t) = integral_{t-tau}^{t} x(t) dt
+
+    The continuous-time counterpart of the moving-average sum: eq. (3.108)
+    is this integral discretized.  Evaluated by the trapezoidal rule on
+    the samples given, with the window clipped at the start of the record
+    -- the leading samples cover less than tau, and how many is reported
+    rather than left to be discovered from the output.
     """
-    Continuous-time integral over a sliding window of duration tau.
+    xs, ts = aslist(x), aslist(t)
+    if len(xs) != len(ts):
+        raise ValueError("x and t must have the same length")
+    if len(xs) < 2:
+        raise ValueError("need at least two samples to integrate")
+    if any(ts[i + 1] <= ts[i] for i in range(len(ts) - 1)):
+        raise ValueError("t must be strictly increasing")
+    tv = float(tau)
+    if tv <= 0:
+        raise ValueError("tau must be positive")
+    out, clipped = [], 0
+    for i in range(len(ts)):
+        lo = ts[i] - tv
+        if lo < ts[0]:
+            lo = ts[0]
+            clipped += 1
+        acc = 0.0
+        for j in range(i):
+            a, b = ts[j], ts[j + 1]
+            if b <= lo:
+                continue
+            fa, fb = xs[j], xs[j + 1]
+            if a < lo:                       # partial panel at the edge
+                fa = fa + (fb - fa) * (lo - a) / (b - a)
+                a = lo
+            acc += 0.5 * (fa + fb) * (b - a)
+        out.append(acc)
+    return RichResult(payload={
+        "y": out, "n": len(out), "tau": tv, "clipped_windows": clipped,
+        "trapezoidal": True,
+        "continuous_counterpart_of_the_ma_filter": True,
+        "method": "Rangayyan (2024) eq. (3.112)"})
 
-    Formula: y(t) = integral_{t-tau}^{t} x(t) dt
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    t : array-like
-        Input data.
-    tau : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.112, p. 143
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Continuous-time integral over a sliding window of duration tau.",
-        }
-    )
+rangayyan_ch3_running_integral_window = runint  # pre-policy spelling
 
 
 # -- rng102: General definition of running integral over (-inf, t]..
-def rangayyan_ch3_integral_general(x, t):
+def runintall(x, t):
+    """Running integral from minus infinity, eq. (3.113).
+
+        y(t) = integral_{-inf}^{t} x(t) dt
+
+    The general definition.  Over a finite record the lower limit is the
+    first sample, so what is returned is the cumulative integral from the
+    START OF THE RECORD -- any mass before it is unobserved and cannot be
+    recovered, which is why the constant of integration is arbitrary and
+    is reported as such.
+
+    The discrete counterpart accumulates every sample and has transfer
+    function 1/(1 - z^-1) -- a pole ON the unit circle at DC, so it has
+    no bounded frequency response and any offset in the input walks off
+    without limit.  The book notes such an operation is seldom used in
+    filtering; the windowed form of eq. (3.112) is used instead.
     """
-    General definition of running integral over (-inf, t].
+    xs, ts = aslist(x), aslist(t)
+    if len(xs) != len(ts):
+        raise ValueError("x and t must have the same length")
+    if len(xs) < 2:
+        raise ValueError("need at least two samples to integrate")
+    if any(ts[i + 1] <= ts[i] for i in range(len(ts) - 1)):
+        raise ValueError("t must be strictly increasing")
+    out, acc = [0.0], 0.0
+    for i in range(len(ts) - 1):
+        acc += 0.5 * (xs[i] + xs[i + 1]) * (ts[i + 1] - ts[i])
+        out.append(acc)
+    return RichResult(payload={
+        "y": out, "n": len(out), "total": acc,
+        "lower_limit": ts[0],
+        "constant_of_integration_is_arbitrary": True,
+        "discrete_pole_on_the_unit_circle": True,
+        "seldom_used_for_filtering": True,
+        "method": "Rangayyan (2024) eq. (3.113)"})
 
-    Formula: y(t) = integral_{-inf}^{t} x(t) dt
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    t : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.113, p. 143
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "General definition of running integral over (-inf, t].",
-        }
-    )
+rangayyan_ch3_integral_general = runintall  # pre-policy spelling
 
 
 # -- rng103: Running integral of a causal signal over [0, t].
@@ -2115,1288 +2376,1335 @@ def rangayyan_ch3_integral_causal(x, dt=1.0):
 
 
 # -- rng104: Fourier transform of the integral of x(t) including DC term..
-def rangayyan_ch3_fourier_of_integral(X, omega):
+def intft(X, omega, X0=None):
+    """Fourier transform of an integral, eq. (3.115).
+
+        Y(w) = (1/(jw)) X(w) + pi X(0) delta(w)
+
+    The delta term is not decoration: it carries the DC content, which
+    the 1/(jw) factor cannot represent because it blows up there.  A
+    caller who drops it -- as eq. (3.116) deliberately does, "keeping
+    aside the second term related to DC" -- is computing the response of
+    the integrator to everything EXCEPT the mean, so a signal with an
+    offset will not be reconstructed.
+
+    The delta is returned as its weight, pi X(0), rather than evaluated:
+    a delta has no value at a point.
     """
-    Fourier transform of the integral of x(t) including DC term.
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    Xs = [_cnum(X)] * len(ws) if not isinstance(X, (list, tuple)) \
+        else [_cnum(v) for v in X]
+    if len(Xs) != len(ws):
+        raise ValueError("X and omega must have the same length")
+    dc = _cnum(X0) if X0 is not None else None
+    out, at_dc = [], []
+    for w, xv in zip(ws, Xs):
+        if abs(w) <= 1e-300:
+            out.append(None)                # 1/(jw) is unbounded at w = 0
+            at_dc.append(True)
+        else:
+            out.append(xv / complex(0.0, w))
+            at_dc.append(False)
+    return RichResult(payload={
+        "Y": out[0] if scalar else out, "omega": omega,
+        "delta_weight": (pi * dc) if dc is not None else None,
+        "at_dc": at_dc[0] if scalar else at_dc,
+        "dc_term_carried_by_the_delta": True,
+        "undefined_at_zero_without_the_delta": True,
+        "method": "Rangayyan (2024) eq. (3.115)"})
 
-    Formula: Y(omega) = (1/(j*omega)) * X(omega) + pi * X(0) * delta(omega)
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    omega : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: spectrum
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.115, p. 144
-    """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Fourier transform of the integral of x(t) including DC term.",
-        }
-    )
+rangayyan_ch3_fourier_of_integral = intft  # pre-policy spelling
 
 
 # -- rng105: Frequency response of the ideal integrator (DC term aside)..
-def rangayyan_ch3_integrator_frequency_response(omega):
+def intfr(omega):
+    """Frequency response of the ideal integrator, eq. (3.116).
+
+        H(w) = 1 / (jw)
+
+    The DC term of eq. (3.115) is set aside, as the book does.  The gain
+    falls as the frequency rises, so the integrator is a lowpass -- and
+    it is unbounded at w = 0, which is refused here rather than returned
+    as an infinity.
     """
-    Frequency response of the ideal integrator (DC term aside).
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    if any(abs(w) <= 1e-300 for w in ws):
+        raise ValueError("H(w) = 1/(jw) is unbounded at w = 0; the DC "
+                         "content sits in the delta term of eq. (3.115)")
+    H = [1.0 / complex(0.0, w) for w in ws]
+    return RichResult(payload={
+        "H": H[0] if scalar else H, "omega": omega,
+        "lowpass": True, "dc_term_set_aside": True,
+        "gain_falls_nonlinearly_with_frequency": True,
+        "method": "Rangayyan (2024) eq. (3.116)"})
 
-    Formula: H(omega) = 1 / (j*omega)
 
-    Parameters
-    ----------
-    omega : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: spectrum
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.116, p. 144
-    """
-    omega = np.atleast_1d(np.asarray(omega, dtype=float))
-    n = len(omega)
-    result = float(np.mean(omega))
-    se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Frequency response of the ideal integrator (DC term aside).",
-        }
-    )
+rangayyan_ch3_integrator_frequency_response = intfr  # pre-policy spelling
 
 
 # -- rng106: Magnitude response of the ideal integrator..
-def rangayyan_ch3_integrator_magnitude_response(omega):
+def intmag(omega):
+    """Magnitude response of the ideal integrator, eq. (3.117).
+
+        |H(w)| = 1 / |w|
+
+    The book prints 1/w, which is right for w > 0 and is how the response
+    is plotted; a magnitude cannot be negative, so the absolute value is
+    taken here and the printed form is noted.
     """
-    Magnitude response of the ideal integrator.
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    if any(abs(w) <= 1e-300 for w in ws):
+        raise ValueError("the magnitude is unbounded at w = 0")
+    mag = [1.0 / abs(w) for w in ws]
+    return RichResult(payload={
+        "magnitude": mag[0] if scalar else mag, "omega": omega,
+        "book_prints_one_over_omega": True,
+        "absolute_value_needed_for_negative_omega": True,
+        "method": "Rangayyan (2024) eq. (3.117)"})
 
-    Formula: |H(omega)| = |1/omega|
 
-    Parameters
-    ----------
-    omega : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.117, p. 144
-    """
-    omega = np.atleast_1d(np.asarray(omega, dtype=float))
-    n = len(omega)
-    result = float(np.mean(omega))
-    se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Magnitude response of the ideal integrator."}
-    )
+rangayyan_ch3_integrator_magnitude_response = intmag  # pre-policy spelling
 
 
 # -- rng107: Phase response of the ideal integrator (constant -pi/2)..
-def rangayyan_ch3_integrator_phase_response(omega):
+def intph(omega):
+    """Phase response of the ideal integrator, eq. (3.118).
+
+        angle H(w) = -pi/2
+
+    Constant, because 1/(jw) is a fixed quarter-turn whatever the
+    frequency.  A constant phase is NOT a constant delay: the group delay
+    is the derivative of the phase, which here is zero, so the integrator
+    delays nothing while shifting everything by a quarter cycle.
     """
-    Phase response of the ideal integrator (constant -pi/2).
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    if any(abs(w) <= 1e-300 for w in ws):
+        raise ValueError("the phase is undefined at w = 0")
+    ph = [-pi / 2.0 if w > 0 else pi / 2.0 for w in ws]
+    return RichResult(payload={
+        "phase": ph[0] if scalar else ph, "omega": omega,
+        "constant": True, "group_delay": 0.0,
+        "constant_phase_is_not_constant_delay": True,
+        "sign_flips_for_negative_omega": True,
+        "method": "Rangayyan (2024) eq. (3.118)"})
 
-    Formula: angle(H(omega)) = -pi/2
 
-    Parameters
-    ----------
-    omega : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.118, p. 144
-    """
-    omega = np.atleast_1d(np.asarray(omega, dtype=float))
-    n = len(omega)
-    result = float(np.mean(omega))
-    se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Phase response of the ideal integrator (constant -pi/2).",
-        }
-    )
+rangayyan_ch3_integrator_phase_response = intph  # pre-policy spelling
 
 
 # -- rng108: Recursive form of the 8-point MA filter using delayed output..
-def rangayyan_ch3_ma_8point_recursive(x, y, n):
+def ma8rec(x, n=None):
+    """Recursive form of the 8-point MA filter, eq. (3.120).
+
+        y(n) = y(n-1) + (1/8) x(n) - (1/8) x(n-8)
+
+    Obtained by subtracting eq. (3.119) from eq. (3.108).  It computes
+    the same output as the direct form with two additions per sample
+    instead of eight, and it "clearly depicts the integration aspect of
+    the filter" -- the running sum is carried in y(n-1) and only the two
+    samples entering and leaving the window are touched.
+
+    The cost is that error accumulates: the recursion never forgets, so a
+    single perturbation in y persists for the whole record, where the
+    direct form would flush it after eight samples.
     """
-    Recursive form of the 8-point MA filter using delayed output.
+    xs = aslist(x)
+    if not xs:
+        raise ValueError("need at least one sample")
+    out, acc = [], 0.0
+    for i in range(len(xs)):
+        acc += 0.125 * xs[i]
+        if i >= 8:
+            acc -= 0.125 * xs[i - 8]
+        out.append(acc)
+    direct = [fsum(xs[i - k] for k in range(8) if i - k >= 0) / 8.0
+              for i in range(len(xs))]
+    gap = max(abs(a - b) for a, b in zip(out, direct))
+    val = None
+    if n is not None:
+        idx = int(n)
+        if not 0 <= idx < len(out):
+            raise ValueError("n is outside the record")
+        val = out[idx]
+    return RichResult(payload={
+        "y": out, "value": val, "index": n, "direct_form": direct,
+        "max_difference": gap, "agrees_with_direct_form": gap <= 1e-9,
+        "additions_per_sample": 2, "direct_form_additions": 8,
+        "error_accumulates": True,
+        "method": "Rangayyan (2024) eq. (3.120)"})
 
-    Formula: y(n) = y(n-1) + (1/8)*x(n) - (1/8)*x(n-8)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.120, p. 145
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Recursive form of the 8-point MA filter using delayed output.",
-        }
-    )
+rangayyan_ch3_ma_8point_recursive = ma8rec  # pre-policy spelling
 
 
 # -- rng109: Transfer function of the recursive 8-point MA filter (sinc-like)..
-def rangayyan_ch3_ma_8point_recursive_transfer_function(z):
+def ma8rectf(z):
+    """Transfer function of the recursive 8-point MA filter, eq. (3.121).
+
+        H(z) = (1/8) (1 - z^-8) / (1 - z^-1)
+
+    A pole at z = 1 and a zero at z = 1 that cancel it, so the filter is
+    still FIR despite the recursive implementation -- the eight zeros of
+    the numerator include the one at DC that removes the pole.  At z = 1
+    the ratio is 0/0 and the limit is the DC gain, 1; that value is
+    returned instead of a division by zero.
     """
-    Transfer function of the recursive 8-point MA filter (sinc-like).
+    scalar = not isinstance(z, (list, tuple))
+    zs = [z] if scalar else list(z)
+    H = []
+    for zv in zs:
+        zc = _cnum(zv)
+        if zc == 0:
+            raise ValueError("z = 0 is a pole of a causal transfer "
+                             "function")
+        den = 1.0 - zc ** -1
+        if abs(den) <= 1e-12:
+            H.append(complex(1.0, 0.0))      # the removable singularity
+        else:
+            H.append(0.125 * (1.0 - zc ** -8) / den)
+    return RichResult(payload={
+        "H": H[0] if scalar else H, "z": z,
+        "pole_at_dc_cancelled_by_a_zero": True,
+        "still_fir": True, "dc_gain": 1.0,
+        "removable_singularity_at_z_equals_one": True,
+        "method": "Rangayyan (2024) eq. (3.121)"})
 
-    Formula: H(z) = (1/8) * (1 - z^(-8)) / (1 - z^(-1))
 
-    Parameters
-    ----------
-    z : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.121, p. 145
-    """
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Transfer function of the recursive 8-point MA filter (sinc-like).",
-        }
-    )
+rangayyan_ch3_ma_8point_recursive_transfer_function = ma8rectf  # pre-policy spelling
 
 
 # -- rng110: Closed-form sinc-type frequency response of the recursive 8-point MA filter..
-def rangayyan_ch3_ma_8point_sinc_frequency_response(omega):
+def ma8sinc(omega):
+    """Sinc-type frequency response of the 8-point MA filter, eq. (3.122).
+
+        H(w) = (1/8) (1 - exp(-j8w)) / (1 - exp(-jw))
+             = (1/8) exp(-j 7w/2) sin(4w) / sin(w/2)
+
+    The Dirichlet-kernel identity: a real sinc-like envelope times a pure
+    delay of 7/2 samples.  The book states this "is equivalent to that in
+    Equation 3.111", and both are recomputed here and compared.  At w = 0
+    the ratio is 0/0 with limit 1, which is returned rather than raising.
+
+    The delay of 3.5 samples is not an integer, which is the price of an
+    even-length filter: the output falls between input samples.
     """
-    Closed-form sinc-type frequency response of the recursive 8-point MA filter.
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    closed, direct = [], []
+    for w in ws:
+        s2 = sin(w / 2.0)
+        if abs(s2) <= 1e-12:
+            closed.append(complex(1.0, 0.0))
+        else:
+            closed.append(0.125 * complex(cos(-3.5 * w), sin(-3.5 * w))
+                          * sin(4.0 * w) / s2)
+        direct.append(0.125 * sum(complex(cos(-w * k), sin(-w * k))
+                                  for k in range(8)))
+    gap = max(abs(a - b) for a, b in zip(closed, direct))
+    return RichResult(payload={
+        "H": closed[0] if scalar else closed, "omega": omega,
+        "direct_sum": direct[0] if scalar else direct,
+        "max_difference": gap, "agrees_with_eq_3_111": gap <= 1e-9,
+        "group_delay": 3.5, "delay_is_not_an_integer": True,
+        "method": "Rangayyan (2024) eq. (3.122)"})
 
-    Formula: H(omega) = (1/8) * (1 - exp(-j*8*omega)) / (1 - exp(-j*omega)) = (1/8) * exp(-j*7*omega/2) * sin(4*omega) / sin(omega/2)
 
-    Parameters
-    ----------
-    omega : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: spectrum
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.122, p. 145
-    """
-    omega = np.atleast_1d(np.asarray(omega, dtype=float))
-    n = len(omega)
-    result = float(np.mean(omega))
-    se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Closed-form sinc-type frequency response of the recursive 8-point MA filter.",
-        }
-    )
+rangayyan_ch3_ma_8point_sinc_frequency_response = ma8sinc  # pre-policy spelling
 
 
 # -- rng111: First-order difference operator approximating the time derivative..
-def rangayyan_ch3_first_difference_operator(x, T, n):
+def fdiff(x, T=1.0, n=None):
+    """First-order difference operator, eq. (3.123).
+
+        y(n) = (1/T) [ x(n) - x(n-1) ]
+
+    The basic DSP derivative.  The 1/T is not cosmetic: without it the
+    output is a change PER SAMPLE, not a rate of change per unit time, so
+    the numbers depend on the sampling rate.  The book is explicit that
+    the scale factor "is required in order to obtain the rate of change
+    of the signal with respect to the true time".
+
+    It is a highpass: it removes DC and boosts high frequencies, which is
+    also its weakness -- it amplifies noise, and eq. (3.128) is the
+    book's remedy.
     """
-    First-order difference operator approximating the time derivative.
+    xs = aslist(x)
+    if not xs:
+        raise ValueError("need at least one sample")
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    out = [(xs[i] - (xs[i - 1] if i >= 1 else 0.0)) / Tv
+           for i in range(len(xs))]
+    val = None
+    if n is not None:
+        idx = int(n)
+        if not 0 <= idx < len(out):
+            raise ValueError("n is outside the record")
+        val = out[idx]
+    return RichResult(payload={
+        "y": out, "value": val, "index": n, "T": Tv,
+        "scale_factor_gives_true_time_rate": True,
+        "highpass": True, "amplifies_noise": True,
+        "removes_dc": True,
+        "method": "Rangayyan (2024) eq. (3.123)"})
 
-    Formula: y(n) = (1/T) * [x(n) - x(n-1)]
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    T : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.123, p. 145
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "First-order difference operator approximating the time derivative.",
-        }
-    )
+rangayyan_ch3_first_difference_operator = fdiff  # pre-policy spelling
 
 
 # -- rng112: Transfer function of the first-order difference operator..
-def rangayyan_ch3_first_difference_transfer_function(z, T):
+def fdifftf(z, T=1.0):
+    """Transfer function of the first difference, eq. (3.124).
+
+        H(z) = (1/T) (1 - z^-1)
+
+    One zero, at z = 1, which is the DC point -- that single zero is the
+    whole of the operator's highpass character.
     """
-    Transfer function of the first-order difference operator.
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    scalar = not isinstance(z, (list, tuple))
+    zs = [z] if scalar else list(z)
+    H = [_polyz([1.0 / Tv, -1.0 / Tv], zv) for zv in zs]
+    return RichResult(payload={
+        "H": H[0] if scalar else H, "z": z, "T": Tv,
+        "zeros": [1.0], "zero_at_dc": True, "dc_gain": 0.0,
+        "method": "Rangayyan (2024) eq. (3.124)"})
 
-    Formula: H(z) = (1/T) * (1 - z^(-1))
 
-    Parameters
-    ----------
-    z : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.124, p. 145
-    """
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Transfer function of the first-order difference operator.",
-        }
-    )
+rangayyan_ch3_first_difference_transfer_function = fdifftf  # pre-policy spelling
 
 
 # -- rng113: Frequency response of the first-order difference operator..
-def rangayyan_ch3_first_difference_frequency_response(omega, T):
+def fdifffr(omega, T=1.0):
+    """Frequency response of the first difference, eq. (3.125).
+
+        H(w) = (1/T) [1 - exp(-jw)]
+             = (1/T) exp(-j w/2) [ 2j sin(w/2) ]
+
+    The second form separates a half-sample delay from a real gain, and
+    the factor of j is what puts the phase a quarter turn ahead -- the
+    +pi/2 in eq. (3.127).  Both forms are computed and compared.
     """
-    Frequency response of the first-order difference operator.
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    raw, split = [], []
+    for w in ws:
+        raw.append((1.0 - complex(cos(-w), sin(-w))) / Tv)
+        split.append(complex(cos(-w / 2.0), sin(-w / 2.0))
+                     * complex(0.0, 2.0 * sin(w / 2.0)) / Tv)
+    gap = max(abs(a - b) for a, b in zip(raw, split))
+    return RichResult(payload={
+        "H": raw[0] if scalar else raw, "omega": omega, "T": Tv,
+        "split_form": split[0] if scalar else split,
+        "max_difference": gap, "forms_agree": gap <= 1e-12,
+        "half_sample_delay": 0.5,
+        "method": "Rangayyan (2024) eq. (3.125)"})
 
-    Formula: H(omega) = (1/T) * [1 - exp(-j*omega)] = (1/T) * exp(-j*omega/2) * [2*j*sin(omega/2)]
 
-    Parameters
-    ----------
-    omega : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: spectrum
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.125, p. 147
-    """
-    omega = np.atleast_1d(np.asarray(omega, dtype=float))
-    n = len(omega)
-    result = float(np.mean(omega))
-    se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Frequency response of the first-order difference operator.",
-        }
-    )
+rangayyan_ch3_first_difference_frequency_response = fdifffr  # pre-policy spelling
 
 
 # -- rng114: Magnitude response of the first-order difference operator..
-def rangayyan_ch3_first_difference_magnitude(omega, T):
+def fdiffmag(omega, T=1.0):
+    """Magnitude response of the first difference, eq. (3.126).
+
+        |H(w)| = (2/T) |sin(w/2)|
+
+    Nought at DC and largest at Nyquist, rising roughly in proportion to
+    frequency over the low end -- which is why the book plots it on a
+    linear scale, "in order to illustrate better its proportionality to
+    frequency", and why the operator amplifies high-frequency noise.
+
+    The book prints (2/T) sin(w/2) without the bars, which is right on
+    0 <= w <= pi, the range plotted; the absolute value is needed for w
+    outside it.
     """
-    Magnitude response of the first-order difference operator.
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    mag = [2.0 * abs(sin(w / 2.0)) / Tv for w in ws]
+    return RichResult(payload={
+        "magnitude": mag[0] if scalar else mag, "omega": omega, "T": Tv,
+        "dc_gain": 0.0, "nyquist_gain": 2.0 / Tv,
+        "roughly_proportional_to_frequency": True,
+        "book_omits_the_absolute_value": True,
+        "method": "Rangayyan (2024) eq. (3.126)"})
 
-    Formula: |H(omega)| = (2/T) * |sin(omega/2)|
 
-    Parameters
-    ----------
-    omega : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.126, p. 147
-    """
-    omega = np.atleast_1d(np.asarray(omega, dtype=float))
-    n = len(omega)
-    result = float(np.mean(omega))
-    se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Magnitude response of the first-order difference operator.",
-        }
-    )
+rangayyan_ch3_first_difference_magnitude = fdiffmag  # pre-policy spelling
 
 
 # -- rng115: Phase response of the first-order difference operator..
-def rangayyan_ch3_first_difference_phase(omega):
+def fdiffph(omega):
+    """Phase response of the first difference, eq. (3.127).
+
+        angle H(w) = pi/2 - w/2
+
+    Linear with slope -1/2, so the group delay is half a sample, plus the
+    constant quarter turn contributed by the j of eq. (3.125).  A
+    half-sample delay cannot be undone by shifting samples, which is one
+    reason the three-point central difference of eq. (3.128) -- whose
+    delay is a whole sample -- is easier to align with the original.
     """
-    Phase response of the first-order difference operator.
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    ph = [pi / 2.0 - w / 2.0 for w in ws]
+    return RichResult(payload={
+        "phase": ph[0] if scalar else ph, "omega": omega,
+        "group_delay": 0.5, "slope": -0.5,
+        "quarter_turn_offset": pi / 2.0, "linear_phase": True,
+        "method": "Rangayyan (2024) eq. (3.127)"})
 
-    Formula: angle(H(omega)) = pi/2 - omega/2
 
-    Parameters
-    ----------
-    omega : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.127, p. 147
-    """
-    omega = np.atleast_1d(np.asarray(omega, dtype=float))
-    n = len(omega)
-    result = float(np.mean(omega))
-    se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Phase response of the first-order difference operator.",
-        }
-    )
+rangayyan_ch3_first_difference_phase = fdiffph  # pre-policy spelling
 
 
 # -- rng116: Three-point central-difference operator (lower-noise derivative)..
-def rangayyan_ch3_three_point_central_difference(x, T, n):
+def cdiff3(x, T=1.0, n=None):
+    """Three-point central-difference operator, eq. (3.128).
+
+        y_3(n) = (1/2) [ y(n) + y(n-1) ]
+               = (1/(2T)) [ x(n) - x(n-2) ]
+
+    Averaging two successive first differences, which is what controls
+    the noise amplification of eq. (3.123).  The book warns the price is
+    accuracy: the approximation to d/dt "is poor after about f_s/10", so
+    it is a better differentiator only over the low tenth of the band.
     """
-    Three-point central-difference operator (lower-noise derivative).
+    xs = aslist(x)
+    if not xs:
+        raise ValueError("need at least one sample")
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    out = [(xs[i] - (xs[i - 2] if i >= 2 else 0.0)) / (2.0 * Tv)
+           for i in range(len(xs))]
+    # the book's derivation: the mean of two successive first differences
+    d1 = fdiff(xs, T=Tv)["y"]
+    avg = [0.5 * (d1[i] + (d1[i - 1] if i >= 1 else 0.0))
+           for i in range(len(xs))]
+    gap = max(abs(a - b) for a, b in zip(out, avg))
+    val = None
+    if n is not None:
+        idx = int(n)
+        if not 0 <= idx < len(out):
+            raise ValueError("n is outside the record")
+        val = out[idx]
+    return RichResult(payload={
+        "y": out, "value": val, "index": n, "T": Tv,
+        "as_averaged_first_differences": avg, "max_difference": gap,
+        "derivation_agrees": gap <= 1e-9,
+        "controls_noise_amplification": True,
+        "poor_above_fs_over_10": True,
+        "method": "Rangayyan (2024) eq. (3.128)"})
 
-    Formula: y_3(n) = (1/(2*T)) * [x(n) - x(n-2)]
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    T : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.128, p. 147
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Three-point central-difference operator (lower-noise derivative).",
-        }
-    )
+rangayyan_ch3_three_point_central_difference = cdiff3  # pre-policy spelling
 
 
 # -- rng117: Transfer function of the three-point central-difference operator..
-def rangayyan_ch3_three_point_central_diff_transfer_function(z, T):
+def cdiff3tf(z, T=1.0):
+    """Transfer function of the three-point central difference,
+    eq. (3.129).
+
+        H(z) = (1/(2T)) (1 - z^-2)
+             = [ (1/T)(1 - z^-1) ] [ (1/2)(1 + z^-1) ]
+
+    The factored form is the point the book draws out: the operator IS a
+    first-order difference in series with a two-point moving average, so
+    it may be built as that cascade.  Zeros at z = 1 and z = -1 make it a
+    bandpass -- a highpass and a lowpass in series -- with the zero at
+    Nyquist pulling the gain there to nought, which is exactly the noise
+    amplification the plain difference suffers from.
     """
-    Transfer function of the three-point central-difference operator.
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    scalar = not isinstance(z, (list, tuple))
+    zs = [z] if scalar else list(z)
+    direct, cascade = [], []
+    for zv in zs:
+        zc = _cnum(zv)
+        if zc == 0:
+            raise ValueError("z = 0 is a pole of a causal transfer "
+                             "function")
+        direct.append((1.0 - zc ** -2) / (2.0 * Tv))
+        cascade.append(((1.0 - zc ** -1) / Tv) * (0.5 * (1.0 + zc ** -1)))
+    gap = max(abs(a - b) for a, b in zip(direct, cascade))
+    return RichResult(payload={
+        "H": direct[0] if scalar else direct, "z": z, "T": Tv,
+        "cascade": cascade[0] if scalar else cascade,
+        "max_difference": gap, "cascade_agrees": gap <= 1e-12,
+        "zeros": [1.0, -1.0], "bandpass": True,
+        "is_first_difference_times_two_point_ma": True,
+        "method": "Rangayyan (2024) eq. (3.129)"})
 
-    Formula: H(z) = (1/(2*T)) * (1 - z^(-2)) = [(1/T)*(1 - z^(-1))] * [0.5*(1 + z^(-1))]
 
-    Parameters
-    ----------
-    z : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.129, p. 148
-    """
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Transfer function of the three-point central-difference operator.",
-        }
-    )
+rangayyan_ch3_three_point_central_diff_transfer_function = cdiff3tf  # pre-policy spelling
 
 
 # -- rng118: Magnitude response of the three-point central-difference operator..
-def rangayyan_ch3_three_point_central_diff_magnitude(omega, T):
+def cdiff3mag(omega, T=1.0):
+    """Magnitude response of the three-point central difference,
+    eq. (3.130).
+
+        |H(w)| = (1/T) |sin(w)|
+
+    Nought at BOTH ends -- at DC from the highpass factor and at Nyquist
+    from the moving-average factor -- with the peak at w = pi/2.  That
+    second zero is what keeps high-frequency noise from being amplified,
+    and it is also why the operator stops approximating a derivative well
+    above about f_s/10.
     """
-    Magnitude response of the three-point central-difference operator.
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    mag = [abs(sin(w)) / Tv for w in ws]
+    return RichResult(payload={
+        "magnitude": mag[0] if scalar else mag, "omega": omega, "T": Tv,
+        "dc_gain": 0.0, "nyquist_gain": 0.0, "peak_at": pi / 2.0,
+        "bandpass": True,
+        "method": "Rangayyan (2024) eq. (3.130)"})
 
-    Formula: |H(omega)| = (1/T) * |sin(omega)|
 
-    Parameters
-    ----------
-    omega : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.130, p. 148
-    """
-    omega = np.atleast_1d(np.asarray(omega, dtype=float))
-    n = len(omega)
-    result = float(np.mean(omega))
-    se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Magnitude response of the three-point central-difference operator.",
-        }
-    )
+rangayyan_ch3_three_point_central_diff_magnitude = cdiff3mag  # pre-policy spelling
 
 
 # -- rng119: Phase response of the three-point central-difference operator..
-def rangayyan_ch3_three_point_central_diff_phase(omega):
+def cdiff3ph(omega):
+    """Phase response of the three-point central difference, eq. (3.131).
+
+        angle H(w) = pi/2 - w
+
+    Slope -1, so the group delay is a WHOLE sample -- against the half
+    sample of the plain first difference.  An integer delay can be undone
+    by shifting the output back, which is why this operator is the easier
+    one to align with the original recording.
     """
-    Phase response of the three-point central-difference operator.
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    ph = [pi / 2.0 - w for w in ws]
+    return RichResult(payload={
+        "phase": ph[0] if scalar else ph, "omega": omega,
+        "group_delay": 1.0, "slope": -1.0,
+        "quarter_turn_offset": pi / 2.0,
+        "integer_delay_can_be_undone_by_shifting": True,
+        "method": "Rangayyan (2024) eq. (3.131)"})
 
-    Formula: angle(H(omega)) = pi/2 - omega
 
-    Parameters
-    ----------
-    omega : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.131, p. 148
-    """
-    omega = np.atleast_1d(np.asarray(omega, dtype=float))
-    n = len(omega)
-    result = float(np.mean(omega))
-    se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Phase response of the three-point central-difference operator.",
-        }
-    )
+rangayyan_ch3_three_point_central_diff_phase = cdiff3ph  # pre-policy spelling
 
 
 # -- rng120: Modified first-difference filter with pole at 0.995 to remove baseline wander..
-def rangayyan_ch3_baseline_wander_filter_z_form_a(z, T):
+def bwander(z, T=1.0, pole=0.995):
+    """Baseline-wander filter, eq. (3.132).
+
+        H(z) = (1/T) (1 - z^-1) / (1 - 0.995 z^-1)
+
+    The first-order difference with a pole placed just inside the unit
+    circle on the real axis, at DC.  The pole nearly cancels the zero
+    everywhere except in a narrow band about DC, so the filter removes
+    the wandering baseline WITHOUT the wholesale high-frequency boost the
+    plain difference of eq. (3.123) applies -- its gain is essentially
+    flat above a few hertz instead of rising with frequency.
+
+    Moving the pole closer to 1 narrows the notch and lengthens the
+    transient; a pole AT 1 would cancel the zero exactly and leave
+    nothing.  The book uses 0.995 and that is the default here.
     """
-    Modified first-difference filter with pole at 0.995 to remove baseline wander.
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    p = float(pole)
+    if not 0.0 <= p < 1.0:
+        raise ValueError("the pole must lie inside the unit circle, "
+                         "0 <= pole < 1; at 1 it cancels the zero exactly")
+    scalar = not isinstance(z, (list, tuple))
+    zs = [z] if scalar else list(z)
+    H = []
+    for zv in zs:
+        zc = _cnum(zv)
+        if zc == 0:
+            raise ValueError("z = 0 is a pole of a causal transfer "
+                             "function")
+        den = 1.0 - p * zc ** -1
+        if abs(den) <= 1e-300:
+            raise ValueError("z is the pole of H(z)")
+        H.append((1.0 - zc ** -1) / (Tv * den))
+    return RichResult(payload={
+        "H": H[0] if scalar else H, "z": z, "T": Tv, "pole": p,
+        "zeros": [1.0], "poles": [p], "dc_gain": 0.0,
+        "pole_nearly_cancels_the_zero_away_from_dc": True,
+        "no_longer_fir": True,
+        "method": "Rangayyan (2024) eq. (3.132)"})
 
-    Formula: H(z) = (1/T) * (1 - z^(-1)) / (1 - 0.995 * z^(-1))
 
-    Parameters
-    ----------
-    z : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.132, p. 149
-    """
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Modified first-difference filter with pole at 0.995 to remove baseline wander.",
-        }
-    )
+rangayyan_ch3_baseline_wander_filter_z_form_a = bwander  # pre-policy spelling
 
 
 # -- rng121: Equivalent (z, not z^-1) form of the baseline-wander filter..
-def rangayyan_ch3_baseline_wander_filter_z_form_b(z, T):
+def bwanderz(z, T=1.0, pole=0.995):
+    """Baseline-wander filter in positive powers of z, eq. (3.133).
+
+        H(z) = (1/T) (z - 1) / (z - 0.995)
+
+    The same filter as eq. (3.132), rearranged.  The book keeps this form
+    because it is the one the graphical method reads directly: the
+    numerator IS the vector from the evaluation point to the zero at
+    z = 1 and the denominator the vector to the pole at 0.995, so the
+    magnitude response is the ratio of two lengths measured off the
+    z-plane diagram.  Both forms are computed here and compared.
     """
-    Equivalent (z, not z^-1) form of the baseline-wander filter.
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    p = float(pole)
+    if not 0.0 <= p < 1.0:
+        raise ValueError("the pole must lie inside the unit circle")
+    scalar = not isinstance(z, (list, tuple))
+    zs = [z] if scalar else list(z)
+    H, other = [], []
+    for zv in zs:
+        zc = _cnum(zv)
+        if abs(zc - p) <= 1e-300:
+            raise ValueError("z is the pole of H(z)")
+        H.append((zc - 1.0) / (Tv * (zc - p)))
+        other.append(bwander(zc, T=Tv, pole=p)["H"])
+    gap = max(abs(a - b) for a, b in zip(H, other))
+    return RichResult(payload={
+        "H": H[0] if scalar else H, "z": z, "T": Tv, "pole": p,
+        "max_difference_from_eq_3_132": gap,
+        "forms_agree": gap <= 1e-9,
+        "numerator_is_the_distance_to_the_zero": True,
+        "denominator_is_the_distance_to_the_pole": True,
+        "method": "Rangayyan (2024) eq. (3.133)"})
 
-    Formula: H(z) = (1/T) * (z - 1) / (z - 0.995)
 
-    Parameters
-    ----------
-    z : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.133, p. 149
-    """
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Equivalent (z, not z^-1) form of the baseline-wander filter.",
-        }
-    )
+rangayyan_ch3_baseline_wander_filter_z_form_b = bwanderz  # pre-policy spelling
 
 
 # -- rng122: Time-domain difference equation of the baseline-wander filter..
-def rangayyan_ch3_baseline_wander_filter_difference_eq(x, y, T, n):
+def bwandereq(x, T=1.0, pole=0.995, n=None):
+    """Difference equation of the baseline-wander filter, eq. (3.134).
+
+        y(n) = (1/T) [ x(n) - x(n-1) ] + 0.995 y(n-1)
+
+    Note the PLUS on the feedback term: eq. (3.134) is written with the
+    pole's coefficient already moved to the right-hand side, so it does
+    not carry the minus that the general form of eq. (3.68) does.
+    Reading a sign off eq. (3.68) and applying it here gives a filter
+    with a pole at -0.995 instead of +0.995 -- a highpass at Nyquist
+    rather than at DC.
+
+    The filter is IIR: the book notes it "is no longer an FIR filter".
     """
-    Time-domain difference equation of the baseline-wander filter.
+    xs = aslist(x)
+    if not xs:
+        raise ValueError("need at least one sample")
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    p = float(pole)
+    if not 0.0 <= p < 1.0:
+        raise ValueError("the pole must lie inside the unit circle")
+    out = []
+    for i in range(len(xs)):
+        prev_x = xs[i - 1] if i >= 1 else 0.0
+        prev_y = out[i - 1] if i >= 1 else 0.0
+        out.append((xs[i] - prev_x) / Tv + p * prev_y)
+    val = None
+    if n is not None:
+        idx = int(n)
+        if not 0 <= idx < len(out):
+            raise ValueError("n is outside the record")
+        val = out[idx]
+    return RichResult(payload={
+        "y": out, "value": val, "index": n, "T": Tv, "pole": p,
+        "feedback_sign": "+", "iir": True,
+        "sign_already_moved_to_the_right_hand_side": True,
+        "method": "Rangayyan (2024) eq. (3.134)"})
 
-    Formula: y(n) = (1/T) * [x(n) - x(n-1)] + 0.995 * y(n-1)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    T : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.134, p. 150
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Time-domain difference equation of the baseline-wander filter.",
-        }
-    )
+rangayyan_ch3_baseline_wander_filter_difference_eq = bwandereq  # pre-policy spelling
 
 
 # -- rng123: Squared-magnitude response of the analog Butterworth lowpass filter..
-def rangayyan_ch3_butterworth_lowpass_squared_magnitude(Omega, Omega_c, N):
+def bwsqmag(Omega, Omega_c, N):
+    """Squared magnitude of the analog Butterworth lowpass, eq. (3.135).
+
+        |H_a(jW)|^2 = 1 / ( 1 + (W/W_c)^{2N} )
+
+    Monotonic in both bands -- no ripple anywhere, which is the defining
+    property of the Butterworth and the reason the book chooses it.  At
+    the cutoff the squared magnitude is exactly 1/2 FOR EVERY ORDER, so
+    W_c is the half-power point regardless of N; raising N steepens the
+    transition without moving it.
     """
-    Squared-magnitude response of the analog Butterworth lowpass filter.
+    Wc = float(Omega_c)
+    if Wc <= 0:
+        raise ValueError("the cutoff Omega_c must be positive")
+    n = int(N)
+    if n < 1:
+        raise ValueError("the order N must be at least 1")
+    scalar = not isinstance(Omega, (list, tuple))
+    ws = [float(Omega)] if scalar else [float(v) for v in Omega]
+    sq = [1.0 / (1.0 + (abs(w) / Wc) ** (2 * n)) for w in ws]
+    return RichResult(payload={
+        "squared_magnitude": sq[0] if scalar else sq,
+        "magnitude": (sq[0] ** 0.5) if scalar else [v ** 0.5 for v in sq],
+        "Omega": Omega, "Omega_c": Wc, "N": n,
+        "half_power_at_cutoff": 0.5, "monotonic": True, "no_ripple": True,
+        "cutoff_is_half_power_for_every_order": True,
+        "method": "Rangayyan (2024) eq. (3.135)"})
 
-    Formula: |H_a(j*Omega)|^2 = 1 / (1 + (j*Omega/(j*Omega_c))^(2*N))
 
-    Parameters
-    ----------
-    Omega : array-like
-        Input data.
-    Omega_c : array-like
-        Input data.
-    N : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.135, p. 154
-    """
-    Omega = np.atleast_1d(np.asarray(Omega, dtype=float))
-    n = len(Omega)
-    result = float(np.mean(Omega))
-    se = float(np.std(Omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Squared-magnitude response of the analog Butterworth lowpass filter.",
-        }
-    )
+rangayyan_ch3_butterworth_lowpass_squared_magnitude = bwsqmag  # pre-policy spelling
 
 
 # -- rng124: Squared transfer function of the Butterworth lowpass filter in s-domain..
-def rangayyan_ch3_butterworth_squared_laplace(s, Omega_c, N):
+def bwsqlap(s, Omega_c, N):
+    """Squared Butterworth transfer function in the s-domain, eq. (3.136).
+
+        H_a(s) H_a(-s) = 1 / ( 1 + (s / (j W_c))^{2N} )
+
+    Obtained from eq. (3.135) by the substitution jW -> s.  It has 2N
+    poles, half of them in the right half-plane, so it is NOT a filter:
+    only the N left-half-plane poles are kept, and that selection --
+    eq. (3.138) -- is what makes the result stable and causal.
     """
-    Squared transfer function of the Butterworth lowpass filter in s-domain.
+    Wc = float(Omega_c)
+    if Wc <= 0:
+        raise ValueError("the cutoff Omega_c must be positive")
+    n = int(N)
+    if n < 1:
+        raise ValueError("the order N must be at least 1")
+    scalar = not isinstance(s, (list, tuple))
+    ss = [s] if scalar else list(s)
+    out = []
+    for sv in ss:
+        sc = _cnum(sv)
+        den = 1.0 + (sc / complex(0.0, Wc)) ** (2 * n)
+        if abs(den) <= 1e-300:
+            raise ValueError("s is a pole of H_a(s) H_a(-s)")
+        out.append(1.0 / den)
+    return RichResult(payload={
+        "H": out[0] if scalar else out, "s": s, "Omega_c": Wc, "N": n,
+        "n_poles": 2 * n, "half_are_right_half_plane": True,
+        "not_a_filter_until_the_poles_are_selected": True,
+        "method": "Rangayyan (2024) eq. (3.136)"})
 
-    Formula: H_a(s) * H_a(-s) = 1 / (1 + (s/(j*Omega_c))^(2*N))
 
-    Parameters
-    ----------
-    s : array-like
-        Input data.
-    Omega_c : array-like
-        Input data.
-    N : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.136, p. 154
-    """
-    s = np.atleast_1d(np.asarray(s, dtype=float))
-    n = len(s)
-    result = float(np.mean(s))
-    se = float(np.std(s, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Squared transfer function of the Butterworth lowpass filter in s-domain.",
-        }
-    )
+rangayyan_ch3_butterworth_squared_laplace = bwsqlap  # pre-policy spelling
 
 
 # -- rng125: Pole positions on the Butterworth circle in the s-plane..
-def rangayyan_ch3_butterworth_pole_positions(Omega_c, N, k):
+def bwpoles(Omega_c, N, k=None):
+    """Butterworth pole positions, eq. (3.137).
+
+        s_k = W_c exp( j pi [ 1/2 + (2k - 1)/(2N) ] ),   k = 1, ..., 2N
+
+    All 2N poles sit on a circle of radius W_c, spaced pi/N apart, placed
+    symmetrically about the imaginary axis and never ON it.  For odd N a
+    pole falls on the real axis.  Complex poles come in conjugate pairs,
+    which is what keeps the filter coefficients real.
+
+    Both the full set and the N left-half-plane poles -- the ones that
+    make a stable causal filter -- are returned; ``k`` selects one pole.
     """
-    Pole positions on the Butterworth circle in the s-plane.
+    Wc = float(Omega_c)
+    if Wc <= 0:
+        raise ValueError("the cutoff Omega_c must be positive")
+    n = int(N)
+    if n < 1:
+        raise ValueError("the order N must be at least 1")
+    allp = []
+    for i in range(1, 2 * n + 1):
+        ang = pi * (0.5 + (2 * i - 1) / (2.0 * n))
+        allp.append(complex(Wc * cos(ang), Wc * sin(ang)))
+    lhp = [p for p in allp if p.real < 0]
+    val = None
+    if k is not None:
+        kk = int(k)
+        if not 1 <= kk <= 2 * n:
+            raise ValueError("k must lie in 1..2N")
+        val = allp[kk - 1]
+    return RichResult(payload={
+        "poles": allp, "left_half_plane": lhp, "value": val, "k": k,
+        "Omega_c": Wc, "N": n, "radius": Wc,
+        "angular_spacing": pi / n,
+        "n_left_half_plane": len(lhp),
+        "none_on_the_imaginary_axis": all(abs(p.real) > 1e-12
+                                          for p in allp),
+        "real_pole_for_odd_order": n % 2 == 1,
+        "method": "Rangayyan (2024) eq. (3.137)"})
 
-    Formula: s_k = Omega_c * exp( j*pi * (0.5 + (2*k - 1)/(2*N)) ), k = 1..2N
 
-    Parameters
-    ----------
-    Omega_c : array-like
-        Input data.
-    N : array-like
-        Input data.
-    k : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.137, p. 154
-    """
-    Omega_c = np.atleast_1d(np.asarray(Omega_c, dtype=float))
-    n = len(Omega_c)
-    result = float(np.mean(Omega_c))
-    se = float(np.std(Omega_c, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Pole positions on the Butterworth circle in the s-plane.",
-        }
-    )
+rangayyan_ch3_butterworth_pole_positions = bwpoles  # pre-policy spelling
 
 
 # -- rng126: Analog Butterworth transfer function from N left-half-plane poles..
-def rangayyan_ch3_butterworth_analog_transfer_function(s, p_k, G, N):
+def bwanalog(Omega_c, N, G=None, s=None):
+    """Analog Butterworth transfer function, eq. (3.138).
+
+        H_a(s) = G / [ (s - p_1)(s - p_2) ... (s - p_N) ]
+
+    built from the N LEFT-half-plane poles of eq. (3.137) only.  With no
+    gain supplied, G is chosen to normalize the DC gain to unity, which
+    makes it W_c^N -- the product of the pole magnitudes.
+
+    The denominator coefficients come back expanded and are real to
+    within rounding, because the poles arrive in conjugate pairs; the
+    largest imaginary residue is returned as a check on that.
     """
-    Analog Butterworth transfer function from N left-half-plane poles.
+    Wc = float(Omega_c)
+    if Wc <= 0:
+        raise ValueError("the cutoff Omega_c must be positive")
+    n = int(N)
+    if n < 1:
+        raise ValueError("the order N must be at least 1")
+    poles = bwpoles(Wc, n)["left_half_plane"]
+    if len(poles) != n:
+        raise ValueError("expected %d left-half-plane poles, found %d"
+                         % (n, len(poles)))
+    coefs = _poly_from_roots(poles)
+    resid = max(abs(c.imag) for c in coefs)
+    den = [c.real for c in coefs]
+    gain = float(G) if G is not None else den[0]
+    Hs = None
+    if s is not None:
+        scalar = not isinstance(s, (list, tuple))
+        ss = [s] if scalar else list(s)
+        vals = []
+        for sv in ss:
+            sc = _cnum(sv)
+            d = sum(den[i] * sc ** i for i in range(len(den)))
+            if abs(d) <= 1e-300:
+                raise ValueError("s is a pole of H_a(s)")
+            vals.append(gain / d)
+        Hs = vals[0] if scalar else vals
+    return RichResult(payload={
+        "poles": poles, "denominator": den, "gain": gain, "H": Hs,
+        "Omega_c": Wc, "N": n,
+        "max_imaginary_residue": resid,
+        "coefficients_are_real": resid <= 1e-9 * max(1.0, max(
+            abs(c) for c in den)),
+        "gain_normalizes_dc_to_unity": G is None,
+        "left_half_plane_only": True,
+        "method": "Rangayyan (2024) eq. (3.138)"})
 
-    Formula: H_a(s) = G / [ (s - p_1)(s - p_2)...(s - p_N) ]
 
-    Parameters
-    ----------
-    s : array-like
-        Input data.
-    p_k : array-like
-        Input data.
-    G : array-like
-        Input data.
-    N : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.138, p. 154
-    """
-    s = np.atleast_1d(np.asarray(s, dtype=float))
-    n = len(s)
-    result = float(np.mean(s))
-    se = float(np.std(s, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Analog Butterworth transfer function from N left-half-plane poles.",
-        }
-    )
+rangayyan_ch3_butterworth_analog_transfer_function = bwanalog  # pre-policy spelling
 
 
 # -- rng127: Bilinear transformation mapping s-domain to z-domain..
-def rangayyan_ch3_bilinear_transformation(z, T):
+def bilinear(z, T=1.0):
+    """Bilinear transformation, eq. (3.139).
+
+        s = (2/T) (1 - z^-1) / (1 + z^-1)
+
+    Maps the whole left half of the s-plane into the unit disc, so a
+    stable analog filter always yields a stable digital one -- unlike
+    impulse invariance, which aliases.  The price is that the infinite
+    frequency axis is squeezed onto a finite circle, and that squeezing
+    is the warping of eqs. (3.141)-(3.142).
+
+    z = -1 maps to infinity, which is refused rather than returned as an
+    overflow.
     """
-    Bilinear transformation mapping s-domain to z-domain.
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    scalar = not isinstance(z, (list, tuple))
+    zs = [z] if scalar else list(z)
+    out = []
+    for zv in zs:
+        zc = _cnum(zv)
+        if zc == 0:
+            raise ValueError("z = 0 is not in the domain of the bilinear "
+                             "transformation")
+        den = 1.0 + zc ** -1
+        if abs(den) <= 1e-300:
+            raise ValueError("z = -1 maps to s = infinity")
+        out.append((2.0 / Tv) * (1.0 - zc ** -1) / den)
+    return RichResult(payload={
+        "s": out[0] if scalar else out, "z": z, "T": Tv,
+        "maps_lhp_into_the_unit_disc": True,
+        "stability_is_preserved": True, "no_aliasing": True,
+        "warps_the_frequency_axis": True,
+        "method": "Rangayyan (2024) eq. (3.139)"})
 
-    Formula: s = (2/T) * (1 - z^(-1)) / (1 + z^(-1))
 
-    Parameters
-    ----------
-    z : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.139, p. 154
-    """
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bilinear transformation mapping s-domain to z-domain.",
-        }
-    )
+rangayyan_ch3_bilinear_transformation = bilinear  # pre-policy spelling
 
 
 # -- rng128: Bilinear transform restricted to the unit circle (sigma=0)..
-def rangayyan_ch3_bilinear_unit_circle_relation(omega, T):
+def bilinunit(omega, T=1.0):
+    """Bilinear transformation on the unit circle, eq. (3.140).
+
+        s = sigma + jW = (2/T) (1 - e^-jw) / (1 + e^-jw)
+                       = (2j/T) tan(w/2)
+
+    On the unit circle sigma vanishes exactly, so the imaginary axis of
+    the s-plane maps onto the unit circle and nowhere else -- that is the
+    property that makes the frequency axes correspond at all.  The
+    residual real part is returned as a check; it should be zero to
+    rounding.
     """
-    Bilinear transform restricted to the unit circle (sigma=0).
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    direct, closed = [], []
+    for w in ws:
+        zc = complex(cos(w), sin(w))
+        den = 1.0 + zc ** -1
+        if abs(den) <= 1e-300:
+            raise ValueError("w = pi maps to s = infinity")
+        direct.append((2.0 / Tv) * (1.0 - zc ** -1) / den)
+        closed.append(complex(0.0, 2.0 * tan(w / 2.0) / Tv))
+    gap = max(abs(a - b) for a, b in zip(direct, closed))
+    sigma = max(abs(v.real) for v in direct)
+    return RichResult(payload={
+        "s": direct[0] if scalar else direct, "omega": omega, "T": Tv,
+        "closed_form": closed[0] if scalar else closed,
+        "max_difference": gap, "forms_agree": gap <= 1e-9,
+        "max_real_part": sigma, "sigma_vanishes": sigma <= 1e-9,
+        "method": "Rangayyan (2024) eq. (3.140)"})
 
-    Formula: s = sigma + j*Omega = (2/T) * (1 - exp(-j*omega))/(1 + exp(-j*omega)) = (2*j/T) * tan(omega/2)
 
-    Parameters
-    ----------
-    omega : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.140, p. 155
-    """
-    omega = np.atleast_1d(np.asarray(omega, dtype=float))
-    n = len(omega)
-    result = float(np.mean(omega))
-    se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bilinear transform restricted to the unit circle (sigma=0).",
-        }
-    )
+rangayyan_ch3_bilinear_unit_circle_relation = bilinunit  # pre-policy spelling
 
 
 # -- rng129: Bilinear frequency warping: analog Omega from discrete omega..
-def rangayyan_ch3_bilinear_warping_omega_to_Omega(omega, T):
+def bilinwarp(omega, T=1.0):
+    """Bilinear frequency warping, discrete to analog, eq. (3.141).
+
+        W = (2/T) tan(w/2)
+
+    The prewarping step.  It is nonlinear, so a digital cutoff cannot be
+    handed to an analog design unchanged: the whole infinite analog axis
+    is compressed into w in (-pi, pi), and the compression is severe near
+    Nyquist, where tan blows up.  Skipping this step puts the realized
+    cutoff below the one asked for, increasingly so as the cutoff nears
+    Nyquist.
     """
-    Bilinear frequency warping: analog Omega from discrete omega.
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    if any(abs(w) >= pi for w in ws):
+        raise ValueError("eq. (3.141) needs |w| < pi; w = pi maps to an "
+                         "infinite analog frequency")
+    out = [(2.0 / Tv) * tan(w / 2.0) for w in ws]
+    return RichResult(payload={
+        "Omega": out[0] if scalar else out, "omega": omega, "T": Tv,
+        "nonlinear": True, "prewarping_is_required": True,
+        "compression_is_severe_near_nyquist": True,
+        "method": "Rangayyan (2024) eq. (3.141)"})
 
-    Formula: Omega = (2/T) * tan(omega/2)
 
-    Parameters
-    ----------
-    omega : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.141, p. 155
-    """
-    omega = np.atleast_1d(np.asarray(omega, dtype=float))
-    n = len(omega)
-    result = float(np.mean(omega))
-    se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bilinear frequency warping: analog Omega from discrete omega.",
-        }
-    )
+rangayyan_ch3_bilinear_warping_omega_to_Omega = bilinwarp  # pre-policy spelling
 
 
 # -- rng130: Bilinear frequency warping: discrete omega from analog Omega..
-def rangayyan_ch3_bilinear_warping_Omega_to_omega(Omega, T):
+def bilinunwarp(Omega, T=1.0):
+    """Bilinear frequency warping, analog to discrete, eq. (3.142).
+
+        w = 2 arctan( W T / 2 )
+
+    The inverse of eq. (3.141), and the two compose to the identity,
+    which is checked here.  Every finite analog frequency lands strictly
+    inside (-pi, pi): the mapping is onto the open interval, so no analog
+    frequency ever reaches Nyquist.
     """
-    Bilinear frequency warping: discrete omega from analog Omega.
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    scalar = not isinstance(Omega, (list, tuple))
+    Ws = [float(Omega)] if scalar else [float(v) for v in Omega]
+    out = [2.0 * atan(W * Tv / 2.0) for W in Ws]
+    back = [(2.0 / Tv) * tan(w / 2.0) for w in out]
+    gap = max(abs(a - b) for a, b in zip(Ws, back)) if Ws else 0.0
+    return RichResult(payload={
+        "omega": out[0] if scalar else out, "Omega": Omega, "T": Tv,
+        "round_trip_error": gap, "inverts_eq_3_141": gap <= 1e-9,
+        "always_inside_the_open_interval": all(abs(w) < pi for w in out),
+        "method": "Rangayyan (2024) eq. (3.142)"})
 
-    Formula: omega = 2 * atan(Omega*T/2)
 
-    Parameters
-    ----------
-    Omega : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.142, p. 155
-    """
-    Omega = np.atleast_1d(np.asarray(Omega, dtype=float))
-    n = len(Omega)
-    result = float(np.mean(Omega))
-    se = float(np.std(Omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bilinear frequency warping: discrete omega from analog Omega.",
-        }
-    )
+rangayyan_ch3_bilinear_warping_Omega_to_omega = bilinunwarp  # pre-policy spelling
 
 
 # -- rng131: Digital Butterworth transfer function after bilinear transform (IIR form)..
-def rangayyan_ch3_butterworth_digital_transfer_function(z, a_k, G_prime, N):
+def bwdigital(Omega_c=None, N=None, T=1.0, fc=None, fs=None, z=None):
+    """Digital Butterworth after the bilinear transformation, eq. (3.143).
+
+        H(z) = G' (1 + z^-1)^N / sum_{k=0}^{N} a_k z^-k,   a_0 = 1
+
+    The N zeros at z = -1 are not a design choice: the bilinear transform
+    puts them there, because s = infinity maps to z = -1 and the analog
+    prototype has all its zeros at infinity.  G' is set to make |H(1)| = 1
+    at DC.
+
+    Give either the prewarped analog cutoff ``Omega_c``, or a digital
+    cutoff ``fc`` with the sampling rate ``fs``, in which case the
+    prewarping of eq. (3.141) is applied here rather than being left to
+    the caller to forget.
     """
-    Digital Butterworth transfer function after bilinear transform (IIR form).
+    Tv = float(T)
+    if Tv <= 0:
+        raise ValueError("the sampling interval T must be positive")
+    if N is None:
+        raise ValueError("the order N is required")
+    n = int(N)
+    if n < 1:
+        raise ValueError("the order N must be at least 1")
+    if (Omega_c is None) == (fc is None):
+        raise ValueError("give either the prewarped Omega_c or a digital "
+                         "cutoff fc with fs, not both and not neither")
+    if fc is not None:
+        if fs is None:
+            raise ValueError("fc needs the sampling rate fs")
+        fsv, fcv = float(fs), float(fc)
+        if not 0 < fcv < fsv / 2.0:
+            raise ValueError("the cutoff must lie strictly between 0 and "
+                             "the Nyquist frequency")
+        Tv = 1.0 / fsv
+        Wc = (2.0 / Tv) * tan(pi * fcv / fsv)
+        prewarped = True
+    else:
+        Wc = float(Omega_c)
+        if Wc <= 0:
+            raise ValueError("the cutoff Omega_c must be positive")
+        prewarped = False
 
-    Formula: H(z) = G' * (1 + z^(-1))^N / sum_{k=0}^{N} a_k * z^(-k)
+    poles_s = bwpoles(Wc, n)["left_half_plane"]
+    # map each analog pole through the bilinear transform
+    poles_z = []
+    for p in poles_s:
+        poles_z.append((2.0 / Tv + p) / (2.0 / Tv - p))
+    den = [c.real for c in _poly_from_roots(poles_z)]
+    den = [c / den[-1] for c in den]              # a_0 = 1 in z^-1 form
+    a = list(reversed(den))
+    num = [c.real for c in _poly_from_roots([-1.0] * n)]
+    b = list(reversed(num))
+    dc_num = fsum(b)
+    dc_den = fsum(a)
+    if abs(dc_num) <= 1e-300:
+        raise ValueError("the numerator vanishes at DC")
+    Gp = dc_den / dc_num
+    b = [Gp * v for v in b]
+    Hz = None
+    if z is not None:
+        scalar = not isinstance(z, (list, tuple))
+        zs = [z] if scalar else list(z)
+        vals = []
+        for zv in zs:
+            dd = _polyz(a, zv)
+            if abs(dd) <= 1e-300:
+                raise ValueError("z is a pole of H(z)")
+            vals.append(_polyz(b, zv) / dd)
+        Hz = vals[0] if scalar else vals
+    return RichResult(payload={
+        "b": b, "a": a, "gain": Gp, "poles_z": poles_z, "H": Hz,
+        "N": n, "Omega_c": Wc, "T": Tv, "prewarped_here": prewarped,
+        "zeros_at_minus_one": n,
+        "zeros_are_forced_by_the_bilinear_transform": True,
+        "dc_gain": 1.0, "leading_a_is_one": abs(a[0] - 1.0) < 1e-12,
+        "method": "Rangayyan (2024) eq. (3.143)"})
 
-    Parameters
-    ----------
-    z : array-like
-        Input data.
-    a_k : array-like
-        Input data.
-    G_prime : array-like
-        Input data.
-    N : array-like
-        Input data.
 
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.143, p. 155
-    """
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Digital Butterworth transfer function after bilinear transform (IIR form).",
-        }
-    )
+rangayyan_ch3_butterworth_digital_transfer_function = bwdigital  # pre-policy spelling
 
 
 # -- rng132: General time-domain difference equation of an IIR filter..
-def rangayyan_ch3_iir_difference_eq_general(x, y, b_k, a_k, N, n):
+def iirdiffgen(x, b_k, a_k=None, n=None):
+    """General IIR difference equation, eq. (3.144).
+
+        y(n) = sum_{k=0}^{N} b_k x(n-k) - sum_{k=1}^{N} a_k y(n-k)
+
+    The time-domain form of eq. (3.143), and how a designed filter is
+    actually run over data.  As in eq. (3.68) the feedback is SUBTRACTED,
+    and ``a_k`` is a_1..a_N without the leading a_0 = 1.
+
+    This is the same recursion as ``iirdiff``; it is kept under its own
+    name because the book states it separately as the realization step
+    that follows the bilinear design.
     """
-    General time-domain difference equation of an IIR filter.
+    return iirdiff(x, b_k, a_k=a_k, n=n)
 
-    Formula: y(n) = sum_{k=0}^{N} b_k x(n-k) - sum_{k=1}^{N} a_k y(n-k)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    b_k : array-like
-        Input data.
-    a_k : array-like
-        Input data.
-    N : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.144, p. 155
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "General time-domain difference equation of an IIR filter.",
-        }
-    )
+rangayyan_ch3_iir_difference_eq_general = iirdiffgen  # pre-policy spelling
 
 
 # -- rng133: Direct discrete-domain specification of the Butterworth lowpass response..
-def rangayyan_ch3_butterworth_lowpass_direct_specification(omega, omega_c, N):
+def bwdirect(omega, omega_c, N):
+    """Butterworth lowpass specified directly in discrete frequency,
+    eq. (3.145).
+
+        |H(w)|^2 = 1 / ( 1 + (w/w_c)^{2N} )
+
+    Specifying the response on the discrete-frequency axis outright, with
+    no analog prototype and no bilinear transform, so there is no warping
+    to prewarp for: w_c is the cutoff that will actually be realized.
+
+    The filter so defined has zero phase, which is only usable when the
+    whole record is in hand and the filtering is done in the frequency
+    domain -- it is not causal and cannot be run sample by sample.
     """
-    Direct discrete-domain specification of the Butterworth lowpass response.
+    wc = float(omega_c)
+    if wc <= 0:
+        raise ValueError("the cutoff omega_c must be positive")
+    n = int(N)
+    if n < 1:
+        raise ValueError("the order N must be at least 1")
+    scalar = not isinstance(omega, (list, tuple))
+    ws = [float(omega)] if scalar else [float(v) for v in omega]
+    sq = [1.0 / (1.0 + (abs(w) / wc) ** (2 * n)) for w in ws]
+    return RichResult(payload={
+        "squared_magnitude": sq[0] if scalar else sq,
+        "magnitude": (sq[0] ** 0.5) if scalar else [v ** 0.5 for v in sq],
+        "omega": omega, "omega_c": wc, "N": n,
+        "half_power_at_cutoff": 0.5, "no_warping": True,
+        "zero_phase": True, "not_causal": True,
+        "method": "Rangayyan (2024) eq. (3.145)"})
 
-    Formula: |H(omega)|^2 = 1 / (1 + (omega/omega_c)^(2*N))
 
-    Parameters
-    ----------
-    omega : array-like
-        Input data.
-    omega_c : array-like
-        Input data.
-    N : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.145, p. 155
-    """
-    omega = np.atleast_1d(np.asarray(omega, dtype=float))
-    n = len(omega)
-    result = float(np.mean(omega))
-    se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Direct discrete-domain specification of the Butterworth lowpass response.",
-        }
-    )
+rangayyan_ch3_butterworth_lowpass_direct_specification = bwdirect  # pre-policy spelling
 
 
 # -- rng134: Butterworth lowpass response indexed by DFT bin k..
-def rangayyan_ch3_butterworth_lowpass_dft_indexed(k, k_c, N):
+def bwlpdft(K, kc=None, N=2, fc=None, fs=None):
+    """Butterworth lowpass indexed by DFT bin, eq. (3.146).
+
+        |H(k)|^2 = 1 / ( 1 + (k/k_c)^{2N} )
+
+    valid for k = 0, 1, ..., K/2, with the upper half a reflection,
+    H(k) = H(K - k).  The book defines the cutoff index as
+    k_c = ceil( K w_c / w_s ), and that CEILING matters: rounding down
+    puts the realized cutoff below the one requested.
+
+    Give k_c directly, or a cutoff ``fc`` with the sampling rate ``fs``
+    and it is computed the book's way.  The full length-K response is
+    returned with the reflection already applied, so it can be multiplied
+    straight onto a DFT array.
     """
-    Butterworth lowpass response indexed by DFT bin k.
+    Kv = int(K)
+    if Kv < 2:
+        raise ValueError("the DFT length K must be at least 2")
+    n = int(N)
+    if n < 1:
+        raise ValueError("the order N must be at least 1")
+    if (kc is None) == (fc is None):
+        raise ValueError("give either the cutoff index kc or a cutoff fc "
+                         "with fs, not both and not neither")
+    if fc is not None:
+        if fs is None:
+            raise ValueError("fc needs the sampling rate fs")
+        fsv, fcv = float(fs), float(fc)
+        if not 0 < fcv < fsv / 2.0:
+            raise ValueError("the cutoff must lie strictly between 0 and "
+                             "the Nyquist frequency")
+        kcv = int(ceil(Kv * fcv / fsv))
+    else:
+        kcv = int(kc)
+    if kcv < 1:
+        raise ValueError("the cutoff index must be at least 1")
+    half = Kv // 2
+    sq = [1.0 / (1.0 + (k / kcv) ** (2 * n)) for k in range(half + 1)]
+    full = list(sq)
+    for k in range(half + 1, Kv):
+        full.append(sq[Kv - k])
+    return RichResult(payload={
+        "squared_magnitude": full,
+        "magnitude": [v ** 0.5 for v in full],
+        "half_spectrum": sq, "K": Kv, "kc": kcv, "N": n,
+        "dc_gain": 1.0, "reflected": True,
+        "cutoff_index_uses_a_ceiling": True,
+        "method": "Rangayyan (2024) eq. (3.146)"})
 
-    Formula: |H(k)|^2 = 1 / (1 + (k/k_c)^(2*N))
 
-    Parameters
-    ----------
-    k : array-like
-        Input data.
-    k_c : array-like
-        Input data.
-    N : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.146, p. 156
-    """
-    k = np.atleast_1d(np.asarray(k, dtype=float))
-    n = len(k)
-    result = float(np.mean(k))
-    se = float(np.std(k, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Butterworth lowpass response indexed by DFT bin k."}
-    )
+rangayyan_ch3_butterworth_lowpass_dft_indexed = bwlpdft  # pre-policy spelling
 
 
 # -- rng135: Butterworth highpass response indexed by DFT bin k..
-def rangayyan_ch3_butterworth_highpass_dft_indexed(k, k_c, N):
+def bwhpdft(K, kc=None, N=2, fc=None, fs=None):
+    """Butterworth highpass indexed by DFT bin, eq. (3.149).
+
+        |H(k)|^2 = 1 / ( 1 + (k_c/k)^{2N} )
+
+    The lowpass of eq. (3.146) with the ratio inverted.  At k = 0 the
+    ratio is unbounded and the response is exactly nought, which is the
+    whole point -- this is the filter the book uses to strip baseline
+    drift from an ECG, eighth order with a 2 Hz cutoff.
+
+    The book is careful that removing the low-frequency artifact leaves
+    high-frequency noise untouched; a highpass is not a denoiser.
     """
-    Butterworth highpass response indexed by DFT bin k.
+    Kv = int(K)
+    if Kv < 2:
+        raise ValueError("the DFT length K must be at least 2")
+    n = int(N)
+    if n < 1:
+        raise ValueError("the order N must be at least 1")
+    if (kc is None) == (fc is None):
+        raise ValueError("give either the cutoff index kc or a cutoff fc "
+                         "with fs, not both and not neither")
+    if fc is not None:
+        if fs is None:
+            raise ValueError("fc needs the sampling rate fs")
+        fsv, fcv = float(fs), float(fc)
+        if not 0 < fcv < fsv / 2.0:
+            raise ValueError("the cutoff must lie strictly between 0 and "
+                             "the Nyquist frequency")
+        kcv = int(ceil(Kv * fcv / fsv))
+    else:
+        kcv = int(kc)
+    if kcv < 1:
+        raise ValueError("the cutoff index must be at least 1")
+    half = Kv // 2
+    sq = [0.0]
+    for k in range(1, half + 1):
+        sq.append(1.0 / (1.0 + (kcv / k) ** (2 * n)))
+    full = list(sq)
+    for k in range(half + 1, Kv):
+        full.append(sq[Kv - k])
+    return RichResult(payload={
+        "squared_magnitude": full,
+        "magnitude": [v ** 0.5 for v in full],
+        "half_spectrum": sq, "K": Kv, "kc": kcv, "N": n,
+        "dc_gain": 0.0, "reflected": True,
+        "leaves_high_frequency_noise_untouched": True,
+        "method": "Rangayyan (2024) eq. (3.149)"})
 
-    Formula: |H(k)|^2 = 1 / (1 + (k_c/k)^(2*N))
 
-    Parameters
-    ----------
-    k : array-like
-        Input data.
-    k_c : array-like
-        Input data.
-    N : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.149, p. 161
-    """
-    k = np.atleast_1d(np.asarray(k, dtype=float))
-    n = len(k)
-    result = float(np.mean(k))
-    se = float(np.std(k, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Butterworth highpass response indexed by DFT bin k."}
-    )
+rangayyan_ch3_butterworth_highpass_dft_indexed = bwhpdft  # pre-policy spelling
 
 
 # -- rng136: Notch filter with two zeros at 60 Hz on the unit circle..
-def rangayyan_ch3_notch_filter_60Hz(z):
+def notch60(fs, f0=60.0, z=None):
+    """Notch filter with two zeros on the unit circle, Section 3.7.
+
+        H(z) = G ( 1 - 2 cos(w_0) z^-1 + z^-2 ),   w_0 = 2 pi f_0 / f_s
+
+    A conjugate pair of zeros AT the interference frequency, so the gain
+    there is exactly nought.  With zeros alone the notch is wide: the
+    response is pulled down over a broad band either side, which is why
+    the book goes on to add poles just inside the zeros to narrow it.
+
+    G normalizes the DC gain to unity.  The zeros lie on the unit circle,
+    so this filter is FIR and has exactly linear phase.
     """
-    Notch filter with two zeros at 60 Hz on the unit circle.
+    fsv = float(fs)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    f0v = float(f0)
+    if not 0 < f0v < fsv / 2.0:
+        raise ValueError("the notch frequency must lie strictly between 0 "
+                         "and the Nyquist frequency")
+    w0 = 2.0 * pi * f0v / fsv
+    b = [1.0, -2.0 * cos(w0), 1.0]
+    dc = fsum(b)
+    if abs(dc) <= 1e-300:
+        raise ValueError("the notch sits at DC; the gain cannot be "
+                         "normalized there")
+    G = 1.0 / dc
+    b = [G * v for v in b]
+    Hz = None
+    if z is not None:
+        scalar = not isinstance(z, (list, tuple))
+        zs = [z] if scalar else list(z)
+        vals = [_polyz(b, zv) for zv in zs]
+        Hz = vals[0] if scalar else vals
+    zeros = [complex(cos(w0), sin(w0)), complex(cos(w0), -sin(w0))]
+    return RichResult(payload={
+        "b": b, "a": [1.0], "gain": G, "zeros": zeros, "H": Hz,
+        "f0": f0v, "fs": fsv, "omega_0": w0,
+        "gain_at_the_notch": abs(_polyz(b, complex(cos(w0), sin(w0)))),
+        "dc_gain": 1.0, "fir": True, "linear_phase": True,
+        "notch_is_wide_without_poles": True,
+        "method": "Rangayyan (2024) Section 3.7 (notch filter with two "
+                  "zeros)"})
 
-    Formula: H(z) = (1 - z^(-1)*z_1)(1 - z^(-1)*z_2) = 1 - 1.85955*z^(-1) + z^(-2)
 
-    Parameters
-    ----------
-    z : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.150, p. 164
-    """
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Notch filter with two zeros at 60 Hz on the unit circle.",
-        }
-    )
+rangayyan_ch3_notch_filter_60Hz = notch60  # pre-policy spelling
 
 
 # -- rng226: Matched-filter impulse response for the basic pattern g(n)..
-def rangayyan_ch4_matched_filter_h_example(n):
+def mfilth(g, normalize=False):
+    """Matched-filter impulse response for a pattern g(n), Chapter 4.
+
+        h(n) = g(N - 1 - n)
+
+    The template reversed in time, which is what makes the filter's
+    output at each instant the cross-correlation of the signal with the
+    template.  Reversal is the whole content: convolving with the
+    unreversed template correlates with a mirrored pattern and peaks in
+    the wrong place.
+
+    The peak lands at index N - 1 when the template is aligned with the
+    start of the record, not at 0; that offset is returned so it need not
+    be rediscovered.  With ``normalize`` the response is scaled to unit
+    energy, which makes outputs comparable across templates.
     """
-    Matched-filter impulse response for the basic pattern g(n).
+    gs = aslist(g)
+    if not gs:
+        raise ValueError("the template needs at least one sample")
+    h = list(reversed(gs))
+    energy = fsum(v * v for v in gs)
+    if normalize:
+        if energy <= 0:
+            raise ValueError("a template with no energy cannot be "
+                             "normalized")
+        h = [v / (energy ** 0.5) for v in h]
+    return RichResult(payload={
+        "h": h, "template": list(gs), "n": len(h),
+        "energy": energy, "normalized": bool(normalize),
+        "peak_index": len(gs) - 1, "time_reversed": True,
+        "output_is_the_cross_correlation": True,
+        "method": "Rangayyan (2024) Ch. 4 (matched filter)"})
 
-    Formula: h(n) = delta(n) + 2*delta(n-1) + 3*delta(n-2)
 
-    Parameters
-    ----------
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 4, Eq 4.54, p. 241
-    """
-    n = np.atleast_1d(np.asarray(n, dtype=float))
-    n = len(n)
-    result = float(np.mean(n))
-    se = float(np.std(n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Matched-filter impulse response for the basic pattern g(n).",
-        }
-    )
+rangayyan_ch4_matched_filter_h_example = mfilth  # pre-policy spelling
 
 
 _CHEATSHEET = [
-    'rgbhp: Butterworth highpass filter design.',
-    'rgblp: Butterworth lowpass filter design (analog prototype to digital).',
-    'rgcomb: Comb filter for periodic artifact removal.',
-    'rgfd1: First-difference operator for baseline wander removal.',
-    'rgfd2: Second-difference operator.',
+    'Butterworth highpass design',
+    'Butterworth lowpass design, eqs. (3.135)-(3.143)',
+    'comb filter, notches at every multiple of fs/N',
+    'first difference applied to a record',
+    'second-order difference operator',
     'rgfir: FIR filter design (windowed sinc) -- see rangayyan_fir_filter for sources.',
-    'rgfresp: Frequency response H(f) of a digital filter from coefficients.',
-    'rggrpd: Group delay of a digital filter.',
+    'frequency response from filter coefficients',
+    'group delay from the unwrapped phase',
     'rgiir: IIR Butterworth filter -- Rangayyan & Krishnan Sec 3.7.1 / 3.7.2.',
     'rgmavg: Moving-average filter.',
-    'rgntch: Notch filter for powerline interference removal (50/60 Hz).',
-    'order-statistic filters: min, max, median, trimmed, L, Section 3.8',
-    'rgphas: Phase response of a digital filter.',
-    'rgsinc: Ideal sinc (low-pass) filter impulse response.',
+    'notch filter with two zeros and two poles',
+    'rgosflt: Order-statistic (median) filter.',
+    'phase response, unwrapped by default',
+    'ideal sinc lowpass kernel, optionally windowed',
     'rgtfe: Transfer function estimate.',
-    'rgwblkm: Blackman window function.',
-    'rgwhamp: Hamming window function.',
-    'rgwhann: Hann (Hanning) window function.',
-    'rgwndw: Window functions: Hamming, Hann, Blackman for spectral leakage control.',
+    'Blackman window',
+    'Hamming window',
+    'Hann window',
+    'window functions: rectangular, Hann, Hamming, Blackman',
     'rng011: Shannon entropy of a discrete process (Rangayyan eq. 3.11).',
     'rng039: 11-point moving average.',
     'rng040: Linear-ramp smoothing filter (Rangayyan eq. 3.42).',
