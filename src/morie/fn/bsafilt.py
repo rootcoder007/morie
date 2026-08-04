@@ -29,6 +29,7 @@ __all__ = [
     'rangayyan_iir_filter',
     'rangayyan_moving_average',
     'rangayyan_notch_filter',
+    'osfilt',
     'rangayyan_order_stat_flt',
     'rangayyan_phase_response',
     'rangayyan_sinc_kernel',
@@ -140,7 +141,6 @@ def _polyz(coefs, z):
     if zc == 0:
         raise ValueError("z = 0 is a pole of a causal transfer function")
     return sum(c * zc ** (-k) for k, c in enumerate(coefs))
-
 
 
 # -- rgbhp: Butterworth highpass filter design.
@@ -669,62 +669,116 @@ def rangayyan_notch_filter(notch_freq, bandwidth, fs):
 
 
 # -- rgosflt: Order-statistic (median) filter.
-def rangayyan_order_stat_flt(x, window, cdf=None):
+def osfilt(x, window, kind="median", alpha=0.0, weights=None, order=None):
+    """Order-statistic filters, Rangayyan (2024) Section 3.8.
+
+    Rank the samples in a moving window and take one entry, or a
+    combination of entries, as the output:
+
+      "min"      first entry; removes high-valued impulsive noise
+      "max"      last entry; removes low-valued impulsive noise
+      "minmax"   the min filter followed by the max filter
+      "median"   the middle entry -- the book's "most popular and
+                 commonly used" order-statistic filter
+      "trimmed"  mean of the list after dropping the lowest and highest
+                 alpha x 100 per cent, 0 <= alpha < 0.5
+      "l"        L-filter, a weighted combination of the whole ranked
+                 list; suitable weights reproduce any of the above
+      "order"    the ith entry outright, ``order`` counting from 1
+
+    All of these are NONLINEAR, so, as the book notes, none of them can
+    be analysed with the Fourier transform: there is no frequency
+    response to report and none is returned.
+
+    The window is centred and odd-length, and the edges are handled by
+    symmetric reflection so the output is the same length as the input
+    and no artificial step is introduced at either end.
     """
-    Order-statistic (median) filter
+    xs = aslist(x)
+    n = len(xs)
+    if n == 0:
+        raise ValueError("need at least one sample")
+    w = int(window)
+    if w < 1:
+        raise ValueError("the window must hold at least one sample")
+    if w % 2 == 0:
+        raise ValueError("the window must be odd so it can be centred, "
+                         "got %d" % w)
+    if w > n:
+        raise ValueError("the window is longer than the record")
+    kinds = ("min", "max", "minmax", "median", "trimmed", "l", "order")
+    if kind not in kinds:
+        raise ValueError("kind must be one of %s, got %r"
+                         % (", ".join(kinds), kind))
+    av = float(alpha)
+    if kind == "trimmed" and not 0.0 <= av < 0.5:
+        raise ValueError("the book writes 0 <= alpha < 0.5; at 0.5 the "
+                         "whole list is trimmed away, got %g" % av)
+    if kind == "l":
+        if weights is None:
+            raise ValueError("the L-filter needs one weight per rank")
+        wts = aslist(weights)
+        if len(wts) != w:
+            raise ValueError("the L-filter needs %d weights, one per "
+                             "rank, got %d" % (w, len(wts)))
+        tot = fsum(wts)
+        if abs(tot) <= 1e-300:
+            raise ValueError("the L-filter weights sum to zero")
+    if kind == "order":
+        if order is None:
+            raise ValueError("kind='order' needs the rank to take")
+        i_ord = int(order)
+        if not 1 <= i_ord <= w:
+            raise ValueError("order must lie in 1..%d, got %d"
+                             % (w, i_ord))
 
-    Formula: y[n] = median(x[n-k], ..., x[n+k])
+    half = w // 2
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    window : array-like
-        Input data.
+    def padded(seq):
+        # whole-sample symmetric reflection: the edge value is repeated,
+        # so a monotone run passes through a median filter untouched.
+        # Half-sample reflection (dropping the edge) shifts the ends by a
+        # sample, which shows up as a spurious step in the output.
+        left = list(reversed(seq[:half]))
+        right = list(reversed(seq[len(seq) - half:]))
+        return left + list(seq) + right
 
-    Returns
-    -------
-    result : dict
-        Keys: y
+    def rank_pass(seq, take):
+        pad = padded(seq)
+        return [take(sorted(pad[i:i + w])) for i in range(len(seq))]
 
-    References
-    ----------
-    Rangayyan Ch 3.8
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Order-statistic (median) filter"}
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
+    if kind == "min":
+        out = rank_pass(xs, lambda r: r[0])
+    elif kind == "max":
+        out = rank_pass(xs, lambda r: r[-1])
+    elif kind == "minmax":
+        out = rank_pass(rank_pass(xs, lambda r: r[0]), lambda r: r[-1])
+    elif kind == "median":
+        out = rank_pass(xs, lambda r: r[half])
+    elif kind == "order":
+        out = rank_pass(xs, lambda r: r[i_ord - 1])
+    elif kind == "trimmed":
+        drop = int(av * w)
+        if 2 * drop >= w:
+            drop = (w - 1) // 2
+        out = rank_pass(xs, lambda r: fsum(r[drop:w - drop])
+                        / (w - 2 * drop))
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Order-statistic (median) filter",
-        }
-    )
+        out = rank_pass(xs, lambda r: fsum(a * b for a, b in zip(wts, r))
+                        / tot)
+
+    return RichResult(payload={
+        "y": out, "n": len(out), "window": w, "kind": kind,
+        "alpha": av if kind == "trimmed" else None,
+        "trimmed_each_end": int(av * w) if kind == "trimmed" else None,
+        "order": i_ord if kind == "order" else None,
+        "nonlinear": True, "no_frequency_response": True,
+        "edges": "symmetric reflection",
+        "method": "Rangayyan (2024) Section 3.8 (order-statistic "
+                  "filters)"})
+
+
+rangayyan_order_stat_flt = osfilt  # pre-policy spelling
 
 
 # -- rgphas: Phase response of a digital filter.
@@ -3335,7 +3389,7 @@ _CHEATSHEET = [
     'rgiir: IIR Butterworth filter -- Rangayyan & Krishnan Sec 3.7.1 / 3.7.2.',
     'rgmavg: Moving-average filter.',
     'rgntch: Notch filter for powerline interference removal (50/60 Hz).',
-    'rgosflt: Order-statistic (median) filter.',
+    'order-statistic filters: min, max, median, trimmed, L, Section 3.8',
     'rgphas: Phase response of a digital filter.',
     'rgsinc: Ideal sinc (low-pass) filter impulse response.',
     'rgtfe: Transfer function estimate.',
@@ -3346,25 +3400,25 @@ _CHEATSHEET = [
     'rng011: Shannon entropy of a discrete process (Rangayyan eq. 3.11).',
     'rng039: 11-point moving average.',
     'rng040: Linear-ramp smoothing filter (Rangayyan eq. 3.42).',
-    'series LSI systems: h = h1 * h2, eq. (3.45)',
-    'parallel LSI systems: h = h1 + h2, eq. (3.49)',
-    'Laplace transform of h(t), eq. (3.50)',
-    'H(omega) = H(s) on s = j omega, eq. (3.52)',
+    'rng043: Combined impulse response of two LSI systems in series is their convolution..',
+    'rng047: Combined impulse response of two LSI systems in parallel is their sum..',
+    'rng048: Bilateral Laplace transform of an impulse response h(t)..',
+    'rng050: Frequency response obtained by evaluating the Laplace transform on the imaginary axis..',
     'rng053: Z-transform of a causal FIR system of length N (transfer function).',
-    'rational IIR transfer function, eq. (3.67)',
-    'IIR difference equation, eq. (3.68)',
-    'magnitude from pole-zero distances, eq. (3.72)',
-    'phase from pole-zero angles, eq. (3.73)',
-    'general FIR / moving-average filter, eqs. (3.97)-(3.99)',
-    'FIR transfer function, eq. (3.99)',
-    'Hann smoothing filter, eq. (3.100)',
-    'Hann impulse response, eq. (3.101)',
-    'Hann filter output in z, eq. (3.102)',
-    'Hann transfer function, double zero at z=-1, eq. (3.103)',
-    'Hann frequency response, raw form, eq. (3.104)',
-    'Hann frequency response, simplified, eq. (3.105)',
-    'Hann magnitude response, eq. (3.106)',
-    'Hann phase response, eq. (3.107)',
+    'rng056: Generic rational transfer function of an IIR filter..',
+    'rng057: Time-domain difference equation form of an IIR filter..',
+    'rng061: Magnitude response from products of distances to zeros and poles..',
+    'rng062: Phase response from sums of angles to zeros and poles..',
+    'rng087: General FIR filter.',
+    'rng088: Transfer function of a generic MA (FIR) filter of order N..',
+    'rng089: Time-domain difference equation of the von Hann (Hanning) smoothing filter..',
+    'rng090: Impulse response of the Hann smoothing filter..',
+    'rng091: Z-domain expression for the Hann filter output..',
+    'rng092: Transfer function of the Hann filter (double zero at z=-1)..',
+    'rng093: Frequency response of the Hann filter on the unit circle..',
+    'rng094: Simplified closed-form frequency response of the Hann filter..',
+    'rng095: Magnitude response of the Hann filter..',
+    'rng096: Linear phase response of the Hann filter..',
     'rng097: 8-point moving average.',
     'rng098: Impulse response of the 8-point MA filter as a sum of shifted deltas..',
     'rng099: Transfer function of the 8-point MA filter..',
