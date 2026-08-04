@@ -2760,6 +2760,64 @@ class ndlist(list):
             return v
         return [conv(v) for v in self]
 
+    def _flat(self):
+        def walk(v):
+            if isinstance(v, marr):
+                for x in v._flat():
+                    yield x
+            elif isinstance(v, list):
+                for x in v:
+                    for y in walk(x):
+                        yield y
+            else:
+                yield float(v)
+        return walk(self)
+
+    def reshape(self, *shape):
+        """Row-major reshape, with a single -1 inferred, as numpy does.
+
+        Returns marr for rank 1 or 2 (the rank-2 core) and ndlist above
+        that. ndlist had no reshape at all, so the common
+        stack(...).reshape(-1, n) idiom could not complete.
+        """
+        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+            shape = tuple(shape[0])
+        flat = list(self._flat())
+        dims = [int(d) for d in shape]
+        if dims.count(-1) > 1:
+            raise ValueError("can only specify one unknown dimension")
+        if -1 in dims:
+            known = 1
+            for d in dims:
+                if d != -1:
+                    known *= d
+            if known <= 0 or len(flat) % known:
+                raise ValueError(
+                    "cannot reshape %d values into %s"
+                    % (len(flat), tuple(shape)))
+            dims[dims.index(-1)] = len(flat) // known
+        total = 1
+        for d in dims:
+            total *= d
+        if total != len(flat):
+            raise ValueError("cannot reshape %d values into %s"
+                             % (len(flat), tuple(dims)))
+        if len(dims) == 1:
+            return marr(flat)
+        if len(dims) == 2:
+            nc = dims[1]
+            return marr([flat[i * nc:(i + 1) * nc] for i in range(dims[0])])
+
+        def build(vals, ds):
+            if len(ds) == 1:
+                return list(vals)
+            step = 1
+            for d in ds[1:]:
+                step *= d
+            return [build(vals[i * step:(i + 1) * step], ds[1:])
+                    for i in range(ds[0])]
+        return ndlist(build(flat, dims))
+
     def _ew(self, other, fn):
         if isinstance(other, ndlist):
             # blockwise: zip leading axis, marr broadcasting handles
@@ -2933,7 +2991,22 @@ def stack(parts, axis=0):
             # rank-3 result surfaces as a nested list (rank-2 core)
             return ndlist([[row[:] for row in a2.data]
                            for a2 in arrs])
-        raise ValueError("stack: 2-D parts support axis=0 only")
+        if axis in (2, -1):
+            # new trailing axis: out[i][j][p] = parts[p][i][j]. This is
+            # the meshgrid -> coordinate-pairs idiom,
+            # stack(meshgrid(g, g), -1).reshape(-1, 2), which previously
+            # raised before any caller reached its own code.
+            nr, nc = arrs[0].shape
+            for a2 in arrs:
+                if tuple(a2.shape) != (nr, nc):
+                    raise ValueError(
+                        "stack: all parts must have the same shape, got "
+                        "%s and %s" % (tuple(arrs[0].shape),
+                                       tuple(a2.shape)))
+            return ndlist([[[a2.data[i][j] for a2 in arrs]
+                            for j in range(nc)] for i in range(nr)])
+        raise ValueError(
+            "stack: 2-D parts support axis 0, 2 or -1; got %r" % (axis,))
     rows = [a2._flat() for a2 in arrs]
     if axis in (0, None):
         return marr(rows)
