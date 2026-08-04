@@ -4,27 +4,46 @@
 Book section read: Montesinos Lopez, Montesinos Lopez and Crossa (2022),
 *Multivariate Statistical Machine Learning Methods for Genomic
 Prediction*, Springer -- volume [Pages 209-249], Chapter 7, Section 7.2
-"Bayesian Ordinal Regression Model", equation (7.2) and the numbered
-Gibbs sampler on pp. 213-214.  The chapter attributes the scheme to
-Albert, J. H. and Chib, S. (1993), Bayesian analysis of binary and
-polychotomous response data, *Journal of the American Statistical
-Association* 88(422), 669-679, which its reference list carries.
+"Bayesian Ordinal Regression Model", equation (7.2) on p. 214 and the
+numbered Gibbs samplers on pp. 212 and 214, all read as rendered page
+images.  The chapter attributes the scheme to Albert, J. H. and Chib, S.
+(1993), Bayesian analysis of binary and polychotomous response data,
+*Journal of the American Statistical Association* 88(422), 669-679,
+which its reference list carries.
 
 Equation (7.2) is p_ic = P(Y_i = c) = Phi(gamma_c + b_i) -
-Phi(gamma_{c-1} + b_i), with L_i = -b_i + E_i the latent variable and
-L = b + e, e ~ N_n(0, I_n).  Step 2 of the sampler is: "For each
-i = 1, ..., n, simulate l_i from the normal distribution N(x_i' beta, 1)
-truncated in (gamma_{y_i - 1}, gamma_{y_i})", and step 3 draws b from
-N(b~, Sigma~_b) with Sigma~_b = (sigma_g^-2 G^-1 + I_n)^-1 and
-b~ = Sigma~_b l.
+Phi(gamma_{c-1} + b_i), c = 1, ..., C, "where now L_i = - b_i + epsilon_i
+is the latent variable".  Step 2 of the sampler is: "For each
+i = 1, ..., n, simulate l_i from the normal distribution
+N(-x_i^T beta, 1) truncated in (gamma_{y_i - 1}, gamma_{y_i})", and step
+3 draws b from N_n(b~, Sigma~_b) with
+Sigma~_b = (sigma_g^-2 G^-1 + I_n)^-1 and b~ = - Sigma~_b l.
 
-DETERMINISM.  Steps 2 and 3 are not simulated.  The latent l_i is set to
-the exact mean of its truncated normal -- for the binary thresholds
+SIGN CONVENTION, stated because the book's minus signs are load-bearing
+and the PDF text layer drops them.  The book's latent has mean MINUS the
+linear predictor, and its b~ and its
+beta~_j = - sigma~^2_{beta_j} (x_j^T e_j) on p. 212 carry the matching
+minus.  This implementation works with lstar = -l, the latent on the
+positive orientation, so lstar has mean +eta and step 3 becomes
+b~ = Sigma~_b lstar.  The two are algebraically the same model and the
+returned beta and b are on the book's own scale; only z_samples and
+estimate, which are lstar, are the negatives of the book's l.
+
+A third erratum in this book, recorded here.  Page 214 writes "L_i = -
+b_i + epsilon_i is the latent variable" and then, in the very next
+sentence, "In matrix form the model for the latent variable can be
+specified as L = b + epsilon".  Those two contradict each other; the
+elementwise form is the one consistent with equation (7.2), with
+b~ = - Sigma~_b l, and with the beta step on p. 212, so the matrix line
+is the misprint.
+
+DETERMINISM.  Steps 2 and 3 are not simulated.  The latent is set to the
+exact mean of its truncated normal -- for the binary thresholds
 (-inf, 0, +inf) that is eta_i + phi(eta_i)/Phi(eta_i) when y_i = 1 and
 eta_i - phi(eta_i)/(1 - Phi(eta_i)) when y_i = 0 -- and step 3 is
-replaced by its conditional mean Sigma~_b l.  Iterating those two exact
-conditional means is the EM fixed point of the same augmentation, so
-both arms land on identical numbers rather than on the same posterior.
+replaced by its conditional mean.  Iterating those two exact conditional
+means is the EM fixed point of the same augmentation, so both arms land
+on identical numbers rather than on the same posterior.
 """
 
 from __future__ import annotations
