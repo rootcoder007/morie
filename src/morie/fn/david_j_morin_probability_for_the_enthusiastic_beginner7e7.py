@@ -1,38 +1,22 @@
-"""Taylor series e^x = sum x^k/k!.
+"""Deprecated alias for :func:`morie.fn.exptaylor`.
 
-Implements eq (7.7) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .exptaylor import exptaylor as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_7"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_7(x, terms=30):
-    """Taylor series e^x = sum x^k/k!.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (7.7).
-    """
-    partials, closed = _morin.exp_taylor(x, terms)
-    payload = {"partial_sums": partials, "e_x": closed,
-               "final_error": abs(partials[-1] - closed)}
-    lines = [("series", partials[-1]), ("e^x", closed)]
-    return RichResult(
-        title="Taylor series e^x = sum x^k/k!.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.exptaylor` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_7() is the book-coordinate name for exptaylor(); "
+        "it will be removed. Use morie.fn.exptaylor() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner7e7: Taylor series e^x = sum x^k/k!. Morin (2016) eq (7.7)."
+    return _impl(x, terms)

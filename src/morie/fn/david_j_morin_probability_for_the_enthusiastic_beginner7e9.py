@@ -1,40 +1,22 @@
-"""Small-x approximation e^x ~ 1 + x.
+"""Deprecated alias for :func:`morie.fn.explinapx`.
 
-Implements eq (7.9) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .explinapx import explinapx as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_9"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_9(x):
-    """Small-x approximation e^x ~ 1 + x.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (7.9).
-    """
-    x_f = float(x)
-    exact = math.exp(x_f)
-    approx = 1.0 + x_f
-    payload = {"exact": exact, "approx": approx,
-               "abs_error": abs(exact - approx)}
-    lines = [("1 + x", approx), ("e^x", exact)]
-    return RichResult(
-        title="Small-x approximation e^x ~ 1 + x.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.explinapx` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_9() is the book-coordinate name for explinapx(); "
+        "it will be removed. Use morie.fn.explinapx() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner7e9: Small-x approximation e^x ~ 1 + x. Morin (2016) eq (7.9)."
+    return _impl(x)
