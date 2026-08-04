@@ -6,6 +6,7 @@ one-function modules named after book coordinates; the public
 symbols are unchanged.
 """
 
+from fractions import Fraction
 from math import erf, exp, fsum, lgamma as _lgamma, log, pi, sqrt
 from . import _array_core as np
 from . import _stats_core as stats
@@ -264,27 +265,39 @@ def _groups(X, y):
 
 # -- rgacc: Classification accuracy.
 def accuracy(table=None, tp=None, tn=None, fp=None, fn=None,
-             prevalence=None):
-    """Classification accuracy, eqs. (10.102) and (10.103).
+             prevalence=None, kind=None, exact=False):
+    """Classification accuracy -- every definition, not just one.
 
-    The book gives the prevalence-weighted form FIRST, eq. (10.102):
+    The book gives two.  Eq. (10.102), stated first, is prevalence
+    weighted:
 
         accuracy = S+ P(A) + S- P(N)
 
-    where P(A) is the prevalence of the disease in the study population
-    and P(N) = 1 - P(A).  Only "if the prior probabilities are not
-    available" does it fall back on eq. (10.103):
+    and eq. (10.103) is the fallback used only "if the prior
+    probabilities are not available":
 
         accuracy = (TP + TN) / (TP + TN + FP + FN)
 
-    The distinction is not pedantry.  Eq. (10.103) is eq. (10.102)
-    evaluated at the prevalence of the TEST SET, so on a set deliberately
-    balanced 50/50 it reports a number that does not describe performance
-    on a population where the disease is rare.  Both are returned, and
-    when ``prevalence`` is supplied the weighted figure is the headline.
+    Eq. (10.103) IS eq. (10.102) evaluated at the prevalence of the TEST
+    SET, so on a set deliberately balanced 50/50 it describes a
+    population that does not exist.  A third form is in common use and
+    is included because it is what "balanced accuracy" means elsewhere:
+    the unweighted mean of sensitivity and specificity, which is
+    eq. (10.102) at a prevalence of one half.
+
+    ``kind`` selects the headline value -- "raw", "weighted" or
+    "balanced" -- and every form is returned regardless, so no caller has
+    to recompute one from another.  Supplying ``prevalence`` selects
+    "weighted" unless ``kind`` says otherwise.
+
+    ``exact`` returns Fractions instead of floats.  The inputs are
+    integer counts, so the raw accuracy is a RATIO OF INTEGERS and is
+    representable exactly; rounding it to a float is a choice, not a
+    necessity.  With an exact prevalence (an int, a Fraction, or a
+    decimal string) the weighted form stays exact too.
     """
     if table is not None:
-        t = _mat(table)
+        t = [aslist(r) for r in table]
         if len(t) != 2 or any(len(r) != 2 for r in t):
             raise ValueError("the table must be 2x2, "
                              "[[TP, FN], [FP, TN]]")
@@ -293,36 +306,63 @@ def accuracy(table=None, tp=None, tn=None, fp=None, fn=None,
         if None in (tp, tn, fp, fn):
             raise ValueError("give a 2x2 table or all four of tp, tn, "
                              "fp, fn")
-        TP, TN, FP, FN = float(tp), float(tn), float(fp), float(fn)
-    if min(TP, TN, FP, FN) < 0:
+        TP, TN, FP, FN = tp, tn, fp, fn
+    counts = [TP, TN, FP, FN]
+    if any(float(v) < 0 for v in counts):
         raise ValueError("counts cannot be negative")
+    if any(float(v) != int(float(v)) for v in counts):
+        raise ValueError("counts must be whole numbers")
+    TP, TN, FP, FN = (int(float(v)) for v in counts)
     total = TP + TN + FP + FN
     if total <= 0:
         raise ValueError("the table is empty")
     if TP + FN <= 0 or TN + FP <= 0:
         raise ValueError("a class is empty; the sensitivity or "
                          "specificity is undefined")
-    se = TP / (TP + FN)
-    sp = TN / (TN + FP)
-    raw = (TP + TN) / total
-    test_prev = (TP + FN) / total
-    out = {"accuracy": raw, "raw_accuracy": raw,
-           "sensitivity": se, "specificity": sp,
-           "test_set_prevalence": test_prev,
-           "eq_10_103_is_eq_10_102_at_the_test_set_prevalence": True,
-           "method": "Rangayyan (2024) eqs. (10.102)-(10.103)"}
+    kinds = ("raw", "weighted", "balanced")
+    if kind is not None and kind not in kinds:
+        raise ValueError("kind must be one of %s, got %r"
+                         % (", ".join(kinds), kind))
+
+    num = Fraction if exact else (lambda a, b=1: float(a) / float(b))
+    se = Fraction(TP, TP + FN) if exact else TP / (TP + FN)
+    sp = Fraction(TN, TN + FP) if exact else TN / (TN + FP)
+    raw = Fraction(TP + TN, total) if exact else (TP + TN) / total
+    test_prev = Fraction(TP + FN, total) if exact else (TP + FN) / total
+    half = Fraction(1, 2) if exact else 0.5
+    balanced = half * (se + sp)
+
+    weighted = None
+    prev = None
     if prevalence is not None:
-        p = float(prevalence)
-        if not 0 <= p <= 1:
+        prev = Fraction(str(prevalence)) if exact else float(prevalence)
+        if not 0 <= prev <= 1:
             raise ValueError("the prevalence must lie in [0, 1]")
-        weighted = se * p + sp * (1.0 - p)
-        out["accuracy"] = weighted
-        out["weighted_accuracy"] = weighted
-        out["prevalence"] = p
-        out["prior_weighted"] = True
-    else:
-        out["prior_weighted"] = False
-    return RichResult(payload=out)
+        weighted = se * prev + sp * (1 - prev)
+
+    chosen = kind
+    if chosen is None:
+        chosen = "weighted" if prevalence is not None else "raw"
+    if chosen == "weighted" and weighted is None:
+        raise ValueError("kind='weighted' needs a prevalence; without "
+                         "the priors the book falls back on "
+                         "eq. (10.103), kind='raw'")
+    headline = {"raw": raw, "weighted": weighted,
+                "balanced": balanced}[chosen]
+
+    return RichResult(payload={
+        "accuracy": headline, "kind": chosen,
+        "raw_accuracy": raw, "weighted_accuracy": weighted,
+        "balanced_accuracy": balanced,
+        "sensitivity": se, "specificity": sp,
+        "prevalence": prev, "test_set_prevalence": test_prev,
+        "counts": {"tp": TP, "tn": TN, "fp": FP, "fn": FN},
+        "n": total, "exact": bool(exact),
+        "prior_weighted": chosen == "weighted",
+        "balanced_is_eq_10_102_at_one_half": True,
+        "eq_10_103_is_eq_10_102_at_the_test_set_prevalence": True,
+        "method": "Rangayyan (2024) eqs. (10.102)-(10.103), with the "
+                  "balanced form at P(A) = 1/2"})
 
 
 rangayyan_accuracy = accuracy  # pre-policy spelling
@@ -705,16 +745,105 @@ def divav(means, covs):
         "method": "Rangayyan (2024) Section 10.10.1 (average divergence)"})
 
 
+def kld(p1, p2):
+    """Kullback-Leibler distance or divergence, eq. (5.33).
+
+        KLD(p1, p2) = sum_l p2(x_l) ln[ p2(x_l) / p1(x_l) ]
+
+    Note the book's argument order: the sum is weighted by the SECOND
+    PDF, not the first.  KLD is not symmetric -- KLD(p1, p2) is not
+    KLD(p2, p1) -- so swapping the arguments gives a different number,
+    and both are returned so the asymmetry is visible rather than a trap.
+    The symmetric combination is the divergence of eq. (10.115), which is
+    exactly KLD(p1, p2) + KLD(p2, p1).
+
+    The book uses this as a FEATURE: Rangayyan and Wu computed the KLD
+    between the PDF of a signal to be classified and Parzen-window PDF
+    models of the normal and abnormal VAG classes, reaching 73 per cent
+    classification with the KLD alone.
+
+    Both PDFs must be positive wherever the weighting PDF is: a zero in
+    p1 where p2 is positive makes the ratio unbounded, and that is
+    reported rather than silently floored.
+    """
+    a, b = aslist(p1), aslist(p2)
+    if len(a) != len(b):
+        raise ValueError("the two PDFs must be sampled on the same grid")
+    if not a:
+        raise ValueError("need at least one bin")
+    if any(v < 0 for v in a) or any(v < 0 for v in b):
+        raise ValueError("a PDF cannot be negative")
+    bad = [i for i in range(len(a)) if b[i] > 0 and a[i] <= 0]
+    if bad:
+        raise ValueError("p1 vanishes at %d bin(s) where p2 does not; "
+                         "the KLD is unbounded there" % len(bad))
+    fwd = fsum(b[i] * log(b[i] / a[i]) for i in range(len(a)) if b[i] > 0)
+    rev = fsum(a[i] * log(a[i] / b[i]) for i in range(len(a))
+               if a[i] > 0 and b[i] > 0)
+    return RichResult(payload={
+        "kld": fwd, "reversed": rev, "symmetric_sum": fwd + rev,
+        "asymmetric": abs(fwd - rev) > 1e-12,
+        "weighted_by_the_second_pdf": True,
+        "symmetric_sum_is_the_divergence_of_eq_10_115": True,
+        "nonnegative": fwd >= -1e-12,
+        "method": "Rangayyan (2024) eq. (5.33)"})
+
+
+def bhattcoef(p1, p2):
+    """Bhattacharyya coefficient, the OVERLAP between two PDFs.
+
+        BC(p1, p2) = sum_l sqrt( p1(x_l) p2(x_l) )
+
+    Bounded in [0, 1]: 1 when the two PDFs are identical, 0 when their
+    supports do not touch.  This is the quantity the Bhattacharyya
+    DISTANCE is built from, D_B = -ln BC, and it is what makes the error
+    bound work -- the overlap of the two class-conditional densities IS
+    the region where the optimal classifier must make mistakes.
+
+    NOT FROM THIS BOOK; see ``bhatt``.
+    """
+    a, b = aslist(p1), aslist(p2)
+    if len(a) != len(b):
+        raise ValueError("the two PDFs must be sampled on the same grid")
+    if not a:
+        raise ValueError("need at least one bin")
+    if any(v < 0 for v in a) or any(v < 0 for v in b):
+        raise ValueError("a PDF cannot be negative")
+    bc = fsum(sqrt(a[i] * b[i]) for i in range(len(a)))
+    return RichResult(payload={
+        "coefficient": bc, "overlap": bc,
+        "distance": (-log(bc)) if bc > 0 else float("inf"),
+        "identical": abs(bc - 1.0) < 1e-12,
+        "disjoint": bc <= 1e-15,
+        "in_unit_interval": -1e-12 <= bc <= 1.0 + 1e-12,
+        "the_overlap_is_where_errors_must_happen": True,
+        "not_from_this_book": True,
+        "method": "Bhattacharyya coefficient; Rangayyan (2024) uses the "
+                  "KLD of eq. (5.33) and the divergence of eq. (10.115)"})
+
+
 def bhatt(m1, m2, C1, C2):
     """Bhattacharyya distance between two multivariate Gaussians.
 
         D_B = (1/8) (m1-m2)^T [(C1+C2)/2]^-1 (m1-m2)
               + (1/2) ln( |(C1+C2)/2| / sqrt(|C1| |C2|) )
 
-    NOT FROM THIS BOOK.  Rangayyan (2024) measures class separability
-    with the normalized distance of eq. (10.112) and the divergence of
-    eqs. (10.115)-(10.117); Bhattacharyya distance appears nowhere in the
-    text.  It is implemented here because the name was already exposed
+    NOT FROM THIS BOOK.  A full-text search of the 2024 third edition --
+    Rangayyan and Krishnan -- finds no occurrence of "Bhattacharyya", nor
+    of Chernoff or Hellinger.  What the book gives instead is the KLD of
+    eq. (5.33) and the divergence of eqs. (10.115)-(10.117), which is the
+    symmetric sum of the two KLDs.
+
+    WHAT IT IS FOR, and why it is kept: D_B = -ln BC where BC is the
+    Bhattacharyya coefficient, the overlap between the two
+    class-conditional densities.  That overlap is precisely the region in
+    which the optimal classifier is forced to err, which is why D_B
+    BOUNDS the Bayes error, P_e <= sqrt(P1 P2) exp(-D_B), and the
+    divergence does not bound anything.  So the two measures answer
+    different questions: the divergence says how far apart the classes
+    are, the Bhattacharyya distance says how well any classifier could
+    possibly do.  Use ``divergence`` when following the book, this when
+    an error bound is wanted.  It is implemented here because the name was already exposed
     and because it is a correct and standard measure -- and because it,
     unlike the divergence, bounds the Bayes error directly.  Prefer
     ``divergence`` when following the book.
