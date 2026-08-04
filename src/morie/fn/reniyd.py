@@ -1,40 +1,24 @@
-"""Rényi entropy of order alpha."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Renyi entropy of order alpha.
 
-from . import _array_core as np
+This module is a re-export.  ``renyi_entropy`` is implemented in
+:mod:`morie.fn.renent` and ``_lazy_map.json`` already resolves the
+public name there; the stub this module replaced was a duplicate of
+that name under a second module, so it re-exports rather than shipping
+a second copy that could drift.
 
-from ._richresult import RichResult
+Renyi, A. (1961).  On measures of entropy and information.  Proc. 4th
+Berkeley Symp. Math. Statist. Prob. 1:547-561.
+"""
+
+from .renent import renyi_entropy
 
 __all__ = ["renyi_entropy"]
 
 
-def renyi_entropy(p, alpha):
-    """
-    Rényi entropy of order alpha
-
-    Formula: H_alpha = (1/(1-alpha)) log sum p^alpha
-
-    Parameters
-    ----------
-    p : array-like
-        Input data.
-    alpha : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Rényi (1961)
-    """
-    p = np.atleast_1d(np.asarray(p, dtype=float))
-    n = len(p)
-    result = float(np.mean(p))
-    se = float(np.std(p, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rényi entropy of order alpha"})
-
-
 def cheatsheet():
-    return "reniyd: Rényi entropy of order alpha"
+    return "reniyd: Renyi entropy (re-export of renent)"
+
+
+# compact alias per ledger/NAMING.md
+renyidiv = renyi_entropy

@@ -1,46 +1,54 @@
-"""SVM Wolfe dual formulation."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Wolfe dual objective of the support vector machine."""
 
-from . import _array_core as np
+from . import _tail1core as C
+from . import _gp_core as G
 
 from ._richresult import RichResult
 
-__all__ = ["svm_dual_wolfe"]
+__all__ = ['svmwolfe', 'svm_dual_wolfe', 'svmdualwolfe']
 
 
-def svm_dual_wolfe(X, y, K):
-    """
-    SVM Wolfe dual formulation
+def svmwolfe(alpha, X, y, K=None):
+    """Wolfe dual objective of the support vector machine.
 
-    Formula: max sum alpha_i - (1/2) sum_i sum_j alpha_i*alpha_j*y_i*y_j*K(x_i,x_j) s.t. sum alpha_i*y_i=0, alpha_i>=0
+    Formula: L(alpha) = sum_i alpha_i - 0.5 sum_i sum_j alpha_i alpha_j y_i y_j K(x_i, x_j)
 
     Parameters
     ----------
-    X : array-like
-        Input data.
+    alpha : array-like
+        Dual variables, length n.
+    X : array-like, shape (n, p)
+        One record per row.
     y : array-like
-        Input data.
-    K : array-like
-        Input data.
+        Class labels coded +1 and -1.
+    K : array-like or None
+        Gram matrix; None uses the linear kernel x_i'x_j.
 
     Returns
     -------
-    result : dict
-        Keys: {'alpha': 'array', 'b': 'float'}
+    RichResult
+        ``dual``, ``linear_term``, ``quadratic_term``, ``constraint_sum``, ``n``.
 
     References
     ----------
-    Montesinos Lopez Ch 9
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 9, Eq. (9.32) p. 349.  The dual depends on the data only through inner products, which is exactly what lets a kernel replace them; ``constraint_sum`` reports sum_i alpha_i y_i, which the dual problem constrains to zero.  Delegates to the chapter routine in morie.fn._gp_core, which was verified against this book in the earlier tranches of this shelf recorded in ledger/SHELF_LEDGER.txt; the page and equation number above are that routine's own, re-read against the chapter PDF here.
     """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SVM Wolfe dual formulation"})
+    a = C.vec(alpha)
+    yv = C.vec(y)
+    if len(a) != len(yv):
+        raise ValueError("alpha and y must have the same length")
+    L = G.svm_dual_objective(a, X, yv, K=K)
+    lin = sum(a)
+    return RichResult(payload={
+        "dual": L, "linear_term": lin, "quadratic_term": lin - L,
+        "constraint_sum": sum(u * w for u, w in zip(a, yv)), "n": len(a),
+        "method": "SVM Wolfe dual objective, MVSML Eq. (9.32)"})
+
+
+svm_dual_wolfe = svmwolfe
+svmdualwolfe = svmwolfe
 
 
 def cheatsheet():
-    return "svmdu: SVM Wolfe dual formulation"
-
-
-# compact alias per ledger/NAMING.md
-svmdualwolfe = svm_dual_wolfe
+    return 'svmdu: Wolfe dual objective of the support vector machine.'
