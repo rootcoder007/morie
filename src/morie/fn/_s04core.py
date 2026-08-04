@@ -153,3 +153,55 @@ def colstd(X):
 
 def euclid(a, b):
     return math.sqrt(sum((u - v) ** 2 for u, v in zip(a, b)))
+
+
+def sgn(v):
+    """Sign mapped onto {-1, +1}; zero goes to +1 so the range is binary."""
+    return 1.0 if v >= 0.0 else -1.0
+
+
+def rnd(v):
+    """Half-away-from-zero rounding.
+
+    Deliberately not the language round().  Python and R both round half
+    to even, but they disagree about which values are exactly half once
+    binary representation is involved, and a quantiser that flips a
+    level on that disagreement is a parity failure waiting to happen.
+    """
+    return sgn(v) * float(int(abs(v) + 0.5))
+
+
+def qr_mgs(A):
+    """Thin QR by modified Gram-Schmidt; returns ``(Q, R)``.
+
+    Modified rather than classical Gram-Schmidt, and certainly not the
+    normal equations: squaring the matrix squares its condition number
+    and loses the small singular values outright.  Diagonal entries of
+    ``R`` come out non-negative by construction, so ``Q`` is unique and
+    there is no sign convention left to disagree about across arms --
+    which is exactly the freedom that LAPACK and LINPACK QR use
+    differently.
+    """
+    n, p = C.shape(A)
+    Q = [list(row) for row in A]
+    R = [[0.0] * p for _ in range(p)]
+    for j in range(p):
+        for i in range(j):
+            R[i][j] = sum(Q[r][i] * Q[r][j] for r in range(n))
+            for r in range(n):
+                Q[r][j] -= R[i][j] * Q[r][i]
+        R[j][j] = math.sqrt(sum(Q[r][j] ** 2 for r in range(n)))
+        d = R[j][j] if R[j][j] > 1e-300 else 1e-300
+        for r in range(n):
+            Q[r][j] /= d
+    return Q, R
+
+
+def rank_first(x):
+    """Ranks 1..n with ties broken by original position."""
+    x = C.vec(x)
+    o = order(x)
+    r = [0] * len(x)
+    for pos, i in enumerate(o):
+        r[i] = pos + 1
+    return r

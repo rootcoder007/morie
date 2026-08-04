@@ -99,3 +99,37 @@ NULL
 }
 
 .s4_euclid <- function(a, b) sqrt(sum((as.numeric(a) - as.numeric(b))^2))
+
+.s4_sgn <- function(v) ifelse(v >= 0, 1, -1)
+
+## Half-away-from-zero. Deliberately not round(): both languages round
+## half to even but disagree about which values are exactly half.
+.s4_rnd <- function(v) .s4_sgn(v) * floor(abs(v) + 0.5)
+
+## Thin QR by modified Gram-Schmidt. R diagonal is non-negative by
+## construction, so Q is unique and there is no sign convention left for
+## the two arms to disagree about (LAPACK and LINPACK differ here).
+.s4_qr_mgs <- function(A) {
+  A <- as.matrix(A)
+  n <- nrow(A); p <- ncol(A)
+  Q <- A
+  R <- matrix(0, p, p)
+  for (j in seq_len(p)) {
+    if (j > 1L) for (i in seq_len(j - 1L)) {
+      R[i, j] <- sum(Q[, i] * Q[, j])
+      Q[, j] <- Q[, j] - R[i, j] * Q[, i]
+    }
+    R[j, j] <- sqrt(sum(Q[, j]^2))
+    d <- if (R[j, j] > 1e-300) R[j, j] else 1e-300
+    Q[, j] <- Q[, j] / d
+  }
+  list(Q = Q, R = R)
+}
+
+.s4_rank_first <- function(x) {
+  x <- as.numeric(unlist(x))
+  o <- order(x, seq_along(x))
+  r <- integer(length(x))
+  r[o] <- seq_along(x)
+  r
+}

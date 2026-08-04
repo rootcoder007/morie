@@ -1,42 +1,63 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Aitchison norm of a composition."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["aitchison_norm"]
+__all__ = ["compnorm", "aitchison_norm"]
 
 
-def aitchison_norm(x):
-    """
-    Aitchison norm of a composition
+def compnorm(x):
+    """Aitchison norm: the distance from a composition to the barycentre.
 
-    Formula: ||x||_A = ||clr(x)||_2
+    It is the ordinary Euclidean norm of the clr coordinates, so it is
+    zero exactly for the uniform composition C(1, ..., 1) and grows as
+    the parts become more unequal.
+
+    Formula: ||x||_a = sqrt( sum_i clr(x)_i^2 )
+                     = sqrt( (1/D) sum_{i<j} log(x_i/x_j)^2 )
 
     Parameters
     ----------
     x : array-like
-        Input data.
+        Strictly positive vector of parts.
 
     Returns
     -------
-    result : dict
-        Keys: n
+    RichResult
+        ``norm``, ``norm_pairwise``, ``D``.  The two agree; both are
+        returned because their agreement is the cheapest check that the
+        clr bookkeeping is right.
 
     References
     ----------
-    Aitchison (1986)
+    Aitchison (1986), The Statistical Analysis of Compositional Data,
+    Chapter 4.  Verified against the reference implementation in the
+    CRAN package ``compositions`` 2.0-9, whose ``norm`` on an
+    ``acomp`` is sqrt(scalar(x, x)) with scalar the clr inner product.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Aitchison norm of a composition"})
+    x = C.vec(x)
+    if any(v <= 0 for v in x):
+        raise ValueError("compositions must be strictly positive")
+    D = len(x)
+    L = [math.log(v) for v in x]
+    lg = sum(L) / D
+    z = [v - lg for v in L]
+    pw = 0.0
+    for i in range(D):
+        for j in range(i + 1, D):
+            pw += (L[i] - L[j]) ** 2
+    return RichResult(payload={
+        "norm": math.sqrt(sum(v * v for v in z)),
+        "norm_pairwise": math.sqrt(pw / D), "D": D,
+        "method": "Aitchison norm"})
+
+
+aitchison_norm = compnorm
 
 
 def cheatsheet():
-    return "aitnrm: Aitchison norm of a composition"
-
-
-# compact alias per ledger/NAMING.md
-aitchisonnorm = aitchison_norm
+    return "aitnrm: ||x||_a = sqrt(sum clr(x)^2)"

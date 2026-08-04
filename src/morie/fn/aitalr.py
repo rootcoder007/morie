@@ -1,51 +1,66 @@
-"""Additive log-ratio (ALR) transform with reference part."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Additive log-ratio (alr) transform with a reference part."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["aitchison_alr"]
+__all__ = ["alr", "aitchison_alr"]
 
 
-def aitchison_alr(x, ref):
-    """
-    Additive log-ratio (ALR) transform with reference part
+def alr(x, ref=None):
+    """Additive log-ratio transform against a chosen reference part.
 
-    Formula: alr_i(x) = log(x_i / x_D),  i=1..D-1
+    Unlike the clr the alr is a bijection onto all of R^(D-1), so it
+    inverts cleanly and its covariance matrix is non-singular -- which
+    is why Aitchison builds the logistic-normal on it.  It is not an
+    isometry, though: distances computed in alr coordinates depend on
+    which part was chosen as reference, so use clr or ilr for anything
+    geometric.
+
+    ``ref`` is a ONE-BASED part index, matching the R arm exactly; the
+    remaining parts keep their original order.
+
+    Formula: alr(x)_i = log( x_i / x_ref ),  i != ref
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    ref : array-like
-        Input data.
+        Strictly positive vector of parts.
+    ref : int, optional
+        One-based index of the reference part (default: the last, D).
 
     Returns
     -------
-    result : dict
-        Keys: y
+    RichResult
+        ``alr``, ``ref``, ``kept``, ``D``.
 
     References
     ----------
-    Aitchison (1986) §4
+    Aitchison (1986), The Statistical Analysis of Compositional Data,
+    Chapter 4.  Verified against the reference implementation in the
+    CRAN package ``compositions`` 2.0-9, whose ``alr`` defaults its
+    ``ivar`` to the last column and returns log(x_i) - log(x_ivar).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Additive log-ratio (ALR) transform with reference part",
-        }
-    )
+    x = C.vec(x)
+    if any(v <= 0 for v in x):
+        raise ValueError("compositions must be strictly positive")
+    D = len(x)
+    r = D if ref is None else int(ref)
+    if not 1 <= r <= D:
+        raise ValueError("ref must be a one-based part index in 1..D")
+    lr = math.log(x[r - 1])
+    keep = [i for i in range(D) if i != r - 1]
+    return RichResult(payload={
+        "alr": [math.log(x[i]) - lr for i in keep],
+        "ref": r, "kept": [i + 1 for i in keep], "D": D,
+        "method": "Additive log-ratio transform"})
+
+
+aitchison_alr = alr
 
 
 def cheatsheet():
-    return "aitalr: Additive log-ratio (ALR) transform with reference part"
-
-
-# compact alias per ledger/NAMING.md
-aitchisonalr = aitchison_alr
+    return "aitalr: alr(x)_i = log(x_i / x_ref)"

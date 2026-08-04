@@ -1,44 +1,58 @@
-"""Centred log-ratio (CLR) transform of a composition."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Centred log-ratio (clr) transform of a composition."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["aitchison_clr"]
+__all__ = ["clr", "aitchison_clr"]
 
 
-def aitchison_clr(x):
-    """
-    Centred log-ratio (CLR) transform of a composition
+def clr(x):
+    """Centred log-ratio transform of a single composition.
 
-    Formula: clr_i(x) = log(x_i / g(x)),  g(x) = (prod_j x_j)^(1/D)
+    The clr sends the simplex isometrically onto the hyperplane of
+    vectors summing to zero, so ordinary Euclidean geometry -- inner
+    products, distances, principal components -- becomes available.
+    The price is the singularity: the image is a D-1 dimensional
+    subspace of R^D, so the clr covariance matrix is always singular.
+    ``sum_clr`` is returned precisely so a caller can see it is zero.
+
+    Formula: clr(x)_i = log( x_i / g(x) ),  g(x) = (prod_j x_j)^(1/D)
 
     Parameters
     ----------
     x : array-like
-        Input data.
+        Strictly positive vector of parts.
 
     Returns
     -------
-    result : dict
-        Keys: z
+    RichResult
+        ``clr``, ``geomean``, ``sum_clr``, ``D``.
 
     References
     ----------
-    Aitchison (1986) §4
+    Aitchison (1986), The Statistical Analysis of Compositional Data,
+    Chapter 4.  Verified against the reference implementation in the
+    CRAN package ``compositions`` 2.0-9, whose ``clr`` computes
+    ``LOG - rowSums(LOG)/D`` on the logged parts.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Centred log-ratio (CLR) transform of a composition"}
-    )
+    x = C.vec(x)
+    if any(v <= 0 for v in x):
+        raise ValueError("compositions must be strictly positive")
+    D = len(x)
+    L = [math.log(v) for v in x]
+    lg = sum(L) / D
+    z = [v - lg for v in L]
+    return RichResult(payload={
+        "clr": z, "geomean": math.exp(lg), "sum_clr": sum(z), "D": D,
+        "method": "Centred log-ratio transform"})
+
+
+aitchison_clr = clr
 
 
 def cheatsheet():
-    return "aitclr: Centred log-ratio (CLR) transform of a composition"
-
-
-# compact alias per ledger/NAMING.md
-aitchisonclr = aitchison_clr
+    return "aitclr: clr(x)_i = log(x_i / g(x))"
