@@ -16,12 +16,17 @@ __all__ = [
     'accuracy',
     'rangayyan_accuracy',
     'rangayyan_ann_mlp',
+    'bayescls',
     'rangayyan_bayes_classifier',
+    'bayesnorm',
     'rangayyan_bayes_gaussian',
     'rangayyan_bundle_branch_block',
     'rangayyan_ecg_bbb_normal',
     'rangayyan_bci_nmf',
+    'normdist',
     'divergence',
+    'divav',
+    'bhatt',
     'rangayyan_bhattacharyya',
     'rangayyan_basis_pursuit',
     'rangayyan_cad_pipeline',
@@ -29,6 +34,7 @@ __all__ = [
     'rangayyan_fetal_ecg_single',
     'rangayyan_ecg_normal_ectopic',
     'rangayyan_eeg_rhythms',
+    'elbow',
     'rangayyan_kmeans_elbow',
     'rangayyan_epilepsy_ksvd',
     'errbound',
@@ -37,19 +43,27 @@ __all__ = [
     'rangayyan_fisher_criterion',
     'fishlda',
     'rangayyan_fisher_lda',
+    'hclust',
     'rangayyan_hierarchical_clust',
     'rangayyan_fastica',
     'rangayyan_ica_artifact',
     'rangayyan_infomax_ica',
+    'kfoldcv',
     'rangayyan_kfold_cv',
+    'kmeans',
     'rangayyan_kmeans',
     'rangayyan_knee_classify',
+    'knn',
     'rangayyan_knn_classifier',
     'rangayyan_ksvd',
     'rangayyan_dictionary_sparse',
+    'lindisc',
     'rangayyan_linear_discrim',
+    'lindsep',
     'rangayyan_lin_discr_sep',
+    'loocv',
     'rangayyan_loo_cv',
+    'logreg',
     'rangayyan_logistic_regression',
     'rangayyan_lstm_signal',
     'mahal',
@@ -65,6 +79,7 @@ __all__ = [
     'rangayyan_pca_vs_ica',
     'ppv',
     'rangayyan_ppv',
+    'qda',
     'rangayyan_qda',
     'rangayyan_rbf_network',
     'roc',
@@ -77,11 +92,42 @@ __all__ = [
     'spec',
     'rangayyan_specificity',
     'rangayyan_sparse_rep',
+    'svm',
     'rangayyan_svm',
+    'svmkern',
     'rangayyan_svm_kernel',
     'rangayyan_vag_adaptive_tfd',
     'rangayyan_ch4_pan_tompkins_peak_classification',
 ]
+
+def _solve_lin(A, b):
+    """Solve A x = b by Gauss-Jordan with partial pivoting."""
+    n = len(b)
+    M = [list(A[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("the system is singular")
+        M[c], M[p] = M[p], M[c]
+        piv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / piv
+            if f:
+                for k in range(c, n + 1):
+                    M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
+
+
+def _tanh(v):
+    """tanh without importing it, stable for large |v|."""
+    if v > 20.0:
+        return 1.0
+    if v < -20.0:
+        return -1.0
+    e = exp(2.0 * v)
+    return (e - 1.0) / (e + 1.0)
 
 def _mat(m):
     """Accept a matrix as a list of rows and return a list of lists."""
@@ -216,7 +262,6 @@ def _groups(X, y):
     return order, out
 
 
-
 # -- rgacc: Classification accuracy.
 def accuracy(table=None, tp=None, tn=None, fp=None, fn=None,
              prevalence=None):
@@ -322,73 +367,126 @@ def rangayyan_ann_mlp(X, y, layers, lr, max_iter):
 
 
 # -- rgbayes: Bayes minimum-error classifier.
-def rangayyan_bayes_classifier(X, class_priors, class_means, class_covs):
+def bayescls(likelihoods, priors=None):
+    """Bayes decision functions, eq. (10.70).
+
+        d_i(x) = p(x|C_i) P(C_i),  assign to the largest
+
+    The MAXIMUM A POSTERIORI rule.  Dropping the prior and comparing the
+    likelihoods alone is maximum likelihood, which is a different
+    classifier and differs whenever the classes are unequally common --
+    for a rare disease the prior is precisely what stops the classifier
+    calling everything positive.
+
+    The posterior probabilities are returned normalized, since the
+    products themselves are not probabilities.
     """
-    Bayes minimum-error classifier
+    lk = aslist(likelihoods)
+    m = len(lk)
+    if m < 2:
+        raise ValueError("need at least two classes")
+    if any(v < 0 for v in lk):
+        raise ValueError("a likelihood cannot be negative")
+    if priors is None:
+        pr = [1.0 / m] * m
+    else:
+        pr = aslist(priors)
+        if len(pr) != m:
+            raise ValueError("give one prior per class")
+        if any(v < 0 for v in pr):
+            raise ValueError("a prior cannot be negative")
+        s = fsum(pr)
+        if abs(s - 1.0) > 1e-9:
+            raise ValueError("the priors must sum to 1, got %g" % s)
+    d = [lk[i] * pr[i] for i in range(m)]
+    tot = fsum(d)
+    post = [v / tot for v in d] if tot > 0 else [0.0] * m
+    mapc = max(range(m), key=lambda i: d[i])
+    mlc = max(range(m), key=lambda i: lk[i])
+    return RichResult(payload={
+        "d": d, "posterior": post, "assigned": mapc,
+        "maximum_likelihood_choice": mlc,
+        "prior_changed_the_decision": mapc != mlc,
+        "priors": pr, "uniform_priors": priors is None,
+        "method": "Rangayyan (2024) eq. (10.70)"})
 
-    Formula: Assign to class k: max P(C_k|X) = max P(X|C_k)*P(C_k)
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    class_priors : array-like
-        Input data.
-    class_means : array-like
-        Input data.
-    class_covs : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: labels, posteriors
-
-    References
-    ----------
-    Rangayyan Ch 10.6
-    """
-    X = np.asarray(X, dtype=float)
-    n = int(X) if X.ndim == 0 else len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayes minimum-error classifier"})
+rangayyan_bayes_classifier = bayescls  # pre-policy spelling
 
 
 # -- rgbayng: Bayes classifier for normal (Gaussian) patterns.
-def rangayyan_bayes_gaussian(X, mu_list, sigma_list, priors):
+def bayesnorm(x, means, covs, priors=None, full=False):
+    """Bayes classifier for normal patterns, eq. (10.72).
+
+        d_i(x) = ln P(C_i) - (n/2) ln(2 pi) - (1/2) ln|C_i|
+                 - (1/2) (x - m_i)^T C_i^-1 (x - m_i)
+
+    The book takes logarithms at eq. (10.71) because the normal PDF is an
+    exponential and ln is monotonic, so the ranking is unchanged while
+    the arithmetic stops underflowing -- with a dozen features the raw
+    densities are far below the smallest float.
+
+    It then notes the (n/2) ln(2 pi) term "does not depend upon i" and
+    drops it, giving eq. (10.73).  Dropping it is safe for CLASSIFYING
+    and wrong for anything that reads the value as a log density; both
+    forms are returned, ``full`` choosing which one is compared.
+
+    The decision surfaces are hyperquadrics.  They reduce to hyperplanes
+    exactly when all the covariance matrices are equal, which is the
+    difference between this and ``qda``.
     """
-    Bayes classifier for normal (Gaussian) patterns
+    xs = aslist(x)
+    ms = [aslist(v) for v in means]
+    cs = [_mat(v) for v in covs]
+    m = len(ms)
+    if m < 2:
+        raise ValueError("need at least two classes")
+    if len(cs) != m:
+        raise ValueError("give one covariance matrix per class")
+    n = len(xs)
+    if any(len(v) != n for v in ms):
+        raise ValueError("every mean must match the length of x")
+    if priors is None:
+        pr = [1.0 / m] * m
+    else:
+        pr = aslist(priors)
+        if len(pr) != m:
+            raise ValueError("give one prior per class")
+        if abs(fsum(pr) - 1.0) > 1e-9:
+            raise ValueError("the priors must sum to 1")
+    const = 0.5 * n * log(2.0 * pi)
+    dfull, dshort = [], []
+    for i in range(m):
+        if pr[i] <= 0:
+            dfull.append(float("-inf"))
+            dshort.append(float("-inf"))
+            continue
+        det = _det(cs[i])
+        if det <= 0:
+            raise ValueError("covariance %d is not positive definite" % i)
+        Ci = _inv(cs[i])
+        d = [xs[j] - ms[i][j] for j in range(n)]
+        quad = fsum(d[a] * fsum(Ci[a][b] * d[b] for b in range(n))
+                    for a in range(n))
+        short = log(pr[i]) - 0.5 * log(det) - 0.5 * quad
+        dshort.append(short)
+        dfull.append(short - const)
+    use = dfull if full else dshort
+    best = max(range(m), key=lambda i: use[i])
+    equal = all(all(abs(cs[0][a][b] - cs[i][a][b]) < 1e-12
+                    for a in range(n) for b in range(n))
+                for i in range(m))
+    return RichResult(payload={
+        "d": use, "d_full": dfull, "d_dropped_constant": dshort,
+        "assigned": best, "priors": pr,
+        "constant_term": const,
+        "surfaces_are_hyperquadrics": True,
+        "linear_when_covariances_are_equal": equal,
+        "log_form_avoids_underflow": True,
+        "method": "Rangayyan (2024) eqs. (10.71)-(10.73)"})
 
-    Formula: g_k(X) = -0.5*(X-mu_k)^T*Sigma_k^{-1}*(X-mu_k) - 0.5*log|Sigma_k| + log P(C_k)
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    mu_list : array-like
-        Input data.
-    sigma_list : array-like
-        Input data.
-    priors : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: labels, discriminants
-
-    References
-    ----------
-    Rangayyan Ch 10.6.2
-    """
-    X = np.asarray(X, dtype=float)
-    n = int(X) if X.ndim == 0 else len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Bayes classifier for normal (Gaussian) patterns"}
-    )
+rangayyan_bayes_gaussian = bayesnorm  # pre-policy spelling
 
 
 # -- rgbbb: Bundle branch block (BBB) classification from ECG.
@@ -872,35 +970,56 @@ def rangayyan_eeg_rhythms(eeg, fs):
 
 
 # -- rgelbow: Elbow method for k-means cluster count selection.
-def rangayyan_kmeans_elbow(X, max_k):
+def elbow(X, kmax=8, kmin=1):
+    """Elbow method for choosing the number of clusters.
+
+        WCSS(k) = sum_k sum_{x in C_k} ||x - mu_k||^2
+
+    WCSS falls monotonically with k and reaches zero at k = n, so it
+    cannot be minimized -- the choice is the KNEE, where the fall stops
+    being worth the extra cluster.  The knee is located here as the point
+    of maximum distance from the chord joining the first and last points
+    of the curve, which is a definite rule rather than an eye judgement.
+
+    It remains a heuristic: on data with no cluster structure at all the
+    curve is smooth and the "knee" is wherever the arithmetic puts it.
+    The monotonicity of the curve is checked and returned, since a rise
+    would mean the k-means runs landed in bad local minima.
     """
-    Elbow method for k-means cluster count selection
+    Xs = _mat(X)
+    n = len(Xs)
+    lo, hi = int(kmin), int(kmax)
+    if lo < 1:
+        raise ValueError("kmin must be at least 1")
+    if hi > n:
+        raise ValueError("kmax exceeds the number of patterns")
+    if hi <= lo:
+        raise ValueError("kmax must exceed kmin")
+    ks, wcss = [], []
+    for k in range(lo, hi + 1):
+        r = kmeans(Xs, k)
+        ks.append(k)
+        wcss.append(r["wcss"])
+    mono = all(b <= a + 1e-9 for a, b in zip(wcss, wcss[1:]))
+    x1, y1 = float(ks[0]), wcss[0]
+    x2, y2 = float(ks[-1]), wcss[-1]
+    den = sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    if den <= 0:
+        knee = ks[0]
+    else:
+        dists = [abs((y2 - y1) * kx - (x2 - x1) * ky + x2 * y1 - y2 * x1)
+                 / den for kx, ky in zip([float(v) for v in ks], wcss)]
+        knee = ks[max(range(len(ks)), key=lambda i: dists[i])]
+    return RichResult(payload={
+        "k": ks, "wcss": wcss, "knee": knee,
+        "monotonic": mono,
+        "wcss_cannot_be_minimized": True,
+        "heuristic_only": True,
+        "method": "elbow criterion on the k-means WCSS; Rangayyan "
+                  "(2024) Section 10.5.1"})
 
-    Formula: WCSS(k) = sum_k sum_{X in C_k} ||X - mu_k||^2; elbow at knee of curve
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    max_k : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: wcss_values, optimal_k
-
-    References
-    ----------
-    Rangayyan Ch 10.5.1
-    """
-    X = np.asarray(X, dtype=float)
-    n = int(X) if X.ndim == 0 else len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Elbow method for k-means cluster count selection"}
-    )
+rangayyan_kmeans_elbow = elbow  # pre-policy spelling
 
 
 # -- rgepiksv: Epileptic seizure detection using K-SVD dictionary learning.
@@ -1083,35 +1202,91 @@ rangayyan_fisher_lda = fishlda  # pre-policy spelling
 
 
 # -- rghier: Hierarchical agglomerative clustering.
-def rangayyan_hierarchical_clust(X, linkage, n_clusters):
+def hclust(X, linkage="single", k=None):
+    """Hierarchical agglomerative clustering, Section 10.5.1.
+
+    Start with every pattern its own cluster and repeatedly merge the two
+    closest, by
+
+      "single"    the nearest pair of members  -- chains, so it will
+                  string distant clusters together through a bridge of
+                  intermediate points
+      "complete"  the furthest pair           -- compact, and splits
+                  elongated clusters
+      "average"   the mean over all pairs     -- between the two
+
+    The choice of linkage is not cosmetic: on the same data single and
+    complete linkage routinely give different partitions, which is why
+    the merge history is returned in full rather than only a labelling.
+
+    Cutting the tree at ``k`` clusters gives labels; without it only the
+    dendrogram history is returned.
     """
-    Hierarchical agglomerative clustering
+    Xs = _mat(X)
+    n = len(Xs)
+    if n < 2:
+        raise ValueError("need at least two patterns")
+    if linkage not in ("single", "complete", "average"):
+        raise ValueError("linkage must be 'single', 'complete' or "
+                         "'average'")
+    p = len(Xs[0])
 
-    Formula: Merge clusters with minimum linkage distance (single/complete/average)
+    def d2(a, b):
+        return sqrt(fsum((a[i] - b[i]) ** 2 for i in range(p)))
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    linkage : array-like
-        Input data.
-    n_clusters : array-like
-        Input data.
+    groups = {i: [i] for i in range(n)}
+    history = []
+    while len(groups) > 1:
+        keys = sorted(groups)
+        best = None
+        for a in range(len(keys)):
+            for b in range(a + 1, len(keys)):
+                ga, gb = groups[keys[a]], groups[keys[b]]
+                ds = [d2(Xs[i], Xs[j]) for i in ga for j in gb]
+                if linkage == "single":
+                    dd = min(ds)
+                elif linkage == "complete":
+                    dd = max(ds)
+                else:
+                    dd = fsum(ds) / len(ds)
+                if best is None or dd < best[0]:
+                    best = (dd, keys[a], keys[b])
+        dd, ka, kb = best
+        history.append({"merged": (ka, kb), "distance": dd,
+                        "size": len(groups[ka]) + len(groups[kb]),
+                        "n_clusters_after": len(groups) - 1})
+        groups[ka] = groups[ka] + groups[kb]
+        del groups[kb]
+    labels = None
+    if k is not None:
+        kk = int(k)
+        if not 1 <= kk <= n:
+            raise ValueError("k must lie in 1..n")
+        g = {i: [i] for i in range(n)}
+        for step in history:
+            if len(g) == kk:
+                break
+            ka, kb = step["merged"]
+            g[ka] = g[ka] + g[kb]
+            del g[kb]
+        labels = [0] * n
+        for c, key in enumerate(sorted(g)):
+            for i in g[key]:
+                labels[i] = c
+    return RichResult(payload={
+        "history": history, "labels": labels, "linkage": linkage,
+        "n": n, "k": k,
+        "merge_distances": [h["distance"] for h in history],
+        "monotonic_merges": all(
+            b >= a - 1e-12 for a, b in zip(
+                [h["distance"] for h in history],
+                [h["distance"] for h in history][1:])),
+        "single_linkage_chains": linkage == "single",
+        "linkage_changes_the_partition": True,
+        "method": "Rangayyan (2024) Section 10.5.1 (cluster seeking)"})
 
-    Returns
-    -------
-    result : dict
-        Keys: labels, dendrogram
 
-    References
-    ----------
-    Rangayyan Ch 10.5.1
-    """
-    X = np.asarray(X, dtype=float)
-    n = int(X) if X.ndim == 0 else len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hierarchical agglomerative clustering"})
+rangayyan_hierarchical_clust = hclust  # pre-policy spelling
 
 
 # -- rgica: FastICA algorithm for independent component analysis.
@@ -1228,71 +1403,151 @@ def rangayyan_infomax_ica(X, n_components, lr, max_iter):
 
 
 # -- rgkfcv: K-fold cross-validation.
-def rangayyan_kfold_cv(X, y, k, classifier):
+def kfoldcv(X, y, k=5, classifier=None, stratified=True):
+    """K-fold cross-validation, Section 10.10.3.
+
+        CV = (1/K) sum_k error on held-out fold k
+
+    The book's point in Section 10.10.3 is that the training and test
+    steps must use SEPARATE data: an error rate measured on the samples
+    that trained the classifier is optimistic, sometimes wildly so, and
+    with enough free parameters it reaches zero while the classifier
+    generalizes not at all.
+
+    Folds are stratified by default, keeping each class's proportion in
+    every fold.  Unstratified folds on unbalanced data can leave a class
+    absent from a training fold entirely, which does not measure
+    generalization so much as luck.
+
+    ``classifier`` is a callable (X_train, y_train, x) -> label; the
+    default is 1-NN.
     """
-    K-fold cross-validation
+    Xs = _mat(X)
+    ys = list(y)
+    n = len(Xs)
+    if n != len(ys):
+        raise ValueError("X and y must have the same number of rows")
+    kk = int(k)
+    if not 2 <= kk <= n:
+        raise ValueError("k must lie in 2..n")
+    if classifier is None:
+        def classifier(Xt, yt, q):
+            return knn(Xt, yt, q, k=1)["assigned"]
+    if stratified:
+        order, _ = _groups(Xs, ys)
+        by = {lab: [i for i in range(n) if ys[i] == lab] for lab in order}
+        folds = [[] for _ in range(kk)]
+        c = 0
+        for lab in order:
+            for i in by[lab]:
+                folds[c % kk].append(i)
+                c += 1
+    else:
+        folds = [[i for i in range(n) if i % kk == f] for f in range(kk)]
+    errors, per_fold = 0, []
+    for f in range(kk):
+        test = folds[f]
+        if not test:
+            continue
+        tr = [i for i in range(n) if i not in set(test)]
+        if len(set(ys[i] for i in tr)) < 2:
+            raise ValueError("fold %d leaves fewer than two classes in "
+                             "the training set; use stratified folds or "
+                             "a smaller k" % f)
+        Xt = [Xs[i] for i in tr]
+        yt = [ys[i] for i in tr]
+        e = sum(1 for i in test if classifier(Xt, yt, Xs[i]) != ys[i])
+        errors += e
+        per_fold.append({"fold": f, "n": len(test), "errors": e,
+                         "error_rate": e / len(test)})
+    rate = errors / n
+    return RichResult(payload={
+        "error_rate": rate, "accuracy": 1.0 - rate, "errors": errors,
+        "n": n, "k": kk, "per_fold": per_fold,
+        "stratified": bool(stratified),
+        "train_and_test_must_be_separate": True,
+        "method": "Rangayyan (2024) Section 10.10.3 (training and test "
+                  "steps)"})
 
-    Formula: CV_k = (1/K) sum_{k=1}^{K} error_k on held-out fold k
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    k : array-like
-        Input data.
-    classifier : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: cv_error, fold_errors
-
-    References
-    ----------
-    Rangayyan Ch 10.10.3
-    """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "K-fold cross-validation"})
+rangayyan_kfold_cv = kfoldcv  # pre-policy spelling
 
 
 # -- rgkmns: K-means clustering algorithm.
-def rangayyan_kmeans(X, k, max_iter, tol):
+def kmeans(X, k, maxiter=100, tol=1e-10, init=None):
+    """K-means cluster seeking, Section 10.5.1.
+
+    Assign each pattern to the nearest centroid, then move each centroid
+    to the mean of the patterns assigned to it, and repeat.  The
+    within-cluster sum of squares falls at every step, so the iteration
+    always terminates -- at a LOCAL minimum, which depends on where the
+    centroids started.  The book's method is unsupervised: it finds
+    groups, and whether those groups correspond to the diagnostic classes
+    is a separate question the algorithm cannot answer.
+
+    Starting centroids are the first k distinct patterns unless ``init``
+    is given, which makes the result reproducible; random starts would
+    make the same call return different clusterings.
+
+    An emptied cluster is re-seeded from the point furthest from its
+    centroid rather than dropped, so k clusters are always returned.
     """
-    K-means clustering algorithm
+    Xs = _mat(X)
+    n = len(Xs)
+    kk = int(k)
+    if kk < 1:
+        raise ValueError("k must be at least 1")
+    if kk > n:
+        raise ValueError("k exceeds the number of patterns")
+    p = len(Xs[0])
+    if init is None:
+        seen, cent = [], []
+        for r in Xs:
+            if r not in seen:
+                seen.append(r)
+                cent.append(list(r))
+            if len(cent) == kk:
+                break
+        if len(cent) < kk:
+            raise ValueError("fewer than k distinct patterns")
+    else:
+        cent = _mat(init)
+        if len(cent) != kk or any(len(r) != p for r in cent):
+            raise ValueError("init must be k x p")
 
-    Formula: Assign to nearest centroid; update mu_k = mean(x_i in cluster k); iterate
+    def d2(a, b):
+        return fsum((a[i] - b[i]) ** 2 for i in range(p))
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    k : array-like
-        Input data.
-    max_iter : array-like
-        Input data.
-    tol : array-like
-        Input data.
+    lab = [0] * n
+    prev = None
+    it = 0
+    for it in range(1, int(maxiter) + 1):
+        for i in range(n):
+            lab[i] = min(range(kk), key=lambda c: d2(Xs[i], cent[c]))
+        for c in range(kk):
+            rows = [Xs[i] for i in range(n) if lab[i] == c]
+            if not rows:
+                far = max(range(n), key=lambda i: d2(Xs[i], cent[lab[i]]))
+                cent[c] = list(Xs[far])
+                lab[far] = c
+                rows = [Xs[far]]
+            cent[c] = _colmeans(rows)
+        wcss = fsum(d2(Xs[i], cent[lab[i]]) for i in range(n))
+        if prev is not None and abs(prev - wcss) <= tol:
+            break
+        prev = wcss
+    sizes = [sum(1 for v in lab if v == c) for c in range(kk)]
+    return RichResult(payload={
+        "labels": lab, "centroids": cent, "wcss": prev, "k": kk,
+        "sizes": sizes, "iterations": it,
+        "converged": it < int(maxiter),
+        "local_minimum_only": True,
+        "depends_on_the_starting_centroids": True,
+        "unsupervised_groups_need_not_be_the_classes": True,
+        "method": "Rangayyan (2024) Section 10.5.1 (cluster seeking)"})
 
-    Returns
-    -------
-    result : dict
-        Keys: labels, centroids
 
-    References
-    ----------
-    Rangayyan Ch 10.5.1
-    """
-    X = np.asarray(X, dtype=float)
-    n = int(X) if X.ndim == 0 else len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "K-means clustering algorithm"})
+rangayyan_kmeans = kmeans  # pre-policy spelling
 
 
 # -- rgkneecl: Knee-joint cartilage pathology classification via VAG features.
@@ -1335,37 +1590,85 @@ def rangayyan_knee_classify(vag, fs, labels):
 
 
 # -- rgknn: K-nearest neighbor (k-NN) classifier.
-def rangayyan_knn_classifier(X_train, y_train, X_test, k):
+def knn(X, y, query, k=1, metric="euclidean", C=None):
+    """Nearest-neighbour and k-NN rules, eq. (10.29).
+
+        x in C_i  if  D(s_i, x) = min D(s_l, x),  l = 1..N
+
+    and the k-NN rule takes the majority among the k nearest.  The book
+    is explicit about why k > 1: with k = 1 "the nearest neighbor may
+    happen to be an outlier that is not representative of its class",
+    so a single mislabelled or freak training point owns a whole region
+    of the feature space.
+
+    ``metric`` may be "euclidean" or "mahalanobis"; the latter needs the
+    covariance ``C`` and is the one to use when the features have
+    different units or are correlated, since Euclidean distance would
+    otherwise be dominated by whichever feature has the largest numbers.
+
+    Ties in the vote are broken toward the class whose voting neighbours
+    are nearest, and the fact that a tie occurred is reported rather than
+    hidden.
     """
-    K-nearest neighbor (k-NN) classifier
+    Xs = _mat(X)
+    ys = list(y)
+    q = aslist(query)
+    if len(Xs) != len(ys):
+        raise ValueError("X and y must have the same number of rows")
+    if not Xs:
+        raise ValueError("need at least one training sample")
+    p = len(q)
+    if any(len(r) != p for r in Xs):
+        raise ValueError("every row of X must match the query length")
+    kk = int(k)
+    if kk < 1:
+        raise ValueError("k must be at least 1")
+    if kk > len(Xs):
+        raise ValueError("k exceeds the number of training samples")
+    if metric not in ("euclidean", "mahalanobis"):
+        raise ValueError("metric must be 'euclidean' or 'mahalanobis'")
+    if metric == "mahalanobis":
+        if C is None:
+            raise ValueError("the Mahalanobis metric needs the "
+                             "covariance C")
+        Ci = _inv(_mat(C))
 
-    Formula: Assign class of majority among k nearest neighbors by Euclidean distance
+        def dist(r):
+            d = [r[i] - q[i] for i in range(p)]
+            return sqrt(max(0.0, fsum(
+                d[i] * fsum(Ci[i][j] * d[j] for j in range(p))
+                for i in range(p))))
+    else:
+        def dist(r):
+            return sqrt(fsum((r[i] - q[i]) ** 2 for i in range(p)))
 
-    Parameters
-    ----------
-    X_train : array-like
-        Input data.
-    y_train : array-like
-        Input data.
-    X_test : array-like
-        Input data.
-    k : array-like
-        Input data.
+    d = [(dist(Xs[i]), ys[i], i) for i in range(len(Xs))]
+    d.sort(key=lambda t: t[0])
+    near = d[:kk]
+    votes = {}
+    for dd, lab, _ in near:
+        votes[lab] = votes.get(lab, 0) + 1
+    top = max(votes.values())
+    tied = [lab for lab, v in votes.items() if v == top]
+    if len(tied) == 1:
+        winner = tied[0]
+    else:
+        best, winner = None, None
+        for lab in tied:
+            s = fsum(dd for dd, l2, _ in near if l2 == lab)
+            if best is None or s < best:
+                best, winner = s, lab
+    return RichResult(payload={
+        "assigned": winner, "votes": votes, "k": kk, "metric": metric,
+        "neighbours": [{"index": i, "label": lab, "distance": dd}
+                       for dd, lab, i in near],
+        "tie": len(tied) > 1, "tied_classes": tied,
+        "nearest_distance": near[0][0], "nearest_label": near[0][1],
+        "single_neighbour_may_be_an_outlier": kk == 1,
+        "method": "Rangayyan (2024) eq. (10.29) and Section 10.4.4"})
 
-    Returns
-    -------
-    result : dict
-        Keys: y_pred
 
-    References
-    ----------
-    Rangayyan Ch 10.4.4
-    """
-    X_train = np.asarray(X_train, dtype=float)
-    n = int(X_train) if X_train.ndim == 0 else len(X_train)
-    result = float(np.mean(X_train))
-    se = float(np.std(X_train, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "K-nearest neighbor (k-NN) classifier"})
+rangayyan_knn_classifier = knn  # pre-policy spelling
 
 
 # -- rgksv: K-SVD dictionary learning algorithm.
@@ -1441,155 +1744,226 @@ def rangayyan_dictionary_sparse(Y, D, sparsity_T):
 
 
 # -- rglindf: Linear discriminant function for pattern classification.
-def rangayyan_linear_discrim(X, y, w, w0):
+def lindisc(x, weights, w0=None):
+    """Linear discriminant and decision functions, Section 10.4.1.
+
+        d_i(x) = w_i^T x + w_i0
+
+    and x is assigned to the class with the LARGEST d_i.  With M classes
+    the decision surface between classes i and j is where
+    d_i(x) = d_j(x), a hyperplane, so a linear machine carves the feature
+    space into convex regions -- which is exactly why it cannot separate
+    classes whose regions are not convex, however many features are
+    added.
+
+    ``weights`` is one weight vector per class; ``w0`` the matching
+    offsets, defaulting to zero.
     """
-    Linear discriminant function for pattern classification
+    xs = aslist(x)
+    W = _mat(weights)
+    m = len(W)
+    if m < 2:
+        raise ValueError("need at least two classes")
+    if any(len(r) != len(xs) for r in W):
+        raise ValueError("every weight vector must match the length of x")
+    b = [0.0] * m if w0 is None else aslist(w0)
+    if len(b) != m:
+        raise ValueError("give one offset per class")
+    d = [fsum(W[i][j] * xs[j] for j in range(len(xs))) + b[i]
+         for i in range(m)]
+    best = max(range(m), key=lambda i: d[i])
+    srt = sorted(d, reverse=True)
+    return RichResult(payload={
+        "d": d, "assigned": best, "margin": srt[0] - srt[1],
+        "n_classes": m, "regions_are_convex": True,
+        "decision_surfaces_are_hyperplanes": True,
+        "method": "Rangayyan (2024) Section 10.4.1 (discriminant and "
+                  "decision functions)"})
 
-    Formula: g(y) = w^T*y + w_0; classify to class with max g_i(y)
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    w : array-like
-        Input data.
-    w0 : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: labels, scores
-
-    References
-    ----------
-    Rangayyan Ch 10.4.1
-    """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Linear discriminant function for pattern classification",
-        }
-    )
+rangayyan_linear_discrim = lindisc  # pre-policy spelling
 
 
 # -- rglindsep: Linear discriminant function with optimal separability.
-def rangayyan_lin_discr_sep(X_1, X_2):
+def lindsep(X, y):
+    """Linear discriminant with optimal separability, Section 10.4.2.
+
+    Fits the Fisher direction w = S_W^-1 (m1 - m2) and reports where to
+    cut the projection.  Two thresholds are offered: the midpoint of the
+    projected class means, and the point that actually minimizes the
+    training error, which differ whenever the classes have unequal
+    spread or unequal size.  The midpoint is only optimal for equal
+    priors AND equal variances, so the fitted cut is reported as the
+    default and the midpoint alongside for comparison.
+
+    The training error is resubstitution error -- the same data that
+    chose the cut -- so it is optimistic by construction.  Section 10.10.3
+    is the book's warning on this; use ``kfoldcv`` or ``loocv`` for an
+    honest figure.
     """
-    Linear discriminant function with optimal separability
+    f = fishlda(X, y)
+    w = f["w"]
+    order = f["classes"]
+    proj = f["projected"]
+    a, b = proj[order[0]], proj[order[1]]
+    ma, mb = f["projected_means"]
+    mid = 0.5 * (ma + mb)
+    hi_first = ma > mb
+    cand = sorted(set(a + b))
+    best_t, best_err = mid, None
+    for i in range(len(cand) + 1):
+        lo = cand[0] - 1.0 if i == 0 else cand[i - 1]
+        hi = cand[-1] + 1.0 if i == len(cand) else cand[i]
+        t = 0.5 * (lo + hi)
+        if hi_first:
+            err = sum(1 for v in a if v <= t) + sum(1 for v in b if v > t)
+        else:
+            err = sum(1 for v in a if v > t) + sum(1 for v in b if v <= t)
+        if best_err is None or err < best_err:
+            best_err, best_t = err, t
+    n = len(a) + len(b)
+    if hi_first:
+        mid_err = sum(1 for v in a if v <= mid) + sum(1 for v in b
+                                                     if v > mid)
+    else:
+        mid_err = sum(1 for v in a if v > mid) + sum(1 for v in b
+                                                    if v <= mid)
+    return RichResult(payload={
+        "w": w, "threshold": best_t, "midpoint_threshold": mid,
+        "classes": order, "first_class_is_above": hi_first,
+        "training_errors": best_err, "midpoint_errors": mid_err,
+        "training_accuracy": 1.0 - best_err / n, "n": n,
+        "projected": proj,
+        "midpoint_optimal_only_for_equal_priors_and_spread": True,
+        "resubstitution_error_is_optimistic": True,
+        "method": "Rangayyan (2024) Sections 10.4.2 and 10.10.3"})
 
-    Formula: Project X_1 to w^T*X_1; optimal w = S_W^{-1}*(mu_1-mu_2)
 
-    Parameters
-    ----------
-    X_1 : array-like
-        Input data.
-    X_2 : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: w, separation
-
-    References
-    ----------
-    Rangayyan Ch 10.4.2
-    """
-    X_1 = np.asarray(X_1, dtype=float)
-    n = int(X_1) if X_1.ndim == 0 else len(X_1)
-    result = float(np.mean(X_1))
-    se = float(np.std(X_1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Linear discriminant function with optimal separability",
-        }
-    )
+rangayyan_lin_discr_sep = lindsep  # pre-policy spelling
 
 
 # -- rgloo: Leave-one-out cross-validation (LOO-CV).
-def rangayyan_loo_cv(X, y, classifier):
+def loocv(X, y, classifier=None):
+    """Leave-one-out cross-validation, Section 10.10.3.
+
+        LOO = (1/N) sum_i I( f_{-i}(x_i) != y_i )
+
+    K-fold with K = N.  It uses the most training data of any split, so
+    its estimate is nearly unbiased, and it is deterministic -- there is
+    only one way to leave one out, so unlike 5-fold it gives the same
+    answer every time.
+
+    The cost is N fits, and a high variance: each of the N training sets
+    differs from the others by a single sample, so the errors are heavily
+    correlated and the estimate moves a lot from dataset to dataset.  For
+    a small biomedical study, which is the case the book is concerned
+    with, that trade is usually worth taking.
     """
-    Leave-one-out cross-validation (LOO-CV)
-
-    Formula: LOO error = (1/N) sum I(f_{-i}(x_i) != y_i)
-
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    classifier : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: loo_error, predictions
-
-    References
-    ----------
-    Rangayyan Ch 10.10.3
-    """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Leave-one-out cross-validation (LOO-CV)"}
-    )
+    Xs = _mat(X)
+    ys = list(y)
+    n = len(Xs)
+    if n != len(ys):
+        raise ValueError("X and y must have the same number of rows")
+    if n < 3:
+        raise ValueError("need at least three samples")
+    if classifier is None:
+        def classifier(Xt, yt, q):
+            return knn(Xt, yt, q, k=1)["assigned"]
+    errors, wrong = 0, []
+    for i in range(n):
+        Xt = [Xs[j] for j in range(n) if j != i]
+        yt = [ys[j] for j in range(n) if j != i]
+        if len(set(yt)) < 2:
+            raise ValueError("removing sample %d leaves one class; the "
+                             "classifier cannot be trained" % i)
+        if classifier(Xt, yt, Xs[i]) != ys[i]:
+            errors += 1
+            wrong.append(i)
+    return RichResult(payload={
+        "error_rate": errors / n, "accuracy": 1.0 - errors / n,
+        "errors": errors, "misclassified": wrong, "n": n, "n_fits": n,
+        "deterministic": True, "nearly_unbiased": True,
+        "high_variance": True,
+        "method": "Rangayyan (2024) Section 10.10.3 (leave-one-out)"})
 
 
-# compact alias per ledger/NAMING.md
-rangayyanloocv = rangayyan_loo_cv
+rangayyan_loo_cv = loocv  # pre-policy spelling
 
 
 # -- rglr: Logistic regression for binary classification.
-def rangayyan_logistic_regression(X, y, lr, max_iter):
+def logreg(X, y, maxiter=100, tol=1e-8, ridge=1e-8):
+    """Logistic regression, Section 10.7.
+
+        P(y = 1 | x) = 1 / (1 + exp(-(w^T x + b)))
+
+    fitted by Newton-Raphson on the log-likelihood, which is the
+    iteratively reweighted least squares of the standard texts.  Unlike
+    the Bayes classifier this models the POSTERIOR directly and assumes
+    nothing about the shape of p(x|C), which is why it survives features
+    that are plainly not Gaussian.
+
+    Perfectly separable classes have no finite maximum -- the likelihood
+    keeps rising as the weights grow -- so a small ridge is added and
+    ``separable`` is reported when the fit runs to the iteration limit
+    with an exploding norm.  Without that, the coefficients are
+    meaningless numbers that merely record where the optimizer stopped.
     """
-    Logistic regression for binary classification
+    Xs = _mat(X)
+    ys = [float(v) for v in y]
+    if len(Xs) != len(ys):
+        raise ValueError("X and y must have the same number of rows")
+    if any(v not in (0.0, 1.0) for v in ys):
+        raise ValueError("logistic regression needs 0/1 labels")
+    if len(set(ys)) < 2:
+        raise ValueError("both classes must be present")
+    n = len(Xs)
+    p = len(Xs[0]) + 1
+    A = [[1.0] + list(r) for r in Xs]
+    w = [0.0] * p
+    lam = float(ridge)
+    it, sep = 0, False
+    for it in range(1, int(maxiter) + 1):
+        eta = [fsum(A[i][j] * w[j] for j in range(p)) for i in range(n)]
+        mu = [1.0 / (1.0 + exp(-min(500.0, max(-500.0, v)))) for v in eta]
+        g = [fsum(A[i][j] * (ys[i] - mu[i]) for i in range(n))
+             - lam * w[j] for j in range(p)]
+        H = [[0.0] * p for _ in range(p)]
+        for i in range(n):
+            wt = mu[i] * (1.0 - mu[i])
+            for a in range(p):
+                for b in range(p):
+                    H[a][b] += wt * A[i][a] * A[i][b]
+        for a in range(p):
+            H[a][a] += lam
+        try:
+            step = _solve_lin(H, g)
+        except ValueError:
+            break
+        w = [w[j] + step[j] for j in range(p)]
+        if max(abs(v) for v in step) < tol:
+            break
+    norm = sqrt(fsum(v * v for v in w))
+    if it >= int(maxiter) and norm > 50.0:
+        sep = True
+    eta = [fsum(A[i][j] * w[j] for j in range(p)) for i in range(n)]
+    mu = [1.0 / (1.0 + exp(-min(500.0, max(-500.0, v)))) for v in eta]
+    ll = fsum(ys[i] * log(max(mu[i], 1e-300))
+              + (1 - ys[i]) * log(max(1 - mu[i], 1e-300))
+              for i in range(n))
+    pred = [1 if v >= 0.5 else 0 for v in mu]
+    acc = sum(1 for i in range(n) if pred[i] == ys[i]) / n
+    return RichResult(payload={
+        "intercept": w[0], "coefficients": w[1:], "w": w,
+        "fitted": mu, "predicted": pred, "loglik": ll,
+        "iterations": it, "converged": it < int(maxiter),
+        "separable": sep, "ridge": lam,
+        "training_accuracy": acc, "n": n,
+        "models_the_posterior_directly": True,
+        "no_gaussian_assumption": True,
+        "method": "Rangayyan (2024) Section 10.7 (logistic regression)"})
 
-    Formula: P(y=1|y) = sigmoid(w^T*y + b) = 1/(1+exp(-(w^T*y+b)))
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    lr : array-like
-        Input data.
-    max_iter : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: w, b, probabilities
-
-    References
-    ----------
-    Rangayyan Ch 10.7
-    """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Logistic regression for binary classification"}
-    )
+rangayyan_logistic_regression = logreg  # pre-policy spelling
 
 
 # -- rglstm: LSTM recurrent network for biomedical time-series classification.
@@ -2070,44 +2444,69 @@ rangayyan_ppv = ppv  # pre-policy spelling
 
 
 # -- rgqda: Quadratic discriminant analysis (QDA) with unequal covariance matrices.
-def rangayyan_qda(X, y):
+def qda(X, y, query, priors=None):
+    """Quadratic discriminant analysis, fitted from data.
+
+        g_k(x) = ln P(C_k) - (1/2) ln|C_k|
+                 - (1/2) (x - m_k)^T C_k^-1 (x - m_k)
+
+    eq. (10.73) with the mean and covariance estimated per class, by
+    eqs. (10.68)-(10.69).  Because each class keeps its OWN covariance
+    the boundaries are quadric surfaces; forcing a single pooled
+    covariance is what turns this into linear discriminant analysis, and
+    that reduction is reported when it holds.
+
+    A class needs more samples than features or its covariance is
+    singular -- QDA estimates p(p+1)/2 covariance parameters PER CLASS,
+    so it is the first thing to break on small samples.  That is raised
+    rather than worked around.
     """
-    Quadratic discriminant analysis (QDA) with unequal covariance matrices
+    Xs = _mat(X)
+    ys = list(y)
+    q = aslist(query)
+    if len(Xs) != len(ys):
+        raise ValueError("X and y must have the same number of rows")
+    p = len(q)
+    if any(len(r) != p for r in Xs):
+        raise ValueError("every row of X must match the query length")
+    order, grp = _groups(Xs, ys)
+    m = len(order)
+    if m < 2:
+        raise ValueError("need at least two classes")
+    for lab in order:
+        if len(grp[lab]) <= p:
+            raise ValueError("class %r has %d samples for %d features; "
+                             "QDA needs more samples than features per "
+                             "class or the covariance is singular"
+                             % (lab, len(grp[lab]), p))
+    if priors is None:
+        pr = [len(grp[lab]) / len(Xs) for lab in order]
+    else:
+        pr = aslist(priors)
+        if len(pr) != m:
+            raise ValueError("give one prior per class")
+    means, covs = [], []
+    for lab in order:
+        rows = grp[lab]
+        mu = _colmeans(rows)
+        S = _scatter(rows, mu)
+        nk = len(rows)
+        covs.append([[S[i][j] / (nk - 1) for j in range(p)]
+                     for i in range(p)])
+        means.append(mu)
+    r = bayesnorm(q, means, covs, priors=pr)
+    return RichResult(payload={
+        "g": r["d"], "assigned": order[r["assigned"]],
+        "assigned_index": r["assigned"], "classes": order,
+        "means": means, "covariances": covs, "priors": pr,
+        "reduces_to_lda_when_covariances_are_equal":
+            r["linear_when_covariances_are_equal"],
+        "parameters_per_class": p * (p + 1) // 2,
+        "method": "Rangayyan (2024) eqs. (10.68)-(10.73), per-class "
+                  "covariances"})
 
-    Formula: g_k(y) = -0.5*ln|Sigma_k| - 0.5*(y-mu_k)^T*Sigma_k^{-1}*(y-mu_k) + ln P(C_k)
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: labels, discriminants
-
-    References
-    ----------
-    Rangayyan Ch 10.4.2
-    """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Quadratic discriminant analysis (QDA) with unequal covariance matrices",
-        }
-    )
-
-
-# compact alias per ledger/NAMING.md
-rangayyanqda = rangayyan_qda
+rangayyan_qda = qda  # pre-policy spelling
 
 
 # -- rgrbf: Radial basis function (RBF) network.
@@ -2417,86 +2816,219 @@ def rangayyan_sparse_rep(x, D, lambda_or_sparsity, method):
 
 
 # -- rgsvm: Support vector machine (SVM) via margin maximization.
-def rangayyan_svm(X, y, kernel, C):
+def svm(X, y, C=1.0, maxiter=2000, tol=1e-6):
+    """Linear support vector machine, Section 10.4.5.
+
+    Maximizes the margin 2/||w|| subject to y_i (w^T x_i + b) >= 1, in
+    the dual
+
+        max sum a_i - (1/2) sum_i sum_j a_i a_j y_i y_j x_i^T x_j
+        s.t. 0 <= a_i <= C,  sum a_i y_i = 0
+
+    solved by SMO-style coordinate ascent on pairs, which respects the
+    equality constraint that single-coordinate updates cannot.
+
+    Only the patterns with a_i > 0 -- the SUPPORT VECTORS -- enter the
+    solution, so the boundary is set by the samples nearest it and is
+    untouched by the bulk of the data.  That is the SVM's strength on
+    small samples and its weakness against a single mislabelled point
+    near the boundary, which C controls: a small C tolerates violations,
+    a large one insists on separating and will contort the boundary
+    around an outlier.
+
+    Labels must be -1 and +1.
     """
-    Support vector machine (SVM) via margin maximization
+    Xs = _mat(X)
+    ys = [float(v) for v in y]
+    n = len(Xs)
+    if n != len(ys):
+        raise ValueError("X and y must have the same number of rows")
+    if set(ys) - {-1.0, 1.0}:
+        raise ValueError("the SVM needs labels -1 and +1")
+    if len(set(ys)) < 2:
+        raise ValueError("both classes must be present")
+    p = len(Xs[0])
+    Cv = float(C)
+    if Cv <= 0:
+        raise ValueError("C must be positive")
+    K = [[fsum(Xs[i][t] * Xs[j][t] for t in range(p)) for j in range(n)]
+         for i in range(n)]
+    a = [0.0] * n
+    b = 0.0
+    it = 0
+    for it in range(1, int(maxiter) + 1):
+        changed = 0
+        for i in range(n):
+            fi = fsum(a[t] * ys[t] * K[t][i] for t in range(n)) + b
+            Ei = fi - ys[i]
+            if (ys[i] * Ei < -tol and a[i] < Cv) or \
+               (ys[i] * Ei > tol and a[i] > 0):
+                j = (i + 1 + it) % n
+                if j == i:
+                    continue
+                fj = fsum(a[t] * ys[t] * K[t][j] for t in range(n)) + b
+                Ej = fj - ys[j]
+                ai, aj = a[i], a[j]
+                if ys[i] != ys[j]:
+                    L, H = max(0.0, aj - ai), min(Cv, Cv + aj - ai)
+                else:
+                    L, H = max(0.0, ai + aj - Cv), min(Cv, ai + aj)
+                if H - L < 1e-12:
+                    continue
+                eta = 2.0 * K[i][j] - K[i][i] - K[j][j]
+                if eta >= -1e-12:
+                    continue
+                anj = aj - ys[j] * (Ei - Ej) / eta
+                anj = min(H, max(L, anj))
+                if abs(anj - aj) < 1e-12:
+                    continue
+                ani = ai + ys[i] * ys[j] * (aj - anj)
+                b1 = b - Ei - ys[i] * (ani - ai) * K[i][i] \
+                    - ys[j] * (anj - aj) * K[i][j]
+                b2 = b - Ej - ys[i] * (ani - ai) * K[i][j] \
+                    - ys[j] * (anj - aj) * K[j][j]
+                if 0 < ani < Cv:
+                    b = b1
+                elif 0 < anj < Cv:
+                    b = b2
+                else:
+                    b = 0.5 * (b1 + b2)
+                a[i], a[j] = ani, anj
+                changed += 1
+        if changed == 0:
+            break
+    w = [fsum(a[i] * ys[i] * Xs[i][t] for i in range(n))
+         for t in range(p)]
+    sv = [i for i in range(n) if a[i] > 1e-8]
+    marg = (2.0 / sqrt(fsum(v * v for v in w))) if any(w) else float("inf")
+    pred = [1.0 if fsum(w[t] * Xs[i][t] for t in range(p)) + b >= 0
+            else -1.0 for i in range(n)]
+    acc = sum(1 for i in range(n) if pred[i] == ys[i]) / n
+    return RichResult(payload={
+        "w": w, "b": b, "alpha": a, "support_vectors": sv,
+        "n_support": len(sv), "margin": marg, "C": Cv,
+        "iterations": it, "converged": it < int(maxiter),
+        "training_accuracy": acc,
+        "boundary_set_by_the_support_vectors_only": True,
+        "large_c_contorts_around_outliers": True,
+        "method": "Rangayyan (2024) Section 10.4.5 (support vector "
+                  "machine)"})
 
-    Formula: max 2/||w|| s.t. y_i(w^T*x_i+b)>=1; dual: max sum(a_i)-(1/2)*sum sum a_i*a_j*y_i*y_j*K(x_i,x_j)
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    kernel : array-like
-        Input data.
-    C : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: support_vectors, w, b, alphas
-
-    References
-    ----------
-    Rangayyan Ch 10.4.5
-    """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Support vector machine (SVM) via margin maximization"}
-    )
-
-
-# compact alias per ledger/NAMING.md
-rangayyansvm = rangayyan_svm
+rangayyan_svm = svm  # pre-policy spelling
 
 
 # -- rgsvmk: SVM with kernel trick (RBF, polynomial, sigmoid kernels).
-def rangayyan_svm_kernel(X, y, kernel, C, gamma):
+def svmkern(X, y, query=None, kernel="rbf", gamma=None, degree=3,
+            coef0=0.0, C=1.0, maxiter=2000, tol=1e-6):
+    """Kernel SVM, Section 10.4.5.
+
+        K(x, x') = exp(-gamma ||x - x'||^2)      RBF
+                 = (x^T x' + coef0)^degree       polynomial
+                 = tanh(gamma x^T x' + coef0)    sigmoid
+
+    The dual of the linear SVM depends on the data only through inner
+    products, so replacing that product with a kernel fits a linear
+    boundary in a space the data is never actually mapped into -- the
+    kernel trick.  The boundary in the ORIGINAL space is then curved, and
+    there is no weight vector to report: the classifier is the list of
+    support vectors and their coefficients, which is why kernel SVMs grow
+    with the training set where the linear one does not.
+
+    gamma defaults to 1/n_features.  The sigmoid kernel is not positive
+    definite for all parameters, so the dual is not guaranteed concave
+    and the solution may depend on the starting point; that is reported
+    rather than assumed away.
     """
-    SVM with kernel trick (RBF, polynomial, sigmoid kernels)
+    Xs = _mat(X)
+    ys = [float(v) for v in y]
+    n = len(Xs)
+    if n != len(ys):
+        raise ValueError("X and y must have the same number of rows")
+    if set(ys) - {-1.0, 1.0}:
+        raise ValueError("the SVM needs labels -1 and +1")
+    p = len(Xs[0])
+    g = (1.0 / p) if gamma is None else float(gamma)
+    if kernel not in ("rbf", "poly", "linear", "sigmoid"):
+        raise ValueError("kernel must be 'rbf', 'poly', 'linear' or "
+                         "'sigmoid'")
 
-    Formula: K(y,y')=exp(-||x-x'||^2/(2*sigma^2)) for RBF; dual: alpha* from QP
+    def kf(u, v):
+        dot = fsum(u[t] * v[t] for t in range(p))
+        if kernel == "linear":
+            return dot
+        if kernel == "poly":
+            return (dot + float(coef0)) ** int(degree)
+        if kernel == "sigmoid":
+            return _tanh(g * dot + float(coef0))
+        d2 = fsum((u[t] - v[t]) ** 2 for t in range(p))
+        return exp(-g * d2)
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    kernel : array-like
-        Input data.
-    C : array-like
-        Input data.
-    gamma : array-like
-        Input data.
+    K = [[kf(Xs[i], Xs[j]) for j in range(n)] for i in range(n)]
+    Cv = float(C)
+    a = [0.0] * n
+    b = 0.0
+    it = 0
+    for it in range(1, int(maxiter) + 1):
+        changed = 0
+        for i in range(n):
+            fi = fsum(a[t] * ys[t] * K[t][i] for t in range(n)) + b
+            Ei = fi - ys[i]
+            if (ys[i] * Ei < -tol and a[i] < Cv) or \
+               (ys[i] * Ei > tol and a[i] > 0):
+                j = (i + 1 + it) % n
+                if j == i:
+                    continue
+                fj = fsum(a[t] * ys[t] * K[t][j] for t in range(n)) + b
+                Ej = fj - ys[j]
+                ai, aj = a[i], a[j]
+                if ys[i] != ys[j]:
+                    L, H = max(0.0, aj - ai), min(Cv, Cv + aj - ai)
+                else:
+                    L, H = max(0.0, ai + aj - Cv), min(Cv, ai + aj)
+                if H - L < 1e-12:
+                    continue
+                eta = 2.0 * K[i][j] - K[i][i] - K[j][j]
+                if eta >= -1e-12:
+                    continue
+                anj = min(H, max(L, aj - ys[j] * (Ei - Ej) / eta))
+                if abs(anj - aj) < 1e-12:
+                    continue
+                ani = ai + ys[i] * ys[j] * (aj - anj)
+                b1 = b - Ei - ys[i] * (ani - ai) * K[i][i] \
+                    - ys[j] * (anj - aj) * K[i][j]
+                b2 = b - Ej - ys[i] * (ani - ai) * K[i][j] \
+                    - ys[j] * (anj - aj) * K[j][j]
+                b = b1 if 0 < ani < Cv else (b2 if 0 < anj < Cv
+                                             else 0.5 * (b1 + b2))
+                a[i], a[j] = ani, anj
+                changed += 1
+        if changed == 0:
+            break
+    sv = [i for i in range(n) if a[i] > 1e-8]
+    pred = [1.0 if fsum(a[t] * ys[t] * K[t][i] for t in range(n)) + b >= 0
+            else -1.0 for i in range(n)]
+    acc = sum(1 for i in range(n) if pred[i] == ys[i]) / n
+    out = {"alpha": a, "b": b, "support_vectors": sv,
+           "n_support": len(sv), "kernel": kernel, "gamma": g, "C": Cv,
+           "iterations": it, "converged": it < int(maxiter),
+           "training_accuracy": acc,
+           "no_weight_vector_in_the_original_space": kernel != "linear",
+           "model_grows_with_the_training_set": True,
+           "sigmoid_kernel_is_not_always_positive_definite":
+               kernel == "sigmoid",
+           "method": "Rangayyan (2024) Section 10.4.5 (kernel SVM)"}
+    if query is not None:
+        q = aslist(query)
+        if len(q) != p:
+            raise ValueError("the query must match the feature length")
+        s = fsum(a[t] * ys[t] * kf(Xs[t], q) for t in range(n)) + b
+        out["decision"] = s
+        out["assigned"] = 1.0 if s >= 0 else -1.0
+    return RichResult(payload=out)
 
-    Returns
-    -------
-    result : dict
-        Keys: svm_model, support_vectors
 
-    References
-    ----------
-    Rangayyan Ch 10.4.5
-    """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "SVM with kernel trick (RBF, polynomial, sigmoid kernels)",
-        }
-    )
+rangayyan_svm_kernel = svmkern  # pre-policy spelling
 
 
 # -- rgvagadp: Adaptive TFD of VAG signals via matching pursuit.
@@ -2599,42 +3131,42 @@ def rangayyan_ch4_pan_tompkins_peak_classification(PEAKI, SPKI=None, NPKI=None,
 
 
 _CHEATSHEET = [
-    'accuracy, prevalence weighted, eqs. (10.102)-(10.103)',
+    'rgacc: Classification accuracy.',
     'rgann: Multilayer perceptron (ANN) with backpropagation.',
-    'rgbayes: Bayes minimum-error classifier.',
-    'rgbayng: Bayes classifier for normal (Gaussian) patterns.',
+    'Bayes decision functions, eq. (10.70)',
+    'Bayes classifier for normal patterns, eq. (10.72)',
     'rgbbb: Bundle branch block (BBB) classification from ECG.',
     'rgbbnorm: Normal versus ectopic beat classification with LDA and Bayes.',
     'rgbci: BCI EEG channel selection via NMF spatial decomposition.',
-    'divergence eq. (10.117), normalized distance eq. (10.112)',
+    'rgbhatt: Bhattacharyya distance for class separability.',
     'rgbp: Basis pursuit: L1 minimization for sparse representation.',
     'rgcad: Computer-aided diagnosis (CAD) pipeline: preprocess -> features -> classify -> validate.',
     'rgcnn: 1D CNN for biomedical signal classification.',
     'rgecgfe: Single-channel fetal ECG extraction using NMF/ICA.',
     'rgecgnl: Normal vs. ectopic ECG beat classification.',
     'rgeegb: EEG rhythm band classification (delta/theta/alpha/beta/gamma).',
-    'rgelbow: Elbow method for k-means cluster count selection.',
+    'elbow criterion for the cluster count',
     'rgepiksv: Epileptic seizure detection using K-SVD dictionary learning.',
-    'Bhattacharyya bound on the Bayes error (not from this book)',
-    "Fisher's criterion for a scalar feature",
-    'Fisher linear discriminant, Section 10.4.2',
-    'rghier: Hierarchical agglomerative clustering.',
+    'rgerrbd: Bhattacharyya bound on Bayes classification error.',
+    "rgfish: Fisher's criterion for feature separability.",
+    'rgfld: Fisher linear discriminant analysis (LDA).',
+    'hierarchical agglomerative clustering, Section 10.5.1',
     'rgica: FastICA algorithm for independent component analysis.',
     'rgicaart: EEG artifact removal via ICA (eye blink, muscle, ECG).',
     'rginf: Infomax ICA algorithm (Bell-Sejnowski).',
-    'rgkfcv: K-fold cross-validation.',
-    'rgkmns: K-means clustering algorithm.',
+    'k-fold cross-validation, Section 10.10.3',
+    'k-means clustering, Section 10.5.1',
     'rgkneecl: Knee-joint cartilage pathology classification via VAG features.',
-    'rgknn: K-nearest neighbor (k-NN) classifier.',
+    'nearest-neighbour and k-NN rules, eq. (10.29)',
     'rgksv: K-SVD dictionary learning algorithm.',
     'rgldsp: Sparse coding given fixed dictionary (OMP/LASSO).',
-    'rglindf: Linear discriminant function for pattern classification.',
-    'rglindsep: Linear discriminant function with optimal separability.',
-    'rgloo: Leave-one-out cross-validation (LOO-CV).',
-    'rglr: Logistic regression for binary classification.',
+    'linear discriminant functions, Section 10.4.1',
+    'linear discriminant with a fitted threshold, Section 10.4.2',
+    'leave-one-out cross-validation, Section 10.10.3',
+    'logistic regression by Newton-Raphson, Section 10.7',
     'rglstm: LSTM recurrent network for biomedical time-series classification.',
-    'Mahalanobis distance, Section 10.4.3',
-    'McNemar/Bowker test of symmetry, Section 10.9.2',
+    'rgmahd: Mahalanobis distance from sample to class.',
+    "rgmcn: McNemar's test for comparing two classifiers.",
     'rgmp: Matching pursuit greedy decomposition into dictionary atoms.',
     'rgneural: Neural decoding for prosthesis control from spike trains.',
     'rgnmf: Nonnegative matrix factorization (NMF) with multiplicative update rules.',
@@ -2642,17 +3174,17 @@ _CHEATSHEET = [
     'rgomp: Orthogonal matching pursuit (OMP) for sparse representation.',
     'rgpca: PCA for signal mixture separation (eigendecomposition of covariance).',
     'rgpcaica: Comparative analysis of PCA, ICA, and NMF for signal separation.',
-    'positive predictive value, eq. (10.106)',
-    'rgqda: Quadratic discriminant analysis (QDA) with unequal covariance matrices.',
+    'rgppv: Positive predictive value (precision).',
+    'quadratic discriminant analysis fitted from data',
     'rgrbf: Radial basis function (RBF) network.',
-    'ROC curve and the area A_z, Section 10.9.1',
+    'rgroc: Receiver operating characteristic (ROC) curve and AUC.',
     'rgsapnmf: Sleep apnea diagnosis via NMF of polysomnographic signals.',
-    'sensitivity (TPF), eq. (10.100)',
-    'separability index tr(S_B)/tr(S_W), Section 10.10.1',
-    'specificity (TNF), eq. (10.101)',
+    'rgsen: Sensitivity (recall, true positive rate).',
+    'rgsepix: Separability index: ratio of between-class to within-class scatter.',
+    'rgspe: Specificity (true negative rate).',
     'rgsprep: Sparse representation of biomedical signals in learned dictionary.',
-    'rgsvm: Support vector machine (SVM) via margin maximization.',
-    'rgsvmk: SVM with kernel trick (RBF, polynomial, sigmoid kernels).',
+    'linear SVM by SMO, Section 10.4.5',
+    'kernel SVM, Section 10.4.5',
     'rgvagadp: Adaptive TFD of VAG signals via matching pursuit.',
     'rng190: Pan-Tompkins peak classification.',
 ]
