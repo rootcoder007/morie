@@ -6,7 +6,7 @@ from . import _array_core as np
 from . import _stats_core as stats
 from ._richresult import hypothesis_test_result
 
-__all__ = ["taroni_ware"]
+__all__ = ["taroni_ware", "taroniware"]
 
 _WEIGHTS = ("tarone-ware", "logrank", "gehan", "peto")
 
@@ -139,6 +139,10 @@ def taroni_ware(time, event, group, weight="tarone-ware"):
         },
     )
 
+
+# compact alias -- _lazy_map.json resolves 'taroniware' to this module, so the
+# name has to exist here or the lookup dies.
+taroniware = taroni_ware
 
 def cheatsheet():
     return "taroni: Tarone-Ware / log-rank / Gehan / Peto weighted log-rank test"
