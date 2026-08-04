@@ -1,52 +1,71 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Winkler interval score: penalize narrow intervals + miscoverage."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Winkler interval score.
 
-from . import _array_core as np
+Winkler (1972) JASA 67(337):187-191; Gneiting and Raftery (2007) JASA 102(477) eq. (43) -- NOT printed in Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_winkler_interval_score"]
+__all__ = ["winkler", "joseph_winkler_interval_score"]
+
+_METHOD = "Winkler interval score"
 
 
-def joseph_winkler_interval_score(y, l, u, alpha):
-    """
-    Winkler interval score: penalize narrow intervals + miscoverage
+def winkler(y, lower, upper, alpha=0.1):
+    """Winkler interval score.
 
-    Formula: W = (u - l) + (2/alpha)*(l - y)*1{y<l} + (2/alpha)*(y - u)*1{y>u}
+    Winkler interval score, ch. 17.
+
+    NOT LOCATED IN THE EXTRACTED TEXT: the corpus copy of Joseph and
+    Tackes never prints the Winkler score, so it is taken from the
+    primary source and stated here in full:
+
+        W = (u - l)
+            + (2/alpha)(l - y)  if y < l
+            + (2/alpha)(y - u)  if y > u
+
+    -- Winkler, R. L. (1972), "A Decision-Theoretic Approach to
+    Interval Estimation", Journal of the American Statistical
+    Association 67(337):187-191; in the form popularized by Gneiting,
+    T. and Raftery, A. E. (2007), "Strictly Proper Scoring Rules,
+    Prediction, and Estimation", JASA 102(477):359-378, eq. (43).
+    Lower is better.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    l : array-like
-        Input data.
-    u : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    y : as documented for the shelf core
+        See ``morie.fn._joseph.winkler``.
+    lower : as documented for the shelf core
+        See ``morie.fn._joseph.winkler``.
+    upper : as documented for the shelf core
+        See ``morie.fn._joseph.winkler``.
+    alpha : as documented for the shelf core
+        See ``morie.fn._joseph.winkler``.
 
     Returns
     -------
-    result : dict
-        Keys: score
+    result : RichResult
+        Payload keys: score, coverage, meanwidth.
 
     References
     ----------
-    Joseph Ch 17, Interval Score (Winkler) section
+    Winkler (1972) JASA 67(337):187-191; Gneiting and Raftery (2007) JASA 102(477) eq. (43) -- NOT printed in Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.winkler(y=y, lower=lower, upper=upper, alpha=alpha)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Winkler interval score: penalize narrow intervals + miscoverage",
-        }
+        title=_METHOD,
+        summary_lines=[("score", res["score"]), ("coverage", res["coverage"]), ("meanwidth", res["meanwidth"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_winkler_interval_score = winkler
+
+
 def cheatsheet():
-    return "jowink: Winkler interval score: penalize narrow intervals + miscoverage"
+    return "winkler: Winkler interval score"

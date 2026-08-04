@@ -1,47 +1,66 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""BIC score for DAG structure scoring in GES."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Gaussian BIC score of a DAG.
 
-from . import _array_core as np
+Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 13 p. 348
+"""
+
+from . import _molak as _core
 
 from ._richresult import RichResult
 
-__all__ = ["bic_score_dag"]
+__all__ = ["bicdag", "bic_score_dag"]
+
+_METHOD = "Gaussian BIC score of a DAG"
 
 
-def bic_score_dag(dag, data):
-    """
-    BIC score for DAG structure scoring in GES
+def bicdag(data, dag, names=None):
+    """Gaussian BIC score of a DAG.
 
-    Formula: BIC(G, data) = log P(data|G, theta_hat) - (k/2)*log(n); k = number of free parameters
+    Gaussian BIC score of a DAG.
+
+    The corpus copy only NAMES the Bayesian Information Criterion as a
+    gCastle GES scoring option (ch. 13, p. 348, citing Chickering
+    2003); no BIC formula is printed there.  The formula used here is
+    the standard Gaussian one, stated explicitly so nothing is
+    attributed to the book that the book does not say:
+
+    score(G) = sum_j [ -n/2 (log(2 pi s2_j) + 1) ] - (log n / 2) k
+
+    with ``s2_j`` the residual variance of the OLS regression of node j
+    on its parents and ``k`` the free-parameter count (one intercept,
+    one slope per parent, one variance per node).
 
     Parameters
     ----------
-    dag : array-like
-        Input data.
-    data : array-like
-        Input data.
+    data : as documented for the shelf core
+        See ``morie.fn._molak.bicdag``.
+    dag : as documented for the shelf core
+        See ``morie.fn._molak.bicdag``.
+    names : as documented for the shelf core
+        See ``morie.fn._molak.bicdag``.
 
     Returns
     -------
-    result : dict
-        Keys: {'bic': 'float'}
+    result : RichResult
+        Payload keys: score, loglik, k, penalty.
 
     References
     ----------
-    Molak Ch 13
+    Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 13 p. 348
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    result = float(np.mean(data))
-    se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.bicdag(data=data, dag=dag, names=names)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "BIC score for DAG structure scoring in GES"}
+        title=_METHOD,
+        summary_lines=[("score", res["score"]), ("loglik", res["loglik"]), ("k", res["k"]), ("penalty", res["penalty"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+bic_score_dag = bicdag
+
+
 def cheatsheet():
-    return "bicsm: BIC score for DAG structure scoring in GES"
-
-
-# compact alias per ledger/NAMING.md
-bicscoredag = bic_score_dag
+    return "bicdag: Gaussian BIC score of a DAG"

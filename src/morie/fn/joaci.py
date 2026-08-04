@@ -1,52 +1,67 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""ACI: online update of alpha to maintain coverage under distribution shift."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Adaptive conformal inference.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 17 p. 519; Gibbs and Candes (2021) NeurIPS 34, arXiv:2106.00170
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_adaptive_conformal_inference"]
+__all__ = ["aci", "joseph_adaptive_conformal_inference"]
+
+_METHOD = "Adaptive conformal inference"
 
 
-def joseph_adaptive_conformal_inference(alpha_t, miscoverage_t, eta, alpha_target):
-    """
-    ACI: online update of alpha to maintain coverage under distribution shift
+def aci(inside, alpha=0.1, gamma=0.01):
+    """Adaptive conformal inference.
 
-    Formula: alpha_{t+1} = alpha_t + eta * (alpha_target - 1{y_t in PI_t})
+    Adaptive conformal inference, ch. 17 p. 519.
+
+    The book's own online update, quoted from p. 519:
+
+        err_t = 1 if Y_t is outside Chat(alpha_t), else 0
+        alpha_{t+1} = alpha_t + gamma (alpha - err_t)
+
+    with alpha_1 = alpha.  ``inside`` is the sequence of coverage
+    outcomes (True when the observation fell inside the interval), so
+    the routine is a pure recursion over data the caller supplies.
+
+    -- the method is Gibbs, I. and Candes, E. (2021), "Adaptive
+    Conformal Inference Under Distribution Shift", NeurIPS 34
+    (arXiv:2106.00170), which the book cites as its Reference 13.
 
     Parameters
     ----------
-    alpha_t : array-like
-        Input data.
-    miscoverage_t : array-like
-        Input data.
-    eta : array-like
-        Input data.
-    alpha_target : array-like
-        Input data.
+    inside : as documented for the shelf core
+        See ``morie.fn._joseph.aci``.
+    alpha : as documented for the shelf core
+        See ``morie.fn._joseph.aci``.
+    gamma : as documented for the shelf core
+        See ``morie.fn._joseph.aci``.
 
     Returns
     -------
-    result : dict
-        Keys: alpha_new
+    result : RichResult
+        Payload keys: final, empirical, minalpha, maxalpha.
 
     References
     ----------
-    Joseph Ch 17, Adaptive Conformal Inference section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 17 p. 519; Gibbs and Candes (2021) NeurIPS 34, arXiv:2106.00170
     """
-    alpha_t = np.atleast_1d(np.asarray(alpha_t, dtype=float))
-    n = len(alpha_t)
-    result = float(np.mean(alpha_t))
-    se = float(np.std(alpha_t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.aci(inside=inside, alpha=alpha, gamma=gamma)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "ACI: online update of alpha to maintain coverage under distribution shift",
-        }
+        title=_METHOD,
+        summary_lines=[("final", res["final"]), ("empirical", res["empirical"]), ("minalpha", res["minalpha"]), ("maxalpha", res["maxalpha"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_adaptive_conformal_inference = aci
+
+
 def cheatsheet():
-    return "joaci: ACI: online update of alpha to maintain coverage under distribution shift"
+    return "aci: Adaptive conformal inference"

@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import builtins as _bi
 import math as _math
+import struct as _struct
 
 pi = _math.pi
 e = _math.e
@@ -46,10 +47,68 @@ def _num(v):
     return float(v)
 
 
+
+# --------------------------------------------------------------- dtypes
+# Struct format and width for every dtype the core can store or emit.
+# tobytes() has to reproduce numpy's byte layout exactly: the GGUF writer
+# packs an array and the loader reads it straight back.
+_DTYPE_FMT = {
+    "float64": ("d", 8), "float32": ("f", 4), "float16": ("e", 2),
+    "int64": ("q", 8), "int32": ("i", 4), "int16": ("h", 2),
+    "int8": ("b", 1),
+    "uint64": ("Q", 8), "uint32": ("I", 4), "uint16": ("H", 2),
+    "uint8": ("B", 1),
+}
+
+
+def _dtype_name(dtype):
+    """Canonical numpy-style name for whatever dtype spelling arrived."""
+    if dtype is None:
+        return "float64"
+    if dtype is int:
+        return "int64"
+    if dtype is float:
+        return "float64"
+    if dtype is bool:
+        return "bool"
+    if isinstance(dtype, str):
+        return dtype
+    return (getattr(dtype, "name", None)
+            or getattr(dtype, "__name__", None) or "float64")
+
+
+def _dtype_cast(v, name):
+    """The value a numpy array of *name* would actually hold.
+
+    Unknown names pass through untouched, so astype() to a dtype the core
+    does not model stays the no-op it has always been.
+    """
+    if name not in _DTYPE_FMT:
+        return v
+    if isinstance(v, complex):
+        v = v.real
+    fmt, size = _DTYPE_FMT[name]
+    if fmt == "d":
+        return float(v)
+    if fmt in ("f", "e"):
+        # round-trip through the narrow width: float32/float16 arrays do
+        # not keep the extra mantissa bits, and a later tobytes() would
+        # silently drop them anyway.
+        return _struct.unpack("<" + fmt, _struct.pack("<" + fmt,
+                                                      float(v)))[0]
+    iv = int(v)                       # numpy truncates toward zero
+    bits = size * 8
+    iv &= (1 << bits) - 1
+    if fmt.islower() and iv >= (1 << (bits - 1)):
+        iv -= 1 << bits               # signed wrap-around
+    return iv
+
+
 class marr:
     """Minimal array: nested lists of floats, 1-D or 2-D."""
 
-    __slots__ = ("data", "shape", "_is_mask", "_is_index", "_aif_keep")
+    __slots__ = ("data", "shape", "_is_mask", "_is_index", "_aif_keep",
+                 "_dt")
 
     def __init__(self, data):
         if isinstance(data, marr):
@@ -269,9 +328,36 @@ class marr:
 
     @property
     def dtype(self):
-        # the list-backed core is always float64; masks surface as
-        # bool through __array__, but dtype reports the storage type
+        # the list-backed core is float64 unless astype/frombuffer tagged
+        # it; masks surface as bool through __array__.
+        name = getattr(self, "_dt", None)
+        if name and name != "float64":
+            return _DTypeNarrow(name)
         return float64
+
+    @property
+    def real(self):
+        """Real part.  numpy exposes this as an attribute, not a method."""
+        return real(self)
+
+    @property
+    def imag(self):
+        """Imaginary part (attribute, matching numpy)."""
+        return imag(self)
+
+    def tobytes(self, order="C"):
+        """Raw C-order bytes for the array's dtype, numpy's layout."""
+        del order
+        name = getattr(self, "_dt", None) or "float64"
+        fmt = _DTYPE_FMT.get(name, ("d", 8))[0]
+        vals = self._flat()
+        if fmt in ("d", "f", "e"):
+            vals = [float(v.real if isinstance(v, complex) else v)
+                    for v in vals]
+        else:
+            vals = [int(v.real if isinstance(v, complex) else v)
+                    for v in vals]
+        return _struct.pack("<%d%s" % (len(vals), fmt), *vals)
 
     @property
     def size(self):
@@ -306,8 +392,13 @@ class marr:
         return out
 
     def astype(self, dtype=None, copy=True):
-        del dtype, copy
-        return marr(self)
+        del copy
+        name = _dtype_name(dtype)
+        if name not in _DTYPE_FMT:
+            return marr(self)
+        out = self._map(lambda v: _dtype_cast(v, name))
+        out._dt = None if name == "float64" else name
+        return out
 
     def flatten(self):
         return marr(self._flat())
@@ -2292,7 +2383,9 @@ class _DTypeNarrow:
     def __init__(self, name):
         self.__name__ = name
         self.name = name
-        self.kind = "f"
+        self.kind = "u" if name.startswith("uint") \
+            else "i" if name.startswith("int") else "f"
+        self.itemsize = _DTYPE_FMT.get(name, ("d", 8))[1]
 
     def __call__(self, v):
         return float(v)
@@ -4152,26 +4245,36 @@ def pad(a, pad_width, mode="constant", constant_values=0.0):
     raise ValueError("unsupported pad mode %r" % mode)
 
 
-def packbits(a):
+def packbits(a, bitorder="big"):
     bits = [1 if v != 0 else 0 for v in asarray(a)._flat()]
     while len(bits) % 8:
         bits.append(0)
     out = []
     for i in range(0, len(bits), 8):
+        chunk = bits[i:i + 8]
         byte = 0
-        for b in bits[i:i + 8]:
-            byte = (byte << 1) | b
+        if bitorder == "little":
+            for k, b in enumerate(chunk):
+                byte |= b << k
+        else:
+            for b in chunk:
+                byte = (byte << 1) | b
         out.append(float(byte))
-    return marr(out)
+    res = marr(out)
+    res._dt = "uint8"
+    return res
 
 
-def unpackbits(a):
+def unpackbits(a, bitorder="big"):
     out = []
+    order = range(8) if bitorder == "little" else range(7, -1, -1)
     for v in asarray(a)._flat():
         byte = int(v) & 0xFF
-        for k in range(7, -1, -1):
+        for k in order:
             out.append(float((byte >> k) & 1))
-    return marr(out)
+    res = marr(out)
+    res._dt = "uint8"
+    return res
 
 
 def nan_to_num(x, nan=0.0, posinf=None, neginf=None):
@@ -4396,18 +4499,13 @@ random = _RandomNS()
 
 
 def frombuffer(buf, dtype="float64", count=-1):
-    import struct
-    fmt_map = {"float64": ("d", 8), "float32": ("f", 4),
-               "float16": ("e", 2),
-               "int64": ("q", 8), "int32": ("i", 4),
-               "int8": ("b", 1), "int16": ("h", 2),
-               "uint8": ("B", 1), "uint64": ("Q", 8)}
-    key = dtype if isinstance(dtype, str) else getattr(
-        dtype, "__name__", "float64")
-    fmt, size = fmt_map.get(key, ("d", 8))
+    key = _dtype_name(dtype)
+    fmt, size = _DTYPE_FMT.get(key, ("d", 8))
     n = len(buf) // size if count in (-1, None) else int(count)
-    vals = struct.unpack("<%d%s" % (n, fmt), bytes(buf[:n * size]))
-    return marr([float(v) for v in vals])
+    vals = _struct.unpack("<%d%s" % (n, fmt), bytes(buf[:n * size]))
+    out = marr([float(v) for v in vals])
+    out._dt = None if key == "float64" else key
+    return out
 
 
 # --------------------------------------------------------------- C dispatch

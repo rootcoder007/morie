@@ -1,76 +1,65 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""r-th order statistic from Uniform(0,1) follows Beta(r, n-r+1) distribution."""
+"""Uniform order statistic U_(r) is Beta(r, n-r+1) -- Theorem 2.4.3."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_order_beta"]
+__all__ = ['ostatbeta', 'gibbons_order_beta']
 
 
-def gibbons_order_beta(r, n, cdf=None):
-    """
-    r-th order statistic from Uniform(0,1) follows Beta(r, n-r+1) distribution
+def ostatbeta(u, r, n):
+    """Density, cdf and moments of U_(r) for a Uniform(0, 1) parent.
 
-    Formula: X_(r) ~ Beta(r, n-r+1) when F = Uniform(0,1)
+    Theorem 2.4.3 (book p. 38): U_(r) ~ Beta(r, n - r + 1), so
+
+    .. math::
+        f_{U_{(r)}}(u) = \\frac{n!}{(r-1)!(n-r)!} u^{r-1}(1-u)^{n-r},
+        \\qquad E[U_{(r)}] = \\frac{r}{n+1}.
 
     Parameters
     ----------
-    r : array-like
-        Input data.
-    n : array-like
-        Input data.
+    u : float
+        Point in [0, 1].
+    r, n : int
+        Order-statistic index and sample size.
 
     Returns
     -------
-    result : dict
-        Keys: distribution
+    RichResult
+        keys ``pdf``, ``cdf``, ``mean``, ``var``, ``alpha``, ``beta``,
+        ``r``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Theorem 2.4.3
+    Gibbons & Chakraborti (2011), Theorem 2.4.3, p. 38.
     """
-    r = np.asarray(r, dtype=float)
-    n = int(r) if r.ndim == 0 else len(r)
-    if r.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "r-th order statistic from Uniform(0,1) follows Beta(r, n-r+1) distribution",
-            }
-        )
-    x_sorted = np.sort(r)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(r), scale=np.std(r, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    r = int(r)
+    n = int(n)
+    if not 1 <= r <= n:
+        raise ValueError("need 1 <= r <= n.")
+    u = float(u)
+    if not 0.0 <= u <= 1.0:
+        raise ValueError("u must lie in [0, 1].")
+    a = float(r)
+    b = float(n - r + 1)
+    coef = math.factorial(n) / (math.factorial(r - 1) * math.factorial(n - r))
+    dens = coef * u ** (r - 1) * (1.0 - u) ** (n - r)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "pdf": float(dens),
+            "cdf": float(stats.beta.cdf(u, a, b)),
+            "mean": a / (a + b),
+            "var": a * b / ((a + b) ** 2 * (a + b + 1.0)),
+            "alpha": a,
+            "beta": b,
+            "r": r,
             "n": n,
-            "method": "r-th order statistic from Uniform(0,1) follows Beta(r, n-r+1) distribution",
+            "method": "U_(r) ~ Beta(r, n-r+1) (Gibbons Thm 2.4.3)",
         }
     )
 
 
-def cheatsheet():
-    return "gb243: r-th order statistic from Uniform(0,1) follows Beta(r, n-r+1) distribution"
+gibbons_order_beta = ostatbeta

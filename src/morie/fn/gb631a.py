@@ -1,76 +1,71 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Asymptotic distribution of two-sample KS statistic."""
+"""Asymptotic distribution of the two-sample KS statistic."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_ks2_asymp"]
+__all__ = ['ks2asymp', 'gibbons_ks2_asymp']
 
 
-def gibbons_ks2_asymp(x, y, cdf=None):
-    """
-    Asymptotic distribution of two-sample KS statistic
+def ks2asymp(d, m, n):
+    """Kolmogorov limit for D_{m,n}.
 
-    Formula: sqrt(mn/(m+n)) * D_{m,n} ->_d Kolmogorov distribution L(d)
+    Section 6.3 (book p. 241): as m, n grow with m/(m+n) bounded away
+    from 0 and 1,
+
+    .. math:: P\\left[\\sqrt{\\tfrac{mn}{m+n}}\\,D_{m,n} > k\\right]
+        \\to 2\\sum_{j=1}^{\\infty}(-1)^{j-1} e^{-2j^2k^2},
+
+    the same limiting law as the one-sample statistic (Theorem 4.3.3),
+    with the effective sample size mn/(m+n).  The series is summed to
+    a fixed 100 terms, which is convergent to well past double
+    precision for every k > 0.05.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    d : float
+        Observed D_{m,n}.
+    m, n : int
+        The two sample sizes.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``p_value``, ``k`` (the standardised statistic),
+        ``neff``, ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 6.3 asymptotic
+    Gibbons & Chakraborti (2011), Sec. 6.3, p. 241; Theorem 4.3.3,
+    p. 108.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Asymptotic distribution of two-sample KS statistic",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
+    d = float(d)
+    m = int(m)
+    n = int(n)
+    if m < 1 or n < 1:
+        raise ValueError("m and n must be at least 1.")
+    if d < 0.0:
+        raise ValueError("d must be non-negative.")
+    neff = m * n / float(m + n)
+    k = math.sqrt(neff) * d
+    if k <= 0.0:
+        pv = 1.0
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        s = 0.0
+        for j in range(1, 101):
+            s += (-1.0) ** (j - 1) * math.exp(-2.0 * j * j * k * k)
+        pv = min(1.0, max(0.0, 2.0 * s))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "p_value": float(pv),
+            "k": float(k),
+            "neff": float(neff),
+            "m": m,
             "n": n,
-            "method": "Asymptotic distribution of two-sample KS statistic",
+            "method": "two-sample KS asymptotic (Kolmogorov limit)",
         }
     )
 
 
-def cheatsheet():
-    return "gb631a: Asymptotic distribution of two-sample KS statistic"
+gibbons_ks2_asymp = ks2asymp

@@ -1,74 +1,63 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Augmented Dickey-Fuller test for unit-root stationarity."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Augmented Dickey-Fuller unit-root test.
 
-from . import _array_core as np
-from . import _stats_core as stats
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 6 p. 149
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_adf_unit_root_test"]
+__all__ = ["adfur", "joseph_adf_unit_root_test"]
+
+_METHOD = "Augmented Dickey-Fuller unit-root test"
 
 
-def joseph_adf_unit_root_test(y, p, cdf=None):
-    """
-    Augmented Dickey-Fuller test for unit-root stationarity
+def adfur(x, lags=1):
+    """Augmented Dickey-Fuller unit-root test.
 
-    Formula: Delta y_t = alpha + beta t + gamma y_{t-1} + sum_{i=1..p} delta_i Delta y_{t-i} + eps_t;  H0: gamma = 0
+    Augmented Dickey-Fuller unit-root test, ch. 6 p. 149.
+
+    Regresses ``diff(x)_t`` on a constant, ``x_{t-1}`` and ``lags``
+    lagged differences; the statistic is the t-ratio on ``x_{t-1}``.
+    The null is a unit root, so a statistic BELOW the critical value
+    rejects non-stationarity -- which is the direction the book uses on
+    p. 149.
+
+    Critical values are MacKinnon's (1991) response surface for the
+    constant-only regression, ``tau = b0 + b1/n + b2/n^2``; they are
+    returned rather than a p-value, because interpolating a p-value
+    would need a table the book does not print.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    p : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._joseph.adfur``.
+    lags : as documented for the shelf core
+        See ``morie.fn._joseph.adfur``.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    result : RichResult
+        Payload keys: stat, se, crit5, stationary5.
 
     References
     ----------
-    Joseph Ch 3, ADF / stationarity test section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 6 p. 149
     """
-    y = np.asarray(y, dtype=float)
-    n = len(y)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Augmented Dickey-Fuller test for unit-root stationarity",
-            }
-        )
-    x_sorted = np.sort(y)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(y), scale=np.std(y, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    res = _core.adfur(x=x, lags=lags)
     return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Augmented Dickey-Fuller test for unit-root stationarity",
-        }
+        title=_METHOD,
+        summary_lines=[("stat", res["stat"]), ("se", res["se"]), ("crit5", res["crit5"]), ("stationary5", res["stationary5"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_adf_unit_root_test = adfur
+
+
 def cheatsheet():
-    return "joadf: Augmented Dickey-Fuller test for unit-root stationarity"
+    return "adfur: Augmented Dickey-Fuller unit-root test"

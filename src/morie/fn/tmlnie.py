@@ -1,44 +1,32 @@
-"""TMLE for natural indirect effect."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Natural indirect effect."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["tmle_natural_indirect"]
+__all__ = ["nieff", "tmle_natural_indirect"]
 
 
-def tmle_natural_indirect(y, D, M, X):
-    """
-    TMLE for natural indirect effect
+def nieff(y11, y10):
+    """Natural indirect effect.
 
-    Formula: E[Y(1,M(1)) - Y(1,M(0))]
+    Natural indirect effect: E[Y(1, M(1))] - E[Y(1, M(0))].
 
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    D : array-like
-        Input data.
-    M : array-like
-        Input data.
-    X : array-like
-        Input data.
+    The effect that runs through the mediator, holding treatment fixed
+    at 1 and moving only the mediator's distribution.  Adding this to
+    the natural direct effect recovers the total effect exactly, which
+    is the decomposition the pair exists for.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Zheng & vdL (2012)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TMLE for natural indirect effect"})
+    return RichResult(title="Natural indirect effect", payload=_c.nieff(y11=y11, y10=y10))
+
+
+tmle_natural_indirect = nieff
 
 
 def cheatsheet():
-    return "tmlnie: TMLE for natural indirect effect"
+    return "tmlnie: Natural indirect effect"

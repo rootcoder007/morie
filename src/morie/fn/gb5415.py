@@ -1,80 +1,58 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Simulated power of sign test via Monte Carlo."""
+"""Simulated power of the sign test from caller-supplied samples."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_sign_simpower"]
+__all__ = ['signsimpow', 'gibbons_sign_simpower']
 
 
-def gibbons_sign_simpower(theta, n, alpha, nsim, cdf=None):
-    """
-    Simulated power of sign test via Monte Carlo
+def signsimpow(samples, m0, kcrit):
+    """Monte-Carlo power of the sign test over pre-drawn samples.
 
-    Formula: beta_hat(theta) = proportion of rejections over simulations
+    Section 5.4.5 (book p. 175).  The book's MINITAB macro draws 1000
+    samples under H1, computes K for each and reports the rejection
+    fraction.  The draws are an *argument* here rather than an internal
+    generator, so the estimate is reproducible across languages: pass
+    the same matrix of samples and both arms return the same number.
 
     Parameters
     ----------
-    theta : array-like
-        Input data.
-    n : array-like
-        Input data.
-    alpha : array-like
-        Input data.
-    nsim : array-like
-        Input data.
+    samples : sequence of sequence of float
+        One row per simulated sample.
+    m0 : float
+        Hypothesised median.
+    kcrit : int
+        Rejection region is K >= kcrit.
 
     Returns
     -------
-    result : dict
-        Keys: simulated_power
+    RichResult
+        keys ``power``, ``rejections``, ``nsim``, ``kmean``,
+        ``kcrit``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.4.5
+    Gibbons & Chakraborti (2011), Sec. 5.4.5, p. 175 (Table 5.4.2).
     """
-    theta = np.asarray(theta, dtype=float)
-    n = int(theta) if theta.ndim == 0 else len(theta)
-    if theta.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Simulated power of sign test via Monte Carlo",
-            }
-        )
-    x_sorted = np.sort(theta)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(theta), scale=np.std(theta, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    rows = [[float(v) for v in r] for r in samples]
+    nsim = len(rows)
+    if nsim < 1:
+        raise ValueError("samples must be non-empty.")
+    kcrit = int(kcrit)
+    ks = [sum(1 for v in r if v > float(m0)) for r in rows]
+    rej = sum(1 for k in ks if k >= kcrit)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Simulated power of sign test via Monte Carlo",
+            "power": rej / nsim,
+            "rejections": int(rej),
+            "nsim": int(nsim),
+            "kmean": sum(ks) / nsim,
+            "kcrit": kcrit,
+            "method": "simulated sign-test power over supplied samples",
         }
     )
 
 
-def cheatsheet():
-    return "gb5415: Simulated power of sign test via Monte Carlo"
+gibbons_sign_simpower = signsimpow

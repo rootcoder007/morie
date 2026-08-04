@@ -1,55 +1,43 @@
-"""Numbered display equation (9.44) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Wolfe dual of the support vector classifier.
 
-from ._richresult import RichResult
+Implements eq. (9.44), (9.45) p.357 of Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_44"]
+Note: the generated stub name this module replaces carried a
+topic label taken from the wrong chapter, and its body ignored the
+cited equation entirely; the name and the implementation below follow
+the equation actually printed on that page.
+"""
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["svmsdual", "mvsml_ridge_lasso_elastic_eq_9_44"]
 
 
-def mvsml_ridge_lasso_elastic_eq_9_44(Wolfe, dual, version, maximization, problem, of):
+def svmsdual(X, y, T, K=None):
+
+    """maximize L(alpha) = sum_i alpha_i
+    - (1/2) sum_i sum_j alpha_i alpha_j y_i y_j (x_i . x_j)
+    (eq. 9.44) subject to 0 <= alpha_i <= T and sum_i alpha_i y_i = 0
+    (eq. 9.45).  It differs from the hard margin dual (9.32)-(9.33)
+    only by the upper bound T on the multipliers, which is what the
+    slack variables buy.  The objective is concave and infinitely
+    differentiable, so this is a convex quadratic program.  Keys:
+    alpha, beta, beta0, objective, support_vectors, balance, bounded,
+    at_bound.
     """
-    Numbered display equation (9.44) from MVSML chapter 9.
 
-    Formula: Wolfe dual version (maximization problem) of the optimization problem Xn Xn   i=1\alphai 2 1 maximize L \alpha ( ) = i=1\alphai\alpha jyiy j xi:x j
+    res = RichResult(payload=_gp.svm_soft_dual(X, y, T, K=K))
 
-    Parameters
-    ----------
-    Wolfe : array-like
-        Input data.
-    dual : array-like
-        Input data.
-    version : array-like
-        Input data.
-    maximization : array-like
-        Input data.
-    problem : array-like
-        Input data.
-    of : array-like
-        Input data.
+    return with_describe_pointer(res, "msm231")
 
-    Returns
-    -------
-    result : dict
-        Keys: expression
 
-    References
-    ----------
-    MVSML, Eq. (9.44) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    """
-    Wolfe = np.atleast_1d(np.asarray(Wolfe, dtype=float))
-    n = len(Wolfe)
-    result = float(np.mean(Wolfe))
-    se = float(np.std(Wolfe, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.44) from MVSML chapter 9.",
-        }
-    )
+mvsml_ridge_lasso_elastic_eq_9_44 = svmsdual
 
 
 def cheatsheet():
-    return "msm231: Numbered display equation (9.44) from MVSML chapter 9."
+    return "msm231: Wolfe dual of the support vector classifier"

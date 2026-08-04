@@ -1,55 +1,21 @@
-"""Numbered display equation (9.7) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Maximum margin classifier -- re-export.
 
-from ._richresult import RichResult
+The generator emitted several modules for eq. (9.6), (9.7), (9.8) p.344 of
+Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
+All of them are the same method, so the implementation lives once in
+morie.fn.msm175 and this module re-exports it.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_7"]
+from .msm175 import hardsvm
 
+__all__ = ["hardsvm", "mvsml_ridge_lasso_elastic_eq_9_7"]
 
-def mvsml_ridge_lasso_elastic_eq_9_7(increasing, k, we, can, now, reformulate):
-    """
-    Numbered display equation (9.7) from MVSML chapter 9.
-
-    Formula: 2 increasing for k\betak  0, we can now reformulate the optimization problem given in (9.6) as 346 9 Support Vector Machines and Support Vector Regression 1 k k2 minimize 2 \beta
-
-    Parameters
-    ----------
-    increasing : array-like
-        Input data.
-    k : array-like
-        Input data.
-    we : array-like
-        Input data.
-    can : array-like
-        Input data.
-    now : array-like
-        Input data.
-    reformulate : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.7) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    """
-    increasing = np.atleast_1d(np.asarray(increasing, dtype=float))
-    n = len(increasing)
-    result = float(np.mean(increasing))
-    se = float(np.std(increasing, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.7) from MVSML chapter 9.",
-        }
-    )
+mvsml_ridge_lasso_elastic_eq_9_7 = hardsvm
 
 
 def cheatsheet():
-    return "msm182: Numbered display equation (9.7) from MVSML chapter 9."
+    return "msm182: Maximum margin classifier (see msm175)"

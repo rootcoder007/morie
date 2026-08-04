@@ -1,54 +1,54 @@
-"""Bayesian equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Two-part minimum-description-length message length.
 
-from . import _array_core as np
+MacKay (2003) eq. (28.16)-(28.17), p. 352
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_28_equation_17"]
+__all__ = ["mdlpost", "information_theory_mackay_chapter_28_equation_17"]
+
+_METHOD = "Two-part minimum-description-length message length"
 
 
-def information_theory_mackay_chapter_28_equation_17(x):
-    """
-    Bayesian equation extracted from Information theory MacKay.
+def mdlpost(ph, pdh, deltad=1.0):
+    """Two-part minimum-description-length message length.
 
-    Formula: [EQ] = logP(HjD) + const: (28.17)
+    (28.16)-(28.17) p.352 -- two-part MDL message length, in bits.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    ph : as documented for the shelf core
+        See ``morie.fn._itila.mdlpost``.
+    pdh : as documented for the shelf core
+        See ``morie.fn._itila.mdlpost``.
+    deltad : as documented for the shelf core
+        See ``morie.fn._itila.mdlpost``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay28e17')`` for the full guide.
+        Payload keys: total, model, data.
 
     References
     ----------
-    Information theory MacKay, ch.28 eq.28.17
+    MacKay (2003) eq. (28.16)-(28.17), p. 352
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.mdlpost(ph=ph, pdh=pdh, deltad=deltad)
     return RichResult(
-        title="Bayesian equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bayesian equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("total", res["total"]), ("model", res["model"]), ("data", res["data"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_28_equation_17 = mdlpost
+
+
 def cheatsheet():
-    return "information_theory_mackay28e17: Bayesian equation extracted from Information theory MacKay."
+    return "mdlpost: Two-part minimum-description-length message length -- MacKay (2003) eq. (28.16)-(28.17), p. 352"

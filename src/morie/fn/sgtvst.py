@@ -1,40 +1,51 @@
-"""Weighted-graph vertex strengths s_i = Σ_j W_{ij}."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Vertex strengths of a weighted graph."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["sgt_vertex_strengths"]
+__all__ = ['vstrength', 'sgt_vertex_strengths']
 
 
-def sgt_vertex_strengths(W):
-    """
-    Weighted-graph vertex strengths s_i = Σ_j W_{ij}
+def vstrength(W):
+    """Vertex strengths of a weighted graph.
 
-    Formula: s_i = Σ_j W_{ij}
+    Degree counts a vertex's neighbours; strength counts what flows through it. The two come apart exactly when weights are heterogeneous, which is the regime the paper is about, so the ratio s_i/k_i is returned alongside.
+
+
+    Formula: s_i = sum_j a_ij w_ij
 
     Parameters
     ----------
-    W : array-like
-        Input data.
+    W : array-like, shape (n, n)
+        Weighted adjacency matrix; a zero entry means no edge.
 
     Returns
     -------
-    result : dict
-        Keys: s
+    RichResult
+        ``strength``, ``degree``, ``ratio``, ``total``, ``n``.
 
     References
     ----------
-    Barrat-Barthélémy-Vespignani (2004)
+    Barrat, Barthelemy, Pastor-Satorras and Vespignani (2004), The
+    architecture of complex weighted networks, PNAS 101:3747-3752,
+    arXiv:cond-mat/0311416, equation (2).  Verified against the paper.
     """
-    W = np.atleast_1d(np.asarray(W, dtype=float))
+    W = C.mat(W)
     n = len(W)
-    result = float(np.mean(W))
-    se = float(np.std(W, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Weighted-graph vertex strengths s_i = Σ_j W_{ij}"}
-    )
+    s = [sum(W[i][j] for j in range(n) if j != i and W[i][j] != 0) for i in range(n)]
+    k = [sum(1 for j in range(n) if j != i and W[i][j] != 0) for i in range(n)]
+    ratio = [s[i] / k[i] if k[i] else float("nan") for i in range(n)]
+    return RichResult(payload={
+        "strength": s, "degree": k, "ratio": ratio, "total": sum(s), "n": n,
+        "method": "Weighted-graph vertex strengths"})
+
+
+sgt_vertex_strengths = vstrength
 
 
 def cheatsheet():
-    return "sgtvst: Weighted-graph vertex strengths s_i = Σ_j W_{ij}"
+    return "sgtvst: Vertex strengths of a weighted graph."

@@ -1,74 +1,81 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Wilcoxon signed-rank statistic T+ = sum R_i * I(D_i > 0)."""
+"""Wilcoxon signed-rank statistic T+ and its null moments."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_wilcoxon_signed_rank"]
+__all__ = ['wsr', 'gibbons_wilcoxon_signed_rank']
 
 
-def gibbons_wilcoxon_signed_rank(differences, cdf=None):
-    """
-    Wilcoxon signed-rank statistic T+ = sum R_i * I(D_i > 0)
+def wsr(x, m0=0.0):
+    """Signed-rank statistic T+ = sum of ranks of the positive |d|.
 
-    Formula: T+ = sum_{i: D_i > 0} R_i; null mean = n(n+1)/4
+    Section 5.7 (book p. 195), eq. (5.7.1).  Zeros are dropped and N
+    reduced (Sec. 5.7.1); |d| ties get midranks.  T- = N(N+1)/2 - T+.
+    The reported z is eq. (5.7.9) with the tie correction (5.7.11)
+    applied to the variance.
 
     Parameters
     ----------
-    differences : array-like
-        Input data.
+    x : sequence of float
+        Sample or paired differences.
+    m0 : float, optional
+        Hypothesised median (default 0).
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (T+), ``tminus``, ``n``, ``nzero``,
+        ``mean``, ``var``, ``z``, ``p_value``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.7
+    Gibbons & Chakraborti (2011), Sec. 5.7, eqs. (5.7.1), (5.7.2),
+    (5.7.9), (5.7.11), pp. 195-203.
     """
-    differences = np.asarray(differences, dtype=float)
-    n = int(differences) if differences.ndim == 0 else len(differences)
-    if differences.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Wilcoxon signed-rank statistic T+ = sum R_i * I(D_i > 0)",
-            }
-        )
-    x_sorted = np.sort(differences)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(differences), scale=np.std(differences, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    ds = [float(v) - float(m0) for v in x]
+    nzero = sum(1 for v in ds if v == 0.0)
+    ds = [v for v in ds if v != 0.0]
+    n = len(ds)
+    if n < 1:
+        raise ValueError("no non-zero differences.")
+    a = [abs(v) for v in ds]
+    order = sorted(range(n), key=lambda i: a[i])
+    ranks = [0.0] * n
+    corr = 0.0
+    i = 0
+    while i < n:
+        j = i
+        while j + 1 < n and a[order[j + 1]] == a[order[i]]:
+            j += 1
+        mid = (i + j) / 2.0 + 1.0
+        for k in range(i, j + 1):
+            ranks[order[k]] = mid
+        t = j - i + 1
+        if t > 1:
+            corr += t * (t * t - 1.0)
+        i = j + 1
+    tplus = sum(ranks[i] for i in range(n) if ds[i] > 0.0)
+    mean = n * (n + 1.0) / 4.0
+    var = n * (n + 1.0) * (2.0 * n + 1.0) / 24.0 - corr / 48.0
+    z = (tplus - mean) / math.sqrt(var) if var > 0.0 else float("nan")
+    pv = 2.0 * (1.0 - stats.norm.cdf(abs(z))) if var > 0.0 else float("nan")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Wilcoxon signed-rank statistic T+ = sum R_i * I(D_i > 0)",
+            "statistic": float(tplus),
+            "tminus": float(n * (n + 1.0) / 2.0 - tplus),
+            "n": int(n),
+            "nzero": int(nzero),
+            "mean": float(mean),
+            "var": float(var),
+            "z": float(z),
+            "p_value": float(min(1.0, pv)),
+            "method": "Wilcoxon signed-rank T+, eqs. (5.7.1)/(5.7.9)",
         }
     )
 
 
-def cheatsheet():
-    return "gb571: Wilcoxon signed-rank statistic T+ = sum R_i * I(D_i > 0)"
+gibbons_wilcoxon_signed_rank = wsr

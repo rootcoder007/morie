@@ -1,55 +1,47 @@
-r"""Numbered display equation (14.12) from MVSML chapter 14.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Penalized functional regression fit.
 
-from ._richresult import RichResult
+Implements eq. (14.12) p.601 of Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
 
-__all__ = ["mvsml_convolutional_nn_eq_14_12"]
+Note: the generated stub name this module replaces carried a
+topic label taken from the wrong chapter, and its body ignored the
+cited equation entirely; the name and the implementation below follow
+the equation actually printed on that page.
+"""
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["penfreg", "mvsml_convolutional_nn_eq_14_12"]
 
 
-def mvsml_convolutional_nn_eq_14_12(be, written, j2, TD, SSE, y):
-    r"""
-    Numbered display equation (14.12) from MVSML chapter 14.
+def penfreg(y, X, P, lam, mu=None):
 
-    Formula: be written as j2 + \lambda\betaTD \beta = SSE\lambda \beta y  1n\mu  X\beta SSE\lambda \beta ( ) = j j j ( ),
+    """With the spectral decomposition P = Gamma D Gamma' of the
+    penalty matrix, X* = X Gamma and beta* = Gamma' beta, the
+    penalized criterion (14.10) becomes
+    SSE_lambda(beta*) = ||y - 1_n mu - X* beta*||^2
+    + lambda beta*' D beta* (eq. 14.12), a ridge regression on
+    rotated columns with a diagonal penalty.  Its minimizer is
+    beta* = (X*'X* + lambda D)^-1 X*'(y - 1_n mu) and the original
+    coefficients are recovered as beta = Gamma beta*, after which
+    beta-hat(t) = sum_l beta-hat_l phi_l(t).  When P is rank
+    deficient the zero eigenvalues contribute nothing, which is the
+    reduction to lambda beta_1*' D_1 beta_1* the book notes.
+    Keys: beta, beta_star, Gamma, eigenvalues, X_star, mu, fitted,
+    residuals, sse, penalty, objective, rank.
+    """
 
-    Parameters
-    ----------
-    be : array-like
-        Input data.
-    written : array-like
-        Input data.
-    j2 : array-like
-        Input data.
-    TD : array-like
-        Input data.
-    SSE : array-like
-        Input data.
-    y : array-like
-        Input data.
+    res = RichResult(payload=_gp.fda_penalized_fit(y, X, P, lam, mu=mu))
 
-    Returns
-    -------
-    result : dict
-        Keys: expression
+    return with_describe_pointer(res, "msm283")
 
-    References
-    ----------
-    MVSML, Eq. (14.12) [Multivariate Statistical Machine Learnin [Pages 579-631] [2026-04-16].pdf]
-    r"""
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (14.12) from MVSML chapter 14.",
-        }
-    )
+
+mvsml_convolutional_nn_eq_14_12 = penfreg
 
 
 def cheatsheet():
-    return "msm283: Numbered display equation (14.12) from MVSML chapter 14."
+    return "msm283: Penalized functional regression fit"

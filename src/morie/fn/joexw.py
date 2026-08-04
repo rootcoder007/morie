@@ -1,54 +1,59 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Expanding-window CV: training set grows, validation fixed-size, walks forward."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Expanding-window cross-validation.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 5 p. 130
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_expanding_window_cv"]
+__all__ = ["expandcv", "joseph_expanding_window_cv"]
+
+_METHOD = "Expanding-window cross-validation"
 
 
-def joseph_expanding_window_cv(y, T0, step, H, K):
-    """
-    Expanding-window CV: training set grows, validation fixed-size, walks forward
+def expandcv(n, initial, testsize, step=None):
+    """Expanding-window cross-validation.
 
-    Formula: for i in 0..K: train = y[0 : T_0 + i*step]; val = y[T_0 + i*step : T_0 + i*step + H]
+    Expanding-window cross-validation, ch. 5 p. 130.
+
+    The training window GROWS: every fold starts at index 0, so no
+    history is ever discarded.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    T0 : array-like
-        Input data.
-    step : array-like
-        Input data.
-    H : array-like
-        Input data.
-    K : array-like
-        Input data.
+    n : as documented for the shelf core
+        See ``morie.fn._joseph.expandcv``.
+    initial : as documented for the shelf core
+        See ``morie.fn._joseph.expandcv``.
+    testsize : as documented for the shelf core
+        See ``morie.fn._joseph.expandcv``.
+    step : as documented for the shelf core
+        See ``morie.fn._joseph.expandcv``.
 
     Returns
     -------
-    result : dict
-        Keys: folds
+    result : RichResult
+        Payload keys: nfolds, firsttrainend, lasttrainend.
 
     References
     ----------
-    Joseph Ch 20, Expanding Window CV section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 5 p. 130
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.expandcv(n=n, initial=initial, testsize=testsize, step=step)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Expanding-window CV: training set grows, validation fixed-size, walks forward",
-        }
+        title=_METHOD,
+        summary_lines=[("nfolds", res["nfolds"]), ("firsttrainend", res["firsttrainend"]), ("lasttrainend", res["lasttrainend"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_expanding_window_cv = expandcv
+
+
 def cheatsheet():
-    return "joexw: Expanding-window CV: training set grows, validation fixed-size, walks forward"
+    return "expandcv: Expanding-window cross-validation"

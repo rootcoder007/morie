@@ -1,6 +1,7 @@
 """Convergence tolerance check for Sinkhorn iterations."""
 
 from . import _array_core as np
+from . import _big2 as _big2
 
 from ._richresult import RichResult
 
@@ -9,34 +10,48 @@ __all__ = ["ot_sinkhorn_tol"]
 
 def ot_sinkhorn_tol(T, a, b):
     """
-    Convergence tolerance check for Sinkhorn iterations
+    Marginal violation of a coupling, in the sup norm.
 
-    Formula: tol = max(|T 1 - a|_inf, |T^T 1 - b|_inf)
+    Formula: tol = max(|T 1 - a|_inf, |T' 1 - b|_inf)
+
+    Verified against Peyre & Cuturi (2019) Section 4.2 -- source
+    consulted: Sinkhorn's stopping criterion is the deviation of the
+    current scaling's marginals from the prescribed ``a`` and ``b``.
 
     Parameters
     ----------
-    T : array-like
-        Input data.
-    a : array-like
-        Input data.
-    b : array-like
-        Input data.
+    T : nested sequence
+        Coupling matrix.
+    a, b : array-like
+        Target marginals; each closed to unit mass internally.
 
     Returns
     -------
-    result : dict
-        Keys: err
+    RichResult
+        Keys: estimate, row_error, col_error, nrow, ncol, method.
 
     References
     ----------
-    Cuturi (2013)
+    Peyre, G. & Cuturi, M. (2019). Computational Optimal Transport,
+    Sec. 4.2.
     """
-    T = np.atleast_1d(np.asarray(T, dtype=float))
-    n = len(T)
-    result = float(np.mean(T))
-    se = float(np.std(T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    m = _big2.mat(T)
+    av = list(_big2.pnorm(np.atleast_1d(np.asarray(a, dtype=float))))
+    bv = list(_big2.pnorm(np.atleast_1d(np.asarray(b, dtype=float))))
+    nr, nc = len(m), len(m[0])
+    if len(av) != nr or len(bv) != nc:
+        raise ValueError("marginals do not match the shape of T")
+    re = max(abs(sum(m[i]) - float(av[i])) for i in range(nr))
+    ce = max(abs(sum(m[i][j] for i in range(nr)) - float(bv[j])) for j in range(nc))
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Convergence tolerance check for Sinkhorn iterations"}
+        payload={
+            "estimate": max(re, ce),
+            "row_error": re,
+            "col_error": ce,
+            "nrow": nr,
+            "ncol": nc,
+            "method": "Sinkhorn marginal violation -- Peyre & Cuturi (2019) Sec. 4.2",
+        }
     )
 
 

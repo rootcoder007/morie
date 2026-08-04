@@ -1,76 +1,71 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Relationship between Hodges-Lehmann estimator and Wilcoxon statistics."""
+"""Hodges-Lehmann estimator and its identity with the Walsh-average counts."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_hodges_wilcoxon"]
+__all__ = ['hlwsrlink', 'gibbons_hodges_wilcoxon']
 
 
-def gibbons_hodges_wilcoxon(x, y, cdf=None):
-    """
-    Relationship between Hodges-Lehmann estimator and Wilcoxon statistics
+def hlwsrlink(x, m0=0.0):
+    """Median of the Walsh averages, and the T+ counting identity.
 
-    Formula: Delta_hat = median of all m*n pairwise differences Y_j - X_i
+    Book p. 209-210.  The Hodges-Lehmann estimator of the median is
+    the median of the N(N+1)/2 Walsh averages (X_i + X_k)/2, i <= k,
+    and the book's counting identity is exact:
+
+        T+ = #{Walsh averages > M0} + (1/2) #{Walsh averages = M0},
+        T- = #{Walsh averages < M0} + (1/2) #{Walsh averages = M0}.
+
+    The book's own illustration (N = 8, M0 = 4.5) gives 16 averages
+    below, 2 equal and 18 above, hence T- = 17 and T+ = 19.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x : sequence of float
+        Sample, n >= 2.
+    m0 : float, optional
+        Hypothesised median (default 0).
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys ``estimate`` (Hodges-Lehmann), ``tplus``, ``tminus``,
+        ``nbelow``, ``nequal``, ``nabove``, ``nwalsh``, ``n``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 6.6
+    Gibbons & Chakraborti (2011), Sec. 5.7.5, pp. 209-210.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    xs = [float(v) for v in x]
+    n = len(xs)
     if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Relationship between Hodges-Lehmann estimator and Wilcoxon statistics",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("need at least 2 observations.")
+    m0 = float(m0)
+    walsh = sorted(
+        (xs[i] + xs[k]) / 2.0 for i in range(n) for k in range(i, n)
+    )
+    nw = len(walsh)
+    below = sum(1 for w in walsh if w < m0)
+    equal = sum(1 for w in walsh if w == m0)
+    above = nw - below - equal
+    mid = nw // 2
+    est = walsh[mid] if nw % 2 else (walsh[mid - 1] + walsh[mid]) / 2.0
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "estimate": float(est),
+            "tplus": float(above + equal / 2.0),
+            "tminus": float(below + equal / 2.0),
+            "nbelow": int(below),
+            "nequal": int(equal),
+            "nabove": int(above),
+            "nwalsh": int(nw),
             "n": n,
-            "method": "Relationship between Hodges-Lehmann estimator and Wilcoxon statistics",
+            "method": "Hodges-Lehmann median of Walsh averages",
         }
     )
 
 
-def cheatsheet():
-    return "gb_hw: Relationship between Hodges-Lehmann estimator and Wilcoxon statistics"
+gibbons_hodges_wilcoxon = hlwsrlink

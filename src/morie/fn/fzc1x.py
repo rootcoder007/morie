@@ -1,45 +1,69 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""c_1(x) coefficient in boundary-free KDFE bias."""
+"""The c_1 bias coefficient of the boundary-free KDFE (Eq. 5.8)."""
 
 from . import _array_core as np
-
 from ._richresult import RichResult
 
-__all__ = ["fauzi_c1_coefficient"]
+__all__ = ["bfc1", "fauzi_c1_coefficient"]
 
 
-def fauzi_c1_coefficient(x, g_func, density):
-    """
-    c_1(x) coefficient in boundary-free KDFE bias
+def bfc1(dg, d2g, density, fp):
+    r"""The c_1 bias coefficient of the boundary-free KDFE (Eq. 5.8).
 
-    Formula: c_1(x) = g''(g^{-1}(x))*f_X(x) + [g'(g^{-1}(x))]^2 * f_X'(x)
+    Eq. (5.8):
+
+    .. math:: c_1(x) = g''(g^{-1}(x))f_X(x)
+              + [g'(g^{-1}(x))]^2 f_X'(x),
+
+    the coefficient in :math:`\mathrm{Bias}[\tilde F_X(x)]
+    = \tfrac{h^2}2 c_1(x)\mu_2(K) + o(h^2)` of Theorem 5.2.
+
+    Compare the naive KDFE, whose bias coefficient is just
+    :math:`f_X'(x)/2\cdot\mu_2` -- i.e. (5.8) with
+    :math:`g = \mathrm{identity}`, where :math:`g''=0` and
+    :math:`g'=1`. The transformation adds one term and rescales the
+    other; that is the entire cost of removing the boundary bias.
+
+    This is the same expression as :math:`b_1(t)` in (4.14) of Chapter 4.
+    The survival estimator and the distribution estimator are the same
+    construction applied to :math:`1-F` and :math:`F`, so they share a
+    bias coefficient -- and Theorem 4.1 duly carries a minus sign in front
+    of it where Theorem 5.2 does not.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    g_func : array-like
-        Input data.
-    density : array-like
-        Input data.
+    dg, d2g : float
+        ``g'(g^{-1}(x))`` and ``g''(g^{-1}(x))``.
+    density : float
+        ``f_X(x)``.
+    fp : float
+        ``f_X'(x)``.
 
     Returns
     -------
-    result : dict
-        Keys: coefficient
+    RichResult
+        Keys ``estimate``, ``method``.
 
     References
     ----------
-    Fauzi Ch 5, Eq 5.8
+    Fauzi and Maesono (2023), Eq. (5.8); the same expression as (4.14).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    val = float(d2g) * float(density) + float(dg) ** 2 * float(fp)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "c_1(x) coefficient in boundary-free KDFE bias"}
+        payload={
+            "estimate": float(val),
+            "method": "c_1 bias coefficient of the boundary-free KDFE (Eq. 5.8)",
+        }
     )
 
 
+fauzi_c1_coefficient = bfc1
+
+
 def cheatsheet():
-    return "fzc1x: c_1(x) coefficient in boundary-free KDFE bias"
+    return "fzc1x: c_1 = g'' f + (g')^2 f'; with g = identity it collapses to the naive f' (5.8)"
+
+
+# CANONICAL TEST
+# >>> abs(bfc1(dg=1.0, d2g=0.0, density=0.3, fp=0.2)['estimate'] - 0.2) < 1e-15
+# True

@@ -1,80 +1,61 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Three-way split into train, validation, test; report final score on test."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Three-way train/validation/test split by identifier hash.
 
-from . import _array_core as np
-from . import _stats_core as stats
+Geron, A. (2026). Hands-On Machine Learning with Scikit-Learn and PyTorch. O'Reilly, ch. 2 p. 61 (hash generalization is ours, not the book's)
+"""
+
+from . import _geron as _core
 
 from ._richresult import RichResult
 
-__all__ = ["geron_train_val_test_split"]
+__all__ = ["tvtsplit", "geron_train_val_test_split"]
+
+_METHOD = "Three-way train/validation/test split by identifier hash"
 
 
-def geron_train_val_test_split(X, y, val_frac, test_frac, seed, cdf=None):
-    """
-    Three-way split into train, validation, test; report final score on test
+def tvtsplit(ids, valratio=0.2, testratio=0.2):
+    """Three-way train/validation/test split by identifier hash.
 
-    Formula: D = D_train cup D_val cup D_test (disjoint)
+    Three-way train/validation/test split by identifier hash.
+
+    p. 61 obtains a three-way split by calling the splitter twice; the
+    hash generalization used here -- one CRC-32 per identifier, mapped
+    to [0, 1) and cut at ``testratio`` and ``testratio + valratio`` --
+    is OURS, not the book's, and is used because it stays deterministic
+    across both language arms.  The p. 58 hash rule itself is the
+    book's.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    val_frac : array-like
-        Input data.
-    test_frac : array-like
-        Input data.
-    seed : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    ids : as documented for the shelf core
+        See ``morie.fn._geron.tvtsplit``.
+    valratio : as documented for the shelf core
+        See ``morie.fn._geron.tvtsplit``.
+    testratio : as documented for the shelf core
+        See ``morie.fn._geron.tvtsplit``.
 
     Returns
     -------
-    result : dict
-        Keys: splits
+    result : RichResult
+        Payload keys: ntrain, nval, ntest.
 
     References
     ----------
-    Géron Ch 1
+    Geron, A. (2026). Hands-On Machine Learning with Scikit-Learn and PyTorch. O'Reilly, ch. 2 p. 61 (hash generalization is ours, not the book's)
     """
-    y = np.asarray(y, dtype=float)
-    n = len(y)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Three-way split into train, validation, test; report final score on test",
-            }
-        )
-    x_sorted = np.sort(y)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(y), scale=np.std(y, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    res = _core.tvtsplit(ids=ids, valratio=valratio, testratio=testratio)
     return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Three-way split into train, validation, test; report final score on test",
-        }
+        title=_METHOD,
+        summary_lines=[("ntrain", res["ntrain"]), ("nval", res["nval"]), ("ntest", res["ntest"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+geron_train_val_test_split = tvtsplit
+
+
 def cheatsheet():
-    return "hmtvt: Three-way split into train, validation, test; report final score on test"
+    return "tvtsplit: Three-way train/validation/test split by identifier hash"

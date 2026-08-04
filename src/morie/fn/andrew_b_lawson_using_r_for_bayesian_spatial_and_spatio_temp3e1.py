@@ -1,54 +1,30 @@
-"""Multilevel equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Joint likelihood of independent observations."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_3_equation_1"]
+__all__ = ["likprod", "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_3_equation_1"]
 
 
-def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_3_equation_1(x):
-    """
-    Multilevel equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.
+def likprod(dens):
+    """Joint likelihood of independent observations.
 
-    Formula: whereθ is a p length vectorθ : {θ1, θ2, ..., θp} and f(.|.) is a probabili
+    L(y|theta) = prod_i f(y_i|theta)   (Lawson eq. 3.1 p.--).
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    The joint likelihood of conditionally independent observations is
+    the product of the individual contributions.
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp3e1')`` for the full guide.
-
-    References
-    ----------
-    Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling, ch.3 eq.3.1
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Multilevel equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Multilevel equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        },
-    )
+    return RichResult(title="Joint likelihood of independent observations", payload=_c.likprod(dens=dens))
+
+
+andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_3_equation_1 = likprod
 
 
 def cheatsheet():
-    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp3e1: Multilevel equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling."
+    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp3e1: Joint likelihood of independent observations"

@@ -1,50 +1,62 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Time-series-aware missing imputation (forward-fill / linear / seasonal-mean)."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Missing-data imputation for time series.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 2 pp. 44-52
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_missing_data_imputation_ts"]
+__all__ = ["tsimpute", "joseph_missing_data_imputation_ts"]
+
+_METHOD = "Missing-data imputation for time series"
 
 
-def joseph_missing_data_imputation_ts(y, strategy, m):
-    """
-    Time-series-aware missing imputation (forward-fill / linear / seasonal-mean)
+def tsimpute(x, method='linear', season=1):
+    """Missing-data imputation for time series.
 
-    Formula: strategies: ffill, bfill, linear interp, seasonal-mean (y_hat_t = mean(y_{t-km}))
+    Missing-data imputation for time series, ch. 2 pp. 44-52.
+
+    ``x`` may contain ``None`` for a gap.  ``method`` is one of the
+    book's own options: ``ffill`` (last observation carried forward),
+    ``bfill``, ``linear`` interpolation between the flanking
+    observations, ``mean`` of the observed values, or ``seasonal``
+    (the mean of the same seasonal position).  Leading or trailing
+    gaps that a method cannot reach fall back to the series mean, so
+    the output never contains a hole.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    strategy : array-like
-        Input data.
-    m : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._joseph.tsimpute``.
+    method : as documented for the shelf core
+        See ``morie.fn._joseph.tsimpute``.
+    season : as documented for the shelf core
+        See ``morie.fn._joseph.tsimpute``.
 
     Returns
     -------
-    result : dict
-        Keys: y_imputed
+    result : RichResult
+        Payload keys: nmissing, n, mean.
 
     References
     ----------
-    Joseph Ch 2, Missing Value Imputation section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 2 pp. 44-52
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.tsimpute(x=x, method=method, season=season)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Time-series-aware missing imputation (forward-fill / linear / seasonal-mean)",
-        }
+        title=_METHOD,
+        summary_lines=[("nmissing", res["nmissing"]), ("n", res["n"]), ("mean", res["mean"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_missing_data_imputation_ts = tsimpute
+
+
 def cheatsheet():
-    return "jomimi: Time-series-aware missing imputation (forward-fill / linear / seasonal-mean)"
+    return "tsimpute: Missing-data imputation for time series"

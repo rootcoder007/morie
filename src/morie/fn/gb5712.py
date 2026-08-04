@@ -1,78 +1,73 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Power function of Wilcoxon signed-rank test under location shift."""
+"""Power of the Wilcoxon signed-rank test by normal approximation."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_wsrt_power"]
+__all__ = ['wsrpow', 'gibbons_wsrt_power']
 
 
-def gibbons_wsrt_power(theta, n, alpha, cdf=None):
-    """
-    Power function of Wilcoxon signed-rank test under location shift
+def wsrpow(n, p1, p2, alpha=0.05):
+    """Normal-approximation power of the upper-tailed signed-rank test.
 
-    Formula: beta(theta) = P(T+ >= c | F(theta) = F(theta - theta))
+    Book p. 205, eqs. (5.7.13)-(5.7.14).  With p1 = P(X_i > M0) and
+    p2 = P(X_i + X_j > 2M0) under H1, the alternative mean of T+ is
+    N p1 + N(N-1) p2 / 2, and taking Noether's r = sigma/sigma_0 = 1,
+
+    .. math:: z_\\beta = \\frac{N(p_1-0.5) + N(N-1)(p_2-0.5)/2}
+        {\\sqrt{N(N+1)(2N+1)/24}} - z_\\alpha,
+
+    with power = Phi(z_beta).
 
     Parameters
     ----------
-    theta : array-like
-        Input data.
-    n : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    n : int
+        Sample size.
+    p1 : float
+        P(X_i > M0) under the alternative.
+    p2 : float
+        P(X_i + X_j > 2 M0) under the alternative, i < j.
+    alpha : float, optional
+        One-sided size (default 0.05).
 
     Returns
     -------
-    result : dict
-        Keys: power
+    RichResult
+        keys ``power``, ``z_beta``, ``shift`` (mu - mu0), ``sd0``,
+        ``n``, ``p1``, ``p2``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.7.2
+    Gibbons & Chakraborti (2011), eqs. (5.7.13)-(5.7.14), p. 205
+    (Noether, 1987).
     """
-    theta = np.asarray(theta, dtype=float)
-    n = int(theta) if theta.ndim == 0 else len(theta)
-    if theta.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    n = int(n)
+    p1 = float(p1)
+    p2 = float(p2)
+    alpha = float(alpha)
     if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Power function of Wilcoxon signed-rank test under location shift",
-            }
-        )
-    x_sorted = np.sort(theta)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(theta), scale=np.std(theta, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("n must be at least 2.")
+    if not 0.0 < alpha < 1.0:
+        raise ValueError("alpha must lie strictly inside (0, 1).")
+    shift = n * (p1 - 0.5) + n * (n - 1.0) * (p2 - 0.5) / 2.0
+    sd0 = math.sqrt(n * (n + 1.0) * (2.0 * n + 1.0) / 24.0)
+    za = stats.norm.ppf(1.0 - alpha)
+    zb = shift / sd0 - za
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "power": float(stats.norm.cdf(zb)),
+            "z_beta": float(zb),
+            "shift": float(shift),
+            "sd0": float(sd0),
             "n": n,
-            "method": "Power function of Wilcoxon signed-rank test under location shift",
+            "p1": p1,
+            "p2": p2,
+            "method": "signed-rank power, eqs. (5.7.13)-(5.7.14)",
         }
     )
 
 
-def cheatsheet():
-    return "gb5712: Power function of Wilcoxon signed-rank test under location shift"
+gibbons_wsrt_power = wsrpow

@@ -1,55 +1,21 @@
-r"""Numbered display equation (9.19) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Quadratic program under one linear inequality -- re-export.
 
-from ._richresult import RichResult
+The generator emitted several modules for eq. (9.15), (9.17), (9.18), (9.19), (9.20), (9.21), (9.22), (9.23), (9.24), (9.25), (9.26) p.346 of
+Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
+All of them are the same method, so the implementation lives once in
+morie.fn.msm188 and this module re-exports it.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_19"]
+from .msm188 import qplincon
 
+__all__ = ["qplincon", "mvsml_ridge_lasso_elastic_eq_9_19"]
 
-def mvsml_ridge_lasso_elastic_eq_9_19(subject, to, x, Then, the, last):
-    r"""
-    Numbered display equation (9.19) from MVSML chapter 9.
-
-    Formula: ) subject to = 2x + 2\alpha = 0 \partial x and \alpha  0 (9.18) Then the last version of the Wolfe dual can be simpliﬁed as ( ) = +\alpha2 + 2\alpha maximize L \lambda
-
-    Parameters
-    ----------
-    subject : array-like
-        Input data.
-    to : array-like
-        Input data.
-    x : array-like
-        Input data.
-    Then : array-like
-        Input data.
-    the : array-like
-        Input data.
-    last : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.19) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    r"""
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.19) from MVSML chapter 9.",
-        }
-    )
+mvsml_ridge_lasso_elastic_eq_9_19 = qplincon
 
 
 def cheatsheet():
-    return "msm191: Numbered display equation (9.19) from MVSML chapter 9."
+    return "msm191: Quadratic program under one linear inequality (see msm188)"

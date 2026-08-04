@@ -1,79 +1,104 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Mean and variance of smoothed sign test statistic."""
+"""Mean and variance of the smoothed sign test statistic."""
 
 from . import _array_core as np
-from . import _stats_core as stats
-
 from ._richresult import RichResult
 
-__all__ = ["fauzi_sign_moments"]
+__all__ = ["ssgnmom", "fauzi_sign_moments"]
 
 
-def fauzi_sign_moments(n, bandwidth, theta, cdf):
-    """
-    Mean and variance of smoothed sign test statistic
+def ssgnmom(n, ftheta=0.5, h=None, f0=None, fpp0=None, a11=None, a13=None):
+    r"""Mean and variance of the smoothed sign test statistic.
 
-    Formula: E[S_tilde]=n{F(theta)+O(h^2)}; Var[S_tilde]=n[{1-F(-theta)}F(theta)+O(h)]
+    Sec. 5.3.1. With
+    :math:`\tilde S = n - \sum_iK(-X_i/h_n)`,
+
+    .. math::
+        E_\theta(\tilde S) &= n\{F(\theta) + O(h_n^2)\}, \\
+        V_\theta(\tilde S) &= n[\{1-F(\theta)\}F(\theta) + O(h_n)].
+
+    Under :math:`H_0` these reduce to :math:`n/2` and :math:`n/4`, and
+    Theorem 5.10 refines the variance to
+    :math:`n/4 - 2nh_nf(0)A_{1,1} - \tfrac{nh_n^3}3f''(0)A_{1,3} + o(1)`
+    with :math:`A_{i,j} = \int K^i(u)k(u)u^j du`. Pass ``a11`` and
+    ``a13`` with ``f0``/``fpp0`` to get that refinement; otherwise the
+    leading forms are returned and ``refined`` is False.
+
+    The point of the whole construction is in the error terms. The
+    ordinary sign test :math:`S` is discrete, so its standardised version
+    jumps by :math:`O(n^{-1/2})` and no Edgeworth expansion can be valid
+    for it. :math:`\tilde S` is continuous, and under :math:`H_0` its
+    leading moments do not depend on :math:`F` at all -- asymptotically
+    distribution-free, which is what makes Theorem 5.9 possible.
+
+    This module previously carried a copy of a Kolmogorov-Smirnov
+    implementation, returning a KS statistic under the name of the sign
+    test's moments. It now computes the moments.
+
+    Verified against the primary source: Maesono, Y., Moriyama, T. and
+    Lu, M. (2018), *AISM* 70(5):969-982 (arXiv:1610.02145), Sec. 3.
 
     Parameters
     ----------
-    n : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
-    theta : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    n : int
+        Sample size.
+    ftheta : float, default 0.5
+        ``F(theta)``; 1/2 under the null.
+    h : float, optional
+        Bandwidth, needed for the Theorem 5.10 refinement.
+    f0, fpp0 : float, optional
+        ``f(0)`` and ``f''(0)``.
+    a11, a13 : float, optional
+        ``A_{1,1}`` and ``A_{1,3}``.
 
     Returns
     -------
-    result : dict
-        Keys: moments
+    RichResult
+        Keys ``mean``, ``variance``, ``se``, ``refined``, ``n``, ``method``.
 
     References
     ----------
-    Fauzi Ch 5
+    Fauzi and Maesono (2023), Sec. 5.3.1 and Theorem 5.10; Maesono, Moriyama and Lu (2018), AISM 70:969-982.
     """
-    data = np.asarray(n, dtype=float) if np.ndim(n) > 0 else None
-    n = int(n) if np.ndim(n) == 0 else len(n)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Mean and variance of smoothed sign test statistic",
-            }
+    n = int(n)
+    if n < 1:
+        raise ValueError(f"sample size must be at least 1, got {n}.")
+    ft = float(ftheta)
+    if not 0.0 <= ft <= 1.0:
+        raise ValueError(f"F(theta) must lie in [0, 1], got {ft}.")
+    mean = float(n) * ft
+    var = float(n) * (1.0 - ft) * ft
+    refined = False
+    if None not in (h, f0, fpp0, a11, a13):
+        hh = float(h)
+        if hh <= 0:
+            raise ValueError(f"bandwidth must be positive, got {hh}.")
+        var = (
+            n / 4.0
+            - 2.0 * n * hh * float(f0) * float(a11)
+            - n * hh ** 3 / 3.0 * float(fpp0) * float(a13)
         )
-    if data is None:
-        rng = np.random.default_rng(0)
-        data = rng.standard_normal(n)
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        refined = True
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "mean": float(mean),
+            "variance": float(var),
+            "se": float(np.sqrt(var)) if var > 0 else float("nan"),
+            "refined": bool(refined),
             "n": n,
-            "method": "Mean and variance of smoothed sign test statistic",
+            "method": "smoothed sign test mean and variance (Sec. 5.3.1)",
         }
     )
 
 
+fauzi_sign_moments = ssgnmom
+
+
 def cheatsheet():
-    return "fzse: Mean and variance of smoothed sign test statistic"
+    return "fzse: smoothed sign test moments n F(theta), n F(1-F); previously a copied KS body"
+
+
+# CANONICAL TEST
+# >>> r = ssgnmom(n=100)
+# >>> r['mean'] == 50.0 and r['variance'] == 25.0
+# True

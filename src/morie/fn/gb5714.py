@@ -1,80 +1,69 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Sample size for Wilcoxon signed-rank test given power."""
+"""Sample size for the signed-rank test -- Gibbons eq. (5.7.15)."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_wsrt_sampsize"]
+__all__ = ['wsrn', 'gibbons_wsrt_sampsize']
 
 
-def gibbons_wsrt_sampsize(alpha, beta, delta, sigma, cdf=None):
-    """
-    Sample size for Wilcoxon signed-rank test given power
+def wsrn(p2, alpha=0.05, beta=0.05, twosided=False):
+    """Noether sample size for the Wilcoxon signed-rank test.
 
-    Formula: n approx via normal approximation to T+ distribution
+    Book p. 206, eq. (5.7.15):
+
+    .. math:: N = \\frac{(z_\\alpha + z_\\beta)^2}{3(p_2 - 0.5)^2},
+
+    where p2 = P(X_i + X_j > 2 M0) under H1.  The book's worked values
+    are N = 1151 for p2 = 0.556 and N = 21 for p2 = 0.921, both at
+    alpha = 0.05 and power 0.95.  Two-sided tests replace alpha by
+    alpha/2.
 
     Parameters
     ----------
-    alpha : array-like
-        Input data.
-    beta : array-like
-        Input data.
-    delta : array-like
-        Input data.
-    sigma : array-like
-        Input data.
+    p2 : float
+        P(X_i + X_j > 2 M0) under the alternative, p2 != 0.5.
+    alpha : float, optional
+        Size (default 0.05).
+    beta : float, optional
+        Type II error (default 0.05, i.e. power 0.95).
+    twosided : bool, optional
+        Use alpha/2 (default False).
 
     Returns
     -------
-    result : dict
-        Keys: sample_size
+    RichResult
+        keys ``n``, ``n_raw``, ``z_alpha``, ``z_beta``, ``p2``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 5.7.4
+    Gibbons & Chakraborti (2011), eq. (5.7.15), p. 206.
     """
-    alpha = np.asarray(alpha, dtype=float)
-    n = int(alpha) if alpha.ndim == 0 else len(alpha)
-    if alpha.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Sample size for Wilcoxon signed-rank test given power",
-            }
-        )
-    x_sorted = np.sort(alpha)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(alpha), scale=np.std(alpha, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    p2 = float(p2)
+    alpha = float(alpha)
+    beta = float(beta)
+    if p2 == 0.5:
+        raise ValueError("p2 must differ from 0.5.")
+    if not 0.0 < p2 < 1.0:
+        raise ValueError("p2 must lie strictly inside (0, 1).")
+    a = alpha / 2.0 if twosided else alpha
+    za = stats.norm.ppf(1.0 - a)
+    zb = stats.norm.ppf(1.0 - beta)
+    nraw = (za + zb) ** 2 / (3.0 * (p2 - 0.5) ** 2)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Sample size for Wilcoxon signed-rank test given power",
+            "n": int(math.ceil(nraw)),
+            "n_raw": float(nraw),
+            "z_alpha": float(za),
+            "z_beta": float(zb),
+            "p2": p2,
+            "method": "signed-rank sample size, eq. (5.7.15)",
         }
     )
 
 
-def cheatsheet():
-    return "gb5714: Sample size for Wilcoxon signed-rank test given power"
+gibbons_wsrt_sampsize = wsrn

@@ -1,55 +1,21 @@
-r"""Numbered display equation (14.2) from MVSML chapter 14.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Basis expansion of the coefficient function -- re-export.
 
-from ._richresult import RichResult
+The generator emitted several modules for eq. (14.2) p.579 of
+Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
+All of them are the same method, so the implementation lives once in
+morie.fn.msm262 and this module re-exports it.
+"""
 
-__all__ = ["mvsml_convolutional_nn_eq_14_2"]
+from .msm262 import basexp
 
+__all__ = ["basexp", "mvsml_convolutional_nn_eq_14_2"]
 
-def mvsml_convolutional_nn_eq_14_2(x, t, l, dt, L1, So):
-    r"""
-    Numbered display equation (14.2) from MVSML chapter 14.
-
-    Formula: = 0 x t( )ϕl t( )dt, l = 1, . . ., L1. So, if yi, i = 1, . . ., n, are independent observations of model (14.1), corresponding to covariate functions xi(+), i = 1, . . ., n, a basis expansion solution for the beta coefﬁcient function is obtained by estimating the parameters involved in model h iT (14.3), and then substituting b\beta = \mu, b\beta1, . . . , b\betaL1 in
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    t : array-like
-        Input data.
-    l : array-like
-        Input data.
-    dt : array-like
-        Input data.
-    L1 : array-like
-        Input data.
-    So : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (14.2) [Multivariate Statistical Machine Learnin [Pages 579-631] [2026-04-16].pdf]
-    r"""
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (14.2) from MVSML chapter 14.",
-        }
-    )
+mvsml_convolutional_nn_eq_14_2 = basexp
 
 
 def cheatsheet():
-    return "msm266: Numbered display equation (14.2) from MVSML chapter 14."
+    return "msm266: Basis expansion of the coefficient function (see msm262)"

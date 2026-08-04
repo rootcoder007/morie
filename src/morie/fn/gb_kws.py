@@ -1,76 +1,63 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Chi-square approximation for Kruskal-Wallis H statistic."""
+"""Chi-square approximation to the Kruskal-Wallis statistic."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_kw_chi2_approx"]
+__all__ = ['kwchi', 'gibbons_kw_chi2_approx']
 
 
-def gibbons_kw_chi2_approx(H, k, cdf=None):
-    """
-    Chi-square approximation for Kruskal-Wallis H statistic
+def kwchi(h, k, ns=None):
+    """Reference chi-square tail for H, with the book's caveat.
 
-    Formula: H ~ chi2(k-1) when all n_i >= 5
+    Section 10.4.1 (book p. 357): H is asymptotically chi-square on
+    k - 1 degrees of freedom, and the approximation "is generally
+    satisfactory except when k = 3 and the sample sizes are five or
+    less" -- exactly the case Table K covers.  ``table_k`` flags that
+    regime so the caller knows the exact table should be used instead.
 
     Parameters
     ----------
-    H : array-like
-        Input data.
-    k : array-like
-        Input data.
+    h : float
+        Observed H.
+    k : int
+        Number of samples, k >= 2.
+    ns : sequence of int, optional
+        The sample sizes, used only to set the ``table_k`` flag.
 
     Returns
     -------
-    result : dict
-        Keys: p_value
+    RichResult
+        keys ``statistic``, ``df``, ``p_value``, ``table_k`` (1 when
+        the exact table is preferable), ``k``, ``method``.
 
     References
     ----------
-    Gibbons Ch 10.4
+    Gibbons & Chakraborti (2011), Sec. 10.4.1, p. 357; Table K, p. 582.
     """
-    H = np.asarray(H, dtype=float)
-    n = int(H) if H.ndim == 0 else len(H)
-    if H.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Chi-square approximation for Kruskal-Wallis H statistic",
-            }
-        )
-    x_sorted = np.sort(H)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(H), scale=np.std(H, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    h = float(h)
+    k = int(k)
+    if k < 2:
+        raise ValueError("k must be at least 2.")
+    df = k - 1
+    flag = 0
+    if ns is not None:
+        nv = [int(v) for v in ns]
+        if k == 3 and all(v <= 5 for v in nv):
+            flag = 1
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Chi-square approximation for Kruskal-Wallis H statistic",
+            "statistic": h,
+            "df": int(df),
+            "p_value": float(stats.chi2.sf(h, df)),
+            "table_k": int(flag),
+            "k": k,
+            "method": "chi-square approximation to H (Sec. 10.4.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_kws: Chi-square approximation for Kruskal-Wallis H statistic"
+gibbons_kw_chi2_approx = kwchi

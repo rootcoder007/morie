@@ -1,54 +1,52 @@
-"""Probability equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Uniform draws needed to hit the typical set once.
 
-from . import _array_core as np
+MacKay (2003) eq. (29.19), p. 366
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_29_equation_19"]
+__all__ = ["rminsamp", "information_theory_mackay_chapter_29_equation_19"]
+
+_METHOD = "Uniform draws needed to hit the typical set once"
 
 
-def information_theory_mackay_chapter_29_equation_19(x):
-    """
-    Probability equation extracted from Information theory MacKay.
+def rminsamp(n, h):
+    """Uniform draws needed to hit the typical set once.
 
-    Formula: [EQ] Rmin' 2N N=2 = 2N=2; (29.19)
+    (29.19) p.366 -- uniform draws needed to hit the typical set once.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    n : as documented for the shelf core
+        See ``morie.fn._itila.rminsamp``.
+    h : as documented for the shelf core
+        See ``morie.fn._itila.rminsamp``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay29e19')`` for the full guide.
+        Payload keys: log2rmin, log10rmin.
 
     References
     ----------
-    Information theory MacKay, ch.29 eq.29.19
+    MacKay (2003) eq. (29.19), p. 366
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.rminsamp(n=n, h=h)
     return RichResult(
-        title="Probability equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("log2rmin", res["log2rmin"]), ("log10rmin", res["log10rmin"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_29_equation_19 = rminsamp
+
+
 def cheatsheet():
-    return "information_theory_mackay29e19: Probability equation extracted from Information theory MacKay."
+    return "rminsamp: Uniform draws needed to hit the typical set once -- MacKay (2003) eq. (29.19), p. 366"

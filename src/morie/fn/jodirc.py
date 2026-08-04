@@ -1,50 +1,59 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Direct multi-step: train a separate model per horizon h."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Direct multi-step forecasting.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 18 p. 548
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_direct_multistep"]
+__all__ = ["dirmulti", "joseph_direct_multistep"]
+
+_METHOD = "Direct multi-step forecasting"
 
 
-def joseph_direct_multistep(X, y, H):
-    """
-    Direct multi-step: train a separate model per horizon h
+def dirmulti(x, lags, horizon):
+    """Direct multi-step forecasting.
 
-    Formula: for h in 1..H: model_h fits (X, y_{t+h});  y_hat_{T+h} = model_h(X_T)
+    Direct multi-step forecasting, ch. 18 p. 548.
+
+    One model PER horizon, each trained to predict h steps ahead
+    directly from the same observed lags -- so no forecast is ever fed
+    back in, and errors cannot compound the way they do in the
+    recursive strategy.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    H : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._joseph.dirmulti``.
+    lags : as documented for the shelf core
+        See ``morie.fn._joseph.dirmulti``.
+    horizon : as documented for the shelf core
+        See ``morie.fn._joseph.dirmulti``.
 
     Returns
     -------
-    result : dict
-        Keys: models
+    result : RichResult
+        Payload keys: first, last, mean, nmodels.
 
     References
     ----------
-    Joseph Ch 18, Direct Multi-output Strategy section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 18 p. 548
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.dirmulti(x=x, lags=lags, horizon=horizon)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Direct multi-step: train a separate model per horizon h",
-        }
+        title=_METHOD,
+        summary_lines=[("first", res["first"]), ("last", res["last"]), ("mean", res["mean"]), ("nmodels", res["nmodels"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_direct_multistep = dirmulti
+
+
 def cheatsheet():
-    return "jodirc: Direct multi-step: train a separate model per horizon h"
+    return "dirmulti: Direct multi-step forecasting"

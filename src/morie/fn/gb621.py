@@ -1,80 +1,89 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Wald-Wolfowitz two-sample runs test using combined pooled sequence."""
+"""Wald-Wolfowitz two-sample runs test on the pooled ordered sequence."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_ks2samp"]
+__all__ = ['wwruns', 'gibbons_ks2samp']
 
 
-def gibbons_ks2samp(x, y, cdf=None):
-    """
-    Wald-Wolfowitz two-sample runs test using combined pooled sequence
+def wwruns(x, y):
+    """Total runs in the pooled ordering of two samples.
 
-    Formula: R = total runs in combined sample labeled X or Y; reject for small/large R
+    Section 6.2 (book p. 231).  Pool the m X's and n Y's, sort, and
+    read off the sequence of sample labels; the number of runs R is
+    small when the two samples separate, so the rejection region for
+    H1: F_X != F_Y is the left tail of the null distribution of
+    Theorem 3.2.2.  Both the exact left-tail probability and the
+    normal approximation with the exact moments
+
+    .. math:: E[R] = \\frac{2mn}{m+n} + 1, \\qquad
+        Var[R] = \\frac{2mn(2mn - m - n)}{(m+n)^2(m+n-1)}
+
+    are returned.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples, sizes m and n, both >= 1.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (R), ``p_value`` (exact left tail), ``z``,
+        ``p_normal``, ``mean``, ``var``, ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 6.2
+    Gibbons & Chakraborti (2011), Sec. 6.2, p. 231; null distribution
+    Theorem 3.2.2, p. 79.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Wald-Wolfowitz two-sample runs test using combined pooled sequence",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    tagged = [(v, 0) for v in xs] + [(v, 1) for v in ys]
+    tagged.sort(key=lambda p: (p[0], p[1]))
+    labels = [t for _, t in tagged]
+    r = 1
+    for i in range(1, len(labels)):
+        if labels[i] != labels[i - 1]:
+            r += 1
+    nn = m + n
+    den = math.comb(nn, m)
+    tail = 0.0
+    for rr in range(2, r + 1):
+        if rr % 2 == 0:
+            k = rr // 2
+            p = 2.0 * math.comb(m - 1, k - 1) * math.comb(n - 1, k - 1)
+        else:
+            k = (rr - 1) // 2
+            p = (
+                math.comb(m - 1, k - 1) * math.comb(n - 1, k)
+                + math.comb(m - 1, k) * math.comb(n - 1, k - 1)
+            )
+        tail += p / den
+    mean = 2.0 * m * n / nn + 1.0
+    var = 2.0 * m * n * (2.0 * m * n - nn) / (float(nn) ** 2 * (nn - 1.0))
+    z = (r - mean) / math.sqrt(var)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": int(r),
+            "p_value": float(min(1.0, tail)),
+            "z": float(z),
+            "p_normal": float(stats.norm.cdf(z)),
+            "mean": float(mean),
+            "var": float(var),
+            "m": m,
             "n": n,
-            "method": "Wald-Wolfowitz two-sample runs test using combined pooled sequence",
+            "method": "Wald-Wolfowitz two-sample runs test (Sec. 6.2)",
         }
     )
 
 
-def cheatsheet():
-    return "gb621: Wald-Wolfowitz two-sample runs test using combined pooled sequence"
-
-
-# compact alias per ledger/NAMING.md
-gibbonsks2samp = gibbons_ks2samp
+gibbons_ks2samp = wwruns

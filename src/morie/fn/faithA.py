@@ -1,50 +1,64 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Faithfulness assumption: conditional independencies in P imply d-separation in G."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Faithfulness assumption for one triple.
 
-from . import _array_core as np
+Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 5 p. 77
+"""
+
+from . import _molak as _core
 
 from ._richresult import RichResult
 
-__all__ = ["faithfulness_assumption"]
+__all__ = ["faithchk", "faithfulness_assumption"]
+
+_METHOD = "Faithfulness assumption for one triple"
 
 
-def faithfulness_assumption(dag, P):
-    """
-    Faithfulness assumption: conditional independencies in P imply d-separation in G
+def faithchk(dag, x, y, z=(), indep=True):
+    """Faithfulness assumption for one triple.
 
-    Formula: If X _|_ Y | Z in P, then X _|_G Y | Z; no cancelling paths in causal structure
+    Faithfulness for one triple, ch. 5 p. 77.
+
+    The printed formulation is ``X indep_P Y | Z  =>  X indep_G Y | Z``:
+    an independence in the DISTRIBUTION must be reflected in the GRAPH.
+    ``indep`` is the observed distributional independence; the return
+    says whether that implication survives for this triple, and
+    separately whether the converse (the global Markov property) does.
 
     Parameters
     ----------
-    dag : array-like
-        Input data.
-    P : array-like
-        Input data.
+    dag : as documented for the shelf core
+        See ``morie.fn._molak.faithchk``.
+    x : as documented for the shelf core
+        See ``morie.fn._molak.faithchk``.
+    y : as documented for the shelf core
+        See ``morie.fn._molak.faithchk``.
+    z : as documented for the shelf core
+        See ``morie.fn._molak.faithchk``.
+    indep : as documented for the shelf core
+        See ``morie.fn._molak.faithchk``.
 
     Returns
     -------
-    result : dict
-        Keys: {'faithful': 'bool'}
+    result : RichResult
+        Payload keys: dseparated, faithful, markov.
 
     References
     ----------
-    Molak Ch 5
+    Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 5 p. 77
     """
-    if isinstance(dag, dict):
-        dag = [len(v) if hasattr(v, "__len__") else float(v) for v in dag.values()] or [0.0]
-    dag = np.asarray(dag, dtype=float)
-    n = int(dag) if dag.ndim == 0 else len(dag)
-    result = float(np.mean(dag))
-    se = float(np.std(dag, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.faithchk(dag=dag, x=x, y=y, z=z, indep=indep)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Faithfulness assumption: conditional independencies in P imply d-separation in G",
-        }
+        title=_METHOD,
+        summary_lines=[("dseparated", res["dseparated"]), ("faithful", res["faithful"]), ("markov", res["markov"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+faithfulness_assumption = faithchk
+
+
 def cheatsheet():
-    return "faithA: Faithfulness assumption: conditional independencies in P imply d-separation in G"
+    return "faithchk: Faithfulness assumption for one triple"

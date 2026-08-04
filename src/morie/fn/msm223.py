@@ -1,55 +1,52 @@
-r"""Numbered display equation (9.38) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Karush-Kuhn-Tucker conditions of the support vector classifier.
 
-from ._richresult import RichResult
+Implements eq. (9.38), (9.39), (9.40), (9.41), (9.42), (9.43) p.356 of Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_38"]
+Note: the generated stub name this module replaces carried a
+topic label taken from the wrong chapter, and its body ignored the
+cited equation entirely; the name and the implementation below follow
+the equation actually printed on that page.
+"""
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["svmkkt", "mvsml_ridge_lasso_elastic_eq_9_38"]
 
 
-def mvsml_ridge_lasso_elastic_eq_9_38(i, yi, xT, L, e, Xn):
-    r"""
-    Numbered display equation (9.38) from MVSML chapter 9.
+def svmkkt(X, y, beta0, beta, alpha, delta, zeta, T):
 
-    Formula: i=1\alphai yi \beta0 + xT L \beta, \beta0, e, \alpha, \delta ( 2 \beta i=1\zetai 2 i \beta + 1 + \zetai Xn + i=1\deltai\zetai,
+    """The Wolfe primal of the soft margin problem,
+    L = (1/2)||beta||^2 + T sum_i zeta_i
+    - sum_i alpha_i [ y_i(beta_0 + x_i beta) - 1 + zeta_i ]
+    - sum_i delta_i zeta_i (eq. 9.38), and the five conditions its
+    stationarity produces: beta = sum_i alpha_i y_i x_i (eq. 9.39),
+    sum_i alpha_i y_i = 0 (eq. 9.40), alpha_i + delta_i = T
+    (eq. 9.41), and the two complementary slackness conditions
+    alpha_i [ y_i(beta_0 + x_i beta) - 1 + zeta_i ] = 0 (eq. 9.42)
+    and delta_i zeta_i = 0 (eq. 9.43).  Each is returned as a
+    residual, zero when the condition holds.
 
-    Parameters
-    ----------
-    i : array-like
-        Input data.
-    yi : array-like
-        Input data.
-    xT : array-like
-        Input data.
-    L : array-like
-        Input data.
-    e : array-like
-        Input data.
-    Xn : array-like
-        Input data.
+    The printed sign of the delta term in (9.38) on p.356 is
+    inconsistent with the book's own (9.41): dL/dzeta_i = T - alpha_i
+    - delta_i requires that term to enter with a minus.  It is
+    implemented with a minus so that (9.41) holds; the book is not
+    silently corrected elsewhere.  Keys: L, stationarity_beta,
+    balance, multiplier_sum, complementary_alpha,
+    complementary_delta, max_residual, kkt_satisfied.
+    """
 
-    Returns
-    -------
-    result : dict
-        Keys: expression
+    res = RichResult(payload=_gp.soft_margin_kkt(X, y, beta0, beta, alpha, delta, zeta, T))
 
-    References
-    ----------
-    MVSML, Eq. (9.38) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    r"""
-    i = np.atleast_1d(np.asarray(i, dtype=float))
-    n = len(i)
-    result = float(np.mean(i))
-    se = float(np.std(i, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.38) from MVSML chapter 9.",
-        }
-    )
+    return with_describe_pointer(res, "msm223")
+
+
+mvsml_ridge_lasso_elastic_eq_9_38 = svmkkt
 
 
 def cheatsheet():
-    return "msm223: Numbered display equation (9.38) from MVSML chapter 9."
+    return "msm223: Karush-Kuhn-Tucker conditions of the support vector classifier"

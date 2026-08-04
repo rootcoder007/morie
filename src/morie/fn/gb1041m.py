@@ -1,76 +1,95 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Multiple comparisons following Kruskal-Wallis test: pairwise rank-sum tests."""
+"""Multiple comparisons following Kruskal-Wallis -- eq. (10.4.8)."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_kw_mult_comp"]
+__all__ = ['kwmc', 'gibbons_kw_mult_comp']
 
 
-def gibbons_kw_mult_comp(groups, alpha, cdf=None):
-    """
-    Multiple comparisons following Kruskal-Wallis test: pairwise rank-sum tests
+def kwmc(rank_means, ns, alpha=0.20):
+    """Pairwise rank-mean comparisons at an experimentwise level.
 
-    Formula: Compare pairs (i,j): |Rbar_i - Rbar_j| > critical * sqrt(N(N+1)/12 * (1/n_i + 1/n_j))
+    Book p. 357, eq. (10.4.8): treatments i and j differ significantly
+    when
+
+    .. math:: |\\bar R_i - \\bar R_j| \\ge z^*
+        \\sqrt{\\frac{N(N+1)}{12}
+                \\left(\\frac{1}{n_i}+\\frac{1}{n_j}\\right)},
+
+    with z* the upper alpha/[k(k-1)] normal quantile, i.e. a Bonferroni
+    split over the k(k-1)/2 two-sided comparisons.  For equal
+    n_i = N/k the bound reduces to z* sqrt(k(N+1)/6), which the book
+    states on the same page.
+
+    The book's Example 10.4.1 (k = 4, n_i = 10, N = 40, alpha = 0.20)
+    gives a bound of 11.125.
 
     Parameters
     ----------
-    groups : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    rank_means : sequence of float
+        The k average rank sums.
+    ns : sequence of int
+        The k sample sizes.
+    alpha : float, optional
+        Experimentwise level (default 0.20, the book's example).
 
     Returns
     -------
-    result : dict
-        Keys: pairwise_comparisons
+    RichResult
+        keys ``bound`` (equal-n bound, else nan), ``bounds`` (pairwise
+        matrix), ``diffs``, ``significant`` (pairs as [i, j]),
+        ``zstar``, ``k``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 10.4 multiple comparisons
+    Gibbons & Chakraborti (2011), eq. (10.4.8), p. 357.
     """
-    groups = np.asarray(groups, dtype=float)
-    n = int(groups) if groups.ndim == 0 else len(groups)
-    if groups.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Multiple comparisons following Kruskal-Wallis test: pairwise rank-sum tests",
-            }
-        )
-    x_sorted = np.sort(groups)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(groups), scale=np.std(groups, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    rm = [float(v) for v in rank_means]
+    nv = [int(v) for v in ns]
+    k = len(rm)
+    alpha = float(alpha)
+    if k < 2 or len(nv) != k:
+        raise ValueError("need at least 2 samples and matching sizes.")
+    if not 0.0 < alpha < 1.0:
+        raise ValueError("alpha must lie strictly inside (0, 1).")
+    nn = sum(nv)
+    zstar = stats.norm.ppf(1.0 - alpha / (k * (k - 1.0)))
+    bounds = []
+    diffs = []
+    sig = []
+    for i in range(k):
+        brow = []
+        drow = []
+        for j in range(k):
+            b = zstar * math.sqrt(
+                nn * (nn + 1.0) / 12.0 * (1.0 / nv[i] + 1.0 / nv[j])
+            )
+            d = abs(rm[i] - rm[j])
+            brow.append(float(b))
+            drow.append(float(d))
+            if i < j and d >= b:
+                sig.append([i, j])
+        bounds.append(brow)
+        diffs.append(drow)
+    eq = float("nan")
+    if len(set(nv)) == 1:
+        eq = zstar * math.sqrt(k * (nn + 1.0) / 6.0)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Multiple comparisons following Kruskal-Wallis test: pairwise rank-sum tests",
+            "bound": eq,
+            "bounds": bounds,
+            "diffs": diffs,
+            "significant": sig,
+            "zstar": float(zstar),
+            "k": int(k),
+            "n": int(nn),
+            "method": "Kruskal-Wallis multiple comparisons, eq. (10.4.8)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1041m: Multiple comparisons following Kruskal-Wallis test: pairwise rank-sum tests"
+gibbons_kw_mult_comp = kwmc

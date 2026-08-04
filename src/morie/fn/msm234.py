@@ -1,55 +1,47 @@
-"""Numbered display equation (9.46) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Support vector machine with a kernel.
 
-from ._richresult import RichResult
+Implements eq. (9.46), (9.47) p.360 of Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_46"]
+Note: the generated stub name this module replaces carried a
+topic label taken from the wrong chapter, and its body ignored the
+cited equation entirely; the name and the implementation below follow
+the equation actually printed on that page.
+"""
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["ksvmdual", "mvsml_ridge_lasso_elastic_eq_9_46"]
 
 
-def mvsml_ridge_lasso_elastic_eq_9_46(to, the, following, optimization, problem, Xn):
+def ksvmdual(X, y, T, kernel='linear', gamma=None, K=None):
+
+    """maximize L(alpha) = sum_i alpha_i
+    - (1/2) sum_i sum_j alpha_i alpha_j y_i y_j K(x_i, x_j)
+    (eq. 9.46) subject to 0 <= alpha_i <= T and sum_i alpha_i y_i = 0
+    (eq. 9.47).  Because the dual of the support vector classifier
+    touches the data only through the inner products x_i . x_j, every
+    instance of one can be replaced by a positive definite symmetric
+    kernel, which implicitly defines an inner product in an enlarged
+    feature space; that substitution is the whole difference between
+    (9.44) and (9.46), and it is what turns the classifier into a
+    support vector machine.  It also means nonvectorial inputs --
+    sequences, trees, graphs -- can be handled, since only K is ever
+    needed.  Keys: alpha, beta, beta0, objective, support_vectors,
+    balance, bounded, at_bound, K, kernel.
     """
-    Numbered display equation (9.46) from MVSML chapter 9.
 
-    Formula: to the following optimization problem: Xn Xn   i=1\alphai 2 1 maximize L \alpha ( ) = i=1\alphai\alpha jyiy jK xi, xj
+    res = RichResult(payload=_gp.ksvm_dual(X, y, T, kernel=kernel, gamma=gamma, K=K))
 
-    Parameters
-    ----------
-    to : array-like
-        Input data.
-    the : array-like
-        Input data.
-    following : array-like
-        Input data.
-    optimization : array-like
-        Input data.
-    problem : array-like
-        Input data.
-    Xn : array-like
-        Input data.
+    return with_describe_pointer(res, "msm234")
 
-    Returns
-    -------
-    result : dict
-        Keys: expression
 
-    References
-    ----------
-    MVSML, Eq. (9.46) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    """
-    to = np.atleast_1d(np.asarray(to, dtype=float))
-    n = len(to)
-    result = float(np.mean(to))
-    se = float(np.std(to, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.46) from MVSML chapter 9.",
-        }
-    )
+mvsml_ridge_lasso_elastic_eq_9_46 = ksvmdual
 
 
 def cheatsheet():
-    return "msm234: Numbered display equation (9.46) from MVSML chapter 9."
+    return "msm234: Support vector machine with a kernel"

@@ -1,76 +1,103 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Wilcoxon rank-sum test statistic W = sum of ranks of X in combined sample."""
+"""Wilcoxon rank-sum statistic W_N with its exact null distribution."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_wilcoxon_ranksum"]
+__all__ = ['wrs', 'gibbons_wilcoxon_ranksum']
 
 
-def gibbons_wilcoxon_ranksum(x, y, cdf=None):
-    """
-    Wilcoxon rank-sum test statistic W = sum of ranks of X in combined sample
+def wrs(x, y):
+    """W_N = sum of the X ranks in the combined ordering.
 
-    Formula: W = sum R_i for X observations; E(W) = m(N+1)/2; Var = mn(N+1)/12
+    Section 8.2 (book p. 290).  With m X's and n Y's and N = m + n,
+
+    .. math:: E[W_N] = \\frac{m(N+1)}{2}, \\qquad
+              Var[W_N] = \\frac{mn(N+1)}{12},
+
+    and the exact null distribution follows the recursion of book
+    p. 291,
+
+    .. math:: r_{m,n}(k) = r_{m-1,n}(k-N) + r_{m,n-1}(k),
+
+    evaluated here by dynamic programming over all C(N, m)
+    arrangements.  Ties get midranks.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (W_N), ``p_value`` (exact two-sided),
+        ``z``, ``p_normal``, ``mean``, ``var``, ``wmin``, ``wmax``,
+        ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 8.2
+    Gibbons & Chakraborti (2011), Sec. 8.2, pp. 290-291.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Wilcoxon rank-sum test statistic W = sum of ranks of X in combined sample",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    nn = m + n
+    pooled = sorted(xs + ys)
+    ranks = {}
+    i = 0
+    while i < nn:
+        j = i
+        while j + 1 < nn and pooled[j + 1] == pooled[i]:
+            j += 1
+        ranks[pooled[i]] = (i + j) / 2.0 + 1.0
+        i = j + 1
+    w = sum(ranks[v] for v in xs)
+    wmin = m * (m + 1) / 2.0
+    wmax = m * (2.0 * nn - m + 1.0) / 2.0
+    # exact counts over the shifted support 0..mn
+    total = m * n
+    counts = [0.0] * (total + 1)
+    counts[0] = 1.0
+    for _ in range(1, m + 1):
+        new = [0.0] * (total + 1)
+        run = 0.0
+        for k in range(total + 1):
+            run += counts[k]
+            if k - n - 1 >= 0:
+                run -= counts[k - n - 1]
+            new[k] = run
+        counts = new
+    denom = math.comb(nn, m)
+    pmf = [c / denom for c in counts]
+    shifted = int(round(w - wmin))
+    shifted = max(0, min(total, shifted))
+    lower = sum(pmf[: shifted + 1])
+    upper = sum(pmf[shifted:])
+    mean = m * (nn + 1.0) / 2.0
+    var = m * n * (nn + 1.0) / 12.0
+    z = (w - mean) / math.sqrt(var)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": float(w),
+            "p_value": float(min(1.0, 2.0 * min(lower, upper))),
+            "z": float(z),
+            "p_normal": float(2.0 * (1.0 - stats.norm.cdf(abs(z)))),
+            "mean": float(mean),
+            "var": float(var),
+            "wmin": float(wmin),
+            "wmax": float(wmax),
+            "m": m,
             "n": n,
-            "method": "Wilcoxon rank-sum test statistic W = sum of ranks of X in combined sample",
+            "method": "Wilcoxon rank-sum W_N, exact recursion (Sec. 8.2)",
         }
     )
 
 
-def cheatsheet():
-    return "gb821: Wilcoxon rank-sum test statistic W = sum of ranks of X in combined sample"
+gibbons_wilcoxon_ranksum = wrs

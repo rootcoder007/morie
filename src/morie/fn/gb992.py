@@ -1,76 +1,82 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Fligner-Killeen test for equality of variances using aligned scores."""
+"""Rosenbaum outside-the-extremes scale test -- eq. (9.9.2)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_fligner_killeen"]
+__all__ = ['rosenbm', 'gibbons_fligner_killeen']
 
 
-def gibbons_fligner_killeen(x, y, cdf=None):
-    """
-    Fligner-Killeen test for equality of variances using aligned scores
+def rosenbm(x, y):
+    """R = number of X's outside the range of the Y sample.
 
-    Formula: FK = sum c(R_i) where c based on absolute deviations from pooled median
+    Section 9.9 (book p. 329), eq. (9.9.2).  Assuming the two
+    populations share a location, Rosenbaum (1953) counts the X
+    observations that are either smaller than the smallest Y or larger
+    than the largest Y.  Under H0
+
+    .. math:: f_R(r) = n(n-1)\\binom{m}{r} B(m+n-1-r,\\; r+2),
+
+    with B the beta function; large R is evidence that the X sample is
+    the more widely dispersed.
+
+    NOTE ON THE MODULE LABEL: the generated stub called this a
+    "Fligner-Killeen test".  Fligner & Killeen (1976) is not cited
+    anywhere in Gibbons & Chakraborti (2011) -- the only Fligner
+    reference in the book is Fligner and Wolfe (1976), on placements --
+    so this module implements what the cited source actually gives at
+    that point, Rosenbaum's test.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (R), ``p_value`` (upper tail), ``pmf``,
+        ``ymin``, ``ymax``, ``mean``, ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 9.9
+    Gibbons & Chakraborti (2011), Sec. 9.9, eq. (9.9.2), p. 329
+    (Rosenbaum, 1953); verification is Problem 9.9, p. 341.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 2:
+        raise ValueError("need m >= 1 and n >= 2.")
+    ymin = min(ys)
+    ymax = max(ys)
+    r = sum(1 for v in xs if v < ymin or v > ymax)
+
+    def _beta(a, b):
+        return math.exp(
+            math.lgamma(a) + math.lgamma(b) - math.lgamma(a + b)
         )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Fligner-Killeen test for equality of variances using aligned scores",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+
+    pmf = [
+        n * (n - 1.0) * math.comb(m, k) * _beta(m + n - 1.0 - k, k + 2.0)
+        for k in range(m + 1)
+    ]
+    mean = sum(k * p for k, p in enumerate(pmf))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": int(r),
+            "p_value": float(min(1.0, sum(pmf[r:]))),
+            "pmf": pmf,
+            "ymin": float(ymin),
+            "ymax": float(ymax),
+            "mean": float(mean),
+            "m": m,
             "n": n,
-            "method": "Fligner-Killeen test for equality of variances using aligned scores",
+            "method": "Rosenbaum outside-extremes scale test, eq. (9.9.2)",
         }
     )
 
 
-def cheatsheet():
-    return "gb992: Fligner-Killeen test for equality of variances using aligned scores"
+gibbons_fligner_killeen = rosenbm

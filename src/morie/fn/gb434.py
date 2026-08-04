@@ -1,76 +1,77 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Exact null distribution of one-sided KS statistic D+_n."""
+"""Exact null distribution of the one-sided KS statistic D+."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_ks_one_sided_dist"]
+__all__ = ['ksplusdist', 'gibbons_ks_one_sided_dist']
 
 
-def gibbons_ks_one_sided_dist(c, n, cdf=None):
-    """
-    Exact null distribution of one-sided KS statistic D+_n
+def ksplusdist(c, n):
+    """P(D+_n >= c) by the Birnbaum-Tingey closed form.
 
-    Formula: P(D+_n < c) = n! * integral over unit simplex with bound c
+    Theorem 4.3.4 (book p. 115) expresses P(D+_n < c) as a nested
+    integral over the uniform order statistics; carrying the
+    integration out gives the finite sum
+
+    .. math:: P(D_n^+ \\ge c) = c \\sum_{j=0}^{\\lfloor n(1-c)\\rfloor}
+        \\binom{n}{j}\\left(c + \\frac{j}{n}\\right)^{j-1}
+        \\left(1 - c - \\frac{j}{n}\\right)^{n-j},
+
+    which is exact for every n and needs no quadrature.
 
     Parameters
     ----------
-    c : array-like
-        Input data.
-    n : array-like
-        Input data.
+    c : float
+        Value of the one-sided statistic, 0 < c < 1.
+    n : int
+        Sample size.
 
     Returns
     -------
-    result : dict
-        Keys: probability
+    RichResult
+        keys ``sf`` (P(D+ >= c)), ``cdf``, ``terms``, ``n``, ``c``,
+        ``method``.
 
     References
     ----------
-    Gibbons Theorem 4.3.4
+    Gibbons & Chakraborti (2011), Theorem 4.3.4, p. 115
+    (Birnbaum and Tingey, 1951).
     """
-    c = np.asarray(c, dtype=float)
-    n = int(c) if c.ndim == 0 else len(c)
-    if c.ndim == 0:
+    c = float(c)
+    n = int(n)
+    if n < 1:
+        raise ValueError("n must be at least 1.")
+    if c <= 0.0:
         return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+            payload={"sf": 1.0, "cdf": 0.0, "terms": 0, "n": n, "c": c,
+                     "method": "P(D+ >= c), Birnbaum-Tingey (Thm 4.3.4)"}
         )
-    if n < 2:
+    if c >= 1.0:
         return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Exact null distribution of one-sided KS statistic D+_n",
-            }
+            payload={"sf": 0.0, "cdf": 1.0, "terms": 0, "n": n, "c": c,
+                     "method": "P(D+ >= c), Birnbaum-Tingey (Thm 4.3.4)"}
         )
-    x_sorted = np.sort(c)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(c), scale=np.std(c, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    jmax = int(math.floor(n * (1.0 - c)))
+    total = 0.0
+    for j in range(jmax + 1):
+        total += (
+            math.comb(n, j)
+            * (c + j / n) ** (j - 1)
+            * (1.0 - c - j / n) ** (n - j)
+        )
+    sf = min(1.0, max(0.0, c * total))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "sf": float(sf),
+            "cdf": float(1.0 - sf),
+            "terms": int(jmax + 1),
             "n": n,
-            "method": "Exact null distribution of one-sided KS statistic D+_n",
+            "c": c,
+            "method": "P(D+ >= c), Birnbaum-Tingey (Thm 4.3.4)",
         }
     )
 
 
-def cheatsheet():
-    return "gb434: Exact null distribution of one-sided KS statistic D+_n"
+gibbons_ks_one_sided_dist = ksplusdist

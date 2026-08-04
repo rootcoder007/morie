@@ -1,46 +1,56 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Log (or log1p) target transformation for strictly-positive series."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Log transformation.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 6 p. 163
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_log_transform"]
+__all__ = ["logtrans", "joseph_log_transform"]
+
+_METHOD = "Log transformation"
 
 
-def joseph_log_transform(y):
-    """
-    Log (or log1p) target transformation for strictly-positive series
+def logtrans(x, offset=0.0):
+    """Log transformation.
 
-    Formula: y_t_log = log(y_t + 1);  inverse: exp(y_t_log) - 1
+    Log transformation with an optional offset, ch. 6 p. 163.
+
+    The offset is the book's own remedy for series containing zeros.
+    ``ratio`` reports the variance-stabilization achieved: the
+    coefficient of variation before and after.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._joseph.logtrans``.
+    offset : as documented for the shelf core
+        See ``morie.fn._joseph.logtrans``.
 
     Returns
     -------
-    result : dict
-        Keys: log_y
+    result : RichResult
+        Payload keys: mean, sd, cvbefore, cvafter.
 
     References
     ----------
-    Joseph Ch 7, Log Transform section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 6 p. 163
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.logtrans(x=x, offset=offset)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Log (or log1p) target transformation for strictly-positive series",
-        }
+        title=_METHOD,
+        summary_lines=[("mean", res["mean"]), ("sd", res["sd"]), ("cvbefore", res["cvbefore"]), ("cvafter", res["cvafter"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_log_transform = logtrans
+
+
 def cheatsheet():
-    return "jolog: Log (or log1p) target transformation for strictly-positive series"
+    return "logtrans: Log transformation"

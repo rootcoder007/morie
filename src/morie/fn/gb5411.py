@@ -1,76 +1,66 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Exact p-value for sign test using binomial CDF."""
+"""Exact binomial p-value for the sign test."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_sign_pvalue"]
+__all__ = ['signp', 'gibbons_sign_pvalue']
 
 
-def gibbons_sign_pvalue(k_obs, n, cdf=None):
-    """
-    Exact p-value for sign test using binomial CDF
+def signp(k, n, alternative="two-sided"):
+    """Exact sign-test p-value from the Binomial(N, 1/2) null.
 
-    Formula: P-value = 2*P(K >= k_obs) or P(K >= k_obs) for one-sided test
+    Section 5.4 (book p. 169), eq. (5.4.3).  The two-sided p-value is
+    the usual doubled smaller tail, capped at 1.
 
     Parameters
     ----------
-    k_obs : array-like
-        Input data.
-    n : array-like
-        Input data.
+    k : int
+        Observed number of positive differences, 0 <= k <= n.
+    n : int
+        Number of non-zero differences.
+    alternative : str, optional
+        ``"two-sided"``, ``"greater"`` (H1: M > M0) or ``"less"``.
 
     Returns
     -------
-    result : dict
-        Keys: p_value
+    RichResult
+        keys ``p_value``, ``p_lower``, ``p_upper``, ``statistic``,
+        ``n``, ``alternative``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.4.1
+    Gibbons & Chakraborti (2011), Sec. 5.4, eq. (5.4.3), p. 169.
     """
-    k_obs = np.asarray(k_obs, dtype=float)
-    n = int(k_obs) if k_obs.ndim == 0 else len(k_obs)
-    if k_obs.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Exact p-value for sign test using binomial CDF",
-            }
-        )
-    x_sorted = np.sort(k_obs)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(k_obs), scale=np.std(k_obs, ddof=1))
+    k = int(k)
+    n = int(n)
+    if n < 1:
+        raise ValueError("n must be at least 1.")
+    if not 0 <= k <= n:
+        raise ValueError("k must lie in 0..n.")
+    half = 0.5**n
+    lower = sum(math.comb(n, i) for i in range(k + 1)) * half
+    upper = sum(math.comb(n, i) for i in range(k, n + 1)) * half
+    if alternative == "greater":
+        pv = upper
+    elif alternative == "less":
+        pv = lower
+    elif alternative == "two-sided":
+        pv = min(1.0, 2.0 * min(lower, upper))
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("alternative must be two-sided, greater or less.")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "p_value": float(pv),
+            "p_lower": float(lower),
+            "p_upper": float(upper),
+            "statistic": k,
             "n": n,
-            "method": "Exact p-value for sign test using binomial CDF",
+            "alternative": alternative,
+            "method": "exact sign test, K ~ Bin(n, 1/2)",
         }
     )
 
 
-def cheatsheet():
-    return "gb5411: Exact p-value for sign test using binomial CDF"
+gibbons_sign_pvalue = signp

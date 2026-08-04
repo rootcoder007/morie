@@ -1,71 +1,90 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Klotz normal-scores scale test."""
+"""Klotz normal-scores test for scale -- eq. (9.5.1)."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_klotz_scale"]
+__all__ = ['klotzsc', 'gibbons_klotz_scale']
 
 
-def gibbons_klotz_scale(x, y, cdf=None):
-    """
-    Klotz normal-scores scale test
+def _tagged(xs, ys):
+    """Pooled sample tagged 0 for X, 1 for Y, sorted with X first on ties."""
+    t = [(v, 0) for v in xs] + [(v, 1) for v in ys]
+    t.sort(key=lambda p: (p[0], p[1]))
+    return [1.0 if lab == 0 else 0.0 for _, lab in t]
 
-    Formula: T_K = sum [Phi^{-1}((R_i/(N+1))^2] for X observations
+
+def _lrmoments(a, m, n):
+    """Theorem 7.3.2 moments of sum a_i Z_i under H0."""
+    nn = m + n
+    abar = sum(a) / nn
+    ss = sum((v - abar) ** 2 for v in a)
+    return m * abar, m * n * ss / (nn * (nn - 1.0))
+
+
+def klotzsc(x, y):
+    """K_N with squared inverse-normal scores.
+
+    Section 9.5 (book p. 322), eq. (9.5.1):
+
+    .. math:: K_N = \\sum_{i=1}^{N}
+        \\left[\\Phi^{-1}\\!\\left(\\frac{i}{N+1}\\right)\\right]^2 Z_i,
+
+    i.e. the van der Waerden location scores squared, so the Klotz test
+    stands to the van der Waerden test exactly as Mood's test stands to
+    Wilcoxon's.  The larger weights sit at both extremes, so H0 is
+    rejected for large K_N against the alternative that the X
+    population has the larger spread.  The book's moments are
+
+    .. math:: E[K_N] = \\frac{m}{N}\\sum_i
+        \\left[\\Phi^{-1}\\!\\left(\\tfrac{i}{N+1}\\right)\\right]^2,
+
+    with the variance the corresponding Theorem 7.3.2 expression.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic``, ``mean``, ``var``, ``z``, ``p_value``,
+        ``scores``, ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 9.5
+    Gibbons & Chakraborti (2011), Sec. 9.5, eq. (9.5.1), p. 322
+    (Klotz, 1962).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Klotz normal-scores scale test"}
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    nn = m + n
+    z = _tagged(xs, ys)
+    a = [stats.norm.ppf(i / (nn + 1.0)) ** 2 for i in range(1, nn + 1)]
+    stat = sum(a[i] * z[i] for i in range(nn))
+    mean, var = _lrmoments(a, m, n)
+    zz = (stat - mean) / math.sqrt(var) if var > 0 else float("nan")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": float(stat),
+            "mean": float(mean),
+            "var": float(var),
+            "z": float(zz),
+            "p_value": float(2.0 * (1.0 - stats.norm.cdf(abs(zz)))),
+            "scores": a,
+            "m": m,
             "n": n,
-            "method": "Klotz normal-scores scale test",
+            "method": "Klotz normal-scores scale test, eq. (9.5.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb951: Klotz normal-scores scale test"
+gibbons_klotz_scale = klotzsc

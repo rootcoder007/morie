@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""L-statistic for kernel functionals (Fauzi Ch 5).
+"""L-statistic for kernel functionals (Fauzi Ch 3, Eq. 3.4).
 
 L_n = sum_i c_{n,i} X_{(i)} with c_{n,i} = integral_{(i-1)/n}^{i/n} J(u) du
 for a user-supplied score function J:(0,1)->R.  Default J=1 yields the
@@ -12,13 +12,25 @@ Asymptotic variance via the Stieltjes-integral form:
 
 estimated via a discretised double-Riemann sum on the Silverman-KDE
 density-at-quantile.
+
+The book's own L-statistic is Eq. (3.4), the KERNEL QUANTILE estimator
+
+    Q_hat_{p,h} = sum_i v_{i,n} X_{i:n},
+    v_{i,n} = (1/h) int_{(i-1)/n}^{i/n} K((u - p)/h) du,
+
+which is this routine with ``score = lambda u: K((u - p) / h) / h``. No
+separate entry point is needed, and none is added. Sec. 3.2 spells out why
+the standard L-statistic theory does not apply to it: the weights depend on
+``n`` through ``h``, and the limiting "score function" is a delta function
+rather than a fixed ``J``, which is exactly the technical obstacle Chapter 3
+works around with an H-decomposition.
 """
 
 from . import _array_core as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_l_statistic"]
+__all__ = ["lstat", "fauzi_l_statistic"]
 
 
 def fauzi_l_statistic(x, score=None, n_quad=200):
@@ -44,7 +56,7 @@ def fauzi_l_statistic(x, score=None, n_quad=200):
     cells = np.searchsorted(fine, u_grid)
     weights = np.empty(n)
     for i in range(n):
-        a, b = cells[i], cells[i + 1]
+        a, b = int(cells[i]), int(cells[i + 1])
         if b <= a:
             b = a + 1
         seg_u = fine[a : b + 1]
@@ -64,7 +76,10 @@ def fauzi_l_statistic(x, score=None, n_quad=200):
     f_Q = np.array([np.mean(_sps.norm.pdf((q - x) / h) / h) for q in Q])
     J_at_u = np.asarray(score(uu), dtype=float)
 
-    U, V = np.meshgrid(uu, uu, indexing="ij")
+    # every matrix below is symmetric in (U, V), so meshgrid orientation
+    # is immaterial and the local _array_core signature (no `indexing`)
+    # is used directly.
+    U, V = np.meshgrid(uu, uu)
     K = (np.minimum(U, V) - U * V) / (np.outer(f_Q, f_Q) + 1e-12)
     JJ = np.outer(J_at_u, J_at_u)
     var = float(np.mean(JJ * K)) / n
@@ -76,9 +91,13 @@ def fauzi_l_statistic(x, score=None, n_quad=200):
             "estimate": L,
             "se": se,
             "n": n,
-            "method": "Fauzi L-statistic with user score function J (Ch 5)",
+            "method": "L-statistic with user score function J (Eq. 3.4)",
         }
     )
+
+
+# compact spelling per ledger/NAMING.md
+lstat = fauzi_l_statistic
 
 
 def cheatsheet():

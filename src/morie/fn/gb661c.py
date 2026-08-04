@@ -1,82 +1,69 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Confidence interval for location shift from Mann-Whitney test."""
+"""Confidence interval for the location shift from Mann-Whitney."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_mw_ci"]
+__all__ = ['mwuci', 'gibbons_mw_ci']
 
 
-def gibbons_mw_ci(x, y, alpha, cdf=None):
-    """
-    Confidence interval for location shift from Mann-Whitney test
+def mwuci(x, y, k):
+    """Interval for theta built from the mn differences X_i - Y_j.
 
-    Formula: CI based on differences Y_j - X_i sorted: Hodges-Lehmann estimate
+    Section 6.6.2 (book p. 267).  Inverting the Mann-Whitney test gives
+    an interval whose endpoints are order statistics of the mn
+    differences X_i - Y_j: with k the lower critical value of U,
+
+    .. math:: (D_{(k+1)},\\; D_{(mn-k)}),
+
+    where D_(1) <= ... <= D_(mn) are the ordered X_i - Y_j, matching
+    the orientation of U in eq. (6.6.1).  The
+    Hodges-Lehmann point estimate, the median of the same differences,
+    is returned as ``estimate``.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples.
+    k : int
+        Lower critical value of U, 0 <= k < mn/2.
 
     Returns
     -------
-    result : dict
-        Keys: lower, upper, estimate
+    RichResult
+        keys ``lower``, ``upper``, ``estimate``, ``k``, ``ndiff``,
+        ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 6.6 CI
+    Gibbons & Chakraborti (2011), Sec. 6.6.2, p. 267.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Confidence interval for location shift from Mann-Whitney test",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    k = int(k)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    d = sorted(xi - yj for xi in xs for yj in ys)
+    nd = len(d)
+    if not 0 <= k < nd:
+        raise ValueError("k must lie in 0..mn-1.")
+    mid = nd // 2
+    est = d[mid] if nd % 2 else (d[mid - 1] + d[mid]) / 2.0
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "lower": float(d[k]),
+            "upper": float(d[nd - 1 - k]),
+            "estimate": float(est),
+            "k": k,
+            "ndiff": int(nd),
+            "m": m,
             "n": n,
-            "method": "Confidence interval for location shift from Mann-Whitney test",
+            "method": "Mann-Whitney shift CI from ordered differences",
         }
     )
 
 
-def cheatsheet():
-    return "gb661c: Confidence interval for location shift from Mann-Whitney test"
-
-
-# compact alias per ledger/NAMING.md
-gibbonsmwci = gibbons_mw_ci
+gibbons_mw_ci = mwuci

@@ -1,76 +1,78 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Type I error and p-value concepts for discrete test statistics."""
+"""Attainable exact sizes of a test with a discrete null distribution."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_type1_error"]
+__all__ = ['exactsize', 'gibbons_type1_error']
 
 
-def gibbons_type1_error(statistic, null_dist, cdf=None):
-    """
-    Type I error and p-value concepts for discrete test statistics
+def exactsize(pmf, alpha=0.05, upper=True):
+    """Attainable significance levels and the p-value of an observation.
 
-    Formula: alpha = P(R <= r_alpha) + P(R >= r'_alpha); discrete exact level <= nominal alpha
+    Section 1.2.9 (book p. 26).  For a discrete statistic only a finite
+    set of exact sizes is attainable; the book lists them explicitly
+    for the Bernoulli example (n = 5, theta = 0.5).  This returns the
+    whole ladder of attainable one-tailed sizes, the largest that does
+    not exceed alpha, and the corresponding critical value.
 
     Parameters
     ----------
-    statistic : array-like
-        Input data.
-    null_dist : array-like
-        Input data.
+    pmf : sequence of float
+        Null probabilities over the support, in increasing order of the
+        statistic.  Need not sum to exactly 1.
+    alpha : float, optional
+        Nominal level (default 0.05).
+    upper : bool, optional
+        Upper-tail rejection region (default True).
 
     Returns
     -------
-    result : dict
-        Keys: exact_level
+    RichResult
+        keys ``sizes`` (attainable tails, one per cut point),
+        ``alpha_exact``, ``cut`` (index into the support),
+        ``nlevels``, ``method``.
 
     References
     ----------
-    Gibbons Ch 3.2.5
+    Gibbons & Chakraborti (2011), Sec. 1.2.9, p. 26.
     """
-    statistic = np.asarray(statistic, dtype=float)
-    n = int(statistic) if statistic.ndim == 0 else len(statistic)
-    if statistic.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Type I error and p-value concepts for discrete test statistics",
-            }
-        )
-    x_sorted = np.sort(statistic)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(statistic), scale=np.std(statistic, ddof=1))
+    p = [float(v) for v in pmf]
+    k = len(p)
+    if k < 1:
+        raise ValueError("pmf must be non-empty.")
+    alpha = float(alpha)
+    if upper:
+        sizes = []
+        acc = 0.0
+        for i in range(k - 1, -1, -1):
+            acc += p[i]
+            sizes.append(acc)
+        sizes = list(reversed(sizes))
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        sizes = []
+        acc = 0.0
+        for i in range(k):
+            acc += p[i]
+            sizes.append(acc)
+    best = float("nan")
+    cut = -1
+    rng = range(k - 1, -1, -1) if upper else range(k)
+    for i in rng:
+        if sizes[i] <= alpha:
+            best = sizes[i]
+            cut = i
+            break
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Type I error and p-value concepts for discrete test statistics",
+            "sizes": sizes,
+            "alpha_exact": float(best),
+            "cut": int(cut),
+            "nlevels": int(k),
+            "method": "attainable exact sizes of a discrete test (Sec. 1.2.9)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_t1e: Type I error and p-value concepts for discrete test statistics"
+gibbons_type1_error = exactsize

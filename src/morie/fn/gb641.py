@@ -1,76 +1,86 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Two-sample median test using count U above combined median."""
+"""Two-sample median test based on the count above the combined median."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_median_test"]
+__all__ = ['medtest', 'gibbons_median_test']
 
 
-def gibbons_median_test(x, y, cdf=None):
-    """
-    Two-sample median test using count U above combined median
+def medtest(x, y):
+    """Median test statistic U and its hypergeometric null law.
 
-    Formula: U = #{X_i > M}; U ~ Hypergeometric(N,m,k) where k = #{Z > M}
+    Section 6.4 (book p. 247).  Pool the samples, find the combined
+    median, and let U be the number of X observations that exceed it.
+    Under H0 the t = number of pooled values above the median are a
+    random subset, so
+
+    .. math:: P(U = u) = \\frac{\\binom{m}{u}\\binom{n}{t-u}}
+        {\\binom{m+n}{t}},
+
+    a hypergeometric law free of F.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples, sizes m and n.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (U), ``p_value`` (two-sided, doubled tail),
+        ``p_lower``, ``p_upper``, ``median``, ``t`` (pooled count above
+        the median), ``mean``, ``var``, ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 6.4
+    Gibbons & Chakraborti (2011), Sec. 6.4, p. 247.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Two-sample median test using count U above combined median",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    pooled = sorted(xs + ys)
+    nn = m + n
+    med = (
+        pooled[nn // 2]
+        if nn % 2
+        else (pooled[nn // 2 - 1] + pooled[nn // 2]) / 2.0
+    )
+    t = sum(1 for v in pooled if v > med)
+    u = sum(1 for v in xs if v > med)
+
+    def _p(k):
+        if k < 0 or k > m or t - k < 0 or t - k > n:
+            return 0.0
+        return math.comb(m, k) * math.comb(n, t - k) / math.comb(nn, t)
+
+    lower = sum(_p(k) for k in range(0, u + 1))
+    upper = sum(_p(k) for k in range(u, m + 1))
+    mean = m * t / float(nn)
+    var = (
+        m * n * t * (nn - t) / (float(nn) ** 2 * (nn - 1.0))
+        if nn > 1
+        else float("nan")
+    )
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": int(u),
+            "p_value": float(min(1.0, 2.0 * min(lower, upper))),
+            "p_lower": float(lower),
+            "p_upper": float(upper),
+            "median": float(med),
+            "t": int(t),
+            "mean": float(mean),
+            "var": float(var),
+            "m": m,
             "n": n,
-            "method": "Two-sample median test using count U above combined median",
+            "method": "two-sample median test, hypergeometric null",
         }
     )
 
 
-def cheatsheet():
-    return "gb641: Two-sample median test using count U above combined median"
+gibbons_median_test = medtest

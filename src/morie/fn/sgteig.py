@@ -1,40 +1,48 @@
-"""Eigenvector centrality from leading eigenvector of A."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Eigenvector centrality from the leading eigenvector (re-export)."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["sgt_eigenvector_centrality"]
+__all__ = ['sgteigcent', 'sgt_eigenvector_centrality']
 
 
-def sgt_eigenvector_centrality(A):
-    """
-    Eigenvector centrality from leading eigenvector of A
+def sgteigcent(A):
+    """Eigenvector centrality from the leading eigenvector (re-export).
 
-    Formula: Av = λ v with λ_max
+    Third listing of the same measure; delegates.
+
+
+    Formula: see eigcent
 
     Parameters
     ----------
-    A : array-like
-        Input data.
+    A : array-like, shape (n, n)
+        Symmetric non-negative adjacency matrix.
 
     Returns
     -------
-    result : dict
-        Keys: v
+    RichResult
+        the payload of :func:`morie.fn.eigcen.eigcent`.
 
     References
     ----------
-    Bonacich (1972)
+    Bonacich (1972), Factoring and weighting approaches to status scores
+    and clique identification, Journal of Mathematical Sociology
+    2:113-120.  Paywalled; the measure is the principal eigenvector of
+    the adjacency matrix, as it is universally described in the
+    centrality literature (e.g. Bonacich 2000, Social Networks
+    22:357-365, which restates his own definition).
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Eigenvector centrality from leading eigenvector of A"}
-    )
+    from .eigcen import eigcent as _e
+    return _e(A)
+
+
+sgt_eigenvector_centrality = sgteigcent
 
 
 def cheatsheet():
-    return "sgteig: Eigenvector centrality from leading eigenvector of A"
+    return "sgteig: Eigenvector centrality from the leading eigenvector (re-export)."

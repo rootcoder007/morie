@@ -1,82 +1,60 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""PDF of r-th order statistic from continuous CDF."""
+"""PDF of the r-th order statistic from a continuous cdf -- Theorem 2.4.2."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_order_pdf"]
+__all__ = ['ostatpdf', 'gibbons_order_pdf']
 
 
-def gibbons_order_pdf(x, r, n, f, F, cdf=None):
-    """
-    PDF of r-th order statistic from continuous CDF
+def ostatpdf(x, r, n, cdf, pdf):
+    """Density of X_(r) for a continuous parent.
 
-    Formula: f_{X_(r)}(x) = n!/((r-1)!(n-r)!) [F(x)]^(r-1) [1-F(x)]^(n-r) f(x)
+    Theorem 2.4.2 (book p. 37), eq. (2.4.2):
+
+    .. math::
+        f_{X_{(r)}}(x) = \\frac{n!}{(r-1)!(n-r)!}
+            [F_X(x)]^{r-1} [1 - F_X(x)]^{n-r} f_X(x).
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    r : array-like
-        Input data.
-    n : array-like
-        Input data.
-    f : array-like
-        Input data.
-    F : array-like
-        Input data.
+    x : float
+        Point at which the density is evaluated.
+    r, n : int
+        Order-statistic index and sample size, 1 <= r <= n.
+    cdf, pdf : callable or float
+        F_X and f_X, either callables or their values at ``x``.
 
     Returns
     -------
-    result : dict
-        Keys: pdf_value
+    RichResult
+        keys ``pdf``, ``coef`` (the multinomial constant), ``fx``,
+        ``dx``, ``r``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Theorem 2.4.2
+    Gibbons & Chakraborti (2011), Theorem 2.4.2, eq. (2.4.2), p. 37.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "PDF of r-th order statistic from continuous CDF",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    r = int(r)
+    n = int(n)
+    if not 1 <= r <= n:
+        raise ValueError("need 1 <= r <= n.")
+    fx = float(cdf(x)) if callable(cdf) else float(cdf)
+    dx = float(pdf(x)) if callable(pdf) else float(pdf)
+    coef = math.factorial(n) / (math.factorial(r - 1) * math.factorial(n - r))
+    val = coef * fx ** (r - 1) * (1.0 - fx) ** (n - r) * dx
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "pdf": float(val),
+            "coef": float(coef),
+            "fx": fx,
+            "dx": dx,
+            "r": r,
             "n": n,
-            "method": "PDF of r-th order statistic from continuous CDF",
+            "method": "f_(r)(x) = n!/((r-1)!(n-r)!) F^(r-1) (1-F)^(n-r) f",
         }
     )
 
 
-def cheatsheet():
-    return "gb242: PDF of r-th order statistic from continuous CDF"
+gibbons_order_pdf = ostatpdf

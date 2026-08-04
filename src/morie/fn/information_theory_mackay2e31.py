@@ -1,54 +1,54 @@
-"""Bayesian equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Posterior predictive probability for the next draw.
 
-from . import _array_core as np
+MacKay (2003) eq. (2.29)-(2.31), p. 29
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_2_equation_31"]
+__all__ = ["urnpred", "information_theory_mackay_chapter_2_equation_31"]
+
+_METHOD = "Posterior predictive probability for the next draw"
 
 
-def information_theory_mackay_chapter_2_equation_31(x):
-    """
-    Bayesian equation extracted from Information theory MacKay.
+def urnpred(nb, ntot, nurns=10):
+    """Posterior predictive probability for the next draw.
 
-    Formula: [EQ] (Fa +Fb + 2) = Fa!Fb!
+    (2.29)-(2.31) p.29 -- predictive P(next ball black).
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    nb : as documented for the shelf core
+        See ``morie.fn._itila.urnpred``.
+    ntot : as documented for the shelf core
+        See ``morie.fn._itila.urnpred``.
+    nurns : as documented for the shelf core
+        See ``morie.fn._itila.urnpred``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay2e31')`` for the full guide.
+        Payload keys: p, pnot, pmap.
 
     References
     ----------
-    Information theory MacKay, ch.2 eq.2.31
+    MacKay (2003) eq. (2.29)-(2.31), p. 29
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.urnpred(nb=nb, ntot=ntot, nurns=nurns)
     return RichResult(
-        title="Bayesian equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bayesian equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("p", res["p"]), ("pnot", res["pnot"]), ("pmap", res["pmap"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_2_equation_31 = urnpred
+
+
 def cheatsheet():
-    return "information_theory_mackay2e31: Bayesian equation extracted from Information theory MacKay."
+    return "urnpred: Posterior predictive probability for the next draw -- MacKay (2003) eq. (2.29)-(2.31), p. 29"

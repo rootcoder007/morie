@@ -1,55 +1,21 @@
-"""Numbered display equation (14.13) from MVSML chapter 14.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Functional regression with environment effects -- re-export.
 
-from ._richresult import RichResult
+The generator emitted several modules for eq. (14.13) p.607 of
+Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
+All of them are the same method, so the implementation lives once in
+morie.fn.msm293 and this module re-exports it.
+"""
 
-__all__ = ["mvsml_convolutional_nn_eq_14_13"]
+from .msm293 import fregenv
 
+__all__ = ["fregenv", "mvsml_convolutional_nn_eq_14_13"]
 
-def mvsml_convolutional_nn_eq_14_13(where, XE, the, design, matrix, of):
-    """
-    Numbered display equation (14.13) from MVSML chapter 14.
-
-    Formula: (14.13) where XE is the design matrix of the environments and \betaE is the vector with the environment effects, and the Bayesian formulation can be completed by assuming a prior distribution for \betaE. As was described in Chap. 6 in the BGLR package, there are several options for this: FIXED, BRR, BayesA, BayesB, BayesC, and BL. In the next example, the ﬁrst one is used. Example 14.6 This is a continuation of Example 14.5 used to illustrate the performance when adding environmental information to the prediction task by using the Bayesian formulation
-
-    Parameters
-    ----------
-    where : array-like
-        Input data.
-    XE : array-like
-        Input data.
-    the : array-like
-        Input data.
-    design : array-like
-        Input data.
-    matrix : array-like
-        Input data.
-    of : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (14.13) [Multivariate Statistical Machine Learnin [Pages 579-631] [2026-04-16].pdf]
-    """
-    where = np.atleast_1d(np.asarray(where, dtype=float))
-    n = len(where)
-    result = float(np.mean(where))
-    se = float(np.std(where, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (14.13) from MVSML chapter 14.",
-        }
-    )
+mvsml_convolutional_nn_eq_14_13 = fregenv
 
 
 def cheatsheet():
-    return "msm294: Numbered display equation (14.13) from MVSML chapter 14."
+    return "msm294: Functional regression with environment effects (see msm293)"

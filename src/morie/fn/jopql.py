@@ -1,45 +1,65 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Pinball (quantile) loss for quantile tau."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Pinball (quantile) loss.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 17 p. 494; formula from TFT eq. (25), arXiv:1912.09363
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_pinball_quantile_loss"]
+__all__ = ["pinball", "joseph_pinball_quantile_loss"]
+
+_METHOD = "Pinball (quantile) loss"
 
 
-def joseph_pinball_quantile_loss(y, q, tau):
-    """
-    Pinball (quantile) loss for quantile tau
+def pinball(y, qhat, q):
+    """Pinball (quantile) loss.
 
-    Formula: L_tau(y, q) = max(tau*(y - q), (tau - 1)*(y - q))
+    Pinball (quantile) loss, ch. 17 p. 494.
+
+    The book points at the quantile loss for probabilistic forecasts
+    ("we can use quantile loss or pinball loss", p. 494).  The
+    canonical statement is TFT eq. (25), which the book's own
+    architecture chapter builds on:
+
+        QL(y, yhat, q) = q (y - yhat)_+ + (1 - q) (yhat - y)_+
+
+    -- Lim, B., Arik, S. O., Loeff, N. and Pfister, T., "Temporal
+    Fusion Transformers for Interpretable Multi-horizon Time Series
+    Forecasting", arXiv:1912.09363, eq. (25).
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    q : array-like
-        Input data.
-    tau : array-like
-        Input data.
+    y : as documented for the shelf core
+        See ``morie.fn._joseph.pinball``.
+    qhat : as documented for the shelf core
+        See ``morie.fn._joseph.pinball``.
+    q : as documented for the shelf core
+        See ``morie.fn._joseph.pinball``.
 
     Returns
     -------
-    result : dict
-        Keys: loss
+    result : RichResult
+        Payload keys: loss, total, coverage.
 
     References
     ----------
-    Joseph Ch 17, Quantile / Pinball Loss section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 17 p. 494; formula from TFT eq. (25), arXiv:1912.09363
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.pinball(y=y, qhat=qhat, q=q)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Pinball (quantile) loss for quantile tau"}
+        title=_METHOD,
+        summary_lines=[("loss", res["loss"]), ("total", res["total"]), ("coverage", res["coverage"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_pinball_quantile_loss = pinball
+
+
 def cheatsheet():
-    return "jopql: Pinball (quantile) loss for quantile tau"
+    return "pinball: Pinball (quantile) loss"

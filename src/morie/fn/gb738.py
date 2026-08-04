@@ -1,80 +1,92 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Chernoff-Savage theorem: asymptotic normality of linear rank statistics."""
+"""Chernoff-Savage asymptotic normality of linear rank statistics."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_chernoff_savage"]
+__all__ = ['lrankasymp', 'gibbons_chernoff_savage']
 
 
-def gibbons_chernoff_savage(T_N, m, n, J, cdf=None):
-    """
-    Chernoff-Savage theorem: asymptotic normality of linear rank statistics
+def lrankasymp(j, jprime, lam, n, nodes=2001):
+    """Null Chernoff-Savage mean and variance from the score function.
 
-    Formula: (T_N/m - mu_N) / sigma_N ->_d N(0,1) subject to J-regularity conditions
+    Theorem 7.3.8 and Corollary 7.3.1 (book pp. 285-286).  Under H0,
+    with lambda = m/N and J the limiting score-generating function,
+
+    .. math:: \\mu = \\int_0^1 J(u)\\,du, \\qquad
+        N\\lambda\\sigma^2 = 2(1-\\lambda)\\iint_{x<y}
+            x(1-y)J'(x)J'(y)\\,dx\\,dy,
+
+    and (T_N/m - mu)/sigma is asymptotically standard normal.  The
+    double integral is reduced to one dimension by the inner
+    cumulative A(y) = int_0^y x J'(x) dx, so the whole computation is
+    a single fixed-grid pass (trapezoidal, ``nodes`` points) and is
+    reproducible bit for bit.
 
     Parameters
     ----------
-    T_N : array-like
-        Input data.
-    m : array-like
-        Input data.
-    n : array-like
-        Input data.
-    J : array-like
-        Input data.
+    j : callable
+        The score function J on (0, 1).
+    jprime : callable
+        Its derivative J'.
+    lam : float
+        lambda = m/N, strictly inside (0, 1).
+    n : int
+        Total sample size N.
+    nodes : int, optional
+        Grid points on (0, 1) (default 2001).
 
     Returns
     -------
-    result : dict
-        Keys: asymp_distribution
+    RichResult
+        keys ``mean``, ``var``, ``sd``, ``integral`` (the double
+        integral), ``lam``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Theorem 7.3.8
+    Gibbons & Chakraborti (2011), Theorem 7.3.8 and Corollary 7.3.1,
+    pp. 285-286 (Chernoff and Savage, 1958).
     """
-    T_N = np.asarray(T_N, dtype=float)
-    n = int(T_N) if T_N.ndim == 0 else len(T_N)
-    if T_N.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    lam = float(lam)
+    n = int(n)
+    nodes = int(nodes)
+    if not 0.0 < lam < 1.0:
+        raise ValueError("lam must lie strictly inside (0, 1).")
     if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Chernoff-Savage theorem: asymptotic normality of linear rank statistics",
-            }
-        )
-    x_sorted = np.sort(T_N)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(T_N), scale=np.std(T_N, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("n must be at least 2.")
+    if nodes < 3:
+        raise ValueError("nodes must be at least 3.")
+    h = 1.0 / (nodes - 1)
+    us = [k * h for k in range(nodes)]
+    eps = 1e-9
+    jv = [float(j(min(1.0 - eps, max(eps, u)))) for u in us]
+    jp = [float(jprime(min(1.0 - eps, max(eps, u)))) for u in us]
+    mu = 0.0
+    for k in range(nodes - 1):
+        mu += 0.5 * h * (jv[k] + jv[k + 1])
+    acc = 0.0
+    cum = [0.0] * nodes
+    for k in range(1, nodes):
+        acc += 0.5 * h * (us[k - 1] * jp[k - 1] + us[k] * jp[k])
+        cum[k] = acc
+    integ = 0.0
+    for k in range(nodes - 1):
+        f0 = (1.0 - us[k]) * jp[k] * cum[k]
+        f1 = (1.0 - us[k + 1]) * jp[k + 1] * cum[k + 1]
+        integ += 0.5 * h * (f0 + f1)
+    var = 2.0 * (1.0 - lam) * integ / (n * lam)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "mean": float(mu),
+            "var": float(var),
+            "sd": float(math.sqrt(var)) if var > 0 else float("nan"),
+            "integral": float(integ),
+            "lam": lam,
             "n": n,
-            "method": "Chernoff-Savage theorem: asymptotic normality of linear rank statistics",
+            "method": "Chernoff-Savage null moments (Thm 7.3.8, Cor 7.3.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb738: Chernoff-Savage theorem: asymptotic normality of linear rank statistics"
+gibbons_chernoff_savage = lrankasymp

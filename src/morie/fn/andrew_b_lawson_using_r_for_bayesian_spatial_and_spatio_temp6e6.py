@@ -1,54 +1,31 @@
-"""Logistic equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Case-control logistic likelihood."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_6"]
+__all__ = ["cclogl", "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_6"]
 
 
-def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_6(x):
-    """
-    Logistic equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.
+def cclogl(eta, y):
+    """Case-control logistic likelihood.
 
-    Formula: β ∼ N(0, Γβ)
+    L = prod_i {exp(eta_i)}^{y_i} / (1 + exp(eta_i))   (Lawson eq. 6.6).
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Case-control likelihood for a case event model, which reduces to a
+    logistic likelihood: the at-risk population function drops out.
+    Returned on the log scale, with the case probabilities.
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp6e6')`` for the full guide.
-
-    References
-    ----------
-    Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling, ch.6 eq.6.6
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Logistic equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Logistic equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        },
-    )
+    return RichResult(title="Case-control logistic likelihood", payload=_c.cclogl(eta=eta, y=y))
+
+
+andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_6 = cclogl
 
 
 def cheatsheet():
-    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp6e6: Logistic equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling."
+    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp6e6: Case-control logistic likelihood"

@@ -1,78 +1,80 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Sample size determination for Mann-Whitney test."""
+"""Noether sample size for the Mann-Whitney test -- eq. (6.6.18)."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_mw_sampsize"]
+__all__ = ['mwun', 'gibbons_mw_sampsize']
 
 
-def gibbons_mw_sampsize(alpha, beta, delta, cdf=None):
-    """
-    Sample size determination for Mann-Whitney test
+def mwun(p, c=0.5, alpha=0.05, beta=0.10, twosided=False):
+    """Total sample size N for a Mann-Whitney test of given power.
 
-    Formula: n from normal approx to U distribution given alpha, beta, delta
+    Book p. 269, eq. (6.6.18):
+
+    .. math:: N = \\frac{(z_\\alpha + z_\\beta)^2}
+        {12\\,c(1-c)(p - 0.5)^2}, \\qquad c = m/N,
+
+    with p = P(Y > X).  Two-sided tests replace alpha by alpha/2.  The
+    book's worked example (alpha = 0.05, power 0.90, p = 0.10,
+    c = 4/9) gives N = 18.05, hence 19 observations split m = 8,
+    n = 11.  At c = 0.5 the formula reduces to the signed-rank
+    sample size (5.7.15).
 
     Parameters
     ----------
-    alpha : array-like
-        Input data.
-    beta : array-like
-        Input data.
-    delta : array-like
-        Input data.
+    p : float
+        P(Y > X) under the alternative, p != 0.5.
+    c : float, optional
+        Allocation fraction m/N (default 0.5).
+    alpha : float, optional
+        Size (default 0.05).
+    beta : float, optional
+        Type II error (default 0.10).
+    twosided : bool, optional
+        Use alpha/2 (default False).
 
     Returns
     -------
-    result : dict
-        Keys: sample_size
+    RichResult
+        keys ``n``, ``n_raw``, ``m``, ``n_y``, ``z_alpha``,
+        ``z_beta``, ``c``, ``p``, ``method``.
 
     References
     ----------
-    Gibbons Ch 6.6 sample size
+    Gibbons & Chakraborti (2011), eq. (6.6.18), p. 269
+    (Noether, 1987).
     """
-    alpha = np.asarray(alpha, dtype=float)
-    n = int(alpha) if alpha.ndim == 0 else len(alpha)
-    if alpha.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Sample size determination for Mann-Whitney test",
-            }
-        )
-    x_sorted = np.sort(alpha)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(alpha), scale=np.std(alpha, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    p = float(p)
+    c = float(c)
+    alpha = float(alpha)
+    beta = float(beta)
+    if p == 0.5:
+        raise ValueError("p must differ from 0.5.")
+    if not 0.0 < c < 1.0:
+        raise ValueError("c must lie strictly inside (0, 1).")
+    a = alpha / 2.0 if twosided else alpha
+    za = stats.norm.ppf(1.0 - a)
+    zb = stats.norm.ppf(1.0 - beta)
+    nraw = (za + zb) ** 2 / (12.0 * c * (1.0 - c) * (p - 0.5) ** 2)
+    ntot = int(math.ceil(nraw))
+    mm = int(round(c * ntot))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Sample size determination for Mann-Whitney test",
+            "n": ntot,
+            "n_raw": float(nraw),
+            "m": mm,
+            "n_y": int(ntot - mm),
+            "z_alpha": float(za),
+            "z_beta": float(zb),
+            "c": c,
+            "p": p,
+            "method": "Mann-Whitney sample size, eq. (6.6.18)",
         }
     )
 
 
-def cheatsheet():
-    return "gb661s: Sample size determination for Mann-Whitney test"
+gibbons_mw_sampsize = mwun

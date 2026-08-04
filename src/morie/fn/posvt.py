@@ -1,48 +1,59 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Positivity (overlap) assumption: every unit has non-zero probability of treatment."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Positivity assumption over covariate strata.
 
-from . import _array_core as np
+Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 7 p. 157
+"""
+
+from . import _molak as _core
 
 from ._richresult import RichResult
 
-__all__ = ["positivity_assumption"]
+__all__ = ["poschk", "positivity_assumption"]
+
+_METHOD = "Positivity assumption over covariate strata"
 
 
-def positivity_assumption(T, X):
-    """
-    Positivity (overlap) assumption: every unit has non-zero probability of treatment
+def poschk(treat, stratum, tol=0.0):
+    """Positivity assumption over covariate strata.
 
-    Formula: 0 < P(T=1|X=T) < 1 for all T in support(X)
+    Positivity: every treatment value has positive probability in
+    every covariate stratum, ch. 7 p. 157.
+
+    Returns the smallest stratum-conditional treatment probability over
+    all (stratum, treatment level) cells, so the caller can see how
+    close to a violation the data sit rather than only that it passed.
 
     Parameters
     ----------
-    T : array-like
-        Input data.
-    X : array-like
-        Input data.
+    treat : as documented for the shelf core
+        See ``morie.fn._molak.poschk``.
+    stratum : as documented for the shelf core
+        See ``morie.fn._molak.poschk``.
+    tol : as documented for the shelf core
+        See ``morie.fn._molak.poschk``.
 
     Returns
     -------
-    result : dict
-        Keys: {'positivity_violated': 'array', 'overlap_plot': 'dict'}
+    result : RichResult
+        Payload keys: minprob, holds, ncells.
 
     References
     ----------
-    Molak Ch 8
+    Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 7 p. 157
     """
-    T = np.asarray(T, dtype=float)
-    n = int(T) if T.ndim == 0 else len(T)
-    result = float(np.mean(T))
-    se = float(np.std(T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.poschk(treat=treat, stratum=stratum, tol=tol)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Positivity (overlap) assumption: every unit has non-zero probability of treatment",
-        }
+        title=_METHOD,
+        summary_lines=[("minprob", res["minprob"]), ("holds", res["holds"]), ("ncells", res["ncells"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+positivity_assumption = poschk
+
+
 def cheatsheet():
-    return "posvt: Positivity (overlap) assumption: every unit has non-zero probability of treatment"
+    return "poschk: Positivity assumption over covariate strata"

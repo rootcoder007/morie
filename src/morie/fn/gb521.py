@@ -1,78 +1,70 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Distribution-free confidence interval for population p-th quantile using order statistics."""
+"""Distribution-free confidence interval for a population quantile."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_quantile_ci"]
+__all__ = ['quantci', 'gibbons_quantile_ci']
 
 
-def gibbons_quantile_ci(x, p, alpha, cdf=None):
-    """
-    Distribution-free confidence interval for population p-th quantile using order statistics
+def quantci(x, p, r, s):
+    """Order-statistic confidence interval (X_(r), X_(s)) for x_p.
 
-    Formula: P(X_(r) <= x_p <= X_(s)) = sum_{i=r}^{s-1} C(n,i) p^i (1-p)^(n-i) = 1-alpha
+    Section 5.2 (book p. 158): for a continuous parent the interval
+    (X_(r), X_(s)) covers the population p-th quantile with the
+    distribution-free probability
+
+    .. math::
+        P[X_{(r)} < x_p < X_{(s)}] = \\sum_{i=r}^{s-1}
+            \\binom{n}{i} p^i (1-p)^{n-i},
+
+    which depends on n, r, s and p only -- never on F.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    p : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    x : sequence of float
+        The sample, n >= 2.
+    p : float
+        Quantile level, 0 < p < 1.
+    r, s : int
+        Order-statistic indices, 1 <= r < s <= n.
 
     Returns
     -------
-    result : dict
-        Keys: r_lower, s_upper
+    RichResult
+        keys ``lower``, ``upper``, ``coverage``, ``alpha``, ``r``,
+        ``s``, ``n``, ``p``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.2
+    Gibbons & Chakraborti (2011), Sec. 5.2, p. 158.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    xs = sorted(float(v) for v in x)
+    n = len(xs)
+    r = int(r)
+    s = int(s)
+    p = float(p)
     if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Distribution-free confidence interval for population p-th quantile using order statistics",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("need at least 2 observations.")
+    if not 1 <= r < s <= n:
+        raise ValueError("need 1 <= r < s <= n.")
+    if not 0.0 < p < 1.0:
+        raise ValueError("p must lie strictly inside (0, 1).")
+    cov = sum(math.comb(n, i) * p**i * (1.0 - p) ** (n - i) for i in range(r, s))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "lower": xs[r - 1],
+            "upper": xs[s - 1],
+            "coverage": float(cov),
+            "alpha": float(1.0 - cov),
+            "r": r,
+            "s": s,
             "n": n,
-            "method": "Distribution-free confidence interval for population p-th quantile using order statistics",
+            "p": p,
+            "method": "P[X_(r) < x_p < X_(s)] = sum_{i=r}^{s-1} C(n,i) p^i q^(n-i)",
         }
     )
 
 
-def cheatsheet():
-    return "gb521: Distribution-free confidence interval for population p-th quantile using order statistics"
+gibbons_quantile_ci = quantci

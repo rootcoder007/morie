@@ -1,73 +1,103 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Naive kernel-smoothed CvM statistic."""
+"""Naive kernel-smoothed Cramer-von Mises statistic (Eq. 5.4)."""
 
 from . import _array_core as np
-from . import _stats_core as stats
-
 from ._richresult import RichResult
 
-__all__ = ["fauzi_naive_kernel_cvm"]
+__all__ = ["kerncvm", "fauzi_naive_kernel_cvm"]
 
 
-def fauzi_naive_kernel_cvm(data, bandwidth, cdf):
-    """
-    Naive kernel-smoothed CvM statistic
+def kerncvm(x, quantile, h=None, ngrid=2001):
+    r"""Naive kernel-smoothed Cramer-von Mises statistic (Eq. 5.4).
 
-    Formula: CvM_hat = n * integral [F_hat(data)-F(data)]^2 dF(data)
+    Eq. (5.4):
+
+    .. math:: \widehat{CvM} = n\!\int_{-\infty}^{\infty}
+              [\hat F_X(x)-F(x)]^2dF(x),
+
+    with :math:`\hat F_X` the naive kernel distribution function
+    estimator.
+
+    Unlike the empirical :math:`CvM_n`, this has no finite-sum closed
+    form: :math:`\hat F_X` is smooth, so the integral does not collapse
+    onto the order statistics. It is evaluated by substituting
+    :math:`u = F(x)` and integrating over :math:`u\in(0,1)` on a fixed
+    equally spaced grid -- which turns :math:`dF(x)` into :math:`du` and
+    needs no density, only the quantile function.
+
+    This module previously carried a copy of the empirical KS body. It now
+    computes a Cramer-von Mises statistic, and a smoothed one.
+
+    Theorem 5.1 gives :math:`|CvM_n - \widehat{CvM}| \to_p 0`, so the
+    Cramer-von Mises critical values still apply.
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    x : array-like
+        Sample.
+    quantile : callable
+        The null quantile function ``F^{-1}(u)`` for ``u`` in ``(0, 1)``.
+    h : float, optional
+        Bandwidth; defaults to the distribution-function rule.
+    ngrid : int, default 2001
+        Number of ``u``-nodes; fixed, never adapted.
 
     Returns
     -------
-    result : dict
-        Keys: statistic
+    RichResult
+        Keys ``statistic``, ``p_value``, ``h``, ``n``, ``method``.
 
     References
     ----------
-    Fauzi Ch 5, Eq 5.4
+    Fauzi and Maesono (2023), Eq. (5.4), Theorem 5.1.
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    if data.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    from . import _stats_core as stats
+    from ._fauzi import kdfe_bandwidth
+
+    xv = np.asarray(x, dtype=float).ravel()
+    n = xv.size
     if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Naive kernel-smoothed CvM statistic"}
-        )
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError(f"need at least two observations, got {n}.")
+    if not callable(quantile):
+        raise ValueError("quantile must be a callable F^-1(u).")
+    if h is None:
+        h = kdfe_bandwidth(xv)
+    h = float(h)
+    if h <= 0:
+        raise ValueError(f"bandwidth must be positive, got {h}.")
+    m = int(ngrid)
+    u = (np.arange(m) + 0.5) / m
+    integrand = np.empty(m)
+    for i, uu in enumerate(u):
+        t = float(quantile(float(uu)))
+        khat = float(np.mean(stats.norm.cdf((t - xv) / h)))
+        integrand[i] = (khat - float(uu)) ** 2
+    stat = float(n * np.mean(integrand))
+    pval = 1.0
+    if stat > 0:
+        acc = 0.0
+        for k in range(100):
+            acc += float(np.exp(-((4.0 * k + 1.0) ** 2) * np.pi ** 2 / (8.0 * stat)))
+        pval = max(0.0, min(1.0, 1.0 - acc * float(np.sqrt(2.0 / stat))))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Naive kernel-smoothed CvM statistic",
+            "statistic": stat,
+            "p_value": float(pval),
+            "h": h,
+            "n": int(n),
+            "method": "naive kernel-smoothed Cramer-von Mises statistic (Eq. 5.4)",
         }
     )
 
 
+fauzi_naive_kernel_cvm = kerncvm
+
+
 def cheatsheet():
-    return "fznkc: Naive kernel-smoothed CvM statistic"
+    return "fznkc: kernel-smoothed CvM by the u = F(x) substitution; no closed form once F is smoothed"
+
+
+# CANONICAL TEST
+# >>> r = kerncvm([0.1, 0.3, 0.5, 0.7, 0.9], quantile=lambda u: u)
+# >>> r['statistic'] > 0
+# True

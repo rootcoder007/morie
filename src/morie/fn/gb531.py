@@ -1,80 +1,81 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Hypothesis test for population quantile based on order statistics."""
+"""Distribution-free test for a population quantile."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_quantile_test"]
+__all__ = ['quanttest', 'gibbons_quantile_test']
 
 
-def gibbons_quantile_test(x, p, x_p0, alpha, cdf=None):
-    """
-    Hypothesis test for population quantile based on order statistics
+def quanttest(x, q0, p=0.5, alternative="two-sided"):
+    """Binomial test of H0: x_p = q0 using the count below q0.
 
-    Formula: Reject H0: x_p = x_p0 when x_p0 not in CI (X_(r), X_(s))
+    Section 5.3 (book p. 163): under H0 the number of sample values
+    not exceeding q0,
+
+    .. math:: K = \\#\\{X_i \\le q_0\\},
+
+    is Binomial(n, p), so an exact test needs no assumption beyond
+    continuity.  ``alternative`` is one of ``"two-sided"``,
+    ``"less"`` (H1: x_p < q0, large K) or ``"greater"``
+    (H1: x_p > q0, small K).
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    p : array-like
-        Input data.
-    x_p0 : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    x : sequence of float
+        The sample, n >= 1.
+    q0 : float
+        Hypothesised quantile value.
+    p : float, optional
+        Quantile level (default 0.5, the median).
+    alternative : str, optional
+        Direction of the alternative.
 
     Returns
     -------
-    result : dict
-        Keys: decision, p_value
+    RichResult
+        keys ``statistic`` (K), ``p_value``, ``n``, ``p``, ``mean``,
+        ``var``, ``alternative``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.3
+    Gibbons & Chakraborti (2011), Sec. 5.3, p. 163.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Hypothesis test for population quantile based on order statistics",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
+    xs = [float(v) for v in x]
+    n = len(xs)
+    p = float(p)
+    if n < 1:
+        raise ValueError("x must be non-empty.")
+    if not 0.0 < p < 1.0:
+        raise ValueError("p must lie strictly inside (0, 1).")
+    k = sum(1 for v in xs if v <= float(q0))
+
+    def _pmf(i):
+        return math.comb(n, i) * p**i * (1.0 - p) ** (n - i)
+
+    lower = sum(_pmf(i) for i in range(k + 1))
+    upper = sum(_pmf(i) for i in range(k, n + 1))
+    if alternative == "less":
+        pv = lower
+    elif alternative == "greater":
+        pv = upper
+    elif alternative == "two-sided":
+        pv = min(1.0, 2.0 * min(lower, upper))
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("alternative must be two-sided, less or greater.")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": int(k),
+            "p_value": float(pv),
             "n": n,
-            "method": "Hypothesis test for population quantile based on order statistics",
+            "p": p,
+            "mean": n * p,
+            "var": n * p * (1.0 - p),
+            "alternative": alternative,
+            "method": "quantile test: K = #{X_i <= q0} ~ Bin(n, p)",
         }
     )
 
 
-def cheatsheet():
-    return "gb531: Hypothesis test for population quantile based on order statistics"
+gibbons_quantile_test = quanttest

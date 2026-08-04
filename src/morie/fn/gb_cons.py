@@ -1,76 +1,69 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Consistency definition: test statistic power -> 1 as n -> inf."""
+"""Consistency of a test: power tends to 1 as the sample size grows."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_consistency"]
+__all__ = ['consist', 'gibbons_consistency']
 
 
-def gibbons_consistency(T, H1, cdf=None):
-    """
-    Consistency definition: test statistic power -> 1 as n -> inf
+def consist(nvals, effect, alpha=0.05):
+    """Power along a sequence of sample sizes, and the consistency verdict.
 
-    Formula: lim P(reject H0 | H1 true) = 1 as n -> inf
+    Section 1.2.10 (book p. 23).  A test is consistent against an
+    alternative when its power tends to 1 as n grows without bound.
+    For a statistic whose standardised form shifts by sqrt(n) * d under
+    the alternative,
+
+    .. math:: Pw(n) = 1 - \\Phi(z_\\alpha - \\sqrt{n}\\, d),
+
+    which increases monotonically to 1 for every d > 0 -- that is the
+    consistency statement, and the returned ``consistent`` flag reports
+    whether the supplied effect satisfies it.
 
     Parameters
     ----------
-    T : array-like
-        Input data.
-    H1 : array-like
-        Input data.
+    nvals : sequence of int
+        Sample sizes, increasing.
+    effect : float
+        Standardised effect d per root observation.
+    alpha : float, optional
+        One-sided size (default 0.05).
 
     Returns
     -------
-    result : dict
-        Keys: is_consistent
+    RichResult
+        keys ``power`` (one per n), ``consistent`` (1/0),
+        ``monotone`` (1/0), ``limit`` (power at the largest n),
+        ``effect``, ``method``.
 
     References
     ----------
-    Gibbons Ch 1.2.10
+    Gibbons & Chakraborti (2011), Sec. 1.2.10, p. 23.
     """
-    T = np.asarray(T, dtype=float)
-    n = int(T) if T.ndim == 0 else len(T)
-    if T.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Consistency definition: test statistic power -> 1 as n -> inf",
-            }
-        )
-    x_sorted = np.sort(T)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(T), scale=np.std(T, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    ns = [int(v) for v in nvals]
+    if len(ns) < 1:
+        raise ValueError("nvals must be non-empty.")
+    if any(v < 1 for v in ns):
+        raise ValueError("sample sizes must be at least 1.")
+    effect = float(effect)
+    alpha = float(alpha)
+    za = stats.norm.ppf(1.0 - alpha)
+    pw = [1.0 - stats.norm.cdf(za - math.sqrt(v) * effect) for v in ns]
+    mono = all(pw[i] <= pw[i + 1] + 1e-15 for i in range(len(pw) - 1))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Consistency definition: test statistic power -> 1 as n -> inf",
+            "power": [float(v) for v in pw],
+            "consistent": int(effect > 0.0),
+            "monotone": int(mono),
+            "limit": float(pw[-1]),
+            "effect": effect,
+            "method": "consistency: Pw(n) = 1 - Phi(z_alpha - sqrt(n) d)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_cons: Consistency definition: test statistic power -> 1 as n -> inf"
+gibbons_consistency = consist

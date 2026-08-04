@@ -1,54 +1,58 @@
-"""Probability equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Gaussian log likelihood in sufficient statistics.
 
-from . import _array_core as np
+MacKay (2003) eq. (24.5)-(24.6), p. 319
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_24_equation_6"]
+__all__ = ["gllsuff", "information_theory_mackay_chapter_24_equation_6"]
+
+_METHOD = "Gaussian log likelihood in sufficient statistics"
 
 
-def information_theory_mackay_chapter_24_equation_6(x):
-    """
-    Probability equation extracted from Information theory MacKay.
+def gllsuff(xbar, s, n, mu, sigma):
+    """Gaussian log likelihood in sufficient statistics.
 
-    Formula: [EQ] 2) [N( x)2 +S]=(22); (24.6)
+    (24.5)-(24.6) p.319 -- Gaussian log likelihood via (xbar, S).
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    xbar : as documented for the shelf core
+        See ``morie.fn._itila.gllsuff``.
+    s : as documented for the shelf core
+        See ``morie.fn._itila.gllsuff``.
+    n : as documented for the shelf core
+        See ``morie.fn._itila.gllsuff``.
+    mu : as documented for the shelf core
+        See ``morie.fn._itila.gllsuff``.
+    sigma : as documented for the shelf core
+        See ``morie.fn._itila.gllsuff``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay24e6')`` for the full guide.
+        Payload keys: loglik, sigman.
 
     References
     ----------
-    Information theory MacKay, ch.24 eq.24.6
+    MacKay (2003) eq. (24.5)-(24.6), p. 319
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.gllsuff(xbar=xbar, s=s, n=n, mu=mu, sigma=sigma)
     return RichResult(
-        title="Probability equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("loglik", res["loglik"]), ("sigman", res["sigman"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_24_equation_6 = gllsuff
+
+
 def cheatsheet():
-    return "information_theory_mackay24e6: Probability equation extracted from Information theory MacKay."
+    return "gllsuff: Gaussian log likelihood in sufficient statistics -- MacKay (2003) eq. (24.5)-(24.6), p. 319"

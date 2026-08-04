@@ -1,54 +1,30 @@
-"""Bayesian equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Log-likelihood of independent observations."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_3_equation_2"]
+__all__ = ["loglksum", "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_3_equation_2"]
 
 
-def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_3_equation_2(x):
-    """
-    Bayesian equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.
+def loglksum(dens):
+    """Log-likelihood of independent observations.
 
-    Formula: [EQ] l(y|θ) =
+    l(y|theta) = sum_i log f(y_i|theta)   (Lawson eq. 3.2).
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    The log of eq. (3.1); the sum form is what is actually evaluated
+    because the product underflows for even moderate n.
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp3e2')`` for the full guide.
-
-    References
-    ----------
-    Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling, ch.3 eq.3.2
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Bayesian equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bayesian equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        },
-    )
+    return RichResult(title="Log-likelihood of independent observations", payload=_c.loglksum(dens=dens))
+
+
+andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_3_equation_2 = loglksum
 
 
 def cheatsheet():
-    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp3e2: Bayesian equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling."
+    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp3e2: Log-likelihood of independent observations"

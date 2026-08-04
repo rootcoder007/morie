@@ -1,80 +1,73 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Simulated power of Wilcoxon signed-rank test via Monte Carlo."""
+"""Simulated power of the signed-rank test from caller-supplied samples."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_wsrt_simpower"]
+__all__ = ['wsrsimpow', 'gibbons_wsrt_simpower']
 
 
-def gibbons_wsrt_simpower(theta, n, alpha, nsim, cdf=None):
-    """
-    Simulated power of Wilcoxon signed-rank test via Monte Carlo
+def wsrsimpow(samples, m0, tcrit):
+    """Monte-Carlo power of the signed-rank test over pre-drawn samples.
 
-    Formula: beta_hat = proportion of simulated rejections
+    Section 5.7.3 (book p. 204): the book's macro draws 1000 samples
+    under H1, computes T+ for each, and reports the fraction exceeding
+    the critical value from Table H.  The draws are an argument here so
+    the estimate is identical in every language given the same input.
 
     Parameters
     ----------
-    theta : array-like
-        Input data.
-    n : array-like
-        Input data.
-    alpha : array-like
-        Input data.
-    nsim : array-like
-        Input data.
+    samples : sequence of sequence of float
+        One row per simulated sample.
+    m0 : float
+        Hypothesised median.
+    tcrit : float
+        Rejection region is T+ >= tcrit.
 
     Returns
     -------
-    result : dict
-        Keys: simulated_power
+    RichResult
+        keys ``power``, ``rejections``, ``nsim``, ``tmean``,
+        ``tcrit``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.7.3
+    Gibbons & Chakraborti (2011), Sec. 5.7.3, p. 204 (Table 5.7.3).
     """
-    theta = np.asarray(theta, dtype=float)
-    n = int(theta) if theta.ndim == 0 else len(theta)
-    if theta.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Simulated power of Wilcoxon signed-rank test via Monte Carlo",
-            }
-        )
-    x_sorted = np.sort(theta)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(theta), scale=np.std(theta, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    rows = [[float(v) for v in r] for r in samples]
+    nsim = len(rows)
+    if nsim < 1:
+        raise ValueError("samples must be non-empty.")
+    tcrit = float(tcrit)
+    ts = []
+    for row in rows:
+        ds = [v - float(m0) for v in row if v != float(m0)]
+        n = len(ds)
+        a = [abs(v) for v in ds]
+        order = sorted(range(n), key=lambda i: a[i])
+        ranks = [0.0] * n
+        i = 0
+        while i < n:
+            j = i
+            while j + 1 < n and a[order[j + 1]] == a[order[i]]:
+                j += 1
+            mid = (i + j) / 2.0 + 1.0
+            for k in range(i, j + 1):
+                ranks[order[k]] = mid
+            i = j + 1
+        ts.append(sum(ranks[i] for i in range(n) if ds[i] > 0.0))
+    rej = sum(1 for t in ts if t >= tcrit)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Simulated power of Wilcoxon signed-rank test via Monte Carlo",
+            "power": rej / nsim,
+            "rejections": int(rej),
+            "nsim": int(nsim),
+            "tmean": sum(ts) / nsim,
+            "tcrit": tcrit,
+            "method": "simulated signed-rank power over supplied samples",
         }
     )
 
 
-def cheatsheet():
-    return "gb5713: Simulated power of Wilcoxon signed-rank test via Monte Carlo"
+gibbons_wsrt_simpower = wsrsimpow

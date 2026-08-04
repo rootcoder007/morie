@@ -1,78 +1,71 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Confidence interval for median difference from median test."""
+"""Confidence interval for the location shift from the median test."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_median_test_ci"]
+__all__ = ['medtestci', 'gibbons_median_test_ci']
 
 
-def gibbons_median_test_ci(x, y, alpha, cdf=None):
-    """
-    Confidence interval for median difference from median test
+def medtestci(x, y, c):
+    """Order-statistic interval for theta from median-test inversion.
 
-    Formula: CI for Delta via inversion of median test at level alpha
+    Section 6.4.2 (book p. 251).  Inverting the median test's
+    acceptance region gives an interval for the shift theta in
+    F_Y(u) = F_X(u - theta) whose endpoints are differences of order
+    statistics of the two samples,
+
+    .. math:: \\left(Y_{(t-c+1)} - X_{(c)},\\;
+                     Y_{(t c)} - X_{(c+1)}\\right)
+
+    in the book's notation; the practical form used here takes the
+    index ``c`` from the null distribution and returns the pair
+    (Y_(c) - X_(m-c+1), Y_(n-c+1) - X_(c)), whose coverage is computed
+    exactly from the hypergeometric null rather than assumed.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples.
+    c : int
+        Index from the null distribution, 1 <= c <= min(m, n).
 
     Returns
     -------
-    result : dict
-        Keys: lower, upper
+    RichResult
+        keys ``lower``, ``upper``, ``estimate`` (median difference),
+        ``c``, ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 6.4 CI
+    Gibbons & Chakraborti (2011), Sec. 6.4.2, p. 251.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Confidence interval for median difference from median test",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = sorted(float(v) for v in x)
+    ys = sorted(float(v) for v in y)
+    m = len(xs)
+    n = len(ys)
+    c = int(c)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    if not 1 <= c <= min(m, n):
+        raise ValueError("c must lie in 1..min(m, n).")
+
+    def _med(v):
+        k = len(v)
+        return v[k // 2] if k % 2 else (v[k // 2 - 1] + v[k // 2]) / 2.0
+
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "lower": float(ys[c - 1] - xs[m - c]),
+            "upper": float(ys[n - c] - xs[c - 1]),
+            "estimate": float(_med(ys) - _med(xs)),
+            "c": c,
+            "m": m,
             "n": n,
-            "method": "Confidence interval for median difference from median test",
+            "method": "median-test confidence interval for the shift",
         }
     )
 
 
-def cheatsheet():
-    return "gb641c: Confidence interval for median difference from median test"
+gibbons_median_test_ci = medtestci

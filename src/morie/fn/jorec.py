@@ -1,50 +1,60 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Recursive multi-step: feed each prediction back as input for the next step."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Recursive multi-step forecasting.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 18 p. 546
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_recursive_multistep"]
+__all__ = ["recmulti", "joseph_recursive_multistep"]
+
+_METHOD = "Recursive multi-step forecasting"
 
 
-def joseph_recursive_multistep(y, model, H):
-    """
-    Recursive multi-step: feed each prediction back as input for the next step
+def recmulti(x, lags, horizon):
+    """Recursive multi-step forecasting.
 
-    Formula: y_hat_{T+h} = f(y_hat_{T+h-1}, y_hat_{T+h-2}, ..., x);  h = 1..H
+    Recursive multi-step forecasting, ch. 18 p. 546.
+
+    One model, trained for a single step, applied repeatedly with its
+    own forecasts fed back in as lags.  The base learner is ordinary
+    least squares on the lag design, so the strategy -- which is what
+    the book is teaching -- is what is being demonstrated, and nothing
+    is fitted at random.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    model : array-like
-        Input data.
-    H : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._joseph.recmulti``.
+    lags : as documented for the shelf core
+        See ``morie.fn._joseph.recmulti``.
+    horizon : as documented for the shelf core
+        See ``morie.fn._joseph.recmulti``.
 
     Returns
     -------
-    result : dict
-        Keys: y_hat
+    result : RichResult
+        Payload keys: first, last, mean, nmodels.
 
     References
     ----------
-    Joseph Ch 18, Recursive (MIMO) Strategy section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 18 p. 546
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.recmulti(x=x, lags=lags, horizon=horizon)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Recursive multi-step: feed each prediction back as input for the next step",
-        }
+        title=_METHOD,
+        summary_lines=[("first", res["first"]), ("last", res["last"]), ("mean", res["mean"]), ("nmodels", res["nmodels"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_recursive_multistep = recmulti
+
+
 def cheatsheet():
-    return "jorec: Recursive multi-step: feed each prediction back as input for the next step"
+    return "recmulti: Recursive multi-step forecasting"

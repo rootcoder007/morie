@@ -1,58 +1,56 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Pearl's Ladder of Causation: three rungs (association, intervention, counterfactual)."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""One rung of the Ladder of Causation.
 
-from . import _array_core as np
-from . import _stats_core as stats
+Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), Table 2.1, ch. 2 p. 15
+"""
+
+from . import _molak as _core
 
 from ._richresult import RichResult
 
-__all__ = ["ladder_of_causation"]
+__all__ = ["causrung", "ladder_of_causation"]
+
+_METHOD = "One rung of the Ladder of Causation"
 
 
-def ladder_of_causation(rung, model):
-    """
-    Pearl's Ladder of Causation: three rungs (association, intervention, counterfactual)
+def causrung(rung):
+    """One rung of the Ladder of Causation.
 
-    Formula: Rung 1: P(Y|X); Rung 2: P(Y|do(X=rung)); Rung 3: P(Y_x | X=rung', Y=y')
+    One rung of the Ladder of Causation, Table 2.1, ch. 2 p. 15.
+
+    The three rungs and their actions and questions are transcribed
+    from the printed table.  ``needsgraph`` and ``needsscm`` follow the
+    book's own account of what each rung requires: rung 1 needs only a
+    joint distribution, rung 2 needs a causal graph, rung 3 needs a
+    full structural causal model.
 
     Parameters
     ----------
-    rung : array-like
-        Input data.
-    model : array-like
-        Input data.
+    rung : as documented for the shelf core
+        See ``morie.fn._molak.causrung``.
 
     Returns
     -------
-    result : dict
-        Keys: {'query': 'distribution'}
+    result : RichResult
+        Payload keys: level, needsgraph, needsscm.
 
     References
     ----------
-    Molak Ch 2
+    Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), Table 2.1, ch. 2 p. 15
     """
-    rung = np.asarray(rung, dtype=float)
-    y = np.asarray(model, dtype=float)
-    n = min(len(rung), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Pearl's Ladder of Causation: three rungs (association, intervention, counterfactual)",
-            }
-        )
-    result = stats.spearmanr(rung[:n], y[:n])
+    res = _core.causrung(rung=rung)
     return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Pearl's Ladder of Causation: three rungs (association, intervention, counterfactual)",
-        }
+        title=_METHOD,
+        summary_lines=[("level", res["level"]), ("needsgraph", res["needsgraph"]), ("needsscm", res["needsscm"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+ladder_of_causation = causrung
+
+
 def cheatsheet():
-    return "ladrc: Pearl's Ladder of Causation: three rungs (association, intervention, counterfactual)"
+    return "causrung: One rung of the Ladder of Causation"

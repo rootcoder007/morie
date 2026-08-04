@@ -1,76 +1,76 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Confidence band for population CDF using KS statistic."""
+"""Kolmogorov-Smirnov confidence band for the population cdf."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_ks_conf_band"]
+__all__ = ['ksband', 'gibbons_ks_conf_band']
 
 
-def gibbons_ks_conf_band(x, alpha, cdf=None):
-    """
-    Confidence band for population CDF using KS statistic
+def ksband(x, dcrit, at=None):
+    """Lower and upper confidence bands L_n(x), U_n(x) for F_X.
 
-    Formula: P(S_n(x) - D_{n,alpha} <= F(x) <= S_n(x) + D_{n,alpha} for all x) = 1-alpha
+    Section 4.4.2 (book p. 121): from P(D_n > D_{n,alpha}) = alpha,
+
+    .. math:: L_n(x) = \\max[S_n(x) - D_{n,\\alpha}, 0], \\qquad
+              U_n(x) = \\min[S_n(x) + D_{n,\\alpha}, 1],
+
+    and F_X lies wholly between them with probability 1 - alpha.  The
+    book stresses the truncation at 0 and 1, because the raw inequality
+    admits numbers outside [0, 1].
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    x : sequence of float
+        Sample, n >= 1.
+    dcrit : float
+        The critical value D_{n,alpha}.
+    at : sequence of float, optional
+        Points at which to report the band (defaults to the sorted
+        sample).
 
     Returns
     -------
-    result : dict
-        Keys: lower_band, upper_band
+    RichResult
+        keys ``at``, ``edf``, ``lower``, ``upper``, ``width``,
+        ``dcrit``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 4.4.2
+    Gibbons & Chakraborti (2011), Sec. 4.4.2, p. 121.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Confidence band for population CDF using KS statistic",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = sorted(float(v) for v in x)
+    n = len(xs)
+    if n < 1:
+        raise ValueError("x must be non-empty.")
+    dcrit = float(dcrit)
+    if not 0.0 < dcrit < 1.0:
+        raise ValueError("dcrit must lie strictly inside (0, 1).")
+    pts = xs if at is None else [float(v) for v in at]
+    edf = []
+    for v in pts:
+        c = 0
+        for xi in xs:
+            if xi <= v:
+                c += 1
+            else:
+                break
+        edf.append(c / n)
+    lo = [max(e - dcrit, 0.0) for e in edf]
+    hi = [min(e + dcrit, 1.0) for e in edf]
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "at": pts,
+            "edf": edf,
+            "lower": lo,
+            "upper": hi,
+            "width": [hi[i] - lo[i] for i in range(len(pts))],
+            "dcrit": dcrit,
             "n": n,
-            "method": "Confidence band for population CDF using KS statistic",
+            "method": "KS confidence band, Sec. 4.4.2",
         }
     )
 
 
-def cheatsheet():
-    return "gb_kcp: Confidence band for population CDF using KS statistic"
+gibbons_ks_conf_band = ksband

@@ -1,73 +1,57 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Mean and variance of RVN test statistic under null hypothesis."""
+"""Null moments of the rank von Neumann statistic."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_rvn_moments"]
+__all__ = ['rvnmom', 'gibbons_rvn_moments']
 
 
-def gibbons_rvn_moments(n, cdf=None):
-    """
-    Mean and variance of RVN test statistic under null hypothesis
+def rvnmom(n):
+    """Asymptotic null mean and variance of RVN.
 
-    Formula: E(RVN) = 2; Var(RVN) = 4(n-2)/((n+1)(n-1))
+    Book p. 95: RVN is asymptotically normal with mean 2 and
+
+    .. math:: Var[RVN] = \\frac{4(n-2)(5n^2-2n-9)}{5n(n+1)(n-1)^2}
+        \\;\\approx\\; \\frac{20}{5n+7}.
+
+    With no ties the denominator of RVN is exactly n(n^2-1)/12, which
+    is returned as ``denom``.
 
     Parameters
     ----------
-    n : array-like
-        Input data.
+    n : int
+        Number of observations, n >= 3.
 
     Returns
     -------
-    result : dict
-        Keys: mean, variance
+    RichResult
+        keys ``mean``, ``var``, ``var_approx``, ``sd``, ``denom``,
+        ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 3.5
+    Gibbons & Chakraborti (2011), Sec. 3.5, p. 95 (Bartels, 1982).
     """
-    data = np.asarray(n, dtype=float) if np.ndim(n) > 0 else None
-    n = int(n) if np.ndim(n) == 0 else len(n)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Mean and variance of RVN test statistic under null hypothesis",
-            }
-        )
-    if data is None:
-        rng = np.random.default_rng(0)
-        data = rng.standard_normal(n)
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    n = int(n)
+    if n < 3:
+        raise ValueError("n must be at least 3.")
+    var = (
+        4.0 * (n - 2.0) * (5.0 * n * n - 2.0 * n - 9.0)
+        / (5.0 * n * (n + 1.0) * (n - 1.0) ** 2)
+    )
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "mean": 2.0,
+            "var": float(var),
+            "var_approx": float(20.0 / (5.0 * n + 7.0)),
+            "sd": float(math.sqrt(var)),
+            "denom": float(n * (n * n - 1.0) / 12.0),
             "n": n,
-            "method": "Mean and variance of RVN test statistic under null hypothesis",
+            "method": "RVN null moments (Gibbons Sec. 3.5, Bartels 1982)",
         }
     )
 
 
-def cheatsheet():
-    return "gb35mv: Mean and variance of RVN test statistic under null hypothesis"
+gibbons_rvn_moments = rvnmom

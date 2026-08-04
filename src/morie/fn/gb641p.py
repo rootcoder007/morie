@@ -1,75 +1,100 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Power of two-sample median test."""
+"""Power of the median test via the precedence-statistic integral."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_median_test_power"]
+__all__ = ['medtestpow', 'gibbons_median_test_power']
 
 
-def gibbons_median_test_power(m, n, Delta, alpha, cdf=None):
-    """
-    Power of two-sample median test
+def _simpson(f, nodes=2001):
+    """Composite Simpson on (0, 1) with a fixed odd node count."""
+    if nodes % 2 == 0:
+        nodes += 1
+    h = 1.0 / (nodes - 1)
+    total = 0.0
+    for i in range(nodes):
+        u = i * h
+        w = 1.0 if i in (0, nodes - 1) else (4.0 if i % 2 else 2.0)
+        total += w * f(u)
+    return total * h / 3.0
 
-    Formula: beta(Delta) = P(reject H0 | location shift Delta)
+
+def medtestpow(m, n, r, wcrit, g, nodes=2001):
+    """Power of a one-sided precedence (median) test, eqs. (6.4.9)-(6.4.10).
+
+    Book p. 254.  With W_r the number of Y's preceding X_(r), the
+    alternative distribution is
+
+    .. math:: P(W_r = i) = \\frac{\\binom{n}{i}}{B(r, m-r+1)}
+        \\int_0^1 g(u)^i [1-g(u)]^{n-i} u^{r-1}(1-u)^{m-r}\\,du,
+        \\qquad g = F_Y \\circ F_X^{-1},
+
+    and the power of the rejection region W_r < w_alpha is the sum of
+    those probabilities for i < w_alpha.  Under H0, g(u) = u.  The
+    integral is evaluated by composite Simpson on a fixed grid, so the
+    result is reproducible to the last bit in any language.
 
     Parameters
     ----------
-    m : array-like
-        Input data.
-    n : array-like
-        Input data.
-    Delta : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    m, n : int
+        Sample sizes.
+    r : int
+        Index of the X order statistic defining the precedence test.
+    wcrit : int
+        Rejection region is W_r < wcrit.
+    g : callable
+        u -> F_Y(F_X^{-1}(u)) on [0, 1]; pass ``lambda u: u`` for H0.
+    nodes : int, optional
+        Simpson nodes (default 2001, forced odd).
 
     Returns
     -------
-    result : dict
-        Keys: power
+    RichResult
+        keys ``power``, ``pmf`` (P(W_r = i), i = 0..n), ``m``, ``n``,
+        ``r``, ``wcrit``, ``method``.
 
     References
     ----------
-    Gibbons Ch 6.4 power
+    Gibbons & Chakraborti (2011), eqs. (6.4.9)-(6.4.10), p. 254.
     """
-    m = np.asarray(m, dtype=float)
-    n = int(m) if m.ndim == 0 else len(m)
-    if m.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Power of two-sample median test"}
-        )
-    x_sorted = np.sort(m)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(m), scale=np.std(m, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    m = int(m)
+    n = int(n)
+    r = int(r)
+    wcrit = int(wcrit)
+    if m < 1 or n < 1:
+        raise ValueError("m and n must be at least 1.")
+    if not 1 <= r <= m:
+        raise ValueError("need 1 <= r <= m.")
+    beta = (
+        math.gamma(r) * math.gamma(m - r + 1) / math.gamma(m + 1)
+    )
+    pmf = []
+    for i in range(n + 1):
+        def integrand(u, i=i):
+            gu = float(g(u))
+            gu = min(1.0, max(0.0, gu))
+            return (
+                gu**i
+                * (1.0 - gu) ** (n - i)
+                * u ** (r - 1)
+                * (1.0 - u) ** (m - r)
+            )
+
+        pmf.append(math.comb(n, i) * _simpson(integrand, nodes) / beta)
+    power = sum(pmf[i] for i in range(min(wcrit, n + 1)))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "power": float(power),
+            "pmf": pmf,
+            "m": m,
             "n": n,
-            "method": "Power of two-sample median test",
+            "r": r,
+            "wcrit": wcrit,
+            "method": "precedence/median-test power, eqs. (6.4.9)-(6.4.10)",
         }
     )
 
 
-def cheatsheet():
-    return "gb641p: Power of two-sample median test"
+gibbons_median_test_power = medtestpow

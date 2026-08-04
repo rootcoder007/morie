@@ -1,80 +1,86 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Freund-Ansari-Bradley-David-Barton scale test using folded ranks."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_fab_test"]
+__all__ = ['ansbrad', 'gibbons_fab_test']
 
 
-def gibbons_fab_test(x, y, cdf=None):
-    """
-    Freund-Ansari-Bradley-David-Barton scale test using folded ranks
+def _tagged(xs, ys):
+    """Pooled sample tagged 0 for X, 1 for Y, sorted with X first on ties."""
+    t = [(v, 0) for v in xs] + [(v, 1) for v in ys]
+    t.sort(key=lambda p: (p[0], p[1]))
+    return [1.0 if lab == 0 else 0.0 for _, lab in t]
 
-    Formula: C = sum a(R_i); a(i) = i if i <= (N+1)/2 else N+1-i
+
+def _lrmoments(a, m, n):
+    """Theorem 7.3.2 moments of sum a_i Z_i under H0."""
+    nn = m + n
+    abar = sum(a) / nn
+    ss = sum((v - abar) ** 2 for v in a)
+    return m * abar, m * n * ss / (nn * (nn - 1.0))
+
+
+def ansbrad(x, y):
+    """A_N with the folded (absolute-deviation) scores, eq. (9.3.1).
+
+    Section 9.3 (book p. 316):
+
+    .. math:: A_N = \\sum_{i=1}^{N}
+        \\left|i - \\frac{N+1}{2}\\right| Z_i,
+
+    the Freund-Ansari-Bradley-David-Barton family.  Giving equal weight
+    to positive and negative rank deviations makes the scores symmetric
+    about the middle of the array, so large A_N again indicates the X's
+    are more dispersed.  Moments come from Theorem 7.3.2 applied to the
+    realised scores, which is exact for every m, n.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic``, ``mean``, ``var``, ``z``, ``p_value``,
+        ``scores``, ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 9.3
+    Gibbons & Chakraborti (2011), Sec. 9.3, eq. (9.3.1), p. 316
+    (Freund and Ansari, 1957; Ansari and Bradley, 1960; David and
+    Barton, 1958).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Freund-Ansari-Bradley-David-Barton scale test using folded ranks",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    nn = m + n
+    z = _tagged(xs, ys)
+    a = [abs(i - (nn + 1.0) / 2.0) for i in range(1, nn + 1)]
+    stat = sum(a[i] * z[i] for i in range(nn))
+    mean, var = _lrmoments(a, m, n)
+    zz = (stat - mean) / math.sqrt(var) if var > 0 else float("nan")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": float(stat),
+            "mean": float(mean),
+            "var": float(var),
+            "z": float(zz),
+            "p_value": float(2.0 * (1.0 - stats.norm.cdf(abs(zz)))),
+            "scores": a,
+            "m": m,
             "n": n,
-            "method": "Freund-Ansari-Bradley-David-Barton scale test using folded ranks",
+            "method": "Freund-Ansari-Bradley-David-Barton test, eq. (9.3.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb931: Freund-Ansari-Bradley-David-Barton scale test using folded ranks"
-
-
-# compact alias per ledger/NAMING.md
-gibbonsfabtest = gibbons_fab_test
+gibbons_fab_test = ansbrad

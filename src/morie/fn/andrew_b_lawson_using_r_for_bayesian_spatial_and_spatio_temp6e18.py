@@ -1,54 +1,31 @@
-"""CentralTendency equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Log-Gaussian Cox process intensity."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_18"]
+__all__ = ["lgcpint", "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_18"]
 
 
-def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_18(x):
-    """
-    CentralTendency equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.
+def lgcpint(lam0, beta, S):
+    """Log-Gaussian Cox process intensity.
 
-    Formula: [EQ] λ(s) = λ0(s) exp{β + S(s)}, (6.18)
+    lambda(s) = lambda_0(s) exp{beta + S(s)}   (Lawson eq. 6.18).
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    First-order intensity of the Diggle et al. (1998) log-Gaussian Cox
+    process: a modulating baseline, a non-zero mean level beta, and a
+    zero-mean Gaussian process S(s) supplied by the caller.
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp6e18')`` for the full guide.
-
-    References
-    ----------
-    Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling, ch.6 eq.6.18
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="CentralTendency equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        },
-    )
+    return RichResult(title="Log-Gaussian Cox process intensity", payload=_c.lgcpint(lam0=lam0, beta=beta, S=S))
+
+
+andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_18 = lgcpint
 
 
 def cheatsheet():
-    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp6e18: CentralTendency equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling."
+    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp6e18: Log-Gaussian Cox process intensity"

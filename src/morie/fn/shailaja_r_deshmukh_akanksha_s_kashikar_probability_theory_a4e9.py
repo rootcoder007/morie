@@ -1,54 +1,33 @@
-"""Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Characteristic-function inversion for a pmf."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_4_equation_9"]
+__all__ = ["cfinvpmf", "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_4_equation_9"]
 
 
-def shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_4_equation_9(x):
-    """
-    Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.
+def cfinvpmf(t, phi_re, phi_im, x):
+    """Characteristic-function inversion for a pmf.
 
-    Formula: mass function px = P [X = x] = pqx, x = 0, 1, 2, · · · , q = 1 − p. Then its
+    p_x = (1/2pi) int_{-pi}^{pi} e^{-itx} phi_X(t) dt   (Deshmukh eq. 4.9).
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Fourier inversion of the characteristic function of an
+    integer-valued random variable.  ``t`` is the quadrature grid on
+    [-pi, pi] and ``phi_re``/``phi_im`` are phi_X evaluated on it; the
+    integral is taken by the trapezoid rule on the supplied grid, so the
+    number of nodes -- not a tolerance -- fixes the accuracy.
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a4e9')`` for the full guide.
-
-    References
-    ----------
-    Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R, ch.4 eq.4.9
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.",
-        },
-    )
+    return RichResult(title="Characteristic-function inversion for a pmf", payload=_c.cfinvpmf(t=t, phi_re=phi_re, phi_im=phi_im, x=x))
+
+
+shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_4_equation_9 = cfinvpmf
 
 
 def cheatsheet():
-    return "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a4e9: Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R."
+    return "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a4e9: Characteristic-function inversion for a pmf"
