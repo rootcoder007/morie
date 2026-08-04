@@ -17,7 +17,7 @@ from ._richresult import RichResult, with_describe_pointer
 from ._sci_core import toeplitz
 
 __all__ = [
-    'acfdist',
+    'acfseg',
     'rangayyan_acf_distance',
     'rangayyan_adaptive_filter',
     'anc',
@@ -152,43 +152,94 @@ def _ccf(x, d, lags):
             for k in range(lags)]
 
 
-def acfdist(x1, x2, lags=8):
-    """ACF distance measure for adaptive segmentation.
+def acfseg(test, reference, lags=None, thp=1.0, thf=1.0):
+    """ACF distance for adaptive segmentation (Michael and Houchin).
 
-    Rangayyan (2024) Section 8.5:
-        d_ACF = (1/p) sum_{m=1}^{p}
-                  [ R_1(m) - R_2(m) ]^2 / [ R_1(0) R_2(0) ],
+    Rangayyan (2024) Section 8.5.2, eqs. (8.27)-(8.29).  A reference
+    window is taken at the start of each segmentation step and the signal
+    is watched through a moving test window; when the two ACFs differ
+    enough a boundary is drawn and the procedure restarts.
 
-    comparing two segments through their autocorrelation sequences,
-    normalized by the product of their zero-lag values.
+    The power distance compares the zero-lag values, which are the powers
+    of the two windows, eq. (8.27):
 
-    That normalization is what the measure lives or dies by: dividing by
-    R_1(0) R_2(0) removes the amplitude of both segments, so the
-    distance responds to a change in SHAPE and not to a change in
-    loudness.  The lag-zero term is excluded from the sum for the same
-    reason -- it carries only the energies, which have already been
-    divided out.
+        d_P(n) = |sqrt(phi_T(n,0)) - sqrt(phi_R(0))|
+                 / min{ sqrt(phi_T(n,0)), sqrt(phi_R(0)) }
+
+    The spectral distance compares the shape over the first q lags,
+    eq. (8.28):
+
+        d_F(n) = sum_{k=1}^{q} |phi_T(n,k) - phi_R(k)|
+                 / ( 0.5 + sum_{k=1}^{q} min{ sqrt(phi_T(n,k)),
+                                              sqrt(phi_R(k)) } )
+
+    and the net distance is the threshold-weighted sum, eq. (8.29):
+
+        d(n) = d_P(n)/Th_P + d_F(n)/Th_F,
+
+    with d(n) > 1 marking a segment boundary.
+
+    ``lags`` is q.  Left as None it is set the way the book sets it: the
+    lower of the two lags at which the ACFs first turn negative.  That
+    definition is what keeps eq. (8.28) real -- every phi(k) inside the
+    square roots is positive by construction up to q -- so a q supplied
+    by hand is checked against the same condition rather than trusted.
+
+    The two distances answer different questions and the book keeps them
+    apart: d_P moves when the signal gets louder at the same shape, d_F
+    when the shape changes at the same power.  Only their weighted sum is
+    compared against unity.
     """
-    a, b = aslist(x1), aslist(x2)
-    p = int(lags)
-    if p < 1:
-        raise ValueError("need at least one lag")
-    if len(a) <= p or len(b) <= p:
-        raise ValueError("each segment needs more samples than lags")
-    r1 = _acf(a, p + 1)
-    r2 = _acf(b, p + 1)
-    if r1[0] <= 0 or r2[0] <= 0:
-        raise ValueError("a segment has zero energy")
-    d = fsum((r1[m] - r2[m]) ** 2 for m in range(1, p + 1)) \
-        / (p * r1[0] * r2[0])
+    a, b = aslist(test), aslist(reference)
+    if len(a) < 2 or len(b) < 2:
+        raise ValueError("each window needs at least two samples")
+    for name, v in (("Th_P", thp), ("Th_F", thf)):
+        if float(v) <= 0:
+            raise ValueError("%s must be positive" % name)
+    nmax = min(len(a), len(b))
+    rt = _acf(a, nmax)
+    rr = _acf(b, nmax)
+    if rt[0] <= 0 or rr[0] <= 0:
+        raise ValueError("a window has zero energy")
+
+    def first_negative(r):
+        for m in range(1, len(r)):
+            if r[m] < 0:
+                return m
+        return len(r)
+
+    auto = min(first_negative(rt), first_negative(rr)) - 1
+    if lags is None:
+        q = auto
+    else:
+        q = int(lags)
+        if q < 1:
+            raise ValueError("need at least one lag")
+        if q > auto:
+            raise ValueError("eq. (8.28) needs the ACFs nonnegative out to "
+                             "lag q; they turn negative at lag %d" % (auto + 1))
+    if q < 1:
+        raise ValueError("both ACFs turn negative at lag 1; no lags to "
+                         "compare")
+
+    st, sr = sqrt(rt[0]), sqrt(rr[0])
+    dp = abs(st - sr) / min(st, sr)
+    num = fsum(abs(rt[m] - rr[m]) for m in range(1, q + 1))
+    den = 0.5 + fsum(min(sqrt(rt[m]), sqrt(rr[m])) for m in range(1, q + 1))
+    df = num / den
+    d = dp / float(thp) + df / float(thf)
     return RichResult(payload={
-        "distance": d, "acf_1": r1, "acf_2": r2, "lags": p,
-        "energy_1": r1[0], "energy_2": r2[0],
-        "amplitude_invariant": True, "zero_lag_excluded": True,
-        "method": "Rangayyan (2024) Section 8.5 (ACF distance)"})
+        "distance": d, "power_distance": dp, "spectral_distance": df,
+        "lags": q, "lags_auto": lags is None, "acf_test": rt[:q + 1],
+        "acf_reference": rr[:q + 1], "power_test": rt[0],
+        "power_reference": rr[0], "boundary": d > 1.0,
+        "th_power": float(thp), "th_spectral": float(thf),
+        "amplitude_invariant": False,
+        "method": "Rangayyan (2024) eqs. (8.27)-(8.29), after Michael and "
+                  "Houchin"})
 
 
-rangayyan_acf_distance = acfdist  # pre-policy spelling
+rangayyan_acf_distance = acfseg  # pre-policy spelling
 
 
 # -- rgadp: LMS adaptive noise canceller -- Rangayyan & Krishnan Sec 3.10.2.
@@ -500,40 +551,10 @@ def rangayyan_gen_likelihood_ratio(x, seg_len, order, cdf=None):
 
 
 # -- rgkalmn: Kalman filter: state prediction/update with Riccati equation.
-def _solve(A, b):
-    """Solve A w = b by Gaussian elimination with partial pivoting."""
-    n = len(b)
-    M = [list(A[i]) + [b[i]] for i in range(n)]
-    for c in range(n):
-        p = max(range(c, n), key=lambda r: abs(M[r][c]))
-        if abs(M[p][c]) < 1e-300:
-            raise ValueError("the correlation matrix is singular; the "
-                             "Wiener-Hopf system of eq. (3.168) has no "
-                             "unique solution")
-        M[c], M[p] = M[p], M[c]
-        piv = M[c][c]
-        for r in range(n):
-            if r == c:
-                continue
-            f = M[r][c] / piv
-            if f:
-                for k in range(c, n + 1):
-                    M[r][k] -= f * M[c][k]
-    return [M[i][n] / M[i][i] for i in range(n)]
 
 
-def _acf(x, lags):
-    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
-    n = len(x)
-    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
-            for m in range(lags)]
 
 
-def _ccf(x, d, lags):
-    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
-    n = min(len(x), len(d))
-    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
-            for k in range(lags)]
 
 
 def kalman(z, F, H, Q, R, x0=None, P0=None):
@@ -671,7 +692,12 @@ def lmsfilt(primary, reference, order=8, mu=0.01, variable=False,
     bound = 1.0 / (m * rpow) if rpow > 0 else float("inf")
     w = [0.0] * m
     y, e, hist = [], [], []
-    power_prev = None
+    # eq. (3.205) is a recursion with no stated initial value.  Seeding it
+    # with the reference's own mean square is the natural choice and is
+    # also the only one that survives a reference starting at zero -- a
+    # sine at phase zero does -- where seeding from r(0)^2 would make the
+    # power estimate vanish and mu(0) unbounded.
+    power_prev = rpow if variable else None
     for i in range(n):
         rv = [rs[i - k] if i - k >= 0 else 0.0 for k in range(m)]
         yi = fsum(a * b for a, b in zip(w, rv))
@@ -704,40 +730,10 @@ rangayyan_lms_filter = lmsfilt  # pre-policy spelling
 
 
 # -- rgpcgadp: Adaptive segmentation of PCG signals via SEM.
-def _solve(A, b):
-    """Solve A w = b by Gaussian elimination with partial pivoting."""
-    n = len(b)
-    M = [list(A[i]) + [b[i]] for i in range(n)]
-    for c in range(n):
-        p = max(range(c, n), key=lambda r: abs(M[r][c]))
-        if abs(M[p][c]) < 1e-300:
-            raise ValueError("the correlation matrix is singular; the "
-                             "Wiener-Hopf system of eq. (3.168) has no "
-                             "unique solution")
-        M[c], M[p] = M[p], M[c]
-        piv = M[c][c]
-        for r in range(n):
-            if r == c:
-                continue
-            f = M[r][c] / piv
-            if f:
-                for k in range(c, n + 1):
-                    M[r][k] -= f * M[c][k]
-    return [M[i][n] / M[i][i] for i in range(n)]
 
 
-def _acf(x, lags):
-    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
-    n = len(x)
-    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
-            for m in range(lags)]
 
 
-def _ccf(x, d, lags):
-    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
-    n = min(len(x), len(d))
-    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
-            for k in range(lags)]
 
 
 def pcgseg(x, fs, window=None, step=None, order=6, threshold=None):
@@ -831,40 +827,10 @@ rangayyan_pcg_adaptive_seg = pcgseg  # pre-policy spelling
 
 
 # -- rgricca: Steady-state Riccati equation solution for Kalman gain.
-def _solve(A, b):
-    """Solve A w = b by Gaussian elimination with partial pivoting."""
-    n = len(b)
-    M = [list(A[i]) + [b[i]] for i in range(n)]
-    for c in range(n):
-        p = max(range(c, n), key=lambda r: abs(M[r][c]))
-        if abs(M[p][c]) < 1e-300:
-            raise ValueError("the correlation matrix is singular; the "
-                             "Wiener-Hopf system of eq. (3.168) has no "
-                             "unique solution")
-        M[c], M[p] = M[p], M[c]
-        piv = M[c][c]
-        for r in range(n):
-            if r == c:
-                continue
-            f = M[r][c] / piv
-            if f:
-                for k in range(c, n + 1):
-                    M[r][k] -= f * M[c][k]
-    return [M[i][n] / M[i][i] for i in range(n)]
 
 
-def _acf(x, lags):
-    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
-    n = len(x)
-    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
-            for m in range(lags)]
 
 
-def _ccf(x, d, lags):
-    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
-    n = min(len(x), len(d))
-    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
-            for k in range(lags)]
 
 
 def riccati(F, H, Q, R, maxiter=1000, tol=1e-12):
@@ -1126,7 +1092,6 @@ def rlslattice(x, order=4, lam=0.98, delta=1e-2):
         b = [0.0] * (m + 1)
         f[0] = b[0] = xs[i]
         for s in range(1, m + 1):
-            cross[s] = lv * cross[s - 1 + 0] * 0.0 + cross[s]
             cross[s] = lv * cross[s] + f[s - 1] * bprev[s - 1]
             fe[s] = lv * fe[s] + f[s - 1] * f[s - 1]
             be[s] = lv * be[s] + bprev[s - 1] * bprev[s - 1]
@@ -1197,40 +1162,10 @@ rangayyan_spec_error_meas = sem  # pre-policy spelling
 
 
 # -- rgwhop: Wiener-Hopf matrix equations for FIR Wiener filter.
-def _solve(A, b):
-    """Solve A w = b by Gaussian elimination with partial pivoting."""
-    n = len(b)
-    M = [list(A[i]) + [b[i]] for i in range(n)]
-    for c in range(n):
-        p = max(range(c, n), key=lambda r: abs(M[r][c]))
-        if abs(M[p][c]) < 1e-300:
-            raise ValueError("the correlation matrix is singular; the "
-                             "Wiener-Hopf system of eq. (3.168) has no "
-                             "unique solution")
-        M[c], M[p] = M[p], M[c]
-        piv = M[c][c]
-        for r in range(n):
-            if r == c:
-                continue
-            f = M[r][c] / piv
-            if f:
-                for k in range(c, n + 1):
-                    M[r][k] -= f * M[c][k]
-    return [M[i][n] / M[i][i] for i in range(n)]
 
 
-def _acf(x, lags):
-    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
-    n = len(x)
-    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
-            for m in range(lags)]
 
 
-def _ccf(x, d, lags):
-    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
-    n = min(len(x), len(d))
-    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
-            for k in range(lags)]
 
 
 def whopf(x, d, order):
@@ -1274,40 +1209,10 @@ rangayyan_wiener_hopf = whopf  # pre-policy spelling
 
 
 # -- rgwnr: Wiener filter (Wiener-Hopf equations, optimal MMSE linear filter).
-def _solve(A, b):
-    """Solve A w = b by Gaussian elimination with partial pivoting."""
-    n = len(b)
-    M = [list(A[i]) + [b[i]] for i in range(n)]
-    for c in range(n):
-        p = max(range(c, n), key=lambda r: abs(M[r][c]))
-        if abs(M[p][c]) < 1e-300:
-            raise ValueError("the correlation matrix is singular; the "
-                             "Wiener-Hopf system of eq. (3.168) has no "
-                             "unique solution")
-        M[c], M[p] = M[p], M[c]
-        piv = M[c][c]
-        for r in range(n):
-            if r == c:
-                continue
-            f = M[r][c] / piv
-            if f:
-                for k in range(c, n + 1):
-                    M[r][k] -= f * M[c][k]
-    return [M[i][n] / M[i][i] for i in range(n)]
 
 
-def _acf(x, lags):
-    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
-    n = len(x)
-    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
-            for m in range(lags)]
 
 
-def _ccf(x, d, lags):
-    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
-    n = min(len(x), len(d))
-    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
-            for k in range(lags)]
 
 
 def wienerfilt(x, desired=None, order=8, sd=None, seta=None, fs=1.0):
@@ -1423,40 +1328,10 @@ def rangayyan_ch3_estimation_error(d, d_tilde, n=None):
 
 
 # -- rng138: Output of the Wiener (transversal) filter as convolution of input with tap weights..
-def _solve(A, b):
-    """Solve A w = b by Gaussian elimination with partial pivoting."""
-    n = len(b)
-    M = [list(A[i]) + [b[i]] for i in range(n)]
-    for c in range(n):
-        p = max(range(c, n), key=lambda r: abs(M[r][c]))
-        if abs(M[p][c]) < 1e-300:
-            raise ValueError("the correlation matrix is singular; the "
-                             "Wiener-Hopf system of eq. (3.168) has no "
-                             "unique solution")
-        M[c], M[p] = M[p], M[c]
-        piv = M[c][c]
-        for r in range(n):
-            if r == c:
-                continue
-            f = M[r][c] / piv
-            if f:
-                for k in range(c, n + 1):
-                    M[r][k] -= f * M[c][k]
-    return [M[i][n] / M[i][i] for i in range(n)]
 
 
-def _acf(x, lags):
-    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
-    n = len(x)
-    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
-            for m in range(lags)]
 
 
-def _ccf(x, d, lags):
-    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
-    n = min(len(x), len(d))
-    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
-            for k in range(lags)]
 
 
 def wienerout(w, x):
@@ -1841,40 +1716,10 @@ rangayyan_ch3_mse_gradient = msegrad  # pre-policy spelling
 
 
 # -- rng145: Wiener-Hopf normal equation for the optimal tap weights..
-def _solve(A, b):
-    """Solve A w = b by Gaussian elimination with partial pivoting."""
-    n = len(b)
-    M = [list(A[i]) + [b[i]] for i in range(n)]
-    for c in range(n):
-        p = max(range(c, n), key=lambda r: abs(M[r][c]))
-        if abs(M[p][c]) < 1e-300:
-            raise ValueError("the correlation matrix is singular; the "
-                             "Wiener-Hopf system of eq. (3.168) has no "
-                             "unique solution")
-        M[c], M[p] = M[p], M[c]
-        piv = M[c][c]
-        for r in range(n):
-            if r == c:
-                continue
-            f = M[r][c] / piv
-            if f:
-                for k in range(c, n + 1):
-                    M[r][k] -= f * M[c][k]
-    return [M[i][n] / M[i][i] for i in range(n)]
 
 
-def _acf(x, lags):
-    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
-    n = len(x)
-    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
-            for m in range(lags)]
 
 
-def _ccf(x, d, lags):
-    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
-    n = min(len(x), len(d))
-    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
-            for k in range(lags)]
 
 
 def wienerhopf(phi, theta):
@@ -1965,40 +1810,10 @@ rangayyan_ch3_minimum_mse = wienermin  # pre-policy spelling
 
 
 # -- rng148: Wiener-Hopf equation expressed as a convolution relationship under stationarity..
-def _solve(A, b):
-    """Solve A w = b by Gaussian elimination with partial pivoting."""
-    n = len(b)
-    M = [list(A[i]) + [b[i]] for i in range(n)]
-    for c in range(n):
-        p = max(range(c, n), key=lambda r: abs(M[r][c]))
-        if abs(M[p][c]) < 1e-300:
-            raise ValueError("the correlation matrix is singular; the "
-                             "Wiener-Hopf system of eq. (3.168) has no "
-                             "unique solution")
-        M[c], M[p] = M[p], M[c]
-        piv = M[c][c]
-        for r in range(n):
-            if r == c:
-                continue
-            f = M[r][c] / piv
-            if f:
-                for k in range(c, n + 1):
-                    M[r][k] -= f * M[c][k]
-    return [M[i][n] / M[i][i] for i in range(n)]
 
 
-def _acf(x, lags):
-    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
-    n = len(x)
-    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
-            for m in range(lags)]
 
 
-def _ccf(x, d, lags):
-    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
-    n = min(len(x), len(d))
-    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
-            for k in range(lags)]
 
 
 def wienerconv(w, phi, theta):
@@ -2672,40 +2487,10 @@ rangayyan_ch3_rls_objective = rlsobj  # pre-policy spelling
 
 
 # -- rng164: Normal equation for the RLS algorithm..
-def _solve(A, b):
-    """Solve A w = b by Gaussian elimination with partial pivoting."""
-    n = len(b)
-    M = [list(A[i]) + [b[i]] for i in range(n)]
-    for c in range(n):
-        p = max(range(c, n), key=lambda r: abs(M[r][c]))
-        if abs(M[p][c]) < 1e-300:
-            raise ValueError("the correlation matrix is singular; the "
-                             "Wiener-Hopf system of eq. (3.168) has no "
-                             "unique solution")
-        M[c], M[p] = M[p], M[c]
-        piv = M[c][c]
-        for r in range(n):
-            if r == c:
-                continue
-            f = M[r][c] / piv
-            if f:
-                for k in range(c, n + 1):
-                    M[r][k] -= f * M[c][k]
-    return [M[i][n] / M[i][i] for i in range(n)]
 
 
-def _acf(x, lags):
-    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
-    n = len(x)
-    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
-            for m in range(lags)]
 
 
-def _ccf(x, d, lags):
-    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
-    n = min(len(x), len(d))
-    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
-            for k in range(lags)]
 
 
 def rlsnormal(phi, theta):
@@ -2981,40 +2766,10 @@ def rangayyan_ch3_rls_theta_recursion(Theta, r, x, lam):
 
 
 # -- rng169: Matrix inversion (ABCD) lemma used in RLS..
-def _solve(A, b):
-    """Solve A w = b by Gaussian elimination with partial pivoting."""
-    n = len(b)
-    M = [list(A[i]) + [b[i]] for i in range(n)]
-    for c in range(n):
-        p = max(range(c, n), key=lambda r: abs(M[r][c]))
-        if abs(M[p][c]) < 1e-300:
-            raise ValueError("the correlation matrix is singular; the "
-                             "Wiener-Hopf system of eq. (3.168) has no "
-                             "unique solution")
-        M[c], M[p] = M[p], M[c]
-        piv = M[c][c]
-        for r in range(n):
-            if r == c:
-                continue
-            f = M[r][c] / piv
-            if f:
-                for k in range(c, n + 1):
-                    M[r][k] -= f * M[c][k]
-    return [M[i][n] / M[i][i] for i in range(n)]
 
 
-def _acf(x, lags):
-    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
-    n = len(x)
-    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
-            for m in range(lags)]
 
 
-def _ccf(x, d, lags):
-    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
-    n = min(len(x), len(d))
-    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
-            for k in range(lags)]
 
 
 def abcdlemma(A, B, C, D):
@@ -3427,40 +3182,10 @@ rangayyan_ch3_rls_a_priori_error = rlsapriori  # pre-policy spelling
 
 
 # -- rng204: PSD as the Fourier transform of the ACF (Wiener-Khinchin)..
-def _solve(A, b):
-    """Solve A w = b by Gaussian elimination with partial pivoting."""
-    n = len(b)
-    M = [list(A[i]) + [b[i]] for i in range(n)]
-    for c in range(n):
-        p = max(range(c, n), key=lambda r: abs(M[r][c]))
-        if abs(M[p][c]) < 1e-300:
-            raise ValueError("the correlation matrix is singular; the "
-                             "Wiener-Hopf system of eq. (3.168) has no "
-                             "unique solution")
-        M[c], M[p] = M[p], M[c]
-        piv = M[c][c]
-        for r in range(n):
-            if r == c:
-                continue
-            f = M[r][c] / piv
-            if f:
-                for k in range(c, n + 1):
-                    M[r][k] -= f * M[c][k]
-    return [M[i][n] / M[i][i] for i in range(n)]
 
 
-def _acf(x, lags):
-    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
-    n = len(x)
-    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
-            for m in range(lags)]
 
 
-def _ccf(x, d, lags):
-    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
-    n = min(len(x), len(d))
-    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
-            for k in range(lags)]
 
 
 def psdacf(x):
