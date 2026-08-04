@@ -1,67 +1,93 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Multiplier bootstrap for Z-estimators (Kosorok 2008, Ch 10).
+"""Multiplier bootstrap of the empirical process."""
 
-G_n^xi(f) = n^{-1/2} sum_i xi_i (f(X_i) - P_n f), with xi_i ~ N(0,1)
-IID independent of the data.  Conditional on the data this Gaussian
-multiplier process converges to the same limit as G_n.  We compute
-the Monte-Carlo standard deviation of the multiplier statistic
-applied to f(x)=x.
-"""
+import math
 
-from . import _array_core as np
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_multiplier_bootstrap"]
+__all__ = ["multboot", "kosorok_multiplier_bootstrap"]
 
 
-def kosorok_multiplier_bootstrap(x, B=1000, seed=0, deterministic_seed: int | None = None):
-    """Gaussian-multiplier bootstrap SE of sqrt(n) P_n(id).
+def multboot(x, B=200, seed=1):
+    """Multiplier bootstrap with exponential weights (Dirichlet weights).
+
+    The weights are divided by their own mean, which is what keeps the
+    total weight equal to n and makes the multiplier bootstrap
+    comparable with the multinomial one; the scaling mu/tau then makes
+    the two have the SAME limit.  With standard exponential multipliers
+    mu = tau = 1, so the factor is 1 -- but it is written out rather
+    than dropped, because it is not 1 for any other weight
+    distribution.
+
+    Weights come from a pinned Lehmer generator with a FIXED budget of
+    B replicates, so the two language arms agree exactly.
+
+    Formula: Ptilde_n f = n^-1 sum_i (xi_i / xibar_n) f(X_i);
+             Gtilde_n = sqrt(n) (mu/tau) (Ptilde_n - P_n),
+             xi ~ Exp(1) so mu = tau = 1
 
     Parameters
     ----------
-    x : array-like.
-    B : int, multiplier replications.
-    seed : int.
-    deterministic_seed : int or None, optional
-        If supplied, RNG state is derived from the SHA-keyed
-        :func:`morie._det_rng.from_seed` so Py<->R streams agree for the
-        canonical fixture.  When ``None`` (default), behaviour is
-        unchanged: the user-supplied ``seed`` drives a fresh
-        :class:`numpy.random.Generator`.
+    x : array-like
+        The sample.
+    B : int
+        Number of replicates (fixed budget).
+    seed : int
+        Seed for the pinned generator.
 
     Returns
     -------
-    RichResult with: estimate (sample mean of G_n^xi), se (sd of
-    G_n^xi across B), n, method.
-    """
-    x = np.asarray(x, dtype=float)
-    n = len(x)
-    if deterministic_seed is not None:
-        from morie._det_rng import from_seed
+    RichResult
+        ``estimate``, ``boot_mean``, ``boot_sd``, ``process_sd``,
+        ``ci_lower``, ``ci_upper``, ``mu``, ``tau``, ``B``, ``n``.
 
-        rng = from_seed("ksr08", deterministic_seed)
-    else:
-        rng = np.random.default_rng(seed)
-    pn = float(x.mean())
-    centred = x - pn
-    xi = rng.normal(size=(B, n))
-    g_xi = (xi @ centred) / np.sqrt(n)
-    return RichResult(
-        payload={
-            "estimate": float(g_xi.mean()),
-            "se": float(g_xi.std(ddof=1)),
-            "n": n,
-            "method": "Multiplier bootstrap G_n^xi = n^{-1/2} sum xi (f-Pf)",
-        }
-    )
+    References
+    ----------
+    Kosorok (2008), Introduction to Empirical Processes and
+    Semiparametric Inference, Section 2.2.3: "we can now define a
+    multiplier bootstrap empirical measure Ptilde_n f = n^-1 sum
+    (xi_i/xibar_n) f(X_i)", with Gtilde_n = sqrt(n)(mu/tau)(Ptilde_n -
+    P_n), and the remark that standard exponential multipliers give
+    Dirichlet weights.  Fetched as the full text of the book.
+    """
+    x = C.vec(x)
+    n = len(x)
+    B = int(B)
+    if n < 2:
+        raise ValueError("the sample must have at least two observations")
+    if B < 2:
+        raise ValueError("B must be at least 2")
+    Pn = sum(x) / n
+    g = C.Lcg(seed)
+    stats = []
+    for _ in range(B):
+        w = []
+        for _ in range(n):
+            u = g.unif()
+            if u <= 0.0:
+                u = 1e-300
+            w.append(-math.log(u))
+        wb = sum(w) / n
+        if wb == 0.0:
+            raise ValueError("the multiplier weights summed to zero")
+        stats.append(sum(w[i] / wb * x[i] for i in range(n)) / n)
+    bm = sum(stats) / B
+    bsd = C.sd(stats, 1)
+    q = sorted(stats)
+    lo = q[max(0, int(math.floor(0.025 * (B - 1))))]
+    hi = q[min(B - 1, int(math.ceil(0.975 * (B - 1))))]
+    return RichResult(payload={
+        "estimate": Pn, "boot_mean": bm, "boot_sd": bsd,
+        "process_sd": math.sqrt(n) * 1.0 * bsd, "ci_lower": lo,
+        "ci_upper": hi, "mu": 1.0, "tau": 1.0, "B": float(B),
+        "n": float(n),
+        "method": "Multiplier bootstrap, Kosorok Section 2.2.3"})
+
+
+kosorok_multiplier_bootstrap = multboot
 
 
 def cheatsheet():
-    return "ksr08: multiplier bootstrap G_n^xi = n^{-1/2} sum xi (f-Pf)"
-
-
-# CANONICAL TEST
-if __name__ == "__main__":
-    rng = np.random.default_rng(0)
-    print(kosorok_multiplier_bootstrap(rng.normal(size=200), B=500, seed=42))
+    return "ksr08: Ptilde_n f = mean (xi_i/xibar) f(X_i); Exp(1) gives mu=tau=1"

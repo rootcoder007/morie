@@ -1,44 +1,67 @@
-"""Effective SRS conversion."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Effective simple-random-sample size of a weighted design."""
 
-from . import _array_core as np
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["effective_srs"]
+__all__ = ["neffsrs", "effective_srs"]
 
 
-def effective_srs(design, method):
-    """
-    Effective SRS conversion
+def neffsrs(w):
+    """Kish effective sample size and design effect of unequal weights.
 
-    Formula: convert complex design to equivalent SRS n_eff
+    Kish's measure of the loss of precision caused by unequal selection
+    weights writes the design effect as one plus the squared coefficient
+    of variation of the weights,
+
+        deff = 1 + cv^2(w) = n * sum w_i^2 / (sum w_i)^2,
+
+    so that the complex design carries as much information as a simple
+    random sample of
+
+        n_eff = n / deff = (sum w_i)^2 / sum w_i^2
+
+    observations.
 
     Parameters
     ----------
-    design : array-like
-        Input data.
-    method : array-like
-        Input data.
+    w : array-like
+        Positive selection or post-stratification weights, one per unit.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``neff``, ``deff``, ``cv2``, ``n``, ``sumw``, ``sumw2``.
 
     References
     ----------
-    Kish (1965)
+    Kish, L. (1965), Survey Sampling, Wiley, Sect. 11.7 ("the effect of
+    unequal weights on the variance"), where deff = 1 + cv^2(w) and the
+    effective sample size is n divided by it.  Standard published form;
+    the 1965 monograph was not available in the local corpus and was not
+    read for this implementation.
     """
-    design = np.atleast_1d(np.asarray(design, dtype=float))
-    n = len(design)
-    result = float(np.mean(design))
-    se = float(np.std(design, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Effective SRS conversion"})
+    w = C.vec(w)
+    n = len(w)
+    if n == 0:
+        raise ValueError("w must be non-empty")
+    if any(v <= 0.0 for v in w):
+        raise ValueError("weights must be strictly positive")
+    s1 = sum(w)
+    s2 = sum(v * v for v in w)
+    deff = n * s2 / (s1 * s1)
+    return RichResult(payload={
+        "neff": s1 * s1 / s2, "deff": deff, "cv2": deff - 1.0,
+        "n": n, "sumw": s1, "sumw2": s2,
+        "method": "Kish effective sample size, deff = 1 + cv^2(w)"})
+
+
+effective_srs = neffsrs
+
+
+effectivesrs = neffsrs
 
 
 def cheatsheet():
-    return "adjsrs: Effective SRS conversion"
-
-
-# compact alias per ledger/NAMING.md
-effectivesrs = effective_srs
+    return "adjsrs: Effective simple-random-sample size of a weighted design."

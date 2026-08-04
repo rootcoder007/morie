@@ -1,74 +1,76 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Le Cam testing lemma: lower bound on sum of error probabilities via affinity."""
+"""Le Cam's posterior inequality."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["ghosal_lecam_lemma"]
+__all__ = ["lecam", "ghosal_lecam_lemma"]
 
 
-def ghosal_lecam_lemma(x, cdf=None):
-    """
-    Le Cam testing lemma: lower bound on sum of error probabilities via affinity
+def lecam(dtv, p0_phi, prior_mass, integral):
+    """Le Cam's bound on the posterior mass of an alternative set.
 
-    Formula: E_{P0}phi + E_P(1-phi) >= 1 - d_TV(P0,P) >= 1 - d_H(P0,P)*sqrt(1-d_H^2/4)
+    The bound decomposes the posterior mass of V into three separate
+    things that can each be controlled on their own: how far the truth
+    is from the set U in total variation, how often the test errs under
+    the truth, and how much prior mass sits on U.  The last term
+    divides by Pi(U), which is why a prior that starves the
+    neighbourhood of the truth destroys the bound no matter how good
+    the test is.
+
+    Formula: P_0 Pi(V | X) <= d_TV(P_0, P_U) + P_0 phi
+                              + (1/Pi(U)) int_V P(1 - phi) dPi(P)
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    dtv : float
+        d_TV(P_0, P_U), in [0, 1].
+    p0_phi : float
+        P_0 phi, the type I error, in [0, 1].
+    prior_mass : float
+        Pi(U), strictly positive.
+    integral : float
+        int_V P(1 - phi) dPi(P), non-negative.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``bound``, ``term_tv``, ``term_test``, ``term_prior``,
+        ``informative`` (1 when the bound is below 1).
 
     References
     ----------
-    Ghosal App D
+    Ghosal & van der Vaart (2017), Fundamentals of Nonparametric
+    Bayesian Inference, Lemma 6.46 (Le Cam), stated there as
+    P_0 Pi(V | X) <= d_TV(P_0, P_U) + P_0 phi + (1/Pi(U)) int_V
+    P(1 - phi) dPi(P), for any measurable sets U, V, test phi and
+    measure P_0.  Read from the copy of the book held in the corpus.
+    NOTE: the worklist filed this under "Appendix D"; in the book it is
+    Lemma 6.46 in Section 6.8.2, not an appendix result.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Le Cam testing lemma: lower bound on sum of error probabilities via affinity",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Le Cam testing lemma: lower bound on sum of error probabilities via affinity",
-        }
-    )
+    dtv = float(dtv)
+    p0 = float(p0_phi)
+    pm = float(prior_mass)
+    it = float(integral)
+    if not 0.0 <= dtv <= 1.0:
+        raise ValueError("dtv must lie in [0, 1]")
+    if not 0.0 <= p0 <= 1.0:
+        raise ValueError("P_0 phi must lie in [0, 1]")
+    if pm <= 0.0:
+        raise ValueError("the prior mass Pi(U) must be positive")
+    if it < 0.0:
+        raise ValueError("the integral must be non-negative")
+    t3 = it / pm
+    b = dtv + p0 + t3
+    return RichResult(payload={
+        "bound": b, "term_tv": dtv, "term_test": p0, "term_prior": t3,
+        "informative": 1.0 if b < 1.0 else 0.0,
+        "method": "Le Cam posterior inequality, Ghosal Lemma 6.46"})
+
+
+ghosal_lecam_lemma = lecam
 
 
 def cheatsheet():
-    return "gh_ap_d2: Le Cam testing lemma: lower bound on sum of error probabilities via affinity"
+    return "gh_ap_d2: Pi(V|X) <= d_TV + P0 phi + (1/Pi(U)) int_V P(1-phi) dPi"

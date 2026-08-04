@@ -1,74 +1,87 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Walker's martingale approach to posterior consistency without exponential tests."""
+"""Martingale route to posterior consistency."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["ghosal_martg_consist"]
+__all__ = ["martcons", "ghosal_martg_consist"]
 
 
-def ghosal_martg_consist(x, cdf=None):
-    """
-    Walker's martingale approach to posterior consistency without exponential tests
+def martcons(dh2, variances=None):
+    """Cesaro-average Hellinger discrepancy of the predictive densities.
 
-    Formula: L_n(theta) = prod p_theta(X_i)/p0(X_i) is nonneg supermartingale
+    The martingale approach earns its place by needing NO tests at all:
+    the predictive-to-truth discrepancies form a martingale, and the
+    strong law for martingale differences turns their Cesaro average
+    into an almost-sure statement.  What is checked here is the
+    conclusion, n^-1 sum d_H^2(phat_i, p_0) -> 0, plus the summability
+    condition sum n^-2 var_0 < infinity that Lemma 6.52 requires -- and
+    which is automatic for the square-root discrepancy.
+
+    Formula: n^-1 sum_{i=1}^{n} d_H^2(phat_i, p_0) -> 0 a.s.;
+             Lemma 6.52 needs sum_{n>=1} n^-2 var_0(Psi(phat_n/phat_{0,n})(X_n)) < inf
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    dh2 : array-like
+        Squared Hellinger distances d_H^2(phat_i, p_0), i = 1..n,
+        each in [0, 1].
+    variances : array-like, optional
+        var_0 of the martingale differences, same length; when given,
+        the Lemma 6.52 partial sum is returned.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``cesaro`` (the running average at n), ``final``, ``tail_mean``
+        (average over the last half, which is what actually has to go
+        to zero), ``lemma652_sum`` (nan if variances is None),
+        ``summable``, ``n``.
 
     References
     ----------
-    Ghosal Ch 6 §6.8.4
+    Ghosal & van der Vaart (2017), Fundamentals of Nonparametric
+    Bayesian Inference, Section 6.8.4 (Martingale Approach), equations
+    (6.17) and (6.18) for the compensators -K(phat_{0,i}; phat_i) and
+    -d_H^2(phat_{0,i}; phat_i), and Lemma 6.52: "If sum_{n=1}^{inf}
+    n^{-2} var_0(Psi(phat_n/phat_{0,n})(X_n)) < inf, then n^{-1} M_n ->
+    0 almost surely ... this implies that n^{-1} sum_{i=1}^{n}
+    d_H^2(phat_i, p_0) -> 0, almost surely".  The approach is due to
+    Walker (2003, 2004) as the book's historical notes record.  Read
+    from the copy of the book held in the corpus.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Walker's martingale approach to posterior consistency without exponential tests",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
+    d = C.vec(dh2)
+    n = len(d)
+    if n < 1:
+        raise ValueError("at least one discrepancy is required")
+    if any(v < 0.0 or v > 1.0 for v in d):
+        raise ValueError("squared Hellinger distances must lie in [0, 1]")
+    run = C.cumsum(d)
+    ces = [run[i] / (i + 1) for i in range(n)]
+    half = n // 2
+    tail = sum(d[half:]) / (n - half)
+    if variances is None:
+        ls = float("nan")
+        sm = float("nan")
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Walker's martingale approach to posterior consistency without exponential tests",
-        }
-    )
+        v = C.vec(variances)
+        if len(v) != n:
+            raise ValueError("variances must have the same length as dh2")
+        if any(x < 0.0 for x in v):
+            raise ValueError("variances must be non-negative")
+        ls = sum(v[i] / ((i + 1) ** 2) for i in range(n))
+        sm = 1.0 if ls < float("inf") else 0.0
+    return RichResult(payload={
+        "cesaro": ces, "final": ces[-1], "tail_mean": tail,
+        "lemma652_sum": ls, "summable": sm, "n": float(n),
+        "method": "Martingale consistency check, Ghosal Section 6.8.4"})
+
+
+ghosal_martg_consist = martcons
 
 
 def cheatsheet():
-    return "gh_c6_15: Walker's martingale approach to posterior consistency without exponential tests"
+    return "gh_c6_15: n^-1 sum d_H^2(phat_i, p0) -> 0; Lemma 6.52 sum n^-2 var"

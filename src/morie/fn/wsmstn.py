@@ -1,68 +1,79 @@
-"""Sufficient statistic Fisher-Neyman."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Sufficient statistics for the Bernoulli and Normal models."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["wasserman_sufficient"]
+__all__ = ["suffstat", "wasserman_sufficient"]
 
 
-def wasserman_sufficient(data, f, cdf=None):
-    """
-    Sufficient statistic Fisher-Neyman
+def suffstat(x, family="normal"):
+    """Sufficient statistics, with the factorisation made explicit.
 
-    Formula: f(x|theta) = g(T(x), theta) h(x)
+    Sufficiency is a claim about the LIKELIHOOD, not about the data, so
+    what is returned alongside the statistics is the log-likelihood
+    written in terms of them: the part that depends on the parameter
+    reaches the data only through T.  Sufficient statistics are far
+    from unique -- (17 Xbar, S) is sufficient too -- so this returns
+    the standard minimal choice.
+
+    Formula: Bernoulli   T = sum_i x_i
+             Normal      T = (xbar, s), with
+                         log f = -n log sigma - n s^2_ml/(2 sigma^2)
+                                 - n (xbar - mu)^2/(2 sigma^2) + const
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    f : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    x : array-like
+        The sample.
+    family : {"bernoulli", "normal"}
+        Which model the statistic is sufficient for.
 
     Returns
     -------
-    result : dict
-        Keys: T
+    RichResult
+        ``T1``, ``T2`` (nan for the Bernoulli), ``n``, ``dim``, and
+        for the Normal also ``mle_mu``, ``mle_sigma2``.
 
     References
     ----------
-    Wasserman (2004), Ch 9
+    Wasserman (2004), All of Statistics, Section 9.13.2, Definition
+    9.32 and Examples 9.33 and 9.34: for Bernoulli(p),
+    L(p) = p^S (1-p)^(n-S) with S = sum_i X_i, so S is sufficient; for
+    N(mu, sigma), T = (Xbar, S) is sufficient because the density
+    depends on the data only through T.  Fetched as the full text of
+    the book.
     """
-    data = np.asarray(data, dtype=float)
-    n = len(data)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Sufficient statistic Fisher-Neyman"}
-        )
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Sufficient statistic Fisher-Neyman",
-        }
-    )
+    x = C.vec(x)
+    n = len(x)
+    if n < 1:
+        raise ValueError("the sample must be non-empty")
+    fam = str(family).lower()
+    if fam == "bernoulli":
+        if any(v not in (0.0, 1.0) for v in x):
+            raise ValueError("Bernoulli data must be 0/1")
+        S = sum(x)
+        return RichResult(payload={
+            "T1": S, "T2": float("nan"), "n": n, "dim": 1.0,
+            "mle_mu": S / n, "mle_sigma2": float("nan"),
+            "method": "Bernoulli sufficient statistic, Wasserman Ex 9.33"})
+    if fam == "normal":
+        if n < 2:
+            raise ValueError("the Normal statistic needs at least two points")
+        m = sum(x) / n
+        s = C.sd(x, 1)
+        return RichResult(payload={
+            "T1": m, "T2": s, "n": n, "dim": 2.0, "mle_mu": m,
+            "mle_sigma2": sum((v - m) ** 2 for v in x) / n,
+            "method": "Normal sufficient statistic, Wasserman Ex 9.34"})
+    raise ValueError("family must be 'bernoulli' or 'normal'")
+
+
+wasserman_sufficient = suffstat
 
 
 def cheatsheet():
-    return "wsmstn: Sufficient statistic Fisher-Neyman"
+    return "wsmstn: Bernoulli T = sum x; Normal T = (xbar, s)"

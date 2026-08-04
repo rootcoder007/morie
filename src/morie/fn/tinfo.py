@@ -1,77 +1,79 @@
-"""Test information function (sum of item infos)."""
+"""Test information function and the conditional standard error it implies."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+from math import sqrt
 
 from ._richresult import RichResult
+from ._k05irt import item_params, info
 
 __all__ = ["test_information"]
 
 
-def test_information(y, theta, a, b, cdf=None):
-    """
-    Test information function (sum of item infos)
+def test_information(theta, a, b, c=None, upper=None, D=1.0):
+    r"""Fisher information of the whole test at each ability value.
 
-    Formula: I(theta) = sum_i a_i^2 P_i(theta) Q_i(theta)
+    .. math:: I(\theta)=\sum_{i=1}^{n} I_i(\theta),
+              \qquad I_i(\theta)=\frac{[P_i'(\theta)]^2}{P_i(\theta)Q_i(\theta)}
+
+    Item information is *additive* -- that is the property that makes
+    IRT test assembly possible at all, since each item's contribution
+    can be evaluated without reference to the rest of the form. For a
+    2PL item this reduces to :math:`D^2a_i^2P_iQ_i`, peaking at
+    :math:`\theta=b_i`; guessing (:math:`c_i>0`) both lowers the peak
+    and shifts it above :math:`b_i`, because a correct response
+    carries less information when it may have been a guess.
+
+    The conditional standard error of measurement follows as
+    :math:`SEM(\theta)=1/\sqrt{I(\theta)}`, the asymptotic standard
+    error of the maximum-likelihood ability estimate.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    theta : array-like
-        Input data.
-    a : array-like
-        Input data.
-    b : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    theta : float or array-like
+        Ability value(s).
+    a, b : array-like
+        Item discriminations and difficulties, one per item.
+    c : array-like, optional
+        Lower asymptotes (guessing). Default 0 -> 2PL.
+    upper : array-like, optional
+        Upper asymptotes. Default 1.
+    D : float
+        Scaling constant.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        Keys ``information`` (list, one per theta), ``sem``,
+        ``item_information`` (n_theta x n_items), ``theta``, ``n_items``.
 
     References
     ----------
-    Lord (1980)
+    Lord, F. M. (1980). *Applications of Item Response Theory to
+    Practical Testing Problems*. Erlbaum, ch. 5.
+    Birnbaum, A. (1968). In Lord & Novick, *Statistical Theories of
+    Mental Test Scores*, ch. 17.
     """
-    y = np.asarray(y, dtype=float)
-    n = len(y)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Test information function (sum of item infos)",
-            }
-        )
-    x_sorted = np.sort(y)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(y), scale=np.std(y, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    aa, bb, cc, uu, n = item_params(a, b, c, upper)
+    try:
+        th = [float(t) for t in theta]
+        scalar = False
+    except TypeError:
+        th = [float(theta)]
+        scalar = True
+    per_item = [[info(t, aa[i], bb[i], cc[i], uu[i], D) for i in range(n)] for t in th]
+    tot = [sum(row) for row in per_item]
+    sem = [1.0 / sqrt(v) if v > 0 else float("inf") for v in tot]
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Test information function (sum of item infos)",
+            "information": tot[0] if scalar else tot,
+            "sem": sem[0] if scalar else sem,
+            "item_information": per_item[0] if scalar else per_item,
+            "theta": th[0] if scalar else th,
+            "n_items": n,
+            "D": float(D),
+            "method": "Test information function, sum of item informations",
         }
     )
 
 
 def cheatsheet():
-    return "tinfo: Test information function (sum of item infos)"
+    return "tinfo: test information I(theta) = sum_i I_i(theta), and SEM = 1/sqrt(I)"

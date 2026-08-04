@@ -1,6 +1,5 @@
-"""Proportion of total effect explained."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Proportion of the total effect explained."""
 
 from ._richresult import RichResult
 
@@ -8,33 +7,40 @@ __all__ = ["proportion_te_explained"]
 
 
 def proportion_te_explained(nie, te):
-    """
-    Proportion of total effect explained
+    """Indirect effect divided by an independently supplied total.
 
-    Formula: PTE = NIE / TE
+    Not the same as the proportion mediated even though it usually
+    prints the same number.  Here the total effect is whatever the
+    caller estimated, which need not equal ``NIE + NDE`` when the two
+    came from different models -- and when it does not, the gap is
+    itself worth seeing, so the implied direct effect is returned.
+
+    Formula: ``PTE = NIE / TE``.
 
     Parameters
     ----------
-    nie : array-like
-        Input data.
-    te : array-like
-        Input data.
+    nie : float
+        Natural indirect effect.
+    te : float
+        Total effect, estimated separately.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``estimate``, ``implied_nde`` (``te - nie``), ``te``.
 
     References
     ----------
-    VanderWeele (2013)
+    VanderWeele, T. J. (2013).  Policy-relevant proportions for direct
+    effects.  Epidemiology 24:175-176.
     """
-    nie = np.atleast_1d(np.asarray(nie, dtype=float))
-    n = len(nie)
-    result = float(np.mean(nie))
-    se = float(np.std(nie, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Proportion of total effect explained"})
+    nie = float(nie)
+    te = float(te)
+    return RichResult(payload={
+        "estimate": nie / te if te != 0.0 else float("nan"),
+        "implied_nde": te - nie, "te": te,
+        "method": "Proportion of the total effect explained"})
 
 
 def cheatsheet():
-    return "pmedex: Proportion of total effect explained"
+    return "pmedex: Proportion of the total effect explained."

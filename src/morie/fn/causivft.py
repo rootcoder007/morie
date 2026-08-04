@@ -1,4 +1,30 @@
-"""First-stage IV F-statistic for weak instruments."""
+# morie.fn -- slice k04 (rootcoder007/morie)
+"""First-stage F statistic for weak instruments.
+
+Source FETCHED (reference implementation): the partial-F construction
+used by Stock, Wright and Yogo (2002), *Journal of Business and
+Economic Statistics* 20, 518-529, "A survey of weak instruments and
+weak identification in generalized method of moments".  The statistic
+is the ordinary F for the joint significance of the L excluded
+instruments Z in the first-stage regression
+
+    D = X_exog gamma + Z pi + v
+
+that is, with RSS_u the residual sum of squares of that regression and
+RSS_r that of the restricted fit on X_exog alone,
+
+    F = [ (RSS_r - RSS_u) / L ] / [ RSS_u / (n - k - L) ]
+
+on (L, n - k - L) degrees of freedom, k = ncol(X_exog) including any
+intercept.  Stock-Yogo report F < 10 as the practical warning line for
+a single endogenous regressor; that threshold is reported but is a rule
+of thumb, not a size-correct critical value.
+
+The previous body of this module was a one-sample Kolmogorov-Smirnov
+test against a fitted normal, pasted by the stub generator.  Deleted.
+"""
+
+from __future__ import annotations
 
 from . import _array_core as np
 from . import _stats_core as stats
@@ -8,68 +34,74 @@ from ._richresult import RichResult
 __all__ = ["causal_iv_first_stage"]
 
 
-def causal_iv_first_stage(D, Z, X_exog, cdf=None):
-    """
-    First-stage IV F-statistic for weak instruments
+def _rss(D, y):
+    beta, *_ = np.linalg.lstsq(D, y, rcond=None)
+    r = y - D @ beta
+    return float(r @ r)
 
-    Formula: F = (R²/(1-R²))(n-k-1)/k from D = π Z + ε
+
+def causal_iv_first_stage(D, Z, X_exog=None, add_intercept=True):
+    """First-stage F on the excluded instruments.
 
     Parameters
     ----------
-    D : array-like
-        Input data.
-    Z : array-like
-        Input data.
-    X_exog : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    D : array-like, shape (n,)
+        The endogenous regressor.
+    Z : array-like, shape (n, L)
+        Excluded instruments.
+    X_exog : array-like, shape (n, q), optional
+        Included exogenous covariates.
+    add_intercept : bool, default True
 
     Returns
     -------
-    result : dict
-        Keys: F, p
-
-    References
-    ----------
-    Stock-Wright-Yogo (2002)
+    RichResult
+        keys: ``statistic``, ``p_value``, ``df1``, ``df2``, ``rss_u``,
+        ``rss_r``, ``n``, ``n_instruments``, ``weak`` (statistic < 10),
+        ``method``.
     """
-    D = np.asarray(D, dtype=float)
-    n = len(D)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "First-stage IV F-statistic for weak instruments",
-            }
-        )
-    x_sorted = np.sort(D)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(D), scale=np.std(D, ddof=1))
+    d = np.asarray(D, dtype=float).ravel()
+    n = int(d.size)
+    Z = np.atleast_2d(np.asarray(Z, dtype=float))
+    if Z.shape[0] != n:
+        Z = Z.T
+    cols = []
+    if add_intercept:
+        cols.append(np.ones(n))
+    if X_exog is not None:
+        Xe = np.atleast_2d(np.asarray(X_exog, dtype=float))
+        if Xe.shape[0] != n:
+            Xe = Xe.T
+        cols.extend(Xe[:, j] for j in range(Xe.shape[1]))
+    Dr = np.column_stack(cols) if cols else np.zeros((n, 0))
+    k = int(Dr.shape[1])
+    L = int(Z.shape[1])
+    df2 = n - k - L
+    if L < 1 or df2 < 1:
+        raise ValueError("need L >= 1 and n > k + L")
+    if k:
+        rss_r = _rss(Dr, d)
+        Du = np.column_stack([Dr, Z])
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        rss_r = float(d @ d)
+        Du = Z
+    rss_u = _rss(Du, d)
+    stat = ((rss_r - rss_u) / L) / (rss_u / df2)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": float(stat),
+            "p_value": float(stats.f.sf(stat, L, df2)),
+            "df1": L,
+            "df2": int(df2),
+            "rss_u": rss_u,
+            "rss_r": rss_r,
             "n": n,
-            "method": "First-stage IV F-statistic for weak instruments",
+            "n_instruments": L,
+            "weak": bool(stat < 10.0),
+            "method": "First-stage F for excluded instruments (Stock-Wright-Yogo 2002)",
         }
     )
 
 
 def cheatsheet():
-    return "causivft: First-stage IV F-statistic for weak instruments"
+    return "causivft: first-stage IV F statistic for weak instruments"

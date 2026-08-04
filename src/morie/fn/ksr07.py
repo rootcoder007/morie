@@ -1,66 +1,88 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Bootstrap consistency for the empirical process (Kosorok 2008, Ch 10).
+"""Nonparametric bootstrap of the empirical process."""
 
-G_n^*(f) = sqrt(n)(P_n^* - P_n)(f) converges (conditionally on the
-data) to the same Gaussian limit as G_n.  We Monte-Carlo it: draw B
-multinomial(n; 1/n,...,1/n) weights, recompute the bootstrap mean,
-and return the bootstrap sd as the SE of sqrt(n) P_n.
-"""
+import math
 
-from . import _array_core as np
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_bootstrap_empirical"]
+__all__ = ["bootemp", "kosorok_bootstrap_empirical"]
 
 
-def kosorok_bootstrap_empirical(x, B=1000, seed=0, deterministic_seed: int | None = None):
-    """Nonparametric bootstrap SE for sqrt(n)*(P_n - P)(id).
+def bootemp(x, B=200, seed=1):
+    """Nonparametric (multinomial) bootstrap of the empirical mean process.
+
+    The bootstrap process is sqrt(n)(Phat_n - P_n), NOT
+    sqrt(n)(Phat_n - P): it is centred at the EMPIRICAL measure,
+    because that is what the resampling actually varies around.
+    Centring at P instead is the classic error and inflates the
+    variance by the sampling variance of P_n itself.
+
+    The resampling is driven by a pinned Lehmer generator with a FIXED
+    budget of B replicates, never a time or convergence criterion, so
+    the two language arms draw identical resamples.
+
+    Formula: Phat_n f = n^-1 sum_i W_i f(X_i), (W_1..W_n) ~ Multinomial(n, 1/n);
+             Ghat_n = sqrt(n) (Phat_n - P_n)
 
     Parameters
     ----------
-    x : array-like, IID sample.
-    B : int, number of bootstrap replications.
-    seed : int.
-    deterministic_seed : int or None, optional
-        If supplied, RNG state is derived from the SHA-keyed
-        :func:`morie._det_rng.from_seed` so Py<->R streams agree for the
-        canonical fixture.  When ``None`` (default), behaviour is
-        unchanged: the user-supplied ``seed`` drives a fresh
-        :class:`numpy.random.Generator`.
+    x : array-like
+        The sample.
+    B : int
+        Number of bootstrap replicates (fixed budget).
+    seed : int
+        Seed for the pinned generator.
 
     Returns
     -------
-    RichResult with: estimate (centred bootstrap mean of G_n^*),
-    se (bootstrap sd of sqrt(n) P_n^*), n, method.
-    """
-    x = np.asarray(x, dtype=float)
-    n = len(x)
-    if deterministic_seed is not None:
-        from morie._det_rng import from_seed
+    RichResult
+        ``estimate`` (P_n f), ``boot_mean``, ``boot_sd``,
+        ``process_sd`` (sd of Ghat_n), ``ci_lower``, ``ci_upper``
+        (percentile), ``B``, ``n``.
 
-        rng = from_seed("ksr07", deterministic_seed)
-    else:
-        rng = np.random.default_rng(seed)
-    idx = rng.integers(0, n, size=(B, n))
-    boot_means = x[idx].mean(axis=1)
-    pn = float(x.mean())
-    gn_star = np.sqrt(n) * (boot_means - pn)
-    return RichResult(
-        payload={
-            "estimate": float(gn_star.mean()),
-            "se": float(gn_star.std(ddof=1)),
-            "n": n,
-            "method": "Bootstrap G_n^*(f) = sqrt(n)(P_n^* - P_n)",
-        }
-    )
+    References
+    ----------
+    Kosorok (2008), Introduction to Empirical Processes and
+    Semiparametric Inference, Section 2.2.3, which defines the
+    nonparametric bootstrap empirical measure with multinomial weights
+    and the bootstrapped process Ghat_n = sqrt(n)(Phat_n - P_n), and
+    Theorem 2.6 relating its convergence to F being P-Donsker.  Fetched
+    as the full text of the book.
+    """
+    x = C.vec(x)
+    n = len(x)
+    B = int(B)
+    if n < 2:
+        raise ValueError("the sample must have at least two observations")
+    if B < 2:
+        raise ValueError("B must be at least 2")
+    Pn = sum(x) / n
+    g = C.Lcg(seed)
+    stats = []
+    for _ in range(B):
+        s = 0.0
+        for _ in range(n):
+            j = int(g.unif() * n)
+            if j >= n:
+                j = n - 1
+            s += x[j]
+        stats.append(s / n)
+    bm = sum(stats) / B
+    bsd = C.sd(stats, 1)
+    q = sorted(stats)
+    lo = q[max(0, int(math.floor(0.025 * (B - 1))))]
+    hi = q[min(B - 1, int(math.ceil(0.975 * (B - 1))))]
+    return RichResult(payload={
+        "estimate": Pn, "boot_mean": bm, "boot_sd": bsd,
+        "process_sd": math.sqrt(n) * bsd, "ci_lower": lo, "ci_upper": hi,
+        "B": float(B), "n": float(n),
+        "method": "Nonparametric bootstrap, Kosorok Section 2.2.3"})
+
+
+kosorok_bootstrap_empirical = bootemp
 
 
 def cheatsheet():
-    return "ksr07: bootstrap empirical process G_n^* = sqrt(n)(P_n^* - P_n)"
-
-
-# CANONICAL TEST
-if __name__ == "__main__":
-    rng = np.random.default_rng(0)
-    print(kosorok_bootstrap_empirical(rng.normal(size=200), B=500, seed=42))
+    return "ksr07: Ghat_n = sqrt(n)(Phat_n - P_n), centred at P_n not P"

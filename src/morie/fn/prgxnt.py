@@ -1,40 +1,60 @@
-"""Perplexity of language model."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Perplexity of a language model."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["perplexity"]
+__all__ = ['perplex', 'perplexity']
 
 
-def perplexity(log_probs, N):
-    """
-    Perplexity of language model
+def perplex(log_probs, N=None):
+    """Perplexity of a language model.
 
-    Formula: PPL = exp(-1/N sum log p(x_i))
+    Perplexity is the exponentiated cross-entropy, so it reads as an effective branching factor: a model with perplexity 100 is as uncertain as one choosing uniformly among 100 options. Both the natural-log and base-2 forms are returned because the literature uses both and the numbers are not comparable across them. N defaults to the number of supplied log-probabilities, which is right only when they are per-token; pass N explicitly when they are not.
+
+
+    Formula: PPL = exp(-(1/N) sum_i log p(x_i)); cross-entropy H = -(1/N) sum_i log2 p(x_i)
 
     Parameters
     ----------
     log_probs : array-like
-        Input data.
-    N : array-like
-        Input data.
+        Natural-log probabilities assigned to the observed tokens.
+    N : int, optional
+        Token count to normalise by; ``len(log_probs)`` if omitted.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``perplexity``, ``cross_entropy_nats``, ``cross_entropy_bits``, ``N``.
 
     References
     ----------
-    Brown et al (1992)
+    Brown, Della Pietra, Mercer, Della Pietra and Lai (1992), An
+    estimate of an upper bound for the entropy of English,
+    Computational Linguistics 18:31-40.  Not held locally; perplexity as
+    the exponentiated per-token cross-entropy is the standard published
+    definition.
     """
-    log_probs = np.atleast_1d(np.asarray(log_probs, dtype=float))
-    n = len(log_probs)
-    result = float(np.mean(log_probs))
-    se = float(np.std(log_probs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Perplexity of language model"})
+    lp = C.vec(log_probs)
+    if not lp:
+        raise ValueError("need at least one log-probability")
+    if any(v > 0 for v in lp):
+        raise ValueError("log-probabilities must be non-positive")
+    n = float(N) if N is not None else float(len(lp))
+    if n <= 0:
+        raise ValueError("N must be positive")
+    h = -sum(lp) / n
+    return RichResult(payload={
+        "perplexity": math.exp(h), "cross_entropy_nats": h,
+        "cross_entropy_bits": h / math.log(2.0), "N": n,
+        "method": "Perplexity"})
+
+
+perplexity = perplex
 
 
 def cheatsheet():
-    return "prgxnt: Perplexity of language model"
+    return "prgxnt: Perplexity of a language model."

@@ -1,74 +1,89 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Prior construction via moments: specify E[int f dG] for test functions f."""
+"""Feasibility of a moment sequence as a prior on [0, 1]."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["ghosal_moment_prior"]
+__all__ = ["momprior", "ghosal_moment_prior"]
 
 
-def ghosal_moment_prior(x, cdf=None):
-    """
-    Prior construction via moments: specify E[int f dG] for test functions f
+def momprior(moments):
+    """Check that a moment sequence is realisable by a measure on [0, 1].
 
-    Formula: G determined by moment sequence via Hausdorff/Hamburger moment problem
+    Ghosal and van der Vaart note that inducing a prior from a prior on
+    the moment sequence is possible in principle but that "maintaining
+    the necessary constraints in the prior specification linking
+    various moments is difficult".  This is that constraint, made
+    checkable: Hausdorff's condition that the alternating finite
+    differences of the moment sequence are all non-negative, which is
+    necessary AND sufficient for a measure on [0, 1] with those
+    moments to exist.
+
+    ``min_difference`` is returned rather than just a yes/no, because a
+    sequence can be feasible by an arbitrarily small margin and a prior
+    that wanders across the boundary is the failure mode being guarded
+    against.
+
+    Formula: m realisable on [0, 1] iff
+             (-1)^k (Delta^k m)_j >= 0 for all j, k >= 0, where
+             (Delta m)_j = m_{j+1} - m_j
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    moments : array-like
+        m_0, m_1, ..., m_n with m_0 = 1.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``feasible`` (1/0), ``min_difference``, ``n_violations``,
+        ``order``, ``differences`` (the full triangle, row k holding
+        (-1)^k Delta^k m).
 
     References
     ----------
-    Ghosal Ch 3 §3.4.4
+    Ghosal & van der Vaart (2017), Fundamentals of Nonparametric
+    Bayesian Inference, Section 3.4.4 (Construction through Moments),
+    which states that on a bounded interval "the sequence of moments
+    uniquely determines the probability measure", so a prior on the
+    measure can be induced from one on the moments, and warns about the
+    linking constraints.  That section gives NO formula; the
+    realisability condition itself is Hausdorff (1921), Summationsmethoden
+    und Momentfolgen I, Mathematische Zeitschrift 9, 74-109, and is
+    cited to its own source.  Ghosal read from the copy of the book
+    held in the corpus.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Prior construction via moments: specify E[int f dG] for test functions f",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Prior construction via moments: specify E[int f dG] for test functions f",
-        }
-    )
+    m = C.vec(moments)
+    N = len(m)
+    if N < 1:
+        raise ValueError("at least the zeroth moment is required")
+    if abs(m[0] - 1.0) > 1e-12:
+        raise ValueError("m_0 must equal 1 for a probability measure")
+    tri = [list(m)]
+    cur = list(m)
+    for k in range(1, N):
+        cur = [cur[j] - cur[j + 1] for j in range(len(cur) - 1)]
+        tri.append(list(cur))
+    worst = math.inf
+    bad = 0
+    for row in tri:
+        for v in row:
+            if v < worst:
+                worst = v
+            if v < -1e-12:
+                bad += 1
+    return RichResult(payload={
+        "feasible": 1.0 if bad == 0 else 0.0, "min_difference": worst,
+        "n_violations": float(bad), "order": float(N - 1),
+        "differences": tri,
+        "method": "Hausdorff moment feasibility, Ghosal Section 3.4.4"})
+
+
+ghosal_moment_prior = momprior
 
 
 def cheatsheet():
-    return "gh_c3_8: Prior construction via moments: specify E[int f dG] for test functions f"
+    return "gh_c3_8: realisable on [0,1] iff all (-1)^k Delta^k m >= 0"

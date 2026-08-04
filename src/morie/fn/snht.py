@@ -1,66 +1,122 @@
-"""Standard normal homogeneity test."""
+"""Alexandersson's standard normal homogeneity test for a change point."""
+
+from math import sqrt
 
 from . import _array_core as np
-from . import _stats_core as stats
-
-from ._richresult import RichResult
+from ._richresult import hypothesis_test_result
+from ._k05core import rnorm
 
 __all__ = ["snht"]
 
 
-def snht(x, cdf=None):
-    """
-    Standard normal homogeneity test
+def _tk(x, n, xbar, sigma):
+    """T_k for k = 1 .. n-1, plus the running standardised partial sums."""
+    tk, s, out_s = [], 0.0, []
+    for k in range(1, n):
+        s += (x[k - 1] - xbar) / sigma
+        out_s.append(s)
+        z1 = s / k
+        z2 = -s / (n - k)          # the two halves sum to zero by construction
+        tk.append(k * z1 * z1 + (n - k) * z2 * z2)
+    return tk, out_s
 
-    Formula: T_k = k z̄_1² + (n-k) z̄_2²
+
+def snht(x, n_mc=1999, seed=0):
+    r"""Standard normal homogeneity test (Alexandersson 1986).
+
+    Tests a single mean shift in a normal series,
+
+    .. math:: x_i = \mu + \Delta\,\mathbf{1}\{i > k\} + \epsilon_i ,
+
+    by maximising over every candidate split point
+
+    .. math:: T_k = k\,\bar z_1^{\,2} + (n-k)\,\bar z_2^{\,2},
+              \qquad T = \max_{1 \le k < n} T_k ,
+
+    where :math:`\bar z_1` and :math:`\bar z_2` are the mean
+    standardised deviations before and after the split.
+
+    Because the series is standardised by its *own* mean and standard
+    deviation, ``T`` is pivotal under the null -- its distribution
+    depends on ``n`` alone -- so the p-value comes from simulating
+    standard normal series of the same length. There is no usable
+    asymptotic form: ``T`` is a maximum over n-1 dependent statistics.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+        The series, complete observations only.
+    n_mc : int
+        Monte Carlo replicates for the p-value. 0 skips it and returns
+        ``nan``. Draws come from morie's own Philox stream, so the R
+        mirror reproduces this number exactly.
+    seed : int
+        Seed for that stream.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        Keys ``statistic`` (T), ``pvalue``, ``change_point`` (k, the
+        index *before* which the shift is placed, 1-based), ``tk``,
+        ``n``, ``n_mc``.
+
+    Notes
+    -----
+    The reported change point is the argmax of ``T_k``; with a genuine
+    shift it lands on the last observation of the first regime.
 
     References
     ----------
-    Alexandersson (1986)
+    Alexandersson, H. (1986). A homogeneity test applied to
+    precipitation data. *Journal of Climatology*, 6, 661-675.
+    Definition cross-checked against the reference implementation in
+    the trend R package (``snh.test``), which uses the same overall
+    mean and the n-1 denominator standard deviation.
     """
-    x = np.asarray(x, dtype=float)
-    n = len(x)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Standard normal homogeneity test"}
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+    v = [float(t) for t in np.asarray(x, dtype=float).ravel().tolist()]
+    n = len(v)
+    if n < 3:
+        raise ValueError("need at least 3 observations.")
+    xbar = sum(v) / n
+    ss = sum((t - xbar) ** 2 for t in v)
+    sigma = sqrt(ss / (n - 1))
+    if sigma <= 0:
+        raise ValueError("series is constant; no change point is identifiable.")
+    tk, _ = _tk(v, n, xbar, sigma)
+    stat = max(tk)
+    kstar = tk.index(stat) + 1
+
+    pval = float("nan")
+    n_mc = int(n_mc)
+    if n_mc > 0:
+        # one independent N(0,1) series per replicate, drawn from its own
+        # Philox stream so replicate j never overlaps replicate j+1.
+        ge = 0
+        for j in range(n_mc):
+            z = rnorm(n, seed=seed, stream=j + 1)
+            m = sum(z) / n
+            sd = sqrt(sum((t - m) ** 2 for t in z) / (n - 1))
+            if sd <= 0:
+                continue
+            if max(_tk(z, n, m, sd)[0]) >= stat:
+                ge += 1
+        pval = (ge + 1) / (n_mc + 1)
+
+    return hypothesis_test_result(
+        test_name="Standard normal homogeneity test",
+        statistic=float(stat),
+        pvalue=float(pval),
+        extra_summary=[("n", n), ("change_point", kstar)],
+        extra_payload={
             "n": n,
-            "method": "Standard normal homogeneity test",
-        }
+            "change_point": kstar,
+            "tk": tk,
+            "n_mc": n_mc,
+            "seed": int(seed),
+            "method": "Alexandersson (1986) SNHT, Monte Carlo p-value",
+        },
     )
 
 
 def cheatsheet():
-    return "snht: Standard normal homogeneity test"
+    return "snht: Alexandersson standard normal homogeneity test (single change point)"

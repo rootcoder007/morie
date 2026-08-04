@@ -1,6 +1,9 @@
-"""Local clustering coefficient."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Local and average clustering coefficient."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
@@ -8,31 +11,56 @@ __all__ = ["clustering_coefficient"]
 
 
 def clustering_coefficient(G):
-    """
-    Local clustering coefficient
+    """Fraction of a node neighbours that are themselves connected.
 
-    Formula: C_v = 2 e(N_v) / (k_v (k_v-1))
+    The measure exists because real networks are not random graphs: they
+    have far more triangles than degree alone predicts.  A node of
+    degree one or zero has no pair of neighbours to close, so it has no
+    defined coefficient; those nodes are excluded from the average
+    rather than counted as zero, which is the convention that keeps the
+    average from drifting down with every leaf added.
+
+    Formula: ``C_v = 2 e(N_v) / (k_v (k_v - 1))``, and the graph
+    average is the mean of ``C_v`` over nodes with ``k_v >= 2``.
 
     Parameters
     ----------
-    G : array-like
-        Input data.
+    G : array-like, shape (n, n)
+        Symmetric adjacency matrix; non-zero means an edge.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``estimate`` (average clustering), ``local``, ``degree``,
+        ``n_defined``, ``n``.
 
     References
     ----------
-    Watts-Strogatz (1998)
+    Watts, D. J. & Strogatz, S. H. (1998).  Collective dynamics of
+    small-world networks.  Nature 393:440-442.
     """
-    G = np.atleast_1d(np.asarray(G, dtype=float))
-    n = len(G)
-    result = float(np.mean(G))
-    se = float(np.std(G, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Local clustering coefficient"})
+    A = C.mat(G)
+    n = len(A)
+    adj = [[1 if (A[i][j] != 0.0 or A[j][i] != 0.0) and i != j else 0
+            for j in range(n)] for i in range(n)]
+    deg = [sum(adj[i]) for i in range(n)]
+    local, defined = [], []
+    for v in range(n):
+        nb = [u for u in range(n) if adj[v][u]]
+        k = len(nb)
+        if k < 2:
+            local.append(float("nan"))
+            continue
+        e = sum(adj[nb[a]][nb[b]] for a in range(k) for b in range(a + 1, k))
+        cv = 2.0 * e / (k * (k - 1.0))
+        local.append(cv)
+        defined.append(cv)
+    avg = sum(defined) / len(defined) if defined else float("nan")
+    return RichResult(payload={
+        "estimate": avg, "local": local, "degree": deg,
+        "n_defined": len(defined), "n": n,
+        "method": "Watts-Strogatz clustering coefficient"})
 
 
 def cheatsheet():
-    return "clstcoef: Local clustering coefficient"
+    return "clstcoef: Local and average clustering coefficient."

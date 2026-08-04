@@ -1,42 +1,54 @@
-"""Combinatorial Laplacian."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Combinatorial graph Laplacian L = T - A."""
 
-from . import _array_core as np
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["sgt_laplacian"]
+__all__ = ["graphlap", "sgt_laplacian"]
 
 
-def sgt_laplacian(A):
-    """
-    Combinatorial Laplacian
+def graphlap(W):
+    """Combinatorial (unnormalised) Laplacian of a weighted graph.
 
-    Formula: L = D - A
+    ``rowsum`` is returned because it must be zero to machine
+    precision: the all-ones vector is always in the kernel, and a
+    non-zero row sum means the weight matrix was not symmetric or the
+    loop convention was mishandled.
+
+    Formula: L(u, v) = d_v - w(v, v) if u = v, -w(u, v) if u ~ v, else 0
 
     Parameters
     ----------
-    A : array-like
-        Input data.
+    W : array-like, shape (n, n)
+        Symmetric non-negative weight matrix.
 
     Returns
     -------
-    result : dict
-        Keys: L
+    RichResult
+        ``L``, ``degree``, ``rowsum``, ``n``.
 
     References
     ----------
-    Chung (1997)
+    Chung (1997), Spectral Graph Theory, CBMS 92, Section 1.4, which
+    generalises the Section 1.2 definition to weighted graphs with
+    loops exactly as written above.  Fetched from the author's own
+    copy of the chapter.
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Combinatorial Laplacian"})
+    W = C.mat(W)
+    n = len(W)
+    if any(len(r) != n for r in W):
+        raise ValueError("W must be square")
+    d = [sum(W[i]) for i in range(n)]
+    L = [[(d[i] - W[i][i]) if i == j else -W[i][j] for j in range(n)]
+         for i in range(n)]
+    return RichResult(payload={
+        "L": L, "degree": d, "rowsum": [sum(r) for r in L], "n": n,
+        "method": "Combinatorial Laplacian L = T - A"})
+
+
+sgt_laplacian = graphlap
 
 
 def cheatsheet():
-    return "sgtlap: Combinatorial Laplacian"
-
-
-# compact alias per ledger/NAMING.md
-sgtlaplacian = sgt_laplacian
+    return "sgtlap: L(u,v) = d_v - w(v,v) on the diagonal, -w(u,v) off it"

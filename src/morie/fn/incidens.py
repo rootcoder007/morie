@@ -1,40 +1,24 @@
-"""Incidence rate."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Person-time incidence rate.
 
-from . import _array_core as np
+This module is a re-export.  ``incidence_rate`` already has a full
+implementation with an exact Poisson confidence interval in
+:mod:`morie.fn.cdinc`, and ``_lazy_map.json`` already resolves the
+public name there.  The stub this module replaced was a duplicate of
+that name.
 
-from ._richresult import RichResult
+Rothman, K.J., Greenland, S. & Lash, T.L., Modern Epidemiology:
+IR = new cases / person-time at risk.
+"""
+
+from .cdinc import incidence_rate
 
 __all__ = ["incidence_rate"]
 
 
-def incidence_rate(cases, person_time):
-    """
-    Incidence rate
-
-    Formula: IR = new cases / person-time
-
-    Parameters
-    ----------
-    cases : array-like
-        Input data.
-    person_time : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Rothman (2012)
-    """
-    cases = np.atleast_1d(np.asarray(cases, dtype=float))
-    n = len(cases)
-    result = float(np.mean(cases))
-    se = float(np.std(cases, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Incidence rate"})
-
-
 def cheatsheet():
-    return "incidens: Incidence rate"
+    return "incidens: Person-time incidence rate (re-export of cdinc)"
+
+
+# compact alias per ledger/NAMING.md
+incrate = incidence_rate

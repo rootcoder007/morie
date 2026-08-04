@@ -1,71 +1,103 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Z-estimator asymptotic distribution (Kosorok 2008, Ch 5).
+"""Z-estimator for a location parameter."""
 
-A Z-estimator theta_n solves P_n psi(.; theta) = 0.  Under regularity,
-sqrt(n)(theta_n - theta_0) -> N(0, V) with sandwich variance
-    V = A^{-1} B A^{-T}, A = P psi_dot(theta_0), B = P psi(theta_0)^{2}.
-With y omitted we solve psi(x; theta) = x - theta = 0 (the sample
-mean).  With y supplied we solve psi(x, y; beta) = x(y - beta x) = 0
-(centred OLS slope), both with sandwich SE.
-"""
+import math
 
-from . import _array_core as np
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_z_estimator"]
+__all__ = ["zestim", "kosorok_z_estimator"]
 
 
-def kosorok_z_estimator(x, y=None):
-    """Z-estimator: location (one-sample) or OLS slope (two-sample).
+def zestim(x, kind="huber", k=1.345, iters=200):
+    """Z-estimator: the theta solving the estimating equation Psi_n(theta) = 0.
+
+    A Z-estimator is defined by a ZERO, not by a maximum, which is what
+    makes the class large enough to hold the median and the Huber
+    estimator alongside the mean.  The root is found by bisection with
+    a FIXED iteration count rather than a tolerance, so the two
+    language arms land on bit-identical iterates -- a tolerance-based
+    loop can stop one step apart and disagree in the last few digits.
+
+    Formula: Psi_n(theta) = n^-1 sum_i psi(x_i - theta) = 0, with
+             psi(u) = u                    (mean)
+             psi(u) = sign(u)              (median)
+             psi(u) = max(-k, min(k, u))   (Huber)
 
     Parameters
     ----------
-    x : array-like.
-    y : array-like or None.
+    x : array-like
+        The sample.
+    kind : {"mean", "median", "huber"}
+        Which estimating function.
+    k : float
+        Huber tuning constant, k > 0.
+    iters : int
+        Bisection steps (fixed budget).
 
     Returns
     -------
-    RichResult with keys estimate, se, n, method.
+    RichResult
+        ``estimate``, ``psi_at_estimate``, ``lower``, ``upper``,
+        ``iters``, ``n``.
+
+    References
+    ----------
+    Kosorok (2008), Introduction to Empirical Processes and
+    Semiparametric Inference, Section 2.2.5 and Theorem 10.16, which
+    define theta_hat_n as an approximate zero of Psi_n(theta) = P_n
+    psi_theta with Psi(theta_0) = 0.  Fetched as the full text of the
+    book.  The Huber psi is Huber (1964), Robust estimation of a
+    location parameter, Annals of Mathematical Statistics 35(1),
+    73-101.
     """
-    x = np.asarray(x, dtype=float)
-    if y is None:
-        n = len(x)
-        theta = float(x.mean())
-        psi = x - theta
-        v = float((psi**2).mean())
-        se = float(np.sqrt(v / n)) if n > 0 else float("nan")
-        method = "Z-estimator: psi(x;theta) = x - theta"
-        est = theta
-    else:
-        y = np.asarray(y, dtype=float)
-        n = len(x)
-        xc = x - x.mean()
-        yc = y - y.mean()
-        beta = float((xc @ yc) / (xc @ xc))
-        resid = yc - beta * xc
-        A = float((xc**2).mean())
-        B = float(((xc**2) * (resid**2)).mean())
-        se = float(np.sqrt(B / (A**2) / n))
-        method = "Z-estimator: psi(x,y;beta) = x(y - beta x)"
-        est = beta
-    return RichResult(
-        payload={
-            "estimate": est,
-            "se": se,
-            "n": n,
-            "method": method,
-        }
-    )
+    x = C.vec(x)
+    n = len(x)
+    if n < 1:
+        raise ValueError("the sample must be non-empty")
+    kind = str(kind).lower()
+    k = float(k)
+    if kind == "huber" and k <= 0:
+        raise ValueError("the Huber constant k must be positive")
+
+    def psi(u):
+        if kind == "mean":
+            return u
+        if kind == "median":
+            return 1.0 if u > 0 else (-1.0 if u < 0 else 0.0)
+        if kind == "huber":
+            return max(-k, min(k, u))
+        raise ValueError("kind must be 'mean', 'median' or 'huber'")
+
+    def Psi(th):
+        return sum(psi(v - th) for v in x) / n
+
+    lo = min(x)
+    hi = max(x)
+    if lo == hi:
+        return RichResult(payload={
+            "estimate": lo, "psi_at_estimate": 0.0, "lower": lo,
+            "upper": hi, "iters": 0.0, "n": float(n),
+            "method": "Z-estimator, Kosorok Section 2.2.5"})
+    a = lo
+    b = hi
+    it = int(iters)
+    for _ in range(it):
+        m = 0.5 * (a + b)
+        if Psi(a) * Psi(m) <= 0:
+            b = m
+        else:
+            a = m
+    th = 0.5 * (a + b)
+    return RichResult(payload={
+        "estimate": th, "psi_at_estimate": Psi(th), "lower": a, "upper": b,
+        "iters": float(it), "n": float(n),
+        "method": "Z-estimator, Kosorok Section 2.2.5"})
+
+
+kosorok_z_estimator = zestim
 
 
 def cheatsheet():
-    return "ksr09: Z-estimator with sandwich SE"
-
-
-# CANONICAL TEST
-if __name__ == "__main__":
-    rng = np.random.default_rng(0)
-    xs = rng.normal(size=200)
-    ys = 1.5 * xs + rng.normal(size=200)
-    print(kosorok_z_estimator(xs, ys))
+    return "ksr09: solve n^-1 sum psi(x_i - theta) = 0 by fixed-budget bisection"
