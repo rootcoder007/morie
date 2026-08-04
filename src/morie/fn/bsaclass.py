@@ -818,8 +818,124 @@ def bhattcoef(p1, p2):
         "in_unit_interval": -1e-12 <= bc <= 1.0 + 1e-12,
         "the_overlap_is_where_errors_must_happen": True,
         "not_from_this_book": True,
+        "reference": "Bhattacharyya A. On a measure of divergence "
+                     "between two statistical populations defined by "
+                     "their probability distributions. Bulletin of the "
+                     "Calcutta Mathematical Society 35:99-109, 1943 "
+                     "(Zbl 0063.00364).",
         "method": "Bhattacharyya coefficient; Rangayyan (2024) uses the "
                   "KLD of eq. (5.33) and the divergence of eq. (10.115)"})
+
+
+def chernoff(p1, p2, alpha=None, n_grid=201):
+    """Chernoff coefficient and information.
+
+        rho_a(p1, p2) = sum_l p1(x_l)^a p2(x_l)^(1-a),   0 <= a <= 1
+        C(p1, p2)     = -ln min_a rho_a
+
+    The Bhattacharyya coefficient is exactly this at a = 1/2, which is
+    the relationship the whole family turns on: BC = rho_{1/2}.  Leaving
+    ``alpha`` unset searches the interval for the minimizing a, which is
+    what makes the Chernoff bound TIGHTER than the Bhattacharyya bound --
+    the latter is the same bound evaluated at a fixed a = 1/2 instead of
+    the best one.
+
+    The bound it gives is P_e <= P1^a P2^(1-a) rho_a for ANY a, so every
+    a yields a valid bound and the minimum yields the best of them.  At
+    equal priors and a = 1/2 this collapses to Kailath's
+    sqrt(P1 P2) exp(-D_B).
+
+    NOT FROM RANGAYYAN (2024); the book uses the KLD of eq. (5.33).
+    """
+    a, b = aslist(p1), aslist(p2)
+    if len(a) != len(b):
+        raise ValueError("the two PDFs must be sampled on the same grid")
+    if not a:
+        raise ValueError("need at least one bin")
+    if any(v < 0 for v in a) or any(v < 0 for v in b):
+        raise ValueError("a PDF cannot be negative")
+
+    def rho(t):
+        return fsum((a[i] ** t) * (b[i] ** (1.0 - t)) for i in range(len(a))
+                    if a[i] > 0 and b[i] > 0)
+
+    if alpha is not None:
+        av = float(alpha)
+        if not 0.0 <= av <= 1.0:
+            raise ValueError("alpha must lie in [0, 1]")
+        best_a, best_rho = av, rho(av)
+        searched = False
+    else:
+        m = int(n_grid)
+        if m < 3:
+            raise ValueError("need at least three grid points")
+        grid = [i / (m - 1) for i in range(m)]
+        vals = [rho(t) for t in grid]
+        k = min(range(m), key=lambda i: vals[i])
+        best_a, best_rho = grid[k], vals[k]
+        searched = True
+    bc = rho(0.5)
+    return RichResult(payload={
+        "coefficient": best_rho, "alpha": best_a,
+        "information": (-log(best_rho)) if best_rho > 0 else float("inf"),
+        "bhattacharyya_coefficient": bc,
+        "bhattacharyya_is_alpha_one_half": True,
+        "alpha_searched": searched,
+        "at_least_as_tight_as_bhattacharyya": best_rho <= bc + 1e-12,
+        "reference": "Chernoff H. A measure of asymptotic efficiency for "
+                     "tests of a hypothesis based on the sum of "
+                     "observations. Annals of Mathematical Statistics "
+                     "23(4):493-507, 1952, doi:10.1214/aoms/1177729330. "
+                     "The alpha = 1/2 identity is Nielsen and Nock, "
+                     "Pattern Recognition Letters, 2014.",
+        "not_from_this_book": True,
+        "method": "Chernoff alpha-coefficient and information"})
+
+
+def hellinger(p1, p2):
+    """Hellinger distance.
+
+        H(p1, p2) = sqrt( 1 - BC(p1, p2) )
+
+    with BC the Bhattacharyya coefficient, so H^2 = 1 - BC.  Unlike the
+    Bhattacharyya distance -ln BC, this one is a TRUE METRIC: bounded in
+    [0, 1], symmetric, and it satisfies the triangle inequality, which
+    -ln BC does not.  That is the reason to reach for it -- anything that
+    needs a metric (clustering, embedding, nearest-neighbour search over
+    distributions) needs this and not D_B.
+
+    The 1/2 normalization is the usual one, H^2 = (1/2) integral
+    (sqrt(p) - sqrt(q))^2; under the unnormalized convention H^2 is
+    2(1 - BC) instead, and both appear in the literature, so the
+    convention is reported rather than assumed.
+
+    NOT FROM RANGAYYAN (2024).
+    """
+    a, b = aslist(p1), aslist(p2)
+    if len(a) != len(b):
+        raise ValueError("the two PDFs must be sampled on the same grid")
+    if not a:
+        raise ValueError("need at least one bin")
+    if any(v < 0 for v in a) or any(v < 0 for v in b):
+        raise ValueError("a PDF cannot be negative")
+    bc = fsum(sqrt(a[i] * b[i]) for i in range(len(a)))
+    h2 = max(0.0, 1.0 - bc)
+    return RichResult(payload={
+        "hellinger": sqrt(h2), "squared": h2,
+        "bhattacharyya_coefficient": bc,
+        "identity_h2_equals_one_minus_bc": True,
+        "is_a_true_metric": True,
+        "satisfies_the_triangle_inequality": True,
+        "bhattacharyya_distance_does_not": True,
+        "normalization": "one half; unnormalized gives 2(1 - BC)",
+        "in_unit_interval": -1e-12 <= sqrt(h2) <= 1.0 + 1e-12,
+        "reference": "Hellinger E. Neue Begruendung der Theorie "
+                     "quadratischer Formen von unendlichvielen "
+                     "Veraenderlichen. Journal fuer die reine und "
+                     "angewandte Mathematik 136:210-271, 1909, "
+                     "doi:10.1515/crll.1909.136.210.",
+        "not_from_this_book": True,
+        "method": "Hellinger distance, H^2 = 1 - BC"})
 
 
 def bhatt(m1, m2, C1, C2):
@@ -869,6 +985,13 @@ def bhatt(m1, m2, C1, C2):
         "covariance_term": 0.5 * log(dM / sqrt(dA * dB)),
         "not_from_this_book": True,
         "book_uses_divergence_eq_10_115": True,
+        "reference": "Bhattacharyya A. Bulletin of the Calcutta "
+                     "Mathematical Society 35:99-109, 1943; the "
+                     "Gaussian closed form and the error bound are "
+                     "Kailath T, The divergence and Bhattacharyya "
+                     "distance measures in signal selection, IEEE "
+                     "Transactions on Communication Technology "
+                     "15(1):52-60, 1967, doi:10.1109/TCOM.1967.1089532.",
         "method": "standard Bhattacharyya distance for Gaussians; "
                   "Rangayyan (2024) uses eqs. (10.112) and (10.115) "
                   "instead"})
@@ -1223,6 +1346,11 @@ def errbound(p1, p2, db):
         "bounds_the_optimal_classifier_not_yours": True,
         "not_from_this_book": True,
         "pairs_with_bhatt_not_with_divergence": True,
+        "reference": "Kailath T. The divergence and Bhattacharyya "
+                     "distance measures in signal selection. IEEE "
+                     "Transactions on Communication Technology "
+                     "15(1):52-60, February 1967, "
+                     "doi:10.1109/TCOM.1967.1089532.",
         "method": "Kailath's Bhattacharyya bound; not given in "
                   "Rangayyan (2024)"})
 
