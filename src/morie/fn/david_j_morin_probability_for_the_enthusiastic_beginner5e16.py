@@ -1,39 +1,22 @@
-"""Poisson pmf with Stirling's approximation applied to k!.
+"""Deprecated alias for :func:`morie.fn.poisstirl`.
 
-Implements eq (5.16) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .poisstirl import poisstirl as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_16"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_16(k, a):
-    """Poisson pmf with Stirling's approximation applied to k!.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (5.16).
-    """
-    approx = _morin.poisson_stirling(k, a)
-    exact = _morin.poisson_pmf(k, a)
-    payload = {"approx": approx, "exact": exact,
-               "rel_error": abs(approx - exact) / max(exact, 1e-300)}
-    lines = [("Stirling PP(k)", approx), ("exact", exact)]
-    return RichResult(
-        title="Poisson pmf with Stirling's approximation applied to k!.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.poisstirl` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_16() is the book-coordinate name for poisstirl(); "
+        "it will be removed. Use morie.fn.poisstirl() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner5e16: Poisson pmf with Stirling's approximation applied to k!. Morin (2016) eq (5.16)."
+    return _impl(k, a)

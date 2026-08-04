@@ -1,38 +1,22 @@
-"""Difference quotient of x^n approaches n x^(n-1).
+"""Deprecated alias for :func:`morie.fn.diffquotn`.
 
-Implements eq (7.33) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .diffquotn import diffquotn as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33(x, n, delta):
-    """Difference quotient of x^n approaches n x^(n-1).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (7.33).
-    """
-    quotient, derivative = _morin.power_derivative_quotient(x, n, delta)
-    payload = {"quotient": quotient, "derivative": derivative,
-               "abs_error": abs(quotient - derivative)}
-    lines = [("quotient", quotient), ("n x^(n-1)", derivative)]
-    return RichResult(
-        title="Difference quotient of x^n approaches n x^(n-1).",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.diffquotn` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_33() is the book-coordinate name for diffquotn(); "
+        "it will be removed. Use morie.fn.diffquotn() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner7e33: Difference quotient of x^n approaches n x^(n-1). Morin (2016) eq (7.33)."
+    return _impl(x, n, delta)
