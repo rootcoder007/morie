@@ -12,7 +12,7 @@ import pytest
 
 from fractions import Fraction
 
-from morie.fn.bsaclass import (accuracy, bayescls, bayesnorm, bhatt,
+from morie.fn.bsaclass import (accuracy, bayescls, bayesnorm, bhattgauss,
                                bhattcoef, chernoff,
                                hellinger, kld,
                                divav, divergence, elbow, errbound,
@@ -215,12 +215,12 @@ def test_divav_reports_the_worst_pair_not_only_the_average():
 
 
 def test_bhattacharyya_is_documented_as_not_from_this_book():
-    r = bhatt([0, 1], [2, -1], C1, C2)
+    r = bhattgauss([0, 1], [2, -1], C1, C2)
     assert r["not_from_this_book"] is True
     assert r["book_uses_divergence_eq_10_115"] is True
     assert r["bhattacharyya"] > 0
     # identical distributions give zero
-    assert bhatt([1, 2], [1, 2], C1, C1)["bhattacharyya"] == \
+    assert bhattgauss([1, 2], [1, 2], C1, C1)["bhattacharyya"] == \
         pytest.approx(0.0, abs=1e-12)
 
 
@@ -657,7 +657,7 @@ def test_every_borrowed_measure_carries_its_primary_citation():
     p2 = [0.1, 0.4, 0.5]
     for r in (bhattcoef(p1, p2), chernoff(p1, p2), hellinger(p1, p2),
               errbound(0.5, 0.5, 1.0),
-              bhatt([0, 1], [2, -1], C1, C2)):
+              bhattgauss([0, 1], [2, -1], C1, C2)):
         assert r["not_from_this_book"] is True
         assert "reference" in r
         assert len(r["reference"]) > 40
