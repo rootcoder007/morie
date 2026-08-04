@@ -1,37 +1,22 @@
-"""Binomial with p = a/n against its Poisson limit.
+"""Deprecated alias for :func:`morie.fn.binpoislim`.
 
-Implements eq (4.34) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .binpoislim import binpoislim as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_34"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_34(k, n, a):
-    """Binomial with p = a/n against its Poisson limit.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (4.34).
-    """
-    exact, limit, err = _morin.binomial_poisson_limit(k, n, a)
-    payload = {"binomial": exact, "poisson": limit, "abs_error": err}
-    lines = [("binomial", exact), ("Poisson limit", limit)]
-    return RichResult(
-        title="Binomial with p = a/n against its Poisson limit.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.binpoislim` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_34() is the book-coordinate name for binpoislim(); "
+        "it will be removed. Use morie.fn.binpoislim() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner4e34: Binomial with p = a/n against its Poisson limit. Morin (2016) eq (4.34)."
+    return _impl(k, n, a)

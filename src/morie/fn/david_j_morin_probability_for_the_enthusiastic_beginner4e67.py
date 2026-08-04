@@ -1,42 +1,22 @@
-"""Binomial variance E(k^2) - (np)^2 = npq.
+"""Deprecated alias for :func:`morie.fn.binomvar`.
 
-Implements eq (4.67) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .binomvar import binomvar as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_67"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_67(n, p):
-    """Binomial variance E(k^2) - (np)^2 = npq.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (4.67).
-    """
-    second = _morin.binomial_second_moment(n, p)
-    mean = _morin.binomial_mean(n, p)
-    value = second - mean ** 2
-    direct = _morin.binomial_variance(n, p)
-    if abs(value - direct) > 1e-9 * max(1.0, direct):
-        raise AssertionError("moment identity disagrees with npq")
-    payload = {"variance": value}
-    lines = [("npq", value)]
-    return RichResult(
-        title="Binomial variance E(k^2) - (np)^2 = npq.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.binomvar` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_67() is the book-coordinate name for binomvar(); "
+        "it will be removed. Use morie.fn.binomvar() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner4e67: Binomial variance E(k^2) - (np)^2 = npq. Morin (2016) eq (4.67)."
+    return _impl(n, p)
