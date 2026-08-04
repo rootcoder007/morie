@@ -7,6 +7,7 @@ symbols are unchanged.
 """
 
 from __future__ import annotations
+from math import cos, fsum, log, log10, pi, sin, sqrt
 from math import fsum
 from math import fsum, sqrt
 from math import inf
@@ -21,21 +22,34 @@ from ._richresult import RichResult, with_describe_pointer
 
 __all__ = [
     'rangayyan_correlation_coeff',
+    'specentropy',
     'rangayyan_spectral_entropy',
+    'fdpsd',
     'rangayyan_fd_psd_slope',
+    'formfactor',
     'rangayyan_form_factor',
+    'fdvag',
     'rangayyan_fractal_vag',
     'rangayyan_higuchi_fd',
+    'katzfd',
     'rangayyan_katz_fd',
+    'firingrate',
     'rangayyan_muap_firing_rate',
+    'nlfeatures',
     'rangayyan_nonlinear_features',
     'rangayyan_pdf_estimate',
+    'rms',
     'rangayyan_rms',
     'rangayyan_rms_noise',
+    'syncavg',
     'rangayyan_sync_average',
+    'sigfeatures',
     'rangayyan_signal_features',
+    'snrfilt',
     'rangayyan_signal_to_noise',
+    'snr',
     'rangayyan_snr',
+    'turnscount',
     'rangayyan_turns_count',
     'rangayyan_zero_crossing',
     'pdfmean',
@@ -67,8 +81,10 @@ __all__ = [
     'covxy',
     'rangayyan_ch3_covariance',
     'rangayyan_ch3_correlation_coefficient',
+    'obsreal',
     'rangayyan_ch3_observed_signal_kth_realization',
 ]
+
 
 
 # -- rgcorec: Pearson correlation coefficient for morphological analysis.
@@ -118,136 +134,202 @@ def rangayyan_correlation_coeff(x, y):
 
 
 # -- rgentrp: Spectral entropy for signal complexity measurement.
-def rangayyan_spectral_entropy(x, fs):
+def specentropy(psd, freqs=None, fmin=None, fmax=None):
+    """Spectral entropy: Shannon entropy of the normalized PSD.
+
+    The PSD is normalized to sum to one and read as a probability mass
+    over frequency, then eq. (3.11) of Rangayyan (2024) is applied:
+
+        p_k = S(f_k) / sum_j S(f_j),   H = - sum_k p_k log2 p_k.
+
+    A flat spectrum gives the maximum log2(K) bits; a pure tone gives
+    zero.  ``normalized`` divides by that maximum so records of different
+    length are comparable.
+
+    Rangayyan (2024) defines the spectral moments of Section 6.4.4 --
+    mean frequency, bandwidth, skewness, kurtosis of the PSD -- but does
+    not print a spectral-entropy equation, so this is eq. (3.11) applied
+    to the PSD rather than a formula quoted from the book.
     """
-    Spectral entropy for signal complexity measurement
+    p = aslist(psd)
+    if not p:
+        raise ValueError("need at least one bin")
+    if any(v < 0 for v in p):
+        raise ValueError("a PSD cannot be negative")
+    if freqs is not None:
+        f = aslist(freqs)
+        if len(f) != len(p):
+            raise ValueError("psd and freqs must have the same length")
+        keep = [(a, b) for a, b in zip(f, p)
+                if (fmin is None or a >= fmin)
+                and (fmax is None or a <= fmax)]
+        if not keep:
+            raise ValueError("the band retains no bins")
+        p = [b for _, b in keep]
+    total = fsum(p)
+    if total <= 0:
+        raise ValueError("the PSD has zero total power")
+    probs = [v / total for v in p]
+    ln2 = log(2.0)
+    h = -fsum(q * log(q) / ln2 for q in probs if q > 0)
+    k = len(probs)
+    hmax = log(k) / ln2 if k > 1 else 0.0
+    return RichResult(payload={
+        "entropy": h, "units": "bits", "max_entropy": hmax,
+        "normalized": (h / hmax) if hmax > 0 else 0.0,
+        "n_bins": k, "probabilities": probs,
+        "method": "Rangayyan (2024) eq. (3.11) applied to the PSD"})
 
-    Formula: H = -sum p_k * log(p_k) where p_k = S(f_k)/sum S(f)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    fs : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: spectral_entropy
-
-    References
-    ----------
-    Rangayyan Ch 5
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Spectral entropy for signal complexity measurement"}
-    )
+rangayyan_spectral_entropy = specentropy  # pre-policy spelling
 
 
 # -- rgfdpsd: Fractal dimension from PSD slope (1/f noise model).
-def rangayyan_fd_psd_slope(psd, freqs, f_range):
+def fdpsd(psd, freqs, fmin=None, fmax=None):
+    """Fractal dimension from the slope of the PSD on log-log axes.
+
+    Rangayyan (2024) Section 6.6.2, eqs. (6.50)-(6.52).  An fBm signal
+    has PSD proportional to 1/f^beta, and for a 1-D signal (E = 1)
+
+        H  = (beta - 1) / 2                                       (6.51)
+        FD = (5 - beta) / 2                                       (6.52)
+
+    with the Hurst coefficient H in [0, 1] and FD in [1, 2].  beta is the
+    NEGATIVE of the least-squares slope of log10 P against log10 f.
+
+    The DC bin is excluded: log(0) is undefined and the DC term carries
+    the mean, not the scaling.  ``in_range`` records whether the fitted
+    beta lands in [0.5, 1.5], the interval the book cites from Voss for
+    most natural phenomena -- a beta far outside it usually means the
+    band was chosen badly rather than that the signal is exotic.
     """
-    Fractal dimension from PSD slope (1/f noise model)
+    p, f = aslist(psd), aslist(freqs)
+    if len(p) != len(f):
+        raise ValueError("psd and freqs must have the same length")
+    pts = [(a, b) for a, b in zip(f, p) if a > 0 and b > 0
+           and (fmin is None or a >= fmin)
+           and (fmax is None or a <= fmax)]
+    if len(pts) < 3:
+        raise ValueError("need at least three positive-frequency bins in "
+                         "the band to fit a slope")
+    lx = [log10(a) for a, _ in pts]
+    ly = [log10(b) for _, b in pts]
+    n = len(lx)
+    mx, my = fsum(lx) / n, fsum(ly) / n
+    sxx = fsum((v - mx) ** 2 for v in lx)
+    if sxx <= 0:
+        raise ValueError("all retained bins share one frequency")
+    slope = fsum((a - mx) * (b - my) for a, b in zip(lx, ly)) / sxx
+    beta = -slope
+    ss_tot = fsum((v - my) ** 2 for v in ly)
+    inter = my - slope * mx
+    ss_res = fsum((b - (inter + slope * a)) ** 2 for a, b in zip(lx, ly))
+    return RichResult(payload={
+        "fd": (5.0 - beta) / 2.0, "beta": beta, "hurst": (beta - 1.0) / 2.0,
+        "slope": slope, "intercept": inter, "n_bins": n,
+        "r_squared": 1.0 - ss_res / ss_tot if ss_tot > 0 else float("nan"),
+        "in_range": 0.5 <= beta <= 1.5,
+        "band": (pts[0][0], pts[-1][0]),
+        "method": "Rangayyan (2024) eqs. (6.50)-(6.52)"})
 
-    Formula: FD = (5 - beta) / 2 where S(f) ~ f^{-beta}; beta from log-log PSD slope
 
-    Parameters
-    ----------
-    psd : array-like
-        Input data.
-    freqs : array-like
-        Input data.
-    f_range : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: fd, beta
-
-    References
-    ----------
-    Rangayyan Ch 6.6.2
-    """
-    psd = np.asarray(psd, dtype=float)
-    n = int(psd) if psd.ndim == 0 else len(psd)
-    result = float(np.mean(psd))
-    se = float(np.std(psd, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Fractal dimension from PSD slope (1/f noise model)"}
-    )
+rangayyan_fd_psd_slope = fdpsd  # pre-policy spelling
 
 
 # -- rgff: Form factor (ratio of RMS to mean absolute value).
-def rangayyan_form_factor(x):
+def formfactor(x):
+    """Hjorth's activity, mobility, and form factor (complexity).
+
+    Rangayyan (2024) Section 5.6.4, eqs. (5.25)-(5.26):
+        activity = sigma_x^2
+        mobility M_x = sigma_{x'} / sigma_x                       (5.25)
+        form factor FF = M_{x'} / M_x
+                       = (sigma_{x''} / sigma_{x'})
+                         / (sigma_{x'} / sigma_x)                 (5.26)
+
+    where x' and x'' are the first and second derivatives.  The book
+    states the complexity of a sinusoid is unity and that other
+    waveforms give larger values as their variation increases.
+
+    The placeholder this replaces defined FF as RMS(x) / mean(|x|),
+    which is the crest-factor family of measures, not Hjorth's.  For a
+    sinusoid that ratio is pi / (2 sqrt(2)) = 1.111, not 1 -- the two
+    definitions do not even agree on the book's stated reference value.
+
+    Derivatives are taken as first differences, which is what a sampled
+    signal admits; the ratios in eq. (5.26) are dimensionless, so the
+    sampling interval cancels and no fs is needed.
     """
-    Form factor (ratio of RMS to mean absolute value)
+    xs = aslist(x)
+    if len(xs) < 4:
+        raise ValueError("need at least four samples for a second derivative")
 
-    Formula: FF = RMS(x) / mean(|x|)
+    def var(v):
+        mu = fsum(v) / len(v)
+        return fsum((u - mu) ** 2 for u in v) / len(v)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    d1 = [xs[i + 1] - xs[i] for i in range(len(xs) - 1)]
+    d2 = [d1[i + 1] - d1[i] for i in range(len(d1) - 1)]
+    a0, a1, a2 = var(xs), var(d1), var(d2)
+    if a0 <= 0:
+        raise ValueError("a constant signal has zero activity; mobility and "
+                         "form factor are undefined")
+    mob = sqrt(a1 / a0)
+    if a1 <= 0:
+        raise ValueError("the first derivative is constant; the form factor "
+                         "is undefined")
+    mob1 = sqrt(a2 / a1)
+    return RichResult(payload={
+        "form_factor": mob1 / mob, "complexity": mob1 / mob,
+        "mobility": mob, "activity": a0,
+        "mobility_of_derivative": mob1,
+        "n": len(xs), "method": "Rangayyan (2024) eqs. (5.25)-(5.26)"})
 
-    Returns
-    -------
-    result : dict
-        Keys: form_factor
 
-    References
-    ----------
-    Rangayyan Ch 5.6.4
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Form factor (ratio of RMS to mean absolute value)"}
-    )
+rangayyan_form_factor = formfactor  # pre-policy spelling
 
 
 # -- rgfracv: Fractal analysis of VAG signals via power spectral slope.
-def rangayyan_fractal_vag(vag, fs):
+def fdvag(x, fs, fmin=100.0, fmax=500.0, nperseg=None):
+    """Fractal dimension of a VAG signal via power spectral analysis.
+
+    Rangayyan (2024) Section 6.6.2 calls PSA the best available method
+    for the FD of a self-affine signal, and Section 6.6.3 applies it to
+    knee-joint vibroarthrographic signals.  The periodogram is fitted
+    over a band -- 100-500 Hz by default, where VAG energy sits above
+    muscle-contraction interference and below the noise floor -- and the
+    slope is converted by eq. (6.52).
+
+    The band is an argument, not a constant, because it is the choice
+    that decides the answer: a band that includes the low-frequency
+    baseline drift fits the drift's slope instead of the signal's.
     """
-    Fractal analysis of VAG signals via power spectral slope
+    xs = aslist(x)
+    if len(xs) < 8:
+        raise ValueError("need at least eight samples")
+    fsv = float(fs)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    m = len(xs) if nperseg is None else min(int(nperseg), len(xs))
+    seg = xs[:m]
+    mu = fsum(seg) / m
+    seg = [v - mu for v in seg]
+    p, f = [], []
+    for k in range(m // 2 + 1):
+        ang = -2.0 * pi * k / m
+        re = fsum(v * cos(ang * i) for i, v in enumerate(seg))
+        im = fsum(v * sin(ang * i) for i, v in enumerate(seg))
+        p.append((re * re + im * im) / m)
+        f.append(k * fsv / m)
+    r = fdpsd(p, f, fmin=fmin, fmax=fmax)
+    out = dict(r)
+    out["fs"] = fsv
+    out["nperseg"] = m
+    out["method"] = "Rangayyan (2024) Sections 6.6.2-6.6.3"
+    return RichResult(payload=out)
 
-    Formula: FD = (5-beta)/2; beta estimated from log-log PSD in 100-500 Hz
 
-    Parameters
-    ----------
-    vag : array-like
-        Input data.
-    fs : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: fd, beta, r_sq
-
-    References
-    ----------
-    Rangayyan Ch 6.6
-    """
-    vag = np.asarray(vag, dtype=float)
-    n = int(vag) if vag.ndim == 0 else len(vag)
-    result = float(np.mean(vag))
-    se = float(np.std(vag, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Fractal analysis of VAG signals via power spectral slope",
-        }
-    )
+rangayyan_fractal_vag = fdvag  # pre-policy spelling
 
 
 # -- rghfd: Higuchi fractal dimension -- Rangayyan Sec. 5.13.2, eqs (5.39)-(5.41).
@@ -337,105 +419,156 @@ def rangayyan_higuchi_fd(x, kmax=10):
 
 
 # -- rgkatzfd: Katz fractal dimension of a waveform.
-def rangayyan_katz_fd(x):
+def katzfd(x, dt=1.0):
+    """Katz's fractal dimension of a waveform.
+
+    Katz (1988), Computers in Biology and Medicine 18(3):145-156:
+
+        FD = log10(n) / ( log10(n) + log10(d / L) ),
+
+    where L is the total path length of the waveform, d is the greatest
+    distance from the first point to any other, and n = L / a is the
+    number of steps, a being the mean step length.  Equivalently
+    n = L / a with a = L / (N - 1) for a uniformly sampled signal, so
+    n = N - 1.
+
+    Rangayyan (2024) Section 5.13.2 covers the ruler method, box counting
+    and Higuchi's algorithm; Katz's estimator is not among them, so this
+    is cited to Katz rather than to the book.  It is included because it
+    is the estimator the module was named for and it is cheap, but note
+    it is scale-sensitive: distances mix the amplitude and time axes, so
+    rescaling the signal changes the answer.  The book's Section 5.13.2
+    warns about exactly this when choosing a ruler size.
     """
-    Katz fractal dimension of a waveform
+    xs = aslist(x)
+    n = len(xs)
+    if n < 3:
+        raise ValueError("need at least three samples")
+    step = float(dt)
+    if step <= 0:
+        raise ValueError("dt must be positive")
+    lengths = [sqrt(step * step + (xs[i + 1] - xs[i]) ** 2)
+               for i in range(n - 1)]
+    total = fsum(lengths)
+    if total <= 0:
+        raise ValueError("the waveform has zero length")
+    d = max(sqrt((i * step) ** 2 + (xs[i] - xs[0]) ** 2) for i in range(n))
+    if d <= 0:
+        raise ValueError("every point coincides with the first")
+    a = total / (n - 1)
+    steps = total / a
+    denom = log10(steps) + log10(d / total)
+    if denom == 0:
+        raise ValueError("the Katz ratio is degenerate for this waveform")
+    return RichResult(payload={
+        "fd": log10(steps) / denom, "total_length": total,
+        "max_distance": d, "mean_step": a, "n_steps": steps, "n": n,
+        "scale_sensitive": True,
+        "method": "Katz (1988); Rangayyan (2024) Section 5.13.2 covers "
+                  "the ruler, box-counting and Higuchi methods instead"})
 
-    Formula: FD = log10(n) / (log10(n) + log10(d/L))
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: fd
-
-    References
-    ----------
-    Rangayyan Ch 5.13.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Katz fractal dimension of a waveform"})
+rangayyan_katz_fd = katzfd  # pre-policy spelling
 
 
 # -- rgmufr: Motor unit mean firing rate and inter-discharge interval (IDI).
-def rangayyan_muap_firing_rate(spike_times):
-    """
-    Motor unit mean firing rate and inter-discharge interval (IDI)
+def firingrate(times, fs=None):
+    """Motor-unit mean firing rate and inter-discharge-interval statistics.
 
-    Formula: MFR = 1/mean(IDI), CV_IDI = std(IDI)/mean(IDI)
+    Rangayyan (2024) Section 4.2 describes temporal recruitment as an
+    increase in the frequency of discharge of each motor unit, and the
+    exercises in Chapter 5 ask for the firing rate of each detected
+    motor unit.  From the discharge instants:
+
+        IDI_k  = t_{k+1} - t_k
+        MFR    = 1 / mean(IDI)
+        CV_IDI = SD(IDI) / mean(IDI).
+
+    MFR is the RECIPROCAL OF THE MEAN interval, not the mean of the
+    reciprocals; those differ whenever the intervals vary (Jensen), and
+    the reciprocal-of-mean is the one that equals discharges per unit
+    time.  Both are returned so the difference is visible.
 
     Parameters
     ----------
-    spike_times : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: mfr, cv_idi
-
-    References
-    ----------
-    Rangayyan Ch 1.2.4
+    times : array-like
+        Discharge instants: seconds if ``fs`` is None, otherwise sample
+        indices converted with the given sampling rate.
+    fs : float, optional
+        Sampling rate in Hz.
     """
-    spike_times = np.asarray(spike_times, dtype=float)
-    n = int(spike_times) if spike_times.ndim == 0 else len(spike_times)
-    result = float(np.mean(spike_times))
-    se = float(np.std(spike_times, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Motor unit mean firing rate and inter-discharge interval (IDI)",
-        }
-    )
+    ts = aslist(times)
+    if len(ts) < 2:
+        raise ValueError("need at least two discharges to form an interval")
+    if fs is not None:
+        if fs <= 0:
+            raise ValueError("fs must be positive")
+        ts = [v / float(fs) for v in ts]
+    if any(b <= a for a, b in zip(ts, ts[1:])):
+        raise ValueError("discharge instants must be strictly increasing")
+    idi = [b - a for a, b in zip(ts, ts[1:])]
+    m = fsum(idi) / len(idi)
+    sd = sqrt(fsum((v - m) ** 2 for v in idi) / len(idi))
+    return RichResult(payload={
+        "mfr": 1.0 / m, "mean_idi": m, "sd_idi": sd, "cv_idi": sd / m,
+        "idi": idi, "n_discharges": len(ts),
+        "mean_instantaneous_rate": fsum(1.0 / v for v in idi) / len(idi),
+        "duration": ts[-1] - ts[0],
+        "method": "Rangayyan (2024) Sections 4.2, 5.x (motor-unit "
+                  "discharge statistics)"})
+
+
+rangayyan_muap_firing_rate = firingrate  # pre-policy spelling
 
 
 # -- rgnl: Nonlinear features of biomedical signals (ApEn, SampEn, DFA, Lyapunov).
-def rangayyan_nonlinear_features(x, m, r):
+def nlfeatures(x, m=2, r=None, dt=1.0):
+    """Nonlinear feature vector: ApEn, SampEn, DFA exponent, Lyapunov.
+
+    Rangayyan (2024) Section 5.13 groups fractal and nonlinear measures
+    as descriptors of waveform complexity.  Each component here is
+    computed by the module that owns it rather than reimplemented:
+
+    - approximate entropy, Pincus (1991)
+    - sample entropy, Richman and Moorman (2000)
+    - detrended fluctuation analysis exponent, Peng et al. (1994)
+    - largest Lyapunov exponent, Rosenstein et al. (1993)
+
+    Only the fractal dimension of Section 5.13.2 is the book's own; the
+    other four are cited to their primary sources, which is why they
+    are listed by author here.  A component that fails on a given record
+    (too few samples, a degenerate embedding) is reported as None with
+    its reason, rather than aborting the whole feature vector.
     """
-    Nonlinear features of biomedical signals (ApEn, SampEn, DFA, Lyapunov)
+    xs = aslist(x)
+    if len(xs) < 16:
+        raise ValueError("need at least sixteen samples for these measures")
+    out, errs = {}, {}
+    parts = [
+        ("apen", "rgapn", "rangayyan_approximate_entropy", (), {"m": m, "r": r}),
+        ("sampen", "rgsam", "rangayyan_sample_entropy", (), {"m": m, "r": r}),
+        ("dfa", "rgdfa", "rangayyan_dfa", (), {}),
+        ("lyapunov", "rglyp", "rangayyan_lyapunov", (), {"dt": dt}),
+    ]
+    import importlib
 
-    Formula: Feature vector: [ApEn, SampEn, alpha_DFA, lambda_max]
+    for key, mod, fname, args, kw in parts:
+        try:
+            fn = getattr(importlib.import_module("." + mod, __package__),
+                         fname)
+            res = fn(xs, *args, **kw)
+            out[key] = res
+        except Exception as exc:                     # noqa: BLE001
+            out[key] = None
+            errs[key] = "%s: %s" % (type(exc).__name__, exc)
+    return RichResult(payload={
+        "features": out, "failures": errs, "n": len(xs),
+        "method": "Rangayyan (2024) Section 5.13; components cited to "
+                  "Pincus (1991), Richman and Moorman (2000), Peng et al. "
+                  "(1994), Rosenstein et al. (1993)"})
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    m : array-like
-        Input data.
-    r : array-like
-        Input data.
 
-    Returns
-    -------
-    result : dict
-        Keys: features_dict
-
-    References
-    ----------
-    Rangayyan Ch 7
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Nonlinear features of biomedical signals (ApEn, SampEn, DFA, Lyapunov)",
-        }
-    )
+rangayyan_nonlinear_features = nlfeatures  # pre-policy spelling
 
 
 # -- rgpdfest: Probability density estimate.
@@ -508,37 +641,40 @@ def rangayyan_pdf_estimate(x, bins=None, bw=None, method="kde", grid=None):
 
 
 # -- rgrms: Root mean square (RMS) value of a signal.
-def rangayyan_rms(x):
+def rms(x, window=None):
+    """Root-mean-square value of a signal, whole or short-time.
+
+    Rangayyan (2024) eq. (3.9):
+        RMS = sqrt( (1/N) sum_{n} x(n)^2 ),
+
+    the average signal level; the divisor is N, not N-1.  With
+    ``window`` the same quantity is computed in a causal moving window,
+    which is how the book uses it for EMG activity in Section 5.6 and
+    Figure 5.10 (a 70 ms window there).
     """
-    Root mean square (RMS) value of a signal
+    from .bsastat import srms
 
-    Formula: RMS = sqrt((1/N) sum x[n]^2)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: rms
-
-    References
-    ----------
-    Rangayyan Ch 5.6.1
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Root mean square (RMS) value of a signal"}
-    )
+    xs = aslist(x)
+    if not xs:
+        raise ValueError("need at least one sample")
+    whole = srms(xs)
+    out = {"rms": whole["rms"], "ms": whole["ms"], "n": len(xs),
+           "method": "Rangayyan (2024) eq. (3.9)"}
+    if window is not None:
+        w = int(window)
+        if w < 1:
+            raise ValueError("window must be at least one sample")
+        short = []
+        for i in range(len(xs)):
+            lo = max(0, i - w + 1)
+            seg = xs[lo:i + 1]
+            short.append(sqrt(fsum(v * v for v in seg) / len(seg)))
+        out["short_time"] = short
+        out["window"] = w
+    return RichResult(payload=out)
 
 
-# compact alias per ledger/NAMING.md
-rangayyanrms = rangayyan_rms
+rangayyan_rms = rms  # pre-policy spelling
 
 
 # -- rgrmsnw: RMS noise level.
@@ -596,178 +732,266 @@ def rangayyan_rms_noise(x, noise_segments=None):
 
 
 # -- rgsavg: Synchronized (ensemble) averaging for SNR enhancement.
-def rangayyan_sync_average(epochs):
+def syncavg(observations):
+    """Synchronized (ensemble) averaging of M aligned realizations.
+
+    Rangayyan (2024) Section 3.5, eqs. (3.95)-(3.96):
+        y_k(n) = x_k(n) + eta_k(n)                                (3.95)
+        sum_k y_k(n) = sum_k x_k(n) + sum_k eta_k(n)              (3.96)
+
+    If the repetitions are identical and aligned, the signal sum is
+    M x(n) while the zero-mean noise sum grows only as sqrt(M) -- so
+    dividing by M leaves the signal intact and shrinks the noise SD by
+    1/sqrt(M), an SNR gain of sqrt(M), or 10 log10(M) dB.
+
+    The two premises are what make it work and what make it fail, so
+    both are reported: ``alignment_note`` records that alignment is the
+    caller's responsibility (the book aligns ERPs on the stimulus and
+    ECGs on the QRS), and the per-instant SD lets a caller see whether
+    the realizations really are repetitions of one signal.
     """
-    Synchronized (ensemble) averaging for SNR enhancement
+    recs = [aslist(r) for r in observations]
+    m = len(recs)
+    if m == 0:
+        raise ValueError("need at least one observation")
+    n = len(recs[0])
+    if n == 0:
+        raise ValueError("records must be nonempty")
+    if any(len(r) != n for r in recs):
+        raise ValueError("all realizations must have the same length; "
+                         "averaging ragged records would average a "
+                         "different number of traces at different instants")
+    avg = [fsum(r[i] for r in recs) / m for i in range(n)]
+    sd = [sqrt(fsum((r[i] - avg[i]) ** 2 for r in recs) / m)
+          for i in range(n)]
+    return RichResult(payload={
+        "average": avg, "sd": sd, "m": m, "n": n,
+        "se": [s / sqrt(m) for s in sd],
+        "snr_gain": sqrt(m), "snr_gain_db": 10.0 * log10(m),
+        "alignment_note": "eqs. (3.95)-(3.96) assume the realizations are "
+                          "already aligned; misalignment smears the average",
+        "method": "Rangayyan (2024) eqs. (3.95)-(3.96)"})
 
-    Formula: x_avg[n] = (1/M) sum_{k=1}^{M} x_k[n]; SNR = sqrt(M) * signal_SNR
 
-    Parameters
-    ----------
-    epochs : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: averaged_signal, snr_gain
-
-    References
-    ----------
-    Rangayyan Ch 3.5
-    """
-    epochs = np.asarray(epochs, dtype=float)
-    n = int(epochs) if epochs.ndim == 0 else len(epochs)
-    result = float(np.mean(epochs))
-    se = float(np.std(epochs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Synchronized (ensemble) averaging for SNR enhancement",
-        }
-    )
+rangayyan_sync_average = syncavg  # pre-policy spelling
 
 
 # -- rgsf: Generic biomedical signal feature vector: time-domain + frequency-domain + nonlinear.
-def rangayyan_signal_features(x, fs):
+def sigfeatures(x, fs=1.0, threshold=0.0):
+    """Time- and frequency-domain feature vector for a biomedical signal.
+
+    Collects the descriptors Rangayyan (2024) uses across Chapters 3, 5
+    and 6, each computed by the function that owns its definition so the
+    vector cannot disagree with the individual measures:
+
+    - mean and SD, eqs. (3.7), (3.10)
+    - RMS, eq. (3.9)
+    - zero-crossing rate, Section 5.6.2
+    - turns count, Section 5.6.3 (Willison)
+    - Hjorth activity, mobility, form factor, eqs. (5.25)-(5.26)
+    - spectral centroid and bandwidth from the periodogram
+    - spectral entropy, eq. (3.11) applied to the PSD
+
+    ``threshold`` is passed to the turns count and defaults to 0, which
+    counts every direction change: for a real EMG record pass the book's
+    100 microvolt threshold, or the count is dominated by noise.
     """
-    Generic biomedical signal feature vector: time-domain + frequency-domain + nonlinear
+    xs = aslist(x)
+    if len(xs) < 8:
+        raise ValueError("need at least eight samples")
+    fsv = float(fs)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    n = len(xs)
+    mu = fsum(xs) / n
+    sd = sqrt(fsum((v - mu) ** 2 for v in xs) / n)
+    rms_v = sqrt(fsum(v * v for v in xs) / n)
+    zc = sum(1 for i in range(1, n)
+             if (xs[i - 1] < 0 <= xs[i]) or (xs[i - 1] >= 0 > xs[i]))
+    hj = formfactor(xs)
+    seg = [v - mu for v in xs]
+    p, f = [], []
+    for k in range(n // 2 + 1):
+        ang = -2.0 * pi * k / n
+        re = fsum(v * cos(ang * i) for i, v in enumerate(seg))
+        im = fsum(v * sin(ang * i) for i, v in enumerate(seg))
+        p.append((re * re + im * im) / n)
+        f.append(k * fsv / n)
+    tot = fsum(p)
+    centroid = fsum(a * b for a, b in zip(f, p)) / tot if tot > 0 else 0.0
+    bw = sqrt(fsum((a - centroid) ** 2 * b for a, b in zip(f, p)) / tot) \
+        if tot > 0 else 0.0
+    ent = specentropy(p)
+    return RichResult(payload={
+        "mean": mu, "sd": sd, "rms": rms_v,
+        "zero_crossings": zc, "zcr": zc * fsv / n,
+        "turns": turnscount(xs, threshold=threshold)["turns"],
+        "activity": hj["activity"], "mobility": hj["mobility"],
+        "form_factor": hj["form_factor"],
+        "spectral_centroid": centroid, "spectral_bandwidth": bw,
+        "spectral_entropy": ent["entropy"],
+        "n": n, "fs": fsv,
+        "method": "Rangayyan (2024) Chapters 3, 5, 6 feature set"})
 
-    Formula: F = [mean, std, rms, zcr, form_factor, centroid, bandwidth, spectral_entropy, sample_entropy]
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    fs : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: feature_vector
-
-    References
-    ----------
-    Rangayyan Ch 10
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Generic biomedical signal feature vector: time-domain + frequency-domain + nonlinear",
-        }
-    )
+rangayyan_signal_features = sigfeatures  # pre-policy spelling
 
 
 # -- rgsig2n: Signal-to-noise ratio calculation after filtering.
-def rangayyan_signal_to_noise(signal_clean, signal_noisy):
+def snrfilt(clean, filtered):
+    """SNR improvement achieved by a filter.
+
+    The residual is what the filter failed to remove, so with a known
+    clean reference the output SNR is
+
+        SNR_out = 10 log10( sum clean^2 / sum (filtered - clean)^2 ),
+
+    the power form of Rangayyan (2024) Section 3.2.1 applied to that
+    residual.  Note this measures the DISTORTED output against the truth:
+    a filter that removes noise but also smooths the signal is penalised
+    for both, which is the honest accounting -- comparing only the noise
+    power would flatter an over-smoothing filter.
     """
-    Signal-to-noise ratio calculation after filtering
+    c, f = aslist(clean), aslist(filtered)
+    if len(c) != len(f):
+        raise ValueError("clean and filtered must have the same length")
+    if not c:
+        raise ValueError("need at least one sample")
+    resid = [b - a for a, b in zip(c, f)]
+    ps = fsum(v * v for v in c)
+    pr = fsum(v * v for v in resid)
+    if pr <= 0:
+        return RichResult(payload={
+            "snr_db": float("inf"), "residual_power": 0.0,
+            "signal_power": ps, "residual": resid, "n": len(c),
+            "method": "Rangayyan (2024) Section 3.2.1"})
+    return RichResult(payload={
+        "snr_db": 10.0 * log10(ps / pr), "residual_power": pr,
+        "signal_power": ps, "residual": resid, "n": len(c),
+        "method": "Rangayyan (2024) Section 3.2.1"})
 
-    Formula: SNR = 10*log10(sum(x_clean^2)/sum(noise^2))
 
-    Parameters
-    ----------
-    signal_clean : array-like
-        Input data.
-    signal_noisy : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: snr_db
-
-    References
-    ----------
-    Rangayyan Ch 3
-    """
-    signal_clean = np.asarray(signal_clean, dtype=float)
-    n = int(signal_clean) if signal_clean.ndim == 0 else len(signal_clean)
-    result = float(np.mean(signal_clean))
-    se = float(np.std(signal_clean, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Signal-to-noise ratio calculation after filtering"}
-    )
+rangayyan_signal_to_noise = snrfilt  # pre-policy spelling
 
 
 # -- rgsnr: Signal-to-noise ratio (dB).
-def rangayyan_snr(signal, noise):
+def snr(signal, noise, definition="power"):
+    """Signal-to-noise ratio in dB.
+
+    Rangayyan (2024), Section 3.2.1, gives two definitions in the same
+    sentence, and they are not interchangeable:
+
+    ``definition="power"``
+        the ratio of the average power of the signal to that of the
+        noise,  SNR = 10 log10( P_signal / P_noise ).
+    ``definition="peak"``
+        the ratio of the PEAK-TO-PEAK amplitude range of the signal of
+        interest to the RMS value of the noise,
+        SNR = 20 log10( (max - min) / RMS_noise ).
+
+    The peak form is an amplitude ratio, hence 20 log10, and it runs
+    roughly 9 dB above the power form for a sinusoid -- so reporting one
+    while the reader assumes the other is a real error, not a rounding
+    difference.  Both are returned; ``snr_db`` is the one named.
     """
-    Signal-to-noise ratio (dB)
-
-    Formula: SNR = 10*log10(P_signal / P_noise)
-
-    Parameters
-    ----------
-    signal : array-like
-        Input data.
-    noise : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: snr_db
-
-    References
-    ----------
-    Rangayyan Ch 1
-    """
-    signal = np.asarray(signal, dtype=float)
-    n = int(signal) if signal.ndim == 0 else len(signal)
-    result = float(np.mean(signal))
-    se = float(np.std(signal, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Signal-to-noise ratio (dB)"})
+    s, e = aslist(signal), aslist(noise)
+    if not s or not e:
+        raise ValueError("both signal and noise need at least one sample")
+    ps = fsum(v * v for v in s) / len(s)
+    pn = fsum(v * v for v in e) / len(e)
+    if pn <= 0:
+        raise ValueError("noise power is zero; the SNR is unbounded")
+    power_db = 10.0 * log10(ps / pn)
+    peak_db = 20.0 * log10((max(s) - min(s)) / sqrt(pn)) \
+        if max(s) > min(s) else float("-inf")
+    if definition not in ("power", "peak"):
+        raise ValueError("definition must be 'power' or 'peak'")
+    return RichResult(payload={
+        "snr_db": power_db if definition == "power" else peak_db,
+        "snr_power_db": power_db, "snr_peak_db": peak_db,
+        "signal_power": ps, "noise_power": pn,
+        "noise_rms": sqrt(pn), "definition": definition,
+        "method": "Rangayyan (2024) Section 3.2.1"})
 
 
-# compact alias per ledger/NAMING.md
-rangayyansnr = rangayyan_snr
+rangayyan_snr = snr  # pre-policy spelling
 
 
 # -- rgturns: Turns count of an EMG signal (number of direction reversals above threshold).
-def rangayyan_turns_count(x, threshold):
-    """
-    Turns count of an EMG signal (number of direction reversals above threshold)
+def turnscount(x, threshold=100.0, window=None):
+    """Willison's turns count.
 
-    Formula: Turn: local extremum where |delta_amp| > threshold
+    Rangayyan (2024) Section 5.6.3, after Willison: a turn is a change in
+    the direction (slope) of the signal, and a turn is COUNTED only when
+    the excursion since the previous counted turn exceeds a threshold --
+    100 microvolts in the book, chosen so that insignificant noise
+    fluctuations are not counted.
+
+    The threshold is measured against the last counted turn, not against
+    the immediately preceding sample.  That is what separates this from
+    simply counting turning points (Section 3.2.1) and is the reason the
+    book calls it robust in noise: a small wobble on a long rising edge
+    produces turning points but no turns.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    threshold : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: turns_count, turn_locs
-
-    References
-    ----------
-    Rangayyan Ch 5.6.3
+        Signal, in the same units as ``threshold``.
+    threshold : float
+        Minimum excursion for a turn to count; 100 (microvolts) in the
+        book's EMG application.
+    window : int, optional
+        Length of a causal moving window, giving a turns-count series as
+        in Figure 5.10 (210 samples there, 70 ms at 3 kHz).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Turns count of an EMG signal (number of direction reversals above threshold)",
-        }
-    )
+    xs = aslist(x)
+    if len(xs) < 3:
+        raise ValueError("need at least three samples to have a turn")
+    if threshold < 0:
+        raise ValueError("threshold must be nonnegative")
+
+    def count(seg):
+        if len(seg) < 3:
+            return 0, []
+        turns, idx = 0, []
+        last = seg[0]
+        direction = 0
+        for i in range(1, len(seg)):
+            step = seg[i] - seg[i - 1]
+            if step == 0:
+                continue
+            d = 1 if step > 0 else -1
+            if direction == 0:
+                direction = d
+                continue
+            if d != direction:
+                # a reversal at sample i-1; count it only if the swing
+                # since the last counted turn is large enough
+                if abs(seg[i - 1] - last) > threshold:
+                    turns += 1
+                    idx.append(i - 1)
+                    last = seg[i - 1]
+                direction = d
+        return turns, idx
+
+    total, positions = count(xs)
+    out = {"turns": total, "positions": positions, "threshold": threshold,
+           "n": len(xs), "method": "Rangayyan (2024) Section 5.6.3"}
+    if window is not None:
+        w = int(window)
+        if w < 3:
+            raise ValueError("window must hold at least three samples")
+        series = []
+        for i in range(len(xs)):
+            lo = max(0, i - w + 1)
+            series.append(count(xs[lo:i + 1])[0])
+        out["short_time"] = series
+        out["window"] = w
+        out["rate"] = total / len(xs)
+    return RichResult(payload=out)
+
+
+rangayyan_turns_count = turnscount  # pre-policy spelling
 
 
 # -- rgzcr: Zero-crossing rate -- Rangayyan & Krishnan Sec 5.6.2.
@@ -1464,81 +1688,87 @@ def rangayyan_ch3_correlation_coefficient(C_xy, sigma_x, sigma_y):
 
 
 # -- rng084: kth observed realization of a signal in noise (signal-plus-noise model)..
-def rangayyan_ch3_observed_signal_kth_realization(x_k, eta_k, n):
-    """
-    kth observed realization of a signal in noise (signal-plus-noise model).
+def obsreal(x, eta):
+    """The k-th observed realization of a signal in noise.
 
-    Formula: y_k(n) = x_k(n) + eta_k(n)
+    Rangayyan (2024) eq. (3.95):
+        y_k(n) = x_k(n) + eta_k(n),
+
+    with k = 1..M the ensemble index and n = 0..N-1 the time index.  This
+    is the model synchronized averaging assumes; forming the ensemble
+    here and handing it to :func:`syncavg` is what eq. (3.96) then does.
 
     Parameters
     ----------
-    x_k : array-like
-        Input data.
-    eta_k : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.95, p. 135
+    x : array-like or sequence of array-like
+        The uncorrupted signal.  A single record is read as the same
+        signal repeated for every realization, which is the book's
+        "identical and aligned" case.
+    eta : sequence of array-like
+        The noise in each of the M observations.
     """
-    x_k = np.atleast_1d(np.asarray(x_k, dtype=float))
-    n = len(x_k)
-    result = float(np.mean(x_k))
-    se = float(np.std(x_k, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "kth observed realization of a signal in noise (signal-plus-noise model).",
-        }
-    )
+    noises = [aslist(e) for e in eta]
+    m = len(noises)
+    if m == 0:
+        raise ValueError("need at least one noise realization")
+    n = len(noises[0])
+    if any(len(e) != n for e in noises):
+        raise ValueError("all noise realizations must have the same length")
+    first = aslist(x[0]) if x and hasattr(x[0], "__len__") else aslist(x)
+    signals = [aslist(r) for r in x] if x and hasattr(x[0], "__len__") \
+        else [first] * m
+    if len(signals) != m:
+        raise ValueError("give one signal per realization, or one for all")
+    if any(len(s) != n for s in signals):
+        raise ValueError("signal and noise records must have equal length")
+    y = [[s[i] + e[i] for i in range(n)] for s, e in zip(signals, noises)]
+    identical = all(all(abs(a - b) < 1e-12 for a, b in zip(s, first))
+                    for s in signals)
+    return RichResult(payload={
+        "y": y, "m": m, "n": n, "identical_repetitions": identical,
+        "method": "Rangayyan (2024) eq. (3.95)"})
+
+
+rangayyan_ch3_observed_signal_kth_realization = obsreal  # pre-policy spelling
 
 
 _CHEATSHEET = [
-    'rgcorec: Pearson correlation coefficient for morphological analysis',
-    'rgentrp: Spectral entropy for signal complexity measurement',
-    'rgfdpsd: Fractal dimension from PSD slope (1/f noise model)',
-    'rgff: Form factor (ratio of RMS to mean absolute value)',
-    'rgfracv: Fractal analysis of VAG signals via power spectral slope',
-    'rghfd: Higuchi fractal dimension -- Rangayyan Sec. 5.13.2',
-    'rgkatzfd: Katz fractal dimension of a waveform',
-    'rgmufr: Motor unit mean firing rate and inter-discharge interval (IDI)',
-    'rgnl: Nonlinear features of biomedical signals (ApEn, SampEn, DFA, Lyapunov)',
-    'rgpdfest: Silverman h reported, not hidden; integral returned as a check',
-    'rgrms: Root mean square (RMS) value of a signal',
-    "rgrmsnw: signal leaking into the 'noise' segment deflates every SNR",
-    'rgsavg: Synchronized (ensemble) averaging for SNR enhancement',
-    'rgsf: Generic biomedical signal feature vector: time-domain + frequency-domain + nonlinear',
-    'rgsig2n: Signal-to-noise ratio calculation after filtering',
-    'rgsnr: Signal-to-noise ratio (dB)',
-    'rgturns: Turns count of an EMG signal (number of direction reversals above threshold)',
-    'rgzcr: Zero-crossing rate -- Rangayyan & Krishnan Sec 5.6.2',
-    'rng001: mean of a PDF, Rangayyan eq. (3.1)',
-    'rng002: mean-squared value of a PDF, Rangayyan eq. (3.2)',
-    'rng003: variance of a PDF, Rangayyan eq. (3.3)',
-    'rng004: skewness of a PDF, Rangayyan eq. (3.4)',
-    'rng005: kurtosis of a PDF, Rangayyan eq. (3.5)',
-    'rng006: differential entropy of a PDF, Rangayyan eq. (3.6)',
-    'rng007: sample mean, Rangayyan eq. (3.7)',
-    'rng008: mean square is total power, not variance, unless mu = 0',
-    'rng009: sample RMS/MS/SD, Rangayyan eqs. (3.8)-(3.10)',
-    'rng010: divisor N, not N-1; both returned',
-    'rng012: additive noise model, Rangayyan eqs. (3.12)-(3.14)',
-    'rng013: mean of a sum, Rangayyan eq. (3.13)',
-    'rng014: sigma_y^2 = sigma_x^2 + sigma_eta^2 (Rangayyan Eq 3.14).',
-    'rng015: ensemble mean at an instant, Rangayyan eq. (3.15)',
-    'rng019: time vs ensemble mean agreeing IS the ergodicity check',
-    'rng021: covariance and correlation, Rangayyan eqs. (3.21)-(3.22)',
-    'rng022: rho_xy = C_xy/(sigma_x sigma_y) (Rangayyan Eq 3.22).',
-    'rng084: kth observed realization of a signal in noise (signal-plus-noise model).',
+    'rgcorec: Pearson correlation coefficient for morphological analysis.',
+    'rgentrp: spectral entropy, eq. (3.11) applied to the PSD',
+    'rgfdpsd: fractal dimension from PSD slope, eqs. (6.50)-(6.52)',
+    'rgff: Hjorth form factor / complexity, Rangayyan eqs. (5.25)-(5.26)',
+    'rgfracv: fractal dimension of VAG signals, Sections 6.6.2-6.6.3',
+    'rghfd: Higuchi fractal dimension -- Rangayyan Sec. 5.13.2, eqs (5.39)-(5.41).',
+    'rgkatzfd: Katz fractal dimension (Katz 1988)',
+    'rgmufr: motor-unit firing rate and IDI statistics',
+    'rgnl: nonlinear feature vector (ApEn, SampEn, DFA, Lyapunov)',
+    'rgpdfest: Probability density estimate.',
+    'rgrms: RMS value, Rangayyan eq. (3.9)',
+    'rgrmsnw: RMS noise level.',
+    'rgsavg: synchronized averaging, Rangayyan eqs. (3.95)-(3.96)',
+    'rgsf: time- and frequency-domain feature vector',
+    'rgsig2n: SNR after filtering, Rangayyan Section 3.2.1',
+    'rgsnr: signal-to-noise ratio in dB, Rangayyan Section 3.2.1',
+    'rgturns: Willison turns count, Rangayyan Section 5.6.3',
+    'rgzcr: Zero-crossing rate -- Rangayyan & Krishnan Sec 5.6.2.',
+    'rng001: Mean of a random process from its PDF (Rangayyan eq. 3.1).',
+    'rng002: Mean-squared value of a random process (Rangayyan eq. 3.2).',
+    'rng003: Variance of a random process (Rangayyan eq. 3.3).',
+    'rng004: Skewness of a random process (Rangayyan eq. 3.4).',
+    'rng005: Kurtosis of a random process (Rangayyan eq. 3.5).',
+    'rng006: Differential entropy of a continuous PDF (Rangayyan eq. 3.6).',
+    'rng007: Sample mean of an observed signal (Rangayyan eq. 3.7).',
+    'rng008: Sample mean square.',
+    'rng009: Sample RMS, MS, and SD of an observed signal (Rangayyan eqs. 3.8-3.10).',
+    'rng010: Sample standard deviation.',
+    'rng012: Additive signal-plus-noise model (Rangayyan eqs. 3.12-3.14).',
+    'rng013: Mean of a sum of random processes (Rangayyan eq. 3.13).',
+    'rng014: Variance of a sum of two uncorrelated random processes (Rangayyan Eq 3.14).',
+    'rng015: Ensemble mean at one instant (Rangayyan eq. 3.15).',
+    'rng019: Time-average mean.',
+    'rng021: Covariance and correlation coefficient (Rangayyan eqs. 3.21-3.22).',
+    'rng022: Correlation coefficient as normalised covariance (Rangayyan Eq 3.22).',
+    'rng084: signal-plus-noise realization, Rangayyan eq. (3.95)',
 ]
 
 
