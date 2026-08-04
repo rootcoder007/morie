@@ -14,7 +14,7 @@
 #' @export
 Hendmme <- function(X, Z, y, Sigma_inv, R_inv = NULL) {
   out <- morie_mme(X, Z, y, Sigma_inv, R_inv = R_inv)
-  b <- out$beta; uu <- out$u
+  b <- out$blue; uu <- out$blup
   Xm <- .t1_mat(X); Zm <- .t1_mat(Z)
   .t1_result(beta = b, u = uu,
              fitted = as.numeric(Xm %*% b) + as.numeric(Zm %*% uu),
