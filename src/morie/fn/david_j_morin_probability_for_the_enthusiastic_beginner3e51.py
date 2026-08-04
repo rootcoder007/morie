@@ -1,37 +1,22 @@
-"""sigma_tot = sqrt(n)/2 for n fair coins (worked variant).
+"""Deprecated alias for :func:`morie.fn.sdcoinsum`.
 
-Implements eq (3.51) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .sdcoinsum import sdcoinsum as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_51"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_51(n):
-    """sigma_tot = sqrt(n)/2 for n fair coins (worked variant).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.51).
-    """
-    value = _morin.sd_fair_coin_sum(n)
-    payload = {"n": int(n), "sd_tot": value}
-    lines = [("sigma_tot", value)]
-    return RichResult(
-        title="sigma_tot = sqrt(n)/2 for n fair coins (worked variant).",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.sdcoinsum` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_51() is the book-coordinate name for sdcoinsum(); "
+        "it will be removed. Use morie.fn.sdcoinsum() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e51: sigma_tot = sqrt(n)/2 for n fair coins (worked variant). Morin (2016) eq (3.51)."
+    return _impl(n)
