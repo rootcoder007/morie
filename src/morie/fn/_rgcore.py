@@ -22,7 +22,37 @@ def aslist(x):
     try:
         return [float(v) for v in x]
     except TypeError:
-        return [float(x)]
+        # Only fall back for a genuine scalar.  Falling back for ANY
+        # TypeError also caught "iterable whose elements are not real",
+        # and then float(x) on the whole sequence reported the container
+        # as the offender instead of the element.
+        try:
+            iter(x)
+        except TypeError:
+            return [float(x)]
+        raise
+
+
+def aslistc(x):
+    """Coerce to a plain list, PRESERVING complex values.
+
+    aslist() forces float and so cannot carry a spectrum.  Anything doing
+    complex-logarithm or conjugate arithmetic -- the complex cepstrum of
+    eqs (4.63) and (4.68), for instance -- needs this instead.
+    """
+    if x is None:
+        return []
+    if hasattr(x, "tolist"):
+        x = x.tolist()
+    try:
+        return [v if isinstance(v, complex) else complex(float(v))
+                for v in x]
+    except TypeError:
+        try:
+            iter(x)
+        except TypeError:
+            return [x if isinstance(x, complex) else complex(float(x))]
+        raise
 
 
 def gridint(y, x=None):
