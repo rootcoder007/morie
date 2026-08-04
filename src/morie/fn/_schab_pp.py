@@ -76,8 +76,10 @@ def border_distance(points, region):
     """Distance from each event to the nearest edge of the bounding region."""
     p = as_points(points)
     xmin, ymin, xmax, ymax = region
-    return np.minimum.reduce([p[:, 0] - xmin, xmax - p[:, 0],
-                              p[:, 1] - ymin, ymax - p[:, 1]])
+    # _array_core.minimum is a plain binary function, not a numpy ufunc, so
+    # it has no .reduce; fold the four edge distances pairwise instead.
+    return np.minimum(np.minimum(p[:, 0] - xmin, xmax - p[:, 0]),
+                      np.minimum(p[:, 1] - ymin, ymax - p[:, 1]))
 
 
 def k_function(points, region, r, correction="border"):
