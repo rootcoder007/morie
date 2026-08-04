@@ -1,37 +1,22 @@
-"""Var(X + Y) = Var(X) + Var(Y) for independent X, Y.
+"""Deprecated alias for :func:`morie.fn.varsum`.
 
-Implements eq (3.25) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .varsum import varsum as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_25"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_25(var_x, var_y):
-    """Var(X + Y) = Var(X) + Var(Y) for independent X, Y.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.25).
-    """
-    value = _morin.var_sum_independent([var_x, var_y])
-    payload = {"var_sum": value}
-    lines = [("Var(X+Y)", value)]
-    return RichResult(
-        title="Var(X + Y) = Var(X) + Var(Y) for independent X, Y.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.varsum` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_25() is the book-coordinate name for varsum(); "
+        "it will be removed. Use morie.fn.varsum() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e25: Var(X + Y) = Var(X) + Var(Y) for independent X, Y. Morin (2016) eq (3.25)."
+    return _impl([var_x, var_y])

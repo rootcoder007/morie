@@ -1,37 +1,22 @@
-"""Variance of one fair coin flip (Heads=1, Tails=0) is 1/4.
+"""Deprecated alias for :func:`morie.fn.coinvar`.
 
-Implements eq (3.21) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .coinvar import coinvar as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_21"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_21():
-    """Variance of one fair coin flip (Heads=1, Tails=0) is 1/4.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.21).
-    """
-    variance, mu = _morin.pmf_variance([0.0, 1.0], [0.5, 0.5])
-    payload = {"variance": variance, "mean": mu}
-    lines = [("variance", variance)]
-    return RichResult(
-        title="Variance of one fair coin flip (Heads=1, Tails=0) is 1/4.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.coinvar` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_21() is the book-coordinate name for coinvar(); "
+        "it will be removed. Use morie.fn.coinvar() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e21: Variance of one fair coin flip (Heads=1, Tails=0) is 1/4. Morin (2016) eq (3.21)."
+    return _impl()
