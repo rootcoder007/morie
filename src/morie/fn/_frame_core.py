@@ -1327,6 +1327,11 @@ class DataFrame:
         return {c: dict(zip(self.index, v))
                 for c, v in self._cols.items()}
 
+    def to_parquet(self, path, compression="snappy"):
+        """Write this frame to a Parquet file (native codec)."""
+        from ._parquet_core import to_parquet as _wp
+        return _wp(self, path, compression=compression)
+
     def to_csv(self, path=None, index=True, sep=","):
         import io
         buf = io.StringIO()
@@ -2431,11 +2436,17 @@ class ExcelFile:
         return read_excel(self._path, sheet_name=sheet_name, **kw)
 
 
-def read_parquet(path, **kw):
-    raise ImportError(
-        "read_parquet requires a parquet engine; morie stores its "
-        "native data as CSV/JSON — convert the file or install "
-        "pyarrow for this one path (path=%r)" % (path,))
+def read_parquet(path, columns=None, **kw):
+    """Read a Parquet file into a DataFrame (native codec)."""
+    from ._parquet_core import read_parquet as _rp
+    return _rp(path, columns=columns)
+
+
+def to_parquet(df, path, compression="snappy"):
+    """Write a DataFrame to Parquet (native codec)."""
+    from ._parquet_core import to_parquet as _wp
+    return _wp(df, path, compression=compression)
+
 
 
 def pivot_table(data, values=None, index=None, columns=None,
