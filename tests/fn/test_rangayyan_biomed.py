@@ -40,14 +40,17 @@ def test_ensemble_and_time_averages_agree_only_under_ergodicity():
     erg = rng.standard_normal((M, T))
     ens = rangayyan_ch3_ensemble_average_function(erg)["ensemble_mean"]
     tim = rangayyan_ch3_time_average_mean(erg)["time_mean"]
-    assert abs(ens.mean()) < 0.1
+    # the fn layer returns plain Python lists (de-numpy campaign),
+    # so use the stdlib rather than an ndarray method
+    assert abs(sum(ens) / len(ens)) < 0.1
     assert abs(np.mean(tim)) < 0.1
     # non-ergodic: each realisation has its own constant offset, so the
     # time averages scatter while the ensemble mean stays near zero
     offs = rng.standard_normal(M)[:, None] * 5.0
     non = rng.standard_normal((M, T)) + offs
     assert rangayyan_ch3_time_average_mean(non)["spread_across_k"] > 3.0
-    assert abs(rangayyan_ch3_ensemble_average_function(non)["ensemble_mean"].mean()) < 1.0
+    nz = rangayyan_ch3_ensemble_average_function(non)["ensemble_mean"]
+    assert abs(sum(nz) / len(nz)) < 1.0
     # ensemble ACF at lag 0 is the mean square at that time
     a = rangayyan_ch3_acf_ensemble_estimate(erg, t1=10, tau=0)
     assert a["acf"] == pytest.approx(np.mean(erg[:, 10] ** 2))

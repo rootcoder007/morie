@@ -13,27 +13,14 @@ from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 import math as _math
 
+from morie.fn._glm_core import NormalIndPower
+
 
 def proportion_effectsize(prop1, prop2):
     """Cohen's h = 2 asin(sqrt(p1)) - 2 asin(sqrt(p2)) (statsmodels-free)."""
     return (2.0 * _math.asin(_math.sqrt(prop1))
             - 2.0 * _math.asin(_math.sqrt(prop2)))
 
-
-class NormalIndPower:
-    """Two-independent-sample normal (z) test power, statsmodels-free.
-
-    power = Phi(delta - z_crit) + Phi(-delta - z_crit) with
-    delta = es sqrt(nobs1 ratio / (1 + ratio)); matches the published
-    two-sample z-power tables (es=0.2, n1=n2=100, alpha=.05 -> 0.293).
-    """
-
-    @staticmethod
-    def power(effect_size, nobs1, alpha=0.05, ratio=1.0):
-        from morie.fn._stats_core import norm as _norm
-        delta = effect_size * _math.sqrt(nobs1 * ratio / (1.0 + ratio))
-        z_crit = _norm.ppf(1.0 - alpha / 2.0)
-        return _norm.cdf(delta - z_crit) + _norm.cdf(-delta - z_crit)
 
 from .causal import run_ebac_selection_ipw_analysis, run_propensity_ipw_analysis
 from .cpads import canonicalize_cpads_frame

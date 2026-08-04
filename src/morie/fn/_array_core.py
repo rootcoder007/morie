@@ -1126,6 +1126,11 @@ def _uf(fn):
     def wrapped(x):
         if isinstance(x, ndlist):
             return ndlist(wrapped(marr(b)) for b in x)
+        if isinstance(x, carr) and x.rows is not None:
+            rows = [[fn(v) for v in r] for r in x.rows]
+            if any(isinstance(v, complex) for r in rows for v in r):
+                return carr(rows)
+            return marr([[float(v) for v in r] for r in rows])
         if isinstance(x, carr) or (
                 isinstance(x, (list, tuple))
                 and x and isinstance(x[0], complex)):
@@ -2925,6 +2930,55 @@ def average(x, weights=None):
     return float(dot(w, a) / w.sum())
 
 
+class _Testing:
+    """numpy.testing's two assertions, the only ones this tree uses.
+
+    Left behind by the de-numpy campaign: `np.testing.assert_*` in a
+    test raised AttributeError rather than comparing anything.
+    """
+
+    @staticmethod
+    def assert_allclose(actual, desired, rtol=1e-7, atol=0,
+                        equal_nan=True, err_msg="", verbose=True):
+        del verbose
+        a = list(asarray(actual)._flat())
+        d = list(asarray(desired)._flat())
+        if len(a) != len(d):
+            raise AssertionError(
+                "shape mismatch: %d vs %d values. %s" % (len(a), len(d),
+                                                         err_msg))
+        for i, (x, y) in enumerate(zip(a, d)):
+            if equal_nan and x != x and y != y:
+                continue
+            if not _bi.abs(x - y) <= atol + rtol * _bi.abs(y):
+                raise AssertionError(
+                    "not close at index %d: %r != %r (rtol=%g, atol=%g). %s"
+                    % (i, x, y, rtol, atol, err_msg))
+
+    @staticmethod
+    def assert_array_equal(actual, desired, err_msg="", verbose=True):
+        del verbose
+        a = list(asarray(actual)._flat())
+        d = list(asarray(desired)._flat())
+        if len(a) != len(d):
+            raise AssertionError(
+                "shape mismatch: %d vs %d values. %s" % (len(a), len(d),
+                                                         err_msg))
+        for i, (x, y) in enumerate(zip(a, d)):
+            if x != y and not (x != x and y != y):
+                raise AssertionError(
+                    "arrays differ at index %d: %r != %r. %s"
+                    % (i, x, y, err_msg))
+
+    assert_equal = assert_array_equal
+    assert_array_almost_equal = staticmethod(
+        lambda a, d, decimal=6, **kw: _Testing.assert_allclose(
+            a, d, rtol=0, atol=1.5 * 10.0 ** (-decimal)))
+
+
+testing = _Testing()
+
+
 def array_equal(a, b):
     fa, fb = asarray(a)._flat(), asarray(b)._flat()
     return len(fa) == len(fb) and fa == fb
@@ -3477,15 +3531,31 @@ class carr:
     """Minimal 1-D complex array for FFT results."""
 
     def __init__(self, data):
+        rows = None
+        if isinstance(data, carr):
+            rows, data = data.rows, data.data
+        elif isinstance(data, (list, tuple)) and data and isinstance(
+                data[0], (list, tuple, carr, marr)):
+            rows = [[complex(v) for v in
+                     (r.data if isinstance(r, carr) else
+                      r._flat() if isinstance(r, marr) else r)]
+                    for r in data]
+            data = [v for r in rows for v in r]
+        self.rows = rows                      # None => 1-D
         self.data = [complex(v) for v in data]
 
     def __len__(self):
-        return len(self.data)
+        return len(self.rows) if self.rows is not None else len(self.data)
 
     def __iter__(self):
+        if self.rows is not None:
+            return iter([carr(r) for r in self.rows])
         return iter(self.data)
 
     def __getitem__(self, i):
+        if self.rows is not None:
+            return carr(self.rows[i]) if isinstance(i, slice) \
+                else carr(self.rows[i])
         if isinstance(i, slice):
             return carr(self.data[i])
         return self.data[i]
@@ -3540,9 +3610,19 @@ class carr:
 
     @property
     def shape(self):
+        if self.rows is not None:
+            return (len(self.rows), len(self.rows[0]) if self.rows else 0)
         return (len(self.data),)
 
+    @property
+    def T(self):
+        if self.rows is None:
+            return carr(self.data)
+        return carr([list(c) for c in zip(*self.rows)])
+
     def __abs__(self):
+        if self.rows is not None:
+            return marr([[_bi.abs(v) for v in r] for r in self.rows])
         return marr([_bi.abs(v) for v in self.data])
 
     def _binop(self, other, fn):
@@ -3646,44 +3726,89 @@ def _tocomplex(x):
     return [complex(v) for v in x]
 
 
+def _rows2d(x):
+    """The rows of a 2-D input, or None if it is 1-D.
+
+    Without this the transforms below flattened a matrix and returned a
+    single spectrum -- a silently wrong answer, not an error.
+    """
+    if isinstance(x, carr):
+        return [r[:] for r in x.rows] if x.rows is not None else None
+    if isinstance(x, marr):
+        return [[complex(v) for v in r] for r in x.data] \
+            if len(x.shape) == 2 else None
+    if hasattr(x, "tolist"):
+        x = x.tolist()
+    if isinstance(x, (list, tuple)) and x and \
+            isinstance(x[0], (list, tuple)):
+        return [[complex(v) for v in r] for r in x]
+    return None
+
+
+def _fft_axis(x, n, axis, one_d):
+    """Apply a 1-D transform along `axis`; None if `x` is not 2-D."""
+    rows = _rows2d(x)
+    if rows is None:
+        return None
+    if axis in (-1, 1):
+        return carr([one_d(r, n) for r in rows])
+    if axis == 0:
+        cols = [one_d(list(c), n) for c in zip(*rows)]
+        return carr([list(r) for r in zip(*cols)])
+    raise ValueError("axis %r is out of bounds for a 2-D transform"
+                     % (axis,))
+
+
+def _pad(a, n):
+    if n is None:
+        return a
+    return a[:n] + [0j] * _bi.max(0, n - len(a))
+
+
 class _FFT:
     @staticmethod
+    def _fft1(a, n=None):
+        return _fft_any(_pad(a, n), False)
+
+    @staticmethod
+    def _ifft1(a, n=None):
+        a = _pad(a, n)
+        return [v / len(a) for v in _fft_any(a, True)]
+
+    @staticmethod
+    def _rfft1(a, n=None):
+        a = _pad(a, n)
+        return _fft_any(a, False)[:len(a) // 2 + 1]
+
+    @staticmethod
     def fft(x, n=None, axis=-1):
-        # 1-D only: axis is accepted for numpy call-compatibility
-        # and must select the single existing axis.
+        got = _fft_axis(x, n, axis, _FFT._fft1)
+        if got is not None:
+            return got
         if axis not in (-1, 0):
-            raise ValueError("only 1-D transforms are "
-                             "supported; axis=%r" % (axis,))
-        a = _tocomplex(x)
-        if n is not None:
-            a = a[:n] + [0j] * _bi.max(0, n - len(a))
-        return carr(_fft_any(a, False))
+            raise ValueError("axis %r is out of bounds for a 1-D "
+                             "transform" % (axis,))
+        return carr(_FFT._fft1(_tocomplex(x), n))
 
     @staticmethod
     def ifft(x, n=None, axis=-1):
-        # 1-D only: axis is accepted for numpy call-compatibility
-        # and must select the single existing axis.
+        got = _fft_axis(x, n, axis, _FFT._ifft1)
+        if got is not None:
+            return got
         if axis not in (-1, 0):
-            raise ValueError("only 1-D transforms are "
-                             "supported; axis=%r" % (axis,))
-        a = _tocomplex(x)
-        if n is not None:
-            a = a[:n] + [0j] * _bi.max(0, n - len(a))
-        out = _fft_any(a, True)
-        return carr([v / len(a) for v in out])
+            raise ValueError("axis %r is out of bounds for a 1-D "
+                             "transform" % (axis,))
+        return carr(_FFT._ifft1(_tocomplex(x), n))
 
     @staticmethod
     def rfft(x, n=None, axis=-1):
-        # 1-D only: axis is accepted for numpy call-compatibility
-        # and must select the single existing axis.
+        got = _fft_axis(x, n, axis, _FFT._rfft1)
+        if got is not None:
+            return got
         if axis not in (-1, 0):
-            raise ValueError("only 1-D transforms are "
-                             "supported; axis=%r" % (axis,))
-        a = _tocomplex(x)
-        if n is not None:
-            a = a[:n] + [0j] * _bi.max(0, n - len(a))
-        full = _fft_any(a, False)
-        return carr(full[:len(a) // 2 + 1])
+            raise ValueError("axis %r is out of bounds for a 1-D "
+                             "transform" % (axis,))
+        return carr(_FFT._rfft1(_tocomplex(x), n))
 
     @staticmethod
     def irfft(x, n=None, axis=-1):

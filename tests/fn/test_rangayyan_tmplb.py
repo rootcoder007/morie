@@ -145,7 +145,12 @@ def test_rls_solves_the_normal_equations_and_forgets_geometrically():
     assert np.isinf(rangayyan_ch3_rls_phi_matrix(r, lam=1.0)["effective_memory"])
     # Phi is symmetric positive semi-definite by construction
     P = phi["Phi"]
-    assert P == pytest.approx(P.T)
+    # pytest.approx does not accept a nested structure, so assert the
+    # symmetry elementwise -- P[i][j] == P[j][i] is the actual property.
+    Pl = [list(row) for row in P]
+    k = len(Pl)
+    assert all(Pl[i][j] == pytest.approx(Pl[j][i], abs=1e-9)
+               for i in range(k) for j in range(k))
     assert np.linalg.eigvalsh(P).min() > -1e-9
     with pytest.raises(ValueError):
         rangayyan_ch3_rls_phi_matrix(r, lam=1.5)

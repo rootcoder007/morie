@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import builtins as _bi
 import math as _math
+from functools import lru_cache as _lru_cache
 
 
 def _erf(x):
@@ -2122,20 +2123,30 @@ class _GenPareto(_Dist):
         return _maybe_map(one, q)
 
 
+@_lru_cache(maxsize=256)
+def _chi2_quantile_grid(df, npts):
+    """Midpoint quantiles of chi2(df), cached.
+
+    Every chi2.ppf is itself a bisection over the incomplete gamma, so
+    recomputing this grid on each noncentral cdf call dominated the
+    cost; the grid depends only on (df, npts).
+    """
+    return tuple(chi2.ppf((i + 0.5) / npts, df) for i in range(npts))
+
+
 class _NCT(_Dist):
     """Noncentral t via cdf integration of the defining integral."""
 
     def cdf(self, x, df, nc):
+        grid = _chi2_quantile_grid(float(df), 200)
+
         def one(v):
             # Algorithm: P(T<=t) = P(Z <= (t*sqrt(W/df) - nc)) averaged
             # over W ~ chi2(df); Gauss-Legendre on W quantiles
-            npts = 200
             total = 0.0
-            for i in range(npts):
-                u = (i + 0.5) / npts
-                w = chi2.ppf(u, df)
+            for w in grid:
                 total += _norm_cdf(v * _math.sqrt(w / df) - nc)
-            return total / npts
+            return total / len(grid)
         return _maybe_map(one, x)
 
     def sf(self, x, df, nc):
@@ -2163,12 +2174,11 @@ class _NCF(_Dist):
     """Noncentral F via chi2 mixture average."""
 
     def cdf(self, x, dfn, dfd, nc):
+        grid = _chi2_quantile_grid(float(dfd), 200)
+
         def one(v):
-            npts = 200
             total = 0.0
-            for i in range(npts):
-                u = (i + 0.5) / npts
-                w = chi2.ppf(u, dfd)      # denominator chi2
+            for w in grid:                # denominator chi2
                 # P(chi2_nc(dfn) <= v*dfn*w/dfd) with noncentrality nc:
                 # Poisson mixture of central chi2
                 lim = v * dfn * w / dfd
@@ -2180,7 +2190,7 @@ class _NCF(_Dist):
                     if pw < 1e-14 and j > nc:
                         break
                 total += acc
-            return total / npts
+            return total / len(grid)
         return _maybe_map(one, x)
 
     def sf(self, x, dfn, dfd, nc):

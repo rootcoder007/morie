@@ -351,3 +351,221 @@ def deviance_residuals(fit, y):
         d = max(dr(ys[i], mu[i]), 0.0)
         out.append(math.copysign(math.sqrt(d), ys[i] - mu[i]))
     return out
+
+
+# --------------------------------------------------------------- power
+# Statistical power for the t, z and one-way ANOVA F tests.  The API is
+# statsmodels.stats.power's (``.power`` / ``.solve_power``) because that
+# is what morie.inference calls; the implementation is native, using the
+# noncentral t and noncentral F already in morie.fn._stats_core.
+#
+# Cohen, J. (1988). *Statistical Power Analysis for the Behavioral
+# Sciences* (2nd ed.), chapters 2 (t), 6 (z on proportions), 8 (F).
+
+
+def _bisect(fn, lo, hi, tol=1e-7):
+    """Bracketed bisection on an increasing function. ponytail: bisection
+    is ~40 evaluations here; Brent would halve that and save no bugs."""
+    flo, fhi = fn(lo), fn(hi)
+    if flo == 0.0:
+        return lo
+    if fhi == 0.0:
+        return hi
+    if flo * fhi > 0.0:
+        raise ValueError(
+            "solve_power: no solution in bracket [%g, %g]" % (lo, hi))
+    for _ in range(200):
+        mid = 0.5 * (lo + hi)
+        if hi - lo <= tol * max(1.0, abs(mid)):
+            return mid
+        fm = fn(mid)
+        if fm == 0.0:
+            return mid
+        if flo * fm < 0.0:
+            hi, fhi = mid, fm
+        else:
+            lo, flo = mid, fm
+    return 0.5 * (lo + hi)
+
+
+class _PowerBase:
+    """Shared ``solve_power``: power is monotone increasing in each of
+    effect_size, nobs and alpha, so whichever one is left ``None`` is
+    recovered by bisection on ``power(...) - target``."""
+
+    _nobs_name = "nobs"
+    _es_bracket = (1e-8, 50.0)
+    _nobs_hi = 1e7
+
+    def _nobs_lo(self, **kwargs):
+        return 2.0 + 1e-6
+
+    def solve_power(self, effect_size=None, alpha=0.05, power=None,
+                    **kwargs):
+        nobs = kwargs.pop(self._nobs_name, None)
+        known = dict(kwargs)
+
+        def pw(es, n, a):
+            known[self._nobs_name] = n
+            return self.power(effect_size=es, alpha=a, **known)
+
+        if power is None:
+            if effect_size is None or nobs is None:
+                raise ValueError(
+                    "solve_power: exactly one argument may be None")
+            return pw(effect_size, nobs, alpha)
+
+        missing = [k for k, v in (("effect_size", effect_size),
+                                  (self._nobs_name, nobs),
+                                  ("alpha", alpha)) if v is None]
+        if len(missing) != 1:
+            raise ValueError(
+                "solve_power: exactly one of effect_size, %s, alpha, power "
+                "must be None (got %d unknowns)"
+                % (self._nobs_name, len(missing)))
+        what = missing[0]
+        if what == "effect_size":
+            lo, hi = self._es_bracket
+            return _bisect(lambda es: pw(es, nobs, alpha) - power, lo, hi)
+        if what == "alpha":
+            return _bisect(lambda a: pw(effect_size, nobs, a) - power,
+                           1e-12, 1.0 - 1e-12)
+        lo = self._nobs_lo(**kwargs)
+        return _bisect(lambda n: pw(effect_size, n, alpha) - power,
+                       lo, self._nobs_hi)
+
+
+def _two_tail_power(crit_hi, crit_lo, sf, cdf, alternative):
+    """Rejection probability under the alternative for a shifted
+    (noncentral) statistic: upper tail, lower tail, or both."""
+    if alternative in ("two-sided", "two_sided", "2s"):
+        return sf(crit_hi) + cdf(crit_lo)
+    if alternative in ("larger", "greater", "one-sided", "1s"):
+        return sf(crit_hi)
+    if alternative in ("smaller", "less"):
+        return cdf(crit_lo)
+    raise ValueError("alternative must be 'two-sided', 'larger' or "
+                     "'smaller', got %r" % (alternative,))
+
+
+class TTestPower(_PowerBase):
+    """Power of the one-sample (or paired) t test.
+
+    ``ncp = effect_size * sqrt(nobs)`` on ``df = nobs - 1`` degrees of
+    freedom, so the test statistic is noncentral t (Cohen 1988, ch. 2).
+    """
+
+    def power(self, effect_size, nobs, alpha=0.05, df=None,
+              alternative="two-sided"):
+        from morie.fn._stats_core import nct, t as _t
+        nobs = float(nobs)
+        if df is None:
+            df = nobs - 1.0
+        if df <= 0:
+            raise ValueError("nobs must exceed 1 for a one-sample t test")
+        ncp = float(effect_size) * math.sqrt(nobs)
+        if alternative in ("two-sided", "two_sided", "2s"):
+            hi = _t.ppf(1.0 - alpha / 2.0, df)
+            lo = -hi
+        else:
+            hi = _t.ppf(1.0 - alpha, df)
+            lo = -hi
+        return _two_tail_power(
+            hi, lo,
+            lambda c: float(nct.sf(c, df, ncp)),
+            lambda c: float(nct.cdf(c, df, ncp)),
+            alternative)
+
+
+class TTestIndPower(_PowerBase):
+    """Power of the two-independent-sample t test.
+
+    ``ncp = effect_size * sqrt(nobs1 * ratio / (1 + ratio))`` on
+    ``df = nobs1 * (1 + ratio) - 2`` (Cohen 1988, ch. 2); with
+    ``ratio = 1`` this is the familiar ``d * sqrt(n/2)``.
+    """
+
+    _nobs_name = "nobs1"
+
+    def _nobs_lo(self, ratio=1.0, **kwargs):
+        return (2.0 + 1e-6) / (1.0 + float(ratio))
+
+    def power(self, effect_size, nobs1, alpha=0.05, ratio=1.0, df=None,
+              alternative="two-sided"):
+        from morie.fn._stats_core import nct, t as _t
+        nobs1 = float(nobs1)
+        ratio = float(ratio)
+        if df is None:
+            df = nobs1 * (1.0 + ratio) - 2.0
+        if df <= 0:
+            raise ValueError("nobs1 too small: df = %g" % df)
+        ncp = float(effect_size) * math.sqrt(nobs1 * ratio / (1.0 + ratio))
+        if alternative in ("two-sided", "two_sided", "2s"):
+            hi = _t.ppf(1.0 - alpha / 2.0, df)
+            lo = -hi
+        else:
+            hi = _t.ppf(1.0 - alpha, df)
+            lo = -hi
+        return _two_tail_power(
+            hi, lo,
+            lambda c: float(nct.sf(c, df, ncp)),
+            lambda c: float(nct.cdf(c, df, ncp)),
+            alternative)
+
+
+class NormalIndPower(_PowerBase):
+    """Normal (z) approximation to :class:`TTestIndPower`.
+
+    ``power = Phi(delta - z_crit) + Phi(-delta - z_crit)`` with
+    ``delta = effect_size * sqrt(nobs1 * ratio / (1 + ratio))``; matches
+    the published two-sample z tables (es = 0.2, n1 = n2 = 100,
+    alpha = .05 -> 0.293).  Also used on Cohen's h for proportions.
+    """
+
+    _nobs_name = "nobs1"
+
+    def _nobs_lo(self, **kwargs):
+        return 1e-6
+
+    def power(self, effect_size, nobs1, alpha=0.05, ratio=1.0,
+              alternative="two-sided"):
+        from morie.fn._stats_core import norm as _norm
+        ratio = float(ratio)
+        delta = float(effect_size) * math.sqrt(
+            float(nobs1) * ratio / (1.0 + ratio))
+        if alternative in ("two-sided", "two_sided", "2s"):
+            crit = _norm.ppf(1.0 - alpha / 2.0)
+        else:
+            crit = _norm.ppf(1.0 - alpha)
+        return _two_tail_power(
+            crit, -crit,
+            lambda c: float(_norm.sf(c - delta)),
+            lambda c: float(_norm.cdf(c - delta)),
+            alternative)
+
+
+class FTestAnovaPower(_PowerBase):
+    """Power of the one-way ANOVA F test.
+
+    Cohen's f is the effect size: ``ncp = f**2 * nobs`` with
+    ``dfn = k_groups - 1`` and ``dfd = nobs - k_groups``, where ``nobs``
+    is the TOTAL sample size (Cohen 1988, ch. 8).
+    """
+
+    _es_bracket = (1e-8, 20.0)
+
+    def _nobs_lo(self, k_groups=2, **kwargs):
+        return float(k_groups) + 1e-6
+
+    def power(self, effect_size, nobs, alpha=0.05, k_groups=2):
+        from morie.fn._stats_core import ncf, f as _f
+        nobs = float(nobs)
+        dfn = float(k_groups) - 1.0
+        dfd = nobs - float(k_groups)
+        if dfn <= 0 or dfd <= 0:
+            raise ValueError(
+                "need k_groups >= 2 and nobs > k_groups (got %g, %g)"
+                % (dfn, dfd))
+        ncp = float(effect_size) ** 2 * nobs
+        crit = _f.ppf(1.0 - alpha, dfn, dfd)
+        return float(ncf.sf(crit, dfn, dfd, ncp))
