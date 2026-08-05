@@ -1,42 +1,53 @@
-"""Spatial AR error model (SEM)."""
+"""Spatial AR error model (SEM) -- alias of ``sarre``."""
 
-from . import _array_core as np
-
-from ._richresult import RichResult
+from .sarre import spatial_ar_error
 
 __all__ = ["spatial_ar_error_model"]
 
 
 def spatial_ar_error_model(y, X, W):
     """
-    Spatial AR error model (SEM)
+    Spatial autoregressive error model (SEM)::
 
-    Formula: y = X beta + u, u = lambda W u + epsilon
+        y = X beta + u,   u = lam W u + eps,   eps ~ N(0, sigma2 I)
+
+    An alias.  The estimator already exists as ``sarre``
+    (``spatial_ar_error``) -- the same concentrated maximum likelihood in
+    ``lam`` over the admissible eigenvalue interval.  Carrying it a
+    second time would give two copies that agree with each other at 1e-9
+    forever and are never checked against anything else, so this only
+    adapts the calling convention: ``sarre`` takes ``(x, y, w)``, this
+    takes ``(y, X, W)``.
+
+    ``ledger/wave2/DUPMAP.tsv`` originally recorded ``sarerr`` as a
+    duplicate of ``lmerr``.  That is wrong and the correction is appended
+    there: ``lmerr`` is Anselin's *Lagrange multiplier diagnostic* for
+    spatial error dependence, a test statistic, not the estimator.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    W : array-like
-        Input data.
+    y : array-like, shape (n,)
+    X : array-like, shape (n, p)
+        Design matrix; the intercept must be explicit.
+    W : array-like, shape (n, n)
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        Whatever ``sarre`` returns, unchanged.
 
     References
     ----------
-    Anselin (1988)
+    Anselin, L. (1988). Spatial Econometrics: Methods and Models.
+    Schabenberger, O. and Gotway, C. A. (2005). Statistical Methods for
+    Spatial Data Analysis, Sec. 6.2.2, pp. 335-341.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Spatial AR error model (SEM)"})
+    return spatial_ar_error(X, y, W)
 
 
 def cheatsheet():
-    return "sarerr: Spatial AR error model (SEM)"
+    return "sarerr: spatial AR error model (alias of sarre)"
+
+
+# compact alias per ledger/NAMING.md
+spatialarerrormodel = spatial_ar_error_model
