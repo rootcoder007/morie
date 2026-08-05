@@ -1,38 +1,22 @@
-"""Test-retest with equal signal and noise: r = 1/sqrt(2).
+"""Deprecated alias for :func:`morie.fn.retestr`.
 
-Implements eq (6.37) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .retestr import retestr as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_37"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_37(sigma_signal, sigma_noise):
-    """Test-retest with equal signal and noise: r = 1/sqrt(2).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.37).
-    """
-    mu_y, sigma_y, r = _morin.linear_model_stats(1.0, 0.0, sigma_signal,
-                                                 0.0, sigma_noise)
-    payload = {"r": r}
-    lines = [("r", r)]
-    return RichResult(
-        title="Test-retest with equal signal and noise: r = 1/sqrt(2).",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.retestr` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_37() is the book-coordinate name for retestr(); "
+        "it will be removed. Use morie.fn.retestr() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e37: Test-retest with equal signal and noise: r = 1/sqrt(2). Morin (2016) eq (6.37)."
+    return _impl(sigma_signal, sigma_noise)

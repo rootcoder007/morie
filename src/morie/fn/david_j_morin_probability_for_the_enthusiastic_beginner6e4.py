@@ -1,37 +1,22 @@
-"""Mean of Y = mX + Z: mu_y = m mu_x + mu_z.
+"""Deprecated alias for :func:`morie.fn.muy`.
 
-Implements eq (6.4) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .muy import muy as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_4"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_4(m, mu_x, mu_z):
-    """Mean of Y = mX + Z: mu_y = m mu_x + mu_z.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.4).
-    """
-    mu_y = float(m) * float(mu_x) + float(mu_z)
-    payload = {"mu_y": mu_y}
-    lines = [("mu_y", mu_y)]
-    return RichResult(
-        title="Mean of Y = mX + Z: mu_y = m mu_x + mu_z.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.muy` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_4() is the book-coordinate name for muy(); "
+        "it will be removed. Use morie.fn.muy() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e4: Mean of Y = mX + Z: mu_y = m mu_x + mu_z. Morin (2016) eq (6.4)."
+    return _impl(m, mu_x, mu_z)

@@ -1,37 +1,22 @@
-"""Sample correlation for data points, deviation form.
+"""Deprecated alias for :func:`morie.fn.sampr`.
 
-Implements eq (6.12) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .sampr import sampr as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_12"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_12(x, y):
-    """Sample correlation for data points, deviation form.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.12).
-    """
-    value = _morin.sample_r(x, y)
-    payload = {"r": value, "cov": _morin.sample_cov(x, y)}
-    lines = [("r", value)]
-    return RichResult(
-        title="Sample correlation for data points, deviation form.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.sampr` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_12() is the book-coordinate name for sampr(); "
+        "it will be removed. Use morie.fn.sampr() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e12: Sample correlation for data points, deviation form. Morin (2016) eq (6.12)."
+    return _impl(x, y)
