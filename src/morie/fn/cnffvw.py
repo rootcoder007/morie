@@ -1,48 +1,58 @@
-"""Cinelli-Hazlett benchmark sensitivity for OLS."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Cinelli-Hazlett sensitivity -- alias of :mod:`morie.fn.chzlt`.
 
-from . import _array_core as np
+`cnffvw` and `chzlt` document the SAME method: the Cinelli & Hazlett
+(2020) omitted-variable-bias bound and robustness value.  Rather than
+carry a second implementation -- which would agree with the first at
+1e-9 forever while doubling the surface -- this module forwards to
+`chzlt` with the argument names of its own stub signature.
+"""
 
 from ._richresult import RichResult
+from .chzlt import cinelli_hazlett, ols_with_se, robustness_value
 
 __all__ = ["cinelli_hazlett_robust"]
 
 
-def cinelli_hazlett_robust(y, D, X, R2_Y, R2_D):
+def cinelli_hazlett_robust(y, D, X=None, R2_Y=0.0, R2_D=0.0, q=1.0):
     """
-    Cinelli-Hazlett benchmark sensitivity for OLS
+    Cinelli-Hazlett sensitivity under a hypothesised confounder
 
-    Formula: adjusted estimate under hypothesised confounder R^2_Y * R^2_D
+    Formula: adjusted estimate under hypothesised confounder R2_Y * R2_D
+
+    Same estimator as :func:`morie.fn.chzlt.cinelli_hazlett`; see there
+    for the bias bound and the robustness value.
 
     Parameters
     ----------
     y : array-like
-        Input data.
+        Outcome.
     D : array-like
-        Input data.
-    X : array-like
-        Input data.
-    R2_Y : array-like
-        Input data.
-    R2_D : array-like
-        Input data.
+        Treatment.
+    X : array-like or None
+        Observed covariates.
+    R2_Y, R2_D : float
+        Hypothesised partial R2 of the confounder with outcome and
+        treatment.
+    q : float
+        Fraction of the estimate the confounder would have to explain.
 
     Returns
     -------
     result : dict
-        Keys: estimate
+        As :func:`morie.fn.chzlt.cinelli_hazlett`.
 
     References
     ----------
-    Cinelli & Hazlett (2020)
+    Cinelli & Hazlett (2020), Making Sense of Sensitivity, JRSS B
+    82(1):39-67.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Cinelli-Hazlett benchmark sensitivity for OLS"}
-    )
+    return cinelli_hazlett(y, D, X, R2_Y, R2_D, q)
 
 
 def cheatsheet():
-    return "cnffvw: Cinelli-Hazlett benchmark sensitivity for OLS"
+    return "cnffvw: Cinelli-Hazlett sensitivity (alias of chzlt)"
+
+
+# compact alias per ledger/NAMING.md
+cinellihazlettrobust = cinelli_hazlett_robust
