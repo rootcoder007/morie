@@ -1,6 +1,5 @@
-"""Orwin's fail-safe N for trivial-effect target."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Orwin's fail-safe N."""
 
 from ._richresult import RichResult
 
@@ -8,42 +7,58 @@ __all__ = ["ma_orwin_fsn"]
 
 
 def ma_orwin_fsn(d_obs, d_crit, d_filldraw, k):
-    """
-    Orwin's fail-safe N for trivial-effect target
+    """How many missing studies would drag the effect down to trivial.
 
-    Formula: N_fs = k(d̄-d_c)/(d_c-d_0)
+    Rosenthal's count asks how many nulls would make the result
+    non-significant, which ties the answer to the sample size rather than
+    to the effect.  Orwin's asks how many would push the pooled effect
+    below whatever magnitude the reader considers trivial, and it lets the
+    missing studies carry a non-zero effect of their own -- both of which
+    make the number mean something substantive rather than procedural.
+
+    Formula: ``N_fs = k (d_obs - d_crit)/(d_crit - d_fill)`` -- Orwin
+    (1983) eq. (2).
 
     Parameters
     ----------
-    d_obs : array-like
-        Input data.
-    d_crit : array-like
-        Input data.
-    d_filldraw : array-like
-        Input data.
-    k : array-like
-        Input data.
+    d_obs : float
+        Observed pooled effect.
+    d_crit : float
+        Effect size considered trivial.
+    d_filldraw : float
+        Mean effect assumed for the unretrieved studies.
+    k : int
+        Number of studies in the meta-analysis.
 
     Returns
     -------
-    result : dict
-        Keys: Nfs
+    RichResult
+        ``Nfs``, ``Nfs_ceiling`` (rounded up to a whole study),
+        ``d_obs``, ``d_crit``, ``d_fill``, ``k``.
 
     References
     ----------
-    Orwin (1983)
+    Orwin, R. G. (1983).  A fail-safe N for effect size in meta-analysis.
+    Journal of Educational Statistics 8(2):157-159.  doi:10.2307/1164923.
     """
-    d_obs = np.atleast_1d(np.asarray(d_obs, dtype=float))
-    n = len(d_obs)
-    result = float(np.mean(d_obs))
-    se = float(np.std(d_obs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Orwin's fail-safe N for trivial-effect target"}
-    )
+    do = float(d_obs)
+    dc = float(d_crit)
+    df = float(d_filldraw)
+    kk = float(k)
+    if kk < 1.0:
+        raise ValueError("k must be at least one")
+    if abs(dc - df) < 1e-15:
+        raise ValueError("d_crit and d_filldraw must differ")
+    n = kk * (do - dc) / (dc - df)
+    ceil = float(int(n)) + (1.0 if n > float(int(n)) else 0.0)
+    return RichResult(payload={
+        "Nfs": n, "Nfs_ceiling": ceil, "d_obs": do, "d_crit": dc,
+        "d_fill": df, "k": kk,
+        "method": "Orwin's fail-safe N"})
 
 
 def cheatsheet():
-    return "maorw: Orwin's fail-safe N for trivial-effect target"
+    return "maorw: Orwin's fail-safe N against a trivial-effect target"
 
 
 # compact alias per ledger/NAMING.md
