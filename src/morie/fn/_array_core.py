@@ -1287,12 +1287,33 @@ def clip(x, lo, hi):
     return one(float(a))
 
 
+def _max2(a, b):
+    """numpy.maximum: NaN propagates from EITHER operand."""
+    if a != a or b != b:
+        return _NAN
+    return a if a >= b else b
+
+
+def _min2(a, b):
+    """numpy.minimum: NaN propagates from EITHER operand."""
+    if a != a or b != b:
+        return _NAN
+    return a if a <= b else b
+
+
 def maximum(x, y):
-    return asarray(x)._zip(y, lambda a, b: a if a >= b else b)
+    # The old lambda was `a if a >= b else b`. Every comparison with NaN is
+    # False, so maximum(nan, 0) fell through to `b` and returned 0, while
+    # maximum(0, nan) returned nan -- the answer depended on argument ORDER,
+    # and an undefined value silently became a number. numpy and R both
+    # propagate. splfun computes sqrt(max(K, 0)/pi), so an undefined K came
+    # out as L = -r in Python and NA in R: a real cross-language
+    # disagreement that simply had not been hit yet.
+    return asarray(x)._zip(y, _max2)
 
 
 def minimum(x, y):
-    return asarray(x)._zip(y, lambda a, b: a if a <= b else b)
+    return asarray(x)._zip(y, _min2)
 
 
 def where(cond, a=None, b=None):
@@ -1527,6 +1548,7 @@ def allclose(a, b, rtol=1e-5, atol=1e-8, equal_nan=False):
 
 
 _INF = float("inf")
+_NAN = float("nan")
 _NINF = float("-inf")
 _pyall = _bi.all
 _pyany = _bi.any
