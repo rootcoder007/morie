@@ -3313,10 +3313,18 @@ class _Testing:
         del verbose
         a = list(asarray(actual)._flat())
         d = list(asarray(desired)._flat())
+        # numpy broadcasts, so assert_allclose(vec, 5.0) compares every
+        # element against 5.0. Demanding equal lengths turned that ordinary
+        # idiom into a spurious "shape mismatch: 3 vs 1 values" failure.
         if len(a) != len(d):
-            raise AssertionError(
-                "shape mismatch: %d vs %d values. %s" % (len(a), len(d),
-                                                         err_msg))
+            if len(d) == 1:
+                d = d * len(a)
+            elif len(a) == 1:
+                a = a * len(d)
+            else:
+                raise AssertionError(
+                    "shape mismatch: %d vs %d values. %s"
+                    % (len(a), len(d), err_msg))
         for i, (x, y) in enumerate(zip(a, d)):
             if equal_nan and x != x and y != y:
                 continue

@@ -569,3 +569,74 @@ class FTestAnovaPower(_PowerBase):
         ncp = float(effect_size) ** 2 * nobs
         crit = _f.ppf(1.0 - alpha, dfn, dfd)
         return float(ncf.sf(crit, dfn, dfd, ncp))
+
+
+# --- statsmodels-compatible family objects -------------------------------
+#
+# survey.py and several callers use the statsmodels object API,
+# `sm.families.Binomial()`, while glm() above resolves a family by name via
+# FAMILIES.get(str(family).lower()). The de-numpy campaign replaced
+# statsmodels with this module but never carried the `families` namespace
+# across, so `sm.families.Binomial()` raised
+# AttributeError: module has no attribute 'families'.
+#
+# Each class stringifies to its own family name, so it drops straight into
+# the existing lookup with no change to glm().
+
+
+class _Family(object):
+    name = "gaussian"
+
+    def __init__(self, link=None):
+        self.link = link
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return "%s()" % type(self).__name__
+
+
+class Gaussian(_Family):
+    name = "gaussian"
+
+
+class Binomial(_Family):
+    name = "binomial"
+
+
+class Poisson(_Family):
+    name = "poisson"
+
+
+class Gamma(_Family):
+    name = "gamma"
+
+
+class NegativeBinomial(_Family):
+    """Present so `sm.families.NegativeBinomial` resolves as an attribute.
+
+    NOTE: glm() above does NOT implement this family -- FAMILIES holds only
+    gaussian, binomial, gamma and poisson. Passing this object to glm()
+    raises a clear "family must be one of ..." error rather than silently
+    fitting something else. Implement it in FAMILIES before relying on it.
+    """
+
+    name = "negativebinomial"
+
+    def __init__(self, link=None, alpha=1.0):
+        _Family.__init__(self, link)
+        self.alpha = float(alpha)
+
+
+class _FamiliesNamespace(object):
+    """Mirrors `statsmodels.api.families`."""
+
+    Gaussian = Gaussian
+    Binomial = Binomial
+    Poisson = Poisson
+    Gamma = Gamma
+    NegativeBinomial = NegativeBinomial
+
+
+families = _FamiliesNamespace()
