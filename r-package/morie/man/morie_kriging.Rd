@@ -5,19 +5,14 @@
 \title{Ordinary kriging system, variances, and the exponential semivariogram}
 \usage{
 morie_kriging(
-  cov_ss = NULL,
-  cov_s0 = NULL,
-  sigma2 = NA,
-  lam = NULL,
-  nu = NA,
-  gamma_s0 = NULL,
-  h = NULL,
-  c0 = NA,
-  c1 = NA,
-  phi = NA,
-  z = NULL,
-  mu = NULL,
-  cov = NULL
+  coords,
+  values,
+  new_coords,
+  model = "exponential",
+  nugget = 0,
+  sill = 1,
+  range_ = 1,
+  trend_order = 1
 )
 }
 \arguments{
