@@ -1,44 +1,23 @@
-"""Samejima graded response model."""
+# morie.fn -- wave2 slice x_2_01 (rootcoder007/morie)
+"""Samejima graded response model -- alias of :mod:`morie.fn.grmsam`.
 
-from . import _array_core as np
+Samejima (1969), "Estimation of latent ability using a response pattern
+of graded scores", Psychometrika Monograph Supplement 34(4, Pt. 2),
+doi:10.1007/BF03372160.
 
-from ._richresult import RichResult
+Already implemented in :mod:`morie.fn.grmsam` as
+``graded_response_samejima``; this module re-exports it under the
+shorter name rather than carrying a second copy.
+"""
 
-__all__ = ["graded_response"]
+from __future__ import annotations
 
+from .grmsam import _grm_probs, graded_response_samejima  # noqa: F401
 
-def graded_response(X, ncats):
-    """
-    Samejima graded response model
+graded_response = graded_response_samejima
 
-    Formula: P(X >= k | theta) = 2PL with category threshold b_jk
-
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    ncats : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Samejima (1969)
-    """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Samejima graded response model"})
+__all__ = ["graded_response", "graded_response_samejima"]
 
 
 def cheatsheet():
-    return "irtgrm: Samejima graded response model"
-
-
-# compact alias per ledger/NAMING.md
-gradedresponse = graded_response
+    return "irtgrm: Samejima graded response model -- alias of grmsam"
