@@ -1,42 +1,76 @@
-"""Mahalanobis-based OT cost matrix."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Mahalanobis ground cost for optimal transport."""
 
-from . import _array_core as np
+from . import _otcore as ot
+from . import _s03core as core
 
 from ._richresult import RichResult
 
 __all__ = ["ot_mahalanobis_distance_ot"]
 
 
-def ot_mahalanobis_distance_ot(X, Y, Sigma):
-    """
-    Mahalanobis-based OT cost matrix
+def _inverse(S):
+    d = len(S)
+    cols = []
+    for j in range(d):
+        e = [1.0 if i == j else 0.0 for i in range(d)]
+        cols.append(core.cholsolve(S, e))
+    return [[cols[j][i] for j in range(d)] for i in range(d)]
 
-    Formula: C_ij = (x_i-y_j)^T Σ^{-1} (x_i-y_j)
+
+def ot_mahalanobis_distance_ot(X, Y, Sigma):
+    """Ground cost that measures distance in units of the data's own spread.
+
+    Euclidean cost silently declares the coordinates equally important and
+    uncorrelated; on any real feature set that is false, and the transport
+    plan inherits the lie.  Whitening by the covariance removes both the
+    scale and the correlation, so the cost is invariant to any full-rank
+    affine recoding of the data.
+
+    Formula: ``C_ij = (x_i - y_j)' Sigma^{-1} (x_i - y_j)``.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    Y : array-like
-        Input data.
-    Sigma : array-like
-        Input data.
+    X : array-like, shape (n, d)
+        Source points.
+    Y : array-like, shape (m, d)
+        Target points.
+    Sigma : array-like, shape (d, d)
+        Covariance, symmetric positive definite.
 
     Returns
     -------
-    result : dict
-        Keys: C
+    RichResult
+        ``C`` (the cost matrix), ``cost`` (the exact transport cost under
+        uniform marginals), ``n``, ``m``, ``d``.
 
     References
     ----------
-    De Maesschalck (2000)
+    De Maesschalck, R., Jouan-Rimbaud, D. and Massart, D. L. (2000).  The
+    Mahalanobis distance.  Chemometrics and Intelligent Laboratory Systems
+    50(1):1-18.  doi:10.1016/S0169-7439(99)00047-7.
     """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mahalanobis-based OT cost matrix"})
+    A = core.mat(X)
+    B = core.mat(Y)
+    S = core.mat(Sigma)
+    d = len(A[0])
+    if len(B[0]) != d or len(S) != d or len(S[0]) != d:
+        raise ValueError("Sigma must be d by d and match both point clouds")
+    Si = _inverse(S)
+    C = []
+    for xi in A:
+        row = []
+        for yj in B:
+            dv = [xi[k] - yj[k] for k in range(d)]
+            row.append(sum(dv[k] * Si[k][l] * dv[l]
+                           for k in range(d) for l in range(d)))
+        C.append(row)
+    n, m = len(A), len(B)
+    _, cost = ot.emd([1.0 / n] * n, [1.0 / m] * m, C)
+    return RichResult(payload={
+        "C": C, "cost": cost, "n": n, "m": m, "d": d,
+        "method": "Mahalanobis ground cost"})
 
 
 def cheatsheet():
-    return "otmd: Mahalanobis-based OT cost matrix"
+    return "otmd: Mahalanobis ground cost matrix and its transport cost"
