@@ -3276,12 +3276,19 @@ def range_(n):
     return builtins.range(n)
 
 
-def bincount(x, minlength=0):
+def bincount(x, weights=None, minlength=0):
     f = [int(v) for v in asarray(x)._flat()]
     n = _bi.max([minlength - 1] + f) + 1 if f or minlength else 0
     out = [0.0] * n
-    for v in f:
-        out[v] += 1.0
+    if weights is None:
+        for v in f:
+            out[v] += 1.0
+    else:
+        w = asarray(weights)._flat()
+        if len(w) != len(f):
+            raise ValueError("weights and x must have the same length")
+        for v, wv in zip(f, w):
+            out[v] += float(wv)
     return marr(out)
 
 
