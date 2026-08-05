@@ -1,42 +1,21 @@
-"""Generalized partial credit model (GPCM)."""
+# morie.fn -- wave2 slice x_2_01 (rootcoder007/morie)
+"""Generalized partial credit model (GPCM) -- alias of :mod:`morie.fn.gpcm`.
 
-from . import _array_core as np
+Muraki (1992), "A generalized partial credit model: application of an
+EM algorithm", Applied Psychological Measurement 16(2):159-176,
+doi:10.1177/014662169201600206.
 
-from ._richresult import RichResult
+The method is already implemented in :mod:`morie.fn.gpcm` under the
+same public name ``generalized_partial_credit``; this module re-exports
+it rather than carrying a second copy of the same estimator.
+"""
+
+from __future__ import annotations
+
+from .gpcm import _gpcm_probs, generalized_partial_credit  # noqa: F401
 
 __all__ = ["generalized_partial_credit"]
 
 
-def generalized_partial_credit(X, ncats):
-    """
-    Generalized partial credit model (GPCM)
-
-    Formula: P(X=k|theta) = exp(sum a (theta - b_jh)) / sum_normalize
-
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    ncats : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Muraki (1992)
-    """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Generalized partial credit model (GPCM)"}
-    )
-
-
 def cheatsheet():
-    return "irtgpc: Generalized partial credit model (GPCM)"
+    return "irtgpc: Generalized partial credit model (GPCM) -- alias of gpcm"
