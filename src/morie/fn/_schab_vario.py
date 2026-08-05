@@ -42,6 +42,16 @@ def correlogram(h, rng, model):
         return np.exp(-PRACTICAL_RANGE_C * h / rng)
     if model == "gaussian":                          # eq (4.10)
         return np.exp(-PRACTICAL_RANGE_C * (h / rng) ** 2)
+    if model == "wave":                              # eq (4.19), p. 148
+        # The CARDINAL-SINE (hole-effect / wave) model. Unlike the
+        # exponential and gaussian models above, the book writes this one
+        # in terms of alpha DIRECTLY -- eq (4.19) is
+        # C(h) = (alpha/h) sin{h/alpha}, with no factor of 3 and no
+        # practical-range rescaling. Do not "harmonise" it onto
+        # PRACTICAL_RANGE_C. R(0) = 1 by the limit sin(u)/u -> 1.
+        u = h / rng
+        safe = np.where(u == 0.0, 1.0, u)
+        return np.where(u == 0.0, 1.0, np.sin(safe) / safe)
     if model == "spherical":                         # eq (4.13)
         r = np.zeros_like(h)
         inside = h <= rng
