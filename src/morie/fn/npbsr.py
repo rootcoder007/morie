@@ -1,42 +1,55 @@
-"""Nonparametric Bayes survival via Beta-process."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Nonparametric Bayes survival via a beta process.
 
-from . import _array_core as np
+DUPLICATE: Hjort's beta-process posterior for right-censored survival
+is already implemented in ``ghsrv`` (public name
+``ghosal_survival_beta_process``), which has an R arm.  This module
+aliases it rather than carrying a second copy.
+"""
 
-from ._richresult import RichResult
+from .ghsrv import ghosal_survival_beta_process as _bp
 
 __all__ = ["np_bayes_survival"]
 
 
-def np_bayes_survival(time, event):
-    """
-    Nonparametric Bayes survival via Beta-process
+def np_bayes_survival(time, event=None, c=1.0, lam0=None):
+    """Posterior-mean survival under a beta-process prior on the hazard.
 
-    Formula: Beta-process prior on cumulative hazard
+    Alias of :func:`morie.fn.ghsrv.ghosal_survival_beta_process`.
+
+    Formula: with ``H ~ BP(c, H_0)`` the posterior is again a beta
+    process and ``dH_post(t) = (c dH_0(t) + dN(t)) / (c + Y(t-))``, so
+    ``S_hat(t) = prod_{s <= t} (1 - dH_post(s))``.  As ``c -> 0`` this
+    becomes the Kaplan-Meier estimator.
 
     Parameters
     ----------
     time : array-like
-        Input data.
-    event : array-like
-        Input data.
+        Observation times, possibly censored.
+    event : array-like or None
+        1 = event, 0 = censored; all events if ``None``.
+    c : float, default 1.0
+        Prior concentration.
+    lam0 : float or None
+        Exponential base hazard rate; ``1 / mean(time)`` if ``None``.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``estimate`` (survival at the median time), ``times``,
+        ``S_post``, ``H_post``, ``c``, ``lam0``, ``n``.
 
     References
     ----------
-    Hjort (1990)
+    Hjort, N. L. (1990).  Nonparametric Bayes estimators based on beta
+    processes in models for life history data.  Annals of Statistics,
+    18(3), 1259--1294.  doi:10.1214/aos/1176347749
     """
-    time = np.atleast_1d(np.asarray(time, dtype=float))
-    n = len(time)
-    result = float(np.mean(time))
-    se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Nonparametric Bayes survival via Beta-process"}
-    )
+    return _bp(time, event=event, c=c, lam0=lam0)
 
 
 def cheatsheet():
-    return "npbsr: Nonparametric Bayes survival via Beta-process"
+    return "npbsr: Beta-process survival (alias of ghsrv)"
+
+
+npbayessurvival = np_bayes_survival
