@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """BvM for Cox model: semiparametric efficient estimation of regression coefficient."""
 
+import math as _math
+
 from . import _array_core as np
 
 from ._richresult import RichResult
@@ -88,20 +90,31 @@ def ghosal_cox_bvm(x, time=None, event=None, beta_grid=None):
         eta = X @ b
         w = np.exp(eta - eta.max())
         ll = 0.0
-        gr = np.zeros(p)
-        he = np.zeros((p, p))
+        # plain lists: an marr row is a copy, not a view, so in-place
+        # accumulation into np.zeros((p, p)) is silently dropped.
+        gr = [0.0] * p
+        he = [[0.0] * p for _ in range(p)]
         for i in np.nonzero(ev == 1.0)[0]:
-            at = tv >= tv[i]
-            sw = float(w[at].sum())
+            # rows in the risk set, as plain index lists: _array_core
+            # supports neither a boolean mask combined with None nor
+            # three-axis fancy indexing, so the risk-set moments are
+            # accumulated explicitly.
+            rows = [j for j in range(n) if tv[j] >= tv[i]]
+            sw = _math.fsum(float(w[j]) for j in rows)
             if sw <= 0:
                 continue
-            xb = (w[at, None] * X[at]).sum(axis=0) / sw
-            ll += eta[i] - np.log(sw)
-            gr += X[i] - xb
-            xx = (w[at, None, None] * (X[at][:, :, None] * X[at][:, None, :])
-                  ).sum(axis=0) / sw
-            he -= xx - np.outer(xb, xb)
-        return -ll, -gr, -he
+            xb = [_math.fsum(float(w[j]) * float(X[j][k]) for j in rows) / sw
+                  for k in range(p)]
+            ll += float(eta[i]) - _math.log(sw)
+            for k in range(p):
+                gr[k] += float(X[i][k]) - xb[k]
+            for k in range(p):
+                for l in range(p):
+                    xx = _math.fsum(float(w[j]) * float(X[j][k])
+                                    * float(X[j][l]) for j in rows) / sw
+                    he[k][l] -= xx - xb[k] * xb[l]
+        return (-ll, np.marr([-v for v in gr]),
+                np.marr([[-v for v in row] for row in he]))
 
     b = np.zeros(p)
     for _ in range(50):
