@@ -1,37 +1,22 @@
-"""r = Cov(X,Y)/(sigma_x sigma_y) for data.
+"""Deprecated alias for :func:`morie.fn.sampr`.
 
-Implements eq (6.9) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .sampr import sampr as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_9"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_9(x, y):
-    """r = Cov(X,Y)/(sigma_x sigma_y) for data.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.9).
-    """
-    value = _morin.sample_r(x, y)
-    payload = {"r": value}
-    lines = [("r", value)]
-    return RichResult(
-        title="r = Cov(X,Y)/(sigma_x sigma_y) for data.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.sampr` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_9() is the book-coordinate name for sampr(); "
+        "it will be removed. Use morie.fn.sampr() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e9: r = Cov(X,Y)/(sigma_x sigma_y) for data. Morin (2016) eq (6.9)."
+    return _impl(x, y)

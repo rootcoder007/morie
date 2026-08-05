@@ -1,38 +1,22 @@
-"""IQ test-retest worked example: r = 1/sqrt(2) ~ 0.71.
+"""Deprecated alias for :func:`morie.fn.retestiq`.
 
-Implements eq (6.38) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .retestiq import retestiq as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_38"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_38():
-    """IQ test-retest worked example: r = 1/sqrt(2) ~ 0.71.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.38).
-    """
-    sigma_x = 15.0 / math.sqrt(2.0)
-    mu_y, sigma_y, r = _morin.linear_model_stats(1.0, 0.0, sigma_x, 0.0, sigma_x)
-    payload = {"r": r, "sigma_y": sigma_y}
-    lines = [("r", r)]
-    return RichResult(
-        title="IQ test-retest worked example: r = 1/sqrt(2) ~ 0.71.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.retestiq` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_38() is the book-coordinate name for retestiq(); "
+        "it will be removed. Use morie.fn.retestiq() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e38: IQ test-retest worked example: r = 1/sqrt(2) ~ 0.71. Morin (2016) eq (6.38)."
+    return _impl()

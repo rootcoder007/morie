@@ -1,38 +1,22 @@
-"""Convolution integral for the sum of independent variables.
+"""Deprecated alias for :func:`morie.fn.sumdens`.
 
-Implements eq (6.65) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .sumdens import sumdens as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_65"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_65(grid_x, density_x, grid_y, density_y, z):
-    """Convolution integral for the sum of independent variables.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.65).
-    """
-    value = _morin.sum_density_convolution(grid_x, density_x,
-                                           grid_y, density_y, z)
-    payload = {"z": float(z), "density": value}
-    lines = [("rho_Z(z)", value)]
-    return RichResult(
-        title="Convolution integral for the sum of independent variables.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.sumdens` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_65() is the book-coordinate name for sumdens(); "
+        "it will be removed. Use morie.fn.sumdens() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e65: Convolution integral for the sum of independent variables. Morin (2016) eq (6.65)."
+    return _impl(grid_x, density_x, grid_y, density_y, z)
