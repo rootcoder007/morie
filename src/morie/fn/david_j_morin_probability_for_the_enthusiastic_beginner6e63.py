@@ -1,37 +1,22 @@
-"""Independence makes the covariance vanish: Cov = E(X)E(Y) - mu_x mu_y = 0.
+"""Deprecated alias for :func:`morie.fn.covindep`.
 
-Implements eq (6.63) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .covindep import covindep as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_63"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_63(x, y, tol=1e-9):
-    """Independence makes the covariance vanish: Cov = E(X)E(Y) - mu_x mu_y = 0.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.63).
-    """
-    cov = _morin.cov_shortcut(x, y)
-    payload = {"cov": cov, "near_zero": abs(cov) <= float(tol)}
-    lines = [("Cov", cov)]
-    return RichResult(
-        title="Independence makes the covariance vanish: Cov = E(X)E(Y) - mu_x mu_y = 0.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_63(x, y, tol=1e-09):
+    """Deprecated; use :func:`morie.fn.covindep` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_63() is the book-coordinate name for covindep(); "
+        "it will be removed. Use morie.fn.covindep() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e63: Independence makes the covariance vanish: Cov = E(X)E(Y) - mu_x mu_y = 0. Morin (2016) eq (6.63)."
+    return _impl(x, y, tol)
