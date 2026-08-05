@@ -1,42 +1,18 @@
-"""DeepWalk embedding."""
+# morie.fn -- function file (rootcoder007/morie)
+"""DeepWalk node embeddings -- alias of :mod:`morie.fn.deepw`.
 
-from . import _array_core as np
+`deepwk` and `deepw` are the SAME method: truncated uniform random walks
+fed to skip-gram, Perozzi, Al-Rfou & Skiena (2014).  Two module names
+for one method is exactly the duplicate this campaign is trying not to
+create, so this file re-exports the implementation rather than repeating
+it -- a second copy would agree with the first at 1e-9 forever and tell
+nobody anything.
+"""
 
-from ._richresult import RichResult
+from .deepw import adjacency_lists, deepwalk, skipgram, uniform_walk
 
 __all__ = ["deepwalk"]
 
 
-def deepwalk(G, walk_len, dim):
-    """
-    DeepWalk embedding
-
-    Formula: random walks + skip-gram (word2vec)
-
-    Parameters
-    ----------
-    G : array-like
-        Input data.
-    walk_len : array-like
-        Input data.
-    dim : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Perozzi et al (2014)
-    """
-    G = np.atleast_1d(np.asarray(G, dtype=float))
-    n = len(G)
-    result = float(np.mean(G))
-    se = float(np.std(G, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DeepWalk embedding"})
-
-
 def cheatsheet():
-    return "deepwk: DeepWalk embedding"
+    return "deepwk: DeepWalk node embeddings (alias of deepw)"
