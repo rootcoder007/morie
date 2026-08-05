@@ -126,9 +126,12 @@ def brier(
         n_e = np.sum((t_s == t_j) & (c_s == 0) & (event[order] == 1))
         if n_e == 0:
             continue
+        # The null reference is S(t), the survival AFTER the drop at t_j.
+        # Appending before the update stored S(t_j-) and made the marginal
+        # KM one event-step stale, which biased scaled_brier / IPA.
+        S_km *= (1 - n_e / n_r) if n_r > 0 else 1.0
         km_overall_times.append(t_j)
         km_overall_vals.append(S_km)
-        S_km *= (1 - n_e / n_r) if n_r > 0 else 1.0
 
     def _get_km_surv(t):
         if len(km_overall_times) == 0:
