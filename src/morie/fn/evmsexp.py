@@ -1,7 +1,9 @@
-"""Logistic max-stable bivariate density (Gumbel families)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Bivariate logistic max-stable distribution."""
 
-from . import _array_core as np
+import math
 
+from . import _s03core as core
 from ._richresult import RichResult
 
 __all__ = ["evt_max_stable_logistic"]
@@ -9,41 +11,74 @@ __all__ = ["evt_max_stable_logistic"]
 
 def evt_max_stable_logistic(x, y, alpha):
     """
-    Logistic max-stable bivariate density (Gumbel families)
+    Bivariate logistic max-stable distribution
 
-    Formula: F(x,y) = exp(-((x^{-1/α}+y^{-1/α})^α))
+    Formula: F(x,y) = exp(-((x^(-1/alpha) + y^(-1/alpha))^alpha))
+
+    Coles (2001) eq. (8.10), p. 146, on unit Frechet margins.  As
+    alpha -> 1 the exponent becomes 1/x + 1/y and the margins are
+    independent; as alpha -> 0 it becomes max(1/x, 1/y) and they are
+    perfectly dependent.  The Pickands function of this family is
+    A(t) = (t^(1/alpha) + (1-t)^(1/alpha))^alpha, and the coefficient of
+    upper tail dependence is 2 - 2^alpha.
 
     Parameters
     ----------
     x : array-like
-        Input data.
+        First coordinate, strictly positive (unit Frechet scale).
     y : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+        Second coordinate, strictly positive.
+    alpha : float
+        Dependence parameter in (0, 1].
 
     Returns
     -------
     result : dict
-        Keys: F
+        Keys: F, estimate, V, A_half, chi, n.
 
     References
     ----------
-    Tawn (1988)
+    Tawn (1988), Biometrika 75(3):397-415.
+    Coles (2001), An Introduction to Statistical Modeling of Extreme
+    Values, Springer, eq. (8.10) p. 146.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Logistic max-stable bivariate density (Gumbel families)",
-        }
-    )
+    xs = core.vec(x)
+    ys = core.vec(y)
+    alpha = float(alpha)
+    if not xs or not ys:
+        raise ValueError("empty input: x and y are required")
+    if len(xs) != len(ys):
+        raise ValueError("x and y must have the same length")
+    if not (0.0 < alpha <= 1.0):
+        raise ValueError("alpha must lie in (0, 1]")
+    if any(v <= 0.0 for v in xs) or any(v <= 0.0 for v in ys):
+        raise ValueError("x and y must be strictly positive on the Frechet scale")
+    F, V = [], []
+    for i in range(len(xs)):
+        # in logs: a small alpha sends x^(-1/alpha) below the smallest
+        # double and the exponent collapses to zero, so the perfect
+        # dependence limit V -> max(1/x, 1/y) would be lost entirely.
+        la = -math.log(xs[i]) / alpha
+        lb = -math.log(ys[i]) / alpha
+        m = la if la > lb else lb
+        v = math.exp(alpha * (m + math.log1p(math.exp(-abs(la - lb)))))
+        V.append(v)
+        F.append(math.exp(-v))
+    a_half = (0.5 ** (1.0 / alpha) + 0.5 ** (1.0 / alpha)) ** alpha
+    return RichResult(payload={
+        "F": F,
+        "estimate": F[0],
+        "V": V,
+        "A_half": a_half,
+        "chi": 2.0 - 2.0 ** alpha,
+        "n": len(xs),
+        "method": "bivariate logistic max-stable distribution",
+    })
 
 
 def cheatsheet():
-    return "evmsexp: Logistic max-stable bivariate density (Gumbel families)"
+    return "evmsexp: bivariate logistic max-stable distribution"
+
+
+# compact alias per ledger/NAMING.md
+evtmaxstablelogistic = evt_max_stable_logistic
