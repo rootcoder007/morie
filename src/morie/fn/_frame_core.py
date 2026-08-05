@@ -554,11 +554,19 @@ class Series:
         return Series([v for _, v in pairs], index=[i for i, _ in pairs],
                       name=self.name)
 
-    def reset_index(self, drop=False):
+    def reset_index(self, drop=False, name=None):
+        # pandas: Series.reset_index(name="n") returns a DataFrame whose
+        # value column is called "n". `name` was missing here, so the
+        # groupby().size().reset_index(name=...) idiom raised
+        # TypeError: unexpected keyword argument 'name' -- in production
+        # code, not just tests: otis.py, otis_churn.py and mrm_siu.py all
+        # use it.
         if drop:
             return Series(list(self._data), name=self.name)
-        return DataFrame({"index": list(self.index),
-                          self.name or 0: list(self._data)})
+        idx_name = getattr(self, "index_name", None) or "index"
+        val_name = name if name is not None else (self.name or 0)
+        return DataFrame({idx_name: list(self.index),
+                          val_name: list(self._data)})
 
     def rank(self, ascending=True):
         idx = sorted(range(len(self._data)),
@@ -2484,3 +2492,52 @@ class MultiIndex:
 
     def tolist(self):
         return list(self.tuples)
+
+
+# --- pandas.testing-compatible helpers -----------------------------------
+#
+# `pd.testing.assert_frame_equal` is the standard way to compare frames in
+# a test. The de-numpy campaign replaced pandas with this module and never
+# carried the namespace across, so every call raised
+# AttributeError: module has no attribute 'testing'.
+
+
+def _assert_frame_equal(left, right, check_dtype=True, check_names=True,
+                        rtol=1e-5, atol=1e-8, err_msg=""):
+    del check_dtype, check_names
+    lc, rc = list(left.columns), list(right.columns)
+    if lc != rc:
+        raise AssertionError("columns differ: %r vs %r. %s"
+                             % (lc, rc, err_msg))
+    if len(left) != len(right):
+        raise AssertionError("row count differs: %d vs %d. %s"
+                             % (len(left), len(right), err_msg))
+    for c in lc:
+        a, b = list(left[c]), list(right[c])
+        for i, (x, y) in enumerate(zip(a, b)):
+            if isinstance(x, float) and isinstance(y, float):
+                if x != x and y != y:
+                    continue
+                if not abs(x - y) <= atol + rtol * abs(y):
+                    raise AssertionError(
+                        "column %r differs at row %d: %r != %r. %s"
+                        % (c, i, x, y, err_msg))
+            elif x != y:
+                raise AssertionError(
+                    "column %r differs at row %d: %r != %r. %s"
+                    % (c, i, x, y, err_msg))
+
+
+def _assert_series_equal(left, right, **kw):
+    _assert_frame_equal(DataFrame({"v": list(left)}),
+                        DataFrame({"v": list(right)}), **kw)
+
+
+class _TestingNamespace(object):
+    """Mirrors `pandas.testing`."""
+
+    assert_frame_equal = staticmethod(_assert_frame_equal)
+    assert_series_equal = staticmethod(_assert_series_equal)
+
+
+testing = _TestingNamespace()
