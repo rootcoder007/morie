@@ -1,37 +1,22 @@
-"""Reverse least squares: x = C y + D minimizing horizontal residuals.
+"""Deprecated alias for :func:`morie.fn.lsqrev`.
 
-Implements eq (6.50) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .lsqrev import lsqrev as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_50"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_50(x, y):
-    """Reverse least squares: x = C y + D minimizing horizontal residuals.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.50).
-    """
-    C, D, S = _morin.least_squares_fit(y, x)
-    payload = {"C": C, "D": D, "S": S}
-    lines = [("C", C), ("D", D)]
-    return RichResult(
-        title="Reverse least squares: x = C y + D minimizing horizontal residuals.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.lsqrev` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_50() is the book-coordinate name for lsqrev(); "
+        "it will be removed. Use morie.fn.lsqrev() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e50: Reverse least squares: x = C y + D minimizing horizontal residuals. Morin (2016) eq (6.50)."
+    return _impl(x, y)
