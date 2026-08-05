@@ -123,3 +123,48 @@
   s2 <- v + ifelse(seq_along(y) <= K, tau2, 0)
   sum(-0.5 * log(2 * pi * s2) - 0.5 * y * y / s2)
 }
+
+# Marsaglia & Tsang (2000) gamma variate, mirroring _array_core
+# Generator.gamma: one normal (two uniforms) plus one uniform per
+# rejection trial, so the stream position matches the Python arm
+# trial for trial.
+#' @keywords internal
+#' @noRd
+.ghc_gamma1 <- function(e, shape, scale = 1) {
+  a <- as.numeric(shape)
+  if (a <= 0) stop("shape must be positive")
+  aa <- if (a >= 1) a else a + 1
+  d <- aa - 1 / 3
+  cc <- 1 / sqrt(9 * d)
+  repeat {
+    x <- .ghc_norm(e, 1L)
+    v <- (1 + cc * x)^3
+    if (v <= 0) next
+    u <- max(.ghc_unif(e, 1L), 1e-300)
+    if (log(u) < 0.5 * x * x + d - d * v + d * log(v)) {
+      g <- d * v
+      if (a < 1) g <- g * max(.ghc_unif(e, 1L), 1e-300)^(1 / a)
+      return(g * scale)
+    }
+  }
+}
+
+#' @keywords internal
+#' @noRd
+.ghc_beta1 <- function(e, a, b) {
+  x <- .ghc_gamma1(e, a)
+  y <- .ghc_gamma1(e, b)
+  x / (x + y)
+}
+
+# Moore-Penrose pseudo-inverse with numpy's default cutoff
+# (rcond = 1e-15 times the largest singular value).
+#' @keywords internal
+#' @noRd
+.ghc_pinv <- function(a, rcond = 1e-15) {
+  a <- as.matrix(a)
+  s <- svd(a)
+  cutoff <- rcond * max(c(s$d, 0))
+  inv <- ifelse(s$d > cutoff, 1 / s$d, 0)
+  s$v %*% (inv * t(s$u))
+}
