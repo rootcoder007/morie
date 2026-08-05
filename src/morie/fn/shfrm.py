@@ -21,7 +21,7 @@ def _profile_theta(D, L, theta):
     return tot
 
 
-def shared_frailty_marginal(time, event, X, cluster, max_outer=40, tol=1e-8):
+def shared_frailty_marginal(time, event, X, cluster, theta=None):
     """
     Shared gamma frailty model with marginal (population-averaged) output.
 
@@ -64,53 +64,90 @@ def shared_frailty_marginal(time, event, X, cluster, max_outer=40, tol=1e-8):
     kidx = {k: [i for i in range(n) if cl[i] == k] for k in ks}
     zeros = np.zeros(n)
 
-    theta = 0.5
-    w = {k: 1.0 for k in ks}
-    beta = np.zeros(p)
-    fit = None
-    for outer in range(max_outer):
-        offs = np.asarray([math.log(w[cl[i]]) for i in range(n)])
-        fit = cox_counting_process(zeros, t, e, Xa, offset=offs)
-        beta_new = fit["beta"]
-        eta = Xa @ beta_new
-        # Breslow baseline with frailty weights in the risk sets
-        risk_w = [w[cl[i]] * math.exp(float(eta[i])) for i in range(n)]
-        etimes = sorted(set(float(t[i]) for i in range(n) if e[i] == 1.0))
-        dL = []
-        for tk in etimes:
-            d = sum(1 for i in range(n) if t[i] == tk and e[i] == 1.0)
-            s0 = sum(risk_w[i] for i in range(n) if t[i] >= tk)
-            dL.append(d / s0)
-        H = []
+    def _em_at_theta(theta, max_em=200, em_tol=1e-10):
+        # inner EM to convergence at FIXED theta; returns full marginal
+        # loglik (Balan & Putter 2019, eq. 3) and the fitted pieces
+        a = 1.0 / theta
+        w = {k: 1.0 for k in ks}
+        fit = None
+        for _ in range(max_em):
+            offs = np.asarray([math.log(w[cl[i]]) for i in range(n)])
+            fit = cox_counting_process(zeros, t, e, Xa, offset=offs)
+            eta = Xa @ fit["beta"]
+            risk_w = [w[cl[i]] * math.exp(float(eta[i])) for i in range(n)]
+            etimes = sorted(set(float(t[i]) for i in range(n) if e[i] == 1.0))
+            dL = []
+            for tk in etimes:
+                d = sum(1 for i in range(n) if t[i] == tk and e[i] == 1.0)
+                s0 = sum(risk_w[i] for i in range(n) if t[i] >= tk)
+                dL.append(d / s0)
+            H = []
+            for i in range(n):
+                hi = sum(dL[m] for m in range(len(etimes)) if etimes[m] <= t[i])
+                H.append(hi * math.exp(float(eta[i])))
+            D = [sum(1.0 for i in kidx[k] if e[i] == 1.0) for k in ks]
+            L = [sum(H[i] for i in kidx[k]) for k in ks]
+            w_new = {ks[j]: (D[j] + a) / (L[j] + a) for j in range(len(ks))}
+            delta = max(abs(w_new[k] - w[k]) for k in ks)
+            w = w_new
+            if delta < em_tol:
+                break
+        # full marginal loglik: event terms + gamma Laplace-derivative term
+        tidx = {tk: m for m, tk in enumerate(etimes)}
+        ll = 0.0
         for i in range(n):
-            hi = sum(dL[m] for m in range(len(etimes)) if etimes[m] <= t[i])
-            H.append(hi * math.exp(float(eta[i])))
-        D = [sum(1.0 for i in kidx[k] if e[i] == 1.0) for k in ks]
-        L = [sum(H[i] for i in kidx[k]) for k in ks]
-        # golden-section on log-theta in [log 1e-3, log 5], 60 iterations
-        lo, hi = math.log(1e-3), math.log(5.0)
-        gr = (math.sqrt(5.0) - 1.0) / 2.0
-        c = hi - gr * (hi - lo)
-        d2 = lo + gr * (hi - lo)
-        fc = _profile_theta(D, L, math.exp(c))
-        fd = _profile_theta(D, L, math.exp(d2))
-        for _ in range(60):
-            if fc > fd:
-                hi, d2, fd = d2, c, fc
-                c = hi - gr * (hi - lo)
-                fc = _profile_theta(D, L, math.exp(c))
-            else:
-                lo, c, fc = c, d2, fd
-                d2 = lo + gr * (hi - lo)
-                fd = _profile_theta(D, L, math.exp(d2))
-        theta_new = math.exp((lo + hi) / 2.0)
-        a = 1.0 / theta_new
-        w_new = {ks[j]: (D[j] + a) / (L[j] + a) for j in range(len(ks))}
-        delta = max(abs(theta_new - theta),
-                    float(np.max(np.abs(beta_new - beta))))
-        beta, theta, w = beta_new, theta_new, w_new
-        if delta < tol:
-            break
+            if e[i] == 1.0:
+                ll += float(eta[i]) + math.log(dL[tidx[float(t[i])]])
+        for j in range(len(ks)):
+            ll += (math.lgamma(a + D[j]) - math.lgamma(a)
+                   + D[j] * math.log(theta)
+                   - (a + D[j]) * math.log(1.0 + theta * L[j]))
+        return ll, fit, w, etimes, dL, D, L
+
+    # outer golden-section on log-theta maximizing the marginal loglik
+    if theta is not None:
+        theta = float(theta)
+        ll_max, fit, w, etimes, dL, D, L = _em_at_theta(theta)
+        beta = fit["beta"]
+        cumL = []
+        acc = 0.0
+        for v in dL:
+            acc += v
+            cumL.append(acc)
+        S_marg = [(1.0 + theta * v) ** (-1.0 / theta) for v in cumL]
+        return RichResult(payload={
+            "estimate": beta, "se": fit["se"], "theta": theta,
+            "kendall_tau": theta / (theta + 2.0), "frailty": w,
+            "baseline_times": np.asarray(etimes),
+            "baseline_cumhaz": np.asarray(cumL),
+            "marginal_survivor": np.asarray(S_marg),
+            "loglik": ll_max, "n_outer": 0,
+            "method": "Vaupel et al (1979) shared gamma frailty, fixed theta",
+        })
+    # NOTE: the marginal likelihood is flat at machine precision over a
+    # ~1e-7 window around the argmax, so cross-language agreement on the
+    # ESTIMATED theta is bounded at ~1e-6 (both arms sit inside the
+    # plateau); the likelihood value itself agrees to <1e-12. Same
+    # equally-optimal-answer class as the R/Python scan-order trap.
+    lo, hi = math.log(1e-4), math.log(20.0)
+    gr = (math.sqrt(5.0) - 1.0) / 2.0
+    c = hi - gr * (hi - lo)
+    d2 = lo + gr * (hi - lo)
+    fc = _em_at_theta(math.exp(c))[0]
+    fd = _em_at_theta(math.exp(d2))[0]
+    for _ in range(50):
+        if fc > fd:
+            hi, d2, fd = d2, c, fc
+            c = hi - gr * (hi - lo)
+            fc = _em_at_theta(math.exp(c))[0]
+        else:
+            lo, c, fc = c, d2, fd
+            d2 = lo + gr * (hi - lo)
+            fd = _em_at_theta(math.exp(d2))[0]
+    theta = math.exp((lo + hi) / 2.0)
+    ll_max, fit, w, etimes, dL, D, L = _em_at_theta(theta)
+    beta = fit["beta"]
+    outer = 50
     # marginal survivor at baseline covariates (x = 0)
     cumL = []
     acc = 0.0
@@ -127,8 +164,8 @@ def shared_frailty_marginal(time, event, X, cluster, max_outer=40, tol=1e-8):
         "baseline_times": np.asarray(etimes),
         "baseline_cumhaz": np.asarray(cumL),
         "marginal_survivor": np.asarray(S_marg),
-        "loglik": fit["loglik"],
-        "n_outer": outer + 1,
+        "loglik": ll_max,
+        "n_outer": outer,
         "method": "Vaupel et al (1979) shared gamma frailty, Klein (1992) EM, marginal survivor",
     })
 
