@@ -111,7 +111,21 @@ def chol(A):
                 s += L[i][p] * L[j][p]
             if i == j:
                 d = A[i][i] - s
-                L[i][j] = math.sqrt(d) if d > 0.0 else 0.0
+                if not (d > 0.0):
+                    # A Cholesky factor exists only for a positive-definite
+                    # matrix. Returning 0 here used to make cholsolve hand
+                    # back the ZERO VECTOR, which a Newton step on a
+                    # log-likelihood Hessian (negative definite) accepted
+                    # silently: beta stayed at 0 and three-way parity passed
+                    # at 1e-9 because both arms did the same thing. Solve
+                    # against -H, or ridge the matrix into positive
+                    # definiteness, but do not accept a wrong answer.
+                    raise ValueError(
+                        "chol: matrix is not positive definite "
+                        "(pivot %d is %.17g); a Cholesky factor does not "
+                        "exist. If this is a log-likelihood Hessian, solve "
+                        "against -H." % (i, d))
+                L[i][j] = math.sqrt(d)
             else:
                 L[i][j] = (A[i][j] - s) / L[j][j] if L[j][j] != 0.0 else 0.0
     return L
