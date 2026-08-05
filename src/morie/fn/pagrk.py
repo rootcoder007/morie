@@ -1,40 +1,48 @@
-"""PageRank."""
+# morie.fn -- function file (rootcoder007/morie)
+"""PageRank.
 
-from . import _array_core as np
+DUPLICATE: PageRank is already implemented in ``pgrank``.  Per
+ledger/wave2/DUPMAP.tsv this module aliases it instead of carrying a
+third power iteration (``prnkpg`` and ``sgtpgr`` are already aliases of
+the same function).
+"""
 
-from ._richresult import RichResult
+from .pgrank import pagerank as _pagerank
 
 __all__ = ["pagerank"]
 
 
-def pagerank(A, alpha):
-    """
-    PageRank
+def pagerank(A, alpha=0.85, n_iter=100):
+    """Stationary distribution of the damped random surfer on ``A``.
 
-    Formula: x = αA^T D^{-1} x + (1-α)/n 1
+    Alias of :func:`morie.fn.pgrank.pagerank`.  ``alpha`` is the damping
+    factor, called ``d`` there.
+
+    Formula: ``x = (1 - alpha)/n + alpha A^T D^-1 x``, with the mass of
+    dangling nodes spread uniformly so the vector sums to one.
 
     Parameters
     ----------
-    A : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    A : array-like, shape (n, n)
+        Adjacency; ``A[i][j]`` non-zero means a link from i to j.
+    alpha : float, default 0.85
+        Damping factor.
+    n_iter : int, default 100
+        Power iterations.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``pr``, ``estimate``, ``top``, ``n``.
 
     References
     ----------
-    Page-Brin (1999)
+    Page, L., Brin, S., Motwani, R. & Winograd, T. (1999).  The PageRank
+    citation ranking: bringing order to the web.  Stanford InfoLab
+    Technical Report 1999-66.
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PageRank"})
+    return _pagerank(A, d=alpha, n_iter=n_iter)
 
 
 def cheatsheet():
-    return "pagrk: PageRank"
+    return "pagrk: PageRank (alias of pgrank.pagerank)"
