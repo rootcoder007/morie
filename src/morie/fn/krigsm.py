@@ -1,44 +1,21 @@
-"""Ordinary kriging interpolation."""
+# morie.fn -- wave2 slice x_2_01 (rootcoder007/morie)
+"""Ordinary kriging interpolation -- alias of :mod:`morie.fn.krig`.
 
-from . import _array_core as np
+Matheron (1963), "Principles of geostatistics", Economic Geology
+58(8):1246-1266, doi:10.2113/gsecongeo.58.8.1246; Cressie (1993),
+Statistics for Spatial Data, rev. ed., Wiley.
 
-from ._richresult import RichResult
+Ordinary kriging with a spherical variogram is already implemented in
+:mod:`morie.fn.krig` under the same public name ``ordinary_kriging``;
+this module re-exports it rather than carrying a second copy.
+"""
+
+from __future__ import annotations
+
+from .krig import _spherical_variogram, ordinary_kriging  # noqa: F401
 
 __all__ = ["ordinary_kriging"]
 
 
-def ordinary_kriging(coords, values, s_predict, variogram):
-    """
-    Ordinary kriging interpolation
-
-    Formula: BLUP at unobserved s* via covariance C(s, s*)
-
-    Parameters
-    ----------
-    coords : array-like
-        Input data.
-    values : array-like
-        Input data.
-    s_predict : array-like
-        Input data.
-    variogram : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Matheron (1962); Cressie (1993)
-    """
-    values = np.atleast_1d(np.asarray(values, dtype=float))
-    n = len(values)
-    result = float(np.mean(values))
-    se = float(np.std(values, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Ordinary kriging interpolation"})
-
-
 def cheatsheet():
-    return "krigsm: Ordinary kriging interpolation"
+    return "krigsm: Ordinary kriging interpolation -- alias of krig"
