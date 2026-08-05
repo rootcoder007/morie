@@ -1,42 +1,54 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Upper tail dependence coefficient."""
 
-from . import _array_core as np
+from .chiDep import chi_dependence
 
 from ._richresult import RichResult
 
 __all__ = ["upper_tail_dependence"]
 
 
-def upper_tail_dependence(y, copula, theta):
-    """
-    Upper tail dependence coefficient
+def upper_tail_dependence(y, copula, theta=0.95):
+    """Upper tail dependence, estimated by Coles' chi(u) diagnostic.
 
-    Formula: lambda_U = lim_{u->1-} (1 - 2u + C(u,u))/(1 - u)
+    ``lambda_U = lim_{u->1-} (1 - 2u + C(u,u)) / (1 - u)`` is exactly the
+    limit of Coles' ``chi(u) = 2 - log C(u,u) / log u``, so the estimator
+    already in the tree is reused rather than written a second time; this
+    module is a thin alias for ``chiDep.chi_dependence``.
+
+    Formula: ``lambda_U = lim_{u->1-} (1 - 2u + C(u,u)) / (1 - u)``.
 
     Parameters
     ----------
     y : array-like
-        Input data.
+        First margin.
     copula : array-like
-        Input data.
-    theta : array-like
-        Input data.
+        Second margin, equal length.
+    theta : float, default 0.95
+        Threshold ``u`` in (0, 1).
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``estimate``, ``u``, ``n``, ``method``.
 
     References
     ----------
-    Joe (1997); Nelsen (2006) §5.4
+    Joe, H. (1997).  Multivariate Models and Multivariate Dependence
+    Concepts.  Chapman & Hall, section 2.1.10.
+    Coles, S. (2001).  An Introduction to Statistical Modeling of Extreme
+    Values.  Springer, section 8.4, pp. 163-165.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Upper tail dependence coefficient"})
+    r = chi_dependence(y, copula, theta)
+    return RichResult(payload={
+        "estimate": float(r["estimate"]), "u": float(r["u"]), "n": int(r["n"]),
+        "method": "upper tail dependence via empirical chi(u) [Joe 1997; Coles 2001]"})
+
+
+# CANONICAL TEST
+# >>> # comonotone data: the rank transforms coincide, so chi is exactly 1
+# >>> assert abs(upper_tail_dependence(list(range(20)), list(range(20)), 0.5)["estimate"] - 1.0) < 1e-12
 
 
 def cheatsheet():
-    return "tldepu: Upper tail dependence coefficient"
+    return "tldepu(y, copula, theta): upper tail dependence (alias of chiDep)."

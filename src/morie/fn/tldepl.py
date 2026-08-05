@@ -1,42 +1,56 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Lower tail dependence coefficient."""
 
-from . import _array_core as np
+from . import _tail1core as C
+from .chiDep import chi_dependence
 
 from ._richresult import RichResult
 
 __all__ = ["lower_tail_dependence"]
 
 
-def lower_tail_dependence(y, copula, theta):
-    """
-    Lower tail dependence coefficient
+def lower_tail_dependence(y, copula, theta=0.95):
+    """Lower tail dependence, via the reflected chi(u) diagnostic.
 
-    Formula: lambda_L = lim_{u->0+} C(u,u)/u
+    ``lambda_L = lim_{u->0+} C(u,u) / u``.  The lower tail of ``(X, Y)``
+    is the upper tail of ``(-X, -Y)``, so this is Coles' ``chi(u)``
+    applied to the reflected sample; no second estimator is written.  For
+    a radially symmetric dependence structure the lower and upper
+    coefficients coincide, which is the anchor used in the tests.
+
+    Formula: ``lambda_L = lim_{u->0+} C(u,u) / u``.
 
     Parameters
     ----------
     y : array-like
-        Input data.
+        First margin.
     copula : array-like
-        Input data.
-    theta : array-like
-        Input data.
+        Second margin, equal length.
+    theta : float, default 0.95
+        Threshold ``u`` in (0, 1).
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``estimate``, ``u``, ``n``, ``method``.
 
     References
     ----------
-    Joe (1997); Nelsen (2006) §5.4
+    Joe, H. (1997).  Multivariate Models and Multivariate Dependence
+    Concepts.  Chapman & Hall, section 2.1.10.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Lower tail dependence coefficient"})
+    a = [-v for v in C.vec(y)]
+    b = [-v for v in C.vec(copula)]
+    r = chi_dependence(a, b, theta)
+    return RichResult(payload={
+        "estimate": float(r["estimate"]), "u": float(r["u"]), "n": int(r["n"]),
+        "method": "lower tail dependence via reflected empirical chi(u) [Joe 1997]"})
+
+
+# CANONICAL TEST
+# >>> # comonotone data is radially symmetric here: both tails give exactly 1
+# >>> assert abs(lower_tail_dependence(list(range(20)), list(range(20)), 0.5)["estimate"] - 1.0) < 1e-12
 
 
 def cheatsheet():
-    return "tldepl: Lower tail dependence coefficient"
+    return "tldepl(y, copula, theta): lower tail dependence (reflected chiDep)."
