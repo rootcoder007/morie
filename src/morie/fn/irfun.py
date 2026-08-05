@@ -78,37 +78,45 @@ def impulse_response(
     for j in range(p):
         A.append(coef[:, 1 + j * m : 1 + (j + 1) * m].copy())
 
-    # Compute MA coefficient matrices Phi[h] via the recursion:
-    #   Phi[0] = I_m
-    #   Phi[h] = sum_{j=1}^{min(h,p)} A[j-1] @ Phi[h-j]
-    Phi = np.zeros((horizon + 1, m, m))
-    Phi[0] = np.eye(m)
+    # MA coefficient matrices Phi[h] via the recursion
+    #   Phi[0] = I_m,  Phi[h] = sum_{j=1}^{min(h,p)} A[j-1] @ Phi[h-j].
+    # Plain nested lists: _array_core does not support assigning a 2-D
+    # block into a 3-D array, which silently made this module unusable
+    # (ValueError: row assignment length mismatch on the first call).
+    Al = [[[float(a[i][j]) for j in range(m)] for i in range(m)] for a in A]
+    Phi = [[[1.0 if i == j else 0.0 for j in range(m)] for i in range(m)]]
     for h in range(1, horizon + 1):
+        acc = [[0.0] * m for _ in range(m)]
         for j in range(1, min(h, p) + 1):
-            Phi[h] += A[j - 1] @ Phi[h - j]
+            Aj = Al[j - 1]
+            Ph = Phi[h - j]
+            for i in range(m):
+                for c in range(m):
+                    acc[i][c] += sum(Aj[i][t] * Ph[t][c] for t in range(m))
+        Phi.append(acc)
 
     # Cholesky factor P such that P @ P' = sigma_u.
-    # Regularise if not positive definite.
     try:
-        P = np.linalg.cholesky(sigma_u)
-    except np.linalg.LinAlgError:
+        P = [[float(v) for v in row] for row in np.linalg.cholesky(sigma_u)]
+    except Exception:
         eigvals, eigvecs = np.linalg.eigh(sigma_u)
         eigvals = np.maximum(eigvals, 1e-12)
-        P = eigvecs @ np.diag(np.sqrt(eigvals))
+        Pm = eigvecs @ np.diag(np.sqrt(eigvals))
+        P = [[float(v) for v in row] for row in Pm]
 
-    # Orthogonalised IRF: Theta[h] = Phi[h] @ P.
-    # Column shock_var of Theta[h] gives responses to shock in shock_var.
-    irf = np.zeros((horizon + 1, m))
+    # Orthogonalised IRF: Theta[h] = Phi[h] @ P; column shock_var.
+    irf = []
     for h in range(horizon + 1):
-        irf[h] = (Phi[h] @ P)[:, shock_var]
+        irf.append([sum(Phi[h][i][t] * P[t][shock_var] for t in range(m))
+                    for i in range(m)])
 
     return DescriptiveResult(
         name="impulse_response",
-        value=float(irf[1, shock_var]) if horizon >= 1 else float(irf[0, shock_var]),
+        value=float(irf[1][shock_var]) if horizon >= 1 else float(irf[0][shock_var]),
         extra={
-            "irf": irf.copy(),
-            "Phi": Phi.copy(),
-            "chol": P.copy(),
+            "irf": irf,
+            "Phi": Phi,
+            "chol": P,
             "horizon": horizon,
             "shock_var": shock_var,
         },
