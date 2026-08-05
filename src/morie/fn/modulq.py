@@ -1,44 +1,48 @@
-"""Newman-Girvan modularity Q."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Newman-Girvan modularity Q (alias of :mod:`sgtmodq`)."""
 
-from . import _array_core as np
+from .sgtmodq import sgt_modularity_q
 
-from ._richresult import RichResult
-
-__all__ = ["modularity_q"]
+__all__ = ["modularity_q", "modularityq"]
 
 
 def modularity_q(G, communities):
-    """
-    Newman-Girvan modularity Q
+    """Newman-Girvan modularity ``Q`` of a partition of a graph.
 
-    Formula: Q = (1/2m) sum (A_ij - k_i k_j/2m) delta(c_i,c_j)
+    This module is an ALIAS.  Modularity is implemented once, in
+    ``sgtmodq.sgt_modularity_q``; this entry point delegates.  No second
+    copy of the arithmetic exists.
+
+        Q = (1 / 2m) sum_ij (A_ij - k_i k_j / 2m) delta(c_i, c_j)
+
+    with ``2m = sum_ij A_ij`` and ``k_i = sum_j A_ij``.  The null term
+    ``k_i k_j / 2m`` is the configuration-model expectation, which is
+    why a single all-node community scores exactly zero however dense
+    the graph.
 
     Parameters
     ----------
-    G : array-like
-        Input data.
-    communities : array-like
-        Input data.
+    G : array-like, shape (n, n)
+        Symmetric adjacency or weight matrix.
+    communities : array-like of int, length n
+        Community label per node.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``Q``, ``estimate``, ``n_communities``, ``n``.
 
     References
     ----------
-    Newman-Girvan (2004)
+    Newman, M. E. J. and Girvan, M. (2004), "Finding and evaluating
+    community structure in networks", Physical Review E 69, 026113,
+    doi:10.1103/PhysRevE.69.026113.
     """
-    G = np.atleast_1d(np.asarray(G, dtype=float))
-    n = len(G)
-    result = float(np.mean(G))
-    se = float(np.std(G, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Newman-Girvan modularity Q"})
+    return sgt_modularity_q(G, communities)
+
+
+modularityq = modularity_q
 
 
 def cheatsheet():
-    return "modulq: Newman-Girvan modularity Q"
-
-
-# compact alias per ledger/NAMING.md
-modularityq = modularity_q
+    return "modulq: Newman-Girvan modularity Q (alias of sgtmodq)"

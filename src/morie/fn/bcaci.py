@@ -46,18 +46,18 @@ def bca_ci(
     for i in range(n_boot):
         sample = data[rng.integers(0, n, size=n)]
         boot_stats[i] = stat_fn(sample)
-    z0 = _st.norm.ppf(np.mean(boot_stats < theta_hat))
-    jackknife = np.empty(n)
-    for i in range(n):
-        jack_sample = np.concatenate([data[:i], data[i + 1 :]])
-        jackknife[i] = stat_fn(jack_sample)
-    jack_mean = jackknife.mean()
-    diff = jack_mean - jackknife
-    a = float(np.sum(diff**3) / (6.0 * np.sum(diff**2) ** 1.5)) if np.sum(diff**2) > 0 else 0.0
-    z_lo = _st.norm.ppf(alpha / 2)
-    z_hi = _st.norm.ppf(1 - alpha / 2)
-    a1 = _st.norm.cdf(z0 + (z0 + z_lo) / (1 - a * (z0 + z_lo)))
-    a2 = _st.norm.cdf(z0 + (z0 + z_hi) / (1 - a * (z0 + z_hi)))
+    # ponytail: one BCa in the tree.  The bias correction (D&H 5.22), the
+    # jackknife acceleration (D&H 5.27) and the endpoint transform (D&H 5.21)
+    # live in btbca and are called from here rather than written twice -- a
+    # second copy would agree with the first at 1e-9 forever and be
+    # indistinguishable from correct work.
+    from .btbca import boot_bca_ci
+
+    _bca = boot_bca_ci(theta_hat, boot_stats, data, stat_fn, alpha)
+    z0 = _bca["z0"]
+    a = _bca["accel"]
+    a1 = _bca["alpha_lo"]
+    a2 = _bca["alpha_hi"]
     sorted_boot = np.sort(boot_stats)
     lo = float(sorted_boot[max(0, int(np.floor(a1 * n_boot)))])
     hi = float(sorted_boot[min(n_boot - 1, int(np.ceil(a2 * n_boot)) - 1)])
