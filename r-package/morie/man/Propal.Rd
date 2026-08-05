@@ -14,24 +14,25 @@ Propal(N, Nh, n)
 \item{n}{total number of units to allocate.}
 }
 \value{
-list: estimate, allocation, allocation_int, variance, A,
-fraction, N, n, method.  estimate is A with every S_i = 1, the only
-variance available without Sh.
+list: estimate, allocation, allocation_int, variance, A, fraction,
+N, n, method.  estimate is A = ((M_0 - n)/n) sum_i N_i, the variance of
+eq. (40) evaluated with every S_i = 1, which is the only variance
+available without S_h.
 }
 \description{
 Neyman, J. (1934), Journal of the Royal Statistical Society 97(4),
-558-625, JSTOR 2342192.  Page 567, read as a rendered page image,
-credits this rule to Bowley: "Professor Bowley considered only the case
-when the sizes, say m_i, of the partial samples are proportional to the
-sizes of corresponding strata" (the sentence runs on to p. 568).  Page
-580, also read as an image, gives what it costs: writing the variance of
-eq. (37) as A + B - C of eq. (39), proportional allocation makes B = C
-identically, so sigma^2 = A = ((M_0 - m_0) / m_0) sum_i M_i S_i^2, which
-is the page eq. (40) -- printed there with a misprint,
-"(M_0 - M_0)/m_0" for "(M_0 - m_0)/m_0"; see \code{Neyman} for the full
-note on that erratum.  The optimum allocation reaches A - C instead, so
-proportional allocation is worse by exactly C >= 0, and C = 0 precisely
-when every S_i is equal -- in which case the two allocations coincide.
+558-625, JSTOR 2342192.  Page 567, read as a rendered page image, credits
+this rule to Bowley: "Professor Bowley considered only the case when the
+sizes, say m'_i, of the partial samples are proportional to the sizes of
+corresponding strata" (the sentence runs on to p. 568).  Page 580, also
+read as an image, gives what it costs: writing the variance of eq. (37)
+as A + B - C of eq. (39), proportional allocation makes B = C
+identically, so sigma^2 = A = ((M_0 - m_0) / m_0) sum_i M_i S_i^2, the
+page's eq. (40) -- printed there with a misprint, "(M_0 - M_0)/m_0" for
+"(M_0 - m_0)/m_0"; see Neyman() for the full note on that erratum.  The
+optimum allocation reaches A - C instead, so proportional allocation is
+worse by exactly C >= 0, and C = 0 precisely when every S_i is equal --
+in which case the two allocations coincide.
 }
 \examples{
 Propal(600, c(100, 200, 300), 60)$allocation

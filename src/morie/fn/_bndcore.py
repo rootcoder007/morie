@@ -104,3 +104,29 @@ def cells(x):
         if v not in out:
             out.append(v)
     return out
+
+
+def wc_intersect(yv, dv, cellv, lo, hi):
+    """Arm bounds intersected over the cells of ``cellv``.
+
+    Returns ``(lo1, hi1, lo0, hi0)``: the exclusion-restriction
+    intersection bounds of Molinari (2021) eq. (2.15) for each arm.
+    """
+    n = len(yv)
+    lo1 = lo0 = None
+    hi1 = hi0 = None
+    for g in cells(cellv):
+        gy = [yv[i] for i in range(n) if cellv[i] == g]
+        gd = [dv[i] for i in range(n) if cellv[i] == g]
+        p1, m1, p0, m0 = cellmeans(gy, gd)
+        a1 = wc_arm(m1, p1, lo, hi)
+        a0 = wc_arm(m0, p0, lo, hi)
+        if lo1 is None or a1[0] > lo1:
+            lo1 = a1[0]
+        if hi1 is None or a1[1] < hi1:
+            hi1 = a1[1]
+        if lo0 is None or a0[0] > lo0:
+            lo0 = a0[0]
+        if hi0 is None or a0[1] < hi0:
+            hi0 = a0[1]
+    return (lo1, hi1, lo0, hi0)
