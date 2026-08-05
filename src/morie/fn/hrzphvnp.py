@@ -100,6 +100,26 @@ def horowitz_ph_frailty_nonpar(t, x, event=None, ny=21, nz=21, nq=21,
     that is NOT done here.  Only Elbers-Ridder identification
     (:math:`Ee^{-V} < \infty`) plus PHU3(ii) is assumed.
 
+    The stub docstring this replaced made three claims that Section
+    6.3.4 contradicts, all checked against pages 223-225:
+
+    * "identification via multiple spells".  The section identifies
+      from a SINGLE spell: "Elbers and Ridder (1982) showed that model
+      (6.68) is identified if Ee^{-V} < infinity" (p. 223).  The word
+      "spell" does not occur in the section.  Multiple-spell
+      identification is a different literature and is not used here.
+    * "V arbitrary with E[V] = 1".  The normalisation the section
+      actually imposes is Lambda_0(y_0) = 1 for some finite y_0 > 0
+      (p. 223), together with |alpha_1| = 1 on the index.  E[V] = 1 is
+      never assumed; what is assumed is the moment condition
+      Ee^{-3V} < infinity (PHU3(ii)).
+    * ``h(t|X,V) = h_0(t) exp(X'beta) V``.  Equation (6.72) writes the
+      hazard as lambda(y|z,v) = lambda_0(y) exp[-(sigma z + v)], i.e.
+      with a NEGATIVE index and an exp(-v) frailty.  The published
+      parameterisation is the one implemented.
+
+    The estimator below follows the source, not the stub.
+
     Parameters
     ----------
     t : array-like, shape (n,)
