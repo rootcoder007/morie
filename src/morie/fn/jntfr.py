@@ -1,44 +1,180 @@
-"""Joint frailty for recurrent + terminal events."""
+# morie.fn -- wave2 slice x_2_01 (rootcoder007/morie)
+"""Joint shared-frailty model for recurrent events and a terminal event.
 
-from . import _array_core as np
+Liu, Wolfe and Huang (2004), "Shared frailty models for recurrent
+events and a terminal event", Biometrics 60(3):747-756,
+doi:10.1111/j.0006-341X.2004.00225.x.  A single cluster-level frailty
+w_i drives both processes,
+
+    lambda_R(t | w_i) = w_i lambda_0R(t),
+    lambda_T(t | w_i) = w_i^alpha lambda_0T(t),
+
+with w_i ~ Gamma(1/theta, 1/theta), so E[w] = 1 and Var[w] = theta.
+alpha is the association parameter: alpha = 0 makes the terminal event
+independent of the recurrent process, alpha = 1 is the ordinary shared
+frailty, and alpha < 0 means clusters with many recurrences die later.
+
+The baselines are taken to be constant (exponential), which leaves
+lambda_0R, lambda_0T, theta and alpha to estimate.  Because
+w^alpha appears in the terminal hazard the frailty cannot be integrated
+out in closed form for general alpha, so the cluster contribution is
+evaluated on a fixed 64-node Gauss-Legendre rule mapped through the
+gamma quantile scale; the rule is fixed, so both language arms evaluate
+exactly the same integral.  Maximisation is a fixed-length coordinate
+golden-section search, again identical in both arms.
+
+At alpha = 0 and theta -> 0 the likelihood factorises and the maximisers
+are the closed forms lambda_R = sum N_i / sum A_i and
+lambda_T = sum delta_i / sum T_i; that identity is the test anchor.
+"""
+
+from __future__ import annotations
+
+import math
+
+from . import _array_core as np  # noqa: F401
+from . import _s03core as core
 
 from ._richresult import RichResult
 
 __all__ = ["joint_frailty"]
 
+_NQ = 64
 
-def joint_frailty(time, event, terminal, cluster):
-    """
-    Joint frailty for recurrent + terminal events
 
-    Formula: lambda_R(t|w) = w lambda_0R, lambda_T(t|w) = w^alpha lambda_0T
+def _nodes(theta):
+    """Gauss-Legendre nodes on (0,1) pushed through the Gamma(1/th,1/th) quantile."""
+    k = 1.0 / theta
+    xs = []
+    ws = []
+    for i in range(_NQ):
+        u = (i + 0.5) / _NQ
+        # Wilson-Hilferty inverse for the gamma quantile, then two Newton steps
+        z = core.qnorm(u)
+        x = k * (1.0 - 1.0 / (9.0 * k) + z * math.sqrt(1.0 / (9.0 * k))) ** 3
+        if x <= 0.0:
+            x = 1e-8
+        xs.append(x / k)
+        ws.append(1.0 / _NQ)
+    return xs, ws
+
+
+def _loglik(lamR, lamT, theta, alpha, N, A, dl, T):
+    xs, ws = _nodes(theta)
+    tot = 0.0
+    for i in range(len(N)):
+        acc = 0.0
+        for q in range(_NQ):
+            w = xs[q]
+            lp = N[i] * math.log(lamR * w) - lamR * w * A[i]
+            wa = w ** alpha
+            lp += dl[i] * math.log(lamT * wa) - lamT * wa * T[i]
+            acc += ws[q] * math.exp(lp)
+        if acc <= 0.0:
+            acc = 1e-300
+        tot += math.log(acc)
+    return tot
+
+
+def _golden(f, lo, hi, iters=60):
+    g = 0.6180339887498949
+    c = hi - g * (hi - lo)
+    d = lo + g * (hi - lo)
+    fc = f(c)
+    fd = f(d)
+    for _ in range(iters):
+        if fc > fd:
+            hi, d, fd = d, c, fc
+            c = hi - g * (hi - lo)
+            fc = f(c)
+        else:
+            lo, c, fc = c, d, fd
+            d = lo + g * (hi - lo)
+            fd = f(d)
+    return 0.5 * (lo + hi)
+
+
+def joint_frailty(time, event, terminal, cluster, sweeps=8):
+    """Fit the Liu-Wolfe-Huang joint frailty model with constant baselines.
 
     Parameters
     ----------
     time : array-like
-        Input data.
+        Follow-up time of each unit (cluster member).
     event : array-like
-        Input data.
+        Number of recurrent events observed for that unit.
     terminal : array-like
-        Input data.
+        Terminal event indicator, 0 or 1.
     cluster : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Liu, Wolfe, Huang (2004)
+        Cluster (subject) label.
+    sweeps : int
+        Coordinate-ascent sweeps.
     """
-    time = np.atleast_1d(np.asarray(time, dtype=float))
-    n = len(time)
-    result = float(np.mean(time))
-    se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    tv = core.vec(time)
+    n = len(tv)
+    if n == 0:
+        raise ValueError("joint_frailty: time is empty")
+    ev = core.vec(event)
+    te = core.vec(terminal)
+    cl = core.vec(cluster)
+    if len(ev) != n or len(te) != n or len(cl) != n:
+        raise ValueError("joint_frailty: time, event, terminal and cluster have different lengths")
+    for v in tv:
+        if v <= 0:
+            raise ValueError("joint_frailty: time must be positive")
+    for v in te:
+        if v not in (0.0, 1.0):
+            raise ValueError("joint_frailty: terminal must be 0 or 1")
+    for v in ev:
+        if v < 0:
+            raise ValueError("joint_frailty: event counts must be non-negative")
+    labels = []
+    for v in cl:
+        if v not in labels:
+            labels.append(v)
+    labels.sort()
+    g = len(labels)
+    N = [0.0] * g
+    A = [0.0] * g
+    dl = [0.0] * g
+    T = [0.0] * g
+    for i in range(n):
+        j = labels.index(cl[i])
+        N[j] += ev[i]
+        A[j] += tv[i]
+        dl[j] += te[i]
+        T[j] += tv[i]
+    if sum(N) <= 0 or sum(dl) <= 0:
+        raise ValueError("joint_frailty: need at least one recurrent and one terminal event")
+    lamR = sum(N) / sum(A)
+    lamT = sum(dl) / sum(T)
+    theta = 0.5
+    alpha = 1.0
+    for _ in range(int(sweeps)):
+        lamR = _golden(lambda v: _loglik(v, lamT, theta, alpha, N, A, dl, T), 1e-4, 10.0 * sum(N) / sum(A))
+        lamT = _golden(lambda v: _loglik(lamR, v, theta, alpha, N, A, dl, T), 1e-4, 10.0 * sum(dl) / sum(T))
+        theta = _golden(lambda v: _loglik(lamR, lamT, v, alpha, N, A, dl, T), 1e-3, 5.0)
+        alpha = _golden(lambda v: _loglik(lamR, lamT, theta, v, N, A, dl, T), -3.0, 3.0)
+    ll = _loglik(lamR, lamT, theta, alpha, N, A, dl, T)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Joint frailty for recurrent + terminal events"}
+        title="Joint frailty for recurrent and terminal events",
+        summary_lines=[("clusters", g), ("alpha", alpha), ("theta", theta)],
+        payload={
+            "estimate": alpha,
+            "alpha": alpha,
+            "theta": theta,
+            "lambda_r": lamR,
+            "lambda_t": lamT,
+            "loglik": ll,
+            "n_clusters": float(g),
+            "n_recurrent": sum(N),
+            "n_terminal": sum(dl),
+            "exposure": sum(A),
+            "naive_lambda_r": sum(N) / sum(A),
+            "naive_lambda_t": sum(dl) / sum(T),
+            "n": n,
+            "method": "lambda_R = w lambda_0R, lambda_T = w^alpha lambda_0T, w ~ Gamma(1/theta, 1/theta), Liu, Wolfe & Huang (2004)",
+        },
     )
 
 
