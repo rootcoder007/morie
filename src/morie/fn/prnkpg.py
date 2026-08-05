@@ -1,40 +1,30 @@
-"""PageRank."""
+# morie.fn -- function file (rootcoder007/morie)
+"""PageRank -- alias of :mod:`morie.fn.pgrank`.
 
-from . import _array_core as np
+This module used to carry its own placeholder.  PageRank is already
+implemented three-way in ``pgrank`` (Python, both R trees), so this is a
+name, not a second implementation: a duplicate would be one more place
+for the dangling-node mass to be handled differently.
+"""
 
-from ._richresult import RichResult
+from .pgrank import pagerank as _pagerank
 
 __all__ = ["pagerank"]
 
 
-def pagerank(G, damping):
-    """
-    PageRank
+def pagerank(G, damping=0.85, n_iter=100):
+    """PageRank of ``G`` with damping ``damping``; see ``pgrank.pagerank``.
 
-    Formula: x = (1-d)/n + d A^T D^-1 x
-
-    Parameters
-    ----------
-    G : array-like
-        Input data.
-    damping : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
+    Formula: ``x = (1 - d)/n + d A^T D^-1 x``.
 
     References
     ----------
-    Page-Brin (1998)
+    Page, L., Brin, S., Motwani, R. & Winograd, T. (1999).  The PageRank
+    citation ranking: bringing order to the web.  Stanford InfoLab
+    technical report 1999-66.
     """
-    G = np.atleast_1d(np.asarray(G, dtype=float))
-    n = len(G)
-    result = float(np.mean(G))
-    se = float(np.std(G, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PageRank"})
+    return _pagerank(G, d=damping, n_iter=n_iter)
 
 
 def cheatsheet():
-    return "prnkpg: PageRank"
+    return "prnkpg: PageRank (alias of pgrank)"
