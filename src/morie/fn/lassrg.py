@@ -1,42 +1,57 @@
-"""Lasso (L1-penalized) regression."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Lasso regression -- an alias for :mod:`esllso`.
 
-from . import _array_core as np
+``ledger/wave2/DUPMAP.tsv`` records ``lassrg`` as a duplicate of
+``esllso`` and it is: the same penalised least-squares problem solved by
+the same cyclic coordinate descent.  Only the argument order differs.
+"""
 
-from ._richresult import RichResult
+from .esllso import esl_lasso
 
 __all__ = ["lasso_regression"]
 
 
-def lasso_regression(y, X, lam):
-    """
-    Lasso (L1-penalized) regression
+def lasso_regression(y, X, lam, max_iter=10000, tol=1e-12):
+    """Least squares with an L1 penalty, which selects while it shrinks.
 
-    Formula: min ||y - X beta||^2 + lambda ||beta||_1
+    Ridge shrinks every coefficient and drops none; subset selection drops
+    but does not shrink, and its objective is combinatorial.  The L1
+    penalty is the convex relaxation that does both at once, and the
+    non-differentiable corner at zero is exactly the feature that produces
+    exact zeros rather than merely small numbers.
+
+    Formula: ``min_beta ||y - X beta||^2 + lambda ||beta||_1`` --
+    Tibshirani (1996).
+
+    This is an alias.  The solver lives in ``morie.fn.esllso``; here the
+    response comes first, as the documented signature has it.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    lam : array-like
-        Input data.
+    y : array-like, shape (n,)
+        Response.
+    X : array-like, shape (n, p)
+        Design matrix.
+    lam : float
+        Penalty, non-negative.
+    max_iter : int, default 10000
+        Maximum sweeps.
+    tol : float, default 1e-12
+        Convergence tolerance.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        Whatever ``esllso.esl_lasso`` returns, unchanged.
 
     References
     ----------
-    Tibshirani (1996)
+    Tibshirani, R. (1996).  Regression shrinkage and selection via the
+    lasso.  Journal of the Royal Statistical Society Series B
+    58(1):267-288.  doi:10.1111/j.2517-6161.1996.tb02080.x.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Lasso (L1-penalized) regression"})
+    return esl_lasso(X, y, lam, max_iter, tol)
 
 
 def cheatsheet():
-    return "lassrg: Lasso (L1-penalized) regression"
+    return "lassrg: lasso regression (alias of esllso)"

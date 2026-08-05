@@ -1,49 +1,58 @@
-"""Leiden community detection (refines Louvain, guarantees well-connected)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Leiden community detection -- an alias for :mod:`scleid`.
 
-from . import _array_core as np
+``ledger/wave2/DUPMAP.tsv`` records ``leid`` as a duplicate of
+``scleid``, and it is: the same local-move / refinement / aggregation
+optimisation of the same quality function.  Only the calling convention
+differs, so that is all this module supplies.
+"""
 
-from ._richresult import RichResult
+from .scleid import leiden_clustering
 
 __all__ = ["leiden_communities"]
 
 
-def leiden_communities(y, A, resolution):
-    """
-    Leiden community detection (refines Louvain, guarantees well-connected)
+def leiden_communities(y, A, resolution=1.0, quality="modularity",
+                       max_iter=20):
+    """Partition a graph into well-connected communities.
 
-    Formula: local move + refinement + aggregation; well-connected communities
+    Louvain can leave a community internally disconnected -- a node moved
+    away can sever the group it left behind, and nothing in the algorithm
+    ever checks.  Leiden inserts a refinement phase that guarantees every
+    returned community is connected, which is why its partitions survive
+    being looked at.
+
+    Formula: local move, refinement, then aggregation, repeated --
+    Traag, Waltman & van Eck (2019).
+
+    This is an alias.  The optimisation lives in ``morie.fn.scleid``.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    A : array-like
-        Input data.
-    resolution : array-like
-        Input data.
+    y : ignored
+        Accepted for interface compatibility with the stub signature.
+    A : array-like, shape (n, n)
+        Weighted adjacency matrix.
+    resolution : float, default 1.0
+        Resolution parameter of the quality function.
+    quality : str, default 'modularity'
+        Quality function, passed through.
+    max_iter : int, default 20
+        Passes.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        Whatever ``scleid.leiden_clustering`` returns, unchanged.
 
     References
     ----------
-    Traag, Waltman, van Eck (2019)
+    Traag, V. A., Waltman, L. and van Eck, N. J. (2019).  From Louvain to
+    Leiden: guaranteeing well-connected communities.  Scientific Reports
+    9:5233.  doi:10.1038/s41598-019-41695-z.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Leiden community detection (refines Louvain, guarantees well-connected)",
-        }
-    )
+    return leiden_clustering(A, resolution, quality, max_iter)
 
 
 def cheatsheet():
-    return "leid: Leiden community detection (refines Louvain, guarantees well-connected)"
+    return "leid: Leiden community detection (alias of scleid)"
