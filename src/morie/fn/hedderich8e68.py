@@ -1,81 +1,30 @@
-"""Logistic equation extracted from Hedderich, Sachs & Reynarowych (2023) Applied Statistics: Methods Using R.."""
+"""Deprecated alias for :func:`morie.fn.lrresid`.
 
-from . import _array_core as np
-from . import _stats_core as stats
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 
-from ._richresult import hypothesis_test_result
+The body this name used to carry was NOT an implementation of Hedderich
+eq. (8.68): the stub generator pasted the same one-sample
+Kolmogorov-Smirnov test into every numbered-equation row of chapters 2-8,
+so the old signature and the old numbers meant nothing.  The real
+implementation, written from the rendered PDF page, is
+:func:`morie.fn.lrresid`; the old signature is not preserved because there
+was nothing behind it to preserve.
+"""
+
+import warnings
+
+from .lrresid import lrresid as _impl
 
 __all__ = ["hedderich_chapter_8_equation_68"]
 
 
-def hedderich_chapter_8_equation_68(x, cdf=None):
-    """
-    Logistic equation extracted from Hedderich, Sachs & Reynarowych (2023) Applied Statistics: Methods Using R.
-
-    Formula: ˆβ0 + ˆβ1xi1 +...+ ˆβpxip)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    cdf : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('hedderich8e68')`` for the full guide.
-
-    References
-    ----------
-    Hedderich, Sachs & Reynarowych (2023) Applied Statistics: Methods Using R, ch.8 eq.8.68
-    """
-    x = np.asarray(x, dtype=float)
-    n = len(x)
-    if n < 2:
-        return hypothesis_test_result(
-            test_name="Logistic equation extracted from Hedderich, Sachs & Reynarowych (2023) Applied Statistics: Methods Using R.",
-            statistic=float("nan"),
-            pvalue=float("nan"),
-            warnings=["n<2: insufficient data."],
-            extra_summary=[("n", n)],
-            extra_payload={
-                "n": n,
-                "method": "Logistic equation extracted from Hedderich, Sachs & Reynarowych (2023) Applied Statistics: Methods Using R.",
-                "p_value": float("nan"),
-            },
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return hypothesis_test_result(
-        test_name="Logistic equation extracted from Hedderich, Sachs & Reynarowych (2023) Applied Statistics: Methods Using R.",
-        statistic=float(statistic),
-        pvalue=float(p_value),
-        extra_summary=[("n", n)],
-        extra_payload={
-            "n": n,
-            "method": "Logistic equation extracted from Hedderich, Sachs & Reynarowych (2023) Applied Statistics: Methods Using R.",
-            "p_value": float(p_value),
-        },
+def hedderich_chapter_8_equation_68(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.lrresid` instead."""
+    warnings.warn(
+        "hedderich_chapter_8_equation_68() is the book-coordinate name for lrresid(); "
+        "it will be removed. Use morie.fn.lrresid() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "hedderich8e68: Logistic equation extracted from Hedderich, Sachs & Reynarowych (2023) Applied Statistics: Methods Using R."
+    return _impl(*args, **kwargs)
