@@ -1,44 +1,47 @@
-"""Modularity Q (Newman) of a community partition."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Modularity Q of a community partition (alias of :mod:`sgtmodq`)."""
 
-from . import _array_core as np
+from .sgtmodq import sgt_modularity_q
 
-from ._richresult import RichResult
-
-__all__ = ["modularity_newman"]
+__all__ = ["modularity_newman", "modularitynewman"]
 
 
-def modularity_newman(y, A, communities):
-    """
-    Modularity Q (Newman) of a community partition
+def modularity_newman(A, communities):
+    """Modularity ``Q`` of a community partition (Newman's form).
 
-    Formula: Q = (1/2m) sum_ij [A_ij - k_i k_j / 2m] delta(c_i, c_j)
+    This module is an ALIAS.  Modularity is implemented once, in
+    ``sgtmodq.sgt_modularity_q``; this entry point delegates.  It is the
+    same quantity as :func:`morie.fn.modulq.modularity_q`; the two module
+    names differ only in which of the two papers they cite.
+
+        Q = (1 / 2m) sum_ij [A_ij - k_i k_j / 2m] delta(c_i, c_j)
+
+    The stub this replaces took a leading ``y`` data argument that its
+    body only averaged; the argument carried no meaning for modularity
+    and has been dropped.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    A : array-like
-        Input data.
-    communities : array-like
-        Input data.
+    A : array-like, shape (n, n)
+        Symmetric adjacency or weight matrix.
+    communities : array-like of int, length n
+        Community label per node.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``Q``, ``estimate``, ``n_communities``, ``n``.
 
     References
     ----------
-    Newman (2006)
+    Newman, M. E. J. (2006), "Modularity and community structure in
+    networks", PNAS 103(23), 8577-8582, doi:10.1073/pnas.0601602103.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Modularity Q (Newman) of a community partition"}
-    )
+    return sgt_modularity_q(A, communities)
+
+
+modularitynewman = modularity_newman
 
 
 def cheatsheet():
-    return "modlar: Modularity Q (Newman) of a community partition"
+    return "modlar: Modularity Q (Newman) of a community partition (alias of sgtmodq)"
