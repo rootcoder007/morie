@@ -1,6 +1,7 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Left-truncated survival adjustment."""
 
-from . import _array_core as np
+from .lftrt import lftrt
 
 from ._richresult import RichResult
 
@@ -8,35 +9,56 @@ __all__ = ["surv_truncation_left"]
 
 
 def surv_truncation_left(entry, time, event):
-    """
-    Left-truncated survival adjustment
+    """Kaplan-Meier survival with the risk set conditional on entry < t.
 
-    Formula: risk set conditional on T > entry_t
+    Under delayed entry a subject is not at risk before its entry time,
+    so the risk set at ``t`` counts only those with ``entry < t <= time``.
+    Ignoring the entry times inflates the early risk sets and biases
+    survival upwards.  The delayed-entry estimator already exists in the
+    tree, so this module is a thin alias for ``lftrt.lftrt`` rather than
+    a second implementation.
+
+    Formula: ``S(t) = prod_{t_j <= t} (1 - d_j / n_j)`` with
+    ``n_j = #{i : entry_i < t_j <= time_i}``.
 
     Parameters
     ----------
     entry : array-like
-        Input data.
+        Left-truncation (entry) times.
     time : array-like
-        Input data.
+        Observed event or censoring times.
     event : array-like
-        Input data.
+        Event indicator, 1 = event, 0 = censored.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``estimate`` (survival at the last event time), ``times``,
+        ``survival``, ``se``, ``ci_lower``, ``ci_upper``, ``n_obs``,
+        ``n_events``, ``method``.
 
     References
     ----------
-    Klein-Moeschberger (2003)
+    Klein, J. P. & Moeschberger, M. L. (2003).  Survival Analysis:
+    Techniques for Censored and Truncated Data, 2nd edition.  Springer,
+    section 4.2.
     """
-    entry = np.atleast_1d(np.asarray(entry, dtype=float))
-    n = len(entry)
-    result = float(np.mean(entry))
-    se = float(np.std(entry, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Left-truncated survival adjustment"})
+    r = lftrt(entry, time, event)
+    s = list(r["survival"])
+    return RichResult(payload={
+        "estimate": float(s[-1]) if s else float("nan"),
+        "times": r["times"], "survival": r["survival"], "se": r["se"],
+        "ci_lower": r["ci_lower"], "ci_upper": r["ci_upper"],
+        "n_obs": int(r["n_obs"]), "n_events": int(r["n_events"]),
+        "method": "delayed-entry Kaplan-Meier [Klein & Moeschberger 2003]"})
+
+
+# CANONICAL TEST
+# >>> # no truncation, four distinct event times: S drops 1 -> .75 -> .5 -> .25
+# >>> r = surv_truncation_left([0, 0, 0, 0], [5, 6, 7, 8], [1, 1, 1, 1])
+# >>> assert abs(float(r["survival"][0]) - 0.75) < 1e-12
+# >>> assert abs(r["estimate"]) < 1e-12
 
 
 def cheatsheet():
-    return "sstrlf: Left-truncated survival adjustment"
+    return "sstrlf(entry, time, event): delayed-entry KM (alias of lftrt)."
