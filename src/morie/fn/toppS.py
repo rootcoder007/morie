@@ -1,46 +1,51 @@
-"""Nucleus (top-p) sampling."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Nucleus (top-p) sampling.
 
-from . import _array_core as np
+DUPLICATE.  Nucleus sampling -- Holtzman, A., Buys, J., Du, L., Forbes,
+M. & Choi, Y. (2020), "The curious case of neural text degeneration",
+ICLR 2020 -- is already implemented in ``morie.fn.toppd`` as
+``top_p_nucleus``: temperature softmax, descending sort, smallest prefix
+whose cumulative probability reaches ``p``, renormalise.  Confirmed the
+same method by reading both docstrings and the truncation rule, as
+``ledger/wave2/SKIP_README.md`` requires before aliasing.
 
-from ._richresult import RichResult
+This module is kept as a name alias so callers who reach for ``toppS``
+land on the one implementation rather than a second copy.
+"""
+
+from .toppd import top_p_nucleus as _impl
 
 __all__ = ["top_p_sampling"]
 
 
 def top_p_sampling(logits, p, temp):
-    """
-    Nucleus (top-p) sampling
+    """Nucleus (top-p) truncated softmax.
 
-    Formula: smallest set with cumulative prob ≥p
+    Alias of :func:`morie.fn.toppd.top_p_nucleus`.
 
     Parameters
     ----------
-    logits : array-like
-        Input data.
-    p : array-like
-        Input data.
-    temp : array-like
-        Input data.
+    logits : array-like, shape (V,)
+        Unnormalised scores.
+    p : float
+        Cumulative-probability cutoff in ``(0, 1]``.
+    temp : float
+        Softmax temperature.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        Whatever :func:`morie.fn.toppd.top_p_nucleus` returns:
+        ``tensor``, ``keep_mask``, ``n_kept``, ``p``, ``method``.
 
     References
     ----------
-    Holtzman et al (2020)
+    Holtzman, A., Buys, J., Du, L., Forbes, M. & Choi, Y. (2020).  The
+    curious case of neural text degeneration.  International Conference
+    on Learning Representations.  arXiv:1904.09751.
     """
-    logits = np.atleast_1d(np.asarray(logits, dtype=float))
-    n = len(logits)
-    result = float(np.mean(logits))
-    se = float(np.std(logits, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Nucleus (top-p) sampling"})
+    return _impl(logits, p, temp)
 
 
 def cheatsheet():
-    return "toppS: Nucleus (top-p) sampling"
-
-
-# compact alias per ledger/NAMING.md
-toppsampling = top_p_sampling
+    return "toppS: alias of toppd.top_p_nucleus (nucleus sampling)."

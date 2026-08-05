@@ -16,6 +16,8 @@ is (-0.504, 0.504), so a (-0.99, 0.99) search spends most of its time
 where the likelihood is undefined.
 """
 
+import math as _math
+
 from . import _array_core as np
 
 __all__ = []
@@ -58,4 +60,11 @@ def safe_search_interval(W, form="identity", pad=1e-6):
     lo = max(lo, -1e6) if np.isfinite(lo) else -1e6
     hi = min(hi, 1e6) if np.isfinite(hi) else 1e6
     eps = pad * max(hi - lo, 1e-12)
-    return lo + eps, hi - eps
+    # Snap the endpoints inward onto a 1e-8 lattice. The bound comes from
+    # an eigen-decomposition, and this arms Jacobi solver and Rs LAPACK
+    # agree only to about 1e-12 relative -- enough for an optimiser (or a
+    # deterministic grid) started from these endpoints to land on a
+    # visibly different point when the likelihood is flat. Snapping makes
+    # the interval bit-identical across the two arms.
+    return (_math.ceil((lo + eps) * 1e8) / 1e8,
+            _math.floor((hi - eps) * 1e8) / 1e8)

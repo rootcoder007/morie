@@ -14,7 +14,7 @@ __all__ = ["cox_counting_process"]
 
 
 def cox_counting_process(start, stop, event, X, strata=None,
-                         max_iter=50, tol=1e-9):
+                         max_iter=50, tol=1e-9, offset=None):
     start = np.asarray(start, dtype=float)
     stop = np.asarray(stop, dtype=float)
     event = np.asarray(event, dtype=float)
@@ -42,6 +42,12 @@ def cox_counting_process(start, stop, event, X, strata=None,
     for i, s in enumerate(strata):
         groups.setdefault(s, []).append(i)
 
+    if offset is None:
+        offs = np.zeros(n)
+    else:
+        offs = np.asarray(offset, dtype=float)
+        if offs.shape[0] != n:
+            raise ValueError("offset must match the number of rows")
     beta = np.zeros(p)
     loglik = 0.0
     info = np.zeros((p, p))
@@ -49,7 +55,7 @@ def cox_counting_process(start, stop, event, X, strata=None,
     if n_events == 0:
         raise ValueError("no events in the data")
     for it in range(max_iter):
-        eta = np.clip(X @ beta, -500.0, 500.0)
+        eta = np.clip(X @ beta + offs, -500.0, 500.0)
         w = np.exp(eta)
         U = np.zeros(p)
         info = np.zeros((p, p))
