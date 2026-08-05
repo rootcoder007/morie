@@ -28,6 +28,7 @@ import argparse
 import io
 import logging
 import os
+import warnings
 import pickle
 import struct
 from pathlib import Path
@@ -256,7 +257,29 @@ def convert(checkpoint_path, output_path, tokenizer_dir=None, turbo_bits=0):
     # containers resolve, anything else refuses to unpickle -- with no
     # torch (and therefore no numpy) anywhere. Verified value-exact
     # against torch 2.13 including float16/bfloat16 and strided views.
+    from morie._exec_guard import checkpoint_trusted
     from morie._pt_reader import load_checkpoint
+
+    # The module docstring above promises the checkpoint is deserialized
+    # "ONLY when MORIE_TRUST_CHECKPOINT=1". That gate was documented but
+    # never actually called: _exec_guard.checkpoint_trusted() existed and
+    # nothing invoked it, so convert() unpickled whatever it was handed.
+    # Checked BEFORE the path is opened, so an untrusted call refuses on
+    # the security condition rather than on whether the file happens to
+    # exist -- the file's existence must not decide which error a caller
+    # sees.
+    if not checkpoint_trusted():
+        raise RuntimeError(
+            "refusing to deserialize %r: set MORIE_TRUST_CHECKPOINT=1 to "
+            "allow it. A .pt checkpoint can execute arbitrary code when "
+            "loaded; enable this only for files you produced yourself or "
+            "obtained from a source you fully trust."
+            % (checkpoint_path,))
+
+    warnings.warn(
+        "MORIE_TRUST_CHECKPOINT is set: deserializing %r. Only do this "
+        "with checkpoints you trust." % (checkpoint_path,),
+        RuntimeWarning, stacklevel=2)
 
     ckpt = load_checkpoint(checkpoint_path)
 

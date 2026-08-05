@@ -420,7 +420,19 @@ class TestCheckpointTrustGate:
 
         monkeypatch.setenv("MORIE_TRUST_CHECKPOINT", "1")
         self._install_fake_torch(monkeypatch)
-        # Past the gate it hits the stub payload lacking "config" -> KeyError,
-        # NOT the MORIE_TRUST_CHECKPOINT RuntimeError. Proves the gate opened.
-        with pytest.raises(KeyError):
+        # This test used to assert KeyError, which came from a fake torch
+        # module's stub payload. The checkpoint reader is now native
+        # (morie._pt_reader) and never touches torch, so patching
+        # sys.modules["torch"] no longer influences it and a missing path
+        # raises FileNotFoundError from the real open().
+        #
+        # The assertion the test actually exists to make is unchanged: with
+        # the knob set, convert() must get PAST the trust gate. So assert
+        # that whatever it raises, it is not the gate's refusal.
+        with pytest.raises(Exception) as excinfo:
             pt2gguf.convert("nonexistent.pt", "out.gguf")
+        assert "MORIE_TRUST_CHECKPOINT" not in str(excinfo.value), (
+            "gate should have opened with the knob set, but it refused: %s"
+            % excinfo.value)
+        assert not isinstance(excinfo.value, RuntimeError) or \
+            "refusing to deserialize" not in str(excinfo.value)
