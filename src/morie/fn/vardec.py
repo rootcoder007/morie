@@ -1,42 +1,25 @@
-"""VAR forecast error variance decomposition."""
+# morie.fn -- function file (rootcoder007/morie)
+"""VAR forecast error variance decomposition -- alias of :mod:`morie.fn.fevdc`.
 
-from . import _array_core as np
+DUPLICATE, resolved by aliasing (wave-2 DUPMAP: vardec -> fevdc).  Both
+names denote the same quantity: with P the lower Cholesky factor of
+Sigma_u and Theta_s the MA coefficient matrices of the fitted VAR, the
+share of the h-step forecast error variance of variable i due to the
+orthogonalised shock j is
 
-from ._richresult import RichResult
+    sum_{s=0}^{h} (Theta_s P)[i, j]^2  /  sum_j sum_{s=0}^{h} (Theta_s P)[i, j]^2
+
+(Lutkepohl 2005, doi:10.1007/978-3-540-27752-1).  ``morie.fn.fevdc``
+already implements it; a second copy would double the surface under a
+name that reads right, so this module re-exports the one implementation.
+"""
+
+from __future__ import annotations
+
+from .fevdc import fevd as var_variance_decomp
 
 __all__ = ["var_variance_decomp"]
 
 
-def var_variance_decomp(fit, horizon):
-    """
-    VAR forecast error variance decomposition
-
-    Formula: share of forecast var attributable to each shock
-
-    Parameters
-    ----------
-    fit : array-like
-        Input data.
-    horizon : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Lütkepohl (2005)
-    """
-    fit = np.atleast_1d(np.asarray(fit, dtype=float))
-    n = len(fit)
-    result = float(np.mean(fit))
-    se = float(np.std(fit, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "VAR forecast error variance decomposition"}
-    )
-
-
 def cheatsheet():
-    return "vardec: VAR forecast error variance decomposition"
+    return "vardec: VAR FEVD -- alias of fevdc (Lutkepohl 2005)"
