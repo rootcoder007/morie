@@ -1,81 +1,93 @@
-"""GeneralStatistics equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Prediction variance under compound symmetry, and when it beats independence."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+from ._richresult import RichResult
 
-from ._richresult import hypothesis_test_result
+__all__ = [
+    "cspvar",
+    "statistical_methods_for_spatial_data_analysis_chapter_1_equation_27",
+]
 
-__all__ = ["statistical_methods_for_spatial_data_analysis_chapter_1_equation_27"]
 
+def cspvar(n, rho, sigma2=1.0):
+    r"""Compound-symmetry prediction variance and the precision condition.
 
-def statistical_methods_for_spatial_data_analysis_chapter_1_equation_27(x, cdf=None):
-    """
-    GeneralStatistics equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.
+    For :math:`\sigma^{-2}\boldsymbol\Sigma = (1-\rho)\mathbf{I} +
+    \rho\mathbf{J}` the prediction error variance of a new observation
+    is (p. 34)
 
-    Formula: In order for the term ((ρn)2 + (1 − ρ)2 )/(1 + (n − 1)ρ) to be less than one, we
+    .. math::
+
+        \sigma^2_{pred} = \sigma^2\left[1 + \frac{1}{n}
+        \frac{(\rho n)^2 + (1-\rho)^2}{1 + (n-1)\rho}\right],
+
+    against :math:`\sigma^2(1 + 1/n)` when the data are uncorrelated.
+    The correlated model is the more precise one exactly when the middle
+    term is below one, which for :math:`\rho > 0` is (eq. 1.27)
+
+    .. math::  \rho < \frac{n+1}{n^2+1}.
+
+    Equicorrelation also bounds ``rho`` from below: ``Var[sum Y_i] =
+    n sigma^2 (1 + (n-1) rho) > 0`` forces ``rho > -1/(n-1)``.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    n : int
+        Sample size, at least 2.
+    rho : float
+        Equicorrelation, in ``(-1/(n-1), 1]``.
+    sigma2 : float
+        Marginal variance ``sigma^2``, positive.
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('statistical_methods_for_spatial_data_analysis1e27')`` for the full guide.
+    RichResult
+        ``var_pred``, ``var_indep``, ``ratio_term``, ``threshold``,
+        ``more_precise``, ``rho_lower_bound``, ``n``, ``rho``, ``sigma2``.
+        ``more_precise`` is the decision "the compound-symmetry model
+        predicts more precisely than the independence model".
 
     References
     ----------
-    Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis, ch.1 eq.1.27
+    Schabenberger, O. & Gotway, C. A. (2005). Statistical Methods for
+    Spatial Data Analysis. Chapman & Hall/CRC, Sec. 1.5.1, eq. (1.27),
+    p. 34.
     """
-    x = np.asarray(x, dtype=float)
-    n = len(x)
+    n = int(n)
+    rho = float(rho)
+    sigma2 = float(sigma2)
     if n < 2:
-        return hypothesis_test_result(
-            test_name="GeneralStatistics equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.",
-            statistic=float("nan"),
-            pvalue=float("nan"),
-            warnings=["n<2: insufficient data."],
-            extra_summary=[("n", n)],
-            extra_payload={
-                "n": n,
-                "method": "GeneralStatistics equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.",
-                "p_value": float("nan"),
-            },
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return hypothesis_test_result(
-        test_name="GeneralStatistics equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.",
-        statistic=float(statistic),
-        pvalue=float(p_value),
-        extra_summary=[("n", n)],
-        extra_payload={
+        raise ValueError("`n` must be at least 2")
+    if sigma2 <= 0:
+        raise ValueError("`sigma2` must be positive")
+    lower = -1.0 / (n - 1)
+    if rho <= lower or rho > 1:
+        raise ValueError("`rho` must lie in (-1/(n-1), 1]")
+
+    term = ((rho * n) ** 2 + (1.0 - rho) ** 2) / (1.0 + (n - 1) * rho)
+    var_pred = sigma2 * (1.0 + term / n)
+    var_indep = sigma2 * (1.0 + 1.0 / n)
+    threshold = (n + 1.0) / (n * n + 1.0)
+
+    return RichResult(
+        title="Compound-symmetry prediction variance (eq. 1.27)",
+        summary_lines=[("n", n), ("rho", rho), ("var_pred", var_pred)],
+        payload={
+            "var_pred": var_pred,
+            "var_indep": var_indep,
+            "ratio_term": term,
+            "threshold": threshold,
+            "more_precise": bool(var_pred < var_indep),
+            "rho_lower_bound": lower,
             "n": n,
-            "method": "GeneralStatistics equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.",
-            "p_value": float(p_value),
+            "rho": rho,
+            "sigma2": sigma2,
         },
     )
 
 
+statistical_methods_for_spatial_data_analysis_chapter_1_equation_27 = cspvar
+
+
 def cheatsheet():
-    return "statistical_methods_for_spatial_data_analysis1e27: GeneralStatistics equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis."
+    return "cspvar: sigma2_pred under compound symmetry; more precise iff rho < (n+1)/(n^2+1)."
