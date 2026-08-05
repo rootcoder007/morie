@@ -1,46 +1,143 @@
-"""Concurrent calibration linkage (single calibration)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Concurrent calibration of two groups on common anchor items."""
 
-from . import _array_core as np
+import math
 
+from . import _s03core as core
 from ._richresult import RichResult
 
 __all__ = ["concurrent_calibration"]
 
 
-def concurrent_calibration(y, item, group, anchor):
-    """
-    Concurrent calibration linkage (single calibration)
+def rasch_jmle(X, iters=200):
+    """Joint ML for the Rasch model: item difficulties b, ability theta.
 
-    Formula: jointly fit b_F, b_R on combined sample with anchor items
+    Difficulties are centred at zero each cycle, which is the
+    identification constraint; without it b and theta drift together and
+    the two groups can never be compared.
+    """
+    n = len(X)
+    k = len(X[0])
+    b = [0.0] * k
+    th = [0.0] * n
+    for _ in range(int(iters)):
+        for i in range(n):
+            num = 0.0
+            den = 0.0
+            for j in range(k):
+                p = core.sigmoid(th[i] - b[j])
+                num += X[i][j] - p
+                den += p * (1.0 - p)
+            if den > 1e-12:
+                step = num / den
+                th[i] += max(min(step, 1.0), -1.0)
+        for j in range(k):
+            num = 0.0
+            den = 0.0
+            for i in range(n):
+                p = core.sigmoid(th[i] - b[j])
+                num += p - X[i][j]
+                den += p * (1.0 - p)
+            if den > 1e-12:
+                step = num / den
+                b[j] += max(min(step, 1.0), -1.0)
+        m = sum(b) / k
+        b = [v - m for v in b]
+    return b, th
+
+
+def concurrent_calibration(y, item=None, group=None, anchor=None, iters=200):
+    """
+    Concurrent calibration with anchor items
+
+    Formula: jointly fit b_F, b_R on the combined sample with anchors
+
+    Both groups are calibrated in ONE run, so the common anchor items
+    put every parameter on a single scale with no separate linking
+    transformation.  Any drift between the two groups' anchor
+    difficulties is therefore an estimate of anchor instability rather
+    than of scale: for two groups drawn from the same distribution the
+    anchor drift is zero up to estimation error.
 
     Parameters
     ----------
     y : array-like
-        Input data.
-    item : array-like
-        Input data.
-    group : array-like
-        Input data.
-    anchor : array-like
-        Input data.
+        n x k matrix of 0/1 responses, both groups stacked.
+    item : array-like or None
+        Ignored; the columns are the items.
+    group : array-like or None
+        Group label per examinee; None treats everyone as one group.
+    anchor : array-like or None
+        Indices of the anchor items; None uses every item.
+    iters : int
+        Joint ML cycles.
 
     Returns
     -------
     result : dict
-        Keys: estimate
+        Keys: estimate (mean anchor drift), b, b_focal, b_reference,
+        drift, theta_mean_focal, theta_mean_reference, n, k, n_anchor.
 
     References
     ----------
-    Wingersky & Lord (1984)
+    Wingersky & Lord (1984), Applied Psychological Measurement
+    8(3):347-364.
+    Kolen & Brennan (2014), Test Equating, Scaling, and Linking, 3rd
+    ed., Springer, ch. 6.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Concurrent calibration linkage (single calibration)"}
-    )
+    X = core.mat(y)
+    n = len(X)
+    if n == 0:
+        raise ValueError("empty input: y has no rows")
+    k = len(X[0])
+    if k < 2:
+        raise ValueError("need at least two items")
+    for r in X:
+        if any(v not in (0.0, 1.0) for v in r):
+            raise ValueError("responses must be 0/1")
+    g = [0] * n if group is None else list(group)
+    if len(g) != n:
+        raise ValueError("y and group must have the same length")
+    anc = list(range(k)) if anchor is None else [int(v) for v in anchor]
+    if any(v < 0 or v >= k for v in anc):
+        raise ValueError("anchor indices out of range")
+    if not anc:
+        raise ValueError("at least one anchor item is required")
+    b, th = rasch_jmle(X, iters)
+    keys = []
+    for v in g:
+        if v not in keys:
+            keys.append(v)
+    if len(keys) == 1:
+        bf = br = b
+        tf = tr = sum(th) / n
+        drift = [0.0] * len(anc)
+    else:
+        fi = [i for i in range(n) if g[i] == keys[0]]
+        ri = [i for i in range(n) if g[i] != keys[0]]
+        bf, thf = rasch_jmle([X[i] for i in fi], iters)
+        br, thr = rasch_jmle([X[i] for i in ri], iters)
+        tf = sum(thf) / len(thf)
+        tr = sum(thr) / len(thr)
+        drift = [bf[j] - br[j] for j in anc]
+    return RichResult(payload={
+        "estimate": sum(abs(v) for v in drift) / len(drift),
+        "b": b,
+        "b_focal": bf,
+        "b_reference": br,
+        "drift": drift,
+        "theta_mean_focal": tf,
+        "theta_mean_reference": tr,
+        "n": n,
+        "k": k,
+        "n_anchor": len(anc),
+        "method": "concurrent calibration with anchor items",
+    })
 
 
 def cheatsheet():
-    return "cnsint: Concurrent calibration linkage (single calibration)"
+    return "cnsint: concurrent calibration with anchor items"
+
+
+# compact alias per ledger/NAMING.md
+concurrentcalibration = concurrent_calibration
