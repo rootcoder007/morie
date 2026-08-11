@@ -1,46 +1,57 @@
-"""Manski no-assumption bounds on the ATE."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Manski no-assumption bounds on the ATE (forwards to bndest)."""
 
-from . import _array_core as np
+from .bndest import bound_estimation
 
-from ._richresult import RichResult
-
-__all__ = ["manski_no_assumption_bounds"]
+__all__ = ["manski", "manski_no_assumption_bounds"]
 
 
-def manski_no_assumption_bounds(y, D, y_min, y_max):
-    """
-    Manski no-assumption bounds on the ATE
+def manski(y, D, y_min, y_max):
+    """Manski (1990) no-assumption (worst-case) bounds on the ATE.
 
-    Formula: L = p E[Y|D=1] + (1-p) y_min - max[Y]; U = p E[Y|D=1] + (1-p) y_max - min[Y]
+    This module and ``bndest`` document the SAME method: decompose each
+    counterfactual mean by the law of total probability and fill the
+    unobserved arm with the support endpoints,
+
+        E[Y(t)] in [ E[Y|D=t] P(D=t) + y_min P(D!=t),
+                     E[Y|D=t] P(D=t) + y_max P(D!=t) ],
+
+    then difference the arm bounds for the ATE.  Rather than carry a
+    second implementation -- which would agree with the first at 1e-9
+    forever while doubling the surface -- this function forwards to
+    :func:`morie.fn.bndest.bound_estimation` with the argument layout of
+    its own stub.  The ATE interval always has width exactly
+    ``y_max - y_min`` and therefore always contains zero.
 
     Parameters
     ----------
     y : array-like
-        Input data.
-    D : array-like
-        Input data.
-    y_min : array-like
-        Input data.
-    y_max : array-like
-        Input data.
+        Observed outcome.
+    D : array-like of 0/1
+        Treatment indicator.
+    y_min, y_max : float
+        Logical support of the outcome (the only assumption used).
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``ate_lower``, ``ate_upper``, ``ate_width``, ``y1_bounds``,
+        ``y0_bounds``, ``p_treated``, ``contains_zero``, ``n``.
 
     References
     ----------
-    Manski (1990); Manski (2003) Partial Identification
+    Manski, C. F. (1990), "Nonparametric Bounds on Treatment Effects",
+    American Economic Review Papers and Proceedings 80(2):319-323.
+    Molinari, F. (2021), "Microeconometrics with Partial Identification",
+    Handbook of Econometrics 7A, eq. (2.11) and p. 18 (ATE differencing);
+    local source ~/work/scratch/x000/molinari.pdf (arXiv:2004.11751).
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Manski no-assumption bounds on the ATE"}
-    )
+    return bound_estimation(y, None, (y_min, y_max), treatment=D)
+
+
+# stub-era long name, kept as an alias
+manski_no_assumption_bounds = manski
 
 
 def cheatsheet():
-    return "manski: Manski no-assumption bounds on the ATE"
+    return "manski: Manski (1990) no-assumption ATE bounds -- forwards to bndest"
