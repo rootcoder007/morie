@@ -591,6 +591,20 @@ class marr:
         elif isinstance(idx, slice):
             vals = asarray(value)._flat()
             rng = range(*idx.indices(self.shape[0]))
+            if len(self.shape) == 2:
+                m2 = self.shape[1]
+                if len(vals) == 1:
+                    vals = vals * (len(rng) * m2)
+                elif len(vals) == m2 and len(rng) > 1:
+                    vals = vals * len(rng)
+                if len(vals) != len(rng) * m2:
+                    raise ValueError(
+                        "cannot assign %d values to a (%d, %d) slice"
+                        % (len(vals), len(rng), m2))
+                for r2, k in enumerate(rng):
+                    self.data[k] = [float(x)
+                                    for x in vals[r2 * m2:(r2 + 1) * m2]]
+                return
             if len(vals) == 1:
                 vals = vals * len(rng)
             for k, r in zip(rng, vals):
@@ -608,10 +622,47 @@ class marr:
                 == "b") or (
                 raw and len(raw) == len(self.data)
                 and _bi.all(isinstance(b, bool) for b in raw))
+            if is_mask and len(self.shape) == 2 \
+                    and len(raw) == self.shape[0] * self.shape[1]:
+                # 2-D boolean mask, elementwise (numpy semantics)
+                vals = list(asarray(value)._flat()) \
+                    if not isinstance(value, (int, float)) else None
+                k = 0
+                for r in range(self.shape[0]):
+                    for c in range(self.shape[1]):
+                        if raw[r * self.shape[1] + c]:
+                            self.data[r][c] = float(value) \
+                                if vals is None \
+                                else float(vals[k if len(vals) > 1 else 0])
+                            k += 1
+                return
             if is_mask:
                 ids = [k for k, b in enumerate(raw) if b]
             else:
                 ids = [int(v) for v in raw]
+            if len(self.shape) == 2:
+                # row selection on a 2-D array: assign whole rows,
+                # broadcasting a scalar, a length-m row, or a
+                # (len(ids), m) / (len(ids), 1) block (numpy
+                # semantics). The old code wrote a scalar float into
+                # the row slot, silently corrupting the matrix.
+                m2 = self.shape[1]
+                if isinstance(value, (int, float)):
+                    for r in ids:
+                        self.data[r] = [float(value)] * m2
+                    return
+                v2 = _b2(asarray(value))
+                if v2.shape[0] not in (1, len(ids)) \
+                        or v2.shape[1] not in (1, m2):
+                    raise ValueError(
+                        "cannot broadcast %s to (%d, %d) selected rows"
+                        % (str(v2.shape), len(ids), m2))
+                for k, r in enumerate(ids):
+                    src_row = v2.data[k if v2.shape[0] > 1 else 0]
+                    self.data[r] = [
+                        float(src_row[c if v2.shape[1] > 1 else 0])
+                        for c in range(m2)]
+                return
             vals = list(asarray(value)._flat()) \
                 if not isinstance(value, (int, float)) else None
             for k, r in enumerate(ids):
@@ -1316,6 +1367,24 @@ def minimum(x, y):
     return asarray(x)._zip(y, _min2)
 
 
+def mod(x, y):
+    # Elementwise modulo (Python semantics, sign of the divisor), added
+    # together with equal(): hmvilb needs np.mod for its integer check.
+    return asarray(x)._zip(y, lambda a, b: a % b)
+
+
+def equal(x, y):
+    # Elementwise equality as 0.0/1.0, matching the mask convention of
+    # the other comparators. Added because hmvilb calls np.equal, which
+    # did not exist: the 1-D token-id input path was uncallable.
+    out = asarray(x)._zip(y, lambda a, b: 1.0 if a == b else 0.0)
+    try:
+        out._is_mask = True
+    except AttributeError:
+        pass
+    return out
+
+
 def where(cond, a=None, b=None):
     c = asarray(cond)
     if a is None:                       # np.where(mask) -> (indices,)
@@ -1833,6 +1902,16 @@ class _SplitMix64:
     def exponential(self, scale=1.0, size=None):
         def one():
             return -float(scale) * _math.log(_pymax(self._u(), 1e-300))
+        return self._fill(one, size)
+
+    def laplace(self, loc=0.0, scale=1.0, size=None):
+        # Inverse-CDF: u ~ U(0,1), h = u - 1/2,
+        # x = loc - scale * sign(h) * log(1 - 2|h|).
+        def one():
+            h = self._u() - 0.5
+            s = 1.0 if h > 0 else (-1.0 if h < 0 else 0.0)
+            return float(loc) - float(scale) * s * _math.log(
+                _pymax(1.0 - 2.0 * abs(h), 1e-300))
         return self._fill(one, size)
 
     def standard_gamma(self, shape, size=None):
@@ -4752,6 +4831,9 @@ class _RandomNS(_Random):
 
     def exponential(self, scale=1.0, size=None):
         return self._global.exponential(scale, size)
+
+    def laplace(self, loc=0.0, scale=1.0, size=None):
+        return self._global.laplace(loc, scale, size)
 
     def choice(self, a, size=None, replace=True, p=None):
         return self._global.choice(a, size, replace, p)

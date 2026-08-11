@@ -1,40 +1,39 @@
-"""ViLBERT two-stream cross-attention."""
+# morie.fn -- wave 3 slice w5_00 (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""ViLBERT two-stream co-attention.
 
-from . import _array_core as np
+Same method as :mod:`morie.fn.hmvilb`: Lu, J., Batra, D., Parikh, D.
+and Lee, S. (2019), "ViLBERT: Pretraining Task-Agnostic
+Visiolinguistic Representations for Vision-and-Language Tasks",
+NeurIPS 32, arXiv:1908.02265, Section 3.1 and Figure 2 -- two
+transformer streams (image regions, text tokens) exchanging
+information through co-attentional layers in which the QUERIES of one
+modality attend over the KEYS and VALUES of the other (image queries
+over text K/V and vice versa).
 
-from ._richresult import RichResult
+There is exactly one implementation: this module delegates to
+:func:`morie.fn.hmvilb.geron_vilbert`.
 
-__all__ = ["vilbert_two_stream"]
+Source: fetched-wave3/lu-etal-2019-vilbert-arxiv1908.02265.pdf
+(Section 3.1, Figure 2).
+"""
+
+from .hmvilb import geron_vilbert as _impl
+
+__all__ = ["vilbrt", "vilbert_two_stream"]
 
 
-def vilbert_two_stream(image_tokens, text_tokens):
+def vilbrt(image, text, d_model=8, seed=0):
+    """ViLBERT co-attention (Lu et al. 2019, arXiv:1908.02265, Sec 3.1).
+
+    Delegates to :func:`morie.fn.hmvilb.geron_vilbert`; see that
+    function for parameters and payload.
     """
-    ViLBERT two-stream cross-attention
+    return _impl(image, text, d_model=d_model, seed=seed)
 
-    Formula: separate visual + text streams; co-attn
 
-    Parameters
-    ----------
-    image_tokens : array-like
-        Input data.
-    text_tokens : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Lu et al (2019) ViLBERT
-    """
-    image_tokens = np.atleast_1d(np.asarray(image_tokens, dtype=float))
-    n = len(image_tokens)
-    result = float(np.mean(image_tokens))
-    se = float(np.std(image_tokens, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ViLBERT two-stream cross-attention"})
+vilbert_two_stream = vilbrt
 
 
 def cheatsheet():
-    return "vilbrt: ViLBERT two-stream cross-attention"
+    return "vilbrt: ViLBERT two-stream co-attention (Lu et al. 2019, arXiv:1908.02265) -- alias of hmvilb.geron_vilbert"

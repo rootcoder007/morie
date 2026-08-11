@@ -1,44 +1,29 @@
-"""l-diversity (Machanavajjhala et al)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""l-diversity -- alias of the shipped implementation in dpld.
 
-from . import _array_core as np
+The generated stub described the l-diversity check of Machanavajjhala
+et al. (2007).  ``dpld.l_diversity`` already implements distinct,
+entropy and recursive (c, l)-diversity from that paper, so this module
+aliases it.
 
-from ._richresult import RichResult
+References
+----------
+Machanavajjhala, A., Kifer, D., Gehrke, J., & Venkitasubramaniam, M.
+    (2007). l-diversity: privacy beyond k-anonymity. *ACM Transactions
+    on Knowledge Discovery from Data*, 1(1), article 3. Definitions in
+    sections 4.1-4.2 (distinct, entropy, recursive (c, l)-diversity).
+"""
 
-__all__ = ["l_diversity_check"]
+from .dpld import l_diversity
 
+__all__ = ["ldiff", "l_diversity_check"]
 
-def l_diversity_check(y, quasi_ids, sensitive, l):
-    """
-    l-diversity (Machanavajjhala et al)
+#: Primary name: alias of :func:`morie.fn.dpld.l_diversity`.
+ldiff = l_diversity
 
-    Formula: each k-anon group has >= l well-represented sensitive values
-
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    quasi_ids : array-like
-        Input data.
-    sensitive : array-like
-        Input data.
-    l : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Machanavajjhala et al (2007)
-    """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "l-diversity (Machanavajjhala et al)"})
+#: Legacy stub name, kept for compatibility.
+l_diversity_check = l_diversity
 
 
 def cheatsheet():
-    return "ldiff: l-diversity (Machanavajjhala et al)"
+    return "ldiff: l-diversity (alias of dpld.l_diversity)."

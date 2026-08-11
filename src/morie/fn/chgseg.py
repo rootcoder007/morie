@@ -1,40 +1,57 @@
-"""PELT pruned exact linear changepoint."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Penalised changepoint segmentation (PELT, Normal mean cost)."""
 
-from . import _array_core as np
+from . import _array_core as np  # noqa: F401  (kept for API uniformity)
 
 from ._richresult import RichResult
+from .pelt import pelt as _pelt
 
-__all__ = ["changepoint_segmentation"]
+__all__ = ["chgseg", "changepoint_segmentation"]
 
 
-def changepoint_segmentation(y, penalty):
+def chgseg(y, penalty=None):
     """
-    PELT pruned exact linear changepoint
+    Changepoint segmentation of a univariate series by PELT with the
+    Normal change-in-mean cost.
 
-    Formula: dynamic programming with cost function
+    This is the eq (3) optimal-partitioning objective of Killick,
+    Fearnhead & Eckley (2012) solved exactly by their Algorithm 2
+    (PELT), specialised to the twice-negative-log-likelihood cost for
+    a change in mean with unit variance (sum of squared deviations
+    from the segment mean). The computational core is shared with
+    morie.fn.pelt.pelt (same paper, same algorithm).
 
     Parameters
     ----------
     y : array-like
-        Input data.
-    penalty : array-like
-        Input data.
+        Series.
+    penalty : float, optional
+        beta; default log(n) (SIC with p = 1).
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    result : RichResult
+        Keys as in pelt: changepoints, n_changepoints, objective,
+        penalty, segment_means.
 
     References
     ----------
-    Killick et al (2012) PELT
+    Killick, R., Fearnhead, P. and Eckley, I. A. (2012), "Optimal
+    detection of changepoints with a linear computational cost", JASA
+    107(500), 1590-1598 (arXiv:1101.1438), eq (3), Algorithm 2.
+    Source PDF: /run/media/rootcoder/WD_BLACK/library/pdf/fetched-wave3/
+    killick-fearnhead-eckley-2012-pelt-optimal-changepoint-linear-cost.pdf
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PELT pruned exact linear changepoint"})
+    res = _pelt(y, cost="mean", penalty=penalty)
+    out = dict(res)
+    out["method"] = "PELT mean-change segmentation (Killick et al. 2012, eq 3)"
+    return RichResult(payload=out)
+
+
+def changepoint_segmentation(y, penalty=None):
+    """Alias for chgseg (original stub export name)."""
+    return chgseg(y, penalty=penalty)
 
 
 def cheatsheet():
-    return "chgseg: PELT pruned exact linear changepoint"
+    return "chgseg(y, penalty) -> exact penalised mean-change segmentation via PELT"

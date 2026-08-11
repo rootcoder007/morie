@@ -1,44 +1,30 @@
-"""Exponential mechanism."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Exponential mechanism -- alias of the shipped implementation in dpexpm.
 
-from . import _array_core as np
+The generated stub described selection with probability proportional to
+exp(epsilon u(D, r) / (2 Delta u)).  That mechanism already ships as
+``dpexpm.dp_exponential_mechanism`` (McSherry-Talwar 2007; Dwork-Roth
+Definition 3.4), so this module aliases it.
 
-from ._richresult import RichResult
+References
+----------
+McSherry, F., & Talwar, K. (2007). Mechanism design via differential
+    privacy. *FOCS 2007*, 94-103.
+Dwork, C., & Roth, A. (2014). The algorithmic foundations of
+    differential privacy. *FnT-TCS*, 9(3-4), 211-487. Definition 3.4.
+    Local source: /run/media/rootcoder/WD_BLACK/library/pdf/fetched-wave3/dwork-roth-2014-algorithmic-foundations-differential-privacy.pdf
+"""
 
-__all__ = ["exponential_mechanism"]
+from .dpexpm import dp_exponential_mechanism
 
+__all__ = ["expmc", "exponential_mechanism"]
 
-def exponential_mechanism(candidates, utility, sensitivity, epsilon):
-    """
-    Exponential mechanism
+#: Primary name: alias of :func:`morie.fn.dpexpm.dp_exponential_mechanism`.
+expmc = dp_exponential_mechanism
 
-    Formula: P(output=r) ∝ exp(ε u(D,r) / 2Δu)
-
-    Parameters
-    ----------
-    candidates : array-like
-        Input data.
-    utility : array-like
-        Input data.
-    sensitivity : array-like
-        Input data.
-    epsilon : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    McSherry-Talwar (2007)
-    """
-    candidates = np.atleast_1d(np.asarray(candidates, dtype=float))
-    n = len(candidates)
-    result = float(np.mean(candidates))
-    se = float(np.std(candidates, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Exponential mechanism"})
+#: Legacy stub name, kept for compatibility.
+exponential_mechanism = dp_exponential_mechanism
 
 
 def cheatsheet():
-    return "expmc: Exponential mechanism"
+    return "expmc: exponential mechanism (alias of dpexpm.dp_exponential_mechanism)."

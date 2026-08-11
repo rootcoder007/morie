@@ -1,44 +1,53 @@
-"""Leiden refined community detection."""
+"""Leiden refined community detection (alias to the scleid optimizer)."""
 
-from . import _array_core as np
+from ._richresult import RichResult  # noqa: F401  (re-export convention)
+from .scleid import leiden_clustering
 
-from ._richresult import RichResult
-
-__all__ = ["leiden_grph"]
+__all__ = ["lemR", "leiden_grph"]
 
 
-def leiden_grph(A, resolution):
+def lemR(A, resolution=1.0, quality="modularity", max_iter=20):
     """
-    Leiden refined community detection
+    Leiden community detection: local moving plus a refinement that
+    guarantees connected communities.
 
-    Formula: Louvain + refinement step (guarantees connectedness)
+    This is an alias: the optimisation lives in
+    :func:`morie.fn.scleid.leiden_clustering` (deterministic index-order
+    variant; every community is split into its connected components
+    before aggregation, which is the guarantee the Leiden refinement
+    exists to provide). Implementing a second copy here would only let
+    the two drift apart.
+
+    Sources
+    -------
+    Traag, V. A., Waltman, L. & van Eck, N. J. (2019). From Louvain to
+    Leiden: guaranteeing well-connected communities. *Scientific
+    Reports*, 9, 5233, arXiv:1810.08473, Sec. "Leiden algorithm" and
+    eq. (2) (fetched-wave3/traag-2019-louvain-to-leiden.pdf).
 
     Parameters
     ----------
-    A : array-like
-        Input data.
-    resolution : array-like
-        Input data.
+    A : array-like, (n, n)
+        Weighted adjacency matrix.
+    resolution : float
+        Resolution parameter of the quality function.
+    quality : str
+        Quality function ("modularity" or "cpm"), passed through.
+    max_iter : int
+        Local-moving passes.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Traag-Waltman-van Eck (2019)
+    RichResult
+        The scleid result unchanged: labels, estimate (quality),
+        n_communities, connected, passes.
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Leiden refined community detection"})
+    return leiden_clustering(A, resolution, quality, max_iter)
+
+
+# long descriptive alias (stub-era name)
+leiden_grph = lemR
 
 
 def cheatsheet():
-    return "lemR: Leiden refined community detection"
-
-
-# compact alias per ledger/NAMING.md
-leidengrph = leiden_grph
+    return "lemR: Leiden refined community detection (alias of scleid)"

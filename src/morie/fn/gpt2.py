@@ -1,44 +1,41 @@
-"""GPT-style decoder forward pass."""
+# morie.fn -- wave 3 slice w5_00 (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""GPT-2 decoder-only forward pass (released size configurations).
 
-from . import _array_core as np
+Same method as :mod:`morie.fn.hmgpt2`: Radford, A., Wu, J., Child, R.,
+Luan, D., Amodei, D. and Sutskever, I. (2019), "Language Models are
+Unsupervised Multitask Learners", OpenAI technical report -- the
+decoder-only transformer of Radford et al. (2018, GPT) scaled to the
+four released sizes (117M/345M/762M/1542M; BPE vocabulary 50257,
+context 1024). The stub cited "Radford et al (2018) GPT" for a
+"GPT-style decoder forward pass"; the forward pass itself is
+DELEGATED by the target to morie.fn.hmdctr.geron_decoder_only
+(masked self-attention blocks + LM head), and hmgpt2 adds the
+released configurations and parameter-scaling arithmetic.
 
-from ._richresult import RichResult
+There is exactly one implementation: this module delegates to
+:func:`morie.fn.hmgpt2.geron_gpt2`.
 
-__all__ = ["gpt_decoder"]
+Source: fetched-wave3/radford-etal-2019-gpt2-unsupervised-multitask-
+learners.pdf (Section 2.3, Table 2 for the sizes).
+"""
+
+from .hmgpt2 import geron_gpt2 as _impl
+
+__all__ = ["gpt2", "gpt_decoder"]
 
 
-def gpt_decoder(tokens, model):
+def gpt2(X, n_layers=None, n_heads=None, size="small", **config):
+    """GPT-2 decoder-only LM (Radford et al. 2019, Sec 2.3, Table 2).
+
+    Delegates to :func:`morie.fn.hmgpt2.geron_gpt2`; see that function
+    for parameters and payload.
     """
-    GPT-style decoder forward pass
+    return _impl(X, n_layers=n_layers, n_heads=n_heads, size=size, **config)
 
-    Formula: causal masked self-attention; AR LM
 
-    Parameters
-    ----------
-    tokens : array-like
-        Input data.
-    model : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Radford et al (2018) GPT
-    """
-    tokens = np.atleast_1d(np.asarray(tokens, dtype=float))
-    n = len(tokens)
-    result = float(np.mean(tokens))
-    se = float(np.std(tokens, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "GPT-style decoder forward pass"})
+gpt_decoder = gpt2
 
 
 def cheatsheet():
-    return "gpt2: GPT-style decoder forward pass"
-
-
-# compact alias per ledger/NAMING.md
-gptdecoder = gpt_decoder
+    return "gpt2: GPT-2 decoder-only LM (Radford et al. 2019) -- alias of hmgpt2.geron_gpt2"
