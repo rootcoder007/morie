@@ -147,6 +147,11 @@ def fwxF(temp, rh, wind, rain, month, ffmc_init=85.0, dmc_init=6.0,
     (local copy fetched-wave3/vanwagner-pickett-1985-ftr33.pdf; FFMC
     statements 110-165, DMC 165-210, DC 215-235, ISI/BUI/FWI/DSR
     235-280, day-length DATA EL/FL).
+    Note: later implementations (e.g. Wang et al. 2015, NOR-X-424;
+    CRAN cffdrs) revise the FFMC conversion constant 147.2 to
+    147.27723; this module keeps 147.2 to match the FTR-33
+    standard program and its printed sample output (cffdrs
+    cross-check: DMC/DC/BUI agree exactly, FFMC within 0.13).
     Van Wagner, C. E. (1987). Development and structure of the
     Canadian Forest Fire Weather Index System. Canadian Forestry
     Service, Forestry Technical Report 35 (system description).
