@@ -3,7 +3,7 @@
 
 from ._richresult import RichResult
 
-__all__ = ["ehh_decay"]
+__all__ = ["ehhdec", "ehh_decay"]
 
 
 def _groups_hh(rows):
@@ -127,4 +127,8 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 ehhdecay = ehh_decay
+ehhdec = ehh_decay
+
+
+# primary name = module name (house rule)
 ehhdec = ehh_decay
