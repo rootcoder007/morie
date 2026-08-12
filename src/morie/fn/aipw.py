@@ -86,6 +86,29 @@ def _quantile7(sorted_v, p):
     return sorted_v[j] * (1.0 - g) + sorted_v[j + 1] * g
 
 
+def _trim_weights(w, weight_trim=None, side="upper"):
+    """Cap IPW WEIGHTS at percentile cutpoints -- Lee, Lessler and
+    Stuart (2011), PLoS ONE 6(3) e18174, who cap the high side only,
+    hence side="upper" by default.  Contrast _trim_ps, which caps the
+    SCORES.  Mirrored by .mor_trim_weights in the R arm."""
+    if weight_trim is None:
+        return w
+    if side not in ("upper", "both"):
+        raise ValueError("weight_trim_side must be 'upper' or 'both'")
+    q = [float(v) for v in (weight_trim if hasattr(weight_trim, "__len__")
+                            else (0.0, weight_trim))]
+    if len(q) == 1:
+        q = [0.0, q[0]]
+    lo, hi = q[0], q[1]
+    if not 0.0 <= lo < hi <= 1.0:
+        raise ValueError("weight_trim must satisfy 0 <= lo < hi <= 1")
+    v = sorted(float(u) for u in w)
+    clo, chi = _quantile7(v, lo), _quantile7(v, hi)
+    if side == "both":
+        return np.asarray([min(max(float(u), clo), chi) for u in w], dtype=float)
+    return np.asarray([min(float(u), chi) for u in w], dtype=float)
+
+
 def _om_ols(X, y):
     """Least squares by the normal equations; shared with the R arm."""
     p = len(X[0])
