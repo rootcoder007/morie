@@ -9,6 +9,20 @@ from ._richresult import RichResult
 __all__ = ["borusyak_jaravel_spiess", "impute_untreated"]
 
 
+def _as_slabs(X):
+    """Covariates as a list of (n, T) matrices, or None.
+
+    Accepts a single (n, T) matrix or a sequence of them.  Kept
+    deliberately rank-2: see _two_way_solve.
+    """
+    if X is None:
+        return None
+    if isinstance(X, (list, tuple)):
+        return [np.asarray(Xi, dtype=float) for Xi in X]
+    Xa = np.asarray(X, dtype=float)
+    return [Xa]
+
+
 def _check_identified(obs, n, T):
     if obs.sum() < n + T - 1:
         raise ValueError(
@@ -30,37 +44,52 @@ def _check_identified(obs, n, T):
 
 
 def _two_way_solve(obs, u_a, u_l, u_b, Xc, max_iter=2000, tol=1e-13):
-    """Block Gauss-Seidel on the two-way normal equations over ``obs``.
+    """Alternating solve of the two-way normal equations on `obs`.
 
-    Solves ``(Z'Z) c = u`` where ``Z`` holds unit dummies, period
-    dummies and any covariates, restricted to the observed cells.
-    Iterating block means rather than forming ``Z`` keeps the memory
-    at the size of the panel instead of (cells x parameters), which
-    matters as soon as the panel has a few hundred units.
+    `Xc` is None or a LIST of (n, T) covariate slabs.  It used to be a
+    rank-3 array, but the native array core's rank>=3 container
+    supports neither 3-D slicing nor matmul, so that route could never
+    execute; a list of 2-D slabs is the same object mathematically and
+    is what the R arm carries too.
     """
     n, T = obs.shape
     n_i = obs.sum(axis=1).astype(float)
     m_t = obs.sum(axis=0).astype(float)
     a = np.zeros(n)
     lam = np.zeros(T)
-    b = None if Xc is None else np.zeros(Xc.shape[2])
+    k = 0 if Xc is None else len(Xc)
+    b = None if Xc is None else np.zeros(k)
     XtX = None
     if Xc is not None:
-        Z = Xc[obs]
-        XtX = Z.T @ Z + 1e-12 * np.eye(Z.shape[1])
+        XtX = np.zeros((k, k))
+        for p_ in range(k):
+            for q_ in range(k):
+                XtX[p_, q_] = float(np.sum(np.where(obs, Xc[p_], 0.0)
+                                           * np.where(obs, Xc[q_], 0.0)))
+        XtX = XtX + 1e-12 * np.eye(k)
+
+    def _xb(bb):
+        out = np.zeros((n, T))
+        for j in range(k):
+            out = out + float(bb[j]) * Xc[j]
+        return out
+
     for _ in range(int(max_iter)):
         a0, l0 = a.copy(), lam.copy()
         other = np.where(obs, lam[None, :], 0.0)
         if b is not None:
-            other = other + np.where(obs, Xc @ b, 0.0)
+            other = other + np.where(obs, _xb(b), 0.0)
         a = (u_a - other.sum(axis=1)) / n_i
         other = np.where(obs, a[:, None], 0.0)
         if b is not None:
-            other = other + np.where(obs, Xc @ b, 0.0)
+            other = other + np.where(obs, _xb(b), 0.0)
         lam = (u_l - other.sum(axis=0)) / m_t
         if b is not None:
             rest = np.where(obs, a[:, None] + lam[None, :], 0.0)
-            b = np.linalg.solve(XtX, u_b - Xc[obs].T @ rest[obs])
+            rhs = np.asarray(
+                [float(np.sum(np.where(obs, Xc[j], 0.0) * rest))
+                 for j in range(k)], dtype=float)
+            b = np.linalg.solve(XtX, u_b - rhs)
         if max(np.max(np.abs(a - a0)), np.max(np.abs(lam - l0))) < tol:
             break
     return a, lam, b
@@ -79,40 +108,31 @@ def impute_untreated(Y, treated, X=None, max_iter=2000, tol=1e-13):
     n, T = Y.shape
     obs = ~treated
     _check_identified(obs, n, T)
-    Xc = None
-    if X is not None:
-        Xc = np.asarray(X, dtype=float)
-        if Xc.ndim == 2:
-            Xc = Xc[:, :, None]
+    Xc = _as_slabs(X)
     Yo = np.where(obs, Y, 0.0)
-    u_b = None if Xc is None else Xc[obs].T @ Y[obs]
+    u_b = None if Xc is None else np.asarray(
+        [float(np.sum(np.where(obs, Xc[j], 0.0) * Yo)) for j in range(len(Xc))],
+        dtype=float)
     a, lam, b = _two_way_solve(obs, Yo.sum(axis=1), Yo.sum(axis=0), u_b, Xc,
                                max_iter, tol)
     Y0 = a[:, None] + lam[None, :]
     if b is not None:
-        Y0 = Y0 + Xc @ b
+        for j in range(len(Xc)):
+            Y0 = Y0 + float(b[j]) * Xc[j]
     return Y0, a, lam, b
 
 
 def _estimator_weights(W, treated, Xc, max_iter=2000, tol=1e-13):
-    r"""The exact linear weights ``v`` with ``tau_hat = sum(v * Y)``.
-
-    The estimator subtracts a projection of the untreated outcomes,
-    so it is linear in :math:`Y` and its weights can be written down:
-    treated cells carry :math:`w_{it}`, and each untreated cell
-    carries minus the amount by which it moves the imputation. Having
-    :math:`v` makes the standard error a plain clustered sum instead
-    of an approximation, and makes the identity
-    :math:`\hat\tau = \sum v_{it} Y_{it}` checkable.
-    """
     obs = ~treated
     u_a = W.sum(axis=1)
     u_l = W.sum(axis=0)
-    u_b = None if Xc is None else np.einsum("ijk,ij->k", Xc, W)
+    u_b = None if Xc is None else np.asarray(
+        [float(np.sum(Xc[j] * W)) for j in range(len(Xc))], dtype=float)
     ca, cl, cb = _two_way_solve(obs, u_a, u_l, u_b, Xc, max_iter, tol)
     proj = ca[:, None] + cl[None, :]
     if cb is not None:
-        proj = proj + Xc @ cb
+        for j in range(len(Xc)):
+            proj = proj + float(cb[j]) * Xc[j]
     return np.where(treated, W, -proj * obs)
 
 
@@ -191,8 +211,8 @@ def borusyak_jaravel_spiess(y, D, unit, time, X=None, weights=None):
         Xa = np.asarray(X, dtype=float)
         if Xa.ndim == 1:
             Xa = Xa[:, None]
-        Xp = np.stack([as_panel(Xa[:, j], unit, time)[0]
-                       for j in range(Xa.shape[1])], axis=2)
+        Xp = [as_panel(Xa[:, j], unit, time)[0]
+              for j in range(Xa.shape[1])]
 
     Y0, alpha, lam, beta = impute_untreated(Y, treated, Xp)
     tau = Y - Y0

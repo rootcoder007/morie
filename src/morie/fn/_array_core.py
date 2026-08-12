@@ -1152,6 +1152,13 @@ def _is_object_like(x, dtype):
 def asarray(x, dtype=None):
     if isinstance(x, oarr) and dtype is None:
         return x
+    if isinstance(x, ndlist):
+        # rank >= 3 container: it already holds floats in nested lists.
+        # Without this passthrough marr(x) raises on the inner lists and
+        # the except branch below flattens it to a 1-D oarr, silently
+        # destroying the shape (this is what broke the covariate route
+        # of morie.fn.boryis).
+        return x
     if hasattr(x, "columns") and hasattr(x, "to_numpy") \
             and not isinstance(x, marr):
         # frame-like (native or real pandas): take its array form
