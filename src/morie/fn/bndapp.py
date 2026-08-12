@@ -92,7 +92,8 @@ def bndapp(y, z, t1=None, t0=None):
         "levels": lev, "lower": lower, "upper": upper,
         "ate_lower": 0.0, "ate_upper": upper[i1] - lower[i0],
         "t1": tt1, "t0": tt0, "n": n,
-        "method": "Manski-Pepper (2000) MTR-MTS bounds, eq. (36)"})
+        "method": "Manski-Pepper (2000) MTR-MTS bounds "
+                  "(Manski 2007 eqs. 9.18-9.19)"})
 
 
 # stub-era long name, kept as an alias
@@ -100,4 +101,5 @@ bound_application = bndapp
 
 
 def cheatsheet():
-    return "bndapp: Manski-Pepper MTR-MTS bounds on E[y(t)] (eq. 36)"
+    return ("bndapp: Manski-Pepper MTR-MTS bounds on E[y(t)] "
+            "(Manski 2007 eq. 9.18; ATE bound eq. 9.19)")
