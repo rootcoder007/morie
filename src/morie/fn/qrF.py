@@ -1,76 +1,72 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
-"""Quantile (pinball) loss for point forecasts."""
-
-from . import _array_core as np
+"""Quantile (pinball) loss (Koenker & Bassett 1978; Koenker 2005)."""
 
 from ._richresult import RichResult
 
-__all__ = ["qrF", "quantile_forecast"]
+__all__ = ["qrF", "pinball_loss"]
 
 
-def qrF(y, y_hat, tau):
+def qrF(y_true, y_pred, theta=0.5):
     """
-    Quantile (pinball) scoring function for point forecasts.
+    Mean quantile (check / pinball) loss of predictions.
 
-    For forecast x, realization y and level tau in (0, 1),
+    The asymmetric absolute loss that defines regression quantiles
+    (Koenker & Bassett 1978, Sec. 2): for the residual
+    u = y - y_hat,
 
-        S(x, y) = (1{x >= y} - tau) (x - y),
+        rho_theta(u) = theta * u        if u >= 0,
+                       (theta - 1) * u  if u < 0,
 
-    the generalized piecewise-linear scoring function of order tau
-    with g(x) = x (Gneiting 2011, eq. for GPL scoring functions,
-    Theorem 9). S is negatively oriented (smaller is better); the
-    tau-quantile of the predictive distribution is the optimal point
-    forecast under S. Equivalent to the Koenker-Bassett check
-    function rho_tau(u) = u (tau - 1{u < 0}) with u = y - x.
+    i.e., under-predictions are weighted theta and over-predictions
+    1 - theta; theta = 1/2 gives half the absolute error.  The
+    empirical minimizer of the mean loss over constant predictions
+    is the theta-th sample quantile.
+
+    Sources
+    -------
+    Koenker, R. & Bassett, G. (1978). Regression quantiles.
+    *Econometrica*, 46(1), 33-50, Sec. 2 (local copy
+    fetched-wave3/Koenker-RegressionQuantiles-1978.pdf).
+    Koenker, R. (2005). *Quantile Regression*. Cambridge University
+    Press (delivered).
 
     Parameters
     ----------
-    y : array-like
-        Realizations.
-    y_hat : array-like
-        Forecasts (broadcast against y).
-    tau : float
+    y_true, y_pred : sequences of float
+        Observations and predictions.
+    theta : float
         Quantile level in (0, 1).
 
     Returns
     -------
-    result : RichResult
-        Keys: estimate (mean score), scores, n, tau, method.
-
-    References
-    ----------
-    Gneiting, T. (2011), "Making and evaluating point forecasts",
-    Journal of the American Statistical Association 106(494), 746-762;
-    arXiv:0912.0902, sec. 3.3, eq. S(x, y) = (1(x >= y) - alpha)
-    (g(x) - g(y)) with g the identity, and Theorem 9 [source:
-    library/pdf/fetched-wave3/gneiting-2011-quantiles-point-forecasts.pdf].
-    Koenker, R. and Bassett, G. (1978), "Regression quantiles",
-    Econometrica 46(1), 33-50 (check function).
+    RichResult
+        Keys: estimate (mean loss), total, losses, theta, n.
     """
-    tau = float(tau)
-    if not 0.0 < tau < 1.0:
-        raise ValueError("tau must be in (0, 1)")
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    x = np.atleast_1d(np.asarray(y_hat, dtype=float))
-    if len(x) == 1 and len(y) > 1:
-        x = np.asarray([float(x[0])] * len(y))
-    if len(x) != len(y):
-        raise ValueError("y and y_hat must have equal length")
-    ind = np.asarray([1.0 if float(x[i]) >= float(y[i]) else 0.0 for i in range(len(y))])
-    scores = (ind - tau) * (x - y)
-    return RichResult(
-        payload={
-            "estimate": float(np.mean(scores)),
-            "scores": scores,
-            "n": len(y),
-            "tau": tau,
-            "method": "Quantile (pinball) loss",
-        }
-    )
+    yt = [float(v) for v in y_true]
+    yp = [float(v) for v in y_pred]
+    n = len(yt)
+    if len(yp) != n or n == 0:
+        raise ValueError("y_true and y_pred must be non-empty and paired")
+    theta = float(theta)
+    if not (0.0 < theta < 1.0):
+        raise ValueError("theta must be in (0, 1)")
+    losses = []
+    for a, b in zip(yt, yp):
+        u = a - b
+        losses.append(theta * u if u >= 0 else (theta - 1.0) * u)
+    tot = sum(losses)
+    return RichResult(payload={
+        "estimate": tot / n,
+        "total": tot,
+        "losses": losses,
+        "theta": theta,
+        "n": n,
+        "method": "quantile/pinball loss (Koenker-Bassett 1978)",
+    })
 
 
-quantile_forecast = qrF
+# long descriptive alias (stub-era name)
+pinball_loss = qrF
 
 
 def cheatsheet():
-    return "qrF: quantile/pinball loss (Gneiting 2011; Koenker-Bassett 1978)"
+    return "qrF: rho_theta(u) = u(theta - 1[u<0]); minimized by theta-quantile"

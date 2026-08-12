@@ -1,131 +1,109 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
-"""Rao-Scott corrections to Pearson chi-square for complex surveys."""
+"""Rao-Scott corrected chi-square for complex surveys (Rao & Scott 1981)."""
+
+import math
 
 from . import _array_core as np
-from . import _sci_core as sci
-
+from ._stats_core import chi2
 from ._richresult import RichResult
 
 __all__ = ["raoscot", "rao_scott_chisq"]
 
 
-def _chisq_sf(x, df):
-    # Survival function of chi-square_df at x via the regularized
-    # upper incomplete gamma function Q(df/2, x/2).
-    if x <= 0:
-        return 1.0
-    return float(sci.gammaincc(df / 2.0, x / 2.0))
-
-
-def raoscot(X2, df, deltas, kappa=None):
+def raoscot(p_hat, p0, n, V=None, deffs=None):
     """
-    First- and second-order Rao-Scott corrected chi-square tests.
+    First-order Rao-Scott corrected goodness-of-fit chi-square.
 
-    Let X2 be the Pearson statistic that would have nu degrees of
-    freedom under simple random sampling, and let delta_1..delta_nu be
-    the generalized design effects (eigenvalue-type quantities of Rao
-    and Scott 1981). With dbar = mean(delta) and squared coefficient
-    of variation c^2 = sum (delta_l - dbar)^2 / (nu dbar^2):
+    Rao & Scott (1981): under a complex design the Pearson statistic
+    X^2 = n sum_i (p_hat_i - p0_i)^2 / p0_i is asymptotically a
+    weighted sum of chi-square(1) variables whose weights lambda_i
+    are the eigenvalues of D = P^{-1} V (their generalized design
+    effects; P = diag(p) - p p').  Their first-order correction
+    treats X^2 / lambda_bar as chi-square with k - 1 degrees of
+    freedom, where lambda_bar is the mean generalized deff -- exact
+    when V is supplied (mean eigenvalue of P0^{-1} V restricted to
+    the k-1 dimensional simplex space, computed here as
+    trace(P0^{-1} V)/(k-1)), or the paper's cell-deff estimate
+    lambda_hat = sum_i (1 - p0_i) d_i / (k - 1) when only cell
+    design effects d_i are known.  Their Section 2.3 model result:
+    if V = c P0 (uniform clustering a la Cohen/Altham/Brier), then
+    every eigenvalue is c and X^2 / c is exactly chi-square_{k-1}.
 
-        first order:   X2_RS1 = X2 / dbar            ~ chi^2_nu
-        second order:  X2_RS2 = X2 / (dbar (1 + c^2)) ~ chi^2_{nu/(1+c^2)}
-
-    and the Thomas-Rao (1987) F version
-
-        F_TR = X2 / (nu dbar)  ~  F_{nu/(1+c^2), kappa nu/(1+c^2)}
-
-    where kappa is the degrees of freedom of the design variance
-    estimator (if supplied).
+    Sources
+    -------
+    Rao, J. N. K. & Scott, A. J. (1981). The analysis of categorical
+    data from complex sample surveys: chi-squared tests for goodness
+    of fit and independence in two-way tables. *JASA*, 76(374),
+    221-230, Secs. 2-3 (local copy fetched-wave3/The Analysis of
+    Categorical Data from Complex Sample Surveys...pdf).
 
     Parameters
     ----------
-    X2 : float
-        Pearson chi-square statistic computed from the weighted table.
-    df : int
-        Simple-random-sampling degrees of freedom nu.
-    deltas : array-like
-        Generalized design effects delta_1..delta_nu. A scalar is
-        treated as a common design effect d0 (then c^2 = 0 and the
-        two corrections coincide).
-    kappa : float, optional
-        Degrees of freedom of the variance estimator; enables the
-        Thomas-Rao F p-value.
+    p_hat : sequence of float
+        Estimated cell proportions (sum to 1).
+    p0 : sequence of float
+        Hypothesized proportions (positive, sum to 1).
+    n : int
+        Sample size.
+    V : matrix, optional
+        Estimated n * covariance matrix of p_hat (k x k); enables
+        the trace-based mean generalized deff.
+    deffs : sequence of float, optional
+        Cell design effects d_i (used when V is absent).
 
     Returns
     -------
-    result : RichResult
-        Keys: estimate (X2_RS2), rs1, rs2, f_tr, df, df2, dbar, c2,
-        p_rs1, p_rs2, p_f, method.
-
-    References
-    ----------
-    Rao, J. N. K. and Scott, A. J. (1981), "The analysis of categorical
-    data from complex sample surveys: chi-squared tests for goodness of
-    fit and independence in two-way tables", JASA 76(374), 221-230.
-    Thomas, D. R. and Rao, J. N. K. (1987), "Small-sample comparisons of
-    level and power for simple goodness-of-fit statistics under cluster
-    sampling", JASA 82(398), 630-636. Formulas as printed in Bilder,
-    C. R. and Loughin, T. M. (2014), "Analysis of Categorical Data
-    with R", CRC Press, sec. 6.3.5 "Tests of independence: Rao-Scott
-    methods" (X2_RS1 = X2/dbar; X2_RS2 = X2/[dbar(1+c^2)] with
-    chi^2_{nu/(1+c^2)}; eq. 6.12 F_TR) [local source:
-    library/pdf/Analysis of Categorical Data with R ... BILDER.pdf,
-    pp. 469-470]. P-values anchored against base R pchisq/pf.
+    RichResult
+        Keys: statistic (X^2), corrected (X^2 / lambda_bar),
+        lambda_bar, df, p_value (of the corrected statistic).
     """
-    X2 = float(X2)
-    nu = float(df)
-    if X2 < 0:
-        raise ValueError("X2 must be nonnegative")
-    if nu < 1:
-        raise ValueError("df must be >= 1")
-    d = np.atleast_1d(np.asarray(deltas, dtype=float))
-    if len(d) == 1:
-        dbar = float(d[0])
-        c2 = 0.0
+    ph = [float(v) for v in p_hat]
+    p0v = [float(v) for v in p0]
+    k = len(ph)
+    if len(p0v) != k or k < 2:
+        raise ValueError("p_hat and p0 must be paired with k >= 2")
+    if any(v <= 0 for v in p0v):
+        raise ValueError("p0 must be positive")
+    if abs(sum(ph) - 1.0) > 1e-6 or abs(sum(p0v) - 1.0) > 1e-6:
+        raise ValueError("proportions must sum to 1")
+    n = int(n)
+    if n < 2:
+        raise ValueError("n must be at least 2")
+    x2 = n * sum((a - b) ** 2 / b for a, b in zip(ph, p0v))
+    df = k - 1
+    if V is not None:
+        Vm = [[float(v) for v in row] for row in V]
+        # lambda_bar = trace(P0^+ V) / (k - 1); on the simplex the
+        # Moore-Penrose action of P0 = diag(p0) - p0 p0' reduces to
+        # sum_i V_ii / p0_i - sum_ij V_ij  (since P0^+ acts as
+        # diag(1/p0) minus the constant direction, and rows of V sum
+        # to zero for proportion covariances; the subtraction guards
+        # inputs whose rows do not exactly sum to zero).
+        tr = sum(Vm[i][i] / p0v[i] for i in range(k))
+        tr -= sum(Vm[i][j] for i in range(k) for j in range(k))
+        lam = tr / df
+    elif deffs is not None:
+        dv = [float(v) for v in deffs]
+        if len(dv) != k or any(v <= 0 for v in dv):
+            raise ValueError("need k positive cell deffs")
+        lam = sum((1.0 - b) * d for b, d in zip(p0v, dv)) / df
     else:
-        if len(d) != int(nu):
-            raise ValueError("need one generalized deff per degree of freedom")
-        dbar = float(np.mean(d))
-        c2 = float(np.sum((d - dbar) ** 2)) / (nu * dbar * dbar)
-    if dbar <= 0:
-        raise ValueError("design effects must be positive")
-    rs1 = X2 / dbar
-    rs2 = X2 / (dbar * (1.0 + c2))
-    df2 = nu / (1.0 + c2)
-    p_rs1 = _chisq_sf(rs1, nu)
-    p_rs2 = _chisq_sf(rs2, df2)
-    f_tr = X2 / (nu * dbar)
-    if kappa is None:
-        p_f = float("nan")
-        ddf = float("nan")
-    else:
-        ddf = float(kappa) * df2
-        # F survival function via the regularized incomplete beta:
-        # P(F > f) = I_{ddf/(ddf + ndf f)}(ddf/2, ndf/2).
-        z = ddf / (ddf + df2 * f_tr)
-        p_f = float(sci.betainc(ddf / 2.0, df2 / 2.0, z))
-    return RichResult(
-        payload={
-            "estimate": rs2,
-            "rs1": rs1,
-            "rs2": rs2,
-            "f_tr": f_tr,
-            "df": nu,
-            "df2": df2,
-            "ddf": ddf,
-            "dbar": dbar,
-            "c2": c2,
-            "p_rs1": p_rs1,
-            "p_rs2": p_rs2,
-            "p_f": p_f,
-            "method": "Rao-Scott corrected chi-square (first/second order + Thomas-Rao F)",
-        }
-    )
+        lam = 1.0
+    if lam <= 0:
+        raise ValueError("estimated mean design effect is not positive")
+    xc = x2 / lam
+    return RichResult(payload={
+        "statistic": x2,
+        "corrected": xc,
+        "lambda_bar": lam,
+        "df": df,
+        "p_value": float(chi2.sf(xc, df)),
+        "method": "Rao-Scott (1981) first-order corrected chi-square",
+    })
 
 
-def rao_scott_chisq(X2, df, deltas, kappa=None):
-    return raoscot(X2, df, deltas, kappa=kappa)
+# long descriptive alias (stub-era name)
+rao_scott_chisq = raoscot
 
 
 def cheatsheet():
-    return "raoscot: Rao-Scott first/second-order corrected chi-square (Bilder-Loughin sec 6.3.5)"
+    return "raoscot: X2 / mean generalized deff ~ chi2_{k-1}"
