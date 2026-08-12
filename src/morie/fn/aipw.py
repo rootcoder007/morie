@@ -49,15 +49,34 @@ import math as _math
 _PS_EPS = 1e-6
 
 
+def _ps_keep(ps, trim=(0.1, 0.9), trim_type="value"):
+    """Mask of units SURVIVING trimming; only "discard" drops any.
+
+    The discard route is Crump, Hotz, Imbens and Mitnik (2009),
+    Biometrika 96(1), 187-199, verified verbatim: "drop all units with
+    estimated propensity scores outside the range [0.1,0.9]".
+
+    Discarding CHANGES THE ESTIMAND -- the result is the ATE on the
+    retained subpopulation, not on the whole sample.  Callers report
+    n_discarded and an estimand note when this route is used.
+    """
+    if trim_type != "discard" or trim is None:
+        return [True] * len(ps)
+    lo, hi = float(trim[0]), float(trim[1])
+    if not 0.0 <= lo < hi <= 1.0:
+        raise ValueError("trim must satisfy 0 <= lo < hi <= 1")
+    return [bool(lo <= float(u) <= hi) for u in ps]
+
+
 def _trim_ps(ps, trim, trim_type="value"):
     """Trim propensity scores; see :func:`estimate_aipw` for the routes.
 
     Mirrored exactly by ``.mor_trim_ps`` in the R arm.
     """
     ps = np.asarray(ps, dtype=float)
-    if trim_type not in ("value", "quantile"):
-        raise ValueError("trim_type must be 'value' or 'quantile'")
-    if trim is not None:
+    if trim_type not in ("value", "quantile", "discard"):
+        raise ValueError("trim_type must be 'value', 'quantile' or 'discard'")
+    if trim is not None and trim_type != "discard":
         lo, hi = float(trim[0]), float(trim[1])
         if not 0.0 <= lo < hi <= 1.0:
             raise ValueError("trim must satisfy 0 <= lo < hi <= 1")
@@ -262,6 +281,18 @@ def estimate_aipw(
     if outcome_fit not in ("separate", "pooled"):
         raise ValueError("outcome_fit must be 'separate' or 'pooled'")
     Xc = _ps_design(frame, covariates)
+    # Crump et al. discard route: drop units outside the overlap range
+    # before fitting anything, and remember how many went.
+    keep = _ps_keep(ps, trim, trim_type)
+    n_discarded = int(sum(1 for k in keep if not k))
+    if n_discarded:
+        idx = [i for i, k in enumerate(keep) if k]
+        if len(idx) < 2:
+            raise ValueError("discard trimming removed almost every unit")
+        t = np.asarray([t[i] for i in idx], dtype=float)
+        y = np.asarray([y[i] for i in idx], dtype=float)
+        ps = np.asarray([ps[i] for i in idx], dtype=float)
+        Xc = [Xc[i] for i in idx]
     n = len(Xc)
     if outcome_fit == "pooled":
         Xp = [[Xc[i][0], t[i]] + Xc[i][1:] for i in range(n)]

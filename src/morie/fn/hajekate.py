@@ -16,7 +16,7 @@ import math
 
 from . import _array_core as np
 from ._richresult import RichResult
-from .aipw import _trim_ps, _trim_weights
+from .aipw import _ps_keep, _trim_ps, _trim_weights
 from .ps_fit import compute_propensity_scores
 
 __all__ = ["hajekate", "hajek_ipw_ate"]
@@ -37,6 +37,15 @@ def hajekate(data, treatment, outcome, covariates, propensity_col=None,
             frame, treatment=treatment, covariates=covariates,
             ps_model=ps_model, ridge_lambda=ridge_lambda).values,
             trim, trim_type)
+    keep = _ps_keep(ps, trim, trim_type)
+    n_discarded = int(sum(1 for k in keep if not k))
+    if n_discarded:
+        idx = [i for i, k in enumerate(keep) if k]
+        if len(idx) < 2:
+            raise ValueError("discard trimming removed almost every unit")
+        t = np.asarray([t[i] for i in idx], dtype=float)
+        y = np.asarray([y[i] for i in idx], dtype=float)
+        ps = np.asarray([ps[i] for i in idx], dtype=float)
     w = np.asarray([t[i] / ps[i] + (1.0 - t[i]) / (1.0 - ps[i])
                     for i in range(len(t))], dtype=float)
     w = _trim_weights(w, weight_trim, weight_trim_side)
@@ -56,6 +65,10 @@ def hajekate(data, treatment, outcome, covariates, propensity_col=None,
         "estimate": ate, "ate": ate, "se": se,
         "ci_lower": ate - z * se, "ci_upper": ate + z * se,
         "ess": (sw * sw) / sum(v * v for v in w), "n": n,
+        "n_discarded": n_discarded,
+        "estimand": ("ATE on the retained subpopulation (Crump et al. "
+                     "2009 discard trimming)" if n_discarded else
+                     "ATE on the full sample"),
         "method": "Hajek IPW ATE (stabilised weights); known-propensity IF SE",
     })
 
