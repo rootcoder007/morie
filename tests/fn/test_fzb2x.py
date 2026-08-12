@@ -1,22 +1,31 @@
-"""Tests for fzb2x.fauzi_b2_coefficient."""
+"""Tests for fzb2x (b_2 bias coefficient of the kernel distribution
+function estimator).
 
-from morie.fn import _array_core as np
+Replaces the generated stub, which imported ``fauzi_b2_coefficient``.
+"""
 
-from morie.fn.fzb2x import fauzi_b2_coefficient
-
-
-def test_fzb2x_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    kernel = lambda u: np.exp(-0.5 * u * u) / np.sqrt(2 * np.pi)
-    result = fauzi_b2_coefficient(x, kernel)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.fzb2x import kdfb2
 
 
-def test_fzb2x_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    kernel = lambda u: np.exp(-0.5 * u * u) / np.sqrt(2 * np.pi)
-    result = fauzi_b2_coefficient(x, kernel)
-    assert isinstance(result, dict)
+def test_the_coefficient_is_proportional_to_the_density_derivative():
+    # b_2 = mu2 * f'(x) / 2 in the usual expansion, so it is linear in
+    # both arguments
+    a = kdfb2(0.4, mu2=1.0)["estimate"]
+    b = kdfb2(0.8, mu2=1.0)["estimate"]
+    assert abs(b - 2.0 * a) < 1e-12
+
+
+def test_it_is_linear_in_mu2():
+    a = kdfb2(0.4, mu2=1.0)["estimate"]
+    b = kdfb2(0.4, mu2=3.0)["estimate"]
+    assert abs(b - 3.0 * a) < 1e-12
+
+
+def test_a_flat_density_gives_no_bias_term():
+    assert abs(kdfb2(0.0)["estimate"]) < 1e-15
+
+
+def test_the_sign_follows_the_derivative():
+    assert kdfb2(1.0)["estimate"] > 0
+    assert kdfb2(-1.0)["estimate"] < 0
+    assert kdfb2(1.0)["mu2"] == 1.0
