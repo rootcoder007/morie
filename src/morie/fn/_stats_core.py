@@ -1152,6 +1152,14 @@ def binomtest(k, n, p=0.5, alternative="two-sided"):
 def _ks_sf(d, n):
     """Two-sided asymptotic Kolmogorov Q(d*sqrt(n)) w/ Stephens correction."""
     lam = d * (_math.sqrt(n) + 0.12 + 0.11 / _math.sqrt(n))
+    if lam < 0.04:
+        # Q(lam) -> 1 as lam -> 0, but the alternating series below does
+        # not converge there: its terms stay near 2 and the truncated
+        # sum lands on an arbitrary value (0.0 at lam = 0, 0.35 at
+        # lam = 0.005).  Return the limit instead.  This is the branch
+        # taken when two samples are identical, i.e. D = 0 with ties, in
+        # which case the correct p-value is 1.
+        return 1.0
     s = 0.0
     for j in range(1, 101):
         term = 2.0 * (-1) ** (j - 1) * _math.exp(-2.0 * j * j * lam * lam)
