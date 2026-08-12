@@ -2,7 +2,13 @@ r"""word2vec: the CBOW and continuous skip-gram architectures.
 
 Mikolov, T., Chen, K., Corrado, G., & Dean, J. (2013) "Efficient
 Estimation of Word Representations in Vector Space",
-arXiv:1301.3781.
+arXiv:1301.3781 -- the CBOW and skip-gram architectures.
+
+Mikolov, T., Sutskever, I., Chen, K., Corrado, G., & Dean, J. (2013)
+"Distributed Representations of Words and Phrases and their
+Compositionality", *NeurIPS*, arXiv:1310.4546 -- negative sampling and
+subsampling of frequent words, which are extensions of skip-gram
+published separately and are marked as such below.
 
 Both architectures are **log-linear**: the expensive non-linear hidden
 layer of a neural language model is removed, leaving a projection into
@@ -40,13 +46,43 @@ fixed window instead is the commonest way to get skip-gram subtly
 wrong, so ``dynamic_window`` defaults to the paper's behaviour and the
 sampling probability is checked in the anchors.
 
-The output layer here is the full softmax. The paper's complexity
+The output layer is the full softmax by default. The 2013a complexity
 terms are written with :math:`\log_2 V`, reflecting the hierarchical
-softmax it uses at scale; :func:`training_complexity` reports the
-paper's :math:`Q` for either. Negative sampling is *not* from this
-paper -- it appears in the follow-up (Mikolov et al., NIPS 2013) --
-so it is not implemented here rather than being attributed to a paper
-that does not contain it.
+softmax used at scale; :func:`training_complexity` reports :math:`Q`
+for either.
+
+**Negative sampling** (``loss="neg"``) comes from the *second* paper,
+Mikolov et al. (2013b) section 2.2, and replaces every
+:math:`\log P(w_O \mid w_I)` term in the skip-gram objective with
+(their eq. 4)
+
+.. math:: \log \sigma\big(v'^{\top}_{w_O} v_{w_I}\big)
+          + \sum_{i=1}^{k} \mathbb{E}_{w_i \sim P_n(w)}
+          \Big[\log \sigma\big(-v'^{\top}_{w_i} v_{w_I}\big)\Big].
+
+It is a simplification of Noise Contrastive Estimation: the task is
+just to tell the true target from :math:`k` draws of a noise
+distribution by logistic regression. NCE needs the numerical noise
+probabilities; NEG needs only samples. The paper reports
+:math:`k = 5\text{-}20` for small datasets and :math:`2\text{-}5` for
+large ones, and that the noise distribution which "outperformed
+significantly the unigram and the uniform distributions ... on every
+task we tried" is the unigram raised to the 3/4 power,
+
+.. math:: P_n(w) = U(w)^{3/4} / Z.
+
+That exponent is not folklore -- it is the paper's empirical finding,
+and ``noise_power`` exposes it rather than hard-coding it.
+
+**Subsampling of frequent words** (2013b section 2.3, their eq. 5)
+discards each occurrence of :math:`w_i` with probability
+
+.. math:: P(w_i) = 1 - \sqrt{t / f(w_i)},
+
+with :math:`f(w_i)` the word's frequency and :math:`t` a threshold
+(they use around :math:`10^{-5}`). Words rarer than :math:`t` are
+never discarded, since the formula goes negative and is clamped at
+zero. Set ``subsample=None`` to switch it off.
 
 What the vectors are for is section 4's observation that they encode
 regularities as *offsets*: ``vector("King") - vector("Man") +
@@ -61,7 +97,8 @@ from . import _array_core as np
 
 from ._richresult import RichResult
 
-__all__ = ["wrd2v", "word2vec", "analogy", "training_complexity"]
+__all__ = ["wrd2v", "word2vec", "analogy", "training_complexity",
+           "noise_distribution", "subsample_probability"]
 
 _ARCH = ("skip-gram", "cbow")
 
@@ -95,8 +132,44 @@ def training_complexity(architecture, D, V, N=None, C=None,
     return float(C) * (D + D * out)
 
 
+def noise_distribution(counts, power=0.75):
+    r""":math:`P_n(w) = U(w)^{3/4} / Z` of Mikolov et al. (2013b) 2.2.
+
+    ``counts`` maps word to frequency. The 3/4 exponent is the
+    paper's empirical choice; ``power=1`` gives the plain unigram and
+    ``power=0`` the uniform distribution, both of which it reports as
+    significantly worse.
+    """
+    ws = sorted(counts, key=repr)
+    raw = [float(counts[w]) ** float(power) for w in ws]
+    z = sum(raw)
+    if z <= 0.0:
+        raise ValueError("wrd2v: noise distribution has no mass")
+    return dict((ws[i], raw[i] / z) for i in range(len(ws)))
+
+
+def subsample_probability(counts, t=1e-5):
+    r"""Discard probability :math:`1 - \sqrt{t / f(w)}` (2013b eq. 5).
+
+    ``f(w)`` is the relative frequency. Clamped at zero, so a word
+    rarer than :math:`t` is never discarded.
+    """
+    total = float(sum(counts.values()))
+    if total <= 0.0:
+        raise ValueError("wrd2v: empty counts")
+    t = float(t)
+    if t <= 0.0:
+        raise ValueError("wrd2v: t must be > 0")
+    out = {}
+    for w, c in counts.items():
+        f = c / total
+        out[w] = max(0.0, 1.0 - math.sqrt(t / f))
+    return out
+
+
 def wrd2v(corpus, size=16, window=5, architecture="skip-gram", lr=0.05,
-          epochs=20, min_count=1, dynamic_window=True, seed=0):
+          epochs=20, min_count=1, dynamic_window=True, loss="softmax",
+          negative=5, noise_power=0.75, subsample=None, seed=0):
     r"""Train word vectors with CBOW or continuous skip-gram.
 
     Parameters
@@ -122,6 +195,18 @@ def wrd2v(corpus, size=16, window=5, architecture="skip-gram", lr=0.05,
         Draw :math:`R \sim \mathrm{Unif}\{1, \dots, C\}` per centre
         word, as section 3.2 specifies. Setting it False gives a fixed
         window, which is *not* what the paper describes.
+    loss : {"softmax", "neg"}
+        Full softmax (2013a) or negative sampling (2013b eq. 4).
+        Skip-gram only -- eq. 4 is defined as a replacement for the
+        terms of the *skip-gram* objective.
+    negative : int
+        :math:`k`, the number of noise samples per positive. The paper
+        suggests 5-20 for small corpora, 2-5 for large ones.
+    noise_power : float
+        Exponent of :math:`P_n(w) \propto U(w)^{\text{power}}`; the
+        paper's 3/4 by default.
+    subsample : float, optional
+        The :math:`t` of 2013b eq. 5. ``None`` disables subsampling.
     seed : int
         Seed for initialisation and window sampling.
 
@@ -143,6 +228,17 @@ def wrd2v(corpus, size=16, window=5, architecture="skip-gram", lr=0.05,
     if architecture not in _ARCH:
         raise ValueError("wrd2v: architecture must be one of %r, got %r"
                          % (_ARCH, architecture))
+    if loss not in ("softmax", "neg"):
+        raise ValueError("wrd2v: loss must be 'softmax' or 'neg', got %r"
+                         % (loss,))
+    if loss == "neg" and architecture != "skip-gram":
+        raise ValueError("wrd2v: negative sampling is defined in Mikolov "
+                         "et al. (2013b) eq. 4 as a replacement for the "
+                         "terms of the SKIP-GRAM objective; use "
+                         "architecture='skip-gram' or loss='softmax'")
+    negative = int(negative)
+    if loss == "neg" and negative < 1:
+        raise ValueError("wrd2v: negative must be >= 1")
     size = int(size)
     window = int(window)
     if size < 1:
@@ -167,7 +263,35 @@ def wrd2v(corpus, size=16, window=5, architecture="skip-gram", lr=0.05,
     V = len(vocab)
     sents = [[w for w in s if w in idx] for s in sents]
 
+    # 2013b eq. 5: discard frequent words before training.
+    if subsample is not None:
+        keep_drop = subsample_probability(
+            dict((w, counts[w]) for w in vocab), subsample)
+        srng = np.random.default_rng(seed + 7)
+        sents = [[w for w in s if srng.random() >= keep_drop[w]]
+                 for s in sents]
+
     rng = np.random.default_rng(seed)
+    # 2013b 2.2: the noise distribution, as a cumulative table.
+    noise = noise_distribution(dict((w, counts[w]) for w in vocab),
+                               noise_power)
+    cum = []
+    acc = 0.0
+    for w in vocab:
+        acc += noise[w]
+        cum.append(acc)
+
+    def draw_noise():
+        u = rng.random() * cum[-1]
+        lo, hi = 0, len(cum) - 1
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if cum[mid] < u:
+                lo = mid + 1
+            else:
+                hi = mid
+        return lo
+
     scale = 0.5 / size
     W = [[(rng.random() * 2.0 - 1.0) * scale for _ in range(size)]
          for _ in range(V)]        # projection (input) vectors
@@ -191,6 +315,11 @@ def wrd2v(corpus, size=16, window=5, architecture="skip-gram", lr=0.05,
                 if architecture == "cbow":
                     total += _cbow_step(W, O, ctx, c, size, V, lr)
                     n_ex += 1
+                elif loss == "neg":
+                    for j in ctx:
+                        total += _neg_step(W, O, c, j, size, lr,
+                                           negative, draw_noise)
+                        n_ex += 1
                 else:
                     for j in ctx:
                         total += _sg_step(W, O, c, j, size, V, lr)
@@ -217,13 +346,18 @@ def wrd2v(corpus, size=16, window=5, architecture="skip-gram", lr=0.05,
         "output_vectors": outv,
         "vocab": dict((w, counts[w]) for w in vocab),
         "loss_curve": curve,
-        "loss": curve[-1] if curve else float("nan"),
+        "final_loss": curve[-1] if curve else float("nan"),
         "similarity": similarity,
         "most_similar": most_similar,
         "size": size,
         "window": window,
         "architecture": architecture,
-        "method": "word2vec (Mikolov et al. 2013, sections 3.1-3.2)",
+        "loss": loss,
+        "negative": negative if loss == "neg" else 0,
+        "noise": noise,
+        "method": "word2vec (Mikolov et al. 2013a secs 3.1-3.2"
+                  + ("; 2013b eq. 4 negative sampling)"
+                     if loss == "neg" else ")"),
     })
 
 
@@ -246,6 +380,40 @@ def _sg_step(W, O, c, j, size, V, lr):
             gh[d] += e * O[k][d]
         for d in range(size):
             O[k][d] -= lr * e * h[d]
+    for d in range(size):
+        W[c][d] -= lr * gh[d]
+    return loss
+
+
+def _sigmoid(z):
+    if z >= 0.0:
+        return 1.0 / (1.0 + math.exp(-z))
+    e = math.exp(z)
+    return e / (1.0 + e)
+
+
+def _neg_step(W, O, c, j, size, lr, k, draw_noise):
+    r"""Mikolov et al. (2013b) eq. 4, one positive and k noise draws.
+
+    The loss minimised is the negative of eq. 4:
+        -log sigma(o_j . w_c) - sum_i log sigma(-o_{n_i} . w_c).
+    """
+    h = W[c]
+    targets = [(j, 1.0)]
+    for _ in range(k):
+        n = draw_noise()
+        targets.append((n, 0.0))
+    gh = [0.0] * size
+    loss = 0.0
+    for idx_t, label in targets:
+        z = sum(O[idx_t][d] * h[d] for d in range(size))
+        p = _sigmoid(z)
+        loss -= math.log(max(p if label == 1.0 else 1.0 - p, 1e-300))
+        e = p - label
+        for d in range(size):
+            gh[d] += e * O[idx_t][d]
+        for d in range(size):
+            O[idx_t][d] -= lr * e * h[d]
     for d in range(size):
         W[c][d] -= lr * gh[d]
     return loss
@@ -306,14 +474,15 @@ def analogy(vectors, a, b, c, topn=1):
 
 
 def cheatsheet():
-    return ("wrd2v: log-linear word vectors (Mikolov 2013). CBOW "
+    return ("wrd2v: log-linear word vectors (Mikolov 2013a). CBOW "
             "predicts the centre word from AVERAGED context vectors "
             "(sec 3.1, Q = N*D + D*log2 V); skip-gram predicts context "
             "from the centre word (sec 3.2, Q = C*(D + D*log2 V)) with "
             "a DYNAMIC window R ~ Unif{1..C}, so distance d is used "
-            "with probability (C-d+1)/C. Negative sampling is the "
-            "FOLLOW-UP paper, not this one. analogy() is the "
-            "b - a + c offset query of sec 4.")
+            "with probability (C-d+1)/C. loss='neg' is negative "
+            "sampling from the FOLLOW-UP paper (2013b eq. 4) with "
+            "Pn(w) = U(w)^0.75/Z, plus eq. 5 subsampling. analogy() "
+            "is the b - a + c offset query of 2013a sec 4.")
 
 
 # compact alias per ledger/NAMING.md
