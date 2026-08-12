@@ -43,6 +43,46 @@ except ImportError:
 from morie.fn.ps_fit import compute_propensity_scores
 
 
+_PS_EPS = 1e-6
+
+
+def _trim_ps(ps, trim, trim_type="value"):
+    """Trim propensity scores; see :func:`estimate_aipw` for the routes.
+
+    Mirrored exactly by ``.mor_trim_ps`` in the R arm.
+    """
+    ps = np.asarray(ps, dtype=float)
+    if trim_type not in ("value", "quantile"):
+        raise ValueError("trim_type must be 'value' or 'quantile'")
+    if trim is not None:
+        lo, hi = float(trim[0]), float(trim[1])
+        if not 0.0 <= lo < hi <= 1.0:
+            raise ValueError("trim must satisfy 0 <= lo < hi <= 1")
+        if trim_type == "quantile":
+            v = sorted(float(u) for u in ps)
+            lo = _quantile7(v, lo)
+            hi = _quantile7(v, hi)
+        ps = np.asarray([min(max(float(u), lo), hi) for u in ps], dtype=float)
+    # numerical guard: the weights must stay finite whatever was asked
+    return np.asarray([min(max(float(u), _PS_EPS), 1.0 - _PS_EPS)
+                       for u in ps], dtype=float)
+
+
+def _quantile7(sorted_v, p):
+    """Type-7 sample quantile, matching R's stats::quantile default."""
+    n = len(sorted_v)
+    if n == 0:
+        raise ValueError("empty propensity vector")
+    if n == 1:
+        return sorted_v[0]
+    h = (n - 1) * p
+    j = int(h)
+    if j >= n - 1:
+        return sorted_v[n - 1]
+    g = h - j
+    return sorted_v[j] * (1.0 - g) + sorted_v[j + 1] * g
+
+
 def estimate_aipw(
     data: pd.DataFrame,
     *,
@@ -50,7 +90,32 @@ def estimate_aipw(
     outcome: str = "heavy_drinking_30d",
     covariates: list[str] | None = None,
     outcome_model: str = "logistic",
+    trim: tuple[float, float] | None = (0.01, 0.99),
+    trim_type: str = "value",
 ) -> dict[str, Any]:
+    """Augmented inverse-probability-weighted ATE.
+
+    Propensity trimming
+    -------------------
+    Extreme propensity scores make the inverse-probability weights
+    explode, so some safeguard is always applied.  BOTH routes in use
+    are available here and the choice is explicit:
+
+    ``trim_type="value"``
+        Clamp the scores to the absolute bounds ``trim``.  Sample
+        independent, so a stratified fit cannot be destabilised by a
+        small stratum's own quantiles.  This is the default.
+    ``trim_type="quantile"``
+        Winsorise the scores at their own sample quantiles ``trim``,
+        i.e. trimming to a common-support region in the spirit of
+        Crump, Hotz, Imbens and Mitnik (2009).
+    ``trim=None``
+        No trimming beyond the numerical guard that keeps the weights
+        finite.
+
+    The R arm ``morie_estimate_aipw`` takes the same two arguments with
+    the same meanings and the same defaults.
+    """
     r"""
     Estimate the ATE via the Augmented Inverse Probability Weighting (AIPW)
     doubly-robust estimator.
@@ -112,7 +177,7 @@ def estimate_aipw(
 
     # -- Propensity scores -------------------------------------------------------
     ps = compute_propensity_scores(frame, treatment=treatment, covariates=covariates).values
-    ps = ps.clip(0.01, 0.99)
+    ps = _trim_ps(ps, trim, trim_type)
 
     # -- Outcome model: preprocess covariates the same way as propensity ---------
     X_raw = frame[covariates].copy()
