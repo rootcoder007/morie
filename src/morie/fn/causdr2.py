@@ -76,6 +76,18 @@ def causdr2(y, d, X, K=2, seed=1):
     K = int(K)
     if K < 1 or K > n:
         raise ValueError("K must lie in 1..n")
+    # The nuisance regressions add their own intercept, so a constant
+    # column in X makes the design singular. That surfaced as a bare
+    # "singular matrix" from the linear algebra core, which says nothing
+    # about which argument was wrong.
+    Xl = Xa.tolist()
+    for j in range(len(Xl[0])):
+        col = [row[j] for row in Xl]
+        if max(col) - min(col) == 0.0:
+            raise ValueError(
+                "causdr2: column %d of X is constant; the nuisance "
+                "regressions add their own intercept, so do not pass "
+                "one" % j)
     Dg = np.concatenate([np.ones((n, 1)), Xa], axis=1)
     if K == 1:
         folds = [0] * n
