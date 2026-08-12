@@ -138,9 +138,14 @@ def estimate_aipw(
         independent, so a stratified fit cannot be destabilised by a
         small stratum's own quantiles.  This is the default.
     ``trim_type="quantile"``
-        Winsorise the scores at their own sample quantiles ``trim``,
-        i.e. trimming to a common-support region in the spirit of
-        Crump, Hotz, Imbens and Mitnik (2009).
+        Winsorise the scores at their own sample quantiles ``trim``.
+        This is WEIGHT TRUNCATION: units are kept and their scores
+        pulled in.  It is NOT the rule of Crump, Hotz, Imbens and
+        Mitnik (2009), Biometrika 96(1), 187-199 -- verified against
+        that paper, they DISCARD units whose estimated propensity lies
+        outside a range (rule of thumb [0.1, 0.9]), which changes the
+        estimand to the ATE on the retained subpopulation.  Neither
+        route here discards.
     ``trim=None``
         No trimming beyond the numerical guard that keeps the weights
         finite.
