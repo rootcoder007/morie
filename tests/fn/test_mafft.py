@@ -1,6 +1,6 @@
 """Tests for mafft (Katoh et al. 2002)."""
 
-from morie.fn.mafft import (GRANTHAM_POLARITY, GRANTHAM_VOLUME,
+from morie.fn.mafft import (GRANTHAM_POLARITY, GRANTHAM_VOLUME, jtt_matrix,
                             arrange_segments, correlation,
                             find_homologous_segments, group_align,
                             guide_tree, iterative_refine, mafft_alignment,
@@ -30,6 +30,34 @@ def test_the_grantham_tables():
     assert GRANTHAM_POLARITY["A"] == 8.1 and GRANTHAM_VOLUME["A"] == 31.0
     assert GRANTHAM_VOLUME["G"] == 3.0 and GRANTHAM_VOLUME["W"] == 170.0
     assert GRANTHAM_POLARITY["D"] == 13.0 and GRANTHAM_POLARITY["L"] == 4.9
+
+
+def test_the_jtt_200_default_matrix():
+    from morie.fn.mafft import _JTT_COUNTS, _JTT_FREQ
+    assert len(_JTT_COUNTS) == 190 and len(_JTT_FREQ) == 20
+    assert abs(sum(_JTT_FREQ) - 1.0) < 1e-9
+    j = jtt_matrix(200)
+    P, f = j["P"], j["freqs"]
+    order = AA
+    assert max(abs(sum(row) - 1.0) for row in P) < 1e-9
+    assert max(abs(f[order[i]] * P[i][k] - f[order[k]] * P[k][i])
+               for i in range(20) for k in range(20)) < 1e-12
+    assert abs(j["rate"] - 0.01) < 1e-12
+    M = j["matrix"]
+    assert max(abs(M[(a, b)] - M[(b, a)]) for a in AA for b in AA) < 1e-9
+    assert all(M[(a, a)] > max(M[(a, b)] for b in AA if b != a)
+               for a in AA)
+    assert max(AA, key=lambda a: M[(a, a)]) == "W"
+
+
+def test_the_all_positive_s_a_matches_the_printed_value():
+    ap = normalized_similarity_matrix(mode="all_positive")
+    assert abs(ap["s_a"] - 0.82) < 0.005
+
+
+def test_the_default_scoring_uses_jtt_frequencies():
+    assert abs(SC["freqs"]["W"] - 0.014) < 1e-9
+    assert abs(SC["freqs"]["L"] - 0.091) < 1e-9
 
 
 def test_the_fft_reproduces_equation_2():
@@ -193,6 +221,8 @@ def test_validation():
                  lambda: residue_vectors(["ACD", "AC"]),
                  lambda: residue_vectors(["ACD"], weights=[1.0, 1.0]),
                  lambda: normalized_similarity_matrix(mode="positive"),
+                 lambda: normalized_similarity_matrix(default="blosum62"),
+                 lambda: jtt_matrix(pam=0),
                  lambda: normalized_similarity_matrix(
                      dict(((a, b), 1.0) for a in AA for b in AA)),
                  lambda: normalized_similarity_matrix({("A", "A"): 1.0}),
