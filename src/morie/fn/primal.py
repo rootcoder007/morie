@@ -95,7 +95,8 @@ def chambolle_pock(K, Kt, prox_f_star, prox_g, x0, y0, tau=None, sigma=None,
     prod = tau * sigma * norm_K * norm_K
     if prod >= 1.0 + 1e-12:
         raise ValueError(
-            "chambolle_pock: Theorem 1 requires tau*sigma*||K||^2 < 1, got "
+            "chambolle_pock: Theorem 1 requires tau*sigma*||K||^2 <= 1, "
+            "got "
             "%.6g. The iteration diverges outside this range while still "
             "returning finite numbers, so this is refused rather than "
             "warned about." % prod)
