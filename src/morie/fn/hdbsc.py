@@ -87,7 +87,7 @@ def _points_under(node, children, n):
     return out
 
 
-def hdbsc(X, min_pts=5, min_cluster_size=5):
+def hdbsc(X, min_pts=5, min_cluster_size=5, selection="eom", verbose=False):
     """
     HDBSCAN* flat clustering by excess-of-mass stability extraction.
 
@@ -136,6 +136,18 @@ def hdbsc(X, min_pts=5, min_cluster_size=5):
         mpts (core-distance neighbour count).
     min_cluster_size : int
         Minimum cluster size for the condensed tree (mclSize).
+    selection : {"eom", "leaf"}
+        Flat-cluster extraction from the condensed tree.  "eom"
+        (default, the paper's recommended method) is the Algorithm 3
+        excess-of-mass optimum -- fewest, most prominent clusters,
+        each possibly at its own density level.  "leaf" selects every
+        leaf of the condensed cluster tree instead (also defined by
+        Campello 2013 and standard in implementations): more,
+        finer-grained, homogeneous-density clusters.  Both extract
+        from the identical hierarchy; only the objective differs.
+    verbose : bool
+        Print stage progress (core/MST/linkage/condense/extract) --
+        useful on large inputs where the MST is O(n^2).
 
     Returns
     -------
@@ -145,17 +157,29 @@ def hdbsc(X, min_pts=5, min_cluster_size=5):
         (parent, child, lambda, child_size)), cluster_tree
         (parent -> [children]).
     """
+    if selection not in ("eom", "leaf"):
+        raise ValueError("selection must be 'eom' or 'leaf'")
     Xv = [[float(v) for v in row] for row in X]
     n = len(Xv)
     mcs = int(min_cluster_size)
     if n < min_pts or n < 2:
         raise ValueError("need at least min_pts points")
     mp = int(min_pts)
+
+    def _say(msg):
+        if verbose:
+            print("[hdbsc] " + msg, flush=True)
+
+    _say("distances (n=%d)" % n)
     D = [[math.sqrt(sum((a - b) ** 2 for a, b in zip(Xv[i], Xv[j])))
           for j in range(n)] for i in range(n)]
+    _say("core distances")
     core = _core_distances(D, n, mp)
+    _say("mutual-reachability MST")
     edges = _mst_mreach(D, core, n)
+    _say("single linkage")
     root, children, node_size = _single_linkage(edges, n)
+    _say("condense")
 
     # --- condense (Algorithm 2): emit rows (parent_cluster, child,
     # lambda, child_size); child is a point (size 1) that fell out or
@@ -209,10 +233,7 @@ def hdbsc(X, min_pts=5, min_cluster_size=5):
             continue                  # coincident points, zero density span
         stability[parent] += sz * (lam - birth[parent])
 
-    # --- Algorithm 3: bottom-up max-stability selection (Eqs. 4-5). ---
-    order_c = sorted(birth, key=lambda c: -birth[c])   # deepest first
-    s_hat = {}
-    selected = {c: True for c in birth if c != n}
+    _say("extract (%s)" % selection)
 
     def subtree(c):
         out = [c]
@@ -220,22 +241,31 @@ def hdbsc(X, min_pts=5, min_cluster_size=5):
             out.extend(subtree(ch))
         return out
 
-    for c in order_c:
-        if c == n:
-            continue
-        kids = cluster_tree[c]
-        if not kids:
-            s_hat[c] = stability[c]
-        else:
-            sub = sum(s_hat[k] for k in kids)
-            if stability[c] < sub:
-                s_hat[c] = sub
-                selected[c] = False
-            else:
+    if selection == "leaf":
+        # leaf selection (Campello 2013): every leaf of the condensed
+        # cluster tree -- finer, homogeneous-density clusters.
+        selected = {c: (c != n and not cluster_tree[c]) for c in birth}
+    else:
+        # Algorithm 3: bottom-up max excess-of-mass selection (Eqs. 4-5).
+        order_c = sorted(birth, key=lambda c: -birth[c])   # deepest first
+        s_hat = {}
+        selected = {c: True for c in birth if c != n}
+        for c in order_c:
+            if c == n:
+                continue
+            kids = cluster_tree[c]
+            if not kids:
                 s_hat[c] = stability[c]
-                for k in kids:
-                    for d in subtree(k):
-                        selected[d] = False
+            else:
+                sub = sum(s_hat[k] for k in kids)
+                if stability[c] < sub:
+                    s_hat[c] = sub
+                    selected[c] = False
+                else:
+                    s_hat[c] = stability[c]
+                    for k in kids:
+                        for d in subtree(k):
+                            selected[d] = False
 
     chosen = sorted(c for c in birth if c != n and selected.get(c))
     label_of = {c: i for i, c in enumerate(chosen)}
@@ -263,7 +293,9 @@ def hdbsc(X, min_pts=5, min_cluster_size=5):
         "cluster_tree": {k: v for k, v in cluster_tree.items()},
         "min_pts": mp,
         "min_cluster_size": mcs,
-        "method": "HDBSCAN* excess-of-mass extraction (Campello 2013)",
+        "selection": selection,
+        "method": "HDBSCAN* %s extraction (Campello 2013)" % (
+            "excess-of-mass" if selection == "eom" else "leaf"),
     })
 
 

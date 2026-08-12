@@ -29,42 +29,117 @@ def _triad_counts(adj, n):
     return {"ffl": ff, "cycle3": cyc // 3}
 
 
-def _degree_preserving_shuffle(adj, n, rng, swaps):
-    edges = [(i, j) for i in range(n) for j in range(n)
-             if i != j and adj[i][j]]
-    e = [list(x) for x in edges]
-    present = set((i, j) for i, j in edges)
-    m = len(e)
+def _classify_edges(adj, n):
+    # row-major: single = directed edges with no reciprocal; mutual =
+    # bidirectional pairs stored once as [min, max].
+    single = []
+    mutual = []
+    seen = set()
+    for i in range(n):
+        for j in range(n):
+            if i == j or not adj[i][j]:
+                continue
+            if adj[j][i]:
+                key = (i, j) if i < j else (j, i)
+                if key not in seen:
+                    seen.add(key)
+                    mutual.append([key[0], key[1]])
+            else:
+                single.append([i, j])
+    return single, mutual
+
+
+def _degree_preserving_shuffle(adj, n, rng, swaps, preserve_mutual):
+    # Milo et al. (2002) / mfinder switching (their refs. 17, 18).
+    # The default ensemble preserves each node's in-degree, out-degree
+    # AND the network's mutual (bidirectional) edge count: single
+    # edges only switch with single edges (and a switch that would
+    # create a reciprocal is rejected), mutual pairs only switch with
+    # mutual pairs.  So the mutual-edge count is invariant.  With
+    # preserve_mutual=False only in/out degree is fixed (the weaker
+    # Fig. 2 caption ensemble), which may create/destroy reciprocals.
+    single, mutual = _classify_edges(adj, n)
+    present = set()
+    for i, j in single:
+        present.add((i, j))
+    for i, j in mutual:
+        present.add((i, j))
+        present.add((j, i))
+    ns = len(single)
+    nm = len(mutual)
+    tot = ns + nm
+    frac_m = nm / tot if tot else 0.0
     for _ in range(swaps):
-        a = int(float(rng.uniform()) * m)
-        b = int(float(rng.uniform()) * m)
-        if a == b:
-            continue
-        (i1, j1), (i2, j2) = e[a], e[b]
-        # swap targets: i1->j2, i2->j1 (preserves out- and in-degree)
-        if i1 == i2 or j1 == j2 or i1 == j2 or i2 == j1:
-            continue
-        if (i1, j2) in present or (i2, j1) in present:
-            continue
-        present.discard((i1, j1)); present.discard((i2, j2))
-        present.add((i1, j2)); present.add((i2, j1))
-        e[a] = [i1, j2]; e[b] = [i2, j1]
+        pool_mut = False
+        if preserve_mutual:
+            pool_mut = float(rng.uniform()) < frac_m
+        ua = float(rng.uniform())
+        ub = float(rng.uniform())
+        if pool_mut:
+            if nm < 2:
+                continue
+            a = int(ua * nm)
+            b = int(ub * nm)
+            if a == b:
+                continue
+            i1, j1 = mutual[a]
+            i2, j2 = mutual[b]
+            if len({i1, j1, i2, j2}) < 4:
+                continue
+            # new mutual pairs {i1,j2}, {i2,j1}; both directions free
+            if ((i1, j2) in present or (j2, i1) in present or
+                    (i2, j1) in present or (j1, i2) in present):
+                continue
+            present.discard((i1, j1)); present.discard((j1, i1))
+            present.discard((i2, j2)); present.discard((j2, i2))
+            present.add((i1, j2)); present.add((j2, i1))
+            present.add((i2, j1)); present.add((j1, i2))
+            mutual[a] = [min(i1, j2), max(i1, j2)]
+            mutual[b] = [min(i2, j1), max(i2, j1)]
+        else:
+            if ns < 2:
+                continue
+            a = int(ua * ns)
+            b = int(ub * ns)
+            if a == b:
+                continue
+            i1, j1 = single[a]
+            i2, j2 = single[b]
+            if len({i1, j1, i2, j2}) < 4:
+                continue
+            # new directed edges i1->j2, i2->j1; reject if they exist
+            # or if either would become a reciprocal (mutual) edge.
+            if (i1, j2) in present or (i2, j1) in present:
+                continue
+            if preserve_mutual and \
+                    ((j2, i1) in present or (j1, i2) in present):
+                continue
+            present.discard((i1, j1)); present.discard((i2, j2))
+            present.add((i1, j2)); present.add((i2, j1))
+            single[a] = [i1, j2]; single[b] = [i2, j1]
     new = [[0] * n for _ in range(n)]
     for i, j in present:
         new[i][j] = 1
     return new
 
 
-def motiff(adjacency, motif="ffl", n_random=100, seed=0, swaps=None):
+def motiff(adjacency, motif="ffl", n_random=100, seed=0, swaps=None,
+           preserve_mutual=True):
     """
     Network-motif significance by degree-preserving randomization.
 
     Milo et al. (2002): a network motif is a subgraph pattern that
     recurs significantly more often in the real network than in
-    randomized networks that preserve each node's in- and
-    out-degree (their Fig. 2 and Methods).  The randomized ensemble
-    is generated by degree-preserving edge swaps; the significance
-    is the Z score Z = (N_real - mean N_rand) / sd N_rand and the
+    randomized networks that preserve each node's connectivity
+    (their Fig. 2 and Methods).  The rigorous ensemble (their refs.
+    17, 18, the mfinder switching algorithm) preserves each node's
+    in-degree and out-degree AND the network's number of mutual
+    (bidirectional) edges -- so a randomized network cannot invent or
+    destroy reciprocal links, which would otherwise bias motifs made
+    of mutual edges.  This is the default (preserve_mutual=True); set
+    it False for the weaker Fig. 2-caption ensemble that fixes only
+    in/out degree.  The significance is the Z score
+    Z = (N_real - mean N_rand) / sd N_rand and the
     empirical p-value is the fraction of randomized networks with an
     equal-or-greater motif count (their P < 0.01 cutoff).  The
     feed-forward loop (i->j, i->k, j->k) and the 3-cycle are scored.
@@ -89,6 +164,9 @@ def motiff(adjacency, motif="ffl", n_random=100, seed=0, swaps=None):
         Native-RNG seed (SplitMix64; mirrored by .ghc_rng in R).
     swaps : int, optional
         Edge swaps per randomization (default 10 * #edges).
+    preserve_mutual : bool
+        True (default) preserves the mutual-edge count (mfinder,
+        refs. 17-18); False fixes only in/out degree.
 
     Returns
     -------
@@ -108,7 +186,8 @@ def motiff(adjacency, motif="ffl", n_random=100, seed=0, swaps=None):
     rng = np.random.default_rng(seed)
     rand = []
     for _ in range(int(n_random)):
-        Ar = _degree_preserving_shuffle(A, n, rng, int(swaps))
+        Ar = _degree_preserving_shuffle(A, n, rng, int(swaps),
+                                        bool(preserve_mutual))
         rand.append(_triad_counts(Ar, n)[motif])
     mu = sum(rand) / len(rand)
     var = sum((c - mu) ** 2 for c in rand) / (len(rand) - 1) \
@@ -126,7 +205,12 @@ def motiff(adjacency, motif="ffl", n_random=100, seed=0, swaps=None):
         "motif": motif,
         "n_random": int(n_random),
         "seed": int(seed),
-        "method": "Milo et al. (2002) motif Z score / p-value",
+        "preserve_mutual": bool(preserve_mutual),
+        "method": "Milo et al. (2002) motif Z score / p-value"
+                  " (mfinder degree+mutual ensemble)"
+                  if preserve_mutual else
+                  "Milo et al. (2002) motif Z score / p-value"
+                  " (in/out-degree ensemble)",
     })
 
 
