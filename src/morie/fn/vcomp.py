@@ -90,6 +90,12 @@ def vcomp(y, group, method="reml", conf_level=0.95):
     """
     if method not in ("reml", "anova"):
         raise ValueError("method must be 'reml' or 'anova'")
+    # Without this the interval silently divides by an F quantile of zero:
+    # conf_level = 1.5 makes alpha negative, _f_ppf returns 0, and the
+    # upper limit raises ZeroDivisionError instead of saying what is wrong.
+    if not 0.0 < float(conf_level) < 1.0:
+        raise ValueError("vcomp: conf_level must lie in (0, 1), got %r"
+                         % (conf_level,))
     av = ranova(y, group)
     fit = remlfn(y, group) if method == "reml" else av
     s2a = float(fit["sigma2_a"])
