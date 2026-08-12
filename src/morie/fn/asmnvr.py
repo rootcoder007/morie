@@ -286,6 +286,17 @@ def asmnvr(reads, k=None, multiplicity="set"):
         k = min(len(r) for r in rs)
     edges, indeg, outdeg = de_bruijn_graph(rs, k, multiplicity)
     path = eulerian_path(edges, indeg, outdeg)
+    # With multiplicity="set" every distinct k-mer is ONE edge, so a
+    # k-mer that genuinely repeats in the source is traversed once and the
+    # assembly comes out short: reads tiling ATGCATGC at k = 3 assemble to
+    # ATGCAT. Nothing downstream can notice, because the path really is
+    # Eulerian on the graph that was built -- and the collapse is not
+    # detectable from the k-mer set either, since read coverage produces
+    # repeated k-mers too. That is the paper's own point about repeats,
+    # and the reason its Eulerian-superpath machinery exists. So the
+    # length is reported as what it is, a lower bound, rather than
+    # guessed at.
+    lower_bound = (multiplicity == "set")
     contigs = [_spell(p) for p in _unitigs(edges, indeg, outdeg)]
     branching = sorted(
         [v for v in set(list(indeg) + list(outdeg))
@@ -297,6 +308,7 @@ def asmnvr(reads, k=None, multiplicity="set"):
         "path": path,
         "contigs": contigs,
         "unambiguous": bool(path is not None and not branching),
+        "length_is_lower_bound": bool(lower_bound and path is not None),
         "branching": branching,
         "n_kmers": n_kmers,
         "n_vertices": len(set(list(indeg) + list(outdeg))),
@@ -305,7 +317,13 @@ def asmnvr(reads, k=None, multiplicity="set"):
         "multiplicity": multiplicity,
         "note": "repeat resolution (Eulerian superpaths) and error "
                 "correction are NOT implemented; a branching graph is "
-                "reported as ambiguous rather than resolved",
+                "reported as ambiguous rather than resolved. With "
+                "multiplicity='set' a k-mer that repeats in the source "
+                "is one edge and is traversed once, so the assembled "
+                "length is a LOWER BOUND on the truth "
+                "(length_is_lower_bound); the collapse cannot be "
+                "detected from the k-mer set, since read coverage "
+                "repeats k-mers too",
         "method": "Eulerian-path assembly (Pevzner, Tang & Waterman 2001)",
     })
 
