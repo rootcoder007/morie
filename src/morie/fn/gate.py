@@ -27,6 +27,8 @@ def estimate_gate(
     propensity_col: str | None = None,
     trim: tuple[float, float] | None = (0.01, 0.99),
     trim_type: str = "value",
+    ps_model: str = "mle",
+    ridge_lambda: float = 1.0,
 ) -> pd.DataFrame:
     r"""Estimate Group Average Treatment Effects (GATE) via AIPW within strata.
 
@@ -81,6 +83,8 @@ def estimate_gate(
                 outcome_model="linear",
                 trim=trim,
                 trim_type=trim_type,
+                ps_model=ps_model,
+                ridge_lambda=ridge_lambda,
             )
             results.append(
                 {
