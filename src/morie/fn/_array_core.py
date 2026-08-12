@@ -1173,6 +1173,15 @@ def _is_object_like(x, dtype):
     return False
 
 
+def _nested_depth(x, cap=8):
+    """How deeply a sequence nests, counting only list/tuple levels."""
+    d = 0
+    while isinstance(x, (list, tuple)) and x and d < cap:
+        d += 1
+        x = x[0]
+    return d
+
+
 def _all_bool_payload(x):
     """True when ``x`` is a (possibly nested) sequence of Python bools."""
     if isinstance(x, bool):
@@ -1200,6 +1209,14 @@ def asarray(x, dtype=None):
         return oarr(x.tolist() if hasattr(x, "tolist") else x)
     if isinstance(x, marr):
         return x
+    # A rank-3 or deeper nested list has to become an ndlist. marr is the
+    # rank-2 core and raises on the inner lists, and the fallback below
+    # then makes an object array of ndim 1 -- so every module taking a
+    # 3-D table (a conditional probability table, say) saw ndim 1 and
+    # rejected its own documented input. ndlist itself was already here;
+    # nothing ever built one from a plain nested list.
+    if isinstance(x, (list, tuple)) and _nested_depth(x) >= 3:
+        return ndlist(x)
     try:
         out = marr(x)
     except (TypeError, ValueError):
@@ -2991,6 +3008,34 @@ def _newaxis_rank3(a, idx):
     return None
 
 
+def _sum_all(x):
+    if isinstance(x, (list, tuple)):
+        return sum(_sum_all(v) for v in x)
+    return float(x)
+
+
+def _sum_axis(x, axis):
+    """Sum a nested list along ``axis``, returning nested lists."""
+    if axis == 0:
+        out = None
+        for block in x:
+            out = block if out is None else _add_nested(out, block)
+        return out
+    return [_sum_axis(v, axis - 1) for v in x]
+
+
+def _add_nested(a, b):
+    if isinstance(a, (list, tuple)):
+        return [_add_nested(a[i], b[i]) for i in range(len(a))]
+    return float(a) + float(b)
+
+
+def _expand_axis(x, axis):
+    if axis == 0:
+        return [x]
+    return [_expand_axis(v, axis - 1) for v in x]
+
+
 class ndlist(list):
     """Thin rank>=3 container: nested lists with .shape/.tolist and
     elementwise scalar arithmetic. The rank-2 core stays marr; this
@@ -3012,6 +3057,34 @@ class ndlist(list):
                 return [conv(x) for x in v]
             return v
         return [conv(v) for v in self]
+
+    def sum(self, axis=None, dtype=None, out=None, keepdims=False):
+        """Sum over one axis of a rank>=3 container, or over all of it.
+
+        Only what the rank-2 core already offers on marr, lifted to the
+        nested case: without it a module that validates a conditional
+        probability table with ``table.sum(axis=2)`` cannot be called at
+        all once the table really is rank 3.
+        """
+        del dtype, out
+        nested = self.tolist()
+        if axis is None:
+            return _sum_all(nested)
+        shape = self.shape
+        if axis < 0:
+            axis += len(shape)
+        if not 0 <= axis < len(shape):
+            raise ValueError("axis %r is out of bounds for shape %r"
+                             % (axis, shape))
+        red = _sum_axis(nested, axis)
+        if keepdims:
+            red = _expand_axis(red, axis)
+        depth = _nested_depth(red)
+        if depth >= 3:
+            return ndlist(red)
+        if depth == 0:
+            return red
+        return marr(red)
 
     def _flat(self):
         def walk(v):

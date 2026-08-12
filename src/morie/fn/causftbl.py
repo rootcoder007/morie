@@ -55,12 +55,19 @@ def causal_frontdoor_adjustment(P_Z_X, P_Y_XZ, P_X):
     if not np.isclose(Px.sum(), 1.0, atol=1e-8):
         raise ValueError("P_X must sum to 1.")
 
-    # inner sum over x': shape (nz, ny)
-    inner = np.tensordot(Px, Pyxz, axes=(0, 0))
-    p_do = Pzx @ inner  # (nx, ny)
-
-    levels = np.arange(p_do.shape[1], dtype=float)
-    exp = p_do @ levels
+    # The two sums of Theorem 3.3.4, written out. They used to be
+    # np.tensordot(Px, Pyxz, axes=(0, 0)) and a matrix product, but the
+    # native array core has no tensordot, so this function raised
+    # AttributeError for every input it was ever given.
+    ny = len(Pyxz[0][0])
+    #   inner[z][y] = sum_x' P(y | x', z) P(x')
+    inner = [[sum(float(Px[xp]) * float(Pyxz[xp][z][y])
+                  for xp in range(nx))
+              for y in range(ny)] for z in range(nz)]
+    #   P(y | do(x)) = sum_z P(z | x) inner[z][y]
+    p_do = [[sum(float(Pzx[x][z]) * inner[z][y] for z in range(nz))
+             for y in range(ny)] for x in range(nx)]
+    exp = [sum(y * p_do[x][y] for y in range(ny)) for x in range(nx)]
     return RichResult(
         payload={
             "p_y_do_x": p_do,
