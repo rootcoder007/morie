@@ -41,6 +41,9 @@ except ImportError:
     StandardScaler = _MissingDep('StandardScaler')
 
 from morie.fn.ps_fit import compute_propensity_scores
+from morie.fn.ps_fit import (_ps_design, _ps_irls_beta,
+                             _ps_solve)
+import math as _math
 
 
 _PS_EPS = 1e-6
@@ -83,6 +86,32 @@ def _quantile7(sorted_v, p):
     return sorted_v[j] * (1.0 - g) + sorted_v[j + 1] * g
 
 
+def _om_ols(X, y):
+    """Least squares by the normal equations; shared with the R arm."""
+    p = len(X[0])
+    A = [[sum(X[i][a] * X[i][b] for i in range(len(X))) for b in range(p)]
+         for a in range(p)]
+    rhs = [sum(X[i][a] * y[i] for i in range(len(X))) for a in range(p)]
+    return _ps_solve(A, rhs)
+
+
+def _om_fit_predict(X, y, rows, Xpred, outcome_model):
+    """Fit the outcome model on `rows` and predict for every row of
+    Xpred.  Linear -> OLS, logistic -> unpenalised IRLS."""
+    Xs = [X[i] for i in rows]
+    ys = [y[i] for i in rows]
+    if outcome_model == "logistic":
+        beta = _ps_irls_beta(Xs, ys, lam=0.0)
+        out = []
+        for row in Xpred:
+            e = sum(row[j] * beta[j] for j in range(len(beta)))
+            e = max(-30.0, min(30.0, e))
+            out.append(1.0 / (1.0 + _math.exp(-e)))
+        return out
+    beta = _om_ols(Xs, ys)
+    return [sum(row[j] * beta[j] for j in range(len(beta))) for row in Xpred]
+
+
 def estimate_aipw(
     data: pd.DataFrame,
     *,
@@ -94,6 +123,7 @@ def estimate_aipw(
     trim_type: str = "value",
     ps_model: str = "mle",
     ridge_lambda: float = 1.0,
+    outcome_fit: str = "separate",
 ) -> dict[str, Any]:
     """Augmented inverse-probability-weighted ATE.
 
@@ -184,32 +214,33 @@ def estimate_aipw(
                                    ridge_lambda=ridge_lambda).values
     ps = _trim_ps(ps, trim, trim_type)
 
-    # -- Outcome model: preprocess covariates the same way as propensity ---------
-    X_raw = frame[covariates].copy()
-    for col in X_raw.columns:
-        if not pd.api.types.is_numeric_dtype(X_raw[col]):
-            le = LabelEncoder()
-            X_raw[col] = le.fit_transform(X_raw[col].astype(str))
-    scaler = StandardScaler()
-    X = scaler.fit_transform(X_raw)
-
-    treated_mask = t == 1
-    control_mask = t == 0
-
-    if outcome_model == "logistic":
-        om1 = LogisticRegression(max_iter=1000)
-        om0 = LogisticRegression(max_iter=1000)
-        om1.fit(X[treated_mask], y[treated_mask])
-        om0.fit(X[control_mask], y[control_mask])
-        mu1 = om1.predict_proba(X)[:, 1]
-        mu0 = om0.predict_proba(X)[:, 1]
+    # -- Outcome model -----------------------------------------------------------
+    # Two routes, both available and both matched exactly by the R arm:
+    #   "separate" (default) fits E[Y | X, T = t] on each arm, so the
+    #              covariate slopes may differ between treated and
+    #              control -- the usual AIPW form;
+    #   "pooled"   fits one regression on Y ~ T + X and predicts with T
+    #              set to 1 and to 0, imposing a common slope.
+    # Before 2026-08-12 the R arm was pooled and this one separate,
+    # silently, which is why their estimates disagreed.
+    if outcome_fit not in ("separate", "pooled"):
+        raise ValueError("outcome_fit must be 'separate' or 'pooled'")
+    Xc = _ps_design(frame, covariates)
+    n = len(Xc)
+    if outcome_fit == "pooled":
+        Xp = [[Xc[i][0], t[i]] + Xc[i][1:] for i in range(n)]
+        X1 = [[Xc[i][0], 1.0] + Xc[i][1:] for i in range(n)]
+        X0 = [[Xc[i][0], 0.0] + Xc[i][1:] for i in range(n)]
+        rows = list(range(n))
+        mu1 = _om_fit_predict(Xp, y, rows, X1, outcome_model)
+        mu0 = _om_fit_predict(Xp, y, rows, X0, outcome_model)
     else:
-        om1 = LinearRegression()
-        om0 = LinearRegression()
-        om1.fit(X[treated_mask], y[treated_mask])
-        om0.fit(X[control_mask], y[control_mask])
-        mu1 = om1.predict(X)
-        mu0 = om0.predict(X)
+        r1 = [i for i in range(n) if t[i] == 1.0]
+        r0 = [i for i in range(n) if t[i] == 0.0]
+        mu1 = _om_fit_predict(Xc, y, r1, Xc, outcome_model)
+        mu0 = _om_fit_predict(Xc, y, r0, Xc, outcome_model)
+    mu1 = np.asarray(mu1, dtype=float)
+    mu0 = np.asarray(mu0, dtype=float)
 
     # -- AIPW influence scores ---------------------------------------------------
     psi = mu1 - mu0 + t * (y - mu1) / ps - (1.0 - t) * (y - mu0) / (1.0 - ps)

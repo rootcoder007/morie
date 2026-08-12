@@ -78,6 +78,15 @@ def _ps_standardize(X):
 
 
 def _ps_irls(X, y, lam=0.0, max_iter=200, tol=1e-12):
+    """Fitted probabilities; see _ps_irls_beta for the coefficients."""
+    beta = _ps_irls_beta(X, y, lam=lam, max_iter=max_iter, tol=tol)
+    n, p = len(X), len(X[0])
+    eta = [sum(X[i][j] * beta[j] for j in range(p)) for i in range(n)]
+    eta = [max(-30.0, min(30.0, e)) for e in eta]
+    return [1.0 / (1.0 + _math.exp(-e)) for e in eta]
+
+
+def _ps_irls_beta(X, y, lam=0.0, max_iter=200, tol=1e-12):
     """Logistic IRLS; `lam` is an L2 penalty on the NON-intercept
     coefficients.  lam = 0 is the unpenalised MLE.
 
@@ -104,9 +113,7 @@ def _ps_irls(X, y, lam=0.0, max_iter=200, tol=1e-12):
         beta = new
         if delta < tol:
             break
-    eta = [sum(X[i][j] * beta[j] for j in range(p)) for i in range(n)]
-    eta = [max(-30.0, min(30.0, e)) for e in eta]
-    return [1.0 / (1.0 + _math.exp(-e)) for e in eta]
+    return beta
 
 
 def _ps_solve(A, b):

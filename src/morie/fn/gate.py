@@ -29,6 +29,7 @@ def estimate_gate(
     trim_type: str = "value",
     ps_model: str = "mle",
     ridge_lambda: float = 1.0,
+    outcome_fit: str = "separate",
 ) -> pd.DataFrame:
     r"""Estimate Group Average Treatment Effects (GATE) via AIPW within strata.
 
@@ -85,6 +86,7 @@ def estimate_gate(
                 trim_type=trim_type,
                 ps_model=ps_model,
                 ridge_lambda=ridge_lambda,
+                outcome_fit=outcome_fit,
             )
             results.append(
                 {
