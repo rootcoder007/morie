@@ -120,6 +120,12 @@ def lloyd_max_codebook(levels=4, source="gaussian", data=None, lo=None,
         })
 
     if src == "empirical":
+        # check before converting: asarray(None) raises a TypeError from
+        # deep inside the array core, which tells the caller nothing about
+        # which argument was missing
+        if data is None:
+            raise ValueError("lloyd_max_codebook: empirical source needs "
+                             "data")
         xs = sorted(float(v) for v in
                     np.atleast_1d(np.asarray(data, dtype=float)))
         if not xs:
