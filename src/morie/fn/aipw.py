@@ -92,6 +92,8 @@ def estimate_aipw(
     outcome_model: str = "logistic",
     trim: tuple[float, float] | None = (0.01, 0.99),
     trim_type: str = "value",
+    ps_model: str = "mle",
+    ridge_lambda: float = 1.0,
 ) -> dict[str, Any]:
     """Augmented inverse-probability-weighted ATE.
 
@@ -176,7 +178,10 @@ def estimate_aipw(
     y = frame[outcome].values.astype(float)
 
     # -- Propensity scores -------------------------------------------------------
-    ps = compute_propensity_scores(frame, treatment=treatment, covariates=covariates).values
+    ps = compute_propensity_scores(frame, treatment=treatment,
+                                   covariates=covariates,
+                                   ps_model=ps_model,
+                                   ridge_lambda=ridge_lambda).values
     ps = _trim_ps(ps, trim, trim_type)
 
     # -- Outcome model: preprocess covariates the same way as propensity ---------
