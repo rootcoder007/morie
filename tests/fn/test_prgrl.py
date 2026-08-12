@@ -44,45 +44,74 @@ def test_a_sequence_that_never_grows_is_not_strictly_a_curriculum():
     assert not is_curriculum(same)["strictly_increasing"]
 
 
-def _panel():
-    st = [7]
+def _lcg(seed):
+    st = [seed]
 
-    def r():
+    def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+    return f
 
-    def g():
-        return math.sqrt(-2 * math.log(max(r(), 1e-12))) * \
-            math.cos(2 * math.pi * r())
 
+def _gauss(r):
+    return math.sqrt(-2 * math.log(max(r(), 1e-12))) * \
+        math.cos(2 * math.pi * r())
+
+
+_MEAN = 1.0 / math.sqrt(2.0)
+
+
+def _gaussians(r, n):
     X, y, d = [], [], []
-    for i in range(80):
-        hard = i >= 40
-        x1, x2 = g(), g()
-        X.append([x1, x2])
-        y.append(2.0 * x1 - 1.0 * x2 + (2.0 if hard else 0.02) * g())
-        d.append(1.0 if hard else 0.0)
+    for _ in range(n):
+        c = 1.0 if r() < 0.5 else -1.0
+        x = [c * _MEAN + _gauss(r), c * _MEAN + _gauss(r)]
+        X.append(x)
+        y.append(c)
+        d.append(-(c * (x[0] + x[1])))
     return X, y, d
 
 
-def test_on_a_convex_objective_the_ordering_changes_nothing():
-    X, y, d = _panel()
-    res = prgrl(X, y, d, n_steps=4, epochs_per_step=60, lr=0.1)
-    assert res["is_curriculum"]
-    assert abs(res["curriculum_loss"] - res["baseline_loss"]) < 1e-7
-    for k in range(2):
-        assert abs(res["curriculum_beta"][k] -
-                   res["baseline_beta"][k]) < 1e-4
+def test_section_4_1_reproduces():
+    from morie.fn.prgrl import easy_only_fit
+    r = _lcg(5)
+    Xtr, ytr, dtr = _gaussians(r, 50)
+    Xte, yte, _ = _gaussians(r, 20000)
+    res = easy_only_fit(Xtr, ytr, dtr, Xte, yte, quantile=0.7,
+                        updates=200, n_repeats=100, seed=2)
+    assert res["improvement"] > 0
+    assert abs(res["easy_only_error"] - 0.163) < 0.02   # paper's number
 
 
-def test_both_routes_recover_the_planted_coefficients():
-    X, y, d = _panel()
-    res = prgrl(X, y, d, n_steps=4, epochs_per_step=60, lr=0.1)
-    assert abs(res["curriculum_beta"][0] - 2.0) < 0.2
-    assert abs(res["curriculum_beta"][1] + 1.0) < 0.2
-    assert len(res["curriculum_history"]) == \
-        len(res["baseline_history"]) == 240
-    assert res["curriculum_history"][-1] < res["curriculum_history"][0]
+def _perceptron_panel(r, w_true, n, p_rel=3, p_irr=7):
+    X, y, d = [], [], []
+    for _ in range(n):
+        xr = [r() for _ in range(p_rel)]
+        nz = int(r() * (p_irr + 1))
+        xi = [(r() if k < nz else 0.0) for k in range(p_irr)]
+        s = sum(w_true[k] * xr[k] for k in range(p_rel))
+        X.append(xr + xi)
+        y.append(1.0 if s > 0 else -1.0)
+        d.append(float(nz))
+    return X, y, d
+
+
+def test_section_4_2_runs_both_orderings_and_is_measured_held_out():
+    r = _lcg(11)
+    w_true = [_gauss(r) for _ in range(3)]
+    Xp, yp, dp = _perceptron_panel(r, w_true, 200)
+    Xq, yq, _ = _perceptron_panel(r, w_true, 2000)
+    got = {}
+    for o in ("sorted", "sampled"):
+        res = prgrl(Xp, yp, dp, X_test=Xq, y_test=yq, updates=200,
+                    n_repeats=100, seed=3, order=o)
+        assert res["held_out"] and res["order"] == o
+        assert 0.0 <= res["curriculum_error"] <= 1.0
+        assert res["is_curriculum"]
+        got[o] = res
+    # sampling from Q_lambda beats sorting once, as eqns 1-2 imply
+    assert got["sampled"]["curriculum_error"] < \
+        got["sorted"]["curriculum_error"]
 
 
 def test_validation():
@@ -95,7 +124,10 @@ def test_validation():
                  lambda: prgrl([[1.0]], [1.0], [1.0]),
                  lambda: prgrl([[1.0], [2.0]], [1.0], [1.0, 2.0]),
                  lambda: prgrl([[1.0], [2.0]], [1.0, 2.0], [1.0, 2.0],
-                               lr=0.0)):
+                               updates=0),
+                 lambda: prgrl([[1.0], [2.0]], [0.0, 1.0], [1.0, 2.0]),
+                 lambda: prgrl([[1.0], [2.0]], [1.0, -1.0], [1.0, 2.0],
+                               order="reverse")):
         try:
             call()
             raise AssertionError("expected ValueError")
