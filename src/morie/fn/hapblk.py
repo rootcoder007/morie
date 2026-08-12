@@ -8,11 +8,16 @@ __all__ = ["hapblk", "haplotype_blocks"]
 
 
 def _dprime_ci(h, grid=200):
-    # 2x2 haplotype counts h = [n00, n01, n10, n11]; likelihood-based
-    # one-sided CI on |D'| by profiling the multinomial likelihood
-    # over D' with allele frequencies fixed at their MLEs (the
-    # confidence-bound approach Gabriel et al. rely on, ref. their
-    # (20): Wall & Pritchard-style CI).
+    # 2x2 haplotype counts h = [n00, n01, n10, n11].  Gabriel et al.
+    # (SOM, their ref. 20) rely on CONFIDENCE BOUNDS on D' rather than
+    # the point estimate: the multinomial (two-locus haplotype)
+    # likelihood is profiled over |D'| in [0,1] with the two allele
+    # frequencies fixed at their MLEs; the likelihood curve is
+    # normalized to a density and its 5th/95th percentiles give the
+    # 90% CI.  The "one-sided upper 95% bound" is the 95th percentile
+    # and the lower bound is the 5th.  This is the exact method later
+    # standardized in Haploview (Barrett et al. 2005); no bootstrap is
+    # involved.
     n = sum(h)
     if n == 0:
         return 0.0, 0.0, 0.0
@@ -68,18 +73,25 @@ def hapblk(H, strong_hi=0.98, strong_lo=0.70, recomb_hi=0.90,
     one-sided upper 95% bound exceeds 0.98 (consistent with no
     historical recombination) AND the lower bound is above 0.7; a
     pair shows "strong evidence for historical recombination" when
-    the upper bound is below 0.9; other pairs are uninformative.  A
-    block is a maximal contiguous marker span in which at least 95%
-    of informative pairs are strong-LD.  Bounds come from the
-    profile likelihood of |D'| on the 2x2 haplotype table.
+    the upper bound is below 0.9; other pairs are uninformative.
+    Following the paper exactly, a block is a maximal contiguous
+    marker span in which fewer than 5% of INFORMATIVE pairs (strong-LD
+    or recombination) show strong evidence of historical recombination
+    -- equivalently at least 95% of informative pairs are strong-LD.
+    The D' confidence bounds are the 5th/95th percentiles of the
+    profiled two-locus likelihood on the 2x2 haplotype table.
 
     Sources
     -------
     Gabriel, S. B. et al. (2002). The structure of haplotype blocks
-    in the human genome. *Science*, 296(5576), 2225-2229, the
-    strong-LD/recombination definitions on p. 2226 (local copy
-    fetched-wave3/The structure of haplotype blocks in the human
-    genome.pdf).
+    in the human genome. *Science*, 296(5576), 2225-2229; the
+    strong-LD / historical-recombination definitions and the block
+    rule on p. 2226, confidence bounds per the supporting online
+    material (their ref. 20) (local copy fetched-wave3/The structure
+    of haplotype blocks in the human genome.pdf).  The likelihood
+    D' confidence-interval computation is the one standardized in
+    Barrett, J. C. et al. (2005), Haploview, *Bioinformatics* 21(2),
+    263-265.
 
     Parameters
     ----------
