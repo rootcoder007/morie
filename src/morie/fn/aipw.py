@@ -139,13 +139,21 @@ def estimate_aipw(
         small stratum's own quantiles.  This is the default.
     ``trim_type="quantile"``
         Winsorise the scores at their own sample quantiles ``trim``.
-        This is WEIGHT TRUNCATION: units are kept and their scores
-        pulled in.  It is NOT the rule of Crump, Hotz, Imbens and
-        Mitnik (2009), Biometrika 96(1), 187-199 -- verified against
-        that paper, they DISCARD units whose estimated propensity lies
-        outside a range (rule of thumb [0.1, 0.9]), which changes the
-        estimand to the ATE on the retained subpopulation.  Neither
-        route here discards.
+        Percentile capping is the standard trimming device here: Lee,
+        B. K., Lessler, J. and Stuart, E. A. (2011), "Weight trimming
+        and propensity score weighting", PLoS ONE 6(3), e18174,
+        doi:10.1371/journal.pone.0018174 -- "all weights with value
+        above the [cutpoint] were set equal to the [cutpoint]".  See
+        also Cole, S. R. and Hernan, M. A. (2008), Am J Epidemiol
+        168(6), 656-664.
+        Two honest differences from Lee et al.: they cap the WEIGHTS,
+        this caps the SCORES (bounding the weights indirectly), and
+        they cap the high side only while this caps both tails.
+        It is NOT the rule of Crump, Hotz, Imbens and Mitnik (2009),
+        Biometrika 96(1), 187-199: verified against that paper, they
+        DISCARD units outside a range (rule of thumb [0.1, 0.9]),
+        which changes the estimand.  Neither route here discards.
+
     ``trim=None``
         No trimming beyond the numerical guard that keeps the weights
         finite.
