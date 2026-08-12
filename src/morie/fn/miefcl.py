@@ -1,115 +1,111 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
-"""Rubin's rules for combining multiple-imputation estimates."""
+"""Rubin's rules for combining multiple-imputation estimates (Rubin 1987)."""
 
-from . import _array_core as np
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["miefcl", "multiple_imputation_combine"]
+__all__ = ["miefcl", "mi_rubin_rules"]
 
 
-def miefcl(estimates, ses, dfcom=None):
+def miefcl(estimates, variances, nu_com=None):
     """
-    Combine m completed-data estimates by Rubin's rules.
+    Pool a scalar estimate across multiply imputed data sets.
 
-    For a scalar estimand Q with completed-data estimates Q_i and
-    variances U_i (i = 1..m):
+    Rubin's rules (Rubin 1987, Sec. 3.3; van Buuren 2018, Eqs.
+    2.16-2.32): with m complete-data estimates Q_l and their
+    variances U_l,
 
-        Qbar = (1/m) sum Q_i
-        Ubar = (1/m) sum U_i                       (within variance)
-        B    = (1/(m-1)) sum (Q_i - Qbar)^2        (between variance)
-        T    = Ubar + (1 + 1/m) B                  (total variance)
+        Qbar = mean(Q_l),
+        Ubar = mean(U_l)                (within variance),
+        B = var(Q_l)  (denominator m-1) (between variance),
+        T = Ubar + (1 + 1/m) B          (total variance).
 
-    Inference uses t_nu with
+    Also returned: relative increase in variance
+    r = (1 + 1/m) B / Ubar, proportion of variance attributable to
+    missingness lambda = (1 + 1/m) B / T (Eq. 2.24), fraction of
+    missing information fmi = (r + 2/(nu+3)) / (1 + r) (Eq. 2.26 form),
+    and the degrees of freedom: nu_old = (m - 1) / lambda^2
+    (Eq. 2.30), replaced by the Barnard-Rubin small-sample value when
+    ``nu_com`` is given (Eqs. 2.31-2.32; see also morie.fn.midegf).
 
-        r      = (1 + 1/m) B / Ubar                (rel. incr. variance)
-        lambda = (1 + 1/m) B / T
-        nu_old = (m - 1) / lambda^2                (Rubin 1987)
-        gamma  = (r + 2/(nu + 3)) / (1 + r)        (fraction missing info)
-
-    If ``dfcom`` (complete-data degrees of freedom) is given, the
-    Barnard-Rubin (1999) small-sample adjustment
-    nu_adj = nu_old * nu_obs / (nu_old + nu_obs) with
-    nu_obs = dfcom (dfcom + 1)(1 - lambda) / (dfcom + 3)
-    replaces nu_old.
+    Sources
+    -------
+    Rubin, D. B. (1987). *Multiple Imputation for Nonresponse in
+    Surveys*. Wiley, Sec. 3.3 (the combining rules).
+    van Buuren, S. (2018). *Flexible Imputation of Missing Data*,
+    2nd ed., Chapman & Hall/CRC, Sec. 2.3, Eqs. 2.16-2.32 (local
+    copy fetched-wave3/vanbuuren-fimd-ch2-rubins-rules.html).
+    Barnard, J. & Rubin, D. B. (1999). Small-sample degrees of
+    freedom with multiple imputation. *Biometrika*, 86, 948-955.
 
     Parameters
     ----------
-    estimates : array-like, shape (m,)
-        Completed-data point estimates Q_i.
-    ses : array-like, shape (m,)
-        Completed-data standard errors sqrt(U_i).
-    dfcom : float, optional
-        Complete-data degrees of freedom (Barnard-Rubin adjustment).
+    estimates : sequence of float
+        Complete-data point estimates, one per imputation.
+    variances : sequence of float
+        Complete-data variances (squared standard errors).
+    nu_com : float, optional
+        Complete-data degrees of freedom (e.g. n - k); enables the
+        Barnard-Rubin adjusted df.
 
     Returns
     -------
-    result : RichResult
-        Keys: estimate, se, t, ubar, b, m, df, riv, lambda, fmi, method.
-
-    References
-    ----------
-    Rubin, D. B. (1987), "Multiple Imputation for Nonresponse in
-    Surveys", Wiley, New York, ch. 3 (repeated-imputation inference for
-    scalar estimands), as printed in van Buuren, S. (2018), "Flexible
-    Imputation of Missing Data", 2nd ed., CRC Press, sec. 2.3,
-    eqs. (2.17)-(2.32) [source snapshot:
-    library/pdf/fetched-wave3/fimd-whyandwhen.html].
-    Barnard, J. and Rubin, D. B. (1999), "Small-sample degrees of
-    freedom with multiple imputation", Biometrika 86(4), 948-955.
-    Anchored against mice::pool (amices/mice, R/pool.R and
-    R/barnard.rubin.R).
+    RichResult
+        Keys: estimate, se, t (total variance), ubar, b, m, riv,
+        lambda_, fmi, df.
     """
-    q = np.atleast_1d(np.asarray(estimates, dtype=float))
-    s = np.atleast_1d(np.asarray(ses, dtype=float))
+    q = [float(v) for v in estimates]
+    u = [float(v) for v in variances]
     m = len(q)
-    if len(s) != m:
-        raise ValueError("estimates and ses must have equal length")
     if m < 2:
-        raise ValueError("need m >= 2 imputations")
-    u = s * s
-    qbar = float(np.mean(q))
-    ubar = float(np.mean(u))
-    b = float(np.sum((q - qbar) ** 2)) / (m - 1.0)
+        raise ValueError("need at least two imputations")
+    if len(u) != m:
+        raise ValueError("estimates and variances must have equal length")
+    if any(v < 0 for v in u):
+        raise ValueError("variances must be non-negative")
+    qbar = sum(q) / m
+    ubar = sum(u) / m
+    b = sum((x - qbar) ** 2 for x in q) / (m - 1)
     t = ubar + (1.0 + 1.0 / m) * b
-    riv = (1.0 + 1.0 / m) * b / ubar if ubar > 0 else float("inf")
-    lam = (1.0 + 1.0 / m) * b / t if t > 0 else float("nan")
-    if lam < 1e-12:
+    if t <= 0:
+        raise ValueError("total variance is not positive")
+    lam = (b + b / m) / t
+    riv = float("inf") if ubar == 0 else (1.0 + 1.0 / m) * b / ubar
+    if lam <= 0:
         df_old = float("inf")
     else:
-        df_old = (m - 1.0) / (lam * lam)
-    if dfcom is None:
+        df_old = (m - 1) / lam ** 2
+    if nu_com is None:
         df = df_old
     else:
-        dfcom = float(dfcom)
-        nu_obs = dfcom * (dfcom + 1.0) * (1.0 - lam) / (dfcom + 3.0)
-        if df_old == float("inf"):
-            df = nu_obs
+        nc = float(nu_com)
+        if nc <= 0:
+            raise ValueError("nu_com must be positive")
+        nu_obs = (nc + 1.0) / (nc + 3.0) * nc * (1.0 - lam)
+        if math.isinf(df_old):
+            df = min(nu_obs, nc)
         else:
             df = df_old * nu_obs / (df_old + nu_obs)
-    if df == float("inf"):
-        fmi = riv / (1.0 + riv)
-    else:
-        fmi = (riv + 2.0 / (df + 3.0)) / (1.0 + riv)
-    return RichResult(
-        payload={
-            "estimate": qbar,
-            "se": float(t) ** 0.5,
-            "t": t,
-            "ubar": ubar,
-            "b": b,
-            "m": m,
-            "df": df,
-            "riv": riv,
-            "lambda": lam,
-            "fmi": fmi,
-            "method": "Rubin's rules MI combination",
-        }
-    )
+    fmi = (riv + 2.0 / (df + 3.0)) / (1.0 + riv) \
+        if not math.isinf(riv) else 1.0
+    return RichResult(payload={
+        "estimate": qbar,
+        "se": math.sqrt(t),
+        "t": t,
+        "ubar": ubar,
+        "b": b,
+        "m": m,
+        "riv": riv,
+        "lambda_": lam,
+        "fmi": fmi,
+        "df": df,
+        "method": "Rubin's rules (Rubin 1987; van Buuren 2018 Sec. 2.3)",
+    })
 
 
-multiple_imputation_combine = miefcl
+# long descriptive alias (stub-era name)
+mi_rubin_rules = miefcl
 
 
 def cheatsheet():
-    return "miefcl: Rubin's rules MI combination (Rubin 1987; Barnard-Rubin 1999 df)"
+    return "miefcl: pool MI estimates, T = Ubar + (1+1/m)B, Barnard-Rubin df"
