@@ -33,7 +33,7 @@ def _reml_loglik(gs, ns, s2a, s2e):
     return -0.5 * (logdetV + math.log(xvx) + ypy), mu
 
 
-def remlfn(y, group, tol=1e-10, max_iter=5000):
+def remlfn(y, group, tol=1e-10, max_iter=5000, solver="auto"):
     r"""
     REML estimation of variance components for the one-way random model.
 
@@ -88,6 +88,20 @@ def remlfn(y, group, tol=1e-10, max_iter=5000):
         Convergence tolerance for the restricted-likelihood maximiser.
     max_iter : int
         Maximum optimiser iterations.
+    solver : {"auto", "closed", "optim"}
+        Which of the two routes to the REML solution to take.
+        "closed" uses Searle et al.'s Sec. 4.8 result that on
+        BALANCED data the REML solutions ARE the ANOVA estimators --
+        exact, and an error if the data are unbalanced.  "optim"
+        always maximises the restricted log-likelihood numerically,
+        which is the general definition and works for any design.
+        "auto" (default) takes the closed form when it applies and
+        the optimiser otherwise: the closed form is preferred where
+        valid because l_R is flat to within double precision near the
+        optimum there (moving sigma_a^2 by 2e-5 changes l_R by only
+        3e-13), so no maximiser can resolve the argmax as well as the
+        theorem does.  Use "optim" on balanced data to see for
+        yourself that the two routes agree.
 
     Returns
     -------
@@ -120,7 +134,16 @@ def remlfn(y, group, tol=1e-10, max_iter=5000):
     # sigma_a^2 by 2e-5 changes l_R by 3e-13, below double
     # precision), so no numerical maximiser can resolve the argmax to
     # better than ~1e-5, while the closed form is exact.
-    if bool(st["balanced"]) and float(st["sigma2_a_raw"]) > 0.0:
+    if solver not in ("auto", "closed", "optim"):
+        raise ValueError("solver must be 'auto', 'closed' or 'optim'")
+    use_closed = (solver == "closed" or
+                  (solver == "auto" and bool(st["balanced"]) and
+                   float(st["sigma2_a_raw"]) > 0.0))
+    if solver == "closed" and not bool(st["balanced"]):
+        raise ValueError(
+            "solver='closed' is only valid for balanced data; Searle "
+            "Sec. 4.8 states REML = ANOVA for balanced data only")
+    if use_closed:
         s2a = float(st["sigma2_a_raw"])
         s2e = float(st["mse"])
         ll, mu = _reml_loglik(gs, ns, s2a, s2e)
@@ -130,6 +153,7 @@ def remlfn(y, group, tol=1e-10, max_iter=5000):
             "n_iter": 0, "converged": True,
             "icc": (s2a / denom) if denom > 0 else 0.0,
             "a": a, "N": N, "closed_form": True,
+            "solver": solver,
             "method": "REML variance components (Searle et al. 1992, "
                       "Sec. 4.8 closed form: REML = ANOVA on balanced data)",
         })
@@ -211,6 +235,7 @@ def remlfn(y, group, tol=1e-10, max_iter=5000):
         "a": a,
         "N": N,
         "closed_form": False,
+        "solver": solver,
         "method": "REML variance components (Searle et al. 1992, Sec. 6.6)",
     })
 
