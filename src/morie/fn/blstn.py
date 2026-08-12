@@ -65,7 +65,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ["blstn", "blast", "msp_exact", "blast_pvalue", "estimate_gumbel",
+__all__ = ["blstn", "blast_nucleotide", "blast", "msp_exact", "blast_pvalue", "estimate_gumbel",
            "word_hits"]
 
 
@@ -459,3 +459,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 blast = blstn
+
+# name carried over from the generated stub this replaced
+blast_nucleotide = blstn
