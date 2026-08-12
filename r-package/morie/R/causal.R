@@ -170,8 +170,47 @@ NULL
 #' @examples
 #' df <- data.frame(t = c(0, 1, 0, 1, 0, 1), x = rnorm(6))
 #' ps <- morie_estimate_propensity_scores(df, "t", "x")
+# Trim propensity scores.  BOTH routes in use are available and the
+# choice is explicit, mirroring Python morie.fn.aipw._trim_ps:
+#   trim_type = "value"    clamp to the absolute bounds `trim`.  Sample
+#                          independent, so a stratified fit cannot be
+#                          destabilised by a small stratum's own
+#                          quantiles.  Default.
+#   trim_type = "quantile" winsorise at the scores' own sample
+#                          quantiles, i.e. trimming to a common-support
+#                          region in the spirit of Crump, Hotz, Imbens
+#                          and Mitnik (2009), Biometrika 96(1), 187-199.
+#   trim = NULL            no trimming beyond the numerical guard that
+#                          keeps the inverse-probability weights finite.
+# NOTE: before 2026-08-12 this package always winsorised at the 1st and
+# 99th sample quantiles while the Python arm clamped at the absolute
+# values 0.01 / 0.99, so the two arms disagreed by ~1e-4 pooled and
+# ~1e-3 within small strata.  The shared default is now
+# trim_type = "value"; pass trim_type = "quantile" for the old
+# behaviour.
+.MOR_PS_EPS <- 1e-6
+
+.mor_trim_ps <- function(ps, trim = c(0.01, 0.99), trim_type = "value") {
+  ps <- as.numeric(ps)
+  if (!(trim_type %in% c("value", "quantile")))
+    stop("trim_type must be 'value' or 'quantile'")
+  if (!is.null(trim)) {
+    lo <- as.numeric(trim[1]); hi <- as.numeric(trim[2])
+    if (!(lo >= 0 && lo < hi && hi <= 1))
+      stop("trim must satisfy 0 <= lo < hi <= 1")
+    if (trim_type == "quantile") {
+      qs <- stats::quantile(ps, c(lo, hi), names = FALSE, type = 7)
+      lo <- qs[1]; hi <- qs[2]
+    }
+    ps <- pmin(pmax(ps, lo), hi)
+  }
+  pmin(pmax(ps, .MOR_PS_EPS), 1 - .MOR_PS_EPS)
+}
+
+
 morie_estimate_propensity_scores <- function(data, treatment, covariates,
-                                             trim = c(0.01, 0.99)) {
+                                             trim = c(0.01, 0.99),
+                                             trim_type = "value") {
   ps <- if (.causal_have_weightit()) {
     tryCatch(
       .fit_propensity_weightit(data, treatment, covariates),
@@ -180,10 +219,7 @@ morie_estimate_propensity_scores <- function(data, treatment, covariates,
   } else {
     .fit_propensity(data, treatment, covariates)
   }
-  lo <- stats::quantile(ps, trim[1])
-  hi <- stats::quantile(ps, trim[2])
-  ps <- pmin(pmax(ps, lo), hi)
-  .clip_ps(ps)
+  .mor_trim_ps(ps, trim, trim_type)
 }
 
 
@@ -382,14 +418,17 @@ morie_estimate_atc <- function(data, treatment, outcome, covariates,
 #' @export
 morie_estimate_aipw <- function(data, treatment, outcome, covariates,
                                 propensity_col = NULL,
-                                outcome_model = c("linear", "logistic")) {
+                                outcome_model = c("linear", "logistic"),
+                                trim = c(0.01, 0.99),
+                                trim_type = "value") {
   outcome_model <- match.arg(outcome_model)
   t <- as.numeric(data[[treatment]])
   y <- as.numeric(data[[outcome]])
   ps <- if (!is.null(propensity_col)) {
-    .clip_ps(data[[propensity_col]])
+    .mor_trim_ps(data[[propensity_col]], trim, trim_type)
   } else {
-    morie_estimate_propensity_scores(data, treatment, covariates)
+    morie_estimate_propensity_scores(data, treatment, covariates,
+                                     trim = trim, trim_type = trim_type)
   }
 
   fam <- if (outcome_model == "logistic") {
