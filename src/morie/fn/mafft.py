@@ -59,8 +59,17 @@ per site is exactly :math:`S_a` between two random sequences and exactly
 :math:`1 + S_a` between two identical ones, so a gap is scored roughly
 like random sequence when :math:`S_a` is small. The paper's controls are
 kept as routes: ``matrix="all_positive"`` reproduces NW-AP-2 by choosing
-the :math:`S_a` that lifts every entry positive, and ``method="NW-NS-2"``
-skips the FFT entirely.
+the :math:`S_a` that lifts every entry positive -- which comes out at
+0.8211, against the 0.82 the paper prints for its own matrix -- and
+``method="NW-NS-2"`` skips the FFT entirely.
+
+The default raw matrix is the paper's own: 200-PAM JTT log-odds, built
+from Jones, Taylor & Thornton's accepted point mutation counts and
+residue frequencies (taken from MAFFT's ``core/JTT.c``) through
+:math:`Q_{ij} = r_{ij} f_j`, :math:`P = e^{Qt}` and
+:math:`M_{ij} = 10 \log_{10}(P_{ij}/f_j)`. Pass ``raw_matrix`` and
+``freqs`` for BLOSUM or anything else, or ``default="grantham"`` for a
+matrix built from the same volume/polarity vectors the FFT uses.
 
 **Gap penalty.** A gap opened where the group already has one should not
 be paid for twice, so
@@ -112,6 +121,7 @@ __all__ = [
     "find_homologous_segments",
     "arrange_segments",
     "normalized_similarity_matrix",
+    "jtt_matrix",
     "group_align",
     "sixtuple_distance",
     "guide_tree",
@@ -289,32 +299,139 @@ def _peaks(lags, c, n_peaks):
     return [lags[i] for i in order[:int(n_peaks)]]
 
 
+# --------------------------------------------------------------- JTT
+#
+# The paper's default matrix is "the 200 PAM log-odds matrix by Jones et
+# al. (22)". These are Jones, Taylor & Thornton's accepted point
+# mutation counts and residue frequencies, taken verbatim from MAFFT's
+# own copy (GSLBiotech/mafft ``core/JTT.c``) rather than retyped: the
+# lower triangle of counts, and ``freq0``.
+
+_JTT_FREQ = (
+    0.077, 0.051, 0.043, 0.052, 0.020, 0.041, 0.062, 0.074, 0.023, 0.052, 0.091, 0.059, 0.024, 0.040, 0.051, 0.069, 0.059, 0.014, 0.032, 0.066,
+)
+
+_JTT_COUNTS = (
+    247,
+    216, 116,
+    386, 48, 1433,
+    106, 125, 32, 13,
+    208, 750, 159, 130, 9,
+    600, 119, 180, 2914, 8, 1027,
+    1183, 614, 291, 577, 98, 84, 610,
+    46, 446, 466, 144, 40, 635, 41, 41,
+    173, 76, 130, 37, 19, 20, 43, 25, 26,
+    257, 205, 63, 34, 36, 314, 65, 56, 134, 1324,
+    200, 2348, 758, 102, 7, 858, 754, 142, 85, 75, 94,
+    100, 61, 39, 27, 23, 52, 30, 27, 21, 704, 974, 103,
+    51, 16, 15, 8, 66, 9, 13, 18, 50, 196, 1093, 7, 49,
+    901, 217, 31, 39, 15, 395, 71, 93, 157, 31, 578, 77, 23, 36,
+    2413, 413, 1738, 244, 353, 182, 156, 1131, 138, 172, 436, 228, 54, 309, 1138,
+    2440, 230, 693, 151, 66, 149, 142, 164, 76, 930, 172, 398, 343, 39, 412, 2258,
+    11, 109, 2, 5, 38, 12, 12, 69, 5, 12, 82, 9, 8, 37, 6, 36, 8,
+    41, 46, 114, 89, 164, 40, 15, 15, 514, 61, 84, 20, 17, 850, 22, 164, 45, 41,
+    1766, 69, 55, 127, 99, 58, 226, 276, 22, 3938, 1261, 58, 559, 189, 84, 219, 526, 27, 42,
+)
+
+
+def _jtt_exchangeability():
+    """``r_ij = n_ij / (400 f_i f_j)``, symmetric, as JTT.c computes it."""
+    f = list(_JTT_FREQ)
+    S = [[0.0] * 20 for _ in range(20)]
+    k = 0
+    for i in range(1, 20):
+        for j in range(i):
+            n = float(_JTT_COUNTS[k])
+            k += 1
+            v = n / (400.0 * f[i] * f[j])
+            S[i][j] = v
+            S[j][i] = v
+    return S, f
+
+
+def jtt_matrix(pam=200, scale=10.0):
+    r"""The JTT log-odds matrix at a given PAM distance.
+
+    The standard construction: exchangeabilities :math:`r_{ij}` give the
+    generator :math:`Q_{ij} = r_{ij} f_j` (:math:`i \ne j`) with rows
+    summing to zero, scaled so that one PAM unit is one substitution per
+    hundred residues; then :math:`P(t) = e^{Qt}` and
+
+    .. math::
+
+       M_{ij} = \text{scale} \cdot \log_{10}\bigl(P_{ij}(t) / f_j\bigr).
+
+    Returns ``{"matrix": ..., "freqs": ..., "P": ...}``. The matrix
+    exponential is exact rather than iterated: :math:`Q` is reversible,
+    so :math:`D^{1/2} Q D^{-1/2}` is symmetric and can be diagonalised.
+    """
+    if pam <= 0:
+        raise ValueError("mafft: pam must be positive")
+    S, f = _jtt_exchangeability()
+    Q = [[0.0] * 20 for _ in range(20)]
+    for i in range(20):
+        off = 0.0
+        for j in range(20):
+            if i == j:
+                continue
+            Q[i][j] = S[i][j] * f[j]
+            off += Q[i][j]
+        Q[i][i] = -off
+    # one PAM = 1% expected substitutions per site
+    mu = -sum(f[i] * Q[i][i] for i in range(20))
+    for i in range(20):
+        for j in range(20):
+            Q[i][j] /= (mu * 100.0)
+    # symmetrise, exponentiate, transform back
+    rt = [math.sqrt(v) for v in f]
+    A = [[Q[i][j] * rt[i] / rt[j] for j in range(20)] for i in range(20)]
+    vals, vecs = np.linalg.eigh(np.asarray(A, dtype=float))
+    w = [float(v) for v in vals]
+    V = [[float(vecs[i][j]) for j in range(20)] for i in range(20)]
+    e = [math.exp(v * float(pam)) for v in w]
+    P = [[0.0] * 20 for _ in range(20)]
+    for i in range(20):
+        for j in range(20):
+            tot = sum(V[i][k] * e[k] * V[j][k] for k in range(20))
+            P[i][j] = tot * rt[j] / rt[i]
+    M = {}
+    for i, a in enumerate(_AA):
+        for j, b in enumerate(_AA):
+            p = max(P[i][j], 1e-300)
+            M[(a, b)] = scale * math.log10(p / f[j])
+    return {"matrix": M, "freqs": dict(zip(_AA, f)), "P": P, "Q": Q,
+            "pam": pam,
+            "rate": -sum(f[i] * Q[i][i] for i in range(20))}
+
+
 # ------------------------------------------------------------- scoring
 
-def _default_raw_matrix(seq_type):
-    """A raw matrix derived from the same Grantham vectors as the FFT.
+def _default_raw_matrix(seq_type, which="jtt200"):
+    """The paper's default raw matrix: 200-PAM JTT log-odds.
 
-    The paper's default is the 200-PAM JTT log-odds matrix; that matrix
-    is not reproduced here, so the default is built from the physico-
-    chemical distance the method already relies on,
+    ``"grantham"`` is offered as an alternative built from the same
+    volume and polarity vectors the FFT uses,
     :math:`M_{ab} = -[(\\hat{v}_a - \\hat{v}_b)^2 +
-    (\\hat{p}_a - \\hat{p}_b)^2]`. Pass ``raw_matrix`` and ``freqs`` to
-    use JTT, BLOSUM or anything else -- Equation 7 rescales whatever it
-    is given.
+    (\\hat{p}_a - \\hat{p}_b)^2]`. Equation 7 rescales whichever is
+    used, so BLOSUM or anything else can be passed as ``raw_matrix``.
     """
     if seq_type == "nt":
         return dict(((a, b), 1.0 if a == b else -1.0)
-                    for a in _NT for b in _NT)
-    M = {}
-    for a in _AA:
-        for b in _AA:
-            M[(a, b)] = -((_VHAT[a] - _VHAT[b]) ** 2 +
-                          (_PHAT[a] - _PHAT[b]) ** 2)
-    return M
+                    for a in _NT for b in _NT), None
+    if which == "grantham":
+        M = {}
+        for a in _AA:
+            for b in _AA:
+                M[(a, b)] = -((_VHAT[a] - _VHAT[b]) ** 2 +
+                              (_PHAT[a] - _PHAT[b]) ** 2)
+        return M, None
+    j = jtt_matrix(200)
+    return j["matrix"], j["freqs"]
 
 
 def normalized_similarity_matrix(raw_matrix=None, freqs=None, s_a=0.06,
-                                 seq_type="aa", mode="normalized"):
+                                 seq_type="aa", mode="normalized",
+                                 default="jtt200"):
     r"""Equation 7.
 
     ``mode="all_positive"`` is the paper's NW-AP-2 control: the raw
@@ -324,9 +441,17 @@ def normalized_similarity_matrix(raw_matrix=None, freqs=None, s_a=0.06,
     """
     if mode not in _MATRICES:
         raise ValueError("mafft: mode must be one of %s" % (_MATRICES,))
+    if default not in ("jtt200", "grantham"):
+        raise ValueError("mafft: default must be 'jtt200' or 'grantham'")
     alpha = _NT if seq_type == "nt" else _AA
-    M = dict(_default_raw_matrix(seq_type)) if raw_matrix is None \
-        else dict(raw_matrix)
+    default_f = None
+    if raw_matrix is None:
+        M, default_f = _default_raw_matrix(seq_type, default)
+        M = dict(M)
+    else:
+        M = dict(raw_matrix)
+    if freqs is None and default_f is not None:
+        freqs = default_f
     if freqs is None:
         freqs = dict((a, 1.0 / len(alpha)) for a in alpha)
     freqs = dict(freqs)
@@ -835,10 +960,11 @@ def mafft_alignment(sequences, method="FFT-NS-2", seq_type=None,
         "note": ("Katoh et al. 2002: the FFT finds homologous segments "
                  "and the residue DP is restricted to the sub-matrices "
                  "between their centres; NW-NS-* skip the FFT and "
-                 "matrix='all_positive' is the paper's NW-AP-2 control. "
-                 "The default raw matrix is built from the same Grantham "
-                 "volume and polarity as the FFT, not the paper's "
-                 "200-PAM JTT -- pass raw_matrix and freqs for that."),
+                 "matrix='all_positive' is the paper's NW-AP-2 control, "
+                 "whose S_a comes out at 0.8211 against the 0.82 the "
+                 "paper prints. The default raw matrix is the paper's "
+                 "own 200-PAM JTT log-odds; default='grantham' builds "
+                 "one from the volume/polarity vectors instead."),
     })
 
 
