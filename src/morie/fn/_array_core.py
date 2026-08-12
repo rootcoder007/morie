@@ -1203,7 +1203,9 @@ def asarray(x, dtype=None):
     try:
         out = marr(x)
     except (TypeError, ValueError):
-        pass
+        # non-numeric payload (strings via an untyped container):
+        # numpy would build an object array here
+        return oarr(x.tolist() if hasattr(x, "tolist") else x)
     else:
         # numpy keeps dtype=bool for a list of bools, and indexing
         # depends on it: x[:, mask] must select the True columns, not the
@@ -1213,12 +1215,6 @@ def asarray(x, dtype=None):
         if dtype is None and _all_bool_payload(x):
             out._is_mask = True
         return out
-    try:
-        raise ValueError
-    except (TypeError, ValueError):
-        # non-numeric payload (strings via an untyped container):
-        # numpy would build an object array here
-        return oarr(x.tolist() if hasattr(x, "tolist") else x)
 
 
 def array(x, dtype=None):
