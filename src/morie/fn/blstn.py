@@ -49,16 +49,45 @@ Equation 2 is what lets "two sequences that share several distinct regions of
 similarity ... sometimes be detected as significantly related, even when no
 segment pair is statistically significant in isolation".
 
-:math:`\lambda` and :math:`K` come from Karlin & Altschul (1990), which the
-paper cites for them and does not reproduce. That paper is not in this
-library, so no closed form for either constant is claimed here. Instead
-:func:`estimate_gumbel` estimates both **from equation 1 itself** -- simulate
-random sequence pairs under the given letter frequencies and scoring scheme,
-take the MSP of each, and regress :math:`\log(-\log \hat F(S))` on :math:`S`,
-whose slope is :math:`-\lambda` and whose intercept is :math:`\log(Kmn)`.
-That is an estimator this module supplies, not a result of the paper; pass
-``lam`` and ``K`` directly when you have the published constants for your
-scoring scheme.
+:math:`\lambda` and :math:`K` come from
+
+    Karlin, S., & Altschul, S. F. (1990) "Methods for assessing the
+    statistical significance of molecular sequence features by using general
+    scoring schemes", *PNAS* 87(6), 2264-2268,
+
+which the BLAST paper cites and does not reproduce. Both are computed in
+closed form by :func:`karlin_altschul`. :math:`\lambda^*` is "the unique
+positive solution to the equation"
+
+.. math:: \sum_{i} p_i e^{\lambda s_i} = 1,
+
+which needs "at least one score to be positive" and the expected score per
+letter to be negative -- otherwise "the maximal segment would tend to be the
+whole sequence, and this is not of interest". :math:`K^*` is the paper's
+Appendix. With :math:`S_k` the sum of :math:`k` independently chosen scores,
+
+.. math:: C^* = \frac{\exp\Big\{-2\sum_{k\ge1}\frac{1}{k}
+          \big(E[e^{\lambda^* S_k}; S_k < 0] + \Pr(S_k \ge 0)\big)
+          \Big\}}{\lambda^* E[S_1 e^{\lambda^* S_1}]},
+
+and :math:`K^*` is bracketed by
+
+.. math:: K^- = C^*\frac{\lambda^*\delta}{e^{\lambda^*\delta} - 1},
+          \qquad
+          K^+ = C^*\frac{\lambda^*\delta}{1 - e^{-\lambda^*\delta}},
+
+where :math:`\delta` "is the smallest span of score values. When all scores
+are integers with greatest common divisor 1, then :math:`\delta = 1`." The
+upper bound is returned by default because "using :math:`K^+` for :math:`K^*`
+always provides a conservative estimate of statistical significance", and the
+series "converges geometrically fast, so that only a small number of terms
+are needed".
+
+:func:`estimate_gumbel` remains as a second route: simulate random pairs, take
+the exact MSP of each, and regress :math:`\log(-\log \hat F(S))` on
+:math:`S`, whose slope is :math:`-\lambda` and whose intercept is
+:math:`\log(Kmn)`. It is useful when the score model is not a simple
+independent-letter one; the anchor checks the two routes against each other.
 """
 
 import math
@@ -195,7 +224,8 @@ def _extend(q, s, qi, si, w, sc, X):
 
 def blstn(query, subjects, w=11, match=5, mismatch=-4, cutoff=None, X=20,
           word_mode="exact", threshold=None, matrix=None, alphabet="ACGT",
-          lam=None, K=None, max_hsps=None):
+          lam=None, K=None, max_hsps=None, letter_probs=None,
+          pvalues=True):
     r"""Search ``subjects`` for locally maximal segment pairs with ``query``.
 
     Parameters
@@ -227,10 +257,15 @@ def blstn(query, subjects, w=11, match=5, mismatch=-4, cutoff=None, X=20,
     alphabet : str
         Letter order for ``matrix``.
     lam, K : float, optional
-        The Karlin-Altschul parameters. Supplied, the result carries
-        p-values from equations 1 and 2; omitted, it does not, because
-        guessing them would make the p-values fiction. See
-        :func:`estimate_gumbel`.
+        The Karlin-Altschul parameters. Omitted, they are computed in
+        closed form by :func:`karlin_altschul` from this search's own
+        scoring scheme and ``letter_probs``, so p-values come back by
+        default. Pass them to override, or set ``pvalues=False`` to skip.
+    letter_probs : sequence of float, optional
+        Background letter frequencies for that calculation; uniform over
+        ``alphabet`` when omitted.
+    pvalues : bool
+        Set ``False`` to report no p-values at all.
     max_hsps : int, optional
         Keep only this many segment pairs per subject, highest score first.
 
@@ -316,7 +351,17 @@ def blstn(query, subjects, w=11, match=5, mismatch=-4, cutoff=None, X=20,
     if max_hsps is not None:
         kept = kept[:int(max_hsps)]
 
-    if lam is not None and K is not None:
+    ka = None
+    if pvalues and (lam is None or K is None):
+        try:
+            ka = karlin_altschul(None, match, mismatch,
+                                 letter_probs or [1.0 / len(alphabet)] *
+                                 len(alphabet), matrix)
+            lam = ka["lam"] if lam is None else lam
+            K = ka["K"] if K is None else K
+        except ValueError:
+            ka = None
+    if pvalues and lam is not None and K is not None:
         for h in kept:
             m = len(subs[h["subject"]])
             h["pvalue"] = blast_pvalue(h["score"], len(q), m, lam, K)
@@ -330,11 +375,171 @@ def blstn(query, subjects, w=11, match=5, mismatch=-4, cutoff=None, X=20,
         "cutoff": cutoff,
         "X": X,
         "word_mode": word_mode,
+        "lam": lam,
+        "K": K,
+        "karlin_altschul": ka,
         "note": "the X-drop extension is a heuristic: it may miss a "
                 "higher-scoring extension (Altschul et al. 1990, section "
                 "2c); msp_exact gives the guaranteed MSP score",
         "method": "BLAST maximal segment pairs (Altschul et al. 1990)",
     })
+
+
+def _lattice(x):
+    """Integer score, or a clear error.
+
+    Karlin & Altschul's theory is stated for scores on a lattice, and the
+    module works on the unit lattice (delta is their gcd). Silently
+    truncating a non-integer score changes the scoring scheme -- -0.01
+    would become 0 and the expected score per letter would go positive --
+    so rescale the scheme yourself rather than have it done behind your
+    back.
+    """
+    v = float(x)
+    n = int(round(v))
+    if abs(v - n) > 1e-9:
+        raise ValueError("blstn: scores must lie on the integer lattice "
+                         "(got %r); multiply the whole scheme by a common "
+                         "factor first" % (x,))
+    return n
+
+
+def score_distribution(match=5, mismatch=-4, letter_probs=None,
+                       matrix=None, subject_probs=None):
+    r"""The distribution of a single aligned-pair score.
+
+    For DNA-style scoring, :math:`P(s) = \sum_{i,j: s_{ij} = s} p_i q_j`
+    with match and mismatch scores; for a substitution matrix, the same sum
+    over its entries. Returns ``{score: probability}`` with integer scores.
+    """
+    if matrix is None:
+        p = list(letter_probs) if letter_probs else [0.25] * 4
+        tot = sum(p)
+        p = [v / tot for v in p]
+        q = p if subject_probs is None else [float(v) for v in subject_probs]
+        qt = sum(q)
+        q = [v / qt for v in q]
+        out = {}
+        for i in range(len(p)):
+            for j in range(len(q)):
+                sc = _lattice(match) if i == j else _lattice(mismatch)
+                out[sc] = out.get(sc, 0.0) + p[i] * q[j]
+        return out
+    p = list(letter_probs)
+    q = p if subject_probs is None else list(subject_probs)
+    out = {}
+    for i in range(len(p)):
+        for j in range(len(q)):
+            sc = _lattice(matrix[i][j])
+            out[sc] = out.get(sc, 0.0) + p[i] * q[j]
+    return out
+
+
+def _lambda_star(dist, hi=20.0, tol=1e-14, max_iter=300):
+    r"""The unique positive root of :math:`\sum_i p_i e^{\lambda s_i} = 1`."""
+    scores = sorted(dist)
+    mean = sum(s * dist[s] for s in scores)
+    if mean >= 0:
+        raise ValueError("blstn: the expected score per letter must be "
+                         "negative (it is %.6g); otherwise the maximal "
+                         "segment is the whole sequence" % mean)
+    if max(scores) <= 0:
+        raise ValueError("blstn: at least one score must be positive")
+
+    def f(lam):
+        return sum(dist[s] * math.exp(lam * s) for s in scores) - 1.0
+
+    lo = 1e-12
+    while f(hi) < 0 and hi < 700:
+        hi *= 2.0
+    if f(hi) < 0:
+        raise ValueError("blstn: no positive root for lambda was found")
+    for _ in range(max_iter):
+        mid = 0.5 * (lo + hi)
+        if f(mid) > 0:
+            hi = mid
+        else:
+            lo = mid
+        if hi - lo < tol:
+            break
+    return 0.5 * (lo + hi)
+
+
+def _gcd_span(scores):
+    """delta: the smallest span of score values (gcd of the scores)."""
+    g = 0
+    for s in scores:
+        a = abs(int(s))
+        while a:
+            g, a = a, g % a
+    return g if g > 0 else 1
+
+
+def karlin_altschul(dist=None, match=5, mismatch=-4, letter_probs=None,
+                    matrix=None, subject_probs=None, max_terms=1000,
+                    tol=1e-12, bound="upper"):
+    r"""Karlin & Altschul (1990): :math:`\lambda^*` and :math:`K^*`.
+
+    Give either a score distribution ``dist`` (``{score: probability}``) or
+    the ingredients for :func:`score_distribution`.
+
+    The series is truncated when a term falls below ``tol``; for +5/-4 DNA
+    that is 226 terms, and the tail beyond 200 moves :math:`K` by less than
+    :math:`10^{-8}`, so ``max_terms`` exists as a guard rather than as a
+    tuning knob.
+
+    ``bound`` selects which of the Appendix's brackets is returned as ``K``:
+    ``"upper"`` (:math:`K^+`, the paper's conservative choice),
+    ``"lower"`` (:math:`K^-`) or ``"mid"`` (their mean). All three are in
+    the result either way.
+    """
+    if dist is None:
+        dist = score_distribution(match, mismatch, letter_probs, matrix,
+                                  subject_probs)
+    dist = dict((_lattice(s), float(p)) for s, p in dist.items() if p > 0)
+    tot = sum(dist.values())
+    dist = dict((s, p / tot) for s, p in dist.items())
+    if bound not in ("upper", "lower", "mid"):
+        raise ValueError("blstn: bound must be 'upper', 'lower' or 'mid'")
+    lam = _lambda_star(dist)
+    delta = _gcd_span(dist)
+
+    # E[S_1 e^{lambda S_1}]
+    denom = lam * sum(s * dist[s] * math.exp(lam * s) for s in dist)
+    if denom <= 0:
+        raise ValueError("blstn: the normalising expectation is not "
+                         "positive; check the scoring scheme")
+
+    # the Appendix series, over the convolutions S_k
+    conv = dict(dist)
+    series = 0.0
+    terms = []
+    for k in range(1, int(max_terms) + 1):
+        e_neg = sum(conv[s] * math.exp(lam * s) for s in conv if s < 0)
+        p_ge0 = sum(conv[s] for s in conv if s >= 0)
+        term = (e_neg + p_ge0) / k
+        series += term
+        terms.append(term)
+        if term < tol and k > 5:
+            break
+        nxt = {}
+        for a, pa in conv.items():
+            for b, pb in dist.items():
+                nxt[a + b] = nxt.get(a + b, 0.0) + pa * pb
+        # drop negligible far-negative tail to keep the convolution finite
+        conv = dict((s, p) for s, p in nxt.items()
+                    if p * math.exp(lam * min(s, 0)) > 1e-300 and p > 1e-300)
+    c_star = math.exp(-2.0 * series) / denom
+    x = lam * delta
+    k_low = c_star * x / (math.exp(x) - 1.0)
+    k_high = c_star * x / (1.0 - math.exp(-x))
+    k = {"upper": k_high, "lower": k_low,
+         "mid": 0.5 * (k_low + k_high)}[bound]
+    return {"lam": lam, "K": k, "K_upper": k_high, "K_lower": k_low,
+            "C": c_star, "delta": delta, "terms": len(terms),
+            "series": series,
+            "mean_score": sum(s * dist[s] for s in dist),
+            "distribution": dist}
 
 
 def blast_pvalue(score, m, n, lam, K, c=1):
@@ -452,9 +657,11 @@ def cheatsheet():
             "each hit until the score falls X below the best seen, so it "
             "can MISS the true MSP -- that is the trade, not a bug. "
             "Significance from eq.1, 1 - exp(-Kmn e^{-lambda S}), and "
-            "eq.2 for c or more distinct segment pairs. lambda and K are "
-            "Karlin-Altschul constants: pass them, or estimate them from "
-            "eq.1 by simulation with estimate_gumbel.")
+            "eq.2 for c or more distinct segment pairs. lambda and K come "
+            "from Karlin & Altschul (1990) in closed form: lambda solves "
+            "sum p_i e^{lambda s_i} = 1, and K from the Appendix series "
+            "C* with the bracket K- <= K <= K+, K+ being the conservative "
+            "choice. estimate_gumbel is the simulation alternative.")
 
 
 # compact alias per ledger/NAMING.md

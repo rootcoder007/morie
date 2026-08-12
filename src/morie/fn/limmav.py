@@ -42,12 +42,45 @@ The weights are per observation, not per gene, which is the point: "different
 samples may be sequenced to different depths, so different count sizes may be
 quite different even if the cpm values are the same".
 
-What follows the weighting here is weighted least squares with ordinary
-t-statistics and Benjamini-Hochberg adjustment. limma's **empirical Bayes
-moderation** of the gene-wise variances (Smyth 2004) is what the paper feeds
-these weights into and is *not* implemented -- that is a different paper, not
-in this library, and moderated t-statistics are not the same as the ordinary
-ones. The result says so rather than letting the caller assume otherwise.
+What follows the weighting is limma's own pipeline:
+
+    Smyth, G. K. (2004) "Linear models and empirical Bayes methods for
+    assessing differential expression in microarray experiments",
+    *Statistical Applications in Genetics and Molecular Biology* 3(1),
+    Article 3.
+
+The gene-wise variances are moderated toward a prior fitted across all
+genes. With prior information equivalent to an estimator :math:`s_0^2` on
+:math:`d_0` degrees of freedom, the posterior mean of :math:`\sigma_g^{-2}`
+gives
+
+.. math:: \tilde s_g^2 = \frac{d_0 s_0^2 + d_g s_g^2}{d_0 + d_g},
+          \qquad
+          \tilde t_{gj} = \frac{\hat\beta_{gj}}{\tilde s_g \sqrt{v_{gj}}},
+
+and the moderated statistic is t-distributed on :math:`d_g + d_0` degrees of
+freedom -- "the added degrees of freedom ... reflect the extra information
+which is borrowed ... from the ensemble of genes". The two ends of the
+spectrum are worth stating because they bracket what moderation does: "the
+moderated t reduces to the ordinary t-statistic if :math:`d_0 = 0` and at the
+opposite end of the spectrum is proportional to the coefficient
+:math:`\hat\beta_{gj}` if :math:`d_0 = \infty`."
+
+The hyperparameters are estimated by the paper's closed forms, matching the
+first two moments of :math:`\log s_g^2` -- chosen because "the moments of
+:math:`\log s_g^2` are finite for any degrees of freedom and because the
+distribution ... is more nearly normal". With
+:math:`e_g = \log s_g^2 - \psi(d_g/2) + \log(d_g/2)`,
+
+.. math:: \psi'(d_0/2) = \mathrm{mean}\{(e_g - \bar e)^2 G/(G-1)
+          - \psi'(d_g/2)\}, \qquad
+          s_0^2 = \exp\{\bar e + \psi(d_0/2) - \log(d_0/2)\},
+
+solved for :math:`d_0` by the monotone Newton iteration of the paper's
+appendix. When that mean is non-positive "there is no evidence that the
+underlying variances vary between genes", so :math:`d_0 = \infty` and
+:math:`s_0^2 = \exp(\bar e)` -- every gene gets the same variance.
+``moderate=False`` returns the ordinary weighted-least-squares t instead.
 """
 
 import math
@@ -58,8 +91,9 @@ from ._richresult import RichResult
 
 from .deseq2 import benjamini_hochberg
 
-__all__ = ["limmav", "voom", "limma_voom", "log_cpm", "lowess", "voom_weights",
-           "weighted_lm"]
+__all__ = ["limmav", "voom", "limma_voom", "log_cpm", "lowess",
+           "voom_weights", "weighted_lm", "ebayes", "digamma",
+           "trigamma", "trigamma_inverse"]
 
 
 def log_cpm(counts, lib_sizes=None, prior_count=0.5, lib_offset=1.0):
@@ -152,6 +186,131 @@ def lowess(x, y, span=0.5, iterations=3):
     return out
 
 
+def digamma(x):
+    r""":math:`\psi(x)`, by recurrence to a large argument then the
+    asymptotic series."""
+    x = float(x)
+    if x <= 0.0:
+        raise ValueError("limmav: digamma needs x > 0")
+    tot = 0.0
+    while x < 10.0:
+        tot -= 1.0 / x
+        x += 1.0
+    inv2 = 1.0 / (x * x)
+    return (tot + math.log(x) - 0.5 / x -
+            inv2 * (1.0 / 12.0 - inv2 * (1.0 / 120.0 - inv2 / 252.0)))
+
+
+def trigamma(x):
+    r""":math:`\psi'(x)`."""
+    x = float(x)
+    if x <= 0.0:
+        raise ValueError("limmav: trigamma needs x > 0")
+    tot = 0.0
+    while x < 20.0:
+        tot += 1.0 / (x * x)
+        x += 1.0
+    inv = 1.0 / x
+    inv2 = inv * inv
+    return tot + inv * (1.0 + 0.5 * inv + inv2 * (
+        1.0 / 6.0 + inv2 * (-1.0 / 30.0 + inv2 * (
+            1.0 / 42.0 - inv2 / 30.0))))
+
+
+def _tetragamma(x):
+    r""":math:`\psi''(x)`, needed by the appendix's Newton step."""
+    x = float(x)
+    tot = 0.0
+    while x < 20.0:
+        tot -= 2.0 / (x * x * x)
+        x += 1.0
+    inv = 1.0 / x
+    inv2 = inv * inv
+    return tot - inv2 * (1.0 + inv * (1.0 + inv2 * (
+        1.0 / 6.0 - inv2 * (1.0 / 6.0 - 3.0 * inv2 / 10.0))))
+
+
+def trigamma_inverse(x, tol=1e-8, max_iter=60):
+    r"""Solve :math:`\psi'(y) = x`, by the paper's appendix.
+
+    "Set :math:`y_0 = 0.5 + 1/x`. Then iterate
+    :math:`y_{i+1} = y_i + \delta_i` with
+    :math:`\delta_i = \psi'(y_i)\{1 - \psi'(y_i)/x\}/\psi''(y_i)`",
+    which is monotonically convergent because :math:`f = 1/\psi'` is convex
+    with :math:`f(y_0) \ge z`. The paper's overflow guards are kept:
+    :math:`y = 1/\sqrt{x}` above :math:`10^7` and :math:`y = 1/x` below
+    :math:`10^{-6}`.
+    """
+    x = float(x)
+    if x <= 0.0:
+        raise ValueError("limmav: trigamma_inverse needs x > 0")
+    if x > 1e7:
+        return 1.0 / math.sqrt(x)
+    if x < 1e-6:
+        return 1.0 / x
+    y = 0.5 + 1.0 / x
+    for _ in range(int(max_iter)):
+        tri = trigamma(y)
+        tet = _tetragamma(y)
+        if tet == 0.0:
+            break
+        d = tri * (1.0 - tri / x) / tet
+        y += d
+        if -d / y < tol:
+            break
+    return y
+
+
+def ebayes(sigma2, df, robust_floor=1e-12):
+    r"""Smyth (2004) section 6.2: estimate :math:`d_0` and :math:`s_0^2`
+    and moderate the variances.
+
+    ``sigma2`` are the gene-wise residual variances :math:`s_g^2` and ``df``
+    their degrees of freedom :math:`d_g` (a scalar or one per gene).
+
+    Returns ``{"d0", "s0_sq", "s2_post", "df_total", "no_gene_variation"}``
+    where ``s2_post`` is :math:`\tilde s_g^2` and ``df_total`` is
+    :math:`d_g + d_0`.
+    """
+    s2 = [float(v) for v in sigma2]
+    G = len(s2)
+    if G == 0:
+        raise ValueError("limmav: no variances to moderate")
+    dg = [float(df)] * G if not isinstance(df, (list, tuple)) else \
+        [float(v) for v in df]
+    if len(dg) != G:
+        raise ValueError("limmav: one degrees-of-freedom value per gene")
+    use = [g for g in range(G) if s2[g] > robust_floor and dg[g] > 0]
+    if not use:
+        raise ValueError("limmav: every gene has zero variance or zero "
+                         "degrees of freedom")
+    e = [math.log(s2[g]) - digamma(dg[g] / 2.0) + math.log(dg[g] / 2.0)
+         for g in use]
+    ebar = sum(e) / len(e)
+    n = len(e)
+    if n > 1:
+        target = sum((v - ebar) ** 2 for v in e) * n / (n - 1.0) / n
+    else:
+        target = 0.0
+    target -= sum(trigamma(dg[g] / 2.0) for g in use) / len(use)
+    if target <= 0.0:
+        # "there is no evidence that the underlying variances vary between
+        # genes so d0 is set to positive infinity and s0^2 = exp(ebar)"
+        d0 = float("inf")
+        s0_sq = math.exp(ebar)
+        post = [s0_sq] * G
+        return {"d0": d0, "s0_sq": s0_sq, "s2_post": post,
+                "df_total": [float("inf")] * G,
+                "no_gene_variation": True}
+    d0 = 2.0 * trigamma_inverse(target)
+    s0_sq = math.exp(ebar + digamma(d0 / 2.0) - math.log(d0 / 2.0))
+    post = [(d0 * s0_sq + dg[g] * s2[g]) / (d0 + dg[g])
+            if dg[g] > 0 else s0_sq for g in range(G)]
+    return {"d0": d0, "s0_sq": s0_sq, "s2_post": post,
+            "df_total": [dg[g] + d0 for g in range(G)],
+            "no_gene_variation": False}
+
+
 def _ols(X, y, w=None):
     """(Weighted) least squares: returns (beta, fitted, resid_sd, XtWXinv)."""
     n = len(y)
@@ -239,15 +398,22 @@ def voom_weights(counts, design, lib_sizes=None, span=0.5):
 
 
 def weighted_lm(y, X, w, contrast):
-    """Weighted least squares with an ordinary t-test on a contrast."""
+    r"""Weighted least squares with a t-test on a contrast.
+
+    Returns ``(estimate, se, t, df, sd, v_unscaled)`` where ``v_unscaled``
+    is :math:`v_{gj} = c'(X'WX)^{-1}c` -- the variance factor Smyth's
+    moderated statistic multiplies by :math:`\tilde s_g^2` instead of by
+    the gene's own :math:`s_g^2`.
+    """
     beta, fit, sd, inv, df = _ols(X, y, w)
     p = len(X[0])
     est = sum(contrast[a] * beta[a] for a in range(p))
-    var = sum(contrast[a] * inv[a][b] * contrast[b]
-              for a in range(p) for b in range(p)) * sd * sd
+    v_un = sum(contrast[a] * inv[a][b] * contrast[b]
+               for a in range(p) for b in range(p))
+    var = v_un * sd * sd
     se = math.sqrt(max(var, 0.0))
     t = est / se if se > 0 else 0.0
-    return est, se, t, df, sd
+    return est, se, t, df, sd, v_un
 
 
 def _t_sf(t, df):
@@ -297,7 +463,7 @@ def _t_sf(t, df):
 
 
 def limmav(counts, design, contrast=None, lib_sizes=None, span=0.5,
-           weights=True):
+           weights=True, moderate=True):
     r"""voom-weighted differential expression.
 
     Parameters
@@ -318,6 +484,10 @@ def limmav(counts, design, contrast=None, lib_sizes=None, span=0.5,
     weights : bool
         ``False`` runs the same pipeline unweighted, which is the
         comparison the paper's simulations make.
+    moderate : bool
+        Apply Smyth's (2004) empirical Bayes moderation, which is what the
+        voom paper feeds these weights into. ``False`` leaves the ordinary
+        weighted-least-squares t-statistics.
 
     Returns
     -------
@@ -361,13 +531,31 @@ def limmav(counts, design, contrast=None, lib_sizes=None, span=0.5,
         raise ValueError("limmav: the contrast must have one entry per "
                          "coefficient (%d)" % p)
     est, se, tt, pv = [], [], [], []
+    sd2, vun = [], []
     df = m - p
     for g in range(G):
-        e, s, t, df, _ = weighted_lm(y[g], X, W[g] if weights else None, c)
+        e, s, t, df, sdev, v_un = weighted_lm(y[g], X,
+                                              W[g] if weights else None, c)
         est.append(e)
         se.append(s)
         tt.append(t)
+        sd2.append(sdev * sdev)
+        vun.append(v_un)
         pv.append(_t_sf(t, df))
+    eb = None
+    if moderate:
+        eb = ebayes(sd2, df)
+        se, tt, pv = [], [], []
+        for g in range(G):
+            s_post = math.sqrt(eb["s2_post"][g])
+            se_g = s_post * math.sqrt(max(vun[g], 0.0))
+            t_g = est[g] / se_g if se_g > 0 else 0.0
+            dtot = eb["df_total"][g]
+            se.append(se_g)
+            tt.append(t_g)
+            pv.append(_t_sf(t_g, dtot) if dtot != float("inf")
+                      else 2.0 * (1.0 - 0.5 * (1.0 + math.erf(
+                          abs(t_g) / math.sqrt(2.0)))))
     padj = benjamini_hochberg(pv)
     return RichResult(payload={
         "estimate": est,
@@ -377,6 +565,12 @@ def limmav(counts, design, contrast=None, lib_sizes=None, span=0.5,
         "pvalue": pv,
         "padj": padj,
         "df": df,
+        "df_total": None if eb is None else eb["df_total"],
+        "d0": None if eb is None else eb["d0"],
+        "s0_sq": None if eb is None else eb["s0_sq"],
+        "s2_gene": sd2,
+        "s2_post": None if eb is None else eb["s2_post"],
+        "moderated": bool(moderate),
         "voom_weights": W,
         "log_cpm": y,
         "mean_log_count": v["mean_log_count"],
@@ -387,9 +581,11 @@ def limmav(counts, design, contrast=None, lib_sizes=None, span=0.5,
         "weighted": bool(weights),
         "n_genes": G,
         "n_samples": m,
-        "note": "limma's empirical Bayes variance moderation (Smyth 2004) "
-                "is NOT applied; these are ordinary weighted-least-squares "
-                "t-statistics",
+        "note": ("moderated t: gene-wise variances shrunk toward s0^2 on "
+                 "d0 prior degrees of freedom and tested on d_g + d0 "
+                 "(Smyth 2004)" if moderate else
+                 "moderate=False: ordinary weighted-least-squares "
+                 "t-statistics, no empirical Bayes"),
         "method": "voom precision weights (Law, Chen, Shi & Smyth 2014)",
     })
 
@@ -403,7 +599,12 @@ def cheatsheet():
             "a piecewise linear lo(), map each FITTED log-cpm to a fitted "
             "log-count, and the weight is lo()^-4 -- an inverse variance, "
             "per OBSERVATION not per gene, because libraries differ in "
-            "depth. Empirical Bayes moderation is NOT here.")
+            "depth. Then Smyth (2004) empirical Bayes: s~^2 = (d0 s0^2 + "
+            "d_g s_g^2)/(d0 + d_g), t~ = beta/(s~ sqrt(v)), tested on "
+            "d_g + d0 degrees of freedom, with d0 and s0^2 from matching "
+            "the first two moments of log s_g^2. d0 = 0 gives back the "
+            "ordinary t; d0 = infinity gives a statistic proportional to "
+            "beta.")
 
 
 # compact aliases

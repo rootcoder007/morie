@@ -2,7 +2,8 @@
 
 import math
 
-from morie.fn.limmav import (limma_voom, limmav, log_cpm, lowess, voom,
+from morie.fn.limmav import (digamma, ebayes, limma_voom, limmav, log_cpm,
+                             lowess, trigamma, trigamma_inverse, voom,
                              voom_weights)
 
 
@@ -195,3 +196,85 @@ def test_validation():
 
 def test_alias():
     assert voom is limmav and limma_voom is limmav
+
+
+def test_digamma_and_trigamma_against_closed_forms():
+    assert abs(digamma(1.0) + 0.5772156649015329) < 1e-10
+    assert abs(digamma(0.5) -
+               (-0.5772156649015329 - 2.0 * math.log(2.0))) < 1e-10
+    for x in (0.3, 1.7, 4.2, 30.0):
+        assert abs(digamma(x + 1.0) - digamma(x) - 1.0 / x) < 1e-10
+    assert abs(trigamma(1.0) - math.pi ** 2 / 6.0) < 1e-12
+
+
+def test_trigamma_inverse_round_trip():
+    for y in (0.4, 1.0, 3.7, 25.0):
+        assert abs(trigamma_inverse(trigamma(y)) - y) < 1e-6
+    # The paper's overflow guards.
+    assert abs(trigamma_inverse(1e8) - 1e-4) < 1e-6
+    assert abs(trigamma_inverse(1e-8) - 1e8) < 1.0
+
+
+def _chisq(rnd, df):
+    tot = 0.0
+    for _ in range(int(df)):
+        u1 = max(rnd(), 1e-12)
+        z = math.sqrt(-2.0 * math.log(u1)) * math.cos(2 * math.pi * rnd())
+        tot += z * z
+    return tot
+
+
+def test_ebayes_recovers_its_own_hyperparameters():
+    d0, s0, dg = 6.0, 2.0, 8
+    rnd = _lcg(5)
+    s2 = []
+    for _ in range(3000):
+        sigma2 = d0 * s0 / _chisq(rnd, d0)
+        s2.append(sigma2 * _chisq(rnd, dg) / dg)
+    eb = ebayes(s2, dg)
+    assert abs(eb["d0"] - d0) < 0.6
+    assert abs(eb["s0_sq"] - s0) < 0.2
+    for g in (0, 100, 2999):
+        want = (eb["d0"] * eb["s0_sq"] + dg * s2[g]) / (eb["d0"] + dg)
+        assert abs(eb["s2_post"][g] - want) < 1e-12
+        assert abs(eb["df_total"][g] - (dg + eb["d0"])) < 1e-12
+    # Every posterior variance lies between the prior and the gene's own.
+    assert all(min(eb["s0_sq"], s2[g]) - 1e-12 <= eb["s2_post"][g] <=
+               max(eb["s0_sq"], s2[g]) + 1e-12 for g in range(len(s2)))
+
+
+def test_ebayes_degenerate_branch():
+    flat = ebayes([1.3] * 200, 8)
+    assert flat["d0"] == float("inf")
+    assert flat["no_gene_variation"]
+    assert all(abs(v - flat["s2_post"][0]) < 1e-12 for v in flat["s2_post"])
+
+
+def test_moderation_is_on_by_default_and_can_be_turned_off():
+    K, _ = _panel(n_genes=300, seed=31)
+    mod = limmav(K, DESIGN)
+    ord_ = limmav(K, DESIGN, moderate=False)
+    assert mod["moderated"] and not ord_["moderated"]
+    assert mod["d0"] > 0 and mod["s0_sq"] > 0
+    assert ord_["d0"] is None and ord_["df_total"] is None
+    assert mod["df_total"][0] > ord_["df"]
+    # Moderation touches the denominator only.
+    assert all(abs(mod["estimate"][g] - ord_["estimate"][g]) < 1e-12
+               for g in range(len(K)))
+    tiny = sorted(range(len(K)), key=lambda g: mod["s2_gene"][g])[:30]
+    assert all(mod["s2_post"][g] > mod["s2_gene"][g] for g in tiny)
+    assert sum(1 for g in tiny
+               if abs(mod["t"][g]) < abs(ord_["t"][g])) >= 28
+    big = sorted(range(len(K)), key=lambda g: -mod["s2_gene"][g])[:30]
+    assert all(mod["s2_post"][g] < mod["s2_gene"][g] for g in big)
+
+
+def test_moderation_buys_power_at_n_equals_three():
+    K, truth = _panel(n_genes=200, seed=77, up=20, down=20)
+    mod = limmav(K, DESIGN)
+    ord_ = limmav(K, DESIGN, moderate=False)
+    tp_m = sum(1 for g in range(200)
+               if mod["padj"][g] < 0.1 and truth[g])
+    tp_o = sum(1 for g in range(200)
+               if ord_["padj"][g] < 0.1 and truth[g])
+    assert tp_m >= tp_o + 10

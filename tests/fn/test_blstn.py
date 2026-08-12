@@ -3,7 +3,7 @@
 import math
 
 from morie.fn.blstn import (blast, blast_pvalue, blstn, estimate_gumbel,
-                            msp_exact, word_hits)
+                            karlin_altschul, msp_exact, word_hits)
 
 ALPHA = "ACGT"
 
@@ -120,7 +120,11 @@ def test_database_search_finds_the_planted_subject():
     assert out["hsps"][0]["subject"] == 3
     assert out["hsps"][0]["sstart"] == 40
     assert out["hsps"][0]["pvalue"] < 1e-3
-    assert "pvalue" not in blstn(target, db, w=8)["hsps"][0]
+    # lambda and K default to the Karlin-Altschul closed forms, so a
+    # p-value is reported without being supplied.
+    auto = blstn(target, db, w=8)
+    assert auto["hsps"][0]["pvalue"] < 1e-3
+    assert auto["lam"] > 0 and auto["K"] > 0
 
 
 def test_validation():
@@ -139,3 +143,55 @@ def test_validation():
 
 def test_alias():
     assert blast is blstn
+
+
+def test_karlin_altschul_lambda_is_log3_for_plus_one_minus_one():
+    # For +1/-1 scores on uniform DNA, sum p_i e^{lambda s_i} = 1 becomes
+    # (1/4)e^{lambda} + (3/4)e^{-lambda} = 1, whose positive root is log 3.
+    ka = karlin_altschul(match=1, mismatch=-1)
+    assert abs(ka["lam"] - math.log(3.0)) < 1e-10
+    assert abs(sum(p * math.exp(ka["lam"] * s)
+                   for s, p in ka["distribution"].items()) - 1.0) < 1e-12
+
+
+def test_karlin_altschul_requirements_and_bounds():
+    ka = karlin_altschul(match=5, mismatch=-4)
+    assert ka["lam"] > 0 and 0 < ka["K"] < 1
+    # K- <= K* <= K+, and the module reports the conservative upper bound.
+    assert ka["K_lower"] <= ka["K_upper"]
+    assert ka["K"] == ka["K_upper"]
+    assert ka["terms"] < 1000        # the series converged inside the cap
+    # the bracket is exactly a factor exp(lam * delta) wide
+    assert abs(ka["K_upper"] / ka["K_lower"] -
+               math.exp(ka["lam"] * ka["delta"])) < 1e-9
+    # The mean score must be negative and some score positive, else the
+    # equation has no positive root.
+    for call in (lambda: karlin_altschul(match=1, mismatch=-0.01),
+                 lambda: karlin_altschul(match=-1, mismatch=-2)):
+        try:
+            call()
+            raise AssertionError("expected ValueError")
+        except ValueError:
+            pass
+
+
+def test_karlin_altschul_bounds_meet_when_the_span_is_small():
+    # K- and K+ differ by the factor e^{lambda d}; a finer score lattice
+    # squeezes them together.
+    # the bracket width is exp(lam * delta); +5/-4 has the gentler lambda
+    coarse = karlin_altschul(dist={2: 0.25, -1: 0.75})
+    fine = karlin_altschul(match=5, mismatch=-4)
+    assert coarse["delta"] == fine["delta"] == 1
+    assert fine["lam"] < coarse["lam"]
+    assert (fine["K_upper"] / fine["K_lower"] <
+            coarse["K_upper"] / coarse["K_lower"])
+
+
+def test_non_integer_scores_are_rejected_not_truncated():
+    for call in (lambda: karlin_altschul(dist={0.05: 0.25, -0.02: 0.75}),
+                 lambda: karlin_altschul(match=1, mismatch=-0.01)):
+        try:
+            call()
+            raise AssertionError('expected ValueError')
+        except ValueError as e:
+            assert 'integer lattice' in str(e)
