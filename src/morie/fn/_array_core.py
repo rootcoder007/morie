@@ -104,6 +104,32 @@ def _dtype_cast(v, name):
     return iv
 
 
+def _mask_positions(sel, axis_len):
+    """Positions selected by ``sel`` if it is a boolean mask, else None.
+
+    numpy tells a mask from an integer index array by dtype. This core is
+    float-backed, so it uses the same convention the bare-index path has
+    always used: an explicit ``_is_mask`` tag (set by comparisons), or a
+    selector of exactly the axis length whose entries are all True/False
+    -- Python bools, not the floats 0.0 and 1.0, which stay integer
+    indices. ``_is_index`` always wins, so an index array is never
+    mistaken for a mask.
+    """
+    if getattr(sel, "_is_index", False):
+        return None
+    vals = sel._flat() if isinstance(sel, marr) else (
+        sel.tolist() if hasattr(sel, "tolist") and
+        not isinstance(sel, (list, tuple)) else list(sel))
+    if getattr(sel, "_is_mask", False):
+        return [k for k, m in enumerate(vals) if m]
+    if getattr(getattr(sel, "dtype", None), "kind", "") == "b":
+        return [k for k, m in enumerate(vals) if m]
+    if len(vals) == axis_len and vals and \
+            _pyall(isinstance(v, bool) for v in vals):
+        return [k for k, m in enumerate(vals) if m]
+    return None
+
+
 class marr:
     """Minimal array: nested lists of floats, 1-D or 2-D."""
 
@@ -234,24 +260,20 @@ class marr:
                     # array-of-rows selector: mask or integer indices
                     iv = i._flat() if isinstance(i, marr) else (
                         i.tolist() if hasattr(i, "tolist") else list(i))
-                    if getattr(i, "_is_mask", False) or (
-                            not getattr(i, "_is_index", False)
-                            and len(iv) == self.shape[0]
-                            and _pyall(isinstance(v, bool) or v in (0.0, 1.0)
-                                       for v in iv)
-                            and (getattr(i, "_is_mask", False)
-                                 or _pyall(isinstance(v, bool)
-                                           for v in iv))):
-                        rows = [self.data[k] for k, m in enumerate(iv) if m]
+                    pos = _mask_positions(i, self.shape[0])
+                    if pos is not None:
+                        rows = [self.data[k] for k in pos]
                     else:
                         rows = [self.data[int(v)] for v in iv]
                     if isinstance(j, slice):
                         return marr([r[j] for r in rows])
                     return marr([r[int(j)] for r in rows])
                 if isinstance(i, slice) and isinstance(j, (marr, list)):
-                    # column-array selector: x[:, idx]
-                    jv = [int(v) for v in
-                          (j._flat() if isinstance(j, marr) else j)]
+                    # column selector: x[:, idx] or x[:, mask]
+                    jv = _mask_positions(j, self.shape[1])
+                    if jv is None:
+                        jv = [int(v) for v in
+                              (j._flat() if isinstance(j, marr) else j)]
                     return marr([[r[c] for c in jv]
                                  for r in self.data[i]])
                 if isinstance(i, slice) or isinstance(j, slice):
@@ -268,11 +290,13 @@ class marr:
                     # x[row, mask_or_index]
                     row = self.data[i]
                     jv = j._flat() if isinstance(j, marr) else list(j)
-                    if getattr(j, "_is_mask", False) or (
-                            not getattr(j, "_is_index", False)
-                            and len(jv) == len(row)
-                            and _pyall(v in (0.0, 1.0) for v in jv)):
-                        return marr([v for v, m2 in zip(row, jv) if m2])
+                    pos = _mask_positions(j, len(row))
+                    if pos is None and not getattr(j, "_is_index", False) \
+                            and len(jv) == len(row) \
+                            and _pyall(v in (0.0, 1.0) for v in jv):
+                        pos = [k for k, m2 in enumerate(jv) if m2]
+                    if pos is not None:
+                        return marr([row[k] for k in pos])
                     return marr([row[int(v)] for v in jv])
                 return self.data[i][j]
             raise ValueError("unsupported index for 1-D")
@@ -1149,6 +1173,15 @@ def _is_object_like(x, dtype):
     return False
 
 
+def _all_bool_payload(x):
+    """True when ``x`` is a (possibly nested) sequence of Python bools."""
+    if isinstance(x, bool):
+        return True
+    if isinstance(x, (list, tuple)):
+        return bool(x) and _pyall(_all_bool_payload(v) for v in x)
+    return False
+
+
 def asarray(x, dtype=None):
     if isinstance(x, oarr) and dtype is None:
         return x
@@ -1168,7 +1201,20 @@ def asarray(x, dtype=None):
     if isinstance(x, marr):
         return x
     try:
-        return marr(x)
+        out = marr(x)
+    except (TypeError, ValueError):
+        pass
+    else:
+        # numpy keeps dtype=bool for a list of bools, and indexing
+        # depends on it: x[:, mask] must select the True columns, not the
+        # columns numbered by True and False. This core is float-backed,
+        # so the boolean-ness has to be carried as a tag or it is lost at
+        # construction and the mask silently becomes an integer index.
+        if dtype is None and _all_bool_payload(x):
+            out._is_mask = True
+        return out
+    try:
+        raise ValueError
     except (TypeError, ValueError):
         # non-numeric payload (strings via an untyped container):
         # numpy would build an object array here
