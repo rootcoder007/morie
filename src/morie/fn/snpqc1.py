@@ -38,11 +38,52 @@ the exact conditional test -- the probability of the observed heterozygote
 count given the allele counts, summed over tables no more probable than the
 observed one -- which is what genotype QC normally uses because the
 chi-square approximation fails on rare variants; both are offered
-(``hwe_test``) and neither is attributed to the tutorial. Relatedness is
-reported as the genomic kinship estimated from centred, scaled genotypes,
-compared against the tutorial's 0.2; PLINK's pi-hat is a method-of-moments
-IBD estimate, which is a different statistic, and the difference is stated
-rather than glossed.
+(``hwe_test``) and neither is attributed to the tutorial.
+
+**Relatedness has two routes, and the tutorial's own statistic is the
+default.** ``relatedness="pihat"`` is PLINK's method-of-moments IBD
+estimator, from the tool the tutorial actually invokes:
+
+    Purcell, S., Neale, B., Todd-Brown, K., Thomas, L., Ferreira, M. A. R.,
+    Bender, D., Maller, J., Sklar, P., de Bakker, P. I. W., Daly, M. J., &
+    Sham, P. C. (2007) "PLINK: A Tool Set for Whole-Genome Association and
+    Population-Based Linkage Analyses", *American Journal of Human
+    Genetics* 81(3), 559-575.
+
+Its equations are printed there: conditional on an IBD state :math:`Z`, the
+expected count of SNPs at IBS state :math:`I` is
+:math:`N(I{=}i \mid Z{=}z) = \sum_m P(I{=}i \mid Z{=}z)`, and the moments
+are inverted in order,
+
+.. math::
+
+   P(Z{=}0) &= rac{N(I{=}0)}{N(I{=}0 \mid Z{=}0)} \
+   P(Z{=}1) &= rac{N(I{=}1) - P(Z{=}0)N(I{=}1 \mid Z{=}0)}
+                    {N(I{=}1 \mid Z{=}1)} \
+   P(Z{=}2) &= rac{N(I{=}2) - P(Z{=}0)N(I{=}2 \mid Z{=}0)
+                     - P(Z{=}1)N(I{=}2 \mid Z{=}1)}{N(I{=}2 \mid Z{=}2)},
+
+with :math:`\hat\pi = P(Z{=}2) + 	frac12 P(Z{=}1)`. The paper is explicit
+that "these estimates of P(Z) are not bounded :math:`0 \le x \le 1` and are
+also not constrained to biologically plausible values", and gives the
+bounding rules, which are implemented as printed: if :math:`P(Z{=}0) > 1` it
+is set to 1 and the others to 0; if :math:`P(Z{=}0) < 0` it is set to 0 and
+:math:`P(Z{=}1), P(Z{=}2)` are rescaled by their sum.
+
+The :math:`P(I \mid Z)` table carries PLINK's ascertainment correction, "where
+:math:`T_A` is the total number of nonmissing alleles and :math:`X` and
+:math:`Y` are the number of :math:`A` and :math:`a` alleles, respectively, so
+that :math:`p = X/T_A` and :math:`q = Y/T_A`" -- factors of
+:math:`(X-1)/X` and :math:`T_A/(T_A-1)` and so on, which correct for
+estimating the frequencies from the same sample. ``correction=False`` drops
+them for the textbook large-sample forms, and the anchor shows the two agree
+to three decimals at 4000 alleles and visibly disagree at 40.
+
+``relatedness="kinship"`` is the other route: the genomic kinship from
+centred, scaled genotypes, which lands on the same scale (about 1 for a
+duplicate pair, 0.5 for full sibs, 0.25 at second degree) but is a different
+estimator, not an IBD decomposition. Both are reported; the 0.2 cutoff is
+the tutorial's either way.
 
 Genotypes are counts of the minor allele, 0/1/2, with ``None`` for a missing
 call.
@@ -56,7 +97,7 @@ from ._richresult import RichResult
 
 __all__ = ["snpqc1", "snp_quality_control", "snp_qc", "call_rates", "maf",
            "hwe_pvalue", "heterozygosity", "kinship_matrix", "ld_prune",
-           "sex_check"]
+           "sex_check", "ibd_moments", "pihat_matrix", "ibs_given_ibd"]
 
 
 def _check(genotypes):
@@ -207,6 +248,123 @@ def sex_check(x_genotypes, reported_sex=None, male_min=0.8, female_max=0.2):
     return res
 
 
+def ibs_given_ibd(x_count, y_count, correction=True):
+    r"""PLINK's Table 1: :math:`P(I \mid Z)` for one SNP.
+
+    ``x_count`` and ``y_count`` are the counts of the two alleles among
+    non-missing calls, so :math:`T_A = X + Y`, :math:`p = X/T_A`,
+    :math:`q = Y/T_A`. With ``correction`` the ascertainment factors of the
+    paper's note are applied; without it the textbook large-sample forms
+    are used.
+
+    Returns ``[[P(I=0|Z=0), P(I=1|Z=0), P(I=2|Z=0)],
+    [0, P(I=1|Z=1), P(I=2|Z=1)], [0, 0, 1]]``.
+    """
+    X = float(x_count)
+    Y = float(y_count)
+    T = X + Y
+    if T <= 0:
+        raise ValueError("snpqc1: a SNP with no non-missing alleles")
+    p = X / T
+    q = Y / T
+    if not correction or T < 5 or X < 4 or Y < 4:
+        # textbook forms; also the fallback when the corrected factors
+        # would divide by a count too small to support them
+        z0 = [2 * p * p * q * q,
+              4 * p ** 3 * q + 4 * p * q ** 3,
+              p ** 4 + q ** 4 + 4 * p * p * q * q]
+        z1 = [0.0, 2 * p * q, 1.0 - 2 * p * q]
+        return [z0, z1, [0.0, 0.0, 1.0]]
+
+    t1, t2, t3 = T / (T - 1.0), T / (T - 2.0), T / (T - 3.0)
+    xa, xb, xc = (X - 1.0) / X, (X - 2.0) / X, (X - 3.0) / X
+    ya, yb, yc = (Y - 1.0) / Y, (Y - 2.0) / Y, (Y - 3.0) / Y
+
+    i0z0 = 2 * p * p * q * q * xa * ya * t1 * t2 * t3
+    i1z0 = (4 * p ** 3 * q * xa * xb * t1 * t2 * t3 +
+            4 * p * q ** 3 * ya * yb * t1 * t2 * t3)
+    i2z0 = (p ** 4 * xa * xb * xc * t1 * t2 * t3 +
+            q ** 4 * ya * yb * yc * t1 * t2 * t3 +
+            4 * p * p * q * q * xa * ya * t1 * t2 * t3)
+    i1z1 = (2 * p * p * q * xa * t1 * t2 + 2 * p * q * q * ya * t1 * t2)
+    i2z1 = (p ** 3 * xa * xb * t1 * t2 + q ** 3 * ya * yb * t1 * t2 +
+            p * p * q * xa * t1 * t2 + p * q * q * ya * t1 * t2)
+    return [[i0z0, i1z0, i2z0], [0.0, i1z1, i2z1], [0.0, 0.0, 1.0]]
+
+
+def ibd_moments(genotypes, correction=True):
+    r"""PLINK's method-of-moments IBD estimates for every pair.
+
+    Returns ``(Z, pihat)`` where ``Z[i][k]`` is
+    ``(P(Z=0), P(Z=1), P(Z=2))`` after the paper's bounding rules and
+    ``pihat[i][k] = P(Z=2) + P(Z=1)/2``.
+    """
+    G, n, m = _check(genotypes)
+    tables = []
+    for j in range(m):
+        called = [G[i][j] for i in range(n) if G[i][j] is not None]
+        if not called:
+            tables.append(None)
+            continue
+        X = sum(called)                       # copies of the minor allele
+        Y = 2 * len(called) - X
+        if X <= 0 or Y <= 0:
+            tables.append(None)               # monomorphic: uninformative
+            continue
+        tables.append(ibs_given_ibd(X, Y, correction))
+
+    Z = [[None] * n for _ in range(n)]
+    P = [[0.0] * n for _ in range(n)]
+    for i in range(n):
+        Z[i][i] = (0.0, 0.0, 1.0)
+        P[i][i] = 1.0
+        for k in range(i + 1, n):
+            obs = [0.0, 0.0, 0.0]
+            exp = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]
+            for j in range(m):
+                if tables[j] is None:
+                    continue
+                gi, gk = G[i][j], G[k][j]
+                if gi is None or gk is None:
+                    continue
+                ibs = 2 - int(abs(gi - gk))
+                obs[ibs] += 1.0
+                for z in range(3):
+                    for t in range(3):
+                        exp[z][t] += tables[j][z][t]
+            if exp[0][0] <= 0:
+                Z[i][k] = Z[k][i] = (1.0, 0.0, 0.0)
+                continue
+            z0 = obs[0] / exp[0][0]
+            z1 = ((obs[1] - z0 * exp[0][1]) / exp[1][1]
+                  if exp[1][1] > 0 else 0.0)
+            z2 = ((obs[2] - z0 * exp[0][2] - z1 * exp[1][2]) / exp[2][2]
+                  if exp[2][2] > 0 else 0.0)
+            # the paper's bounding rules, as printed
+            if z0 > 1.0:
+                z0, z1, z2 = 1.0, 0.0, 0.0
+            elif z0 < 0.0:
+                z0 = 0.0
+                s = z1 + z2
+                if s > 0:
+                    z1, z2 = z1 / s, z2 / s
+                else:
+                    z1, z2 = 0.0, 1.0
+            z1 = max(z1, 0.0)
+            z2 = max(z2, 0.0)
+            tot = z0 + z1 + z2
+            if tot > 0:
+                z0, z1, z2 = z0 / tot, z1 / tot, z2 / tot
+            Z[i][k] = Z[k][i] = (z0, z1, z2)
+            P[i][k] = P[k][i] = z2 + 0.5 * z1
+    return Z, P
+
+
+def pihat_matrix(genotypes, correction=True):
+    r"""Just the :math:`\hat\pi = P(Z{=}2) + \tfrac12 P(Z{=}1)` matrix."""
+    return ibd_moments(genotypes, correction)[1]
+
+
 def kinship_matrix(genotypes):
     r"""Genomic kinship from centred, scaled genotypes.
 
@@ -287,7 +445,7 @@ def snpqc1(genotypes, phenotype=None, trait="binary", geno_relaxed=0.2,
            mind_relaxed=0.2, geno=0.02, mind=0.02, maf_threshold=0.01,
            hwe_case=1e-10, hwe_control=1e-6, hwe_quantitative=1e-6,
            het_sd=3.0, pihat=0.2, hwe_test="exact", x_genotypes=None,
-           reported_sex=None):
+           reported_sex=None, relatedness="pihat", ibd_correction=True):
     r"""Run the tutorial's QC steps and report what each one removes.
 
     Defaults are the tutorial's own thresholds. ``trait`` selects the HWE
@@ -425,8 +583,15 @@ def snpqc1(genotypes, phenotype=None, trait="binary", geno_relaxed=0.2,
     inds = [i for i in inds if i not in set(drop)]
 
     # step 6, relatedness on pruned SNPs
+    if relatedness not in ("pihat", "kinship"):
+        raise ValueError("snpqc1: relatedness must be 'pihat' (PLINK's "
+                         "method-of-moments IBD) or 'kinship'")
     pruned = ld_prune(sub())
-    K = kinship_matrix([[G[i][snps[t]] for t in pruned] for i in inds])
+    pruned_geno = [[G[i][snps[t]] for t in pruned] for i in inds]
+    if relatedness == "pihat":
+        Zstates, K = ibd_moments(pruned_geno, ibd_correction)
+    else:
+        Zstates, K = None, kinship_matrix(pruned_geno)
     drop = []
     for a in range(len(inds)):
         for b in range(a + 1, len(inds)):
@@ -447,7 +612,10 @@ def snpqc1(genotypes, phenotype=None, trait="binary", geno_relaxed=0.2,
         "maf": freqs,
         "hwe_p": hwe_p,
         "heterozygosity": het,
+        "relatedness_matrix": K,
         "kinship": K,
+        "ibd_states": Zstates,
+        "relatedness": relatedness,
         "pruned_snps": [snps[t] for t in pruned],
         "thresholds": {"geno_relaxed": geno_relaxed,
                        "mind_relaxed": mind_relaxed, "geno": geno,
@@ -457,9 +625,12 @@ def snpqc1(genotypes, phenotype=None, trait="binary", geno_relaxed=0.2,
                        "het_sd": het_sd, "pihat": pihat},
         "trait": trait,
         "hwe_test": hwe_test,
-        "note": "relatedness uses a genomic kinship estimate, not PLINK's "
-                "method-of-moments pi-hat; the 0.2 cutoff is the "
-                "tutorial's",
+        "note": ("relatedness by PLINK's method-of-moments IBD (Purcell "
+                 "et al. 2007), pi-hat = P(Z=2) + P(Z=1)/2"
+                 if relatedness == "pihat" else
+                 "relatedness by genomic kinship, NOT PLINK's pi-hat; "
+                 "pass relatedness='pihat' for the IBD estimator") +
+                "; the 0.2 cutoff is the tutorial's",
         "method": "GWAS quality control (Marees et al. 2018, Table 1)",
     })
 
@@ -473,7 +644,12 @@ def cheatsheet():
             "and 1e-6 in controls for binary traits, 1e-6 for "
             "quantitative; heterozygosity +-3 SD from the mean; "
             "relatedness above 0.2 after LD pruning. HWE by exact "
-            "conditional test or chi-square; kinship is not pi-hat.")
+            "conditional test or chi-square. Relatedness has TWO routes: "
+            "PLINK's method-of-moments IBD (Purcell 2007) giving "
+            "pi-hat = P(Z=2) + P(Z=1)/2 with the paper's bounding rules "
+            "and ascertainment correction, which is the default and the "
+            "statistic the 0.2 cutoff was written for, or a genomic "
+            "kinship on the same scale.")
 
 
 # compact aliases
