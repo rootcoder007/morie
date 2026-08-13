@@ -59,6 +59,13 @@ def gwPot(gas, horizon=100):
     et al. (2020), SF6 lifetime from AR6 Sec. 2.2.4.3, as stated in
     the table caption.
 
+    Hodnebrog, Ø., Aamaas, B., Fuglestvedt, J. S., Marston, G., Myhre,
+    G., Nielsen, C. J., Sandstad, M., Shine, K. P. & Wallington, T. J.
+    (2020) "Updated Global Warming Potentials and Radiative
+    Efficiencies of Halocarbons and Other Weak Atmospheric Absorbers",
+    *Reviews of Geophysics* 58(3), e2019RG000691,
+    doi:10.1029/2019RG000691 (local copy in fetched-wave3).
+
     Parameters
     ----------
     gas : str
