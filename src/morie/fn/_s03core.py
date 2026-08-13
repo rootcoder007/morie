@@ -498,13 +498,23 @@ def besselk(nu, x, terms=160):
 # performs the identical arithmetic in the identical order.
 
 
-def logit_irls(X, y, iters=60, ridge=1e-10, tol=1e-13):
+def logit_irls(X, y, iters=60, ridge=1e-10, tol=1e-13, penalty=0.0):
     """Logistic regression by iteratively reweighted least squares.
 
     Newton-Raphson on the log-likelihood, which for the canonical link
     is exactly IRLS: beta <- beta + (X' W X)^-1 X' (y - p), with
     W = diag(p (1 - p)).  Starting value zero, so the first step is the
     usual one from the sample mean.
+
+    `penalty` adds a ridge term to the OBJECTIVE, maximising
+    loglik(beta) - (penalty/2) sum_{j>=1} beta_j^2, so the score gains
+    -penalty*beta and the Hessian gains penalty*I on the slopes. The
+    intercept is left unpenalized: shrinking it would move the fitted
+    marginal prevalence rather than the confounding relationship.
+
+    `ridge` is a different thing and keeps its old meaning -- a
+    numerical stabilizer inside the Newton-step solve, with no effect
+    on the fitted coefficients.
     """
     n = len(X)
     p = len(X[0]) if n else 0
@@ -521,6 +531,11 @@ def logit_irls(X, y, iters=60, ridge=1e-10, tol=1e-13):
                 Xtr[a] += X[i][a] * r
                 for b in range(p):
                     XtWX[a][b] += X[i][a] * w[i] * X[i][b]
+        pen = float(penalty)
+        if pen > 0.0:
+            for a in range(1, p):          # slopes only, not the intercept
+                Xtr[a] -= pen * beta[a]
+                XtWX[a][a] += pen
         step = ridgesolve(XtWX, Xtr, ridge)
         mx = 0.0
         for a in range(p):
@@ -628,7 +643,7 @@ def mammen(i):
 # --------------------------------------------------------------------
 
 
-def treatment_density(A, X, kind="binary", ridge=1e-8):
+def treatment_density(A, X, kind="binary", ridge=1e-8, penalty=0.0):
     """f(A | X) evaluated at each observed A.
 
     "binary" fits a logistic model and returns g^A (1-g)^(1-A), the
@@ -642,7 +657,7 @@ def treatment_density(A, X, kind="binary", ridge=1e-8):
     n = len(av)
     Z = design(X, n)
     if kind == "binary":
-        b = logit_irls(Z, av, 60, ridge)
+        b = logit_irls(Z, av, 60, ridge, penalty=float(penalty))
         g = [sigmoid(v) for v in matvec(Z, b)]
         dens = [g[i] if av[i] > 0.5 else 1.0 - g[i] for i in range(n)]
         return dens, {"coef": b, "prob": g}
@@ -665,7 +680,7 @@ def treatment_density(A, X, kind="binary", ridge=1e-8):
 
 
 def ip_weights(A, X_denom, X_num=None, kind="binary", stabilize=True,
-               trim=None, ridge=1e-8):
+               trim=None, ridge=1e-8, penalty=0.0):
     """One time point's IP weight, Sec. 12.3.
 
     `X_num` is the numerator model's covariates. Passing None gives the
@@ -688,7 +703,8 @@ def ip_weights(A, X_denom, X_num=None, kind="binary", stabilize=True,
     comes out low, so the mean-1 check stops being informative. It is
     reported rather than silently tolerated.
     """
-    den, dinfo = treatment_density(A, X_denom, kind=kind, ridge=ridge)
+    den, dinfo = treatment_density(A, X_denom, kind=kind, ridge=ridge,
+                                   penalty=penalty)
     n = len(den)
     for i in range(n):
         if den[i] <= 0.0:
@@ -700,6 +716,9 @@ def ip_weights(A, X_denom, X_num=None, kind="binary", stabilize=True,
         num = [1.0] * n
         ninfo = None
     else:
+        # the numerator model is not penalized: it is the stabilizing
+        # factor f(A) or f(A | Abar), and shrinking it would change the
+        # estimand rather than the weights' variance
         num, ninfo = treatment_density(A, X_num, kind=kind, ridge=ridge)
     w = [num[i] / den[i] for i in range(n)]
     diag = _weight_diagnostics(w, dinfo, ninfo, kind, stabilize)
@@ -748,7 +767,7 @@ def _weight_diagnostics(w, dinfo, ninfo, kind, stabilize):
 
 
 def ip_weights_history(A_hist, L_hist, kind="binary", stabilize=True,
-                       trim=None, ridge=1e-8):
+                       trim=None, ridge=1e-8, penalty=0.0):
     """Sec. 21.2's product over time.
 
     `A_hist` is a list of K treatment vectors, one per time point;
@@ -788,7 +807,8 @@ def ip_weights_history(A_hist, L_hist, kind="binary", stabilize=True,
         den_X = _bind_cols(None, lbar + past, n)
         num_X = _bind_cols(None, past, n) if past else None
         wk, info = ip_weights(ak, den_X, num_X, kind=kind,
-                              stabilize=stabilize, ridge=ridge)
+                              stabilize=stabilize, ridge=ridge,
+                              penalty=penalty)
         for i in range(n):
             w[i] *= wk[i]
         per_time.append({"time": k, "weight": wk, "info": info})
