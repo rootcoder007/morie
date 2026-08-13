@@ -1,7 +1,12 @@
 # morie.fn -- genomic-prediction core (rootcoder007/morie)
 """Shared machinery for the MVSML shelf.
 
-Everything follows Montesinos López, Montesinos López & Crossa (2022),
+Everything follows Montesinos Lopez, O. A., Montesinos Lopez, A. & Crossa, J. (2022)
+*Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer, Cham, ISBN 978-3-030-89009-4,
+doi:10.1007/978-3-030-89010-0 (open access);
+the short form below is Montesinos López, Montesinos López & Crossa
+(2022),
 *Multivariate Statistical Machine Learning Methods for Genomic
 Prediction*, Springer (open access, DOI 10.1007/978-3-030-89010-0) --
 equations checked against the library PDF:
@@ -1094,7 +1099,9 @@ def bayes_b_gibbs(y, X, n_iter=2000, burn_in=500, pi0=0.5,
 def bayes_lasso_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
                       R2=0.5, lam2=1.0, seed=42):
     """The Bayesian Lasso of sec. 6.6 p.184 in the Park and Casella
-    (2008) scale-mixture form quoted there:
+    (2008) scale-mixture form quoted there -- Park, T. & Casella, G.
+    (2008) "The Bayesian Lasso", *Journal of the American Statistical
+    Association* 103(482), 681-686, doi:10.1198/016214508000000337:
     beta_j | tau_j ~ N(0, tau_j sigma2) with tau_j ~ Exp(2/lambda^2),
     which is the double exponential L(0, sqrt(sigma2)/lambda) after
     marginalizing tau.  The heavier tails shrink small effects harder
@@ -1457,7 +1464,10 @@ def ordinal_probabilities(eta, thresholds, link="probit"):
 
 def _rtruncnorm(rng, mean, sd, lo, hi):
     """Draw from N(mean, sd^2) truncated to (lo, hi) by inverting the
-    CDF, which is the step the Albert and Chib (1993) sampler of
+    CDF, which is the step the Albert, J. H. & Chib, S. (1993) "Bayesian
+    analysis of binary and polychotomous response data", *Journal of the
+    American Statistical Association* 88(422), 669-679,
+    doi:10.1080/01621459.1993.10476321, sampler of
     p.212 needs for the latent variables."""
     a = _norm_cdf((lo - mean) / sd) if lo > -1e300 else 0.0
     b = _norm_cdf((hi - mean) / sd) if hi < 1e300 else 1.0
@@ -1614,7 +1624,10 @@ def ordinal_probit_gblup_gibbs(y, G, n_iter=1500, burn_in=400,
 # ------- ordinal logistic / multinomial / Poisson (ch. 7 pp.221-233)
 def _rpolya_gamma(rng, b, c, n_terms=120):
     """PG(b, c) by the Devroye-style infinite convolution used in
-    Polson, Scott and Windle (2013), the augmentation the book adopts
+    Polson, N. G., Scott, J. G. & Windle, J. (2013) "Bayesian inference
+    for logistic models using Polya-Gamma latent variables", *Journal of
+    the American Statistical Association* 108(504), 1339-1349,
+    doi:10.1080/01621459.2013.829001 -- the augmentation the book adopts
     on p.222: omega = (2 pi^2)^-1 sum_k g_k / ((k - 1/2)^2
     + c^2/(4 pi^2)) with g_k ~ Ga(b, 1)."""
     tot = 0.0
@@ -2222,6 +2235,16 @@ def kernel_eigen_design(K, tol=1e-10):
 def nystrom_kernel(X, m_index, kernel="linear", gamma=None):
     """The Nystrom approximation of p.290 (Williams and Seeger 2001)
     as used by Cuevas et al. (2020):
+
+    Williams, C. K. I. & Seeger, M. (2001) "Using the Nystrom method to
+    speed up kernel machines", *Advances in Neural Information
+    Processing Systems* 13, 682-688.
+
+    Cuevas, J., Montesinos-Lopez, O. A., Martini, J. W. R.,
+    Perez-Rodriguez, P., Lillemo, M. & Crossa, J. (2020) "Approximate
+    genome-based kernel models for large data sets including main
+    effects and interactions", *Frontiers in Genetics* 11, 567757,
+    doi:10.3389/fgene.2020.567757 -- the low-rank kernel this builds.
 
         K ~= Q = K_{n,m} K_{m,m}^-1 K_{n,m}'
 
@@ -2953,8 +2976,10 @@ def msm_weighted_glm(y, X, weights=None, family="gaussian",
     """Weighted GLM by iteratively reweighted least squares, the
     outcome stage of a marginal structural model.
 
-    With the stabilized IPT weights of Robins, Hernan and Brumback
-    (2000) as ``weights``, fitting E[Y | a-bar] in the pseudo-
+    With the stabilized IPT weights of Robins, J. M., Hernan, M. A. &
+    Brumback, B. (2000) "Marginal structural models and causal
+    inference in epidemiology", *Epidemiology* 11(5), 550-560,
+    doi:10.1097/00001648-200009000-00011, as ``weights``, fitting E[Y | a-bar] in the pseudo-
     population created by the weights estimates the causal parameter
     of the MSM rather than an association adjusted for confounders.
     ``family`` is one of gaussian (identity), binomial (logit) or

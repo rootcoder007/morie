@@ -1,8 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Shared conditional-heteroscedasticity core.
 
-Specifications follow Tsay (2010), *Analysis of Financial Time
-Series*, 3rd ed., Ch. 3 -- read in the library PDF:
+Specifications follow Tsay, R. S. (2010) *Analysis of Financial Time
+Series*, 3rd ed., Wiley Series in Probability and Statistics, Hoboken
+NJ, ISBN 978-0-470-41435-4, Ch. 3 -- read in the library PDF:
 
 - GARCH(1,1), Sec. 3.5 p. 131
 - IGARCH(1,1), Sec. 3.6 p. 140-141: the unit-root constraint
@@ -503,6 +504,11 @@ def ms_garch_fit(r, n_regimes=2, max_iter=60):
         "loglik": float(-res.fun), "n_regimes": K, "n": int(n),
         "converged": bool(res.fun < 1e9),
         "method": "Markov-switching GARCH, Gray (1996) collapsed recursion",
+        # Gray, S. F. (1996) "Modeling the conditional distribution of
+        # interest rates as a regime-switching process", Journal of
+        # Financial Economics 42(1), 27-62,
+        # doi:10.1016/0304-405X(96)00875-6. The filter is Hamilton, J. D.
+        # (1989) Econometrica 57(2), 357-384, doi:10.2307/1912559.
     }
 
 

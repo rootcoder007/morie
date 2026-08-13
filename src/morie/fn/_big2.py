@@ -139,7 +139,9 @@ def mat(a):
 def sinkhorn(a, b, C, epsilon, max_iter=200):
     """Sinkhorn scaling with a FIXED iteration count -- no early exit.
 
-    Returns ``(T, u, v, a, b)``.  K = exp(-C/eps) as in Cuturi (2013)
+    Returns ``(T, u, v, a, b)``.  K = exp(-C/eps) as in Cuturi, M. (2013)
+    "Sinkhorn distances: lightspeed computation of optimal transport",
+    *Advances in Neural Information Processing Systems* 26, 2292-2300
     Sec. 4.1 with lambda = 1/eps; the alternating updates are
     u <- a / (K v) and v <- b / (K' u), started from v = 1.
     """
@@ -217,7 +219,10 @@ def sekernel(spec=None):
     """Squared-exponential kernel factory.
 
     ``spec`` is ``(sf, l)`` (default ``(1, 1)``) or a callable
-    ``k(x1, x2)``.  Rasmussen & Williams (2006), p. 19:
+    ``k(x1, x2)``.  Rasmussen, C. E. & Williams, C. K. I. (2006)
+    *Gaussian Processes for Machine Learning*, Adaptive Computation and
+    Machine Learning, MIT Press, ISBN 0-262-18253-X,
+    doi:10.7551/mitpress/3206.001.0001, p. 19:
     ``k(x_p, x_q) = sf^2 exp(-(1/(2 l^2)) |x_p - x_q|^2)``.
     """
     if spec is None:

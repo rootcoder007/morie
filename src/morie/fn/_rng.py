@@ -1,6 +1,20 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """A native random number generator: Philox4x32-10 and Wichura's AS 241.
 
+References
+----------
+Salmon, J. K., Moraes, M. A., Dror, R. O. & Shaw, D. E. (2011)
+"Parallel random numbers: as easy as 1, 2, 3", *Proceedings of the 2011
+International Conference for High Performance Computing, Networking,
+Storage and Analysis (SC '11)*, article 16, 1-12,
+doi:10.1145/2063384.2063405 -- Philox4x32-10, whose multipliers and
+Weyl constants are their Table 1.
+
+Wichura, M. J. (1988) "Algorithm AS 241: The percentage points of the
+normal distribution", *Journal of the Royal Statistical Society,
+Series C (Applied Statistics)* 37(3), 477-484, doi:10.2307/2347330 --
+the PPND16 coefficients used for the normal quantile.
+
 Two published algorithms, implemented rather than delegated, so that the R
 and Python arms of morie draw the SAME numbers rather than merely
 statistically similar ones.

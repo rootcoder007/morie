@@ -2394,6 +2394,12 @@ spatial.Voronoi = Voronoi
 def schur(a, output="real"):
     """Real Schur decomposition via Hessenberg + shifted QR iteration.
 
+    The iteration is Francis, J. G. F. (1961) "The QR transformation: a
+    unitary analogue to the LR transformation -- Part 1", *The Computer
+    Journal* 4(3), 265-271, doi:10.1093/comjnl/4.3.265. "Schur
+    decomposition" names the factorisation, not the algorithm; the
+    algorithm is Francis's.
+
     Returns (T, Z) with A = Z T Z^T, Z orthogonal, T quasi-upper-
     triangular. Verified by reconstruction + eigenvalue agreement.
     """

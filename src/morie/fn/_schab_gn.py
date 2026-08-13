@@ -24,6 +24,16 @@ here. That matters for cross-language agreement: an analytic Jacobian has
 no finite-difference step to choose, so R and Python execute the same
 arithmetic rather than two differently-tuned approximations.
 
+References
+----------
+Schabenberger, O. & Gotway, C. A. (2005) *Statistical Methods for
+Spatial Data Analysis*, Texts in Statistical Science, Chapman &
+Hall/CRC, Boca Raton, ISBN 1-58488-322-7.
+
+Cressie, N. (1985) "Fitting variogram models by weighted least
+squares", *Journal of the International Association for Mathematical
+Geology* 17, 563-586 -- the weights of eq (4.34).
+
 Everything here is internal.
 """
 

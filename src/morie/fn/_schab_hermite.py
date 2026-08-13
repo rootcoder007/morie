@@ -39,6 +39,13 @@ The text notes rho(h)^p tends to white noise as p grows, so "in practice
 only a few (usually less than a dozen ...) Hermite polynomials need to be
 predicted".
 
+References
+----------
+Schabenberger, O. & Gotway, C. A. (2005) *Statistical Methods for
+Spatial Data Analysis*, Texts in Statistical Science, Chapman &
+Hall/CRC, Boca Raton, ISBN 1-58488-322-7.
+Sec. 5.6 and eq (5.71).
+
 Everything here is internal.
 """
 

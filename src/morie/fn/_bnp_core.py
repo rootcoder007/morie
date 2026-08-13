@@ -1,7 +1,12 @@
 # morie.fn -- Bayesian-nonparametrics core (rootcoder007/morie)
 """Shared machinery for the Ghosal & van der Vaart shelf.
 
-Everything follows Ghosal & van der Vaart (2017), *Fundamentals of
+Everything follows Ghosal, S. & van der Vaart, A. (2017) *Fundamentals of
+Nonparametric Bayesian Inference*, Cambridge Series in Statistical
+and Probabilistic Mathematics 44, Cambridge University Press,
+ISBN 978-0-521-87826-5.
+
+Full title as printed: *Fundamentals of
 Nonparametric Bayesian Inference*, CUP -- equations checked against
 the library PDF:
 

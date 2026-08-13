@@ -245,6 +245,10 @@ def robust_vcov(fit, kind="HC1"):
     with the small-sample adjustment selected by ``kind``:
 
         HC0  omega = e^2                     White (1980)
+
+    White, H. (1980) "A heteroskedasticity-consistent covariance matrix
+    estimator and a direct test for heteroskedasticity", *Econometrica*
+    48(4), 817-838, doi:10.2307/1912934.
         HC1  omega = e^2 n/(n-k)             the Stata default
         HC2  omega = e^2/(1-h_ii)
         HC3  omega = e^2/(1-h_ii)^2          best under leverage
@@ -346,6 +350,10 @@ def newey_west_vcov(fit, lags=None, prewhite=False):
 def breusch_pagan(fit, studentise=True):
     """Breusch-Pagan test for heteroskedasticity.
 
+    Breusch, T. S. & Pagan, A. R. (1979) "A simple test for
+    heteroscedasticity and random coefficient variation",
+    *Econometrica* 47(5), 1287-1294, doi:10.2307/1911963.
+
     Regresses the squared residuals on the original design; under
     homoskedasticity the statistic is chi-squared with k-1 degrees of
     freedom.  ``studentise=True`` is Koenker's version, which does not
@@ -376,6 +384,10 @@ def breusch_pagan(fit, studentise=True):
 
 def durbin_watson(fit):
     """Durbin-Watson statistic for first-order autocorrelation.
+
+    Durbin, J. & Watson, G. S. (1951) "Testing for serial correlation in
+    least squares regression. II", *Biometrika* 38(1/2), 159-177,
+    doi:10.2307/2332325.
 
         DW = sum_{t=2}^{n} (e_t - e_{t-1})^2 / sum_t e_t^2
 

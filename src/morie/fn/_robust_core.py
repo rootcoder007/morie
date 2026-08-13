@@ -224,7 +224,10 @@ def mad_median_rule(x, crit=2.24):
     Declares X an outlier when |X - M| / MADN > 2.24.  Both M and MADN
     have breakdown point 0.5, so unlike the mean-and-variance rule this
     does not suffer from masking.  The book notes that 2.24 comes from
-    Rousseeuw and van Zomeren (1990), and that Hampel's original used
+    Rousseeuw, P. J. & van Zomeren, B. C. (1990) "Unmasking
+    multivariate outliers and leverage points", *Journal of the
+    American Statistical Association* 85(411), 633-639,
+    doi:10.2307/2289999, and that Hampel's original used
     3.5.
     """
     v = _flat(x)
@@ -322,6 +325,9 @@ def welch_test(x, y):
 
 def yuen_test(x, y, tr=0.2):
     """Yuen's (1974) test for two independent trimmed means, sec. 7.4.1.
+
+    Yuen, K. K. (1974) "The two-sample trimmed t for unequal population
+    variances", *Biometrika* 61(1), 165-170, doi:10.2307/2334299.
 
     With h the number of values left after trimming and s_w^2 the
     Winsorized variance,
@@ -694,6 +700,11 @@ def _norm_quantile(p):
 def brunner_munzel(x, y, alpha=0.05):
     """Brunner-Munzel (2000) heteroscedastic rank test.
 
+    Brunner, E. & Munzel, U. (2000) "The nonparametric Behrens-Fisher
+    problem: asymptotic theory and a small-sample approximation",
+    *Biometrical Journal* 42(1), 17-25,
+    doi:10.1002/(SICI)1521-4036(200001)42:1<17::AID-BIMJ17>3.0.CO;2-U.
+
     The heteroscedastic analogue of Wilcoxon-Mann-Whitney: it tests
     P(X<Y) + 0.5 P(X=Y) = 1/2 without assuming the two distributions
     have the same shape, which is what WMW needs and rarely has.
@@ -1042,7 +1053,10 @@ def boxplot_outliers(x, carling=False, gval=None):
     """Boxplot outlier rule on the ideal fourths.
 
     Unlike R's ``boxplot``, the quartiles come from the ideal fourths of
-    eq. (2.6)-(2.7).  ``carling=True`` applies Carling's (2000)
+    eq. (2.6)-(2.7).  ``carling=True`` applies the rule of Carling, K.
+    (2000) "Resistant outlier rules and the non-Gaussian case",
+    *Computational Statistics & Data Analysis* 33(3), 249-258,
+    doi:10.1016/S0167-9473(99)00057-2,
     modification, which centres the interval on the MEDIAN and scales
     the fence with the sample size,
 
@@ -1156,6 +1170,12 @@ def _normal_winsorized_variance(tr):
 
 def akp_effect_size(x, y, tr=0.2, equal_variance=True):
     """Robust effect size of Algina, Keselman and Penfield (2005).
+
+    Algina, J., Keselman, H. J. & Penfield, R. D. (2005) "An
+    alternative to Cohen's standardized mean difference effect size: a
+    robust parameter and confidence interval in the two independent
+    groups case", *Psychological Methods* 10(3), 317-328,
+    doi:10.1037/1082-989X.10.3.317.
 
     A trimmed-mean analogue of Cohen's d: the difference in trimmed
     means over a Winsorized pooled standard deviation, multiplied by a
@@ -1412,7 +1432,10 @@ def _trace(A):
 def brunner_dette_munk(groups):
     """Brunner-Dette-Munk rank-based one-way ANOVA.
 
-    Brunner, Dette and Munk (1997), *JASA* 92, 1494-1502.  A fully
+    Brunner, E., Dette, H. & Munk, A. (1997) "Box-type approximations
+    in nonparametric factorial designs", *Journal of the American
+    Statistical Association* 92(440), 1494-1502,
+    doi:10.1080/01621459.1997.10473671.  A fully
     nonparametric heteroscedastic one-way design: it tests equality of
     the relative treatment effects
 
@@ -1613,7 +1636,11 @@ def spatial_2sls(y, X, W, add_intercept=True, robust=False):
         y = rho W y + X beta + e
 
     W y is endogenous, so it is instrumented with the spatially lagged
-    exogenous variables [X, WX, W^2 X] -- the Kelejian and Prucha (1998)
+    exogenous variables [X, WX, W^2 X] -- Kelejian, H. H. & Prucha,
+    I. R. (1998) "A generalized spatial two-stage least squares
+    procedure for estimating a spatial autoregressive model with
+    autoregressive disturbances", *The Journal of Real Estate Finance
+    and Economics* 17(1), 99-121, doi:10.1023/A:1007707430416
     instrument set that ``spdep::stsls`` uses.  Ordinary least squares
     on this model is inconsistent; 2SLS is the cheap consistent fix.
     """
@@ -1677,7 +1704,10 @@ def gm_error_sar(y, X, W, add_intercept=True):
 
         y = X beta + u,   u = lambda W u + e
 
-    Kelejian and Prucha (1999).  Three moment conditions in
+    Kelejian, H. H. & Prucha, I. R. (1999) "A generalized moments
+    estimator for the autoregressive parameter in a spatial model",
+    *International Economic Review* 40(2), 509-533,
+    doi:10.1111/1468-2354.00027.  Three moment conditions in
     (lambda, lambda^2, sigma^2) are stacked into
 
         G (lambda, lambda^2, sigma^2)' = g
@@ -1831,7 +1861,10 @@ def spatial_lag_model(y, X, W, add_intercept=True, interval=(-0.999, 0.999)):
 
         y = rho W y + X beta + eps
 
-    Uses Ord's (1975) concentrated log-likelihood.  Regressing y and Wy
+    Uses the concentrated log-likelihood of Ord, J. K. (1975)
+    "Estimation methods for models of spatial interaction", *Journal of
+    the American Statistical Association* 70(349), 120-126,
+    doi:10.1080/01621459.1975.10480272.  Regressing y and Wy
     separately on X gives residuals e0 and ed, and then
 
         SSE(rho) = (e0 - rho ed)' (e0 - rho ed)
@@ -2156,7 +2189,10 @@ def adf_test(y, lags=1, kind="drift"):
     is not t-distributed under the null, so it must be compared with
     Dickey-Fuller critical values, not normal ones.  The 1/5/10 per
     cent values returned here are the ones urca prints, interpolated
-    from Dickey and Fuller (1981) for the relevant n.
+    from Dickey, D. A. & Fuller, W. A. (1981) "Likelihood ratio
+    statistics for autoregressive time series with a unit root",
+    *Econometrica* 49(4), 1057-1072, doi:10.2307/1912517, for the
+    relevant n.
 
     Matches ``urca::ur.df(y, type = kind, lags = lags)``.
     """

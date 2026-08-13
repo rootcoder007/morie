@@ -11,6 +11,39 @@ differences, and the difference is not cosmetic: the Matheron estimator
 is unbiased but has an unbounded influence function, so a single
 outlying observation contaminates the estimate at every lag it
 participates in. Example 4.3 (p. 157-161) is reproduced in the test
+References
+----------
+Schabenberger, O. & Gotway, C. A. (2005) *Statistical Methods for
+Spatial Data Analysis*, Texts in Statistical Science, Chapman &
+Hall/CRC, Boca Raton, ISBN 1-58488-322-7.
+Sec. 4.4, eqs (4.24) and (4.34), and Example 4.3 (pp. 157-161).
+
+Matheron, G. (1962) *Traite de Geostatistique Appliquee, Tome I*,
+Memoires du Bureau de Recherches Geologiques et Minieres no. 14,
+Editions Technip, Paris -- where Schabenberger & Gotway (p. 153)
+attribute the classical estimator. Print monograph; not digitised.
+
+Matheron, G. (1963) "Principles of geostatistics", *Economic Geology*
+58(8), 1246-1266, doi:10.2113/gsecongeo.58.8.1246 -- the English
+exposition that is usually cited in its place. Matheron's *The Theory
+of Regionalized Variables and Its Applications* (Les Cahiers du Centre
+de Morphologie Mathematique de Fontainebleau) is freely available from
+the Fontainebleau library and is in fetched-wave3.
+
+Cressie, N. & Hawkins, D. M. (1980) "Robust estimation of the
+variogram, I", *Journal of the International Association for
+Mathematical Geology* 12, 115-125 -- the robust alternative to the
+classical estimator, and the reason the influence-function contrast
+above matters.
+
+Cressie, N. (1985) "Fitting variogram models by weighted least
+squares", *Journal of the International Association for Mathematical
+Geology* 17, 563-586 -- eq (4.34).
+
+Zimmerman, D. L. & Zimmerman, M. B. (1991) "A comparison of spatial
+semivariogram estimators and corresponding kriging predictors",
+*Technometrics* 33, 77-91 -- the OLS/WLS comparison quoted at p. 165.
+
 suite precisely because it shows this happening.
 """
 

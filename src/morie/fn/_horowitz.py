@@ -49,6 +49,10 @@ def kernel_deriv(u, name="gaussian"):
 def silverman_bw(x, factor=1.06):
     r"""Silverman's rule :math:`h = c\,\hat\sigma\,n^{-1/5}`.
 
+    Silverman, B. W. (1986) *Density Estimation for Statistics and Data
+    Analysis*, Monographs on Statistics and Applied Probability 26,
+    Chapman & Hall, London, eq. (3.28) -- in the library.
+
     The exponent -1/5 is the MISE-optimal rate for a second-order
     kernel and a twice-differentiable density; it is NOT optimal for
     derivative estimation, which needs -1/7 (see

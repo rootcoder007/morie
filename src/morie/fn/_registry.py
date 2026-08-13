@@ -1,6 +1,12 @@
 """Naming registry for morie.fn functions.
 
 Single source of truth: short name -> metadata.
+
+The author-year strings in the section comments below (Kosorok 2008,
+Horowitz 2009, Armstrong 2014/2021, and so on) are shelf labels, not
+citations: they say which book-as-spec shelf a block of names came
+from. The bibliographic entry for each lives in the core module that
+implements the shelf.
 Used by fn/__init__.py for auto-export and stat_commands.py for CLI dispatch.
 
 'Knowledge itself is power. -- Francis Bacon'

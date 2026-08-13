@@ -33,13 +33,18 @@ ARE_TABLE = {
     },
 }
 
-# Hodges-Lehmann (1956) bounds quoted on p. 492-493
+# Hodges, J. L. & Lehmann, E. L. (1956) "The efficiency of some
+# nonparametric competitors of the t-test", Annals of Mathematical
+# Statistics 27(2), 324-335, doi:10.1214/aoms/1177728261 -- the bounds
+# quoted on p. 492-493
 HL_WILCOXON_LOWER_BOUND = 0.864  # inf over continuous symmetric F
 HL_SIGN_LOWER_BOUND = 1.0 / 3.0  # inf over continuous unimodal symmetric F
 
 # scale problem, Sec. 13.3.3 (PDF-verified): ARE(Mood, F | normal)
 ARE_MOOD_VS_F_NORMAL = 15.0 / (2.0 * _PI**2)
-# Klotz (1962) normal-scores scale test attains full efficiency at the normal
+# Klotz, J. (1962) "Nonparametric tests for scale", Annals of
+# Mathematical Statistics 33(2), 498-512, doi:10.1214/aoms/1177704576 --
+# the normal-scores scale test attains full efficiency at the normal
 ARE_KLOTZ_VS_F_NORMAL = 1.0
 
 

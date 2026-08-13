@@ -2,7 +2,13 @@
 """Deterministic random forest core for the Chapter 15 modules.
 
 Shared by rfmlt, rfmdi and rfpmi.  The algorithm is the one printed in
-Montesinos Lopez, Montesinos Lopez and Crossa (2022), *Multivariate
+Montesinos Lopez, O. A., Montesinos Lopez, A. & Crossa, J. (2022)
+*Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer, Cham, ISBN 978-3-030-89009-4,
+doi:10.1007/978-3-030-89010-0 (open access).
+
+Short form below: Montesinos Lopez, Montesinos Lopez and Crossa (2022),
+*Multivariate
 Statistical Machine Learning Methods for Genomic Prediction*, Springer,
 volume [Pages 633-681], Chapter 15, Section 15.4, pp. 639-640, read as
 rendered page images:
@@ -29,7 +35,9 @@ response.  Page 643 gives the defaults this core uses: mtry = p/3 for
 regression, "values are always rounded up", and nodesize 5 for
 regression.  The splitting rule is the weighted mean squared error, "the
 least square criterion", which p. 643 attributes to Breiman, Friedman,
-Olshen and Stone (1984), Chapter 8.4.
+Olshen and Stone (1984), Chapter 8.4 -- Breiman, L., Friedman, J. H.,
+Olshen, R. A. & Stone, C. J. (1984) *Classification and Regression
+Trees*, Wadsworth, Belmont CA, ISBN 0-534-98053-8.
 
 DETERMINISM.  The book's steps 1 and 2(a) both say "randomly", and a
 random forest whose two arms draw different samples cannot be compared at

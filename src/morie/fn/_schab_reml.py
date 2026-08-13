@@ -43,6 +43,17 @@ straight from the text rather than from convenience:
 There is no REML estimator of the mean: the text is explicit that
 beta_reml is "simply an EGLS estimator evaluated at theta_reml".
 
+References
+----------
+Schabenberger, O. & Gotway, C. A. (2005) *Statistical Methods for
+Spatial Data Analysis*, Texts in Statistical Science, Chapman &
+Hall/CRC, Boca Raton, ISBN 1-58488-322-7.
+Sec. 4.5 and Sec. 5.5.
+
+Harville, D. A. (1974) "Bayesian inference for variance components
+using only error contrasts", *Biometrika* 61, 383-385 -- the origin of
+the restricted likelihood maximised here.
+
 Everything here is internal.
 """
 
