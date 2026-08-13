@@ -11,7 +11,11 @@ instead of only structurally.
 Source: R sources, ``src/main/RNG.c`` (RNG_Init, MT_sgenrand,
 MT_genrand, fixup, unif_rand) and ``src/main/random.c`` /
 ``src/nmath/...`` for R_unif_index and rbits.  The Mersenne Twister
-itself is Matsumoto and Nishimura (1998).
+itself is Matsumoto, M. and Nishimura, T. (1998), "Mersenne twister:
+a 623-dimensionally equidistributed uniform pseudo-random number
+generator", ACM Transactions on Modeling and Computer Simulation
+8(1), 3-30, doi:10.1145/272991.272995. PDF not in hand (the ACM
+Digital Library serves HTML); cited from bibliographic details.
 
 No external dependencies -- plain integer arithmetic.
 """

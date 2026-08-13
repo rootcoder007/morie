@@ -442,6 +442,13 @@ def poschk(treat, stratum, tol=0.0):
 def rlearn(y, t, m, e, x=None):
     """Residualized (Robinson-style) CATE estimator.
 
+    The decomposition is Robinson, P. M. (1988),
+    "Root-N-Consistent Semiparametric Regression", Econometrica
+    56(4), 931-954. PDF not in hand (JSTOR serves HTML); cited
+    from bibliographic details. Nie and Wager (2021), cited
+    below, is the R-learner built on it and is the spec actually
+    followed here.
+
     NOT LOCATED IN THE EXTRACTED TEXT of the corpus copy of Molak,
     which covers the S-, T-, X- and DR-learners but has no R-learner
     section.  The estimator is therefore taken from the primary source

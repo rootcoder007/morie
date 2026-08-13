@@ -1,6 +1,35 @@
 # morie.fn -- shared core (rootcoder007/morie)
 """Survival analysis: Kaplan-Meier, Nelson-Aalen, log-rank and Cox.
 
+Every estimator here is named after the paper that introduced it, and
+none of them were cited. They are:
+
+Kaplan, E. L., & Meier, P. (1958). "Nonparametric estimation from
+incomplete observations." *Journal of the American Statistical
+Association* 53(282), 457-481.
+
+Nelson, W. (1972). "Theory and Applications of Hazard Plotting for
+Censored Failure Data." *Technometrics* 14(4), 945-966.
+
+Aalen, O. (1978). "Nonparametric Inference for a Family of Counting
+Processes." *Annals of Statistics* 6(4), 701-726.
+doi:10.1214/aos/1176344247. -- Nelson and Aalen arrived at the
+cumulative-hazard estimator from different directions, which is why it
+carries both names.
+
+Mantel, N. (1966). "Evaluation of survival data and two new rank order
+statistics arising in its consideration." *Cancer Chemotherapy Reports*
+50(3), 163-170. -- the log-rank test.
+
+Cox, D. R. (1972). "Regression Models and Life-Tables." *Journal of the
+Royal Statistical Society, Series B* 34(2), 187-220. -- the
+proportional-hazards model and its partial likelihood.
+
+None of these PDFs is in hand: JSTOR, Project Euclid and Wiley all
+serve HTML rather than the file. They are cited from bibliographic
+details, and the formulas below have not been re-verified against them.
+
+
 Verified numerically against R's ``survival`` package, which is the
 reference implementation for this material:
 

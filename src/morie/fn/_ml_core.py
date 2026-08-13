@@ -577,7 +577,10 @@ class _ForestBase:
                 self.min_samples_split, mf, rng, classify,
                 n_classes))
         if self.oob_score and self.bootstrap:
-            # Breiman (1996) out-of-bag estimate: each sample scored
+            # Out-of-bag estimate: Breiman, L. (1996), "Bagging predictors",
+# Machine Learning 24(2), 123-140, doi:10.1007/BF00058655. PDF not
+# in hand (Springer serves HTML); cited from bibliographic details.
+# Each sample scored
             # only by the trees whose bootstrap excluded it
             correct = 0.0
             counted = 0
