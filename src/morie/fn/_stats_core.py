@@ -851,7 +851,30 @@ def linregress(x, y=None):
 
 # ---------------------------------------------------- descriptive
 
-def skew(a, bias=True):
+def _by_axis(fn, a, axis):
+    """Apply a 1-D statistic down `axis` of a 2-D input.
+
+    skew and kurtosis took no `axis`, so every numpy-style call --
+    fn/copod.py does stats.skew(X, axis=0) -- raised TypeError. Only
+    axis=0 and axis=1 make sense for the 2-D inputs used here; None
+    keeps the previous flatten-everything behaviour.
+    """
+    rows = [list(r) for r in a.tolist()] if hasattr(a, "tolist") else \
+        [list(r) for r in a]
+    if not rows or not isinstance(rows[0], list):
+        return fn(rows)
+    from . import _array_core as _ac2
+    if axis == 0:
+        cols = list(zip(*rows))
+        return _ac2.marr([fn(list(c)) for c in cols])
+    if axis == 1:
+        return _ac2.marr([fn(list(r)) for r in rows])
+    raise ValueError("axis must be 0, 1 or None, got %r" % (axis,))
+
+
+def skew(a, bias=True, axis=None):
+    if axis is not None:
+        return _by_axis(lambda v: skew(v, bias=bias), a, axis)
     v = _flatten(a)
     n = len(v)
     m = _mean(v)
@@ -865,7 +888,10 @@ def skew(a, bias=True):
     return g1 * _math.sqrt(n * (n - 1)) / (n - 2)
 
 
-def kurtosis(a, fisher=True, bias=True):
+def kurtosis(a, fisher=True, bias=True, axis=None):
+    if axis is not None:
+        return _by_axis(lambda v: kurtosis(v, fisher=fisher, bias=bias),
+                        a, axis)
     v = _flatten(a)
     n = len(v)
     m = _mean(v)
@@ -1809,7 +1835,89 @@ class _GenExtreme(_Dist):
         return _maybe_map(one, q)
 
 
+def _gauss_legendre(n):
+    """Nodes and weights on [-1, 1], by Newton iteration on P_n."""
+    nodes, weights = [], []
+    for i in range(1, n + 1):
+        z = _math.cos(_math.pi * (i - 0.25) / (n + 0.5))
+        for _ in range(100):
+            p0, p1 = 1.0, 0.0
+            for j in range(1, n + 1):
+                p2 = p1
+                p1 = p0
+                p0 = ((2.0 * j - 1.0) * z * p1 - (j - 1.0) * p2) / j
+            dp = n * (z * p0 - p1) / (z * z - 1.0)
+            dz = p0 / dp
+            z -= dz
+            if abs(dz) < 1e-15:
+                break
+        nodes.append(z)
+        weights.append(2.0 / ((1.0 - z * z) * dp * dp))
+    return nodes, weights
+
+
 class _MultivariateNormal:
+    def cdf(self, x, mean=None, cov=None):
+        r"""The normal CDF, exact for one and two dimensions.
+
+        Only `pdf`/`logpdf` existed, so the Gaussian copula could not be
+        evaluated at all. Two dimensions is what a copula needs and is
+        the case with a clean closed form -- the tetrachoric series of
+        Sheppard, via
+
+        .. math::
+
+           \Phi_2(h, k; \rho) = \Phi(h)\Phi(k) + \frac{1}{2\pi}
+             \int_0^{\rho} \frac{1}{\sqrt{1-t^2}}
+             \exp\!\left(-\frac{h^2 - 2thk + k^2}{2(1-t^2)}\right) dt,
+
+        which is smooth on the whole path and integrates to machine
+        precision with Gauss-Legendre. Three or more dimensions needs
+        Genz's method and is refused rather than approximated silently.
+        """
+        xv = [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
+        d = len(xv)
+        mu = ([0.0] * d if mean is None else
+              [float(v) for v in (mean.tolist()
+                                  if hasattr(mean, "tolist") else mean)])
+        if cov is None:
+            cm = [[1.0 if i == j else 0.0 for j in range(d)]
+                  for i in range(d)]
+        else:
+            cm = cov.tolist() if hasattr(cov, "tolist") else cov
+            cm = [[float(v) for v in r] for r in cm]
+        if len(mu) != d or len(cm) != d:
+            raise ValueError("multivariate_normal.cdf: x, mean and cov "
+                             "disagree on dimension")
+        z = [(xv[i] - mu[i]) / _math.sqrt(cm[i][i]) for i in range(d)]
+        if d == 1:
+            return norm.cdf(z[0])
+        if d != 2:
+            raise NotImplementedError(
+                "multivariate_normal.cdf: only 1 and 2 dimensions are "
+                "implemented exactly; %d needs Genz's method and is not "
+                "approximated here" % d)
+        rho = cm[0][1] / _math.sqrt(cm[0][0] * cm[1][1])
+        if rho <= -1.0 or rho >= 1.0:
+            raise ValueError("multivariate_normal.cdf: correlation %g is "
+                             "outside (-1, 1)" % rho)
+        h, k = z[0], z[1]
+        base = norm.cdf(h) * norm.cdf(k)
+        if rho == 0.0:
+            return base
+        # 64-node Gauss-Legendre on [0, rho]
+        n = 64
+        nodes, weights = _gauss_legendre(n)
+        half = 0.5 * rho
+        total = 0.0
+        for a in range(n):
+            tt = half * (nodes[a] + 1.0)
+            om = 1.0 - tt * tt
+            total += weights[a] * _math.exp(
+                -(h * h - 2.0 * tt * h * k + k * k) / (2.0 * om)
+            ) / _math.sqrt(om)
+        return base + half * total / (2.0 * _math.pi)
+
     def pdf(self, x, mean, cov):
         return _math.exp(self.logpdf(x, mean, cov))
 

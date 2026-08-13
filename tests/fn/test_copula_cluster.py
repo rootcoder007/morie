@@ -107,7 +107,10 @@ def test_family_front_ends_agree_with_the_core():
 def test_plackett_reduces_to_independence_at_one():
     u = np.array([0.2, 0.5, 0.8])
     U, V = np.meshgrid(u, u, indexing="ij")
-    assert copula_cdf("plackett", U, V, 1.0) == pytest.approx(U * V)
+    # pytest.approx cannot take a nested marr, so compare flat
+    got = np.asarray(copula_cdf("plackett", U, V, 1.0)).ravel()
+    want = np.asarray(U * V).ravel()
+    assert list(got) == pytest.approx(list(want))
     assert plackett_copula(0.4, 0.6, 1.0)["tau"] == pytest.approx(0.0, abs=0.02)
 
 
