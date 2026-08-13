@@ -100,6 +100,14 @@ Four kernels are available. Their :math:`(q, k_q, \int k^2)` are
 tabulated in :data:`KERNEL_CONSTANTS` and every one of them is
 recomputed from the kernel function itself in the tests, so nothing
 here rests on a transcribed number.
+
+Each kernel is credited to its own source at its definition below.
+Of those, only Andrews & Monahan and Andrews are in the local
+library; Bartlett (1950), Parzen (1957), Newey & West (1987) and
+Blackman & Tukey (1958) are cited from their bibliographic details
+and were not re-read here -- which costs nothing, because the
+constants that matter are recomputed from the kernel functions
+rather than taken from any of them.
 """
 
 import math
@@ -135,13 +143,25 @@ EIGENVALUE_CAP = 0.97
 # --------------------------------------------------------------------------
 
 def bartlett_kernel(x):
-    """Newey & West's triangular kernel; :math:`q = 1`."""
+    r"""The triangular kernel; :math:`q = 1`.
+
+    Bartlett, M. S. (1950) "Periodogram analysis and continuous
+    spectra", *Biometrika* 37(1/2), 1-16; brought into HAC estimation
+    by Newey, W. K., & West, K. D. (1987) "A Simple, Positive
+    Semi-Definite, Heteroskedasticity and Autocorrelation Consistent
+    Covariance Matrix", *Econometrica* 55(3), 703-708.
+    """
     ax = abs(float(x))
     return 1.0 - ax if ax <= 1.0 else 0.0
 
 
 def parzen_kernel(x):
-    """Parzen's kernel; :math:`q = 2`."""
+    r"""Parzen's kernel; :math:`q = 2`.
+
+    Parzen, E. (1957) "On Consistent Estimates of the Spectrum of a
+    Stationary Time Series", *Annals of Mathematical Statistics* 28(2),
+    329-348. doi:10.1214/aoms/1177706938.
+    """
     ax = abs(float(x))
     if ax <= 0.5:
         return 1.0 - 6.0 * ax * ax + 6.0 * ax ** 3
@@ -171,7 +191,13 @@ def quadratic_spectral_kernel(x):
 
 
 def tukey_hanning_kernel(x):
-    """The Tukey-Hanning kernel; :math:`q = 2`."""
+    r"""The Tukey-Hanning kernel; :math:`q = 2`.
+
+    Blackman, R. B., & Tukey, J. W. (1958) *The Measurement of Power
+    Spectra from the Point of View of Communications Engineering*,
+    Dover. The name pairs Tukey with Julius von Hann, whose weighting
+    it adapts.
+    """
     ax = abs(float(x))
     return 0.5 * (1.0 + math.cos(math.pi * ax)) if ax <= 1.0 else 0.0
 
