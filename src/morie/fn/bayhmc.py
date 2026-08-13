@@ -5,6 +5,13 @@ Hoffman, M. D., & Gelman, A. (2014) "The No-U-Turn Sampler: Adaptively
 Setting Path Lengths in Hamiltonian Monte Carlo", *Journal of Machine
 Learning Research* 15, 1593-1623.
 
+Metropolis, N., Rosenbluth, A. W., Rosenbluth, M. N., Teller, A. H.,
+& Teller, E. (1953) "Equation of State Calculations by Fast Computing
+Machines", *Journal of Chemical Physics* 21(6), 1087-1092.
+doi:10.1063/1.1699114 -- the accept-reject rule the energy error is
+corrected with below. NUTS replaces the fixed-length trajectory and
+the hand-tuned step size, not this.
+
 Hamiltonian Monte Carlo turns sampling into physics: augment the target
 :math:`p(\theta)` with a momentum :math:`r \sim N(0, I)`, giving the
 joint :math:`p(\theta, r) \propto \exp\{\mathcal{L}(\theta) -
