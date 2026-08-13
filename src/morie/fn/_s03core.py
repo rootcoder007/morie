@@ -752,9 +752,11 @@ def ip_weights_history(A_hist, L_hist, kind="binary", stabilize=True,
     """Sec. 21.2's product over time.
 
     `A_hist` is a list of K treatment vectors, one per time point;
-    `L_hist` a list of K covariate matrices. At time k the denominator
-    model conditions on L-bar_k and A-bar_{k-1}, and the numerator model
-    on A-bar_{k-1} alone.
+    `L_hist` a list of K covariate matrices, each holding the
+    covariates measured AT that time. At time k the denominator model
+    conditions on L-bar_k -- every covariate block from time 0 to time
+    k, accumulated here rather than expected from the caller -- and on
+    A-bar_{k-1}; the numerator model on A-bar_{k-1} alone.
     """
     K = len(A_hist)
     if K == 0:
@@ -766,14 +768,24 @@ def ip_weights_history(A_hist, L_hist, kind="binary", stabilize=True,
     w = [1.0] * n
     per_time = []
     past = []                       # columns of treatment history so far
+    lbar = []                       # columns of COVARIATE history so far
     for k in range(K):
         ak = vec(A_hist[k])
         if len(ak) != n:
             raise ValueError("ip_weights_history: time %d has %d rows, "
                              "time 0 has %d" % (k, len(ak), n))
-        Lk = mat(L_hist[k]) if L_hist[k] is not None else None
-        # denominator covariates: L-bar_k together with A-bar_{k-1}
-        den_X = _bind_cols(Lk, past, n)
+        if L_hist[k] is not None:
+            block = mat(L_hist[k])
+            if len(block) != n:
+                raise ValueError(
+                    "ip_weights_history: covariate block at time %d has "
+                    "%d rows, treatment has %d" % (k, len(block), n))
+            for c in range(len(block[0])):
+                lbar.append([row[c] for row in block])
+        # Sec. 21.2: the denominator conditions on L-bar_k, the whole
+        # covariate history to date, and on A-bar_{k-1}; the numerator
+        # on A-bar_{k-1} alone.
+        den_X = _bind_cols(None, lbar + past, n)
         num_X = _bind_cols(None, past, n) if past else None
         wk, info = ip_weights(ak, den_X, num_X, kind=kind,
                               stabilize=stabilize, ridge=ridge)
