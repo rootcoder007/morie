@@ -64,6 +64,14 @@ def phylotr(distance, labels=None):
 
     References
     ----------
+    Studier, J. A. and Keppler, K. J. (1988), "A note on the
+    neighbor-joining algorithm of Saitou and Nei", Molecular
+    Biology and Evolution 5(6), 729-731. -- the O(n^3)
+    reformulation named in the docstring above as the variant used
+    by modern NJ. PDF NOT IN HAND: Oxford University Press serves
+    HTML, not the file. Cited because the module names the variant;
+    the reformulation has not been re-verified against the paper.
+
     Saitou, N. and Nei, M. (1987), "The neighbor-joining method: a
     new method for reconstructing phylogenetic trees", Molecular
     Biology and Evolution 4(4), 406-425. Equations (1), (4), (5),
