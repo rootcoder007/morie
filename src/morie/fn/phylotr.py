@@ -44,7 +44,9 @@ def phylotr(distance, labels=None):
 
     Note: this is the 1987 algorithm as printed, including the
     averaged distance update of eq. (5). It selects the same
-    topology as the Studier-Keppler (1988) variant used by modern NJ
+    topology as the Studier-Keppler (1988) O(n^3) criterion used by
+    modern NJ, which selects the same pair; this module uses the
+    Saitou & Nei eq. (4) form
     software on additive data, but intermediate distances and the
     printed S values follow the original paper.
 
@@ -66,11 +68,14 @@ def phylotr(distance, labels=None):
     ----------
     Studier, J. A. and Keppler, K. J. (1988), "A note on the
     neighbor-joining algorithm of Saitou and Nei", Molecular
-    Biology and Evolution 5(6), 729-731. -- the O(n^3)
-    reformulation named in the docstring above as the variant used
-    by modern NJ. PDF NOT IN HAND: Oxford University Press serves
-    HTML, not the file. Cited because the module names the variant;
-    the reformulation has not been re-verified against the paper.
+    Biology and Evolution 5(6), 729-731. Letter to the Editor,
+    p. 729: S_ij = (N - 2) D_ij - R_i - R_j with R_i = sum_k D_ik.
+    This module does NOT compute that; :func:`_sij` implements
+    Saitou & Nei eq. (4) directly. The two criteria are minimised by
+    the same pair, so the topology is identical -- that equivalence
+    is asserted in the tests -- and Studier & Keppler is named here
+    because it is the O(n^3) form modern implementations use, not
+    because it is the form used below.
 
     Saitou, N. and Nei, M. (1987), "The neighbor-joining method: a
     new method for reconstructing phylogenetic trees", Molecular

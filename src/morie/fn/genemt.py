@@ -28,14 +28,6 @@ def gene_meta_analysis(sumstats, gene_annotation):
     References
     ----------
     de Leeuw et al (2015) MAGMA
-    Brown, M. B. (1975). "A method for combining
-    non-independent, one-sided tests of significance",
-    Biometrics 31(4), 987-992. JSTOR 2529826. -- the method
-    named above for combining dependent SNP p-values: it
-    matches the first two moments of Fisher's statistic under
-    dependence. PDF NOT IN HAND: JSTOR serves HTML, not the
-    file. Cited because the module uses the method by name;
-    the formula has not been re-verified against the paper.
     """
     sumstats = np.atleast_1d(np.asarray(sumstats, dtype=float))
     n = len(sumstats)

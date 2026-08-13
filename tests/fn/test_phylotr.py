@@ -92,3 +92,50 @@ def test_phylotr_additive_four_taxa():
     assert abs(j0["La"] - 1.0) < 1e-12
     assert abs(j0["Lb"] - 2.0) < 1e-12
     assert phylogenetic_tree is phylotr
+
+
+def test_saitou_nei_and_studier_keppler_pick_the_same_pair():
+    """Studier & Keppler (1988) p.729 give S_ij = (N-2) D_ij - R_i - R_j
+    with R_i = sum_k D_ik, the O(n^3) criterion modern NJ uses.
+
+    phylotr computes Saitou & Nei eq. (4) instead. The two are minimised
+    by the same pair, which is the whole reason the cheap form is a
+    legitimate substitute -- and it is why the docstring may claim the
+    Studier-Keppler topology while computing the other formula. If that
+    ever stopped holding, the claim would be false.
+    """
+    from morie.fn.phylotr import _sij
+
+    def sk(D, m, i, j):
+        ri = sum(D[i][k] for k in range(m))
+        rj = sum(D[j][k] for k in range(m))
+        return (m - 2.0) * D[i][j] - ri - rj
+
+    mats = [
+        [[0.0, 7.0, 11.0, 14.0],
+         [7.0, 0.0, 6.0, 9.0],
+         [11.0, 6.0, 0.0, 7.0],
+         [14.0, 9.0, 7.0, 0.0]],
+        # Saitou & Nei (1987) Table 1 distances
+        [[0, 7, 8, 11, 13, 16, 13, 17],
+         [7, 0, 5, 8, 10, 13, 10, 14],
+         [8, 5, 0, 5, 7, 10, 7, 11],
+         [11, 8, 5, 0, 8, 11, 8, 12],
+         [13, 10, 7, 8, 0, 5, 6, 10],
+         [16, 13, 10, 11, 5, 0, 9, 13],
+         [13, 10, 7, 8, 6, 9, 0, 8],
+         [17, 14, 11, 12, 10, 13, 8, 0]],
+    ]
+    for raw in mats:
+        D = [[float(v) for v in row] for row in raw]
+        m = len(D)
+        pairs = [(i, j) for i in range(m) for j in range(i + 1, m)]
+        best_sn = min(pairs, key=lambda p: _sij(D, m, p[0], p[1]))
+        best_sk = min(pairs, key=lambda p: sk(D, m, p[0], p[1]))
+        assert best_sn == best_sk, (best_sn, best_sk)
+
+        # NOT asserted: that the two rank every pair identically. They
+        # do not, and the equivalence never claimed they would -- the
+        # Studier-Keppler rearrangement preserves the MINIMISER, which
+        # is all neighbour-joining needs. On the Saitou & Nei Table 1
+        # matrix the orders first diverge at the 8th-ranked pair.
