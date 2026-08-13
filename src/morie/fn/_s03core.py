@@ -888,6 +888,39 @@ def wls(X, y, w, ridge=1e-10):
             "resid": resid, "n": n}
 
 
+def logistic_fluctuation(outcome, offset_logit, H, rows=None, iters=100,
+                         tol=1e-12):
+    """One-dimensional logistic fluctuation of a bounded regression.
+
+    Solves the score equation sum_i H_i (Y_i - expit(offset_i + eps H_i))
+    = 0 by Newton, which is exactly a univariate logistic regression of
+    `outcome` on the clever covariate `H` with `offset_logit` as offset.
+    This is the targeting step shared by the TMLEs in this package.
+
+    van der Laan, M. J. & Rubin, D. (2006) "Targeted maximum likelihood
+    learning", *The International Journal of Biostatistics* 2(1),
+    article 11, doi:10.2202/1557-4679.1043.
+    """
+    n = len(outcome)
+    idx = list(range(n)) if rows is None else list(rows)
+    if not idx or all(abs(H[i]) < 1e-14 for i in idx):
+        return 0.0
+    eps = 0.0
+    for _ in range(iters):
+        num = den = 0.0
+        for i in idx:
+            pr = sigmoid(offset_logit[i] + eps * H[i])
+            num += H[i] * (outcome[i] - pr)
+            den += H[i] * H[i] * pr * (1.0 - pr)
+        if den < 1e-14:
+            break
+        step = num / den
+        eps += step
+        if abs(step) < tol:
+            break
+    return eps
+
+
 def tmle_ate(y, D, X=None, trim=0.0, link="logit"):
     """Targeted maximum likelihood for the ATE.
 
