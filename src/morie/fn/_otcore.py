@@ -235,7 +235,10 @@ def _tree_path(basis, n, si, sj):
 def emd(a, b, C, max_pivots=20000):
     """Exact discrete optimal transport by the transportation simplex.
 
-    ponytail: Dantzig entering rule with a pivot cap rather than Bland's
+    ponytail: Dantzig entering rule with a pivot cap rather than the
+    anti-cycling rule of Bland, R. G. (1977), "New finite pivoting
+    rules for the simplex method", Mathematics of Operations
+    Research 2(2), 103-107. PDF not in hand (INFORMS serves HTML); cited from bibliographic details. Bland's
     rule.  Degenerate ties could in principle cycle; the cap turns that
     into a loud error instead of a hang.  Swap in Bland's rule if a real
     instance ever trips it.

@@ -77,6 +77,13 @@ def semivariogram(h, nugget, sill, rng, model):
 def empirical_semivariogram(coords, z, n_bins=15, max_dist=None):
     """Matheron's method-of-moments estimator, eq (4.1).
 
+    Matheron, G. (1963), "Principles of geostatistics", Economic
+    Geology 58(8), 1246-1266 -- the estimator this computes.
+    PDF not in hand (GeoScienceWorld serves HTML); cited from bibliographic details. The equation
+    number above is Schabenberger and Gotway (2005), which is the
+    spec followed here and is cited in full at the top.
+
+
     gamma_hat(h) = 1 / (2 |N(h)|) * sum over N(h) of (Z(s_i) - Z(s_j))^2
     """
     coords = np.atleast_2d(np.asarray(coords, dtype=float))
