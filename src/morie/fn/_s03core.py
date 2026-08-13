@@ -606,6 +606,256 @@ def mammen(i):
     return (1.0 - r5) / 2.0 if vdc(i, 2) < p else (1.0 + r5) / 2.0
 
 
+# --------------------------------------------------------------------
+# IP weighting for time-varying treatments
+#
+# Hernan, M. A. & Robins, J. M. (2020) *Causal Inference: What If*,
+# Boca Raton: Chapman & Hall/CRC, Ch. 12 and Ch. 21. Section 12.3 gives
+# the time-fixed weights
+#
+#     W^A  = 1 / f(A | L)              (nonstabilized)
+#     SW^A = f(A) / f(A | L)           (stabilized)
+#
+# and Sec. 21.2 generalises them to a treatment history A-bar with
+# time-varying covariates L-bar as the product over time
+#
+#     W^Abar  = prod_k 1 / f(A_k | Abar_{k-1}, Lbar_k)
+#     SW^Abar = prod_k f(A_k | Abar_{k-1}) / f(A_k | Abar_{k-1}, Lbar_k)
+#
+# The numerator model conditions on past treatment only; that is the
+# whole difference between the two, and it is why the stabilized
+# weights have the narrower range.
+# --------------------------------------------------------------------
+
+
+def treatment_density(A, X, kind="binary", ridge=1e-8):
+    """f(A | X) evaluated at each observed A.
+
+    "binary" fits a logistic model and returns g^A (1-g)^(1-A), the
+    probability of the treatment value actually received -- which is
+    what the denominator of an IP weight is, informally, in the book's
+    own words. "normal" fits a linear model and returns the normal
+    density at the observed dose, which is the generalized propensity
+    score of a continuous treatment.
+    """
+    av = vec(A)
+    n = len(av)
+    Z = design(X, n)
+    if kind == "binary":
+        b = logit_irls(Z, av, 60, ridge)
+        g = [sigmoid(v) for v in matvec(Z, b)]
+        dens = [g[i] if av[i] > 0.5 else 1.0 - g[i] for i in range(n)]
+        return dens, {"coef": b, "prob": g}
+    if kind == "normal":
+        b = lstsq(Z, av, ridge)
+        mu = matvec(Z, b)
+        resid = [av[i] - mu[i] for i in range(n)]
+        k = len(b)
+        df = n - k if n > k else 1
+        s2 = sum(r * r for r in resid) / df
+        if s2 <= 0.0:
+            raise ValueError(
+                "treatment_density: the treatment model fits the dose "
+                "exactly, so f(A|X) is degenerate and no IP weight exists")
+        c = 1.0 / math.sqrt(2.0 * math.pi * s2)
+        dens = [c * math.exp(-0.5 * r * r / s2) for r in resid]
+        return dens, {"coef": b, "mu": mu, "sigma2": s2}
+    raise ValueError("treatment_density: kind must be 'binary' or "
+                     "'normal', got %r" % (kind,))
+
+
+def ip_weights(A, X_denom, X_num=None, kind="binary", stabilize=True,
+               trim=None, ridge=1e-8):
+    """One time point's IP weight, Sec. 12.3.
+
+    `X_num` is the numerator model's covariates. Passing None gives the
+    marginal numerator f(A), the book's usual choice; passing past
+    treatment gives f(A_k | Abar_{k-1}), which is what Sec. 21.2 needs.
+    `stabilize=False` gives the nonstabilized 1/f(A|L).
+
+    `trim` truncates the weights at the given upper quantile and its
+    complement -- not part of the book's estimator, and off by default,
+    because truncation trades variance for bias and that is a decision
+    the caller should make deliberately.
+
+    The returned info carries diagnostics: the mean weight (which
+    Sec. 12.3 says to check is 1), the largest weight, the Kish
+    effective sample size, and for a Gaussian continuous treatment
+    ``finite_variance``, which is False when the confounders explain
+    more than half the variance of the dose. In that regime the
+    stabilized weight has infinite variance: its expectation is still
+    exactly 1, but the sample mean converges arbitrarily slowly and
+    comes out low, so the mean-1 check stops being informative. It is
+    reported rather than silently tolerated.
+    """
+    den, dinfo = treatment_density(A, X_denom, kind=kind, ridge=ridge)
+    n = len(den)
+    for i in range(n):
+        if den[i] <= 0.0:
+            raise ValueError(
+                "ip_weights: f(A|L) is zero for observation %d, so the "
+                "positivity condition fails in the sample and the weight "
+                "is undefined" % i)
+    if not stabilize:
+        num = [1.0] * n
+        ninfo = None
+    else:
+        num, ninfo = treatment_density(A, X_num, kind=kind, ridge=ridge)
+    w = [num[i] / den[i] for i in range(n)]
+    diag = _weight_diagnostics(w, dinfo, ninfo, kind, stabilize)
+    if trim is not None:
+        q = float(trim)
+        if not 0.5 < q < 1.0:
+            raise ValueError("ip_weights: trim must be in (0.5, 1), got %r"
+                             % (trim,))
+        hi = quantile7(w, q)
+        lo = quantile7(w, 1.0 - q)
+        w = [min(max(v, lo), hi) for v in w]
+    out = {"denominator": den, "numerator": num,
+           "denominator_fit": dinfo, "numerator_fit": ninfo}
+    out.update(diag)
+    return w, out
+
+
+def _weight_diagnostics(w, dinfo, ninfo, kind, stabilize):
+    """Kish effective sample size, and the finite-variance condition.
+
+    The effective sample size (sum w)^2 / sum w^2 is Kish, L. (1965)
+    *Survey Sampling*, Wiley, and says how many equally weighted
+    observations the weighted sample is worth. A value far below n is
+    the honest signal that a few observations are carrying the estimate.
+
+    `finite_variance` is None unless both models are Gaussian, where the
+    condition sigma_c^2 > sigma_m^2 / 2 can be checked exactly.
+    """
+    n = len(w)
+    s1 = sum(w)
+    s2 = sum(v * v for v in w)
+    ess = (s1 * s1 / s2) if s2 > 0.0 else 0.0
+    out = {"mean_weight": s1 / n if n else float("nan"),
+           "max_weight": max(w) if w else float("nan"),
+           "effective_sample_size": ess,
+           "ess_fraction": ess / n if n else float("nan"),
+           "finite_variance": None,
+           "variance_ratio": None}
+    if kind == "normal" and stabilize and ninfo is not None:
+        sc2 = float(dinfo["sigma2"])
+        sm2 = float(ninfo["sigma2"])
+        out["variance_ratio"] = sc2 / (0.5 * sm2) if sm2 > 0.0 else \
+            float("inf")
+        out["finite_variance"] = bool(sc2 > 0.5 * sm2)
+    return out
+
+
+def ip_weights_history(A_hist, L_hist, kind="binary", stabilize=True,
+                       trim=None, ridge=1e-8):
+    """Sec. 21.2's product over time.
+
+    `A_hist` is a list of K treatment vectors, one per time point;
+    `L_hist` a list of K covariate matrices. At time k the denominator
+    model conditions on L-bar_k and A-bar_{k-1}, and the numerator model
+    on A-bar_{k-1} alone.
+    """
+    K = len(A_hist)
+    if K == 0:
+        raise ValueError("ip_weights_history: need at least one time point")
+    if len(L_hist) != K:
+        raise ValueError("ip_weights_history: %d treatment times but %d "
+                         "covariate blocks" % (K, len(L_hist)))
+    n = len(vec(A_hist[0]))
+    w = [1.0] * n
+    per_time = []
+    past = []                       # columns of treatment history so far
+    for k in range(K):
+        ak = vec(A_hist[k])
+        if len(ak) != n:
+            raise ValueError("ip_weights_history: time %d has %d rows, "
+                             "time 0 has %d" % (k, len(ak), n))
+        Lk = mat(L_hist[k]) if L_hist[k] is not None else None
+        # denominator covariates: L-bar_k together with A-bar_{k-1}
+        den_X = _bind_cols(Lk, past, n)
+        num_X = _bind_cols(None, past, n) if past else None
+        wk, info = ip_weights(ak, den_X, num_X, kind=kind,
+                              stabilize=stabilize, ridge=ridge)
+        for i in range(n):
+            w[i] *= wk[i]
+        per_time.append({"time": k, "weight": wk, "info": info})
+        past = [list(col) for col in past] + [list(ak)]
+    if trim is not None:
+        q = float(trim)
+        if not 0.5 < q < 1.0:
+            raise ValueError("ip_weights_history: trim must be in (0.5, 1)")
+        hi = quantile7(w, q)
+        lo = quantile7(w, 1.0 - q)
+        w = [min(max(v, lo), hi) for v in w]
+    return w, per_time
+
+
+def _bind_cols(M, extra_cols, n):
+    """Column-bind a matrix (or None) with a list of length-n columns."""
+    if M is None and not extra_cols:
+        return None
+    rows = []
+    for i in range(n):
+        r = []
+        if M is not None:
+            r.extend(list(M[i]))
+        for col in extra_cols:
+            r.append(float(col[i]))
+        rows.append(r)
+    return rows
+
+
+def wls(X, y, w, ridge=1e-10):
+    """Weighted least squares, the fitting step of every MSM here.
+
+    Returns the coefficients and the robust (sandwich) standard errors.
+    The robust variance is not optional: the pseudo-population created
+    by the weights has the wrong sample size, so the model-based
+    standard error is wrong by construction, and the book says to use a
+    robust variance estimator throughout Part II.
+    """
+    yv = vec(y)
+    n = len(yv)
+    Z = design(X, n)
+    wv = [float(v) for v in vec(w)]
+    if len(wv) != n:
+        raise ValueError("wls: %d weights for %d observations"
+                         % (len(wv), n))
+    if any(v < 0.0 for v in wv):
+        raise ValueError("wls: weights must be non-negative")
+    k = len(Z[0])
+    XtWX = [[sum(wv[i] * Z[i][a] * Z[i][b] for i in range(n))
+             for b in range(k)] for a in range(k)]
+    XtWy = [sum(wv[i] * Z[i][a] * yv[i] for i in range(n))
+            for a in range(k)]
+    for a in range(k):
+        XtWX[a][a] += ridge
+    beta = cholsolve(XtWX, XtWy)
+    fitted = matvec(Z, beta)
+    resid = [yv[i] - fitted[i] for i in range(n)]
+    # sandwich: (X'WX)^-1 (sum w^2 e^2 x x') (X'WX)^-1
+    meat = [[sum((wv[i] * resid[i]) ** 2 * Z[i][a] * Z[i][b]
+                 for i in range(n))
+             for b in range(k)] for a in range(k)]
+    bread_cols = [cholsolve(XtWX, [1.0 if j == a else 0.0
+                                   for j in range(k)]) for a in range(k)]
+    var = []
+    for a in range(k):
+        row = []
+        for b in range(k):
+            t = 0.0
+            for u in range(k):
+                for v in range(k):
+                    t += bread_cols[a][u] * meat[u][v] * bread_cols[b][v]
+            row.append(t)
+        var.append(row)
+    se = [math.sqrt(var[a][a]) if var[a][a] > 0.0 else float("nan")
+          for a in range(k)]
+    return {"coef": beta, "se": se, "vcov": var, "fitted": fitted,
+            "resid": resid, "n": n}
+
+
 def tmle_ate(y, D, X=None, trim=0.0, link="logit"):
     """Targeted maximum likelihood for the ATE.
 
