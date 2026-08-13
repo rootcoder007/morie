@@ -4083,7 +4083,7 @@ def _lstsq(a, b, rcond=None):
     ``rcond * max(s)`` are treated as zero.
     """
     aa = atleast_2d(asarray(a))
-    bv = asarray(b)._flat()
+    bb = asarray(b)
     n, k = aa.shape
     u, sv, vt = _svd(aa)
     svl = list(sv._flat())
@@ -4095,13 +4095,35 @@ def _lstsq(a, b, rcond=None):
     else:
         ratio = float(rcond)
     cut = (_bi.max(svl) if svl else 0.0) * ratio
-    uy = [_math.fsum(u.data[r][c] * bv[r] for r in range(n))
-          for c in range(len(svl))]
-    z = [uy[c] / svl[c] if svl[c] > cut else 0.0
-         for c in range(len(svl))]
-    x = marr([_math.fsum(vt.data[c][j] * z[c]
-                         for c in range(len(svl)))
-              for j in range(k)])
+
+    # A two-dimensional b holds one right-hand side per column, exactly
+    # as numpy.linalg.lstsq does; each is solved separately and the
+    # solutions are returned as the columns of a k x nrhs matrix.
+    two_d = len(bb.shape) == 2
+    if two_d:
+        if bb.shape[0] != n:
+            raise ValueError(
+                "lstsq: a has %d rows but b has %d" % (n, bb.shape[0]))
+        cols = [[bb.data[r][c] for r in range(n)]
+                for c in range(bb.shape[1])]
+    else:
+        cols = [bb._flat()]
+
+    sols = []
+    for bv in cols:
+        uy = [_math.fsum(u.data[r][c] * bv[r] for r in range(n))
+              for c in range(len(svl))]
+        z = [uy[c] / svl[c] if svl[c] > cut else 0.0
+             for c in range(len(svl))]
+        sols.append([_math.fsum(vt.data[c][j] * z[c]
+                                for c in range(len(svl)))
+                     for j in range(k)])
+
+    if two_d:
+        x = marr([[sols[c][j] for c in range(len(sols))]
+                  for j in range(k)])
+    else:
+        x = marr(sols[0])
     resid = marr([])
     rank = _pysum(1 for v in svl if v > cut)
     return x, resid, rank, sv
