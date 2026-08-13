@@ -41,6 +41,17 @@ def _lag(x, k):
 def adf_test(x, lags=1, trend="c"):
     r"""Augmented Dickey-Fuller test.
 
+    Dickey, D. A. and Fuller, W. A. (1979), "Distribution of the
+    estimators for autoregressive time series with a unit root",
+    Journal of the American Statistical Association 74(366),
+    427-431 -- the test. Said, S. E. and Dickey, D. A. (1984),
+    "Testing for unit roots in autoregressive-moving average
+    models of unknown order", Biometrika 71(3), 599-607 -- the
+    augmentation that makes it the ADF. PDF not in hand (JSTOR and OUP serve HTML); cited from bibliographic details.
+    The critical values used below are MacKinnon (2010), cited
+    in full at the top of this module.
+
+
     Regresses :math:`\Delta x_t` on :math:`x_{t-1}`, the chosen
     deterministic terms and ``lags`` lagged differences; the statistic
     is the t-ratio on :math:`x_{t-1}`. Under the null of a unit root
