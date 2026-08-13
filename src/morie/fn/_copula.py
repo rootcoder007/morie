@@ -5,6 +5,16 @@ Parameter/tau relations follow Czado (2019), *Analyzing Dependent Data
 with Vine Copulas*, Table 3.2 p. 54 -- read in the library PDF, not
 recalled. Theorem 3.9 eq. (3.17) gives the general Archimedean
 integral; the closed forms below are that table's rows.
+
+References
+----------
+Czado, C. (2019). *Analyzing Dependent Data with Vine Copulas: A
+Practical Guide with R*. Lecture Notes in Statistics 222. Springer.
+ISBN 978-3-030-13784-7.
+
+None of these PDFs is in the local library; they are cited from
+bibliographic details, and the formulas here have not been
+re-verified against them.
 """
 
 from . import _array_core as np

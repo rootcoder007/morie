@@ -6,6 +6,19 @@ exit, so the Python and the R arm of the package execute the same
 arithmetic in the same order and agree to machine precision.  A cyclic
 Jacobi sweep that stops on a convergence test would stop after a
 different number of sweeps on the two arms and silently break parity.
+
+References
+----------
+Brandes, U. (2001). "A Faster Algorithm for Betweenness Centrality."
+*Journal of Mathematical Sociology* 25(2), 163-177.
+
+Freeman, L. C. (1977). "A Set of Measures of Centrality Based on
+Betweenness." *Sociometry* 40(1), 35-41. -- the measure Brandes
+accumulates.
+
+None of these PDFs is in the local library; they are cited from
+bibliographic details, and the formulas here have not been
+re-verified against them.
 """
 
 import math
