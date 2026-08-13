@@ -23,6 +23,16 @@ prescribes. The support constraint 1 + xi (z - mu)/sigma > 0 returns
 -inf outside the feasible set (sec. 3.3.2 warning).
 
 Page/equation numbers verified against the library PDF.
+
+References
+----------
+Coles, S. (2001). *An Introduction to Statistical Modeling of Extreme
+Values*. Springer Series in Statistics. Springer.
+ISBN 978-1-85233-459-8.
+
+None of these PDFs is in the local library; they are cited from
+bibliographic details, and the formulas here have not been
+re-verified against them.
 """
 
 from __future__ import annotations
