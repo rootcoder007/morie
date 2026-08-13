@@ -128,6 +128,29 @@ class TestLinalg:
         b_m, *_ = mnp.linalg.lstsq(x, y)
         assert close(b_m, [1.0, 2.0], 1e-10)
 
+    def test_lstsq_matrix_rhs_solves_each_column(self):
+        # A two-dimensional b holds one right-hand side per column.
+        # This used to flatten b and read the first n entries of the
+        # row-major order, mixing the columns together and returning a
+        # single vector -- a wrong answer with no error raised.
+        a = [[2.0, 1.0], [1.0, 3.0], [0.0, 1.0], [4.0, -1.0]]
+        xt = [[1.0, -2.0], [0.5, 3.0]]
+        b = [[sum(a[r][k] * xt[k][c] for k in range(2)) for c in range(2)]
+             for r in range(4)]
+        sol, *_ = mnp.linalg.lstsq(a, b, rcond=None)
+        assert sol.shape == (2, 2)
+        for i in range(2):
+            for j in range(2):
+                assert sol[i][j] == pytest.approx(xt[i][j], abs=1e-10)
+        # each column must equal the one-dimensional solve of that column
+        for c in range(2):
+            one, *_ = mnp.linalg.lstsq(a, [b[r][c] for r in range(4)],
+                                       rcond=None)
+            for i in range(2):
+                assert sol[i][c] == pytest.approx(one[i], abs=1e-12)
+        with pytest.raises(ValueError):
+            mnp.linalg.lstsq(a, [[1.0, 2.0], [3.0, 4.0]], rcond=None)
+
 
 class TestRandom:
     def test_deterministic_and_distributed(self):
