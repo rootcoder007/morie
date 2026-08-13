@@ -1,8 +1,14 @@
 r"""RAPPOR: randomized aggregatable privacy-preserving ordinal response.
 
 Erlingsson, Ú., Pihur, V., & Korolova, A. (2014) "RAPPOR: Randomized
-Aggregatable Privacy-Preserving Ordinal Response", *Proc. 21st ACM CCS*,
-1054-1067.
+Aggregatable Privacy-Preserving Ordinal Response", *Proceedings of the
+2014 ACM SIGSAC Conference on Computer and Communications Security
+(CCS '14)*, 1054-1067, doi:10.1145/2660267.2660348.
+
+Bloom, B. H. (1970) "Space/time trade-offs in hash coding with allowable
+errors", *Communications of the ACM* 13(7), 422-426,
+doi:10.1145/362686.362692 -- the filter built in step 1, and the source
+of the false-positive rate that sets the k and h defaults.
 
 The client never sends its value. It sends a doubly-randomized bit
 array, and the server recovers *population* counts from many such
@@ -148,11 +154,18 @@ def _bloom(value, k, h, cohort=0):
 
 
 def rappor_encode(values, k=16, h=2, f=0.5, p=0.5, q=0.75, cohorts=1,
-                  variant="full", seed=0):
+                  variant="full", seed=0, client_ids=None):
     r"""Run steps 1-4 for a list of client values.
 
     Returns the reports, the per-cohort per-bit counts the server sees,
     and the cohort assignment.
+
+    ``client_ids`` labels which client each row came from. Given it, the
+    permanent randomized response of step 2 is drawn once per (client,
+    value) pair and reused -- the memoization the paper requires -- and
+    each client keeps a single cohort across all its rows (Sec. 3.1).
+    Left ``None``, every row is treated as a distinct client reporting
+    once, which is the same thing when no client repeats.
     """
     var = str(variant).lower()
     if var not in _VARIANTS:
@@ -183,7 +196,18 @@ def rappor_encode(values, k=16, h=2, f=0.5, p=0.5, q=0.75, cohorts=1,
     else:
         alphabet = None
 
+    if client_ids is None:
+        ids = list(range(n))
+    else:
+        ids = [str(c) for c in client_ids]
+        if len(ids) != n:
+            raise ValueError(
+                "rappor_encode: %d values but %d client_ids"
+                % (n, len(ids)))
+
     rng = np.random.default_rng(seed)
+    prr_memo = {}
+    cohort_memo = {}
     reports = []
     cohort_of = []
     counts = [[0] * k for _ in range(m)]
@@ -191,9 +215,14 @@ def rappor_encode(values, k=16, h=2, f=0.5, p=0.5, q=0.75, cohorts=1,
 
     for idx in range(n):
         v = vals[idx]
-        j = 0 if m == 1 else int(float(rng.uniform()) * m)
-        if j >= m:
-            j = m - 1
+        cid = ids[idx]
+        if cid in cohort_memo:
+            j = cohort_memo[cid]
+        else:
+            j = 0 if m == 1 else int(float(rng.uniform()) * m)
+            if j >= m:
+                j = m - 1
+            cohort_memo[cid] = j
         cohort_of.append(j)
         sizes[j] += 1
 
@@ -204,16 +233,24 @@ def rappor_encode(values, k=16, h=2, f=0.5, p=0.5, q=0.75, cohorts=1,
             for b in _bloom(v, k, h, cohort=j):
                 B[b] = 1
 
-        # Step 2, PRR.
-        Bp = [0] * k
-        for i in range(k):
-            u = float(rng.uniform())
-            if u < 0.5 * f:
-                Bp[i] = 1
-            elif u < f:
-                Bp[i] = 0
-            else:
-                Bp[i] = B[i]
+        # Step 2, PRR -- drawn once per (client, value) and memoized.
+        # Re-drawing it per report is what lets an attacker average a
+        # client's reports back to B, which is precisely what the
+        # permanent response is there to stop.
+        memo_key = (cid, str(v))
+        if memo_key in prr_memo:
+            Bp = list(prr_memo[memo_key])
+        else:
+            Bp = [0] * k
+            for i in range(k):
+                u = float(rng.uniform())
+                if u < 0.5 * f:
+                    Bp[i] = 1
+                elif u < f:
+                    Bp[i] = 0
+                else:
+                    Bp[i] = B[i]
+            prr_memo[memo_key] = list(Bp)
 
         # Step 3, IRR -- skipped by the one-time variant.
         if var == "one-time":
@@ -234,6 +271,7 @@ def rappor_encode(values, k=16, h=2, f=0.5, p=0.5, q=0.75, cohorts=1,
         "counts": counts,
         "cohort_sizes": sizes,
         "cohort_of": cohort_of,
+        "client_ids": list(ids),
         "k": int(k),
         "h": int(h),
         "cohorts": int(m),
