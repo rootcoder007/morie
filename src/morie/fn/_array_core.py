@@ -1468,18 +1468,34 @@ def where(cond, a=None, b=None):
                     if v != 0])
         out._is_index = True
         return (out,)
-    if len(c.shape) == 2:
-        # full broadcasting over the condition's shape
+    if len(c.shape) == 2 or len(asarray(a).shape) == 2 \
+            or len(asarray(b).shape) == 2:
+        # Broadcast the CONDITION too, not just the two value arrays.
+        # It used to iterate over the condition's own shape, so a (1, d)
+        # mask against (n, d) values returned a single row -- and callers
+        # that then combined it with an (n,) array got that one row
+        # spread silently over every sample. fn/copod.py scored all 200
+        # points identically because of exactly this.
+        cb = _b2(c)
         ab = _b2(asarray(a))
         bb2 = _b2(asarray(b))
+        rows = _bi.max(cb.shape[0], ab.shape[0], bb2.shape[0])
+        cols = _bi.max(cb.shape[1], ab.shape[1], bb2.shape[1])
+        for src, name in ((cb, "cond"), (ab, "a"), (bb2, "b")):
+            for got, want, what in ((src.shape[0], rows, "rows"),
+                                    (src.shape[1], cols, "columns")):
+                if got not in (1, want):
+                    raise ValueError(
+                        "where: %s has %d %s, cannot broadcast to %d"
+                        % (name, got, what, want))
 
         def pick(src, r, cc):
             row = src.data[r if src.shape[0] > 1 else 0]
             return row[cc if src.shape[1] > 1 else 0]
-        return marr([[pick(ab, r, cc) if c.data[r][cc]
+        return marr([[pick(ab, r, cc) if pick(cb, r, cc)
                       else pick(bb2, r, cc)
-                      for cc in range(c.shape[1])]
-                     for r in range(c.shape[0])])
+                      for cc in range(cols)]
+                     for r in range(rows)])
     aa, bb = asarray(a), asarray(b)
     if isinstance(aa, oarr) or isinstance(bb, oarr) or \
             isinstance(a, str) or isinstance(b, str):
@@ -1892,6 +1908,46 @@ class _SplitMix64:
         def one():
             return low + (high - low) * (self._next() >> 11) / (1 << 53)
         return self._fill(one, size)
+
+    def multivariate_normal(self, mean, cov, size=None):
+        """Correlated normal draws: mean + L z, with cov = L L'.
+
+        _SplitMix64 carried eleven univariate distributions and not this
+        one, so every caller that wanted correlated normals raised
+        AttributeError -- which is what the copula tests were hitting.
+
+        Cholesky is used when cov is positive definite. Sample
+        covariance matrices often are not, only positive semi-definite,
+        so a symmetric eigendecomposition with negative eigenvalues
+        clipped to zero is the fallback; that still gives L L' = cov to
+        rounding whenever cov is a valid covariance.
+        """
+        mu = [float(v) for v in asarray(mean)._flat()]
+        d = len(mu)
+        c = atleast_2d(asarray(cov, dtype=float))
+        if c.shape != (d, d):
+            raise ValueError("multivariate_normal: cov is %s but mean has "
+                             "%d entries" % (c.shape, d))
+        try:
+            lo = linalg.cholesky(c)
+            L = [[float(lo[i][j]) for j in range(d)] for i in range(d)]
+        except Exception:
+            w, v = linalg.eigh(c)
+            wl = [_bi.max(float(x), 0.0) for x in w._flat()]
+            L = [[float(v[i][k]) * _math.sqrt(wl[k]) for k in range(d)]
+                 for i in range(d)]
+        n = 1 if size is None else int(size)
+        if n < 0:
+            raise ValueError("multivariate_normal: size must not be "
+                             "negative")
+        rows = []
+        for _ in range(n):
+            z = [float(x) for x in
+                 atleast_1d(asarray(self.standard_normal(d)))._flat()]
+            rows.append([mu[i] + _math.fsum(L[i][k] * z[k]
+                                            for k in range(d))
+                         for i in range(d)])
+        return marr(rows) if size is not None else marr(rows[0])
 
     def standard_normal(self, size=None):
         return self.normal(0.0, 1.0, size)
@@ -3493,10 +3549,26 @@ def bincount(x, weights=None, minlength=0):
     return marr(out)
 
 
-def meshgrid(x, y):
+def meshgrid(x, y, indexing="xy"):
+    """As numpy.meshgrid, including the ``indexing`` keyword.
+
+    The keyword was missing, so every caller writing the numpy-standard
+    ``meshgrid(a, b, indexing="ij")`` got a TypeError -- which is what
+    the copula tau quadrature was hitting.
+
+    "xy" (the default, and the previous behaviour) gives arrays of shape
+    (len(y), len(x)); "ij" gives (len(x), len(y)), i.e. the transpose.
+    """
+    if indexing not in ("xy", "ij"):
+        raise ValueError("meshgrid: indexing must be 'xy' or 'ij', got %r"
+                         % (indexing,))
     fx, fy = asarray(x)._flat(), asarray(y)._flat()
-    gx = marr([fx[:] for _ in fy])
-    gy = marr([[v] * len(fx) for v in fy])
+    if indexing == "xy":
+        gx = marr([fx[:] for _ in fy])
+        gy = marr([[v] * len(fx) for v in fy])
+    else:
+        gx = marr([[v] * len(fy) for v in fx])
+        gy = marr([fy[:] for _ in fx])
     return gx, gy
 
 
