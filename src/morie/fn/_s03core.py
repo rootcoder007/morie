@@ -498,7 +498,8 @@ def besselk(nu, x, terms=160):
 # performs the identical arithmetic in the identical order.
 
 
-def logit_irls(X, y, iters=60, ridge=1e-10, tol=1e-13, penalty=0.0):
+def logit_irls(X, y, iters=60, ridge=1e-10, tol=1e-13,
+               penalty=0.0, obs_weights=None):
     """Logistic regression by iteratively reweighted least squares.
 
     Newton-Raphson on the log-likelihood, which for the canonical link
@@ -515,18 +516,29 @@ def logit_irls(X, y, iters=60, ridge=1e-10, tol=1e-13, penalty=0.0):
     `ridge` is a different thing and keeps its old meaning -- a
     numerical stabilizer inside the Newton-step solve, with no effect
     on the fitted coefficients.
+
+    `obs_weights` multiplies each observation's contribution to the
+    score and to the Hessian, which is what a weighted (quasi-)binomial
+    likelihood means. Needed wherever observations carry unequal weight
+    by construction -- e.g. the alpha_ij = 1/N_j weights that make every
+    cluster count once regardless of its size.
     """
     n = len(X)
     p = len(X[0]) if n else 0
+    ow = [1.0] * n if obs_weights is None else [float(v) for v in
+                                               obs_weights]
+    if len(ow) != n:
+        raise ValueError("logit_irls: %d weights for %d rows"
+                         % (len(ow), n))
     beta = [0.0] * p
     for _ in range(iters):
         eta = matvec(X, beta)
         mu = [sigmoid(z) for z in eta]
-        w = [mu[i] * (1.0 - mu[i]) for i in range(n)]
+        w = [ow[i] * mu[i] * (1.0 - mu[i]) for i in range(n)]
         XtWX = [[0.0] * p for _ in range(p)]
         Xtr = [0.0] * p
         for i in range(n):
-            r = y[i] - mu[i]
+            r = ow[i] * (y[i] - mu[i])
             for a in range(p):
                 Xtr[a] += X[i][a] * r
                 for b in range(p):
@@ -889,7 +901,7 @@ def wls(X, y, w, ridge=1e-10):
 
 
 def logistic_fluctuation(outcome, offset_logit, H, rows=None, iters=100,
-                         tol=1e-12):
+                         tol=1e-12, obs_weights=None):
     """One-dimensional logistic fluctuation of a bounded regression.
 
     Solves the score equation sum_i H_i (Y_i - expit(offset_i + eps H_i))
@@ -903,6 +915,11 @@ def logistic_fluctuation(outcome, offset_logit, H, rows=None, iters=100,
     """
     n = len(outcome)
     idx = list(range(n)) if rows is None else list(rows)
+    ow = [1.0] * n if obs_weights is None else [float(v) for v in
+                                                obs_weights]
+    if len(ow) != n:
+        raise ValueError("logistic_fluctuation: %d weights for %d rows"
+                         % (len(ow), n))
     if not idx or all(abs(H[i]) < 1e-14 for i in idx):
         return 0.0
     eps = 0.0
@@ -910,8 +927,8 @@ def logistic_fluctuation(outcome, offset_logit, H, rows=None, iters=100,
         num = den = 0.0
         for i in idx:
             pr = sigmoid(offset_logit[i] + eps * H[i])
-            num += H[i] * (outcome[i] - pr)
-            den += H[i] * H[i] * pr * (1.0 - pr)
+            num += ow[i] * H[i] * (outcome[i] - pr)
+            den += ow[i] * H[i] * H[i] * pr * (1.0 - pr)
         if den < 1e-14:
             break
         step = num / den

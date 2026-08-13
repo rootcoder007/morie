@@ -50,6 +50,18 @@ and estimating it anyway can still buy precision. The candidate g's are
 selected collaboratively, by the same variance loss, so a covariate that
 predicts assignment but not the outcome is not adjusted for.
 
+**Hierarchical data.** Where individual-level records are available
+underneath the cluster-level exposure, ``tmle_hierarchical`` implements
+Balzer et al. (2019)'s two estimators. They differ in where the
+averaging happens -- average the outcomes into :math:`Y^c_j` and target
+at cluster level, or target the pooled individual regression and average
+the *targeted* predictions afterwards -- and, behind that, in what they
+assume about interference within a cluster. Pairing individual risk
+factors with individual outcomes is the more efficient when the exposure
+depends on the covariate matrix, but it assumes no covariate
+interference, and where that fails it buys precision with bias. Both are
+returned.
+
 References
 ----------
 Balzer, L. B., van der Laan, M. J. & Petersen, M. L. (2018)
@@ -82,6 +94,14 @@ Randomized Trials with Binary Outcomes: Targeted Maximum Likelihood
 Estimation", *Statistics in Medicine* 28(1), 39-64,
 doi:10.1002/sim.3445. Why the logistic working model may be
 misspecified without cost here.
+
+Balzer, L. B., Zheng, W., van der Laan, M. J. & Petersen, M. L. (2019)
+"A new approach to hierarchical data analysis: Targeted maximum
+likelihood estimation for the causal effect of a cluster-level
+exposure", *Statistical Methods in Medical Research* 28(6), 1761-1780,
+doi:10.1177/0962280218774936. The two hierarchical TMLEs: eq. (4)-(9)
+for the cluster-level estimator, eq. (11)-(21) for the individual-level
+one, Sec. 5 for their comparison.
 """
 
 import math
@@ -92,7 +112,7 @@ from ._richresult import RichResult
 
 __all__ = ["tmle_cluster_ic", "adaptive_prespecification",
            "candidate_tmle", "influence_curve", "variance_estimate",
-           "default_library"]
+           "default_library", "tmle_hierarchical", "cluster_weights"]
 
 _TARGETS = ("SATE", "PATE")
 _DESIGNS = ("unmatched", "matched", "clustered")
@@ -510,6 +530,304 @@ def tmle_cluster_ic(y, D, X, cluster=None, target="SATE",
         "method": "adaptive pre-specification TMLE, Balzer, van der "
                   "Laan & Petersen (2018) Ch. 13",
     })
+
+
+# ---------------------------------------------------------------------
+# Hierarchical data: the cluster-level and individual-level TMLEs
+# ---------------------------------------------------------------------
+
+def cluster_weights(cluster, weights=None):
+    r"""The per-individual weights alpha_ij and the cluster groups.
+
+    Balzer et al. (2019) require :math:`\sum_i \alpha_{ij} = 1` within
+    each cluster, so the cluster-level outcome
+    :math:`Y^c_j = \sum_i \alpha_{ij} Y_{ij}` is a weighted mean and
+    every cluster counts once no matter how many individuals it holds.
+    The default :math:`\alpha_{ij} = 1/N_j` is their stated choice.
+    """
+    lab = [str(c) for c in cluster]
+    n = len(lab)
+    order, groups = [], {}
+    for i, c in enumerate(lab):
+        if c not in groups:
+            groups[c] = []
+            order.append(c)
+        groups[c].append(i)
+    grp = [groups[c] for c in order]
+    if weights is None:
+        alpha = [0.0] * n
+        for g in grp:
+            for i in g:
+                alpha[i] = 1.0 / len(g)
+        return alpha, grp
+    alpha = [float(v) for v in weights]
+    if len(alpha) != n:
+        raise ValueError("cluster_weights: %d weights for %d rows"
+                         % (len(alpha), n))
+    if any(v < 0.0 for v in alpha):
+        raise ValueError("cluster_weights: weights must be non-negative")
+    for g in grp:
+        tot = sum(alpha[i] for i in g)
+        if abs(tot - 1.0) > 1e-8:
+            raise ValueError("cluster_weights: weights in a cluster sum "
+                             "to %.6f, not 1" % tot)
+    return alpha, grp
+
+
+def _one_per_cluster(v, groups, name):
+    """Pull a cluster-level variable out of per-individual rows."""
+    out = []
+    for g in groups:
+        first = v[g[0]]
+        for i in g:
+            if v[i] != first:
+                raise ValueError("tmlcic: %s varies within a cluster; "
+                                 "it is a cluster-level variable" % name)
+        out.append(first)
+    return out
+
+
+def _hier_cluster_arm(yc, Aj, Zj, groups, a, trim, ridge, known_g):
+    """TMLE I, eq. (4)-(9): fit, target and average at cluster level."""
+    J = len(groups)
+    X = k.design(Zj, J)
+    if known_g is not None:
+        p1 = [min(max(float(v), trim), 1.0 - trim) for v in known_g]
+    else:
+        b = k.logit_irls(X, Aj, ridge=max(ridge, 1e-10))
+        p1 = [min(max(k.sigmoid(v), trim), 1.0 - trim)
+              for v in k.matvec(X, b)]
+    ga = [p1[j] if a == 1.0 else 1.0 - p1[j] for j in range(J)]
+
+    def row(av, j):
+        return [1.0, av] + list(Zj[j])
+
+    bq = k.logit_irls([row(Aj[j], j) for j in range(J)], yc,
+                      ridge=max(ridge, 1e-10))
+
+    def q(av, j):
+        r = row(av, j)
+        return k.sigmoid(sum(bq[t] * r[t] for t in range(len(bq))))
+
+    H = [(1.0 / ga[j]) if Aj[j] == a else 0.0 for j in range(J)]
+    off = [_logit(q(Aj[j], j)) for j in range(J)]
+    eps = k.logistic_fluctuation(yc, off, H)
+    qs_obs = [k.sigmoid(off[j] + eps * H[j]) for j in range(J)]
+    qs_a = [k.sigmoid(_logit(q(a, j)) + eps / ga[j]) for j in range(J)]
+    psi = sum(qs_a) / J
+    D = [H[j] * (yc[j] - qs_obs[j]) + qs_a[j] - psi for j in range(J)]
+    return psi, D, {"eps": eps, "max_weight": max(1.0 / g for g in ga),
+                    "min_g": min(ga)}
+
+
+def _hier_individual_arm(y, Ai, Zi, alpha, groups, a, trim, ridge,
+                         known_g):
+    """TMLE II, eq. (14)-(21).
+
+    The difference from TMLE I is only where the averaging happens: the
+    individual regression is targeted with an INDIVIDUAL clever
+    covariate and the targeted predictions are averaged within cluster
+    afterwards, rather than averaged first and targeted at cluster
+    level.
+    """
+    n = len(y)
+    J = len(groups)
+    X = k.design(Zi, n)
+    if known_g is not None:
+        p1 = [min(max(float(v), trim), 1.0 - trim) for v in known_g]
+    else:
+        b = k.logit_irls(X, Ai, ridge=max(ridge, 1e-10),
+                         obs_weights=alpha)
+        p1 = [min(max(k.sigmoid(v), trim), 1.0 - trim)
+              for v in k.matvec(X, b)]
+    ga = [p1[i] if a == 1.0 else 1.0 - p1[i] for i in range(n)]
+
+    def row(av, i):
+        return [1.0, av] + list(Zi[i])
+
+    bq = k.logit_irls([row(Ai[i], i) for i in range(n)], y,
+                      ridge=max(ridge, 1e-10), obs_weights=alpha)
+
+    def q(av, i):
+        r = row(av, i)
+        return k.sigmoid(sum(bq[t] * r[t] for t in range(len(bq))))
+
+    H = [(1.0 / ga[i]) if Ai[i] == a else 0.0 for i in range(n)]
+    off = [_logit(q(Ai[i], i)) for i in range(n)]
+    eps = k.logistic_fluctuation(y, off, H, obs_weights=alpha)
+    qs_obs = [k.sigmoid(off[i] + eps * H[i]) for i in range(n)]
+    qs_a = [k.sigmoid(_logit(q(a, i)) + eps / ga[i]) for i in range(n)]
+    # average the TARGETED predictions within each cluster
+    qc_a = [sum(alpha[i] * qs_a[i] for i in g) for g in groups]
+    psi = sum(qc_a) / J
+    D = []
+    for t, g in enumerate(groups):
+        D.append(sum(alpha[i] * (H[i] * (y[i] - qs_obs[i]) + qs_a[i])
+                     for i in g) - psi)
+    return psi, D, {"eps": eps, "max_weight": max(1.0 / gv for gv in ga),
+                    "min_g": min(ga), "qc": qc_a}
+
+
+def tmle_hierarchical(y, A, E, W, cluster, arm="both", weights=None,
+                      known_g=None, trim=0.01, ridge=1e-8, level=0.95):
+    r"""Causal effect of a CLUSTER-level exposure on hierarchical data.
+
+    Two estimators of :math:`E[Y^c(1)] - E[Y^c(0)]`, differing in the
+    causal model they are derived under and, in practice, in **where the
+    averaging happens**:
+
+    ``"cluster"``
+        TMLE I. Individual outcomes are averaged into :math:`Y^c_j`
+        first and the targeting uses a cluster-level clever covariate
+        :math:`H^c = I(A=a)/g^c(a \mid E, W)`. Derived under a
+        non-parametric hierarchical causal model that allows *arbitrary*
+        interactions between individuals in a cluster -- contagion, and
+        one individual's covariates influencing another's outcome.
+
+    ``"individual"``
+        TMLE II. The pooled individual regression is targeted with an
+        individual clever covariate
+        :math:`H_{ij} = I(A_j=a)/g(a \mid E_j, W_{ij})` and the
+        *targeted* predictions are averaged within cluster afterwards.
+        Derived under a restricted model assuming **no covariate
+        interference** -- individual i's outcome does not depend on
+        anyone else's covariates -- and that :math:`(E, W_{i\cdot})`
+        suffices to control confounding.
+
+    **The restriction is not free.** When the exposure depends on the
+    covariate matrix, the sub-model's efficiency bound is the better of
+    the two, so pairing individual risk factors with individual outcomes
+    buys precision. But the assumptions are assumptions: in an
+    observational setting where covariate interference is actually
+    present, TMLE II can be biased and its interval misleading, while
+    TMLE I -- which assumed nothing about the within-cluster structure
+    -- stays honest. Both are returned so the comparison is visible
+    rather than taken on trust.
+
+    When assignment depends only on the cluster-level covariates,
+    :math:`g^c(A \mid E, W) = g^c(A \mid E)`, the two efficient
+    influence curves coincide.
+
+    Parameters
+    ----------
+    y : array-like
+        Individual-level outcomes in [0, 1], one row per individual.
+    A : array-like
+        The cluster-level exposure, given per individual; it must not
+        vary within a cluster.
+    E : array-like
+        Cluster-level covariates, per individual; constant in a cluster.
+    W : array-like
+        Individual-level covariates, one row per individual.
+    cluster : array-like
+        Cluster labels.
+    arm : {"both", "cluster", "individual"}
+    weights : array-like, optional
+        The alpha_ij, which must sum to 1 within each cluster. Defaults
+        to 1/N_j.
+    known_g : (g_cluster, g_individual), optional
+        Known assignment probabilities P(A = 1 | .), as in a trial.
+
+    Returns
+    -------
+    RichResult
+        ``estimate`` is the chosen arm's effect (the individual-level
+        one when both are run, since that is the more efficient under
+        its assumptions), with both arms' point estimates, standard
+        errors and treatment-specific means reported separately.
+
+    Examples
+    --------
+    Compare the two estimators before trusting either::
+
+        r = tmle_hierarchical(y, A, E, W, cluster)
+        r["estimate_cluster"], r["estimate_individual"]
+    """
+    if arm not in ("both", "cluster", "individual"):
+        raise ValueError("tmlcic: arm must be both, cluster or "
+                         "individual, got %r" % (arm,))
+    yv, Av = k.vec(y), k.vec(A)
+    n = len(yv)
+    if len(Av) != n:
+        raise ValueError("tmlcic: %d outcomes but %d exposures"
+                         % (n, len(Av)))
+    if any(v not in (0.0, 1.0) for v in Av):
+        raise ValueError("tmlcic: the exposure must be binary 0/1")
+    if any(v < 0.0 or v > 1.0 for v in yv):
+        raise ValueError("tmlcic: individual outcomes must lie in "
+                         "[0, 1]; rescale them first")
+    Em = k.mat(E) if E is not None else [[] for _ in range(n)]
+    Wm = k.mat(W) if W is not None else [[] for _ in range(n)]
+    if len(Em) != n or len(Wm) != n:
+        raise ValueError("tmlcic: covariate blocks have %d and %d rows "
+                         "for %d individuals" % (len(Em), len(Wm), n))
+    t = float(trim)
+    if not 0.0 < t < 0.5:
+        raise ValueError("tmlcic: trim must be in (0, 0.5), got %r"
+                         % (trim,))
+    alpha, groups = cluster_weights(cluster, weights)
+    J = len(groups)
+    if J < 4:
+        raise ValueError("tmlcic: need at least 4 clusters, got %d" % J)
+    Aj = _one_per_cluster(Av, groups, "the exposure")
+    if not 0 < sum(Aj) < J:
+        raise ValueError("tmlcic: both exposure arms must be non-empty")
+    for c in range(len(Em[0]) if Em[0] else 0):
+        _one_per_cluster([r[c] for r in Em], groups,
+                         "a cluster-level covariate")
+
+    yc = [sum(alpha[i] * yv[i] for i in g) for g in groups]
+    Ej = [Em[g[0]] for g in groups]
+    Wbar = [[sum(alpha[i] * Wm[i][c] for i in g)
+             for c in range(len(Wm[0]) if Wm[0] else 0)] for g in groups]
+    Zj = [list(Ej[t]) + list(Wbar[t]) for t in range(J)]
+    Zi = [list(Em[i]) + list(Wm[i]) for i in range(n)]
+    kg_c = known_g[0] if known_g is not None else None
+    kg_i = known_g[1] if known_g is not None else None
+
+    out = {}
+    z = k.qnorm(0.5 + 0.5 * float(level))
+    for nm, run in (("cluster", arm in ("both", "cluster")),
+                    ("individual", arm in ("both", "individual"))):
+        if not run:
+            continue
+        psi, D, info = {}, {}, {}
+        for a in (0.0, 1.0):
+            if nm == "cluster":
+                p, d, inf = _hier_cluster_arm(yc, Aj, Zj, groups, a, t,
+                                              ridge, kg_c)
+            else:
+                p, d, inf = _hier_individual_arm(yv, Av, Zi, alpha,
+                                                 groups, a, t, ridge,
+                                                 kg_i)
+            psi[a], D[a], info[a] = p, d, inf
+        contrast = psi[1.0] - psi[0.0]
+        Dc = [D[1.0][j] - D[0.0][j] for j in range(J)]
+        se = k.sd(Dc) / math.sqrt(J) if J > 1 else float("nan")
+        out[nm] = {"estimate": contrast, "se": se,
+                   "ci": (contrast - z * se, contrast + z * se),
+                   "mean_1": psi[1.0], "mean_0": psi[0.0],
+                   "influence_curve": Dc,
+                   "eic_mean": sum(Dc) / J,
+                   "epsilon": (info[0.0]["eps"], info[1.0]["eps"]),
+                   "max_weight": max(info[0.0]["max_weight"],
+                                     info[1.0]["max_weight"])}
+
+    main = "individual" if "individual" in out else "cluster"
+    payload = {
+        "estimate": out[main]["estimate"], "se": out[main]["se"],
+        "ci": out[main]["ci"], "arm_reported": main, "arm": arm,
+        "n": n, "n_clusters": J,
+        "cluster_sizes": [len(g) for g in groups],
+        "cluster_outcome": yc, "alpha": alpha,
+        "level": float(level), "known_g": known_g is not None,
+        "method": "hierarchical TMLE for a cluster-level exposure, "
+                  "Balzer, Zheng, van der Laan & Petersen (2019)",
+    }
+    for nm, r in out.items():
+        for key, val in r.items():
+            payload["%s_%s" % (key, nm)] = val
+    return RichResult(payload=payload)
 
 
 def cheatsheet():
