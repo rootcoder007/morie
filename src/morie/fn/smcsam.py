@@ -244,8 +244,17 @@ def smcsam(log_gamma, initial, n_particles=500, ladder=None, n_steps=20,
 
     References
     ----------
-    Del Moral, Doucet & Jasra (2006) *JRSS-B* 68(3), 411-436: equations
+    Del Moral, P., Doucet, A. & Jasra, A. (2006) "Sequential Monte Carlo
+    samplers", *Journal of the Royal Statistical Society, Series B*
+    68(3), 411-436, doi:10.1111/j.1467-9868.2006.00553.x: equations
     10-12, 30-31, the ESS criterion and section 3.1.1.
+
+    Metropolis, N., Rosenbluth, A. W., Rosenbluth, M. N., Teller, A. H.
+    & Teller, E. (1953) "Equation of state calculations by fast
+    computing machines", *Journal of Chemical Physics* 21(6),
+    1087-1092, doi:10.1063/1.1699114 -- the accept-reject rule that
+    makes :func:`random_walk_kernel` invariant. Equation 31 requires
+    invariance; it does not supply it.
     """
     if weight_rule not in ("mcmc", "general"):
         raise ValueError("smcsam: weight_rule must be 'mcmc' or 'general'")

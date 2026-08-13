@@ -276,8 +276,16 @@ def asmnvr(reads, k=None, multiplicity="set"):
 
     References
     ----------
-    Pevzner, Tang & Waterman (2001) *PNAS* 98(17), 9748-9753,
-    "Eulerian Superpaths".
+    Pevzner, P. A., Tang, H. & Waterman, M. S. (2001) "An Eulerian path
+    approach to DNA fragment assembly", *Proceedings of the National
+    Academy of Sciences* 98(17), 9748-9753, doi:10.1073/pnas.171285098
+    -- the de Bruijn graph and the Eulerian superpath.
+
+    Hierholzer, C. (1873) "Ueber die Moeglichkeit, einen Linienzug ohne
+    Wiederholung und ohne Unterbrechung zu umfahren", *Mathematische
+    Annalen* 6(1), 30-32 (communicated posthumously by Chr. Wiener) --
+    the existence condition and the constructive circuit-splicing proof
+    that :func:`eulerian_path` implements.
     """
     rs = [str(r) for r in reads]
     if not rs:

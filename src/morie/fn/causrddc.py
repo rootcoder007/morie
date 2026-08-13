@@ -379,8 +379,28 @@ def causrddc(y, x, treatment=None, cutoff=0.0, nu=0, p=1, q=None, h=None,
 
     References
     ----------
-    Calonico, Cattaneo & Titiunik (2014) *Econometrica* 82(6), 2295-2326:
+    Calonico, S., Cattaneo, M. D. & Titiunik, R. (2014) "Robust
+    Nonparametric Confidence Intervals for Regression-Discontinuity
+    Designs", *Econometrica* 82(6), 2295-2326, doi:10.3982/ECTA11757:
     Theorem 1, Remarks 3 and 7, Lemma 1, section 5.
+
+    Abadie, A. & Imbens, G. W. (2006) "Large Sample Properties of
+    Matching Estimators for Average Treatment Effects", *Econometrica*
+    74(1), 235-267, doi:10.1111/j.1468-0262.2006.00655.x -- the
+    nearest-neighbour variance estimator of ``vce="nn"``.
+
+    The partialling-out step that makes Remark 7 hold by construction:
+
+    Frisch, R. & Waugh, F. V. (1933) "Partial Time Regressions as
+    Compared with Individual Trends", *Econometrica* 1(4), 387-401,
+    JSTOR 1907330.
+
+    Lovell, M. C. (1963) "Seasonal Adjustment of Economic Time Series
+    and Multiple Regression Analysis", *Journal of the American
+    Statistical Association* 58(304), 993-1010,
+    doi:10.1080/01621459.1963.10480682 -- the generalisation to
+    arbitrary regressors; freely available as Cowles Foundation
+    Discussion Paper No. 151 (1963).
     """
     y = [float(v) for v in y]
     x = [float(v) - float(cutoff) for v in x]
