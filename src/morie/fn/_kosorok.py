@@ -271,7 +271,15 @@ def sup_difference(f, g, grid):
 
 
 def survival_psi(S, t_grid, S0, L, G):
-    r"""The Kaplan-Meier Z-estimator map (Kosorok Eq. 2.11, p. 26):
+    r"""The Kaplan-Meier Z-estimator map (Kosorok Eq. 2.11, p. 26).
+
+    The estimator itself is Kaplan, E. L. and Meier, P. (1958),
+    "Nonparametric estimation from incomplete observations",
+    Journal of the American Statistical Association 53(282),
+    457-481. PDF not in hand (JSTOR serves HTML); cited from bibliographic details.
+    Kosorok (2008) is the spec followed here for the Z-estimator
+    form; it is not the source of the estimator.
+
 
     .. math:: \Psi(S)(t) = S_0(t)L(t)
               + \int_0^t \frac{S_0(u)}{S(u)}\,dG(u)\,S(t) - S(t).
