@@ -301,8 +301,9 @@ def nonlinear_cg(f, grad, x0, beta="fletcher-reeves", restart=None,
         functions -- the method finds the bottom of whatever valley it
         starts in -- and is immaterial for quadratics.
     beta : {"fletcher-reeves", "polak-ribiere", "polak-ribiere-plus"}
-        Equation 20, or Shewchuk section 14.1 with and without the
-        ``max(beta, 0)`` safeguard.
+        Equation 20 (Fletcher & Reeves), or Polak & Ribiere equation
+        3.20 with and without the ``max(beta, 0)`` safeguard of
+        Shewchuk section 14.1.
     restart : int, optional
         Revert to steepest descent every this many iterations.
         Defaults to :math:`n+1`, the paper's choice; quadratic
