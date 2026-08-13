@@ -1176,7 +1176,14 @@ def binomtest(k, n, p=0.5, alternative="two-sided"):
 # ---------------------------------------------------- KS family
 
 def _ks_sf(d, n):
-    """Two-sided asymptotic Kolmogorov Q(d*sqrt(n)) w/ Stephens correction."""
+    """Two-sided asymptotic Kolmogorov Q(d*sqrt(n)) w/ Stephens correction.
+
+    Stephens, M. A. (1970) "Use of the Kolmogorov-Smirnov, Cramer-von
+    Mises and related statistics without extensive tables", *Journal of
+    the Royal Statistical Society, Series B* 32(1), 115-122,
+    doi:10.1111/j.2517-6161.1970.tb00821.x -- the small-sample
+    correction applied to the asymptotic series.
+    """
     lam = d * (_math.sqrt(n) + 0.12 + 0.11 / _math.sqrt(n))
     if lam < 0.04:
         # Q(lam) -> 1 as lam -> 0, but the alternating series below does
@@ -1197,6 +1204,10 @@ def _ks_sf(d, n):
 
 def _ks_pkolmogorov(d, n):
     """P(D_n < d), exact, by Marsaglia, Tsang and Wang (2003).
+
+    Marsaglia, G., Tsang, W. W. & Wang, J. (2003) "Evaluating
+    Kolmogorov's distribution", *Journal of Statistical Software*
+    8(18), 1-4, doi:10.18637/jss.v008.i18.
 
     Journal of Statistical Software 8(18), "Evaluating Kolmogorov's
     Distribution".  The same algorithm R's ks.test uses for n < 100.
@@ -1873,7 +1884,11 @@ class _MultivariateNormal:
 
         which is smooth on the whole path and integrates to machine
         precision with Gauss-Legendre. Three or more dimensions needs
-        Genz's method and is refused rather than approximated silently.
+        Genz's method -- Genz, A. (1992) "Numerical computation of
+    multivariate normal probabilities", *Journal of Computational and
+    Graphical Statistics* 1(2), 141-149,
+    doi:10.1080/10618600.1992.10477010 -- and is refused rather than
+    approximated silently.
         """
         xv = [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
         d = len(xv)
@@ -2426,7 +2441,9 @@ def cramervonmises_2samp(x, y):
     allr = rankdata(xv + yv)
     rx = allr[:n]
     ry = allr[n:]
-    # Anderson (1962) computational form
+    # Anderson, T. W. (1962) "On the distribution of the two-sample
+    # Cramer-von Mises criterion", Annals of Mathematical Statistics
+    # 33(3), 1148-1159, doi:10.1214/aoms/1177704477 -- computational form
     u = n * _math.fsum((rx[i] - (i + 1)) ** 2
                        for i in range(n)) \
         + m * _math.fsum((ry[j] - (j + 1)) ** 2 for j in range(m))

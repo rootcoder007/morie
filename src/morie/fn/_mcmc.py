@@ -1,7 +1,11 @@
 # morie.fn -- shared helpers (rootcoder007/morie)
 """Shared MCMC diagnostic machinery.
 
-Effective sample size and R-hat as specified in Vehtari et al. (2021), which
+Effective sample size and R-hat as specified in Vehtari, A., Gelman, A.,
+Simpson, D., Carpenter, B. & Burkner, P.-C. (2021)
+"Rank-normalization, folding, and localization: an improved R-hat for
+assessing convergence of MCMC", *Bayesian Analysis* 16(2), 667-718,
+doi:10.1214/20-BA1221, which
 is the modern replacement for the classic Gelman-Rubin diagnostic: it uses
 rank normalisation, folds the chains to detect scale differences, and splits
 each chain in half so that a chain which has not mixed *within itself* is

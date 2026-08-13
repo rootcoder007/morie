@@ -512,7 +512,15 @@ class MarkovRegression:
              for i in range(k)]
         llf_old = -_math.inf
         for _it in range(maxiter):
-            # Hamilton filter
+            # Hamilton, J. D. (1989) "A new approach to the economic analysis
+        # of nonstationary time series and the business cycle",
+        # Econometrica 57(2), 357-384, doi:10.2307/1912559 -- the filter.
+        # The smoother is Kim, C.-J. (1994) "Dynamic linear models with
+        # Markov-switching", Journal of Econometrics 60(1-2), 1-22,
+        # doi:10.1016/0304-4076(94)90036-1. Kalman, R. E. (1960) "A new
+        # approach to linear filtering and prediction problems", Journal
+        # of Basic Engineering 82(1), 35-45, doi:10.1115/1.3662552, for
+        # the linear-Gaussian pass this reduces to.
             dens = [[_math.exp(-0.5 * (y[t] - mu[j]) ** 2
                                / sig2[j])
                      / _math.sqrt(2.0 * _math.pi * sig2[j])

@@ -1,7 +1,12 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Finite-level density p_m.
 
-Implements eq. (3.19), p.44 of Ghosal & van der Vaart (2017), *Fundamentals of
+Implements eq. (3.19), p. 44 of Ghosal, S. & van der Vaart, A. (2017) *Fundamentals of
+Nonparametric Bayesian Inference*, Cambridge Series in Statistical
+and Probabilistic Mathematics 44, Cambridge University Press,
+ISBN 978-0-521-87826-5.
+
+Full title as printed: *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 

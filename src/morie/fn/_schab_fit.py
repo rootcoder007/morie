@@ -4,6 +4,17 @@
 Schabenberger & Gotway (2005), *Statistical Methods for Spatial Data
 Analysis*, Sec. 4.4 (least-squares fitting) and Sec. 4.5 (likelihood).
 
+References
+----------
+Schabenberger, O. & Gotway, C. A. (2005) *Statistical Methods for
+Spatial Data Analysis*, Texts in Statistical Science, Chapman &
+Hall/CRC, Boca Raton, ISBN 1-58488-322-7.
+Sec. 4.4 (least-squares fitting) and Sec. 4.5 (likelihood).
+
+Harville, D. A. (1974) "Bayesian inference for variance components
+using only error contrasts", *Biometrika* 61, 383-385 -- the error
+contrasts that REML is built on.
+
 Everything here is internal; the public entry points are `spols`, `spwls`
 and `spreml`.
 """
