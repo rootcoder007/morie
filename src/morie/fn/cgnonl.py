@@ -5,12 +5,19 @@ Fletcher, R., & Reeves, C. M. (1964) "Function minimization by conjugate
 gradients", *The Computer Journal* 7(2), 149-154.
 doi:10.1093/comjnl/7.2.149
 
+Polak, E., & Ribiere, G. (1969) "Note sur la convergence de methodes de
+directions conjuguees", *Revue francaise d'informatique et de recherche
+operationnelle, Serie rouge* 3(R1), 35-43. Open access at Numdam,
+http://www.numdam.org/article/M2AN_1969__3_1_35_0.pdf -- section 3.2
+and equation 3.20, for the Polak-Ribiere choice of :math:`\beta`.
+
 Shewchuk, J. R. (1994) "An Introduction to the Conjugate Gradient Method
 Without the Agonizing Pain", Edition 1 1/4, School of Computer Science,
 Carnegie Mellon University, CMU-CS-94-125 -- section 14.1, for the
-Polak-Ribiere choice of :math:`\beta` and its ``max(beta, 0)``
-safeguard. Fletcher & Reeves is the primary source and everything below
-is theirs unless said otherwise.
+``max(beta, 0)`` safeguard only, which is not in Polak & Ribiere.
+
+Fletcher & Reeves is the primary source and everything below is theirs
+unless said otherwise.
 
 The appeal is stated in the abstract: a quadratically convergent
 gradient method whose "particular advantages are its simplicity and its
@@ -69,14 +76,28 @@ brackets :math:`t_m`; and the bracket is resolved by cubic
 interpolation, which uses the function value *and* the slope at each
 end and so converges faster than bisection on a smooth function.
 
-Routes kept: ``beta="fletcher-reeves"`` is the paper's; ``"polak-
-ribiere"`` and ``"polak-ribiere-plus"`` are Shewchuk section 14.1,
-where the plus variant is the ``max(beta, 0)`` safeguard that restores
-the convergence guarantee PR otherwise lacks. On a quadratic with an
-exact line search the two agree exactly, because successive gradients
-are then orthogonal -- which the tests use as a cross-check that both
-are right. ``line_search="fletcher-reeves"`` is the three-stage search
-above; ``"exact-quadratic"`` is available for the quadratic case, where
+Routes kept: ``beta="fletcher-reeves"`` is equation 20 above;
+``"polak-ribiere"`` is Polak & Ribiere equation 3.20,
+
+.. math::
+
+   \gamma_i = \frac{\|r_{i+1}\|^2 - r_{i+1}' r_i}{\|r_i\|^2},
+
+written there with :math:`r = -g`, the negative gradient, so in terms
+of :math:`g` it is :math:`g_{i+1}'(g_{i+1} - g_i) / (g_i' g_i)` -- the
+signs cancel. ``"polak-ribiere-plus"`` adds the ``max(beta, 0)``
+safeguard, which is Shewchuk section 14.1 and not in Polak & Ribiere.
+
+Polak & Ribiere prove the two coincide on a quadratic -- "le terme
+:math:`r_{i+1}' r_i` est nul lorsque la fonction :math:`f` est
+quadratique" -- and the tests use exactly that as a cross-check that
+both formulas are right. Their section 4 also confirms the restart rule
+from the other side: "Ils proposent, comme optimum, de briser toutes
+les :math:`n+1` iterations", and observes that for convex :math:`f`
+the modified method does not need the break at all.
+
+``line_search="fletcher-reeves"`` is the three-stage search above;
+``"exact-quadratic"`` is available for the quadratic case, where
 :math:`t_m = -p'g/(p'Ap)` in closed form.
 """
 
@@ -117,13 +138,20 @@ def beta_fletcher_reeves(g_new, g_old):
 
 
 def beta_polak_ribiere(g_new, g_old, plus=False):
-    r"""Shewchuk section 14.1:
-    :math:`\beta = g_{i+1}'(g_{i+1} - g_i) / (g_i' g_i)`.
+    r"""Polak & Ribiere (1969) equation 3.20.
 
-    ``plus`` applies the ``max(beta, 0)`` safeguard, which is what
-    restores a convergence guarantee -- Polak-Ribiere "can, in rare
-    cases, cycle infinitely without converging", though it "often
-    converges much more quickly" than Fletcher-Reeves.
+    As printed, with :math:`r = -g`:
+
+    .. math::
+
+       \gamma_i = \frac{\|r_{i+1}\|^2 - r_{i+1}' r_i}{\|r_i\|^2}
+                = \frac{g_{i+1}'(g_{i+1} - g_i)}{g_i' g_i}.
+
+    ``plus`` applies the ``max(beta, 0)`` safeguard, which is Shewchuk
+    section 14.1 rather than Polak & Ribiere: it restores a convergence
+    guarantee, since Polak-Ribiere "can, in rare cases, cycle infinitely
+    without converging", though it "often converges much more quickly"
+    than Fletcher-Reeves.
     """
     den = _dot(g_old, g_old)
     if den <= 0.0:
@@ -399,6 +427,7 @@ def cheatsheet():
             "it stores only three vectors. Restarts to steepest descent "
             "every n+1 iterations -- their fix for Rosenbrock's valley, "
             "where successive directions went nearly parallel. "
-            "beta='polak-ribiere[-plus]' is Shewchuk sec. 14.1; on a "
-            "quadratic with an exact line search it coincides with "
-            "Fletcher-Reeves.")
+            "beta='polak-ribiere' is Polak & Ribiere (1969) eq. 3.20, "
+            "gamma = (|r_{i+1}|^2 - r'_{i+1} r_i) / |r_i|^2; the "
+            "'-plus' max(beta, 0) safeguard is Shewchuk sec. 14.1. On a "
+            "quadratic the two coincide, which that paper proves.")
