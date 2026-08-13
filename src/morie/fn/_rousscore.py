@@ -14,6 +14,16 @@ say "draw random subsets", these helpers enumerate subsets in
 lexicographic order instead, so both arms visit the same candidates in
 the same sequence and land on the same optimum rather than merely on
 an optimum of the same quality.
+
+References
+----------
+Rousseeuw, P. J., & Van Driessen, K. (1999). "A Fast Algorithm for the
+Minimum Covariance Determinant Estimator." *Technometrics* 41(3),
+212-223.
+
+None of these PDFs is in the local library; they are cited from
+bibliographic details, and the formulas here have not been
+re-verified against them.
 """
 
 from __future__ import annotations

@@ -23,6 +23,25 @@ the kind of small-sample bias these methods exist to avoid.
 L-moments (Hosking 1990) are the linear combinations
 l1 = b0, l2 = 2 b1 - b0, l3 = 6 b2 - 6 b1 + b0, and their GEV/GPD
 inversions have closed forms the tests verify against.
+
+References
+----------
+Hosking, J. R. M. (1990). "L-moments: Analysis and Estimation of
+Distributions Using Linear Combinations of Order Statistics." *Journal
+of the Royal Statistical Society, Series B* 52(1), 105-124.
+
+Hosking, J. R. M., Wallis, J. R., & Wood, E. F. (1985). "Estimation of
+the Generalized Extreme-Value Distribution by the Method of
+Probability-Weighted Moments." *Technometrics* 27(3), 251-261.
+
+Landwehr, J. M., Matalas, N. C., & Wallis, J. R. (1979). "Probability
+Weighted Moments Compared With Some Traditional Techniques in
+Estimating Gumbel Parameters and Quantiles." *Water Resources Research*
+15(5), 1055-1064.
+
+None of these PDFs is in the local library; they are cited from
+bibliographic details, and the formulas here have not been
+re-verified against them.
 """
 
 from . import _array_core as np

@@ -9,6 +9,20 @@ efficiency, and the constants scattered through them (1.345, 1.547,
 4.685, 2.2191, 1.1926) are not folklore: each is the solution of a
 calibration equation, stated at its definition below, and the tests
 recompute the ones that have closed forms.
+
+References
+----------
+Rousseeuw, P. J., & Yohai, V. (1984). "Robust Regression by Means of
+S-Estimators." In *Robust and Nonlinear Time Series Analysis*, Lecture
+Notes in Statistics 26, Springer, 256-272.
+
+Rousseeuw, P. J., & Croux, C. (1993). "Alternatives to the Median
+Absolute Deviation." *Journal of the American Statistical Association*
+88(424), 1273-1283.
+
+None of these PDFs is in the local library; they are cited from
+bibliographic details, and the formulas here have not been
+re-verified against them.
 """
 
 from . import _array_core as np
