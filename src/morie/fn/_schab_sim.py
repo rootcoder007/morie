@@ -19,6 +19,13 @@ Draws come from morie's own Philox/AS 241 generator, so an R and a Python
 run with the same seed produce the same field rather than merely the same
 distribution.
 
+References
+----------
+Schabenberger, O. & Gotway, C. A. (2005) *Statistical Methods for
+Spatial Data Analysis*, Texts in Statistical Science, Chapman &
+Hall/CRC, Boca Raton, ISBN 1-58488-322-7.
+Chapter 7, eq (7.1) (conditional simulation by kriging).
+
 Everything here is internal.
 """
 

@@ -1,7 +1,12 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Moment-inequality criterion shared by the interval-identification modules.
 
-The criterion is Molinari (2021) equation (4.2) with the two inequalities
+The criterion is Molinari, F. (2020) "Microeconometrics with partial
+identification", in Durlauf, S. N., Hansen, L. P., Heckman, J. J. &
+Matzkin, R. L. (eds.), *Handbook of Econometrics* vol. 7A, Elsevier,
+355-486, doi:10.1016/bs.hoe.2020.05.002 (the volume is dated 2021 on
+its spine; Elsevier records the chapter as 2020). Equation (4.2), with
+the two inequalities
 of an interval-identified scalar, ``E[yL] - theta <= 0`` and
 ``theta - E[yU] <= 0``.  Only violated inequalities contribute, so the
 criterion is exactly zero on ``[E yL, E yU]`` and positive off it, which

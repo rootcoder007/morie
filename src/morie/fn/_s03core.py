@@ -545,6 +545,10 @@ def design(X, n):
 def drdid_panel(dy, D, X=None, weights=None):
     """Doubly robust DiD for panel data, Sant'Anna and Zhao (2020) eq. (2.6).
 
+    Sant'Anna, P. H. C. & Zhao, J. (2020) "Doubly robust
+    difference-in-differences estimators", *Journal of Econometrics*
+    219(1), 101-122, doi:10.1016/j.jeconom.2020.06.003.
+
         tau = E[(w1(D) - w0(D, X; pi)) (dY - mu_0(X))]
         w1  = D / E[D]
         w0  = [pi(X)(1-D)/(1-pi(X))] / E[pi(X)(1-D)/(1-pi(X))]
@@ -605,7 +609,9 @@ def mammen(i):
 def tmle_ate(y, D, X=None, trim=0.0, link="logit"):
     """Targeted maximum likelihood for the ATE.
 
-    van der Laan and Rubin (2006), Targeted maximum likelihood learning,
+    van der Laan, M. J. & Rubin, D. (2006) "Targeted maximum likelihood
+    learning", *The International Journal of Biostatistics* 2(1),
+    article 11, doi:10.2202/1557-4679.1043,
     *The International Journal of Biostatistics* 2(1), article 11.  The
     initial outcome fit Qbar is fluctuated along the logistic submodel
     whose score is the clever covariate
@@ -616,7 +622,10 @@ def tmle_ate(y, D, X=None, trim=0.0, link="logit"):
     the score equation and is found by a Newton step, after which
     psi = mean( Qbar*(1, X) - Qbar*(0, X) ).  y is scaled to [0, 1] so
     the logistic fluctuation is valid for continuous outcomes too, which
-    is Gruber and van der Laan's (2010) bounded-continuous trick.
+    is the bounded-continuous trick of Gruber, S. & van der Laan, M. J.
+    (2010) "A targeted maximum likelihood estimator of a causal effect
+    on a bounded continuous outcome", *The International Journal of
+    Biostatistics* 6(1), article 26, doi:10.2202/1557-4679.1260.
     """
     yv = vec(y)
     d = vec(D)

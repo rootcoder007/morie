@@ -5,7 +5,10 @@ Three families, one recurring shape: a variance decomposition whose
 COMPONENTS are the quantity of interest, and whose reported value
 depends on assumptions that the arithmetic cannot see.
 
-* Intraclass correlation. Shrout and Fleiss (1979) give SIX
+* Intraclass correlation. Shrout, P. E. & Fleiss, J. L. (1979)
+  "Intraclass correlations: uses in assessing rater reliability",
+  *Psychological Bulletin* 86(2), 420-428,
+  doi:10.1037/0033-2909.86.2.420, give SIX
   coefficients, not one, and they are different numbers on the same
   data. The choice is a design statement -- are raters random or
   fixed, is the target a single rating or an average of k -- and
@@ -159,6 +162,10 @@ def fixed_effect_pool(yi, vi):
 
 def dersimonian_laird(yi, vi):
     r"""The DerSimonian-Laird (1986) moment estimator
+
+    DerSimonian, R. & Laird, N. (1986) "Meta-analysis in clinical
+    trials", *Controlled Clinical Trials* 7(3), 177-188,
+    doi:10.1016/0197-2456(86)90046-2.
 
     .. math:: \hat\tau^2_{DL} = \max\left(0,
               \frac{Q - (k-1)}{\sum w_i - \sum w_i^2/\sum w_i}\right).

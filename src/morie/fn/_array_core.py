@@ -2043,7 +2043,10 @@ class _SplitMix64:
         a = float(shape)
 
         def one():
-            # Marsaglia-Tsang (2000); boost for a < 1
+            # Marsaglia, G. & Tsang, W. W. (2000) "A simple method for
+        # generating gamma variables", ACM Transactions on Mathematical
+        # Software 26(3), 363-372, doi:10.1145/358407.358414.
+        # Boost for a < 1 is their section 6.
             aa = a if a >= 1.0 else a + 1.0
             d = aa - 1.0 / 3.0
             c = 1.0 / _math.sqrt(9.0 * d)
@@ -2134,7 +2137,8 @@ class _SplitMix64:
         return self._fill(one, size)
 
     def _gamma_variate(self, shape):
-        # Marsaglia & Tsang (2000) squeeze method; shape < 1 boosted
+        # Marsaglia & Tsang (2000) ACM TOMS 26(3), 363-372, the squeeze
+    # method of their section 4; shape < 1 boosted per section 6.
         # via Gamma(a+1) * U^(1/a)
         a = float(shape)
         if a < 1.0:

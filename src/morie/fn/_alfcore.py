@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Shared layer algebra for the AlphaFold modules (Jumper et al. 2021).
 
-Reference is the Supplementary Information of Jumper et al. (2021),
+Reference is the Supplementary Information of Jumper, J. et al. (2021)
+"Highly accurate protein structure prediction with AlphaFold",
+*Nature* 596, 583-589, doi:10.1038/s41586-021-03819-2,
 "Highly accurate protein structure prediction with AlphaFold", Nature
 596:583-589, which specifies the network as numbered pseudocode
 (Algorithms 1-32).

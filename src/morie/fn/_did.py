@@ -19,6 +19,23 @@ The helpers here are the pieces the modern estimators share:
 * a simplex-constrained least-squares solver, for the synthetic
   control and synthetic DiD weights;
 * propensity and outcome fits for the doubly-robust estimators.
+
+References
+----------
+Goodman-Bacon, A. (2021) "Difference-in-differences with variation in
+treatment timing", *Journal of Econometrics* 225(2), 254-277,
+doi:10.1016/j.jeconom.2021.03.014 -- the decomposition of the two-way
+fixed-effects estimand into 2x2 comparisons.
+
+Bertrand, M., Duflo, E. & Mullainathan, S. (2004) "How much should we
+trust differences-in-differences estimates?", *The Quarterly Journal of
+Economics* 119(1), 249-275, doi:10.1162/003355304772839588 -- the
+serial-correlation failure that motivates clustering by unit.
+
+Arkhangelsky, D., Athey, S., Hirshberg, D. A., Imbens, G. W. & Wager,
+S. (2021) "Synthetic difference-in-differences", *American Economic
+Review* 111(12), 4088-4118, doi:10.1257/aer.20190159 -- the ridge term
+``zeta``.
 """
 
 from . import _array_core as np

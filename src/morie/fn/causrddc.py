@@ -399,8 +399,11 @@ def causrddc(y, x, treatment=None, cutoff=0.0, nu=0, p=1, q=None, h=None,
     and Multiple Regression Analysis", *Journal of the American
     Statistical Association* 58(304), 993-1010,
     doi:10.1080/01621459.1963.10480682 -- the generalisation to
-    arbitrary regressors; freely available as Cowles Foundation
-    Discussion Paper No. 151 (1963).
+    arbitrary regressors. Its abstract describes the paper as extending
+    "the fundamental Frisch-Waugh theorem", which is the attribution
+    relied on here. Both the version of record and the freely available
+    Cowles Foundation Discussion Paper No. 151 (1963) are in
+    fetched-wave3.
     """
     y = [float(v) for v in y]
     x = [float(v) - float(cutoff) for v in x]
