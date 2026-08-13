@@ -284,3 +284,155 @@ def test_clusters_of_other_sizes_are_allowed(trial):
                         design="clustered", n_folds=5)
     assert r["independent_units"] == N // 4
     assert math.isfinite(r["se"])
+
+
+# ---------------------------------------------------------------------
+# The hierarchical TMLEs -- Balzer, Zheng, van der Laan & Petersen (2019)
+# ---------------------------------------------------------------------
+
+from morie.fn.tmlcic import cluster_weights, tmle_hierarchical  # noqa
+
+
+def _make(J, seed, assign="E-only", interference=0.0):
+    """Hierarchical generator. `assign` puts the exposure in Sec. 5's
+    two regimes; `interference` breaks the sub-model's no-covariate-
+    interference assumption in exactly the way the paper warns about."""
+    rng = np.random.default_rng(seed)
+    cl = []
+    for _ in range(J):
+        Nj = 8 + int(float(rng.uniform()) * 17)
+        cl.append({"E": float(rng.uniform()), "N": Nj,
+                   "W": [rng.standard_normal() for _ in range(Nj)]})
+    for c in cl:
+        wbar = sum(c["W"]) / c["N"]
+        z = -0.3 + 2.0 * (c["E"] - 0.5)
+        if assign == "EW":
+            z += 1.6 * wbar
+        c["A"] = 1.0 if float(rng.uniform()) < expit(z) else 0.0
+
+    def mu(a, c, i):
+        others = ((sum(c["W"]) - c["W"][i]) / (c["N"] - 1)
+                  if c["N"] > 1 else 0.0)
+        return expit(-0.9 + 1.1 * c["W"][i] + 1.4 * (c["E"] - 0.5)
+                     - 0.8 * a + interference * others)
+
+    y, A, E, W, lab = [], [], [], [], []
+    for j, c in enumerate(cl):
+        for i in range(c["N"]):
+            y.append(1.0 if float(rng.uniform()) < mu(c["A"], c, i)
+                     else 0.0)
+            A.append(c["A"])
+            E.append([c["E"]])
+            W.append([c["W"][i]])
+            lab.append("c%03d" % j)
+
+    def cf(a):
+        return sum(sum(mu(a, c, i) for i in range(c["N"])) / c["N"]
+                   for c in cl) / len(cl)
+
+    return {"y": y, "A": A, "E": E, "W": W, "cluster": lab,
+            "truth": cf(1.0) - cf(0.0), "J": len(cl), "n": len(y)}
+
+
+def test_alpha_weights_default_to_one_over_n_j():
+    alpha, groups = cluster_weights(["a", "a", "b", "b", "b"])
+    assert alpha == [0.5, 0.5, 1 / 3.0, 1 / 3.0, 1 / 3.0]
+    for g in groups:
+        assert sum(alpha[i] for i in g) == pytest.approx(1.0)
+    with pytest.raises(ValueError):
+        cluster_weights(["a", "a"], [0.3, 0.3])
+    with pytest.raises(ValueError):
+        cluster_weights(["a", "a"], [-0.5, 1.5])
+
+
+@pytest.fixture(scope="module")
+def hier():
+    return _make(200, 11, assign="E-only")
+
+
+def test_both_hierarchical_tmles_recover_the_truth(hier):
+    d = hier
+    r = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"])
+    for nm in ("cluster", "individual"):
+        assert (abs(r["estimate_" + nm] - d["truth"])
+                < 3.0 * r["se_" + nm])
+        assert abs(r["eic_mean_" + nm]) < 1e-9
+
+
+def test_the_influence_curves_coincide_when_g_depends_only_on_e(hier):
+    """Sec. 5. Compared curve against curve, not just the two point
+    estimates -- two estimators can agree on a number by luck."""
+    d = hier
+    r = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"])
+    assert k.corr(r["influence_curve_cluster"],
+                  r["influence_curve_individual"]) > 0.9
+    assert (abs(r["estimate_cluster"] - r["estimate_individual"])
+            < 1.5 * r["se_cluster"])
+
+
+def test_covariate_interference_biases_the_sub_model_estimator():
+    """The paper's warning: under the restricted model's assumptions the
+    individual-level TMLE is more efficient, but where covariate
+    interference is actually present it buys that with bias."""
+    reps = 25
+    bias = {"cluster": [], "individual": []}
+    for rep in range(reps):
+        d = _make(120, 900 + rep, assign="EW", interference=2.5)
+        r = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"],
+                              d["cluster"])
+        for nm in ("cluster", "individual"):
+            bias[nm].append(r["estimate_" + nm] - d["truth"])
+    mi = k.mean(bias["individual"])
+    se_i = k.sd(bias["individual"]) / math.sqrt(reps)
+    assert abs(mi) > 3.0 * se_i
+    assert abs(mi) > 1.5 * abs(k.mean(bias["cluster"]))
+
+
+def test_unequal_cluster_sizes_each_count_once(hier):
+    d = hier
+    r = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"])
+    assert min(r["cluster_sizes"]) < max(r["cluster_sizes"])
+    assert len(r["cluster_sizes"]) == d["J"]
+    n0 = r["cluster_sizes"][0]
+    assert r["cluster_outcome"][0] == pytest.approx(
+        sum(d["y"][:n0]) / n0)
+
+
+def test_a_single_arm_can_be_run(hier):
+    d = hier
+    both = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"],
+                             d["cluster"])
+    only = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"],
+                             d["cluster"], arm="cluster")
+    assert only["arm_reported"] == "cluster"
+    assert only["estimate"] == pytest.approx(both["estimate_cluster"],
+                                             abs=1e-12)
+    assert "estimate_individual" not in only
+
+
+def test_hierarchical_argument_checks(hier):
+    d = hier
+    with pytest.raises(ValueError):
+        tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"],
+                          arm="nope")
+    with pytest.raises(ValueError):        # exposure varies in a cluster
+        tmle_hierarchical(d["y"], [1.0 - d["A"][0]] + d["A"][1:],
+                          d["E"], d["W"], d["cluster"])
+    with pytest.raises(ValueError):        # E varies in a cluster
+        tmle_hierarchical(d["y"], d["A"], [[9.0]] + d["E"][1:], d["W"],
+                          d["cluster"])
+    with pytest.raises(ValueError):        # outcome outside [0,1]
+        tmle_hierarchical([2.0] + d["y"][1:], d["A"], d["E"], d["W"],
+                          d["cluster"])
+    with pytest.raises(ValueError):
+        tmle_hierarchical(d["y"], [2.0] * d["n"], d["E"], d["W"],
+                          d["cluster"])
+    with pytest.raises(ValueError):
+        tmle_hierarchical(d["y"], [1.0] * d["n"], d["E"], d["W"],
+                          d["cluster"])
+    with pytest.raises(ValueError):
+        tmle_hierarchical(d["y"][:-1], d["A"], d["E"], d["W"],
+                          d["cluster"])
+    with pytest.raises(ValueError):
+        tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"],
+                          trim=0.9)
