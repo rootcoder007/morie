@@ -73,3 +73,6 @@ def bound_iv_partial(y, D, Z):
 
 def cheatsheet():
     return "bnsipv: IV bound intersected with monotone treatment response"
+
+# public names resolved by fn/_lazy_map.json
+boundivpartial = bound_iv_partial

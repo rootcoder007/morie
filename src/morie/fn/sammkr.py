@@ -175,3 +175,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 sammultimask = rank_masks
+
+# public names resolved by fn/_lazy_map.json
+sam_multi_mask_rank = rank_masks

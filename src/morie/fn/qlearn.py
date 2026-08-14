@@ -159,3 +159,6 @@ qlearn = q_learning
 
 def cheatsheet():
     return "qlearn(P, R, gamma, alpha, epsilon, n_episodes) -> tabular Q-learning per Sutton-Barto 2018 eq 6.8."
+
+# public names resolved by fn/_lazy_map.json
+qlearning = q_learning

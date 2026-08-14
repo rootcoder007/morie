@@ -74,3 +74,6 @@ def icc_two_way_mixed(y, subject, rater):
 
 def cheatsheet():
     return "icc3: ICC(3,1) two-way mixed single rater (consistency)"
+
+# public names resolved by fn/_lazy_map.json
+icctwowaymixed = icc_two_way_mixed

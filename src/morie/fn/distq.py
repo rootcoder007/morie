@@ -271,3 +271,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 categoricalprojection = categorical_projection
+
+# public names resolved by fn/_lazy_map.json
+distributional_rl = categorical_projection

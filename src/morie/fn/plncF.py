@@ -85,3 +85,6 @@ plncF = planck_function
 
 def cheatsheet():
     return "plncF(lam, T) -> Planck B(lam,T); Wien peak b/T; consistent with plank (frequency form) via c/lam^2 Jacobian"
+
+# public names resolved by fn/_lazy_map.json
+planckfunction = planck_function

@@ -173,3 +173,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 factorizationmachine = fit_fm
+
+# public names resolved by fn/_lazy_map.json
+factorization_machines = fit_fm

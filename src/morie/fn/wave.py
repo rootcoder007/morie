@@ -227,3 +227,6 @@ def wavelet_basis(y, wavelet="db2", level=None):
 
 def cheatsheet():
     return "wave: Daubechies orthonormal wavelet basis (db1/db2/db3), Daubechies (1988)"
+
+# public names resolved by fn/_lazy_map.json
+waveletbasis = wavelet_basis

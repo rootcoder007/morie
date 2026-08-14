@@ -121,3 +121,6 @@ def cold_start_user(user, mode="popular", R=None, item_features=None,
 
 def cheatsheet():
     return "colE: cold-start recommendation fallback"
+
+# public names resolved by fn/_lazy_map.json
+coldstartuser = cold_start_user

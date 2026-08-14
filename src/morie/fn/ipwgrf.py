@@ -182,3 +182,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 ipwforest = ipw_forest
+
+# public names resolved by fn/_lazy_map.json
+ipw_grf = ipw_forest
+ipwgrf = ipw_forest

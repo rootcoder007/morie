@@ -216,3 +216,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 sdxlconditioning = condition_vector
+
+# public names resolved by fn/_lazy_map.json
+sdxl_unet = condition_vector
+sdxlunet = condition_vector

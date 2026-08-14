@@ -126,3 +126,6 @@ kabsch_rmsd = rmsdtr
 
 def cheatsheet():
     return "rmsdtr: R = sum w y x'; U from R'R eigen; det +1; RMSD after fit"
+
+# public names resolved by fn/_lazy_map.json
+rmsd = rmsdtr

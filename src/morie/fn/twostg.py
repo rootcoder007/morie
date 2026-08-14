@@ -251,3 +251,6 @@ twostg = two_stage_hazard
 
 def cheatsheet():
     return "twostg(time, event, X, Z=None, error='ph'|'po') -> Cheng-Wei-Ying transformation-model estimator."
+
+# public names resolved by fn/_lazy_map.json
+twostagehazard = two_stage_hazard

@@ -19,3 +19,7 @@ __all__ = ["query_tokens", "qformer_attend", "trainable_fraction",
 
 # compact alias per ledger/NAMING.md
 queryingtransformer = qformer_attend
+
+# public names resolved by fn/_lazy_map.json
+blip_qformer = qformer_attend
+blipqformer = qformer_attend

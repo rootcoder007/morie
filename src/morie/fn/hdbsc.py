@@ -306,3 +306,6 @@ hdbscan_labels = hdbsc
 def cheatsheet():
     return ("hdbsc: mreach MST + single linkage; condense (mclSize); "
             "S(C)=sum(lam_max-lam_min); bottom-up max-stability select")
+
+# public names resolved by fn/_lazy_map.json
+hdbscan = hdbsc

@@ -121,3 +121,6 @@ def particle_swarm(f, bounds, n_particles=20, w=0.7, c1=1.5, c2=1.5,
 
 def cheatsheet():
     return "pso_op: Particle swarm optimisation (deterministic stream)"
+
+# public names resolved by fn/_lazy_map.json
+particleswarm = particle_swarm

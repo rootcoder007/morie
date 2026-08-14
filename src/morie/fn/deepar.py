@@ -276,3 +276,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 deeparforecast = deepar_forecast
+
+# public names resolved by fn/_lazy_map.json
+deepar = deepar_forecast

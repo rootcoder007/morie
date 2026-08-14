@@ -248,3 +248,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 kinktreatmentbound = rkd_estimate
+
+# public names resolved by fn/_lazy_map.json
+bound_kink_te = rkd_estimate
+boundkinkte = rkd_estimate

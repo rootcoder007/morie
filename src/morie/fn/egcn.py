@@ -18,3 +18,6 @@ __all__ = ["edge_message", "coord_update", "egcl", "run_egnn",
 
 # compact alias per ledger/NAMING.md
 equivariantgraphconv = run_egnn
+
+# public names resolved by fn/_lazy_map.json
+e_gcn = run_egnn

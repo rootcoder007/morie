@@ -107,3 +107,6 @@ bootstrap_calibration_ci = btcalib
 
 def cheatsheet():
     return "btcalib: beta_i = 1 - Phi(|t*_i|); alpha' = q_{2a}(beta); == bootstrap-t"
+
+# public names resolved by fn/_lazy_map.json
+boot_calibrated_ci = btcalib

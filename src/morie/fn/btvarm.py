@@ -89,3 +89,6 @@ def boot_var_mean(x, B=200, rng=2, exhaustive=False):
 
 def cheatsheet():
     return "btvarm: Bootstrap variance of the sample mean"
+
+# public names resolved by fn/_lazy_map.json
+bootvarmean = boot_var_mean

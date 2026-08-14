@@ -235,3 +235,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 bayescrediblebound = compare_sets
+
+# public names resolved by fn/_lazy_map.json
+bound_bayes_credible = compare_sets

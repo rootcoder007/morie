@@ -135,3 +135,7 @@ mutual_information_knn = miest1
 def cheatsheet():
     return ("miest1: I1=psi(k)-<psi(nx+1)+psi(ny+1)>+psi(N); "
             "I2=psi(k)-1/k-<psi(nx)+psi(ny)>+psi(N)")
+
+# public names resolved by fn/_lazy_map.json
+mi_ksg = miest1
+miksg = miest1

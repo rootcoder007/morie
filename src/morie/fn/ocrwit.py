@@ -180,3 +180,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 layoutlmv3 = word_patch_alignment
+
+# public names resolved by fn/_lazy_map.json
+ocr_wit_layout = word_patch_alignment
+ocrwitlayout = word_patch_alignment

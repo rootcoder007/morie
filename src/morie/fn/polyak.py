@@ -156,3 +156,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 polyakaveraging = polyak_average
+
+# public names resolved by fn/_lazy_map.json
+polyak_target = polyak_average
+polyaktarget = polyak_average

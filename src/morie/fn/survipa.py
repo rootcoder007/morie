@@ -62,3 +62,6 @@ def ipa_brier(time, event, predicted_S, eval_time):
 
 def cheatsheet():
     return "survipa(time, event, predicted_S, eval_time): IPA (alias of brier)."
+
+# public names resolved by fn/_lazy_map.json
+ipabrier = ipa_brier

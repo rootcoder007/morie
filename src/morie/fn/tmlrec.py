@@ -94,3 +94,6 @@ def tmle_recurrent(time, event, D, X):
 
 def cheatsheet():
     return "tmlrec: TMLE for the marginal recurrent-event rate ratio."
+
+# public names resolved by fn/_lazy_map.json
+tmlerecurrent = tmle_recurrent

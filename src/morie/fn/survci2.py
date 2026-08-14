@@ -65,3 +65,6 @@ def uno_concordance(time, event, predicted_risk):
 
 def cheatsheet():
     return "survci2(time, event, predicted_risk): Uno C (alias of cstat)."
+
+# public names resolved by fn/_lazy_map.json
+unoconcordance = uno_concordance

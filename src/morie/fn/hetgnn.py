@@ -209,3 +209,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 heterogeneousattention = han_forward
+
+# public names resolved by fn/_lazy_map.json
+heterogeneous_gnn = han_forward

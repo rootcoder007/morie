@@ -440,3 +440,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 honestforest = honest_forest
+
+# public names resolved by fn/_lazy_map.json
+honest_random_forest = honest_forest

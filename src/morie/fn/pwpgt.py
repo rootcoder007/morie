@@ -51,3 +51,6 @@ def cheatsheet():
 
 
 pwpgt = pwp_gap_time
+
+# public names resolved by fn/_lazy_map.json
+pwpgaptime = pwp_gap_time

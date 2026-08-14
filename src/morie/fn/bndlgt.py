@@ -90,3 +90,6 @@ def bound_logistic(y, D, X):
 
 def cheatsheet():
     return "bndlgt: Logistic odds-ratio bound"
+
+# public names resolved by fn/_lazy_map.json
+boundlogistic = bound_logistic

@@ -238,3 +238,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 momentfoundation = harmonise
+
+# public names resolved by fn/_lazy_map.json
+moment_foundation = harmonise

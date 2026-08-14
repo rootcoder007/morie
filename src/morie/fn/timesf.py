@@ -38,3 +38,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 timesffoundation = rollout
+
+# public names resolved by fn/_lazy_map.json
+timesfm_foundation = rollout

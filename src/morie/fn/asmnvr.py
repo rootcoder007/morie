@@ -349,3 +349,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 de_novo_assembly = asmnvr
+
+# public names resolved by fn/_lazy_map.json
+genome_assembly = asmnvr
+genomeassembly = asmnvr

@@ -304,3 +304,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 earssignal = ears_detect
+
+# public names resolved by fn/_lazy_map.json
+surveillance_signal = ears_detect

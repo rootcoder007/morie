@@ -220,3 +220,6 @@ bayes_network = baynet
 
 def cheatsheet():
     return "baynet: discrete BN posterior via sum-product variable elimination"
+
+# public names resolved by fn/_lazy_map.json
+bayesnetwork = baynet

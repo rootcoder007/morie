@@ -107,3 +107,6 @@ rao_scott_chisq = raoscot
 
 def cheatsheet():
     return "raoscot: X2 / mean generalized deff ~ chi2_{k-1}"
+
+# public names resolved by fn/_lazy_map.json
+raoscottchisq = raoscot

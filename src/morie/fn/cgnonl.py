@@ -432,3 +432,6 @@ def cheatsheet():
             "gamma = (|r_{i+1}|^2 - r'_{i+1} r_i) / |r_i|^2; the "
             "'-plus' max(beta, 0) safeguard is Shewchuk sec. 14.1. On a "
             "quadratic the two coincide, which that paper proves.")
+
+# public names resolved by fn/_lazy_map.json
+nonlinearcg = nonlinear_cg

@@ -122,3 +122,6 @@ def tmle_spillover(y, D, X, network, exposure_summary=None):
 
 def cheatsheet():
     return "tmlspl: TMLE for a direct effect under network interference."
+
+# public names resolved by fn/_lazy_map.json
+tmlespillover = tmle_spillover

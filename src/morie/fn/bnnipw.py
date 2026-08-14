@@ -71,3 +71,6 @@ def bound_no_iv_proxy(y, D, Z_proxy):
 
 def cheatsheet():
     return "bnnipw: proxy intersection bound with a validity check"
+
+# public names resolved by fn/_lazy_map.json
+boundnoivproxy = bound_no_iv_proxy

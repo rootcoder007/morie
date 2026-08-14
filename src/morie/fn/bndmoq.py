@@ -97,3 +97,6 @@ def bound_moment_qed(y, D, X, quantile):
 
 def cheatsheet():
     return "bndmoq: Quantile-equivariant bound"
+
+# public names resolved by fn/_lazy_map.json
+boundmomentqed = bound_moment_qed

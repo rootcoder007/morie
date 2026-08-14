@@ -138,3 +138,6 @@ def cheatsheet():
 
 
 chrF = chrf_score
+
+# public names resolved by fn/_lazy_map.json
+chrf = chrf_score

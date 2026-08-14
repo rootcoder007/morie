@@ -228,3 +228,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 sammaskdecoder = decode_mask
+
+# public names resolved by fn/_lazy_map.json
+sam_mask_decoder = decode_mask

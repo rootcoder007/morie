@@ -248,3 +248,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 bayesianpersonalizedranking = learn_bpr
+
+# public names resolved by fn/_lazy_map.json
+bpr_mf = learn_bpr
+bprmf = learn_bpr

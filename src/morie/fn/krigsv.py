@@ -190,3 +190,6 @@ def _wls2(x, y, w):
 def cheatsheet():
     return ("krigsv: fit c0, c, a of gamma(h) = c0 + c(1 - rho(h/a)) by "
             "weighted least squares on the binned empirical semivariogram")
+
+# public names resolved by fn/_lazy_map.json
+variogramfit = variogram_fit

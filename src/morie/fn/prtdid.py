@@ -46,3 +46,6 @@ def cheatsheet():
     return ("prtdid: Goodman-Bacon (2021) Theorem 1 partition of the "
             "TWFE DiD into weighted 2x2s -- alias of "
             "gbacon.goodman_bacon_decomp")
+
+# public names resolved by fn/_lazy_map.json
+partitiondid = goodman_bacon_decomp

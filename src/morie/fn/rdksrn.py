@@ -124,3 +124,6 @@ def sharp_rdd(y, x, cutoff=0.0, bandwidth=1.0):
 
 def cheatsheet():
     return "rdksrn: Sharp RDD with local linear regression"
+
+# public names resolved by fn/_lazy_map.json
+sharprdd = sharp_rdd

@@ -275,3 +275,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 shortpanelbound = identified_set
+
+# public names resolved by fn/_lazy_map.json
+bound_short_panel = identified_set

@@ -86,3 +86,6 @@ def bound_selection(y, D, X):
 
 def cheatsheet():
     return "bnssel: Sample-selection bound (Heckman model)"
+
+# public names resolved by fn/_lazy_map.json
+boundselection = bound_selection

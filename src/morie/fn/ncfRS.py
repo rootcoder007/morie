@@ -204,3 +204,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 neuralcollaborativefiltering = fit_gmf
+
+# public names resolved by fn/_lazy_map.json
+ncf = fit_gmf

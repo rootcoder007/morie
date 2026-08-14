@@ -232,3 +232,6 @@ def vae_anomaly(X, vae=None, latent_dim=1, n_samples=32, alpha=0.1,
 
 def cheatsheet():
     return "vae_an: VAE reconstruction-probability anomaly detection (An & Cho 2015)"
+
+# public names resolved by fn/_lazy_map.json
+vaeanomaly = vae_anomaly

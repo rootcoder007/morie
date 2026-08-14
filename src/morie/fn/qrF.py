@@ -70,3 +70,6 @@ pinball_loss = qrF
 
 def cheatsheet():
     return "qrF: rho_theta(u) = u(theta - 1[u<0]); minimized by theta-quantile"
+
+# public names resolved by fn/_lazy_map.json
+quantile_forecast = qrF

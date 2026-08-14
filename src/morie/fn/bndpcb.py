@@ -203,3 +203,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 pseudobayescredible = bet_proof_interval
+
+# public names resolved by fn/_lazy_map.json
+bound_pseudo_credible = bet_proof_interval

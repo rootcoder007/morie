@@ -137,3 +137,6 @@ rao_wu_bootstrap = bootss
 
 def cheatsheet():
     return "bootss: w* = [(1-r) + r (n/m) m*] w, r = sqrt(m/(n-1)); var Eq. 3.5"
+
+# public names resolved by fn/_lazy_map.json
+bootstrap_survey = bootss

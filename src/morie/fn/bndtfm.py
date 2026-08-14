@@ -103,3 +103,6 @@ def _apply(yv, tv, value):
 
 def cheatsheet():
     return "bndtfm: Bound under outcome transformation"
+
+# public names resolved by fn/_lazy_map.json
+boundtransform = bound_transform

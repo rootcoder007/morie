@@ -655,3 +655,6 @@ def cheatsheet():
 # compact aliases
 snp_quality_control = snpqc1
 snp_qc = snpqc1
+
+# public names resolved by fn/_lazy_map.json
+snpqc = snpqc1

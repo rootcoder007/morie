@@ -244,3 +244,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 patchtst = patchtst_encode
+
+# public names resolved by fn/_lazy_map.json
+patch_tst = patchtst_encode

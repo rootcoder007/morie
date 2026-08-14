@@ -103,3 +103,7 @@ sabr_implied_volatility = volsabr
 
 def cheatsheet():
     return "volsabr: sigma_B = alpha/((fK)^((1-b)/2)(1+...)) * z/x(z) * (1+corr T)"
+
+# public names resolved by fn/_lazy_map.json
+vol_sabr_implied = volsabr
+volsabrimplied = volsabr

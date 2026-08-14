@@ -197,3 +197,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 clusterforest = cluster_forest
+
+# public names resolved by fn/_lazy_map.json
+clustered_grf = cluster_forest
+clusteredgrf = cluster_forest

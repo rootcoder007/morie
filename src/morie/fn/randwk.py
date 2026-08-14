@@ -85,3 +85,6 @@ def random_walk(G, start=0, steps=1):
 
 def cheatsheet():
     return "randwk: Random walk on a network"
+
+# public names resolved by fn/_lazy_map.json
+randomwalk = random_walk

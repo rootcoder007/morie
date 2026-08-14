@@ -213,3 +213,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 parsingexpressiongrammar = parse
+
+# public names resolved by fn/_lazy_map.json
+peg_parser = parse
+pegparser = parse

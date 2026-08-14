@@ -202,3 +202,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 gruforrecommendation = session_parallel_batches
+
+# public names resolved by fn/_lazy_map.json
+gru4rec = session_parallel_batches

@@ -264,3 +264,6 @@ def stl_anomaly(x, period, **kw):
 
 def cheatsheet():
     return "stlAn(x, period) -> STL seasonal/trend/remainder + MAD outlier flags"
+
+# public names resolved by fn/_lazy_map.json
+stlanomaly = stl_decompose

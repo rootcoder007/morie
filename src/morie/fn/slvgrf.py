@@ -283,3 +283,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 slicedgrf = rate
+
+# public names resolved by fn/_lazy_map.json
+sliced_grf = rate

@@ -202,3 +202,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 hmmersearch = search_pipeline
+
+# public names resolved by fn/_lazy_map.json
+profile_hmm_search = search_pipeline

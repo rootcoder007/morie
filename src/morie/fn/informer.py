@@ -251,3 +251,6 @@ def cheatsheet():
 # compact alias per ledger/NAMING.md -- infmer and informer are the
 # same ledger entry duplicated; both names resolve here
 informerattention = probsparse_attention
+
+# public names resolved by fn/_lazy_map.json
+informer_long_horizon = probsparse_attention

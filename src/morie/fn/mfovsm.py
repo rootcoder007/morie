@@ -175,3 +175,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 mfovsm_ = mfo_vsm
+
+# public names resolved by fn/_lazy_map.json
+mfovsm = mfo_vsm

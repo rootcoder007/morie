@@ -100,3 +100,6 @@ basEvap = penman_monteith
 
 def cheatsheet():
     return "basEvap(T, R_n, u2, VPD, G=0, P=101.3) -> FAO-56 Eq. 6 reference ET0 (mm/day)"
+
+# public names resolved by fn/_lazy_map.json
+penmanmonteith = penman_monteith

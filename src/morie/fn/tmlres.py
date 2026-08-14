@@ -104,3 +104,6 @@ def tmle_residual(y, D, X):
 
 def cheatsheet():
     return "tmlres: TMLE with a second-order (residual) bias correction."
+
+# public names resolved by fn/_lazy_map.json
+tmleresidual = tmle_residual

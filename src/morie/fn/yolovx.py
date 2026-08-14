@@ -221,3 +221,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 yoloxhead = simota_assign
+
+# public names resolved by fn/_lazy_map.json
+yolo_decoupled_head = simota_assign

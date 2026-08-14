@@ -354,3 +354,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 trimmed_kmeans = rkmeans
+
+# public names resolved by fn/_lazy_map.json
+trimmedkmeans = rkmeans

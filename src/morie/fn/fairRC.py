@@ -190,3 +190,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 fairranking = rND
+
+# public names resolved by fn/_lazy_map.json
+fairness_rec = rND
+fairnessrec = rND

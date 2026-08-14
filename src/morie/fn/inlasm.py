@@ -260,3 +260,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 inla = integrate_marginals
+
+# public names resolved by fn/_lazy_map.json
+inla_spatial = integrate_marginals
+inlaspatial = integrate_marginals

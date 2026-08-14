@@ -60,3 +60,6 @@ def survey_median(y, weights=None):
 
 def cheatsheet():
     return "svymed(y, weights): weighted median with a Woodruff interval."
+
+# public names resolved by fn/_lazy_map.json
+surveymedian = survey_median

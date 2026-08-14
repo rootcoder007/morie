@@ -170,3 +170,7 @@ haplotype_blocks = hapblk
 
 def cheatsheet():
     return "hapblk: strong LD = CI(D') in (0.7, ...)+hi>0.98; block = 95% strong pairs"
+
+# public names resolved by fn/_lazy_map.json
+haplotype_block = hapblk
+haplotypeblock = hapblk

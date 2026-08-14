@@ -113,3 +113,7 @@ blast_msp = blastp
 
 def cheatsheet():
     return "blastp: MSP = best ungapped local score; E = K m n exp(-lam S)"
+
+# public names resolved by fn/_lazy_map.json
+blast_protein = blastp
+blastprotein = blastp

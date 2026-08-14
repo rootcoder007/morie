@@ -535,3 +535,6 @@ gwas_emmax = gwasem
 
 # name carried over from the generated stub this replaced
 emmax_gwas = gwasem
+
+# public names resolved by fn/_lazy_map.json
+emmaxgwas = gwasem

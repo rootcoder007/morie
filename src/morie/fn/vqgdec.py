@@ -208,3 +208,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 vqgandecoder = decode
+
+# public names resolved by fn/_lazy_map.json
+vqgan_decode = decode
+vqgandecode = decode

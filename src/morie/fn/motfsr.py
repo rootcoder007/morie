@@ -686,3 +686,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 motif_meme = motfsr
+
+# public names resolved by fn/_lazy_map.json
+motifmeme = motfsr

@@ -369,3 +369,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 edger = ql_f_test
+
+# public names resolved by fn/_lazy_map.json
+edger_diff = ql_f_test
+edgerdiff = ql_f_test

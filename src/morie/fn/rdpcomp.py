@@ -201,3 +201,6 @@ def cheatsheet():
     return ("rdpcomp: sampled Gaussian RDP, A_alpha = sum_k C(a,k) "
             "(1-q)^(a-k) q^k exp(k(k-1)/(2 sigma^2)), eps = log(A)/(a-1) "
             "(MTZ 2019 Case I); integer alpha only; composes by addition.")
+
+# public names resolved by fn/_lazy_map.json
+rdp_subsampled_composition = rdp_sampled_gaussian

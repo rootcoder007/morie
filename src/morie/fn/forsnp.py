@@ -96,3 +96,6 @@ forensic_lr = forsnp
 
 def cheatsheet():
     return "forsnp: product-rule RMP with NRC II theta correction; LR = 1/RMP"
+
+# public names resolved by fn/_lazy_map.json
+forensiclr = forsnp

@@ -203,3 +203,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 t5encoder = span_corruption
+
+# public names resolved by fn/_lazy_map.json
+t5 = span_corruption

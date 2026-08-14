@@ -189,3 +189,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 elmorepresentation = elmo_representation
+
+# public names resolved by fn/_lazy_map.json
+elmo = elmo_representation

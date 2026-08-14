@@ -264,3 +264,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 collaborativedenoisingautoencoder = fit_cdae
+
+# public names resolved by fn/_lazy_map.json
+cdae = fit_cdae

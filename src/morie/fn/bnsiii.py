@@ -75,3 +75,6 @@ def bound_iii(y, X, moments):
 
 def cheatsheet():
     return "bnsiii: identified set as the zero-level set of the CHT criterion"
+
+# public names resolved by fn/_lazy_map.json
+boundiii = bound_iii

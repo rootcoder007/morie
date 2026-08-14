@@ -148,3 +148,6 @@ standardized_precipitation_index = droSPI
 
 def cheatsheet():
     return "droSPI: gamma-fit totals (Thom MLE), H=q+(1-q)G, A-S normal transform"
+
+# public names resolved by fn/_lazy_map.json
+spi = droSPI

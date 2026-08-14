@@ -324,3 +324,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 contacttracingyield = probability_of_control
+
+# public names resolved by fn/_lazy_map.json
+contact_tracing_yield = probability_of_control

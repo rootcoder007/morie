@@ -273,3 +273,6 @@ def cheatsheet():
 
 
 tcls = t_closeness
+
+# public names resolved by fn/_lazy_map.json
+tcloseness = t_closeness

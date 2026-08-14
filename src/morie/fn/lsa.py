@@ -180,3 +180,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 latentsemantic = lsa_decompose
+
+# public names resolved by fn/_lazy_map.json
+lsa = lsa_decompose

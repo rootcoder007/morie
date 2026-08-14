@@ -132,3 +132,6 @@ def matrix_profile(x, window):
 
 def cheatsheet():
     return "matrxP(x, m) -> matrix profile + index; max = discord, min = motif"
+
+# public names resolved by fn/_lazy_map.json
+matrixprofile = matrxP
