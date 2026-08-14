@@ -39,7 +39,7 @@
 .norm_cdf <- function(x) 0.5 * (1 + .erf(x / sqrt(2)))
 
 # mirror _s03core.wls
-.wls <- function(X, y, w, rcond) {
+.farmlmm_wls <- function(X, y, w, rcond) {
   X <- .to_mat(X)
   y <- .to_vec(y)
   w <- as.numeric(w)
@@ -97,7 +97,7 @@
   for (j in seq_len(p)) {
     cols <- c(j, setdiff(cov, j))
     X <- M[, cols, drop = FALSE]
-    co <- tryCatch(.wls(X, yv, rep(1, n), 1e-8)$coef, error = function(e) NULL)
+    co <- tryCatch(.farmlmm_wls(X, yv, rep(1, n), 1e-8)$coef, error = function(e) NULL)
     if (is.null(co)) {
       pv[j] <- 1; betas[j] <- 0; next
     }
