@@ -46,7 +46,7 @@ chain_entry <- function(previous_hash, entry, key = NULL) {
   if (is.null(key)) {
     return(list(hash = sha256(c(p, e)), keyed = FALSE))
   }
-  list(hash = hmac_sha256(key, c(p, e)), keyed = TRUE,
+  list(hash = .morie_hmac_sha256_impl(key, c(p, e)), keyed = TRUE,
        note = paste("forward rewriting now needs the KEY as well ",
                     "as write access"))
 }
