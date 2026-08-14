@@ -115,7 +115,7 @@ did_forest <- function(Y, D, X, event_time, x_eval = NULL,
     stop(sprintf("didfst: %d covariate rows for %d panel units", nrow(Xm), n))
   Dv <- as.numeric(D)
   flat <- did_estimate(delta, Dv)
-  grow <- hntfst::grow_forest(Xm, delta, W = Dv, kind = kind,
+  grow <- grow_forest(Xm, delta, W = Dv, kind = kind,
                                n_trees = as.integer(n_trees),
                                min_leaf = as.integer(min_leaf),
                                alpha = alpha, max_depth = as.integer(max_depth),
@@ -126,7 +126,7 @@ did_forest <- function(Y, D, X, event_time, x_eval = NULL,
   taus <- numeric(nrow(pts))
   wt_t <- numeric(nrow(pts)); wt_c <- numeric(nrow(pts))
   for (k in seq_len(nrow(pts))) {
-    w <- hntfst::forest_weights(trees, Xm, pts[k, ])
+    w <- forest_weights(trees, Xm, pts[k, ])
     e <- did_estimate(delta, Dv, weights = w)
     taus[k] <- e$estimate
     wt_t[k] <- e$treated_weight
