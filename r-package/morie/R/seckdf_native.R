@@ -32,7 +32,7 @@
 #' @export
 extract <- function(ikm, salt = NULL) {
   s <- if (is.null(salt)) raw(.HASH_LEN) else .as_bytes(salt)
-  list(prk = hmac_sha256(s, ikm),
+  list(prk = .morie_hmac_sha256_impl(s, ikm),
        salt_supplied = !is.null(salt),
        note = paste("the salt is the HMAC KEY; the IKM is the ",
                     "message"))
@@ -58,7 +58,7 @@ expand <- function(prk, info = raw(0), length = 32L) {
   inf <- .as_bytes(info)
   out <- raw(0); t <- raw(0); i <- 1L
   while (length(out) < L) {
-    t <- hmac_sha256(p, c(t, inf, as.raw(i)))
+    t <- .morie_hmac_sha256_impl(p, c(t, inf, as.raw(i)))
     out <- c(out, t)
     i <- i + 1L
   }
