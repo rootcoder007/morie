@@ -1,0 +1,172 @@
+# morie.fn -- function file (rootcoder007/morie)
+# FarmCPU: fixed and random models, circulating.
+#
+# References
+# Liu, X., Huang, M., Fan, B., Buckler, E. S. & Zhang, Z. (2016)
+# "Iterative Usage of Fixed and Random Effect Models for Powerful and
+# Efficient Genome-Wide Association Studies", PLoS Genetics 12(2),
+# e1005767, doi:10.1371/journal.pgen.1005767.
+# Yu, J. et al. (2006) "A unified mixed-model method for association
+# mapping that accounts for multiple levels of relatedness", Nature
+# Genetics 38(2), 203-208.
+# Segura, V. et al. (2012) "An efficient multi-locus mixed-model
+# approach for genome-wide association studies in structured
+# populations", Nature Genetics 44(7), 825-830.
+
+
+# Base R has no erf/erfc; both are pnorm in disguise. Defined here so
+# the arm stays base-R only, as the package requires.
+.erf <- function(x) 2 * pnorm(x * sqrt(2)) - 1
+.erfc <- function(x) 2 * pnorm(-x * sqrt(2))
+
+.EPS <- 1e-12
+
+# mirror _s03core.mat
+.to_mat <- function(X) {
+  if (is.data.frame(X)) X <- as.matrix(X)
+  if (is.null(dim(X))) X <- matrix(as.numeric(X), nrow = length(X))
+  X <- matrix(as.numeric(X), nrow = nrow(X))
+  X
+}
+
+# mirror _s03core.vec
+.to_vec <- function(y) {
+  if (is.data.frame(y)) y <- as.matrix(y)
+  if (!is.null(dim(y))) y <- as.numeric(y)
+  as.numeric(y)
+}
+
+.norm_cdf <- function(x) 0.5 * (1 + .erf(x / sqrt(2)))
+
+# mirror _s03core.wls
+.wls <- function(X, y, w, rcond) {
+  X <- .to_mat(X)
+  y <- .to_vec(y)
+  w <- as.numeric(w)
+  if (nrow(X) != length(y)) stop("wls: length mismatch")
+  sw <- sqrt(w)
+  Xw <- X * sw
+  yw <- y * sw
+  xtx <- crossprod(Xw, Xw)
+  xty <- crossprod(Xw, yw)
+  co <- qr.solve(xtx, xty, tol = rcond)
+  list(coef = as.numeric(co))
+}
+
+.kinship_from_markers <- function(G, markers = NULL) {
+  M <- .to_mat(G)
+  n <- nrow(M); p <- ncol(M)
+  cols <- if (is.null(markers)) seq_len(p) else as.integer(markers) + 1L
+  if (length(cols) == 0L) stop("farmlmm: kinship needs at least one marker")
+  Z <- matrix(0, nrow = length(cols), ncol = n)
+  for (ii in seq_along(cols)) {
+    j <- cols[ii]
+    col <- M[, j]
+    m <- sum(col) / n
+    s <- sqrt(sum((col - m) ^ 2) / n)
+    if (s == 0) s <- 1
+    Z[ii, ] <- (col - m) / s
+  }
+  K <- (crossprod(Z, Z) / length(cols))
+  list(K = K, markers_used = as.integer(cols) - 1L,
+       n_markers = length(cols), all_markers = is.null(markers))
+}
+
+.confounding <- function(G, K, marker) {
+  M <- .to_mat(G)
+  n <- nrow(M)
+  g <- M[, as.integer(marker) + 1L]
+  kg <- as.numeric(K %*% g) / n
+  mg <- mean(g); mk <- mean(kg)
+  num <- sum((g - mg) * (kg - mk))
+  den <- sqrt(sum((g - mg) ^ 2) * sum((kg - mk) ^ 2))
+  list(correlation = if (den > .EPS) num / den else 0,
+       marker = as.integer(marker),
+       note = "kinship from ALL markers contains the tested marker; that is the confounding")
+}
+
+.fixed_effect_scan <- function(y, G, covariates = integer(0), K = NULL) {
+  yv <- .to_vec(y)
+  M <- .to_mat(G)
+  n <- nrow(M); p <- ncol(M)
+  if (length(yv) != n) {
+    stop(sprintf("farmlmm: %d phenotypes but %d genotypes", length(yv), n))
+  }
+  cov <- as.integer(covariates) + 1L
+  pv <- numeric(p); betas <- numeric(p)
+  for (j in seq_len(p)) {
+    cols <- c(j, setdiff(cov, j))
+    X <- M[, cols, drop = FALSE]
+    co <- tryCatch(.wls(X, yv, rep(1, n), 1e-8)$coef, error = function(e) NULL)
+    if (is.null(co)) {
+      pv[j] <- 1; betas[j] <- 0; next
+    }
+    fit <- co[1L] + as.numeric(X %*% co[-1L])
+    res <- yv - fit
+    dof <- max(n - length(cols) - 1L, 1L)
+    s2 <- sum(res * res) / dof
+    xj <- X[, 1]
+    xm <- mean(xj)
+    sxx <- sum((xj - xm) ^ 2)
+    se <- if (sxx > .EPS) sqrt(s2 / sxx) else Inf
+    t <- if (se > 0) co[2L] / se else 0
+    pv[j] <- 2 * (1 - .norm_cdf(abs(t)))
+    betas[j] <- co[2L]
+  }
+  list(p = pv, beta = betas, covariates = as.integer(covariates),
+       note = "associated markers enter as COVARIATES, which is what controls false positives")
+}
+
+.random_effect_step <- function(y, G, selected, bins = NULL) {
+  sel <- as.integer(selected) + 1L
+  if (length(sel) == 0L) {
+    return(list(K = NULL, markers_used = integer(0),
+                note = "no associated markers yet; kinship is the identity at the first iteration"))
+  }
+  kk <- .kinship_from_markers(G, sel - 1L)
+  yv <- .to_vec(y)
+  n <- length(yv)
+  Kk <- kk$K
+  m <- mean(yv)
+  blup <- as.numeric(Kk %*% (yv - m)) / n
+  list(K = Kk, markers_used = sel - 1L, blup = blup,
+       note = "kinship from a SMALL selected set, so it no longer contains the marker under test")
+}
+
+.farmcpu <- function(y, G, max_iter = 10L, threshold = NULL, seed = 0L) {
+  yv <- .to_vec(y)
+  M <- .to_mat(G)
+  p <- ncol(M)
+  thr <- if (is.null(threshold)) 0.05 / p else as.numeric(threshold)
+  sel <- integer(0); hist <- list(); converged <- FALSE
+  fem <- NULL
+  for (it in seq_len(as.integer(max_iter))) {
+    fem <- .fixed_effect_scan(yv, M, sel - 1L)
+    new <- sort(which(fem$p < thr) - 1L)
+    hist[[length(hist) + 1L]] <- new
+    if (identical(new, sel)) {
+      converged <- TRUE
+      break
+    }
+    if (length(hist) >= 3L && identical(new, hist[[length(hist) - 2L]])) {
+      break
+    }
+    sel <- new
+    .random_effect_step(yv, M, sel)
+  }
+  list(
+    estimate = sel, selected = sel, p = fem$p,
+    iterations = length(hist), converged = converged,
+    oscillating = (!converged && length(hist) >= 3L &&
+                     identical(hist[[length(hist)]], hist[[length(hist) - 2L]])),
+    threshold = thr, history = hist,
+    method = "FarmCPU; Liu, Huang, Fan, Buckler & Zhang (2016)",
+    note = "kinship rebuilt from the SELECTED markers each round, so the confounding is removed rather than reduced"
+  )
+}
+
+morie_farmlmm <- function(y, G, max_iter = 10L, threshold = NULL, seed = 0L) {
+  .farmcpu(y = y, G = G, max_iter = max_iter, threshold = threshold, seed = seed)
+}
+
+erf <- function(x) 2 * pnorm(x) - 1
