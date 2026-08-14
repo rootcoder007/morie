@@ -50,7 +50,7 @@ algorithm, the occurs check, and the factorisation
 from ._richresult import RichResult
 
 __all__ = ["var", "app", "const", "is_var", "variables", "occurs",
-           "apply_subst", "compose", "unify", "match",
+           "apply_subst", "substitute", "compose", "unify", "match",
            "factor_through", "unification"]
 
 VAR = "VAR"
@@ -124,6 +124,18 @@ def apply_subst(t, subst):
     raise ValueError("unifAlg: the substitution %r does not reach a "
                      "fixed point -- it binds a variable to a term "
                      "containing itself" % (subst,))
+
+
+def substitute(t, subst):
+    r"""Apply a substitution in a single pass, without re-entering
+    the terms it inserts.
+
+    This is what a rewrite step needs: the bindings a matcher
+    produces may mention the same variable names as the pattern, and
+    iterating to a fixed point would then diverge on a substitution
+    that is perfectly legitimate.
+    """
+    return _apply_once(_check(t), subst)
 
 
 def _apply_once(t, subst):
