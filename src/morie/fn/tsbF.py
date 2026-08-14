@@ -73,26 +73,26 @@ ranking methods on RMSE.
 
 Kourentzes, N. (2014) "On intermittent demand model optimisation and
 selection", *International Journal of Production Economics* 156,
-180-190, doi:10.1016/j.ijpe.2014.06.007. That the smoothing constants
+180-190. The article prints no DOI. That the smoothing constants
 and the initial states should be estimated together, and that the
 usual squared-error optimisation misbehaves on intermittent series.
 
 Babai, M. Z., Syntetos, A. & Teunter, R. (2014) "Intermittent demand
 forecasting: An empirical study on accuracy and the risk of
 obsolescence", *International Journal of Production Economics* 157,
-212-219, doi:10.1016/j.ijpe.2014.08.019. The empirical comparison of
+212-219. The article prints no DOI. The empirical comparison of
 TSB against Croston and SBA under obsolescence risk.
 
 Babai, M. Z., Dallery, Y., Boubaker, S. & Kalai, R. (2019) "A new
 method to forecast intermittent demand in the presence of inventory
 obsolescence", *International Journal of Production Economics* 209,
-30-41, doi:10.1016/j.ijpe.2018.02.017. A later obsolescence-aware
+30-41, doi:10.1016/j.ijpe.2018.01.026. A later obsolescence-aware
 alternative to TSB.
 
 Yang, Y., Ding, C., Lee, S., Yu, L. & Ma, F. (2021) "A modified
 Teunter-Syntetos-Babai method for intermittent demand forecasting",
 *Journal of Management Science and Engineering* 6(1), 53-63,
-doi:10.1016/j.jmse.2021.02.005. A modification of the TSB update.
+doi:10.1016/j.jmse.2021.02.008. A modification of the TSB update.
 
 Svetunkov, I. & Boylan, J. E. (2023) "iETS: State space model for
 intermittent demand forecasting", *International Journal of
