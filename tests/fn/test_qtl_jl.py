@@ -224,11 +224,38 @@ def test_invalid_hmm_inputs_are_refused(bad):
         bad()
 
 
-def test_unsourced_scan_methods_are_refused():
-    for m in ("hk", "imp"):
-        assert not M.method_status(m)["available"]
-        with pytest.raises(ValueError):
-            M.scanone(Y, [LEFT, RIGHT], [0.0, 0.2], method=m)
+def test_haley_knott_is_still_refused():
+    assert not M.method_status("hk")["available"]
+    with pytest.raises(ValueError):
+        M.scanone(Y, [LEFT, RIGHT], [0.0, 0.2], method="hk")
+
+
+def test_the_imputation_weight_penalises_model_dimension():
+    a = M.imputation_weights(Y, LEFT, model_dimension=1)
+    b = M.imputation_weights(Y, LEFT, model_dimension=3)
+    assert a - b == pytest.approx(math.log(len(Y)))
+
+
+def test_a_wrong_length_genotype_column_is_refused():
+    with pytest.raises(ValueError):
+        M.imputation_weights(Y, LEFT[:5])
+
+
+def test_imputation_draws_are_reproducible_and_honour_markers():
+    geno = [[LEFT[i], RIGHT[i]] for i in range(len(Y))]
+    a = M.sample_genotypes(geno, [0.0, 0.2], [0.0, 0.1], n_imp=4,
+                           seed=1)
+    b = M.sample_genotypes(geno, [0.0, 0.2], [0.0, 0.1], n_imp=4,
+                           seed=1)
+    assert a == b
+    assert all(a[k][i][0] == LEFT[i] for k in range(4)
+               for i in range(len(Y)))
+
+
+def test_covariates_are_refused_for_the_imputation_scan():
+    with pytest.raises(ValueError):
+        M.scanone(Y, [LEFT, RIGHT], [0.0, 0.2], method="imp",
+                  covariates=[[1.0] * len(Y)])
 
 
 def test_an_unknown_method_is_refused():

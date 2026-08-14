@@ -31,10 +31,19 @@ Botstein, maximised by EM; ``"mr"`` is marker regression, which uses
 only individuals typed at the marker and can only report LOD *at*
 markers. Both are implemented from sources in hand.
 
-Broman et al. also list Haley-Knott regression and multiple
-imputation. This module names them and refuses them rather than
-guessing: the applications note gives no formulas, and neither Haley &
-Knott (1992) nor Sen & Churchill (2001) is in the corpus.
+``imp``
+    Multiple imputation, Sen & Churchill's scheme. Genotypes are
+    sampled on a pseudomarker grid from :math:`p(g\mid m)` -- markers
+    only, no phenotype -- and each realisation is weighted by
+    :math:`n^{-v/2}\mathrm{RSS}^{-n/2}`, the normal-model weight of
+    their equation (3). The posterior at a location is proportional to
+    the *average* weight over realisations, equation (4), which is why
+    the LOD is not the arithmetic mean of per-imputation LODs. The
+    separation matters in practice: the draws are model-free, so
+    comparing a new genetic model recomputes only the weights.
+
+Haley-Knott regression is still named and refused: the applications
+note gives no formula and Haley & Knott (1992) is not in the corpus.
 ``method_status`` reports which methods are available and why.
 
 References
@@ -63,13 +72,20 @@ Probabilistic Functions of Markov Chains", *The Annals of
 Mathematical Statistics* 41(1), 164-171,
 doi:10.1214/aoms/1177697196, for the forward-backward algorithm.
 
+Sen, Ś. & Churchill, G. A. (2001) "A statistical framework for
+quantitative trait mapping", *Genetics* 159(1), 371-387,
+doi:10.1093/genetics/159.1.371. The section "A weighted sample of QTL
+genotypes" for the pseudomarker grid, the sampling of realisations
+from :math:`p(g\mid m)` by Markov chain, the weight
+:math:`W_H(r_i(u)) = p(y\mid g = r_i(u))\,p(\gamma = u)` of equation
+(3) and its normal-model form :math:`n^{-v/2}\mathrm{RSS}^{-n/2}`;
+and "Estimating QTL locations" for equation (4), the posterior being
+proportional to the sum of weights over realisations.
+
 Not in the corpus, and therefore not implemented: Haley, C. S. &
 Knott, S. A. (1992) "A simple regression method for mapping
 quantitative trait loci in line crosses using flanking markers",
-*Heredity* 69(4), 315-324, doi:10.1038/hdy.1992.131; and Sen, Ś. &
-Churchill, G. A. (2001) "A statistical framework for quantitative
-trait mapping", *Genetics* 159(1), 371-387,
-doi:10.1093/genetics/159.1.371.
+*Heredity* 69(4), 315-324, doi:10.1038/hdy.1992.131.
 """
 
 import math
@@ -81,10 +97,11 @@ from . import survrsf as _rsf
 from ._richresult import RichResult
 
 __all__ = ["METHODS", "method_status", "hmm_genotype_probabilities",
+           "sample_genotypes", "imputation_weights",
            "scanone", "permutation_threshold", "lod_support_interval"]
 
 METHODS = ("em", "mr", "hk", "imp")
-_AVAILABLE = ("em", "mr")
+_AVAILABLE = ("em", "mr", "imp")
 _UNSOURCED = {
     "hk": "Haley-Knott regression is named but not defined in Broman "
           "et al. (2003); the primary source, Haley, C. S. & Knott, "
@@ -92,11 +109,6 @@ _UNSOURCED = {
           "quantitative trait loci in line crosses using flanking "
           "markers', Heredity 69(4), 315-324, "
           "doi:10.1038/hdy.1992.131, is not in the corpus",
-    "imp": "multiple imputation is named but not defined in Broman "
-           "et al. (2003); the primary source, Sen, S. & Churchill, "
-           "G. A. (2001) 'A statistical framework for quantitative "
-           "trait mapping', Genetics 159(1), 371-387, "
-           "doi:10.1093/genetics/159.1.371, is not in the corpus",
 }
 
 
@@ -179,6 +191,126 @@ def hmm_genotype_probabilities(genotypes, positions, error_rate=0.0):
     return out
 
 
+def sample_genotypes(genotypes, positions, grid, n_imp=16,
+                     error_rate=0.0, seed=0):
+    r"""Draw pseudomarker genotypes from :math:`p(g \mid m)`.
+
+    Forward-filter, backward-sample down the chromosome, which is the
+    Markov sampling scheme the paper points to. The draws depend on
+    the marker data only -- not on the phenotype and not on any
+    genetic model -- which is exactly why the same realisations can be
+    reused as models are compared, and why only the weights are
+    recomputed.
+    """
+    m = len(positions)
+    n = len(genotypes)
+    rng = _rsf._Rng(seed)
+    post = hmm_genotype_probabilities(genotypes, positions,
+                                      error_rate)
+    out = []
+    for _ in range(int(n_imp)):
+        draw = []
+        for i in range(n):
+            # sample the marker states first, right to left
+            states = [0] * m
+            states[m - 1] = 1 if rng.next() < post[i][m - 1][1] else 0
+            for j in range(m - 2, -1, -1):
+                r = _im.haldane(float(positions[j + 1])
+                                - float(positions[j]))
+                w = [post[i][j][k]
+                     * (1.0 - r if k == states[j + 1] else r)
+                     for k in (0, 1)]
+                tot = w[0] + w[1]
+                states[j] = 1 if rng.next() < w[1] / tot else 0
+            # then interpolate each grid position between its flanks
+            row = []
+            for g in grid:
+                j = max(k for k in range(m)
+                        if float(positions[k]) <= g + 1e-12)
+                if j == m - 1:
+                    row.append(states[j])
+                    continue
+                d1 = max(g - float(positions[j]), 0.0)
+                d2 = max(float(positions[j + 1]) - g, 0.0)
+                pr = _im.genotype_probabilities(
+                    states[j], states[j + 1], _im.haldane(d1),
+                    _im.haldane(d2))
+                row.append(1 if rng.next() < pr[1] else 0)
+            draw.append(row)
+        out.append(draw)
+    return out
+
+
+def imputation_weights(y, genotype_column, model_dimension=2):
+    r"""The normal-model weight :math:`n^{-v/2}\,\mathrm{RSS}^{-n/2}`.
+
+    Sen & Churchill's Sec. "A weighted sample": genotypes that explain
+    more of the phenotype get more weight, and the model dimension
+    :math:`v` is penalised so models of different size stay
+    comparable. Returned on the log scale, since
+    :math:`\mathrm{RSS}^{-n/2}` underflows immediately.
+    """
+    n = len(y)
+    if n != len(genotype_column):
+        raise ValueError("mqtmpl: one genotype per phenotype")
+    g = [float(v) for v in genotype_column]
+    my = sum(y) / n
+    mg = sum(g) / n
+    sgg = sum((v - mg) ** 2 for v in g)
+    if sgg <= 0.0:
+        rss = sum((v - my) ** 2 for v in y)
+    else:
+        b = sum((g[i] - mg) * (y[i] - my) for i in range(n)) / sgg
+        a = my - b * mg
+        rss = sum((y[i] - (a + b * g[i])) ** 2 for i in range(n))
+    rss = max(rss, 1e-300)
+    return (-0.5 * float(model_dimension) * math.log(n)
+            - 0.5 * n * math.log(rss))
+
+
+def _scan_imp(y, markers, positions, step, n_imp, error_rate, seed):
+    """Multiple-imputation scan; LOD from averaged weights."""
+    n = len(y)
+    grid = []
+    g = float(positions[0])
+    end = float(positions[-1])
+    while g <= end + 1e-12:
+        grid.append(g)
+        g += float(step)
+    geno = [[markers[j][i] for j in range(len(markers))]
+            for i in range(n)]
+    draws = sample_genotypes(geno, positions, grid, n_imp,
+                             error_rate, seed)
+    null = imputation_weights(y, [0.0] * n, model_dimension=1)
+    lods = []
+    for gi in range(len(grid)):
+        ws = [imputation_weights(y, [draws[k][i][gi] for i in range(n)])
+              for k in range(len(draws))]
+        top = max(ws)
+        avg = top + math.log(sum(math.exp(w - top) for w in ws)
+                             / len(ws))
+        lods.append((avg - null) * _im.LOG10E)
+    k = max(range(len(lods)), key=lambda i: lods[i])
+    return RichResult(payload={
+        "estimate": lods[k], "peak_lod": lods[k],
+        "peak_position": grid[k], "position": grid, "lod": lods,
+        "method_used": "imp", "n_imputations": int(n_imp),
+        "note": "weights are n^(-v/2) RSS^(-n/2) on the log scale; "
+                "the draws depend on the markers only, so a new model "
+                "reuses them and only the weights change",
+        "method": "multiple-imputation scan; Sen & Churchill (2001) "
+                  "eqs (3)-(4)",
+    })
+
+
+def kw_n_imp(covariates):
+    """Number of imputations; covariates are not yet supported here."""
+    if covariates:
+        raise ValueError("mqtmpl: covariates are not implemented for "
+                         "the imputation scan")
+    return 64
+
+
 def scanone(y, markers, positions, method="em", step=0.02,
             covariates=(), error_rate=0.0):
     r"""Single-QTL genome scan."""
@@ -187,6 +319,9 @@ def scanone(y, markers, positions, method="em", step=0.02,
     if any(len(c) != n for c in markers):
         raise ValueError("mqtmpl: every marker must be typed on all "
                          "%d individuals" % n)
+    if method == "imp":
+        return _scan_imp(y, markers, positions, step,
+                         kw_n_imp(covariates), error_rate, 0)
     if method == "mr":
         out_pos, out_lod = [], []
         for j in range(len(markers)):
