@@ -23,7 +23,7 @@
   X
 }
 
-.quantile7 <- function(sorted_x, q) {
+.flow_an_quantile7 <- function(sorted_x, q) {
   n <- length(sorted_x)
   pos <- q * (n + 1L)
   lo <- floor(pos)
@@ -106,7 +106,7 @@
   if (q <= 0 || q >= 1) {
     stop(sprintf("flow_an: threshold_quantile must be in (0, 1), got %s", format(threshold_quantile)))
   }
-  thr <- .quantile7(sort(ref), q)
+  thr <- .flow_an_quantile7(sort(ref), q)
   flags <- as.numeric(scores > thr)
   list(
     estimate = scores, score = scores, threshold = thr, flag = flags,
