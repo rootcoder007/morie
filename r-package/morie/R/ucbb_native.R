@@ -77,7 +77,7 @@ morie_ucbb <- function(x, T = NULL) {
 #' w_i <- w_i exp(gamma (x_i / p_i) / K) (Auer et al. 2002, Figure 1;
 #' regret bound Theorem 3.1).
 #'
-#' @param x Reward table (T x K), entries in [0, 1].
+#' @param x Reward table (T x K), entries in \[0, 1\].
 #' @param gamma_ Mixing parameter in (0, 1].
 #' @param T Number of trials (default all rows).
 #' @param seed SplitMix64 seed (mirrors the Python arm).

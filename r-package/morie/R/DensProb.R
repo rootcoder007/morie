@@ -2,7 +2,7 @@
 
 #' Interval probability from a density on a grid
 #'
-#' Trapezoid integration on a 513-point refinement of [a, b].  The
+#' Trapezoid integration on a 513-point refinement of \[a, b\].  The
 #' supplied density must integrate to within 5 percent of 1 over the
 #' whole grid, which catches an unnormalised input.
 #'

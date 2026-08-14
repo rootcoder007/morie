@@ -336,7 +336,7 @@ morie_convlayer <- function(x, kernel, bias = NULL, stride = c(1, 1),
 #' O(n^3) -- swap it in if n ever exceeds a handful.
 #' @param posdist tracks-by-detections position cost matrix
 #' @param appdist matching appearance cost matrix, or NULL
-#' @param weight the appearance share of the combined cost, in [0, 1]
+#' @param weight the appearance share of the combined cost, in \[0, 1\]
 #' @param maxn cap on the exhaustive search
 #' @return list(cost, assignment, nmatched, nunmatchedtracks,
 #'   nunmatcheddets, meancost)

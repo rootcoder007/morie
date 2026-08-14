@@ -8,7 +8,7 @@
 #' look like, which is the point: the bound shows how little the data alone
 #' deliver.
 #'
-#' Formula: \code{[E(y | D = 1) - y_1, E(y | D = 1) - y_0]} with
+#' Formula: \code{\[E(y | D = 1) - y_1, E(y | D = 1) - y_0\]} with
 #' \code{y_0 = min y} and \code{y_1 = max y}.
 #'
 #' @param y Observed outcome.

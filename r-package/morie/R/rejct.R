@@ -5,7 +5,7 @@
 #' lambda* = sup|psi(x)-psi(y)|/|x-y|, all at the standard normal.  Huber's psi
 #' has rho* infinite, gamma* = k/(2 Phi(k) - 1) and lambda* = 1; Tukey's
 #' biweight has rho* = c and sup|psi| = 16 c/(25 sqrt 5) at x = c/sqrt 5, with
-#' E[psi'] by Simpson's rule on [-c, c].  Source consulted: Hampel (1974),
+#' E[psi'] by Simpson's rule on \[-c, c\].  Source consulted: Hampel (1974),
 #' JASA 69(346), 383-393, section 2.
 #'
 #' @param psi "huber" or "bisquare".

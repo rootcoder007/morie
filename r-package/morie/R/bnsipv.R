@@ -9,7 +9,7 @@
 #' and an empty intersection means the two are jointly refuted.
 #'
 #' Formula: instrument bound from Molinari (2021) equation (2.15), shape
-#' bound \code{[0, upper]} from equation (2.13), intersected.
+#' bound \code{\[0, upper\]} from equation (2.13), intersected.
 #'
 #' @param y Observed outcome.
 #' @param D Binary treatment, coded 0/1.

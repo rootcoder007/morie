@@ -11,8 +11,8 @@
 #'
 #' Model deviance and deviance residuals (8.68):
 #' \code{D = sum d_i^2} with
-#' \code{d_i = sign(y_i - n_i p_i) sqrt(2 [y_i log(y_i / (n_i p_i)) +
-#' (n_i - y_i) log((n_i - y_i) / (n_i (1 - p_i)))])}.
+#' \code{d_i = sign(y_i - n_i p_i) sqrt(2 \[y_i log(y_i / (n_i p_i)) +
+#' (n_i - y_i) log((n_i - y_i) / (n_i (1 - p_i)))\])}.
 #'
 #' BOOK ERRATUM in (8.68): the printed radicand is
 #' \code{-2(y log(y/(n p))) + (n - y) log(...)}.  Read literally the

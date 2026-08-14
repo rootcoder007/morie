@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #' Cross K-function for bivariate point patterns
 #'
-#' eq (3.9): \eqn{\hat{K}_{ij}(h) = [\hat\lambda_i \hat\lambda_j
-#' \nu(A)]^{-1} \sum_k \sum_l w(s_k, u_l)^{-1} I(h_{kl} \le h)}, with
+#' eq (3.9): \eqn{\hat{K}_{ij}(h) = \[\hat\lambda_i \hat\lambda_j
+#' \nu(A)\]^{-1} \sum_k \sum_l w(s_k, u_l)^{-1} I(h_{kl} \le h)}, with
 #' \eqn{w} Ripley's isotropic weight -- the proportion of the circumference
 #' of a circle centred at \eqn{s_k} with radius \eqn{h_{kl}} inside the
 #' window, computed exactly rather than by sampling.

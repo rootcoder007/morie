@@ -49,7 +49,7 @@
 #' y <- u * 0.3 + tt * 0.2 + ifelse(tt >= g, 1 + 0.5 * rel, 0)
 #' d <- data.frame(y = y, d = as.numeric(tt >= g), unit = u, time = tt)
 #' out <- Gbtcom(d, "y", "d", "unit", "time")
-#' round(out$weight[["treated vs never-treated"]], 10)
+#' round(out$weight[\["treated vs never-treated"\]], 10)
 #' @export
 Gbtcom <- function(data, outcome, treatment, unit, time) {
   dec <- morie_did_bacon_decomposition(data, outcome, treatment,
