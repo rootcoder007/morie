@@ -274,3 +274,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 svm_dual_qp = smo
+
+# public names resolved by fn/_lazy_map.json
+svm_dual = smo
+svmdual = smo

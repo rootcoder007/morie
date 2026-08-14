@@ -77,3 +77,6 @@ def sgt_mixing_time(A, epsilon=0.01):
 
 def cheatsheet():
     return "sgtmix: Mixing time from the absolute spectral gap"
+
+# public names resolved by fn/_lazy_map.json
+sgtmixingtime = sgt_mixing_time

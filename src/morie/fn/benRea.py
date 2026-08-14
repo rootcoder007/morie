@@ -255,3 +255,7 @@ def cheatsheet():
 # compact alias per ledger/NAMING.md
 nerdecode = ner_decode
 __all__.append("ner_decode")
+
+# public names resolved by fn/_lazy_map.json
+named_entity = ner_decode
+namedentity = ner_decode

@@ -296,3 +296,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 treeoptimalregime = fit_tree
+
+# public names resolved by fn/_lazy_map.json
+tree_based_regime = fit_tree

@@ -292,3 +292,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 selfcontrolledcaseseries = sccs_poisson_fit
+
+# public names resolved by fn/_lazy_map.json
+sccs_design = sccs_poisson_fit
+sccsdesign = sccs_poisson_fit

@@ -104,3 +104,6 @@ def icc_one_way(y, cluster):
 
 def cheatsheet():
     return "icc1: ICC(1) one-way random-effects model"
+
+# public names resolved by fn/_lazy_map.json
+icconeway = icc_one_way

@@ -89,3 +89,6 @@ def tmle_subgroup(y, D, X, subgroup):
 
 def cheatsheet():
     return "tmlsbg: TMLE for a subgroup-conditional treatment effect."
+
+# public names resolved by fn/_lazy_map.json
+tmlesubgroup = tmle_subgroup

@@ -102,3 +102,6 @@ def ramsay_weight(y, a, max_iter=100, tol=1e-13):
 
 def cheatsheet():
     return "ramsw: Ramsay (1977) exponential weight function"
+
+# public names resolved by fn/_lazy_map.json
+ramsayweight = ramsay_weight

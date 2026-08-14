@@ -289,3 +289,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 randomizedinterventionaleffect = randomized_interventional_effect
+
+# public names resolved by fn/_lazy_map.json
+randomized_intervention = randomized_interventional_effect

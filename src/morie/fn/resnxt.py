@@ -167,3 +167,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 resnext = aggregated_block
+
+# public names resolved by fn/_lazy_map.json
+resnext_block = aggregated_block
+resnextblock = aggregated_block

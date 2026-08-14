@@ -108,3 +108,6 @@ def tmle_qlearning(state, action, reward, time):
 
 def cheatsheet():
     return "tmlqlc: stagewise-targeted Q-learning for a dynamic regime."
+
+# public names resolved by fn/_lazy_map.json
+tmleqlearning = tmle_qlearning

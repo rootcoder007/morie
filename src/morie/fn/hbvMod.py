@@ -174,3 +174,6 @@ hbv_hydrology = hbvMod
 
 def cheatsheet():
     return "hbvMod: HBV rainfall-runoff (snow/soil/2 GW boxes/MAXBAS routing)"
+
+# public names resolved by fn/_lazy_map.json
+hbvhydrology = hbvMod

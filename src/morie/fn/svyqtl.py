@@ -113,3 +113,6 @@ def _cdf(yy, w, tot, t):
 
 def cheatsheet():
     return "svyqtl(y, weights, quantile): weighted-CDF quantile, Woodruff interval."
+
+# public names resolved by fn/_lazy_map.json
+surveyquantile = survey_quantile

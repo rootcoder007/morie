@@ -356,3 +356,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 sccsnoevent = sccs_fit
+
+# public names resolved by fn/_lazy_map.json
+sccs_no_replacement = sccs_fit

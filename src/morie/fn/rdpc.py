@@ -71,3 +71,6 @@ rdpc = renyi_dp
 
 def cheatsheet():
     return "rdpc: Gaussian-mechanism Renyi DP budget (Mironov 2017, Corollary 3)."
+
+# public names resolved by fn/_lazy_map.json
+renyidp = renyi_dp

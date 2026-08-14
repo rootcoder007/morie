@@ -107,3 +107,6 @@ def _deff(w):
 
 def cheatsheet():
     return "trimit(y, weights, threshold): cap weights, redistribute the excess."
+
+# public names resolved by fn/_lazy_map.json
+weighttrimming = weight_trimming

@@ -234,3 +234,6 @@ def cheatsheet():
             "identical to it) and time weights fitted the same way "
             "transposed. method='did' uses 1/N_co and uniform time "
             "weights; 'sc' uses unit weights only; 'sdid' uses both.")
+
+# public names resolved by fn/_lazy_map.json
+causal_synthetic_did = unit_weights

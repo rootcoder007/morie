@@ -134,3 +134,6 @@ def tmle_markov(state, action, reward, policy):
 
 def cheatsheet():
     return "tmlmrk: TMLE for the long-run policy value in a Markov decision process."
+
+# public names resolved by fn/_lazy_map.json
+tmlemarkov = tmle_markov

@@ -463,3 +463,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 mixed_integer_bnb = branch_and_bound
+
+# public names resolved by fn/_lazy_map.json
+mip_branch_bound = branch_and_bound
+mipbranchbound = branch_and_bound

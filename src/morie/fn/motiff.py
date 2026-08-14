@@ -220,3 +220,7 @@ network_motifs = motiff
 
 def cheatsheet():
     return "motiff: Z = (N_real - mean N_rand)/sd; p = frac rand >= real"
+
+# public names resolved by fn/_lazy_map.json
+motif_count = motiff
+motifcount = motiff

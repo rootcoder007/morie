@@ -144,3 +144,6 @@ def tmle_high_dim(y, D, X, lam):
 
 def cheatsheet():
     return "tmlphd: high-dimensional TMLE with lasso nuisance models."
+
+# public names resolved by fn/_lazy_map.json
+tmlehighdim = tmle_high_dim

@@ -99,3 +99,6 @@ def boot_ci_median(x, B=200, alpha=0.05, rng=2, exhaustive=False):
 
 def cheatsheet():
     return "btcimed: Bootstrap CI for the median"
+
+# public names resolved by fn/_lazy_map.json
+bootcimedian = boot_ci_median

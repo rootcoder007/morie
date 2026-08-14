@@ -90,3 +90,7 @@ response_weight_adjustment = respwt
 
 def cheatsheet():
     return "respwt: phi_c = sum w_resp / sum w_all; w_adj = w / phi_c"
+
+# public names resolved by fn/_lazy_map.json
+response_weight = respwt
+responseweight = respwt

@@ -89,3 +89,6 @@ def bound_inference(theta, moments, alpha=0.05):
 
 def cheatsheet():
     return "bndinf: test-inversion CI for an interval-identified scalar"
+
+# public names resolved by fn/_lazy_map.json
+boundinference = bound_inference

@@ -366,3 +366,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 tsbforecast = tsb_forecast
+
+# public names resolved by fn/_lazy_map.json
+tsb = tsb_forecast

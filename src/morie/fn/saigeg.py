@@ -306,3 +306,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 saigegwas = saige_test
+
+# public names resolved by fn/_lazy_map.json
+saige_gwas = saige_test

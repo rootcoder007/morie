@@ -431,3 +431,6 @@ def cheatsheet():
             "mixture-of-experts ridge correction W_k = (phi* diag(R_k) "
             "phi*' + lambda I)^-1 phi* diag(R_k) Z' whose intercept row "
             "is zeroed, so batch goes and cell type stays.")
+
+# public names resolved by fn/_lazy_map.json
+singlecell_integration = scintg

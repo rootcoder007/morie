@@ -228,3 +228,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 hybrid_recommender = weighted
+
+# public names resolved by fn/_lazy_map.json
+hybrid_rec = weighted
+hybridrec = weighted

@@ -217,3 +217,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 adidaforecast = adida_forecast
+
+# public names resolved by fn/_lazy_map.json
+adida = adida_forecast

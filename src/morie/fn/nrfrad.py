@@ -216,3 +216,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 neuralradiancefield = volume_render
+
+# public names resolved by fn/_lazy_map.json
+nerf_radiance = volume_render
+nerfradiance = volume_render

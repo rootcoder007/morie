@@ -252,3 +252,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 latentdirichlet = variational_em
+
+# public names resolved by fn/_lazy_map.json
+lda_topic = variational_em
+ldatopic = variational_em

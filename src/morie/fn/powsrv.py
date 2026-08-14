@@ -72,3 +72,6 @@ def power_survey(effect_size, alpha=0.05, DEFF=1.0, n=100):
 
 def cheatsheet():
     return "powsrv: Survey-design-aware power"
+
+# public names resolved by fn/_lazy_map.json
+powersurvey = power_survey

@@ -108,3 +108,6 @@ iterated_bootstrap_test = btiseq
 
 def cheatsheet():
     return "btiseq: p_B = 1 - H(T); p_B1 = frac{H*_b(T*_b) >= H(T)}"
+
+# public names resolved by fn/_lazy_map.json
+boot_iter_calibrated = btiseq

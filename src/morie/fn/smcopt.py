@@ -157,3 +157,6 @@ def cheatsheet():
 # names carried over / compact aliases
 smc_optimise = smcopt
 sequential_mc = smcopt
+
+# public names resolved by fn/_lazy_map.json
+sequentialmc = smcopt

@@ -165,3 +165,6 @@ tsne_embedding = sctsne
 
 def cheatsheet():
     return "sctsne: P by perplexity search; q ~ Student-t; grad Eq.5 + momentum"
+
+# public names resolved by fn/_lazy_map.json
+tsneembedding = sctsne

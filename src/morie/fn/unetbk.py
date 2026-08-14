@@ -246,3 +246,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 unet = valid_output_size
+
+# public names resolved by fn/_lazy_map.json
+unet_backbone = valid_output_size
+unetbackbone = valid_output_size

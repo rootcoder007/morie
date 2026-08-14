@@ -367,3 +367,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 sensitivitytest = breakdown_value
+
+# public names resolved by fn/_lazy_map.json
+sensitivity_did = breakdown_value
+sensitivitydid = breakdown_value

@@ -203,3 +203,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 selectchangepoints = select_changepoints
+
+# public names resolved by fn/_lazy_map.json
+prophet_changepoint = select_changepoints

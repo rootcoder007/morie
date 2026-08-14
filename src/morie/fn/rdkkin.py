@@ -98,3 +98,6 @@ def kink_rdd(y, x, D=None, cutoff=0.0, bandwidth=1.0):
 
 def cheatsheet():
     return "rdkkin: Regression kink design (RKD)"
+
+# public names resolved by fn/_lazy_map.json
+kinkrdd = kink_rdd

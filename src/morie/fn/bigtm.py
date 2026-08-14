@@ -321,3 +321,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 bigramtopicmodel = gibbs_bigram_topic
+
+# public names resolved by fn/_lazy_map.json
+bigram_topic = gibbs_bigram_topic
+bigramtopic = gibbs_bigram_topic

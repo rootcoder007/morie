@@ -231,3 +231,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 implicitfeedback = fit_wrmf
+
+# public names resolved by fn/_lazy_map.json
+implicit_feedback_loss = fit_wrmf

@@ -283,3 +283,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 sequential_minimal_optimization = smo_platt
+
+# public names resolved by fn/_lazy_map.json
+smo_solver = smo_platt
+smosolver = smo_platt

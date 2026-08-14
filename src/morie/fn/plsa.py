@@ -229,3 +229,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 probabilisticlsa = fit_plsa
+
+# public names resolved by fn/_lazy_map.json
+plsa = fit_plsa

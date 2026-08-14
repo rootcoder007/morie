@@ -109,3 +109,6 @@ mi_rubin_rules = miefcl
 
 def cheatsheet():
     return "miefcl: pool MI estimates, T = Ubar + (1+1/m)B, Barnard-Rubin df"
+
+# public names resolved by fn/_lazy_map.json
+multiple_imputation_combine = miefcl

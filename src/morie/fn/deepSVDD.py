@@ -153,3 +153,7 @@ support_vector_data_description = svdd
 
 def cheatsheet():
     return "svdd: max sum a K_ii - aa'K, sum a=1, 0<=a<=C; a = center weights"
+
+# public names resolved by fn/_lazy_map.json
+deep_svdd = svdd
+deepsvdd = svdd

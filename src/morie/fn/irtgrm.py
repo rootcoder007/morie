@@ -21,3 +21,6 @@ __all__ = ["graded_response", "graded_response_samejima"]
 
 def cheatsheet():
     return "irtgrm: Samejima graded response model -- alias of grmsam"
+
+# public names resolved by fn/_lazy_map.json
+gradedresponse = graded_response_samejima

@@ -138,3 +138,7 @@ ar_sieve_bootstrap = btarsv
 
 def cheatsheet():
     return "btarsv: YW AR(p) fit; resample centred residuals; regen AR + Xbar"
+
+# public names resolved by fn/_lazy_map.json
+boot_ar_sieve = btarsv
+bootarsieve = btarsv

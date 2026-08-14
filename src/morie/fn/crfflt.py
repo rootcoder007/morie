@@ -276,3 +276,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 christianofitzgerald = cf_filter
+
+# public names resolved by fn/_lazy_map.json
+christiano_fitzgerald = cf_filter

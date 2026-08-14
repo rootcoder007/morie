@@ -295,3 +295,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 simulatedweightbound = confidence_set
+
+# public names resolved by fn/_lazy_map.json
+bound_simul_weights = confidence_set

@@ -190,3 +190,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 diffusiontransformer = dit_block
+
+# public names resolved by fn/_lazy_map.json
+dit_diffusion_transformer = dit_block

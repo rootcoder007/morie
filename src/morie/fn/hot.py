@@ -142,3 +142,6 @@ def hot_sax(x, window, alphabet=3, word_length=None):
 
 def cheatsheet():
     return "hot(x, window) -> most unusual subsequence (discord) via HOT SAX search"
+
+# public names resolved by fn/_lazy_map.json
+hotsax = hot

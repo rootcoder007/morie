@@ -102,3 +102,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 xpehh = xp_ehh
+
+# public names resolved by fn/_lazy_map.json
+xpehh1 = xp_ehh

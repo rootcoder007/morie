@@ -108,3 +108,6 @@ max_stable_simulation = mxetA
 
 def cheatsheet():
     return "mxetA: Y_t = sup_k f_t(T_k)/Gamma_k; P(Y<=y) = exp(-c_t/y)"
+
+# public names resolved by fn/_lazy_map.json
+max_exceedance_curve = mxetA

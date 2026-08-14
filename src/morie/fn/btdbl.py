@@ -116,3 +116,7 @@ double_bootstrap_ci = btdbl
 
 def cheatsheet():
     return "btdbl: c1 = q_{1-a}(H*_b(R*_b)); crit = H_n^{-1}(c1); theta in t +- crit/sqrt(n)"
+
+# public names resolved by fn/_lazy_map.json
+boot_double = btdbl
+bootdouble = btdbl

@@ -169,3 +169,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 hkdf_sha256 = hkdf
+
+# public names resolved by fn/_lazy_map.json
+hkdf_extract_expand = hkdf

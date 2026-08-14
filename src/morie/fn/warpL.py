@@ -212,3 +212,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 warp_rank_loss = warp_step
+
+# public names resolved by fn/_lazy_map.json
+warp = warp_step

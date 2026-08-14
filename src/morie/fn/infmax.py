@@ -210,3 +210,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 deepinfomax = local_objective
+
+# public names resolved by fn/_lazy_map.json
+infomax_objective = local_objective

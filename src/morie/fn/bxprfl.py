@@ -127,3 +127,6 @@ def baxter_king(y, p_low=6.0, p_high=32.0, K=12):
 
 def cheatsheet():
     return "bxprfl: ideal BP coefficients plus a constant so the weights sum to ZERO; else the trend leaks in"
+
+# public names resolved by fn/_lazy_map.json
+baxterking = bk_weights

@@ -174,3 +174,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 neuralgraphcf = stack_layers
+
+# public names resolved by fn/_lazy_map.json
+ngcf = stack_layers

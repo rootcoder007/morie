@@ -39,3 +39,6 @@ gpt_decoder = gpt2
 
 def cheatsheet():
     return "gpt2: GPT-2 decoder-only LM (Radford et al. 2019) -- alias of hmgpt2.geron_gpt2"
+
+# public names resolved by fn/_lazy_map.json
+gptdecoder = gpt2

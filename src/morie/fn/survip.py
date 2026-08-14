@@ -73,3 +73,6 @@ def survey_p_value(test_stat, DEFF=1.0, df=1):
 
 def cheatsheet():
     return "survip(test_stat, DEFF, df): design-corrected chi-square p-value."
+
+# public names resolved by fn/_lazy_map.json
+surveypvalue = survey_p_value

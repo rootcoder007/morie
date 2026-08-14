@@ -89,3 +89,6 @@ def _cv(w):
 
 def cheatsheet():
     return "trmwgt(weights, quantile): truncate weights at their q-th percentile."
+
+# public names resolved by fn/_lazy_map.json
+trimweights = trim_weights

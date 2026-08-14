@@ -191,3 +191,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 folkrank_search = folkrank
+
+# public names resolved by fn/_lazy_map.json
+tag_aware_rec = folkrank
+tagawarerec = folkrank

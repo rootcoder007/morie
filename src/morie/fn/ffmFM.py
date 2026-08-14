@@ -164,3 +164,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 fieldawarefm = fit_ffm
+
+# public names resolved by fn/_lazy_map.json
+field_aware_fm = fit_ffm

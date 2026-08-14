@@ -93,3 +93,7 @@ normal_invgamma_update = nignst
 
 def cheatsheet():
     return "nignst(y, mu0, kappa0, nu0, sigma0_sq) -> exact N-Inv-chi2 posterior parameters."
+
+# public names resolved by fn/_lazy_map.json
+normal_inv_gamma = nignst
+normalinvgamma = nignst

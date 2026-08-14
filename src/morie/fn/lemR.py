@@ -51,3 +51,6 @@ leiden_grph = lemR
 
 def cheatsheet():
     return "lemR: Leiden refined community detection (alias of scleid)"
+
+# public names resolved by fn/_lazy_map.json
+leidengrph = lemR

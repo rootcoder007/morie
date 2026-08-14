@@ -117,3 +117,6 @@ functional_bootstrap_band = funBoot
 
 def cheatsheet():
     return "funBoot: D = q_{1-a}(dist(T*_b, mean T*)); band = ball(center, D)"
+
+# public names resolved by fn/_lazy_map.json
+functional_bootstrap = funBoot

@@ -331,3 +331,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 etwfedid = etwfe
+
+# public names resolved by fn/_lazy_map.json
+causal_did_wooldridge_eta = etwfe

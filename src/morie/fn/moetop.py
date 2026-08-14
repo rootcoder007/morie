@@ -141,3 +141,6 @@ def moe_topk_routing(y=None, x=None, W_g=None, experts=None, k=2, alpha=0.01):
 
 def cheatsheet():
     return "moetop: MoE top-k routing + aux loss (GShard arXiv:2006.16668; Switch arXiv:2101.03961 Eqs 4-6)"
+
+# public names resolved by fn/_lazy_map.json
+moetopkrouting = moetop

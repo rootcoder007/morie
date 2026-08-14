@@ -163,3 +163,6 @@ def fast_mcd(X, h=None, n_starts=500, max_iter=100, n_keep=10):
 
 def cheatsheet():
     return "fastm: FAST-MCD by C-step concentration"
+
+# public names resolved by fn/_lazy_map.json
+fastmcd = fast_mcd

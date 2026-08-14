@@ -161,3 +161,7 @@ def cheatsheet():
 # compact alias per ledger/NAMING.md
 duelingq = dueling_q
 __all__.append("dueling_step")
+
+# public names resolved by fn/_lazy_map.json
+dueling_dqn = dueling_q
+duelingdqn = dueling_q

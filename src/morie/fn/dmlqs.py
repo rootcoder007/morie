@@ -206,3 +206,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 directedmpnn = dmpnn_message_pass
+
+# public names resolved by fn/_lazy_map.json
+deepml_qsar = dmpnn_message_pass
+deepmlqsar = dmpnn_message_pass

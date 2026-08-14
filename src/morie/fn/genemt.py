@@ -258,3 +258,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 magma = gene_set_regression
+
+# public names resolved by fn/_lazy_map.json
+gene_meta_analysis = gene_set_regression

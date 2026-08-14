@@ -198,3 +198,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 deepsemanticmodel = click_posterior
+
+# public names resolved by fn/_lazy_map.json
+dssm = click_posterior

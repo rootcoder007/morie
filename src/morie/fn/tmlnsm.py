@@ -110,3 +110,6 @@ def tmle_non_smooth(y, D, X, bw):
 
 def cheatsheet():
     return "tmlnsm: TMLE for a non-smooth functional (median difference)."
+
+# public names resolved by fn/_lazy_map.json
+tmlenonsmooth = tmle_non_smooth

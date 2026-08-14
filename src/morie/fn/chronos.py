@@ -271,3 +271,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 chronosforecast = tokenize
+
+# public names resolved by fn/_lazy_map.json
+chronos_foundation_ts = tokenize

@@ -192,3 +192,7 @@ mice_chained_equations = miord2
 
 def cheatsheet():
     return "miord2: chained Bayesian-normal imputation, m chains x maxit sweeps"
+
+# public names resolved by fn/_lazy_map.json
+mi_chained_eq = miord2
+michainedeq = miord2

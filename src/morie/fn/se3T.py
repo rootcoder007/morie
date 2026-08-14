@@ -216,3 +216,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 se3transformer = se3_attention
+
+# public names resolved by fn/_lazy_map.json
+se3_transformer = se3_attention

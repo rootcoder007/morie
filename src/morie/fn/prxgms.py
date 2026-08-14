@@ -169,3 +169,6 @@ def cheatsheet():
 
 
 prxgms = prox_gradient
+
+# public names resolved by fn/_lazy_map.json
+proximal_gradient_method = prox_gradient

@@ -259,3 +259,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 calibratedrecommendations = calibrated_rerank
+
+# public names resolved by fn/_lazy_map.json
+calibrated_rec = calibrated_rerank
+calibratedrec = calibrated_rerank

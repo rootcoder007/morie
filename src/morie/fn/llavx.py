@@ -184,3 +184,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 visualinstruction = build_sequence
+
+# public names resolved by fn/_lazy_map.json
+llava_visual_chat = build_sequence

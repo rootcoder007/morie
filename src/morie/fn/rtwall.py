@@ -90,3 +90,6 @@ wallinga_teunis_rt = rtwall
 
 def cheatsheet():
     return "rtwall: p_ij = w(ti-tj)/sum_k w(ti-tk); R_j = sum_i p_ij"
+
+# public names resolved by fn/_lazy_map.json
+rt_wallinga_teunis = rtwall

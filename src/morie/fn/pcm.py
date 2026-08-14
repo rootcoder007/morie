@@ -89,3 +89,6 @@ partial_credit_model = pcm
 
 def cheatsheet():
     return "pcm: P(k) = exp(sum_v Da(theta-b_v)) / sum_h exp(...), a=1 Masters"
+
+# public names resolved by fn/_lazy_map.json
+partial_credit_masters = pcm

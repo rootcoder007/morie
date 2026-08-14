@@ -109,3 +109,7 @@ irt_linking_haebara = linkhae
 
 def cheatsheet():
     return "linkhae: min sum [P_to - P_from*(A,B)]^2 over item curves"
+
+# public names resolved by fn/_lazy_map.json
+linking_haebara = linkhae
+linkinghaebara = linkhae

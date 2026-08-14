@@ -209,3 +209,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 user_based_cf = predict_rating
+
+# public names resolved by fn/_lazy_map.json
+user_cf = predict_rating
+usercf = predict_rating

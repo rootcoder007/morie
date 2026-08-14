@@ -155,3 +155,7 @@ ddqn = double_q_learning
 
 def cheatsheet():
     return "ddqn(P, R, gamma, ...) -> tabular Double Q-learning (Sutton-Barto 2018 Sec 6.7; van Hasselt 2010)."
+
+# public names resolved by fn/_lazy_map.json
+double_dqn = double_q_learning
+doubledqn = double_q_learning

@@ -610,3 +610,6 @@ def cheatsheet():
 # compact aliases
 voom = limmav
 limma_voom = limmav
+
+# public names resolved by fn/_lazy_map.json
+limmavoom = limmav

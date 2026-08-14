@@ -175,3 +175,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 hierarchicalattention = classify
+
+# public names resolved by fn/_lazy_map.json
+pretrained_attention = classify

@@ -95,3 +95,6 @@ irt_linking_mean_mean = linkmm
 
 def cheatsheet():
     return "linkmm: A=mu(aF)/mu(aT) (or sd ratio), B=mu(bT)-A mu(bF)"
+
+# public names resolved by fn/_lazy_map.json
+linking_meanmean = linkmm

@@ -106,3 +106,6 @@ mirt_factor_loadings = mfird
 
 def cheatsheet():
     return "mfird: lambda = a/sqrt(1 + a P a'); tau = -d/sqrt(1 + a P a')"
+
+# public names resolved by fn/_lazy_map.json
+mirt_factor_loading = mfird

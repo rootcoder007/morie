@@ -179,3 +179,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 sortpooling = sort_pooling
+
+# public names resolved by fn/_lazy_map.json
+sortpool = sort_pooling

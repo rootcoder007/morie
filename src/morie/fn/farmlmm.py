@@ -231,3 +231,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 farmcpumodel = farmcpu
+
+# public names resolved by fn/_lazy_map.json
+farm_cpu = farmcpu

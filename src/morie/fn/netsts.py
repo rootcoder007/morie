@@ -220,3 +220,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 lstmforecast = lstm_forecast
+
+# public names resolved by fn/_lazy_map.json
+neural_ts_lstm = lstm_forecast
+neuraltslstm = lstm_forecast

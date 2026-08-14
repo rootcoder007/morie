@@ -258,3 +258,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 predictor_corrector = solve_lp
+
+# public names resolved by fn/_lazy_map.json
+mehrotras_predictor = solve_lp

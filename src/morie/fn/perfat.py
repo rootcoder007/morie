@@ -241,3 +241,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 favorattention = favor_attention
+
+# public names resolved by fn/_lazy_map.json
+performer_favor_attention = favor_attention

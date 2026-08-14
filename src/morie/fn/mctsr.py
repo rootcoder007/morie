@@ -188,3 +188,7 @@ monte_carlo_tree_search = mctsr
 def cheatsheet():
     return ("mctsr: UCT = Xbar_j + 2*Cp*sqrt(2*ln n / n_j); "
             "Cp=1/sqrt(2); robust=most-visited root child")
+
+# public names resolved by fn/_lazy_map.json
+mcts_rollout = mctsr
+mctsrollout = mctsr

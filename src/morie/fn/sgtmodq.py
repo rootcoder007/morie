@@ -76,3 +76,6 @@ def sgt_modularity_q(A, labels):
 
 def cheatsheet():
     return "sgtmodq: Newman-Girvan modularity Q"
+
+# public names resolved by fn/_lazy_map.json
+sgtmodularityq = sgt_modularity_q

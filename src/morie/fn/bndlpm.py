@@ -121,3 +121,6 @@ def bound_lp_method(y, D, Z, moment_eqs=None):
 
 def cheatsheet():
     return "bndlpm: Balke-Pearl sharp ATE bounds by linear programming"
+
+# public names resolved by fn/_lazy_map.json
+boundlpmethod = bound_lp_method

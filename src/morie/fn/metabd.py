@@ -270,3 +270,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 metabat2 = bin_contigs
+
+# public names resolved by fn/_lazy_map.json
+metagenome_binning = bin_contigs

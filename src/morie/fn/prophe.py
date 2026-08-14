@@ -135,3 +135,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 additivecomponents = additive_components
+
+# public names resolved by fn/_lazy_map.json
+facebook_prophet = additive_components

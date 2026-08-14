@@ -144,3 +144,6 @@ swin_msa_window = swinmw
 
 def cheatsheet():
     return "swinmw: Swin window MSA with relative position bias (Liu et al. 2021, arXiv:2103.14030, Eq 4)"
+
+# public names resolved by fn/_lazy_map.json
+swinmsawindow = swinmw

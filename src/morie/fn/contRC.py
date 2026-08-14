@@ -89,3 +89,6 @@ def content_based(item_feat, user_profile, ratings=None, topn=3):
 
 def cheatsheet():
     return "contRC: content-based recommendation"
+
+# public names resolved by fn/_lazy_map.json
+contentbased = content_based

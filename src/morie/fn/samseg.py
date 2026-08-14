@@ -200,3 +200,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 segmentanything = promptable_segment
+
+# public names resolved by fn/_lazy_map.json
+sam_segment = promptable_segment
+samsegment = promptable_segment

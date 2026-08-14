@@ -246,3 +246,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 chacha20poly1305 = aead_encrypt
+
+# public names resolved by fn/_lazy_map.json
+aead_chacha20poly1305 = aead_encrypt

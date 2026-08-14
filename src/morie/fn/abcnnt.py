@@ -341,3 +341,7 @@ def cheatsheet():
             "q(x_o|theta)p(theta). The flow is a stack of affine "
             "autoregressive transforms, so log q = log N(u;0,I) - sum "
             "alpha_i by the change of variables.")
+
+# public names resolved by fn/_lazy_map.json
+abc_neural = abcnnt
+abcneural = abcnnt

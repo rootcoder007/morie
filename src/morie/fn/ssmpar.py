@@ -180,3 +180,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 parallelscan = parallel_scan
+
+# public names resolved by fn/_lazy_map.json
+ssm_parallel_scan = parallel_scan
