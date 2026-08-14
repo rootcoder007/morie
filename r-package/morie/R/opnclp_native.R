@@ -24,7 +24,7 @@ morie_opnclp <- function(payload) {
     return(fit_power_law(payload$x, payload$y))
   }
   if (op == "predict") {
-    return(predict(payload$fit, payload$compute))
+    return(.opnclp_predict(payload$fit, payload$compute))
   }
   if (op == "compare_scaling") {
     la <- if (is.null(payload$label_a)) "A" else payload$label_a
@@ -98,7 +98,7 @@ fit_power_law <- function(x, y) {
        range = c(min(X), max(X)), n = n)
 }
 
-predict <- function(fit, compute) {
+.opnclp_predict <- function(fit, compute) {
   c <- as.numeric(compute)
   if (c <= 0.0) {
     stop("opnclp: compute must be positive")
