@@ -54,7 +54,50 @@ demand estimates", *International Journal of Forecasting* 21(2),
 Syntetos, A. A. & Boylan, J. E. (2001) "On the bias of intermittent
 demand estimates", *International Journal of Production Economics*
 71(1-3), 457-466, doi:10.1016/S0925-5273(00)00143-2. The inversion
-bias itself.
+bias itself -- an ASYMPTOTIC result, which is why the anchor measures
+it under ``init="known"``.
+
+Prak, D., Teunter, R., Babai, M. Z., Boylan, J. E. & Syntetos, A.
+(2021) "Robust compound Poisson parameter estimation for inventory
+control", *Omega* 104, 102481, doi:10.1016/j.omega.2021.102481. That
+the standard intermittent-demand estimators are severely biased in
+finite samples, which is the effect ``burn_in`` and the ``init``
+routes exist to separate from the asymptotic bias above.
+
+Teunter, R. H. & Duncan, L. (2009) "Forecasting intermittent demand:
+a comparative study", *Journal of the Operational Research Society*
+60(3), 321-329, doi:10.1057/palgrave.jors.2602569. That per-period
+error measures are the wrong yardstick for intermittent demand, which
+is why the anchor compares bias against a known p*mu rather than
+ranking methods on RMSE.
+
+Kourentzes, N. (2014) "On intermittent demand model optimisation and
+selection", *International Journal of Production Economics* 156,
+180-190, doi:10.1016/j.ijpe.2014.06.007. That the smoothing constants
+and the initial states should be estimated together, and that the
+usual squared-error optimisation misbehaves on intermittent series.
+
+Babai, M. Z., Syntetos, A. & Teunter, R. (2014) "Intermittent demand
+forecasting: An empirical study on accuracy and the risk of
+obsolescence", *International Journal of Production Economics* 157,
+212-219, doi:10.1016/j.ijpe.2014.08.019. The empirical comparison of
+TSB against Croston and SBA under obsolescence risk.
+
+Babai, M. Z., Dallery, Y., Boubaker, S. & Kalai, R. (2019) "A new
+method to forecast intermittent demand in the presence of inventory
+obsolescence", *International Journal of Production Economics* 209,
+30-41, doi:10.1016/j.ijpe.2018.02.017. A later obsolescence-aware
+alternative to TSB.
+
+Yang, Y., Ding, C., Lee, S., Yu, L. & Ma, F. (2021) "A modified
+Teunter-Syntetos-Babai method for intermittent demand forecasting",
+*Journal of Management Science and Engineering* 6(1), 53-63,
+doi:10.1016/j.jmse.2021.02.005. A modification of the TSB update.
+
+Svetunkov, I. & Boylan, J. E. (2023) "iETS: State space model for
+intermittent demand forecasting", *International Journal of
+Production Economics* 265, 109013, doi:10.1016/j.ijpe.2023.109013.
+The state-space formulation that puts Croston and TSB in one family.
 """
 
 import math
@@ -70,25 +113,101 @@ _EPS = 1e-12
 _METHODS = ("tsb", "croston", "sba")
 
 
-def _init(y):
-    """Initialise from the first positive demand, as the methods do."""
-    pos = [v for v in y if v > 0.0]
+_INITS = ("global", "heuristic", "known")
+
+
+def _init(y, init="global", z0=None, x0=None, p0=None):
+    r"""Starting states for the smoothers -- three published routes.
+
+    Which one is right depends on what is being measured, and the
+    difference is not cosmetic: at a small smoothing constant the
+    initial state decays as :math:`(1-\alpha)^t`, so it takes roughly
+    :math:`3/\alpha` periods to fall below 5% of its starting weight.
+    At :math:`\alpha = 0.05` that is 60 periods. A finite sample
+    shorter than that is still reading its own initialisation.
+
+    ``init="known"``
+        The states are supplied. In a Monte Carlo study the data
+        generating process is known, so setting :math:`z_0 = \mu`,
+        :math:`x_0 = 1/p`, :math:`p_0 = p` removes the transient
+        entirely and whatever bias survives is the *structural* bias of
+        the estimator -- which is what the asymptotic theory is about.
+    ``init="global"``
+        :math:`z_0` is the mean of the non-zero demands and
+        :math:`x_0 = T/N_{>0}`, both over the whole sample. This is the
+        closest approximation to the truth available without knowing the
+        DGP, so it is the default for real data.
+    ``init="heuristic"``
+        :math:`z_0` is the FIRST positive demand and :math:`x_0` the
+        mean observed gap. This is what a naive implementation does, and
+        it is kept because it is what the finite-sample bias literature
+        is describing: a low first observation drags the whole path down
+        for :math:`\sim 3/\alpha` periods, which can flip the sign of the
+        measured bias relative to the asymptotic prediction.
+    """
+    yv = [float(v) for v in y]
+    pos = [v for v in yv if v > 0.0]
     if not pos:
         raise ValueError("tsbF: the series has no positive demand")
-    first = next(i for i, v in enumerate(y) if v > 0.0)
+    if init not in _INITS:
+        raise ValueError("tsbF: init must be one of %s, got %r"
+                         % (", ".join(_INITS), init))
+    first = next(i for i, v in enumerate(yv) if v > 0.0)
+    if init == "known":
+        if z0 is None or (x0 is None and p0 is None):
+            raise ValueError("tsbF: init='known' needs z0 and one of "
+                             "x0 / p0")
+        Z = float(z0)
+        if x0 is None:
+            if not 0.0 < float(p0) <= 1.0:
+                raise ValueError("tsbF: p0 must be in (0, 1], got %r"
+                                 % (p0,))
+            X = 1.0 / float(p0)
+            P = float(p0)
+        else:
+            if float(x0) < 1.0:
+                raise ValueError("tsbF: x0 must be at least 1, got %r"
+                                 % (x0,))
+            X = float(x0)
+            P = 1.0 / X if p0 is None else float(p0)
+        if Z <= 0.0:
+            raise ValueError("tsbF: z0 must be positive, got %r" % (z0,))
+        return first, Z, X, P
+    if init == "global":
+        Z = sum(pos) / len(pos)
+        X = len(yv) / float(len(pos))
+        P = len(pos) / float(len(yv))
+        return first, Z, max(X, 1.0), P
+    # heuristic
     gaps = []
     last = first
-    for i in range(first + 1, len(y)):
-        if y[i] > 0.0:
+    for i in range(first + 1, len(yv)):
+        if yv[i] > 0.0:
             gaps.append(i - last)
             last = i
-    z0 = pos[0]
-    x0 = (sum(gaps) / len(gaps)) if gaps else 1.0
-    p0 = len(pos) / float(len(y))
-    return first, z0, max(x0, 1.0), p0
+    X = (sum(gaps) / len(gaps)) if gaps else 1.0
+    return first, pos[0], max(X, 1.0), len(pos) / float(len(yv))
 
 
-def tsb_forecast(y, alpha=0.1, beta=0.05, horizon=1):
+def _burn(seq, burn_in):
+    """Drop the first ``burn_in`` fitted values.
+
+    The initial state's weight decays as (1-alpha)^t, so the first
+    ~3/alpha fitted values are still dominated by whatever the states
+    were set to. Discarding them isolates the estimator's own behaviour.
+    """
+    b = int(burn_in)
+    if b < 0:
+        raise ValueError("tsbF: burn_in must be non-negative, got %r"
+                         % (burn_in,))
+    if b >= len(seq):
+        raise ValueError("tsbF: burn_in %d discards the whole series "
+                         "of length %d" % (b, len(seq)))
+    return seq[b:]
+
+
+def tsb_forecast(y, alpha=0.1, beta=0.05, horizon=1, init="global",
+                 z0=None, p0=None, burn_in=0):
     r"""TSB: probability updated EVERY period, size only on demand."""
     yv = [float(v) for v in k.vec(y)]
     n = len(yv)
@@ -99,9 +218,10 @@ def tsb_forecast(y, alpha=0.1, beta=0.05, horizon=1):
         if not 0.0 < float(v) <= 1.0:
             raise ValueError("tsbF: %s must be in (0, 1], got %r"
                              % (nm, v))
-    first, z0, _, p0 = _init(yv)
+    first, zi, _, pi = _init(yv, init=init, z0=z0, p0=p0,
+                             x0=None if p0 is None else 1.0 / p0)
     a, b = float(alpha), float(beta)
-    z, p = z0, p0
+    z, p = zi, pi
     fitted, probs, sizes = [], [], []
     for t in range(n):
         occ = 1.0 if yv[t] > 0.0 else 0.0
@@ -116,14 +236,20 @@ def tsb_forecast(y, alpha=0.1, beta=0.05, horizon=1):
     return RichResult(payload={
         "estimate": [fitted[-1]] * int(horizon),
         "forecast": [fitted[-1]] * int(horizon),
-        "fitted": fitted, "probability": probs, "size": sizes,
+        "fitted": _burn(fitted, burn_in),
+        "fitted_full": fitted,
+        "probability": _burn(probs, burn_in),
+        "size": _burn(sizes, burn_in),
+        "init": init, "burn_in": int(burn_in),
+        "z_init": zi, "p_init": pi,
         "p_final": p, "z_final": z, "alpha": a, "beta": b,
         "method": "TSB, Teunter, Syntetos & Babai (2011)",
         "updates_on_zeros": True,
     })
 
 
-def croston_forecast(y, alpha=0.1, horizon=1):
+def croston_forecast(y, alpha=0.1, horizon=1, init="global",
+                     z0=None, x0=None, burn_in=0):
     r"""Croston: size and INTERVAL, updated only at demand epochs.
 
     Nothing updates on a zero, so an obsolete item keeps its last
@@ -137,9 +263,9 @@ def croston_forecast(y, alpha=0.1, horizon=1):
     if not 0.0 < float(alpha) <= 1.0:
         raise ValueError("tsbF: alpha must be in (0, 1], got %r"
                          % (alpha,))
-    first, z0, x0, _ = _init(yv)
+    first, zi, xi, _ = _init(yv, init=init, z0=z0, x0=x0)
     a = float(alpha)
-    z, x = z0, x0
+    z, x = zi, xi
     since = 0
     fitted = []
     for t in range(n):
@@ -152,19 +278,26 @@ def croston_forecast(y, alpha=0.1, horizon=1):
     return RichResult(payload={
         "estimate": [fitted[-1]] * int(horizon),
         "forecast": [fitted[-1]] * int(horizon),
-        "fitted": fitted, "z_final": z, "x_final": x, "alpha": a,
+        "fitted": _burn(fitted, burn_in), "fitted_full": fitted,
+        "z_final": z, "x_final": x, "alpha": a,
+        "init": init, "burn_in": int(burn_in),
+        "z_init": zi, "x_init": xi,
         "method": "Croston (1972)", "updates_on_zeros": False,
     })
 
 
-def sba_forecast(y, alpha=0.1, horizon=1):
+def sba_forecast(y, alpha=0.1, horizon=1, init="global",
+                 z0=None, x0=None, burn_in=0):
     r"""Syntetos-Boylan: Croston deflated by :math:`(1-\alpha/2)`."""
-    c = croston_forecast(y, alpha=alpha, horizon=horizon)
+    c = croston_forecast(y, alpha=alpha, horizon=horizon,
+                         init=init, z0=z0, x0=x0, burn_in=burn_in)
     d = 1.0 - float(alpha) / 2.0
     return RichResult(payload={
         "estimate": [v * d for v in c["forecast"]],
         "forecast": [v * d for v in c["forecast"]],
         "fitted": [v * d for v in c["fitted"]],
+        "fitted_full": [v * d for v in c["fitted_full"]],
+        "init": init, "burn_in": int(burn_in),
         "deflator": d, "alpha": float(alpha),
         "method": "Syntetos-Boylan Approximation (2005)",
         "updates_on_zeros": False,
@@ -198,16 +331,22 @@ def demand_classification(y, adi_cut=1.32, cv2_cut=0.49):
 
 
 def intermittent_forecast(y, method="tsb", alpha=0.1, beta=0.05,
-                          horizon=1):
+                          horizon=1, init="global", z0=None,
+                          x0=None, p0=None, burn_in=0):
     """Dispatch, so the three can be compared on one series."""
     if method not in _METHODS:
         raise ValueError("tsbF: method must be one of %s, got %r"
                          % (", ".join(_METHODS), method))
     if method == "tsb":
-        return tsb_forecast(y, alpha=alpha, beta=beta, horizon=horizon)
+        return tsb_forecast(y, alpha=alpha, beta=beta,
+                            horizon=horizon, init=init, z0=z0,
+                            p0=p0, burn_in=burn_in)
     if method == "croston":
-        return croston_forecast(y, alpha=alpha, horizon=horizon)
-    return sba_forecast(y, alpha=alpha, horizon=horizon)
+        return croston_forecast(y, alpha=alpha, horizon=horizon,
+                                init=init, z0=z0, x0=x0,
+                                burn_in=burn_in)
+    return sba_forecast(y, alpha=alpha, horizon=horizon, init=init,
+                        z0=z0, x0=x0, burn_in=burn_in)
 
 
 def cheatsheet():
@@ -217,7 +356,12 @@ def cheatsheet():
             "independent. Croston smooths the INTERVAL and forecasts "
             "z'/x' -- nothing updates on a zero, so an obsolete item "
             "keeps its forecast forever, and the ratio carries an "
-            "inversion bias. SBA deflates by (1 - alpha/2).")
+            "inversion bias. SBA deflates by (1 - alpha/2). The "
+            "inversion bias is ASYMPTOTIC: use init='known' to see "
+            "it, because with init='heuristic' the initial state "
+            "decays as (1-alpha)^t and takes ~3/alpha periods to "
+            "clear, which can flip the measured sign (Prak et al. "
+            "2021). burn_in drops that transient.")
 
 
 # compact alias per ledger/NAMING.md
