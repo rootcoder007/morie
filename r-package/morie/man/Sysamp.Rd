@@ -24,11 +24,11 @@ the simple-random-sampling variance.
 }
 \details{
 Formula: V(ybar_sy) = (1/k) sum_\{i=1\}^\{k\} (ybar_i - Ybar)^2;
-deff = V(ybar_sy) / \link{(1 - f) S^2 / n}
+deff = V(ybar_sy) / \[(1 - f) S^2 / n\]
 }
 \references{
 Cochran (1977), Sampling Techniques, 3rd edition, Chapter
 8. Chapter 8 was NOT in the scanned excerpt available to this batch,
 so the standard published form is used; rho is reported by inverting
-V(ybar_sy) = (S^2/n)\link{1 + (n - 1) rho}.
+V(ybar_sy) = (S^2/n)\[1 + (n - 1) rho\].
 }

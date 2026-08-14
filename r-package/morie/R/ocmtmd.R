@@ -22,7 +22,7 @@
 #' @param A Binary treatment, 0/1.
 #' @param H Covariate history, no intercept column; one is added.
 #' @param Q Fitted values of the outcome model; if \code{NULL}, the
-#'   outcome is regressed on \code{[1, A, H]} by least squares.
+#'   outcome is regressed on \code{\[1, A, H\]} by least squares.
 #' @return List with \code{estimate}, \code{b0}, \code{b1},
 #'   \code{t_stat}, \code{resid_sd}, \code{mean_resid_treated},
 #'   \code{mean_resid_control}, \code{alpha_crump}, \code{n_kept},

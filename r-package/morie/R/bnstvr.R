@@ -8,7 +8,7 @@
 #' bite; it is also what makes it refutable, since an empty intersection
 #' contradicts mean independence.
 #'
-#' Formula: \code{E[y(t)] in [max_x lower(x), min_x upper(x)]}, then the ATE
+#' Formula: \code{E[y(t)] in \[max_x lower(x), min_x upper(x)\]}, then the ATE
 #' interval formed from the two intersected arms.
 #'
 #' @param y Observed outcome.

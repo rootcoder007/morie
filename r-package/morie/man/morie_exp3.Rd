@@ -7,7 +7,7 @@
 morie_exp3(x, gamma_, T = NULL, seed = 0)
 }
 \arguments{
-\item{x}{Reward table (T x K), entries in \link{0, 1}.}
+\item{x}{Reward table (T x K), entries in \[0, 1\].}
 
 \item{gamma_}{Mixing parameter in (0, 1].}
 

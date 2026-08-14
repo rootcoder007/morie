@@ -9,8 +9,8 @@
 #' bound whenever selection rates differ by stratum, and reproduces the
 #' pooled bound when they do not.
 #'
-#' Formula, per stratum: \code{[E(y | D = 1, x) P(D = 1 | x) +
-#' y_0 P(D = 0 | x), E(y | D = 1, x) P(D = 1 | x) + y_1 P(D = 0 | x)]},
+#' Formula, per stratum: \code{\[E(y | D = 1, x) P(D = 1 | x) +
+#' y_0 P(D = 0 | x), E(y | D = 1, x) P(D = 1 | x) + y_1 P(D = 0 | x)\]},
 #' averaged with weights \code{P(x)}.
 #'
 #' @param y Outcome; entries with \code{D = 0} are unobserved and their
