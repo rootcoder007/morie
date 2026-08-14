@@ -79,10 +79,20 @@ def coxph(
         exp_eta = np.exp(eta)
 
         cum_exp = np.cumsum(exp_eta)
-        cum_Xexp = np.cumsum(X_s * exp_eta[:, None], axis=0)
-        cum_XXexp = np.zeros((n, p, p))
+        # _array_core.cumsum flattens, so accumulate the rows here
+        # rather than passing an axis it does not take.
+        cum_Xexp = np.zeros((n, p))
+        running = np.zeros(p)
         for i in range(n):
-            cum_XXexp[i] = (cum_XXexp[i - 1] if i > 0 else np.zeros((p, p))) + np.outer(X_s[i], X_s[i]) * exp_eta[i]
+            running = running + X_s[i] * exp_eta[i]
+            cum_Xexp[i] = running
+        # _array_core has no 3-D array, so the running p x p sums are
+        # kept in a plain list rather than a (n, p, p) block.
+        cum_XXexp = []
+        running_XX = np.zeros((p, p))
+        for i in range(n):
+            running_XX = running_XX + np.outer(X_s[i], X_s[i]) * exp_eta[i]
+            cum_XXexp.append(running_XX)
 
         score = np.zeros(p)
         hess = np.zeros((p, p))
