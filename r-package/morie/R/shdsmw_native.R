@@ -31,7 +31,7 @@
   list(obj)
 }
 
-.wls <- function(X, y, w) {
+.shdsmw_wls <- function(X, y, w) {
   X <- as.matrix(X); storage.mode(X) <- "double"
   y <- .vec(y); w <- .vec(w)
   n <- length(y)
@@ -135,7 +135,7 @@ shrinkage_msm <- function(y, treatment_history, covariate_history,
                      "'final' or 'everexposed', got ",
                      deparse(contrast)))
     X <- matrix(e, n, 1L)
-    f <- .wls(X, yv, w)
+    f <- .shdsmw_wls(X, yv, w)
     s1 <- sum(w); s2 <- sum(w * w)
     list(lam = as.numeric(lm), estimate = f$coef[1L],
          se = f$se[1L], weights = w,
@@ -156,7 +156,7 @@ shrinkage_msm <- function(y, treatment_history, covariate_history,
                                       effective_sample_size =
                                         r$effective_sample_size)
   }
-  unadj <- .wls(matrix(main$exposure, n, 1L), yv, rep(1, n))
+  unadj <- .shdsmw_wls(matrix(main$exposure, n, 1L), yv, rep(1, n))
   out <- main
   out$path <- rows
   out$unadjusted <- unadj$coef[1L]
