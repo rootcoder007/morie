@@ -293,7 +293,11 @@ morie_gwasem_gc <- function(stats, df = 1) {
 .gwasem_reml_delta <- function(y, X, evals, evecs, ml) {
   n <- length(y); p <- ncol(X)
   yt <- as.numeric(t(evecs) %*% y)
-  Xt <- t(apply(X, 1L, function(r) as.numeric(t(evecs) %*% r)))
+  # apply(X, 1L, ...) walks the ROWS of X, which have length p,
+  # but t(evecs) is n x n and needs length-n vectors. Rotating the
+  # design is just t(evecs) %*% X, matching the Python arm's
+  # Xt[k][a] = sum_i evecs[i][k] * X[i][a].
+  Xt <- t(evecs) %*% X
   loglik <- function(delta) {
     d <- evals + delta
     if (min(d) <= 1e-12) return(-Inf)
@@ -304,8 +308,13 @@ morie_gwasem_gc <- function(stats, df = 1) {
     for (a in seq_len(p)) v[a] <- sum(Xt[, a] * yt / d)
     bb <- tryCatch(solve(M, v), error = function(e) NULL)
     if (is.null(bb)) return(-Inf)
-    ldM <- determinant(M, logarithm = TRUE)$modulus
-    if (attr(ldM, "sign") != 1) return(-Inf)
+    # determinant() returns sign as a LIST ELEMENT, not as an attribute
+    # of $modulus, so attr(ldM, "sign") was NULL and the comparison
+    # errored with "argument is of length zero". The Python arm uses
+    # slogdet and rejects sign <= 0.
+    dt <- determinant(M, logarithm = TRUE)
+    if (as.numeric(dt$sign) <= 0) return(-Inf)
+    ldM <- as.numeric(dt$modulus)
     rss <- sum((yt - as.numeric(Xt %*% bb))^2 / d)
     if (rss <= 0) return(-Inf)
     logdetV <- sum(log(d))
