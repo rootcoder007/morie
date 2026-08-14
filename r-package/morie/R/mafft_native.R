@@ -840,7 +840,7 @@ mafft_alignment <- function(sequences, method = "FFT-NS-2",
 
 mafftalignment <- mafft_alignment
 
-cheatsheet <- function() {
+.mafft_cheatsheet <- function() {
   paste("mafft: MAFFT (Katoh et al. 2002). Residues become Grantham ",
         "volume/polarity vectors, c(k) = c_v(k) + c_p(k) is got by ",
         "FFT as V1*(m).V2(m), a 30-site window over the top 20 peaks ",

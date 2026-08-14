@@ -98,7 +98,7 @@ smcopt <- function(objective, initial, n_particles = 200L, n_steps = 30L,
                       "& Jasra 2006, section 2.3.1c)", sep = ""))
 }
 
-cheatsheet <- function() {
+.smcopt_cheatsheet <- function() {
   paste("smcopt: SMC as a global optimiser (Del Moral, Doucet & Jasra ",
         "2006, sec 2.3.1c). Anneal pi_n = pi^phi_n with phi rising, so ",
         "the target concentrates on the modes. Unlike single-chain ",

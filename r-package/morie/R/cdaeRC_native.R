@@ -225,7 +225,7 @@ morie_cdaeRC <- function(pos, n_users, n_items, k_dim = 8L, q = 0.2,
 cdae <- fit_cdae
 collaborativedenoisingautoencoder <- fit_cdae
 
-cheatsheet <- function() {
+.cdaeRC_cheatsheet <- function() {
   paste("cdaeRC: a denoising auto-encoder over a user's BINARY",
         "preference vector, plus a USER-SPECIFIC input node V_u --",
         "that node is what separates it from a plain DAE and makes",

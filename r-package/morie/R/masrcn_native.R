@@ -154,7 +154,7 @@ multitask_loss <- function(l_cls, l_box, l_mask) {
 maskrcnn <- roi_align
 mask_rcnn_segmentation <- roi_align
 
-cheatsheet <- function() {
+.masrcn_cheatsheet <- function() {
   paste("masrcn: Faster R-CNN plus a THIRD branch predicting a ",
         "binary mask per RoI. Two details carry it. RoIPool ",
         "QUANTISES twice -- box and bins -- which is fine for a ",

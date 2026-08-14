@@ -269,7 +269,7 @@ aggregate_att <- function(gt, scheme = "simple", horizon = NULL) {
 }
 
 #' @export
-cheatsheet <- function() {
+.didfst_cheatsheet <- function() {
   paste("didfst: DiD forest. Delta_i = post-mean - pre-mean; the",
         "scalar estimator (Wager 2025 eq. 13.7) is the difference",
         "of group means of Delta, and the forest version is the",

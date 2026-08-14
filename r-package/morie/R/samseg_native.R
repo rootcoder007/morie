@@ -141,7 +141,7 @@ sam_segment <- promptable_segment
 samsegment <- promptable_segment
 segmentanything <- promptable_segment
 
-cheatsheet <- function() {
+.samseg_cheatsheet <- function() {
   paste("samseg: the task is 'return a VALID mask for any prompt,",
         "and for an AMBIGUOUS prompt a valid mask for at least one",
         "intended object' -- which is what makes it usable as",

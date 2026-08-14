@@ -115,7 +115,7 @@ relative_error <- function(X, M) {
 matrixcompletion <- svt
 matrix_completion_low_rank <- svt
 
-cheatsheet <- function() {
+.meglt_cheatsheet <- function() {
   paste("meglt: most low-rank matrices are recovered EXACTLY from ",
         "m >= C n^1.2 r log n sampled entries -- 1.25 covers all ",
         "ranks. Rank minimisation is NP-hard, so minimise the ",

@@ -452,7 +452,7 @@ deseq2 <- function(counts, design, contrast = NULL, size = NULL,
 }
 
 #' @export
-cheatsheet <- function() {
+.deseq2_cheatsheet <- function() {
   paste("deseq2: RNA-seq differential expression (Love, Huber & Anders",
         "2014). NB GLM with log link, Var = mu + alpha mu^2. Size",
         "factors by median-of-ratios. Dispersion in three steps:",
