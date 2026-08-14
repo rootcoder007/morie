@@ -1,40 +1,40 @@
-"""TimesFM foundation model (Google)."""
+# morie.fn -- function file (rootcoder007/morie)
+r"""TimesFM -- duplicate ledger entry.
 
-from . import _array_core as np
+The wave-3 ledger carries this method twice, as ``timesf`` and as
+``timesfm``, both citing Das et al. (2024) and both describing the
+same decoder-only foundation model. One paper, one method.
 
-from ._richresult import RichResult
+This module re-exports :mod:`timesfm` rather than duplicating it, so
+the two entries cannot drift apart. The patching contract, the
+input/output patch asymmetry and the rollout arithmetic are documented
+there.
 
-__all__ = ["timesfm_foundation"]
+References
+----------
+Das, A., Kong, W., Sen, R. & Zhou, Y. (2024) "A decoder-only
+foundation model for time-series forecasting", *Proceedings of the
+41st International Conference on Machine Learning*, PMLR 235,
+arXiv:2310.10688.
 
+See Also
+--------
+:mod:`morie.fn.timesfm` -- the implementation.
+"""
 
-def timesfm_foundation(y, horizon):
-    """
-    TimesFM foundation model (Google)
+from .timesfm import (causal_mask, horizon_plan, input_patches,
+                      rollout, rollout_steps)
 
-    Formula: decoder-only transformer for TS forecasting
-
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    horizon : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Das et al (2024) TimesFM
-    """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TimesFM foundation model (Google)"})
+__all__ = ["input_patches", "causal_mask", "rollout_steps", "rollout",
+           "horizon_plan"]
 
 
 def cheatsheet():
-    return "timesf: TimesFM foundation model (Google)"
+    from .timesfm import cheatsheet as _c
+    return ("timesf: the same ledger method as `timesfm` -- one "
+            "paper, one implementation, re-exported so the two "
+            "entries cannot drift. " + _c())
+
+
+# compact alias per ledger/NAMING.md
+timesffoundation = rollout
