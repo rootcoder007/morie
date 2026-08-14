@@ -231,8 +231,7 @@ loglik <- function(w, ar = list(), ma = list()) {
     sumlogf <- sumlogf + log(f)
     a <- as.numeric(T %*% a)
     TP <- T %*% P
-    P <- t(TP) %*% T
-    for (i in 1:r) P[i, i] <- P[i, i] + R[i] * R[i]
+    P <- TP %*% t(T) + R %o% R
   }
   sigma2 <- ssq / n
   ll <- -0.5 * n * (log(2 * pi * sigma2) + 1) - 0.5 * sumlogf
@@ -319,7 +318,7 @@ loglik <- function(w, ar = list(), ma = list()) {
   list(x = simplex[best, ], fun = fv[best], success = TRUE)
 }
 
-fit <- function(y, order = c(0, 1, 1), seasonal_order = c(0, 1, 1),
+.sarima_fit <- function(y, order = c(0, 1, 1), seasonal_order = c(0, 1, 1),
                 s = 12, method = "ml", start = NULL) {
   if (!(method %in% .SARIMA_METHODS))
     stop("sarima: method must be one of ml, uls, css, moment, got ",
@@ -387,7 +386,7 @@ fit <- function(y, order = c(0, 1, 1), seasonal_order = c(0, 1, 1),
     if (length(x0) != npar)
       stop("sarima: ", length(x0), " starting values for ", npar,
            " parameters")
-  } else if (c(p, q, P, Q) == c(0L, 1L, 0L, 1L)) {
+  } else if ((p == 0) && (q == 1) && (P == 0) && (Q == 1)) {
     pre <- preliminary_estimates(w, s)
     x0 <- c(pre$theta, pre$Theta)
   } else {
@@ -543,7 +542,7 @@ r_convention <- function(fitted) {
 morie_sarima <- function(y, order = c(0, 1, 1),
                         seasonal_order = c(0, 1, 1), s = 12,
                         method = "ml", start = NULL) {
-  fit(y, order = order, seasonal_order = seasonal_order, s = s,
+  .sarima_fit(y, order = order, seasonal_order = seasonal_order, s = s,
       method = method, start = start)
 }
 
