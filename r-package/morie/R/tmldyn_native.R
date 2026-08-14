@@ -19,7 +19,7 @@
 # K-fold CV split between rule and targeting, two scalar fluctuations,
 # the four static-regime comparators.
 
-.METHODS <- c("cv-tmle", "tmle", "ipw", "gcomp")
+.TMLDYN_METHODS <- c("cv-tmle", "tmle", "ipw", "gcomp")
 .EPS <- 1e-9
 
 .logit <- function(p) {
@@ -276,7 +276,7 @@ morie_tmle_dynamic_regime <- function(y, treatment_history,
                                       V0 = NULL, V1 = NULL, trim = 0.01,
                                       known_g = NULL, ridge = 1e-8,
                                       level = 0.95) {
-  if (!(method %in% .METHODS))
+  if (!(method %in% .TMLDYN_METHODS))
     stop("tmldyn: method must be one of cv-tmle/tmle/ipw/gcomp")
   yv <- as.numeric(y)
   n <- length(yv)
