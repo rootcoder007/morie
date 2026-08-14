@@ -54,11 +54,17 @@ specified by sources in hand and are implemented:
 ``logrankrandom``
     One random split point per candidate variable; the variable with
     the largest log-rank statistic at its random point wins.
+``logrankscore``
+    Hothorn and Lausen's standardised statistic on Lausen's log-rank
+    scores: the scores are computed once per node, the statistic for a
+    candidate cutpoint is the sum of scores on one side, standardised
+    by moments *conditional on those scores*, and the split maximises
+    its absolute value. Without censoring the scores reduce to Savage
+    scores and sum to zero.
 
-The remaining two -- ``conserve`` (daughters closest to the
-conservation-of-events principle) and ``logrankscore`` (Hothorn and
-Lausen's standardised statistic) -- are named here and refused, with
-the citation, rather than guessed at: the paper defines neither, and
+The remaining rule, ``conserve`` (daughters closest to the
+conservation-of-events principle), is named here and refused with the
+citation rather than guessed at: the paper does not define it and
 points to Ishwaran & Kogalur (2008) for the details. ``SPLIT_RULES``
 lists all four and ``rule_status`` says which are available and why.
 
@@ -88,6 +94,15 @@ Harrell, F., Califf, R., Pryor, D., Lee, K. & Rosati, R. (1982)
 doi:10.1001/jama.1982.03320430047030, for the concordance index the
 above recipe computes.
 
+Hothorn, T. & Lausen, B. (2003) "On the exact distribution of
+maximally selected rank statistics", *Computational Statistics & Data
+Analysis* 43(2), 121-137, doi:10.1016/S0167-9473(02)00225-6.
+Equations (1)-(4) for the linear rank statistic at a cutpoint, its
+conditional expectation and variance and the standardised form, and
+Sec. 5 equation (13) for Lausen's log-rank scores under right
+censoring, including the remark that without censoring or ties they
+are Savage scores and that the moments are conditional on the scores.
+
 Segal, M. R. (1988) "Regression Trees for Censored Data", *Biometrics*
 44(1), 35-47, doi:10.2307/2531894, and LeBlanc, M. & Crowley, J. (1993)
 "Survival Trees by Goodness of Split", *Journal of the American
@@ -100,25 +115,20 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["nelson_aalen", "logrank_statistic", "best_split",
+__all__ = ["nelson_aalen", "logrank_statistic",
+           "logrank_scores", "logrank_score_statistic",
+           "best_split",
            "grow_tree", "predict_tree", "forest", "ensemble_chf",
            "mortality", "c_index", "conservation_check", "vimp",
            "rule_status", "SPLIT_RULES"]
 
 SPLIT_RULES = ("logrank", "logrankrandom", "conserve", "logrankscore")
-_AVAILABLE = ("logrank", "logrankrandom")
+_AVAILABLE = ("logrank", "logrankrandom", "logrankscore")
 _UNSOURCED = {
     "conserve": "the conservation-of-events splitting rule is named "
                 "but not defined in Ishwaran et al. (2008); see "
                 "Ishwaran & Kogalur (2008), the randomSurvivalForest "
                 "technical manual",
-    "logrankscore": "the standardised log-rank score rule is "
-                    "attributed to Hothorn, T. & Lausen, B. (2003) "
-                    "'On the exact distribution of maximally selected "
-                    "rank statistics', Computational Statistics & "
-                    "Data Analysis 43(2), 121-137, "
-                    "doi:10.1016/S0167-9473(02)00225-6, which is not "
-                    "in the corpus",
 }
 
 
@@ -254,12 +264,75 @@ def logrank_statistic(times, events, group):
     return abs(num) / math.sqrt(var)
 
 
+def logrank_scores(times, events):
+    r"""Lausen's log-rank scores, Hothorn & Lausen (2003) eq. (13).
+
+    .. math:: a_i = \delta_i - \sum_{j:\ Z_j \le Z_i}
+              \frac{\delta_j}{N - \gamma_j(Z) + 1},
+              \qquad \gamma_j(Z) = \#\{i : Z_i \le Z_j\}.
+
+    Without censoring or ties these are the Savage scores, and they
+    sum to zero -- an exact identity the anchor uses.
+    """
+    N = len(times)
+    if N != len(events):
+        raise ValueError("survrsf: times and events must have the "
+                         "same length")
+    if N == 0:
+        raise ValueError("survrsf: no observations")
+    gamma = [sum(1 for t in times if t <= times[j]) for j in range(N)]
+    out = []
+    for i in range(N):
+        s = 0.0
+        for j in range(N):
+            if times[j] <= times[i] and events[j]:
+                s += 1.0 / (N - gamma[j] + 1)
+        out.append(float(int(events[i] != 0)) - s)
+    return out
+
+
+def logrank_score_statistic(times, events, group, scores=None):
+    r"""The standardised statistic of Hothorn & Lausen (2003) eqs.
+    (1)-(4).
+
+    :math:`T = \sum_{i \in \text{left}} a_i` with
+
+    .. math:: E(T\mid X) = \frac{m}{N}\sum_i a_i, \qquad
+              \mathrm{Var}(T\mid X) = \frac{m\,n}{N^2(N-1)}
+              \Big(N\sum_i a_i^2 - \big(\sum_i a_i\big)^2\Big),
+
+    and :math:`S = (T - E)/\sqrt{\mathrm{Var}}`, standard normal
+    under the null. Unlike the plain log-rank statistic, the moments
+    here are *conditional on the scores*, which is what makes the
+    split comparable across candidate cutpoints.
+    """
+    N = len(times)
+    a = logrank_scores(times, events) if scores is None else list(scores)
+    if not (N == len(group) == len(a)):
+        raise ValueError("survrsf: times, group and scores must have "
+                         "the same length")
+    m = sum(1 for g in group if not g)
+    n = N - m
+    if m == 0 or n == 0 or N < 2:
+        return 0.0
+    T = sum(a[i] for i in range(N) if not group[i])
+    sa = sum(a)
+    sa2 = sum(v * v for v in a)
+    ET = m * sa / float(N)
+    VT = (m * n / float(N * N * (N - 1))) * (N * sa2 - sa * sa)
+    if VT <= 0.0:
+        return 0.0
+    return abs(T - ET) / math.sqrt(VT)
+
+
 def best_split(X, times, events, features, min_deaths=3,
                rule="logrank", rng=None):
     r"""Search the candidate variables for the best split."""
     _check_rule(rule)
     n = len(times)
     best = None
+    scores = (logrank_scores(times, events)
+              if rule == "logrankscore" else None)
     for j in features:
         vals = sorted(set(X[i][j] for i in range(n)))
         if len(vals) < 2:
@@ -278,7 +351,11 @@ def best_split(X, times, events, features, min_deaths=3,
                     or sum(1 for i in right if events[i])
                     < min_deaths):
                 continue
-            stat = logrank_statistic(times, events, grp)
+            if rule == "logrankscore":
+                stat = logrank_score_statistic(times, events, grp,
+                                               scores)
+            else:
+                stat = logrank_statistic(times, events, grp)
             if best is None or stat > best["statistic"]:
                 best = {"variable": j, "cut": c, "statistic": stat,
                         "left": left, "right": right}
