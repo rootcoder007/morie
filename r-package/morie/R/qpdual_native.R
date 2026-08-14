@@ -98,7 +98,10 @@ morie_qpdual <- function(Q, c, x0 = NULL, domain = "simplex",
       dQd <- sum(d * (Qm %*% d))
       gamma <- if (dQd <= 0) 1.0 else min(1.0, max(0.0, gap / dQd))
     } else {
-      gamma <- 2.0 / (it + 2.0)
+      # it is 1-based here, so the Frank-Wolfe index is it-1 and
+      # the open-loop step is 2/((it-1)+2); using 2/(it+2) would
+      # skip gamma = 1 on the first step and shift the schedule
+      gamma <- 2.0 / (it + 1.0)
     }
     x <- x + gamma * d
     history <- c(history, obj(x))

@@ -151,7 +151,9 @@ def frank_wolfe_qp(Q, c, x0=None, domain="simplex", lower=None, upper=None,
         "x": x,
         "fun": float(obj(x)),
         "gap": float(gap),
-        "iterations": int(it),
+        # it is 0-based, so the number of iterations performed
+        # is it + 1
+        "iterations": int(it) + 1,
         "converged": bool(converged),
         "domain": dom,
         "step": st,
