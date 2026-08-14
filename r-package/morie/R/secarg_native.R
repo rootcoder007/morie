@@ -1,0 +1,375 @@
+# Argon2: make the attacker pay for memory, not just for time.
+# Sources: Biryukov, A., Dinu, D., Khovratovich, D. & Josefsson, S.
+# (2021) "Argon2 Memory-Hard Function for Password Hashing and
+# Proof-of-Work Applications", RFC 9106, doi:10.17487/RFC9106; the
+# design and trade-off analysis in Biryukov, Dinu & Khovratovich
+# (2016) "Argon2", EuroS&P 292-302, doi:10.1109/EuroSP.2016.31; and
+# the BLAKE2 hash in Saarinen & Aumasson (2015) RFC 7693.
+#
+# Native R arm mirroring the Python arm exactly: the same block
+# permutation P applied to the 16-word rows and to the indexed
+# columns, the same pre-hashing digest H_0 over every parameter so
+# changing the variant, the memory, the passes or the lanes changes
+# the tag, and the same data-independent addressing rule for
+# Argon2i and for the first half of the first pass of Argon2id.
+
+.MASK64 <- 0xffffffffffffffff
+.MASK32 <- 0xffffffff
+.BLOCK <- 1024
+.SL <- 4
+.TYPES <- c(argon2d = 0L, argon2i = 1L, argon2id = 2L)
+.VERSION <- 0x13
+
+# little-endian 32-bit pack of an integer (returns raw bytes)
+.le32 <- function(n) {
+  n <- as.integer(n)
+  v <- bitwAnd(n, 0xffffffff)
+  rawShift <- function(b, k) {
+    if (k == 0) b else c(rawShift(b[-length(b)], k - 1L), 0L)[seq_along(b)]
+  }
+  b0 <- bitwAnd(v, 0xff)
+  b1 <- bitwAnd(bitwShiftR(v, 8), 0xff)
+  b2 <- bitwAnd(bitwShiftR(v, 16), 0xff)
+  b3 <- bitwAnd(bitwShiftR(v, 24), 0xff)
+  as.raw(c(b0, b1, b2, b3))
+}
+
+.le64 <- function(n) {
+  n <- as.numeric(n)
+  v <- n %% .MASK64
+  v <- if (v < 0) v + .MASK64 else v
+  b <- integer(8)
+  for (k in 0:7) b[k + 1L] <- bitwAnd(bitwShiftR(v, 8L * k), 0xff)
+  as.raw(b)
+}
+
+#' @keywords internal
+.as_bytes <- function(x) {
+  if (is.raw(x)) return(x)
+  if (is.character(x)) return(charToRaw(paste(x, collapse = "")))
+  if (is.null(x)) return(raw(0))
+  stop("expected raw, character or NULL")
+}
+
+#' Argon2's variable-length hash H' (BLAKE2b stretched past 64 bytes)
+#'
+#' @param data Bytes.
+#' @param length Desired output length in bytes.
+#' @return Raw bytes of that length.
+#' @references RFC 9106 Sec. 3.3.
+#' @export
+variable_hash <- function(data, length) {
+  T <- as.integer(length)
+  if (T < 1L) stop("secarg: the output length must be positive")
+  a <- .as_bytes(data)
+  if (T <= 64L) return(blake2b(c(.le32(T), a), T))
+  r <- -(-T %/% 32L) - 2L
+  out <- raw(0)
+  v <- blake2b(c(.le32(T), a), 64L)
+  out <- c(out, v[1:32])
+  for (kk in seq_len(r - 1L)) {
+    v <- blake2b(v, 64L)
+    out <- c(out, v[1:32])
+  }
+  v <- blake2b(v, T - 32L * r)
+  out <- c(out, v)
+  out[seq_len(T)]
+}
+
+#' Pre-hashing digest H_0 over every parameter
+#'
+#' @return Raw 64-byte digest.
+#' @references RFC 9106 Sec. 3.1.
+#' @export
+prehash <- function(password, salt, parallelism, tag_length, memory,
+                    passes, variant = "argon2id", secret = raw(0),
+                    associated = raw(0), version = .VERSION) {
+  y <- unname(.TYPES[tolower(as.character(variant))])
+  if (is.na(y)) {
+    stop("secarg: variant must be one of ",
+         paste(names(.TYPES), collapse = ", "), ", got ",
+         deparse(variant))
+  }
+  P <- .as_bytes(password)
+  S <- .as_bytes(salt)
+  K <- .as_bytes(secret)
+  X <- .as_bytes(associated)
+  if (length(S) < 8L) {
+    stop("secarg: the salt must be at least 8 bytes ",
+         "(the RFC recommends 16), got ", length(S))
+  }
+  buf <- c(.le32(parallelism), .le32(tag_length), .le32(memory),
+           .le32(passes), .le32(version), .le32(y),
+           .le32(length(P)), P, .le32(length(S)), S,
+           .le32(length(K)), K, .le32(length(X)), X)
+  blake2b(buf, 64L)
+}
+
+# G function's 8-word permutation on a 16-word vector.
+.gb <- function(v, a, b, c, d) {
+  va <- v[a]; vb <- v[b]; vc <- v[c]; vd <- v[d]
+  # mult (low-32) * 2 * (high-32) emulated by bitwAnd + bitwShiftR pieces
+  va_l <- bitwAnd(va, .MASK32); va_h <- bitwShiftR(va, 32)
+  vb_l <- bitwAnd(vb, .MASK32); vb_h <- bitwShiftR(vb, 32)
+  vc_l <- bitwAnd(vc, .MASK32); vc_h <- bitwShiftR(vc, 32)
+  vd_l <- bitwAnd(vd, .MASK32); vd_h <- bitwShiftR(vd, 32)
+
+  # 64-bit product
+  mul6464 <- function(x, y) {
+    a_lo <- bitwAnd(x, .MASK32); a_hi <- bitwShiftR(x, 32)
+    b_lo <- bitwAnd(y, .MASK32); b_hi <- bitwShiftR(y, 32)
+    p1 <- bitwShiftL(a_lo * b_lo, 0)
+    p2 <- bitwShiftL(a_lo * b_hi, 32)
+    p3 <- bitwShiftL(a_hi * b_lo, 32)
+    p4 <- bitwShiftL(a_hi * b_hi, 64)
+    bitwAnd(p1 + p2 + p3 + p4, .MASK64)
+  }
+
+  # v[a] = v[a] + v[b] + 2*low32(v[a])*low32(v[b])  (mod 2^64)
+  v[a] <- bitwAnd(va + vb + 2L * va_l * vb_l, .MASK64)
+  # v[d] = ROR32(v[d] xor v[a])  ==  ((v[d]^v[a])>>32)|((v[d]^v[a])<<32) & M64
+  t <- bitwXor(v[d], v[a])
+  v[d] <- bitwAnd(bitwOr(bitwShiftR(t, 32),
+                         bitwAnd(bitwShiftL(t, 32), .MASK64)),
+                  .MASK64)
+  # v[c] = v[c] + v[d] + 2*low32(v[c])*low32(v[d])
+  vc <- v[c]; vd <- v[d]
+  v[c] <- bitwAnd(vc + vd + 2L * bitwAnd(vc, .MASK32) * bitwAnd(vd, .MASK32),
+                  .MASK64)
+  # v[b] = ROR24(v[b] xor v[c])
+  vb <- v[b]; vc <- v[c]
+  x <- bitwXor(vb, vc)
+  v[b] <- bitwAnd(bitwOr(bitwShiftR(x, 24),
+                         bitwAnd(bitwShiftL(x, 40), .MASK64)),
+                  .MASK64)
+  # v[a] = v[a] + v[b] + 2*low32(v[a])*low32(v[b])
+  va <- v[a]; vb <- v[b]
+  v[a] <- bitwAnd(va + vb + 2L * bitwAnd(va, .MASK32) * bitwAnd(vb, .MASK32),
+                  .MASK64)
+  # v[d] = ROR16(v[d] xor v[a])
+  vd <- v[d]; va <- v[a]
+  x <- bitwXor(vd, va)
+  v[d] <- bitwAnd(bitwOr(bitwShiftR(x, 16),
+                         bitwAnd(bitwShiftL(x, 48), .MASK64)),
+                  .MASK64)
+  # v[c] = v[c] + v[d] + 2*low32(v[c])*low32(v[d])
+  vc <- v[c]; vd <- v[d]
+  v[c] <- bitwAnd(vc + vd + 2L * bitwAnd(vc, .MASK32) * bitwAnd(vd, .MASK32),
+                  .MASK64)
+  # v[b] = ROR63(v[b] xor v[c])
+  vb <- v[b]; vc <- v[c]
+  x <- bitwXor(vb, vc)
+  v[b] <- bitwAnd(bitwOr(bitwShiftR(x, 63),
+                         bitwAnd(bitwShiftL(x, 1), .MASK64)),
+                  .MASK64)
+  v
+}
+
+.P_step <- function(v) {
+  v <- .gb(v, 1L, 5L, 9L, 13L)
+  v <- .gb(v, 2L, 6L, 10L, 14L)
+  v <- .gb(v, 3L, 7L, 11L, 15L)
+  v <- .gb(v, 4L, 8L, 12L, 16L)
+  v <- .gb(v, 1L, 6L, 11L, 16L)
+  v <- .gb(v, 2L, 7L, 12L, 13L)
+  v <- .gb(v, 3L, 8L, 9L, 14L)
+  v <- .gb(v, 4L, 5L, 10L, 15L)
+  v
+}
+
+#' Compression function G(X, Y) = R xor Q
+#' @export
+compress <- function(X, Y) {
+  R <- mapply(bitwXor, X, Y, SIMPLIFY = FALSE)
+  Q <- R
+  for (i in 0:7) {
+    row <- Q[(16L * i + 1L):(16L * i + 16L)]
+    row <- .P_step(row)
+    Q[(16L * i + 1L):(16L * i + 16L)] <- row
+  }
+  idx <- integer(16)
+  for (i in 0:7) {
+    idx[2L * i + 1L] <- 16L * i + 2L * 0L + 1L
+    idx[2L * i + 2L] <- 16L * i + 2L * 0L + 2L
+  }
+  # The Python actually builds idx with 2*j for j in 0..7 per row.
+  idx <- integer(16)
+  pos <- 1L
+  for (j in 0:7) for (i in 0:7) {
+    idx[pos] <- 16L * i + 2L * j + 1L; pos <- pos + 1L
+    idx[pos] <- 16L * i + 2L * j + 2L; pos <- pos + 1L
+  }
+  col <- Q[idx]
+  col <- .P_step(col)
+  Q[idx] <- col
+  mapply(bitwXor, Q, R, SIMPLIFY = FALSE)
+}
+
+.to_words <- function(bs) {
+  n <- length(bs) %/% 8L
+  out <- integer(n)
+  for (i in seq_len(n)) {
+    v <- 0L
+    chunk <- bs[(8L * (i - 1L) + 1L):(8L * i)]
+    for (k in 0:7) {
+      v <- v + as.integer(chunk[k + 1L]) * bitwShiftL(1L, 8L * k)
+    }
+    out[i] <- v
+  }
+  out
+}
+
+.to_bytes <- function(ws) {
+  do.call(c, lapply(ws, .le64))
+}
+
+.addresses <- function(pass_no, lane, slice_no, m_prime, passes, y,
+                       counter) {
+  zero <- as.list(rep(0L, 128L))
+  inp <- as.list(rep(0L, 128L))
+  inp[[1L]] <- pass_no
+  inp[[2L]] <- lane
+  inp[[3L]] <- slice_no
+  inp[[4L]] <- m_prime
+  inp[[5L]] <- passes
+  inp[[6L]] <- y
+  inp[[7L]] <- counter
+  compress(zero, compress(zero, inp))
+}
+
+#' Argon2 password hash (RFC 9106)
+#' @export
+argon2 <- function(password, salt, memory = 32, passes = 3,
+                   parallelism = 4, tag_length = 32,
+                   variant = "argon2id", secret = raw(0),
+                   associated = raw(0)) {
+  y <- unname(.TYPES[tolower(as.character(variant))])
+  if (is.na(y)) {
+    stop("secarg: variant must be one of ",
+         paste(names(.TYPES), collapse = ", "), ", got ",
+         deparse(variant))
+  }
+  p <- as.integer(parallelism)
+  t <- as.integer(passes)
+  m <- as.integer(memory)
+  if (p < 1L) stop("secarg: parallelism must be at least 1")
+  if (t < 1L) stop("secarg: at least one pass is required")
+  if (m < 8L * p) {
+    stop("secarg: memory must be at least 8*p = ", 8L * p,
+         " KiB, got ", m)
+  }
+  m_prime <- (m %/% (.SL * p)) * (.SL * p)
+  q <- m_prime %/% p
+  seg <- q %/% .SL
+  H0 <- prehash(password, salt, p, tag_length, m, t, variant,
+                secret, associated)
+  B <- replicate(p, replicate(q, NULL, simplify = FALSE),
+                 simplify = FALSE)
+  for (i in 0:(p - 1L)) {
+    B[[i + 1L]][[1L]] <- .to_words(variable_hash(
+      c(H0, .le32(0L), .le32(i)), .BLOCK))
+    B[[i + 1L]][[2L]] <- .to_words(variable_hash(
+      c(H0, .le32(1L), .le32(i)), .BLOCK))
+  }
+  for (r in 0:(t - 1L)) {
+    for (sl in 0:(.SL - 1L)) {
+      for (i in 0:(p - 1L)) {
+        data_indep <- (y == 1L) || (y == 2L && r == 0L && sl < 2L)
+        addr <- NULL; counter <- 0L
+        start <- 0L
+        if (r == 0L && sl == 0L) {
+          start <- 2L
+          if (data_indep) {
+            counter <- counter + 1L
+            addr <- .addresses(r, i, sl, m_prime, t, y, counter)
+          }
+        }
+        for (idx in start:(seg - 1L)) {
+          if (data_indep && idx %% 128L == 0L) {
+            counter <- counter + 1L
+            addr <- .addresses(r, i, sl, m_prime, t, y, counter)
+          }
+          j <- sl * seg + idx
+          prev <- if (j > 0L) B[[i + 1L]][[j + 1L]]
+                  else B[[i + 1L]][[q]]
+          pr <- if (data_indep) addr[[(idx %% 128L) + 1L]]
+                else prev[[1L]]
+          J1 <- bitwAnd(pr, .MASK32)
+          J2 <- bitwShiftR(pr, 32) # already masked by R's integer width
+          lane <- if (r == 0L && sl == 0L) i else (J2 %% p)
+          W <- if (r == 0L) {
+            if (sl == 0L || lane == i) j - 1L
+            else sl * seg - (1L - (idx == 0L) * 1L)
+          } else {
+            if (lane == i) q - seg + idx - 1L
+            else q - seg - (1L - (idx == 0L) * 1L)
+          }
+          if (W < 1L) W <- 1L
+          J1_num <- as.numeric(J1)
+          x <- (J1_num * J1_num) / 2^32
+          yy <- (W * x) / 2^32
+          zz <- W - 1L - as.integer(yy)
+          startpos <- if (r == 0L) 0L else ((sl + 1L) %% .SL) * seg
+          ref <- (startpos + zz) %% q
+          new <- compress(prev, B[[lane + 1L]][[ref + 1L]])
+          if (r == 0L) {
+            B[[i + 1L]][[j + 1L]] <- new
+          } else {
+            old <- B[[i + 1L]][[j + 1L]]
+            B[[i + 1L]][[j + 1L]] <- mapply(bitwXor, new, old,
+                                            SIMPLIFY = FALSE)
+          }
+        }
+      }
+    }
+  }
+  C <- B[[1L]][[q]]
+  for (i in 1:(p - 1L)) {
+    C <- mapply(bitwXor, C, B[[i + 1L]][[q]], SIMPLIFY = FALSE)
+  }
+  tag <- variable_hash(.to_bytes(C), as.integer(tag_length))
+  list(estimate = .hexlify(tag), tag = tag, tag_hex = .hexlify(tag),
+       variant = as.character(variant),
+       memory_kib = m, memory_used_kib = m_prime, passes = t,
+       parallelism = p, version = .VERSION,
+       data_independent_first_half = (y == 2L),
+       method = "Argon2 v1.3; Biryukov, Dinu, Khovratovich & Josefsson (2021) RFC 9106",
+       note = paste("a tag is only comparable against another ",
+                    "computed under the SAME parameters, which is ",
+                    "why they are returned with it"))
+}
+
+.hexlify <- function(bs) {
+  paste(format(as.hexmode(as.integer(bs)), width = 2,
+               upper.case = TRUE), collapse = "")
+}
+
+#' Recommended Argon2 configurations from RFC 9106 Sec. 4
+#' @export
+parameter_advice <- function(profile = "first") {
+  rec <- list(
+    first = list(variant = "argon2id", memory = 2L * 1024L * 1024L,
+                 passes = 1L, parallelism = 4L, tag_length = 32L,
+                 salt_bytes = 16L,
+                 note = paste("RFC 9106 Sec. 4 first recommended ",
+                              "option: 2 GiB, t = 1, p = 4")),
+    second = list(variant = "argon2id", memory = 64L * 1024L,
+                  passes = 3L, parallelism = 4L, tag_length = 32L,
+                  salt_bytes = 16L,
+                  note = paste("RFC 9106 Sec. 4 second option for ",
+                               "memory-constrained environments: 64 ",
+                               "MiB, t = 3, p = 4"))
+  )
+  if (!profile %in% names(rec)) {
+    stop("secarg: profile must be 'first' or 'second', got ",
+         deparse(profile))
+  }
+  out <- rec[[profile]]
+  out$memory_gib <- out$memory / (1024.0 * 1024.0)
+  out$warning <- paste("lowering memory in favour of more passes ",
+                       "weakens time-space trade-off resistance")
+  out
+}
+
+# house entry point: the package exports one morie_<module>
+morie_secarg <- argon2
