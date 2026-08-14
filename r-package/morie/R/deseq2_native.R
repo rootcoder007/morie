@@ -282,7 +282,7 @@ dispersion_trend <- function(mu_bar, disp, max_iter = 10L, tol = 1e-6) {
 #' @param p Numeric vector of raw p-values.
 #' @return Numeric vector of adjusted p-values.
 #' @export
-benjamini_hochberg <- function(p) {
+.deseq2_benjamini_hochberg <- function(p) {
   n <- length(p)
   order_idx <- order(p)
   adj <- numeric(n); prev <- 1
@@ -433,7 +433,7 @@ deseq2 <- function(counts, design, contrast = NULL, size = NULL,
   stat <- ifelse(se > 0, est / se, 0)
   pval <- 2 * (1 - vapply(stat, function(z)
     .ghc_deseq2_norm_cdf(abs(z)), numeric(1)))
-  padj <- benjamini_hochberg(pval)
+  padj <- .deseq2_benjamini_hochberg(pval)
   list(estimate = est, log_fold_change = est, lfc_mle = est_mle,
        lfc_se = se, lfc_se_mle = se_mle * scale_fac,
        stat = stat, pvalue = pval, padj = padj,
