@@ -139,3 +139,6 @@ def db_wavelet(y, level=None, wavelet="db2"):
 
 def cheatsheet():
     return "wvltdb: multi-level Daubechies wavelet decomposition (Daubechies 1992 Ch. 5)"
+
+# public names resolved by fn/_lazy_map.json
+dbwavelet = db_wavelet

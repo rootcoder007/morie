@@ -252,3 +252,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 catevariableimportance = cate_variable_importance
+
+# public names resolved by fn/_lazy_map.json
+causal_forest_selection = cate_variable_importance

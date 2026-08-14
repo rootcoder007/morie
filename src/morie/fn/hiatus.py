@@ -271,3 +271,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 twostrainhiatus = simulate
+
+# public names resolved by fn/_lazy_map.json
+hiatus_model = simulate
+hiatusmodel = simulate

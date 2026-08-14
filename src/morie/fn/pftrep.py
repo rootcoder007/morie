@@ -153,3 +153,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 replicatedpfilter = replicated_pfilter
+
+# public names resolved by fn/_lazy_map.json
+particle_filter_epi = replicated_pfilter

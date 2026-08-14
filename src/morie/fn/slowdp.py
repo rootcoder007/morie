@@ -209,3 +209,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 dp_truncation = truncated_dp
+
+# public names resolved by fn/_lazy_map.json
+slow_dp_truncate = truncated_dp
+slowdptruncate = truncated_dp

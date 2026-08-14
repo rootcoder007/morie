@@ -404,3 +404,6 @@ def cheatsheet():
             "from the normalised-Laplacian eigenvectors; then SGD on the "
             "fuzzy cross entropy with the paper's attractive and "
             "repulsive forces, a and b fitted to min_dist.")
+
+# public names resolved by fn/_lazy_map.json
+umapsinglecell = umap_singlecell

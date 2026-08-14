@@ -174,3 +174,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 graphcontrastive = grace_objective
+
+# public names resolved by fn/_lazy_map.json
+grace = grace_objective

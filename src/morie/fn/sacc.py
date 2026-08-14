@@ -155,3 +155,6 @@ sacc = soft_policy_iteration
 
 def cheatsheet():
     return "sacc(P, R, gamma, temp) -> exact soft policy iteration (Haarnoja et al 2018, Sec 4.1)."
+
+# public names resolved by fn/_lazy_map.json
+sac = soft_policy_iteration

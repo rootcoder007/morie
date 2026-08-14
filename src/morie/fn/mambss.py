@@ -268,3 +268,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 selectivessmstep = selective_ssm_step
+
+# public names resolved by fn/_lazy_map.json
+mamba_ssm_step = selective_ssm_step
+mambassmstep = selective_ssm_step

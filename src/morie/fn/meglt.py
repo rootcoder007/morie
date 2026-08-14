@@ -182,3 +182,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 matrixcompletion = svt
+
+# public names resolved by fn/_lazy_map.json
+matrix_completion_low_rank = svt

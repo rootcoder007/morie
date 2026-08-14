@@ -211,3 +211,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 indianbuffet = sample_ibp
+
+# public names resolved by fn/_lazy_map.json
+indian_buffet_factor = sample_ibp

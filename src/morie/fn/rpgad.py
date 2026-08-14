@@ -212,3 +212,6 @@ def cheatsheet():
 
 
 rpgad = rdp_to_eps_delta
+
+# public names resolved by fn/_lazy_map.json
+rdptoepsdelta = rdp_to_eps_delta

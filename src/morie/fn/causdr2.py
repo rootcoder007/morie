@@ -131,3 +131,6 @@ causal_orthogonal_score = causdr2
 
 def cheatsheet():
     return "causdr2(y, d, X, K, seed) -> DML2 partially linear theta with cross-fit OLS nuisances."
+
+# public names resolved by fn/_lazy_map.json
+causal_dr_orthogonal = causdr2

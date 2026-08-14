@@ -215,3 +215,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 maskrcnn = roi_align
+
+# public names resolved by fn/_lazy_map.json
+mask_rcnn_segmentation = roi_align

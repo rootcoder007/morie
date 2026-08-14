@@ -119,3 +119,7 @@ tau_leap_ssa = taulep
 
 def cheatsheet():
     return "taulep: K_j ~ Poisson(a_j(x) tau); x += sum K_j nu_j per leap"
+
+# public names resolved by fn/_lazy_map.json
+tau_leap_sim = taulep
+tauleapsim = taulep

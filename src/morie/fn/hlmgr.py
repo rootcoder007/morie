@@ -151,3 +151,7 @@ hlm_tau_matrix = hlmgr
 
 def cheatsheet():
     return "hlmgr: T = S - Vbar (PSD-clipped); Lambda = T(T+V)^-1; EB shrinkage"
+
+# public names resolved by fn/_lazy_map.json
+hlm_gamma_matrix = hlmgr
+hlmgammamatrix = hlmgr

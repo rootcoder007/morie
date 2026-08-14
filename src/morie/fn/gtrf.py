@@ -224,3 +224,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 graphtransformer = graph_transformer_layer
+
+# public names resolved by fn/_lazy_map.json
+graph_transformer = graph_transformer_layer

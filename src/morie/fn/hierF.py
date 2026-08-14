@@ -230,3 +230,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 mintreconcile = mint_reconcile
+
+# public names resolved by fn/_lazy_map.json
+hierarchical_forecast = mint_reconcile

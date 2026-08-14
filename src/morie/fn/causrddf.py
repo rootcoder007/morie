@@ -133,3 +133,6 @@ def cheatsheet():
     return ("causrddf: fuzzy RDD tau = (outcome jump)/(treatment jump), "
             "one-sided local linear fits, separate IK bandwidths; "
             "reduces to the sharp estimate when the first stage is sharp")
+
+# public names resolved by fn/_lazy_map.json
+causalrddfuzzy = rdd_fuzzy

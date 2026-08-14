@@ -141,3 +141,6 @@ variance_components = vcomp
 def cheatsheet():
     return ("vcomp: ANOVA or REML variance components + exact ICC F "
             "interval on balanced data (Searle Sec. 3.5)")
+
+# public names resolved by fn/_lazy_map.json
+variance_components_henderson3 = vcomp

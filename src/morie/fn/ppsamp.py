@@ -97,3 +97,6 @@ def pps_sampling(y, size, n):
 
 def cheatsheet():
     return "ppsamp: Probability proportional to size sampling"
+
+# public names resolved by fn/_lazy_map.json
+ppssampling = pps_sampling

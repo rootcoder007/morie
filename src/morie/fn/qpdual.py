@@ -168,3 +168,6 @@ def cheatsheet():
 
 
 qpdual = frank_wolfe_qp
+
+# public names resolved by fn/_lazy_map.json
+quadratic_program = frank_wolfe_qp

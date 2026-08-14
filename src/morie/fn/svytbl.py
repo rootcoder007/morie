@@ -112,3 +112,6 @@ def _lab(v):
 
 def cheatsheet():
     return "svytbl(x, y, weights): weighted table plus Rao-Scott corrected chi-square."
+
+# public names resolved by fn/_lazy_map.json
+surveyxtab = survey_xtab

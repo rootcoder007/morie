@@ -196,3 +196,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 anomalyscore = anomaly_score
+
+# public names resolved by fn/_lazy_map.json
+normalizing_flow_anomaly = anomaly_score

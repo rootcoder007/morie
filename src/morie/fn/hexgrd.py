@@ -119,3 +119,6 @@ hexagonal_grid = hexgrd
 
 def cheatsheet():
     return "hexgrd: Carr hbin hexagon binning; nearest of two offset lattices"
+
+# public names resolved by fn/_lazy_map.json
+hexagonalgrid = hexgrd

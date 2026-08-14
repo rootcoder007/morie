@@ -240,3 +240,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 forestfitcheck = forest_fit_check
+
+# public names resolved by fn/_lazy_map.json
+forest_fit_consistency = forest_fit_check

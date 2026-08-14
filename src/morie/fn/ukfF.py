@@ -181,3 +181,6 @@ unscented_kalman_filter = ukfF
 
 def cheatsheet():
     return "ukfF: 2n+1 sigma points, UT predict + Kalman gain update"
+
+# public names resolved by fn/_lazy_map.json
+unscented_kalman = ukfF

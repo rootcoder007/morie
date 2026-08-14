@@ -264,3 +264,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 rag_retrieval = top_k
+
+# public names resolved by fn/_lazy_map.json
+ragretrieval = top_k

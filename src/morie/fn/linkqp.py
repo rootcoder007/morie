@@ -107,3 +107,6 @@ irt_linking_stocking_lord = linkqp
 
 def cheatsheet():
     return "linkqp: min sum [TCC_to - TCC_from*(A,B)]^2 (Stocking-Lord)"
+
+# public names resolved by fn/_lazy_map.json
+linking_stocking_lord = linkqp

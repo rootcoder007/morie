@@ -223,3 +223,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 ssept = predict_next
+
+# public names resolved by fn/_lazy_map.json
+ssepta_seq = predict_next
+sseptaseq = predict_next

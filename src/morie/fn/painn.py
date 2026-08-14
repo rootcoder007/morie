@@ -207,3 +207,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 painnnet = gated_update
+
+# public names resolved by fn/_lazy_map.json
+painn = gated_update

@@ -90,3 +90,6 @@ link_prediction = linkpr
 
 def cheatsheet():
     return "linkpr: CN / Adamic-Adar / resource-allocation link prediction scores"
+
+# public names resolved by fn/_lazy_map.json
+linkprediction = linkpr

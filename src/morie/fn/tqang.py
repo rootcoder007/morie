@@ -105,3 +105,6 @@ def cheatsheet():
 
 
 tqang = quantize_angles
+
+# public names resolved by fn/_lazy_map.json
+turboquant_angle_quantization = quantize_angles

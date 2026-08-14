@@ -249,3 +249,6 @@ def cheatsheet():
             "have the opposite sign to every cell effect. DID_M compares "
             "switchers to stayers between consecutive periods and is "
             "unbiased under common trends whatever the heterogeneity.")
+
+# public names resolved by fn/_lazy_map.json
+causal_did_de_chaisemartin = twfe_weights

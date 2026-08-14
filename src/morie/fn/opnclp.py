@@ -211,3 +211,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 openclipscaling = fit_power_law
+
+# public names resolved by fn/_lazy_map.json
+open_clip = fit_power_law
+openclip = fit_power_law

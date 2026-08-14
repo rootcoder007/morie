@@ -376,3 +376,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 argon2id = argon2
+
+# public names resolved by fn/_lazy_map.json
+argon2id_kdf = argon2
+argon2idkdf = argon2

@@ -193,3 +193,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 nbeatsforecast = nbeats_forecast
+
+# public names resolved by fn/_lazy_map.json
+n_beats = nbeats_forecast
+nbeats = nbeats_forecast

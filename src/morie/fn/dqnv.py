@@ -197,3 +197,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 deepqnetwork = q_learning
+
+# public names resolved by fn/_lazy_map.json
+deep_q_network = q_learning

@@ -222,3 +222,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 anogan = invert_to_latent
+
+# public names resolved by fn/_lazy_map.json
+gan_anomaly = invert_to_latent
+gananomaly = invert_to_latent

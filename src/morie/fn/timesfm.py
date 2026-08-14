@@ -191,3 +191,6 @@ def cheatsheet():
 # compact alias per ledger/NAMING.md -- timesf and timesfm are the
 # same ledger entry duplicated
 timesfmforecast = rollout
+
+# public names resolved by fn/_lazy_map.json
+timesfm = rollout

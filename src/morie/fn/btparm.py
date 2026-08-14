@@ -114,3 +114,6 @@ def boot_parametric(theta_hat, rvs_fn=None, stat=None, B=200, n=None, seed=1, al
 
 def cheatsheet():
     return "btparm: simulate from F(.|theta_hat); efficient if the family is right, confidently wrong if not"
+
+# public names resolved by fn/_lazy_map.json
+bootparametric = normal_rvs

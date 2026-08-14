@@ -117,3 +117,6 @@ anova_variance_components = ranova
 def cheatsheet():
     return ("ranova: sigma2_e = MSE; sigma2_a = (MSA - MSE)/n0, "
             "n0 = (N - sum n_i^2/N)/(a-1)")
+
+# public names resolved by fn/_lazy_map.json
+random_effects_anova_decomp = ranova

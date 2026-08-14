@@ -290,3 +290,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 prophetfit = prophet_fit
+
+# public names resolved by fn/_lazy_map.json
+prophet = prophet_fit

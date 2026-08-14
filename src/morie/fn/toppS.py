@@ -49,3 +49,6 @@ def top_p_sampling(logits, p, temp):
 
 def cheatsheet():
     return "toppS: alias of toppd.top_p_nucleus (nucleus sampling)."
+
+# public names resolved by fn/_lazy_map.json
+toppsampling = top_p_sampling

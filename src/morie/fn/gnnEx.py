@@ -199,3 +199,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 gnnexplainer = explain_node
+
+# public names resolved by fn/_lazy_map.json
+gnn_explainer = explain_node

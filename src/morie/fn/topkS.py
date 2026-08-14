@@ -80,3 +80,6 @@ def top_k_sampling(logits, k, temp):
 
 def cheatsheet():
     return "topkS(logits, k, temp): top-k truncated softmax."
+
+# public names resolved by fn/_lazy_map.json
+topksampling = top_k_sampling

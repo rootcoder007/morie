@@ -125,3 +125,6 @@ def boot_smoothed(x, stat=None, h=None, B=200, seed=1, alpha=0.05):
 
 def cheatsheet():
     return "btsmth: x* = x_I + h*eps; for the mean this only ADDS h^2/n to the variance"
+
+# public names resolved by fn/_lazy_map.json
+bootsmoothed = boot_smoothed

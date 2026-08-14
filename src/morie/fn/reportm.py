@@ -90,3 +90,6 @@ reportm = report_noisy_max
 
 def cheatsheet():
     return "reportm: Report Noisy Max index selection (Dwork-Roth 2014, Claim 3.9)."
+
+# public names resolved by fn/_lazy_map.json
+reportnoisymax = report_noisy_max

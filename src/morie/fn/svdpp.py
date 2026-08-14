@@ -212,3 +212,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 svd_plus_plus = fit_svdpp
+
+# public names resolved by fn/_lazy_map.json
+svdpp = fit_svdpp

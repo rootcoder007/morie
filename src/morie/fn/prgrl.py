@@ -371,3 +371,7 @@ def cheatsheet():
             "compares HELD-OUT error under a fixed update budget, "
             "which is Section 4.2's experiment; easy_only_fit is "
             "Section 4.1's.")
+
+# public names resolved by fn/_lazy_map.json
+prog_rl = entropy
+progrl = entropy

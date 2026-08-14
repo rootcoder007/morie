@@ -40,3 +40,6 @@ flash_attention = flsh2
 
 def cheatsheet():
     return "flsh2: FlashAttention (Dao et al. 2022, arXiv:2205.14135) -- alias of hmfa.geron_flash_attention"
+
+# public names resolved by fn/_lazy_map.json
+flashattention = flsh2

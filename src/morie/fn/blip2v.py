@@ -209,3 +209,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 blip2 = qformer_attend
+
+# public names resolved by fn/_lazy_map.json
+blip2_qformer = qformer_attend
+blip2qformer = qformer_attend

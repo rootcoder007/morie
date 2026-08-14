@@ -327,3 +327,7 @@ def cheatsheet():
             "averaging (eq.6) to hit an average acceptance of delta, "
             "during warmup only. sampler='hmc' gives the fixed-length "
             "Algorithm 1 baseline.")
+
+# public names resolved by fn/_lazy_map.json
+hmc_dual_avg = bayhmc
+hmcdualavg = bayhmc

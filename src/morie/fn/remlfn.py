@@ -247,3 +247,7 @@ reml_variance_components = remlfn
 def cheatsheet():
     return ("remlfn: REML for the one-way random model; balanced data "
             "REML solutions = ANOVA estimators (Searle Sec. 4.8)")
+
+# public names resolved by fn/_lazy_map.json
+reml_loglik = remlfn
+remlloglik = remlfn

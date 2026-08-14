@@ -196,3 +196,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 kernelmomentbound = ks_confidence_set
+
+# public names resolved by fn/_lazy_map.json
+bound_kernel_moment = ks_confidence_set

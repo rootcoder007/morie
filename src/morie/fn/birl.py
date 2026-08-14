@@ -336,3 +336,6 @@ def cheatsheet():
             "proposal makes some action beat pi(s). By Theorem 3 the "
             "answer to report is the optimal policy for the posterior "
             "MEAN reward.")
+
+# public names resolved by fn/_lazy_map.json
+bayesianirl = birl

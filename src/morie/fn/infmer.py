@@ -40,3 +40,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 informerforecast = probsparse_attention
+
+# public names resolved by fn/_lazy_map.json
+informer = probsparse_attention

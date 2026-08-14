@@ -225,3 +225,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 hash_chained_log = verify_chain
+
+# public names resolved by fn/_lazy_map.json
+hash_chain_audit = verify_chain
+hashchainaudit = verify_chain

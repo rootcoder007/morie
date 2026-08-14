@@ -199,3 +199,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 structuraldeepnetwork = sdne_loss
+
+# public names resolved by fn/_lazy_map.json
+sdne = sdne_loss

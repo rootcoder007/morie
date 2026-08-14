@@ -78,3 +78,7 @@ manski_bound = bdtrns
 
 def cheatsheet():
     return "bdtrns: [m p + g0 (1-p), m p + g1 (1-p)]; width = (g1-g0)(1-p)"
+
+# public names resolved by fn/_lazy_map.json
+bound_transport = bdtrns
+boundtransport = bdtrns

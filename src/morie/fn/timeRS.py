@@ -202,3 +202,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 timesvdpp = fit_time_bias
+
+# public names resolved by fn/_lazy_map.json
+timesvd = fit_time_bias

@@ -188,3 +188,7 @@ def cheatsheet():
 
 
 primal = chambolle_pock
+
+# public names resolved by fn/_lazy_map.json
+primal_dual = chambolle_pock
+primaldual = chambolle_pock

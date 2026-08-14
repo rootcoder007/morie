@@ -203,3 +203,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 equivariantgnn = run_egnn
+
+# public names resolved by fn/_lazy_map.json
+egnn_layer = run_egnn
+egnnlayer = run_egnn

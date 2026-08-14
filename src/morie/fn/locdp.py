@@ -34,3 +34,6 @@ local_dp = randomized_response
 
 def cheatsheet():
     return "locdp: local DP randomized response (alias of rrand.randomized_response)."
+
+# public names resolved by fn/_lazy_map.json
+localdp = randomized_response

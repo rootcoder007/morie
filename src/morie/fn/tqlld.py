@@ -230,3 +230,6 @@ def cheatsheet():
 
 
 tqlld = lloyd_max_codebook
+
+# public names resolved by fn/_lazy_map.json
+turboquant_lloyd_max_codebook = lloyd_max_codebook

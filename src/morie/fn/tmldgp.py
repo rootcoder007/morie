@@ -248,3 +248,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 penalisedtmle = penalised_tmle
+
+# public names resolved by fn/_lazy_map.json
+tmle_doubly_robust_pen = penalised_tmle

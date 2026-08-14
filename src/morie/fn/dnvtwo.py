@@ -245,3 +245,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 dinov2 = self_distillation_loss
+
+# public names resolved by fn/_lazy_map.json
+dinov2_repr = self_distillation_loss

@@ -262,3 +262,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 adjustedpaf = population_attributable_risk
+
+# public names resolved by fn/_lazy_map.json
+adjusted_paf = population_attributable_risk

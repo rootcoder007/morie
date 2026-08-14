@@ -127,3 +127,6 @@ def cheatsheet():
 
 
 tqpack = pack_indices
+
+# public names resolved by fn/_lazy_map.json
+turboquant_bit_pack_indices = pack_indices

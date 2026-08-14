@@ -124,3 +124,6 @@ def raking_ratio(y, weights, margins, tol=1e-12, max_iter=200):
 
 def cheatsheet():
     return "raklng: Raking ratio post-stratification"
+
+# public names resolved by fn/_lazy_map.json
+rakingratio = raking_ratio

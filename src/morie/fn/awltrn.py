@@ -304,3 +304,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 augmentedowl = fit_aol
+
+# public names resolved by fn/_lazy_map.json
+augmented_owl = fit_aol

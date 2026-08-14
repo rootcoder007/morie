@@ -205,3 +205,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 normalizingflow = flow_log_density
+
+# public names resolved by fn/_lazy_map.json
+variational_nf = flow_log_density
+variationalnf = flow_log_density

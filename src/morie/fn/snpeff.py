@@ -218,3 +218,7 @@ def cheatsheet():
             "downstream, intergenic. Impact HIGH for the four that "
             "break the protein, MODERATE for missense and inframe "
             "indels, LOW for synonymous, MODIFIER for the rest.")
+
+# public names resolved by fn/_lazy_map.json
+variant_effect = codon_table
+varianteffect = codon_table

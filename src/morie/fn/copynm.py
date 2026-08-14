@@ -310,3 +310,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 circular_binary_segmentation = copynm
+
+# public names resolved by fn/_lazy_map.json
+copy_number_variant = copynm

@@ -92,3 +92,6 @@ def fuzzy_rdd(y, x, D, cutoff=0.0, bandwidth=1.0):
 
 def cheatsheet():
     return "rdfzzy: Fuzzy RDD (incomplete compliance at the cutoff)"
+
+# public names resolved by fn/_lazy_map.json
+fuzzyrdd = fuzzy_rdd

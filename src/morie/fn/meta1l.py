@@ -152,3 +152,6 @@ metalearner_ensemble = meta1l
 
 def cheatsheet():
     return "meta1l(y, w, X, ps) -> S/T/X/R metalearner CATEs with OLS base learners."
+
+# public names resolved by fn/_lazy_map.json
+meta_learner_ensemble = meta1l

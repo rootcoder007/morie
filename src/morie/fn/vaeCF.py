@@ -237,3 +237,6 @@ def vae_cf(R, K=5, latent_dim=2, beta=0.2, n_samples=16, relevance=None,
 
 def cheatsheet():
     return "vaeCF: multinomial VAE for collaborative filtering (Liang et al. 2018)"
+
+# public names resolved by fn/_lazy_map.json
+vaecf = vae_cf

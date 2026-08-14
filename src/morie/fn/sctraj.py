@@ -588,3 +588,6 @@ def cheatsheet():
             "leaves, then shrink from the root outward with a cosine "
             "kernel weight that is 1 at the origin and 0 past the last "
             "shared cell. Pseudotime is arc length along the curve.")
+
+# public names resolved by fn/_lazy_map.json
+scrnaseq_trajectory = sctraj

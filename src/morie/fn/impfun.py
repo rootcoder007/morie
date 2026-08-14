@@ -205,3 +205,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 impute2 = copying_model
+
+# public names resolved by fn/_lazy_map.json
+genotype_imputation = copying_model

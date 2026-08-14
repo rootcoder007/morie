@@ -114,3 +114,6 @@ ucbb = ucb_bandit
 
 def cheatsheet():
     return "ucbb(x) -> deterministic UCB1 play sequence on a (T, K) reward table (Auer et al 2002, fig 1)."
+
+# public names resolved by fn/_lazy_map.json
+ucbbandit = ucb_bandit

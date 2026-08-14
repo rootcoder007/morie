@@ -204,3 +204,6 @@ shesd = ttsAn
 
 def cheatsheet():
     return "ttsAn(x, period) -> S-H-ESD anomalies via STL seasonal removal + robust generalised ESD"
+
+# public names resolved by fn/_lazy_map.json
+twitteranomaly = ttsAn

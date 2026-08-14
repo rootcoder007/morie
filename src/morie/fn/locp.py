@@ -150,3 +150,6 @@ local_polynomial_smoother = locp
 
 def cheatsheet():
     return "locp: per-x0 kernel-WLS on centered polynomial; f_hat = alpha_hat"
+
+# public names resolved by fn/_lazy_map.json
+local_polynomial = locp

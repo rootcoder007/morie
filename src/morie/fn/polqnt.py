@@ -150,3 +150,6 @@ polqnt = polarquant
 
 def cheatsheet():
     return "polqnt: PolarQuant polar-transformation quantization (Han et al. 2025)."
+
+# public names resolved by fn/_lazy_map.json
+polar_quantization = polarquant

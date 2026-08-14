@@ -108,3 +108,6 @@ causal_transport_weights = caustrnsp
 
 def cheatsheet():
     return "caustrnsp(y, z, s, mode) -> trial effect generalized/transported to a target population."
+
+# public names resolved by fn/_lazy_map.json
+causal_transportability_weights = caustrnsp

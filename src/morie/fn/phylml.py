@@ -274,3 +274,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 maximum_likelihood_phylogeny = phylml
+
+# public names resolved by fn/_lazy_map.json
+phylogenetic_ml = phylml
+phylogeneticml = phylml

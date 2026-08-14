@@ -162,3 +162,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 neuralattentiverec = bilinear_scores
+
+# public names resolved by fn/_lazy_map.json
+narm = bilinear_scores

@@ -135,3 +135,6 @@ def set_transformer(X=None, k=None, S=None, params=None):
 
 def cheatsheet():
     return "setT: Set Transformer PMA pooling (Lee et al. 2019, arXiv:1810.00825, Eq 7 + Sec 3.2)"
+
+# public names resolved by fn/_lazy_map.json
+settransformer = setT

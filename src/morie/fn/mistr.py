@@ -286,3 +286,6 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 mistralblock = mistral_block
+
+# public names resolved by fn/_lazy_map.json
+mistral = mistral_block
