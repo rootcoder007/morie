@@ -61,12 +61,21 @@ specified by sources in hand and are implemented:
     by moments *conditional on those scores*, and the split maximises
     its absolute value. Without censoring the scores reduce to Savage
     scores and sum to zero.
+``conserve``
+    Conservation of events, defined in the companion *R News* article
+    rather than in the AOAS paper. Lemma 1 fixes the *final* partial
+    sum :math:`M_{n_j,j}` at zero in every node, so it carries no
+    information; what discriminates is how the partial sums behave
+    *before* the end. Summing :math:`|M_{k,j}|` over
+    :math:`k < n_j`, weighting each daughter by its size at risk and
+    taking :math:`1/(1+\mathrm{Conserve})` turns "conservation
+    arrives evenly" into a quantity the tree maximises like any other
+    split statistic. The paper offers it because log-rank splitting
+    favours continuous predictors and uneven cuts.
 
-The remaining rule, ``conserve`` (daughters closest to the
-conservation-of-events principle), is named here and refused with the
-citation rather than guessed at: the paper does not define it and
-points to Ishwaran & Kogalur (2008) for the details. ``SPLIT_RULES``
-lists all four and ``rule_status`` says which are available and why.
+All four rules of the paper are implemented. Note the companion
+article also lists a fifth, ``logrankapprox``, a fast approximation to
+log-rank splitting; it is not implemented here.
 
 **Variable importance** follows Sec. 7: drop the out-of-bag cases down
 their in-bag tree and, whenever a split on :math:`x` is met, send the
@@ -103,6 +112,19 @@ Sec. 5 equation (13) for Lausen's log-rank scores under right
 censoring, including the remark that without censoring or ties they
 are Savage scores and that the moments are conditional on the scores.
 
+Ishwaran, H. & Kogalur, U. B. (2007) "Random Survival Forests for R",
+*R News* 7(2), 25-31. The section "Conservation of events splitting"
+supplies what the AOAS paper omits: the residuals
+:math:`M_{k,j} = \sum_{l\le k}\hat H_j(T_{(l),j}) -
+\sum_{l\le k}\delta_{(l),j}`, the weighted sum
+:math:`\mathrm{Conserve}(x,c)`, the observation that
+:math:`M_{n_j,j} = 0` while nothing constrains earlier :math:`k`, and
+the transform :math:`1/(1+\mathrm{Conserve})` used as the measure of
+node separation.
+
+Naftel, D. C., Blackstone, E. H. & Turner, M. E. (1985) *Conservation
+of Events*, unpublished notes, for the principle itself.
+
 Segal, M. R. (1988) "Regression Trees for Censored Data", *Biometrics*
 44(1), 35-47, doi:10.2307/2531894, and LeBlanc, M. & Crowley, J. (1993)
 "Survival Trees by Goodness of Split", *Journal of the American
@@ -116,6 +138,7 @@ from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["nelson_aalen", "logrank_statistic",
+           "conservation_residuals", "conserve_statistic",
            "logrank_scores", "logrank_score_statistic",
            "best_split",
            "grow_tree", "predict_tree", "forest", "ensemble_chf",
@@ -123,13 +146,9 @@ __all__ = ["nelson_aalen", "logrank_statistic",
            "rule_status", "SPLIT_RULES"]
 
 SPLIT_RULES = ("logrank", "logrankrandom", "conserve", "logrankscore")
-_AVAILABLE = ("logrank", "logrankrandom", "logrankscore")
-_UNSOURCED = {
-    "conserve": "the conservation-of-events splitting rule is named "
-                "but not defined in Ishwaran et al. (2008); see "
-                "Ishwaran & Kogalur (2008), the randomSurvivalForest "
-                "technical manual",
-}
+_AVAILABLE = ("logrank", "logrankrandom", "logrankscore",
+              "conserve")
+_UNSOURCED = {}
 
 
 def rule_status(rule=None):
@@ -325,6 +344,65 @@ def logrank_score_statistic(times, events, group, scores=None):
     return abs(T - ET) / math.sqrt(VT)
 
 
+def conservation_residuals(times, events):
+    r"""The partial sums :math:`M_{k}` of Ishwaran & Kogalur (2007).
+
+    .. math:: M_{k} = \sum_{l \le k} \hat H(T_{(l)})
+              - \sum_{l \le k} \delta_{(l)}, \qquad k = 1,\dots,n,
+
+    over the *ordered* times of a node. Lemma 1 forces
+    :math:`M_{n} = 0` -- conservation holds at the end -- but nothing
+    constrains the partial sums, so their size measures how evenly
+    conservation is distributed across the node's deaths.
+    """
+    n = len(times)
+    if n != len(events):
+        raise ValueError("survrsf: times and events must have the "
+                         "same length")
+    if n == 0:
+        return []
+    na = nelson_aalen(times, events)
+    order = sorted(range(n), key=lambda i: times[i])
+    out, h_sum, d_sum = [], 0.0, 0.0
+    for i in order:
+        h_sum += _chf_at(na, times[i])
+        d_sum += 1.0 if events[i] else 0.0
+        out.append(h_sum - d_sum)
+    return out
+
+
+def conserve_statistic(times, events, group):
+    r"""Conservation-of-events splitting, Ishwaran & Kogalur (2007).
+
+    .. math:: \mathrm{Conserve}(x, c) = \frac{1}{Y_{1,1} + Y_{1,2}}
+              \sum_{j=1}^{2} Y_{1,j} \sum_{k=1}^{n_j - 1}
+              \big| M_{k,j} \big| ,
+
+    with :math:`Y_{1,j}` the number at risk at the first time in
+    daughter :math:`j`. Small means the daughters are well separated,
+    so the node-separation measure returned here is the paper's
+    transform :math:`1/(1 + \mathrm{Conserve})`, which is what the
+    tree maximises alongside every other rule.
+    """
+    n = len(times)
+    if not (n == len(events) == len(group)):
+        raise ValueError("survrsf: times, events and group must have "
+                         "the same length")
+    total = 0.0
+    weight = 0.0
+    for g in (0, 1):
+        idx = [i for i in range(n) if int(bool(group[i])) == g]
+        if not idx:
+            return 0.0
+        m = conservation_residuals([times[i] for i in idx],
+                                   [events[i] for i in idx])
+        y1 = float(len(idx))
+        total += y1 * sum(abs(v) for v in m[:-1])
+        weight += y1
+    conserve = total / weight if weight > 0.0 else 0.0
+    return 1.0 / (1.0 + conserve)
+
+
 def best_split(X, times, events, features, min_deaths=3,
                rule="logrank", rng=None):
     r"""Search the candidate variables for the best split."""
@@ -354,6 +432,8 @@ def best_split(X, times, events, features, min_deaths=3,
             if rule == "logrankscore":
                 stat = logrank_score_statistic(times, events, grp,
                                                scores)
+            elif rule == "conserve":
+                stat = conserve_statistic(times, events, grp)
             else:
                 stat = logrank_statistic(times, events, grp)
             if best is None or stat > best["statistic"]:
