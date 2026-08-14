@@ -37,7 +37,7 @@ morie_opnclp <- function(payload) {
     return(infonce(payload$image_embeddings, payload$text_embeddings, t))
   }
   if (op == "cheatsheet") {
-    return(cheatsheet())
+    return(.opnclp_cheatsheet())
   }
   stop("opnclp: unknown op")
 }
@@ -177,7 +177,7 @@ infonce <- function(image_embeddings, text_embeddings, temperature = 0.07) {
        note = paste("symmetric, so neither modality is the anchor"))
 }
 
-cheatsheet <- function() {
+.opnclp_cheatsheet <- function() {
   paste("opnclp: CLIP-scale laws had been measured on PRIVATE data and",
         "models; re-run on public LAION with an open implementation,",
         "up to 2B pairs, and the scaling is a POWER LAW across",

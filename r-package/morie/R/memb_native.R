@@ -277,7 +277,7 @@ memb <- function(target_predict, shadow_data, eval_in, eval_out,
        method = "shadow-trained membership inference (Shokri et al. 2017)")
 }
 
-cheatsheet <- function() {
+.memb_cheatsheet <- function() {
   "memb: membership inference (Shokri et al. 2017). Black-box output vector in, member/non-member out. Train k SHADOW models on data distributed like the target's, where you DO know membership; their outputs on their own training data are labelled 'in' and on a disjoint test set 'out'; that labelled set trains the attack model -- one per output class, since the tell is class-conditional. Shadow data from Algorithm 1 synthesis against the target, from feature marginals, or from noisy real data. Metrics are precision and recall over members. The attack lives on the train/test gap: no overfitting, no attack."
 }
 

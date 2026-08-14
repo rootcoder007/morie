@@ -233,7 +233,7 @@ effective_reproduction_number <- function(R0, si_mean, si_sd, delay_mean,
                     "measured from that point"))
 }
 
-cheatsheet <- function() {
+.ttrace_cheatsheet <- function() {
   paste0("ttrace: branching process. Offspring ~ NegBinom(mean R0, ",
          "dispersion k), variance R0(1 + R0/k) -- overdispersion ",
          "matters because small k means most chains die alone. A ",

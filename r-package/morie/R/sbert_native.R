@@ -145,7 +145,7 @@ morie_sbert <- function(pairs, embed) {
 sbert <- sts_score
 sentencebert <- sts_score
 
-cheatsheet <- function() {
+.sbert_cheatsheet <- function() {
   paste("sbert: BERT scores a PAIR, so comparing n sentences needs",
         "C(n,2) forward passes -- 10k sentences is ~50M. A SIAMESE",
         "network embeds each sentence ONCE with shared weights, so",

@@ -204,7 +204,7 @@ causscd <- morie_causscd
 
 causal_synthetic_did <- unit_weights
 
-cheatsheet <- function() {
+.causscd_cheatsheet <- function() {
   paste("causscd: synthetic DID (Arkhangelsky et al. 2021). Same",
         "weighted two-way regression as DID, but with unit weights",
         "fitted over the simplex WITH a free intercept (so the",

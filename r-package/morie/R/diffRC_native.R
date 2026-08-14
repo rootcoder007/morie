@@ -169,7 +169,7 @@ denoise <- function(x_t, model, schedule, t_start = NULL) {
 }
 
 #' @export
-cheatsheet <- function() {
+.diffRC_cheatsheet <- function() {
   paste("diffRC: GAN recommenders are unstable and VAE ones trade",
         "representation for tractability, so use diffusion -- but",
         "NOT the image schedule. Image diffusion destroys x_0",
