@@ -79,7 +79,7 @@
   build(struct, 0L)
 }
 
-grow_forest <- function(X, y, W = NULL, kind = "double-sample",
+.orfgrf_grow_forest <- function(X, y, W = NULL, kind = "double-sample",
                         n_trees = 100, min_leaf = 5, alpha = 0.05,
                         max_depth = 12, seed = 0) {
   n <- length(y)
@@ -112,7 +112,7 @@ grow_forest <- function(X, y, W = NULL, kind = "double-sample",
 # Forest kernel weights alpha_i(x) for a single evaluation point.
 # Each unit that lands in the same leaf as x in tree t contributes
 # 1 / (#units from tree t's leaf-sample in that leaf).
-forest_weights <- function(trees, X, x) {
+.orfgrf_forest_weights <- function(trees, X, x) {
   n <- nrow(X)
   w <- rep(0, n)
   for (t in trees$trees) {
@@ -194,7 +194,7 @@ orf_estimate <- function(Y, T, X, W, x, trees,
     stop("orfgrf: residualize must be local or global, got ",
          residualize)
   n <- length(Y)
-  w <- forest_weights(trees, X, x)
+  w <- .orfgrf_forest_weights(trees, X, x)
   if (identical(residualize, "global")) {
     flat <- rep(1 / n, n)
     qh <- local_nuisance(Y, W, flat, ridge = ridge)$fit
@@ -236,7 +236,7 @@ orthogonal_random_forest <- function(Y, T, X, W, x_eval = NULL,
   if (nrow(Xm) != n || nrow(Wm) != n)
     stop("orfgrf: feature/control rows must equal n")
   if (n < 8L) stop("orfgrf: need at least 8 observations, got ", n)
-  trees <- grow_forest(Xm, y, W = t, kind = kind,
+  trees <- .orfgrf_grow_forest(Xm, y, W = t, kind = kind,
                        n_trees = as.integer(n_trees),
                        min_leaf = as.integer(min_leaf),
                        alpha = as.numeric(alpha),
