@@ -123,7 +123,7 @@ morie_sammkr <- function(masks, predicted_iou, target = NULL) {
 sam_multi_mask_rank <- rank_masks
 sammultimask <- rank_masks
 
-cheatsheet <- function() {
+.sammkr_cheatsheet <- function() {
   paste("sammkr: one output forces the model to AVERAGE the valid",
         "masks of an ambiguous prompt -- a blur that answers nobody.",
         "So predict THREE, because segmentation nesting is usually at",

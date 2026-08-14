@@ -46,7 +46,7 @@ morie_nrfrad <- function(payload) {
                                        tol))
   }
   if (op == "cheatsheet") {
-    return(cheatsheet())
+    return(.nrfrad_cheatsheet())
   }
   stop("nrfrad: unknown op")
 }
@@ -200,7 +200,7 @@ density_is_view_independent <- function(model, point, directions, tol = 1e-9) {
                     "for colour"))
 }
 
-cheatsheet <- function() {
+.nrfrad_cheatsheet <- function() {
   paste("nrfrad: a scene IS a continuous 5D function -- position plus",
         "viewing direction to density and radiance -- stored in a plain",
         "MLP; the weights are the scene. DENSITY must come from position",

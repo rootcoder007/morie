@@ -256,7 +256,7 @@ lyapunov_exponent <- function(y, embedding = NULL, tau = NULL, dt = 1.0,
 
 largest_lyapunov <- lyapunov_exponent
 
-cheatsheet <- function() {
+.lyapun_cheatsheet <- function() {
   "lyapun: largest Lyapunov exponent (Rosenstein, Collins & De Luca 1993). Embed with delay J and dimension m, find each point's nearest neighbour at least a mean period away, and take lambda_1 as the slope of <ln d_j(i)> against i*dt over the initial rise -- no normalisation by d_j(0) is needed, since a constant offset does not change a slope. Expected values from the paper's table 1: 0.693 for the logistic map at mu = 4, 0.418 for the Henon map. Routes: 'rosenstein' (eq. 13, default), 'sato' (eq. 9), 'sato_k' (eq. 10, whose plateau the paper itself calls unreliable)."
 }
 

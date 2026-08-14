@@ -126,7 +126,7 @@ morie_sasRec <- function(E, WQ, WK, WV, mask = NULL) {
 sasrec <- self_attention
 selfattentivesequential <- self_attention
 
-cheatsheet <- function() {
+.sasRec_cheatsheet <- function() {
   paste("sasRec: Markov chains win where data are SPARSE (parsimony",
         "is critical), RNNs where they are DENSE (complexity is",
         "affordable) -- and the choice is normally made once for a",
