@@ -290,7 +290,39 @@ def test_an_empty_daughter_scores_zero():
                                      [0, 0]) == 0.0
 
 
-def test_the_score_rule_is_now_available_and_conserve_is_not():
+def test_every_splitting_rule_is_implemented():
     st = R.rule_status()
-    assert "logrankscore" in st["available"]
-    assert set(st["unavailable"]) == {"conserve"}
+    assert set(st["available"]) == set(st["rules"])
+    assert st["unavailable"] == {}
+
+
+def test_the_last_conservation_residual_is_zero():
+    m = R.conservation_residuals([1.0, 2.0, 3.0, 4.0], [1, 0, 1, 1])
+    assert m[-1] == pytest.approx(0.0, abs=1e-12)
+    assert any(abs(v) > 0.1 for v in m[:-1])
+
+
+def test_the_first_conservation_residual_by_hand():
+    m = R.conservation_residuals([1.0, 2.0, 3.0, 4.0, 5.0],
+                                 [1, 0, 1, 1, 0])
+    assert m[0] == pytest.approx(1.0 / 5.0 - 1.0)
+
+
+def test_the_conserve_measure_is_bounded():
+    t = [1.0, 2.0, 3.0, 4.0, 5.0]
+    e = [1, 0, 1, 1, 0]
+    v = R.conserve_statistic(t, e, [0, 0, 0, 1, 1])
+    assert 0.0 < v <= 1.0
+    assert R.conserve_statistic(t, e, [0] * 5) == 0.0
+
+
+def test_a_perfectly_conserved_split_scores_one():
+    assert R.conserve_statistic([1.0, 2.0], [1, 1],
+                                [0, 1]) == pytest.approx(1.0)
+
+
+def test_mismatched_lengths_are_refused():
+    with pytest.raises(ValueError):
+        R.conservation_residuals([1.0, 2.0], [1])
+    with pytest.raises(ValueError):
+        R.conserve_statistic([1.0, 2.0], [1, 1], [0])
