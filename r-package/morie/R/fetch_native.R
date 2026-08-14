@@ -26,7 +26,7 @@
 #'   (default TRUE, mirroring \code{jsonlite::fromJSON}).
 #' @return The parsed R object.
 #' @examples
-#' morie_fetch_json('{"a": [1, 2, 3], "b": "x"}')
+#' morie_fetch_json('{"a": \[1, 2, 3\], "b": "x"}')
 #' @export
 morie_fetch_json <- function(txt, simplify = TRUE) {
   if (is.raw(txt)) txt <- rawToChar(txt)

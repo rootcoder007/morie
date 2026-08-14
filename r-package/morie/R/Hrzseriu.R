@@ -34,7 +34,7 @@
 #' @param w Numeric vector, the instrument.
 #' @param K Integer, the series length J.  The text uses the same basis
 #'   and length for g and for rho, and so does this.
-#' @param basis Character, "poly" or "cos", on the mid-rank [0, 1]
+#' @param basis Character, "poly" or "cos", on the mid-rank \[0, 1\]
 #'   scale.
 #' @return Named list with g_hat, beta, m_hat, Q, J, basis, n, method.
 #' @keywords internal

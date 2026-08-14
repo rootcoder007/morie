@@ -13,7 +13,7 @@
 #' 1/Gamma_k max F < min_t Y_t.
 #'
 #' @param F Non-negative matrix (n_t x m): spectral functions on m
-#'   uniform sites of [0, 1].
+#'   uniform sites of \[0, 1\].
 #' @param n_sim Number of independent realizations.
 #' @param seed SplitMix64 seed (mirrors the Python arm).
 #' @param max_points Safety cap on points per realization.

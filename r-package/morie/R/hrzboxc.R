@@ -2,7 +2,7 @@
 #' Box-Cox regression by the minimum-distance estimator of Foster et al.
 #'
 #' Horowitz, J. L. (2009), Semiparametric and Nonparametric Methods in
-#' Econometrics, Springer, Section 6.1.2, page 195 (volume [Pages 189-232],
+#' Econometrics, Springer, Section 6.1.2, page 195 (volume \[Pages 189-232\],
 #' read as a rendered page image).  The model is (6.2) with T the Box-Cox
 #' transformation (6.3), page 190, T(y, a) = (y^a - 1)/a for a nonzero and
 #' log y at a = 0, and F_U left unrestricted.  For any candidate a the slope

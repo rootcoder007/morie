@@ -3,7 +3,7 @@
 #'
 #' Horowitz, J. L. (2009), Semiparametric and Nonparametric Methods in
 #' Econometrics, Springer, Section 6.2.2, pages 205-208 (volume
-#' [Pages 189-232], read as rendered page images).  With Z = exp(-V) gamma
+#' \[Pages 189-232\], read as rendered page images).  With Z = exp(-V) gamma
 #' with mean 1 and unknown variance theta (p. 205), the marginal density of Y
 #' is (6.39), and the log likelihood over the jumps of Lambda_0 is (6.40).
 #' Nielsen et al. (1992) and Petersen et al. (1996) replace the
@@ -26,7 +26,7 @@
 #'
 #' 2. (6.40) prints the second term as (1 + 1/t) log[1 + t dA(Y_i)], with the
 #'    jump dA rather than the level A.  (6.39), directly above it, has
-#'    [1 + theta Lambda_0(y)]^(1 + 1/theta) with the level.  The level is used
+#'    \[1 + theta Lambda_0(y)\]^(1 + 1/theta) with the level.  The level is used
 #'    here.
 #'
 #' 3. (6.42) is written for the uncensored case the section discusses.  The

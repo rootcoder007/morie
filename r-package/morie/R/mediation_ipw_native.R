@@ -97,7 +97,7 @@
 #' @param x covariate matrix.
 #' @param link \code{"probit"} (the specification Huber uses) or
 #'   \code{"logit"}.
-#' @param trim propensity scores outside \code{[trim, 1 - trim]} are
+#' @param trim propensity scores outside \code{\[trim, 1 - trim\]} are
 #'   dropped. Defaults to \code{0}, i.e. no trimming: Huber's footnote
 #'   10 states that no trimming is applied, scores near the boundary not
 #'   arising in that paper's simulation or application. Raise it when

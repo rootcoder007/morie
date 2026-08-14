@@ -36,8 +36,8 @@
 #' Under E exp(-3V) < Inf (PHU3(ii)) the Schucany-Sommers bias
 #' correction
 #'
-#'   sigma_n = [sigma_n(y_n1) - n^(-q(1-delta)) sigma_n(y_n2)]
-#'             / [1 - n^(-q(1-delta))]                          (6.81)
+#'   sigma_n = \[sigma_n(y_n1) - n^(-q(1-delta)) sigma_n(y_n2)\]
+#'             / \[1 - n^(-q(1-delta))\]                          (6.81)
 #'
 #' reaches a rate arbitrarily close to the n^(-2/5) that Ishwaran
 #' (1996) shows is optimal, and that correction is applied.  The

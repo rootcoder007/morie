@@ -8,7 +8,7 @@
 #' Formula: H_a = 1\{A = a, M = m\} / (g_a(W) h_m(A, W));
 #'   psi = E[Q*(1, m, W)] - E[Q*(0, m, W)]
 #'
-#' @param Y Outcome in [0, 1].
+#' @param Y Outcome in \[0, 1\].
 #' @param A Binary treatment.
 #' @param M Mediator level of each observation.
 #' @param QAM Initial E[Y | A, M, W] at the observed (A, M).

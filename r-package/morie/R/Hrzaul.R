@@ -20,7 +20,7 @@
 #'   sum_j int m_j^2(v) dv = 1                                  (3.26)
 #'
 #' (3.25) is imposed EXACTLY here, by expanding each m_j in centred
-#' monomials v^k - 1/(k+1) which integrate to zero on [0, 1] by
+#' monomials v^k - 1/(k+1) which integrate to zero on \[0, 1\] by
 #' construction; (3.26) is imposed exactly by rescaling against the
 #' closed-form Gram matrix.  Neither is approached iteratively, so both
 #' are identities of the returned fit rather than things that happen to

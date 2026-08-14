@@ -10,7 +10,7 @@
 #'
 #' Search strategy, chosen so both language arms land on identical numbers
 #' rather than merely the same optimum: the criterion is evaluated at every
-#' integer sample lag in [-max_lag, max_lag] over the overlapping part of the
+#' integer sample lag in \[-max_lag, max_lag\] over the overlapping part of the
 #' two curves, normalised by the overlap length so lags are comparable, and
 #' the integer minimiser is refined by a parabola through the criterion at the
 #' minimiser and its two neighbours.  No optimiser, no random restarts.

@@ -15,7 +15,7 @@
 #' \code{E[y(0) | c] = (E[y (1 - D) | Z = 0] - E[y (1 - D) | Z = 1]) / pi_c},
 #' with \code{pi_c = P(D = 1 | Z = 1) - P(D = 1 | Z = 0)}. Their difference
 #' is the Wald ratio. The ATE bound is
-#' \code{pi_c LATE + (1 - pi_c) [y_0 - y_1, y_1 - y_0]}.
+#' \code{pi_c LATE + (1 - pi_c) \[y_0 - y_1, y_1 - y_0\]}.
 #'
 #' @param y Observed outcome.
 #' @param D Binary treatment, coded 0/1.

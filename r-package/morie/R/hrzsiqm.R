@@ -8,7 +8,7 @@
 #' Theorem 2.1.  beta is proportional to dQ_alpha(Y|X=x)/dx, so with a
 #' weight W, delta = E[W(x) dQ_alpha(Y|X=x)/dx] equals beta up to
 #' scale and the average-derivative estimator is
-#' deltahat_AD = (1/n) sum_i [dQhat_alpha(Y|X_i)/dx] W(X_i).
+#' deltahat_AD = (1/n) sum_i \[dQhat_alpha(Y|X_i)/dx\] W(X_i).
 #' Chaudhuri, Doksum and Samarov (1997) derive its asymptotics.
 #'
 #' Local derivatives come from kernel-weighted linear quantile
