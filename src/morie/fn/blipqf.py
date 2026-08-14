@@ -1,46 +1,21 @@
-"""BLIP Q-Former bridge."""
+# morie.fn -- function file (rootcoder007/morie)
+r"""BLIP-2 Q-Former -- re-export of :mod:`blip2v`.
 
-from . import _array_core as np
+``blipqf`` and ``blip2v`` are two ledger rows citing the same paper
+(Li, Li, Savarese & Hoi 2023). They are kept as one implementation
+with a re-export so the two entries cannot drift apart, exactly as
+``timesf`` re-exports ``timesfm`` and ``egcn`` re-exports ``egnnL``.
 
-from ._richresult import RichResult
+See :mod:`blip2v` for the mechanism, the two-stage argument and the
+references.
+"""
 
-__all__ = ["blip_qformer"]
+from .blip2v import (cheatsheet, project_to_llm, qformer_attend,
+                     query_tokens, stage_one_objectives,
+                     trainable_fraction)
 
-
-def blip_qformer(image_features, queries, llm):
-    """
-    BLIP Q-Former bridge
-
-    Formula: learnable queries cross-attend frozen ViT + LLM
-
-    Parameters
-    ----------
-    image_features : array-like
-        Input data.
-    queries : array-like
-        Input data.
-    llm : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Li et al (2023) BLIP-2
-    """
-    image_features = np.atleast_1d(np.asarray(image_features, dtype=float))
-    n = len(image_features)
-    result = float(np.mean(image_features))
-    se = float(np.std(image_features, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BLIP Q-Former bridge"})
-
-
-def cheatsheet():
-    return "blipqf: BLIP Q-Former bridge"
-
+__all__ = ["query_tokens", "qformer_attend", "trainable_fraction",
+           "stage_one_objectives", "project_to_llm", "cheatsheet"]
 
 # compact alias per ledger/NAMING.md
-blipqformer = blip_qformer
+queryingtransformer = qformer_attend
