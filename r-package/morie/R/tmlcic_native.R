@@ -50,6 +50,11 @@
   log(q / (1.0 - q))
 }
 
+.tmlcic_sig <- function(z) {
+  # vectorised sigmoid (.s03sigmoid is scalar-only)
+  vapply(z, .s03sigmoid, numeric(1))
+}
+
 .tmlcic_wlogit <- function(X, y, ridge=1e-10, obs_weights=NULL) {
   # Weighted logistic IRLS with a ridge penalty.
   X <- as.matrix(X)
@@ -60,7 +65,7 @@
   beta <- numeric(p)
   for (it in seq_len(60L)) {
     eta <- as.numeric(X %*% beta)
-    mu <- .s03sigmoid(eta)
+    mu <- .tmlcic_sig(eta)
     Wt <- w * mu * (1 - mu)
     XtWX <- crossprod(X, X * Wt) + diag(max(ridge, 1e-10), p)
     Xtr <- as.numeric(crossprod(X, w * (y - mu)))
@@ -539,7 +544,7 @@ morie_tmlcic_cluster_weights <- function(cluster, weights=NULL) {
     p1 <- pmin(pmax(as.numeric(known_g), trim), 1.0 - trim)
   } else {
     b <- .tmlcic_wlogit(Xg, Aj, ridge=max(ridge, 1e-10))
-    p1 <- pmin(pmax(.s03sigmoid(as.numeric(Xg %*% b)), trim), 1.0 - trim)
+    p1 <- pmin(pmax(.tmlcic_sig(as.numeric(Xg %*% b)), trim), 1.0 - trim)
   }
   ga <- vapply(seq_len(J), function(j) if (a == 1.0) p1[j] else 1.0 - p1[j],
                numeric(1))
@@ -552,7 +557,7 @@ morie_tmlcic_cluster_weights <- function(cluster, weights=NULL) {
               numeric(1))
   off <- vapply(seq_len(J), function(j) .tmlcic_logit(q(Aj[j], j)), numeric(1))
   eps <- .tmlcic_fluct(yc, off, H)
-  qs_obs <- .s03sigmoid(off + eps * H)
+  qs_obs <- .tmlcic_sig(off + eps * H)
   qs_a <- vapply(seq_len(J),
                  function(j) .s03sigmoid(.tmlcic_logit(q(a, j)) + eps / ga[j]),
                  numeric(1))
@@ -573,7 +578,7 @@ morie_tmlcic_cluster_weights <- function(cluster, weights=NULL) {
     p1 <- pmin(pmax(as.numeric(known_g), trim), 1.0 - trim)
   } else {
     b <- .tmlcic_wlogit(Xg, Ai, ridge=max(ridge, 1e-10), obs_weights=alpha)
-    p1 <- pmin(pmax(.s03sigmoid(as.numeric(Xg %*% b)), trim), 1.0 - trim)
+    p1 <- pmin(pmax(.tmlcic_sig(as.numeric(Xg %*% b)), trim), 1.0 - trim)
   }
   ga <- vapply(seq_len(n), function(i) if (a == 1.0) p1[i] else 1.0 - p1[i],
                numeric(1))
@@ -586,7 +591,7 @@ morie_tmlcic_cluster_weights <- function(cluster, weights=NULL) {
               numeric(1))
   off <- vapply(seq_len(n), function(i) .tmlcic_logit(q(Ai[i], i)), numeric(1))
   eps <- .tmlcic_fluct(y, off, H, obs_weights=alpha)
-  qs_obs <- .s03sigmoid(off + eps * H)
+  qs_obs <- .tmlcic_sig(off + eps * H)
   qs_a <- vapply(seq_len(n),
                  function(i) .s03sigmoid(.tmlcic_logit(q(a, i)) + eps / ga[i]),
                  numeric(1))
