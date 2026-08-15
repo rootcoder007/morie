@@ -32,12 +32,22 @@
 #' @return A single numeric vector.
 #' @references Hamilton, W. L. et al. (2017).
 #' @export
+.gsage_rows <- function(x) {
+  # k.mat's contract: accept a list of vectors OR a matrix, yield rows.
+  if (is.matrix(x) || is.data.frame(x)) {
+    m <- as.matrix(x)
+    storage.mode(m) <- "double"
+    return(lapply(seq_len(nrow(m)), function(i) as.numeric(m[i, ])))
+  }
+  lapply(x, as.numeric)
+}
+
 morie_gsageemd_aggregate <- function(vectors, how = "mean", W = NULL) {
   if (!(how %in% .GSAGE_AGGS))
     stop(paste0("gsageemd: aggregator must be one of ",
                 paste(.GSAGE_AGGS, collapse = ", "), ", got ",
                 deparse(how)))
-  V <- lapply(vectors, as.numeric)
+  V <- .gsage_rows(vectors)
   if (length(V) == 0L) stop("gsageemd: no neighbours to aggregate")
   d <- length(V[[1L]])
   if (how == "mean") {
