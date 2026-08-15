@@ -51,17 +51,23 @@ GRANTHAM_VOLUME <- list(
   c(mu, sd)
 }
 
-.MAFFT_P <- .mafft_norm(unlist(GRANTHAM_POLARITY[.MAFFT_AA]))
-.MAFFT_V <- .mafft_norm(unlist(GRANTHAM_VOLUME[.MAFFT_AA]))
+# .MAFFT_AA is one string; the Python arm iterates its characters
+# ("for a in _AA"). Indexing the property list by the whole string
+# matches no name, so every one of these was NULL and the package
+# failed to load: .mafft_norm(NULL) has n = 0 and sd = NaN.
+.MAFFT_AA_CHARS <- strsplit(.MAFFT_AA, "")[[1L]]
+
+.MAFFT_P <- .mafft_norm(unlist(GRANTHAM_POLARITY[.MAFFT_AA_CHARS]))
+.MAFFT_V <- .mafft_norm(unlist(GRANTHAM_VOLUME[.MAFFT_AA_CHARS]))
 .MAFFT_PMU <- .MAFFT_P[1]; .MAFFT_PSD <- .MAFFT_P[2]
 .MAFFT_VMU <- .MAFFT_V[1]; .MAFFT_VSD <- .MAFFT_V[2]
 
 .MAFFT_VHAT <- setNames(
-  (unlist(GRANTHAM_VOLUME[.MAFFT_AA]) - .MAFFT_VMU) / .MAFFT_VSD,
-  .MAFFT_AA)
+  (unlist(GRANTHAM_VOLUME[.MAFFT_AA_CHARS]) - .MAFFT_VMU) / .MAFFT_VSD,
+  .MAFFT_AA_CHARS)
 .MAFFT_PHAT <- setNames(
-  (unlist(GRANTHAM_POLARITY[.MAFFT_AA]) - .MAFFT_PMU) / .MAFFT_PSD,
-  .MAFFT_AA)
+  (unlist(GRANTHAM_POLARITY[.MAFFT_AA_CHARS]) - .MAFFT_PMU) / .MAFFT_PSD,
+  .MAFFT_AA_CHARS)
 
 mafft_clean <- function(seqs, seq_type = NULL) {
   out <- as.character(toupper(unlist(seqs)))
@@ -102,13 +108,13 @@ residue_vectors <- function(group, weights = NULL, seq_type = "aa") {
   vol <- vapply(seq_len(L), function(n) {
     sum(vapply(seq_along(split_rows), function(i) {
       ch <- split_rows[[i]][n]
-      weights[i] * if (ch %in% .MAFFT_AA) .MAFFT_VHAT[[ch]] else 0
+      weights[i] * if (ch %in% .MAFFT_AA_CHARS) .MAFFT_VHAT[[ch]] else 0
     }, numeric(1)))
   }, numeric(1))
   pol <- vapply(seq_len(L), function(n) {
     sum(vapply(seq_along(split_rows), function(i) {
       ch <- split_rows[[i]][n]
-      weights[i] * if (ch %in% .MAFFT_AA) .MAFFT_PHAT[[ch]] else 0
+      weights[i] * if (ch %in% .MAFFT_AA_CHARS) .MAFFT_PHAT[[ch]] else 0
     }, numeric(1)))
   }, numeric(1))
   list(vol, pol)
