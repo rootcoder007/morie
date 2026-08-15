@@ -169,6 +169,25 @@ def linear_weighted_learner(y, A, W, propensity=None, method="gest",
         ytilde = [yv[i] - fitted[i] for i in range(n)]
 
     p = len(Wm[0]) if Wm and Wm[0] else 0
+    # The blip is identified only through the treatment residual
+    # A - E[A | W]. If the propensity model reproduces the treatment
+    # exactly -- which happens whenever the treatment is itself among the
+    # covariates, or is a deterministic function of them -- that residual
+    # is zero, the estimating equation is 0 = 0, and psi is whatever the
+    # ridge happens to return. Two arms will then disagree on a number
+    # that means nothing. Refuse instead.
+    resid_a = [av[i] - pi[i] for i in range(n)]
+    scale_a = max(abs(v) for v in av) if av else 0.0
+    if max(abs(v) for v in resid_a) <= 1e-9 * max(1.0, scale_a):
+        raise ValueError(
+            "linear_weighted_learner: the propensity model reproduces the "
+            "treatment exactly, so A - E[A | W] is zero and the blip is "
+            "UNIDENTIFIED -- any psi solves the estimating equation. This "
+            "usually means the treatment was passed as one of its own "
+            "covariates, or pi_covariates determines it. Supply a "
+            "propensity that leaves variation in A."
+        )
+
     if method == "gest":
         # Score: sum_i (A_i - pi_i) [1, W_i] (Y_i - A_i [1,W_i]' psi) = 0
         # which is linear in psi, so it solves in closed form.
