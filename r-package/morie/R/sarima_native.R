@@ -546,7 +546,7 @@ morie_sarima <- function(y, order = c(0, 1, 1),
       method = method, start = start)
 }
 
-seasonal_arima <- fit
+seasonal_arima <- .sarima_fit
 
 .sarima_cheatsheet <- function() {
   paste("sarima: phi(B)Phi(B^s) nabla^d nabla_s^D z =",

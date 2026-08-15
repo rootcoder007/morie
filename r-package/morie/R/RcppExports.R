@@ -17,6 +17,14 @@
     .Call(`_morie_morie_crypto_pbkdf2_sha256_native`, password, salt, iterations, dklen)
 }
 
+.morie_blake2b_impl <- function(data, outlen, key = NULL) {
+    .Call(`_morie_morie_crypto_blake2b_native`, data, outlen, key)
+}
+
+.morie_argon2_impl <- function(password, salt, memory, passes, parallelism, tag_length, variant, secret = NULL, associated = NULL) {
+    .Call(`_morie_morie_crypto_argon2_native`, password, salt, memory, passes, parallelism, tag_length, variant, secret, associated)
+}
+
 .morie_crypto_liboqs_available <- function() {
     .Call(`_morie_morie_crypto_liboqs_available`)
 }
