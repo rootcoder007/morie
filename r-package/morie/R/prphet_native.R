@@ -316,3 +316,35 @@ prphet_cheatsheet <- function() {
          "periodic. Holidays need their own indicators because they ",
          "move. Penalise the deltas ONLY.")
 }
+
+# Namespaced aliases so both trees expose one API. The morie tree
+# defined these unprefixed, which is a collision hazard in R's single
+# sourced environment, and left prnFil calling a morie_prphet_fit that
+# existed only in rmorie.
+#' @rdname morie_prphet
+#' @export
+morie_prphet_fit <- morie_prphet
+
+#' @rdname piecewise_trend
+#' @export
+morie_prphet_piecewise_trend <- piecewise_trend
+
+#' @rdname trend_matrix
+#' @export
+morie_prphet_trend_matrix <- trend_matrix
+
+#' @rdname fourier_terms
+#' @export
+morie_prphet_fourier_terms <- fourier_terms
+
+#' @rdname holiday_matrix
+#' @export
+morie_prphet_holiday_matrix <- holiday_matrix
+
+#' @rdname prophet_design
+#' @export
+morie_prphet_design <- prophet_design
+
+#' @rdname prophet_predict
+#' @export
+morie_prphet_predict <- prophet_predict
