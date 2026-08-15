@@ -8,7 +8,7 @@
 #   becomes. Impact grades are the paper's own four: HIGH, MODERATE,
 #   LOW and MODIFIER. Translation uses NCBI genetic code table 1.
 
-.BASES <- "TCAG"
+.snpeff_BASES <- "TCAG"
 .AA <- paste0("FFLLSSSSYY**CC*W",
               "LLLLPPPPHHQQRRRR",
               "IIIMTTTTNNKKSSRR",
@@ -19,9 +19,9 @@
   for (i in 1:4) {
     for (j in 1:4) {
       for (k in 1:4) {
-        b1 <- substr(.BASES, i, i)
-        b2 <- substr(.BASES, j, j)
-        b3 <- substr(.BASES, k, k)
+        b1 <- substr(.snpeff_BASES, i, i)
+        b2 <- substr(.snpeff_BASES, j, j)
+        b3 <- substr(.snpeff_BASES, k, k)
         tbl[[paste0(b1, b2, b3)]] <-
           substr(.AA, (i - 1L) * 16L + (j - 1L) * 4L + k,
                  (i - 1L) * 16L + (j - 1L) * 4L + k)

@@ -7,8 +7,8 @@
 # complex microbial communities", PeerJ 3, e1165,
 # doi:10.7717/peerj.1165.
 
-.EPS <- 1e-12
-.BASES <- strsplit("ACGT", "")[[1]]
+.metabd_EPS <- 1e-12
+.metabd_BASES <- strsplit("ACGT", "")[[1]]
 
 .comp_map <- c(A = "T", C = "G", G = "C", T = "A")
 
@@ -45,7 +45,7 @@ abundance_correlation <- function(cov_a, cov_b) {
   ma <- mean(a); mb <- mean(b)
   num <- sum((a - ma) * (b - mb))
   den <- sqrt(sum((a - ma) ^ 2) * sum((b - mb) ^ 2))
-  list(correlation = if (den > .EPS) num / den else 0.0, n_samples = length(a))
+  list(correlation = if (den > .metabd_EPS) num / den else 0.0, n_samples = length(a))
 }
 
 length_weight <- function(length, l_min = 2500.0, l_ref = 100000.0) {
