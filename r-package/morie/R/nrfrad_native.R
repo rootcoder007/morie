@@ -51,7 +51,7 @@ morie_nrfrad <- function(payload) {
   stop("nrfrad: unknown op")
 }
 
-.vec <- function(x) {
+.nrfrad_vec <- function(x) {
   if (is.null(x)) return(numeric(0))
   if (is.list(x) && !is.null(x$sigma)) return(unlist(x$sigma)) # not used
   as.numeric(unlist(x))

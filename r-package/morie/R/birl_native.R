@@ -120,10 +120,10 @@ log_prior <- function(R, prior = "uniform", scale = 1, r_max = NULL,
   -(J * sum(R[pairs[, 1]] * R[pairs[, 2]]) + H * sum(R))
 }
 
-.rng <- function(seed) {
+.birl_rng <- function(seed) {
   st <- as.integer(seed); if (st <= 0) st <- 1L
   f <- function() {
-    st <<- (1103515245L * st + 12345L) %% 2147483648L
+    st <<- .ghc_lcg31(st)
     st / 2147483648
   }
   f
@@ -137,7 +137,7 @@ policy_walk <- function(T, observations, gamma, n_iter = 1000, delta = 0.25,
   if (n_iter < 1) stop("birl: n_iter must be positive")
   burn <- if (is.null(burn)) n_iter %/% 2 else as.integer(burn)
   if (burn < 0 || burn >= n_iter) stop("birl: burn must be less than n_iter")
-  rnd <- .rng(seed + 3L)
+  rnd <- .birl_rng(seed + 3L)
   grid <- function(v) round(v / delta) * delta
   R <- if (is.null(R0)) vapply(1:nS, function(i)
     grid((2 * rnd() - 1) * r_max), numeric(1)) else vapply(R0, grid, numeric(1))

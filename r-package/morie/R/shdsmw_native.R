@@ -19,7 +19,7 @@
 # maximum weight) along a path of penalties that runs from the
 # unpenalized fit to the unadjusted limit.
 
-.vec <- function(x) as.numeric(as.matrix(x))
+.shdsmw_vec <- function(x) as.numeric(as.matrix(x))
 
 .hist <- function(obj, allow_none = FALSE) {
   if (is.null(obj)) return(if (allow_none) list(NULL) else list())
@@ -33,7 +33,7 @@
 
 .shdsmw_wls <- function(X, y, w) {
   X <- as.matrix(X); storage.mode(X) <- "double"
-  y <- .vec(y); w <- .vec(w)
+  y <- .shdsmw_vec(y); w <- .shdsmw_vec(w)
   n <- length(y)
   if (nrow(X) != n) stop("X and y length mismatch")
   # diagonal weight matrix; weighted normal equations X' W X b = X' W y
@@ -71,7 +71,7 @@ shrinkage_msm <- function(y, treatment_history, covariate_history,
     stop("shrinkage_msm: ", length(A_hist), " treatment times but ",
          length(L_hist), " covariate blocks")
   }
-  yv <- .vec(y)
+  yv <- .shdsmw_vec(y)
   n <- length(yv)
 
   # ridge-penalised logistic regression on the treatment history
@@ -79,7 +79,7 @@ shrinkage_msm <- function(y, treatment_history, covariate_history,
   # penalty on the slopes (NOT the intercept). Returns fitted
   # probabilities of length n.
   ridge_ps <- function(A_block, L_block, penalty) {
-    A <- .vec(A_block)
+    A <- .shdsmw_vec(A_block)
     # Build the design: intercept + the most recent L (or empty).
     if (is.null(L_block) || length(L_block) == 0L) {
       X <- matrix(1, nrow = n, ncol = 1L)
@@ -119,17 +119,17 @@ shrinkage_msm <- function(y, treatment_history, covariate_history,
     for (t in seq_along(A_hist)) {
       L_block <- if (length(L_hist) >= t) L_hist[[t]] else NULL
       ps <- ridge_ps(A_hist[[t]], L_block, penalty = lm)
-      A <- .vec(A_hist[[t]])
+      A <- .shdsmw_vec(A_hist[[t]])
       sw <- ifelse(A == 1, 1 / ps, 1 / (1 - ps))
       if (!is.null(trim)) sw <- pmin(sw, trim)
       w <- w + sw
       per[[t]] <- ps
     }
     cum <- numeric(n)
-    for (i in seq_len(n)) for (a in A_hist) cum[i] <- cum[i] + .vec(a)[i]
+    for (i in seq_len(n)) for (a in A_hist) cum[i] <- cum[i] + .shdsmw_vec(a)[i]
     e <- switch(contrast,
                 cumulative = cum,
-                final = .vec(A_hist[[length(A_hist)]]),
+                final = .shdsmw_vec(A_hist[[length(A_hist)]]),
                 everexposed = ifelse(cum > 0, 1, 0),
                 stop("shrinkage_msm: contrast must be 'cumulative', ",
                      "'final' or 'everexposed', got ",

@@ -21,10 +21,10 @@
 .EPS <- 1e-12
 .WEIGHTS <- c("qini", "autoc", "uniform")
 
-.vec <- function(x) as.numeric(as.matrix(x))
+.slvgrf_vec <- function(x) as.numeric(as.matrix(x))
 
 .check <- function(scores, priority) {
-  g <- .vec(scores); s <- .vec(priority)
+  g <- .slvgrf_vec(scores); s <- .slvgrf_vec(priority)
   if (length(g) != length(s)) {
     stop("slvgrf: ", length(g), " scores but ", length(s),
          " priority values")
@@ -38,11 +38,11 @@
 #' Doubly-robust AIPW score
 #' @export
 aipw_scores <- function(Y, W, mu1, mu0, e) {
-  y <- .vec(Y); w <- .vec(W)
-  m1 <- .vec(mu1); m0 <- .vec(mu0)
+  y <- .slvgrf_vec(Y); w <- .slvgrf_vec(W)
+  m1 <- .slvgrf_vec(mu1); m0 <- .slvgrf_vec(mu0)
   n <- length(y)
   ev <- if (is.numeric(e) && length(e) == 1L) rep(as.numeric(e), n)
-        else .vec(e)
+        else .slvgrf_vec(e)
   for (nm in c("W", "mu1", "mu0", "e")) {
     v <- switch(nm, W = w, mu1 = m1, mu0 = m0, e = ev)
     if (length(v) != n) {
@@ -123,7 +123,7 @@ qini_curve <- function(scores, priority, cost = NULL) {
     cv <- rep(1, n)
   } else {
     cv <- if (is.numeric(cost) && length(cost) == 1L)
-      rep(as.numeric(cost), n) else .vec(cost)
+      rep(as.numeric(cost), n) else .slvgrf_vec(cost)
     if (length(cv) != n) {
       stop("slvgrf: ", length(cv), " costs for ", n, " units")
     }

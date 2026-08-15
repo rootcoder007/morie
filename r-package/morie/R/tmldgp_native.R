@@ -15,12 +15,12 @@
 
 .EPS <- 1e-12
 
-.logit <- function(p) {
+.tmldgp_logit <- function(p) {
   q <- min(max(as.numeric(p), 1e-9), 1 - 1e-9)
   log(q / (1 - q))
 }
 
-.expit <- function(x) {
+.tmldgp_expit <- function(x) {
   if (x > -700) 1 / (1 + exp(-x)) else 0
 }
 
@@ -127,16 +127,16 @@ morie_shrunk_targeting_unsafe <- function(Q, H, Y, ridge = 1.0) {
   n <- length(q)
   if (!(length(h) == n && length(y) == n))
     stop("tmldgp: Q, H, Y must be the same length")
-  off <- vapply(q, .logit, numeric(1))
+  off <- vapply(q, .tmldgp_logit, numeric(1))
   e <- 0
   for (it in seq_len(60L)) {
-    p <- .expit(off + e * h)
+    p <- .tmldgp_expit(off + e * h)
     gr <- sum(h * (y - p)) - as.numeric(ridge) * e
     he <- sum(h * h * p * (1 - p)) + as.numeric(ridge)
     if (he < 1e-12) break
     e <- e + gr / he
   }
-  upd <- .expit(off + e * h)
+  upd <- .tmldgp_expit(off + e * h)
   list(epsilon = e, Q_star = upd,
        score = sum(h * (y - upd)) / n,
        caveat = "the score equation is NOT solved when the fluctuation is penalised")
@@ -178,10 +178,10 @@ morie_penalised_tmle <- function(y, D, X, penalty = 0.05, iters = 100) {
                          numeric(1)), 1e-6), 1 - 1e-6)
   H <- a / gg - (1 - a) / (1 - gg)
   qa <- ifelse(a == 1, q1, q0)
-  off <- vapply(qa, .logit, numeric(1))
+  off <- vapply(qa, .tmldgp_logit, numeric(1))
   e <- 0
   for (it in seq_len(as.integer(iters))) {
-    p <- .expit(off + e * H)
+    p <- .tmldgp_expit(off + e * H)
     gr <- sum(H * (yv - p))
     he <- sum(H * H * p * (1 - p))
     if (he < 1e-12) break
@@ -189,8 +189,8 @@ morie_penalised_tmle <- function(y, D, X, penalty = 0.05, iters = 100) {
     e <- e + step
     if (abs(step) < 1e-12) break
   }
-  q1s <- .expit(.logit(q1) + e / gg)
-  q0s <- .expit(.logit(q0) - e / (1 - gg))
+  q1s <- .tmldgp_expit(.tmldgp_logit(q1) + e / gg)
+  q0s <- .tmldgp_expit(.tmldgp_logit(q0) - e / (1 - gg))
   psi <- mean(q1s - q0s)
   d <- vapply(seq_len(n), function(i) {
     qas <- if (a[i] == 1) q1s[i] else q0s[i]
