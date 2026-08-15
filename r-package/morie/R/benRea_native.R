@@ -18,7 +18,7 @@
 # *Proceedings of NAACL-HLT 2019*, 4171-4186,
 # doi:10.18653/v1/N19-1423.
 
-.NEG <- -Inf
+.benRea_NEG <- -Inf
 
 bio_labels <- function(types) {
   ts <- as.list(types)
@@ -83,16 +83,16 @@ viterbi_decode <- function(emissions, labels, transitions = NULL,
   T_mat <- if (is.null(transitions)) valid_transitions(labels) else transitions
   S <- if (is.null(transition_scores)) matrix(0.0, n, n) else transition_scores
   ok0 <- start_allowed(labels)
-  dp <- matrix(.NEG, L, n)
+  dp <- matrix(.benRea_NEG, L, n)
   bk <- matrix(-1L, L, n)
   for (j in seq_len(n)) {
     if (ok0[j]) dp[1L, j] <- emissions[[1L]][j]
   }
   for (t in 2:L) {
     for (j in seq_len(n)) {
-      best <- .NEG; arg <- -1L
+      best <- .benRea_NEG; arg <- -1L
       for (i in seq_len(n)) {
-        if (!T_mat[i, j] || dp[t - 1L, i] == .NEG) next
+        if (!T_mat[i, j] || dp[t - 1L, i] == .benRea_NEG) next
         v <- dp[t - 1L, i] + S[i, j]
         if (v > best) { best <- v; arg <- i }
       }
@@ -103,7 +103,7 @@ viterbi_decode <- function(emissions, labels, transitions = NULL,
     }
   }
   end <- which.max(dp[L, ])
-  if (dp[L, end] == .NEG) stop("benRea: no valid path exists")
+  if (dp[L, end] == .benRea_NEG) stop("benRea: no valid path exists")
   path_idx <- end
   for (t in L:2) {
     path_idx <- c(bk[t, path_idx[1L]], path_idx)

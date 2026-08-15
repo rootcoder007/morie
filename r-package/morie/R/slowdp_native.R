@@ -15,7 +15,7 @@
 # silently moves the discarded mass onto the survivors and so has
 # its effect reported alongside.
 
-.EPS <- 1e-12
+.slowdp_EPS <- 1e-12
 
 .beta_1_alpha <- function(e, alpha) {
   u <- .ghc_unif(e, 1L)
@@ -84,9 +84,9 @@ decay_diagnostics <- function(weights, alpha) {
   exp_tail <- truncation_error(alpha, K)$expected_tail
   realised <- max(0, 1 - sum(p))
   biggest_late <- which.max(p) - 1L
-  monotone <- all(diff(p) >= -.EPS)
+  monotone <- all(diff(p) >= -.slowdp_EPS)
   list(realised_tail = realised, expected_tail = exp_tail,
-       ratio = if (exp_tail > .EPS) realised / exp_tail else Inf,
+       ratio = if (exp_tail > .slowdp_EPS) realised / exp_tail else Inf,
        largest_index = biggest_late, monotone = monotone,
        note = paste("the sticks are NOT ordered; a late large stick ",
                     "is exactly what a mean-based truncation misses"))
@@ -102,7 +102,7 @@ truncated_dp <- function(alpha, K, base_sampler = NULL, seed = 0,
   tail <- sb$remaining
   if (isTRUE(renormalise)) {
     z <- sum(p)
-    if (z <= .EPS) {
+    if (z <= .slowdp_EPS) {
       stop("slowdp: the kept sticks carry no mass")
     }
     p <- p / z

@@ -9,7 +9,7 @@
 #   G. E. (2017) "Neural Message Passing for Quantum Chemistry",
 #   ICML 2017, PMLR 70, 1263-1272, arXiv:1704.01212.
 
-.EPS <- 1e-12
+.schN_EPS <- 1e-12
 
 gaussian_expansion <- function(r, mu_min = 0.0, mu_max = 6.0,
                                n_gaussians = 25, gamma = NULL) {

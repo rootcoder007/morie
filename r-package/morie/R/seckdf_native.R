@@ -16,14 +16,14 @@
 .HASH_LEN <- 32L
 .MAX_BLOCKS <- 255L
 
-.as_bytes <- function(x) {
+.seckdf_as_bytes <- function(x) {
   if (is.raw(x)) return(x)
   if (is.character(x)) return(charToRaw(paste(x, collapse = "")))
   if (is.null(x)) return(raw(0))
   stop("expected raw, character or NULL")
 }
 
-.hexlify <- function(bs) {
+.seckdf_hexlify <- function(bs) {
   paste(format(as.hexmode(as.integer(bs)), width = 2,
                upper.case = TRUE), collapse = "")
 }
@@ -31,7 +31,7 @@
 #' HKDF Extract: PRK = HMAC(salt, IKM)
 #' @export
 extract <- function(ikm, salt = NULL) {
-  s <- if (is.null(salt)) raw(.HASH_LEN) else .as_bytes(salt)
+  s <- if (is.null(salt)) raw(.HASH_LEN) else .seckdf_as_bytes(salt)
   list(prk = .morie_hmac_sha256_impl(s, ikm),
        salt_supplied = !is.null(salt),
        note = paste("the salt is the HMAC KEY; the IKM is the ",
@@ -49,13 +49,13 @@ expand <- function(prk, info = raw(0), length = 32L) {
          "; the counter is a single octet, so this cannot be ",
          "satisfied")
   }
-  p <- .as_bytes(prk)
+  p <- .seckdf_as_bytes(prk)
   if (length(p) < .HASH_LEN) {
     stop("seckdf: the PRK is ", length(p), " bytes, shorter than ",
          "the hash length ", .HASH_LEN,
          " -- Extract was probably skipped on non-uniform input")
   }
-  inf <- .as_bytes(info)
+  inf <- .seckdf_as_bytes(info)
   out <- raw(0); t <- raw(0); i <- 1L
   while (length(out) < L) {
     t <- .morie_hmac_sha256_impl(p, c(t, inf, as.raw(i)))
@@ -70,15 +70,15 @@ expand <- function(prk, info = raw(0), length = 32L) {
 hkdf <- function(ikm, salt = NULL, info = raw(0), length = 32L,
                  skip_extract = FALSE) {
   if (isTRUE(skip_extract)) {
-    prk <- .as_bytes(ikm); salted <- FALSE
+    prk <- .seckdf_as_bytes(ikm); salted <- FALSE
   } else {
     e <- extract(ikm, salt)
     prk <- e$prk; salted <- e$salt_supplied
   }
   r <- expand(prk, info, length)
-  list(estimate = .hexlify(r$okm), okm = r$okm,
-       okm_hex = .hexlify(r$okm), prk = prk,
-       prk_hex = .hexlify(prk), length = r$length,
+  list(estimate = .seckdf_hexlify(r$okm), okm = r$okm,
+       okm_hex = .seckdf_hexlify(r$okm), prk = prk,
+       prk_hex = .seckdf_hexlify(prk), length = r$length,
        blocks = r$blocks, salt_supplied = salted,
        extract_skipped = isTRUE(skip_extract),
        method = "HKDF-SHA256; Krawczyk & Eronen (2010) RFC 5869",
@@ -93,9 +93,9 @@ derive_context_keys <- function(ikm, contexts, salt = NULL,
   e <- extract(ikm, salt)
   keys <- list()
   for (c in contexts) {
-    keys[[c]] <- expand(e$prk, .as_bytes(c), length)$okm
+    keys[[c]] <- expand(e$prk, .seckdf_as_bytes(c), length)$okm
   }
-  hexed <- lapply(keys, .hexlify)
+  hexed <- lapply(keys, .seckdf_hexlify)
   distinct <- length(unique(unlist(hexed))) == length(hexed)
   list(keys = keys, hex = hexed, prk = e$prk,
        all_distinct = distinct,

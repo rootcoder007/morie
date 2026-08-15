@@ -19,8 +19,8 @@
 
 # Base R has no erf/erfc; both are pnorm in disguise. Defined here so
 # the arm stays base-R only, as the package requires.
-.erf <- function(x) 2 * pnorm(x * sqrt(2)) - 1
-.erfc <- function(x) 2 * pnorm(-x * sqrt(2))
+.bayopt_erf <- function(x) 2 * pnorm(x * sqrt(2)) - 1
+.bayopt_erfc <- function(x) 2 * pnorm(-x * sqrt(2))
 
 .KERNELS <- c("matern52", "se")
 .ACQ <- c("ei", "pi", "lcb")

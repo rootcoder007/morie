@@ -13,7 +13,7 @@
 # arXiv:1607.06450. The normalisation the paper applies per layer
 # before weighting.
 
-.EPS <- 1e-12
+.elmo_EPS <- 1e-12
 
 .elmo_sigmoid <- function(x) 1 / (1 + exp(-x))
 

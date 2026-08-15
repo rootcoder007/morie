@@ -11,7 +11,7 @@
   out
 }
 
-embed <- function(y, m, tau) {
+.lyapun_embed <- function(y, m, tau) {
   y <- .as_series(y)
   m <- as.integer(m); tau <- as.integer(tau)
   if (m < 1L) stop("lyapun: the embedding dimension must be >= 1")
@@ -107,7 +107,7 @@ divergence_curve <- function(y, m = NULL, tau = NULL, dt = 1.0,
   if (is.null(tau)) tau <- autocorrelation_lag(y)
   if (is.null(m)) m <- 3L
   if (dt <= 0) stop("lyapun: the sampling period must be positive")
-  pts <- embed(y, m, tau)
+  pts <- .lyapun_embed(y, m, tau)
   n_pts <- length(pts)
   if (is.null(min_sep)) min_sep <- as.integer(round(mean_period(y, dt)))
   min_sep <- as.integer(min_sep)

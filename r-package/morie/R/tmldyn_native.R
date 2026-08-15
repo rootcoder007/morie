@@ -20,10 +20,10 @@
 # the four static-regime comparators.
 
 .TMLDYN_METHODS <- c("cv-tmle", "tmle", "ipw", "gcomp")
-.EPS <- 1e-9
+.tmldyn_EPS <- 1e-9
 
 .tmldyn_logit <- function(p) {
-  q <- min(max(as.numeric(p), .EPS), 1 - .EPS)
+  q <- min(max(as.numeric(p), .tmldyn_EPS), 1 - .tmldyn_EPS)
   log(q / (1 - q))
 }
 
@@ -123,7 +123,7 @@
   }
   if (!(trim >= 0 && trim < 0.5))
     stop("tmldyn: trim must be in [0, 0.5)")
-  lo <- max(trim, .EPS); hi <- 1 - max(trim, .EPS)
+  lo <- max(trim, .tmldyn_EPS); hi <- 1 - max(trim, .tmldyn_EPS)
   p0 <- pmin(pmax(p0, lo), hi)
   p1 <- pmin(pmax(p1, lo), hi)
   g0 <- ifelse(A0 == 1, p0, 1 - p0)
@@ -142,7 +142,7 @@
   b <- rep(0, p)
   for (it in seq_len(max_iter)) {
     eta <- as.numeric(Xm %*% b)
-    pc <- pmin(pmax(.tmldyn_expit(eta), .EPS), 1 - .EPS)
+    pc <- pmin(pmax(.tmldyn_expit(eta), .tmldyn_EPS), 1 - .tmldyn_EPS)
     W <- pc * (1 - pc)
     z <- eta + (a - pc) / W
     XtWX <- crossprod(Xm, Xm * W) + ridge * diag(p)
@@ -358,8 +358,8 @@ morie_tmle_dynamic_regime <- function(y, treatment_history,
       f1 <- .fit_q1(pseudo, L0, A0, tr, ridge)
       for (i in vl) {
         q2d[i] <- min(max(f2$q2(rd0[i], rd1[[rd0[i] + 1L]][i], i),
-                          .EPS), 1 - .EPS)
-        q1d[i] <- min(max(f1$q1(rd0[i], i), .EPS), 1 - .EPS)
+                          .tmldyn_EPS), 1 - .tmldyn_EPS)
+        q1d[i] <- min(max(f1$q1(rd0[i], i), .tmldyn_EPS), 1 - .tmldyn_EPS)
       }
     }
     if (method == "gcomp") {

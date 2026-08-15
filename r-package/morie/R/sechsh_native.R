@@ -19,14 +19,14 @@
 .NODE <- as.raw(0x01)
 .GENESIS <- raw(32)
 
-.as_bytes <- function(x) {
+.sechsh_as_bytes <- function(x) {
   if (is.raw(x)) return(x)
   if (is.character(x)) return(charToRaw(paste(x, collapse = "")))
   if (is.null(x)) return(raw(0))
   stop("expected raw, character or NULL")
 }
 
-.hexlify <- function(bs) {
+.sechsh_hexlify <- function(bs) {
   paste(format(as.hexmode(as.integer(bs)), width = 2,
                upper.case = TRUE), collapse = "")
 }
@@ -41,8 +41,8 @@
 #' One step of the hash chain
 #' @export
 chain_entry <- function(previous_hash, entry, key = NULL) {
-  p <- .as_bytes(previous_hash)
-  e <- .as_bytes(entry)
+  p <- .sechsh_as_bytes(previous_hash)
+  e <- .sechsh_as_bytes(entry)
   if (is.null(key)) {
     return(list(hash = sha256(c(p, e)), keyed = FALSE))
   }
@@ -54,17 +54,17 @@ chain_entry <- function(previous_hash, entry, key = NULL) {
 #' Build a complete chain from a list of entries
 #' @export
 build_chain <- function(entries, key = NULL, genesis = .GENESIS) {
-  prev <- .as_bytes(genesis)
+  prev <- .sechsh_as_bytes(genesis)
   hashes <- list()
   for (e in entries) {
     prev <- chain_entry(prev, e, key)$hash
     hashes[[length(hashes) + 1L]] <- prev
   }
   list(hashes = hashes,
-       head = if (length(hashes) > 0L) prev else .as_bytes(genesis),
+       head = if (length(hashes) > 0L) prev else .sechsh_as_bytes(genesis),
        n = length(hashes),
-       head_hex = .hexlify(if (length(hashes) > 0L) prev
-                           else .as_bytes(genesis)),
+       head_hex = .sechsh_hexlify(if (length(hashes) > 0L) prev
+                           else .sechsh_as_bytes(genesis)),
        keyed = !is.null(key))
 }
 
@@ -77,14 +77,14 @@ verify_chain <- function(entries, hashes, key = NULL,
          length(hashes), " hashes -- an entry or a hash has been ",
          "dropped")
   }
-  prev <- .as_bytes(genesis)
+  prev <- .sechsh_as_bytes(genesis)
   first_bad <- NULL
   for (i in seq_along(entries)) {
     want <- chain_entry(prev, entries[[i]], key)$hash
     if (!.constant_time_equal(want, hashes[[i]])) {
       if (is.null(first_bad)) first_bad <- i - 1L
     }
-    prev <- .as_bytes(hashes[[i]])
+    prev <- .sechsh_as_bytes(hashes[[i]])
   }
   list(estimate = is.null(first_bad), intact = is.null(first_bad),
        first_bad = first_bad,
@@ -101,7 +101,7 @@ verify_chain <- function(entries, hashes, key = NULL,
 #' RFC 6962 Merkle Tree Hash
 #' @export
 merkle_root <- function(leaves) {
-  L <- lapply(leaves, .as_bytes)
+  L <- lapply(leaves, .sechsh_as_bytes)
   if (length(L) == 0L) return(sha256(raw(0)))
   if (length(L) == 1L) return(sha256(c(.LEAF, L[[1L]])))
   k <- 1L
@@ -114,7 +114,7 @@ merkle_root <- function(leaves) {
 #' Build an inclusion proof (audit path) for the given leaf
 #' @export
 inclusion_proof <- function(leaves, index) {
-  L <- lapply(leaves, .as_bytes)
+  L <- lapply(leaves, .sechsh_as_bytes)
   m <- as.integer(index)
   if (m < 0L || m >= length(L)) {
     stop("sechsh: index ", m, " is outside a log of ",
@@ -134,7 +134,7 @@ inclusion_proof <- function(leaves, index) {
     }
   }
   list(path = path,
-       path_hex = lapply(path, .hexlify),
+       path_hex = lapply(path, .sechsh_hexlify),
        length = length(path), index = m, size = length(L),
        note = paste("log2(n) hashes prove membership against a ",
                     "trusted head"))
@@ -147,7 +147,7 @@ verify_inclusion <- function(leaf, index, size, path, root) {
   if (m < 0L || m >= n) {
     stop("sechsh: index ", m, " is outside a log of ", n)
   }
-  node <- sha256(c(.LEAF, .as_bytes(leaf)))
+  node <- sha256(c(.LEAF, .sechsh_as_bytes(leaf)))
   # The Python collects the descent top-down, then folds bottom-up.
   lo <- 0L; hi <- n
   steps <- list(); used <- 0L
@@ -158,7 +158,7 @@ verify_inclusion <- function(leaf, index, size, path, root) {
     }
     k <- 1L
     while (k * 2L < hi - lo) k <- k * 2L
-    sib <- .as_bytes(p[[used + 1L]])
+    sib <- .sechsh_as_bytes(p[[used + 1L]])
     used <- used + 1L
     if (m - lo < k) {
       steps[[length(steps) + 1L]] <- list(sib = sib, on_right = TRUE)
@@ -176,7 +176,7 @@ verify_inclusion <- function(leaf, index, size, path, root) {
       node <- sha256(c(.NODE, st$sib, node))
     }
   }
-  list(root = node, root_hex = .hexlify(node),
+  list(root = node, root_hex = .sechsh_hexlify(node),
        valid = .constant_time_equal(node, root),
        path_used = used)
 }

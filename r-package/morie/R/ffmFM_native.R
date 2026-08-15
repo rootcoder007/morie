@@ -13,7 +13,7 @@
 # Rendle, S. (2010) "Factorization Machines", ICDM 2010, 995-1000,
 # doi:10.1109/ICDM.2010.127. The model FFM specialises.
 
-.EPS <- 1e-12
+.ffmFM_EPS <- 1e-12
 
 .n_parameters <- function(n_features, n_fields, k_dim, model = "ffm") {
   n <- as.integer(n_features); f <- as.integer(n_fields)

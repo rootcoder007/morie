@@ -18,8 +18,8 @@
 # weights, and the same half-sample bootstrap with the 1/sqrt(2)
 # rescale justified by Corollary 5.
 
-.EPS <- 1e-12
-.WEIGHTS <- c("qini", "autoc", "uniform")
+.slvgrf_EPS <- 1e-12
+.slvgrf_WEIGHTS <- c("qini", "autoc", "uniform")
 
 .slvgrf_vec <- function(x) as.numeric(as.matrix(x))
 
@@ -87,9 +87,9 @@ toc_curve <- function(scores, priority) {
 #' RATE: int alpha(u) TOC(u) du
 #' @export
 rate <- function(scores, priority, weight = "autoc") {
-  if (!(weight %in% .WEIGHTS)) {
+  if (!(weight %in% .slvgrf_WEIGHTS)) {
     stop("slvgrf: weight must be one of ",
-         paste(.WEIGHTS, collapse = ", "), ", got ", deparse(weight))
+         paste(.slvgrf_WEIGHTS, collapse = ", "), ", got ", deparse(weight))
   }
   c <- toc_curve(scores, priority)
   n <- c$n
@@ -165,7 +165,7 @@ rate_test <- function(scores, priority, weight = "autoc", reps = 500L,
   m <- mean(draws)
   v <- var(draws)
   se <- sqrt(max(v, 0) / 2)
-  z <- if (se > .EPS) theta / se else 0
+  z <- if (se > .slvgrf_EPS) theta / se else 0
   p <- 2 * (1 - pnorm(abs(z)))
   list(estimate = theta, se = se, z = z, p_value = p,
        weight = weight, reps = as.integer(reps), n = n,
