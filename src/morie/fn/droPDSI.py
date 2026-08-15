@@ -119,17 +119,38 @@ def palmer_pdsi(precip, pet, awc=100.0, month=None):
             for i in range(n)]
     d = [P[i] - Phat[i] for i in range(n)]
 
-    md = sum(abs(v) for v in d) / n
-    mP = sum(P) / n
-    mPE = sum(PE) / n
-    mL = sum(L) / n
-    mR = sum(R) / n
-    mRO = sum(RO) / n
-    # Palmer's climatic characteristic
-    num = (mPE + mR + mRO) / (mP + mL + _EPS) + 2.8
-    Kp = 1.5 * math.log10(num / (md + _EPS) if num > 0 else 1.0) + 0.5
-    Kp = max(Kp, 0.0)
-    Z = [Kp * v for v in d]
+    # Palmer's climatic characteristic is computed PER CALENDAR MONTH and
+    # then rescaled across months; a single record-wide K collapses to zero
+    # on ordinary seasonal data and takes the whole index with it.
+    if month is None:
+        mon = [i % 12 for i in range(n)]
+    else:
+        mon = [int(v) % 12 for v in k.vec(month)]
+        if len(mon) != n:
+            raise ValueError("droPDSI: %d observations but %d month labels"
+                             % (n, len(mon)))
+    Kp_month = [0.0] * 12
+    D_month = [0.0] * 12
+    for j in range(12):
+        idx = [i for i in range(n) if mon[i] == j]
+        if not idx:
+            continue
+        cnt = float(len(idx))
+        Dj = sum(abs(d[i]) for i in idx) / cnt
+        mPE = sum(PE[i] for i in idx) / cnt
+        mR = sum(R[i] for i in idx) / cnt
+        mRO = sum(RO[i] for i in idx) / cnt
+        mP = sum(P[i] for i in idx) / cnt
+        mL = sum(L[i] for i in idx) / cnt
+        ratio_j = (mPE + mR + mRO) / (mP + mL + _EPS) + 2.8
+        arg = ratio_j / (Dj + _EPS)
+        Kp_month[j] = 1.5 * math.log10(arg if arg > _EPS else _EPS) + 0.5
+        D_month[j] = Dj
+    denom = sum(D_month[j] * Kp_month[j] for j in range(12))
+    if abs(denom) > _EPS:
+        Kp_month = [17.67 * v / denom for v in Kp_month]
+    Kp = sum(Kp_month) / 12.0
+    Z = [Kp_month[mon[i]] * d[i] for i in range(n)]
 
     X = []
     prev = 0.0
@@ -142,7 +163,8 @@ def palmer_pdsi(precip, pet, awc=100.0, month=None):
         "estimate": X, "pdsi": X, "z_index": Z, "departure": d,
         "cafec_precip": Phat,
         "alpha": alpha, "beta": beta, "gamma": gamma, "delta": delta,
-        "K": Kp, "evapotranspiration": ET, "recharge": R, "runoff": RO,
+        "K": Kp, "K_month": Kp_month,
+        "mean_abs_departure": D_month, "evapotranspiration": ET, "recharge": R, "runoff": RO,
         "loss": L, "soil_surface_capacity": su_cap,
         "soil_under_capacity": sl_cap, "n": n,
         "duration_factor": 0.897, "duration_divisor": 3.0,
