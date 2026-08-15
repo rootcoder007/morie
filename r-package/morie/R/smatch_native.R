@@ -12,7 +12,7 @@
 # Sec. 4 design (n, log offset, per-individual factor columns), the
 # same IRLS Poisson fit and the same Sec. 7.6 sample-size expression.
 
-.SMA_EPS <- 1e-12
+.smatch_EPS <- 1e-12
 
 #' Build the SCCS Poisson design matrix (Sec. 4)
 #'
@@ -49,7 +49,7 @@ morie_smatch_poisson_design <- function(cases, risk_periods,
     cells <- people[[i]]
     for (cell in cells) {
       j <- cell$age; r <- cell$risk; e <- cell$exposure; n <- cell$n
-      if (e <= .SMA_EPS) next
+      if (e <= .smatch_EPS) next
       row <- numeric(ncol)
       if (r > 0L) row[r] <- 1
       if (j > 0L) row[n_risk + j] <- 1
@@ -145,7 +145,7 @@ morie_smatch_sample_size <- function(log_ri, r, p_exposed,
   eb <- exp(b); den <- rr * eb + 1 - rr
   rho <- rr * eb / den
   A <- 2 * (rho * b - log(den))
-  if (A <= .SMA_EPS)
+  if (A <= .smatch_EPS)
     stop(sprintf("smatch: the information A is non-positive (%.3e) -- the design carries no signal here", A))
   B <- b * b * rho * (1 - rho) / A
   C <- 1 + (1 - p) / (p * den)
@@ -167,7 +167,7 @@ morie_smatch_power <- function(n_events, log_ri, r, p_exposed,
                                  power = 0.5)
   A <- s$A; B <- s$B; C <- s$C; za <- s$z_alpha_2
   root <- sqrt(max(n_events * A / C, 0))
-  zg <- if (B > .SMA_EPS) (root - za) / sqrt(B) else Inf
+  zg <- if (B > .smatch_EPS) (root - za) / sqrt(B) else Inf
   list(power = pnorm(zg), z_power = zg, n_events = n_events,
        A = A, B = B, C = C)
 }
@@ -225,4 +225,9 @@ morie_smatch_relative_efficiency <- function(r, log_ri) {
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
 # house entry point: the package exports one morie_<module>
+# Python declares these three as aliases of sccs_poisson_fit.
+morie_smatch_selfcontrolledcaseseries <- morie_smatch_sccs_poisson_fit
+morie_smatch_sccs_design <- morie_smatch_sccs_poisson_fit
+morie_smatch_sccsdesign <- morie_smatch_sccs_poisson_fit
+
 morie_smatch <- morie_smatch_poisson_design
