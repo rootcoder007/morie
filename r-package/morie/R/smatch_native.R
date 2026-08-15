@@ -66,59 +66,22 @@ morie_smatch_poisson_design <- function(cases, risk_periods,
 #' @keywords internal
 #' @noRd
 .smatch_build_intervals <- function(start, end, exposure, events, rp,
-                                      ab) {
-  total_dur <- end - start
-  boundaries <- c(0, ab, total_dur)
-  # risk windows relative to case start
-  risk_int <- lapply(rp, function(r) c(max(0, r[1]), min(total_dur, r[2])))
-  out <- list()
-  for (b in seq_len(length(boundaries) - 1L)) {
-    lo <- boundaries[b]; hi <- boundaries[b + 1L]
-    if (hi <= lo) next
-    age <- b - 1L
-    in_risk <- which(sapply(risk_int, function(ri) !(ri[2] <= lo || ri[1] >= hi)))
-    if (length(in_risk) == 0L) {
-      dur <- hi - lo
-      ne <- sum(sapply(events, function(t) t > lo && t <= hi))
-      out[[length(out) + 1L]] <- list(age = age, risk = 0L,
-                                       exposure = dur, n = ne)
-    } else {
-      # split into exposed and unexposed portions within this age band
-      cuts <- sort(unique(c(lo, hi,
-                            unlist(lapply(risk_int[in_risk],
-                                          function(ri) c(ri[1], ri[2]))))))
-      cuts <- cuts[cuts > lo & cuts < hi]
-      for (k in seq_len(length(cuts) - 1L)) {
-        a <- cuts[k]; z <- cuts[k + 1L]
-        mid <- (a + z) / 2
-        is_risk <- any(sapply(risk_int[in_risk], function(ri) ri[1] <= mid && ri[2] >= mid))
-        dur <- z - a
-        ne <- sum(sapply(events, function(t) t > a && t <= z))
-        out[[length(out) + 1L]] <- list(age = age, risk = if (is_risk) 1L else 0L,
-                                         exposure = dur, n = ne)
-      }
-    }
+                                    ab) {
+  # Python's smatch imports build_intervals from sccsno rather than defining
+  # one; delegating keeps the two in step instead of drifting apart again.
+  cells <- morie_sccsno_build_intervals(start, end, exposure, events, rp, ab)
+  as_cell <- function(band, risk, e, n) {
+    list(age = as.integer(band), risk = as.integer(risk),
+         exposure = as.numeric(e), n = as.numeric(n))
   }
-  out
+  if (is.matrix(cells)) {
+    return(lapply(seq_len(nrow(cells)), function(q)
+      as_cell(cells[q, 1L], cells[q, 2L], cells[q, 3L], cells[q, 4L])))
+  }
+  lapply(cells, function(cl)
+    as_cell(cl[[1L]], cl[[2L]], cl[[3L]], cl[[4L]]))
 }
 
-#' IRLS Poisson fit of the SCCS design
-#'
-#' Returns the same relative incidences the conditional multinomial
-#' fit returns: the per-individual factors are nuisance parameters
-#' whose only job is to reproduce the observed totals.
-#'
-#' @param cases List of case dicts.
-#' @param risk_periods List of \code{c(start, end)} windows.
-#' @param age_breaks Numeric vector.
-#' @param iters Maximum IRLS iterations.
-#' @tol Convergence tolerance on max parameter change.
-#' @param ridge Ridge added to the normal equation.
-#' @return List with \code{relative_incidence} (==\code{estimate}),
-#'   \code{log_ri}, \code{age_effects}, \code{individual_effects},
-#'   \code{coef}, \code{converged}, \code{iterations}, \code{n_rows},
-#'   \code{n_people}, \code{method}, \code{identical_to}.
-#' @export
 morie_smatch_sccs_poisson_fit <- function(cases, risk_periods,
                                            age_breaks = numeric(0),
                                            iters = 200, tol = 1e-12,
