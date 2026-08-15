@@ -72,8 +72,22 @@ __all__ = ["svdd", "support_vector_data_description"]
 
 
 def _mat(X, name):
-    rows = [[float(v) for v in r]
-            for r in np.atleast_2d(np.asarray(X, dtype=float))]
+    # A flat sequence of n numbers is n observations in ONE dimension, not
+    # a single n-dimensional point. atleast_2d gives the second reading --
+    # a (1, n) matrix -- which makes the description a sphere around one
+    # point, so R^2 comes out zero and the fit is silently meaningless.
+    # R's as.matrix() takes the first reading, which is also the
+    # convention every SVDD reference assumes, so match it here.
+    arr = np.asarray(X, dtype=float)
+    flat = getattr(arr, "ndim", None) == 1 or (
+        isinstance(X, (list, tuple)) and X
+        and not isinstance(X[0], (list, tuple))
+        and not hasattr(X[0], "__len__"))
+    if flat:
+        rows = [[float(v)] for v in np.asarray(X, dtype=float)]
+    else:
+        rows = [[float(v) for v in r]
+                for r in np.atleast_2d(arr)]
     if not rows or not rows[0]:
         raise ValueError("svdd: %s must be a non-empty (n, p) matrix" % name)
     w = len(rows[0])
