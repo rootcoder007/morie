@@ -85,7 +85,7 @@
   w <- if (is.null(obs_weights)) rep(1.0, length(y)) else as.numeric(obs_weights)
   eps <- 0.0
   for (it in seq_len(100L)) {
-    p <- .s03sigmoid(off[idx] + eps * H[idx])
+    p <- .tmlcic_sig(off[idx] + eps * H[idx])
     grad <- sum(w[idx] * H[idx] * (y[idx] - p))
     hess <- -sum(w[idx] * H[idx] ^ 2 * p * (1 - p))
     if (abs(hess) < 1e-12) {
