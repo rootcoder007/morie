@@ -25,7 +25,7 @@
 .KERNELS <- c("matern52", "se")
 .ACQ <- c("ei", "pi", "lcb")
 
-.phi <- function(z) exp(-0.5 * z * z) / sqrt(2 * pi)
+.bayopt_phi <- function(z) exp(-0.5 * z * z) / sqrt(2 * pi)
 
 .Phi <- function(z) 0.5 * (1.0 + 2 * pnorm(z) - 1.0)
 # pnorm is the standard normal CDF. 2 * pnorm(z) - 1 = .erf(z/sqrt(2)).
@@ -201,9 +201,9 @@ acquisition_gradient <- function(gmu, gsd, mu, sd, best, acq = "ei",
   if (sd <= 1e-12) return(rep(0.0, d))
   g <- (best - xi - mu) / sd
   if (acq == "ei")
-    return(.phi(g) * gsd - .Phi(g) * gmu)
+    return(.bayopt_phi(g) * gsd - .Phi(g) * gmu)
   dg <- (-gmu - g * gsd) / sd
-  .phi(g) * dg
+  .bayopt_phi(g) * dg
 }
 
 maximise_acquisition <- function(X, y, best, box, acq = "ei", kernel = "matern52",
@@ -215,7 +215,7 @@ maximise_acquisition <- function(X, y, best, box, acq = "ei", kernel = "matern52
   if (is.null(rnd)) {
     st <- 12345L
     rnd <- function() {
-      st <<- (1103515245 * st + 12345L) %% (1L * 2^31)
+      st <<- .ghc_lcg31(st)
       st / as.numeric(2L^31)
     }
   }
@@ -275,7 +275,7 @@ probability_of_improvement <- function(mu, sd, best, xi = 0.0) {
 expected_improvement <- function(mu, sd, best, xi = 0.0) {
   if (sd <= 0) return(0.0)
   g <- (best - xi - mu) / sd
-  sd * (g * .Phi(g) + .phi(g))
+  sd * (g * .Phi(g) + .bayopt_phi(g))
 }
 
 lower_confidence_bound <- function(mu, sd, kappa = 2.0) {
@@ -311,13 +311,16 @@ bayopt <- function(f, bounds, n_iter = 20, n_init = 5, acq = "ei",
   if (is.null(X0) && n_init < 2)
     stop("bayopt: at least two initial points are needed")
   d <- length(box)
-  st <- as.integer((as.integer(seed) & 0x7FFFFFFF) %||% 1L)
+  # R's `&` is LOGICAL, not bitwise: as.integer(seed) & 0x7FFFFFFF
+  # evaluates to TRUE and coerces to 1, so every seed produced the same
+  # stream. The Python arm's `int(seed) & 0x7FFFFFFF` is a mask.
+  st <- bitwAnd(as.integer(seed), 2147483647L)
   if (st == 0L) st <- 1L
   # local RNG
   rnd_env <- new.env()
   rnd_env$st <- st
   rnd <- function() {
-    rnd_env$st <- (1103515245L * rnd_env$st + 12345L) %% (1L * 2^31)
+    rnd_env$st <- .ghc_lcg31(rnd_env$st)
     rnd_env$st / as.numeric(2L^31)
   }
   draw <- function() sapply(seq_len(d), function(i) box[[i]][1] + rnd() * (box[[i]][2] - box[[i]][1]))

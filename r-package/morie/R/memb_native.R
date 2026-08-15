@@ -4,7 +4,7 @@
 
 .ghc_unif_int <- function(e, n) floor(.ghc_unif(e, n) * n)
 
-.rng <- function(seed) .ghc_rng(seed)
+.memb_rng <- function(seed) .ghc_rng(seed)
 
 logistic_trainer <- function(l2 = 1e-3, epochs = 300L, lr = 0.5, seed = 0) {
   function(X, y) {
@@ -120,7 +120,7 @@ synthesize <- function(target_predict, c, n_features, feature_values = NULL,
   if (k_min < 1L) stop("memb: k_min must be >= 1")
   k_max <- if (is.null(k_max)) n_features else as.integer(k_max)
   if (k_max < k_min) stop("memb: k_max must be at least k_min")
-  e <- .rng(seed)
+  e <- .memb_rng(seed)
   vals <- if (is.null(feature_values)) lapply(seq_len(n_features), function(j) c(0.0, 1.0)) else feature_values
   if (length(vals) != n_features) stop("memb: feature_values must have one entry per feature")
   rand_record <- function(base = NULL, k = NULL) {
@@ -172,7 +172,7 @@ synthesize <- function(target_predict, c, n_features, feature_values = NULL,
 
 synthesize_marginals <- function(X, n, seed = 0) {
   if (length(X) == 0L) stop("memb: no data to take marginals from")
-  e <- .rng(seed)
+  e <- .memb_rng(seed)
   d <- length(X[[1]])
   cols <- lapply(seq_len(d), function(j) sapply(X, function(row) row[j]))
   out <- matrix(0, as.integer(n), d)
@@ -183,7 +183,7 @@ synthesize_marginals <- function(X, n, seed = 0) {
 
 synthesize_noisy <- function(X, fraction = 0.1, feature_values = NULL, seed = 0) {
   if (fraction < 0 || fraction > 1) stop("memb: fraction must lie in [0, 1]")
-  e <- .rng(seed)
+  e <- .memb_rng(seed)
   d <- length(X[[1]])
   vals <- if (is.null(feature_values)) lapply(seq_len(d), function(j) sort(unique(sapply(X, function(row) row[j])))) else feature_values
   out <- lapply(X, function(row) {

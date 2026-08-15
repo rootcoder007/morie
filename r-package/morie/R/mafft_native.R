@@ -538,7 +538,7 @@ find_homologous_segments <- function(group1, group2, scoring,
 }
 
 arrange_segments <- function(segments) {
-  if (is.matrix(segments)) segs <- as.list(1:nrow(segments)) else
+  if (is.matrix(segments)) segs <- as.list(seq_len(nrow(segments))) else
     segs <- as.list(seq_along(segments))
   if (length(segs) == 0L) return(list())
   if (is.matrix(segments)) {

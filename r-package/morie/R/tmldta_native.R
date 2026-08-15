@@ -19,21 +19,21 @@
 .TMLDTA_METHODS <- c("cv-tmle", "sample-split", "naive")
 .EPS <- 1e-9
 
-.logit <- function(p) {
+.tmldta_logit <- function(p) {
   q <- min(max(as.numeric(p), .EPS), 1 - .EPS)
   log(q / (1 - q))
 }
 
-.expit <- function(x) {
+.tmldta_expit <- function(x) {
   if (x > -700) 1 / (1 + exp(-x)) else 0
 }
 
-.qnorm <- function(p) {
+.tmldta_qnorm <- function(p) {
   qnorm(p, 0, 1)
 }
 
 # Logistic IRLS that returns a coefficient vector for a 0/1 outcome.
-.logit_irls <- function(Z, a, ridge = 1e-8, max_iter = 50L,
+.tmldta_logit_irls <- function(Z, a, ridge = 1e-8, max_iter = 50L,
                         tol = 1e-10) {
   n <- length(a)
   if (is.matrix(Z)) {
@@ -47,7 +47,7 @@
   XtWz <- numeric(p)
   for (it in seq_len(max_iter)) {
     eta <- as.numeric(X %*% b)
-    pc <- pmin(pmax(.expit(eta), .EPS), 1 - .EPS)
+    pc <- pmin(pmax(.tmldta_expit(eta), .EPS), 1 - .EPS)
     W <- pc * (1 - pc)
     z <- eta + (a - pc) / W
     XtWX <- crossprod(X, X * W) + ridge * diag(p)
@@ -82,10 +82,10 @@
   X <- lapply(rows, function(i) rowf(A_[i], i))
   Xm <- do.call(rbind, X)
   av <- ys[rows]
-  b <- .logit_irls(Xm, av, ridge = max(ridge, 1e-10))
+  b <- .tmldta_logit_irls(Xm, av, ridge = max(ridge, 1e-10))
   qf <- function(a, i) {
     r <- rowf(a, i)
-    .expit(sum(r * b))
+    .tmldta_expit(sum(r * b))
   }
   list(q = qf, b = b)
 }
@@ -102,8 +102,8 @@
   }
   Xr <- X[rows, , drop = FALSE]
   catf <- function(mask) {
-    b <- .logit_irls(Xr, mask[rows], ridge = max(ridge, 1e-10))
-    .expit(as.numeric(X %*% b))
+    b <- .tmldta_logit_irls(Xr, mask[rows], ridge = max(ridge, 1e-10))
+    .tmldta_expit(as.numeric(X %*% b))
   }
   pH <- catf(as.numeric(A_ == aH))
   pL <- catf(as.numeric(A_ == aL))
@@ -142,14 +142,14 @@
     H[i] <- (if (A_[i] == aH) 1 / g$gH[i] else 0) -
             (if (A_[i] == aL) 1 / g$gL[i] else 0)
   }
-  off <- vapply(seq_len(n), function(i) .logit(fit$q(A_[i], i)),
+  off <- vapply(seq_len(n), function(i) .tmldta_logit(fit$q(A_[i], i)),
                 numeric(1))
   eps <- 0
   if (target) {
     for (it in seq_len(100L)) {
       num <- den <- 0
       for (i in est_rows) {
-        p <- .expit(off[i] + eps * H[i])
+        p <- .tmldta_expit(off[i] + eps * H[i])
         num <- num + H[i] * (ys[i] - p)
         den <- den + H[i] * H[i] * p * (1 - p)
       }
@@ -161,13 +161,13 @@
   }
   qstar <- function(a, i) {
     h <- if (a == aH) 1 / g$gH[i] else -1 / g$gL[i]
-    .expit(.logit(fit$q(a, i)) + eps * h)
+    .tmldta_expit(.tmldta_logit(fit$q(a, i)) + eps * h)
   }
   m <- length(est_rows)
   psi <- mean(vapply(est_rows, function(i) qstar(aH, i) - qstar(aL, i),
                      numeric(1)))
   D <- vapply(est_rows, function(i) {
-    resid <- .expit(off[i] + eps * H[i])
+    resid <- .tmldta_expit(off[i] + eps * H[i])
     H[i] * (ys[i] - resid) + qstar(aH, i) - qstar(aL, i) - psi
   }, numeric(1))
   list(psi = psi, D = D, info = list(eps = eps,
@@ -267,7 +267,7 @@ morie_tmle_data_adaptive <- function(y, D, X, candidate_strata = NULL,
   }
   psi <- rng * psi_hat
   se <- rng * sqrt(sigma2 / n)
-  z <- .qnorm(0.5 + 0.5 * level)
+  z <- .tmldta_qnorm(0.5 + 0.5 * level)
   chosen <- table(unlist(lapply(splits,
                                  function(s) paste0(s$aL, ",", s$aH))))
   modal <- names(which.max(chosen))

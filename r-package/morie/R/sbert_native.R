@@ -95,7 +95,7 @@ pair_cost <- function(n, mode = "cross-encoder") {
     stop("sbert: need at least 2 sentences")
   if (!(mode %in% c("cross-encoder", "bi-encoder")))
     stop("sbert: mode must be cross-encoder or bi-encoder, got ", format(mode))
-  cross <- N * (N - 1L) %/% 2L
+  cross <- (N * (N - 1L)) %/% 2L
   list(forward_passes = if (mode == "cross-encoder") cross else N,
        cross_encoder = cross, bi_encoder = N,
        speedup = cross / N, n = N,

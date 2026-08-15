@@ -15,7 +15,7 @@
 
 .EPS <- 1e-12
 
-.sigmoid <- function(x) 1 / (1 + exp(-x))
+.elmo_sigmoid <- function(x) 1 / (1 + exp(-x))
 
 .layer_weights <- function(raw) {
   if (length(raw) == 0L) stop("elmo: no layer weights given")
@@ -35,10 +35,10 @@
   Wha <- as.matrix(Wh)
   ba <- as.numeric(b)
   z <- as.numeric(Wxa %*% xa + Wha %*% ha + ba)
-  ig <- .sigmoid(z[seq_len(d)])
-  fg <- .sigmoid(z[d + seq_len(d)])
+  ig <- .elmo_sigmoid(z[seq_len(d)])
+  fg <- .elmo_sigmoid(z[d + seq_len(d)])
   gg <- tanh(z[2 * d + seq_len(d)])
-  og <- .sigmoid(z[3 * d + seq_len(d)])
+  og <- .elmo_sigmoid(z[3 * d + seq_len(d)])
   cn <- fg * ca + ig * gg
   hn <- og * tanh(cn)
   list(h = hn, c = cn)

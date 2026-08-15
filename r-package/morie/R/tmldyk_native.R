@@ -16,17 +16,17 @@
 
 .EPS <- 1e-12
 
-.logit <- function(p) {
+.tmldyk_logit <- function(p) {
   q <- min(max(as.numeric(p), 1e-9), 1 - 1e-9)
   log(q / (1 - q))
 }
 
-.expit <- function(x) {
+.tmldyk_expit <- function(x) {
   if (x > -700) 1 / (1 + exp(-x)) else 0
 }
 
 # Logistic IRLS that returns a coefficient vector.
-.logit_irls <- function(Z, a, ridge = 1e-8, max_iter = 50L,
+.tmldyk_logit_irls <- function(Z, a, ridge = 1e-8, max_iter = 50L,
                         tol = 1e-10) {
   n <- length(a)
   X <- if (is.matrix(Z)) Z else do.call(rbind, Z)
@@ -34,7 +34,7 @@
   b <- rep(0, p)
   for (it in seq_len(max_iter)) {
     eta <- as.numeric(X %*% b)
-    pc <- pmin(pmax(.expit(eta), 1e-9), 1 - 1e-9)
+    pc <- pmin(pmax(.tmldyk_expit(eta), 1e-9), 1 - 1e-9)
     W <- pc * (1 - pc)
     z <- eta + (a - pc) / W
     XtWX <- crossprod(X, X * W) + ridge * diag(p)
@@ -48,7 +48,7 @@
 }
 
 # Solve a least-squares problem with a ridge.
-.lstsq <- function(Z, yv, ridge = 1e-8) {
+.tmldyk_lstsq <- function(Z, yv, ridge = 1e-8) {
   X <- if (is.matrix(Z)) Z else do.call(rbind, Z)
   p <- ncol(X)
   solve(crossprod(X) + ridge * diag(p), crossprod(X, yv))
@@ -87,9 +87,9 @@
   ys <- sc$scaled
   if (is.null(g)) {
     Z <- cbind(1, W)
-    b <- .logit_irls(Z, a)
+    b <- .tmldyk_logit_irls(Z, a)
     eta <- as.numeric(Z %*% b)
-    gg <- pmin(pmax(.expit(eta), 0.01), 0.99)
+    gg <- pmin(pmax(.tmldyk_expit(eta), 0.01), 0.99)
   } else {
     gg <- pmax(pmin(as.numeric(g), 1 - 1e-6), 1e-6)
   }
@@ -110,10 +110,10 @@
   }
   H <- a / gg - (1 - a) / (1 - gg)
   qa <- ifelse(a == 1, q1, q0)
-  off <- vapply(qa, .logit, numeric(1))
+  off <- vapply(qa, .tmldyk_logit, numeric(1))
   e <- 0
   for (it in seq_len(100L)) {
-    p <- .expit(off + e * H)
+    p <- .tmldyk_expit(off + e * H)
     gr <- sum(H * (ys - p))
     he <- sum(H * H * p * (1 - p))
     if (he < 1e-12) break
@@ -121,8 +121,8 @@
     e <- e + step
     if (abs(step) < 1e-12) break
   }
-  q1s <- .expit(.logit(q1) + e / gg)
-  q0s <- .expit(.logit(q0) - e / (1 - gg))
+  q1s <- .tmldyk_expit(.tmldyk_logit(q1) + e / gg)
+  q0s <- .tmldyk_expit(.tmldyk_logit(q0) - e / (1 - gg))
   psi_s <- mean(q1s - q0s)
   psi <- psi_s * sc$range
   d <- vapply(seq_len(n), function(i) {
