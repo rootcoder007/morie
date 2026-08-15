@@ -23,7 +23,7 @@
 # Graph Neural Networks", ICML 2021, PMLR 139, 9323-9332,
 # arXiv:2102.09844.
 
-.EPS <- 1e-12
+.painn_EPS <- 1e-12
 
 # ||v|| -- an invariant built from an equivariant.
 vector_norm <- function(v) {
@@ -55,7 +55,7 @@ scalar_vector_message <- function(s_j, v_j, r_ij, phi_s, phi_v,
   V <- as.matrix(v_j)
   r <- as.numeric(r_ij)
   d <- sqrt(sum(r * r))
-  if (d <= .EPS)
+  if (d <= .painn_EPS)
     stop("painn: two atoms occupy the same position")
   hat <- r / d
   w <- as.numeric(W_rbf(d))

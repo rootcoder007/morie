@@ -14,9 +14,9 @@
 # the same row-wise relu h W1 + b1 followed by W2 + b2 in rFF, and
 # the same per-row LayerNorm on the residual sum.
 
-.EPS <- 1e-5
+.setT_EPS <- 1e-5
 
-.ln <- function(row, eps = .EPS) {
+.ln <- function(row, eps = .setT_EPS) {
   n <- length(row)
   mu <- sum(row) / n
   var <- sum((row - mu)^2) / n

@@ -10,7 +10,7 @@
 # of IR techniques", ACM Transactions on Information Systems 20(4),
 # 422-446. The logarithmic discount.
 
-.EPS <- 1e-12
+.fairRC_EPS <- 1e-12
 
 .cutoffs <- function(N, step = 10L) {
   n <- as.integer(N); s <- as.integer(step)
@@ -30,8 +30,8 @@
     if (measure == "rND") {
       tot <- tot + w * abs(p - P)
     } else if (measure == "rKL") {
-      a <- min(max(p, .EPS), 1 - .EPS)
-      b <- min(max(P, .EPS), 1 - .EPS)
+      a <- min(max(p, .fairRC_EPS), 1 - .fairRC_EPS)
+      b <- min(max(P, .fairRC_EPS), 1 - .fairRC_EPS)
       tot <- tot + w * (a * log(a / b) + (1 - a) * log((1 - a) / (1 - b)))
     } else {
       npos <- sum(protected[seq_len(i)])
@@ -50,7 +50,7 @@
   npos <- sum(as.integer(protected))
   worst <- c(rep(0L, n - npos), rep(1L, npos))
   z <- .raw(worst, measure, step)
-  if (z > .EPS) z else 1
+  if (z > .fairRC_EPS) z else 1
 }
 
 .measure <- function(protected, measure, step, normalize, caveat = NULL) {

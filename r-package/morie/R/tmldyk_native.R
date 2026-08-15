@@ -14,7 +14,7 @@
 # carries 1/g_min), the private confidence interval that adds the
 # mechanism's variance, and the basic composition rule.
 
-.EPS <- 1e-12
+.tmldyk_EPS <- 1e-12
 
 .tmldyk_logit <- function(p) {
   q <- min(max(as.numeric(p), 1e-9), 1 - 1e-9)
@@ -68,7 +68,7 @@
   a <- if (is.null(lower)) min(v) else as.numeric(lower)
   b <- if (is.null(upper)) max(v) else as.numeric(upper)
   if (b <= a) stop("tmlcou: the upper bound must exceed the lower one")
-  if (any(v < a - .EPS | v > b + .EPS))
+  if (any(v < a - .tmldyk_EPS | v > b + .tmldyk_EPS))
     stop("tmlcou: an outcome lies outside the stated bounds")
   list(scaled = (v - a) / (b - a), lower = a, upper = b, range = b - a)
 }

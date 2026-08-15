@@ -7,7 +7,7 @@
 # "Curiosity-driven Exploration by Self-supervised Prediction", ICML,
 # arXiv:1705.05363. Eqs. 2-7.
 
-.EPS <- 1e-300
+.explor_EPS <- 1e-300
 
 .mat <- function(x, name) {
   if (is.data.frame(x)) x <- as.matrix(x)
@@ -123,7 +123,7 @@ explor <- function(states, actions, next_states, n_actions = NULL,
       zi <- .matvec(Winv, inp_i)
       if (isTRUE(discrete)) {
         pr <- .explor_softmax(zi)
-        li <- -log(max(pr[Avec[t] + 1L], .EPS))
+        li <- -log(max(pr[Avec[t] + 1L], .explor_EPS))
         gi <- pr - avec
         if (which.max(pr) - 1L == Avec[t]) n_correct <- n_correct + 1L
       } else {

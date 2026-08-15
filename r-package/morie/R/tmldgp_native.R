@@ -13,7 +13,7 @@
 # coordinate-descent lasso, post-lasso refit on the support, and
 # targeted maximum likelihood with the fluctuation left unpenalised.
 
-.EPS <- 1e-12
+.tmldgp_EPS <- 1e-12
 
 .tmldgp_logit <- function(p) {
   q <- min(max(as.numeric(p), 1e-9), 1 - 1e-9)
@@ -58,7 +58,7 @@ morie_lasso_path <- function(X, y, lam, iters = 500L, tol = 1e-9) {
         r[i] <- t_[i] - b0 - s
       }
       zj <- sum(rows[, j]^2)
-      if (zj < .EPS) next
+      if (zj < .tmldgp_EPS) next
       sxx <- 0
       for (i in seq_len(n)) sxx <- sxx + rows[i, j] * r[i]
       new <- .soft(sxx / n, as.numeric(lam)) / (zj / n)

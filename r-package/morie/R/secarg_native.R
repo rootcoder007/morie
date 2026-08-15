@@ -46,7 +46,7 @@
 }
 
 #' @keywords internal
-.as_bytes <- function(x) {
+.secarg_as_bytes <- function(x) {
   if (is.raw(x)) return(x)
   if (is.character(x)) return(charToRaw(paste(x, collapse = "")))
   if (is.null(x)) return(raw(0))
@@ -63,7 +63,7 @@
 morie_secarg_variable_hash <- function(data, length) {
   T <- as.integer(length)
   if (T < 1L) stop("secarg: the output length must be positive")
-  a <- .as_bytes(data)
+  a <- .secarg_as_bytes(data)
   if (T <= 64L) return(.morie_blake2b_impl(c(.le32(T), a), T))
   r <- -(-T %/% 32L) - 2L
   out <- raw(0)
@@ -92,10 +92,10 @@ morie_secarg_prehash <- function(password, salt, parallelism, tag_length, memory
          paste(names(.TYPES), collapse = ", "), ", got ",
          deparse(variant))
   }
-  P <- .as_bytes(password)
-  S <- .as_bytes(salt)
-  K <- .as_bytes(secret)
-  X <- .as_bytes(associated)
+  P <- .secarg_as_bytes(password)
+  S <- .secarg_as_bytes(salt)
+  K <- .secarg_as_bytes(secret)
+  X <- .secarg_as_bytes(associated)
   if (length(S) < 8L) {
     stop("secarg: the salt must be at least 8 bytes ",
          "(the RFC recommends 16), got ", length(S))
@@ -267,7 +267,7 @@ morie_secarg_argon2 <- function(password, salt, memory = 32, passes = 3,
                      "returned with it"))
 }
 
-.hexlify <- function(bs) {
+.secarg_hexlify <- function(bs) {
   paste(format(as.hexmode(as.integer(bs)), width = 2,
                upper.case = TRUE), collapse = "")
 }

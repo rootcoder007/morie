@@ -20,7 +20,7 @@
 # Vaswani, A. et al. (2017) "Attention is all you need", NeurIPS
 # 2017, arXiv:1706.03762.
 
-.EPS <- 1e-12
+.patchT_EPS <- 1e-12
 
 # Cut one univariate series into patches of length P. With stride
 # equal to patch_len the patches are disjoint; a smaller stride
@@ -90,7 +90,7 @@ instance_norm <- function(x) {
     stop("patchT: need at least 2 points to normalise")
   m <- mean(v)
   sd <- sqrt(sum((v - m) ^ 2) / (length(v) - 1L))
-  if (sd <= .EPS)
+  if (sd <= .patchT_EPS)
     return(list(normalised = rep(0.0, length(v)), mean = m, sd = 0.0,
                 degenerate = TRUE))
   list(normalised = (v - m) / sd, mean = m, sd = sd,

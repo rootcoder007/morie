@@ -14,7 +14,7 @@
 # vocabulary is full, the same Viterbi over the split lattice for
 # the unigram model, and morie_sentpc_decode/unescape as a pure string operation.
 
-.EPS <- 1e-300
+.sentpc_EPS <- 1e-300
 .SPACE <- "\u2581"
 
 .escape_whitespace <- function(text, add_prefix = TRUE) {

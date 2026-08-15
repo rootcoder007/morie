@@ -17,10 +17,10 @@
 # (9.14)-(9.15), and the separation diagnostics.
 
 .TMLDTA_METHODS <- c("cv-tmle", "sample-split", "naive")
-.EPS <- 1e-9
+.tmldta_EPS <- 1e-9
 
 .tmldta_logit <- function(p) {
-  q <- min(max(as.numeric(p), .EPS), 1 - .EPS)
+  q <- min(max(as.numeric(p), .tmldta_EPS), 1 - .tmldta_EPS)
   log(q / (1 - q))
 }
 
@@ -47,7 +47,7 @@
   XtWz <- numeric(p)
   for (it in seq_len(max_iter)) {
     eta <- as.numeric(X %*% b)
-    pc <- pmin(pmax(.tmldta_expit(eta), .EPS), 1 - .EPS)
+    pc <- pmin(pmax(.tmldta_expit(eta), .tmldta_EPS), 1 - .tmldta_EPS)
     W <- pc * (1 - pc)
     z <- eta + (a - pc) / W
     XtWX <- crossprod(X, X * W) + ridge * diag(p)

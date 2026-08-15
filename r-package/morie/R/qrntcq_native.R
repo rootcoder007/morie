@@ -19,7 +19,7 @@
 # ratio is independent of the infected fraction for standard
 # quarantine.
 
-.EPS <- 1e-12
+.qrntcq_EPS <- 1e-12
 
 #' @keywords internal
 #' @noRd
@@ -57,7 +57,7 @@ gamma_generation_time <- function(shape = 2.83, scale = 1.86, grid = NULL,
     }
   }
   z <- .trapz(ts, dens)
-  if (z <= .EPS)
+  if (z <= .qrntcq_EPS)
     stop("qrntcq: the generation-time density integrates to zero")
   list(t = ts, density = as.numeric(dens) / z)
 }
@@ -117,7 +117,7 @@ quarantine_efficacy <- function(t_Q, t_R, generation_time = NULL,
     stop(sprintf("qrntcq: quarantine cannot start before ",
                  "exposure (t_Q %g < t_E %g)", q, as.numeric(t_E)))
   remaining <- .mass(ts, ys, q, ts[length(ts)])
-  if (remaining <= .EPS) {
+  if (remaining <= .qrntcq_EPS) {
     return(list(efficacy = 0.0, remaining_mass = remaining,
                 prevented_mass = 0.0,
                 note = paste0("no transmission remains after t_Q, so ",
@@ -238,7 +238,7 @@ optimal_duration <- function(t_Q = 3.0, generation_time = NULL,
   best <- NULL
   curve <- list()
   t <- as.numeric(t_Q) + as.numeric(step)
-  while (t <= as.numeric(t_max) + .EPS) {
+  while (t <= as.numeric(t_max) + .qrntcq_EPS) {
     e <- quarantine_efficacy(t_Q, t, g)$efficacy
     u <- e / (t - as.numeric(t_Q))
     curve[[length(curve) + 1L]] <- list(t_R = t, efficacy = e,

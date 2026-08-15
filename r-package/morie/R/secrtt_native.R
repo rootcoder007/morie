@@ -13,7 +13,7 @@
 # (cheap, zero record ciphertext touched) vs DEK rotation (one
 # record rewritten).
 
-.as_bytes <- function(x) {
+.secrtt_as_bytes <- function(x) {
   if (is.raw(x)) return(x)
   if (is.character(x)) return(charToRaw(paste(x, collapse = "")))
   if (is.null(x)) return(raw(0))
@@ -24,7 +24,7 @@
 #' @export
 generate_dek <- function(master_seed, record_id, salt = NULL) {
   r <- hkdf(master_seed, salt,
-            c(charToRaw("dek:"), .as_bytes(record_id)), 32L)
+            c(charToRaw("dek:"), .secrtt_as_bytes(record_id)), 32L)
   list(dek = r$okm, dek_hex = r$okm_hex,
        record_id = record_id,
        note = paste("per-record, so one leaked DEK exposes one ",
@@ -35,14 +35,14 @@ generate_dek <- function(master_seed, record_id, salt = NULL) {
 #' @export
 wrap_dek <- function(dek, kek, nonce, kek_id = "kek-1",
                      aad = raw(0)) {
-  d <- .as_bytes(dek)
+  d <- .secrtt_as_bytes(dek)
   if (length(d) != 32L) {
     stop("secrtt: a DEK must be 32 bytes, got ", length(d))
   }
-  bound <- c(.as_bytes(aad), .as_bytes(kek_id))
+  bound <- c(.secrtt_as_bytes(aad), .secrtt_as_bytes(kek_id))
   r <- aead_encrypt(kek, nonce, d, bound)
   list(wrapped = r$ciphertext, tag = r$tag,
-       nonce = .as_bytes(nonce), kek_id = kek_id,
+       nonce = .secrtt_as_bytes(nonce), kek_id = kek_id,
        wrapped_hex = r$ciphertext_hex,
        note = paste("the KEK id is authenticated, so a wrapped DEK ",
                     "cannot be replayed under a different KEK"))
@@ -52,8 +52,8 @@ wrap_dek <- function(dek, kek, nonce, kek_id = "kek-1",
 #' @export
 unwrap_dek <- function(wrapped, kek, audit_log = NULL) {
   r <- aead_decrypt(kek, wrapped$nonce, wrapped$wrapped, wrapped$tag,
-                    c(.as_bytes(wrapped$aad %||% raw(0)),
-                      .as_bytes(wrapped$kek_id)))
+                    c(.secrtt_as_bytes(wrapped$aad %||% raw(0)),
+                      .secrtt_as_bytes(wrapped$kek_id)))
   if (!is.null(audit_log)) {
     audit_log[[length(audit_log) + 1L]] <- list(
       event = "unwrap", kek_id = wrapped$kek_id, ok = r$valid)
@@ -73,14 +73,14 @@ unwrap_dek <- function(wrapped, kek, audit_log = NULL) {
 seal_record <- function(plaintext, dek, nonce, aad = raw(0)) {
   r <- aead_encrypt(dek, nonce, plaintext, aad)
   list(ciphertext = r$ciphertext, tag = r$tag,
-       nonce = .as_bytes(nonce), aad = .as_bytes(aad))
+       nonce = .secrtt_as_bytes(nonce), aad = .secrtt_as_bytes(aad))
 }
 
 #' Open a sealed record
 #' @export
 open_record <- function(sealed, dek) {
   r <- aead_decrypt(dek, sealed$nonce, sealed$ciphertext,
-                    sealed$tag, .as_bytes(sealed$aad %||% raw(0)))
+                    sealed$tag, .secrtt_as_bytes(sealed$aad %||% raw(0)))
   if (!r$valid) {
     stop("secrtt: the record failed authentication")
   }
@@ -114,7 +114,7 @@ rotate_kek <- function(wrapped_deks, old_kek, new_kek, new_nonces,
 rotate_dek <- function(sealed, old_dek, new_dek, new_nonce) {
   pt <- open_record(sealed, old_dek)
   list(sealed = seal_record(pt, new_dek, new_nonce,
-                            .as_bytes(sealed$aad %||% raw(0))),
+                            .secrtt_as_bytes(sealed$aad %||% raw(0))),
        records_reencrypted = 1L,
        note = paste("rotating a DEK rewrites its record; rotating ",
                     "the KEK does not"))
