@@ -22,20 +22,20 @@
 .TMLDYN_METHODS <- c("cv-tmle", "tmle", "ipw", "gcomp")
 .EPS <- 1e-9
 
-.logit <- function(p) {
+.tmldyn_logit <- function(p) {
   q <- min(max(as.numeric(p), .EPS), 1 - .EPS)
   log(q / (1 - q))
 }
 
-.expit <- function(x) {
+.tmldyn_expit <- function(x) {
   if (x > -700) 1 / (1 + exp(-x)) else 0
 }
 
-.qnorm <- function(p) qnorm(p, 0, 1)
+.tmldyn_qnorm <- function(p) qnorm(p, 0, 1)
 
 .sd <- function(x) sqrt(mean((x - mean(x))^2))
 
-.lstsq <- function(X, yv, ridge = 1e-8) {
+.tmldyn_lstsq <- function(X, yv, ridge = 1e-8) {
   Xm <- if (is.matrix(X)) X else do.call(rbind, X)
   p <- ncol(Xm)
   solve(crossprod(Xm) + ridge * diag(p), crossprod(Xm, yv))
@@ -65,7 +65,7 @@
   }
   X <- lapply(idx, function(i) row_q2(A0[i], A1[i], i))
   Xm <- do.call(rbind, X)
-  b <- .lstsq(Xm, ys[idx], ridge)
+  b <- .tmldyn_lstsq(Xm, ys[idx], ridge)
   q2f <- function(a0, a1, i) {
     r <- row_q2(a0, a1, i)
     sum(r * b)
@@ -87,7 +87,7 @@
   }
   X <- lapply(idx, function(i) row_q1(A0[i], i))
   Xm <- do.call(rbind, X)
-  b <- .lstsq(Xm, pseudo[idx], ridge)
+  b <- .tmldyn_lstsq(Xm, pseudo[idx], ridge)
   q1f <- function(a0, i) {
     r <- row_q1(a0, i)
     sum(r * b)
@@ -99,7 +99,7 @@
 .project <- function(values, basis, n, ridge) {
   if (is.null(basis)) return(as.numeric(values))
   Z <- if (is.matrix(basis)) basis else do.call(rbind, basis)
-  co <- .lstsq(Z, as.numeric(values), ridge)
+  co <- .tmldyn_lstsq(Z, as.numeric(values), ridge)
   as.numeric(Z %*% co)
 }
 
@@ -113,13 +113,13 @@
   } else {
     X0 <- if (is.matrix(L0)) L0 else do.call(rbind, L0)
     X0d <- cbind(1, X0)
-    b0 <- .logit_irls(X0d, A0, ridge = 1e-8)
-    p0 <- .expit(as.numeric(X0d %*% b0))
+    b0 <- .tmldyn_logit_irls(X0d, A0, ridge = 1e-8)
+    p0 <- .tmldyn_expit(as.numeric(X0d %*% b0))
     X1r <- lapply(seq_len(n), function(i) c(A0[i], L0[i, ], L1[i, ]))
     X1m <- do.call(rbind, X1r)
     X1d <- cbind(1, X1m)
-    b1 <- .logit_irls(X1d, A1, ridge = 1e-8)
-    p1 <- .expit(as.numeric(X1d %*% b1))
+    b1 <- .tmldyn_logit_irls(X1d, A1, ridge = 1e-8)
+    p1 <- .tmldyn_expit(as.numeric(X1d %*% b1))
   }
   if (!(trim >= 0 && trim < 0.5))
     stop("tmldyn: trim must be in [0, 0.5)")
@@ -135,14 +135,14 @@
 }
 
 # Logistic IRLS for binary outcome, used by the intervention mechanism.
-.logit_irls <- function(X, a, ridge = 1e-8, max_iter = 50L,
+.tmldyn_logit_irls <- function(X, a, ridge = 1e-8, max_iter = 50L,
                         tol = 1e-10) {
   Xm <- if (is.matrix(X)) X else do.call(rbind, X)
   n <- nrow(Xm); p <- ncol(Xm)
   b <- rep(0, p)
   for (it in seq_len(max_iter)) {
     eta <- as.numeric(Xm %*% b)
-    pc <- pmin(pmax(.expit(eta), .EPS), 1 - .EPS)
+    pc <- pmin(pmax(.tmldyn_expit(eta), .EPS), 1 - .EPS)
     W <- pc * (1 - pc)
     z <- eta + (a - pc) / W
     XtWX <- crossprod(Xm, Xm * W) + ridge * diag(p)
@@ -191,7 +191,7 @@
   for (it in seq_len(iters)) {
     num <- den <- 0
     for (i in rows) {
-      p <- .expit(off[i] + eps * H[i])
+      p <- .tmldyn_expit(off[i] + eps * H[i])
       num <- num + H[i] * (outcome[i] - p)
       den <- den + H[i] * H[i] * p * (1 - p)
     }
@@ -367,19 +367,19 @@ morie_tmle_dynamic_regime <- function(y, treatment_history,
       eic <- q1d - psi_s
       eps1 <- eps2 <- 0
     } else {
-      off2 <- vapply(q2d, .logit, numeric(1))
+      off2 <- vapply(q2d, .tmldyn_logit, numeric(1))
       eps2 <- .fluctuate(ys, off2, H2, seq_len(n))
-      q2d <- .expit(off2 + eps2 * H2)
-      off1 <- vapply(q1d, .logit, numeric(1))
+      q2d <- .tmldyn_expit(off2 + eps2 * H2)
+      off1 <- vapply(q1d, .tmldyn_logit, numeric(1))
       eps1 <- .fluctuate(q2d, off1, H1, seq_len(n))
-      q1d <- .expit(off1 + eps1 * H1)
+      q1d <- .tmldyn_expit(off1 + eps1 * H1)
       psi_s <- mean(q1d)
       eic <- (q1d - psi_s) + H1 * (q2d - q1d) + H2 * (ys - q2d)
     }
   }
   psi <- ymin + rng * psi_s
   se <- if (n > 1L) .sd(eic) * rng / sqrt(n) else NaN
-  z <- .qnorm(0.5 + 0.5 * level)
+  z <- .tmldyn_qnorm(0.5 + 0.5 * level)
   static <- list()
   for (a0 in c(0, 1)) for (a1 in c(0, 1)) {
     v <- .rule_value_seq(ys, L0, A0, L1, A1, rep(a0, n),

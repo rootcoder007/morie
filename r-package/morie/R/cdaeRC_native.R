@@ -65,7 +65,7 @@ encode <- function(y_tilde, W, V_u, b, activation = "sigmoid") {
   z
 }
 
-decode <- function(z, Wp, bp, items = NULL, activation = "sigmoid") {
+morie_cdaeRC_decode <- function(z, Wp, bp, items = NULL, activation = "sigmoid") {
   idx <- if (is.null(items)) seq_along(bp) else as.integer(items)
   out <- numeric(length(idx))
   names(out) <- as.character(idx)

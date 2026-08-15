@@ -29,7 +29,7 @@
   out
 }
 
-.softmax <- function(z) {
+.explor_softmax <- function(z) {
   m <- max(z)
   e <- exp(z - m)
   s <- sum(e)
@@ -122,7 +122,7 @@ explor <- function(states, actions, next_states, n_actions = NULL,
       inp_i <- c(p, p1)
       zi <- .matvec(Winv, inp_i)
       if (isTRUE(discrete)) {
-        pr <- .softmax(zi)
+        pr <- .explor_softmax(zi)
         li <- -log(max(pr[Avec[t] + 1L], .EPS))
         gi <- pr - avec
         if (which.max(pr) - 1L == Avec[t]) n_correct <- n_correct + 1L

@@ -63,7 +63,7 @@ selective_ssm_step <- function(x, h, A, B, C, delta, rule = "zoh") {
   out
 }
 
-.sigmoid <- function(z) 1.0 / (1.0 + exp(-as.numeric(z)))
+.mambss_sigmoid <- function(z) 1.0 / (1.0 + exp(-as.numeric(z)))
 
 selective_scan <- function(X, A, W_B, W_C, W_delta, delta_bias = NULL,
                            b_B = NULL, b_C = NULL, b_delta = 0.0,
@@ -117,7 +117,7 @@ gated_rnn_equivalent <- function(x, w, b = 0.0) {
   h <- 0.0
   hs <- numeric(length(x)); gs <- numeric(length(x))
   for (i in seq_along(x)) {
-    g <- .sigmoid(as.numeric(w) * as.numeric(x[i]) + as.numeric(b))
+    g <- .mambss_sigmoid(as.numeric(w) * as.numeric(x[i]) + as.numeric(b))
     h <- (1.0 - g) * h + g * as.numeric(x[i])
     hs[i] <- h; gs[i] <- g
   }

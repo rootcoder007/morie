@@ -12,7 +12,7 @@
 # at the marker so runs of spaces do not collapse, the same greedy
 # BPE trainer that merges the most frequent pair until the
 # vocabulary is full, the same Viterbi over the split lattice for
-# the unigram model, and decode/unescape as a pure string operation.
+# the unigram model, and morie_sentpc_decode/unescape as a pure string operation.
 
 .EPS <- 1e-300
 .SPACE <- "\u2581"
@@ -63,7 +63,7 @@ unescape_whitespace <- function(text, strip_prefix = TRUE) {
 
 #' Decode pieces back to text (pure string operation)
 #' @export
-decode <- function(pieces, strip_prefix = TRUE) {
+morie_sentpc_decode <- function(pieces, strip_prefix = TRUE) {
   .unescape_whitespace(paste0(as.character(pieces), collapse = ""),
                        strip_prefix)
 }

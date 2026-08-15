@@ -24,7 +24,7 @@
   if (model == "ffm") n * f * kk else n * kk
 }
 
-.phi <- function(x, fields, W) {
+.ffmFM_phi <- function(x, fields, W) {
   nz <- list()
   for (kv in x) {
     j <- as.integer(kv[[1L]]); v <- as.numeric(kv[[2L]])
@@ -87,7 +87,7 @@
     tot <- 0
     for (r in seq_along(rows)) {
       y <- as.numeric(labels[[r]])
-      p <- .phi(rows[[r]], fields, W)
+      p <- .ffmFM_phi(rows[[r]], fields, W)
       tot <- tot + .logistic_loss(y, p)
       yp <- y * p
       g0 <- -y / (1 + exp(min(700, yp)))

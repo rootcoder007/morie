@@ -126,7 +126,7 @@ run_egnn <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
        note = "h is E(n) INVARIANT, x is E(n) EQUIVARIANT")
 }
 
-equivariance_error <- function(H, X, phi_e, phi_x, phi_h, Q, g,
+morie_egnnL_equivariance_error <- function(H, X, phi_e, phi_x, phi_h, Q, g,
                                layers = 2, C = NULL) {
   X <- as.matrix(X)
   n <- nrow(X)

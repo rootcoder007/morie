@@ -148,7 +148,7 @@ dipole_moment <- function(charges, R, centre = NULL) {
 # Rotate the input; scalars must not move, vectors must rotate.
 # Checking only the scalars would pass a model that has silently
 # lost its vector channel.
-equivariance_error <- function(model, s, v, R, Q, tol = 1e-9) {
+morie_painn_equivariance_error <- function(model, s, v, R, Q, tol = 1e-9) {
   pos <- as.matrix(R)
   Qm <- as.matrix(Q)
   d <- ncol(pos)
