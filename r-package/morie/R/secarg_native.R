@@ -22,16 +22,18 @@
 
 # little-endian 32-bit pack of an integer (returns raw bytes)
 .le32 <- function(n) {
-  n <- as.integer(n)
-  v <- bitwAnd(n, 0xffffffff)
-  rawShift <- function(b, k) {
-    if (k == 0) b else c(rawShift(b[-length(b)], k - 1L), 0L)[seq_along(b)]
-  }
-  b0 <- bitwAnd(v, 0xff)
-  b1 <- bitwAnd(bitwShiftR(v, 8), 0xff)
-  b2 <- bitwAnd(bitwShiftR(v, 16), 0xff)
-  b3 <- bitwAnd(bitwShiftR(v, 24), 0xff)
-  as.raw(c(b0, b1, b2, b3))
+  # bitwAnd(n, 0xffffffff) is NA in R: 4294967295 is past .Machine
+  # integer.max, so the whole prefix came back as zero bytes and every
+  # digest in this file was wrong. The Python arm is
+  # int(n).to_bytes(4, "little"); do that arithmetically.
+  v <- as.numeric(n)
+  if (!is.finite(v) || v < 0 || v >= 4294967296)
+    stop(sprintf("secarg: %s does not fit in an unsigned 32-bit word",
+                 format(n)))
+  as.raw(c(v %% 256,
+           (v %/% 256) %% 256,
+           (v %/% 65536) %% 256,
+           (v %/% 16777216) %% 256))
 }
 
 .le64 <- function(n) {
@@ -58,20 +60,20 @@
 #' @return Raw bytes of that length.
 #' @references RFC 9106 Sec. 3.3.
 #' @export
-variable_hash <- function(data, length) {
+morie_secarg_variable_hash <- function(data, length) {
   T <- as.integer(length)
   if (T < 1L) stop("secarg: the output length must be positive")
   a <- .as_bytes(data)
-  if (T <= 64L) return(blake2b(c(.le32(T), a), T))
+  if (T <= 64L) return(.morie_blake2b_impl(c(.le32(T), a), T))
   r <- -(-T %/% 32L) - 2L
   out <- raw(0)
-  v <- blake2b(c(.le32(T), a), 64L)
+  v <- .morie_blake2b_impl(c(.le32(T), a), 64L)
   out <- c(out, v[1:32])
   for (kk in seq_len(r - 1L)) {
-    v <- blake2b(v, 64L)
+    v <- .morie_blake2b_impl(v, 64L)
     out <- c(out, v[1:32])
   }
-  v <- blake2b(v, T - 32L * r)
+  v <- .morie_blake2b_impl(v, T - 32L * r)
   out <- c(out, v)
   out[seq_len(T)]
 }
@@ -81,7 +83,7 @@ variable_hash <- function(data, length) {
 #' @return Raw 64-byte digest.
 #' @references RFC 9106 Sec. 3.1.
 #' @export
-prehash <- function(password, salt, parallelism, tag_length, memory,
+morie_secarg_prehash <- function(password, salt, parallelism, tag_length, memory,
                     passes, variant = "argon2id", secret = raw(0),
                     associated = raw(0), version = .VERSION) {
   y <- unname(.TYPES[tolower(as.character(variant))])
@@ -102,7 +104,7 @@ prehash <- function(password, salt, parallelism, tag_length, memory,
            .le32(passes), .le32(version), .le32(y),
            .le32(length(P)), P, .le32(length(S)), S,
            .le32(length(K)), K, .le32(length(X)), X)
-  blake2b(buf, 64L)
+  .morie_blake2b_impl(buf, 64L)
 }
 
 # G function's 8-word permutation on a 16-word vector.
@@ -179,7 +181,7 @@ prehash <- function(password, salt, parallelism, tag_length, memory,
 
 #' Compression function G(X, Y) = R xor Q
 #' @export
-compress <- function(X, Y) {
+morie_secarg_compress <- function(X, Y) {
   R <- mapply(bitwXor, X, Y, SIMPLIFY = FALSE)
   Q <- R
   for (i in 0:7) {
@@ -234,109 +236,35 @@ compress <- function(X, Y) {
   inp[[5L]] <- passes
   inp[[6L]] <- y
   inp[[7L]] <- counter
-  compress(zero, compress(zero, inp))
+  morie_secarg_compress(zero, morie_secarg_compress(zero, inp))
 }
 
 #' Argon2 password hash (RFC 9106)
 #' @export
-argon2 <- function(password, salt, memory = 32, passes = 3,
-                   parallelism = 4, tag_length = 32,
-                   variant = "argon2id", secret = raw(0),
-                   associated = raw(0)) {
-  y <- unname(.TYPES[tolower(as.character(variant))])
-  if (is.na(y)) {
-    stop("secarg: variant must be one of ",
-         paste(names(.TYPES), collapse = ", "), ", got ",
-         deparse(variant))
-  }
+morie_secarg_argon2 <- function(password, salt, memory = 32, passes = 3,
+                                parallelism = 4, tag_length = 32,
+                                variant = "argon2id", secret = NULL,
+                                associated = NULL) {
+  tag <- .morie_argon2_impl(password, salt, as.integer(memory),
+                           as.integer(passes), as.integer(parallelism),
+                           as.integer(tag_length), as.character(variant),
+                           secret, associated)
   p <- as.integer(parallelism)
-  t <- as.integer(passes)
   m <- as.integer(memory)
-  if (p < 1L) stop("secarg: parallelism must be at least 1")
-  if (t < 1L) stop("secarg: at least one pass is required")
-  if (m < 8L * p) {
-    stop("secarg: memory must be at least 8*p = ", 8L * p,
-         " KiB, got ", m)
-  }
-  m_prime <- (m %/% (.SL * p)) * (.SL * p)
-  q <- m_prime %/% p
-  seg <- q %/% .SL
-  H0 <- prehash(password, salt, p, tag_length, m, t, variant,
-                secret, associated)
-  B <- replicate(p, replicate(q, NULL, simplify = FALSE),
-                 simplify = FALSE)
-  for (i in 0:(p - 1L)) {
-    B[[i + 1L]][[1L]] <- .to_words(variable_hash(
-      c(H0, .le32(0L), .le32(i)), .BLOCK))
-    B[[i + 1L]][[2L]] <- .to_words(variable_hash(
-      c(H0, .le32(1L), .le32(i)), .BLOCK))
-  }
-  for (r in 0:(t - 1L)) {
-    for (sl in 0:(.SL - 1L)) {
-      for (i in 0:(p - 1L)) {
-        data_indep <- (y == 1L) || (y == 2L && r == 0L && sl < 2L)
-        addr <- NULL; counter <- 0L
-        start <- 0L
-        if (r == 0L && sl == 0L) {
-          start <- 2L
-          if (data_indep) {
-            counter <- counter + 1L
-            addr <- .addresses(r, i, sl, m_prime, t, y, counter)
-          }
-        }
-        for (idx in start:(seg - 1L)) {
-          if (data_indep && idx %% 128L == 0L) {
-            counter <- counter + 1L
-            addr <- .addresses(r, i, sl, m_prime, t, y, counter)
-          }
-          j <- sl * seg + idx
-          prev <- if (j > 0L) B[[i + 1L]][[j + 1L]]
-                  else B[[i + 1L]][[q]]
-          pr <- if (data_indep) addr[[(idx %% 128L) + 1L]]
-                else prev[[1L]]
-          J1 <- bitwAnd(pr, .MASK32)
-          J2 <- bitwShiftR(pr, 32) # already masked by R's integer width
-          lane <- if (r == 0L && sl == 0L) i else (J2 %% p)
-          W <- if (r == 0L) {
-            if (sl == 0L || lane == i) j - 1L
-            else sl * seg - (1L - (idx == 0L) * 1L)
-          } else {
-            if (lane == i) q - seg + idx - 1L
-            else q - seg - (1L - (idx == 0L) * 1L)
-          }
-          if (W < 1L) W <- 1L
-          J1_num <- as.numeric(J1)
-          x <- (J1_num * J1_num) / 2^32
-          yy <- (W * x) / 2^32
-          zz <- W - 1L - as.integer(yy)
-          startpos <- if (r == 0L) 0L else ((sl + 1L) %% .SL) * seg
-          ref <- (startpos + zz) %% q
-          new <- compress(prev, B[[lane + 1L]][[ref + 1L]])
-          if (r == 0L) {
-            B[[i + 1L]][[j + 1L]] <- new
-          } else {
-            old <- B[[i + 1L]][[j + 1L]]
-            B[[i + 1L]][[j + 1L]] <- mapply(bitwXor, new, old,
-                                            SIMPLIFY = FALSE)
-          }
-        }
-      }
-    }
-  }
-  C <- B[[1L]][[q]]
-  for (i in 1:(p - 1L)) {
-    C <- mapply(bitwXor, C, B[[i + 1L]][[q]], SIMPLIFY = FALSE)
-  }
-  tag <- variable_hash(.to_bytes(C), as.integer(tag_length))
-  list(estimate = .hexlify(tag), tag = tag, tag_hex = .hexlify(tag),
-       variant = as.character(variant),
-       memory_kib = m, memory_used_kib = m_prime, passes = t,
-       parallelism = p, version = .VERSION,
+  m_prime <- (m %/% (4L * p)) * (4L * p)
+  y <- switch(as.character(variant), argon2d = 0L, argon2i = 1L,
+              argon2id = 2L)
+  hex <- paste(sprintf("%02x", as.integer(tag)), collapse = "")
+  list(estimate = hex, tag = tag, tag_hex = hex,
+       variant = as.character(variant), memory_kib = m,
+       memory_used_kib = m_prime, passes = as.integer(passes),
+       parallelism = p, version = 19L,
        data_independent_first_half = (y == 2L),
-       method = "Argon2 v1.3; Biryukov, Dinu, Khovratovich & Josefsson (2021) RFC 9106",
-       note = paste("a tag is only comparable against another ",
-                    "computed under the SAME parameters, which is ",
-                    "why they are returned with it"))
+       method = paste0("Argon2 v1.3; Biryukov, Dinu, Khovratovich & ",
+                       "Josefsson (2021) RFC 9106"),
+       note = paste0("a tag is only comparable against another computed ",
+                     "under the SAME parameters, which is why they are ",
+                     "returned with it"))
 }
 
 .hexlify <- function(bs) {
@@ -346,7 +274,7 @@ argon2 <- function(password, salt, memory = 32, passes = 3,
 
 #' Recommended Argon2 configurations from RFC 9106 Sec. 4
 #' @export
-parameter_advice <- function(profile = "first") {
+morie_secarg_parameter_advice <- function(profile = "first") {
   rec <- list(
     first = list(variant = "argon2id", memory = 2L * 1024L * 1024L,
                  passes = 1L, parallelism = 4L, tag_length = 32L,
@@ -372,4 +300,4 @@ parameter_advice <- function(profile = "first") {
 }
 
 # house entry point: the package exports one morie_<module>
-morie_secarg <- argon2
+morie_secarg <- morie_secarg_argon2
