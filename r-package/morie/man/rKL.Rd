@@ -28,3 +28,7 @@ of IR techniques", ACM Transactions on Information Systems 20(4),
 422-446. The logarithmic discount.
 }
 \keyword{internal}
+\examples{
+prot <- c(rep(0L, 10), rep(1L, 10), rep(0L, 10), rep(1L, 10))
+rKL(prot, step = 10)
+}
