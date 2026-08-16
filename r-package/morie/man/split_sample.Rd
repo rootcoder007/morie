@@ -19,3 +19,6 @@ Part of the tldapar_native implementation; see the file header for the source it
 A list with \code{estimation}, \code{training}, \code{V}.
 }
 \keyword{internal}
+\examples{
+str(split_sample(30, V = 5), max.level = 1)
+}
