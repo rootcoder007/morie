@@ -8,7 +8,7 @@
 .morie_dxi_po(s)
 }
 \arguments{
-\item{s}{See Usage.}
+\item{s}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the twostg_native implementation; see the file header for the source it follows.

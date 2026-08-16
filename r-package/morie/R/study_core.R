@@ -1,9 +1,10 @@
 #' .na_omit_cols
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.run_causal_estimators_module_internal}, \code{.run_ebac_gender_smote_sensitivity_module_internal}, \code{.run_logistic_models_module_internal} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data A matrix; indexed by row and column.
 #' @param cols See Usage.
 #' @return The value of \code{[}.
 #' @export
@@ -23,8 +24,8 @@
 #' model.matrix with "contrasts can be applied only to factors with 2 or
 #' more levels".
 #'
-#' @param data See Usage.
-#' @param terms See Usage.
+#' @param data A vector; indexed elementwise.
+#' @param terms A vector; indexed elementwise.
 #' @return The value of \code{[}.
 #' @export
 .viable_terms <- function(data, terms) {
@@ -46,12 +47,13 @@
 #' Reformulate() with degenerate-term protection; intercept-only on
 #' total loss
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.run_causal_estimators_module_internal}, \code{.run_ebac_core_module_internal}, \code{.run_regression_models_module_internal} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param response See Usage.
-#' @param terms See Usage.
-#' @param data See Usage.
+#' @param terms A vector; its length is taken.
+#' @param data Passed to \code{.viable_terms}.
 #' @return The value of \code{stats::reformulate}.
 #' @export
 .robust_formula <- function(response, terms, data) {
@@ -62,7 +64,8 @@
 
 #' .safe_divide
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.binary_ci}, \code{.continuous_power_required_n}, \code{.run_ebac_gender_smote_sensitivity_module_internal} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param num See Usage.
@@ -78,11 +81,12 @@
 
 #' .wald_ci
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.binary_ci}, \code{.run_propensity_scores_module_internal}, \code{.weighted_binary_estimate} and 7 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param estimate See Usage.
-#' @param se See Usage.
+#' @param estimate Numeric; combined arithmetically in the body.
+#' @param se Numeric; combined arithmetically in the body.
 #' @return A vector, from \code{c}.
 #' @export
 .wald_ci <- function(estimate, se) {
@@ -94,11 +98,12 @@
 
 #' .binary_ci
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.run_descriptive_statistics_module_internal}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param successes See Usage.
-#' @param n See Usage.
+#' @param successes Passed to \code{.safe_divide}.
+#' @param n Numeric; passed to \code{max}.
 #' @return A list with \code{p}, \code{se}, \code{ci}.
 #' @export
 .binary_ci <- function(successes, n) {
@@ -110,11 +115,12 @@
 
 #' .weighted_binary_estimate
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.run_descriptive_statistics_module_internal}, \code{.run_ebac_core_module_internal}, \code{.run_ebac_integrations_module_internal} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param w See Usage.
+#' @param x A vector; its length is taken and its elements indexed.
+#' @param w A vector; indexed elementwise.
 #' @return A list with \code{p}, \code{se}, \code{ci}, \code{n}, \code{n_eff}.
 #' @export
 .weighted_binary_estimate <- function(x, w) {
@@ -133,7 +139,8 @@
 
 #' .clip_exp
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.or_table}, \code{.run_regression_models_module_internal}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
@@ -145,7 +152,8 @@
 
 #' .safe_confint
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.linear_coef_table}, \code{.or_table}, \code{.run_regression_models_module_internal}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param fit See Usage.
@@ -161,12 +169,13 @@
 
 #' .or_table
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.run_ebac_core_module_internal}, \code{.run_ebac_gender_smote_sensitivity_module_internal}, \code{.run_ebac_selection_adjustment_ipw_module_internal} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param fit See Usage.
+#' @param fit Passed to \code{.safe_confint}.
 #' @param model Defaults to \code{NULL}.
-#' @param lower_se_name Defaults to \code{FALSE}.
+#' @param lower_se_name A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .or_table <- function(fit, model = NULL, lower_se_name = FALSE) {
@@ -198,10 +207,11 @@
 
 #' .linear_coef_table
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.run_ebac_core_module_internal}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param fit See Usage.
+#' @param fit Passed to \code{.safe_confint}.
 #' @param model See Usage.
 #' @return A data frame.
 #' @export
@@ -223,7 +233,8 @@
 
 #' .cpads_labeled_data
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.run_causal_estimators_module_internal}, \code{.run_descriptive_statistics_module_internal}, \code{.run_distribution_tests_module_internal} and 12 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param data See Usage.
@@ -260,11 +271,12 @@
 
 #' .run_data_wrangling_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
-#' @param cpads_csv Defaults to \code{NULL}.
+#' @param data A matrix; passed to \code{nrow}.
+#' @param cpads_csv Optional; may be \code{NULL}. Passed to \code{.resolve_cpads_csv}.
 #' @param output_dir Defaults to \code{NULL}.
 #' @return A list with \code{data_na_summary}, \code{data_wrangling_log}.
 #' @export
@@ -305,10 +317,11 @@
 
 #' .run_descriptive_statistics_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data A list; the body reads \code{$cannabis_any_use}, \code{$heavy_drinking_30d}, \code{$weight} from it.
 #' @return A list with \code{binomial_summaries}, \code{binomial_summaries_survey_weighted}, \code{probability_estimates}.
 #' @export
 .run_descriptive_statistics_module_internal <- function(data) {
@@ -382,10 +395,11 @@
 
 #' .run_distribution_tests_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data A list; the body reads \code{$alc06_valid}, \code{$ebac_tot}, \code{$heavy_drinking_30d} from it.
 #' @return A list with \code{distribution_tests}, \code{alcohol_correlation_matrix}, \code{clt_convergence}.
 #' @export
 .run_distribution_tests_module_internal <- function(data) {
@@ -458,10 +472,11 @@
 
 #' .run_frequentist_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data A list; the body reads \code{$cannabis_any_use}, \code{$gender_label}, \code{$heavy_drinking_30d} from it.
 #' @return A list with \code{frequentist_heavy_drinking_prevalence_ci}, \code{frequentist_effect_sizes}, \code{frequentist_hypothesis_tests}.
 #' @export
 .run_frequentist_module_internal <- function(data) {
@@ -572,10 +587,11 @@
 
 #' .run_bayesian_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data A list; the body reads \code{$heavy_drinking_30d} from it.
 #' @return A list with \code{bayesian_posterior_summaries}, \code{bayesian_bayes_factors}, \code{bayesian_vs_frequentist_ci}.
 #' @export
 .run_bayesian_module_internal <- function(data) {
@@ -641,10 +657,11 @@
 
 #' .run_logistic_models_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data Passed to \code{.cpads_labeled_data}.
 #' @return A list with \code{logistic_odds_ratios}, \code{logistic_interaction_odds_ratios}, \code{logistic_interaction_tests}, \code{logistic_smote_status}, \code{logistic_smote_odds_ratios}.
 #' @export
 .run_logistic_models_module_internal <- function(data) {
@@ -701,10 +718,11 @@
 
 #' .run_model_comparison_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data Passed to \code{.cpads_labeled_data}.
 #' @return A list with \code{model_comparison_summary}, \code{model_comparison_full_coefs}, \code{model_comparison_interaction}, \code{model_comparison_wald_tests}.
 #' @export
 .run_model_comparison_module_internal <- function(data) {
@@ -769,10 +787,11 @@
 
 #' .run_regression_models_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data A list; the body reads \code{$alcohol_past12m} from it.
 #' @return A list with \code{regression_coefficients}, \code{regression_model_comparison}.
 #' @export
 .run_regression_models_module_internal <- function(data) {
@@ -823,10 +842,11 @@
 
 #' .run_propensity_scores_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.run_causal_estimators_module_internal}, \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data Passed to \code{morie_run_propensity_ipw_analysis}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .run_propensity_scores_module_internal <- function(data) {
@@ -849,10 +869,11 @@
 
 #' .run_causal_estimators_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data Passed to \code{.cpads_labeled_data}.
 #' @return A list with \code{causal_estimator_comparison}.
 #' @export
 .run_causal_estimators_module_internal <- function(data) {
@@ -901,10 +922,11 @@
 
 #' .run_treatment_effects_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data Passed to \code{.cpads_labeled_data}.
 #' @return A list with \code{treatment_effects_summary}, \code{cate_subgroup_estimates}.
 #' @export
 .run_treatment_effects_module_internal <- function(data) {
@@ -986,7 +1008,8 @@
 
 #' .run_dag_specification_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param data See Usage.
@@ -1023,11 +1046,12 @@
 
 #' .run_meta_synthesis_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
-#' @param output_dir Defaults to \code{NULL}.
+#' @param data A list; the body reads \code{$cannabis_any_use}, \code{$heavy_drinking_30d} from it.
+#' @param output_dir Passed to \code{.read_existing_output}.
 #' @return The value of \code{list}.
 #' @export
 .run_meta_synthesis_module_internal <- function(data, output_dir = NULL) {
@@ -1113,10 +1137,11 @@
 
 #' .run_ebac_core_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data A list; the body reads \code{$alcohol_past12m} from it.
 #' @return A list with \code{ebac_data_quality_checks}, \code{ebac_distribution_unweighted}, \code{ebac_model_samples}, \code{ebac_weighted_summaries}, \code{ebac_missingness_weighted}, \code{ebac_missingness_or}, \code{ebac_missingness_or_eligible_drinkers}, \code{ebac_logistic_or_primary}, \code{ebac_linear_coefficients_primary}, \code{ebac_logistic_or_sensitivity_with_heavy}, \code{ebac_linear_coefficients_sensitivity_with_heavy}.
 #' @export
 .run_ebac_core_module_internal <- function(data) {
@@ -1232,10 +1257,11 @@
 
 #' .run_ebac_gender_smote_sensitivity_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data A list; the body reads \code{$alcohol_past12m}, \code{$ebac_tot} from it.
 #' @return A list with \code{ebac_gender_interaction_svy_or}, \code{ebac_gender_interaction_tests}, \code{ebac_gender_marginal_probs}, \code{ebac_smote_status}, \code{ebac_smote_or}, \code{ebac_smote_compare}.
 #' @export
 .run_ebac_gender_smote_sensitivity_module_internal <- function(data) {
@@ -1317,10 +1343,11 @@
 
 #' .run_ebac_selection_adjustment_ipw_module_internal
 #'
-#' Part of the study_core implementation; see the file header for the
+#' A step of the study_core implementation. Called by \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data A list; the body reads \code{$alcohol_past12m} from it.
 #' @return A list with \code{ebac_ipw_weight_diagnostics}, \code{ebac_ipw_logistic_or}, \code{ebac_ipw_linear_coefficients}, \code{ebac_ipw_cannabis_comparison}, \code{ebac_ipw_observation_model_or}, \code{ebac_ipw_covariate_balance}, \code{ebac_final_ipw_diagnostics}, \code{ebac_final_ipw_or}, \code{ebac_final_ipw_linear}, \code{ebac_final_ipw_comparison}.
 #' @export
 .run_ebac_selection_adjustment_ipw_module_internal <- function(data) {

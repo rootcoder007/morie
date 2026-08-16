@@ -11,13 +11,13 @@ morie_offlrl(dataset, states = NULL, actions = NULL, alpha = 1, gamma = 0.99, va
 \item{dataset}{See Usage.}
 \item{states}{Defaults to \code{NULL}.}
 \item{actions}{Defaults to \code{NULL}.}
-\item{alpha}{Defaults to \code{1}.}
-\item{gamma}{Defaults to \code{0.99}.}
-\item{variant}{Defaults to \code{"H"}.}
-\item{backup}{Defaults to \code{"max"}.}
+\item{alpha}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
+\item{gamma}{Numeric; combined arithmetically in the body. Defaults to \code{0.99}.}
+\item{variant}{One of \code{"H"}, \code{"mu"}, \code{"rho"}. Defaults to \code{"H"}.}
+\item{backup}{One of \code{"max"}, \code{"pi"}. Defaults to \code{"max"}.}
 \item{policy}{Defaults to \code{NULL}.}
 \item{mu}{Defaults to \code{NULL}.}
-\item{lr}{Defaults to \code{0.5}.}
+\item{lr}{Numeric; combined arithmetically in the body. Defaults to \code{0.5}.}
 \item{iters}{Defaults to \code{2000}.}
 \item{tol}{Defaults to \code{1e-12}.}
 }

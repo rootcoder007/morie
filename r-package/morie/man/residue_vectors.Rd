@@ -9,8 +9,8 @@ residue_vectors(group, weights = NULL, seq_type = "aa")
 }
 \arguments{
 \item{group}{See Usage.}
-\item{weights}{Defaults to \code{NULL}.}
-\item{seq_type}{Defaults to \code{"aa"}.}
+\item{weights}{Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.}
+\item{seq_type}{Compared against \code{"nt"}. Defaults to \code{"aa"}.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

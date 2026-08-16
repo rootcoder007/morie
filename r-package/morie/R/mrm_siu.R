@@ -31,7 +31,8 @@ NULL
 
 #' .parse_iso
 #'
-#' Part of the mrm_siu implementation; see the file header for the
+#' A step of the mrm_siu implementation. Called by \code{mrm_siu_case_to_decision_km}, \code{mrm_siu_per_service_rate}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.

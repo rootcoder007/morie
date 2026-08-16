@@ -9,8 +9,8 @@ morie_tlnetlg_community_estimand(Q_fn, friends, W, policy)
 }
 \arguments{
 \item{Q_fn}{See Usage.}
-\item{friends}{See Usage.}
-\item{W}{See Usage.}
+\item{friends}{A vector; its length is taken.}
+\item{W}{Passed to \code{.tlnetlg_mat}.}
 \item{policy}{See Usage.}
 }
 \description{

@@ -8,9 +8,9 @@
 .siu_llm_call(model, prompt, timeout_s = .siu_llm_default_timeout(), mock_response_text = NULL)
 }
 \arguments{
-\item{model}{See Usage.}
-\item{prompt}{See Usage.}
-\item{timeout_s}{Defaults to \code{.siu_llm_default_timeout()}.}
+\item{model}{A vector; its length is taken.}
+\item{prompt}{Passed to \code{.siu_llm_call_one}.}
+\item{timeout_s}{Passed to \code{.siu_llm_call_one}.}
 \item{mock_response_text}{Defaults to \code{NULL}.}
 }
 \description{

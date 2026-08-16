@@ -8,10 +8,10 @@
 morie_tlnetlg_longitudinal_network_gcomp(Q_seq, friends, W, policy, T)
 }
 \arguments{
-\item{Q_seq}{See Usage.}
-\item{friends}{See Usage.}
-\item{W}{See Usage.}
-\item{policy}{See Usage.}
+\item{Q_seq}{A vector; its length is taken and its elements indexed.}
+\item{friends}{Passed to \code{morie_tlnetlg_community_estimand}.}
+\item{W}{Passed to \code{.tlnetlg_mat}.}
+\item{policy}{Passed to \code{morie_tlnetlg_community_estimand}.}
 \item{T}{See Usage.}
 }
 \description{

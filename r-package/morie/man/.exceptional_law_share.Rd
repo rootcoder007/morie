@@ -8,7 +8,7 @@
 .exceptional_law_share(blips, tol = 0.01)
 }
 \arguments{
-\item{blips}{See Usage.}
+\item{blips}{A vector; its length is taken.}
 \item{tol}{Defaults to \code{0.01}.}
 }
 \description{

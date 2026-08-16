@@ -9,13 +9,13 @@ morie_unifAlg_occurs(name, t)
 }
 \arguments{
 \item{name}{See Usage.}
-\item{t}{See Usage.}
+\item{t}{Passed to \code{morie_unifAlg_variables}.}
 }
 \description{
 Part of the unifAlg_native implementation; see the file header for the source it follows.
 }
 \value{
-The value of \code{%in%}.
+The value of \code{\%in\%}.
 }
 \references{
 ----------

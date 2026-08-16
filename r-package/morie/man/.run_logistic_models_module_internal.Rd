@@ -8,7 +8,7 @@
 .run_logistic_models_module_internal(data)
 }
 \arguments{
-\item{data}{See Usage.}
+\item{data}{Passed to \code{.cpads_labeled_data}.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

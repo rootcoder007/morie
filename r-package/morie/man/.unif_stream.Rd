@@ -8,11 +8,11 @@
 .unif_stream(seed, block = 8192L)
 }
 \arguments{
-\item{seed}{See Usage.}
+\item{seed}{Passed to \code{.ghc_rng}.}
 \item{block}{Defaults to \code{8192L}.}
 }
 \description{
-Part of the bayrjmcmc_native implementation; see the file header for the source it follows.
+A step of the bayrjmcmc_native implementation. Called by \code{changepoint_rjmcmc}, \code{reversible_jump_mcmc}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{function}.

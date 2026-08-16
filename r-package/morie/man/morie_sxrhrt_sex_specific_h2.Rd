@@ -10,8 +10,8 @@ morie_sxrhrt_sex_specific_h2(y, sex, K, X = NULL, max_cycles = 60L, tol = 1e-09,
 \arguments{
 \item{y}{See Usage.}
 \item{sex}{See Usage.}
-\item{K}{See Usage.}
-\item{X}{Defaults to \code{NULL}.}
+\item{K}{Passed to \code{.sxrhrt_rows}.}
+\item{X}{Optional; may be \code{NULL}. Passed to \code{.sxrhrt_rows}.}
 \item{max_cycles}{Defaults to \code{60L}.}
 \item{tol}{Defaults to \code{1e-09}.}
 \item{male_label}{Defaults to \code{1}.}

@@ -8,7 +8,7 @@
 morie_sccsno_relative_incidence(fit, level = 0.95)
 }
 \arguments{
-\item{fit}{See Usage.}
+\item{fit}{A list; the body reads \code{$log_ri}, \code{$se_log_ri} from it.}
 \item{level}{Defaults to \code{0.95}.}
 }
 \description{

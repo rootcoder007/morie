@@ -8,11 +8,11 @@
 .hill_mle(x, x_min)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{x_min}{See Usage.}
+\item{x}{A vector; its length is taken and its elements indexed.}
+\item{x_min}{Numeric; combined arithmetically in the body.}
 }
 \description{
-(x_min - 0.5))) The -0.5 continuity correction matters when x_min is small. Continuous Hill (no correction) would use log(x / x_min), but morie\\\'s OTIS placement counts are integer-valued so the discrete form is right.
+(x_min - 0.5))) The -0.5 continuity correction matters when x_min is small. Continuous Hill (no correction) would use log(x / x_min), but morie\\'s OTIS placement counts are integer-valued so the discrete form is right.
 }
 \value{
 A numeric value.

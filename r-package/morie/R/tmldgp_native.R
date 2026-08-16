@@ -17,7 +17,8 @@
 
 #' .tmldgp_logit
 #'
-#' Part of the tmldgp_native implementation; see the file header for the
+#' A step of the tmldgp_native implementation. Called by \code{morie_penalised_tmle}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p See Usage.
@@ -30,10 +31,11 @@
 
 #' .tmldgp_expit
 #'
-#' Part of the tmldgp_native implementation; see the file header for the
+#' A step of the tmldgp_native implementation. Called by \code{morie_penalised_tmle}, \code{morie_shrunk_targeting_unsafe}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Numeric; combined arithmetically in the body.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .tmldgp_expit <- function(x) {
@@ -42,11 +44,12 @@
 
 #' .soft
 #'
-#' Part of the tmldgp_native implementation; see the file header for the
+#' A step of the tmldgp_native implementation. Called by \code{morie_lasso_path}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param t See Usage.
+#' @param x Numeric; passed to \code{abs}.
+#' @param t Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .soft <- function(x, t) sign(x) * pmax(abs(x) - t, 0)

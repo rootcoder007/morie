@@ -18,7 +18,8 @@
 
 #' node2v_alpha_pq
 #'
-#' Part of the node2v_native implementation; see the file header for the
+#' A step of the node2v_native implementation. Called by \code{node2v_transition_probabilities}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param d_tx See Usage.
@@ -41,10 +42,11 @@ node2v_alpha_pq <- function(d_tx, p, q) {
 
 #' node2v_dist
 #'
-#' Part of the node2v_native implementation; see the file header for the
+#' A step of the node2v_native implementation. Called by \code{node2v_transition_probabilities}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param adj See Usage.
+#' @param adj A vector; indexed elementwise.
 #' @param t See Usage.
 #' @param x See Usage.
 #' @return A numeric value.
@@ -59,15 +61,16 @@ node2v_dist <- function(adj, t, x) {
 
 #' node2v_transition_probabilities
 #'
-#' Part of the node2v_native implementation; see the file header for the
+#' A step of the node2v_native implementation. Called by \code{node2v_walk}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param adj See Usage.
+#' @param adj A vector; indexed elementwise.
 #' @param t See Usage.
 #' @param v See Usage.
 #' @param p See Usage.
 #' @param q See Usage.
-#' @param weights Defaults to \code{NULL}.
+#' @param weights Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @return A list with \code{nodes}, \code{probabilities}, \code{unnormalized}, \code{Z}.
 #' @export
 node2v_transition_probabilities <- function(adj, t, v, p, q,
@@ -106,7 +109,8 @@ node2v_transition_probabilities <- function(adj, t, v, p, q,
 
 #' node2v_walk
 #'
-#' Part of the node2v_native implementation; see the file header for the
+#' A step of the node2v_native implementation. Called by \code{morie_node2v}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param adj See Usage.
@@ -114,7 +118,7 @@ node2v_transition_probabilities <- function(adj, t, v, p, q,
 #' @param length See Usage.
 #' @param p Defaults to \code{1}.
 #' @param q Defaults to \code{1}.
-#' @param rng Defaults to \code{NULL}.
+#' @param rng Optional; may be \code{NULL}. Passed to \code{.ghc_unif}.
 #' @param weights Defaults to \code{NULL}.
 #' @return The value of \code{path}, as built in the body.
 #' @export
@@ -146,10 +150,11 @@ node2v_walk <- function(adj, start, length, p = 1, q = 1, rng = NULL,
 
 #' morie_node2v
 #'
-#' Part of the node2v_native implementation; see the file header for the
+#' A step of the node2v_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param adj See Usage.
+#' @param adj A vector; its length is taken.
 #' @param num_walks Defaults to \code{10}.
 #' @param length Defaults to \code{10}.
 #' @param p Defaults to \code{1}.
@@ -189,7 +194,8 @@ node2v_generate_walks <- morie_node2v
 
 #' node2v_skipgram_pairs
 #'
-#' Part of the node2v_native implementation; see the file header for the
+#' A step of the node2v_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param walks See Usage.
@@ -216,7 +222,8 @@ node2v_skipgram_pairs <- function(walks, window = 2) {
 
 #' node2v_cheatsheet
 #'
-#' Part of the node2v_native implementation; see the file header for the
+#' A step of the node2v_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

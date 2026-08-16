@@ -8,7 +8,7 @@
 .siu_p_normalise_yes_no(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{Optional; may be \code{NULL}. Character; passed to \code{trimws}.}
 }
 \description{
 Part of the siu_parser implementation; see the file header for the source it follows.

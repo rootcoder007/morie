@@ -8,7 +8,7 @@
 .otis_contingency_chi2(df, row, col, value)
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{A matrix; indexed by row and column.}
 \item{row}{See Usage.}
 \item{col}{See Usage.}
 \item{value}{See Usage.}

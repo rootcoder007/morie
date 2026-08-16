@@ -8,8 +8,8 @@
 morie_warpL_rank_weight(rank, alphas)
 }
 \arguments{
-\item{rank}{See Usage.}
-\item{alphas}{See Usage.}
+\item{rank}{Passed to \code{.warpL_rank_weight}.}
+\item{alphas}{Passed to \code{.warpL_rank_weight}.}
 }
 \description{
 Part of the warpL_native implementation; see the file header for the source it follows.

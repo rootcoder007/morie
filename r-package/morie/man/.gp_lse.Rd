@@ -3,12 +3,12 @@
 % the formals.
 \name{.gp_lse}
 \alias{.gp_lse}
-\title{Log(sum(exp(v))) with Wilkinson\\\'s footnote-1 shift. Drops non-finite}
+\title{Log(sum(exp(v))) with Wilkinson\\'s footnote-1 shift. Drops non-finite}
 \usage{
 .gp_lse(values)
 }
 \arguments{
-\item{values}{See Usage.}
+\item{values}{A vector; indexed elementwise.}
 }
 \description{
 entries: any single -inf would otherwise dominate the sum.

@@ -9,22 +9,22 @@ changepoint_rjmcmc(y = numeric(0), L = 1, n_iter = 40000, burn_in = 4000, lam = 
 }
 \arguments{
 \item{y}{Defaults to \code{numeric(0)}.}
-\item{L}{Defaults to \code{1}.}
-\item{n_iter}{Defaults to \code{40000}.}
-\item{burn_in}{Defaults to \code{4000}.}
-\item{lam}{Defaults to \code{3}.}
-\item{k_max}{Defaults to \code{30}.}
-\item{alpha}{Defaults to \code{1}.}
-\item{beta}{Defaults to \code{200}.}
-\item{seed}{Defaults to \code{0}.}
+\item{L}{Numeric; passed to \code{log}. Defaults to \code{1}.}
+\item{n_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{40000}.}
+\item{burn_in}{Numeric; combined arithmetically in the body. Defaults to \code{4000}.}
+\item{lam}{Passed to \code{.log_k_prior_ratio}. Defaults to \code{3}.}
+\item{k_max}{Numeric; combined arithmetically in the body. Defaults to \code{30}.}
+\item{alpha}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
+\item{beta}{Numeric; passed to \code{log}. Defaults to \code{200}.}
+\item{seed}{Passed to \code{.unif_stream}. Defaults to \code{0}.}
 \item{cap}{Defaults to \code{0.9}.}
-\item{use_likelihood}{Defaults to \code{TRUE}.}
-\item{k_init}{Defaults to \code{0}.}
-\item{thin}{Defaults to \code{1}.}
-\item{keep_chain}{Defaults to \code{FALSE}.}
+\item{use_likelihood}{A flag; the body branches on it. Defaults to \code{TRUE}.}
+\item{k_init}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{0}.}
+\item{thin}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
+\item{keep_chain}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{
-Part of the bayrjmcmc_native implementation; see the file header for the source it follows.
+A step of the bayrjmcmc_native implementation. No other function in the package calls it. See the file header for the source the module follows.
 }
 \value{
 A list with \code{k_posterior}, \code{k_counts}, \code{k_mean}, \code{s}, \code{h}, \code{accept}, \code{tried}, \code{c}, \code{b}, \code{d}, \code{eta}, \code{pi}, \code{mean_s1_given_k1}, \code{var_s1_given_k1}, \code{mean_height}, \code{chain}, \code{n_kept}, \code{use_likelihood}, \code{method}, \code{note}.

@@ -8,8 +8,8 @@
 .trupek_matvec(H, v)
 }
 \arguments{
-\item{H}{See Usage.}
-\item{v}{See Usage.}
+\item{H}{A matrix; indexed by row and column.}
+\item{v}{Passed to \code{.trupek_dot}.}
 }
 \description{
 Part of the trupek_native implementation; see the file header for the source it follows.

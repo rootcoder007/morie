@@ -8,8 +8,8 @@
 cv_tmle_split(n, V = 10L, seed = 0L)
 }
 \arguments{
-\item{n}{See Usage.}
-\item{V}{Defaults to \code{10L}.}
+\item{n}{A count; the body uses it as \code{seq_len(...)}.}
+\item{V}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{10L}.}
 \item{seed}{Defaults to \code{0L}.}
 }
 \description{

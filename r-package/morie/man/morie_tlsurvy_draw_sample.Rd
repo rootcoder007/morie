@@ -9,7 +9,7 @@ morie_tlsurvy_draw_sample(pi, seed = 0)
 }
 \arguments{
 \item{pi}{See Usage.}
-\item{seed}{Defaults to \code{0}.}
+\item{seed}{Passed to \code{.ghc_rng}. Defaults to \code{0}.}
 }
 \description{
 Part of the tlsurvy_native implementation; see the file header for the source it follows.

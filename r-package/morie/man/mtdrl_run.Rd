@@ -9,11 +9,11 @@ mtdrl_run(tasks, agent, episode_length = 100, n_arms = NULL, seed = 0, reset_bet
 }
 \arguments{
 \item{tasks}{See Usage.}
-\item{agent}{See Usage.}
+\item{agent}{A list; the body reads \code{$act}, \code{$observe}, \code{$reset} from it.}
 \item{episode_length}{Defaults to \code{100}.}
 \item{n_arms}{Defaults to \code{NULL}.}
 \item{seed}{Defaults to \code{0}.}
-\item{reset_between_episodes}{Defaults to \code{TRUE}.}
+\item{reset_between_episodes}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the mtdrl_native implementation; see the file header for the source it follows.

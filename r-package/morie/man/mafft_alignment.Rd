@@ -9,7 +9,7 @@ mafft_alignment(sequences, method = "FFT-NS-2", seq_type = NULL, raw_matrix = NU
 }
 \arguments{
 \item{sequences}{See Usage.}
-\item{method}{Defaults to \code{"FFT-NS-2"}.}
+\item{method}{One of \code{"FFT-NS-2"}, \code{"FFT-NS-i"}, \code{"NW-NS-2"}. Defaults to \code{"FFT-NS-2"}.}
 \item{seq_type}{Defaults to \code{NULL}.}
 \item{raw_matrix}{Defaults to \code{NULL}.}
 \item{freqs}{Defaults to \code{NULL}.}

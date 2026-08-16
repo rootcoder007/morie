@@ -10,8 +10,8 @@ mqtmpl_genotype_probabilities(s_left, s_right, r_left, r_right)
 \arguments{
 \item{s_left}{See Usage.}
 \item{s_right}{See Usage.}
-\item{r_left}{See Usage.}
-\item{r_right}{See Usage.}
+\item{r_left}{Numeric; combined arithmetically in the body.}
+\item{r_right}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the mqtmpl_native implementation; see the file header for the source it follows.

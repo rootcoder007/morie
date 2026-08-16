@@ -8,7 +8,7 @@
 morie_pace(Y, argvals, K)
 }
 \arguments{
-\item{Y}{See Usage.}
+\item{Y}{A vector; its length is taken.}
 \item{argvals}{See Usage.}
 \item{K}{See Usage.}
 }

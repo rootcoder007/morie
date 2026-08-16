@@ -8,8 +8,8 @@
 .lan_gp_placeholder_W(crime_arr, k = 4L)
 }
 \arguments{
-\item{crime_arr}{See Usage.}
-\item{k}{Defaults to \code{4L}.}
+\item{crime_arr}{A vector; its length is taken and its elements indexed.}
+\item{k}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{4L}.}
 }
 \description{
 Part of the laniyonu_gentrification_policing implementation; see the file header for the source it follows.

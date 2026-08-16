@@ -8,7 +8,7 @@
 .uof_fmt_pct(p)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the mrm_uof implementation; see the file header for the source it follows.

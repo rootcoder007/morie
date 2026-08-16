@@ -8,8 +8,8 @@
 mistr_rope_angles(d, base = 10000)
 }
 \arguments{
-\item{d}{See Usage.}
-\item{base}{Defaults to \code{10000}.}
+\item{d}{Numeric; combined arithmetically in the body.}
+\item{base}{Numeric; combined arithmetically in the body. Defaults to \code{10000}.}
 }
 \description{
 Part of the mistr_native implementation; see the file header for the source it follows.

@@ -8,13 +8,13 @@
 .discover_levels(ys, A_, W, levels, rows, eval_rows, ridge)
 }
 \arguments{
-\item{ys}{See Usage.}
-\item{A_}{See Usage.}
-\item{W}{See Usage.}
-\item{levels}{See Usage.}
-\item{rows}{See Usage.}
+\item{ys}{Passed to \code{.fit_q_dta}.}
+\item{A_}{Passed to \code{.fit_q_dta}.}
+\item{W}{Passed to \code{.fit_q_dta}.}
+\item{levels}{A vector; indexed elementwise.}
+\item{rows}{Passed to \code{.fit_q_dta}.}
 \item{eval_rows}{See Usage.}
-\item{ridge}{See Usage.}
+\item{ridge}{Passed to \code{.fit_q_dta}.}
 }
 \description{
 Part of the tmldta_native implementation; see the file header for the source it follows.

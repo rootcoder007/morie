@@ -9,7 +9,7 @@ project_patches(patch_features, W, b = NULL)
 }
 \arguments{
 \item{patch_features}{See Usage.}
-\item{W}{See Usage.}
+\item{W}{A matrix; indexed by row and column.}
 \item{b}{Defaults to \code{NULL}.}
 }
 \description{

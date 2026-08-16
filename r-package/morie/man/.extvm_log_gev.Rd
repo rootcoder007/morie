@@ -8,8 +8,8 @@
 .extvm_log_gev(par, x)
 }
 \arguments{
-\item{par}{See Usage.}
-\item{x}{See Usage.}
+\item{par}{A vector; indexed elementwise.}
+\item{x}{A vector; its length is taken.}
 }
 \description{
 Lifted from the extvm() optimiser closure so the xi ~ 0 (Gumbel) and out-of-support branches are directly unit-testable; the BFGS search in extvm() is not guaranteed to probe xi within 1e-8 of zero.

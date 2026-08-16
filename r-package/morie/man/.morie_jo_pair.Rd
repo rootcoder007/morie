@@ -8,8 +8,8 @@
 .morie_jo_pair(y, yhat)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{yhat}{See Usage.}
+\item{y}{Passed to \code{.morie_jo_vec}.}
+\item{yhat}{Passed to \code{.morie_jo_vec}.}
 }
 \description{
 Part of the ts_joseph implementation; see the file header for the source it follows.

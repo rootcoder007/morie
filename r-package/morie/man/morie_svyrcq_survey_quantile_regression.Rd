@@ -8,11 +8,11 @@
 morie_svyrcq_survey_quantile_regression(X, y, tau = 0.5, weights = NULL, add_intercept = TRUE, max_iter = 200, tol = 1e-10, eps = 1e-06)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
 \item{y}{See Usage.}
-\item{tau}{Defaults to \code{0.5}.}
+\item{tau}{Numeric; combined arithmetically in the body. Defaults to \code{0.5}.}
 \item{weights}{Defaults to \code{NULL}.}
-\item{add_intercept}{Defaults to \code{TRUE}.}
+\item{add_intercept}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 \item{max_iter}{Defaults to \code{200}.}
 \item{tol}{Defaults to \code{1e-10}.}
 \item{eps}{Defaults to \code{1e-06}.}

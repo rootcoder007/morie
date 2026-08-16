@@ -8,7 +8,7 @@
 offlrl_lookup(mat, s, a)
 }
 \arguments{
-\item{mat}{See Usage.}
+\item{mat}{A vector; indexed elementwise.}
 \item{s}{See Usage.}
 \item{a}{See Usage.}
 }

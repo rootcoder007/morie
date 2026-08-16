@@ -23,7 +23,8 @@
 # little-endian 32-bit pack of an integer (returns raw bytes)
 #' Little-endian 32-bit pack of an integer (returns raw bytes)
 #'
-#' Part of the secarg_native implementation; see the file header for the
+#' A step of the secarg_native implementation. Called by \code{morie_secarg_prehash}, \code{morie_secarg_variable_hash}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n See Usage.
@@ -46,10 +47,11 @@
 
 #' .le64
 #'
-#' Part of the secarg_native implementation; see the file header for the
+#' A step of the secarg_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n See Usage.
+#' @param n Numeric; combined arithmetically in the body.
 #' @return The value of \code{as.raw}.
 #' @export
 .le64 <- function(n) {
@@ -126,10 +128,11 @@ morie_secarg_prehash <- function(password, salt, parallelism, tag_length, memory
 # G function's 8-word permutation on a 16-word vector.
 #' G function\'s 8-word permutation on a 16-word vector
 #'
-#' Part of the secarg_native implementation; see the file header for the
+#' A step of the secarg_native implementation. Called by \code{.P_step}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param v See Usage.
+#' @param v A vector; indexed elementwise.
 #' @param a See Usage.
 #' @param b See Usage.
 #' @param c See Usage.
@@ -197,10 +200,11 @@ morie_secarg_prehash <- function(password, salt, parallelism, tag_length, memory
 
 #' .P_step
 #'
-#' Part of the secarg_native implementation; see the file header for the
+#' A step of the secarg_native implementation. Called by \code{morie_secarg_compress}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param v See Usage.
+#' @param v Passed to \code{.gb}.
 #' @return The value of \code{v}, as built in the body.
 #' @export
 .P_step <- function(v) {
@@ -245,10 +249,11 @@ morie_secarg_compress <- function(X, Y) {
 
 #' .to_words
 #'
-#' Part of the secarg_native implementation; see the file header for the
+#' A step of the secarg_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param bs See Usage.
+#' @param bs A vector; its length is taken and its elements indexed.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .to_words <- function(bs) {
@@ -267,7 +272,8 @@ morie_secarg_compress <- function(X, Y) {
 
 #' .to_bytes
 #'
-#' Part of the secarg_native implementation; see the file header for the
+#' A step of the secarg_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param ws See Usage.
@@ -279,7 +285,8 @@ morie_secarg_compress <- function(X, Y) {
 
 #' .addresses
 #'
-#' Part of the secarg_native implementation; see the file header for the
+#' A step of the secarg_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param pass_no See Usage.
@@ -335,7 +342,8 @@ morie_secarg_argon2 <- function(password, salt, memory = 32, passes = 3,
 
 #' .secarg_hexlify
 #'
-#' Part of the secarg_native implementation; see the file header for the
+#' A step of the secarg_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param bs See Usage.

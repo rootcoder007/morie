@@ -8,11 +8,11 @@
 site_likelihood(tree, seqs, site, pi = NULL, u = 1)
 }
 \arguments{
-\item{tree}{See Usage.}
-\item{seqs}{See Usage.}
-\item{site}{See Usage.}
-\item{pi}{Defaults to \code{NULL}.}
-\item{u}{Defaults to \code{1}.}
+\item{tree}{Passed to \code{.phylml_prune}.}
+\item{seqs}{Passed to \code{.phylml_prune}.}
+\item{site}{Passed to \code{.phylml_prune}.}
+\item{pi}{Passed to \code{.phylml_pi}.}
+\item{u}{Passed to \code{.phylml_prune}. Defaults to \code{1}.}
 }
 \description{
 Part of the phylml_native implementation; see the file header for the source it follows.

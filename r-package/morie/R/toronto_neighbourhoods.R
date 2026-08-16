@@ -75,7 +75,7 @@ NULL
 #' Part of the toronto_neighbourhoods implementation; see the file
 #' header for the source it follows.
 #'
-#' @param version See Usage.
+#' @param version Passed to \code{.morie_to_fixture_name}.
 #' @return The value of \code{utils::read.csv}.
 #' @export
 .morie_to_neighbourhoods_fixture <- function(version) {
@@ -333,7 +333,7 @@ morie_to_hood_crosswalk <- function() {
 #' the same phase) read `area_overlap_pct`; remap to the new
 #' `pct_140_in_158` so they keep working.
 #'
-#' @param cw See Usage.
+#' @param cw A list; the body reads \code{$area_overlap_pct}, \code{$pct_140_in_158} from it.
 #' @return The value of \code{cw}, as built in the body.
 #' @export
 .morie_to_legacy_overlap_col <- function(cw) {

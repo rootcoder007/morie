@@ -8,7 +8,7 @@
 rbf_basis(x, n_centres = 5, width = NULL)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Passed to \code{.polkrn_vec}.}
 \item{n_centres}{Defaults to \code{5}.}
 \item{width}{Defaults to \code{NULL}.}
 }

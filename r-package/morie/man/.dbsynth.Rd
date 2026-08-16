@@ -8,10 +8,10 @@
 .dbsynth(a, d, h, g)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{d}{See Usage.}
-\item{h}{See Usage.}
-\item{g}{See Usage.}
+\item{a}{A vector; its length is taken and its elements indexed.}
+\item{d}{A vector; indexed elementwise.}
+\item{h}{A vector; its length is taken and its elements indexed.}
+\item{g}{A vector; indexed elementwise.}
 }
 \description{
 Part of the wvltdb implementation; see the file header for the source it follows.

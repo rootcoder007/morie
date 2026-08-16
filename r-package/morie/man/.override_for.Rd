@@ -8,8 +8,8 @@
 .override_for(dataset_name, col_name)
 }
 \arguments{
-\item{dataset_name}{See Usage.}
-\item{col_name}{See Usage.}
+\item{dataset_name}{Character; passed to \code{tolower}.}
+\item{col_name}{Character; passed to \code{trimws}.}
 }
 \description{
 Part of the variable_taxonomy implementation; see the file header for the source it follows.

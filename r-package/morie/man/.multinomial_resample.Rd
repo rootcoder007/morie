@@ -8,7 +8,7 @@
 .multinomial_resample(weights)
 }
 \arguments{
-\item{weights}{See Usage.}
+\item{weights}{A vector; its length is taken.}
 }
 \description{
 Part of the prtcl_native implementation; see the file header for the source it follows.

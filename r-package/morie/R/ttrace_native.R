@@ -27,12 +27,13 @@
 
 #' negbinom_offspring
 #'
-#' Part of the ttrace_native implementation; see the file header for the
+#' A step of the ttrace_native implementation. Called by \code{simulate_outbreak}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param R0 See Usage.
 #' @param dispersion See Usage.
-#' @param rng See Usage.
+#' @param rng Passed to \code{.tt_gamma_draw}.
 #' @return The value of \code{.tt_poisson_draw}.
 #' @export
 negbinom_offspring <- function(R0, dispersion, rng) {
@@ -55,12 +56,13 @@ negbinom_offspring <- function(R0, dispersion, rng) {
 
 #' .tt_gamma_draw
 #'
-#' Part of the ttrace_native implementation; see the file header for the
+#' A step of the ttrace_native implementation. Called by \code{negbinom_offspring}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param shape See Usage.
-#' @param scale See Usage.
-#' @param rng See Usage.
+#' @param scale Passed to \code{.tt_gamma_draw}.
+#' @param rng Passed to \code{.ghc_unif}.
 #' @return The value of \code{repeat}.
 #' @export
 .tt_gamma_draw <- function(shape, scale, rng) {
@@ -84,11 +86,12 @@ negbinom_offspring <- function(R0, dispersion, rng) {
 
 #' .tt_poisson_draw
 #'
-#' Part of the ttrace_native implementation; see the file header for the
+#' A step of the ttrace_native implementation. Called by \code{negbinom_offspring}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param lam See Usage.
-#' @param rng See Usage.
+#' @param rng Passed to \code{.ghc_norm}.
 #' @return The value of \code{repeat}.
 #' @export
 .tt_poisson_draw <- function(lam, rng) {
@@ -114,13 +117,14 @@ negbinom_offspring <- function(R0, dispersion, rng) {
 
 #' serial_interval_draw
 #'
-#' Part of the ttrace_native implementation; see the file header for the
+#' A step of the ttrace_native implementation. Called by \code{simulate_outbreak}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param mean See Usage.
 #' @param sd See Usage.
-#' @param rng See Usage.
-#' @param allow_presymptomatic Defaults to \code{TRUE}.
+#' @param rng Passed to \code{.ghc_norm}.
+#' @param allow_presymptomatic A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return The value of \code{v}, as built in the body.
 #' @export
 serial_interval_draw <- function(mean, sd, rng, allow_presymptomatic = TRUE) {
@@ -136,7 +140,8 @@ serial_interval_draw <- function(mean, sd, rng, allow_presymptomatic = TRUE) {
 
 #' A "case" is a 3-tuple (infection_time, isolation_time, subclinical)
 #'
-#' Part of the ttrace_native implementation; see the file header for the
+#' A step of the ttrace_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param ... Passed through.
@@ -149,7 +154,8 @@ serial_interval_draw <- function(mean, sd, rng, allow_presymptomatic = TRUE) {
 
 #' simulate_outbreak
 #'
-#' Part of the ttrace_native implementation; see the file header for the
+#' A step of the ttrace_native implementation. Called by \code{morie_ttrace}, \code{probability_of_control}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param R0 Defaults to \code{2.5}.
@@ -249,7 +255,8 @@ simulate_outbreak <- function(R0 = 2.5, dispersion = 0.16, n_initial = 20,
 
 #' probability_of_control
 #'
-#' Part of the ttrace_native implementation; see the file header for the
+#' A step of the ttrace_native implementation. Called by \code{morie_ttrace}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param reps Defaults to \code{200}.
@@ -285,7 +292,8 @@ probability_of_control <- function(reps = 200, seed = 0, ...) {
 
 #' effective_reproduction_number
 #'
-#' Part of the ttrace_native implementation; see the file header for the
+#' A step of the ttrace_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param R0 See Usage.
@@ -329,7 +337,8 @@ effective_reproduction_number <- function(R0, si_mean, si_sd, delay_mean,
 
 #' .ttrace_cheatsheet
 #'
-#' Part of the ttrace_native implementation; see the file header for the
+#' A step of the ttrace_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.
@@ -354,7 +363,8 @@ contact_tracing_yield <- probability_of_control
 
 #' morie_ttrace
 #'
-#' Part of the ttrace_native implementation; see the file header for the
+#' A step of the ttrace_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param seed Defaults to \code{0}.

@@ -8,7 +8,7 @@
 .sdcfst_logit_predict(beta, x)
 }
 \arguments{
-\item{beta}{See Usage.}
+\item{beta}{A vector; indexed elementwise.}
 \item{x}{See Usage.}
 }
 \description{

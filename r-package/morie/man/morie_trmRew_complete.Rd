@@ -9,9 +9,9 @@ morie_trmRew_complete(equations, precedence, max_rules = 60, max_steps = 10000, 
 }
 \arguments{
 \item{equations}{See Usage.}
-\item{precedence}{See Usage.}
+\item{precedence}{Passed to \code{.trmRew_interreduce}.}
 \item{max_rules}{Defaults to \code{60}.}
-\item{max_steps}{Defaults to \code{10000}.}
+\item{max_steps}{Passed to \code{morie_trmRew_normal_form}. Defaults to \code{10000}.}
 \item{max_iter}{Defaults to \code{4000}.}
 }
 \description{

@@ -3,13 +3,13 @@
 % the formals.
 \name{.mor_ks_sf}
 \alias{.mor_ks_sf}
-\title{Two-sided asymptotic Kolmogorov series with Stephens\\\' correction}
+\title{Two-sided asymptotic Kolmogorov series with Stephens\\' correction}
 \usage{
 .mor_ks_sf(d, n)
 }
 \arguments{
-\item{d}{See Usage.}
-\item{n}{See Usage.}
+\item{d}{Numeric; combined arithmetically in the body.}
+\item{n}{Numeric; passed to \code{sqrt}.}
 }
 \description{
 Part of the over_native implementation; see the file header for the source it follows.

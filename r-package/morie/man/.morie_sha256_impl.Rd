@@ -8,7 +8,7 @@
 .morie_sha256_impl(data)
 }
 \arguments{
-\item{data}{See Usage.}
+\item{data}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

@@ -34,12 +34,13 @@ NULL
 
 #' .tbl_fmt_num
 #'
-#' Part of the tables_pub implementation; see the file header for the
+#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{format_number} and 7 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Numeric; passed to \code{abs}.
 #' @param digits Defaults to \code{2L}.
-#' @param apa Defaults to \code{FALSE}.
+#' @param apa A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return The value of \code{s}, as built in the body.
 #' @export
 .tbl_fmt_num <- function(x, digits = 2L, apa = FALSE) {
@@ -54,12 +55,13 @@ NULL
 
 #' .tbl_fmt_pval
 #'
-#' Part of the tables_pub implementation; see the file header for the
+#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{hazard_ratio_table}, \code{model_comparison_table} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p See Usage.
-#' @param digits Defaults to \code{3L}.
-#' @param apa Defaults to \code{FALSE}.
+#' @param digits Numeric; combined arithmetically in the body. Defaults to \code{3L}.
+#' @param apa A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return The value of \code{s}, as built in the body.
 #' @export
 .tbl_fmt_pval <- function(p, digits = 3L, apa = FALSE) {
@@ -75,7 +77,8 @@ NULL
 
 #' .tbl_stars
 #'
-#' Part of the tables_pub implementation; see the file header for the
+#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{hazard_ratio_table} and 4 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p See Usage.
@@ -91,13 +94,14 @@ NULL
 
 #' .tbl_smd
 #'
-#' Part of the tables_pub implementation; see the file header for the
+#' A step of the tables_pub implementation. Called by \code{table1}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param m1 See Usage.
-#' @param m2 See Usage.
-#' @param sd1 See Usage.
-#' @param sd2 See Usage.
+#' @param m1 Numeric; combined arithmetically in the body.
+#' @param m2 Numeric; combined arithmetically in the body.
+#' @param sd1 Numeric; combined arithmetically in the body.
+#' @param sd2 Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .tbl_smd <- function(m1, m2, sd1, sd2) {
@@ -113,7 +117,8 @@ NULL
 
 #' .tbl_footnotes_new
 #'
-#' Part of the tables_pub implementation; see the file header for the
+#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return The value of \code{e}, as built in the body.
@@ -126,10 +131,11 @@ NULL
 
 #' .tbl_footnotes_add
 #'
-#' Part of the tables_pub implementation; see the file header for the
+#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param reg See Usage.
+#' @param reg A list; the body reads \code{$notes} from it.
 #' @param text See Usage.
 #' @return The value of \code{[}.
 #' @export
@@ -140,10 +146,11 @@ NULL
 
 #' .tbl_footnotes_render
 #'
-#' Part of the tables_pub implementation; see the file header for the
+#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param reg See Usage.
+#' @param reg A list; the body reads \code{$notes} from it.
 #' @param fmt Defaults to \code{"text"}.
 #' @return A character value.
 #' @export
@@ -168,11 +175,12 @@ NULL
 
 #' .tbl_to_format
 #'
-#' Part of the tables_pub implementation; see the file header for the
+#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{format_dataframe} and 7 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param df See Usage.
-#' @param fmt Defaults to \code{c("dataframe", "latex", "html", "markdown", "text", "csv")}.
+#' @param fmt One of \code{"csv"}, \code{"dataframe"}.
 #' @param title Defaults to \code{""}.
 #' @param footnotes Defaults to \code{""}.
 #' @return The value of \code{out}, as built in the body.
@@ -407,7 +415,8 @@ table1 <- function(data, group_col = NULL,
 
 #' .tbl_extract_model
 #'
-#' Part of the tables_pub implementation; see the file header for the
+#' A step of the tables_pub implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param m See Usage.

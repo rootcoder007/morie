@@ -8,7 +8,7 @@
 .vepan_introns(t)
 }
 \arguments{
-\item{t}{See Usage.}
+\item{t}{A list; the body reads \code{$exons} from it.}
 }
 \description{
 Part of the vepan_native implementation; see the file header for the source it follows.

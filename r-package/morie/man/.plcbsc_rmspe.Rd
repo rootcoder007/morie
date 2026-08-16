@@ -8,7 +8,7 @@
 .plcbsc_rmspe(gaps)
 }
 \arguments{
-\item{gaps}{See Usage.}
+\item{gaps}{A vector; its length is taken.}
 }
 \description{
 Part of the plcbsc_native implementation; see the file header for the source it follows.

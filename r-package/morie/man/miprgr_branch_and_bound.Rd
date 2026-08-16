@@ -10,10 +10,10 @@ miprgr_branch_and_bound(A, b, c, integer_vars, maximise = TRUE, prune = TRUE, ma
 \arguments{
 \item{A}{See Usage.}
 \item{b}{See Usage.}
-\item{c}{See Usage.}
+\item{c}{A vector; its length is taken.}
 \item{integer_vars}{See Usage.}
-\item{maximise}{Defaults to \code{TRUE}.}
-\item{prune}{Defaults to \code{TRUE}.}
+\item{maximise}{A flag; the body branches on it. Defaults to \code{TRUE}.}
+\item{prune}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 \item{max_nodes}{Defaults to \code{5000}.}
 \item{solver}{Defaults to \code{"simplex"}.}
 }

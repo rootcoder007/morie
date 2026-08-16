@@ -8,7 +8,7 @@
 sequential_scan(pairs, x0 = 0)
 }
 \arguments{
-\item{pairs}{See Usage.}
+\item{pairs}{A vector; its length is taken.}
 \item{x0}{Defaults to \code{0}.}
 }
 \description{

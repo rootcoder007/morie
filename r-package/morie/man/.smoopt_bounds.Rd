@@ -12,7 +12,7 @@
 \item{i2}{See Usage.}
 \item{alpha}{See Usage.}
 \item{y}{See Usage.}
-\item{C}{See Usage.}
+\item{C}{Numeric; passed to \code{min}.}
 }
 \description{
 svmopt._bounds exactly.

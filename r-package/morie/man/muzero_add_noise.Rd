@@ -8,9 +8,9 @@
 muzero_add_noise(prior, alpha, frac, seed)
 }
 \arguments{
-\item{prior}{See Usage.}
+\item{prior}{Numeric; combined arithmetically in the body.}
 \item{alpha}{See Usage.}
-\item{frac}{See Usage.}
+\item{frac}{Numeric; combined arithmetically in the body.}
 \item{seed}{See Usage.}
 }
 \description{

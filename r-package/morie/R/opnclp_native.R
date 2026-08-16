@@ -14,10 +14,11 @@
 
 #' morie_opnclp
 #'
-#' Part of the opnclp_native implementation; see the file header for the
+#' A step of the opnclp_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param payload See Usage.
+#' @param payload A list; the body reads \code{$compute}, \code{$fit}, \code{$image_embeddings}, \code{$label_a}, \code{$label_b}, \code{$model_params}, \code{$op}, \code{$samples_seen}, \code{$temperature}, \code{$text_embeddings}, \code{$x}, \code{$x_a}, \code{$x_b}, \code{$y}, \code{$y_a}, \code{$y_b} from it.
 #' @return Nothing; this branch always raises.
 #' @export
 morie_opnclp <- function(payload) {
@@ -52,7 +53,8 @@ morie_opnclp <- function(payload) {
 
 #' .as_num_vec
 #'
-#' Part of the opnclp_native implementation; see the file header for the
+#' A step of the opnclp_native implementation. Called by \code{fit_power_law}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p See Usage.
@@ -70,7 +72,8 @@ morie_opnclp <- function(payload) {
 
 #' .as_num_mat
 #'
-#' Part of the opnclp_native implementation; see the file header for the
+#' A step of the opnclp_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param m See Usage.
@@ -85,7 +88,8 @@ morie_opnclp <- function(payload) {
 
 #' total_compute
 #'
-#' Part of the opnclp_native implementation; see the file header for the
+#' A step of the opnclp_native implementation. Called by \code{morie_opnclp}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param samples_seen See Usage.
@@ -103,11 +107,12 @@ total_compute <- function(samples_seen, model_params) {
 
 #' fit_power_law
 #'
-#' Part of the opnclp_native implementation; see the file header for the
+#' A step of the opnclp_native implementation. Called by \code{compare_scaling}, \code{morie_opnclp}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param y See Usage.
+#' @param x Passed to \code{.as_num_vec}.
+#' @param y Passed to \code{.as_num_vec}.
 #' @return A list with \code{alpha}, \code{beta}, \code{slope}, \code{r_squared}, \code{range}, \code{n}.
 #' @export
 fit_power_law <- function(x, y) {
@@ -142,10 +147,11 @@ fit_power_law <- function(x, y) {
 
 #' .opnclp_predict
 #'
-#' Part of the opnclp_native implementation; see the file header for the
+#' A step of the opnclp_native implementation. Called by \code{morie_opnclp}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param fit See Usage.
+#' @param fit A list; the body reads \code{$alpha}, \code{$beta}, \code{$range} from it.
 #' @param compute See Usage.
 #' @return A list with \code{value}, \code{extrapolation_decades}, \code{interpolated}, \code{note}.
 #' @export
@@ -166,7 +172,8 @@ fit_power_law <- function(x, y) {
 
 #' compare_scaling
 #'
-#' Part of the opnclp_native implementation; see the file header for the
+#' A step of the opnclp_native implementation. Called by \code{morie_opnclp}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x_a See Usage.
@@ -194,10 +201,11 @@ compare_scaling <- function(x_a, y_a, x_b, y_b, label_a = "A", label_b = "B") {
 # Build a row x col numeric matrix from a list-of-list input.
 #' Build a row x col numeric matrix from a list-of-list input
 #'
-#' Part of the opnclp_native implementation; see the file header for the
+#' A step of the opnclp_native implementation. Called by \code{infonce}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param m See Usage.
+#' @param m Optional; may be \code{NULL}. A vector; its length is taken.
 #' @return The value of \code{do.call}.
 #' @export
 .coerce_mat <- function(m) {
@@ -211,11 +219,12 @@ compare_scaling <- function(x_a, y_a, x_b, y_b, label_a = "A", label_b = "B") {
 
 #' infonce
 #'
-#' Part of the opnclp_native implementation; see the file header for the
+#' A step of the opnclp_native implementation. Called by \code{morie_opnclp}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param image_embeddings See Usage.
-#' @param text_embeddings See Usage.
+#' @param image_embeddings Passed to \code{.coerce_mat}.
+#' @param text_embeddings Passed to \code{.coerce_mat}.
 #' @param temperature Defaults to \code{0.07}.
 #' @return A list with \code{loss}, \code{image_to_text}, \code{text_to_image}, \code{logits}, \code{note}.
 #' @export
@@ -261,7 +270,8 @@ infonce <- function(image_embeddings, text_embeddings, temperature = 0.07) {
 
 #' .opnclp_cheatsheet
 #'
-#' Part of the opnclp_native implementation; see the file header for the
+#' A step of the opnclp_native implementation. Called by \code{morie_opnclp}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

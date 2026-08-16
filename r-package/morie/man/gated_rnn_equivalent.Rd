@@ -8,7 +8,7 @@
 gated_rnn_equivalent(x, w, b = 0)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A vector; its length is taken and its elements indexed.}
 \item{w}{See Usage.}
 \item{b}{Defaults to \code{0}.}
 }

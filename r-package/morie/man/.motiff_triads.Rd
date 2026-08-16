@@ -8,8 +8,8 @@
 .motiff_triads(adj, n)
 }
 \arguments{
-\item{adj}{See Usage.}
-\item{n}{See Usage.}
+\item{adj}{A matrix; indexed by row and column.}
+\item{n}{A count; the body uses it as \code{seq_len(...)}.}
 }
 \description{
 Part of the motiff_native implementation; see the file header for the source it follows.

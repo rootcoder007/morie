@@ -8,12 +8,12 @@
 .raw(protected, measure, step)
 }
 \arguments{
-\item{protected}{See Usage.}
-\item{measure}{See Usage.}
-\item{step}{See Usage.}
+\item{protected}{A vector; its length is taken and its elements indexed.}
+\item{measure}{One of \code{"rKL"}, \code{"rND"}.}
+\item{step}{Passed to \code{.cutoffs}.}
 }
 \description{
-Part of the fairRC_native implementation; see the file header for the source it follows.
+A step of the fairRC_native implementation. Called by \code{.measure}, \code{.normalizer}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{tot}, as built in the body.
@@ -21,7 +21,7 @@ The value of \code{tot}, as built in the body.
 \references{
 Yang, K. & Stoyanovich, J. (2017) "Measuring Fairness in Ranked
 Outputs", Proceedings of the 29th International Conference on
-Scientific and Statistical Database Management (SSDBM \\'17),
+Scientific and Statistical Database Management (SSDBM \'17),
 arXiv:1610.08559. Sec. 3.
 Jarvelin, K. & Kekalainen, J. (2002) "Cumulated gain-based evaluation
 of IR techniques", ACM Transactions on Information Systems 20(4),

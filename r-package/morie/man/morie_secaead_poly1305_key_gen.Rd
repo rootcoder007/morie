@@ -8,8 +8,8 @@
 morie_secaead_poly1305_key_gen(key, nonce)
 }
 \arguments{
-\item{key}{See Usage.}
-\item{nonce}{See Usage.}
+\item{key}{Passed to \code{morie_secaead_chacha20_block}.}
+\item{nonce}{Passed to \code{morie_secaead_chacha20_block}.}
 }
 \description{
 Part of the secaead_native implementation; see the file header for the source it follows.

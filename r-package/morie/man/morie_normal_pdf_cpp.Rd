@@ -8,9 +8,9 @@
 morie_normal_pdf_cpp(x, mean, sd)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{mean}{See Usage.}
-\item{sd}{See Usage.}
+\item{x}{Passed to \code{.Call}.}
+\item{mean}{Passed to \code{.Call}.}
+\item{sd}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

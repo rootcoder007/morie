@@ -14,8 +14,8 @@ compute_threshold(i1, i2, a1_new, a2_new, alpha, y, E, K, b, C)
 \item{a2_new}{See Usage.}
 \item{alpha}{See Usage.}
 \item{y}{See Usage.}
-\item{E}{See Usage.}
-\item{K}{See Usage.}
+\item{E}{A vector; indexed elementwise.}
+\item{K}{Passed to \code{.smoopt_K}.}
 \item{b}{See Usage.}
 \item{C}{See Usage.}
 }

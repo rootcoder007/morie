@@ -8,8 +8,8 @@
 .sv_dl_components(n, edges)
 }
 \arguments{
-\item{n}{See Usage.}
-\item{edges}{See Usage.}
+\item{n}{A count; the body uses it as \code{seq_len(...)}.}
+\item{edges}{A matrix; indexed by row and column.}
 }
 \description{
 Part of the sv_dl_native implementation; see the file header for the source it follows.

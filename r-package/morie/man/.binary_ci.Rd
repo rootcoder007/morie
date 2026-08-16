@@ -8,8 +8,8 @@
 .binary_ci(successes, n)
 }
 \arguments{
-\item{successes}{See Usage.}
-\item{n}{See Usage.}
+\item{successes}{Passed to \code{.safe_divide}.}
+\item{n}{Numeric; passed to \code{max}.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

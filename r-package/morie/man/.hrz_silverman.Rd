@@ -8,10 +8,10 @@
 .hrz_silverman(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A vector; its length is taken.}
 }
 \description{
-Part of the helpers_horowitz implementation; see the file header for the source it follows.
+A step of the helpers_horowitz implementation. Called by \code{hrzb2}, \code{Hrzctrl}, \code{hrzi1} and 24 others in the module. See the file header for the source the module follows.
 }
 \value{
 The value of \code{unname}.

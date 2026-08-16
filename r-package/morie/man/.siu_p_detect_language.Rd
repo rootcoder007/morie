@@ -8,7 +8,7 @@
 .siu_p_detect_language(text)
 }
 \arguments{
-\item{text}{See Usage.}
+\item{text}{Character; passed to \code{grepl}.}
 }
 \description{
 Part of the siu_parser implementation; see the file header for the source it follows.

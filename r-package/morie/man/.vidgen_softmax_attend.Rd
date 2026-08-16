@@ -8,8 +8,8 @@
 .vidgen_softmax_attend(X, mask = NULL)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{mask}{Defaults to \code{NULL}.}
+\item{X}{A matrix; indexed by row and column.}
+\item{mask}{Optional; may be \code{NULL}. A matrix; indexed by row and column.}
 }
 \description{
 Part of the vidgen_native implementation; see the file header for the source it follows.

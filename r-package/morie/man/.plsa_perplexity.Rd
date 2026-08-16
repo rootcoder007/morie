@@ -8,10 +8,10 @@
 .plsa_perplexity(n_dw, Pz, Pd_z, Pw_z)
 }
 \arguments{
-\item{n_dw}{See Usage.}
-\item{Pz}{See Usage.}
-\item{Pd_z}{See Usage.}
-\item{Pw_z}{See Usage.}
+\item{n_dw}{Passed to \code{.plsa_check}.}
+\item{Pz}{Passed to \code{.plsa_log_likelihood}.}
+\item{Pd_z}{Passed to \code{.plsa_log_likelihood}.}
+\item{Pw_z}{Passed to \code{.plsa_log_likelihood}.}
 }
 \description{
 Part of the plsa_native implementation; see the file header for the source it follows.

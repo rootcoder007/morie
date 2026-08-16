@@ -8,10 +8,10 @@
 .propinf_sgd_step(net, grads, lr, scale)
 }
 \arguments{
-\item{net}{See Usage.}
-\item{grads}{See Usage.}
-\item{lr}{See Usage.}
-\item{scale}{See Usage.}
+\item{net}{A vector; its length is taken and its elements indexed.}
+\item{grads}{A vector; indexed elementwise.}
+\item{lr}{Numeric; combined arithmetically in the body.}
+\item{scale}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

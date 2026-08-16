@@ -8,9 +8,9 @@
 mask_loss(logits, target, decoupled = TRUE)
 }
 \arguments{
-\item{logits}{See Usage.}
-\item{target}{See Usage.}
-\item{decoupled}{Defaults to \code{TRUE}.}
+\item{logits}{A matrix; passed to \code{as.matrix}.}
+\item{target}{A matrix; passed to \code{as.matrix}.}
+\item{decoupled}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the masrcn_native implementation; see the file header for the source it follows.

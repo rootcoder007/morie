@@ -8,7 +8,7 @@
 morie_survnnr_survival_function(fit_result, x, times = NULL)
 }
 \arguments{
-\item{fit_result}{See Usage.}
+\item{fit_result}{Passed to \code{morie_survnnr_baseline_hazard}.}
 \item{x}{See Usage.}
 \item{times}{Defaults to \code{NULL}.}
 }

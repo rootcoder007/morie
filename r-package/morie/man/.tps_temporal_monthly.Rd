@@ -8,7 +8,7 @@
 .tps_temporal_monthly(df)
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{A list; the body reads \code{$OCC_DAY}, \code{$OCC_MONTH}, \code{$OCC_YEAR} from it.}
 }
 \description{
 with $dates (POSIXct, first-of-month) and $counts (integer).

@@ -8,9 +8,9 @@
 .otis_d_simple(ds_id, description, by)
 }
 \arguments{
-\item{ds_id}{See Usage.}
-\item{description}{See Usage.}
-\item{by}{See Usage.}
+\item{ds_id}{Passed to \code{.otis_summary_lines}.}
+\item{description}{Passed to \code{.otis_summary_lines}.}
+\item{by}{Passed to \code{.otis_crosstab}.}
 }
 \description{
 Part of the otis_all_analyze implementation; see the file header for the source it follows.

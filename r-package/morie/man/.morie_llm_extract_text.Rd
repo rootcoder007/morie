@@ -8,7 +8,7 @@
 .morie_llm_extract_text(data)
 }
 \arguments{
-\item{data}{See Usage.}
+\item{data}{A list; the body reads \code{$choices} from it.}
 }
 \description{
 Part of the llm implementation; see the file header for the source it follows.

@@ -8,10 +8,10 @@
 .vepan_splice_terms(t, v, lo, hi)
 }
 \arguments{
-\item{t}{See Usage.}
+\item{t}{A list; the body reads \code{$end}, \code{$exons}, \code{$start}, \code{$strand} from it.}
 \item{v}{See Usage.}
-\item{lo}{See Usage.}
-\item{hi}{See Usage.}
+\item{lo}{Passed to \code{.vepan_seqrange}.}
+\item{hi}{Passed to \code{.vepan_seqrange}.}
 }
 \description{
 Part of the vepan_native implementation; see the file header for the source it follows.

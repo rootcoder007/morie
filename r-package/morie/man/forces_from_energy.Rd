@@ -10,7 +10,7 @@ forces_from_energy(energy_fn, R, h = 1e-05)
 \arguments{
 \item{energy_fn}{See Usage.}
 \item{R}{See Usage.}
-\item{h}{Defaults to \code{1e-05}.}
+\item{h}{Numeric; combined arithmetically in the body. Defaults to \code{1e-05}.}
 }
 \description{
 Part of the schN_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .kernel_fn(kernel_type)
 }
 \arguments{
-\item{kernel_type}{See Usage.}
+\item{kernel_type}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the semipar_bridge implementation; see the file header for the source it follows.

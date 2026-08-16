@@ -8,8 +8,8 @@
 mafft_gap_profiles(group, weights)
 }
 \arguments{
-\item{group}{See Usage.}
-\item{weights}{See Usage.}
+\item{group}{A vector; its length is taken and its elements indexed.}
+\item{weights}{A vector; indexed elementwise.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

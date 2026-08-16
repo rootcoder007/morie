@@ -8,8 +8,8 @@
 .morie_jo_fitpred(rows, y, newrow)
 }
 \arguments{
-\item{rows}{See Usage.}
-\item{y}{See Usage.}
+\item{rows}{A matrix; passed to \code{nrow}.}
+\item{y}{Passed to \code{.morie_jo_ols}.}
 \item{newrow}{See Usage.}
 }
 \description{

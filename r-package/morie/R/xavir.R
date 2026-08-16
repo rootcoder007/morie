@@ -49,7 +49,8 @@ morie_xavir_xavier_init <- function(fan_in, fan_out, seed = 42L, uniform = TRUE)
 
 #' .Random.seed_safe
 #'
-#' Part of the xavir implementation; see the file header for the source
+#' A step of the xavir implementation. Called by \code{morie_xavir_xavier_init}.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @return One of two values, depending on the branch taken.
@@ -64,7 +65,8 @@ morie_xavir_xavier_init <- function(fan_in, fan_out, seed = 42L, uniform = TRUE)
 
 #' .Random.seed_restore
 #'
-#' Part of the xavir implementation; see the file header for the source
+#' A step of the xavir implementation. Called by \code{morie_xavir_xavier_init}.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @param old See Usage.

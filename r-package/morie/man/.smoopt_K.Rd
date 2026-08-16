@@ -8,10 +8,10 @@
 .smoopt_K(K)
 }
 \arguments{
-\item{K}{See Usage.}
+\item{K}{A vector; its length is taken and its elements indexed.}
 }
 \description{
-matrix if it isn\\\'t already.
+matrix if it isn\\'t already.
 }
 \value{
 The value of \code{M}, as built in the body.

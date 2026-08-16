@@ -8,8 +8,8 @@
 .secaead_mac_data(aad, ciphertext)
 }
 \arguments{
-\item{aad}{See Usage.}
-\item{ciphertext}{See Usage.}
+\item{aad}{Passed to \code{.secaead_as_bytes}.}
+\item{ciphertext}{Passed to \code{.secaead_as_bytes}.}
 }
 \description{
 Part of the secaead_native implementation; see the file header for the source it follows.

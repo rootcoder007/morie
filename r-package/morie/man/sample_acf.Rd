@@ -8,7 +8,7 @@
 sample_acf(x, lags)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A vector; its length is taken and its elements indexed.}
 \item{lags}{See Usage.}
 }
 \description{

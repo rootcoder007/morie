@@ -8,7 +8,7 @@
 morie_nrfrad(payload)
 }
 \arguments{
-\item{payload}{See Usage.}
+\item{payload}{A list; the body reads \code{$bins}, \code{$colour}, \code{$direction}, \code{$directions}, \code{$eps}, \code{$include_input}, \code{$L}, \code{$model}, \code{$n_samples}, \code{$op}, \code{$origin}, \code{$p}, \code{$point}, \code{$rng}, \code{$sigma}, \code{$stratified}, \code{$t}, \code{$t_far}, \code{$t_near}, \code{$tol}, \code{$weights} from it.}
 }
 \description{
 Part of the nrfrad_native implementation; see the file header for the source it follows.

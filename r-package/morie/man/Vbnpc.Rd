@@ -51,8 +51,8 @@ is on the variational distribution, not the model.
 
 Coordinate updates (Eqs. 18-21): gamma_{t,1} = 1 + sum_n phi_{n,t};
 gamma_{t,2} = alpha + sum_n sum_{j>t} phi_{n,j}; phi_{n,t} proportional
-to exp(E\[log V_t\] + sum_{i<t} E\link{log(1-V_i)} + E_q\[log p(y_n|eta_t)\]),
-with E\[log V_t\] = psi(g1) - psi(g1+g2) and E\link{log(1-V_t)} = psi(g2) -
+to exp(E\[log V_t\] + sum_{i<t} E[log(1-V_i)] + E_q\[log p(y_n|eta_t)\]),
+with E\[log V_t\] = psi(g1) - psi(g1+g2) and E[log(1-V_t)] = psi(g2) -
 psi(g1+g2).
 
 COMPONENT MODEL. Univariate Gaussian with KNOWN variance sigma2 and a

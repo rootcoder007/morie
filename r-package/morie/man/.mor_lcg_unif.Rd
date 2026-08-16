@@ -8,7 +8,7 @@
 .mor_lcg_unif(e)
 }
 \arguments{
-\item{e}{See Usage.}
+\item{e}{A list; the body reads \code{$s} from it.}
 }
 \description{
 Part of the reportm_native implementation; see the file header for the source it follows.

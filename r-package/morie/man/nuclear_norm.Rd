@@ -8,7 +8,7 @@
 nuclear_norm(A)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{A matrix; passed to \code{as.matrix}.}
 }
 \description{
 Part of the meglt_native implementation; see the file header for the source it follows.

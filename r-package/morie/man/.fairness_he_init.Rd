@@ -8,10 +8,10 @@
 .fairness_he_init(sizes)
 }
 \arguments{
-\item{sizes}{See Usage.}
+\item{sizes}{A vector; its length is taken and its elements indexed.}
 }
 \description{
-Part of the fairness_gan implementation; see the file header for the source it follows.
+A step of the fairness_gan implementation. Called by \code{morie_fairness_spatial_gan}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{params}, as built in the body.

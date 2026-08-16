@@ -51,7 +51,7 @@ NULL
 #' @param n_tracts See Usage.
 #' @param rho See Usage.
 #' @param moran_i_ols See Usage.
-#' @param decompositions See Usage.
+#' @param decompositions A vector; indexed elementwise.
 #' @param gent_distribution See Usage.
 #' @param sensitivity_thresholds Defaults to \code{list()}.
 #' @param note Defaults to \code{""}.
@@ -104,8 +104,8 @@ NULL
 #' Part of the laniyonu_gentrification_policing implementation; see the
 #' file header for the source it follows.
 #'
-#' @param crime_arr See Usage.
-#' @param k Defaults to \code{4L}.
+#' @param crime_arr A vector; its length is taken and its elements indexed.
+#' @param k A count; the body uses it as \code{seq_len(...)}. Defaults to \code{4L}.
 #' @return A numeric value.
 #' @export
 .lan_gp_placeholder_W <- function(crime_arr, k = 4L) {
@@ -130,8 +130,8 @@ NULL
 #' Part of the laniyonu_gentrification_policing implementation; see the
 #' file header for the source it follows.
 #'
-#' @param resid See Usage.
-#' @param W See Usage.
+#' @param resid A vector; its length is taken.
+#' @param W A matrix; passed to \code{dim}.
 #' @return A numeric value.
 #' @export
 .lan_gp_morans_i <- function(resid, W) {
@@ -153,7 +153,7 @@ NULL
 #' Part of the laniyonu_gentrification_policing implementation; see the
 #' file header for the source it follows.
 #'
-#' @param baseline_frame See Usage.
+#' @param baseline_frame A matrix; passed to \code{nrow}.
 #' @param baseline_income_col See Usage.
 #' @param baseline_rent_col See Usage.
 #' @param growth_college_col See Usage.
@@ -216,11 +216,11 @@ NULL
 #' Part of the laniyonu_gentrification_policing implementation; see the
 #' file header for the source it follows.
 #'
-#' @param rho See Usage.
-#' @param beta_direct See Usage.
-#' @param beta_spatial See Usage.
-#' @param W See Usage.
-#' @param coefficient_names See Usage.
+#' @param rho Numeric; combined arithmetically in the body.
+#' @param beta_direct A vector; indexed elementwise.
+#' @param beta_spatial A vector; indexed elementwise.
+#' @param W A matrix; passed to \code{nrow}.
+#' @param coefficient_names A vector; its length is taken and its elements indexed.
 #' @return The value of \code{lapply}.
 #' @export
 .lan_sdm_decompose <- function(rho, beta_direct, beta_spatial, W,

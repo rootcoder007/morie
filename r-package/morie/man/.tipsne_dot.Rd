@@ -8,8 +8,8 @@
 .tipsne_dot(a, b)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{a}{A vector; its length is taken and its elements indexed.}
+\item{b}{A vector; indexed elementwise.}
 }
 \description{
 Part of the tipsne_native implementation; see the file header for the source it follows.

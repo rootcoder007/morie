@@ -8,10 +8,10 @@
 .surepi_baseline(counts, t, lag, width, sigma_floor)
 }
 \arguments{
-\item{counts}{See Usage.}
-\item{t}{See Usage.}
-\item{lag}{See Usage.}
-\item{width}{See Usage.}
+\item{counts}{A vector; indexed elementwise.}
+\item{t}{Numeric; combined arithmetically in the body.}
+\item{lag}{Numeric; combined arithmetically in the body.}
+\item{width}{Numeric; combined arithmetically in the body.}
 \item{sigma_floor}{See Usage.}
 }
 \description{

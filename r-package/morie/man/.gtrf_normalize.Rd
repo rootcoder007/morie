@@ -8,11 +8,11 @@
 .gtrf_normalize(X, how)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{how}{See Usage.}
+\item{X}{A matrix; indexed by row and column.}
+\item{how}{One of \code{"batch"}, \code{"none"}.}
 }
 \description{
-Part of the gtrf_native implementation; see the file header for the source it follows.
+A step of the gtrf_native implementation. Called by \code{morie_gtrf_layer}. See the file header for the source the module follows.
 }
 \value{
 One of two values, depending on the branch taken.

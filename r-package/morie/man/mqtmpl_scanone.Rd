@@ -8,12 +8,12 @@
 mqtmpl_scanone(y, markers, positions, method = "em", step = 0.02, covariates = list(), error_rate = 0)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{markers}{See Usage.}
-\item{positions}{See Usage.}
-\item{method}{Defaults to \code{"em"}.}
+\item{y}{A vector; its length is taken and its elements indexed.}
+\item{markers}{A vector; its length is taken and its elements indexed.}
+\item{positions}{A vector; indexed elementwise.}
+\item{method}{One of \code{"imp"}, \code{"mr"}. Defaults to \code{"em"}.}
 \item{step}{Defaults to \code{0.02}.}
-\item{covariates}{Defaults to \code{list()}.}
+\item{covariates}{A vector; its length is taken. Defaults to \code{list()}.}
 \item{error_rate}{Defaults to \code{0}.}
 }
 \description{

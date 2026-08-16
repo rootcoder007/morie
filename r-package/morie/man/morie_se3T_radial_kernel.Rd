@@ -9,7 +9,7 @@ morie_se3T_radial_kernel(distance, weights = NULL, sigma = 1)
 }
 \arguments{
 \item{distance}{See Usage.}
-\item{weights}{Defaults to \code{NULL}.}
+\item{weights}{Optional; may be \code{NULL}. Passed to \code{.se3T_vec}.}
 \item{sigma}{Defaults to \code{1}.}
 }
 \description{

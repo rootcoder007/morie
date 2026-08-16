@@ -12,7 +12,8 @@ NULL
 
 #' .sim_result
 #'
-#' Part of the fairness_simulation implementation; see the file header
+#' A step of the fairness_simulation implementation. Called by \code{morie_fairness_noisy_or_detection}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param title See Usage.

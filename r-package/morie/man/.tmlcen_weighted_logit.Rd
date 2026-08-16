@@ -8,11 +8,11 @@
 .tmlcen_weighted_logit(Z, y, w, iters = 60L, ridge = 1e-10)
 }
 \arguments{
-\item{Z}{See Usage.}
-\item{y}{See Usage.}
-\item{w}{See Usage.}
-\item{iters}{Defaults to \code{60L}.}
-\item{ridge}{Defaults to \code{1e-10}.}
+\item{Z}{A matrix; passed to \code{nrow}.}
+\item{y}{Numeric; combined arithmetically in the body.}
+\item{w}{Numeric; combined arithmetically in the body.}
+\item{iters}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{60L}.}
+\item{ridge}{Passed to \code{.tmlcen_ridgesolve}. Defaults to \code{1e-10}.}
 }
 \description{
 Part of the tmlcen_native implementation; see the file header for the source it follows.

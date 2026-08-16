@@ -8,9 +8,9 @@
 .tso_fit_po_stacked(X, y, K, max_iter, tol)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; passed to \code{nrow}.}
 \item{y}{See Usage.}
-\item{K}{See Usage.}
+\item{K}{Numeric; combined arithmetically in the body.}
 \item{max_iter}{See Usage.}
 \item{tol}{See Usage.}
 }

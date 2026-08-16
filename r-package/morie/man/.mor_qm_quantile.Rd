@@ -8,8 +8,8 @@
 .mor_qm_quantile(sorted_x, p)
 }
 \arguments{
-\item{sorted_x}{See Usage.}
-\item{p}{See Usage.}
+\item{sorted_x}{A vector; its length is taken and its elements indexed.}
+\item{p}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the qmDS_native implementation; see the file header for the source it follows.

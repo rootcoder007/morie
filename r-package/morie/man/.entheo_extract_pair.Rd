@@ -8,11 +8,11 @@
 .entheo_extract_pair(record_or_eeg, fmri)
 }
 \arguments{
-\item{record_or_eeg}{See Usage.}
+\item{record_or_eeg}{A list; the body reads \code{$fmri} from it.}
 \item{fmri}{See Usage.}
 }
 \description{
-Part of the entheo_analysis implementation; see the file header for the source it follows.
+A step of the entheo_analysis implementation. Called by \code{beautiful_loop_metric}, \code{san_score}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{e_dmt}, \code{f_dmt}, \code{e_pcb}, \code{f_pcb}.

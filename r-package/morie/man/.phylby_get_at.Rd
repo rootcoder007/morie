@@ -8,7 +8,7 @@
 .phylby_get_at(node, path)
 }
 \arguments{
-\item{node}{See Usage.}
+\item{node}{A vector; indexed elementwise.}
 \item{path}{See Usage.}
 }
 \description{

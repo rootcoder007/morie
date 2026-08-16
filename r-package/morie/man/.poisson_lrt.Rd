@@ -8,10 +8,10 @@
 .poisson_lrt(n_obs, n_in, n_exp, n_tot)
 }
 \arguments{
-\item{n_obs}{See Usage.}
+\item{n_obs}{Numeric; combined arithmetically in the body.}
 \item{n_in}{See Usage.}
-\item{n_exp}{See Usage.}
-\item{n_tot}{See Usage.}
+\item{n_exp}{Numeric; combined arithmetically in the body.}
+\item{n_tot}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the mrm_kulldorff implementation; see the file header for the source it follows.

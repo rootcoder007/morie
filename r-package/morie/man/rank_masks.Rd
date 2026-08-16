@@ -8,7 +8,7 @@
 rank_masks(masks, predicted_iou, target = NULL)
 }
 \arguments{
-\item{masks}{See Usage.}
+\item{masks}{A vector; its length is taken.}
 \item{predicted_iou}{See Usage.}
 \item{target}{Defaults to \code{NULL}.}
 }

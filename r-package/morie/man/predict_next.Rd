@@ -8,8 +8,8 @@
 predict_next(state, item_embeddings, top_k = 5, exclude = list())
 }
 \arguments{
-\item{state}{See Usage.}
-\item{item_embeddings}{See Usage.}
+\item{state}{Passed to \code{.sasrec_vec}.}
+\item{item_embeddings}{Passed to \code{.sasrec_mat}.}
 \item{top_k}{Defaults to \code{5}.}
 \item{exclude}{Defaults to \code{list()}.}
 }

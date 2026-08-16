@@ -1133,7 +1133,8 @@ sgolay <- function(x, window = 11L, polyorder = 3L) {
 
 #' .morie_py_call
 #'
-#' Part of the signal implementation; see the file header for the source
+#' A step of the signal implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @param fn_name See Usage.

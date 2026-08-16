@@ -9,9 +9,9 @@ gated_update(s, v, U, V, phi)
 }
 \arguments{
 \item{s}{See Usage.}
-\item{v}{See Usage.}
-\item{U}{See Usage.}
-\item{V}{See Usage.}
+\item{v}{A matrix; passed to \code{as.matrix}.}
+\item{U}{A matrix; passed to \code{as.matrix}.}
+\item{V}{A matrix; passed to \code{as.matrix}.}
 \item{phi}{See Usage.}
 }
 \description{

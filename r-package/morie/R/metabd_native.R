@@ -14,12 +14,13 @@
 
 #' tetranucleotide_frequency
 #'
-#' Part of the metabd_native implementation; see the file header for the
+#' A step of the metabd_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param seq See Usage.
 #' @param kk Defaults to \code{4L}.
-#' @param canonical Defaults to \code{TRUE}.
+#' @param canonical A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{frequency}, \code{vector}, \code{kmers}, \code{n_kmers}, \code{canonical}.
 #' @export
 tetranucleotide_frequency <- function(seq, kk = 4L, canonical = TRUE) {
@@ -49,7 +50,8 @@ tetranucleotide_frequency <- function(seq, kk = 4L, canonical = TRUE) {
 
 #' abundance_correlation
 #'
-#' Part of the metabd_native implementation; see the file header for the
+#' A step of the metabd_native implementation. Called by \code{composite_distance}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param cov_a See Usage.
@@ -69,7 +71,8 @@ abundance_correlation <- function(cov_a, cov_b) {
 
 #' length_weight
 #'
-#' Part of the metabd_native implementation; see the file header for the
+#' A step of the metabd_native implementation. Called by \code{composite_distance}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param length See Usage.
@@ -89,12 +92,13 @@ length_weight <- function(length, l_min = 2500.0, l_ref = 100000.0) {
 
 #' composite_distance
 #'
-#' Part of the metabd_native implementation; see the file header for the
+#' A step of the metabd_native implementation. Called by \code{bin_contigs}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param tnf_a See Usage.
 #' @param tnf_b See Usage.
-#' @param cov_a Defaults to \code{NULL}.
+#' @param cov_a Optional; may be \code{NULL}. A vector; its length is taken.
 #' @param cov_b Defaults to \code{NULL}.
 #' @param len_a Defaults to \code{NULL}.
 #' @param len_b Defaults to \code{NULL}.
@@ -127,11 +131,12 @@ composite_distance <- function(tnf_a, tnf_b, cov_a = NULL, cov_b = NULL,
 
 #' bin_contigs
 #'
-#' Part of the metabd_native implementation; see the file header for the
+#' A step of the metabd_native implementation. Called by \code{morie_metabd}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param tnfs See Usage.
-#' @param coverages Defaults to \code{NULL}.
+#' @param tnfs A matrix; passed to \code{as.matrix}.
+#' @param coverages Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @param lengths Defaults to \code{NULL}.
 #' @param threshold Defaults to \code{0.15}.
 #' @param min_bin_size Defaults to \code{2e+05}.
@@ -169,7 +174,8 @@ bin_contigs <- function(tnfs, coverages = NULL, lengths = NULL, threshold = 0.15
 
 #' purity_completeness
 #'
-#' Part of the metabd_native implementation; see the file header for the
+#' A step of the metabd_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param bins See Usage.
@@ -198,7 +204,8 @@ purity_completeness <- function(bins, truth) {
 
 #' .metabd_cheatsheet
 #'
-#' Part of the metabd_native implementation; see the file header for the
+#' A step of the metabd_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.
@@ -212,7 +219,8 @@ metagenome_binning <- bin_contigs
 
 #' morie_metabd
 #'
-#' Part of the metabd_native implementation; see the file header for the
+#' A step of the metabd_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param tnfs See Usage.

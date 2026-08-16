@@ -8,8 +8,8 @@
 .check(scores, priority)
 }
 \arguments{
-\item{scores}{See Usage.}
-\item{priority}{See Usage.}
+\item{scores}{Passed to \code{.slvgrf_vec}.}
+\item{priority}{Passed to \code{.slvgrf_vec}.}
 }
 \description{
 Part of the slvgrf_native implementation; see the file header for the source it follows.

@@ -8,13 +8,13 @@
 coord_update(X, M, phi_x, C = NULL)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{M}{See Usage.}
+\item{X}{A matrix; indexed by row and column.}
+\item{M}{A vector; indexed elementwise.}
 \item{phi_x}{See Usage.}
 \item{C}{Defaults to \code{NULL}.}
 }
 \description{
-Part of the egnnL_native implementation; see the file header for the source it follows.
+A step of the egnnL_native implementation. Called by \code{egcl}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{lapply}.

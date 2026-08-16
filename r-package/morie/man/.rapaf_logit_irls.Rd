@@ -8,10 +8,10 @@
 .rapaf_logit_irls(X, y, ridge = 1e-08, obs_weights = NULL)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{ridge}{Defaults to \code{1e-08}.}
-\item{obs_weights}{Defaults to \code{NULL}.}
+\item{X}{A matrix; indexed by row and column.}
+\item{y}{A vector; its length is taken.}
+\item{ridge}{Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.}
+\item{obs_weights}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the rapaf_native implementation; see the file header for the source it follows.

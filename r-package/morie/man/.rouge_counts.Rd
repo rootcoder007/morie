@@ -8,7 +8,7 @@
 .rouge_counts(keys)
 }
 \arguments{
-\item{keys}{See Usage.}
+\item{keys}{A vector; its length is taken.}
 }
 \description{
 Part of the rouge_native implementation; see the file header for the source it follows.

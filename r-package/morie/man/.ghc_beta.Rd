@@ -8,9 +8,9 @@
 .ghc_beta(e, a, b)
 }
 \arguments{
-\item{e}{See Usage.}
-\item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{e}{Passed to \code{.ghc_gamma}.}
+\item{a}{Passed to \code{.ghc_gamma}.}
+\item{b}{Passed to \code{.ghc_gamma}.}
 }
 \description{
 Part of the pmpfit_native implementation; see the file header for the source it follows.

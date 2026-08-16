@@ -8,7 +8,7 @@
 .sv_pairwise_dist(X)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
 }
 \description{
 Part of the spatial_voting implementation; see the file header for the source it follows.

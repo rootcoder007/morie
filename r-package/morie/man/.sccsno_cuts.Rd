@@ -11,7 +11,7 @@
 \item{start}{See Usage.}
 \item{end}{See Usage.}
 \item{exposure}{See Usage.}
-\item{risk_periods}{See Usage.}
+\item{risk_periods}{A matrix; indexed by row and column.}
 \item{age_breaks}{See Usage.}
 }
 \description{

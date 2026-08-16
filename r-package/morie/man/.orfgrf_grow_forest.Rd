@@ -8,8 +8,8 @@
 .orfgrf_grow_forest(X, y, W = NULL, kind = "double-sample", n_trees = 100, min_leaf = 5, alpha = 0.05, max_depth = 12, seed = 0)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
+\item{X}{Passed to \code{.grow_one_tree}.}
+\item{y}{A vector; its length is taken.}
 \item{W}{Defaults to \code{NULL}.}
 \item{kind}{Defaults to \code{"double-sample"}.}
 \item{n_trees}{Defaults to \code{100}.}

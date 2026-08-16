@@ -8,9 +8,9 @@
 .rkmeans_spatial_median(pts, tol = 1e-10, max_iter = 200)
 }
 \arguments{
-\item{pts}{See Usage.}
+\item{pts}{Passed to \code{.rkmeans_mean}.}
 \item{tol}{Defaults to \code{1e-10}.}
-\item{max_iter}{Defaults to \code{200}.}
+\item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{200}.}
 }
 \description{
 Part of the rkmeans_native implementation; see the file header for the source it follows.

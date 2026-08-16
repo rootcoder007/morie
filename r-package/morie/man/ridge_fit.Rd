@@ -8,9 +8,9 @@
 ridge_fit(X, y, lam)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{lam}{See Usage.}
+\item{X}{A matrix; passed to \code{nrow}.}
+\item{y}{A matrix; passed to \code{crossprod}.}
+\item{lam}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the regmlm_native implementation; see the file header for the source it follows.

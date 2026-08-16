@@ -8,7 +8,7 @@
 .trmwgt_cv(w)
 }
 \arguments{
-\item{w}{See Usage.}
+\item{w}{A vector; its length is taken.}
 }
 \description{
 Part of the Trmwgt implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 miprgr_fractional_variable(x, integer_vars, tol = 1e-07)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A vector; indexed elementwise.}
 \item{integer_vars}{See Usage.}
 \item{tol}{Defaults to \code{1e-07}.}
 }

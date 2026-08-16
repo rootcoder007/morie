@@ -8,12 +8,12 @@
 morie_tmle_cross_lagged(y, D, X, time, g = NULL, bounds = NULL)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{D}{See Usage.}
-\item{X}{See Usage.}
-\item{time}{See Usage.}
-\item{g}{Defaults to \code{NULL}.}
-\item{bounds}{Defaults to \code{NULL}.}
+\item{y}{Passed to \code{.tmlcll_vec}.}
+\item{D}{Passed to \code{.tmlcll_vec}.}
+\item{X}{Passed to \code{.tmlcll_mat}.}
+\item{time}{Passed to \code{.tmlcll_vec}.}
+\item{g}{Optional; may be \code{NULL}. Passed to \code{.tmlcll_vec}.}
+\item{bounds}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 }
 \description{
 Part of the tmlcll_native implementation; see the file header for the source it follows.

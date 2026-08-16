@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{rank}{See Usage.}
-\item{alphas}{See Usage.}
+\item{alphas}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the warpL_native implementation; see the file header for the source it follows.

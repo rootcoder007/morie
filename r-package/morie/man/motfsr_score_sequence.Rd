@@ -8,9 +8,9 @@
 motfsr_score_sequence(spec, sequence, alphabet, threshold = NULL)
 }
 \arguments{
-\item{spec}{See Usage.}
+\item{spec}{A vector; its length is taken and its elements indexed.}
 \item{sequence}{See Usage.}
-\item{alphabet}{See Usage.}
+\item{alphabet}{A vector; its length is taken.}
 \item{threshold}{Defaults to \code{NULL}.}
 }
 \description{

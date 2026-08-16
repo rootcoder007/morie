@@ -8,7 +8,7 @@
 .saigeg_variance(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A vector; its length is taken.}
 }
 \description{
 Part of the saigeg_native implementation; see the file header for the source it follows.

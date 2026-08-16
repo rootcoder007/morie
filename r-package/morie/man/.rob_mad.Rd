@@ -8,7 +8,7 @@
 .rob_mad(r)
 }
 \arguments{
-\item{r}{See Usage.}
+\item{r}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the robust_native implementation; see the file header for the source it follows.

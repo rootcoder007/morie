@@ -8,8 +8,8 @@
 .tdcvar_logreg_pred(X, beta)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{beta}{See Usage.}
+\item{X}{A matrix; passed to \code{\%*\%}.}
+\item{beta}{A matrix; passed to \code{\%*\%}.}
 }
 \description{
 Part of the tdcvar_native implementation; see the file header for the source it follows.

@@ -8,11 +8,11 @@
 .seq_hamming(a, b)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{a}{A vector; its length is taken.}
+\item{b}{A vector; its length is taken.}
 }
 \description{
-Part of the cluseq implementation; see the file header for the source it follows.
+A step of the cluseq implementation. Called by \code{Cluseq}. See the file header for the source the module follows.
 }
 \value{
 A numeric value.

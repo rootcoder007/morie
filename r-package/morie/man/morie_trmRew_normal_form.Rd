@@ -9,8 +9,8 @@ morie_trmRew_normal_form(t, rules, strategy = "innermost", max_steps = 10000)
 }
 \arguments{
 \item{t}{See Usage.}
-\item{rules}{See Usage.}
-\item{strategy}{Defaults to \code{"innermost"}.}
+\item{rules}{Passed to \code{morie_trmRew_rewrite_step}.}
+\item{strategy}{Passed to \code{morie_trmRew_rewrite_step}. Defaults to \code{"innermost"}.}
 \item{max_steps}{Defaults to \code{10000}.}
 }
 \description{

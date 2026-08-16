@@ -114,10 +114,11 @@ NULL
 # Yes/No/T/F/1/0 -> integer 0/1
 #' Yes/No/T/F/1/0 -> integer 0/1
 #'
-#' Part of the otis_churn implementation; see the file header for the
+#' A step of the otis_churn implementation. Called by \code{morie_otis_irr_glmm_vm}, \code{morie_otis_region_alert_state_richness}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param s See Usage.
+#' @param s A vector; indexed elementwise.
 #' @return The value of \code{as.integer}.
 #' @export
 .churn_yn <- function(s) {
@@ -137,7 +138,7 @@ NULL
 #'
 #' (chi2, p, v) with NA entries when the table is too sparse.
 #'
-#' @param tbl See Usage.
+#' @param tbl A matrix; passed to \code{dim}.
 #' @param min_cell Defaults to \code{5L}.
 #' @return A list with \code{chi2}, \code{p}, \code{v}.
 #' @export

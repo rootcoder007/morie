@@ -8,9 +8,9 @@
 mqtmpl_imputation_weights(y, genotype_column, model_dimension = 2)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{genotype_column}{See Usage.}
-\item{model_dimension}{Defaults to \code{2}.}
+\item{y}{A vector; its length is taken.}
+\item{genotype_column}{A vector; its length is taken.}
+\item{model_dimension}{Numeric; combined arithmetically in the body. Defaults to \code{2}.}
 }
 \description{
 Part of the mqtmpl_native implementation; see the file header for the source it follows.

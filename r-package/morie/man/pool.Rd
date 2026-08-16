@@ -8,8 +8,8 @@
 pool(token_vectors, mode = "mean", mask = NULL)
 }
 \arguments{
-\item{token_vectors}{See Usage.}
-\item{mode}{Defaults to \code{"mean"}.}
+\item{token_vectors}{Passed to \code{.sbert_mat}.}
+\item{mode}{One of \code{"cls"}, \code{"max"}. Defaults to \code{"mean"}.}
 \item{mask}{Defaults to \code{NULL}.}
 }
 \description{

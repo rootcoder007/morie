@@ -8,12 +8,12 @@
 identified_set(beta, n_pre, n_post, M = 0, family = "SD", l_vec = NULL, grid = NULL)
 }
 \arguments{
-\item{beta}{See Usage.}
-\item{n_pre}{See Usage.}
-\item{n_post}{See Usage.}
+\item{beta}{Passed to \code{.snmtst_split}.}
+\item{n_pre}{Passed to \code{.snmtst_split}.}
+\item{n_post}{Passed to \code{.snmtst_split}.}
 \item{M}{Defaults to \code{0}.}
-\item{family}{Defaults to \code{"SD"}.}
-\item{l_vec}{Defaults to \code{NULL}.}
+\item{family}{Compared against \code{"SD"}. Defaults to \code{"SD"}.}
+\item{l_vec}{Passed to \code{.snmtst_target}.}
 \item{grid}{Defaults to \code{NULL}.}
 }
 \description{

@@ -8,8 +8,8 @@
 .otis_design_matrix(data, covariates)
 }
 \arguments{
-\item{data}{See Usage.}
-\item{covariates}{See Usage.}
+\item{data}{A matrix; indexed by row and column.}
+\item{covariates}{A vector; its length is taken.}
 }
 \description{
 data frame and a vector of covariate names. Mirrors python _design_matrix.

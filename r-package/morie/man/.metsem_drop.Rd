@@ -8,7 +8,7 @@
 .metsem_drop(g, es)
 }
 \arguments{
-\item{g}{See Usage.}
+\item{g}{A list; the body reads \code{$edges}, \code{$inc}, \code{$k}, \code{$nodes}, \code{$out} from it.}
 \item{es}{See Usage.}
 }
 \description{

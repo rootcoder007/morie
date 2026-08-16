@@ -8,9 +8,9 @@
 .mfovsm_logreg_fit(y, X, max_iter = 25, tol = 1e-08)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{X}{See Usage.}
-\item{max_iter}{Defaults to \code{25}.}
+\item{y}{A vector; its length is taken.}
+\item{X}{A matrix; passed to \code{ncol}.}
+\item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{25}.}
 \item{tol}{Defaults to \code{1e-08}.}
 }
 \description{

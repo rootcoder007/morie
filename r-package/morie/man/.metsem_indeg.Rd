@@ -8,7 +8,7 @@
 .metsem_indeg(g, v)
 }
 \arguments{
-\item{g}{See Usage.}
+\item{g}{A list; the body reads \code{$inc} from it.}
 \item{v}{See Usage.}
 }
 \description{

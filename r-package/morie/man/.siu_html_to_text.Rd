@@ -8,7 +8,7 @@
 .siu_html_to_text(h)
 }
 \arguments{
-\item{h}{See Usage.}
+\item{h}{Character; passed to \code{trimws}.}
 }
 \description{
 most common entities so reports + news releases can be displayed as plain text. Mirrors the C++ html_to_text() but with the safer linear single-pass approach (no std::regex backtracking risk).

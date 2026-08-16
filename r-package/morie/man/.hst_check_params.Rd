@@ -8,10 +8,10 @@
 .hst_check_params(p)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{A list; the body reads \code{$alpha}, \code{$beta}, \code{$mu}, \code{$sigma} from it.}
 }
 \description{
-Part of the hawkes_spatial implementation; see the file header for the source it follows.
+A step of the hawkes_spatial implementation. Called by \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik}, \code{morie_hawkes_st_simulate}. See the file header for the source the module follows.
 }
 \value{
 Invisibly,the value of \code{p}, as built in the body.

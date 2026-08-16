@@ -9,9 +9,9 @@
 }
 \arguments{
 \item{X}{See Usage.}
-\item{a}{See Usage.}
-\item{ridge}{Defaults to \code{1e-08}.}
-\item{max_iter}{Defaults to \code{50L}.}
+\item{a}{Numeric; combined arithmetically in the body.}
+\item{ridge}{Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.}
+\item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.}
 \item{tol}{Defaults to \code{1e-10}.}
 }
 \description{

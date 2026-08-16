@@ -27,7 +27,8 @@ NULL
 
 #' .mt_result
 #'
-#' Part of the multiple_testing implementation; see the file header for
+#' A step of the multiple_testing implementation. Called by \code{.mt_adjusted}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param title See Usage.
@@ -56,14 +57,15 @@ NULL
 
 #' .mt_adjusted
 #'
-#' Part of the multiple_testing implementation; see the file header for
+#' A step of the multiple_testing implementation. Called by \code{benjamini_hochberg}, \code{benjamini_yekutieli}, \code{bonferroni} and 10 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param method See Usage.
-#' @param p See Usage.
-#' @param alpha See Usage.
-#' @param adjusted See Usage.
-#' @param labels Defaults to \code{NULL}.
+#' @param method Passed to \code{.mt_result}.
+#' @param p A vector; its length is taken.
+#' @param alpha Passed to \code{.mt_result}.
+#' @param adjusted Numeric; passed to \code{max}.
+#' @param labels Passed to \code{.mt_result}.
 #' @param note Defaults to \code{NULL}.
 #' @return The value of \code{.mt_result}.
 #' @export
@@ -109,10 +111,11 @@ NULL
 
 #' .mt_check_p
 #'
-#' Part of the multiple_testing implementation; see the file header for
+#' A step of the multiple_testing implementation. Called by \code{benjamini_hochberg}, \code{benjamini_yekutieli}, \code{bonferroni} and 17 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param p See Usage.
+#' @param p A vector; its length is taken.
 #' @return The value of \code{pmin}.
 #' @export
 .mt_check_p <- function(p) {
@@ -337,7 +340,8 @@ storey_q <- function(p_values, alpha = 0.05, lambda_param = 0.5,
 
 #' .mt_combine_result
 #'
-#' Part of the multiple_testing implementation; see the file header for
+#' A step of the multiple_testing implementation. Called by \code{cauchy_combination}, \code{fisher_combined}, \code{simes_combined} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param method See Usage.

@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{P}{See Usage.}
-\item{R}{See Usage.}
+\item{R}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the mdppol_native implementation; see the file header for the source it follows.

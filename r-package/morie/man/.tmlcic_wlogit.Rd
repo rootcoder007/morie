@@ -8,9 +8,9 @@
 .tmlcic_wlogit(X, y, ridge = 1e-10, obs_weights = NULL)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{ridge}{Defaults to \code{1e-10}.}
+\item{X}{A matrix; passed to \code{nrow}.}
+\item{y}{Numeric; combined arithmetically in the body.}
+\item{ridge}{Numeric; passed to \code{max}. Defaults to \code{1e-10}.}
 \item{obs_weights}{Defaults to \code{NULL}.}
 }
 \description{

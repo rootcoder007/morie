@@ -8,10 +8,10 @@
 #' from the hrzi1() optimiser closure so the zero-norm guard is directly
 #' unit-testable. `h0` is the kernel bandwidth.
 #'
-#' @param b See Usage.
-#' @param X See Usage.
-#' @param y See Usage.
-#' @param h0 See Usage.
+#' @param b Numeric; combined arithmetically in the body.
+#' @param X A matrix; passed to \code{\%*\%}.
+#' @param y A matrix; passed to \code{\%*\%}.
+#' @param h0 Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .hrzi1_obj <- function(b, X, y, h0) {

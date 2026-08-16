@@ -8,7 +8,7 @@
 morie_survnnr_baseline_hazard(fit_result)
 }
 \arguments{
-\item{fit_result}{See Usage.}
+\item{fit_result}{A list; the body reads \code{$events}, \code{$risk}, \code{$times} from it.}
 }
 \description{
 Part of the survnnr_native implementation; see the file header for the source it follows.

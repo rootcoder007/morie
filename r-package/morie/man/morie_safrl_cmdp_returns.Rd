@@ -14,7 +14,7 @@ morie_safrl_cmdp_returns(policy, states, actions, step, reward, costs, gamma = 0
 \item{step}{See Usage.}
 \item{reward}{See Usage.}
 \item{costs}{See Usage.}
-\item{gamma}{Defaults to \code{0.9}.}
+\item{gamma}{Numeric; combined arithmetically in the body. Defaults to \code{0.9}.}
 \item{start}{Defaults to \code{NULL}.}
 \item{iters}{Defaults to \code{5000}.}
 \item{tol}{Defaults to \code{1e-14}.}

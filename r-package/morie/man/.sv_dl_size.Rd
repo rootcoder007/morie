@@ -8,9 +8,9 @@
 .sv_dl_size(p, label, median)
 }
 \arguments{
-\item{p}{See Usage.}
-\item{label}{See Usage.}
-\item{median}{See Usage.}
+\item{p}{Passed to \code{.sv_dl_insert}.}
+\item{label}{A vector; indexed elementwise.}
+\item{median}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the sv_dl_native implementation; see the file header for the source it follows.

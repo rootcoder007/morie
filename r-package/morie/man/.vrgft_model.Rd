@@ -8,10 +8,10 @@
 .vrgft_model(h, c0, c1, a, model)
 }
 \arguments{
-\item{h}{See Usage.}
-\item{c0}{See Usage.}
-\item{c1}{See Usage.}
-\item{a}{See Usage.}
+\item{h}{Numeric; combined arithmetically in the body.}
+\item{c0}{Numeric; combined arithmetically in the body.}
+\item{c1}{Numeric; combined arithmetically in the body.}
+\item{a}{Numeric; combined arithmetically in the body.}
 \item{model}{See Usage.}
 }
 \description{

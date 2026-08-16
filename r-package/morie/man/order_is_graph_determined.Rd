@@ -10,7 +10,7 @@ order_is_graph_determined(features, adj, perm, k_keep, tol = 1e-09)
 \arguments{
 \item{features}{See Usage.}
 \item{adj}{See Usage.}
-\item{perm}{See Usage.}
+\item{perm}{A vector; indexed elementwise.}
 \item{k_keep}{See Usage.}
 \item{tol}{Defaults to \code{1e-09}.}
 }

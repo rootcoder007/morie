@@ -8,12 +8,12 @@
 .smixd_negreml(theta, D, n, X, y, p)
 }
 \arguments{
-\item{theta}{See Usage.}
-\item{D}{See Usage.}
-\item{n}{See Usage.}
+\item{theta}{A vector; indexed elementwise.}
+\item{D}{Numeric; combined arithmetically in the body.}
+\item{n}{A matrix; passed to \code{diag}.}
 \item{X}{See Usage.}
 \item{y}{See Usage.}
-\item{p}{See Usage.}
+\item{p}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Extracted from the smixd() optimiser closure so the non-positive- -definite-covariance, singular-information and non-positive-variance guards are all directly unit-testable. `theta` = c(log phi, log nu).

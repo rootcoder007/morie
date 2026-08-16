@@ -195,10 +195,11 @@
 
 #' .morie_db_indexes_for
 #'
-#' Part of the db_indexes implementation; see the file header for the
+#' A step of the db_indexes implementation. Called by \code{morie_db_create_indexes}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param table_name See Usage.
+#' @param table_name Character; passed to \code{grepl}.
 #' @return The value of \code{list}.
 #' @export
 .morie_db_indexes_for <- function(table_name) {

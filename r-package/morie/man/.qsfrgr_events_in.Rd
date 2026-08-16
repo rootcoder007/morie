@@ -8,7 +8,7 @@
 .qsfrgr_events_in(event, rows)
 }
 \arguments{
-\item{event}{See Usage.}
+\item{event}{A vector; indexed elementwise.}
 \item{rows}{See Usage.}
 }
 \description{

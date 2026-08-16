@@ -8,7 +8,7 @@
 .vepan_kind(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{A list; the body reads \code{$alt}, \code{$ref} from it.}
 }
 \description{
 Part of the vepan_native implementation; see the file header for the source it follows.

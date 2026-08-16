@@ -11,7 +11,7 @@
 \item{pkg}{See Usage.}
 }
 \description{
-Part of the helpers_ghosal_bnp implementation; see the file header for the source it follows.
+A step of the helpers_ghosal_bnp implementation. No other function in the package calls it. See the file header for the source the module follows.
 }
 \value{
 The value of \code{requireNamespace}.

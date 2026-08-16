@@ -8,10 +8,10 @@
 .hrzi1_obj(b, X, y, h0)
 }
 \arguments{
-\item{b}{See Usage.}
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{h0}{See Usage.}
+\item{b}{Numeric; combined arithmetically in the body.}
+\item{X}{A matrix; passed to \code{\%*\%}.}
+\item{y}{A matrix; passed to \code{\%*\%}.}
+\item{h0}{Numeric; combined arithmetically in the body.}
 }
 \description{
 from the hrzi1() optimiser closure so the zero-norm guard is directly unit-testable. `h0` is the kernel bandwidth.

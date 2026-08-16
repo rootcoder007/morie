@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{text}{See Usage.}
-\item{lowercase}{Defaults to \code{FALSE}.}
+\item{lowercase}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{
 Part of the sacrb_native implementation; see the file header for the source it follows.

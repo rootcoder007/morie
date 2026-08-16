@@ -62,7 +62,8 @@ morie_list_morie_modules <- function() {
 
 #' Primary: built-in SQLite DB. Fallback: raw CSV in datasets/
 #'
-#' Part of the modules implementation; see the file header for the
+#' A step of the modules implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return The value of \code{[}.
@@ -175,10 +176,11 @@ morie_load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
 
 #' .write_module_outputs
 #'
-#' Part of the modules implementation; see the file header for the
+#' A step of the modules implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param outputs See Usage.
+#' @param outputs A vector; indexed elementwise.
 #' @param output_dir Defaults to \code{NULL}.
 #' @return The value of \code{outputs}, as built in the body.
 #' @export

@@ -8,12 +8,12 @@
 .hrz_nw_loo(z, y, h)
 }
 \arguments{
-\item{z}{See Usage.}
-\item{y}{See Usage.}
-\item{h}{See Usage.}
+\item{z}{A matrix; indexed by row and column.}
+\item{y}{A matrix; passed to \code{\%*\%}.}
+\item{h}{Numeric; combined arithmetically in the body.}
 }
 \description{
-Part of the helpers_horowitz implementation; see the file header for the source it follows.
+A step of the helpers_horowitz implementation. Called by \code{hrzp1}, \code{morie_ichimura}. See the file header for the source the module follows.
 }
 \value{
 A vector, from \code{as.numeric}.

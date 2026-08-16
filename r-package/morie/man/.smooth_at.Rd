@@ -8,11 +8,11 @@
 .smooth_at(xv, av, g, h, fit)
 }
 \arguments{
-\item{xv}{See Usage.}
-\item{av}{See Usage.}
-\item{g}{See Usage.}
-\item{h}{See Usage.}
-\item{fit}{See Usage.}
+\item{xv}{A vector; its length is taken.}
+\item{av}{Numeric; combined arithmetically in the body.}
+\item{g}{Numeric; combined arithmetically in the body.}
+\item{h}{Numeric; combined arithmetically in the body.}
+\item{fit}{Compared against \code{"kernel"}.}
 }
 \description{
 Part of the tmlcps_native implementation; see the file header for the source it follows.

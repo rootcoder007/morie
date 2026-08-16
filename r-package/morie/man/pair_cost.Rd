@@ -9,7 +9,7 @@ pair_cost(n, mode = "cross-encoder")
 }
 \arguments{
 \item{n}{See Usage.}
-\item{mode}{Defaults to \code{"cross-encoder"}.}
+\item{mode}{One of \code{"bi-encoder"}, \code{"cross-encoder"}. Defaults to \code{"cross-encoder"}.}
 }
 \description{
 Part of the sbert_native implementation; see the file header for the source it follows.

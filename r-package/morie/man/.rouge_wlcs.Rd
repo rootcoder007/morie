@@ -8,9 +8,9 @@
 .rouge_wlcs(a, b, alpha)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
-\item{alpha}{See Usage.}
+\item{a}{A vector; its length is taken and its elements indexed.}
+\item{b}{A vector; its length is taken and its elements indexed.}
+\item{alpha}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the rouge_native implementation; see the file header for the source it follows.

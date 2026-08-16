@@ -25,10 +25,11 @@
 
 #' .morie_w4d_lcg_u
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param n See Usage.
+#' @param n A count; the body uses it as \code{seq_len(...)}.
 #' @param seed See Usage.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -205,13 +206,14 @@ morie_geron_sac <- function(env, policy = NULL, critic = NULL, epochs = 20, lr =
 
 #' .morie_w4d_lcg_mat
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{.morie_w4d_sae_train_layer}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param nr See Usage.
-#' @param nc See Usage.
+#' @param nr A count; the body uses it as \code{matrix(...)}.
+#' @param nc A count; the body uses it as \code{matrix(...)}.
 #' @param seed See Usage.
-#' @param scale Defaults to \code{0.1}.
+#' @param scale Numeric; combined arithmetically in the body. Defaults to \code{0.1}.
 #' @return A matrix, from \code{matrix}.
 #' @export
 .morie_w4d_lcg_mat <- function(nr, nc, seed, scale = 0.1) {
@@ -227,14 +229,15 @@ morie_geron_sac <- function(env, policy = NULL, critic = NULL, epochs = 20, lr =
 
 #' .morie_w4d_sae_train_layer
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_stacked_autoencoder_modules}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param H See Usage.
-#' @param k See Usage.
-#' @param epochs See Usage.
-#' @param lr See Usage.
-#' @param seed See Usage.
+#' @param H A matrix; passed to \code{nrow}.
+#' @param k A count; the body uses it as \code{numeric(...)}.
+#' @param epochs A count; the body uses it as \code{seq_len(...)}.
+#' @param lr Numeric; combined arithmetically in the body.
+#' @param seed Passed to \code{.morie_w4d_lcg_mat}.
 #' @return A list with \code{W}, \code{b}, \code{c}, \code{losses}.
 #' @export
 .morie_w4d_sae_train_layer <- function(H, k, epochs, lr, seed) {
@@ -262,13 +265,14 @@ morie_geron_sac <- function(env, policy = NULL, critic = NULL, epochs = 20, lr =
 
 #' .morie_w4d_sae_forward
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_stacked_autoencoder_modules}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param A See Usage.
-#' @param Ws See Usage.
-#' @param bs See Usage.
-#' @param cs See Usage.
+#' @param Ws A vector; its length is taken and its elements indexed.
+#' @param bs A vector; indexed elementwise.
+#' @param cs A vector; indexed elementwise.
 #' @return A list with \code{hs}, \code{rs}.
 #' @export
 .morie_w4d_sae_forward <- function(A, Ws, bs, cs) {
@@ -290,15 +294,16 @@ morie_geron_sac <- function(env, policy = NULL, critic = NULL, epochs = 20, lr =
 
 #' .morie_w4d_sae_backward
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_stacked_autoencoder_modules}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param A See Usage.
-#' @param Ws See Usage.
+#' @param A A matrix; passed to \code{nrow}.
+#' @param Ws A vector; its length is taken and its elements indexed.
 #' @param bs See Usage.
 #' @param cs See Usage.
-#' @param hs See Usage.
-#' @param rs See Usage.
+#' @param hs A vector; indexed elementwise.
+#' @param rs A vector; indexed elementwise.
 #' @return A list with \code{dW}, \code{db}, \code{dc}.
 #' @export
 .morie_w4d_sae_backward <- function(A, Ws, bs, cs, hs, rs) {
@@ -387,11 +392,12 @@ morie_geron_stacked_autoencoder_modules <- function(X, hidden_sizes = c(2), epoc
 
 #' .morie_w4d_fit_predict
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_self_supervised}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param A See Usage.
-#' @param t See Usage.
+#' @param t A matrix; passed to \code{\%*\%}.
 #' @return A list with \code{theta}, \code{fitted}.
 #' @export
 .morie_w4d_fit_predict <- function(A, t) {
@@ -527,12 +533,13 @@ morie_geron_semisupervised <- function(X_l, y_l, X_u, alpha = 1.0, gamma = 1.0,
 
 #' .morie_w4d_lcg_vec
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_senet}, \code{morie_geron_swin}, \code{morie_geron_transformer} and 5 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param n See Usage.
+#' @param n A count; the body uses it as \code{seq_len(...)}.
 #' @param seed See Usage.
-#' @param scale Defaults to \code{0.5}.
+#' @param scale Numeric; combined arithmetically in the body. Defaults to \code{0.5}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .morie_w4d_lcg_vec <- function(n, seed, scale = 0.5) {
@@ -910,13 +917,14 @@ morie_geron_silhouette <- function(X, labels, metric = "euclidean") {
 
 #' .morie_w4d_lloyd
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_semisupervised_cluster}, \code{morie_geron_spectral_clustering}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param Z See Usage.
-#' @param k See Usage.
+#' @param Z A matrix; indexed by row and column.
+#' @param k Numeric; combined arithmetically in the body.
 #' @param seed Defaults to \code{0}.
-#' @param iters Defaults to \code{100}.
+#' @param iters A count; the body uses it as \code{seq_len(...)}. Defaults to \code{100}.
 #' @return A list with \code{labels}, \code{centers}.
 #' @export
 .morie_w4d_lloyd <- function(Z, k, seed = 0, iters = 100) {
@@ -1371,7 +1379,8 @@ morie_geron_swin <- function(image, window_size, n_layers = 2, d_model = 4, seed
 
 #' .morie_w4d_symd_tokenize
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_symd_parse}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param src See Usage.
@@ -1475,7 +1484,8 @@ morie_geron_symd_parse <- function(src) {
 
 #' .morie_w4d_symd_num
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{.morie_w4d_symd_diff}, \code{.morie_w4d_symd_simplify}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param v See Usage.
@@ -1484,10 +1494,11 @@ morie_geron_symd_parse <- function(src) {
 .morie_w4d_symd_num <- function(v) list("num", as.numeric(v))
 #' .morie_w4d_symd_eqnum
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{.morie_w4d_symd_simplify}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param t See Usage.
+#' @param t A vector; its length is taken and its elements indexed.
 #' @param v See Usage.
 #' @return A logical value.
 #' @export
@@ -1495,10 +1506,11 @@ morie_geron_symd_parse <- function(src) {
 
 #' .morie_w4d_symd_simplify
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_symbolic_diff}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param t See Usage.
+#' @param t A vector; indexed elementwise.
 #' @return The value of \code{list}.
 #' @export
 .morie_w4d_symd_simplify <- function(t) {
@@ -1542,11 +1554,12 @@ morie_geron_symd_parse <- function(src) {
 
 #' .morie_w4d_symd_diff
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_symbolic_diff}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param t See Usage.
-#' @param var See Usage.
+#' @param t A vector; indexed elementwise.
+#' @param var Passed to \code{.morie_w4d_symd_diff}.
 #' @return Nothing; this branch always raises.
 #' @export
 .morie_w4d_symd_diff <- function(t, var) {
@@ -1628,10 +1641,11 @@ morie_geron_symd_evaluate <- function(t, env) {
 
 #' .morie_w4d_symd_count
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_symbolic_diff}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param t See Usage.
+#' @param t A vector; indexed elementwise.
 #' @return A numeric value.
 #' @export
 .morie_w4d_symd_count <- function(t) {
@@ -1687,10 +1701,11 @@ morie_geron_symbolic_diff <- function(expr, var = "x", at = NULL) {
 
 #' .morie_w4d_tokens
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_t5}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x A vector; its length is taken.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .morie_w4d_tokens <- function(x) {
@@ -1948,11 +1963,12 @@ morie_geron_transfer_learning <- function(pretrained_model, X, y, n_frozen = 1, 
 
 #' .morie_w4d_apply_op
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_run_graph}, \code{morie_geron_trace}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param op See Usage.
-#' @param x See Usage.
+#' @param op A list; the body reads \code{$kind}, \code{$param} from it.
+#' @param x A matrix; passed to \code{\%*\%}.
 #' @return Nothing; this branch always raises.
 #' @export
 .morie_w4d_apply_op <- function(op, x) {
@@ -2036,11 +2052,12 @@ morie_geron_torchscript <- function(model, example_inputs) {
 
 #' .morie_w4d_layernorm
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_transformer}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
-#' @param eps Defaults to \code{1e-05}.
+#' @param x Numeric; combined arithmetically in the body.
+#' @param eps Numeric; combined arithmetically in the body. Defaults to \code{1e-05}.
 #' @return A numeric value.
 #' @export
 .morie_w4d_layernorm <- function(x, eps = 1e-5) {
@@ -2180,10 +2197,11 @@ morie_geron_tensor_parallelism <- function(model, n_devices = 2, x = NULL, schem
 
 #' .morie_w4d_sigmoid_stable
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_trl_finetune}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param z See Usage.
+#' @param z A vector; its length is taken and its elements indexed.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .morie_w4d_sigmoid_stable <- function(z) {
@@ -2416,11 +2434,12 @@ morie_geron_unsupervised_learning <- function(X, n_clusters = 2, bottleneck = 1,
 
 #' .morie_w4d_loo_mse
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_unsupervised_pretraining}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param D See Usage.
-#' @param t See Usage.
+#' @param D A matrix; passed to \code{t}.
+#' @param t A matrix; passed to \code{\%*\%}.
 #' @return A list with \code{theta}, \code{loo}, \code{train}.
 #' @export
 .morie_w4d_loo_mse <- function(D, t) {
@@ -2511,10 +2530,11 @@ morie_geron_vanishing_gradients <- function(grads, tol = 0.5) {
 
 #' .morie_w4d_lcg_normal
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_vae}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param n See Usage.
+#' @param n A count; the body uses it as \code{seq_len(...)}.
 #' @param seed See Usage.
 #' @return The value of \code{[}.
 #' @export
@@ -2819,11 +2839,12 @@ morie_geron_vilbert <- function(image, text, d_model = 8, seed = 0) {
 
 #' .morie_w4d_sinusoidal
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_vision_transformer}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param Tn See Usage.
-#' @param d See Usage.
+#' @param Tn A count; the body uses it as \code{matrix(...)}.
+#' @param d A count; the body uses it as \code{matrix(...)}.
 #' @return The value of \code{ifelse}.
 #' @export
 .morie_w4d_sinusoidal <- function(Tn, d) {
@@ -3042,10 +3063,11 @@ morie_geron_word_embeddings <- function(vocab, d = 8, E = NULL, seed = 0) {
 
 #' .morie_w4d_wp_split
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param word See Usage.
+#' @param word Character; passed to \code{strsplit}.
 #' @return A vector, from \code{c}.
 #' @export
 .morie_w4d_wp_split <- function(word) {
@@ -3299,26 +3321,28 @@ morie_geron_xception <- function(n_classes = 1000, in_channels = 3, input_size =
 
 #' .morie_w4d_xgb_leaf_weight
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{.morie_w4d_xgb_build}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param G See Usage.
-#' @param H See Usage.
-#' @param lam See Usage.
+#' @param G Numeric; combined arithmetically in the body.
+#' @param H Numeric; combined arithmetically in the body.
+#' @param lam Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .morie_w4d_xgb_leaf_weight <- function(G, H, lam) -G / (H + lam)
 #' .morie_w4d_xgb_gain
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{.morie_w4d_xgb_build}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param GL See Usage.
-#' @param HL See Usage.
-#' @param GR See Usage.
-#' @param HR See Usage.
-#' @param lam See Usage.
-#' @param gamma See Usage.
+#' @param GL Numeric; combined arithmetically in the body.
+#' @param HL Numeric; combined arithmetically in the body.
+#' @param GR Numeric; combined arithmetically in the body.
+#' @param HR Numeric; combined arithmetically in the body.
+#' @param lam Numeric; combined arithmetically in the body.
+#' @param gamma Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .morie_w4d_xgb_gain <- function(GL, HL, GR, HR, lam, gamma) {
@@ -3328,17 +3352,18 @@ morie_geron_xception <- function(n_classes = 1000, in_channels = 3, input_size =
 
 #' .morie_w4d_xgb_build
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_xgboost}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param X See Usage.
-#' @param g See Usage.
-#' @param h See Usage.
-#' @param depth See Usage.
-#' @param max_depth See Usage.
-#' @param lam See Usage.
-#' @param gamma See Usage.
-#' @param min_child_weight See Usage.
+#' @param X A matrix; indexed by row and column.
+#' @param g A vector; indexed elementwise.
+#' @param h A vector; indexed elementwise.
+#' @param depth Numeric; combined arithmetically in the body.
+#' @param max_depth Passed to \code{.morie_w4d_xgb_build}.
+#' @param lam Passed to \code{.morie_w4d_xgb_leaf_weight}.
+#' @param gamma Passed to \code{.morie_w4d_xgb_gain}.
+#' @param min_child_weight Passed to \code{.morie_w4d_xgb_build}.
 #' @return The value of \code{node}, as built in the body.
 #' @export
 .morie_w4d_xgb_build <- function(X, g, h, depth, max_depth, lam, gamma, min_child_weight) {
@@ -3372,11 +3397,12 @@ morie_geron_xception <- function(n_classes = 1000, in_channels = 3, input_size =
 
 #' .morie_w4d_xgb_predict
 #'
-#' Part of the geron_w4d_native implementation; see the file header for
+#' A step of the geron_w4d_native implementation. Called by \code{morie_geron_xgboost}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param node See Usage.
-#' @param X See Usage.
+#' @param X A matrix; indexed by row and column.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .morie_w4d_xgb_predict <- function(node, X) {

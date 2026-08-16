@@ -25,10 +25,11 @@
 
 #' .sasrec_mat
 #'
-#' Part of the sasRec_native implementation; see the file header for the
+#' A step of the sasRec_native implementation. Called by \code{attention_span}, \code{predict_next}, \code{self_attention}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x A matrix; passed to \code{as.matrix}.
 #' @return Nothing; this branch always raises.
 #' @export
 .sasrec_mat <- function(x) {
@@ -46,10 +47,11 @@
 
 #' .sasrec_vec
 #'
-#' Part of the sasRec_native implementation; see the file header for the
+#' A step of the sasRec_native implementation. Called by \code{predict_next}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x A matrix; indexed by row and column.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .sasrec_vec <- function(x) {
@@ -62,7 +64,8 @@
 
 #' causal_mask
 #'
-#' Part of the sasRec_native implementation; see the file header for the
+#' A step of the sasRec_native implementation. Called by \code{self_attention}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n See Usage.
@@ -80,13 +83,14 @@ causal_mask <- function(n) {
 
 #' self_attention
 #'
-#' Part of the sasRec_native implementation; see the file header for the
+#' A step of the sasRec_native implementation. Called by \code{morie_sasRec}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param E See Usage.
-#' @param WQ See Usage.
-#' @param WK See Usage.
-#' @param WV See Usage.
+#' @param E Passed to \code{.sasrec_mat}.
+#' @param WQ A matrix; passed to \code{nrow}.
+#' @param WK A matrix; passed to \code{ncol}.
+#' @param WV A matrix; passed to \code{ncol}.
 #' @param mask Defaults to \code{NULL}.
 #' @return A list with \code{output}, \code{weights}, \code{note}.
 #' @export
@@ -117,10 +121,11 @@ self_attention <- function(E, WQ, WK, WV, mask = NULL) {
 
 #' attention_span
 #'
-#' Part of the sasRec_native implementation; see the file header for the
+#' A step of the sasRec_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param weights See Usage.
+#' @param weights Passed to \code{.sasrec_mat}.
 #' @param position Defaults to \code{NULL}.
 #' @return A list with \code{mean_lookback}, \code{mass_on_last}, \code{effective_order}, \code{note}.
 #' @export
@@ -140,11 +145,12 @@ attention_span <- function(weights, position = NULL) {
 
 #' predict_next
 #'
-#' Part of the sasRec_native implementation; see the file header for the
+#' A step of the sasRec_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param state See Usage.
-#' @param item_embeddings See Usage.
+#' @param state Passed to \code{.sasrec_vec}.
+#' @param item_embeddings Passed to \code{.sasrec_mat}.
 #' @param top_k Defaults to \code{5}.
 #' @param exclude Defaults to \code{list()}.
 #' @return A list with \code{estimate}, \code{ranking}, \code{n_scored}, \code{method}.
@@ -168,7 +174,8 @@ predict_next <- function(state, item_embeddings, top_k = 5,
 
 #' complexity
 #'
-#' Part of the sasRec_native implementation; see the file header for the
+#' A step of the sasRec_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n See Usage.
@@ -186,7 +193,8 @@ complexity <- function(n, d) {
 
 #' morie_sasRec
 #'
-#' Part of the sasRec_native implementation; see the file header for the
+#' A step of the sasRec_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param E See Usage.
@@ -205,7 +213,8 @@ selfattentivesequential <- self_attention
 
 #' .sasRec_cheatsheet
 #'
-#' Part of the sasRec_native implementation; see the file header for the
+#' A step of the sasRec_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

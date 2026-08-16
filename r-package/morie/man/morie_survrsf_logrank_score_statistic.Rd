@@ -8,9 +8,9 @@
 morie_survrsf_logrank_score_statistic(times, events, group, scores = NULL)
 }
 \arguments{
-\item{times}{See Usage.}
-\item{events}{See Usage.}
-\item{group}{See Usage.}
+\item{times}{A vector; its length is taken.}
+\item{events}{Passed to \code{morie_survrsf_logrank_scores}.}
+\item{group}{A vector; its length is taken.}
 \item{scores}{Defaults to \code{NULL}.}
 }
 \description{

@@ -8,10 +8,10 @@
 .morie_theta_ml(y, mu, n = sum(weights), weights, limit = 10, eps = .Machine$double.eps^0.25)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{mu}{See Usage.}
-\item{n}{Defaults to \code{sum(weights)}.}
-\item{weights}{See Usage.}
+\item{y}{A vector; its length is taken.}
+\item{mu}{Numeric; combined arithmetically in the body.}
+\item{n}{Numeric; combined arithmetically in the body. Defaults to \code{sum(weights)}.}
+\item{weights}{Numeric; combined arithmetically in the body.}
 \item{limit}{Defaults to \code{10}.}
 \item{eps}{Defaults to \code{.Machine$double.eps^0.25}.}
 }

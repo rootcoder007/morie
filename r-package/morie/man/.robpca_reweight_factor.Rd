@@ -8,8 +8,8 @@
 .robpca_reweight_factor(q, k)
 }
 \arguments{
-\item{q}{See Usage.}
-\item{k}{See Usage.}
+\item{q}{Numeric; combined arithmetically in the body.}
+\item{k}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the robpca_native implementation; see the file header for the source it follows.

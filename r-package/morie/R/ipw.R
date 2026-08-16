@@ -18,11 +18,12 @@ morie_validate_cpads_data <- function(data, strict = TRUE) {
 
 #' .weighted_prop
 #'
-#' Part of the ipw implementation; see the file header for the source it
+#' A step of the ipw implementation. Called by \code{morie_run_propensity_ipw_analysis}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
-#' @param x See Usage.
-#' @param w See Usage.
+#' @param x Numeric; combined arithmetically in the body.
+#' @param w Numeric; passed to \code{sum}.
 #' @return A numeric value.
 #' @export
 .weighted_prop <- function(x, w) {
@@ -31,10 +32,11 @@ morie_validate_cpads_data <- function(data, strict = TRUE) {
 
 #' .ess
 #'
-#' Part of the ipw implementation; see the file header for the source it
+#' A step of the ipw implementation. Called by \code{morie_run_ebac_selection_ipw_analysis}, \code{morie_run_propensity_ipw_analysis}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
-#' @param w See Usage.
+#' @param w Numeric; passed to \code{sum}.
 #' @return A numeric value.
 #' @export
 .ess <- function(w) {

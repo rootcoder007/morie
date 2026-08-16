@@ -10,7 +10,7 @@
 \arguments{
 \item{time}{See Usage.}
 \item{event}{See Usage.}
-\item{X}{See Usage.}
+\item{X}{A matrix; indexed by row and column.}
 \item{weights}{See Usage.}
 \item{strata}{See Usage.}
 \item{cluster}{See Usage.}
@@ -23,7 +23,7 @@ A list with \code{T}, \code{E}, \code{M}, \code{w}, \code{h}, \code{c}, \code{n}
 }
 \references{
 ----------
-Binder, D. A. (1992) "Fitting Cox\\'s proportional hazards models from
+Binder, D. A. (1992) "Fitting Cox\'s proportional hazards models from
 survey data", *Biometrika* 79(1), 139-147,
 doi:10.1093/biomet/79.1.139. The weighted estimating equation above,
 the interpretation of :math:`\hat\beta` as a finite-population census

@@ -31,7 +31,8 @@ NULL
 
 #' .otis_year_col
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_summary_lines}, \code{.otis_year_trend}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param df See Usage.
@@ -46,7 +47,8 @@ NULL
 
 #' .otis_to_int
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b07}, \code{morie_otis_analyze_c01}, \code{morie_otis_analyze_c03}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
@@ -59,7 +61,8 @@ NULL
 
 #' .otis_is_truthy
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b01}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
@@ -73,10 +76,11 @@ NULL
 
 #' .otis_summary_lines
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_c_simple}, \code{.otis_d_simple}, \code{morie_otis_analyze_b01} and 18 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param df See Usage.
+#' @param df A matrix; passed to \code{nrow}.
 #' @param ds_id See Usage.
 #' @param description Defaults to \code{NULL}.
 #' @param series Defaults to \code{NULL}.
@@ -111,15 +115,16 @@ NULL
 
 #' .otis_crosstab
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_c_simple}, \code{.otis_d_simple}, \code{morie_otis_analyze_b02} and 13 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param df See Usage.
+#' @param df A matrix; indexed by row and column.
 #' @param row See Usage.
 #' @param col See Usage.
 #' @param value See Usage.
-#' @param aggfunc Defaults to \code{c("sum", "max")}.
-#' @param top_rows Defaults to \code{20L}.
+#' @param aggfunc Compared against \code{"max"}. Defaults to \code{c("sum", "max")}.
+#' @param top_rows Numeric; passed to \code{min}. Defaults to \code{20L}.
 #' @return A list with \code{title}, \code{headers}, \code{rows}.
 #' @export
 .otis_crosstab <- function(df, row, col, value,
@@ -152,10 +157,11 @@ NULL
 
 #' .otis_year_trend
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_d_simple}, \code{morie_otis_analyze_b01}, \code{morie_otis_analyze_b02}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param df See Usage.
+#' @param df A vector; indexed elementwise.
 #' @param value See Usage.
 #' @param year_col Defaults to \code{NULL}.
 #' @return A list with \code{title}, \code{headers}, \code{rows}.
@@ -182,7 +188,8 @@ NULL
 
 #' .otis_wrap
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_aggregate_glm}, \code{.otis_c_simple}, \code{.otis_d_simple} and 35 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param title See Usage.
@@ -214,7 +221,8 @@ NULL
 # Indicator helpers (parallel to Python _female_indicator etc.)
 #' Indicator helpers (parallel to Python _female_indicator etc.)
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b04_ruhela_aggregate}, \code{morie_otis_analyze_b08_ruhela_aggregate}, \code{morie_otis_analyze_b09_ruhela_aggregate} and 6 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
@@ -226,7 +234,8 @@ NULL
 
 #' .otis_toronto_indicator
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
@@ -238,7 +247,8 @@ NULL
 
 #' .otis_age_50plus_indicator
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_c06_ruhela_aggregate}, \code{morie_otis_analyze_c09_ruhela_aggregate}, \code{morie_otis_analyze_d05_ruhela_aggregate}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
@@ -250,7 +260,8 @@ NULL
 
 #' .otis_indigenous_indicator
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_c03_ruhela_aggregate}, \code{morie_otis_analyze_c04_ruhela_aggregate}, \code{morie_otis_analyze_c04_ruhela_aggregate_region_cluster} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
@@ -262,7 +273,8 @@ NULL
 
 #' .otis_minority_religion_indicator
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_c05_ruhela_aggregate}, \code{morie_otis_analyze_c08_ruhela_aggregate}, \code{morie_otis_analyze_d04_ruhela_aggregate}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
@@ -623,14 +635,15 @@ morie_otis_analyze_c03 <- function(data) {
 
 #' .otis_c_simple
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param ds_id See Usage.
-#' @param description See Usage.
-#' @param row_col See Usage.
-#' @param col_col Defaults to \code{"Region_MostRecentPlacement"}.
-#' @param value_col Defaults to \code{"NumberIndividuals_RestrictiveConfinement"}.
+#' @param ds_id Passed to \code{.otis_summary_lines}.
+#' @param description Passed to \code{.otis_summary_lines}.
+#' @param row_col Passed to \code{.otis_crosstab}.
+#' @param col_col Passed to \code{.otis_crosstab}.
+#' @param value_col Passed to \code{.otis_crosstab}.
 #' @return The value of \code{function}.
 #' @export
 .otis_c_simple <- function(ds_id, description, row_col,
@@ -795,12 +808,13 @@ morie_otis_analyze_d01 <- function(data) {
 
 #' .otis_d_simple
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param ds_id See Usage.
-#' @param description See Usage.
-#' @param by See Usage.
+#' @param ds_id Passed to \code{.otis_summary_lines}.
+#' @param description Passed to \code{.otis_summary_lines}.
+#' @param by Passed to \code{.otis_crosstab}.
 #' @return The value of \code{function}.
 #' @export
 .otis_d_simple <- function(ds_id, description, by) {
@@ -982,7 +996,8 @@ print.morie_otis_analysis_result <- function(x, ...) {
 
 #' .otis_causal_available
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_a01}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @return A logical value.
@@ -995,7 +1010,8 @@ print.morie_otis_analysis_result <- function(x, ...) {
 
 #' .otis_not_yet_ported
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_a01}, \code{morie_otis_analyze_a01_ruhela_alt_age}, \code{morie_otis_analyze_a01_ruhela_alt_gender} and 42 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param fn_name See Usage.
@@ -1237,10 +1253,11 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
 
 #' .otis_aggregate_glm
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b03_ruhela_aggregate}, \code{morie_otis_analyze_b04_ruhela_aggregate}, \code{morie_otis_analyze_b06_ruhela_aggregate} and 21 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param work See Usage.
+#' @param work A matrix; indexed by row and column.
 #' @param treatment See Usage.
 #' @param outcome See Usage.
 #' @param covariates Defaults to \code{character(0)}.
@@ -1248,7 +1265,7 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
 #' @param cluster_group Defaults to \code{NULL}.
 #' @param ds_id See Usage.
 #' @param source_label See Usage.
-#' @param title See Usage.
+#' @param title Passed to \code{.otis_wrap}.
 #' @param interpretation See Usage.
 #' @return The value of \code{.otis_wrap}.
 #' @export
@@ -2508,7 +2525,8 @@ morie_otis_analyze_b01_ruhela_subgroup_male <- function(data = NULL,
 
 #' .otis_classify_bin
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b05_mandela_classification}, \code{morie_otis_analyze_c11_mandela_classification}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
@@ -2818,10 +2836,11 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
 
 #' .otis_chi2_cramer
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_contingency_chi2}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param tbl See Usage.
+#' @param tbl A matrix; passed to \code{dim}.
 #' @return A list with \code{chi2}, \code{dof}, \code{pvalue}, \code{cramer_v}, \code{n}, \code{min_cell}, \code{min_expected}.
 #' @export
 .otis_chi2_cramer <- function(tbl) {
@@ -2854,10 +2873,11 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
 
 #' .otis_contingency_chi2
 #'
-#' Part of the otis_all_analyze implementation; see the file header for
+#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_c_chi2}, \code{morie_otis_analyze_d_chi2}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param df See Usage.
+#' @param df A matrix; indexed by row and column.
 #' @param row See Usage.
 #' @param col See Usage.
 #' @param value See Usage.

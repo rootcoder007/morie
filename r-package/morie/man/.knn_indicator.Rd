@@ -3,13 +3,13 @@
 % the formals.
 \name{.knn_indicator}
 \alias{.knn_indicator}
-\title{Internal: a_ij = 1 when j is among i\\\'s k nearest, excluding i itself}
+\title{Internal: a_ij = 1 when j is among i\\'s k nearest, excluding i itself}
 \usage{
 .knn_indicator(D, k)
 }
 \arguments{
-\item{D}{See Usage.}
-\item{k}{See Usage.}
+\item{D}{A matrix; indexed by row and column.}
+\item{k}{A count; the body uses it as \code{seq_len(...)}.}
 }
 \description{
 Part of the panelspatial implementation; see the file header for the source it follows.

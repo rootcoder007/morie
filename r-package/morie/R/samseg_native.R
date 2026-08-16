@@ -24,10 +24,11 @@
 
 #' .samseg_mat
 #'
-#' Part of the samseg_native implementation; see the file header for the
+#' A step of the samseg_native implementation. Called by \code{encode_mask_prompt}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x A matrix; passed to \code{as.matrix}.
 #' @return Nothing; this branch always raises.
 #' @export
 .samseg_mat <- function(x) {
@@ -48,12 +49,13 @@
 
 #' .samseg_pos_enc
 #'
-#' Part of the samseg_native implementation; see the file header for the
+#' A step of the samseg_native implementation. Called by \code{encode_box_prompt}, \code{encode_point_prompt}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
 #' @param y See Usage.
-#' @param dim Defaults to \code{8}.
+#' @param dim A count; the body uses it as \code{numeric(...)}. Defaults to \code{8}.
 #' @param scale Defaults to \code{1}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -69,12 +71,13 @@
 
 #' encode_point_prompt
 #'
-#' Part of the samseg_native implementation; see the file header for the
+#' A step of the samseg_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param points See Usage.
 #' @param labels See Usage.
-#' @param dim Defaults to \code{8}.
+#' @param dim Passed to \code{.samseg_pos_enc}. Defaults to \code{8}.
 #' @param type_embeddings Defaults to \code{NULL}.
 #' @return A list with \code{tokens}, \code{n_prompts}, \code{sparse}, \code{note}.
 #' @export
@@ -106,11 +109,12 @@ encode_point_prompt <- function(points, labels, dim = 8,
 
 #' encode_box_prompt
 #'
-#' Part of the samseg_native implementation; see the file header for the
+#' A step of the samseg_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param box See Usage.
-#' @param dim Defaults to \code{8}.
+#' @param dim Passed to \code{.samseg_pos_enc}. Defaults to \code{8}.
 #' @param type_embeddings Defaults to \code{NULL}.
 #' @return A list with \code{tokens}, \code{n_prompts}, \code{sparse}.
 #' @export
@@ -134,11 +138,12 @@ encode_box_prompt <- function(box, dim = 8, type_embeddings = NULL) {
 
 #' encode_mask_prompt
 #'
-#' Part of the samseg_native implementation; see the file header for the
+#' A step of the samseg_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param mask See Usage.
-#' @param image_embedding See Usage.
+#' @param mask Passed to \code{.samseg_mat}.
+#' @param image_embedding Passed to \code{.samseg_mat}.
 #' @param weight Defaults to \code{1}.
 #' @return A list with \code{embedding}, \code{sparse}, \code{note}.
 #' @export
@@ -156,7 +161,8 @@ encode_mask_prompt <- function(mask, image_embedding, weight = 1.0) {
 
 #' amortised_cost
 #'
-#' Part of the samseg_native implementation; see the file header for the
+#' A step of the samseg_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param encoder_ms See Usage.
@@ -182,7 +188,8 @@ amortised_cost <- function(encoder_ms, decoder_ms, n_prompts) {
 
 #' promptable_segment
 #'
-#' Part of the samseg_native implementation; see the file header for the
+#' A step of the samseg_native implementation. Called by \code{morie_samseg}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param image_embedding See Usage.
@@ -204,7 +211,8 @@ promptable_segment <- function(image_embedding, prompt_tokens, decoder,
 
 #' morie_samseg
 #'
-#' Part of the samseg_native implementation; see the file header for the
+#' A step of the samseg_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param image_embedding See Usage.
@@ -225,7 +233,8 @@ segmentanything <- promptable_segment
 
 #' .samseg_cheatsheet
 #'
-#' Part of the samseg_native implementation; see the file header for the
+#' A step of the samseg_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

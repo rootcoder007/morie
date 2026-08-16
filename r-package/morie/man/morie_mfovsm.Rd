@@ -8,12 +8,12 @@
 morie_mfovsm(y, feature, A, H, v_in_numerator = TRUE, contrast = "cumulative", trim = NULL)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{feature}{See Usage.}
-\item{A}{See Usage.}
-\item{H}{See Usage.}
-\item{v_in_numerator}{Defaults to \code{TRUE}.}
-\item{contrast}{Defaults to \code{"cumulative"}.}
+\item{y}{Passed to \code{.mfovsm_vec}.}
+\item{feature}{Passed to \code{.mfovsm_vec}.}
+\item{A}{Passed to \code{.mfovsm_hist}.}
+\item{H}{Passed to \code{.mfovsm_hist}.}
+\item{v_in_numerator}{A flag; the body branches on it. Defaults to \code{TRUE}.}
+\item{contrast}{One of \code{"cumulative"}, \code{"everexposed"}, \code{"final"}. Defaults to \code{"cumulative"}.}
 \item{trim}{Defaults to \code{NULL}.}
 }
 \description{

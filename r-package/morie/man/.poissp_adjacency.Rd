@@ -8,7 +8,7 @@
 .poissp_adjacency(W)
 }
 \arguments{
-\item{W}{See Usage.}
+\item{W}{A matrix; passed to \code{as.matrix}.}
 }
 \description{
 Part of the poissp_native implementation; see the file header for the source it follows.

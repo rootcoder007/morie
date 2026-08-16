@@ -8,9 +8,9 @@
 nashq_stage_game_type(A, B, tol = 1e-09)
 }
 \arguments{
-\item{A}{See Usage.}
-\item{B}{See Usage.}
-\item{tol}{Defaults to \code{1e-09}.}
+\item{A}{Numeric; passed to \code{max}.}
+\item{B}{Numeric; passed to \code{max}.}
+\item{tol}{Numeric; combined arithmetically in the body. Defaults to \code{1e-09}.}
 }
 \description{
 Part of the nashq_native implementation; see the file header for the source it follows.

@@ -9,10 +9,10 @@ selective_ssm_step(x, h, A, B, C, delta, rule = "zoh")
 }
 \arguments{
 \item{x}{See Usage.}
-\item{h}{See Usage.}
-\item{A}{See Usage.}
+\item{h}{A vector; its length is taken and its elements indexed.}
+\item{A}{A vector; its length is taken.}
 \item{B}{See Usage.}
-\item{C}{See Usage.}
+\item{C}{A vector; its length is taken.}
 \item{delta}{See Usage.}
 \item{rule}{Defaults to \code{"zoh"}.}
 }

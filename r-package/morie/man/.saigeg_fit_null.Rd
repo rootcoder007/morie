@@ -8,9 +8,9 @@
 .saigeg_fit_null(y, X, ridge = 1e-08)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{X}{See Usage.}
-\item{ridge}{Defaults to \code{1e-08}.}
+\item{y}{A vector; its length is taken.}
+\item{X}{Passed to \code{.saigeg_design}.}
+\item{ridge}{Passed to \code{.saigeg_logit_irls}. Defaults to \code{1e-08}.}
 }
 \description{
 Part of the saigeg_native implementation; see the file header for the source it follows.

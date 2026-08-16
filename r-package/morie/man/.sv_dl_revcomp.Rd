@@ -8,7 +8,7 @@
 .sv_dl_revcomp(s)
 }
 \arguments{
-\item{s}{See Usage.}
+\item{s}{Character; passed to \code{toupper}.}
 }
 \description{
 Part of the sv_dl_native implementation; see the file header for the source it follows.

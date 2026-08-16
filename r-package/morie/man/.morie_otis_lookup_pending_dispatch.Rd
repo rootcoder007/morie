@@ -9,14 +9,14 @@
 }
 \arguments{
 \item{dataset_label}{See Usage.}
-\item{fixture}{See Usage.}
-\item{offline}{See Usage.}
+\item{fixture}{Character; passed to \code{sub}.}
+\item{offline}{A flag; the body branches on it.}
 \item{resource_id}{See Usage.}
 \item{registry_key}{Defaults to \code{NULL}.}
-\item{source}{Defaults to \code{NULL}.}
+\item{source}{Optional; may be \code{NULL}. Passed to \code{.morie_load_chain}.}
 }
 \description{
-auto-resolved from .MORIE_ONTARIO_CKAN_REGISTRY[[registry_key]] when the caller doesn\\\'t pass an explicit override; if the registry entry is also missing or NA the function errors with a clear message.
+auto-resolved from .MORIE_ONTARIO_CKAN_REGISTRY[[registry_key]] when the caller doesn\\'t pass an explicit override; if the registry entry is also missing or NA the function errors with a clear message.
 }
 \value{
 The value of \code{.morie_load_chain}.

@@ -8,8 +8,8 @@
 .siu_p_label_int(text, label)
 }
 \arguments{
-\item{text}{See Usage.}
-\item{label}{See Usage.}
+\item{text}{Passed to \code{.siu_p_label_value}.}
+\item{label}{Passed to \code{.siu_p_label_value}.}
 }
 \description{
 Part of the siu_parser implementation; see the file header for the source it follows.

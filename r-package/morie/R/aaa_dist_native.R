@@ -40,8 +40,8 @@
 #'
 #' far tail never passes through 1 - P and lose its digits.
 #'
-#' @param a See Usage.
-#' @param x See Usage.
+#' @param a Numeric; combined arithmetically in the body.
+#' @param x Numeric; passed to \code{log}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .morie_gammainc_q <- function(a, x) {
@@ -92,7 +92,8 @@
 
 #' .morie_erf
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
@@ -109,8 +110,8 @@
 #'
 #' Lentz continued fraction for the complement otherwise.
 #'
-#' @param a See Usage.
-#' @param x See Usage.
+#' @param a Numeric; combined arithmetically in the body.
+#' @param x Numeric; passed to \code{log}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .morie_gammainc_p <- function(a, x) {
@@ -152,12 +153,13 @@
 
 #' .morie_betacf
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{.morie_betainc}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param a See Usage.
-#' @param b See Usage.
-#' @param x See Usage.
+#' @param a Numeric; combined arithmetically in the body.
+#' @param b Numeric; combined arithmetically in the body.
+#' @param x Numeric; combined arithmetically in the body.
 #' @return The value of \code{h}, as built in the body.
 #' @export
 .morie_betacf <- function(a, b, x) {
@@ -194,12 +196,13 @@
 
 #' Regularized incomplete beta I_x(a, b)
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{Pbeta}, \code{Pbinom}, \code{Pf} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param a See Usage.
-#' @param b See Usage.
-#' @param x See Usage.
+#' @param a Numeric; combined arithmetically in the body.
+#' @param b Numeric; combined arithmetically in the body.
+#' @param x Numeric; passed to \code{log}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .morie_betainc <- function(a, b, x) {
@@ -218,14 +221,15 @@
 
 #' .morie_bisect_q
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{Qbeta}, \code{Qf}, \code{Qgamma} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param cdf See Usage.
-#' @param p See Usage.
-#' @param lo See Usage.
-#' @param hi See Usage.
-#' @param tol Defaults to \code{1e-13}.
+#' @param p Numeric; combined arithmetically in the body.
+#' @param lo Numeric; combined arithmetically in the body.
+#' @param hi Numeric; passed to \code{abs}.
+#' @param tol Numeric; combined arithmetically in the body. Defaults to \code{1e-13}.
 #' @return The value of \code{x}, as built in the body.
 #' @export
 .morie_bisect_q <- function(cdf, p, lo, hi, tol = 1e-13) {
@@ -255,13 +259,14 @@
 
 #' Dnorm
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param mean Defaults to \code{0}.
-#' @param sd Defaults to \code{1}.
-#' @param log Defaults to \code{FALSE}.
+#' @param x Numeric; combined arithmetically in the body.
+#' @param mean Numeric; combined arithmetically in the body. Defaults to \code{0}.
+#' @param sd Numeric; passed to \code{log}. Defaults to \code{1}.
+#' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Dnorm <- function(x, mean = 0, sd = 1, log = FALSE) {
@@ -273,13 +278,14 @@ Dnorm <- function(x, mean = 0, sd = 1, log = FALSE) {
 
 #' Pnorm
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param q See Usage.
-#' @param mean Defaults to \code{0}.
-#' @param sd Defaults to \code{1}.
-#' @param lower_tail Defaults to \code{TRUE}.
+#' @param q Numeric; combined arithmetically in the body.
+#' @param mean Numeric; combined arithmetically in the body. Defaults to \code{0}.
+#' @param sd Numeric; combined arithmetically in the body. Defaults to \code{1}.
+#' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Pnorm <- function(q, mean = 0, sd = 1, lower_tail = TRUE) {
@@ -293,13 +299,14 @@ Pnorm <- function(q, mean = 0, sd = 1, lower_tail = TRUE) {
 
 #' Qnorm
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{Rnorm}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
-#' @param mean Defaults to \code{0}.
-#' @param sd Defaults to \code{1}.
-#' @param lower_tail Defaults to \code{TRUE}.
+#' @param p Numeric; combined arithmetically in the body.
+#' @param mean Numeric; combined arithmetically in the body. Defaults to \code{0}.
+#' @param sd Numeric; combined arithmetically in the body. Defaults to \code{1}.
+#' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A numeric value.
 #' @export
 Qnorm <- function(p, mean = 0, sd = 1, lower_tail = TRUE) {
@@ -313,11 +320,11 @@ Qnorm <- function(p, mean = 0, sd = 1, lower_tail = TRUE) {
 #'
 #' uniform k, so the stream is stable when n changes
 #'
-#' @param n See Usage.
+#' @param n Passed to \code{.morie_random_uniform}.
 #' @param mean Defaults to \code{0}.
 #' @param sd Defaults to \code{1}.
-#' @param seed Defaults to \code{0}.
-#' @param stream Defaults to \code{0}.
+#' @param seed Passed to \code{.morie_random_uniform}. Defaults to \code{0}.
+#' @param stream Passed to \code{.morie_random_uniform}. Defaults to \code{0}.
 #' @return The value of \code{Qnorm}.
 #' @export
 Rnorm <- function(n, mean = 0, sd = 1, seed = 0, stream = 0) {
@@ -332,12 +339,13 @@ Rnorm <- function(n, mean = 0, sd = 1, seed = 0, stream = 0) {
 
 #' Dexp
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param rate Defaults to \code{1}.
-#' @param log Defaults to \code{FALSE}.
+#' @param x Numeric; combined arithmetically in the body.
+#' @param rate Numeric; passed to \code{log}. Defaults to \code{1}.
+#' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Dexp <- function(x, rate = 1, log = FALSE) {
@@ -348,12 +356,13 @@ Dexp <- function(x, rate = 1, log = FALSE) {
 
 #' Pexp
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param q See Usage.
-#' @param rate Defaults to \code{1}.
-#' @param lower_tail Defaults to \code{TRUE}.
+#' @param q Numeric; combined arithmetically in the body.
+#' @param rate Numeric; combined arithmetically in the body. Defaults to \code{1}.
+#' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Pexp <- function(q, rate = 1, lower_tail = TRUE) {
@@ -364,11 +373,12 @@ Pexp <- function(q, rate = 1, lower_tail = TRUE) {
 
 #' Qexp
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{Rexp}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
-#' @param rate Defaults to \code{1}.
+#' @param p Numeric; combined arithmetically in the body.
+#' @param rate Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @return A numeric value.
 #' @export
 Qexp <- function(p, rate = 1) {
@@ -379,13 +389,14 @@ Qexp <- function(p, rate = 1) {
 
 #' Rexp
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n See Usage.
+#' @param n Passed to \code{.morie_random_uniform}.
 #' @param rate Defaults to \code{1}.
-#' @param seed Defaults to \code{0}.
-#' @param stream Defaults to \code{0}.
+#' @param seed Passed to \code{.morie_random_uniform}. Defaults to \code{0}.
+#' @param stream Passed to \code{.morie_random_uniform}. Defaults to \code{0}.
 #' @return The value of \code{Qexp}.
 #' @export
 Rexp <- function(n, rate = 1, seed = 0, stream = 0) {
@@ -397,13 +408,14 @@ Rexp <- function(n, rate = 1, seed = 0, stream = 0) {
 
 #' Dgamma
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{Dchisq}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param shape See Usage.
-#' @param rate Defaults to \code{1}.
-#' @param log Defaults to \code{FALSE}.
+#' @param x Numeric; passed to \code{log}.
+#' @param shape Numeric; combined arithmetically in the body.
+#' @param rate Numeric; passed to \code{log}. Defaults to \code{1}.
+#' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Dgamma <- function(x, shape, rate = 1, log = FALSE) {
@@ -416,13 +428,14 @@ Dgamma <- function(x, shape, rate = 1, log = FALSE) {
 
 #' Pgamma
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{Pchisq}, \code{Qgamma}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param q See Usage.
-#' @param shape See Usage.
-#' @param rate Defaults to \code{1}.
-#' @param lower_tail Defaults to \code{TRUE}.
+#' @param shape Passed to \code{.morie_gammainc_p}.
+#' @param rate Numeric; combined arithmetically in the body. Defaults to \code{1}.
+#' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Pgamma <- function(q, shape, rate = 1, lower_tail = TRUE) {
@@ -434,7 +447,8 @@ Pgamma <- function(q, shape, rate = 1, lower_tail = TRUE) {
 
 #' Qgamma
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{Qchisq}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p See Usage.
@@ -450,22 +464,24 @@ Qgamma <- function(p, shape, rate = 1) {
 
 #' Dchisq
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
-#' @param df See Usage.
+#' @param df Numeric; combined arithmetically in the body.
 #' @param log Defaults to \code{FALSE}.
 #' @return The value of \code{Dgamma}.
 #' @export
 Dchisq <- function(x, df, log = FALSE) Dgamma(x, df / 2, 0.5, log)
 #' Pchisq
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{.rsconsistency}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param q See Usage.
-#' @param df See Usage.
+#' @param df Numeric; combined arithmetically in the body.
 #' @param lower_tail Defaults to \code{TRUE}.
 #' @return The value of \code{Pgamma}.
 #' @export
@@ -473,11 +489,12 @@ Pchisq <- function(q, df, lower_tail = TRUE)
   Pgamma(q, df / 2, 0.5, lower_tail)
 #' Qchisq
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{.rsconsistency}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p See Usage.
-#' @param df See Usage.
+#' @param df Numeric; combined arithmetically in the body.
 #' @return The value of \code{Qgamma}.
 #' @export
 Qchisq <- function(p, df) Qgamma(p, df / 2, 0.5)
@@ -486,12 +503,13 @@ Qchisq <- function(p, df) Qgamma(p, df / 2, 0.5)
 
 #' Dpois
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
-#' @param lambda See Usage.
-#' @param log Defaults to \code{FALSE}.
+#' @param lambda Numeric; passed to \code{log}.
+#' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Dpois <- function(x, lambda, log = FALSE) {
@@ -505,12 +523,13 @@ Dpois <- function(x, lambda, log = FALSE) {
 
 #' P(X <= k) = Q(k+1, lambda), the UPPER regularized incomplete gamma
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{Qpois}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param q See Usage.
-#' @param lambda See Usage.
-#' @param lower_tail Defaults to \code{TRUE}.
+#' @param lambda Passed to \code{.morie_gammainc_p}.
+#' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Ppois <- function(q, lambda, lower_tail = TRUE) {
@@ -524,7 +543,8 @@ Ppois <- function(q, lambda, lower_tail = TRUE) {
 
 #' Smallest k with cdf(k) >= p, as R defines it
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p See Usage.
@@ -543,13 +563,14 @@ Qpois <- function(p, lambda) {
 
 #' Dbinom
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
-#' @param size See Usage.
-#' @param prob See Usage.
-#' @param log Defaults to \code{FALSE}.
+#' @param size Numeric; combined arithmetically in the body.
+#' @param prob Numeric; passed to \code{log}.
+#' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Dbinom <- function(x, size, prob, log = FALSE) {
@@ -567,13 +588,14 @@ Dbinom <- function(x, size, prob, log = FALSE) {
 
 #' P(X <= k) = I_{1-p}(n - k, k + 1)
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{Qbinom}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param q See Usage.
-#' @param size See Usage.
-#' @param prob See Usage.
-#' @param lower_tail Defaults to \code{TRUE}.
+#' @param size Numeric; combined arithmetically in the body.
+#' @param prob Numeric; combined arithmetically in the body.
+#' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Pbinom <- function(q, size, prob, lower_tail = TRUE) {
@@ -589,7 +611,8 @@ Pbinom <- function(q, size, prob, lower_tail = TRUE) {
 
 #' Qbinom
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p See Usage.
@@ -610,13 +633,14 @@ Qbinom <- function(p, size, prob) {
 
 #' Dbeta
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param shape1 See Usage.
-#' @param shape2 See Usage.
-#' @param log Defaults to \code{FALSE}.
+#' @param x Numeric; passed to \code{log}.
+#' @param shape1 Numeric; combined arithmetically in the body.
+#' @param shape2 Numeric; combined arithmetically in the body.
+#' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Dbeta <- function(x, shape1, shape2, log = FALSE) {
@@ -629,13 +653,14 @@ Dbeta <- function(x, shape1, shape2, log = FALSE) {
 
 #' Pbeta
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{Qbeta}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param q See Usage.
-#' @param shape1 See Usage.
-#' @param shape2 See Usage.
-#' @param lower_tail Defaults to \code{TRUE}.
+#' @param shape1 Passed to \code{.morie_betainc}.
+#' @param shape2 Passed to \code{.morie_betainc}.
+#' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Pbeta <- function(q, shape1, shape2, lower_tail = TRUE) {
@@ -645,7 +670,8 @@ Pbeta <- function(q, shape1, shape2, lower_tail = TRUE) {
 
 #' Qbeta
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p See Usage.
@@ -662,12 +688,13 @@ Qbeta <- function(p, shape1, shape2) {
 
 #' Dt
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param df See Usage.
-#' @param log Defaults to \code{FALSE}.
+#' @param x Numeric; combined arithmetically in the body.
+#' @param df Numeric; combined arithmetically in the body.
+#' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Dt <- function(x, df, log = FALSE) {
@@ -679,12 +706,13 @@ Dt <- function(x, df, log = FALSE) {
 
 #' Pt
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{Qt}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param q See Usage.
-#' @param df See Usage.
-#' @param lower_tail Defaults to \code{TRUE}.
+#' @param df Numeric; combined arithmetically in the body.
+#' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Pt <- function(q, df, lower_tail = TRUE) {
@@ -721,13 +749,14 @@ Qt <- function(p, df) {
 
 #' Pf
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. Called by \code{Qf}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param q See Usage.
-#' @param df1 See Usage.
-#' @param df2 See Usage.
-#' @param lower_tail Defaults to \code{TRUE}.
+#' @param df1 Numeric; combined arithmetically in the body.
+#' @param df2 Numeric; combined arithmetically in the body.
+#' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 Pf <- function(q, df1, df2, lower_tail = TRUE) {
@@ -740,7 +769,8 @@ Pf <- function(q, df1, df2, lower_tail = TRUE) {
 
 #' Qf
 #'
-#' Part of the dist_native implementation; see the file header for the
+#' A step of the dist_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p See Usage.

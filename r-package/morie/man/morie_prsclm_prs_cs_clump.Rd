@@ -8,13 +8,13 @@
 morie_prsclm_prs_cs_clump(sumstats, ld_ref, p_threshold = NULL, r2 = 0.1, window = 250000, genotypes = NULL, standardize = FALSE)
 }
 \arguments{
-\item{sumstats}{See Usage.}
-\item{ld_ref}{See Usage.}
+\item{sumstats}{A list; the body reads \code{$beta}, \code{$p}, \code{$position}, \code{$snp} from it.}
+\item{ld_ref}{Passed to \code{.prsclm_rows}.}
 \item{p_threshold}{Defaults to \code{NULL}.}
 \item{r2}{Defaults to \code{0.1}.}
 \item{window}{Defaults to \code{250000}.}
-\item{genotypes}{Defaults to \code{NULL}.}
-\item{standardize}{Defaults to \code{FALSE}.}
+\item{genotypes}{Optional; may be \code{NULL}. Passed to \code{.prsclm_rows}.}
+\item{standardize}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{
 Part of the prsclm_native implementation; see the file header for the source it follows.

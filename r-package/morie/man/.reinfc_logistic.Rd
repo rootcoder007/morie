@@ -8,7 +8,7 @@
 .reinfc_logistic(s)
 }
 \arguments{
-\item{s}{See Usage.}
+\item{s}{Numeric; passed to \code{exp}.}
 }
 \description{
 Part of the reinfc_native implementation; see the file header for the source it follows.

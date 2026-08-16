@@ -8,10 +8,10 @@
 .pratt_document_vector(H_sentences, W, b, u_s)
 }
 \arguments{
-\item{H_sentences}{See Usage.}
-\item{W}{See Usage.}
-\item{b}{See Usage.}
-\item{u_s}{See Usage.}
+\item{H_sentences}{Passed to \code{.pratt_attention}.}
+\item{W}{Passed to \code{.pratt_attention}.}
+\item{b}{Passed to \code{.pratt_attention}.}
+\item{u_s}{Passed to \code{.pratt_attention}.}
 }
 \description{
 Part of the pratt_native implementation; see the file header for the source it follows.

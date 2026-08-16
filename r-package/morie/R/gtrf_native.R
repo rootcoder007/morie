@@ -184,11 +184,12 @@ morie_gtrf_layer <- function(H, adj, WQ, WK, WV, W1, W2,
 
 #' .gtrf_normalize
 #'
-#' Part of the gtrf_native implementation; see the file header for the
+#' A step of the gtrf_native implementation. Called by \code{morie_gtrf_layer}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
-#' @param how See Usage.
+#' @param X A matrix; indexed by row and column.
+#' @param how One of \code{"batch"}, \code{"none"}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .gtrf_normalize <- function(X, how) {

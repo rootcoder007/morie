@@ -8,10 +8,10 @@
 .stahdo_outlyingness(X, directions = "subsample", n_directions = 500, seed = 1)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{directions}{Defaults to \code{"subsample"}.}
-\item{n_directions}{Defaults to \code{500}.}
-\item{seed}{Defaults to \code{1}.}
+\item{X}{Passed to \code{.stahdo_prep}.}
+\item{directions}{Compared against \code{"subsample"}. Defaults to \code{"subsample"}.}
+\item{n_directions}{Passed to \code{.stahdo_subsample_dirs}. Defaults to \code{500}.}
+\item{seed}{Passed to \code{.stahdo_subsample_dirs}. Defaults to \code{1}.}
 }
 \description{
 Part of the stahdo_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 .mean_ci(x, confidence = 0.95)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{confidence}{Defaults to \code{0.95}.}
+\item{x}{A vector; its length is taken.}
+\item{confidence}{Numeric; combined arithmetically in the body. Defaults to \code{0.95}.}
 }
 \description{
 Part of the statistics implementation; see the file header for the source it follows.

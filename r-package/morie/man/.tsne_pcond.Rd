@@ -8,10 +8,10 @@
 .tsne_pcond(D2, perp, tol = 1e-05, max_iter = 60)
 }
 \arguments{
-\item{D2}{See Usage.}
-\item{perp}{See Usage.}
+\item{D2}{A matrix; indexed by row and column.}
+\item{perp}{Numeric; passed to \code{log}.}
 \item{tol}{Defaults to \code{1e-05}.}
-\item{max_iter}{Defaults to \code{60}.}
+\item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{60}.}
 }
 \description{
 Part of the sctsne_native implementation; see the file header for the source it follows.

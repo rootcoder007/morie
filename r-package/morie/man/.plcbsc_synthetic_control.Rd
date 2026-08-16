@@ -12,7 +12,7 @@
 \item{x_donors}{See Usage.}
 \item{v}{Defaults to \code{NULL}.}
 \item{max_iter}{Defaults to \code{5000}.}
-\item{tol}{Defaults to \code{1e-12}.}
+\item{tol}{Numeric; combined arithmetically in the body. Defaults to \code{1e-12}.}
 \item{step}{Defaults to \code{NULL}.}
 }
 \description{

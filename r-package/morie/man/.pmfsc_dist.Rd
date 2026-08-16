@@ -8,8 +8,8 @@
 .pmfsc_dist(a, b)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{a}{Numeric; combined arithmetically in the body.}
+\item{b}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the pmfsc_native implementation; see the file header for the source it follows.
@@ -33,7 +33,7 @@ A numeric value.
 A note on what is sourced. The functional form and the role of each
 factor above are from the papers. The particular realisation of the
 volume correction as an excluded-volume ratio, and the capping rule
-for unobserved bins, are this module\\'s -- they are described in the
+for unobserved bins, are this module\'s -- they are described in the
 sources in words rather than given as formulas, so they are named here
 as choices rather than attributed.
 }

@@ -9,7 +9,7 @@ teacher_votes(teacher_predicts, rows, n_classes = NULL)
 }
 \arguments{
 \item{teacher_predicts}{See Usage.}
-\item{rows}{See Usage.}
+\item{rows}{A vector; its length is taken.}
 \item{n_classes}{Defaults to \code{NULL}.}
 }
 \description{

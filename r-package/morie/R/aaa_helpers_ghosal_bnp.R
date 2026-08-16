@@ -8,7 +8,8 @@ NULL
 
 #' .gh_have
 #'
-#' Part of the helpers_ghosal_bnp implementation; see the file header
+#' A step of the helpers_ghosal_bnp implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param pkg See Usage.
@@ -18,11 +19,12 @@ NULL
 
 #' .gh_pairwise_sq
 #'
-#' Part of the helpers_ghosal_bnp implementation; see the file header
+#' A step of the helpers_ghosal_bnp implementation. Called by \code{morie_ghosal_gp_matern}, \code{morie_ghosal_gp_squared_exponential}, \code{morie_ghosal_np_classification}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param a See Usage.
-#' @param b Defaults to \code{a}.
+#' @param a A matrix; passed to \code{\%*\%}.
+#' @param b A matrix; passed to \code{t}. Defaults to \code{a}.
 #' @return A numeric value.
 #' @export
 .gh_pairwise_sq <- function(a, b = a) {
@@ -31,11 +33,12 @@ NULL
 
 #' .gh_bernstein
 #'
-#' Part of the helpers_ghosal_bnp implementation; see the file header
+#' A step of the helpers_ghosal_bnp implementation. Called by \code{morie_ghosal_sieve_prior}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param u See Usage.
-#' @param K See Usage.
+#' @param u A vector; its length is taken.
+#' @param K A count; the body uses it as \code{seq_len(...)}.
 #' @return The value of \code{B}, as built in the body.
 #' @export
 .gh_bernstein <- function(u, K) {
@@ -49,13 +52,14 @@ NULL
 
 #' .gh_surv_post
 #'
-#' Part of the helpers_ghosal_bnp implementation; see the file header
+#' A step of the helpers_ghosal_bnp implementation. Called by \code{morie_ghosal_neutral_right}, \code{morie_ghosal_survival_beta_process}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param t See Usage.
+#' @param t A vector; its length is taken.
 #' @param ev See Usage.
-#' @param c See Usage.
-#' @param lam0 See Usage.
+#' @param c Numeric; combined arithmetically in the body.
+#' @param lam0 Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.
 #' @return A list with \code{times}, \code{S}, \code{H}, \code{dH}, \code{lam0}.
 #' @export
 .gh_surv_post <- function(t, ev, c, lam0) {
@@ -77,10 +81,11 @@ NULL
 
 #' .gh_haar_dwt
 #'
-#' Part of the helpers_ghosal_bnp implementation; see the file header
+#' A step of the helpers_ghosal_bnp implementation. Called by \code{morie_ghosal_wavelet_prior}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param y See Usage.
+#' @param y A vector; its length is taken.
 #' @return A list with \code{coeffs}, \code{L}.
 #' @export
 .gh_haar_dwt <- function(y) {

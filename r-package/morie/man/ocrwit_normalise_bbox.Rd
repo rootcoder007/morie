@@ -8,7 +8,7 @@
 ocrwit_normalise_bbox(box, width, height, scale = 1000)
 }
 \arguments{
-\item{box}{See Usage.}
+\item{box}{A vector; indexed elementwise.}
 \item{width}{See Usage.}
 \item{height}{See Usage.}
 \item{scale}{Defaults to \code{1000}.}

@@ -8,9 +8,9 @@
 .morie_slhdsa128s_verify_impl(pk_sxp, message_sxp, signature_sxp)
 }
 \arguments{
-\item{pk_sxp}{See Usage.}
-\item{message_sxp}{See Usage.}
-\item{signature_sxp}{See Usage.}
+\item{pk_sxp}{Passed to \code{.Call}.}
+\item{message_sxp}{Passed to \code{.Call}.}
+\item{signature_sxp}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

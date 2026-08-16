@@ -9,7 +9,7 @@ lag_summary(series, t, lags = 2)
 }
 \arguments{
 \item{series}{See Usage.}
-\item{t}{See Usage.}
+\item{t}{Numeric; passed to \code{min}.}
 \item{lags}{Defaults to \code{2}.}
 }
 \description{

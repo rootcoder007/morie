@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{seq}{See Usage.}
-\item{first}{See Usage.}
+\item{first}{A vector; indexed elementwise.}
 \item{nts}{See Usage.}
 }
 \description{

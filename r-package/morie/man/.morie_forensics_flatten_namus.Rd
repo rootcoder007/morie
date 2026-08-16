@@ -3,15 +3,15 @@
 % the formals.
 \name{.morie_forensics_flatten_namus}
 \alias{.morie_forensics_flatten_namus}
-\title{Internal: pull morie\\\'s documented columns out of one NamUs record}
+\title{Internal: pull morie\\'s documented columns out of one NamUs record}
 \usage{
 .morie_forensics_flatten_namus(rec)
 }
 \arguments{
-\item{rec}{See Usage.}
+\item{rec}{A list; the body reads \code{$caseNumber}, \code{$circumstances}, \code{$circumstancesOfDisappearance}, \code{$county}, \code{$namUsCaseNumber}, \code{$sighting}, \code{$state}, \code{$subjectDescription}, \code{$subjectIdentification} from it.}
 }
 \description{
-Part of the ingest_forensics implementation; see the file header for the source it follows.
+A step of the ingest_forensics implementation. Called by \code{morie_ingest_forensics_namus_missing}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{case_number}, \code{state}, \code{county}, \code{dlc_date}, \code{sex}, \code{race}, \code{age_min}, \code{age_max}, \code{height_cm_min}, \code{height_cm_max}, \code{weight_kg_min}, \code{weight_kg_max}, \code{first_name}, \code{last_name}, \code{city}, \code{circumstances}.

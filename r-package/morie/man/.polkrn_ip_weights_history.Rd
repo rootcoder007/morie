@@ -8,10 +8,10 @@
 .polkrn_ip_weights_history(A_hist, L_hist, kind, stabilize, trim)
 }
 \arguments{
-\item{A_hist}{See Usage.}
-\item{L_hist}{See Usage.}
+\item{A_hist}{A vector; its length is taken and its elements indexed.}
+\item{L_hist}{A vector; indexed elementwise.}
 \item{kind}{See Usage.}
-\item{stabilize}{See Usage.}
+\item{stabilize}{A flag; the body branches on it.}
 \item{trim}{See Usage.}
 }
 \description{

@@ -8,8 +8,8 @@
 .propinf_mlp_init(sizes, rnd)
 }
 \arguments{
-\item{sizes}{See Usage.}
-\item{rnd}{See Usage.}
+\item{sizes}{A vector; its length is taken and its elements indexed.}
+\item{rnd}{Passed to \code{.propinf_normal_lcg}.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

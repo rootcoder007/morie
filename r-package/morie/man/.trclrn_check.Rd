@@ -10,8 +10,8 @@
 \arguments{
 \item{Y}{See Usage.}
 \item{A}{See Usage.}
-\item{X}{See Usage.}
-\item{propensity}{See Usage.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
+\item{propensity}{Optional; may be \code{NULL}. A vector; its length is taken.}
 \item{min_propensity}{See Usage.}
 }
 \description{

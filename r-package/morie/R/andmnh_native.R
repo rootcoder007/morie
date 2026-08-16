@@ -64,7 +64,8 @@ tukey_hanning_kernel <- function(x) {
 
 #' .morie_check_kernel
 #'
-#' Part of the andmnh_native implementation; see the file header for the
+#' A step of the andmnh_native implementation. Called by \code{automatic_bandwidth}, \code{kernel_hac}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param kernel See Usage.
@@ -95,10 +96,11 @@ moment_vectors <- function(e, X) {
 
 #' .morie_svd
 #'
-#' Part of the andmnh_native implementation; see the file header for the
+#' A step of the andmnh_native implementation. Called by \code{prewhiten_var}, \code{singular_value_adjust}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param a See Usage.
+#' @param a A matrix; passed to \code{nrow}.
 #' @return A list with \code{u}, \code{s}, \code{vt}.
 #' @export
 .morie_svd <- function(a) {

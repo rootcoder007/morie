@@ -11,10 +11,11 @@
 
 #' .mat
 #'
-#' Part of the explor_native implementation; see the file header for the
+#' A step of the explor_native implementation. Called by \code{explor}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x A matrix; passed to \code{nrow}.
 #' @param name See Usage.
 #' @return The value of \code{X}, as built in the body.
 #' @export
@@ -28,11 +29,12 @@
 
 #' .matvec
 #'
-#' Part of the explor_native implementation; see the file header for the
+#' A step of the explor_native implementation. Called by \code{explor}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param W See Usage.
-#' @param x See Usage.
+#' @param W A matrix; indexed by row and column.
+#' @param x A vector; its length is taken and its elements indexed.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .matvec <- function(W, x) {
@@ -49,10 +51,11 @@
 
 #' .explor_softmax
 #'
-#' Part of the explor_native implementation; see the file header for the
+#' A step of the explor_native implementation. Called by \code{explor}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param z See Usage.
+#' @param z Numeric; passed to \code{max}.
 #' @return A numeric value.
 #' @export
 .explor_softmax <- function(z) {
@@ -64,21 +67,22 @@
 
 #' explor
 #'
-#' Part of the explor_native implementation; see the file header for the
+#' A step of the explor_native implementation. Called by \code{morie_explor}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param states See Usage.
-#' @param actions See Usage.
-#' @param next_states See Usage.
+#' @param states Passed to \code{.mat}.
+#' @param actions Passed to \code{.mat}.
+#' @param next_states Passed to \code{.mat}.
 #' @param n_actions Defaults to \code{NULL}.
 #' @param n_features Defaults to \code{8L}.
-#' @param eta Defaults to \code{1}.
-#' @param beta Defaults to \code{0.2}.
-#' @param lr Defaults to \code{0.05}.
+#' @param eta Numeric; combined arithmetically in the body. Defaults to \code{1}.
+#' @param beta Numeric; combined arithmetically in the body. Defaults to \code{0.2}.
+#' @param lr Numeric; combined arithmetically in the body. Defaults to \code{0.05}.
 #' @param epochs Defaults to \code{1L}.
-#' @param features Defaults to \code{"inverse"}.
-#' @param discrete Defaults to \code{TRUE}.
-#' @param seed Defaults to \code{0L}.
+#' @param features One of \code{"identity"}, \code{"inverse"}. Defaults to \code{"inverse"}.
+#' @param discrete A flag; the body branches on it. Defaults to \code{TRUE}.
+#' @param seed Passed to \code{.ghc_rng}. Defaults to \code{0L}.
 #' @return The value of \code{payload}, as built in the body.
 #' @export
 explor <- function(states, actions, next_states, n_actions = NULL,
@@ -247,7 +251,8 @@ explor <- function(states, actions, next_states, n_actions = NULL,
 
 #' morie_explor
 #'
-#' Part of the explor_native implementation; see the file header for the
+#' A step of the explor_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param states See Usage.

@@ -8,13 +8,13 @@
 .hawkes_nll_cpp(theta, times, end_time, kernel)
 }
 \arguments{
-\item{theta}{See Usage.}
-\item{times}{See Usage.}
-\item{end_time}{See Usage.}
+\item{theta}{A vector; indexed elementwise.}
+\item{times}{Passed to \code{morie_hawkes_ll_exp_const_cpp}.}
+\item{end_time}{Passed to \code{morie_hawkes_ll_exp_const_cpp}.}
 \item{kernel}{See Usage.}
 }
 \description{
-Part of the hawkes_fit implementation; see the file header for the source it follows.
+A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{switch}.

@@ -8,9 +8,9 @@
 .plsa_joint_probability(Pz, Pd_z, Pw_z)
 }
 \arguments{
-\item{Pz}{See Usage.}
-\item{Pd_z}{See Usage.}
-\item{Pw_z}{See Usage.}
+\item{Pz}{A vector; its length is taken.}
+\item{Pd_z}{A matrix; indexed by row and column.}
+\item{Pw_z}{A matrix; indexed by row and column.}
 }
 \description{
 Part of the plsa_native implementation; see the file header for the source it follows.

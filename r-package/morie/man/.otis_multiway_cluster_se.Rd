@@ -8,8 +8,8 @@
 .otis_multiway_cluster_se(scores, clusters)
 }
 \arguments{
-\item{scores}{See Usage.}
-\item{clusters}{See Usage.}
+\item{scores}{Passed to \code{.otis_cluster_se}.}
+\item{clusters}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the otis_causal implementation; see the file header for the source it follows.

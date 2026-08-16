@@ -8,10 +8,10 @@
 .morie_vpd_terms_warning(accept_terms)
 }
 \arguments{
-\item{accept_terms}{See Usage.}
+\item{accept_terms}{A flag; the body branches on it.}
 }
 \description{
-Part of the datasets_vpd implementation; see the file header for the source it follows.
+A step of the datasets_vpd implementation. Called by \code{morie_datasets_vpd_crime}. See the file header for the source the module follows.
 }
 \value{
 Invisibly,nothing; the function is called for its effect.

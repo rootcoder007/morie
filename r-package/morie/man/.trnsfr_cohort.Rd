@@ -8,7 +8,7 @@
 .trnsfr_cohort(S)
 }
 \arguments{
-\item{S}{See Usage.}
+\item{S}{Passed to \code{.s03vec}.}
 }
 \description{
 Part of the trnsfr_native implementation; see the file header for the source it follows.

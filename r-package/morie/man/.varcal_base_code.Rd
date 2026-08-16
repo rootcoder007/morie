@@ -8,7 +8,7 @@
 .varcal_base_code(b)
 }
 \arguments{
-\item{b}{See Usage.}
+\item{b}{One of \code{"A"}, \code{"C"}, \code{"G"}, \code{"T"}.}
 }
 \description{
 Part of the varcal_native implementation; see the file header for the source it follows.

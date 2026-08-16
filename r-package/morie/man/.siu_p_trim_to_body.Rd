@@ -8,7 +8,7 @@
 .siu_p_trim_to_body(text)
 }
 \arguments{
-\item{text}{See Usage.}
+\item{text}{A vector; its length is taken.}
 }
 \description{
 Part of the siu_parser implementation; see the file header for the source it follows.

@@ -10,8 +10,8 @@
 \arguments{
 \item{fps}{See Usage.}
 \item{k}{See Usage.}
-\item{objective}{See Usage.}
-\item{seed}{Defaults to \code{NULL}.}
+\item{objective}{Compared against \code{"maxmin"}.}
+\item{seed}{Passed to \code{.tncomp_seed}.}
 \item{D}{Defaults to \code{NULL}.}
 }
 \description{

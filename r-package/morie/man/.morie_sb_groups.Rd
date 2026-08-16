@@ -8,10 +8,10 @@
 .morie_sb_groups(h, bins, cutoff, exact)
 }
 \arguments{
-\item{h}{See Usage.}
-\item{bins}{See Usage.}
+\item{h}{A vector; indexed elementwise.}
+\item{bins}{Optional; may be \code{NULL}. A vector; its length is taken.}
 \item{cutoff}{See Usage.}
-\item{exact}{See Usage.}
+\item{exact}{A flag; the body branches on it.}
 }
 \description{
 Part of the schaben_native implementation; see the file header for the source it follows.

@@ -39,7 +39,8 @@ NULL
 
 #' .tps_stoch_result
 #'
-#' Part of the tps_stochastic implementation; see the file header for
+#' A step of the tps_stochastic implementation. Called by \code{morie_tps_fokker_planck_grid}, \code{morie_tps_hawkes_temporal_fit}, \code{morie_tps_langevin_simulate} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param title See Usage.
@@ -69,7 +70,8 @@ NULL
 
 #' .tps_stoch_round
 #'
-#' Part of the tps_stochastic implementation; see the file header for
+#' A step of the tps_stochastic implementation. Called by \code{morie_tps_fokker_planck_grid}, \code{morie_tps_hawkes_temporal_fit}, \code{morie_tps_langevin_simulate} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
@@ -91,7 +93,7 @@ NULL
 #' decomposition unaffected by ArcGIS UTC conversion); fall back to
 #' OCC_DATE / REPORT_DATE.
 #'
-#' @param df See Usage.
+#' @param df A list; the body reads \code{$OCC_DAY}, \code{$OCC_MONTH}, \code{$OCC_YEAR} from it.
 #' @param min_year Defaults to \code{2014L}.
 #' @return A vector, from \code{sort}.
 #' @export
@@ -156,9 +158,9 @@ NULL
 #' Closed-form integral: mu*T + kappa * sum_i (1 - exp(-omega*(T -
 #' t_i)))
 #'
-#' @param params See Usage.
-#' @param t See Usage.
-#' @param T_window See Usage.
+#' @param params A vector; indexed elementwise.
+#' @param t A vector; its length is taken and its elements indexed.
+#' @param T_window Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .tps_stoch_neg_loglik_hawkes <- function(params, t, T_window) {
@@ -188,10 +190,11 @@ NULL
 # Build daily counts from a POSIXct vector. Returns list(dates, counts).
 #' Build daily counts from a POSIXct vector. Returns list(dates, counts)
 #'
-#' Part of the tps_stochastic implementation; see the file header for
+#' A step of the tps_stochastic implementation. Called by \code{morie_tps_fokker_planck_grid}, \code{morie_tps_langevin_simulate}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param ts See Usage.
+#' @param ts A vector; its length is taken.
 #' @return A list with \code{dates}, \code{counts}.
 #' @export
 .tps_stoch_daily <- function(ts) {
@@ -210,10 +213,11 @@ NULL
 # Build monthly counts from a POSIXct vector.
 #' Build monthly counts from a POSIXct vector
 #'
-#' Part of the tps_stochastic implementation; see the file header for
+#' A step of the tps_stochastic implementation. Called by \code{morie_tps_sarima_forecast}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param ts See Usage.
+#' @param ts A vector; its length is taken.
 #' @return A list with \code{dates}, \code{counts}.
 #' @export
 .tps_stoch_monthly <- function(ts) {

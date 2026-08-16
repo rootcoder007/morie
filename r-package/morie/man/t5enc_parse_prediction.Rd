@@ -28,7 +28,7 @@ prefixes; the treatment of classification by emitting the label text
 and of regression by emitting a rounded number as a string, with
 outputs that do not match any label counted as wrong; the span
 corruption pre-training objective with sentinels and the ablations
-selecting 15% corruption and mean span length 3; and the simplified
+selecting 15\% corruption and mean span length 3; and the simplified
 relative position embeddings shared across layers, bucketed by
 relative offset with logarithmically growing buckets.
 

@@ -8,7 +8,7 @@
 .trupek_norm(a)
 }
 \arguments{
-\item{a}{See Usage.}
+\item{a}{Passed to \code{.trupek_dot}.}
 }
 \description{
 Part of the trupek_native implementation; see the file header for the source it follows.

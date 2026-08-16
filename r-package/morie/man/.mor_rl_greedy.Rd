@@ -8,7 +8,7 @@
 .mor_rl_greedy(Qs, A)
 }
 \arguments{
-\item{Qs}{See Usage.}
+\item{Qs}{A vector; indexed elementwise.}
 \item{A}{See Usage.}
 }
 \description{

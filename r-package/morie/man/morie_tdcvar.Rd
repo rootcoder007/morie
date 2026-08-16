@@ -8,14 +8,14 @@
 morie_tdcvar(y, A, L_t, time = NULL, contrast = "cumulative", kind = "binary", stabilize = TRUE, trim = NULL)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{Passed to \code{.tdcvar_vec}.}
 \item{A}{See Usage.}
 \item{L_t}{See Usage.}
-\item{time}{Defaults to \code{NULL}.}
-\item{contrast}{Defaults to \code{"cumulative"}.}
-\item{kind}{Defaults to \code{"binary"}.}
-\item{stabilize}{Defaults to \code{TRUE}.}
-\item{trim}{Defaults to \code{NULL}.}
+\item{time}{Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.}
+\item{contrast}{One of \code{"cumulative"}, \code{"everexposed"}, \code{"final"}. Defaults to \code{"cumulative"}.}
+\item{kind}{Passed to \code{.tdcvar_ip_weights_history}. Defaults to \code{"binary"}.}
+\item{stabilize}{Passed to \code{.tdcvar_ip_weights_history}. Defaults to \code{TRUE}.}
+\item{trim}{Passed to \code{.tdcvar_ip_weights_history}.}
 }
 \description{
 Part of the tdcvar_native implementation; see the file header for the source it follows.

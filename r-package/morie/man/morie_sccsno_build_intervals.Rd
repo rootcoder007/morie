@@ -10,10 +10,10 @@ morie_sccsno_build_intervals(start, end, exposure, event_times, risk_periods, ag
 \arguments{
 \item{start}{See Usage.}
 \item{end}{See Usage.}
-\item{exposure}{See Usage.}
+\item{exposure}{Optional; may be \code{NULL}. Passed to \code{.sccsno_cuts}.}
 \item{event_times}{See Usage.}
-\item{risk_periods}{See Usage.}
-\item{age_breaks}{See Usage.}
+\item{risk_periods}{Passed to \code{.sccsno_rp}.}
+\item{age_breaks}{Passed to \code{.sccsno_cuts}.}
 }
 \description{
 Part of the sccsno_native implementation; see the file header for the source it follows.

@@ -53,10 +53,11 @@ morie_ingest_chicago_resources <- function() {
 # Internal: a single Socrata SoQL GET against `resource_url`.
 #' Internal: a single Socrata SoQL GET against `resource_url`
 #'
-#' Part of the ingest_chicago implementation; see the file header for
+#' A step of the ingest_chicago implementation. Called by \code{morie_ingest_chicago_socrata}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param resource_url See Usage.
+#' @param resource_url Passed to \code{.morie_dataset_http_text}.
 #' @param where Defaults to \code{NULL}.
 #' @param select Defaults to \code{NULL}.
 #' @param order Defaults to \code{NULL}.
@@ -139,7 +140,7 @@ morie_ingest_chicago_resources <- function() {
 #'
 #' heterogeneous JSON shapes (missing columns become NA).
 #'
-#' @param rows See Usage.
+#' @param rows A vector; its length is taken.
 #' @return The value of \code{do.call}.
 #' @export
 .morie_chicago_rows_to_df <- function(rows) {

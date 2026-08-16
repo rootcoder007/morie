@@ -8,14 +8,14 @@
 .snpeff_pack(effect, ref_codon, alt_codon, ref_aa, alt_aa, ref, alt, pos, codon_index = NULL, hgvs_p = NULL)
 }
 \arguments{
-\item{effect}{See Usage.}
+\item{effect}{Passed to \code{.snpeff_impact}.}
 \item{ref_codon}{See Usage.}
 \item{alt_codon}{See Usage.}
 \item{ref_aa}{See Usage.}
 \item{alt_aa}{See Usage.}
 \item{ref}{See Usage.}
 \item{alt}{See Usage.}
-\item{pos}{See Usage.}
+\item{pos}{Numeric; combined arithmetically in the body.}
 \item{codon_index}{Defaults to \code{NULL}.}
 \item{hgvs_p}{Defaults to \code{NULL}.}
 }

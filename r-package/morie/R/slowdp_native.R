@@ -19,11 +19,12 @@
 
 #' .beta_1_alpha
 #'
-#' Part of the slowdp_native implementation; see the file header for the
+#' A step of the slowdp_native implementation. Called by \code{stick_breaking}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param e See Usage.
-#' @param alpha See Usage.
+#' @param e Passed to \code{.ghc_unif}.
+#' @param alpha Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .beta_1_alpha <- function(e, alpha) {

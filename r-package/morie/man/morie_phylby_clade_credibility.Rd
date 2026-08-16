@@ -8,7 +8,7 @@
 morie_phylby_clade_credibility(samples)
 }
 \arguments{
-\item{samples}{See Usage.}
+\item{samples}{Passed to \code{.phylby_clade_credibility}.}
 }
 \description{
 Part of the phylby_native implementation; see the file header for the source it follows.

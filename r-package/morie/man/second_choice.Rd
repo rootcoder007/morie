@@ -11,9 +11,9 @@ second_choice(i1, alpha, y, E, C, rng, tol = 0.001)
 \item{i1}{See Usage.}
 \item{alpha}{See Usage.}
 \item{y}{See Usage.}
-\item{E}{See Usage.}
+\item{E}{A vector; indexed elementwise.}
 \item{C}{See Usage.}
-\item{rng}{See Usage.}
+\item{rng}{Passed to \code{.ghc_unif}.}
 \item{tol}{Defaults to \code{0.001}.}
 }
 \description{

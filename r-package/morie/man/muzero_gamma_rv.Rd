@@ -8,7 +8,7 @@
 muzero_gamma_rv(alpha)
 }
 \arguments{
-\item{alpha}{See Usage.}
+\item{alpha}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the muzero_native implementation; see the file header for the source it follows.

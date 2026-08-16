@@ -8,7 +8,7 @@
 .tmlcds_logit(p)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the tmlcds_native implementation; see the file header for the source it follows.

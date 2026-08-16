@@ -8,13 +8,13 @@
 .qsfrgr_best_split(X, time, event, rows, feats, min_leaf, rule)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{time}{See Usage.}
-\item{event}{See Usage.}
-\item{rows}{See Usage.}
+\item{X}{A matrix; indexed by row and column.}
+\item{time}{Passed to \code{morie_qsfrgr_logrank}.}
+\item{event}{Passed to \code{morie_qsfrgr_logrank}.}
+\item{rows}{A vector; indexed elementwise.}
 \item{feats}{See Usage.}
 \item{min_leaf}{See Usage.}
-\item{rule}{See Usage.}
+\item{rule}{Compared against \code{"logrank"}.}
 }
 \description{
 Part of the qsfrgr_native implementation; see the file header for the source it follows.

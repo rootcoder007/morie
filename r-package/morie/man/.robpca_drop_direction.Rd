@@ -8,8 +8,8 @@
 .robpca_drop_direction(rows, v)
 }
 \arguments{
-\item{rows}{See Usage.}
-\item{v}{See Usage.}
+\item{rows}{A matrix; passed to \code{nrow}.}
+\item{v}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the robpca_native implementation; see the file header for the source it follows.

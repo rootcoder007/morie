@@ -9,11 +9,11 @@
 }
 \arguments{
 \item{kernel}{See Usage.}
-\item{times}{See Usage.}
-\item{end_time}{See Usage.}
+\item{times}{A vector; its length is taken.}
+\item{end_time}{Numeric; combined arithmetically in the body.}
 }
 \description{
-Part of the hawkes_fit implementation; see the file header for the source it follows.
+A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{switch}.

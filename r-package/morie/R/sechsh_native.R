@@ -21,7 +21,8 @@
 
 #' .sechsh_as_bytes
 #'
-#' Part of the sechsh_native implementation; see the file header for the
+#' A step of the sechsh_native implementation. Called by \code{build_chain}, \code{chain_entry}, \code{verify_chain} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
@@ -36,7 +37,8 @@
 
 #' .sechsh_hexlify
 #'
-#' Part of the sechsh_native implementation; see the file header for the
+#' A step of the sechsh_native implementation. Called by \code{build_chain}, \code{verify_inclusion}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param bs See Usage.
@@ -49,11 +51,12 @@
 
 #' .constant_time_equal
 #'
-#' Part of the sechsh_native implementation; see the file header for the
+#' A step of the sechsh_native implementation. Called by \code{verify_chain}, \code{verify_inclusion}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param a See Usage.
-#' @param b See Usage.
+#' @param a A vector; its length is taken.
+#' @param b A vector; its length is taken.
 #' @return A logical value.
 #' @export
 .constant_time_equal <- function(a, b) {

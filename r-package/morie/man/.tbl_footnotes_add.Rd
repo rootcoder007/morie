@@ -8,7 +8,7 @@
 .tbl_footnotes_add(reg, text)
 }
 \arguments{
-\item{reg}{See Usage.}
+\item{reg}{A list; the body reads \code{$notes} from it.}
 \item{text}{See Usage.}
 }
 \description{

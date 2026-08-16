@@ -8,10 +8,10 @@
 .morie_bq_quote_ident(name)
 }
 \arguments{
-\item{name}{See Usage.}
+\item{name}{A vector; its length is taken.}
 }
 \description{
-isn\\\'t a legal project / dataset / table name.
+isn\\'t a legal project / dataset / table name.
 }
 \value{
 A character value.

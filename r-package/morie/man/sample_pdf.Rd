@@ -8,10 +8,10 @@
 sample_pdf(bins, weights, n_samples, rng, eps = 1e-05)
 }
 \arguments{
-\item{bins}{See Usage.}
-\item{weights}{See Usage.}
+\item{bins}{Passed to \code{.as_numeric_vec}.}
+\item{weights}{Passed to \code{.as_numeric_vec}.}
 \item{n_samples}{See Usage.}
-\item{rng}{See Usage.}
+\item{rng}{Passed to \code{.ghc_unif}.}
 \item{eps}{Defaults to \code{1e-05}.}
 }
 \description{

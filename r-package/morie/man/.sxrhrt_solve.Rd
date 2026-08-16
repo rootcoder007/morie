@@ -8,8 +8,8 @@
 .sxrhrt_solve(L, b)
 }
 \arguments{
-\item{L}{See Usage.}
-\item{b}{See Usage.}
+\item{L}{A matrix; indexed by row and column.}
+\item{b}{A vector; indexed elementwise.}
 }
 \description{
 Part of the sxrhrt_native implementation; see the file header for the source it follows.

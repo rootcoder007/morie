@@ -8,9 +8,9 @@
 .wenge_saturated_models(ev, Mm, Xm)
 }
 \arguments{
-\item{ev}{See Usage.}
-\item{Mm}{See Usage.}
-\item{Xm}{See Usage.}
+\item{ev}{A vector; its length is taken and its elements indexed.}
+\item{Mm}{A matrix; indexed by row and column.}
+\item{Xm}{A matrix; indexed by row and column.}
 }
 \description{
 Part of the wenge_native implementation; see the file header for the source it follows.

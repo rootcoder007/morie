@@ -21,7 +21,8 @@
 
 #' .tmldta_logit
 #'
-#' Part of the tmldta_native implementation; see the file header for the
+#' A step of the tmldta_native implementation. Called by \code{.split_specific_tmle}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p See Usage.
@@ -34,10 +35,11 @@
 
 #' .tmldta_expit
 #'
-#' Part of the tmldta_native implementation; see the file header for the
+#' A step of the tmldta_native implementation. Called by \code{.fit_g_dta}, \code{.fit_q_dta}, \code{.split_specific_tmle} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Numeric; combined arithmetically in the body.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .tmldta_expit <- function(x) {
@@ -46,7 +48,8 @@
 
 #' .tmldta_qnorm
 #'
-#' Part of the tmldta_native implementation; see the file header for the
+#' A step of the tmldta_native implementation. Called by \code{morie_tmle_data_adaptive}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p See Usage.
@@ -59,13 +62,14 @@
 # Logistic IRLS that returns a coefficient vector for a 0/1 outcome.
 #' Logistic IRLS that returns a coefficient vector for a 0/1 outcome
 #'
-#' Part of the tmldta_native implementation; see the file header for the
+#' A step of the tmldta_native implementation. Called by \code{.fit_g_dta}, \code{.fit_q_dta}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param Z See Usage.
-#' @param a See Usage.
-#' @param ridge Defaults to \code{1e-08}.
-#' @param max_iter Defaults to \code{50L}.
+#' @param a A vector; its length is taken.
+#' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
+#' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
 #' @param tol Defaults to \code{1e-10}.
 #' @return The value of \code{b}, as built in the body.
 #' @export
@@ -99,15 +103,16 @@
 # Q surface for the data-adaptive target parameter.
 #' Q surface for the data-adaptive target parameter
 #'
-#' Part of the tmldta_native implementation; see the file header for the
+#' A step of the tmldta_native implementation. Called by \code{.discover_levels}, \code{.split_specific_tmle}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param ys See Usage.
-#' @param A_ See Usage.
-#' @param W See Usage.
-#' @param levels See Usage.
+#' @param ys A vector; indexed elementwise.
+#' @param A_ A vector; indexed elementwise.
+#' @param W A matrix; indexed by row and column.
+#' @param levels A vector; indexed elementwise.
 #' @param rows See Usage.
-#' @param ridge See Usage.
+#' @param ridge Numeric; passed to \code{max}.
 #' @return A list with \code{q}, \code{b}.
 #' @export
 .fit_q_dta <- function(ys, A_, W, levels, rows, ridge) {
@@ -142,16 +147,17 @@
 # Three-category treatment propensity, normalised.
 #' Three-category treatment propensity, normalised
 #'
-#' Part of the tmldta_native implementation; see the file header for the
+#' A step of the tmldta_native implementation. Called by \code{.split_specific_tmle}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param A_ See Usage.
-#' @param W See Usage.
+#' @param A_ A vector; its length is taken.
+#' @param W A vector; its length is taken.
 #' @param aL See Usage.
 #' @param aH See Usage.
 #' @param rows See Usage.
-#' @param ridge See Usage.
-#' @param trim See Usage.
+#' @param ridge Numeric; passed to \code{max}.
+#' @param trim Numeric; passed to \code{max}.
 #' @return A list with \code{gH}, \code{gL}.
 #' @export
 .fit_g_dta <- function(A_, W, aL, aH, rows, ridge, trim) {
@@ -184,16 +190,17 @@
 # Discover the data-adaptive levels (argmin and argmax of mean Q).
 #' Discover the data-adaptive levels (argmin and argmax of mean Q)
 #'
-#' Part of the tmldta_native implementation; see the file header for the
+#' A step of the tmldta_native implementation. Called by \code{morie_tmle_data_adaptive}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param ys See Usage.
-#' @param A_ See Usage.
-#' @param W See Usage.
-#' @param levels See Usage.
-#' @param rows See Usage.
+#' @param ys Passed to \code{.fit_q_dta}.
+#' @param A_ Passed to \code{.fit_q_dta}.
+#' @param W Passed to \code{.fit_q_dta}.
+#' @param levels A vector; indexed elementwise.
+#' @param rows Passed to \code{.fit_q_dta}.
 #' @param eval_rows See Usage.
-#' @param ridge See Usage.
+#' @param ridge Passed to \code{.fit_q_dta}.
 #' @return A list with \code{aL}, \code{aH}, \code{info}.
 #' @export
 .discover_levels <- function(ys, A_, W, levels, rows, eval_rows, ridge) {
@@ -210,20 +217,21 @@
 # Solve the per-split TMLE at fixed levels.
 #' Solve the per-split TMLE at fixed levels
 #'
-#' Part of the tmldta_native implementation; see the file header for the
+#' A step of the tmldta_native implementation. Called by \code{morie_tmle_data_adaptive}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param ys See Usage.
-#' @param A_ See Usage.
-#' @param W See Usage.
-#' @param levels See Usage.
-#' @param aL See Usage.
-#' @param aH See Usage.
-#' @param fit_rows See Usage.
-#' @param est_rows See Usage.
-#' @param ridge See Usage.
-#' @param trim See Usage.
-#' @param target See Usage.
+#' @param ys A vector; its length is taken and its elements indexed.
+#' @param A_ A vector; indexed elementwise.
+#' @param W Passed to \code{.fit_q_dta}.
+#' @param levels Passed to \code{.fit_q_dta}.
+#' @param aL Passed to \code{.fit_g_dta}.
+#' @param aH Passed to \code{.fit_g_dta}.
+#' @param fit_rows Passed to \code{.fit_q_dta}.
+#' @param est_rows A vector; its length is taken.
+#' @param ridge Passed to \code{.fit_q_dta}.
+#' @param trim Passed to \code{.fit_g_dta}.
+#' @param target A flag; the body branches on it.
 #' @return A list with \code{psi}, \code{D}, \code{info}.
 #' @export
 .split_specific_tmle <- function(ys, A_, W, levels, aL, aH,
@@ -274,10 +282,11 @@
 
 #' .folds_dta
 #'
-#' Part of the tmldta_native implementation; see the file header for the
+#' A step of the tmldta_native implementation. Called by \code{morie_tmle_data_adaptive}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n See Usage.
+#' @param n A count; the body uses it as \code{seq_len(...)}.
 #' @param n_folds See Usage.
 #' @return The value of \code{lapply}.
 #' @export

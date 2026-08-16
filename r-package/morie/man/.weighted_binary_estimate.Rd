@@ -8,8 +8,8 @@
 .weighted_binary_estimate(x, w)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{w}{See Usage.}
+\item{x}{A vector; its length is taken and its elements indexed.}
+\item{w}{A vector; indexed elementwise.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

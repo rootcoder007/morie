@@ -8,10 +8,10 @@
 .morie_hex_to_raw(h)
 }
 \arguments{
-\item{h}{See Usage.}
+\item{h}{A vector; its length is taken.}
 }
 \description{
-Part of the crypto_keystore implementation; see the file header for the source it follows.
+A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load}, \code{morie_crypto_keystore_store}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{as.raw}.

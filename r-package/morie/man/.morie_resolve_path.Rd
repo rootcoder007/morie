@@ -11,7 +11,7 @@
 \item{path}{See Usage.}
 }
 \description{
-Part of the crypto_keystore implementation; see the file header for the source it follows.
+A step of the crypto_keystore implementation. Called by \code{.morie_read_store}, \code{.morie_write_store}, \code{morie_crypto_keystore_create}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{normalizePath}.

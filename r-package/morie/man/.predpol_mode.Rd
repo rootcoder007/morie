@@ -11,7 +11,7 @@
 \item{x}{See Usage.}
 }
 \description{
-Part of the fairness_predpol implementation; see the file header for the source it follows.
+A step of the fairness_predpol implementation. Called by \code{morie_fairness_predpol_aggregate_areas}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{[}.

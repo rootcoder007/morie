@@ -12,7 +12,7 @@
 \item{...}{Passed through.}
 }
 \description{
-Part of the ingest_cihi implementation; see the file header for the source it follows.
+A step of the ingest_cihi implementation. Called by \code{morie_ingest_cihi_xlsx}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{best_df}, as built in the body.

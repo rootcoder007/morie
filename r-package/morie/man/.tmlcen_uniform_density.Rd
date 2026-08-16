@@ -8,7 +8,7 @@
 .tmlcen_uniform_density(ts)
 }
 \arguments{
-\item{ts}{See Usage.}
+\item{ts}{Numeric; passed to \code{max}.}
 }
 \description{
 Part of the tmlcen_native implementation; see the file header for the source it follows.

@@ -8,10 +8,10 @@
 .morie_ensure_design_matrix(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A matrix; indexed by row and column.}
 }
 \description{
-users can pass a vector predictor without hitting glmnet\\\'s "x should be a matrix with 2 or more columns" error.
+users can pass a vector predictor without hitting glmnet\\'s "x should be a matrix with 2 or more columns" error.
 }
 \value{
 The value of \code{x}, as built in the body.

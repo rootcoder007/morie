@@ -8,7 +8,7 @@
 morie_wrd2v_noise_distribution(counts, power = 0.75)
 }
 \arguments{
-\item{counts}{See Usage.}
+\item{counts}{A vector; indexed elementwise.}
 \item{power}{Defaults to \code{0.75}.}
 }
 \description{

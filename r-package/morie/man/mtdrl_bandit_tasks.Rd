@@ -11,7 +11,7 @@ mtdrl_bandit_tasks(n_arms = 2, n_tasks = 100, seed = 0, structure = "independent
 \item{n_arms}{Defaults to \code{2}.}
 \item{n_tasks}{Defaults to \code{100}.}
 \item{seed}{Defaults to \code{0}.}
-\item{structure}{Defaults to \code{"independent"}.}
+\item{structure}{One of \code{"independent"}, \code{"paired"}. Defaults to \code{"independent"}.}
 }
 \description{
 Part of the mtdrl_native implementation; see the file header for the source it follows.

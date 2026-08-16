@@ -8,12 +8,12 @@
 morie_strmkr_strauss_process(coords, r, gamma = NULL, window = NULL, nx = 12L, ny = 12L, max_iter = 100L, tol = 1e-11)
 }
 \arguments{
-\item{coords}{See Usage.}
+\item{coords}{Passed to \code{.strmkr_rows}.}
 \item{r}{See Usage.}
 \item{gamma}{Defaults to \code{NULL}.}
 \item{window}{Defaults to \code{NULL}.}
-\item{nx}{Defaults to \code{12L}.}
-\item{ny}{Defaults to \code{12L}.}
+\item{nx}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{12L}.}
+\item{ny}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{12L}.}
 \item{max_iter}{Defaults to \code{100L}.}
 \item{tol}{Defaults to \code{1e-11}.}
 }

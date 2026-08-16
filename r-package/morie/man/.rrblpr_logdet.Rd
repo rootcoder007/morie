@@ -8,7 +8,7 @@
 .rrblpr_logdet(L)
 }
 \arguments{
-\item{L}{See Usage.}
+\item{L}{A matrix; passed to \code{diag}.}
 }
 \description{
 Part of the rrblpr_native implementation; see the file header for the source it follows.

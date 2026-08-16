@@ -8,7 +8,7 @@
 .kern(u)
 }
 \arguments{
-\item{u}{See Usage.}
+\item{u}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the tmlcps_native implementation; see the file header for the source it follows.

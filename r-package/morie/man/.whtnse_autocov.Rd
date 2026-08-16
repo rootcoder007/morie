@@ -3,13 +3,13 @@
 % the formals.
 \name{.whtnse_autocov}
 \alias{.whtnse_autocov}
-\title{Internal: Gamma_l = n^-1 sum_{t=l+1}^{n} e_t e_{t-l}\\\'}
+\title{Internal: Gamma_l = n^-1 sum_{t=l+1}^{n} e_t e_{t-l}\\'}
 \usage{
 .whtnse_autocov(E, lag)
 }
 \arguments{
-\item{E}{See Usage.}
-\item{lag}{See Usage.}
+\item{E}{A matrix; indexed by row and column.}
+\item{lag}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the whtnse implementation; see the file header for the source it follows.

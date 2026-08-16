@@ -8,11 +8,11 @@
 .airl_log(x, floor = 1e-300)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{floor}{Defaults to \code{1e-300}.}
+\item{x}{Numeric; passed to \code{max}.}
+\item{floor}{Numeric; passed to \code{max}. Defaults to \code{1e-300}.}
 }
 \description{
-Part of the airl_native implementation; see the file header for the source it follows.
+A step of the airl_native implementation. Called by \code{airl}. See the file header for the source the module follows.
 }
 \value{
 A numeric value.

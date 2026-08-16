@@ -8,7 +8,7 @@
 morie_yolovx_decode_box(ltrb, cx, cy, stride = 1)
 }
 \arguments{
-\item{ltrb}{See Usage.}
+\item{ltrb}{Passed to \code{.s03vec}.}
 \item{cx}{See Usage.}
 \item{cy}{See Usage.}
 \item{stride}{Defaults to \code{1}.}

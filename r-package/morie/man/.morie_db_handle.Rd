@@ -9,10 +9,10 @@
 }
 \arguments{
 \item{con}{Defaults to \code{NULL}.}
-\item{db_path}{Defaults to \code{NULL}.}
+\item{db_path}{Passed to \code{morie_db_connect}.}
 }
 \description{
-Part of the database implementation; see the file header for the source it follows.
+A step of the database implementation. Called by \code{morie_cache_list}, \code{morie_cache_load}, \code{morie_cache_store}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{con}, \code{close}.

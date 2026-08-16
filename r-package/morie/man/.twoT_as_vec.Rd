@@ -21,7 +21,7 @@ One of two values, depending on the branch taken.
 Yi, X., Yang, J., Hong, L., Cheng, D. Z., Heldt, L., Kumthekar, A.,
 Zhao, Z., Wei, L. & Chi, E. (2019) "Sampling-Bias-Corrected Neural
 Modeling for Large Corpus Item Recommendations", *Proceedings of the
-13th ACM Conference on Recommender Systems (RecSys \\'19)*, 269-277,
+13th ACM Conference on Recommender Systems (RecSys \'19)*, 269-277,
 doi:10.1145/3298689.3346996. The two-tower architecture for
 large-corpus item retrieval; batch softmax with in-batch negatives and
 the resulting sampling bias toward popular items; the logQ correction

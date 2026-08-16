@@ -8,10 +8,10 @@
 .pratt_attention(H, W, b, u_context)
 }
 \arguments{
-\item{H}{See Usage.}
-\item{W}{See Usage.}
-\item{b}{See Usage.}
-\item{u_context}{See Usage.}
+\item{H}{Passed to \code{.pratt_mat}.}
+\item{W}{A matrix; passed to \code{t}.}
+\item{b}{A vector; its length is taken.}
+\item{u_context}{Passed to \code{.pratt_vec}.}
 }
 \description{
 Part of the pratt_native implementation; see the file header for the source it follows.

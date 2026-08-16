@@ -8,7 +8,7 @@
 morie_randIE_decompose(result)
 }
 \arguments{
-\item{result}{See Usage.}
+\item{result}{A list; the body reads \code{$direct}, \code{$indirect}, \code{$total} from it.}
 }
 \description{
 Part of the randIE_native implementation; see the file header for the source it follows.

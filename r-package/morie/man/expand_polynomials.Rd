@@ -9,10 +9,10 @@ expand_polynomials(phi = list(), Phi = list(), theta = list(), Theta = list(), s
 }
 \arguments{
 \item{phi}{Defaults to \code{list()}.}
-\item{Phi}{Defaults to \code{list()}.}
+\item{Phi}{A vector; its length is taken. Defaults to \code{list()}.}
 \item{theta}{Defaults to \code{list()}.}
-\item{Theta}{Defaults to \code{list()}.}
-\item{s}{Defaults to \code{12}.}
+\item{Theta}{A vector; its length is taken. Defaults to \code{list()}.}
+\item{s}{Passed to \code{.sarima_seasonal_lift}. Defaults to \code{12}.}
 }
 \description{
 Part of the sarima_native implementation; see the file header for the source it follows.

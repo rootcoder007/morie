@@ -8,7 +8,7 @@
 .vc_groups(y, group)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{A vector; indexed elementwise.}
 \item{group}{See Usage.}
 }
 \description{

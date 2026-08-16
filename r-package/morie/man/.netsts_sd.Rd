@@ -8,7 +8,7 @@
 .netsts_sd(y)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{A vector; its length is taken.}
 }
 \description{
 Part of the netsts_native implementation; see the file header for the source it follows.

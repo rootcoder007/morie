@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{X}{See Usage.}
-\item{y}{See Usage.}
+\item{y}{A vector; indexed elementwise.}
 \item{fit_rows}{See Usage.}
 }
 \description{

@@ -8,7 +8,7 @@
 .vqgenc_as_vector(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A matrix; passed to \code{nrow}.}
 }
 \description{
 Part of the vqgenc_native implementation; see the file header for the source it follows.

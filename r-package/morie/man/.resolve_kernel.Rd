@@ -8,7 +8,7 @@
 .resolve_kernel(kernel)
 }
 \arguments{
-\item{kernel}{See Usage.}
+\item{kernel}{Character; passed to \code{tolower}.}
 }
 \description{
 Part of the semipar_bridge implementation; see the file header for the source it follows.

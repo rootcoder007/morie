@@ -8,7 +8,7 @@
 .tmlcen_coerce_subject_list(x, n)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A matrix; indexed by row and column.}
 \item{n}{See Usage.}
 }
 \description{

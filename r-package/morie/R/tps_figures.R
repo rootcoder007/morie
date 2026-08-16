@@ -163,10 +163,10 @@ morie_tps_figures <- function(out_dir,
 #'
 #' Exp(1)-distributed when the model is correct (Ogata 1988).
 #'
-#' @param dt See Usage.
-#' @param mu See Usage.
-#' @param kappa See Usage.
-#' @param omega See Usage.
+#' @param dt Numeric; passed to \code{min}.
+#' @param mu Numeric; combined arithmetically in the body.
+#' @param kappa Numeric; combined arithmetically in the body.
+#' @param omega Numeric; combined arithmetically in the body.
 #' @return The value of \code{res}, as built in the body.
 #' @export
 .tps_stoch_hawkes_residuals <- function(dt, mu, kappa, omega) {

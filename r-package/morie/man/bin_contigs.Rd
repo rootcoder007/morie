@@ -8,8 +8,8 @@
 bin_contigs(tnfs, coverages = NULL, lengths = NULL, threshold = 0.15, min_bin_size = 2e+05)
 }
 \arguments{
-\item{tnfs}{See Usage.}
-\item{coverages}{Defaults to \code{NULL}.}
+\item{tnfs}{A matrix; passed to \code{as.matrix}.}
+\item{coverages}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 \item{lengths}{Defaults to \code{NULL}.}
 \item{threshold}{Defaults to \code{0.15}.}
 \item{min_bin_size}{Defaults to \code{2e+05}.}

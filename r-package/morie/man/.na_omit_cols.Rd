@@ -8,7 +8,7 @@
 .na_omit_cols(data, cols)
 }
 \arguments{
-\item{data}{See Usage.}
+\item{data}{A matrix; indexed by row and column.}
 \item{cols}{See Usage.}
 }
 \description{

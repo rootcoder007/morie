@@ -8,8 +8,8 @@
 .morie_crypto_mlkem768_decaps(sk_sxp, ct_sxp)
 }
 \arguments{
-\item{sk_sxp}{See Usage.}
-\item{ct_sxp}{See Usage.}
+\item{sk_sxp}{Passed to \code{.Call}.}
+\item{ct_sxp}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

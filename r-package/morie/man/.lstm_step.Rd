@@ -9,14 +9,14 @@
 }
 \arguments{
 \item{x}{See Usage.}
-\item{h}{See Usage.}
-\item{c}{See Usage.}
-\item{Wx}{See Usage.}
-\item{Wh}{See Usage.}
+\item{h}{A vector; its length is taken.}
+\item{c}{A vector; its length is taken.}
+\item{Wx}{A matrix; passed to \code{as.matrix}.}
+\item{Wh}{A matrix; passed to \code{as.matrix}.}
 \item{b}{See Usage.}
 }
 \description{
-Part of the elmo_native implementation; see the file header for the source it follows.
+A step of the elmo_native implementation. Called by \code{.bilm_forward}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{h}, \code{c}.

@@ -8,8 +8,8 @@
 .ukfF_ut(pts, w, fun)
 }
 \arguments{
-\item{pts}{See Usage.}
-\item{w}{See Usage.}
+\item{pts}{A matrix; indexed by row and column.}
+\item{w}{A matrix; passed to \code{crossprod}.}
 \item{fun}{See Usage.}
 }
 \description{

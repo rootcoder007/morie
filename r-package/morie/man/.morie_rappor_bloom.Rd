@@ -9,9 +9,9 @@
 }
 \arguments{
 \item{value}{See Usage.}
-\item{k}{See Usage.}
-\item{h}{See Usage.}
-\item{cohort}{Defaults to \code{0}.}
+\item{k}{Numeric; combined arithmetically in the body.}
+\item{h}{A count; the body uses it as \code{seq_len(...)}.}
+\item{cohort}{Numeric; combined arithmetically in the body. Defaults to \code{0}.}
 }
 \description{
 Part of the rappor_native implementation; see the file header for the source it follows.

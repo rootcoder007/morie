@@ -9,7 +9,7 @@ noisy_argmax(counts, gamma, seed = 0)
 }
 \arguments{
 \item{counts}{See Usage.}
-\item{gamma}{See Usage.}
+\item{gamma}{Numeric; combined arithmetically in the body.}
 \item{seed}{Defaults to \code{0}.}
 }
 \description{

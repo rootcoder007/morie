@@ -8,8 +8,8 @@
 .ols_slope(xs, ys)
 }
 \arguments{
-\item{xs}{See Usage.}
-\item{ys}{See Usage.}
+\item{xs}{A vector; its length is taken.}
+\item{ys}{Numeric; passed to \code{mean}.}
 }
 \description{
 Part of the lyapun_native implementation; see the file header for the source it follows.

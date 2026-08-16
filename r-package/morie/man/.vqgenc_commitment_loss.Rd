@@ -8,8 +8,8 @@
 .vqgenc_commitment_loss(encoder_output, quantized, beta = 0.25)
 }
 \arguments{
-\item{encoder_output}{See Usage.}
-\item{quantized}{See Usage.}
+\item{encoder_output}{Passed to \code{.vqgenc_as_vector}.}
+\item{quantized}{Passed to \code{.vqgenc_as_vector}.}
 \item{beta}{Defaults to \code{0.25}.}
 }
 \description{

@@ -9,10 +9,10 @@ morie_rrblpr_rr_blup(y, M, lam = NULL, X = NULL, M_new = NULL, log_lam_lo = -12,
 }
 \arguments{
 \item{y}{See Usage.}
-\item{M}{See Usage.}
+\item{M}{Passed to \code{.rrblpr_rows}.}
 \item{lam}{Defaults to \code{NULL}.}
-\item{X}{Defaults to \code{NULL}.}
-\item{M_new}{Defaults to \code{NULL}.}
+\item{X}{Optional; may be \code{NULL}. Passed to \code{.rrblpr_rows}.}
+\item{M_new}{Optional; may be \code{NULL}. Passed to \code{.rrblpr_rows}.}
 \item{log_lam_lo}{Defaults to \code{-12}.}
 \item{log_lam_hi}{Defaults to \code{12}.}
 \item{max_iter}{Defaults to \code{200L}.}

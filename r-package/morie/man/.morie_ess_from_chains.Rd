@@ -8,7 +8,7 @@
 .morie_ess_from_chains(chains)
 }
 \arguments{
-\item{chains}{See Usage.}
+\item{chains}{A count; the body uses it as \code{matrix(...)}.}
 }
 \description{
 Part of the mcmc_native implementation; see the file header for the source it follows.

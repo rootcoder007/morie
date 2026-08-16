@@ -8,8 +8,8 @@
 .predict_tree(tree, x)
 }
 \arguments{
-\item{tree}{See Usage.}
-\item{x}{See Usage.}
+\item{tree}{A list; the body reads \code{$cut}, \code{$j}, \code{$leaf}, \code{$left}, \code{$right}, \code{$value} from it.}
+\item{x}{A vector; indexed elementwise.}
 }
 \description{
 Part of the orfgrf_native implementation; see the file header for the source it follows.

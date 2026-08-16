@@ -80,7 +80,8 @@ morie_cor_pearson <- function(x, y) {
 # Internal: detect whether the Rcpp .so was successfully built.
 #' Internal: detect whether the Rcpp .so was successfully built
 #'
-#' Part of the fast implementation; see the file header for the source
+#' A step of the fast implementation. Called by \code{morie_cor_pearson}, \code{morie_fast_available}, \code{morie_hawkes_fit} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @return The value of \code{tryCatch}.

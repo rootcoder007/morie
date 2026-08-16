@@ -8,7 +8,7 @@
 muzero_Node(prior = 0)
 }
 \arguments{
-\item{prior}{Defaults to \code{0}.}
+\item{prior}{A vector; indexed elementwise. Defaults to \code{0}.}
 }
 \description{
 Part of the muzero_native implementation; see the file header for the source it follows.

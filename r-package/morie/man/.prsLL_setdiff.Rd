@@ -8,7 +8,7 @@
 .prsLL_setdiff(a, b)
 }
 \arguments{
-\item{a}{See Usage.}
+\item{a}{A vector; indexed elementwise.}
 \item{b}{See Usage.}
 }
 \description{

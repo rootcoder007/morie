@@ -8,9 +8,9 @@
 check_associativity(a, b, c, tol = 1e-12)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
-\item{c}{See Usage.}
+\item{a}{Passed to \code{.ssmpar_compose}.}
+\item{b}{Passed to \code{.ssmpar_compose}.}
+\item{c}{Passed to \code{.ssmpar_compose}.}
 \item{tol}{Defaults to \code{1e-12}.}
 }
 \description{

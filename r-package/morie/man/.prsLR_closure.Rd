@@ -9,9 +9,9 @@
 }
 \arguments{
 \item{items}{See Usage.}
-\item{ag}{See Usage.}
-\item{first}{See Usage.}
-\item{nts}{See Usage.}
+\item{ag}{A list; the body reads \code{$rules} from it.}
+\item{first}{Passed to \code{.prsLR_first_seq}.}
+\item{nts}{Passed to \code{.prsLR_first_seq}.}
 \item{k}{See Usage.}
 }
 \description{

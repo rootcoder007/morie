@@ -8,8 +8,8 @@
 .tmlcll_logit_irls(des, a)
 }
 \arguments{
-\item{des}{See Usage.}
-\item{a}{See Usage.}
+\item{des}{A matrix; passed to \code{nrow}.}
+\item{a}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the tmlcll_native implementation; see the file header for the source it follows.

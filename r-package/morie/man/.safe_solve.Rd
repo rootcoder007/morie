@@ -8,10 +8,10 @@
 .safe_solve(A)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{A matrix; passed to \code{solve}.}
 }
 \description{
-Part of the diagnostics implementation; see the file header for the source it follows.
+A step of the diagnostics implementation. Called by \code{compute_influence}, \code{compute_residuals}, \code{compute_vif} and 2 others in the module. See the file header for the source the module follows.
 }
 \value{
 One of two values, depending on the branch taken.

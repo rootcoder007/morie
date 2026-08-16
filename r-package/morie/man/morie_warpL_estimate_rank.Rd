@@ -8,8 +8,8 @@
 morie_warpL_estimate_rank(n_draws, n_labels)
 }
 \arguments{
-\item{n_draws}{See Usage.}
-\item{n_labels}{See Usage.}
+\item{n_draws}{Passed to \code{.warpL_estimate_rank}.}
+\item{n_labels}{Passed to \code{.warpL_estimate_rank}.}
 }
 \description{
 Part of the warpL_native implementation; see the file header for the source it follows.

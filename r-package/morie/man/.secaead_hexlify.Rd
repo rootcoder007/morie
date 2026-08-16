@@ -8,7 +8,7 @@
 .secaead_hexlify(bs)
 }
 \arguments{
-\item{bs}{See Usage.}
+\item{bs}{Passed to \code{.secaead_as_bytes}.}
 }
 \description{
 Part of the secaead_native implementation; see the file header for the source it follows.

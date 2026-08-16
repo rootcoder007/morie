@@ -170,19 +170,20 @@ NULL
 
 #' .morie_nyc_nypd_dispatch
 #'
-#' Part of the datasets_nyc_nypd implementation; see the file header for
+#' A step of the datasets_nyc_nypd implementation. Called by \code{morie_datasets_nyc_nypd_arrests_historic}, \code{morie_datasets_nyc_nypd_arrests_ytd}, \code{morie_datasets_nyc_nypd_by_key} and 6 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param dataset_key See Usage.
 #' @param year See Usage.
-#' @param max_features See Usage.
-#' @param offline See Usage.
-#' @param resource_id See Usage.
-#' @param mode Defaults to \code{c("soda2", "soda3")}.
-#' @param paginate Defaults to \code{FALSE}.
-#' @param page_size Defaults to \code{1000L}.
-#' @param max_pages Defaults to \code{200L}.
-#' @param app_token Defaults to \code{NULL}.
+#' @param max_features Optional; may be \code{NULL}. Passed to \code{.morie_dataset_socrata_fetch}.
+#' @param offline A flag; the body branches on it.
+#' @param resource_id Optional; may be \code{NULL}. Passed to \code{.morie_dataset_soda3_query}.
+#' @param mode Compared against \code{"soda2"}. Defaults to \code{c("soda2", "soda3")}.
+#' @param paginate Passed to \code{.morie_dataset_socrata_fetch}. Defaults to \code{FALSE}.
+#' @param page_size Passed to \code{.morie_dataset_socrata_fetch}. Defaults to \code{1000L}.
+#' @param max_pages Passed to \code{.morie_dataset_socrata_fetch}. Defaults to \code{200L}.
+#' @param app_token Passed to \code{.morie_dataset_soda3_query}.
 #' @return The value of \code{.morie_dataset_soda3_query}.
 #' @export
 .morie_nyc_nypd_dispatch <- function(dataset_key, year, max_features,
@@ -756,7 +757,8 @@ morie_datasets_nyc_nypd_boro_crosswalk <- function() {
 
 #' .morie_nyc_boundary_fixture
 #'
-#' Part of the datasets_nyc_nypd implementation; see the file header for
+#' A step of the datasets_nyc_nypd implementation. Called by \code{morie_datasets_nyc_community_districts}, \code{morie_datasets_nyc_council_districts}, \code{morie_datasets_nyc_ntas_2020} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param fname See Usage.
@@ -896,7 +898,8 @@ morie_datasets_nyc_ntas_2020 <- function(offline = TRUE,
 
 #' .morie_nyc_zcta_fixture
 #'
-#' Part of the datasets_nyc_nypd implementation; see the file header for
+#' A step of the datasets_nyc_nypd implementation. Called by \code{morie_datasets_nyc_zctas}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param fname See Usage.

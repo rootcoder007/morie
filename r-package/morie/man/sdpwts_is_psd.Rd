@@ -8,7 +8,7 @@
 sdpwts_is_psd(M, tol = -1e-10)
 }
 \arguments{
-\item{M}{See Usage.}
+\item{M}{A matrix; passed to \code{as.matrix}.}
 \item{tol}{Defaults to \code{-1e-10}.}
 }
 \description{

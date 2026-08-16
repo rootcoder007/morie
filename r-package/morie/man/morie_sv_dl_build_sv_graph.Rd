@@ -9,11 +9,11 @@ morie_sv_dl_build_sv_graph(pairs, median, sd, label, orientation = c("+", "-"), 
 }
 \arguments{
 \item{pairs}{See Usage.}
-\item{median}{See Usage.}
-\item{sd}{See Usage.}
-\item{label}{See Usage.}
+\item{median}{Numeric; combined arithmetically in the body.}
+\item{sd}{Numeric; combined arithmetically in the body.}
+\item{label}{A vector; indexed elementwise.}
 \item{orientation}{Defaults to \code{c("+", "-")}.}
-\item{n_sd}{Defaults to \code{3}.}
+\item{n_sd}{Numeric; combined arithmetically in the body. Defaults to \code{3}.}
 \item{window}{Defaults to \code{NULL}.}
 }
 \description{

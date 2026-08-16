@@ -8,8 +8,8 @@
 .morie_tcls_hier(p, q, hierarchy, domain)
 }
 \arguments{
-\item{p}{See Usage.}
-\item{q}{See Usage.}
+\item{p}{A vector; indexed elementwise.}
+\item{q}{A vector; indexed elementwise.}
 \item{hierarchy}{See Usage.}
 \item{domain}{See Usage.}
 }

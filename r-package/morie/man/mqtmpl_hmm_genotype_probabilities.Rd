@@ -9,7 +9,7 @@ mqtmpl_hmm_genotype_probabilities(genotypes, positions, error_rate = 0)
 }
 \arguments{
 \item{genotypes}{See Usage.}
-\item{positions}{See Usage.}
+\item{positions}{A vector; its length is taken and its elements indexed.}
 \item{error_rate}{Defaults to \code{0}.}
 }
 \description{

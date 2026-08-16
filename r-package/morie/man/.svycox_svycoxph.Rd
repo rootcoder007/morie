@@ -8,12 +8,12 @@
 .svycox_svycoxph(time, event, X, weights = NULL, strata = NULL, cluster = NULL, max_iter = 100, tol = 1e-09)
 }
 \arguments{
-\item{time}{See Usage.}
-\item{event}{See Usage.}
-\item{X}{See Usage.}
-\item{weights}{Defaults to \code{NULL}.}
-\item{strata}{Defaults to \code{NULL}.}
-\item{cluster}{Defaults to \code{NULL}.}
+\item{time}{Passed to \code{.svycox_prep}.}
+\item{event}{Passed to \code{.svycox_prep}.}
+\item{X}{Passed to \code{.svycox_prep}.}
+\item{weights}{Passed to \code{.svycox_prep}.}
+\item{strata}{Passed to \code{.svycox_prep}.}
+\item{cluster}{Passed to \code{.svycox_prep}.}
 \item{max_iter}{Defaults to \code{100}.}
 \item{tol}{Defaults to \code{1e-09}.}
 }
@@ -25,7 +25,7 @@ A list with \code{estimate}, \code{coefficients}, \code{hazard_ratios}, \code{st
 }
 \references{
 ----------
-Binder, D. A. (1992) "Fitting Cox\\'s proportional hazards models from
+Binder, D. A. (1992) "Fitting Cox\'s proportional hazards models from
 survey data", *Biometrika* 79(1), 139-147,
 doi:10.1093/biomet/79.1.139. The weighted estimating equation above,
 the interpretation of :math:`\hat\beta` as a finite-population census

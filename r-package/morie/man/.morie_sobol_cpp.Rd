@@ -8,8 +8,8 @@
 .morie_sobol_cpp(n, d)
 }
 \arguments{
-\item{n}{See Usage.}
-\item{d}{See Usage.}
+\item{n}{Passed to \code{.Call}.}
+\item{d}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

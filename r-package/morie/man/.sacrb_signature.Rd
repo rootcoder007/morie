@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{tokenizer}{Defaults to \code{"13a"}.}
-\item{lowercase}{Defaults to \code{FALSE}.}
+\item{lowercase}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 \item{max_n}{Defaults to \code{4L}.}
 \item{n_refs}{Defaults to \code{1L}.}
 \item{version}{Defaults to \code{"morie-sacrb-1"}.}

@@ -8,7 +8,7 @@
 .morie_detect_format(url)
 }
 \arguments{
-\item{url}{See Usage.}
+\item{url}{Character; passed to \code{sub}.}
 }
 \description{
 back to the URL file extension. Returns one of the morie_fetch formats.

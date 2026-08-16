@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{estimator}{See Usage.}
-\item{ate}{See Usage.}
-\item{ate_se}{See Usage.}
+\item{ate}{Numeric; combined arithmetically in the body.}
+\item{ate_se}{Numeric; combined arithmetically in the body.}
 \item{ate_pval}{See Usage.}
 \item{n}{See Usage.}
 \item{n_treated}{See Usage.}

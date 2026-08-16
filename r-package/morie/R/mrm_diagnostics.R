@@ -34,7 +34,8 @@ NULL
 
 #' .morie_logistic_propensity
 #'
-#' Part of the mrm_diagnostics implementation; see the file header for
+#' A step of the mrm_diagnostics implementation. Called by \code{mrm_check_overlap}, \code{mrm_median_causal_effect}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param D See Usage.

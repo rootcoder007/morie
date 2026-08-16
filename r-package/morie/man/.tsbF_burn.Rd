@@ -8,7 +8,7 @@
 .tsbF_burn(seq, burn_in)
 }
 \arguments{
-\item{seq}{See Usage.}
+\item{seq}{A vector; its length is taken and its elements indexed.}
 \item{burn_in}{See Usage.}
 }
 \description{

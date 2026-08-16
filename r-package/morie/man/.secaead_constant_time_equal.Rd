@@ -8,8 +8,8 @@
 .secaead_constant_time_equal(a, b)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{a}{Passed to \code{.secaead_as_bytes}.}
+\item{b}{Passed to \code{.secaead_as_bytes}.}
 }
 \description{
 Part of the secaead_native implementation; see the file header for the source it follows.

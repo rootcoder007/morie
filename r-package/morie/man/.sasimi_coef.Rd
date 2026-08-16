@@ -8,7 +8,7 @@
 .sasimi_coef(name)
 }
 \arguments{
-\item{name}{See Usage.}
+\item{name}{One of \code{"cosine"}, \code{"dice"}, \code{"tanimoto"}.}
 }
 \description{
 Part of the sasimi_native implementation; see the file header for the source it follows.

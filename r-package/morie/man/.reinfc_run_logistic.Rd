@@ -9,16 +9,16 @@
 }
 \arguments{
 \item{reward_fn}{See Usage.}
-\item{xs}{See Usage.}
-\item{wm}{See Usage.}
-\item{baseline}{See Usage.}
-\item{mode}{See Usage.}
-\item{alpha}{See Usage.}
-\item{gamma}{See Usage.}
-\item{k}{See Usage.}
-\item{trials}{See Usage.}
-\item{eligibility}{See Usage.}
-\item{rng}{See Usage.}
+\item{xs}{A matrix; indexed by row and column.}
+\item{wm}{A matrix; passed to \code{nrow}.}
+\item{baseline}{Passed to \code{.reinfc_running_baseline}.}
+\item{mode}{Compared against \code{"episodic"}.}
+\item{alpha}{Numeric; combined arithmetically in the body.}
+\item{gamma}{Numeric; combined arithmetically in the body.}
+\item{k}{A count; the body uses it as \code{seq_len(...)}.}
+\item{trials}{A count; the body uses it as \code{seq_len(...)}.}
+\item{eligibility}{Compared against \code{"ybar"}.}
+\item{rng}{Passed to \code{.ghc_unif}.}
 }
 \description{
 Part of the reinfc_native implementation; see the file header for the source it follows.

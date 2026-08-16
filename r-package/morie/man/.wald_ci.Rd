@@ -8,8 +8,8 @@
 .wald_ci(estimate, se)
 }
 \arguments{
-\item{estimate}{See Usage.}
-\item{se}{See Usage.}
+\item{estimate}{Numeric; combined arithmetically in the body.}
+\item{se}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

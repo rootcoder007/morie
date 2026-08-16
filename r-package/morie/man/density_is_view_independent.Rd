@@ -9,8 +9,8 @@ density_is_view_independent(model, point, directions, tol = 1e-09)
 }
 \arguments{
 \item{model}{See Usage.}
-\item{point}{See Usage.}
-\item{directions}{See Usage.}
+\item{point}{Passed to \code{.as_numeric_vec}.}
+\item{directions}{A vector; its length is taken and its elements indexed.}
 \item{tol}{Defaults to \code{1e-09}.}
 }
 \description{

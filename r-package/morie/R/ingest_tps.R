@@ -85,13 +85,14 @@ morie_ingest_tps_layers <- function() {
 # Internal: a single ArcGIS FeatureServer /query call.
 #' Internal: a single ArcGIS FeatureServer /query call
 #'
-#' Part of the ingest_tps implementation; see the file header for the
+#' A step of the ingest_tps implementation. Called by \code{morie_ingest_tps_feature_layer}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param layer_url See Usage.
 #' @param where Defaults to \code{"1=1"}.
 #' @param out_fields Defaults to \code{"*"}.
-#' @param return_geometry Defaults to \code{FALSE}.
+#' @param return_geometry A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @param result_offset Defaults to \code{0L}.
 #' @param result_record_count Defaults to \code{2000L}.
 #' @param user_agent Defaults to \code{.MORIE_TPS_DEFAULT_UA}.
@@ -153,8 +154,8 @@ morie_ingest_tps_layers <- function() {
 #'
 #' data.frame, optionally splicing in geom_x / geom_y.
 #'
-#' @param features See Usage.
-#' @param return_geometry See Usage.
+#' @param features A vector; its length is taken.
+#' @param return_geometry A flag; the body branches on it.
 #' @return The value of \code{lapply}.
 #' @export
 .morie_tps_features_to_rows <- function(features, return_geometry) {

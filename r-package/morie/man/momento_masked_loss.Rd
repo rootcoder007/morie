@@ -8,9 +8,9 @@
 momento_masked_loss(truth, reconstruction, mask)
 }
 \arguments{
-\item{truth}{See Usage.}
-\item{reconstruction}{See Usage.}
-\item{mask}{See Usage.}
+\item{truth}{A vector; its length is taken and its elements indexed.}
+\item{reconstruction}{A vector; its length is taken and its elements indexed.}
+\item{mask}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the momento_native implementation; see the file header for the source it follows.

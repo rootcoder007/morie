@@ -8,7 +8,7 @@
 morie_rmrl_machine_step(machine, u, sigma)
 }
 \arguments{
-\item{machine}{See Usage.}
+\item{machine}{A list; the body reads \code{$edges}, \code{$terminal} from it.}
 \item{u}{See Usage.}
 \item{sigma}{See Usage.}
 }

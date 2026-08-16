@@ -8,8 +8,8 @@
 .prsLR_first_seq(seq, first, nts)
 }
 \arguments{
-\item{seq}{See Usage.}
-\item{first}{See Usage.}
+\item{seq}{A vector; its length is taken.}
+\item{first}{A vector; indexed elementwise.}
 \item{nts}{See Usage.}
 }
 \description{

@@ -10,7 +10,7 @@
 \arguments{
 \item{alpha}{See Usage.}
 \item{y}{See Usage.}
-\item{K}{See Usage.}
+\item{K}{Passed to \code{.smoopt_K}.}
 }
 \description{
 is directly comparable to svmopt.dual_objective up to the sign of the threshold term -- the threshold does not enter the dual itself.

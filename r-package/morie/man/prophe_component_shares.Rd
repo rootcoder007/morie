@@ -8,7 +8,7 @@
 prophe_component_shares(components)
 }
 \arguments{
-\item{components}{See Usage.}
+\item{components}{A vector; indexed elementwise.}
 }
 \description{
 Part of the prophe_native implementation; see the file header for the source it follows.

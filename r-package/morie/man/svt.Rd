@@ -8,8 +8,8 @@
 svt(M, observed, tau = NULL, step = 1.9, iters = 200L, tol = 1e-06)
 }
 \arguments{
-\item{M}{See Usage.}
-\item{observed}{See Usage.}
+\item{M}{A matrix; passed to \code{as.matrix}.}
+\item{observed}{A matrix; indexed by row and column.}
 \item{tau}{Defaults to \code{NULL}.}
 \item{step}{Defaults to \code{1.9}.}
 \item{iters}{Defaults to \code{200L}.}

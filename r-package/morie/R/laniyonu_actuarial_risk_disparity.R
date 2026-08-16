@@ -92,8 +92,8 @@ NULL
 #'
 #' Returns coefficients (with intercept), SEs, log-lik.
 #'
-#' @param yk See Usage.
-#' @param X See Usage.
+#' @param yk A vector; its length is taken.
+#' @param X A matrix; passed to \code{ncol}.
 #' @return A list with \code{coef}, \code{se}, \code{loglik}, \code{n}, \code{converged}.
 #' @export
 .lan_threshold_logit <- function(yk, X) {
@@ -158,13 +158,13 @@ NULL
 #' Part of the laniyonu_actuarial_risk_disparity implementation; see the
 #' file header for the source it follows.
 #'
-#' @param df See Usage.
-#' @param outcome_col See Usage.
-#' @param race_cols See Usage.
-#' @param gender_col See Usage.
+#' @param df A matrix; indexed by row and column.
+#' @param outcome_col Passed to \code{.lan_ard_result}.
+#' @param race_cols Passed to \code{.lan_ard_result}.
+#' @param gender_col Passed to \code{.lan_ard_result}.
 #' @param control_cols See Usage.
-#' @param ordinal_levels See Usage.
-#' @param split_by_gender See Usage.
+#' @param ordinal_levels A vector; its length is taken and its elements indexed.
+#' @param split_by_gender A flag; the body branches on it.
 #' @return The value of \code{.lan_ard_result}.
 #' @export
 .lan_run_ordinal <- function(df, outcome_col, race_cols, gender_col,
@@ -356,12 +356,12 @@ NULL
 #' Part of the laniyonu_actuarial_risk_disparity implementation; see the
 #' file header for the source it follows.
 #'
-#' @param sub See Usage.
+#' @param sub A matrix; indexed by row and column.
 #' @param score_col See Usage.
 #' @param outcome_col See Usage.
-#' @param race_cols See Usage.
+#' @param race_cols A vector; its length is taken.
 #' @param control_cols See Usage.
-#' @param bootstrap_replicates See Usage.
+#' @param bootstrap_replicates A count; the body uses it as \code{seq_len(...)}.
 #' @param random_state See Usage.
 #' @return A list with \code{coefficients}, \code{std_errors}, \code{bootstrap_se}, \code{score_coefficient}, \code{n_obs}.
 #' @export
@@ -427,16 +427,16 @@ NULL
 #' Part of the laniyonu_actuarial_risk_disparity implementation; see the
 #' file header for the source it follows.
 #'
-#' @param df See Usage.
-#' @param outcome See Usage.
-#' @param outcome_col See Usage.
-#' @param score_col See Usage.
-#' @param race_cols See Usage.
-#' @param gender_col See Usage.
-#' @param control_cols See Usage.
-#' @param split_by_gender See Usage.
-#' @param bootstrap_replicates See Usage.
-#' @param random_state See Usage.
+#' @param df A matrix; indexed by row and column.
+#' @param outcome Passed to \code{.lan_ard_result}.
+#' @param outcome_col Passed to \code{.lan_score_net_residual}.
+#' @param score_col Passed to \code{.lan_score_net_residual}.
+#' @param race_cols Passed to \code{.lan_score_net_residual}.
+#' @param gender_col Passed to \code{.lan_ard_result}.
+#' @param control_cols Passed to \code{.lan_score_net_residual}.
+#' @param split_by_gender A flag; the body branches on it.
+#' @param bootstrap_replicates Passed to \code{.lan_score_net_residual}.
+#' @param random_state Passed to \code{.lan_score_net_residual}.
 #' @return The value of \code{.lan_ard_result}.
 #' @export
 .lan_run_residual <- function(df, outcome, outcome_col, score_col,

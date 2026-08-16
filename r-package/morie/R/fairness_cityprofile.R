@@ -46,7 +46,8 @@ MORIE_FAIRNESS_CANONICAL_FIELDS <- c(
 
 #' .morie_fairness_init_registry
 #'
-#' Part of the fairness_cityprofile implementation; see the file header
+#' A step of the fairness_cityprofile implementation. Called by \code{morie_fairness_get_city}, \code{morie_fairness_list_cities}, \code{morie_fairness_register_city}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @return One of two values, depending on the branch taken.

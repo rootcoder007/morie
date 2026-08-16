@@ -61,7 +61,8 @@
 # Internal: resolve FBI CDE API key from arg -> env, or stop.
 #' Internal: resolve FBI CDE API key from arg -> env, or stop
 #'
-#' Part of the ingest_forensics implementation; see the file header for
+#' A step of the ingest_forensics implementation. Called by \code{morie_ingest_forensics_nibrs}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param api_key Defaults to \code{NULL}.
@@ -93,7 +94,7 @@
 #' Nested dicts become dotted keys; scalar lists are ";"-joined; nested
 #' lists are JSON-serialised.
 #'
-#' @param rec See Usage.
+#' @param rec A vector; indexed elementwise.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .morie_forensics_flatten_nibrs <- function(rec) {
@@ -146,9 +147,9 @@
 #' backend with httr2 fallback), inspects HTTP status code for 401/403
 #' (auth) + 4xx (generic) custom error formatting.
 #'
-#' @param url See Usage.
-#' @param params Defaults to \code{list()}.
-#' @param headers Defaults to \code{list()}.
+#' @param url Passed to \code{.morie_dataset_http_text_with_status}.
+#' @param params Passed to \code{.morie_dataset_http_text_with_status}. Defaults to \code{list()}.
+#' @param headers A vector; its length is taken. Defaults to \code{list()}.
 #' @param timeout Defaults to \code{.MORIE_FORENSICS_DEFAULT_TIMEOUT}.
 #' @param user_agent Defaults to \code{.MORIE_FORENSICS_DEFAULT_UA}.
 #' @param auth_signup_url Defaults to \code{NULL}.
@@ -205,8 +206,8 @@
 #'
 #' tolerating heterogeneous columns (missing -> NA).
 #'
-#' @param rows See Usage.
-#' @param columns Defaults to \code{NULL}.
+#' @param rows A vector; its length is taken.
+#' @param columns Optional; may be \code{NULL}. A vector; its length is taken.
 #' @return The value of \code{do.call}.
 #' @export
 .morie_forensics_rows_to_df <- function(rows, columns = NULL) {
@@ -359,10 +360,11 @@ morie_ingest_forensics_nibrs <- function(year,
 # Internal: pull morie's documented columns out of one NamUs record.
 #' Internal: pull morie\'s documented columns out of one NamUs record
 #'
-#' Part of the ingest_forensics implementation; see the file header for
+#' A step of the ingest_forensics implementation. Called by \code{morie_ingest_forensics_namus_missing}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param rec See Usage.
+#' @param rec A list; the body reads \code{$caseNumber}, \code{$circumstances}, \code{$circumstancesOfDisappearance}, \code{$county}, \code{$namUsCaseNumber}, \code{$sighting}, \code{$state}, \code{$subjectDescription}, \code{$subjectIdentification} from it.
 #' @return A list with \code{case_number}, \code{state}, \code{county}, \code{dlc_date}, \code{sex}, \code{race}, \code{age_min}, \code{age_max}, \code{height_cm_min}, \code{height_cm_max}, \code{weight_kg_min}, \code{weight_kg_max}, \code{first_name}, \code{last_name}, \code{city}, \code{circumstances}.
 #' @export
 .morie_forensics_flatten_namus <- function(rec) {
@@ -551,7 +553,7 @@ morie_ingest_forensics_namus_missing <- function(
 #' NamUs Search endpoint actually returns; verified live 2026-07).
 #' Height/weight are not projectable via Search -- NA by contract.
 #'
-#' @param rec See Usage.
+#' @param rec A vector; indexed elementwise.
 #' @return A list with \code{case_number}, \code{state}, \code{county}, \code{dlc_date}, \code{sex}, \code{race}, \code{age_min}, \code{age_max}, \code{height_cm_min}, \code{height_cm_max}, \code{weight_kg_min}, \code{weight_kg_max}, \code{first_name}, \code{last_name}, \code{city}, \code{circumstances}.
 #' @export
 .morie_forensics_flatten_namus_search <- function(rec) {
@@ -577,10 +579,11 @@ morie_ingest_forensics_namus_missing <- function(
 # Internal: pull morie's documented columns out of one NIST RDS record.
 #' Internal: pull morie\'s documented columns out of one NIST RDS record
 #'
-#' Part of the ingest_forensics implementation; see the file header for
+#' A step of the ingest_forensics implementation. Called by \code{morie_ingest_forensics_nist_rds}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param rec See Usage.
+#' @param rec A list; the body reads \code{$@id}, \code{$byteSize}, \code{$description}, \code{$ediid}, \code{$identifier}, \code{$issued}, \code{$keyword}, \code{$landing_page}, \code{$landingPage}, \code{$license}, \code{$modified}, \code{$publisher}, \code{$rights}, \code{$size}, \code{$theme}, \code{$title} from it.
 #' @return A list with \code{dataset_id}, \code{title}, \code{description}, \code{publisher}, \code{issued}, \code{modified}, \code{keyword}, \code{landing_page}, \code{size_bytes}, \code{license}.
 #' @export
 .morie_forensics_flatten_nist <- function(rec) {

@@ -8,10 +8,10 @@
 .rff(M, W1, b1, W2, b2)
 }
 \arguments{
-\item{M}{See Usage.}
-\item{W1}{See Usage.}
+\item{M}{A matrix; passed to \code{\%*\%}.}
+\item{W1}{A matrix; passed to \code{\%*\%}.}
 \item{b1}{See Usage.}
-\item{W2}{See Usage.}
+\item{W2}{A matrix; passed to \code{\%*\%}.}
 \item{b2}{See Usage.}
 }
 \description{

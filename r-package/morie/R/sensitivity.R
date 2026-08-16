@@ -30,7 +30,8 @@ NULL
 
 #' .evalue_result
 #'
-#' Part of the sensitivity implementation; see the file header for the
+#' A step of the sensitivity implementation. Called by \code{e_value_rr}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param point_estimate See Usage.
@@ -58,7 +59,8 @@ NULL
 
 #' .rosenbaum_result
 #'
-#' Part of the sensitivity implementation; see the file header for the
+#' A step of the sensitivity implementation. Called by \code{rosenbaum_bounds}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param gamma_values See Usage.
@@ -84,7 +86,8 @@ NULL
 
 #' .tipping_point_result
 #'
-#' Part of the sensitivity implementation; see the file header for the
+#' A step of the sensitivity implementation. Called by \code{tipping_point_analysis}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param delta_values See Usage.
@@ -111,7 +114,8 @@ NULL
 
 #' .ovb_result
 #'
-#' Part of the sensitivity implementation; see the file header for the
+#' A step of the sensitivity implementation. Called by \code{omitted_variable_bias}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param estimate See Usage.
@@ -139,7 +143,8 @@ NULL
 
 #' .spec_curve_result
 #'
-#' Part of the sensitivity implementation; see the file header for the
+#' A step of the sensitivity implementation. Called by \code{specification_curve}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param estimates See Usage.
@@ -177,10 +182,11 @@ NULL
 
 #' .rr_to_evalue
 #'
-#' Part of the sensitivity implementation; see the file header for the
+#' A step of the sensitivity implementation. Called by \code{e_value_rr}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param rr See Usage.
+#' @param rr Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .rr_to_evalue <- function(rr) {

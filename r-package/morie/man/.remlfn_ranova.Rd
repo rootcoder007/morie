@@ -8,8 +8,8 @@
 .remlfn_ranova(y, group)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{group}{See Usage.}
+\item{y}{Numeric; passed to \code{mean}.}
+\item{group}{Passed to \code{.remlfn_groups}.}
 }
 \description{
 Part of the remlfn_native implementation; see the file header for the source it follows.

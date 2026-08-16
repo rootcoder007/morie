@@ -10,9 +10,9 @@
 \arguments{
 \item{p_or_recordedplot}{See Usage.}
 \item{outfile}{See Usage.}
-\item{fig_w}{See Usage.}
-\item{fig_h}{See Usage.}
-\item{use_gg}{See Usage.}
+\item{fig_w}{Numeric; combined arithmetically in the body.}
+\item{fig_h}{Numeric; combined arithmetically in the body.}
+\item{use_gg}{A flag; the body branches on it.}
 }
 \description{
 Part of the tps_render implementation; see the file header for the source it follows.

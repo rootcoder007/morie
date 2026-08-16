@@ -10,12 +10,13 @@
 
 #' mistr_rms_norm
 #'
-#' Part of the mistr_native implementation; see the file header for the
+#' A step of the mistr_native implementation. Called by \code{mistr_mistral_block}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param weight Defaults to \code{NULL}.
-#' @param eps Defaults to \code{1e-06}.
+#' @param x A vector; its length is taken.
+#' @param weight Optional; may be \code{NULL}. A vector; its length is taken.
+#' @param eps Numeric; combined arithmetically in the body. Defaults to \code{1e-06}.
 #' @return A numeric value.
 #' @export
 mistr_rms_norm <- function(x, weight = NULL, eps = 1e-6) {
@@ -35,13 +36,14 @@ mistr_rms_norm <- function(x, weight = NULL, eps = 1e-6) {
 
 #' mistr_swiglu
 #'
-#' Part of the mistr_native implementation; see the file header for the
+#' A step of the mistr_native implementation. Called by \code{mistr_mistral_block}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param W1 See Usage.
-#' @param W2 See Usage.
-#' @param W3 See Usage.
+#' @param x A matrix; passed to \code{crossprod}.
+#' @param W1 A matrix; passed to \code{crossprod}.
+#' @param W2 A matrix; passed to \code{crossprod}.
+#' @param W3 A matrix; passed to \code{crossprod}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 mistr_swiglu <- function(x, W1, W2, W3) {
@@ -61,11 +63,12 @@ mistr_swiglu <- function(x, W1, W2, W3) {
 
 #' mistr_rope_angles
 #'
-#' Part of the mistr_native implementation; see the file header for the
+#' A step of the mistr_native implementation. Called by \code{mistr_apply_rope}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param d See Usage.
-#' @param base Defaults to \code{10000}.
+#' @param d Numeric; combined arithmetically in the body.
+#' @param base Numeric; combined arithmetically in the body. Defaults to \code{10000}.
 #' @return A numeric value.
 #' @export
 mistr_rope_angles <- function(d, base = 10000) {
@@ -77,11 +80,12 @@ mistr_rope_angles <- function(d, base = 10000) {
 
 #' mistr_apply_rope
 #'
-#' Part of the mistr_native implementation; see the file header for the
+#' A step of the mistr_native implementation. Called by \code{mistr_grouped_query_attention}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param pos See Usage.
+#' @param x A vector; its length is taken and its elements indexed.
+#' @param pos Numeric; combined arithmetically in the body.
 #' @param theta Defaults to \code{NULL}.
 #' @param base Defaults to \code{10000}.
 #' @return The value of \code{out}, as built in the body.
@@ -105,12 +109,13 @@ mistr_apply_rope <- function(x, pos, theta = NULL, base = 10000) {
 
 #' mistr_sliding_window_mask
 #'
-#' Part of the mistr_native implementation; see the file header for the
+#' A step of the mistr_native implementation. Called by \code{mistr_mistral_block}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param L See Usage.
+#' @param L A count; the body uses it as \code{seq_len(...)}.
 #' @param window See Usage.
-#' @param causal Defaults to \code{TRUE}.
+#' @param causal A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return The value of \code{mask}, as built in the body.
 #' @export
 mistr_sliding_window_mask <- function(L, window, causal = TRUE) {
@@ -129,7 +134,8 @@ mistr_sliding_window_mask <- function(L, window, causal = TRUE) {
 
 #' mistr_attention_span
 #'
-#' Part of the mistr_native implementation; see the file header for the
+#' A step of the mistr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param window See Usage.
@@ -142,16 +148,17 @@ mistr_attention_span <- function(window, n_layers) {
 
 #' mistr_grouped_query_attention
 #'
-#' Part of the mistr_native implementation; see the file header for the
+#' A step of the mistr_native implementation. Called by \code{mistr_mistral_block}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param Q See Usage.
-#' @param K See Usage.
-#' @param V See Usage.
-#' @param n_heads See Usage.
-#' @param n_kv_heads See Usage.
-#' @param mask Defaults to \code{NULL}.
-#' @param positions Defaults to \code{NULL}.
+#' @param Q A matrix; passed to \code{as.matrix}.
+#' @param K A matrix; passed to \code{as.matrix}.
+#' @param V A matrix; passed to \code{as.matrix}.
+#' @param n_heads A count; the body uses it as \code{seq_len(...)}.
+#' @param n_kv_heads Numeric; combined arithmetically in the body.
+#' @param mask Optional; may be \code{NULL}. A matrix; indexed by row and column.
+#' @param positions Optional; may be \code{NULL}. A vector; its length is taken.
 #' @param base Defaults to \code{10000}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -222,10 +229,11 @@ mistr_grouped_query_attention <- function(Q, K, V, n_heads, n_kv_heads,
 
 #' mistr_mistral_block
 #'
-#' Part of the mistr_native implementation; see the file header for the
+#' A step of the mistr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{as.matrix}.
 #' @param Wq See Usage.
 #' @param Wk See Usage.
 #' @param Wv See Usage.
@@ -234,7 +242,7 @@ mistr_grouped_query_attention <- function(Q, K, V, n_heads, n_kv_heads,
 #' @param W2 See Usage.
 #' @param W3 See Usage.
 #' @param n_heads See Usage.
-#' @param n_kv_heads See Usage.
+#' @param n_kv_heads Numeric; combined arithmetically in the body.
 #' @param window See Usage.
 #' @param norm1 Defaults to \code{NULL}.
 #' @param norm2 Defaults to \code{NULL}.
@@ -270,7 +278,8 @@ mistr_mistral_block <- function(X, Wq, Wk, Wv, Wo, W1, W2, W3,
 
 #' mistr_cheatsheet
 #'
-#' Part of the mistr_native implementation; see the file header for the
+#' A step of the mistr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

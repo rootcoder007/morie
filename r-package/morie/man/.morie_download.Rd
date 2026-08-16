@@ -8,11 +8,11 @@
 .morie_download(url, ext = "")
 }
 \arguments{
-\item{url}{See Usage.}
+\item{url}{Character; passed to \code{sub}.}
 \item{ext}{Defaults to \code{""}.}
 }
 \description{
-Part of the data_access implementation; see the file header for the source it follows.
+A step of the data_access implementation. Called by \code{morie_fetch}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{tmp}, as built in the body.

@@ -10,7 +10,7 @@
 \arguments{
 \item{x}{See Usage.}
 \item{y}{See Usage.}
-\item{dim}{Defaults to \code{8}.}
+\item{dim}{A count; the body uses it as \code{numeric(...)}. Defaults to \code{8}.}
 \item{scale}{Defaults to \code{1}.}
 }
 \description{

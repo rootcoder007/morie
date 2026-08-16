@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{shape}{See Usage.}
-\item{scale}{See Usage.}
-\item{rng}{See Usage.}
+\item{scale}{Passed to \code{.tt_gamma_draw}.}
+\item{rng}{Passed to \code{.ghc_unif}.}
 }
 \description{
 Part of the ttrace_native implementation; see the file header for the source it follows.

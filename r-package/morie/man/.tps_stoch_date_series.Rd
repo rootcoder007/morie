@@ -8,7 +8,7 @@
 .tps_stoch_date_series(df, min_year = 2014L)
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{A list; the body reads \code{$OCC_DAY}, \code{$OCC_MONTH}, \code{$OCC_YEAR} from it.}
 \item{min_year}{Defaults to \code{2014L}.}
 }
 \description{

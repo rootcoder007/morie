@@ -8,9 +8,9 @@
 nbeats_trend_basis(length, degree, offset = 0, scale = NULL)
 }
 \arguments{
-\item{length}{See Usage.}
-\item{degree}{See Usage.}
-\item{offset}{Defaults to \code{0}.}
+\item{length}{A count; the body uses it as \code{seq_len(...)}.}
+\item{degree}{Numeric; combined arithmetically in the body.}
+\item{offset}{Numeric; combined arithmetically in the body. Defaults to \code{0}.}
 \item{scale}{Defaults to \code{NULL}.}
 }
 \description{

@@ -8,7 +8,7 @@
 morie_prsPEG_lit(s)
 }
 \arguments{
-\item{s}{See Usage.}
+\item{s}{A vector; its length is taken.}
 }
 \description{
 Part of the prsPEG_native implementation; see the file header for the source it follows.

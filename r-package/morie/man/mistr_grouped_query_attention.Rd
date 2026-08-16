@@ -8,13 +8,13 @@
 mistr_grouped_query_attention(Q, K, V, n_heads, n_kv_heads, mask = NULL, positions = NULL, base = 10000)
 }
 \arguments{
-\item{Q}{See Usage.}
-\item{K}{See Usage.}
-\item{V}{See Usage.}
-\item{n_heads}{See Usage.}
-\item{n_kv_heads}{See Usage.}
-\item{mask}{Defaults to \code{NULL}.}
-\item{positions}{Defaults to \code{NULL}.}
+\item{Q}{A matrix; passed to \code{as.matrix}.}
+\item{K}{A matrix; passed to \code{as.matrix}.}
+\item{V}{A matrix; passed to \code{as.matrix}.}
+\item{n_heads}{A count; the body uses it as \code{seq_len(...)}.}
+\item{n_kv_heads}{Numeric; combined arithmetically in the body.}
+\item{mask}{Optional; may be \code{NULL}. A matrix; indexed by row and column.}
+\item{positions}{Optional; may be \code{NULL}. A vector; its length is taken.}
 \item{base}{Defaults to \code{10000}.}
 }
 \description{

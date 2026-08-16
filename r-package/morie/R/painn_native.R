@@ -28,10 +28,11 @@
 # ||v|| -- an invariant built from an equivariant.
 #' ||v|| -- an invariant built from an equivariant
 #'
-#' Part of the painn_native implementation; see the file header for the
+#' A step of the painn_native implementation. Called by \code{gated_update}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param v See Usage.
+#' @param v A matrix; passed to \code{as.matrix}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 vector_norm <- function(v) {
@@ -63,7 +64,7 @@ vector_norm <- function(v) {
 #' network equivariant rather than approximately so.
 #'
 #' @param s_j See Usage.
-#' @param v_j See Usage.
+#' @param v_j A matrix; passed to \code{as.matrix}.
 #' @param r_ij See Usage.
 #' @param phi_s See Usage.
 #' @param phi_v See Usage.
@@ -115,9 +116,9 @@ scalar_vector_message <- function(s_j, v_j, r_ij, phi_s, phi_v,
 #' information without breaking invariance of the energy.
 #'
 #' @param s See Usage.
-#' @param v See Usage.
-#' @param U See Usage.
-#' @param V See Usage.
+#' @param v A matrix; passed to \code{as.matrix}.
+#' @param U A matrix; passed to \code{as.matrix}.
+#' @param V A matrix; passed to \code{as.matrix}.
 #' @param phi See Usage.
 #' @return A list with \code{ds}, \code{dv}, \code{scalar_from_vectors}, \code{note}.
 #' @export
@@ -167,7 +168,7 @@ gated_update <- function(s, v, U, V, phi) {
 #' read off directly from equivariant atomwise quantities.
 #'
 #' @param charges See Usage.
-#' @param R See Usage.
+#' @param R A matrix; passed to \code{as.matrix}.
 #' @param centre Defaults to \code{NULL}.
 #' @return A list with \code{dipole}, \code{magnitude}, \code{note}.
 #' @export
@@ -198,9 +199,9 @@ dipole_moment <- function(charges, R, centre = NULL) {
 #'
 #' @param model See Usage.
 #' @param s See Usage.
-#' @param v See Usage.
-#' @param R See Usage.
-#' @param Q See Usage.
+#' @param v A matrix; passed to \code{as.matrix}.
+#' @param R A matrix; passed to \code{as.matrix}.
+#' @param Q A matrix; passed to \code{as.matrix}.
 #' @param tol Defaults to \code{1e-09}.
 #' @return A list with \code{scalar_error}, \code{vector_error}, \code{scalars_invariant}, \code{vectors_equivariant}, \code{note}.
 #' @export
@@ -258,7 +259,8 @@ morie_painn_equivariance_error <- function(model, s, v, R, Q, tol = 1e-9) {
 
 #' .painn_cheatsheet
 #'
-#' Part of the painn_native implementation; see the file header for the
+#' A step of the painn_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

@@ -7,10 +7,11 @@
 
 #' mpfn_sig
 #'
-#' Part of the mpfn_native implementation; see the file header for the
+#' A step of the mpfn_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Numeric; combined arithmetically in the body.
 #' @return One of two values, depending on the branch taken.
 #' @export
 mpfn_sig <- function(x) {
@@ -19,12 +20,13 @@ mpfn_sig <- function(x) {
 
 #' mpfn_message
 #'
-#' Part of the mpfn_native implementation; see the file header for the
+#' A step of the mpfn_native implementation. Called by \code{mpfn_message_passing}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param h_v See Usage.
 #' @param h_w See Usage.
-#' @param e_vw See Usage.
+#' @param e_vw A vector; its length is taken and its elements indexed.
 #' @param A Defaults to \code{NULL}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
@@ -40,10 +42,11 @@ mpfn_message <- function(h_v, h_w, e_vw, A = NULL) {
 
 #' mpfn_update_gru
 #'
-#' Part of the mpfn_native implementation; see the file header for the
+#' A step of the mpfn_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param h See Usage.
+#' @param h A vector; its length is taken.
 #' @param m See Usage.
 #' @param Wz See Usage.
 #' @param Uz See Usage.
@@ -66,12 +69,13 @@ mpfn_update_gru <- function(h, m, Wz, Uz, Wr, Ur, Wh, Uh) {
 
 #' mpfn_message_passing
 #'
-#' Part of the mpfn_native implementation; see the file header for the
+#' A step of the mpfn_native implementation. Called by \code{mpfn_is_permutation_invariant}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param H0 See Usage.
-#' @param adj See Usage.
-#' @param edge_features See Usage.
+#' @param adj A vector; indexed elementwise.
+#' @param edge_features A vector; indexed elementwise.
 #' @param T Defaults to \code{3}.
 #' @param A Defaults to \code{NULL}.
 #' @param update Defaults to \code{NULL}.
@@ -106,12 +110,13 @@ mpfn_message_passing <- function(H0, adj, edge_features, T = 3, A = NULL,
 
 #' mpfn_readout
 #'
-#' Part of the mpfn_native implementation; see the file header for the
+#' A step of the mpfn_native implementation. Called by \code{mpfn_is_permutation_invariant}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param H See Usage.
-#' @param how Defaults to \code{"sum"}.
-#' @param H0 Defaults to \code{NULL}.
+#' @param how One of \code{"gated"}, \code{"mean"}, \code{"sum"}. Defaults to \code{"sum"}.
+#' @param H0 Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @param i_fn Defaults to \code{NULL}.
 #' @param j_fn Defaults to \code{NULL}.
 #' @return The value of \code{acc}, as built in the body.
@@ -146,13 +151,14 @@ mpfn_readout <- function(H, how = "sum", H0 = NULL, i_fn = NULL, j_fn = NULL) {
 
 #' mpfn_is_permutation_invariant
 #'
-#' Part of the mpfn_native implementation; see the file header for the
+#' A step of the mpfn_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param H See Usage.
-#' @param adj See Usage.
-#' @param edge_features See Usage.
-#' @param perm See Usage.
+#' @param H A vector; its length is taken and its elements indexed.
+#' @param adj A vector; its length is taken and its elements indexed.
+#' @param edge_features A vector; its length is taken and its elements indexed.
+#' @param perm A vector; indexed elementwise.
 #' @param T Defaults to \code{3}.
 #' @param how Defaults to \code{"sum"}.
 #' @param tol Defaults to \code{1e-09}.
@@ -185,7 +191,8 @@ mpfn_is_permutation_invariant <- function(H, adj, edge_features, perm, T = 3,
 
 #' mpfn_cheatsheet
 #'
-#' Part of the mpfn_native implementation; see the file header for the
+#' A step of the mpfn_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

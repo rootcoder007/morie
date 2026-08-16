@@ -84,15 +84,16 @@ morie_smatch_poisson_design <- function(cases, risk_periods,
 
 #' morie_smatch_sccs_poisson_fit
 #'
-#' Part of the smatch_native implementation; see the file header for the
+#' A step of the smatch_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param cases See Usage.
-#' @param risk_periods See Usage.
-#' @param age_breaks Defaults to \code{numeric(0)}.
+#' @param cases Passed to \code{morie_smatch_poisson_design}.
+#' @param risk_periods Passed to \code{morie_smatch_poisson_design}.
+#' @param age_breaks Passed to \code{morie_smatch_poisson_design}. Defaults to \code{numeric(0)}.
 #' @param iters Defaults to \code{200}.
 #' @param tol Defaults to \code{1e-12}.
-#' @param ridge Defaults to \code{1e-09}.
+#' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-09}.
 #' @return A list with \code{estimate}, \code{relative_incidence}, \code{log_ri}, \code{age_effects}, \code{individual_effects}, \code{coef}, \code{converged}, \code{iterations}, \code{n_rows}, \code{n_people}, \code{method}, \code{identical_to}.
 #' @export
 morie_smatch_sccs_poisson_fit <- function(cases, risk_periods,
@@ -199,10 +200,11 @@ morie_smatch_relative_efficiency <- function(r, log_ri) {
 # Beasley-Springer-Moro inverse normal CDF
 #' Beasley-Springer-Moro inverse normal CDF
 #'
-#' Part of the smatch_native implementation; see the file header for the
+#' A step of the smatch_native implementation. Called by \code{morie_smatch_sample_size}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p A vector; its length is taken and its elements indexed.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .smatch_qnorm <- function(p) {

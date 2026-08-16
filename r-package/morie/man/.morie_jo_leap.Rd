@@ -8,7 +8,7 @@
 .morie_jo_leap(y)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the ts_joseph implementation; see the file header for the source it follows.

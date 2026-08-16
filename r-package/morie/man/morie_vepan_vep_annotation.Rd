@@ -10,11 +10,11 @@ morie_vepan_vep_annotation(variants, transcripts, genome, upstream = 5000, downs
 \arguments{
 \item{variants}{See Usage.}
 \item{transcripts}{See Usage.}
-\item{genome}{See Usage.}
-\item{upstream}{Defaults to \code{5000}.}
-\item{downstream}{Defaults to \code{5000}.}
-\item{mode}{Defaults to \code{"all"}.}
-\item{no_intergenic}{Defaults to \code{FALSE}.}
+\item{genome}{Passed to \code{morie_vepan_annotate}.}
+\item{upstream}{Passed to \code{morie_vepan_annotate}. Defaults to \code{5000}.}
+\item{downstream}{Passed to \code{morie_vepan_annotate}. Defaults to \code{5000}.}
+\item{mode}{One of \code{"all"}, \code{"per_gene"}, \code{"pick"}. Defaults to \code{"all"}.}
+\item{no_intergenic}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{
 Part of the vepan_native implementation; see the file header for the source it follows.

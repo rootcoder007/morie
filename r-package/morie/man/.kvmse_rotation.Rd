@@ -8,8 +8,8 @@
 .kvmse_rotation(d, seed)
 }
 \arguments{
-\item{d}{See Usage.}
-\item{seed}{See Usage.}
+\item{d}{A count; the body uses it as \code{seq_len(...)}.}
+\item{seed}{Passed to \code{.t1_lcg}.}
 }
 \description{
 Part of the tqkmse implementation; see the file header for the source it follows.

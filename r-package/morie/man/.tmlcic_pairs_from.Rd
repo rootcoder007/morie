@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{cluster}{See Usage.}
-\item{n}{See Usage.}
+\item{n}{A count; the body uses it as \code{seq_len(...)}.}
 }
 \description{
 Part of the tmlcic_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .secaead_qr(s, a, b, c, d)
 }
 \arguments{
-\item{s}{See Usage.}
+\item{s}{A vector; indexed elementwise.}
 \item{a}{See Usage.}
 \item{b}{See Usage.}
 \item{c}{See Usage.}

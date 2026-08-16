@@ -9,7 +9,7 @@ smo(y, K, C = 1, tol = 1e-08, max_iter = 20000)
 }
 \arguments{
 \item{y}{See Usage.}
-\item{K}{See Usage.}
+\item{K}{A matrix; indexed by row and column.}
 \item{C}{Defaults to \code{1}.}
 \item{tol}{Defaults to \code{1e-08}.}
 \item{max_iter}{Defaults to \code{20000}.}

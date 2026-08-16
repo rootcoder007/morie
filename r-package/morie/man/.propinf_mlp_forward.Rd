@@ -8,10 +8,10 @@
 .propinf_mlp_forward(net, x, final = "relu", hidden_act = "relu")
 }
 \arguments{
-\item{net}{See Usage.}
+\item{net}{A vector; its length is taken and its elements indexed.}
 \item{x}{See Usage.}
-\item{final}{Defaults to \code{"relu"}.}
-\item{hidden_act}{Defaults to \code{"relu"}.}
+\item{final}{One of \code{"linear"}, \code{"sigmoid"}, \code{"tanh"}. Defaults to \code{"relu"}.}
+\item{hidden_act}{Compared against \code{"tanh"}. Defaults to \code{"relu"}.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

@@ -9,7 +9,7 @@ term_weighting(X, how = "log_entropy")
 }
 \arguments{
 \item{X}{See Usage.}
-\item{how}{Defaults to \code{"log_entropy"}.}
+\item{how}{One of \code{"raw"}, \code{"tfidf"}. Defaults to \code{"log_entropy"}.}
 }
 \description{
 Part of the lsa_native implementation; see the file header for the source it follows.

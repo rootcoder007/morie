@@ -8,14 +8,14 @@
 .bca_interval(data, statistic, boot_stats, original, ci_level)
 }
 \arguments{
-\item{data}{See Usage.}
+\item{data}{Passed to \code{.nrow_like}.}
 \item{statistic}{See Usage.}
-\item{boot_stats}{See Usage.}
+\item{boot_stats}{Passed to \code{.pct}.}
 \item{original}{See Usage.}
-\item{ci_level}{See Usage.}
+\item{ci_level}{Numeric; combined arithmetically in the body.}
 }
 \description{
-Part of the bootstrap_methods implementation; see the file header for the source it follows.
+A step of the bootstrap_methods implementation. Called by \code{bootstrap}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{ci_lo}, \code{ci_hi}, \code{acc}.

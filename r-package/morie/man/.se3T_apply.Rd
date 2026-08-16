@@ -8,8 +8,8 @@
 .se3T_apply(R, v)
 }
 \arguments{
-\item{R}{See Usage.}
-\item{v}{See Usage.}
+\item{R}{A matrix; indexed by row and column.}
+\item{v}{A vector; indexed elementwise.}
 }
 \description{
 Part of the se3T_native implementation; see the file header for the source it follows.

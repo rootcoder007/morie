@@ -12,7 +12,7 @@ counterfactual_mean(Y, A, L, a_star, strata_probs = NULL)
 \item{A}{See Usage.}
 \item{L}{See Usage.}
 \item{a_star}{See Usage.}
-\item{strata_probs}{Defaults to \code{NULL}.}
+\item{strata_probs}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 }
 \description{
 Part of the tlgcmp_native implementation; see the file header for the source it follows.

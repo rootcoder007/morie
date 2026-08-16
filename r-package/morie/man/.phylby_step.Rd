@@ -8,14 +8,14 @@
 .phylby_step(state, seqs, pi, prior_mean, partitions, rnd, beta, tune)
 }
 \arguments{
-\item{state}{See Usage.}
-\item{seqs}{See Usage.}
-\item{pi}{See Usage.}
-\item{prior_mean}{See Usage.}
-\item{partitions}{See Usage.}
+\item{state}{A list; the body reads \code{$rate}, \code{$rates}, \code{$tree} from it.}
+\item{seqs}{Passed to \code{.phylby_log_posterior}.}
+\item{pi}{Passed to \code{.phylby_log_posterior}.}
+\item{prior_mean}{Passed to \code{.phylby_log_posterior}.}
+\item{partitions}{Passed to \code{.phylby_log_posterior}.}
 \item{rnd}{See Usage.}
-\item{beta}{See Usage.}
-\item{tune}{See Usage.}
+\item{beta}{Numeric; combined arithmetically in the body.}
+\item{tune}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the phylby_native implementation; see the file header for the source it follows.

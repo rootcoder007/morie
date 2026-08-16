@@ -8,11 +8,11 @@
 .wenge_parametric_models(yv, ev, Mm, Xm, ridge)
 }
 \arguments{
-\item{yv}{See Usage.}
-\item{ev}{See Usage.}
-\item{Mm}{See Usage.}
-\item{Xm}{See Usage.}
-\item{ridge}{See Usage.}
+\item{yv}{A vector; its length is taken.}
+\item{ev}{Numeric; combined arithmetically in the body.}
+\item{Mm}{A matrix; indexed by row and column.}
+\item{Xm}{A matrix; indexed by row and column.}
+\item{ridge}{Passed to \code{.s03logit}.}
 }
 \description{
 Part of the wenge_native implementation; see the file header for the source it follows.

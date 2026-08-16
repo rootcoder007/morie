@@ -8,7 +8,7 @@
 .snpest_ess(w)
 }
 \arguments{
-\item{w}{See Usage.}
+\item{w}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the snpest_native implementation; see the file header for the source it follows.

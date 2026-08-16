@@ -8,7 +8,7 @@
 .opnclp_predict(fit, compute)
 }
 \arguments{
-\item{fit}{See Usage.}
+\item{fit}{A list; the body reads \code{$alpha}, \code{$beta}, \code{$range} from it.}
 \item{compute}{See Usage.}
 }
 \description{

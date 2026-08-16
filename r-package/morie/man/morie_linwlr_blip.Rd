@@ -8,9 +8,9 @@
 morie_linwlr_blip(a, w, psi)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{w}{See Usage.}
-\item{psi}{See Usage.}
+\item{a}{Passed to \code{.linwlr_vec}.}
+\item{w}{Optional; may be \code{NULL}. Passed to \code{.linwlr_mat}.}
+\item{psi}{A vector; indexed elementwise.}
 }
 \description{
 Part of the linwlr_native implementation; see the file header for the source it follows.

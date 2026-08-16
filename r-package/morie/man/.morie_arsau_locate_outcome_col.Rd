@@ -9,10 +9,10 @@
 }
 \arguments{
 \item{df}{See Usage.}
-\item{target}{See Usage.}
+\item{target}{Character; passed to \code{tolower}.}
 }
 \description{
-Part of the arsau_analyze implementation; see the file header for the source it follows.
+A step of the arsau_analyze implementation. Called by \code{morie_arsau_analyze_individual_records}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{[}.

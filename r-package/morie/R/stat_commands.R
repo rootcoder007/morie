@@ -465,7 +465,7 @@ print.morie_stat_command <- function(x, ...) {
 #' R/ directory for files whose names begin with a known prefix.  Falls
 #' back to scanning the function\'s source attributes when available.
 #'
-#' @param fn_name See Usage.
+#' @param fn_name Character; passed to \code{startsWith}.
 #' @return A character value.
 #' @export
 .morie_infer_category <- function(fn_name) {

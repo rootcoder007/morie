@@ -17,7 +17,8 @@
 
 #' .sammkr_flat
 #'
-#' Part of the sammkr_native implementation; see the file header for the
+#' A step of the sammkr_native implementation. Called by \code{iou}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param m See Usage.
@@ -35,7 +36,8 @@
 
 #' average_of_valid_masks
 #'
-#' Part of the sammkr_native implementation; see the file header for the
+#' A step of the sammkr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param masks See Usage.
@@ -62,11 +64,12 @@ average_of_valid_masks <- function(masks) {
 
 #' iou
 #'
-#' Part of the sammkr_native implementation; see the file header for the
+#' A step of the sammkr_native implementation. Called by \code{rank_masks}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param a See Usage.
-#' @param b See Usage.
+#' @param a Passed to \code{.sammkr_flat}.
+#' @param b Passed to \code{.sammkr_flat}.
 #' @param threshold Defaults to \code{0.5}.
 #' @return A numeric value.
 #' @export
@@ -83,10 +86,11 @@ iou <- function(a, b, threshold = 0.5) {
 
 #' min_loss_over_masks
 #'
-#' Part of the sammkr_native implementation; see the file header for the
+#' A step of the sammkr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param predictions See Usage.
+#' @param predictions A vector; its length is taken.
 #' @param target See Usage.
 #' @param loss_fn See Usage.
 #' @return A list with \code{loss}, \code{index}, \code{losses}, \code{mean_loss}, \code{gap}, \code{note}.
@@ -105,10 +109,11 @@ min_loss_over_masks <- function(predictions, target, loss_fn) {
 
 #' whole_part_subpart
 #'
-#' Part of the sammkr_native implementation; see the file header for the
+#' A step of the sammkr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param masks See Usage.
+#' @param masks A vector; its length is taken.
 #' @param target_hierarchy Defaults to \code{NULL}.
 #' @return A list with \code{assignment}, \code{sizes}, \code{nested}, \code{note}.
 #' @export
@@ -140,10 +145,11 @@ whole_part_subpart <- function(masks, target_hierarchy = NULL) {
 
 #' rank_masks
 #'
-#' Part of the sammkr_native implementation; see the file header for the
+#' A step of the sammkr_native implementation. Called by \code{morie_sammkr}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param masks See Usage.
+#' @param masks A vector; its length is taken.
 #' @param predicted_iou See Usage.
 #' @param target Defaults to \code{NULL}.
 #' @return The value of \code{out}, as built in the body.
@@ -173,7 +179,8 @@ rank_masks <- function(masks, predicted_iou, target = NULL) {
 
 #' morie_sammkr
 #'
-#' Part of the sammkr_native implementation; see the file header for the
+#' A step of the sammkr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param masks See Usage.
@@ -190,7 +197,8 @@ sammultimask <- rank_masks
 
 #' .sammkr_cheatsheet
 #'
-#' Part of the sammkr_native implementation; see the file header for the
+#' A step of the sammkr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

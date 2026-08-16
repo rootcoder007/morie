@@ -44,8 +44,8 @@ NULL
 #' (intercept already folded in).  Uses log1p(exp(-|eta|)) for
 #' stability.
 #'
-#' @param eta See Usage.
-#' @param y See Usage.
+#' @param eta Numeric; passed to \code{exp}.
+#' @param y Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .tso_logit_ll <- function(eta, y) {
@@ -60,9 +60,9 @@ NULL
 #' binary problems and constrain beta to be shared while letting
 #' cutpoint intercepts differ.  Mirrors _logit_fit_no_intercept().
 #'
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{nrow}.
 #' @param y See Usage.
-#' @param K See Usage.
+#' @param K Numeric; combined arithmetically in the body.
 #' @param max_iter See Usage.
 #' @param tol See Usage.
 #' @return A list with \code{intercepts}, \code{beta}.

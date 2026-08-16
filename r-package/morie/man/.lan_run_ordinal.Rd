@@ -8,13 +8,13 @@
 .lan_run_ordinal(df, outcome_col, race_cols, gender_col, control_cols, ordinal_levels, split_by_gender)
 }
 \arguments{
-\item{df}{See Usage.}
-\item{outcome_col}{See Usage.}
-\item{race_cols}{See Usage.}
-\item{gender_col}{See Usage.}
+\item{df}{A matrix; indexed by row and column.}
+\item{outcome_col}{Passed to \code{.lan_ard_result}.}
+\item{race_cols}{Passed to \code{.lan_ard_result}.}
+\item{gender_col}{Passed to \code{.lan_ard_result}.}
 \item{control_cols}{See Usage.}
-\item{ordinal_levels}{See Usage.}
-\item{split_by_gender}{See Usage.}
+\item{ordinal_levels}{A vector; its length is taken and its elements indexed.}
+\item{split_by_gender}{A flag; the body branches on it.}
 }
 \description{
 Part of the laniyonu_actuarial_risk_disparity implementation; see the file header for the source it follows.

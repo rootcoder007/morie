@@ -8,8 +8,8 @@
 .morie_jo_ols(x, y)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{y}{See Usage.}
+\item{x}{A matrix; indexed by row and column.}
+\item{y}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the ts_joseph implementation; see the file header for the source it follows.

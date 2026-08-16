@@ -3,12 +3,12 @@
 % the formals.
 \name{morie_se3T_rotation_matrix}
 \alias{morie_se3T_rotation_matrix}
-\title{Rodrigues\\' formula -- a genuine element of SO(3)}
+\title{Rodrigues\' formula -- a genuine element of SO(3)}
 \usage{
 morie_se3T_rotation_matrix(axis, angle)
 }
 \arguments{
-\item{axis}{See Usage.}
+\item{axis}{Passed to \code{.se3T_vec}.}
 \item{angle}{See Usage.}
 }
 \description{

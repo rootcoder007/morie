@@ -34,7 +34,8 @@ NULL
 
 #' .tps_temporal_result
 #'
-#' Part of the tps_temporal implementation; see the file header for the
+#' A step of the tps_temporal implementation. Called by \code{morie_tps_arima_forecast}, \code{morie_tps_changepoint_detection}, \code{morie_tps_seasonal_pattern} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param title See Usage.
@@ -63,7 +64,8 @@ NULL
 
 #' .tps_temporal_fmt_round
 #'
-#' Part of the tps_temporal implementation; see the file header for the
+#' A step of the tps_temporal implementation. Called by \code{morie_tps_arima_forecast}, \code{morie_tps_changepoint_detection}, \code{morie_tps_seasonal_pattern} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
@@ -81,7 +83,7 @@ NULL
 #'
 #' with $dates (POSIXct, first-of-month) and $counts (integer).
 #'
-#' @param df See Usage.
+#' @param df A list; the body reads \code{$OCC_DAY}, \code{$OCC_MONTH}, \code{$OCC_YEAR} from it.
 #' @return A list with \code{dates}, \code{counts}.
 #' @export
 .tps_temporal_monthly <- function(df) {

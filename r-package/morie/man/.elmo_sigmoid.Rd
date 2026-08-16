@@ -8,10 +8,10 @@
 .elmo_sigmoid(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Numeric; combined arithmetically in the body.}
 }
 \description{
-Part of the elmo_native implementation; see the file header for the source it follows.
+A step of the elmo_native implementation. Called by \code{.lstm_step}. See the file header for the source the module follows.
 }
 \value{
 A numeric value.

@@ -8,7 +8,7 @@
 .sv_dl_insert(p)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{A list; the body reads \code{$len2}, \code{$pos1}, \code{$pos2} from it.}
 }
 \description{
 Part of the sv_dl_native implementation; see the file header for the source it follows.

@@ -11,7 +11,7 @@
 \item{values}{See Usage.}
 \item{basis}{See Usage.}
 \item{n}{See Usage.}
-\item{ridge}{See Usage.}
+\item{ridge}{Passed to \code{.tmldyn_lstsq}.}
 }
 \description{
 Part of the tmldyn_native implementation; see the file header for the source it follows.

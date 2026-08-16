@@ -8,7 +8,7 @@
 .rfppos_norm(a)
 }
 \arguments{
-\item{a}{See Usage.}
+\item{a}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the rfppos_native implementation; see the file header for the source it follows.

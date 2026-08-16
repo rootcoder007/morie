@@ -24,7 +24,7 @@ viruses, and its use in selecting antigens for multivalent vaccines;
 the competing risks framework with each genotype a separate endpoint;
 cumulative incidence as the cumulative parameter, of greater public
 health relevance when vaccine effects wane; the Aalen-Johansen
-estimator\\'s consistency under uninformative censoring and
+estimator\'s consistency under uninformative censoring and
 nonparametric efficiency absent covariates; the concern of informative
 censoring and the routine availability of prognostic covariates; and
 the drawback that semiparametric hazard-based alternatives require a

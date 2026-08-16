@@ -8,7 +8,7 @@
 motfsr_uniform_theta(w, L, mu)
 }
 \arguments{
-\item{w}{See Usage.}
+\item{w}{A count; the body uses it as \code{seq_len(...)}.}
 \item{L}{See Usage.}
 \item{mu}{See Usage.}
 }

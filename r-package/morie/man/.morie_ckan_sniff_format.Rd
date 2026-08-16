@@ -8,11 +8,11 @@
 .morie_ckan_sniff_format(url, as_format = NULL)
 }
 \arguments{
-\item{url}{See Usage.}
-\item{as_format}{Defaults to \code{NULL}.}
+\item{url}{Character; passed to \code{sub}.}
+\item{as_format}{Optional; may be \code{NULL}. Character; passed to \code{tolower}.}
 }
 \description{
-Part of the ingest_ckan implementation; see the file header for the source it follows.
+A step of the ingest_ckan implementation. Called by \code{morie_ingest_ckan_read_resource}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{tolower}.

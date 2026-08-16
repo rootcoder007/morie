@@ -8,7 +8,7 @@
 .distance(pts, a, b)
 }
 \arguments{
-\item{pts}{See Usage.}
+\item{pts}{A vector; indexed elementwise.}
 \item{a}{See Usage.}
 \item{b}{See Usage.}
 }

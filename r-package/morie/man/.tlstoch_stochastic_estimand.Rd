@@ -9,11 +9,11 @@
 }
 \arguments{
 \item{Q_fn}{See Usage.}
-\item{A}{See Usage.}
-\item{W}{See Usage.}
-\item{delta}{See Usage.}
-\item{lower}{Defaults to \code{NULL}.}
-\item{upper}{Defaults to \code{NULL}.}
+\item{A}{Passed to \code{.tlstoch_vec}.}
+\item{W}{Passed to \code{.tlstoch_mat}.}
+\item{delta}{Passed to \code{.tlstoch_shift_regime}.}
+\item{lower}{Passed to \code{.tlstoch_shift_regime}.}
+\item{upper}{Passed to \code{.tlstoch_shift_regime}.}
 }
 \description{
 Part of the tlstoch_native implementation; see the file header for the source it follows.

@@ -10,7 +10,8 @@
 
 #' symbolic_representation
 #'
-#' Part of the llavx_native implementation; see the file header for the
+#' A step of the llavx_native implementation. Called by \code{morie_llavx}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param captions See Usage.
@@ -37,10 +38,11 @@ symbolic_representation <- function(captions, boxes) {
 
 #' instruction_prompt
 #'
-#' Part of the llavx_native implementation; see the file header for the
+#' A step of the llavx_native implementation. Called by \code{morie_llavx}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param symbolic See Usage.
+#' @param symbolic A list; the body reads \code{$text} from it.
 #' @param kind Defaults to \code{"conversation"}.
 #' @return A list with \code{prompt}, \code{kind}.
 #' @export
@@ -58,11 +60,12 @@ instruction_prompt <- function(symbolic, kind = "conversation") {
 
 #' project_patches
 #'
-#' Part of the llavx_native implementation; see the file header for the
+#' A step of the llavx_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param patch_features See Usage.
-#' @param W See Usage.
+#' @param W A matrix; indexed by row and column.
 #' @param b Defaults to \code{NULL}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -90,7 +93,8 @@ project_patches <- function(patch_features, W, b = NULL) {
 
 #' build_sequence
 #'
-#' Part of the llavx_native implementation; see the file header for the
+#' A step of the llavx_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param visual_tokens See Usage.
@@ -112,7 +116,8 @@ build_sequence <- function(visual_tokens, text_embeddings) {
 
 #' training_stage
 #'
-#' Part of the llavx_native implementation; see the file header for the
+#' A step of the llavx_native implementation. Called by \code{morie_llavx}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param stage See Usage.
@@ -137,7 +142,8 @@ training_stage <- function(stage) {
 
 #' .llavx_cheatsheet
 #'
-#' Part of the llavx_native implementation; see the file header for the
+#' A step of the llavx_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.
@@ -151,7 +157,8 @@ llava_visual_chat <- build_sequence
 
 #' morie_llavx
 #'
-#' Part of the llavx_native implementation; see the file header for the
+#' A step of the llavx_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param captions Defaults to \code{NULL}.

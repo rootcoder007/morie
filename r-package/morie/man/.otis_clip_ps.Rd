@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{e}{See Usage.}
-\item{eps}{Defaults to \code{0.02}.}
+\item{eps}{Numeric; combined arithmetically in the body. Defaults to \code{0.02}.}
 }
 \description{
 Part of the otis_causal implementation; see the file header for the source it follows.

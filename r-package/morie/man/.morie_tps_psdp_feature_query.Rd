@@ -8,10 +8,10 @@
 .morie_tps_psdp_feature_query(layer_url, where = "1=1", max_features = NULL, return_geometry = FALSE)
 }
 \arguments{
-\item{layer_url}{See Usage.}
-\item{where}{Defaults to \code{"1=1"}.}
-\item{max_features}{Defaults to \code{NULL}.}
-\item{return_geometry}{Defaults to \code{FALSE}.}
+\item{layer_url}{Passed to \code{.morie_dataset_tps_fetch}.}
+\item{where}{Passed to \code{.morie_dataset_tps_fetch}. Defaults to \code{"1=1"}.}
+\item{max_features}{Passed to \code{.morie_dataset_tps_fetch}.}
+\item{return_geometry}{Passed to \code{.morie_dataset_tps_fetch}. Defaults to \code{FALSE}.}
 }
 \description{
 data.frame of attributes. Mock this in tests.

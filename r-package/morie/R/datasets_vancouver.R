@@ -104,7 +104,8 @@ NULL
 
 #' .morie_vancouver_fixture
 #'
-#' Part of the datasets_vancouver implementation; see the file header
+#' A step of the datasets_vancouver implementation. Called by \code{morie_datasets_vancouver_community_centres}, \code{morie_datasets_vancouver_community_food_markets}, \code{morie_datasets_vancouver_disability_parking} and 6 others in the module.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param fname See Usage.

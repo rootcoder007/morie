@@ -8,14 +8,14 @@
 .gwasem_reml_delta(y, X, evals, evecs, ml)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{X}{See Usage.}
-\item{evals}{See Usage.}
-\item{evecs}{See Usage.}
-\item{ml}{See Usage.}
+\item{y}{A matrix; passed to \code{\%*\%}.}
+\item{X}{A matrix; passed to \code{ncol}.}
+\item{evals}{Numeric; combined arithmetically in the body.}
+\item{evecs}{A matrix; passed to \code{t}.}
+\item{ml}{A flag; the body branches on it.}
 }
 \description{
-Part of the gwasem_native implementation; see the file header for the source it follows.
+A step of the gwasem_native implementation. Called by \code{morie_gwasem_reml}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{delta}, \code{sigma_a2}, \code{sigma_e2}, \code{ll}.

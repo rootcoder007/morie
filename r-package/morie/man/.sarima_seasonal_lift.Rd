@@ -8,7 +8,7 @@
 .sarima_seasonal_lift(c, s)
 }
 \arguments{
-\item{c}{See Usage.}
+\item{c}{A vector; its length is taken and its elements indexed.}
 \item{s}{See Usage.}
 }
 \description{

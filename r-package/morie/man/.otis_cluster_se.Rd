@@ -8,7 +8,7 @@
 .otis_cluster_se(scores, cluster)
 }
 \arguments{
-\item{scores}{See Usage.}
+\item{scores}{A vector; its length is taken.}
 \item{cluster}{See Usage.}
 }
 \description{

@@ -11,10 +11,10 @@
 \item{n_features}{See Usage.}
 \item{n_fields}{See Usage.}
 \item{k_dim}{See Usage.}
-\item{model}{Defaults to \code{"ffm"}.}
+\item{model}{One of \code{"ffm"}, \code{"fm"}. Defaults to \code{"ffm"}.}
 }
 \description{
-Part of the ffmFM_native implementation; see the file header for the source it follows.
+A step of the ffmFM_native implementation. Called by \code{.fit_ffm}. See the file header for the source the module follows.
 }
 \value{
 One of two values, depending on the branch taken.
@@ -22,7 +22,7 @@ One of two values, depending on the branch taken.
 \references{
 Juan, Y., Zhuang, Y., Chin, W.-S. & Lin, C.-J. (2016) "Field-aware
 Factorization Machines for CTR Prediction", Proceedings of the Tenth
-ACM Conference on Recommender Systems (RecSys \\'16), 43-50,
+ACM Conference on Recommender Systems (RecSys \'16), 43-50,
 doi:10.1145/2959100.2959134. Sec. 2 (FM and its limitation), Sec. 3
 (the FFM model equation with the crossed field indices, the nfk
 parameter count, the logistic loss with y in {-1,1}, and the AdaGrad

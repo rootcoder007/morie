@@ -13,7 +13,8 @@
 
 #' gaussian_expansion
 #'
-#' Part of the schN_native implementation; see the file header for the
+#' A step of the schN_native implementation. Called by \code{cfconv}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param r See Usage.
@@ -38,7 +39,8 @@ gaussian_expansion <- function(r, mu_min = 0.0, mu_max = 6.0,
 
 #' cosine_cutoff
 #'
-#' Part of the schN_native implementation; see the file header for the
+#' A step of the schN_native implementation. Called by \code{cfconv}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param r See Usage.
@@ -54,7 +56,8 @@ cosine_cutoff <- function(r, cutoff = 5.0) {
 
 #' cfconv
 #'
-#' Part of the schN_native implementation; see the file header for the
+#' A step of the schN_native implementation. Called by \code{morie_schN}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param X See Usage.
@@ -94,12 +97,13 @@ cfconv <- function(X, R, filter_net, cutoff = 5.0, ...) {
 
 #' forces_from_energy
 #'
-#' Part of the schN_native implementation; see the file header for the
+#' A step of the schN_native implementation. Called by \code{invariance_error}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param energy_fn See Usage.
 #' @param R See Usage.
-#' @param h Defaults to \code{1e-05}.
+#' @param h Numeric; combined arithmetically in the body. Defaults to \code{1e-05}.
 #' @return A list with \code{estimate}, \code{forces}, \code{net_force}, \code{method}, \code{note}.
 #' @export
 forces_from_energy <- function(energy_fn, R, h = 1e-5) {
@@ -127,12 +131,13 @@ forces_from_energy <- function(energy_fn, R, h = 1e-5) {
 
 #' invariance_error
 #'
-#' Part of the schN_native implementation; see the file header for the
+#' A step of the schN_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param energy_fn See Usage.
 #' @param R See Usage.
-#' @param Q See Usage.
+#' @param Q A matrix; passed to \code{as.matrix}.
 #' @param g Defaults to \code{NULL}.
 #' @return A list with \code{energy_error}, \code{force_error}, \code{energy_invariant}, \code{forces_equivariant}, \code{note}.
 #' @export
@@ -162,7 +167,8 @@ invariance_error <- function(energy_fn, R, Q, g = NULL) {
 
 #' .schN_cheatsheet
 #'
-#' Part of the schN_native implementation; see the file header for the
+#' A step of the schN_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.
@@ -182,7 +188,8 @@ invariance_error <- function(energy_fn, R, Q, g = NULL) {
 
 #' morie_schN
 #'
-#' Part of the schN_native implementation; see the file header for the
+#' A step of the schN_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param ... Passed through.

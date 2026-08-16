@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{w}{See Usage.}
-\item{v}{See Usage.}
+\item{v}{A matrix; passed to \code{\%*\%}.}
 }
 \description{
 Part of the ts_joseph implementation; see the file header for the source it follows.

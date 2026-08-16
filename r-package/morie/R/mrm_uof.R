@@ -42,10 +42,11 @@ NULL
 
 #' .uof_gini
 #'
-#' Part of the mrm_uof implementation; see the file header for the
+#' A step of the mrm_uof implementation. Called by \code{mrm_uof_force_concentration}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x A vector; its length is taken.
 #' @return A numeric value.
 #' @export
 .uof_gini <- function(x) {
@@ -60,11 +61,12 @@ NULL
 
 #' .uof_hill_alpha
 #'
-#' Part of the mrm_uof implementation; see the file header for the
+#' A step of the mrm_uof implementation. Called by \code{mrm_uof_force_concentration}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param x_min Defaults to \code{1}.
+#' @param x A vector; its length is taken and its elements indexed.
+#' @param x_min Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @return A numeric value.
 #' @export
 .uof_hill_alpha <- function(x, x_min = 1.0) {
@@ -82,11 +84,12 @@ NULL
 
 #' .uof_topk_share
 #'
-#' Part of the mrm_uof implementation; see the file header for the
+#' A step of the mrm_uof implementation. Called by \code{mrm_uof_force_concentration}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param k See Usage.
+#' @param x A vector; its length is taken.
+#' @param k A count; the body uses it as \code{seq_len(...)}.
 #' @return A numeric value.
 #' @export
 .uof_topk_share <- function(x, k) {
@@ -101,12 +104,13 @@ NULL
 
 #' .uof_wilson_ci
 #'
-#' Part of the mrm_uof implementation; see the file header for the
+#' A step of the mrm_uof implementation. Called by \code{mrm_uof_demographic_disparity}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param k See Usage.
-#' @param n See Usage.
-#' @param z Defaults to \code{1.95996398454005}.
+#' @param k Numeric; combined arithmetically in the body.
+#' @param n Numeric; combined arithmetically in the body.
+#' @param z Numeric; combined arithmetically in the body. Defaults to \code{1.95996398454005}.
 #' @return A vector, from \code{c}.
 #' @export
 .uof_wilson_ci <- function(k, n, z = 1.959963984540054) {
@@ -127,13 +131,14 @@ NULL
 
 #' .uof_cramers_v
 #'
-#' Part of the mrm_uof implementation; see the file header for the
+#' A step of the mrm_uof implementation. Called by \code{mrm_uof_region_locality}, \code{mrm_uof_weapon_diversity}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param chi2 See Usage.
-#' @param n See Usage.
-#' @param r See Usage.
-#' @param c See Usage.
+#' @param chi2 Numeric; combined arithmetically in the body.
+#' @param n Numeric; combined arithmetically in the body.
+#' @param r Numeric; combined arithmetically in the body.
+#' @param c Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .uof_cramers_v <- function(chi2, n, r, c) {
@@ -146,10 +151,11 @@ NULL
 
 #' .uof_fmt_pct
 #'
-#' Part of the mrm_uof implementation; see the file header for the
+#' A step of the mrm_uof implementation. Called by \code{mrm_uof_data_quality_audit}, \code{mrm_uof_force_concentration}, \code{mrm_uof_region_locality}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Numeric; combined arithmetically in the body.
 #' @return A character value.
 #' @export
 .uof_fmt_pct <- function(p) {
@@ -161,7 +167,8 @@ NULL
 
 #' .uof_result
 #'
-#' Part of the mrm_uof implementation; see the file header for the
+#' A step of the mrm_uof implementation. Called by \code{mrm_uof_data_quality_audit}, \code{mrm_uof_demographic_disparity}, \code{mrm_uof_force_concentration} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param title See Usage.

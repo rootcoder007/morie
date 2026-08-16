@@ -180,7 +180,8 @@ morie_install_extras <- function(which = "missing",
 # Internal: read this package's Suggests field from its DESCRIPTION.
 #' Internal: read this package\'s Suggests field from its DESCRIPTION
 #'
-#' Part of the install_extras implementation; see the file header for
+#' A step of the install_extras implementation. Called by \code{morie_install_extras}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @return The value of \code{[}.
@@ -205,7 +206,8 @@ morie_install_extras <- function(which = "missing",
 # Internal: is a CRAN package installed locally?
 #' Internal: is a CRAN package installed locally?
 #'
-#' Part of the install_extras implementation; see the file header for
+#' A step of the install_extras implementation. Called by \code{.morie_check_system_libs}, \code{morie_install_extras}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param pkg See Usage.

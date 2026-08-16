@@ -9,8 +9,8 @@ smo_platt(y, K, C = 1, tol = 0.001, eps = 1e-05, max_passes = 200L, seed = 0L)
 }
 \arguments{
 \item{y}{See Usage.}
-\item{K}{See Usage.}
-\item{C}{Defaults to \code{1}.}
+\item{K}{Passed to \code{.smoopt_K}.}
+\item{C}{Passed to \code{.smoopt_bounds}. Defaults to \code{1}.}
 \item{tol}{Defaults to \code{0.001}.}
 \item{eps}{Defaults to \code{1e-05}.}
 \item{max_passes}{Defaults to \code{200L}.}

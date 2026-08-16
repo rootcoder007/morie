@@ -8,23 +8,23 @@
 reversible_jump_mcmc(models, moves, init_model, init_theta = numeric(0), n_iter = 10000, burn_in = 0, thin = 1, seed = 0, within = NULL, within_scale = 0.5, within_weight = 1, move_weight = 1, jacobian = "analytic", keep_chain = TRUE)
 }
 \arguments{
-\item{models}{See Usage.}
+\item{models}{A vector; indexed elementwise.}
 \item{moves}{See Usage.}
 \item{init_model}{See Usage.}
 \item{init_theta}{Defaults to \code{numeric(0)}.}
-\item{n_iter}{Defaults to \code{10000}.}
-\item{burn_in}{Defaults to \code{0}.}
-\item{thin}{Defaults to \code{1}.}
-\item{seed}{Defaults to \code{0}.}
-\item{within}{Defaults to \code{NULL}.}
-\item{within_scale}{Defaults to \code{0.5}.}
+\item{n_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{10000}.}
+\item{burn_in}{Numeric; combined arithmetically in the body. Defaults to \code{0}.}
+\item{thin}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
+\item{seed}{Passed to \code{.unif_stream}. Defaults to \code{0}.}
+\item{within}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
+\item{within_scale}{Passed to \code{.rw_within}. Defaults to \code{0.5}.}
 \item{within_weight}{Defaults to \code{1}.}
 \item{move_weight}{Defaults to \code{1}.}
-\item{jacobian}{Defaults to \code{"analytic"}.}
-\item{keep_chain}{Defaults to \code{TRUE}.}
+\item{jacobian}{One of \code{"analytic"}, \code{"numeric"}. Defaults to \code{"analytic"}.}
+\item{keep_chain}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
-Part of the bayrjmcmc_native implementation; see the file header for the source it follows.
+A step of the bayrjmcmc_native implementation. Called by \code{morie_bayrjmcmc}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{model_freq}, \code{visits}, \code{n_kept}, \code{accept}, \code{tried}, \code{chain}, \code{jacobian}, \code{method}, \code{note}.

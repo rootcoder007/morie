@@ -8,10 +8,10 @@
 .resnxt_block_equivalence(x, Wins, Wmids, Wouts, tol = 1e-09)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{Wins}{See Usage.}
-\item{Wmids}{See Usage.}
-\item{Wouts}{See Usage.}
+\item{x}{Passed to \code{.resnxt_aggregated_block}.}
+\item{Wins}{Passed to \code{.resnxt_aggregated_block}.}
+\item{Wmids}{Passed to \code{.resnxt_aggregated_block}.}
+\item{Wouts}{A vector; indexed elementwise.}
 \item{tol}{Defaults to \code{1e-09}.}
 }
 \description{

@@ -9,7 +9,7 @@ exposure_summary(A_history, how = "cumulative")
 }
 \arguments{
 \item{A_history}{See Usage.}
-\item{how}{Defaults to \code{"cumulative"}.}
+\item{how}{One of \code{"cumulative"}, \code{"duration"}, \code{"final"}. Defaults to \code{"cumulative"}.}
 }
 \description{
 Part of the polkrn_native implementation; see the file header for the source it follows.

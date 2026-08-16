@@ -10,7 +10,7 @@ surepi_compound_smoothing(values, current, passes = c(4, 2, 5, 3), multiplier = 
 \arguments{
 \item{values}{See Usage.}
 \item{current}{See Usage.}
-\item{passes}{Defaults to \code{c(4, 2, 5, 3)}.}
+\item{passes}{Numeric; passed to \code{max}. Defaults to \code{c(4, 2, 5, 3)}.}
 \item{multiplier}{Defaults to \code{2}.}
 }
 \description{

@@ -8,8 +8,8 @@
 morie_unclr_alr_inv(z, total)
 }
 \arguments{
-\item{z}{See Usage.}
-\item{total}{See Usage.}
+\item{z}{Numeric; passed to \code{exp}.}
+\item{total}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the unclr implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .psy_items(m, a, b, cc)
 }
 \arguments{
-\item{m}{See Usage.}
+\item{m}{A count; the body uses it as \code{rep(...)}.}
 \item{a}{See Usage.}
 \item{b}{See Usage.}
 \item{cc}{See Usage.}

@@ -8,7 +8,7 @@
 .mor_pq_reconstruct(levels, radius)
 }
 \arguments{
-\item{levels}{See Usage.}
+\item{levels}{A vector; its length is taken and its elements indexed.}
 \item{radius}{See Usage.}
 }
 \description{

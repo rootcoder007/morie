@@ -8,7 +8,7 @@
 .stahdo_random_dirs(p, n_dirs, seed)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{Passed to \code{.ghc_unif}.}
 \item{n_dirs}{See Usage.}
 \item{seed}{See Usage.}
 }

@@ -10,7 +10,7 @@ airline_autocovariances(theta, Theta, sigma2 = 1)
 \arguments{
 \item{theta}{See Usage.}
 \item{Theta}{See Usage.}
-\item{sigma2}{Defaults to \code{1}.}
+\item{sigma2}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
 }
 \description{
 Part of the sarima_native implementation; see the file header for the source it follows.

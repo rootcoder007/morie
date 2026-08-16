@@ -10,12 +10,12 @@
 \arguments{
 \item{layer_key}{See Usage.}
 \item{year}{See Usage.}
-\item{max_features}{See Usage.}
-\item{offline}{See Usage.}
-\item{layer_url}{See Usage.}
+\item{max_features}{Optional; may be \code{NULL}. Passed to \code{.morie_tps_psdp_feature_query}.}
+\item{offline}{A flag; the body branches on it.}
+\item{layer_url}{Optional; may be \code{NULL}. Passed to \code{.morie_tps_psdp_feature_query}.}
 }
 \description{
-Part of the datasets_tps_psdp implementation; see the file header for the source it follows.
+A step of the datasets_tps_psdp implementation. Called by \code{morie_datasets_tps_assault}, \code{morie_datasets_tps_autotheft}, \code{morie_datasets_tps_bicycletheft} and 9 others in the module. See the file header for the source the module follows.
 }
 \value{
 The value of \code{morie_datasets_tps_arcgis_hub_by_id}.

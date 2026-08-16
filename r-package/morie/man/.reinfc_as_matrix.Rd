@@ -8,7 +8,7 @@
 .reinfc_as_matrix(x, name)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Optional; may be \code{NULL}. A matrix; passed to \code{dim}.}
 \item{name}{See Usage.}
 }
 \description{

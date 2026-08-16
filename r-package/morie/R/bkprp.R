@@ -48,10 +48,11 @@ morie_bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
 
 #' .bkprp_sigma
 #'
-#' Part of the bkprp implementation; see the file header for the source
+#' A step of the bkprp implementation. Called by \code{morie_bkprp_backpropagation}.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param z See Usage.
+#' @param z Numeric; combined arithmetically in the body.
 #' @param activation See Usage.
 #' @return The value of \code{switch}.
 #' @export
@@ -69,12 +70,13 @@ morie_bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
 
 #' .bkprp_sigma_prime
 #'
-#' Part of the bkprp implementation; see the file header for the source
+#' A step of the bkprp implementation. Called by \code{morie_bkprp_backpropagation}.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param z See Usage.
+#' @param z A matrix; passed to \code{nrow}.
 #' @param activation See Usage.
-#' @param a See Usage.
+#' @param a Numeric; combined arithmetically in the body.
 #' @return The value of \code{switch}.
 #' @export
 .bkprp_sigma_prime <- function(z, activation, a) {

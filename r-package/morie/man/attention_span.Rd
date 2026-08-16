@@ -8,7 +8,7 @@
 attention_span(weights, position = NULL)
 }
 \arguments{
-\item{weights}{See Usage.}
+\item{weights}{Passed to \code{.sasrec_mat}.}
 \item{position}{Defaults to \code{NULL}.}
 }
 \description{

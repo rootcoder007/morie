@@ -8,13 +8,13 @@
 .gp_mle_lengthscale(X, y, nug, kernel)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{nug}{See Usage.}
-\item{kernel}{See Usage.}
+\item{X}{A matrix; indexed by row and column.}
+\item{y}{Passed to \code{.gp_profile_nll}.}
+\item{nug}{Passed to \code{.gp_profile_nll}.}
+\item{kernel}{Passed to \code{.gp_profile_nll}.}
 }
 \description{
-Part of the abcgp_native implementation; see the file header for the source it follows.
+A step of the abcgp_native implementation. Called by \code{gp_fit}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{ls}, as built in the body.

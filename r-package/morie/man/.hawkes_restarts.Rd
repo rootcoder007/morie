@@ -8,10 +8,10 @@
 .hawkes_restarts(phi0)
 }
 \arguments{
-\item{phi0}{See Usage.}
+\item{phi0}{A vector; its length is taken.}
 }
 \description{
-the fit is reproducible regardless of the caller\\\'s random seed. The perturbations span lower / higher eta and shifted baseline / shape; the lower-eta start in particular lets the optimiser reach the Poisson submodel when the data carries no self-excitation.
+the fit is reproducible regardless of the caller\\'s random seed. The perturbations span lower / higher eta and shifted baseline / shape; the lower-eta start in particular lets the optimiser reach the Poisson submodel when the data carries no self-excitation.
 }
 \value{
 The value of \code{lapply}.

@@ -8,7 +8,7 @@
 .neighbours(n_atoms, bonds)
 }
 \arguments{
-\item{n_atoms}{See Usage.}
+\item{n_atoms}{A count; the body uses it as \code{seq_len(...)}.}
 \item{bonds}{See Usage.}
 }
 \description{

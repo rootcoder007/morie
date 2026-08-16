@@ -29,7 +29,8 @@
 
 #' .new_residual_diag
 #'
-#' Part of the diagnostics implementation; see the file header for the
+#' A step of the diagnostics implementation. Called by \code{compute_residuals}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param raw See Usage.
@@ -41,7 +42,7 @@
 #' @param normality See Usage.
 #' @param hetero See Usage.
 #' @param autoc See Usage.
-#' @param outlier_indices See Usage.
+#' @param outlier_indices A vector; its length is taken.
 #' @return The value of \code{structure}.
 #' @export
 .new_residual_diag <- function(raw, std, student, deviance, pearson,
@@ -65,7 +66,8 @@
 
 #' .new_influence_diag
 #'
-#' Part of the diagnostics implementation; see the file header for the
+#' A step of the diagnostics implementation. Called by \code{compute_influence}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param h See Usage.
@@ -73,7 +75,7 @@
 #' @param dffits See Usage.
 #' @param dfbetas See Usage.
 #' @param covratio See Usage.
-#' @param influential See Usage.
+#' @param influential A vector; its length is taken.
 #' @param high_lev See Usage.
 #' @param high_cook See Usage.
 #' @return The value of \code{structure}.
@@ -93,7 +95,8 @@
 
 #' .new_collin_diag
 #'
-#' Part of the diagnostics implementation; see the file header for the
+#' A step of the diagnostics implementation. Called by \code{collinearity_diagnostics}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param vif See Usage.
@@ -119,7 +122,8 @@
 
 #' .new_spec_test
 #'
-#' Part of the diagnostics implementation; see the file header for the
+#' A step of the diagnostics implementation. Called by \code{hosmer_lemeshow_test}, \code{likelihood_ratio_test}, \code{link_test} and 4 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param name See Usage.
@@ -139,7 +143,8 @@
 
 #' .new_gof
 #'
-#' Part of the diagnostics implementation; see the file header for the
+#' A step of the diagnostics implementation. Called by \code{compute_goodness_of_fit}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param r_squared See Usage.
@@ -174,7 +179,8 @@
 
 #' .new_diag_report
 #'
-#' Part of the diagnostics implementation; see the file header for the
+#' A step of the diagnostics implementation. Called by \code{full_diagnostics}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param residuals See Usage.
@@ -199,10 +205,11 @@
 # Solve / pseudo-inverse helper.
 #' Solve / pseudo-inverse helper
 #'
-#' Part of the diagnostics implementation; see the file header for the
+#' A step of the diagnostics implementation. Called by \code{compute_influence}, \code{compute_residuals}, \code{compute_vif} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param A See Usage.
+#' @param A A matrix; passed to \code{solve}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .safe_solve <- function(A) {

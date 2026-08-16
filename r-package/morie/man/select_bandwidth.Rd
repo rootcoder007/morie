@@ -12,7 +12,7 @@ select_bandwidth(X, x0, bandwidths, kernel = "epanechnikov", criterion = "lepski
 \item{x0}{See Usage.}
 \item{bandwidths}{See Usage.}
 \item{kernel}{Defaults to \code{"epanechnikov"}.}
-\item{criterion}{Defaults to \code{"lepski"}.}
+\item{criterion}{One of \code{"lepski"}, \code{"smallest_se"}. Defaults to \code{"lepski"}.}
 \item{C}{Defaults to \code{1}.}
 }
 \description{

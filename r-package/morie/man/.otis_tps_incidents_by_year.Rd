@@ -8,7 +8,7 @@
 .otis_tps_incidents_by_year(df_tps)
 }
 \arguments{
-\item{df_tps}{See Usage.}
+\item{df_tps}{A vector; indexed elementwise.}
 }
 \description{
 Part of the otis_tps_overlay implementation; see the file header for the source it follows.

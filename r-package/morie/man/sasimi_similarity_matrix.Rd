@@ -9,7 +9,7 @@ sasimi_similarity_matrix(fps, coefficient = "tanimoto")
 }
 \arguments{
 \item{fps}{See Usage.}
-\item{coefficient}{Defaults to \code{"tanimoto"}.}
+\item{coefficient}{Passed to \code{.sasimi_coef}. Defaults to \code{"tanimoto"}.}
 }
 \description{
 Part of the sasimi_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .tps_stoch_monthly(ts)
 }
 \arguments{
-\item{ts}{See Usage.}
+\item{ts}{A vector; its length is taken.}
 }
 \description{
 Part of the tps_stochastic implementation; see the file header for the source it follows.

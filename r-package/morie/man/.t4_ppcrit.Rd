@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{n}{See Usage.}
-\item{kind}{Defaults to \code{"Z(t_alpha)"}.}
+\item{kind}{Compared against \code{"Z(alpha)"}. Defaults to \code{"Z(t_alpha)"}.}
 }
 \description{
 Part of the pptest implementation; see the file header for the source it follows.

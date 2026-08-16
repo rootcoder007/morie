@@ -8,7 +8,7 @@
 .morie_weight_result(weights, propensity, method, estimand, call, stabilize = FALSE, trim = NULL)
 }
 \arguments{
-\item{weights}{See Usage.}
+\item{weights}{A vector; its length is taken.}
 \item{propensity}{See Usage.}
 \item{method}{See Usage.}
 \item{estimand}{See Usage.}

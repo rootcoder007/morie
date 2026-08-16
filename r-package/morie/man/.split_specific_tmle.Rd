@@ -8,17 +8,17 @@
 .split_specific_tmle(ys, A_, W, levels, aL, aH, fit_rows, est_rows, ridge, trim, target)
 }
 \arguments{
-\item{ys}{See Usage.}
-\item{A_}{See Usage.}
-\item{W}{See Usage.}
-\item{levels}{See Usage.}
-\item{aL}{See Usage.}
-\item{aH}{See Usage.}
-\item{fit_rows}{See Usage.}
-\item{est_rows}{See Usage.}
-\item{ridge}{See Usage.}
-\item{trim}{See Usage.}
-\item{target}{See Usage.}
+\item{ys}{A vector; its length is taken and its elements indexed.}
+\item{A_}{A vector; indexed elementwise.}
+\item{W}{Passed to \code{.fit_q_dta}.}
+\item{levels}{Passed to \code{.fit_q_dta}.}
+\item{aL}{Passed to \code{.fit_g_dta}.}
+\item{aH}{Passed to \code{.fit_g_dta}.}
+\item{fit_rows}{Passed to \code{.fit_q_dta}.}
+\item{est_rows}{A vector; its length is taken.}
+\item{ridge}{Passed to \code{.fit_q_dta}.}
+\item{trim}{Passed to \code{.fit_g_dta}.}
+\item{target}{A flag; the body branches on it.}
 }
 \description{
 Part of the tmldta_native implementation; see the file header for the source it follows.

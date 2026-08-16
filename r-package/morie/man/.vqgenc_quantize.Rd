@@ -8,8 +8,8 @@
 .vqgenc_quantize(vectors, codebook)
 }
 \arguments{
-\item{vectors}{See Usage.}
-\item{codebook}{See Usage.}
+\item{vectors}{Passed to \code{.vqgenc_as_matrix}.}
+\item{codebook}{Passed to \code{.vqgenc_as_matrix}.}
 }
 \description{
 Part of the vqgenc_native implementation; see the file header for the source it follows.

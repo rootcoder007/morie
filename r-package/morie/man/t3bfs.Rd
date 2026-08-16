@@ -8,7 +8,7 @@
 t3bfs(A, s)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{A matrix; indexed by row and column.}
 \item{s}{See Usage.}
 }
 \description{

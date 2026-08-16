@@ -8,7 +8,7 @@
 reconstruct(model)
 }
 \arguments{
-\item{model}{See Usage.}
+\item{model}{A list; the body reads \code{$D}, \code{$S}, \code{$T} from it.}
 }
 \description{
 Part of the lsa_native implementation; see the file header for the source it follows.

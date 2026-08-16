@@ -8,8 +8,8 @@
 .hawkes_loglik_poisson(n, end_time)
 }
 \arguments{
-\item{n}{See Usage.}
-\item{end_time}{See Usage.}
+\item{n}{Numeric; combined arithmetically in the body.}
+\item{end_time}{Numeric; combined arithmetically in the body.}
 }
 \description{
 (eta = 0): its MLE baseline is nu_hat = n / end_time, giving logLik = n*log(n/T) - n. The Hawkes family nests this, so the Hawkes MLE log-likelihood can never fall below it.

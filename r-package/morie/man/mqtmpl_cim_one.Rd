@@ -8,7 +8,7 @@
 mqtmpl_cim_one(y, left, right, r_left, r_right, cofactors)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{A vector; its length is taken.}
 \item{left}{See Usage.}
 \item{right}{See Usage.}
 \item{r_left}{See Usage.}
