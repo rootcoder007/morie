@@ -23,3 +23,7 @@ A vector, from \code{sort}.
 Base R only.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+motfsr_alphabet_of(V, V)
+}

@@ -17,3 +17,7 @@ The paper\'s similarity score S = 2 D / (d_i + d_j)
 A numeric similarity in \code{[0, 1]}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_torsion_similarity(V, V)
+}

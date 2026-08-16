@@ -13,3 +13,6 @@ the registry (aliases are not counted).
 \description{
 Total number of registered commands (excluding aliases)
 }
+\examples{
+n_stat_commands()
+}

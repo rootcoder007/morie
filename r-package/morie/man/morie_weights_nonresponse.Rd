@@ -23,3 +23,7 @@ are scaled up so each cell's weighted total is preserved.
 Within each cell, scales respondent weights up by total/responder ratio.
 Non-respondents end up with weight 0.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_nonresponse(V, V)
+}

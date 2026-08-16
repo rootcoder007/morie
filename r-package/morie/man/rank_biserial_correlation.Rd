@@ -17,3 +17,7 @@ A \code{morie_effect_size}.
 \description{
 Rank-biserial correlation (matched rank version)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+rank_biserial_correlation(V, V)
+}

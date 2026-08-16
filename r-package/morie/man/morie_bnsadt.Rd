@@ -24,3 +24,7 @@ Publication-bias correction with its adversarial bound
 A list with the fit, the corrected estimate under it, and the   adversarial interval over the family with the beta attaining each   end.
 }
 \keyword{internal}
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+morie_bnsadt(M, M)
+}

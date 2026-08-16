@@ -31,3 +31,7 @@ large as the diameter collapses everything into one cluster.
 Croucher et al. (2015), Nucleic Acids Research
 43(3):e15.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Cluseq(V)
+}

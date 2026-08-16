@@ -12,3 +12,6 @@ Named list (ok / error / model / project / location / reply).
 \description{
 Tiny smoke test for the Vertex AI client
 }
+\examples{
+morie_vertex_health_check()
+}

@@ -27,3 +27,7 @@ A numeric value.
 Base R only.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+mqtmpl_imputation_weights(V, V)
+}

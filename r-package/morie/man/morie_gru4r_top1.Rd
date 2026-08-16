@@ -19,3 +19,7 @@ The smoothed relative rank :math:`\\sigma(r_j - r_i)` plus, when \code{regulariz
 Scalar loss.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_gru4r_top1(V, V)
+}

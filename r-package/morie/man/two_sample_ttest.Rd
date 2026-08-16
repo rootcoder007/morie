@@ -21,3 +21,7 @@ Cohen's d effect size, and combined sample size.
 \description{
 Independent two-sample t-test (equal or unequal variance)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+two_sample_ttest(V, V)
+}

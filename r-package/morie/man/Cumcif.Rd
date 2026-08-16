@@ -30,3 +30,7 @@ module's own stub signature.
 Aalen & Johansen (1978), Scand. J. Statist.
 5(3):141-150.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Cumcif(V, V)
+}

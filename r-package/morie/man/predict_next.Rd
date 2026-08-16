@@ -20,3 +20,7 @@ Part of the sasRec_native implementation; see the file header for the source it 
 A list with \code{estimate}, \code{ranking}, \code{n_scored}, \code{method}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+predict_next(V, V)
+}

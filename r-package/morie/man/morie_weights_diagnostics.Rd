@@ -21,3 +21,7 @@ A named list with elements \code{n}, \code{sum_weights},
 Returns a named list with summary statistics, Kish ESS, design effect,
 weight-range ratio, and percentile vector.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_diagnostics(V)
+}

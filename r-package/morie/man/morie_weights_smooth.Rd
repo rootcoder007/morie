@@ -27,3 +27,7 @@ rescaled to preserve the original weight sum.
 \description{
 Smooth survey weights via shrinkage toward the mean (or log-mean).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_smooth(V)
+}

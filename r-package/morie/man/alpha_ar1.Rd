@@ -14,3 +14,7 @@ Andrews (1991) eq. 6.4, alpha(q) from p AR(1) fits
 A list with \code{alpha}, \code{fits}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+alpha_ar1(V)
+}

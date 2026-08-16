@@ -34,3 +34,6 @@ integer to a data.frame) or \code{df} + \code{year_col}.
 Change-point detection is the manual largest-absolute-difference
 heuristic (the R port does not require \pkg{changepoint}).
 }
+\examples{
+mrm_uof_yoy_change()
+}

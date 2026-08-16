@@ -14,3 +14,7 @@ Half-sample bootstrap test of RATE = 0
 A list with \code{estimate}, \code{se}, \code{z}, \code{p_value}, \code{weight}, \code{reps}, \code{n}, \code{null}, \code{method}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+rate_test(V, V)
+}

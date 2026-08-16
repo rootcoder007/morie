@@ -43,3 +43,7 @@ p-value uses (1 + count of permutation statistics at least T_obs)
 divided by (B+1), per Phipson and Smyth 2010.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+permt(V, V)
+}

@@ -22,3 +22,7 @@ Computes the partial-correlation matrix of a multivariate sample
 partial correlations) and the joint Gaussian copula log-likelihood.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+vines(V)
+}

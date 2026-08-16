@@ -36,3 +36,7 @@ one-way random-intercept fit by moments.
 Nakagawa & Schielzeth (2013), Methods Ecol. Evol.
 4(2):133-142.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Ccngg(V)
+}

@@ -19,3 +19,7 @@ Cohen's d, and combined sample size.
 \description{
 Welch's t-test (convenience wrapper)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+welch_ttest(V, V)
+}

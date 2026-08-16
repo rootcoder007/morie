@@ -14,3 +14,7 @@ Quantise samples with a fixed codebook
 A list with \code{estimate}, \code{indices}, \code{values},   \code{mse}, \code{levels}, \code{method}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_tqlld_quantize_with_codebook(V, V)
+}

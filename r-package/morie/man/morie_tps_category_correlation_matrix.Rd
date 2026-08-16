@@ -18,3 +18,7 @@ For every category in \code{dfs}, computes per-HOOD_158 counts,
 aligns onto a common (union) hood index, and reports the Pearson
 correlation matrix.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_category_correlation_matrix(D)
+}

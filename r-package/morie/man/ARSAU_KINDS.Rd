@@ -14,3 +14,6 @@ Character vector of sorted unique dataset kinds (e.g.
 \description{
 Known ARSAU dataset kinds.
 }
+\examples{
+ARSAU_KINDS()
+}

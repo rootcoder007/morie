@@ -14,3 +14,7 @@ Qini curve: cumulative gain from treating the top fraction
 A list with \code{spend}, \code{gain}, \code{ate}, \code{n}, \code{constrained}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+qini_curve(V, V)
+}

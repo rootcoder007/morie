@@ -20,3 +20,7 @@ The trend vector T = (1/N) sum (a_i - A) S_i and its randomisation test
 A list with the vector, descriptors, length, null mean and   sd, and the z-score.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_trend_vector(V, V)
+}

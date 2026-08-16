@@ -21,3 +21,7 @@ spectrum as \code{x} (approximate).
 Rangayyan & Krishnan (2015), Ch. 5;
 Oppenheim & Schafer (2010).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_dsp_min_phase(V)
+}

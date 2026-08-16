@@ -17,3 +17,7 @@ Basic composition of privacy budgets
 A list with the total epsilon, the number of releases, and   a note.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_composition_budget(V)
+}

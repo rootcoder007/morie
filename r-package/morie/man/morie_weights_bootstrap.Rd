@@ -23,3 +23,7 @@ A numeric matrix of bootstrap replicate weights with
 \description{
 Bootstrap replicate weights (Rao-Wu rescaling within strata).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_bootstrap(V)
+}

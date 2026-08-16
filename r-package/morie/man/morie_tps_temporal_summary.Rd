@@ -19,3 +19,7 @@ Year / month / day-of-week / hour-of-day rollups, plus a coverage
 line.  Robust to missing columns: only includes tables for the
 fields actually present.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_temporal_summary(D)
+}

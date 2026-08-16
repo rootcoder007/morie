@@ -41,3 +41,6 @@ Related upstream resources Vee surfaced 2026-05-25:
 \item \url{https://github.com/kianenigma/awesome-psychedelics.git} (curated index)
 }
 }
+\examples{
+morie_entheo_clone_dmt_imaging()
+}

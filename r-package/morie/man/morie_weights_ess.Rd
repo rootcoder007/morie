@@ -16,3 +16,7 @@ Length-1 numeric: the Kish effective sample size (0 when
 \description{
 Kish effective sample size: \eqn{(\sum w_i)^2 / \sum w_i^2}{(sum w_i)^2 / sum w_i^2}.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_ess(V)
+}

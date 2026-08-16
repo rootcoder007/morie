@@ -18,3 +18,7 @@ One uniform, J evenly spaced points through the cumulative weights; the count pa
 Integer vector of indices.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+systematic_resample(V)
+}

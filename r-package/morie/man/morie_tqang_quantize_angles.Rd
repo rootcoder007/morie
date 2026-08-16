@@ -18,3 +18,7 @@ Returns a list with the sector indices, the reconstructed angles, the wrapped er
 A list with \code{estimate}, \code{indices}, \code{values}, \code{errors}, \code{mse}, \code{max_abs_error}, \code{delta}, \code{half_delta}, \code{mse_bound}, \code{bits}, \code{levels}, \code{method}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_tqang_quantize_angles(V)
+}

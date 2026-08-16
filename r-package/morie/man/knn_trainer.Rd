@@ -18,3 +18,6 @@ Part of the memb_native implementation; see the file header for the source it fo
 The value of \code{function}.
 }
 \keyword{internal}
+\examples{
+knn_trainer()
+}

@@ -17,3 +17,7 @@ Markov transition matrix on \code{Region_AtTimeOfPlacement} within
 each person-year, with stationary distribution and off-diagonal
 Theil-T concentration.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_intra_year_transition_matrix(V)
+}

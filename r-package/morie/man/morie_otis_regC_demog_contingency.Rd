@@ -17,3 +17,7 @@ Per-person-year multi-region indicator (\code{regC >= 2}) cross-
 tabulated with Gender and Age_Category; reports chi-square +
 Cramer's V on each.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_regC_demog_contingency(V)
+}

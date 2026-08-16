@@ -17,3 +17,7 @@ Equation 5: \eqn{\hat S_N = (n-1)\hat S / \mathrm{Tr}(P\hat S P)} with \eqn{P = 
 Normalised matrix.
 }
 \keyword{internal}
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+morie_gwasem_gower(M)
+}

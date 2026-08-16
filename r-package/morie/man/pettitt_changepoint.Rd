@@ -22,3 +22,7 @@ approximate p-value.
 Pettitt (1979). A non-parametric approach to the
 change-point problem. \emph{J. R. Stat. Soc. C}, 28(2), 126--135.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+pettitt_changepoint(V)
+}

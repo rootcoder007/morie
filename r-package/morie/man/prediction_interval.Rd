@@ -19,3 +19,7 @@ Numeric c(lower, upper).
 \description{
 Prediction interval for a new study (random-effects meta)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+prediction_interval(V, V)
+}

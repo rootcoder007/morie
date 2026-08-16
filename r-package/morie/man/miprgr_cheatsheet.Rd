@@ -19,3 +19,6 @@ A character value.
 Base R only.
 }
 \keyword{internal}
+\examples{
+miprgr_cheatsheet()
+}
