@@ -223,12 +223,17 @@
   } else {
     X0 <- if (is.matrix(L0)) L0 else do.call(rbind, L0)
     X0d <- cbind(1, X0)
-    b0 <- .tmldyn_logit_irls(X0d, A0, ridge = 1e-8)
+    # the caller's penalty, not a fixed ridge: penalty was
+    # accepted and ignored, so a nearly separated treatment
+    # model could not be steadied by asking for it
+    b0 <- .tmldyn_logit_irls(X0d, A0, ridge = 1e-8,
+                             penalty = penalty)
     p0 <- .tmldyn_expit(as.numeric(X0d %*% b0))
     X1r <- lapply(seq_len(n), function(i) c(A0[i], L0[i, ], L1[i, ]))
     X1m <- do.call(rbind, X1r)
     X1d <- cbind(1, X1m)
-    b1 <- .tmldyn_logit_irls(X1d, A1, ridge = 1e-8)
+    b1 <- .tmldyn_logit_irls(X1d, A1, ridge = 1e-8,
+                             penalty = penalty)
     p1 <- .tmldyn_expit(as.numeric(X1d %*% b1))
   }
   if (!(trim >= 0 && trim < 0.5))
@@ -259,7 +264,7 @@
 #' @return The value of \code{b}, as built in the body.
 #' @export
 .tmldyn_logit_irls <- function(X, a, ridge = 1e-8, max_iter = 50L,
-                        tol = 1e-10) {
+                        tol = 1e-10, penalty = 0) {
   Xm <- if (is.matrix(X)) X else do.call(rbind, X)
   n <- nrow(Xm); p <- ncol(Xm)
   b <- rep(0, p)
@@ -268,7 +273,7 @@
     pc <- pmin(pmax(.tmldyn_expit(eta), .tmldyn_EPS), 1 - .tmldyn_EPS)
     W <- pc * (1 - pc)
     z <- eta + (a - pc) / W
-    XtWX <- crossprod(Xm, Xm * W) + ridge * diag(p)
+    XtWX <- crossprod(Xm, Xm * W) + (ridge + as.numeric(penalty)) * diag(p)
     XtWz <- crossprod(Xm, W * z)
     b_new <- tryCatch(solve(XtWX, XtWz),
                       error = function(e) solve(XtWX + 1e-8 * diag(p), XtWz))
