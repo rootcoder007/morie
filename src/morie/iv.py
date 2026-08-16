@@ -177,26 +177,16 @@ def _cluster_se(
 
     unique_c = np.unique(cluster_ids)
     G = len(unique_c)
-    meat = np.zeros((k, k))
+    # The score must use the PROJECTED regressors: the bread is
+    # inv(X' P_Z X), so the meat has to be built from Xhat = P_Z X for
+    # the two to be halves of the same sandwich. Scoring on raw X gives
+    # a variance that is neither the 2SLS one nor the OLS one.
+    X_hat = P_Z @ X
+    k_ = X.shape[1]
+    meat = np.zeros((k_, k_))
     for c in unique_c:
         mask = cluster_ids == c
-        Xc = X[mask]
-        Zc = Z[mask]
-        ec = resid[mask]
-        score = Xc.T @ (Zc @ np.linalg.pinv(Z.T @ Z) @ Z.T @ np.diag(ec) @ np.ones(mask.sum()))
-        # Simplified: use X'Z*e clustering
-        score_c = Xc.T @ np.diag(ec) @ Zc @ np.linalg.pinv(Z.T @ Z) @ Z.T[:, mask].sum(axis=1)
-        meat += np.outer(Xc.T @ (ec[:, None] * Zc).sum(axis=0), Xc.T @ (ec[:, None] * Zc).sum(axis=0))
-
-    # Simplified cluster-robust: direct sandwich
-    # Re-do with simpler formula
-    meat = np.zeros((k, k))
-    PZ_Z = np.linalg.pinv(Z.T @ Z) @ Z.T
-    for c in unique_c:
-        mask = cluster_ids == c
-        Xc = X[mask]
-        ec = resid[mask]
-        s = Xc.T @ ec  # (k,)
+        s = X_hat[mask].T @ resid[mask]
         meat += np.outer(s, s)
 
     correction = (G / (G - 1)) * ((n - 1) / (n - k))
