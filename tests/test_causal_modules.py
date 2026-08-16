@@ -488,7 +488,7 @@ class TestRDD:
         res = bandwidth_ik(x, y, cutoff=0.0)
         assert isinstance(res, BandwidthResult)
         assert res.h_opt > 0
-        assert res.method == "IK"
+        assert res.method == "IK 2012 plug-in"
 
     def test_rd_plot_data_returns_dict(self, rng):
         df = self._make_rdd_data(rng)
