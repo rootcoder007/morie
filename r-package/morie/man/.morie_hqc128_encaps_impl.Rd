@@ -8,7 +8,7 @@
 .morie_hqc128_encaps_impl(pk_sxp)
 }
 \arguments{
-\item{pk_sxp}{See Usage.}
+\item{pk_sxp}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

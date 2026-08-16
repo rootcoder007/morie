@@ -8,9 +8,9 @@
 .morie_forensics_get_json(url, params = list(), headers = list(), timeout = .MORIE_FORENSICS_DEFAULT_TIMEOUT, user_agent = .MORIE_FORENSICS_DEFAULT_UA, auth_signup_url = NULL, label = "forensics")
 }
 \arguments{
-\item{url}{See Usage.}
-\item{params}{Defaults to \code{list()}.}
-\item{headers}{Defaults to \code{list()}.}
+\item{url}{Passed to \code{.morie_dataset_http_text_with_status}.}
+\item{params}{Passed to \code{.morie_dataset_http_text_with_status}. Defaults to \code{list()}.}
+\item{headers}{A vector; its length is taken. Defaults to \code{list()}.}
 \item{timeout}{Defaults to \code{.MORIE_FORENSICS_DEFAULT_TIMEOUT}.}
 \item{user_agent}{Defaults to \code{.MORIE_FORENSICS_DEFAULT_UA}.}
 \item{auth_signup_url}{Defaults to \code{NULL}.}

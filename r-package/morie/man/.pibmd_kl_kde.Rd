@@ -8,9 +8,9 @@
 .pibmd_kl_kde(q, p, n_grid)
 }
 \arguments{
-\item{q}{See Usage.}
-\item{p}{See Usage.}
-\item{n_grid}{See Usage.}
+\item{q}{A vector; its length is taken.}
+\item{p}{A vector; its length is taken.}
+\item{n_grid}{A count; the body uses it as \code{seq_len(...)}.}
 }
 \description{
 Part of the pibmd_native implementation; see the file header for the source it follows.

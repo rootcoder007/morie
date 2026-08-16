@@ -8,10 +8,10 @@
 morie_rouge_n(candidate, reference, n = 1, beta = 1)
 }
 \arguments{
-\item{candidate}{See Usage.}
-\item{reference}{See Usage.}
-\item{n}{Defaults to \code{1}.}
-\item{beta}{Defaults to \code{1}.}
+\item{candidate}{Passed to \code{.rouge_toks}.}
+\item{reference}{Passed to \code{.rouge_get_refs_complex}.}
+\item{n}{Passed to \code{.rouge_ngrams}. Defaults to \code{1}.}
+\item{beta}{Passed to \code{.rouge_prf}. Defaults to \code{1}.}
 }
 \description{
 Part of the rouge_native implementation; see the file header for the source it follows.

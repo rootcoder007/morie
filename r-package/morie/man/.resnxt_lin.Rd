@@ -8,8 +8,8 @@
 .resnxt_lin(W, x)
 }
 \arguments{
-\item{W}{See Usage.}
-\item{x}{See Usage.}
+\item{W}{A vector; its length is taken and its elements indexed.}
+\item{x}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the resnxt_native implementation; see the file header for the source it follows.

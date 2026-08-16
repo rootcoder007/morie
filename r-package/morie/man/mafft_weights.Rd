@@ -8,7 +8,7 @@
 mafft_weights(k)
 }
 \arguments{
-\item{k}{See Usage.}
+\item{k}{A count; the body uses it as \code{rep(...)}.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .propinf_node_metric(layer, i)
 }
 \arguments{
-\item{layer}{See Usage.}
+\item{layer}{A list; the body reads \code{$W} from it.}
 \item{i}{See Usage.}
 }
 \description{

@@ -8,11 +8,11 @@
 .weighted_prop(x, w)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{w}{See Usage.}
+\item{x}{Numeric; combined arithmetically in the body.}
+\item{w}{Numeric; passed to \code{sum}.}
 }
 \description{
-Part of the ipw implementation; see the file header for the source it follows.
+A step of the ipw implementation. Called by \code{morie_run_propensity_ipw_analysis}. See the file header for the source the module follows.
 }
 \value{
 A numeric value.

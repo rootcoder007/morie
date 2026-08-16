@@ -10,7 +10,7 @@
 \arguments{
 \item{t}{See Usage.}
 \item{exposure}{See Usage.}
-\item{risk_periods}{See Usage.}
+\item{risk_periods}{A matrix; indexed by row and column.}
 }
 \description{
 Part of the sccsno_native implementation; see the file header for the source it follows.

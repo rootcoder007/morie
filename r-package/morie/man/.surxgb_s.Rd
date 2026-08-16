@@ -8,9 +8,9 @@
 .surxgb_s(y, u, sigma)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{u}{See Usage.}
-\item{sigma}{See Usage.}
+\item{y}{Numeric; passed to \code{log}.}
+\item{u}{Numeric; combined arithmetically in the body.}
+\item{sigma}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the surxgb_native implementation; see the file header for the source it follows.
@@ -21,7 +21,7 @@ A numeric value.
 \references{
 ----------
 Chen, T. & Guestrin, C. (2016) "XGBoost: A Scalable Tree Boosting
-System", KDD \\'16, 785-794, doi:10.1145/2939672.2939785. Secs. 2.1
+System", KDD \'16, 785-794, doi:10.1145/2939672.2939785. Secs. 2.1
 and 2.2, eqs (5)-(7).
 
 Barnwal, A., Cho, H. & Hocking, T. (2022) "Survival Regression with

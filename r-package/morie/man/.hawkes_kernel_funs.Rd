@@ -8,8 +8,8 @@
 .hawkes_kernel_funs(kernel, theta)
 }
 \arguments{
-\item{kernel}{See Usage.}
-\item{theta}{See Usage.}
+\item{kernel}{One of \code{"exponential"}, \code{"lomax"}, \code{"weibull"}.}
+\item{theta}{A vector; indexed elementwise.}
 }
 \description{
 the pure-R fallback. Returns NULL for an infeasible parameter vector.

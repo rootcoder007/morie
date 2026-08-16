@@ -8,11 +8,11 @@
 .dmlc_ols(X, idx, y, te, p)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{idx}{See Usage.}
-\item{y}{See Usage.}
-\item{te}{See Usage.}
-\item{p}{See Usage.}
+\item{X}{A matrix; indexed by row and column.}
+\item{idx}{A vector; its length is taken.}
+\item{y}{A vector; indexed elementwise.}
+\item{te}{A vector; its length is taken.}
+\item{p}{Numeric; combined arithmetically in the body.}
 }
 \description{
 arms Part of the dml_clustered implementation; see the file header for the source it follows.

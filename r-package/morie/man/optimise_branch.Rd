@@ -9,9 +9,9 @@ optimise_branch(make_tree, seqs, pi = NULL, u = 1, lo = 1e-06, hi = 10, tol = 1e
 }
 \arguments{
 \item{make_tree}{See Usage.}
-\item{seqs}{See Usage.}
-\item{pi}{Defaults to \code{NULL}.}
-\item{u}{Defaults to \code{1}.}
+\item{seqs}{Passed to \code{morie_phylml}.}
+\item{pi}{Passed to \code{morie_phylml}.}
+\item{u}{Passed to \code{morie_phylml}. Defaults to \code{1}.}
 \item{lo}{Defaults to \code{1e-06}.}
 \item{hi}{Defaults to \code{10}.}
 \item{tol}{Defaults to \code{1e-10}.}

@@ -8,8 +8,8 @@
 .tmlcll_design(W, n)
 }
 \arguments{
-\item{W}{See Usage.}
-\item{n}{See Usage.}
+\item{W}{A matrix; passed to \code{ncol}.}
+\item{n}{A count; the body uses it as \code{matrix(...)}.}
 }
 \description{
 Part of the tmlcll_native implementation; see the file header for the source it follows.

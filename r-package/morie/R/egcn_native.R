@@ -18,17 +18,18 @@
 # Re-export from egnnL
 #' Re-export from egnnL
 #'
-#' Part of the egcn_native implementation; see the file header for the
+#' A step of the egcn_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param H See Usage.
-#' @param X See Usage.
-#' @param layers See Usage.
-#' @param phi_e See Usage.
-#' @param phi_x See Usage.
-#' @param phi_h See Usage.
-#' @param A Defaults to \code{NULL}.
-#' @param C Defaults to \code{NULL}.
+#' @param H Passed to \code{morie_egnnL}.
+#' @param X Passed to \code{morie_egnnL}.
+#' @param layers Passed to \code{morie_egnnL}.
+#' @param phi_e Passed to \code{morie_egnnL}.
+#' @param phi_x Passed to \code{morie_egnnL}.
+#' @param phi_h Passed to \code{morie_egnnL}.
+#' @param A Passed to \code{morie_egnnL}.
+#' @param C Passed to \code{morie_egnnL}.
 #' @return The value of \code{morie_egnnL}.
 #' @export
 morie_egcn <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL, C = NULL) {

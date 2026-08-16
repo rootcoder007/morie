@@ -25,10 +25,11 @@ NULL
 
 #' .hst_check_params
 #'
-#' Part of the hawkes_spatial implementation; see the file header for
+#' A step of the hawkes_spatial implementation. Called by \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik}, \code{morie_hawkes_st_simulate}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param p See Usage.
+#' @param p A list; the body reads \code{$alpha}, \code{$beta}, \code{$mu}, \code{$sigma} from it.
 #' @return Invisibly,the value of \code{p}, as built in the body.
 #' @export
 .hst_check_params <- function(p) {
@@ -45,11 +46,12 @@ NULL
 # Gaussian spatial density evaluated at squared distances.
 #' Gaussian spatial density evaluated at squared distances
 #'
-#' Part of the hawkes_spatial implementation; see the file header for
+#' A step of the hawkes_spatial implementation. Called by \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param d2 See Usage.
-#' @param sigma See Usage.
+#' @param d2 Numeric; combined arithmetically in the body.
+#' @param sigma Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .hst_spatial <- function(d2, sigma) {

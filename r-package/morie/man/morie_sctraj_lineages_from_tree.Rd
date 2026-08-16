@@ -8,7 +8,7 @@
 morie_sctraj_lineages_from_tree(tree, root)
 }
 \arguments{
-\item{tree}{See Usage.}
+\item{tree}{A list; the body reads \code{$adjacency} from it.}
 \item{root}{See Usage.}
 }
 \description{

@@ -8,8 +8,8 @@
 .remlfn_groups(y, group)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{group}{See Usage.}
+\item{y}{A vector; its length is taken and its elements indexed.}
+\item{group}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the remlfn_native implementation; see the file header for the source it follows.

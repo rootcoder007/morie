@@ -8,11 +8,11 @@
 .entheo_san_per_frame(eeg, fmri)
 }
 \arguments{
-\item{eeg}{See Usage.}
-\item{fmri}{See Usage.}
+\item{eeg}{Passed to \code{.entheo_align}.}
+\item{fmri}{Passed to \code{.entheo_align}.}
 }
 \description{
-Part of the entheo_analysis implementation; see the file header for the source it follows.
+A step of the entheo_analysis implementation. Called by \code{san_score}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{out}, as built in the body.

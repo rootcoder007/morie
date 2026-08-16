@@ -8,8 +8,8 @@
 .siu_read_html_cache(html_dir, name)
 }
 \arguments{
-\item{html_dir}{See Usage.}
-\item{name}{See Usage.}
+\item{html_dir}{A vector; its length is taken and its elements indexed.}
+\item{name}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the siu implementation; see the file header for the source it follows.

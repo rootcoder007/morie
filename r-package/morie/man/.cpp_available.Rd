@@ -8,7 +8,7 @@
 .cpp_available()
 }
 \description{
-Part of the fast implementation; see the file header for the source it follows.
+A step of the fast implementation. Called by \code{morie_cor_pearson}, \code{morie_fast_available}, \code{morie_hawkes_fit} and 3 others in the module. See the file header for the source the module follows.
 }
 \value{
 The value of \code{tryCatch}.

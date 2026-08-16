@@ -10,9 +10,9 @@ morie_tlboot(data, estimator, B = 200L, seed = 0L, method = c("naive", "targeted
 \arguments{
 \item{data}{See Usage.}
 \item{estimator}{See Usage.}
-\item{B}{Defaults to \code{200L}.}
+\item{B}{A vector; its length is taken. Defaults to \code{200L}.}
 \item{seed}{Defaults to \code{0L}.}
-\item{method}{Defaults to \code{c("naive", "targeted", "multiplier")}.}
+\item{method}{One of \code{"naive"}, \code{"targeted"}.}
 \item{ic}{Defaults to \code{NULL}.}
 }
 \description{

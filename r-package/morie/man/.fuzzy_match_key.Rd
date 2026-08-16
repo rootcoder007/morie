@@ -8,10 +8,10 @@
 .fuzzy_match_key(key)
 }
 \arguments{
-\item{key}{See Usage.}
+\item{key}{Character; passed to \code{gsub}.}
 }
 \description{
-Part of the database implementation; see the file header for the source it follows.
+A step of the database implementation. Called by \code{morie_dataset_info}, \code{morie_load_dataset}. See the file header for the source the module follows.
 }
 \value{
 Nothing; the function is called for its effect.

@@ -8,10 +8,11 @@ NULL
 
 #' .hrz_silverman
 #'
-#' Part of the helpers_horowitz implementation; see the file header for
+#' A step of the helpers_horowitz implementation. Called by \code{hrzb2}, \code{Hrzctrl}, \code{hrzi1} and 24 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x A vector; its length is taken.
 #' @return The value of \code{unname}.
 #' @export
 .hrz_silverman <- function(x) {
@@ -33,10 +34,11 @@ NULL
 
 #' .hrz_gauss_kernel
 #'
-#' Part of the helpers_horowitz implementation; see the file header for
+#' A step of the helpers_horowitz implementation. Called by \code{morie_kde_h}, \code{morie_kernel_quantile}, \code{morie_lewbel_binary} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param u See Usage.
+#' @param u Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .hrz_gauss_kernel <- function(u) exp(-0.5 * u^2) / sqrt(2 * pi)
@@ -44,12 +46,13 @@ NULL
 
 #' .hrz_nw_loo
 #'
-#' Part of the helpers_horowitz implementation; see the file header for
+#' A step of the helpers_horowitz implementation. Called by \code{hrzp1}, \code{morie_ichimura}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param z See Usage.
-#' @param y See Usage.
-#' @param h See Usage.
+#' @param z A matrix; indexed by row and column.
+#' @param y A matrix; passed to \code{\%*\%}.
+#' @param h Numeric; combined arithmetically in the body.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .hrz_nw_loo <- function(z, y, h) {
@@ -74,11 +77,12 @@ NULL
 
 #' .hrz_probit_newton
 #'
-#' Part of the helpers_horowitz implementation; see the file header for
+#' A step of the helpers_horowitz implementation. Called by \code{hrzs1}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param D See Usage.
-#' @param Z See Usage.
+#' @param D Numeric; combined arithmetically in the body.
+#' @param Z A matrix; passed to \code{ncol}.
 #' @param maxit Defaults to \code{50}.
 #' @param tol Defaults to \code{1e-08}.
 #' @return A vector, from \code{as.numeric}.
@@ -106,11 +110,12 @@ NULL
 
 #' .hrz_logit_newton
 #'
-#' Part of the helpers_horowitz implementation; see the file header for
+#' A step of the helpers_horowitz implementation. Called by \code{hrzt1}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param D See Usage.
-#' @param X See Usage.
+#' @param D Numeric; combined arithmetically in the body.
+#' @param X A matrix; passed to \code{ncol}.
 #' @param maxit Defaults to \code{50}.
 #' @param tol Defaults to \code{1e-08}.
 #' @return A numeric value.
@@ -136,12 +141,13 @@ NULL
 
 #' .hrz_qreg_irls
 #'
-#' Part of the helpers_horowitz implementation; see the file header for
+#' A step of the helpers_horowitz implementation. Called by \code{hrzc1}, \code{hrzq1}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param X See Usage.
-#' @param y See Usage.
-#' @param tau Defaults to \code{0.5}.
+#' @param X A matrix; passed to \code{t}.
+#' @param y Numeric; combined arithmetically in the body.
+#' @param tau Numeric; combined arithmetically in the body. Defaults to \code{0.5}.
 #' @param maxit Defaults to \code{50}.
 #' @param tol Defaults to \code{1e-06}.
 #' @return A vector, from \code{as.numeric}.
@@ -169,11 +175,12 @@ NULL
 
 #' .hrz_hermite
 #'
-#' Part of the helpers_horowitz implementation; see the file header for
+#' A step of the helpers_horowitz implementation. Called by \code{hrzn1}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param t See Usage.
-#' @param J See Usage.
+#' @param t A vector; its length is taken.
+#' @param J A count; the body uses it as \code{matrix(...)}.
 #' @return The value of \code{H}, as built in the body.
 #' @export
 .hrz_hermite <- function(t, J) {

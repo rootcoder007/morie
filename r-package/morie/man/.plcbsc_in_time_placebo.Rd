@@ -10,8 +10,8 @@
 \arguments{
 \item{y_treated}{See Usage.}
 \item{y_donors}{See Usage.}
-\item{t0}{See Usage.}
-\item{fake_t0}{See Usage.}
+\item{t0}{Numeric; combined arithmetically in the body.}
+\item{fake_t0}{A count; the body uses it as \code{seq_len(...)}.}
 \item{v}{Defaults to \code{NULL}.}
 \item{...}{Passed through.}
 }

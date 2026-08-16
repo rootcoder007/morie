@@ -8,7 +8,7 @@
 .sxrhrt_logdet(L)
 }
 \arguments{
-\item{L}{See Usage.}
+\item{L}{A matrix; passed to \code{diag}.}
 }
 \description{
 Part of the sxrhrt_native implementation; see the file header for the source it follows.

@@ -9,7 +9,7 @@ nashq_pick(M, A, who, epsilon, rng)
 }
 \arguments{
 \item{M}{See Usage.}
-\item{A}{See Usage.}
+\item{A}{A vector; its length is taken.}
 \item{who}{See Usage.}
 \item{epsilon}{See Usage.}
 \item{rng}{See Usage.}

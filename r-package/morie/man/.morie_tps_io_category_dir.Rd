@@ -8,7 +8,7 @@
 .morie_tps_io_category_dir(name, fmt_subdir)
 }
 \arguments{
-\item{name}{See Usage.}
+\item{name}{Passed to \code{.morie_tps_canonical}.}
 \item{fmt_subdir}{See Usage.}
 }
 \description{

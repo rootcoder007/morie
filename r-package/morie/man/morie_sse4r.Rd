@@ -8,9 +8,9 @@
 morie_sse4r(sequence, user_embedding, item_table, attend = NULL, top_k = 3)
 }
 \arguments{
-\item{sequence}{See Usage.}
-\item{user_embedding}{See Usage.}
-\item{item_table}{See Usage.}
+\item{sequence}{Passed to \code{.sse4r_personalise}.}
+\item{user_embedding}{Passed to \code{.sse4r_personalise}.}
+\item{item_table}{A matrix; passed to \code{as.matrix}.}
 \item{attend}{Defaults to \code{NULL}.}
 \item{top_k}{Defaults to \code{3}.}
 }

@@ -8,7 +8,7 @@
 .sd(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Numeric; passed to \code{mean}.}
 }
 \description{
 Part of the tmldyn_native implementation; see the file header for the source it follows.

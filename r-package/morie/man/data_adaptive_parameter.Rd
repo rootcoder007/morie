@@ -10,8 +10,8 @@ data_adaptive_parameter(define_on_training, estimate_on_holdout, n, V = 10L, see
 \arguments{
 \item{define_on_training}{See Usage.}
 \item{estimate_on_holdout}{See Usage.}
-\item{n}{See Usage.}
-\item{V}{Defaults to \code{10L}.}
+\item{n}{A count; the body uses it as \code{rep(...)}.}
+\item{V}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{10L}.}
 \item{seed}{Defaults to \code{0L}.}
 }
 \description{

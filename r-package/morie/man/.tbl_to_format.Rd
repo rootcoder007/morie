@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{df}{See Usage.}
-\item{fmt}{Defaults to \code{c("dataframe", "latex", "html", "markdown", "text", "csv")}.}
+\item{fmt}{One of \code{"csv"}, \code{"dataframe"}.}
 \item{title}{Defaults to \code{""}.}
 \item{footnotes}{Defaults to \code{""}.}
 }

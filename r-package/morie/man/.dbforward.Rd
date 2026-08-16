@@ -9,9 +9,9 @@
 }
 \arguments{
 \item{x}{See Usage.}
-\item{h}{See Usage.}
-\item{g}{See Usage.}
-\item{level}{See Usage.}
+\item{h}{Passed to \code{.dbstep}.}
+\item{g}{Passed to \code{.dbstep}.}
+\item{level}{A count; the body uses it as \code{seq_len(...)}.}
 }
 \description{
 Part of the wave implementation; see the file header for the source it follows.

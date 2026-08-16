@@ -8,11 +8,11 @@
 nashq_is_equilibrium(A, B, p, q, tol)
 }
 \arguments{
-\item{A}{See Usage.}
-\item{B}{See Usage.}
-\item{p}{See Usage.}
-\item{q}{See Usage.}
-\item{tol}{See Usage.}
+\item{A}{A matrix; indexed by row and column.}
+\item{B}{A matrix; indexed by row and column.}
+\item{p}{Numeric; combined arithmetically in the body.}
+\item{q}{Numeric; combined arithmetically in the body.}
+\item{tol}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the nashq_native implementation; see the file header for the source it follows.

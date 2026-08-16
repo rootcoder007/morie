@@ -8,9 +8,9 @@
 .sctraj_interp(s, curve, u)
 }
 \arguments{
-\item{s}{See Usage.}
-\item{curve}{See Usage.}
-\item{u}{See Usage.}
+\item{s}{A vector; its length is taken and its elements indexed.}
+\item{curve}{A matrix; indexed by row and column.}
+\item{u}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the sctraj_native implementation; see the file header for the source it follows.

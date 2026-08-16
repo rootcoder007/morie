@@ -8,8 +8,8 @@
 .constant_time_equal(a, b)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{a}{A vector; its length is taken.}
+\item{b}{A vector; its length is taken.}
 }
 \description{
 Part of the sechsh_native implementation; see the file header for the source it follows.

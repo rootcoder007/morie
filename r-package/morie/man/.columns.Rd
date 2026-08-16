@@ -8,7 +8,7 @@
 .columns(X, n)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.}
 \item{n}{See Usage.}
 }
 \description{

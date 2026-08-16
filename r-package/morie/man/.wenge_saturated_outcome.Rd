@@ -8,10 +8,10 @@
 .wenge_saturated_outcome(yv, ev, Mm, Xm)
 }
 \arguments{
-\item{yv}{See Usage.}
-\item{ev}{See Usage.}
-\item{Mm}{See Usage.}
-\item{Xm}{See Usage.}
+\item{yv}{A vector; its length is taken and its elements indexed.}
+\item{ev}{A vector; indexed elementwise.}
+\item{Mm}{A matrix; indexed by row and column.}
+\item{Xm}{A matrix; indexed by row and column.}
 }
 \description{
 Part of the wenge_native implementation; see the file header for the source it follows.

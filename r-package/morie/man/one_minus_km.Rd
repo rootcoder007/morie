@@ -8,8 +8,8 @@
 one_minus_km(hazards, times, cause)
 }
 \arguments{
-\item{hazards}{See Usage.}
-\item{times}{See Usage.}
+\item{hazards}{A vector; indexed elementwise.}
+\item{times}{A vector; its length is taken.}
 \item{cause}{See Usage.}
 }
 \description{

@@ -8,12 +8,12 @@
 morie_tlseqsl_sequential_super_learner(histories, outcomes, library, T, V = 5, seed = 0)
 }
 \arguments{
-\item{histories}{See Usage.}
+\item{histories}{A vector; its length is taken and its elements indexed.}
 \item{outcomes}{See Usage.}
-\item{library}{See Usage.}
-\item{T}{See Usage.}
-\item{V}{Defaults to \code{5}.}
-\item{seed}{Defaults to \code{0}.}
+\item{library}{Passed to \code{morie_tlseqsl_ensemble_super_learner}.}
+\item{T}{Numeric; combined arithmetically in the body.}
+\item{V}{Passed to \code{morie_tlseqsl_ensemble_super_learner}. Defaults to \code{5}.}
+\item{seed}{Passed to \code{morie_tlseqsl_ensemble_super_learner}. Defaults to \code{0}.}
 }
 \description{
 Part of the tlseqsl_native implementation; see the file header for the source it follows.

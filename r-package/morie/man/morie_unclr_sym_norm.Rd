@@ -8,8 +8,8 @@
 morie_unclr_sym_norm(A, self_loops)
 }
 \arguments{
-\item{A}{See Usage.}
-\item{self_loops}{See Usage.}
+\item{A}{A matrix; passed to \code{nrow}.}
+\item{self_loops}{A flag; the body branches on it.}
 }
 \description{
 Part of the unclr implementation; see the file header for the source it follows.

@@ -16,7 +16,7 @@
 \item{warnings}{Defaults to \code{character()}.}
 }
 \description{
-Part of the doob_trends implementation; see the file header for the source it follows.
+A step of the doob_trends implementation. Called by \code{analyze_doob_full_affidavit}, \code{analyze_doob_table1_releases}, \code{analyze_doob_table2_flow} and 2 others in the module. See the file header for the source the module follows.
 }
 \value{
 The value of \code{structure}.

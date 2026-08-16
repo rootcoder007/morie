@@ -14,7 +14,7 @@ replicated_pfilter(y, n_particles, init, step, loglik, n_reps = 10L, seed = 0L)
 \item{step}{See Usage.}
 \item{loglik}{See Usage.}
 \item{n_reps}{Defaults to \code{10L}.}
-\item{seed}{Defaults to \code{0L}.}
+\item{seed}{Numeric; combined arithmetically in the body. Defaults to \code{0L}.}
 }
 \description{
 Part of the pftrep_native implementation; see the file header for the source it follows.

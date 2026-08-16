@@ -9,7 +9,7 @@ kernel_smooth(u, kernel = "epanechnikov")
 }
 \arguments{
 \item{u}{See Usage.}
-\item{kernel}{Defaults to \code{"epanechnikov"}.}
+\item{kernel}{One of \code{"epanechnikov"}, \code{"uniform"}. Defaults to \code{"epanechnikov"}.}
 }
 \description{
 Part of the tlcvnp_native implementation; see the file header for the source it follows.

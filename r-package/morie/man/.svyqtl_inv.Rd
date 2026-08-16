@@ -8,7 +8,7 @@
 .svyqtl_inv(xs, cum, p)
 }
 \arguments{
-\item{xs}{See Usage.}
+\item{xs}{A vector; its length is taken and its elements indexed.}
 \item{cum}{See Usage.}
 \item{p}{See Usage.}
 }

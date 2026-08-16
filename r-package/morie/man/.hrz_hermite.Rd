@@ -8,11 +8,11 @@
 .hrz_hermite(t, J)
 }
 \arguments{
-\item{t}{See Usage.}
-\item{J}{See Usage.}
+\item{t}{A vector; its length is taken.}
+\item{J}{A count; the body uses it as \code{matrix(...)}.}
 }
 \description{
-Part of the helpers_horowitz implementation; see the file header for the source it follows.
+A step of the helpers_horowitz implementation. Called by \code{hrzn1}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{H}, as built in the body.

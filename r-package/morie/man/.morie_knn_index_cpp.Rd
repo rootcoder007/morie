@@ -8,8 +8,8 @@
 .morie_knn_index_cpp(coords, k)
 }
 \arguments{
-\item{coords}{See Usage.}
-\item{k}{See Usage.}
+\item{coords}{Passed to \code{.Call}.}
+\item{k}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

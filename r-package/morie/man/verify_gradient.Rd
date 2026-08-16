@@ -9,7 +9,7 @@ verify_gradient(psi_of_P, D, score, weights = NULL, h = 1e-05, tol = 1e-04)
 }
 \arguments{
 \item{psi_of_P}{See Usage.}
-\item{D}{See Usage.}
+\item{D}{A vector; its length is taken.}
 \item{score}{See Usage.}
 \item{weights}{Defaults to \code{NULL}.}
 \item{h}{Defaults to \code{1e-05}.}

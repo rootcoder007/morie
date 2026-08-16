@@ -9,18 +9,18 @@ morie_wrd2v_wrd2v(corpus, size = 16, window = 5, architecture = "skip-gram", lr 
 }
 \arguments{
 \item{corpus}{See Usage.}
-\item{size}{Defaults to \code{16}.}
-\item{window}{Defaults to \code{5}.}
-\item{architecture}{Defaults to \code{"skip-gram"}.}
-\item{lr}{Defaults to \code{0.05}.}
+\item{size}{A count; the body uses it as \code{matrix(...)}. Defaults to \code{16}.}
+\item{window}{Numeric; combined arithmetically in the body. Defaults to \code{5}.}
+\item{architecture}{One of \code{"cbow"}, \code{"skip-gram"}. Defaults to \code{"skip-gram"}.}
+\item{lr}{Passed to \code{.wrd2v_cbow_step}. Defaults to \code{0.05}.}
 \item{epochs}{Defaults to \code{20}.}
 \item{min_count}{Defaults to \code{1}.}
-\item{dynamic_window}{Defaults to \code{TRUE}.}
-\item{loss}{Defaults to \code{"softmax"}.}
-\item{negative}{Defaults to \code{5}.}
-\item{noise_power}{Defaults to \code{0.75}.}
-\item{subsample}{Defaults to \code{NULL}.}
-\item{seed}{Defaults to \code{0}.}
+\item{dynamic_window}{A flag; the body branches on it. Defaults to \code{TRUE}.}
+\item{loss}{One of \code{"neg"}, \code{"softmax"}. Defaults to \code{"softmax"}.}
+\item{negative}{Passed to \code{.wrd2v_neg_step}. Defaults to \code{5}.}
+\item{noise_power}{Passed to \code{morie_wrd2v_noise_distribution}. Defaults to \code{0.75}.}
+\item{subsample}{Optional; may be \code{NULL}. Passed to \code{morie_wrd2v_subsample_probability}.}
+\item{seed}{Numeric; combined arithmetically in the body. Defaults to \code{0}.}
 }
 \description{
 Part of the wrd2v_native implementation; see the file header for the source it follows.

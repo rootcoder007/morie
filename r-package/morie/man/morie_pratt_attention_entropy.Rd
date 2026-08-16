@@ -8,7 +8,7 @@
 morie_pratt_attention_entropy(alpha)
 }
 \arguments{
-\item{alpha}{See Usage.}
+\item{alpha}{Passed to \code{.pratt_vec}.}
 }
 \description{
 Part of the pratt_native implementation; see the file header for the source it follows.

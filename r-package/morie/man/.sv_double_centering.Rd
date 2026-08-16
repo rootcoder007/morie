@@ -8,7 +8,7 @@
 .sv_double_centering(D)
 }
 \arguments{
-\item{D}{See Usage.}
+\item{D}{A matrix; passed to \code{nrow}.}
 }
 \description{
 Part of the spatial_voting implementation; see the file header for the source it follows.

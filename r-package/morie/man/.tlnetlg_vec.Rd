@@ -27,7 +27,7 @@ realisations; in many cluster randomized trials or observational
 studies of few communities the number of independent units is not
 large enough for limit-distribution inference; the extreme case of a
 single community of causally connected individuals and whether a
-community-level intervention\\'s effect on a community-level outcome can
+community-level intervention\'s effect on a community-level outcome can
 still be evaluated; and the requirement that causal models incorporate
 all units and that identifiability be established under minimal
 assumptions WITHOUT relying on asymptotics in a number of independent

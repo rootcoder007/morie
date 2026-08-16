@@ -8,8 +8,8 @@
 .run_meta_synthesis_module_internal(data, output_dir = NULL)
 }
 \arguments{
-\item{data}{See Usage.}
-\item{output_dir}{Defaults to \code{NULL}.}
+\item{data}{A list; the body reads \code{$cannabis_any_use}, \code{$heavy_drinking_30d} from it.}
+\item{output_dir}{Passed to \code{.read_existing_output}.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

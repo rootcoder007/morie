@@ -8,7 +8,7 @@
 .siu_p_re_escape(s)
 }
 \arguments{
-\item{s}{See Usage.}
+\item{s}{Character; passed to \code{gsub}.}
 }
 \description{
 Part of the siu_parser implementation; see the file header for the source it follows.

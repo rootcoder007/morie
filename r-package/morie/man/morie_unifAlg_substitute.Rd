@@ -8,8 +8,8 @@
 morie_unifAlg_substitute(t, subst)
 }
 \arguments{
-\item{t}{See Usage.}
-\item{subst}{See Usage.}
+\item{t}{Passed to \code{.unifAlg_check}.}
+\item{subst}{Passed to \code{.unifAlg_apply_once}.}
 }
 \description{
 Part of the unifAlg_native implementation; see the file header for the source it follows.

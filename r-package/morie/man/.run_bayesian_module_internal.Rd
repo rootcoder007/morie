@@ -8,7 +8,7 @@
 .run_bayesian_module_internal(data)
 }
 \arguments{
-\item{data}{See Usage.}
+\item{data}{A list; the body reads \code{$heavy_drinking_30d} from it.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

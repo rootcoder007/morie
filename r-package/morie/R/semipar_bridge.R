@@ -88,10 +88,11 @@ KERNEL_BIWEIGHT <- 4L
 
 #' .kernel_gaussian
 #'
-#' Part of the semipar_bridge implementation; see the file header for
+#' A step of the semipar_bridge implementation. Called by \code{kernel_cond_moments}, \code{local_linear}, \code{loocv_bandwidth} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param u See Usage.
+#' @param u Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .kernel_gaussian <- function(u) {
@@ -100,10 +101,11 @@ KERNEL_BIWEIGHT <- 4L
 
 #' .kernel_epanechnikov
 #'
-#' Part of the semipar_bridge implementation; see the file header for
+#' A step of the semipar_bridge implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param u See Usage.
+#' @param u Numeric; passed to \code{abs}.
 #' @return The value of \code{ifelse}.
 #' @export
 .kernel_epanechnikov <- function(u) {
@@ -112,10 +114,11 @@ KERNEL_BIWEIGHT <- 4L
 
 #' .kernel_uniform
 #'
-#' Part of the semipar_bridge implementation; see the file header for
+#' A step of the semipar_bridge implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param u See Usage.
+#' @param u Numeric; passed to \code{abs}.
 #' @return The value of \code{ifelse}.
 #' @export
 .kernel_uniform <- function(u) {
@@ -124,10 +127,11 @@ KERNEL_BIWEIGHT <- 4L
 
 #' .kernel_triangular
 #'
-#' Part of the semipar_bridge implementation; see the file header for
+#' A step of the semipar_bridge implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param u See Usage.
+#' @param u Numeric; passed to \code{abs}.
 #' @return The value of \code{ifelse}.
 #' @export
 .kernel_triangular <- function(u) {
@@ -136,10 +140,11 @@ KERNEL_BIWEIGHT <- 4L
 
 #' .kernel_biweight
 #'
-#' Part of the semipar_bridge implementation; see the file header for
+#' A step of the semipar_bridge implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param u See Usage.
+#' @param u Numeric; passed to \code{abs}.
 #' @return The value of \code{ifelse}.
 #' @export
 .kernel_biweight <- function(u) {
@@ -148,10 +153,11 @@ KERNEL_BIWEIGHT <- 4L
 
 #' .kernel_fn
 #'
-#' Part of the semipar_bridge implementation; see the file header for
+#' A step of the semipar_bridge implementation. Called by \code{kde}, \code{kernel_eval}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param kernel_type See Usage.
+#' @param kernel_type Numeric; combined arithmetically in the body.
 #' @return The value of \code{switch}.
 #' @export
 .kernel_fn <- function(kernel_type) {
@@ -166,10 +172,11 @@ KERNEL_BIWEIGHT <- 4L
 
 #' .resolve_kernel
 #'
-#' Part of the semipar_bridge implementation; see the file header for
+#' A step of the semipar_bridge implementation. Called by \code{kde}, \code{kernel_eval}, \code{SemiparKernels}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param kernel See Usage.
+#' @param kernel Character; passed to \code{tolower}.
 #' @return Nothing; this branch always raises.
 #' @export
 .resolve_kernel <- function(kernel) {

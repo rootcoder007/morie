@@ -10,14 +10,14 @@ find_homologous_segments(group1, group2, scoring, weights1 = NULL, weights2 = NU
 \arguments{
 \item{group1}{See Usage.}
 \item{group2}{See Usage.}
-\item{scoring}{See Usage.}
+\item{scoring}{A list; the body reads \code{$matrix} from it.}
 \item{weights1}{Defaults to \code{NULL}.}
 \item{weights2}{Defaults to \code{NULL}.}
 \item{seq_type}{Defaults to \code{"aa"}.}
-\item{window}{Defaults to \code{30L}.}
+\item{window}{Numeric; combined arithmetically in the body. Defaults to \code{30L}.}
 \item{n_peaks}{Defaults to \code{20L}.}
 \item{threshold}{Defaults to \code{0.7}.}
-\item{max_len}{Defaults to \code{150L}.}
+\item{max_len}{Numeric; combined arithmetically in the body. Defaults to \code{150L}.}
 \item{corr_method}{Defaults to \code{"fft"}.}
 }
 \description{

@@ -8,9 +8,9 @@
 mistr_sliding_window_mask(L, window, causal = TRUE)
 }
 \arguments{
-\item{L}{See Usage.}
+\item{L}{A count; the body uses it as \code{seq_len(...)}.}
 \item{window}{See Usage.}
-\item{causal}{Defaults to \code{TRUE}.}
+\item{causal}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the mistr_native implementation; see the file header for the source it follows.

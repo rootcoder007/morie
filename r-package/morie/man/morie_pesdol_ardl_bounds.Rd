@@ -9,9 +9,9 @@ morie_pesdol_ardl_bounds(y, x, p = 1, q = 1)
 }
 \arguments{
 \item{y}{See Usage.}
-\item{x}{See Usage.}
-\item{p}{Defaults to \code{1}.}
-\item{q}{Defaults to \code{1}.}
+\item{x}{A matrix; passed to \code{as.matrix}.}
+\item{p}{Numeric; passed to \code{max}. Defaults to \code{1}.}
+\item{q}{Numeric; passed to \code{max}. Defaults to \code{1}.}
 }
 \description{
 Part of the pesdol_native implementation; see the file header for the source it follows.

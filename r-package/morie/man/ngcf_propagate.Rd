@@ -8,12 +8,12 @@
 ngcf_propagate(E, adjacency, W1, W2, affinity = TRUE, slope = 0.2)
 }
 \arguments{
-\item{E}{See Usage.}
-\item{adjacency}{See Usage.}
+\item{E}{A matrix; indexed by row and column.}
+\item{adjacency}{A vector; indexed elementwise.}
 \item{W1}{See Usage.}
 \item{W2}{See Usage.}
 \item{affinity}{Defaults to \code{TRUE}.}
-\item{slope}{Defaults to \code{0.2}.}
+\item{slope}{Passed to \code{.ngcf_leaky}. Defaults to \code{0.2}.}
 }
 \description{
 Part of the ngcf_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 .tps_sp_roll(M, shift, axis)
 }
 \arguments{
-\item{M}{See Usage.}
-\item{shift}{See Usage.}
+\item{M}{A matrix; indexed by row and column.}
+\item{shift}{Numeric; combined arithmetically in the body.}
 \item{axis}{See Usage.}
 }
 \description{

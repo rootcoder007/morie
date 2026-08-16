@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{X}{See Usage.}
-\item{yv}{See Usage.}
-\item{ridge}{Defaults to \code{1e-08}.}
+\item{yv}{A matrix; passed to \code{crossprod}.}
+\item{ridge}{Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.}
 }
 \description{
 Part of the tmldyn_native implementation; see the file header for the source it follows.

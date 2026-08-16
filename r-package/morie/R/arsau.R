@@ -67,7 +67,8 @@ NULL
 
 #' .morie_env
 #'
-#' Part of the arsau implementation; see the file header for the source
+#' A step of the arsau implementation. Called by \code{.morie_resolve_arsau_dir}.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @param name See Usage.
@@ -164,7 +165,8 @@ NULL
 
 #' .arsau_make_entry
 #'
-#' Part of the arsau implementation; see the file header for the source
+#' A step of the arsau implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @param year_or_range See Usage.
@@ -173,7 +175,7 @@ NULL
 #' @param sidecar_filename See Usage.
 #' @param expected_rows See Usage.
 #' @param expected_cols See Usage.
-#' @param is_valid See Usage.
+#' @param is_valid A flag; the body branches on it.
 #' @param description_en See Usage.
 #' @param description_fr See Usage.
 #' @return A list with \code{year_or_range}, \code{kind}, \code{csv_filename}, \code{sidecar_filename}, \code{expected_rows}, \code{expected_cols}, \code{is_valid}, \code{description_en}, \code{description_fr}.
@@ -348,7 +350,8 @@ morie_arsau_read_sidecar <- function(path) {
 
 #' .arsau_lookup
 #'
-#' Part of the arsau implementation; see the file header for the source
+#' A step of the arsau implementation. Called by \code{morie_arsau_describe}, \code{morie_arsau_load_aggregate_summary}, \code{morie_arsau_load_detailed_dataset} and 4 others in the module.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @param year_or_range See Usage.
@@ -365,11 +368,12 @@ morie_arsau_read_sidecar <- function(path) {
 
 #' .arsau_coerce_year_key
 #'
-#' Part of the arsau implementation; see the file header for the source
+#' A step of the arsau implementation. Called by \code{morie_arsau_available_datasets}, \code{morie_arsau_describe}, \code{morie_arsau_load_aggregate_summary} and 5 others in the module.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @param year See Usage.
-#' @param range_ok Defaults to \code{FALSE}.
+#' @param range_ok A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return Nothing; this branch always raises.
 #' @export
 .arsau_coerce_year_key <- function(year, range_ok = FALSE) {
@@ -390,13 +394,14 @@ morie_arsau_read_sidecar <- function(path) {
 
 #' .arsau_load_one
 #'
-#' Part of the arsau implementation; see the file header for the source
+#' A step of the arsau implementation. Called by \code{morie_arsau_load_aggregate_summary}, \code{morie_arsau_load_detailed_dataset}, \code{morie_arsau_load_individual_records} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param entry See Usage.
-#' @param data_dir Defaults to \code{NULL}.
-#' @param language Defaults to \code{"en"}.
-#' @param allow_invalid Defaults to \code{FALSE}.
+#' @param entry A list; the body reads \code{$csv_filename}, \code{$description_en}, \code{$description_fr}, \code{$expected_cols}, \code{$expected_rows}, \code{$is_valid}, \code{$kind}, \code{$sidecar_filename}, \code{$year_or_range} from it.
+#' @param data_dir Passed to \code{.morie_resolve_arsau_dir}.
+#' @param language Character; passed to \code{substr}. Defaults to \code{"en"}.
+#' @param allow_invalid A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .arsau_load_one <- function(entry, data_dir = NULL, language = "en", allow_invalid = FALSE) {

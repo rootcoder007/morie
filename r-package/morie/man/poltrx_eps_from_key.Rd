@@ -8,7 +8,7 @@
 poltrx_eps_from_key(key)
 }
 \arguments{
-\item{key}{See Usage.}
+\item{key}{Compared against \code{"()"}.}
 }
 \description{
 Part of the poltrx_native implementation; see the file header for the source it follows.

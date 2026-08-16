@@ -8,10 +8,10 @@
 .morie_fairness_mean_finite(xs)
 }
 \arguments{
-\item{xs}{See Usage.}
+\item{xs}{A vector; indexed elementwise.}
 }
 \description{
-Part of the fairness_temporal implementation; see the file header for the source it follows.
+A step of the fairness_temporal implementation. Called by \code{morie_fairness_predpol_temporal_audit}. See the file header for the source the module follows.
 }
 \value{
 One of two values, depending on the branch taken.

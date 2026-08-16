@@ -8,7 +8,7 @@
 .morie_tps_read_excel(name, nrows)
 }
 \arguments{
-\item{name}{See Usage.}
+\item{name}{Passed to \code{.morie_tps_io_category_dir}.}
 \item{nrows}{See Usage.}
 }
 \description{

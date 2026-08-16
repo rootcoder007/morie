@@ -8,9 +8,9 @@
 decode_mask(prompt_tokens, image_tokens, grid_shape, n_blocks = 2, upsample_factor = 2, output_index = 0)
 }
 \arguments{
-\item{prompt_tokens}{See Usage.}
-\item{image_tokens}{See Usage.}
-\item{grid_shape}{See Usage.}
+\item{prompt_tokens}{Passed to \code{.samdec_mat}.}
+\item{image_tokens}{Passed to \code{.samdec_mat}.}
+\item{grid_shape}{A vector; indexed elementwise.}
 \item{n_blocks}{Defaults to \code{2}.}
 \item{upsample_factor}{Defaults to \code{2}.}
 \item{output_index}{Defaults to \code{0}.}

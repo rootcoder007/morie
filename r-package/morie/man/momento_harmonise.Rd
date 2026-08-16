@@ -8,9 +8,9 @@
 momento_harmonise(series_list, patch_len, normalise = TRUE)
 }
 \arguments{
-\item{series_list}{See Usage.}
+\item{series_list}{A vector; its length is taken.}
 \item{patch_len}{See Usage.}
-\item{normalise}{Defaults to \code{TRUE}.}
+\item{normalise}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the momento_native implementation; see the file header for the source it follows.

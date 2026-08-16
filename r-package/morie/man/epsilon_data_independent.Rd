@@ -8,9 +8,9 @@
 epsilon_data_independent(T, gamma, delta)
 }
 \arguments{
-\item{T}{See Usage.}
-\item{gamma}{See Usage.}
-\item{delta}{See Usage.}
+\item{T}{Numeric; combined arithmetically in the body.}
+\item{gamma}{Numeric; combined arithmetically in the body.}
+\item{delta}{Numeric; combined arithmetically in the body.}
 }
 \description{
 composition of T queries, each (2 gamma, 0)-DP, without looking at the votes.

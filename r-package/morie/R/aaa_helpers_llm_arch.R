@@ -8,10 +8,11 @@ NULL
 
 #' Softmax along the last axis of an array
 #'
-#' Part of the helpers_llm_arch implementation; see the file header for
+#' A step of the helpers_llm_arch implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x A matrix; passed to \code{dim}.
 #' @return The value of \code{aperm}.
 #' @export
 .softmax_last <- function(x) {

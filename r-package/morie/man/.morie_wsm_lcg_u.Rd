@@ -8,7 +8,7 @@
 .morie_wsm_lcg_u(count, seed = 13)
 }
 \arguments{
-\item{count}{See Usage.}
+\item{count}{A count; the body uses it as \code{seq_len(...)}.}
 \item{seed}{Defaults to \code{13}.}
 }
 \description{

@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{p}{See Usage.}
-\item{digits}{Defaults to \code{3L}.}
-\item{apa}{Defaults to \code{FALSE}.}
+\item{digits}{Numeric; combined arithmetically in the body. Defaults to \code{3L}.}
+\item{apa}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{
 Part of the tables_pub implementation; see the file header for the source it follows.

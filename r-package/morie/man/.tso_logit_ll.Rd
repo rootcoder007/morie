@@ -8,8 +8,8 @@
 .tso_logit_ll(eta, y)
 }
 \arguments{
-\item{eta}{See Usage.}
-\item{y}{See Usage.}
+\item{eta}{Numeric; passed to \code{exp}.}
+\item{y}{Numeric; combined arithmetically in the body.}
 }
 \description{
 (intercept already folded in).  Uses log1p(exp(-|eta|)) for stability.

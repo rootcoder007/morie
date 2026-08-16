@@ -8,13 +8,13 @@
 .tmlcic_hier_cluster_arm(yc, Aj, Zj, groups, a, trim, ridge, known_g)
 }
 \arguments{
-\item{yc}{See Usage.}
-\item{Aj}{See Usage.}
-\item{Zj}{See Usage.}
-\item{groups}{See Usage.}
+\item{yc}{Numeric; combined arithmetically in the body.}
+\item{Aj}{A vector; indexed elementwise.}
+\item{Zj}{A matrix; passed to \code{as.matrix}.}
+\item{groups}{A vector; its length is taken.}
 \item{a}{See Usage.}
-\item{trim}{See Usage.}
-\item{ridge}{See Usage.}
+\item{trim}{Numeric; combined arithmetically in the body.}
+\item{ridge}{Numeric; passed to \code{max}.}
 \item{known_g}{See Usage.}
 }
 \description{

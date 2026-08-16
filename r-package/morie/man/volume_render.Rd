@@ -8,9 +8,9 @@
 volume_render(sigma, colour, t)
 }
 \arguments{
-\item{sigma}{See Usage.}
-\item{colour}{See Usage.}
-\item{t}{See Usage.}
+\item{sigma}{Passed to \code{.as_numeric_vec}.}
+\item{colour}{A matrix; indexed by row and column.}
+\item{t}{Passed to \code{.as_numeric_vec}.}
 }
 \description{
 Part of the nrfrad_native implementation; see the file header for the source it follows.

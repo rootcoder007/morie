@@ -3,12 +3,12 @@
 % the formals.
 \name{.sctraj_solve}
 \alias{.sctraj_solve}
-\title{Solve A x = b; singular pooled covariance gets the paper\\\'s advice}
+\title{Solve A x = b; singular pooled covariance gets the paper\\'s advice}
 \usage{
 .sctraj_solve(A, b)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{A matrix; passed to \code{nrow}.}
 \item{b}{See Usage.}
 }
 \description{

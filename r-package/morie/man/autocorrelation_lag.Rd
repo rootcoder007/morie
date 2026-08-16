@@ -8,7 +8,7 @@
 autocorrelation_lag(y, threshold = NULL)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{A vector; its length is taken and its elements indexed.}
 \item{threshold}{Defaults to \code{NULL}.}
 }
 \description{

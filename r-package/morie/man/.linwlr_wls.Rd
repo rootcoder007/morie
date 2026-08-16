@@ -8,9 +8,9 @@
 .linwlr_wls(X, y, w)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{w}{See Usage.}
+\item{X}{A matrix; passed to \code{nrow}.}
+\item{y}{Numeric; combined arithmetically in the body.}
+\item{w}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the linwlr_native implementation; see the file header for the source it follows.

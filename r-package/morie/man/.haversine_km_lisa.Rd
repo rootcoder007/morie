@@ -8,10 +8,10 @@
 .haversine_km_lisa(lat1, lon1, lat2, lon2)
 }
 \arguments{
-\item{lat1}{See Usage.}
-\item{lon1}{See Usage.}
-\item{lat2}{See Usage.}
-\item{lon2}{See Usage.}
+\item{lat1}{Numeric; combined arithmetically in the body.}
+\item{lon1}{Numeric; combined arithmetically in the body.}
+\item{lat2}{Numeric; combined arithmetically in the body.}
+\item{lon2}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the mrm_lisa implementation; see the file header for the source it follows.

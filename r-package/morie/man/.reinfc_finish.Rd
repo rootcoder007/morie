@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{param}{See Usage.}
-\item{rewards}{See Usage.}
+\item{rewards}{A vector; its length is taken and its elements indexed.}
 \item{bs}{See Usage.}
 \item{traj}{See Usage.}
 }

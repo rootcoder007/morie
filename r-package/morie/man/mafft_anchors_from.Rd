@@ -8,7 +8,7 @@
 mafft_anchors_from(chain)
 }
 \arguments{
-\item{chain}{See Usage.}
+\item{chain}{A matrix; indexed by row and column.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

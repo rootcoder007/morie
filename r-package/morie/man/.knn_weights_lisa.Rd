@@ -8,9 +8,9 @@
 .knn_weights_lisa(lat, lon, k)
 }
 \arguments{
-\item{lat}{See Usage.}
-\item{lon}{See Usage.}
-\item{k}{See Usage.}
+\item{lat}{A vector; its length is taken and its elements indexed.}
+\item{lon}{A vector; indexed elementwise.}
+\item{k}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the mrm_lisa implementation; see the file header for the source it follows.

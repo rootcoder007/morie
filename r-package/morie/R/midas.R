@@ -10,10 +10,10 @@
 #' and the non-finite-SSE guard are directly unit-testable. `X` is the
 #' lag-matrix, `Y` the target, `K` the number of high-frequency lags.
 #'
-#' @param p See Usage.
-#' @param X See Usage.
-#' @param Y See Usage.
-#' @param K See Usage.
+#' @param p A vector; indexed elementwise.
+#' @param X A matrix; passed to \code{\%*\%}.
+#' @param Y Numeric; combined arithmetically in the body.
+#' @param K Passed to \code{.morie_beta_weights}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .midas_sse <- function(p, X, Y, K) {

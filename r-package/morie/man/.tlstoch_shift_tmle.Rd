@@ -8,14 +8,14 @@
 .tlstoch_shift_tmle(Y, A, W, Q_fn, g_fn, delta, lower = NULL, upper = NULL, iters = 60)
 }
 \arguments{
-\item{Y}{See Usage.}
-\item{A}{See Usage.}
-\item{W}{See Usage.}
+\item{Y}{Passed to \code{.tlstoch_vec}.}
+\item{A}{Passed to \code{.tlstoch_vec}.}
+\item{W}{Passed to \code{.tlstoch_mat}.}
 \item{Q_fn}{See Usage.}
-\item{g_fn}{See Usage.}
-\item{delta}{See Usage.}
-\item{lower}{Defaults to \code{NULL}.}
-\item{upper}{Defaults to \code{NULL}.}
+\item{g_fn}{Passed to \code{.tlstoch_density_ratio}.}
+\item{delta}{Passed to \code{.tlstoch_density_ratio}.}
+\item{lower}{Passed to \code{.tlstoch_density_ratio}.}
+\item{upper}{Passed to \code{.tlstoch_density_ratio}.}
 \item{iters}{Defaults to \code{60}.}
 }
 \description{

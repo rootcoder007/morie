@@ -8,8 +8,8 @@
 .qlr_ssr(X, y)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
+\item{X}{A matrix; passed to \code{t}.}
+\item{y}{A matrix; passed to \code{\%*\%}.}
 }
 \description{
 Part of the qlrtst_native implementation; see the file header for the source it follows.

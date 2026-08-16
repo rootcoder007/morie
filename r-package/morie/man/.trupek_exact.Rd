@@ -8,10 +8,10 @@
 .trupek_exact(g, H, delta, tol, maxit)
 }
 \arguments{
-\item{g}{See Usage.}
-\item{H}{See Usage.}
-\item{delta}{See Usage.}
-\item{tol}{See Usage.}
+\item{g}{A vector; its length is taken.}
+\item{H}{A matrix; indexed by row and column.}
+\item{delta}{Numeric; combined arithmetically in the body.}
+\item{tol}{Numeric; combined arithmetically in the body.}
 \item{maxit}{See Usage.}
 }
 \description{

@@ -8,7 +8,7 @@
 .sctraj_arc_length(curve)
 }
 \arguments{
-\item{curve}{See Usage.}
+\item{curve}{A matrix; indexed by row and column.}
 }
 \description{
 Part of the sctraj_native implementation; see the file header for the source it follows.

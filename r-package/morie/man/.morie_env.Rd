@@ -11,7 +11,7 @@
 \item{name}{See Usage.}
 }
 \description{
-Part of the arsau implementation; see the file header for the source it follows.
+A step of the arsau implementation. Called by \code{.morie_resolve_arsau_dir}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{trimws}.

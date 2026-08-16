@@ -8,16 +8,16 @@
 morie_tmlcic_adaptive_prespecification(y, A, W, groups, design, target, library = NULL, g_library = NULL, n_folds = NULL, ridge = 1e-08)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{A}{See Usage.}
-\item{W}{See Usage.}
-\item{groups}{See Usage.}
-\item{design}{See Usage.}
-\item{target}{See Usage.}
+\item{y}{A vector; its length is taken.}
+\item{A}{Passed to \code{morie_tmlcic_candidate_tmle}.}
+\item{W}{A matrix; passed to \code{ncol}.}
+\item{groups}{Passed to \code{.tmlcic_cv_folds}.}
+\item{design}{Passed to \code{.tmlcic_cv_folds}.}
+\item{target}{Passed to \code{morie_tmlcic_influence_curve}.}
 \item{library}{Defaults to \code{NULL}.}
 \item{g_library}{Defaults to \code{NULL}.}
-\item{n_folds}{Defaults to \code{NULL}.}
-\item{ridge}{Defaults to \code{1e-08}.}
+\item{n_folds}{Passed to \code{.tmlcic_cv_folds}.}
+\item{ridge}{Passed to \code{morie_tmlcic_candidate_tmle}. Defaults to \code{1e-08}.}
 }
 \description{
 Part of the tmlcic_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 indicator_basis(X, knots = NULL, max_order = 2L)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{knots}{Defaults to \code{NULL}.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
+\item{knots}{Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.}
 \item{max_order}{Defaults to \code{2L}.}
 }
 \description{

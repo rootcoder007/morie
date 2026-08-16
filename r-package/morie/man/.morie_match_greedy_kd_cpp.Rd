@@ -8,11 +8,11 @@
 .morie_match_greedy_kd_cpp(treated, control, ratio, caliper_dist, replace)
 }
 \arguments{
-\item{treated}{See Usage.}
-\item{control}{See Usage.}
-\item{ratio}{See Usage.}
-\item{caliper_dist}{See Usage.}
-\item{replace}{See Usage.}
+\item{treated}{Passed to \code{.Call}.}
+\item{control}{Passed to \code{.Call}.}
+\item{ratio}{Passed to \code{.Call}.}
+\item{caliper_dist}{Passed to \code{.Call}.}
+\item{replace}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

@@ -33,10 +33,11 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_io_category_dir
 #'
-#' Part of the tps_io implementation; see the file header for the source
+#' A step of the tps_io implementation. Called by \code{.morie_tps_read_csv}, \code{.morie_tps_read_excel}, \code{.morie_tps_read_featurecollection} and 6 others in the module.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param name See Usage.
+#' @param name Passed to \code{.morie_tps_canonical}.
 #' @param fmt_subdir See Usage.
 #' @return The value of \code{file.path}.
 #' @export
@@ -49,7 +50,8 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_io_pick_one
 #'
-#' Part of the tps_io implementation; see the file header for the source
+#' A step of the tps_io implementation. Called by \code{.morie_tps_read_csv}, \code{.morie_tps_read_excel}, \code{.morie_tps_read_featurecollection} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @param d See Usage.
@@ -79,10 +81,11 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_apply_nrows
 #'
-#' Part of the tps_io implementation; see the file header for the source
+#' A step of the tps_io implementation. Called by \code{.morie_tps_read_featurecollection}, \code{.morie_tps_read_geojson}, \code{.morie_tps_read_kml} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param df See Usage.
+#' @param df A matrix; indexed by row and column.
 #' @param nrows See Usage.
 #' @return The value of \code{[}.
 #' @export
@@ -98,10 +101,11 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_read_csv
 #'
-#' Part of the tps_io implementation; see the file header for the source
+#' A step of the tps_io implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param name See Usage.
+#' @param name Passed to \code{.morie_tps_io_category_dir}.
 #' @param nrows See Usage.
 #' @return The value of \code{do.call}.
 #' @export
@@ -117,10 +121,11 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_read_excel
 #'
-#' Part of the tps_io implementation; see the file header for the source
+#' A step of the tps_io implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param name See Usage.
+#' @param name Passed to \code{.morie_tps_io_category_dir}.
 #' @param nrows See Usage.
 #' @return The value of \code{df}, as built in the body.
 #' @export
@@ -151,11 +156,12 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_read_geojson
 #'
-#' Part of the tps_io implementation; see the file header for the source
+#' A step of the tps_io implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param name See Usage.
-#' @param nrows See Usage.
+#' @param name Passed to \code{.morie_tps_io_category_dir}.
+#' @param nrows Passed to \code{.morie_tps_apply_nrows}.
 #' @return The value of \code{.morie_tps_apply_nrows}.
 #' @export
 .morie_tps_read_geojson <- function(name, nrows) {
@@ -181,8 +187,8 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 #'
 #' the sf GeoJSON driver handles them when given the right path.
 #'
-#' @param name See Usage.
-#' @param nrows See Usage.
+#' @param name Passed to \code{.morie_tps_io_category_dir}.
+#' @param nrows Passed to \code{.morie_tps_apply_nrows}.
 #' @return The value of \code{.morie_tps_apply_nrows}.
 #' @export
 .morie_tps_read_featurecollection <- function(name, nrows) {
@@ -217,11 +223,12 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_read_kml
 #'
-#' Part of the tps_io implementation; see the file header for the source
+#' A step of the tps_io implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param name See Usage.
-#' @param nrows See Usage.
+#' @param name Passed to \code{.morie_tps_io_category_dir}.
+#' @param nrows Passed to \code{.morie_tps_apply_nrows}.
 #' @return The value of \code{.morie_tps_apply_nrows}.
 #' @export
 .morie_tps_read_kml <- function(name, nrows) {
@@ -271,11 +278,12 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_read_sf_path
 #'
-#' Part of the tps_io implementation; see the file header for the source
+#' A step of the tps_io implementation. Called by \code{.morie_tps_read_filegeodatabase}, \code{.morie_tps_read_geopackage}, \code{.morie_tps_read_shapefile} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @param p See Usage.
-#' @param nrows See Usage.
+#' @param nrows Passed to \code{.morie_tps_apply_nrows}.
 #' @return The value of \code{.morie_tps_apply_nrows}.
 #' @export
 .morie_tps_read_sf_path <- function(p, nrows) {
@@ -296,11 +304,12 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_read_geopackage
 #'
-#' Part of the tps_io implementation; see the file header for the source
+#' A step of the tps_io implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param name See Usage.
-#' @param nrows See Usage.
+#' @param name Passed to \code{.morie_tps_io_category_dir}.
+#' @param nrows Passed to \code{.morie_tps_read_sf_path}.
 #' @return The value of \code{.morie_tps_read_sf_path}.
 #' @export
 .morie_tps_read_geopackage <- function(name, nrows) {
@@ -312,11 +321,12 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_read_sqlite_geodatabase
 #'
-#' Part of the tps_io implementation; see the file header for the source
+#' A step of the tps_io implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param name See Usage.
-#' @param nrows See Usage.
+#' @param name Passed to \code{.morie_tps_io_category_dir}.
+#' @param nrows Passed to \code{.morie_tps_read_sf_path}.
 #' @return The value of \code{.morie_tps_read_sf_path}.
 #' @export
 .morie_tps_read_sqlite_geodatabase <- function(name, nrows) {
@@ -332,11 +342,12 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_read_shapefile
 #'
-#' Part of the tps_io implementation; see the file header for the source
+#' A step of the tps_io implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param name See Usage.
-#' @param nrows See Usage.
+#' @param name Passed to \code{.morie_tps_io_category_dir}.
+#' @param nrows Passed to \code{.morie_tps_read_sf_path}.
 #' @return The value of \code{.morie_tps_read_sf_path}.
 #' @export
 .morie_tps_read_shapefile <- function(name, nrows) {
@@ -375,11 +386,12 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' GDAL OpenFileGDB driver via sf::st_read works on the directory
 #'
-#' Part of the tps_io implementation; see the file header for the source
+#' A step of the tps_io implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param name See Usage.
-#' @param nrows See Usage.
+#' @param name Passed to \code{.morie_tps_io_category_dir}.
+#' @param nrows Passed to \code{.morie_tps_read_sf_path}.
 #' @return The value of \code{.morie_tps_read_sf_path}.
 #' @export
 .morie_tps_read_filegeodatabase <- function(name, nrows) {

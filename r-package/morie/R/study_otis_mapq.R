@@ -42,7 +42,8 @@
 
 #' .run_otis_analysis_module_internal
 #'
-#' Part of the study_otis_mapq implementation; see the file header for
+#' A step of the study_otis_mapq implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @return A list with \code{otis_descriptives}, \code{otis_alert_combos}, \code{otis_dml_results}, \code{otis_trends}.
@@ -157,7 +158,8 @@
 
 #' .run_mapq_psychometrics_module_internal
 #'
-#' Part of the study_otis_mapq implementation; see the file header for
+#' A step of the study_otis_mapq implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @return A list with \code{mapq_reliability}, \code{mapq_factor_loadings}, \code{mapq_dml_results}.

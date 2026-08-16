@@ -8,9 +8,9 @@
 resample(weights, rng, scheme = "systematic")
 }
 \arguments{
-\item{weights}{See Usage.}
-\item{rng}{See Usage.}
-\item{scheme}{Defaults to \code{"systematic"}.}
+\item{weights}{Numeric; passed to \code{sum}.}
+\item{rng}{Passed to \code{.ghc_unif}.}
+\item{scheme}{One of \code{"multinomial"}, \code{"residual"}, \code{"stratified"}, \code{"systematic"}. Defaults to \code{"systematic"}.}
 }
 \description{
 Part of the smcsam_native implementation; see the file header for the source it follows.

@@ -8,11 +8,11 @@
 .entheo_binding_per_frame(eeg, fmri)
 }
 \arguments{
-\item{eeg}{See Usage.}
-\item{fmri}{See Usage.}
+\item{eeg}{Passed to \code{.entheo_envelope}.}
+\item{fmri}{Passed to \code{.entheo_align}.}
 }
 \description{
-Part of the entheo_analysis implementation; see the file header for the source it follows.
+A step of the entheo_analysis implementation. Called by \code{beautiful_loop_metric}. See the file header for the source the module follows.
 }
 \value{
 A numeric value.

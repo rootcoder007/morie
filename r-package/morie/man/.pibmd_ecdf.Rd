@@ -8,7 +8,7 @@
 .pibmd_ecdf(sorted_v, x)
 }
 \arguments{
-\item{sorted_v}{See Usage.}
+\item{sorted_v}{A vector; its length is taken.}
 \item{x}{See Usage.}
 }
 \description{

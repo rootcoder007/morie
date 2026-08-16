@@ -8,9 +8,9 @@
 neighbours(order, seasonal_order, constant, s)
 }
 \arguments{
-\item{order}{See Usage.}
-\item{seasonal_order}{See Usage.}
-\item{constant}{See Usage.}
+\item{order}{A vector; indexed elementwise.}
+\item{seasonal_order}{A vector; indexed elementwise.}
+\item{constant}{A flag; the body branches on it.}
 \item{s}{See Usage.}
 }
 \description{

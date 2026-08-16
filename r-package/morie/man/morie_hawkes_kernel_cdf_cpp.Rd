@@ -8,9 +8,9 @@
 morie_hawkes_kernel_cdf_cpp(u, kind, psi)
 }
 \arguments{
-\item{u}{See Usage.}
-\item{kind}{See Usage.}
-\item{psi}{See Usage.}
+\item{u}{Passed to \code{.Call}.}
+\item{kind}{Passed to \code{.Call}.}
+\item{psi}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

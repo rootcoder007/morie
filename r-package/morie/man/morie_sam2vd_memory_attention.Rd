@@ -8,11 +8,11 @@
 morie_sam2vd_memory_attention(frame_features, bank, current_frame, n_blocks = 1, include_pointers = TRUE)
 }
 \arguments{
-\item{frame_features}{See Usage.}
-\item{bank}{See Usage.}
-\item{current_frame}{See Usage.}
+\item{frame_features}{Passed to \code{.sam2vd_to_num}.}
+\item{bank}{A list; the body reads \code{$pointers}, \code{$prompted}, \code{$recent} from it.}
+\item{current_frame}{Passed to \code{morie_sam2vd_temporal_embedding}.}
 \item{n_blocks}{Defaults to \code{1}.}
-\item{include_pointers}{Defaults to \code{TRUE}.}
+\item{include_pointers}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the sam2vd_native implementation; see the file header for the source it follows.

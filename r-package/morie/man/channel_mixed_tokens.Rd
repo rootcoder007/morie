@@ -8,7 +8,7 @@
 channel_mixed_tokens(X, patch_len, stride = NULL)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
 \item{patch_len}{See Usage.}
 \item{stride}{Defaults to \code{NULL}.}
 }

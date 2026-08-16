@@ -8,7 +8,7 @@
 inject_special_codes(x, rate = 0.02, codes = c(97L, 98L, 99L, 997L, 998L, 999L))
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A vector; its length is taken and its elements indexed.}
 \item{rate}{Defaults to \code{0.02}.}
 \item{codes}{Defaults to \code{c(97L, 98L, 99L, 997L, 998L, 999L)}.}
 }

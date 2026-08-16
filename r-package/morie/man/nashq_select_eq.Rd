@@ -8,11 +8,11 @@
 nashq_select_eq(A, B, selection, agent, tol)
 }
 \arguments{
-\item{A}{See Usage.}
-\item{B}{See Usage.}
-\item{selection}{See Usage.}
+\item{A}{Numeric; passed to \code{max}.}
+\item{B}{Numeric; passed to \code{max}.}
+\item{selection}{One of \code{"best_for_agent"}, \code{"first"}, \code{"global_optimal"}.}
 \item{agent}{See Usage.}
-\item{tol}{See Usage.}
+\item{tol}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the nashq_native implementation; see the file header for the source it follows.

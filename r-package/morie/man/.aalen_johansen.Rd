@@ -8,8 +8,8 @@
 .aalen_johansen(time, event_type, cause = 1)
 }
 \arguments{
-\item{time}{See Usage.}
-\item{event_type}{See Usage.}
+\item{time}{Passed to \code{.s03vec}.}
+\item{event_type}{Passed to \code{.s03vec}.}
 \item{cause}{Defaults to \code{1}.}
 }
 \description{

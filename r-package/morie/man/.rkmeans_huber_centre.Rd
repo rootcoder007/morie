@@ -8,10 +8,10 @@
 .rkmeans_huber_centre(pts, c_val, tol = 1e-10, max_iter = 200)
 }
 \arguments{
-\item{pts}{See Usage.}
-\item{c_val}{See Usage.}
+\item{pts}{Passed to \code{.rkmeans_mean}.}
+\item{c_val}{Numeric; combined arithmetically in the body.}
 \item{tol}{Defaults to \code{1e-10}.}
-\item{max_iter}{Defaults to \code{200}.}
+\item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{200}.}
 }
 \description{
 Part of the rkmeans_native implementation; see the file header for the source it follows.

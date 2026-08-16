@@ -8,7 +8,7 @@
 .as_item_matrix(data)
 }
 \arguments{
-\item{data}{See Usage.}
+\item{data}{A matrix; passed to \code{as.matrix}.}
 }
 \description{
 Part of the psymet implementation; see the file header for the source it follows.

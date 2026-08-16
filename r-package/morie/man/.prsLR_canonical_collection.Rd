@@ -8,8 +8,8 @@
 .prsLR_canonical_collection(ag, k)
 }
 \arguments{
-\item{ag}{See Usage.}
-\item{k}{See Usage.}
+\item{ag}{A list; the body reads \code{$rules}, \code{$start} from it.}
+\item{k}{Passed to \code{.prsLR_closure}.}
 }
 \description{
 Part of the prsLR_native implementation; see the file header for the source it follows.

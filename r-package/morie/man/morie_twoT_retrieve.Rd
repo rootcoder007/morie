@@ -8,11 +8,11 @@
 morie_twoT_retrieve(query_embedding, item_embeddings, probabilities = NULL, top_k = 5, temperature = 1)
 }
 \arguments{
-\item{query_embedding}{See Usage.}
-\item{item_embeddings}{See Usage.}
-\item{probabilities}{Defaults to \code{NULL}.}
+\item{query_embedding}{Passed to \code{.twoT_as_vec}.}
+\item{item_embeddings}{Passed to \code{.twoT_as_mat}.}
+\item{probabilities}{Optional; may be \code{NULL}. Passed to \code{.twoT_as_vec}.}
 \item{top_k}{Defaults to \code{5}.}
-\item{temperature}{Defaults to \code{1}.}
+\item{temperature}{Passed to \code{morie_twoT_corrected_logits}. Defaults to \code{1}.}
 }
 \description{
 Part of the twoT_native implementation; see the file header for the source it follows.

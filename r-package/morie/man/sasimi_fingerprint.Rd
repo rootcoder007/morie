@@ -8,7 +8,7 @@
 sasimi_fingerprint(bits, n_bits = NULL)
 }
 \arguments{
-\item{bits}{See Usage.}
+\item{bits}{A vector; its length is taken.}
 \item{n_bits}{Defaults to \code{NULL}.}
 }
 \description{

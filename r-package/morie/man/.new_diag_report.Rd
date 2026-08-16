@@ -16,7 +16,7 @@
 \item{assessment}{See Usage.}
 }
 \description{
-Part of the diagnostics implementation; see the file header for the source it follows.
+A step of the diagnostics implementation. Called by \code{full_diagnostics}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{structure}.

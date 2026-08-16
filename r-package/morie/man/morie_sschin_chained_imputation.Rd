@@ -10,10 +10,10 @@ morie_sschin_chained_imputation(time, event, X, mi_iter = 5L, cycles = 10L, ties
 \arguments{
 \item{time}{See Usage.}
 \item{event}{See Usage.}
-\item{X}{See Usage.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
 \item{mi_iter}{Defaults to \code{5L}.}
 \item{cycles}{Defaults to \code{10L}.}
-\item{ties}{Defaults to \code{"breslow"}.}
+\item{ties}{Compared against \code{"breslow"}. Defaults to \code{"breslow"}.}
 }
 \description{
 Part of the sschin_native implementation; see the file header for the source it follows.

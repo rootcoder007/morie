@@ -8,11 +8,11 @@
 .morie_ckan_read_path(path, fmt)
 }
 \arguments{
-\item{path}{See Usage.}
-\item{fmt}{See Usage.}
+\item{path}{Passed to \code{.morie_from_json}.}
+\item{fmt}{One of \code{"csv"}, \code{"json"}, \code{"parquet"}, \code{"tab"}, \code{"tsv"}, \code{"xls"}, \code{"xlsx"}.}
 }
 \description{
-Part of the ingest_ckan implementation; see the file header for the source it follows.
+A step of the ingest_ckan implementation. Called by \code{morie_ingest_ckan_read_resource}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{utils::read.csv}.

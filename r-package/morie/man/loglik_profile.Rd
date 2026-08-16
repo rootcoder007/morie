@@ -13,7 +13,7 @@ loglik_profile(y, grid, make_model, n_particles = 200L, n_reps = 5L, seed = 0L)
 \item{make_model}{See Usage.}
 \item{n_particles}{Defaults to \code{200L}.}
 \item{n_reps}{Defaults to \code{5L}.}
-\item{seed}{Defaults to \code{0L}.}
+\item{seed}{Numeric; combined arithmetically in the body. Defaults to \code{0L}.}
 }
 \description{
 Part of the pftrep_native implementation; see the file header for the source it follows.

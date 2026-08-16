@@ -8,8 +8,8 @@
 .stahdo_mad(v, consistent = TRUE)
 }
 \arguments{
-\item{v}{See Usage.}
-\item{consistent}{Defaults to \code{TRUE}.}
+\item{v}{Numeric; combined arithmetically in the body.}
+\item{consistent}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the stahdo_native implementation; see the file header for the source it follows.

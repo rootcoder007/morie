@@ -8,7 +8,7 @@
 .morie_svdd_mat(X, name)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; passed to \code{nrow}.}
 \item{name}{See Usage.}
 }
 \description{

@@ -8,7 +8,7 @@
 .morie_to_legacy_overlap_col(cw)
 }
 \arguments{
-\item{cw}{See Usage.}
+\item{cw}{A list; the body reads \code{$area_overlap_pct}, \code{$pct_140_in_158} from it.}
 }
 \description{
 the same phase) read `area_overlap_pct`; remap to the new `pct_140_in_158` so they keep working.

@@ -8,11 +8,11 @@
 morie_warpL_warp_loss(score_positive, score_negative, estimated_rank, alphas, margin = 1)
 }
 \arguments{
-\item{score_positive}{See Usage.}
-\item{score_negative}{See Usage.}
-\item{estimated_rank}{See Usage.}
-\item{alphas}{See Usage.}
-\item{margin}{Defaults to \code{1}.}
+\item{score_positive}{Passed to \code{.warpL_warp_loss}.}
+\item{score_negative}{Passed to \code{.warpL_warp_loss}.}
+\item{estimated_rank}{Passed to \code{.warpL_warp_loss}.}
+\item{alphas}{Passed to \code{.warpL_warp_loss}.}
+\item{margin}{Passed to \code{.warpL_warp_loss}. Defaults to \code{1}.}
 }
 \description{
 Part of the warpL_native implementation; see the file header for the source it follows.

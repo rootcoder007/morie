@@ -8,7 +8,7 @@
 .cohens_d_paired(d)
 }
 \arguments{
-\item{d}{See Usage.}
+\item{d}{Numeric; passed to \code{mean}.}
 }
 \description{
 Part of the statistics implementation; see the file header for the source it follows.

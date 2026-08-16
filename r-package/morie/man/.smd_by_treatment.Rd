@@ -8,7 +8,7 @@
 .smd_by_treatment(data, treat_col, covariate_cols)
 }
 \arguments{
-\item{data}{See Usage.}
+\item{data}{A vector; indexed elementwise.}
 \item{treat_col}{See Usage.}
 \item{covariate_cols}{See Usage.}
 }

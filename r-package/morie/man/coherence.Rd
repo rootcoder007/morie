@@ -8,7 +8,7 @@
 coherence(A, rank = NULL)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{A matrix; passed to \code{as.matrix}.}
 \item{rank}{Defaults to \code{NULL}.}
 }
 \description{

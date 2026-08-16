@@ -8,7 +8,7 @@
 .siu_p_scan_mh_race(narrative)
 }
 \arguments{
-\item{narrative}{See Usage.}
+\item{narrative}{Optional; may be \code{NULL}. Character; passed to \code{tolower}.}
 }
 \description{
 Part of the siu_parser implementation; see the file header for the source it follows.

@@ -8,9 +8,9 @@
 .lan_smi_fit_nb(X, y, offset_vec, max_iter, tol)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{offset_vec}{See Usage.}
+\item{X}{A matrix; passed to \code{ncol}.}
+\item{y}{Numeric; combined arithmetically in the body.}
+\item{offset_vec}{Numeric; combined arithmetically in the body.}
 \item{max_iter}{See Usage.}
 \item{tol}{See Usage.}
 }

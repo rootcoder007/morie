@@ -8,7 +8,7 @@
 .rmrl_compile(phi)
 }
 \arguments{
-\item{phi}{See Usage.}
+\item{phi}{Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the rmrl_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .morie_tps_apply_nrows(df, nrows)
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{A matrix; indexed by row and column.}
 \item{nrows}{See Usage.}
 }
 \description{

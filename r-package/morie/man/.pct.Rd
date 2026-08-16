@@ -9,10 +9,10 @@
 }
 \arguments{
 \item{x}{See Usage.}
-\item{p}{See Usage.}
+\item{p}{Numeric; combined arithmetically in the body.}
 }
 \description{
-Part of the bootstrap_methods implementation; see the file header for the source it follows.
+A step of the bootstrap_methods implementation. Called by \code{.bca_interval}, \code{block_bootstrap}, \code{bootstrap} and 3 others in the module. See the file header for the source the module follows.
 }
 \value{
 The value of \code{unname}.

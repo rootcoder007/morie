@@ -8,7 +8,7 @@
 mirror_pad(image, pad)
 }
 \arguments{
-\item{image}{See Usage.}
+\item{image}{Passed to \code{.unetbk_as_matrix}.}
 \item{pad}{See Usage.}
 }
 \description{

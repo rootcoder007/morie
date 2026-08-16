@@ -8,7 +8,7 @@
 .is_boolean_value_set(vv)
 }
 \arguments{
-\item{vv}{See Usage.}
+\item{vv}{Optional; may be \code{NULL}. A vector; its length is taken.}
 }
 \description{
 Part of the variable_taxonomy implementation; see the file header for the source it follows.

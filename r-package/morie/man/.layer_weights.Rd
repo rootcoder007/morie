@@ -8,10 +8,10 @@
 .layer_weights(raw)
 }
 \arguments{
-\item{raw}{See Usage.}
+\item{raw}{A vector; its length is taken.}
 }
 \description{
-Part of the elmo_native implementation; see the file header for the source it follows.
+A step of the elmo_native implementation. Called by \code{.elmo_mix}, \code{.elmo_representation}. See the file header for the source the module follows.
 }
 \value{
 A vector, from \code{as.numeric}.

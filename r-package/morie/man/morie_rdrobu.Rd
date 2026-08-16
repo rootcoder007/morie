@@ -8,10 +8,10 @@
 morie_rdrobu(y, x, cutoff = 0, alpha = 0.05, ...)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{x}{See Usage.}
-\item{cutoff}{Defaults to \code{0}.}
-\item{alpha}{Defaults to \code{0.05}.}
+\item{y}{Passed to \code{morie_causrddc}.}
+\item{x}{Passed to \code{morie_causrddc}.}
+\item{cutoff}{Passed to \code{morie_causrddc}. Defaults to \code{0}.}
+\item{alpha}{Passed to \code{morie_causrddc}. Defaults to \code{0.05}.}
 \item{...}{Passed through.}
 }
 \description{

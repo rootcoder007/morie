@@ -9,7 +9,7 @@ nashq_solve(A, b)
 }
 \arguments{
 \item{A}{See Usage.}
-\item{b}{See Usage.}
+\item{b}{A vector; its length is taken.}
 }
 \description{
 Part of the nashq_native implementation; see the file header for the source it follows.

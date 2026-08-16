@@ -3,7 +3,7 @@
 % the formals.
 \name{.onLoad}
 \alias{.onLoad}
-\title{Future\\\'s connection-misuse check (diff_connections() in}
+\title{Future\\'s connection-misuse check (diff_connections() in}
 \usage{
 .onLoad(libname, pkgname)
 }

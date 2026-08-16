@@ -8,11 +8,11 @@
 .ghlgd_negll(theta, Bx, Bg, gz, n)
 }
 \arguments{
-\item{theta}{See Usage.}
-\item{Bx}{See Usage.}
-\item{Bg}{See Usage.}
+\item{theta}{A matrix; passed to \code{\%*\%}.}
+\item{Bx}{A matrix; passed to \code{\%*\%}.}
+\item{Bg}{A matrix; passed to \code{\%*\%}.}
 \item{gz}{See Usage.}
-\item{n}{See Usage.}
+\item{n}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Extracted from the morie_ghosal_log_density() optimiser closure for direct unit-testing. `Bx`/`Bg` are the data and grid basis matrices, `gz` the standardised evaluation grid, `n` the sample size.

@@ -8,7 +8,7 @@
 .write_module_outputs(outputs, output_dir = NULL)
 }
 \arguments{
-\item{outputs}{See Usage.}
+\item{outputs}{A vector; indexed elementwise.}
 \item{output_dir}{Defaults to \code{NULL}.}
 }
 \description{

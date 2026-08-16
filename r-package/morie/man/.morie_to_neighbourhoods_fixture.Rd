@@ -8,7 +8,7 @@
 .morie_to_neighbourhoods_fixture(version)
 }
 \arguments{
-\item{version}{See Usage.}
+\item{version}{Passed to \code{.morie_to_fixture_name}.}
 }
 \description{
 Part of the toronto_neighbourhoods implementation; see the file header for the source it follows.

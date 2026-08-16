@@ -13,7 +13,7 @@
 \item{covariates}{See Usage.}
 }
 \description{
-Part of the investigation implementation; see the file header for the source it follows.
+A step of the investigation implementation. Called by \code{morie_run_treatment_effects_analysis}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{pmin}.

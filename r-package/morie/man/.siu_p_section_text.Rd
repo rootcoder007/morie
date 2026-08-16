@@ -8,8 +8,8 @@
 .siu_p_section_text(text, header, end_markers = character())
 }
 \arguments{
-\item{text}{See Usage.}
-\item{header}{See Usage.}
+\item{text}{A vector; its length is taken.}
+\item{header}{Passed to \code{.siu_p_re_escape}.}
 \item{end_markers}{Defaults to \code{character()}.}
 }
 \description{

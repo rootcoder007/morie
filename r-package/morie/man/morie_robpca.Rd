@@ -8,14 +8,14 @@
 morie_robpca(X, k = NULL, alpha = 0.75, kmax = 10L, n_dirs = 250L, n_start = 250L, seed = 17L, reweight = TRUE)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{k}{Defaults to \code{NULL}.}
-\item{alpha}{Defaults to \code{0.75}.}
-\item{kmax}{Defaults to \code{10L}.}
+\item{X}{Passed to \code{.robpca_matrix}.}
+\item{k}{Passed to \code{.robpca_choose_k}.}
+\item{alpha}{Numeric; combined arithmetically in the body. Defaults to \code{0.75}.}
+\item{kmax}{Numeric; combined arithmetically in the body. Defaults to \code{10L}.}
 \item{n_dirs}{Defaults to \code{250L}.}
-\item{n_start}{Defaults to \code{250L}.}
-\item{seed}{Defaults to \code{17L}.}
-\item{reweight}{Defaults to \code{TRUE}.}
+\item{n_start}{Passed to \code{.robpca_fast_mcd}. Defaults to \code{250L}.}
+\item{seed}{Passed to \code{.robpca_fast_mcd}. Defaults to \code{17L}.}
+\item{reweight}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the robpca_native implementation; see the file header for the source it follows.

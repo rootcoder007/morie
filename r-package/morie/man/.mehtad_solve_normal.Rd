@@ -8,10 +8,10 @@
 .mehtad_solve_normal(A, d, rhs, ridge = 1e-11)
 }
 \arguments{
-\item{A}{See Usage.}
-\item{d}{See Usage.}
+\item{A}{A matrix; passed to \code{as.matrix}.}
+\item{d}{A count; the body uses it as \code{rep(...)}.}
 \item{rhs}{See Usage.}
-\item{ridge}{Defaults to \code{1e-11}.}
+\item{ridge}{Numeric; combined arithmetically in the body. Defaults to \code{1e-11}.}
 }
 \description{
 Part of the mehtad_native implementation; see the file header for the source it follows.

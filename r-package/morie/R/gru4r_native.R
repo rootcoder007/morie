@@ -17,10 +17,11 @@
 
 #' Numerically stable sigmoid: below -700 it is effectively 0
 #'
-#' Part of the gru4r_native implementation; see the file header for the
+#' A step of the gru4r_native implementation. Called by \code{morie_gru4r_bpr}, \code{morie_gru4r_gru}, \code{morie_gru4r_top1}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Numeric; combined arithmetically in the body.
 #' @return The value of \code{ifelse}.
 #' @export
 .gru4r_sigmoid <- function(x) {

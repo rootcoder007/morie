@@ -8,7 +8,7 @@
 morie_sam2vd_temporal_embedding(entry, current_frame, dim = NULL, scale = 0.1)
 }
 \arguments{
-\item{entry}{See Usage.}
+\item{entry}{A list; the body reads \code{$features}, \code{$frame}, \code{$prompted} from it.}
 \item{current_frame}{See Usage.}
 \item{dim}{Defaults to \code{NULL}.}
 \item{scale}{Defaults to \code{0.1}.}

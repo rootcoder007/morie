@@ -94,10 +94,10 @@
 #'
 #' data.frame of attributes. Mock this in tests.
 #'
-#' @param layer_url See Usage.
-#' @param where Defaults to \code{"1=1"}.
-#' @param max_features Defaults to \code{NULL}.
-#' @param return_geometry Defaults to \code{FALSE}.
+#' @param layer_url Passed to \code{.morie_dataset_tps_fetch}.
+#' @param where Passed to \code{.morie_dataset_tps_fetch}. Defaults to \code{"1=1"}.
+#' @param max_features Passed to \code{.morie_dataset_tps_fetch}.
+#' @param return_geometry Passed to \code{.morie_dataset_tps_fetch}. Defaults to \code{FALSE}.
 #' @return Nothing; this branch always raises.
 #' @export
 .morie_tps_psdp_feature_query <- function(layer_url, where = "1=1",
@@ -336,13 +336,14 @@ morie_datasets_tps_mha_apprehensions <- function(year = NULL,
 # Internal: shared offline+live dispatch for ARSAU UoF wrappers.
 #' Internal: shared offline+live dispatch for ARSAU UoF wrappers
 #'
-#' Part of the datasets_ontario_tps implementation; see the file header
+#' A step of the datasets_ontario_tps implementation. Called by \code{morie_datasets_arsau_aggregate_summary}, \code{morie_datasets_arsau_detailed_dataset}, \code{morie_datasets_arsau_uof_individual_records} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param kind See Usage.
 #' @param year See Usage.
-#' @param offline See Usage.
-#' @param resource_id See Usage.
+#' @param offline A flag; the body branches on it.
+#' @param resource_id Optional; may be \code{NULL}. Passed to \code{.morie_ontario_ckan_dump_csv}.
 #' @param fixture_name See Usage.
 #' @return The value of \code{.morie_ontario_ckan_dump_csv}.
 #' @export
@@ -716,11 +717,11 @@ morie_datasets_ontario_ckan_layers <- function() {
 #' is also missing or NA the function errors with a clear message.
 #'
 #' @param dataset_label See Usage.
-#' @param fixture See Usage.
-#' @param offline See Usage.
+#' @param fixture Character; passed to \code{sub}.
+#' @param offline A flag; the body branches on it.
 #' @param resource_id See Usage.
 #' @param registry_key Defaults to \code{NULL}.
-#' @param source Defaults to \code{NULL}.
+#' @param source Optional; may be \code{NULL}. Passed to \code{.morie_load_chain}.
 #' @return The value of \code{.morie_load_chain}.
 #' @export
 .morie_otis_lookup_pending_dispatch <- function(dataset_label, fixture,

@@ -11,7 +11,7 @@
 \item{api_key}{Defaults to \code{NULL}.}
 }
 \description{
-Part of the ingest_forensics implementation; see the file header for the source it follows.
+A step of the ingest_forensics implementation. Called by \code{morie_ingest_forensics_nibrs}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{key}, as built in the body.

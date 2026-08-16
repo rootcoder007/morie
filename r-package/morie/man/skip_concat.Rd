@@ -8,8 +8,8 @@
 skip_concat(upsampled, contracting)
 }
 \arguments{
-\item{upsampled}{See Usage.}
-\item{contracting}{See Usage.}
+\item{upsampled}{Passed to \code{.unetbk_as_matrix}.}
+\item{contracting}{Passed to \code{.unetbk_as_matrix}.}
 }
 \description{
 Part of the unetbk_native implementation; see the file header for the source it follows.

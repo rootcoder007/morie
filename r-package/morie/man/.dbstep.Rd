@@ -8,9 +8,9 @@
 .dbstep(a, h, g)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{h}{See Usage.}
-\item{g}{See Usage.}
+\item{a}{A vector; its length is taken and its elements indexed.}
+\item{h}{A vector; its length is taken and its elements indexed.}
+\item{g}{A vector; indexed elementwise.}
 }
 \description{
 Part of the wave implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 .ms_km(time, event)
 }
 \arguments{
-\item{time}{See Usage.}
-\item{event}{See Usage.}
+\item{time}{Passed to \code{.ms_check}.}
+\item{event}{Passed to \code{.ms_check}.}
 }
 \description{
 Part of the survival_more implementation; see the file header for the source it follows.

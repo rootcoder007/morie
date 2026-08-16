@@ -14,10 +14,10 @@ morie_primal(K, Kt, prox_f_star, prox_g, x0, y0, tau = NULL, sigma = NULL, theta
 \item{prox_g}{See Usage.}
 \item{x0}{See Usage.}
 \item{y0}{See Usage.}
-\item{tau}{Defaults to \code{NULL}.}
-\item{sigma}{Defaults to \code{NULL}.}
-\item{theta}{Defaults to \code{1}.}
-\item{norm_K}{Defaults to \code{NULL}.}
+\item{tau}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
+\item{sigma}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
+\item{theta}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
+\item{norm_K}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
 \item{max_iter}{Defaults to \code{500}.}
 \item{tol}{Defaults to \code{1e-10}.}
 }

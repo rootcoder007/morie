@@ -8,7 +8,7 @@
 .sschin_cholsolve(A, b)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{A matrix; passed to \code{chol}.}
 \item{b}{See Usage.}
 }
 \description{

@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{lam}{See Usage.}
-\item{rng}{See Usage.}
+\item{rng}{Passed to \code{.ghc_norm}.}
 }
 \description{
 Part of the ttrace_native implementation; see the file header for the source it follows.

@@ -8,11 +8,11 @@
 .attend(X, Y, Wq, Wk, Wv)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{Y}{See Usage.}
-\item{Wq}{See Usage.}
-\item{Wk}{See Usage.}
-\item{Wv}{See Usage.}
+\item{X}{A matrix; passed to \code{\%*\%}.}
+\item{Y}{A matrix; passed to \code{\%*\%}.}
+\item{Wq}{A matrix; passed to \code{\%*\%}.}
+\item{Wk}{A matrix; passed to \code{\%*\%}.}
+\item{Wv}{A matrix; passed to \code{\%*\%}.}
 }
 \description{
 Part of the setT_mixedcase_native implementation; see the file header for the source it follows.

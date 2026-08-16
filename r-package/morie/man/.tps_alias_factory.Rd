@@ -8,7 +8,7 @@
 .tps_alias_factory(name)
 }
 \arguments{
-\item{name}{See Usage.}
+\item{name}{Passed to \code{morie_tps_analyze_one}.}
 }
 \description{
 Part of the tps_all_analyze implementation; see the file header for the source it follows.

@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{endpoint}{See Usage.}
-\item{required_n}{See Usage.}
-\item{strata_levels}{See Usage.}
+\item{required_n}{Numeric; combined arithmetically in the body.}
+\item{strata_levels}{A vector; its length is taken.}
 \item{target_power}{Defaults to \code{0.8}.}
 }
 \description{

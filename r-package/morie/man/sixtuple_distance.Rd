@@ -8,7 +8,7 @@
 sixtuple_distance(seqs)
 }
 \arguments{
-\item{seqs}{See Usage.}
+\item{seqs}{A vector; its length is taken.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

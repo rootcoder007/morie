@@ -9,7 +9,7 @@ mafft_clean(seqs, seq_type = NULL)
 }
 \arguments{
 \item{seqs}{See Usage.}
-\item{seq_type}{Defaults to \code{NULL}.}
+\item{seq_type}{Optional; may be \code{NULL}. One of \code{"aa"}, \code{"nt"}.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

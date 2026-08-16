@@ -8,10 +8,10 @@
 morie_matching_abadie_imbens_kernel_cpp(y, t, treated_pos, control_pos)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{t}{See Usage.}
-\item{treated_pos}{See Usage.}
-\item{control_pos}{See Usage.}
+\item{y}{Passed to \code{.Call}.}
+\item{t}{Passed to \code{.Call}.}
+\item{treated_pos}{Passed to \code{.Call}.}
+\item{control_pos}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

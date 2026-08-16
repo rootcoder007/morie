@@ -9,11 +9,11 @@
 }
 \arguments{
 \item{x}{See Usage.}
-\item{fields}{See Usage.}
-\item{W}{See Usage.}
+\item{fields}{A vector; indexed elementwise.}
+\item{W}{A vector; indexed elementwise.}
 }
 \description{
-Part of the ffmFM_native implementation; see the file header for the source it follows.
+A step of the ffmFM_native implementation. Called by \code{.fit_ffm}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{tot}, as built in the body.
@@ -21,7 +21,7 @@ The value of \code{tot}, as built in the body.
 \references{
 Juan, Y., Zhuang, Y., Chin, W.-S. & Lin, C.-J. (2016) "Field-aware
 Factorization Machines for CTR Prediction", Proceedings of the Tenth
-ACM Conference on Recommender Systems (RecSys \\'16), 43-50,
+ACM Conference on Recommender Systems (RecSys \'16), 43-50,
 doi:10.1145/2959100.2959134. Sec. 2 (FM and its limitation), Sec. 3
 (the FFM model equation with the crossed field indices, the nfk
 parameter count, the logistic loss with y in {-1,1}, and the AdaGrad

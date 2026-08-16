@@ -8,9 +8,9 @@
 .linwlr_lstsq(Z, y, ridge)
 }
 \arguments{
-\item{Z}{See Usage.}
-\item{y}{See Usage.}
-\item{ridge}{See Usage.}
+\item{Z}{A matrix; passed to \code{ncol}.}
+\item{y}{A matrix; passed to \code{crossprod}.}
+\item{ridge}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the linwlr_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 morie_wrd2v_subsample_probability(counts, t = 1e-05)
 }
 \arguments{
-\item{counts}{See Usage.}
-\item{t}{Defaults to \code{1e-05}.}
+\item{counts}{A vector; indexed elementwise.}
+\item{t}{Numeric; combined arithmetically in the body. Defaults to \code{1e-05}.}
 }
 \description{
 Part of the wrd2v_native implementation; see the file header for the source it follows.

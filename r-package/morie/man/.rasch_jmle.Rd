@@ -8,9 +8,9 @@
 .rasch_jmle(X, iters = 200, prior_var = 4)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; indexed by row and column.}
 \item{iters}{Defaults to \code{200}.}
-\item{prior_var}{Defaults to \code{4}.}
+\item{prior_var}{Numeric; combined arithmetically in the body. Defaults to \code{4}.}
 }
 \description{
 (the identification constraint), and a N(0, prior_var) penalty is carried on both sets of parameters because joint ML alone DIVERGES on perfectly separated response patterns.

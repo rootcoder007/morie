@@ -8,9 +8,9 @@
 .mor_rl_eps(e, Qs, A, epsilon)
 }
 \arguments{
-\item{e}{See Usage.}
-\item{Qs}{See Usage.}
-\item{A}{See Usage.}
+\item{e}{Passed to \code{.ghc_unif}.}
+\item{Qs}{Passed to \code{.mor_rl_greedy}.}
+\item{A}{Numeric; combined arithmetically in the body.}
 \item{epsilon}{See Usage.}
 }
 \description{

@@ -9,10 +9,10 @@
 }
 \arguments{
 \item{fn}{See Usage.}
-\item{x0}{See Usage.}
+\item{x0}{A vector; its length is taken and its elements indexed.}
 \item{xatol}{Defaults to \code{1e-10}.}
 \item{fatol}{Defaults to \code{1e-10}.}
-\item{maxiter}{Defaults to \code{5000}.}
+\item{maxiter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{5000}.}
 }
 \description{
 Part of the remlfn_native implementation; see the file header for the source it follows.

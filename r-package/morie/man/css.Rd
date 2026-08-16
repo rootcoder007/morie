@@ -8,10 +8,10 @@
 css(w, ar = list(), ma = list(), full = FALSE)
 }
 \arguments{
-\item{w}{See Usage.}
-\item{ar}{Defaults to \code{list()}.}
-\item{ma}{Defaults to \code{list()}.}
-\item{full}{Defaults to \code{FALSE}.}
+\item{w}{A vector; its length is taken and its elements indexed.}
+\item{ar}{A vector; its length is taken and its elements indexed. Defaults to \code{list()}.}
+\item{ma}{A vector; its length is taken and its elements indexed. Defaults to \code{list()}.}
+\item{full}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{
 Part of the sarima_native implementation; see the file header for the source it follows.

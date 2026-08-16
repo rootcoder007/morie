@@ -12,7 +12,7 @@
 \item{kind}{See Usage.}
 }
 \description{
-Part of the arsau implementation; see the file header for the source it follows.
+A step of the arsau implementation. Called by \code{morie_arsau_describe}, \code{morie_arsau_load_aggregate_summary}, \code{morie_arsau_load_detailed_dataset} and 4 others in the module. See the file header for the source the module follows.
 }
 \value{
 The value of \code{[[}.

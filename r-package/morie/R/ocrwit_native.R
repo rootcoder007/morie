@@ -17,10 +17,11 @@
 
 #' ocrwit_normalise_bbox
 #'
-#' Part of the ocrwit_native implementation; see the file header for the
+#' A step of the ocrwit_native implementation. Called by \code{ocrwit_patch_of_box}, \code{ocrwit_segment_layout_boxes}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param box See Usage.
+#' @param box A vector; indexed elementwise.
 #' @param width See Usage.
 #' @param height See Usage.
 #' @param scale Defaults to \code{1000}.
@@ -41,7 +42,8 @@ ocrwit_normalise_bbox <- function(box, width, height, scale = 1000) {
 
 #' ocrwit_segment_layout_boxes
 #'
-#' Part of the ocrwit_native implementation; see the file header for the
+#' A step of the ocrwit_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param boxes See Usage.
@@ -77,7 +79,8 @@ ocrwit_segment_layout_boxes <- function(boxes, segment_ids, width, height,
 
 #' ocrwit_mask_units
 #'
-#' Part of the ocrwit_native implementation; see the file header for the
+#' A step of the ocrwit_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n_units See Usage.
@@ -112,7 +115,8 @@ ocrwit_mask_units <- function(n_units, rate = 0.3, seed = 0, block = 1) {
 
 #' ocrwit_patch_of_box
 #'
-#' Part of the ocrwit_native implementation; see the file header for the
+#' A step of the ocrwit_native implementation. Called by \code{morie_ocrwit}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param box See Usage.
@@ -140,10 +144,11 @@ ocrwit_patch_of_box <- function(box, width, height, patch_grid = 14) {
 
 #' morie_ocrwit
 #'
-#' Part of the ocrwit_native implementation; see the file header for the
+#' A step of the ocrwit_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param text_boxes See Usage.
+#' @param text_boxes A vector; its length is taken and its elements indexed.
 #' @param masked_patches See Usage.
 #' @param width See Usage.
 #' @param height See Usage.
@@ -179,7 +184,8 @@ ocrwitlayout <- morie_ocrwit
 
 #' ocrwit_cheatsheet
 #'
-#' Part of the ocrwit_native implementation; see the file header for the
+#' A step of the ocrwit_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

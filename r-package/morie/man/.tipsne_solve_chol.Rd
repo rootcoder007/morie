@@ -3,13 +3,13 @@
 % the formals.
 \name{.tipsne_solve_chol}
 \alias{.tipsne_solve_chol}
-\title{Solve L L\\\' x = b by forward then back substitution}
+\title{Solve L L\\' x = b by forward then back substitution}
 \usage{
 .tipsne_solve_chol(lo, b)
 }
 \arguments{
-\item{lo}{See Usage.}
-\item{b}{See Usage.}
+\item{lo}{A matrix; indexed by row and column.}
+\item{b}{A vector; indexed elementwise.}
 }
 \description{
 Part of the tipsne_native implementation; see the file header for the source it follows.

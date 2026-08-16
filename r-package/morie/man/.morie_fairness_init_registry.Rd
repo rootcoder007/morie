@@ -8,7 +8,7 @@
 .morie_fairness_init_registry()
 }
 \description{
-Part of the fairness_cityprofile implementation; see the file header for the source it follows.
+A step of the fairness_cityprofile implementation. Called by \code{morie_fairness_get_city}, \code{morie_fairness_list_cities}, \code{morie_fairness_register_city}. See the file header for the source the module follows.
 }
 \value{
 One of two values, depending on the branch taken.

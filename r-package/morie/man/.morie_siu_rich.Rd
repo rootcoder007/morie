@@ -16,7 +16,7 @@
 \item{payload}{Defaults to \code{list()}.}
 }
 \description{
-RichResult-style constructor for the R side --------------------------------------------------------------------------- Returns a named list classed for morie\\\'s rich-output dispatch. Mirrors the structure of morie.fn._richresult.RichResult so that downstream `describe()` / `morie_print_rich()` consumers can render the same multi-section paragraph layout from R.
+RichResult-style constructor for the R side --------------------------------------------------------------------------- Returns a named list classed for morie\\'s rich-output dispatch. Mirrors the structure of morie.fn._richresult.RichResult so that downstream `describe()` / `morie_print_rich()` consumers can render the same multi-section paragraph layout from R.
 }
 \value{
 The value of \code{out}, as built in the body.

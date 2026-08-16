@@ -8,8 +8,8 @@
 .robpca_od_cutoff(od, h)
 }
 \arguments{
-\item{od}{See Usage.}
-\item{h}{See Usage.}
+\item{od}{Numeric; combined arithmetically in the body.}
+\item{h}{Numeric; passed to \code{max}.}
 }
 \description{
 Part of the robpca_native implementation; see the file header for the source it follows.

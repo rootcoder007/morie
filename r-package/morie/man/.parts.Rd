@@ -8,10 +8,10 @@
 .parts(label)
 }
 \arguments{
-\item{label}{See Usage.}
+\item{label}{Compared against \code{"O"}.}
 }
 \description{
-Part of the benRea_native implementation; see the file header for the source it follows.
+A step of the benRea_native implementation. Called by \code{extract_spans}, \code{is_valid_bio}, \code{start_allowed} and 1 others in the module. See the file header for the source the module follows.
 }
 \value{
 The value of \code{[[}.

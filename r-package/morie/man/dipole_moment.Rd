@@ -9,7 +9,7 @@ dipole_moment(charges, R, centre = NULL)
 }
 \arguments{
 \item{charges}{See Usage.}
-\item{R}{See Usage.}
+\item{R}{A matrix; passed to \code{as.matrix}.}
 \item{centre}{Defaults to \code{NULL}.}
 }
 \description{

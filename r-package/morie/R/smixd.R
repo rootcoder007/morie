@@ -10,12 +10,12 @@
 #' -definite-covariance, singular-information and non-positive-variance
 #' guards are all directly unit-testable. `theta` = c(log phi, log nu).
 #'
-#' @param theta See Usage.
-#' @param D See Usage.
-#' @param n See Usage.
+#' @param theta A vector; indexed elementwise.
+#' @param D Numeric; combined arithmetically in the body.
+#' @param n A matrix; passed to \code{diag}.
 #' @param X See Usage.
 #' @param y See Usage.
-#' @param p See Usage.
+#' @param p Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .smixd_negreml <- function(theta, D, n, X, y, p) {

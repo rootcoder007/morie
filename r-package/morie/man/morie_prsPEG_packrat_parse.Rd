@@ -9,8 +9,8 @@ morie_prsPEG_packrat_parse(expr, text, full = TRUE)
 }
 \arguments{
 \item{expr}{See Usage.}
-\item{text}{See Usage.}
-\item{full}{Defaults to \code{TRUE}.}
+\item{text}{A vector; its length is taken.}
+\item{full}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the prsPEG_native implementation; see the file header for the source it follows.

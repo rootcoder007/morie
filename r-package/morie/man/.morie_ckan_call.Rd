@@ -8,9 +8,9 @@
 .morie_ckan_call(portal, action, params = NULL, api_key = NULL, user_agent = .MORIE_CKAN_DEFAULT_UA, timeout = .MORIE_CKAN_DEFAULT_TIMEOUT)
 }
 \arguments{
-\item{portal}{See Usage.}
+\item{portal}{Passed to \code{.morie_ckan_portal}.}
 \item{action}{See Usage.}
-\item{params}{Defaults to \code{NULL}.}
+\item{params}{Passed to \code{.morie_dataset_http_text}.}
 \item{api_key}{Defaults to \code{NULL}.}
 \item{user_agent}{Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.}
 \item{timeout}{Defaults to \code{.MORIE_CKAN_DEFAULT_TIMEOUT}.}

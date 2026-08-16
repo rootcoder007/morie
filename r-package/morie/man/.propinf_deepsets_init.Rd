@@ -8,12 +8,12 @@
 .propinf_deepsets_init(shapes, phi_hidden, repr_dim, rho_hidden, rnd, context = "paired", edge_hidden = NULL)
 }
 \arguments{
-\item{shapes}{See Usage.}
+\item{shapes}{A vector; its length is taken and its elements indexed.}
 \item{phi_hidden}{See Usage.}
-\item{repr_dim}{See Usage.}
+\item{repr_dim}{Numeric; combined arithmetically in the body.}
 \item{rho_hidden}{See Usage.}
-\item{rnd}{See Usage.}
-\item{context}{Defaults to \code{"paired"}.}
+\item{rnd}{Passed to \code{.propinf_mlp_init}.}
+\item{context}{One of \code{"none"}, \code{"paired"}. Defaults to \code{"paired"}.}
 \item{edge_hidden}{Defaults to \code{NULL}.}
 }
 \description{

@@ -14,12 +14,12 @@
 \item{sidecar_filename}{See Usage.}
 \item{expected_rows}{See Usage.}
 \item{expected_cols}{See Usage.}
-\item{is_valid}{See Usage.}
+\item{is_valid}{A flag; the body branches on it.}
 \item{description_en}{See Usage.}
 \item{description_fr}{See Usage.}
 }
 \description{
-Part of the arsau implementation; see the file header for the source it follows.
+A step of the arsau implementation. No other function in the package calls it. See the file header for the source the module follows.
 }
 \value{
 A list with \code{year_or_range}, \code{kind}, \code{csv_filename}, \code{sidecar_filename}, \code{expected_rows}, \code{expected_cols}, \code{is_valid}, \code{description_en}, \code{description_fr}.

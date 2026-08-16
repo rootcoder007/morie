@@ -8,7 +8,7 @@
 morie_opnclp(payload)
 }
 \arguments{
-\item{payload}{See Usage.}
+\item{payload}{A list; the body reads \code{$compute}, \code{$fit}, \code{$image_embeddings}, \code{$label_a}, \code{$label_b}, \code{$model_params}, \code{$op}, \code{$samples_seen}, \code{$temperature}, \code{$text_embeddings}, \code{$x}, \code{$x_a}, \code{$x_b}, \code{$y}, \code{$y_a}, \code{$y_b} from it.}
 }
 \description{
 Part of the opnclp_native implementation; see the file header for the source it follows.

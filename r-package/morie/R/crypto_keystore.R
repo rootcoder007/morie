@@ -36,7 +36,8 @@
 
 #' .morie_keystore_require
 #'
-#' Part of the crypto_keystore implementation; see the file header for
+#' A step of the crypto_keystore implementation. Called by \code{.morie_derive_key}, \code{.morie_read_store}, \code{.morie_write_store} and 4 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @return One of two values, depending on the branch taken.
@@ -54,7 +55,8 @@
 
 #' .morie_resolve_path
 #'
-#' Part of the crypto_keystore implementation; see the file header for
+#' A step of the crypto_keystore implementation. Called by \code{.morie_read_store}, \code{.morie_write_store}, \code{morie_crypto_keystore_create}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param path See Usage.
@@ -66,10 +68,11 @@
 
 #' .morie_derive_key
 #'
-#' Part of the crypto_keystore implementation; see the file header for
+#' A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param password See Usage.
+#' @param password A vector; its length is taken.
 #' @param salt See Usage.
 #' @return Nothing; this branch always raises.
 #' @export
@@ -95,10 +98,11 @@
 
 #' .morie_hex_to_raw
 #'
-#' Part of the crypto_keystore implementation; see the file header for
+#' A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load}, \code{morie_crypto_keystore_store}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param h See Usage.
+#' @param h A vector; its length is taken.
 #' @return The value of \code{as.raw}.
 #' @export
 .morie_hex_to_raw <- function(h) {
@@ -115,7 +119,8 @@
 
 #' .morie_raw_to_hex
 #'
-#' Part of the crypto_keystore implementation; see the file header for
+#' A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_store}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param r See Usage.
@@ -128,10 +133,11 @@
 
 #' .morie_read_store
 #'
-#' Part of the crypto_keystore implementation; see the file header for
+#' A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load}, \code{morie_crypto_keystore_store}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param path See Usage.
+#' @param path Passed to \code{.morie_resolve_path}.
 #' @return The value of \code{.morie_from_json}.
 #' @export
 .morie_read_store <- function(path) {
@@ -145,11 +151,12 @@
 
 #' .morie_write_store
 #'
-#' Part of the crypto_keystore implementation; see the file header for
+#' A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_store}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param data See Usage.
-#' @param path See Usage.
+#' @param data Passed to \code{.morie_to_json}.
+#' @param path Passed to \code{.morie_resolve_path}.
 #' @return Invisibly,nothing; the function is called for its effect.
 #' @export
 .morie_write_store <- function(data, path) {

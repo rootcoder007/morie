@@ -8,12 +8,12 @@
 morie_sam2vd_propagate(frames, encoder, decoder, prompts = NULL, n_recent = 7, m_prompted = 1)
 }
 \arguments{
-\item{frames}{See Usage.}
+\item{frames}{A vector; its length is taken and its elements indexed.}
 \item{encoder}{See Usage.}
 \item{decoder}{See Usage.}
 \item{prompts}{Defaults to \code{NULL}.}
-\item{n_recent}{Defaults to \code{7}.}
-\item{m_prompted}{Defaults to \code{1}.}
+\item{n_recent}{Passed to \code{morie_sam2vd_memory_bank}. Defaults to \code{7}.}
+\item{m_prompted}{Passed to \code{morie_sam2vd_memory_bank}. Defaults to \code{1}.}
 }
 \description{
 Part of the sam2vd_native implementation; see the file header for the source it follows.

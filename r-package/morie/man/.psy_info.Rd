@@ -8,8 +8,8 @@
 .psy_info(theta, it)
 }
 \arguments{
-\item{theta}{See Usage.}
-\item{it}{See Usage.}
+\item{theta}{Passed to \code{.psy_p3pl}.}
+\item{it}{A list; the body reads \code{$a}, \code{$b}, \code{$c} from it.}
 }
 \description{
 Part of the psycho_native implementation; see the file header for the source it follows.

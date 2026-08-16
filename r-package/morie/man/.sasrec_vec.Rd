@@ -8,7 +8,7 @@
 .sasrec_vec(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A matrix; indexed by row and column.}
 }
 \description{
 Part of the sasRec_native implementation; see the file header for the source it follows.

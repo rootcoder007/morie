@@ -8,10 +8,10 @@
 #' from the vrgft() optimiser closure so the model switch (including the
 #' unknown-model stop) is directly unit-testable.
 #'
-#' @param h See Usage.
-#' @param c0 See Usage.
-#' @param c1 See Usage.
-#' @param a See Usage.
+#' @param h Numeric; combined arithmetically in the body.
+#' @param c0 Numeric; combined arithmetically in the body.
+#' @param c1 Numeric; combined arithmetically in the body.
+#' @param a Numeric; combined arithmetically in the body.
 #' @param model See Usage.
 #' @return The value of \code{switch}.
 #' @export
@@ -30,14 +30,15 @@
 # Internal: variogram weighted-least-squares objective.
 #' Internal: variogram weighted-least-squares objective
 #'
-#' Part of the vrgft implementation; see the file header for the source
+#' A step of the vrgft implementation. Called by \code{vrgft}.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param p See Usage.
-#' @param mids See Usage.
-#' @param gammas See Usage.
-#' @param weights See Usage.
-#' @param model See Usage.
+#' @param p A vector; indexed elementwise.
+#' @param mids Passed to \code{.vrgft_model}.
+#' @param gammas Numeric; combined arithmetically in the body.
+#' @param weights Numeric; combined arithmetically in the body.
+#' @param model Passed to \code{.vrgft_model}.
 #' @return A numeric value.
 #' @export
 .vrgft_obj <- function(p, mids, gammas, weights, model) {

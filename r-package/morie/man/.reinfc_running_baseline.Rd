@@ -8,8 +8,8 @@
 .reinfc_running_baseline(state, baseline, gamma)
 }
 \arguments{
-\item{state}{See Usage.}
-\item{baseline}{See Usage.}
+\item{state}{A list; the body reads \code{$v1}, \code{$v2} from it.}
+\item{baseline}{One of \code{"comparison"}, \code{"none"}.}
 \item{gamma}{See Usage.}
 }
 \description{

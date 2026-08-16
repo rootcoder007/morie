@@ -8,10 +8,10 @@
 mpfn_is_permutation_invariant(H, adj, edge_features, perm, T = 3, how = "sum", tol = 1e-09)
 }
 \arguments{
-\item{H}{See Usage.}
-\item{adj}{See Usage.}
-\item{edge_features}{See Usage.}
-\item{perm}{See Usage.}
+\item{H}{A vector; its length is taken and its elements indexed.}
+\item{adj}{A vector; its length is taken and its elements indexed.}
+\item{edge_features}{A vector; its length is taken and its elements indexed.}
+\item{perm}{A vector; indexed elementwise.}
 \item{T}{Defaults to \code{3}.}
 \item{how}{Defaults to \code{"sum"}.}
 \item{tol}{Defaults to \code{1e-09}.}

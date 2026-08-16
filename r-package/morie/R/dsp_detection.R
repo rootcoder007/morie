@@ -444,11 +444,12 @@ morie_dsp_csd <- function(x, y, fs = 1, nperseg = 256L) {
 # Local unwrap (numeric vector).
 #' Local unwrap (numeric vector)
 #'
-#' Part of the dsp_detection implementation; see the file header for the
+#' A step of the dsp_detection implementation. Called by \code{morie_dsp_complex_cepstrum}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
-#' @param tol Defaults to \code{pi}.
+#' @param p A vector; indexed elementwise.
+#' @param tol Numeric; combined arithmetically in the body. Defaults to \code{pi}.
 #' @return A vector, from \code{c}.
 #' @export
 .unwrap_d <- function(p, tol = pi) {

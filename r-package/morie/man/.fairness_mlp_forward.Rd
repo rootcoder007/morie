@@ -8,11 +8,11 @@
 .fairness_mlp_forward(params, x)
 }
 \arguments{
-\item{params}{See Usage.}
-\item{x}{See Usage.}
+\item{params}{A vector; its length is taken and its elements indexed.}
+\item{x}{A matrix; passed to \code{\%*\%}.}
 }
 \description{
-Part of the fairness_gan implementation; see the file header for the source it follows.
+A step of the fairness_gan implementation. Called by \code{morie_fairness_spatial_gan}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{x}, as built in the body.

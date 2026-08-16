@@ -8,12 +8,12 @@
 .tlsate_variance_gap(A, Y, Q1, Q0, g, psi)
 }
 \arguments{
-\item{A}{See Usage.}
-\item{Y}{See Usage.}
-\item{Q1}{See Usage.}
-\item{Q0}{See Usage.}
-\item{g}{See Usage.}
-\item{psi}{See Usage.}
+\item{A}{Passed to \code{.tlsate_check}.}
+\item{Y}{Passed to \code{.tlsate_check}.}
+\item{Q1}{Passed to \code{.tlsate_check}.}
+\item{Q0}{Passed to \code{.tlsate_check}.}
+\item{g}{Passed to \code{.tlsate_check}.}
+\item{psi}{Passed to \code{.tlsate_pate_influence_curve}.}
 }
 \description{
 Part of the tlsate_native implementation; see the file header for the source it follows.

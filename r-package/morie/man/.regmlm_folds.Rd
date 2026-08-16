@@ -8,9 +8,9 @@
 .regmlm_folds(n, k, scheme)
 }
 \arguments{
-\item{n}{See Usage.}
-\item{k}{See Usage.}
-\item{scheme}{See Usage.}
+\item{n}{A count; the body uses it as \code{seq_len(...)}.}
+\item{k}{A count; the body uses it as \code{seq_len(...)}.}
+\item{scheme}{Compared against \code{"loo"}.}
 }
 \description{
 Part of the regmlm_native implementation; see the file header for the source it follows.

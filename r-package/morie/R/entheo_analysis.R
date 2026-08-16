@@ -101,10 +101,11 @@ san_score <- function(eeg, fmri = NULL) {
 
 #' .entheo_extract_pair
 #'
-#' Part of the entheo_analysis implementation; see the file header for
+#' A step of the entheo_analysis implementation. Called by \code{beautiful_loop_metric}, \code{san_score}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param record_or_eeg See Usage.
+#' @param record_or_eeg A list; the body reads \code{$fmri} from it.
 #' @param fmri See Usage.
 #' @return A list with \code{e_dmt}, \code{f_dmt}, \code{e_pcb}, \code{f_pcb}.
 #' @export
@@ -121,10 +122,11 @@ san_score <- function(eeg, fmri = NULL) {
 
 #' .entheo_envelope
 #'
-#' Part of the entheo_analysis implementation; see the file header for
+#' A step of the entheo_analysis implementation. Called by \code{.entheo_binding_per_frame}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Numeric; passed to \code{abs}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .entheo_envelope <- function(x) {
@@ -139,7 +141,8 @@ san_score <- function(eeg, fmri = NULL) {
 
 #' .entheo_align
 #'
-#' Part of the entheo_analysis implementation; see the file header for
+#' A step of the entheo_analysis implementation. Called by \code{.entheo_binding_per_frame}, \code{.entheo_san_per_frame}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param e See Usage.
@@ -169,11 +172,12 @@ san_score <- function(eeg, fmri = NULL) {
 
 #' .entheo_binding_per_frame
 #'
-#' Part of the entheo_analysis implementation; see the file header for
+#' A step of the entheo_analysis implementation. Called by \code{beautiful_loop_metric}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param eeg See Usage.
-#' @param fmri See Usage.
+#' @param eeg Passed to \code{.entheo_envelope}.
+#' @param fmri Passed to \code{.entheo_align}.
 #' @return A numeric value.
 #' @export
 .entheo_binding_per_frame <- function(eeg, fmri) {
@@ -206,11 +210,12 @@ san_score <- function(eeg, fmri = NULL) {
 
 #' .entheo_san_per_frame
 #'
-#' Part of the entheo_analysis implementation; see the file header for
+#' A step of the entheo_analysis implementation. Called by \code{san_score}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param eeg See Usage.
-#' @param fmri See Usage.
+#' @param eeg Passed to \code{.entheo_align}.
+#' @param fmri Passed to \code{.entheo_align}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .entheo_san_per_frame <- function(eeg, fmri) {

@@ -8,13 +8,13 @@
 .morie_parse_file(path, format, simplify, ...)
 }
 \arguments{
-\item{path}{See Usage.}
-\item{format}{See Usage.}
-\item{simplify}{See Usage.}
+\item{path}{Passed to \code{.morie_from_json}.}
+\item{format}{One of \code{"csv"}, \code{"html"}, \code{"json"}, \code{"tsv"}, \code{"xlsx"}, \code{"xml"}.}
+\item{simplify}{A flag; the body branches on it.}
 \item{...}{Passed through.}
 }
 \description{
-Part of the data_access implementation; see the file header for the source it follows.
+A step of the data_access implementation. Called by \code{morie_fetch}. See the file header for the source the module follows.
 }
 \value{
 Nothing; this branch always raises.

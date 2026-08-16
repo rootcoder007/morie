@@ -8,7 +8,7 @@
 .snpqc1_check(genotypes)
 }
 \arguments{
-\item{genotypes}{See Usage.}
+\item{genotypes}{A matrix; passed to \code{as.matrix}.}
 }
 \description{
 Part of the snpqc1_native implementation; see the file header for the source it follows.

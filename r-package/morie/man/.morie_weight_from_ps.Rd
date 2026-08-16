@@ -8,7 +8,7 @@
 .morie_weight_from_ps(ps, t01, estimand)
 }
 \arguments{
-\item{ps}{See Usage.}
+\item{ps}{Numeric; combined arithmetically in the body.}
 \item{t01}{See Usage.}
 \item{estimand}{See Usage.}
 }

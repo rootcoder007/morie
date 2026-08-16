@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{prompt}{See Usage.}
-\item{context}{Defaults to \code{NULL}.}
+\item{context}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 \item{system_prompt}{Defaults to \code{NULL}.}
 }
 \description{

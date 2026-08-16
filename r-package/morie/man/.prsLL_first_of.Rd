@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{seq}{See Usage.}
-\item{g}{See Usage.}
+\item{g}{Passed to \code{.prsLL_first_sets}.}
 \item{first}{Defaults to \code{NULL}.}
 }
 \description{

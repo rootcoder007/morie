@@ -8,9 +8,9 @@
 .uof_wilson_ci(k, n, z = 1.95996398454005)
 }
 \arguments{
-\item{k}{See Usage.}
-\item{n}{See Usage.}
-\item{z}{Defaults to \code{1.95996398454005}.}
+\item{k}{Numeric; combined arithmetically in the body.}
+\item{n}{Numeric; combined arithmetically in the body.}
+\item{z}{Numeric; combined arithmetically in the body. Defaults to \code{1.95996398454005}.}
 }
 \description{
 Part of the mrm_uof implementation; see the file header for the source it follows.

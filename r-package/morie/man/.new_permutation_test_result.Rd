@@ -17,7 +17,7 @@
 \item{ci_upper}{Defaults to \code{NA_real_}.}
 }
 \description{
-Part of the bootstrap_methods implementation; see the file header for the source it follows.
+A step of the bootstrap_methods implementation. Called by \code{paired_permutation_test}, \code{permutation_test}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{structure}.

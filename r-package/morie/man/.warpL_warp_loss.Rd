@@ -11,7 +11,7 @@
 \item{score_positive}{See Usage.}
 \item{score_negative}{See Usage.}
 \item{estimated_rank}{See Usage.}
-\item{alphas}{See Usage.}
+\item{alphas}{Passed to \code{.warpL_rank_weight}.}
 \item{margin}{Defaults to \code{1}.}
 }
 \description{

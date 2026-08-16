@@ -8,7 +8,7 @@
 sdpwts_min_eigenvalue_sdp(A, t0 = 1, mu = 10, tol = 1e-09)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{A matrix; passed to \code{as.matrix}.}
 \item{t0}{Defaults to \code{1}.}
 \item{mu}{Defaults to \code{10}.}
 \item{tol}{Defaults to \code{1e-09}.}

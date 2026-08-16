@@ -8,13 +8,13 @@
 morie_tlbandt(W, Y1, Y0, blip_fn, delta = 0.1, seed = 0, greedy = FALSE, burn_in = 20L)
 }
 \arguments{
-\item{W}{See Usage.}
+\item{W}{A matrix; passed to \code{as.matrix}.}
 \item{Y1}{See Usage.}
 \item{Y0}{See Usage.}
 \item{blip_fn}{See Usage.}
-\item{delta}{Defaults to \code{0.1}.}
-\item{seed}{Defaults to \code{0}.}
-\item{greedy}{Defaults to \code{FALSE}.}
+\item{delta}{Passed to \code{.tlbandt_design_probability}. Defaults to \code{0.1}.}
+\item{seed}{Passed to \code{.ghc_rng}. Defaults to \code{0}.}
+\item{greedy}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 \item{burn_in}{Defaults to \code{20L}.}
 }
 \description{

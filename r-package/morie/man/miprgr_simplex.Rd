@@ -3,15 +3,15 @@
 % the formals.
 \name{miprgr_simplex}
 \alias{miprgr_simplex}
-\title{Two-phase simplex with Bland\\'s rule, maximising c\\'x}
+\title{Two-phase simplex with Bland\'s rule, maximising c\'x}
 \usage{
 miprgr_simplex(A, b, c, tol = 1e-09, max_iter = 20000)
 }
 \arguments{
-\item{A}{See Usage.}
-\item{b}{See Usage.}
-\item{c}{See Usage.}
-\item{tol}{Defaults to \code{1e-09}.}
+\item{A}{A matrix; indexed by row and column.}
+\item{b}{A vector; its length is taken and its elements indexed.}
+\item{c}{A vector; its length is taken.}
+\item{tol}{Numeric; combined arithmetically in the body. Defaults to \code{1e-09}.}
 \item{max_iter}{Defaults to \code{20000}.}
 }
 \description{

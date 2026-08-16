@@ -8,8 +8,8 @@
 .strtwt_cols(X, n, nm)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{n}{See Usage.}
+\item{X}{Optional; may be \code{NULL}. Passed to \code{.s03mat}.}
+\item{n}{A count; the body uses it as \code{matrix(...)}.}
 \item{nm}{See Usage.}
 }
 \description{

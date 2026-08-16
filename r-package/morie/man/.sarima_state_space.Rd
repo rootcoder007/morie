@@ -8,8 +8,8 @@
 .sarima_state_space(ar, ma)
 }
 \arguments{
-\item{ar}{See Usage.}
-\item{ma}{See Usage.}
+\item{ar}{A vector; its length is taken and its elements indexed.}
+\item{ma}{A vector; its length is taken.}
 }
 \description{
 Part of the sarima_native implementation; see the file header for the source it follows.

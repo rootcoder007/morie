@@ -8,8 +8,8 @@
 .tlstoch_density_ratio(A, W, delta, g_fn, lower = NULL, upper = NULL)
 }
 \arguments{
-\item{A}{See Usage.}
-\item{W}{See Usage.}
+\item{A}{Passed to \code{.tlstoch_vec}.}
+\item{W}{Passed to \code{.tlstoch_mat}.}
 \item{delta}{See Usage.}
 \item{g_fn}{See Usage.}
 \item{lower}{Defaults to \code{NULL}.}

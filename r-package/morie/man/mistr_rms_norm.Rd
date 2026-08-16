@@ -8,9 +8,9 @@
 mistr_rms_norm(x, weight = NULL, eps = 1e-06)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{weight}{Defaults to \code{NULL}.}
-\item{eps}{Defaults to \code{1e-06}.}
+\item{x}{A vector; its length is taken.}
+\item{weight}{Optional; may be \code{NULL}. A vector; its length is taken.}
+\item{eps}{Numeric; combined arithmetically in the body. Defaults to \code{1e-06}.}
 }
 \description{
 Part of the mistr_native implementation; see the file header for the source it follows.

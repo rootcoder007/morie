@@ -8,7 +8,7 @@
 mqtmpl_kw_n_imp(covariates)
 }
 \arguments{
-\item{covariates}{See Usage.}
+\item{covariates}{A vector; its length is taken.}
 }
 \description{
 Part of the mqtmpl_native implementation; see the file header for the source it follows.

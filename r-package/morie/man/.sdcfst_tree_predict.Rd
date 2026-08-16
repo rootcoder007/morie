@@ -8,8 +8,8 @@
 .sdcfst_tree_predict(node, x)
 }
 \arguments{
-\item{node}{See Usage.}
-\item{x}{See Usage.}
+\item{node}{A list; the body reads \code{$cut}, \code{$feature}, \code{$leaf}, \code{$left}, \code{$right}, \code{$value} from it.}
+\item{x}{A vector; indexed elementwise.}
 }
 \description{
 Part of the sdcfst_native implementation; see the file header for the source it follows.

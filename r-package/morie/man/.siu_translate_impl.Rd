@@ -10,11 +10,11 @@
 \arguments{
 \item{target_lang}{See Usage.}
 \item{source_lang}{See Usage.}
-\item{case_numbers}{See Usage.}
-\item{model}{See Usage.}
+\item{case_numbers}{Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.}
+\item{model}{Passed to \code{.siu_llm_call}.}
 \item{fields}{See Usage.}
-\item{cache_dir}{See Usage.}
-\item{progress}{See Usage.}
+\item{cache_dir}{Passed to \code{.siu_load_canonical_overrides}.}
+\item{progress}{A flag; the body branches on it.}
 }
 \description{
 Part of the siu implementation; see the file header for the source it follows.

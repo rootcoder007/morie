@@ -8,10 +8,10 @@
 level1_stack(preds, y, cv = "kfold", k = 5, lam = NULL)
 }
 \arguments{
-\item{preds}{See Usage.}
-\item{y}{See Usage.}
-\item{cv}{Defaults to \code{"kfold"}.}
-\item{k}{Defaults to \code{5}.}
+\item{preds}{A vector; its length is taken.}
+\item{y}{A vector; its length is taken and its elements indexed.}
+\item{cv}{Passed to \code{.regmlm_folds}. Defaults to \code{"kfold"}.}
+\item{k}{Passed to \code{.regmlm_folds}. Defaults to \code{5}.}
 \item{lam}{Defaults to \code{NULL}.}
 }
 \description{

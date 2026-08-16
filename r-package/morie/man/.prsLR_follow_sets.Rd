@@ -8,8 +8,8 @@
 .prsLR_follow_sets(g, first)
 }
 \arguments{
-\item{g}{See Usage.}
-\item{first}{See Usage.}
+\item{g}{A list; the body reads \code{$rules}, \code{$start} from it.}
+\item{first}{Passed to \code{.prsLR_first_seq}.}
 }
 \description{
 Part of the prsLR_native implementation; see the file header for the source it follows.

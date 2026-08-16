@@ -8,10 +8,10 @@
 morie_tmlcmp(time, event_type, D, X, times = NULL, cause = 1, horizon = NULL, g = NULL, iters = 50)
 }
 \arguments{
-\item{time}{See Usage.}
-\item{event_type}{See Usage.}
-\item{D}{See Usage.}
-\item{X}{See Usage.}
+\item{time}{Passed to \code{.tmlcmp_vec}.}
+\item{event_type}{Passed to \code{.tmlcmp_vec}.}
+\item{D}{Passed to \code{.tmlcmp_vec}.}
+\item{X}{Passed to \code{.tmlcmp_mat}.}
 \item{times}{Defaults to \code{NULL}.}
 \item{cause}{Defaults to \code{1}.}
 \item{horizon}{Defaults to \code{NULL}.}

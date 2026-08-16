@@ -10,7 +10,7 @@
 \arguments{
 \item{data}{See Usage.}
 \item{statistic}{See Usage.}
-\item{B}{See Usage.}
+\item{B}{A count; the body uses it as \code{seq_len(...)}.}
 \item{seed}{See Usage.}
 }
 \description{

@@ -8,7 +8,7 @@
 .rgisint_runs(f)
 }
 \arguments{
-\item{f}{See Usage.}
+\item{f}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the rgisint implementation; see the file header for the source it follows.

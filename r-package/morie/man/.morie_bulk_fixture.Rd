@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{fname}{See Usage.}
-\item{offline}{See Usage.}
+\item{offline}{A flag; the body branches on it.}
 }
 \description{
 Part of the datasets_bulk_catalogs implementation; see the file header for the source it follows.

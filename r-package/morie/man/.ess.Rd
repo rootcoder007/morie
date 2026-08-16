@@ -8,10 +8,10 @@
 .ess(w)
 }
 \arguments{
-\item{w}{See Usage.}
+\item{w}{Numeric; passed to \code{sum}.}
 }
 \description{
-Part of the ipw implementation; see the file header for the source it follows.
+A step of the ipw implementation. Called by \code{morie_run_ebac_selection_ipw_analysis}, \code{morie_run_propensity_ipw_analysis}. See the file header for the source the module follows.
 }
 \value{
 A numeric value.

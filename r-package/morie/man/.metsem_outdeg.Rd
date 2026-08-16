@@ -8,7 +8,7 @@
 .metsem_outdeg(g, v)
 }
 \arguments{
-\item{g}{See Usage.}
+\item{g}{A list; the body reads \code{$out} from it.}
 \item{v}{See Usage.}
 }
 \description{

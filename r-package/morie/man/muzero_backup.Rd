@@ -8,10 +8,10 @@
 muzero_backup(path, value, gamma, mm)
 }
 \arguments{
-\item{path}{See Usage.}
+\item{path}{A vector; its length is taken and its elements indexed.}
 \item{value}{See Usage.}
-\item{gamma}{See Usage.}
-\item{mm}{See Usage.}
+\item{gamma}{Numeric; combined arithmetically in the body.}
+\item{mm}{A list; the body reads \code{$update} from it.}
 }
 \description{
 Part of the muzero_native implementation; see the file header for the source it follows.

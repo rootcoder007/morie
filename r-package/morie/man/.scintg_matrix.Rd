@@ -8,7 +8,7 @@
 .scintg_matrix(Z)
 }
 \arguments{
-\item{Z}{See Usage.}
+\item{Z}{A matrix; passed to \code{nrow}.}
 }
 \description{
 Part of the scintg_native implementation; see the file header for the source it follows.

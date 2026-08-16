@@ -10,7 +10,7 @@
 \arguments{
 \item{Q1}{See Usage.}
 \item{Q0}{See Usage.}
-\item{kappa}{See Usage.}
+\item{kappa}{Passed to \code{.tloilr_constrained_rule}.}
 }
 \description{
 Part of the tloilr_native implementation; see the file header for the source it follows.

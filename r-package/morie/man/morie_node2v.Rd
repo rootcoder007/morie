@@ -8,7 +8,7 @@
 morie_node2v(adj, num_walks = 10, length = 10, p = 1, q = 1, seed = 0, weights = NULL)
 }
 \arguments{
-\item{adj}{See Usage.}
+\item{adj}{A vector; its length is taken.}
 \item{num_walks}{Defaults to \code{10}.}
 \item{length}{Defaults to \code{10}.}
 \item{p}{Defaults to \code{1}.}

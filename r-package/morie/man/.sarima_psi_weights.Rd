@@ -8,8 +8,8 @@
 .sarima_psi_weights(ar, ma, h)
 }
 \arguments{
-\item{ar}{See Usage.}
-\item{ma}{See Usage.}
+\item{ar}{A vector; its length is taken and its elements indexed.}
+\item{ma}{A vector; its length is taken and its elements indexed.}
 \item{h}{See Usage.}
 }
 \description{

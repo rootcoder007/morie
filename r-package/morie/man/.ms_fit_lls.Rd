@@ -8,10 +8,10 @@
 .ms_fit_lls(dist, time, event, X = NULL)
 }
 \arguments{
-\item{dist}{See Usage.}
-\item{time}{See Usage.}
-\item{event}{See Usage.}
-\item{X}{Defaults to \code{NULL}.}
+\item{dist}{Compared against \code{"exponential"}.}
+\item{time}{Passed to \code{.ms_check}.}
+\item{event}{Passed to \code{.ms_check}.}
+\item{X}{Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.}
 }
 \description{
 Part of the survival_more implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .otis_aggregate_glm(work, treatment, outcome, covariates = character(0), year_col = "EndFiscalYear", cluster_group = NULL, ds_id, source_label, title, interpretation)
 }
 \arguments{
-\item{work}{See Usage.}
+\item{work}{A matrix; indexed by row and column.}
 \item{treatment}{See Usage.}
 \item{outcome}{See Usage.}
 \item{covariates}{Defaults to \code{character(0)}.}
@@ -16,7 +16,7 @@
 \item{cluster_group}{Defaults to \code{NULL}.}
 \item{ds_id}{See Usage.}
 \item{source_label}{See Usage.}
-\item{title}{See Usage.}
+\item{title}{Passed to \code{.otis_wrap}.}
 \item{interpretation}{See Usage.}
 }
 \description{

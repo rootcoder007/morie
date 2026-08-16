@@ -8,7 +8,7 @@
 t3expit(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the t3util implementation; see the file header for the source it follows.

@@ -8,10 +8,10 @@
 .gh_haar_dwt(y)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{A vector; its length is taken.}
 }
 \description{
-Part of the helpers_ghosal_bnp implementation; see the file header for the source it follows.
+A step of the helpers_ghosal_bnp implementation. Called by \code{morie_ghosal_wavelet_prior}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{coeffs}, \code{L}.

@@ -8,11 +8,11 @@
 .vrgft_obj(p, mids, gammas, weights, model)
 }
 \arguments{
-\item{p}{See Usage.}
-\item{mids}{See Usage.}
-\item{gammas}{See Usage.}
-\item{weights}{See Usage.}
-\item{model}{See Usage.}
+\item{p}{A vector; indexed elementwise.}
+\item{mids}{Passed to \code{.vrgft_model}.}
+\item{gammas}{Numeric; combined arithmetically in the body.}
+\item{weights}{Numeric; combined arithmetically in the body.}
+\item{model}{Passed to \code{.vrgft_model}.}
 }
 \description{
 Part of the vrgft implementation; see the file header for the source it follows.

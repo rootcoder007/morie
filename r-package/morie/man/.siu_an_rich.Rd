@@ -16,7 +16,7 @@
 \item{payload}{Defaults to \code{list()}.}
 }
 \description{
-.siu_an_rich -- thin RichResult constructor mirroring sprott_doob.R\\\'s .morie_siu_rich; reproduced here to keep this file self-contained. ---------------------------------------------------------------------------
+.siu_an_rich -- thin RichResult constructor mirroring sprott_doob.R\\'s .morie_siu_rich; reproduced here to keep this file self-contained. ---------------------------------------------------------------------------
 }
 \value{
 The value of \code{structure}.

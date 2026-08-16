@@ -8,11 +8,11 @@
 .mt_adjusted(method, p, alpha, adjusted, labels = NULL, note = NULL)
 }
 \arguments{
-\item{method}{See Usage.}
-\item{p}{See Usage.}
-\item{alpha}{See Usage.}
-\item{adjusted}{See Usage.}
-\item{labels}{Defaults to \code{NULL}.}
+\item{method}{Passed to \code{.mt_result}.}
+\item{p}{A vector; its length is taken.}
+\item{alpha}{Passed to \code{.mt_result}.}
+\item{adjusted}{Numeric; passed to \code{max}.}
+\item{labels}{Passed to \code{.mt_result}.}
 \item{note}{Defaults to \code{NULL}.}
 }
 \description{

@@ -11,12 +11,12 @@
 \item{fig_dir}{See Usage.}
 \item{name}{See Usage.}
 \item{draw}{See Usage.}
-\item{save_fig}{Defaults to \code{TRUE}.}
+\item{save_fig}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 \item{width}{Defaults to \code{1140}.}
 \item{height}{Defaults to \code{620}.}
 }
 \description{
-for the result\\\'s Figure line; with fig_dir = NULL nothing is written and the returned note says exactly that (no silent claims).
+for the result\\'s Figure line; with fig_dir = NULL nothing is written and the returned note says exactly that (no silent claims).
 }
 \value{
 The value of \code{path}, as built in the body.

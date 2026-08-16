@@ -17,13 +17,14 @@
 
 #' .n_parameters
 #'
-#' Part of the ffmFM_native implementation; see the file header for the
+#' A step of the ffmFM_native implementation. Called by \code{.fit_ffm}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n_features See Usage.
 #' @param n_fields See Usage.
 #' @param k_dim See Usage.
-#' @param model Defaults to \code{"ffm"}.
+#' @param model One of \code{"ffm"}, \code{"fm"}. Defaults to \code{"ffm"}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .n_parameters <- function(n_features, n_fields, k_dim, model = "ffm") {
@@ -37,12 +38,13 @@
 
 #' .ffmFM_phi
 #'
-#' Part of the ffmFM_native implementation; see the file header for the
+#' A step of the ffmFM_native implementation. Called by \code{.fit_ffm}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
-#' @param fields See Usage.
-#' @param W See Usage.
+#' @param fields A vector; indexed elementwise.
+#' @param W A vector; indexed elementwise.
 #' @return The value of \code{tot}, as built in the body.
 #' @export
 .ffmFM_phi <- function(x, fields, W) {
@@ -70,7 +72,8 @@
 
 #' .logistic_loss
 #'
-#' Part of the ffmFM_native implementation; see the file header for the
+#' A step of the ffmFM_native implementation. Called by \code{.fit_ffm}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param y See Usage.
@@ -88,17 +91,18 @@
 
 #' .fit_ffm
 #'
-#' Part of the ffmFM_native implementation; see the file header for the
+#' A step of the ffmFM_native implementation. Called by \code{morie_ffmFM}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param rows See Usage.
-#' @param labels See Usage.
-#' @param fields See Usage.
+#' @param rows A vector; its length is taken and its elements indexed.
+#' @param labels A vector; its length is taken and its elements indexed.
+#' @param fields A vector; indexed elementwise.
 #' @param n_features See Usage.
 #' @param n_fields See Usage.
 #' @param k_dim Defaults to \code{4L}.
-#' @param eta Defaults to \code{0.1}.
-#' @param lam Defaults to \code{2e-05}.
+#' @param eta Numeric; combined arithmetically in the body. Defaults to \code{0.1}.
+#' @param lam Numeric; combined arithmetically in the body. Defaults to \code{2e-05}.
 #' @param epochs Defaults to \code{10L}.
 #' @param seed Defaults to \code{0L}.
 #' @return A list with \code{estimate}, \code{W}, \code{loss_history}, \code{final_loss}, \code{k}, \code{n_parameters}, \code{n_parameters_fm}, \code{method}, \code{caveat}.
@@ -174,19 +178,20 @@
 
 #' morie_ffmFM
 #'
-#' Part of the ffmFM_native implementation; see the file header for the
+#' A step of the ffmFM_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param rows See Usage.
-#' @param labels See Usage.
-#' @param fields See Usage.
-#' @param n_features See Usage.
-#' @param n_fields See Usage.
-#' @param k_dim Defaults to \code{4L}.
-#' @param eta Defaults to \code{0.1}.
-#' @param lam Defaults to \code{2e-05}.
-#' @param epochs Defaults to \code{10L}.
-#' @param seed Defaults to \code{0L}.
+#' @param rows Passed to \code{.fit_ffm}.
+#' @param labels Passed to \code{.fit_ffm}.
+#' @param fields Passed to \code{.fit_ffm}.
+#' @param n_features Passed to \code{.fit_ffm}.
+#' @param n_fields Passed to \code{.fit_ffm}.
+#' @param k_dim Passed to \code{.fit_ffm}. Defaults to \code{4L}.
+#' @param eta Passed to \code{.fit_ffm}. Defaults to \code{0.1}.
+#' @param lam Passed to \code{.fit_ffm}. Defaults to \code{2e-05}.
+#' @param epochs Passed to \code{.fit_ffm}. Defaults to \code{10L}.
+#' @param seed Passed to \code{.fit_ffm}. Defaults to \code{0L}.
 #' @return The value of \code{.fit_ffm}.
 #' @export
 morie_ffmFM <- function(rows, labels, fields, n_features, n_fields,

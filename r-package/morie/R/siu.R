@@ -650,8 +650,8 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
 #' whose case_number matches. Silent on misses (override for a case not
 #' in the parse, or field not in the schema).
 #'
-#' @param df See Usage.
-#' @param overrides See Usage.
+#' @param df A list; the body reads \code{$case_number} from it.
+#' @param overrides Optional; may be \code{NULL}. A list; the body reads \code{$case_number}, \code{$field}, \code{$verified_value} from it.
 #' @return The value of \code{df}, as built in the body.
 #' @export
 .siu_apply_canonical_overrides <- function(df, overrides) {
@@ -910,11 +910,12 @@ morie_siu_refresh_manifest <- function(
 # Internal: read a gzipped cached HTML page if it exists, else "".
 #' Internal: read a gzipped cached HTML page if it exists, else ""
 #'
-#' Part of the siu implementation; see the file header for the source it
+#' A step of the siu implementation. Called by \code{morie_siu_audit_case}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
-#' @param html_dir See Usage.
-#' @param name See Usage.
+#' @param html_dir A vector; its length is taken and its elements indexed.
+#' @param name A vector; its length is taken and its elements indexed.
 #' @return The value of \code{rawToChar}.
 #' @export
 .siu_read_html_cache <- function(html_dir, name) {
@@ -1045,7 +1046,7 @@ morie_siu_audit_case <- function(case_number,
 #' plain text. Mirrors the C++ html_to_text() but with the safer linear
 #' single-pass approach (no std::regex backtracking risk).
 #'
-#' @param h See Usage.
+#' @param h Character; passed to \code{trimws}.
 #' @return The value of \code{trimws}.
 #' @export
 .siu_html_to_text <- function(h) {
@@ -1283,7 +1284,8 @@ morie_siu_compare <- function(case_number, external,
 
 #' .siu_llm_providers
 #'
-#' Part of the siu implementation; see the file header for the source it
+#' A step of the siu implementation. Called by \code{.siu_llm_call_one}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @return A list with \code{gemini}, \code{claude}, \code{vertex}, \code{ollama}, \code{openai}, \code{openai_compatible}.
@@ -1540,7 +1542,7 @@ morie_siu_compare <- function(case_number, external,
 #' MORIE_LLM_TIMEOUT_S env var or the timeout_s arg.
 #'
 #' @param model See Usage.
-#' @param prompt See Usage.
+#' @param prompt Passed to \code{morie_llm_ask}.
 #' @param timeout_s Defaults to \code{.siu_llm_default_timeout()}.
 #' @return The value of \code{p$extract}.
 #' @export
@@ -1608,9 +1610,9 @@ morie_siu_compare <- function(case_number, external,
 #' `mock_response_text` arg exists ONLY so unit tests can exercise the
 #' surrounding R glue without hitting the network.
 #'
-#' @param model See Usage.
-#' @param prompt See Usage.
-#' @param timeout_s Defaults to \code{.siu_llm_default_timeout()}.
+#' @param model A vector; its length is taken.
+#' @param prompt Passed to \code{.siu_llm_call_one}.
+#' @param timeout_s Passed to \code{.siu_llm_call_one}.
 #' @param mock_response_text Defaults to \code{NULL}.
 #' @return Nothing; this branch always raises.
 #' @export
@@ -2269,16 +2271,17 @@ morie_siu_translate_fr_to_en <- function(
 
 #' .siu_translate_impl
 #'
-#' Part of the siu implementation; see the file header for the source it
+#' A step of the siu implementation. Called by \code{morie_siu_translate}, \code{morie_siu_translate_fr_to_en}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @param target_lang See Usage.
 #' @param source_lang See Usage.
-#' @param case_numbers See Usage.
-#' @param model See Usage.
+#' @param case_numbers Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.
+#' @param model Passed to \code{.siu_llm_call}.
 #' @param fields See Usage.
-#' @param cache_dir See Usage.
-#' @param progress See Usage.
+#' @param cache_dir Passed to \code{.siu_load_canonical_overrides}.
+#' @param progress A flag; the body branches on it.
 #' @return Invisibly,the value of \code{out}, as built in the body.
 #' @export
 .siu_translate_impl <- function(

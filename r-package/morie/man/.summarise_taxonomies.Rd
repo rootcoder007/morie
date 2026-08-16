@@ -8,12 +8,12 @@
 .summarise_taxonomies(taxonomies, analyzed_set, domain)
 }
 \arguments{
-\item{taxonomies}{See Usage.}
+\item{taxonomies}{A vector; its length is taken.}
 \item{analyzed_set}{See Usage.}
-\item{domain}{See Usage.}
+\item{domain}{Character; passed to \code{toupper}.}
 }
 \description{
-Part of the audit_variables implementation; see the file header for the source it follows.
+A step of the audit_variables implementation. Called by \code{morie_audit_arsau_variables}, \code{morie_audit_otis_variables}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{out}, as built in the body.

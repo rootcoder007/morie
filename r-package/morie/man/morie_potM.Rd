@@ -9,7 +9,7 @@ morie_potM(y, u, return_periods = c(10, 100))
 }
 \arguments{
 \item{y}{See Usage.}
-\item{u}{See Usage.}
+\item{u}{Numeric; combined arithmetically in the body.}
 \item{return_periods}{Defaults to \code{c(10, 100)}.}
 }
 \description{

@@ -8,8 +8,8 @@
 .safrl_solve(A, b)
 }
 \arguments{
-\item{A}{See Usage.}
-\item{b}{See Usage.}
+\item{A}{A vector; indexed elementwise.}
+\item{b}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the safrl_native implementation; see the file header for the source it follows.

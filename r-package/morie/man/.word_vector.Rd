@@ -8,17 +8,17 @@
 .word_vector(word, Z, gram_index, n_min = 3L, n_max = 6L, boundary = TRUE, whole_word = TRUE, hash_buckets = NULL)
 }
 \arguments{
-\item{word}{See Usage.}
-\item{Z}{See Usage.}
-\item{gram_index}{See Usage.}
-\item{n_min}{Defaults to \code{3L}.}
-\item{n_max}{Defaults to \code{6L}.}
-\item{boundary}{Defaults to \code{TRUE}.}
-\item{whole_word}{Defaults to \code{TRUE}.}
-\item{hash_buckets}{Defaults to \code{NULL}.}
+\item{word}{Passed to \code{.subwords}.}
+\item{Z}{A matrix; indexed by row and column.}
+\item{gram_index}{Passed to \code{.gram_slot}.}
+\item{n_min}{Passed to \code{.subwords}. Defaults to \code{3L}.}
+\item{n_max}{Passed to \code{.subwords}. Defaults to \code{6L}.}
+\item{boundary}{Passed to \code{.subwords}. Defaults to \code{TRUE}.}
+\item{whole_word}{Passed to \code{.subwords}. Defaults to \code{TRUE}.}
+\item{hash_buckets}{Passed to \code{.gram_slot}.}
 }
 \description{
-Part of the fastxt_native implementation; see the file header for the source it follows.
+A step of the fastxt_native implementation. Called by \code{fasttext}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{v}, \code{hit}.

@@ -8,7 +8,7 @@
 .snmtst_target(post, l_vec)
 }
 \arguments{
-\item{post}{See Usage.}
+\item{post}{A vector; its length is taken.}
 \item{l_vec}{See Usage.}
 }
 \description{

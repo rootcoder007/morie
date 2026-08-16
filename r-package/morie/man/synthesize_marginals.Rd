@@ -8,9 +8,9 @@
 synthesize_marginals(X, n, seed = 0)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A vector; its length is taken and its elements indexed.}
 \item{n}{See Usage.}
-\item{seed}{Defaults to \code{0}.}
+\item{seed}{Passed to \code{.memb_rng}. Defaults to \code{0}.}
 }
 \description{
 Part of the memb_native implementation; see the file header for the source it follows.

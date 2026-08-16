@@ -8,7 +8,7 @@
 .smatch_qnorm(p)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the smatch_native implementation; see the file header for the source it follows.

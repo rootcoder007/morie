@@ -8,8 +8,8 @@
 fit_power_law(x, y)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{y}{See Usage.}
+\item{x}{Passed to \code{.as_num_vec}.}
+\item{y}{Passed to \code{.as_num_vec}.}
 }
 \description{
 Part of the opnclp_native implementation; see the file header for the source it follows.

@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{response}{See Usage.}
-\item{terms}{See Usage.}
-\item{data}{See Usage.}
+\item{terms}{A vector; its length is taken.}
+\item{data}{Passed to \code{.viable_terms}.}
 }
 \description{
 total loss Part of the study_core implementation; see the file header for the source it follows.

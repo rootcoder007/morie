@@ -8,13 +8,13 @@
 .hrz_logit_newton(D, X, maxit = 50, tol = 1e-08)
 }
 \arguments{
-\item{D}{See Usage.}
-\item{X}{See Usage.}
+\item{D}{Numeric; combined arithmetically in the body.}
+\item{X}{A matrix; passed to \code{ncol}.}
 \item{maxit}{Defaults to \code{50}.}
 \item{tol}{Defaults to \code{1e-08}.}
 }
 \description{
-Part of the helpers_horowitz implementation; see the file header for the source it follows.
+A step of the helpers_horowitz implementation. Called by \code{hrzt1}. See the file header for the source the module follows.
 }
 \value{
 A numeric value.

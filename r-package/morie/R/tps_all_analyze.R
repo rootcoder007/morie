@@ -55,7 +55,8 @@ NULL
 
 #' .tps_safe_year_col
 #'
-#' Part of the tps_all_analyze implementation; see the file header for
+#' A step of the tps_all_analyze implementation. Called by \code{morie_tps_temporal_summary}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param df See Usage.
@@ -70,11 +71,12 @@ NULL
 
 #' .tps_vc_rows
 #'
-#' Part of the tps_all_analyze implementation; see the file header for
+#' A step of the tps_all_analyze implementation. Called by \code{morie_tps_offence_summary}, \code{morie_tps_spatial_summary}, \code{morie_tps_temporal_summary}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
-#' @param top Defaults to \code{20L}.
+#' @param top A count; the body uses it as \code{seq_len(...)}. Defaults to \code{20L}.
 #' @return The value of \code{lapply}.
 #' @export
 .tps_vc_rows <- function(x, top = 20L) {
@@ -492,10 +494,11 @@ morie_tps_analyze_one <- function(df, name = "?") {
 
 #' .tps_alias_factory
 #'
-#' Part of the tps_all_analyze implementation; see the file header for
+#' A step of the tps_all_analyze implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param name See Usage.
+#' @param name Passed to \code{morie_tps_analyze_one}.
 #' @return The value of \code{function}.
 #' @export
 .tps_alias_factory <- function(name) {

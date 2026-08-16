@@ -8,7 +8,7 @@
 .otis_year_trend(df, value, year_col = NULL)
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{A vector; indexed elementwise.}
 \item{value}{See Usage.}
 \item{year_col}{Defaults to \code{NULL}.}
 }

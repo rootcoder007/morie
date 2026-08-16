@@ -9,7 +9,7 @@ t3nodes(m = 401L, lim = 8)
 }
 \arguments{
 \item{m}{Defaults to \code{401L}.}
-\item{lim}{Defaults to \code{8}.}
+\item{lim}{Numeric; combined arithmetically in the body. Defaults to \code{8}.}
 }
 \description{
 Part of the t3util implementation; see the file header for the source it follows.

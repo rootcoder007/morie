@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{arm}{See Usage.}
-\item{X}{See Usage.}
-\item{n}{See Usage.}
+\item{X}{Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.}
+\item{n}{A count; the body uses it as \code{rep(...)}.}
 }
 \description{
 Part of the tipsne_native implementation; see the file header for the source it follows.

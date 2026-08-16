@@ -214,10 +214,11 @@ morie_datasets_vpd_crime <- function(offline = TRUE,
 
 #' .morie_vpd_terms_warning
 #'
-#' Part of the datasets_vpd implementation; see the file header for the
+#' A step of the datasets_vpd implementation. Called by \code{morie_datasets_vpd_crime}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param accept_terms See Usage.
+#' @param accept_terms A flag; the body branches on it.
 #' @return Invisibly,nothing; the function is called for its effect.
 #' @export
 .morie_vpd_terms_warning <- function(accept_terms) {

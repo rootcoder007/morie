@@ -10,7 +10,7 @@
 \arguments{
 \item{n_in}{See Usage.}
 \item{hidden}{See Usage.}
-\item{rnd}{See Usage.}
+\item{rnd}{Passed to \code{.propinf_normal_lcg}.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

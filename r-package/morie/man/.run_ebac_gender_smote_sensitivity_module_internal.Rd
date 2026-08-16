@@ -8,7 +8,7 @@
 .run_ebac_gender_smote_sensitivity_module_internal(data)
 }
 \arguments{
-\item{data}{See Usage.}
+\item{data}{A list; the body reads \code{$alcohol_past12m}, \code{$ebac_tot} from it.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

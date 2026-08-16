@@ -9,10 +9,10 @@ narm_attention_weights(h_t, H, A1, A2, v)
 }
 \arguments{
 \item{h_t}{See Usage.}
-\item{H}{See Usage.}
-\item{A1}{See Usage.}
-\item{A2}{See Usage.}
-\item{v}{See Usage.}
+\item{H}{A matrix; passed to \code{as.matrix}.}
+\item{A1}{A matrix; passed to \code{\%*\%}.}
+\item{A2}{A matrix; passed to \code{\%*\%}.}
+\item{v}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the narm_native implementation; see the file header for the source it follows.

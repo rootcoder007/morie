@@ -8,8 +8,8 @@
 .rgemgf_r2(x, y)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{y}{See Usage.}
+\item{x}{A vector; its length is taken.}
+\item{y}{Numeric; passed to \code{sum}.}
 }
 \description{
 Part of the rgemgf implementation; see the file header for the source it follows.

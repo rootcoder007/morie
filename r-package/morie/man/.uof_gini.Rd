@@ -8,7 +8,7 @@
 .uof_gini(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A vector; its length is taken.}
 }
 \description{
 Part of the mrm_uof implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 offlrl_logsumexp(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{Numeric; passed to \code{max}.}
 }
 \description{
 Part of the offlrl_native implementation; see the file header for the source it follows.

@@ -8,12 +8,12 @@
 .wrd2v_sg_step(st, c, j, size, V, lr)
 }
 \arguments{
-\item{st}{See Usage.}
+\item{st}{A list; the body reads \code{$O}, \code{$W} from it.}
 \item{c}{See Usage.}
 \item{j}{See Usage.}
 \item{size}{See Usage.}
 \item{V}{See Usage.}
-\item{lr}{See Usage.}
+\item{lr}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the wrd2v_native implementation; see the file header for the source it follows.

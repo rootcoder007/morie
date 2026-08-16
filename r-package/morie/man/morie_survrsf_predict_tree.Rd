@@ -8,8 +8,8 @@
 morie_survrsf_predict_tree(tree, x, random_variable = NULL, rng = NULL)
 }
 \arguments{
-\item{tree}{See Usage.}
-\item{x}{See Usage.}
+\item{tree}{A list; the body reads \code{$root} from it.}
+\item{x}{A vector; indexed elementwise.}
 \item{random_variable}{Defaults to \code{NULL}.}
 \item{rng}{Defaults to \code{NULL}.}
 }

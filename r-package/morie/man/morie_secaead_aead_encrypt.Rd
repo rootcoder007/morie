@@ -8,10 +8,10 @@
 morie_secaead_aead_encrypt(key, nonce, plaintext, aad = NULL)
 }
 \arguments{
-\item{key}{See Usage.}
-\item{nonce}{See Usage.}
-\item{plaintext}{See Usage.}
-\item{aad}{Defaults to \code{NULL}.}
+\item{key}{Passed to \code{morie_secaead_poly1305_key_gen}.}
+\item{nonce}{Passed to \code{morie_secaead_poly1305_key_gen}.}
+\item{plaintext}{Passed to \code{morie_secaead_chacha20}.}
+\item{aad}{Passed to \code{.secaead_mac_data}.}
 }
 \description{
 Part of the secaead_native implementation; see the file header for the source it follows.

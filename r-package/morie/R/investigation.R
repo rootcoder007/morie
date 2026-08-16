@@ -156,7 +156,8 @@ morie_compare_nested_logistic_models <- function(data, outcome,
 # Internal: fit a logistic propensity model and clip to [0.01, 0.99].
 #' Internal: fit a logistic propensity model and clip to [0.01, 0.99]
 #'
-#' Part of the investigation implementation; see the file header for the
+#' A step of the investigation implementation. Called by \code{morie_run_treatment_effects_analysis}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param data See Usage.

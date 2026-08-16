@@ -8,7 +8,7 @@
 .siu_p_normalise_sex(s)
 }
 \arguments{
-\item{s}{See Usage.}
+\item{s}{Optional; may be \code{NULL}. Character; passed to \code{trimws}.}
 }
 \description{
 Normalisation helpers (mirror morie.siu._normalize). ---------------------------------------------------------------------------

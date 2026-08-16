@@ -9,7 +9,7 @@ momento_task_mask(n_patches, task = "forecast", span = 1, start = NULL)
 }
 \arguments{
 \item{n_patches}{See Usage.}
-\item{task}{Defaults to \code{"forecast"}.}
+\item{task}{One of \code{"forecast"}, \code{"impute"}. Defaults to \code{"forecast"}.}
 \item{span}{Defaults to \code{1}.}
 \item{start}{Defaults to \code{NULL}.}
 }

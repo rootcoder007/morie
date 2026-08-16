@@ -8,15 +8,15 @@
 .morie_rlearner_forest_cpp(X, pseudo, weight, Xpred, n_trees, max_depth, min_node, subsample, seed)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{pseudo}{See Usage.}
-\item{weight}{See Usage.}
-\item{Xpred}{See Usage.}
-\item{n_trees}{See Usage.}
-\item{max_depth}{See Usage.}
-\item{min_node}{See Usage.}
-\item{subsample}{See Usage.}
-\item{seed}{See Usage.}
+\item{X}{Passed to \code{.Call}.}
+\item{pseudo}{Passed to \code{.Call}.}
+\item{weight}{Passed to \code{.Call}.}
+\item{Xpred}{Passed to \code{.Call}.}
+\item{n_trees}{Passed to \code{.Call}.}
+\item{max_depth}{Passed to \code{.Call}.}
+\item{min_node}{Passed to \code{.Call}.}
+\item{subsample}{Passed to \code{.Call}.}
+\item{seed}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

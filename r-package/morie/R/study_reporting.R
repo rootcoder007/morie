@@ -1,11 +1,12 @@
 #' .binary_power_required_n
 #'
-#' Part of the study_reporting implementation; see the file header for
+#' A step of the study_reporting implementation. Called by \code{.run_power_design_module_extended}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param p1 See Usage.
-#' @param p2 See Usage.
-#' @param alpha Defaults to \code{0.05}.
+#' @param p1 Numeric; passed to \code{sqrt}.
+#' @param p2 Numeric; passed to \code{sqrt}.
+#' @param alpha Numeric; combined arithmetically in the body. Defaults to \code{0.05}.
 #' @param power Defaults to \code{0.8}.
 #' @return A numeric value.
 #' @export
@@ -21,13 +22,14 @@
 
 #' .continuous_power_required_n
 #'
-#' Part of the study_reporting implementation; see the file header for
+#' A step of the study_reporting implementation. Called by \code{.run_power_design_module_extended}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param mean1 See Usage.
-#' @param mean2 See Usage.
-#' @param sd_pooled See Usage.
-#' @param alpha Defaults to \code{0.05}.
+#' @param mean1 Numeric; combined arithmetically in the body.
+#' @param mean2 Numeric; combined arithmetically in the body.
+#' @param sd_pooled Passed to \code{.safe_divide}.
+#' @param alpha Numeric; combined arithmetically in the body. Defaults to \code{0.05}.
 #' @param power Defaults to \code{0.8}.
 #' @return A numeric value.
 #' @export
@@ -43,12 +45,13 @@
 
 #' .block_schedule
 #'
-#' Part of the study_reporting implementation; see the file header for
+#' A step of the study_reporting implementation. Called by \code{.run_power_design_module_extended}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param endpoint See Usage.
-#' @param required_n See Usage.
-#' @param strata_levels See Usage.
+#' @param required_n Numeric; combined arithmetically in the body.
+#' @param strata_levels A vector; its length is taken.
 #' @param target_power Defaults to \code{0.8}.
 #' @return The value of \code{do.call}.
 #' @export
@@ -99,10 +102,11 @@
 
 #' .run_power_design_module_extended
 #'
-#' Part of the study_reporting implementation; see the file header for
+#' A step of the study_reporting implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param data See Usage.
+#' @param data A list; the body reads \code{$alcohol_past12m}, \code{$ebac_legal}, \code{$ebac_tot}, \code{$gender_label}, \code{$heavy_drinking_30d}, \code{$weight} from it.
 #' @return A vector, from \code{c}.
 #' @export
 .run_power_design_module_extended <- function(data) {
@@ -436,7 +440,8 @@
 
 #' .read_existing_output
 #'
-#' Part of the study_reporting implementation; see the file header for
+#' A step of the study_reporting implementation. Called by \code{.run_figures_module_internal}, \code{.run_meta_synthesis_module_internal}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param output_dir See Usage.
@@ -472,7 +477,8 @@
 
 #' .copy_legacy_artifacts
 #'
-#' Part of the study_reporting implementation; see the file header for
+#' A step of the study_reporting implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param relative_paths See Usage.
@@ -495,10 +501,11 @@
 
 #' .run_ebac_integrations_module_internal
 #'
-#' Part of the study_reporting implementation; see the file header for
+#' A step of the study_reporting implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param data See Usage.
+#' @param data A list; the body reads \code{$alcohol_past12m}, \code{$cannabis_any_use}, \code{$ebac_tot}, \code{$weight} from it.
 #' @param output_dir Defaults to \code{NULL}.
 #' @return A list with \code{ebac_final_domain_samples}, \code{ebac_final_formula_input_audit}, \code{ebac_final_formula_validation}, \code{ebac_final_interaction_tests}, \code{ebac_final_weighted_descriptives}, \code{ebac_final_weighted_linear}, \code{ebac_final_weighted_or}, \code{ebac_final_smote_compare}, \code{ebac_final_smote_or}, \code{ebac_final_smote_status}, \code{ebac_final_causal_effects}, \code{ebac_final_cate}, \code{ebac_final_consistency_checks}, \code{ebac_final_crosswalk_previous}, \code{ebac_final_dml_results}, \code{ebac_final_dml_status}, \code{ebac_final_key_summary}, \code{ebac_final_user_guide_variable_map}, \code{ebac_final_variable_audit}.
 #' @export
@@ -613,9 +620,9 @@
 #' @param fig_dir See Usage.
 #' @param name See Usage.
 #' @param draw See Usage.
-#' @param png_too Defaults to \code{FALSE}.
-#' @param width Defaults to \code{8}.
-#' @param height Defaults to \code{6}.
+#' @param png_too A flag; the body branches on it. Defaults to \code{FALSE}.
+#' @param width Numeric; combined arithmetically in the body. Defaults to \code{8}.
+#' @param height Numeric; combined arithmetically in the body. Defaults to \code{6}.
 #' @return The value of \code{wrote}, as built in the body.
 #' @export
 .fig_write <- function(fig_dir, name, draw, png_too = FALSE,
@@ -656,10 +663,11 @@
 # Standardized mean differences of dummy-coded covariates between arms.
 #' Standardized mean differences of dummy-coded covariates between arms
 #'
-#' Part of the study_reporting implementation; see the file header for
+#' A step of the study_reporting implementation. Called by \code{.run_figures_module_internal}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param data See Usage.
+#' @param data A vector; indexed elementwise.
 #' @param treat_col See Usage.
 #' @param covariate_cols See Usage.
 #' @return The value of \code{[}.
@@ -693,11 +701,12 @@
 
 #' .run_figures_module_internal
 #'
-#' Part of the study_reporting implementation; see the file header for
+#' A step of the study_reporting implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param data See Usage.
-#' @param output_dir Defaults to \code{NULL}.
+#' @param data A list; the body reads \code{$heavy_drinking_30d} from it.
+#' @param output_dir Optional; may be \code{NULL}. Passed to \code{.read_existing_output}.
 #' @return Invisibly,the value of \code{list}.
 #' @export
 .run_figures_module_internal <- function(data, output_dir = NULL) {
@@ -887,10 +896,11 @@
 
 #' .run_tables_module_internal
 #'
-#' Part of the study_reporting implementation; see the file header for
+#' A step of the study_reporting implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param data See Usage.
+#' @param data A list; the body reads \code{$cannabis_any_use} from it.
 #' @param output_dir Defaults to \code{NULL}.
 #' @return Invisibly,the value of \code{list}.
 #' @export
@@ -963,7 +973,8 @@
 
 #' .run_final_report_module_internal
 #'
-#' Part of the study_reporting implementation; see the file header for
+#' A step of the study_reporting implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param data See Usage.

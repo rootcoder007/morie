@@ -8,10 +8,10 @@
 .tmlcen_logit_irls(Z, y, max_iter = 60L, ridge = 1e-08)
 }
 \arguments{
-\item{Z}{See Usage.}
-\item{y}{See Usage.}
-\item{max_iter}{Defaults to \code{60L}.}
-\item{ridge}{Defaults to \code{1e-08}.}
+\item{Z}{A matrix; passed to \code{nrow}.}
+\item{y}{Passed to \code{.tmlcen_weighted_logit}.}
+\item{max_iter}{Passed to \code{.tmlcen_weighted_logit}. Defaults to \code{60L}.}
+\item{ridge}{Passed to \code{.tmlcen_weighted_logit}. Defaults to \code{1e-08}.}
 }
 \description{
 Part of the tmlcen_native implementation; see the file header for the source it follows.

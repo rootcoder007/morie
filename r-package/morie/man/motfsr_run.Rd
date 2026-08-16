@@ -9,18 +9,18 @@ motfsr_run(sequences, w, alphabet = NULL, n_motifs = 1, beta = 0.01, lambda0 = N
 }
 \arguments{
 \item{sequences}{See Usage.}
-\item{w}{See Usage.}
+\item{w}{A count; the body uses it as \code{seq_len(...)}.}
 \item{alphabet}{Defaults to \code{NULL}.}
-\item{n_motifs}{Defaults to \code{1}.}
+\item{n_motifs}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{1}.}
 \item{beta}{Defaults to \code{0.01}.}
 \item{lambda0}{Defaults to \code{NULL}.}
 \item{max_iter}{Defaults to \code{1000}.}
 \item{tol}{Defaults to \code{1e-06}.}
 \item{normalize_overlaps}{Defaults to \code{TRUE}.}
-\item{starts}{Defaults to \code{"subsequences"}.}
+\item{starts}{One of \code{"subsequences"}, \code{"uniform"}. Defaults to \code{"subsequences"}.}
 \item{start_weight}{Defaults to \code{0.5}.}
 \item{max_starts}{Defaults to \code{200}.}
-\item{start_scoring}{Defaults to \code{"one_step"}.}
+\item{start_scoring}{One of \code{"none"}, \code{"one_step"}. Defaults to \code{"one_step"}.}
 \item{erase_by}{Defaults to \code{"letter"}.}
 \item{loss}{Defaults to \code{NULL}.}
 }

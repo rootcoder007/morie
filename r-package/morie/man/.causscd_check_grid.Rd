@@ -8,12 +8,12 @@
 .causscd_check_grid(Y, treated, t_post)
 }
 \arguments{
-\item{Y}{See Usage.}
+\item{Y}{A matrix; passed to \code{nrow}.}
 \item{treated}{See Usage.}
 \item{t_post}{See Usage.}
 }
 \description{
-Part of the causscd_native implementation; see the file header for the source it follows.
+A step of the causscd_native implementation. Called by \code{sdid}, \code{time_weights}, \code{unit_weights}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{Y}, \code{n}, \code{T}, \code{tr}, \code{t_post}.

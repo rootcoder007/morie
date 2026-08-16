@@ -9,7 +9,7 @@ lemma4_bound(counts, gamma)
 }
 \arguments{
 \item{counts}{See Usage.}
-\item{gamma}{See Usage.}
+\item{gamma}{Numeric; combined arithmetically in the body.}
 }
 \description{
 (4 exp(gamma (n_j* - n_j))), j* the plurality winner. The bound is a bound, so the raw value is also returned.

@@ -8,7 +8,7 @@
 .dbmirror(h)
 }
 \arguments{
-\item{h}{See Usage.}
+\item{h}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the wave implementation; see the file header for the source it follows.

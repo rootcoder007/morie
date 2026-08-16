@@ -8,7 +8,7 @@
 .run_regression_models_module_internal(data)
 }
 \arguments{
-\item{data}{See Usage.}
+\item{data}{A list; the body reads \code{$alcohol_past12m} from it.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

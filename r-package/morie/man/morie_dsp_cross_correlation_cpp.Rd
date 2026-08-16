@@ -8,9 +8,9 @@
 morie_dsp_cross_correlation_cpp(x, y, max_lag)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{y}{See Usage.}
-\item{max_lag}{See Usage.}
+\item{x}{Passed to \code{.Call}.}
+\item{y}{Passed to \code{.Call}.}
+\item{max_lag}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

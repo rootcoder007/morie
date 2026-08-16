@@ -15,7 +15,7 @@ morie_tlhaltm(rate_Q = NULL, rate_g = NULL, n = NULL, err_Q = NULL, err_g = NULL
 \item{err_g}{Defaults to \code{NULL}.}
 \item{delta}{Defaults to \code{NULL}.}
 \item{donsker}{Defaults to \code{TRUE}.}
-\item{mode}{Defaults to \code{c("rate", "remainder", "efficiency", "split")}.}
+\item{mode}{One of \code{"rate"}, \code{"remainder"}, \code{"split"}.}
 }
 \description{
 Part of the tlhaltm_native implementation; see the file header for the source it follows.

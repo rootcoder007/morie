@@ -8,13 +8,13 @@
 miprgr_solve_relaxation(A, b, c, bounds = list(), n = NULL, maximise = TRUE, solver = "simplex")
 }
 \arguments{
-\item{A}{See Usage.}
-\item{b}{See Usage.}
-\item{c}{See Usage.}
-\item{bounds}{Defaults to \code{list()}.}
+\item{A}{A matrix; indexed by row and column.}
+\item{b}{A vector; its length is taken and its elements indexed.}
+\item{c}{A vector; its length is taken.}
+\item{bounds}{A vector; its length is taken. Defaults to \code{list()}.}
 \item{n}{Defaults to \code{NULL}.}
-\item{maximise}{Defaults to \code{TRUE}.}
-\item{solver}{Defaults to \code{"simplex"}.}
+\item{maximise}{A flag; the body branches on it. Defaults to \code{TRUE}.}
+\item{solver}{Compared against \code{"simplex"}. Defaults to \code{"simplex"}.}
 }
 \description{
 Part of the miprgr_native implementation; see the file header for the source it follows.

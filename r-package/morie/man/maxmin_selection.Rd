@@ -8,9 +8,9 @@
 maxmin_selection(fps, k, seed = NULL)
 }
 \arguments{
-\item{fps}{See Usage.}
-\item{k}{See Usage.}
-\item{seed}{Defaults to \code{NULL}.}
+\item{fps}{Passed to \code{.tncomp_select}.}
+\item{k}{Passed to \code{.tncomp_select}.}
+\item{seed}{Passed to \code{.tncomp_select}.}
 }
 \description{
 Part of the tncomp_native implementation; see the file header for the source it follows.

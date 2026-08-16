@@ -8,8 +8,8 @@
 mtdrl_history_features(history, n_arms)
 }
 \arguments{
-\item{history}{See Usage.}
-\item{n_arms}{See Usage.}
+\item{history}{A vector; its length is taken and its elements indexed.}
+\item{n_arms}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the mtdrl_native implementation; see the file header for the source it follows.

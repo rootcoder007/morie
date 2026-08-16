@@ -8,7 +8,7 @@
 morie_plsqs_pls_regression(X, Y, n_components = 2)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
 \item{Y}{See Usage.}
 \item{n_components}{Defaults to \code{2}.}
 }

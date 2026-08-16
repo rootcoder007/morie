@@ -43,10 +43,11 @@ NULL
 
 #' .gini_int
 #'
-#' Part of the mrm_otis implementation; see the file header for the
+#' A step of the mrm_otis implementation. Called by \code{morie_otis_path_complexity_gini}, \code{morie_otis_repeat_placement_concentration}, \code{morie_otis_within_year_placement_count} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x A vector; its length is taken.
 #' @return A numeric value.
 #' @export
 .gini_int <- function(x) {
@@ -66,8 +67,8 @@ NULL
 #' morie\'s OTIS placement counts are integer-valued so the discrete
 #' form is right.
 #'
-#' @param x See Usage.
-#' @param x_min See Usage.
+#' @param x A vector; its length is taken and its elements indexed.
+#' @param x_min Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .hill_mle <- function(x, x_min) {
@@ -87,10 +88,11 @@ NULL
 
 #' .cramer_v
 #'
-#' Part of the mrm_otis implementation; see the file header for the
+#' A step of the mrm_otis implementation. Called by \code{mrm_otis_mortification_cooccurrence}, \code{mrm_otis_region_locality}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param tbl See Usage.
+#' @param tbl A matrix; passed to \code{dim}.
 #' @return A numeric value.
 #' @export
 .cramer_v <- function(tbl) {

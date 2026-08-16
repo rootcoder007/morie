@@ -8,7 +8,7 @@
 newton_direction(A, x, s, rp, rd, rc)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{A matrix; passed to \code{as.matrix}.}
 \item{x}{See Usage.}
 \item{s}{See Usage.}
 \item{rp}{See Usage.}

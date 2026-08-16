@@ -57,7 +57,7 @@ NULL
 #' Part of the laniyonu_smi_force_disparity implementation; see the file
 #' header for the source it follows.
 #'
-#' @param alpha_v See Usage.
+#' @param alpha_v A list; the body reads \code{$estimate}, \code{$std_error} from it.
 #' @param intercept See Usage.
 #' @param year_effects See Usage.
 #' @param area_random_effect_sd See Usage.
@@ -65,7 +65,7 @@ NULL
 #' @param n_events See Usage.
 #' @param n_area_years See Usage.
 #' @param log_likelihood See Usage.
-#' @param converged See Usage.
+#' @param converged A flag; the body branches on it.
 #' @param exposure_summary Defaults to \code{list()}.
 #' @param note Defaults to \code{""}.
 #' @return The value of \code{out}, as built in the body.
@@ -150,7 +150,7 @@ NULL
 #' @param survey_df See Usage.
 #' @param survey_trait_col See Usage.
 #' @param survey_covariate_cols See Usage.
-#' @param area_df See Usage.
+#' @param area_df A vector; indexed elementwise.
 #' @param area_population_col See Usage.
 #' @return The value of \code{setNames}.
 #' @export
@@ -186,9 +186,9 @@ NULL
 #' Part of the laniyonu_smi_force_disparity implementation; see the file
 #' header for the source it follows.
 #'
-#' @param X See Usage.
-#' @param y See Usage.
-#' @param offset_vec See Usage.
+#' @param X A matrix; passed to \code{ncol}.
+#' @param y Numeric; combined arithmetically in the body.
+#' @param offset_vec Numeric; combined arithmetically in the body.
 #' @param max_iter See Usage.
 #' @param tol See Usage.
 #' @return A list with \code{coef}, \code{se}, \code{loglik}, \code{phi}, \code{converged}.

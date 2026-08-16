@@ -17,10 +17,10 @@
 \item{normality}{See Usage.}
 \item{hetero}{See Usage.}
 \item{autoc}{See Usage.}
-\item{outlier_indices}{See Usage.}
+\item{outlier_indices}{A vector; its length is taken.}
 }
 \description{
-Part of the diagnostics implementation; see the file header for the source it follows.
+A step of the diagnostics implementation. Called by \code{compute_residuals}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{structure}.

@@ -8,7 +8,7 @@
 .pibmd_moments(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{A vector; its length is taken.}
 }
 \description{
 Part of the pibmd_native implementation; see the file header for the source it follows.

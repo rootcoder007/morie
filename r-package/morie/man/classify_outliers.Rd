@@ -8,8 +8,8 @@
 classify_outliers(sd, od, sd_cut, od_cut)
 }
 \arguments{
-\item{sd}{See Usage.}
-\item{od}{See Usage.}
+\item{sd}{A vector; its length is taken and its elements indexed.}
+\item{od}{A vector; indexed elementwise.}
 \item{sd_cut}{See Usage.}
 \item{od_cut}{See Usage.}
 }

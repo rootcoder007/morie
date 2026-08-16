@@ -8,8 +8,8 @@
 .sacrb_ngram_counts(tokens, n)
 }
 \arguments{
-\item{tokens}{See Usage.}
-\item{n}{See Usage.}
+\item{tokens}{A vector; its length is taken and its elements indexed.}
+\item{n}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the sacrb_native implementation; see the file header for the source it follows.

@@ -8,9 +8,9 @@
 .cv_bandwidth(xv, av, fit, n_folds)
 }
 \arguments{
-\item{xv}{See Usage.}
-\item{av}{See Usage.}
-\item{fit}{See Usage.}
+\item{xv}{A vector; its length is taken and its elements indexed.}
+\item{av}{A vector; indexed elementwise.}
+\item{fit}{Passed to \code{.smooth_at}.}
 \item{n_folds}{See Usage.}
 }
 \description{

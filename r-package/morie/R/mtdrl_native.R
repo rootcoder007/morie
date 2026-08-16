@@ -4,13 +4,14 @@
 
 #' mtdrl_bandit_tasks
 #'
-#' Part of the mtdrl_native implementation; see the file header for the
+#' A step of the mtdrl_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n_arms Defaults to \code{2}.
 #' @param n_tasks Defaults to \code{100}.
 #' @param seed Defaults to \code{0}.
-#' @param structure Defaults to \code{"independent"}.
+#' @param structure One of \code{"independent"}, \code{"paired"}. Defaults to \code{"independent"}.
 #' @return The value of \code{tasks}, as built in the body.
 #' @export
 mtdrl_bandit_tasks <- function(n_arms = 2, n_tasks = 100, seed = 0,
@@ -38,11 +39,12 @@ mtdrl_bandit_tasks <- function(n_arms = 2, n_tasks = 100, seed = 0,
 
 #' mtdrl_history_features
 #'
-#' Part of the mtdrl_native implementation; see the file header for the
+#' A step of the mtdrl_native implementation. Called by \code{mtdrl_run}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param history See Usage.
-#' @param n_arms See Usage.
+#' @param history A vector; its length is taken and its elements indexed.
+#' @param n_arms Numeric; combined arithmetically in the body.
 #' @return The value of \code{feat}, as built in the body.
 #' @export
 mtdrl_history_features <- function(history, n_arms) {
@@ -58,7 +60,8 @@ mtdrl_history_features <- function(history, n_arms) {
 
 #' mtdrl_TabularHistoryAgent
 #'
-#' Part of the mtdrl_native implementation; see the file header for the
+#' A step of the mtdrl_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n_arms See Usage.
@@ -96,15 +99,16 @@ mtdrl_TabularHistoryAgent <- function(n_arms, epsilon = 0.1, optimistic = 1) {
 
 #' mtdrl_run
 #'
-#' Part of the mtdrl_native implementation; see the file header for the
+#' A step of the mtdrl_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param tasks See Usage.
-#' @param agent See Usage.
+#' @param agent A list; the body reads \code{$act}, \code{$observe}, \code{$reset} from it.
 #' @param episode_length Defaults to \code{100}.
 #' @param n_arms Defaults to \code{NULL}.
 #' @param seed Defaults to \code{0}.
-#' @param reset_between_episodes Defaults to \code{TRUE}.
+#' @param reset_between_episodes A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{estimate}, \code{mean_reward}, \code{total_reward}, \code{regret}, \code{reward_by_step}, \code{optimal_action_rate}, \code{episode_reward}, \code{n_episodes}, \code{episode_length}, \code{n_arms}, \code{method}.
 #' @export
 mtdrl_run <- function(tasks, agent, episode_length = 100, n_arms = NULL,
@@ -168,7 +172,8 @@ mtdrl_run <- function(tasks, agent, episode_length = 100, n_arms = NULL,
 
 #' mtdrl_cheatsheet
 #'
-#' Part of the mtdrl_native implementation; see the file header for the
+#' A step of the mtdrl_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

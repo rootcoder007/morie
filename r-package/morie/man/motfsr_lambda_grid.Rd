@@ -8,9 +8,9 @@
 motfsr_lambda_grid(n_starts_total, n_seqs, w, lambda0)
 }
 \arguments{
-\item{n_starts_total}{See Usage.}
-\item{n_seqs}{See Usage.}
-\item{w}{See Usage.}
+\item{n_starts_total}{Numeric; combined arithmetically in the body.}
+\item{n_seqs}{Numeric; passed to \code{sqrt}.}
+\item{w}{Numeric; combined arithmetically in the body.}
 \item{lambda0}{See Usage.}
 }
 \description{

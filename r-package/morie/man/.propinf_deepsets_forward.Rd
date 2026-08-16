@@ -8,8 +8,8 @@
 .propinf_deepsets_forward(model, sets)
 }
 \arguments{
-\item{model}{See Usage.}
-\item{sets}{See Usage.}
+\item{model}{A list; the body reads \code{$context}, \code{$phis}, \code{$psis}, \code{$repr_dim}, \code{$rho}, \code{$scalers} from it.}
+\item{sets}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

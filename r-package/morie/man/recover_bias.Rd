@@ -10,8 +10,8 @@ recover_bias(alpha, y, grad, C)
 \arguments{
 \item{alpha}{See Usage.}
 \item{y}{See Usage.}
-\item{grad}{See Usage.}
-\item{C}{See Usage.}
+\item{grad}{A vector; indexed elementwise.}
+\item{C}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the svmopt_native implementation; see the file header for the source it follows.

@@ -10,9 +10,9 @@ morie_painn_equivariance_error(model, s, v, R, Q, tol = 1e-09)
 \arguments{
 \item{model}{See Usage.}
 \item{s}{See Usage.}
-\item{v}{See Usage.}
-\item{R}{See Usage.}
-\item{Q}{See Usage.}
+\item{v}{A matrix; passed to \code{as.matrix}.}
+\item{R}{A matrix; passed to \code{as.matrix}.}
+\item{Q}{A matrix; passed to \code{as.matrix}.}
 \item{tol}{Defaults to \code{1e-09}.}
 }
 \description{

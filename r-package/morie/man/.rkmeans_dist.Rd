@@ -8,8 +8,8 @@
 .rkmeans_dist(x, m)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{m}{See Usage.}
+\item{x}{Numeric; combined arithmetically in the body.}
+\item{m}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the rkmeans_native implementation; see the file header for the source it follows.

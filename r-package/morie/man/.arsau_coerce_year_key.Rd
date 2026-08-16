@@ -9,10 +9,10 @@
 }
 \arguments{
 \item{year}{See Usage.}
-\item{range_ok}{Defaults to \code{FALSE}.}
+\item{range_ok}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{
-Part of the arsau implementation; see the file header for the source it follows.
+A step of the arsau implementation. Called by \code{morie_arsau_available_datasets}, \code{morie_arsau_describe}, \code{morie_arsau_load_aggregate_summary} and 5 others in the module. See the file header for the source the module follows.
 }
 \value{
 Nothing; this branch always raises.

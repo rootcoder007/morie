@@ -8,19 +8,19 @@
 morie_scumap_umap_singlecell(X, n_neighbors = 15, min_dist = 0.1, n_components = 2, n_epochs = 200, learning_rate = 1, spread = 1, negative_sample_rate = 5, init = "spectral", seed = 0, laplacian = "normalised", a = NULL, b = NULL)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{n_neighbors}{Defaults to \code{15}.}
-\item{min_dist}{Defaults to \code{0.1}.}
+\item{X}{Passed to \code{.scumap_matrix}.}
+\item{n_neighbors}{Passed to \code{morie_scumap_fuzzy_simplicial_set}. Defaults to \code{15}.}
+\item{min_dist}{Passed to \code{morie_scumap_fit_ab}. Defaults to \code{0.1}.}
 \item{n_components}{Defaults to \code{2}.}
-\item{n_epochs}{Defaults to \code{200}.}
-\item{learning_rate}{Defaults to \code{1}.}
-\item{spread}{Defaults to \code{1}.}
+\item{n_epochs}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{200}.}
+\item{learning_rate}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
+\item{spread}{Passed to \code{morie_scumap_fit_ab}. Defaults to \code{1}.}
 \item{negative_sample_rate}{Defaults to \code{5}.}
-\item{init}{Defaults to \code{"spectral"}.}
+\item{init}{One of \code{"random"}, \code{"spectral"}. Defaults to \code{"spectral"}.}
 \item{seed}{Defaults to \code{0}.}
-\item{laplacian}{Defaults to \code{"normalised"}.}
-\item{a}{Defaults to \code{NULL}.}
-\item{b}{Defaults to \code{NULL}.}
+\item{laplacian}{Passed to \code{morie_scumap_spectral_layout}. Defaults to \code{"normalised"}.}
+\item{a}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
+\item{b}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the scumap_native implementation; see the file header for the source it follows.

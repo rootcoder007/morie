@@ -8,10 +8,10 @@
 .bessel_i0(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Numeric; passed to \code{abs}.}
 }
 \description{
-Part of the dsp_spectral implementation; see the file header for the source it follows.
+A step of the dsp_spectral implementation. Called by \code{.kaiser_window}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{out}, as built in the body.

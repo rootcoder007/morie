@@ -11,11 +11,11 @@
 \item{word}{See Usage.}
 \item{n_min}{Defaults to \code{3L}.}
 \item{n_max}{Defaults to \code{6L}.}
-\item{boundary}{Defaults to \code{TRUE}.}
-\item{whole_word}{Defaults to \code{TRUE}.}
+\item{boundary}{A flag; the body branches on it. Defaults to \code{TRUE}.}
+\item{whole_word}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
-Part of the fastxt_native implementation; see the file header for the source it follows.
+A step of the fastxt_native implementation. Called by \code{.word_vector}, \code{fasttext}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{grams}, as built in the body.

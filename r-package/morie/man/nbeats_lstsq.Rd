@@ -8,9 +8,9 @@
 nbeats_lstsq(X, y, ridge = 1e-08)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{ridge}{Defaults to \code{1e-08}.}
+\item{X}{A matrix; passed to \code{ncol}.}
+\item{y}{A matrix; passed to \code{crossprod}.}
+\item{ridge}{Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.}
 }
 \description{
 Part of the nbeats_native implementation; see the file header for the source it follows.

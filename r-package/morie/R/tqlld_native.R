@@ -20,10 +20,11 @@
 
 #' .tqlld_phi
 #'
-#' Part of the tqlld_native implementation; see the file header for the
+#' A step of the tqlld_native implementation. Called by \code{.tqlld_gaussian_cells}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .tqlld_phi <- function(x) exp(-0.5 * x * x) / sqrt(2 * pi)
@@ -31,13 +32,14 @@
 # Midpoint-quadrature mass and first moment of N(0,1) on each cell.
 #' Midpoint-quadrature mass and first moment of N(0,1) on each cell
 #'
-#' Part of the tqlld_native implementation; see the file header for the
+#' A step of the tqlld_native implementation. Called by \code{morie_tqlld_lloyd_max_codebook}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param bounds See Usage.
-#' @param lo See Usage.
-#' @param hi See Usage.
-#' @param n_grid See Usage.
+#' @param lo Numeric; combined arithmetically in the body.
+#' @param hi Numeric; combined arithmetically in the body.
+#' @param n_grid Numeric; combined arithmetically in the body.
 #' @return A list with \code{mass}, \code{mom}.
 #' @export
 .tqlld_gaussian_cells <- function(bounds, lo, hi, n_grid) {

@@ -8,8 +8,8 @@
 morie_twoT_corrected_logits(scores, probabilities, temperature = 1)
 }
 \arguments{
-\item{scores}{See Usage.}
-\item{probabilities}{See Usage.}
+\item{scores}{Passed to \code{.twoT_as_vec}.}
+\item{probabilities}{Passed to \code{.twoT_as_vec}.}
 \item{temperature}{Defaults to \code{1}.}
 }
 \description{

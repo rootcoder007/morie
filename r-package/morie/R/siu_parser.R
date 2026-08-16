@@ -166,10 +166,11 @@ NULL
 
 #' .siu_p_trim_to_body
 #'
-#' Part of the siu_parser implementation; see the file header for the
+#' A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param text See Usage.
+#' @param text A vector; its length is taken.
 #' @return The value of \code{text}, as built in the body.
 #' @export
 .siu_p_trim_to_body <- function(text) {
@@ -206,7 +207,7 @@ NULL
 #' ---------------------------------------------------------------------------
 #'
 #' @param text See Usage.
-#' @param label See Usage.
+#' @param label Passed to \code{.siu_p_re_escape}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .siu_p_label_value <- function(text, label) {
@@ -226,11 +227,12 @@ NULL
 
 #' .siu_p_label_int
 #'
-#' Part of the siu_parser implementation; see the file header for the
+#' A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param text See Usage.
-#' @param label See Usage.
+#' @param text Passed to \code{.siu_p_label_value}.
+#' @param label Passed to \code{.siu_p_label_value}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .siu_p_label_int <- function(text, label) {
@@ -242,10 +244,11 @@ NULL
 
 #' .siu_p_re_escape
 #'
-#' Part of the siu_parser implementation; see the file header for the
+#' A step of the siu_parser implementation. Called by \code{.siu_p_detect_police_service}, \code{.siu_p_label_value}, \code{.siu_p_section_text}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param s See Usage.
+#' @param s Character; passed to \code{gsub}.
 #' @return The value of \code{gsub}.
 #' @export
 .siu_p_re_escape <- function(s) {
@@ -263,8 +266,8 @@ NULL
 #' end-marker. Pure-R equivalent of _section_text.
 #' ---------------------------------------------------------------------------
 #'
-#' @param text See Usage.
-#' @param header See Usage.
+#' @param text A vector; its length is taken.
+#' @param header Passed to \code{.siu_p_re_escape}.
 #' @param end_markers Defaults to \code{character()}.
 #' @return The value of \code{substr}.
 #' @export
@@ -368,10 +371,11 @@ NULL
 
 #' .siu_p_detect_police_service
 #'
-#' Part of the siu_parser implementation; see the file header for the
+#' A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param text See Usage.
+#' @param text A vector; its length is taken and its elements indexed.
 #' @return A character value.
 #' @export
 .siu_p_detect_police_service <- function(text) {
@@ -446,10 +450,11 @@ NULL
 
 #' Crude ASCII fold for matching FR markers without accents
 #'
-#' Part of the siu_parser implementation; see the file header for the
+#' A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param text See Usage.
+#' @param text Character; passed to \code{grepl}.
 #' @return A character value.
 #' @export
 .siu_p_detect_language <- function(text) {
@@ -488,7 +493,8 @@ NULL
 
 #' .siu_p_parse_nrid_from_url
 #'
-#' Part of the siu_parser implementation; see the file header for the
+#' A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param url See Usage.
@@ -510,7 +516,7 @@ NULL
 #' Normalisation helpers (mirror morie.siu._normalize).
 #' ---------------------------------------------------------------------------
 #'
-#' @param s See Usage.
+#' @param s Optional; may be \code{NULL}. Character; passed to \code{trimws}.
 #' @return The value of \code{s}, as built in the body.
 #' @export
 .siu_p_normalise_sex <- function(s) {
@@ -524,10 +530,11 @@ NULL
 
 #' .siu_p_normalise_yes_no
 #'
-#' Part of the siu_parser implementation; see the file header for the
+#' A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param v See Usage.
+#' @param v Optional; may be \code{NULL}. Character; passed to \code{trimws}.
 #' @return A logical value.
 #' @export
 .siu_p_normalise_yes_no <- function(v) {
@@ -540,10 +547,11 @@ NULL
 
 #' .siu_p_parse_date
 #'
-#' Part of the siu_parser implementation; see the file header for the
+#' A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}, \code{morie_siu_parse_news_html}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param raw See Usage.
+#' @param raw Optional; may be \code{NULL}. Character; passed to \code{trimws}.
 #' @return A list with \code{iso}, \code{raw}.
 #' @export
 .siu_p_parse_date <- function(raw) {
@@ -592,11 +600,12 @@ NULL
 
 #' .siu_p_extract_narrative_full
 #'
-#' Part of the siu_parser implementation; see the file header for the
+#' A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param html See Usage.
-#' @param text See Usage.
+#' @param text A vector; its length is taken and its elements indexed.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .siu_p_extract_narrative_full <- function(html, text) {
@@ -634,10 +643,11 @@ NULL
 
 #' .siu_p_extract_summary
 #'
-#' Part of the siu_parser implementation; see the file header for the
+#' A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param text See Usage.
+#' @param text Character; passed to \code{strsplit}.
 #' @return The value of \code{substr}.
 #' @export
 .siu_p_extract_summary <- function(text) {
@@ -663,10 +673,11 @@ NULL
 
 #' .siu_p_scan_mh_race
 #'
-#' Part of the siu_parser implementation; see the file header for the
+#' A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param narrative See Usage.
+#' @param narrative Optional; may be \code{NULL}. Character; passed to \code{tolower}.
 #' @return A character value.
 #' @export
 .siu_p_scan_mh_race <- function(narrative) {
@@ -685,11 +696,12 @@ NULL
 
 #' .siu_p_find_news_release_link
 #'
-#' Part of the siu_parser implementation; see the file header for the
+#' A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param html See Usage.
-#' @param source_url See Usage.
+#' @param source_url Optional; may be \code{NULL}. Character; passed to \code{sub}.
 #' @return The value of \code{m}, as built in the body.
 #' @export
 .siu_p_find_news_release_link <- function(html, source_url) {

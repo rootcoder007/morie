@@ -13,7 +13,7 @@ morie_fairRC(protected, step = 10L, normalize = TRUE)
 \item{normalize}{Defaults to \code{TRUE}.}
 }
 \description{
-Part of the fairRC_native implementation; see the file header for the source it follows.
+A step of the fairRC_native implementation. No other function in the package calls it. See the file header for the source the module follows.
 }
 \value{
 The value of \code{rND}.

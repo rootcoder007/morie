@@ -20,7 +20,8 @@ NULL
 
 #' .predpol_result
 #'
-#' Part of the fairness_predpol implementation; see the file header for
+#' A step of the fairness_predpol implementation. Called by \code{morie_fairness_predpol_calibration_audit}, \code{morie_fairness_predpol_score_disparity}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param title See Usage.
@@ -44,10 +45,11 @@ NULL
 
 #' .predpol_ordered_unique
 #'
-#' Part of the fairness_predpol implementation; see the file header for
+#' A step of the fairness_predpol implementation. Called by \code{morie_fairness_predpol_calibration_audit}, \code{morie_fairness_predpol_score_disparity}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x A vector; indexed elementwise.
 #' @return The value of \code{[}.
 #' @export
 .predpol_ordered_unique <- function(x) {
@@ -57,7 +59,8 @@ NULL
 
 #' .predpol_mode
 #'
-#' Part of the fairness_predpol implementation; see the file header for
+#' A step of the fairness_predpol implementation. Called by \code{morie_fairness_predpol_aggregate_areas}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.

@@ -8,10 +8,10 @@
 .morie_db_indexes_for(table_name)
 }
 \arguments{
-\item{table_name}{See Usage.}
+\item{table_name}{Character; passed to \code{grepl}.}
 }
 \description{
-Part of the db_indexes implementation; see the file header for the source it follows.
+A step of the db_indexes implementation. Called by \code{morie_db_create_indexes}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{list}.

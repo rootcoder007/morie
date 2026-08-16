@@ -8,11 +8,11 @@
 profile_beta(wy, wX, ar = numeric(0), ma = numeric(0), filter = "exact")
 }
 \arguments{
-\item{wy}{See Usage.}
-\item{wX}{See Usage.}
-\item{ar}{Defaults to \code{numeric(0)}.}
-\item{ma}{Defaults to \code{numeric(0)}.}
-\item{filter}{Defaults to \code{"exact"}.}
+\item{wy}{A vector; its length is taken.}
+\item{wX}{A vector; its length is taken and its elements indexed.}
+\item{ar}{Passed to \code{.col}. Defaults to \code{numeric(0)}.}
+\item{ma}{Passed to \code{.col}. Defaults to \code{numeric(0)}.}
+\item{filter}{One of \code{"conditional"}, \code{"exact"}. Defaults to \code{"exact"}.}
 }
 \description{
 Part of the sarimax_native implementation; see the file header for the source it follows.

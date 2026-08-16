@@ -8,7 +8,7 @@
 .rndnet_running_stats_new(n)
 }
 \arguments{
-\item{n}{See Usage.}
+\item{n}{A count; the body uses it as \code{rep(...)}.}
 }
 \description{
 Part of the rndnet_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 nashq_mat(M, name)
 }
 \arguments{
-\item{M}{See Usage.}
+\item{M}{A matrix; passed to \code{nrow}.}
 \item{name}{See Usage.}
 }
 \description{

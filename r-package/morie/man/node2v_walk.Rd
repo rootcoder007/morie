@@ -13,7 +13,7 @@ node2v_walk(adj, start, length, p = 1, q = 1, rng = NULL, weights = NULL)
 \item{length}{See Usage.}
 \item{p}{Defaults to \code{1}.}
 \item{q}{Defaults to \code{1}.}
-\item{rng}{Defaults to \code{NULL}.}
+\item{rng}{Optional; may be \code{NULL}. Passed to \code{.ghc_unif}.}
 \item{weights}{Defaults to \code{NULL}.}
 }
 \description{

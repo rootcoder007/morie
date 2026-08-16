@@ -8,12 +8,12 @@
 auto_order(y, X = NULL, d = 0, D = 0, s = 1, method = "css", max_steps = 20)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{X}{Defaults to \code{NULL}.}
-\item{d}{Defaults to \code{0}.}
-\item{D}{Defaults to \code{0}.}
-\item{s}{Defaults to \code{1}.}
-\item{method}{Defaults to \code{"css"}.}
+\item{y}{Passed to \code{.try_fit}.}
+\item{X}{Passed to \code{.try_fit}.}
+\item{d}{Numeric; combined arithmetically in the body. Defaults to \code{0}.}
+\item{D}{Numeric; combined arithmetically in the body. Defaults to \code{0}.}
+\item{s}{Passed to \code{.try_fit}. Defaults to \code{1}.}
+\item{method}{Passed to \code{.try_fit}. Defaults to \code{"css"}.}
 \item{max_steps}{Defaults to \code{20}.}
 }
 \description{

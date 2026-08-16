@@ -8,8 +8,8 @@
 mean_period(y, dt = 1)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{dt}{Defaults to \code{1}.}
+\item{y}{A vector; its length is taken.}
+\item{dt}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
 }
 \description{
 Part of the lyapun_native implementation; see the file header for the source it follows.

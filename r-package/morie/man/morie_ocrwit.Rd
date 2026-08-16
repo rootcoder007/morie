@@ -8,7 +8,7 @@
 morie_ocrwit(text_boxes, masked_patches, width, height, patch_grid = 14, masked_text = list())
 }
 \arguments{
-\item{text_boxes}{See Usage.}
+\item{text_boxes}{A vector; its length is taken and its elements indexed.}
 \item{masked_patches}{See Usage.}
 \item{width}{See Usage.}
 \item{height}{See Usage.}

@@ -8,7 +8,7 @@
 .propinf_lcg_draw(e)
 }
 \arguments{
-\item{e}{See Usage.}
+\item{e}{A list; the body reads \code{$st} from it.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

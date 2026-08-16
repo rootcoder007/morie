@@ -9,8 +9,8 @@ morie_phylml(tree, seqs, pi = NULL, u = 1)
 }
 \arguments{
 \item{tree}{See Usage.}
-\item{seqs}{See Usage.}
-\item{pi}{Defaults to \code{NULL}.}
+\item{seqs}{A vector; its length is taken.}
+\item{pi}{Passed to \code{.phylml_pi}.}
 \item{u}{Defaults to \code{1}.}
 }
 \description{

@@ -8,9 +8,9 @@
 .tps_sp_grad(F_, dx, dy)
 }
 \arguments{
-\item{F_}{See Usage.}
-\item{dx}{See Usage.}
-\item{dy}{See Usage.}
+\item{F_}{Passed to \code{.tps_sp_roll}.}
+\item{dx}{Numeric; combined arithmetically in the body.}
+\item{dy}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the tps_statphysics implementation; see the file header for the source it follows.

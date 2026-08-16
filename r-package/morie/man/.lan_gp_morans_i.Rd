@@ -8,8 +8,8 @@
 .lan_gp_morans_i(resid, W)
 }
 \arguments{
-\item{resid}{See Usage.}
-\item{W}{See Usage.}
+\item{resid}{A vector; its length is taken.}
+\item{W}{A matrix; passed to \code{dim}.}
 }
 \description{
 Part of the laniyonu_gentrification_policing implementation; see the file header for the source it follows.

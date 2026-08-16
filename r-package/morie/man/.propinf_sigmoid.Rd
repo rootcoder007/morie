@@ -8,7 +8,7 @@
 .propinf_sigmoid(z)
 }
 \arguments{
-\item{z}{See Usage.}
+\item{z}{Numeric; passed to \code{exp}.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

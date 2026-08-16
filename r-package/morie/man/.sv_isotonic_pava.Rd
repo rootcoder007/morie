@@ -8,7 +8,7 @@
 .sv_isotonic_pava(y, w = NULL)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{A vector; its length is taken.}
 \item{w}{Defaults to \code{NULL}.}
 }
 \description{

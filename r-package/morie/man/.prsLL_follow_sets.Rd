@@ -8,7 +8,7 @@
 .prsLL_follow_sets(g, first = NULL)
 }
 \arguments{
-\item{g}{See Usage.}
+\item{g}{A list; the body reads \code{$rules}, \code{$start} from it.}
 \item{first}{Defaults to \code{NULL}.}
 }
 \description{

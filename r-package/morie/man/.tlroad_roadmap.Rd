@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{data_description}{See Usage.}
-\item{model_assumptions}{See Usage.}
+\item{model_assumptions}{A vector; its length is taken.}
 \item{target_name}{See Usage.}
 \item{estimator}{Defaults to \code{"TMLE"}.}
 }

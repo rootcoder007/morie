@@ -8,7 +8,7 @@
 .tncomp_seed(D, seed)
 }
 \arguments{
-\item{D}{See Usage.}
+\item{D}{A matrix; passed to \code{nrow}.}
 \item{seed}{See Usage.}
 }
 \description{

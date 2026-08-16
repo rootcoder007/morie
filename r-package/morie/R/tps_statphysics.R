@@ -73,7 +73,8 @@ NULL
 
 #' .tps_sp_result
 #'
-#' Part of the tps_statphysics implementation; see the file header for
+#' A step of the tps_statphysics implementation. Called by \code{morie_tps_criminal_network_graph}, \code{morie_tps_inspection_game_phase}, \code{morie_tps_levy_flight_alpha} and 4 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param title See Usage.
@@ -101,7 +102,8 @@ NULL
 
 #' .tps_sp_round
 #'
-#' Part of the tps_statphysics implementation; see the file header for
+#' A step of the tps_statphysics implementation. Called by \code{morie_tps_inspection_game_phase}, \code{morie_tps_levy_flight_alpha}, \code{morie_tps_lotka_volterra_police_crime} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
@@ -123,10 +125,10 @@ NULL
 #' with a midpoint cos-lat factor so this module does not hard-depend on
 #' the renderer port.
 #'
-#' @param lat See Usage.
-#' @param lon See Usage.
-#' @param lat_ref Defaults to \code{(43.55 + 43.9)/2}.
-#' @param lon_ref Defaults to \code{(-79.65 + -79.1)/2}.
+#' @param lat Numeric; combined arithmetically in the body.
+#' @param lon Numeric; combined arithmetically in the body.
+#' @param lat_ref Numeric; combined arithmetically in the body. Defaults to \code{(43.55 + 43.9)/2}.
+#' @param lon_ref Numeric; combined arithmetically in the body. Defaults to \code{(-79.65 + -79.1)/2}.
 #' @return A list with \code{x}, \code{y}.
 #' @export
 .tps_sp_project_xy <- function(lat, lon,
@@ -142,7 +144,8 @@ NULL
 
 #' .tps_sp_toronto_grid
 #'
-#' Part of the tps_statphysics implementation; see the file header for
+#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param nx Defaults to \code{90L}.
@@ -159,11 +162,12 @@ NULL
 # Periodic-shift roll equivalent to NumPy np.roll along one axis.
 #' Periodic-shift roll equivalent to NumPy np.roll along one axis
 #'
-#' Part of the tps_statphysics implementation; see the file header for
+#' A step of the tps_statphysics implementation. Called by \code{.tps_sp_grad}, \code{.tps_sp_lap}, \code{.tps_sp_local_max3x3} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param M See Usage.
-#' @param shift See Usage.
+#' @param M A matrix; indexed by row and column.
+#' @param shift Numeric; combined arithmetically in the body.
 #' @param axis See Usage.
 #' @return One of two values, depending on the branch taken.
 #' @export
@@ -181,12 +185,13 @@ NULL
 # Periodic 5-point Laplacian.
 #' Periodic 5-point Laplacian
 #'
-#' Part of the tps_statphysics implementation; see the file header for
+#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param F_ See Usage.
-#' @param dx See Usage.
-#' @param dy See Usage.
+#' @param F_ Numeric; combined arithmetically in the body.
+#' @param dx Numeric; passed to \code{max}.
+#' @param dy Numeric; passed to \code{max}.
 #' @return A numeric value.
 #' @export
 .tps_sp_lap <- function(F_, dx, dy) {
@@ -198,12 +203,13 @@ NULL
 # Central-difference gradient with periodic wrap (gx, gy).
 #' Central-difference gradient with periodic wrap (gx, gy)
 #'
-#' Part of the tps_statphysics implementation; see the file header for
+#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param F_ See Usage.
-#' @param dx See Usage.
-#' @param dy See Usage.
+#' @param F_ Passed to \code{.tps_sp_roll}.
+#' @param dx Numeric; combined arithmetically in the body.
+#' @param dy Numeric; combined arithmetically in the body.
 #' @return A list with \code{gx}, \code{gy}.
 #' @export
 .tps_sp_grad <- function(F_, dx, dy) {
@@ -216,10 +222,11 @@ NULL
 # Pointwise 3x3 local-maximum filter.
 #' Pointwise 3x3 local-maximum filter
 #'
-#' Part of the tps_statphysics implementation; see the file header for
+#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}, \code{morie_tps_sdb_turing_demo}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param F_ See Usage.
+#' @param F_ Passed to \code{.tps_sp_roll}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .tps_sp_local_max3x3 <- function(F_) {
@@ -236,13 +243,14 @@ NULL
 # 2-D histogram on prescribed bin edges (rows = y, cols = x).
 #' 2-D histogram on prescribed bin edges (rows = y, cols = x)
 #'
-#' Part of the tps_statphysics implementation; see the file header for
+#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
 #' @param y See Usage.
-#' @param gx See Usage.
-#' @param gy See Usage.
+#' @param gx A vector; its length is taken.
+#' @param gy A vector; its length is taken.
 #' @return The value of \code{H}, as built in the body.
 #' @export
 .tps_sp_hist2d <- function(x, y, gx, gy) {
@@ -274,7 +282,7 @@ NULL
 #' @param fig_dir See Usage.
 #' @param name See Usage.
 #' @param draw See Usage.
-#' @param save_fig Defaults to \code{TRUE}.
+#' @param save_fig A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param width Defaults to \code{1140}.
 #' @param height Defaults to \code{620}.
 #' @return The value of \code{path}, as built in the body.

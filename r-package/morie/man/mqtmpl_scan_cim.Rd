@@ -9,11 +9,11 @@ mqtmpl_scan_cim(y, markers, positions, cofactors = list(), window = 0, step = 0.
 }
 \arguments{
 \item{y}{See Usage.}
-\item{markers}{See Usage.}
-\item{positions}{See Usage.}
-\item{cofactors}{Defaults to \code{list()}.}
+\item{markers}{A vector; its length is taken and its elements indexed.}
+\item{positions}{A vector; indexed elementwise.}
+\item{cofactors}{A vector; its length is taken. Defaults to \code{list()}.}
 \item{window}{Defaults to \code{0}.}
-\item{step}{Defaults to \code{0.02}.}
+\item{step}{Numeric; combined arithmetically in the body. Defaults to \code{0.02}.}
 }
 \description{
 Part of the mqtmpl_native implementation; see the file header for the source it follows.

@@ -13,12 +13,12 @@
 \item{dffits}{See Usage.}
 \item{dfbetas}{See Usage.}
 \item{covratio}{See Usage.}
-\item{influential}{See Usage.}
+\item{influential}{A vector; its length is taken.}
 \item{high_lev}{See Usage.}
 \item{high_cook}{See Usage.}
 }
 \description{
-Part of the diagnostics implementation; see the file header for the source it follows.
+A step of the diagnostics implementation. Called by \code{compute_influence}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{structure}.

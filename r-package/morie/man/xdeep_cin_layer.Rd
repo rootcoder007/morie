@@ -8,9 +8,9 @@
 xdeep_cin_layer(X_prev, X0, W)
 }
 \arguments{
-\item{X_prev}{See Usage.}
-\item{X0}{See Usage.}
-\item{W}{See Usage.}
+\item{X_prev}{Passed to \code{.xdeep_to_mat}.}
+\item{X0}{Passed to \code{.xdeep_to_mat}.}
+\item{W}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the xdeep_native implementation; see the file header for the source it follows.

@@ -8,10 +8,10 @@
 .wls_int(Xm, yv, w, ridge)
 }
 \arguments{
-\item{Xm}{See Usage.}
-\item{yv}{See Usage.}
-\item{w}{See Usage.}
-\item{ridge}{See Usage.}
+\item{Xm}{A matrix; passed to \code{nrow}.}
+\item{yv}{A matrix; passed to \code{\%*\%}.}
+\item{w}{A matrix; passed to \code{diag}.}
+\item{ridge}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the tmldyk_native implementation; see the file header for the source it follows.

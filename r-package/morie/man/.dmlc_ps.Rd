@@ -10,8 +10,8 @@
 \arguments{
 \item{Xtr}{See Usage.}
 \item{dtr}{See Usage.}
-\item{Xte}{See Usage.}
-\item{eps}{See Usage.}
+\item{Xte}{A matrix; passed to \code{\%*\%}.}
+\item{eps}{Numeric; combined arithmetically in the body.}
 }
 \description{
 clipped Part of the dml_clustered implementation; see the file header for the source it follows.

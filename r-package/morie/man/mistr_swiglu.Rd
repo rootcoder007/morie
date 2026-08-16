@@ -8,10 +8,10 @@
 mistr_swiglu(x, W1, W2, W3)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{W1}{See Usage.}
-\item{W2}{See Usage.}
-\item{W3}{See Usage.}
+\item{x}{A matrix; passed to \code{crossprod}.}
+\item{W1}{A matrix; passed to \code{crossprod}.}
+\item{W2}{A matrix; passed to \code{crossprod}.}
+\item{W3}{A matrix; passed to \code{crossprod}.}
 }
 \description{
 Part of the mistr_native implementation; see the file header for the source it follows.

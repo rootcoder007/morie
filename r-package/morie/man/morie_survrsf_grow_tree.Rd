@@ -8,14 +8,14 @@
 morie_survrsf_grow_tree(X, times, events, mtry = NULL, min_deaths = 3, rule = "logrank", seed = 0, rng = NULL)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{times}{See Usage.}
-\item{events}{See Usage.}
+\item{X}{A matrix; indexed by row and column.}
+\item{times}{A vector; its length is taken and its elements indexed.}
+\item{events}{A vector; indexed elementwise.}
 \item{mtry}{Defaults to \code{NULL}.}
-\item{min_deaths}{Defaults to \code{3}.}
-\item{rule}{Defaults to \code{"logrank"}.}
-\item{seed}{Defaults to \code{0}.}
-\item{rng}{Defaults to \code{NULL}.}
+\item{min_deaths}{Numeric; combined arithmetically in the body. Defaults to \code{3}.}
+\item{rule}{Passed to \code{.survrsf_check_rule}. Defaults to \code{"logrank"}.}
+\item{seed}{Passed to \code{.survrsf_rng}. Defaults to \code{0}.}
+\item{rng}{Optional; may be \code{NULL}. A list; the body reads \code{$sample_} from it.}
 }
 \description{
 Part of the survrsf_native implementation; see the file header for the source it follows.

@@ -8,11 +8,11 @@
 selective_scan(X, A, W_B, W_C, W_delta, delta_bias = NULL, b_B = NULL, b_C = NULL, b_delta = 0, rule = "zoh", D_skip = NULL)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{A}{See Usage.}
-\item{W_B}{See Usage.}
-\item{W_C}{See Usage.}
-\item{W_delta}{See Usage.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
+\item{A}{A matrix; passed to \code{as.matrix}.}
+\item{W_B}{A matrix; passed to \code{as.matrix}.}
+\item{W_C}{A matrix; passed to \code{as.matrix}.}
+\item{W_delta}{A matrix; passed to \code{as.matrix}.}
 \item{delta_bias}{Defaults to \code{NULL}.}
 \item{b_B}{Defaults to \code{NULL}.}
 \item{b_C}{Defaults to \code{NULL}.}

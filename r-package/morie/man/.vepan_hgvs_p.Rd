@@ -8,8 +8,8 @@
 .vepan_hgvs_p(info, terms)
 }
 \arguments{
-\item{info}{See Usage.}
-\item{terms}{See Usage.}
+\item{info}{A list; the body reads \code{$alt_aa}, \code{$protein_position}, \code{$ref_aa} from it.}
+\item{terms}{One of \code{"frameshift_variant"}, \code{"start_retained_variant"}, \code{"stop_retained_variant"}, \code{"synonymous_variant"}.}
 }
 \description{
 Part of the vepan_native implementation; see the file header for the source it follows.

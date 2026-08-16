@@ -3,7 +3,7 @@
 % the formals.
 \name{morie_survrsf_rule_status}
 \alias{morie_survrsf_rule_status}
-\title{Which of the paper\\'s four splitting rules are implemented}
+\title{Which of the paper\'s four splitting rules are implemented}
 \usage{
 morie_survrsf_rule_status(rule = NULL)
 }

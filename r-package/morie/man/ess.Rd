@@ -8,7 +8,7 @@
 ess(weights)
 }
 \arguments{
-\item{weights}{See Usage.}
+\item{weights}{Numeric; passed to \code{sum}.}
 }
 \description{
 Part of the smcsam_native implementation; see the file header for the source it follows.

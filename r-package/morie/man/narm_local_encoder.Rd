@@ -8,7 +8,7 @@
 narm_local_encoder(H, alpha)
 }
 \arguments{
-\item{H}{See Usage.}
+\item{H}{A matrix; passed to \code{as.matrix}.}
 \item{alpha}{See Usage.}
 }
 \description{

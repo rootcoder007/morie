@@ -8,8 +8,8 @@
 .morie_match_optimal_assign_cpp(treated, control)
 }
 \arguments{
-\item{treated}{See Usage.}
-\item{control}{See Usage.}
+\item{treated}{Passed to \code{.Call}.}
+\item{control}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

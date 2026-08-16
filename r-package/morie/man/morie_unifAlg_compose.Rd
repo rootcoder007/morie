@@ -8,8 +8,8 @@
 morie_unifAlg_compose(outer, inner)
 }
 \arguments{
-\item{outer}{See Usage.}
-\item{inner}{See Usage.}
+\item{outer}{A vector; indexed elementwise.}
+\item{inner}{A vector; indexed elementwise.}
 }
 \description{
 Part of the unifAlg_native implementation; see the file header for the source it follows.

@@ -8,13 +8,13 @@
 .fit_q2(ys, L0, A0, L1, A1, idx, ridge)
 }
 \arguments{
-\item{ys}{See Usage.}
-\item{L0}{See Usage.}
-\item{A0}{See Usage.}
-\item{L1}{See Usage.}
-\item{A1}{See Usage.}
+\item{ys}{A vector; indexed elementwise.}
+\item{L0}{A matrix; indexed by row and column.}
+\item{A0}{A vector; indexed elementwise.}
+\item{L1}{A matrix; indexed by row and column.}
+\item{A1}{A vector; indexed elementwise.}
 \item{idx}{See Usage.}
-\item{ridge}{See Usage.}
+\item{ridge}{Passed to \code{.tmldyn_lstsq}.}
 }
 \description{
 treatment-by-covariate and treatment-by-treatment interactions.

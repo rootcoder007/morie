@@ -8,13 +8,13 @@
 solve_pair(i, j, alpha, y, K, grad, C)
 }
 \arguments{
-\item{i}{See Usage.}
-\item{j}{See Usage.}
+\item{i}{Passed to \code{.svmopt_bounds}.}
+\item{j}{Passed to \code{.svmopt_bounds}.}
 \item{alpha}{See Usage.}
-\item{y}{See Usage.}
-\item{K}{See Usage.}
-\item{grad}{See Usage.}
-\item{C}{See Usage.}
+\item{y}{A vector; indexed elementwise.}
+\item{K}{A matrix; indexed by row and column.}
+\item{grad}{A vector; indexed elementwise.}
+\item{C}{Passed to \code{.svmopt_bounds}.}
 }
 \description{
 Part of the svmopt_native implementation; see the file header for the source it follows.

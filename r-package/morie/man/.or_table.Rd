@@ -8,9 +8,9 @@
 .or_table(fit, model = NULL, lower_se_name = FALSE)
 }
 \arguments{
-\item{fit}{See Usage.}
+\item{fit}{Passed to \code{.safe_confint}.}
 \item{model}{Defaults to \code{NULL}.}
-\item{lower_se_name}{Defaults to \code{FALSE}.}
+\item{lower_se_name}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

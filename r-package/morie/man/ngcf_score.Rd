@@ -8,7 +8,7 @@
 ngcf_score(final, u, i)
 }
 \arguments{
-\item{final}{See Usage.}
+\item{final}{A matrix; indexed by row and column.}
 \item{u}{See Usage.}
 \item{i}{See Usage.}
 }

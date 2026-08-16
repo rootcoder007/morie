@@ -41,7 +41,8 @@
 
 #' .morie_gr_fin
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{.morie_gr_attend}, \code{.morie_gr_check_mdp}, \code{.morie_gr_mse_core} and 105 others in the module.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param x See Usage.
@@ -56,10 +57,11 @@
 # np.atleast_2d: a vector becomes a ONE-ROW matrix.
 #' Np.atleast_2d: a vector becomes a ONE-ROW matrix
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{.morie_gr_attend}, \code{.morie_gr_check_mdp}, \code{.morie_gr_mse_core} and 71 others in the module.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param x See Usage.
+#' @param x A matrix; passed to \code{dim}.
 #' @return The value of \code{m}, as built in the body.
 #' @export
 .morie_gr_a2d <- function(x) {
@@ -77,12 +79,13 @@
 # Box-Muller normals off the reference LCG, cos then sin per pair.
 #' Box-Muller normals off the reference LCG, cos then sin per pair
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{morie_geron_ddpm_forward_process}, \code{morie_geron_ddpm_reverse_step}, \code{morie_geron_gaussian_random_projection} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param count See Usage.
+#' @param count A count; the body uses it as \code{seq_len(...)}.
 #' @param seed See Usage.
-#' @param clamp Defaults to \code{FALSE}.
+#' @param clamp A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return The value of \code{[}.
 #' @export
 .morie_gr_lcg_normals <- function(count, seed, clamp = FALSE) {
@@ -106,10 +109,11 @@
 #' LCG Fisher-Yates over 0..n-1, exactly the Python loop (i from n-1
 #' down)
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{morie_geron_dataloader_minibatch}, \code{morie_geron_kfold_cv}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param n See Usage.
+#' @param n A count; the body uses it as \code{seq_len(...)}.
 #' @param seed See Usage.
 #' @return The value of \code{perm}, as built in the body.
 #' @export
@@ -130,10 +134,11 @@
 # grsig kernel: the two-branch overflow-safe logistic.
 #' Grsig kernel: the two-branch overflow-safe logistic
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{morie_geron_gru_cell}, \code{morie_geron_logistic_regression_probability}, \code{morie_geron_lstm_cell} and 6 others in the module.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param z See Usage.
+#' @param z A vector; its length is taken and its elements indexed.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .morie_gr_sigmoid_vec <- function(z) {
@@ -149,10 +154,11 @@
 # grn021 kernel.
 #' Grn021 kernel
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{morie_geron_ch4_softmax_function}, \code{morie_geron_temperature_sampling}, \code{morie_geron_topk_sampling}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param s See Usage.
+#' @param s A vector; its length is taken.
 #' @return A numeric value.
 #' @export
 .morie_gr_softmax_vec <- function(s) {
@@ -166,12 +172,13 @@
 # attsdp / grsdpa kernel. mask: logical matrix, TRUE = attend.
 #' Attsdp / grsdpa kernel. mask: logical matrix, TRUE = attend
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{morie_geron_block_multi_head_attention}, \code{morie_geron_flash_attention_tile}, \code{morie_geron_multi_head_attention} and 5 others in the module.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param Q See Usage.
-#' @param K See Usage.
-#' @param V See Usage.
+#' @param Q A matrix; passed to \code{ncol}.
+#' @param K A matrix; passed to \code{nrow}.
+#' @param V A matrix; passed to \code{nrow}.
 #' @param mask Defaults to \code{NULL}.
 #' @return A list with \code{output}, \code{weights}, \code{scores}.
 #' @export
@@ -196,12 +203,13 @@
 # grmse core, shared by every regularised cost and every GD driver here.
 #' Grmse core, shared by every regularised cost and every GD driver here
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{morie_geron_ch4_mse_gradient_vector}, \code{morie_geron_ch4_normal_equation}, \code{morie_geron_early_stopping} and 4 others in the module.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param X See Usage.
-#' @param y See Usage.
-#' @param theta See Usage.
+#' @param X A matrix; passed to \code{nrow}.
+#' @param y A vector; its length is taken.
+#' @param theta A matrix; passed to \code{\%*\%}.
 #' @return A list with \code{cost}, \code{rmse}, \code{residuals}, \code{predictions}, \code{n}.
 #' @export
 .morie_gr_mse_core <- function(X, y, theta) {
@@ -221,10 +229,11 @@
 
 #' .morie_gr_logaddexp0
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{morie_geron_dpo_loss}, \code{morie_geron_regression_mlp_output}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param z See Usage.
+#' @param z Numeric; passed to \code{abs}.
 #' @return A numeric value.
 #' @export
 .morie_gr_logaddexp0 <- function(z) pmax(z, 0) + log1p(exp(-abs(z)))
@@ -941,10 +950,11 @@ morie_gr_dual <- function(value, deriv = 0) {
 
 #' .morie_gr_lift
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{Ops.morie_gr_dual}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param o See Usage.
+#' @param o Passed to \code{morie_gr_dual}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .morie_gr_lift <- function(o) if (inherits(o, "morie_gr_dual")) o else
@@ -3139,10 +3149,11 @@ morie_geron_ch4_softmax_function <- function(s, k, K = NULL) {
 
 #' .morie_gr_score_matrix
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{.morie_gr_probability_matrix}, \code{morie_geron_softmax_score_grsmxs}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{ncol}.
 #' @param theta See Usage.
 #' @return A list with \code{X}, \code{theta}, \code{scores}.
 #' @export
@@ -3170,11 +3181,12 @@ morie_geron_softmax_score_grsmxs <- function(X, theta) {
 
 #' .morie_gr_probability_matrix
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{.morie_gr_gradient_matrix}, \code{morie_geron_softmax_cross_entropy_cost}, \code{morie_geron_softmax_probability}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param X See Usage.
-#' @param theta See Usage.
+#' @param X Passed to \code{.morie_gr_score_matrix}.
+#' @param theta Passed to \code{.morie_gr_score_matrix}.
 #' @return A list with \code{X}, \code{theta}, \code{probabilities}, \code{scores}.
 #' @export
 .morie_gr_probability_matrix <- function(X, theta) {
@@ -3200,12 +3212,13 @@ morie_geron_softmax_probability <- function(X, theta) {
 
 #' .morie_gr_one_hot
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{.morie_gr_gradient_matrix}, \code{morie_geron_softmax_cross_entropy_cost}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param Y See Usage.
-#' @param K See Usage.
-#' @param m See Usage.
+#' @param Y A matrix; passed to \code{nrow}.
+#' @param K A count; the body uses it as \code{matrix(...)}.
+#' @param m A count; the body uses it as \code{seq_len(...)}.
 #' @return The value of \code{Y}, as built in the body.
 #' @export
 .morie_gr_one_hot <- function(Y, K, m) {
@@ -3248,12 +3261,13 @@ morie_geron_softmax_cross_entropy_cost <- function(X, Y, theta) {
 
 #' .morie_gr_gradient_matrix
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{morie_geron_ch4_cross_entropy_gradient_vector}, \code{morie_geron_softmax_cost_gradient}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param X See Usage.
-#' @param Y See Usage.
-#' @param theta See Usage.
+#' @param X Passed to \code{.morie_gr_probability_matrix}.
+#' @param Y Passed to \code{.morie_gr_one_hot}.
+#' @param theta Passed to \code{.morie_gr_probability_matrix}.
 #' @return A list with \code{X}, \code{P}, \code{Yh}, \code{G}.
 #' @export
 .morie_gr_gradient_matrix <- function(X, Y, theta) {
@@ -3932,7 +3946,8 @@ morie_geron_ppo_clipped_objective <- function(ratios, advantages, eps = 0.2) {
 
 #' .morie_gr_sorted_counts
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{morie_geron_precision_recall_curve}, \code{morie_geron_roc_curve}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param y_true See Usage.
@@ -4348,7 +4363,8 @@ morie_geron_pyramid_vit_stage <- function(X, WQ, WK, WV, reduction_ratio = 2) {
 
 #' .morie_gr_check_mdp
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{.morie_gr_policy_evaluation}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param policy See Usage.
@@ -4391,13 +4407,14 @@ morie_geron_pyramid_vit_stage <- function(X, WQ, WK, WV, reduction_ratio = 2) {
 
 #' .morie_gr_policy_evaluation
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{morie_geron_action_value_function}, \code{morie_geron_state_value_function}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param policy See Usage.
-#' @param transitions See Usage.
-#' @param rewards See Usage.
-#' @param gamma See Usage.
+#' @param policy Passed to \code{.morie_gr_check_mdp}.
+#' @param transitions Passed to \code{.morie_gr_check_mdp}.
+#' @param rewards Passed to \code{.morie_gr_check_mdp}.
+#' @param gamma Passed to \code{.morie_gr_check_mdp}.
 #' @return A list with \code{V}, \code{pi}, \code{P}, \code{R}, \code{r_sa}, \code{gamma}, \code{S}, \code{A}.
 #' @export
 .morie_gr_policy_evaluation <- function(policy, transitions, rewards, gamma) {
@@ -5153,10 +5170,11 @@ morie_geron_silhouette_score <- function(X, labels) {
 
 #' .morie_gr_sym_is_const
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{.morie_gr_sym_diff}, \code{.morie_gr_sym_eval}, \code{.morie_gr_sym_simplify} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param e See Usage.
+#' @param e A vector; its length is taken.
 #' @return A logical value.
 #' @export
 .morie_gr_sym_is_const <- function(e) is.numeric(e) && length(e) == 1L
@@ -5165,11 +5183,12 @@ morie_geron_silhouette_score <- function(X, labels) {
 
 #' .morie_gr_sym_eval
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{.morie_gr_sym_simplify}, \code{morie_geron_symbolic_differentiation}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param e See Usage.
-#' @param env See Usage.
+#' @param e A vector; its length is taken and its elements indexed.
+#' @param env A vector; indexed elementwise.
 #' @return The value of \code{switch}.
 #' @export
 .morie_gr_sym_eval <- function(e, env) {
@@ -5198,10 +5217,11 @@ morie_geron_silhouette_score <- function(X, labels) {
 
 #' .morie_gr_sym_simplify
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{morie_geron_symbolic_differentiation}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param e See Usage.
+#' @param e A vector; its length is taken and its elements indexed.
 #' @return A vector, from \code{c}.
 #' @export
 .morie_gr_sym_simplify <- function(e) {
@@ -5235,11 +5255,12 @@ morie_geron_silhouette_score <- function(X, labels) {
 
 #' .morie_gr_sym_diff
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{morie_geron_symbolic_differentiation}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param e See Usage.
-#' @param var See Usage.
+#' @param e A vector; its length is taken and its elements indexed.
+#' @param var Passed to \code{.morie_gr_sym_diff}.
 #' @return The value of \code{list}.
 #' @export
 .morie_gr_sym_diff <- function(e, var) {
@@ -5276,10 +5297,11 @@ morie_geron_silhouette_score <- function(X, labels) {
 
 #' .morie_gr_sym_str
 #'
-#' Part of the geron_train_native implementation; see the file header
+#' A step of the geron_train_native implementation. Called by \code{morie_geron_symbolic_differentiation}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param e See Usage.
+#' @param e A vector; its length is taken and its elements indexed.
 #' @return A character value.
 #' @export
 .morie_gr_sym_str <- function(e) {

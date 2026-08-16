@@ -10,11 +10,11 @@
 #' direct unit-testing. `Bx`/`Bg` are the data and grid basis matrices,
 #' `gz` the standardised evaluation grid, `n` the sample size.
 #'
-#' @param theta See Usage.
-#' @param Bx See Usage.
-#' @param Bg See Usage.
+#' @param theta A matrix; passed to \code{\%*\%}.
+#' @param Bx A matrix; passed to \code{\%*\%}.
+#' @param Bg A matrix; passed to \code{\%*\%}.
 #' @param gz See Usage.
-#' @param n See Usage.
+#' @param n Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .ghlgd_negll <- function(theta, Bx, Bg, gz, n) {

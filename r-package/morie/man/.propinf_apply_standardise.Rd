@@ -8,9 +8,9 @@
 .propinf_apply_standardise(f, mu, sd)
 }
 \arguments{
-\item{f}{See Usage.}
-\item{mu}{See Usage.}
-\item{sd}{See Usage.}
+\item{f}{Numeric; combined arithmetically in the body.}
+\item{mu}{Numeric; combined arithmetically in the body.}
+\item{sd}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

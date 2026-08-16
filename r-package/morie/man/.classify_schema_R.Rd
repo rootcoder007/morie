@@ -8,8 +8,8 @@
 .classify_schema_R(schema, dataset_name)
 }
 \arguments{
-\item{schema}{See Usage.}
-\item{dataset_name}{See Usage.}
+\item{schema}{A list; the body reads \code{$columns} from it.}
+\item{dataset_name}{Passed to \code{morie_classify_variable}.}
 }
 \description{
 list with $columns) into a list of taxonomies.

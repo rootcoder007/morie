@@ -8,7 +8,7 @@
 .ghc_svd(A)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{A matrix; passed to \code{nrow}.}
 }
 \description{
 Part of the lsa_native implementation; see the file header for the source it follows.

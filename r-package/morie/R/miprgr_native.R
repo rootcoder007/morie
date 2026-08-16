@@ -6,13 +6,14 @@
 
 #' Two-phase simplex with Bland\'s rule, maximising c\'x
 #'
-#' Part of the miprgr_native implementation; see the file header for the
+#' A step of the miprgr_native implementation. Called by \code{miprgr_solve_relaxation}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param A See Usage.
-#' @param b See Usage.
-#' @param c See Usage.
-#' @param tol Defaults to \code{1e-09}.
+#' @param A A matrix; indexed by row and column.
+#' @param b A vector; its length is taken and its elements indexed.
+#' @param c A vector; its length is taken.
+#' @param tol Numeric; combined arithmetically in the body. Defaults to \code{1e-09}.
 #' @param max_iter Defaults to \code{20000}.
 #' @return A list with \code{feasible}, \code{x}, \code{value}.
 #' @export
@@ -148,16 +149,17 @@ miprgr_simplex <- function(A, b, c, tol = 1e-9, max_iter = 20000) {
 
 #' miprgr_solve_relaxation
 #'
-#' Part of the miprgr_native implementation; see the file header for the
+#' A step of the miprgr_native implementation. Called by \code{miprgr_branch_and_bound}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param A See Usage.
-#' @param b See Usage.
-#' @param c See Usage.
-#' @param bounds Defaults to \code{list()}.
+#' @param A A matrix; indexed by row and column.
+#' @param b A vector; its length is taken and its elements indexed.
+#' @param c A vector; its length is taken.
+#' @param bounds A vector; its length is taken. Defaults to \code{list()}.
 #' @param n Defaults to \code{NULL}.
-#' @param maximise Defaults to \code{TRUE}.
-#' @param solver Defaults to \code{"simplex"}.
+#' @param maximise A flag; the body branches on it. Defaults to \code{TRUE}.
+#' @param solver Compared against \code{"simplex"}. Defaults to \code{"simplex"}.
 #' @return A list with \code{feasible}, \code{x}, \code{value}, \code{note}.
 #' @export
 miprgr_solve_relaxation <- function(A, b, c, bounds = list(),
@@ -203,10 +205,11 @@ miprgr_solve_relaxation <- function(A, b, c, bounds = list(),
 
 #' miprgr_fractional_variable
 #'
-#' Part of the miprgr_native implementation; see the file header for the
+#' A step of the miprgr_native implementation. Called by \code{miprgr_branch_and_bound}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x A vector; indexed elementwise.
 #' @param integer_vars See Usage.
 #' @param tol Defaults to \code{1e-07}.
 #' @return A list with \code{index}, \code{fractionality}, \code{integral}.
@@ -228,12 +231,13 @@ miprgr_fractional_variable <- function(x, integer_vars, tol = 1e-7) {
 
 #' miprgr_round_relaxation
 #'
-#' Part of the miprgr_native implementation; see the file header for the
+#' A step of the miprgr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
-#' @param A See Usage.
-#' @param b See Usage.
+#' @param A A matrix; indexed by row and column.
+#' @param b A vector; indexed elementwise.
 #' @param integer_vars See Usage.
 #' @return A list with \code{x}, \code{feasible}, \code{violations}, \code{note}.
 #' @export
@@ -253,15 +257,16 @@ miprgr_round_relaxation <- function(x, A, b, integer_vars) {
 
 #' miprgr_enumerate_integer
 #'
-#' Part of the miprgr_native implementation; see the file header for the
+#' A step of the miprgr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param A See Usage.
-#' @param b See Usage.
-#' @param c See Usage.
+#' @param A A matrix; indexed by row and column.
+#' @param b A vector; indexed elementwise.
+#' @param c A vector; its length is taken.
 #' @param integer_vars See Usage.
 #' @param upper Defaults to \code{10}.
-#' @param maximise Defaults to \code{TRUE}.
+#' @param maximise A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{value}, \code{x}, \code{note}.
 #' @export
 miprgr_enumerate_integer <- function(A, b, c, integer_vars, upper = 10,
@@ -303,15 +308,16 @@ miprgr_enumerate_integer <- function(A, b, c, integer_vars, upper = 10,
 
 #' miprgr_branch_and_bound
 #'
-#' Part of the miprgr_native implementation; see the file header for the
+#' A step of the miprgr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param A See Usage.
 #' @param b See Usage.
-#' @param c See Usage.
+#' @param c A vector; its length is taken.
 #' @param integer_vars See Usage.
-#' @param maximise Defaults to \code{TRUE}.
-#' @param prune Defaults to \code{TRUE}.
+#' @param maximise A flag; the body branches on it. Defaults to \code{TRUE}.
+#' @param prune A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param max_nodes Defaults to \code{5000}.
 #' @param solver Defaults to \code{"simplex"}.
 #' @return A list with \code{estimate}, \code{value}, \code{x}, \code{feasible}, \code{nodes}, \code{pruned}, \code{pruning}, \code{max_list_length}, \code{root_bound}, \code{truncated}, \code{method}, \code{note}.
@@ -406,7 +412,8 @@ miprgr_branch_and_bound <- function(A, b, c, integer_vars, maximise = TRUE,
 
 #' miprgr_cheatsheet
 #'
-#' Part of the miprgr_native implementation; see the file header for the
+#' A step of the miprgr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

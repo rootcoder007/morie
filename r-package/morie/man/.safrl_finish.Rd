@@ -8,11 +8,11 @@
 .safrl_finish(step, g, cols, cv, H, delta, lam, nu, feasible, recovery)
 }
 \arguments{
-\item{step}{See Usage.}
-\item{g}{See Usage.}
-\item{cols}{See Usage.}
-\item{cv}{See Usage.}
-\item{H}{See Usage.}
+\item{step}{A vector; indexed elementwise.}
+\item{g}{A vector; its length is taken and its elements indexed.}
+\item{cols}{A vector; its length is taken and its elements indexed.}
+\item{cv}{A vector; indexed elementwise.}
+\item{H}{A vector; indexed elementwise.}
 \item{delta}{See Usage.}
 \item{lam}{See Usage.}
 \item{nu}{See Usage.}

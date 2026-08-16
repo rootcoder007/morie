@@ -76,7 +76,8 @@ NULL
 
 #' .has_survey_pkg
 #'
-#' Part of the weights implementation; see the file header for the
+#' A step of the weights implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return The value of \code{requireNamespace}.

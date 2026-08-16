@@ -8,7 +8,7 @@
 .mafft_norm(vals)
 }
 \arguments{
-\item{vals}{See Usage.}
+\item{vals}{A vector; its length is taken.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

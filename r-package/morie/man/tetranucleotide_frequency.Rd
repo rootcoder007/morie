@@ -10,7 +10,7 @@ tetranucleotide_frequency(seq, kk = 4L, canonical = TRUE)
 \arguments{
 \item{seq}{See Usage.}
 \item{kk}{Defaults to \code{4L}.}
-\item{canonical}{Defaults to \code{TRUE}.}
+\item{canonical}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the metabd_native implementation; see the file header for the source it follows.

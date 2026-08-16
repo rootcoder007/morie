@@ -30,7 +30,8 @@
 
 #' .new_bootstrap_result
 #'
-#' Part of the bootstrap_methods implementation; see the file header for
+#' A step of the bootstrap_methods implementation. Called by \code{block_bootstrap}, \code{bootstrap}, \code{parametric_bootstrap} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param estimate See Usage.
@@ -63,7 +64,8 @@
 
 #' .new_jackknife_result
 #'
-#' Part of the bootstrap_methods implementation; see the file header for
+#' A step of the bootstrap_methods implementation. Called by \code{delete_d_jackknife}, \code{jackknife}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param estimate See Usage.
@@ -92,7 +94,8 @@
 
 #' .new_permutation_test_result
 #'
-#' Part of the bootstrap_methods implementation; see the file header for
+#' A step of the bootstrap_methods implementation. Called by \code{paired_permutation_test}, \code{permutation_test}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param observed_statistic See Usage.
@@ -121,7 +124,8 @@
 
 #' .new_cv_result
 #'
-#' Part of the bootstrap_methods implementation; see the file header for
+#' A step of the bootstrap_methods implementation. Called by \code{.boot_cross_validate}, \code{repeated_cv}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param scores See Usage.
@@ -147,11 +151,12 @@
 # Helper: percentile-of-vector (matches numpy.percentile linear interp).
 #' Helper: percentile-of-vector (matches numpy.percentile linear interp)
 #'
-#' Part of the bootstrap_methods implementation; see the file header for
+#' A step of the bootstrap_methods implementation. Called by \code{.bca_interval}, \code{block_bootstrap}, \code{bootstrap} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
-#' @param p See Usage.
+#' @param p Numeric; combined arithmetically in the body.
 #' @return The value of \code{unname}.
 #' @export
 .pct <- function(x, p) unname(stats::quantile(x, probs = p / 100,
@@ -160,10 +165,11 @@
 # Helper: subset rows of a vector or matrix.
 #' Helper: subset rows of a vector or matrix
 #'
-#' Part of the bootstrap_methods implementation; see the file header for
+#' A step of the bootstrap_methods implementation. Called by \code{.bca_interval}, \code{block_bootstrap}, \code{bootstrap} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param data See Usage.
+#' @param data A matrix; indexed by row and column.
 #' @param idx See Usage.
 #' @return One of two values, depending on the branch taken.
 #' @export
@@ -174,10 +180,11 @@
 
 #' .nrow_like
 #'
-#' Part of the bootstrap_methods implementation; see the file header for
+#' A step of the bootstrap_methods implementation. Called by \code{.bca_interval}, \code{block_bootstrap}, \code{bootstrap} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param data See Usage.
+#' @param data A matrix; passed to \code{nrow}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .nrow_like <- function(data) {
@@ -297,14 +304,15 @@ bootstrap <- function(data, statistic, n_boot = 2000L, ci_level = 0.95,
 # BCa (bias-corrected and accelerated) percentile interval.
 #' BCa (bias-corrected and accelerated) percentile interval
 #'
-#' Part of the bootstrap_methods implementation; see the file header for
+#' A step of the bootstrap_methods implementation. Called by \code{bootstrap}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param data See Usage.
+#' @param data Passed to \code{.nrow_like}.
 #' @param statistic See Usage.
-#' @param boot_stats See Usage.
+#' @param boot_stats Passed to \code{.pct}.
 #' @param original See Usage.
-#' @param ci_level See Usage.
+#' @param ci_level Numeric; combined arithmetically in the body.
 #' @return A list with \code{ci_lo}, \code{ci_hi}, \code{acc}.
 #' @export
 .bca_interval <- function(data, statistic, boot_stats, original, ci_level) {

@@ -10,12 +10,12 @@ memb(target_predict, shadow_data, eval_in, eval_out, train_fn = NULL, attack_tra
 \arguments{
 \item{target_predict}{See Usage.}
 \item{shadow_data}{See Usage.}
-\item{eval_in}{See Usage.}
-\item{eval_out}{See Usage.}
+\item{eval_in}{A vector; indexed elementwise.}
+\item{eval_out}{A vector; indexed elementwise.}
 \item{train_fn}{Defaults to \code{NULL}.}
 \item{attack_train_fn}{Defaults to \code{NULL}.}
 \item{n_shadow}{Defaults to \code{NULL}.}
-\item{sort_features}{Defaults to \code{FALSE}.}
+\item{sort_features}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 \item{threshold}{Defaults to \code{0.5}.}
 }
 \description{

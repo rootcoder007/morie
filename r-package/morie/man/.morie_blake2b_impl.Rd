@@ -8,9 +8,9 @@
 .morie_blake2b_impl(data, outlen, key = NULL)
 }
 \arguments{
-\item{data}{See Usage.}
-\item{outlen}{See Usage.}
-\item{key}{Defaults to \code{NULL}.}
+\item{data}{Passed to \code{.Call}.}
+\item{outlen}{Passed to \code{.Call}.}
+\item{key}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

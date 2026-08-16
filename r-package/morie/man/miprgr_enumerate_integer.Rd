@@ -8,12 +8,12 @@
 miprgr_enumerate_integer(A, b, c, integer_vars, upper = 10, maximise = TRUE)
 }
 \arguments{
-\item{A}{See Usage.}
-\item{b}{See Usage.}
-\item{c}{See Usage.}
+\item{A}{A matrix; indexed by row and column.}
+\item{b}{A vector; indexed elementwise.}
+\item{c}{A vector; its length is taken.}
 \item{integer_vars}{See Usage.}
 \item{upper}{Defaults to \code{10}.}
-\item{maximise}{Defaults to \code{TRUE}.}
+\item{maximise}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the miprgr_native implementation; see the file header for the source it follows.

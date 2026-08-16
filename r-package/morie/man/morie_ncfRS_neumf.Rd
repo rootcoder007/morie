@@ -10,10 +10,10 @@ morie_ncfRS_neumf(p_gmf, q_gmf, p_mlp, q_mlp, Ws, bs, h)
 \arguments{
 \item{p_gmf}{See Usage.}
 \item{q_gmf}{See Usage.}
-\item{p_mlp}{See Usage.}
-\item{q_mlp}{See Usage.}
-\item{Ws}{See Usage.}
-\item{bs}{See Usage.}
+\item{p_mlp}{Passed to \code{morie_ncfRS_mlp_layers}.}
+\item{q_mlp}{Passed to \code{morie_ncfRS_mlp_layers}.}
+\item{Ws}{Passed to \code{morie_ncfRS_mlp_layers}.}
+\item{bs}{Passed to \code{morie_ncfRS_mlp_layers}.}
 \item{h}{See Usage.}
 }
 \description{

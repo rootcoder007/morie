@@ -21,7 +21,7 @@ A numeric value.
 \references{
 ----------
 Koren, Y. (2008) "Factorization Meets the Neighborhood: a
-Multifaceted Collaborative Filtering Model", KDD \\'08, 426-434,
+Multifaceted Collaborative Filtering Model", KDD \'08, 426-434,
 doi:10.1145/1401890.1401944. Sec. 1 and 4, eq. (15).
 
 Koren, Y., Bell, R. & Volinsky, C. (2009) "Matrix Factorization

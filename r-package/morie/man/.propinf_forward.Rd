@@ -8,7 +8,7 @@
 .propinf_forward(net, x)
 }
 \arguments{
-\item{net}{See Usage.}
+\item{net}{A vector; its length is taken and its elements indexed.}
 \item{x}{See Usage.}
 }
 \description{

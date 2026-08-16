@@ -8,7 +8,7 @@
 .scalar(state)
 }
 \arguments{
-\item{state}{See Usage.}
+\item{state}{A vector; indexed elementwise.}
 }
 \description{
 Part of the prtcl_native implementation; see the file header for the source it follows.

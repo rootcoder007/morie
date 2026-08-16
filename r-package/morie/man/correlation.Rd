@@ -13,7 +13,7 @@ correlation(group1, group2, weights1 = NULL, weights2 = NULL, seq_type = "aa", m
 \item{weights1}{Defaults to \code{NULL}.}
 \item{weights2}{Defaults to \code{NULL}.}
 \item{seq_type}{Defaults to \code{"aa"}.}
-\item{method}{Defaults to \code{"fft"}.}
+\item{method}{One of \code{"direct"}, \code{"fft"}. Defaults to \code{"fft"}.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

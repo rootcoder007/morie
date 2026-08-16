@@ -8,9 +8,9 @@
 .potM_loglik(z, sigma, xi)
 }
 \arguments{
-\item{z}{See Usage.}
-\item{sigma}{See Usage.}
-\item{xi}{See Usage.}
+\item{z}{A vector; its length is taken.}
+\item{sigma}{Numeric; passed to \code{log}.}
+\item{xi}{Numeric; passed to \code{abs}.}
 }
 \description{
 Part of the potM_mixedcase_native implementation; see the file header for the source it follows.

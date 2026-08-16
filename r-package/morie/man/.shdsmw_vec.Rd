@@ -8,7 +8,7 @@
 .shdsmw_vec(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A matrix; passed to \code{as.matrix}.}
 }
 \description{
 Part of the shdsmw_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .prsLR_augment(g)
 }
 \arguments{
-\item{g}{See Usage.}
+\item{g}{A list; the body reads \code{$rules}, \code{$start} from it.}
 }
 \description{
 Part of the prsLR_native implementation; see the file header for the source it follows.

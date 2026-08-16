@@ -11,9 +11,9 @@
 #' distance matrix, `n` the sample size, `X`/`y` the design and
 #' response.
 #'
-#' @param log_phi See Usage.
-#' @param D See Usage.
-#' @param n See Usage.
+#' @param log_phi Numeric; passed to \code{exp}.
+#' @param D Numeric; combined arithmetically in the body.
+#' @param n A matrix; passed to \code{diag}.
 #' @param X See Usage.
 #' @param y See Usage.
 #' @return A numeric value.

@@ -11,7 +11,7 @@
 \item{Q}{See Usage.}
 \item{H}{See Usage.}
 \item{Y}{See Usage.}
-\item{iters}{Defaults to \code{60L}.}
+\item{iters}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{60L}.}
 }
 \description{
 Part of the tlctmle_native implementation; see the file header for the source it follows.

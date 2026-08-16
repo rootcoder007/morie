@@ -8,7 +8,7 @@
 .morie_crypto_mlkem768_encaps(pk_sxp)
 }
 \arguments{
-\item{pk_sxp}{See Usage.}
+\item{pk_sxp}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #' SPDX-License-Identifier: AGPL-3.0-or-later
 #'
-#' Part of the ingest_cihi implementation; see the file header for the
+#' A step of the ingest_cihi implementation. Called by \code{morie_ingest_cihi_xlsx}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param path See Usage.

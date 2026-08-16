@@ -10,7 +10,7 @@ group_align(group1, group2, scoring, weights1 = NULL, weights2 = NULL, s_op = 2.
 \arguments{
 \item{group1}{See Usage.}
 \item{group2}{See Usage.}
-\item{scoring}{See Usage.}
+\item{scoring}{A list; the body reads \code{$matrix} from it.}
 \item{weights1}{Defaults to \code{NULL}.}
 \item{weights2}{Defaults to \code{NULL}.}
 \item{s_op}{Defaults to \code{2.4}.}

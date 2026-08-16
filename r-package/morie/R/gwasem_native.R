@@ -292,14 +292,15 @@ morie_gwasem_gc <- function(stats, df = 1) {
 
 #' .gwasem_reml_delta
 #'
-#' Part of the gwasem_native implementation; see the file header for the
+#' A step of the gwasem_native implementation. Called by \code{morie_gwasem_reml}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
-#' @param X See Usage.
-#' @param evals See Usage.
-#' @param evecs See Usage.
-#' @param ml See Usage.
+#' @param y A matrix; passed to \code{\%*\%}.
+#' @param X A matrix; passed to \code{ncol}.
+#' @param evals Numeric; combined arithmetically in the body.
+#' @param evecs A matrix; passed to \code{t}.
+#' @param ml A flag; the body branches on it.
 #' @return A list with \code{delta}, \code{sigma_a2}, \code{sigma_e2}, \code{ll}.
 #' @export
 .gwasem_reml_delta <- function(y, X, evals, evecs, ml) {
@@ -372,10 +373,11 @@ morie_gwasem_gc <- function(stats, df = 1) {
 
 #' .gwasem_norm_sf
 #'
-#' Part of the gwasem_native implementation; see the file header for the
+#' A step of the gwasem_native implementation. Called by \code{morie_gwasem}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param z See Usage.
+#' @param z Numeric; passed to \code{abs}.
 #' @return The value of \code{pnorm}.
 #' @export
 .gwasem_norm_sf <- function(z) {
@@ -384,12 +386,13 @@ morie_gwasem_gc <- function(stats, df = 1) {
 
 #' .gwasem_f_sf
 #'
-#' Part of the gwasem_native implementation; see the file header for the
+#' A step of the gwasem_native implementation. Called by \code{morie_gwasem}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param f See Usage.
-#' @param df1 See Usage.
-#' @param df2 See Usage.
+#' @param f Numeric; combined arithmetically in the body.
+#' @param df1 Numeric; combined arithmetically in the body.
+#' @param df2 Numeric; combined arithmetically in the body.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .gwasem_f_sf <- function(f, df1, df2) {

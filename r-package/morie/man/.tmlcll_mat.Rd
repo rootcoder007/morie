@@ -8,7 +8,7 @@
 .tmlcll_mat(X)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{Optional; may be \code{NULL}. A matrix; passed to \code{dim}.}
 }
 \description{
 Part of the tmlcll_native implementation; see the file header for the source it follows.

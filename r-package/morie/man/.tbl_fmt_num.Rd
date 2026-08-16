@@ -8,9 +8,9 @@
 .tbl_fmt_num(x, digits = 2L, apa = FALSE)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Numeric; passed to \code{abs}.}
 \item{digits}{Defaults to \code{2L}.}
-\item{apa}{Defaults to \code{FALSE}.}
+\item{apa}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{
 Part of the tables_pub implementation; see the file header for the source it follows.

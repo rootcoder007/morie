@@ -9,8 +9,8 @@ morie_sv_dl_insert_size_stats(pairs, orientation = NULL, spread = "mad")
 }
 \arguments{
 \item{pairs}{See Usage.}
-\item{orientation}{Defaults to \code{NULL}.}
-\item{spread}{Defaults to \code{"mad"}.}
+\item{orientation}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
+\item{spread}{One of \code{"mad"}, \code{"sd"}. Defaults to \code{"mad"}.}
 }
 \description{
 Part of the sv_dl_native implementation; see the file header for the source it follows.

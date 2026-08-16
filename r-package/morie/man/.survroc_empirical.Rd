@@ -10,7 +10,7 @@
 \arguments{
 \item{T}{See Usage.}
 \item{E}{See Usage.}
-\item{M}{See Usage.}
+\item{M}{A vector; indexed elementwise.}
 \item{c}{See Usage.}
 \item{t}{See Usage.}
 }

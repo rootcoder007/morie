@@ -9,8 +9,8 @@ snpeff(cds, variants, cds_start = 0, upstream = 5000, downstream = 5000, transcr
 }
 \arguments{
 \item{cds}{See Usage.}
-\item{variants}{See Usage.}
-\item{cds_start}{Defaults to \code{0}.}
+\item{variants}{A vector; its length is taken and its elements indexed.}
+\item{cds_start}{Numeric; combined arithmetically in the body. Defaults to \code{0}.}
 \item{upstream}{Defaults to \code{5000}.}
 \item{downstream}{Defaults to \code{5000}.}
 \item{transcript_len}{Defaults to \code{NULL}.}

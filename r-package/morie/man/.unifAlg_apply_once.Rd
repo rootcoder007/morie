@@ -8,8 +8,8 @@
 .unifAlg_apply_once(t, subst)
 }
 \arguments{
-\item{t}{See Usage.}
-\item{subst}{See Usage.}
+\item{t}{A vector; indexed elementwise.}
+\item{subst}{A vector; indexed elementwise.}
 }
 \description{
 Part of the unifAlg_native implementation; see the file header for the source it follows.

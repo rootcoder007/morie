@@ -8,7 +8,7 @@
 .tlnet1_count_edges(friends)
 }
 \arguments{
-\item{friends}{See Usage.}
+\item{friends}{A vector; its length is taken.}
 }
 \description{
 Part of the tlnet1_native implementation; see the file header for the source it follows.

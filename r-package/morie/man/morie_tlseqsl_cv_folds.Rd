@@ -8,9 +8,9 @@
 morie_tlseqsl_cv_folds(n, V = 10, seed = 0)
 }
 \arguments{
-\item{n}{See Usage.}
-\item{V}{Defaults to \code{10}.}
-\item{seed}{Defaults to \code{0}.}
+\item{n}{A count; the body uses it as \code{seq_len(...)}.}
+\item{V}{A count; the body uses it as \code{vector(...)}. Defaults to \code{10}.}
+\item{seed}{Passed to \code{.ghc_rng}. Defaults to \code{0}.}
 }
 \description{
 Part of the tlseqsl_native implementation; see the file header for the source it follows.

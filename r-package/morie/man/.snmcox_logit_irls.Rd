@@ -8,10 +8,10 @@
 .snmcox_logit_irls(X, y, iters = 60L, ridge = 1e-08, tol = 1e-13)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{iters}{Defaults to \code{60L}.}
-\item{ridge}{Defaults to \code{1e-08}.}
+\item{X}{A matrix; passed to \code{ncol}.}
+\item{y}{Numeric; combined arithmetically in the body.}
+\item{iters}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{60L}.}
+\item{ridge}{Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.}
 \item{tol}{Defaults to \code{1e-13}.}
 }
 \description{

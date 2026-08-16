@@ -8,7 +8,7 @@
 .tps_sp_local_max3x3(F_)
 }
 \arguments{
-\item{F_}{See Usage.}
+\item{F_}{Passed to \code{.tps_sp_roll}.}
 }
 \description{
 Part of the tps_statphysics implementation; see the file header for the source it follows.

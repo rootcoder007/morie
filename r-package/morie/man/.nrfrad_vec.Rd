@@ -8,7 +8,7 @@
 .nrfrad_vec(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Optional; may be \code{NULL}. A list; the body reads \code{$sigma} from it.}
 }
 \description{
 Part of the nrfrad_native implementation; see the file header for the source it follows.

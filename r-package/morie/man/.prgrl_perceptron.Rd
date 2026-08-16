@@ -8,9 +8,9 @@
 .prgrl_perceptron(X, y, order, updates, w0)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{order}{See Usage.}
+\item{X}{A vector; indexed elementwise.}
+\item{y}{A vector; indexed elementwise.}
+\item{order}{A vector; its length is taken and its elements indexed.}
 \item{updates}{See Usage.}
 \item{w0}{See Usage.}
 }

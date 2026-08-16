@@ -8,8 +8,8 @@
 morie_canonical_collection(ag, k = 1)
 }
 \arguments{
-\item{ag}{See Usage.}
-\item{k}{Defaults to \code{1}.}
+\item{ag}{Passed to \code{.prsLR_canonical_collection}.}
+\item{k}{Passed to \code{.prsLR_canonical_collection}. Defaults to \code{1}.}
 }
 \description{
 Part of the prsLR_native implementation; see the file header for the source it follows.

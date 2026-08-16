@@ -18,21 +18,23 @@
 
 #' .airl_log
 #'
-#' Part of the airl_native implementation; see the file header for the
+#' A step of the airl_native implementation. Called by \code{airl}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param floor Defaults to \code{1e-300}.
+#' @param x Numeric; passed to \code{max}.
+#' @param floor Numeric; passed to \code{max}. Defaults to \code{1e-300}.
 #' @return A numeric value.
 #' @export
 .airl_log <- function(x, floor = 1e-300) log(max(x, floor))
 
 #' .airl_key
 #'
-#' Part of the airl_native implementation; see the file header for the
+#' A step of the airl_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param s See Usage.
+#' @param s A vector; its length is taken.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .airl_key <- function(s) {
@@ -42,13 +44,14 @@
 
 #' .airl_prep
 #'
-#' Part of the airl_native implementation; see the file header for the
+#' A step of the airl_native implementation. Called by \code{airl}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param S See Usage.
-#' @param A See Usage.
-#' @param S1 See Usage.
-#' @param LP See Usage.
+#' @param S A vector; its length is taken.
+#' @param A A vector; its length is taken.
+#' @param S1 A vector; its length is taken.
+#' @param LP A vector; its length is taken.
 #' @param name See Usage.
 #' @return A list with \code{S}, \code{A}, \code{S1}, \code{LP}.
 #' @export
@@ -217,10 +220,11 @@ airl <- function(expert_states, expert_actions, expert_next,
 
 #' .airl_key_from_str
 #'
-#' Part of the airl_native implementation; see the file header for the
+#' A step of the airl_native implementation. Called by \code{airl}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param s See Usage.
+#' @param s Character; passed to \code{grepl}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .airl_key_from_str <- function(s) {

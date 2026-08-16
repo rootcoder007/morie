@@ -8,11 +8,11 @@
 nashq_is_saddle(A, B, p, q, tol)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{A matrix; passed to \code{nrow}.}
 \item{B}{See Usage.}
 \item{p}{See Usage.}
 \item{q}{See Usage.}
-\item{tol}{See Usage.}
+\item{tol}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the nashq_native implementation; see the file header for the source it follows.

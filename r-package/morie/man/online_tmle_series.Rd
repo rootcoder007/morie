@@ -10,7 +10,7 @@ online_tmle_series(Y, A, Z, Q_fn, g_fn, target_prob, burn_in = 10)
 \arguments{
 \item{Y}{See Usage.}
 \item{A}{See Usage.}
-\item{Z}{See Usage.}
+\item{Z}{A matrix; indexed by row and column.}
 \item{Q_fn}{See Usage.}
 \item{g_fn}{See Usage.}
 \item{target_prob}{See Usage.}

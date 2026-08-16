@@ -8,8 +8,8 @@
 .tlroad_plugin(Q1, Q0)
 }
 \arguments{
-\item{Q1}{See Usage.}
-\item{Q0}{See Usage.}
+\item{Q1}{Passed to \code{.tlroad_vec}.}
+\item{Q0}{Passed to \code{.tlroad_vec}.}
 }
 \description{
 Part of the tlroad_native implementation; see the file header for the source it follows.

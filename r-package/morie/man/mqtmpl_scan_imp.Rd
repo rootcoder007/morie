@@ -8,10 +8,10 @@
 mqtmpl_scan_imp(y, markers, positions, step, n_imp, error_rate, seed)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{markers}{See Usage.}
-\item{positions}{See Usage.}
-\item{step}{See Usage.}
+\item{y}{A vector; its length is taken.}
+\item{markers}{A vector; its length is taken and its elements indexed.}
+\item{positions}{A vector; its length is taken and its elements indexed.}
+\item{step}{Numeric; combined arithmetically in the body.}
 \item{n_imp}{See Usage.}
 \item{error_rate}{See Usage.}
 \item{seed}{See Usage.}

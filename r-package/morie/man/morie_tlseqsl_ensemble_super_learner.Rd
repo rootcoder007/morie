@@ -8,13 +8,13 @@
 morie_tlseqsl_ensemble_super_learner(X, y, library, V = 10, loss = "squared", seed = 0, grid = 21)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{library}{See Usage.}
-\item{V}{Defaults to \code{10}.}
-\item{loss}{Defaults to \code{"squared"}.}
-\item{seed}{Defaults to \code{0}.}
-\item{grid}{Defaults to \code{21}.}
+\item{X}{Passed to \code{morie_tlseqsl_discrete_super_learner}.}
+\item{y}{Passed to \code{morie_tlseqsl_discrete_super_learner}.}
+\item{library}{Passed to \code{morie_tlseqsl_discrete_super_learner}.}
+\item{V}{Passed to \code{morie_tlseqsl_discrete_super_learner}. Defaults to \code{10}.}
+\item{loss}{Passed to \code{morie_tlseqsl_discrete_super_learner}. Defaults to \code{"squared"}.}
+\item{seed}{Passed to \code{morie_tlseqsl_discrete_super_learner}. Defaults to \code{0}.}
+\item{grid}{Numeric; combined arithmetically in the body. Defaults to \code{21}.}
 }
 \description{
 Part of the tlseqsl_native implementation; see the file header for the source it follows.

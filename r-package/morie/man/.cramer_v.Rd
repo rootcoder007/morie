@@ -8,7 +8,7 @@
 .cramer_v(tbl)
 }
 \arguments{
-\item{tbl}{See Usage.}
+\item{tbl}{A matrix; passed to \code{dim}.}
 }
 \description{
 Part of the mrm_otis implementation; see the file header for the source it follows.

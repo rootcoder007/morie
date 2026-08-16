@@ -9,8 +9,8 @@ univariate_mcd(values, h = NULL, consistent = TRUE)
 }
 \arguments{
 \item{values}{See Usage.}
-\item{h}{Defaults to \code{NULL}.}
-\item{consistent}{Defaults to \code{TRUE}.}
+\item{h}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
+\item{consistent}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the robpca_native implementation; see the file header for the source it follows.

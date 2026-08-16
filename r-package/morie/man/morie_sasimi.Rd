@@ -10,7 +10,7 @@ morie_sasimi(fp_a, fp_b, coefficient = "tanimoto", alpha = NULL, beta = NULL)
 \arguments{
 \item{fp_a}{See Usage.}
 \item{fp_b}{See Usage.}
-\item{coefficient}{Defaults to \code{"tanimoto"}.}
+\item{coefficient}{Passed to \code{.sasimi_coef}. Defaults to \code{"tanimoto"}.}
 \item{alpha}{Defaults to \code{NULL}.}
 \item{beta}{Defaults to \code{NULL}.}
 }

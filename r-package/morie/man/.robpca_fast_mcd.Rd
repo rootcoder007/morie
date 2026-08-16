@@ -8,10 +8,10 @@
 .robpca_fast_mcd(rows, h, n_start = 250L, seed = 17L)
 }
 \arguments{
-\item{rows}{See Usage.}
+\item{rows}{A matrix; indexed by row and column.}
 \item{h}{See Usage.}
 \item{n_start}{Defaults to \code{250L}.}
-\item{seed}{Defaults to \code{17L}.}
+\item{seed}{Numeric; combined arithmetically in the body. Defaults to \code{17L}.}
 }
 \description{
 Part of the robpca_native implementation; see the file header for the source it follows.

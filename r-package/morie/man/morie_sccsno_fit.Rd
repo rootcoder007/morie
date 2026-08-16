@@ -9,11 +9,11 @@ morie_sccsno_fit(cases, risk_periods, age_breaks = c(), iters = 100, tol = 1e-10
 }
 \arguments{
 \item{cases}{See Usage.}
-\item{risk_periods}{See Usage.}
+\item{risk_periods}{Passed to \code{.sccsno_rp}.}
 \item{age_breaks}{Defaults to \code{c()}.}
 \item{iters}{Defaults to \code{100}.}
 \item{tol}{Defaults to \code{1e-10}.}
-\item{ridge}{Defaults to \code{1e-10}.}
+\item{ridge}{A matrix; passed to \code{diag}. Defaults to \code{1e-10}.}
 }
 \description{
 Part of the sccsno_native implementation; see the file header for the source it follows.

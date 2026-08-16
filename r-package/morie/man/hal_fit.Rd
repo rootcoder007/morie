@@ -15,7 +15,7 @@ hal_fit(X, y, lam = 1, iters = 2000L, step = 0.05, max_order = 2L, knots = NULL,
 \item{step}{Defaults to \code{0.05}.}
 \item{max_order}{Defaults to \code{2L}.}
 \item{knots}{Defaults to \code{NULL}.}
-\item{intercept}{Defaults to \code{TRUE}.}
+\item{intercept}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the tlhal_native implementation; see the file header for the source it follows.

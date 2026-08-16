@@ -9,11 +9,11 @@ nashq_run(states, actions, step, rewards, gamma = 0.9, alpha = 0.5, epsilon = 0.
 }
 \arguments{
 \item{states}{See Usage.}
-\item{actions}{See Usage.}
+\item{actions}{A vector; its length is taken and its elements indexed.}
 \item{step}{See Usage.}
 \item{rewards}{See Usage.}
-\item{gamma}{Defaults to \code{0.9}.}
-\item{alpha}{Defaults to \code{0.5}.}
+\item{gamma}{Numeric; combined arithmetically in the body. Defaults to \code{0.9}.}
+\item{alpha}{Numeric; combined arithmetically in the body. Defaults to \code{0.5}.}
 \item{epsilon}{Defaults to \code{0.1}.}
 \item{episodes}{Defaults to \code{500}.}
 \item{horizon}{Defaults to \code{50}.}

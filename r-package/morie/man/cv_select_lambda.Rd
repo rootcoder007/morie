@@ -8,7 +8,7 @@
 cv_select_lambda(X, y, lambdas, V = 5L, seed = 0L, ...)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
 \item{y}{See Usage.}
 \item{lambdas}{See Usage.}
 \item{V}{Defaults to \code{5L}.}

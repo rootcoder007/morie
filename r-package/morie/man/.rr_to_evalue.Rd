@@ -8,7 +8,7 @@
 .rr_to_evalue(rr)
 }
 \arguments{
-\item{rr}{See Usage.}
+\item{rr}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the sensitivity implementation; see the file header for the source it follows.

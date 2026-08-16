@@ -8,8 +8,8 @@
 .wrd2v_scores(O, h)
 }
 \arguments{
-\item{O}{See Usage.}
-\item{h}{See Usage.}
+\item{O}{A matrix; passed to \code{\%*\%}.}
+\item{h}{A matrix; passed to \code{\%*\%}.}
 }
 \description{
 Part of the wrd2v_native implementation; see the file header for the source it follows.

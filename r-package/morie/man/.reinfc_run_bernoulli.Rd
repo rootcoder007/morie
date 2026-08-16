@@ -9,14 +9,14 @@
 }
 \arguments{
 \item{reward_fn}{See Usage.}
-\item{pv}{See Usage.}
-\item{baseline}{See Usage.}
-\item{mode}{See Usage.}
-\item{rho}{See Usage.}
-\item{gamma}{See Usage.}
-\item{k}{See Usage.}
-\item{trials}{See Usage.}
-\item{rng}{See Usage.}
+\item{pv}{A vector; its length is taken.}
+\item{baseline}{Passed to \code{.reinfc_running_baseline}.}
+\item{mode}{Compared against \code{"episodic"}.}
+\item{rho}{Numeric; combined arithmetically in the body.}
+\item{gamma}{Passed to \code{.reinfc_running_baseline}.}
+\item{k}{A count; the body uses it as \code{seq_len(...)}.}
+\item{trials}{A count; the body uses it as \code{seq_len(...)}.}
+\item{rng}{Passed to \code{.ghc_unif}.}
 }
 \description{
 Part of the reinfc_native implementation; see the file header for the source it follows.

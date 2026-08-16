@@ -8,9 +8,9 @@
 morie_tloilr(Q1, Q0, kappa)
 }
 \arguments{
-\item{Q1}{See Usage.}
-\item{Q0}{See Usage.}
-\item{kappa}{See Usage.}
+\item{Q1}{Passed to \code{.tloilr_constrained_value}.}
+\item{Q0}{Passed to \code{.tloilr_constrained_value}.}
+\item{kappa}{Passed to \code{.tloilr_constrained_value}.}
 }
 \description{
 Part of the tloilr_native implementation; see the file header for the source it follows.

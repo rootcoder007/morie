@@ -8,8 +8,8 @@
 morie_twoT_streaming_frequency(hits, n_steps, alpha = 0.05, init = NULL)
 }
 \arguments{
-\item{hits}{See Usage.}
-\item{n_steps}{See Usage.}
+\item{hits}{Passed to \code{.twoT_get_items}.}
+\item{n_steps}{A count; the body uses it as \code{seq_len(...)}.}
 \item{alpha}{Defaults to \code{0.05}.}
 \item{init}{Defaults to \code{NULL}.}
 }

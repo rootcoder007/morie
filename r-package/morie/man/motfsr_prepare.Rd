@@ -9,7 +9,7 @@ motfsr_prepare(sequences, w, alphabet)
 }
 \arguments{
 \item{sequences}{See Usage.}
-\item{w}{See Usage.}
+\item{w}{Numeric; combined arithmetically in the body.}
 \item{alphabet}{See Usage.}
 }
 \description{

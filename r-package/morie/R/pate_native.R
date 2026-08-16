@@ -22,7 +22,7 @@
 #' in which case the argmax is the vote).
 #'
 #' @param teacher_predicts See Usage.
-#' @param rows See Usage.
+#' @param rows A vector; its length is taken.
 #' @param n_classes Defaults to \code{NULL}.
 #' @return The value of \code{split}.
 #' @export
@@ -65,7 +65,7 @@ teacher_votes <- function(teacher_predicts, rows, n_classes = NULL) {
 #' Laplace draw per class with scale 1/gamma.
 #'
 #' @param counts See Usage.
-#' @param gamma See Usage.
+#' @param gamma Numeric; combined arithmetically in the body.
 #' @param seed Defaults to \code{0}.
 #' @return A numeric value.
 #' @export
@@ -87,9 +87,9 @@ noisy_argmax <- function(counts, gamma, seed = 0) {
 #' composition of T queries, each (2 gamma, 0)-DP, without looking at
 #' the votes.
 #'
-#' @param T See Usage.
-#' @param gamma See Usage.
-#' @param delta See Usage.
+#' @param T Numeric; combined arithmetically in the body.
+#' @param gamma Numeric; combined arithmetically in the body.
+#' @param delta Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 epsilon_data_independent <- function(T, gamma, delta) {
@@ -111,7 +111,7 @@ epsilon_data_independent <- function(T, gamma, delta) {
 #' bound, so the raw value is also returned.
 #'
 #' @param counts See Usage.
-#' @param gamma See Usage.
+#' @param gamma Numeric; combined arithmetically in the body.
 #' @return A list with \code{bound}, \code{raw}.
 #' @export
 lemma4_bound <- function(counts, gamma) {
@@ -137,9 +137,9 @@ lemma4_bound <- function(counts, gamma) {
 #' condition fails. The accountant must fall back on Theorem 2 outside
 #' that range.
 #'
-#' @param q See Usage.
-#' @param gamma See Usage.
-#' @param l See Usage.
+#' @param q Numeric; combined arithmetically in the body.
+#' @param gamma Numeric; combined arithmetically in the body.
+#' @param l Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 theorem3_moment <- function(q, gamma, l) {
@@ -157,14 +157,15 @@ theorem3_moment <- function(q, gamma, l) {
 # Compose the per-query moment bounds and convert to (eps, delta).
 #' Compose the per-query moment bounds and convert to (eps, delta)
 #'
-#' Part of the pate_native implementation; see the file header for the
+#' A step of the pate_native implementation. Called by \code{pate}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param vote_counts See Usage.
-#' @param gamma See Usage.
-#' @param delta See Usage.
+#' @param vote_counts A vector; its length is taken.
+#' @param gamma Numeric; combined arithmetically in the body.
+#' @param delta Numeric; combined arithmetically in the body.
 #' @param lambdas Defaults to \code{NULL}.
-#' @param data_dependent Defaults to \code{TRUE}.
+#' @param data_dependent A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{epsilon}, \code{lambda}, \code{alpha}, \code{delta}, \code{queries}, \code{used}.
 #' @export
 moments_accountant <- function(vote_counts, gamma, delta,
@@ -278,7 +279,8 @@ pate <- function(teacher_predicts, queries, gamma = 0.05, delta = 1e-5,
 
 #' .pate_cheatsheet
 #'
-#' Part of the pate_native implementation; see the file header for the
+#' A step of the pate_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

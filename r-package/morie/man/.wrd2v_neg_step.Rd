@@ -8,12 +8,12 @@
 .wrd2v_neg_step(st, c, j, size, lr, k, draw_noise)
 }
 \arguments{
-\item{st}{See Usage.}
+\item{st}{A list; the body reads \code{$O}, \code{$W} from it.}
 \item{c}{See Usage.}
 \item{j}{See Usage.}
-\item{size}{See Usage.}
-\item{lr}{See Usage.}
-\item{k}{See Usage.}
+\item{size}{A count; the body uses it as \code{numeric(...)}.}
+\item{lr}{Numeric; combined arithmetically in the body.}
+\item{k}{A count; the body uses it as \code{seq_len(...)}.}
 \item{draw_noise}{See Usage.}
 }
 \description{

@@ -8,15 +8,15 @@
 morie_svdd(X, C = NULL, nu = NULL, kernel = "rbf", gamma = NULL, degree = 3, coef0 = 1, tol = 1e-10, max_iter = 20000)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{C}{Defaults to \code{NULL}.}
-\item{nu}{Defaults to \code{NULL}.}
-\item{kernel}{Defaults to \code{"rbf"}.}
-\item{gamma}{Defaults to \code{NULL}.}
-\item{degree}{Defaults to \code{3}.}
-\item{coef0}{Defaults to \code{1}.}
-\item{tol}{Defaults to \code{1e-10}.}
-\item{max_iter}{Defaults to \code{20000}.}
+\item{X}{Passed to \code{.morie_svdd_mat}.}
+\item{C}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
+\item{nu}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
+\item{kernel}{One of \code{"linear"}, \code{"poly"}, \code{"rbf"}. Defaults to \code{"rbf"}.}
+\item{gamma}{Optional; may be \code{NULL}. Passed to \code{.morie_svdd_kernel_matrix}.}
+\item{degree}{Passed to \code{.morie_svdd_kernel_matrix}. Defaults to \code{3}.}
+\item{coef0}{Passed to \code{.morie_svdd_kernel_matrix}. Defaults to \code{1}.}
+\item{tol}{Passed to \code{.morie_svdd_solve_dual}. Defaults to \code{1e-10}.}
+\item{max_iter}{Passed to \code{.morie_svdd_solve_dual}. Defaults to \code{20000}.}
 }
 \description{
 Part of the svdd_native implementation; see the file header for the source it follows.

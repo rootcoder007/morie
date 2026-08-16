@@ -10,8 +10,8 @@
 \arguments{
 \item{x}{See Usage.}
 \item{y}{See Usage.}
-\item{gx}{See Usage.}
-\item{gy}{See Usage.}
+\item{gx}{A vector; its length is taken.}
+\item{gy}{A vector; its length is taken.}
 }
 \description{
 Part of the tps_statphysics implementation; see the file header for the source it follows.

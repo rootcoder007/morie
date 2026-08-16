@@ -11,7 +11,7 @@
 \item{score_positive}{See Usage.}
 \item{negative_scorer}{See Usage.}
 \item{n_labels}{See Usage.}
-\item{rng}{See Usage.}
+\item{rng}{Passed to \code{.ghc_unif}.}
 \item{margin}{Defaults to \code{1}.}
 \item{max_draws}{Defaults to \code{NULL}.}
 }

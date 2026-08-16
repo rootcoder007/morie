@@ -16,7 +16,7 @@
 \item{...}{Passed through.}
 }
 \description{
-Part of the fairness_predpol implementation; see the file header for the source it follows.
+A step of the fairness_predpol implementation. Called by \code{morie_fairness_predpol_calibration_audit}, \code{morie_fairness_predpol_score_disparity}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{out}, as built in the body.

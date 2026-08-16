@@ -8,10 +8,10 @@
 synthesize_noisy(X, fraction = 0.1, feature_values = NULL, seed = 0)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A vector; indexed elementwise.}
 \item{fraction}{Defaults to \code{0.1}.}
 \item{feature_values}{Defaults to \code{NULL}.}
-\item{seed}{Defaults to \code{0}.}
+\item{seed}{Passed to \code{.memb_rng}. Defaults to \code{0}.}
 }
 \description{
 Part of the memb_native implementation; see the file header for the source it follows.

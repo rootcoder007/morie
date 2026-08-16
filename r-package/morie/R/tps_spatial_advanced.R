@@ -38,7 +38,8 @@ NULL
 
 #' .tps_adv_result
 #'
-#' Part of the tps_spatial_advanced implementation; see the file header
+#' A step of the tps_spatial_advanced implementation. Called by \code{morie_tps_bivariate_moran}, \code{morie_tps_dbscan_clusters}, \code{morie_tps_getis_ord_g_star} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param title See Usage.
@@ -70,10 +71,11 @@ NULL
 
 #' .tps_coords
 #'
-#' Part of the tps_spatial_advanced implementation; see the file header
+#' A step of the tps_spatial_advanced implementation. Called by \code{morie_tps_dbscan_clusters}, \code{morie_tps_ripley_k}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param df See Usage.
+#' @param df A matrix; indexed by row and column.
 #' @param lat_col See Usage.
 #' @param lon_col See Usage.
 #' @return A matrix, from \code{as.matrix}.
@@ -91,13 +93,14 @@ NULL
 
 #' .tps_haversine_km
 #'
-#' Part of the tps_spatial_advanced implementation; see the file header
+#' A step of the tps_spatial_advanced implementation. Called by \code{morie_tps_bivariate_moran}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param lat1 See Usage.
-#' @param lon1 See Usage.
-#' @param lat2 See Usage.
-#' @param lon2 See Usage.
+#' @param lat1 Numeric; combined arithmetically in the body.
+#' @param lon1 Numeric; combined arithmetically in the body.
+#' @param lat2 Numeric; combined arithmetically in the body.
+#' @param lon2 Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .tps_haversine_km <- function(lat1, lon1, lat2, lon2) {
@@ -112,11 +115,12 @@ NULL
 
 #' .tps_knn_idx
 #'
-#' Part of the tps_spatial_advanced implementation; see the file header
+#' A step of the tps_spatial_advanced implementation. Called by \code{morie_tps_getis_ord_g_star}, \code{morie_tps_polygon_morans_i}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param coords See Usage.
-#' @param k See Usage.
+#' @param coords A matrix; indexed by row and column.
+#' @param k A count; the body uses it as \code{seq_len(...)}.
 #' @return The value of \code{idx}, as built in the body.
 #' @export
 .tps_knn_idx <- function(coords, k) {
@@ -555,7 +559,8 @@ morie_tps_dbscan_clusters <- function(df,
 #' `polygons` is an sf object with a geometry column. Use sf if
 #' available
 #'
-#' Part of the tps_spatial_advanced implementation; see the file header
+#' A step of the tps_spatial_advanced implementation. Called by \code{morie_tps_bivariate_moran}, \code{morie_tps_polygon_morans_i}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param polygons See Usage.

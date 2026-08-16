@@ -8,10 +8,10 @@
 morie_survnnr_concordance(fit_result, X, times, events)
 }
 \arguments{
-\item{fit_result}{See Usage.}
-\item{X}{See Usage.}
-\item{times}{See Usage.}
-\item{events}{See Usage.}
+\item{fit_result}{Passed to \code{morie_survnnr_risk_score}.}
+\item{X}{Passed to \code{morie_survnnr_risk_score}.}
+\item{times}{Passed to \code{.survnnr_c_index}.}
+\item{events}{Passed to \code{.survnnr_c_index}.}
 }
 \description{
 Part of the survnnr_native implementation; see the file header for the source it follows.

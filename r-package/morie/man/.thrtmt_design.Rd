@@ -8,8 +8,8 @@
 .thrtmt_design(rows, n)
 }
 \arguments{
-\item{rows}{See Usage.}
-\item{n}{See Usage.}
+\item{rows}{A vector; its length is taken and its elements indexed.}
+\item{n}{A count; the body uses it as \code{matrix(...)}.}
 }
 \description{
 Part of the thrtmt_native implementation; see the file header for the source it follows.

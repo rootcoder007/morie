@@ -8,8 +8,8 @@
 .mfovsm_quantile7(x, q)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{q}{See Usage.}
+\item{x}{A vector; its length is taken and its elements indexed.}
+\item{q}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the mfovsm_native implementation; see the file header for the source it follows.

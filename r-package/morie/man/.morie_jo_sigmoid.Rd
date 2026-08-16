@@ -8,7 +8,7 @@
 .morie_jo_sigmoid(t)
 }
 \arguments{
-\item{t}{See Usage.}
+\item{t}{Numeric; passed to \code{exp}.}
 }
 \description{
 Part of the ts_joseph implementation; see the file header for the source it follows.

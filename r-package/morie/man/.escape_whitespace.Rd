@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{text}{See Usage.}
-\item{add_prefix}{Defaults to \code{TRUE}.}
+\item{add_prefix}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the sentpc_native implementation; see the file header for the source it follows.

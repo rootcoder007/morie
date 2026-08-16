@@ -8,7 +8,7 @@
 morie_prsPEG_plus(e)
 }
 \arguments{
-\item{e}{See Usage.}
+\item{e}{Passed to \code{morie_prsPEG_seq}.}
 }
 \description{
 Part of the prsPEG_native implementation; see the file header for the source it follows.

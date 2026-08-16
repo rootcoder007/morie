@@ -8,8 +8,8 @@
 resolve_synthetic_name_map(name_map, profile)
 }
 \arguments{
-\item{name_map}{See Usage.}
-\item{profile}{See Usage.}
+\item{name_map}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
+\item{profile}{Passed to \code{morie_default_synthetic_name_map}.}
 }
 \description{
 Part of the synthetic implementation; see the file header for the source it follows.

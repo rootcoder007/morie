@@ -8,10 +8,10 @@
 morie_unclr_lr_impute(X, dl, n_iter, draw = NULL)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
 \item{dl}{See Usage.}
 \item{n_iter}{See Usage.}
-\item{draw}{Defaults to \code{NULL}.}
+\item{draw}{Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.}
 }
 \description{
 Part of the unclr implementation; see the file header for the source it follows.

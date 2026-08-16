@@ -8,11 +8,11 @@
 .fluctuate(outcome, off, H, rows, iters = 100L, tol = 1e-12)
 }
 \arguments{
-\item{outcome}{See Usage.}
-\item{off}{See Usage.}
-\item{H}{See Usage.}
-\item{rows}{See Usage.}
-\item{iters}{Defaults to \code{100L}.}
+\item{outcome}{A vector; indexed elementwise.}
+\item{off}{A vector; indexed elementwise.}
+\item{H}{A vector; indexed elementwise.}
+\item{rows}{A vector; its length is taken.}
+\item{iters}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{100L}.}
 \item{tol}{Defaults to \code{1e-12}.}
 }
 \description{

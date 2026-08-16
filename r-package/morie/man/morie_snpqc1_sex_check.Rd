@@ -8,7 +8,7 @@
 morie_snpqc1_sex_check(x_genotypes, reported_sex = NULL, male_min = 0.8, female_max = 0.2)
 }
 \arguments{
-\item{x_genotypes}{See Usage.}
+\item{x_genotypes}{Passed to \code{.snpqc1_check}.}
 \item{reported_sex}{Defaults to \code{NULL}.}
 \item{male_min}{Defaults to \code{0.8}.}
 \item{female_max}{Defaults to \code{0.2}.}

@@ -8,7 +8,7 @@
 .stahdo_median(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{Numeric; passed to \code{sort}.}
 }
 \description{
 Part of the stahdo_native implementation; see the file header for the source it follows.

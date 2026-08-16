@@ -8,9 +8,9 @@
 .ipw_dta(y, w, e, keep, weights)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{w}{See Usage.}
-\item{e}{See Usage.}
+\item{y}{A vector; its length is taken and its elements indexed.}
+\item{w}{A vector; indexed elementwise.}
+\item{e}{A vector; indexed elementwise.}
 \item{keep}{See Usage.}
 \item{weights}{See Usage.}
 }
