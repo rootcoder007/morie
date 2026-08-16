@@ -19,3 +19,6 @@ morie_gru4r_recall(ranked, target, kk = 20)
 0 or 1.
 }
 \keyword{internal}
+\examples{
+morie_gru4r_recall(ranked = c(1, 2, 3, 4, 5, 6, 7, 8), target = 5L)
+}

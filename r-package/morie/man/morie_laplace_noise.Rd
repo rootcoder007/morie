@@ -18,3 +18,6 @@ One draw from Lap(0, b) by inverse transform
 A numeric value.
 }
 \keyword{internal}
+\examples{
+morie_laplace_noise(scale = TRUE, rng = list(a = 1, b = 2))
+}

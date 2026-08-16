@@ -20,3 +20,6 @@ At image-diffusion scales the personal history is destroyed. The \code{scale} kn
 A list with \code{beta}, \code{alpha_bar}, \code{T},   \code{scale}, \code{signal_retained}, \code{note}.
 }
 \keyword{internal}
+\examples{
+noise_schedule(T = 5L)
+}

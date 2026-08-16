@@ -17,3 +17,6 @@ Wrap an angle to \code{[-pi, pi)}
 Numeric scalar in \code{[-pi, pi)}.
 }
 \keyword{internal}
+\examples{
+morie_tqang_wrap_angle(theta = 0.5)
+}

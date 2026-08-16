@@ -23,3 +23,6 @@ the sample proportion as \code{estimate}, and sample size n.
 \description{
 One-sample z-test for a proportion
 }
+\examples{
+one_proportion_ztest(count = c(1, 2, 3, 4, 5, 6, 7, 8), nobs = 5L)
+}

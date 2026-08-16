@@ -24,3 +24,6 @@ The value of \code{theta}, as built in the body.
 Base R only.
 }
 \keyword{internal}
+\examples{
+motfsr_uniform_theta(w = 5L, L = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

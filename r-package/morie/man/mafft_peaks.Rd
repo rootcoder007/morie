@@ -19,3 +19,6 @@ Part of the mafft_native implementation; see the file header for the source it f
 The value of \code{[}.
 }
 \keyword{internal}
+\examples{
+mafft_peaks(lags = 5L, c = c(1, 2, 3, 4, 5, 6, 7, 8), n_peaks = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

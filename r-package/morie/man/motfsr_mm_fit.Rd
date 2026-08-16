@@ -32,3 +32,6 @@ A list with \code{theta}, \code{motif}, \code{background}, \code{lambda1}, \code
 Base R only.
 }
 \keyword{internal}
+\examples{
+motfsr_mm_fit(sequences = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), w = 5L)
+}

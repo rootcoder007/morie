@@ -18,3 +18,6 @@ Part of the sarima_native implementation; see the file header for the source it 
 A list with \code{variance}, \code{se}, \code{white_noise_se}.
 }
 \keyword{internal}
+\examples{
+bartlett_se(rho = 0.5, n = 5L)
+}

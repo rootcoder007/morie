@@ -14,3 +14,6 @@ Equation 2.3, kernel HAC on already-prewhitened vectors
 A numeric value.
 }
 \keyword{internal}
+\examples{
+kernel_hac(v = c(1, 2, 3, 4, 5, 6, 7, 8), bandwidth = 0.5)
+}

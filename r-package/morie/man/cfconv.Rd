@@ -21,3 +21,6 @@ Part of the schN_native implementation; see the file header for the source it fo
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+cfconv(X = 5L, R = 5L, filter_net = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

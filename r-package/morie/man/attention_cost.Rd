@@ -21,3 +21,6 @@ attention over a look-back of L costs L^2 per channel. Patching reduces the sequ
 A list with \code{n_patches}, \code{pointwise}, \code{patched}, \code{reduction}, \code{stride}, \code{patch_len}, \code{note}.
 }
 \keyword{internal}
+\examples{
+attention_cost(L = 5L, patch_len = 5L)
+}

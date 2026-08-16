@@ -26,3 +26,6 @@ The value of \code{seq.int}.
 Base R only.
 }
 \keyword{internal}
+\examples{
+momento_task_mask(n_patches = 5L)
+}

@@ -20,3 +20,6 @@ Interval / ratio columns get mean/sd/min/q25/median/q75/max; nominal
 / ordinal columns get a \code{top_counts} list of value -> count for the
 top ten levels.
 }
+\examples{
+morie_dataset_summarize_column(x = c(1, 2, 3, 4, 5, 6, 7, 8), level = 0.5)
+}

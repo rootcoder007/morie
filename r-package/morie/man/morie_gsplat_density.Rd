@@ -22,3 +22,6 @@ Large positional gradient with a small Gaussian means under-reconstruction (clon
 A list with \code{clone}, \code{split}, \code{prune},   \code{n_before} and \code{n_after}.
 }
 \keyword{internal}
+\examples{
+morie_gsplat_density(gradients = c(1, 2, 3, 4, 5, 6, 7, 8), scales = c(1, 2, 3, 4, 5, 6, 7, 8), opacities = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

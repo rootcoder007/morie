@@ -19,3 +19,6 @@ condition fails. The accountant must fall back on Theorem 2 outside that range.
 A numeric value.
 }
 \keyword{internal}
+\examples{
+theorem3_moment(q = 0.5, gamma = 0.5, l = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

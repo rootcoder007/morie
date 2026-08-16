@@ -14,3 +14,6 @@ Train a BPE model: merge the most frequent adjacent pair greedily
 A list with \code{merges}, \code{vocab}, \code{vocab_size}, \code{requested}, \code{algorithm}, \code{note}.
 }
 \keyword{internal}
+\examples{
+train_bpe(corpus = c(1, 2, 3, 4, 5, 6, 7, 8), vocab_size = 5L)
+}

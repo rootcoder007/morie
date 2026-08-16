@@ -14,3 +14,6 @@ Cost model: single-key vs envelope rotation
 A list with \code{single_key_bytes}, \code{envelope_kek_bytes}, \code{ratio}, \code{records_touched_single}, \code{records_touched_envelope}, \code{note}.
 }
 \keyword{internal}
+\examples{
+rotation_cost(n_records = 5L, mean_record_bytes = 5L)
+}

@@ -18,3 +18,6 @@ Utility = efficacy per person-day in quarantine (eq. 4)
 Numeric.
 }
 \keyword{internal}
+\examples{
+utility(efficacy = c(1, 2, 3, 4, 5, 6, 7, 8), days_in_quarantine = 5L)
+}

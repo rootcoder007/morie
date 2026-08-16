@@ -14,3 +14,6 @@ Tukey-Hanning kernel
 The value of \code{if}.
 }
 \keyword{internal}
+\examples{
+tukey_hanning_kernel(x = 5L)
+}

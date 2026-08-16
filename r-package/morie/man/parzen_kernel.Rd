@@ -14,3 +14,6 @@ Parzen kernel
 The terminal expression of the body.
 }
 \keyword{internal}
+\examples{
+parzen_kernel(x = 5L)
+}

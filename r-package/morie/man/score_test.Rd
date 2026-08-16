@@ -17,3 +17,6 @@ A \code{morie_specification_test}.
 \description{
 Score (Lagrange multiplier) test
 }
+\examples{
+score_test(score_vector = 5L, information_matrix = 5L)
+}
