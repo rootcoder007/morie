@@ -1,0 +1,30 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{motfsr_theta_from_subsequence}
+\alias{motfsr_theta_from_subsequence}
+\title{motfsr_theta_from_subsequence}
+\usage{
+motfsr_theta_from_subsequence(coded, i, j, w, L, mu, weight)
+}
+\arguments{
+\item{coded}{See Usage.}
+\item{i}{See Usage.}
+\item{j}{See Usage.}
+\item{w}{See Usage.}
+\item{L}{See Usage.}
+\item{mu}{See Usage.}
+\item{weight}{See Usage.}
+}
+\description{
+Part of the motfsr_native implementation; see the file header for the source it follows.
+}
+\value{
+The value of \code{theta}, as built in the body.
+}
+\references{
+  Bailey & Elkan (1994) ISMB-94, 28-36.
+  Bailey & Elkan (1995) ISMB-95, 21-29.
+Base R only.
+}
+\keyword{internal}

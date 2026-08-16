@@ -17,17 +17,44 @@
 offlrl_variants <- c("H", "rho", "mu")
 offlrl_backups <- c("max", "pi")
 
+#' offlrl_logsumexp
+#'
+#' Part of the offlrl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param v See Usage.
+#' @return A numeric value.
+#' @export
 offlrl_logsumexp <- function(v) {
   m <- max(v)
   m + log(sum(exp(v - m)))
 }
 
+#' offlrl_softmax
+#'
+#' Part of the offlrl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param v See Usage.
+#' @return A numeric value.
+#' @export
 offlrl_softmax <- function(v) {
   m <- max(v)
   e <- exp(v - m)
   e / sum(e)
 }
 
+#' offlrl_as_dist
+#'
+#' Part of the offlrl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param d See Usage.
+#' @param S See Usage.
+#' @param A See Usage.
+#' @param name See Usage.
+#' @return A list with \code{matrix}, \code{lookup}.
+#' @export
 offlrl_as_dist <- function(d, S, A, name) {
   if (is.null(d)) return(NULL)
   out <- list()
@@ -52,10 +79,30 @@ offlrl_as_dist <- function(d, S, A, name) {
   })
 }
 
+#' offlrl_lookup
+#'
+#' Part of the offlrl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param mat See Usage.
+#' @param s See Usage.
+#' @param a See Usage.
+#' @return The value of \code{[[}.
+#' @export
 offlrl_lookup <- function(mat, s, a) {
   mat[[paste0(s, "|", a)]]
 }
 
+#' offlrl_safe_max_key
+#'
+#' Part of the offlrl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param qmap See Usage.
+#' @param s See Usage.
+#' @param A See Usage.
+#' @return The value of \code{best_a}, as built in the body.
+#' @export
 offlrl_safe_max_key <- function(qmap, s, A) {
   best_v <- -Inf
   best_a <- A[1]
@@ -66,6 +113,25 @@ offlrl_safe_max_key <- function(qmap, s, A) {
   best_a
 }
 
+#' morie_offlrl
+#'
+#' Part of the offlrl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param dataset See Usage.
+#' @param states Defaults to \code{NULL}.
+#' @param actions Defaults to \code{NULL}.
+#' @param alpha Defaults to \code{1}.
+#' @param gamma Defaults to \code{0.99}.
+#' @param variant Defaults to \code{"H"}.
+#' @param backup Defaults to \code{"max"}.
+#' @param policy Defaults to \code{NULL}.
+#' @param mu Defaults to \code{NULL}.
+#' @param lr Defaults to \code{0.5}.
+#' @param iters Defaults to \code{2000}.
+#' @param tol Defaults to \code{1e-12}.
+#' @return A list with \code{estimate}, \code{q}, \code{value}, \code{greedy}, \code{behavior}, \code{counts}, \code{penalty}, \code{bellman_error}, \code{objective}, \code{alpha}, \code{variant}, \code{backup}, \code{n_transitions}, \code{method}.
+#' @export
 morie_offlrl <- function(dataset, states = NULL, actions = NULL,
                          alpha = 1.0, gamma = 0.99, variant = "H",
                          backup = "max", policy = NULL, mu = NULL,
@@ -286,6 +352,13 @@ offline_rl_cql <- morie_offlrl
 offlinerlcql <- morie_offlrl
 conservative_q_learning <- morie_offlrl
 
+#' offlrl_cheatsheet
+#'
+#' Part of the offlrl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 offlrl_cheatsheet <- function() {
   paste("offlrl: CQL (Kumar 2020). Fitted Q plus alpha*(push DOWN ",
         "E_mu[Q] - push UP E_pi_beta[Q]) so the Q-function LOWER ",

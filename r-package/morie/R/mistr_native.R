@@ -8,6 +8,16 @@
 #   Beltagy et al. (2020) "Longformer" arXiv:2004.05150
 # Base R only.
 
+#' mistr_rms_norm
+#'
+#' Part of the mistr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param weight Defaults to \code{NULL}.
+#' @param eps Defaults to \code{1e-06}.
+#' @return A numeric value.
+#' @export
 mistr_rms_norm <- function(x, weight = NULL, eps = 1e-6) {
   d <- length(x)
   if (d == 0L) stop("mistr: empty vector")
@@ -23,6 +33,17 @@ mistr_rms_norm <- function(x, weight = NULL, eps = 1e-6) {
   x * inv * weight
 }
 
+#' mistr_swiglu
+#'
+#' Part of the mistr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param W1 See Usage.
+#' @param W2 See Usage.
+#' @param W3 See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 mistr_swiglu <- function(x, W1, W2, W3) {
   x <- as.numeric(x)
   W1 <- as.matrix(W1)
@@ -38,6 +59,15 @@ mistr_swiglu <- function(x, W1, W2, W3) {
   as.numeric(crossprod(gated, W2))
 }
 
+#' mistr_rope_angles
+#'
+#' Part of the mistr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param d See Usage.
+#' @param base Defaults to \code{10000}.
+#' @return A numeric value.
+#' @export
 mistr_rope_angles <- function(d, base = 10000) {
   if (d %% 2L != 0L) {
     stop(sprintf("mistr: RoPE needs an even dimension, got %d", d))
@@ -45,6 +75,17 @@ mistr_rope_angles <- function(d, base = 10000) {
   base^(-(2 * seq_len(d %/% 2L) - 2) / d)
 }
 
+#' mistr_apply_rope
+#'
+#' Part of the mistr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param pos See Usage.
+#' @param theta Defaults to \code{NULL}.
+#' @param base Defaults to \code{10000}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 mistr_apply_rope <- function(x, pos, theta = NULL, base = 10000) {
   d <- length(x)
   th <- if (is.null(theta)) mistr_rope_angles(d, base) else theta
@@ -62,6 +103,16 @@ mistr_apply_rope <- function(x, pos, theta = NULL, base = 10000) {
   out
 }
 
+#' mistr_sliding_window_mask
+#'
+#' Part of the mistr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param L See Usage.
+#' @param window See Usage.
+#' @param causal Defaults to \code{TRUE}.
+#' @return The value of \code{mask}, as built in the body.
+#' @export
 mistr_sliding_window_mask <- function(L, window, causal = TRUE) {
   if (window < 1L) {
     stop(sprintf("mistr: window must be at least 1, got %d", window))
@@ -76,10 +127,34 @@ mistr_sliding_window_mask <- function(L, window, causal = TRUE) {
   mask
 }
 
+#' mistr_attention_span
+#'
+#' Part of the mistr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param window See Usage.
+#' @param n_layers See Usage.
+#' @return A numeric value.
+#' @export
 mistr_attention_span <- function(window, n_layers) {
   as.integer(window) * as.integer(n_layers)
 }
 
+#' mistr_grouped_query_attention
+#'
+#' Part of the mistr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param Q See Usage.
+#' @param K See Usage.
+#' @param V See Usage.
+#' @param n_heads See Usage.
+#' @param n_kv_heads See Usage.
+#' @param mask Defaults to \code{NULL}.
+#' @param positions Defaults to \code{NULL}.
+#' @param base Defaults to \code{10000}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 mistr_grouped_query_attention <- function(Q, K, V, n_heads, n_kv_heads,
                                           mask = NULL, positions = NULL,
                                           base = 10000) {
@@ -145,6 +220,27 @@ mistr_grouped_query_attention <- function(Q, K, V, n_heads, n_kv_heads,
   out
 }
 
+#' mistr_mistral_block
+#'
+#' Part of the mistr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param Wq See Usage.
+#' @param Wk See Usage.
+#' @param Wv See Usage.
+#' @param Wo See Usage.
+#' @param W1 See Usage.
+#' @param W2 See Usage.
+#' @param W3 See Usage.
+#' @param n_heads See Usage.
+#' @param n_kv_heads See Usage.
+#' @param window See Usage.
+#' @param norm1 Defaults to \code{NULL}.
+#' @param norm2 Defaults to \code{NULL}.
+#' @param base Defaults to \code{10000}.
+#' @return A list with \code{estimate}, \code{output}, \code{attention_mask}, \code{L}, \code{d}, \code{n_heads}, \code{n_kv_heads}, \code{window}, \code{kv_cache_entries}, \code{method}.
+#' @export
 mistr_mistral_block <- function(X, Wq, Wk, Wv, Wo, W1, W2, W3,
                                 n_heads, n_kv_heads, window,
                                 norm1 = NULL, norm2 = NULL, base = 10000) {
@@ -172,6 +268,13 @@ mistr_mistral_block <- function(X, Wq, Wk, Wv, Wo, W1, W2, W3,
        method = "Mistral decoder block: SWA + GQA + RoPE + SwiGLU + RMSNorm, Jiang et al. (2023)")
 }
 
+#' mistr_cheatsheet
+#'
+#' Part of the mistr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 mistr_cheatsheet <- function() {
   paste("mistr: SWA -- token i attends to (i-W, i]; span grows to k*W over k layers because attention composes. RoPE rotates pairs (2i, 2i+1) by pos*theta_i, and <R_m q, R_n k> = <R_{m-n} q, k> EXACTLY. GQA shares one kv head across n_heads/n_kv query heads. SwiGLU gates; RMSNorm is scale-invariant but NOT shift-invariant.")
 }

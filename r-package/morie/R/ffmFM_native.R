@@ -125,6 +125,23 @@
   )
 }
 
+#' morie_ffmFM
+#'
+#' Part of the ffmFM_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param rows See Usage.
+#' @param labels See Usage.
+#' @param fields See Usage.
+#' @param n_features See Usage.
+#' @param n_fields See Usage.
+#' @param k_dim Defaults to \code{4L}.
+#' @param eta Defaults to \code{0.1}.
+#' @param lam Defaults to \code{2e-05}.
+#' @param epochs Defaults to \code{10L}.
+#' @param seed Defaults to \code{0L}.
+#' @return The value of \code{.fit_ffm}.
+#' @export
 morie_ffmFM <- function(rows, labels, fields, n_features, n_fields,
                         k_dim = 4L, eta = 0.1, lam = 2e-5, epochs = 10L,
                         seed = 0L) {

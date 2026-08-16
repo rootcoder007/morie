@@ -82,6 +82,19 @@ morie_smatch_poisson_design <- function(cases, risk_periods,
     as_cell(cl[[1L]], cl[[2L]], cl[[3L]], cl[[4L]]))
 }
 
+#' morie_smatch_sccs_poisson_fit
+#'
+#' Part of the smatch_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param cases See Usage.
+#' @param risk_periods See Usage.
+#' @param age_breaks Defaults to \code{numeric(0)}.
+#' @param iters Defaults to \code{200}.
+#' @param tol Defaults to \code{1e-12}.
+#' @param ridge Defaults to \code{1e-09}.
+#' @return A list with \code{estimate}, \code{relative_incidence}, \code{log_ri}, \code{age_effects}, \code{individual_effects}, \code{coef}, \code{converged}, \code{iterations}, \code{n_rows}, \code{n_people}, \code{method}, \code{identical_to}.
+#' @export
 morie_smatch_sccs_poisson_fit <- function(cases, risk_periods,
                                            age_breaks = numeric(0),
                                            iters = 200, tol = 1e-12,

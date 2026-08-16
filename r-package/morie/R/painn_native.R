@@ -26,6 +26,14 @@
 .painn_EPS <- 1e-12
 
 # ||v|| -- an invariant built from an equivariant.
+#' ||v|| -- an invariant built from an equivariant
+#'
+#' Part of the painn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param v See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 vector_norm <- function(v) {
   a <- as.matrix(v)
   if (ncol(a) == 3L) {
@@ -49,6 +57,19 @@ vector_norm <- function(v) {
 # The message: scalars from scalars, vectors from s*hat_r and s*v.
 # Type is preserved by construction, which is what makes the whole
 # network equivariant rather than approximately so.
+#' The message: scalars from scalars, vectors from s*hat_r and s*v
+#'
+#' Type is preserved by construction, which is what makes the whole
+#' network equivariant rather than approximately so.
+#'
+#' @param s_j See Usage.
+#' @param v_j See Usage.
+#' @param r_ij See Usage.
+#' @param phi_s See Usage.
+#' @param phi_v See Usage.
+#' @param W_rbf See Usage.
+#' @return A list with \code{ds}, \code{dv}, \code{note}.
+#' @export
 scalar_vector_message <- function(s_j, v_j, r_ij, phi_s, phi_v,
                                   W_rbf) {
   s <- as.numeric(s_j)
@@ -87,6 +108,19 @@ scalar_vector_message <- function(s_j, v_j, r_ij, phi_s, phi_v,
 # is the only path from the vector channel back to the scalar one,
 # and it is invariant -- which is why the network can use
 # directional information without breaking invariance of the energy.
+#' The update block: v1 . v2 re-enters the scalars. That inner product
+#'
+#' is the only path from the vector channel back to the scalar one, and
+#' it is invariant -- which is why the network can use directional
+#' information without breaking invariance of the energy.
+#'
+#' @param s See Usage.
+#' @param v See Usage.
+#' @param U See Usage.
+#' @param V See Usage.
+#' @param phi See Usage.
+#' @return A list with \code{ds}, \code{dv}, \code{scalar_from_vectors}, \code{note}.
+#' @export
 gated_update <- function(s, v, U, V, phi) {
   sv <- as.numeric(s)
   Vv <- as.matrix(v)
@@ -128,6 +162,15 @@ gated_update <- function(s, v, U, V, phi) {
 
 # mu = sum_i q_i (r_i - r_c). A tensorial (here vector) property,
 # read off directly from equivariant atomwise quantities.
+#' Mu = sum_i q_i (r_i - r_c). A tensorial (here vector) property,
+#'
+#' read off directly from equivariant atomwise quantities.
+#'
+#' @param charges See Usage.
+#' @param R See Usage.
+#' @param centre Defaults to \code{NULL}.
+#' @return A list with \code{dipole}, \code{magnitude}, \code{note}.
+#' @export
 dipole_moment <- function(charges, R, centre = NULL) {
   q <- as.numeric(charges)
   pos <- as.matrix(R)
@@ -148,6 +191,19 @@ dipole_moment <- function(charges, R, centre = NULL) {
 # Rotate the input; scalars must not move, vectors must rotate.
 # Checking only the scalars would pass a model that has silently
 # lost its vector channel.
+#' Rotate the input; scalars must not move, vectors must rotate
+#'
+#' Checking only the scalars would pass a model that has silently lost
+#' its vector channel.
+#'
+#' @param model See Usage.
+#' @param s See Usage.
+#' @param v See Usage.
+#' @param R See Usage.
+#' @param Q See Usage.
+#' @param tol Defaults to \code{1e-09}.
+#' @return A list with \code{scalar_error}, \code{vector_error}, \code{scalars_invariant}, \code{vectors_equivariant}, \code{note}.
+#' @export
 morie_painn_equivariance_error <- function(model, s, v, R, Q, tol = 1e-9) {
   pos <- as.matrix(R)
   Qm <- as.matrix(Q)

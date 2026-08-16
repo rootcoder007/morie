@@ -5,6 +5,16 @@
 #   Nie et al. (2023) "PatchTST" arXiv:2211.14730
 # Base R only.
 
+#' momento_harmonise
+#'
+#' Part of the momento_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param series_list See Usage.
+#' @param patch_len See Usage.
+#' @param normalise Defaults to \code{TRUE}.
+#' @return A list with \code{batch}, \code{meta}, \code{n_series}, \code{n_patches}, \code{patch_len}, \code{note}.
+#' @export
 momento_harmonise <- function(series_list, patch_len, normalise = TRUE) {
   P <- as.integer(patch_len)
   if (P < 1L) stop("momento: patch_len must be at least 1")
@@ -51,6 +61,16 @@ momento_harmonise <- function(series_list, patch_len, normalise = TRUE) {
        note = "each channel is its own row, so datasets with different channel counts share a batch")
 }
 
+#' momento_mask_patches
+#'
+#' Part of the momento_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param patches See Usage.
+#' @param mask_idx See Usage.
+#' @param fill Defaults to \code{0}.
+#' @return A list with \code{masked}, \code{mask}, \code{mask_idx}, \code{mask_rate}, \code{n_patches}.
+#' @export
 momento_mask_patches <- function(patches, mask_idx, fill = 0) {
   n <- length(patches)
   idx <- sort(unique(as.integer(mask_idx)))
@@ -73,6 +93,16 @@ momento_mask_patches <- function(patches, mask_idx, fill = 0) {
        n_patches = n)
 }
 
+#' momento_masked_loss
+#'
+#' Part of the momento_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param truth See Usage.
+#' @param reconstruction See Usage.
+#' @param mask See Usage.
+#' @return A list with \code{mse}, \code{n_scored}, \code{scored}.
+#' @export
 momento_masked_loss <- function(truth, reconstruction, mask) {
   n <- length(truth)
   if (length(reconstruction) != n || length(mask) != n) {
@@ -96,6 +126,17 @@ momento_masked_loss <- function(truth, reconstruction, mask) {
        scored = "masked positions only -- scoring the visible ones would reward copying")
 }
 
+#' momento_task_mask
+#'
+#' Part of the momento_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param n_patches See Usage.
+#' @param task Defaults to \code{"forecast"}.
+#' @param span Defaults to \code{1}.
+#' @param start Defaults to \code{NULL}.
+#' @return The value of \code{seq.int}.
+#' @export
 momento_task_mask <- function(n_patches, task = "forecast", span = 1, start = NULL) {
   n <- as.integer(n_patches)
   s <- as.integer(span)
@@ -120,6 +161,17 @@ momento_task_mask <- function(n_patches, task = "forecast", span = 1, start = NU
   seq.int(n - s, n - 1L)
 }
 
+#' momento_reconstruction_curve
+#'
+#' Part of the momento_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param patches See Usage.
+#' @param reconstructor See Usage.
+#' @param rates See Usage.
+#' @param seed Defaults to \code{0}.
+#' @return A list with \code{curve}, \code{n_patches}, \code{rates}, \code{mse}.
+#' @export
 momento_reconstruction_curve <- function(patches, reconstructor, rates, seed = 0) {
   P <- lapply(patches, as.numeric)
   n <- length(P)
@@ -138,6 +190,13 @@ momento_reconstruction_curve <- function(patches, reconstructor, rates, seed = 0
        mse = vapply(out, function(o) o$mse, numeric(1)))
 }
 
+#' momento_cheatsheet
+#'
+#' Part of the momento_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @return A character value.
+#' @export
 momento_cheatsheet <- function() {
   paste("momento: masked time-series pretraining. Mask patches with ZEROS and reconstruct; the loss counts the MASKED positions only, since scoring visible ones rewards copying. The hard part is multi-dataset pretraining: series differ in resolution, channel count, length and amplitude, so harmonise per-series and keep channels independent. Mask rate is a real knob -- too low is interpolation, too high leaves no context. Task changes only WHERE the mask goes: tail for forecasting, interior for imputation.")
 }

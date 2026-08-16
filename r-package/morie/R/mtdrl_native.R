@@ -2,6 +2,17 @@
 # Reference: Wang et al. (2016) "Learning to reinforcement learn" arXiv:1611.05763
 # Base R only.
 
+#' mtdrl_bandit_tasks
+#'
+#' Part of the mtdrl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n_arms Defaults to \code{2}.
+#' @param n_tasks Defaults to \code{100}.
+#' @param seed Defaults to \code{0}.
+#' @param structure Defaults to \code{"independent"}.
+#' @return The value of \code{tasks}, as built in the body.
+#' @export
 mtdrl_bandit_tasks <- function(n_arms = 2, n_tasks = 100, seed = 0,
                                structure = "independent") {
   if (!(structure %in% c("independent", "paired"))) {
@@ -25,6 +36,15 @@ mtdrl_bandit_tasks <- function(n_arms = 2, n_tasks = 100, seed = 0,
   tasks
 }
 
+#' mtdrl_history_features
+#'
+#' Part of the mtdrl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param history See Usage.
+#' @param n_arms See Usage.
+#' @return The value of \code{feat}, as built in the body.
+#' @export
 mtdrl_history_features <- function(history, n_arms) {
   feat <- rep(0, n_arms + 2L)
   if (length(history) > 0L) {
@@ -36,6 +56,16 @@ mtdrl_history_features <- function(history, n_arms) {
   feat
 }
 
+#' mtdrl_TabularHistoryAgent
+#'
+#' Part of the mtdrl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n_arms See Usage.
+#' @param epsilon Defaults to \code{0.1}.
+#' @param optimistic Defaults to \code{1}.
+#' @return The value of \code{agent}, as built in the body.
+#' @export
 mtdrl_TabularHistoryAgent <- function(n_arms, epsilon = 0.1, optimistic = 1) {
   agent <- new.env(parent = emptyenv())
   agent$n_arms <- as.integer(n_arms)
@@ -64,6 +94,19 @@ mtdrl_TabularHistoryAgent <- function(n_arms, epsilon = 0.1, optimistic = 1) {
   agent
 }
 
+#' mtdrl_run
+#'
+#' Part of the mtdrl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param tasks See Usage.
+#' @param agent See Usage.
+#' @param episode_length Defaults to \code{100}.
+#' @param n_arms Defaults to \code{NULL}.
+#' @param seed Defaults to \code{0}.
+#' @param reset_between_episodes Defaults to \code{TRUE}.
+#' @return A list with \code{estimate}, \code{mean_reward}, \code{total_reward}, \code{regret}, \code{reward_by_step}, \code{optimal_action_rate}, \code{episode_reward}, \code{n_episodes}, \code{episode_length}, \code{n_arms}, \code{method}.
+#' @export
 mtdrl_run <- function(tasks, agent, episode_length = 100, n_arms = NULL,
                       seed = 0, reset_between_episodes = TRUE) {
   T_ <- lapply(tasks, as.numeric)
@@ -123,6 +166,13 @@ mtdrl_run <- function(tasks, agent, episode_length = 100, n_arms = NULL,
        method = "meta-RL evaluation loop (Wang et al. 2016 sec. 2)")
 }
 
+#' mtdrl_cheatsheet
+#'
+#' Part of the mtdrl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 mtdrl_cheatsheet <- function() {
   paste("mtdrl: deep meta-RL (Wang 2016). Train with one RL algorithm so the RECURRENT DYNAMICS implement a second, learned one. Policy conditions on the whole within-episode history H_t including the previous ACTION and REWARD; the recurrent state is RESET each episode, and after training the weights are frozen so all within-episode adaptation is in the activations. bandit_tasks(structure='paired') is the dependent-arm family whose structure an adapted inner algorithm can exploit.")
 }

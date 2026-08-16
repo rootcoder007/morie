@@ -4,6 +4,18 @@
 #   Dakin, R. J. (1965) The Computer Journal 8(3), 250-255.
 # Base R only.
 
+#' Two-phase simplex with Bland\'s rule, maximising c\'x
+#'
+#' Part of the miprgr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param A See Usage.
+#' @param b See Usage.
+#' @param c See Usage.
+#' @param tol Defaults to \code{1e-09}.
+#' @param max_iter Defaults to \code{20000}.
+#' @return A list with \code{feasible}, \code{x}, \code{value}.
+#' @export
 miprgr_simplex <- function(A, b, c, tol = 1e-9, max_iter = 20000) {
   # Two-phase simplex with Bland's rule, maximising c'x.
   m <- length(b)
@@ -134,6 +146,20 @@ miprgr_simplex <- function(A, b, c, tol = 1e-9, max_iter = 20000) {
   list(feasible = TRUE, x = x, value = sum(as.numeric(c) * x))
 }
 
+#' miprgr_solve_relaxation
+#'
+#' Part of the miprgr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param A See Usage.
+#' @param b See Usage.
+#' @param c See Usage.
+#' @param bounds Defaults to \code{list()}.
+#' @param n Defaults to \code{NULL}.
+#' @param maximise Defaults to \code{TRUE}.
+#' @param solver Defaults to \code{"simplex"}.
+#' @return A list with \code{feasible}, \code{x}, \code{value}, \code{note}.
+#' @export
 miprgr_solve_relaxation <- function(A, b, c, bounds = list(),
                                     n = NULL, maximise = TRUE,
                                     solver = "simplex") {
@@ -175,6 +201,16 @@ miprgr_solve_relaxation <- function(A, b, c, bounds = list(),
        note = "a valid BOUND on every integer point below this node")
 }
 
+#' miprgr_fractional_variable
+#'
+#' Part of the miprgr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param integer_vars See Usage.
+#' @param tol Defaults to \code{1e-07}.
+#' @return A list with \code{index}, \code{fractionality}, \code{integral}.
+#' @export
 miprgr_fractional_variable <- function(x, integer_vars, tol = 1e-7) {
   best <- NA_integer_
   gap <- 0
@@ -190,6 +226,17 @@ miprgr_fractional_variable <- function(x, integer_vars, tol = 1e-7) {
        integral = is.na(best))
 }
 
+#' miprgr_round_relaxation
+#'
+#' Part of the miprgr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param A See Usage.
+#' @param b See Usage.
+#' @param integer_vars See Usage.
+#' @return A list with \code{x}, \code{feasible}, \code{violations}, \code{note}.
+#' @export
 miprgr_round_relaxation <- function(x, A, b, integer_vars) {
   xr <- as.numeric(x)
   for (j in integer_vars) xr[j] <- as.numeric(round(xr[j]))
@@ -204,6 +251,19 @@ miprgr_round_relaxation <- function(x, A, b, integer_vars) {
        note = "rounding is not a substitute for branching")
 }
 
+#' miprgr_enumerate_integer
+#'
+#' Part of the miprgr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param A See Usage.
+#' @param b See Usage.
+#' @param c See Usage.
+#' @param integer_vars See Usage.
+#' @param upper Defaults to \code{10}.
+#' @param maximise Defaults to \code{TRUE}.
+#' @return A list with \code{value}, \code{x}, \code{note}.
+#' @export
 miprgr_enumerate_integer <- function(A, b, c, integer_vars, upper = 10,
                                      maximise = TRUE) {
   n <- length(c)
@@ -241,6 +301,21 @@ miprgr_enumerate_integer <- function(A, b, c, integer_vars, upper = 10,
        note = "exhaustive over the box, so the search can be checked against something other than itself")
 }
 
+#' miprgr_branch_and_bound
+#'
+#' Part of the miprgr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param A See Usage.
+#' @param b See Usage.
+#' @param c See Usage.
+#' @param integer_vars See Usage.
+#' @param maximise Defaults to \code{TRUE}.
+#' @param prune Defaults to \code{TRUE}.
+#' @param max_nodes Defaults to \code{5000}.
+#' @param solver Defaults to \code{"simplex"}.
+#' @return A list with \code{estimate}, \code{value}, \code{x}, \code{feasible}, \code{nodes}, \code{pruned}, \code{pruning}, \code{max_list_length}, \code{root_bound}, \code{truncated}, \code{method}, \code{note}.
+#' @export
 miprgr_branch_and_bound <- function(A, b, c, integer_vars, maximise = TRUE,
                                     prune = TRUE, max_nodes = 5000,
                                     solver = "simplex") {
@@ -329,6 +404,13 @@ miprgr_branch_and_bound <- function(A, b, c, integer_vars, maximise = TRUE,
     note = "node limit reached, so the result is NOT proven optimal")
 }
 
+#' miprgr_cheatsheet
+#'
+#' Part of the miprgr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 miprgr_cheatsheet <- function() {
   paste("miprgr: the LP relaxation is easy and usually FRACTIONAL,",
         "and ROUNDING is not a fix -- the rounded point is often",

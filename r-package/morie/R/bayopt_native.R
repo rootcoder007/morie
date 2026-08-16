@@ -48,6 +48,17 @@
   sum((a - b)^2 / (ls^2))
 }
 
+#' matern52
+#'
+#' Part of the bayopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param a See Usage.
+#' @param b See Usage.
+#' @param amplitude Defaults to \code{1}.
+#' @param length_scale Defaults to \code{1}.
+#' @return A numeric value.
+#' @export
 matern52 <- function(a, b, amplitude = 1.0, length_scale = 1.0) {
   ls <- .lengths(length_scale, length(a))
   r2 <- .r2(a, b, ls)
@@ -55,6 +66,17 @@ matern52 <- function(a, b, amplitude = 1.0, length_scale = 1.0) {
   amplitude * (1.0 + s + (5.0 / 3.0) * r2) * exp(-s)
 }
 
+#' squared_exponential
+#'
+#' Part of the bayopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param a See Usage.
+#' @param b See Usage.
+#' @param amplitude Defaults to \code{1}.
+#' @param length_scale Defaults to \code{1}.
+#' @return A numeric value.
+#' @export
 squared_exponential <- function(a, b, amplitude = 1.0, length_scale = 1.0) {
   ls <- .lengths(length_scale, length(a))
   amplitude * exp(-0.5 * .r2(a, b, ls))
@@ -105,6 +127,21 @@ squared_exponential <- function(a, b, amplitude = 1.0, length_scale = 1.0) {
   x
 }
 
+#' gp_posterior
+#'
+#' Part of the bayopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param y See Usage.
+#' @param Xs See Usage.
+#' @param kernel Defaults to \code{"matern52"}.
+#' @param amplitude Defaults to \code{1}.
+#' @param length_scale Defaults to \code{1}.
+#' @param noise Defaults to \code{1e-08}.
+#' @param mean Defaults to \code{NULL}.
+#' @return A list with \code{mean}, \code{variance}, \code{sd}.
+#' @export
 gp_posterior <- function(X, y, Xs, kernel = "matern52", amplitude = 1.0,
                          length_scale = 1.0, noise = 1e-8, mean = NULL) {
   rows <- lapply(X, function(r) as.numeric(r))
@@ -146,6 +183,21 @@ gp_posterior <- function(X, y, Xs, kernel = "matern52", amplitude = 1.0,
   list(mean = out_m, variance = out_v, sd = sqrt(out_v))
 }
 
+#' gp_posterior_gradient
+#'
+#' Part of the bayopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param y See Usage.
+#' @param xs See Usage.
+#' @param kernel Defaults to \code{"matern52"}.
+#' @param amplitude Defaults to \code{1}.
+#' @param length_scale Defaults to \code{1}.
+#' @param noise Defaults to \code{1e-08}.
+#' @param mean Defaults to \code{NULL}.
+#' @return A list with \code{grad_mu}, \code{grad_sd}, \code{mu}, \code{sd}.
+#' @export
 gp_posterior_gradient <- function(X, y, xs, kernel = "matern52", amplitude = 1.0,
                                   length_scale = 1.0, noise = 1e-8, mean = NULL) {
   rows <- lapply(X, function(r) as.numeric(r))
@@ -191,6 +243,21 @@ gp_posterior_gradient <- function(X, y, xs, kernel = "matern52", amplitude = 1.0
   list(grad_mu = gmu, grad_sd = gsd, mu = mu, sd = sd)
 }
 
+#' acquisition_gradient
+#'
+#' Part of the bayopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param gmu See Usage.
+#' @param gsd See Usage.
+#' @param mu See Usage.
+#' @param sd See Usage.
+#' @param best See Usage.
+#' @param acq Defaults to \code{"ei"}.
+#' @param kappa Defaults to \code{2}.
+#' @param xi Defaults to \code{0}.
+#' @return A numeric value.
+#' @export
 acquisition_gradient <- function(gmu, gsd, mu, sd, best, acq = "ei",
                                  kappa = 2.0, xi = 0.0) {
   if (!(acq %in% .ACQ))
@@ -206,6 +273,29 @@ acquisition_gradient <- function(gmu, gsd, mu, sd, best, acq = "ei",
   .bayopt_phi(g) * dg
 }
 
+#' maximise_acquisition
+#'
+#' Part of the bayopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param y See Usage.
+#' @param best See Usage.
+#' @param box See Usage.
+#' @param acq Defaults to \code{"ei"}.
+#' @param kernel Defaults to \code{"matern52"}.
+#' @param amplitude Defaults to \code{1}.
+#' @param length_scale Defaults to \code{1}.
+#' @param noise Defaults to \code{1e-08}.
+#' @param kappa Defaults to \code{2}.
+#' @param xi Defaults to \code{0}.
+#' @param starts Defaults to \code{NULL}.
+#' @param n_starts Defaults to \code{8}.
+#' @param max_iter Defaults to \code{60}.
+#' @param tol Defaults to \code{1e-08}.
+#' @param rnd Defaults to \code{NULL}.
+#' @return A list with \code{x}, \code{acq}, \code{n_starts}, \code{evaluations}.
+#' @export
 maximise_acquisition <- function(X, y, best, box, acq = "ei", kernel = "matern52",
                                  amplitude = 1.0, length_scale = 1.0, noise = 1e-8,
                                  kappa = 2.0, xi = 0.0, starts = NULL,
@@ -267,21 +357,66 @@ maximise_acquisition <- function(X, y, best, box, acq = "ei", kernel = "matern52
   list(x = best_pt, acq = best_val, n_starts = length(starts), evaluations = evals)
 }
 
+#' probability_of_improvement
+#'
+#' Part of the bayopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param mu See Usage.
+#' @param sd See Usage.
+#' @param best See Usage.
+#' @param xi Defaults to \code{0}.
+#' @return The value of \code{.Phi}.
+#' @export
 probability_of_improvement <- function(mu, sd, best, xi = 0.0) {
   if (sd <= 0) return(0.0)
   .Phi((best - xi - mu) / sd)
 }
 
+#' expected_improvement
+#'
+#' Part of the bayopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param mu See Usage.
+#' @param sd See Usage.
+#' @param best See Usage.
+#' @param xi Defaults to \code{0}.
+#' @return A numeric value.
+#' @export
 expected_improvement <- function(mu, sd, best, xi = 0.0) {
   if (sd <= 0) return(0.0)
   g <- (best - xi - mu) / sd
   sd * (g * .Phi(g) + .bayopt_phi(g))
 }
 
+#' lower_confidence_bound
+#'
+#' Part of the bayopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param mu See Usage.
+#' @param sd See Usage.
+#' @param kappa Defaults to \code{2}.
+#' @return A numeric value.
+#' @export
 lower_confidence_bound <- function(mu, sd, kappa = 2.0) {
   mu - kappa * sd
 }
 
+#' acquire
+#'
+#' Part of the bayopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param mu See Usage.
+#' @param sd See Usage.
+#' @param best See Usage.
+#' @param acq Defaults to \code{"ei"}.
+#' @param kappa Defaults to \code{2}.
+#' @param xi Defaults to \code{0}.
+#' @return A numeric value.
+#' @export
 acquire <- function(mu, sd, best, acq = "ei", kappa = 2.0, xi = 0.0) {
   if (!(acq %in% .ACQ))
     stop(sprintf("bayopt: acq must be one of %s", paste(.ACQ, collapse=", ")))
@@ -290,6 +425,30 @@ acquire <- function(mu, sd, best, acq = "ei", kappa = 2.0, xi = 0.0) {
   -lower_confidence_bound(mu, sd, kappa)
 }
 
+#' bayopt
+#'
+#' Part of the bayopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param f See Usage.
+#' @param bounds See Usage.
+#' @param n_iter Defaults to \code{20}.
+#' @param n_init Defaults to \code{5}.
+#' @param acq Defaults to \code{"ei"}.
+#' @param kernel Defaults to \code{"matern52"}.
+#' @param amplitude Defaults to \code{1}.
+#' @param length_scale Defaults to \code{1}.
+#' @param noise Defaults to \code{1e-08}.
+#' @param kappa Defaults to \code{2}.
+#' @param xi Defaults to \code{0}.
+#' @param n_candidates Defaults to \code{200}.
+#' @param seed Defaults to \code{0}.
+#' @param X0 Defaults to \code{NULL}.
+#' @param y0 Defaults to \code{NULL}.
+#' @param inner Defaults to \code{"gradient"}.
+#' @param n_starts Defaults to \code{8}.
+#' @return A list with \code{estimate}, \code{x_best}, \code{y_best}, \code{X}, \code{y}, \code{trace}, \code{acq}, \code{kernel}, \code{inner}, \code{n_eval}, \code{method}, \code{note}.
+#' @export
 bayopt <- function(f, bounds, n_iter = 20, n_init = 5, acq = "ei",
                    kernel = "matern52", amplitude = 1.0,
                    length_scale = 1.0, noise = 1e-8, kappa = 2.0, xi = 0.0,
@@ -377,4 +536,12 @@ bayopt <- function(f, bounds, n_iter = 20, n_init = 5, acq = "ei",
 
 bayesian_optimization <- bayopt
 
+#' morie_bayopt
+#'
+#' Part of the bayopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ... Passed through.
+#' @return The value of \code{bayopt}.
+#' @export
 morie_bayopt <- function(...) bayopt(...)

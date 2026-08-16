@@ -26,12 +26,36 @@
   sum((a - b) ^ 2)
 }
 
+#' edge_message
+#'
+#' Part of the egnnL_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param h_i See Usage.
+#' @param h_j See Usage.
+#' @param x_i See Usage.
+#' @param x_j See Usage.
+#' @param phi_e See Usage.
+#' @param a_ij Defaults to \code{NULL}.
+#' @return The value of \code{phi_e}.
+#' @export
 edge_message <- function(h_i, h_j, x_i, x_j, phi_e, a_ij = NULL) {
   phi_e(as.numeric(h_i), as.numeric(h_j),
         .sqdist(as.numeric(x_i), as.numeric(x_j)),
         a_ij)
 }
 
+#' coord_update
+#'
+#' Part of the egnnL_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param M See Usage.
+#' @param phi_x See Usage.
+#' @param C Defaults to \code{NULL}.
+#' @return The value of \code{lapply}.
+#' @export
 coord_update <- function(X, M, phi_x, C = NULL) {
   X <- as.matrix(X)
   n <- nrow(X)
@@ -51,6 +75,24 @@ coord_update <- function(X, M, phi_x, C = NULL) {
   lapply(seq_len(nrow(out)), function(i) as.numeric(out[i, ]))
 }
 
+#' egcl
+#'
+#' Part of the egnnL_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param H See Usage.
+#' @param X See Usage.
+#' @param phi_e See Usage.
+#' @param phi_x See Usage.
+#' @param phi_h See Usage.
+#' @param A Defaults to \code{NULL}.
+#' @param C Defaults to \code{NULL}.
+#' @param V Defaults to \code{NULL}.
+#' @param mode Defaults to \code{"position"}.
+#' @param phi_v Defaults to \code{NULL}.
+#' @param dt Defaults to \code{1}.
+#' @return A list with \code{H}, \code{X}, \code{V}, \code{messages}.
+#' @export
 egcl <- function(H, X, phi_e, phi_x, phi_h, A = NULL, C = NULL,
                  V = NULL, mode = "position", phi_v = NULL,
                  dt = 1.0) {
@@ -106,6 +148,21 @@ egcl <- function(H, X, phi_e, phi_x, phi_h, A = NULL, C = NULL,
   list(H = Hn, X = Xn, V = Vn, messages = M)
 }
 
+#' run_egnn
+#'
+#' Part of the egnnL_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param H See Usage.
+#' @param X See Usage.
+#' @param layers See Usage.
+#' @param phi_e See Usage.
+#' @param phi_x See Usage.
+#' @param phi_h See Usage.
+#' @param A Defaults to \code{NULL}.
+#' @param C Defaults to \code{NULL}.
+#' @return A list with \code{estimate}, \code{H}, \code{X}, \code{layers}, \code{method}, \code{note}.
+#' @export
 run_egnn <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
                      C = NULL) {
   h <- apply(as.matrix(H), 1, as.numeric)
@@ -126,6 +183,22 @@ run_egnn <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
        note = "h is E(n) INVARIANT, x is E(n) EQUIVARIANT")
 }
 
+#' morie_egnnL_equivariance_error
+#'
+#' Part of the egnnL_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param H See Usage.
+#' @param X See Usage.
+#' @param phi_e See Usage.
+#' @param phi_x See Usage.
+#' @param phi_h See Usage.
+#' @param Q See Usage.
+#' @param g See Usage.
+#' @param layers Defaults to \code{2}.
+#' @param C Defaults to \code{NULL}.
+#' @return A list with \code{coordinate_error}, \code{feature_error}, \code{equivariant}, \code{invariant}, \code{note}.
+#' @export
 morie_egnnL_equivariance_error <- function(H, X, phi_e, phi_x, phi_h, Q, g,
                                layers = 2, C = NULL) {
   X <- as.matrix(X)
@@ -161,21 +234,81 @@ morie_egnnL_equivariance_error <- function(H, X, phi_e, phi_x, phi_h, Q, g,
         "velocity matters.")
 }
 
+#' morie_egnnL
+#'
+#' Part of the egnnL_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param H See Usage.
+#' @param X See Usage.
+#' @param layers See Usage.
+#' @param phi_e See Usage.
+#' @param phi_x See Usage.
+#' @param phi_h See Usage.
+#' @param A Defaults to \code{NULL}.
+#' @param C Defaults to \code{NULL}.
+#' @return The value of \code{run_egnn}.
+#' @export
 morie_egnnL <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
                         C = NULL) {
   run_egnn(H, X, layers, phi_e, phi_x, phi_h, A, C)
 }
 
+#' equivariantgnn
+#'
+#' Part of the egnnL_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param H See Usage.
+#' @param X See Usage.
+#' @param layers See Usage.
+#' @param phi_e See Usage.
+#' @param phi_x See Usage.
+#' @param phi_h See Usage.
+#' @param A Defaults to \code{NULL}.
+#' @param C Defaults to \code{NULL}.
+#' @return The value of \code{run_egnn}.
+#' @export
 equivariantgnn <- function(H, X, layers, phi_e, phi_x, phi_h,
                            A = NULL, C = NULL) {
   run_egnn(H, X, layers, phi_e, phi_x, phi_h, A, C)
 }
 
+#' egnn_layer
+#'
+#' Part of the egnnL_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param H See Usage.
+#' @param X See Usage.
+#' @param layers See Usage.
+#' @param phi_e See Usage.
+#' @param phi_x See Usage.
+#' @param phi_h See Usage.
+#' @param A Defaults to \code{NULL}.
+#' @param C Defaults to \code{NULL}.
+#' @return The value of \code{run_egnn}.
+#' @export
 egnn_layer <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
                        C = NULL) {
   run_egnn(H, X, layers, phi_e, phi_x, phi_h, A, C)
 }
 
+#' egnnlayer
+#'
+#' Part of the egnnL_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param H See Usage.
+#' @param X See Usage.
+#' @param layers See Usage.
+#' @param phi_e See Usage.
+#' @param phi_x See Usage.
+#' @param phi_h See Usage.
+#' @param A Defaults to \code{NULL}.
+#' @param C Defaults to \code{NULL}.
+#' @return The value of \code{run_egnn}.
+#' @export
 egnnlayer <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
                       C = NULL) {
   run_egnn(H, X, layers, phi_e, phi_x, phi_h, A, C)

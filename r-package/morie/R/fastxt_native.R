@@ -86,6 +86,26 @@
   docs
 }
 
+#' fasttext
+#'
+#' Part of the fastxt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param corpus See Usage.
+#' @param dim Defaults to \code{50L}.
+#' @param n_min Defaults to \code{3L}.
+#' @param n_max Defaults to \code{6L}.
+#' @param window Defaults to \code{5L}.
+#' @param epochs Defaults to \code{5L}.
+#' @param lr Defaults to \code{0.05}.
+#' @param negative Defaults to \code{5L}.
+#' @param min_count Defaults to \code{1L}.
+#' @param boundary Defaults to \code{TRUE}.
+#' @param whole_word Defaults to \code{TRUE}.
+#' @param hash_buckets Defaults to \code{NULL}.
+#' @param seed Defaults to \code{0L}.
+#' @return A list with \code{estimate}, \code{vectors}, \code{vocab}, \code{index}, \code{ngrams}, \code{ngram_index}, \code{Z}, \code{context}, \code{loss_history}, \code{final_loss}, \code{oov}, \code{n_vocab}, \code{n_ngrams}, \code{dim}, \code{n_min}, \code{n_max}, \code{hash_buckets}, \code{method}.
+#' @export
 fasttext <- function(corpus, dim = 50L, n_min = 3L, n_max = 6L,
                      window = 5L, epochs = 5L, lr = 0.05, negative = 5L,
                      min_count = 1L, boundary = TRUE, whole_word = TRUE,
@@ -206,6 +226,26 @@ fasttext <- function(corpus, dim = 50L, n_min = 3L, n_max = 6L,
   )
 }
 
+#' morie_fastxt
+#'
+#' Part of the fastxt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param corpus See Usage.
+#' @param dim Defaults to \code{50L}.
+#' @param n_min Defaults to \code{3L}.
+#' @param n_max Defaults to \code{6L}.
+#' @param window Defaults to \code{5L}.
+#' @param epochs Defaults to \code{5L}.
+#' @param lr Defaults to \code{0.05}.
+#' @param negative Defaults to \code{5L}.
+#' @param min_count Defaults to \code{1L}.
+#' @param boundary Defaults to \code{TRUE}.
+#' @param whole_word Defaults to \code{TRUE}.
+#' @param hash_buckets Defaults to \code{NULL}.
+#' @param seed Defaults to \code{0L}.
+#' @return The value of \code{fasttext}.
+#' @export
 morie_fastxt <- function(corpus, dim = 50L, n_min = 3L, n_max = 6L,
                          window = 5L, epochs = 5L, lr = 0.05,
                          negative = 5L, min_count = 1L, boundary = TRUE,

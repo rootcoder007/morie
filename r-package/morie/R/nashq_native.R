@@ -4,6 +4,15 @@
 
 nashq_selections <- c("global_optimal", "saddle", "first", "best_for_agent")
 
+#' nashq_mat
+#'
+#' Part of the nashq_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param M See Usage.
+#' @param name See Usage.
+#' @return The value of \code{M}, as built in the body.
+#' @export
 nashq_mat <- function(M, name) {
   M <- as.matrix(M)
   if (nrow(M) == 0L || ncol(M) == 0L) {
@@ -13,6 +22,15 @@ nashq_mat <- function(M, name) {
   M
 }
 
+#' nashq_solve
+#'
+#' Part of the nashq_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param A See Usage.
+#' @param b See Usage.
+#' @return The value of \code{[}.
+#' @export
 nashq_solve <- function(A, b) {
   n <- length(b)
   M <- cbind(A, b)
@@ -34,6 +52,15 @@ nashq_solve <- function(A, b) {
   M[, n + 1L]
 }
 
+#' nashq_indifference
+#'
+#' Part of the nashq_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param payoff See Usage.
+#' @param k See Usage.
+#' @return The value of \code{[}.
+#' @export
 nashq_indifference <- function(payoff, k) {
   Aeq <- matrix(0, nrow = k + 1L, ncol = k + 1L)
   beq <- numeric(k + 1L)
@@ -48,6 +75,16 @@ nashq_indifference <- function(payoff, k) {
   sol[seq_len(k)]
 }
 
+#' nashq_payoff
+#'
+#' Part of the nashq_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param M See Usage.
+#' @param p See Usage.
+#' @param q See Usage.
+#' @return The value of \code{tot}, as built in the body.
+#' @export
 nashq_payoff <- function(M, p, q) {
   tot <- 0
   for (i in seq_along(p)) {
@@ -59,6 +96,18 @@ nashq_payoff <- function(M, p, q) {
   tot
 }
 
+#' nashq_is_equilibrium
+#'
+#' Part of the nashq_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param A See Usage.
+#' @param B See Usage.
+#' @param p See Usage.
+#' @param q See Usage.
+#' @param tol See Usage.
+#' @return A logical value.
+#' @export
 nashq_is_equilibrium <- function(A, B, p, q, tol) {
   va <- nashq_payoff(A, p, q)
   vb <- nashq_payoff(B, p, q)
@@ -73,6 +122,16 @@ nashq_is_equilibrium <- function(A, B, p, q, tol) {
   TRUE
 }
 
+#' nashq_equilibria_bimatrix
+#'
+#' Part of the nashq_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param A See Usage.
+#' @param B See Usage.
+#' @param tol Defaults to \code{1e-09}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 nashq_equilibria_bimatrix <- function(A, B, tol = 1e-9) {
   A <- nashq_mat(A, "A"); B <- nashq_mat(B, "B")
   if (nrow(B) != nrow(A) || ncol(B) != ncol(A)) {
@@ -112,6 +171,18 @@ nashq_equilibria_bimatrix <- function(A, B, tol = 1e-9) {
   out
 }
 
+#' nashq_is_saddle
+#'
+#' Part of the nashq_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param A See Usage.
+#' @param B See Usage.
+#' @param p See Usage.
+#' @param q See Usage.
+#' @param tol See Usage.
+#' @return A logical value.
+#' @export
 nashq_is_saddle <- function(A, B, p, q, tol) {
   for (j in seq_len(ncol(A))) {
     pure <- numeric(ncol(A)); pure[j] <- 1
@@ -124,6 +195,16 @@ nashq_is_saddle <- function(A, B, p, q, tol) {
   TRUE
 }
 
+#' nashq_stage_game_type
+#'
+#' Part of the nashq_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param A See Usage.
+#' @param B See Usage.
+#' @param tol Defaults to \code{1e-09}.
+#' @return A list with \code{estimate}, \code{equilibria}, \code{n_equilibria}, \code{has_global_optimal}, \code{has_saddle}, \code{global_optimal}, \code{saddle}, \code{method}.
+#' @export
 nashq_stage_game_type <- function(A, B, tol = 1e-9) {
   A <- nashq_mat(A, "A"); B <- nashq_mat(B, "B")
   eqs <- nashq_equilibria_bimatrix(A, B, tol)
@@ -141,6 +222,18 @@ nashq_stage_game_type <- function(A, B, tol = 1e-9) {
        method = "stage game classification (Hu & Wellman 2003 Defs 12-13)")
 }
 
+#' nashq_select_eq
+#'
+#' Part of the nashq_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param A See Usage.
+#' @param B See Usage.
+#' @param selection See Usage.
+#' @param agent See Usage.
+#' @param tol See Usage.
+#' @return The value of \code{[[}.
+#' @export
 nashq_select_eq <- function(A, B, selection, agent, tol) {
   eqs <- nashq_equilibria_bimatrix(A, B, tol)
   if (length(eqs) == 0L) return(NULL)
@@ -161,6 +254,18 @@ nashq_select_eq <- function(A, B, selection, agent, tol) {
   eqs[[1]]
 }
 
+#' nashq_pick
+#'
+#' Part of the nashq_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param M See Usage.
+#' @param A See Usage.
+#' @param who See Usage.
+#' @param epsilon See Usage.
+#' @param rng See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 nashq_pick <- function(M, A, who, epsilon, rng) {
   if (rng() < epsilon) return(sample.int(length(A), 1L) - 1L)
   if (who == 0L) {
@@ -173,6 +278,28 @@ nashq_pick <- function(M, A, who, epsilon, rng) {
   if (length(best) > 1L) best[as.integer(rng() * length(best)) + 1L] else best
 }
 
+#' nashq_run
+#'
+#' Part of the nashq_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param states See Usage.
+#' @param actions See Usage.
+#' @param step See Usage.
+#' @param rewards See Usage.
+#' @param gamma Defaults to \code{0.9}.
+#' @param alpha Defaults to \code{0.5}.
+#' @param epsilon Defaults to \code{0.1}.
+#' @param episodes Defaults to \code{500}.
+#' @param horizon Defaults to \code{50}.
+#' @param start Defaults to \code{NULL}.
+#' @param selection Defaults to \code{"global_optimal"}.
+#' @param terminal Defaults to \code{NULL}.
+#' @param seed Defaults to \code{0}.
+#' @param agent Defaults to \code{0}.
+#' @param tol Defaults to \code{1e-09}.
+#' @return A list with \code{estimate}, \code{q}, \code{policy}, \code{nash_values}, \code{stage_game_types}, \code{returns}, \code{mean_return_last}, \code{selection}, \code{method}.
+#' @export
 nashq_run <- function(states, actions, step, rewards, gamma = 0.9, alpha = 0.5,
                       epsilon = 0.1, episodes = 500, horizon = 50, start = NULL,
                       selection = "global_optimal", terminal = NULL,
@@ -264,6 +391,13 @@ nashq_run <- function(states, actions, step, rewards, gamma = 0.9, alpha = 0.5,
        method = "Nash Q-learning (Hu & Wellman 2003, Table 2)")
 }
 
+#' nashq_cheatsheet
+#'
+#' Part of the nashq_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 nashq_cheatsheet <- function() {
   paste("nashq: Q^i over JOINT actions; update with the stage-game Nash payoff instead of a max -- Q^i <- (1-a)Q^i + a[r^i + beta pi^1...pi^n Q^i(s')] (Hu & Wellman 2003 eqs. 6-7). Needs every agent's reward. Equilibrium selection changes the update: convergence is proved only for global optimal (Def 12) or saddle (Def 13) stage games. stage_game_type() reports which you have.")
 }

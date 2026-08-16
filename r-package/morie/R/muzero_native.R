@@ -2,6 +2,13 @@
 # Reference: Schrittwieser et al. (2020) "MuZero" arXiv:1911.08265
 # Base R only.
 
+#' muzero_MinMax
+#'
+#' Part of the muzero_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return The value of \code{env}, as built in the body.
+#' @export
 muzero_MinMax <- function() {
   env <- new.env(parent = emptyenv())
   env$lo <- NULL
@@ -17,6 +24,14 @@ muzero_MinMax <- function() {
   env
 }
 
+#' muzero_Node
+#'
+#' Part of the muzero_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param prior Defaults to \code{0}.
+#' @return The value of \code{env}, as built in the body.
+#' @export
 muzero_Node <- function(prior = 0) {
   env <- new.env(parent = emptyenv())
   env$visits <- 0
@@ -39,6 +54,18 @@ muzero_Node <- function(prior = 0) {
   env
 }
 
+#' muzero_select
+#'
+#' Part of the muzero_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param node See Usage.
+#' @param A_keys See Usage.
+#' @param mm See Usage.
+#' @param c1 See Usage.
+#' @param c2 See Usage.
+#' @return The value of \code{best_a}, as built in the body.
+#' @export
 muzero_select <- function(node, A_keys, mm, c1, c2) {
   total <- 0
   for (k in A_keys) total <- total + node$children[[k]]$visits
@@ -56,6 +83,17 @@ muzero_select <- function(node, A_keys, mm, c1, c2) {
   best_a
 }
 
+#' muzero_backup
+#'
+#' Part of the muzero_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param path See Usage.
+#' @param value See Usage.
+#' @param gamma See Usage.
+#' @param mm See Usage.
+#' @return The value of \code{for}.
+#' @export
 muzero_backup <- function(path, value, gamma, mm) {
   g <- value
   for (i in rev(seq_along(path))) {
@@ -67,6 +105,14 @@ muzero_backup <- function(path, value, gamma, mm) {
   }
 }
 
+#' muzero_gamma_rv
+#'
+#' Part of the muzero_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param alpha See Usage.
+#' @return The value of \code{repeat}.
+#' @export
 muzero_gamma_rv <- function(alpha) {
   if (alpha < 1) {
     u <- runif(1)
@@ -83,6 +129,17 @@ muzero_gamma_rv <- function(alpha) {
   }
 }
 
+#' muzero_add_noise
+#'
+#' Part of the muzero_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param prior See Usage.
+#' @param alpha See Usage.
+#' @param frac See Usage.
+#' @param seed See Usage.
+#' @return A numeric value.
+#' @export
 muzero_add_noise <- function(prior, alpha, frac, seed) {
   if (alpha <= 0) stop("muzero: dirichlet_alpha must be > 0")
   if (!(frac >= 0 && frac <= 1)) stop("muzero: exploration_fraction must lie in [0, 1]")
@@ -93,6 +150,26 @@ muzero_add_noise <- function(prior, alpha, frac, seed) {
   (1 - frac) * prior + frac * noise
 }
 
+#' muzero_search
+#'
+#' Part of the muzero_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param observation See Usage.
+#' @param actions See Usage.
+#' @param representation See Usage.
+#' @param dynamics See Usage.
+#' @param prediction See Usage.
+#' @param simulations Defaults to \code{50}.
+#' @param gamma Defaults to \code{0.997}.
+#' @param c1 Defaults to \code{1.25}.
+#' @param c2 Defaults to \code{19652}.
+#' @param dirichlet_alpha Defaults to \code{NULL}.
+#' @param exploration_fraction Defaults to \code{0.25}.
+#' @param temperature Defaults to \code{1}.
+#' @param seed Defaults to \code{0}.
+#' @return A list with \code{estimate}, \code{policy}, \code{action}, \code{value}, \code{visits}, \code{Q}, \code{prior}, \code{n_dynamics_calls}, \code{n_prediction_calls}, \code{simulations}, \code{method}.
+#' @export
 muzero_search <- function(observation, actions, representation, dynamics,
                           prediction, simulations = 50, gamma = 0.997,
                           c1 = 1.25, c2 = 19652, dirichlet_alpha = NULL,
@@ -182,6 +259,13 @@ muzero_search <- function(observation, actions, representation, dynamics,
        method = "MuZero MCTS (Schrittwieser et al. 2020, eqs. 2-5)")
 }
 
+#' muzero_cheatsheet
+#'
+#' Part of the muzero_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 muzero_cheatsheet <- function() {
   paste("muzero: MCTS over a LEARNED latent model -- h (represent), g (dynamics -> reward, next latent), f (predict -> prior, value); no observation is ever reconstructed. pUCT eq. 2 with c1=1.25, c2=19652; backup eqs. 3-4 form the l-k step bootstrapped return G^k and fold it into a running mean; Q is min-max normalised over the whole tree (eq. 5) because values are unbounded. Search policy = visit counts. One g and one f call per simulation.")
 }
