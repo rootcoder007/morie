@@ -18,3 +18,8 @@ Part of the lyapun_native implementation; see the file header for the source it 
 A numeric value.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+y <- as.numeric(arima.sim(list(ar = 0.9), 200))
+autocorrelation_lag(y)
+}
