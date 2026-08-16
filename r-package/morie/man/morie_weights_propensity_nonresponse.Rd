@@ -22,3 +22,8 @@ response probability and non-respondents receive weight 0.
 \description{
 Propensity-score non-response weights (logistic).
 }
+\examples{
+p <- c(0.1, 0.2, 0.5, 1)
+morie_weights_design(p)
+morie_weights_propensity_nonresponse(weights = p, responded = p, X = p)
+}

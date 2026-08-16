@@ -21,3 +21,9 @@ List with \code{value}, \code{d_loss}, \code{g_loss_nonsaturating},
 V = mean log D(x) + mean log(1 - D(G(z))) after clipping to
 [eps, 1-eps]; the accuracy uses the UNCLIPPED probabilities.
 }
+\examples{
+x0 <- c(0.5, -0.3, 1.2)
+alpha_bar <- cumprod(rep(0.98, 10))
+morie_geron_ddpm_forward_process(x0, t = 5, alpha_bar = alpha_bar, seed = 1)
+morie_geron_gan_minimax(real = alpha_bar, fake = alpha_bar, D_real = alpha_bar, D_fake = alpha_bar)
+}

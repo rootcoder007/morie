@@ -19,3 +19,10 @@ List with \code{y_hat} (0-based), \code{mean_probabilities},
 \description{
 y_hat = argmax of the weight-averaged class probabilities.
 }
+\examples{
+Q <- matrix(0.5, 4, 2)
+Qt <- matrix(0.5, 4, 2)
+batch <- list(c(0L, 0L, 1, 1L, 0L), c(1L, 1L, 0, 2L, 1L))
+morie_geron_dqn_loss(Q, Qt, batch, gamma = 0.9)
+morie_geron_soft_voting(probabilities = Q)
+}
