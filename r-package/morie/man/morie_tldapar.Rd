@@ -27,3 +27,6 @@ Part of the tldapar_native implementation; see the file header for the source it
 The value of \code{variable_importance}.
 }
 \keyword{internal}
+\examples{
+str(morie_tldapar(30, V = 5, mode = "split"), max.level = 1)
+}
