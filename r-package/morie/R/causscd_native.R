@@ -21,8 +21,9 @@
 #' @export
 .causscd_check_grid <- function(Y, treated, t_post) {
   Y <- as.matrix(Y)
-  Y <- storage.mode(Y) <- "double"
-  Y <- matrix(as.double(Y), nrow = nrow(Y), ncol = ncol(Y))
+  # the old chained assignment  Y <- storage.mode(Y) <- "double"  set Y
+  # to the STRING "double", so no call ever got past this line
+  storage.mode(Y) <- "double"
   n <- nrow(Y)
   if (n < 2L)
     stop("causscd: need at least two units")
