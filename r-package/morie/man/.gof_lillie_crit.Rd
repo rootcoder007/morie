@@ -14,3 +14,14 @@ Internal helper: Lilliefors critical values at sample size n
 A vector.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+mat <- matrix(0, nrow = 20, ncol = 3)
+for (i in seq_len(20)) {
+  pick <- sample.int(3, 5, replace = TRUE)
+  for (k in pick) mat[i, k] <- mat[i, k] + 1
+}
+res <- fleiss_kappa(mat)
+res$test_statistic
+.gof_lillie_crit(n = i, dist = k)
+}

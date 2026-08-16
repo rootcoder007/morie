@@ -17,3 +17,9 @@ sum of within-row + across-row region-change indicators.
 The value of \code{base}, as built in the body.
 }
 \keyword{internal}
+\examples{
+df <- morie_synth_otis("b01", n = 200L, seed = 1L)
+grid <- morie_otis_causal_grid(df)
+names(grid)
+.otis_alert_volatility_frame(df = df)
+}

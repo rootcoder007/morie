@@ -16,3 +16,10 @@ A \code{morie_rich_result} list with elements \code{method},
 \description{
 Simes test for the global null
 }
+\examples{
+set.seed(1)
+p <- c(runif(50), runif(10, 0, 0.005))
+res <- bonferroni(p, alpha = 0.05)
+res$n_rejected
+simes_combined(p_values = p)
+}

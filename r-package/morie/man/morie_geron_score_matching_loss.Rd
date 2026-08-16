@@ -24,3 +24,10 @@ List with \code{loss}, \code{per_sample}, \code{target}, \code{x_noisy},
 \description{
 L = mean w ||eps/sigma - s_theta(x0 + sigma eps)||^2.
 }
+\examples{
+x_t <- c(0.5, -0.1)
+h_prev <- c(0.2, 0.3)
+Wz <- matrix(0.1, 2, 4); Wr <- matrix(0.1, 2, 4); W <- matrix(0.1, 2, 4)
+morie_geron_gru_cell(x_t, h_prev, Wz, Wr, W)
+morie_geron_score_matching_loss(x0 = W, sigma = h_prev, eps = W, score_pred = W)
+}
