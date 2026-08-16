@@ -18,3 +18,7 @@ Part of the tps_all_analyze implementation; see the file header for the source i
 The value of \code{lapply}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.tps_vc_rows(V)
+}

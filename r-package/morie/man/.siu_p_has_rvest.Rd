@@ -14,3 +14,6 @@
 A logical value.
 }
 \keyword{internal}
+\examples{
+.siu_p_has_rvest()
+}

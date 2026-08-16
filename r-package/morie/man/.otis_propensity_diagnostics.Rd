@@ -18,3 +18,7 @@ Part of the otis_causal implementation; see the file header for the source it fo
 A list with \code{brier}, \code{obs_prevalence}, \code{predicted_prevalence}, \code{log_loss}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.otis_propensity_diagnostics(V, V)
+}

@@ -18,3 +18,6 @@ I0. Matches numpy.kaiser(N, beta).
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.kaiser_window(N = 5L)
+}

@@ -14,3 +14,6 @@ missing.
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.morie_bq_require()
+}

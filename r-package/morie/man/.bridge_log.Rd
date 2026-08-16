@@ -14,3 +14,6 @@ Part of the stat_bridge implementation; see the file header for the source it fo
 A list with \code{write}, \code{call}, \code{getvalue}.
 }
 \keyword{internal}
+\examples{
+.bridge_log()
+}

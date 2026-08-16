@@ -17,3 +17,6 @@ A step of the data_access implementation. Called by \code{morie_ckan_search}, \c
 A character value.
 }
 \keyword{internal}
+\examples{
+.nz()
+}

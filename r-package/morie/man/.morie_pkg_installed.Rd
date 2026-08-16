@@ -17,3 +17,7 @@ A step of the install_extras implementation. Called by \code{.morie_check_system
 A logical value.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.morie_pkg_installed(V)
+}

@@ -19,3 +19,6 @@ A step of the fairness_gan implementation. Called by \code{morie_fairness_ctgan_
 The value of \code{.fairness_result}.
 }
 \keyword{internal}
+\examples{
+.fairness_no_backend_result(title = c(1, 2, 3, 4, 5, 6, 7, 8), call = c(1, 2, 3, 4, 5, 6, 7, 8), note = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

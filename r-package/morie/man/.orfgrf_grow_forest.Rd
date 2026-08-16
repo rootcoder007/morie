@@ -25,3 +25,7 @@ Part of the orfgrf_native implementation; see the file header for the source it 
 A list with \code{trees}, \code{bags}, \code{s}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.orfgrf_grow_forest(V, V)
+}

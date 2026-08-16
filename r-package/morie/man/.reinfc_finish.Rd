@@ -20,3 +20,6 @@ Part of the reinfc_native implementation; see the file header for the source it 
 A list with \code{estimate}, \code{rewards}, \code{baseline}, \code{trajectory}, \code{n_trials}, \code{mean_reward_first}, \code{mean_reward_last}, \code{method}.
 }
 \keyword{internal}
+\examples{
+.reinfc_finish(param = c(1, 2, 3, 4, 5, 6, 7, 8), rewards = c(1, 2, 3, 4, 5, 6, 7, 8), bs = c(1, 2, 3, 4, 5, 6, 7, 8), traj = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

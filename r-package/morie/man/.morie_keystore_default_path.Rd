@@ -14,3 +14,6 @@ explicit user opt-in. The keystore default path therefore resolves to a session-
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.morie_keystore_default_path()
+}

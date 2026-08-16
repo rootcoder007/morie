@@ -19,3 +19,6 @@ Part of the potM_mixedcase_native implementation; see the file header for the so
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.potM_loglik(z = c(1, 2, 3, 4, 5, 6, 7, 8), sigma = 0.5, xi = 5L)
+}

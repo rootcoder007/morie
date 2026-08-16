@@ -14,3 +14,6 @@ A step of the crypto_keystore implementation. Called by \code{.morie_derive_key}
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.morie_keystore_require()
+}

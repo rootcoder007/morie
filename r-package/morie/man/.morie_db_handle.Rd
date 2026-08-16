@@ -18,3 +18,6 @@ A step of the database implementation. Called by \code{morie_cache_list}, \code{
 A list with \code{con}, \code{close}.
 }
 \keyword{internal}
+\examples{
+.morie_db_handle()
+}

@@ -18,3 +18,7 @@ A step of the bootstrap_methods implementation. Called by \code{.bca_interval}, 
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.idx(V, V)
+}

@@ -18,3 +18,6 @@ Part of the toptor_native implementation; see the file header for the source it 
 The value of \code{adj}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.neighbours(n_atoms = 5L, bonds = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)))
+}

@@ -17,3 +17,6 @@ Part of the ml_geron implementation; see the file header for the source it follo
 The value of \code{.morie_gr_xor32}.
 }
 \keyword{internal}
+\examples{
+.morie_gr_crc32(value = 5L)
+}

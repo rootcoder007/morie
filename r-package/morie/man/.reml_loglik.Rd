@@ -20,3 +20,6 @@ Part of the ranova_native implementation; see the file header for the source it 
 A list with \code{ll}, \code{mu}.
 }
 \keyword{internal}
+\examples{
+.reml_loglik(gs = c(1, 2, 3, 4, 5, 6, 7, 8), ns = c(1, 2, 3, 4, 5, 6, 7, 8), s2a = c(1, 2, 3, 4, 5, 6, 7, 8), s2e = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

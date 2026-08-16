@@ -29,3 +29,7 @@ arXiv:1607.06450. The normalisation the paper applies per layer
 before weighting.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.elmo_sigmoid(V)
+}

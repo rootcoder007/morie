@@ -18,3 +18,7 @@ Part of the laniyonu_gentrification_policing implementation; see the file header
 A numeric value.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.lan_gp_morans_i(V, V)
+}

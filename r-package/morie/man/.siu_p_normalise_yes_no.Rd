@@ -17,3 +17,6 @@ Part of the siu_parser implementation; see the file header for the source it fol
 A logical value.
 }
 \keyword{internal}
+\examples{
+.siu_p_normalise_yes_no(v = 5L)
+}

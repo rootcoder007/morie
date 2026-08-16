@@ -22,3 +22,7 @@ Part of the sv_dl_native implementation; see the file header for the source it f
 A list with \code{best}, \code{best_at}.
 }
 \keyword{internal}
+\examples{
+S <- c("a", "b", "c")
+.sv_dl_gotoh(S, S)
+}

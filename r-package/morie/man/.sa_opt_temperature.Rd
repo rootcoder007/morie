@@ -21,3 +21,6 @@ Part of the sa_opt_native implementation; see the file header for the source it 
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.sa_opt_temperature(schedule = 5L, T0 = c(1, 2, 3, 4, 5, 6, 7, 8), k = 5L, n_iter = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5)
+}

@@ -17,3 +17,6 @@ Part of the rgs_native implementation; see the file header for the source it fol
 The value of \code{w}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.rgs_grid_weights(n_t = 5L)
+}

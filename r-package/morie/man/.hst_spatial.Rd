@@ -18,3 +18,7 @@ A step of the hawkes_spatial implementation. Called by \code{morie_hawkes_st_int
 A numeric value.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.hst_spatial(V, V)
+}

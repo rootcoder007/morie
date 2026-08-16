@@ -14,3 +14,6 @@ Part of the modules implementation; see the file header for the source it follow
 The value of \code{[}.
 }
 \keyword{internal}
+\examples{
+.cpads_default_csv()
+}

@@ -17,3 +17,7 @@ U+2581; joining reproduces the input exactly so runs of spaces do not collapse.
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+S <- c("a", "b", "c")
+.units(S)
+}

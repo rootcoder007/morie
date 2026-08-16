@@ -20,3 +20,6 @@ A step of the helpers_ghosal_bnp implementation. Called by \code{morie_ghosal_ne
 A list with \code{times}, \code{S}, \code{H}, \code{dH}, \code{lam0}.
 }
 \keyword{internal}
+\examples{
+.gh_surv_post(t = c(1, 2, 3, 4, 5, 6, 7, 8), ev = c(1, 2, 3, 4, 5, 6, 7, 8), c = c(1, 2, 3, 4, 5, 6, 7, 8), lam0 = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

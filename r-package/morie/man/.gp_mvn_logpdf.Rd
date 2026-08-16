@@ -19,3 +19,6 @@ A step of the abcgp_native implementation. Called by \code{.gp_mw_sampler}, \cod
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.gp_mvn_logpdf(y = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2, 3, 4, 5, 6, 7, 8), cov = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2))
+}

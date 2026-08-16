@@ -17,3 +17,7 @@ Part of the sechsh_native implementation; see the file header for the source it 
 Nothing; this branch always raises.
 }
 \keyword{internal}
+\examples{
+S <- c("a", "b", "c")
+.sechsh_as_bytes(S)
+}

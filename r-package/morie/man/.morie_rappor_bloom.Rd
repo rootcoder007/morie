@@ -20,3 +20,6 @@ Part of the rappor_native implementation; see the file header for the source it 
 A vector, from \code{sort}.
 }
 \keyword{internal}
+\examples{
+.morie_rappor_bloom(value = c(1, 2, 3, 4, 5, 6, 7, 8), k = 5L, h = 0.5)
+}

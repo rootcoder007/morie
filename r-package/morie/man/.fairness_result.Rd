@@ -22,3 +22,7 @@ A step of the fairness_gan implementation. Called by \code{.fairness_no_backend_
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.fairness_result(V, V)
+}

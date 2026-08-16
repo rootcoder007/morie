@@ -20,3 +20,7 @@ A step of the helpers_horowitz implementation. Called by \code{hrzs1}. See the f
 A vector, from \code{as.numeric}.
 }
 \keyword{internal}
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+.hrz_probit_newton(M, M)
+}

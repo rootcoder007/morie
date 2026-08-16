@@ -14,3 +14,6 @@ Part of the llavx_native implementation; see the file header for the source it f
 A character value.
 }
 \keyword{internal}
+\examples{
+.llavx_cheatsheet()
+}

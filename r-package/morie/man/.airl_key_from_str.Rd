@@ -17,3 +17,6 @@ A step of the airl_native implementation. Called by \code{airl}. See the file he
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.airl_key_from_str(s = 5L)
+}

@@ -19,3 +19,6 @@ Part of the sctraj_native implementation; see the file header for the source it 
 The value of \code{[}.
 }
 \keyword{internal}
+\examples{
+.sctraj_interp(s = 5L, curve = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), u = 5L)
+}

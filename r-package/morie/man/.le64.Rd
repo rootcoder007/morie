@@ -17,3 +17,6 @@ Part of the secarg_native implementation; see the file header for the source it 
 The value of \code{as.raw}.
 }
 \keyword{internal}
+\examples{
+.le64(n = 5L)
+}

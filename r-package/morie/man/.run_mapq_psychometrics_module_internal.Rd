@@ -14,3 +14,6 @@ Part of the study_otis_mapq implementation; see the file header for the source i
 A list with \code{mapq_reliability}, \code{mapq_factor_loadings}, \code{mapq_dml_results}.
 }
 \keyword{internal}
+\examples{
+.run_mapq_psychometrics_module_internal()
+}

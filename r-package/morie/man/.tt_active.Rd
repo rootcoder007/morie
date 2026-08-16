@@ -17,3 +17,6 @@ Part of the ttrace_native implementation; see the file header for the source it 
 The value of \code{list}.
 }
 \keyword{internal}
+\examples{
+.tt_active()
+}

@@ -17,3 +17,7 @@ A step of the ipw implementation. Called by \code{morie_run_ebac_selection_ipw_a
 A numeric value.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.ess(V)
+}

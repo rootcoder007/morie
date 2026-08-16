@@ -18,3 +18,6 @@ Part of the tps_statphysics implementation; see the file header for the source i
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.tps_sp_round(x = 5L)
+}

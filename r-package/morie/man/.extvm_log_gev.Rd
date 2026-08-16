@@ -18,3 +18,7 @@ Lifted from the extvm() optimiser closure so the xi ~ 0 (Gumbel) and out-of-supp
 The value of \code{ll}, as built in the body.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.extvm_log_gev(V, V)
+}

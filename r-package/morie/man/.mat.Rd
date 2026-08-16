@@ -23,3 +23,7 @@ Pathak, D., Agrawal, P., Efros, A. A., & Darrell, T. (2017)
 arXiv:1705.05363. Eqs. 2-7.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.mat(V, V)
+}

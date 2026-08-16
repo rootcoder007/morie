@@ -19,3 +19,6 @@ A step of the dml_clustered implementation. Called by \code{morie_dml_clustered}
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.dmlc_multiway_se(infl = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), clusters = c(1, 2, 3, 4, 5, 6, 7, 8), n = 5L)
+}

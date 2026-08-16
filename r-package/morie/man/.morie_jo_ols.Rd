@@ -18,3 +18,7 @@ Part of the ts_joseph implementation; see the file header for the source it foll
 The value of \code{.morie_jo_solve}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.morie_jo_ols(V, V)
+}

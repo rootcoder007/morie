@@ -14,3 +14,6 @@ Part of the schN_native implementation; see the file header for the source it fo
 A character value.
 }
 \keyword{internal}
+\examples{
+.schN_cheatsheet()
+}

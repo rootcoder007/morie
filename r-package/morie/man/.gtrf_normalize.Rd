@@ -18,3 +18,6 @@ A step of the gtrf_native implementation. Called by \code{morie_gtrf_layer}. See
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.gtrf_normalize(X = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), how = 5L)
+}

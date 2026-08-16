@@ -19,3 +19,6 @@ Part of the prgrl_native implementation; see the file header for the source it f
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.prgrl_error(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), w = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

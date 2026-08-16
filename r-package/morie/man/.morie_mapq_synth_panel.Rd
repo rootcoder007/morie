@@ -18,3 +18,6 @@ structure, plus gender/age demographics and a Knowledge Scale (KS) driven by epi
 The value of \code{panel}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.morie_mapq_synth_panel()
+}

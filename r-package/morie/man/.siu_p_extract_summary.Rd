@@ -17,3 +17,7 @@ Part of the siu_parser implementation; see the file header for the source it fol
 The value of \code{substr}.
 }
 \keyword{internal}
+\examples{
+S <- c("a", "b", "c")
+.siu_p_extract_summary(S)
+}

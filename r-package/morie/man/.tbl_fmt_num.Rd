@@ -19,3 +19,6 @@ Part of the tables_pub implementation; see the file header for the source it fol
 The value of \code{s}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.tbl_fmt_num(x = 5L)
+}

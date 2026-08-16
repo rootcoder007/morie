@@ -17,3 +17,7 @@ A step of the helpers_horowitz implementation. Called by \code{hrzb2}, \code{Hrz
 The value of \code{unname}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.hrz_silverman(V)
+}

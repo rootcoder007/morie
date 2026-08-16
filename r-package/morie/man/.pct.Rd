@@ -18,3 +18,7 @@ A step of the bootstrap_methods implementation. Called by \code{.bca_interval}, 
 The value of \code{unname}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.pct(V, V)
+}

@@ -14,3 +14,6 @@ Require the dataset root or stop with a curated error.
 The value of \code{root}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.morie_entheo_require_root()
+}

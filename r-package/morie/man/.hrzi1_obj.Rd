@@ -20,3 +20,6 @@ from the hrzi1() optimiser closure so the zero-norm guard is directly unit-testa
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.hrzi1_obj(b = c(1, 2, 3, 4, 5, 6, 7, 8), X = 5L, y = c(1, 2, 3, 4, 5, 6, 7, 8), h0 = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

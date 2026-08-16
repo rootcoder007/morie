@@ -18,3 +18,6 @@ Part of the synth_otis implementation; see the file header for the source it fol
 A data frame.
 }
 \keyword{internal}
+\examples{
+.morie_otis_b04_panel()
+}

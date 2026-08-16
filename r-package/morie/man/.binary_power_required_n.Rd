@@ -20,3 +20,6 @@ Part of the study_reporting implementation; see the file header for the source i
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.binary_power_required_n(p1 = 5L, p2 = 5L)
+}

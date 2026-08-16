@@ -17,3 +17,7 @@ A step of the chrF_native implementation. Called by \code{.chrF_pr}. See the fil
 The value of \code{d}, as built in the body.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.chrF_counts(V)
+}

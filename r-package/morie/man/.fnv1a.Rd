@@ -28,3 +28,7 @@ compositionality", NIPS 26, 3111-3119 -- the skipgram with negative
 sampling this extends.
 }
 \keyword{internal}
+\examples{
+S <- c("a", "b", "c")
+.fnv1a(S)
+}

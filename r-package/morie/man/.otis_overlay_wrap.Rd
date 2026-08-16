@@ -22,3 +22,7 @@ constructor defined in otis_all_analyze.R -- both files ship in the same R/ coll
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.otis_overlay_wrap(V, V)
+}

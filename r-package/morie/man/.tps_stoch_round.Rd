@@ -18,3 +18,6 @@ Part of the tps_stochastic implementation; see the file header for the source it
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.tps_stoch_round(x = 5L, k = 5L)
+}

@@ -18,3 +18,6 @@ A step of the abcgp_native implementation. Called by \code{gp_fit}. See the file
 The value of \code{pmax}.
 }
 \keyword{internal}
+\examples{
+.gp_as_nugget(nugget = 5L, n = 5L)
+}

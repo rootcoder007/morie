@@ -18,3 +18,6 @@ A step of the helpers_horowitz implementation. Called by \code{hrzn1}. See the f
 The value of \code{H}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.hrz_hermite(t = c(1, 2, 3, 4, 5, 6, 7, 8), J = 5L)
+}

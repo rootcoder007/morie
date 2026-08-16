@@ -17,3 +17,7 @@ A step of the entheo_analysis implementation. Called by \code{.entheo_binding_pe
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.entheo_envelope(V)
+}

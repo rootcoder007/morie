@@ -19,3 +19,6 @@ Part of the pibmd_native implementation; see the file header for the source it f
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.pibmd_kl_kde(q = 0.5, p = 0.5, n_grid = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

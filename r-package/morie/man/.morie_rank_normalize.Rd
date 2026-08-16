@@ -17,3 +17,7 @@ Part of the mcmc_native implementation; see the file header for the source it fo
 A matrix, from \code{matrix}.
 }
 \keyword{internal}
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+.morie_rank_normalize(M)
+}

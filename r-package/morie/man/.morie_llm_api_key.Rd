@@ -14,3 +14,6 @@ Part of the llm implementation; see the file header for the source it follows.
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.morie_llm_api_key()
+}

@@ -18,3 +18,7 @@ Part of the study_core implementation; see the file header for the source it fol
 A list with \code{p}, \code{se}, \code{ci}, \code{n}, \code{n_eff}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.weighted_binary_estimate(V, V)
+}

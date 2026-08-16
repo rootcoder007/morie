@@ -18,3 +18,7 @@ A step of the data_access implementation. Called by \code{morie_ckan_search}, \c
 A character value.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.morie_url_with_params(V)
+}

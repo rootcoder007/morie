@@ -22,3 +22,7 @@ A step of the doob_trends implementation. Called by \code{analyze_doob_full_affi
 The value of \code{structure}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.doob_result(V, V)
+}

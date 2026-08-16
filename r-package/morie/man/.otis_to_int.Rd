@@ -17,3 +17,6 @@ Part of the otis_all_analyze implementation; see the file header for the source 
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.otis_to_int(x = 5L)
+}

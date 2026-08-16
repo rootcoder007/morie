@@ -22,3 +22,6 @@ Part of the netcms_native implementation; see the file header for the source it 
 The value of \code{beta}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.netcms_lasso(V = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), s12 = 5L, lam = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5, tol = 0.5, maxit = 5L)
+}

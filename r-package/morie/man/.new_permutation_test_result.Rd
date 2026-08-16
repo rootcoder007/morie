@@ -23,3 +23,6 @@ A step of the bootstrap_methods implementation. Called by \code{paired_permutati
 The value of \code{structure}.
 }
 \keyword{internal}
+\examples{
+.new_permutation_test_result(observed_statistic = c(1, 2, 3, 4, 5, 6, 7, 8), p_value = c(1, 2, 3, 4, 5, 6, 7, 8), null_distribution = c(1, 2, 3, 4, 5, 6, 7, 8), n_permutations = c(1, 2, 3, 4, 5, 6, 7, 8), alternative = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

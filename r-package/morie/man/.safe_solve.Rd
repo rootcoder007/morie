@@ -17,3 +17,7 @@ A step of the diagnostics implementation. Called by \code{compute_influence}, \c
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.safe_solve(V)
+}

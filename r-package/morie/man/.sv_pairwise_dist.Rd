@@ -17,3 +17,7 @@ Part of the spatial_voting implementation; see the file header for the source it
 A matrix, from \code{as.matrix}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.sv_pairwise_dist(V)
+}

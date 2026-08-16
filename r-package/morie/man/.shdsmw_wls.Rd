@@ -19,3 +19,6 @@ Part of the shdsmw_native implementation; see the file header for the source it 
 A list with \code{coef}, \code{se}.
 }
 \keyword{internal}
+\examples{
+.shdsmw_wls(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), w = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

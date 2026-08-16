@@ -20,3 +20,6 @@ optimiser closure so the zero-norm guard is directly unit-testable.
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.hrzb2_loss(b = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), ys = c(1, 2, 3, 4, 5, 6, 7, 8), h = 0.5)
+}

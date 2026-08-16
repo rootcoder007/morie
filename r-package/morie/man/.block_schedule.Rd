@@ -20,3 +20,6 @@ Part of the study_reporting implementation; see the file header for the source i
 The value of \code{do.call}.
 }
 \keyword{internal}
+\examples{
+.block_schedule(endpoint = c(1, 2, 3, 4, 5, 6, 7, 8), required_n = 5L, strata_levels = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

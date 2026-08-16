@@ -19,3 +19,6 @@ Part of the linwlr_native implementation; see the file header for the source it 
 A matrix, from \code{solve}.
 }
 \keyword{internal}
+\examples{
+.linwlr_lstsq(Z = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), y = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), ridge = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

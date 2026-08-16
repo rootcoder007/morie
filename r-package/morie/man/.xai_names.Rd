@@ -18,3 +18,6 @@ A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_al
 The value of \code{nm}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.xai_names(feature_names = c("a", "b", "c"), d = 3L)
+}

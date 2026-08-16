@@ -14,3 +14,6 @@ Part of the survey implementation; see the file header for the source it follows
 The value of \code{morie_ensure_extras}.
 }
 \keyword{internal}
+\examples{
+.req_survey()
+}

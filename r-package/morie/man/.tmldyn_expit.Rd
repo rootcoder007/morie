@@ -17,3 +17,6 @@ Part of the tmldyn_native implementation; see the file header for the source it 
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.tmldyn_expit(x = 5L)
+}

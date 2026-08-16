@@ -21,3 +21,6 @@ Part of the setT_mixedcase_native implementation; see the file header for the so
 A list with \code{O}, \code{W}.
 }
 \keyword{internal}
+\examples{
+.attend(X = c(1, 2, 3, 4, 5, 6, 7, 8), Y = c(1, 2, 3, 4, 5, 6, 7, 8), Wq = c(1, 2, 3, 4, 5, 6, 7, 8), Wk = c(1, 2, 3, 4, 5, 6, 7, 8), Wv = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

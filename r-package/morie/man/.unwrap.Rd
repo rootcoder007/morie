@@ -18,3 +18,7 @@ A step of the dsp_waveform implementation. Called by \code{morie_dsp_complex_dem
 A vector, from \code{c}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.unwrap(V)
+}

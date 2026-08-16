@@ -18,3 +18,6 @@ Part of the variable_taxonomy implementation; see the file header for the source
 Nothing; the function is called for its effect.
 }
 \keyword{internal}
+\examples{
+.override_for(dataset_name = 5L, col_name = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

@@ -19,3 +19,6 @@ is directly comparable to svmopt.dual_objective up to the sign of the threshold 
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.smoopt_dual_objective(alpha = 0.5, y = 5L, K = 5L)
+}

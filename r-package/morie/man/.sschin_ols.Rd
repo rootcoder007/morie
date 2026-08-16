@@ -19,3 +19,7 @@ Part of the sschin_native implementation; see the file header for the source it 
 A list with \code{beta}, \code{sigma}.
 }
 \keyword{internal}
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+.sschin_ols(M, M)
+}

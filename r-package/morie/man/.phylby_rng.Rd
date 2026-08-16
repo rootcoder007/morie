@@ -17,3 +17,6 @@ Part of the phylby_native implementation; see the file header for the source it 
 The value of \code{function}.
 }
 \keyword{internal}
+\examples{
+.phylby_rng(seed = 5L)
+}

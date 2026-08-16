@@ -14,3 +14,6 @@ Part of the llm implementation; see the file header for the source it follows.
 The value of \code{sub}.
 }
 \keyword{internal}
+\examples{
+.morie_llm_ollama_base()
+}

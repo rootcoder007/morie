@@ -17,3 +17,6 @@ Part of the spatial_voting implementation; see the file header for the source it
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.sv_double_centering(D = 5L)
+}

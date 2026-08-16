@@ -18,3 +18,6 @@ Part of the study_core implementation; see the file header for the source it fol
 A list with \code{p}, \code{se}, \code{ci}.
 }
 \keyword{internal}
+\examples{
+.binary_ci(successes = c(1, 2, 3, 4, 5, 6, 7, 8), n = 5L)
+}

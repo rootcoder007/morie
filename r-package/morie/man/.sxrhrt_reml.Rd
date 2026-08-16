@@ -21,3 +21,6 @@ Part of the sxrhrt_native implementation; see the file header for the source it 
 A list with \code{ll}, \code{beta}, \code{L}.
 }
 \keyword{internal}
+\examples{
+.sxrhrt_reml(theta = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), Km = c(1, 2, 3, 4, 5, 6, 7, 8), male = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

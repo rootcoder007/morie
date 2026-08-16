@@ -14,3 +14,6 @@ gemini -- closed, paid, fast.  env: GOOGLE_API_KEY claude -- closed, paid, fast.
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.siu_llm_default_timeout()
+}

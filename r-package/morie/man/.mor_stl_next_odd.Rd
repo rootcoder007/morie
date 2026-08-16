@@ -17,3 +17,6 @@ Part of the stlAn_native implementation; see the file header for the source it f
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.mor_stl_next_odd(v = 5L)
+}

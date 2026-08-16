@@ -22,3 +22,7 @@ Part of the mrm_primitives_gentrification implementation; see the file header fo
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.mrm_result(V, V)
+}

@@ -18,3 +18,8 @@
 A numeric value.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+S <- c("a", "b", "c")
+.hill_mle(V, S)
+}

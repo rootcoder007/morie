@@ -21,3 +21,6 @@ idx Part of the tmldyn_native implementation; see the file header for the source
 A list with \code{q1}, \code{b}.
 }
 \keyword{internal}
+\examples{
+.fit_q1(pseudo = c(1, 2, 3, 4, 5, 6, 7, 8), L0 = c(1, 2, 3, 4, 5, 6, 7, 8), A0 = c(1, 2, 3, 4, 5, 6, 7, 8), idx = c(1, 2, 3, 4, 5, 6, 7, 8), ridge = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

@@ -21,3 +21,6 @@ arms Part of the dml_clustered implementation; see the file header for the sourc
 A vector, from \code{as.numeric}.
 }
 \keyword{internal}
+\examples{
+.dmlc_ols(X = c(1, 2, 3, 4, 5, 6, 7, 8), idx = 5L, y = c(1, 2, 3, 4, 5, 6, 7, 8), te = c(1, 2, 3, 4, 5, 6, 7, 8), p = 0.5)
+}

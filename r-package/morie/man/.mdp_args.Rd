@@ -18,3 +18,6 @@ Part of the mdpval_native implementation; see the file header for the source it 
 A list with \code{Pm}, \code{R}, \code{S}, \code{A}.
 }
 \keyword{internal}
+\examples{
+.mdp_args(P = 1, R = 5L)
+}

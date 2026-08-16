@@ -19,3 +19,7 @@ endpoint that ollama exposes.  R has no native ``ollamafreeapi`` SDK, so we POST
 The value of \code{.morie_llm_strip_think}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.morie_llm_freeapi_completion(V)
+}

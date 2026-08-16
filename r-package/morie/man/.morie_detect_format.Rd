@@ -17,3 +17,6 @@ back to the URL file extension. Returns one of the morie_fetch formats.
 The value of \code{switch}.
 }
 \keyword{internal}
+\examples{
+.morie_detect_format(url = 5L)
+}
