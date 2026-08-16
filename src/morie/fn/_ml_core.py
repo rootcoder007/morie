@@ -916,50 +916,59 @@ class KMeans:
 
 
 class DBSCAN:
-    def __init__(self, eps=0.5, min_samples=5, **kw):
+    METRICS = ("euclidean", "manhattan", "chebyshev")
+
+    def __init__(self, eps=0.5, min_samples=5, metric="euclidean", **kw):
         del kw
         self.eps = eps
         self.min_samples = min_samples
+        if metric not in self.METRICS:
+            raise ValueError(
+                "unknown metric %r; DBSCAN supports %s"
+                % (metric, ", ".join(self.METRICS)))
+        self.metric = metric
+
+    def _dist(self, a, b):
+        d = len(a)
+        if self.metric == "manhattan":
+            return _math.fsum(abs(a[t] - b[t]) for t in range(d))
+        if self.metric == "chebyshev":
+            return max(abs(a[t] - b[t]) for t in range(d)) if d else 0.0
+        return _math.sqrt(_math.fsum((a[t] - b[t]) ** 2 for t in range(d)))
 
     def fit(self, X, y=None):
         del y
         Xd = _X2d(X)
         n = len(Xd)
-        d = len(Xd[0])
-        eps2 = self.eps * self.eps
+        eps = self.eps
 
-        def neighbors(i):
-            out = []
-            for j in range(n):
-                if _math.fsum((Xd[i][t] - Xd[j][t]) ** 2
-                              for t in range(d)) <= eps2:
-                    out.append(j)
-            return out
+        nbrs = []
+        for i in range(n):
+            nbrs.append([j for j in range(n)
+                         if self._dist(Xd[i], Xd[j]) <= eps])
+        core = [len(nbrs[i]) >= self.min_samples for i in range(n)]
+
         labels = [None] * n
         cid = 0
         for i in range(n):
-            if labels[i] is not None:
-                continue
-            nb = neighbors(i)
-            if len(nb) < self.min_samples:
-                labels[i] = -1
+            if labels[i] is not None or not core[i]:
                 continue
             labels[i] = cid
-            seeds = [j for j in nb if j != i]
+            seeds = [j for j in nbrs[i] if j != i]
             while seeds:
                 j = seeds.pop()
-                if labels[j] == -1:
-                    labels[j] = cid
-                if labels[j] is not None:
+                if labels[j] is not None and labels[j] != -1:
                     continue
                 labels[j] = cid
-                nb2 = neighbors(j)
-                if len(nb2) >= self.min_samples:
-                    seeds.extend(t for t in nb2
-                                 if labels[t] is None
-                                 or labels[t] == -1)
+                if core[j]:
+                    seeds.extend(t for t in nbrs[j]
+                                 if labels[t] is None or labels[t] == -1)
             cid += 1
+        labels = [-1 if v is None else v for v in labels]
+
         self.labels_ = _ac.marr([float(v) for v in labels])
+        self.core_sample_indices_ = _ac.marr(
+            [float(i) for i in range(n) if core[i]])
         return self
 
     def fit_predict(self, X, y=None):
