@@ -20,3 +20,11 @@ A step of the causscd_native implementation. No other function in the package ca
 The value of \code{p}, as built in the body.
 }
 \keyword{internal}
+\examples{
+set.seed(2)
+Y <- matrix(rnorm(80, 10), 8, 10)
+Y[7:8, 7:10] <- Y[7:8, 7:10] + 3
+treated <- c(rep(0L, 6), 1L, 1L)
+r <- morie_causscd(Y, treated, t_post = 6)
+str(r, max.level = 1)
+}
