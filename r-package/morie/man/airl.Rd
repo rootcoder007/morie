@@ -1,0 +1,25 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{airl}
+\alias{airl}
+\title{Adversarial Inverse Reinforcement Learning}
+\usage{
+airl(expert_states, expert_actions, expert_next, expert_log_policy, policy_states, policy_actions, policy_next, policy_log_policy, gamma = 0.99, state_only = TRUE, lr = 0.1, epochs = 500L, l2 = 0)
+}
+\arguments{
+\item{expert_states,expert_actions,expert_next}{Expert transitions.}
+\item{expert_log_policy}{log pi(a|s) under the *current* policy.}
+\item{policy_states,policy_actions,policy_next}{Policy transitions.}
+\item{policy_log_policy}{log pi(a|s) for the policy transitions.}
+\item{gamma}{Discount used in the shaping term.}
+\item{state_only}{TRUE: parameterise g on s alone (Theorem C.1);   FALSE: g(s, a).}
+\item{lr,epochs,l2}{Full-batch gradient ascent on the logistic   log-likelihood with optional ridge penalty.}
+}
+\description{
+Fit the AIRL discriminator and return the recovered reward, following Fu, Luo & Levine (2018) eq. 4 and Algorithm 1.
+}
+\value{
+List with reward (line 6 of Algorithm 1), g, h, f_policy,   f_expert, D_policy, D_expert, accuracy, log_likelihood, gamma,   state_only, method.
+}
+\keyword{internal}
