@@ -5,7 +5,7 @@
 \alias{.tmldyn_logit_irls}
 \title{Logistic IRLS for binary outcome, used by the intervention mechanism}
 \usage{
-.tmldyn_logit_irls(X, a, ridge = 1e-08, max_iter = 50L, tol = 1e-10)
+.tmldyn_logit_irls(X, a, ridge = 1e-08, max_iter = 50L, tol = 1e-10, penalty = 0)
 }
 \arguments{
 \item{X}{A matrix; the body checks with \code{is.matrix}.}
@@ -15,7 +15,7 @@
 \item{tol}{Defaults to \code{1e-10}.}
 }
 \description{
-Part of the tmldyn_native implementation; see the file header for the source it follows.
+A step of the tmldyn_native implementation. Called by \code{.intervention_mechanism}. See the file header for the source the module follows. source it follows.
 }
 \value{
 The value of \code{b}, as built in the body.
