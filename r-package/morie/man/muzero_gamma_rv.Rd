@@ -17,3 +17,6 @@ Part of the muzero_native implementation; see the file header for the source it 
 The value of \code{repeat}.
 }
 \keyword{internal}
+\examples{
+muzero_gamma_rv(alpha = 0.5)
+}

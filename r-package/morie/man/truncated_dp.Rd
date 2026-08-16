@@ -14,3 +14,6 @@ Truncated Dirichlet process draw
 A list with \code{estimate}, \code{weights}, \code{atoms}, \code{discarded_mass}, \code{expected_discarded}, \code{renormalised}, \code{K}, \code{alpha}, \code{method}, \code{note}.
 }
 \keyword{internal}
+\examples{
+truncated_dp(alpha = 0.5, K = 5L)
+}

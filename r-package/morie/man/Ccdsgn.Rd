@@ -35,3 +35,6 @@ on the log scale, sqrt(1/a + 1/b + 1/c + 1/d).
 Cornfield (1951), Proc. 2nd Berkeley Symp. 4:135-148;
 Woolf (1955), Ann. Human Genetics 19(4):251-253.
 }
+\examples{
+Ccdsgn(cases = list(a = 1, b = 2), controls = list(a = 1, b = 2))
+}

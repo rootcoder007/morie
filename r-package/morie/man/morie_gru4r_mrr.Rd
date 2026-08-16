@@ -19,3 +19,6 @@ morie_gru4r_mrr(ranked, target, kk = 20)
 Scalar.
 }
 \keyword{internal}
+\examples{
+morie_gru4r_mrr(ranked = c(1, 2, 3, 4, 5, 6, 7, 8), target = 5L)
+}

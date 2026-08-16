@@ -18,3 +18,6 @@ Part of the mafft_native implementation; see the file header for the source it f
 A list with \code{M}, \code{f}.
 }
 \keyword{internal}
+\examples{
+mafft_default_raw(seq_type = 5L)
+}

@@ -23,3 +23,6 @@ One of two values, depending on the branch taken.
 Base R only.
 }
 \keyword{internal}
+\examples{
+mpfn_sig(x = 5L)
+}

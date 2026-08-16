@@ -19,3 +19,6 @@ Nothing is mixed across channels, so the channel identity survives -- and becaus
 A list with \code{tokens}, \code{D}, \code{n_patches}, \code{patch_len}, \code{n_tokens_total}, \code{design}, \code{note}.
 }
 \keyword{internal}
+\examples{
+channel_independent_tokens(X = c(1, 2, 3, 4, 5, 6, 7, 8), patch_len = 5L)
+}

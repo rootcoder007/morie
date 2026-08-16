@@ -36,3 +36,6 @@ A list with \code{estimate}, \code{motifs}, \code{alphabet}, \code{w}, \code{n_s
 Base R only.
 }
 \keyword{internal}
+\examples{
+motfsr_run(sequences = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), w = 5L)
+}

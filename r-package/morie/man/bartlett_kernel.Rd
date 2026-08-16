@@ -14,3 +14,6 @@ Bartlett (triangular) kernel
 The value of \code{if}.
 }
 \keyword{internal}
+\examples{
+bartlett_kernel(x = 5L)
+}

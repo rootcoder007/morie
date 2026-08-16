@@ -23,3 +23,6 @@ A numeric value.
 Base R only.
 }
 \keyword{internal}
+\examples{
+motfsr_mu(coded = c(1, 2, 3, 4, 5, 6, 7, 8), L = 5L)
+}

@@ -14,3 +14,6 @@ Invert the whitespace escape
 The value of \code{.unescape_whitespace}.
 }
 \keyword{internal}
+\examples{
+unescape_whitespace(text = 5L)
+}

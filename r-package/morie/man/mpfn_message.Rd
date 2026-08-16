@@ -26,3 +26,6 @@ A vector, from \code{as.numeric}.
 Base R only.
 }
 \keyword{internal}
+\examples{
+mpfn_message(h_v = c(1, 2, 3, 4, 5, 6, 7, 8), h_w = c(1, 2, 3, 4, 5, 6, 7, 8), e_vw = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

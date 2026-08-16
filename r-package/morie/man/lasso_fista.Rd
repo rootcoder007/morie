@@ -22,3 +22,6 @@ Minimises \code{1/2 ||Ax - b||^2 + lam * ||x||_1}; the prox is soft-thresholding
 A list with \code{estimate}, \code{x}, \code{fun},   \code{objective}, \code{iterations}, \code{L}, \code{accelerated},   \code{converged}, \code{method}, \code{lambda}, \code{L}.
 }
 \keyword{internal}
+\examples{
+lasso_fista(A = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L, lam = 5L)
+}

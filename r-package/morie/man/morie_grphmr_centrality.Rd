@@ -21,3 +21,6 @@ Adds a learnable vector indexed by node degree to the input features. Attention 
 A list with \code{encoding}, \code{degrees},   \code{note}.
 }
 \keyword{internal}
+\examples{
+morie_grphmr_centrality(adj = c(1, 2, 3, 4, 5, 6, 7, 8), n = 5L, z_in = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

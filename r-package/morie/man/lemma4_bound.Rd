@@ -18,3 +18,6 @@ lemma4_bound(counts, gamma)
 A list with \code{bound}, \code{raw}.
 }
 \keyword{internal}
+\examples{
+lemma4_bound(counts = c(1, 2, 3, 4, 5, 6, 7, 8), gamma = 0.5)
+}

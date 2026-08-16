@@ -24,3 +24,6 @@ The value of \code{z}, as built in the body.
 Base R only.
 }
 \keyword{internal}
+\examples{
+motfsr_normalise_windows(z = c(1, 2, 3, 4, 5, 6, 7, 8), w = 5L)
+}

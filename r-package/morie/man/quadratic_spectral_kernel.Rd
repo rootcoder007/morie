@@ -14,3 +14,6 @@ Quadratic spectral kernel
 A numeric value.
 }
 \keyword{internal}
+\examples{
+quadratic_spectral_kernel(x = 5L)
+}

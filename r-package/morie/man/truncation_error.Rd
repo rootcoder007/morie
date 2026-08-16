@@ -14,3 +14,6 @@ Closed-form expected tail (alpha/(1+alpha))^K
 A list with \code{expected_tail}, \code{kept}, \code{alpha}, \code{K}, \code{per_stick_factor}, \code{note}.
 }
 \keyword{internal}
+\examples{
+truncation_error(alpha = 0.5, K = 5L)
+}

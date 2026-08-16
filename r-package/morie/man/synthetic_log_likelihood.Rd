@@ -14,3 +14,6 @@ Returns \code{log_lik, mu, cov} per Wilkinson eq. (2) and Meeds & Welling eq. (9
 A list with \code{log_lik}, \code{mu}, \code{cov}.
 }
 \keyword{internal}
+\examples{
+synthetic_log_likelihood(draws = c(1, 2, 3, 4, 5, 6, 7, 8), obs = 5L)
+}

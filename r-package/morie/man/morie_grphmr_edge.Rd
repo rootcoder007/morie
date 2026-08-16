@@ -19,3 +19,6 @@ For each pair the edge features along the path are weighted by \code{w_table[ste
 A list with \code{edge_bias} (named numeric vector),   \code{note}.
 }
 \keyword{internal}
+\examples{
+morie_grphmr_edge(paths = c(1, 2, 3, 4, 5, 6, 7, 8), edge_features = c(1, 2, 3, 4, 5, 6, 7, 8), w_table = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

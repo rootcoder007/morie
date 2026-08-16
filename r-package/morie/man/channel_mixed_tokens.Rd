@@ -19,3 +19,6 @@ blended. Provided for contrast. Summing across channels at the first projection 
 A list with \code{tokens}, \code{n_patches}, \code{n_tokens_total}, \code{design}, \code{note}.
 }
 \keyword{internal}
+\examples{
+channel_mixed_tokens(X = c(1, 2, 3, 4, 5, 6, 7, 8), patch_len = 5L)
+}

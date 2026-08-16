@@ -19,3 +19,6 @@ composition of T queries, each (2 gamma, 0)-DP, without looking at the votes.
 A numeric value.
 }
 \keyword{internal}
+\examples{
+epsilon_data_independent(T = 5L, gamma = 0.5, delta = 0.5)
+}

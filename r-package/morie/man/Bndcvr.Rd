@@ -36,3 +36,6 @@ The coverage requirements distinguished here are equations
 (2010), Econometrica 78(1), 119-157, \doi{10.3982/ECTA7502}, is the
 stub's attribution.
 }
+\examples{
+Bndcvr(lower = c(1, 2, 3, 4, 5, 6, 7, 8), upper = c(1, 2, 3, 4, 5, 6, 7, 8), theta_true = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
