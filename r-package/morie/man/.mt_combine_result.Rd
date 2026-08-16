@@ -8,10 +8,10 @@
 .mt_combine_result(method, stat, p_comb, interp, extra = list())
 }
 \arguments{
-\item{method}{See Usage.}
-\item{stat}{See Usage.}
-\item{p_comb}{See Usage.}
-\item{interp}{See Usage.}
+\item{method}{Carried through into a list the body builds.}
+\item{stat}{Carried through into a list the body builds.}
+\item{p_comb}{Carried through into a list the body builds.}
+\item{interp}{Carried through into a list the body builds.}
 \item{extra}{Defaults to \code{list()}.}
 }
 \description{

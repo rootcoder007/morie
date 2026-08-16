@@ -8,12 +8,12 @@
 .otis_wrap(title, summary_lines, tables = list(), interpretation = NULL, warnings = character(0), payload = NULL)
 }
 \arguments{
-\item{title}{See Usage.}
-\item{summary_lines}{See Usage.}
+\item{title}{Carried through into a list the body builds.}
+\item{summary_lines}{Carried through into a list the body builds.}
 \item{tables}{Iterated over elementwise, with \code{Filter}. Defaults to \code{list()}.}
 \item{interpretation}{Defaults to \code{NULL}.}
-\item{warnings}{Defaults to \code{character(0)}.}
-\item{payload}{Defaults to \code{NULL}.}
+\item{warnings}{Carried through into a list the body builds. Defaults to \code{character(0)}.}
+\item{payload}{Carried through into a list the body builds.}
 }
 \description{
 Part of the otis_all_analyze implementation; see the file header for the source it follows.

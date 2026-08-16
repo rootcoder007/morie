@@ -8,7 +8,7 @@
 .otis_causal_estimate(estimator, ate, ate_se, ate_pval, n, n_treated, p_treat, notes = list())
 }
 \arguments{
-\item{estimator}{See Usage.}
+\item{estimator}{Carried through into a list the body builds.}
 \item{ate}{Numeric; combined arithmetically in the body.}
 \item{ate_se}{Numeric; combined arithmetically in the body.}
 \item{ate_pval}{Coerced to numeric by the body, with \code{as.numeric}.}

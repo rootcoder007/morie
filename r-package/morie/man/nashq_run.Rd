@@ -18,7 +18,7 @@ nashq_run(states, actions, step, rewards, gamma = 0.9, alpha = 0.5, epsilon = 0.
 \item{episodes}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{500}.}
 \item{horizon}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{50}.}
 \item{start}{Optional; may be \code{NULL}. A function; the body checks with \code{is.function}.}
-\item{selection}{Defaults to \code{"global_optimal"}.}
+\item{selection}{Carried through into a list the body builds. Defaults to \code{"global_optimal"}.}
 \item{terminal}{Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.}
 \item{seed}{Defaults to \code{0}.}
 \item{agent}{Defaults to \code{0}.}

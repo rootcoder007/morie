@@ -33,7 +33,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param con Defaults to \code{NULL}.
+#' @param con The body requires: `con` must be a DBIConnection (see `?DBI::dbConnect`).
 #' @param db_path Passed to \code{morie_db_connect}.
 #' @return A list with \code{con}, \code{close}.
 #' @export

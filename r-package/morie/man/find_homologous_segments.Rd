@@ -15,7 +15,7 @@ find_homologous_segments(group1, group2, scoring, weights1 = NULL, weights2 = NU
 \item{weights2}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 \item{seq_type}{Defaults to \code{"aa"}.}
 \item{window}{Numeric; combined arithmetically in the body. Defaults to \code{30L}.}
-\item{n_peaks}{Defaults to \code{20L}.}
+\item{n_peaks}{The body requires: mafft: window, n_peaks and max_len must be positive. Defaults to \code{20L}.}
 \item{threshold}{Defaults to \code{0.7}.}
 \item{max_len}{Numeric; combined arithmetically in the body. Defaults to \code{150L}.}
 \item{corr_method}{Defaults to \code{"fft"}.}

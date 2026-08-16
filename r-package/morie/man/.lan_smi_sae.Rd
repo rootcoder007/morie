@@ -8,7 +8,7 @@
 .lan_smi_sae(survey_df, survey_trait_col, survey_covariate_cols, area_df, area_population_col)
 }
 \arguments{
-\item{survey_df}{See Usage.}
+\item{survey_df}{The body requires: survey_df missing columns:.}
 \item{survey_trait_col}{See Usage.}
 \item{survey_covariate_cols}{See Usage.}
 \item{area_df}{A vector; indexed elementwise.}

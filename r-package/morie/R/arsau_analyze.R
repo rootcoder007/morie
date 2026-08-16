@@ -116,14 +116,14 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param title See Usage.
-#' @param call See Usage.
+#' @param title Carried through into a list the body builds.
+#' @param call Carried through into a list the body builds.
 #' @param sub_results A vector; its length is taken and its elements indexed.
 #' @param data Optional; may be \code{NULL}. A matrix; passed to \code{nrow}.
-#' @param sidecar See Usage.
-#' @param year_or_range See Usage.
-#' @param kind See Usage.
-#' @param language See Usage.
+#' @param sidecar Carried through into a list the body builds.
+#' @param year_or_range Carried through into a list the body builds.
+#' @param kind Carried through into a list the body builds.
+#' @param language Carried through into a list the body builds.
 #' @param is_valid A flag; the body branches on it.
 #' @param extra_interpretation Defaults to \code{""}.
 #' @return The value of \code{payload}, as built in the body.

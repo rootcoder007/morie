@@ -8,7 +8,7 @@
 .prsLR_leaf(sym)
 }
 \arguments{
-\item{sym}{See Usage.}
+\item{sym}{Carried through into a list the body builds.}
 }
 \description{
 Part of the prsLR_native implementation; see the file header for the source it follows.

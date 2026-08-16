@@ -8,7 +8,7 @@
 .hawkes_param_names(kernel)
 }
 \arguments{
-\item{kernel}{See Usage.}
+\item{kernel}{The body requires: unknown kernel:.}
 }
 \description{
 A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}. See the file header for the source the module follows.

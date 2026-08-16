@@ -58,7 +58,7 @@ NULL
 #' Part of the toronto_neighbourhoods implementation; see the file
 #' header for the source it follows.
 #'
-#' @param version See Usage.
+#' @param version The body requires: unknown version:.
 #' @return The value of \code{switch}.
 #' @export
 .morie_to_fixture_name <- function(version) {

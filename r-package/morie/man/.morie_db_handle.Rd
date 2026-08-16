@@ -8,7 +8,7 @@
 .morie_db_handle(con = NULL, db_path = NULL)
 }
 \arguments{
-\item{con}{Defaults to \code{NULL}.}
+\item{con}{The body requires: `con` must be a DBIConnection (see `?DBI::dbConnect`).}
 \item{db_path}{Passed to \code{morie_db_connect}.}
 }
 \description{

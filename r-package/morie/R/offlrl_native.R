@@ -124,15 +124,15 @@ offlrl_safe_max_key <- function(qmap, s, A) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param dataset See Usage.
+#' @param dataset The body requires: offlrl: dataset must be non-empty.
 #' @param states Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.
 #' @param actions Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.
 #' @param alpha Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @param gamma Numeric; combined arithmetically in the body. Defaults to \code{0.99}.
 #' @param variant One of \code{"H"}, \code{"mu"}, \code{"rho"}. Defaults to \code{"H"}.
 #' @param backup One of \code{"max"}, \code{"pi"}. Defaults to \code{"max"}.
-#' @param policy Defaults to \code{NULL}.
-#' @param mu Defaults to \code{NULL}.
+#' @param policy The body requires: offlrl: variant='rho' needs policy(a|s) to play the role of pi^\{k-1\}.
+#' @param mu The body requires: offlrl: variant must be one of c('H','rho','mu'), got '.
 #' @param lr Numeric; combined arithmetically in the body. Defaults to \code{0.5}.
 #' @param iters Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000}.
 #' @param tol Defaults to \code{1e-12}.

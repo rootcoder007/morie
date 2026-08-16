@@ -8,12 +8,12 @@
 .new_diag_report(residuals, influence, collinearity, gof, spec_tests, assessment)
 }
 \arguments{
-\item{residuals}{See Usage.}
-\item{influence}{See Usage.}
-\item{collinearity}{See Usage.}
-\item{gof}{See Usage.}
-\item{spec_tests}{See Usage.}
-\item{assessment}{See Usage.}
+\item{residuals}{Carried through into a list the body builds.}
+\item{influence}{Carried through into a list the body builds.}
+\item{collinearity}{Carried through into a list the body builds.}
+\item{gof}{Carried through into a list the body builds.}
+\item{spec_tests}{Carried through into a list the body builds.}
+\item{assessment}{Carried through into a list the body builds.}
 }
 \description{
 A step of the diagnostics implementation. Called by \code{full_diagnostics}. See the file header for the source the module follows.

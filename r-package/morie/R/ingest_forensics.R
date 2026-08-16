@@ -65,7 +65,7 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param api_key Defaults to \code{NULL}.
+#' @param api_key The body requires: and either pass api_key=... or export.
 #' @return The value of \code{key}, as built in the body.
 #' @export
 .morie_forensics_require_fbi_key <- function(api_key = NULL) {

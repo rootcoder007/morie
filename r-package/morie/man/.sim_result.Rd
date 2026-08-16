@@ -8,11 +8,11 @@
 .sim_result(title, call, summary_lines = list(), warnings = character(0), interpretation = "", ...)
 }
 \arguments{
-\item{title}{See Usage.}
-\item{call}{See Usage.}
-\item{summary_lines}{Defaults to \code{list()}.}
-\item{warnings}{Defaults to \code{character(0)}.}
-\item{interpretation}{Defaults to \code{""}.}
+\item{title}{Carried through into a list the body builds.}
+\item{call}{Carried through into a list the body builds.}
+\item{summary_lines}{Carried through into a list the body builds. Defaults to \code{list()}.}
+\item{warnings}{Carried through into a list the body builds. Defaults to \code{character(0)}.}
+\item{interpretation}{Carried through into a list the body builds. Defaults to \code{""}.}
 \item{...}{Passed through.}
 }
 \description{

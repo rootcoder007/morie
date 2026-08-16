@@ -11,8 +11,8 @@
 \item{X}{A matrix; passed to \code{ncol}.}
 \item{y}{Numeric; combined arithmetically in the body.}
 \item{offset_vec}{Numeric; combined arithmetically in the body.}
-\item{max_iter}{See Usage.}
-\item{tol}{See Usage.}
+\item{max_iter}{Carried through into a list the body builds.}
+\item{tol}{Carried through into a list the body builds.}
 }
 \description{
 Part of the laniyonu_smi_force_disparity implementation; see the file header for the source it follows.

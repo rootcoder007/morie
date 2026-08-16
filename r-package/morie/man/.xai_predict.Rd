@@ -8,7 +8,7 @@
 .xai_predict(predict_fn, X)
 }
 \arguments{
-\item{predict_fn}{See Usage.}
+\item{predict_fn}{The body requires: predict_fn must return one prediction per row of X.}
 \item{X}{A matrix; passed to \code{nrow}.}
 }
 \description{

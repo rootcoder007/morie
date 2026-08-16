@@ -8,15 +8,15 @@
 .new_jackknife_result(estimate, se, ci_lower, ci_upper, bias, n, jackknife_estimates, pseudovalues, influence_values)
 }
 \arguments{
-\item{estimate}{See Usage.}
-\item{se}{See Usage.}
-\item{ci_lower}{See Usage.}
-\item{ci_upper}{See Usage.}
-\item{bias}{See Usage.}
-\item{n}{See Usage.}
-\item{jackknife_estimates}{See Usage.}
-\item{pseudovalues}{See Usage.}
-\item{influence_values}{See Usage.}
+\item{estimate}{Carried through into a list the body builds.}
+\item{se}{Carried through into a list the body builds.}
+\item{ci_lower}{Carried through into a list the body builds.}
+\item{ci_upper}{Carried through into a list the body builds.}
+\item{bias}{Carried through into a list the body builds.}
+\item{n}{Carried through into a list the body builds.}
+\item{jackknife_estimates}{Carried through into a list the body builds.}
+\item{pseudovalues}{Carried through into a list the body builds.}
+\item{influence_values}{Carried through into a list the body builds.}
 }
 \description{
 A step of the bootstrap_methods implementation. Called by \code{delete_d_jackknife}, \code{jackknife}. See the file header for the source the module follows.

@@ -11,8 +11,8 @@
 \item{X}{A matrix; passed to \code{nrow}.}
 \item{y}{See Usage.}
 \item{K}{Numeric; combined arithmetically in the body.}
-\item{max_iter}{See Usage.}
-\item{tol}{See Usage.}
+\item{max_iter}{Carried through into a list the body builds.}
+\item{tol}{Carried through into a list the body builds.}
 }
 \description{
 binary problems and constrain beta to be shared while letting cutpoint intercepts differ.  Mirrors _logit_fit_no_intercept().

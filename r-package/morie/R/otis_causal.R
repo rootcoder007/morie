@@ -242,7 +242,7 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param estimator See Usage.
+#' @param estimator Carried through into a list the body builds.
 #' @param ate Numeric; combined arithmetically in the body.
 #' @param ate_se Numeric; combined arithmetically in the body.
 #' @param ate_pval Coerced to numeric by the body, with \code{as.numeric}.

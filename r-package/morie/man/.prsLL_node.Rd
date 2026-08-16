@@ -8,8 +8,8 @@
 .prsLL_node(sym, kids)
 }
 \arguments{
-\item{sym}{See Usage.}
-\item{kids}{See Usage.}
+\item{sym}{Carried through into a list the body builds.}
+\item{kids}{Carried through into a list the body builds.}
 }
 \description{
 Part of the prsLL_native implementation; see the file header for the source it follows.

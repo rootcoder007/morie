@@ -117,8 +117,8 @@ mpfn_message_passing <- function(H0, adj, edge_features, T = 3, A = NULL,
 #' @param H Iterated over elementwise, with \code{lapply}.
 #' @param how One of \code{"gated"}, \code{"mean"}, \code{"sum"}. Defaults to \code{"sum"}.
 #' @param H0 Optional; may be \code{NULL}. A vector; indexed elementwise.
-#' @param i_fn Defaults to \code{NULL}.
-#' @param j_fn Defaults to \code{NULL}.
+#' @param i_fn The body requires: mpfn: the gated readout needs H0, i_fn and j_fn.
+#' @param j_fn The body requires: mpfn: the gated readout needs H0, i_fn and j_fn.
 #' @return The value of \code{acc}, as built in the body.
 #' @export
 mpfn_readout <- function(H, how = "sum", H0 = NULL, i_fn = NULL, j_fn = NULL) {

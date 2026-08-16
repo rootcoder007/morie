@@ -31,11 +31,11 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param title See Usage.
-#' @param call See Usage.
-#' @param summary_lines Defaults to \code{list()}.
-#' @param warnings Defaults to \code{character(0)}.
-#' @param interpretation Defaults to \code{""}.
+#' @param title Carried through into a list the body builds.
+#' @param call Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
 #' @param ... Passed through.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -344,10 +344,10 @@ storey_q <- function(p_values, alpha = 0.05, lambda_param = 0.5,
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param method See Usage.
-#' @param stat See Usage.
-#' @param p_comb See Usage.
-#' @param interp See Usage.
+#' @param method Carried through into a list the body builds.
+#' @param stat Carried through into a list the body builds.
+#' @param p_comb Carried through into a list the body builds.
+#' @param interp Carried through into a list the body builds.
 #' @param extra Defaults to \code{list()}.
 #' @return The value of \code{out}, as built in the body.
 #' @export

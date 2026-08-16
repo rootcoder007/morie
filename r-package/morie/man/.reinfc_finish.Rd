@@ -11,7 +11,7 @@
 \item{param}{Coerced to list by the body, with \code{as.list}.}
 \item{rewards}{A vector; its length is taken and its elements indexed.}
 \item{bs}{Coerced to numeric by the body, with \code{as.numeric}.}
-\item{traj}{See Usage.}
+\item{traj}{Carried through into a list the body builds.}
 }
 \description{
 Part of the reinfc_native implementation; see the file header for the source it follows.

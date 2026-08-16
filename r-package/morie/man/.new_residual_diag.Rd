@@ -8,15 +8,15 @@
 .new_residual_diag(raw, std, student, deviance, pearson, fitted, normality, hetero, autoc, outlier_indices)
 }
 \arguments{
-\item{raw}{See Usage.}
-\item{std}{See Usage.}
-\item{student}{See Usage.}
-\item{deviance}{See Usage.}
-\item{pearson}{See Usage.}
-\item{fitted}{See Usage.}
-\item{normality}{See Usage.}
-\item{hetero}{See Usage.}
-\item{autoc}{See Usage.}
+\item{raw}{Carried through into a list the body builds.}
+\item{std}{Carried through into a list the body builds.}
+\item{student}{Carried through into a list the body builds.}
+\item{deviance}{Carried through into a list the body builds.}
+\item{pearson}{Carried through into a list the body builds.}
+\item{fitted}{Carried through into a list the body builds.}
+\item{normality}{Carried through into a list the body builds.}
+\item{hetero}{Carried through into a list the body builds.}
+\item{autoc}{Carried through into a list the body builds.}
 \item{outlier_indices}{A vector; its length is taken.}
 }
 \description{

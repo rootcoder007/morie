@@ -127,7 +127,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param corpus See Usage.
+#' @param corpus The body requires: fasttext: corpus must not be None.
 #' @return The value of \code{docs}, as built in the body.
 #' @export
 .as_docs <- function(corpus) {

@@ -16,7 +16,7 @@ muzero_search(observation, actions, representation, dynamics, prediction, simula
 \item{simulations}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50}.}
 \item{gamma}{Defaults to \code{0.997}.}
 \item{c1}{Defaults to \code{1.25}.}
-\item{c2}{Defaults to \code{19652}.}
+\item{c2}{The body requires: muzero: c2 must be > 0. Defaults to \code{19652}.}
 \item{dirichlet_alpha}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 \item{exploration_fraction}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.25}.}
 \item{temperature}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
