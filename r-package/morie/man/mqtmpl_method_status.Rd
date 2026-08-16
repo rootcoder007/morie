@@ -8,7 +8,7 @@
 mqtmpl_method_status(method = NULL)
 }
 \arguments{
-\item{method}{Defaults to \code{NULL}.}
+\item{method}{Optional; may be \code{NULL}. Carried through into a list the body builds.}
 }
 \description{
 Part of the mqtmpl_native implementation; see the file header for the source it follows.

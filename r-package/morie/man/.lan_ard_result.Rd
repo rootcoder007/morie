@@ -8,10 +8,10 @@
 .lan_ard_result(title, call, interpretation = "", warnings_ = character(0), ...)
 }
 \arguments{
-\item{title}{See Usage.}
-\item{call}{See Usage.}
-\item{interpretation}{Defaults to \code{""}.}
-\item{warnings_}{Defaults to \code{character(0)}.}
+\item{title}{Carried through into a list the body builds.}
+\item{call}{Carried through into a list the body builds.}
+\item{interpretation}{Carried through into a list the body builds. Defaults to \code{""}.}
+\item{warnings_}{Carried through into a list the body builds. Defaults to \code{character(0)}.}
 \item{...}{Passed through.}
 }
 \description{

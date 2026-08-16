@@ -106,7 +106,7 @@ san_score <- function(eeg, fmri = NULL) {
 #' the source it follows.
 #'
 #' @param record_or_eeg A list; the body reads \code{$fmri} from it.
-#' @param fmri See Usage.
+#' @param fmri Carried through into a list the body builds.
 #' @return A list with \code{e_dmt}, \code{f_dmt}, \code{e_pcb}, \code{f_pcb}.
 #' @export
 .entheo_extract_pair <- function(record_or_eeg, fmri) {

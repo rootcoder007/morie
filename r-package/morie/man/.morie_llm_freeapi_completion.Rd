@@ -8,7 +8,7 @@
 .morie_llm_freeapi_completion(messages, model = NULL, timeout = 180)
 }
 \arguments{
-\item{messages}{See Usage.}
+\item{messages}{Carried through into a list the body builds.}
 \item{model}{Defaults to \code{NULL}.}
 \item{timeout}{Defaults to \code{180}.}
 }

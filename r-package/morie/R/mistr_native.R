@@ -241,7 +241,7 @@ mistr_grouped_query_attention <- function(Q, K, V, n_heads, n_kv_heads,
 #' @param W1 See Usage.
 #' @param W2 See Usage.
 #' @param W3 See Usage.
-#' @param n_heads See Usage.
+#' @param n_heads Carried through into a list the body builds.
 #' @param n_kv_heads Numeric; combined arithmetically in the body.
 #' @param window Coerced to integer by the body, with \code{as.integer}.
 #' @param norm1 Defaults to \code{NULL}.

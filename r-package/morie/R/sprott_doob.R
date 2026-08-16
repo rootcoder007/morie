@@ -55,12 +55,12 @@ NULL
 #' downstream `describe()` / `morie_print_rich()` consumers can render
 #' the same multi-section paragraph layout from R.
 #'
-#' @param title See Usage.
-#' @param summary_lines Defaults to \code{list()}.
-#' @param tables Defaults to \code{list()}.
-#' @param interpretation Defaults to \code{""}.
+#' @param title Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param tables Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
 #' @param warnings Coerced to character by the body, with \code{as.character}. Defaults to \code{character()}.
-#' @param payload Defaults to \code{list()}.
+#' @param payload Carried through into a list the body builds. Defaults to \code{list()}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .morie_siu_rich <- function(title, summary_lines = list(), tables = list(),

@@ -233,7 +233,7 @@ squared_exponential <- function(a, b, amplitude = 1.0, length_scale = 1.0) {
 #' @param kernel Passed to \code{.kernel}. Defaults to \code{"matern52"}.
 #' @param amplitude Defaults to \code{1}.
 #' @param length_scale Defaults to \code{1}.
-#' @param noise Defaults to \code{1e-08}.
+#' @param noise The body requires: bayopt: noise must be non-negative. Defaults to \code{1e-08}.
 #' @param mean Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{mean}, \code{variance}, \code{sd}.
 #' @export
@@ -537,8 +537,8 @@ acquire <- function(mu, sd, best, acq = "ei", kappa = 2.0, xi = 0.0) {
 #' @param bounds Iterated over elementwise, with \code{lapply}.
 #' @param n_iter Coerced to integer by the body, with \code{as.integer}. Defaults to \code{20}.
 #' @param n_init Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.
-#' @param acq Defaults to \code{"ei"}.
-#' @param kernel Defaults to \code{"matern52"}.
+#' @param acq Carried through into a list the body builds. Defaults to \code{"ei"}.
+#' @param kernel Carried through into a list the body builds. Defaults to \code{"matern52"}.
 #' @param amplitude Defaults to \code{1}.
 #' @param length_scale Defaults to \code{1}.
 #' @param noise Defaults to \code{1e-08}.
@@ -549,7 +549,7 @@ acquire <- function(mu, sd, best, acq = "ei", kappa = 2.0, xi = 0.0) {
 #' @param X0 Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.
 #' @param y0 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param inner One of \code{"gradient"}, \code{"random"}. Defaults to \code{"gradient"}.
-#' @param n_starts Defaults to \code{8}.
+#' @param n_starts The body requires: bayopt: n_starts must be positive. Defaults to \code{8}.
 #' @return A list with \code{estimate}, \code{x_best}, \code{y_best}, \code{X}, \code{y}, \code{trace}, \code{acq}, \code{kernel}, \code{inner}, \code{n_eval}, \code{method}, \code{note}.
 #' @export
 bayopt <- function(f, bounds, n_iter = 20, n_init = 5, acq = "ei",

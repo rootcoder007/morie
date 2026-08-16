@@ -8,12 +8,12 @@
 .churn_result(title, summary_lines = list(), tables = list(), interpretation = "", warnings = character(0), payload = list())
 }
 \arguments{
-\item{title}{See Usage.}
-\item{summary_lines}{Defaults to \code{list()}.}
-\item{tables}{Defaults to \code{list()}.}
-\item{interpretation}{Defaults to \code{""}.}
-\item{warnings}{Defaults to \code{character(0)}.}
-\item{payload}{Defaults to \code{list()}.}
+\item{title}{Carried through into a list the body builds.}
+\item{summary_lines}{Carried through into a list the body builds. Defaults to \code{list()}.}
+\item{tables}{Carried through into a list the body builds. Defaults to \code{list()}.}
+\item{interpretation}{Carried through into a list the body builds. Defaults to \code{""}.}
+\item{warnings}{Carried through into a list the body builds. Defaults to \code{character(0)}.}
+\item{payload}{Carried through into a list the body builds. Defaults to \code{list()}.}
 }
 \description{
 we define a thin alias here to avoid load-order coupling). We name it `.churn_result` so it can co-exist if file load order changes.

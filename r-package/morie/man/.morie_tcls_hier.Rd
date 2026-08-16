@@ -10,8 +10,8 @@
 \arguments{
 \item{p}{A vector; indexed elementwise.}
 \item{q}{A vector; indexed elementwise.}
-\item{hierarchy}{See Usage.}
-\item{domain}{See Usage.}
+\item{hierarchy}{The body requires: morie_tcls: hierarchy must have exactly one root, found.}
+\item{domain}{The body requires: is not a domain value.}
 }
 \description{
 Part of the tcls_native implementation; see the file header for the source it follows.

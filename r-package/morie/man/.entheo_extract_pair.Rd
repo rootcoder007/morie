@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{record_or_eeg}{A list; the body reads \code{$fmri} from it.}
-\item{fmri}{See Usage.}
+\item{fmri}{Carried through into a list the body builds.}
 }
 \description{
 A step of the entheo_analysis implementation. Called by \code{beautiful_loop_metric}, \code{san_score}. See the file header for the source the module follows.

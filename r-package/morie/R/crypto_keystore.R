@@ -73,7 +73,7 @@
 #' the source it follows.
 #'
 #' @param password A vector; its length is taken.
-#' @param salt See Usage.
+#' @param salt The body requires: salt must be a raw vector.
 #' @return Nothing; this branch always raises.
 #' @export
 .morie_derive_key <- function(password, salt) {

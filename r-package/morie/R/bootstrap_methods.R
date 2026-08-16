@@ -34,17 +34,17 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param estimate See Usage.
-#' @param se See Usage.
-#' @param ci_lower See Usage.
-#' @param ci_upper See Usage.
-#' @param bias See Usage.
-#' @param n_boot See Usage.
-#' @param method See Usage.
-#' @param ci_method See Usage.
-#' @param boot_distribution See Usage.
-#' @param original_estimate See Usage.
-#' @param acceleration Defaults to \code{0}.
+#' @param estimate Carried through into a list the body builds.
+#' @param se Carried through into a list the body builds.
+#' @param ci_lower Carried through into a list the body builds.
+#' @param ci_upper Carried through into a list the body builds.
+#' @param bias Carried through into a list the body builds.
+#' @param n_boot Carried through into a list the body builds.
+#' @param method Carried through into a list the body builds.
+#' @param ci_method Carried through into a list the body builds.
+#' @param boot_distribution Carried through into a list the body builds.
+#' @param original_estimate Carried through into a list the body builds.
+#' @param acceleration Carried through into a list the body builds. Defaults to \code{0}.
 #' @return The value of \code{structure}.
 #' @export
 .new_bootstrap_result <- function(estimate, se, ci_lower, ci_upper, bias,
@@ -68,15 +68,15 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param estimate See Usage.
-#' @param se See Usage.
-#' @param ci_lower See Usage.
-#' @param ci_upper See Usage.
-#' @param bias See Usage.
-#' @param n See Usage.
-#' @param jackknife_estimates See Usage.
-#' @param pseudovalues See Usage.
-#' @param influence_values See Usage.
+#' @param estimate Carried through into a list the body builds.
+#' @param se Carried through into a list the body builds.
+#' @param ci_lower Carried through into a list the body builds.
+#' @param ci_upper Carried through into a list the body builds.
+#' @param bias Carried through into a list the body builds.
+#' @param n Carried through into a list the body builds.
+#' @param jackknife_estimates Carried through into a list the body builds.
+#' @param pseudovalues Carried through into a list the body builds.
+#' @param influence_values Carried through into a list the body builds.
 #' @return The value of \code{structure}.
 #' @export
 .new_jackknife_result <- function(estimate, se, ci_lower, ci_upper, bias,
@@ -98,13 +98,13 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param observed_statistic See Usage.
-#' @param p_value See Usage.
-#' @param null_distribution See Usage.
-#' @param n_permutations See Usage.
-#' @param alternative See Usage.
-#' @param ci_lower Defaults to \code{NA_real_}.
-#' @param ci_upper Defaults to \code{NA_real_}.
+#' @param observed_statistic Carried through into a list the body builds.
+#' @param p_value Carried through into a list the body builds.
+#' @param null_distribution Carried through into a list the body builds.
+#' @param n_permutations Carried through into a list the body builds.
+#' @param alternative Carried through into a list the body builds.
+#' @param ci_lower Carried through into a list the body builds. Defaults to \code{NA_real_}.
+#' @param ci_upper Carried through into a list the body builds. Defaults to \code{NA_real_}.
 #' @return The value of \code{structure}.
 #' @export
 .new_permutation_test_result <- function(observed_statistic, p_value,
@@ -128,14 +128,14 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param scores See Usage.
-#' @param mean_score See Usage.
-#' @param se_score See Usage.
-#' @param ci_lower See Usage.
-#' @param ci_upper See Usage.
-#' @param n_folds See Usage.
-#' @param metric See Usage.
-#' @param fold_sizes See Usage.
+#' @param scores Carried through into a list the body builds.
+#' @param mean_score Carried through into a list the body builds.
+#' @param se_score Carried through into a list the body builds.
+#' @param ci_lower Carried through into a list the body builds.
+#' @param ci_upper Carried through into a list the body builds.
+#' @param n_folds Carried through into a list the body builds.
+#' @param metric Carried through into a list the body builds.
+#' @param fold_sizes Carried through into a list the body builds.
 #' @return The value of \code{structure}.
 #' @export
 .new_cv_result <- function(scores, mean_score, se_score, ci_lower, ci_upper,

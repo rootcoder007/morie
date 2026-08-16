@@ -102,12 +102,12 @@ NULL
 #' constructor defined in otis_all_analyze.R -- both files ship in the
 #' same R/ collation order, so this resolves at package-load time).
 #'
-#' @param title See Usage.
-#' @param summary_lines See Usage.
+#' @param title Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds.
 #' @param tables Iterated over elementwise, with \code{Filter}. Defaults to \code{list()}.
-#' @param interpretation Defaults to \code{""}.
-#' @param warnings Defaults to \code{character(0)}.
-#' @param payload Defaults to \code{NULL}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param payload Carried through into a list the body builds.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .otis_overlay_wrap <- function(title, summary_lines,

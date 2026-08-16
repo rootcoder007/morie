@@ -87,12 +87,12 @@ CCRSO_TABLE3_AGE <- data.frame(
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param title See Usage.
-#' @param summary_lines See Usage.
-#' @param tables Defaults to \code{list()}.
-#' @param interpretation Defaults to \code{NULL}.
-#' @param payload Defaults to \code{list()}.
-#' @param warnings Defaults to \code{character()}.
+#' @param title Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds.
+#' @param tables Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param interpretation Carried through into a list the body builds.
+#' @param payload Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character()}.
 #' @return The value of \code{structure}.
 #' @export
 .doob_result <- function(title, summary_lines, tables = list(),

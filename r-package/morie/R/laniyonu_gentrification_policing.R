@@ -48,13 +48,13 @@ NULL
 #' file header for the source it follows.
 #'
 #' @param year Coerced to character by the body, with \code{as.character}.
-#' @param n_tracts See Usage.
-#' @param rho See Usage.
-#' @param moran_i_ols See Usage.
+#' @param n_tracts Carried through into a list the body builds.
+#' @param rho Carried through into a list the body builds.
+#' @param moran_i_ols Carried through into a list the body builds.
 #' @param decompositions A vector; indexed elementwise.
-#' @param gent_distribution See Usage.
-#' @param sensitivity_thresholds Defaults to \code{list()}.
-#' @param note Defaults to \code{""}.
+#' @param gent_distribution Carried through into a list the body builds.
+#' @param sensitivity_thresholds Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param note Carried through into a list the body builds. Defaults to \code{""}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .lan_gp_result <- function(year, n_tracts, rho, moran_i_ols,

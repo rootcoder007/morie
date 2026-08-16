@@ -11,7 +11,7 @@
 \item{t}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{G}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{mu}{Coerced to numeric by the body, with \code{as.numeric}.}
-\item{order}{Defaults to \code{0}.}
+\item{order}{The body requires: saigeg: order must be 0, 1 or 2. Defaults to \code{0}.}
 }
 \description{
 Part of the saigeg_native implementation; see the file header for the source it follows.

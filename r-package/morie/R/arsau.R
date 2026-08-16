@@ -169,15 +169,15 @@ NULL
 #' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param year_or_range See Usage.
-#' @param kind See Usage.
-#' @param csv_filename See Usage.
-#' @param sidecar_filename See Usage.
+#' @param year_or_range Carried through into a list the body builds.
+#' @param kind Carried through into a list the body builds.
+#' @param csv_filename Carried through into a list the body builds.
+#' @param sidecar_filename Carried through into a list the body builds.
 #' @param expected_rows Coerced to integer by the body, with \code{as.integer}.
 #' @param expected_cols Coerced to integer by the body, with \code{as.integer}.
 #' @param is_valid A flag; the body branches on it.
-#' @param description_en See Usage.
-#' @param description_fr See Usage.
+#' @param description_en Carried through into a list the body builds.
+#' @param description_fr Carried through into a list the body builds.
 #' @return A list with \code{year_or_range}, \code{kind}, \code{csv_filename}, \code{sidecar_filename}, \code{expected_rows}, \code{expected_cols}, \code{is_valid}, \code{description_en}, \code{description_fr}.
 #' @export
 .arsau_make_entry <- function(year_or_range, kind, csv_filename, sidecar_filename,

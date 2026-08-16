@@ -8,9 +8,9 @@
 .morie_llm_messages(prompt, context = NULL, system_prompt = NULL)
 }
 \arguments{
-\item{prompt}{See Usage.}
+\item{prompt}{Carried through into a list the body builds.}
 \item{context}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
-\item{system_prompt}{Defaults to \code{NULL}.}
+\item{system_prompt}{Optional; may be \code{NULL}. Carried through into a list the body builds.}
 }
 \description{
 Part of the llm implementation; see the file header for the source it follows.

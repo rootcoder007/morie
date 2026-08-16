@@ -9,16 +9,16 @@
 }
 \arguments{
 \item{alpha_v}{A list; the body reads \code{$estimate}, \code{$std_error} from it.}
-\item{intercept}{See Usage.}
-\item{year_effects}{See Usage.}
-\item{area_random_effect_sd}{See Usage.}
-\item{dispersion}{See Usage.}
-\item{n_events}{See Usage.}
-\item{n_area_years}{See Usage.}
-\item{log_likelihood}{See Usage.}
+\item{intercept}{Carried through into a list the body builds.}
+\item{year_effects}{Carried through into a list the body builds.}
+\item{area_random_effect_sd}{Carried through into a list the body builds.}
+\item{dispersion}{Carried through into a list the body builds.}
+\item{n_events}{Carried through into a list the body builds.}
+\item{n_area_years}{Carried through into a list the body builds.}
+\item{log_likelihood}{Carried through into a list the body builds.}
 \item{converged}{A flag; the body branches on it.}
-\item{exposure_summary}{Defaults to \code{list()}.}
-\item{note}{Defaults to \code{""}.}
+\item{exposure_summary}{Carried through into a list the body builds. Defaults to \code{list()}.}
+\item{note}{Carried through into a list the body builds. Defaults to \code{""}.}
 }
 \description{
 Part of the laniyonu_smi_force_disparity implementation; see the file header for the source it follows.

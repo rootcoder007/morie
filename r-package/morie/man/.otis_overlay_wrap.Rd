@@ -8,12 +8,12 @@
 .otis_overlay_wrap(title, summary_lines, tables = list(), interpretation = "", warnings = character(0), payload = NULL)
 }
 \arguments{
-\item{title}{See Usage.}
-\item{summary_lines}{See Usage.}
+\item{title}{Carried through into a list the body builds.}
+\item{summary_lines}{Carried through into a list the body builds.}
 \item{tables}{Iterated over elementwise, with \code{Filter}. Defaults to \code{list()}.}
-\item{interpretation}{Defaults to \code{""}.}
-\item{warnings}{Defaults to \code{character(0)}.}
-\item{payload}{Defaults to \code{NULL}.}
+\item{interpretation}{Carried through into a list the body builds. Defaults to \code{""}.}
+\item{warnings}{Carried through into a list the body builds. Defaults to \code{character(0)}.}
+\item{payload}{Carried through into a list the body builds.}
 }
 \description{
 constructor defined in otis_all_analyze.R -- both files ship in the same R/ collation order, so this resolves at package-load time).

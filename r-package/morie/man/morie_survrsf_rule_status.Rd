@@ -8,7 +8,7 @@
 morie_survrsf_rule_status(rule = NULL)
 }
 \arguments{
-\item{rule}{Defaults to \code{NULL}.}
+\item{rule}{Optional; may be \code{NULL}. Carried through into a list the body builds.}
 }
 \description{
 Part of the survrsf_native implementation; see the file header for the source it follows.

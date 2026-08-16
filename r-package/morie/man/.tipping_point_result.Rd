@@ -8,12 +8,12 @@
 .tipping_point_result(delta_values, adjusted_estimates, adjusted_p_values, tipping_point, original_estimate, interpretation)
 }
 \arguments{
-\item{delta_values}{See Usage.}
-\item{adjusted_estimates}{See Usage.}
-\item{adjusted_p_values}{See Usage.}
-\item{tipping_point}{See Usage.}
-\item{original_estimate}{See Usage.}
-\item{interpretation}{See Usage.}
+\item{delta_values}{Carried through into a list the body builds.}
+\item{adjusted_estimates}{Carried through into a list the body builds.}
+\item{adjusted_p_values}{Carried through into a list the body builds.}
+\item{tipping_point}{Carried through into a list the body builds.}
+\item{original_estimate}{Carried through into a list the body builds.}
+\item{interpretation}{Carried through into a list the body builds.}
 }
 \description{
 Part of the sensitivity implementation; see the file header for the source it follows.

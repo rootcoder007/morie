@@ -8,19 +8,19 @@
 .new_gof(r_squared, adj_r_squared, pseudo_r_squared, aic, bic, log_likelihood, deviance, pearson_chi2, df_model, df_residual, f_statistic, f_pvalue, n_obs)
 }
 \arguments{
-\item{r_squared}{See Usage.}
-\item{adj_r_squared}{See Usage.}
-\item{pseudo_r_squared}{See Usage.}
-\item{aic}{See Usage.}
-\item{bic}{See Usage.}
-\item{log_likelihood}{See Usage.}
-\item{deviance}{See Usage.}
-\item{pearson_chi2}{See Usage.}
-\item{df_model}{See Usage.}
-\item{df_residual}{See Usage.}
-\item{f_statistic}{See Usage.}
-\item{f_pvalue}{See Usage.}
-\item{n_obs}{See Usage.}
+\item{r_squared}{Carried through into a list the body builds.}
+\item{adj_r_squared}{Carried through into a list the body builds.}
+\item{pseudo_r_squared}{Carried through into a list the body builds.}
+\item{aic}{Carried through into a list the body builds.}
+\item{bic}{Carried through into a list the body builds.}
+\item{log_likelihood}{Carried through into a list the body builds.}
+\item{deviance}{Carried through into a list the body builds.}
+\item{pearson_chi2}{Carried through into a list the body builds.}
+\item{df_model}{Carried through into a list the body builds.}
+\item{df_residual}{Carried through into a list the body builds.}
+\item{f_statistic}{Carried through into a list the body builds.}
+\item{f_pvalue}{Carried through into a list the body builds.}
+\item{n_obs}{Carried through into a list the body builds.}
 }
 \description{
 A step of the diagnostics implementation. Called by \code{compute_goodness_of_fit}. See the file header for the source the module follows.

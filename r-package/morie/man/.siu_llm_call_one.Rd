@@ -8,7 +8,7 @@
 .siu_llm_call_one(model, prompt, timeout_s = .siu_llm_default_timeout())
 }
 \arguments{
-\item{model}{See Usage.}
+\item{model}{The body requires: . Set it, or use model = "ollama" with a local.}
 \item{prompt}{Passed to \code{morie_llm_ask}.}
 \item{timeout_s}{Defaults to \code{.siu_llm_default_timeout()}.}
 }

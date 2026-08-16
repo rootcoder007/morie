@@ -8,14 +8,14 @@
 .morie_arsau_wrap(title, call, sub_results, data, sidecar, year_or_range, kind, language, is_valid, extra_interpretation = "")
 }
 \arguments{
-\item{title}{See Usage.}
-\item{call}{See Usage.}
+\item{title}{Carried through into a list the body builds.}
+\item{call}{Carried through into a list the body builds.}
 \item{sub_results}{A vector; its length is taken and its elements indexed.}
 \item{data}{Optional; may be \code{NULL}. A matrix; passed to \code{nrow}.}
-\item{sidecar}{See Usage.}
-\item{year_or_range}{See Usage.}
-\item{kind}{See Usage.}
-\item{language}{See Usage.}
+\item{sidecar}{Carried through into a list the body builds.}
+\item{year_or_range}{Carried through into a list the body builds.}
+\item{kind}{Carried through into a list the body builds.}
+\item{language}{Carried through into a list the body builds.}
 \item{is_valid}{A flag; the body branches on it.}
 \item{extra_interpretation}{Defaults to \code{""}.}
 }

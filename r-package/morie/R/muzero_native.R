@@ -170,7 +170,7 @@ muzero_add_noise <- function(prior, alpha, frac, seed) {
 #' @param simulations A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50}.
 #' @param gamma Defaults to \code{0.997}.
 #' @param c1 Defaults to \code{1.25}.
-#' @param c2 Defaults to \code{19652}.
+#' @param c2 The body requires: muzero: c2 must be > 0. Defaults to \code{19652}.
 #' @param dirichlet_alpha Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param exploration_fraction Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.25}.
 #' @param temperature Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.

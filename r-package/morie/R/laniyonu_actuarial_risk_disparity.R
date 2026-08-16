@@ -67,10 +67,10 @@ NULL
 #' Part of the laniyonu_actuarial_risk_disparity implementation; see the
 #' file header for the source it follows.
 #'
-#' @param title See Usage.
-#' @param call See Usage.
-#' @param interpretation Defaults to \code{""}.
-#' @param warnings_ Defaults to \code{character(0)}.
+#' @param title Carried through into a list the body builds.
+#' @param call Carried through into a list the body builds.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param warnings_ Carried through into a list the body builds. Defaults to \code{character(0)}.
 #' @param ... Passed through.
 #' @return The value of \code{out}, as built in the body.
 #' @export

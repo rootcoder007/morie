@@ -170,7 +170,7 @@ mqtmpl_UNSOURCED <- list(
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param method Defaults to \code{NULL}.
+#' @param method Optional; may be \code{NULL}. Carried through into a list the body builds.
 #' @return A list with \code{method}, \code{available}, \code{reason}.
 #' @export
 mqtmpl_method_status <- function(method = NULL) {

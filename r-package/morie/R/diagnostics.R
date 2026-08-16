@@ -33,15 +33,15 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param raw See Usage.
-#' @param std See Usage.
-#' @param student See Usage.
-#' @param deviance See Usage.
-#' @param pearson See Usage.
-#' @param fitted See Usage.
-#' @param normality See Usage.
-#' @param hetero See Usage.
-#' @param autoc See Usage.
+#' @param raw Carried through into a list the body builds.
+#' @param std Carried through into a list the body builds.
+#' @param student Carried through into a list the body builds.
+#' @param deviance Carried through into a list the body builds.
+#' @param pearson Carried through into a list the body builds.
+#' @param fitted Carried through into a list the body builds.
+#' @param normality Carried through into a list the body builds.
+#' @param hetero Carried through into a list the body builds.
+#' @param autoc Carried through into a list the body builds.
 #' @param outlier_indices A vector; its length is taken.
 #' @return The value of \code{structure}.
 #' @export
@@ -70,14 +70,14 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param h See Usage.
-#' @param cooks See Usage.
-#' @param dffits See Usage.
-#' @param dfbetas See Usage.
-#' @param covratio See Usage.
+#' @param h Carried through into a list the body builds.
+#' @param cooks Carried through into a list the body builds.
+#' @param dffits Carried through into a list the body builds.
+#' @param dfbetas Carried through into a list the body builds.
+#' @param covratio Carried through into a list the body builds.
 #' @param influential A vector; its length is taken.
-#' @param high_lev See Usage.
-#' @param high_cook See Usage.
+#' @param high_lev Carried through into a list the body builds.
+#' @param high_cook Carried through into a list the body builds.
 #' @return The value of \code{structure}.
 #' @export
 .new_influence_diag <- function(h, cooks, dffits, dfbetas, covratio,
@@ -99,13 +99,13 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param vif See Usage.
-#' @param cond_num See Usage.
-#' @param cond_idx See Usage.
-#' @param var_decomp See Usage.
-#' @param eigvals See Usage.
-#' @param n_collin See Usage.
-#' @param pairs See Usage.
+#' @param vif Carried through into a list the body builds.
+#' @param cond_num Carried through into a list the body builds.
+#' @param cond_idx Carried through into a list the body builds.
+#' @param var_decomp Carried through into a list the body builds.
+#' @param eigvals Carried through into a list the body builds.
+#' @param n_collin Carried through into a list the body builds.
+#' @param pairs Carried through into a list the body builds.
 #' @return The value of \code{structure}.
 #' @export
 .new_collin_diag <- function(vif, cond_num, cond_idx, var_decomp,
@@ -126,11 +126,11 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param name See Usage.
-#' @param statistic See Usage.
-#' @param p_value See Usage.
-#' @param df See Usage.
-#' @param conclusion See Usage.
+#' @param name Carried through into a list the body builds.
+#' @param statistic Carried through into a list the body builds.
+#' @param p_value Carried through into a list the body builds.
+#' @param df Carried through into a list the body builds.
+#' @param conclusion Carried through into a list the body builds.
 #' @return The value of \code{structure}.
 #' @export
 .new_spec_test <- function(name, statistic, p_value, df, conclusion) {
@@ -147,19 +147,19 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param r_squared See Usage.
-#' @param adj_r_squared See Usage.
-#' @param pseudo_r_squared See Usage.
-#' @param aic See Usage.
-#' @param bic See Usage.
-#' @param log_likelihood See Usage.
-#' @param deviance See Usage.
-#' @param pearson_chi2 See Usage.
-#' @param df_model See Usage.
-#' @param df_residual See Usage.
-#' @param f_statistic See Usage.
-#' @param f_pvalue See Usage.
-#' @param n_obs See Usage.
+#' @param r_squared Carried through into a list the body builds.
+#' @param adj_r_squared Carried through into a list the body builds.
+#' @param pseudo_r_squared Carried through into a list the body builds.
+#' @param aic Carried through into a list the body builds.
+#' @param bic Carried through into a list the body builds.
+#' @param log_likelihood Carried through into a list the body builds.
+#' @param deviance Carried through into a list the body builds.
+#' @param pearson_chi2 Carried through into a list the body builds.
+#' @param df_model Carried through into a list the body builds.
+#' @param df_residual Carried through into a list the body builds.
+#' @param f_statistic Carried through into a list the body builds.
+#' @param f_pvalue Carried through into a list the body builds.
+#' @param n_obs Carried through into a list the body builds.
 #' @return The value of \code{structure}.
 #' @export
 .new_gof <- function(r_squared, adj_r_squared, pseudo_r_squared,
@@ -183,12 +183,12 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param residuals See Usage.
-#' @param influence See Usage.
-#' @param collinearity See Usage.
-#' @param gof See Usage.
-#' @param spec_tests See Usage.
-#' @param assessment See Usage.
+#' @param residuals Carried through into a list the body builds.
+#' @param influence Carried through into a list the body builds.
+#' @param collinearity Carried through into a list the body builds.
+#' @param gof Carried through into a list the body builds.
+#' @param spec_tests Carried through into a list the body builds.
+#' @param assessment Carried through into a list the body builds.
 #' @return The value of \code{structure}.
 #' @export
 .new_diag_report <- function(residuals, influence, collinearity,

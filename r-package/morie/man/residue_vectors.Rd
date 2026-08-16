@@ -8,7 +8,7 @@
 residue_vectors(group, weights = NULL, seq_type = "aa")
 }
 \arguments{
-\item{group}{See Usage.}
+\item{group}{The body requires: mafft: sequences in a group must be aligned to the same length.}
 \item{weights}{Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.}
 \item{seq_type}{Compared against \code{"nt"}. Defaults to \code{"aa"}.}
 }

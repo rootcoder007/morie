@@ -8,7 +8,7 @@
 normalized_similarity_matrix(raw_matrix = NULL, freqs = NULL, s_a = 0.06, seq_type = "aa", mode = "normalized", default = "jtt200")
 }
 \arguments{
-\item{raw_matrix}{Defaults to \code{NULL}.}
+\item{raw_matrix}{The body requires: mafft: raw_matrix has no signal (average1 equals average2).}
 \item{freqs}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 \item{s_a}{Numeric; combined arithmetically in the body. Defaults to \code{0.06}.}
 \item{seq_type}{Compared against \code{"nt"}. Defaults to \code{"aa"}.}

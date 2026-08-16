@@ -18,7 +18,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param kernel See Usage.
+#' @param kernel The body requires: unknown kernel:.
 #' @return The value of \code{switch}.
 #' @export
 .hawkes_param_names <- function(kernel) {
