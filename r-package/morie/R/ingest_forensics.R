@@ -150,7 +150,7 @@
 #' @param url Passed to \code{.morie_dataset_http_text_with_status}.
 #' @param params Passed to \code{.morie_dataset_http_text_with_status}. Defaults to \code{list()}.
 #' @param headers A vector; its length is taken. Defaults to \code{list()}.
-#' @param timeout Defaults to \code{.MORIE_FORENSICS_DEFAULT_TIMEOUT}.
+#' @param timeout Coerced to integer by the body, with \code{as.integer}.
 #' @param user_agent Defaults to \code{.MORIE_FORENSICS_DEFAULT_UA}.
 #' @param auth_signup_url Defaults to \code{NULL}.
 #' @param label Defaults to \code{"forensics"}.

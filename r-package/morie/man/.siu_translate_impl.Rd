@@ -12,7 +12,7 @@
 \item{source_lang}{See Usage.}
 \item{case_numbers}{Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.}
 \item{model}{Passed to \code{.siu_llm_call}.}
-\item{fields}{See Usage.}
+\item{fields}{Iterated over elementwise, with \code{lapply}.}
 \item{cache_dir}{Passed to \code{.siu_load_canonical_overrides}.}
 \item{progress}{A flag; the body branches on it.}
 }

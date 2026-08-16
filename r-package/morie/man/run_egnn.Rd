@@ -10,7 +10,7 @@ run_egnn(H, X, layers, phi_e, phi_x, phi_h, A = NULL, C = NULL)
 \arguments{
 \item{H}{A matrix; passed to \code{as.matrix}.}
 \item{X}{A matrix; passed to \code{as.matrix}.}
-\item{layers}{See Usage.}
+\item{layers}{Coerced to integer by the body, with \code{as.integer}.}
 \item{phi_e}{See Usage.}
 \item{phi_x}{See Usage.}
 \item{phi_h}{See Usage.}

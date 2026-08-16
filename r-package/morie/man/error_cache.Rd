@@ -8,10 +8,10 @@
 error_cache(alpha, y, K, b)
 }
 \arguments{
-\item{alpha}{See Usage.}
-\item{y}{See Usage.}
+\item{alpha}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{K}{Passed to \code{.smoopt_K}.}
-\item{b}{See Usage.}
+\item{b}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the smoopt_native implementation; see the file header for the source it follows.

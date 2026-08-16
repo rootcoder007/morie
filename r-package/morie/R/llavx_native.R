@@ -14,8 +14,8 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param captions See Usage.
-#' @param boxes See Usage.
+#' @param captions Coerced to character by the body, with \code{as.character}.
+#' @param boxes Coerced to list by the body, with \code{as.list}.
 #' @return A list with \code{text}, \code{n_captions}, \code{n_boxes}, \code{note}.
 #' @export
 symbolic_representation <- function(captions, boxes) {
@@ -64,9 +64,9 @@ instruction_prompt <- function(symbolic, kind = "conversation") {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param patch_features See Usage.
+#' @param patch_features Iterated over elementwise, with \code{lapply}.
 #' @param W A matrix; indexed by row and column.
-#' @param b Defaults to \code{NULL}.
+#' @param b Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 project_patches <- function(patch_features, W, b = NULL) {
@@ -97,8 +97,8 @@ project_patches <- function(patch_features, W, b = NULL) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param visual_tokens See Usage.
-#' @param text_embeddings See Usage.
+#' @param visual_tokens Iterated over elementwise, with \code{lapply}.
+#' @param text_embeddings Iterated over elementwise, with \code{lapply}.
 #' @return A list with \code{estimate}, \code{sequence}, \code{n_visual}, \code{n_text}, \code{method}, \code{note}.
 #' @export
 build_sequence <- function(visual_tokens, text_embeddings) {
@@ -120,7 +120,7 @@ build_sequence <- function(visual_tokens, text_embeddings) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param stage See Usage.
+#' @param stage Coerced to integer by the body, with \code{as.integer}.
 #' @return A list, whose contents depend on the branch taken; across the branches its names are \code{stage}, \code{trainable}, \code{frozen}, \code{data}, \code{note}.
 #' @export
 training_stage <- function(stage) {

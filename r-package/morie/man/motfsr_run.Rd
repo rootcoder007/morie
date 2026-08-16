@@ -18,8 +18,8 @@ motfsr_run(sequences, w, alphabet = NULL, n_motifs = 1, beta = 0.01, lambda0 = N
 \item{tol}{Defaults to \code{1e-06}.}
 \item{normalize_overlaps}{Defaults to \code{TRUE}.}
 \item{starts}{One of \code{"subsequences"}, \code{"uniform"}. Defaults to \code{"subsequences"}.}
-\item{start_weight}{Defaults to \code{0.5}.}
-\item{max_starts}{Defaults to \code{200}.}
+\item{start_weight}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.5}.}
+\item{max_starts}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.}
 \item{start_scoring}{One of \code{"none"}, \code{"one_step"}. Defaults to \code{"one_step"}.}
 \item{erase_by}{Defaults to \code{"letter"}.}
 \item{loss}{Defaults to \code{NULL}.}

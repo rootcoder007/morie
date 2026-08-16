@@ -13,7 +13,7 @@ motfsr_theta_from_subsequence(coded, i, j, w, L, mu, weight)
 \item{j}{Numeric; combined arithmetically in the body.}
 \item{w}{A count; the body uses it as \code{seq_len(...)}.}
 \item{L}{A count; the body uses it as \code{rep(...)}.}
-\item{mu}{See Usage.}
+\item{mu}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{weight}{Numeric; combined arithmetically in the body.}
 }
 \description{

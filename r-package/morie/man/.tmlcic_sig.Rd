@@ -8,7 +8,7 @@
 .tmlcic_sig(z)
 }
 \arguments{
-\item{z}{See Usage.}
+\item{z}{Iterated over elementwise, with \code{vapply}.}
 }
 \description{
 Part of the tmlcic_native implementation; see the file header for the source it follows.

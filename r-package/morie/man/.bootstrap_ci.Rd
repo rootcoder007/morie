@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{func}{See Usage.}
-\item{args}{See Usage.}
+\item{args}{Iterated over elementwise, with \code{lapply}.}
 \item{n_boot}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{2000L}.}
 \item{confidence}{Numeric; combined arithmetically in the body. Defaults to \code{0.95}.}
 \item{seed}{Defaults to \code{42L}.}

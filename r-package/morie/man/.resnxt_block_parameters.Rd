@@ -8,9 +8,9 @@
 .resnxt_block_parameters(width, cardinality, bottleneck)
 }
 \arguments{
-\item{width}{See Usage.}
-\item{cardinality}{See Usage.}
-\item{bottleneck}{See Usage.}
+\item{width}{Coerced to integer by the body, with \code{as.integer}.}
+\item{cardinality}{Coerced to integer by the body, with \code{as.integer}.}
+\item{bottleneck}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the resnxt_native implementation; see the file header for the source it follows.

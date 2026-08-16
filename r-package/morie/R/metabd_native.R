@@ -18,8 +18,8 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param seq See Usage.
-#' @param kk Defaults to \code{4L}.
+#' @param seq Coerced to character by the body, with \code{as.character}.
+#' @param kk Coerced to integer by the body, with \code{as.integer}. Defaults to \code{4L}.
 #' @param canonical A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{frequency}, \code{vector}, \code{kmers}, \code{n_kmers}, \code{canonical}.
 #' @export
@@ -54,8 +54,8 @@ tetranucleotide_frequency <- function(seq, kk = 4L, canonical = TRUE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param cov_a See Usage.
-#' @param cov_b See Usage.
+#' @param cov_a Coerced to numeric by the body, with \code{as.numeric}.
+#' @param cov_b Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{correlation}, \code{n_samples}.
 #' @export
 abundance_correlation <- function(cov_a, cov_b) {
@@ -75,9 +75,9 @@ abundance_correlation <- function(cov_a, cov_b) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param length See Usage.
-#' @param l_min Defaults to \code{2500}.
-#' @param l_ref Defaults to \code{1e+05}.
+#' @param length Coerced to numeric by the body, with \code{as.numeric}.
+#' @param l_min Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{2500}.
+#' @param l_ref Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e+05}.
 #' @return A list with \code{weight}, \code{length}, \code{below_minimum}.
 #' @export
 length_weight <- function(length, l_min = 2500.0, l_ref = 100000.0) {
@@ -96,13 +96,13 @@ length_weight <- function(length, l_min = 2500.0, l_ref = 100000.0) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param tnf_a See Usage.
-#' @param tnf_b See Usage.
+#' @param tnf_a Coerced to numeric by the body, with \code{as.numeric}.
+#' @param tnf_b Coerced to numeric by the body, with \code{as.numeric}.
 #' @param cov_a Optional; may be \code{NULL}. A vector; its length is taken.
 #' @param cov_b Defaults to \code{NULL}.
 #' @param len_a Defaults to \code{NULL}.
 #' @param len_b Defaults to \code{NULL}.
-#' @param w_abundance Defaults to \code{0.5}.
+#' @param w_abundance Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.5}.
 #' @return A list with \code{distance}, \code{composition}, \code{abundance}, \code{abundance_usable}, \code{confidence}, \code{effective_weight}, \code{note}.
 #' @export
 composite_distance <- function(tnf_a, tnf_b, cov_a = NULL, cov_b = NULL,
@@ -137,9 +137,9 @@ composite_distance <- function(tnf_a, tnf_b, cov_a = NULL, cov_b = NULL,
 #'
 #' @param tnfs A matrix; passed to \code{as.matrix}.
 #' @param coverages Optional; may be \code{NULL}. A vector; indexed elementwise.
-#' @param lengths Defaults to \code{NULL}.
-#' @param threshold Defaults to \code{0.15}.
-#' @param min_bin_size Defaults to \code{2e+05}.
+#' @param lengths Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param threshold Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.15}.
+#' @param min_bin_size Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{2e+05}.
 #' @return A list with \code{estimate}, \code{bins}, \code{unbinned}, \code{n_bins}, \code{n_unbinned}, \code{method}, \code{note}.
 #' @export
 bin_contigs <- function(tnfs, coverages = NULL, lengths = NULL, threshold = 0.15,
@@ -179,7 +179,7 @@ bin_contigs <- function(tnfs, coverages = NULL, lengths = NULL, threshold = 0.15
 #' source it follows.
 #'
 #' @param bins See Usage.
-#' @param truth See Usage.
+#' @param truth Coerced to character by the body, with \code{as.character}.
 #' @return A list with \code{per_bin}, \code{mean_purity}, \code{mean_completeness}, \code{note}.
 #' @export
 purity_completeness <- function(bins, truth) {

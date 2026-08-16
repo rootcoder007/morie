@@ -58,10 +58,10 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param alpha See Usage.
-#' @param y See Usage.
+#' @param alpha Coerced to numeric by the body, with \code{as.numeric}.
+#' @param y Coerced to numeric by the body, with \code{as.numeric}.
 #' @param K Passed to \code{.smoopt_K}.
-#' @param b See Usage.
+#' @param b Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A numeric value.
 #' @export
 error_cache <- function(alpha, y, K, b) {
@@ -80,11 +80,11 @@ error_cache <- function(alpha, y, K, b) {
 #' source it follows.
 #'
 #' @param i See Usage.
-#' @param alpha See Usage.
-#' @param y See Usage.
-#' @param E See Usage.
-#' @param C See Usage.
-#' @param tol Defaults to \code{0.001}.
+#' @param alpha Coerced to numeric by the body, with \code{as.numeric}.
+#' @param y Coerced to numeric by the body, with \code{as.numeric}.
+#' @param E Coerced to numeric by the body, with \code{as.numeric}.
+#' @param C Coerced to numeric by the body, with \code{as.numeric}.
+#' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.001}.
 #' @return A logical value.
 #' @export
 violates_kkt <- function(i, alpha, y, E, C, tol = 1e-3) {
@@ -100,8 +100,8 @@ violates_kkt <- function(i, alpha, y, E, C, tol = 1e-3) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param alpha See Usage.
-#' @param C See Usage.
+#' @param alpha Coerced to numeric by the body, with \code{as.numeric}.
+#' @param C Coerced to numeric by the body, with \code{as.numeric}.
 #' @param examine_all A flag; the body branches on it.
 #' @return A list with \code{indices}, \code{kind}, \code{n_non_bound}, \code{note}.
 #' @export
@@ -122,11 +122,11 @@ outer_loop_schedule <- function(alpha, C, examine_all) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param i1 See Usage.
-#' @param alpha See Usage.
+#' @param i1 Coerced to integer by the body, with \code{as.integer}.
+#' @param alpha Coerced to numeric by the body, with \code{as.numeric}.
 #' @param y See Usage.
 #' @param E A vector; indexed elementwise.
-#' @param C See Usage.
+#' @param C Coerced to numeric by the body, with \code{as.numeric}.
 #' @param rng Passed to \code{.ghc_unif}.
 #' @param tol Defaults to \code{0.001}.
 #' @return A list with \code{index}, \code{level}, \code{note}.
@@ -167,16 +167,16 @@ second_choice <- function(i1, alpha, y, E, C, rng, tol = 1e-3) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param i1 See Usage.
-#' @param i2 See Usage.
-#' @param a1_new See Usage.
-#' @param a2_new See Usage.
-#' @param alpha See Usage.
-#' @param y See Usage.
+#' @param i1 Coerced to integer by the body, with \code{as.integer}.
+#' @param i2 Coerced to integer by the body, with \code{as.integer}.
+#' @param a1_new Coerced to numeric by the body, with \code{as.numeric}.
+#' @param a2_new Coerced to numeric by the body, with \code{as.numeric}.
+#' @param alpha Coerced to numeric by the body, with \code{as.numeric}.
+#' @param y Coerced to numeric by the body, with \code{as.numeric}.
 #' @param E A vector; indexed elementwise.
 #' @param K Passed to \code{.smoopt_K}.
-#' @param b See Usage.
-#' @param C See Usage.
+#' @param b Coerced to numeric by the body, with \code{as.numeric}.
+#' @param C Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{b}, \code{from}, \code{b1}, \code{b2}, \code{note}.
 #' @export
 compute_threshold <- function(i1, i2, a1_new, a2_new, alpha, y, E, K,
@@ -210,8 +210,8 @@ compute_threshold <- function(i1, i2, a1_new, a2_new, alpha, y, E, K,
 #'
 #' @param i1 See Usage.
 #' @param i2 See Usage.
-#' @param alpha See Usage.
-#' @param y See Usage.
+#' @param alpha Coerced to numeric by the body, with \code{as.numeric}.
+#' @param y Coerced to numeric by the body, with \code{as.numeric}.
 #' @param C Numeric; passed to \code{min}.
 #' @return A vector, from \code{c}.
 #' @export
@@ -236,8 +236,8 @@ compute_threshold <- function(i1, i2, a1_new, a2_new, alpha, y, E, K,
 #' is directly comparable to svmopt.dual_objective up to the sign of the
 #' threshold term -- the threshold does not enter the dual itself.
 #'
-#' @param alpha See Usage.
-#' @param y See Usage.
+#' @param alpha Coerced to numeric by the body, with \code{as.numeric}.
+#' @param y Coerced to numeric by the body, with \code{as.numeric}.
 #' @param K Passed to \code{.smoopt_K}.
 #' @return A numeric value.
 #' @export
@@ -253,13 +253,13 @@ compute_threshold <- function(i1, i2, a1_new, a2_new, alpha, y, E, K,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
+#' @param y Coerced to numeric by the body, with \code{as.numeric}.
 #' @param K Passed to \code{.smoopt_K}.
 #' @param C Passed to \code{.smoopt_bounds}. Defaults to \code{1}.
 #' @param tol Defaults to \code{0.001}.
-#' @param eps Defaults to \code{1e-05}.
-#' @param max_passes Defaults to \code{200L}.
-#' @param seed Defaults to \code{0L}.
+#' @param eps Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-05}.
+#' @param max_passes Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200L}.
+#' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0L}.
 #' @return A list with \code{estimate}, \code{alpha}, \code{b}, \code{passes}, \code{full_passes}, \code{non_bound_passes}, \code{steps}, \code{support_vectors}, \code{n_sv}, \code{equality_residual}, \code{kkt_violations}, \code{objective}, \code{method}, \code{note}.
 #' @export
 smo_platt <- function(y, K, C = 1.0, tol = 1e-3, eps = 1e-5,

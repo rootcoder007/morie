@@ -10,7 +10,7 @@ motfsr_uniform_theta(w, L, mu)
 \arguments{
 \item{w}{A count; the body uses it as \code{seq_len(...)}.}
 \item{L}{See Usage.}
-\item{mu}{See Usage.}
+\item{mu}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the motfsr_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 cfconv(X, R, filter_net, cutoff = 5, ...)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{R}{See Usage.}
+\item{X}{Iterated over elementwise, with \code{lapply}.}
+\item{R}{Iterated over elementwise, with \code{lapply}.}
 \item{filter_net}{See Usage.}
 \item{cutoff}{Defaults to \code{5}.}
 \item{...}{Passed through.}

@@ -57,7 +57,7 @@ morie_opnclp <- function(payload) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Optional; may be \code{NULL}. A list; the body checks with \code{is.list}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .as_num_vec <- function(p) {
@@ -76,7 +76,7 @@ morie_opnclp <- function(payload) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param m See Usage.
+#' @param m Optional; may be \code{NULL}. A matrix; the body checks with \code{is.matrix}.
 #' @return The value of \code{do.call}.
 #' @export
 .as_num_mat <- function(m) {
@@ -92,8 +92,8 @@ morie_opnclp <- function(payload) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param samples_seen See Usage.
-#' @param model_params See Usage.
+#' @param samples_seen Coerced to numeric by the body, with \code{as.numeric}.
+#' @param model_params Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{compute}, \code{samples_seen}, \code{params}, \code{gmac_scale}.
 #' @export
 total_compute <- function(samples_seen, model_params) {
@@ -152,7 +152,7 @@ fit_power_law <- function(x, y) {
 #' source it follows.
 #'
 #' @param fit A list; the body reads \code{$alpha}, \code{$beta}, \code{$range} from it.
-#' @param compute See Usage.
+#' @param compute Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{value}, \code{extrapolation_decades}, \code{interpolated}, \code{note}.
 #' @export
 .opnclp_predict <- function(fit, compute) {
@@ -225,7 +225,7 @@ compare_scaling <- function(x_a, y_a, x_b, y_b, label_a = "A", label_b = "B") {
 #'
 #' @param image_embeddings Passed to \code{.coerce_mat}.
 #' @param text_embeddings Passed to \code{.coerce_mat}.
-#' @param temperature Defaults to \code{0.07}.
+#' @param temperature Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.07}.
 #' @return A list with \code{loss}, \code{image_to_text}, \code{text_to_image}, \code{logits}, \code{note}.
 #' @export
 infonce <- function(image_embeddings, text_embeddings, temperature = 0.07) {

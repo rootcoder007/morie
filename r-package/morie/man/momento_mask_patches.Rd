@@ -9,7 +9,7 @@ momento_mask_patches(patches, mask_idx, fill = 0)
 }
 \arguments{
 \item{patches}{A vector; its length is taken and its elements indexed.}
-\item{mask_idx}{See Usage.}
+\item{mask_idx}{Coerced to integer by the body, with \code{as.integer}.}
 \item{fill}{A count; the body uses it as \code{rep(...)}. Defaults to \code{0}.}
 }
 \description{

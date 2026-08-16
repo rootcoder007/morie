@@ -8,7 +8,7 @@
 .arsau_lookup(year_or_range, kind)
 }
 \arguments{
-\item{year_or_range}{See Usage.}
+\item{year_or_range}{Coerced to character by the body, with \code{as.character}.}
 \item{kind}{See Usage.}
 }
 \description{

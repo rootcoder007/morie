@@ -8,11 +8,11 @@
 morie_yolovx_center_sampling(box, grid_w, grid_h, stride = 1, radius = 1.5)
 }
 \arguments{
-\item{box}{See Usage.}
-\item{grid_w}{See Usage.}
-\item{grid_h}{See Usage.}
-\item{stride}{Defaults to \code{1}.}
-\item{radius}{Defaults to \code{1.5}.}
+\item{box}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{grid_w}{Coerced to integer by the body, with \code{as.integer}.}
+\item{grid_h}{Coerced to integer by the body, with \code{as.integer}.}
+\item{stride}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
+\item{radius}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1.5}.}
 }
 \description{
 Part of the yolovx_native implementation; see the file header for the source it follows.

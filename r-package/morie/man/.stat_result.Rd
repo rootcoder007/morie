@@ -9,14 +9,14 @@
 }
 \arguments{
 \item{method}{See Usage.}
-\item{test_statistic}{See Usage.}
-\item{p_value}{See Usage.}
-\item{df}{Defaults to \code{NA_real_}.}
-\item{ci_lower}{Defaults to \code{NA_real_}.}
-\item{ci_upper}{Defaults to \code{NA_real_}.}
-\item{effect_size}{Defaults to \code{NA_real_}.}
-\item{estimate}{Defaults to \code{NA_real_}.}
-\item{n}{Defaults to \code{NA_integer_}.}
+\item{test_statistic}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{p_value}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{df}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.}
+\item{ci_lower}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.}
+\item{ci_upper}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.}
+\item{effect_size}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.}
+\item{estimate}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.}
+\item{n}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}. Defaults to \code{NA_integer_}.}
 \item{extra}{Defaults to \code{list()}.}
 }
 \description{

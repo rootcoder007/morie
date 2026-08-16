@@ -16,7 +16,7 @@
 \item{delta}{Passed to \code{.tlstoch_density_ratio}.}
 \item{lower}{Passed to \code{.tlstoch_density_ratio}.}
 \item{upper}{Passed to \code{.tlstoch_density_ratio}.}
-\item{iters}{Defaults to \code{60}.}
+\item{iters}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{60}.}
 }
 \description{
 Part of the tlstoch_native implementation; see the file header for the source it follows.

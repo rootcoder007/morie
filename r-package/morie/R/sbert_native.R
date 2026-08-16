@@ -68,7 +68,7 @@
 #'
 #' @param token_vectors Passed to \code{.sbert_mat}.
 #' @param mode One of \code{"cls"}, \code{"max"}. Defaults to \code{"mean"}.
-#' @param mask Defaults to \code{NULL}.
+#' @param mask Optional; may be \code{NULL}. Coerced to logical by the body, with \code{as.logical}.
 #' @return A numeric value.
 #' @export
 pool <- function(token_vectors, mode = "mean", mask = NULL) {
@@ -144,7 +144,7 @@ classification_features <- function(u, v) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n See Usage.
+#' @param n Coerced to integer by the body, with \code{as.integer}.
 #' @param mode One of \code{"bi-encoder"}, \code{"cross-encoder"}. Defaults to \code{"cross-encoder"}.
 #' @return A list with \code{forward_passes}, \code{cross_encoder}, \code{bi_encoder}, \code{speedup}, \code{n}, \code{note}.
 #' @export
@@ -169,7 +169,7 @@ pair_cost <- function(n, mode = "cross-encoder") {
 #'
 #' @param query See Usage.
 #' @param corpus_embeddings Passed to \code{.sbert_mat}.
-#' @param top_k Defaults to \code{5}.
+#' @param top_k Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.
 #' @return A list with \code{ranking}, \code{n_corpus}, \code{forward_passes}, \code{note}.
 #' @export
 rank_by_similarity <- function(query, corpus_embeddings, top_k = 5) {

@@ -8,7 +8,7 @@
 .arsau_coerce_year_key(year, range_ok = FALSE)
 }
 \arguments{
-\item{year}{See Usage.}
+\item{year}{Coerced to character by the body, with \code{as.character}.}
 \item{range_ok}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{

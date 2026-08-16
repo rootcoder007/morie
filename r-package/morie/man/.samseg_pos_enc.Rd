@@ -8,10 +8,10 @@
 .samseg_pos_enc(x, y, dim = 8, scale = 1)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{y}{See Usage.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{dim}{A count; the body uses it as \code{numeric(...)}. Defaults to \code{8}.}
-\item{scale}{Defaults to \code{1}.}
+\item{scale}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 }
 \description{
 Part of the samseg_native implementation; see the file header for the source it follows.

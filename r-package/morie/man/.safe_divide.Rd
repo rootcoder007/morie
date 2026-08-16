@@ -8,8 +8,8 @@
 .safe_divide(num, den)
 }
 \arguments{
-\item{num}{See Usage.}
-\item{den}{See Usage.}
+\item{num}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{den}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

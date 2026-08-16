@@ -10,9 +10,9 @@ bin_contigs(tnfs, coverages = NULL, lengths = NULL, threshold = 0.15, min_bin_si
 \arguments{
 \item{tnfs}{A matrix; passed to \code{as.matrix}.}
 \item{coverages}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
-\item{lengths}{Defaults to \code{NULL}.}
-\item{threshold}{Defaults to \code{0.15}.}
-\item{min_bin_size}{Defaults to \code{2e+05}.}
+\item{lengths}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{threshold}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.15}.}
+\item{min_bin_size}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{2e+05}.}
 }
 \description{
 Part of the metabd_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 .tlhoest_first_order_expansion(D1, psi_plugin)
 }
 \arguments{
-\item{D1}{See Usage.}
-\item{psi_plugin}{See Usage.}
+\item{D1}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{psi_plugin}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tlhoest_native implementation; see the file header for the source it follows.

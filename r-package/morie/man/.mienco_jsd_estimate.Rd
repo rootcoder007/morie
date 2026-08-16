@@ -8,8 +8,8 @@
 .mienco_jsd_estimate(paired, unpaired)
 }
 \arguments{
-\item{paired}{See Usage.}
-\item{unpaired}{See Usage.}
+\item{paired}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{unpaired}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the mienco_native implementation; see the file header for the source it follows.

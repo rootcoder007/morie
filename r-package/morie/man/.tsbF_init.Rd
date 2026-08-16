@@ -8,11 +8,11 @@
 .tsbF_init(y, init = "global", z0 = NULL, x0 = NULL, p0 = NULL)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{init}{One of \code{"global"}, \code{"known"}. Defaults to \code{"global"}.}
-\item{z0}{Defaults to \code{NULL}.}
-\item{x0}{Defaults to \code{NULL}.}
-\item{p0}{Defaults to \code{NULL}.}
+\item{z0}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{x0}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{p0}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tsbF_native implementation; see the file header for the source it follows.

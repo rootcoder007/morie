@@ -25,7 +25,7 @@ mpfn_sig <- function(x) {
 #' source it follows.
 #'
 #' @param h_v See Usage.
-#' @param h_w See Usage.
+#' @param h_w Coerced to numeric by the body, with \code{as.numeric}.
 #' @param e_vw A vector; its length is taken and its elements indexed.
 #' @param A Defaults to \code{NULL}.
 #' @return A vector, from \code{as.numeric}.
@@ -73,10 +73,10 @@ mpfn_update_gru <- function(h, m, Wz, Uz, Wr, Ur, Wh, Uh) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param H0 See Usage.
+#' @param H0 Iterated over elementwise, with \code{lapply}.
 #' @param adj A vector; indexed elementwise.
 #' @param edge_features A vector; indexed elementwise.
-#' @param T Defaults to \code{3}.
+#' @param T Coerced to integer by the body, with \code{as.integer}. Defaults to \code{3}.
 #' @param A Defaults to \code{NULL}.
 #' @param update Defaults to \code{NULL}.
 #' @return The value of \code{H}, as built in the body.
@@ -114,7 +114,7 @@ mpfn_message_passing <- function(H0, adj, edge_features, T = 3, A = NULL,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param H See Usage.
+#' @param H Iterated over elementwise, with \code{lapply}.
 #' @param how One of \code{"gated"}, \code{"mean"}, \code{"sum"}. Defaults to \code{"sum"}.
 #' @param H0 Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @param i_fn Defaults to \code{NULL}.
@@ -161,7 +161,7 @@ mpfn_readout <- function(H, how = "sum", H0 = NULL, i_fn = NULL, j_fn = NULL) {
 #' @param perm A vector; indexed elementwise.
 #' @param T Defaults to \code{3}.
 #' @param how Defaults to \code{"sum"}.
-#' @param tol Defaults to \code{1e-09}.
+#' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.
 #' @return A list with \code{invariant}, \code{max_deviation}, \code{readout}.
 #' @export
 mpfn_is_permutation_invariant <- function(H, adj, edge_features, perm, T = 3,

@@ -8,9 +8,9 @@
 .tlbandt_regret(Y, Y1, Y0)
 }
 \arguments{
-\item{Y}{See Usage.}
-\item{Y1}{See Usage.}
-\item{Y0}{See Usage.}
+\item{Y}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{Y1}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{Y0}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tlbandt_native implementation; see the file header for the source it follows.

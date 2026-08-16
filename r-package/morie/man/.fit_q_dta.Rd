@@ -12,7 +12,7 @@
 \item{A_}{A vector; indexed elementwise.}
 \item{W}{A matrix; indexed by row and column.}
 \item{levels}{A vector; indexed elementwise.}
-\item{rows}{See Usage.}
+\item{rows}{Iterated over elementwise, with \code{lapply}.}
 \item{ridge}{Numeric; passed to \code{max}.}
 }
 \description{

@@ -8,7 +8,7 @@
 .phylby_rng(seed)
 }
 \arguments{
-\item{seed}{See Usage.}
+\item{seed}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the phylby_native implementation; see the file header for the source it follows.

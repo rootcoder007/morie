@@ -8,7 +8,7 @@
 .otis_toronto_indicator(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to character by the body, with \code{as.character}.}
 }
 \description{
 Part of the otis_all_analyze implementation; see the file header for the source it follows.

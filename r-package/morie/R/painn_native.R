@@ -63,9 +63,9 @@ vector_norm <- function(v) {
 #' Type is preserved by construction, which is what makes the whole
 #' network equivariant rather than approximately so.
 #'
-#' @param s_j See Usage.
+#' @param s_j Coerced to numeric by the body, with \code{as.numeric}.
 #' @param v_j A matrix; passed to \code{as.matrix}.
-#' @param r_ij See Usage.
+#' @param r_ij Coerced to numeric by the body, with \code{as.numeric}.
 #' @param phi_s See Usage.
 #' @param phi_v See Usage.
 #' @param W_rbf See Usage.
@@ -115,7 +115,7 @@ scalar_vector_message <- function(s_j, v_j, r_ij, phi_s, phi_v,
 #' it is invariant -- which is why the network can use directional
 #' information without breaking invariance of the energy.
 #'
-#' @param s See Usage.
+#' @param s Coerced to numeric by the body, with \code{as.numeric}.
 #' @param v A matrix; passed to \code{as.matrix}.
 #' @param U A matrix; passed to \code{as.matrix}.
 #' @param V A matrix; passed to \code{as.matrix}.
@@ -167,9 +167,9 @@ gated_update <- function(s, v, U, V, phi) {
 #'
 #' read off directly from equivariant atomwise quantities.
 #'
-#' @param charges See Usage.
+#' @param charges Coerced to numeric by the body, with \code{as.numeric}.
 #' @param R A matrix; passed to \code{as.matrix}.
-#' @param centre Defaults to \code{NULL}.
+#' @param centre Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{dipole}, \code{magnitude}, \code{note}.
 #' @export
 dipole_moment <- function(charges, R, centre = NULL) {
@@ -202,7 +202,7 @@ dipole_moment <- function(charges, R, centre = NULL) {
 #' @param v A matrix; passed to \code{as.matrix}.
 #' @param R A matrix; passed to \code{as.matrix}.
 #' @param Q A matrix; passed to \code{as.matrix}.
-#' @param tol Defaults to \code{1e-09}.
+#' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.
 #' @return A list with \code{scalar_error}, \code{vector_error}, \code{scalars_invariant}, \code{vectors_equivariant}, \code{note}.
 #' @export
 morie_painn_equivariance_error <- function(model, s, v, R, Q, tol = 1e-9) {

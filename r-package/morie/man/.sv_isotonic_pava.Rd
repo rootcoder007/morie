@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{y}{A vector; its length is taken.}
-\item{w}{Defaults to \code{NULL}.}
+\item{w}{Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.}
 }
 \description{
 Part of the spatial_voting implementation; see the file header for the source it follows.

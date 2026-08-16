@@ -8,11 +8,11 @@
 mqtmpl_permutation_threshold(y, markers, positions, n_perm = 100, alpha = 0.05, method = "em", step = 0.05, seed = 0, ...)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{markers}{See Usage.}
 \item{positions}{See Usage.}
-\item{n_perm}{Defaults to \code{100}.}
-\item{alpha}{Defaults to \code{0.05}.}
+\item{n_perm}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100}.}
+\item{alpha}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.05}.}
 \item{method}{Defaults to \code{"em"}.}
 \item{step}{Defaults to \code{0.05}.}
 \item{seed}{Defaults to \code{0}.}

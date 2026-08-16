@@ -8,7 +8,7 @@
 .tlnet1_vec(values)
 }
 \arguments{
-\item{values}{See Usage.}
+\item{values}{A matrix; the body checks with \code{is.matrix}.}
 }
 \description{
 Part of the tlnet1_native implementation; see the file header for the source it follows.

@@ -11,13 +11,13 @@
 \item{rows}{A vector; its length is taken and its elements indexed.}
 \item{labels}{A vector; its length is taken and its elements indexed.}
 \item{fields}{A vector; indexed elementwise.}
-\item{n_features}{See Usage.}
-\item{n_fields}{See Usage.}
-\item{k_dim}{Defaults to \code{4L}.}
+\item{n_features}{Coerced to integer by the body, with \code{as.integer}.}
+\item{n_fields}{Coerced to integer by the body, with \code{as.integer}.}
+\item{k_dim}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{4L}.}
 \item{eta}{Numeric; combined arithmetically in the body. Defaults to \code{0.1}.}
 \item{lam}{Numeric; combined arithmetically in the body. Defaults to \code{2e-05}.}
-\item{epochs}{Defaults to \code{10L}.}
-\item{seed}{Defaults to \code{0L}.}
+\item{epochs}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{10L}.}
+\item{seed}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.}
 }
 \description{
 A step of the ffmFM_native implementation. Called by \code{morie_ffmFM}. See the file header for the source the module follows.

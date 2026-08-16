@@ -10,7 +10,7 @@ mafft_peaks(lags, c, n_peaks)
 \arguments{
 \item{lags}{A vector; indexed elementwise.}
 \item{c}{Numeric; passed to \code{order}.}
-\item{n_peaks}{See Usage.}
+\item{n_peaks}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

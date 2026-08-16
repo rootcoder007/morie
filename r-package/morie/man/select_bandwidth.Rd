@@ -10,10 +10,10 @@ select_bandwidth(X, x0, bandwidths, kernel = "epanechnikov", criterion = "lepski
 \arguments{
 \item{X}{See Usage.}
 \item{x0}{See Usage.}
-\item{bandwidths}{See Usage.}
+\item{bandwidths}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{kernel}{Defaults to \code{"epanechnikov"}.}
 \item{criterion}{One of \code{"lepski"}, \code{"smallest_se"}. Defaults to \code{"lepski"}.}
-\item{C}{Defaults to \code{1}.}
+\item{C}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 }
 \description{
 Part of the tlcvnp_native implementation; see the file header for the source it follows.

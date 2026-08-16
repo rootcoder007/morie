@@ -8,7 +8,7 @@
 .otis_is_truthy(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Numeric; the body checks with \code{is.numeric}.}
 }
 \description{
 Part of the otis_all_analyze implementation; see the file header for the source it follows.

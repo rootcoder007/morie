@@ -13,7 +13,7 @@
 \item{Q1}{Passed to \code{.tlroad_vec}.}
 \item{Q0}{Passed to \code{.tlroad_vec}.}
 \item{g}{Passed to \code{.tlroad_vec}.}
-\item{psi}{See Usage.}
+\item{psi}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tlroad_native implementation; see the file header for the source it follows.

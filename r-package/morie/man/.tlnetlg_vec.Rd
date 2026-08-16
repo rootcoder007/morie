@@ -8,7 +8,7 @@
 .tlnetlg_vec(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Optional; may be \code{NULL}. A list; the body checks with \code{is.list}.}
 }
 \description{
 Part of the tlnetlg_native implementation; see the file header for the source it follows.

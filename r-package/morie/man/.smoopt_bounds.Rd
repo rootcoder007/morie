@@ -10,8 +10,8 @@
 \arguments{
 \item{i1}{See Usage.}
 \item{i2}{See Usage.}
-\item{alpha}{See Usage.}
-\item{y}{See Usage.}
+\item{alpha}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{C}{Numeric; passed to \code{min}.}
 }
 \description{

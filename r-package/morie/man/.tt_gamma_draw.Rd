@@ -8,7 +8,7 @@
 .tt_gamma_draw(shape, scale, rng)
 }
 \arguments{
-\item{shape}{See Usage.}
+\item{shape}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{scale}{Passed to \code{.tt_gamma_draw}.}
 \item{rng}{Passed to \code{.ghc_unif}.}
 }

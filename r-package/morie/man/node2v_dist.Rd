@@ -9,7 +9,7 @@ node2v_dist(adj, t, x)
 }
 \arguments{
 \item{adj}{A vector; indexed elementwise.}
-\item{t}{See Usage.}
+\item{t}{Coerced to character by the body, with \code{as.character}.}
 \item{x}{See Usage.}
 }
 \description{

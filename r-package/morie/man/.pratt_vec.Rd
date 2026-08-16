@@ -8,7 +8,7 @@
 .pratt_vec(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the pratt_native implementation; see the file header for the source it follows.

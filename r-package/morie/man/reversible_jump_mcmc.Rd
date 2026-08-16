@@ -11,14 +11,14 @@ reversible_jump_mcmc(models, moves, init_model, init_theta = numeric(0), n_iter 
 \item{models}{A vector; indexed elementwise.}
 \item{moves}{See Usage.}
 \item{init_model}{See Usage.}
-\item{init_theta}{Defaults to \code{numeric(0)}.}
+\item{init_theta}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{numeric(0)}.}
 \item{n_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{10000}.}
 \item{burn_in}{Numeric; combined arithmetically in the body. Defaults to \code{0}.}
 \item{thin}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
 \item{seed}{Passed to \code{.unif_stream}. Defaults to \code{0}.}
 \item{within}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 \item{within_scale}{Passed to \code{.rw_within}. Defaults to \code{0.5}.}
-\item{within_weight}{Defaults to \code{1}.}
+\item{within_weight}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 \item{move_weight}{Defaults to \code{1}.}
 \item{jacobian}{One of \code{"analytic"}, \code{"numeric"}. Defaults to \code{"analytic"}.}
 \item{keep_chain}{A flag; the body branches on it. Defaults to \code{TRUE}.}

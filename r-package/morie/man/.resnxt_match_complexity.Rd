@@ -8,9 +8,9 @@
 .resnxt_match_complexity(width, cardinality, target_parameters)
 }
 \arguments{
-\item{width}{See Usage.}
-\item{cardinality}{See Usage.}
-\item{target_parameters}{See Usage.}
+\item{width}{Coerced to integer by the body, with \code{as.integer}.}
+\item{cardinality}{Coerced to integer by the body, with \code{as.integer}.}
+\item{target_parameters}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the resnxt_native implementation; see the file header for the source it follows.

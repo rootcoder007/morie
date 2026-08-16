@@ -8,8 +8,8 @@
 chronos_mean_scale(x, context = NULL)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{context}{Defaults to \code{NULL}.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{context}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 A step of the chronos_native implementation. Called by \code{chronos_tokenize}. See the file header for the source the module follows.

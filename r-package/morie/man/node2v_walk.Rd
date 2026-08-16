@@ -10,7 +10,7 @@ node2v_walk(adj, start, length, p = 1, q = 1, rng = NULL, weights = NULL)
 \arguments{
 \item{adj}{See Usage.}
 \item{start}{See Usage.}
-\item{length}{See Usage.}
+\item{length}{Coerced to integer by the body, with \code{as.integer}.}
 \item{p}{Defaults to \code{1}.}
 \item{q}{Defaults to \code{1}.}
 \item{rng}{Optional; may be \code{NULL}. Passed to \code{.ghc_unif}.}

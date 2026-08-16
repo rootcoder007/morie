@@ -8,8 +8,8 @@
 .tlbandt_sequential_ci(D, level = 1.96)
 }
 \arguments{
-\item{D}{See Usage.}
-\item{level}{Defaults to \code{1.96}.}
+\item{D}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{level}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1.96}.}
 }
 \description{
 Part of the tlbandt_native implementation; see the file header for the source it follows.

@@ -97,9 +97,9 @@ tagRC_tripartite_graph <- function(triples) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param nodes See Usage.
-#' @param focus See Usage.
-#' @param weight Defaults to \code{0.9}.
+#' @param nodes Coerced to character by the body, with \code{as.character}.
+#' @param focus Coerced to character by the body, with \code{as.character}.
+#' @param weight Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.9}.
 #' @return A list with \code{p}, \code{focus}, \code{mass}.
 #' @export
 tagRC_preference_vector <- function(nodes, focus, weight = 0.9) {
@@ -132,11 +132,11 @@ tagRC_preference_vector <- function(nodes, focus, weight = 0.9) {
 #' source it follows.
 #'
 #' @param adjacency A vector; indexed elementwise.
-#' @param nodes See Usage.
-#' @param p Defaults to \code{NULL}.
+#' @param nodes Coerced to character by the body, with \code{as.character}.
+#' @param p Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.
 #' @param d Numeric; combined arithmetically in the body. Defaults to \code{0.7}.
 #' @param iters A count; the body uses it as \code{seq_len(...)}. Defaults to \code{200}.
-#' @param tol Defaults to \code{1e-12}.
+#' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-12}.
 #' @return A list with \code{w}, \code{ranking}.
 #' @export
 tagRC_adapted_pagerank <- function(adjacency, nodes, p = NULL,

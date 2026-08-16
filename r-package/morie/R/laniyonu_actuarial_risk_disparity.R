@@ -134,7 +134,7 @@ NULL
 #' Part of the laniyonu_actuarial_risk_disparity implementation; see the
 #' file header for the source it follows.
 #'
-#' @param y See Usage.
+#' @param y Coerced to character by the body, with \code{as.character}.
 #' @param levels_ See Usage.
 #' @return The value of \code{m}, as built in the body.
 #' @export

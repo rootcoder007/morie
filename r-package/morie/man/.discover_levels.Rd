@@ -13,7 +13,7 @@
 \item{W}{Passed to \code{.fit_q_dta}.}
 \item{levels}{A vector; indexed elementwise.}
 \item{rows}{Passed to \code{.fit_q_dta}.}
-\item{eval_rows}{See Usage.}
+\item{eval_rows}{Iterated over elementwise, with \code{vapply}.}
 \item{ridge}{Passed to \code{.fit_q_dta}.}
 }
 \description{

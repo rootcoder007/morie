@@ -8,9 +8,9 @@
 dipole_moment(charges, R, centre = NULL)
 }
 \arguments{
-\item{charges}{See Usage.}
+\item{charges}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{R}{A matrix; passed to \code{as.matrix}.}
-\item{centre}{Defaults to \code{NULL}.}
+\item{centre}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 read off directly from equivariant atomwise quantities.

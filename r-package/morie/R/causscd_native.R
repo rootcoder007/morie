@@ -15,8 +15,8 @@
 #' the source it follows.
 #'
 #' @param Y A matrix; passed to \code{nrow}.
-#' @param treated See Usage.
-#' @param t_post See Usage.
+#' @param treated Coerced to logical by the body, with \code{as.logical}.
+#' @param t_post Coerced to integer by the body, with \code{as.integer}.
 #' @return A list with \code{Y}, \code{n}, \code{T}, \code{tr}, \code{t_post}.
 #' @export
 .causscd_check_grid <- function(Y, treated, t_post) {
@@ -79,7 +79,7 @@
 #' @param cols A vector; its length is taken and its elements indexed.
 #' @param target A vector; its length is taken.
 #' @param penalty Numeric; combined arithmetically in the body.
-#' @param iters Defaults to \code{2000L}.
+#' @param iters Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000L}.
 #' @param tol Defaults to \code{1e-12}.
 #' @return A list with \code{w}, \code{icept}.
 #' @export

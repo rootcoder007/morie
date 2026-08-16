@@ -8,7 +8,7 @@
 start_allowed(labels)
 }
 \arguments{
-\item{labels}{See Usage.}
+\item{labels}{Iterated over elementwise, with \code{sapply}.}
 }
 \description{
 A step of the benRea_native implementation. Called by \code{viterbi_decode}. See the file header for the source the module follows.

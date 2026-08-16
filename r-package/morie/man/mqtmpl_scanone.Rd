@@ -14,7 +14,7 @@ mqtmpl_scanone(y, markers, positions, method = "em", step = 0.02, covariates = l
 \item{method}{One of \code{"imp"}, \code{"mr"}. Defaults to \code{"em"}.}
 \item{step}{Defaults to \code{0.02}.}
 \item{covariates}{A vector; its length is taken. Defaults to \code{list()}.}
-\item{error_rate}{Defaults to \code{0}.}
+\item{error_rate}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.}
 }
 \description{
 Part of the mqtmpl_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .wfrep_lab(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{Numeric; the body checks with \code{is.numeric}.}
 }
 \description{
 Part of the Wfrep implementation; see the file header for the source it follows.

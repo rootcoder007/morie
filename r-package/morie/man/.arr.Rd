@@ -8,7 +8,7 @@
 .arr(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 A step of the effect_sizes implementation. Called by \code{cles}, \code{cliffs_delta}, \code{coefficient_of_variation} and 7 others in the module. See the file header for the source the module follows.

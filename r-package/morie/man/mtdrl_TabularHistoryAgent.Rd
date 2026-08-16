@@ -8,9 +8,9 @@
 mtdrl_TabularHistoryAgent(n_arms, epsilon = 0.1, optimistic = 1)
 }
 \arguments{
-\item{n_arms}{See Usage.}
-\item{epsilon}{Defaults to \code{0.1}.}
-\item{optimistic}{Defaults to \code{1}.}
+\item{n_arms}{Coerced to integer by the body, with \code{as.integer}.}
+\item{epsilon}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.1}.}
+\item{optimistic}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 }
 \description{
 Part of the mtdrl_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .xdeep_to_vec(a)
 }
 \arguments{
-\item{a}{See Usage.}
+\item{a}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the xdeep_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .otis_to_int(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the otis_all_analyze implementation; see the file header for the source it follows.

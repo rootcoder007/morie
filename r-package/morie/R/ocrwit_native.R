@@ -22,9 +22,9 @@
 #' source it follows.
 #'
 #' @param box A vector; indexed elementwise.
-#' @param width See Usage.
-#' @param height See Usage.
-#' @param scale Defaults to \code{1000}.
+#' @param width Coerced to numeric by the body, with \code{as.numeric}.
+#' @param height Coerced to numeric by the body, with \code{as.numeric}.
+#' @param scale Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1000}.
 #' @return A vector, from \code{c}.
 #' @export
 ocrwit_normalise_bbox <- function(box, width, height, scale = 1000) {
@@ -46,8 +46,8 @@ ocrwit_normalise_bbox <- function(box, width, height, scale = 1000) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param boxes See Usage.
-#' @param segment_ids See Usage.
+#' @param boxes Coerced to list by the body, with \code{as.list}.
+#' @param segment_ids Coerced to list by the body, with \code{as.list}.
 #' @param width See Usage.
 #' @param height See Usage.
 #' @param scale Defaults to \code{1000}.
@@ -83,10 +83,10 @@ ocrwit_segment_layout_boxes <- function(boxes, segment_ids, width, height,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n_units See Usage.
-#' @param rate Defaults to \code{0.3}.
-#' @param seed Defaults to \code{0}.
-#' @param block Defaults to \code{1}.
+#' @param n_units Coerced to integer by the body, with \code{as.integer}.
+#' @param rate Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.3}.
+#' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
+#' @param block Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1}.
 #' @return A list with \code{masked}, \code{kept}, \code{rate}, \code{block}, \code{note}.
 #' @export
 ocrwit_mask_units <- function(n_units, rate = 0.3, seed = 0, block = 1) {
@@ -122,7 +122,7 @@ ocrwit_mask_units <- function(n_units, rate = 0.3, seed = 0, block = 1) {
 #' @param box See Usage.
 #' @param width See Usage.
 #' @param height See Usage.
-#' @param patch_grid Defaults to \code{14}.
+#' @param patch_grid Coerced to integer by the body, with \code{as.integer}. Defaults to \code{14}.
 #' @return A vector, from \code{sort}.
 #' @export
 ocrwit_patch_of_box <- function(box, width, height, patch_grid = 14) {

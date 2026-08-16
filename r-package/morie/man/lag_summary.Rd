@@ -8,9 +8,9 @@
 lag_summary(series, t, lags = 2)
 }
 \arguments{
-\item{series}{See Usage.}
+\item{series}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{t}{Numeric; passed to \code{min}.}
-\item{lags}{Defaults to \code{2}.}
+\item{lags}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2}.}
 }
 \description{
 Part of the tlonts_native implementation; see the file header for the source it follows.

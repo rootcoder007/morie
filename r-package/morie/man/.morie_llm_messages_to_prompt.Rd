@@ -8,7 +8,7 @@
 .morie_llm_messages_to_prompt(messages)
 }
 \arguments{
-\item{messages}{See Usage.}
+\item{messages}{Iterated over elementwise, with \code{vapply}.}
 }
 \description{
 Part of the llm implementation; see the file header for the source it follows.

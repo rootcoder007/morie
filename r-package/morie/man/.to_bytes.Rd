@@ -8,7 +8,7 @@
 .to_bytes(ws)
 }
 \arguments{
-\item{ws}{See Usage.}
+\item{ws}{Iterated over elementwise, with \code{lapply}.}
 }
 \description{
 Part of the secarg_native implementation; see the file header for the source it follows.

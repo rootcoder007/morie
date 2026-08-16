@@ -8,7 +8,7 @@
 .t4_lccrit(df)
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the nybhsn implementation; see the file header for the source it follows.

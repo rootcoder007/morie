@@ -8,7 +8,7 @@
 .siu_an_falsy(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{A logical; the body checks with \code{is.logical}.}
 }
 \description{
 Part of the siu_analyze implementation; see the file header for the source it follows.

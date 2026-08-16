@@ -12,7 +12,7 @@
 #' the source it follows.
 #'
 #' @param series_list A vector; its length is taken.
-#' @param patch_len See Usage.
+#' @param patch_len Coerced to integer by the body, with \code{as.integer}.
 #' @param normalise A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{batch}, \code{meta}, \code{n_series}, \code{n_patches}, \code{patch_len}, \code{note}.
 #' @export
@@ -69,7 +69,7 @@ momento_harmonise <- function(series_list, patch_len, normalise = TRUE) {
 #' the source it follows.
 #'
 #' @param patches A vector; its length is taken and its elements indexed.
-#' @param mask_idx See Usage.
+#' @param mask_idx Coerced to integer by the body, with \code{as.integer}.
 #' @param fill A count; the body uses it as \code{rep(...)}. Defaults to \code{0}.
 #' @return A list with \code{masked}, \code{mask}, \code{mask_idx}, \code{mask_rate}, \code{n_patches}.
 #' @export
@@ -135,10 +135,10 @@ momento_masked_loss <- function(truth, reconstruction, mask) {
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param n_patches See Usage.
+#' @param n_patches Coerced to integer by the body, with \code{as.integer}.
 #' @param task One of \code{"forecast"}, \code{"impute"}. Defaults to \code{"forecast"}.
-#' @param span Defaults to \code{1}.
-#' @param start Defaults to \code{NULL}.
+#' @param span Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1}.
+#' @param start Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{seq.int}.
 #' @export
 momento_task_mask <- function(n_patches, task = "forecast", span = 1, start = NULL) {
@@ -171,7 +171,7 @@ momento_task_mask <- function(n_patches, task = "forecast", span = 1, start = NU
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param patches See Usage.
+#' @param patches Iterated over elementwise, with \code{lapply}.
 #' @param reconstructor See Usage.
 #' @param rates See Usage.
 #' @param seed Defaults to \code{0}.

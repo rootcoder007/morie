@@ -8,7 +8,7 @@
 .netsts_vec(y)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the netsts_native implementation; see the file header for the source it follows.

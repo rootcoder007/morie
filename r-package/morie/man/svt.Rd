@@ -10,10 +10,10 @@ svt(M, observed, tau = NULL, step = 1.9, iters = 200L, tol = 1e-06)
 \arguments{
 \item{M}{A matrix; passed to \code{as.matrix}.}
 \item{observed}{A matrix; indexed by row and column.}
-\item{tau}{Defaults to \code{NULL}.}
-\item{step}{Defaults to \code{1.9}.}
-\item{iters}{Defaults to \code{200L}.}
-\item{tol}{Defaults to \code{1e-06}.}
+\item{tau}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{step}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1.9}.}
+\item{iters}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200L}.}
+\item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-06}.}
 }
 \description{
 Part of the meglt_native implementation; see the file header for the source it follows.

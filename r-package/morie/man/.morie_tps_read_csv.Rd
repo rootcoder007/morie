@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{name}{Passed to \code{.morie_tps_io_category_dir}.}
-\item{nrows}{See Usage.}
+\item{nrows}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the tps_io implementation; see the file header for the source it follows.

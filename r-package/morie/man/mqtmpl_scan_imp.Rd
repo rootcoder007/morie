@@ -12,7 +12,7 @@ mqtmpl_scan_imp(y, markers, positions, step, n_imp, error_rate, seed)
 \item{markers}{A vector; its length is taken and its elements indexed.}
 \item{positions}{A vector; its length is taken and its elements indexed.}
 \item{step}{Numeric; combined arithmetically in the body.}
-\item{n_imp}{See Usage.}
+\item{n_imp}{Coerced to integer by the body, with \code{as.integer}.}
 \item{error_rate}{See Usage.}
 \item{seed}{See Usage.}
 }

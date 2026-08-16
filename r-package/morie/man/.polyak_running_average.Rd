@@ -8,9 +8,9 @@
 .polyak_running_average(prev, new, decay = 0.999)
 }
 \arguments{
-\item{prev}{See Usage.}
-\item{new}{See Usage.}
-\item{decay}{Defaults to \code{0.999}.}
+\item{prev}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{new}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{decay}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.999}.}
 }
 \description{
 Part of the polyak_native implementation; see the file header for the source it follows.

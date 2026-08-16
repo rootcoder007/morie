@@ -9,11 +9,11 @@ violates_kkt(i, alpha, y, E, C, tol = 0.001)
 }
 \arguments{
 \item{i}{See Usage.}
-\item{alpha}{See Usage.}
-\item{y}{See Usage.}
-\item{E}{See Usage.}
-\item{C}{See Usage.}
-\item{tol}{Defaults to \code{0.001}.}
+\item{alpha}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{E}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{C}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.001}.}
 }
 \description{
 Part of the smoopt_native implementation; see the file header for the source it follows.

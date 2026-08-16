@@ -8,8 +8,8 @@
 .nhits_expressiveness_knots(horizon, ratio)
 }
 \arguments{
-\item{horizon}{See Usage.}
-\item{ratio}{See Usage.}
+\item{horizon}{Coerced to integer by the body, with \code{as.integer}.}
+\item{ratio}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the nhits_native implementation; see the file header for the source it follows.

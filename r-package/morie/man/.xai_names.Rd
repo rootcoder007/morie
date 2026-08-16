@@ -8,7 +8,7 @@
 .xai_names(feature_names, d)
 }
 \arguments{
-\item{feature_names}{See Usage.}
+\item{feature_names}{Optional; may be \code{NULL}. Coerced to character by the body, with \code{as.character}.}
 \item{d}{A count; the body uses it as \code{seq_len(...)}.}
 }
 \description{

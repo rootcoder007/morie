@@ -17,11 +17,11 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param r See Usage.
-#' @param mu_min Defaults to \code{0}.
-#' @param mu_max Defaults to \code{6}.
-#' @param n_gaussians Defaults to \code{25}.
-#' @param gamma Defaults to \code{NULL}.
+#' @param r Coerced to numeric by the body, with \code{as.numeric}.
+#' @param mu_min Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
+#' @param mu_max Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{6}.
+#' @param n_gaussians Coerced to integer by the body, with \code{as.integer}. Defaults to \code{25}.
+#' @param gamma Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A numeric value.
 #' @export
 gaussian_expansion <- function(r, mu_min = 0.0, mu_max = 6.0,
@@ -43,8 +43,8 @@ gaussian_expansion <- function(r, mu_min = 0.0, mu_max = 6.0,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param r See Usage.
-#' @param cutoff Defaults to \code{5}.
+#' @param r Coerced to numeric by the body, with \code{as.numeric}.
+#' @param cutoff Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{5}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 cosine_cutoff <- function(r, cutoff = 5.0) {
@@ -60,8 +60,8 @@ cosine_cutoff <- function(r, cutoff = 5.0) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
-#' @param R See Usage.
+#' @param X Iterated over elementwise, with \code{lapply}.
+#' @param R Iterated over elementwise, with \code{lapply}.
 #' @param filter_net See Usage.
 #' @param cutoff Defaults to \code{5}.
 #' @param ... Passed through.
@@ -102,7 +102,7 @@ cfconv <- function(X, R, filter_net, cutoff = 5.0, ...) {
 #' source it follows.
 #'
 #' @param energy_fn See Usage.
-#' @param R See Usage.
+#' @param R Iterated over elementwise, with \code{lapply}.
 #' @param h Numeric; combined arithmetically in the body. Defaults to \code{1e-05}.
 #' @return A list with \code{estimate}, \code{forces}, \code{net_force}, \code{method}, \code{note}.
 #' @export
@@ -136,9 +136,9 @@ forces_from_energy <- function(energy_fn, R, h = 1e-5) {
 #' source it follows.
 #'
 #' @param energy_fn See Usage.
-#' @param R See Usage.
+#' @param R Iterated over elementwise, with \code{lapply}.
 #' @param Q A matrix; passed to \code{as.matrix}.
-#' @param g Defaults to \code{NULL}.
+#' @param g Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{energy_error}, \code{force_error}, \code{energy_invariant}, \code{forces_equivariant}, \code{note}.
 #' @export
 invariance_error <- function(energy_fn, R, Q, g = NULL) {

@@ -8,7 +8,7 @@
 .clip_exp(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

@@ -8,9 +8,9 @@
 .svdpp_baseline(mu, b_user, b_item)
 }
 \arguments{
-\item{mu}{See Usage.}
-\item{b_user}{See Usage.}
-\item{b_item}{See Usage.}
+\item{mu}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{b_user}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{b_item}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the svdpp_native implementation; see the file header for the source it follows.

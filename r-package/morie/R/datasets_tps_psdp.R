@@ -153,7 +153,7 @@ morie_tps_psdp_layers <- function() {
 #' the source it follows.
 #'
 #' @param layer_key See Usage.
-#' @param year See Usage.
+#' @param year Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @param max_features Optional; may be \code{NULL}. Passed to \code{.morie_tps_psdp_feature_query}.
 #' @param offline A flag; the body branches on it.
 #' @param layer_url Optional; may be \code{NULL}. Passed to \code{.morie_tps_psdp_feature_query}.

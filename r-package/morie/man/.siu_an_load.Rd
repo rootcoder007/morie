@@ -8,7 +8,7 @@
 .siu_an_load(x = NULL)
 }
 \arguments{
-\item{x}{Defaults to \code{NULL}.}
+\item{x}{Optional; may be \code{NULL}. A data frame; the body checks with \code{is.data.frame}.}
 }
 \description{
 .siu_an_load -- accept a data frame, a path, or NULL (defaults). ---------------------------------------------------------------------------

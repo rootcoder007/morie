@@ -8,9 +8,9 @@
 .polyak_soft_update(target, online, tau = 0.001)
 }
 \arguments{
-\item{target}{See Usage.}
-\item{online}{See Usage.}
-\item{tau}{Defaults to \code{0.001}.}
+\item{target}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{online}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{tau}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.001}.}
 }
 \description{
 Part of the polyak_native implementation; see the file header for the source it follows.

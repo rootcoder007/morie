@@ -11,12 +11,12 @@ explor(states, actions, next_states, n_actions = NULL, n_features = 8L, eta = 1,
 \item{states}{Passed to \code{.mat}.}
 \item{actions}{Passed to \code{.mat}.}
 \item{next_states}{Passed to \code{.mat}.}
-\item{n_actions}{Defaults to \code{NULL}.}
-\item{n_features}{Defaults to \code{8L}.}
+\item{n_actions}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
+\item{n_features}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8L}.}
 \item{eta}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
 \item{beta}{Numeric; combined arithmetically in the body. Defaults to \code{0.2}.}
 \item{lr}{Numeric; combined arithmetically in the body. Defaults to \code{0.05}.}
-\item{epochs}{Defaults to \code{1L}.}
+\item{epochs}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1L}.}
 \item{features}{One of \code{"identity"}, \code{"inverse"}. Defaults to \code{"inverse"}.}
 \item{discrete}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 \item{seed}{Passed to \code{.ghc_rng}. Defaults to \code{0L}.}

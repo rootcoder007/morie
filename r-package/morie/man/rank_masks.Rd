@@ -9,7 +9,7 @@ rank_masks(masks, predicted_iou, target = NULL)
 }
 \arguments{
 \item{masks}{A vector; its length is taken.}
-\item{predicted_iou}{See Usage.}
+\item{predicted_iou}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{target}{Defaults to \code{NULL}.}
 }
 \description{

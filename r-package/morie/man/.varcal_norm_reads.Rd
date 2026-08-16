@@ -8,7 +8,7 @@
 .varcal_norm_reads(reads)
 }
 \arguments{
-\item{reads}{See Usage.}
+\item{reads}{Iterated over elementwise, with \code{lapply}.}
 }
 \description{
 Part of the varcal_native implementation; see the file header for the source it follows.

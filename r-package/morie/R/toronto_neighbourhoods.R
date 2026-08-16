@@ -100,7 +100,7 @@ NULL
 #' testthat::local_mocked_bindings(.morie_to_ckan_dump_csv = ...).
 #'
 #' @param resource_id See Usage.
-#' @param limit Defaults to \code{100000L}.
+#' @param limit Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100000L}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .morie_to_ckan_dump_csv <- function(resource_id, limit = 100000L) {
@@ -349,7 +349,7 @@ morie_to_hood_crosswalk <- function() {
 #'
 #' the crosswalk uses ("82" -> "082"; "0082" -> "082"; "Niagara" -> NA).
 #'
-#' @param x See Usage.
+#' @param x Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{ifelse}.
 #' @export
 .morie_to_normalise_hood_code <- function(x) {

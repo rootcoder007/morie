@@ -8,7 +8,7 @@
 morie_haldane(distance)
 }
 \arguments{
-\item{distance}{See Usage.}
+\item{distance}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the rqtmpl_native implementation; see the file header for the source it follows.

@@ -10,7 +10,7 @@
 \arguments{
 \item{title}{See Usage.}
 \item{summary_lines}{See Usage.}
-\item{tables}{Defaults to \code{list()}.}
+\item{tables}{Iterated over elementwise, with \code{Filter}. Defaults to \code{list()}.}
 \item{interpretation}{Defaults to \code{""}.}
 \item{warnings}{Defaults to \code{character(0)}.}
 \item{payload}{Defaults to \code{NULL}.}

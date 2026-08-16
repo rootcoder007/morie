@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{count}{A count; the body uses it as \code{seq_len(...)}.}
-\item{seed}{Defaults to \code{13}.}
+\item{seed}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{13}.}
 }
 \description{
 Part of the wasserman_native implementation; see the file header for the source it follows.

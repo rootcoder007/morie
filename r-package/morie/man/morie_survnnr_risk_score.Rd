@@ -9,7 +9,7 @@ morie_survnnr_risk_score(fit_result, X)
 }
 \arguments{
 \item{fit_result}{A list; the body reads \code{$activation}, \code{$b}, \code{$W} from it.}
-\item{X}{See Usage.}
+\item{X}{Iterated over elementwise, with \code{sapply}.}
 }
 \description{
 Part of the survnnr_native implementation; see the file header for the source it follows.

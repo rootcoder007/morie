@@ -8,8 +8,8 @@
 chronos_quantile_bins(samples, n_bins = 4096L)
 }
 \arguments{
-\item{samples}{See Usage.}
-\item{n_bins}{Defaults to \code{4096L}.}
+\item{samples}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{n_bins}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{4096L}.}
 }
 \description{
 A step of the chronos_native implementation. No other function in the package calls it. See the file header for the source the module follows.

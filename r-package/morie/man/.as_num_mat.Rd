@@ -8,7 +8,7 @@
 .as_num_mat(m)
 }
 \arguments{
-\item{m}{See Usage.}
+\item{m}{Optional; may be \code{NULL}. A matrix; the body checks with \code{is.matrix}.}
 }
 \description{
 Part of the opnclp_native implementation; see the file header for the source it follows.

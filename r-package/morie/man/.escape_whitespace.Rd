@@ -8,7 +8,7 @@
 .escape_whitespace(text, add_prefix = TRUE)
 }
 \arguments{
-\item{text}{See Usage.}
+\item{text}{Coerced to character by the body, with \code{as.character}.}
 \item{add_prefix}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{

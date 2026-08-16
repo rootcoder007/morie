@@ -10,7 +10,7 @@
 \arguments{
 \item{X}{Passed to \code{.bilm_forward}.}
 \item{layers}{Passed to \code{.bilm_forward}.}
-\item{raw_weights}{Defaults to \code{NULL}.}
+\item{raw_weights}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 \item{gamma}{Passed to \code{.elmo_mix}. Defaults to \code{1}.}
 }
 \description{

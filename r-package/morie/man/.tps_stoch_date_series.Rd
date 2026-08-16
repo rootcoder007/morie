@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{df}{A list; the body reads \code{$OCC_DAY}, \code{$OCC_MONTH}, \code{$OCC_YEAR} from it.}
-\item{min_year}{Defaults to \code{2014L}.}
+\item{min_year}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2014L}.}
 }
 \description{
 Prefer integer-triple OCC_YEAR/OCC_MONTH/OCC_DAY (local-time decomposition unaffected by ArcGIS UTC conversion); fall back to OCC_DATE / REPORT_DATE.

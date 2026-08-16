@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{p}{Passed to \code{.ghc_unif}.}
-\item{n_dirs}{See Usage.}
-\item{seed}{See Usage.}
+\item{n_dirs}{Coerced to integer by the body, with \code{as.integer}.}
+\item{seed}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the stahdo_native implementation; see the file header for the source it follows.

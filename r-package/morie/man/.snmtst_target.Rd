@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{post}{A vector; its length is taken.}
-\item{l_vec}{See Usage.}
+\item{l_vec}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the snmtst_native implementation; see the file header for the source it follows.

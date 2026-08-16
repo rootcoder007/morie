@@ -10,7 +10,7 @@
 \arguments{
 \item{Zn}{A matrix; indexed by row and column.}
 \item{K}{A count; the body uses it as \code{seq_len(...)}.}
-\item{seed}{See Usage.}
+\item{seed}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the scintg_native implementation; see the file header for the source it follows.

@@ -9,7 +9,7 @@ sdpwts_is_psd(M, tol = -1e-10)
 }
 \arguments{
 \item{M}{A matrix; passed to \code{as.matrix}.}
-\item{tol}{Defaults to \code{-1e-10}.}
+\item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{-1e-10}.}
 }
 \description{
 Part of the sdpwts_native implementation; see the file header for the source it follows.

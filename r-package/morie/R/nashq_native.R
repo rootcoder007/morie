@@ -294,18 +294,18 @@ nashq_pick <- function(M, A, who, epsilon, rng) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param states See Usage.
+#' @param states Coerced to list by the body, with \code{as.list}.
 #' @param actions A vector; its length is taken and its elements indexed.
-#' @param step See Usage.
-#' @param rewards See Usage.
+#' @param step A function; the body checks with \code{is.function}.
+#' @param rewards A function; the body checks with \code{is.function}.
 #' @param gamma Numeric; combined arithmetically in the body. Defaults to \code{0.9}.
 #' @param alpha Numeric; combined arithmetically in the body. Defaults to \code{0.5}.
 #' @param epsilon Defaults to \code{0.1}.
-#' @param episodes Defaults to \code{500}.
-#' @param horizon Defaults to \code{50}.
-#' @param start Defaults to \code{NULL}.
+#' @param episodes Coerced to integer by the body, with \code{as.integer}. Defaults to \code{500}.
+#' @param horizon Coerced to integer by the body, with \code{as.integer}. Defaults to \code{50}.
+#' @param start Optional; may be \code{NULL}. A function; the body checks with \code{is.function}.
 #' @param selection Defaults to \code{"global_optimal"}.
-#' @param terminal Defaults to \code{NULL}.
+#' @param terminal Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.
 #' @param seed Defaults to \code{0}.
 #' @param agent Defaults to \code{0}.
 #' @param tol Defaults to \code{1e-09}.

@@ -8,10 +8,10 @@
 focal_loss(prob, target, gamma = 2, alpha = 0.25)
 }
 \arguments{
-\item{prob}{See Usage.}
-\item{target}{See Usage.}
-\item{gamma}{Defaults to \code{2}.}
-\item{alpha}{Defaults to \code{0.25}.}
+\item{prob}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{target}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{gamma}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{2}.}
+\item{alpha}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.25}.}
 }
 \description{
 Part of the samdec_native implementation; see the file header for the source it follows.

@@ -11,11 +11,11 @@
 \item{estimator}{See Usage.}
 \item{ate}{Numeric; combined arithmetically in the body.}
 \item{ate_se}{Numeric; combined arithmetically in the body.}
-\item{ate_pval}{See Usage.}
-\item{n}{See Usage.}
-\item{n_treated}{See Usage.}
-\item{p_treat}{See Usage.}
-\item{notes}{Defaults to \code{list()}.}
+\item{ate_pval}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{n}{Coerced to integer by the body, with \code{as.integer}.}
+\item{n_treated}{Coerced to integer by the body, with \code{as.integer}.}
+\item{p_treat}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{notes}{Coerced to list by the body, with \code{as.list}. Defaults to \code{list()}.}
 }
 \description{
 Part of the otis_causal implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .tmldyk_logit(p)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tmldyk_native implementation; see the file header for the source it follows.
