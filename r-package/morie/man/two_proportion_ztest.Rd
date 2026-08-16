@@ -21,3 +21,6 @@ the proportion difference as \code{estimate}, and combined n.
 \description{
 Two-sample z-test for the difference in proportions
 }
+\examples{
+two_proportion_ztest(40, 100, 25, 100)
+}

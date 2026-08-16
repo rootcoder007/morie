@@ -19,3 +19,11 @@ A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
 \description{
 Slightly less conservative than Bonferroni under independence.
 }
+\examples{
+make_p <- function(n_null = 80, n_sig = 20, seed = 1) {
+    set.seed(seed)
+    c(runif(n_null), pmin(runif(n_sig, 0, 0.005), 1))
+}
+p <- make_p(50, 10)
+sidak(p)
+}

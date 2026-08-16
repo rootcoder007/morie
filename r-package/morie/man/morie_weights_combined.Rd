@@ -39,3 +39,8 @@ post-stratification / optional trimming.
 \description{
 Combined design x nonresponse x post-strat (x trim) pipeline.
 }
+\examples{
+r <- c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+pi <- rep(0.5, 8)
+morie_weights_combined(pi, r)
+}

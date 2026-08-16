@@ -16,3 +16,6 @@ the Levene (Brown-Forsythe) test followed by Bartlett's test.
 \description{
 Run a suite of homogeneity-of-variance tests
 }
+\examples{
+variance_equality_suite(rnorm(40), rnorm(40, sd = 2))
+}

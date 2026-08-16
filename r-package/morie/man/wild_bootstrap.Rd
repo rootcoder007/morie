@@ -37,3 +37,9 @@ A \code{morie_bootstrap_result}.
 Multiplies the residuals by random weights (Rademacher or Mammen)
 and refits OLS.
 }
+\examples{
+n <- 30L
+X <- cbind(1, rnorm(n))
+y <- 1 + 0.5 * X[, 2] + rnorm(n)
+wild_bootstrap(y, X, statistic_idx = 2L, n_boot = 30L, weight_distribution = "rademacher")
+}

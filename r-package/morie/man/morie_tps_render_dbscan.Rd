@@ -32,3 +32,14 @@ Runs DBSCAN on rotated-km coordinates and colours points by cluster
 label, with noise rendered grey.  Requires the suggested \pkg{dbscan}
 package; without it a base-graphics single-colour fallback is drawn.
 }
+\examples{
+.make_synthetic_points <- function(n = 200L, seed = 2L) {
+    set.seed(seed)
+    data.frame(LAT_WGS84 = stats::runif(n, 43.58, 43.88), LONG_WGS84 = stats::runif(n, 
+        -79.62, -79.13), OCC_DATE = format(as.POSIXct("2023-01-01", 
+        tz = "UTC") + sample.int(86400L * 365L, n, replace = TRUE), 
+        "\%Y-\%m-\%d"), stringsAsFactors = FALSE)
+}
+pts <- .make_synthetic_points(n = 100L, seed = 5L)
+morie_tps_render_dbscan(pts, eps_km = 1, min_samples = 5L, outfile = NULL)
+}

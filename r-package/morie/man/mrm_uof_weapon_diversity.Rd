@@ -23,3 +23,7 @@ Builds a weapon x force contingency table, runs a chi-square test
 of independence, computes Cramer's V, and reports the top-3
 (weapon, force) cells by standardised Pearson residual.
 }
+\examples{
+df <- data.frame(f = character(0), cnt = integer(0))
+mrm_uof_weapon_diversity(df, "w", "f")
+}

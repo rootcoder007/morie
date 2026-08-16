@@ -35,3 +35,14 @@ raking loop did not converge within \code{max_iter}.
 For multi-variable marginals use \code{morie_weights_rake()}; this helper is the
 single-variable convenience.
 }
+\examples{
+.make_survey_df <- function(n = 100L, seed = 1L) {
+    set.seed(seed)
+    data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n, 
+        5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"), 
+        n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE), 
+        fpc = rep(1000L, n))
+}
+df <- .make_survey_df()
+morie_survey_calibrate(df, "x", list(x = 100), max_iter = 20)
+}

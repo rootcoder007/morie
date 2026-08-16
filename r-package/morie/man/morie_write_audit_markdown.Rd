@@ -17,3 +17,8 @@ The path written.
 \description{
 Write a Markdown audit report.
 }
+\examples{
+res <- morie_audit_otis_variables()
+tmp <- tempfile(fileext = ".md")
+morie_write_audit_markdown(tmp, res)
+}

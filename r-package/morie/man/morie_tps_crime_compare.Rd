@@ -19,3 +19,22 @@ Accepts a named list of TPS data.frames (e.g.
 \code{OCC_YEAR} is present in every frame) a side-by-side
 year-by-year matrix.
 }
+\examples{
+.mk_tps_full <- function(n = 200L, seed = 1L) {
+    set.seed(seed)
+    data.frame(OCC_YEAR = sample(2018:2024, n, replace = TRUE), 
+        OCC_MONTH = sample(1:12, n, replace = TRUE), OCC_DOW = sample(c("Mon", 
+            "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"), n, replace = TRUE), 
+        OCC_HOUR = sample(0:23, n, replace = TRUE), DIVISION = sample(paste0("D", 
+            11:55), n, replace = TRUE), HOOD_158 = sample(letters[1:20], 
+            n, replace = TRUE), PREMISES_TYPE = sample(c("House", 
+            "Apt", "Street"), n, replace = TRUE), LOCATION_TYPE = sample(c("Bar", 
+            "Park", "Road"), n, replace = TRUE), OFFENCE = sample(c("Assault", 
+            "Theft"), n, replace = TRUE), UCR_CODE = sample(c("1430", 
+            "2120"), n, replace = TRUE), LAT_WGS84 = 43.6 + runif(n, 
+            0, 0.2), LONG_WGS84 = -79.4 + runif(n, 0, 0.2), stringsAsFactors = FALSE)
+}
+dfs <- list(Assault = .mk_tps_full(80L, seed = 2L), Robbery = .mk_tps_full(40L, 
+    seed = 3L))
+morie_tps_crime_compare(dfs)
+}
