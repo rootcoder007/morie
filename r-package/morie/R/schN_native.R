@@ -63,7 +63,7 @@ cosine_cutoff <- function(r, cutoff = 5.0) {
 #' @param X Iterated over elementwise, with \code{lapply}.
 #' @param R Iterated over elementwise, with \code{lapply}.
 #' @param filter_net Accepted by the signature and not used anywhere in the body.
-#' @param cutoff Defaults to \code{5}.
+#' @param cutoff Passed to \code{cosine_cutoff}. Defaults to \code{5}.
 #' @param ... Passed through.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -135,7 +135,7 @@ forces_from_energy <- function(energy_fn, R, h = 1e-5) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param energy_fn See Usage.
+#' @param energy_fn Passed to \code{forces_from_energy}.
 #' @param R Iterated over elementwise, with \code{lapply}.
 #' @param Q A matrix; passed to \code{as.matrix}.
 #' @param g Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.

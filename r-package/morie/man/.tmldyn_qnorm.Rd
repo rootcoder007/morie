@@ -8,7 +8,7 @@
 .tmldyn_qnorm(p)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{Passed to \code{qnorm}.}
 }
 \description{
 Part of the tmldyn_native implementation; see the file header for the source it follows.

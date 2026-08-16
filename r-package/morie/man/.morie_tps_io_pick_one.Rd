@@ -8,8 +8,8 @@
 .morie_tps_io_pick_one(d, exts)
 }
 \arguments{
-\item{d}{See Usage.}
-\item{exts}{See Usage.}
+\item{d}{Passed to \code{dir.exists}.}
+\item{exts}{Passed to \code{paste}.}
 }
 \description{
 Part of the tps_io implementation; see the file header for the source it follows.

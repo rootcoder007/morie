@@ -53,7 +53,7 @@ morie_bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
 #' it follows.
 #'
 #' @param z Numeric; combined arithmetically in the body.
-#' @param activation See Usage.
+#' @param activation Passed to \code{switch}.
 #' @return The value of \code{switch}.
 #' @export
 .bkprp_sigma <- function(z, activation) {
@@ -75,7 +75,7 @@ morie_bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
 #' it follows.
 #'
 #' @param z A matrix; passed to \code{nrow}.
-#' @param activation See Usage.
+#' @param activation Passed to \code{switch}.
 #' @param a Numeric; combined arithmetically in the body.
 #' @return The value of \code{switch}.
 #' @export

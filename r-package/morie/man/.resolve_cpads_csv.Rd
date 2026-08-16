@@ -8,7 +8,7 @@
 .resolve_cpads_csv(cpads_csv)
 }
 \arguments{
-\item{cpads_csv}{See Usage.}
+\item{cpads_csv}{Passed to \code{file.exists}.}
 }
 \description{
 N1); a direct Rscript caller is responsible for a path valid from its own cwd. No parent-directory walk: it only ever "worked" when the output dir happened to sit inside the repo, and silently surprised everyone else.

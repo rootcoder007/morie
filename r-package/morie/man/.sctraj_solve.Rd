@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{A}{A matrix; passed to \code{nrow}.}
-\item{b}{See Usage.}
+\item{b}{Passed to \code{cbind}.}
 }
 \description{
 Part of the sctraj_native implementation; see the file header for the source it follows.

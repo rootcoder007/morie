@@ -10,7 +10,7 @@
 \arguments{
 \item{seq}{See Usage.}
 \item{first}{A vector; indexed elementwise.}
-\item{nts}{See Usage.}
+\item{nts}{Passed to \code{\%in\%}.}
 }
 \description{
 Part of the prsLL_native implementation; see the file header for the source it follows.

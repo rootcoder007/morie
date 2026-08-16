@@ -43,9 +43,9 @@
 #' fallback) + .morie_from_json(simplifyVector=FALSE).
 #'
 #' @param portal Passed to \code{.morie_ckan_portal}.
-#' @param action See Usage.
+#' @param action Passed to \code{sprintf}.
 #' @param params Passed to \code{.morie_dataset_http_text}.
-#' @param api_key Defaults to \code{NULL}.
+#' @param api_key Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param user_agent Accepted by the signature and not used anywhere in the body. Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.
 #' @param timeout Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{$}.

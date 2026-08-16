@@ -8,7 +8,7 @@
 .morie_portal_fixture_rows(fname)
 }
 \arguments{
-\item{fname}{See Usage.}
+\item{fname}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the dataset_portal_catalog implementation; see the file header for the source it follows.

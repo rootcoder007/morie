@@ -8,8 +8,8 @@
 .tps_sp_fig(fig_dir, name, draw, save_fig = TRUE, width = 1140, height = 620)
 }
 \arguments{
-\item{fig_dir}{See Usage.}
-\item{name}{See Usage.}
+\item{fig_dir}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
+\item{name}{Passed to \code{file.path}.}
 \item{draw}{Accepted by the signature and not used anywhere in the body.}
 \item{save_fig}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 \item{width}{Defaults to \code{1140}.}

@@ -8,7 +8,7 @@
 .Phi(z)
 }
 \arguments{
-\item{z}{See Usage.}
+\item{z}{Passed to \code{pnorm}.}
 }
 \description{
 Using pnorm is exactly the closed form below.

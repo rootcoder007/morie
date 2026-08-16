@@ -135,7 +135,7 @@ NULL
 #' file header for the source it follows.
 #'
 #' @param y Coerced to character by the body, with \code{as.character}.
-#' @param levels_ See Usage.
+#' @param levels_ Passed to \code{match}.
 #' @return The value of \code{m}, as built in the body.
 #' @export
 .lan_ord_levels_to_int <- function(y, levels_) {
@@ -162,7 +162,7 @@ NULL
 #' @param outcome_col Passed to \code{.lan_ard_result}.
 #' @param race_cols Passed to \code{.lan_ard_result}.
 #' @param gender_col Passed to \code{.lan_ard_result}.
-#' @param control_cols See Usage.
+#' @param control_cols Passed to \code{c}.
 #' @param ordinal_levels A vector; its length is taken and its elements indexed.
 #' @param split_by_gender A flag; the body branches on it.
 #' @return The value of \code{.lan_ard_result}.
@@ -357,12 +357,12 @@ NULL
 #' file header for the source it follows.
 #'
 #' @param sub A matrix; indexed by row and column.
-#' @param score_col See Usage.
-#' @param outcome_col See Usage.
+#' @param score_col Passed to \code{c}.
+#' @param outcome_col Passed to \code{c}.
 #' @param race_cols A vector; its length is taken.
-#' @param control_cols See Usage.
+#' @param control_cols Passed to \code{c}.
 #' @param bootstrap_replicates A count; the body uses it as \code{seq_len(...)}.
-#' @param random_state See Usage.
+#' @param random_state Passed to \code{set.seed}.
 #' @return A list with \code{coefficients}, \code{std_errors}, \code{bootstrap_se}, \code{score_coefficient}, \code{n_obs}.
 #' @export
 .lan_score_net_residual <- function(sub, score_col, outcome_col,

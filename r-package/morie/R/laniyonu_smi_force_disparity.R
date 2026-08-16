@@ -148,10 +148,10 @@ NULL
 #' header for the source it follows.
 #'
 #' @param survey_df The body requires: survey_df missing columns:.
-#' @param survey_trait_col See Usage.
-#' @param survey_covariate_cols See Usage.
+#' @param survey_trait_col Passed to \code{c}.
+#' @param survey_covariate_cols Passed to \code{c}.
 #' @param area_df A vector; indexed elementwise.
-#' @param area_population_col See Usage.
+#' @param area_population_col Passed to \code{c}.
 #' @return The value of \code{setNames}.
 #' @export
 .lan_smi_sae <- function(survey_df, survey_trait_col, survey_covariate_cols,

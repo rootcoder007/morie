@@ -35,7 +35,7 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Passed to \code{as.Date}.
 #' @return The value of \code{suppressWarnings}.
 #' @export
 .parse_iso <- function(x) suppressWarnings(as.Date(x, format = "%Y-%m-%d"))

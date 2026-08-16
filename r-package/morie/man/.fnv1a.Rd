@@ -8,7 +8,7 @@
 .fnv1a(s)
 }
 \arguments{
-\item{s}{See Usage.}
+\item{s}{Passed to \code{charToRaw}.}
 }
 \description{
 A step of the fastxt_native implementation. Called by \code{.gram_slot}. See the file header for the source the module follows.

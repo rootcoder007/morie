@@ -8,8 +8,8 @@
 .pmfsc_key(a, b)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{a}{Passed to \code{paste0}.}
+\item{b}{Passed to \code{paste0}.}
 }
 \description{
 Part of the pmfsc_native implementation; see the file header for the source it follows.

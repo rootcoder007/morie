@@ -164,7 +164,7 @@ morie_datasets_chicago_socrata_by_id <- function(soda_id,
 #' Part of the datasets_bulk_catalogs implementation; see the file
 #' header for the source it follows.
 #'
-#' @param fname See Usage.
+#' @param fname Passed to \code{sprintf}.
 #' @param offline A flag; the body branches on it.
 #' @return The value of \code{utils::read.csv}.
 #' @export

@@ -8,7 +8,7 @@
 .siu_p_find_news_release_link(html, source_url)
 }
 \arguments{
-\item{html}{See Usage.}
+\item{html}{Passed to \code{regmatches}.}
 \item{source_url}{Optional; may be \code{NULL}. Character; passed to \code{sub}.}
 }
 \description{

@@ -8,11 +8,11 @@
 morie_sasRec(E, WQ, WK, WV, mask = NULL)
 }
 \arguments{
-\item{E}{See Usage.}
-\item{WQ}{See Usage.}
-\item{WK}{See Usage.}
-\item{WV}{See Usage.}
-\item{mask}{Defaults to \code{NULL}.}
+\item{E}{Passed to \code{self_attention}.}
+\item{WQ}{Passed to \code{self_attention}.}
+\item{WK}{Passed to \code{self_attention}.}
+\item{WV}{Passed to \code{self_attention}.}
+\item{mask}{Passed to \code{self_attention}.}
 }
 \description{
 Part of the sasRec_native implementation; see the file header for the source it follows.

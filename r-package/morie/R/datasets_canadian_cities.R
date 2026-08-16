@@ -68,7 +68,7 @@ morie_datasets_ottawa_open_crime_adjacent_layers <- function(offline = TRUE) {
 #' Part of the datasets_canadian_cities implementation; see the file
 #' header for the source it follows.
 #'
-#' @param fname See Usage.
+#' @param fname Passed to \code{sprintf}.
 #' @param offline A flag; the body branches on it.
 #' @return The value of \code{utils::read.csv}.
 #' @export
@@ -246,7 +246,7 @@ morie_datasets_edmonton_socrata_by_id <- function(soda_id,
 #' Part of the datasets_canadian_cities implementation; see the file
 #' header for the source it follows.
 #'
-#' @param fname See Usage.
+#' @param fname Passed to \code{system.file}.
 #' @return The value of \code{utils::read.csv}.
 #' @export
 .morie_canadian_fixture <- function(fname) {

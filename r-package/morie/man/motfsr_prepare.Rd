@@ -10,7 +10,7 @@ motfsr_prepare(sequences, w, alphabet)
 \arguments{
 \item{sequences}{Coerced to character by the body, with \code{as.character}.}
 \item{w}{Numeric; combined arithmetically in the body.}
-\item{alphabet}{See Usage.}
+\item{alphabet}{Passed to \code{motfsr_alphabet_of}.}
 }
 \description{
 Part of the motfsr_native implementation; see the file header for the source it follows.

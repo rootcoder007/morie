@@ -8,11 +8,11 @@
 morie_masrcn(features, box, out_size = 2L, stride = 1, samples = 2L)
 }
 \arguments{
-\item{features}{See Usage.}
-\item{box}{See Usage.}
-\item{out_size}{Defaults to \code{2L}.}
-\item{stride}{Defaults to \code{1}.}
-\item{samples}{Defaults to \code{2L}.}
+\item{features}{Passed to \code{roi_align}.}
+\item{box}{Passed to \code{roi_align}.}
+\item{out_size}{Passed to \code{roi_align}. Defaults to \code{2L}.}
+\item{stride}{Passed to \code{roi_align}. Defaults to \code{1}.}
+\item{samples}{Passed to \code{roi_align}. Defaults to \code{2L}.}
 }
 \description{
 Part of the masrcn_native implementation; see the file header for the source it follows.

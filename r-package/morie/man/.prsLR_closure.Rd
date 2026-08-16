@@ -12,7 +12,7 @@
 \item{ag}{A list; the body reads \code{$rules} from it.}
 \item{first}{Passed to \code{.prsLR_first_seq}.}
 \item{nts}{Passed to \code{.prsLR_first_seq}.}
-\item{k}{See Usage.}
+\item{k}{Passed to \code{==}.}
 }
 \description{
 Part of the prsLR_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 .run_final_report_module_internal(data, output_dir = NULL)
 }
 \arguments{
-\item{data}{See Usage.}
-\item{output_dir}{Defaults to \code{NULL}.}
+\item{data}{Passed to \code{names}.}
+\item{output_dir}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the study_reporting implementation; see the file header for the source it follows.

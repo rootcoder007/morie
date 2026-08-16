@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{x}{Optional; may be \code{NULL}. A matrix; passed to \code{dim}.}
-\item{name}{See Usage.}
+\item{name}{Passed to \code{sprintf}.}
 }
 \description{
 Part of the reinfc_native implementation; see the file header for the source it follows.

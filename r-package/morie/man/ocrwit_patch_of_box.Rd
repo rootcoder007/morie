@@ -8,9 +8,9 @@
 ocrwit_patch_of_box(box, width, height, patch_grid = 14)
 }
 \arguments{
-\item{box}{See Usage.}
-\item{width}{See Usage.}
-\item{height}{See Usage.}
+\item{box}{Passed to \code{ocrwit_normalise_bbox}.}
+\item{width}{Passed to \code{ocrwit_normalise_bbox}.}
+\item{height}{Passed to \code{ocrwit_normalise_bbox}.}
 \item{patch_grid}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{14}.}
 }
 \description{

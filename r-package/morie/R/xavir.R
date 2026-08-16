@@ -69,7 +69,7 @@ morie_xavir_xavier_init <- function(fan_in, fan_out, seed = 42L, uniform = TRUE)
 #' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param old See Usage.
+#' @param old Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .Random.seed_restore <- function(old) {

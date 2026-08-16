@@ -8,8 +8,8 @@
 .read_existing_output(output_dir, file_name, fallback = NULL)
 }
 \arguments{
-\item{output_dir}{See Usage.}
-\item{file_name}{See Usage.}
+\item{output_dir}{Passed to \code{file.path}.}
+\item{file_name}{Passed to \code{file.path}.}
 \item{fallback}{Defaults to \code{NULL}.}
 }
 \description{

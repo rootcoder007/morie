@@ -8,7 +8,7 @@
 .tl1step_as_numvec(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Passed to \code{unlist}.}
 }
 \description{
 Part of the tl1step_native implementation; see the file header for the source it follows.

@@ -11,7 +11,7 @@ RlsMonitor(x, reference = NULL, order = 8, lam = 0.98, settle = NULL, threshold 
 \item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{reference}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 \item{order}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8}.}
-\item{lam}{Defaults to \code{0.98}.}
+\item{lam}{Passed to \code{RlsFilt}. Defaults to \code{0.98}.}
 \item{settle}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 \item{threshold}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{3}.}
 \item{window}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}

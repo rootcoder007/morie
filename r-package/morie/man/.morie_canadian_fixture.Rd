@@ -8,7 +8,7 @@
 .morie_canadian_fixture(fname)
 }
 \arguments{
-\item{fname}{See Usage.}
+\item{fname}{Passed to \code{system.file}.}
 }
 \description{
 Part of the datasets_canadian_cities implementation; see the file header for the source it follows.

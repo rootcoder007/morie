@@ -12,7 +12,7 @@
 \item{H}{Passed to \code{.trupek_matvec}.}
 \item{delta}{Passed to \code{.trupek_boundary}.}
 \item{tol}{Numeric; passed to \code{max}.}
-\item{maxit}{See Usage.}
+\item{maxit}{Passed to \code{>}.}
 }
 \description{
 Part of the trupek_native implementation; see the file header for the source it follows.

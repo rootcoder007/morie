@@ -39,7 +39,7 @@ NULL
 #' source it follows.
 #'
 #' @param x Numeric; passed to \code{abs}.
-#' @param digits Defaults to \code{2L}.
+#' @param digits Passed to \code{formatC}. Defaults to \code{2L}.
 #' @param apa A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return The value of \code{s}, as built in the body.
 #' @export
@@ -59,7 +59,7 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Passed to \code{is.finite}.
 #' @param digits Numeric; combined arithmetically in the body. Defaults to \code{3L}.
 #' @param apa A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return The value of \code{s}, as built in the body.
@@ -81,7 +81,7 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Passed to \code{is.finite}.
 #' @return A character value.
 #' @export
 .tbl_stars <- function(p) {
@@ -136,7 +136,7 @@ NULL
 #' source it follows.
 #'
 #' @param reg A list; the body reads \code{$notes} from it.
-#' @param text See Usage.
+#' @param text Passed to \code{\%in\%}.
 #' @return The value of \code{[}.
 #' @export
 .tbl_footnotes_add <- function(reg, text) {
@@ -151,7 +151,7 @@ NULL
 #' source it follows.
 #'
 #' @param reg A list; the body reads \code{$notes} from it.
-#' @param fmt Defaults to \code{"text"}.
+#' @param fmt Passed to \code{switch}. Defaults to \code{"text"}.
 #' @return A character value.
 #' @export
 .tbl_footnotes_render <- function(reg, fmt = "text") {
@@ -179,10 +179,10 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param df See Usage.
+#' @param df Passed to \code{return}.
 #' @param fmt One of \code{"csv"}, \code{"dataframe"}.
-#' @param title Defaults to \code{""}.
-#' @param footnotes Defaults to \code{""}.
+#' @param title Passed to \code{nzchar}. Defaults to \code{""}.
+#' @param footnotes Passed to \code{nzchar}. Defaults to \code{""}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .tbl_to_format <- function(df, fmt = c("dataframe", "latex", "html",
@@ -419,7 +419,7 @@ table1 <- function(data, group_col = NULL,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param m See Usage.
+#' @param m Passed to \code{summary}.
 #' @return A list with \code{params}, \code{se}, \code{pvalues}, \code{ci}, \code{nobs}, \code{rsquared}, \code{aic}, \code{bic}, \code{llf}.
 #' @export
 .tbl_extract_model <- function(m) {

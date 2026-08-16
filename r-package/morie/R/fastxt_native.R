@@ -56,7 +56,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param s See Usage.
+#' @param s Passed to \code{charToRaw}.
 #' @return The value of \code{h}, as built in the body.
 #' @export
 .fnv1a <- function(s) {
@@ -291,19 +291,19 @@ fasttext <- function(corpus, dim = 50L, n_min = 3L, n_max = 6L,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param corpus See Usage.
-#' @param dim Defaults to \code{50L}.
-#' @param n_min Defaults to \code{3L}.
-#' @param n_max Defaults to \code{6L}.
-#' @param window Defaults to \code{5L}.
-#' @param epochs Defaults to \code{5L}.
-#' @param lr Defaults to \code{0.05}.
-#' @param negative Defaults to \code{5L}.
-#' @param min_count Defaults to \code{1L}.
-#' @param boundary Defaults to \code{TRUE}.
-#' @param whole_word Defaults to \code{TRUE}.
-#' @param hash_buckets Defaults to \code{NULL}.
-#' @param seed Defaults to \code{0L}.
+#' @param corpus Passed to \code{fasttext}.
+#' @param dim Passed to \code{fasttext}. Defaults to \code{50L}.
+#' @param n_min Passed to \code{fasttext}. Defaults to \code{3L}.
+#' @param n_max Passed to \code{fasttext}. Defaults to \code{6L}.
+#' @param window Passed to \code{fasttext}. Defaults to \code{5L}.
+#' @param epochs Passed to \code{fasttext}. Defaults to \code{5L}.
+#' @param lr Passed to \code{fasttext}. Defaults to \code{0.05}.
+#' @param negative Passed to \code{fasttext}. Defaults to \code{5L}.
+#' @param min_count Passed to \code{fasttext}. Defaults to \code{1L}.
+#' @param boundary Passed to \code{fasttext}. Defaults to \code{TRUE}.
+#' @param whole_word Passed to \code{fasttext}. Defaults to \code{TRUE}.
+#' @param hash_buckets Passed to \code{fasttext}.
+#' @param seed Passed to \code{fasttext}. Defaults to \code{0L}.
 #' @return The value of \code{fasttext}.
 #' @export
 morie_fastxt <- function(corpus, dim = 50L, n_min = 3L, n_max = 6L,

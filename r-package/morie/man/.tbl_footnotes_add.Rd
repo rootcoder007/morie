@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{reg}{A list; the body reads \code{$notes} from it.}
-\item{text}{See Usage.}
+\item{text}{Passed to \code{\%in\%}.}
 }
 \description{
 Part of the tables_pub implementation; see the file header for the source it follows.

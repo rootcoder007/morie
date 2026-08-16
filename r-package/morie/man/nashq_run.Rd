@@ -14,15 +14,15 @@ nashq_run(states, actions, step, rewards, gamma = 0.9, alpha = 0.5, epsilon = 0.
 \item{rewards}{A function; the body checks with \code{is.function}.}
 \item{gamma}{Numeric; combined arithmetically in the body. Defaults to \code{0.9}.}
 \item{alpha}{Numeric; combined arithmetically in the body. Defaults to \code{0.5}.}
-\item{epsilon}{Defaults to \code{0.1}.}
+\item{epsilon}{Passed to \code{nashq_pick}. Defaults to \code{0.1}.}
 \item{episodes}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{500}.}
 \item{horizon}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{50}.}
 \item{start}{Optional; may be \code{NULL}. A function; the body checks with \code{is.function}.}
 \item{selection}{Carried through into a list the body builds. Defaults to \code{"global_optimal"}.}
 \item{terminal}{Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.}
-\item{seed}{Defaults to \code{0}.}
-\item{agent}{Defaults to \code{0}.}
-\item{tol}{Defaults to \code{1e-09}.}
+\item{seed}{Passed to \code{set.seed}. Defaults to \code{0}.}
+\item{agent}{Passed to \code{nashq_select_eq}. Defaults to \code{0}.}
+\item{tol}{Passed to \code{nashq_select_eq}. Defaults to \code{1e-09}.}
 }
 \description{
 Part of the nashq_native implementation; see the file header for the source it follows.

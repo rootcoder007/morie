@@ -57,7 +57,7 @@ NULL
 #' source it follows.
 #'
 #' @param n_obs Numeric; combined arithmetically in the body.
-#' @param n_in See Usage.
+#' @param n_in Passed to \code{==}.
 #' @param n_exp Numeric; combined arithmetically in the body.
 #' @param n_tot Numeric; combined arithmetically in the body.
 #' @return A numeric value.

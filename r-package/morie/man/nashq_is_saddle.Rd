@@ -9,9 +9,9 @@ nashq_is_saddle(A, B, p, q, tol)
 }
 \arguments{
 \item{A}{A matrix; passed to \code{nrow}.}
-\item{B}{See Usage.}
-\item{p}{See Usage.}
-\item{q}{See Usage.}
+\item{B}{Passed to \code{nashq_payoff}.}
+\item{p}{Passed to \code{nashq_payoff}.}
+\item{q}{Passed to \code{nashq_payoff}.}
 \item{tol}{Numeric; combined arithmetically in the body.}
 }
 \description{

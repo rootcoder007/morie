@@ -147,8 +147,8 @@ design_from_prior <- function(n, prior_ppf, dim = NULL, skip = 1L) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param summary See Usage.
+#' @param x Passed to \code{summary}.
+#' @param summary Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .gp_summarise <- function(x, summary) {
@@ -574,8 +574,8 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
 #' source it follows.
 #'
 #' @param log_prior Accepted by the signature and not used anywhere in the body.
-#' @param theta See Usage.
-#' @param theta_p See Usage.
+#' @param theta Passed to \code{log_prior}.
+#' @param theta_p Passed to \code{log_prior}.
 #' @param ll Numeric; combined arithmetically in the body.
 #' @param ll_p Numeric; combined arithmetically in the body.
 #' @param log_q Numeric; combined arithmetically in the body.
@@ -595,7 +595,7 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
 #' source it follows.
 #'
 #' @param alphas A vector; its length is taken.
-#' @param tau See Usage.
+#' @param tau Passed to \code{<=}.
 #' @param n_grid A count; the body uses it as \code{seq_len(...)}. Defaults to \code{101L}.
 #' @return A numeric value.
 #' @export
@@ -657,12 +657,12 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
 #' @param theta0 Coerced to numeric by the body, with \code{as.numeric}.
 #' @param n_iter Coerced to integer by the body, with \code{as.integer}.
 #' @param n_sim Coerced to integer by the body, with \code{as.integer}.
-#' @param epsilon See Usage.
+#' @param epsilon Passed to \code{synthetic_log_likelihood}.
 #' @param proposal_sd Coerced to numeric by the body, with \code{as.numeric}.
 #' @param summary Passed to \code{.gp_summarise}.
 #' @param seed Passed to \code{.ghc_rng}.
 #' @param adaptive A flag; the body branches on it.
-#' @param xi See Usage.
+#' @param xi Passed to \code{<}.
 #' @param delta_s Coerced to integer by the body, with \code{as.integer}.
 #' @param n_alpha A count; the body uses it as \code{seq_len(...)}.
 #' @param max_sim Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.

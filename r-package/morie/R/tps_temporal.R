@@ -68,8 +68,8 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param k See Usage.
+#' @param x Passed to \code{is.finite}.
+#' @param k Passed to \code{round}.
 #' @return A numeric value.
 #' @export
 .tps_temporal_fmt_round <- function(x, k) {

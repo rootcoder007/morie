@@ -9,12 +9,12 @@
 }
 \arguments{
 \item{resource_url}{Passed to \code{.morie_dataset_http_text}.}
-\item{where}{Defaults to \code{NULL}.}
-\item{select}{Defaults to \code{NULL}.}
-\item{order}{Defaults to \code{NULL}.}
+\item{where}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
+\item{select}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
+\item{order}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 \item{limit}{Coerced to integer by the body, with \code{as.integer}.}
 \item{offset}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.}
-\item{app_token}{Defaults to \code{NULL}.}
+\item{app_token}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 \item{user_agent}{Accepted by the signature and not used anywhere in the body.}
 \item{timeout}{Coerced to integer by the body, with \code{as.integer}.}
 }

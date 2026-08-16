@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{v}{Coerced to character by the body, with \code{as.character}.}
-\item{name}{See Usage.}
+\item{name}{Passed to \code{paste0}.}
 }
 \description{
 Part of the randIE_native implementation; see the file header for the source it follows.

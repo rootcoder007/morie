@@ -8,10 +8,10 @@
 .tbl_to_format(df, fmt = c("dataframe", "latex", "html", "markdown", "text", "csv"), title = "", footnotes = "")
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{Passed to \code{return}.}
 \item{fmt}{One of \code{"csv"}, \code{"dataframe"}.}
-\item{title}{Defaults to \code{""}.}
-\item{footnotes}{Defaults to \code{""}.}
+\item{title}{Passed to \code{nzchar}. Defaults to \code{""}.}
+\item{footnotes}{Passed to \code{nzchar}. Defaults to \code{""}.}
 }
 \description{
 Part of the tables_pub implementation; see the file header for the source it follows.

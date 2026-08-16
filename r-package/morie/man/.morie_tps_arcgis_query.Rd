@@ -8,7 +8,7 @@
 .morie_tps_arcgis_query(layer_url, where = "1=1", out_fields = "*", return_geometry = FALSE, result_offset = 0L, result_record_count = 2000L, user_agent = .MORIE_TPS_DEFAULT_UA, timeout = .MORIE_TPS_DEFAULT_TIMEOUT)
 }
 \arguments{
-\item{layer_url}{See Usage.}
+\item{layer_url}{Passed to \code{paste0}.}
 \item{where}{Carried through into a list the body builds. Defaults to \code{"1=1"}.}
 \item{out_fields}{Carried through into a list the body builds. Defaults to \code{"*"}.}
 \item{return_geometry}{A flag; the body branches on it. Defaults to \code{FALSE}.}

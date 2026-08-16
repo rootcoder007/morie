@@ -210,7 +210,7 @@ morie_install_extras <- function(which = "missing",
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param pkg See Usage.
+#' @param pkg Passed to \code{requireNamespace}.
 #' @return A logical value.
 #' @export
 .morie_pkg_installed <- function(pkg) {

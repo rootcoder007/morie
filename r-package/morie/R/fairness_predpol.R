@@ -63,7 +63,7 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Passed to \code{table}.
 #' @return The value of \code{[}.
 #' @export
 .predpol_mode <- function(x) {

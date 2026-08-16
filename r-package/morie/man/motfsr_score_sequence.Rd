@@ -11,7 +11,7 @@ motfsr_score_sequence(spec, sequence, alphabet, threshold = NULL)
 \item{spec}{A vector; its length is taken and its elements indexed.}
 \item{sequence}{Coerced to character by the body, with \code{as.character}.}
 \item{alphabet}{A vector; its length is taken.}
-\item{threshold}{Defaults to \code{NULL}.}
+\item{threshold}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the motfsr_native implementation; see the file header for the source it follows.

@@ -9,7 +9,7 @@ autocorrelation_lag(y, threshold = NULL)
 }
 \arguments{
 \item{y}{A vector; its length is taken and its elements indexed.}
-\item{threshold}{Defaults to \code{NULL}.}
+\item{threshold}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the lyapun_native implementation; see the file header for the source it follows.

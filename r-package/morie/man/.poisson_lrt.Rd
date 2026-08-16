@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{n_obs}{Numeric; combined arithmetically in the body.}
-\item{n_in}{See Usage.}
+\item{n_in}{Passed to \code{==}.}
 \item{n_exp}{Numeric; combined arithmetically in the body.}
 \item{n_tot}{Numeric; combined arithmetically in the body.}
 }

@@ -13,8 +13,8 @@
 \item{headers}{A vector; its length is taken. Defaults to \code{list()}.}
 \item{timeout}{Coerced to integer by the body, with \code{as.integer}.}
 \item{user_agent}{Accepted by the signature and not used anywhere in the body.}
-\item{auth_signup_url}{Defaults to \code{NULL}.}
-\item{label}{Defaults to \code{"forensics"}.}
+\item{auth_signup_url}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
+\item{label}{Passed to \code{stop}. Defaults to \code{"forensics"}.}
 }
 \description{
 3ZZ: routes through .morie_dataset_http_text_with_status (libcurl backend with httr2 fallback), inspects HTTP status code for 401/403 (auth) + 4xx (generic) custom error formatting.

@@ -8,8 +8,8 @@
 .dmlc_cluster_se(infl, cluster, n)
 }
 \arguments{
-\item{infl}{See Usage.}
-\item{cluster}{See Usage.}
+\item{infl}{Passed to \code{tapply}.}
+\item{cluster}{Passed to \code{tapply}.}
 \item{n}{Numeric; combined arithmetically in the body.}
 }
 \description{

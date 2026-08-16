@@ -8,7 +8,7 @@
 .otis_b01_canonical(df)
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{Passed to \code{names}.}
 }
 \description{
 analyzers speak the lower-snake schema of the canonical loader.

@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{df}{A vector; indexed elementwise.}
-\item{value}{See Usage.}
-\item{year_col}{Defaults to \code{NULL}.}
+\item{value}{Passed to \code{\%in\%}.}
+\item{year_col}{Passed to \code{\%||\%}.}
 }
 \description{
 Part of the otis_all_analyze implementation; see the file header for the source it follows.

@@ -10,7 +10,7 @@ node2v_dist(adj, t, x)
 \arguments{
 \item{adj}{A vector; indexed elementwise.}
 \item{t}{Coerced to character by the body, with \code{as.character}.}
-\item{x}{See Usage.}
+\item{x}{Passed to \code{==}.}
 }
 \description{
 Part of the node2v_native implementation; see the file header for the source it follows.

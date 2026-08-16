@@ -8,7 +8,7 @@
 .morie_resolve_path(path)
 }
 \arguments{
-\item{path}{See Usage.}
+\item{path}{Passed to \code{path.expand}.}
 }
 \description{
 A step of the crypto_keystore implementation. Called by \code{.morie_read_store}, \code{.morie_write_store}, \code{morie_crypto_keystore_create}. See the file header for the source the module follows.

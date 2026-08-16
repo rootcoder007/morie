@@ -161,8 +161,8 @@ newton_direction <- function(A, x, s, rp, rd, rc) {
 #' @param c Coerced to numeric by the body, with \code{as.numeric}.
 #' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.
 #' @param max_iter Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100L}.
-#' @param nu Defaults to \code{3}.
-#' @param eta Defaults to \code{0.9995}.
+#' @param nu Passed to \code{centering_parameter}. Defaults to \code{3}.
+#' @param eta Passed to \code{max_step}. Defaults to \code{0.9995}.
 #' @param corrector A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{estimate}, \code{x}, \code{y}, \code{s}, \code{mu}, \code{objective}, \code{dual_objective}, \code{iterations}, \code{corrector}, \code{primal_residual}, \code{dual_residual}, \code{converged}, \code{method}, \code{note}.
 #' @export
@@ -246,14 +246,14 @@ mehrotras_predictor <- solve_lp
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param A See Usage.
-#' @param b See Usage.
-#' @param c See Usage.
-#' @param tol Defaults to \code{1e-09}.
-#' @param max_iter Defaults to \code{100L}.
-#' @param nu Defaults to \code{3}.
-#' @param eta Defaults to \code{0.9995}.
-#' @param corrector Defaults to \code{TRUE}.
+#' @param A Passed to \code{solve_lp}.
+#' @param b Passed to \code{solve_lp}.
+#' @param c Passed to \code{solve_lp}.
+#' @param tol Passed to \code{solve_lp}. Defaults to \code{1e-09}.
+#' @param max_iter Passed to \code{solve_lp}. Defaults to \code{100L}.
+#' @param nu Passed to \code{solve_lp}. Defaults to \code{3}.
+#' @param eta Passed to \code{solve_lp}. Defaults to \code{0.9995}.
+#' @param corrector Passed to \code{solve_lp}. Defaults to \code{TRUE}.
 #' @return The value of \code{solve_lp}.
 #' @export
 morie_mehtad <- function(A, b, c, tol = 1e-9, max_iter = 100L,

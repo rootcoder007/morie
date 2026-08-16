@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{z}{Numeric; combined arithmetically in the body.}
-\item{activation}{See Usage.}
+\item{activation}{Passed to \code{switch}.}
 }
 \description{
 A step of the bkprp implementation. Called by \code{morie_bkprp_backpropagation}. See the file header for the source the module follows.

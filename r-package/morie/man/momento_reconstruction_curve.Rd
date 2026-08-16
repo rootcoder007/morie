@@ -11,7 +11,7 @@ momento_reconstruction_curve(patches, reconstructor, rates, seed = 0)
 \item{patches}{Iterated over elementwise, with \code{lapply}.}
 \item{reconstructor}{Accepted by the signature and not used anywhere in the body.}
 \item{rates}{See Usage.}
-\item{seed}{Defaults to \code{0}.}
+\item{seed}{Passed to \code{set.seed}. Defaults to \code{0}.}
 }
 \description{
 Part of the momento_native implementation; see the file header for the source it follows.

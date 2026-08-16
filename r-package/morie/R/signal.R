@@ -1137,7 +1137,7 @@ sgolay <- function(x, window = 11L, polyorder = 3L) {
 #' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param fn_name See Usage.
+#' @param fn_name Passed to \code{paste}.
 #' @param ... Passed through.
 #' @return A character value.
 #' @export

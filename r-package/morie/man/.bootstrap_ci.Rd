@@ -8,11 +8,11 @@
 .bootstrap_ci(func, args, n_boot = 2000L, confidence = 0.95, seed = 42L)
 }
 \arguments{
-\item{func}{See Usage.}
+\item{func}{Passed to \code{do.call}.}
 \item{args}{Iterated over elementwise, with \code{lapply}.}
 \item{n_boot}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{2000L}.}
 \item{confidence}{Numeric; combined arithmetically in the body. Defaults to \code{0.95}.}
-\item{seed}{Defaults to \code{42L}.}
+\item{seed}{Passed to \code{set.seed}. Defaults to \code{42L}.}
 }
 \description{
 A step of the effect_sizes implementation. Called by \code{bootstrap_effect_size_ci}, \code{cles}, \code{cliffs_delta} and 2 others in the module. See the file header for the source the module follows.

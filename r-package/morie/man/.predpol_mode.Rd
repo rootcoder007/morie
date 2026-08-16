@@ -8,7 +8,7 @@
 .predpol_mode(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Passed to \code{table}.}
 }
 \description{
 A step of the fairness_predpol implementation. Called by \code{morie_fairness_predpol_aggregate_areas}. See the file header for the source the module follows.

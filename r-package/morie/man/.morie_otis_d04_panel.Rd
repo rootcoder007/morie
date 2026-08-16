@@ -8,8 +8,8 @@
 .morie_otis_d04_panel(n = 200L, seed = 1L)
 }
 \arguments{
-\item{n}{Defaults to \code{200L}.}
-\item{seed}{Defaults to \code{1L}.}
+\item{n}{Passed to \code{sample}. Defaults to \code{200L}.}
+\item{seed}{Passed to \code{set.seed}. Defaults to \code{1L}.}
 }
 \description{
 Part of the synth_otis implementation; see the file header for the source it follows.

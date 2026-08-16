@@ -74,7 +74,7 @@
 #' @param theta A vector; indexed elementwise.
 #' @param times Passed to \code{morie_hawkes_ll_exp_const_cpp}.
 #' @param end_time Passed to \code{morie_hawkes_ll_exp_const_cpp}.
-#' @param kernel See Usage.
+#' @param kernel Passed to \code{switch}.
 #' @return The value of \code{switch}.
 #' @export
 .hawkes_nll_cpp <- function(theta, times, end_time, kernel) {
@@ -198,7 +198,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param kernel See Usage.
+#' @param kernel Passed to \code{switch}.
 #' @param times A vector; its length is taken.
 #' @param end_time Numeric; combined arithmetically in the body.
 #' @return The value of \code{switch}.

@@ -202,8 +202,8 @@ print.morie_dml_clustered <- function(x, ...) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param infl See Usage.
-#' @param cluster See Usage.
+#' @param infl Passed to \code{tapply}.
+#' @param cluster Passed to \code{tapply}.
 #' @param n Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export

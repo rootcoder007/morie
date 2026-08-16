@@ -10,7 +10,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param seqs See Usage.
+#' @param seqs Passed to \code{unlist}.
 #' @param alphabet Optional; may be \code{NULL}. Coerced to character by the body, with \code{as.character}.
 #' @return A vector, from \code{sort}.
 #' @export
@@ -35,7 +35,7 @@ motfsr_alphabet_of <- function(seqs, alphabet) {
 #'
 #' @param sequences Coerced to character by the body, with \code{as.character}.
 #' @param w Numeric; combined arithmetically in the body.
-#' @param alphabet See Usage.
+#' @param alphabet Passed to \code{motfsr_alphabet_of}.
 #' @return A list with \code{coded}, \code{alpha}, \code{starts}.
 #' @export
 motfsr_prepare <- function(sequences, w, alphabet) {
@@ -143,7 +143,7 @@ motfsr_theta_from_subsequence <- function(coded, i, j, w, L, mu, weight) {
 #' @param i See Usage.
 #' @param j Numeric; combined arithmetically in the body.
 #' @param w A count; the body uses it as \code{seq_len(...)}.
-#' @param comp See Usage.
+#' @param comp Passed to \code{==}.
 #' @return The value of \code{tot}, as built in the body.
 #' @export
 motfsr_log_component <- function(theta, coded, i, j, w, comp) {
@@ -201,9 +201,9 @@ motfsr_normalise_windows <- function(z, w, max_sweeps = 100) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param sequences See Usage.
+#' @param sequences Passed to \code{motfsr_prepare}.
 #' @param w A count; the body uses it as \code{seq_len(...)}.
-#' @param alphabet Defaults to \code{NULL}.
+#' @param alphabet Passed to \code{motfsr_prepare}.
 #' @param theta0 Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.
 #' @param lambda0 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param beta Numeric; combined arithmetically in the body. Defaults to \code{0.01}.
@@ -375,7 +375,7 @@ motfsr_bayes_threshold <- function(lambda1, loss = NULL) {
 #' @param spec A vector; its length is taken and its elements indexed.
 #' @param sequence Coerced to character by the body, with \code{as.character}.
 #' @param alphabet A vector; its length is taken.
-#' @param threshold Defaults to \code{NULL}.
+#' @param threshold Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{scores}, \code{hits}.
 #' @export
 motfsr_score_sequence <- function(spec, sequence, alphabet, threshold = NULL) {
@@ -429,21 +429,21 @@ motfsr_lambda_grid <- function(n_starts_total, n_seqs, w, lambda0) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param sequences See Usage.
+#' @param sequences Passed to \code{motfsr_prepare}.
 #' @param w A count; the body uses it as \code{seq_len(...)}.
-#' @param alphabet Defaults to \code{NULL}.
+#' @param alphabet Passed to \code{motfsr_prepare}.
 #' @param n_motifs A count; the body uses it as \code{seq_len(...)}. Defaults to \code{1}.
-#' @param beta Defaults to \code{0.01}.
-#' @param lambda0 Defaults to \code{NULL}.
-#' @param max_iter Defaults to \code{1000}.
-#' @param tol Defaults to \code{1e-06}.
-#' @param normalize_overlaps Defaults to \code{TRUE}.
+#' @param beta Passed to \code{motfsr_mm_fit}. Defaults to \code{0.01}.
+#' @param lambda0 Passed to \code{motfsr_lambda_grid}.
+#' @param max_iter Passed to \code{motfsr_mm_fit}. Defaults to \code{1000}.
+#' @param tol Passed to \code{motfsr_mm_fit}. Defaults to \code{1e-06}.
+#' @param normalize_overlaps Passed to \code{motfsr_mm_fit}. Defaults to \code{TRUE}.
 #' @param starts One of \code{"subsequences"}, \code{"uniform"}. Defaults to \code{"subsequences"}.
 #' @param start_weight Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.5}.
 #' @param max_starts Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.
 #' @param start_scoring One of \code{"none"}, \code{"one_step"}. Defaults to \code{"one_step"}.
-#' @param erase_by Defaults to \code{"letter"}.
-#' @param loss Defaults to \code{NULL}.
+#' @param erase_by Passed to \code{motfsr_mm_fit}. Defaults to \code{"letter"}.
+#' @param loss Passed to \code{motfsr_bayes_threshold}.
 #' @return A list with \code{estimate}, \code{motifs}, \code{alphabet}, \code{w}, \code{n_subsequences}, \code{erasing}, \code{method}.
 #' @export
 motfsr_run <- function(sequences, w, alphabet = NULL, n_motifs = 1,

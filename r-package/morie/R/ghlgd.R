@@ -13,7 +13,7 @@
 #' @param theta A matrix; passed to \code{\%*\%}.
 #' @param Bx A matrix; passed to \code{\%*\%}.
 #' @param Bg A matrix; passed to \code{\%*\%}.
-#' @param gz See Usage.
+#' @param gz Passed to \code{diff}.
 #' @param n Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export

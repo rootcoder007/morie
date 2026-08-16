@@ -8,13 +8,13 @@
 node2v_walk(adj, start, length, p = 1, q = 1, rng = NULL, weights = NULL)
 }
 \arguments{
-\item{adj}{See Usage.}
-\item{start}{See Usage.}
+\item{adj}{Passed to \code{node2v_transition_probabilities}.}
+\item{start}{Passed to \code{c}.}
 \item{length}{Coerced to integer by the body, with \code{as.integer}.}
-\item{p}{Defaults to \code{1}.}
-\item{q}{Defaults to \code{1}.}
+\item{p}{Passed to \code{node2v_transition_probabilities}. Defaults to \code{1}.}
+\item{q}{Passed to \code{node2v_transition_probabilities}. Defaults to \code{1}.}
 \item{rng}{Optional; may be \code{NULL}. Passed to \code{.ghc_unif}.}
-\item{weights}{Defaults to \code{NULL}.}
+\item{weights}{Passed to \code{node2v_transition_probabilities}.}
 }
 \description{
 Part of the node2v_native implementation; see the file header for the source it follows.

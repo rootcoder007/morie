@@ -8,12 +8,12 @@
 morie_meglt(M, observed, tau = NULL, step = 1.9, iters = 200L, tol = 1e-06)
 }
 \arguments{
-\item{M}{See Usage.}
-\item{observed}{See Usage.}
-\item{tau}{Defaults to \code{NULL}.}
-\item{step}{Defaults to \code{1.9}.}
-\item{iters}{Defaults to \code{200L}.}
-\item{tol}{Defaults to \code{1e-06}.}
+\item{M}{Passed to \code{svt}.}
+\item{observed}{Passed to \code{svt}.}
+\item{tau}{Passed to \code{svt}.}
+\item{step}{Passed to \code{svt}. Defaults to \code{1.9}.}
+\item{iters}{Passed to \code{svt}. Defaults to \code{200L}.}
+\item{tol}{Passed to \code{svt}. Defaults to \code{1e-06}.}
 }
 \description{
 Part of the meglt_native implementation; see the file header for the source it follows.

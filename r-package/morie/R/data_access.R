@@ -80,7 +80,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param url See Usage.
+#' @param url Passed to \code{url}.
 #' @return A character value.
 #' @export
 .morie_read_text <- function(url) {
@@ -97,7 +97,7 @@
 #' source it follows.
 #'
 #' @param url Character; passed to \code{sub}.
-#' @param ext Defaults to \code{""}.
+#' @param ext Passed to \code{nzchar}. Defaults to \code{""}.
 #' @return The value of \code{tmp}, as built in the body.
 #' @export
 .morie_download <- function(url, ext = "") {

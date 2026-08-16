@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{reg}{A list; the body reads \code{$notes} from it.}
-\item{fmt}{Defaults to \code{"text"}.}
+\item{fmt}{Passed to \code{switch}. Defaults to \code{"text"}.}
 }
 \description{
 Part of the tables_pub implementation; see the file header for the source it follows.

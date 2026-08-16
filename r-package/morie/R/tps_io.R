@@ -38,7 +38,7 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 #' it follows.
 #'
 #' @param name Passed to \code{.morie_tps_canonical}.
-#' @param fmt_subdir See Usage.
+#' @param fmt_subdir Passed to \code{file.path}.
 #' @return The value of \code{file.path}.
 #' @export
 .morie_tps_io_category_dir <- function(name, fmt_subdir) {
@@ -54,8 +54,8 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 #' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param d See Usage.
-#' @param exts See Usage.
+#' @param d Passed to \code{dir.exists}.
+#' @param exts Passed to \code{paste}.
 #' @return Nothing; this branch always raises.
 #' @export
 .morie_tps_io_pick_one <- function(d, exts) {

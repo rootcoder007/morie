@@ -8,9 +8,9 @@
 surepi_c3_ultra(counts, threshold = 2, sigma_floor = 1)
 }
 \arguments{
-\item{counts}{See Usage.}
-\item{threshold}{Defaults to \code{2}.}
-\item{sigma_floor}{Defaults to \code{1}.}
+\item{counts}{Passed to \code{surepi_ears_detect}.}
+\item{threshold}{Passed to \code{surepi_ears_detect}. Defaults to \code{2}.}
+\item{sigma_floor}{Passed to \code{surepi_ears_detect}. Defaults to \code{1}.}
 }
 \description{
 Part of the surepi_native implementation; see the file header for the source it follows.

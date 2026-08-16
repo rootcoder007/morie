@@ -79,10 +79,10 @@ mqtmpl_single_marker <- function(y, g) {
 #' source it follows.
 #'
 #' @param y A vector; its length is taken.
-#' @param left See Usage.
-#' @param right See Usage.
-#' @param r_left See Usage.
-#' @param r_right See Usage.
+#' @param left Passed to \code{mqtmpl_genotype_probabilities}.
+#' @param right Passed to \code{mqtmpl_genotype_probabilities}.
+#' @param r_left Passed to \code{mqtmpl_genotype_probabilities}.
+#' @param r_right Passed to \code{mqtmpl_genotype_probabilities}.
 #' @param cofactors See Usage.
 #' @return A list with \code{lod}, \code{rss}, \code{coef}.
 #' @export
@@ -109,7 +109,7 @@ mqtmpl_cim_one <- function(y, left, right, r_left, r_right, cofactors) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
+#' @param y Passed to \code{mqtmpl_cim_one}.
 #' @param markers A vector; its length is taken and its elements indexed.
 #' @param positions A vector; indexed elementwise.
 #' @param cofactors A vector; its length is taken. Defaults to \code{list()}.
@@ -192,7 +192,7 @@ mqtmpl_method_status <- function(method = NULL) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param method See Usage.
+#' @param method Passed to \code{\%in\%}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 mqtmpl_check_method <- function(method) {
@@ -285,8 +285,8 @@ mqtmpl_hmm_genotype_probabilities <- function(genotypes, positions, error_rate =
 #' @param positions A vector; its length is taken and its elements indexed.
 #' @param grid A vector; its length is taken and its elements indexed.
 #' @param n_imp Coerced to integer by the body, with \code{as.integer}. Defaults to \code{16}.
-#' @param error_rate Defaults to \code{0}.
-#' @param seed Defaults to \code{0}.
+#' @param error_rate Passed to \code{mqtmpl_hmm_genotype_probabilities}. Defaults to \code{0}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{0}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 mqtmpl_sample_genotypes <- function(genotypes, positions, grid, n_imp = 16,
@@ -367,8 +367,8 @@ mqtmpl_imputation_weights <- function(y, genotype_column, model_dimension = 2) {
 #' @param positions A vector; its length is taken and its elements indexed.
 #' @param step Numeric; combined arithmetically in the body.
 #' @param n_imp Coerced to integer by the body, with \code{as.integer}.
-#' @param error_rate See Usage.
-#' @param seed See Usage.
+#' @param error_rate Passed to \code{mqtmpl_sample_genotypes}.
+#' @param seed Passed to \code{mqtmpl_sample_genotypes}.
 #' @return A list with \code{estimate}, \code{peak_lod}, \code{peak_position}, \code{position}, \code{lod}, \code{method_used}, \code{n_imputations}, \code{note}, \code{method}.
 #' @export
 mqtmpl_scan_imp <- function(y, markers, positions, step, n_imp,
@@ -426,7 +426,7 @@ mqtmpl_kw_n_imp <- function(covariates) {
 #' @param markers A vector; its length is taken and its elements indexed.
 #' @param positions A vector; indexed elementwise.
 #' @param method One of \code{"imp"}, \code{"mr"}. Defaults to \code{"em"}.
-#' @param step Defaults to \code{0.02}.
+#' @param step Passed to \code{mqtmpl_scan_imp}. Defaults to \code{0.02}.
 #' @param covariates A vector; its length is taken. Defaults to \code{list()}.
 #' @param error_rate Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
 #' @return A list with \code{estimate}, \code{peak_lod}, \code{peak_position}, \code{position}, \code{lod}, \code{method_used}, \code{n_covariates}, \code{error_rate}, \code{method}.
@@ -477,13 +477,13 @@ mqtmpl_scanone <- function(y, markers, positions, method = "em", step = 0.02,
 #' source it follows.
 #'
 #' @param y Coerced to numeric by the body, with \code{as.numeric}.
-#' @param markers See Usage.
-#' @param positions See Usage.
+#' @param markers Passed to \code{mqtmpl_scanone}.
+#' @param positions Passed to \code{mqtmpl_scanone}.
 #' @param n_perm Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100}.
 #' @param alpha Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.05}.
-#' @param method Defaults to \code{"em"}.
-#' @param step Defaults to \code{0.05}.
-#' @param seed Defaults to \code{0}.
+#' @param method Passed to \code{mqtmpl_scanone}. Defaults to \code{"em"}.
+#' @param step Passed to \code{mqtmpl_scanone}. Defaults to \code{0.05}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{0}.
 #' @param ... Passed through.
 #' @return A list with \code{estimate}, \code{threshold}, \code{alpha}, \code{n_perm}, \code{null_maxima}, \code{median_null}, \code{method}.
 #' @export

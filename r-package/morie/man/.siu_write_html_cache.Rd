@@ -8,9 +8,9 @@
 .siu_write_html_cache(html_dir, name, html)
 }
 \arguments{
-\item{html_dir}{See Usage.}
-\item{name}{See Usage.}
-\item{html}{See Usage.}
+\item{html_dir}{Passed to \code{file.path}.}
+\item{name}{Passed to \code{file.path}.}
+\item{html}{Passed to \code{writeChar}.}
 }
 \description{
 from morie_fetch_siu() when cache_html = TRUE.

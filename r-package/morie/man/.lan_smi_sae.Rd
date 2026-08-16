@@ -9,10 +9,10 @@
 }
 \arguments{
 \item{survey_df}{The body requires: survey_df missing columns:.}
-\item{survey_trait_col}{See Usage.}
-\item{survey_covariate_cols}{See Usage.}
+\item{survey_trait_col}{Passed to \code{c}.}
+\item{survey_covariate_cols}{Passed to \code{c}.}
 \item{area_df}{A vector; indexed elementwise.}
-\item{area_population_col}{See Usage.}
+\item{area_population_col}{Passed to \code{c}.}
 }
 \description{
 Part of the laniyonu_smi_force_disparity implementation; see the file header for the source it follows.

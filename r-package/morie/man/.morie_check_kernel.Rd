@@ -8,7 +8,7 @@
 .morie_check_kernel(kernel)
 }
 \arguments{
-\item{kernel}{See Usage.}
+\item{kernel}{Passed to \code{\%in\%}.}
 }
 \description{
 A step of the andmnh_native implementation. Called by \code{automatic_bandwidth}, \code{kernel_hac}. See the file header for the source the module follows.

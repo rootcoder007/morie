@@ -8,8 +8,8 @@
 .tps_sp_round(x, k = 3L)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{k}{Defaults to \code{3L}.}
+\item{x}{Passed to \code{is.finite}.}
+\item{k}{Passed to \code{round}. Defaults to \code{3L}.}
 }
 \description{
 Part of the tps_statphysics implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .morie_tps_psdp_dispatch(layer_key, year, max_features, offline, layer_url)
 }
 \arguments{
-\item{layer_key}{See Usage.}
+\item{layer_key}{Passed to \code{\%in\%}.}
 \item{year}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 \item{max_features}{Optional; may be \code{NULL}. Passed to \code{.morie_tps_psdp_feature_query}.}
 \item{offline}{A flag; the body branches on it.}

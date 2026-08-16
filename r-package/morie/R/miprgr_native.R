@@ -14,7 +14,7 @@
 #' @param b A vector; its length is taken and its elements indexed.
 #' @param c A vector; its length is taken.
 #' @param tol Numeric; combined arithmetically in the body. Defaults to \code{1e-09}.
-#' @param max_iter Defaults to \code{20000}.
+#' @param max_iter Passed to \code{run_phase}. Defaults to \code{20000}.
 #' @return A list with \code{feasible}, \code{x}, \code{value}.
 #' @export
 miprgr_simplex <- function(A, b, c, tol = 1e-9, max_iter = 20000) {
@@ -211,7 +211,7 @@ miprgr_solve_relaxation <- function(A, b, c, bounds = list(),
 #'
 #' @param x A vector; indexed elementwise.
 #' @param integer_vars See Usage.
-#' @param tol Defaults to \code{1e-07}.
+#' @param tol Passed to \code{>}. Defaults to \code{1e-07}.
 #' @return A list with \code{index}, \code{fractionality}, \code{integral}.
 #' @export
 miprgr_fractional_variable <- function(x, integer_vars, tol = 1e-7) {
@@ -312,14 +312,14 @@ miprgr_enumerate_integer <- function(A, b, c, integer_vars, upper = 10,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param A See Usage.
-#' @param b See Usage.
+#' @param A Passed to \code{miprgr_solve_relaxation}.
+#' @param b Passed to \code{miprgr_solve_relaxation}.
 #' @param c A vector; its length is taken.
 #' @param integer_vars Coerced to integer by the body, with \code{as.integer}.
 #' @param maximise A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param prune A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param max_nodes Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5000}.
-#' @param solver Defaults to \code{"simplex"}.
+#' @param solver Passed to \code{miprgr_solve_relaxation}. Defaults to \code{"simplex"}.
 #' @return A list with \code{estimate}, \code{value}, \code{x}, \code{feasible}, \code{nodes}, \code{pruned}, \code{pruning}, \code{max_list_length}, \code{root_bound}, \code{truncated}, \code{method}, \code{note}.
 #' @export
 miprgr_branch_and_bound <- function(A, b, c, integer_vars, maximise = TRUE,

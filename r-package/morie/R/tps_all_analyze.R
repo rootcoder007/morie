@@ -59,7 +59,7 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param df See Usage.
+#' @param df Passed to \code{names}.
 #' @return Nothing; the function is called for its effect.
 #' @export
 .tps_safe_year_col <- function(df) {
@@ -75,7 +75,7 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Passed to \code{table}.
 #' @param top A count; the body uses it as \code{seq_len(...)}. Defaults to \code{20L}.
 #' @return The value of \code{lapply}.
 #' @export

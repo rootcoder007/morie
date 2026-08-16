@@ -8,7 +8,7 @@
 .tbl_extract_model(m)
 }
 \arguments{
-\item{m}{See Usage.}
+\item{m}{Passed to \code{summary}.}
 }
 \description{
 Part of the tables_pub implementation; see the file header for the source it follows.

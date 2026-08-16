@@ -12,7 +12,7 @@
 \item{d}{Numeric; combined arithmetically in the body.}
 \item{ridge}{Numeric; combined arithmetically in the body. Defaults to \code{0.001}.}
 \item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.}
-\item{tol}{Defaults to \code{1e-06}.}
+\item{tol}{Passed to \code{<}. Defaults to \code{1e-06}.}
 }
 \description{
 Part of the otis_causal implementation; see the file header for the source it follows.

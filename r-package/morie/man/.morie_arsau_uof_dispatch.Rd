@@ -8,11 +8,11 @@
 .morie_arsau_uof_dispatch(kind, year, offline, resource_id, fixture_name)
 }
 \arguments{
-\item{kind}{See Usage.}
+\item{kind}{Passed to \code{sprintf}.}
 \item{year}{Coerced to character by the body, with \code{as.character}.}
 \item{offline}{A flag; the body branches on it.}
 \item{resource_id}{Optional; may be \code{NULL}. Passed to \code{.morie_ontario_ckan_dump_csv}.}
-\item{fixture_name}{See Usage.}
+\item{fixture_name}{Passed to \code{system.file}.}
 }
 \description{
 A step of the datasets_ontario_tps implementation. Called by \code{morie_datasets_arsau_aggregate_summary}, \code{morie_datasets_arsau_detailed_dataset}, \code{morie_datasets_arsau_uof_individual_records} and 2 others in the module. See the file header for the source the module follows.

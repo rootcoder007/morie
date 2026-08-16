@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{label}{Carried through into a list the body builds.}
-\item{a_iso}{See Usage.}
-\item{b_iso}{See Usage.}
+\item{a_iso}{Passed to \code{as.Date}.}
+\item{b_iso}{Passed to \code{as.Date}.}
 }
 \description{
 .siu_an_interval -- day-delta summary helper used by decision_timing. ---------------------------------------------------------------------------

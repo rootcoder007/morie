@@ -82,11 +82,11 @@ effect_size_result <- function(measure, estimate,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param func See Usage.
+#' @param func Passed to \code{do.call}.
 #' @param args Iterated over elementwise, with \code{lapply}.
 #' @param n_boot A count; the body uses it as \code{seq_len(...)}. Defaults to \code{2000L}.
 #' @param confidence Numeric; combined arithmetically in the body. Defaults to \code{0.95}.
-#' @param seed Defaults to \code{42L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{42L}.
 #' @return A list with \code{se}, \code{ci_lo}, \code{ci_hi}.
 #' @export
 .bootstrap_ci <- function(func, args, n_boot = 2000L,

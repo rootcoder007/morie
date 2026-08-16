@@ -12,7 +12,7 @@ NULL
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param pkg See Usage.
+#' @param pkg Passed to \code{requireNamespace}.
 #' @return The value of \code{requireNamespace}.
 #' @export
 .gh_have <- function(pkg) requireNamespace(pkg, quietly = TRUE)
@@ -57,7 +57,7 @@ NULL
 #' for the source it follows.
 #'
 #' @param t A vector; its length is taken.
-#' @param ev See Usage.
+#' @param ev Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param c Numeric; combined arithmetically in the body.
 #' @param lam0 Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.
 #' @return A list with \code{times}, \code{S}, \code{H}, \code{dH}, \code{lam0}.

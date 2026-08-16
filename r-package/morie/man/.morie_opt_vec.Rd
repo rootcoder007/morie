@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{g}{Coerced to numeric by the body, with \code{as.numeric}.}
-\item{name}{Defaults to \code{"g"}.}
+\item{name}{Passed to \code{sprintf}. Defaults to \code{"g"}.}
 }
 \description{
 Part of the optim_native implementation; see the file header for the source it follows.

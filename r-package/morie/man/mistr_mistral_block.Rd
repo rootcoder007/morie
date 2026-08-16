@@ -9,19 +9,19 @@ mistr_mistral_block(X, Wq, Wk, Wv, Wo, W1, W2, W3, n_heads, n_kv_heads, window, 
 }
 \arguments{
 \item{X}{A matrix; passed to \code{as.matrix}.}
-\item{Wq}{See Usage.}
-\item{Wk}{See Usage.}
-\item{Wv}{See Usage.}
-\item{Wo}{See Usage.}
-\item{W1}{See Usage.}
-\item{W2}{See Usage.}
-\item{W3}{See Usage.}
+\item{Wq}{Passed to \code{proj}.}
+\item{Wk}{Passed to \code{proj}.}
+\item{Wv}{Passed to \code{proj}.}
+\item{Wo}{Passed to \code{proj}.}
+\item{W1}{Passed to \code{mistr_swiglu}.}
+\item{W2}{Passed to \code{mistr_swiglu}.}
+\item{W3}{Passed to \code{mistr_swiglu}.}
 \item{n_heads}{Carried through into a list the body builds.}
 \item{n_kv_heads}{Numeric; combined arithmetically in the body.}
 \item{window}{Coerced to integer by the body, with \code{as.integer}.}
-\item{norm1}{Defaults to \code{NULL}.}
-\item{norm2}{Defaults to \code{NULL}.}
-\item{base}{Defaults to \code{10000}.}
+\item{norm1}{Optional; may be \code{NULL}. Passed to \code{mistr_rms_norm}.}
+\item{norm2}{Passed to \code{mistr_rms_norm}.}
+\item{base}{Passed to \code{mistr_grouped_query_attention}. Defaults to \code{10000}.}
 }
 \description{
 Part of the mistr_native implementation; see the file header for the source it follows.

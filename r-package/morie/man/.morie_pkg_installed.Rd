@@ -8,7 +8,7 @@
 .morie_pkg_installed(pkg)
 }
 \arguments{
-\item{pkg}{See Usage.}
+\item{pkg}{Passed to \code{requireNamespace}.}
 }
 \description{
 A step of the install_extras implementation. Called by \code{.morie_check_system_libs}, \code{morie_install_extras}. See the file header for the source the module follows.

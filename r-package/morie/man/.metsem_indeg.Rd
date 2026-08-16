@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{g}{A list; the body reads \code{$inc} from it.}
-\item{v}{See Usage.}
+\item{v}{Passed to \code{\%in\%}.}
 }
 \description{
 Part of the metsem_native implementation; see the file header for the source it follows.

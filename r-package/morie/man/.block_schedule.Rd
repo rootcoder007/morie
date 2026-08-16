@@ -8,10 +8,10 @@
 .block_schedule(endpoint, required_n, strata_levels, target_power = 0.8)
 }
 \arguments{
-\item{endpoint}{See Usage.}
+\item{endpoint}{Passed to \code{data.frame}.}
 \item{required_n}{Numeric; combined arithmetically in the body.}
 \item{strata_levels}{A vector; its length is taken.}
-\item{target_power}{Defaults to \code{0.8}.}
+\item{target_power}{Passed to \code{data.frame}. Defaults to \code{0.8}.}
 }
 \description{
 Part of the study_reporting implementation; see the file header for the source it follows.

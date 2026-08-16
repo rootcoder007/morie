@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{scores}{A vector; its length is taken.}
-\item{cluster}{See Usage.}
+\item{cluster}{Passed to \code{tapply}.}
 }
 \description{
 Part of the otis_causal implementation; see the file header for the source it follows.

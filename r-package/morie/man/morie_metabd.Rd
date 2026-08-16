@@ -8,11 +8,11 @@
 morie_metabd(tnfs, coverages = NULL, lengths = NULL, threshold = 0.15, min_bin_size = 2e+05)
 }
 \arguments{
-\item{tnfs}{See Usage.}
-\item{coverages}{Defaults to \code{NULL}.}
-\item{lengths}{Defaults to \code{NULL}.}
-\item{threshold}{Defaults to \code{0.15}.}
-\item{min_bin_size}{Defaults to \code{2e+05}.}
+\item{tnfs}{Passed to \code{bin_contigs}.}
+\item{coverages}{Passed to \code{bin_contigs}.}
+\item{lengths}{Passed to \code{bin_contigs}.}
+\item{threshold}{Passed to \code{bin_contigs}. Defaults to \code{0.15}.}
+\item{min_bin_size}{Passed to \code{bin_contigs}. Defaults to \code{2e+05}.}
 }
 \description{
 Part of the metabd_native implementation; see the file header for the source it follows.

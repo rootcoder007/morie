@@ -59,7 +59,7 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param path See Usage.
+#' @param path Passed to \code{path.expand}.
 #' @return The value of \code{normalizePath}.
 #' @export
 .morie_resolve_path <- function(path) {
@@ -123,7 +123,7 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param r See Usage.
+#' @param r Passed to \code{is.raw}.
 #' @return A character value.
 #' @export
 .morie_raw_to_hex <- function(r) {

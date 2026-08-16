@@ -11,7 +11,7 @@
 \item{e}{Passed to \code{.ghc_unif}.}
 \item{Qs}{Passed to \code{.mor_rl_greedy}.}
 \item{A}{Numeric; combined arithmetically in the body.}
-\item{epsilon}{See Usage.}
+\item{epsilon}{Passed to \code{<}.}
 }
 \description{
 Part of the qlearn_native implementation; see the file header for the source it follows.

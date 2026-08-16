@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{xs}{A vector; its length is taken and its elements indexed.}
-\item{cum}{See Usage.}
-\item{p}{See Usage.}
+\item{cum}{Passed to \code{>=}.}
+\item{p}{Passed to \code{>=}.}
 }
 \description{
 Part of the Svyqtl implementation; see the file header for the source it follows.

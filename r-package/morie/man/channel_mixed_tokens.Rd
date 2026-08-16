@@ -9,8 +9,8 @@ channel_mixed_tokens(X, patch_len, stride = NULL)
 }
 \arguments{
 \item{X}{A matrix; passed to \code{as.matrix}.}
-\item{patch_len}{See Usage.}
-\item{stride}{Defaults to \code{NULL}.}
+\item{patch_len}{Passed to \code{patchify}.}
+\item{stride}{Passed to \code{patchify}.}
 }
 \description{
 blended. Provided for contrast. Summing across channels at the first projection is what makes such a model permutation-invariant and so unable to say which channel a signal came from.

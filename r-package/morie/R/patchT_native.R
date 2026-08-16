@@ -68,7 +68,7 @@ patchify <- function(x, patch_len, stride = NULL) {
 #'
 #' @param X A matrix; passed to \code{as.matrix}.
 #' @param patch_len Coerced to integer by the body, with \code{as.integer}.
-#' @param stride Defaults to \code{NULL}.
+#' @param stride Passed to \code{patchify}.
 #' @return A list with \code{tokens}, \code{D}, \code{n_patches}, \code{patch_len}, \code{n_tokens_total}, \code{design}, \code{note}.
 #' @export
 channel_independent_tokens <- function(X, patch_len, stride = NULL) {
@@ -100,8 +100,8 @@ channel_independent_tokens <- function(X, patch_len, stride = NULL) {
 #' unable to say which channel a signal came from.
 #'
 #' @param X A matrix; passed to \code{as.matrix}.
-#' @param patch_len See Usage.
-#' @param stride Defaults to \code{NULL}.
+#' @param patch_len Passed to \code{patchify}.
+#' @param stride Passed to \code{patchify}.
 #' @return A list with \code{tokens}, \code{n_patches}, \code{n_tokens_total}, \code{design}, \code{note}.
 #' @export
 channel_mixed_tokens <- function(X, patch_len, stride = NULL) {
@@ -179,8 +179,8 @@ attention_cost <- function(L, patch_len, stride = NULL, D = 1,
 #' source it follows.
 #'
 #' @param X A matrix; passed to \code{as.matrix}.
-#' @param patch_len See Usage.
-#' @param stride Defaults to \code{NULL}.
+#' @param patch_len Passed to \code{channel_independent_tokens}.
+#' @param stride Passed to \code{channel_independent_tokens}.
 #' @param normalise A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{estimate}, \code{tokens}, \code{D}, \code{n_patches}, \code{n_tokens_total}, \code{norm_stats}, \code{normalised}, \code{cost}, \code{method}.
 #' @export

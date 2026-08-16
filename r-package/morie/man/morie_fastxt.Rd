@@ -8,19 +8,19 @@
 morie_fastxt(corpus, dim = 50L, n_min = 3L, n_max = 6L, window = 5L, epochs = 5L, lr = 0.05, negative = 5L, min_count = 1L, boundary = TRUE, whole_word = TRUE, hash_buckets = NULL, seed = 0L)
 }
 \arguments{
-\item{corpus}{See Usage.}
-\item{dim}{Defaults to \code{50L}.}
-\item{n_min}{Defaults to \code{3L}.}
-\item{n_max}{Defaults to \code{6L}.}
-\item{window}{Defaults to \code{5L}.}
-\item{epochs}{Defaults to \code{5L}.}
-\item{lr}{Defaults to \code{0.05}.}
-\item{negative}{Defaults to \code{5L}.}
-\item{min_count}{Defaults to \code{1L}.}
-\item{boundary}{Defaults to \code{TRUE}.}
-\item{whole_word}{Defaults to \code{TRUE}.}
-\item{hash_buckets}{Defaults to \code{NULL}.}
-\item{seed}{Defaults to \code{0L}.}
+\item{corpus}{Passed to \code{fasttext}.}
+\item{dim}{Passed to \code{fasttext}. Defaults to \code{50L}.}
+\item{n_min}{Passed to \code{fasttext}. Defaults to \code{3L}.}
+\item{n_max}{Passed to \code{fasttext}. Defaults to \code{6L}.}
+\item{window}{Passed to \code{fasttext}. Defaults to \code{5L}.}
+\item{epochs}{Passed to \code{fasttext}. Defaults to \code{5L}.}
+\item{lr}{Passed to \code{fasttext}. Defaults to \code{0.05}.}
+\item{negative}{Passed to \code{fasttext}. Defaults to \code{5L}.}
+\item{min_count}{Passed to \code{fasttext}. Defaults to \code{1L}.}
+\item{boundary}{Passed to \code{fasttext}. Defaults to \code{TRUE}.}
+\item{whole_word}{Passed to \code{fasttext}. Defaults to \code{TRUE}.}
+\item{hash_buckets}{Passed to \code{fasttext}.}
+\item{seed}{Passed to \code{fasttext}. Defaults to \code{0L}.}
 }
 \description{
 A step of the fastxt_native implementation. No other function in the package calls it. See the file header for the source the module follows.

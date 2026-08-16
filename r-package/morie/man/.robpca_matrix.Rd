@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{X}{Optional; may be \code{NULL}. A matrix; passed to \code{dim}.}
-\item{name}{Defaults to \code{"X"}.}
+\item{name}{Passed to \code{sprintf}. Defaults to \code{"X"}.}
 }
 \description{
 Part of the robpca_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 rank_by_similarity(query, corpus_embeddings, top_k = 5)
 }
 \arguments{
-\item{query}{See Usage.}
+\item{query}{Passed to \code{cosine_similarity}.}
 \item{corpus_embeddings}{Passed to \code{.sbert_mat}.}
 \item{top_k}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.}
 }

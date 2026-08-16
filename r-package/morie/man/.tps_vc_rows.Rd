@@ -8,7 +8,7 @@
 .tps_vc_rows(x, top = 20L)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Passed to \code{table}.}
 \item{top}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{20L}.}
 }
 \description{

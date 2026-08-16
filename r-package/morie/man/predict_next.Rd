@@ -11,7 +11,7 @@ predict_next(state, item_embeddings, top_k = 5, exclude = list())
 \item{state}{Passed to \code{.sasrec_vec}.}
 \item{item_embeddings}{Passed to \code{.sasrec_mat}.}
 \item{top_k}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.}
-\item{exclude}{Defaults to \code{list()}.}
+\item{exclude}{Passed to \code{unlist}. Defaults to \code{list()}.}
 }
 \description{
 Part of the sasRec_native implementation; see the file header for the source it follows.

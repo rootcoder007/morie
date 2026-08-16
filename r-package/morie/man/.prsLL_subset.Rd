@@ -8,8 +8,8 @@
 .prsLL_subset(a, b)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{a}{Passed to \code{\%in\%}.}
+\item{b}{Passed to \code{\%in\%}.}
 }
 \description{
 Part of the prsLL_native implementation; see the file header for the source it follows.

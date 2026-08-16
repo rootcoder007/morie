@@ -38,8 +38,8 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param D See Usage.
-#' @param X See Usage.
+#' @param D Passed to \code{data.frame}.
+#' @param X Passed to \code{data.frame}.
 #' @return The value of \code{pmax}.
 #' @export
 .morie_logistic_propensity <- function(D, X) {

@@ -108,7 +108,7 @@ NULL
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param fname See Usage.
+#' @param fname Passed to \code{system.file}.
 #' @return The value of \code{utils::read.csv}.
 #' @export
 .morie_vancouver_fixture <- function(fname) {

@@ -9,9 +9,9 @@
 }
 \arguments{
 \item{df}{A matrix; indexed by row and column.}
-\item{row}{See Usage.}
-\item{col}{See Usage.}
-\item{value}{See Usage.}
+\item{row}{Passed to \code{c}.}
+\item{col}{Passed to \code{c}.}
+\item{value}{Passed to \code{c}.}
 \item{aggfunc}{Compared against \code{"max"}. Defaults to \code{c("sum", "max")}.}
 \item{top_rows}{Numeric; passed to \code{min}. Defaults to \code{20L}.}
 }

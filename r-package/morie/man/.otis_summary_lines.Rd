@@ -9,10 +9,10 @@
 }
 \arguments{
 \item{df}{A matrix; passed to \code{nrow}.}
-\item{ds_id}{See Usage.}
-\item{description}{Defaults to \code{NULL}.}
-\item{series}{Defaults to \code{NULL}.}
-\item{primary_metric}{Defaults to \code{NULL}.}
+\item{ds_id}{Passed to \code{sprintf}.}
+\item{description}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
+\item{series}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
+\item{primary_metric}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the otis_all_analyze implementation; see the file header for the source it follows.

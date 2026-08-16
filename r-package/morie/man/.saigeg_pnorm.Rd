@@ -8,7 +8,7 @@
 .saigeg_pnorm(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Passed to \code{pnorm}.}
 }
 \description{
 Part of the saigeg_native implementation; see the file header for the source it follows.

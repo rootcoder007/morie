@@ -10,9 +10,9 @@ ocrwit_segment_layout_boxes(boxes, segment_ids, width, height, scale = 1000)
 \arguments{
 \item{boxes}{Coerced to list by the body, with \code{as.list}.}
 \item{segment_ids}{Coerced to list by the body, with \code{as.list}.}
-\item{width}{See Usage.}
-\item{height}{See Usage.}
-\item{scale}{Defaults to \code{1000}.}
+\item{width}{Passed to \code{ocrwit_normalise_bbox}.}
+\item{height}{Passed to \code{ocrwit_normalise_bbox}.}
+\item{scale}{Passed to \code{ocrwit_normalise_bbox}. Defaults to \code{1000}.}
 }
 \description{
 Part of the ocrwit_native implementation; see the file header for the source it follows.

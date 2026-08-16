@@ -8,7 +8,7 @@
 .morie_matching_have(pkg)
 }
 \arguments{
-\item{pkg}{See Usage.}
+\item{pkg}{Passed to \code{requireNamespace}.}
 }
 \description{
 Part of the matching implementation; see the file header for the source it follows.

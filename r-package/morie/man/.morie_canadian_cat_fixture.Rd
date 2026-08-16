@@ -8,7 +8,7 @@
 .morie_canadian_cat_fixture(fname, offline)
 }
 \arguments{
-\item{fname}{See Usage.}
+\item{fname}{Passed to \code{sprintf}.}
 \item{offline}{A flag; the body branches on it.}
 }
 \description{

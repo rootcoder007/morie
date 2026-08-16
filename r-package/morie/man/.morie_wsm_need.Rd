@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{ok}{A flag; the body branches on it.}
-\item{msg}{See Usage.}
+\item{msg}{Passed to \code{stop}.}
 }
 \description{
 Part of the wasserman_native implementation; see the file header for the source it follows.

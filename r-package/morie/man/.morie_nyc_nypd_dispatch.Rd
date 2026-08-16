@@ -8,7 +8,7 @@
 .morie_nyc_nypd_dispatch(dataset_key, year, max_features, offline, resource_id, mode = c("soda2", "soda3"), paginate = FALSE, page_size = 1000L, max_pages = 200L, app_token = NULL)
 }
 \arguments{
-\item{dataset_key}{See Usage.}
+\item{dataset_key}{Passed to \code{\%in\%}.}
 \item{year}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 \item{max_features}{Optional; may be \code{NULL}. Passed to \code{.morie_dataset_socrata_fetch}.}
 \item{offline}{A flag; the body branches on it.}

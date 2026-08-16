@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{messages}{Carried through into a list the body builds.}
-\item{model}{Defaults to \code{NULL}.}
+\item{model}{Passed to \code{\%||\%}.}
 \item{timeout}{Defaults to \code{180}.}
 }
 \description{

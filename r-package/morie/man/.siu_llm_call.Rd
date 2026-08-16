@@ -11,7 +11,7 @@
 \item{model}{A vector; its length is taken.}
 \item{prompt}{Passed to \code{.siu_llm_call_one}.}
 \item{timeout_s}{Passed to \code{.siu_llm_call_one}.}
-\item{mock_response_text}{Defaults to \code{NULL}.}
+\item{mock_response_text}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 AND whose request returns without erroring wins. `model` may be a character vector for failover (e.g. c("gemini", "ollama")). The `mock_response_text` arg exists ONLY so unit tests can exercise the surrounding R glue without hitting the network.

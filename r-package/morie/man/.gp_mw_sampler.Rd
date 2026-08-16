@@ -14,12 +14,12 @@
 \item{theta0}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{n_iter}{Coerced to integer by the body, with \code{as.integer}.}
 \item{n_sim}{Coerced to integer by the body, with \code{as.integer}.}
-\item{epsilon}{See Usage.}
+\item{epsilon}{Passed to \code{synthetic_log_likelihood}.}
 \item{proposal_sd}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{summary}{Passed to \code{.gp_summarise}.}
 \item{seed}{Passed to \code{.ghc_rng}.}
 \item{adaptive}{A flag; the body branches on it.}
-\item{xi}{See Usage.}
+\item{xi}{Passed to \code{<}.}
 \item{delta_s}{Coerced to integer by the body, with \code{as.integer}.}
 \item{n_alpha}{A count; the body uses it as \code{seq_len(...)}.}
 \item{max_sim}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
