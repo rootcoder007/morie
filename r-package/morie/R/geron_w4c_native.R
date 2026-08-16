@@ -597,8 +597,12 @@ morie_geron_onnx_export <- function(model, args, file = NULL) {
 # ponytail: no jsonlite dependency declared for this package; write() only when a file path is
 # actually given, and fall back to a minimal deparse so the optional side effect never hard-fails.
 jsonlite_toJSON_or_stub <- function(x) {
-  if (requireNamespace("jsonlite", quietly = TRUE)) .s03json_toJSON(x, auto_unbox = TRUE, pretty = TRUE)
-  else paste(utils::capture.output(str(x)), collapse = "\n")
+  # The fallback existed because jsonlite was optional. The codec is now
+  # part of this package and always present, so there is nothing to fall
+  # back from -- and the `if (requireNamespace("jsonlite"))` that used to
+  # guard this would now disable our OWN serialiser when the package it
+  # replaced is absent.
+  .s03json_toJSON(x, auto_unbox = TRUE, pretty = TRUE)
 }
 
 # ============================================================ hmoob
