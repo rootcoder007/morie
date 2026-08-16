@@ -23,3 +23,8 @@ Part of the mafft_native implementation; see the file header for the source it f
 The value of \code{mafft_nw}.
 }
 \keyword{internal}
+\examples{
+sc <- normalized_similarity_matrix(seq_type = "aa")
+r <- group_align(list("MKVLA"), list("MKVLG"), sc)
+str(r, max.level = 1)
+}

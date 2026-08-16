@@ -19,3 +19,10 @@ A step of the chronos_native implementation. No other function in the package ca
 A numeric value.
 }
 \keyword{internal}
+\examples{
+set.seed(2)
+b <- chronos_uniform_bins(-3, 3, n_bins = 16L)
+x <- rnorm(10)
+tk <- chronos_tokenize(x, b, add_eos = FALSE)
+chronos_detokenize(tk$tokens, b, tk$scale)
+}

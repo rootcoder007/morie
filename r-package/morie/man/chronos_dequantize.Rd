@@ -18,3 +18,7 @@ A step of the chronos_native implementation. Called by \code{chronos_detokenize}
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+b <- chronos_uniform_bins(-3, 3, n_bins = 16L)
+chronos_dequantize(chronos_quantize(c(-2.5, 0, 1.7), b)$tokens, b)
+}
