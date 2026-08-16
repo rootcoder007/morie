@@ -29,8 +29,8 @@ mqtmpl_haldane <- function(d) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param s_left See Usage.
-#' @param s_right See Usage.
+#' @param s_left Accepted by the signature and not used anywhere in the body.
+#' @param s_right Accepted by the signature and not used anywhere in the body.
 #' @param r_left Numeric; combined arithmetically in the body.
 #' @param r_right Numeric; combined arithmetically in the body.
 #' @return A vector, from \code{c}.
@@ -113,7 +113,7 @@ mqtmpl_cim_one <- function(y, left, right, r_left, r_right, cofactors) {
 #' @param markers A vector; its length is taken and its elements indexed.
 #' @param positions A vector; indexed elementwise.
 #' @param cofactors A vector; its length is taken. Defaults to \code{list()}.
-#' @param window Defaults to \code{0}.
+#' @param window Accepted by the signature and not used anywhere in the body. Defaults to \code{0}.
 #' @param step Numeric; combined arithmetically in the body. Defaults to \code{0.02}.
 #' @return A list with \code{estimate}, \code{peak_lod}, \code{peak_position}, \code{position}, \code{lod}, \code{fit}.
 #' @export

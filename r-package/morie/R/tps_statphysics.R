@@ -281,7 +281,7 @@ NULL
 #'
 #' @param fig_dir See Usage.
 #' @param name See Usage.
-#' @param draw See Usage.
+#' @param draw Accepted by the signature and not used anywhere in the body.
 #' @param save_fig A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param width Defaults to \code{1140}.
 #' @param height Defaults to \code{620}.

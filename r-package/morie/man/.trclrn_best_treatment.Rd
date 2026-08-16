@@ -15,7 +15,7 @@
 \item{arms}{See Usage.}
 \item{method}{Compared against \code{"ipw"}.}
 \item{Xm}{A matrix; indexed by row and column.}
-\item{outcome_model}{See Usage.}
+\item{outcome_model}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the trclrn_native implementation; see the file header for the source it follows.

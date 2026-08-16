@@ -9,7 +9,7 @@ momento_reconstruction_curve(patches, reconstructor, rates, seed = 0)
 }
 \arguments{
 \item{patches}{Iterated over elementwise, with \code{lapply}.}
-\item{reconstructor}{See Usage.}
+\item{reconstructor}{Accepted by the signature and not used anywhere in the body.}
 \item{rates}{See Usage.}
 \item{seed}{Defaults to \code{0}.}
 }

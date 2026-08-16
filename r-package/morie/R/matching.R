@@ -52,7 +52,7 @@ NULL
 #' source it follows.
 #'
 #' @param pkg Passed to \code{morie_ensure_extras}.
-#' @param fn See Usage.
+#' @param fn Accepted by the signature and not used anywhere in the body.
 #' @return Invisibly,a logical value.
 #' @export
 .morie_matching_require <- function(pkg, fn) {

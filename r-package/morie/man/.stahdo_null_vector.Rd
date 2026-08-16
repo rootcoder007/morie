@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{rows}{A matrix; passed to \code{nrow}.}
-\item{p}{See Usage.}
+\item{p}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the stahdo_native implementation; see the file header for the source it follows.

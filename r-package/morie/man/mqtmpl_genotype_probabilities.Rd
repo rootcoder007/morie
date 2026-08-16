@@ -8,8 +8,8 @@
 mqtmpl_genotype_probabilities(s_left, s_right, r_left, r_right)
 }
 \arguments{
-\item{s_left}{See Usage.}
-\item{s_right}{See Usage.}
+\item{s_left}{Accepted by the signature and not used anywhere in the body.}
+\item{s_right}{Accepted by the signature and not used anywhere in the body.}
 \item{r_left}{Numeric; combined arithmetically in the body.}
 \item{r_right}{Numeric; combined arithmetically in the body.}
 }

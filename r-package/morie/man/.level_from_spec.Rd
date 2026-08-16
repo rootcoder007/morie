@@ -11,7 +11,7 @@
 \item{col_name}{Character; passed to \code{grepl}.}
 \item{dtype}{One of \code{"bool"}, \code{"date"}, \code{"datetime"}, \code{"float"}, \code{"int"}, \code{"string"}.}
 \item{valid_values}{Optional; may be \code{NULL}. A vector; its length is taken.}
-\item{dataset_name}{See Usage.}
+\item{dataset_name}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the variable_taxonomy implementation; see the file header for the source it follows.

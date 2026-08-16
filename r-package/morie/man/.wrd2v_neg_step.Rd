@@ -14,7 +14,7 @@
 \item{size}{A count; the body uses it as \code{numeric(...)}.}
 \item{lr}{Numeric; combined arithmetically in the body.}
 \item{k}{A count; the body uses it as \code{seq_len(...)}.}
-\item{draw_noise}{See Usage.}
+\item{draw_noise}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the wrd2v_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 morie_painn_equivariance_error(model, s, v, R, Q, tol = 1e-09)
 }
 \arguments{
-\item{model}{See Usage.}
+\item{model}{Accepted by the signature and not used anywhere in the body.}
 \item{s}{See Usage.}
 \item{v}{A matrix; passed to \code{as.matrix}.}
 \item{R}{A matrix; passed to \code{as.matrix}.}

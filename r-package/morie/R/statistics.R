@@ -51,7 +51,7 @@ NULL
 #' source it follows.
 #'
 #' @param x A vector; indexed elementwise.
-#' @param name Defaults to \code{"x"}.
+#' @param name Accepted by the signature and not used anywhere in the body. Defaults to \code{"x"}.
 #' @return The value of \code{[}.
 #' @export
 .stat_validate <- function(x, name = "x") {

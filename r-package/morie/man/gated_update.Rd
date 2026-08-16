@@ -12,7 +12,7 @@ gated_update(s, v, U, V, phi)
 \item{v}{A matrix; passed to \code{as.matrix}.}
 \item{U}{A matrix; passed to \code{as.matrix}.}
 \item{V}{A matrix; passed to \code{as.matrix}.}
-\item{phi}{See Usage.}
+\item{phi}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 is the only path from the vector channel back to the scalar one, and it is invariant -- which is why the network can use directional information without breaking invariance of the energy.

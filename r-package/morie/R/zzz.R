@@ -40,8 +40,8 @@ utils::globalVariables(c(
 #' workers, which is why it was only flaky. Only set when the user has
 #' not chosen their own value.
 #'
-#' @param libname See Usage.
-#' @param pkgname See Usage.
+#' @param libname Accepted by the signature and not used anywhere in the body.
+#' @param pkgname Accepted by the signature and not used anywhere in the body.
 #' @return Invisibly,nothing; the function is called for its effect.
 #' @export
 .onLoad <- function(libname, pkgname) {

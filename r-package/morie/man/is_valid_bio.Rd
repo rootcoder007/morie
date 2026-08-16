@@ -9,7 +9,7 @@ is_valid_bio(path, labels = NULL)
 }
 \arguments{
 \item{path}{See Usage.}
-\item{labels}{Defaults to \code{NULL}.}
+\item{labels}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 A step of the benRea_native implementation. Called by \code{ner_decode}. See the file header for the source the module follows.

@@ -10,7 +10,7 @@
 \arguments{
 \item{state}{A list; the body reads \code{$v1}, \code{$v2} from it.}
 \item{baseline}{One of \code{"comparison"}, \code{"none"}.}
-\item{gamma}{See Usage.}
+\item{gamma}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the reinfc_native implementation; see the file header for the source it follows.

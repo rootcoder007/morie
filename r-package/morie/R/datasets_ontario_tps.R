@@ -60,7 +60,7 @@
 #' given resource_id; return a parsed data.frame. Mock this in tests.
 #'
 #' @param resource_id See Usage.
-#' @param limit Defaults to \code{200000L}.
+#' @param limit Accepted by the signature and not used anywhere in the body. Defaults to \code{200000L}.
 #' @return Nothing; this branch always raises.
 #' @export
 .morie_ontario_ckan_dump_csv <- function(resource_id, limit = 200000L) {
