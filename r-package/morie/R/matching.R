@@ -66,6 +66,25 @@ NULL
 }
 
 #' @keywords internal
+.morie_matching_distance <- function(df, ps) {
+  # MatchIt reads a numeric `distance` as the propensity score itself,
+  # so a supplied score needs no refit. Alignment mirrors the Python
+  # arm's ps.reindex(df.index): by name when the vector is named, by
+  # position when it is already one-per-retained-row. Anything else is
+  # refused -- recycling a mis-sized score silently matches on the
+  # wrong units.
+  if (is.null(ps)) return("glm")
+  ps <- as.numeric(ps)
+  if (!is.null(names(ps)) && all(rownames(df) %in% names(ps)))
+    return(unname(ps[rownames(df)]))
+  if (length(ps) == nrow(df)) return(ps)
+  stop("`ps` has length ", length(ps), " but ", nrow(df),
+       " rows remain after dropping incomplete cases; supply one score ",
+       "per retained row, or a named vector covering them.",
+       call. = FALSE)
+}
+
+#' @keywords internal
 .morie_matching_logit <- function(p, eps = 1e-6) {
   p <- pmin(pmax(p, eps), 1 - eps)
   log(p / (1 - p))
@@ -320,7 +339,7 @@ morie_matching_nearest_neighbor <- function(data, treatment, covariates,
   .morie_match_nearest_native(data, treatment, covariates,
                               n_neighbors = n_neighbors,
                               caliper = caliper, replace = replace,
-                              alpha = alpha)
+                              alpha = alpha, ps = ps)
 }
 
 
@@ -505,7 +524,7 @@ morie_matching_full <- function(data, treatment, covariates,
     f <- stats::as.formula(paste(treatment, "~",
                                  paste(covariates, collapse = " + ")))
     mi <- tryCatch(
-      MatchIt::matchit(f, data = df, method = "full", distance = "glm"),
+      MatchIt::matchit(f, data = df, method = "full", distance = .morie_matching_distance(df, ps)),
       error = function(e) NULL
     )
     if (!is.null(mi)) {
