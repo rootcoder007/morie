@@ -304,7 +304,7 @@ nashq_pick <- function(M, A, who, epsilon, rng) {
 #' @param episodes Coerced to integer by the body, with \code{as.integer}. Defaults to \code{500}.
 #' @param horizon Coerced to integer by the body, with \code{as.integer}. Defaults to \code{50}.
 #' @param start Optional; may be \code{NULL}. A function; the body checks with \code{is.function}.
-#' @param selection Defaults to \code{"global_optimal"}.
+#' @param selection Carried through into a list the body builds. Defaults to \code{"global_optimal"}.
 #' @param terminal Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.
 #' @param seed Defaults to \code{0}.
 #' @param agent Defaults to \code{0}.

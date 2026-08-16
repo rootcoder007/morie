@@ -8,11 +8,11 @@
 .new_spec_test(name, statistic, p_value, df, conclusion)
 }
 \arguments{
-\item{name}{See Usage.}
-\item{statistic}{See Usage.}
-\item{p_value}{See Usage.}
-\item{df}{See Usage.}
-\item{conclusion}{See Usage.}
+\item{name}{Carried through into a list the body builds.}
+\item{statistic}{Carried through into a list the body builds.}
+\item{p_value}{Carried through into a list the body builds.}
+\item{df}{Carried through into a list the body builds.}
+\item{conclusion}{Carried through into a list the body builds.}
 }
 \description{
 A step of the diagnostics implementation. Called by \code{hosmer_lemeshow_test}, \code{likelihood_ratio_test}, \code{link_test} and 4 others in the module. See the file header for the source the module follows.

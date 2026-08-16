@@ -63,8 +63,8 @@ NULL
 #' @param X A matrix; passed to \code{nrow}.
 #' @param y See Usage.
 #' @param K Numeric; combined arithmetically in the body.
-#' @param max_iter See Usage.
-#' @param tol See Usage.
+#' @param max_iter Carried through into a list the body builds.
+#' @param tol Carried through into a list the body builds.
 #' @return A list with \code{intercepts}, \code{beta}.
 #' @export
 .tso_fit_po_stacked <- function(X, y, K, max_iter, tol) {

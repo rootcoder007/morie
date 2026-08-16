@@ -12,7 +12,7 @@
 #' @param c0 Numeric; combined arithmetically in the body.
 #' @param c1 Numeric; combined arithmetically in the body.
 #' @param a Numeric; combined arithmetically in the body.
-#' @param model See Usage.
+#' @param model The body requires: unknown model.
 #' @return The value of \code{switch}.
 #' @export
 .vrgft_model <- function(h, c0, c1, a, model) {

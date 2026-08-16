@@ -9,13 +9,13 @@
 }
 \arguments{
 \item{work}{A matrix; indexed by row and column.}
-\item{treatment}{See Usage.}
-\item{outcome}{See Usage.}
+\item{treatment}{Carried through into a list the body builds.}
+\item{outcome}{Carried through into a list the body builds.}
 \item{covariates}{Defaults to \code{character(0)}.}
-\item{year_col}{Defaults to \code{"EndFiscalYear"}.}
-\item{cluster_group}{Defaults to \code{NULL}.}
-\item{ds_id}{See Usage.}
-\item{source_label}{See Usage.}
+\item{year_col}{Carried through into a list the body builds. Defaults to \code{"EndFiscalYear"}.}
+\item{cluster_group}{Optional; may be \code{NULL}. Carried through into a list the body builds.}
+\item{ds_id}{Carried through into a list the body builds.}
+\item{source_label}{Carried through into a list the body builds.}
 \item{title}{Passed to \code{.otis_wrap}.}
 \item{interpretation}{See Usage.}
 }

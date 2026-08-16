@@ -8,13 +8,13 @@
 .new_collin_diag(vif, cond_num, cond_idx, var_decomp, eigvals, n_collin, pairs)
 }
 \arguments{
-\item{vif}{See Usage.}
-\item{cond_num}{See Usage.}
-\item{cond_idx}{See Usage.}
-\item{var_decomp}{See Usage.}
-\item{eigvals}{See Usage.}
-\item{n_collin}{See Usage.}
-\item{pairs}{See Usage.}
+\item{vif}{Carried through into a list the body builds.}
+\item{cond_num}{Carried through into a list the body builds.}
+\item{cond_idx}{Carried through into a list the body builds.}
+\item{var_decomp}{Carried through into a list the body builds.}
+\item{eigvals}{Carried through into a list the body builds.}
+\item{n_collin}{Carried through into a list the body builds.}
+\item{pairs}{Carried through into a list the body builds.}
 }
 \description{
 A step of the diagnostics implementation. Called by \code{collinearity_diagnostics}. See the file header for the source the module follows.

@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{layer_url}{See Usage.}
-\item{where}{Defaults to \code{"1=1"}.}
-\item{out_fields}{Defaults to \code{"*"}.}
+\item{where}{Carried through into a list the body builds. Defaults to \code{"1=1"}.}
+\item{out_fields}{Carried through into a list the body builds. Defaults to \code{"*"}.}
 \item{return_geometry}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 \item{result_offset}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.}
 \item{result_record_count}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000L}.}

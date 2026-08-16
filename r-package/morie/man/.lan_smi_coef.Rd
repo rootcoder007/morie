@@ -8,7 +8,7 @@
 .lan_smi_coef(name, estimate, std_error)
 }
 \arguments{
-\item{name}{See Usage.}
+\item{name}{Carried through into a list the body builds.}
 \item{estimate}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{std_error}{Coerced to numeric by the body, with \code{as.numeric}.}
 }

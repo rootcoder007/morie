@@ -150,9 +150,9 @@ morie_llm_probe_ollama <- function(timeout = 2) {
 #' See the file header for the source the module follows.
 #' follows.
 #'
-#' @param prompt See Usage.
+#' @param prompt Carried through into a list the body builds.
 #' @param context Optional; may be \code{NULL}. A vector; indexed elementwise.
-#' @param system_prompt Defaults to \code{NULL}.
+#' @param system_prompt Optional; may be \code{NULL}. Carried through into a list the body builds.
 #' @return The value of \code{list}.
 #' @export
 .morie_llm_messages <- function(prompt, context = NULL, system_prompt = NULL) {
@@ -522,7 +522,7 @@ morie_llm_detect_provider <- function() {
 #' POST /v1/chat/completions to FREEAPI_BASE_URL.  Returns "" on
 #' failure.
 #'
-#' @param messages See Usage.
+#' @param messages Carried through into a list the body builds.
 #' @param model Defaults to \code{NULL}.
 #' @param timeout Defaults to \code{180}.
 #' @return The value of \code{.morie_llm_strip_think}.

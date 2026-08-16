@@ -8,7 +8,7 @@
 smcopt(objective, initial, n_particles = 200L, n_steps = 30L, phi_max = 50, phi_min = 0.1, kind = "geometric", kernel = NULL, ess_threshold = 0.5, scheme = "systematic", seed = 0L, maximise = TRUE)
 }
 \arguments{
-\item{objective}{See Usage.}
+\item{objective}{The body requires: smcopt: the objective was never evaluated.}
 \item{initial}{See Usage.}
 \item{n_particles}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200L}.}
 \item{n_steps}{Defaults to \code{30L}.}

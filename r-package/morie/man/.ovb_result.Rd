@@ -8,13 +8,13 @@
 .ovb_result(estimate, se, rv_q, rv_qa, partial_r2_treatment, benchmark_bounds, interpretation)
 }
 \arguments{
-\item{estimate}{See Usage.}
-\item{se}{See Usage.}
-\item{rv_q}{See Usage.}
-\item{rv_qa}{See Usage.}
-\item{partial_r2_treatment}{See Usage.}
-\item{benchmark_bounds}{See Usage.}
-\item{interpretation}{See Usage.}
+\item{estimate}{Carried through into a list the body builds.}
+\item{se}{Carried through into a list the body builds.}
+\item{rv_q}{Carried through into a list the body builds.}
+\item{rv_qa}{Carried through into a list the body builds.}
+\item{partial_r2_treatment}{Carried through into a list the body builds.}
+\item{benchmark_bounds}{Carried through into a list the body builds.}
+\item{interpretation}{Carried through into a list the body builds.}
 }
 \description{
 Part of the sensitivity implementation; see the file header for the source it follows.

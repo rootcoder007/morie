@@ -8,7 +8,7 @@
 .siu_an_interval(label, a_iso, b_iso)
 }
 \arguments{
-\item{label}{See Usage.}
+\item{label}{Carried through into a list the body builds.}
 \item{a_iso}{See Usage.}
 \item{b_iso}{See Usage.}
 }

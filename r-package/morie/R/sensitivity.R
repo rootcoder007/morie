@@ -34,13 +34,13 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param point_estimate See Usage.
-#' @param e_value_point See Usage.
-#' @param e_value_ci See Usage.
-#' @param rr See Usage.
-#' @param ci_lower See Usage.
-#' @param ci_upper See Usage.
-#' @param interpretation See Usage.
+#' @param point_estimate Carried through into a list the body builds.
+#' @param e_value_point Carried through into a list the body builds.
+#' @param e_value_ci Carried through into a list the body builds.
+#' @param rr Carried through into a list the body builds.
+#' @param ci_lower Carried through into a list the body builds.
+#' @param ci_upper Carried through into a list the body builds.
+#' @param interpretation Carried through into a list the body builds.
 #' @return The value of \code{structure}.
 #' @export
 .evalue_result <- function(point_estimate, e_value_point, e_value_ci,
@@ -63,12 +63,12 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param gamma_values See Usage.
-#' @param p_upper See Usage.
-#' @param p_lower See Usage.
-#' @param critical_gamma See Usage.
-#' @param method See Usage.
-#' @param interpretation See Usage.
+#' @param gamma_values Carried through into a list the body builds.
+#' @param p_upper Carried through into a list the body builds.
+#' @param p_lower Carried through into a list the body builds.
+#' @param critical_gamma Carried through into a list the body builds.
+#' @param method Carried through into a list the body builds.
+#' @param interpretation Carried through into a list the body builds.
 #' @return The value of \code{structure}.
 #' @export
 .rosenbaum_result <- function(gamma_values, p_upper, p_lower,
@@ -90,12 +90,12 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param delta_values See Usage.
-#' @param adjusted_estimates See Usage.
-#' @param adjusted_p_values See Usage.
-#' @param tipping_point See Usage.
-#' @param original_estimate See Usage.
-#' @param interpretation See Usage.
+#' @param delta_values Carried through into a list the body builds.
+#' @param adjusted_estimates Carried through into a list the body builds.
+#' @param adjusted_p_values Carried through into a list the body builds.
+#' @param tipping_point Carried through into a list the body builds.
+#' @param original_estimate Carried through into a list the body builds.
+#' @param interpretation Carried through into a list the body builds.
 #' @return The value of \code{structure}.
 #' @export
 .tipping_point_result <- function(delta_values, adjusted_estimates,
@@ -118,13 +118,13 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param estimate See Usage.
-#' @param se See Usage.
-#' @param rv_q See Usage.
-#' @param rv_qa See Usage.
-#' @param partial_r2_treatment See Usage.
-#' @param benchmark_bounds See Usage.
-#' @param interpretation See Usage.
+#' @param estimate Carried through into a list the body builds.
+#' @param se Carried through into a list the body builds.
+#' @param rv_q Carried through into a list the body builds.
+#' @param rv_qa Carried through into a list the body builds.
+#' @param partial_r2_treatment Carried through into a list the body builds.
+#' @param benchmark_bounds Carried through into a list the body builds.
+#' @param interpretation Carried through into a list the body builds.
 #' @return The value of \code{structure}.
 #' @export
 .ovb_result <- function(estimate, se, rv_q, rv_qa, partial_r2_treatment,
@@ -147,15 +147,15 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param estimates See Usage.
-#' @param ses See Usage.
-#' @param p_values See Usage.
-#' @param specifications See Usage.
-#' @param median_estimate See Usage.
-#' @param iqr_lower See Usage.
-#' @param iqr_upper See Usage.
-#' @param pct_significant See Usage.
-#' @param pct_same_sign See Usage.
+#' @param estimates Carried through into a list the body builds.
+#' @param ses Carried through into a list the body builds.
+#' @param p_values Carried through into a list the body builds.
+#' @param specifications Carried through into a list the body builds.
+#' @param median_estimate Carried through into a list the body builds.
+#' @param iqr_lower Carried through into a list the body builds.
+#' @param iqr_upper Carried through into a list the body builds.
+#' @param pct_significant Carried through into a list the body builds.
+#' @param pct_same_sign Carried through into a list the body builds.
 #' @return The value of \code{structure}.
 #' @export
 .spec_curve_result <- function(estimates, ses, p_values, specifications,

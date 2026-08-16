@@ -9,13 +9,13 @@
 }
 \arguments{
 \item{year}{Coerced to character by the body, with \code{as.character}.}
-\item{n_tracts}{See Usage.}
-\item{rho}{See Usage.}
-\item{moran_i_ols}{See Usage.}
+\item{n_tracts}{Carried through into a list the body builds.}
+\item{rho}{Carried through into a list the body builds.}
+\item{moran_i_ols}{Carried through into a list the body builds.}
 \item{decompositions}{A vector; indexed elementwise.}
-\item{gent_distribution}{See Usage.}
-\item{sensitivity_thresholds}{Defaults to \code{list()}.}
-\item{note}{Defaults to \code{""}.}
+\item{gent_distribution}{Carried through into a list the body builds.}
+\item{sensitivity_thresholds}{Carried through into a list the body builds. Defaults to \code{list()}.}
+\item{note}{Carried through into a list the body builds. Defaults to \code{""}.}
 }
 \description{
 Part of the laniyonu_gentrification_policing implementation; see the file header for the source it follows.

@@ -38,11 +38,11 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param title See Usage.
-#' @param call See Usage.
-#' @param summary_lines Defaults to \code{list()}.
-#' @param warnings Defaults to \code{character(0)}.
-#' @param interpretation Defaults to \code{""}.
+#' @param title Carried through into a list the body builds.
+#' @param call Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
 #' @param ... Passed through.
 #' @return The value of \code{out}, as built in the body.
 #' @export

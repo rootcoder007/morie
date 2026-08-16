@@ -8,7 +8,7 @@
 .morie_forensics_require_fbi_key(api_key = NULL)
 }
 \arguments{
-\item{api_key}{Defaults to \code{NULL}.}
+\item{api_key}{The body requires: and either pass api_key=... or export.}
 }
 \description{
 A step of the ingest_forensics implementation. Called by \code{morie_ingest_forensics_nibrs}. See the file header for the source the module follows.

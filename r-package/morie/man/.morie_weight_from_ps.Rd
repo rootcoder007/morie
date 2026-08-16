@@ -10,7 +10,7 @@
 \arguments{
 \item{ps}{Numeric; combined arithmetically in the body.}
 \item{t01}{See Usage.}
-\item{estimand}{See Usage.}
+\item{estimand}{The body requires: estimand must be ATE, ATT, or ATC.}
 }
 \description{
 Part of the weight_native implementation; see the file header for the source it follows.

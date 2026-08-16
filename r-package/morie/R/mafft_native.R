@@ -109,7 +109,7 @@ mafft_clean <- function(seqs, seq_type = NULL) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param group See Usage.
+#' @param group The body requires: mafft: sequences in a group must be aligned to the same length.
 #' @param weights Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.
 #' @param seq_type Compared against \code{"nt"}. Defaults to \code{"aa"}.
 #' @return The value of \code{list}.
@@ -398,7 +398,7 @@ mafft_lookup <- function(M, a, b) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param raw_matrix Defaults to \code{NULL}.
+#' @param raw_matrix The body requires: mafft: raw_matrix has no signal (average1 equals average2).
 #' @param freqs Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @param s_a Numeric; combined arithmetically in the body. Defaults to \code{0.06}.
 #' @param seq_type Compared against \code{"nt"}. Defaults to \code{"aa"}.
@@ -673,7 +673,7 @@ group_align <- function(group1, group2, scoring, weights1 = NULL,
 #' @param weights2 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param seq_type Defaults to \code{"aa"}.
 #' @param window Numeric; combined arithmetically in the body. Defaults to \code{30L}.
-#' @param n_peaks Defaults to \code{20L}.
+#' @param n_peaks The body requires: mafft: window, n_peaks and max_len must be positive. Defaults to \code{20L}.
 #' @param threshold Defaults to \code{0.7}.
 #' @param max_len Numeric; combined arithmetically in the body. Defaults to \code{150L}.
 #' @param corr_method Defaults to \code{"fft"}.
@@ -974,7 +974,7 @@ progressive_align <- function(seqs, scoring, tree = NULL, seq_type = "aa",
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param alignment See Usage.
+#' @param alignment The body requires: mafft: an alignment must be rectangular.
 #' @param scoring A list; the body reads \code{$matrix} from it.
 #' @param s_op Numeric; combined arithmetically in the body. Defaults to \code{2.4}.
 #' @param weights Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
@@ -1101,18 +1101,18 @@ iterative_refine <- function(alignment, scoring, tree = NULL, s_op = 2.4,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param sequences See Usage.
+#' @param sequences The body requires: mafft: at least two sequences are needed.
 #' @param method One of \code{"FFT-NS-2"}, \code{"FFT-NS-i"}, \code{"NW-NS-2"}. Defaults to \code{"FFT-NS-2"}.
 #' @param seq_type Defaults to \code{NULL}.
 #' @param raw_matrix Defaults to \code{NULL}.
 #' @param freqs Defaults to \code{NULL}.
 #' @param s_a Defaults to \code{0.06}.
 #' @param s_op Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{2.4}.
-#' @param matrix Defaults to \code{"normalized"}.
-#' @param window Defaults to \code{30L}.
-#' @param n_peaks Defaults to \code{20L}.
-#' @param threshold Defaults to \code{0.7}.
-#' @param max_len Defaults to \code{150L}.
+#' @param matrix Carried through into a list the body builds. Defaults to \code{"normalized"}.
+#' @param window Carried through into a list the body builds. Defaults to \code{30L}.
+#' @param n_peaks Carried through into a list the body builds. Defaults to \code{20L}.
+#' @param threshold Carried through into a list the body builds. Defaults to \code{0.7}.
+#' @param max_len Carried through into a list the body builds. Defaults to \code{150L}.
 #' @param max_iterate Defaults to \code{16L}.
 #' @return A list with \code{estimate}, \code{alignment}, \code{score}, \code{method}, \code{seq_type}, \code{length}, \code{n}, \code{s_a}, \code{s_op}, \code{matrix_mode}, \code{tree}, \code{refine_rounds}, \code{note}.
 #' @export

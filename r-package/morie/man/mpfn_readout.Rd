@@ -11,8 +11,8 @@ mpfn_readout(H, how = "sum", H0 = NULL, i_fn = NULL, j_fn = NULL)
 \item{H}{Iterated over elementwise, with \code{lapply}.}
 \item{how}{One of \code{"gated"}, \code{"mean"}, \code{"sum"}. Defaults to \code{"sum"}.}
 \item{H0}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
-\item{i_fn}{Defaults to \code{NULL}.}
-\item{j_fn}{Defaults to \code{NULL}.}
+\item{i_fn}{The body requires: mpfn: the gated readout needs H0, i_fn and j_fn.}
+\item{j_fn}{The body requires: mpfn: the gated readout needs H0, i_fn and j_fn.}
 }
 \description{
 Part of the mpfn_native implementation; see the file header for the source it follows.

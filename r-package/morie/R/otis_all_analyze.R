@@ -192,12 +192,12 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param title See Usage.
-#' @param summary_lines See Usage.
+#' @param title Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds.
 #' @param tables Iterated over elementwise, with \code{Filter}. Defaults to \code{list()}.
 #' @param interpretation Defaults to \code{NULL}.
-#' @param warnings Defaults to \code{character(0)}.
-#' @param payload Defaults to \code{NULL}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param payload Carried through into a list the body builds.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .otis_wrap <- function(title, summary_lines, tables = list(),
@@ -1258,13 +1258,13 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
 #' the source it follows.
 #'
 #' @param work A matrix; indexed by row and column.
-#' @param treatment See Usage.
-#' @param outcome See Usage.
+#' @param treatment Carried through into a list the body builds.
+#' @param outcome Carried through into a list the body builds.
 #' @param covariates Defaults to \code{character(0)}.
-#' @param year_col Defaults to \code{"EndFiscalYear"}.
-#' @param cluster_group Defaults to \code{NULL}.
-#' @param ds_id See Usage.
-#' @param source_label See Usage.
+#' @param year_col Carried through into a list the body builds. Defaults to \code{"EndFiscalYear"}.
+#' @param cluster_group Optional; may be \code{NULL}. Carried through into a list the body builds.
+#' @param ds_id Carried through into a list the body builds.
+#' @param source_label Carried through into a list the body builds.
 #' @param title Passed to \code{.otis_wrap}.
 #' @param interpretation See Usage.
 #' @return The value of \code{.otis_wrap}.

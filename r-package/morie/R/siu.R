@@ -1541,7 +1541,7 @@ morie_siu_compare <- function(case_number, external,
 #' slow CPU-only local Ollama generation on a Raspberry Pi. Override via
 #' MORIE_LLM_TIMEOUT_S env var or the timeout_s arg.
 #'
-#' @param model See Usage.
+#' @param model The body requires: . Set it, or use model = "ollama" with a local.
 #' @param prompt Passed to \code{morie_llm_ask}.
 #' @param timeout_s Defaults to \code{.siu_llm_default_timeout()}.
 #' @return The value of \code{p$extract}.

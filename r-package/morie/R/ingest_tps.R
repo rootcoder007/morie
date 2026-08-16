@@ -90,8 +90,8 @@ morie_ingest_tps_layers <- function() {
 #' source it follows.
 #'
 #' @param layer_url See Usage.
-#' @param where Defaults to \code{"1=1"}.
-#' @param out_fields Defaults to \code{"*"}.
+#' @param where Carried through into a list the body builds. Defaults to \code{"1=1"}.
+#' @param out_fields Carried through into a list the body builds. Defaults to \code{"*"}.
 #' @param return_geometry A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @param result_offset Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.
 #' @param result_record_count Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000L}.

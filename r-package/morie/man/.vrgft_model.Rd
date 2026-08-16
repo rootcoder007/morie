@@ -12,7 +12,7 @@
 \item{c0}{Numeric; combined arithmetically in the body.}
 \item{c1}{Numeric; combined arithmetically in the body.}
 \item{a}{Numeric; combined arithmetically in the body.}
-\item{model}{See Usage.}
+\item{model}{The body requires: unknown model.}
 }
 \description{
 from the vrgft() optimiser closure so the model switch (including the unknown-model stop) is directly unit-testable.

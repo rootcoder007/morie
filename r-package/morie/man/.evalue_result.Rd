@@ -8,13 +8,13 @@
 .evalue_result(point_estimate, e_value_point, e_value_ci, rr, ci_lower, ci_upper, interpretation)
 }
 \arguments{
-\item{point_estimate}{See Usage.}
-\item{e_value_point}{See Usage.}
-\item{e_value_ci}{See Usage.}
-\item{rr}{See Usage.}
-\item{ci_lower}{See Usage.}
-\item{ci_upper}{See Usage.}
-\item{interpretation}{See Usage.}
+\item{point_estimate}{Carried through into a list the body builds.}
+\item{e_value_point}{Carried through into a list the body builds.}
+\item{e_value_ci}{Carried through into a list the body builds.}
+\item{rr}{Carried through into a list the body builds.}
+\item{ci_lower}{Carried through into a list the body builds.}
+\item{ci_upper}{Carried through into a list the body builds.}
+\item{interpretation}{Carried through into a list the body builds.}
 }
 \description{
 Part of the sensitivity implementation; see the file header for the source it follows.

@@ -65,7 +65,7 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param method See Usage.
+#' @param method Carried through into a list the body builds.
 #' @param test_statistic Coerced to numeric by the body, with \code{as.numeric}.
 #' @param p_value Coerced to numeric by the body, with \code{as.numeric}.
 #' @param df Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.
@@ -74,7 +74,7 @@ NULL
 #' @param effect_size Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.
 #' @param estimate Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.
 #' @param n Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}. Defaults to \code{NA_integer_}.
-#' @param extra Defaults to \code{list()}.
+#' @param extra Carried through into a list the body builds. Defaults to \code{list()}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .stat_result <- function(method, test_statistic, p_value,

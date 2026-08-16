@@ -80,12 +80,12 @@ NULL
 #' self-contained.
 #' ---------------------------------------------------------------------------
 #'
-#' @param title See Usage.
-#' @param summary_lines Defaults to \code{list()}.
-#' @param tables Defaults to \code{list()}.
-#' @param interpretation Defaults to \code{""}.
-#' @param warnings Defaults to \code{character()}.
-#' @param payload Defaults to \code{list()}.
+#' @param title Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param tables Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character()}.
+#' @param payload Carried through into a list the body builds. Defaults to \code{list()}.
 #' @return The value of \code{structure}.
 #' @export
 .siu_an_rich <- function(title, summary_lines = list(),
@@ -523,7 +523,7 @@ morie_siu_mental_health_race_indicators <- function(data = NULL) {
 #' .siu_an_interval -- day-delta summary helper used by decision_timing.
 #' ---------------------------------------------------------------------------
 #'
-#' @param label See Usage.
+#' @param label Carried through into a list the body builds.
 #' @param a_iso See Usage.
 #' @param b_iso See Usage.
 #' @return The value of \code{list}.

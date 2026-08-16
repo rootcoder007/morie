@@ -16,7 +16,7 @@ mistr_mistral_block(X, Wq, Wk, Wv, Wo, W1, W2, W3, n_heads, n_kv_heads, window, 
 \item{W1}{See Usage.}
 \item{W2}{See Usage.}
 \item{W3}{See Usage.}
-\item{n_heads}{See Usage.}
+\item{n_heads}{Carried through into a list the body builds.}
 \item{n_kv_heads}{Numeric; combined arithmetically in the body.}
 \item{window}{Coerced to integer by the body, with \code{as.integer}.}
 \item{norm1}{Defaults to \code{NULL}.}
