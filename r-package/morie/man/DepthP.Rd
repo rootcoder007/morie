@@ -34,3 +34,6 @@ Stahel (1981), PhD thesis, ETH Zurich; Donoho (1982),
 qualifying paper, Harvard; Zuo & Serfling (2000), Ann. Statist.
 28(2):461-482.
 }
+\examples{
+DepthP(x = 5L, X = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

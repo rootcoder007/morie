@@ -35,3 +35,6 @@ gneiting-2011-quantiles-point-forecasts.pdf); Koenker, R. and
 Bassett, G. (1978), Regression quantiles, Econometrica 46(1),
 33-50.
 }
+\examples{
+Qrf(y = c(1, 2, 3, 4, 5, 6, 7, 8), y_hat = c(1, 2, 3, 4, 5, 6, 7, 8), tau = 0.5)
+}

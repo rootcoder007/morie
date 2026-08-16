@@ -31,3 +31,6 @@ Named list with \code{baseline}, \code{baseline_rate},
 \description{
 Demographic disparity in outcome rates with risk-ratio CIs
 }
+\examples{
+mrm_uof_demographic_disparity(df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), demo_col = c(1, 2, 3, 4, 5, 6, 7, 8), outcome_col = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

@@ -28,3 +28,6 @@ The value of \code{H}, as built in the body.
 Base R only.
 }
 \keyword{internal}
+\examples{
+mpfn_message_passing(H0 = c(1, 2, 3, 4, 5, 6, 7, 8), adj = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), edge_features = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

@@ -18,3 +18,6 @@ Flips each eigenvector\'s sign with probability 1/2, per the paper.
 Sign-flipped encoding.
 }
 \keyword{internal}
+\examples{
+morie_gtrf_sign_flip(pe = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), rng = list(a = 1, b = 2))
+}

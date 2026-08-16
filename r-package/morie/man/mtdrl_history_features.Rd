@@ -18,3 +18,6 @@ Part of the mtdrl_native implementation; see the file header for the source it f
 The value of \code{feat}, as built in the body.
 }
 \keyword{internal}
+\examples{
+mtdrl_history_features(history = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), n_arms = 5L)
+}

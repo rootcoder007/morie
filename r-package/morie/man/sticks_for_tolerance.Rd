@@ -14,3 +14,6 @@ Smallest K with expected tail below the tolerance
 A list with \code{K}, \code{expected_tail}, \code{tolerance}, \code{note}.
 }
 \keyword{internal}
+\examples{
+sticks_for_tolerance(alpha = 0.5)
+}

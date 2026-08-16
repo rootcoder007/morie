@@ -29,3 +29,6 @@ A data.frame with \verb{metric, value}.
 Produces a tidy data.frame with the estimate, CI, p-value,
 applicable E-values (RR / OR / HR), and a tipping-point delta.
 }
+\examples{
+sensitivity_summary(estimate = 5L, se = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

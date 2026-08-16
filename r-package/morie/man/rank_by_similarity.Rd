@@ -19,3 +19,6 @@ Part of the sbert_native implementation; see the file header for the source it f
 A list with \code{ranking}, \code{n_corpus}, \code{forward_passes}, \code{note}.
 }
 \keyword{internal}
+\examples{
+rank_by_similarity(query = 5L, corpus_embeddings = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

@@ -19,3 +19,6 @@ Laplace draw per class with scale 1/gamma.
 A numeric value.
 }
 \keyword{internal}
+\examples{
+noisy_argmax(counts = c(1, 2, 3, 4, 5, 6, 7, 8), gamma = 0.5)
+}

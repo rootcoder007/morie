@@ -21,3 +21,6 @@ A \code{morie_specification_test}.
 \description{
 Tests H0: \code{R \%*\% beta = r}.
 }
+\examples{
+wald_test(estimates = 5L, vcov = 5L)
+}

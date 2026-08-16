@@ -36,3 +36,6 @@ match the supplied marginal targets. \code{margins} is a named list keyed by
 variable name; each entry is a named numeric vector mapping category values
 (as strings) to target totals.
 }
+\examples{
+morie_weights_rake(weights = c(1, 2, 3, 4, 5, 6, 7, 8), df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), margins = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

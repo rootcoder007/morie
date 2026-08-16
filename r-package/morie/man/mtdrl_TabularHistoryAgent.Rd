@@ -19,3 +19,6 @@ Part of the mtdrl_native implementation; see the file header for the source it f
 The value of \code{agent}, as built in the body.
 }
 \keyword{internal}
+\examples{
+mtdrl_TabularHistoryAgent(n_arms = 5L)
+}

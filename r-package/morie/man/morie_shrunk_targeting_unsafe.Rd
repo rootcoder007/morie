@@ -18,3 +18,6 @@ The thing not to do: penalise the fluctuation
 A list with the would-be \code{epsilon}, the updated fit,   and the un-targeted mean score.
 }
 \keyword{internal}
+\examples{
+morie_shrunk_targeting_unsafe(Q = 0.5, H = 0.5, Y = 5L)
+}

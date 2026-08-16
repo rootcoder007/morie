@@ -19,3 +19,6 @@ Cosine and sine Fourier pairs, exactly periodic with \code{period}
 A list of rows, each \code{2 * order} long.
 }
 \keyword{internal}
+\examples{
+fourier_terms(t = c(1, 2, 3, 4, 5, 6, 7, 8), period = 5L, order = 5L)
+}

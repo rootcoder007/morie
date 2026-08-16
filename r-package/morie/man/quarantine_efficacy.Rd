@@ -20,3 +20,6 @@ quarantine_efficacy(t_Q, t_R, generation_time = NULL, t_E = 0)
 A list with \code{efficacy}, \code{prevented_mass},   \code{remaining_mass}, \code{t_Q}, \code{t_R}, \code{max_attainable},   \code{pre_quarantine_mass} (and a \code{note} if no transmission   remains).
 }
 \keyword{internal}
+\examples{
+quarantine_efficacy(t_Q = 5L, t_R = 5L)
+}

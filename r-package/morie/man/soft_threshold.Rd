@@ -18,3 +18,6 @@ Prox of \code{tau * |.|_1}, applied elementwise.
 Numeric vector of the same length.
 }
 \keyword{internal}
+\examples{
+soft_threshold(v = c(1, 2, 3, 4, 5, 6, 7, 8), tau = 0.5)
+}

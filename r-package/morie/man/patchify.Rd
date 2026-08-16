@@ -19,3 +19,6 @@ equal to patch_len the patches are disjoint; a smaller stride overlaps them. The
 A list with \code{patches}, \code{n_patches}, \code{patch_len}, \code{stride}, \code{L}, \code{covers}.
 }
 \keyword{internal}
+\examples{
+patchify(x = c(1, 2, 3, 4, 5, 6, 7, 8), patch_len = 5L)
+}

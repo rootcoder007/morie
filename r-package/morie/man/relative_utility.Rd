@@ -21,3 +21,6 @@ The infected fraction cancels in the ratio for standard quarantine; \code{infect
 A list with \code{relative_utility}, \code{utility_a},   \code{utility_b}, \code{efficacy_a}, \code{efficacy_b},   \code{independent_of_infected_fraction}, \code{note}.
 }
 \keyword{internal}
+\examples{
+relative_utility(t_R_a = 5L, t_R_b = 5L)
+}

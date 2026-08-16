@@ -29,3 +29,6 @@ straddling theta and its population value is exactly
 \references{
 Liu (1990), Ann. Statist. 18(1):405-414.
 }
+\examples{
+DepthS(X = c(1, 2, 3, 4, 5, 6, 7, 8), theta = 0.5)
+}

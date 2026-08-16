@@ -15,3 +15,6 @@ Numeric d.
 \description{
 Convert odds ratio to Cohen's d (Hasselblad & Hedges, 1995)
 }
+\examples{
+or_to_d(or_val = 5L)
+}

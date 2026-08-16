@@ -25,3 +25,6 @@ A list with \code{scores}, \code{hits}.
 Base R only.
 }
 \keyword{internal}
+\examples{
+motfsr_score_sequence(spec = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), sequence = 5L, alphabet = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
