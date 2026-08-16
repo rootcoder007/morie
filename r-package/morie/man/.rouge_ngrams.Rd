@@ -18,3 +18,6 @@ Part of the rouge_native implementation; see the file header for the source it f
 The value of \code{lapply}.
 }
 \keyword{internal}
+\examples{
+.rouge_ngrams(toks = c(1, 2, 3, 4, 5, 6, 7, 8), n = 5L)
+}

@@ -21,3 +21,6 @@ Part of the prgrl_native implementation; see the file header for the source it f
 The value of \code{w}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.prgrl_perceptron(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), order = 5L, updates = c(1, 2, 3, 4, 5, 6, 7, 8), w0 = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

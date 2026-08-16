@@ -18,3 +18,6 @@ Part of the ts_joseph implementation; see the file header for the source it foll
 A vector, from \code{vapply}.
 }
 \keyword{internal}
+\examples{
+.morie_jo_interp(theta = 0.5, length_ = 5L)
+}

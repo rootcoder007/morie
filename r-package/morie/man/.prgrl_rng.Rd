@@ -17,3 +17,6 @@ Part of the prgrl_native implementation; see the file header for the source it f
 The value of \code{function}.
 }
 \keyword{internal}
+\examples{
+.prgrl_rng(seed = 5L)
+}

@@ -17,3 +17,6 @@ Part of the multiple_testing implementation; see the file header for the source 
 The value of \code{pmin}.
 }
 \keyword{internal}
+\examples{
+.mt_check_p(p = 0.5)
+}

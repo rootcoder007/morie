@@ -22,3 +22,6 @@ Part of the plcbsc_native implementation; see the file header for the source it 
 A list with \code{weights}, \code{loss}, \code{fitted}, \code{n_iter}, \code{converged}.
 }
 \keyword{internal}
+\examples{
+.plcbsc_synthetic_control(x_treated = 5L, x_donors = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

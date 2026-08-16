@@ -18,3 +18,6 @@ Part of the scumap_native implementation; see the file header for the source it 
 The value of \code{v}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.scumap_clip(v = 5L)
+}

@@ -24,3 +24,6 @@ Part of the phylby_native implementation; see the file header for the source it 
 A list with \code{loglik}, \code{logprior}, \code{logpost}.
 }
 \keyword{internal}
+\examples{
+.phylby_log_posterior(tree = list(a = 1, b = 2), seqs = c("a", "b", "c"))
+}

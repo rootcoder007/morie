@@ -14,3 +14,6 @@ Part of the meglt_native implementation; see the file header for the source it f
 A character value.
 }
 \keyword{internal}
+\examples{
+.meglt_cheatsheet()
+}

@@ -17,3 +17,6 @@ the shipped one and is merged in too -- so individual users can record their own
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.siu_load_canonical_overrides()
+}

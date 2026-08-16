@@ -18,3 +18,7 @@ Part of the over_native implementation; see the file header for the source it fo
 A list with \code{stat}, \code{p}, \code{n1}, \code{n2}, \code{d_plus}, \code{d_minus}, \code{n_ties}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.mor_ks_2samp(V, V)
+}

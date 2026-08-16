@@ -20,3 +20,7 @@ port delegates to morie.tps_render.project_xy; in R we approximate with a midpoi
 A list with \code{x}, \code{y}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.tps_sp_project_xy(V, V)
+}

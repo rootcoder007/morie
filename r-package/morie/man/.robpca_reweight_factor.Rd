@@ -18,3 +18,6 @@ Part of the robpca_native implementation; see the file header for the source it 
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.robpca_reweight_factor(q = 0.5, k = 5L)
+}

@@ -19,3 +19,6 @@ Part of the helpers_time_series_advanced implementation; see the file header for
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.morie_beta_weights(t1 = c(1, 2, 3, 4, 5, 6, 7, 8), t2 = c(1, 2, 3, 4, 5, 6, 7, 8), K = 5L)
+}

@@ -14,3 +14,6 @@
 A character value.
 }
 \keyword{internal}
+\examples{
+.didfst_cheatsheet()
+}

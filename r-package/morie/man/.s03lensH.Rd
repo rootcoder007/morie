@@ -18,3 +18,6 @@ Part of the matern implementation; see the file header for the source it follows
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.s03lensH(t = 5L, r = 5L)
+}

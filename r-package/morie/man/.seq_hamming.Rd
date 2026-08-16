@@ -18,3 +18,7 @@ A step of the cluseq implementation. Called by \code{Cluseq}. See the file heade
 A numeric value.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.seq_hamming(V, V)
+}

@@ -19,3 +19,6 @@ Part of the study_reporting implementation; see the file header for the source i
 The value of \code{fallback}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.read_existing_output(output_dir = 5L, file_name = 5L)
+}

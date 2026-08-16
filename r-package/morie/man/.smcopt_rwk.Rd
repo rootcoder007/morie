@@ -17,3 +17,7 @@ the Python arm\\'s random_walk_kernel(scale=1.0): propose x\\' = x + Normal(0, s
 The value of \code{function}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.smcopt_rwk(V)
+}

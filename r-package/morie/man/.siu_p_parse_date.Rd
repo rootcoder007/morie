@@ -17,3 +17,6 @@ Part of the siu_parser implementation; see the file header for the source it fol
 A list with \code{iso}, \code{raw}.
 }
 \keyword{internal}
+\examples{
+.siu_p_parse_date(raw = 5L)
+}

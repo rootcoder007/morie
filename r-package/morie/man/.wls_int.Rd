@@ -20,3 +20,6 @@ Part of the tmldyk_native implementation; see the file header for the source it 
 A matrix, from \code{solve}.
 }
 \keyword{internal}
+\examples{
+.wls_int(Xm = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), yv = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), w = c(1, 2, 3, 4, 5, 6, 7, 8), ridge = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

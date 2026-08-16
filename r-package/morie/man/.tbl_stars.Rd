@@ -17,3 +17,6 @@ Part of the tables_pub implementation; see the file header for the source it fol
 A character value.
 }
 \keyword{internal}
+\examples{
+.tbl_stars(p = 0.5)
+}

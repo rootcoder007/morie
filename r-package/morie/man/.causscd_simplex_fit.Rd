@@ -21,3 +21,6 @@ A step of the causscd_native implementation. Called by \code{time_weights}, \cod
 A list with \code{w}, \code{icept}.
 }
 \keyword{internal}
+\examples{
+.causscd_simplex_fit(cols = 5L, target = c(1, 2, 3, 4, 5, 6, 7, 8), penalty = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

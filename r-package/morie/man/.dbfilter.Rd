@@ -17,3 +17,7 @@ Part of the wave implementation; see the file header for the source it follows.
 Nothing; this branch always raises.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.dbfilter(V)
+}

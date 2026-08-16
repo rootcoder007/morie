@@ -17,3 +17,7 @@ Part of the llm implementation; see the file header for the source it follows.
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+.morie_llm_extract_text(D)
+}

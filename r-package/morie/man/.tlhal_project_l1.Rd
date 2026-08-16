@@ -18,3 +18,6 @@ Part of the tlhal_native implementation; see the file header for the source it f
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.tlhal_project_l1(v = c(1, 2, 3, 4, 5, 6, 7, 8), lam = 5L)
+}

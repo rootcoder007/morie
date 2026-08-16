@@ -14,3 +14,6 @@ exact field list and order the C++ parser emits.
 A vector, from \code{c}.
 }
 \keyword{internal}
+\examples{
+.siu_field_list()
+}

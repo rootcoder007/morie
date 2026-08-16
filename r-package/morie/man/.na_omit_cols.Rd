@@ -18,3 +18,6 @@ Part of the study_core implementation; see the file header for the source it fol
 The value of \code{[}.
 }
 \keyword{internal}
+\examples{
+.na_omit_cols(data = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), cols = factor(c("lo", "hi", "lo", "hi")))
+}

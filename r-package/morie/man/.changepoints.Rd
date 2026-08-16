@@ -20,3 +20,6 @@ If \code{changepoints} is supplied it is used as-is; otherwise \code{n_changepoi
 Numeric vector of changepoints.
 }
 \keyword{internal}
+\examples{
+.changepoints(t = c(1, 2, 3, 4, 5, 6, 7, 8), n_changepoints = 5L)
+}

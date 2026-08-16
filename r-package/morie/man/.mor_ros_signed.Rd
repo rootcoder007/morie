@@ -18,3 +18,7 @@ Part of the rosenb_native implementation; see the file header for the source it 
 A list with \code{p_upper}, \code{p_lower}, \code{W}, \code{mu_plus}, \code{sigma_plus}, \code{z_upper}, \code{n_pairs}, \code{Gamma}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.mor_ros_signed(V)
+}

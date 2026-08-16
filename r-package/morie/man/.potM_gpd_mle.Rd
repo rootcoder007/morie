@@ -17,3 +17,7 @@ Part of the potM_mixedcase_native implementation; see the file header for the so
 A list with \code{sigma}, \code{xi}, \code{loglik}, \code{cov}, \code{converged}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.potM_gpd_mle(V)
+}

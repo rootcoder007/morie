@@ -34,3 +34,6 @@ arXiv:1607.06450. The normalisation the paper applies per layer
 before weighting.
 }
 \keyword{internal}
+\examples{
+.lstm_step(x = c(1, 2, 3, 4, 5, 6, 7, 8), h = c(1, 2, 3, 4, 5, 6, 7, 8), c = c(1, 2, 3, 4, 5, 6, 7, 8), Wx = c(1, 2, 3, 4, 5, 6, 7, 8), Wh = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L)
+}

@@ -17,3 +17,6 @@ Part of the wave implementation; see the file header for the source it follows.
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.dbpow2(n = 5L)
+}

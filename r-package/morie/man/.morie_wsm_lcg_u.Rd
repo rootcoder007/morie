@@ -18,3 +18,6 @@ Part of the wasserman_native implementation; see the file header for the source 
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.morie_wsm_lcg_u(count = 5L)
+}

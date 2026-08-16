@@ -19,3 +19,7 @@ F_k(t) = sum_{u <= t} S(u-) dN_k(u) / Y(u).  The S(u-) factor is the ALL-CAUSE K
 A list with \code{times}, \code{F}, \code{S}, \code{Y}, \code{dk}, \code{n}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.aalen_johansen(V, V)
+}

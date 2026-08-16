@@ -18,3 +18,7 @@ A step of the dsp_filters implementation. Called by \code{morie_dsp_hann_filter}
 The value of \code{[}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.same_convolve(V, V)
+}

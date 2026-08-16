@@ -19,3 +19,6 @@ Part of the statistics implementation; see the file header for the source it fol
 A vector, from \code{c}.
 }
 \keyword{internal}
+\examples{
+.fisher_z_ci(r = c(1, 2, 3, 4, 5, 6, 7, 8), n = 5L, confidence = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

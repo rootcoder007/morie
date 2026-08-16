@@ -14,3 +14,6 @@ applied via prefix dispatch.
 The value of \code{list}.
 }
 \keyword{internal}
+\examples{
+.morie_db_indexes_tps_crime()
+}

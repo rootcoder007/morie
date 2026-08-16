@@ -14,3 +14,6 @@ installed package has no project root. Degrade to NA so callers (.copy_legacy_ar
 The value of \code{file.path}.
 }
 \keyword{internal}
+\examples{
+.legacy_reference_root()
+}

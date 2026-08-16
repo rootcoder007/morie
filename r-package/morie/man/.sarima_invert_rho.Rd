@@ -17,3 +17,6 @@ Part of the sarima_native implementation; see the file header for the source it 
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.sarima_invert_rho(rho = 0.5)
+}

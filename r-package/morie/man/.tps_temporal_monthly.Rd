@@ -17,3 +17,7 @@ with $dates (POSIXct, first-of-month) and $counts (integer).
 A list with \code{dates}, \code{counts}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.tps_temporal_monthly(V)
+}

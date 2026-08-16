@@ -18,3 +18,8 @@ Returns coefficients (with intercept), SEs, log-lik.
 A list with \code{coef}, \code{se}, \code{loglik}, \code{n}, \code{converged}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+.lan_threshold_logit(V, D)
+}

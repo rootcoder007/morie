@@ -14,3 +14,6 @@ any failure. Unlike .siu_load_manifest() (which restricts to healthy 200s for ha
 The value of \code{tryCatch}.
 }
 \keyword{internal}
+\examples{
+.siu_load_manifest_raw()
+}

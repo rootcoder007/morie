@@ -19,3 +19,6 @@ total loss Part of the study_core implementation; see the file header for the so
 The value of \code{stats::reformulate}.
 }
 \keyword{internal}
+\examples{
+.robust_formula(response = c(1, 2, 3, 4, 5, 6, 7, 8), terms = c("a", "b", "c"), data = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)))
+}

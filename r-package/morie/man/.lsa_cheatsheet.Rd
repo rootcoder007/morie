@@ -14,3 +14,6 @@ Part of the lsa_native implementation; see the file header for the source it fol
 A character value.
 }
 \keyword{internal}
+\examples{
+.lsa_cheatsheet()
+}

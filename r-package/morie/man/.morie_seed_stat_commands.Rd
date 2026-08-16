@@ -14,3 +14,6 @@ entries even before downstream packages append their own. The full 620-command t
 Invisibly,the value of \code{length}.
 }
 \keyword{internal}
+\examples{
+.morie_seed_stat_commands()
+}

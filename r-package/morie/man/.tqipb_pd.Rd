@@ -14,3 +14,6 @@ Part of the tqipb_native implementation; see the file header for the source it f
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.tqipb_pd()
+}

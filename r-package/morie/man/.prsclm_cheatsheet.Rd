@@ -14,3 +14,6 @@ Part of the prsclm_native implementation; see the file header for the source it 
 A character value.
 }
 \keyword{internal}
+\examples{
+.prsclm_cheatsheet()
+}

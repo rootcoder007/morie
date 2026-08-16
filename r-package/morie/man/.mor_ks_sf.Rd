@@ -18,3 +18,6 @@ Part of the over_native implementation; see the file header for the source it fo
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.mor_ks_sf(d = 5L, n = 5L)
+}

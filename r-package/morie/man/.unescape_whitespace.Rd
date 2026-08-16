@@ -18,3 +18,6 @@ Part of the sentpc_native implementation; see the file header for the source it 
 The value of \code{gsub}.
 }
 \keyword{internal}
+\examples{
+.unescape_whitespace(text = 5L)
+}

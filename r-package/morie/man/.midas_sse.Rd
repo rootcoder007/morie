@@ -20,3 +20,6 @@ morie_midas_regression() optimiser closure so the theta-domain guard and the non
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.midas_sse(p = c(1, 2, 3, 4, 5, 6, 7, 8), X = 5L, Y = 5L, K = 5L)
+}

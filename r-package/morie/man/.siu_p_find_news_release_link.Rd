@@ -18,3 +18,7 @@ Part of the siu_parser implementation; see the file header for the source it fol
 The value of \code{m}, as built in the body.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.siu_p_find_news_release_link(V, V)
+}

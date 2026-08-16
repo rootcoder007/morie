@@ -14,3 +14,6 @@ Part of the otis_all_analyze implementation; see the file header for the source 
 A logical value.
 }
 \keyword{internal}
+\examples{
+.otis_causal_available()
+}

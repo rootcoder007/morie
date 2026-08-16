@@ -14,3 +14,6 @@ A step of the fast implementation. Called by \code{morie_cor_pearson}, \code{mor
 The value of \code{tryCatch}.
 }
 \keyword{internal}
+\examples{
+.cpp_available()
+}

@@ -17,3 +17,6 @@ Part of the semipar_bridge implementation; see the file header for the source it
 The value of \code{switch}.
 }
 \keyword{internal}
+\examples{
+.kernel_fn(kernel_type = 5L)
+}

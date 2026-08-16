@@ -19,3 +19,6 @@ Part of the sctraj_native implementation; see the file header for the source it 
 The value of \code{best}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.sctraj_project(point = c(1, 2, 3, 4, 5, 6, 7, 8), curve = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), s = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

@@ -19,3 +19,6 @@ concordance of the sign of the index with the +-1 response). Extracted from the 
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.hrzb1_score(b = c(1, 2, 3, 4, 5, 6, 7, 8), ys = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

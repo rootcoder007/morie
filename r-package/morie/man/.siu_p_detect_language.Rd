@@ -17,3 +17,6 @@ Part of the siu_parser implementation; see the file header for the source it fol
 A character value.
 }
 \keyword{internal}
+\examples{
+.siu_p_detect_language(text = 5L)
+}

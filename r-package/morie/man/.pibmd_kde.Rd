@@ -19,3 +19,6 @@ Part of the pibmd_native implementation; see the file header for the source it f
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.pibmd_kde(x = c(1, 2, 3, 4, 5, 6, 7, 8), sample_ = c(1, 2, 3, 4, 5, 6, 7, 8), h = 0.5)
+}

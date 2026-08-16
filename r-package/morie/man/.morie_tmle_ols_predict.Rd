@@ -19,3 +19,6 @@ Part of the tmle_native implementation; see the file header for the source it fo
 The value of \code{as.vector}.
 }
 \keyword{internal}
+\examples{
+.morie_tmle_ols_predict(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), fit_rows = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

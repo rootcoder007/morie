@@ -21,3 +21,6 @@ Molinari (2021) eq (2.15). Returns c(lo1, hi1, lo0, hi0).
 A vector, from \code{c}.
 }
 \keyword{internal}
+\examples{
+.bnd_wc_intersect(yv = c(1, 2, 3, 4, 5, 6, 7, 8), dv = c(1, 2, 3, 4, 5, 6, 7, 8), cellv = c(1, 2, 3, 4, 5, 6, 7, 8), lo = c(1, 2, 3, 4, 5, 6, 7, 8), hi = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

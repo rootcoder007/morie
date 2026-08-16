@@ -17,3 +17,7 @@ A step of the didfst_native implementation. Called by \code{group_time_att}, \co
 A list with \code{M}, \code{n}, \code{T}.
 }
 \keyword{internal}
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+.ghc_didfst_panel(M)
+}

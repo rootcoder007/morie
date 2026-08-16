@@ -18,3 +18,6 @@ Part of the pptest implementation; see the file header for the source it follows
 A vector, from \code{vapply}.
 }
 \keyword{internal}
+\examples{
+.t4_ppcrit(n = 5L)
+}

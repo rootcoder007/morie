@@ -18,3 +18,6 @@ Part of the vepan_native implementation; see the file header for the source it f
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.vepan_find(s = 5L, ch = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

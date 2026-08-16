@@ -18,3 +18,7 @@ Part of the study_reporting implementation; see the file header for the source i
 A list with \code{ebac_final_output_coverage}, \code{ebac_final_output_shapes}, \code{ebac_final_script_run_status}, \code{ebac_final_audit_checks}, \code{ebac_final_user_guide_excerpt}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.run_final_report_module_internal(V)
+}

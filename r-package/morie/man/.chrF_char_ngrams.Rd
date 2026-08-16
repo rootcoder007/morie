@@ -18,3 +18,6 @@ A step of the chrF_native implementation. Called by \code{chrf_score}. See the f
 The value of \code{substring}.
 }
 \keyword{internal}
+\examples{
+.chrF_char_ngrams(s = 5L, n = 5L)
+}
