@@ -1,0 +1,16 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{inclusion_proof}
+\alias{inclusion_proof}
+\title{Build an inclusion proof (audit path) for the given leaf}
+\usage{
+inclusion_proof(leaves, index)
+}
+\description{
+Build an inclusion proof (audit path) for the given leaf
+}
+\value{
+A list with \code{path}, \code{path_hex}, \code{length}, \code{index}, \code{size}, \code{note}.
+}
+\keyword{internal}
