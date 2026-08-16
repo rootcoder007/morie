@@ -271,7 +271,7 @@ reversible_jump_mcmc <- function(models, moves, init_model, init_theta = numeric
     for (mv in moves)
       if (mv$frm == name)
         opts[[length(opts) + 1L]] <- list(kind = "jump", mv = mv,
-                                          w = as.numeric(mv$weight %||% move_weight))
+                                          w = as.numeric(mv[["weight"]] %||% move_weight))
     tot <- sum(sapply(opts, function(o) o$w))
     if (tot <= 0.0)
       stop(sprintf("bayrjmcmc: model %r has no move with positive weight", name))
@@ -317,7 +317,7 @@ reversible_jump_mcmc <- function(models, moves, init_model, init_theta = numeric
         }
       }
     } else {
-      label <- mv$name %||% sprintf("%s->%s", mv$frm, mv$to)
+      label <- mv[["name"]] %||% sprintf("%s->%s", mv$frm, mv$to)
       tried[[label]] <- (tried[[label]] %||% 0L) + 1L
       u <- as.numeric(mv$propose(theta, uni))
       if (length(u) != as.integer(mv$n_u))
@@ -330,8 +330,8 @@ reversible_jump_mcmc <- function(models, moves, init_model, init_theta = numeric
         stop(sprintf("bayrjmcmc: move %s produced theta of length %d and u2 of length %d; the model has dim %d and the move declares n_u_rev = %d",
                      label, length(theta2), length(u2), dim2, as.integer(mv$n_u_rev)))
 
-      if (jacobian == "numeric" || is.null(mv$logjac)) {
-        if (jacobian == "analytic" && is.null(mv$logjac)) {
+      if (jacobian == "numeric" || is.null(mv[["logjac"]])) {
+        if (jacobian == "analytic" && is.null(mv[["logjac"]])) {
           logjac <- 0.0
         } else {
           n_from <- length(theta)
@@ -343,19 +343,19 @@ reversible_jump_mcmc <- function(models, moves, init_model, init_theta = numeric
           logjac <- numeric_log_jacobian(flat, c(theta, u))
         }
       } else {
-        logjac <- as.numeric(mv$logjac(theta, u, theta2, u2))
+        logjac <- as.numeric(mv[["logjac"]](theta, u, theta2, u2))
       }
 
       rev_key <- paste(mv$to, mv$frm, sep = "|")
       rev <- by_pair[[rev_key]]
       op2 <- avail[[mv$to]]
       tot2 <- op2$tot
-      w_rev <- as.numeric(rev$weight %||% move_weight)
+      w_rev <- as.numeric(rev[["weight"]] %||% move_weight)
       log_j_from <- log(w) - log(tot)
       log_j_to <- log(w_rev) - log(tot2)
 
-      logq_u <- if (!is.null(mv$logq)) as.numeric(mv$logq(theta, u)) else 0.0
-      logq_rev <- if (!is.null(mv$logq_rev)) as.numeric(mv$logq_rev(theta2, u2)) else 0.0
+      logq_u <- if (!is.null(mv[["logq"]])) as.numeric(mv[["logq"]](theta, u)) else 0.0
+      logq_rev <- if (!is.null(mv[["logq_rev"]])) as.numeric(mv[["logq_rev"]](theta2, u2)) else 0.0
 
       lp_new <- as.numeric(models[[mv$to]]$logpost(theta2))
       log_alpha <- rj_log_acceptance(logp, lp_new, log_j_from, log_j_to,
@@ -373,7 +373,7 @@ reversible_jump_mcmc <- function(models, moves, init_model, init_theta = numeric
     }
   }
 
-  kept <- sum(unname(as.list(visits)))
+  kept <- sum(unlist(as.list(visits)))
   freq <- list()
   for (nm in names(models)) freq[[nm]] <- visits[[nm]] / kept
   rates <- list()
