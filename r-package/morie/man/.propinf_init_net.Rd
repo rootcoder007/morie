@@ -19,3 +19,8 @@ Part of the propinf_native implementation; see the file header for the source it
 The value of \code{net}, as built in the body.
 }
 \keyword{internal}
+\examples{
+rnd <- .propinf_rng(3L)
+net <- .propinf_init_net(3L, c(4L), rnd)
+length(net)
+}
