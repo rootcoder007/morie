@@ -15,6 +15,14 @@
 # floor is used here, and the same sigmoid (clamped below -700 for
 # numerical stability) is used everywhere a probability is needed.
 
+#' Numerically stable sigmoid: below -700 it is effectively 0
+#'
+#' Part of the gru4r_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{ifelse}.
+#' @export
 .gru4r_sigmoid <- function(x) {
   # Numerically stable sigmoid: below -700 it is effectively 0.
   ifelse(x > -700, 1 / (1 + exp(-x)), 0)

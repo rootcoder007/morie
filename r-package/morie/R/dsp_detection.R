@@ -442,6 +442,15 @@ morie_dsp_csd <- function(x, y, fs = 1, nperseg = 256L) {
 # ---- internal helpers -------------------------------------------------
 
 # Local unwrap (numeric vector).
+#' Local unwrap (numeric vector)
+#'
+#' Part of the dsp_detection implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @param tol Defaults to \code{pi}.
+#' @return A vector, from \code{c}.
+#' @export
 .unwrap_d <- function(p, tol = pi) {
   d <- diff(p)
   adj <- ifelse(d >  tol, d - 2 * pi,

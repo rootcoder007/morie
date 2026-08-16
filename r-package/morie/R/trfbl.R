@@ -53,12 +53,29 @@ morie_trfbl_transformer_block <- function(x, num_heads = 2L, d_ff = NULL,
   )
 }
 
+#' .trfbl_layer_norm
+#'
+#' Part of the trfbl implementation; see the file header for the source
+#' it follows.
+#'
+#' @param x See Usage.
+#' @param eps Defaults to \code{1e-05}.
+#' @return The value of \code{sweep}.
+#' @export
 .trfbl_layer_norm <- function(x, eps = 1e-5) {
   mu <- rowMeans(x)
   var <- apply(x, 1L, function(v) mean((v - mean(v))^2))
   sweep(sweep(x, 1L, mu, "-"), 1L, sqrt(var + eps), "/")
 }
 
+#' .trfbl_gelu
+#'
+#' Part of the trfbl implementation; see the file header for the source
+#' it follows.
+#'
+#' @param z See Usage.
+#' @return A numeric value.
+#' @export
 .trfbl_gelu <- function(z) {
   0.5 * z * (1 + tanh(sqrt(2 / pi) * (z + 0.044715 * z^3)))
 }

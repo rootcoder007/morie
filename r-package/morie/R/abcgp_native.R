@@ -39,6 +39,13 @@
 
 # log(sum(exp(v))) with Wilkinson's footnote-1 shift. Drops non-finite
 # entries: any single -inf would otherwise dominate the sum.
+#' Log(sum(exp(v))) with Wilkinson\'s footnote-1 shift. Drops non-finite
+#'
+#' entries: any single -inf would otherwise dominate the sum.
+#'
+#' @param values See Usage.
+#' @return A numeric value.
+#' @export
 .gp_lse <- function(values) {
   vals <- values[is.finite(values)]
   if (length(vals) == 0L) return(-Inf)
@@ -134,6 +141,15 @@ design_from_prior <- function(n, prior_ppf, dim = NULL, skip = 1L) {
   out
 }
 
+#' .gp_summarise
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param summary See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .gp_summarise <- function(x, summary) {
   v <- if (is.null(summary)) x else summary(x)
   as.numeric(v)
@@ -193,6 +209,15 @@ gabc_log_likelihood <- function(sim, obs, theta, n_sim = 50L, epsilon = 1.0,
        nugget_variance = sum((finite - mu) ^ 2) / (length(finite) - 1L))
 }
 
+#' .gp_chol
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param a See Usage.
+#' @param jitter Defaults to \code{1e-12}.
+#' @return The value of \code{L}, as built in the body.
+#' @export
 .gp_chol <- function(a, jitter = 1e-12) {
   n <- nrow(a)
   L <- matrix(0, n, n)
@@ -210,6 +235,15 @@ gabc_log_likelihood <- function(sim, obs, theta, n_sim = 50L, epsilon = 1.0,
   L
 }
 
+#' .gp_chol_solve
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param L See Usage.
+#' @param b See Usage.
+#' @return The value of \code{x}, as built in the body.
+#' @export
 .gp_chol_solve <- function(L, b) {
   n <- nrow(L)
   y <- numeric(n)
@@ -225,6 +259,16 @@ gabc_log_likelihood <- function(sim, obs, theta, n_sim = 50L, epsilon = 1.0,
   x
 }
 
+#' .gp_mvn_logpdf
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param y See Usage.
+#' @param mu See Usage.
+#' @param cov See Usage.
+#' @return A numeric value.
+#' @export
 .gp_mvn_logpdf <- function(y, mu, cov) {
   n <- length(y)
   L <- .gp_chol(cov)
@@ -261,6 +305,17 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
   list(log_lik = .gp_mvn_logpdf(y, mu, cov), mu = mu, cov = cov)
 }
 
+#' .gp_corr
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param a See Usage.
+#' @param b See Usage.
+#' @param lengthscale See Usage.
+#' @param kernel See Usage.
+#' @return A numeric value.
+#' @export
 .gp_corr <- function(a, b, lengthscale, kernel) {
   r2 <- sum(((a - b) / lengthscale) ^ 2)
   if (kernel == "sqexp") return(exp(-0.5 * r2))
@@ -273,8 +328,25 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
   (1 + s + s * s / 3) * exp(-s)
 }
 
+#' .gp_basis
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param theta See Usage.
+#' @return A vector, from \code{c}.
+#' @export
 .gp_basis <- function(theta) c(1, theta, theta * theta)
 
+#' .gp_as_nugget
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param nugget See Usage.
+#' @param n See Usage.
+#' @return The value of \code{pmax}.
+#' @export
 .gp_as_nugget <- function(nugget, n) {
   if (is.null(nugget)) return(rep(1e-8, n))
   v <- as.numeric(nugget)
@@ -283,6 +355,18 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
   pmax(v, 1e-12)
 }
 
+#' .gp_profile_nll
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param y See Usage.
+#' @param ls See Usage.
+#' @param nug See Usage.
+#' @param kernel See Usage.
+#' @return A numeric value.
+#' @export
 .gp_profile_nll <- function(X, y, ls, nug, kernel) {
   n <- nrow(X)
   A <- matrix(0, n, n)
@@ -311,6 +395,17 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
   0.5 * (logdet + (n - q) * log(s2))
 }
 
+#' .gp_mle_lengthscale
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param y See Usage.
+#' @param nug See Usage.
+#' @param kernel See Usage.
+#' @return The value of \code{ls}, as built in the body.
+#' @export
 .gp_mle_lengthscale <- function(X, y, nug, kernel) {
   n <- nrow(X); p <- ncol(X)
   spans <- vapply(seq_len(p), function(j) {
@@ -463,12 +558,36 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
   list(fit = fit, waves = waves)
 }
 
+#' .gp_alpha_terms
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param log_prior See Usage.
+#' @param theta See Usage.
+#' @param theta_p See Usage.
+#' @param ll See Usage.
+#' @param ll_p See Usage.
+#' @param log_q See Usage.
+#' @param log_q_p See Usage.
+#' @return A numeric value.
+#' @export
 .gp_alpha_terms <- function(log_prior, theta, theta_p, ll, ll_p,
                             log_q, log_q_p) {
   min(0, (log_prior(theta_p) + ll_p + log_q_p) -
         (log_prior(theta) + ll + log_q))
 }
 
+#' .gp_expected_error
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param alphas See Usage.
+#' @param tau See Usage.
+#' @param n_grid Defaults to \code{101L}.
+#' @return A numeric value.
+#' @export
 .gp_expected_error <- function(alphas, tau, n_grid = 101L) {
   M <- length(alphas)
   total <- 0
@@ -481,11 +600,30 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
   total / n_grid
 }
 
+#' .gp_median
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param v See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .gp_median <- function(v) {
   s <- sort(v); n <- length(s)
   if (n %% 2L == 1L) s[(n + 1L) %/% 2L] else 0.5 * (s[n %/% 2L] + s[n %/% 2L + 1L])
 }
 
+#' .gp_draw_mean
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param mu See Usage.
+#' @param cov See Usage.
+#' @param S See Usage.
+#' @param e See Usage.
+#' @return A numeric value.
+#' @export
 .gp_draw_mean <- function(mu, cov, S, e) {
   n <- length(mu)
   scaled <- cov / S
@@ -494,6 +632,28 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
   mu + L %*% z
 }
 
+#' .gp_mw_sampler
+#'
+#' Part of the abcgp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param sim See Usage.
+#' @param obs See Usage.
+#' @param log_prior See Usage.
+#' @param theta0 See Usage.
+#' @param n_iter See Usage.
+#' @param n_sim See Usage.
+#' @param epsilon See Usage.
+#' @param proposal_sd See Usage.
+#' @param summary See Usage.
+#' @param seed See Usage.
+#' @param adaptive See Usage.
+#' @param xi See Usage.
+#' @param delta_s See Usage.
+#' @param n_alpha See Usage.
+#' @param max_sim Defaults to \code{NULL}.
+#' @return A list with \code{chain}, \code{acceptance_rate}, \code{n_simulations}, \code{unresolved_steps}.
+#' @export
 .gp_mw_sampler <- function(sim, obs, log_prior, theta0, n_iter, n_sim,
                            epsilon, proposal_sd, summary, seed, adaptive,
                            xi, delta_s, n_alpha, max_sim = NULL) {

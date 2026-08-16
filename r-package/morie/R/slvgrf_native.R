@@ -21,8 +21,25 @@
 .slvgrf_EPS <- 1e-12
 .slvgrf_WEIGHTS <- c("qini", "autoc", "uniform")
 
+#' .slvgrf_vec
+#'
+#' Part of the slvgrf_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .slvgrf_vec <- function(x) as.numeric(as.matrix(x))
 
+#' .check
+#'
+#' Part of the slvgrf_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param scores See Usage.
+#' @param priority See Usage.
+#' @return A list with \code{g}, \code{s}.
+#' @export
 .check <- function(scores, priority) {
   g <- .slvgrf_vec(scores); s <- .slvgrf_vec(priority)
   if (length(g) != length(s)) {

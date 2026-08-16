@@ -51,6 +51,22 @@ morie_ingest_chicago_resources <- function() {
 }
 
 # Internal: a single Socrata SoQL GET against `resource_url`.
+#' Internal: a single Socrata SoQL GET against `resource_url`
+#'
+#' Part of the ingest_chicago implementation; see the file header for
+#' the source it follows.
+#'
+#' @param resource_url See Usage.
+#' @param where Defaults to \code{NULL}.
+#' @param select Defaults to \code{NULL}.
+#' @param order Defaults to \code{NULL}.
+#' @param limit Defaults to \code{.MORIE_CHICAGO_DEFAULT_PAGE_SIZE}.
+#' @param offset Defaults to \code{0L}.
+#' @param app_token Defaults to \code{NULL}.
+#' @param user_agent Defaults to \code{.MORIE_CHICAGO_DEFAULT_UA}.
+#' @param timeout Defaults to \code{.MORIE_CHICAGO_DEFAULT_TIMEOUT}.
+#' @return The value of \code{payload}, as built in the body.
+#' @export
 .morie_chicago_socrata_get <- function(resource_url,
                                        where = NULL,
                                        select = NULL,
@@ -119,6 +135,13 @@ morie_ingest_chicago_resources <- function() {
 
 # Internal: bind a list-of-row-lists to a data.frame, tolerating
 # heterogeneous JSON shapes (missing columns become NA).
+#' Internal: bind a list-of-row-lists to a data.frame, tolerating
+#'
+#' heterogeneous JSON shapes (missing columns become NA).
+#'
+#' @param rows See Usage.
+#' @return The value of \code{do.call}.
+#' @export
 .morie_chicago_rows_to_df <- function(rows) {
   if (length(rows) == 0L) {
     return(data.frame())

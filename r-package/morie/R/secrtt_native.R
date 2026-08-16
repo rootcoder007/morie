@@ -13,6 +13,14 @@
 # (cheap, zero record ciphertext touched) vs DEK rotation (one
 # record rewritten).
 
+#' .secrtt_as_bytes
+#'
+#' Part of the secrtt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 .secrtt_as_bytes <- function(x) {
   if (is.raw(x)) return(x)
   if (is.character(x)) return(charToRaw(paste(x, collapse = "")))

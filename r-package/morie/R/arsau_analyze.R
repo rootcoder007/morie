@@ -84,6 +84,15 @@ NULL
 # Internal: locate a (possibly whitespace-corrupted) outcome column
 # ---------------------------------------------------------------------------
 
+#' .morie_arsau_locate_outcome_col
+#'
+#' Part of the arsau_analyze implementation; see the file header for the
+#' source it follows.
+#'
+#' @param df See Usage.
+#' @param target See Usage.
+#' @return The value of \code{[}.
+#' @export
 .morie_arsau_locate_outcome_col <- function(df, target) {
   if (target %in% names(df)) return(target)
   trimmed <- tolower(trimws(names(df)))
@@ -100,6 +109,23 @@ NULL
 # the top so they appear in the wrapped result's printed banner.
 # ---------------------------------------------------------------------------
 
+#' .morie_arsau_wrap
+#'
+#' Part of the arsau_analyze implementation; see the file header for the
+#' source it follows.
+#'
+#' @param title See Usage.
+#' @param call See Usage.
+#' @param sub_results See Usage.
+#' @param data See Usage.
+#' @param sidecar See Usage.
+#' @param year_or_range See Usage.
+#' @param kind See Usage.
+#' @param language See Usage.
+#' @param is_valid See Usage.
+#' @param extra_interpretation Defaults to \code{""}.
+#' @return The value of \code{payload}, as built in the body.
+#' @export
 .morie_arsau_wrap <- function(title, call, sub_results, data, sidecar,
                               year_or_range, kind, language, is_valid,
                               extra_interpretation = "") {

@@ -44,6 +44,13 @@ MORIE_FAIRNESS_CANONICAL_FIELDS <- c(
 .morie_fairness_registry <- new.env(parent = emptyenv())
 
 
+#' .morie_fairness_init_registry
+#'
+#' Part of the fairness_cityprofile implementation; see the file header
+#' for the source it follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_fairness_init_registry <- function() {
   if (!exists("generic", envir = .morie_fairness_registry, inherits = FALSE)) {
     assign("generic",

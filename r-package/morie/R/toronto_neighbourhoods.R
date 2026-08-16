@@ -53,6 +53,14 @@
 NULL
 
 # Map a "version" string to the bundled fixture filename.
+#' Map a "version" string to the bundled fixture filename
+#'
+#' Part of the toronto_neighbourhoods implementation; see the file
+#' header for the source it follows.
+#'
+#' @param version See Usage.
+#' @return The value of \code{switch}.
+#' @export
 .morie_to_fixture_name <- function(version) {
   switch(version,
     "158" = "to_neighbourhoods_158.csv",
@@ -62,6 +70,14 @@ NULL
 }
 
 # Read a bundled neighbourhood fixture from inst/extdata.
+#' Read a bundled neighbourhood fixture from inst/extdata
+#'
+#' Part of the toronto_neighbourhoods implementation; see the file
+#' header for the source it follows.
+#'
+#' @param version See Usage.
+#' @return The value of \code{utils::read.csv}.
+#' @export
 .morie_to_neighbourhoods_fixture <- function(version) {
   fname <- .morie_to_fixture_name(version)
   path <- system.file("extdata", fname, package = "morie")
@@ -79,6 +95,14 @@ NULL
 
 # Internal: live CKAN datastore_search fetcher. Mockable via
 # testthat::local_mocked_bindings(.morie_to_ckan_dump_csv = ...).
+#' Internal: live CKAN datastore_search fetcher. Mockable via
+#'
+#' testthat::local_mocked_bindings(.morie_to_ckan_dump_csv = ...).
+#'
+#' @param resource_id See Usage.
+#' @param limit Defaults to \code{100000L}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_to_ckan_dump_csv <- function(resource_id, limit = 100000L) {
   if (!requireNamespace("httr2", quietly = TRUE) ||
       !requireNamespace("jsonlite", quietly = TRUE)) {
@@ -304,6 +328,14 @@ morie_to_hood_crosswalk <- function() {
 # Backwards-compatibility: the original equivalency joiners (added in
 # the same phase) read `area_overlap_pct`; remap to the new
 # `pct_140_in_158` so they keep working.
+#' Backwards-compatibility: the original equivalency joiners (added in
+#'
+#' the same phase) read `area_overlap_pct`; remap to the new
+#' `pct_140_in_158` so they keep working.
+#'
+#' @param cw See Usage.
+#' @return The value of \code{cw}, as built in the body.
+#' @export
 .morie_to_legacy_overlap_col <- function(cw) {
   if (!"area_overlap_pct" %in% names(cw)) {
     cw$area_overlap_pct <- cw$pct_140_in_158
@@ -313,6 +345,13 @@ morie_to_hood_crosswalk <- function() {
 
 # Normalise a hood-code value to the 3-char zero-padded canonical form
 # the crosswalk uses ("82" -> "082"; "0082" -> "082"; "Niagara" -> NA).
+#' Normalise a hood-code value to the 3-char zero-padded canonical form
+#'
+#' the crosswalk uses ("82" -> "082"; "0082" -> "082"; "Niagara" -> NA).
+#'
+#' @param x See Usage.
+#' @return The value of \code{ifelse}.
+#' @export
 .morie_to_normalise_hood_code <- function(x) {
   s <- trimws(as.character(x))
   i <- suppressWarnings(as.integer(s))

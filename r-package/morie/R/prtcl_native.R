@@ -66,6 +66,14 @@ systematic_resample <- function(weights, u = NULL) {
 }
 
 # Internal multinomial resampler used when systematic=FALSE
+#' Internal multinomial resampler used when systematic=FALSE
+#'
+#' Part of the prtcl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param weights See Usage.
+#' @return The value of \code{idx}, as built in the body.
+#' @export
 .multinomial_resample <- function(weights) {
   J <- length(weights)
   w <- as.numeric(weights) / sum(weights)
@@ -84,6 +92,14 @@ systematic_resample <- function(weights, u = NULL) {
   idx
 }
 
+#' .scalar
+#'
+#' Part of the prtcl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param state See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .scalar <- function(state) {
   if (is.list(state)) return(as.numeric(state[[1L]]))
   as.numeric(state)

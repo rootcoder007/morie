@@ -19,20 +19,56 @@
 .TMLDTA_METHODS <- c("cv-tmle", "sample-split", "naive")
 .tmldta_EPS <- 1e-9
 
+#' .tmldta_logit
+#'
+#' Part of the tmldta_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @return A numeric value.
+#' @export
 .tmldta_logit <- function(p) {
   q <- min(max(as.numeric(p), .tmldta_EPS), 1 - .tmldta_EPS)
   log(q / (1 - q))
 }
 
+#' .tmldta_expit
+#'
+#' Part of the tmldta_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .tmldta_expit <- function(x) {
   if (x > -700) 1 / (1 + exp(-x)) else 0
 }
 
+#' .tmldta_qnorm
+#'
+#' Part of the tmldta_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @return The value of \code{qnorm}.
+#' @export
 .tmldta_qnorm <- function(p) {
   qnorm(p, 0, 1)
 }
 
 # Logistic IRLS that returns a coefficient vector for a 0/1 outcome.
+#' Logistic IRLS that returns a coefficient vector for a 0/1 outcome
+#'
+#' Part of the tmldta_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param Z See Usage.
+#' @param a See Usage.
+#' @param ridge Defaults to \code{1e-08}.
+#' @param max_iter Defaults to \code{50L}.
+#' @param tol Defaults to \code{1e-10}.
+#' @return The value of \code{b}, as built in the body.
+#' @export
 .tmldta_logit_irls <- function(Z, a, ridge = 1e-8, max_iter = 50L,
                         tol = 1e-10) {
   n <- length(a)
@@ -61,6 +97,19 @@
 }
 
 # Q surface for the data-adaptive target parameter.
+#' Q surface for the data-adaptive target parameter
+#'
+#' Part of the tmldta_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ys See Usage.
+#' @param A_ See Usage.
+#' @param W See Usage.
+#' @param levels See Usage.
+#' @param rows See Usage.
+#' @param ridge See Usage.
+#' @return A list with \code{q}, \code{b}.
+#' @export
 .fit_q_dta <- function(ys, A_, W, levels, rows, ridge) {
   ref <- levels[1]
   others <- levels[-1]
@@ -91,6 +140,20 @@
 }
 
 # Three-category treatment propensity, normalised.
+#' Three-category treatment propensity, normalised
+#'
+#' Part of the tmldta_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param A_ See Usage.
+#' @param W See Usage.
+#' @param aL See Usage.
+#' @param aH See Usage.
+#' @param rows See Usage.
+#' @param ridge See Usage.
+#' @param trim See Usage.
+#' @return A list with \code{gH}, \code{gL}.
+#' @export
 .fit_g_dta <- function(A_, W, aL, aH, rows, ridge, trim) {
   n <- length(A_)
   if (is.matrix(W)) {
@@ -119,6 +182,20 @@
 }
 
 # Discover the data-adaptive levels (argmin and argmax of mean Q).
+#' Discover the data-adaptive levels (argmin and argmax of mean Q)
+#'
+#' Part of the tmldta_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ys See Usage.
+#' @param A_ See Usage.
+#' @param W See Usage.
+#' @param levels See Usage.
+#' @param rows See Usage.
+#' @param eval_rows See Usage.
+#' @param ridge See Usage.
+#' @return A list with \code{aL}, \code{aH}, \code{info}.
+#' @export
 .discover_levels <- function(ys, A_, W, levels, rows, eval_rows, ridge) {
   fit <- .fit_q_dta(ys, A_, W, levels, rows, ridge)
   means <- sapply(levels, function(a)
@@ -131,6 +208,24 @@
 }
 
 # Solve the per-split TMLE at fixed levels.
+#' Solve the per-split TMLE at fixed levels
+#'
+#' Part of the tmldta_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ys See Usage.
+#' @param A_ See Usage.
+#' @param W See Usage.
+#' @param levels See Usage.
+#' @param aL See Usage.
+#' @param aH See Usage.
+#' @param fit_rows See Usage.
+#' @param est_rows See Usage.
+#' @param ridge See Usage.
+#' @param trim See Usage.
+#' @param target See Usage.
+#' @return A list with \code{psi}, \code{D}, \code{info}.
+#' @export
 .split_specific_tmle <- function(ys, A_, W, levels, aL, aH,
                                   fit_rows, est_rows, ridge, trim,
                                   target) {
@@ -177,6 +272,15 @@
                                            numeric(1)))))
 }
 
+#' .folds_dta
+#'
+#' Part of the tmldta_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n See Usage.
+#' @param n_folds See Usage.
+#' @return The value of \code{lapply}.
+#' @export
 .folds_dta <- function(n, n_folds) {
   V <- max(2, min(as.integer(n_folds), n))
   lapply(seq_len(V), function(v)

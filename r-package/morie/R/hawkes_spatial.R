@@ -23,6 +23,14 @@
 #'   83(401), 9--27. \doi{10.1080/01621459.1988.10478560}
 NULL
 
+#' .hst_check_params
+#'
+#' Part of the hawkes_spatial implementation; see the file header for
+#' the source it follows.
+#'
+#' @param p See Usage.
+#' @return Invisibly,the value of \code{p}, as built in the body.
+#' @export
 .hst_check_params <- function(p) {
   need <- c("mu", "alpha", "beta", "sigma")
   if (!all(need %in% names(p))) {
@@ -35,6 +43,15 @@ NULL
 }
 
 # Gaussian spatial density evaluated at squared distances.
+#' Gaussian spatial density evaluated at squared distances
+#'
+#' Part of the hawkes_spatial implementation; see the file header for
+#' the source it follows.
+#'
+#' @param d2 See Usage.
+#' @param sigma See Usage.
+#' @return A numeric value.
+#' @export
 .hst_spatial <- function(d2, sigma) {
   exp(-d2 / (2 * sigma^2)) / (2 * pi * sigma^2)
 }

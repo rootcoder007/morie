@@ -256,6 +256,13 @@ morie_painn_equivariance_error <- function(model, s, v, R, Q, tol = 1e-9) {
                     sep = ""))
 }
 
+#' .painn_cheatsheet
+#'
+#' Part of the painn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .painn_cheatsheet <- function() {
   paste("painn: message passing was LESS DATA EFFICIENT than ",
         "kernel methods, and the diagnosis is INVARIANT ",

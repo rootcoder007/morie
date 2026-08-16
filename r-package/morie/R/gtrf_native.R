@@ -182,6 +182,15 @@ morie_gtrf_layer <- function(H, adj, WQ, WK, WV, W1, W2,
   .gtrf_normalize(out, norm)
 }
 
+#' .gtrf_normalize
+#'
+#' Part of the gtrf_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param how See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .gtrf_normalize <- function(X, how) {
   if (how == "none") return(X)
   n <- nrow(X); d <- ncol(X)

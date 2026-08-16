@@ -78,6 +78,13 @@ morie_cor_pearson <- function(x, y) {
 }
 
 # Internal: detect whether the Rcpp .so was successfully built.
+#' Internal: detect whether the Rcpp .so was successfully built
+#'
+#' Part of the fast implementation; see the file header for the source
+#' it follows.
+#'
+#' @return The value of \code{tryCatch}.
+#' @export
 .cpp_available <- function() {
   tryCatch(
     {

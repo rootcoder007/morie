@@ -28,6 +28,24 @@
 
 # ---- Result container constructors ----------------------------------------
 
+#' .new_bootstrap_result
+#'
+#' Part of the bootstrap_methods implementation; see the file header for
+#' the source it follows.
+#'
+#' @param estimate See Usage.
+#' @param se See Usage.
+#' @param ci_lower See Usage.
+#' @param ci_upper See Usage.
+#' @param bias See Usage.
+#' @param n_boot See Usage.
+#' @param method See Usage.
+#' @param ci_method See Usage.
+#' @param boot_distribution See Usage.
+#' @param original_estimate See Usage.
+#' @param acceleration Defaults to \code{0}.
+#' @return The value of \code{structure}.
+#' @export
 .new_bootstrap_result <- function(estimate, se, ci_lower, ci_upper, bias,
                                   n_boot, method, ci_method,
                                   boot_distribution, original_estimate,
@@ -43,6 +61,22 @@
   )
 }
 
+#' .new_jackknife_result
+#'
+#' Part of the bootstrap_methods implementation; see the file header for
+#' the source it follows.
+#'
+#' @param estimate See Usage.
+#' @param se See Usage.
+#' @param ci_lower See Usage.
+#' @param ci_upper See Usage.
+#' @param bias See Usage.
+#' @param n See Usage.
+#' @param jackknife_estimates See Usage.
+#' @param pseudovalues See Usage.
+#' @param influence_values See Usage.
+#' @return The value of \code{structure}.
+#' @export
 .new_jackknife_result <- function(estimate, se, ci_lower, ci_upper, bias,
                                   n, jackknife_estimates, pseudovalues,
                                   influence_values) {
@@ -56,6 +90,20 @@
   )
 }
 
+#' .new_permutation_test_result
+#'
+#' Part of the bootstrap_methods implementation; see the file header for
+#' the source it follows.
+#'
+#' @param observed_statistic See Usage.
+#' @param p_value See Usage.
+#' @param null_distribution See Usage.
+#' @param n_permutations See Usage.
+#' @param alternative See Usage.
+#' @param ci_lower Defaults to \code{NA_real_}.
+#' @param ci_upper Defaults to \code{NA_real_}.
+#' @return The value of \code{structure}.
+#' @export
 .new_permutation_test_result <- function(observed_statistic, p_value,
                                          null_distribution, n_permutations,
                                          alternative,
@@ -71,6 +119,21 @@
   )
 }
 
+#' .new_cv_result
+#'
+#' Part of the bootstrap_methods implementation; see the file header for
+#' the source it follows.
+#'
+#' @param scores See Usage.
+#' @param mean_score See Usage.
+#' @param se_score See Usage.
+#' @param ci_lower See Usage.
+#' @param ci_upper See Usage.
+#' @param n_folds See Usage.
+#' @param metric See Usage.
+#' @param fold_sizes See Usage.
+#' @return The value of \code{structure}.
+#' @export
 .new_cv_result <- function(scores, mean_score, se_score, ci_lower, ci_upper,
                            n_folds, metric, fold_sizes) {
   structure(
@@ -82,15 +145,41 @@
 }
 
 # Helper: percentile-of-vector (matches numpy.percentile linear interp).
+#' Helper: percentile-of-vector (matches numpy.percentile linear interp)
+#'
+#' Part of the bootstrap_methods implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param p See Usage.
+#' @return The value of \code{unname}.
+#' @export
 .pct <- function(x, p) unname(stats::quantile(x, probs = p / 100,
                                               names = FALSE, type = 7))
 
 # Helper: subset rows of a vector or matrix.
+#' Helper: subset rows of a vector or matrix
+#'
+#' Part of the bootstrap_methods implementation; see the file header for
+#' the source it follows.
+#'
+#' @param data See Usage.
+#' @param idx See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .idx <- function(data, idx) {
   if (is.matrix(data) || is.data.frame(data)) data[idx, , drop = FALSE]
   else data[idx]
 }
 
+#' .nrow_like
+#'
+#' Part of the bootstrap_methods implementation; see the file header for
+#' the source it follows.
+#'
+#' @param data See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .nrow_like <- function(data) {
   if (is.matrix(data) || is.data.frame(data)) nrow(data) else length(data)
 }
@@ -206,6 +295,18 @@ bootstrap <- function(data, statistic, n_boot = 2000L, ci_level = 0.95,
 }
 
 # BCa (bias-corrected and accelerated) percentile interval.
+#' BCa (bias-corrected and accelerated) percentile interval
+#'
+#' Part of the bootstrap_methods implementation; see the file header for
+#' the source it follows.
+#'
+#' @param data See Usage.
+#' @param statistic See Usage.
+#' @param boot_stats See Usage.
+#' @param original See Usage.
+#' @param ci_level See Usage.
+#' @return A list with \code{ci_lo}, \code{ci_hi}, \code{acc}.
+#' @export
 .bca_interval <- function(data, statistic, boot_stats, original, ci_level) {
   n <- .nrow_like(data)
   alpha <- 1 - ci_level

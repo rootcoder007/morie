@@ -36,6 +36,20 @@
 # 3YY: collapsed .morie_ckan_build_req + _call into a single
 # function that routes through .morie_dataset_http_text (libcurl
 # with httr2 fallback) + .morie_from_json(simplifyVector=FALSE).
+#' Internal: perform a CKAN Action-API call and unwrap `result`
+#'
+#' 3YY: collapsed .morie_ckan_build_req + _call into a single function
+#' that routes through .morie_dataset_http_text (libcurl with httr2
+#' fallback) + .morie_from_json(simplifyVector=FALSE).
+#'
+#' @param portal See Usage.
+#' @param action See Usage.
+#' @param params Defaults to \code{NULL}.
+#' @param api_key Defaults to \code{NULL}.
+#' @param user_agent Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.
+#' @param timeout Defaults to \code{.MORIE_CKAN_DEFAULT_TIMEOUT}.
+#' @return The value of \code{$}.
+#' @export
 .morie_ckan_call <- function(portal,
                              action,
                              params = NULL,
@@ -81,6 +95,15 @@
 }
 
 # Internal: sniff a resource format from URL extension when unset.
+#' Internal: sniff a resource format from URL extension when unset
+#'
+#' Part of the ingest_ckan implementation; see the file header for the
+#' source it follows.
+#'
+#' @param url See Usage.
+#' @param as_format Defaults to \code{NULL}.
+#' @return The value of \code{tolower}.
+#' @export
 .morie_ckan_sniff_format <- function(url, as_format = NULL) {
   if (!is.null(as_format) && nzchar(as_format)) {
     return(tolower(as_format))
@@ -93,6 +116,15 @@
 }
 
 # Internal: read a downloaded resource path into a data.frame by format.
+#' Internal: read a downloaded resource path into a data.frame by format
+#'
+#' Part of the ingest_ckan implementation; see the file header for the
+#' source it follows.
+#'
+#' @param path See Usage.
+#' @param fmt See Usage.
+#' @return The value of \code{utils::read.csv}.
+#' @export
 .morie_ckan_read_path <- function(path, fmt) {
   fmt <- tolower(fmt)
   if (fmt %in% c("csv")) {

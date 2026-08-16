@@ -19,6 +19,15 @@
 # This helper draws every column name + every categorical level from
 # the authoritative dictionary.
 
+#' .morie_otis_a01_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_a01_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -36,6 +45,15 @@
   )
 }
 
+#' .morie_otis_b01_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_b01_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -61,6 +79,15 @@
   )
 }
 
+#' .morie_otis_b02_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_b02_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -74,6 +101,15 @@
   )
 }
 
+#' .morie_otis_b03_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_b03_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -87,6 +123,15 @@
   )
 }
 
+#' .morie_otis_b04_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_b04_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -99,6 +144,15 @@
   )
 }
 
+#' .morie_otis_b05_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_b05_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -109,6 +163,15 @@
   )
 }
 
+#' .morie_otis_b06_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_b06_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -122,6 +185,15 @@
   )
 }
 
+#' .morie_otis_b07_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_b07_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -134,6 +206,15 @@
   )
 }
 
+#' .morie_otis_b08_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_b08_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -147,6 +228,15 @@
   )
 }
 
+#' .morie_otis_b09_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_b09_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -158,6 +248,15 @@
   )
 }
 
+#' .morie_otis_c01_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_c01_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -170,6 +269,15 @@
   )
 }
 
+#' .morie_otis_c02_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_c02_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -183,6 +291,15 @@
   )
 }
 
+#' .morie_otis_c03_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_c03_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -196,6 +313,15 @@
   )
 }
 
+#' .morie_otis_c04_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_c04_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -208,6 +334,15 @@
   )
 }
 
+#' .morie_otis_c05_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_c05_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -220,6 +355,15 @@
   )
 }
 
+#' .morie_otis_c06_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_c06_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -232,6 +376,15 @@
   )
 }
 
+#' .morie_otis_c07_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_c07_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -245,6 +398,15 @@
   )
 }
 
+#' .morie_otis_c08_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_c08_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -258,6 +420,15 @@
   )
 }
 
+#' .morie_otis_c09_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_c09_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -271,6 +442,15 @@
   )
 }
 
+#' .morie_otis_c10_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_c10_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -285,6 +465,15 @@
   )
 }
 
+#' .morie_otis_c11_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_c11_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -296,6 +485,15 @@
   )
 }
 
+#' .morie_otis_c12_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_c12_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -309,6 +507,15 @@
   )
 }
 
+#' .morie_otis_d01_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_d01_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -322,6 +529,15 @@
   )
 }
 
+#' .morie_otis_d02_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_d02_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -332,6 +548,15 @@
   )
 }
 
+#' .morie_otis_d03_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_d03_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -342,6 +567,15 @@
   )
 }
 
+#' .morie_otis_d04_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_d04_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -352,6 +586,15 @@
   )
 }
 
+#' .morie_otis_d05_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_d05_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -362,6 +605,15 @@
   )
 }
 
+#' .morie_otis_d06_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_d06_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -373,6 +625,15 @@
   )
 }
 
+#' .morie_otis_d07_panel
+#'
+#' Part of the synth_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n Defaults to \code{200L}.
+#' @param seed Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
 .morie_otis_d07_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(

@@ -36,6 +36,19 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+#' .tps_adv_result
+#'
+#' Part of the tps_spatial_advanced implementation; see the file header
+#' for the source it follows.
+#'
+#' @param title See Usage.
+#' @param call See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param interpretation Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .tps_adv_result <- function(title, call,
                              summary_lines = list(),
                              warnings = character(0),
@@ -55,6 +68,16 @@ NULL
 }
 
 
+#' .tps_coords
+#'
+#' Part of the tps_spatial_advanced implementation; see the file header
+#' for the source it follows.
+#'
+#' @param df See Usage.
+#' @param lat_col See Usage.
+#' @param lon_col See Usage.
+#' @return A matrix, from \code{as.matrix}.
+#' @export
 .tps_coords <- function(df, lat_col, lon_col) {
   if (!all(c(lat_col, lon_col) %in% names(df))) {
     return(matrix(numeric(0), 0L, 2L))
@@ -66,6 +89,17 @@ NULL
 }
 
 
+#' .tps_haversine_km
+#'
+#' Part of the tps_spatial_advanced implementation; see the file header
+#' for the source it follows.
+#'
+#' @param lat1 See Usage.
+#' @param lon1 See Usage.
+#' @param lat2 See Usage.
+#' @param lon2 See Usage.
+#' @return A numeric value.
+#' @export
 .tps_haversine_km <- function(lat1, lon1, lat2, lon2) {
   Rk <- 6371
   rad <- pi / 180
@@ -76,6 +110,15 @@ NULL
 }
 
 
+#' .tps_knn_idx
+#'
+#' Part of the tps_spatial_advanced implementation; see the file header
+#' for the source it follows.
+#'
+#' @param coords See Usage.
+#' @param k See Usage.
+#' @return The value of \code{idx}, as built in the body.
+#' @export
 .tps_knn_idx <- function(coords, k) {
   n <- nrow(coords)
   k <- min(as.integer(k), n - 1L)
@@ -509,6 +552,15 @@ morie_tps_dbscan_clusters <- function(df,
 # 4. Polygon-based Moran's I
 # ---------------------------------------------------------------------------
 
+#' `polygons` is an sf object with a geometry column. Use sf if
+#' available
+#'
+#' Part of the tps_spatial_advanced implementation; see the file header
+#' for the source it follows.
+#'
+#' @param polygons See Usage.
+#' @return Nothing; the function is called for its effect.
+#' @export
 .tps_polygon_centroids <- function(polygons) {
   # `polygons` is an sf object with a geometry column. Use sf if available
   if (requireNamespace("sf", quietly = TRUE) && inherits(polygons, "sf")) {

@@ -4,6 +4,16 @@
 # Lifted from the extvm() optimiser closure so the xi ~ 0 (Gumbel) and
 # out-of-support branches are directly unit-testable; the BFGS search in
 # extvm() is not guaranteed to probe xi within 1e-8 of zero.
+#' Internal: GEV per-observation log-density (Coles xi convention)
+#'
+#' Lifted from the extvm() optimiser closure so the xi ~ 0 (Gumbel) and
+#' out-of-support branches are directly unit-testable; the BFGS search
+#' in extvm() is not guaranteed to probe xi within 1e-8 of zero.
+#'
+#' @param par See Usage.
+#' @param x See Usage.
+#' @return The value of \code{ll}, as built in the body.
+#' @export
 .extvm_log_gev <- function(par, x) {
   mu <- par[1]
   sigma <- exp(par[2])

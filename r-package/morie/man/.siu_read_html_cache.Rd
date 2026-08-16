@@ -1,0 +1,20 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{.siu_read_html_cache}
+\alias{.siu_read_html_cache}
+\title{Internal: read a gzipped cached HTML page if it exists, else ""}
+\usage{
+.siu_read_html_cache(html_dir, name)
+}
+\arguments{
+\item{html_dir}{See Usage.}
+\item{name}{See Usage.}
+}
+\description{
+Part of the siu implementation; see the file header for the source it follows.
+}
+\value{
+The value of \code{rawToChar}.
+}
+\keyword{internal}

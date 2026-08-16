@@ -6,6 +6,14 @@
 #' @name llm_arch_helpers
 NULL
 
+#' Softmax along the last axis of an array
+#'
+#' Part of the helpers_llm_arch implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{aperm}.
+#' @export
 .softmax_last <- function(x) {
   # softmax along the last axis of an array
   d <- dim(x)

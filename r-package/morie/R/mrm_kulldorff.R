@@ -28,6 +28,17 @@
 NULL
 
 
+#' .haversine_km_mat
+#'
+#' Part of the mrm_kulldorff implementation; see the file header for the
+#' source it follows.
+#'
+#' @param lat1 See Usage.
+#' @param lon1 See Usage.
+#' @param lat2 See Usage.
+#' @param lon2 See Usage.
+#' @return A numeric value.
+#' @export
 .haversine_km_mat <- function(lat1, lon1, lat2, lon2) {
   R <- 6371
   rad <- pi / 180
@@ -38,6 +49,17 @@ NULL
 }
 
 
+#' .poisson_lrt
+#'
+#' Part of the mrm_kulldorff implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n_obs See Usage.
+#' @param n_in See Usage.
+#' @param n_exp See Usage.
+#' @param n_tot See Usage.
+#' @return A numeric value.
+#' @export
 .poisson_lrt <- function(n_obs, n_in, n_exp, n_tot) {
   if (n_in == 0 || n_obs == 0 || n_obs <= n_exp) {
     return(0.0)

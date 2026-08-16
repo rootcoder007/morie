@@ -71,6 +71,18 @@ NULL
 # Internal helpers (NOT exported)
 # ---------------------------------------------------------------------------
 
+#' .tps_sp_result
+#'
+#' Part of the tps_statphysics implementation; see the file header for
+#' the source it follows.
+#'
+#' @param title See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param interpretation Defaults to \code{""}.
+#' @param payload Defaults to \code{list()}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .tps_sp_result <- function(title, summary_lines = list(),
                             warnings = character(0),
                             interpretation = "",
@@ -87,6 +99,15 @@ NULL
   out
 }
 
+#' .tps_sp_round
+#'
+#' Part of the tps_statphysics implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param k Defaults to \code{3L}.
+#' @return A numeric value.
+#' @export
 .tps_sp_round <- function(x, k = 3L) {
   if (!is.finite(x)) return(NA_real_)
   round(x, k)
@@ -96,6 +117,18 @@ NULL
 # port delegates to morie.tps_render.project_xy; in R we approximate
 # with a midpoint cos-lat factor so this module does not hard-depend on
 # the renderer port.
+#' Cosine-corrected planar projection on the Toronto bbox. The Python
+#'
+#' port delegates to morie.tps_render.project_xy; in R we approximate
+#' with a midpoint cos-lat factor so this module does not hard-depend on
+#' the renderer port.
+#'
+#' @param lat See Usage.
+#' @param lon See Usage.
+#' @param lat_ref Defaults to \code{(43.55 + 43.9)/2}.
+#' @param lon_ref Defaults to \code{(-79.65 + -79.1)/2}.
+#' @return A list with \code{x}, \code{y}.
+#' @export
 .tps_sp_project_xy <- function(lat, lon,
                                  lat_ref = (43.55 + 43.90) / 2,
                                  lon_ref = (-79.65 + -79.10) / 2) {
@@ -107,6 +140,15 @@ NULL
   )
 }
 
+#' .tps_sp_toronto_grid
+#'
+#' Part of the tps_statphysics implementation; see the file header for
+#' the source it follows.
+#'
+#' @param nx Defaults to \code{90L}.
+#' @param ny Defaults to \code{60L}.
+#' @return A list with \code{gx}, \code{gy}.
+#' @export
 .tps_sp_toronto_grid <- function(nx = 90L, ny = 60L) {
   prj <- .tps_sp_project_xy(c(43.55, 43.90), c(-79.65, -79.10))
   gx <- seq(min(prj$x) - 1, max(prj$x) + 1, length.out = nx)
@@ -115,6 +157,16 @@ NULL
 }
 
 # Periodic-shift roll equivalent to NumPy np.roll along one axis.
+#' Periodic-shift roll equivalent to NumPy np.roll along one axis
+#'
+#' Part of the tps_statphysics implementation; see the file header for
+#' the source it follows.
+#'
+#' @param M See Usage.
+#' @param shift See Usage.
+#' @param axis See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .tps_sp_roll <- function(M, shift, axis) {
   d <- dim(M)
   if (axis == 1L) {
@@ -127,6 +179,16 @@ NULL
 }
 
 # Periodic 5-point Laplacian.
+#' Periodic 5-point Laplacian
+#'
+#' Part of the tps_statphysics implementation; see the file header for
+#' the source it follows.
+#'
+#' @param F_ See Usage.
+#' @param dx See Usage.
+#' @param dy See Usage.
+#' @return A numeric value.
+#' @export
 .tps_sp_lap <- function(F_, dx, dy) {
   (.tps_sp_roll(F_,  1L, 1L) + .tps_sp_roll(F_, -1L, 1L) +
    .tps_sp_roll(F_,  1L, 2L) + .tps_sp_roll(F_, -1L, 2L) -
@@ -134,6 +196,16 @@ NULL
 }
 
 # Central-difference gradient with periodic wrap (gx, gy).
+#' Central-difference gradient with periodic wrap (gx, gy)
+#'
+#' Part of the tps_statphysics implementation; see the file header for
+#' the source it follows.
+#'
+#' @param F_ See Usage.
+#' @param dx See Usage.
+#' @param dy See Usage.
+#' @return A list with \code{gx}, \code{gy}.
+#' @export
 .tps_sp_grad <- function(F_, dx, dy) {
   list(
     gx = (.tps_sp_roll(F_, -1L, 2L) - .tps_sp_roll(F_, 1L, 2L)) / (2 * dx),
@@ -142,6 +214,14 @@ NULL
 }
 
 # Pointwise 3x3 local-maximum filter.
+#' Pointwise 3x3 local-maximum filter
+#'
+#' Part of the tps_statphysics implementation; see the file header for
+#' the source it follows.
+#'
+#' @param F_ See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .tps_sp_local_max3x3 <- function(F_) {
   out <- F_
   for (di in c(-1L, 0L, 1L)) {
@@ -154,6 +234,17 @@ NULL
 }
 
 # 2-D histogram on prescribed bin edges (rows = y, cols = x).
+#' 2-D histogram on prescribed bin edges (rows = y, cols = x)
+#'
+#' Part of the tps_statphysics implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param y See Usage.
+#' @param gx See Usage.
+#' @param gy See Usage.
+#' @return The value of \code{H}, as built in the body.
+#' @export
 .tps_sp_hist2d <- function(x, y, gx, gy) {
   ix <- findInterval(x, gx, rightmost.closed = TRUE)
   iy <- findInterval(y, gy, rightmost.closed = TRUE)
@@ -175,6 +266,19 @@ NULL
 # Write one PNG under the caller-supplied fig_dir and return its path
 # for the result's Figure line; with fig_dir = NULL nothing is written
 # and the returned note says exactly that (no silent claims).
+#' Write one PNG under the caller-supplied fig_dir and return its path
+#'
+#' for the result\'s Figure line; with fig_dir = NULL nothing is written
+#' and the returned note says exactly that (no silent claims).
+#'
+#' @param fig_dir See Usage.
+#' @param name See Usage.
+#' @param draw See Usage.
+#' @param save_fig Defaults to \code{TRUE}.
+#' @param width Defaults to \code{1140}.
+#' @param height Defaults to \code{620}.
+#' @return The value of \code{path}, as built in the body.
+#' @export
 .tps_sp_fig <- function(fig_dir, name, draw, save_fig = TRUE,
                         width = 1140, height = 620) {
   if (!isTRUE(save_fig)) return("(skipped)")

@@ -14,6 +14,15 @@
 # --- internal helpers ------------------------------------------------------
 
 # Append a named list of query parameters to a URL, URL-encoding values.
+#' Append a named list of query parameters to a URL, URL-encoding values
+#'
+#' Part of the data_access implementation; see the file header for the
+#' source it follows.
+#'
+#' @param url See Usage.
+#' @param params Defaults to \code{NULL}.
+#' @return A character value.
+#' @export
 .morie_url_with_params <- function(url, params = NULL) {
   if (is.null(params) || length(params) == 0L) {
     return(url)
@@ -40,6 +49,14 @@
     "https://ckan0.cf.opendata.inter.prod-toronto.ca"
 )
 
+#' .morie_ckan_portal
+#'
+#' Part of the data_access implementation; see the file header for the
+#' source it follows.
+#'
+#' @param portal See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 .morie_ckan_portal <- function(portal) {
   if (grepl("^https?://", portal)) {
     return(sub("/+$", "", portal))
@@ -55,6 +72,14 @@
 }
 
 # Read text from a URL (used for JSON/XML/HTML API responses).
+#' Read text from a URL (used for JSON/XML/HTML API responses)
+#'
+#' Part of the data_access implementation; see the file header for the
+#' source it follows.
+#'
+#' @param url See Usage.
+#' @return A character value.
+#' @export
 .morie_read_text <- function(url) {
   con <- url(url)
   on.exit(close(con), add = TRUE)
@@ -62,6 +87,15 @@
 }
 
 # Download a URL to a temp file, returning the local path.
+#' Download a URL to a temp file, returning the local path
+#'
+#' Part of the data_access implementation; see the file header for the
+#' source it follows.
+#'
+#' @param url See Usage.
+#' @param ext Defaults to \code{""}.
+#' @return The value of \code{tmp}, as built in the body.
+#' @export
 .morie_download <- function(url, ext = "") {
   if (!nzchar(ext)) ext <- tools::file_ext(sub("\\?.*$", "", url))
   tmp <- tempfile(fileext = if (nzchar(ext)) paste0(".", ext) else "")
@@ -71,6 +105,14 @@
 
 # Detect the format of a URL from its HTTP Content-Type header, falling
 # back to the URL file extension. Returns one of the morie_fetch formats.
+#' Detect the format of a URL from its HTTP Content-Type header, falling
+#'
+#' back to the URL file extension. Returns one of the morie_fetch
+#' formats.
+#'
+#' @param url See Usage.
+#' @return The value of \code{switch}.
+#' @export
 .morie_detect_format <- function(url) {
   ct <- tryCatch(
     {
@@ -119,6 +161,17 @@
 }
 
 # Parse a downloaded local file according to a known format.
+#' Parse a downloaded local file according to a known format
+#'
+#' Part of the data_access implementation; see the file header for the
+#' source it follows.
+#'
+#' @param path See Usage.
+#' @param format See Usage.
+#' @param simplify See Usage.
+#' @param ... Passed through.
+#' @return Nothing; this branch always raises.
+#' @export
 .morie_parse_file <- function(path, format, simplify, ...) {
   if (format %in% c("xlsx")) {
     if (!requireNamespace("readxl", quietly = TRUE)) {
@@ -347,6 +400,14 @@ morie_ckan_search <- function(query, portal = "open.canada.ca",
 }
 
 # Small helper: first non-empty scalar, else "".
+#' Small helper: first non-empty scalar, else ""
+#'
+#' Part of the data_access implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ... Passed through.
+#' @return A character value.
+#' @export
 .nz <- function(...) {
   for (x in list(...)) {
     if (!is.null(x) && length(x) >= 1L && !is.na(x[[1L]]) &&

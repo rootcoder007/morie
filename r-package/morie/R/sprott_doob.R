@@ -46,6 +46,23 @@ NULL
 # the structure of morie.fn._richresult.RichResult so that downstream
 # `describe()` / `morie_print_rich()` consumers can render the same
 # multi-section paragraph layout from R.
+#' .morie_siu_rich
+#'
+#' RichResult-style constructor for the R side
+#' ---------------------------------------------------------------------------
+#' Returns a named list classed for morie\'s rich-output dispatch.
+#' Mirrors the structure of morie.fn._richresult.RichResult so that
+#' downstream `describe()` / `morie_print_rich()` consumers can render
+#' the same multi-section paragraph layout from R.
+#'
+#' @param title See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param tables Defaults to \code{list()}.
+#' @param interpretation Defaults to \code{""}.
+#' @param warnings Defaults to \code{character()}.
+#' @param payload Defaults to \code{list()}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .morie_siu_rich <- function(title, summary_lines = list(), tables = list(),
                             interpretation = "", warnings = character(),
                             payload = list()) {

@@ -31,6 +31,15 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 )
 
 
+#' .morie_tps_io_category_dir
+#'
+#' Part of the tps_io implementation; see the file header for the source
+#' it follows.
+#'
+#' @param name See Usage.
+#' @param fmt_subdir See Usage.
+#' @return The value of \code{file.path}.
+#' @export
 .morie_tps_io_category_dir <- function(name, fmt_subdir) {
   canonical <- .morie_tps_canonical(name)
   base <- morie_tps_data_dir()
@@ -38,6 +47,15 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 }
 
 
+#' .morie_tps_io_pick_one
+#'
+#' Part of the tps_io implementation; see the file header for the source
+#' it follows.
+#'
+#' @param d See Usage.
+#' @param exts See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 .morie_tps_io_pick_one <- function(d, exts) {
   if (!dir.exists(d)) {
     stop(sprintf("no matching file in %s (exts: %s)",
@@ -59,6 +77,15 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 }
 
 
+#' .morie_tps_apply_nrows
+#'
+#' Part of the tps_io implementation; see the file header for the source
+#' it follows.
+#'
+#' @param df See Usage.
+#' @param nrows See Usage.
+#' @return The value of \code{[}.
+#' @export
 .morie_tps_apply_nrows <- function(df, nrows) {
   if (is.null(nrows)) return(df)
   n <- min(nrow(df), as.integer(nrows))
@@ -69,6 +96,15 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 # ── CSV / Excel ───────────────────────────────────────────────────
 
 
+#' .morie_tps_read_csv
+#'
+#' Part of the tps_io implementation; see the file header for the source
+#' it follows.
+#'
+#' @param name See Usage.
+#' @param nrows See Usage.
+#' @return The value of \code{do.call}.
+#' @export
 .morie_tps_read_csv <- function(name, nrows) {
   p <- .morie_tps_io_pick_one(
     .morie_tps_io_category_dir(name, "CSV"), "csv")
@@ -79,6 +115,15 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 }
 
 
+#' .morie_tps_read_excel
+#'
+#' Part of the tps_io implementation; see the file header for the source
+#' it follows.
+#'
+#' @param name See Usage.
+#' @param nrows See Usage.
+#' @return The value of \code{df}, as built in the body.
+#' @export
 .morie_tps_read_excel <- function(name, nrows) {
   if (!requireNamespace("readxl", quietly = TRUE)) {
     stop(
@@ -104,6 +149,15 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 # ── GeoJSON / FeatureCollection ───────────────────────────────────
 
 
+#' .morie_tps_read_geojson
+#'
+#' Part of the tps_io implementation; see the file header for the source
+#' it follows.
+#'
+#' @param name See Usage.
+#' @param nrows See Usage.
+#' @return The value of \code{.morie_tps_apply_nrows}.
+#' @export
 .morie_tps_read_geojson <- function(name, nrows) {
   if (!requireNamespace("sf", quietly = TRUE)) {
     stop(
@@ -123,6 +177,14 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 }
 
 
+#' ESRI FeatureCollection exports are .txt with JSON inside;
+#'
+#' the sf GeoJSON driver handles them when given the right path.
+#'
+#' @param name See Usage.
+#' @param nrows See Usage.
+#' @return The value of \code{.morie_tps_apply_nrows}.
+#' @export
 .morie_tps_read_featurecollection <- function(name, nrows) {
   # ESRI FeatureCollection exports are .txt with JSON inside;
   # the sf GeoJSON driver handles them when given the right path.
@@ -153,6 +215,15 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 # ── KML / KMZ ─────────────────────────────────────────────────────
 
 
+#' .morie_tps_read_kml
+#'
+#' Part of the tps_io implementation; see the file header for the source
+#' it follows.
+#'
+#' @param name See Usage.
+#' @param nrows See Usage.
+#' @return The value of \code{.morie_tps_apply_nrows}.
+#' @export
 .morie_tps_read_kml <- function(name, nrows) {
   if (!requireNamespace("sf", quietly = TRUE)) {
     stop(
@@ -198,6 +269,15 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 # ── GeoPackage / SQLiteGeodatabase ────────────────────────────────
 
 
+#' .morie_tps_read_sf_path
+#'
+#' Part of the tps_io implementation; see the file header for the source
+#' it follows.
+#'
+#' @param p See Usage.
+#' @param nrows See Usage.
+#' @return The value of \code{.morie_tps_apply_nrows}.
+#' @export
 .morie_tps_read_sf_path <- function(p, nrows) {
   if (!requireNamespace("sf", quietly = TRUE)) {
     stop(
@@ -214,6 +294,15 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 }
 
 
+#' .morie_tps_read_geopackage
+#'
+#' Part of the tps_io implementation; see the file header for the source
+#' it follows.
+#'
+#' @param name See Usage.
+#' @param nrows See Usage.
+#' @return The value of \code{.morie_tps_read_sf_path}.
+#' @export
 .morie_tps_read_geopackage <- function(name, nrows) {
   p <- .morie_tps_io_pick_one(
     .morie_tps_io_category_dir(name, "GeoPackage"), "gpkg")
@@ -221,6 +310,15 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 }
 
 
+#' .morie_tps_read_sqlite_geodatabase
+#'
+#' Part of the tps_io implementation; see the file header for the source
+#' it follows.
+#'
+#' @param name See Usage.
+#' @param nrows See Usage.
+#' @return The value of \code{.morie_tps_read_sf_path}.
+#' @export
 .morie_tps_read_sqlite_geodatabase <- function(name, nrows) {
   p <- .morie_tps_io_pick_one(
     .morie_tps_io_category_dir(name, "SQLiteGeodatabase"),
@@ -232,6 +330,15 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 # ── Shapefile / FileGeoDatabase ───────────────────────────────────
 
 
+#' .morie_tps_read_shapefile
+#'
+#' Part of the tps_io implementation; see the file header for the source
+#' it follows.
+#'
+#' @param name See Usage.
+#' @param nrows See Usage.
+#' @return The value of \code{.morie_tps_read_sf_path}.
+#' @export
 .morie_tps_read_shapefile <- function(name, nrows) {
   if (!requireNamespace("sf", quietly = TRUE)) {
     stop(
@@ -266,6 +373,15 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 }
 
 
+#' GDAL OpenFileGDB driver via sf::st_read works on the directory
+#'
+#' Part of the tps_io implementation; see the file header for the source
+#' it follows.
+#'
+#' @param name See Usage.
+#' @param nrows See Usage.
+#' @return The value of \code{.morie_tps_read_sf_path}.
+#' @export
 .morie_tps_read_filegeodatabase <- function(name, nrows) {
   # GDAL OpenFileGDB driver via sf::st_read works on the directory.
   if (!requireNamespace("sf", quietly = TRUE)) {

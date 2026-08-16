@@ -33,6 +33,19 @@ NULL
 # Internal helper (shared wrapper for MRM primitives)
 # ---------------------------------------------------------------------------
 
+#' .mrm_result
+#'
+#' Part of the mrm_primitives_gentrification implementation; see the
+#' file header for the source it follows.
+#'
+#' @param title See Usage.
+#' @param call See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param interpretation Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .mrm_result <- function(title, call, summary_lines = list(),
                         warnings = character(0),
                         interpretation = "",

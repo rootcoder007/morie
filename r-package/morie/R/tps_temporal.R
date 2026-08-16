@@ -32,6 +32,19 @@ NULL
 # Internal helpers (NOT exported)
 # ---------------------------------------------------------------------------
 
+#' .tps_temporal_result
+#'
+#' Part of the tps_temporal implementation; see the file header for the
+#' source it follows.
+#'
+#' @param title See Usage.
+#' @param call See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param interpretation Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .tps_temporal_result <- function(title, call, summary_lines = list(),
                                   warnings = character(0),
                                   interpretation = "",
@@ -48,6 +61,15 @@ NULL
   out
 }
 
+#' .tps_temporal_fmt_round
+#'
+#' Part of the tps_temporal implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param k See Usage.
+#' @return A numeric value.
+#' @export
 .tps_temporal_fmt_round <- function(x, k) {
   if (!is.finite(x)) return(NA_real_)
   round(x, k)
@@ -55,6 +77,13 @@ NULL
 
 # Build monthly counts from an arbitrary date column. Returns a list
 # with $dates (POSIXct, first-of-month) and $counts (integer).
+#' Build monthly counts from an arbitrary date column. Returns a list
+#'
+#' with $dates (POSIXct, first-of-month) and $counts (integer).
+#'
+#' @param df See Usage.
+#' @return A list with \code{dates}, \code{counts}.
+#' @export
 .tps_temporal_monthly <- function(df) {
   dt <- NULL
   if (all(c("OCC_YEAR", "OCC_MONTH", "OCC_DAY") %in% names(df))) {

@@ -32,6 +32,15 @@
 NULL
 
 
+#' .morie_logistic_propensity
+#'
+#' Part of the mrm_diagnostics implementation; see the file header for
+#' the source it follows.
+#'
+#' @param D See Usage.
+#' @param X See Usage.
+#' @return The value of \code{pmax}.
+#' @export
 .morie_logistic_propensity <- function(D, X) {
   d <- data.frame(D = D, X)
   fit <- suppressWarnings(stats::glm(D ~ ., data = d, family = stats::binomial()))

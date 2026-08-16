@@ -17,6 +17,15 @@
 .MOVE_KEYS <- c("frm", "to", "n_u", "n_u_rev", "propose", "transform")
 
 
+#' .unif_stream
+#'
+#' Part of the bayrjmcmc_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param seed See Usage.
+#' @param block Defaults to \code{8192L}.
+#' @return The value of \code{function}.
+#' @export
 .unif_stream <- function(seed, block = 8192L) {
   e <- new.env(parent = emptyenv())
   e$buf <- numeric(0)
@@ -40,6 +49,14 @@
   function() e$uni()
 }
 
+#' .logabsdet
+#'
+#' Part of the bayrjmcmc_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param a See Usage.
+#' @return The value of \code{total}, as built in the body.
+#' @export
 .logabsdet <- function(a) {
   n <- nrow(a)
   if (n == 0) return(0.0)
@@ -175,6 +192,16 @@ rj_log_acceptance <- function(logpost_from, logpost_to, log_j_from,
    + log_jacobian)
 }
 
+#' .rw_within
+#'
+#' Part of the bayrjmcmc_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param theta See Usage.
+#' @param uni See Usage.
+#' @param scale See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .rw_within <- function(theta, uni, scale) {
   out <- numeric(length(theta))
   for (i in seq_along(theta)) {
@@ -465,12 +492,33 @@ birth_log_jacobian <- function(h_j, h_new_left, h_new_right) {
   2.0 * log(as.numeric(h_new_left) + as.numeric(h_new_right)) - log(as.numeric(h_j))
 }
 
+#' .merge_height
+#'
+#' Part of the bayrjmcmc_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param s_left See Usage.
+#' @param s_mid See Usage.
+#' @param s_right See Usage.
+#' @param h_left See Usage.
+#' @param h_right See Usage.
+#' @return A numeric value.
+#' @export
 .merge_height <- function(s_left, s_mid, s_right, h_left, h_right) {
   span <- as.numeric(s_right) - as.numeric(s_left)
   exp(((as.numeric(s_mid) - as.numeric(s_left)) * log(h_left)
        + (as.numeric(s_right) - as.numeric(s_mid)) * log(h_right)) / span)
 }
 
+#' .log_k_prior_ratio
+#'
+#' Part of the bayrjmcmc_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param lam See Usage.
+#' @param k See Usage.
+#' @return A numeric value.
+#' @export
 .log_k_prior_ratio <- function(lam, k) {
   log(lam) - log(k + 1.0)
 }

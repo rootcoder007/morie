@@ -130,6 +130,18 @@ preprocess_fmri <- function(record,
 # Internal filter helpers
 # ---------------------------------------------------------------------------
 
+#' .entheo_bandpass
+#'
+#' Part of the entheo_preprocess implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param sfreq See Usage.
+#' @param low See Usage.
+#' @param high See Usage.
+#' @param order Defaults to \code{4L}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .entheo_bandpass <- function(x, sfreq, low, high, order = 4L) {
   ny <- sfreq / 2
   bf <- .morie_dsp_butter(order, c(low / ny, high / ny), type = "pass")
@@ -148,6 +160,17 @@ preprocess_fmri <- function(record,
   out
 }
 
+#' .entheo_notch
+#'
+#' Part of the entheo_preprocess implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param sfreq See Usage.
+#' @param freq See Usage.
+#' @param q Defaults to \code{30}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .entheo_notch <- function(x, sfreq, freq, q = 30) {
   bw <- freq / q
   bf <- .morie_dsp_butter(2, c(
@@ -171,6 +194,15 @@ preprocess_fmri <- function(record,
   out
 }
 
+#' .entheo_asr_trim
+#'
+#' Part of the entheo_preprocess implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param threshold See Usage.
+#' @return A list with \code{arr}, \code{n_bad}.
+#' @export
 .entheo_asr_trim <- function(x, threshold) {
   mu <- rowMeans(x)
   sd <- apply(x, 1, stats::sd) + 1e-9

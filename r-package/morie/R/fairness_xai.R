@@ -20,6 +20,19 @@
 NULL
 
 
+#' .xai_result
+#'
+#' Part of the fairness_xai implementation; see the file header for the
+#' source it follows.
+#'
+#' @param title See Usage.
+#' @param call See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param interpretation Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .xai_result <- function(title, call, summary_lines = list(),
                         warnings = character(0),
                         interpretation = "", ...) {
@@ -31,6 +44,14 @@ NULL
   out
 }
 
+#' .xai_as_2d
+#'
+#' Part of the fairness_xai implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @return The value of \code{m}, as built in the body.
+#' @export
 .xai_as_2d <- function(X) {
   m <- as.matrix(X)
   if (!is.numeric(m)) storage.mode(m) <- "double"
@@ -39,6 +60,15 @@ NULL
   m
 }
 
+#' .xai_names
+#'
+#' Part of the fairness_xai implementation; see the file header for the
+#' source it follows.
+#'
+#' @param feature_names See Usage.
+#' @param d See Usage.
+#' @return The value of \code{nm}, as built in the body.
+#' @export
 .xai_names <- function(feature_names, d) {
   if (is.null(feature_names)) return(sprintf("x%d", seq_len(d) - 1L))
   nm <- as.character(feature_names)
@@ -49,6 +79,15 @@ NULL
   nm
 }
 
+#' .xai_resolve
+#'
+#' Part of the fairness_xai implementation; see the file header for the
+#' source it follows.
+#'
+#' @param feature See Usage.
+#' @param names See Usage.
+#' @return The value of \code{idx}, as built in the body.
+#' @export
 .xai_resolve <- function(feature, names) {
   if (is.character(feature)) {
     if (!(feature %in% names)) {
@@ -63,6 +102,15 @@ NULL
   idx
 }
 
+#' .xai_predict
+#'
+#' Part of the fairness_xai implementation; see the file header for the
+#' source it follows.
+#'
+#' @param predict_fn See Usage.
+#' @param X See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .xai_predict <- function(predict_fn, X) {
   out <- as.numeric(predict_fn(X))
   if (length(out) != nrow(X)) {
@@ -71,6 +119,13 @@ NULL
   out
 }
 
+#' .xai_have_iml
+#'
+#' Part of the fairness_xai implementation; see the file header for the
+#' source it follows.
+#'
+#' @return The value of \code{requireNamespace}.
+#' @export
 .xai_have_iml <- function() {
   requireNamespace("iml", quietly = TRUE)
 }

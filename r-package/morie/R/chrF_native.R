@@ -3,18 +3,44 @@
 # automatic MT evaluation", Proc. 10th Workshop on Statistical Machine
 # Translation (WMT15), 392-395.
 
+#' .chrF_char_ngrams
+#'
+#' Part of the chrF_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param s See Usage.
+#' @param n See Usage.
+#' @return The value of \code{substring}.
+#' @export
 .chrF_char_ngrams <- function(s, n) {
   L <- nchar(s)
   if (L < n) return(character(0))
   substring(s, seq_len(L - n + 1L), seq_len(L - n + 1L) + n - 1L)
 }
 
+#' .chrF_word_ngrams
+#'
+#' Part of the chrF_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ws See Usage.
+#' @param n See Usage.
+#' @return The value of \code{lapply}.
+#' @export
 .chrF_word_ngrams <- function(ws, n) {
   L <- length(ws)
   if (L < n) return(list())
   lapply(seq_len(L - n + 1L), function(i) ws[seq.int(i, i + n - 1L)])
 }
 
+#' .chrF_counts
+#'
+#' Part of the chrF_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param seq See Usage.
+#' @return The value of \code{d}, as built in the body.
+#' @export
 .chrF_counts <- function(seq) {
   d <- list()
   for (g in seq) {
@@ -24,6 +50,15 @@
   d
 }
 
+#' .chrF_pr
+#'
+#' Part of the chrF_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param hyp_grams See Usage.
+#' @param ref_grams See Usage.
+#' @return A vector, from \code{c}.
+#' @export
 .chrF_pr <- function(hyp_grams, ref_grams) {
   if (length(hyp_grams) == 0L || length(ref_grams) == 0L) return(NULL)
   hc <- .chrF_counts(hyp_grams)

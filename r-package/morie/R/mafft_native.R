@@ -43,6 +43,14 @@ GRANTHAM_VOLUME <- list(
 .MAFFT_MATRICES <- c("normalized", "all_positive")
 .MAFFT_SIX_GROUPS <- c("AGPST", "C", "DENQ", "FWY", "HKR", "ILMV")
 
+#' .mafft_norm
+#'
+#' Part of the mafft_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param vals See Usage.
+#' @return A vector, from \code{c}.
+#' @export
 .mafft_norm <- function(vals) {
   n <- length(vals)
   mu <- sum(vals) / n
@@ -1131,6 +1139,13 @@ mafft_alignment <- function(sequences, method = "FFT-NS-2",
 
 mafftalignment <- mafft_alignment
 
+#' .mafft_cheatsheet
+#'
+#' Part of the mafft_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .mafft_cheatsheet <- function() {
   paste("mafft: MAFFT (Katoh et al. 2002). Residues become Grantham ",
         "volume/polarity vectors, c(k) = c_v(k) + c_p(k) is got by ",

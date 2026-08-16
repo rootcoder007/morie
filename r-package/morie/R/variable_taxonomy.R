@@ -76,6 +76,15 @@ NULL
                      source = "override"))
 )
 
+#' .override_for
+#'
+#' Part of the variable_taxonomy implementation; see the file header for
+#' the source it follows.
+#'
+#' @param dataset_name See Usage.
+#' @param col_name See Usage.
+#' @return Nothing; the function is called for its effect.
+#' @export
 .override_for <- function(dataset_name, col_name) {
   ds_lc <- tolower(dataset_name)
   col_lc <- tolower(trimws(col_name))
@@ -104,6 +113,14 @@ NULL
                        c("0", "1"), c("1", "0"))
 
 
+#' .is_boolean_value_set
+#'
+#' Part of the variable_taxonomy implementation; see the file header for
+#' the source it follows.
+#'
+#' @param vv See Usage.
+#' @return A logical value.
+#' @export
 .is_boolean_value_set <- function(vv) {
   if (is.null(vv) || length(vv) == 0L) return(FALSE)
   lc <- tolower(trimws(as.character(vv)))
@@ -113,6 +130,14 @@ NULL
   FALSE
 }
 
+#' .cardinality_from_vv
+#'
+#' Part of the variable_taxonomy implementation; see the file header for
+#' the source it follows.
+#'
+#' @param vv See Usage.
+#' @return A character value.
+#' @export
 .cardinality_from_vv <- function(vv) {
   if (is.null(vv) || length(vv) == 0L) return("unknown")
   n <- length(vv)
@@ -122,6 +147,17 @@ NULL
   "discrete_high"
 }
 
+#' .level_from_spec
+#'
+#' Part of the variable_taxonomy implementation; see the file header for
+#' the source it follows.
+#'
+#' @param col_name See Usage.
+#' @param dtype See Usage.
+#' @param valid_values See Usage.
+#' @param dataset_name See Usage.
+#' @return A character value.
+#' @export
 .level_from_spec <- function(col_name, dtype, valid_values, dataset_name) {
   dtype <- tolower(dtype %||% "string")
   if (grepl(.RE_IDENTIFIER, col_name, ignore.case = TRUE)) return("identifier")
@@ -144,6 +180,14 @@ NULL
   "nominal"
 }
 
+#' .role_from_name
+#'
+#' Part of the variable_taxonomy implementation; see the file header for
+#' the source it follows.
+#'
+#' @param col_name See Usage.
+#' @return A character value.
+#' @export
 .role_from_name <- function(col_name) {
   if (grepl(.RE_IDENTIFIER, col_name, ignore.case = TRUE)) return("identifier")
   if (grepl(.RE_OUTCOME,    col_name, ignore.case = TRUE)) return("outcome")

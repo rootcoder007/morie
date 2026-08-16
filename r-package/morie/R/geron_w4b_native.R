@@ -12,6 +12,14 @@
 
 # ---------------------------------------------------------------- internal helpers (not exported)
 
+#' .morie_gr_w4b_sigmoid
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param z See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .morie_gr_w4b_sigmoid <- function(z) {
   out <- numeric(length(z))
   pos <- z >= 0
@@ -21,6 +29,14 @@
   out
 }
 
+#' .morie_gr_w4b_softmax_rows
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param Z See Usage.
+#' @return A numeric value.
+#' @export
 .morie_gr_w4b_softmax_rows <- function(Z) {
   Z <- as.matrix(Z)
   mx <- apply(Z, 1, max)
@@ -28,10 +44,34 @@
   E / rowSums(E)
 }
 
+#' .morie_gr_w4b_popsd
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return A numeric value.
+#' @export
 .morie_gr_w4b_popsd <- function(x) sqrt(mean((x - mean(x))^2))
 
+#' .morie_gr_w4b_softplus
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param z See Usage.
+#' @return A numeric value.
+#' @export
 .morie_gr_w4b_softplus <- function(z) pmax(z, 0) + log1p(exp(-abs(z)))
 
+#' .morie_gr_w4b_pairwise_distances
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param X See Usage.
+#' @return A numeric value.
+#' @export
 .morie_gr_w4b_pairwise_distances <- function(X) {
   X <- as.matrix(X)
   n <- nrow(X)
@@ -40,6 +80,14 @@
   sqrt(pmax(sq, 0))
 }
 
+#' .morie_gr_w4b_double_center
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param D See Usage.
+#' @return A numeric value.
+#' @export
 .morie_gr_w4b_double_center <- function(D) {
   D <- as.matrix(D)
   n <- nrow(D)
@@ -241,6 +289,16 @@ morie_geron_hf_trainer <- function(model, args = list(), train_ds, eval_ds = NUL
 
 # ---------------------------------------------------------------- 5. hmhgb
 
+#' .morie_gr_w4b_bincount
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param w See Usage.
+#' @param minlength See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .morie_gr_w4b_bincount <- function(x, w, minlength) {
   out <- numeric(minlength)
   if (length(x)) {
@@ -251,11 +309,32 @@ morie_geron_hf_trainer <- function(model, args = list(), train_ds, eval_ds = NUL
   out
 }
 
+#' .morie_gr_w4b_searchsorted_left
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param e See Usage.
+#' @param x See Usage.
+#' @return A vector, from \code{vapply}.
+#' @export
 .morie_gr_w4b_searchsorted_left <- function(e, x) {
   if (length(e) == 0L) return(rep(0L, length(x)))
   vapply(x, function(xi) sum(e < xi), integer(1))
 }
 
+#' .morie_gr_w4b_hgb_best_split
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param binned See Usage.
+#' @param grad See Usage.
+#' @param hess See Usage.
+#' @param n_bins See Usage.
+#' @param min_leaf See Usage.
+#' @return A list with \code{gain}, \code{feature}, \code{bin0}.
+#' @export
 .morie_gr_w4b_hgb_best_split <- function(binned, grad, hess, n_bins, min_leaf) {
   n_feat <- ncol(binned)
   G <- sum(grad); H <- sum(hess)
@@ -276,6 +355,21 @@ morie_geron_hf_trainer <- function(model, args = list(), train_ds, eval_ds = NUL
   list(gain = best_gain, feature = best_j, bin0 = best_bin0)
 }
 
+#' .morie_gr_w4b_hgb_grow
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param binned See Usage.
+#' @param grad See Usage.
+#' @param hess See Usage.
+#' @param rows See Usage.
+#' @param depth See Usage.
+#' @param max_depth See Usage.
+#' @param n_bins See Usage.
+#' @param min_leaf See Usage.
+#' @return A list with \code{feature}, \code{bin0}, \code{gain}, \code{left}, \code{right}.
+#' @export
 .morie_gr_w4b_hgb_grow <- function(binned, grad, hess, rows, depth, max_depth, n_bins, min_leaf) {
   g <- grad[rows]; h <- hess[rows]
   leafval <- function() if (sum(h) > 0) sum(g) / sum(h) else 0
@@ -290,6 +384,15 @@ morie_geron_hf_trainer <- function(model, args = list(), train_ds, eval_ds = NUL
        right = .morie_gr_w4b_hgb_grow(binned, grad, hess, right, depth + 1L, max_depth, n_bins, min_leaf))
 }
 
+#' .morie_gr_w4b_hgb_predict
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param node See Usage.
+#' @param binned See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .morie_gr_w4b_hgb_predict <- function(node, binned) {
   out <- numeric(nrow(binned))
   stack <- list(list(node = node, rows = seq_len(nrow(binned))))
@@ -419,6 +522,16 @@ morie_geron_hidden_layers_heuristic <- function(model, X, y, max_layers = 10, mi
 
 # ---------------------------------------------------------------- 7. hmhpt (uses internal ridge/grid search + existing CV core)
 
+#' .morie_gr_w4b_ridge_estimator
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param Xtr See Usage.
+#' @param ytr See Usage.
+#' @param alpha Defaults to \code{0}.
+#' @return The value of \code{function}.
+#' @export
 .morie_gr_w4b_ridge_estimator <- function(Xtr, ytr, alpha = 0.0) {
   X <- as.matrix(Xtr); y <- as.numeric(ytr)
   .morie_gr_need(alpha >= 0, "ridge_estimator: alpha must be non-negative")
@@ -427,6 +540,19 @@ morie_geron_hidden_layers_heuristic <- function(model, X, y, max_layers = 10, mi
   function(Xnew) as.numeric(as.matrix(Xnew) %*% theta)
 }
 
+#' .morie_gr_w4b_grid_search
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param param_grid See Usage.
+#' @param X See Usage.
+#' @param y See Usage.
+#' @param estimator Defaults to \code{NULL}.
+#' @param K Defaults to \code{3}.
+#' @param score Defaults to \code{NULL}.
+#' @return A list with \code{best_params}, \code{best_score}, \code{results}, \code{n_candidates}, \code{n_fits}, \code{estimate}, \code{n}, \code{method}.
+#' @export
 .morie_gr_w4b_grid_search <- function(param_grid, X, y, estimator = NULL, K = 3, score = NULL) {
   names_p <- names(param_grid)
   .morie_gr_need(length(names_p) > 0L, "geron_grid_search: param_grid is empty")
@@ -1949,6 +2075,16 @@ morie_geron_mdp <- function(states, actions, P, R, gamma = 0.95, max_iter = 1000
 
 # ---------------------------------------------------------------- 14/44. hmiso (delegates to morie_geron_mds, morie_geron_pairwise_distances)
 
+#' .morie_gr_w4b_dijkstra
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param adj See Usage.
+#' @param source See Usage.
+#' @param m See Usage.
+#' @return The value of \code{dist}, as built in the body.
+#' @export
 .morie_gr_w4b_dijkstra <- function(adj, source, m) {
   dist <- rep(Inf, m); dist[source] <- 0
   seen <- rep(FALSE, m)
@@ -2004,6 +2140,17 @@ morie_geron_isomap <- function(X, n_components, n_neighbors = 5) {
 
 # ---------------------------------------------------------------- 45. hmmha (internal scaled-dot-product-attention helper)
 
+#' .morie_gr_w4b_sdpa
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param Q See Usage.
+#' @param K See Usage.
+#' @param V See Usage.
+#' @param mask Defaults to \code{NULL}.
+#' @return A list with \code{output}, \code{attention}.
+#' @export
 .morie_gr_w4b_sdpa <- function(Q, K, V, mask = NULL) {
   Q <- as.matrix(Q); K <- as.matrix(K); V <- as.matrix(V)
   d_k <- ncol(Q)
@@ -2417,6 +2564,15 @@ morie_geron_model_based <- function(X, y, add_bias = TRUE, eta = NULL, n_iter = 
 
 # ---------------------------------------------------------------- 55. hmmpp
 
+#' .morie_gr_w4b_mpp_partition
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param w See Usage.
+#' @param k See Usage.
+#' @return The value of \code{assign}, as built in the body.
+#' @export
 .morie_gr_w4b_mpp_partition <- function(w, k) {
   fits <- function(cap) {
     used <- 1L; load <- 0
@@ -2521,6 +2677,16 @@ morie_geron_multioutput <- function(X, Y, k = 1, X_new = NULL) {
 
 # ---------------------------------------------------------------- 57. hmmxp (internal maxpool helper)
 
+#' .morie_gr_w4b_maxpool
+#'
+#' Part of the geron_w4b_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param k See Usage.
+#' @param s See Usage.
+#' @return A list with \code{y}, \code{argmax}, \code{output_shape}.
+#' @export
 .morie_gr_w4b_maxpool <- function(x, k, s) {
   x <- as.matrix(x)
   H <- nrow(x); W <- ncol(x)

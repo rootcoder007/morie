@@ -159,6 +159,15 @@ morie_datasets_chicago_socrata_by_id <- function(soda_id,
   df
 }
 
+#' .morie_bulk_fixture
+#'
+#' Part of the datasets_bulk_catalogs implementation; see the file
+#' header for the source it follows.
+#'
+#' @param fname See Usage.
+#' @param offline See Usage.
+#' @return The value of \code{utils::read.csv}.
+#' @export
 .morie_bulk_fixture <- function(fname, offline) {
   if (!isTRUE(offline)) {
     stop(sprintf(paste0(

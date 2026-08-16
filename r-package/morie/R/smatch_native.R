@@ -197,6 +197,14 @@ morie_smatch_relative_efficiency <- function(r, log_ri) {
 }
 
 # Beasley-Springer-Moro inverse normal CDF
+#' Beasley-Springer-Moro inverse normal CDF
+#'
+#' Part of the smatch_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .smatch_qnorm <- function(p) {
   p <- pmin(pmax(p, 1e-15), 1 - 1e-15)
   a <- c(-3.969683028665376e+01, 2.209460984245205e+02,

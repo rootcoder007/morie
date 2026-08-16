@@ -135,6 +135,13 @@ training_stage <- function(stage) {
   }
 }
 
+#' .llavx_cheatsheet
+#'
+#' Part of the llavx_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .llavx_cheatsheet <- function() {
   "llavx: instruction tuning works in language and lacked MULTIMODAL data, so generate it with a LANGUAGE-ONLY GPT-4 fed a SYMBOLIC image -- captions and boxes. The image never reaches the generator, which is what makes the pipeline possible and also caps it: what the captions omit cannot be asked about. Architecture is deliberately thin: ONE projection matrix into the word-embedding space, projected patches used as tokens, no cross-attention. Stage 1 trains only the projection; stage 2 adds the language model."
 }

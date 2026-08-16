@@ -1,4 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+#' SPDX-License-Identifier: AGPL-3.0-or-later
+#'
+#' Part of the ingest_cihi implementation; see the file header for the
+#' source it follows.
+#'
+#' @param path See Usage.
+#' @param ... Passed through.
+#' @return The value of \code{best_df}, as built in the body.
+#' @export
 .morie_cihi_pick_data_sheet <- function(path, ...) {
   morie_ensure_extras("readxl")
   sheets <- readxl::excel_sheets(path)

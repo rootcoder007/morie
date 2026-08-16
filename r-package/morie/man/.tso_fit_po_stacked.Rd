@@ -1,0 +1,23 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{.tso_fit_po_stacked}
+\alias{.tso_fit_po_stacked}
+\title{Fallback proportional-odds fit (no MASS): stack the K-1 cutpoint}
+\usage{
+.tso_fit_po_stacked(X, y, K, max_iter, tol)
+}
+\arguments{
+\item{X}{See Usage.}
+\item{y}{See Usage.}
+\item{K}{See Usage.}
+\item{max_iter}{See Usage.}
+\item{tol}{See Usage.}
+}
+\description{
+binary problems and constrain beta to be shared while letting cutpoint intercepts differ.  Mirrors _logit_fit_no_intercept().
+}
+\value{
+A list with \code{intercepts}, \code{beta}.
+}
+\keyword{internal}

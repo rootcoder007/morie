@@ -42,6 +42,14 @@ NULL
 # ---------------------------------------------------------------------------
 # .siu_an_load -- accept a data frame, a path, or NULL (defaults).
 # ---------------------------------------------------------------------------
+#' .siu_an_load
+#'
+#' .siu_an_load -- accept a data frame, a path, or NULL (defaults).
+#' ---------------------------------------------------------------------------
+#'
+#' @param x Defaults to \code{NULL}.
+#' @return The value of \code{utils::read.csv}.
+#' @export
 .siu_an_load <- function(x = NULL) {
   if (is.data.frame(x)) {
     return(x)
@@ -65,6 +73,21 @@ NULL
 # .siu_an_rich -- thin RichResult constructor mirroring sprott_doob.R's
 # .morie_siu_rich; reproduced here to keep this file self-contained.
 # ---------------------------------------------------------------------------
+#' .siu_an_rich
+#'
+#' .siu_an_rich -- thin RichResult constructor mirroring
+#' sprott_doob.R\'s .morie_siu_rich; reproduced here to keep this file
+#' self-contained.
+#' ---------------------------------------------------------------------------
+#'
+#' @param title See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param tables Defaults to \code{list()}.
+#' @param interpretation Defaults to \code{""}.
+#' @param warnings Defaults to \code{character()}.
+#' @param payload Defaults to \code{list()}.
+#' @return The value of \code{structure}.
+#' @export
 .siu_an_rich <- function(title, summary_lines = list(),
                          tables = list(),
                          interpretation = "",
@@ -87,12 +110,28 @@ NULL
 # ---------------------------------------------------------------------------
 # Truthy / falsy counters tolerant of CSV-roundtripped booleans.
 # ---------------------------------------------------------------------------
+#' .siu_an_truthy
+#'
+#' Truthy / falsy counters tolerant of CSV-roundtripped booleans.
+#' ---------------------------------------------------------------------------
+#'
+#' @param v See Usage.
+#' @return A numeric value.
+#' @export
 .siu_an_truthy <- function(v) {
   if (is.logical(v)) return(sum(v %in% TRUE, na.rm = TRUE))
   s <- tolower(trimws(as.character(v)))
   sum(s %in% c("true", "yes", "1", "t"), na.rm = TRUE)
 }
 
+#' .siu_an_falsy
+#'
+#' Part of the siu_analyze implementation; see the file header for the
+#' source it follows.
+#'
+#' @param v See Usage.
+#' @return A numeric value.
+#' @export
 .siu_an_falsy <- function(v) {
   if (is.logical(v)) return(sum(v %in% FALSE, na.rm = TRUE))
   s <- tolower(trimws(as.character(v)))
@@ -478,6 +517,16 @@ morie_siu_mental_health_race_indicators <- function(data = NULL) {
 # ---------------------------------------------------------------------------
 # .siu_an_interval -- day-delta summary helper used by decision_timing.
 # ---------------------------------------------------------------------------
+#' .siu_an_interval
+#'
+#' .siu_an_interval -- day-delta summary helper used by decision_timing.
+#' ---------------------------------------------------------------------------
+#'
+#' @param label See Usage.
+#' @param a_iso See Usage.
+#' @param b_iso See Usage.
+#' @return The value of \code{list}.
+#' @export
 .siu_an_interval <- function(label, a_iso, b_iso) {
   a <- suppressWarnings(as.Date(a_iso))
   b <- suppressWarnings(as.Date(b_iso))

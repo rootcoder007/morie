@@ -2,6 +2,14 @@
 # "A practical method for calculating largest Lyapunov exponents from
 # small data sets", Physica D 65(1-2), 117-134.
 
+#' .as_series
+#'
+#' Part of the lyapun_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param y See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .as_series <- function(y) {
   out <- as.numeric(y)
   if (length(out) < 10L)
@@ -11,6 +19,16 @@
   out
 }
 
+#' .lyapun_embed
+#'
+#' Part of the lyapun_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param y See Usage.
+#' @param m See Usage.
+#' @param tau See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .lyapun_embed <- function(y, m, tau) {
   y <- .as_series(y)
   m <- as.integer(m); tau <- as.integer(tau)
@@ -83,6 +101,15 @@ mean_period <- function(y, dt = 1.0) {
   (1.0 / f_mean) / dt
 }
 
+#' .nearest_neighbours
+#'
+#' Part of the lyapun_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param pts See Usage.
+#' @param min_sep See Usage.
+#' @return A list with \code{nn}, \code{d0}.
+#' @export
 .nearest_neighbours <- function(pts, min_sep) {
   n_pts <- length(pts); m <- length(pts[[1]])
   nn <- rep(-1L, n_pts)
@@ -108,6 +135,16 @@ mean_period <- function(y, dt = 1.0) {
   list(nn = nn, d0 = d0)
 }
 
+#' .distance
+#'
+#' Part of the lyapun_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param pts See Usage.
+#' @param a See Usage.
+#' @param b See Usage.
+#' @return A numeric value.
+#' @export
 .distance <- function(pts, a, b) {
   s <- 0.0
   pa <- pts[[a]]; pb <- pts[[b]]
@@ -177,6 +214,16 @@ divergence_curve <- function(y, m = NULL, tau = NULL, dt = 1.0,
        m = m, tau = tau, min_sep = min_sep, n_points = n_pts, n_obs = n)
 }
 
+#' .linear_region
+#'
+#' Part of the lyapun_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param curve See Usage.
+#' @param lo_frac Defaults to \code{0.1}.
+#' @param hi_frac Defaults to \code{0.8}.
+#' @return A vector, from \code{c}.
+#' @export
 .linear_region <- function(curve, lo_frac = 0.1, hi_frac = 0.8) {
   n <- length(curve)
   if (n < 4L) return(c(0L, n))
@@ -196,6 +243,15 @@ divergence_curve <- function(y, m = NULL, tau = NULL, dt = 1.0,
   c(lo, hi)
 }
 
+#' .ols_slope
+#'
+#' Part of the lyapun_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param xs See Usage.
+#' @param ys See Usage.
+#' @return A vector, from \code{c}.
+#' @export
 .ols_slope <- function(xs, ys) {
   n <- length(xs)
   mx <- mean(xs); my <- mean(ys)
@@ -303,6 +359,13 @@ lyapunov_exponent <- function(y, embedding = NULL, tau = NULL, dt = 1.0,
 
 largest_lyapunov <- lyapunov_exponent
 
+#' .lyapun_cheatsheet
+#'
+#' Part of the lyapun_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .lyapun_cheatsheet <- function() {
   "lyapun: largest Lyapunov exponent (Rosenstein, Collins & De Luca 1993). Embed with delay J and dimension m, find each point's nearest neighbour at least a mean period away, and take lambda_1 as the slope of <ln d_j(i)> against i*dt over the initial rise -- no normalisation by d_j(0) is needed, since a constant offset does not change a slope. Expected values from the paper's table 1: 0.693 for the logistic map at mu = 4, 0.418 for the Henon map. Routes: 'rosenstein' (eq. 13, default), 'sato' (eq. 9), 'sato_k' (eq. 10, whose plateau the paper itself calls unreliable)."
 }

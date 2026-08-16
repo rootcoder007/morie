@@ -168,6 +168,23 @@ NULL
 # Shared factory
 # ---------------------------------------------------------------------------
 
+#' .morie_nyc_nypd_dispatch
+#'
+#' Part of the datasets_nyc_nypd implementation; see the file header for
+#' the source it follows.
+#'
+#' @param dataset_key See Usage.
+#' @param year See Usage.
+#' @param max_features See Usage.
+#' @param offline See Usage.
+#' @param resource_id See Usage.
+#' @param mode Defaults to \code{c("soda2", "soda3")}.
+#' @param paginate Defaults to \code{FALSE}.
+#' @param page_size Defaults to \code{1000L}.
+#' @param max_pages Defaults to \code{200L}.
+#' @param app_token Defaults to \code{NULL}.
+#' @return The value of \code{.morie_dataset_soda3_query}.
+#' @export
 .morie_nyc_nypd_dispatch <- function(dataset_key, year, max_features,
                                        offline, resource_id,
                                        mode = c("soda2", "soda3"),
@@ -737,6 +754,15 @@ morie_datasets_nyc_nypd_boro_crosswalk <- function() {
 # NYC multi-boundary loaders (3CCC2)
 # ---------------------------------------------------------------------------
 
+#' .morie_nyc_boundary_fixture
+#'
+#' Part of the datasets_nyc_nypd implementation; see the file header for
+#' the source it follows.
+#'
+#' @param fname See Usage.
+#' @param expected_rows Defaults to \code{NULL}.
+#' @return The value of \code{df}, as built in the body.
+#' @export
 .morie_nyc_boundary_fixture <- function(fname, expected_rows = NULL) {
   path <- system.file("extdata", fname, package = "morie")
   if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
@@ -868,6 +894,15 @@ morie_datasets_nyc_ntas_2020 <- function(offline = TRUE,
   df
 }
 
+#' .morie_nyc_zcta_fixture
+#'
+#' Part of the datasets_nyc_nypd implementation; see the file header for
+#' the source it follows.
+#'
+#' @param fname See Usage.
+#' @param expected_rows Defaults to \code{221L}.
+#' @return The value of \code{df}, as built in the body.
+#' @export
 .morie_nyc_zcta_fixture <- function(fname, expected_rows = 221L) {
   path <- system.file("extdata", fname, package = "morie")
   if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {

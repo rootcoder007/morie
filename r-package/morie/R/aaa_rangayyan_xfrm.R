@@ -35,6 +35,15 @@ Ztrans <- function(x, z = NULL, n0 = 0) {
   out
 }
 
+#' .morie_rg_conv
+#'
+#' Part of the rangayyan_xfrm implementation; see the file header for
+#' the source it follows.
+#'
+#' @param xs See Usage.
+#' @param hs See Usage.
+#' @return A vector, from \code{vapply}.
+#' @export
 .morie_rg_conv <- function(xs, hs) {
   n <- length(xs); m <- length(hs)
   vapply(seq_len(n + m - 1L), function(k) {
@@ -574,6 +583,15 @@ CircConv <- function(x, h, npoints = NULL) {
        method = "Rangayyan (2024) eq. (3.90)")
 }
 
+#' .morie_rg_evenodd
+#'
+#' Part of the rangayyan_xfrm implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param n Defaults to \code{NULL}.
+#' @return A list with \code{n}, \code{even}, \code{odd}, \code{x}, \code{reconstruction_error}.
+#' @export
 .morie_rg_evenodd <- function(x, n = NULL) {
   xs <- as.numeric(x)
   m <- length(xs)

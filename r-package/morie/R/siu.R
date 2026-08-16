@@ -20,6 +20,17 @@
 # refreshes, and the `default` fallback (used only when the discovery
 # endpoint is unreachable) is set to 6000 so cold-start sweeps still
 # capture everything currently published.
+#' As of 2026-05 the live max sits around drid ~5100; the default margin
+#'
+#' of 300 gives substantial headroom for reports added between manifest
+#' refreshes, and the `default` fallback (used only when the discovery
+#' endpoint is unreachable) is set to 6000 so cold-start sweeps still
+#' capture everything currently published.
+#'
+#' @param default Defaults to \code{6000L}.
+#' @param margin Defaults to \code{300L}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .siu_discover_max_drid <- function(default = 6000L, margin = 300L) {
   html <- tryCatch(
     .siu_http_get(paste0(
@@ -516,6 +527,14 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
 # any failure. Unlike .siu_load_manifest() (which restricts to
 # healthy 200s for harvester use), this returns ALL columns + rows
 # so morie_siu_index() can serve the full table.
+#' Internal: read the unfiltered shipped manifest. Returns NULL on
+#'
+#' any failure. Unlike .siu_load_manifest() (which restricts to healthy
+#' 200s for harvester use), this returns ALL columns + rows so
+#' morie_siu_index() can serve the full table.
+#'
+#' @return The value of \code{tryCatch}.
+#' @export
 .siu_load_manifest_raw <- function() {
   p <- system.file("extdata", "siu_drid_manifest.csv.gz",
     package = "morie"
@@ -550,6 +569,16 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
 # record their own corrections without touching the package source.
 # Maintainer-confirmed corrections get promoted into the shipped
 # table; user-side corrections stay local until then.
+#' The user-side cache at <cache_dir>/canonical_overrides.csv mirrors
+#'
+#' the shipped one and is merged in too -- so individual users can
+#' record their own corrections without touching the package source.
+#' Maintainer-confirmed corrections get promoted into the shipped table;
+#' user-side corrections stay local until then.
+#'
+#' @param user_cache_dir Defaults to \code{NULL}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .siu_load_canonical_overrides <- function(user_cache_dir = NULL) {
   read_one <- function(p) {
     if (!nzchar(p) || !file.exists(p)) {
@@ -614,6 +643,17 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
 # for any match, overwrite df[[field]] at the row whose case_number
 # matches. Silent on misses (override for a case not in the parse,
 # or field not in the schema).
+#' Internal: apply a canonical-overrides table to a parsed SIU data
+#'
+#' frame. Each row of `overrides` is (case_number, field,
+#' verified_value); for any match, overwrite df[[field]] at the row
+#' whose case_number matches. Silent on misses (override for a case not
+#' in the parse, or field not in the schema).
+#'
+#' @param df See Usage.
+#' @param overrides See Usage.
+#' @return The value of \code{df}, as built in the body.
+#' @export
 .siu_apply_canonical_overrides <- function(df, overrides) {
   if (is.null(overrides) || !nrow(overrides)) {
     return(df)
@@ -709,6 +749,12 @@ morie_siu_record_correction <- function(case_number, field,
 
 # Internal: read the shipped DRID manifest if present. Returns NULL on
 # any failure so the harvester degrades gracefully to a full sweep.
+#' Internal: read the shipped DRID manifest if present. Returns NULL on
+#'
+#' any failure so the harvester degrades gracefully to a full sweep.
+#'
+#' @return The value of \code{m}, as built in the body.
+#' @export
 .siu_load_manifest <- function() {
   p <- system.file("extdata", "siu_drid_manifest.csv.gz", package = "morie")
   if ((!nzchar(p) || !file.exists(p)) &&
@@ -846,6 +892,15 @@ morie_siu_refresh_manifest <- function(
 
 # Internal: write one HTML page to <html_dir>/<name>, gzipped. Called
 # from morie_fetch_siu() when cache_html = TRUE.
+#' Internal: write one HTML page to <html_dir>/<name>, gzipped. Called
+#'
+#' from morie_fetch_siu() when cache_html = TRUE.
+#'
+#' @param html_dir See Usage.
+#' @param name See Usage.
+#' @param html See Usage.
+#' @return The value of \code{writeChar}.
+#' @export
 .siu_write_html_cache <- function(html_dir, name, html) {
   con <- gzfile(file.path(html_dir, name), "w")
   on.exit(close(con), add = TRUE)
@@ -853,6 +908,15 @@ morie_siu_refresh_manifest <- function(
 }
 
 # Internal: read a gzipped cached HTML page if it exists, else "".
+#' Internal: read a gzipped cached HTML page if it exists, else ""
+#'
+#' Part of the siu implementation; see the file header for the source it
+#' follows.
+#'
+#' @param html_dir See Usage.
+#' @param name See Usage.
+#' @return The value of \code{rawToChar}.
+#' @export
 .siu_read_html_cache <- function(html_dir, name) {
   if (!length(html_dir) || !length(name) ||
       !nzchar(html_dir[1L]) || !nzchar(name[1L])) {
@@ -975,6 +1039,15 @@ morie_siu_audit_case <- function(case_number,
 # most common entities so reports + news releases can be displayed
 # as plain text. Mirrors the C++ html_to_text() but with the safer
 # linear single-pass approach (no std::regex backtracking risk).
+#' Internal: R-side HTML-to-text helper. Strips tags + decodes the
+#'
+#' most common entities so reports + news releases can be displayed as
+#' plain text. Mirrors the C++ html_to_text() but with the safer linear
+#' single-pass approach (no std::regex backtracking risk).
+#'
+#' @param h See Usage.
+#' @return The value of \code{trimws}.
+#' @export
 .siu_html_to_text <- function(h) {
   if (!nzchar(h)) {
     return("")
@@ -1189,12 +1262,32 @@ morie_siu_compare <- function(case_number, external,
 # Internal: default LLM HTTP timeout in seconds. 600s (10 min)
 # accommodates slow CPU-only local inference on a Raspberry Pi.
 # Override globally via MORIE_LLM_TIMEOUT_S env var.
+#' Providers:
+#'
+#' gemini -- closed, paid, fast.  env: GOOGLE_API_KEY claude -- closed,
+#' paid, fast.  env: ANTHROPIC_API_KEY ollama -- open-weight models env:
+#' OLLAMA_HOST (e.g. over a local or self- "http://localhost:11434"
+#' hosted REST endpoint; or any hosted Ollama- free/OllamaFreeAPI-
+#' compatible base URL), compatible.  optional OLLAMA_MODEL (default
+#' "llama3.2:3b") Internal: default LLM HTTP timeout in seconds. 600s
+#' (10 min) accommodates slow CPU-only local inference on a Raspberry
+#' Pi. Override globally via MORIE_LLM_TIMEOUT_S env var.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .siu_llm_default_timeout <- function() {
   v <- Sys.getenv("MORIE_LLM_TIMEOUT_S", unset = "")
   t <- suppressWarnings(as.integer(v))
   if (!is.finite(t) || t < 1L) 600L else t
 }
 
+#' .siu_llm_providers
+#'
+#' Part of the siu implementation; see the file header for the source it
+#' follows.
+#'
+#' @return A list with \code{gemini}, \code{claude}, \code{vertex}, \code{ollama}, \code{openai}, \code{openai_compatible}.
+#' @export
 .siu_llm_providers <- function() {
   list(
     gemini = list(
@@ -1441,6 +1534,16 @@ morie_siu_compare <- function(case_number, external,
 # Default timeout is 600s (10 min) -- long enough to accommodate
 # slow CPU-only local Ollama generation on a Raspberry Pi. Override
 # via MORIE_LLM_TIMEOUT_S env var or the timeout_s arg.
+#' Default timeout is 600s (10 min) -- long enough to accommodate
+#'
+#' slow CPU-only local Ollama generation on a Raspberry Pi. Override via
+#' MORIE_LLM_TIMEOUT_S env var or the timeout_s arg.
+#'
+#' @param model See Usage.
+#' @param prompt See Usage.
+#' @param timeout_s Defaults to \code{.siu_llm_default_timeout()}.
+#' @return The value of \code{p$extract}.
+#' @export
 .siu_llm_call_one <- function(model, prompt,
                               timeout_s = .siu_llm_default_timeout()) {
   if (!requireNamespace("httr2", quietly = TRUE)) {
@@ -1498,6 +1601,19 @@ morie_siu_compare <- function(case_number, external,
 # character vector for failover (e.g. c("gemini", "ollama")). The
 # `mock_response_text` arg exists ONLY so unit tests can exercise
 # the surrounding R glue without hitting the network.
+#' Internal: try `model` in order. The first one whose env var is set
+#'
+#' AND whose request returns without erroring wins. `model` may be a
+#' character vector for failover (e.g. c("gemini", "ollama")). The
+#' `mock_response_text` arg exists ONLY so unit tests can exercise the
+#' surrounding R glue without hitting the network.
+#'
+#' @param model See Usage.
+#' @param prompt See Usage.
+#' @param timeout_s Defaults to \code{.siu_llm_default_timeout()}.
+#' @param mock_response_text Defaults to \code{NULL}.
+#' @return Nothing; this branch always raises.
+#' @export
 .siu_llm_call <- function(model, prompt,
                           timeout_s = .siu_llm_default_timeout(),
                           mock_response_text = NULL) {
@@ -1528,6 +1644,12 @@ morie_siu_compare <- function(case_number, external,
 
 # The canonical 64-column SIU schema. Hard-coded so the LLM gets the
 # exact field list and order the C++ parser emits.
+#' The canonical 64-column SIU schema. Hard-coded so the LLM gets the
+#'
+#' exact field list and order the C++ parser emits.
+#'
+#' @return A vector, from \code{c}.
+#' @export
 .siu_field_list <- function() {
   c(
     "case_number", "drid", "nrid", "source_url_report", "source_url_news",
@@ -2145,6 +2267,20 @@ morie_siu_translate_fr_to_en <- function(
   )
 }
 
+#' .siu_translate_impl
+#'
+#' Part of the siu implementation; see the file header for the source it
+#' follows.
+#'
+#' @param target_lang See Usage.
+#' @param source_lang See Usage.
+#' @param case_numbers See Usage.
+#' @param model See Usage.
+#' @param fields See Usage.
+#' @param cache_dir See Usage.
+#' @param progress See Usage.
+#' @return Invisibly,the value of \code{out}, as built in the body.
+#' @export
 .siu_translate_impl <- function(
   target_lang, source_lang, case_numbers, model,
   fields, cache_dir, progress

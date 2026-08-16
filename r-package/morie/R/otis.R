@@ -63,6 +63,19 @@ NULL
 # Internal result constructor
 # ---------------------------------------------------------------------------
 
+#' .otis_result
+#'
+#' Part of the otis implementation; see the file header for the source
+#' it follows.
+#'
+#' @param title See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param tables Defaults to \code{list()}.
+#' @param interpretation Defaults to \code{""}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param payload Defaults to \code{list()}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_result <- function(title,
                           summary_lines = list(),
                           tables = list(),
@@ -83,6 +96,14 @@ NULL
 
 
 # Tolerant Yes/No/1/0/TRUE -> integer 0/1
+#' Tolerant Yes/No/1/0/TRUE -> integer 0/1
+#'
+#' Part of the otis implementation; see the file header for the source
+#' it follows.
+#'
+#' @param s See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_binarise <- function(s) {
   if (is.logical(s)) {
     return(as.integer(s))

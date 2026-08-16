@@ -196,6 +196,13 @@ purity_completeness <- function(bins, truth) {
        note = "contamination and fragmentation are different failures")
 }
 
+#' .metabd_cheatsheet
+#'
+#' Part of the metabd_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .metabd_cheatsheet <- function() {
   "metabd: bin contigs into draft genomes from TWO signals -- tetranucleotide composition (available always, noisy on short contigs) and abundance covariance ACROSS SAMPLES (strong, but undefined with one sample). Earlier tools needed manual parameter tuning and degraded on poor assemblies; the contribution is an ADAPTIVE algorithm that removes the tuning. Confidence must scale with contig LENGTH, since discarding short contigs discards most of the assembly. Purity and completeness are separate failures and are reported separately."
 }

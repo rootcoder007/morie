@@ -290,6 +290,18 @@ morie_gwasem_gc <- function(stats, df = 1) {
 
 # -- helpers ----------------------------------------------------------------
 
+#' .gwasem_reml_delta
+#'
+#' Part of the gwasem_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param y See Usage.
+#' @param X See Usage.
+#' @param evals See Usage.
+#' @param evecs See Usage.
+#' @param ml See Usage.
+#' @return A list with \code{delta}, \code{sigma_a2}, \code{sigma_e2}, \code{ll}.
+#' @export
 .gwasem_reml_delta <- function(y, X, evals, evecs, ml) {
   n <- length(y); p <- ncol(X)
   yt <- as.numeric(t(evecs) %*% y)
@@ -358,10 +370,28 @@ morie_gwasem_gc <- function(stats, df = 1) {
        sigma_e2 = sigma_a2 * delta, ll = loglik(delta))
 }
 
+#' .gwasem_norm_sf
+#'
+#' Part of the gwasem_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param z See Usage.
+#' @return The value of \code{pnorm}.
+#' @export
 .gwasem_norm_sf <- function(z) {
   pnorm(abs(z), lower.tail = FALSE)
 }
 
+#' .gwasem_f_sf
+#'
+#' Part of the gwasem_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param f See Usage.
+#' @param df1 See Usage.
+#' @param df2 See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .gwasem_f_sf <- function(f, df1, df2) {
   if (f <= 0) return(1.0)
   x <- df2 / (df2 + df1 * f)

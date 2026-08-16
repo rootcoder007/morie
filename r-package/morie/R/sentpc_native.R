@@ -17,6 +17,15 @@
 .sentpc_EPS <- 1e-300
 .SPACE <- "\u2581"
 
+#' .escape_whitespace
+#'
+#' Part of the sentpc_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param text See Usage.
+#' @param add_prefix Defaults to \code{TRUE}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .escape_whitespace <- function(text, add_prefix = TRUE) {
   s <- as.character(text)
   out <- gsub(" ", .SPACE, s, fixed = TRUE)
@@ -24,6 +33,15 @@
   out
 }
 
+#' .unescape_whitespace
+#'
+#' Part of the sentpc_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param text See Usage.
+#' @param strip_prefix Defaults to \code{TRUE}.
+#' @return The value of \code{gsub}.
+#' @export
 .unescape_whitespace <- function(text, strip_prefix = TRUE) {
   s <- as.character(text)
   if (isTRUE(strip_prefix) && startsWith(s, .SPACE))
@@ -34,6 +52,14 @@
 # Split an escaped string so every unit after the first begins with
 # U+2581; joining reproduces the input exactly so runs of spaces do
 # not collapse.
+#' Split an escaped string so every unit after the first begins with
+#'
+#' U+2581; joining reproduces the input exactly so runs of spaces do not
+#' collapse.
+#'
+#' @param escaped See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .units <- function(escaped) {
   out <- character(0); cur <- ""
   chars <- strsplit(escaped, "")[[1]]

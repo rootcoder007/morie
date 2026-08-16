@@ -59,6 +59,14 @@
 )
 
 # Internal: resolve FBI CDE API key from arg -> env, or stop.
+#' Internal: resolve FBI CDE API key from arg -> env, or stop
+#'
+#' Part of the ingest_forensics implementation; see the file header for
+#' the source it follows.
+#'
+#' @param api_key Defaults to \code{NULL}.
+#' @return The value of \code{key}, as built in the body.
+#' @export
 .morie_forensics_require_fbi_key <- function(api_key = NULL) {
   key <- if (!is.null(api_key) && nzchar(api_key)) {
     api_key
@@ -80,6 +88,14 @@
 # Internal: flatten one nested NIBRS JSON record to a single row.
 # Nested dicts become dotted keys; scalar lists are ";"-joined;
 # nested lists are JSON-serialised.
+#' Internal: flatten one nested NIBRS JSON record to a single row
+#'
+#' Nested dicts become dotted keys; scalar lists are ";"-joined; nested
+#' lists are JSON-serialised.
+#'
+#' @param rec See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .morie_forensics_flatten_nibrs <- function(rec) {
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     stop(
@@ -124,6 +140,21 @@
 # 3ZZ: routes through .morie_dataset_http_text_with_status (libcurl
 # backend with httr2 fallback), inspects HTTP status code for
 # 401/403 (auth) + 4xx (generic) custom error formatting.
+#' Internal: shared GET + JSON parse with explicit auth checks
+#'
+#' 3ZZ: routes through .morie_dataset_http_text_with_status (libcurl
+#' backend with httr2 fallback), inspects HTTP status code for 401/403
+#' (auth) + 4xx (generic) custom error formatting.
+#'
+#' @param url See Usage.
+#' @param params Defaults to \code{list()}.
+#' @param headers Defaults to \code{list()}.
+#' @param timeout Defaults to \code{.MORIE_FORENSICS_DEFAULT_TIMEOUT}.
+#' @param user_agent Defaults to \code{.MORIE_FORENSICS_DEFAULT_UA}.
+#' @param auth_signup_url Defaults to \code{NULL}.
+#' @param label Defaults to \code{"forensics"}.
+#' @return The value of \code{.morie_from_json}.
+#' @export
 .morie_forensics_get_json <- function(url,
                                       params = list(),
                                       headers = list(),
@@ -170,6 +201,14 @@
 
 # Internal: rbind a list of named-list rows into a data.frame,
 # tolerating heterogeneous columns (missing -> NA).
+#' Internal: rbind a list of named-list rows into a data.frame,
+#'
+#' tolerating heterogeneous columns (missing -> NA).
+#'
+#' @param rows See Usage.
+#' @param columns Defaults to \code{NULL}.
+#' @return The value of \code{do.call}.
+#' @export
 .morie_forensics_rows_to_df <- function(rows, columns = NULL) {
   if (length(rows) == 0L) {
     if (is.null(columns)) {
@@ -318,6 +357,14 @@ morie_ingest_forensics_nibrs <- function(year,
 }
 
 # Internal: pull morie's documented columns out of one NamUs record.
+#' Internal: pull morie\'s documented columns out of one NamUs record
+#'
+#' Part of the ingest_forensics implementation; see the file header for
+#' the source it follows.
+#'
+#' @param rec See Usage.
+#' @return A list with \code{case_number}, \code{state}, \code{county}, \code{dlc_date}, \code{sex}, \code{race}, \code{age_min}, \code{age_max}, \code{height_cm_min}, \code{height_cm_max}, \code{weight_kg_min}, \code{weight_kg_max}, \code{first_name}, \code{last_name}, \code{city}, \code{circumstances}.
+#' @export
 .morie_forensics_flatten_namus <- function(rec) {
   sub_id <- rec$subjectIdentification
   if (is.null(sub_id)) sub_id <- list()
@@ -499,6 +546,14 @@ morie_ingest_forensics_namus_missing <- function(
 # Internal: flatten one flat Search-projection record (the shape the
 # NamUs Search endpoint actually returns; verified live 2026-07).
 # Height/weight are not projectable via Search -- NA by contract.
+#' Internal: flatten one flat Search-projection record (the shape the
+#'
+#' NamUs Search endpoint actually returns; verified live 2026-07).
+#' Height/weight are not projectable via Search -- NA by contract.
+#'
+#' @param rec See Usage.
+#' @return A list with \code{case_number}, \code{state}, \code{county}, \code{dlc_date}, \code{sex}, \code{race}, \code{age_min}, \code{age_max}, \code{height_cm_min}, \code{height_cm_max}, \code{weight_kg_min}, \code{weight_kg_max}, \code{first_name}, \code{last_name}, \code{city}, \code{circumstances}.
+#' @export
 .morie_forensics_flatten_namus_search <- function(rec) {
   g <- function(k) if (is.null(rec[[k]])) NA else rec[[k]]
   list(
@@ -520,6 +575,14 @@ morie_ingest_forensics_namus_missing <- function(
 }
 
 # Internal: pull morie's documented columns out of one NIST RDS record.
+#' Internal: pull morie\'s documented columns out of one NIST RDS record
+#'
+#' Part of the ingest_forensics implementation; see the file header for
+#' the source it follows.
+#'
+#' @param rec See Usage.
+#' @return A list with \code{dataset_id}, \code{title}, \code{description}, \code{publisher}, \code{issued}, \code{modified}, \code{keyword}, \code{landing_page}, \code{size_bytes}, \code{license}.
+#' @export
 .morie_forensics_flatten_nist <- function(rec) {
   keyword <- rec$keyword
   if (is.null(keyword)) keyword <- rec$theme

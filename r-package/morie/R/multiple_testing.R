@@ -25,6 +25,19 @@ NULL
 # Internal helpers (NOT exported)
 # ---------------------------------------------------------------------------
 
+#' .mt_result
+#'
+#' Part of the multiple_testing implementation; see the file header for
+#' the source it follows.
+#'
+#' @param title See Usage.
+#' @param call See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param interpretation Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .mt_result <- function(title, call, summary_lines = list(),
                        warnings = character(0),
                        interpretation = "",
@@ -41,6 +54,19 @@ NULL
   out
 }
 
+#' .mt_adjusted
+#'
+#' Part of the multiple_testing implementation; see the file header for
+#' the source it follows.
+#'
+#' @param method See Usage.
+#' @param p See Usage.
+#' @param alpha See Usage.
+#' @param adjusted See Usage.
+#' @param labels Defaults to \code{NULL}.
+#' @param note Defaults to \code{NULL}.
+#' @return The value of \code{.mt_result}.
+#' @export
 .mt_adjusted <- function(method, p, alpha, adjusted, labels = NULL,
                          note = NULL) {
   p <- as.numeric(p)
@@ -81,6 +107,14 @@ NULL
   )
 }
 
+#' .mt_check_p
+#'
+#' Part of the multiple_testing implementation; see the file header for
+#' the source it follows.
+#'
+#' @param p See Usage.
+#' @return The value of \code{pmin}.
+#' @export
 .mt_check_p <- function(p) {
   p <- as.numeric(p)
   if (length(p) == 0L) {
@@ -301,6 +335,18 @@ storey_q <- function(p_values, alpha = 0.05, lambda_param = 0.5,
 # Combining p-values
 # ---------------------------------------------------------------------------
 
+#' .mt_combine_result
+#'
+#' Part of the multiple_testing implementation; see the file header for
+#' the source it follows.
+#'
+#' @param method See Usage.
+#' @param stat See Usage.
+#' @param p_comb See Usage.
+#' @param interp See Usage.
+#' @param extra Defaults to \code{list()}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .mt_combine_result <- function(method, stat, p_comb, interp,
                                 extra = list()) {
   out <- list(

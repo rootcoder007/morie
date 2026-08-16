@@ -159,6 +159,16 @@ morie_tps_figures <- function(out_dir,
 
 # Time-rescaling residuals for the exponential-kernel Hawkes fit;
 # Exp(1)-distributed when the model is correct (Ogata 1988).
+#' Time-rescaling residuals for the exponential-kernel Hawkes fit;
+#'
+#' Exp(1)-distributed when the model is correct (Ogata 1988).
+#'
+#' @param dt See Usage.
+#' @param mu See Usage.
+#' @param kappa See Usage.
+#' @param omega See Usage.
+#' @return The value of \code{res}, as built in the body.
+#' @export
 .tps_stoch_hawkes_residuals <- function(dt, mu, kappa, omega) {
   t <- sort(as.numeric(difftime(dt, min(dt), units = "days")))
   n <- length(t)

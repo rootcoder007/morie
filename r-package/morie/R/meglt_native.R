@@ -24,6 +24,14 @@
 
 .meglt_eps <- 1e-12
 
+#' .meglt_svd
+#'
+#' Part of the meglt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param A See Usage.
+#' @return A list with \code{u}, \code{d}, \code{vt}.
+#' @export
 .meglt_svd <- function(A) {
   s <- svd(A, nu = nrow(A), nv = 0)
   list(u = s$u, d = s$d, vt = t(s$v))
@@ -165,6 +173,13 @@ relative_error <- function(X, M) {
 matrixcompletion <- svt
 matrix_completion_low_rank <- svt
 
+#' .meglt_cheatsheet
+#'
+#' Part of the meglt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .meglt_cheatsheet <- function() {
   paste("meglt: most low-rank matrices are recovered EXACTLY from ",
         "m >= C n^1.2 r log n sampled entries -- 1.25 covers all ",

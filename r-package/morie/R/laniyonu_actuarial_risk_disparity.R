@@ -62,6 +62,18 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+#' .lan_ard_result
+#'
+#' Part of the laniyonu_actuarial_risk_disparity implementation; see the
+#' file header for the source it follows.
+#'
+#' @param title See Usage.
+#' @param call See Usage.
+#' @param interpretation Defaults to \code{""}.
+#' @param warnings_ Defaults to \code{character(0)}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .lan_ard_result <- function(title, call, interpretation = "",
                              warnings_ = character(0), ...) {
   out <- list(
@@ -76,6 +88,14 @@ NULL
 }
 
 
+#' Binary logit at a single ordinal threshold (P(Y > k))
+#'
+#' Returns coefficients (with intercept), SEs, log-lik.
+#'
+#' @param yk See Usage.
+#' @param X See Usage.
+#' @return A list with \code{coef}, \code{se}, \code{loglik}, \code{n}, \code{converged}.
+#' @export
 .lan_threshold_logit <- function(yk, X) {
   # Binary logit at a single ordinal threshold (P(Y > k)).
   # Returns coefficients (with intercept), SEs, log-lik.
@@ -109,6 +129,15 @@ NULL
 }
 
 
+#' .lan_ord_levels_to_int
+#'
+#' Part of the laniyonu_actuarial_risk_disparity implementation; see the
+#' file header for the source it follows.
+#'
+#' @param y See Usage.
+#' @param levels_ See Usage.
+#' @return The value of \code{m}, as built in the body.
+#' @export
 .lan_ord_levels_to_int <- function(y, levels_) {
   m <- match(as.character(y), levels_)
   if (any(is.na(m))) {
@@ -124,6 +153,20 @@ NULL
 # Stage 1 — threshold-specific ordinal logit
 # ---------------------------------------------------------------------------
 
+#' .lan_run_ordinal
+#'
+#' Part of the laniyonu_actuarial_risk_disparity implementation; see the
+#' file header for the source it follows.
+#'
+#' @param df See Usage.
+#' @param outcome_col See Usage.
+#' @param race_cols See Usage.
+#' @param gender_col See Usage.
+#' @param control_cols See Usage.
+#' @param ordinal_levels See Usage.
+#' @param split_by_gender See Usage.
+#' @return The value of \code{.lan_ard_result}.
+#' @export
 .lan_run_ordinal <- function(df, outcome_col, race_cols, gender_col,
                               control_cols, ordinal_levels,
                               split_by_gender) {
@@ -308,6 +351,20 @@ NULL
 # Stage 2 — score-net-residual logit
 # ---------------------------------------------------------------------------
 
+#' .lan_score_net_residual
+#'
+#' Part of the laniyonu_actuarial_risk_disparity implementation; see the
+#' file header for the source it follows.
+#'
+#' @param sub See Usage.
+#' @param score_col See Usage.
+#' @param outcome_col See Usage.
+#' @param race_cols See Usage.
+#' @param control_cols See Usage.
+#' @param bootstrap_replicates See Usage.
+#' @param random_state See Usage.
+#' @return A list with \code{coefficients}, \code{std_errors}, \code{bootstrap_se}, \code{score_coefficient}, \code{n_obs}.
+#' @export
 .lan_score_net_residual <- function(sub, score_col, outcome_col,
                                      race_cols, control_cols,
                                      bootstrap_replicates,
@@ -365,6 +422,23 @@ NULL
 }
 
 
+#' .lan_run_residual
+#'
+#' Part of the laniyonu_actuarial_risk_disparity implementation; see the
+#' file header for the source it follows.
+#'
+#' @param df See Usage.
+#' @param outcome See Usage.
+#' @param outcome_col See Usage.
+#' @param score_col See Usage.
+#' @param race_cols See Usage.
+#' @param gender_col See Usage.
+#' @param control_cols See Usage.
+#' @param split_by_gender See Usage.
+#' @param bootstrap_replicates See Usage.
+#' @param random_state See Usage.
+#' @return The value of \code{.lan_ard_result}.
+#' @export
 .lan_run_residual <- function(df, outcome, outcome_col, score_col,
                                race_cols, gender_col, control_cols,
                                split_by_gender, bootstrap_replicates,

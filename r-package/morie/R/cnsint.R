@@ -4,6 +4,17 @@
 # (the identification constraint), and a N(0, prior_var) penalty is
 # carried on both sets of parameters because joint ML alone DIVERGES on
 # perfectly separated response patterns.
+#' Joint MAP for the Rasch model.  Difficulties are centred each cycle
+#'
+#' (the identification constraint), and a N(0, prior_var) penalty is
+#' carried on both sets of parameters because joint ML alone DIVERGES on
+#' perfectly separated response patterns.
+#'
+#' @param X See Usage.
+#' @param iters Defaults to \code{200}.
+#' @param prior_var Defaults to \code{4}.
+#' @return A list with \code{b}, \code{th}.
+#' @export
 .rasch_jmle <- function(X, iters = 200, prior_var = 4) {
   n <- nrow(X); k <- ncol(X)
   b <- numeric(k); th <- numeric(n)

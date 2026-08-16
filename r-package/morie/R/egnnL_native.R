@@ -22,6 +22,15 @@
 
 .EGNNL_MODES <- c("position", "momentum")
 
+#' .sqdist
+#'
+#' Part of the egnnL_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param a See Usage.
+#' @param b See Usage.
+#' @return A numeric value.
+#' @export
 .sqdist <- function(a, b) {
   sum((a - b) ^ 2)
 }
@@ -222,6 +231,13 @@ morie_egnnL_equivariance_error <- function(H, X, phi_e, phi_x, phi_h, Q, g,
        note = "x must transform WITH Q and g; h must not move at all")
 }
 
+#' .egnnL_cheatsheet
+#'
+#' Part of the egnnL_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .egnnL_cheatsheet <- function() {
   paste("egnnL: equivariance to translation, rotation and reflection",
         "WITHOUT spherical harmonics. m_ij depends on position only",

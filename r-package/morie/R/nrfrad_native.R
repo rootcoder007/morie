@@ -59,6 +59,14 @@ morie_nrfrad <- function(payload) {
   stop("nrfrad: unknown op")
 }
 
+#' .nrfrad_vec
+#'
+#' Part of the nrfrad_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .nrfrad_vec <- function(x) {
   if (is.null(x)) return(numeric(0))
   if (is.list(x) && !is.null(x$sigma)) return(unlist(x$sigma)) # not used
@@ -67,6 +75,13 @@ morie_nrfrad <- function(payload) {
 
 # Accept either a numeric vector or a list of numerics, mirroring
 # k.vec() which iterates over the input.
+#' Accept either a numeric vector or a list of numerics, mirroring
+#'
+#' k.vec() which iterates over the input.
+#'
+#' @param p See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .as_numeric_vec <- function(p) {
   if (is.null(p)) return(numeric(0))
   if (is.list(p)) {
@@ -265,6 +280,13 @@ density_is_view_independent <- function(model, point, directions, tol = 1e-9) {
                     "for colour"))
 }
 
+#' .nrfrad_cheatsheet
+#'
+#' Part of the nrfrad_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .nrfrad_cheatsheet <- function() {
   paste("nrfrad: a scene IS a continuous 5D function -- position plus",
         "viewing direction to density and radiance -- stored in a plain",

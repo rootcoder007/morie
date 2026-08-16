@@ -63,6 +63,15 @@ morie_datasets_ottawa_open_crime_adjacent_layers <- function(offline = TRUE) {
                                 offline)
 }
 
+#' .morie_canadian_cat_fixture
+#'
+#' Part of the datasets_canadian_cities implementation; see the file
+#' header for the source it follows.
+#'
+#' @param fname See Usage.
+#' @param offline See Usage.
+#' @return The value of \code{utils::read.csv}.
+#' @export
 .morie_canadian_cat_fixture <- function(fname, offline) {
   if (!isTRUE(offline)) {
     stop(sprintf(paste0(
@@ -232,6 +241,14 @@ morie_datasets_edmonton_socrata_by_id <- function(soda_id,
 # Helpers
 # ---------------------------------------------------------------------------
 
+#' .morie_canadian_fixture
+#'
+#' Part of the datasets_canadian_cities implementation; see the file
+#' header for the source it follows.
+#'
+#' @param fname See Usage.
+#' @return The value of \code{utils::read.csv}.
+#' @export
 .morie_canadian_fixture <- function(fname) {
   path <- system.file("extdata", fname, package = "morie")
   if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {

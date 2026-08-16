@@ -1,3 +1,14 @@
+#' .binary_power_required_n
+#'
+#' Part of the study_reporting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param p1 See Usage.
+#' @param p2 See Usage.
+#' @param alpha Defaults to \code{0.05}.
+#' @param power Defaults to \code{0.8}.
+#' @return A numeric value.
+#' @export
 .binary_power_required_n <- function(p1, p2, alpha = 0.05, power = 0.80) {
   h <- abs(2 * asin(sqrt(p1)) - 2 * asin(sqrt(p2)))
   if (is.na(h) || h <= 0) {
@@ -8,6 +19,18 @@
   2 * ((z_alpha + z_beta) / h)^2
 }
 
+#' .continuous_power_required_n
+#'
+#' Part of the study_reporting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param mean1 See Usage.
+#' @param mean2 See Usage.
+#' @param sd_pooled See Usage.
+#' @param alpha Defaults to \code{0.05}.
+#' @param power Defaults to \code{0.8}.
+#' @return A numeric value.
+#' @export
 .continuous_power_required_n <- function(mean1, mean2, sd_pooled, alpha = 0.05, power = 0.80) {
   d <- abs(.safe_divide(mean1 - mean2, sd_pooled))
   if (is.na(d) || d <= 0) {
@@ -18,6 +41,17 @@
   2 * ((z_alpha + z_beta) / d)^2
 }
 
+#' .block_schedule
+#'
+#' Part of the study_reporting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param endpoint See Usage.
+#' @param required_n See Usage.
+#' @param strata_levels See Usage.
+#' @param target_power Defaults to \code{0.8}.
+#' @return The value of \code{do.call}.
+#' @export
 .block_schedule <- function(endpoint, required_n, strata_levels, target_power = 0.8) {
   out <- list()
   if (length(strata_levels) == 0L || is.na(required_n)) {
@@ -63,6 +97,14 @@
   do.call(rbind, out)
 }
 
+#' .run_power_design_module_extended
+#'
+#' Part of the study_reporting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param data See Usage.
+#' @return A vector, from \code{c}.
+#' @export
 .run_power_design_module_extended <- function(data) {
   data <- .cpads_labeled_data(data)
   binary_endpoints <- list(
@@ -392,6 +434,16 @@
   )
 }
 
+#' .read_existing_output
+#'
+#' Part of the study_reporting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param output_dir See Usage.
+#' @param file_name See Usage.
+#' @param fallback Defaults to \code{NULL}.
+#' @return The value of \code{fallback}, as built in the body.
+#' @export
 .read_existing_output <- function(output_dir, file_name, fallback = NULL) {
   path <- file.path(output_dir, file_name)
   if (file.exists(path)) {
@@ -400,6 +452,13 @@
   fallback
 }
 
+#' The legacy migration tree exists only in a source checkout; an
+#'
+#' installed package has no project root. Degrade to NA so callers
+#' (.copy_legacy_artifacts) simply copy nothing rather than erroring.
+#'
+#' @return The value of \code{file.path}.
+#' @export
 .legacy_reference_root <- function() {
   # The legacy migration tree exists only in a source checkout; an
   # installed package has no project root. Degrade to NA so callers
@@ -411,6 +470,16 @@
   file.path(root, "migration_files", "one")
 }
 
+#' .copy_legacy_artifacts
+#'
+#' Part of the study_reporting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param relative_paths See Usage.
+#' @param output_dir See Usage.
+#' @param root Defaults to \code{file.path(.legacy_reference_root(), "six", "outputs")}.
+#' @return The value of \code{copied}, as built in the body.
+#' @export
 .copy_legacy_artifacts <- function(relative_paths, output_dir, root = file.path(.legacy_reference_root(), "six", "outputs")) {
   copied <- character()
   for (rel in relative_paths) {
@@ -424,6 +493,15 @@
   copied
 }
 
+#' .run_ebac_integrations_module_internal
+#'
+#' Part of the study_reporting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param data See Usage.
+#' @param output_dir Defaults to \code{NULL}.
+#' @return A list with \code{ebac_final_domain_samples}, \code{ebac_final_formula_input_audit}, \code{ebac_final_formula_validation}, \code{ebac_final_interaction_tests}, \code{ebac_final_weighted_descriptives}, \code{ebac_final_weighted_linear}, \code{ebac_final_weighted_or}, \code{ebac_final_smote_compare}, \code{ebac_final_smote_or}, \code{ebac_final_smote_status}, \code{ebac_final_causal_effects}, \code{ebac_final_cate}, \code{ebac_final_consistency_checks}, \code{ebac_final_crosswalk_previous}, \code{ebac_final_dml_results}, \code{ebac_final_dml_status}, \code{ebac_final_key_summary}, \code{ebac_final_user_guide_variable_map}, \code{ebac_final_variable_audit}.
+#' @export
 .run_ebac_integrations_module_internal <- function(data, output_dir = NULL) {
   if (is.null(output_dir)) {
     output_dir <- tempfile("morie-ebac-integrations-")
@@ -526,6 +604,20 @@
 # Render one figure to figures/<name>.pdf (and optionally .png). Returns the
 # relative paths written, or character(0) if the draw function errored (the
 # half-written file is removed and a warning names the figure).
+#' Render one figure to figures/<name>.pdf (and optionally .png).
+#' Returns the
+#'
+#' relative paths written, or character(0) if the draw function errored
+#' (the half-written file is removed and a warning names the figure).
+#'
+#' @param fig_dir See Usage.
+#' @param name See Usage.
+#' @param draw See Usage.
+#' @param png_too Defaults to \code{FALSE}.
+#' @param width Defaults to \code{8}.
+#' @param height Defaults to \code{6}.
+#' @return The value of \code{wrote}, as built in the body.
+#' @export
 .fig_write <- function(fig_dir, name, draw, png_too = FALSE,
                        width = 8, height = 6) {
   wrote <- character()
@@ -562,6 +654,16 @@
 }
 
 # Standardized mean differences of dummy-coded covariates between arms.
+#' Standardized mean differences of dummy-coded covariates between arms
+#'
+#' Part of the study_reporting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param data See Usage.
+#' @param treat_col See Usage.
+#' @param covariate_cols See Usage.
+#' @return The value of \code{[}.
+#' @export
 .smd_by_treatment <- function(data, treat_col, covariate_cols) {
   treat <- data[[treat_col]]
   keep <- !is.na(treat)
@@ -589,6 +691,15 @@
   smd[is.finite(smd)]
 }
 
+#' .run_figures_module_internal
+#'
+#' Part of the study_reporting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param data See Usage.
+#' @param output_dir Defaults to \code{NULL}.
+#' @return Invisibly,the value of \code{list}.
+#' @export
 .run_figures_module_internal <- function(data, output_dir = NULL) {
   if (is.null(output_dir)) {
     output_dir <- tempfile("morie-figures-")
@@ -774,6 +885,15 @@
   invisible(list())
 }
 
+#' .run_tables_module_internal
+#'
+#' Part of the study_reporting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param data See Usage.
+#' @param output_dir Defaults to \code{NULL}.
+#' @return Invisibly,the value of \code{list}.
+#' @export
 .run_tables_module_internal <- function(data, output_dir = NULL) {
   if (is.null(output_dir)) {
     output_dir <- tempfile("morie-tables-")
@@ -841,6 +961,15 @@
   invisible(list())
 }
 
+#' .run_final_report_module_internal
+#'
+#' Part of the study_reporting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param data See Usage.
+#' @param output_dir Defaults to \code{NULL}.
+#' @return A list with \code{ebac_final_output_coverage}, \code{ebac_final_output_shapes}, \code{ebac_final_script_run_status}, \code{ebac_final_audit_checks}, \code{ebac_final_user_guide_excerpt}.
+#' @export
 .run_final_report_module_internal <- function(data, output_dir = NULL) {
   if (is.null(output_dir)) {
     output_dir <- tempfile("morie-final-report-")

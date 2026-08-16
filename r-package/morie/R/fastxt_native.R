@@ -12,6 +12,18 @@
 # compositionality", NIPS 26, 3111-3119 -- the skipgram with negative
 # sampling this extends.
 
+#' .subwords
+#'
+#' Part of the fastxt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param word See Usage.
+#' @param n_min Defaults to \code{3L}.
+#' @param n_max Defaults to \code{6L}.
+#' @param boundary Defaults to \code{TRUE}.
+#' @param whole_word Defaults to \code{TRUE}.
+#' @return The value of \code{grams}, as built in the body.
+#' @export
 .subwords <- function(word, n_min = 3L, n_max = 6L, boundary = TRUE,
                       whole_word = TRUE) {
   lo <- as.integer(n_min); hi <- as.integer(n_max)
@@ -37,6 +49,14 @@
   grams
 }
 
+#' .fnv1a
+#'
+#' Part of the fastxt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param s See Usage.
+#' @return The value of \code{h}, as built in the body.
+#' @export
 .fnv1a <- function(s) {
   h <- 2166136261
   bytes <- as.integer(charToRaw(s))
@@ -47,6 +67,16 @@
   h
 }
 
+#' .gram_slot
+#'
+#' Part of the fastxt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param g See Usage.
+#' @param gram_index See Usage.
+#' @param hash_buckets See Usage.
+#' @return The value of \code{gi}, as built in the body.
+#' @export
 .gram_slot <- function(g, gram_index, hash_buckets) {
   if (!is.null(hash_buckets)) {
     return(.fnv1a(g) %% as.integer(hash_buckets))
@@ -56,6 +86,21 @@
   gi
 }
 
+#' .word_vector
+#'
+#' Part of the fastxt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param word See Usage.
+#' @param Z See Usage.
+#' @param gram_index See Usage.
+#' @param n_min Defaults to \code{3L}.
+#' @param n_max Defaults to \code{6L}.
+#' @param boundary Defaults to \code{TRUE}.
+#' @param whole_word Defaults to \code{TRUE}.
+#' @param hash_buckets Defaults to \code{NULL}.
+#' @return A list with \code{v}, \code{hit}.
+#' @export
 .word_vector <- function(word, Z, gram_index, n_min = 3L, n_max = 6L,
                          boundary = TRUE, whole_word = TRUE,
                          hash_buckets = NULL) {
@@ -72,6 +117,14 @@
   list(v = v, hit = hit)
 }
 
+#' .as_docs
+#'
+#' Part of the fastxt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param corpus See Usage.
+#' @return The value of \code{docs}, as built in the body.
+#' @export
 .as_docs <- function(corpus) {
   if (is.null(corpus)) stop("fasttext: corpus must not be None")
   docs <- list()
