@@ -295,18 +295,18 @@ def bandwidth_ik(
     cutoff: float = 0.0,
     kernel: str = "triangular",
 ) -> BandwidthResult:
-    """Imbens-Kalyanaraman (2012) optimal bandwidth selector.
+    """Imbens-Kalyanaraman MSE-optimal bandwidth.
+
+    The three-step plug-in of IK (2012): a pilot window at the cutoff
+    for the density and conditional variance, a global cubic for the
+    third derivative, one-sided quadratics for the second derivatives,
+    and the regularised MSE-optimal rule with the kernel constant.
 
     Parameters
     ----------
-    x : np.ndarray
-        Running variable.
-    y : np.ndarray
-        Outcome.
+    x, y : np.ndarray
     cutoff : float
-        RD cutoff.
     kernel : str
-        Kernel function name.
 
     Returns
     -------
@@ -314,63 +314,80 @@ def bandwidth_ik(
 
     References
     ----------
-    Imbens, G. W., & Kalyanaraman, K. (2012). Optimal bandwidth choice
-    for the regression discontinuity estimator. *Review of Economic
-    Studies*, 79(3), 933--959.
+    Imbens, G. and Kalyanaraman, K. (2012). Optimal bandwidth choice for
+        the regression discontinuity estimator. Review of Economic
+        Studies, 79(3), 933-959.
     """
+    x = np.asarray(x, dtype=float)
+    y = np.asarray(y, dtype=float)
+    ok = np.isfinite(x) & np.isfinite(y)
+    x, y = x[ok], y[ok]
     n = len(x)
-    x_range = x.max() - x.min()
+    sd_x = float(np.std(x, ddof=1))
 
-    # Step 1: pilot bandwidth via rule of thumb
-    h_pilot = 1.84 * np.std(x) * n ** (-1 / 5)
+    # Step 1: density and conditional variance in a pilot window.
+    h1 = 1.84 * sd_x * n ** (-1 / 5)
+    il = (x >= cutoff - h1) & (x < cutoff)
+    ir = (x >= cutoff) & (x <= cutoff + h1)
+    n_l, n_r = int(il.sum()), int(ir.sum())
+    if n_l < 3 or n_r < 3:
+        return BandwidthResult(
+            h_opt=float(1.84 * sd_x * n ** (-1 / 5)),
+            method="ROT fallback (too few cutoff obs)",
+            details={},
+        )
+    f_c = (n_l + n_r) / (2 * n * h1)
+    s2_c = float(
+        np.sum((y[il] - y[il].mean()) ** 2) + np.sum((y[ir] - y[ir].mean()) ** 2)
+    ) / (n_l + n_r)
 
-    # Step 2: estimate second derivatives on each side
-    left = x < cutoff
-    right = x >= cutoff
+    # Step 2: third derivative from a global cubic, then the
+    # second-stage pilot bandwidths and one-sided quadratics.
+    d = x - cutoff
+    tr = (d >= 0).astype(float)
+    G = np.column_stack([np.ones(n), tr, d, d ** 2, d ** 3])
+    coef, *_ = np.linalg.lstsq(G, y, rcond=None)
+    m3 = 6 * coef[4]
+    if not np.isfinite(m3) or m3 == 0:
+        m3 = 1e-8
+    n_pos, n_neg = int((d >= 0).sum()), int((d < 0).sum())
+    base = (s2_c / (f_c * m3 ** 2)) ** (1 / 7)
+    h2_r = 3.56 * base * n_pos ** (-1 / 7)
+    h2_l = 3.56 * base * n_neg ** (-1 / 7)
 
-    def _estimate_curvature(x_sub, y_sub, h):
-        if len(x_sub) < 4:
-            return 0.0
-        beta, _ = _local_poly_fit(x_sub, y_sub, cutoff, h, p=2, kernel=kernel)
-        return 2 * beta[2] if len(beta) > 2 else 0.0
+    def _fit2(mask, h2):
+        sel = mask & (np.abs(d) <= h2)
+        k = int(sel.sum())
+        if k < 4:
+            return 0.0, k
+        dd = d[sel]
+        Q = np.column_stack([np.ones(k), dd, dd ** 2])
+        b, *_ = np.linalg.lstsq(Q, y[sel], rcond=None)
+        return float(2 * b[2]), k
 
-    m2_left = _estimate_curvature(x[left], y[left], h_pilot)
-    m2_right = _estimate_curvature(x[right], y[right], h_pilot)
+    m2_r, N_r = _fit2(d >= 0, h2_r)
+    m2_l, N_l = _fit2(d < 0, h2_l)
 
-    # Step 3: estimate variance on each side
-    def _local_variance(x_sub, y_sub, h):
-        if len(x_sub) < 3:
-            return np.var(y_sub) if len(y_sub) > 0 else 1.0
-        beta, _ = _local_poly_fit(x_sub, y_sub, cutoff, h, p=1, kernel=kernel)
-        X = np.column_stack([np.ones(len(x_sub)), x_sub - cutoff])
-        resid = y_sub - X @ beta[:2]
-        K = _get_kernel(kernel)
-        kw = K((x_sub - cutoff) / h) / h
-        return float(np.sum(kw * resid**2) / max(np.sum(kw), 1e-10))
-
-    sigma2_left = _local_variance(x[left], y[left], h_pilot)
-    sigma2_right = _local_variance(x[right], y[right], h_pilot)
-
-    # Step 4: compute optimal bandwidth
-    # IK formula (simplified)
-    n_left = left.sum()
-    n_right = right.sum()
-    f_x = n / (2 * x_range)  # approximate density at cutoff
-
-    curvature = m2_right - m2_left
-    if abs(curvature) < 1e-10:
-        curvature = 1e-10
-
-    # Kernel constants for triangular kernel
-    C_k = 2.1  # approximate
-    regularisation = sigma2_left / max(n_left, 1) + sigma2_right / max(n_right, 1)
-    h_opt = C_k * (regularisation / (curvature**2 + 1e-10)) ** (1 / 5) * n ** (-1 / 5)
-    h_opt = min(max(h_opt, x_range * 0.02), x_range * 0.5)
+    # Step 3: the regularised MSE-optimal bandwidth.
+    r_r = 2160 * s2_c / (max(N_r, 1) * h2_r ** 4)
+    r_l = 2160 * s2_c / (max(N_l, 1) * h2_l ** 4)
+    C_K = {"triangular": 3.4375, "uniform": 5.40,
+           "epanechnikov": 4.497}.get(kernel, 3.4375)
+    denom = (m2_r - m2_l) ** 2 + r_r + r_l
+    h_ik = C_K * (2 * s2_c / (f_c * denom)) ** (1 / 5) * n ** (-1 / 5)
 
     return BandwidthResult(
-        h_opt=float(h_opt), method="IK", details={"h_pilot": h_pilot, "m2_left": m2_left, "m2_right": m2_right}
+        h_opt=float(h_ik),
+        method="IK 2012 plug-in",
+        details={
+            "f_c": float(f_c),
+            "sigma2_c": float(s2_c),
+            "m2_right": float(m2_r),
+            "m2_left": float(m2_l),
+            "reg_right": float(r_r),
+            "reg_left": float(r_l),
+        },
     )
-
 
 def bandwidth_rot(
     x: np.ndarray,
