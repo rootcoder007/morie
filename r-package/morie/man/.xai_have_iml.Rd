@@ -14,3 +14,6 @@ A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_pe
 The value of \code{requireNamespace}.
 }
 \keyword{internal}
+\examples{
+.xai_have_iml()
+}

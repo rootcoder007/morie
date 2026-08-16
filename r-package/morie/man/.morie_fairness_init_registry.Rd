@@ -14,3 +14,6 @@ A step of the fairness_cityprofile implementation. Called by \code{morie_fairnes
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.morie_fairness_init_registry()
+}

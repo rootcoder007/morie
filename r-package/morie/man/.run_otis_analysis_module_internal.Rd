@@ -14,3 +14,6 @@ Part of the study_otis_mapq implementation; see the file header for the source i
 A list with \code{otis_descriptives}, \code{otis_alert_combos}, \code{otis_dml_results}, \code{otis_trends}.
 }
 \keyword{internal}
+\examples{
+.run_otis_analysis_module_internal()
+}

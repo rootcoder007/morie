@@ -18,3 +18,8 @@ Part of the vepan_native implementation; see the file header for the source it f
 A character value.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+.vepan_hgvs_p(D, V)
+}

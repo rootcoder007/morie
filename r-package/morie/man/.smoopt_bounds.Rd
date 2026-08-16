@@ -21,3 +21,6 @@ svmopt._bounds exactly.
 A vector, from \code{c}.
 }
 \keyword{internal}
+\examples{
+.smoopt_bounds(i1 = 5L, i2 = 5L, alpha = 0.5, y = c(1, 2, 3, 4, 5, 6, 7, 8), C = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

@@ -18,3 +18,7 @@ the gpfit() optimiser closure so the xi ~ 0 (exponential) and out-of-support bra
 The value of \code{ll}, as built in the body.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.gpfit_log_gp(V, V)
+}

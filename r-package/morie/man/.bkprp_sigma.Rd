@@ -18,3 +18,6 @@ A step of the bkprp implementation. Called by \code{morie_bkprp_backpropagation}
 The value of \code{switch}.
 }
 \keyword{internal}
+\examples{
+.bkprp_sigma(z = c(1, 2, 3, 4, 5, 6, 7, 8), activation = 5L)
+}

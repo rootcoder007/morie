@@ -17,3 +17,7 @@ A step of the airl_native implementation. No other function in the package calls
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.airl_key(V)
+}

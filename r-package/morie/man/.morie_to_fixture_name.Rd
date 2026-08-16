@@ -17,3 +17,6 @@ Part of the toronto_neighbourhoods implementation; see the file header for the s
 The value of \code{switch}.
 }
 \keyword{internal}
+\examples{
+.morie_to_fixture_name(version = 5L)
+}

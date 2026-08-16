@@ -18,3 +18,7 @@ Part of the otis_all_analyze implementation; see the file header for the source 
 The value of \code{.otis_wrap}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.otis_not_yet_ported(V)
+}

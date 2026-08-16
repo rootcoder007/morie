@@ -14,3 +14,6 @@ Uses configure-time flags written into DESCRIPTION at install (Phase 3JJJ1/2: MO
 A list with \code{libcurl}, \code{libsodium}, \code{liboqs}.
 }
 \keyword{internal}
+\examples{
+.morie_check_system_libs()
+}

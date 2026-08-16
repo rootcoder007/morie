@@ -18,3 +18,7 @@ Part of the trfbl implementation; see the file header for the source it follows.
 The value of \code{sweep}.
 }
 \keyword{internal}
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+.trfbl_layer_norm(M)
+}

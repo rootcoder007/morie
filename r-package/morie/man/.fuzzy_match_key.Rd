@@ -17,3 +17,6 @@ A step of the database implementation. Called by \code{morie_dataset_info}, \cod
 Nothing; the function is called for its effect.
 }
 \keyword{internal}
+\examples{
+.fuzzy_match_key(key = 5L)
+}

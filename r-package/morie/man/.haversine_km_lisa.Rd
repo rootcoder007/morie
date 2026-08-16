@@ -20,3 +20,6 @@ Part of the mrm_lisa implementation; see the file header for the source it follo
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.haversine_km_lisa(lat1 = c(1, 2, 3, 4, 5, 6, 7, 8), lon1 = c(1, 2, 3, 4, 5, 6, 7, 8), lat2 = c(1, 2, 3, 4, 5, 6, 7, 8), lon2 = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

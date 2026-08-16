@@ -18,3 +18,7 @@ Part of the mdppol_native implementation; see the file header for the source it 
 A list with \code{Pm}, \code{R}, \code{S}, \code{A}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.mdppol_args(V, V)
+}

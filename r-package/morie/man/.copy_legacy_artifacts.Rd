@@ -19,3 +19,7 @@ Part of the study_reporting implementation; see the file header for the source i
 The value of \code{copied}, as built in the body.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.copy_legacy_artifacts(V, V)
+}

@@ -19,3 +19,6 @@ A step of the helpers_horowitz implementation. Called by \code{hrzp1}, \code{mor
 A vector, from \code{as.numeric}.
 }
 \keyword{internal}
+\examples{
+.hrz_nw_loo(z = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), h = 0.5)
+}

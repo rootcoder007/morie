@@ -14,3 +14,6 @@ Part of the tps_render implementation; see the file header for the source it fol
 The value of \code{requireNamespace}.
 }
 \keyword{internal}
+\examples{
+.tps_has_ggplot2()
+}

@@ -17,3 +17,6 @@ Part of the variable_taxonomy implementation; see the file header for the source
 A character value.
 }
 \keyword{internal}
+\examples{
+.role_from_name(col_name = 5L)
+}

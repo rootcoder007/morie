@@ -14,3 +14,6 @@ Part of the tldapar_native implementation; see the file header for the source it
 A character value.
 }
 \keyword{internal}
+\examples{
+.tldapar_cheatsheet()
+}

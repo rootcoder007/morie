@@ -17,3 +17,6 @@ A step of the arsau implementation. Called by \code{.morie_resolve_arsau_dir}. S
 The value of \code{trimws}.
 }
 \keyword{internal}
+\examples{
+.morie_env(name = 5L)
+}

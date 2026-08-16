@@ -17,3 +17,7 @@ Part of the otis_tps_overlay implementation; see the file header for the source 
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+.otis_tps_incidents_by_year(D)
+}

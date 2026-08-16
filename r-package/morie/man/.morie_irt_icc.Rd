@@ -19,3 +19,6 @@ Part of the survey_psych_native implementation; see the file header for the sour
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.morie_irt_icc(a = c(1, 2, 3, 4, 5, 6, 7, 8), b = c(1, 2, 3, 4, 5, 6, 7, 8), theta = 0.5)
+}

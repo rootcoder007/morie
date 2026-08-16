@@ -17,3 +17,7 @@ Part of the spatial_voting implementation; see the file header for the source it
 The value of \code{apply}.
 }
 \keyword{internal}
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+.sv_nanmean_col(M)
+}

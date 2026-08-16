@@ -18,3 +18,6 @@ Part of the otis_causal implementation; see the file header for the source it fo
 The value of \code{.otis_cluster_se}.
 }
 \keyword{internal}
+\examples{
+.otis_multiway_cluster_se(scores = 5L, clusters = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

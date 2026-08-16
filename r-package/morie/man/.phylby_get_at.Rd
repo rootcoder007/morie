@@ -18,3 +18,6 @@ Part of the phylby_native implementation; see the file header for the source it 
 The value of \code{node}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.phylby_get_at(node = c(1, 2, 3, 4, 5, 6, 7, 8), path = 5L)
+}

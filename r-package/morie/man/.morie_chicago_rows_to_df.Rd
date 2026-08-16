@@ -17,3 +17,7 @@ heterogeneous JSON shapes (missing columns become NA).
 The value of \code{do.call}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.morie_chicago_rows_to_df(V)
+}

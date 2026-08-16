@@ -18,3 +18,7 @@ Prefer integer-triple OCC_YEAR/OCC_MONTH/OCC_DAY (local-time decomposition unaff
 A vector, from \code{sort}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.tps_stoch_date_series(V)
+}

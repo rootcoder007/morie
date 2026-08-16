@@ -17,3 +17,6 @@ Part of the dataset_portal_catalog implementation; see the file header for the s
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.morie_portal_fixture_rows(fname = 5L)
+}

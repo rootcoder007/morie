@@ -20,3 +20,6 @@ Exp(1)-distributed when the model is correct (Ogata 1988).
 The value of \code{res}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.tps_stoch_hawkes_residuals(dt = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2, 3, 4, 5, 6, 7, 8), kappa = c(1, 2, 3, 4, 5, 6, 7, 8), omega = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

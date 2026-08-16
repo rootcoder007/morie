@@ -18,3 +18,7 @@ FutureResult) can segfault R uncatchably when DoubleML/mlr3 resolve futures. Set
 Invisibly,nothing; the function is called for its effect.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.onLoad(V, V)
+}

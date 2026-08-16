@@ -17,3 +17,7 @@ Part of the snpqc1_native implementation; see the file header for the source it 
 A list with \code{G}, \code{n}, \code{m}.
 }
 \keyword{internal}
+\examples{
+S <- c("a", "b", "c")
+.snpqc1_check(S)
+}

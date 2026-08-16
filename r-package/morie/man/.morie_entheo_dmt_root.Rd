@@ -14,3 +14,6 @@
 The value of \code{if}.
 }
 \keyword{internal}
+\examples{
+.morie_entheo_dmt_root()
+}

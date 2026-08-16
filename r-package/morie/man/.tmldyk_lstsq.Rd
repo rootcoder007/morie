@@ -19,3 +19,7 @@ Part of the tmldyk_native implementation; see the file header for the source it 
 A matrix, from \code{solve}.
 }
 \keyword{internal}
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+.tmldyk_lstsq(M, M)
+}

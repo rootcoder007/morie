@@ -19,3 +19,6 @@ Part of the mrm_uof implementation; see the file header for the source it follow
 A vector, from \code{c}.
 }
 \keyword{internal}
+\examples{
+.uof_wilson_ci(k = 5L, n = 5L)
+}

@@ -17,3 +17,6 @@ Part of the siu_parser implementation; see the file header for the source it fol
 A character value.
 }
 \keyword{internal}
+\examples{
+.siu_p_scan_mh_race(narrative = 5L)
+}

@@ -17,3 +17,7 @@ the fit is reproducible regardless of the caller\\'s random seed. The perturbati
 The value of \code{lapply}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.hawkes_restarts(V)
+}

@@ -17,3 +17,6 @@ Part of the sensitivity implementation; see the file header for the source it fo
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.rr_to_evalue(rr = 5L)
+}

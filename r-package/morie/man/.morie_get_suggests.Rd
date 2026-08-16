@@ -14,3 +14,6 @@ A step of the install_extras implementation. Called by \code{morie_install_extra
 The value of \code{[}.
 }
 \keyword{internal}
+\examples{
+.morie_get_suggests()
+}

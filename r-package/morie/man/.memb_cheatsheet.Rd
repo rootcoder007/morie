@@ -14,3 +14,6 @@ Part of the memb_native implementation; see the file header for the source it fo
 A character value.
 }
 \keyword{internal}
+\examples{
+.memb_cheatsheet()
+}

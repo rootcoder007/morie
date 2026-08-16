@@ -17,3 +17,7 @@ A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_al
 The value of \code{m}, as built in the body.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.xai_as_2d(V)
+}

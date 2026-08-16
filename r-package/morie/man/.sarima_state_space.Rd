@@ -18,3 +18,7 @@ Part of the sarima_native implementation; see the file header for the source it 
 A list with \code{T}, \code{R}, \code{r}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.sarima_state_space(V, V)
+}

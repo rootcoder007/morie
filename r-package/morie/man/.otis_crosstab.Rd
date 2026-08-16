@@ -22,3 +22,6 @@ Part of the otis_all_analyze implementation; see the file header for the source 
 A list with \code{title}, \code{headers}, \code{rows}.
 }
 \keyword{internal}
+\examples{
+.otis_crosstab(df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), row = c(1, 2, 3, 4, 5, 6, 7, 8), col = c("a", "b", "c"), value = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

@@ -18,3 +18,7 @@ Part of the psycho_native implementation; see the file header for the source it 
 A list with \code{mu}, \code{Q}, \code{w}, \code{k}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.psy_fixed_pool(V, V)
+}

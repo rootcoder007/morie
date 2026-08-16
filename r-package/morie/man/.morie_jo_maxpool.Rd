@@ -18,3 +18,6 @@ Part of the ts_joseph implementation; see the file header for the source it foll
 A vector, from \code{vapply}.
 }
 \keyword{internal}
+\examples{
+.morie_jo_maxpool(v = c(1, 2, 3, 4, 5, 6, 7, 8), k = 5L)
+}

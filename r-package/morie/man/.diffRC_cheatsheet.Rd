@@ -14,3 +14,6 @@
 A character value.
 }
 \keyword{internal}
+\examples{
+.diffRC_cheatsheet()
+}

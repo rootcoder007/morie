@@ -17,3 +17,7 @@ A step of the abcgp_native implementation. Called by \code{gp_predict}. See the 
 A vector, from \code{c}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.gp_basis(V)
+}

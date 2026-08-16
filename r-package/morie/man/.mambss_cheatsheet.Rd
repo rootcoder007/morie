@@ -14,3 +14,6 @@ Part of the mambss_native implementation; see the file header for the source it 
 A character value.
 }
 \keyword{internal}
+\examples{
+.mambss_cheatsheet()
+}

@@ -18,3 +18,6 @@ A step of the bayrjmcmc_native implementation. Called by \code{changepoint_rjmcm
 The value of \code{function}.
 }
 \keyword{internal}
+\examples{
+.unif_stream(seed = 5L)
+}

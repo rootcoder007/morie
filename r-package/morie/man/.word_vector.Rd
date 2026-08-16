@@ -35,3 +35,6 @@ compositionality", NIPS 26, 3111-3119 -- the skipgram with negative
 sampling this extends.
 }
 \keyword{internal}
+\examples{
+.word_vector(word = 5L, Z = c(1, 2, 3, 4, 5, 6, 7, 8), gram_index = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)))
+}

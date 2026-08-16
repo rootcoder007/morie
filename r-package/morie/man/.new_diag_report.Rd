@@ -22,3 +22,6 @@ A step of the diagnostics implementation. Called by \code{full_diagnostics}. See
 The value of \code{structure}.
 }
 \keyword{internal}
+\examples{
+.new_diag_report(residuals = c(1, 2, 3, 4, 5, 6, 7, 8), influence = c(1, 2, 3, 4, 5, 6, 7, 8), collinearity = c(1, 2, 3, 4, 5, 6, 7, 8), gof = c(1, 2, 3, 4, 5, 6, 7, 8), spec_tests = c(1, 2, 3, 4, 5, 6, 7, 8), assessment = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

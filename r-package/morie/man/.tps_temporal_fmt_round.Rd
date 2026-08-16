@@ -18,3 +18,6 @@ Part of the tps_temporal implementation; see the file header for the source it f
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.tps_temporal_fmt_round(x = 5L, k = 5L)
+}

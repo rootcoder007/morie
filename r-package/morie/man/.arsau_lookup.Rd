@@ -18,3 +18,6 @@ A step of the arsau implementation. Called by \code{morie_arsau_describe}, \code
 The value of \code{[[}.
 }
 \keyword{internal}
+\examples{
+.arsau_lookup(year_or_range = 5L, kind = 5L)
+}

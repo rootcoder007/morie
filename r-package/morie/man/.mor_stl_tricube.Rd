@@ -17,3 +17,6 @@ Part of the stlAn_native implementation; see the file header for the source it f
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.mor_stl_tricube(u = 5L)
+}

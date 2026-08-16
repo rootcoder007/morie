@@ -17,3 +17,7 @@ Stripped-text + body-slice primitives. -----------------------------------------
 The value of \code{trimws}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.siu_p_stripped_text(V)
+}

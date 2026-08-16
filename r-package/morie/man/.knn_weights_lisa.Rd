@@ -19,3 +19,6 @@ Part of the mrm_lisa implementation; see the file header for the source it follo
 The value of \code{W}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.knn_weights_lisa(lat = c(1, 2, 3, 4, 5, 6, 7, 8), lon = c(1, 2, 3, 4, 5, 6, 7, 8), k = 5L)
+}

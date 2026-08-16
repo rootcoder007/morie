@@ -17,3 +17,7 @@ A step of the helpers_llm_arch implementation. No other function in the package 
 The value of \code{aperm}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.softmax_last(V)
+}

@@ -20,3 +20,6 @@ Part of the tps_statphysics implementation; see the file header for the source i
 The value of \code{H}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.tps_sp_hist2d(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), gx = c(1, 2, 3, 4, 5, 6, 7, 8), gy = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

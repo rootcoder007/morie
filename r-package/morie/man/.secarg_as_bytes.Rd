@@ -14,3 +14,7 @@
 The value of \code{stop}.
 }
 \keyword{internal}
+\examples{
+S <- c("a", "b", "c")
+.secarg_as_bytes(S)
+}

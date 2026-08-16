@@ -14,3 +14,6 @@ A step of the fairness_gan implementation. Called by \code{morie_fairness_ctgan_
 A list with \code{kind}, \code{note}.
 }
 \keyword{internal}
+\examples{
+.fairness_backend()
+}

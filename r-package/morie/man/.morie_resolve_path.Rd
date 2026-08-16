@@ -17,3 +17,7 @@ A step of the crypto_keystore implementation. Called by \code{.morie_read_store}
 The value of \code{normalizePath}.
 }
 \keyword{internal}
+\examples{
+S <- c("a", "b", "c")
+.morie_resolve_path(S)
+}

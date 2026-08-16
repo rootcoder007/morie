@@ -20,3 +20,6 @@ Part of the variable_taxonomy implementation; see the file header for the source
 A character value.
 }
 \keyword{internal}
+\examples{
+.level_from_spec(col_name = 5L, dtype = 5L, valid_values = c(1, 2, 3, 4, 5, 6, 7, 8), dataset_name = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

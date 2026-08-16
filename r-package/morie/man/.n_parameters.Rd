@@ -32,3 +32,6 @@ Rendle, S. (2010) "Factorization Machines", ICDM 2010, 995-1000,
 doi:10.1109/ICDM.2010.127. The model FFM specialises.
 }
 \keyword{internal}
+\examples{
+.n_parameters(n_features = c(1, 2, 3, 4, 5, 6, 7, 8), n_fields = c(1, 2, 3, 4, 5, 6, 7, 8), k_dim = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

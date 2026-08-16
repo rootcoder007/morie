@@ -20,3 +20,6 @@ Part of the pibmd_native implementation; see the file header for the source it f
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.pibmd_kl_gaussian(mq = c(1, 2, 3, 4, 5, 6, 7, 8), sq2 = c(1, 2, 3, 4, 5, 6, 7, 8), mp = c(1, 2, 3, 4, 5, 6, 7, 8), sp2 = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

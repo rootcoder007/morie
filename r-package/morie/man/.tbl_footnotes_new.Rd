@@ -14,3 +14,6 @@ Part of the tables_pub implementation; see the file header for the source it fol
 The value of \code{e}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.tbl_footnotes_new()
+}

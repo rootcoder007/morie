@@ -19,3 +19,6 @@ Part of the tmldyk_native implementation; see the file header for the source it 
 A numeric value.
 }
 \keyword{internal}
+\examples{
+.unscale(value = c(1, 2, 3, 4, 5, 6, 7, 8), lower = c(1, 2, 3, 4, 5, 6, 7, 8), upper = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

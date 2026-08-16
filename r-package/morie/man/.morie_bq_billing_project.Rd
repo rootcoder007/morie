@@ -17,3 +17,6 @@ A step of the ingest_bigquery implementation. Called by \code{morie_ingest_bigqu
 Nothing; the function is called for its effect.
 }
 \keyword{internal}
+\examples{
+.morie_bq_billing_project()
+}

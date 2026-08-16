@@ -17,3 +17,6 @@
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.churn_parse_placement_bin(label = 5L)
+}

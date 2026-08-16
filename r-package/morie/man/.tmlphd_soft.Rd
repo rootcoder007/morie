@@ -18,3 +18,6 @@ Part of the tmlphd implementation; see the file header for the source it follows
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.tmlphd_soft(z = 5L, t = 5L)
+}

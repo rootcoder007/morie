@@ -14,3 +14,6 @@ mirror in src/morie/fn/_mapq_const.py).
 A list with \code{EE}, \code{EA}, \code{UA}, \code{ER}.
 }
 \keyword{internal}
+\examples{
+.mapq_subscales()
+}

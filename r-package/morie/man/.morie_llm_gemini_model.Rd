@@ -14,3 +14,6 @@ Part of the llm implementation; see the file header for the source it follows.
 The value of \code{.morie_llm_env}.
 }
 \keyword{internal}
+\examples{
+.morie_llm_gemini_model()
+}

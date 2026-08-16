@@ -19,3 +19,6 @@ Part of the laniyonu_smi_force_disparity implementation; see the file header for
 A list with \code{name}, \code{estimate}, \code{std_error}.
 }
 \keyword{internal}
+\examples{
+.lan_smi_coef(name = c(1, 2, 3, 4, 5, 6, 7, 8), estimate = c(1, 2, 3, 4, 5, 6, 7, 8), std_error = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

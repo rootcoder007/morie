@@ -18,3 +18,8 @@ Part of the Strtwt implementation; see the file header for the source it follows
 The value of \code{pmin}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+.strtwt_fit(M, V)
+}

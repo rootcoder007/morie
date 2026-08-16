@@ -17,3 +17,7 @@ A step of the gru4r_native implementation. Called by \code{morie_gru4r_bpr}, \co
 The value of \code{ifelse}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.gru4r_sigmoid(V)
+}

@@ -19,3 +19,6 @@ Part of the study_reporting implementation; see the file header for the source i
 The value of \code{[}.
 }
 \keyword{internal}
+\examples{
+.smd_by_treatment(data = c(1, 2, 3, 4, 5, 6, 7, 8), treat_col = 5L, covariate_cols = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

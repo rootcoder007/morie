@@ -17,3 +17,6 @@ Part of the rmrl_native implementation; see the file header for the source it fo
 A character value.
 }
 \keyword{internal}
+\examples{
+.rmrl_key()
+}

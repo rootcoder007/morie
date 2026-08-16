@@ -17,3 +17,7 @@ k.vec() which iterates over the input.
 A vector, from \code{as.numeric}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.as_numeric_vec(V)
+}

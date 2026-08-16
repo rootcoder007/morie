@@ -17,3 +17,7 @@ Part of the Trimit implementation; see the file header for the source it follows
 A numeric value.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.trimit_deff(V)
+}

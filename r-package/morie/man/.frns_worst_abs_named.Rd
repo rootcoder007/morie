@@ -17,3 +17,7 @@ A step of the frns_predpol implementation. Called by \code{morie_predpol_calibra
 The value of \code{[}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.frns_worst_abs_named(V)
+}

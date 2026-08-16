@@ -18,3 +18,6 @@ of 300 gives substantial headroom for reports added between manifest refreshes, 
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+.siu_discover_max_drid()
+}

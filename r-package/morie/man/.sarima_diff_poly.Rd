@@ -18,3 +18,6 @@ Part of the sarima_native implementation; see the file header for the source it 
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.sarima_diff_poly(k = 5L, s = 5L)
+}

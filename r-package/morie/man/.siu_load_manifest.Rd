@@ -14,3 +14,6 @@ any failure so the harvester degrades gracefully to a full sweep.
 The value of \code{m}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.siu_load_manifest()
+}

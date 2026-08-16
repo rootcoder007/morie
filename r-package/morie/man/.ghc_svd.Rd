@@ -17,3 +17,7 @@ Part of the lsa_native implementation; see the file header for the source it fol
 A list with \code{T}, \code{S}, \code{Dt}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.ghc_svd(V)
+}

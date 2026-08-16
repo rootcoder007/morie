@@ -17,3 +17,6 @@ A step of the db_indexes implementation. Called by \code{morie_db_create_indexes
 The value of \code{list}.
 }
 \keyword{internal}
+\examples{
+.morie_db_indexes_for(table_name = 5L)
+}

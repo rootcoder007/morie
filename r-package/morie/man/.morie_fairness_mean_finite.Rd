@@ -17,3 +17,7 @@ A step of the fairness_temporal implementation. Called by \code{morie_fairness_p
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.morie_fairness_mean_finite(V)
+}

@@ -17,3 +17,6 @@ Part of the siu_parser implementation; see the file header for the source it fol
 The value of \code{as.integer}.
 }
 \keyword{internal}
+\examples{
+.siu_p_parse_nrid_from_url(url = 5L)
+}

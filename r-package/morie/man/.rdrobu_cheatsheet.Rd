@@ -14,3 +14,6 @@ Part of the rdrobu_native implementation; see the file header for the source it 
 A character value.
 }
 \keyword{internal}
+\examples{
+.rdrobu_cheatsheet()
+}

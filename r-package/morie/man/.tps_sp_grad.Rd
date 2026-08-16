@@ -19,3 +19,6 @@ Part of the tps_statphysics implementation; see the file header for the source i
 A list with \code{gx}, \code{gy}.
 }
 \keyword{internal}
+\examples{
+.tps_sp_grad(F_ = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), dx = c(1, 2, 3, 4, 5, 6, 7, 8), dy = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

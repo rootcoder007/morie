@@ -17,3 +17,6 @@ Part of the propinf_native implementation; see the file header for the source it
 The value of \code{e}, as built in the body.
 }
 \keyword{internal}
+\examples{
+.propinf_rng(seed = 5L)
+}

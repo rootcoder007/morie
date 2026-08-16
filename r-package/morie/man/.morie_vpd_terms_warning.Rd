@@ -17,3 +17,7 @@ A step of the datasets_vpd implementation. Called by \code{morie_datasets_vpd_cr
 Invisibly,nothing; the function is called for its effect.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.morie_vpd_terms_warning(V)
+}

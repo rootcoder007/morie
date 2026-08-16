@@ -17,3 +17,6 @@ Part of the mrm_uof implementation; see the file header for the source it follow
 A character value.
 }
 \keyword{internal}
+\examples{
+.uof_fmt_pct(p = 0.5)
+}

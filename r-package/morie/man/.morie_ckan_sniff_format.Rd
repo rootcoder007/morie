@@ -18,3 +18,6 @@ A step of the ingest_ckan implementation. Called by \code{morie_ingest_ckan_read
 The value of \code{tolower}.
 }
 \keyword{internal}
+\examples{
+.morie_ckan_sniff_format(url = 5L)
+}

@@ -17,3 +17,7 @@ Part of the study_core implementation; see the file header for the source it fol
 A list with \code{official_doc_alignment_checklist}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.run_dag_specification_module_internal(V)
+}

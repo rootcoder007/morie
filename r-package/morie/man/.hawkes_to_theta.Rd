@@ -17,3 +17,7 @@ feasibility cliffs: a0 is free, eta = plogis(phi) in (0, 1), and the shape/scale
 The value of \code{theta}, as built in the body.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+.hawkes_to_theta(V)
+}

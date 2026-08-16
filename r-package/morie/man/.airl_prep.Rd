@@ -21,3 +21,6 @@ A step of the airl_native implementation. Called by \code{airl}. See the file he
 A list with \code{S}, \code{A}, \code{S1}, \code{LP}.
 }
 \keyword{internal}
+\examples{
+.airl_prep(S = c(1, 2, 3, 4, 5, 6, 7, 8), A = c(1, 2, 3, 4, 5, 6, 7, 8), S1 = c(1, 2, 3, 4, 5, 6, 7, 8), LP = c(1, 2, 3, 4, 5, 6, 7, 8), name = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

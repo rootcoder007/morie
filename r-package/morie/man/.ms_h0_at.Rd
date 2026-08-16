@@ -19,3 +19,6 @@ Part of the survival_more implementation; see the file header for the source it 
 A vector, from \code{vapply}.
 }
 \keyword{internal}
+\examples{
+.ms_h0_at(ut = c(1, 2, 3, 4, 5, 6, 7, 8), H = 0.5, t = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
