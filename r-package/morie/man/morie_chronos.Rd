@@ -21,3 +21,9 @@ A step of the chronos_native implementation. No other function in the package ca
 The value of \code{chronos_tokenize}.
 }
 \keyword{internal}
+\examples{
+set.seed(3)
+b <- chronos_uniform_bins(-3, 3, n_bins = 16L)
+r <- morie_chronos(rnorm(20), b)
+str(r, max.level = 1)
+}

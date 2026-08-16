@@ -23,3 +23,8 @@ Part of the mafft_native implementation; see the file header for the source it f
 The value of \code{mafft_alignment}.
 }
 \keyword{internal}
+\examples{
+r <- morie_mafft(c("MKVLATLLPLAA", "MKVLATLLPLAG", "MRVLATGLPLAA"),
+                 method = "FFT-NS-2")
+str(r, max.level = 1)
+}
