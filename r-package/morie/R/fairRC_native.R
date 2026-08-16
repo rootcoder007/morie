@@ -188,6 +188,13 @@ rRD <- function(protected, step = 10L, normalize = TRUE) {
 #' @param normalize Passed to \code{rND}. Defaults to \code{TRUE}.
 #' @return The value of \code{rND}.
 #' @export
-morie_fairRC <- function(protected, step = 10L, normalize = TRUE) {
-  rND(protected, step = step, normalize = normalize)
+morie_fairRC <- function(protected, measure = "rND", step = 10L,
+                         normalize = TRUE) {
+  # all three measures stay selectable, rND stays the default
+  if (!(measure %in% c("rND", "rKL", "rRD")))
+    stop("fairRC: measure must be one of rND, rKL, rRD, got ",
+         deparse(measure))
+  if (measure == "rND") rND(protected, step = step, normalize = normalize)
+  else if (measure == "rKL") rKL(protected, step = step, normalize = normalize)
+  else rRD(protected, step = step, normalize = normalize)
 }
