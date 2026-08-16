@@ -17,3 +17,7 @@ Part of the mafft_native implementation; see the file header for the source it f
 The value of \code{do.call}.
 }
 \keyword{internal}
+\examples{
+segs <- rbind(c(0, 0, 4, 5, 0), c(5, 6, 3, 3, 0), c(2, 1, 2, 4, 0))
+arrange_segments(segs)
+}

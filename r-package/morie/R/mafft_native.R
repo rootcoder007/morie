@@ -555,20 +555,23 @@ mafft_nw <- function(g1, g2, M, w1, w2, s_op) {
   for (i in 2:(n + 1L)) {
     for (j in 2:(m + 1L)) {
       h <- mafft_site_score(M, g1, g2, w1, w2, i - 1L, j - 1L)
-      best <- list(v = P[i - 1L, j - 1L], kind = "M", pi = i - 1L, pj = j - 1L)
+      # backpointers hold the PREDECESSOR in the 0-based frame the
+      # traceback walks (it adds one to re-enter matrix indexing): M
+      # stored the current cell and the traceback spun forever
+      best <- list(v = P[i - 1L, j - 1L], kind = "M", pi = i - 2L, pj = j - 2L)
       for (x in 0:(i - 1L)) {
         if (is.infinite(P[x + 1L, j - 1L + 1L])) next
         pen <- s_op * (1.0 - (gs1[x + 1L] + ge1[i]) / 2.0)
         v <- P[x + 1L, j] - pen
         if (v > best$v)
-          best <- list(v = v, kind = "I", pi = x, pj = j - 1L)
+          best <- list(v = v, kind = "I", pi = x, pj = j - 2L)
       }
       for (y in 0:(j - 1L)) {
         if (is.infinite(P[i, y + 1L])) next
         pen <- s_op * (1.0 - (gs2[y + 1L] + ge2[j]) / 2.0)
         v <- P[i, y + 1L] - pen
         if (v > best$v)
-          best <- list(v = v, kind = "D", pi = i - 1L, pj = y)
+          best <- list(v = v, kind = "D", pi = i - 2L, pj = y)
       }
       P[i, j] <- h + best$v
       back[[i, j]] <- list(kind = best$kind, pi = best$pi, pj = best$pj)
@@ -580,14 +583,15 @@ mafft_nw <- function(g1, g2, M, w1, w2, s_op) {
     b <- back[[i, j]]
     cols[[length(cols) + 1L]] <- c(i - 1L, j - 1L)
     if (b$kind == "I") {
-      for (t in (i - 2L):(b$pi)) cols[[length(cols) + 1L]] <- c(t, NA)
+      if (i - 2L >= b$pi) for (t in (i - 2L):(b$pi)) cols[[length(cols) + 1L]] <- c(t, NA)
     } else if (b$kind == "D") {
-      for (t in (j - 2L):(b$pj)) cols[[length(cols) + 1L]] <- c(NA, t)
+      if (j - 2L >= b$pj) for (t in (j - 2L):(b$pj)) cols[[length(cols) + 1L]] <- c(NA, t)
     }
     i <- b$pi + 1L; j <- b$pj + 1L
   }
-  for (t in (i - 1L):1) cols[[length(cols) + 1L]] <- c(t, NA)
-  for (t in (j - 1L):1) cols[[length(cols) + 1L]] <- c(NA, t)
+  # guard the tails: the colon ASCENDS from 0 when i or j is already 1
+  if (i > 1L) for (t in (i - 1L):1) cols[[length(cols) + 1L]] <- c(t, NA)
+  if (j > 1L) for (t in (j - 1L):1) cols[[length(cols) + 1L]] <- c(NA, t)
   cols <- rev(cols)
   out1 <- vapply(g1, function(s) {
     paste(vapply(cols, function(c) {
@@ -761,7 +765,9 @@ arrange_segments <- function(segments) {
   best <- segments[, 3] * segments[, 4]
   prev <- rep(NA, n)
   for (i in 1:n) {
-    for (j in 1:(i - 1L)) {
+    # seq_len, not 1:(i-1) -- the colon counts DOWN at i = 1 and
+    # indexes row 0
+    for (j in seq_len(i - 1L)) {
       a <- segments[j, ]; b <- segments[i, ]
       if (a[1] + a[3] <= b[1] && a[2] + a[3] <= b[2]) {
         v <- best[j] + segments[i, 3] * segments[i, 4]
@@ -865,12 +871,16 @@ guide_tree <- function(D) {
   dist <- list()
   for (i in 1:n) for (j in 1:n) if (i != j) dist[[paste(i, j)]] <- D[i, j]
   merges <- list()
-  nxt <- n
+  # new cluster ids start at n + 1: starting at n reused the id of the
+  # last ORIGINAL cluster, so lookups on a merged id read the original
+  nxt <- n + 1L
   active <- as.list(1:n)
   while (length(active) > 1L) {
     best <- NULL
     for (k in seq_along(active)) {
-      for (kk in (k + 1L):length(active)) {
+      # seq_len guard: the colon counts DOWN when k is last and
+      # indexes active[[length + 1]]
+      for (kk in seq_len(length(active) - k) + k) {
         i <- active[[k]]; j <- active[[kk]]
         d <- dist[[paste(i, j)]]
         key <- c(d, i, j)
@@ -892,7 +902,7 @@ guide_tree <- function(D) {
       dist[[paste(nxt, idx)]] <- d
       dist[[paste(idx, nxt)]] <- d
     }
-    clusters[[nxt + 1L]] <- members
+    clusters[[nxt]] <- members
     active <- c(active[!(active %in% c(i, j))], list(nxt))
     nxt <- nxt + 1L
   }
