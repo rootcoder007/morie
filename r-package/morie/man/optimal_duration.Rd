@@ -1,0 +1,22 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{optimal_duration}
+\alias{optimal_duration}
+\title{Release time maximising utility}
+\usage{
+optimal_duration(t_Q = 3, generation_time = NULL, t_max = 20, step = 0.25)
+}
+\arguments{
+\item{t_Q}{Quarantine start.}
+\item{generation_time}{Output of \code{\link{gamma_generation_time}}.}
+\item{t_max}{Maximum release time to consider.}
+\item{step}{Step size.}
+}
+\description{
+Release time maximising utility
+}
+\value{
+A list with \code{estimate}, \code{optimal_t_R},   \code{efficacy_at_optimum}, \code{utility_at_optimum}, \code{curve},   \code{t_Q}, \code{method}.
+}
+\keyword{internal}

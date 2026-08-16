@@ -1,0 +1,21 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{morie_grphmr_edge}
+\alias{morie_grphmr_edge}
+\title{Edge-feature bias averaged along the shortest path}
+\usage{
+morie_grphmr_edge(paths, edge_features, w_table)
+}
+\arguments{
+\item{paths}{Named list of integer vectors, one per (i, j) pair.}
+\item{edge_features}{Named list of numeric vectors keyed by edge   \code{"u,v"} (and \code{"v,u"}).}
+\item{w_table}{Length-K numeric vector of step weights.}
+}
+\description{
+For each pair the edge features along the path are weighted by \code{w_table[step]} and averaged across the path length. Bond type is a property of neither endpoint, so it has to enter the model here.
+}
+\value{
+A list with \code{edge_bias} (named numeric vector),   \code{note}.
+}
+\keyword{internal}
