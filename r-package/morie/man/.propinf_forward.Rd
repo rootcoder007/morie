@@ -18,3 +18,8 @@ Part of the propinf_native implementation; see the file header for the source it
 A list with \code{acts}, \code{pre}.
 }
 \keyword{internal}
+\examples{
+rnd <- .propinf_rng(3L)
+net <- .propinf_init_net(3L, c(4L), rnd)
+.propinf_forward(net, c(0.5, -0.2, 0.1))
+}
