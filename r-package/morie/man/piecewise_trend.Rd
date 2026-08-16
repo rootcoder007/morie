@@ -21,3 +21,6 @@ The offsets carry \code{gamma_j = -s_j delta_j} so the segments join by construc
 Numeric vector of trend values.
 }
 \keyword{internal}
+\examples{
+piecewise_trend(t = c(1, 2, 3, 4, 5, 6, 7, 8), k_rate = c(1, 2, 3, 4, 5, 6, 7, 8), m_off = c(1, 2, 3, 4, 5, 6, 7, 8), deltas = c(1, 2, 3, 4, 5, 6, 7, 8), cps = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

@@ -39,3 +39,6 @@ with overlap units down-weighted by \code{theta} and
 \description{
 Multi-frame (dual-frame) survey weights (Hartley compositing).
 }
+\examples{
+morie_weights_multiframe(weights_a = c(1, 2, 3, 4, 5, 6, 7, 8), weights_b = c(1, 2, 3, 4, 5, 6, 7, 8), overlap_a = c(1, 2, 3, 4, 5, 6, 7, 8), overlap_b = c(1, 2, 3, 4, 5, 6, 7, 8))
+}

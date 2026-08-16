@@ -20,3 +20,6 @@ Part of the smoopt_native implementation; see the file header for the source it 
 A numeric value.
 }
 \keyword{internal}
+\examples{
+error_cache(alpha = 0.5, y = c(1, 2, 3, 4, 5, 6, 7, 8), K = 5L, b = 5L)
+}

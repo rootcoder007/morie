@@ -25,3 +25,6 @@ A list with \code{x}, \code{feasible}, \code{violations}, \code{note}.
 Base R only.
 }
 \keyword{internal}
+\examples{
+miprgr_round_relaxation(x = c(1, 2, 3, 4, 5, 6, 7, 8), A = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), b = c(1, 2, 3, 4, 5, 6, 7, 8), integer_vars = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
