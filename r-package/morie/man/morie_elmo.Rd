@@ -32,3 +32,12 @@ arXiv:1607.06450. The normalisation the paper applies per layer
 before weighting.
 }
 \keyword{internal}
+\examples{
+set.seed(2)
+d <- 2
+X <- matrix(rnorm(6, 0, 0.5), 3, d)
+mkw <- function() matrix(rnorm(4 * d * d, 0, 0.3), 4 * d, d)
+layer <- list(mkw(), mkw(), rep(0, 4 * d), mkw(), mkw(), rep(0, 4 * d))
+r <- morie_elmo(X, list(layer))
+str(r, max.level = 1)
+}
