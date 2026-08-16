@@ -25,3 +25,9 @@ Part of the lyapun_native implementation; see the file header for the source it 
 The value of \code{lyapunov_exponent}.
 }
 \keyword{internal}
+\examples{
+r0 <- 3.9; x <- numeric(400); x[1] <- 0.4
+for (i in 2:400) x[i] <- r0 * x[i - 1] * (1 - x[i - 1])
+r <- morie_lyapun(x, embedding = 3, tau = 1)
+str(r, max.level = 1)
+}

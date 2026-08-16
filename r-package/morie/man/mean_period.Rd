@@ -18,3 +18,7 @@ Part of the lyapun_native implementation; see the file header for the source it 
 A numeric value.
 }
 \keyword{internal}
+\examples{
+y <- sin(2 * pi * (1:400) / 25)
+mean_period(y)
+}
