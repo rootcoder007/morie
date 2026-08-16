@@ -18,3 +18,9 @@ A step of the geron_train_native implementation. Called by \code{morie_geron_pre
 A list with \code{y}, \code{s}, \code{P}, \code{N}.
 }
 \keyword{internal}
+\examples{
+y <- c(1, 1, 0, 0, 1, 0, 1, 1)
+morie_geron_information_gain(y, left_mask = c(TRUE, TRUE, TRUE, FALSE,
+                                              FALSE, FALSE, TRUE, FALSE))
+.morie_gr_sorted_counts(y_true = y, y_scores = y)
+}

@@ -18,3 +18,13 @@ frame. Each row of `overrides` is (case_number, field, verified_value); for any 
 The value of \code{df}, as built in the body.
 }
 \keyword{internal}
+\examples{
+idx <- morie_siu_index(lang = "en")
+head(idx)
+# How many drids are English vs French vs unknown?
+table(morie_siu_index()$`_language`)
+# Unique-case index (English-preferred)
+canon <- morie_siu_index(canonical_only = TRUE)
+nrow(canon)
+.siu_apply_canonical_overrides(df = canon, overrides = idx)
+}

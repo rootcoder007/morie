@@ -30,3 +30,8 @@ that did not exist in the 140-scheme (the newly-split children
 like Etobicoke City Centre / Islington from 14-Islington-City-
 Centre-West) the result is the historical parent 140-hood.
 }
+\examples{
+df <- data.frame(OCC_YEAR = 2024L, HOOD_158 = "82", HOOD_140 = "82")
+morie_tps_resolve_hood_col(df, prefer = "158")
+morie_tps_add_hood_140_from_158(df = df)
+}

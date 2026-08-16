@@ -22,3 +22,9 @@ Part of the scintg_native implementation; see the file header for the source it 
 A list with \code{total}, \code{fit}, \code{entropy}, \code{kl}.
 }
 \keyword{internal}
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+.scintg_maximum_diversity_clustering(M, D)
+.scintg_harmony_objective(Z = M, R = D, Y = M, batches = D)
+}

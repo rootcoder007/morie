@@ -14,3 +14,10 @@ Internal helper: Val Score
 The value of \code{switch}.
 }
 \keyword{internal}
+\examples{
+child <- data.frame(fk = c(1, 2, 3))
+parent <- data.frame(pk = c(1, 2, 3, 4))
+res <- check_referential_integrity(child, parent, "fk", "pk")
+res$passed
+.val_score(scoring = child, y_true = child, y_pred = child)
+}
