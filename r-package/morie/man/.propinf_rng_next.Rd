@@ -17,3 +17,7 @@ Part of the propinf_native implementation; see the file header for the source it
 A numeric value.
 }
 \keyword{internal}
+\examples{
+e <- .propinf_rng(7L)
+c(.propinf_rng_next(e), .propinf_rng_next(e))
+}
