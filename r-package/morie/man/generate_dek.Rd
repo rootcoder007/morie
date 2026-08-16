@@ -1,0 +1,16 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{generate_dek}
+\alias{generate_dek}
+\title{Derive a distinct DEK per record}
+\usage{
+generate_dek(master_seed, record_id, salt = NULL)
+}
+\description{
+Derive a distinct DEK per record
+}
+\value{
+A list with \code{dek}, \code{dek_hex}, \code{record_id}, \code{note}.
+}
+\keyword{internal}

@@ -1,0 +1,16 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{unescape_whitespace}
+\alias{unescape_whitespace}
+\title{Invert the whitespace escape}
+\usage{
+unescape_whitespace(text, strip_prefix = TRUE)
+}
+\description{
+Invert the whitespace escape
+}
+\value{
+The value of \code{.unescape_whitespace}.
+}
+\keyword{internal}
