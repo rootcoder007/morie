@@ -10,6 +10,19 @@
 NULL
 
 
+#' .sim_result
+#'
+#' Part of the fairness_simulation implementation; see the file header
+#' for the source it follows.
+#'
+#' @param title See Usage.
+#' @param call See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param interpretation Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .sim_result <- function(title, call, summary_lines = list(),
                          warnings = character(0),
                          interpretation = "", ...) {

@@ -32,6 +32,16 @@ NULL
 # Formatting helpers
 # ---------------------------------------------------------------------------
 
+#' .tbl_fmt_num
+#'
+#' Part of the tables_pub implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param digits Defaults to \code{2L}.
+#' @param apa Defaults to \code{FALSE}.
+#' @return The value of \code{s}, as built in the body.
+#' @export
 .tbl_fmt_num <- function(x, digits = 2L, apa = FALSE) {
   if (!is.finite(x)) return("")
   s <- formatC(x, format = "f", digits = digits)
@@ -42,6 +52,16 @@ NULL
   s
 }
 
+#' .tbl_fmt_pval
+#'
+#' Part of the tables_pub implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @param digits Defaults to \code{3L}.
+#' @param apa Defaults to \code{FALSE}.
+#' @return The value of \code{s}, as built in the body.
+#' @export
 .tbl_fmt_pval <- function(p, digits = 3L, apa = FALSE) {
   if (!is.finite(p)) return("")
   if (p < 10^(-digits))
@@ -53,6 +73,14 @@ NULL
   s
 }
 
+#' .tbl_stars
+#'
+#' Part of the tables_pub implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @return A character value.
+#' @export
 .tbl_stars <- function(p) {
   if (!is.finite(p)) return("")
   if (p < 0.001) return("***")
@@ -61,6 +89,17 @@ NULL
   ""
 }
 
+#' .tbl_smd
+#'
+#' Part of the tables_pub implementation; see the file header for the
+#' source it follows.
+#'
+#' @param m1 See Usage.
+#' @param m2 See Usage.
+#' @param sd1 See Usage.
+#' @param sd2 See Usage.
+#' @return A numeric value.
+#' @export
 .tbl_smd <- function(m1, m2, sd1, sd2) {
   ps <- sqrt((sd1^2 + sd2^2) / 2)
   if (ps < 1e-12) return(0)
@@ -72,17 +111,42 @@ NULL
 # Footnote registry
 # ---------------------------------------------------------------------------
 
+#' .tbl_footnotes_new
+#'
+#' Part of the tables_pub implementation; see the file header for the
+#' source it follows.
+#'
+#' @return The value of \code{e}, as built in the body.
+#' @export
 .tbl_footnotes_new <- function() {
   e <- new.env(parent = emptyenv())
   e$notes <- character(0)
   e
 }
 
+#' .tbl_footnotes_add
+#'
+#' Part of the tables_pub implementation; see the file header for the
+#' source it follows.
+#'
+#' @param reg See Usage.
+#' @param text See Usage.
+#' @return The value of \code{[}.
+#' @export
 .tbl_footnotes_add <- function(reg, text) {
   if (!(text %in% reg$notes)) reg$notes <- c(reg$notes, text)
   letters[match(text, reg$notes) %% 26L + 1L]
 }
 
+#' .tbl_footnotes_render
+#'
+#' Part of the tables_pub implementation; see the file header for the
+#' source it follows.
+#'
+#' @param reg See Usage.
+#' @param fmt Defaults to \code{"text"}.
+#' @return A character value.
+#' @export
 .tbl_footnotes_render <- function(reg, fmt = "text") {
   if (length(reg$notes) == 0L) return("")
   out <- character(0)
@@ -102,6 +166,17 @@ NULL
 # Format conversion
 # ---------------------------------------------------------------------------
 
+#' .tbl_to_format
+#'
+#' Part of the tables_pub implementation; see the file header for the
+#' source it follows.
+#'
+#' @param df See Usage.
+#' @param fmt Defaults to \code{c("dataframe", "latex", "html", "markdown", "text", "csv")}.
+#' @param title Defaults to \code{""}.
+#' @param footnotes Defaults to \code{""}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .tbl_to_format <- function(df, fmt = c("dataframe", "latex", "html",
                                         "markdown", "text", "csv"),
                             title = "", footnotes = "") {
@@ -330,6 +405,14 @@ table1 <- function(data, group_col = NULL,
 # Regression table
 # ---------------------------------------------------------------------------
 
+#' .tbl_extract_model
+#'
+#' Part of the tables_pub implementation; see the file header for the
+#' source it follows.
+#'
+#' @param m See Usage.
+#' @return A list with \code{params}, \code{se}, \code{pvalues}, \code{ci}, \code{nobs}, \code{rsquared}, \code{aic}, \code{bic}, \code{llf}.
+#' @export
 .tbl_extract_model <- function(m) {
   b <- stats::coef(m)
   se <- sqrt(diag(stats::vcov(m)))

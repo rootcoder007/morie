@@ -16,10 +16,27 @@ morie_validate_cpads_data <- function(data, strict = TRUE) {
   missing
 }
 
+#' .weighted_prop
+#'
+#' Part of the ipw implementation; see the file header for the source it
+#' follows.
+#'
+#' @param x See Usage.
+#' @param w See Usage.
+#' @return A numeric value.
+#' @export
 .weighted_prop <- function(x, w) {
   sum(x * w, na.rm = TRUE) / sum(w, na.rm = TRUE)
 }
 
+#' .ess
+#'
+#' Part of the ipw implementation; see the file header for the source it
+#' follows.
+#'
+#' @param w See Usage.
+#' @return A numeric value.
+#' @export
 .ess <- function(w) {
   (sum(w)^2) / sum(w^2)
 }

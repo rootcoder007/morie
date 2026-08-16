@@ -83,6 +83,21 @@ morie_ingest_tps_layers <- function() {
 }
 
 # Internal: a single ArcGIS FeatureServer /query call.
+#' Internal: a single ArcGIS FeatureServer /query call
+#'
+#' Part of the ingest_tps implementation; see the file header for the
+#' source it follows.
+#'
+#' @param layer_url See Usage.
+#' @param where Defaults to \code{"1=1"}.
+#' @param out_fields Defaults to \code{"*"}.
+#' @param return_geometry Defaults to \code{FALSE}.
+#' @param result_offset Defaults to \code{0L}.
+#' @param result_record_count Defaults to \code{2000L}.
+#' @param user_agent Defaults to \code{.MORIE_TPS_DEFAULT_UA}.
+#' @param timeout Defaults to \code{.MORIE_TPS_DEFAULT_TIMEOUT}.
+#' @return The value of \code{payload}, as built in the body.
+#' @export
 .morie_tps_arcgis_query <- function(layer_url,
                                     where = "1=1",
                                     out_fields = "*",
@@ -134,6 +149,14 @@ morie_ingest_tps_layers <- function() {
 
 # Internal: bind one ArcGIS feature payload's attribute rows into a
 # data.frame, optionally splicing in geom_x / geom_y.
+#' Internal: bind one ArcGIS feature payload\'s attribute rows into a
+#'
+#' data.frame, optionally splicing in geom_x / geom_y.
+#'
+#' @param features See Usage.
+#' @param return_geometry See Usage.
+#' @return The value of \code{lapply}.
+#' @export
 .morie_tps_features_to_rows <- function(features, return_geometry) {
   if (length(features) == 0L) {
     return(list())

@@ -16,6 +16,15 @@
 
 # ---------------------------------------------------------------- helpers
 
+#' .morie_bx_vec
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param v See Usage.
+#' @param name Defaults to \code{"x"}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .morie_bx_vec <- function(v, name = "x") {
   out <- as.numeric(v)
   if (length(out) == 0L)
@@ -25,6 +34,15 @@
   out
 }
 
+#' .morie_bx_mat
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param M See Usage.
+#' @param name Defaults to \code{"X"}.
+#' @return The value of \code{M}, as built in the body.
+#' @export
 .morie_bx_mat <- function(M, name = "X") {
   if (is.null(M)) stop(name, " is required")
   if (is.list(M) && !is.data.frame(M)) {
@@ -42,10 +60,35 @@
   M
 }
 
+#' .morie_bx_dot
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param a See Usage.
+#' @param b See Usage.
+#' @return The value of \code{.morie_fsum}.
+#' @export
 .morie_bx_dot <- function(a, b) .morie_fsum(a * b)
 
+#' .morie_bx_nrm
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param a See Usage.
+#' @return A numeric value.
+#' @export
 .morie_bx_nrm <- function(a) sqrt(.morie_fsum(a * a))
 
+#' Matrix product with compensated inner sums, not BLAS: the summation
+#'
+#' order has to match the Python arm or an iterative update diverges
+#'
+#' @param A See Usage.
+#' @param B See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .morie_bx_mm <- function(A, B) {
   # matrix product with compensated inner sums, not BLAS: the summation
   # order has to match the Python arm or an iterative update diverges
@@ -58,14 +101,40 @@
   out
 }
 
+#' .morie_bx_mv
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param A See Usage.
+#' @param v See Usage.
+#' @return A vector, from \code{vapply}.
+#' @export
 .morie_bx_mv <- function(A, v) {
   if (ncol(A) != length(v))
     stop("matrix and vector dimensions do not agree")
   vapply(seq_len(nrow(A)), function(i) .morie_fsum(A[i, ] * v), numeric(1))
 }
 
+#' .morie_bx_mean
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param v See Usage.
+#' @return A numeric value.
+#' @export
 .morie_bx_mean <- function(v) .morie_fsum(v) / length(v)
 
+#' .morie_bx_sd
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param v See Usage.
+#' @param ddof Defaults to \code{1}.
+#' @return A numeric value.
+#' @export
 .morie_bx_sd <- function(v, ddof = 1) {
   n <- length(v)
   if (n - ddof < 1) return(0)
@@ -73,6 +142,14 @@
   sqrt(.morie_fsum((v - m)^2) / (n - ddof))
 }
 
+#' Kurtosis EXCESS K\' = K - 3, eq (3.5) and the note below it: zero for
+#' a
+#'
+#' Gaussian, positive for a peaked heavy-tailed PDF
+#'
+#' @param v See Usage.
+#' @return A numeric value.
+#' @export
 .morie_bx_kurt <- function(v) {
   # kurtosis EXCESS K' = K - 3, eq (3.5) and the note below it: zero for a
   # Gaussian, positive for a peaked heavy-tailed PDF
@@ -85,6 +162,14 @@
   m4 / (s2 * s2) - 3
 }
 
+#' Gaussian elimination with partial pivoting; raises rather than
+#'
+#' returning garbage on a singular system
+#'
+#' @param A See Usage.
+#' @param b See Usage.
+#' @return A vector, from \code{vapply}.
+#' @export
 .morie_bx_solve <- function(A, b) {
   # Gaussian elimination with partial pivoting; raises rather than
   # returning garbage on a singular system
@@ -110,6 +195,16 @@
   vapply(seq_len(n), function(i) M[i, n + 1L] / M[i, i], numeric(1))
 }
 
+#' .morie_bx_lstsq
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param A See Usage.
+#' @param y See Usage.
+#' @param ridge Defaults to \code{1e-10}.
+#' @return The value of \code{.morie_bx_solve}.
+#' @export
 .morie_bx_lstsq <- function(A, y, ridge = 1e-10) {
   At <- t(A)
   G <- .morie_bx_mm(At, A)
@@ -117,6 +212,15 @@
   .morie_bx_solve(G, .morie_bx_mv(At, y))
 }
 
+#' Cyclic Jacobi rotations: the whole spectrum, repeated eigenvalues
+#'
+#' included, without the deflation error of power iteration
+#'
+#' @param S See Usage.
+#' @param sweeps Defaults to \code{60L}.
+#' @param tol Defaults to \code{1e-12}.
+#' @return A list with \code{values}, \code{vectors}.
+#' @export
 .morie_bx_jacobi <- function(S, sweeps = 60L, tol = 1e-12) {
   # cyclic Jacobi rotations: the whole spectrum, repeated eigenvalues
   # included, without the deflation error of power iteration
@@ -150,6 +254,15 @@
   list(values = vals[ord], vectors = V[, ord, drop = FALSE])
 }
 
+#' Numerical Recipes ranqd1 LCG on (0, 1).  1664525 * (2^32 - 1) is
+#' below
+#'
+#' 2^53, so the double arithmetic here is exact and matches the Python
+#' arm\'s 32-bit masked integer step for step.
+#'
+#' @param seed See Usage.
+#' @return The value of \code{function}.
+#' @export
 .morie_bx_rng <- function(seed) {
   # Numerical Recipes ranqd1 LCG on (0, 1).  1664525 * (2^32 - 1) is below
   # 2^53, so the double arithmetic here is exact and matches the Python
@@ -161,6 +274,17 @@
   }
 }
 
+#' Row-major fill, the order the Python list comprehensions draw in
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param nr See Usage.
+#' @param nc See Usage.
+#' @param u See Usage.
+#' @param f See Usage.
+#' @return The value of \code{m}, as built in the body.
+#' @export
 .morie_bx_fill <- function(nr, nc, u, f) {
   # row-major fill, the order the Python list comprehensions draw in
   m <- matrix(0, nr, nc)
@@ -168,6 +292,15 @@
   m
 }
 
+#' Plain sequential double accumulation, NOT compensated: mirrors the
+#' one
+#'
+#' place the Python arm uses `x += ...` in a loop instead of fsum, so
+#' the two arms round identically there too
+#'
+#' @param v See Usage.
+#' @return The value of \code{s}, as built in the body.
+#' @export
 .morie_bx_nsum <- function(v) {
   # plain sequential double accumulation, NOT compensated: mirrors the one
   # place the Python arm uses `x += ...` in a loop instead of fsum, so the
@@ -177,6 +310,15 @@
   s
 }
 
+#' .morie_bx_cov
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param X See Usage.
+#' @param unbiased Defaults to \code{TRUE}.
+#' @return A list with \code{mu}, \code{C}.
+#' @export
 .morie_bx_cov <- function(X, unbiased = TRUE) {
   n <- nrow(X); p <- ncol(X)
   if (unbiased && n < 2L)
@@ -192,6 +334,18 @@
   list(mu = mu, C = C)
 }
 
+#' Lee-Seung multiplicative updates: "ls" is eqs (9.49)-(9.50), "kld" is
+#'
+#' eqs (9.54)-(9.55)
+#'
+#' @param V See Usage.
+#' @param r See Usage.
+#' @param maxiter See Usage.
+#' @param tol See Usage.
+#' @param seed See Usage.
+#' @param cost See Usage.
+#' @return A list with \code{W}, \code{H}, \code{error}, \code{iterations}.
+#' @export
 .morie_bx_nmfmu <- function(V, r, maxiter, tol, seed, cost) {
   # Lee-Seung multiplicative updates: "ls" is eqs (9.49)-(9.50), "kld" is
   # eqs (9.54)-(9.55)
@@ -239,6 +393,17 @@
   list(W = W, H = H, error = err, iterations = it)
 }
 
+#' Greedy atom picks with a least-squares reprojection on the support
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param D See Usage.
+#' @param sparsity See Usage.
+#' @param tol See Usage.
+#' @return A list with \code{coefficients}, \code{support}, \code{residual}.
+#' @export
 .morie_bx_omp <- function(x, D, sparsity, tol) {
   # greedy atom picks with a least-squares reprojection on the support
   n <- length(x)
@@ -273,6 +438,15 @@
   list(coefficients = coef, support = sup, residual = r)
 }
 
+#' Real Gabor dictionary, eqs (9.2)-(9.3), on a fixed dyadic grid so the
+#'
+#' dictionary is reproducible without an RNG
+#'
+#' @param n See Usage.
+#' @param natoms See Usage.
+#' @param seed Defaults to \code{1}.
+#' @return A list with \code{atoms}, \code{params}.
+#' @export
 .morie_bx_gabor <- function(n, natoms, seed = 1) {
   # real Gabor dictionary, eqs (9.2)-(9.3), on a fixed dyadic grid so the
   # dictionary is reproducible without an RNG
@@ -309,6 +483,14 @@
     matrix(0, 0L, n), params = params)
 }
 
+#' .morie_bx_dftmag
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return A vector, from \code{vapply}.
+#' @export
 .morie_bx_dftmag <- function(x) {
   n <- length(x)
   tt <- seq_len(n) - 1L
@@ -320,6 +502,16 @@
   }, numeric(1))
 }
 
+#' .morie_bx_stft
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param nwin See Usage.
+#' @param hop See Usage.
+#' @return A list with \code{re}, \code{im}, \code{mag}, \code{win}.
+#' @export
 .morie_bx_stft <- function(x, nwin, hop) {
   n <- length(x)
   if (nwin < 4L || nwin > n)
@@ -352,6 +544,19 @@
        mag = do.call(rbind, mag_f), win = win)
 }
 
+#' .morie_bx_istft
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param re_f See Usage.
+#' @param im_f See Usage.
+#' @param nwin See Usage.
+#' @param hop See Usage.
+#' @param win See Usage.
+#' @param n See Usage.
+#' @return The value of \code{ifelse}.
+#' @export
 .morie_bx_istft <- function(re_f, im_f, nwin, hop, win, n) {
   out <- numeric(n)
   wsum <- numeric(n)
@@ -379,11 +584,31 @@
   ifelse(wsum > 1e-12, out / wsum, 0)
 }
 
+#' .morie_bx_confusion
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param true See Usage.
+#' @param pred See Usage.
+#' @return A list with \code{tp}, \code{tn}, \code{fp}, \code{fn}.
+#' @export
 .morie_bx_confusion <- function(true, pred) {
   list(tp = sum(true == 1 & pred == 1), tn = sum(true == 0 & pred == 0),
        fp = sum(true == 0 & pred == 1), fn = sum(true == 1 & pred == 0))
 }
 
+#' .morie_bx_scores
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param tp See Usage.
+#' @param tn See Usage.
+#' @param fp See Usage.
+#' @param fn See Usage.
+#' @return A list with \code{sensitivity}, \code{specificity}, \code{accuracy}.
+#' @export
 .morie_bx_scores <- function(tp, tn, fp, fn) {
   tot <- tp + tn + fp + fn
   list(sensitivity = if (tp + fn > 0) tp / (tp + fn) else NaN,
@@ -391,6 +616,14 @@
        accuracy = if (tot > 0) (tp + tn) / tot else NaN)
 }
 
+#' Logistic node function, eq (10.81), saturated rather than overflowing
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param b See Usage.
+#' @return The value of \code{ifelse}.
+#' @export
 .morie_bx_sig <- function(b) {
   # logistic node function, eq (10.81), saturated rather than overflowing
   ifelse(b < -700, 0, ifelse(b > 700, 1, 1 / (1 + exp(-b))))
@@ -661,6 +894,19 @@ PvcBayes <- function(features, labels, priors = NULL, query = NULL) {
                        "classifier of Section 10.6.2"))
 }
 
+#' Shared core of BciChSel and NmfChSel: eqs (9.94)-(9.96)
+#'
+#' Part of the rangayyan_class2 implementation; see the file header for
+#' the source it follows.
+#'
+#' @param trials See Usage.
+#' @param nselect See Usage.
+#' @param rank See Usage.
+#' @param maxiter See Usage.
+#' @param tol See Usage.
+#' @param seed See Usage.
+#' @return A list with \code{X}, \code{C}, \code{W}, \code{H}, \code{error}, \code{rmsd}, \code{normalized}, \code{ranking}, \code{selected}.
+#' @export
 .morie_bx_chsel <- function(trials, nselect, rank, maxiter, tol, seed) {
   # shared core of BciChSel and NmfChSel: eqs (9.94)-(9.96)
   X <- .morie_bx_mat(trials, "trials")

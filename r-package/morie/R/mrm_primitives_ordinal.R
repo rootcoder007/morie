@@ -39,6 +39,15 @@ NULL
 # mrm_primitives_gentrification.R and are reused (not redefined) here.
 
 
+#' Log-likelihood of a single binary logit with linear predictor `eta`
+#'
+#' (intercept already folded in).  Uses log1p(exp(-|eta|)) for
+#' stability.
+#'
+#' @param eta See Usage.
+#' @param y See Usage.
+#' @return A numeric value.
+#' @export
 .tso_logit_ll <- function(eta, y) {
   # log-likelihood of a single binary logit with linear predictor `eta`
   # (intercept already folded in).  Uses log1p(exp(-|eta|)) for stability.
@@ -46,6 +55,18 @@ NULL
 }
 
 
+#' Fallback proportional-odds fit (no MASS): stack the K-1 cutpoint
+#'
+#' binary problems and constrain beta to be shared while letting
+#' cutpoint intercepts differ.  Mirrors _logit_fit_no_intercept().
+#'
+#' @param X See Usage.
+#' @param y See Usage.
+#' @param K See Usage.
+#' @param max_iter See Usage.
+#' @param tol See Usage.
+#' @return A list with \code{intercepts}, \code{beta}.
+#' @export
 .tso_fit_po_stacked <- function(X, y, K, max_iter, tol) {
   # Fallback proportional-odds fit (no MASS): stack the K-1 cutpoint
   # binary problems and constrain beta to be shared while letting

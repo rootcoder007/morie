@@ -28,6 +28,20 @@ NULL
 
 # -- Result containers ------------------------------------------------
 
+#' .evalue_result
+#'
+#' Part of the sensitivity implementation; see the file header for the
+#' source it follows.
+#'
+#' @param point_estimate See Usage.
+#' @param e_value_point See Usage.
+#' @param e_value_ci See Usage.
+#' @param rr See Usage.
+#' @param ci_lower See Usage.
+#' @param ci_upper See Usage.
+#' @param interpretation See Usage.
+#' @return The value of \code{structure}.
+#' @export
 .evalue_result <- function(point_estimate, e_value_point, e_value_ci,
                             rr, ci_lower, ci_upper, interpretation) {
   structure(
@@ -42,6 +56,19 @@ NULL
   )
 }
 
+#' .rosenbaum_result
+#'
+#' Part of the sensitivity implementation; see the file header for the
+#' source it follows.
+#'
+#' @param gamma_values See Usage.
+#' @param p_upper See Usage.
+#' @param p_lower See Usage.
+#' @param critical_gamma See Usage.
+#' @param method See Usage.
+#' @param interpretation See Usage.
+#' @return The value of \code{structure}.
+#' @export
 .rosenbaum_result <- function(gamma_values, p_upper, p_lower,
                                 critical_gamma, method, interpretation) {
   structure(
@@ -55,6 +82,19 @@ NULL
   )
 }
 
+#' .tipping_point_result
+#'
+#' Part of the sensitivity implementation; see the file header for the
+#' source it follows.
+#'
+#' @param delta_values See Usage.
+#' @param adjusted_estimates See Usage.
+#' @param adjusted_p_values See Usage.
+#' @param tipping_point See Usage.
+#' @param original_estimate See Usage.
+#' @param interpretation See Usage.
+#' @return The value of \code{structure}.
+#' @export
 .tipping_point_result <- function(delta_values, adjusted_estimates,
                                      adjusted_p_values, tipping_point,
                                      original_estimate, interpretation) {
@@ -69,6 +109,20 @@ NULL
   )
 }
 
+#' .ovb_result
+#'
+#' Part of the sensitivity implementation; see the file header for the
+#' source it follows.
+#'
+#' @param estimate See Usage.
+#' @param se See Usage.
+#' @param rv_q See Usage.
+#' @param rv_qa See Usage.
+#' @param partial_r2_treatment See Usage.
+#' @param benchmark_bounds See Usage.
+#' @param interpretation See Usage.
+#' @return The value of \code{structure}.
+#' @export
 .ovb_result <- function(estimate, se, rv_q, rv_qa, partial_r2_treatment,
                           benchmark_bounds, interpretation) {
   structure(
@@ -83,6 +137,22 @@ NULL
   )
 }
 
+#' .spec_curve_result
+#'
+#' Part of the sensitivity implementation; see the file header for the
+#' source it follows.
+#'
+#' @param estimates See Usage.
+#' @param ses See Usage.
+#' @param p_values See Usage.
+#' @param specifications See Usage.
+#' @param median_estimate See Usage.
+#' @param iqr_lower See Usage.
+#' @param iqr_upper See Usage.
+#' @param pct_significant See Usage.
+#' @param pct_same_sign See Usage.
+#' @return The value of \code{structure}.
+#' @export
 .spec_curve_result <- function(estimates, ses, p_values, specifications,
                                  median_estimate, iqr_lower, iqr_upper,
                                  pct_significant, pct_same_sign) {
@@ -105,6 +175,14 @@ NULL
 # E-value (VanderWeele & Ding 2017)
 # =====================================================================
 
+#' .rr_to_evalue
+#'
+#' Part of the sensitivity implementation; see the file header for the
+#' source it follows.
+#'
+#' @param rr See Usage.
+#' @return A numeric value.
+#' @export
 .rr_to_evalue <- function(rr) {
   if (rr < 1) rr <- 1 / rr
   rr + sqrt(rr * (rr - 1))

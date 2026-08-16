@@ -50,6 +50,14 @@ morie_opnclp <- function(payload) {
   stop("opnclp: unknown op")
 }
 
+#' .as_num_vec
+#'
+#' Part of the opnclp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .as_num_vec <- function(p) {
   if (is.null(p)) return(numeric(0))
   if (is.list(p)) {
@@ -60,6 +68,14 @@ morie_opnclp <- function(payload) {
   as.numeric(p)
 }
 
+#' .as_num_mat
+#'
+#' Part of the opnclp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param m See Usage.
+#' @return The value of \code{do.call}.
+#' @export
 .as_num_mat <- function(m) {
   if (is.matrix(m)) return(m)
   if (is.null(m)) return(matrix(numeric(0), 0, 0))
@@ -124,6 +140,15 @@ fit_power_law <- function(x, y) {
        range = c(min(X), max(X)), n = n)
 }
 
+#' .opnclp_predict
+#'
+#' Part of the opnclp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param fit See Usage.
+#' @param compute See Usage.
+#' @return A list with \code{value}, \code{extrapolation_decades}, \code{interpolated}, \code{note}.
+#' @export
 .opnclp_predict <- function(fit, compute) {
   c <- as.numeric(compute)
   if (c <= 0.0) {
@@ -167,6 +192,14 @@ compare_scaling <- function(x_a, y_a, x_b, y_b, label_a = "A", label_b = "B") {
 }
 
 # Build a row x col numeric matrix from a list-of-list input.
+#' Build a row x col numeric matrix from a list-of-list input
+#'
+#' Part of the opnclp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param m See Usage.
+#' @return The value of \code{do.call}.
+#' @export
 .coerce_mat <- function(m) {
   if (is.matrix(m)) return(m)
   if (is.null(m) || length(m) == 0L) return(matrix(numeric(0), 0, 0))
@@ -226,6 +259,13 @@ infonce <- function(image_embeddings, text_embeddings, temperature = 0.07) {
        note = paste("symmetric, so neither modality is the anchor"))
 }
 
+#' .opnclp_cheatsheet
+#'
+#' Part of the opnclp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .opnclp_cheatsheet <- function() {
   paste("opnclp: CLIP-scale laws had been measured on PRIVATE data and",
         "models; re-run on public LAION with an open implementation,",

@@ -74,6 +74,13 @@
 NULL
 
 
+#' .has_survey_pkg
+#'
+#' Part of the weights implementation; see the file header for the
+#' source it follows.
+#'
+#' @return The value of \code{requireNamespace}.
+#' @export
 .has_survey_pkg <- function() requireNamespace("survey", quietly = TRUE)
 
 # ---------------------------------------------------------------------------

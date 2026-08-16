@@ -15,8 +15,24 @@
 
 .elmo_EPS <- 1e-12
 
+#' .elmo_sigmoid
+#'
+#' Part of the elmo_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return A numeric value.
+#' @export
 .elmo_sigmoid <- function(x) 1 / (1 + exp(-x))
 
+#' .layer_weights
+#'
+#' Part of the elmo_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param raw See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .layer_weights <- function(raw) {
   if (length(raw) == 0L) stop("elmo: no layer weights given")
   mx <- max(raw)
@@ -25,6 +41,19 @@
   as.numeric(e / tot)
 }
 
+#' .lstm_step
+#'
+#' Part of the elmo_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param h See Usage.
+#' @param c See Usage.
+#' @param Wx See Usage.
+#' @param Wh See Usage.
+#' @param b See Usage.
+#' @return A list with \code{h}, \code{c}.
+#' @export
 .lstm_step <- function(x, h, c, Wx, Wh, b) {
   d <- length(h)
   if (length(c) != d) stop("elmo: hidden and cell sizes differ")
@@ -44,6 +73,15 @@
   list(h = hn, c = cn)
 }
 
+#' .bilm_forward
+#'
+#' Part of the elmo_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param layers See Usage.
+#' @return The value of \code{reps}, as built in the body.
+#' @export
 .bilm_forward <- function(X, layers) {
   Xm <- as.matrix(X)
   L <- nrow(Xm)
@@ -82,6 +120,17 @@
   reps
 }
 
+#' .elmo_mix
+#'
+#' Part of the elmo_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param reps See Usage.
+#' @param raw_weights See Usage.
+#' @param gamma Defaults to \code{1}.
+#' @param position Defaults to \code{NULL}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .elmo_mix <- function(reps, raw_weights, gamma = 1.0, position = NULL) {
   n_layers <- length(reps)
   if (length(raw_weights) != n_layers) {
@@ -108,6 +157,17 @@
   if (is.null(position)) out else out[1L, , drop = TRUE]
 }
 
+#' .elmo_representation
+#'
+#' Part of the elmo_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param layers See Usage.
+#' @param raw_weights Defaults to \code{NULL}.
+#' @param gamma Defaults to \code{1}.
+#' @return A list with \code{estimate}, \code{elmo}, \code{layers}, \code{weights}, \code{gamma}, \code{n_layers}, \code{L}, \code{d}, \code{top_layer}, \code{method}.
+#' @export
 .elmo_representation <- function(X, layers, raw_weights = NULL, gamma = 1.0) {
   reps <- .bilm_forward(X, layers)
   n <- length(reps)

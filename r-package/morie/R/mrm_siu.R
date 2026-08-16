@@ -29,6 +29,14 @@
 NULL
 
 
+#' .parse_iso
+#'
+#' Part of the mrm_siu implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{suppressWarnings}.
+#' @export
 .parse_iso <- function(x) suppressWarnings(as.Date(x, format = "%Y-%m-%d"))
 
 

@@ -3,6 +3,17 @@
 # Internal: Ichimura single-index leave-one-out objective. Extracted
 # from the hrzi1() optimiser closure so the zero-norm guard is directly
 # unit-testable. `h0` is the kernel bandwidth.
+#' Internal: Ichimura single-index leave-one-out objective. Extracted
+#'
+#' from the hrzi1() optimiser closure so the zero-norm guard is directly
+#' unit-testable. `h0` is the kernel bandwidth.
+#'
+#' @param b See Usage.
+#' @param X See Usage.
+#' @param y See Usage.
+#' @param h0 See Usage.
+#' @return A numeric value.
+#' @export
 .hrzi1_obj <- function(b, X, y, h0) {
   nb <- sqrt(sum(b^2))
   if (nb < 1e-12) {

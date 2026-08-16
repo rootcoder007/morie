@@ -102,6 +102,14 @@ morie_datasets_vancouver_opendata_layers <- function(offline = TRUE,
 #' @name vancouver_crime_adjacent
 NULL
 
+#' .morie_vancouver_fixture
+#'
+#' Part of the datasets_vancouver implementation; see the file header
+#' for the source it follows.
+#'
+#' @param fname See Usage.
+#' @return The value of \code{utils::read.csv}.
+#' @export
 .morie_vancouver_fixture <- function(fname) {
   path <- system.file("extdata", fname, package = "morie")
   if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {

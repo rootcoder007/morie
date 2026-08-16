@@ -55,6 +55,14 @@
 
 # Internal: GET the Ontario CKAN datastore_dump JSON endpoint for a
 # given resource_id; return a parsed data.frame. Mock this in tests.
+#' Internal: GET the Ontario CKAN datastore_dump JSON endpoint for a
+#'
+#' given resource_id; return a parsed data.frame. Mock this in tests.
+#'
+#' @param resource_id See Usage.
+#' @param limit Defaults to \code{200000L}.
+#' @return Nothing; this branch always raises.
+#' @export
 .morie_ontario_ckan_dump_csv <- function(resource_id, limit = 200000L) {
   if (!requireNamespace("httr2", quietly = TRUE) ||
       !requireNamespace("jsonlite", quietly = TRUE)) {
@@ -82,6 +90,16 @@
 
 # Internal: GET a TPS PSDP ArcGIS FeatureServer layer; return a
 # data.frame of attributes. Mock this in tests.
+#' Internal: GET a TPS PSDP ArcGIS FeatureServer layer; return a
+#'
+#' data.frame of attributes. Mock this in tests.
+#'
+#' @param layer_url See Usage.
+#' @param where Defaults to \code{"1=1"}.
+#' @param max_features Defaults to \code{NULL}.
+#' @param return_geometry Defaults to \code{FALSE}.
+#' @return Nothing; this branch always raises.
+#' @export
 .morie_tps_psdp_feature_query <- function(layer_url, where = "1=1",
                                             max_features = NULL,
                                             return_geometry = FALSE) {
@@ -316,6 +334,18 @@ morie_datasets_tps_mha_apprehensions <- function(year = NULL,
     "2020-2022" = "2150ac23-4e55-474a-b61f-81baf6850851"))
 
 # Internal: shared offline+live dispatch for ARSAU UoF wrappers.
+#' Internal: shared offline+live dispatch for ARSAU UoF wrappers
+#'
+#' Part of the datasets_ontario_tps implementation; see the file header
+#' for the source it follows.
+#'
+#' @param kind See Usage.
+#' @param year See Usage.
+#' @param offline See Usage.
+#' @param resource_id See Usage.
+#' @param fixture_name See Usage.
+#' @return The value of \code{.morie_ontario_ckan_dump_csv}.
+#' @export
 .morie_arsau_uof_dispatch <- function(kind, year, offline,
                                         resource_id, fixture_name) {
   if (isTRUE(offline)) {
@@ -679,6 +709,20 @@ morie_datasets_ontario_ckan_layers <- function() {
 # auto-resolved from .MORIE_ONTARIO_CKAN_REGISTRY[[registry_key]] when
 # the caller doesn't pass an explicit override; if the registry entry
 # is also missing or NA the function errors with a clear message.
+#' Internal shared dispatch for the OTIS wrappers. Resource ids are
+#'
+#' auto-resolved from .MORIE_ONTARIO_CKAN_REGISTRY[[registry_key]] when
+#' the caller doesn\'t pass an explicit override; if the registry entry
+#' is also missing or NA the function errors with a clear message.
+#'
+#' @param dataset_label See Usage.
+#' @param fixture See Usage.
+#' @param offline See Usage.
+#' @param resource_id See Usage.
+#' @param registry_key Defaults to \code{NULL}.
+#' @param source Defaults to \code{NULL}.
+#' @return The value of \code{.morie_load_chain}.
+#' @export
 .morie_otis_lookup_pending_dispatch <- function(dataset_label, fixture,
                                                   offline, resource_id,
                                                   registry_key = NULL,

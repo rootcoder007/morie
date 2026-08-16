@@ -4,6 +4,20 @@
 # Extracted from the sglm() optimiser closure so the non-positive-
 # -definite-covariance guard is directly unit-testable. `D` is the
 # distance matrix, `n` the sample size, `X`/`y` the design and response.
+#' Internal: spatial-GLM profile negative log-likelihood in log(phi)
+#'
+#' Extracted from the sglm() optimiser closure so the non-positive-
+#' -definite-covariance guard is directly unit-testable. `D` is the
+#' distance matrix, `n` the sample size, `X`/`y` the design and
+#' response.
+#'
+#' @param log_phi See Usage.
+#' @param D See Usage.
+#' @param n See Usage.
+#' @param X See Usage.
+#' @param y See Usage.
+#' @return A numeric value.
+#' @export
 .sglm_negll <- function(log_phi, D, n, X, y) {
   phi <- exp(log_phi)
   R <- exp(-D / phi) + 1e-8 * diag(n)

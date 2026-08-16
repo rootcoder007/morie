@@ -142,6 +142,18 @@ print.morie_dml_clustered <- function(x, ...) {
 }
 
 # Ridge-logistic propensity (tiny ridge for separation), predicted + clipped.
+#' Ridge-logistic propensity (tiny ridge for separation), predicted +
+#' clipped
+#'
+#' Part of the dml_clustered implementation; see the file header for the
+#' source it follows.
+#'
+#' @param Xtr See Usage.
+#' @param dtr See Usage.
+#' @param Xte See Usage.
+#' @param eps See Usage.
+#' @return The value of \code{pmin}.
+#' @export
 .dmlc_ps <- function(Xtr, dtr, Xte, eps) {
   fit <- tryCatch(
     stats::glm.fit(Xtr, dtr, family = stats::binomial()),
@@ -154,6 +166,19 @@ print.morie_dml_clustered <- function(x, ...) {
 }
 
 # Per-arm OLS outcome regression; robust to rank-deficiency and thin arms.
+#' Per-arm OLS outcome regression; robust to rank-deficiency and thin
+#' arms
+#'
+#' Part of the dml_clustered implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param idx See Usage.
+#' @param y See Usage.
+#' @param te See Usage.
+#' @param p See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .dmlc_ols <- function(X, idx, y, te, p) {
   if (length(idx) < p + 2L) {
     return(rep(if (length(idx)) mean(y[idx]) else mean(y), length(te)))
@@ -168,12 +193,33 @@ print.morie_dml_clustered <- function(x, ...) {
 }
 
 # Liang-Zeger one-way cluster-robust SE of a mean, from the influence function.
+#' Liang-Zeger one-way cluster-robust SE of a mean, from the influence
+#' function
+#'
+#' Part of the dml_clustered implementation; see the file header for the
+#' source it follows.
+#'
+#' @param infl See Usage.
+#' @param cluster See Usage.
+#' @param n See Usage.
+#' @return A numeric value.
+#' @export
 .dmlc_cluster_se <- function(infl, cluster, n) {
   grp <- tapply(infl, cluster, sum)
   sqrt(max(sum(grp^2, na.rm = TRUE) / (n^2), 0))
 }
 
 # Cameron-Gelbach-Miller up to two-way.
+#' Cameron-Gelbach-Miller up to two-way
+#'
+#' Part of the dml_clustered implementation; see the file header for the
+#' source it follows.
+#'
+#' @param infl See Usage.
+#' @param clusters See Usage.
+#' @param n See Usage.
+#' @return A numeric value.
+#' @export
 .dmlc_multiway_se <- function(infl, clusters, n) {
   if (length(clusters) == 1L) return(.dmlc_cluster_se(infl, clusters[[1]], n))
   a <- clusters[[1]]

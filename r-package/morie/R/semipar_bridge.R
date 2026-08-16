@@ -86,26 +86,74 @@ KERNEL_BIWEIGHT <- 4L
 # Internal kernel functions
 # ---------------------------------------------------------------------------
 
+#' .kernel_gaussian
+#'
+#' Part of the semipar_bridge implementation; see the file header for
+#' the source it follows.
+#'
+#' @param u See Usage.
+#' @return A numeric value.
+#' @export
 .kernel_gaussian <- function(u) {
   (1.0 / sqrt(2.0 * pi)) * exp(-0.5 * u * u)
 }
 
+#' .kernel_epanechnikov
+#'
+#' Part of the semipar_bridge implementation; see the file header for
+#' the source it follows.
+#'
+#' @param u See Usage.
+#' @return The value of \code{ifelse}.
+#' @export
 .kernel_epanechnikov <- function(u) {
   ifelse(abs(u) <= 1.0, 0.75 * (1.0 - u * u), 0.0)
 }
 
+#' .kernel_uniform
+#'
+#' Part of the semipar_bridge implementation; see the file header for
+#' the source it follows.
+#'
+#' @param u See Usage.
+#' @return The value of \code{ifelse}.
+#' @export
 .kernel_uniform <- function(u) {
   ifelse(abs(u) <= 1.0, 0.5, 0.0)
 }
 
+#' .kernel_triangular
+#'
+#' Part of the semipar_bridge implementation; see the file header for
+#' the source it follows.
+#'
+#' @param u See Usage.
+#' @return The value of \code{ifelse}.
+#' @export
 .kernel_triangular <- function(u) {
   ifelse(abs(u) <= 1.0, 1.0 - abs(u), 0.0)
 }
 
+#' .kernel_biweight
+#'
+#' Part of the semipar_bridge implementation; see the file header for
+#' the source it follows.
+#'
+#' @param u See Usage.
+#' @return The value of \code{ifelse}.
+#' @export
 .kernel_biweight <- function(u) {
   ifelse(abs(u) <= 1.0, (15.0 / 16.0) * (1.0 - u * u) ^ 2, 0.0)
 }
 
+#' .kernel_fn
+#'
+#' Part of the semipar_bridge implementation; see the file header for
+#' the source it follows.
+#'
+#' @param kernel_type See Usage.
+#' @return The value of \code{switch}.
+#' @export
 .kernel_fn <- function(kernel_type) {
   switch(kernel_type + 1L,
          .kernel_gaussian,
@@ -116,6 +164,14 @@ KERNEL_BIWEIGHT <- 4L
          .kernel_gaussian)
 }
 
+#' .resolve_kernel
+#'
+#' Part of the semipar_bridge implementation; see the file header for
+#' the source it follows.
+#'
+#' @param kernel See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 .resolve_kernel <- function(kernel) {
   if (is.numeric(kernel)) return(as.integer(kernel))
   if (is.character(kernel)) {

@@ -37,6 +37,13 @@
 
 # Vectorise the (n, n) gram matrix K into a column-stored numeric
 # matrix if it isn't already.
+#' Vectorise the (n, n) gram matrix K into a column-stored numeric
+#'
+#' matrix if it isn\'t already.
+#'
+#' @param K See Usage.
+#' @return The value of \code{M}, as built in the body.
+#' @export
 .smoopt_K <- function(K) {
   if (is.matrix(K)) return(K)
   n <- length(K)
@@ -192,6 +199,17 @@ compute_threshold <- function(i1, i2, a1_new, a2_new, alpha, y, E, K,
 
 # Analytic step bounds L <= a2_new <= H.  Mirrors
 # svmopt._bounds exactly.
+#' Analytic step bounds L <= a2_new <= H.  Mirrors
+#'
+#' svmopt._bounds exactly.
+#'
+#' @param i1 See Usage.
+#' @param i2 See Usage.
+#' @param alpha See Usage.
+#' @param y See Usage.
+#' @param C See Usage.
+#' @return A vector, from \code{c}.
+#' @export
 .smoopt_bounds <- function(i1, i2, alpha, y, C) {
   yy <- as.numeric(y); a <- as.numeric(alpha); C <- as.numeric(C)
   if (yy[i1] == yy[i2]) {
@@ -208,6 +226,16 @@ compute_threshold <- function(i1, i2, a1_new, a2_new, alpha, y, E, K,
 # is directly comparable to svmopt.dual_objective up to the sign of
 # the threshold term -- the threshold does not enter the dual
 # itself.
+#' Dual objective of the C-SVM, in the Platt sign convention so it
+#'
+#' is directly comparable to svmopt.dual_objective up to the sign of the
+#' threshold term -- the threshold does not enter the dual itself.
+#'
+#' @param alpha See Usage.
+#' @param y See Usage.
+#' @param K See Usage.
+#' @return A numeric value.
+#' @export
 .smoopt_dual_objective <- function(alpha, y, K) {
   a <- as.numeric(alpha); yy <- as.numeric(y); n <- length(a)
   Km <- .smoopt_K(K)
@@ -308,6 +336,13 @@ smo_platt <- function(y, K, C = 1.0, tol = 1e-3, eps = 1e-5,
                     sep = ""))
 }
 
+#' .smoopt_cheatsheet
+#'
+#' Part of the smoopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .smoopt_cheatsheet <- function() {
   paste("smoopt: same SVM dual as svmopt, different CHOICE of ",
         "pair. Two multipliers because the equality constraint ",

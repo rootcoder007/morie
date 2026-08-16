@@ -162,6 +162,15 @@ morie_tokenizer_decode <- function(tok, ids) {
   out
 }
 
+#' .morie_tokenizer_bpe_encode
+#'
+#' Part of the tokenizer implementation; see the file header for the
+#' source it follows.
+#'
+#' @param tok See Usage.
+#' @param text See Usage.
+#' @return The value of \code{tokens}, as built in the body.
+#' @export
 .morie_tokenizer_bpe_encode <- function(tok, text) {
   text <- paste0("\u2581", gsub(" ", "\u2581", text, fixed = TRUE))
   tokens <- character()

@@ -45,6 +45,14 @@ NULL
 
 # Internal: turn a dataset_dictionary-style DatasetSchema (a named
 # list with $columns) into a list of taxonomies.
+#' Internal: turn a dataset_dictionary-style DatasetSchema (a named
+#'
+#' list with $columns) into a list of taxonomies.
+#'
+#' @param schema See Usage.
+#' @param dataset_name See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .classify_schema_R <- function(schema, dataset_name) {
   out <- vector("list", length(schema$columns))
   for (i in seq_along(schema$columns)) {
@@ -61,6 +69,16 @@ NULL
 
 
 # Internal: compute counts + flag lists from a flat taxonomy list
+#' Internal: compute counts + flag lists from a flat taxonomy list
+#'
+#' Part of the audit_variables implementation; see the file header for
+#' the source it follows.
+#'
+#' @param taxonomies See Usage.
+#' @param analyzed_set See Usage.
+#' @param domain See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .summarise_taxonomies <- function(taxonomies, analyzed_set, domain) {
   n_total <- length(taxonomies)
   n_analyzed <- sum(vapply(taxonomies,

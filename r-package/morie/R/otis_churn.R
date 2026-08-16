@@ -50,6 +50,19 @@ NULL
 # Result constructor shared with otis.R (.otis_result lives there but
 # we define a thin alias here to avoid load-order coupling). We name it
 # `.churn_result` so it can co-exist if file load order changes.
+#' Result constructor shared with otis.R (.otis_result lives there but
+#'
+#' we define a thin alias here to avoid load-order coupling). We name it
+#' `.churn_result` so it can co-exist if file load order changes.
+#'
+#' @param title See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param tables Defaults to \code{list()}.
+#' @param interpretation Defaults to \code{""}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param payload Defaults to \code{list()}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .churn_result <- function(title,
                            summary_lines = list(),
                            tables = list(),
@@ -74,6 +87,14 @@ NULL
 #   "2 placements"         -> 2
 #   "6 to 10 placements"   -> 8 (midpoint)
 #   "Greater than 40"      -> 50 (boundary + 10)
+#' Parse OTIS b09 placement-count bin labels:
+#'
+#' "1 placement" -> 1 "2 placements" -> 2 "6 to 10 placements" -> 8
+#' (midpoint) "Greater than 40" -> 50 (boundary + 10)
+#'
+#' @param label See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .churn_parse_placement_bin <- function(label) {
   s <- tolower(trimws(as.character(label)))
   if (grepl("greater than", s)) {
@@ -91,6 +112,14 @@ NULL
 
 
 # Yes/No/T/F/1/0 -> integer 0/1
+#' Yes/No/T/F/1/0 -> integer 0/1
+#'
+#' Part of the otis_churn implementation; see the file header for the
+#' source it follows.
+#'
+#' @param s See Usage.
+#' @return The value of \code{as.integer}.
+#' @export
 .churn_yn <- function(s) {
   if (is.logical(s)) return(as.integer(s))
   if (is.numeric(s)) {
@@ -104,6 +133,14 @@ NULL
 
 # chi-square + Cramer's V on a 2x2-or-larger crosstab. Returns list
 # (chi2, p, v) with NA entries when the table is too sparse.
+#' Chi-square + Cramer\'s V on a 2x2-or-larger crosstab. Returns list
+#'
+#' (chi2, p, v) with NA entries when the table is too sparse.
+#'
+#' @param tbl See Usage.
+#' @param min_cell Defaults to \code{5L}.
+#' @return A list with \code{chi2}, \code{p}, \code{v}.
+#' @export
 .churn_chi2_v <- function(tbl, min_cell = 5L) {
   if (any(dim(tbl) < 2L)) {
     return(list(chi2 = NA_real_, p = NA_real_, v = NA_real_))

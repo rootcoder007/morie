@@ -15,6 +15,14 @@
 .SAMMKR_EPS <- 1e-12
 .SAMMKR_NESTING <- c("whole", "part", "subpart")
 
+#' .sammkr_flat
+#'
+#' Part of the sammkr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param m See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .sammkr_flat <- function(m) {
   if (is.matrix(m)) return(as.numeric(m))
   if (is.list(m)) {
@@ -180,6 +188,13 @@ morie_sammkr <- function(masks, predicted_iou, target = NULL) {
 sam_multi_mask_rank <- rank_masks
 sammultimask <- rank_masks
 
+#' .sammkr_cheatsheet
+#'
+#' Part of the sammkr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .sammkr_cheatsheet <- function() {
   paste("sammkr: one output forces the model to AVERAGE the valid",
         "masks of an ambiguous prompt -- a blur that answers nobody.",

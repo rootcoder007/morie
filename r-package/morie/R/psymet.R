@@ -10,8 +10,23 @@
 #   McDonald (1999). Test Theory: A Unified Treatment.
 #   Revelle (2024). psych R package.
 
+#' .has_psych
+#'
+#' Part of the psymet implementation; see the file header for the source
+#' it follows.
+#'
+#' @return The value of \code{requireNamespace}.
+#' @export
 .has_psych <- function() requireNamespace("psych", quietly = TRUE)
 
+#' .psych_or_stop
+#'
+#' Part of the psymet implementation; see the file header for the source
+#' it follows.
+#'
+#' @param fn See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .psych_or_stop <- function(fn) {
   if (!.has_psych()) {
     stop(sprintf(
@@ -21,6 +36,14 @@
   }
 }
 
+#' .as_item_matrix
+#'
+#' Part of the psymet implementation; see the file header for the source
+#' it follows.
+#'
+#' @param data See Usage.
+#' @return The value of \code{X}, as built in the body.
+#' @export
 .as_item_matrix <- function(data) {
   X <- as.matrix(data)
   storage.mode(X) <- "double"

@@ -22,6 +22,14 @@
 .SAMSEG_EPS <- 1e-12
 .SAMSEG_TYPES <- c("foreground", "background", "box_tl", "box_br")
 
+#' .samseg_mat
+#'
+#' Part of the samseg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 .samseg_mat <- function(x) {
   if (is.matrix(x)) return(x)
   if (is.numeric(x)) return(as.matrix(x))
@@ -38,6 +46,17 @@
   stop("samseg: expected a matrix-like input")
 }
 
+#' .samseg_pos_enc
+#'
+#' Part of the samseg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param y See Usage.
+#' @param dim Defaults to \code{8}.
+#' @param scale Defaults to \code{1}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .samseg_pos_enc <- function(x, y, dim = 8, scale = 1.0) {
   out <- numeric(dim)
   for (j in seq_len(as.integer(dim) %/% 2L)) {
@@ -204,6 +223,13 @@ sam_segment <- promptable_segment
 samsegment <- promptable_segment
 segmentanything <- promptable_segment
 
+#' .samseg_cheatsheet
+#'
+#' Part of the samseg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .samseg_cheatsheet <- function() {
   paste("samseg: the task is 'return a VALID mask for any prompt,",
         "and for an AMBIGUOUS prompt a valid mask for at least one",

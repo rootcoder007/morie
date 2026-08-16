@@ -47,6 +47,13 @@ morie_xavir_xavier_init <- function(fan_in, fan_out, seed = 42L, uniform = TRUE)
   )
 }
 
+#' .Random.seed_safe
+#'
+#' Part of the xavir implementation; see the file header for the source
+#' it follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .Random.seed_safe <- function() {
   if (exists(".Random.seed", envir = globalenv())) {
     get(".Random.seed", envir = globalenv())
@@ -55,6 +62,14 @@ morie_xavir_xavier_init <- function(fan_in, fan_out, seed = 42L, uniform = TRUE)
   }
 }
 
+#' .Random.seed_restore
+#'
+#' Part of the xavir implementation; see the file header for the source
+#' it follows.
+#'
+#' @param old See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .Random.seed_restore <- function(old) {
   if (is.null(old)) {
     if (exists(".Random.seed", envir = globalenv())) {

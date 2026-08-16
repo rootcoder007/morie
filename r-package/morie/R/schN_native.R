@@ -160,6 +160,13 @@ invariance_error <- function(energy_fn, R, Q, g = NULL) {
        note = "energy INVARIANT, forces EQUIVARIANT -- two different properties from one design choice")
 }
 
+#' .schN_cheatsheet
+#'
+#' Part of the schN_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .schN_cheatsheet <- function() {
   paste("schN: a convolution needs a grid and atoms have none, so",
         "make the filter a FUNCTION of interatomic distance -- a",

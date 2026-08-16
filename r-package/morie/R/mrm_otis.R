@@ -41,6 +41,14 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+#' .gini_int
+#'
+#' Part of the mrm_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return A numeric value.
+#' @export
 .gini_int <- function(x) {
   x <- sort(as.numeric(x))
   n <- length(x)
@@ -50,6 +58,18 @@ NULL
   (2 * sum(seq_len(n) * x) - (n + 1) * sum(x)) / (n * sum(x))
 }
 
+#' Clauset-Shalizi-Newman discrete MLE: alpha = 1 + n / sum(log(x /
+#' (x_min - 0.5)))
+#'
+#' The -0.5 continuity correction matters when x_min is small.
+#' Continuous Hill (no correction) would use log(x / x_min), but
+#' morie\'s OTIS placement counts are integer-valued so the discrete
+#' form is right.
+#'
+#' @param x See Usage.
+#' @param x_min See Usage.
+#' @return A numeric value.
+#' @export
 .hill_mle <- function(x, x_min) {
   # Clauset-Shalizi-Newman discrete MLE: alpha = 1 + n / sum(log(x / (x_min - 0.5)))
   # The -0.5 continuity correction matters when x_min is small.
@@ -65,6 +85,14 @@ NULL
   1 + n / sum(log(x / denom))
 }
 
+#' .cramer_v
+#'
+#' Part of the mrm_otis implementation; see the file header for the
+#' source it follows.
+#'
+#' @param tbl See Usage.
+#' @return A numeric value.
+#' @export
 .cramer_v <- function(tbl) {
   if (any(dim(tbl) < 2L)) {
     return(NA_real_)

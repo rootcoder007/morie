@@ -16,6 +16,14 @@
 .HASH_LEN <- 32L
 .MAX_BLOCKS <- 255L
 
+#' .seckdf_as_bytes
+#'
+#' Part of the seckdf_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 .seckdf_as_bytes <- function(x) {
   if (is.raw(x)) return(x)
   if (is.character(x)) return(charToRaw(paste(x, collapse = "")))
@@ -23,6 +31,14 @@
   stop("expected raw, character or NULL")
 }
 
+#' .seckdf_hexlify
+#'
+#' Part of the seckdf_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param bs See Usage.
+#' @return A character value.
+#' @export
 .seckdf_hexlify <- function(bs) {
   paste(format(as.hexmode(as.integer(bs)), width = 2,
                upper.case = TRUE), collapse = "")

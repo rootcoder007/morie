@@ -12,6 +12,15 @@
 
 .fairRC_EPS <- 1e-12
 
+#' .cutoffs
+#'
+#' Part of the fairRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param N See Usage.
+#' @param step Defaults to \code{10L}.
+#' @return The value of \code{seq}.
+#' @export
 .cutoffs <- function(N, step = 10L) {
   n <- as.integer(N); s <- as.integer(step)
   if (n < s) {
@@ -20,6 +29,16 @@
   seq(s, n, by = s)
 }
 
+#' .raw
+#'
+#' Part of the fairRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param protected See Usage.
+#' @param measure See Usage.
+#' @param step See Usage.
+#' @return The value of \code{tot}, as built in the body.
+#' @export
 .raw <- function(protected, measure, step) {
   N <- length(protected)
   P <- sum(protected) / N
@@ -45,6 +64,16 @@
   tot
 }
 
+#' .normalizer
+#'
+#' Part of the fairRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param protected See Usage.
+#' @param measure Defaults to \code{"rND"}.
+#' @param step Defaults to \code{10L}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .normalizer <- function(protected, measure = "rND", step = 10L) {
   n <- length(protected)
   npos <- sum(as.integer(protected))
@@ -53,6 +82,18 @@
   if (z > .fairRC_EPS) z else 1
 }
 
+#' .measure
+#'
+#' Part of the fairRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param protected See Usage.
+#' @param measure See Usage.
+#' @param step See Usage.
+#' @param normalize See Usage.
+#' @param caveat Defaults to \code{NULL}.
+#' @return The value of \code{pay}, as built in the body.
+#' @export
 .measure <- function(protected, measure, step, normalize, caveat = NULL) {
   if (!(measure %in% c("rND", "rKL", "rRD"))) {
     stop(sprintf("fairRC: measure must be one of %s, got %s",

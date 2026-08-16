@@ -212,6 +212,14 @@ morie_datasets_vpd_crime <- function(offline = TRUE,
 
 .MORIE_VPD_TERMS_WARNED <- new.env(parent = emptyenv())
 
+#' .morie_vpd_terms_warning
+#'
+#' Part of the datasets_vpd implementation; see the file header for the
+#' source it follows.
+#'
+#' @param accept_terms See Usage.
+#' @return Invisibly,nothing; the function is called for its effect.
+#' @export
 .morie_vpd_terms_warning <- function(accept_terms) {
   if (isTRUE(accept_terms)) return(invisible())
   if (isTRUE(.MORIE_VPD_TERMS_WARNED$warned)) return(invisible())

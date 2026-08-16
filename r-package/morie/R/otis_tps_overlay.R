@@ -41,6 +41,14 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+#' .otis_tps_toronto_seg_by_year
+#'
+#' Part of the otis_tps_overlay implementation; see the file header for
+#' the source it follows.
+#'
+#' @param df_b01 See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_tps_toronto_seg_by_year <- function(df_b01) {
   stopifnot(is.data.frame(df_b01))
   if (!("EndFiscalYear" %in% names(df_b01))) {
@@ -61,6 +69,14 @@ NULL
   out
 }
 
+#' .otis_tps_incidents_by_year
+#'
+#' Part of the otis_tps_overlay implementation; see the file header for
+#' the source it follows.
+#'
+#' @param df_tps See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_tps_incidents_by_year <- function(df_tps) {
   stopifnot(is.data.frame(df_tps))
   yc <- if ("OCC_YEAR" %in% names(df_tps)) "OCC_YEAR" else
@@ -79,6 +95,19 @@ NULL
 # Wrap a list as a morie_otis_analysis_result (lazy reference to the
 # constructor defined in otis_all_analyze.R -- both files ship in the
 # same R/ collation order, so this resolves at package-load time).
+#' Wrap a list as a morie_otis_analysis_result (lazy reference to the
+#'
+#' constructor defined in otis_all_analyze.R -- both files ship in the
+#' same R/ collation order, so this resolves at package-load time).
+#'
+#' @param title See Usage.
+#' @param summary_lines See Usage.
+#' @param tables Defaults to \code{list()}.
+#' @param interpretation Defaults to \code{""}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param payload Defaults to \code{NULL}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_overlay_wrap <- function(title, summary_lines,
                                 tables = list(),
                                 interpretation = "",

@@ -154,6 +154,16 @@ morie_compare_nested_logistic_models <- function(data, outcome,
 }
 
 # Internal: fit a logistic propensity model and clip to [0.01, 0.99].
+#' Internal: fit a logistic propensity model and clip to [0.01, 0.99]
+#'
+#' Part of the investigation implementation; see the file header for the
+#' source it follows.
+#'
+#' @param data See Usage.
+#' @param treatment See Usage.
+#' @param covariates See Usage.
+#' @return The value of \code{pmin}.
+#' @export
 .morie_fit_propensity <- function(data, treatment, covariates) {
   fml <- stats::as.formula(paste(treatment, "~",
                                   paste(covariates, collapse = " + ")))

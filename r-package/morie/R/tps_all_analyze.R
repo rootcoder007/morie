@@ -53,6 +53,14 @@ NULL
 # Internal: column-detection + value-counts helpers
 # ---------------------------------------------------------------------------
 
+#' .tps_safe_year_col
+#'
+#' Part of the tps_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param df See Usage.
+#' @return Nothing; the function is called for its effect.
+#' @export
 .tps_safe_year_col <- function(df) {
   for (c in c("OCC_YEAR", "REPORT_YEAR", "Year")) {
     if (c %in% names(df)) return(c)
@@ -60,6 +68,15 @@ NULL
   NULL
 }
 
+#' .tps_vc_rows
+#'
+#' Part of the tps_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param top Defaults to \code{20L}.
+#' @return The value of \code{lapply}.
+#' @export
 .tps_vc_rows <- function(x, top = 20L) {
   counts <- sort(table(x, useNA = "ifany"), decreasing = TRUE)
   if (length(counts) > top) counts <- counts[seq_len(top)]
@@ -473,6 +490,14 @@ morie_tps_analyze_one <- function(df, name = "?") {
 # 7. Convenience aliases (13)
 # ---------------------------------------------------------------------------
 
+#' .tps_alias_factory
+#'
+#' Part of the tps_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param name See Usage.
+#' @return The value of \code{function}.
+#' @export
 .tps_alias_factory <- function(name) {
   force(name)
   function(df) morie_tps_analyze_one(df, name = name)

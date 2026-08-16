@@ -464,6 +464,14 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
 # Helpers
 # ---------------------------------------------------------------------------
 
+#' .morie_portal_fixture_rows
+#'
+#' Part of the dataset_portal_catalog implementation; see the file
+#' header for the source it follows.
+#'
+#' @param fname See Usage.
+#' @return A numeric value.
+#' @export
 .morie_portal_fixture_rows <- function(fname) {
   if (is.null(fname) || is.na(fname) || !nzchar(fname))
     return(NA_integer_)

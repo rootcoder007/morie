@@ -40,6 +40,14 @@ NULL
 # Internal helpers (NOT exported)
 # ---------------------------------------------------------------------------
 
+#' .uof_gini
+#'
+#' Part of the mrm_uof implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return A numeric value.
+#' @export
 .uof_gini <- function(x) {
   x <- sort(as.numeric(x))
   n <- length(x)
@@ -50,6 +58,15 @@ NULL
   (2 * sum(seq_len(n) * x) - (n + 1L) * s) / (n * s)
 }
 
+#' .uof_hill_alpha
+#'
+#' Part of the mrm_uof implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param x_min Defaults to \code{1}.
+#' @return A numeric value.
+#' @export
 .uof_hill_alpha <- function(x, x_min = 1.0) {
   x <- as.numeric(x)
   x <- x[!is.na(x) & x >= x_min]
@@ -63,6 +80,15 @@ NULL
   1.0 + length(x) / denom
 }
 
+#' .uof_topk_share
+#'
+#' Part of the mrm_uof implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param k See Usage.
+#' @return A numeric value.
+#' @export
 .uof_topk_share <- function(x, k) {
   x <- as.numeric(x)
   s <- sum(x, na.rm = TRUE)
@@ -73,6 +99,16 @@ NULL
   sum(sort(x, decreasing = TRUE)[seq_len(k)]) / s
 }
 
+#' .uof_wilson_ci
+#'
+#' Part of the mrm_uof implementation; see the file header for the
+#' source it follows.
+#'
+#' @param k See Usage.
+#' @param n See Usage.
+#' @param z Defaults to \code{1.95996398454005}.
+#' @return A vector, from \code{c}.
+#' @export
 .uof_wilson_ci <- function(k, n, z = 1.959963984540054) {
   if (n == 0L) {
     return(c(NA_real_, NA_real_))
@@ -89,6 +125,17 @@ NULL
   c(max(0.0, centre - margin), min(1.0, centre + margin))
 }
 
+#' .uof_cramers_v
+#'
+#' Part of the mrm_uof implementation; see the file header for the
+#' source it follows.
+#'
+#' @param chi2 See Usage.
+#' @param n See Usage.
+#' @param r See Usage.
+#' @param c See Usage.
+#' @return A numeric value.
+#' @export
 .uof_cramers_v <- function(chi2, n, r, c) {
   k <- min(r - 1L, c - 1L)
   if (k <= 0L || n == 0L) {
@@ -97,6 +144,14 @@ NULL
   sqrt(chi2 / (n * k))
 }
 
+#' .uof_fmt_pct
+#'
+#' Part of the mrm_uof implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @return A character value.
+#' @export
 .uof_fmt_pct <- function(p) {
   if (!is.finite(p)) {
     return("n/a")
@@ -104,6 +159,19 @@ NULL
   sprintf("%.2f%%", 100 * p)
 }
 
+#' .uof_result
+#'
+#' Part of the mrm_uof implementation; see the file header for the
+#' source it follows.
+#'
+#' @param title See Usage.
+#' @param call See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param interpretation Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .uof_result <- function(title, call, summary_lines = list(),
                          warnings = character(0),
                          interpretation = "",

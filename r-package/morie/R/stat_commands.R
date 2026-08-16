@@ -247,6 +247,15 @@ clear_stat_commands <- function() {
 # 620-command tree lives in Python; the R surface starts with the
 # multiple-testing and semiparametric callables ported alongside this
 # file.
+#' Register a curated, small first wave so the registry has reachable
+#'
+#' entries even before downstream packages append their own. The full
+#' 620-command tree lives in Python; the R surface starts with the
+#' multiple-testing and semiparametric callables ported alongside this
+#' file.
+#'
+#' @return Invisibly,the value of \code{length}.
+#' @export
 .morie_seed_stat_commands <- function() {
   seeds <- list(
     list(
@@ -451,6 +460,14 @@ print.morie_stat_command <- function(x, ...) {
 # Infer a category for a function `fn_name` by searching the installed
 # R/ directory for files whose names begin with a known prefix.  Falls
 # back to scanning the function's source attributes when available.
+#' Infer a category for a function `fn_name` by searching the installed
+#'
+#' R/ directory for files whose names begin with a known prefix.  Falls
+#' back to scanning the function\'s source attributes when available.
+#'
+#' @param fn_name See Usage.
+#' @return A character value.
+#' @export
 .morie_infer_category <- function(fn_name) {
   # Cheap path: prefix match against the static map.
   for (px in names(.MORIE_CATEGORY_PREFIX_MAP)) {

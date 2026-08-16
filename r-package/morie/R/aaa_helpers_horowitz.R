@@ -6,6 +6,14 @@
 #' @name horowitz_helpers
 NULL
 
+#' .hrz_silverman
+#'
+#' Part of the helpers_horowitz implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{unname}.
+#' @export
 .hrz_silverman <- function(x) {
   x <- as.numeric(x)
   n <- length(x)
@@ -23,9 +31,27 @@ NULL
 .hrz_R_K_gaussian <- 1.0 / (2.0 * sqrt(pi))
 
 
+#' .hrz_gauss_kernel
+#'
+#' Part of the helpers_horowitz implementation; see the file header for
+#' the source it follows.
+#'
+#' @param u See Usage.
+#' @return A numeric value.
+#' @export
 .hrz_gauss_kernel <- function(u) exp(-0.5 * u^2) / sqrt(2 * pi)
 
 
+#' .hrz_nw_loo
+#'
+#' Part of the helpers_horowitz implementation; see the file header for
+#' the source it follows.
+#'
+#' @param z See Usage.
+#' @param y See Usage.
+#' @param h See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .hrz_nw_loo <- function(z, y, h) {
   if (is.null(dim(z))) {
     u <- outer(z, z, `-`) / h
@@ -46,6 +72,17 @@ NULL
 }
 
 
+#' .hrz_probit_newton
+#'
+#' Part of the helpers_horowitz implementation; see the file header for
+#' the source it follows.
+#'
+#' @param D See Usage.
+#' @param Z See Usage.
+#' @param maxit Defaults to \code{50}.
+#' @param tol Defaults to \code{1e-08}.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .hrz_probit_newton <- function(D, Z, maxit = 50, tol = 1e-8) {
   q <- ncol(Z)
   beta <- rep(0, q)
@@ -67,6 +104,17 @@ NULL
 }
 
 
+#' .hrz_logit_newton
+#'
+#' Part of the helpers_horowitz implementation; see the file header for
+#' the source it follows.
+#'
+#' @param D See Usage.
+#' @param X See Usage.
+#' @param maxit Defaults to \code{50}.
+#' @param tol Defaults to \code{1e-08}.
+#' @return A numeric value.
+#' @export
 .hrz_logit_newton <- function(D, X, maxit = 50, tol = 1e-8) {
   p <- ncol(X)
   beta <- rep(0, p)
@@ -86,6 +134,18 @@ NULL
 }
 
 
+#' .hrz_qreg_irls
+#'
+#' Part of the helpers_horowitz implementation; see the file header for
+#' the source it follows.
+#'
+#' @param X See Usage.
+#' @param y See Usage.
+#' @param tau Defaults to \code{0.5}.
+#' @param maxit Defaults to \code{50}.
+#' @param tol Defaults to \code{1e-06}.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .hrz_qreg_irls <- function(X, y, tau = 0.5, maxit = 50, tol = 1e-6) {
   beta <- as.numeric(stats::coef(stats::lm.fit(X, y)))
   for (k in 1:maxit) {
@@ -107,6 +167,15 @@ NULL
 }
 
 
+#' .hrz_hermite
+#'
+#' Part of the helpers_horowitz implementation; see the file header for
+#' the source it follows.
+#'
+#' @param t See Usage.
+#' @param J See Usage.
+#' @return The value of \code{H}, as built in the body.
+#' @export
 .hrz_hermite <- function(t, J) {
   n <- length(t)
   H <- matrix(0, n, J)

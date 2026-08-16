@@ -99,6 +99,15 @@ san_score <- function(eeg, fmri = NULL) {
 # Internal: theoretical-framework helpers (parity with _theory.py)
 # ---------------------------------------------------------------------------
 
+#' .entheo_extract_pair
+#'
+#' Part of the entheo_analysis implementation; see the file header for
+#' the source it follows.
+#'
+#' @param record_or_eeg See Usage.
+#' @param fmri See Usage.
+#' @return A list with \code{e_dmt}, \code{f_dmt}, \code{e_pcb}, \code{f_pcb}.
+#' @export
 .entheo_extract_pair <- function(record_or_eeg, fmri) {
   if (is.list(record_or_eeg) && !is.null(record_or_eeg$fmri)) {
     rec <- record_or_eeg
@@ -110,6 +119,14 @@ san_score <- function(eeg, fmri = NULL) {
   list(e_dmt = record_or_eeg, f_dmt = fmri, e_pcb = NULL, f_pcb = NULL)
 }
 
+#' .entheo_envelope
+#'
+#' Part of the entheo_analysis implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .entheo_envelope <- function(x) {
   kern <- rep(1 / 5, 5)
   abs_x <- abs(x)
@@ -120,6 +137,15 @@ san_score <- function(eeg, fmri = NULL) {
   }
 }
 
+#' .entheo_align
+#'
+#' Part of the entheo_analysis implementation; see the file header for
+#' the source it follows.
+#'
+#' @param e See Usage.
+#' @param f See Usage.
+#' @return A list with \code{e}, \code{f}.
+#' @export
 .entheo_align <- function(e, f) {
   e_tc <- if (is.matrix(e)) colMeans(e) else e
   f_tc <- if (is.matrix(f)) colMeans(f) else f
@@ -141,6 +167,15 @@ san_score <- function(eeg, fmri = NULL) {
   list(e = .bin(e_tc), f = .bin(f_tc))
 }
 
+#' .entheo_binding_per_frame
+#'
+#' Part of the entheo_analysis implementation; see the file header for
+#' the source it follows.
+#'
+#' @param eeg See Usage.
+#' @param fmri See Usage.
+#' @return A numeric value.
+#' @export
 .entheo_binding_per_frame <- function(eeg, fmri) {
   env <- .entheo_envelope(eeg)
   al <- .entheo_align(env, fmri)
@@ -169,6 +204,15 @@ san_score <- function(eeg, fmri = NULL) {
   out / sd_o
 }
 
+#' .entheo_san_per_frame
+#'
+#' Part of the entheo_analysis implementation; see the file header for
+#' the source it follows.
+#'
+#' @param eeg See Usage.
+#' @param fmri See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .entheo_san_per_frame <- function(eeg, fmri) {
   al <- .entheo_align(eeg, fmri)
   e_tc <- al$e

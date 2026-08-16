@@ -178,6 +178,13 @@ morie_install_extras <- function(which = "missing",
 
 
 # Internal: read this package's Suggests field from its DESCRIPTION.
+#' Internal: read this package\'s Suggests field from its DESCRIPTION
+#'
+#' Part of the install_extras implementation; see the file header for
+#' the source it follows.
+#'
+#' @return The value of \code{[}.
+#' @export
 .morie_get_suggests <- function() {
   desc_path <- system.file("DESCRIPTION", package = "morie")
   if (!nzchar(desc_path)) {
@@ -196,6 +203,14 @@ morie_install_extras <- function(which = "missing",
 
 
 # Internal: is a CRAN package installed locally?
+#' Internal: is a CRAN package installed locally?
+#'
+#' Part of the install_extras implementation; see the file header for
+#' the source it follows.
+#'
+#' @param pkg See Usage.
+#' @return A logical value.
+#' @export
 .morie_pkg_installed <- function(pkg) {
   isTRUE(requireNamespace(pkg, quietly = TRUE))
 }
@@ -307,6 +322,14 @@ morie_ensure_extras <- function(pkgs, ask = interactive(), repos = NULL) {
 # Uses configure-time flags written into DESCRIPTION at install
 # (Phase 3JJJ1/2: MORIE_HAVE_SODIUM / MORIE_HAVE_LIBOQS), with
 # library-load fallback for libcurl (Imports R-side).
+#' Internal: probe whether the C system libraries are available
+#'
+#' Uses configure-time flags written into DESCRIPTION at install (Phase
+#' 3JJJ1/2: MORIE_HAVE_SODIUM / MORIE_HAVE_LIBOQS), with library-load
+#' fallback for libcurl (Imports R-side).
+#'
+#' @return A list with \code{libcurl}, \code{libsodium}, \code{liboqs}.
+#' @export
 .morie_check_system_libs <- function() {
   list(
     libcurl   = .morie_pkg_installed("curl") || .morie_pkg_installed("httr2"),

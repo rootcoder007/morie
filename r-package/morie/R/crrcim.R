@@ -5,6 +5,18 @@
 # ALL-CAUSE Kaplan-Meier: leaving it out gives 1 - KM computed on the
 # cause alone, which over-states the incidence whenever a competing
 # event can happen first.
+#' Aalen-Johansen estimator of F_k(t) plus the overall KM survival
+#'
+#' F_k(t) = sum_{u <= t} S(u-) dN_k(u) / Y(u).  The S(u-) factor is the
+#' ALL-CAUSE Kaplan-Meier: leaving it out gives 1 - KM computed on the
+#' cause alone, which over-states the incidence whenever a competing
+#' event can happen first.
+#'
+#' @param time See Usage.
+#' @param event_type See Usage.
+#' @param cause Defaults to \code{1}.
+#' @return A list with \code{times}, \code{F}, \code{S}, \code{Y}, \code{dk}, \code{n}.
+#' @export
 .aalen_johansen <- function(time, event_type, cause = 1) {
   t <- .s03vec(time)
   n <- length(t)

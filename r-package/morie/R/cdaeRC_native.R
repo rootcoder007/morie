@@ -24,6 +24,15 @@
 .CDAE_LOSSES <- c("square", "log", "hinge", "cross_entropy")
 .CDAE_ACTS <- c("sigmoid", "identity", "tanh")
 
+#' .cdae_act
+#'
+#' Part of the cdaeRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param name See Usage.
+#' @param x See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .cdae_act <- function(name, x) {
   if (name == "sigmoid") {
     if (x >= -700) 1.0 / (1.0 + exp(-x)) else 0.0
@@ -37,6 +46,15 @@
   }
 }
 
+#' .cdae_dact
+#'
+#' Part of the cdaeRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param name See Usage.
+#' @param y See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .cdae_dact <- function(name, y) {
   if (name == "sigmoid") y * (1.0 - y)
   else if (name == "identity") 1.0
@@ -320,6 +338,13 @@ morie_cdaeRC <- function(pos, n_users, n_items, k_dim = 8L, q = 0.2,
 cdae <- fit_cdae
 collaborativedenoisingautoencoder <- fit_cdae
 
+#' .cdaeRC_cheatsheet
+#'
+#' Part of the cdaeRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .cdaeRC_cheatsheet <- function() {
   paste("cdaeRC: a denoising auto-encoder over a user's BINARY",
         "preference vector, plus a USER-SPECIFIC input node V_u --",

@@ -4,6 +4,18 @@
 # morie_midas_regression() optimiser closure so the theta-domain guard and the
 # non-finite-SSE guard are directly unit-testable. `X` is the lag-matrix,
 # `Y` the target, `K` the number of high-frequency lags.
+#' Internal: MIDAS sum-of-squared-errors objective. Extracted from the
+#'
+#' morie_midas_regression() optimiser closure so the theta-domain guard
+#' and the non-finite-SSE guard are directly unit-testable. `X` is the
+#' lag-matrix, `Y` the target, `K` the number of high-frequency lags.
+#'
+#' @param p See Usage.
+#' @param X See Usage.
+#' @param Y See Usage.
+#' @param K See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .midas_sse <- function(p, X, Y, K) {
   b0 <- p[1]
   b1 <- p[2]

@@ -202,10 +202,29 @@ morie_tps_project_xy <- function(lat, lon,
 # Internal: ggplot2-or-base dispatcher
 # ---------------------------------------------------------------------------
 
+#' .tps_has_ggplot2
+#'
+#' Part of the tps_render implementation; see the file header for the
+#' source it follows.
+#'
+#' @return The value of \code{requireNamespace}.
+#' @export
 .tps_has_ggplot2 <- function() {
   requireNamespace("ggplot2", quietly = TRUE)
 }
 
+#' .tps_save_plot
+#'
+#' Part of the tps_render implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p_or_recordedplot See Usage.
+#' @param outfile See Usage.
+#' @param fig_w See Usage.
+#' @param fig_h See Usage.
+#' @param use_gg See Usage.
+#' @return The value of \code{outfile}, as built in the body.
+#' @export
 .tps_save_plot <- function(p_or_recordedplot, outfile, fig_w, fig_h,
                             use_gg) {
   outfile <- path.expand(outfile)
@@ -613,6 +632,17 @@ morie_tps_render_yearly_grid <- function(polys,
 # ----------------------------------------------------------------------------
 
 # Internal: draw a north-arrow compass in plot coordinates.
+#' Internal: draw a north-arrow compass in plot coordinates
+#'
+#' Part of the tps_render implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param y See Usage.
+#' @param size Defaults to \code{1.5}.
+#' @param use_gg Defaults to \code{FALSE}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .tps_draw_compass <- function(x, y, size = 1.5, use_gg = FALSE) {
   if (use_gg && .tps_has_ggplot2()) {
     arrow_df <- data.frame(
@@ -640,6 +670,17 @@ morie_tps_render_yearly_grid <- function(polys,
 }
 
 # Internal: draw a scalebar of `length_km` near (x, y) in km space.
+#' Internal: draw a scalebar of `length_km` near (x, y) in km space
+#'
+#' Part of the tps_render implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param y See Usage.
+#' @param length_km Defaults to \code{5}.
+#' @param use_gg Defaults to \code{FALSE}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .tps_draw_scalebar <- function(x, y, length_km = 5, use_gg = FALSE) {
   if (use_gg && .tps_has_ggplot2()) {
     list(

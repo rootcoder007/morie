@@ -32,10 +32,27 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+#' .morie_matching_have
+#'
+#' Part of the matching implementation; see the file header for the
+#' source it follows.
+#'
+#' @param pkg See Usage.
+#' @return The value of \code{requireNamespace}.
+#' @export
 .morie_matching_have <- function(pkg) {
   requireNamespace(pkg, quietly = TRUE)
 }
 
+#' .morie_matching_require
+#'
+#' Part of the matching implementation; see the file header for the
+#' source it follows.
+#'
+#' @param pkg See Usage.
+#' @param fn See Usage.
+#' @return Invisibly,a logical value.
+#' @export
 .morie_matching_require <- function(pkg, fn) {
   morie_ensure_extras(pkg)
   invisible(TRUE)

@@ -57,6 +57,13 @@
 NULL
 
 
+#' .req_survey
+#'
+#' Part of the survey implementation; see the file header for the source
+#' it follows.
+#'
+#' @return The value of \code{morie_ensure_extras}.
+#' @export
 .req_survey <- function() {
   morie_ensure_extras("survey")
 }

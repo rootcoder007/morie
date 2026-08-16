@@ -68,6 +68,15 @@ NULL
 # Build a numeric design matrix (intercept + drop-first dummies) from a
 # data frame and a vector of covariate names. Mirrors python
 # _design_matrix.
+#' Build a numeric design matrix (intercept + drop-first dummies) from a
+#'
+#' data frame and a vector of covariate names. Mirrors python
+#' _design_matrix.
+#'
+#' @param data See Usage.
+#' @param covariates See Usage.
+#' @return The value of \code{mf}, as built in the body.
+#' @export
 .otis_design_matrix <- function(data, covariates) {
   sub <- data[, covariates, drop = FALSE]
   # Convert character/factor columns to factors with drop-first dummies
@@ -91,6 +100,18 @@ NULL
 }
 
 # Newton-Raphson logistic with ridge penalty.
+#' Newton-Raphson logistic with ridge penalty
+#'
+#' Part of the otis_causal implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param d See Usage.
+#' @param ridge Defaults to \code{0.001}.
+#' @param max_iter Defaults to \code{50L}.
+#' @param tol Defaults to \code{1e-06}.
+#' @return The value of \code{beta}, as built in the body.
+#' @export
 .otis_logit_fit <- function(X, d, ridge = 1e-3, max_iter = 50L, tol = 1e-6) {
   n <- nrow(X)
   p <- ncol(X)
@@ -112,17 +133,45 @@ NULL
 }
 
 # Clip propensity away from 0/1.
+#' Clip propensity away from 0/1
+#'
+#' Part of the otis_causal implementation; see the file header for the
+#' source it follows.
+#'
+#' @param e See Usage.
+#' @param eps Defaults to \code{0.02}.
+#' @return The value of \code{pmin}.
+#' @export
 .otis_clip_ps <- function(e, eps = 0.02) {
   pmin(pmax(e, eps), 1 - eps)
 }
 
 # Predict propensity from fitted beta on a (possibly new) X.
+#' Predict propensity from fitted beta on a (possibly new) X
+#'
+#' Part of the otis_causal implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param beta See Usage.
+#' @param eps Defaults to \code{0.02}.
+#' @return The value of \code{.otis_clip_ps}.
+#' @export
 .otis_predict_ps <- function(X, beta, eps = 0.02) {
   eta <- pmin(pmax(as.numeric(X %*% beta), -30), 30)
   .otis_clip_ps(1 / (1 + exp(-eta)), eps = eps)
 }
 
 # Brier + log-loss + observed/predicted prevalence.
+#' Brier + log-loss + observed/predicted prevalence
+#'
+#' Part of the otis_causal implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @param d See Usage.
+#' @return A list with \code{brier}, \code{obs_prevalence}, \code{predicted_prevalence}, \code{log_loss}.
+#' @export
 .otis_propensity_diagnostics <- function(p, d) {
   brier <- mean((p - d)^2)
   pc <- pmin(pmax(p, 1e-12), 1 - 1e-12)
@@ -134,6 +183,15 @@ NULL
 }
 
 # Liang-Zeger one-way cluster-robust SE for mean of a score vector.
+#' Liang-Zeger one-way cluster-robust SE for mean of a score vector
+#'
+#' Part of the otis_causal implementation; see the file header for the
+#' source it follows.
+#'
+#' @param scores See Usage.
+#' @param cluster See Usage.
+#' @return A numeric value.
+#' @export
 .otis_cluster_se <- function(scores, cluster) {
   scores <- as.numeric(scores)
   n <- length(scores)
@@ -143,6 +201,15 @@ NULL
 }
 
 # Cameron-Gelbach-Miller multi-way cluster-robust SE (up to 2-way).
+#' Cameron-Gelbach-Miller multi-way cluster-robust SE (up to 2-way)
+#'
+#' Part of the otis_causal implementation; see the file header for the
+#' source it follows.
+#'
+#' @param scores See Usage.
+#' @param clusters See Usage.
+#' @return The value of \code{.otis_cluster_se}.
+#' @export
 .otis_multiway_cluster_se <- function(scores, clusters) {
   if (length(clusters) == 1L) {
     return(.otis_cluster_se(scores, clusters[[1]]))
@@ -163,6 +230,21 @@ NULL
 }
 
 # CausalEstimate constructor (R analogue of the python dataclass).
+#' CausalEstimate constructor (R analogue of the python dataclass)
+#'
+#' Part of the otis_causal implementation; see the file header for the
+#' source it follows.
+#'
+#' @param estimator See Usage.
+#' @param ate See Usage.
+#' @param ate_se See Usage.
+#' @param ate_pval See Usage.
+#' @param n See Usage.
+#' @param n_treated See Usage.
+#' @param p_treat See Usage.
+#' @param notes Defaults to \code{list()}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_causal_estimate <- function(estimator, ate, ate_se, ate_pval,
                                   n, n_treated, p_treat, notes = list()) {
   z <- if (ate_se > 0) ate / ate_se else 0
@@ -694,6 +776,13 @@ morie_otis_classify_mandela_combo <- function(mh, sr, sw,
 
 # Aggregate per-(id, year) the count of distinct alert-combos and the
 # sum of within-row + across-row region-change indicators.
+#' Aggregate per-(id, year) the count of distinct alert-combos and the
+#'
+#' sum of within-row + across-row region-change indicators.
+#'
+#' @param df See Usage.
+#' @return The value of \code{base}, as built in the body.
+#' @export
 .otis_alert_volatility_frame <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear", "Gender",
               "Age_Category", "Region_AtTimeOfPlacement",

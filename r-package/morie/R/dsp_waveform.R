@@ -636,6 +636,15 @@ morie_dsp_baseline_correlation <- function(x, y) {
 # ---- internal helpers -------------------------------------------------
 
 # numpy.unwrap port: shift phase jumps > pi by 2*pi.
+#' Numpy.unwrap port: shift phase jumps > pi by 2*pi
+#'
+#' Part of the dsp_waveform implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @param tol Defaults to \code{pi}.
+#' @return A vector, from \code{c}.
+#' @export
 .unwrap <- function(p, tol = pi) {
   d <- diff(p)
   adj <- ifelse(d >  tol, d - 2 * pi,

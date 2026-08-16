@@ -16,13 +16,42 @@
 # (identical transitions are tallied, not stored), the same line-6
 # reward. No randomness is used here; the function is deterministic.
 
+#' .airl_log
+#'
+#' Part of the airl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param floor Defaults to \code{1e-300}.
+#' @return A numeric value.
+#' @export
 .airl_log <- function(x, floor = 1e-300) log(max(x, floor))
 
+#' .airl_key
+#'
+#' Part of the airl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param s See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .airl_key <- function(s) {
   if (is.numeric(s) && length(s) == 1L) s
   else as.numeric(s)
 }
 
+#' .airl_prep
+#'
+#' Part of the airl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param S See Usage.
+#' @param A See Usage.
+#' @param S1 See Usage.
+#' @param LP See Usage.
+#' @param name See Usage.
+#' @return A list with \code{S}, \code{A}, \code{S1}, \code{LP}.
+#' @export
 .airl_prep <- function(S, A, S1, LP, name) {
   if (length(S) == 0L || length(A) == 0L || length(S1) == 0L ||
         length(LP) == 0L)
@@ -186,6 +215,14 @@ airl <- function(expert_states, expert_actions, expert_next,
        method = "AIRL (Fu, Luo & Levine 2018, eq. 4 + Alg. 1)")
 }
 
+#' .airl_key_from_str
+#'
+#' Part of the airl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param s See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .airl_key_from_str <- function(s) {
   if (grepl("^list\\(", s)) {
     inner <- sub("^list\\((.*)\\)$", "\\1", s)

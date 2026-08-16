@@ -37,6 +37,19 @@ NULL
 # Internal helpers (NOT exported)
 # ---------------------------------------------------------------------------
 
+#' .tps_stoch_result
+#'
+#' Part of the tps_stochastic implementation; see the file header for
+#' the source it follows.
+#'
+#' @param title See Usage.
+#' @param call See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param interpretation Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .tps_stoch_result <- function(title, call, summary_lines = list(),
                                warnings = character(0),
                                interpretation = "",
@@ -54,6 +67,15 @@ NULL
   out
 }
 
+#' .tps_stoch_round
+#'
+#' Part of the tps_stochastic implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param k See Usage.
+#' @return A numeric value.
+#' @export
 .tps_stoch_round <- function(x, k) {
   if (!is.finite(x)) return(NA_real_)
   round(x, k)
@@ -63,6 +85,16 @@ NULL
 # Prefer integer-triple OCC_YEAR/OCC_MONTH/OCC_DAY (local-time
 # decomposition unaffected by ArcGIS UTC conversion); fall back to
 # OCC_DATE / REPORT_DATE.
+#' Return a numeric vector of incident times (POSIXct)
+#'
+#' Prefer integer-triple OCC_YEAR/OCC_MONTH/OCC_DAY (local-time
+#' decomposition unaffected by ArcGIS UTC conversion); fall back to
+#' OCC_DATE / REPORT_DATE.
+#'
+#' @param df See Usage.
+#' @param min_year Defaults to \code{2014L}.
+#' @return A vector, from \code{sort}.
+#' @export
 .tps_stoch_date_series <- function(df, min_year = 2014L) {
   ts <- NULL
   if (all(c("OCC_YEAR", "OCC_MONTH", "OCC_DAY") %in% names(df))) {
@@ -118,6 +150,17 @@ NULL
 # Negative log-likelihood of exponential-kernel Hawkes:
 #   lambda(t) = mu + kappa*omega * sum_{t_i<t} exp(-omega*(t - t_i))
 # Closed-form integral: mu*T + kappa * sum_i (1 - exp(-omega*(T - t_i)))
+#' Negative log-likelihood of exponential-kernel Hawkes:
+#'
+#' lambda(t) = mu + kappa*omega * sum_{t_i<t} exp(-omega*(t - t_i))
+#' Closed-form integral: mu*T + kappa * sum_i (1 - exp(-omega*(T -
+#' t_i)))
+#'
+#' @param params See Usage.
+#' @param t See Usage.
+#' @param T_window See Usage.
+#' @return A numeric value.
+#' @export
 .tps_stoch_neg_loglik_hawkes <- function(params, t, T_window) {
   mu <- params[1L]
   kappa <- params[2L]
@@ -143,6 +186,14 @@ NULL
 
 
 # Build daily counts from a POSIXct vector. Returns list(dates, counts).
+#' Build daily counts from a POSIXct vector. Returns list(dates, counts)
+#'
+#' Part of the tps_stochastic implementation; see the file header for
+#' the source it follows.
+#'
+#' @param ts See Usage.
+#' @return A list with \code{dates}, \code{counts}.
+#' @export
 .tps_stoch_daily <- function(ts) {
   if (length(ts) == 0L) {
     return(list(dates = as.POSIXct(character(0), tz = "UTC"),
@@ -157,6 +208,14 @@ NULL
 }
 
 # Build monthly counts from a POSIXct vector.
+#' Build monthly counts from a POSIXct vector
+#'
+#' Part of the tps_stochastic implementation; see the file header for
+#' the source it follows.
+#'
+#' @param ts See Usage.
+#' @return A list with \code{dates}, \code{counts}.
+#' @export
 .tps_stoch_monthly <- function(ts) {
   if (length(ts) == 0L) {
     return(list(dates = as.POSIXct(character(0), tz = "UTC"),

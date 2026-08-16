@@ -62,6 +62,17 @@ morie_tps_list_categories <- function() {
 
 # Internal: one ArcGIS REST /query GET. Returns the parsed GeoJSON
 # list (raises on HTTP / JSON failure).
+#' Internal: one ArcGIS REST /query GET. Returns the parsed GeoJSON
+#'
+#' list (raises on HTTP / JSON failure).
+#'
+#' @param base_url See Usage.
+#' @param where See Usage.
+#' @param offset See Usage.
+#' @param max_records Defaults to \code{2000L}.
+#' @param timeout Defaults to \code{120}.
+#' @return The value of \code{.morie_from_json}.
+#' @export
 .morie_tps_fetch_arcgis_query <- function(base_url, where, offset,
                                     max_records = 2000L,
                                     timeout = 120) {

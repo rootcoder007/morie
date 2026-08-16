@@ -22,25 +22,76 @@
 .TMLDYN_METHODS <- c("cv-tmle", "tmle", "ipw", "gcomp")
 .tmldyn_EPS <- 1e-9
 
+#' .tmldyn_logit
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @return A numeric value.
+#' @export
 .tmldyn_logit <- function(p) {
   q <- min(max(as.numeric(p), .tmldyn_EPS), 1 - .tmldyn_EPS)
   log(q / (1 - q))
 }
 
+#' .tmldyn_expit
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .tmldyn_expit <- function(x) {
   if (x > -700) 1 / (1 + exp(-x)) else 0
 }
 
+#' .tmldyn_qnorm
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @return The value of \code{qnorm}.
+#' @export
 .tmldyn_qnorm <- function(p) qnorm(p, 0, 1)
 
+#' .sd
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return A numeric value.
+#' @export
 .sd <- function(x) sqrt(mean((x - mean(x))^2))
 
+#' .tmldyn_lstsq
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param yv See Usage.
+#' @param ridge Defaults to \code{1e-08}.
+#' @return A matrix, from \code{solve}.
+#' @export
 .tmldyn_lstsq <- function(X, yv, ridge = 1e-8) {
   Xm <- if (is.matrix(X)) X else do.call(rbind, X)
   p <- ncol(Xm)
   solve(crossprod(Xm) + ridge * diag(p), crossprod(Xm, yv))
 }
 
+#' .design_block
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param L See Usage.
+#' @param n See Usage.
+#' @return The value of \code{do.call}.
+#' @export
 .design_block <- function(L, n) {
   if (is.matrix(L)) return(L)
   do.call(rbind, L)
@@ -48,6 +99,19 @@
 
 # Fit Q2 (E[Y | Abar(1), Lbar(1)]) on the rows in idx, with full
 # treatment-by-covariate and treatment-by-treatment interactions.
+#' Fit Q2 (E[Y | Abar(1), Lbar(1)]) on the rows in idx, with full
+#'
+#' treatment-by-covariate and treatment-by-treatment interactions.
+#'
+#' @param ys See Usage.
+#' @param L0 See Usage.
+#' @param A0 See Usage.
+#' @param L1 See Usage.
+#' @param A1 See Usage.
+#' @param idx See Usage.
+#' @param ridge See Usage.
+#' @return A list with \code{q2}, \code{b}.
+#' @export
 .fit_q2 <- function(ys, L0, A0, L1, A1, idx, ridge) {
   row_q2 <- function(a0, a1, i) {
     if (is.matrix(L0)) {
@@ -74,6 +138,19 @@
 }
 
 # Fit Q1 (E[Q2(A(0), d_{A(1)}, Lbar(1)) | A(0), L(0)]) on the rows in idx.
+#' Fit Q1 (E[Q2(A(0), d_{A(1)}, Lbar(1)) | A(0), L(0)]) on the rows in
+#' idx
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param pseudo See Usage.
+#' @param L0 See Usage.
+#' @param A0 See Usage.
+#' @param idx See Usage.
+#' @param ridge See Usage.
+#' @return A list with \code{q1}, \code{b}.
+#' @export
 .fit_q1 <- function(pseudo, L0, A0, idx, ridge) {
   row_q1 <- function(a0, i) {
     if (is.matrix(L0)) {
@@ -96,6 +173,17 @@
 }
 
 # Least-squares projection of values onto the basis V at the eval rows.
+#' Least-squares projection of values onto the basis V at the eval rows
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param values See Usage.
+#' @param basis See Usage.
+#' @param n See Usage.
+#' @param ridge See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .project <- function(values, basis, n, ridge) {
   if (is.null(basis)) return(as.numeric(values))
   Z <- if (is.matrix(basis)) basis else do.call(rbind, basis)
@@ -104,6 +192,19 @@
 }
 
 # Intervention mechanism g_{A(0)} and g_{A(1)}, with positivity trim.
+#' Intervention mechanism g_{A(0)} and g_{A(1)}, with positivity trim
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param L0 See Usage.
+#' @param A0 See Usage.
+#' @param L1 See Usage.
+#' @param A1 See Usage.
+#' @param trim See Usage.
+#' @param known See Usage.
+#' @return A list with \code{g0}, \code{g1}, \code{info}.
+#' @export
 .intervention_mechanism <- function(L0, A0, L1, A1, trim, known) {
   n <- length(A0)
   if (!is.null(known)) {
@@ -135,6 +236,18 @@
 }
 
 # Logistic IRLS for binary outcome, used by the intervention mechanism.
+#' Logistic IRLS for binary outcome, used by the intervention mechanism
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param a See Usage.
+#' @param ridge Defaults to \code{1e-08}.
+#' @param max_iter Defaults to \code{50L}.
+#' @param tol Defaults to \code{1e-10}.
+#' @return The value of \code{b}, as built in the body.
+#' @export
 .tmldyn_logit_irls <- function(X, a, ridge = 1e-8, max_iter = 50L,
                         tol = 1e-10) {
   Xm <- if (is.matrix(X)) X else do.call(rbind, X)
@@ -156,6 +269,21 @@
 }
 
 # Theorem 22.1: the two blips and the V-optimal rule.
+#' Theorem 22.1: the two blips and the V-optimal rule
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ys See Usage.
+#' @param L0 See Usage.
+#' @param A0 See Usage.
+#' @param L1 See Usage.
+#' @param A1 See Usage.
+#' @param V0 See Usage.
+#' @param V1 See Usage.
+#' @param ridge See Usage.
+#' @return A list with \code{blip1}, \code{blip2}, \code{d0}, \code{d1}, \code{q2}, \code{q1}, \code{coef_q2}, \code{coef_q1}, \code{pseudo}.
+#' @export
 .sequential_blips <- function(ys, L0, A0, L1, A1, V0, V1, ridge) {
   n <- length(ys)
   f2 <- .fit_q2(ys, L0, A0, L1, A1, seq_len(n), ridge)
@@ -183,6 +311,19 @@
        pseudo = pseudo)
 }
 
+#' .fluctuate
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param outcome See Usage.
+#' @param off See Usage.
+#' @param H See Usage.
+#' @param rows See Usage.
+#' @param iters Defaults to \code{100L}.
+#' @param tol Defaults to \code{1e-12}.
+#' @return The value of \code{eps}, as built in the body.
+#' @export
 .fluctuate <- function(outcome, off, H, rows, iters = 100L,
                        tol = 1e-12) {
   if (length(rows) == 0L) return(0)
@@ -203,11 +344,35 @@
   eps
 }
 
+#' .folds
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n See Usage.
+#' @param n_folds See Usage.
+#' @return The value of \code{lapply}.
+#' @export
 .folds <- function(n, n_folds) {
   J <- max(2, min(as.integer(n_folds), n))
   lapply(seq_len(J) - 1L, function(j) which(seq_len(n) %% J == j))
 }
 
+#' .rule_value_seq
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ys See Usage.
+#' @param L0 See Usage.
+#' @param A0 See Usage.
+#' @param L1 See Usage.
+#' @param A1 See Usage.
+#' @param d0 See Usage.
+#' @param d1 See Usage.
+#' @param ridge See Usage.
+#' @return A numeric value.
+#' @export
 .rule_value_seq <- function(ys, L0, A0, L1, A1, d0, d1, ridge) {
   f2 <- .fit_q2(ys, L0, A0, L1, A1, seq_along(ys), ridge)
   pseudo <- vapply(seq_along(ys), function(i)
@@ -216,11 +381,29 @@
   mean(vapply(seq_along(ys), function(i) f1$q1(d0[i], i), numeric(1)))
 }
 
+#' .exceptional_law_share
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param blips See Usage.
+#' @param tol Defaults to \code{0.01}.
+#' @return A numeric value.
+#' @export
 .exceptional_law_share <- function(blips, tol = 0.01) {
   if (length(blips) == 0L) return(0)
   mean(abs(blips) <= tol)
 }
 
+#' .coerce_regime
+#'
+#' Part of the tmldyn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param regime See Usage.
+#' @param n See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 .coerce_regime <- function(regime, n) {
   if (is.null(regime) || (is.character(regime) &&
                           tolower(regime) %in% c("optimal", "v-optimal")))

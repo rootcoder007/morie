@@ -486,6 +486,14 @@ morie_dsp_fbm_synthesis <- function(N, H = 0.5) {
 
 # Kaiser window with shape `beta` using the modified Bessel function
 # I0. Matches numpy.kaiser(N, beta).
+#' Kaiser window with shape `beta` using the modified Bessel function
+#'
+#' I0. Matches numpy.kaiser(N, beta).
+#'
+#' @param N See Usage.
+#' @param beta Defaults to \code{14}.
+#' @return A numeric value.
+#' @export
 .kaiser_window <- function(N, beta = 14) {
   if (N == 1L) return(1)
   n <- seq.int(0, N - 1L)
@@ -495,6 +503,14 @@ morie_dsp_fbm_synthesis <- function(N, H = 0.5) {
 }
 
 # Polynomial expansion of I0 valid for beta up to ~16.
+#' Polynomial expansion of I0 valid for beta up to ~16
+#'
+#' Part of the dsp_spectral implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .bessel_i0 <- function(x) {
   ax <- abs(x)
   out <- numeric(length(ax))
