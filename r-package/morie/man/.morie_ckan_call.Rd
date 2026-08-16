@@ -12,7 +12,7 @@
 \item{action}{See Usage.}
 \item{params}{Passed to \code{.morie_dataset_http_text}.}
 \item{api_key}{Defaults to \code{NULL}.}
-\item{user_agent}{Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.}
+\item{user_agent}{Accepted by the signature and not used anywhere in the body. Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.}
 \item{timeout}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{

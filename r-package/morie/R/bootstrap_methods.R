@@ -309,7 +309,7 @@ bootstrap <- function(data, statistic, n_boot = 2000L, ci_level = 0.95,
 #' the source it follows.
 #'
 #' @param data Passed to \code{.nrow_like}.
-#' @param statistic See Usage.
+#' @param statistic Accepted by the signature and not used anywhere in the body.
 #' @param boot_stats Passed to \code{.pct}.
 #' @param original See Usage.
 #' @param ci_level Numeric; combined arithmetically in the body.

@@ -172,7 +172,7 @@ momento_task_mask <- function(n_patches, task = "forecast", span = 1, start = NU
 #' the source it follows.
 #'
 #' @param patches Iterated over elementwise, with \code{lapply}.
-#' @param reconstructor See Usage.
+#' @param reconstructor Accepted by the signature and not used anywhere in the body.
 #' @param rates See Usage.
 #' @param seed Defaults to \code{0}.
 #' @return A list with \code{curve}, \code{n_patches}, \code{rates}, \code{mse}.

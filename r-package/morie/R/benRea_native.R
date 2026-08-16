@@ -98,7 +98,7 @@ start_allowed <- function(labels) {
 #' source it follows.
 #'
 #' @param path See Usage.
-#' @param labels Defaults to \code{NULL}.
+#' @param labels Accepted by the signature and not used anywhere in the body.
 #' @return A logical value.
 #' @export
 is_valid_bio <- function(path, labels = NULL) {

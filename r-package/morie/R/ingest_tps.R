@@ -95,7 +95,7 @@ morie_ingest_tps_layers <- function() {
 #' @param return_geometry A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @param result_offset Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.
 #' @param result_record_count Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000L}.
-#' @param user_agent Defaults to \code{.MORIE_TPS_DEFAULT_UA}.
+#' @param user_agent Accepted by the signature and not used anywhere in the body. Defaults to \code{.MORIE_TPS_DEFAULT_UA}.
 #' @param timeout Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{payload}, as built in the body.
 #' @export

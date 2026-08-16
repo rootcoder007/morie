@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{rules}{See Usage.}
-\item{precedence}{See Usage.}
+\item{precedence}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the trmRew_native implementation; see the file header for the source it follows.

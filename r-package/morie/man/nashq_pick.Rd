@@ -12,7 +12,7 @@ nashq_pick(M, A, who, epsilon, rng)
 \item{A}{A vector; its length is taken.}
 \item{who}{See Usage.}
 \item{epsilon}{See Usage.}
-\item{rng}{See Usage.}
+\item{rng}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the nashq_native implementation; see the file header for the source it follows.

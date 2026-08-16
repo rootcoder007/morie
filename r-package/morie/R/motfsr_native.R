@@ -94,7 +94,7 @@ motfsr_mu <- function(coded, L) {
 #' source it follows.
 #'
 #' @param w A count; the body uses it as \code{seq_len(...)}.
-#' @param L See Usage.
+#' @param L Accepted by the signature and not used anywhere in the body.
 #' @param mu Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{theta}, as built in the body.
 #' @export

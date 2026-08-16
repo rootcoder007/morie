@@ -9,7 +9,7 @@ motfsr_uniform_theta(w, L, mu)
 }
 \arguments{
 \item{w}{A count; the body uses it as \code{seq_len(...)}.}
-\item{L}{See Usage.}
+\item{L}{Accepted by the signature and not used anywhere in the body.}
 \item{mu}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{

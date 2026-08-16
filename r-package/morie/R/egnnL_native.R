@@ -46,7 +46,7 @@
 #' @param h_j Coerced to numeric by the body, with \code{as.numeric}.
 #' @param x_i Coerced to numeric by the body, with \code{as.numeric}.
 #' @param x_j Coerced to numeric by the body, with \code{as.numeric}.
-#' @param phi_e See Usage.
+#' @param phi_e Accepted by the signature and not used anywhere in the body.
 #' @param a_ij Defaults to \code{NULL}.
 #' @return The value of \code{phi_e}.
 #' @export
@@ -64,7 +64,7 @@ edge_message <- function(h_i, h_j, x_i, x_j, phi_e, a_ij = NULL) {
 #'
 #' @param X A matrix; indexed by row and column.
 #' @param M A vector; indexed elementwise.
-#' @param phi_x See Usage.
+#' @param phi_x Accepted by the signature and not used anywhere in the body.
 #' @param C Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{lapply}.
 #' @export
@@ -97,7 +97,7 @@ coord_update <- function(X, M, phi_x, C = NULL) {
 #' @param X A matrix; indexed by row and column.
 #' @param phi_e See Usage.
 #' @param phi_x See Usage.
-#' @param phi_h See Usage.
+#' @param phi_h Accepted by the signature and not used anywhere in the body.
 #' @param A Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @param C Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param V Optional; may be \code{NULL}. A vector; indexed elementwise.

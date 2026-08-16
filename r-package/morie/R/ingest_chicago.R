@@ -64,7 +64,7 @@ morie_ingest_chicago_resources <- function() {
 #' @param limit Coerced to integer by the body, with \code{as.integer}.
 #' @param offset Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.
 #' @param app_token Defaults to \code{NULL}.
-#' @param user_agent Defaults to \code{.MORIE_CHICAGO_DEFAULT_UA}.
+#' @param user_agent Accepted by the signature and not used anywhere in the body.
 #' @param timeout Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{payload}, as built in the body.
 #' @export

@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{x}{A vector; indexed elementwise.}
-\item{name}{Defaults to \code{"x"}.}
+\item{name}{Accepted by the signature and not used anywhere in the body. Defaults to \code{"x"}.}
 }
 \description{
 Part of the statistics implementation; see the file header for the source it follows.

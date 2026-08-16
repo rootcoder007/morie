@@ -12,7 +12,7 @@
 \item{params}{Passed to \code{.morie_dataset_http_text_with_status}. Defaults to \code{list()}.}
 \item{headers}{A vector; its length is taken. Defaults to \code{list()}.}
 \item{timeout}{Coerced to integer by the body, with \code{as.integer}.}
-\item{user_agent}{Defaults to \code{.MORIE_FORENSICS_DEFAULT_UA}.}
+\item{user_agent}{Accepted by the signature and not used anywhere in the body.}
 \item{auth_signup_url}{Defaults to \code{NULL}.}
 \item{label}{Defaults to \code{"forensics"}.}
 }

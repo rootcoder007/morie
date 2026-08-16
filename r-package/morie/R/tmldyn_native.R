@@ -95,7 +95,7 @@
 #' source it follows.
 #'
 #' @param L A matrix; the body checks with \code{is.matrix}.
-#' @param n See Usage.
+#' @param n Accepted by the signature and not used anywhere in the body.
 #' @return The value of \code{do.call}.
 #' @export
 .design_block <- function(L, n) {
@@ -188,7 +188,7 @@
 #'
 #' @param values Coerced to numeric by the body, with \code{as.numeric}.
 #' @param basis Optional; may be \code{NULL}. A matrix; the body checks with \code{is.matrix}.
-#' @param n See Usage.
+#' @param n Accepted by the signature and not used anywhere in the body.
 #' @param ridge Passed to \code{.tmldyn_lstsq}.
 #' @return A vector, from \code{as.numeric}.
 #' @export

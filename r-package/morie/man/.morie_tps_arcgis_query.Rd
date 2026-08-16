@@ -14,7 +14,7 @@
 \item{return_geometry}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 \item{result_offset}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.}
 \item{result_record_count}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000L}.}
-\item{user_agent}{Defaults to \code{.MORIE_TPS_DEFAULT_UA}.}
+\item{user_agent}{Accepted by the signature and not used anywhere in the body. Defaults to \code{.MORIE_TPS_DEFAULT_UA}.}
 \item{timeout}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{

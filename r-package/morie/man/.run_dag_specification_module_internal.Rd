@@ -8,7 +8,7 @@
 .run_dag_specification_module_internal(data)
 }
 \arguments{
-\item{data}{See Usage.}
+\item{data}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

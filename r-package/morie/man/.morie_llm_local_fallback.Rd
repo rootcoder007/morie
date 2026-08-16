@@ -8,7 +8,7 @@
 .morie_llm_local_fallback(prompt)
 }
 \arguments{
-\item{prompt}{See Usage.}
+\item{prompt}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the llm implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 .onLoad(libname, pkgname)
 }
 \arguments{
-\item{libname}{See Usage.}
-\item{pkgname}{See Usage.}
+\item{libname}{Accepted by the signature and not used anywhere in the body.}
+\item{pkgname}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 FutureResult) can segfault R uncatchably when DoubleML/mlr3 resolve futures. Setting the env var BEFORE future is loaded makes the "ignore" setting take effect in the main process AND every worker -- each re-reads R_FUTURE_* when future loads. An options() guard does not reach workers, which is why it was only flaky. Only set when the user has not chosen their own value.

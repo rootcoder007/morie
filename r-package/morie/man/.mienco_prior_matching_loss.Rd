@@ -10,7 +10,7 @@
 \arguments{
 \item{samples}{Iterated over elementwise, with \code{sapply}.}
 \item{prior_samples}{Iterated over elementwise, with \code{sapply}.}
-\item{discriminator}{See Usage.}
+\item{discriminator}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the mienco_native implementation; see the file header for the source it follows.

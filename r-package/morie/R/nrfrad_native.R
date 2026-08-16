@@ -266,7 +266,7 @@ sample_pdf <- function(bins, weights, n_samples, rng, eps = 1e-5) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param model See Usage.
+#' @param model Accepted by the signature and not used anywhere in the body.
 #' @param point Passed to \code{.as_numeric_vec}.
 #' @param directions A vector; its length is taken and its elements indexed.
 #' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.

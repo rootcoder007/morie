@@ -151,7 +151,7 @@
 #' @param params Passed to \code{.morie_dataset_http_text_with_status}. Defaults to \code{list()}.
 #' @param headers A vector; its length is taken. Defaults to \code{list()}.
 #' @param timeout Coerced to integer by the body, with \code{as.integer}.
-#' @param user_agent Defaults to \code{.MORIE_FORENSICS_DEFAULT_UA}.
+#' @param user_agent Accepted by the signature and not used anywhere in the body.
 #' @param auth_signup_url Defaults to \code{NULL}.
 #' @param label Defaults to \code{"forensics"}.
 #' @return The value of \code{.morie_from_json}.

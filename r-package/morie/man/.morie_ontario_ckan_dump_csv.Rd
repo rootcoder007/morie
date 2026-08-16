@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{resource_id}{See Usage.}
-\item{limit}{Defaults to \code{200000L}.}
+\item{limit}{Accepted by the signature and not used anywhere in the body. Defaults to \code{200000L}.}
 }
 \description{
 given resource_id; return a parsed data.frame. Mock this in tests.

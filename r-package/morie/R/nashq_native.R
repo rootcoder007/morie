@@ -273,7 +273,7 @@ nashq_select_eq <- function(A, B, selection, agent, tol) {
 #' @param A A vector; its length is taken.
 #' @param who See Usage.
 #' @param epsilon See Usage.
-#' @param rng See Usage.
+#' @param rng Accepted by the signature and not used anywhere in the body.
 #' @return One of two values, depending on the branch taken.
 #' @export
 nashq_pick <- function(M, A, who, epsilon, rng) {
