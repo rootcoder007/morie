@@ -40,6 +40,14 @@ bio_labels <- function(types) {
   out
 }
 
+#' .parts
+#'
+#' Part of the benRea_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param label See Usage.
+#' @return The value of \code{[[}.
+#' @export
 .parts <- function(label) {
   if (label == "O") return(list("O", NA))
   strsplit(label, "-", fixed = TRUE)[[1]]

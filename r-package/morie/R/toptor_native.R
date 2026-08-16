@@ -14,6 +14,15 @@
                   "B", "Se", "As")
 
 # Neighbour list and degree from a bond list.
+#' Neighbour list and degree from a bond list
+#'
+#' Part of the toptor_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n_atoms See Usage.
+#' @param bonds See Usage.
+#' @return The value of \code{adj}, as built in the body.
+#' @export
 .neighbours <- function(n_atoms, bonds) {
   adj <- vector("list", n_atoms)
   for (i in seq_len(n_atoms)) adj[[i]] <- integer(0)
@@ -30,6 +39,15 @@
 }
 
 # Pi-electron count per atom, rounded to an integer.
+#' Pi-electron count per atom, rounded to an integer
+#'
+#' Part of the toptor_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n_atoms See Usage.
+#' @param bonds See Usage.
+#' @return The value of \code{as.integer}.
+#' @export
 .pi_electrons <- function(n_atoms, bonds) {
   npi <- rep(0.0, n_atoms)
   for (b in bonds) {
@@ -43,6 +61,15 @@
 }
 
 # Lexicographic comparison of two 4-tuples of (NPI, TYPE, NBR) codes.
+#' Lexicographic comparison of two 4-tuples of (NPI, TYPE, NBR) codes
+#'
+#' Part of the toptor_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param a See Usage.
+#' @param b See Usage.
+#' @return A logical value.
+#' @export
 .lex_le <- function(a, b) {
   for (k in seq_along(a)) {
     if (a[[k]][[1]] != b[[k]][[1]]) return(a[[k]][[1]] < b[[k]][[1]])

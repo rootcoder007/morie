@@ -1,0 +1,25 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{.siu_translate_impl}
+\alias{.siu_translate_impl}
+\title{.siu_translate_impl}
+\usage{
+.siu_translate_impl(target_lang, source_lang, case_numbers, model, fields, cache_dir, progress)
+}
+\arguments{
+\item{target_lang}{See Usage.}
+\item{source_lang}{See Usage.}
+\item{case_numbers}{See Usage.}
+\item{model}{See Usage.}
+\item{fields}{See Usage.}
+\item{cache_dir}{See Usage.}
+\item{progress}{See Usage.}
+}
+\description{
+Part of the siu implementation; see the file header for the source it follows.
+}
+\value{
+Invisibly,the value of \code{out}, as built in the body.
+}
+\keyword{internal}

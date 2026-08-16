@@ -23,6 +23,14 @@
 
 .SASREC_EPS <- 1e-12
 
+#' .sasrec_mat
+#'
+#' Part of the sasRec_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 .sasrec_mat <- function(x) {
   if (is.matrix(x)) return(x)
   if (is.numeric(x)) return(as.matrix(x))
@@ -36,6 +44,14 @@
   stop("sasRec: expected a matrix-like input")
 }
 
+#' .sasrec_vec
+#'
+#' Part of the sasRec_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .sasrec_vec <- function(x) {
   if (is.matrix(x)) {
     if (nrow(x) == 1L) return(as.numeric(x[1, ]))
@@ -187,6 +203,13 @@ morie_sasRec <- function(E, WQ, WK, WV, mask = NULL) {
 sasrec <- self_attention
 selfattentivesequential <- self_attention
 
+#' .sasRec_cheatsheet
+#'
+#' Part of the sasRec_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .sasRec_cheatsheet <- function() {
   paste("sasRec: Markov chains win where data are SPARSE (parsimony",
         "is critical), RNNs where they are DENSE (complexity is",

@@ -50,6 +50,13 @@ NULL
 # ---------------------------------------------------------------------------
 # .siu_p_has_rvest -- gate rvest/xml2 use (suggested, not required).
 # ---------------------------------------------------------------------------
+#' .siu_p_has_rvest
+#'
+#' .siu_p_has_rvest -- gate rvest/xml2 use (suggested, not required).
+#' ---------------------------------------------------------------------------
+#'
+#' @return A logical value.
+#' @export
 .siu_p_has_rvest <- function() {
   requireNamespace("rvest", quietly = TRUE) &&
     requireNamespace("xml2", quietly = TRUE)
@@ -61,6 +68,15 @@ NULL
 # Python BLANK_ROW; extra keys appearing only here are populated by
 # this parser specifically.
 # ---------------------------------------------------------------------------
+#' .siu_p_blank_row
+#'
+#' .siu_p_blank_row -- minimal SIU_COLUMNS row template. Keys match the
+#' Python BLANK_ROW; extra keys appearing only here are populated by
+#' this parser specifically.
+#' ---------------------------------------------------------------------------
+#'
+#' @return A list with \code{parser_version}, \code{source_url_report}, \code{source_url_news}, \code{drid}, \code{nrid}, \code{case_number}, \code{police_service}, \code{number_of_officers_involved}, \code{number_of_subject_officials}, \code{number_of_witness_officials}, \code{number_of_civilian_witnesses}, \code{siu_investigators}, \code{siu_forensics_investigators}, \code{subject_official_interviewed_or_notes}, \code{location_of_call}, \code{reason_for_interaction}, \code{date_of_incident_iso}, \code{date_of_incident_raw}, \code{date_siu_notified_iso}, \code{date_siu_notified_raw}, \code{notifying_party}, \code{date_of_director_decision_iso}, \code{date_of_director_decision_raw}, \code{injuries_sustained}, \code{specific_injuries}, \code{sex_gender_affected}, \code{age_affected}, \code{relevant_legislation}, \code{charges_recommended}, \code{directors_decision_reasonable}, \code{mental_health_or_race_indications}, \code{supplemental_materials}, \code{narrative_full}, \code{narrative_summary}, \code{_language}.
+#' @export
 .siu_p_blank_row <- function() {
   list(
     parser_version                       = .SIU_R_PARSER_VERSION,
@@ -105,6 +121,14 @@ NULL
 # ---------------------------------------------------------------------------
 # Stripped-text + body-slice primitives.
 # ---------------------------------------------------------------------------
+#' .siu_p_stripped_text
+#'
+#' Stripped-text + body-slice primitives.
+#' ---------------------------------------------------------------------------
+#'
+#' @param html See Usage.
+#' @return The value of \code{trimws}.
+#' @export
 .siu_p_stripped_text <- function(html) {
   if (.siu_p_has_rvest()) {
     doc <- tryCatch(xml2::read_html(html), error = function(e) NULL)
@@ -140,6 +164,14 @@ NULL
 }
 
 
+#' .siu_p_trim_to_body
+#'
+#' Part of the siu_parser implementation; see the file header for the
+#' source it follows.
+#'
+#' @param text See Usage.
+#' @return The value of \code{text}, as built in the body.
+#' @export
 .siu_p_trim_to_body <- function(text) {
   if (!is.character(text) || length(text) == 0L || !nzchar(text)) return(text)
   m <- tryCatch(gregexpr("(?:^|\\
@@ -168,6 +200,15 @@ NULL
 # ---------------------------------------------------------------------------
 # Label / value primitives.
 # ---------------------------------------------------------------------------
+#' .siu_p_label_value
+#'
+#' Label / value primitives.
+#' ---------------------------------------------------------------------------
+#'
+#' @param text See Usage.
+#' @param label See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .siu_p_label_value <- function(text, label) {
   pat <- paste0(.siu_p_re_escape(label),
                 "\\s*[:\\-]?\\s*(.{1,200}?)(?=\\
@@ -183,6 +224,15 @@ NULL
   if (!nzchar(val)) NULL else val
 }
 
+#' .siu_p_label_int
+#'
+#' Part of the siu_parser implementation; see the file header for the
+#' source it follows.
+#'
+#' @param text See Usage.
+#' @param label See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .siu_p_label_int <- function(text, label) {
   raw <- .siu_p_label_value(text, label)
   if (is.null(raw)) return(NA_integer_)
@@ -190,6 +240,14 @@ NULL
   if (length(m) == 0L) NA_integer_ else as.integer(m)
 }
 
+#' .siu_p_re_escape
+#'
+#' Part of the siu_parser implementation; see the file header for the
+#' source it follows.
+#'
+#' @param s See Usage.
+#' @return The value of \code{gsub}.
+#' @export
 .siu_p_re_escape <- function(s) {
   gsub("([\\\\.^$|()\\[\\]{}*+?])", "\\\\\\1", s, perl = TRUE)
 }
@@ -199,6 +257,17 @@ NULL
 # Section slicer -- pulls text between `header` and the first
 # end-marker. Pure-R equivalent of _section_text.
 # ---------------------------------------------------------------------------
+#' .siu_p_section_text
+#'
+#' Section slicer -- pulls text between `header` and the first
+#' end-marker. Pure-R equivalent of _section_text.
+#' ---------------------------------------------------------------------------
+#'
+#' @param text See Usage.
+#' @param header See Usage.
+#' @param end_markers Defaults to \code{character()}.
+#' @return The value of \code{substr}.
+#' @export
 .siu_p_section_text <- function(text, header, end_markers = character()) {
   pat <- paste0("(?:^|\\
 )\\s*",
@@ -297,6 +366,14 @@ NULL
 )
 
 
+#' .siu_p_detect_police_service
+#'
+#' Part of the siu_parser implementation; see the file header for the
+#' source it follows.
+#'
+#' @param text See Usage.
+#' @return A character value.
+#' @export
 .siu_p_detect_police_service <- function(text) {
   if (!is.character(text) || length(text) == 0L ||
       is.na(text[1L]) || !nzchar(text)) return(NA_character_)
@@ -367,6 +444,14 @@ NULL
   "Analysis and Director's Decision"
 )
 
+#' Crude ASCII fold for matching FR markers without accents
+#'
+#' Part of the siu_parser implementation; see the file header for the
+#' source it follows.
+#'
+#' @param text See Usage.
+#' @return A character value.
+#' @export
 .siu_p_detect_language <- function(text) {
   # Crude ASCII fold for matching FR markers without accents
   norm <- iconv(text, to = "ASCII//TRANSLIT")
@@ -386,6 +471,14 @@ NULL
 # ---------------------------------------------------------------------------
 # URL helpers (drid / nrid extractors).
 # ---------------------------------------------------------------------------
+#' .siu_p_parse_drid_from_url
+#'
+#' URL helpers (drid / nrid extractors).
+#' ---------------------------------------------------------------------------
+#'
+#' @param url See Usage.
+#' @return The value of \code{as.integer}.
+#' @export
 .siu_p_parse_drid_from_url <- function(url) {
   if (is.null(url) || !nzchar(url)) return(NA_integer_)
   m <- regmatches(url, regexpr("drid=(\\d+)", url, perl = TRUE))
@@ -393,6 +486,14 @@ NULL
   as.integer(sub("drid=", "", m))
 }
 
+#' .siu_p_parse_nrid_from_url
+#'
+#' Part of the siu_parser implementation; see the file header for the
+#' source it follows.
+#'
+#' @param url See Usage.
+#' @return The value of \code{as.integer}.
+#' @export
 .siu_p_parse_nrid_from_url <- function(url) {
   if (is.null(url) || !nzchar(url)) return(NA_integer_)
   m <- regmatches(url, regexpr("nrid=(\\d+)", url, perl = TRUE))
@@ -404,6 +505,14 @@ NULL
 # ---------------------------------------------------------------------------
 # Normalisation helpers (mirror morie.siu._normalize).
 # ---------------------------------------------------------------------------
+#' .siu_p_normalise_sex
+#'
+#' Normalisation helpers (mirror morie.siu._normalize).
+#' ---------------------------------------------------------------------------
+#'
+#' @param s See Usage.
+#' @return The value of \code{s}, as built in the body.
+#' @export
 .siu_p_normalise_sex <- function(s) {
   if (is.null(s) || is.na(s) || !nzchar(s)) return(NA_character_)
   low <- tolower(trimws(s))
@@ -413,6 +522,14 @@ NULL
   s
 }
 
+#' .siu_p_normalise_yes_no
+#'
+#' Part of the siu_parser implementation; see the file header for the
+#' source it follows.
+#'
+#' @param v See Usage.
+#' @return A logical value.
+#' @export
 .siu_p_normalise_yes_no <- function(v) {
   if (is.null(v) || is.na(v) || !nzchar(v)) return(NA)
   low <- tolower(trimws(v))
@@ -421,6 +538,14 @@ NULL
   NA
 }
 
+#' .siu_p_parse_date
+#'
+#' Part of the siu_parser implementation; see the file header for the
+#' source it follows.
+#'
+#' @param raw See Usage.
+#' @return A list with \code{iso}, \code{raw}.
+#' @export
 .siu_p_parse_date <- function(raw) {
   if (is.null(raw) || is.na(raw) || !nzchar(raw)) {
     return(list(iso = NA_character_, raw = NA_character_))
@@ -435,6 +560,13 @@ NULL
        raw = raw)
 }
 
+#' SIU case numbers: 2 digits, optional hyphen, 3-4 letters, hyphen,
+#'
+#' 3 digits.
+#'
+#' @param text See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .siu_p_find_case_number <- function(text) {
   # SIU case numbers: 2 digits, optional hyphen, 3-4 letters, hyphen,
   # 3 digits.
@@ -458,6 +590,15 @@ NULL
 )
 
 
+#' .siu_p_extract_narrative_full
+#'
+#' Part of the siu_parser implementation; see the file header for the
+#' source it follows.
+#'
+#' @param html See Usage.
+#' @param text See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .siu_p_extract_narrative_full <- function(html, text) {
   if (.siu_p_has_rvest()) {
     doc <- tryCatch(xml2::read_html(html), error = function(e) NULL)
@@ -491,6 +632,14 @@ NULL
 }
 
 
+#' .siu_p_extract_summary
+#'
+#' Part of the siu_parser implementation; see the file header for the
+#' source it follows.
+#'
+#' @param text See Usage.
+#' @return The value of \code{substr}.
+#' @export
 .siu_p_extract_summary <- function(text) {
   paras <- strsplit(text, "\
 \
@@ -512,6 +661,14 @@ NULL
 )
 
 
+#' .siu_p_scan_mh_race
+#'
+#' Part of the siu_parser implementation; see the file header for the
+#' source it follows.
+#'
+#' @param narrative See Usage.
+#' @return A character value.
+#' @export
 .siu_p_scan_mh_race <- function(narrative) {
   if (is.null(narrative) || is.na(narrative) ||
       !nzchar(narrative)) return("")
@@ -526,6 +683,15 @@ NULL
 }
 
 
+#' .siu_p_find_news_release_link
+#'
+#' Part of the siu_parser implementation; see the file header for the
+#' source it follows.
+#'
+#' @param html See Usage.
+#' @param source_url See Usage.
+#' @return The value of \code{m}, as built in the body.
+#' @export
 .siu_p_find_news_release_link <- function(html, source_url) {
   if (.siu_p_has_rvest()) {
     doc <- tryCatch(xml2::read_html(html), error = function(e) NULL)

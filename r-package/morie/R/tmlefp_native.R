@@ -143,6 +143,18 @@ morie_owate_weights <- function(pscore, sigma2_treated = NULL,
 }
 
 # Normalised IPW effect over a subpopulation or with given weights.
+#' Normalised IPW effect over a subpopulation or with given weights
+#'
+#' Part of the tmlefp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param y See Usage.
+#' @param w See Usage.
+#' @param e See Usage.
+#' @param keep See Usage.
+#' @param weights See Usage.
+#' @return A list with \code{est}, \code{n_kept}.
+#' @export
 .ipw_dta <- function(y, w, e, keep, weights) {
   n <- length(y)
   sel <- if (is.null(keep)) seq_len(n) else which(keep)

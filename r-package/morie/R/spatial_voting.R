@@ -54,6 +54,14 @@
 
 # ---- internal helpers ------------------------------------------------------
 
+#' .sv_as_matrix
+#'
+#' Part of the spatial_voting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{m}, as built in the body.
+#' @export
 .sv_as_matrix <- function(x) {
   if (is.null(x)) return(NULL)
   m <- as.matrix(x)
@@ -61,15 +69,39 @@
   m
 }
 
+#' .sv_nanmean_col
+#'
+#' Part of the spatial_voting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param M See Usage.
+#' @return The value of \code{apply}.
+#' @export
 .sv_nanmean_col <- function(M) {
   apply(M, 2, function(v) mean(v, na.rm = TRUE))
 }
 
+#' .sv_pairwise_dist
+#'
+#' Part of the spatial_voting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param X See Usage.
+#' @return A matrix, from \code{as.matrix}.
+#' @export
 .sv_pairwise_dist <- function(X) {
   X <- as.matrix(X)
   as.matrix(stats::dist(X))
 }
 
+#' .sv_double_centering
+#'
+#' Part of the spatial_voting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param D See Usage.
+#' @return A numeric value.
+#' @export
 .sv_double_centering <- function(D) {
   D <- as.matrix(D)
   n <- nrow(D)
@@ -78,6 +110,15 @@
   -0.5 * H %*% A %*% H
 }
 
+#' .sv_safe_pinv
+#'
+#' Part of the spatial_voting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param M See Usage.
+#' @param tol Defaults to \code{1e-12}.
+#' @return The value of \code{%*%}.
+#' @export
 .sv_safe_pinv <- function(M, tol = 1e-12) {
   s <- svd(M)
   d <- s$d
@@ -85,6 +126,15 @@
   s$v %*% (diag(inv_d, nrow = length(inv_d)) %*% t(s$u))
 }
 
+#' .sv_isotonic_pava
+#'
+#' Part of the spatial_voting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param y See Usage.
+#' @param w Defaults to \code{NULL}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .sv_isotonic_pava <- function(y, w = NULL) {
   n <- length(y)
   if (is.null(w)) w <- rep(1, n)
@@ -957,6 +1007,14 @@ morie_spatial_voting_procrustes <- function(X, X_target) {
 # 8. Bayesian methods -- STUBBED (porting MCMC samplers exceeds session)
 # ===========================================================================
 
+#' .NOT_PORTED
+#'
+#' Part of the spatial_voting implementation; see the file header for
+#' the source it follows.
+#'
+#' @param name See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 .NOT_PORTED <- function(name) {
   stop(sprintf("NotYetPorted: %s -- the Bayesian MCMC backend is not yet ported to R. ",
                name),

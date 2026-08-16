@@ -176,6 +176,12 @@
 
 # TPS crime-table family shares a common base schema; one spec
 # applied via prefix dispatch.
+#' TPS crime-table family shares a common base schema; one spec
+#'
+#' applied via prefix dispatch.
+#'
+#' @return The value of \code{list}.
+#' @export
 .morie_db_indexes_tps_crime <- function() {
   list(
     list(name_suffix = "_objectid",   cols = "OBJECTID",        unique = TRUE),
@@ -187,6 +193,14 @@
   )
 }
 
+#' .morie_db_indexes_for
+#'
+#' Part of the db_indexes implementation; see the file header for the
+#' source it follows.
+#'
+#' @param table_name See Usage.
+#' @return The value of \code{list}.
+#' @export
 .morie_db_indexes_for <- function(table_name) {
   reg <- .morie_db_index_registry()
   if (table_name %in% names(reg)) {

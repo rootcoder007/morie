@@ -212,6 +212,13 @@ patchtst_encode <- function(X, patch_len, stride = NULL,
                       "Kalagnanam (2023)", sep = ""))
 }
 
+#' .patchT_cheatsheet
+#'
+#' Part of the patchT_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .patchT_cheatsheet <- function() {
   paste("patchT: PatchTST. A single time step is not a word, so ",
         "tokenise SUBSERIES: patches of length P, stride S, ",

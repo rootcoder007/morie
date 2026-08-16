@@ -614,6 +614,15 @@ morie_dsp_even_odd <- function(x) {
 # ---- internal helpers -------------------------------------------------
 
 # "same"-mode convolution matching numpy.convolve(x, k, "same").
+#' "same"-mode convolution matching numpy.convolve(x, k, "same")
+#'
+#' Part of the dsp_filters implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param k See Usage.
+#' @return The value of \code{[}.
+#' @export
 .same_convolve <- function(x, k) {
   n <- length(x)
   m <- length(k)

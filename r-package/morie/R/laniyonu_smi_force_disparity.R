@@ -52,6 +52,24 @@ NULL
 # Helpers
 # ---------------------------------------------------------------------------
 
+#' .lan_smi_result
+#'
+#' Part of the laniyonu_smi_force_disparity implementation; see the file
+#' header for the source it follows.
+#'
+#' @param alpha_v See Usage.
+#' @param intercept See Usage.
+#' @param year_effects See Usage.
+#' @param area_random_effect_sd See Usage.
+#' @param dispersion See Usage.
+#' @param n_events See Usage.
+#' @param n_area_years See Usage.
+#' @param log_likelihood See Usage.
+#' @param converged See Usage.
+#' @param exposure_summary Defaults to \code{list()}.
+#' @param note Defaults to \code{""}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .lan_smi_result <- function(alpha_v, intercept, year_effects,
                               area_random_effect_sd, dispersion,
                               n_events, n_area_years, log_likelihood,
@@ -103,6 +121,16 @@ NULL
 }
 
 
+#' .lan_smi_coef
+#'
+#' Part of the laniyonu_smi_force_disparity implementation; see the file
+#' header for the source it follows.
+#'
+#' @param name See Usage.
+#' @param estimate See Usage.
+#' @param std_error See Usage.
+#' @return A list with \code{name}, \code{estimate}, \code{std_error}.
+#' @export
 .lan_smi_coef <- function(name, estimate, std_error) {
   list(name = name,
        estimate = as.numeric(estimate),
@@ -114,6 +142,18 @@ NULL
 # Synthetic Area Exposure (SAE) — base-R logistic + tract scoring
 # ---------------------------------------------------------------------------
 
+#' .lan_smi_sae
+#'
+#' Part of the laniyonu_smi_force_disparity implementation; see the file
+#' header for the source it follows.
+#'
+#' @param survey_df See Usage.
+#' @param survey_trait_col See Usage.
+#' @param survey_covariate_cols See Usage.
+#' @param area_df See Usage.
+#' @param area_population_col See Usage.
+#' @return The value of \code{setNames}.
+#' @export
 .lan_smi_sae <- function(survey_df, survey_trait_col, survey_covariate_cols,
                           area_df, area_population_col) {
   needed_s <- c(survey_trait_col, survey_covariate_cols)
@@ -141,6 +181,18 @@ NULL
 # Negative-binomial fitter
 # ---------------------------------------------------------------------------
 
+#' Native NB GLM (morie_glm_nb); fall back to optim-based MLE on error
+#'
+#' Part of the laniyonu_smi_force_disparity implementation; see the file
+#' header for the source it follows.
+#'
+#' @param X See Usage.
+#' @param y See Usage.
+#' @param offset_vec See Usage.
+#' @param max_iter See Usage.
+#' @param tol See Usage.
+#' @return A list with \code{coef}, \code{se}, \code{loglik}, \code{phi}, \code{converged}.
+#' @export
 .lan_smi_fit_nb <- function(X, y, offset_vec, max_iter, tol) {
   # Native NB GLM (morie_glm_nb); fall back to optim-based MLE on error.
   {

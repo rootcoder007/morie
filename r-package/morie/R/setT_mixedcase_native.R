@@ -16,6 +16,15 @@
 
 .setT_EPS <- 1e-5
 
+#' .ln
+#'
+#' Part of the setT_mixedcase_native implementation; see the file header
+#' for the source it follows.
+#'
+#' @param row See Usage.
+#' @param eps Defaults to \code{.setT_EPS}.
+#' @return A numeric value.
+#' @export
 .ln <- function(row, eps = .setT_EPS) {
   n <- length(row)
   mu <- sum(row) / n
@@ -24,6 +33,18 @@
   (row - mu) / s
 }
 
+#' .rff
+#'
+#' Part of the setT_mixedcase_native implementation; see the file header
+#' for the source it follows.
+#'
+#' @param M See Usage.
+#' @param W1 See Usage.
+#' @param b1 See Usage.
+#' @param W2 See Usage.
+#' @param b2 See Usage.
+#' @return A numeric value.
+#' @export
 .rff <- function(M, W1, b1, W2, b2) {
   H <- M %*% W1
   R <- t(apply(H, 1, function(row)
@@ -33,6 +54,18 @@
              byrow = TRUE)
 }
 
+#' .attend
+#'
+#' Part of the setT_mixedcase_native implementation; see the file header
+#' for the source it follows.
+#'
+#' @param X See Usage.
+#' @param Y See Usage.
+#' @param Wq See Usage.
+#' @param Wk See Usage.
+#' @param Wv See Usage.
+#' @return A list with \code{O}, \code{W}.
+#' @export
 .attend <- function(X, Y, Wq, Wk, Wv) {
   Q <- X %*% Wq
   K <- Y %*% Wk
@@ -47,6 +80,16 @@
   list(O = O, W = W)
 }
 
+#' .mab
+#'
+#' Part of the setT_mixedcase_native implementation; see the file header
+#' for the source it follows.
+#'
+#' @param X See Usage.
+#' @param Y See Usage.
+#' @param p See Usage.
+#' @return A list with \code{O}, \code{W}.
+#' @export
 .mab <- function(X, Y, p) {
   out <- .attend(X, Y, p$Wq, p$Wk, p$Wv)
   A <- out$O; W <- out$W

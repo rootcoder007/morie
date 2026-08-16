@@ -28,6 +28,17 @@
 NULL
 
 
+#' .haversine_km_lisa
+#'
+#' Part of the mrm_lisa implementation; see the file header for the
+#' source it follows.
+#'
+#' @param lat1 See Usage.
+#' @param lon1 See Usage.
+#' @param lat2 See Usage.
+#' @param lon2 See Usage.
+#' @return A numeric value.
+#' @export
 .haversine_km_lisa <- function(lat1, lon1, lat2, lon2) {
   R <- 6371
   rad <- pi / 180
@@ -38,6 +49,16 @@ NULL
 }
 
 
+#' .knn_weights_lisa
+#'
+#' Part of the mrm_lisa implementation; see the file header for the
+#' source it follows.
+#'
+#' @param lat See Usage.
+#' @param lon See Usage.
+#' @param k See Usage.
+#' @return The value of \code{W}, as built in the body.
+#' @export
 .knn_weights_lisa <- function(lat, lon, k) {
   n <- length(lat)
   W <- matrix(0, n, n)

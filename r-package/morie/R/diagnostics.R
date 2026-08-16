@@ -27,6 +27,23 @@
 
 # ---- Result containers ----------------------------------------------------
 
+#' .new_residual_diag
+#'
+#' Part of the diagnostics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param raw See Usage.
+#' @param std See Usage.
+#' @param student See Usage.
+#' @param deviance See Usage.
+#' @param pearson See Usage.
+#' @param fitted See Usage.
+#' @param normality See Usage.
+#' @param hetero See Usage.
+#' @param autoc See Usage.
+#' @param outlier_indices See Usage.
+#' @return The value of \code{structure}.
+#' @export
 .new_residual_diag <- function(raw, std, student, deviance, pearson,
                                fitted, normality, hetero, autoc,
                                outlier_indices) {
@@ -46,6 +63,21 @@
   )
 }
 
+#' .new_influence_diag
+#'
+#' Part of the diagnostics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param h See Usage.
+#' @param cooks See Usage.
+#' @param dffits See Usage.
+#' @param dfbetas See Usage.
+#' @param covratio See Usage.
+#' @param influential See Usage.
+#' @param high_lev See Usage.
+#' @param high_cook See Usage.
+#' @return The value of \code{structure}.
+#' @export
 .new_influence_diag <- function(h, cooks, dffits, dfbetas, covratio,
                                 influential, high_lev, high_cook) {
   structure(
@@ -59,6 +91,20 @@
   )
 }
 
+#' .new_collin_diag
+#'
+#' Part of the diagnostics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param vif See Usage.
+#' @param cond_num See Usage.
+#' @param cond_idx See Usage.
+#' @param var_decomp See Usage.
+#' @param eigvals See Usage.
+#' @param n_collin See Usage.
+#' @param pairs See Usage.
+#' @return The value of \code{structure}.
+#' @export
 .new_collin_diag <- function(vif, cond_num, cond_idx, var_decomp,
                              eigvals, n_collin, pairs) {
   structure(
@@ -71,6 +117,18 @@
   )
 }
 
+#' .new_spec_test
+#'
+#' Part of the diagnostics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param name See Usage.
+#' @param statistic See Usage.
+#' @param p_value See Usage.
+#' @param df See Usage.
+#' @param conclusion See Usage.
+#' @return The value of \code{structure}.
+#' @export
 .new_spec_test <- function(name, statistic, p_value, df, conclusion) {
   structure(
     list(name = name, statistic = statistic, p_value = p_value,
@@ -79,6 +137,26 @@
   )
 }
 
+#' .new_gof
+#'
+#' Part of the diagnostics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param r_squared See Usage.
+#' @param adj_r_squared See Usage.
+#' @param pseudo_r_squared See Usage.
+#' @param aic See Usage.
+#' @param bic See Usage.
+#' @param log_likelihood See Usage.
+#' @param deviance See Usage.
+#' @param pearson_chi2 See Usage.
+#' @param df_model See Usage.
+#' @param df_residual See Usage.
+#' @param f_statistic See Usage.
+#' @param f_pvalue See Usage.
+#' @param n_obs See Usage.
+#' @return The value of \code{structure}.
+#' @export
 .new_gof <- function(r_squared, adj_r_squared, pseudo_r_squared,
                     aic, bic, log_likelihood, deviance, pearson_chi2,
                     df_model, df_residual, f_statistic, f_pvalue, n_obs) {
@@ -94,6 +172,19 @@
   )
 }
 
+#' .new_diag_report
+#'
+#' Part of the diagnostics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param residuals See Usage.
+#' @param influence See Usage.
+#' @param collinearity See Usage.
+#' @param gof See Usage.
+#' @param spec_tests See Usage.
+#' @param assessment See Usage.
+#' @return The value of \code{structure}.
+#' @export
 .new_diag_report <- function(residuals, influence, collinearity,
                              gof, spec_tests, assessment) {
   structure(
@@ -106,6 +197,14 @@
 }
 
 # Solve / pseudo-inverse helper.
+#' Solve / pseudo-inverse helper
+#'
+#' Part of the diagnostics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param A See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .safe_solve <- function(A) {
   res <- try(solve(A), silent = TRUE)
   if (inherits(res, "try-error")) .morie_ginv(A) else res

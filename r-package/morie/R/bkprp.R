@@ -46,6 +46,15 @@ morie_bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
   )
 }
 
+#' .bkprp_sigma
+#'
+#' Part of the bkprp implementation; see the file header for the source
+#' it follows.
+#'
+#' @param z See Usage.
+#' @param activation See Usage.
+#' @return The value of \code{switch}.
+#' @export
 .bkprp_sigma <- function(z, activation) {
   switch(activation,
     "identity" = z,
@@ -58,6 +67,16 @@ morie_bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
   )
 }
 
+#' .bkprp_sigma_prime
+#'
+#' Part of the bkprp implementation; see the file header for the source
+#' it follows.
+#'
+#' @param z See Usage.
+#' @param activation See Usage.
+#' @param a See Usage.
+#' @return The value of \code{switch}.
+#' @export
 .bkprp_sigma_prime <- function(z, activation, a) {
   switch(activation,
     "identity" = matrix(1, nrow(z), ncol(z)),

@@ -16,16 +16,44 @@
 
 .tmldyk_EPS <- 1e-12
 
+#' .tmldyk_logit
+#'
+#' Part of the tmldyk_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @return A numeric value.
+#' @export
 .tmldyk_logit <- function(p) {
   q <- min(max(as.numeric(p), 1e-9), 1 - 1e-9)
   log(q / (1 - q))
 }
 
+#' .tmldyk_expit
+#'
+#' Part of the tmldyk_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .tmldyk_expit <- function(x) {
   if (x > -700) 1 / (1 + exp(-x)) else 0
 }
 
 # Logistic IRLS that returns a coefficient vector.
+#' Logistic IRLS that returns a coefficient vector
+#'
+#' Part of the tmldyk_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param Z See Usage.
+#' @param a See Usage.
+#' @param ridge Defaults to \code{1e-08}.
+#' @param max_iter Defaults to \code{50L}.
+#' @param tol Defaults to \code{1e-10}.
+#' @return The value of \code{b}, as built in the body.
+#' @export
 .tmldyk_logit_irls <- function(Z, a, ridge = 1e-8, max_iter = 50L,
                         tol = 1e-10) {
   n <- length(a)
@@ -48,12 +76,33 @@
 }
 
 # Solve a least-squares problem with a ridge.
+#' Solve a least-squares problem with a ridge
+#'
+#' Part of the tmldyk_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param Z See Usage.
+#' @param yv See Usage.
+#' @param ridge Defaults to \code{1e-08}.
+#' @return A matrix, from \code{solve}.
+#' @export
 .tmldyk_lstsq <- function(Z, yv, ridge = 1e-8) {
   X <- if (is.matrix(Z)) Z else do.call(rbind, Z)
   p <- ncol(X)
   solve(crossprod(X) + ridge * diag(p), crossprod(X, yv))
 }
 
+#' .wls_int
+#'
+#' Part of the tmldyk_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param Xm See Usage.
+#' @param yv See Usage.
+#' @param w See Usage.
+#' @param ridge See Usage.
+#' @return A matrix, from \code{solve}.
+#' @export
 .wls_int <- function(Xm, yv, w, ridge) {
   Xd <- cbind(1, Xm)
   W <- diag(w, nrow(Xm))
@@ -62,6 +111,16 @@
   solve(XtWX, XtWy)
 }
 
+#' .rescale
+#'
+#' Part of the tmldyk_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param y See Usage.
+#' @param lower See Usage.
+#' @param upper See Usage.
+#' @return A list with \code{scaled}, \code{lower}, \code{upper}, \code{range}.
+#' @export
 .rescale <- function(y, lower, upper) {
   v <- as.numeric(y)
   if (length(v) == 0L) stop("tmlcou: no outcomes given")
@@ -73,12 +132,37 @@
   list(scaled = (v - a) / (b - a), lower = a, upper = b, range = b - a)
 }
 
+#' .unscale
+#'
+#' Part of the tmldyk_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param value See Usage.
+#' @param lower See Usage.
+#' @param upper See Usage.
+#' @return A numeric value.
+#' @export
 .unscale <- function(value, lower, upper) {
   as.numeric(value) * (as.numeric(upper) - as.numeric(lower)) +
     as.numeric(lower)
 }
 
 # Underlying TMLE on the bounded-outcome scale (rescaled to [0,1]).
+#' Underlying TMLE on the bounded-outcome scale (rescaled to [0,1])
+#'
+#' Part of the tmldyk_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param yv See Usage.
+#' @param a See Usage.
+#' @param W See Usage.
+#' @param g See Usage.
+#' @param Q1 See Usage.
+#' @param Q0 See Usage.
+#' @param lower See Usage.
+#' @param upper See Usage.
+#' @return A list with \code{psi}, \code{se}, \code{range}.
+#' @export
 .tmle_ate_bounded <- function(yv, a, W, g, Q1, Q0, lower, upper) {
   n <- length(yv)
   if (any(yv < lower | yv > upper))

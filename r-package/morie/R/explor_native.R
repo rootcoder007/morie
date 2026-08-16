@@ -9,6 +9,15 @@
 
 .explor_EPS <- 1e-300
 
+#' .mat
+#'
+#' Part of the explor_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param name See Usage.
+#' @return The value of \code{X}, as built in the body.
+#' @export
 .mat <- function(x, name) {
   if (is.data.frame(x)) x <- as.matrix(x)
   x <- as.matrix(x)
@@ -17,6 +26,15 @@
   X
 }
 
+#' .matvec
+#'
+#' Part of the explor_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param W See Usage.
+#' @param x See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .matvec <- function(W, x) {
   n_out <- ncol(W)
   out <- rep(0, n_out)
@@ -29,6 +47,14 @@
   out
 }
 
+#' .explor_softmax
+#'
+#' Part of the explor_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param z See Usage.
+#' @return A numeric value.
+#' @export
 .explor_softmax <- function(z) {
   m <- max(z)
   e <- exp(z - m)

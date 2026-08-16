@@ -1,0 +1,19 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{.otis_alert_volatility_frame}
+\alias{.otis_alert_volatility_frame}
+\title{Aggregate per-(id, year) the count of distinct alert-combos and the}
+\usage{
+.otis_alert_volatility_frame(df)
+}
+\arguments{
+\item{df}{See Usage.}
+}
+\description{
+sum of within-row + across-row region-change indicators.
+}
+\value{
+The value of \code{base}, as built in the body.
+}
+\keyword{internal}

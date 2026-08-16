@@ -62,11 +62,31 @@ effect_size_result <- function(measure, estimate,
 
 # -- Helpers ----------------------------------------------------------
 
+#' .arr
+#'
+#' Part of the effect_sizes implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{[}.
+#' @export
 .arr <- function(x) {
   v <- as.numeric(x)
   v[is.finite(v)]
 }
 
+#' .bootstrap_ci
+#'
+#' Part of the effect_sizes implementation; see the file header for the
+#' source it follows.
+#'
+#' @param func See Usage.
+#' @param args See Usage.
+#' @param n_boot Defaults to \code{2000L}.
+#' @param confidence Defaults to \code{0.95}.
+#' @param seed Defaults to \code{42L}.
+#' @return A list with \code{se}, \code{ci_lo}, \code{ci_hi}.
+#' @export
 .bootstrap_ci <- function(func, args, n_boot = 2000L,
                             confidence = 0.95, seed = 42L) {
   set.seed(seed)

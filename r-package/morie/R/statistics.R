@@ -44,11 +44,37 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+#' .stat_validate
+#'
+#' Part of the statistics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param name Defaults to \code{"x"}.
+#' @return The value of \code{[}.
+#' @export
 .stat_validate <- function(x, name = "x") {
   x <- suppressWarnings(as.numeric(x))
   x[is.finite(x)]
 }
 
+#' .stat_result
+#'
+#' Part of the statistics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param method See Usage.
+#' @param test_statistic See Usage.
+#' @param p_value See Usage.
+#' @param df Defaults to \code{NA_real_}.
+#' @param ci_lower Defaults to \code{NA_real_}.
+#' @param ci_upper Defaults to \code{NA_real_}.
+#' @param effect_size Defaults to \code{NA_real_}.
+#' @param estimate Defaults to \code{NA_real_}.
+#' @param n Defaults to \code{NA_integer_}.
+#' @param extra Defaults to \code{list()}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .stat_result <- function(method, test_statistic, p_value,
                          df = NA_real_, ci_lower = NA_real_,
                          ci_upper = NA_real_, effect_size = NA_real_,
@@ -99,6 +125,15 @@ print.morie_test_result <- function(x, ...) {
   invisible(x)
 }
 
+#' .cohens_d_ind
+#'
+#' Part of the statistics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param y See Usage.
+#' @return A numeric value.
+#' @export
 .cohens_d_ind <- function(x, y) {
   nx <- length(x)
   ny <- length(y)
@@ -107,18 +142,44 @@ print.morie_test_result <- function(x, ...) {
   (mean(x) - mean(y)) / sp
 }
 
+#' .cohens_d_one
+#'
+#' Part of the statistics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param mu0 See Usage.
+#' @return A numeric value.
+#' @export
 .cohens_d_one <- function(x, mu0) {
   s <- sd(x)
   if (s == 0) return(0)
   (mean(x) - mu0) / s
 }
 
+#' .cohens_d_paired
+#'
+#' Part of the statistics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param d See Usage.
+#' @return A numeric value.
+#' @export
 .cohens_d_paired <- function(d) {
   s <- sd(d)
   if (s == 0) return(0)
   mean(d) / s
 }
 
+#' .mean_ci
+#'
+#' Part of the statistics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param confidence Defaults to \code{0.95}.
+#' @return A vector, from \code{c}.
+#' @export
 .mean_ci <- function(x, confidence = 0.95) {
   n <- length(x)
   se <- sd(x) / sqrt(n)
@@ -126,6 +187,17 @@ print.morie_test_result <- function(x, ...) {
   c(mean(x) - tcrit * se, mean(x) + tcrit * se)
 }
 
+#' .diff_ci
+#'
+#' Part of the statistics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @param y See Usage.
+#' @param confidence Defaults to \code{0.95}.
+#' @param equal_var Defaults to \code{TRUE}.
+#' @return A vector, from \code{c}.
+#' @export
 .diff_ci <- function(x, y, confidence = 0.95, equal_var = TRUE) {
   nx <- length(x)
   ny <- length(y)
@@ -546,6 +618,16 @@ cochrans_q <- function(...) {
 # CORRELATION
 # ===================================================================
 
+#' .fisher_z_ci
+#'
+#' Part of the statistics implementation; see the file header for the
+#' source it follows.
+#'
+#' @param r See Usage.
+#' @param n See Usage.
+#' @param confidence See Usage.
+#' @return A vector, from \code{c}.
+#' @export
 .fisher_z_ci <- function(r, n, confidence) {
   z <- atanh(r)
   se <- if (n > 3) 1 / sqrt(n - 3) else Inf

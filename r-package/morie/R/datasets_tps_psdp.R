@@ -146,6 +146,18 @@ morie_tps_psdp_layers <- function() {
 # escape hatch for callers who want a non-canonical FeatureServer URL).
 # ---------------------------------------------------------------------------
 
+#' .morie_tps_psdp_dispatch
+#'
+#' Part of the datasets_tps_psdp implementation; see the file header for
+#' the source it follows.
+#'
+#' @param layer_key See Usage.
+#' @param year See Usage.
+#' @param max_features See Usage.
+#' @param offline See Usage.
+#' @param layer_url See Usage.
+#' @return The value of \code{morie_datasets_tps_arcgis_hub_by_id}.
+#' @export
 .morie_tps_psdp_dispatch <- function(layer_key, year, max_features,
                                       offline, layer_url) {
   if (!(layer_key %in% names(.MORIE_TPS_PSDP_REGISTRY))) {

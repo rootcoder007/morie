@@ -110,6 +110,14 @@ morie_gsageemd_sample <- function(adj, v, size, rng) {
     integer(1))
 }
 
+#' .gsage_norm
+#'
+#' Part of the gsageemd_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param v See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .gsage_norm <- function(v) {
   n <- sqrt(sum(v * v))
   if (n <= .GSAGE_EPS) v else v / n

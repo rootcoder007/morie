@@ -1,0 +1,19 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{.otis_tps_toronto_seg_by_year}
+\alias{.otis_tps_toronto_seg_by_year}
+\title{.otis_tps_toronto_seg_by_year}
+\usage{
+.otis_tps_toronto_seg_by_year(df_b01)
+}
+\arguments{
+\item{df_b01}{See Usage.}
+}
+\description{
+Part of the otis_tps_overlay implementation; see the file header for the source it follows.
+}
+\value{
+The value of \code{out}, as built in the body.
+}
+\keyword{internal}

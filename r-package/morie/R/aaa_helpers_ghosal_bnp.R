@@ -6,12 +6,38 @@
 #' @name ghosal_bnp_helpers
 NULL
 
+#' .gh_have
+#'
+#' Part of the helpers_ghosal_bnp implementation; see the file header
+#' for the source it follows.
+#'
+#' @param pkg See Usage.
+#' @return The value of \code{requireNamespace}.
+#' @export
 .gh_have <- function(pkg) requireNamespace(pkg, quietly = TRUE)
 
+#' .gh_pairwise_sq
+#'
+#' Part of the helpers_ghosal_bnp implementation; see the file header
+#' for the source it follows.
+#'
+#' @param a See Usage.
+#' @param b Defaults to \code{a}.
+#' @return A numeric value.
+#' @export
 .gh_pairwise_sq <- function(a, b = a) {
   outer(rowSums(a^2), rowSums(b^2), "+") - 2 * a %*% t(b)
 }
 
+#' .gh_bernstein
+#'
+#' Part of the helpers_ghosal_bnp implementation; see the file header
+#' for the source it follows.
+#'
+#' @param u See Usage.
+#' @param K See Usage.
+#' @return The value of \code{B}, as built in the body.
+#' @export
 .gh_bernstein <- function(u, K) {
   u <- pmin(pmax(u, 1e-12), 1 - 1e-12)
   B <- matrix(0, nrow = length(u), ncol = K)
@@ -21,6 +47,17 @@ NULL
   B
 }
 
+#' .gh_surv_post
+#'
+#' Part of the helpers_ghosal_bnp implementation; see the file header
+#' for the source it follows.
+#'
+#' @param t See Usage.
+#' @param ev See Usage.
+#' @param c See Usage.
+#' @param lam0 See Usage.
+#' @return A list with \code{times}, \code{S}, \code{H}, \code{dH}, \code{lam0}.
+#' @export
 .gh_surv_post <- function(t, ev, c, lam0) {
   t <- as.numeric(t)
   n <- length(t)
@@ -38,6 +75,14 @@ NULL
   list(times = uniq, S = S, H = cumsum(dHp), dH = dHp, lam0 = lam0)
 }
 
+#' .gh_haar_dwt
+#'
+#' Part of the helpers_ghosal_bnp implementation; see the file header
+#' for the source it follows.
+#'
+#' @param y See Usage.
+#' @return A list with \code{coeffs}, \code{L}.
+#' @export
 .gh_haar_dwt <- function(y) {
   L <- 1L
   while (L < length(y)) L <- 2L * L

@@ -10,6 +10,16 @@
 # keys set MORIE_KEYSTORE_PATH (or pass path = ... explicitly to the
 # keystore_create / load / store / wipe functions). morie 0.9.4 was
 # archived from CRAN over this same issue; do not regress.
+#' CRAN policy: packages must not write outside tempdir() without
+#'
+#' explicit user opt-in. The keystore default path therefore resolves to
+#' a session-scoped tempdir() location; users who want persistent keys
+#' set MORIE_KEYSTORE_PATH (or pass path = ... explicitly to the
+#' keystore_create / load / store / wipe functions). morie 0.9.4 was
+#' archived from CRAN over this same issue; do not regress.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_keystore_default_path <- function() {
   override <- Sys.getenv("MORIE_KEYSTORE_PATH", "")
   if (nzchar(override)) {
@@ -24,6 +34,13 @@
 .MORIE_SCRYPT_DK <- 32L
 .MORIE_SODIUM_NONCE_LEN <- 24L
 
+#' .morie_keystore_require
+#'
+#' Part of the crypto_keystore implementation; see the file header for
+#' the source it follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_keystore_require <- function() {
   if (!requireNamespace("sodium", quietly = TRUE)) {
     stop("morie_crypto requires sodium; install.packages('sodium')",
@@ -35,10 +52,27 @@
   }
 }
 
+#' .morie_resolve_path
+#'
+#' Part of the crypto_keystore implementation; see the file header for
+#' the source it follows.
+#'
+#' @param path See Usage.
+#' @return The value of \code{normalizePath}.
+#' @export
 .morie_resolve_path <- function(path) {
   normalizePath(path.expand(path), mustWork = FALSE)
 }
 
+#' .morie_derive_key
+#'
+#' Part of the crypto_keystore implementation; see the file header for
+#' the source it follows.
+#'
+#' @param password See Usage.
+#' @param salt See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 .morie_derive_key <- function(password, salt) {
   .morie_keystore_require()
   if (!is.raw(salt)) stop("salt must be a raw vector", call. = FALSE)
@@ -59,6 +93,14 @@
   )
 }
 
+#' .morie_hex_to_raw
+#'
+#' Part of the crypto_keystore implementation; see the file header for
+#' the source it follows.
+#'
+#' @param h See Usage.
+#' @return The value of \code{as.raw}.
+#' @export
 .morie_hex_to_raw <- function(h) {
   if (!is.character(h) || length(h) != 1L) {
     stop("expected single hex string", call. = FALSE)
@@ -71,11 +113,27 @@
   as.raw(strtoi(pairs, 16L))
 }
 
+#' .morie_raw_to_hex
+#'
+#' Part of the crypto_keystore implementation; see the file header for
+#' the source it follows.
+#'
+#' @param r See Usage.
+#' @return A character value.
+#' @export
 .morie_raw_to_hex <- function(r) {
   if (!is.raw(r)) stop("expected raw vector", call. = FALSE)
   paste(format(r), collapse = "")
 }
 
+#' .morie_read_store
+#'
+#' Part of the crypto_keystore implementation; see the file header for
+#' the source it follows.
+#'
+#' @param path See Usage.
+#' @return The value of \code{.morie_from_json}.
+#' @export
 .morie_read_store <- function(path) {
   .morie_keystore_require()
   p <- .morie_resolve_path(path)
@@ -85,6 +143,15 @@
   .morie_from_json(p, simplifyVector = FALSE)
 }
 
+#' .morie_write_store
+#'
+#' Part of the crypto_keystore implementation; see the file header for
+#' the source it follows.
+#'
+#' @param data See Usage.
+#' @param path See Usage.
+#' @return Invisibly,nothing; the function is called for its effect.
+#' @export
 .morie_write_store <- function(data, path) {
   .morie_keystore_require()
   p <- .morie_resolve_path(path)

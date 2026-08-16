@@ -16,6 +16,14 @@
 NULL
 
 
+#' .morie_fairness_mean_finite
+#'
+#' Part of the fairness_temporal implementation; see the file header for
+#' the source it follows.
+#'
+#' @param xs See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_fairness_mean_finite <- function(xs) {
   finite <- xs[is.finite(xs)]
   if (length(finite) == 0L) NA_real_ else mean(finite)

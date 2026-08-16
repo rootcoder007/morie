@@ -23,21 +23,72 @@ GEMINI_BASE_URL <- "https://generativelanguage.googleapis.com/v1beta/openai"
 
 `%||%` <- function(a, b) if (is.null(a)) b else a
 
+#' .morie_llm_env
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @param name See Usage.
+#' @param default Defaults to \code{""}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_llm_env <- function(name, default = "") {
   v <- trimws(Sys.getenv(name, unset = ""))
   if (nzchar(v)) v else default
 }
+#' .morie_llm_ollama_base
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @return The value of \code{sub}.
+#' @export
 .morie_llm_ollama_base <- function() {
   sub("/+$", "", .morie_llm_env("OLLAMA_BASE_URL", DEFAULT_OLLAMA_BASE_URL))
 }
+#' .morie_llm_gemini_key
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_llm_gemini_key  <- function() { v <- .morie_llm_env("GEMINI_API_KEY")
 if (nzchar(v)) v else NULL }
+#' .morie_llm_openai_key
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_llm_openai_key  <- function() { v <- .morie_llm_env("OPENAI_API_KEY")
 if (nzchar(v)) v else NULL }
+#' .morie_llm_api_base
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_llm_api_base    <- function() { v <- .morie_llm_env("LLM_API_BASE_URL")
 if (nzchar(v)) sub("/+$", "", v) else NULL }
+#' .morie_llm_api_key
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_llm_api_key     <- function() { v <- .morie_llm_env("LLM_API_KEY")
 if (nzchar(v)) v else NULL }
+#' .morie_llm_gemini_model
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @return The value of \code{.morie_llm_env}.
+#' @export
 .morie_llm_gemini_model <- function() .morie_llm_env("GEMINI_MODEL", DEFAULT_GEMINI_MODEL)
 
 #' Probe a local Ollama instance
@@ -63,6 +114,14 @@ morie_llm_probe_ollama <- function(timeout = 2) {
 }
 
 
+#' .morie_llm_system_prompt
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @param context_block Defaults to \code{""}.
+#' @return A character value.
+#' @export
 .morie_llm_system_prompt <- function(context_block = "") {
   paste0(
     "You are the MORIE agent for methods for observational inference and ",
@@ -77,6 +136,16 @@ morie_llm_probe_ollama <- function(timeout = 2) {
   )
 }
 
+#' .morie_llm_messages
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @param prompt See Usage.
+#' @param context Defaults to \code{NULL}.
+#' @param system_prompt Defaults to \code{NULL}.
+#' @return The value of \code{list}.
+#' @export
 .morie_llm_messages <- function(prompt, context = NULL, system_prompt = NULL) {
   if (is.null(system_prompt)) {
     ctx_block <- if (is.null(context)) "" else paste(
@@ -131,6 +200,14 @@ morie_llm_request_completion <- function(base_url, model, messages,
   .morie_from_json(httr2::resp_body_string(resp), simplifyVector = FALSE)
 }
 
+#' .morie_llm_extract_text
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @param data See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_llm_extract_text <- function(data) {
   choices <- data$choices
   if (length(choices) == 0L) return("")
@@ -138,6 +215,14 @@ morie_llm_request_completion <- function(base_url, model, messages,
   if (is.null(msg)) "" else (msg$content %||% "")
 }
 
+#' .morie_llm_local_fallback
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @param prompt See Usage.
+#' @return A character value.
+#' @export
 .morie_llm_local_fallback <- function(prompt) {
   paste0(
     "MORIE is running in local-only mode (no LLM provider detected).\
@@ -242,6 +327,13 @@ morie_llm_agent_available <- function() {
 DEFAULT_FREEAPI_MODEL <- "mistral-nemo:custom"
 FREEAPI_BASE_URL      <- "https://ollamafreeapi.duckdns.org"  # community-hosted
 
+#' .morie_llm_freeapi_model
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_llm_freeapi_model <- function() {
   v <- trimws(Sys.getenv("moriefam", unset = ""))
   if (nzchar(v)) v else DEFAULT_FREEAPI_MODEL
@@ -372,6 +464,14 @@ morie_llm_detect_provider <- function() {
   "local"
 }
 
+#' .morie_llm_messages_to_prompt
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @param messages See Usage.
+#' @return A character value.
+#' @export
 .morie_llm_messages_to_prompt <- function(messages) {
   parts <- vapply(messages, function(m) {
     role <- m$role %||% "user"
@@ -385,6 +485,14 @@ morie_llm_detect_provider <- function() {
 ")
 }
 
+#' .morie_llm_strip_think
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @param text See Usage.
+#' @return The value of \code{trimws}.
+#' @export
 .morie_llm_strip_think <- function(text) {
   trimws(gsub("(?s)<think>.*?</think>\\s*", "", text, perl = TRUE))
 }
@@ -392,6 +500,18 @@ morie_llm_detect_provider <- function() {
 # Non-streaming FreeAPI completion via the same OpenAI-compatible endpoint
 # that ollama exposes.  R has no native ``ollamafreeapi`` SDK, so we POST
 # /v1/chat/completions to FREEAPI_BASE_URL.  Returns "" on failure.
+#' Non-streaming FreeAPI completion via the same OpenAI-compatible
+#' endpoint
+#'
+#' that ollama exposes.  R has no native ``ollamafreeapi`` SDK, so we
+#' POST /v1/chat/completions to FREEAPI_BASE_URL.  Returns "" on
+#' failure.
+#'
+#' @param messages See Usage.
+#' @param model Defaults to \code{NULL}.
+#' @param timeout Defaults to \code{180}.
+#' @return The value of \code{.morie_llm_strip_think}.
+#' @export
 .morie_llm_freeapi_completion <- function(messages, model = NULL, timeout = 180) {
   if (!requireNamespace("httr2", quietly = TRUE) ||
       !requireNamespace("jsonlite", quietly = TRUE)) return("")

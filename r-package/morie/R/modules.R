@@ -60,6 +60,13 @@ morie_list_morie_modules <- function() {
   )
 }
 
+#' Primary: built-in SQLite DB. Fallback: raw CSV in datasets/
+#'
+#' Part of the modules implementation; see the file header for the
+#' source it follows.
+#'
+#' @return The value of \code{[}.
+#' @export
 .cpads_default_csv <- function() {
   # Primary: built-in SQLite DB. Fallback: raw CSV in datasets/.
   candidates <- c(
@@ -74,6 +81,17 @@ morie_list_morie_modules <- function() {
   candidates[1L]
 }
 
+#' The Python bridge passes an absolute path (see modules.py, finding
+#' N1);
+#'
+#' a direct Rscript caller is responsible for a path valid from its own
+#' cwd. No parent-directory walk: it only ever "worked" when the output
+#' dir happened to sit inside the repo, and silently surprised everyone
+#' else.
+#'
+#' @param cpads_csv See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 .resolve_cpads_csv <- function(cpads_csv) {
   # The Python bridge passes an absolute path (see modules.py, finding N1);
   # a direct Rscript caller is responsible for a path valid from its own cwd.
@@ -155,6 +173,15 @@ morie_load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
   morie_canonicalize_cpads_data(utils::read.csv(cpads_csv, stringsAsFactors = FALSE))
 }
 
+#' .write_module_outputs
+#'
+#' Part of the modules implementation; see the file header for the
+#' source it follows.
+#'
+#' @param outputs See Usage.
+#' @param output_dir Defaults to \code{NULL}.
+#' @return The value of \code{outputs}, as built in the body.
+#' @export
 .write_module_outputs <- function(outputs, output_dir = NULL) {
   if (is.null(output_dir)) {
     return(outputs)

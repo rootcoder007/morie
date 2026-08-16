@@ -19,6 +19,14 @@
 .NODE <- as.raw(0x01)
 .GENESIS <- raw(32)
 
+#' .sechsh_as_bytes
+#'
+#' Part of the sechsh_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 .sechsh_as_bytes <- function(x) {
   if (is.raw(x)) return(x)
   if (is.character(x)) return(charToRaw(paste(x, collapse = "")))
@@ -26,11 +34,28 @@
   stop("expected raw, character or NULL")
 }
 
+#' .sechsh_hexlify
+#'
+#' Part of the sechsh_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param bs See Usage.
+#' @return A character value.
+#' @export
 .sechsh_hexlify <- function(bs) {
   paste(format(as.hexmode(as.integer(bs)), width = 2,
                upper.case = TRUE), collapse = "")
 }
 
+#' .constant_time_equal
+#'
+#' Part of the sechsh_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param a See Usage.
+#' @param b See Usage.
+#' @return A logical value.
+#' @export
 .constant_time_equal <- function(a, b) {
   if (length(a) != length(b)) return(FALSE)
   v <- as.integer(bitwXor(as.integer(a), as.integer(b)))

@@ -19,6 +19,14 @@
 .ghc_DIDFST_EPS <- 1e-12
 .ghc_DIDFST_COMPARISON <- c("never-treated", "not-yet-treated")
 
+#' .ghc_didfst_panel
+#'
+#' Part of the didfst_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param Y See Usage.
+#' @return A list with \code{M}, \code{n}, \code{T}.
+#' @export
 .ghc_didfst_panel <- function(Y) {
   M <- as.matrix(Y)
   if (nrow(M) == 0L) stop("didfst: the panel is empty")

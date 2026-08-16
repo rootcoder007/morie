@@ -18,6 +18,19 @@
 NULL
 
 
+#' .predpol_result
+#'
+#' Part of the fairness_predpol implementation; see the file header for
+#' the source it follows.
+#'
+#' @param title See Usage.
+#' @param call See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param interpretation Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .predpol_result <- function(title, call, summary_lines = list(),
                              warnings = character(0),
                              interpretation = "", ...) {
@@ -29,11 +42,27 @@ NULL
   out
 }
 
+#' .predpol_ordered_unique
+#'
+#' Part of the fairness_predpol implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{[}.
+#' @export
 .predpol_ordered_unique <- function(x) {
   x <- as.character(x)
   x[!duplicated(x)]
 }
 
+#' .predpol_mode
+#'
+#' Part of the fairness_predpol implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{[}.
+#' @export
 .predpol_mode <- function(x) {
   tab <- table(x)
   names(tab)[which.max(tab)]

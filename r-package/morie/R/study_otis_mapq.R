@@ -14,6 +14,13 @@
 
 # The b01 sample ships with data.ontario.ca column headers; the otis.R
 # analyzers speak the lower-snake schema of the canonical loader.
+#' The b01 sample ships with data.ontario.ca column headers; the otis.R
+#'
+#' analyzers speak the lower-snake schema of the canonical loader.
+#'
+#' @param df See Usage.
+#' @return The value of \code{df}, as built in the body.
+#' @export
 .otis_b01_canonical <- function(df) {
   map <- c(
     EndFiscalYear = "end_fiscal_year",
@@ -33,6 +40,13 @@
   df
 }
 
+#' .run_otis_analysis_module_internal
+#'
+#' Part of the study_otis_mapq implementation; see the file header for
+#' the source it follows.
+#'
+#' @return A list with \code{otis_descriptives}, \code{otis_alert_combos}, \code{otis_dml_results}, \code{otis_trends}.
+#' @export
 .run_otis_analysis_module_internal <- function() {
   df <- .otis_b01_canonical(morie_sample("otis_b01"))
 
@@ -88,6 +102,12 @@
 
 # MAPQII structure: 20 Likert items, 4 subscales (see the Python
 # mirror in src/morie/fn/_mapq_const.py).
+#' MAPQII structure: 20 Likert items, 4 subscales (see the Python
+#'
+#' mirror in src/morie/fn/_mapq_const.py).
+#'
+#' @return A list with \code{EE}, \code{EA}, \code{UA}, \code{ER}.
+#' @export
 .mapq_subscales <- function() {
   list(
     EE = paste0("EE", 1:5),  # Experiential Engagement
@@ -101,6 +121,16 @@
 # structure, plus gender/age demographics and a Knowledge Scale (KS)
 # driven by epistemic attitudes and a modest gender gap -- so the DML
 # stage has a real signal to recover.
+#' Deterministic synthetic MAPQII panel with a planted 4-factor
+#'
+#' structure, plus gender/age demographics and a Knowledge Scale (KS)
+#' driven by epistemic attitudes and a modest gender gap -- so the DML
+#' stage has a real signal to recover.
+#'
+#' @param n Defaults to \code{400L}.
+#' @param seed Defaults to \code{2026L}.
+#' @return The value of \code{panel}, as built in the body.
+#' @export
 .morie_mapq_synth_panel <- function(n = 400L, seed = 2026L) {
   set.seed(seed)
   subscales <- .mapq_subscales()
@@ -125,6 +155,13 @@
   panel
 }
 
+#' .run_mapq_psychometrics_module_internal
+#'
+#' Part of the study_otis_mapq implementation; see the file header for
+#' the source it follows.
+#'
+#' @return A list with \code{mapq_reliability}, \code{mapq_factor_loadings}, \code{mapq_dml_results}.
+#' @export
 .run_mapq_psychometrics_module_internal <- function() {
   panel <- .morie_mapq_synth_panel()
   subscales <- .mapq_subscales()

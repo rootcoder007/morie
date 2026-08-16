@@ -1131,6 +1131,15 @@ sgolay <- function(x, window = 11L, polyorder = 3L) {
   )
 }
 
+#' .morie_py_call
+#'
+#' Part of the signal implementation; see the file header for the source
+#' it follows.
+#'
+#' @param fn_name See Usage.
+#' @param ... Passed through.
+#' @return A character value.
+#' @export
 .morie_py_call <- function(fn_name, ...) {
   args <- list(...)
   arg_str <- paste(vapply(args, function(a) {

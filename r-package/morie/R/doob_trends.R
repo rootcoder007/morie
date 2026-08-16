@@ -81,6 +81,19 @@ CCRSO_TABLE3_AGE <- data.frame(
 
 # -- Helper: build a Rich-style named-list result --------------------
 
+#' .doob_result
+#'
+#' Part of the doob_trends implementation; see the file header for the
+#' source it follows.
+#'
+#' @param title See Usage.
+#' @param summary_lines See Usage.
+#' @param tables Defaults to \code{list()}.
+#' @param interpretation Defaults to \code{NULL}.
+#' @param payload Defaults to \code{list()}.
+#' @param warnings Defaults to \code{character()}.
+#' @return The value of \code{structure}.
+#' @export
 .doob_result <- function(title, summary_lines, tables = list(),
                           interpretation = NULL, payload = list(),
                           warnings = character()) {

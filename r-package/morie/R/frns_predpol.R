@@ -30,6 +30,14 @@
 NULL
 
 
+#' Name of the element with the largest absolute value
+#'
+#' Part of the frns_predpol implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{[}.
+#' @export
 .frns_worst_abs_named <- function(x) {
   # name of the element with the largest absolute value.
   x <- x[is.finite(x)]

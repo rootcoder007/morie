@@ -62,6 +62,14 @@ tukey_hanning_kernel <- function(x) {
   "tukey-hanning" = c(2, pi ^ 2 / 4, 0.75, 1)
 )
 
+#' .morie_check_kernel
+#'
+#' Part of the andmnh_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param kernel See Usage.
+#' @return A list with \code{fn}, \code{const}.
+#' @export
 .morie_check_kernel <- function(kernel) {
   if (!(kernel %in% names(.MORIE_KERNELS)))
     stop("andmnh: kernel must be one of ",
@@ -85,6 +93,14 @@ moment_vectors <- function(e, X) {
   out
 }
 
+#' .morie_svd
+#'
+#' Part of the andmnh_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param a See Usage.
+#' @return A list with \code{u}, \code{s}, \code{vt}.
+#' @export
 .morie_svd <- function(a) {
   a <- as.matrix(a)
   m <- nrow(a); n <- ncol(a); k <- min(m, n)

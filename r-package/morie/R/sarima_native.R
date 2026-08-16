@@ -84,6 +84,15 @@ difference <- function(y, d = 0, D = 0, s = 1) {
   w
 }
 
+#' .sarima_poly_mult
+#'
+#' Part of the sarima_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param a See Usage.
+#' @param b See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .sarima_poly_mult <- function(a, b) {
   out <- rep(0, length(a) + length(b) - 1L)
   for (i in seq_along(a)) for (j in seq_along(b)) {
@@ -92,6 +101,15 @@ difference <- function(y, d = 0, D = 0, s = 1) {
   out
 }
 
+#' .sarima_seasonal_lift
+#'
+#' Part of the sarima_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param c See Usage.
+#' @param s See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .sarima_seasonal_lift <- function(c, s) {
   out <- rep(0, (length(c) - 1L) * as.integer(s) + 1L)
   for (i in seq_along(c)) out[(i - 1L) * as.integer(s) + 1L] <- c[i]
@@ -180,6 +198,14 @@ airline_autocovariances <- function(theta, Theta, sigma2 = 1.0) {
        nonzero_lags = c(1, 11, 12, 13))
 }
 
+#' .sarima_invert_rho
+#'
+#' Part of the sarima_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param rho See Usage.
+#' @return A numeric value.
+#' @export
 .sarima_invert_rho <- function(rho) {
   r <- as.numeric(rho)
   if (abs(r) > 0.5)
@@ -256,6 +282,15 @@ css <- function(w, ar = list(), ma = list(), full = FALSE) {
   else ssq
 }
 
+#' .sarima_state_space
+#'
+#' Part of the sarima_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ar See Usage.
+#' @param ma See Usage.
+#' @return A list with \code{T}, \code{R}, \code{r}.
+#' @export
 .sarima_state_space <- function(ar, ma) {
   p <- length(ar); q <- length(ma)
   r <- max(p, q + 1L)
@@ -268,6 +303,16 @@ css <- function(w, ar = list(), ma = list(), full = FALSE) {
   list(T = T, R = R[1:r], r = r)
 }
 
+#' .sarima_initial_covariance
+#'
+#' Part of the sarima_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param T See Usage.
+#' @param R See Usage.
+#' @param r See Usage.
+#' @return A matrix, from \code{matrix}.
+#' @export
 .sarima_initial_covariance <- function(T, R, r) {
   n <- r * r
   A <- matrix(0, n, n)
@@ -327,6 +372,15 @@ loglik <- function(w, ar = list(), ma = list()) {
        exact_ssq = ssq, sum_log_f = sumlogf)
 }
 
+#' .sarima_roots_ok
+#'
+#' Part of the sarima_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param coefs See Usage.
+#' @param tol Defaults to \code{1.001}.
+#' @return A logical value.
+#' @export
 .sarima_roots_ok <- function(coefs, tol = 1.001) {
   if (length(coefs) == 0L) return(TRUE)
   poly <- c(1, -as.numeric(coefs))
@@ -345,6 +399,16 @@ loglik <- function(w, ar = list(), ma = list()) {
   TRUE
 }
 
+#' Small Nelder-Mead simplex minimiser in base R, with the same
+#'
+#' restart-until-stuck shape as the Python arm\'s call to
+#' _sci_core.minimize(method="Nelder-Mead").
+#'
+#' @param fn See Usage.
+#' @param x0 See Usage.
+#' @param maxit Defaults to \code{200L}.
+#' @return A list with \code{x}, \code{fun}, \code{success}.
+#' @export
 .sarima_minimize_nm <- function(fn, x0, maxit = 200L) {
   # Small Nelder-Mead simplex minimiser in base R, with the same
   # restart-until-stuck shape as the Python arm's call to
@@ -406,6 +470,19 @@ loglik <- function(w, ar = list(), ma = list()) {
   list(x = simplex[best, ], fun = fv[best], success = TRUE)
 }
 
+#' .sarima_fit
+#'
+#' Part of the sarima_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param y See Usage.
+#' @param order Defaults to \code{c(0, 1, 1)}.
+#' @param seasonal_order Defaults to \code{c(0, 1, 1)}.
+#' @param s Defaults to \code{12}.
+#' @param method Defaults to \code{"ml"}.
+#' @param start Defaults to \code{NULL}.
+#' @return The value of \code{.sarima_package}.
+#' @export
 .sarima_fit <- function(y, order = c(0, 1, 1), seasonal_order = c(0, 1, 1),
                 s = 12, method = "ml", start = NULL) {
   if (!(method %in% .SARIMA_METHODS))
@@ -503,6 +580,26 @@ loglik <- function(w, ar = list(), ma = list()) {
                   s, c(p, d, q), c(P, D, Q), ll, cs, method, res)
 }
 
+#' .sarima_package
+#'
+#' Part of the sarima_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param y See Usage.
+#' @param w See Usage.
+#' @param phi See Usage.
+#' @param theta See Usage.
+#' @param Phi See Usage.
+#' @param Theta See Usage.
+#' @param s See Usage.
+#' @param order See Usage.
+#' @param seasonal_order See Usage.
+#' @param ll See Usage.
+#' @param cs See Usage.
+#' @param method See Usage.
+#' @param res See Usage.
+#' @return A list with \code{estimate}, \code{sigma2}, \code{phi}, \code{theta}, \code{Phi}, \code{Theta}, \code{ar}, \code{ma}, \code{loglik}, \code{aic}, \code{n_used}, \code{n_par}, \code{residuals}, \code{ssq}, \code{order}, \code{seasonal_order}, \code{s}, \code{y}, \code{w}, \code{fit_method}, \code{converged}, \code{method}.
+#' @export
 .sarima_package <- function(y, w, phi, theta, Phi, Theta, s, order,
                             seasonal_order, ll, cs, method, res) {
   npar <- length(phi) + length(theta) + length(Phi) + length(Theta)
@@ -527,6 +624,15 @@ loglik <- function(w, ar = list(), ma = list()) {
                        "; Box et al. (2016) Ch. 9"))
 }
 
+#' .sarima_diff_poly
+#'
+#' Part of the sarima_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param k See Usage.
+#' @param s See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .sarima_diff_poly <- function(k, s) {
   out <- c(1.0)
   for (step in seq_len(as.integer(k))) {
@@ -537,6 +643,16 @@ loglik <- function(w, ar = list(), ma = list()) {
   out
 }
 
+#' .sarima_psi_weights
+#'
+#' Part of the sarima_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ar See Usage.
+#' @param ma See Usage.
+#' @param h See Usage.
+#' @return The value of \code{psi}, as built in the body.
+#' @export
 .sarima_psi_weights <- function(ar, ma, h) {
   psi <- c(1.0)
   for (j in 2:h) {
@@ -685,6 +801,13 @@ morie_sarima <- function(y, order = c(0, 1, 1),
 
 seasonal_arima <- .sarima_fit
 
+#' .sarima_cheatsheet
+#'
+#' Part of the sarima_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .sarima_cheatsheet <- function() {
   paste("sarima: phi(B)Phi(B^s) nabla^d nabla_s^D z =",
         "theta(B)Theta(B^s) a. The airline (0,1,1)x(0,1,1)_12 is",

@@ -2,8 +2,25 @@
 # "Membership Inference Attacks Against Machine Learning Models", IEEE
 # Symposium on Security and Privacy, 3-18.
 
+#' .ghc_unif_int
+#'
+#' Part of the memb_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param e See Usage.
+#' @param n See Usage.
+#' @return The value of \code{floor}.
+#' @export
 .ghc_unif_int <- function(e, n) floor(.ghc_unif(e, n) * n)
 
+#' .memb_rng
+#'
+#' Part of the memb_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param seed See Usage.
+#' @return The value of \code{.ghc_rng}.
+#' @export
 .memb_rng <- function(seed) .ghc_rng(seed)
 
 #' logistic_trainer
@@ -291,6 +308,15 @@ precision_recall <- function(pred, truth) {
        tp = tp, fp = fp, fn = fn, tn = tn)
 }
 
+#' .sorted_features
+#'
+#' Part of the memb_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param vec See Usage.
+#' @param top Defaults to \code{NULL}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .sorted_features <- function(vec, top = NULL) {
   s <- sort(vec, decreasing = TRUE)
   if (is.null(top)) s else s[seq_len(min(top, length(s)))]
@@ -372,6 +398,13 @@ memb <- function(target_predict, shadow_data, eval_in, eval_out,
        method = "shadow-trained membership inference (Shokri et al. 2017)")
 }
 
+#' .memb_cheatsheet
+#'
+#' Part of the memb_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .memb_cheatsheet <- function() {
   "memb: membership inference (Shokri et al. 2017). Black-box output vector in, member/non-member out. Train k SHADOW models on data distributed like the target's, where you DO know membership; their outputs on their own training data are labelled 'in' and on a disjoint test set 'out'; that labelled set trains the attack model -- one per output class, since the tell is class-conditional. Shadow data from Algorithm 1 synthesis against the target, from feature marginals, or from noisy real data. Metrics are precision and recall over members. The attack lives on the train/test gap: no overfitting, no attack."
 }

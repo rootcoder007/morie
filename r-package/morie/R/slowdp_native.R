@@ -17,6 +17,15 @@
 
 .slowdp_EPS <- 1e-12
 
+#' .beta_1_alpha
+#'
+#' Part of the slowdp_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param e See Usage.
+#' @param alpha See Usage.
+#' @return A numeric value.
+#' @export
 .beta_1_alpha <- function(e, alpha) {
   u <- .ghc_unif(e, 1L)
   u <- min(max(u, 1e-15), 1 - 1e-15)

@@ -19,6 +19,19 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+#' .fairness_result
+#'
+#' Part of the fairness_gan implementation; see the file header for the
+#' source it follows.
+#'
+#' @param title See Usage.
+#' @param call See Usage.
+#' @param summary_lines Defaults to \code{list()}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param interpretation Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .fairness_result <- function(title, call, summary_lines = list(),
                               warnings = character(0),
                               interpretation = "", ...) {
@@ -30,6 +43,13 @@ NULL
   out
 }
 
+#' Prefer native R torch; fall back to reticulate + JAX
+#'
+#' Part of the fairness_gan implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A list with \code{kind}, \code{note}.
+#' @export
 .fairness_backend <- function() {
   # Prefer native R torch; fall back to reticulate + JAX.
   if (requireNamespace("torch", quietly = TRUE)) {
@@ -53,6 +73,16 @@ NULL
                      "callable."))
 }
 
+#' .fairness_no_backend_result
+#'
+#' Part of the fairness_gan implementation; see the file header for the
+#' source it follows.
+#'
+#' @param title See Usage.
+#' @param call See Usage.
+#' @param note See Usage.
+#' @return The value of \code{.fairness_result}.
+#' @export
 .fairness_no_backend_result <- function(title, call, note) {
   .fairness_result(
     title, call,
@@ -69,6 +99,14 @@ NULL
   )
 }
 
+#' .fairness_he_init
+#'
+#' Part of the fairness_gan implementation; see the file header for the
+#' source it follows.
+#'
+#' @param sizes See Usage.
+#' @return The value of \code{params}, as built in the body.
+#' @export
 .fairness_he_init <- function(sizes) {
   params <- vector("list", length(sizes) - 1L)
   for (i in seq_len(length(sizes) - 1L)) {
@@ -80,6 +118,15 @@ NULL
   params
 }
 
+#' .fairness_mlp_forward
+#'
+#' Part of the fairness_gan implementation; see the file header for the
+#' source it follows.
+#'
+#' @param params See Usage.
+#' @param x See Usage.
+#' @return The value of \code{x}, as built in the body.
+#' @export
 .fairness_mlp_forward <- function(params, x) {
   for (i in seq_along(params)) {
     x <- sweep(x %*% params[[i]]$W, 2L, params[[i]]$b, "+")

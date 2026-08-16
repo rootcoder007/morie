@@ -1,0 +1,32 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{.measure}
+\alias{.measure}
+\title{.measure}
+\usage{
+.measure(protected, measure, step, normalize, caveat = NULL)
+}
+\arguments{
+\item{protected}{See Usage.}
+\item{measure}{See Usage.}
+\item{step}{See Usage.}
+\item{normalize}{See Usage.}
+\item{caveat}{Defaults to \code{NULL}.}
+}
+\description{
+Part of the fairRC_native implementation; see the file header for the source it follows.
+}
+\value{
+The value of \code{pay}, as built in the body.
+}
+\references{
+Yang, K. & Stoyanovich, J. (2017) "Measuring Fairness in Ranked
+Outputs", Proceedings of the 29th International Conference on
+Scientific and Statistical Database Management (SSDBM \\'17),
+arXiv:1610.08559. Sec. 3.
+Jarvelin, K. & Kekalainen, J. (2002) "Cumulated gain-based evaluation
+of IR techniques", ACM Transactions on Information Systems 20(4),
+422-446. The logarithmic discount.
+}
+\keyword{internal}

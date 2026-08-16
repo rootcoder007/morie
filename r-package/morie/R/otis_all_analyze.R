@@ -29,6 +29,14 @@ NULL
 # Internal helpers (mirror _summary_lines, _crosstab, _year_trend, _to_int)
 # ---------------------------------------------------------------------------
 
+#' .otis_year_col
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param df See Usage.
+#' @return Nothing; the function is called for its effect.
+#' @export
 .otis_year_col <- function(df) {
   for (c in c("EndFiscalYear", "Year")) {
     if (c %in% names(df)) return(c)
@@ -36,17 +44,45 @@ NULL
   NULL
 }
 
+#' .otis_to_int
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .otis_to_int <- function(x) {
   v <- suppressWarnings(as.integer(x))
   if (length(v) == 0L || is.na(v)) 0L else v
 }
 
+#' .otis_is_truthy
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{as.integer}.
+#' @export
 .otis_is_truthy <- function(x) {
   if (is.logical(x)) return(as.integer(x))
   if (is.numeric(x)) return(as.integer(x == 1))
   as.integer(tolower(trimws(as.character(x))) %in% c("yes", "true", "1"))
 }
 
+#' .otis_summary_lines
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param df See Usage.
+#' @param ds_id See Usage.
+#' @param description Defaults to \code{NULL}.
+#' @param series Defaults to \code{NULL}.
+#' @param primary_metric Defaults to \code{NULL}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_summary_lines <- function(df, ds_id, description = NULL,
                                   series = NULL, primary_metric = NULL) {
   yc <- .otis_year_col(df)
@@ -73,6 +109,19 @@ NULL
   out
 }
 
+#' .otis_crosstab
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param df See Usage.
+#' @param row See Usage.
+#' @param col See Usage.
+#' @param value See Usage.
+#' @param aggfunc Defaults to \code{c("sum", "max")}.
+#' @param top_rows Defaults to \code{20L}.
+#' @return A list with \code{title}, \code{headers}, \code{rows}.
+#' @export
 .otis_crosstab <- function(df, row, col, value,
                             aggfunc = c("sum", "max"),
                             top_rows = 20L) {
@@ -101,6 +150,16 @@ NULL
   )
 }
 
+#' .otis_year_trend
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param df See Usage.
+#' @param value See Usage.
+#' @param year_col Defaults to \code{NULL}.
+#' @return A list with \code{title}, \code{headers}, \code{rows}.
+#' @export
 .otis_year_trend <- function(df, value, year_col = NULL) {
   yc <- year_col %||% .otis_year_col(df)
   if (is.null(yc) || !(value %in% names(df))) return(NULL)
@@ -121,6 +180,19 @@ NULL
 `%||%` <- function(a, b) if (is.null(a)) b else a
 
 
+#' .otis_wrap
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param title See Usage.
+#' @param summary_lines See Usage.
+#' @param tables Defaults to \code{list()}.
+#' @param interpretation Defaults to \code{NULL}.
+#' @param warnings Defaults to \code{character(0)}.
+#' @param payload Defaults to \code{NULL}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_wrap <- function(title, summary_lines, tables = list(),
                         interpretation = NULL, warnings = character(0),
                         payload = NULL) {
@@ -140,22 +212,62 @@ NULL
 
 
 # Indicator helpers (parallel to Python _female_indicator etc.)
+#' Indicator helpers (parallel to Python _female_indicator etc.)
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{as.integer}.
+#' @export
 .otis_female_indicator <- function(x) {
   as.integer(tolower(as.character(x)) == "female")
 }
 
+#' .otis_toronto_indicator
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{as.integer}.
+#' @export
 .otis_toronto_indicator <- function(x) {
   as.integer(tolower(as.character(x)) == "toronto")
 }
 
+#' .otis_age_50plus_indicator
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{as.integer}.
+#' @export
 .otis_age_50plus_indicator <- function(x) {
   as.integer(grepl("50", as.character(x)))
 }
 
+#' .otis_indigenous_indicator
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{as.integer}.
+#' @export
 .otis_indigenous_indicator <- function(x) {
   as.integer(tolower(as.character(x)) == "indigenous")
 }
 
+#' .otis_minority_religion_indicator
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{as.integer}.
+#' @export
 .otis_minority_religion_indicator <- function(x) {
   excluded <- c("christian", "no religion", "unknown or not reported")
   as.integer(!(tolower(trimws(as.character(x))) %in% excluded))
@@ -509,6 +621,18 @@ morie_otis_analyze_c03 <- function(data) {
   )
 }
 
+#' .otis_c_simple
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param ds_id See Usage.
+#' @param description See Usage.
+#' @param row_col See Usage.
+#' @param col_col Defaults to \code{"Region_MostRecentPlacement"}.
+#' @param value_col Defaults to \code{"NumberIndividuals_RestrictiveConfinement"}.
+#' @return The value of \code{function}.
+#' @export
 .otis_c_simple <- function(ds_id, description, row_col,
                             col_col = "Region_MostRecentPlacement",
                             value_col = "NumberIndividuals_RestrictiveConfinement") {
@@ -669,6 +793,16 @@ morie_otis_analyze_d01 <- function(data) {
   )
 }
 
+#' .otis_d_simple
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param ds_id See Usage.
+#' @param description See Usage.
+#' @param by See Usage.
+#' @return The value of \code{function}.
+#' @export
 .otis_d_simple <- function(ds_id, description, by) {
   function(data) {
     s <- .otis_summary_lines(data, ds_id, description = description)
@@ -846,12 +980,28 @@ print.morie_otis_analysis_result <- function(x, ...) {
 # falls back to stop("not yet ported -- requires morie causal helpers").
 # This mirrors the agent-prompt directive: never ship wrong math.
 
+#' .otis_causal_available
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @return A logical value.
+#' @export
 .otis_causal_available <- function() {
   exists("morie_otis_irm_dml", mode = "function") &&
     exists("morie_otis_make_pair_alert_to_volatility_ruhela",
            mode = "function")
 }
 
+#' .otis_not_yet_ported
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param fn_name See Usage.
+#' @param reason Defaults to \code{""}.
+#' @return The value of \code{.otis_wrap}.
+#' @export
 .otis_not_yet_ported <- function(fn_name, reason = "") {
   msg <- sprintf("%s: not yet ported to R (%s)", fn_name,
                  if (nzchar(reason)) reason else
@@ -1085,6 +1235,23 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
 # GEE clustering runs the native Liang-Zeger estimator (Poisson +
 # exchangeable working correlation, sandwich covariance).
 
+#' .otis_aggregate_glm
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param work See Usage.
+#' @param treatment See Usage.
+#' @param outcome See Usage.
+#' @param covariates Defaults to \code{character(0)}.
+#' @param year_col Defaults to \code{"EndFiscalYear"}.
+#' @param cluster_group Defaults to \code{NULL}.
+#' @param ds_id See Usage.
+#' @param source_label See Usage.
+#' @param title See Usage.
+#' @param interpretation See Usage.
+#' @return The value of \code{.otis_wrap}.
+#' @export
 .otis_aggregate_glm <- function(work, treatment, outcome,
                                   covariates = character(0),
                                   year_col = "EndFiscalYear",
@@ -2339,6 +2506,14 @@ morie_otis_analyze_b01_ruhela_subgroup_male <- function(data = NULL,
   "Greater than 30 days"
 )
 
+#' .otis_classify_bin
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_classify_bin <- function(x) {
   s <- as.character(x)
   out <- rep("Unknown", length(s))
@@ -2641,6 +2816,14 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
 #
 # Faithfully ported via stats::chisq.test (+ Cramer's V).
 
+#' .otis_chi2_cramer
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param tbl See Usage.
+#' @return A list with \code{chi2}, \code{dof}, \code{pvalue}, \code{cramer_v}, \code{n}, \code{min_cell}, \code{min_expected}.
+#' @export
 .otis_chi2_cramer <- function(tbl) {
   if (length(tbl) == 0L || sum(tbl) == 0L)
     return(list(chi2 = NA_real_, dof = 0L, pvalue = NA_real_,
@@ -2669,6 +2852,17 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
        min_expected = min_exp)
 }
 
+#' .otis_contingency_chi2
+#'
+#' Part of the otis_all_analyze implementation; see the file header for
+#' the source it follows.
+#'
+#' @param df See Usage.
+#' @param row See Usage.
+#' @param col See Usage.
+#' @param value See Usage.
+#' @return A list with \code{table}, \code{stats}.
+#' @export
 .otis_contingency_chi2 <- function(df, row, col, value) {
   if (!all(c(row, col, value) %in% names(df)))
     return(list(table = NULL,

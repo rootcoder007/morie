@@ -1,5 +1,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+#' .seq_hamming
+#'
+#' Part of the cluseq implementation; see the file header for the source
+#' it follows.
+#'
+#' @param a See Usage.
+#' @param b See Usage.
+#' @return A numeric value.
+#' @export
 .seq_hamming <- function(a, b) {
   if (length(a) != length(b))
     stop("sequences must be the same length to compare")

@@ -44,6 +44,16 @@ annealing_ladder <- function(n_steps, phi_max = 50.0, phi_min = 0.1,
 # x' = x + Normal(0, scale^2) and accept with the standard
 # Metropolis-Hastings ratio.  No library calls; uses .ghc_norm
 # so the run is reproducible from the seed.
+#' Bare random-walk kernel with a caller-chosen scale.  Mirrors
+#'
+#' the Python arm\'s random_walk_kernel(scale=1.0): propose x\' = x +
+#' Normal(0, scale^2) and accept with the standard Metropolis-Hastings
+#' ratio.  No library calls; uses .ghc_norm so the run is reproducible
+#' from the seed.
+#'
+#' @param scale See Usage.
+#' @return The value of \code{function}.
+#' @export
 .smcopt_rwk <- function(scale) {
   function(x, log_target, rng) {
     n <- length(x)
@@ -128,6 +138,13 @@ smcopt <- function(objective, initial, n_particles = 200L, n_steps = 30L,
                       "& Jasra 2006, section 2.3.1c)", sep = ""))
 }
 
+#' .smcopt_cheatsheet
+#'
+#' Part of the smcopt_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .smcopt_cheatsheet <- function() {
   paste("smcopt: SMC as a global optimiser (Del Moral, Doucet & Jasra ",
         "2006, sec 2.3.1c). Anneal pi_n = pi^phi_n with phi rising, so ",

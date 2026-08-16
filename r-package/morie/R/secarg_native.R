@@ -21,6 +21,14 @@
 .VERSION <- 0x13
 
 # little-endian 32-bit pack of an integer (returns raw bytes)
+#' Little-endian 32-bit pack of an integer (returns raw bytes)
+#'
+#' Part of the secarg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n See Usage.
+#' @return The value of \code{as.raw}.
+#' @export
 .le32 <- function(n) {
   # bitwAnd(n, 0xffffffff) is NA in R: 4294967295 is past .Machine
   # integer.max, so the whole prefix came back as zero bytes and every
@@ -36,6 +44,14 @@
            (v %/% 16777216) %% 256))
 }
 
+#' .le64
+#'
+#' Part of the secarg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n See Usage.
+#' @return The value of \code{as.raw}.
+#' @export
 .le64 <- function(n) {
   n <- as.numeric(n)
   v <- n %% .MASK64
@@ -108,6 +124,18 @@ morie_secarg_prehash <- function(password, salt, parallelism, tag_length, memory
 }
 
 # G function's 8-word permutation on a 16-word vector.
+#' G function\'s 8-word permutation on a 16-word vector
+#'
+#' Part of the secarg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param v See Usage.
+#' @param a See Usage.
+#' @param b See Usage.
+#' @param c See Usage.
+#' @param d See Usage.
+#' @return The value of \code{v}, as built in the body.
+#' @export
 .gb <- function(v, a, b, c, d) {
   va <- v[a]; vb <- v[b]; vc <- v[c]; vd <- v[d]
   # mult (low-32) * 2 * (high-32) emulated by bitwAnd + bitwShiftR pieces
@@ -167,6 +195,14 @@ morie_secarg_prehash <- function(password, salt, parallelism, tag_length, memory
   v
 }
 
+#' .P_step
+#'
+#' Part of the secarg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param v See Usage.
+#' @return The value of \code{v}, as built in the body.
+#' @export
 .P_step <- function(v) {
   v <- .gb(v, 1L, 5L, 9L, 13L)
   v <- .gb(v, 2L, 6L, 10L, 14L)
@@ -207,6 +243,14 @@ morie_secarg_compress <- function(X, Y) {
   mapply(bitwXor, Q, R, SIMPLIFY = FALSE)
 }
 
+#' .to_words
+#'
+#' Part of the secarg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param bs See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .to_words <- function(bs) {
   n <- length(bs) %/% 8L
   out <- integer(n)
@@ -221,10 +265,32 @@ morie_secarg_compress <- function(X, Y) {
   out
 }
 
+#' .to_bytes
+#'
+#' Part of the secarg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ws See Usage.
+#' @return The value of \code{do.call}.
+#' @export
 .to_bytes <- function(ws) {
   do.call(c, lapply(ws, .le64))
 }
 
+#' .addresses
+#'
+#' Part of the secarg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param pass_no See Usage.
+#' @param lane See Usage.
+#' @param slice_no See Usage.
+#' @param m_prime See Usage.
+#' @param passes See Usage.
+#' @param y See Usage.
+#' @param counter See Usage.
+#' @return The value of \code{morie_secarg_compress}.
+#' @export
 .addresses <- function(pass_no, lane, slice_no, m_prime, passes, y,
                        counter) {
   zero <- as.list(rep(0L, 128L))
@@ -267,6 +333,14 @@ morie_secarg_argon2 <- function(password, salt, memory = 32, passes = 3,
                      "returned with it"))
 }
 
+#' .secarg_hexlify
+#'
+#' Part of the secarg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param bs See Usage.
+#' @return A character value.
+#' @export
 .secarg_hexlify <- function(bs) {
   paste(format(as.hexmode(as.integer(bs)), width = 2,
                upper.case = TRUE), collapse = "")

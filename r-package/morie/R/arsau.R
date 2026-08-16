@@ -65,6 +65,14 @@ NULL
 # Internal: path resolver
 # ---------------------------------------------------------------------------
 
+#' .morie_env
+#'
+#' Part of the arsau implementation; see the file header for the source
+#' it follows.
+#'
+#' @param name See Usage.
+#' @return The value of \code{trimws}.
+#' @export
 .morie_env <- function(name) {
   v <- Sys.getenv(name, unset = NA_character_)
   if (is.na(v) || !nzchar(trimws(v))) {
@@ -154,6 +162,22 @@ NULL
 # Registry
 # ---------------------------------------------------------------------------
 
+#' .arsau_make_entry
+#'
+#' Part of the arsau implementation; see the file header for the source
+#' it follows.
+#'
+#' @param year_or_range See Usage.
+#' @param kind See Usage.
+#' @param csv_filename See Usage.
+#' @param sidecar_filename See Usage.
+#' @param expected_rows See Usage.
+#' @param expected_cols See Usage.
+#' @param is_valid See Usage.
+#' @param description_en See Usage.
+#' @param description_fr See Usage.
+#' @return A list with \code{year_or_range}, \code{kind}, \code{csv_filename}, \code{sidecar_filename}, \code{expected_rows}, \code{expected_cols}, \code{is_valid}, \code{description_en}, \code{description_fr}.
+#' @export
 .arsau_make_entry <- function(year_or_range, kind, csv_filename, sidecar_filename,
                                 expected_rows, expected_cols, is_valid,
                                 description_en, description_fr) {
@@ -322,6 +346,15 @@ morie_arsau_read_sidecar <- function(path) {
 # Internal: shared loader
 # ---------------------------------------------------------------------------
 
+#' .arsau_lookup
+#'
+#' Part of the arsau implementation; see the file header for the source
+#' it follows.
+#'
+#' @param year_or_range See Usage.
+#' @param kind See Usage.
+#' @return The value of \code{[[}.
+#' @export
 .arsau_lookup <- function(year_or_range, kind) {
   key <- paste(as.character(year_or_range), kind, sep = "|")
   if (!(key %in% names(.ARSAU_REGISTRY_LIST))) {
@@ -330,6 +363,15 @@ morie_arsau_read_sidecar <- function(path) {
   .ARSAU_REGISTRY_LIST[[key]]
 }
 
+#' .arsau_coerce_year_key
+#'
+#' Part of the arsau implementation; see the file header for the source
+#' it follows.
+#'
+#' @param year See Usage.
+#' @param range_ok Defaults to \code{FALSE}.
+#' @return Nothing; this branch always raises.
+#' @export
 .arsau_coerce_year_key <- function(year, range_ok = FALSE) {
   s <- trimws(as.character(year))
   yrs <- ARSAU_YEARS()
@@ -346,6 +388,17 @@ morie_arsau_read_sidecar <- function(path) {
 }
 
 
+#' .arsau_load_one
+#'
+#' Part of the arsau implementation; see the file header for the source
+#' it follows.
+#'
+#' @param entry See Usage.
+#' @param data_dir Defaults to \code{NULL}.
+#' @param language Defaults to \code{"en"}.
+#' @param allow_invalid Defaults to \code{FALSE}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .arsau_load_one <- function(entry, data_dir = NULL, language = "en", allow_invalid = FALSE) {
   if (!entry$is_valid && !allow_invalid) {
     stop(sprintf(

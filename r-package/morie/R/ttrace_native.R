@@ -53,6 +53,16 @@ negbinom_offspring <- function(R0, dispersion, rng) {
   .tt_poisson_draw(lam, rng)
 }
 
+#' .tt_gamma_draw
+#'
+#' Part of the ttrace_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param shape See Usage.
+#' @param scale See Usage.
+#' @param rng See Usage.
+#' @return The value of \code{repeat}.
+#' @export
 .tt_gamma_draw <- function(shape, scale, rng) {
   a <- as.numeric(shape)
   if (a < 1) {
@@ -72,6 +82,15 @@ negbinom_offspring <- function(R0, dispersion, rng) {
   }
 }
 
+#' .tt_poisson_draw
+#'
+#' Part of the ttrace_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param lam See Usage.
+#' @param rng See Usage.
+#' @return The value of \code{repeat}.
+#' @export
 .tt_poisson_draw <- function(lam, rng) {
   lm <- as.numeric(lam)
   if (lm <= 0)
@@ -115,6 +134,14 @@ serial_interval_draw <- function(mean, sd, rng, allow_presymptomatic = TRUE) {
   v
 }
 
+#' A "case" is a 3-tuple (infection_time, isolation_time, subclinical)
+#'
+#' Part of the ttrace_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ... Passed through.
+#' @return The value of \code{list}.
+#' @export
 .tt_active <- function(...) {
   # a "case" is a 3-tuple (infection_time, isolation_time, subclinical)
   list(...)
@@ -300,6 +327,13 @@ effective_reproduction_number <- function(R0, si_mean, si_sd, delay_mean,
                     "measured from that point"))
 }
 
+#' .ttrace_cheatsheet
+#'
+#' Part of the ttrace_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .ttrace_cheatsheet <- function() {
   paste0("ttrace: branching process. Offspring ~ NegBinom(mean R0, ",
          "dispersion k), variance R0(1 + R0/k) -- overdispersion ",

@@ -21,6 +21,14 @@
 .SBERT_EPS <- 1e-12
 .SBERT_POOLING <- c("mean", "cls", "max")
 
+#' .sbert_mat
+#'
+#' Part of the sbert_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 .sbert_mat <- function(x) {
   if (is.matrix(x)) return(x)
   if (is.numeric(x)) return(as.matrix(x))
@@ -34,6 +42,14 @@
   stop("sbert: expected a matrix-like input")
 }
 
+#' .sbert_vec
+#'
+#' Part of the sbert_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .sbert_vec <- function(x) {
   if (is.matrix(x)) {
     if (nrow(x) == 1L) return(as.numeric(x[1, ]))
@@ -210,6 +226,13 @@ morie_sbert <- function(pairs, embed) {
 sbert <- sts_score
 sentencebert <- sts_score
 
+#' .sbert_cheatsheet
+#'
+#' Part of the sbert_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .sbert_cheatsheet <- function() {
   paste("sbert: BERT scores a PAIR, so comparing n sentences needs",
         "C(n,2) forward passes -- 10k sentences is ~50M. A SIAMESE",

@@ -85,6 +85,14 @@ morie_burkov_cosine_similarity <- function(x, y) {
        method = "Cosine similarity (Burkov Eq 1.5)")
 }
 
+#' .morie_burkov_phi
+#'
+#' Part of the burkov_lm_native implementation; see the file header for
+#' the source it follows.
+#'
+#' @param name See Usage.
+#' @return The value of \code{switch}.
+#' @export
 .morie_burkov_phi <- function(name) {
   if (is.function(name)) return(name)
   switch(name,

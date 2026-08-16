@@ -276,6 +276,13 @@ pate <- function(teacher_predicts, queries, gamma = 0.05, delta = 1e-5,
                       "al. 2017)", sep = ""))
 }
 
+#' .pate_cheatsheet
+#'
+#' Part of the pate_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 .pate_cheatsheet <- function() {
   paste("pate: private aggregation of teacher ensembles (Papernot et ",
         "al. 2017). Teachers trained on disjoint partitions vote; the ",

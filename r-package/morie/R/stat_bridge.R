@@ -76,6 +76,13 @@ stat_bridge_help <- function() {
 
 
 # Bridge log class used to capture handler output.
+#' Bridge log class used to capture handler output
+#'
+#' Part of the stat_bridge implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A list with \code{write}, \code{call}, \code{getvalue}.
+#' @export
 .bridge_log <- function() {
   parts <- character(0)
   list(

@@ -1,0 +1,20 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{.otis_not_yet_ported}
+\alias{.otis_not_yet_ported}
+\title{.otis_not_yet_ported}
+\usage{
+.otis_not_yet_ported(fn_name, reason = "")
+}
+\arguments{
+\item{fn_name}{See Usage.}
+\item{reason}{Defaults to \code{""}.}
+}
+\description{
+Part of the otis_all_analyze implementation; see the file header for the source it follows.
+}
+\value{
+The value of \code{.otis_wrap}.
+}
+\keyword{internal}

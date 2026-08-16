@@ -27,6 +27,15 @@
 # open + own + close). The default path is the per-user cache.
 #
 # Returns: list(con = DBIConnection, close = logical).
+#' Returns: list(con = DBIConnection, close = logical)
+#'
+#' Part of the database implementation; see the file header for the
+#' source it follows.
+#'
+#' @param con Defaults to \code{NULL}.
+#' @param db_path Defaults to \code{NULL}.
+#' @return A list with \code{con}, \code{close}.
+#' @export
 .morie_db_handle <- function(con = NULL, db_path = NULL) {
   if (!is.null(con)) {
     if (!inherits(con, "DBIConnection")) {
@@ -548,6 +557,14 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
 # Unified load interface
 # ---------------------------------------------------------------------------
 
+#' .fuzzy_match_key
+#'
+#' Part of the database implementation; see the file header for the
+#' source it follows.
+#'
+#' @param key See Usage.
+#' @return Nothing; the function is called for its effect.
+#' @export
 .fuzzy_match_key <- function(key) {
   catalog <- morie_dataset_catalog()
   key_lower <- tolower(gsub("-", "_", key))
