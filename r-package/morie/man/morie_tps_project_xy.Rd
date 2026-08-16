@@ -37,3 +37,7 @@ Clockwise convention: positive \code{rot_deg_cw} rotates the map
 so a line that previously sloped up-right slopes less (or
 down-right).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_tps_project_xy(V, V)
+}

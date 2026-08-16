@@ -19,3 +19,6 @@ Proof-of-Work Applications", RFC 9106, doi:10.17487/RFC9106; the
 the BLAKE2 hash in Saarinen & Aumasson (2015) RFC 7693.
 }
 \keyword{internal}
+\examples{
+morie_secarg_parameter_advice()
+}

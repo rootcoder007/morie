@@ -24,3 +24,7 @@ A list with \code{index}, \code{fractionality}, \code{integral}.
 Base R only.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+miprgr_fractional_variable(V, V)
+}

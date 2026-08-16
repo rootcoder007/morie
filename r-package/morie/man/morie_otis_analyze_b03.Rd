@@ -17,3 +17,7 @@ crosstabs of segregation-placement counts.
 \description{
 Segregation placements by alert x institution (b03)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_analyze_b03(V)
+}

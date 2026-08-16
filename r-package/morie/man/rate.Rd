@@ -14,3 +14,7 @@ RATE: int alpha(u) TOC(u) du
 A list with \code{estimate}, \code{weight}, \code{curve}, \code{n}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+rate(V, V)
+}

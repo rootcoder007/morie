@@ -15,3 +15,7 @@ RichResult with summary + housing-unit-by-alert crosstab.
 \description{
 Custodial deaths by alert x housing unit (d07)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_analyze_d07(V)
+}

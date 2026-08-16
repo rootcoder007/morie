@@ -19,3 +19,7 @@ Part of the masrcn_native implementation; see the file header for the source it 
 A list, whose contents depend on the branch taken; across the branches its names are \code{loss}, \code{kind}, \code{note}, \code{caveat}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+mask_loss(V, V)
+}

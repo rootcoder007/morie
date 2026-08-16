@@ -17,3 +17,7 @@ per instance before patching and reversed afterwards.
 A list with \code{normalised}, \code{mean}, \code{sd}, \code{degenerate}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+instance_norm(V)
+}

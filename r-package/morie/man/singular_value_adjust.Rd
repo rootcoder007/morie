@@ -14,3 +14,7 @@ SVD cap on the prewhitening matrix
 The value of \code{%*%}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+singular_value_adjust(V)
+}

@@ -14,3 +14,6 @@ prxgms_cheatsheet
 A character value.
 }
 \keyword{internal}
+\examples{
+prxgms_cheatsheet()
+}

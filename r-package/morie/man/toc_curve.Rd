@@ -14,3 +14,7 @@ TOC at u = j/n for j = 1..n (Definition 2)
 A list with \code{u}, \code{toc}, \code{ate}, \code{order}, \code{n}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+toc_curve(V, V)
+}

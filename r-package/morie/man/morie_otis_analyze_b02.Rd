@@ -17,3 +17,7 @@ gender x region crosstab of total segregation days.
 \description{
 Aggregate segregation days per person per year (b02)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_analyze_b02(V)
+}

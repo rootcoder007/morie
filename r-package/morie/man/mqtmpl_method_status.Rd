@@ -25,3 +25,6 @@ A list with \code{method}, \code{available}, \code{reason}.
 Base R only.
 }
 \keyword{internal}
+\examples{
+mqtmpl_method_status()
+}

@@ -20,3 +20,7 @@ One indicator per holiday, optionally widened by a window
 A list with \code{matrix} (list of rows) and \code{names}   (sorted holiday names).
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+holiday_matrix(V, V)
+}

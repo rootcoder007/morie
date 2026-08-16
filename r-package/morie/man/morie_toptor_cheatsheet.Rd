@@ -14,3 +14,6 @@ Compact one-line summary of the toptor recipe
 A character string.
 }
 \keyword{internal}
+\examples{
+morie_toptor_cheatsheet()
+}

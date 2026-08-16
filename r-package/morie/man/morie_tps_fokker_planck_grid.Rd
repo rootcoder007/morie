@@ -28,3 +28,7 @@ observation by an explicit advection-diffusion finite-difference
 scheme with reflective boundaries on a grid spanning
 from 0 to 1.5 * max(counts) + 1.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_fokker_planck_grid(D)
+}

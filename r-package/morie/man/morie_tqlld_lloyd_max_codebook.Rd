@@ -23,3 +23,6 @@ Returns a list with \code{codebook}, \code{boundaries}, \code{distortion}, \code
 A list with \code{estimate}, \code{codebook}, \code{boundaries}, \code{distortion}, \code{distortion_history}, \code{iterations}, \code{converged}, \code{source}, \code{levels}, \code{method}.
 }
 \keyword{internal}
+\examples{
+morie_tqlld_lloyd_max_codebook()
+}

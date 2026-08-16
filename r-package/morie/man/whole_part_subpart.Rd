@@ -18,3 +18,7 @@ Part of the sammkr_native implementation; see the file header for the source it 
 A list with \code{assignment}, \code{sizes}, \code{nested}, \code{note}.
 }
 \keyword{internal}
+\examples{
+S <- c("a", "b", "c")
+whole_part_subpart(S)
+}

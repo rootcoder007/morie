@@ -25,3 +25,7 @@ Each stratum is split into two halves; signs from a random Hadamard-like
 matrix double one half and zero the other. For exact Hadamard ordering use
 \code{survey::as.svrepdesign(..., type = "BRR")}.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_brr(V, V)
+}

@@ -32,3 +32,6 @@ Columns mirror the upstream schema described in
 \description{
 Inmate-participant demographics (head)
 }
+\examples{
+morie_datasets_corrections_uof_inmate_participant()
+}

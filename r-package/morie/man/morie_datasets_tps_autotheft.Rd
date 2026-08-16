@@ -36,3 +36,6 @@ Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 \description{
 TPS PSDP -- Auto Theft
 }
+\examples{
+morie_datasets_tps_autotheft()
+}

@@ -26,3 +26,7 @@ or \code{population_size}.
 \description{
 Normalise weights so they sum to n (sample) or N (population).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_normalize(V)
+}

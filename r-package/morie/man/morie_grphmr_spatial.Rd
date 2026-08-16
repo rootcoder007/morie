@@ -19,3 +19,8 @@ Looks up \code{b_table[d]} (clipped to the table size) and uses \code{unreachabl
 A list with \code{bias}, \code{unreachable_bias},   \code{note}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+morie_grphmr_spatial(M, V)
+}

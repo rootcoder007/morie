@@ -28,3 +28,7 @@ Part of the offlrl_native implementation; see the file header for the source it 
 A list with \code{estimate}, \code{q}, \code{value}, \code{greedy}, \code{behavior}, \code{counts}, \code{penalty}, \code{bellman_error}, \code{objective}, \code{alpha}, \code{variant}, \code{backup}, \code{n_transitions}, \code{method}.
 }
 \keyword{internal}
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_offlrl(D)
+}

@@ -14,3 +14,7 @@ Andrews (1991) eq. 6.1, automatic plug-in bandwidth
 A list with \code{bandwidth}, \code{alpha}, \code{fits}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+automatic_bandwidth(V)
+}

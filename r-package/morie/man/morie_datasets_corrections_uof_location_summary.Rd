@@ -32,3 +32,6 @@ Columns mirror the upstream schema described in
 \description{
 Location-of-incident annual summary
 }
+\examples{
+morie_datasets_corrections_uof_location_summary()
+}

@@ -62,3 +62,7 @@ text; CSV text for "csv").
 \description{
 Table 1 (baseline characteristics) stratified by group
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+table1(M)
+}

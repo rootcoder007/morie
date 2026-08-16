@@ -32,3 +32,6 @@ Use-of-force incidents (head dataset)
 \url{https://data.ontario.ca/dataset/use-of-force-in-correctional-institutions};
 Open Government Licence -- Ontario.
 }
+\examples{
+morie_datasets_corrections_uof_incidents()
+}

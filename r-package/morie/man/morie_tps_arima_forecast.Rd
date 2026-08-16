@@ -24,3 +24,7 @@ periods ahead with \code{stats::predict}. AIC is reported from
 the fit; BIC is computed manually as
 \code{AIC + k * (log(n) - 2)}.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_arima_forecast(D)
+}

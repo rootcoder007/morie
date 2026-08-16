@@ -17,3 +17,7 @@ institution x measure crosstab of placement durations.
 \description{
 Durations by institution & gender (b08)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_analyze_b08(V)
+}

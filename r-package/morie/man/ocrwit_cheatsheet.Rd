@@ -14,3 +14,6 @@ Part of the ocrwit_native implementation; see the file header for the source it 
 A character value.
 }
 \keyword{internal}
+\examples{
+ocrwit_cheatsheet()
+}

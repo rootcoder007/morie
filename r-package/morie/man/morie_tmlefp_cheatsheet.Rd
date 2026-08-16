@@ -14,3 +14,6 @@ Compact one-line summary of the tmlefp recipe
 A character string.
 }
 \keyword{internal}
+\examples{
+morie_tmlefp_cheatsheet()
+}

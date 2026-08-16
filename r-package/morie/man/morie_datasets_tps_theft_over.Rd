@@ -36,3 +36,6 @@ HOOD_140 attached.
 \description{
 TPS PSDP -- Theft Over
 }
+\examples{
+morie_datasets_tps_theft_over()
+}

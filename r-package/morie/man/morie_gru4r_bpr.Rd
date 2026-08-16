@@ -18,3 +18,7 @@ morie_gru4r_bpr(r_target, r_negatives)
 Scalar loss.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_gru4r_bpr(V, V)
+}

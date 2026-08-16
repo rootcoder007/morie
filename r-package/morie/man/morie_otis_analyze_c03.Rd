@@ -18,3 +18,7 @@ plus RC/custody and Seg/custody ratios.
 \description{
 Individuals x race x gender (c03)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_analyze_c03(V)
+}

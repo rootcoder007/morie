@@ -14,3 +14,6 @@ Compact one-line summary of the tmldyk recipe
 A character string.
 }
 \keyword{internal}
+\examples{
+morie_tmldyk_cheatsheet()
+}

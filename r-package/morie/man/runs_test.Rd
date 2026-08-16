@@ -20,3 +20,7 @@ size n, and \code{extra} list carrying \code{n_runs} and
 \description{
 Wald-Wolfowitz runs test for randomness
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+runs_test(V)
+}

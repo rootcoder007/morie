@@ -20,3 +20,6 @@ A character value.
 Base R only.
 }
 \keyword{internal}
+\examples{
+mpfn_cheatsheet()
+}

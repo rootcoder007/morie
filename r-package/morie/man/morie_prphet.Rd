@@ -26,3 +26,7 @@ Soft-thresholded cyclic coordinate descent. The Laplace prior on the deltas is a
 A list with \code{estimate}, \code{fitted}, \code{residual},   \code{coef}, \code{beta}, \code{columns}, \code{changepoints},   \code{deltas}, \code{k}, \code{m}, \code{trend}, \code{holiday_names},   \code{t}, \code{n}, \code{changepoint_prior},   \code{n_active_changepoints}, \code{sigma}, \code{seasonalities},   \code{method}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_prphet(V, V)
+}

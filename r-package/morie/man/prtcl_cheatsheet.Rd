@@ -14,3 +14,6 @@ prtcl_cheatsheet
 A character value.
 }
 \keyword{internal}
+\examples{
+prtcl_cheatsheet()
+}

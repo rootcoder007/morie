@@ -15,3 +15,7 @@ A \code{morie_stat_command} or \code{NULL}.
 \description{
 Resolve a command by canonical name or alias
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+resolve_stat_command(V)
+}

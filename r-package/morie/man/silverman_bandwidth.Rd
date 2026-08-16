@@ -19,3 +19,7 @@ times n to the negative one-fifth.
 \references{
 Silverman, B. W. (1986), p. 48.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+silverman_bandwidth(V)
+}

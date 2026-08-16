@@ -18,3 +18,7 @@ Convenience helper: given a data.frame just-loaded by
 \code{list(name, dtype, valid_values)} structure expected by the
 audit functions.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_specs_from_df(V)
+}

@@ -21,3 +21,7 @@ Stack trend, seasonality and holiday columns into one design
 A list with \code{X} (list of rows), \code{cols}, \code{hn}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+prophet_design(V, V)
+}

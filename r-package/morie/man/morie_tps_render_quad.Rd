@@ -24,3 +24,7 @@ Lays out a 2x2 quad combining a choropleth, point pattern, yearly grid
 summary, and (when available) a DBSCAN cluster panel.  Falls back to
 base graphics with \code{par(mfrow = c(2, 2))} when ggplot2 is absent.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_render_quad(D)
+}

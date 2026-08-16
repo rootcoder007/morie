@@ -21,3 +21,7 @@ A numeric matrix of SDR replicate weights with
 \description{
 Successive Difference Replication (SDR) weights.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_sdr(V)
+}

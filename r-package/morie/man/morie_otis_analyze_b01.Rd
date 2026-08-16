@@ -17,3 +17,7 @@ is not cross-year-safe.
 \description{
 Person-level segregation-placement analysis (b01)
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_otis_analyze_b01(D)
+}

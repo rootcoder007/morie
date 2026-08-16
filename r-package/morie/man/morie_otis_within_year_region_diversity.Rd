@@ -15,3 +15,7 @@ morie_otis_within_year_region_diversity(df)
 \description{
 Distinct \code{Region_AtTimeOfPlacement} values per person-year.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_within_year_region_diversity(V)
+}

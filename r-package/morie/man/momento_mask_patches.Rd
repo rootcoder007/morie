@@ -25,3 +25,8 @@ A list with \code{masked}, \code{mask}, \code{mask_idx}, \code{mask_rate}, \code
 Base R only.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+momento_mask_patches(V, M)
+}

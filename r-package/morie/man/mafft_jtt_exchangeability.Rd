@@ -14,3 +14,6 @@ Part of the mafft_native implementation; see the file header for the source it f
 A list with \code{S}, \code{f}.
 }
 \keyword{internal}
+\examples{
+mafft_jtt_exchangeability()
+}

@@ -25,3 +25,7 @@ live in \code{R/data_access.R} and \code{R/dataset_catalog.R}).  An
 optional \code{out_dir} writes per-dataset \code{tps_<name>.txt}
 transcripts.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_analyze_all(D)
+}

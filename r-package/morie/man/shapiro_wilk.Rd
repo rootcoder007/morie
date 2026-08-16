@@ -16,3 +16,7 @@ with the Shapiro-Wilk W statistic, p-value, and sample size n.
 \description{
 Shapiro-Wilk test for normality
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+shapiro_wilk(V)
+}
