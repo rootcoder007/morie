@@ -246,6 +246,13 @@ def qb_cf_score(y, D, X, quantile=0.5, n_strata=4, weight="ate",
         "se": float("nan"),
         "focal_stratum": focal,
         "focal_effect": eff[focal],
+        # A stratum can hold only one arm, in which case it has no
+        # effect to report and its entry is not-a-number. Returning that
+        # bare would make "the focal stratum is empty of controls" look
+        # exactly like a numerical accident, so the deadness is a flag
+        # the caller can branch on rather than a value they have to test
+        # for nan-ness to discover.
+        "focal_live": eff[focal] == eff[focal],
         "n_clipped": n_clipped,
         "n_live_strata": len(live),
         "n": n,
