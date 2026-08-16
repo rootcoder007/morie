@@ -8,7 +8,7 @@
 .coerce_mat(m)
 }
 \arguments{
-\item{m}{See Usage.}
+\item{m}{Optional; may be \code{NULL}. A vector; its length is taken.}
 }
 \description{
 Part of the opnclp_native implementation; see the file header for the source it follows.

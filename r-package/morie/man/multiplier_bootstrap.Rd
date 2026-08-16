@@ -8,9 +8,9 @@
 multiplier_bootstrap(ic, B = 1000L, seed = 0L)
 }
 \arguments{
-\item{ic}{See Usage.}
-\item{B}{Defaults to \code{1000L}.}
-\item{seed}{Defaults to \code{0L}.}
+\item{ic}{Passed to \code{morie_tlboot}.}
+\item{B}{Passed to \code{morie_tlboot}. Defaults to \code{1000L}.}
+\item{seed}{Passed to \code{morie_tlboot}. Defaults to \code{0L}.}
 }
 \description{
 Part of the tlboot_native implementation; see the file header for the source it follows.

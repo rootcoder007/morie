@@ -8,7 +8,7 @@
 .propinf_rows(X)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; indexed by row and column.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

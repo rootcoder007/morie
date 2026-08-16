@@ -8,11 +8,11 @@
 .lan_sdm_decompose(rho, beta_direct, beta_spatial, W, coefficient_names)
 }
 \arguments{
-\item{rho}{See Usage.}
-\item{beta_direct}{See Usage.}
-\item{beta_spatial}{See Usage.}
-\item{W}{See Usage.}
-\item{coefficient_names}{See Usage.}
+\item{rho}{Numeric; combined arithmetically in the body.}
+\item{beta_direct}{A vector; indexed elementwise.}
+\item{beta_spatial}{A vector; indexed elementwise.}
+\item{W}{A matrix; passed to \code{nrow}.}
+\item{coefficient_names}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the laniyonu_gentrification_policing implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 .ssmpar_compose(left, right)
 }
 \arguments{
-\item{left}{See Usage.}
-\item{right}{See Usage.}
+\item{left}{A vector; indexed elementwise.}
+\item{right}{A vector; indexed elementwise.}
 }
 \description{
 Part of the ssmpar_native implementation; see the file header for the source it follows.

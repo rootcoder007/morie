@@ -8,7 +8,7 @@
 .otis_chi2_cramer(tbl)
 }
 \arguments{
-\item{tbl}{See Usage.}
+\item{tbl}{A matrix; passed to \code{dim}.}
 }
 \description{
 Part of the otis_all_analyze implementation; see the file header for the source it follows.

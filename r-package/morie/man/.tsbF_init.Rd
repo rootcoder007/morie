@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{y}{See Usage.}
-\item{init}{Defaults to \code{"global"}.}
+\item{init}{One of \code{"global"}, \code{"known"}. Defaults to \code{"global"}.}
 \item{z0}{Defaults to \code{NULL}.}
 \item{x0}{Defaults to \code{NULL}.}
 \item{p0}{Defaults to \code{NULL}.}

@@ -8,9 +8,9 @@
 .mor_rl_out(Q, S, A)
 }
 \arguments{
-\item{Q}{See Usage.}
-\item{S}{See Usage.}
-\item{A}{See Usage.}
+\item{Q}{A matrix; indexed by row and column.}
+\item{S}{A count; the body uses it as \code{seq_len(...)}.}
+\item{A}{Passed to \code{.mor_rl_greedy}.}
 }
 \description{
 Part of the qlearn_native implementation; see the file header for the source it follows.

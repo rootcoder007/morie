@@ -8,11 +8,11 @@
 muzero_select(node, A_keys, mm, c1, c2)
 }
 \arguments{
-\item{node}{See Usage.}
-\item{A_keys}{See Usage.}
-\item{mm}{See Usage.}
-\item{c1}{See Usage.}
-\item{c2}{See Usage.}
+\item{node}{A list; the body reads \code{$children} from it.}
+\item{A_keys}{A vector; indexed elementwise.}
+\item{mm}{A list; the body reads \code{$normalize} from it.}
+\item{c1}{Numeric; combined arithmetically in the body.}
+\item{c2}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the muzero_native implementation; see the file header for the source it follows.

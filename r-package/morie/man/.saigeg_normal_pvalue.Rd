@@ -10,7 +10,7 @@
 \arguments{
 \item{s}{See Usage.}
 \item{variance}{See Usage.}
-\item{two_sided}{Defaults to \code{TRUE}.}
+\item{two_sided}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the saigeg_native implementation; see the file header for the source it follows.

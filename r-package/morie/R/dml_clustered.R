@@ -145,13 +145,14 @@ print.morie_dml_clustered <- function(x, ...) {
 #' Ridge-logistic propensity (tiny ridge for separation), predicted +
 #' clipped
 #'
-#' Part of the dml_clustered implementation; see the file header for the
+#' A step of the dml_clustered implementation. Called by \code{morie_dml_clustered}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param Xtr See Usage.
 #' @param dtr See Usage.
-#' @param Xte See Usage.
-#' @param eps See Usage.
+#' @param Xte A matrix; passed to \code{\%*\%}.
+#' @param eps Numeric; combined arithmetically in the body.
 #' @return The value of \code{pmin}.
 #' @export
 .dmlc_ps <- function(Xtr, dtr, Xte, eps) {
@@ -169,14 +170,15 @@ print.morie_dml_clustered <- function(x, ...) {
 #' Per-arm OLS outcome regression; robust to rank-deficiency and thin
 #' arms
 #'
-#' Part of the dml_clustered implementation; see the file header for the
+#' A step of the dml_clustered implementation. Called by \code{morie_dml_clustered}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
-#' @param idx See Usage.
-#' @param y See Usage.
-#' @param te See Usage.
-#' @param p See Usage.
+#' @param X A matrix; indexed by row and column.
+#' @param idx A vector; its length is taken.
+#' @param y A vector; indexed elementwise.
+#' @param te A vector; its length is taken.
+#' @param p Numeric; combined arithmetically in the body.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .dmlc_ols <- function(X, idx, y, te, p) {
@@ -196,12 +198,13 @@ print.morie_dml_clustered <- function(x, ...) {
 #' Liang-Zeger one-way cluster-robust SE of a mean, from the influence
 #' function
 #'
-#' Part of the dml_clustered implementation; see the file header for the
+#' A step of the dml_clustered implementation. Called by \code{.dmlc_multiway_se}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param infl See Usage.
 #' @param cluster See Usage.
-#' @param n See Usage.
+#' @param n Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .dmlc_cluster_se <- function(infl, cluster, n) {
@@ -212,12 +215,13 @@ print.morie_dml_clustered <- function(x, ...) {
 # Cameron-Gelbach-Miller up to two-way.
 #' Cameron-Gelbach-Miller up to two-way
 #'
-#' Part of the dml_clustered implementation; see the file header for the
+#' A step of the dml_clustered implementation. Called by \code{morie_dml_clustered}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param infl See Usage.
-#' @param clusters See Usage.
-#' @param n See Usage.
+#' @param infl Passed to \code{.dmlc_cluster_se}.
+#' @param clusters A vector; its length is taken and its elements indexed.
+#' @param n Passed to \code{.dmlc_cluster_se}.
 #' @return A numeric value.
 #' @export
 .dmlc_multiway_se <- function(infl, clusters, n) {

@@ -8,8 +8,8 @@
 .ln(row, eps = .setT_EPS)
 }
 \arguments{
-\item{row}{See Usage.}
-\item{eps}{Defaults to \code{.setT_EPS}.}
+\item{row}{A vector; its length is taken.}
+\item{eps}{Numeric; combined arithmetically in the body. Defaults to \code{.setT_EPS}.}
 }
 \description{
 Part of the setT_mixedcase_native implementation; see the file header for the source it follows.

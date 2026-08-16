@@ -9,10 +9,10 @@ morie_mienco(summary, patches, other_patches, critic, estimator = "jsd")
 }
 \arguments{
 \item{summary}{See Usage.}
-\item{patches}{See Usage.}
-\item{other_patches}{See Usage.}
+\item{patches}{A vector; its length is taken.}
+\item{other_patches}{A vector; its length is taken.}
 \item{critic}{See Usage.}
-\item{estimator}{Defaults to \code{"jsd"}.}
+\item{estimator}{Compared against \code{"jsd"}. Defaults to \code{"jsd"}.}
 }
 \description{
 Part of the mienco_native implementation; see the file header for the source it follows.

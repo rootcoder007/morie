@@ -6,7 +6,8 @@
 
 #' motfsr_alphabet_of
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. Called by \code{motfsr_prepare}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param seqs See Usage.
@@ -28,11 +29,12 @@ motfsr_alphabet_of <- function(seqs, alphabet) {
 
 #' motfsr_prepare
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. Called by \code{motfsr_mm_fit}, \code{motfsr_run}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param sequences See Usage.
-#' @param w See Usage.
+#' @param w Numeric; combined arithmetically in the body.
 #' @param alphabet See Usage.
 #' @return A list with \code{coded}, \code{alpha}, \code{starts}.
 #' @export
@@ -70,11 +72,12 @@ motfsr_prepare <- function(sequences, w, alphabet) {
 
 #' motfsr_mu
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. Called by \code{motfsr_mm_fit}, \code{motfsr_run}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param coded See Usage.
-#' @param L See Usage.
+#' @param L A count; the body uses it as \code{numeric(...)}.
 #' @return A numeric value.
 #' @export
 motfsr_mu <- function(coded, L) {
@@ -86,10 +89,11 @@ motfsr_mu <- function(coded, L) {
 
 #' motfsr_uniform_theta
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. Called by \code{motfsr_run}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param w See Usage.
+#' @param w A count; the body uses it as \code{seq_len(...)}.
 #' @param L See Usage.
 #' @param mu See Usage.
 #' @return The value of \code{theta}, as built in the body.
@@ -103,16 +107,17 @@ motfsr_uniform_theta <- function(w, L, mu) {
 
 #' motfsr_theta_from_subsequence
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. Called by \code{motfsr_mm_fit}, \code{motfsr_run}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param coded See Usage.
+#' @param coded A vector; indexed elementwise.
 #' @param i See Usage.
-#' @param j See Usage.
-#' @param w See Usage.
-#' @param L See Usage.
+#' @param j Numeric; combined arithmetically in the body.
+#' @param w A count; the body uses it as \code{seq_len(...)}.
+#' @param L A count; the body uses it as \code{rep(...)}.
 #' @param mu See Usage.
-#' @param weight See Usage.
+#' @param weight Numeric; combined arithmetically in the body.
 #' @return The value of \code{theta}, as built in the body.
 #' @export
 motfsr_theta_from_subsequence <- function(coded, i, j, w, L, mu, weight) {
@@ -129,14 +134,15 @@ motfsr_theta_from_subsequence <- function(coded, i, j, w, L, mu, weight) {
 
 #' motfsr_log_component
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. Called by \code{motfsr_mm_fit}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param theta See Usage.
-#' @param coded See Usage.
+#' @param theta A vector; indexed elementwise.
+#' @param coded A vector; indexed elementwise.
 #' @param i See Usage.
-#' @param j See Usage.
-#' @param w See Usage.
+#' @param j Numeric; combined arithmetically in the body.
+#' @param w A count; the body uses it as \code{seq_len(...)}.
 #' @param comp See Usage.
 #' @return The value of \code{tot}, as built in the body.
 #' @export
@@ -153,12 +159,13 @@ motfsr_log_component <- function(theta, coded, i, j, w, comp) {
 
 #' motfsr_normalise_windows
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. Called by \code{motfsr_mm_fit}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param z See Usage.
-#' @param w See Usage.
-#' @param max_sweeps Defaults to \code{100}.
+#' @param z A vector; its length is taken and its elements indexed.
+#' @param w A count; the body uses it as \code{seq_len(...)}.
+#' @param max_sweeps A count; the body uses it as \code{seq_len(...)}. Defaults to \code{100}.
 #' @return The value of \code{z}, as built in the body.
 #' @export
 motfsr_normalise_windows <- function(z, w, max_sweeps = 100) {
@@ -190,20 +197,21 @@ motfsr_normalise_windows <- function(z, w, max_sweeps = 100) {
 
 #' motfsr_mm_fit
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. Called by \code{motfsr_run}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param sequences See Usage.
-#' @param w See Usage.
+#' @param w A count; the body uses it as \code{seq_len(...)}.
 #' @param alphabet Defaults to \code{NULL}.
 #' @param theta0 Defaults to \code{NULL}.
 #' @param lambda0 Defaults to \code{NULL}.
-#' @param beta Defaults to \code{0.01}.
+#' @param beta Numeric; combined arithmetically in the body. Defaults to \code{0.01}.
 #' @param erasing Defaults to \code{NULL}.
-#' @param max_iter Defaults to \code{1000}.
+#' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{1000}.
 #' @param tol Defaults to \code{1e-06}.
-#' @param normalize_overlaps Defaults to \code{TRUE}.
-#' @param erase_by Defaults to \code{"letter"}.
+#' @param normalize_overlaps A flag; the body branches on it. Defaults to \code{TRUE}.
+#' @param erase_by One of \code{"letter"}, \code{"start"}. Defaults to \code{"letter"}.
 #' @return A list with \code{theta}, \code{motif}, \code{background}, \code{lambda1}, \code{z}, \code{log_likelihood}, \code{log_likelihood_trace}, \code{n_iter}, \code{converged}, \code{alphabet}, \code{w}.
 #' @export
 motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
@@ -314,11 +322,12 @@ motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
 
 #' motfsr_log_odds_matrix
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. Called by \code{motfsr_run}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param motif See Usage.
-#' @param background See Usage.
+#' @param background A vector; indexed elementwise.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 motfsr_log_odds_matrix <- function(motif, background) {
@@ -333,11 +342,12 @@ motfsr_log_odds_matrix <- function(motif, background) {
 
 #' motfsr_bayes_threshold
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. Called by \code{motfsr_run}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param lambda1 See Usage.
-#' @param loss Defaults to \code{NULL}.
+#' @param lambda1 Numeric; combined arithmetically in the body.
+#' @param loss Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @return A numeric value.
 #' @export
 motfsr_bayes_threshold <- function(lambda1, loss = NULL) {
@@ -358,12 +368,13 @@ motfsr_bayes_threshold <- function(lambda1, loss = NULL) {
 
 #' motfsr_score_sequence
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param spec See Usage.
+#' @param spec A vector; its length is taken and its elements indexed.
 #' @param sequence See Usage.
-#' @param alphabet See Usage.
+#' @param alphabet A vector; its length is taken.
 #' @param threshold Defaults to \code{NULL}.
 #' @return A list with \code{scores}, \code{hits}.
 #' @export
@@ -390,12 +401,13 @@ motfsr_score_sequence <- function(spec, sequence, alphabet, threshold = NULL) {
 
 #' motfsr_lambda_grid
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. Called by \code{motfsr_run}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n_starts_total See Usage.
-#' @param n_seqs See Usage.
-#' @param w See Usage.
+#' @param n_starts_total Numeric; combined arithmetically in the body.
+#' @param n_seqs Numeric; passed to \code{sqrt}.
+#' @param w Numeric; combined arithmetically in the body.
 #' @param lambda0 See Usage.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -413,22 +425,23 @@ motfsr_lambda_grid <- function(n_starts_total, n_seqs, w, lambda0) {
 
 #' motfsr_run
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param sequences See Usage.
-#' @param w See Usage.
+#' @param w A count; the body uses it as \code{seq_len(...)}.
 #' @param alphabet Defaults to \code{NULL}.
-#' @param n_motifs Defaults to \code{1}.
+#' @param n_motifs A count; the body uses it as \code{seq_len(...)}. Defaults to \code{1}.
 #' @param beta Defaults to \code{0.01}.
 #' @param lambda0 Defaults to \code{NULL}.
 #' @param max_iter Defaults to \code{1000}.
 #' @param tol Defaults to \code{1e-06}.
 #' @param normalize_overlaps Defaults to \code{TRUE}.
-#' @param starts Defaults to \code{"subsequences"}.
+#' @param starts One of \code{"subsequences"}, \code{"uniform"}. Defaults to \code{"subsequences"}.
 #' @param start_weight Defaults to \code{0.5}.
 #' @param max_starts Defaults to \code{200}.
-#' @param start_scoring Defaults to \code{"one_step"}.
+#' @param start_scoring One of \code{"none"}, \code{"one_step"}. Defaults to \code{"one_step"}.
 #' @param erase_by Defaults to \code{"letter"}.
 #' @param loss Defaults to \code{NULL}.
 #' @return A list with \code{estimate}, \code{motifs}, \code{alphabet}, \code{w}, \code{n_subsequences}, \code{erasing}, \code{method}.
@@ -543,7 +556,8 @@ motfsr_run <- function(sequences, w, alphabet = NULL, n_motifs = 1,
 
 #' motfsr_cheatsheet
 #'
-#' Part of the motfsr_native implementation; see the file header for the
+#' A step of the motfsr_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

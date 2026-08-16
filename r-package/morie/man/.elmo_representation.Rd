@@ -8,13 +8,13 @@
 .elmo_representation(X, layers, raw_weights = NULL, gamma = 1)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{layers}{See Usage.}
+\item{X}{Passed to \code{.bilm_forward}.}
+\item{layers}{Passed to \code{.bilm_forward}.}
 \item{raw_weights}{Defaults to \code{NULL}.}
-\item{gamma}{Defaults to \code{1}.}
+\item{gamma}{Passed to \code{.elmo_mix}. Defaults to \code{1}.}
 }
 \description{
-Part of the elmo_native implementation; see the file header for the source it follows.
+A step of the elmo_native implementation. Called by \code{morie_elmo}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{estimate}, \code{elmo}, \code{layers}, \code{weights}, \code{gamma}, \code{n_layers}, \code{L}, \code{d}, \code{top_layer}, \code{method}.

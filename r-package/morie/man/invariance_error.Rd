@@ -10,7 +10,7 @@ invariance_error(energy_fn, R, Q, g = NULL)
 \arguments{
 \item{energy_fn}{See Usage.}
 \item{R}{See Usage.}
-\item{Q}{See Usage.}
+\item{Q}{A matrix; passed to \code{as.matrix}.}
 \item{g}{Defaults to \code{NULL}.}
 }
 \description{

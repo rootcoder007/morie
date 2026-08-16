@@ -148,14 +148,15 @@ morie_tps_psdp_layers <- function() {
 
 #' .morie_tps_psdp_dispatch
 #'
-#' Part of the datasets_tps_psdp implementation; see the file header for
+#' A step of the datasets_tps_psdp implementation. Called by \code{morie_datasets_tps_assault}, \code{morie_datasets_tps_autotheft}, \code{morie_datasets_tps_bicycletheft} and 9 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param layer_key See Usage.
 #' @param year See Usage.
-#' @param max_features See Usage.
-#' @param offline See Usage.
-#' @param layer_url See Usage.
+#' @param max_features Optional; may be \code{NULL}. Passed to \code{.morie_tps_psdp_feature_query}.
+#' @param offline A flag; the body branches on it.
+#' @param layer_url Optional; may be \code{NULL}. Passed to \code{.morie_tps_psdp_feature_query}.
 #' @return The value of \code{morie_datasets_tps_arcgis_hub_by_id}.
 #' @export
 .morie_tps_psdp_dispatch <- function(layer_key, year, max_features,

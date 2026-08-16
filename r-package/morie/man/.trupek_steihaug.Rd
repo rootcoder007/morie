@@ -8,10 +8,10 @@
 .trupek_steihaug(g, H, delta, tol, maxit)
 }
 \arguments{
-\item{g}{See Usage.}
-\item{H}{See Usage.}
-\item{delta}{See Usage.}
-\item{tol}{See Usage.}
+\item{g}{A vector; its length is taken.}
+\item{H}{Passed to \code{.trupek_matvec}.}
+\item{delta}{Passed to \code{.trupek_boundary}.}
+\item{tol}{Numeric; passed to \code{max}.}
 \item{maxit}{See Usage.}
 }
 \description{

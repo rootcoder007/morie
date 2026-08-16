@@ -8,13 +8,13 @@
 .hawkes_nll_pureR(theta, times, end_time, kernel)
 }
 \arguments{
-\item{theta}{See Usage.}
-\item{times}{See Usage.}
-\item{end_time}{See Usage.}
-\item{kernel}{See Usage.}
+\item{theta}{A vector; indexed elementwise.}
+\item{times}{A vector; its length is taken and its elements indexed.}
+\item{end_time}{Numeric; combined arithmetically in the body.}
+\item{kernel}{Passed to \code{.hawkes_kernel_funs}.}
 }
 \description{
-Part of the hawkes_fit implementation; see the file header for the source it follows.
+A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}. See the file header for the source the module follows.
 }
 \value{
 A numeric value.

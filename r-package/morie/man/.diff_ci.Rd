@@ -8,10 +8,10 @@
 .diff_ci(x, y, confidence = 0.95, equal_var = TRUE)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{y}{See Usage.}
-\item{confidence}{Defaults to \code{0.95}.}
-\item{equal_var}{Defaults to \code{TRUE}.}
+\item{x}{A vector; its length is taken.}
+\item{y}{A vector; its length is taken.}
+\item{confidence}{Numeric; combined arithmetically in the body. Defaults to \code{0.95}.}
+\item{equal_var}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the statistics implementation; see the file header for the source it follows.

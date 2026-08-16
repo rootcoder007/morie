@@ -8,14 +8,14 @@
 .entheo_bandpass(x, sfreq, low, high, order = 4L)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{sfreq}{See Usage.}
-\item{low}{See Usage.}
-\item{high}{See Usage.}
-\item{order}{Defaults to \code{4L}.}
+\item{x}{A matrix; indexed by row and column.}
+\item{sfreq}{Numeric; combined arithmetically in the body.}
+\item{low}{Numeric; combined arithmetically in the body.}
+\item{high}{Numeric; combined arithmetically in the body.}
+\item{order}{Passed to \code{.morie_dsp_butter}. Defaults to \code{4L}.}
 }
 \description{
-Part of the entheo_preprocess implementation; see the file header for the source it follows.
+A step of the entheo_preprocess implementation. Called by \code{preprocess_eeg}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{out}, as built in the body.

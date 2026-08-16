@@ -3,14 +3,14 @@
 % the formals.
 \name{morie_calonico_cattaneo_titiunik}
 \alias{morie_calonico_cattaneo_titiunik}
-\title{Alias kept from the generated stub\\'s signature}
+\title{Alias kept from the generated stub\'s signature}
 \usage{
 morie_calonico_cattaneo_titiunik(y, x, cutoff = 0, ...)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{x}{See Usage.}
-\item{cutoff}{Defaults to \code{0}.}
+\item{y}{Passed to \code{morie_rdrobu}.}
+\item{x}{Passed to \code{morie_rdrobu}.}
+\item{cutoff}{Passed to \code{morie_rdrobu}. Defaults to \code{0}.}
 \item{...}{Passed through.}
 }
 \description{

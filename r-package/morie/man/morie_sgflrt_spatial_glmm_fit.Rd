@@ -9,18 +9,18 @@ morie_sgflrt_spatial_glmm_fit(y, X, coords, family = "poisson", model = "exponen
 }
 \arguments{
 \item{y}{See Usage.}
-\item{X}{See Usage.}
-\item{coords}{See Usage.}
-\item{family}{Defaults to \code{"poisson"}.}
-\item{model}{Defaults to \code{"exponential"}.}
+\item{X}{Passed to \code{.sgflrt_rows}.}
+\item{coords}{Passed to \code{.sgflrt_rows}.}
+\item{family}{One of \code{"binomial"}, \code{"gaussian"}, \code{"poisson"}. Defaults to \code{"poisson"}.}
+\item{model}{Passed to \code{.sgflrt_corr}. Defaults to \code{"exponential"}.}
 \item{sigma2}{Defaults to \code{NULL}.}
 \item{phi}{Defaults to \code{NULL}.}
 \item{kappa}{Defaults to \code{1.5}.}
 \item{nugget}{Defaults to \code{0}.}
 \item{dispersion}{Defaults to \code{NULL}.}
-\item{inner_iter}{Defaults to \code{50L}.}
+\item{inner_iter}{Passed to \code{.sgflrt_laplace}. Defaults to \code{50L}.}
 \item{outer_cycles}{Defaults to \code{3L}.}
-\item{tol}{Defaults to \code{1e-10}.}
+\item{tol}{Passed to \code{.sgflrt_laplace}. Defaults to \code{1e-10}.}
 }
 \description{
 Part of the sgflrt_native implementation; see the file header for the source it follows.

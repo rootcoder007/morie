@@ -8,7 +8,7 @@
 .otis_alert_volatility_frame(df)
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{A matrix; indexed by row and column.}
 }
 \description{
 sum of within-row + across-row region-change indicators.

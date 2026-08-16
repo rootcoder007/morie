@@ -11,14 +11,14 @@
 \item{layer_url}{See Usage.}
 \item{where}{Defaults to \code{"1=1"}.}
 \item{out_fields}{Defaults to \code{"*"}.}
-\item{return_geometry}{Defaults to \code{FALSE}.}
+\item{return_geometry}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 \item{result_offset}{Defaults to \code{0L}.}
 \item{result_record_count}{Defaults to \code{2000L}.}
 \item{user_agent}{Defaults to \code{.MORIE_TPS_DEFAULT_UA}.}
 \item{timeout}{Defaults to \code{.MORIE_TPS_DEFAULT_TIMEOUT}.}
 }
 \description{
-Part of the ingest_tps implementation; see the file header for the source it follows.
+A step of the ingest_tps implementation. Called by \code{morie_ingest_tps_feature_layer}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{payload}, as built in the body.

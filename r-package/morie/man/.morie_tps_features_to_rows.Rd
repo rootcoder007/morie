@@ -3,13 +3,13 @@
 % the formals.
 \name{.morie_tps_features_to_rows}
 \alias{.morie_tps_features_to_rows}
-\title{Internal: bind one ArcGIS feature payload\\\'s attribute rows into a}
+\title{Internal: bind one ArcGIS feature payload\\'s attribute rows into a}
 \usage{
 .morie_tps_features_to_rows(features, return_geometry)
 }
 \arguments{
-\item{features}{See Usage.}
-\item{return_geometry}{See Usage.}
+\item{features}{A vector; its length is taken.}
+\item{return_geometry}{A flag; the body branches on it.}
 }
 \description{
 data.frame, optionally splicing in geom_x / geom_y.

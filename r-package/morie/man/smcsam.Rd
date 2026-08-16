@@ -17,7 +17,7 @@ smcsam(log_gamma, initial, n_particles = 500L, ladder = NULL, n_steps = 20L, ker
 \item{ess_threshold}{Defaults to \code{0.5}.}
 \item{scheme}{Defaults to \code{"systematic"}.}
 \item{seed}{Defaults to \code{0L}.}
-\item{weight_rule}{Defaults to \code{"mcmc"}.}
+\item{weight_rule}{One of \code{"general"}, \code{"mcmc"}. Defaults to \code{"mcmc"}.}
 \item{log_forward}{Defaults to \code{NULL}.}
 \item{log_backward}{Defaults to \code{NULL}.}
 }

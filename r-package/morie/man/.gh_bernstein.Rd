@@ -8,11 +8,11 @@
 .gh_bernstein(u, K)
 }
 \arguments{
-\item{u}{See Usage.}
-\item{K}{See Usage.}
+\item{u}{A vector; its length is taken.}
+\item{K}{A count; the body uses it as \code{seq_len(...)}.}
 }
 \description{
-Part of the helpers_ghosal_bnp implementation; see the file header for the source it follows.
+A step of the helpers_ghosal_bnp implementation. Called by \code{morie_ghosal_sieve_prior}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{B}, as built in the body.

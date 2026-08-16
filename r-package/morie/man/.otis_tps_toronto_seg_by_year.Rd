@@ -8,7 +8,7 @@
 .otis_tps_toronto_seg_by_year(df_b01)
 }
 \arguments{
-\item{df_b01}{See Usage.}
+\item{df_b01}{A list; the body reads \code{$EndFiscalYear}, \code{$Region_AtTimeOfPlacement} from it.}
 }
 \description{
 Part of the otis_tps_overlay implementation; see the file header for the source it follows.

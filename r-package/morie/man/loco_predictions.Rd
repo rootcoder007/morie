@@ -8,9 +8,9 @@
 loco_predictions(preds, meta, weights, chromosomes = NULL)
 }
 \arguments{
-\item{preds}{See Usage.}
+\item{preds}{A vector; indexed elementwise.}
 \item{meta}{See Usage.}
-\item{weights}{See Usage.}
+\item{weights}{A vector; indexed elementwise.}
 \item{chromosomes}{Defaults to \code{NULL}.}
 }
 \description{

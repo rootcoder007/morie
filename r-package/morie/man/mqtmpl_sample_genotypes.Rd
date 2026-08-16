@@ -8,9 +8,9 @@
 mqtmpl_sample_genotypes(genotypes, positions, grid, n_imp = 16, error_rate = 0, seed = 0)
 }
 \arguments{
-\item{genotypes}{See Usage.}
-\item{positions}{See Usage.}
-\item{grid}{See Usage.}
+\item{genotypes}{A vector; its length is taken.}
+\item{positions}{A vector; its length is taken and its elements indexed.}
+\item{grid}{A vector; its length is taken and its elements indexed.}
 \item{n_imp}{Defaults to \code{16}.}
 \item{error_rate}{Defaults to \code{0}.}
 \item{seed}{Defaults to \code{0}.}

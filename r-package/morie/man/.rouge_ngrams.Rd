@@ -8,8 +8,8 @@
 .rouge_ngrams(toks, n)
 }
 \arguments{
-\item{toks}{See Usage.}
-\item{n}{See Usage.}
+\item{toks}{A vector; its length is taken and its elements indexed.}
+\item{n}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the rouge_native implementation; see the file header for the source it follows.

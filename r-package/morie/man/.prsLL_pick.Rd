@@ -8,7 +8,7 @@
 .prsLL_pick(table, A, a)
 }
 \arguments{
-\item{table}{See Usage.}
+\item{table}{A vector; indexed elementwise.}
 \item{A}{See Usage.}
 \item{a}{See Usage.}
 }

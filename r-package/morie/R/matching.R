@@ -34,7 +34,8 @@ NULL
 
 #' .morie_matching_have
 #'
-#' Part of the matching implementation; see the file header for the
+#' A step of the matching implementation. Called by \code{morie_matching_estimate_propensity}, \code{morie_matching_full}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param pkg See Usage.
@@ -46,10 +47,11 @@ NULL
 
 #' .morie_matching_require
 #'
-#' Part of the matching implementation; see the file header for the
+#' A step of the matching implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param pkg See Usage.
+#' @param pkg Passed to \code{morie_ensure_extras}.
 #' @param fn See Usage.
 #' @return Invisibly,a logical value.
 #' @export

@@ -10,7 +10,7 @@ negbinom_offspring(R0, dispersion, rng)
 \arguments{
 \item{R0}{See Usage.}
 \item{dispersion}{See Usage.}
-\item{rng}{See Usage.}
+\item{rng}{Passed to \code{.tt_gamma_draw}.}
 }
 \description{
 Part of the ttrace_native implementation; see the file header for the source it follows.

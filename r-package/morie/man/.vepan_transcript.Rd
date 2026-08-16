@@ -8,7 +8,7 @@
 .vepan_transcript(tr)
 }
 \arguments{
-\item{tr}{See Usage.}
+\item{tr}{A list; the body reads \code{$biotype}, \code{$canonical}, \code{$cds_end}, \code{$cds_start}, \code{$chrom}, \code{$exons}, \code{$gene}, \code{$id}, \code{$strand} from it.}
 }
 \description{
 Part of the vepan_native implementation; see the file header for the source it follows.

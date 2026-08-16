@@ -8,12 +8,12 @@
 morie_svycox(time, event, X, weights = NULL, strata = NULL, cluster = NULL, ...)
 }
 \arguments{
-\item{time}{See Usage.}
-\item{event}{See Usage.}
-\item{X}{See Usage.}
-\item{weights}{Defaults to \code{NULL}.}
-\item{strata}{Defaults to \code{NULL}.}
-\item{cluster}{Defaults to \code{NULL}.}
+\item{time}{Passed to \code{.svycox_svycoxph}.}
+\item{event}{Passed to \code{.svycox_svycoxph}.}
+\item{X}{Passed to \code{.svycox_svycoxph}.}
+\item{weights}{Passed to \code{.svycox_svycoxph}.}
+\item{strata}{Passed to \code{.svycox_svycoxph}.}
+\item{cluster}{Passed to \code{.svycox_svycoxph}.}
 \item{...}{Passed through.}
 }
 \description{

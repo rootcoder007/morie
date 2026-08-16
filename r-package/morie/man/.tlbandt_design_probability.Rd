@@ -10,7 +10,7 @@
 \arguments{
 \item{blip_estimate}{See Usage.}
 \item{delta}{Defaults to \code{0.1}.}
-\item{greedy}{Defaults to \code{FALSE}.}
+\item{greedy}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{
 Part of the tlbandt_native implementation; see the file header for the source it follows.

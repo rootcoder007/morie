@@ -8,7 +8,7 @@
 .rrblpr_chol(A)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{A matrix; indexed by row and column.}
 }
 \description{
 Part of the rrblpr_native implementation; see the file header for the source it follows.

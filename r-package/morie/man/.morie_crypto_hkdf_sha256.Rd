@@ -8,10 +8,10 @@
 .morie_crypto_hkdf_sha256(ikm_sxp, length_sxp, salt_sxp, info_sxp)
 }
 \arguments{
-\item{ikm_sxp}{See Usage.}
-\item{length_sxp}{See Usage.}
-\item{salt_sxp}{See Usage.}
-\item{info_sxp}{See Usage.}
+\item{ikm_sxp}{Passed to \code{.Call}.}
+\item{length_sxp}{Passed to \code{.Call}.}
+\item{salt_sxp}{Passed to \code{.Call}.}
+\item{info_sxp}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

@@ -43,7 +43,7 @@
 #'
 #' entries: any single -inf would otherwise dominate the sum.
 #'
-#' @param values See Usage.
+#' @param values A vector; indexed elementwise.
 #' @return A numeric value.
 #' @export
 .gp_lse <- function(values) {
@@ -143,7 +143,8 @@ design_from_prior <- function(n, prior_ppf, dim = NULL, skip = 1L) {
 
 #' .gp_summarise
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{.gp_mw_sampler}, \code{gabc_log_likelihood}, \code{synthetic_log_likelihood}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
@@ -211,10 +212,11 @@ gabc_log_likelihood <- function(sim, obs, theta, n_sim = 50L, epsilon = 1.0,
 
 #' .gp_chol
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{.gp_draw_mean}, \code{.gp_mvn_logpdf}, \code{.gp_profile_nll} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param a See Usage.
+#' @param a A matrix; indexed by row and column.
 #' @param jitter Defaults to \code{1e-12}.
 #' @return The value of \code{L}, as built in the body.
 #' @export
@@ -237,11 +239,12 @@ gabc_log_likelihood <- function(sim, obs, theta, n_sim = 50L, epsilon = 1.0,
 
 #' .gp_chol_solve
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{.gp_mvn_logpdf}, \code{.gp_profile_nll}, \code{gp_fit} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param L See Usage.
-#' @param b See Usage.
+#' @param L A matrix; indexed by row and column.
+#' @param b A vector; indexed elementwise.
 #' @return The value of \code{x}, as built in the body.
 #' @export
 .gp_chol_solve <- function(L, b) {
@@ -261,12 +264,13 @@ gabc_log_likelihood <- function(sim, obs, theta, n_sim = 50L, epsilon = 1.0,
 
 #' .gp_mvn_logpdf
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{.gp_mw_sampler}, \code{synthetic_log_likelihood}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
-#' @param mu See Usage.
-#' @param cov See Usage.
+#' @param y A vector; its length is taken.
+#' @param mu Numeric; combined arithmetically in the body.
+#' @param cov Passed to \code{.gp_chol}.
 #' @return A numeric value.
 #' @export
 .gp_mvn_logpdf <- function(y, mu, cov) {
@@ -307,13 +311,14 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
 
 #' .gp_corr
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{.gp_profile_nll}, \code{gp_fit}, \code{gp_predict}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param a See Usage.
-#' @param b See Usage.
-#' @param lengthscale See Usage.
-#' @param kernel See Usage.
+#' @param a Numeric; combined arithmetically in the body.
+#' @param b Numeric; combined arithmetically in the body.
+#' @param lengthscale Numeric; combined arithmetically in the body.
+#' @param kernel One of \code{"matern32"}, \code{"sqexp"}.
 #' @return A numeric value.
 #' @export
 .gp_corr <- function(a, b, lengthscale, kernel) {
@@ -330,21 +335,23 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
 
 #' .gp_basis
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{gp_predict}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param theta See Usage.
+#' @param theta Numeric; combined arithmetically in the body.
 #' @return A vector, from \code{c}.
 #' @export
 .gp_basis <- function(theta) c(1, theta, theta * theta)
 
 #' .gp_as_nugget
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{gp_fit}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param nugget See Usage.
-#' @param n See Usage.
+#' @param n A count; the body uses it as \code{rep(...)}.
 #' @return The value of \code{pmax}.
 #' @export
 .gp_as_nugget <- function(nugget, n) {
@@ -357,14 +364,15 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
 
 #' .gp_profile_nll
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{.gp_mle_lengthscale}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
-#' @param y See Usage.
-#' @param ls See Usage.
-#' @param nug See Usage.
-#' @param kernel See Usage.
+#' @param X A matrix; indexed by row and column.
+#' @param y Numeric; combined arithmetically in the body.
+#' @param ls Passed to \code{.gp_corr}.
+#' @param nug A vector; indexed elementwise.
+#' @param kernel Passed to \code{.gp_corr}.
 #' @return A numeric value.
 #' @export
 .gp_profile_nll <- function(X, y, ls, nug, kernel) {
@@ -397,13 +405,14 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
 
 #' .gp_mle_lengthscale
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{gp_fit}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
-#' @param y See Usage.
-#' @param nug See Usage.
-#' @param kernel See Usage.
+#' @param X A matrix; indexed by row and column.
+#' @param y Passed to \code{.gp_profile_nll}.
+#' @param nug Passed to \code{.gp_profile_nll}.
+#' @param kernel Passed to \code{.gp_profile_nll}.
 #' @return The value of \code{ls}, as built in the body.
 #' @export
 .gp_mle_lengthscale <- function(X, y, nug, kernel) {
@@ -560,16 +569,17 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
 
 #' .gp_alpha_terms
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{.gp_mw_sampler}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param log_prior See Usage.
 #' @param theta See Usage.
 #' @param theta_p See Usage.
-#' @param ll See Usage.
-#' @param ll_p See Usage.
-#' @param log_q See Usage.
-#' @param log_q_p See Usage.
+#' @param ll Numeric; combined arithmetically in the body.
+#' @param ll_p Numeric; combined arithmetically in the body.
+#' @param log_q Numeric; combined arithmetically in the body.
+#' @param log_q_p Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .gp_alpha_terms <- function(log_prior, theta, theta_p, ll, ll_p,
@@ -580,12 +590,13 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
 
 #' .gp_expected_error
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{.gp_mw_sampler}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param alphas See Usage.
+#' @param alphas A vector; its length is taken.
 #' @param tau See Usage.
-#' @param n_grid Defaults to \code{101L}.
+#' @param n_grid A count; the body uses it as \code{seq_len(...)}. Defaults to \code{101L}.
 #' @return A numeric value.
 #' @export
 .gp_expected_error <- function(alphas, tau, n_grid = 101L) {
@@ -602,10 +613,11 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
 
 #' .gp_median
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{.gp_mw_sampler}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param v See Usage.
+#' @param v Numeric; passed to \code{sort}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .gp_median <- function(v) {
@@ -615,13 +627,14 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
 
 #' .gp_draw_mean
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{.gp_mw_sampler}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param mu See Usage.
-#' @param cov See Usage.
-#' @param S See Usage.
-#' @param e See Usage.
+#' @param mu A vector; its length is taken.
+#' @param cov Numeric; combined arithmetically in the body.
+#' @param S Numeric; combined arithmetically in the body.
+#' @param e Passed to \code{.ghc_norm}.
 #' @return A numeric value.
 #' @export
 .gp_draw_mean <- function(mu, cov, S, e) {
@@ -634,23 +647,24 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
 
 #' .gp_mw_sampler
 #'
-#' Part of the abcgp_native implementation; see the file header for the
+#' A step of the abcgp_native implementation. Called by \code{gps_abc}, \code{synthetic_abc}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param sim See Usage.
-#' @param obs See Usage.
-#' @param log_prior See Usage.
+#' @param obs Passed to \code{.gp_summarise}.
+#' @param log_prior Passed to \code{.gp_alpha_terms}.
 #' @param theta0 See Usage.
 #' @param n_iter See Usage.
 #' @param n_sim See Usage.
 #' @param epsilon See Usage.
 #' @param proposal_sd See Usage.
-#' @param summary See Usage.
-#' @param seed See Usage.
-#' @param adaptive See Usage.
+#' @param summary Passed to \code{.gp_summarise}.
+#' @param seed Passed to \code{.ghc_rng}.
+#' @param adaptive A flag; the body branches on it.
 #' @param xi See Usage.
 #' @param delta_s See Usage.
-#' @param n_alpha See Usage.
+#' @param n_alpha A count; the body uses it as \code{seq_len(...)}.
 #' @param max_sim Defaults to \code{NULL}.
 #' @return A list with \code{chain}, \code{acceptance_rate}, \code{n_simulations}, \code{unresolved_steps}.
 #' @export

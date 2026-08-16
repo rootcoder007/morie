@@ -8,7 +8,7 @@
 .stat_validate(x, name = "x")
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A vector; indexed elementwise.}
 \item{name}{Defaults to \code{"x"}.}
 }
 \description{

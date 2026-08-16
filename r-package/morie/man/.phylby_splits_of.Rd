@@ -8,7 +8,7 @@
 .phylby_splits_of(tree)
 }
 \arguments{
-\item{tree}{See Usage.}
+\item{tree}{Passed to \code{.phylby_tips}.}
 }
 \description{
 Part of the phylby_native implementation; see the file header for the source it follows.

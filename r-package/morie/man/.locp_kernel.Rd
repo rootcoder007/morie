@@ -8,8 +8,8 @@
 .locp_kernel(name, t)
 }
 \arguments{
-\item{name}{See Usage.}
-\item{t}{See Usage.}
+\item{name}{One of \code{"epanechnikov"}, \code{"gaussian"}, \code{"tricube"}.}
+\item{t}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the locp_native implementation; see the file header for the source it follows.

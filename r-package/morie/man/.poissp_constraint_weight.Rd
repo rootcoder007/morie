@@ -8,7 +8,7 @@
 .poissp_constraint_weight(m)
 }
 \arguments{
-\item{m}{See Usage.}
+\item{m}{A vector; its length is taken.}
 }
 \description{
 Part of the poissp_native implementation; see the file header for the source it follows.

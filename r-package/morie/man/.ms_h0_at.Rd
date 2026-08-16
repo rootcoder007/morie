@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{ut}{See Usage.}
-\item{H}{See Usage.}
+\item{H}{A vector; indexed elementwise.}
 \item{t}{See Usage.}
 }
 \description{

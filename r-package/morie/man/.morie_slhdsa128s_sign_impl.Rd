@@ -8,8 +8,8 @@
 .morie_slhdsa128s_sign_impl(sk_sxp, message_sxp)
 }
 \arguments{
-\item{sk_sxp}{See Usage.}
-\item{message_sxp}{See Usage.}
+\item{sk_sxp}{Passed to \code{.Call}.}
+\item{message_sxp}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

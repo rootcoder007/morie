@@ -10,7 +10,7 @@
 \arguments{
 \item{d}{See Usage.}
 \item{hidden}{See Usage.}
-\item{seed}{See Usage.}
+\item{seed}{Passed to \code{.ghc_rng}.}
 }
 \description{
 Part of the survnnr_native implementation; see the file header for the source it follows.

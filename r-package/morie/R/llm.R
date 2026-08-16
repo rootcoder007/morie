@@ -25,7 +25,8 @@ GEMINI_BASE_URL <- "https://generativelanguage.googleapis.com/v1beta/openai"
 
 #' .morie_llm_env
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{.morie_llm_api_base}, \code{.morie_llm_api_key}, \code{.morie_llm_gemini_key} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @param name See Usage.
@@ -38,7 +39,8 @@ GEMINI_BASE_URL <- "https://generativelanguage.googleapis.com/v1beta/openai"
 }
 #' .morie_llm_ollama_base
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}, \code{morie_llm_probe_ollama}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @return The value of \code{sub}.
@@ -48,7 +50,8 @@ GEMINI_BASE_URL <- "https://generativelanguage.googleapis.com/v1beta/openai"
 }
 #' .morie_llm_gemini_key
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @return One of two values, depending on the branch taken.
@@ -57,7 +60,8 @@ GEMINI_BASE_URL <- "https://generativelanguage.googleapis.com/v1beta/openai"
 if (nzchar(v)) v else NULL }
 #' .morie_llm_openai_key
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @return One of two values, depending on the branch taken.
@@ -66,7 +70,8 @@ if (nzchar(v)) v else NULL }
 if (nzchar(v)) v else NULL }
 #' .morie_llm_api_base
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @return One of two values, depending on the branch taken.
@@ -75,7 +80,8 @@ if (nzchar(v)) v else NULL }
 if (nzchar(v)) sub("/+$", "", v) else NULL }
 #' .morie_llm_api_key
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @return One of two values, depending on the branch taken.
@@ -84,7 +90,8 @@ if (nzchar(v)) sub("/+$", "", v) else NULL }
 if (nzchar(v)) v else NULL }
 #' .morie_llm_gemini_model
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @return The value of \code{.morie_llm_env}.
@@ -116,7 +123,8 @@ morie_llm_probe_ollama <- function(timeout = 2) {
 
 #' .morie_llm_system_prompt
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{.morie_llm_messages}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @param context_block Defaults to \code{""}.
@@ -138,11 +146,12 @@ morie_llm_probe_ollama <- function(timeout = 2) {
 
 #' .morie_llm_messages
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{morie_llm_ask}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @param prompt See Usage.
-#' @param context Defaults to \code{NULL}.
+#' @param context Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @param system_prompt Defaults to \code{NULL}.
 #' @return The value of \code{list}.
 #' @export
@@ -202,10 +211,11 @@ morie_llm_request_completion <- function(base_url, model, messages,
 
 #' .morie_llm_extract_text
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{.morie_llm_freeapi_completion}, \code{morie_llm_ask}, \code{morie_llm_ask_multi}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
-#' @param data See Usage.
+#' @param data A list; the body reads \code{$choices} from it.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .morie_llm_extract_text <- function(data) {
@@ -217,7 +227,8 @@ morie_llm_request_completion <- function(base_url, model, messages,
 
 #' .morie_llm_local_fallback
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @param prompt See Usage.
@@ -329,7 +340,8 @@ FREEAPI_BASE_URL      <- "https://ollamafreeapi.duckdns.org"  # community-hosted
 
 #' .morie_llm_freeapi_model
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{.morie_llm_freeapi_completion}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @return One of two values, depending on the branch taken.
@@ -449,7 +461,8 @@ morie_llm_list_freeapi_models <- function() {
 
 #' morie_llm_detect_provider
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{morie_llm_agent_available}, \code{morie_llm_ask}, \code{morie_llm_ask_multi}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @return A character value.
@@ -466,7 +479,8 @@ morie_llm_detect_provider <- function() {
 
 #' .morie_llm_messages_to_prompt
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' follows.
 #'
 #' @param messages See Usage.
@@ -487,10 +501,11 @@ morie_llm_detect_provider <- function() {
 
 #' .morie_llm_strip_think
 #'
-#' Part of the llm implementation; see the file header for the source it
+#' A step of the llm implementation. Called by \code{.morie_llm_freeapi_completion}.
+#' See the file header for the source the module follows.
 #' follows.
 #'
-#' @param text See Usage.
+#' @param text Character; passed to \code{gsub}.
 #' @return The value of \code{trimws}.
 #' @export
 .morie_llm_strip_think <- function(text) {

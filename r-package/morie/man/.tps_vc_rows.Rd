@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{x}{See Usage.}
-\item{top}{Defaults to \code{20L}.}
+\item{top}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{20L}.}
 }
 \description{
 Part of the tps_all_analyze implementation; see the file header for the source it follows.

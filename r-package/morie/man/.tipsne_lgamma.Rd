@@ -8,7 +8,7 @@
 .tipsne_lgamma(z)
 }
 \arguments{
-\item{z}{See Usage.}
+\item{z}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the tipsne_native implementation; see the file header for the source it follows.

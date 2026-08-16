@@ -11,7 +11,7 @@ singular_value_adjust(a, cap = .EIGENVALUE_CAP)
 SVD cap on the prewhitening matrix
 }
 \value{
-The value of \code{%*%}.
+The value of \code{\%*\%}.
 }
 \keyword{internal}
 \examples{

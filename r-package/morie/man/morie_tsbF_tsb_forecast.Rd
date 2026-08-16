@@ -12,10 +12,10 @@ morie_tsbF_tsb_forecast(y, alpha = 0.1, beta = 0.05, horizon = 1, init = "global
 \item{alpha}{Defaults to \code{0.1}.}
 \item{beta}{Defaults to \code{0.05}.}
 \item{horizon}{Defaults to \code{1}.}
-\item{init}{Defaults to \code{"global"}.}
-\item{z0}{Defaults to \code{NULL}.}
-\item{p0}{Defaults to \code{NULL}.}
-\item{burn_in}{Defaults to \code{0}.}
+\item{init}{Passed to \code{.tsbF_init}. Defaults to \code{"global"}.}
+\item{z0}{Passed to \code{.tsbF_init}.}
+\item{p0}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
+\item{burn_in}{Passed to \code{.tsbF_burn}. Defaults to \code{0}.}
 }
 \description{
 Part of the tsbF_native implementation; see the file header for the source it follows.

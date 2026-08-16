@@ -13,7 +13,7 @@ muzero_search(observation, actions, representation, dynamics, prediction, simula
 \item{representation}{See Usage.}
 \item{dynamics}{See Usage.}
 \item{prediction}{See Usage.}
-\item{simulations}{Defaults to \code{50}.}
+\item{simulations}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50}.}
 \item{gamma}{Defaults to \code{0.997}.}
 \item{c1}{Defaults to \code{1.25}.}
 \item{c2}{Defaults to \code{19652}.}

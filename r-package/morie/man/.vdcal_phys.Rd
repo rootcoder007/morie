@@ -8,7 +8,7 @@
 .vdcal_phys(par)
 }
 \arguments{
-\item{par}{See Usage.}
+\item{par}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 }
 \description{
 Part of the vdcal_native implementation; see the file header for the source it follows.

@@ -73,8 +73,8 @@ NULL
 #' data frame and a vector of covariate names. Mirrors python
 #' _design_matrix.
 #'
-#' @param data See Usage.
-#' @param covariates See Usage.
+#' @param data A matrix; indexed by row and column.
+#' @param covariates A vector; its length is taken.
 #' @return The value of \code{mf}, as built in the body.
 #' @export
 .otis_design_matrix <- function(data, covariates) {
@@ -102,13 +102,14 @@ NULL
 # Newton-Raphson logistic with ridge penalty.
 #' Newton-Raphson logistic with ridge penalty
 #'
-#' Part of the otis_causal implementation; see the file header for the
+#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate}, \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
-#' @param d See Usage.
-#' @param ridge Defaults to \code{0.001}.
-#' @param max_iter Defaults to \code{50L}.
+#' @param X A matrix; passed to \code{nrow}.
+#' @param d Numeric; combined arithmetically in the body.
+#' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{0.001}.
+#' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
 #' @param tol Defaults to \code{1e-06}.
 #' @return The value of \code{beta}, as built in the body.
 #' @export
@@ -135,11 +136,12 @@ NULL
 # Clip propensity away from 0/1.
 #' Clip propensity away from 0/1
 #'
-#' Part of the otis_causal implementation; see the file header for the
+#' A step of the otis_causal implementation. Called by \code{.otis_predict_ps}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param e See Usage.
-#' @param eps Defaults to \code{0.02}.
+#' @param eps Numeric; combined arithmetically in the body. Defaults to \code{0.02}.
 #' @return The value of \code{pmin}.
 #' @export
 .otis_clip_ps <- function(e, eps = 0.02) {
@@ -149,12 +151,13 @@ NULL
 # Predict propensity from fitted beta on a (possibly new) X.
 #' Predict propensity from fitted beta on a (possibly new) X
 #'
-#' Part of the otis_causal implementation; see the file header for the
+#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate}, \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
-#' @param beta See Usage.
-#' @param eps Defaults to \code{0.02}.
+#' @param X A matrix; passed to \code{\%*\%}.
+#' @param beta A matrix; passed to \code{\%*\%}.
+#' @param eps Passed to \code{.otis_clip_ps}. Defaults to \code{0.02}.
 #' @return The value of \code{.otis_clip_ps}.
 #' @export
 .otis_predict_ps <- function(X, beta, eps = 0.02) {
@@ -165,11 +168,12 @@ NULL
 # Brier + log-loss + observed/predicted prevalence.
 #' Brier + log-loss + observed/predicted prevalence
 #'
-#' Part of the otis_causal implementation; see the file header for the
+#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate}, \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
-#' @param d See Usage.
+#' @param p Numeric; passed to \code{mean}.
+#' @param d Numeric; passed to \code{mean}.
 #' @return A list with \code{brier}, \code{obs_prevalence}, \code{predicted_prevalence}, \code{log_loss}.
 #' @export
 .otis_propensity_diagnostics <- function(p, d) {
@@ -185,10 +189,11 @@ NULL
 # Liang-Zeger one-way cluster-robust SE for mean of a score vector.
 #' Liang-Zeger one-way cluster-robust SE for mean of a score vector
 #'
-#' Part of the otis_causal implementation; see the file header for the
+#' A step of the otis_causal implementation. Called by \code{.otis_multiway_cluster_se}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param scores See Usage.
+#' @param scores A vector; its length is taken.
 #' @param cluster See Usage.
 #' @return A numeric value.
 #' @export
@@ -203,11 +208,12 @@ NULL
 # Cameron-Gelbach-Miller multi-way cluster-robust SE (up to 2-way).
 #' Cameron-Gelbach-Miller multi-way cluster-robust SE (up to 2-way)
 #'
-#' Part of the otis_causal implementation; see the file header for the
+#' A step of the otis_causal implementation. Called by \code{morie_otis_irm_dml}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param scores See Usage.
-#' @param clusters See Usage.
+#' @param scores Passed to \code{.otis_cluster_se}.
+#' @param clusters A vector; its length is taken and its elements indexed.
 #' @return The value of \code{.otis_cluster_se}.
 #' @export
 .otis_multiway_cluster_se <- function(scores, clusters) {
@@ -232,12 +238,13 @@ NULL
 # CausalEstimate constructor (R analogue of the python dataclass).
 #' CausalEstimate constructor (R analogue of the python dataclass)
 #'
-#' Part of the otis_causal implementation; see the file header for the
+#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate}, \code{morie_otis_aipw_superlearner}, \code{morie_otis_causal_grid} and 4 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param estimator See Usage.
-#' @param ate See Usage.
-#' @param ate_se See Usage.
+#' @param ate Numeric; combined arithmetically in the body.
+#' @param ate_se Numeric; combined arithmetically in the body.
 #' @param ate_pval See Usage.
 #' @param n See Usage.
 #' @param n_treated See Usage.
@@ -780,7 +787,7 @@ morie_otis_classify_mandela_combo <- function(mh, sr, sw,
 #'
 #' sum of within-row + across-row region-change indicators.
 #'
-#' @param df See Usage.
+#' @param df A matrix; indexed by row and column.
 #' @return The value of \code{base}, as built in the body.
 #' @export
 .otis_alert_volatility_frame <- function(df) {

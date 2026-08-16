@@ -8,8 +8,8 @@
 .kaiser_window(N, beta = 14)
 }
 \arguments{
-\item{N}{See Usage.}
-\item{beta}{Defaults to \code{14}.}
+\item{N}{Numeric; combined arithmetically in the body.}
+\item{beta}{Numeric; combined arithmetically in the body. Defaults to \code{14}.}
 }
 \description{
 I0. Matches numpy.kaiser(N, beta).

@@ -8,9 +8,9 @@
 .snpest_resample(e, weights, scheme)
 }
 \arguments{
-\item{e}{See Usage.}
-\item{weights}{See Usage.}
-\item{scheme}{See Usage.}
+\item{e}{Passed to \code{.ghc_unif}.}
+\item{weights}{A vector; its length is taken and its elements indexed.}
+\item{scheme}{One of \code{"multinomial"}, \code{"stratified"}, \code{"systematic"}.}
 }
 \description{
 Part of the snpest_native implementation; see the file header for the source it follows.

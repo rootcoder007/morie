@@ -11,9 +11,9 @@
 \item{start}{See Usage.}
 \item{stop}{See Usage.}
 \item{event}{See Usage.}
-\item{X}{See Usage.}
-\item{strata}{Defaults to \code{NULL}.}
-\item{max_iter}{Defaults to \code{50L}.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
+\item{strata}{Optional; may be \code{NULL}. A vector; its length is taken.}
+\item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.}
 \item{tol}{Defaults to \code{1e-09}.}
 \item{offset}{Defaults to \code{NULL}.}
 }

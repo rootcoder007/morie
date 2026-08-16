@@ -8,10 +8,10 @@
 .otis_logit_fit(X, d, ridge = 0.001, max_iter = 50L, tol = 1e-06)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{d}{See Usage.}
-\item{ridge}{Defaults to \code{0.001}.}
-\item{max_iter}{Defaults to \code{50L}.}
+\item{X}{A matrix; passed to \code{nrow}.}
+\item{d}{Numeric; combined arithmetically in the body.}
+\item{ridge}{Numeric; combined arithmetically in the body. Defaults to \code{0.001}.}
+\item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.}
 \item{tol}{Defaults to \code{1e-06}.}
 }
 \description{

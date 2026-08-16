@@ -8,7 +8,7 @@
 sts_score(pairs, embed)
 }
 \arguments{
-\item{pairs}{See Usage.}
+\item{pairs}{A vector; its length is taken and its elements indexed.}
 \item{embed}{See Usage.}
 }
 \description{

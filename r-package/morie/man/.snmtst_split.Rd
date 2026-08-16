@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{beta}{See Usage.}
-\item{n_pre}{See Usage.}
-\item{n_post}{See Usage.}
+\item{n_pre}{A count; the body uses it as \code{seq_len(...)}.}
+\item{n_post}{A count; the body uses it as \code{seq_len(...)}.}
 }
 \description{
 Part of the snmtst_native implementation; see the file header for the source it follows.

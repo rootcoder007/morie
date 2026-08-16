@@ -8,8 +8,8 @@
 mqtmpl_single_marker(y, g)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{g}{See Usage.}
+\item{y}{A vector; its length is taken.}
+\item{g}{Numeric; passed to \code{mean}.}
 }
 \description{
 Part of the mqtmpl_native implementation; see the file header for the source it follows.

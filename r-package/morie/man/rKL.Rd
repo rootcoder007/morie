@@ -8,12 +8,12 @@
 rKL(protected, step = 10L, normalize = TRUE)
 }
 \arguments{
-\item{protected}{See Usage.}
-\item{step}{Defaults to \code{10L}.}
-\item{normalize}{Defaults to \code{TRUE}.}
+\item{protected}{Passed to \code{.measure}.}
+\item{step}{Passed to \code{.measure}. Defaults to \code{10L}.}
+\item{normalize}{Passed to \code{.measure}. Defaults to \code{TRUE}.}
 }
 \description{
-Part of the fairRC_native implementation; see the file header for the source it follows.
+A step of the fairRC_native implementation. No other function in the package calls it. See the file header for the source the module follows.
 }
 \value{
 The value of \code{.measure}.

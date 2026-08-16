@@ -8,10 +8,10 @@
 .gru4r_sigmoid(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Numeric; combined arithmetically in the body.}
 }
 \description{
-Part of the gru4r_native implementation; see the file header for the source it follows.
+A step of the gru4r_native implementation. Called by \code{morie_gru4r_bpr}, \code{morie_gru4r_gru}, \code{morie_gru4r_top1}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{ifelse}.

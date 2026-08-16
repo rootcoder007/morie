@@ -8,13 +8,13 @@
 motfsr_theta_from_subsequence(coded, i, j, w, L, mu, weight)
 }
 \arguments{
-\item{coded}{See Usage.}
+\item{coded}{A vector; indexed elementwise.}
 \item{i}{See Usage.}
-\item{j}{See Usage.}
-\item{w}{See Usage.}
-\item{L}{See Usage.}
+\item{j}{Numeric; combined arithmetically in the body.}
+\item{w}{A count; the body uses it as \code{seq_len(...)}.}
+\item{L}{A count; the body uses it as \code{rep(...)}.}
 \item{mu}{See Usage.}
-\item{weight}{See Usage.}
+\item{weight}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the motfsr_native implementation; see the file header for the source it follows.

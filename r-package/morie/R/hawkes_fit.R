@@ -14,7 +14,8 @@
 
 #' .hawkes_param_names
 #'
-#' Part of the hawkes_fit implementation; see the file header for the
+#' A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param kernel See Usage.
@@ -38,7 +39,7 @@
 #' feasibility cliffs: a0 is free, eta = plogis(phi) in (0, 1), and the
 #' shape/scale parameters are exp(phi) > 0.
 #'
-#' @param phi See Usage.
+#' @param phi A vector; indexed elementwise.
 #' @return The value of \code{theta}, as built in the body.
 #' @export
 .hawkes_to_theta <- function(phi) {
@@ -50,10 +51,11 @@
 
 #' .hawkes_to_phi
 #'
-#' Part of the hawkes_fit implementation; see the file header for the
+#' A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param theta See Usage.
+#' @param theta A vector; indexed elementwise.
 #' @return The value of \code{phi}, as built in the body.
 #' @export
 .hawkes_to_phi <- function(theta) {
@@ -65,12 +67,13 @@
 
 #' .hawkes_nll_cpp
 #'
-#' Part of the hawkes_fit implementation; see the file header for the
+#' A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param theta See Usage.
-#' @param times See Usage.
-#' @param end_time See Usage.
+#' @param theta A vector; indexed elementwise.
+#' @param times Passed to \code{morie_hawkes_ll_exp_const_cpp}.
+#' @param end_time Passed to \code{morie_hawkes_ll_exp_const_cpp}.
 #' @param kernel See Usage.
 #' @return The value of \code{switch}.
 #' @export
@@ -98,8 +101,8 @@
 #'
 #' pure-R fallback. Returns NULL for an infeasible parameter vector.
 #'
-#' @param kernel See Usage.
-#' @param theta See Usage.
+#' @param kernel One of \code{"exponential"}, \code{"lomax"}, \code{"weibull"}.
+#' @param theta A vector; indexed elementwise.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .hawkes_kernel_funs <- function(kernel, theta) {
@@ -150,13 +153,14 @@
 
 #' .hawkes_nll_pureR
 #'
-#' Part of the hawkes_fit implementation; see the file header for the
+#' A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param theta See Usage.
-#' @param times See Usage.
-#' @param end_time See Usage.
-#' @param kernel See Usage.
+#' @param theta A vector; indexed elementwise.
+#' @param times A vector; its length is taken and its elements indexed.
+#' @param end_time Numeric; combined arithmetically in the body.
+#' @param kernel Passed to \code{.hawkes_kernel_funs}.
 #' @return A numeric value.
 #' @export
 .hawkes_nll_pureR <- function(theta, times, end_time, kernel) {
@@ -190,12 +194,13 @@
 
 #' .hawkes_start
 #'
-#' Part of the hawkes_fit implementation; see the file header for the
+#' A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param kernel See Usage.
-#' @param times See Usage.
-#' @param end_time See Usage.
+#' @param times A vector; its length is taken.
+#' @param end_time Numeric; combined arithmetically in the body.
 #' @return The value of \code{switch}.
 #' @export
 .hawkes_start <- function(kernel, times, end_time) {
@@ -221,8 +226,8 @@
 #' n*log(n/T) - n. The Hawkes family nests this, so the Hawkes MLE
 #' log-likelihood can never fall below it.
 #'
-#' @param n See Usage.
-#' @param end_time See Usage.
+#' @param n Numeric; combined arithmetically in the body.
+#' @param end_time Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .hawkes_loglik_poisson <- function(n, end_time) {
@@ -241,7 +246,7 @@
 #' the lower-eta start in particular lets the optimiser reach the
 #' Poisson submodel when the data carries no self-excitation.
 #'
-#' @param phi0 See Usage.
+#' @param phi0 A vector; its length is taken.
 #' @return The value of \code{lapply}.
 #' @export
 .hawkes_restarts <- function(phi0) {

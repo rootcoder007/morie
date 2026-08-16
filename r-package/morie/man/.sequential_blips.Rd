@@ -8,14 +8,14 @@
 .sequential_blips(ys, L0, A0, L1, A1, V0, V1, ridge)
 }
 \arguments{
-\item{ys}{See Usage.}
-\item{L0}{See Usage.}
-\item{A0}{See Usage.}
-\item{L1}{See Usage.}
-\item{A1}{See Usage.}
+\item{ys}{A vector; its length is taken.}
+\item{L0}{Passed to \code{.fit_q2}.}
+\item{A0}{A vector; indexed elementwise.}
+\item{L1}{Passed to \code{.fit_q2}.}
+\item{A1}{Passed to \code{.fit_q2}.}
 \item{V0}{See Usage.}
 \item{V1}{See Usage.}
-\item{ridge}{See Usage.}
+\item{ridge}{Passed to \code{.fit_q2}.}
 }
 \description{
 Part of the tmldyn_native implementation; see the file header for the source it follows.

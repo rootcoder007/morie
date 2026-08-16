@@ -10,7 +10,7 @@
 \arguments{
 \item{infl}{See Usage.}
 \item{cluster}{See Usage.}
-\item{n}{See Usage.}
+\item{n}{Numeric; combined arithmetically in the body.}
 }
 \description{
 function Part of the dml_clustered implementation; see the file header for the source it follows.

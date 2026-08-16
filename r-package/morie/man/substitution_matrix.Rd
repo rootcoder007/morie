@@ -8,8 +8,8 @@
 substitution_matrix(t, pi = NULL, u = 1)
 }
 \arguments{
-\item{t}{See Usage.}
-\item{pi}{Defaults to \code{NULL}.}
+\item{t}{Numeric; combined arithmetically in the body.}
+\item{pi}{Passed to \code{.phylml_pi}.}
 \item{u}{Defaults to \code{1}.}
 }
 \description{

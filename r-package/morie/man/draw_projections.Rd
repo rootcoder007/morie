@@ -8,10 +8,10 @@
 draw_projections(m, d, seed = 0L, orthogonal = TRUE)
 }
 \arguments{
-\item{m}{See Usage.}
-\item{d}{See Usage.}
+\item{m}{A count; the body uses it as \code{seq_len(...)}.}
+\item{d}{A count; the body uses it as \code{matrix(...)}.}
 \item{seed}{Defaults to \code{0L}.}
-\item{orthogonal}{Defaults to \code{TRUE}.}
+\item{orthogonal}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the perfat_native implementation; see the file header for the source it follows.

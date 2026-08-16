@@ -86,11 +86,12 @@ NULL
 
 #' .morie_arsau_locate_outcome_col
 #'
-#' Part of the arsau_analyze implementation; see the file header for the
+#' A step of the arsau_analyze implementation. Called by \code{morie_arsau_analyze_individual_records}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param df See Usage.
-#' @param target See Usage.
+#' @param target Character; passed to \code{tolower}.
 #' @return The value of \code{[}.
 #' @export
 .morie_arsau_locate_outcome_col <- function(df, target) {
@@ -111,18 +112,19 @@ NULL
 
 #' .morie_arsau_wrap
 #'
-#' Part of the arsau_analyze implementation; see the file header for the
+#' A step of the arsau_analyze implementation. Called by \code{morie_arsau_analyze_aggregate_summary}, \code{morie_arsau_analyze_detailed_dataset}, \code{morie_arsau_analyze_individual_records} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param title See Usage.
 #' @param call See Usage.
-#' @param sub_results See Usage.
-#' @param data See Usage.
+#' @param sub_results A vector; its length is taken and its elements indexed.
+#' @param data Optional; may be \code{NULL}. A matrix; passed to \code{nrow}.
 #' @param sidecar See Usage.
 #' @param year_or_range See Usage.
 #' @param kind See Usage.
 #' @param language See Usage.
-#' @param is_valid See Usage.
+#' @param is_valid A flag; the body branches on it.
 #' @param extra_interpretation Defaults to \code{""}.
 #' @return The value of \code{payload}, as built in the body.
 #' @export

@@ -8,13 +8,13 @@
 morie_elmo(X, layers, raw_weights = NULL, gamma = 1)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{layers}{See Usage.}
-\item{raw_weights}{Defaults to \code{NULL}.}
-\item{gamma}{Defaults to \code{1}.}
+\item{X}{Passed to \code{.elmo_representation}.}
+\item{layers}{Passed to \code{.elmo_representation}.}
+\item{raw_weights}{Passed to \code{.elmo_representation}.}
+\item{gamma}{Passed to \code{.elmo_representation}. Defaults to \code{1}.}
 }
 \description{
-Part of the elmo_native implementation; see the file header for the source it follows.
+A step of the elmo_native implementation. No other function in the package calls it. See the file header for the source the module follows.
 }
 \value{
 The value of \code{.elmo_representation}.

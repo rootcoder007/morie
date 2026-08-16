@@ -8,11 +8,11 @@
 morie_timesf(history, predictor, horizon, input_patch_len, output_patch_len)
 }
 \arguments{
-\item{history}{See Usage.}
-\item{predictor}{See Usage.}
-\item{horizon}{See Usage.}
-\item{input_patch_len}{See Usage.}
-\item{output_patch_len}{See Usage.}
+\item{history}{Passed to \code{morie_timesfm}.}
+\item{predictor}{Passed to \code{morie_timesfm}.}
+\item{horizon}{Passed to \code{morie_timesfm}.}
+\item{input_patch_len}{Passed to \code{morie_timesfm}.}
+\item{output_patch_len}{Passed to \code{morie_timesfm}.}
 }
 \description{
 Part of the timesf_native implementation; see the file header for the source it follows.

@@ -8,11 +8,11 @@
 tagRC_adapted_pagerank(adjacency, nodes, p = NULL, d = 0.7, iters = 200, tol = 1e-12)
 }
 \arguments{
-\item{adjacency}{See Usage.}
+\item{adjacency}{A vector; indexed elementwise.}
 \item{nodes}{See Usage.}
 \item{p}{Defaults to \code{NULL}.}
-\item{d}{Defaults to \code{0.7}.}
-\item{iters}{Defaults to \code{200}.}
+\item{d}{Numeric; combined arithmetically in the body. Defaults to \code{0.7}.}
+\item{iters}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{200}.}
 \item{tol}{Defaults to \code{1e-12}.}
 }
 \description{

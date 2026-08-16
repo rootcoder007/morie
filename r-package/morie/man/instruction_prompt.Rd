@@ -8,7 +8,7 @@
 instruction_prompt(symbolic, kind = "conversation")
 }
 \arguments{
-\item{symbolic}{See Usage.}
+\item{symbolic}{A list; the body reads \code{$text} from it.}
 \item{kind}{Defaults to \code{"conversation"}.}
 }
 \description{

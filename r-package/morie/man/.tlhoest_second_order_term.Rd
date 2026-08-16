@@ -10,7 +10,7 @@
 \arguments{
 \item{D2_kernel}{See Usage.}
 \item{O}{See Usage.}
-\item{exclude_diagonal}{Defaults to \code{TRUE}.}
+\item{exclude_diagonal}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the tlhoest_native implementation; see the file header for the source it follows.

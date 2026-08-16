@@ -8,9 +8,9 @@
 nbeats_seasonality_basis(length, harmonics, offset = 0, period = NULL)
 }
 \arguments{
-\item{length}{See Usage.}
-\item{harmonics}{See Usage.}
-\item{offset}{Defaults to \code{0}.}
+\item{length}{A count; the body uses it as \code{seq_len(...)}.}
+\item{harmonics}{A count; the body uses it as \code{seq_len(...)}.}
+\item{offset}{Numeric; combined arithmetically in the body. Defaults to \code{0}.}
 \item{period}{Defaults to \code{NULL}.}
 }
 \description{

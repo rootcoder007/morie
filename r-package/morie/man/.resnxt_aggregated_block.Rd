@@ -8,10 +8,10 @@
 .resnxt_aggregated_block(x, Wins, Wmids, Wouts)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{Wins}{See Usage.}
-\item{Wmids}{See Usage.}
-\item{Wouts}{See Usage.}
+\item{x}{Passed to \code{.resnxt_vec}.}
+\item{Wins}{A vector; its length is taken and its elements indexed.}
+\item{Wmids}{A vector; indexed elementwise.}
+\item{Wouts}{A vector; indexed elementwise.}
 }
 \description{
 Part of the resnxt_native implementation; see the file header for the source it follows.

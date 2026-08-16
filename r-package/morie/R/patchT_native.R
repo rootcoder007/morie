@@ -66,7 +66,7 @@ patchify <- function(x, patch_len, stride = NULL) {
 #' and because the downstream weights are shared, the whole model is
 #' equivariant to permuting them.
 #'
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{as.matrix}.
 #' @param patch_len See Usage.
 #' @param stride Defaults to \code{NULL}.
 #' @return A list with \code{tokens}, \code{D}, \code{n_patches}, \code{patch_len}, \code{n_tokens_total}, \code{design}, \code{note}.
@@ -99,7 +99,7 @@ channel_independent_tokens <- function(X, patch_len, stride = NULL) {
 #' projection is what makes such a model permutation-invariant and so
 #' unable to say which channel a signal came from.
 #'
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{as.matrix}.
 #' @param patch_len See Usage.
 #' @param stride Defaults to \code{NULL}.
 #' @return A list with \code{tokens}, \code{n_patches}, \code{n_tokens_total}, \code{design}, \code{note}.
@@ -149,7 +149,7 @@ instance_norm <- function(x) {
 #' @param patch_len See Usage.
 #' @param stride Defaults to \code{NULL}.
 #' @param D Defaults to \code{1}.
-#' @param channel_independent Defaults to \code{TRUE}.
+#' @param channel_independent A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{n_patches}, \code{pointwise}, \code{patched}, \code{reduction}, \code{stride}, \code{patch_len}, \code{note}.
 #' @export
 attention_cost <- function(L, patch_len, stride = NULL, D = 1,
@@ -174,13 +174,14 @@ attention_cost <- function(L, patch_len, stride = NULL, D = 1,
 # The full front end: instance norm, patch, per-channel tokens.
 #' The full front end: instance norm, patch, per-channel tokens
 #'
-#' Part of the patchT_native implementation; see the file header for the
+#' A step of the patchT_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{as.matrix}.
 #' @param patch_len See Usage.
 #' @param stride Defaults to \code{NULL}.
-#' @param normalise Defaults to \code{TRUE}.
+#' @param normalise A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{estimate}, \code{tokens}, \code{D}, \code{n_patches}, \code{n_tokens_total}, \code{norm_stats}, \code{normalised}, \code{cost}, \code{method}.
 #' @export
 patchtst_encode <- function(X, patch_len, stride = NULL,
@@ -214,7 +215,8 @@ patchtst_encode <- function(X, patch_len, stride = NULL,
 
 #' .patchT_cheatsheet
 #'
-#' Part of the patchT_native implementation; see the file header for the
+#' A step of the patchT_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

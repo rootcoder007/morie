@@ -55,11 +55,12 @@ morie_trfbl_transformer_block <- function(x, num_heads = 2L, d_ff = NULL,
 
 #' .trfbl_layer_norm
 #'
-#' Part of the trfbl implementation; see the file header for the source
+#' A step of the trfbl implementation. Called by \code{morie_trfbl_transformer_block}.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @param x See Usage.
-#' @param eps Defaults to \code{1e-05}.
+#' @param eps Numeric; combined arithmetically in the body. Defaults to \code{1e-05}.
 #' @return The value of \code{sweep}.
 #' @export
 .trfbl_layer_norm <- function(x, eps = 1e-5) {
@@ -70,10 +71,11 @@ morie_trfbl_transformer_block <- function(x, num_heads = 2L, d_ff = NULL,
 
 #' .trfbl_gelu
 #'
-#' Part of the trfbl implementation; see the file header for the source
+#' A step of the trfbl implementation. Called by \code{morie_trfbl_transformer_block}.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param z See Usage.
+#' @param z Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .trfbl_gelu <- function(z) {

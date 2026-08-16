@@ -8,8 +8,8 @@
 .propinf_vector_meta_predict(net, f)
 }
 \arguments{
-\item{net}{See Usage.}
-\item{f}{See Usage.}
+\item{net}{A vector; its length is taken.}
+\item{f}{Passed to \code{.propinf_mlp_forward}.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

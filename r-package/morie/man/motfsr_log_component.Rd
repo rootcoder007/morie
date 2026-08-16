@@ -8,11 +8,11 @@
 motfsr_log_component(theta, coded, i, j, w, comp)
 }
 \arguments{
-\item{theta}{See Usage.}
-\item{coded}{See Usage.}
+\item{theta}{A vector; indexed elementwise.}
+\item{coded}{A vector; indexed elementwise.}
 \item{i}{See Usage.}
-\item{j}{See Usage.}
-\item{w}{See Usage.}
+\item{j}{Numeric; combined arithmetically in the body.}
+\item{w}{A count; the body uses it as \code{seq_len(...)}.}
 \item{comp}{See Usage.}
 }
 \description{

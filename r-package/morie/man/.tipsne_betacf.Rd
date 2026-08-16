@@ -3,14 +3,14 @@
 % the formals.
 \name{.tipsne_betacf}
 \alias{.tipsne_betacf}
-\title{Lentz\\\'s algorithm for the beta continued fraction}
+\title{Lentz\\'s algorithm for the beta continued fraction}
 \usage{
 .tipsne_betacf(a, b, x)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
-\item{x}{See Usage.}
+\item{a}{Numeric; combined arithmetically in the body.}
+\item{b}{Numeric; combined arithmetically in the body.}
+\item{x}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the tipsne_native implementation; see the file header for the source it follows.

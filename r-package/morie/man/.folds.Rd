@@ -8,7 +8,7 @@
 .folds(n, n_folds)
 }
 \arguments{
-\item{n}{See Usage.}
+\item{n}{A count; the body uses it as \code{seq_len(...)}.}
 \item{n_folds}{See Usage.}
 }
 \description{

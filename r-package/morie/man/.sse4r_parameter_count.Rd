@@ -23,11 +23,11 @@ A list with \code{user_params}, \code{item_params}, \code{total}, \code{user_sha
 ----------
 Wu, L., Li, S., Hsieh, C.-J. & Sharpnack, J. (2020) "SSE-PT:
 Sequential Recommendation Via Personalized Transformer", *Proceedings
-of the 14th ACM Conference on Recommender Systems (RecSys \\'20)*,
+of the 14th ACM Conference on Recommender Systems (RecSys \'20)*,
 328-337, doi:10.1145/3383313.3412258; earlier circulated as "Temporal
 Collaborative Ranking Via Personalized Transformer",
 arXiv:1908.05435. The observation that existing self-attentive
-sequential models are not personalised and that different users\\' rating
+sequential models are not personalised and that different users\' rating
 patterns are treated alike; the personalised Transformer concatenating
 a user embedding with each item embedding in the input sequence; and
 the use of Stochastic Shared Embeddings regularisation, replacing an

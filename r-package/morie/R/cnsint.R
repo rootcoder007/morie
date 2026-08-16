@@ -10,9 +10,9 @@
 #' carried on both sets of parameters because joint ML alone DIVERGES on
 #' perfectly separated response patterns.
 #'
-#' @param X See Usage.
+#' @param X A matrix; indexed by row and column.
 #' @param iters Defaults to \code{200}.
-#' @param prior_var Defaults to \code{4}.
+#' @param prior_var Numeric; combined arithmetically in the body. Defaults to \code{4}.
 #' @return A list with \code{b}, \code{th}.
 #' @export
 .rasch_jmle <- function(X, iters = 200, prior_var = 4) {

@@ -8,7 +8,7 @@
 morie_sccsno_check_assumptions(fit_with_pre, pre_index = 0, tol = 0.25)
 }
 \arguments{
-\item{fit_with_pre}{See Usage.}
+\item{fit_with_pre}{A list; the body reads \code{$relative_incidence} from it.}
 \item{pre_index}{Defaults to \code{0}.}
 \item{tol}{Defaults to \code{0.25}.}
 }

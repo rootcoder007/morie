@@ -43,10 +43,11 @@ NULL
 
 #' .otis_tps_toronto_seg_by_year
 #'
-#' Part of the otis_tps_overlay implementation; see the file header for
+#' A step of the otis_tps_overlay implementation. Called by \code{morie_otis_tps_yoy_correlation}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param df_b01 See Usage.
+#' @param df_b01 A list; the body reads \code{$EndFiscalYear}, \code{$Region_AtTimeOfPlacement} from it.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .otis_tps_toronto_seg_by_year <- function(df_b01) {
@@ -71,10 +72,11 @@ NULL
 
 #' .otis_tps_incidents_by_year
 #'
-#' Part of the otis_tps_overlay implementation; see the file header for
+#' A step of the otis_tps_overlay implementation. Called by \code{morie_otis_tps_yoy_correlation}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param df_tps See Usage.
+#' @param df_tps A vector; indexed elementwise.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .otis_tps_incidents_by_year <- function(df_tps) {

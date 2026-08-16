@@ -8,12 +8,12 @@
 .fit_q_dta(ys, A_, W, levels, rows, ridge)
 }
 \arguments{
-\item{ys}{See Usage.}
-\item{A_}{See Usage.}
-\item{W}{See Usage.}
-\item{levels}{See Usage.}
+\item{ys}{A vector; indexed elementwise.}
+\item{A_}{A vector; indexed elementwise.}
+\item{W}{A matrix; indexed by row and column.}
+\item{levels}{A vector; indexed elementwise.}
 \item{rows}{See Usage.}
-\item{ridge}{See Usage.}
+\item{ridge}{Numeric; passed to \code{max}.}
 }
 \description{
 Part of the tmldta_native implementation; see the file header for the source it follows.

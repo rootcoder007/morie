@@ -19,7 +19,7 @@
 \item{influence_values}{See Usage.}
 }
 \description{
-Part of the bootstrap_methods implementation; see the file header for the source it follows.
+A step of the bootstrap_methods implementation. Called by \code{delete_d_jackknife}, \code{jackknife}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{structure}.

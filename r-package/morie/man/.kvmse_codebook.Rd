@@ -11,8 +11,8 @@
 \item{b}{See Usage.}
 \item{iters}{Defaults to \code{200}.}
 \item{grid}{Defaults to \code{2001}.}
-\item{lo}{Defaults to \code{-6}.}
-\item{hi}{Defaults to \code{6}.}
+\item{lo}{Numeric; combined arithmetically in the body. Defaults to \code{-6}.}
+\item{hi}{Numeric; combined arithmetically in the body. Defaults to \code{6}.}
 }
 \description{
 Part of the tqkmse implementation; see the file header for the source it follows.

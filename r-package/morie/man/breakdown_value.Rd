@@ -13,7 +13,7 @@ breakdown_value(beta, n_pre, n_post, family = "SD", l_vec = NULL, sign = "positi
 \item{n_post}{See Usage.}
 \item{family}{Defaults to \code{"SD"}.}
 \item{l_vec}{Defaults to \code{NULL}.}
-\item{sign}{Defaults to \code{"positive"}.}
+\item{sign}{One of \code{"negative"}, \code{"positive"}. Defaults to \code{"positive"}.}
 \item{M_max}{Defaults to \code{10}.}
 \item{tol}{Defaults to \code{1e-09}.}
 }

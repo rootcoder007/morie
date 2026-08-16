@@ -8,9 +8,9 @@
 .propinf_permute_hidden_layer_internal(net, t, sigma)
 }
 \arguments{
-\item{net}{See Usage.}
-\item{t}{See Usage.}
-\item{sigma}{See Usage.}
+\item{net}{A vector; indexed elementwise.}
+\item{t}{Numeric; combined arithmetically in the body.}
+\item{sigma}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

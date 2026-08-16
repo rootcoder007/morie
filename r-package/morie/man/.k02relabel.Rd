@@ -8,7 +8,7 @@
 .k02relabel(comm)
 }
 \arguments{
-\item{comm}{See Usage.}
+\item{comm}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the sgtcoml implementation; see the file header for the source it follows.

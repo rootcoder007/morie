@@ -9,17 +9,17 @@
 }
 \arguments{
 \item{y}{See Usage.}
-\item{w}{See Usage.}
-\item{phi}{See Usage.}
-\item{theta}{See Usage.}
-\item{Phi}{See Usage.}
-\item{Theta}{See Usage.}
+\item{w}{A vector; its length is taken.}
+\item{phi}{A vector; its length is taken.}
+\item{theta}{A vector; its length is taken.}
+\item{Phi}{A vector; its length is taken.}
+\item{Theta}{A vector; its length is taken.}
 \item{s}{See Usage.}
 \item{order}{See Usage.}
 \item{seasonal_order}{See Usage.}
-\item{ll}{See Usage.}
-\item{cs}{See Usage.}
-\item{method}{See Usage.}
+\item{ll}{A list; the body reads \code{$loglik}, \code{$sigma2} from it.}
+\item{cs}{A list; the body reads \code{$residuals}, \code{$sigma2}, \code{$ssq} from it.}
+\item{method}{One of \code{"ml"}, \code{"uls"}.}
 \item{res}{See Usage.}
 }
 \description{

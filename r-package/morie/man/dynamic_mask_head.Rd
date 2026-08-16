@@ -8,8 +8,8 @@
 dynamic_mask_head(output_token, image_grid_vectors, mlp = NULL)
 }
 \arguments{
-\item{output_token}{See Usage.}
-\item{image_grid_vectors}{See Usage.}
+\item{output_token}{Passed to \code{.samdec_vec}.}
+\item{image_grid_vectors}{A matrix; passed to \code{as.matrix}.}
 \item{mlp}{Defaults to \code{NULL}.}
 }
 \description{

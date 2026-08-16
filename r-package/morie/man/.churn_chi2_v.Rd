@@ -3,12 +3,12 @@
 % the formals.
 \name{.churn_chi2_v}
 \alias{.churn_chi2_v}
-\title{Chi-square + Cramer\\\'s V on a 2x2-or-larger crosstab. Returns list}
+\title{Chi-square + Cramer\\'s V on a 2x2-or-larger crosstab. Returns list}
 \usage{
 .churn_chi2_v(tbl, min_cell = 5L)
 }
 \arguments{
-\item{tbl}{See Usage.}
+\item{tbl}{A matrix; passed to \code{dim}.}
 \item{min_cell}{Defaults to \code{5L}.}
 }
 \description{

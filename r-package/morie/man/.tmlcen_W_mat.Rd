@@ -8,8 +8,8 @@
 .tmlcen_W_mat(W, n)
 }
 \arguments{
-\item{W}{See Usage.}
-\item{n}{See Usage.}
+\item{W}{Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.}
+\item{n}{A count; the body uses it as \code{matrix(...)}.}
 }
 \description{
 Part of the tmlcen_native implementation; see the file header for the source it follows.

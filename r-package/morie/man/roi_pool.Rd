@@ -8,8 +8,8 @@
 roi_pool(features, box, out_size = 2L, stride = 1)
 }
 \arguments{
-\item{features}{See Usage.}
-\item{box}{See Usage.}
+\item{features}{A matrix; passed to \code{as.matrix}.}
+\item{box}{A vector; indexed elementwise.}
 \item{out_size}{Defaults to \code{2L}.}
 \item{stride}{Defaults to \code{1}.}
 }

@@ -8,14 +8,14 @@
 morie_randIE_randomized_interventional_effect(Y, A, M, C = NULL, treated = "1", control = "0", route = "gformula", laplace = 0)
 }
 \arguments{
-\item{Y}{See Usage.}
-\item{A}{See Usage.}
-\item{M}{See Usage.}
-\item{C}{Defaults to \code{NULL}.}
+\item{Y}{Passed to \code{morie_randIE_interventional_mean}.}
+\item{A}{Passed to \code{morie_randIE_interventional_mean}.}
+\item{M}{Passed to \code{morie_randIE_interventional_mean}.}
+\item{C}{Passed to \code{morie_randIE_interventional_mean}.}
 \item{treated}{Defaults to \code{"1"}.}
 \item{control}{Defaults to \code{"0"}.}
-\item{route}{Defaults to \code{"gformula"}.}
-\item{laplace}{Defaults to \code{0}.}
+\item{route}{Passed to \code{morie_randIE_interventional_mean}. Defaults to \code{"gformula"}.}
+\item{laplace}{Passed to \code{morie_randIE_interventional_mean}. Defaults to \code{0}.}
 }
 \description{
 Part of the randIE_native implementation; see the file header for the source it follows.

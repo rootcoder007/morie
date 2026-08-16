@@ -8,10 +8,10 @@
 morie_tlhoest(psi_plugin, D1, D2_kernel, O)
 }
 \arguments{
-\item{psi_plugin}{See Usage.}
-\item{D1}{See Usage.}
-\item{D2_kernel}{See Usage.}
-\item{O}{See Usage.}
+\item{psi_plugin}{Passed to \code{.tlhoest_first_order_expansion}.}
+\item{D1}{Passed to \code{.tlhoest_first_order_expansion}.}
+\item{D2_kernel}{Passed to \code{.tlhoest_second_order_term}.}
+\item{O}{Passed to \code{.tlhoest_second_order_term}.}
 }
 \description{
 Part of the tlhoest_native implementation; see the file header for the source it follows.

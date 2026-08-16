@@ -8,10 +8,10 @@
 morie_tncomp(fps, k, objective = "maxmin", seed = NULL)
 }
 \arguments{
-\item{fps}{See Usage.}
-\item{k}{See Usage.}
-\item{objective}{Defaults to \code{"maxmin"}.}
-\item{seed}{Defaults to \code{NULL}.}
+\item{fps}{Passed to \code{.tncomp_select}.}
+\item{k}{Passed to \code{.tncomp_select}.}
+\item{objective}{Passed to \code{.tncomp_select}. Defaults to \code{"maxmin"}.}
+\item{seed}{Passed to \code{.tncomp_select}.}
 }
 \description{
 Part of the tncomp_native implementation; see the file header for the source it follows.

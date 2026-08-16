@@ -18,7 +18,8 @@
 
 #' .seckdf_as_bytes
 #'
-#' Part of the seckdf_native implementation; see the file header for the
+#' A step of the seckdf_native implementation. Called by \code{derive_context_keys}, \code{expand}, \code{extract} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
@@ -33,7 +34,8 @@
 
 #' .seckdf_hexlify
 #'
-#' Part of the seckdf_native implementation; see the file header for the
+#' A step of the seckdf_native implementation. Called by \code{hkdf}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param bs See Usage.

@@ -8,8 +8,8 @@
 .surepi_runmed(x, width)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{width}{See Usage.}
+\item{x}{A vector; its length is taken and its elements indexed.}
+\item{width}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the surepi_native implementation; see the file header for the source it follows.

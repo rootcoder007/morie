@@ -8,9 +8,9 @@
 .morie_beta_weights(t1, t2, K)
 }
 \arguments{
-\item{t1}{See Usage.}
-\item{t2}{See Usage.}
-\item{K}{See Usage.}
+\item{t1}{Numeric; combined arithmetically in the body.}
+\item{t2}{Numeric; combined arithmetically in the body.}
+\item{K}{A count; the body uses it as \code{seq_len(...)}.}
 }
 \description{
 Part of the helpers_time_series_advanced implementation; see the file header for the source it follows.

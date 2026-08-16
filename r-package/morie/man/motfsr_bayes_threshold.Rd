@@ -8,8 +8,8 @@
 motfsr_bayes_threshold(lambda1, loss = NULL)
 }
 \arguments{
-\item{lambda1}{See Usage.}
-\item{loss}{Defaults to \code{NULL}.}
+\item{lambda1}{Numeric; combined arithmetically in the body.}
+\item{loss}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 }
 \description{
 Part of the motfsr_native implementation; see the file header for the source it follows.

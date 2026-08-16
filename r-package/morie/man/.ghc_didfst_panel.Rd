@@ -8,10 +8,10 @@
 .ghc_didfst_panel(Y)
 }
 \arguments{
-\item{Y}{See Usage.}
+\item{Y}{A matrix; passed to \code{as.matrix}.}
 }
 \description{
-Part of the didfst_native implementation; see the file header for the source it follows.
+A step of the didfst_native implementation. Called by \code{group_time_att}, \code{panel_differences}, \code{placebo_did}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{M}, \code{n}, \code{T}.

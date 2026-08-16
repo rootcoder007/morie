@@ -8,10 +8,10 @@
 .morie_chacha20poly1305_decrypt_impl(key_sxp, nonce_sxp, ct_with_tag_sxp, aad_sxp)
 }
 \arguments{
-\item{key_sxp}{See Usage.}
-\item{nonce_sxp}{See Usage.}
-\item{ct_with_tag_sxp}{See Usage.}
-\item{aad_sxp}{See Usage.}
+\item{key_sxp}{Passed to \code{.Call}.}
+\item{nonce_sxp}{Passed to \code{.Call}.}
+\item{ct_with_tag_sxp}{Passed to \code{.Call}.}
+\item{aad_sxp}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

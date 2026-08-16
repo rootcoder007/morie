@@ -10,7 +10,7 @@ composite_distance(tnf_a, tnf_b, cov_a = NULL, cov_b = NULL, len_a = NULL, len_b
 \arguments{
 \item{tnf_a}{See Usage.}
 \item{tnf_b}{See Usage.}
-\item{cov_a}{Defaults to \code{NULL}.}
+\item{cov_a}{Optional; may be \code{NULL}. A vector; its length is taken.}
 \item{cov_b}{Defaults to \code{NULL}.}
 \item{len_a}{Defaults to \code{NULL}.}
 \item{len_b}{Defaults to \code{NULL}.}

@@ -8,9 +8,9 @@
 .tdcvar_logreg(X, y, max_iter = 25L, tol = 1e-08)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{max_iter}{Defaults to \code{25L}.}
+\item{X}{A matrix; passed to \code{nrow}.}
+\item{y}{Numeric; combined arithmetically in the body.}
+\item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{25L}.}
 \item{tol}{Defaults to \code{1e-08}.}
 }
 \description{

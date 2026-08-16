@@ -8,11 +8,11 @@
 prophe_additive_components(t, y, seasonalities = NULL, holidays = NULL, holiday_window = c(0, 0), ...)
 }
 \arguments{
-\item{t}{See Usage.}
-\item{y}{See Usage.}
-\item{seasonalities}{Defaults to \code{NULL}.}
-\item{holidays}{Defaults to \code{NULL}.}
-\item{holiday_window}{Defaults to \code{c(0, 0)}.}
+\item{t}{Passed to \code{morie_prphet}.}
+\item{y}{Passed to \code{morie_prphet}.}
+\item{seasonalities}{Optional; may be \code{NULL}. A vector; its length is taken.}
+\item{holidays}{Optional; may be \code{NULL}. A vector; its length is taken.}
+\item{holiday_window}{A vector; indexed elementwise. Defaults to \code{c(0, 0)}.}
 \item{...}{Passed through.}
 }
 \description{

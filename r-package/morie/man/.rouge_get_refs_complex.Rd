@@ -8,7 +8,7 @@
 .rouge_get_refs_complex(reference)
 }
 \arguments{
-\item{reference}{See Usage.}
+\item{reference}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the rouge_native implementation; see the file header for the source it follows.

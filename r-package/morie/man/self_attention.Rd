@@ -8,10 +8,10 @@
 self_attention(E, WQ, WK, WV, mask = NULL)
 }
 \arguments{
-\item{E}{See Usage.}
-\item{WQ}{See Usage.}
-\item{WK}{See Usage.}
-\item{WV}{See Usage.}
+\item{E}{Passed to \code{.sasrec_mat}.}
+\item{WQ}{A matrix; passed to \code{nrow}.}
+\item{WK}{A matrix; passed to \code{ncol}.}
+\item{WV}{A matrix; passed to \code{ncol}.}
 \item{mask}{Defaults to \code{NULL}.}
 }
 \description{

@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{model}{See Usage.}
-\item{prompt}{See Usage.}
+\item{prompt}{Passed to \code{morie_llm_ask}.}
 \item{timeout_s}{Defaults to \code{.siu_llm_default_timeout()}.}
 }
 \description{

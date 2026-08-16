@@ -22,7 +22,8 @@ NULL
 
 #' .xai_result
 #'
-#' Part of the fairness_xai implementation; see the file header for the
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale}, \code{morie_fairness_xai_ceteris_paribus}, \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param title See Usage.
@@ -46,10 +47,11 @@ NULL
 
 #' .xai_as_2d
 #'
-#' Part of the fairness_xai implementation; see the file header for the
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale}, \code{morie_fairness_xai_ceteris_paribus}, \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{as.matrix}.
 #' @return The value of \code{m}, as built in the body.
 #' @export
 .xai_as_2d <- function(X) {
@@ -62,11 +64,12 @@ NULL
 
 #' .xai_names
 #'
-#' Part of the fairness_xai implementation; see the file header for the
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale}, \code{morie_fairness_xai_ceteris_paribus}, \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param feature_names See Usage.
-#' @param d See Usage.
+#' @param d A count; the body uses it as \code{seq_len(...)}.
 #' @return The value of \code{nm}, as built in the body.
 #' @export
 .xai_names <- function(feature_names, d) {
@@ -81,11 +84,12 @@ NULL
 
 #' .xai_resolve
 #'
-#' Part of the fairness_xai implementation; see the file header for the
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale}, \code{morie_fairness_xai_ceteris_paribus}, \code{morie_fairness_xai_partial_dependence}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param feature See Usage.
-#' @param names See Usage.
+#' @param names A vector; its length is taken.
 #' @return The value of \code{idx}, as built in the body.
 #' @export
 .xai_resolve <- function(feature, names) {
@@ -104,11 +108,12 @@ NULL
 
 #' .xai_predict
 #'
-#' Part of the fairness_xai implementation; see the file header for the
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale}, \code{morie_fairness_xai_ceteris_paribus}, \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param predict_fn See Usage.
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{nrow}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .xai_predict <- function(predict_fn, X) {
@@ -121,7 +126,8 @@ NULL
 
 #' .xai_have_iml
 #'
-#' Part of the fairness_xai implementation; see the file header for the
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_permutation_importance}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return The value of \code{requireNamespace}.

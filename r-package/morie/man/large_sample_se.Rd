@@ -10,7 +10,7 @@ large_sample_se(theta, Theta, n)
 \arguments{
 \item{theta}{See Usage.}
 \item{Theta}{See Usage.}
-\item{n}{See Usage.}
+\item{n}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the sarima_native implementation; see the file header for the source it follows.

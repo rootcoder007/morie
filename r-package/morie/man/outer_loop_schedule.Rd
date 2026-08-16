@@ -10,7 +10,7 @@ outer_loop_schedule(alpha, C, examine_all)
 \arguments{
 \item{alpha}{See Usage.}
 \item{C}{See Usage.}
-\item{examine_all}{See Usage.}
+\item{examine_all}{A flag; the body branches on it.}
 }
 \description{
 Part of the smoopt_native implementation; see the file header for the source it follows.

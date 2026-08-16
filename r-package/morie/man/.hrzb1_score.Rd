@@ -8,9 +8,9 @@
 .hrzb1_score(b, ys, X)
 }
 \arguments{
-\item{b}{See Usage.}
-\item{ys}{See Usage.}
-\item{X}{See Usage.}
+\item{b}{A matrix; passed to \code{\%*\%}.}
+\item{ys}{Numeric; combined arithmetically in the body.}
+\item{X}{A matrix; passed to \code{\%*\%}.}
 }
 \description{
 concordance of the sign of the index with the +-1 response). Extracted from the hrzb1() optimiser closures so it can be unit-tested directly.

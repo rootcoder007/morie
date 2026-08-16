@@ -8,11 +8,11 @@
 .morie_write_store(data, path)
 }
 \arguments{
-\item{data}{See Usage.}
-\item{path}{See Usage.}
+\item{data}{Passed to \code{.morie_to_json}.}
+\item{path}{Passed to \code{.morie_resolve_path}.}
 }
 \description{
-Part of the crypto_keystore implementation; see the file header for the source it follows.
+A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_store}. See the file header for the source the module follows.
 }
 \value{
 Invisibly,nothing; the function is called for its effect.

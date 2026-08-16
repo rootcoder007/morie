@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{P}{See Usage.}
-\item{R}{See Usage.}
+\item{R}{A matrix; passed to \code{dim}.}
 }
 \description{
 Part of the mdpval_native implementation; see the file header for the source it follows.

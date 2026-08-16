@@ -8,8 +8,8 @@
 encode_mask_prompt(mask, image_embedding, weight = 1)
 }
 \arguments{
-\item{mask}{See Usage.}
-\item{image_embedding}{See Usage.}
+\item{mask}{Passed to \code{.samseg_mat}.}
+\item{image_embedding}{Passed to \code{.samseg_mat}.}
 \item{weight}{Defaults to \code{1}.}
 }
 \description{

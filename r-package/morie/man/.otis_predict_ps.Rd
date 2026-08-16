@@ -8,9 +8,9 @@
 .otis_predict_ps(X, beta, eps = 0.02)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{beta}{See Usage.}
-\item{eps}{Defaults to \code{0.02}.}
+\item{X}{A matrix; passed to \code{\%*\%}.}
+\item{beta}{A matrix; passed to \code{\%*\%}.}
+\item{eps}{Passed to \code{.otis_clip_ps}. Defaults to \code{0.02}.}
 }
 \description{
 Part of the otis_causal implementation; see the file header for the source it follows.

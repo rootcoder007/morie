@@ -6,10 +6,10 @@
 #'
 #' optimiser closure so the zero-norm guard is directly unit-testable.
 #'
-#' @param b See Usage.
-#' @param X See Usage.
-#' @param ys See Usage.
-#' @param h See Usage.
+#' @param b Numeric; combined arithmetically in the body.
+#' @param X A matrix; passed to \code{\%*\%}.
+#' @param ys Numeric; combined arithmetically in the body.
+#' @param h Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .hrzb2_loss <- function(b, X, ys, h) {

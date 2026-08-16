@@ -8,7 +8,7 @@
 .trmRew_prec(precedence, sym)
 }
 \arguments{
-\item{precedence}{See Usage.}
+\item{precedence}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 \item{sym}{See Usage.}
 }
 \description{
@@ -25,7 +25,7 @@ Abstract Algebra, Pergamon Press, 263-297,
 doi:10.1016/B978-0-08-012975-4.50028-X.
 
 Newman, M. H. A. (1942) "On theories with a combinatorial definition
-of \\'equivalence\\'", Annals of Mathematics 43(2), 223-243,
+of \'equivalence\'", Annals of Mathematics 43(2), 223-243,
 doi:10.2307/1968867.
 
 Baader, F. & Nipkow, T. (1998) Term Rewriting and All That,

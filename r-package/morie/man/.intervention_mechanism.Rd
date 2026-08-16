@@ -8,12 +8,12 @@
 .intervention_mechanism(L0, A0, L1, A1, trim, known)
 }
 \arguments{
-\item{L0}{See Usage.}
-\item{A0}{See Usage.}
-\item{L1}{See Usage.}
-\item{A1}{See Usage.}
-\item{trim}{See Usage.}
-\item{known}{See Usage.}
+\item{L0}{A matrix; indexed by row and column.}
+\item{A0}{A vector; its length is taken and its elements indexed.}
+\item{L1}{A matrix; indexed by row and column.}
+\item{A1}{Passed to \code{.tmldyn_logit_irls}.}
+\item{trim}{Numeric; passed to \code{max}.}
+\item{known}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 }
 \description{
 Part of the tmldyn_native implementation; see the file header for the source it follows.

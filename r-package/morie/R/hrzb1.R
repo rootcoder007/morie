@@ -9,9 +9,9 @@
 #' of the sign of the index with the +-1 response). Extracted from the
 #' hrzb1() optimiser closures so it can be unit-tested directly.
 #'
-#' @param b See Usage.
-#' @param ys See Usage.
-#' @param X See Usage.
+#' @param b A matrix; passed to \code{\%*\%}.
+#' @param ys Numeric; combined arithmetically in the body.
+#' @param X A matrix; passed to \code{\%*\%}.
 #' @return A numeric value.
 #' @export
 .hrzb1_score <- function(b, ys, X) {

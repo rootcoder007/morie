@@ -59,7 +59,8 @@ NULL
 
 #' .req_survey
 #'
-#' Part of the survey implementation; see the file header for the source
+#' A step of the survey implementation. Called by \code{morie_survey_glm}, \code{morie_survey_mean}.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @return The value of \code{morie_ensure_extras}.

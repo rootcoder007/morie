@@ -8,7 +8,7 @@
 .stahdo_weight(r, cutoff)
 }
 \arguments{
-\item{r}{See Usage.}
+\item{r}{Numeric; combined arithmetically in the body.}
 \item{cutoff}{See Usage.}
 }
 \description{

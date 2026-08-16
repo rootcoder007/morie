@@ -8,7 +8,7 @@
 r_convention(fitted)
 }
 \arguments{
-\item{fitted}{See Usage.}
+\item{fitted}{A list; the body reads \code{$aic}, \code{$loglik}, \code{$phi}, \code{$Phi}, \code{$sigma2}, \code{$theta}, \code{$Theta} from it.}
 }
 \description{
 Part of the sarima_native implementation; see the file header for the source it follows.

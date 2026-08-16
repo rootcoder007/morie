@@ -8,10 +8,10 @@
 .kernel(name)
 }
 \arguments{
-\item{name}{See Usage.}
+\item{name}{Compared against \code{"matern52"}.}
 }
 \description{
-Part of the bayopt_native implementation; see the file header for the source it follows.
+A step of the bayopt_native implementation. Called by \code{gp_posterior}, \code{gp_posterior_gradient}. See the file header for the source the module follows.
 }
 \value{
 One of two values, depending on the branch taken.

@@ -8,9 +8,9 @@
 .stahdo_subsample_dirs(M, n, p, n_dirs, seed)
 }
 \arguments{
-\item{M}{See Usage.}
-\item{n}{See Usage.}
-\item{p}{See Usage.}
+\item{M}{A matrix; indexed by row and column.}
+\item{n}{Numeric; combined arithmetically in the body.}
+\item{p}{A count; the body uses it as \code{seq_len(...)}.}
 \item{n_dirs}{See Usage.}
 \item{seed}{See Usage.}
 }

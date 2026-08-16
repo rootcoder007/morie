@@ -8,7 +8,7 @@
 .residual_column(w, ar, ma)
 }
 \arguments{
-\item{w}{See Usage.}
+\item{w}{A vector; its length is taken.}
 \item{ar}{See Usage.}
 \item{ma}{See Usage.}
 }

@@ -8,10 +8,10 @@
 morie_twoT_tower_embedding(features, W, b = NULL, normalise = TRUE)
 }
 \arguments{
-\item{features}{See Usage.}
-\item{W}{See Usage.}
-\item{b}{Defaults to \code{NULL}.}
-\item{normalise}{Defaults to \code{TRUE}.}
+\item{features}{Passed to \code{.twoT_as_vec}.}
+\item{W}{Passed to \code{.twoT_as_mat}.}
+\item{b}{Optional; may be \code{NULL}. Passed to \code{.twoT_as_vec}.}
+\item{normalise}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the twoT_native implementation; see the file header for the source it follows.

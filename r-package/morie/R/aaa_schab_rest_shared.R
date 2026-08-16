@@ -33,10 +33,11 @@
 
 #' .schab_moran_check_w
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_geary_c}, \code{.schab_moran_i}, \code{.schab_weight_sums}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param w See Usage.
+#' @param w A matrix; passed to \code{nrow}.
 #' @return The value of \code{w}, as built in the body.
 #' @export
 .schab_moran_check_w <- function(w) {
@@ -51,10 +52,11 @@
 
 #' .schab_weight_sums
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_moran_moments}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param w See Usage.
+#' @param w A matrix; passed to \code{t}.
 #' @return A list with \code{S0}, \code{S1}, \code{S2}.
 #' @export
 .schab_weight_sums <- function(w) {
@@ -68,11 +70,12 @@
 
 #' .schab_moran_i
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_moran_moments}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param z See Usage.
-#' @param w See Usage.
+#' @param z A vector; its length is taken.
+#' @param w A matrix; passed to \code{nrow}.
 #' @return A numeric value.
 #' @export
 .schab_moran_i <- function(z, w) {
@@ -89,11 +92,12 @@
 
 #' .schab_geary_c
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_moran_moments}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param z See Usage.
-#' @param w See Usage.
+#' @param z A vector; its length is taken.
+#' @param w A matrix; passed to \code{nrow}.
 #' @return A numeric value.
 #' @export
 .schab_geary_c <- function(z, w) {
@@ -110,7 +114,8 @@
 
 #' .schab_kurtosis_b
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_moran_moments}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param z See Usage.
@@ -125,11 +130,12 @@
 
 #' .schab_moran_moments
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{spmenv}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param z See Usage.
-#' @param w See Usage.
+#' @param z A vector; its length is taken.
+#' @param w Passed to \code{.schab_weight_sums}.
 #' @return A list with \code{I}, \code{expectation}, \code{variance_normal}, \code{variance_randomization}, \code{sd_normal}, \code{sd_randomization}, \code{z_normal}, \code{z_randomization}, \code{kurtosis_b}, \code{S0}, \code{S1}, \code{S2}, \code{n}, \code{geary_c}, \code{geary_expectation}.
 #' @export
 .schab_moran_moments <- function(z, w) {
@@ -161,11 +167,12 @@
 
 #' .schab_ripley_weights
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_cross_k}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param points See Usage.
-#' @param region See Usage.
+#' @param region A vector; indexed elementwise.
 #' @param radii See Usage.
 #' @return The value of \code{ifelse}.
 #' @export
@@ -208,14 +215,15 @@
 
 #' .schab_cross_k
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_cross_k_combined}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param p1 See Usage.
-#' @param p2 See Usage.
-#' @param region See Usage.
+#' @param p1 A matrix; indexed by row and column.
+#' @param p2 A matrix; indexed by row and column.
+#' @param region A vector; indexed elementwise.
 #' @param r See Usage.
-#' @param correction Defaults to \code{"ripley"}.
+#' @param correction One of \code{"none"}, \code{"ripley"}. Defaults to \code{"ripley"}.
 #' @return A vector, from \code{vapply}.
 #' @export
 .schab_cross_k <- function(p1, p2, region, r, correction = "ripley") {
@@ -246,14 +254,15 @@
 
 #' .schab_cross_k_combined
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{spkcrs}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param p1 See Usage.
-#' @param p2 See Usage.
-#' @param region See Usage.
-#' @param r See Usage.
-#' @param correction Defaults to \code{"ripley"}.
+#' @param p1 A matrix; passed to \code{nrow}.
+#' @param p2 A matrix; passed to \code{nrow}.
+#' @param region A vector; indexed elementwise.
+#' @param r Numeric; combined arithmetically in the body.
+#' @param correction Passed to \code{.schab_cross_k}. Defaults to \code{"ripley"}.
 #' @return A list with \code{K_star}, \code{K_12}, \code{K_21}, \code{L_star}, \code{L_minus_h}, \code{K_independence}, \code{r}, \code{lambda_1}, \code{lambda_2}.
 #' @export
 .schab_cross_k_combined <- function(p1, p2, region, r, correction = "ripley") {
@@ -277,8 +286,8 @@
 #'
 #' Python arm\'s k_function; needed by Diggle-Chetwynd\'s D(h).
 #'
-#' @param p See Usage.
-#' @param region See Usage.
+#' @param p A matrix; indexed by row and column.
+#' @param region A vector; indexed elementwise.
 #' @param r See Usage.
 #' @return A vector, from \code{vapply}.
 #' @export
@@ -301,13 +310,14 @@
 
 #' .schab_dc_d
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{spkcrs}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param p1 See Usage.
-#' @param p2 See Usage.
-#' @param region See Usage.
-#' @param r See Usage.
+#' @param p1 Passed to \code{.schab_k_border}.
+#' @param p2 Passed to \code{.schab_k_border}.
+#' @param region Passed to \code{.schab_k_border}.
+#' @param r Passed to \code{.schab_k_border}.
 #' @return A list with \code{D}, \code{K_11}, \code{K_22}, \code{r}.
 #' @export
 .schab_dc_d <- function(p1, p2, region, r) {
@@ -320,10 +330,11 @@
 
 #' .schab_lattice_check
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_periodogram}, \code{.schab_periodogram_from_cov}, \code{.schab_sample_cov2d}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param z See Usage.
+#' @param z A matrix; passed to \code{nrow}.
 #' @return The value of \code{z}, as built in the body.
 #' @export
 .schab_lattice_check <- function(z) {
@@ -335,11 +346,12 @@
 
 #' .schab_fourier_freq
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_periodogram}, \code{.schab_periodogram_from_cov}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param r See Usage.
-#' @param c See Usage.
+#' @param r Numeric; combined arithmetically in the body.
+#' @param c Numeric; combined arithmetically in the body.
 #' @return A list with \code{w1}, \code{w2}, \code{j}, \code{k}.
 #' @export
 .schab_fourier_freq <- function(r, c) {
@@ -350,10 +362,11 @@
 
 #' .schab_sample_cov2d
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_periodogram_from_cov}, \code{spperiod}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param z See Usage.
+#' @param z A matrix; passed to \code{nrow}.
 #' @return A list with \code{cov}, \code{lags_j}, \code{lags_k}.
 #' @export
 .schab_sample_cov2d <- function(z) {
@@ -381,11 +394,12 @@
 
 #' .schab_periodogram
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{spperiod}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param z See Usage.
-#' @param omit_zero_frequency Defaults to \code{TRUE}.
+#' @param z A matrix; passed to \code{nrow}.
+#' @param omit_zero_frequency A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{periodogram}, \code{omega1}, \code{omega2}, \code{j}, \code{k}, \code{zero_index}, \code{nonzero_mask}, \code{mean_invariant}, \code{r}, \code{c}.
 #' @export
 .schab_periodogram <- function(z, omit_zero_frequency = TRUE) {
@@ -414,10 +428,11 @@
 
 #' .schab_periodogram_from_cov
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{spperiod}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param z See Usage.
+#' @param z A matrix; passed to \code{nrow}.
 #' @return A list with \code{periodogram}, \code{omega1}, \code{omega2}, \code{covariance}, \code{lags_j}, \code{lags_k}.
 #' @export
 .schab_periodogram_from_cov <- function(z) {
@@ -439,16 +454,17 @@
 
 #' .schab_point_source_corr
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{spnst}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param coords See Usage.
+#' @param coords A matrix; passed to \code{as.matrix}.
 #' @param source See Usage.
-#' @param theta1 See Usage.
-#' @param theta2 Defaults to \code{0}.
-#' @param theta3 Defaults to \code{0}.
-#' @param anisotropy Defaults to \code{NULL}.
-#' @param source_anisotropy Defaults to \code{NULL}.
+#' @param theta1 Numeric; combined arithmetically in the body.
+#' @param theta2 Numeric; combined arithmetically in the body. Defaults to \code{0}.
+#' @param theta3 Numeric; combined arithmetically in the body. Defaults to \code{0}.
+#' @param anisotropy Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.
+#' @param source_anisotropy Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .schab_point_source_corr <- function(coords, source, theta1, theta2 = 0,
@@ -493,14 +509,15 @@
 
 #' .schab_practical_range
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{spnst}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param theta1 See Usage.
-#' @param theta2 Defaults to \code{0}.
-#' @param theta3 Defaults to \code{0}.
-#' @param ci Defaults to \code{NULL}.
-#' @param cj Defaults to \code{NULL}.
+#' @param theta1 Numeric; combined arithmetically in the body.
+#' @param theta2 Numeric; combined arithmetically in the body. Defaults to \code{0}.
+#' @param theta3 Numeric; combined arithmetically in the body. Defaults to \code{0}.
+#' @param ci Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.
+#' @param cj Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .schab_practical_range <- function(theta1, theta2 = 0, theta3 = 0,
@@ -512,10 +529,11 @@
 
 #' .schab_haas_window
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_moving_window_krige}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param coords See Usage.
+#' @param coords A matrix; passed to \code{as.matrix}.
 #' @param target See Usage.
 #' @param min_sites Defaults to \code{35L}.
 #' @param step Defaults to \code{5L}.
@@ -561,12 +579,13 @@
 
 #' .schab_empirical_variogram
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_moving_window_krige}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param coords See Usage.
-#' @param z See Usage.
-#' @param n_lags Defaults to \code{10L}.
+#' @param coords A matrix; passed to \code{as.matrix}.
+#' @param z A vector; indexed elementwise.
+#' @param n_lags A count; the body uses it as \code{seq_len(...)}. Defaults to \code{10L}.
 #' @return A list with \code{h}, \code{gamma}, \code{counts}.
 #' @export
 .schab_empirical_variogram <- function(coords, z, n_lags = 10L) {
@@ -596,10 +615,11 @@
 
 #' .schab_variogram_wls
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_moving_window_krige}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param h See Usage.
+#' @param h A vector; indexed elementwise.
 #' @param gamma See Usage.
 #' @param counts See Usage.
 #' @return A list with \code{sill}, \code{range}, \code{converged}, \code{wls}.
@@ -631,15 +651,16 @@
 
 #' .schab_krige_at
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{.schab_moving_window_krige}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param coords See Usage.
-#' @param z See Usage.
+#' @param coords A matrix; passed to \code{as.matrix}.
+#' @param z Numeric; combined arithmetically in the body.
 #' @param target See Usage.
-#' @param sill See Usage.
-#' @param rng See Usage.
-#' @param mu See Usage.
+#' @param sill Numeric; combined arithmetically in the body.
+#' @param rng Numeric; combined arithmetically in the body.
+#' @param mu Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .schab_krige_at <- function(coords, z, target, sill, rng, mu) {
@@ -655,17 +676,18 @@
 
 #' .schab_moving_window_krige
 #'
-#' Part of the schab_rest_shared implementation; see the file header for
+#' A step of the schab_rest_shared implementation. Called by \code{spmwst}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param coords See Usage.
-#' @param z See Usage.
-#' @param targets See Usage.
-#' @param min_sites Defaults to \code{35L}.
-#' @param step Defaults to \code{5L}.
-#' @param n_lags Defaults to \code{10L}.
-#' @param local_mean Defaults to \code{FALSE}.
-#' @param local_variogram Defaults to \code{TRUE}.
+#' @param coords A matrix; passed to \code{as.matrix}.
+#' @param z A vector; its length is taken and its elements indexed.
+#' @param targets A matrix; passed to \code{as.matrix}.
+#' @param min_sites Passed to \code{.schab_haas_window}. Defaults to \code{35L}.
+#' @param step Passed to \code{.schab_haas_window}. Defaults to \code{5L}.
+#' @param n_lags Passed to \code{.schab_empirical_variogram}. Defaults to \code{10L}.
+#' @param local_mean A flag; the body branches on it. Defaults to \code{FALSE}.
+#' @param local_variogram A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{prediction}, \code{local_sill}, \code{local_range}, \code{window_sizes}, \code{converged}, \code{theta_is_global}, \code{global_sill}, \code{global_range}, \code{caveats}.
 #' @export
 .schab_moving_window_krige <- function(coords, z, targets, min_sites = 35L,

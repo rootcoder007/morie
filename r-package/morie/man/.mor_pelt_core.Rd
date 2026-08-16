@@ -8,8 +8,8 @@
 .mor_pelt_core(x, cost, penalty, min_seglen)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{cost}{See Usage.}
+\item{x}{A vector; its length is taken.}
+\item{cost}{Passed to \code{.mor_cp_cost}.}
 \item{penalty}{See Usage.}
 \item{min_seglen}{See Usage.}
 }

@@ -8,8 +8,8 @@
 .pesdol_ols(X, y)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
+\item{X}{A matrix; passed to \code{nrow}.}
+\item{y}{A matrix; passed to \code{crossprod}.}
 }
 \description{
 Part of the pesdol_native implementation; see the file header for the source it follows.

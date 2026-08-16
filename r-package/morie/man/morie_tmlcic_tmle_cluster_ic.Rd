@@ -8,17 +8,17 @@
 morie_tmlcic_tmle_cluster_ic(y, D, X, cluster = NULL, target = "SATE", design = NULL, library = NULL, g_library = NULL, n_folds = NULL, adapt = TRUE, ridge = 1e-08, level = 0.95)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{D}{See Usage.}
-\item{X}{See Usage.}
-\item{cluster}{Defaults to \code{NULL}.}
-\item{target}{Defaults to \code{"SATE"}.}
-\item{design}{Defaults to \code{NULL}.}
-\item{library}{Defaults to \code{NULL}.}
-\item{g_library}{Defaults to \code{NULL}.}
-\item{n_folds}{Defaults to \code{NULL}.}
-\item{adapt}{Defaults to \code{TRUE}.}
-\item{ridge}{Defaults to \code{1e-08}.}
+\item{y}{Passed to \code{.s03vec}.}
+\item{D}{Passed to \code{.s03vec}.}
+\item{X}{Optional; may be \code{NULL}. Passed to \code{.s03mat}.}
+\item{cluster}{Optional; may be \code{NULL}. Passed to \code{.tmlcic_pairs_from}.}
+\item{target}{Passed to \code{morie_tmlcic_adaptive_prespecification}. Defaults to \code{"SATE"}.}
+\item{design}{Optional; may be \code{NULL}. One of \code{"matched"}, \code{"unmatched"}.}
+\item{library}{Passed to \code{morie_tmlcic_adaptive_prespecification}.}
+\item{g_library}{Passed to \code{morie_tmlcic_adaptive_prespecification}.}
+\item{n_folds}{Passed to \code{morie_tmlcic_adaptive_prespecification}.}
+\item{adapt}{A flag; the body branches on it. Defaults to \code{TRUE}.}
+\item{ridge}{Passed to \code{morie_tmlcic_adaptive_prespecification}. Defaults to \code{1e-08}.}
 \item{level}{Defaults to \code{0.95}.}
 }
 \description{

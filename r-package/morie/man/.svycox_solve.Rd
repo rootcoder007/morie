@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{A}{See Usage.}
-\item{b}{See Usage.}
+\item{b}{A vector; its length is taken.}
 }
 \description{
 Part of the svycox_native implementation; see the file header for the source it follows.
@@ -19,7 +19,7 @@ A vector, from \code{sapply}.
 }
 \references{
 ----------
-Binder, D. A. (1992) "Fitting Cox\\'s proportional hazards models from
+Binder, D. A. (1992) "Fitting Cox\'s proportional hazards models from
 survey data", *Biometrika* 79(1), 139-147,
 doi:10.1093/biomet/79.1.139. The weighted estimating equation above,
 the interpretation of :math:`\hat\beta` as a finite-population census

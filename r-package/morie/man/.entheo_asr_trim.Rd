@@ -8,11 +8,11 @@
 .entheo_asr_trim(x, threshold)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A vector; indexed elementwise.}
 \item{threshold}{See Usage.}
 }
 \description{
-Part of the entheo_preprocess implementation; see the file header for the source it follows.
+A step of the entheo_preprocess implementation. Called by \code{preprocess_eeg}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{arr}, \code{n_bad}.

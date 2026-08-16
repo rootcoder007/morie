@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{text}{See Usage.}
-\item{label}{See Usage.}
+\item{label}{Passed to \code{.siu_p_re_escape}.}
 }
 \description{
 Label / value primitives. ---------------------------------------------------------------------------

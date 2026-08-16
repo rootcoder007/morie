@@ -8,7 +8,7 @@
 .tlnet1_fset(friends, i)
 }
 \arguments{
-\item{friends}{See Usage.}
+\item{friends}{A vector; indexed elementwise.}
 \item{i}{See Usage.}
 }
 \description{

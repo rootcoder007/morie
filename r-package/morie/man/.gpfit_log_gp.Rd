@@ -8,8 +8,8 @@
 .gpfit_log_gp(par, y)
 }
 \arguments{
-\item{par}{See Usage.}
-\item{y}{See Usage.}
+\item{par}{A vector; indexed elementwise.}
+\item{y}{A vector; its length is taken.}
 }
 \description{
 the gpfit() optimiser closure so the xi ~ 0 (exponential) and out-of-support branches are directly unit-testable.

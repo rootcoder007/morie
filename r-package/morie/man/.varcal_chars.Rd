@@ -8,7 +8,7 @@
 .varcal_chars(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A vector; its length is taken.}
 }
 \description{
 Part of the varcal_native implementation; see the file header for the source it follows.

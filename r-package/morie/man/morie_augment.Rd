@@ -8,7 +8,7 @@
 morie_augment(g)
 }
 \arguments{
-\item{g}{See Usage.}
+\item{g}{Passed to \code{.prsLR_augment}.}
 }
 \description{
 Part of the prsLR_native implementation; see the file header for the source it follows.

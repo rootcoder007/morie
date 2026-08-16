@@ -8,8 +8,8 @@
 .strtwt_fit(Z, a)
 }
 \arguments{
-\item{Z}{See Usage.}
-\item{a}{See Usage.}
+\item{Z}{Passed to \code{.s03logit}.}
+\item{a}{Passed to \code{.s03logit}.}
 }
 \description{
 Part of the Strtwt implementation; see the file header for the source it follows.

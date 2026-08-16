@@ -8,8 +8,8 @@
 .prsLR_build_tables(g, method)
 }
 \arguments{
-\item{g}{See Usage.}
-\item{method}{See Usage.}
+\item{g}{Passed to \code{.prsLR_augment}.}
+\item{method}{One of \code{"lalr1"}, \code{"slr1"}.}
 }
 \description{
 Part of the prsLR_native implementation; see the file header for the source it follows.

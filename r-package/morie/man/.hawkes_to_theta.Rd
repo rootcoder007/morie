@@ -8,7 +8,7 @@
 .hawkes_to_theta(phi)
 }
 \arguments{
-\item{phi}{See Usage.}
+\item{phi}{A vector; indexed elementwise.}
 }
 \description{
 feasibility cliffs: a0 is free, eta = plogis(phi) in (0, 1), and the shape/scale parameters are exp(phi) > 0.

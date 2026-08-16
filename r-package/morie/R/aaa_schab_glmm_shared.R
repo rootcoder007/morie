@@ -30,12 +30,13 @@
 
 #' .schab_link
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{.schab_conditional_mean}, \code{.schab_fit_pseudo_likelihood}, \code{.schab_naive_marginal_mean} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Numeric; passed to \code{exp}.
 #' @param kind See Usage.
-#' @param inverse Defaults to \code{FALSE}.
+#' @param inverse A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return Nothing; this branch always raises.
 #' @export
 .schab_link <- function(x, kind, inverse = FALSE) {
@@ -51,10 +52,11 @@
 
 #' .schab_link_derivative
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{.schab_mu_eta}, \code{.schab_predict_glm}, \code{.schab_pseudo_data} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param mu See Usage.
+#' @param mu A vector; its length is taken.
 #' @param kind See Usage.
 #' @return Nothing; this branch always raises.
 #' @export
@@ -71,8 +73,8 @@
 #'
 #' notes when deriving (6.89).
 #'
-#' @param mu See Usage.
-#' @param kind See Usage.
+#' @param mu Passed to \code{.schab_link_derivative}.
+#' @param kind Passed to \code{.schab_link_derivative}.
 #' @return A numeric value.
 #' @export
 .schab_mu_eta <- function(mu, kind) {
@@ -83,10 +85,11 @@
 
 #' .schab_variance_function
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{.schab_conditional_variance}, \code{.schab_data_covariance}, \code{.schab_sigma_mu}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param mu See Usage.
+#' @param mu A vector; its length is taken.
 #' @param family See Usage.
 #' @return Nothing; this branch always raises.
 #' @export
@@ -100,7 +103,8 @@
 
 #' .schab_canonical_link
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{.schab_fit_pseudo_likelihood}, \code{spglmm}, \code{sppql}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param family See Usage.
@@ -115,13 +119,14 @@
 
 #' .schab_conditional_mean
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{spglmm}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{\%*\%}.
 #' @param beta See Usage.
 #' @param S See Usage.
-#' @param link_kind Defaults to \code{"log"}.
+#' @param link_kind Passed to \code{.schab_link}. Defaults to \code{"log"}.
 #' @return The value of \code{.schab_link}.
 #' @export
 .schab_conditional_mean <- function(X, beta, S, link_kind = "log") {
@@ -132,12 +137,13 @@
 
 #' .schab_conditional_variance
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{spglmm}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param mu See Usage.
+#' @param mu Passed to \code{.schab_variance_function}.
 #' @param sigma2 See Usage.
-#' @param family See Usage.
+#' @param family Passed to \code{.schab_variance_function}.
 #' @return A numeric value.
 #' @export
 .schab_conditional_variance <- function(mu, sigma2, family) {
@@ -146,14 +152,15 @@
 
 #' .schab_marginal_moments_lognormal
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{spglmm}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{\%*\%}.
 #' @param beta See Usage.
 #' @param sigma2_S See Usage.
 #' @param sigma2 Defaults to \code{1}.
-#' @param rho Defaults to \code{NULL}.
+#' @param rho Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .schab_marginal_moments_lognormal <- function(X, beta, sigma2_S, sigma2 = 1,
@@ -177,12 +184,13 @@
 
 #' G^-1(x\'beta) -- what the marginal mean is NOT, in a GLMM
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{spglmm}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{\%*\%}.
 #' @param beta See Usage.
-#' @param link_kind Defaults to \code{"log"}.
+#' @param link_kind Passed to \code{.schab_link}. Defaults to \code{"log"}.
 #' @return The value of \code{.schab_link}.
 #' @export
 .schab_naive_marginal_mean <- function(X, beta, link_kind = "log") {
@@ -195,12 +203,13 @@
 
 #' .schab_pseudo_data
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{.schab_fit_pseudo_likelihood}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param z See Usage.
-#' @param mu See Usage.
-#' @param link_kind See Usage.
+#' @param z Numeric; combined arithmetically in the body.
+#' @param mu Numeric; combined arithmetically in the body.
+#' @param link_kind Passed to \code{.schab_link}.
 #' @return A numeric value.
 #' @export
 .schab_pseudo_data <- function(z, mu, link_kind) {
@@ -212,11 +221,11 @@
 #'
 #' sides. Distinct from .schab_data_covariance -- see .schab_pql_score.
 #'
-#' @param mu See Usage.
+#' @param mu A vector; its length is taken.
 #' @param sigma2 See Usage.
-#' @param family See Usage.
-#' @param link_kind See Usage.
-#' @param R Defaults to \code{NULL}.
+#' @param family Passed to \code{.schab_variance_function}.
+#' @param link_kind Passed to \code{.schab_link_derivative}.
+#' @param R Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.
 #' @return A numeric value.
 #' @export
 .schab_sigma_mu <- function(mu, sigma2, family, link_kind, R = NULL) {
@@ -237,10 +246,10 @@
 #' one; with (6.79) as written the scores are wrong by a factor of
 #' Psi^2.
 #'
-#' @param mu See Usage.
+#' @param mu A vector; its length is taken.
 #' @param sigma2 See Usage.
-#' @param family See Usage.
-#' @param R Defaults to \code{NULL}.
+#' @param family Passed to \code{.schab_variance_function}.
+#' @param R Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.
 #' @return A numeric value.
 #' @export
 .schab_data_covariance <- function(mu, sigma2, family, R = NULL) {
@@ -255,12 +264,13 @@
 
 #' .schab_gls_beta
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{.schab_fit_pseudo_likelihood}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param X See Usage.
-#' @param Sigma_nu See Usage.
-#' @param nu See Usage.
+#' @param X A matrix; passed to \code{t}.
+#' @param Sigma_nu A matrix; passed to \code{as.matrix}.
+#' @param nu A matrix; passed to \code{\%*\%}.
 #' @return A list with \code{beta}, \code{cov_beta}.
 #' @export
 .schab_gls_beta <- function(X, Sigma_nu, nu) {
@@ -273,13 +283,14 @@
 
 #' .schab_predict_random_field
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{.schab_fit_pseudo_likelihood}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param Sigma_S See Usage.
-#' @param Sigma_nu See Usage.
+#' @param Sigma_S A matrix; passed to \code{as.matrix}.
+#' @param Sigma_nu A matrix; passed to \code{as.matrix}.
 #' @param nu See Usage.
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{as.matrix}.
 #' @param beta See Usage.
 #' @return A vector, from \code{as.numeric}.
 #' @export
@@ -290,12 +301,13 @@
 
 #' .schab_reml_objective
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{sppql}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param X See Usage.
-#' @param Sigma_nu See Usage.
-#' @param nu See Usage.
+#' @param X A matrix; passed to \code{nrow}.
+#' @param Sigma_nu A matrix; passed to \code{as.matrix}.
+#' @param nu A matrix; passed to \code{\%*\%}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .schab_reml_objective <- function(X, Sigma_nu, nu) {
@@ -315,7 +327,8 @@
 
 #' .schab_initial_mu
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{.schab_fit_pseudo_likelihood}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param z See Usage.
@@ -331,16 +344,17 @@
 
 #' .schab_fit_pseudo_likelihood
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{sppql}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param z See Usage.
-#' @param X See Usage.
-#' @param Sigma_S See Usage.
-#' @param family Defaults to \code{"poisson"}.
-#' @param link_kind Defaults to \code{NULL}.
-#' @param sigma2 Defaults to \code{1}.
-#' @param R Defaults to \code{NULL}.
+#' @param z A vector; its length is taken.
+#' @param X A matrix; passed to \code{nrow}.
+#' @param Sigma_S A matrix; passed to \code{dim}.
+#' @param family Passed to \code{.schab_canonical_link}. Defaults to \code{"poisson"}.
+#' @param link_kind Optional; may be \code{NULL}. Passed to \code{.schab_pseudo_data}.
+#' @param sigma2 Passed to \code{.schab_sigma_mu}. Defaults to \code{1}.
+#' @param R Passed to \code{.schab_sigma_mu}.
 #' @param max_iter Defaults to \code{100L}.
 #' @param tol Defaults to \code{1e-08}.
 #' @return A list with \code{beta}, \code{S}, \code{mu}, \code{sigma2}, \code{cov_beta}, \code{se_beta}, \code{Sigma_nu}, \code{pseudo_data}, \code{n_iter}, \code{converged}, \code{link}, \code{family}.
@@ -384,18 +398,19 @@
 
 #' .schab_pql_score
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{sppql}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param z See Usage.
-#' @param X See Usage.
+#' @param z Numeric; combined arithmetically in the body.
+#' @param X A matrix; passed to \code{t}.
 #' @param beta See Usage.
-#' @param S See Usage.
-#' @param Sigma_S See Usage.
-#' @param family See Usage.
-#' @param link_kind See Usage.
-#' @param sigma2 Defaults to \code{1}.
-#' @param R Defaults to \code{NULL}.
+#' @param S A matrix; passed to \code{solve}.
+#' @param Sigma_S A matrix; passed to \code{as.matrix}.
+#' @param family Passed to \code{.schab_data_covariance}.
+#' @param link_kind Passed to \code{.schab_link}.
+#' @param sigma2 Passed to \code{.schab_data_covariance}. Defaults to \code{1}.
+#' @param R Passed to \code{.schab_data_covariance}.
 #' @return A list with \code{score_beta}, \code{score_S}.
 #' @export
 .schab_pql_score <- function(z, X, beta, S, Sigma_S, family, link_kind,
@@ -421,7 +436,7 @@
 #' @param nu0_hat See Usage.
 #' @param sigma2_nu0 See Usage.
 #' @param mu0_hat See Usage.
-#' @param link_kind See Usage.
+#' @param link_kind Passed to \code{.schab_link_derivative}.
 #' @return A list with \code{prediction}, \code{mspe}, \code{prediction_error}, \code{inverse_link_prediction}, \code{pseudo_scale_prediction}, \code{pseudo_scale_mspe}, \code{mspe_is_for}.
 #' @export
 .schab_predict_glm <- function(nu0_hat, sigma2_nu0, mu0_hat, link_kind) {
@@ -445,10 +460,11 @@
 
 #' .schab_neighbour_structure
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{.schab_bym_icar_log_prior}, \code{.schab_bym_map}, \code{spbayr}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param adjacency See Usage.
+#' @param adjacency A matrix; passed to \code{as.matrix}.
 #' @return A numeric value.
 #' @export
 .schab_neighbour_structure <- function(adjacency) {
@@ -469,10 +485,11 @@
 
 #' Sigma^2 R^-, the Moore-Penrose inverse: R is singular by construction
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param R See Usage.
+#' @param R A matrix; passed to \code{as.matrix}.
 #' @param sigma2 Defaults to \code{1}.
 #' @return A numeric value.
 #' @export
@@ -487,11 +504,12 @@
 
 #' .schab_icar_full_conditional
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param u See Usage.
-#' @param adjacency See Usage.
+#' @param u A matrix; passed to \code{\%*\%}.
+#' @param adjacency A matrix; passed to \code{as.matrix}.
 #' @param sigma2 Defaults to \code{1}.
 #' @return A list with \code{mean}, \code{variance}, \code{n_neighbours}.
 #' @export
@@ -507,11 +525,12 @@
 
 #' .schab_lcar_precision
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{spbayr}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param R See Usage.
-#' @param rho See Usage.
+#' @param R A matrix; passed to \code{nrow}.
+#' @param rho Numeric; combined arithmetically in the body.
 #' @param sigma2 Defaults to \code{1}.
 #' @return A numeric value.
 #' @export
@@ -524,12 +543,13 @@
 
 #' .schab_lcar_full_conditional
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param u See Usage.
-#' @param adjacency See Usage.
-#' @param rho See Usage.
+#' @param u A matrix; passed to \code{\%*\%}.
+#' @param adjacency A matrix; passed to \code{as.matrix}.
+#' @param rho Numeric; combined arithmetically in the body.
 #' @param sigma2 Defaults to \code{1}.
 #' @return A list with \code{mean}, \code{variance}, \code{n_neighbours}.
 #' @export
@@ -544,11 +564,12 @@
 
 #' .schab_bym_convolution
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param u See Usage.
-#' @param v See Usage.
+#' @param u A vector; its length is taken.
+#' @param v A vector; its length is taken.
 #' @return A numeric value.
 #' @export
 .schab_bym_convolution <- function(u, v) {
@@ -561,7 +582,8 @@
 
 #' .schab_bym_identifiability_note
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{spbym}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @return A character value.
@@ -575,7 +597,8 @@
 
 #' .schab_smr
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{spbayr}, \code{spbym}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param counts See Usage.
@@ -593,11 +616,12 @@
 
 #' .schab_poisson_disease_mean
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param expected See Usage.
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{as.matrix}.
 #' @param beta See Usage.
 #' @param psi See Usage.
 #' @return A numeric value.
@@ -611,12 +635,13 @@
 
 #' .schab_bym_icar_log_prior
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{.schab_bym_log_posterior}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param u See Usage.
-#' @param adjacency See Usage.
-#' @param kappa See Usage.
+#' @param u A matrix; passed to \code{t}.
+#' @param adjacency Passed to \code{.schab_neighbour_structure}.
+#' @param kappa Numeric; passed to \code{log}.
 #' @return A numeric value.
 #' @export
 .schab_bym_icar_log_prior <- function(u, adjacency, kappa) {
@@ -628,12 +653,13 @@
 
 #' .schab_bym_median_log_prior
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{spbym}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param u See Usage.
-#' @param adjacency See Usage.
-#' @param kappa See Usage.
+#' @param u A vector; its length is taken and its elements indexed.
+#' @param adjacency A matrix; passed to \code{as.matrix}.
+#' @param kappa Numeric; passed to \code{log}.
 #' @return A numeric value.
 #' @export
 .schab_bym_median_log_prior <- function(u, adjacency, kappa) {
@@ -647,17 +673,18 @@
 
 #' .schab_bym_log_posterior
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{.schab_bym_map}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param y See Usage.
+#' @param y A vector; its length is taken.
 #' @param c_exp See Usage.
-#' @param u See Usage.
-#' @param v See Usage.
-#' @param kappa See Usage.
-#' @param lam See Usage.
-#' @param adjacency See Usage.
-#' @param epsilon Defaults to \code{0.01}.
+#' @param u A vector; its length is taken.
+#' @param v A vector; its length is taken.
+#' @param kappa Numeric; combined arithmetically in the body.
+#' @param lam Numeric; passed to \code{log}.
+#' @param adjacency Passed to \code{.schab_bym_icar_log_prior}.
+#' @param epsilon Numeric; combined arithmetically in the body. Defaults to \code{0.01}.
 #' @return A numeric value.
 #' @export
 .schab_bym_log_posterior <- function(y, c_exp, u, v, kappa, lam, adjacency,
@@ -681,14 +708,15 @@
 
 #' .schab_bym_map
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{spbym}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param y See Usage.
+#' @param y A vector; its length is taken.
 #' @param c_exp See Usage.
-#' @param adjacency See Usage.
-#' @param kappa See Usage.
-#' @param lam See Usage.
+#' @param adjacency Passed to \code{.schab_neighbour_structure}.
+#' @param kappa Numeric; combined arithmetically in the body.
+#' @param lam Numeric; combined arithmetically in the body.
 #' @param max_iter Defaults to \code{200L}.
 #' @param tol Defaults to \code{1e-11}.
 #' @return A list with \code{u}, \code{v}, \code{x}, \code{relative_risk}, \code{fitted}, \code{n_iter}, \code{converged}, \code{sum_v}, \code{fitted_total}, \code{observed_total}, \code{log_posterior}.
@@ -739,7 +767,8 @@
 
 #' .schab_random_walk_structure
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{spbayr}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param n_time See Usage.
@@ -761,11 +790,12 @@
 
 #' .schab_interaction_structure
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{spbayr}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param R_space See Usage.
-#' @param R_time See Usage.
+#' @param R_space A matrix; passed to \code{as.matrix}.
+#' @param R_time A matrix; passed to \code{as.matrix}.
 #' @param kind See Usage.
 #' @return A list with \code{structure}, \code{kind}, \code{rank}, \code{rank_deficiency}, \code{n_constraints_required}.
 #' @export
@@ -785,10 +815,11 @@
 
 #' .schab_null_space_constraints
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. Called by \code{spbayr}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param R_delta See Usage.
+#' @param R_delta A matrix; passed to \code{as.matrix}.
 #' @param tol Defaults to \code{NULL}.
 #' @return A list with \code{A}, \code{e}, \code{n_constraints}, \code{rank_deficiency}.
 #' @export
@@ -805,11 +836,12 @@
 
 #' .schab_apply_sum_to_zero
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param delta See Usage.
-#' @param A See Usage.
+#' @param A A matrix; passed to \code{nrow}.
 #' @return A numeric value.
 #' @export
 .schab_apply_sum_to_zero <- function(delta, A) {
@@ -820,11 +852,12 @@
 
 #' .schab_linear_trend_log_risk
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param alpha See Usage.
-#' @param u See Usage.
+#' @param u A vector; its length is taken.
 #' @param beta_t See Usage.
 #' @param delta_i See Usage.
 #' @param times See Usage.
@@ -841,14 +874,15 @@
 
 #' .schab_nonparametric_log_risk
 #'
-#' Part of the schab_glmm_shared implementation; see the file header for
+#' A step of the schab_glmm_shared implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param alpha See Usage.
-#' @param u See Usage.
-#' @param phi See Usage.
+#' @param u Numeric; combined arithmetically in the body.
+#' @param phi A vector; its length is taken.
 #' @param gamma See Usage.
-#' @param delta Defaults to \code{NULL}.
+#' @param delta Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .schab_nonparametric_log_risk <- function(alpha, u, phi, gamma, delta = NULL) {

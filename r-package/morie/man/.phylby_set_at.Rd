@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{node}{See Usage.}
-\item{path}{See Usage.}
-\item{value}{See Usage.}
+\item{path}{A vector; its length is taken and its elements indexed.}
+\item{value}{Passed to \code{.phylby_set_at}.}
 }
 \description{
 Part of the phylby_native implementation; see the file header for the source it follows.

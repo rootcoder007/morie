@@ -8,10 +8,10 @@
 .continuous_power_required_n(mean1, mean2, sd_pooled, alpha = 0.05, power = 0.8)
 }
 \arguments{
-\item{mean1}{See Usage.}
-\item{mean2}{See Usage.}
-\item{sd_pooled}{See Usage.}
-\item{alpha}{Defaults to \code{0.05}.}
+\item{mean1}{Numeric; combined arithmetically in the body.}
+\item{mean2}{Numeric; combined arithmetically in the body.}
+\item{sd_pooled}{Passed to \code{.safe_divide}.}
+\item{alpha}{Numeric; combined arithmetically in the body. Defaults to \code{0.05}.}
 \item{power}{Defaults to \code{0.8}.}
 }
 \description{

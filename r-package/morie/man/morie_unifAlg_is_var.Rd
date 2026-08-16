@@ -8,7 +8,7 @@
 morie_unifAlg_is_var(t)
 }
 \arguments{
-\item{t}{See Usage.}
+\item{t}{Passed to \code{.unifAlg_is_var}.}
 }
 \description{
 Part of the unifAlg_native implementation; see the file header for the source it follows.

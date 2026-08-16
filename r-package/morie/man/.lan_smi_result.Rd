@@ -8,7 +8,7 @@
 .lan_smi_result(alpha_v, intercept, year_effects, area_random_effect_sd, dispersion, n_events, n_area_years, log_likelihood, converged, exposure_summary = list(), note = "")
 }
 \arguments{
-\item{alpha_v}{See Usage.}
+\item{alpha_v}{A list; the body reads \code{$estimate}, \code{$std_error} from it.}
 \item{intercept}{See Usage.}
 \item{year_effects}{See Usage.}
 \item{area_random_effect_sd}{See Usage.}
@@ -16,7 +16,7 @@
 \item{n_events}{See Usage.}
 \item{n_area_years}{See Usage.}
 \item{log_likelihood}{See Usage.}
-\item{converged}{See Usage.}
+\item{converged}{A flag; the body branches on it.}
 \item{exposure_summary}{Defaults to \code{list()}.}
 \item{note}{Defaults to \code{""}.}
 }

@@ -69,7 +69,7 @@ morie_datasets_ottawa_open_crime_adjacent_layers <- function(offline = TRUE) {
 #' header for the source it follows.
 #'
 #' @param fname See Usage.
-#' @param offline See Usage.
+#' @param offline A flag; the body branches on it.
 #' @return The value of \code{utils::read.csv}.
 #' @export
 .morie_canadian_cat_fixture <- function(fname, offline) {

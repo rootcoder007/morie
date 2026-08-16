@@ -28,7 +28,7 @@
 #'
 #' isn\'t a legal project / dataset / table name.
 #'
-#' @param name See Usage.
+#' @param name A vector; its length is taken.
 #' @return A character value.
 #' @export
 .morie_bq_quote_ident <- function(name) {
@@ -47,7 +47,8 @@
 # Internal: resolve the billing project.
 #' Internal: resolve the billing project
 #'
-#' Part of the ingest_bigquery implementation; see the file header for
+#' A step of the ingest_bigquery implementation. Called by \code{morie_ingest_bigquery_query}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param billing_project Defaults to \code{NULL}.

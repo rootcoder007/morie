@@ -8,8 +8,8 @@
 morie_survroc_kaplan_meier(times, events, at = NULL)
 }
 \arguments{
-\item{times}{See Usage.}
-\item{events}{See Usage.}
+\item{times}{Passed to \code{.survroc_clean}.}
+\item{events}{Passed to \code{.survroc_clean}.}
 \item{at}{Defaults to \code{NULL}.}
 }
 \description{

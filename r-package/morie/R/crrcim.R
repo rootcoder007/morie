@@ -12,8 +12,8 @@
 #' cause alone, which over-states the incidence whenever a competing
 #' event can happen first.
 #'
-#' @param time See Usage.
-#' @param event_type See Usage.
+#' @param time Passed to \code{.s03vec}.
+#' @param event_type Passed to \code{.s03vec}.
 #' @param cause Defaults to \code{1}.
 #' @return A list with \code{times}, \code{F}, \code{S}, \code{Y}, \code{dk}, \code{n}.
 #' @export

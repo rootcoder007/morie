@@ -8,14 +8,14 @@
 favor_attention(Q, K, V, n_features = 128L, seed = 0L, kind = "positive", orthogonal = TRUE, causal = FALSE)
 }
 \arguments{
-\item{Q}{See Usage.}
-\item{K}{See Usage.}
-\item{V}{See Usage.}
+\item{Q}{A matrix; passed to \code{as.matrix}.}
+\item{K}{A matrix; passed to \code{as.matrix}.}
+\item{V}{A matrix; passed to \code{as.matrix}.}
 \item{n_features}{Defaults to \code{128L}.}
 \item{seed}{Defaults to \code{0L}.}
 \item{kind}{Defaults to \code{"positive"}.}
-\item{orthogonal}{Defaults to \code{TRUE}.}
-\item{causal}{Defaults to \code{FALSE}.}
+\item{orthogonal}{A flag; the body branches on it. Defaults to \code{TRUE}.}
+\item{causal}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{
 Part of the perfat_native implementation; see the file header for the source it follows.

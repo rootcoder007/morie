@@ -15,7 +15,7 @@
 \item{conclusion}{See Usage.}
 }
 \description{
-Part of the diagnostics implementation; see the file header for the source it follows.
+A step of the diagnostics implementation. Called by \code{hosmer_lemeshow_test}, \code{likelihood_ratio_test}, \code{link_test} and 4 others in the module. See the file header for the source the module follows.
 }
 \value{
 The value of \code{structure}.

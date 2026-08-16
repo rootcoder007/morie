@@ -9,7 +9,7 @@ jtt_matrix(pam = 200, scale = 10)
 }
 \arguments{
 \item{pam}{Defaults to \code{200}.}
-\item{scale}{Defaults to \code{10}.}
+\item{scale}{Numeric; combined arithmetically in the body. Defaults to \code{10}.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

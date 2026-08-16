@@ -8,8 +8,8 @@
 .tncomp_tanimoto(f1, f2)
 }
 \arguments{
-\item{f1}{See Usage.}
-\item{f2}{See Usage.}
+\item{f1}{A vector; its length is taken.}
+\item{f2}{A vector; its length is taken.}
 }
 \description{
 Part of the tncomp_native implementation; see the file header for the source it follows.

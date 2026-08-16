@@ -8,7 +8,7 @@
 .stahdo_null_vector(rows, p)
 }
 \arguments{
-\item{rows}{See Usage.}
+\item{rows}{A matrix; passed to \code{nrow}.}
 \item{p}{See Usage.}
 }
 \description{

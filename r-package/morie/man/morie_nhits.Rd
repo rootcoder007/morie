@@ -8,11 +8,11 @@
 morie_nhits(y, horizon, lookback = NULL, blocks = NULL, ridge = 1e-08)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{Passed to \code{.nhits_vec}.}
 \item{horizon}{See Usage.}
 \item{lookback}{Defaults to \code{NULL}.}
 \item{blocks}{Defaults to \code{NULL}.}
-\item{ridge}{Defaults to \code{1e-08}.}
+\item{ridge}{Passed to \code{.nhits_nhits_stack}. Defaults to \code{1e-08}.}
 }
 \description{
 Part of the nhits_native implementation; see the file header for the source it follows.

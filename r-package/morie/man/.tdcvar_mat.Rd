@@ -8,7 +8,7 @@
 .tdcvar_mat(X)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the tdcvar_native implementation; see the file header for the source it follows.

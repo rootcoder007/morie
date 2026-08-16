@@ -11,7 +11,7 @@
 \item{pkg}{See Usage.}
 }
 \description{
-Part of the install_extras implementation; see the file header for the source it follows.
+A step of the install_extras implementation. Called by \code{.morie_check_system_libs}, \code{morie_install_extras}. See the file header for the source the module follows.
 }
 \value{
 A logical value.

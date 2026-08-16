@@ -46,10 +46,11 @@ NULL
 
 #' .stat_validate
 #'
-#' Part of the statistics implementation; see the file header for the
+#' A step of the statistics implementation. Called by \code{anderson_darling}, \code{auto_test}, \code{dagostino_pearson} and 18 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x A vector; indexed elementwise.
 #' @param name Defaults to \code{"x"}.
 #' @return The value of \code{[}.
 #' @export
@@ -60,7 +61,8 @@ NULL
 
 #' .stat_result
 #'
-#' Part of the statistics implementation; see the file header for the
+#' A step of the statistics implementation. Called by \code{anderson_darling}, \code{bartlett_test}, \code{chi2_goodness_of_fit} and 33 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param method See Usage.
@@ -127,11 +129,12 @@ print.morie_test_result <- function(x, ...) {
 
 #' .cohens_d_ind
 #'
-#' Part of the statistics implementation; see the file header for the
+#' A step of the statistics implementation. Called by \code{two_sample_ttest}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param y See Usage.
+#' @param x A vector; its length is taken.
+#' @param y A vector; its length is taken.
 #' @return A numeric value.
 #' @export
 .cohens_d_ind <- function(x, y) {
@@ -144,11 +147,12 @@ print.morie_test_result <- function(x, ...) {
 
 #' .cohens_d_one
 #'
-#' Part of the statistics implementation; see the file header for the
+#' A step of the statistics implementation. Called by \code{one_sample_ttest}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param mu0 See Usage.
+#' @param x Numeric; passed to \code{mean}.
+#' @param mu0 Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .cohens_d_one <- function(x, mu0) {
@@ -159,10 +163,11 @@ print.morie_test_result <- function(x, ...) {
 
 #' .cohens_d_paired
 #'
-#' Part of the statistics implementation; see the file header for the
+#' A step of the statistics implementation. Called by \code{paired_ttest}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param d See Usage.
+#' @param d Numeric; passed to \code{mean}.
 #' @return A numeric value.
 #' @export
 .cohens_d_paired <- function(d) {
@@ -173,11 +178,12 @@ print.morie_test_result <- function(x, ...) {
 
 #' .mean_ci
 #'
-#' Part of the statistics implementation; see the file header for the
+#' A step of the statistics implementation. Called by \code{one_sample_ttest}, \code{paired_ttest}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param confidence Defaults to \code{0.95}.
+#' @param x A vector; its length is taken.
+#' @param confidence Numeric; combined arithmetically in the body. Defaults to \code{0.95}.
 #' @return A vector, from \code{c}.
 #' @export
 .mean_ci <- function(x, confidence = 0.95) {
@@ -189,13 +195,14 @@ print.morie_test_result <- function(x, ...) {
 
 #' .diff_ci
 #'
-#' Part of the statistics implementation; see the file header for the
+#' A step of the statistics implementation. Called by \code{two_sample_ttest}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param y See Usage.
-#' @param confidence Defaults to \code{0.95}.
-#' @param equal_var Defaults to \code{TRUE}.
+#' @param x A vector; its length is taken.
+#' @param y A vector; its length is taken.
+#' @param confidence Numeric; combined arithmetically in the body. Defaults to \code{0.95}.
+#' @param equal_var A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A vector, from \code{c}.
 #' @export
 .diff_ci <- function(x, y, confidence = 0.95, equal_var = TRUE) {
@@ -620,12 +627,13 @@ cochrans_q <- function(...) {
 
 #' .fisher_z_ci
 #'
-#' Part of the statistics implementation; see the file header for the
+#' A step of the statistics implementation. Called by \code{pearson_correlation}, \code{point_biserial_correlation}, \code{spearman_correlation}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param r See Usage.
-#' @param n See Usage.
-#' @param confidence See Usage.
+#' @param n Numeric; combined arithmetically in the body.
+#' @param confidence Numeric; combined arithmetically in the body.
 #' @return A vector, from \code{c}.
 #' @export
 .fisher_z_ci <- function(r, n, confidence) {

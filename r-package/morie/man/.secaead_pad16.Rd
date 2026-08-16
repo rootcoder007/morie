@@ -8,7 +8,7 @@
 .secaead_pad16(b)
 }
 \arguments{
-\item{b}{See Usage.}
+\item{b}{A vector; its length is taken.}
 }
 \description{
 Part of the secaead_native implementation; see the file header for the source it follows.

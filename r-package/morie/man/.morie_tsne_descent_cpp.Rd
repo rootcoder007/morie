@@ -8,10 +8,10 @@
 .morie_tsne_descent_cpp(P, Y, n_iter, eta)
 }
 \arguments{
-\item{P}{See Usage.}
-\item{Y}{See Usage.}
-\item{n_iter}{See Usage.}
-\item{eta}{See Usage.}
+\item{P}{Passed to \code{.Call}.}
+\item{Y}{Passed to \code{.Call}.}
+\item{n_iter}{Passed to \code{.Call}.}
+\item{eta}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

@@ -9,7 +9,7 @@ morie_vidgen_space_only_conv(video, kernel)
 }
 \arguments{
 \item{video}{See Usage.}
-\item{kernel}{See Usage.}
+\item{kernel}{Passed to \code{.vidgen_mat}.}
 }
 \description{
 Part of the vidgen_native implementation; see the file header for the source it follows.

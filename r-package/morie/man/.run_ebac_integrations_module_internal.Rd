@@ -8,7 +8,7 @@
 .run_ebac_integrations_module_internal(data, output_dir = NULL)
 }
 \arguments{
-\item{data}{See Usage.}
+\item{data}{A list; the body reads \code{$alcohol_past12m}, \code{$cannabis_any_use}, \code{$ebac_tot}, \code{$weight} from it.}
 \item{output_dir}{Defaults to \code{NULL}.}
 }
 \description{

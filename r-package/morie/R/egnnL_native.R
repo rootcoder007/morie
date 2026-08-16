@@ -24,11 +24,12 @@
 
 #' .sqdist
 #'
-#' Part of the egnnL_native implementation; see the file header for the
+#' A step of the egnnL_native implementation. Called by \code{edge_message}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param a See Usage.
-#' @param b See Usage.
+#' @param a Numeric; combined arithmetically in the body.
+#' @param b Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .sqdist <- function(a, b) {
@@ -37,7 +38,8 @@
 
 #' edge_message
 #'
-#' Part of the egnnL_native implementation; see the file header for the
+#' A step of the egnnL_native implementation. Called by \code{egcl}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param h_i See Usage.
@@ -56,11 +58,12 @@ edge_message <- function(h_i, h_j, x_i, x_j, phi_e, a_ij = NULL) {
 
 #' coord_update
 #'
-#' Part of the egnnL_native implementation; see the file header for the
+#' A step of the egnnL_native implementation. Called by \code{egcl}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
-#' @param M See Usage.
+#' @param X A matrix; indexed by row and column.
+#' @param M A vector; indexed elementwise.
 #' @param phi_x See Usage.
 #' @param C Defaults to \code{NULL}.
 #' @return The value of \code{lapply}.
@@ -86,18 +89,19 @@ coord_update <- function(X, M, phi_x, C = NULL) {
 
 #' egcl
 #'
-#' Part of the egnnL_native implementation; see the file header for the
+#' A step of the egnnL_native implementation. Called by \code{run_egnn}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param H See Usage.
-#' @param X See Usage.
+#' @param H A matrix; indexed by row and column.
+#' @param X A matrix; indexed by row and column.
 #' @param phi_e See Usage.
 #' @param phi_x See Usage.
 #' @param phi_h See Usage.
-#' @param A Defaults to \code{NULL}.
+#' @param A Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @param C Defaults to \code{NULL}.
-#' @param V Defaults to \code{NULL}.
-#' @param mode Defaults to \code{"position"}.
+#' @param V Optional; may be \code{NULL}. A vector; indexed elementwise.
+#' @param mode Compared against \code{"position"}. Defaults to \code{"position"}.
 #' @param phi_v Defaults to \code{NULL}.
 #' @param dt Defaults to \code{1}.
 #' @return A list with \code{H}, \code{X}, \code{V}, \code{messages}.
@@ -159,11 +163,12 @@ egcl <- function(H, X, phi_e, phi_x, phi_h, A = NULL, C = NULL,
 
 #' run_egnn
 #'
-#' Part of the egnnL_native implementation; see the file header for the
+#' A step of the egnnL_native implementation. Called by \code{egnn_layer}, \code{egnnlayer}, \code{equivariantgnn} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param H See Usage.
-#' @param X See Usage.
+#' @param H A matrix; passed to \code{as.matrix}.
+#' @param X A matrix; passed to \code{as.matrix}.
 #' @param layers See Usage.
 #' @param phi_e See Usage.
 #' @param phi_x See Usage.
@@ -194,16 +199,17 @@ run_egnn <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
 
 #' morie_egnnL_equivariance_error
 #'
-#' Part of the egnnL_native implementation; see the file header for the
+#' A step of the egnnL_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param H See Usage.
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{nrow}.
 #' @param phi_e See Usage.
 #' @param phi_x See Usage.
 #' @param phi_h See Usage.
-#' @param Q See Usage.
-#' @param g See Usage.
+#' @param Q A matrix; passed to \code{\%*\%}.
+#' @param g Numeric; combined arithmetically in the body.
 #' @param layers Defaults to \code{2}.
 #' @param C Defaults to \code{NULL}.
 #' @return A list with \code{coordinate_error}, \code{feature_error}, \code{equivariant}, \code{invariant}, \code{note}.
@@ -233,7 +239,8 @@ morie_egnnL_equivariance_error <- function(H, X, phi_e, phi_x, phi_h, Q, g,
 
 #' .egnnL_cheatsheet
 #'
-#' Part of the egnnL_native implementation; see the file header for the
+#' A step of the egnnL_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.
@@ -252,7 +259,8 @@ morie_egnnL_equivariance_error <- function(H, X, phi_e, phi_x, phi_h, Q, g,
 
 #' morie_egnnL
 #'
-#' Part of the egnnL_native implementation; see the file header for the
+#' A step of the egnnL_native implementation. Called by \code{morie_egcn}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param H See Usage.
@@ -272,7 +280,8 @@ morie_egnnL <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
 
 #' equivariantgnn
 #'
-#' Part of the egnnL_native implementation; see the file header for the
+#' A step of the egnnL_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param H See Usage.
@@ -292,7 +301,8 @@ equivariantgnn <- function(H, X, layers, phi_e, phi_x, phi_h,
 
 #' egnn_layer
 #'
-#' Part of the egnnL_native implementation; see the file header for the
+#' A step of the egnnL_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param H See Usage.
@@ -312,7 +322,8 @@ egnn_layer <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
 
 #' egnnlayer
 #'
-#' Part of the egnnL_native implementation; see the file header for the
+#' A step of the egnnL_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param H See Usage.

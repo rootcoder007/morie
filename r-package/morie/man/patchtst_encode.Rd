@@ -8,10 +8,10 @@
 patchtst_encode(X, patch_len, stride = NULL, normalise = TRUE)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
 \item{patch_len}{See Usage.}
 \item{stride}{Defaults to \code{NULL}.}
-\item{normalise}{Defaults to \code{TRUE}.}
+\item{normalise}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the patchT_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 .morie_opt_state(state, n, keys = c("m", "v"))
 }
 \arguments{
-\item{state}{See Usage.}
-\item{n}{See Usage.}
+\item{state}{Optional; may be \code{NULL}. A list; the body reads \code{$t} from it.}
+\item{n}{A count; the body uses it as \code{numeric(...)}.}
 \item{keys}{Defaults to \code{c("m", "v")}.}
 }
 \description{

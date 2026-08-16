@@ -9,8 +9,8 @@ miprgr_round_relaxation(x, A, b, integer_vars)
 }
 \arguments{
 \item{x}{See Usage.}
-\item{A}{See Usage.}
-\item{b}{See Usage.}
+\item{A}{A matrix; indexed by row and column.}
+\item{b}{A vector; indexed elementwise.}
 \item{integer_vars}{See Usage.}
 }
 \description{

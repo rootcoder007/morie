@@ -49,8 +49,8 @@ NULL
 #'
 #' list with $columns) into a list of taxonomies.
 #'
-#' @param schema See Usage.
-#' @param dataset_name See Usage.
+#' @param schema A list; the body reads \code{$columns} from it.
+#' @param dataset_name Passed to \code{morie_classify_variable}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .classify_schema_R <- function(schema, dataset_name) {
@@ -71,12 +71,13 @@ NULL
 # Internal: compute counts + flag lists from a flat taxonomy list
 #' Internal: compute counts + flag lists from a flat taxonomy list
 #'
-#' Part of the audit_variables implementation; see the file header for
+#' A step of the audit_variables implementation. Called by \code{morie_audit_arsau_variables}, \code{morie_audit_otis_variables}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param taxonomies See Usage.
+#' @param taxonomies A vector; its length is taken.
 #' @param analyzed_set See Usage.
-#' @param domain See Usage.
+#' @param domain Character; passed to \code{toupper}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .summarise_taxonomies <- function(taxonomies, analyzed_set, domain) {

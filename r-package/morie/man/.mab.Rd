@@ -8,9 +8,9 @@
 .mab(X, Y, p)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{Y}{See Usage.}
-\item{p}{See Usage.}
+\item{X}{Numeric; combined arithmetically in the body.}
+\item{Y}{Passed to \code{.attend}.}
+\item{p}{A list; the body reads \code{$b1}, \code{$b2}, \code{$W1}, \code{$W2}, \code{$Wk}, \code{$Wq}, \code{$Wv} from it.}
 }
 \description{
 Part of the setT_mixedcase_native implementation; see the file header for the source it follows.

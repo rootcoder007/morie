@@ -8,7 +8,7 @@
 strec_session_average(embeddings)
 }
 \arguments{
-\item{embeddings}{See Usage.}
+\item{embeddings}{Passed to \code{.strec_as_rows}.}
 }
 \description{
 Part of the strec_native implementation; see the file header for the source it follows.

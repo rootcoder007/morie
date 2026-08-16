@@ -19,7 +19,7 @@ smcopt(objective, initial, n_particles = 200L, n_steps = 30L, phi_max = 50, phi_
 \item{ess_threshold}{Defaults to \code{0.5}.}
 \item{scheme}{Defaults to \code{"systematic"}.}
 \item{seed}{Defaults to \code{0L}.}
-\item{maximise}{Defaults to \code{TRUE}.}
+\item{maximise}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the smcopt_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 .mor_cp_segmeans(x, bounds)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{bounds}{See Usage.}
+\item{x}{A vector; indexed elementwise.}
+\item{bounds}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the pelt_native implementation; see the file header for the source it follows.

@@ -9,9 +9,9 @@
 #' morie_ghosal_empirical_bayes() optimiser closure for direct
 #' unit-testing.
 #'
-#' @param a See Usage.
-#' @param K_n See Usage.
-#' @param n See Usage.
+#' @param a Numeric; passed to \code{log}.
+#' @param K_n Numeric; combined arithmetically in the body.
+#' @param n Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .ghebp_negll <- function(a, K_n, n) {

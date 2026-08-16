@@ -16,7 +16,7 @@ ctmle(A, Y, Q1, Q0, W, g_models, V = 5L, seed = 0L, penalty = TRUE)
 \item{g_models}{See Usage.}
 \item{V}{Defaults to \code{5L}.}
 \item{seed}{Defaults to \code{0L}.}
-\item{penalty}{Defaults to \code{TRUE}.}
+\item{penalty}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the tlctmle_native implementation; see the file header for the source it follows.

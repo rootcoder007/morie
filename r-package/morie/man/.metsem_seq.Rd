@@ -8,7 +8,7 @@
 .metsem_seq(path)
 }
 \arguments{
-\item{path}{See Usage.}
+\item{path}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the metsem_native implementation; see the file header for the source it follows.

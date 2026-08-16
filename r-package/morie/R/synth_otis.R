@@ -21,10 +21,11 @@
 
 #' .morie_otis_a01_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n Defaults to \code{200L}.
+#' @param n Numeric; combined arithmetically in the body. Defaults to \code{200L}.
 #' @param seed Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
@@ -47,10 +48,11 @@
 
 #' .morie_otis_b01_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. Called by \code{morie_synth_otis}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n Defaults to \code{200L}.
+#' @param n Numeric; combined arithmetically in the body. Defaults to \code{200L}.
 #' @param seed Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
@@ -81,10 +83,11 @@
 
 #' .morie_otis_b02_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n Defaults to \code{200L}.
+#' @param n Numeric; combined arithmetically in the body. Defaults to \code{200L}.
 #' @param seed Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
@@ -103,7 +106,8 @@
 
 #' .morie_otis_b03_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -125,7 +129,8 @@
 
 #' .morie_otis_b04_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -146,7 +151,8 @@
 
 #' .morie_otis_b05_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -165,7 +171,8 @@
 
 #' .morie_otis_b06_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -187,7 +194,8 @@
 
 #' .morie_otis_b07_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -208,7 +216,8 @@
 
 #' .morie_otis_b08_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -230,7 +239,8 @@
 
 #' .morie_otis_b09_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -250,7 +260,8 @@
 
 #' .morie_otis_c01_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -271,7 +282,8 @@
 
 #' .morie_otis_c02_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -293,7 +305,8 @@
 
 #' .morie_otis_c03_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -315,7 +328,8 @@
 
 #' .morie_otis_c04_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -336,7 +350,8 @@
 
 #' .morie_otis_c05_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -357,7 +372,8 @@
 
 #' .morie_otis_c06_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -378,7 +394,8 @@
 
 #' .morie_otis_c07_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -400,7 +417,8 @@
 
 #' .morie_otis_c08_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -422,7 +440,8 @@
 
 #' .morie_otis_c09_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -444,7 +463,8 @@
 
 #' .morie_otis_c10_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -467,7 +487,8 @@
 
 #' .morie_otis_c11_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -487,7 +508,8 @@
 
 #' .morie_otis_c12_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -509,10 +531,11 @@
 
 #' .morie_otis_d01_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n Defaults to \code{200L}.
+#' @param n Numeric; combined arithmetically in the body. Defaults to \code{200L}.
 #' @param seed Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
@@ -531,7 +554,8 @@
 
 #' .morie_otis_d02_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -550,7 +574,8 @@
 
 #' .morie_otis_d03_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -569,7 +594,8 @@
 
 #' .morie_otis_d04_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -588,7 +614,8 @@
 
 #' .morie_otis_d05_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -607,7 +634,8 @@
 
 #' .morie_otis_d06_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.
@@ -627,7 +655,8 @@
 
 #' .morie_otis_d07_panel
 #'
-#' Part of the synth_otis implementation; see the file header for the
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Defaults to \code{200L}.

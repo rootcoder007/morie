@@ -8,10 +8,10 @@
 .remlfn_loglik(gs, ns, s2a, s2e)
 }
 \arguments{
-\item{gs}{See Usage.}
-\item{ns}{See Usage.}
-\item{s2a}{See Usage.}
-\item{s2e}{See Usage.}
+\item{gs}{A vector; its length is taken and its elements indexed.}
+\item{ns}{A vector; indexed elementwise.}
+\item{s2a}{Numeric; combined arithmetically in the body.}
+\item{s2e}{Numeric; passed to \code{log}.}
 }
 \description{
 Part of the remlfn_native implementation; see the file header for the source it follows.

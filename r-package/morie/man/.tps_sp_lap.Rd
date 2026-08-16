@@ -8,9 +8,9 @@
 .tps_sp_lap(F_, dx, dy)
 }
 \arguments{
-\item{F_}{See Usage.}
-\item{dx}{See Usage.}
-\item{dy}{See Usage.}
+\item{F_}{Numeric; combined arithmetically in the body.}
+\item{dx}{Numeric; passed to \code{max}.}
+\item{dy}{Numeric; passed to \code{max}.}
 }
 \description{
 Part of the tps_statphysics implementation; see the file header for the source it follows.

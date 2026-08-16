@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{html}{See Usage.}
-\item{source_url}{See Usage.}
+\item{source_url}{Optional; may be \code{NULL}. Character; passed to \code{sub}.}
 }
 \description{
 Part of the siu_parser implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .sasimi_guard(n)
 }
 \arguments{
-\item{n}{See Usage.}
+\item{n}{A list; the body reads \code{$a}, \code{$b} from it.}
 }
 \description{
 Part of the sasimi_native implementation; see the file header for the source it follows.

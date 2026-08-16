@@ -8,13 +8,13 @@
 .fit_g_dta(A_, W, aL, aH, rows, ridge, trim)
 }
 \arguments{
-\item{A_}{See Usage.}
-\item{W}{See Usage.}
+\item{A_}{A vector; its length is taken.}
+\item{W}{A vector; its length is taken.}
 \item{aL}{See Usage.}
 \item{aH}{See Usage.}
 \item{rows}{See Usage.}
-\item{ridge}{See Usage.}
-\item{trim}{See Usage.}
+\item{ridge}{Numeric; passed to \code{max}.}
+\item{trim}{Numeric; passed to \code{max}.}
 }
 \description{
 Part of the tmldta_native implementation; see the file header for the source it follows.

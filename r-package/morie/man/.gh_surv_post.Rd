@@ -8,13 +8,13 @@
 .gh_surv_post(t, ev, c, lam0)
 }
 \arguments{
-\item{t}{See Usage.}
+\item{t}{A vector; its length is taken.}
 \item{ev}{See Usage.}
-\item{c}{See Usage.}
-\item{lam0}{See Usage.}
+\item{c}{Numeric; combined arithmetically in the body.}
+\item{lam0}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
 }
 \description{
-Part of the helpers_ghosal_bnp implementation; see the file header for the source it follows.
+A step of the helpers_ghosal_bnp implementation. Called by \code{morie_ghosal_neutral_right}, \code{morie_ghosal_survival_beta_process}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{times}, \code{S}, \code{H}, \code{dH}, \code{lam0}.

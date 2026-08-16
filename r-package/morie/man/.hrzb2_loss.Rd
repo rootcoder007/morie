@@ -8,10 +8,10 @@
 .hrzb2_loss(b, X, ys, h)
 }
 \arguments{
-\item{b}{See Usage.}
-\item{X}{See Usage.}
-\item{ys}{See Usage.}
-\item{h}{See Usage.}
+\item{b}{Numeric; combined arithmetically in the body.}
+\item{X}{A matrix; passed to \code{\%*\%}.}
+\item{ys}{Numeric; combined arithmetically in the body.}
+\item{h}{Numeric; combined arithmetically in the body.}
 }
 \description{
 optimiser closure so the zero-norm guard is directly unit-testable.

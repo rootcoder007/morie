@@ -12,7 +12,8 @@
 
 #' .has_psych
 #'
-#' Part of the psymet implementation; see the file header for the source
+#' A step of the psymet implementation. Called by \code{.psych_or_stop}.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @return The value of \code{requireNamespace}.
@@ -21,7 +22,8 @@
 
 #' .psych_or_stop
 #'
-#' Part of the psymet implementation; see the file header for the source
+#' A step of the psymet implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @param fn See Usage.
@@ -38,10 +40,11 @@
 
 #' .as_item_matrix
 #'
-#' Part of the psymet implementation; see the file header for the source
+#' A step of the psymet implementation. Called by \code{morie_psymet_alpha}, \code{morie_psymet_alphadel}, \code{morie_psymet_bartlett} and 6 others in the module.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param data See Usage.
+#' @param data A matrix; passed to \code{as.matrix}.
 #' @return The value of \code{X}, as built in the body.
 #' @export
 .as_item_matrix <- function(data) {

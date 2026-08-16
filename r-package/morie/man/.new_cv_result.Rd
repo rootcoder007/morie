@@ -18,7 +18,7 @@
 \item{fold_sizes}{See Usage.}
 }
 \description{
-Part of the bootstrap_methods implementation; see the file header for the source it follows.
+A step of the bootstrap_methods implementation. Called by \code{.boot_cross_validate}, \code{repeated_cv}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{structure}.

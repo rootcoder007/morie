@@ -8,9 +8,9 @@
 .morie_irt_icc(a, b, theta)
 }
 \arguments{
-\item{a}{See Usage.}
+\item{a}{A vector; its length is taken.}
 \item{b}{See Usage.}
-\item{theta}{See Usage.}
+\item{theta}{A vector; its length is taken.}
 }
 \description{
 Part of the survey_psych_native implementation; see the file header for the source it follows.

@@ -25,12 +25,13 @@
 
 #' .masrcn_bilinear
 #'
-#' Part of the masrcn_native implementation; see the file header for the
+#' A step of the masrcn_native implementation. Called by \code{roi_align}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param F See Usage.
-#' @param y See Usage.
-#' @param x See Usage.
+#' @param F A matrix; indexed by row and column.
+#' @param y Numeric; combined arithmetically in the body.
+#' @param x Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .masrcn_bilinear <- function(F, y, x) {
@@ -48,11 +49,12 @@
 
 #' roi_pool
 #'
-#' Part of the masrcn_native implementation; see the file header for the
+#' A step of the masrcn_native implementation. Called by \code{alignment_error}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param features See Usage.
-#' @param box See Usage.
+#' @param features A matrix; passed to \code{as.matrix}.
+#' @param box A vector; indexed elementwise.
 #' @param out_size Defaults to \code{2L}.
 #' @param stride Defaults to \code{1}.
 #' @return A list with \code{pooled}, \code{quantised_box}, \code{quantisation_shift}, \code{caveat}.
@@ -93,11 +95,12 @@ roi_pool <- function(features, box, out_size = 2L, stride = 1.0) {
 
 #' roi_align
 #'
-#' Part of the masrcn_native implementation; see the file header for the
+#' A step of the masrcn_native implementation. Called by \code{morie_masrcn}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param features See Usage.
-#' @param box See Usage.
+#' @param features A matrix; passed to \code{as.matrix}.
+#' @param box A vector; indexed elementwise.
 #' @param out_size Defaults to \code{2L}.
 #' @param stride Defaults to \code{1}.
 #' @param samples Defaults to \code{2L}.
@@ -137,7 +140,8 @@ roi_align <- function(features, box, out_size = 2L, stride = 1.0,
 
 #' alignment_error
 #'
-#' Part of the masrcn_native implementation; see the file header for the
+#' A step of the masrcn_native implementation. Called by \code{morie_masrcn}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param features See Usage.
@@ -160,12 +164,13 @@ alignment_error <- function(features, box, out_size = 2L, stride = 1.0) {
 
 #' mask_loss
 #'
-#' Part of the masrcn_native implementation; see the file header for the
+#' A step of the masrcn_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param logits See Usage.
-#' @param target See Usage.
-#' @param decoupled Defaults to \code{TRUE}.
+#' @param logits A matrix; passed to \code{as.matrix}.
+#' @param target A matrix; passed to \code{as.matrix}.
+#' @param decoupled A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list, whose contents depend on the branch taken; across the branches its names are \code{loss}, \code{kind}, \code{note}, \code{caveat}.
 #' @export
 mask_loss <- function(logits, target, decoupled = TRUE) {
@@ -200,7 +205,8 @@ mask_loss <- function(logits, target, decoupled = TRUE) {
 
 #' multitask_loss
 #'
-#' Part of the masrcn_native implementation; see the file header for the
+#' A step of the masrcn_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param l_cls See Usage.
@@ -220,7 +226,8 @@ mask_rcnn_segmentation <- roi_align
 
 #' .masrcn_cheatsheet
 #'
-#' Part of the masrcn_native implementation; see the file header for the
+#' A step of the masrcn_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.
@@ -240,7 +247,8 @@ mask_rcnn_segmentation <- roi_align
 
 #' morie_masrcn
 #'
-#' Part of the masrcn_native implementation; see the file header for the
+#' A step of the masrcn_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param features See Usage.

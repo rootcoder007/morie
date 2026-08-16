@@ -8,11 +8,11 @@
 .tdcvar_ip_weights_history(A_hist, L_hist, kind = "binary", stabilize = TRUE, trim = NULL)
 }
 \arguments{
-\item{A_hist}{See Usage.}
-\item{L_hist}{See Usage.}
+\item{A_hist}{A vector; its length is taken and its elements indexed.}
+\item{L_hist}{A vector; indexed elementwise.}
 \item{kind}{Defaults to \code{"binary"}.}
-\item{stabilize}{Defaults to \code{TRUE}.}
-\item{trim}{Defaults to \code{NULL}.}
+\item{stabilize}{A flag; the body branches on it. Defaults to \code{TRUE}.}
+\item{trim}{Optional; may be \code{NULL}. A vector; its length is taken.}
 }
 \description{
 Part of the tdcvar_native implementation; see the file header for the source it follows.

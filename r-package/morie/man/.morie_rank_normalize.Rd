@@ -8,7 +8,7 @@
 .morie_rank_normalize(C)
 }
 \arguments{
-\item{C}{See Usage.}
+\item{C}{A matrix; passed to \code{nrow}.}
 }
 \description{
 Part of the mcmc_native implementation; see the file header for the source it follows.

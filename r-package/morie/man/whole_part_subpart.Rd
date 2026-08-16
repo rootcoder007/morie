@@ -8,7 +8,7 @@
 whole_part_subpart(masks, target_hierarchy = NULL)
 }
 \arguments{
-\item{masks}{See Usage.}
+\item{masks}{A vector; its length is taken.}
 \item{target_hierarchy}{Defaults to \code{NULL}.}
 }
 \description{

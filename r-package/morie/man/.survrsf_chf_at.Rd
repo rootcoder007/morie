@@ -8,7 +8,7 @@
 .survrsf_chf_at(na, t)
 }
 \arguments{
-\item{na}{See Usage.}
+\item{na}{A list; the body reads \code{$chf}, \code{$time} from it.}
 \item{t}{See Usage.}
 }
 \description{

@@ -8,12 +8,12 @@
 .otis_crosstab(df, row, col, value, aggfunc = c("sum", "max"), top_rows = 20L)
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{A matrix; indexed by row and column.}
 \item{row}{See Usage.}
 \item{col}{See Usage.}
 \item{value}{See Usage.}
-\item{aggfunc}{Defaults to \code{c("sum", "max")}.}
-\item{top_rows}{Defaults to \code{20L}.}
+\item{aggfunc}{Compared against \code{"max"}. Defaults to \code{c("sum", "max")}.}
+\item{top_rows}{Numeric; passed to \code{min}. Defaults to \code{20L}.}
 }
 \description{
 Part of the otis_all_analyze implementation; see the file header for the source it follows.

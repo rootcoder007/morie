@@ -12,7 +12,7 @@
 \item{n_tracts}{See Usage.}
 \item{rho}{See Usage.}
 \item{moran_i_ols}{See Usage.}
-\item{decompositions}{See Usage.}
+\item{decompositions}{A vector; indexed elementwise.}
 \item{gent_distribution}{See Usage.}
 \item{sensitivity_thresholds}{Defaults to \code{list()}.}
 \item{note}{Defaults to \code{""}.}

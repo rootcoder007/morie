@@ -8,9 +8,9 @@
 .morie_svdd_solve_dual(K, C, n, tol, max_iter)
 }
 \arguments{
-\item{K}{See Usage.}
-\item{C}{See Usage.}
-\item{n}{See Usage.}
+\item{K}{A matrix; indexed by row and column.}
+\item{C}{Numeric; combined arithmetically in the body.}
+\item{n}{A count; the body uses it as \code{seq_len(...)}.}
 \item{tol}{See Usage.}
 \item{max_iter}{See Usage.}
 }

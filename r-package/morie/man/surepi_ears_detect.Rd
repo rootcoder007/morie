@@ -9,9 +9,9 @@ surepi_ears_detect(counts, method = "C2", threshold = 3, sigma_floor = 1)
 }
 \arguments{
 \item{counts}{See Usage.}
-\item{method}{Defaults to \code{"C2"}.}
+\item{method}{Compared against \code{"C3"}. Defaults to \code{"C2"}.}
 \item{threshold}{Defaults to \code{3}.}
-\item{sigma_floor}{Defaults to \code{1}.}
+\item{sigma_floor}{Passed to \code{.surepi_stat}. Defaults to \code{1}.}
 }
 \description{
 Part of the surepi_native implementation; see the file header for the source it follows.

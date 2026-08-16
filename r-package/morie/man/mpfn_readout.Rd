@@ -9,8 +9,8 @@ mpfn_readout(H, how = "sum", H0 = NULL, i_fn = NULL, j_fn = NULL)
 }
 \arguments{
 \item{H}{See Usage.}
-\item{how}{Defaults to \code{"sum"}.}
-\item{H0}{Defaults to \code{NULL}.}
+\item{how}{One of \code{"gated"}, \code{"mean"}, \code{"sum"}. Defaults to \code{"sum"}.}
+\item{H0}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 \item{i_fn}{Defaults to \code{NULL}.}
 \item{j_fn}{Defaults to \code{NULL}.}
 }

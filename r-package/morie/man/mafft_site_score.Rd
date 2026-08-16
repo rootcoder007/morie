@@ -9,12 +9,12 @@ mafft_site_score(M, ga, gb, wa, wb, i, j)
 }
 \arguments{
 \item{M}{See Usage.}
-\item{ga}{See Usage.}
-\item{gb}{See Usage.}
-\item{wa}{See Usage.}
-\item{wb}{See Usage.}
-\item{i}{See Usage.}
-\item{j}{See Usage.}
+\item{ga}{A vector; its length is taken and its elements indexed.}
+\item{gb}{A vector; its length is taken and its elements indexed.}
+\item{wa}{A vector; indexed elementwise.}
+\item{wb}{A vector; indexed elementwise.}
+\item{i}{Character; passed to \code{substr}.}
+\item{j}{Character; passed to \code{substr}.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

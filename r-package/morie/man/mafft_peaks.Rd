@@ -8,8 +8,8 @@
 mafft_peaks(lags, c, n_peaks)
 }
 \arguments{
-\item{lags}{See Usage.}
-\item{c}{See Usage.}
+\item{lags}{A vector; indexed elementwise.}
+\item{c}{Numeric; passed to \code{order}.}
 \item{n_peaks}{See Usage.}
 }
 \description{

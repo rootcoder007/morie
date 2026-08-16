@@ -8,14 +8,14 @@
 .tmle_ate_bounded(yv, a, W, g, Q1, Q0, lower, upper)
 }
 \arguments{
-\item{yv}{See Usage.}
-\item{a}{See Usage.}
-\item{W}{See Usage.}
+\item{yv}{A vector; its length is taken.}
+\item{a}{A vector; indexed elementwise.}
+\item{W}{A matrix; indexed by row and column.}
 \item{g}{See Usage.}
 \item{Q1}{See Usage.}
 \item{Q0}{See Usage.}
-\item{lower}{See Usage.}
-\item{upper}{See Usage.}
+\item{lower}{Passed to \code{.rescale}.}
+\item{upper}{Passed to \code{.rescale}.}
 }
 \description{
 Part of the tmldyk_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 .quanrg_loss(res, theta)
 }
 \arguments{
-\item{res}{See Usage.}
-\item{theta}{See Usage.}
+\item{res}{Numeric; combined arithmetically in the body.}
+\item{theta}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the quanrg_native implementation; see the file header for the source it follows.

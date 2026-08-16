@@ -8,7 +8,7 @@
 .otis_summary_lines(df, ds_id, description = NULL, series = NULL, primary_metric = NULL)
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{A matrix; passed to \code{nrow}.}
 \item{ds_id}{See Usage.}
 \item{description}{Defaults to \code{NULL}.}
 \item{series}{Defaults to \code{NULL}.}

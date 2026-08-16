@@ -8,8 +8,8 @@
 infonce(image_embeddings, text_embeddings, temperature = 0.07)
 }
 \arguments{
-\item{image_embeddings}{See Usage.}
-\item{text_embeddings}{See Usage.}
+\item{image_embeddings}{Passed to \code{.coerce_mat}.}
+\item{text_embeddings}{Passed to \code{.coerce_mat}.}
 \item{temperature}{Defaults to \code{0.07}.}
 }
 \description{

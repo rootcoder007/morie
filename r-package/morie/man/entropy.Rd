@@ -8,7 +8,7 @@
 entropy(q)
 }
 \arguments{
-\item{q}{See Usage.}
+\item{q}{Numeric; passed to \code{sum}.}
 }
 \description{
 Part of the prgrl_native implementation; see the file header for the source it follows.

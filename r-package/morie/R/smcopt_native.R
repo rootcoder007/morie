@@ -13,13 +13,14 @@
 
 #' annealing_ladder
 #'
-#' Part of the smcopt_native implementation; see the file header for the
+#' A step of the smcopt_native implementation. Called by \code{smcopt}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n_steps See Usage.
-#' @param phi_max Defaults to \code{50}.
-#' @param phi_min Defaults to \code{0.1}.
-#' @param kind Defaults to \code{"geometric"}.
+#' @param phi_max Numeric; combined arithmetically in the body. Defaults to \code{50}.
+#' @param phi_min Numeric; combined arithmetically in the body. Defaults to \code{0.1}.
+#' @param kind One of \code{"geometric"}, \code{"linear"}. Defaults to \code{"geometric"}.
 #' @return Nothing; this branch always raises.
 #' @export
 annealing_ladder <- function(n_steps, phi_max = 50.0, phi_min = 0.1,
@@ -51,7 +52,7 @@ annealing_ladder <- function(n_steps, phi_max = 50.0, phi_min = 0.1,
 #' ratio.  No library calls; uses .ghc_norm so the run is reproducible
 #' from the seed.
 #'
-#' @param scale See Usage.
+#' @param scale Numeric; combined arithmetically in the body.
 #' @return The value of \code{function}.
 #' @export
 .smcopt_rwk <- function(scale) {
@@ -71,7 +72,8 @@ annealing_ladder <- function(n_steps, phi_max = 50.0, phi_min = 0.1,
 
 #' smcopt
 #'
-#' Part of the smcopt_native implementation; see the file header for the
+#' A step of the smcopt_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param objective See Usage.
@@ -85,7 +87,7 @@ annealing_ladder <- function(n_steps, phi_max = 50.0, phi_min = 0.1,
 #' @param ess_threshold Defaults to \code{0.5}.
 #' @param scheme Defaults to \code{"systematic"}.
 #' @param seed Defaults to \code{0L}.
-#' @param maximise Defaults to \code{TRUE}.
+#' @param maximise A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{estimate}, \code{best_x}, \code{best_value}, \code{particles}, \code{weights}, \code{particle_mean}, \code{ladder}, \code{ess_trace}, \code{resampled}, \code{accept_trace}, \code{n_particles}, \code{maximise}, \code{note}, \code{method}.
 #' @export
 smcopt <- function(objective, initial, n_particles = 200L, n_steps = 30L,
@@ -140,7 +142,8 @@ smcopt <- function(objective, initial, n_particles = 200L, n_steps = 30L,
 
 #' .smcopt_cheatsheet
 #'
-#' Part of the smcopt_native implementation; see the file header for the
+#' A step of the smcopt_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

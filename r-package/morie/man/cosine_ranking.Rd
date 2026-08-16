@@ -8,8 +8,8 @@
 cosine_ranking(q_hat, model, top_k = 5)
 }
 \arguments{
-\item{q_hat}{See Usage.}
-\item{model}{See Usage.}
+\item{q_hat}{A vector; indexed elementwise.}
+\item{model}{A list; the body reads \code{$D}, \code{$S} from it.}
 \item{top_k}{Defaults to \code{5}.}
 }
 \description{

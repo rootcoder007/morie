@@ -9,16 +9,16 @@ motfsr_mm_fit(sequences, w, alphabet = NULL, theta0 = NULL, lambda0 = NULL, beta
 }
 \arguments{
 \item{sequences}{See Usage.}
-\item{w}{See Usage.}
+\item{w}{A count; the body uses it as \code{seq_len(...)}.}
 \item{alphabet}{Defaults to \code{NULL}.}
 \item{theta0}{Defaults to \code{NULL}.}
 \item{lambda0}{Defaults to \code{NULL}.}
-\item{beta}{Defaults to \code{0.01}.}
+\item{beta}{Numeric; combined arithmetically in the body. Defaults to \code{0.01}.}
 \item{erasing}{Defaults to \code{NULL}.}
-\item{max_iter}{Defaults to \code{1000}.}
+\item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{1000}.}
 \item{tol}{Defaults to \code{1e-06}.}
-\item{normalize_overlaps}{Defaults to \code{TRUE}.}
-\item{erase_by}{Defaults to \code{"letter"}.}
+\item{normalize_overlaps}{A flag; the body branches on it. Defaults to \code{TRUE}.}
+\item{erase_by}{One of \code{"letter"}, \code{"start"}. Defaults to \code{"letter"}.}
 }
 \description{
 Part of the motfsr_native implementation; see the file header for the source it follows.

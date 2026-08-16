@@ -8,8 +8,8 @@
 .beta_1_alpha(e, alpha)
 }
 \arguments{
-\item{e}{See Usage.}
-\item{alpha}{See Usage.}
+\item{e}{Passed to \code{.ghc_unif}.}
+\item{alpha}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the slowdp_native implementation; see the file header for the source it follows.

@@ -8,9 +8,9 @@
 .prsLL_parse(g, tokens, route = "table")
 }
 \arguments{
-\item{g}{See Usage.}
+\item{g}{A list; the body reads \code{$start} from it.}
 \item{tokens}{See Usage.}
-\item{route}{Defaults to \code{"table"}.}
+\item{route}{Compared against \code{"table"}. Defaults to \code{"table"}.}
 }
 \description{
 Part of the prsLL_native implementation; see the file header for the source it follows.

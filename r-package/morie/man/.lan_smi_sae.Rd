@@ -11,7 +11,7 @@
 \item{survey_df}{See Usage.}
 \item{survey_trait_col}{See Usage.}
 \item{survey_covariate_cols}{See Usage.}
-\item{area_df}{See Usage.}
+\item{area_df}{A vector; indexed elementwise.}
 \item{area_population_col}{See Usage.}
 }
 \description{

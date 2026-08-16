@@ -10,10 +10,10 @@ morie_scumap_smooth_knn_dist(distances, n_neighbors, rho = NULL, tol = 1e-05, ma
 \arguments{
 \item{distances}{See Usage.}
 \item{n_neighbors}{See Usage.}
-\item{rho}{Defaults to \code{NULL}.}
+\item{rho}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
 \item{tol}{Defaults to \code{1e-05}.}
 \item{max_iter}{Defaults to \code{64}.}
-\item{min_scale}{Defaults to \code{0.001}.}
+\item{min_scale}{Numeric; combined arithmetically in the body. Defaults to \code{0.001}.}
 }
 \description{
 Part of the scumap_native implementation; see the file header for the source it follows.

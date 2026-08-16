@@ -8,8 +8,8 @@
 morie_dsp_median_filter_cpp(x, kernel_size)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{kernel_size}{See Usage.}
+\item{x}{Passed to \code{.Call}.}
+\item{kernel_size}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

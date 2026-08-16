@@ -8,7 +8,7 @@
 .scintg_l2_normalise(Z)
 }
 \arguments{
-\item{Z}{See Usage.}
+\item{Z}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the scintg_native implementation; see the file header for the source it follows.

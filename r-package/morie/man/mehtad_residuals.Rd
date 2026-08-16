@@ -8,7 +8,7 @@
 mehtad_residuals(A, b, c, x, y, s)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{A matrix; passed to \code{as.matrix}.}
 \item{b}{See Usage.}
 \item{c}{See Usage.}
 \item{x}{See Usage.}

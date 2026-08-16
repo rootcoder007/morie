@@ -8,11 +8,11 @@
 .hst_spatial(d2, sigma)
 }
 \arguments{
-\item{d2}{See Usage.}
-\item{sigma}{See Usage.}
+\item{d2}{Numeric; combined arithmetically in the body.}
+\item{sigma}{Numeric; combined arithmetically in the body.}
 }
 \description{
-Part of the hawkes_spatial implementation; see the file header for the source it follows.
+A step of the hawkes_spatial implementation. Called by \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik}. See the file header for the source the module follows.
 }
 \value{
 A numeric value.

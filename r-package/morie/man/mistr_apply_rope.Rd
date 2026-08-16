@@ -8,8 +8,8 @@
 mistr_apply_rope(x, pos, theta = NULL, base = 10000)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{pos}{See Usage.}
+\item{x}{A vector; its length is taken and its elements indexed.}
+\item{pos}{Numeric; combined arithmetically in the body.}
 \item{theta}{Defaults to \code{NULL}.}
 \item{base}{Defaults to \code{10000}.}
 }

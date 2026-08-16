@@ -8,10 +8,10 @@
 .tbl_smd(m1, m2, sd1, sd2)
 }
 \arguments{
-\item{m1}{See Usage.}
-\item{m2}{See Usage.}
-\item{sd1}{See Usage.}
-\item{sd2}{See Usage.}
+\item{m1}{Numeric; combined arithmetically in the body.}
+\item{m2}{Numeric; combined arithmetically in the body.}
+\item{sd1}{Numeric; combined arithmetically in the body.}
+\item{sd2}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the tables_pub implementation; see the file header for the source it follows.

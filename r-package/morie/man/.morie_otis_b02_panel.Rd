@@ -8,7 +8,7 @@
 .morie_otis_b02_panel(n = 200L, seed = 1L)
 }
 \arguments{
-\item{n}{Defaults to \code{200L}.}
+\item{n}{Numeric; combined arithmetically in the body. Defaults to \code{200L}.}
 \item{seed}{Defaults to \code{1L}.}
 }
 \description{

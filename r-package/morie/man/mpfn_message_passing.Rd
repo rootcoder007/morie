@@ -9,8 +9,8 @@ mpfn_message_passing(H0, adj, edge_features, T = 3, A = NULL, update = NULL)
 }
 \arguments{
 \item{H0}{See Usage.}
-\item{adj}{See Usage.}
-\item{edge_features}{See Usage.}
+\item{adj}{A vector; indexed elementwise.}
+\item{edge_features}{A vector; indexed elementwise.}
 \item{T}{Defaults to \code{3}.}
 \item{A}{Defaults to \code{NULL}.}
 \item{update}{Defaults to \code{NULL}.}

@@ -8,9 +8,9 @@
 .tps_stoch_neg_loglik_hawkes(params, t, T_window)
 }
 \arguments{
-\item{params}{See Usage.}
-\item{t}{See Usage.}
-\item{T_window}{See Usage.}
+\item{params}{A vector; indexed elementwise.}
+\item{t}{A vector; its length is taken and its elements indexed.}
+\item{T_window}{Numeric; combined arithmetically in the body.}
 }
 \description{
 lambda(t) = mu + kappa*omega * sum_{t_i<t} exp(-omega*(t - t_i)) Closed-form integral: mu*T + kappa * sum_i (1 - exp(-omega*(T - t_i)))

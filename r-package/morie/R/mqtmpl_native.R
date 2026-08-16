@@ -11,10 +11,11 @@ mqtmpl_LOG10E <- log10(exp(1))
 
 #' mqtmpl_haldane
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_hmm_genotype_probabilities}, \code{mqtmpl_sample_genotypes}, \code{mqtmpl_scan_cim}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param d See Usage.
+#' @param d Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 mqtmpl_haldane <- function(d) {
@@ -24,13 +25,14 @@ mqtmpl_haldane <- function(d) {
 
 #' Qk left, qk+1 right
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_cim_one}, \code{mqtmpl_sample_genotypes}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param s_left See Usage.
 #' @param s_right See Usage.
-#' @param r_left See Usage.
-#' @param r_right See Usage.
+#' @param r_left Numeric; combined arithmetically in the body.
+#' @param r_right Numeric; combined arithmetically in the body.
 #' @return A vector, from \code{c}.
 #' @export
 mqtmpl_genotype_probabilities <- function(s_left, s_right, r_left, r_right) {
@@ -44,11 +46,12 @@ mqtmpl_genotype_probabilities <- function(s_left, s_right, r_left, r_right) {
 
 #' mqtmpl_single_marker
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_scanone}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
-#' @param g See Usage.
+#' @param y A vector; its length is taken.
+#' @param g Numeric; passed to \code{mean}.
 #' @return A list with \code{lod}, \code{rss}, \code{rss0}.
 #' @export
 mqtmpl_single_marker <- function(y, g) {
@@ -71,10 +74,11 @@ mqtmpl_single_marker <- function(y, g) {
 
 #' mqtmpl_cim_one
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_scan_cim}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
+#' @param y A vector; its length is taken.
 #' @param left See Usage.
 #' @param right See Usage.
 #' @param r_left See Usage.
@@ -101,15 +105,16 @@ mqtmpl_cim_one <- function(y, left, right, r_left, r_right, cofactors) {
 
 #' mqtmpl_scan_cim
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_scanone}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param y See Usage.
-#' @param markers See Usage.
-#' @param positions See Usage.
-#' @param cofactors Defaults to \code{list()}.
+#' @param markers A vector; its length is taken and its elements indexed.
+#' @param positions A vector; indexed elementwise.
+#' @param cofactors A vector; its length is taken. Defaults to \code{list()}.
 #' @param window Defaults to \code{0}.
-#' @param step Defaults to \code{0.02}.
+#' @param step Numeric; combined arithmetically in the body. Defaults to \code{0.02}.
 #' @return A list with \code{estimate}, \code{peak_lod}, \code{peak_position}, \code{position}, \code{lod}, \code{fit}.
 #' @export
 mqtmpl_scan_cim <- function(y, markers, positions, cofactors = list(),
@@ -161,7 +166,8 @@ mqtmpl_UNSOURCED <- list(
 
 #' mqtmpl_method_status
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param method Defaults to \code{NULL}.
@@ -182,7 +188,8 @@ mqtmpl_method_status <- function(method = NULL) {
 
 #' mqtmpl_check_method
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_scanone}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param method See Usage.
@@ -201,11 +208,12 @@ mqtmpl_check_method <- function(method) {
 
 #' mqtmpl_hmm_genotype_probabilities
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_sample_genotypes}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param genotypes See Usage.
-#' @param positions See Usage.
+#' @param positions A vector; its length is taken and its elements indexed.
 #' @param error_rate Defaults to \code{0}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -269,12 +277,13 @@ mqtmpl_hmm_genotype_probabilities <- function(genotypes, positions, error_rate =
 
 #' mqtmpl_sample_genotypes
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_scan_imp}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param genotypes See Usage.
-#' @param positions See Usage.
-#' @param grid See Usage.
+#' @param genotypes A vector; its length is taken.
+#' @param positions A vector; its length is taken and its elements indexed.
+#' @param grid A vector; its length is taken and its elements indexed.
 #' @param n_imp Defaults to \code{16}.
 #' @param error_rate Defaults to \code{0}.
 #' @param seed Defaults to \code{0}.
@@ -321,12 +330,13 @@ mqtmpl_sample_genotypes <- function(genotypes, positions, grid, n_imp = 16,
 
 #' mqtmpl_imputation_weights
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_scan_imp}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
-#' @param genotype_column See Usage.
-#' @param model_dimension Defaults to \code{2}.
+#' @param y A vector; its length is taken.
+#' @param genotype_column A vector; its length is taken.
+#' @param model_dimension Numeric; combined arithmetically in the body. Defaults to \code{2}.
 #' @return A numeric value.
 #' @export
 mqtmpl_imputation_weights <- function(y, genotype_column, model_dimension = 2) {
@@ -348,13 +358,14 @@ mqtmpl_imputation_weights <- function(y, genotype_column, model_dimension = 2) {
 
 #' mqtmpl_scan_imp
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_scanone}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
-#' @param markers See Usage.
-#' @param positions See Usage.
-#' @param step See Usage.
+#' @param y A vector; its length is taken.
+#' @param markers A vector; its length is taken and its elements indexed.
+#' @param positions A vector; its length is taken and its elements indexed.
+#' @param step Numeric; combined arithmetically in the body.
 #' @param n_imp See Usage.
 #' @param error_rate See Usage.
 #' @param seed See Usage.
@@ -391,10 +402,11 @@ mqtmpl_scan_imp <- function(y, markers, positions, step, n_imp,
 
 #' mqtmpl_kw_n_imp
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_scanone}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param covariates See Usage.
+#' @param covariates A vector; its length is taken.
 #' @return A numeric value.
 #' @export
 mqtmpl_kw_n_imp <- function(covariates) {
@@ -406,15 +418,16 @@ mqtmpl_kw_n_imp <- function(covariates) {
 
 #' mqtmpl_scanone
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_permutation_threshold}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
-#' @param markers See Usage.
-#' @param positions See Usage.
-#' @param method Defaults to \code{"em"}.
+#' @param y A vector; its length is taken and its elements indexed.
+#' @param markers A vector; its length is taken and its elements indexed.
+#' @param positions A vector; indexed elementwise.
+#' @param method One of \code{"imp"}, \code{"mr"}. Defaults to \code{"em"}.
 #' @param step Defaults to \code{0.02}.
-#' @param covariates Defaults to \code{list()}.
+#' @param covariates A vector; its length is taken. Defaults to \code{list()}.
 #' @param error_rate Defaults to \code{0}.
 #' @return A list with \code{estimate}, \code{peak_lod}, \code{peak_position}, \code{position}, \code{lod}, \code{method_used}, \code{n_covariates}, \code{error_rate}, \code{method}.
 #' @export
@@ -459,7 +472,8 @@ mqtmpl_scanone <- function(y, markers, positions, method = "em", step = 0.02,
 
 #' mqtmpl_permutation_threshold
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param y See Usage.
@@ -496,10 +510,11 @@ mqtmpl_permutation_threshold <- function(y, markers, positions, n_perm = 100,
 
 #' mqtmpl_lod_support_interval
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param scan_result See Usage.
+#' @param scan_result A list; the body reads \code{$lod}, \code{$position} from it.
 #' @param drop Defaults to \code{1.5}.
 #' @return A list with \code{peak}, \code{lower}, \code{upper}, \code{drop}, \code{peak_lod}.
 #' @export
@@ -518,7 +533,8 @@ mqtmpl_lod_support_interval <- function(scan_result, drop = 1.5) {
 
 #' mqtmpl_cheatsheet
 #'
-#' Part of the mqtmpl_native implementation; see the file header for the
+#' A step of the mqtmpl_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

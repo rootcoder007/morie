@@ -9,7 +9,7 @@ motfsr_log_odds_matrix(motif, background)
 }
 \arguments{
 \item{motif}{See Usage.}
-\item{background}{See Usage.}
+\item{background}{A vector; indexed elementwise.}
 }
 \description{
 Part of the motfsr_native implementation; see the file header for the source it follows.

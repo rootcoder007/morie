@@ -8,7 +8,7 @@
 .tps_coords(df, lat_col, lon_col)
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{A matrix; indexed by row and column.}
 \item{lat_col}{See Usage.}
 \item{lon_col}{See Usage.}
 }

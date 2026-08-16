@@ -68,10 +68,11 @@ systematic_resample <- function(weights, u = NULL) {
 # Internal multinomial resampler used when systematic=FALSE
 #' Internal multinomial resampler used when systematic=FALSE
 #'
-#' Part of the prtcl_native implementation; see the file header for the
+#' A step of the prtcl_native implementation. Called by \code{morie_prtcl}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param weights See Usage.
+#' @param weights A vector; its length is taken.
 #' @return The value of \code{idx}, as built in the body.
 #' @export
 .multinomial_resample <- function(weights) {
@@ -94,10 +95,11 @@ systematic_resample <- function(weights, u = NULL) {
 
 #' .scalar
 #'
-#' Part of the prtcl_native implementation; see the file header for the
+#' A step of the prtcl_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param state See Usage.
+#' @param state A vector; indexed elementwise.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .scalar <- function(state) {

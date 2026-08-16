@@ -23,10 +23,11 @@
 
 #' .sbert_mat
 #'
-#' Part of the sbert_native implementation; see the file header for the
+#' A step of the sbert_native implementation. Called by \code{pool}, \code{rank_by_similarity}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x A matrix; passed to \code{as.matrix}.
 #' @return Nothing; this branch always raises.
 #' @export
 .sbert_mat <- function(x) {
@@ -44,10 +45,11 @@
 
 #' .sbert_vec
 #'
-#' Part of the sbert_native implementation; see the file header for the
+#' A step of the sbert_native implementation. Called by \code{classification_features}, \code{cosine_similarity}, \code{sts_score}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x A matrix; indexed by row and column.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .sbert_vec <- function(x) {
@@ -60,11 +62,12 @@
 
 #' pool
 #'
-#' Part of the sbert_native implementation; see the file header for the
+#' A step of the sbert_native implementation. Called by \code{morie_geron_lenet5}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param token_vectors See Usage.
-#' @param mode Defaults to \code{"mean"}.
+#' @param token_vectors Passed to \code{.sbert_mat}.
+#' @param mode One of \code{"cls"}, \code{"max"}. Defaults to \code{"mean"}.
 #' @param mask Defaults to \code{NULL}.
 #' @return A numeric value.
 #' @export
@@ -94,11 +97,12 @@ pool <- function(token_vectors, mode = "mean", mask = NULL) {
 
 #' cosine_similarity
 #'
-#' Part of the sbert_native implementation; see the file header for the
+#' A step of the sbert_native implementation. Called by \code{rank_by_similarity}, \code{sts_score}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param u See Usage.
-#' @param v See Usage.
+#' @param u Passed to \code{.sbert_vec}.
+#' @param v Passed to \code{.sbert_vec}.
 #' @return A numeric value.
 #' @export
 cosine_similarity <- function(u, v) {
@@ -115,11 +119,12 @@ cosine_similarity <- function(u, v) {
 
 #' classification_features
 #'
-#' Part of the sbert_native implementation; see the file header for the
+#' A step of the sbert_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param u See Usage.
-#' @param v See Usage.
+#' @param u Passed to \code{.sbert_vec}.
+#' @param v Passed to \code{.sbert_vec}.
 #' @return A list with \code{features}, \code{u}, \code{v}, \code{abs_diff}, \code{dim}, \code{note}.
 #' @export
 classification_features <- function(u, v) {
@@ -135,11 +140,12 @@ classification_features <- function(u, v) {
 
 #' pair_cost
 #'
-#' Part of the sbert_native implementation; see the file header for the
+#' A step of the sbert_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n See Usage.
-#' @param mode Defaults to \code{"cross-encoder"}.
+#' @param mode One of \code{"bi-encoder"}, \code{"cross-encoder"}. Defaults to \code{"cross-encoder"}.
 #' @return A list with \code{forward_passes}, \code{cross_encoder}, \code{bi_encoder}, \code{speedup}, \code{n}, \code{note}.
 #' @export
 pair_cost <- function(n, mode = "cross-encoder") {
@@ -157,11 +163,12 @@ pair_cost <- function(n, mode = "cross-encoder") {
 
 #' rank_by_similarity
 #'
-#' Part of the sbert_native implementation; see the file header for the
+#' A step of the sbert_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param query See Usage.
-#' @param corpus_embeddings See Usage.
+#' @param corpus_embeddings Passed to \code{.sbert_mat}.
 #' @param top_k Defaults to \code{5}.
 #' @return A list with \code{ranking}, \code{n_corpus}, \code{forward_passes}, \code{note}.
 #' @export
@@ -181,10 +188,11 @@ rank_by_similarity <- function(query, corpus_embeddings, top_k = 5) {
 
 #' sts_score
 #'
-#' Part of the sbert_native implementation; see the file header for the
+#' A step of the sbert_native implementation. Called by \code{morie_sbert}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param pairs See Usage.
+#' @param pairs A vector; its length is taken and its elements indexed.
 #' @param embed See Usage.
 #' @return A list with \code{estimate}, \code{scores}, \code{embed_calls}, \code{n_pairs}, \code{cross_encoder_calls}, \code{method}.
 #' @export
@@ -212,7 +220,8 @@ sts_score <- function(pairs, embed) {
 
 #' morie_sbert
 #'
-#' Part of the sbert_native implementation; see the file header for the
+#' A step of the sbert_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param pairs See Usage.
@@ -228,7 +237,8 @@ sentencebert <- sts_score
 
 #' .sbert_cheatsheet
 #'
-#' Part of the sbert_native implementation; see the file header for the
+#' A step of the sbert_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

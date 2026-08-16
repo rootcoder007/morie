@@ -10,8 +10,8 @@ morie_velocity(u, s, beta, gamma)
 \arguments{
 \item{u}{See Usage.}
 \item{s}{See Usage.}
-\item{beta}{See Usage.}
-\item{gamma}{See Usage.}
+\item{beta}{Numeric; combined arithmetically in the body.}
+\item{gamma}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the scvelo_native implementation; see the file header for the source it follows.

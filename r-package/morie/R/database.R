@@ -29,11 +29,12 @@
 # Returns: list(con = DBIConnection, close = logical).
 #' Returns: list(con = DBIConnection, close = logical)
 #'
-#' Part of the database implementation; see the file header for the
+#' A step of the database implementation. Called by \code{morie_cache_list}, \code{morie_cache_load}, \code{morie_cache_store}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param con Defaults to \code{NULL}.
-#' @param db_path Defaults to \code{NULL}.
+#' @param db_path Passed to \code{morie_db_connect}.
 #' @return A list with \code{con}, \code{close}.
 #' @export
 .morie_db_handle <- function(con = NULL, db_path = NULL) {
@@ -559,10 +560,11 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
 
 #' .fuzzy_match_key
 #'
-#' Part of the database implementation; see the file header for the
+#' A step of the database implementation. Called by \code{morie_dataset_info}, \code{morie_load_dataset}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param key See Usage.
+#' @param key Character; passed to \code{gsub}.
 #' @return Nothing; the function is called for its effect.
 #' @export
 .fuzzy_match_key <- function(key) {

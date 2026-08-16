@@ -9,7 +9,7 @@ particle_filter_simple(y, n_particles, init, step, loglik, seed = 0L)
 }
 \arguments{
 \item{y}{See Usage.}
-\item{n_particles}{See Usage.}
+\item{n_particles}{A count; the body uses it as \code{rep(...)}.}
 \item{init}{See Usage.}
 \item{step}{See Usage.}
 \item{loglik}{See Usage.}

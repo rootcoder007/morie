@@ -8,8 +8,8 @@
 .run_data_wrangling_module_internal(data, cpads_csv = NULL, output_dir = NULL)
 }
 \arguments{
-\item{data}{See Usage.}
-\item{cpads_csv}{Defaults to \code{NULL}.}
+\item{data}{A matrix; passed to \code{nrow}.}
+\item{cpads_csv}{Optional; may be \code{NULL}. Passed to \code{.resolve_cpads_csv}.}
 \item{output_dir}{Defaults to \code{NULL}.}
 }
 \description{

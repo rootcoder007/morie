@@ -17,20 +17,22 @@
 
 #' .elmo_sigmoid
 #'
-#' Part of the elmo_native implementation; see the file header for the
+#' A step of the elmo_native implementation. Called by \code{.lstm_step}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .elmo_sigmoid <- function(x) 1 / (1 + exp(-x))
 
 #' .layer_weights
 #'
-#' Part of the elmo_native implementation; see the file header for the
+#' A step of the elmo_native implementation. Called by \code{.elmo_mix}, \code{.elmo_representation}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param raw See Usage.
+#' @param raw A vector; its length is taken.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .layer_weights <- function(raw) {
@@ -43,14 +45,15 @@
 
 #' .lstm_step
 #'
-#' Part of the elmo_native implementation; see the file header for the
+#' A step of the elmo_native implementation. Called by \code{.bilm_forward}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
-#' @param h See Usage.
-#' @param c See Usage.
-#' @param Wx See Usage.
-#' @param Wh See Usage.
+#' @param h A vector; its length is taken.
+#' @param c A vector; its length is taken.
+#' @param Wx A matrix; passed to \code{as.matrix}.
+#' @param Wh A matrix; passed to \code{as.matrix}.
 #' @param b See Usage.
 #' @return A list with \code{h}, \code{c}.
 #' @export
@@ -75,11 +78,12 @@
 
 #' .bilm_forward
 #'
-#' Part of the elmo_native implementation; see the file header for the
+#' A step of the elmo_native implementation. Called by \code{.elmo_representation}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
-#' @param layers See Usage.
+#' @param X A matrix; passed to \code{as.matrix}.
+#' @param layers A vector; its length is taken and its elements indexed.
 #' @return The value of \code{reps}, as built in the body.
 #' @export
 .bilm_forward <- function(X, layers) {
@@ -122,12 +126,13 @@
 
 #' .elmo_mix
 #'
-#' Part of the elmo_native implementation; see the file header for the
+#' A step of the elmo_native implementation. Called by \code{.elmo_representation}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param reps See Usage.
-#' @param raw_weights See Usage.
-#' @param gamma Defaults to \code{1}.
+#' @param reps A vector; its length is taken and its elements indexed.
+#' @param raw_weights A vector; its length is taken.
+#' @param gamma Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @param position Defaults to \code{NULL}.
 #' @return One of two values, depending on the branch taken.
 #' @export
@@ -159,13 +164,14 @@
 
 #' .elmo_representation
 #'
-#' Part of the elmo_native implementation; see the file header for the
+#' A step of the elmo_native implementation. Called by \code{morie_elmo}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
-#' @param layers See Usage.
+#' @param X Passed to \code{.bilm_forward}.
+#' @param layers Passed to \code{.bilm_forward}.
 #' @param raw_weights Defaults to \code{NULL}.
-#' @param gamma Defaults to \code{1}.
+#' @param gamma Passed to \code{.elmo_mix}. Defaults to \code{1}.
 #' @return A list with \code{estimate}, \code{elmo}, \code{layers}, \code{weights}, \code{gamma}, \code{n_layers}, \code{L}, \code{d}, \code{top_layer}, \code{method}.
 #' @export
 .elmo_representation <- function(X, layers, raw_weights = NULL, gamma = 1.0) {
@@ -185,13 +191,14 @@
 
 #' morie_elmo
 #'
-#' Part of the elmo_native implementation; see the file header for the
+#' A step of the elmo_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
-#' @param layers See Usage.
-#' @param raw_weights Defaults to \code{NULL}.
-#' @param gamma Defaults to \code{1}.
+#' @param X Passed to \code{.elmo_representation}.
+#' @param layers Passed to \code{.elmo_representation}.
+#' @param raw_weights Passed to \code{.elmo_representation}.
+#' @param gamma Passed to \code{.elmo_representation}. Defaults to \code{1}.
 #' @return The value of \code{.elmo_representation}.
 #' @export
 morie_elmo <- function(X, layers, raw_weights = NULL, gamma = 1.0) {

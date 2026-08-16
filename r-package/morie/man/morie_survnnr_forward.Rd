@@ -8,10 +8,10 @@
 morie_survnnr_forward(W, b, x, activation = "tanh")
 }
 \arguments{
-\item{W}{See Usage.}
-\item{b}{See Usage.}
+\item{W}{A vector; its length is taken and its elements indexed.}
+\item{b}{A vector; indexed elementwise.}
 \item{x}{See Usage.}
-\item{activation}{Defaults to \code{"tanh"}.}
+\item{activation}{Passed to \code{.survnnr_act}. Defaults to \code{"tanh"}.}
 }
 \description{
 Part of the survnnr_native implementation; see the file header for the source it follows.

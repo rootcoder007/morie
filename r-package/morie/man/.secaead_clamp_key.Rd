@@ -8,7 +8,7 @@
 .secaead_clamp_key(k)
 }
 \arguments{
-\item{k}{See Usage.}
+\item{k}{A vector; indexed elementwise.}
 }
 \description{
 Part of the secaead_native implementation; see the file header for the source it follows.

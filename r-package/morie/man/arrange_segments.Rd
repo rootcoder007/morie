@@ -8,7 +8,7 @@
 arrange_segments(segments)
 }
 \arguments{
-\item{segments}{See Usage.}
+\item{segments}{A matrix; indexed by row and column.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

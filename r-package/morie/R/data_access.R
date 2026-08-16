@@ -16,11 +16,12 @@
 # Append a named list of query parameters to a URL, URL-encoding values.
 #' Append a named list of query parameters to a URL, URL-encoding values
 #'
-#' Part of the data_access implementation; see the file header for the
+#' A step of the data_access implementation. Called by \code{morie_ckan_search}, \code{morie_fetch}, \code{morie_fetch_arcgis}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param url See Usage.
-#' @param params Defaults to \code{NULL}.
+#' @param url Character; passed to \code{grepl}.
+#' @param params Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.
 #' @return A character value.
 #' @export
 .morie_url_with_params <- function(url, params = NULL) {
@@ -51,10 +52,11 @@
 
 #' .morie_ckan_portal
 #'
-#' Part of the data_access implementation; see the file header for the
+#' A step of the data_access implementation. Called by \code{.morie_ckan_call}, \code{morie_ckan_search}, \code{morie_ingest_ckan_search_packages}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param portal See Usage.
+#' @param portal Character; passed to \code{grepl}.
 #' @return Nothing; this branch always raises.
 #' @export
 .morie_ckan_portal <- function(portal) {
@@ -74,7 +76,8 @@
 # Read text from a URL (used for JSON/XML/HTML API responses).
 #' Read text from a URL (used for JSON/XML/HTML API responses)
 #'
-#' Part of the data_access implementation; see the file header for the
+#' A step of the data_access implementation. Called by \code{morie_ckan_search}, \code{morie_fetch}, \code{morie_fetch_arcgis}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param url See Usage.
@@ -89,10 +92,11 @@
 # Download a URL to a temp file, returning the local path.
 #' Download a URL to a temp file, returning the local path
 #'
-#' Part of the data_access implementation; see the file header for the
+#' A step of the data_access implementation. Called by \code{morie_fetch}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param url See Usage.
+#' @param url Character; passed to \code{sub}.
 #' @param ext Defaults to \code{""}.
 #' @return The value of \code{tmp}, as built in the body.
 #' @export
@@ -110,7 +114,7 @@
 #' back to the URL file extension. Returns one of the morie_fetch
 #' formats.
 #'
-#' @param url See Usage.
+#' @param url Character; passed to \code{sub}.
 #' @return The value of \code{switch}.
 #' @export
 .morie_detect_format <- function(url) {
@@ -163,12 +167,13 @@
 # Parse a downloaded local file according to a known format.
 #' Parse a downloaded local file according to a known format
 #'
-#' Part of the data_access implementation; see the file header for the
+#' A step of the data_access implementation. Called by \code{morie_fetch}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param path See Usage.
-#' @param format See Usage.
-#' @param simplify See Usage.
+#' @param path Passed to \code{.morie_from_json}.
+#' @param format One of \code{"csv"}, \code{"html"}, \code{"json"}, \code{"tsv"}, \code{"xlsx"}, \code{"xml"}.
+#' @param simplify A flag; the body branches on it.
 #' @param ... Passed through.
 #' @return Nothing; this branch always raises.
 #' @export
@@ -402,7 +407,8 @@ morie_ckan_search <- function(query, portal = "open.canada.ca",
 # Small helper: first non-empty scalar, else "".
 #' Small helper: first non-empty scalar, else ""
 #'
-#' Part of the data_access implementation; see the file header for the
+#' A step of the data_access implementation. Called by \code{morie_ckan_search}, \code{morie_fetch_arcgis}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param ... Passed through.

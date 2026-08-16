@@ -8,7 +8,7 @@
 is_absolute_path(path)
 }
 \arguments{
-\item{path}{See Usage.}
+\item{path}{Character; passed to \code{grepl}.}
 }
 \description{
 Part of the paths implementation; see the file header for the source it follows.

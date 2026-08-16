@@ -8,12 +8,12 @@
 node2v_transition_probabilities(adj, t, v, p, q, weights = NULL)
 }
 \arguments{
-\item{adj}{See Usage.}
+\item{adj}{A vector; indexed elementwise.}
 \item{t}{See Usage.}
 \item{v}{See Usage.}
 \item{p}{See Usage.}
 \item{q}{See Usage.}
-\item{weights}{Defaults to \code{NULL}.}
+\item{weights}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 }
 \description{
 Part of the node2v_native implementation; see the file header for the source it follows.

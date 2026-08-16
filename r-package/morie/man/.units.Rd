@@ -8,7 +8,7 @@
 .units(escaped)
 }
 \arguments{
-\item{escaped}{See Usage.}
+\item{escaped}{Character; passed to \code{strsplit}.}
 }
 \description{
 U+2581; joining reproduces the input exactly so runs of spaces do not collapse.

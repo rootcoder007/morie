@@ -8,9 +8,9 @@
 .level_from_spec(col_name, dtype, valid_values, dataset_name)
 }
 \arguments{
-\item{col_name}{See Usage.}
-\item{dtype}{See Usage.}
-\item{valid_values}{See Usage.}
+\item{col_name}{Character; passed to \code{grepl}.}
+\item{dtype}{One of \code{"bool"}, \code{"date"}, \code{"datetime"}, \code{"float"}, \code{"int"}, \code{"string"}.}
+\item{valid_values}{Optional; may be \code{NULL}. A vector; its length is taken.}
 \item{dataset_name}{See Usage.}
 }
 \description{

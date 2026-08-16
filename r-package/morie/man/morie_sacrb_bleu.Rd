@@ -12,8 +12,8 @@ morie_sacrb_bleu(candidates, references, max_n = 4L, weights = NULL, tokenizer =
 \item{references}{See Usage.}
 \item{max_n}{Defaults to \code{4L}.}
 \item{weights}{Defaults to \code{NULL}.}
-\item{tokenizer}{Defaults to \code{"13a"}.}
-\item{lowercase}{Defaults to \code{FALSE}.}
+\item{tokenizer}{Passed to \code{.sacrb_tok}. Defaults to \code{"13a"}.}
+\item{lowercase}{Passed to \code{.sacrb_tok}. Defaults to \code{FALSE}.}
 }
 \description{
 Part of the sacrb_native implementation; see the file header for the source it follows.

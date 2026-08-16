@@ -56,10 +56,11 @@
 
 #' .sv_as_matrix
 #'
-#' Part of the spatial_voting implementation; see the file header for
+#' A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_aldrich_mckelvey}, \code{morie_spatial_voting_blackbox}, \code{morie_spatial_voting_optimal_classification}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.
 #' @return The value of \code{m}, as built in the body.
 #' @export
 .sv_as_matrix <- function(x) {
@@ -71,7 +72,8 @@
 
 #' .sv_nanmean_col
 #'
-#' Part of the spatial_voting implementation; see the file header for
+#' A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_aldrich_mckelvey}, \code{morie_spatial_voting_anchoring_vignettes}, \code{morie_spatial_voting_blackbox}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param M See Usage.
@@ -83,10 +85,11 @@
 
 #' .sv_pairwise_dist
 #'
-#' Part of the spatial_voting implementation; see the file header for
+#' A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_classical_mds}, \code{morie_spatial_voting_indscal}, \code{morie_spatial_voting_nonmetric_mds} and 2 others in the module.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param X See Usage.
+#' @param X A matrix; passed to \code{as.matrix}.
 #' @return A matrix, from \code{as.matrix}.
 #' @export
 .sv_pairwise_dist <- function(X) {
@@ -96,10 +99,11 @@
 
 #' .sv_double_centering
 #'
-#' Part of the spatial_voting implementation; see the file header for
+#' A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_classical_mds}, \code{morie_spatial_voting_double_centering}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param D See Usage.
+#' @param D A matrix; passed to \code{nrow}.
 #' @return A numeric value.
 #' @export
 .sv_double_centering <- function(D) {
@@ -112,7 +116,8 @@
 
 #' .sv_safe_pinv
 #'
-#' Part of the spatial_voting implementation; see the file header for
+#' A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_smacof}, \code{morie_spatial_voting_smacof_unfolding}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param M See Usage.
@@ -128,10 +133,11 @@
 
 #' .sv_isotonic_pava
 #'
-#' Part of the spatial_voting implementation; see the file header for
+#' A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_nonmetric_mds}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param y See Usage.
+#' @param y A vector; its length is taken.
 #' @param w Defaults to \code{NULL}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -1009,7 +1015,8 @@ morie_spatial_voting_procrustes <- function(X, X_target) {
 
 #' .NOT_PORTED
 #'
-#' Part of the spatial_voting implementation; see the file header for
+#' A step of the spatial_voting implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param name See Usage.

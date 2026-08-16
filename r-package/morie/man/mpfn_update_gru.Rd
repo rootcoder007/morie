@@ -8,7 +8,7 @@
 mpfn_update_gru(h, m, Wz, Uz, Wr, Ur, Wh, Uh)
 }
 \arguments{
-\item{h}{See Usage.}
+\item{h}{A vector; its length is taken.}
 \item{m}{See Usage.}
 \item{Wz}{See Usage.}
 \item{Uz}{See Usage.}

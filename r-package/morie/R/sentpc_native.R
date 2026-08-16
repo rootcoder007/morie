@@ -19,11 +19,12 @@
 
 #' .escape_whitespace
 #'
-#' Part of the sentpc_native implementation; see the file header for the
+#' A step of the sentpc_native implementation. Called by \code{encode_bpe}, \code{escape_whitespace}, \code{train_bpe} and 1 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param text See Usage.
-#' @param add_prefix Defaults to \code{TRUE}.
+#' @param add_prefix A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .escape_whitespace <- function(text, add_prefix = TRUE) {
@@ -35,11 +36,12 @@
 
 #' .unescape_whitespace
 #'
-#' Part of the sentpc_native implementation; see the file header for the
+#' A step of the sentpc_native implementation. Called by \code{morie_sentpc_decode}, \code{unescape_whitespace}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param text See Usage.
-#' @param strip_prefix Defaults to \code{TRUE}.
+#' @param strip_prefix A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return The value of \code{gsub}.
 #' @export
 .unescape_whitespace <- function(text, strip_prefix = TRUE) {
@@ -57,7 +59,7 @@
 #' U+2581; joining reproduces the input exactly so runs of spaces do not
 #' collapse.
 #'
-#' @param escaped See Usage.
+#' @param escaped Character; passed to \code{strsplit}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .units <- function(escaped) {

@@ -8,7 +8,7 @@
 .snpqc1_log_fact(n)
 }
 \arguments{
-\item{n}{See Usage.}
+\item{n}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the snpqc1_native implementation; see the file header for the source it follows.

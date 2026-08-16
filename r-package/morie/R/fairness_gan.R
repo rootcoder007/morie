@@ -21,7 +21,8 @@ NULL
 
 #' .fairness_result
 #'
-#' Part of the fairness_gan implementation; see the file header for the
+#' A step of the fairness_gan implementation. Called by \code{.fairness_no_backend_result}, \code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param title See Usage.
@@ -45,7 +46,8 @@ NULL
 
 #' Prefer native R torch; fall back to reticulate + JAX
 #'
-#' Part of the fairness_gan implementation; see the file header for the
+#' A step of the fairness_gan implementation. Called by \code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A list with \code{kind}, \code{note}.
@@ -75,12 +77,13 @@ NULL
 
 #' .fairness_no_backend_result
 #'
-#' Part of the fairness_gan implementation; see the file header for the
+#' A step of the fairness_gan implementation. Called by \code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param title See Usage.
-#' @param call See Usage.
-#' @param note See Usage.
+#' @param title Passed to \code{.fairness_result}.
+#' @param call Passed to \code{.fairness_result}.
+#' @param note Passed to \code{.fairness_result}.
 #' @return The value of \code{.fairness_result}.
 #' @export
 .fairness_no_backend_result <- function(title, call, note) {
@@ -101,10 +104,11 @@ NULL
 
 #' .fairness_he_init
 #'
-#' Part of the fairness_gan implementation; see the file header for the
+#' A step of the fairness_gan implementation. Called by \code{morie_fairness_spatial_gan}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param sizes See Usage.
+#' @param sizes A vector; its length is taken and its elements indexed.
 #' @return The value of \code{params}, as built in the body.
 #' @export
 .fairness_he_init <- function(sizes) {
@@ -120,11 +124,12 @@ NULL
 
 #' .fairness_mlp_forward
 #'
-#' Part of the fairness_gan implementation; see the file header for the
+#' A step of the fairness_gan implementation. Called by \code{morie_fairness_spatial_gan}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param params See Usage.
-#' @param x See Usage.
+#' @param params A vector; its length is taken and its elements indexed.
+#' @param x A matrix; passed to \code{\%*\%}.
 #' @return The value of \code{x}, as built in the body.
 #' @export
 .fairness_mlp_forward <- function(params, x) {

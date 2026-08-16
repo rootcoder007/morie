@@ -8,7 +8,7 @@
 .phylby_subtrees(node, path = integer(0))
 }
 \arguments{
-\item{node}{See Usage.}
+\item{node}{A vector; its length is taken and its elements indexed.}
 \item{path}{Defaults to \code{integer(0)}.}
 }
 \description{

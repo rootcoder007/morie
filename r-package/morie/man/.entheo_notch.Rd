@@ -8,13 +8,13 @@
 .entheo_notch(x, sfreq, freq, q = 30)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{sfreq}{See Usage.}
-\item{freq}{See Usage.}
-\item{q}{Defaults to \code{30}.}
+\item{x}{A matrix; indexed by row and column.}
+\item{sfreq}{Numeric; combined arithmetically in the body.}
+\item{freq}{Numeric; combined arithmetically in the body.}
+\item{q}{Numeric; combined arithmetically in the body. Defaults to \code{30}.}
 }
 \description{
-Part of the entheo_preprocess implementation; see the file header for the source it follows.
+A step of the entheo_preprocess implementation. Called by \code{preprocess_eeg}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{out}, as built in the body.

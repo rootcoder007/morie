@@ -10,8 +10,8 @@ serial_interval_draw(mean, sd, rng, allow_presymptomatic = TRUE)
 \arguments{
 \item{mean}{See Usage.}
 \item{sd}{See Usage.}
-\item{rng}{See Usage.}
-\item{allow_presymptomatic}{Defaults to \code{TRUE}.}
+\item{rng}{Passed to \code{.ghc_norm}.}
+\item{allow_presymptomatic}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the ttrace_native implementation; see the file header for the source it follows.

@@ -16,10 +16,11 @@
 # Neighbour list and degree from a bond list.
 #' Neighbour list and degree from a bond list
 #'
-#' Part of the toptor_native implementation; see the file header for the
+#' A step of the toptor_native implementation. Called by \code{morie_topological_torsions}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n_atoms See Usage.
+#' @param n_atoms A count; the body uses it as \code{seq_len(...)}.
 #' @param bonds See Usage.
 #' @return The value of \code{adj}, as built in the body.
 #' @export
@@ -41,10 +42,11 @@
 # Pi-electron count per atom, rounded to an integer.
 #' Pi-electron count per atom, rounded to an integer
 #'
-#' Part of the toptor_native implementation; see the file header for the
+#' A step of the toptor_native implementation. Called by \code{morie_topological_torsions}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n_atoms See Usage.
+#' @param n_atoms A count; the body uses it as \code{rep(...)}.
 #' @param bonds See Usage.
 #' @return The value of \code{as.integer}.
 #' @export
@@ -63,11 +65,12 @@
 # Lexicographic comparison of two 4-tuples of (NPI, TYPE, NBR) codes.
 #' Lexicographic comparison of two 4-tuples of (NPI, TYPE, NBR) codes
 #'
-#' Part of the toptor_native implementation; see the file header for the
+#' A step of the toptor_native implementation. Called by \code{morie_topological_torsions}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param a See Usage.
-#' @param b See Usage.
+#' @param a A vector; its length is taken and its elements indexed.
+#' @param b A vector; indexed elementwise.
 #' @return A logical value.
 #' @export
 .lex_le <- function(a, b) {

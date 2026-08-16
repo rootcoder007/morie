@@ -18,7 +18,8 @@
 
 #' .tmldyk_logit
 #'
-#' Part of the tmldyk_native implementation; see the file header for the
+#' A step of the tmldyk_native implementation. Called by \code{.tmle_ate_bounded}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p See Usage.
@@ -31,10 +32,11 @@
 
 #' .tmldyk_expit
 #'
-#' Part of the tmldyk_native implementation; see the file header for the
+#' A step of the tmldyk_native implementation. Called by \code{.tmldyk_logit_irls}, \code{.tmle_ate_bounded}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Numeric; combined arithmetically in the body.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .tmldyk_expit <- function(x) {
@@ -44,13 +46,14 @@
 # Logistic IRLS that returns a coefficient vector.
 #' Logistic IRLS that returns a coefficient vector
 #'
-#' Part of the tmldyk_native implementation; see the file header for the
+#' A step of the tmldyk_native implementation. Called by \code{.tmle_ate_bounded}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param Z See Usage.
-#' @param a See Usage.
-#' @param ridge Defaults to \code{1e-08}.
-#' @param max_iter Defaults to \code{50L}.
+#' @param a A vector; its length is taken.
+#' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
+#' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
 #' @param tol Defaults to \code{1e-10}.
 #' @return The value of \code{b}, as built in the body.
 #' @export
@@ -78,12 +81,13 @@
 # Solve a least-squares problem with a ridge.
 #' Solve a least-squares problem with a ridge
 #'
-#' Part of the tmldyk_native implementation; see the file header for the
+#' A step of the tmldyk_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param Z See Usage.
-#' @param yv See Usage.
-#' @param ridge Defaults to \code{1e-08}.
+#' @param yv A matrix; passed to \code{crossprod}.
+#' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
 #' @return A matrix, from \code{solve}.
 #' @export
 .tmldyk_lstsq <- function(Z, yv, ridge = 1e-8) {
@@ -94,13 +98,14 @@
 
 #' .wls_int
 #'
-#' Part of the tmldyk_native implementation; see the file header for the
+#' A step of the tmldyk_native implementation. Called by \code{.tmle_ate_bounded}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param Xm See Usage.
-#' @param yv See Usage.
-#' @param w See Usage.
-#' @param ridge See Usage.
+#' @param Xm A matrix; passed to \code{nrow}.
+#' @param yv A matrix; passed to \code{\%*\%}.
+#' @param w A matrix; passed to \code{diag}.
+#' @param ridge Numeric; combined arithmetically in the body.
 #' @return A matrix, from \code{solve}.
 #' @export
 .wls_int <- function(Xm, yv, w, ridge) {
@@ -113,7 +118,8 @@
 
 #' .rescale
 #'
-#' Part of the tmldyk_native implementation; see the file header for the
+#' A step of the tmldyk_native implementation. Called by \code{.tmle_ate_bounded}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param y See Usage.
@@ -134,7 +140,8 @@
 
 #' .unscale
 #'
-#' Part of the tmldyk_native implementation; see the file header for the
+#' A step of the tmldyk_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param value See Usage.
@@ -150,17 +157,18 @@
 # Underlying TMLE on the bounded-outcome scale (rescaled to [0,1]).
 #' Underlying TMLE on the bounded-outcome scale (rescaled to [0,1])
 #'
-#' Part of the tmldyk_native implementation; see the file header for the
+#' A step of the tmldyk_native implementation. Called by \code{morie_tmle_diff_kernel}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param yv See Usage.
-#' @param a See Usage.
-#' @param W See Usage.
+#' @param yv A vector; its length is taken.
+#' @param a A vector; indexed elementwise.
+#' @param W A matrix; indexed by row and column.
 #' @param g See Usage.
 #' @param Q1 See Usage.
 #' @param Q0 See Usage.
-#' @param lower See Usage.
-#' @param upper See Usage.
+#' @param lower Passed to \code{.rescale}.
+#' @param upper Passed to \code{.rescale}.
 #' @return A list with \code{psi}, \code{se}, \code{range}.
 #' @export
 .tmle_ate_bounded <- function(yv, a, W, g, Q1, Q0, lower, upper) {

@@ -8,7 +8,7 @@
 .taulep_poisson(e, lam)
 }
 \arguments{
-\item{e}{See Usage.}
+\item{e}{Passed to \code{.ghc_unif}.}
 \item{lam}{See Usage.}
 }
 \description{

@@ -8,8 +8,8 @@
 #' the gpfit() optimiser closure so the xi ~ 0 (exponential) and
 #' out-of-support branches are directly unit-testable.
 #'
-#' @param par See Usage.
-#' @param y See Usage.
+#' @param par A vector; indexed elementwise.
+#' @param y A vector; its length is taken.
 #' @return The value of \code{ll}, as built in the body.
 #' @export
 .gpfit_log_gp <- function(par, y) {

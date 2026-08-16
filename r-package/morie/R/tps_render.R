@@ -204,7 +204,8 @@ morie_tps_project_xy <- function(lat, lon,
 
 #' .tps_has_ggplot2
 #'
-#' Part of the tps_render implementation; see the file header for the
+#' A step of the tps_render implementation. Called by \code{.tps_draw_compass}, \code{.tps_draw_scalebar}, \code{morie_tps_render_choropleth} and 6 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return The value of \code{requireNamespace}.
@@ -215,14 +216,15 @@ morie_tps_project_xy <- function(lat, lon,
 
 #' .tps_save_plot
 #'
-#' Part of the tps_render implementation; see the file header for the
+#' A step of the tps_render implementation. Called by \code{morie_tps_render_choropleth}, \code{morie_tps_render_dbscan}, \code{morie_tps_render_district_proportional} and 4 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p_or_recordedplot See Usage.
 #' @param outfile See Usage.
-#' @param fig_w See Usage.
-#' @param fig_h See Usage.
-#' @param use_gg See Usage.
+#' @param fig_w Numeric; combined arithmetically in the body.
+#' @param fig_h Numeric; combined arithmetically in the body.
+#' @param use_gg A flag; the body branches on it.
 #' @return The value of \code{outfile}, as built in the body.
 #' @export
 .tps_save_plot <- function(p_or_recordedplot, outfile, fig_w, fig_h,
@@ -634,13 +636,14 @@ morie_tps_render_yearly_grid <- function(polys,
 # Internal: draw a north-arrow compass in plot coordinates.
 #' Internal: draw a north-arrow compass in plot coordinates
 #'
-#' Part of the tps_render implementation; see the file header for the
+#' A step of the tps_render implementation. Called by \code{morie_tps_render_dbscan}, \code{morie_tps_render_district_proportional}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.
-#' @param y See Usage.
-#' @param size Defaults to \code{1.5}.
-#' @param use_gg Defaults to \code{FALSE}.
+#' @param y Numeric; combined arithmetically in the body.
+#' @param size Numeric; combined arithmetically in the body. Defaults to \code{1.5}.
+#' @param use_gg A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .tps_draw_compass <- function(x, y, size = 1.5, use_gg = FALSE) {
@@ -672,13 +675,14 @@ morie_tps_render_yearly_grid <- function(polys,
 # Internal: draw a scalebar of `length_km` near (x, y) in km space.
 #' Internal: draw a scalebar of `length_km` near (x, y) in km space
 #'
-#' Part of the tps_render implementation; see the file header for the
+#' A step of the tps_render implementation. Called by \code{morie_tps_render_dbscan}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
-#' @param y See Usage.
-#' @param length_km Defaults to \code{5}.
-#' @param use_gg Defaults to \code{FALSE}.
+#' @param x Numeric; combined arithmetically in the body.
+#' @param y Numeric; combined arithmetically in the body.
+#' @param length_km Numeric; combined arithmetically in the body. Defaults to \code{5}.
+#' @param use_gg A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .tps_draw_scalebar <- function(x, y, length_km = 5, use_gg = FALSE) {

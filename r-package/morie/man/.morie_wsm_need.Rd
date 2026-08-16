@@ -8,7 +8,7 @@
 .morie_wsm_need(ok, msg)
 }
 \arguments{
-\item{ok}{See Usage.}
+\item{ok}{A flag; the body branches on it.}
 \item{msg}{See Usage.}
 }
 \description{

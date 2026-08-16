@@ -8,8 +8,8 @@
 morie_unifAlg_match(pattern, subject)
 }
 \arguments{
-\item{pattern}{See Usage.}
-\item{subject}{See Usage.}
+\item{pattern}{Passed to \code{.unifAlg_check}.}
+\item{subject}{Passed to \code{.unifAlg_check}.}
 }
 \description{
 Part of the unifAlg_native implementation; see the file header for the source it follows.

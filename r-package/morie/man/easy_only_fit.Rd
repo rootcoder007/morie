@@ -8,14 +8,14 @@
 easy_only_fit(X, y, difficulty, X_test, y_test, quantile = 0.5, updates = 200, seed = 0, n_repeats = 50)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{difficulty}{See Usage.}
-\item{X_test}{See Usage.}
-\item{y_test}{See Usage.}
-\item{quantile}{Defaults to \code{0.5}.}
+\item{X}{Passed to \code{.prgrl_to_rows}.}
+\item{y}{Passed to \code{.prgrl_to_vec}.}
+\item{difficulty}{Passed to \code{.prgrl_to_vec}.}
+\item{X_test}{Passed to \code{.prgrl_to_rows}.}
+\item{y_test}{Passed to \code{.prgrl_to_vec}.}
+\item{quantile}{Numeric; combined arithmetically in the body. Defaults to \code{0.5}.}
 \item{updates}{Defaults to \code{200}.}
-\item{seed}{Defaults to \code{0}.}
+\item{seed}{Passed to \code{.prgrl_rng}. Defaults to \code{0}.}
 \item{n_repeats}{Defaults to \code{50}.}
 }
 \description{

@@ -2,11 +2,12 @@
 
 #' .seq_hamming
 #'
-#' Part of the cluseq implementation; see the file header for the source
+#' A step of the cluseq implementation. Called by \code{Cluseq}.
+#' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param a See Usage.
-#' @param b See Usage.
+#' @param a A vector; its length is taken.
+#' @param b A vector; its length is taken.
 #' @return A numeric value.
 #' @export
 .seq_hamming <- function(a, b) {

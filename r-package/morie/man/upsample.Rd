@@ -8,7 +8,7 @@
 upsample(grid, factor = 2)
 }
 \arguments{
-\item{grid}{See Usage.}
+\item{grid}{Passed to \code{.samdec_mat}.}
 \item{factor}{Defaults to \code{2}.}
 }
 \description{

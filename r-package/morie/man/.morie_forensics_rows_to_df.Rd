@@ -8,8 +8,8 @@
 .morie_forensics_rows_to_df(rows, columns = NULL)
 }
 \arguments{
-\item{rows}{See Usage.}
-\item{columns}{Defaults to \code{NULL}.}
+\item{rows}{A vector; its length is taken.}
+\item{columns}{Optional; may be \code{NULL}. A vector; its length is taken.}
 }
 \description{
 tolerating heterogeneous columns (missing -> NA).

@@ -9,11 +9,11 @@ morie_saigeg(y, G, X = NULL, mu = NULL, ratio = 1, two_sided = TRUE)
 }
 \arguments{
 \item{y}{See Usage.}
-\item{G}{See Usage.}
-\item{X}{Defaults to \code{NULL}.}
-\item{mu}{Defaults to \code{NULL}.}
+\item{G}{Passed to \code{.saigeg_score_statistic}.}
+\item{X}{Passed to \code{.saigeg_fit_null}.}
+\item{mu}{Optional; may be \code{NULL}. Passed to \code{.saigeg_score_statistic}.}
 \item{ratio}{Defaults to \code{1}.}
-\item{two_sided}{Defaults to \code{TRUE}.}
+\item{two_sided}{Passed to \code{.saigeg_normal_pvalue}. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the saigeg_native implementation; see the file header for the source it follows.

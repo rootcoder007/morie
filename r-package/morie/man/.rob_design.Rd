@@ -8,7 +8,7 @@
 .rob_design(X, y)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
 \item{y}{See Usage.}
 }
 \description{

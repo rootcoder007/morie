@@ -8,9 +8,9 @@
 sequential_g_formula(Q_functions, L_supports, L_probs, rule)
 }
 \arguments{
-\item{Q_functions}{See Usage.}
-\item{L_supports}{See Usage.}
-\item{L_probs}{See Usage.}
+\item{Q_functions}{A vector; indexed elementwise.}
+\item{L_supports}{A vector; its length is taken and its elements indexed.}
+\item{L_probs}{A vector; its length is taken and its elements indexed.}
 \item{rule}{See Usage.}
 }
 \description{

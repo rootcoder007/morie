@@ -8,9 +8,9 @@
 .trupek_dogleg(g, H, delta)
 }
 \arguments{
-\item{g}{See Usage.}
-\item{H}{See Usage.}
-\item{delta}{See Usage.}
+\item{g}{Numeric; combined arithmetically in the body.}
+\item{H}{Passed to \code{.trupek_chol}.}
+\item{delta}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the trupek_native implementation; see the file header for the source it follows.

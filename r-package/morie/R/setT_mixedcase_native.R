@@ -18,11 +18,12 @@
 
 #' .ln
 #'
-#' Part of the setT_mixedcase_native implementation; see the file header
+#' A step of the setT_mixedcase_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param row See Usage.
-#' @param eps Defaults to \code{.setT_EPS}.
+#' @param row A vector; its length is taken.
+#' @param eps Numeric; combined arithmetically in the body. Defaults to \code{.setT_EPS}.
 #' @return A numeric value.
 #' @export
 .ln <- function(row, eps = .setT_EPS) {
@@ -35,13 +36,14 @@
 
 #' .rff
 #'
-#' Part of the setT_mixedcase_native implementation; see the file header
+#' A step of the setT_mixedcase_native implementation. Called by \code{.mab}, \code{setT}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param M See Usage.
-#' @param W1 See Usage.
+#' @param M A matrix; passed to \code{\%*\%}.
+#' @param W1 A matrix; passed to \code{\%*\%}.
 #' @param b1 See Usage.
-#' @param W2 See Usage.
+#' @param W2 A matrix; passed to \code{\%*\%}.
 #' @param b2 See Usage.
 #' @return A numeric value.
 #' @export
@@ -56,14 +58,15 @@
 
 #' .attend
 #'
-#' Part of the setT_mixedcase_native implementation; see the file header
+#' A step of the setT_mixedcase_native implementation. Called by \code{.mab}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param X See Usage.
-#' @param Y See Usage.
-#' @param Wq See Usage.
-#' @param Wk See Usage.
-#' @param Wv See Usage.
+#' @param X A matrix; passed to \code{\%*\%}.
+#' @param Y A matrix; passed to \code{\%*\%}.
+#' @param Wq A matrix; passed to \code{\%*\%}.
+#' @param Wk A matrix; passed to \code{\%*\%}.
+#' @param Wv A matrix; passed to \code{\%*\%}.
 #' @return A list with \code{O}, \code{W}.
 #' @export
 .attend <- function(X, Y, Wq, Wk, Wv) {
@@ -82,12 +85,13 @@
 
 #' .mab
 #'
-#' Part of the setT_mixedcase_native implementation; see the file header
+#' A step of the setT_mixedcase_native implementation. Called by \code{setT}.
+#' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param X See Usage.
-#' @param Y See Usage.
-#' @param p See Usage.
+#' @param X Numeric; combined arithmetically in the body.
+#' @param Y Passed to \code{.attend}.
+#' @param p A list; the body reads \code{$b1}, \code{$b2}, \code{$W1}, \code{$W2}, \code{$Wk}, \code{$Wq}, \code{$Wv} from it.
 #' @return A list with \code{O}, \code{W}.
 #' @export
 .mab <- function(X, Y, p) {

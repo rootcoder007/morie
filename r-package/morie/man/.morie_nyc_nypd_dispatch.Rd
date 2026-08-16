@@ -10,17 +10,17 @@
 \arguments{
 \item{dataset_key}{See Usage.}
 \item{year}{See Usage.}
-\item{max_features}{See Usage.}
-\item{offline}{See Usage.}
-\item{resource_id}{See Usage.}
-\item{mode}{Defaults to \code{c("soda2", "soda3")}.}
-\item{paginate}{Defaults to \code{FALSE}.}
-\item{page_size}{Defaults to \code{1000L}.}
-\item{max_pages}{Defaults to \code{200L}.}
-\item{app_token}{Defaults to \code{NULL}.}
+\item{max_features}{Optional; may be \code{NULL}. Passed to \code{.morie_dataset_socrata_fetch}.}
+\item{offline}{A flag; the body branches on it.}
+\item{resource_id}{Optional; may be \code{NULL}. Passed to \code{.morie_dataset_soda3_query}.}
+\item{mode}{Compared against \code{"soda2"}. Defaults to \code{c("soda2", "soda3")}.}
+\item{paginate}{Passed to \code{.morie_dataset_socrata_fetch}. Defaults to \code{FALSE}.}
+\item{page_size}{Passed to \code{.morie_dataset_socrata_fetch}. Defaults to \code{1000L}.}
+\item{max_pages}{Passed to \code{.morie_dataset_socrata_fetch}. Defaults to \code{200L}.}
+\item{app_token}{Passed to \code{.morie_dataset_soda3_query}.}
 }
 \description{
-Part of the datasets_nyc_nypd implementation; see the file header for the source it follows.
+A step of the datasets_nyc_nypd implementation. Called by \code{morie_datasets_nyc_nypd_arrests_historic}, \code{morie_datasets_nyc_nypd_arrests_ytd}, \code{morie_datasets_nyc_nypd_by_key} and 6 others in the module. See the file header for the source the module follows.
 }
 \value{
 The value of \code{.morie_dataset_soda3_query}.

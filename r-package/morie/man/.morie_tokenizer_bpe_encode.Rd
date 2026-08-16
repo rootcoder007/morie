@@ -8,8 +8,8 @@
 .morie_tokenizer_bpe_encode(tok, text)
 }
 \arguments{
-\item{tok}{See Usage.}
-\item{text}{See Usage.}
+\item{tok}{A list; the body reads \code{$token_to_id} from it.}
+\item{text}{A vector; its length is taken.}
 }
 \description{
 Part of the tokenizer implementation; see the file header for the source it follows.

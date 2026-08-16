@@ -8,7 +8,7 @@
 .otis_binarise(s)
 }
 \arguments{
-\item{s}{See Usage.}
+\item{s}{A vector; indexed elementwise.}
 }
 \description{
 Part of the otis implementation; see the file header for the source it follows.

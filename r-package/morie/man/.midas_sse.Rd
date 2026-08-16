@@ -8,10 +8,10 @@
 .midas_sse(p, X, Y, K)
 }
 \arguments{
-\item{p}{See Usage.}
-\item{X}{See Usage.}
-\item{Y}{See Usage.}
-\item{K}{See Usage.}
+\item{p}{A vector; indexed elementwise.}
+\item{X}{A matrix; passed to \code{\%*\%}.}
+\item{Y}{Numeric; combined arithmetically in the body.}
+\item{K}{Passed to \code{.morie_beta_weights}.}
 }
 \description{
 morie_midas_regression() optimiser closure so the theta-domain guard and the non-finite-SSE guard are directly unit-testable. `X` is the lag-matrix, `Y` the target, `K` the number of high-frequency lags.

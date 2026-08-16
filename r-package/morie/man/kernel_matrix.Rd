@@ -8,8 +8,8 @@
 kernel_matrix(X, kernel = "linear", gamma = 1, degree = 3, coef0 = 0)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{kernel}{Defaults to \code{"linear"}.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
+\item{kernel}{One of \code{"linear"}, \code{"poly"}, \code{"rbf"}. Defaults to \code{"linear"}.}
 \item{gamma}{Defaults to \code{1}.}
 \item{degree}{Defaults to \code{3}.}
 \item{coef0}{Defaults to \code{0}.}

@@ -8,12 +8,12 @@
 .bkprp_sigma_prime(z, activation, a)
 }
 \arguments{
-\item{z}{See Usage.}
+\item{z}{A matrix; passed to \code{nrow}.}
 \item{activation}{See Usage.}
-\item{a}{See Usage.}
+\item{a}{Numeric; combined arithmetically in the body.}
 }
 \description{
-Part of the bkprp implementation; see the file header for the source it follows.
+A step of the bkprp implementation. Called by \code{morie_bkprp_backpropagation}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{switch}.

@@ -8,9 +8,9 @@
 positional_encoding(p, L = 10, include_input = TRUE)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{Passed to \code{.as_numeric_vec}.}
 \item{L}{Defaults to \code{10}.}
-\item{include_input}{Defaults to \code{TRUE}.}
+\item{include_input}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the nrfrad_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .plsa_check(n_dw)
 }
 \arguments{
-\item{n_dw}{See Usage.}
+\item{n_dw}{A matrix; passed to \code{as.matrix}.}
 }
 \description{
 Part of the plsa_native implementation; see the file header for the source it follows.

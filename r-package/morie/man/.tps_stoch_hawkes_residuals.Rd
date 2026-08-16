@@ -8,10 +8,10 @@
 .tps_stoch_hawkes_residuals(dt, mu, kappa, omega)
 }
 \arguments{
-\item{dt}{See Usage.}
-\item{mu}{See Usage.}
-\item{kappa}{See Usage.}
-\item{omega}{See Usage.}
+\item{dt}{Numeric; passed to \code{min}.}
+\item{mu}{Numeric; combined arithmetically in the body.}
+\item{kappa}{Numeric; combined arithmetically in the body.}
+\item{omega}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Exp(1)-distributed when the model is correct (Ogata 1988).

@@ -164,11 +164,12 @@ morie_tokenizer_decode <- function(tok, ids) {
 
 #' .morie_tokenizer_bpe_encode
 #'
-#' Part of the tokenizer implementation; see the file header for the
+#' A step of the tokenizer implementation. Called by \code{morie_tokenizer_encode}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param tok See Usage.
-#' @param text See Usage.
+#' @param tok A list; the body reads \code{$token_to_id} from it.
+#' @param text A vector; its length is taken.
 #' @return The value of \code{tokens}, as built in the body.
 #' @export
 .morie_tokenizer_bpe_encode <- function(tok, text) {

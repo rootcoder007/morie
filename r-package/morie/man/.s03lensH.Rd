@@ -8,8 +8,8 @@
 .s03lensH(t, r)
 }
 \arguments{
-\item{t}{See Usage.}
-\item{r}{See Usage.}
+\item{t}{Numeric; combined arithmetically in the body.}
+\item{r}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the matern implementation; see the file header for the source it follows.

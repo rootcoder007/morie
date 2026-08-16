@@ -8,8 +8,8 @@
 .lan_threshold_logit(yk, X)
 }
 \arguments{
-\item{yk}{See Usage.}
-\item{X}{See Usage.}
+\item{yk}{A vector; its length is taken.}
+\item{X}{A matrix; passed to \code{ncol}.}
 }
 \description{
 Returns coefficients (with intercept), SEs, log-lik.

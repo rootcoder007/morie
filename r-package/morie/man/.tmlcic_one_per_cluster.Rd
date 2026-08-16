@@ -8,8 +8,8 @@
 .tmlcic_one_per_cluster(v, groups, name)
 }
 \arguments{
-\item{v}{See Usage.}
-\item{groups}{See Usage.}
+\item{v}{A vector; indexed elementwise.}
+\item{groups}{A vector; its length is taken and its elements indexed.}
 \item{name}{See Usage.}
 }
 \description{

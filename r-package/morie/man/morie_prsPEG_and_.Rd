@@ -8,7 +8,7 @@
 morie_prsPEG_and_(e)
 }
 \arguments{
-\item{e}{See Usage.}
+\item{e}{Passed to \code{.probe}.}
 }
 \description{
 Part of the prsPEG_native implementation; see the file header for the source it follows.

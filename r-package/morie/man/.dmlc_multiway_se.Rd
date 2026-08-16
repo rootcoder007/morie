@@ -8,12 +8,12 @@
 .dmlc_multiway_se(infl, clusters, n)
 }
 \arguments{
-\item{infl}{See Usage.}
-\item{clusters}{See Usage.}
-\item{n}{See Usage.}
+\item{infl}{Passed to \code{.dmlc_cluster_se}.}
+\item{clusters}{A vector; its length is taken and its elements indexed.}
+\item{n}{Passed to \code{.dmlc_cluster_se}.}
 }
 \description{
-Part of the dml_clustered implementation; see the file header for the source it follows.
+A step of the dml_clustered implementation. Called by \code{morie_dml_clustered}. See the file header for the source the module follows.
 }
 \value{
 A numeric value.

@@ -8,9 +8,9 @@
 .linear_region(curve, lo_frac = 0.1, hi_frac = 0.8)
 }
 \arguments{
-\item{curve}{See Usage.}
-\item{lo_frac}{Defaults to \code{0.1}.}
-\item{hi_frac}{Defaults to \code{0.8}.}
+\item{curve}{A vector; its length is taken and its elements indexed.}
+\item{lo_frac}{Numeric; combined arithmetically in the body. Defaults to \code{0.1}.}
+\item{hi_frac}{Numeric; combined arithmetically in the body. Defaults to \code{0.8}.}
 }
 \description{
 Part of the lyapun_native implementation; see the file header for the source it follows.

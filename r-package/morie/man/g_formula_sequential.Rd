@@ -8,7 +8,7 @@
 g_formula_sequential(Q_seq)
 }
 \arguments{
-\item{Q_seq}{See Usage.}
+\item{Q_seq}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the tlclust_native implementation; see the file header for the source it follows.

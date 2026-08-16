@@ -8,11 +8,11 @@
 .bnd_wc_intersect(yv, dv, cellv, lo, hi)
 }
 \arguments{
-\item{yv}{See Usage.}
-\item{dv}{See Usage.}
+\item{yv}{A vector; indexed elementwise.}
+\item{dv}{A vector; indexed elementwise.}
 \item{cellv}{See Usage.}
-\item{lo}{See Usage.}
-\item{hi}{See Usage.}
+\item{lo}{Passed to \code{.bnd_wc_arm}.}
+\item{hi}{Passed to \code{.bnd_wc_arm}.}
 }
 \description{
 Molinari (2021) eq (2.15). Returns c(lo1, hi1, lo0, hi0).

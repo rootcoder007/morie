@@ -8,7 +8,7 @@
 .coerce_regime(regime, n)
 }
 \arguments{
-\item{regime}{See Usage.}
+\item{regime}{Optional; may be \code{NULL}. Character; passed to \code{tolower}.}
 \item{n}{See Usage.}
 }
 \description{

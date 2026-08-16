@@ -8,9 +8,9 @@
 .sglm_negll(log_phi, D, n, X, y)
 }
 \arguments{
-\item{log_phi}{See Usage.}
-\item{D}{See Usage.}
-\item{n}{See Usage.}
+\item{log_phi}{Numeric; passed to \code{exp}.}
+\item{D}{Numeric; combined arithmetically in the body.}
+\item{n}{A matrix; passed to \code{diag}.}
 \item{X}{See Usage.}
 \item{y}{See Usage.}
 }

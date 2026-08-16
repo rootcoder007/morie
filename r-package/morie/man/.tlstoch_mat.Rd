@@ -8,7 +8,7 @@
 .tlstoch_mat(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the tlstoch_native implementation; see the file header for the source it follows.

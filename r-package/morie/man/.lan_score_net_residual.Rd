@@ -8,12 +8,12 @@
 .lan_score_net_residual(sub, score_col, outcome_col, race_cols, control_cols, bootstrap_replicates, random_state)
 }
 \arguments{
-\item{sub}{See Usage.}
+\item{sub}{A matrix; indexed by row and column.}
 \item{score_col}{See Usage.}
 \item{outcome_col}{See Usage.}
-\item{race_cols}{See Usage.}
+\item{race_cols}{A vector; its length is taken.}
 \item{control_cols}{See Usage.}
-\item{bootstrap_replicates}{See Usage.}
+\item{bootstrap_replicates}{A count; the body uses it as \code{seq_len(...)}.}
 \item{random_state}{See Usage.}
 }
 \description{

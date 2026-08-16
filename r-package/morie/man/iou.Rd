@@ -8,8 +8,8 @@
 iou(a, b, threshold = 0.5)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{a}{Passed to \code{.sammkr_flat}.}
+\item{b}{Passed to \code{.sammkr_flat}.}
 \item{threshold}{Defaults to \code{0.5}.}
 }
 \description{

@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{p}{See Usage.}
-\item{nrows}{See Usage.}
+\item{nrows}{Passed to \code{.morie_tps_apply_nrows}.}
 }
 \description{
 Part of the tps_io implementation; see the file header for the source it follows.

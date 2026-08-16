@@ -8,9 +8,9 @@
 morie_trmRew_lpo_greater(s, t, precedence)
 }
 \arguments{
-\item{s}{See Usage.}
-\item{t}{See Usage.}
-\item{precedence}{See Usage.}
+\item{s}{A vector; indexed elementwise.}
+\item{t}{A vector; indexed elementwise.}
+\item{precedence}{Passed to \code{morie_trmRew_lpo_greater}.}
 }
 \description{
 Part of the trmRew_native implementation; see the file header for the source it follows.

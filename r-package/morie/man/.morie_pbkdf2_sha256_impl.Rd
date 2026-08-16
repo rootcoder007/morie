@@ -8,10 +8,10 @@
 .morie_pbkdf2_sha256_impl(password, salt, iterations, dklen)
 }
 \arguments{
-\item{password}{See Usage.}
-\item{salt}{See Usage.}
-\item{iterations}{See Usage.}
-\item{dklen}{See Usage.}
+\item{password}{Passed to \code{.Call}.}
+\item{salt}{Passed to \code{.Call}.}
+\item{iterations}{Passed to \code{.Call}.}
+\item{dklen}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

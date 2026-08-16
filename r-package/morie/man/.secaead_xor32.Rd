@@ -8,8 +8,8 @@
 .secaead_xor32(a, b)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{a}{Numeric; combined arithmetically in the body.}
+\item{b}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the secaead_native implementation; see the file header for the source it follows.

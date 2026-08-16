@@ -8,7 +8,7 @@
 .regmlm_lambda_grid(p, n, n_ridge = 5)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{Numeric; combined arithmetically in the body.}
 \item{n}{See Usage.}
 \item{n_ridge}{Defaults to \code{5}.}
 }

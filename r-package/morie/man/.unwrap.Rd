@@ -8,11 +8,11 @@
 .unwrap(p, tol = pi)
 }
 \arguments{
-\item{p}{See Usage.}
-\item{tol}{Defaults to \code{pi}.}
+\item{p}{A vector; indexed elementwise.}
+\item{tol}{Numeric; combined arithmetically in the body. Defaults to \code{pi}.}
 }
 \description{
-Part of the dsp_waveform implementation; see the file header for the source it follows.
+A step of the dsp_waveform implementation. Called by \code{morie_dsp_complex_demodulation}. See the file header for the source the module follows.
 }
 \value{
 A vector, from \code{c}.

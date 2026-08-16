@@ -8,8 +8,8 @@
 .cohens_d_ind(x, y)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{y}{See Usage.}
+\item{x}{A vector; its length is taken.}
+\item{y}{A vector; its length is taken.}
 }
 \description{
 Part of the statistics implementation; see the file header for the source it follows.

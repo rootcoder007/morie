@@ -9,10 +9,10 @@
 }
 \arguments{
 \item{feature}{See Usage.}
-\item{names}{See Usage.}
+\item{names}{A vector; its length is taken.}
 }
 \description{
-Part of the fairness_xai implementation; see the file header for the source it follows.
+A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale}, \code{morie_fairness_xai_ceteris_paribus}, \code{morie_fairness_xai_partial_dependence}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{idx}, as built in the body.

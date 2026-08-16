@@ -8,7 +8,7 @@
 .tmldyn_expit(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the tmldyn_native implementation; see the file header for the source it follows.

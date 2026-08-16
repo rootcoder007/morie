@@ -11,7 +11,7 @@
 \item{url}{See Usage.}
 }
 \description{
-Part of the data_access implementation; see the file header for the source it follows.
+A step of the data_access implementation. Called by \code{morie_ckan_search}, \code{morie_fetch}, \code{morie_fetch_arcgis}. See the file header for the source the module follows.
 }
 \value{
 A character value.

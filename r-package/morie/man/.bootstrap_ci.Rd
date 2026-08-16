@@ -10,12 +10,12 @@
 \arguments{
 \item{func}{See Usage.}
 \item{args}{See Usage.}
-\item{n_boot}{Defaults to \code{2000L}.}
-\item{confidence}{Defaults to \code{0.95}.}
+\item{n_boot}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{2000L}.}
+\item{confidence}{Numeric; combined arithmetically in the body. Defaults to \code{0.95}.}
 \item{seed}{Defaults to \code{42L}.}
 }
 \description{
-Part of the effect_sizes implementation; see the file header for the source it follows.
+A step of the effect_sizes implementation. Called by \code{bootstrap_effect_size_ci}, \code{cles}, \code{cliffs_delta} and 2 others in the module. See the file header for the source the module follows.
 }
 \value{
 A list with \code{se}, \code{ci_lo}, \code{ci_hi}.

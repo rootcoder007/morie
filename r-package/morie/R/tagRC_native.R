@@ -31,7 +31,8 @@
 
 #' tagRC_tripartite_graph
 #'
-#' Part of the tagRC_native implementation; see the file header for the
+#' A step of the tagRC_native implementation. Called by \code{morie_tagRC}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param triples See Usage.
@@ -92,7 +93,8 @@ tagRC_tripartite_graph <- function(triples) {
 
 #' tagRC_preference_vector
 #'
-#' Part of the tagRC_native implementation; see the file header for the
+#' A step of the tagRC_native implementation. Called by \code{morie_tagRC}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param nodes See Usage.
@@ -125,14 +127,15 @@ tagRC_preference_vector <- function(nodes, focus, weight = 0.9) {
 
 #' tagRC_adapted_pagerank
 #'
-#' Part of the tagRC_native implementation; see the file header for the
+#' A step of the tagRC_native implementation. Called by \code{morie_tagRC}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param adjacency See Usage.
+#' @param adjacency A vector; indexed elementwise.
 #' @param nodes See Usage.
 #' @param p Defaults to \code{NULL}.
-#' @param d Defaults to \code{0.7}.
-#' @param iters Defaults to \code{200}.
+#' @param d Numeric; combined arithmetically in the body. Defaults to \code{0.7}.
+#' @param iters A count; the body uses it as \code{seq_len(...)}. Defaults to \code{200}.
 #' @param tol Defaults to \code{1e-12}.
 #' @return A list with \code{w}, \code{ranking}.
 #' @export
@@ -198,7 +201,8 @@ tagRC_adapted_pagerank <- function(adjacency, nodes, p = NULL,
 
 #' morie_tagRC
 #'
-#' Part of the tagRC_native implementation; see the file header for the
+#' A step of the tagRC_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param triples See Usage.
@@ -240,7 +244,8 @@ tagRC_tagawarerec <- morie_tagRC
 
 #' tagRC_cheatsheet
 #'
-#' Part of the tagRC_native implementation; see the file header for the
+#' A step of the tagRC_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

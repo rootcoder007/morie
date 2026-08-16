@@ -8,9 +8,9 @@
 offlrl_safe_max_key(qmap, s, A)
 }
 \arguments{
-\item{qmap}{See Usage.}
+\item{qmap}{A vector; indexed elementwise.}
 \item{s}{See Usage.}
-\item{A}{See Usage.}
+\item{A}{A vector; indexed elementwise.}
 }
 \description{
 Part of the offlrl_native implementation; see the file header for the source it follows.

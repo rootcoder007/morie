@@ -15,7 +15,8 @@
 
 #' .secrtt_as_bytes
 #'
-#' Part of the secrtt_native implementation; see the file header for the
+#' A step of the secrtt_native implementation. Called by \code{generate_dek}, \code{open_record}, \code{rotate_dek} and 3 others in the module.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x See Usage.

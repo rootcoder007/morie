@@ -8,7 +8,7 @@
 .morie_forensics_flatten_nibrs(rec)
 }
 \arguments{
-\item{rec}{See Usage.}
+\item{rec}{A vector; indexed elementwise.}
 }
 \description{
 Nested dicts become dotted keys; scalar lists are ";"-joined; nested lists are JSON-serialised.

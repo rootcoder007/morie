@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{r}{See Usage.}
-\item{n}{See Usage.}
-\item{confidence}{See Usage.}
+\item{n}{Numeric; combined arithmetically in the body.}
+\item{confidence}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the statistics implementation; see the file header for the source it follows.

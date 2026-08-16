@@ -8,8 +8,8 @@
 morie_matching_euclidean_pairs_cpp(X_t, X_c)
 }
 \arguments{
-\item{X_t}{See Usage.}
-\item{X_c}{See Usage.}
+\item{X_t}{Passed to \code{.Call}.}
+\item{X_c}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

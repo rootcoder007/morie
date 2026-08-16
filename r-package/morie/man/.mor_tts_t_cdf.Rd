@@ -8,8 +8,8 @@
 .mor_tts_t_cdf(t, v)
 }
 \arguments{
-\item{t}{See Usage.}
-\item{v}{See Usage.}
+\item{t}{Numeric; combined arithmetically in the body.}
+\item{v}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the ttsAn_native implementation; see the file header for the source it follows.

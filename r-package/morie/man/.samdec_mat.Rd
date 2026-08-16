@@ -8,7 +8,7 @@
 .samdec_mat(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A matrix; passed to \code{dim}.}
 }
 \description{
 Part of the samdec_native implementation; see the file header for the source it follows.

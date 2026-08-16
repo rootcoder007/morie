@@ -8,9 +8,9 @@
 .prgrl_error(X, y, w)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
-\item{w}{See Usage.}
+\item{X}{A vector; its length is taken and its elements indexed.}
+\item{y}{A vector; indexed elementwise.}
+\item{w}{A vector; indexed elementwise.}
 }
 \description{
 Part of the prgrl_native implementation; see the file header for the source it follows.

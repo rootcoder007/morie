@@ -9,7 +9,7 @@ scalar_vector_message(s_j, v_j, r_ij, phi_s, phi_v, W_rbf)
 }
 \arguments{
 \item{s_j}{See Usage.}
-\item{v_j}{See Usage.}
+\item{v_j}{A matrix; passed to \code{as.matrix}.}
 \item{r_ij}{See Usage.}
 \item{phi_s}{See Usage.}
 \item{phi_v}{See Usage.}

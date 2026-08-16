@@ -8,9 +8,9 @@
 .tlstoch_positivity_shift(A, delta, W = NULL, bins = 5)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{Passed to \code{.tlstoch_vec}.}
 \item{delta}{See Usage.}
-\item{W}{Defaults to \code{NULL}.}
+\item{W}{Optional; may be \code{NULL}. Passed to \code{.tlstoch_vec}.}
 \item{bins}{Defaults to \code{5}.}
 }
 \description{

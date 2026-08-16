@@ -8,9 +8,9 @@
 .binary_power_required_n(p1, p2, alpha = 0.05, power = 0.8)
 }
 \arguments{
-\item{p1}{See Usage.}
-\item{p2}{See Usage.}
-\item{alpha}{Defaults to \code{0.05}.}
+\item{p1}{Numeric; passed to \code{sqrt}.}
+\item{p2}{Numeric; passed to \code{sqrt}.}
+\item{alpha}{Numeric; combined arithmetically in the body. Defaults to \code{0.05}.}
 \item{power}{Defaults to \code{0.8}.}
 }
 \description{

@@ -8,7 +8,7 @@
 .kernel_biweight(u)
 }
 \arguments{
-\item{u}{See Usage.}
+\item{u}{Numeric; passed to \code{abs}.}
 }
 \description{
 Part of the semipar_bridge implementation; see the file header for the source it follows.

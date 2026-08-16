@@ -9,7 +9,7 @@ morie_pibmd_prior_informativeness_bias_diagnostic(samples, prior, n_grid = 512L)
 }
 \arguments{
 \item{samples}{See Usage.}
-\item{prior}{See Usage.}
+\item{prior}{A list; the body reads \code{$mean}, \code{$sd} from it.}
 \item{n_grid}{Defaults to \code{512L}.}
 }
 \description{

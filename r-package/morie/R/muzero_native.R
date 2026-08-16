@@ -4,7 +4,8 @@
 
 #' muzero_MinMax
 #'
-#' Part of the muzero_native implementation; see the file header for the
+#' A step of the muzero_native implementation. Called by \code{muzero_search}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return The value of \code{env}, as built in the body.
@@ -26,10 +27,11 @@ muzero_MinMax <- function() {
 
 #' muzero_Node
 #'
-#' Part of the muzero_native implementation; see the file header for the
+#' A step of the muzero_native implementation. Called by \code{muzero_search}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param prior Defaults to \code{0}.
+#' @param prior A vector; indexed elementwise. Defaults to \code{0}.
 #' @return The value of \code{env}, as built in the body.
 #' @export
 muzero_Node <- function(prior = 0) {
@@ -56,14 +58,15 @@ muzero_Node <- function(prior = 0) {
 
 #' muzero_select
 #'
-#' Part of the muzero_native implementation; see the file header for the
+#' A step of the muzero_native implementation. Called by \code{muzero_search}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param node See Usage.
-#' @param A_keys See Usage.
-#' @param mm See Usage.
-#' @param c1 See Usage.
-#' @param c2 See Usage.
+#' @param node A list; the body reads \code{$children} from it.
+#' @param A_keys A vector; indexed elementwise.
+#' @param mm A list; the body reads \code{$normalize} from it.
+#' @param c1 Numeric; combined arithmetically in the body.
+#' @param c2 Numeric; combined arithmetically in the body.
 #' @return The value of \code{best_a}, as built in the body.
 #' @export
 muzero_select <- function(node, A_keys, mm, c1, c2) {
@@ -85,13 +88,14 @@ muzero_select <- function(node, A_keys, mm, c1, c2) {
 
 #' muzero_backup
 #'
-#' Part of the muzero_native implementation; see the file header for the
+#' A step of the muzero_native implementation. Called by \code{muzero_search}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param path See Usage.
+#' @param path A vector; its length is taken and its elements indexed.
 #' @param value See Usage.
-#' @param gamma See Usage.
-#' @param mm See Usage.
+#' @param gamma Numeric; combined arithmetically in the body.
+#' @param mm A list; the body reads \code{$update} from it.
 #' @return The value of \code{for}.
 #' @export
 muzero_backup <- function(path, value, gamma, mm) {
@@ -107,10 +111,11 @@ muzero_backup <- function(path, value, gamma, mm) {
 
 #' muzero_gamma_rv
 #'
-#' Part of the muzero_native implementation; see the file header for the
+#' A step of the muzero_native implementation. Called by \code{muzero_add_noise}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param alpha See Usage.
+#' @param alpha Numeric; combined arithmetically in the body.
 #' @return The value of \code{repeat}.
 #' @export
 muzero_gamma_rv <- function(alpha) {
@@ -131,12 +136,13 @@ muzero_gamma_rv <- function(alpha) {
 
 #' muzero_add_noise
 #'
-#' Part of the muzero_native implementation; see the file header for the
+#' A step of the muzero_native implementation. Called by \code{muzero_search}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param prior See Usage.
+#' @param prior Numeric; combined arithmetically in the body.
 #' @param alpha See Usage.
-#' @param frac See Usage.
+#' @param frac Numeric; combined arithmetically in the body.
 #' @param seed See Usage.
 #' @return A numeric value.
 #' @export
@@ -152,7 +158,8 @@ muzero_add_noise <- function(prior, alpha, frac, seed) {
 
 #' muzero_search
 #'
-#' Part of the muzero_native implementation; see the file header for the
+#' A step of the muzero_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param observation See Usage.
@@ -160,7 +167,7 @@ muzero_add_noise <- function(prior, alpha, frac, seed) {
 #' @param representation See Usage.
 #' @param dynamics See Usage.
 #' @param prediction See Usage.
-#' @param simulations Defaults to \code{50}.
+#' @param simulations A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50}.
 #' @param gamma Defaults to \code{0.997}.
 #' @param c1 Defaults to \code{1.25}.
 #' @param c2 Defaults to \code{19652}.
@@ -261,7 +268,8 @@ muzero_search <- function(observation, actions, representation, dynamics,
 
 #' muzero_cheatsheet
 #'
-#' Part of the muzero_native implementation; see the file header for the
+#' A step of the muzero_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A character value.

@@ -8,7 +8,7 @@
 .tlstoch_shift_regime(A, delta, lower = NULL, upper = NULL)
 }
 \arguments{
-\item{A}{See Usage.}
+\item{A}{Passed to \code{.tlstoch_vec}.}
 \item{delta}{See Usage.}
 \item{lower}{Defaults to \code{NULL}.}
 \item{upper}{Defaults to \code{NULL}.}

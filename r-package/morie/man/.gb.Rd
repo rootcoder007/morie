@@ -3,12 +3,12 @@
 % the formals.
 \name{.gb}
 \alias{.gb}
-\title{G function\\\'s 8-word permutation on a 16-word vector}
+\title{G function\\'s 8-word permutation on a 16-word vector}
 \usage{
 .gb(v, a, b, c, d)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{A vector; indexed elementwise.}
 \item{a}{See Usage.}
 \item{b}{See Usage.}
 \item{c}{See Usage.}

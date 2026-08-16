@@ -8,11 +8,11 @@
 .mfovsm_ip_weights(ak, den, num, kind = "binary", stabilize = TRUE)
 }
 \arguments{
-\item{ak}{See Usage.}
+\item{ak}{A vector; its length is taken.}
 \item{den}{See Usage.}
 \item{num}{See Usage.}
 \item{kind}{Defaults to \code{"binary"}.}
-\item{stabilize}{Defaults to \code{TRUE}.}
+\item{stabilize}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the mfovsm_native implementation; see the file header for the source it follows.

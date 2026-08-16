@@ -7,12 +7,13 @@
 
 #' momento_harmonise
 #'
-#' Part of the momento_native implementation; see the file header for
+#' A step of the momento_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param series_list See Usage.
+#' @param series_list A vector; its length is taken.
 #' @param patch_len See Usage.
-#' @param normalise Defaults to \code{TRUE}.
+#' @param normalise A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{batch}, \code{meta}, \code{n_series}, \code{n_patches}, \code{patch_len}, \code{note}.
 #' @export
 momento_harmonise <- function(series_list, patch_len, normalise = TRUE) {
@@ -63,12 +64,13 @@ momento_harmonise <- function(series_list, patch_len, normalise = TRUE) {
 
 #' momento_mask_patches
 #'
-#' Part of the momento_native implementation; see the file header for
+#' A step of the momento_native implementation. Called by \code{momento_reconstruction_curve}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param patches See Usage.
+#' @param patches A vector; its length is taken and its elements indexed.
 #' @param mask_idx See Usage.
-#' @param fill Defaults to \code{0}.
+#' @param fill A count; the body uses it as \code{rep(...)}. Defaults to \code{0}.
 #' @return A list with \code{masked}, \code{mask}, \code{mask_idx}, \code{mask_rate}, \code{n_patches}.
 #' @export
 momento_mask_patches <- function(patches, mask_idx, fill = 0) {
@@ -95,12 +97,13 @@ momento_mask_patches <- function(patches, mask_idx, fill = 0) {
 
 #' momento_masked_loss
 #'
-#' Part of the momento_native implementation; see the file header for
+#' A step of the momento_native implementation. Called by \code{momento_reconstruction_curve}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param truth See Usage.
-#' @param reconstruction See Usage.
-#' @param mask See Usage.
+#' @param truth A vector; its length is taken and its elements indexed.
+#' @param reconstruction A vector; its length is taken and its elements indexed.
+#' @param mask A vector; its length is taken and its elements indexed.
 #' @return A list with \code{mse}, \code{n_scored}, \code{scored}.
 #' @export
 momento_masked_loss <- function(truth, reconstruction, mask) {
@@ -128,11 +131,12 @@ momento_masked_loss <- function(truth, reconstruction, mask) {
 
 #' momento_task_mask
 #'
-#' Part of the momento_native implementation; see the file header for
+#' A step of the momento_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param n_patches See Usage.
-#' @param task Defaults to \code{"forecast"}.
+#' @param task One of \code{"forecast"}, \code{"impute"}. Defaults to \code{"forecast"}.
 #' @param span Defaults to \code{1}.
 #' @param start Defaults to \code{NULL}.
 #' @return The value of \code{seq.int}.
@@ -163,7 +167,8 @@ momento_task_mask <- function(n_patches, task = "forecast", span = 1, start = NU
 
 #' momento_reconstruction_curve
 #'
-#' Part of the momento_native implementation; see the file header for
+#' A step of the momento_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param patches See Usage.
@@ -192,7 +197,8 @@ momento_reconstruction_curve <- function(patches, reconstructor, rates, seed = 0
 
 #' momento_cheatsheet
 #'
-#' Part of the momento_native implementation; see the file header for
+#' A step of the momento_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @return A character value.

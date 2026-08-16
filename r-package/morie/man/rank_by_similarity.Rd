@@ -9,7 +9,7 @@ rank_by_similarity(query, corpus_embeddings, top_k = 5)
 }
 \arguments{
 \item{query}{See Usage.}
-\item{corpus_embeddings}{See Usage.}
+\item{corpus_embeddings}{Passed to \code{.sbert_mat}.}
 \item{top_k}{Defaults to \code{5}.}
 }
 \description{

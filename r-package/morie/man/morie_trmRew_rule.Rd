@@ -8,8 +8,8 @@
 morie_trmRew_rule(lhs, rhs)
 }
 \arguments{
-\item{lhs}{See Usage.}
-\item{rhs}{See Usage.}
+\item{lhs}{Passed to \code{.trmRew_is_var}.}
+\item{rhs}{Passed to \code{morie_unifAlg_variables}.}
 }
 \description{
 Part of the trmRew_native implementation; see the file header for the source it follows.

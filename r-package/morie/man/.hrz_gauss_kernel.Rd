@@ -8,10 +8,10 @@
 .hrz_gauss_kernel(u)
 }
 \arguments{
-\item{u}{See Usage.}
+\item{u}{Numeric; combined arithmetically in the body.}
 }
 \description{
-Part of the helpers_horowitz implementation; see the file header for the source it follows.
+A step of the helpers_horowitz implementation. Called by \code{morie_kde_h}, \code{morie_kernel_quantile}, \code{morie_lewbel_binary} and 2 others in the module. See the file header for the source the module follows.
 }
 \value{
 A numeric value.

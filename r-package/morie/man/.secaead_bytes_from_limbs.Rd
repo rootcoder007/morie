@@ -8,8 +8,8 @@
 .secaead_bytes_from_limbs(limbs, nbytes)
 }
 \arguments{
-\item{limbs}{See Usage.}
-\item{nbytes}{See Usage.}
+\item{limbs}{A vector; its length is taken and its elements indexed.}
+\item{nbytes}{A count; the body uses it as \code{integer(...)}.}
 }
 \description{
 Part of the secaead_native implementation; see the file header for the source it follows.

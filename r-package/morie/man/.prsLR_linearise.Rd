@@ -8,7 +8,7 @@
 .prsLR_linearise(tree)
 }
 \arguments{
-\item{tree}{See Usage.}
+\item{tree}{A list; the body reads \code{$children}, \code{$symbol} from it.}
 }
 \description{
 Part of the prsLR_native implementation; see the file header for the source it follows.

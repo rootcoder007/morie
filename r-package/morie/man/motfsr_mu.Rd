@@ -9,7 +9,7 @@ motfsr_mu(coded, L)
 }
 \arguments{
 \item{coded}{See Usage.}
-\item{L}{See Usage.}
+\item{L}{A count; the body uses it as \code{numeric(...)}.}
 }
 \description{
 Part of the motfsr_native implementation; see the file header for the source it follows.

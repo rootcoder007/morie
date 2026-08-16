@@ -8,7 +8,7 @@
 .morie_crypto_random_bytes(n)
 }
 \arguments{
-\item{n}{See Usage.}
+\item{n}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

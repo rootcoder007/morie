@@ -8,8 +8,8 @@
 .rob_tukey_rho(u, cc)
 }
 \arguments{
-\item{u}{See Usage.}
-\item{cc}{See Usage.}
+\item{u}{Numeric; combined arithmetically in the body.}
+\item{cc}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the robust_native implementation; see the file header for the source it follows.

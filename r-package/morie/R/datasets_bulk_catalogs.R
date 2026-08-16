@@ -165,7 +165,7 @@ morie_datasets_chicago_socrata_by_id <- function(soda_id,
 #' header for the source it follows.
 #'
 #' @param fname See Usage.
-#' @param offline See Usage.
+#' @param offline A flag; the body branches on it.
 #' @return The value of \code{utils::read.csv}.
 #' @export
 .morie_bulk_fixture <- function(fname, offline) {

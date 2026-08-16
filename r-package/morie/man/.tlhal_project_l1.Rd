@@ -8,8 +8,8 @@
 .tlhal_project_l1(v, lam)
 }
 \arguments{
-\item{v}{See Usage.}
-\item{lam}{See Usage.}
+\item{v}{Numeric; passed to \code{abs}.}
+\item{lam}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the tlhal_native implementation; see the file header for the source it follows.

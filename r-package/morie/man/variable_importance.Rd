@@ -8,7 +8,7 @@
 variable_importance(X, Y, screen, effect, V = 5L, seed = 0L)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
 \item{Y}{See Usage.}
 \item{screen}{See Usage.}
 \item{effect}{See Usage.}

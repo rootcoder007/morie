@@ -30,13 +30,14 @@ NULL
 
 #' .haversine_km_mat
 #'
-#' Part of the mrm_kulldorff implementation; see the file header for the
+#' A step of the mrm_kulldorff implementation. Called by \code{mrm_tps_kulldorff_scan}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param lat1 See Usage.
-#' @param lon1 See Usage.
-#' @param lat2 See Usage.
-#' @param lon2 See Usage.
+#' @param lat1 Numeric; combined arithmetically in the body.
+#' @param lon1 Numeric; combined arithmetically in the body.
+#' @param lat2 Numeric; combined arithmetically in the body.
+#' @param lon2 Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .haversine_km_mat <- function(lat1, lon1, lat2, lon2) {
@@ -51,13 +52,14 @@ NULL
 
 #' .poisson_lrt
 #'
-#' Part of the mrm_kulldorff implementation; see the file header for the
+#' A step of the mrm_kulldorff implementation. Called by \code{mrm_tps_kulldorff_scan}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n_obs See Usage.
+#' @param n_obs Numeric; combined arithmetically in the body.
 #' @param n_in See Usage.
-#' @param n_exp See Usage.
-#' @param n_tot See Usage.
+#' @param n_exp Numeric; combined arithmetically in the body.
+#' @param n_tot Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
 .poisson_lrt <- function(n_obs, n_in, n_exp, n_tot) {

@@ -8,8 +8,8 @@
 morie_safrl_worst_case_violation(delta, gamma, epsilon)
 }
 \arguments{
-\item{delta}{See Usage.}
-\item{gamma}{See Usage.}
+\item{delta}{Numeric; combined arithmetically in the body.}
+\item{gamma}{Numeric; combined arithmetically in the body.}
 \item{epsilon}{See Usage.}
 }
 \description{

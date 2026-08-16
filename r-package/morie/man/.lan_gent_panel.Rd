@@ -8,7 +8,7 @@
 .lan_gent_panel(baseline_frame, baseline_income_col, baseline_rent_col, growth_college_col, growth_rent_col, income_quantile = 0.4, rent_quantile = 0.4, growth_quantile = 0.66)
 }
 \arguments{
-\item{baseline_frame}{See Usage.}
+\item{baseline_frame}{A matrix; passed to \code{nrow}.}
 \item{baseline_income_col}{See Usage.}
 \item{baseline_rent_col}{See Usage.}
 \item{growth_college_col}{See Usage.}

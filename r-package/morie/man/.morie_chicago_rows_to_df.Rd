@@ -8,7 +8,7 @@
 .morie_chicago_rows_to_df(rows)
 }
 \arguments{
-\item{rows}{See Usage.}
+\item{rows}{A vector; its length is taken.}
 }
 \description{
 heterogeneous JSON shapes (missing columns become NA).

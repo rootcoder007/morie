@@ -10,7 +10,7 @@
 \arguments{
 \item{text}{See Usage.}
 \item{pos}{See Usage.}
-\item{ctx}{See Usage.}
+\item{ctx}{A list; the body reads \code{$steps} from it.}
 \item{fn}{See Usage.}
 }
 \description{

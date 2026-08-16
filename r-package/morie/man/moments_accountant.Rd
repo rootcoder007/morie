@@ -8,11 +8,11 @@
 moments_accountant(vote_counts, gamma, delta, lambdas = NULL, data_dependent = TRUE)
 }
 \arguments{
-\item{vote_counts}{See Usage.}
-\item{gamma}{See Usage.}
-\item{delta}{See Usage.}
+\item{vote_counts}{A vector; its length is taken.}
+\item{gamma}{Numeric; combined arithmetically in the body.}
+\item{delta}{Numeric; combined arithmetically in the body.}
 \item{lambdas}{Defaults to \code{NULL}.}
-\item{data_dependent}{Defaults to \code{TRUE}.}
+\item{data_dependent}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the pate_native implementation; see the file header for the source it follows.

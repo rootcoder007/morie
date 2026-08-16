@@ -8,7 +8,7 @@
 .morie_matching_require(pkg, fn)
 }
 \arguments{
-\item{pkg}{See Usage.}
+\item{pkg}{Passed to \code{morie_ensure_extras}.}
 \item{fn}{See Usage.}
 }
 \description{

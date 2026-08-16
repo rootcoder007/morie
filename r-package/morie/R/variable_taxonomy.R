@@ -78,11 +78,12 @@ NULL
 
 #' .override_for
 #'
-#' Part of the variable_taxonomy implementation; see the file header for
+#' A step of the variable_taxonomy implementation. Called by \code{morie_classify_variable}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param dataset_name See Usage.
-#' @param col_name See Usage.
+#' @param dataset_name Character; passed to \code{tolower}.
+#' @param col_name Character; passed to \code{trimws}.
 #' @return Nothing; the function is called for its effect.
 #' @export
 .override_for <- function(dataset_name, col_name) {
@@ -115,10 +116,11 @@ NULL
 
 #' .is_boolean_value_set
 #'
-#' Part of the variable_taxonomy implementation; see the file header for
+#' A step of the variable_taxonomy implementation. Called by \code{.level_from_spec}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param vv See Usage.
+#' @param vv Optional; may be \code{NULL}. A vector; its length is taken.
 #' @return A logical value.
 #' @export
 .is_boolean_value_set <- function(vv) {
@@ -132,10 +134,11 @@ NULL
 
 #' .cardinality_from_vv
 #'
-#' Part of the variable_taxonomy implementation; see the file header for
+#' A step of the variable_taxonomy implementation. Called by \code{morie_classify_variable}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param vv See Usage.
+#' @param vv Optional; may be \code{NULL}. A vector; its length is taken.
 #' @return A character value.
 #' @export
 .cardinality_from_vv <- function(vv) {
@@ -149,12 +152,13 @@ NULL
 
 #' .level_from_spec
 #'
-#' Part of the variable_taxonomy implementation; see the file header for
+#' A step of the variable_taxonomy implementation. Called by \code{morie_classify_variable}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param col_name See Usage.
-#' @param dtype See Usage.
-#' @param valid_values See Usage.
+#' @param col_name Character; passed to \code{grepl}.
+#' @param dtype One of \code{"bool"}, \code{"date"}, \code{"datetime"}, \code{"float"}, \code{"int"}, \code{"string"}.
+#' @param valid_values Optional; may be \code{NULL}. A vector; its length is taken.
 #' @param dataset_name See Usage.
 #' @return A character value.
 #' @export
@@ -182,10 +186,11 @@ NULL
 
 #' .role_from_name
 #'
-#' Part of the variable_taxonomy implementation; see the file header for
+#' A step of the variable_taxonomy implementation. Called by \code{morie_classify_variable}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param col_name See Usage.
+#' @param col_name Character; passed to \code{grepl}.
 #' @return A character value.
 #' @export
 .role_from_name <- function(col_name) {

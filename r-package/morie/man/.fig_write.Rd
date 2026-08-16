@@ -11,9 +11,9 @@
 \item{fig_dir}{See Usage.}
 \item{name}{See Usage.}
 \item{draw}{See Usage.}
-\item{png_too}{Defaults to \code{FALSE}.}
-\item{width}{Defaults to \code{8}.}
-\item{height}{Defaults to \code{6}.}
+\item{png_too}{A flag; the body branches on it. Defaults to \code{FALSE}.}
+\item{width}{Numeric; combined arithmetically in the body. Defaults to \code{8}.}
+\item{height}{Numeric; combined arithmetically in the body. Defaults to \code{6}.}
 }
 \description{
 Returns the relative paths written, or character(0) if the draw function errored (the half-written file is removed and a warning names the figure).

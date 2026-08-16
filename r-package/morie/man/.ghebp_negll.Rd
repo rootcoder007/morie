@@ -8,9 +8,9 @@
 .ghebp_negll(a, K_n, n)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{K_n}{See Usage.}
-\item{n}{See Usage.}
+\item{a}{Numeric; passed to \code{log}.}
+\item{K_n}{Numeric; combined arithmetically in the body.}
+\item{n}{Numeric; combined arithmetically in the body.}
 }
 \description{
 concentration parameter alpha. Extracted from the morie_ghosal_empirical_bayes() optimiser closure for direct unit-testing.

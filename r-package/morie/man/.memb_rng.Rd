@@ -8,7 +8,7 @@
 .memb_rng(seed)
 }
 \arguments{
-\item{seed}{See Usage.}
+\item{seed}{Passed to \code{.ghc_rng}.}
 }
 \description{
 Part of the memb_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 .tmlcll_ols(X, y)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
+\item{X}{Passed to \code{.tmlcll_mat}.}
+\item{y}{Passed to \code{.tmlcll_vec}.}
 }
 \description{
 Part of the tmlcll_native implementation; see the file header for the source it follows.

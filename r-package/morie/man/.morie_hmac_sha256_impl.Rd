@@ -8,8 +8,8 @@
 .morie_hmac_sha256_impl(key, msg)
 }
 \arguments{
-\item{key}{See Usage.}
-\item{msg}{See Usage.}
+\item{key}{Passed to \code{.Call}.}
+\item{msg}{Passed to \code{.Call}.}
 }
 \description{
 Part of the RcppExports implementation; see the file header for the source it follows.

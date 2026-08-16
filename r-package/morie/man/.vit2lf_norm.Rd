@@ -8,7 +8,7 @@
 .vit2lf_norm(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{Numeric; passed to \code{.w3_dot}.}
 }
 \description{
 Part of the vit2lf_native implementation; see the file header for the source it follows.

@@ -8,10 +8,10 @@
 .ms_logsf_logpdf(dist, y, mu, logsig)
 }
 \arguments{
-\item{dist}{See Usage.}
-\item{y}{See Usage.}
-\item{mu}{See Usage.}
-\item{logsig}{See Usage.}
+\item{dist}{One of \code{"exponential"}, \code{"loglogistic"}, \code{"lognormal"}, \code{"weibull"}.}
+\item{y}{Numeric; combined arithmetically in the body.}
+\item{mu}{Numeric; combined arithmetically in the body.}
+\item{logsig}{Numeric; passed to \code{exp}.}
 }
 \description{
 Part of the survival_more implementation; see the file header for the source it follows.

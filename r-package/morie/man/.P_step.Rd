@@ -8,7 +8,7 @@
 .P_step(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{Passed to \code{.gb}.}
 }
 \description{
 Part of the secarg_native implementation; see the file header for the source it follows.

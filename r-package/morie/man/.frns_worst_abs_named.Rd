@@ -8,10 +8,10 @@
 .frns_worst_abs_named(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A vector; its length is taken and its elements indexed.}
 }
 \description{
-Part of the frns_predpol implementation; see the file header for the source it follows.
+A step of the frns_predpol implementation. Called by \code{morie_predpol_calibration_audit}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{[}.

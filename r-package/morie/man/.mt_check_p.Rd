@@ -8,7 +8,7 @@
 .mt_check_p(p)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{A vector; its length is taken.}
 }
 \description{
 Part of the multiple_testing implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 .cohens_d_one(x, mu0)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{mu0}{See Usage.}
+\item{x}{Numeric; passed to \code{mean}.}
+\item{mu0}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the statistics implementation; see the file header for the source it follows.

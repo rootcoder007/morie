@@ -8,7 +8,7 @@
 mafft_lookup(M, a, b)
 }
 \arguments{
-\item{M}{See Usage.}
+\item{M}{A vector; indexed elementwise.}
 \item{a}{See Usage.}
 \item{b}{See Usage.}
 }

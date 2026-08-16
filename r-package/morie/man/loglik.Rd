@@ -8,9 +8,9 @@
 loglik(w, ar = list(), ma = list())
 }
 \arguments{
-\item{w}{See Usage.}
-\item{ar}{Defaults to \code{list()}.}
-\item{ma}{Defaults to \code{list()}.}
+\item{w}{A vector; its length is taken and its elements indexed.}
+\item{ar}{Passed to \code{.sarima_state_space}. Defaults to \code{list()}.}
+\item{ma}{Passed to \code{.sarima_state_space}. Defaults to \code{list()}.}
 }
 \description{
 Part of the sarima_native implementation; see the file header for the source it follows.

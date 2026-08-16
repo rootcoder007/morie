@@ -8,8 +8,8 @@
 morie_regmlm(G, y, chromosomes = NULL, block_size = 1000, n_ridge = 5, cv = "kfold", k = 5)
 }
 \arguments{
-\item{G}{See Usage.}
-\item{y}{See Usage.}
+\item{G}{A matrix; passed to \code{nrow}.}
+\item{y}{A vector; its length is taken.}
 \item{chromosomes}{Defaults to \code{NULL}.}
 \item{block_size}{Defaults to \code{1000}.}
 \item{n_ridge}{Defaults to \code{5}.}

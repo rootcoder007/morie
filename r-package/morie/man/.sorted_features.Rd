@@ -8,8 +8,8 @@
 .sorted_features(vec, top = NULL)
 }
 \arguments{
-\item{vec}{See Usage.}
-\item{top}{Defaults to \code{NULL}.}
+\item{vec}{Numeric; passed to \code{sort}.}
+\item{top}{Optional; may be \code{NULL}. Numeric; passed to \code{min}.}
 }
 \description{
 Part of the memb_native implementation; see the file header for the source it follows.

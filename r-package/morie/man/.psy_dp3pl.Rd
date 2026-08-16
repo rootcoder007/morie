@@ -8,10 +8,10 @@
 .psy_dp3pl(theta, a, b, cc)
 }
 \arguments{
-\item{theta}{See Usage.}
-\item{a}{See Usage.}
-\item{b}{See Usage.}
-\item{cc}{See Usage.}
+\item{theta}{Passed to \code{.psy_p3pl}.}
+\item{a}{Numeric; combined arithmetically in the body.}
+\item{b}{Passed to \code{.psy_p3pl}.}
+\item{cc}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the psycho_native implementation; see the file header for the source it follows.

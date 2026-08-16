@@ -8,7 +8,7 @@
 .morie_llm_strip_think(text)
 }
 \arguments{
-\item{text}{See Usage.}
+\item{text}{Character; passed to \code{gsub}.}
 }
 \description{
 Part of the llm implementation; see the file header for the source it follows.

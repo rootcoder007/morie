@@ -8,7 +8,7 @@
 .vepan_revcomp(s)
 }
 \arguments{
-\item{s}{See Usage.}
+\item{s}{Character; passed to \code{toupper}.}
 }
 \description{
 Part of the vepan_native implementation; see the file header for the source it follows.

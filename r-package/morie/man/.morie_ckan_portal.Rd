@@ -8,10 +8,10 @@
 .morie_ckan_portal(portal)
 }
 \arguments{
-\item{portal}{See Usage.}
+\item{portal}{Character; passed to \code{grepl}.}
 }
 \description{
-Part of the data_access implementation; see the file header for the source it follows.
+A step of the data_access implementation. Called by \code{.morie_ckan_call}, \code{morie_ckan_search}, \code{morie_ingest_ckan_search_packages}. See the file header for the source the module follows.
 }
 \value{
 Nothing; this branch always raises.

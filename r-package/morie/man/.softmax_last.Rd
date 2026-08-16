@@ -8,10 +8,10 @@
 .softmax_last(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{A matrix; passed to \code{dim}.}
 }
 \description{
-Part of the helpers_llm_arch implementation; see the file header for the source it follows.
+A step of the helpers_llm_arch implementation. No other function in the package calls it. See the file header for the source the module follows.
 }
 \value{
 The value of \code{aperm}.

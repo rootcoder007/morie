@@ -8,7 +8,7 @@
 .sv_dl_median(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{Numeric; passed to \code{sort}.}
 }
 \description{
 Part of the sv_dl_native implementation; see the file header for the source it follows.

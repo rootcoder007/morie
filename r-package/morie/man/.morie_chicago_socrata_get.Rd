@@ -8,7 +8,7 @@
 .morie_chicago_socrata_get(resource_url, where = NULL, select = NULL, order = NULL, limit = .MORIE_CHICAGO_DEFAULT_PAGE_SIZE, offset = 0L, app_token = NULL, user_agent = .MORIE_CHICAGO_DEFAULT_UA, timeout = .MORIE_CHICAGO_DEFAULT_TIMEOUT)
 }
 \arguments{
-\item{resource_url}{See Usage.}
+\item{resource_url}{Passed to \code{.morie_dataset_http_text}.}
 \item{where}{Defaults to \code{NULL}.}
 \item{select}{Defaults to \code{NULL}.}
 \item{order}{Defaults to \code{NULL}.}
@@ -19,7 +19,7 @@
 \item{timeout}{Defaults to \code{.MORIE_CHICAGO_DEFAULT_TIMEOUT}.}
 }
 \description{
-Part of the ingest_chicago implementation; see the file header for the source it follows.
+A step of the ingest_chicago implementation. Called by \code{morie_ingest_chicago_socrata}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{payload}, as built in the body.

@@ -8,7 +8,7 @@
 .role_from_name(col_name)
 }
 \arguments{
-\item{col_name}{See Usage.}
+\item{col_name}{Character; passed to \code{grepl}.}
 }
 \description{
 Part of the variable_taxonomy implementation; see the file header for the source it follows.

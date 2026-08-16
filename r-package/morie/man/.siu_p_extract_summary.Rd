@@ -8,7 +8,7 @@
 .siu_p_extract_summary(text)
 }
 \arguments{
-\item{text}{See Usage.}
+\item{text}{Character; passed to \code{strsplit}.}
 }
 \description{
 Part of the siu_parser implementation; see the file header for the source it follows.

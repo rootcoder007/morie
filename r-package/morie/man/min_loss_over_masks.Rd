@@ -8,7 +8,7 @@
 min_loss_over_masks(predictions, target, loss_fn)
 }
 \arguments{
-\item{predictions}{See Usage.}
+\item{predictions}{A vector; its length is taken.}
 \item{target}{See Usage.}
 \item{loss_fn}{See Usage.}
 }

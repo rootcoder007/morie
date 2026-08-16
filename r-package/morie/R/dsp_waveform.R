@@ -638,11 +638,12 @@ morie_dsp_baseline_correlation <- function(x, y) {
 # numpy.unwrap port: shift phase jumps > pi by 2*pi.
 #' Numpy.unwrap port: shift phase jumps > pi by 2*pi
 #'
-#' Part of the dsp_waveform implementation; see the file header for the
+#' A step of the dsp_waveform implementation. Called by \code{morie_dsp_complex_demodulation}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
-#' @param tol Defaults to \code{pi}.
+#' @param p A vector; indexed elementwise.
+#' @param tol Numeric; combined arithmetically in the body. Defaults to \code{pi}.
 #' @return A vector, from \code{c}.
 #' @export
 .unwrap <- function(p, tol = pi) {

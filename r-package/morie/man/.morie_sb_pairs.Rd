@@ -8,7 +8,7 @@
 .morie_sb_pairs(coords, z)
 }
 \arguments{
-\item{coords}{See Usage.}
+\item{coords}{A matrix; passed to \code{as.matrix}.}
 \item{z}{See Usage.}
 }
 \description{

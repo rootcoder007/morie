@@ -11,7 +11,7 @@
 \item{x}{See Usage.}
 }
 \description{
-Part of the effect_sizes implementation; see the file header for the source it follows.
+A step of the effect_sizes implementation. Called by \code{cles}, \code{cliffs_delta}, \code{coefficient_of_variation} and 7 others in the module. See the file header for the source the module follows.
 }
 \value{
 The value of \code{[}.

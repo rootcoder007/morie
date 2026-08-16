@@ -3,14 +3,14 @@
 % the formals.
 \name{theorem3_moment}
 \alias{theorem3_moment}
-\title{Theorem 3\\'s data-dependent moment bound, or NA when its}
+\title{Theorem 3\'s data-dependent moment bound, or NA when its}
 \usage{
 theorem3_moment(q, gamma, l)
 }
 \arguments{
-\item{q}{See Usage.}
-\item{gamma}{See Usage.}
-\item{l}{See Usage.}
+\item{q}{Numeric; combined arithmetically in the body.}
+\item{gamma}{Numeric; combined arithmetically in the body.}
+\item{l}{Numeric; combined arithmetically in the body.}
 }
 \description{
 condition fails. The accountant must fall back on Theorem 2 outside that range.

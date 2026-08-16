@@ -8,7 +8,7 @@
 .siu_p_parse_date(raw)
 }
 \arguments{
-\item{raw}{See Usage.}
+\item{raw}{Optional; may be \code{NULL}. Character; passed to \code{trimws}.}
 }
 \description{
 Part of the siu_parser implementation; see the file header for the source it follows.

@@ -132,14 +132,15 @@ preprocess_fmri <- function(record,
 
 #' .entheo_bandpass
 #'
-#' Part of the entheo_preprocess implementation; see the file header for
+#' A step of the entheo_preprocess implementation. Called by \code{preprocess_eeg}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
-#' @param sfreq See Usage.
-#' @param low See Usage.
-#' @param high See Usage.
-#' @param order Defaults to \code{4L}.
+#' @param x A matrix; indexed by row and column.
+#' @param sfreq Numeric; combined arithmetically in the body.
+#' @param low Numeric; combined arithmetically in the body.
+#' @param high Numeric; combined arithmetically in the body.
+#' @param order Passed to \code{.morie_dsp_butter}. Defaults to \code{4L}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .entheo_bandpass <- function(x, sfreq, low, high, order = 4L) {
@@ -162,13 +163,14 @@ preprocess_fmri <- function(record,
 
 #' .entheo_notch
 #'
-#' Part of the entheo_preprocess implementation; see the file header for
+#' A step of the entheo_preprocess implementation. Called by \code{preprocess_eeg}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
-#' @param sfreq See Usage.
-#' @param freq See Usage.
-#' @param q Defaults to \code{30}.
+#' @param x A matrix; indexed by row and column.
+#' @param sfreq Numeric; combined arithmetically in the body.
+#' @param freq Numeric; combined arithmetically in the body.
+#' @param q Numeric; combined arithmetically in the body. Defaults to \code{30}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .entheo_notch <- function(x, sfreq, freq, q = 30) {
@@ -196,10 +198,11 @@ preprocess_fmri <- function(record,
 
 #' .entheo_asr_trim
 #'
-#' Part of the entheo_preprocess implementation; see the file header for
+#' A step of the entheo_preprocess implementation. Called by \code{preprocess_eeg}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x A vector; indexed elementwise.
 #' @param threshold See Usage.
 #' @return A list with \code{arr}, \code{n_bad}.
 #' @export

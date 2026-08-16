@@ -32,10 +32,11 @@ NULL
 
 #' Name of the element with the largest absolute value
 #'
-#' Part of the frns_predpol implementation; see the file header for the
+#' A step of the frns_predpol implementation. Called by \code{morie_predpol_calibration_audit}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x A vector; its length is taken and its elements indexed.
 #' @return The value of \code{[}.
 #' @export
 .frns_worst_abs_named <- function(x) {

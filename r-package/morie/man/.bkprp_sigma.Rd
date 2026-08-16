@@ -8,11 +8,11 @@
 .bkprp_sigma(z, activation)
 }
 \arguments{
-\item{z}{See Usage.}
+\item{z}{Numeric; combined arithmetically in the body.}
 \item{activation}{See Usage.}
 }
 \description{
-Part of the bkprp implementation; see the file header for the source it follows.
+A step of the bkprp implementation. Called by \code{morie_bkprp_backpropagation}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{switch}.

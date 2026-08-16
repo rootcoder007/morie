@@ -12,9 +12,9 @@ morie_mtr2sx(beta_x, se_x, beta_y, se_y, model = "multiplicative", weights = "fi
 \item{se_x}{See Usage.}
 \item{beta_y}{See Usage.}
 \item{se_y}{See Usage.}
-\item{model}{Defaults to \code{"multiplicative"}.}
-\item{weights}{Defaults to \code{"first_order"}.}
-\item{theta}{Defaults to \code{0}.}
+\item{model}{One of \code{"fixed"}, \code{"multiplicative"}. Defaults to \code{"multiplicative"}.}
+\item{weights}{Compared against \code{"second_order"}. Defaults to \code{"first_order"}.}
+\item{theta}{Numeric; combined arithmetically in the body. Defaults to \code{0}.}
 }
 \description{
 Part of the mtr2sx_native implementation; see the file header for the source it follows.

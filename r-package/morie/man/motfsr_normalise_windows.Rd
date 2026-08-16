@@ -8,9 +8,9 @@
 motfsr_normalise_windows(z, w, max_sweeps = 100)
 }
 \arguments{
-\item{z}{See Usage.}
-\item{w}{See Usage.}
-\item{max_sweeps}{Defaults to \code{100}.}
+\item{z}{A vector; its length is taken and its elements indexed.}
+\item{w}{A count; the body uses it as \code{seq_len(...)}.}
+\item{max_sweeps}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{100}.}
 }
 \description{
 Part of the motfsr_native implementation; see the file header for the source it follows.

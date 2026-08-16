@@ -8,8 +8,8 @@
 morie_ri_clpm_coefficients(X, Y)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{Y}{See Usage.}
+\item{X}{Passed to \code{morie_within_between_decomposition}.}
+\item{Y}{Passed to \code{morie_within_between_decomposition}.}
 }
 \description{
 Part of the tmlcll_native implementation; see the file header for the source it follows.

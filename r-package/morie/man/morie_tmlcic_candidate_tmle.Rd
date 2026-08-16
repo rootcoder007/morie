@@ -8,15 +8,15 @@
 morie_tmlcic_candidate_tmle(y, A, W, cand, g1, rows = NULL, eval_rows = NULL, ridge = 1e-08, target_step = TRUE)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{A}{See Usage.}
-\item{W}{See Usage.}
-\item{cand}{See Usage.}
+\item{y}{A vector; its length is taken.}
+\item{A}{A vector; indexed elementwise.}
+\item{W}{Passed to \code{.tmlcic_fit_working_model}.}
+\item{cand}{Passed to \code{.tmlcic_fit_working_model}.}
 \item{g1}{See Usage.}
-\item{rows}{Defaults to \code{NULL}.}
+\item{rows}{Optional; may be \code{NULL}. Passed to \code{.tmlcic_fit_working_model}.}
 \item{eval_rows}{Defaults to \code{NULL}.}
-\item{ridge}{Defaults to \code{1e-08}.}
-\item{target_step}{Defaults to \code{TRUE}.}
+\item{ridge}{Passed to \code{.tmlcic_fit_working_model}. Defaults to \code{1e-08}.}
+\item{target_step}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the tmlcic_native implementation; see the file header for the source it follows.

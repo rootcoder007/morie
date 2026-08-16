@@ -8,8 +8,8 @@
 .ghc_unif_int(e, n)
 }
 \arguments{
-\item{e}{See Usage.}
-\item{n}{See Usage.}
+\item{e}{Passed to \code{.ghc_unif}.}
+\item{n}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the memb_native implementation; see the file header for the source it follows.

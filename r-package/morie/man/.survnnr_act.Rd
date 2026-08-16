@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{v}{See Usage.}
-\item{kind}{See Usage.}
+\item{kind}{One of \code{"relu"}, \code{"tanh"}.}
 }
 \description{
 Part of the survnnr_native implementation; see the file header for the source it follows.

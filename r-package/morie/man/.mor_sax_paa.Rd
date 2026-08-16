@@ -8,8 +8,8 @@
 .mor_sax_paa(z, w)
 }
 \arguments{
-\item{z}{See Usage.}
-\item{w}{See Usage.}
+\item{z}{A vector; its length is taken and its elements indexed.}
+\item{w}{A count; the body uses it as \code{seq_len(...)}.}
 }
 \description{
 Part of the saxR_native implementation; see the file header for the source it follows.

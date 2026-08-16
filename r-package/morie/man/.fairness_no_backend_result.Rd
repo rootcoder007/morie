@@ -8,12 +8,12 @@
 .fairness_no_backend_result(title, call, note)
 }
 \arguments{
-\item{title}{See Usage.}
-\item{call}{See Usage.}
-\item{note}{See Usage.}
+\item{title}{Passed to \code{.fairness_result}.}
+\item{call}{Passed to \code{.fairness_result}.}
+\item{note}{Passed to \code{.fairness_result}.}
 }
 \description{
-Part of the fairness_gan implementation; see the file header for the source it follows.
+A step of the fairness_gan implementation. Called by \code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{.fairness_result}.

@@ -8,7 +8,7 @@
 .linear_coef_table(fit, model)
 }
 \arguments{
-\item{fit}{See Usage.}
+\item{fit}{Passed to \code{.safe_confint}.}
 \item{model}{See Usage.}
 }
 \description{

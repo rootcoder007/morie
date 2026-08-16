@@ -9,9 +9,9 @@
 }
 \arguments{
 \item{x}{See Usage.}
-\item{y}{See Usage.}
-\item{size}{Defaults to \code{1.5}.}
-\item{use_gg}{Defaults to \code{FALSE}.}
+\item{y}{Numeric; combined arithmetically in the body.}
+\item{size}{Numeric; combined arithmetically in the body. Defaults to \code{1.5}.}
+\item{use_gg}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{
 Part of the tps_render implementation; see the file header for the source it follows.

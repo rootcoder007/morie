@@ -8,8 +8,8 @@
 morie_surxgb_cdf(z, dist = "normal")
 }
 \arguments{
-\item{z}{See Usage.}
-\item{dist}{Defaults to \code{"normal"}.}
+\item{z}{Numeric; passed to \code{exp}.}
+\item{dist}{One of \code{"logistic"}, \code{"normal"}. Defaults to \code{"normal"}.}
 }
 \description{
 Part of the surxgb_native implementation; see the file header for the source it follows.

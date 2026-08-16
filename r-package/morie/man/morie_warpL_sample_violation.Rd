@@ -8,12 +8,12 @@
 morie_warpL_sample_violation(score_positive, negative_scorer, n_labels, rng, margin = 1, max_draws = NULL)
 }
 \arguments{
-\item{score_positive}{See Usage.}
-\item{negative_scorer}{See Usage.}
-\item{n_labels}{See Usage.}
-\item{rng}{See Usage.}
-\item{margin}{Defaults to \code{1}.}
-\item{max_draws}{Defaults to \code{NULL}.}
+\item{score_positive}{Passed to \code{.warpL_sample_violation}.}
+\item{negative_scorer}{Passed to \code{.warpL_sample_violation}.}
+\item{n_labels}{Passed to \code{.warpL_sample_violation}.}
+\item{rng}{Passed to \code{.warpL_sample_violation}.}
+\item{margin}{Passed to \code{.warpL_sample_violation}. Defaults to \code{1}.}
+\item{max_draws}{Passed to \code{.warpL_sample_violation}.}
 }
 \description{
 Part of the warpL_native implementation; see the file header for the source it follows.

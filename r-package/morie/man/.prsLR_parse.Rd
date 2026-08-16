@@ -8,9 +8,9 @@
 .prsLR_parse(g, tokens, method, tables)
 }
 \arguments{
-\item{g}{See Usage.}
+\item{g}{Passed to \code{.prsLR_build_tables}.}
 \item{tokens}{See Usage.}
-\item{method}{See Usage.}
+\item{method}{Passed to \code{.prsLR_build_tables}.}
 \item{tables}{See Usage.}
 }
 \description{

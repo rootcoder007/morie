@@ -8,7 +8,7 @@
 .morie_tps_canonical(name)
 }
 \arguments{
-\item{name}{See Usage.}
+\item{name}{A vector; its length is taken.}
 }
 \description{
 Part of the tps_datasets implementation; see the file header for the source it follows.

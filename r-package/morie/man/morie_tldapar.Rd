@@ -18,7 +18,7 @@ morie_tldapar(n, V = 10L, seed = 0L, define_on_training = NULL, estimate_on_hold
 \item{effect}{Defaults to \code{NULL}.}
 \item{screen}{Defaults to \code{NULL}.}
 \item{reuse_fn}{Defaults to \code{NULL}.}
-\item{mode}{Defaults to \code{c("split", "combine", "vimp", "reuse")}.}
+\item{mode}{One of \code{"combine"}, \code{"reuse"}, \code{"split"}.}
 }
 \description{
 Part of the tldapar_native implementation; see the file header for the source it follows.

@@ -8,10 +8,10 @@
 .gsage_norm(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{Numeric; combined arithmetically in the body.}
 }
 \description{
-Part of the gsageemd_native implementation; see the file header for the source it follows.
+A step of the gsageemd_native implementation. Called by \code{morie_gsageemd_layer}. See the file header for the source the module follows.
 }
 \value{
 One of two values, depending on the branch taken.

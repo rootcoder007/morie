@@ -8,7 +8,7 @@
 offlrl_as_dist(d, S, A, name)
 }
 \arguments{
-\item{d}{See Usage.}
+\item{d}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 \item{S}{See Usage.}
 \item{A}{See Usage.}
 \item{name}{See Usage.}

@@ -8,10 +8,10 @@
 .smcopt_rwk(scale)
 }
 \arguments{
-\item{scale}{See Usage.}
+\item{scale}{Numeric; combined arithmetically in the body.}
 }
 \description{
-the Python arm\\\'s random_walk_kernel(scale=1.0): propose x\\\' = x + Normal(0, scale^2) and accept with the standard Metropolis-Hastings ratio.  No library calls; uses .ghc_norm so the run is reproducible from the seed.
+the Python arm\\'s random_walk_kernel(scale=1.0): propose x\\' = x + Normal(0, scale^2) and accept with the standard Metropolis-Hastings ratio.  No library calls; uses .ghc_norm so the run is reproducible from the seed.
 }
 \value{
 The value of \code{function}.

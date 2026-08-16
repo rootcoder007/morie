@@ -8,13 +8,13 @@
 ray_points(origin, direction, t_near, t_far, n_samples, rng = NULL, stratified = TRUE)
 }
 \arguments{
-\item{origin}{See Usage.}
-\item{direction}{See Usage.}
+\item{origin}{Passed to \code{.as_numeric_vec}.}
+\item{direction}{Passed to \code{.as_numeric_vec}.}
 \item{t_near}{See Usage.}
 \item{t_far}{See Usage.}
 \item{n_samples}{See Usage.}
-\item{rng}{Defaults to \code{NULL}.}
-\item{stratified}{Defaults to \code{TRUE}.}
+\item{rng}{Optional; may be \code{NULL}. Passed to \code{.ghc_unif}.}
+\item{stratified}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the nrfrad_native implementation; see the file header for the source it follows.

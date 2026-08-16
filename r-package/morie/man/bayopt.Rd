@@ -23,11 +23,11 @@ bayopt(f, bounds, n_iter = 20, n_init = 5, acq = "ei", kernel = "matern52", ampl
 \item{seed}{Defaults to \code{0}.}
 \item{X0}{Defaults to \code{NULL}.}
 \item{y0}{Defaults to \code{NULL}.}
-\item{inner}{Defaults to \code{"gradient"}.}
+\item{inner}{One of \code{"gradient"}, \code{"random"}. Defaults to \code{"gradient"}.}
 \item{n_starts}{Defaults to \code{8}.}
 }
 \description{
-Part of the bayopt_native implementation; see the file header for the source it follows.
+A step of the bayopt_native implementation. Called by \code{morie_bayopt}. See the file header for the source the module follows.
 }
 \value{
 A list with \code{estimate}, \code{x_best}, \code{y_best}, \code{X}, \code{y}, \code{trace}, \code{acq}, \code{kernel}, \code{inner}, \code{n_eval}, \code{method}, \code{note}.

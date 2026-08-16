@@ -8,10 +8,10 @@
 .uof_cramers_v(chi2, n, r, c)
 }
 \arguments{
-\item{chi2}{See Usage.}
-\item{n}{See Usage.}
-\item{r}{See Usage.}
-\item{c}{See Usage.}
+\item{chi2}{Numeric; combined arithmetically in the body.}
+\item{n}{Numeric; combined arithmetically in the body.}
+\item{r}{Numeric; combined arithmetically in the body.}
+\item{c}{Numeric; combined arithmetically in the body.}
 }
 \description{
 Part of the mrm_uof implementation; see the file header for the source it follows.

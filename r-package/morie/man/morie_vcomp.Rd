@@ -8,10 +8,10 @@
 morie_vcomp(y, group, method = "reml", conf_level = 0.95)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{group}{See Usage.}
-\item{method}{Defaults to \code{"reml"}.}
-\item{conf_level}{Defaults to \code{0.95}.}
+\item{y}{Passed to \code{morie_ranova}.}
+\item{group}{Passed to \code{morie_ranova}.}
+\item{method}{One of \code{"anova"}, \code{"reml"}. Defaults to \code{"reml"}.}
+\item{conf_level}{Numeric; combined arithmetically in the body. Defaults to \code{0.95}.}
 }
 \description{
 Part of the vcomp_native implementation; see the file header for the source it follows.

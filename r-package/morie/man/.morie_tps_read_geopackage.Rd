@@ -8,8 +8,8 @@
 .morie_tps_read_geopackage(name, nrows)
 }
 \arguments{
-\item{name}{See Usage.}
-\item{nrows}{See Usage.}
+\item{name}{Passed to \code{.morie_tps_io_category_dir}.}
+\item{nrows}{Passed to \code{.morie_tps_read_sf_path}.}
 }
 \description{
 Part of the tps_io implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 morie_vepan_annotate(variant, transcripts, genome, upstream = 5000, downstream = 5000)
 }
 \arguments{
-\item{variant}{See Usage.}
+\item{variant}{Passed to \code{.vepan_variant}.}
 \item{transcripts}{See Usage.}
 \item{genome}{See Usage.}
 \item{upstream}{Defaults to \code{5000}.}

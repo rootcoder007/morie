@@ -10,7 +10,7 @@ error_cache(alpha, y, K, b)
 \arguments{
 \item{alpha}{See Usage.}
 \item{y}{See Usage.}
-\item{K}{See Usage.}
+\item{K}{Passed to \code{.smoopt_K}.}
 \item{b}{See Usage.}
 }
 \description{

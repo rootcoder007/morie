@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{b}{A vector; its length is taken.}
 }
 \description{
 Part of the ts_joseph implementation; see the file header for the source it follows.

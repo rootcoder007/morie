@@ -8,7 +8,7 @@
 .morie_wsm_trapz(y, x)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{A vector; its length is taken and its elements indexed.}
 \item{x}{See Usage.}
 }
 \description{

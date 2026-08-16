@@ -17,7 +17,8 @@
 
 #' chronos_mean_scale
 #'
-#' Part of the chronos_native implementation; see the file header for
+#' A step of the chronos_native implementation. Called by \code{chronos_tokenize}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
@@ -43,7 +44,8 @@ chronos_mean_scale <- function(x, context = NULL) {
 
 #' chronos_uniform_bins
 #'
-#' Part of the chronos_native implementation; see the file header for
+#' A step of the chronos_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param lo Defaults to \code{-15}.
@@ -63,7 +65,8 @@ chronos_uniform_bins <- function(lo = -15.0, hi = 15.0, n_bins = 4096L) {
 
 #' chronos_quantile_bins
 #'
-#' Part of the chronos_native implementation; see the file header for
+#' A step of the chronos_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param samples See Usage.
@@ -92,11 +95,12 @@ chronos_quantile_bins <- function(samples, n_bins = 4096L) {
 
 #' chronos_quantize
 #'
-#' Part of the chronos_native implementation; see the file header for
+#' A step of the chronos_native implementation. Called by \code{chronos_tokenize}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
-#' @param bins See Usage.
+#' @param bins A list; the body reads \code{$centers}, \code{$edges} from it.
 #' @return A list with \code{tokens}, \code{n_clipped}, \code{clipped_fraction}, \code{in_range}, \code{note}.
 #' @export
 chronos_quantize <- function(x, bins) {
@@ -120,11 +124,12 @@ chronos_quantize <- function(x, bins) {
 
 #' chronos_dequantize
 #'
-#' Part of the chronos_native implementation; see the file header for
+#' A step of the chronos_native implementation. Called by \code{chronos_detokenize}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param tokens See Usage.
-#' @param bins See Usage.
+#' @param bins A list; the body reads \code{$centers} from it.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 chronos_dequantize <- function(tokens, bins) {
@@ -144,13 +149,14 @@ chronos_dequantize <- function(tokens, bins) {
 
 #' chronos_tokenize
 #'
-#' Part of the chronos_native implementation; see the file header for
+#' A step of the chronos_native implementation. Called by \code{morie_chronos}.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.
-#' @param bins See Usage.
+#' @param bins A list; the body reads \code{$n_bins} from it.
 #' @param context Defaults to \code{NULL}.
-#' @param add_eos Defaults to \code{TRUE}.
+#' @param add_eos A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param pad_to Defaults to \code{NULL}.
 #' @return A list with \code{estimate}, \code{tokens}, \code{scale}, \code{n_clipped}, \code{clipped_fraction}, \code{vocab_size}, \code{method}, \code{ignores}.
 #' @export
@@ -173,7 +179,8 @@ chronos_tokenize <- function(x, bins, context = NULL, add_eos = TRUE,
 
 #' chronos_detokenize
 #'
-#' Part of the chronos_native implementation; see the file header for
+#' A step of the chronos_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param tokens See Usage.
@@ -187,11 +194,12 @@ chronos_detokenize <- function(tokens, bins, scale) {
 
 #' chronos_forecast_summary
 #'
-#' Part of the chronos_native implementation; see the file header for
+#' A step of the chronos_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param token_probs See Usage.
-#' @param bins See Usage.
+#' @param bins A list; the body reads \code{$centers} from it.
 #' @param quantiles Defaults to \code{c(0.1, 0.5, 0.9)}.
 #' @return A list with \code{mean}, \code{quantiles}, \code{mode}, \code{note}.
 #' @export
@@ -229,7 +237,8 @@ chronos_forecast_summary <- function(token_probs, bins,
 
 #' morie_chronos
 #'
-#' Part of the chronos_native implementation; see the file header for
+#' A step of the chronos_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x See Usage.

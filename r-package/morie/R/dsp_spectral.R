@@ -490,8 +490,8 @@ morie_dsp_fbm_synthesis <- function(N, H = 0.5) {
 #'
 #' I0. Matches numpy.kaiser(N, beta).
 #'
-#' @param N See Usage.
-#' @param beta Defaults to \code{14}.
+#' @param N Numeric; combined arithmetically in the body.
+#' @param beta Numeric; combined arithmetically in the body. Defaults to \code{14}.
 #' @return A numeric value.
 #' @export
 .kaiser_window <- function(N, beta = 14) {
@@ -505,10 +505,11 @@ morie_dsp_fbm_synthesis <- function(N, H = 0.5) {
 # Polynomial expansion of I0 valid for beta up to ~16.
 #' Polynomial expansion of I0 valid for beta up to ~16
 #'
-#' Part of the dsp_spectral implementation; see the file header for the
+#' A step of the dsp_spectral implementation. Called by \code{.kaiser_window}.
+#' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Numeric; passed to \code{abs}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .bessel_i0 <- function(x) {

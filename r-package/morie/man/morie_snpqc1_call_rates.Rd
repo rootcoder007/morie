@@ -8,7 +8,7 @@
 morie_snpqc1_call_rates(genotypes)
 }
 \arguments{
-\item{genotypes}{See Usage.}
+\item{genotypes}{Passed to \code{.snpqc1_check}.}
 }
 \description{
 Part of the snpqc1_native implementation; see the file header for the source it follows.

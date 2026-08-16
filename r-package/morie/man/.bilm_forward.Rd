@@ -8,11 +8,11 @@
 .bilm_forward(X, layers)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{layers}{See Usage.}
+\item{X}{A matrix; passed to \code{as.matrix}.}
+\item{layers}{A vector; its length is taken and its elements indexed.}
 }
 \description{
-Part of the elmo_native implementation; see the file header for the source it follows.
+A step of the elmo_native implementation. Called by \code{.elmo_representation}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{reps}, as built in the body.

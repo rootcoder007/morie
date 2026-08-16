@@ -8,10 +8,10 @@
 outlyingness(X, h = NULL, n_dirs = 250L, seed = 17L)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{Passed to \code{.robpca_matrix}.}
 \item{h}{Defaults to \code{NULL}.}
-\item{n_dirs}{Defaults to \code{250L}.}
-\item{seed}{Defaults to \code{17L}.}
+\item{n_dirs}{Passed to \code{.robpca_directions}. Defaults to \code{250L}.}
+\item{seed}{Passed to \code{.robpca_directions}. Defaults to \code{17L}.}
 }
 \description{
 Part of the robpca_native implementation; see the file header for the source it follows.

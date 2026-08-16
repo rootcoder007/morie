@@ -8,11 +8,11 @@
 .gh_pairwise_sq(a, b = a)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{Defaults to \code{a}.}
+\item{a}{A matrix; passed to \code{\%*\%}.}
+\item{b}{A matrix; passed to \code{t}. Defaults to \code{a}.}
 }
 \description{
-Part of the helpers_ghosal_bnp implementation; see the file header for the source it follows.
+A step of the helpers_ghosal_bnp implementation. Called by \code{morie_ghosal_gp_matern}, \code{morie_ghosal_gp_squared_exponential}, \code{morie_ghosal_np_classification}. See the file header for the source the module follows.
 }
 \value{
 A numeric value.

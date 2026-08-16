@@ -8,8 +8,8 @@
 morie_unifAlg_factor_through(general, other, over)
 }
 \arguments{
-\item{general}{See Usage.}
-\item{other}{See Usage.}
+\item{general}{Passed to \code{morie_unifAlg_apply_subst}.}
+\item{other}{Passed to \code{morie_unifAlg_apply_subst}.}
 \item{over}{See Usage.}
 }
 \description{

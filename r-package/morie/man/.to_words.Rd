@@ -8,7 +8,7 @@
 .to_words(bs)
 }
 \arguments{
-\item{bs}{See Usage.}
+\item{bs}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the secarg_native implementation; see the file header for the source it follows.

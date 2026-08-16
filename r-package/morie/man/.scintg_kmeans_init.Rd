@@ -8,8 +8,8 @@
 .scintg_kmeans_init(Zn, K, seed)
 }
 \arguments{
-\item{Zn}{See Usage.}
-\item{K}{See Usage.}
+\item{Zn}{A matrix; indexed by row and column.}
+\item{K}{A count; the body uses it as \code{seq_len(...)}.}
 \item{seed}{See Usage.}
 }
 \description{

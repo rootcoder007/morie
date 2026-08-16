@@ -8,9 +8,9 @@
 .sacrb_modified_precision(cand_tokens, refs_tokens, n)
 }
 \arguments{
-\item{cand_tokens}{See Usage.}
+\item{cand_tokens}{Passed to \code{.sacrb_ngram_counts}.}
 \item{refs_tokens}{See Usage.}
-\item{n}{See Usage.}
+\item{n}{Passed to \code{.sacrb_ngram_counts}.}
 }
 \description{
 Part of the sacrb_native implementation; see the file header for the source it follows.

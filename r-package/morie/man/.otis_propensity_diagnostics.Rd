@@ -8,8 +8,8 @@
 .otis_propensity_diagnostics(p, d)
 }
 \arguments{
-\item{p}{See Usage.}
-\item{d}{See Usage.}
+\item{p}{Numeric; passed to \code{mean}.}
+\item{d}{Numeric; passed to \code{mean}.}
 }
 \description{
 Part of the otis_causal implementation; see the file header for the source it follows.

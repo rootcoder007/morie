@@ -11,7 +11,7 @@
 \item{fname}{See Usage.}
 }
 \description{
-Part of the datasets_vancouver implementation; see the file header for the source it follows.
+A step of the datasets_vancouver implementation. Called by \code{morie_datasets_vancouver_community_centres}, \code{morie_datasets_vancouver_community_food_markets}, \code{morie_datasets_vancouver_disability_parking} and 6 others in the module. See the file header for the source the module follows.
 }
 \value{
 The value of \code{utils::read.csv}.

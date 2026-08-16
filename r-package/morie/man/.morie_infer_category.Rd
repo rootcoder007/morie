@@ -8,10 +8,10 @@
 .morie_infer_category(fn_name)
 }
 \arguments{
-\item{fn_name}{See Usage.}
+\item{fn_name}{Character; passed to \code{startsWith}.}
 }
 \description{
-R/ directory for files whose names begin with a known prefix.  Falls back to scanning the function\\\'s source attributes when available.
+R/ directory for files whose names begin with a known prefix.  Falls back to scanning the function\\'s source attributes when available.
 }
 \value{
 A character value.

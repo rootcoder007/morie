@@ -10,8 +10,8 @@
 #' out-of-support branches are directly unit-testable; the BFGS search
 #' in extvm() is not guaranteed to probe xi within 1e-8 of zero.
 #'
-#' @param par See Usage.
-#' @param x See Usage.
+#' @param par A vector; indexed elementwise.
+#' @param x A vector; its length is taken.
 #' @return The value of \code{ll}, as built in the body.
 #' @export
 .extvm_log_gev <- function(par, x) {

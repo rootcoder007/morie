@@ -12,7 +12,7 @@
 \item{expected_rows}{Defaults to \code{221L}.}
 }
 \description{
-Part of the datasets_nyc_nypd implementation; see the file header for the source it follows.
+A step of the datasets_nyc_nypd implementation. Called by \code{morie_datasets_nyc_zctas}. See the file header for the source the module follows.
 }
 \value{
 The value of \code{df}, as built in the body.

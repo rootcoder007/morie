@@ -8,7 +8,7 @@
 .secaead_le_bytes(words)
 }
 \arguments{
-\item{words}{See Usage.}
+\item{words}{A vector; its length is taken and its elements indexed.}
 }
 \description{
 Part of the secaead_native implementation; see the file header for the source it follows.

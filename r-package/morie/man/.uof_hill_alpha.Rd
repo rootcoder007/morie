@@ -8,8 +8,8 @@
 .uof_hill_alpha(x, x_min = 1)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{x_min}{Defaults to \code{1}.}
+\item{x}{A vector; its length is taken and its elements indexed.}
+\item{x_min}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
 }
 \description{
 Part of the mrm_uof implementation; see the file header for the source it follows.
