@@ -56,7 +56,9 @@
   tot <- 0
   na <- length(nz)
   for (a in seq_len(na)) {
-    for (b in (a + 1L):na) {
+    # seq_len guard: the colon counts DOWN when a is the last
+    # non-zero and reads nz[[na + 1]]
+    for (b in seq_len(na - a) + a) {
       j1 <- nz[[a]]$j; v1 <- nz[[a]]$v
       j2 <- nz[[b]]$j; v2 <- nz[[b]]$v
       f1 <- as.integer(fields[j1 + 1L]); f2 <- as.integer(fields[j2 + 1L])
@@ -149,7 +151,9 @@
       }
       na <- length(nz)
       for (a in seq_len(na)) {
-        for (b in (a + 1L):na) {
+        # seq_len guard: the colon counts DOWN when a is the last
+    # non-zero and reads nz[[na + 1]]
+    for (b in seq_len(na - a) + a) {
           j1 <- nz[[a]]$j + 1L; v1 <- nz[[a]]$v
           j2 <- nz[[b]]$j + 1L; v2 <- nz[[b]]$v
           f1 <- as.integer(fields[j1]) + 1L
