@@ -21,7 +21,7 @@ morie_matching_optimal_pair(
 
 \item{distance}{One of \code{"propensity"} or \code{"mahalanobis"}.}
 
-\item{ps}{Optional pre-computed propensity scores.}
+\item{ps}{Optional propensity scores. When supplied they REPLACE the fitted model and become the matching distance directly, aligned to the rows that survive the NA drop.}
 }
 \value{
 A list of class \code{morie_match_result}.
