@@ -10,7 +10,7 @@
 \arguments{
 \item{fig_dir}{See Usage.}
 \item{name}{See Usage.}
-\item{draw}{See Usage.}
+\item{draw}{Accepted by the signature and not used anywhere in the body.}
 \item{save_fig}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 \item{width}{Defaults to \code{1140}.}
 \item{height}{Defaults to \code{620}.}

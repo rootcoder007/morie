@@ -8,7 +8,7 @@
 .prgrl_gauss(r)
 }
 \arguments{
-\item{r}{See Usage.}
+\item{r}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the prgrl_native implementation; see the file header for the source it follows.

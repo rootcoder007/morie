@@ -66,9 +66,9 @@ vector_norm <- function(v) {
 #' @param s_j Coerced to numeric by the body, with \code{as.numeric}.
 #' @param v_j A matrix; passed to \code{as.matrix}.
 #' @param r_ij Coerced to numeric by the body, with \code{as.numeric}.
-#' @param phi_s See Usage.
-#' @param phi_v See Usage.
-#' @param W_rbf See Usage.
+#' @param phi_s Accepted by the signature and not used anywhere in the body.
+#' @param phi_v Accepted by the signature and not used anywhere in the body.
+#' @param W_rbf Accepted by the signature and not used anywhere in the body.
 #' @return A list with \code{ds}, \code{dv}, \code{note}.
 #' @export
 scalar_vector_message <- function(s_j, v_j, r_ij, phi_s, phi_v,
@@ -119,7 +119,7 @@ scalar_vector_message <- function(s_j, v_j, r_ij, phi_s, phi_v,
 #' @param v A matrix; passed to \code{as.matrix}.
 #' @param U A matrix; passed to \code{as.matrix}.
 #' @param V A matrix; passed to \code{as.matrix}.
-#' @param phi See Usage.
+#' @param phi Accepted by the signature and not used anywhere in the body.
 #' @return A list with \code{ds}, \code{dv}, \code{scalar_from_vectors}, \code{note}.
 #' @export
 gated_update <- function(s, v, U, V, phi) {
@@ -197,7 +197,7 @@ dipole_moment <- function(charges, R, centre = NULL) {
 #' Checking only the scalars would pass a model that has silently lost
 #' its vector channel.
 #'
-#' @param model See Usage.
+#' @param model Accepted by the signature and not used anywhere in the body.
 #' @param s See Usage.
 #' @param v A matrix; passed to \code{as.matrix}.
 #' @param R A matrix; passed to \code{as.matrix}.

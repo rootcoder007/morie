@@ -1012,7 +1012,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data See Usage.
+#' @param data Accepted by the signature and not used anywhere in the body.
 #' @return A list with \code{official_doc_alignment_checklist}.
 #' @export
 .run_dag_specification_module_internal <- function(data) {

@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{L}{A matrix; the body checks with \code{is.matrix}.}
-\item{n}{See Usage.}
+\item{n}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the tmldyn_native implementation; see the file header for the source it follows.

@@ -24,7 +24,7 @@ mpfn_sig <- function(x) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param h_v See Usage.
+#' @param h_v Accepted by the signature and not used anywhere in the body.
 #' @param h_w Coerced to numeric by the body, with \code{as.numeric}.
 #' @param e_vw A vector; its length is taken and its elements indexed.
 #' @param A Defaults to \code{NULL}.

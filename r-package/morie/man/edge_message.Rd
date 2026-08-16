@@ -12,7 +12,7 @@ edge_message(h_i, h_j, x_i, x_j, phi_e, a_ij = NULL)
 \item{h_j}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{x_i}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{x_j}{Coerced to numeric by the body, with \code{as.numeric}.}
-\item{phi_e}{See Usage.}
+\item{phi_e}{Accepted by the signature and not used anywhere in the body.}
 \item{a_ij}{Defaults to \code{NULL}.}
 }
 \description{

@@ -11,7 +11,7 @@
 \item{text}{See Usage.}
 \item{pos}{See Usage.}
 \item{ctx}{A list; the body reads \code{$steps} from it.}
-\item{fn}{See Usage.}
+\item{fn}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the prsPEG_native implementation; see the file header for the source it follows.

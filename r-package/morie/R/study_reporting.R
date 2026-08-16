@@ -619,7 +619,7 @@
 #'
 #' @param fig_dir See Usage.
 #' @param name See Usage.
-#' @param draw See Usage.
+#' @param draw Accepted by the signature and not used anywhere in the body.
 #' @param png_too A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @param width Numeric; combined arithmetically in the body. Defaults to \code{8}.
 #' @param height Numeric; combined arithmetically in the body. Defaults to \code{6}.

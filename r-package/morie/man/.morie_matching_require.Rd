@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{pkg}{Passed to \code{morie_ensure_extras}.}
-\item{fn}{See Usage.}
+\item{fn}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the matching implementation; see the file header for the source it follows.

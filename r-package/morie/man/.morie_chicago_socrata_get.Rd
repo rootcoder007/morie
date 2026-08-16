@@ -15,7 +15,7 @@
 \item{limit}{Coerced to integer by the body, with \code{as.integer}.}
 \item{offset}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.}
 \item{app_token}{Defaults to \code{NULL}.}
-\item{user_agent}{Defaults to \code{.MORIE_CHICAGO_DEFAULT_UA}.}
+\item{user_agent}{Accepted by the signature and not used anywhere in the body.}
 \item{timeout}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{

@@ -8,9 +8,9 @@
 naive_reuse(define_and_estimate, n, seed = 0L)
 }
 \arguments{
-\item{define_and_estimate}{See Usage.}
+\item{define_and_estimate}{Accepted by the signature and not used anywhere in the body.}
 \item{n}{Coerced to integer by the body, with \code{as.integer}.}
-\item{seed}{Defaults to \code{0L}.}
+\item{seed}{Accepted by the signature and not used anywhere in the body. Defaults to \code{0L}.}
 }
 \description{
 Part of the tldapar_native implementation; see the file header for the source it follows.

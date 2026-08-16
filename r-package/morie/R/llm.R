@@ -231,7 +231,7 @@ morie_llm_request_completion <- function(base_url, model, messages,
 #' See the file header for the source the module follows.
 #' follows.
 #'
-#' @param prompt See Usage.
+#' @param prompt Accepted by the signature and not used anywhere in the body.
 #' @return A character value.
 #' @export
 .morie_llm_local_fallback <- function(prompt) {

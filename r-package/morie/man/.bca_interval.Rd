@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{data}{Passed to \code{.nrow_like}.}
-\item{statistic}{See Usage.}
+\item{statistic}{Accepted by the signature and not used anywhere in the body.}
 \item{boot_stats}{Passed to \code{.pct}.}
 \item{original}{See Usage.}
 \item{ci_level}{Numeric; combined arithmetically in the body.}

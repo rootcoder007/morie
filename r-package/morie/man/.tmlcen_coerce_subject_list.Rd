@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{x}{A matrix; indexed by row and column.}
-\item{n}{See Usage.}
+\item{n}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{
 Part of the tmlcen_native implementation; see the file header for the source it follows.

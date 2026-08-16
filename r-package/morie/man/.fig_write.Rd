@@ -10,7 +10,7 @@
 \arguments{
 \item{fig_dir}{See Usage.}
 \item{name}{See Usage.}
-\item{draw}{See Usage.}
+\item{draw}{Accepted by the signature and not used anywhere in the body.}
 \item{png_too}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 \item{width}{Numeric; combined arithmetically in the body. Defaults to \code{8}.}
 \item{height}{Numeric; combined arithmetically in the body. Defaults to \code{6}.}

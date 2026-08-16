@@ -12,7 +12,7 @@ mqtmpl_scan_cim(y, markers, positions, cofactors = list(), window = 0, step = 0.
 \item{markers}{A vector; its length is taken and its elements indexed.}
 \item{positions}{A vector; indexed elementwise.}
 \item{cofactors}{A vector; its length is taken. Defaults to \code{list()}.}
-\item{window}{Defaults to \code{0}.}
+\item{window}{Accepted by the signature and not used anywhere in the body. Defaults to \code{0}.}
 \item{step}{Numeric; combined arithmetically in the body. Defaults to \code{0.02}.}
 }
 \description{
