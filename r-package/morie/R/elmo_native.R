@@ -123,6 +123,17 @@
   )
 }
 
+#' morie_elmo
+#'
+#' Part of the elmo_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param layers See Usage.
+#' @param raw_weights Defaults to \code{NULL}.
+#' @param gamma Defaults to \code{1}.
+#' @return The value of \code{.elmo_representation}.
+#' @export
 morie_elmo <- function(X, layers, raw_weights = NULL, gamma = 1.0) {
   .elmo_representation(X, layers, raw_weights = raw_weights, gamma = gamma)
 }

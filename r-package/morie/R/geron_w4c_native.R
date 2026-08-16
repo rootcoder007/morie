@@ -596,6 +596,15 @@ morie_geron_onnx_export <- function(model, args, file = NULL) {
 }
 # ponytail: no jsonlite dependency declared for this package; write() only when a file path is
 # actually given, and fall back to a minimal deparse so the optional side effect never hard-fails.
+#' Ponytail: no jsonlite dependency declared for this package; write()
+#' only when a file path is
+#'
+#' actually given, and fall back to a minimal deparse so the optional
+#' side effect never hard-fails.
+#'
+#' @param x See Usage.
+#' @return The value of \code{.s03json_toJSON}.
+#' @export
 jsonlite_toJSON_or_stub <- function(x) {
   # The fallback existed because jsonlite was optional. The codec is now
   # part of this package and always present, so there is nothing to fall

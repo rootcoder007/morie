@@ -26,6 +26,17 @@
 # equal to patch_len the patches are disjoint; a smaller stride
 # overlaps them. The number of patches is N = floor((L-P)/S) + 1,
 # which is what makes the attention map shrink.
+#' Cut one univariate series into patches of length P. With stride
+#'
+#' equal to patch_len the patches are disjoint; a smaller stride
+#' overlaps them. The number of patches is N = floor((L-P)/S) + 1, which
+#' is what makes the attention map shrink.
+#'
+#' @param x See Usage.
+#' @param patch_len See Usage.
+#' @param stride Defaults to \code{NULL}.
+#' @return A list with \code{patches}, \code{n_patches}, \code{patch_len}, \code{stride}, \code{L}, \code{covers}.
+#' @export
 patchify <- function(x, patch_len, stride = NULL) {
   v <- as.numeric(x)
   L <- length(v)
@@ -49,6 +60,17 @@ patchify <- function(x, patch_len, stride = NULL) {
 # Nothing is mixed across channels, so the channel identity
 # survives -- and because the downstream weights are shared, the
 # whole model is equivariant to permuting them.
+#' One token stream per channel, weights shared across channels
+#'
+#' Nothing is mixed across channels, so the channel identity survives --
+#' and because the downstream weights are shared, the whole model is
+#' equivariant to permuting them.
+#'
+#' @param X See Usage.
+#' @param patch_len See Usage.
+#' @param stride Defaults to \code{NULL}.
+#' @return A list with \code{tokens}, \code{D}, \code{n_patches}, \code{patch_len}, \code{n_tokens_total}, \code{design}, \code{note}.
+#' @export
 channel_independent_tokens <- function(X, patch_len, stride = NULL) {
   Xm <- as.matrix(X)
   if (nrow(Xm) == 0L) stop("patchT: the input series is empty")
@@ -71,6 +93,17 @@ channel_independent_tokens <- function(X, patch_len, stride = NULL) {
 # first projection is what makes such a model
 # permutation-invariant and so unable to say which channel a
 # signal came from.
+#' The alternative: one token per time position, all channels
+#'
+#' blended. Provided for contrast. Summing across channels at the first
+#' projection is what makes such a model permutation-invariant and so
+#' unable to say which channel a signal came from.
+#'
+#' @param X See Usage.
+#' @param patch_len See Usage.
+#' @param stride Defaults to \code{NULL}.
+#' @return A list with \code{tokens}, \code{n_patches}, \code{n_tokens_total}, \code{design}, \code{note}.
+#' @export
 channel_mixed_tokens <- function(X, patch_len, stride = NULL) {
   Xm <- as.matrix(X)
   if (nrow(Xm) == 0L) stop("patchT: the input series is empty")
@@ -84,6 +117,13 @@ channel_mixed_tokens <- function(X, patch_len, stride = NULL) {
 
 # Standardise one series to zero mean and unit variance. Applied
 # per instance before patching and reversed afterwards.
+#' Standardise one series to zero mean and unit variance. Applied
+#'
+#' per instance before patching and reversed afterwards.
+#'
+#' @param x See Usage.
+#' @return A list with \code{normalised}, \code{mean}, \code{sd}, \code{degenerate}.
+#' @export
 instance_norm <- function(x) {
   v <- as.numeric(x)
   if (length(v) < 2L)
@@ -100,6 +140,18 @@ instance_norm <- function(x) {
 # Attention-map size, patched against point-wise. Point-wise
 # attention over a look-back of L costs L^2 per channel. Patching
 # reduces the sequence to N tokens, so the cost falls to N^2.
+#' Attention-map size, patched against point-wise. Point-wise
+#'
+#' attention over a look-back of L costs L^2 per channel. Patching
+#' reduces the sequence to N tokens, so the cost falls to N^2.
+#'
+#' @param L See Usage.
+#' @param patch_len See Usage.
+#' @param stride Defaults to \code{NULL}.
+#' @param D Defaults to \code{1}.
+#' @param channel_independent Defaults to \code{TRUE}.
+#' @return A list with \code{n_patches}, \code{pointwise}, \code{patched}, \code{reduction}, \code{stride}, \code{patch_len}, \code{note}.
+#' @export
 attention_cost <- function(L, patch_len, stride = NULL, D = 1,
                            channel_independent = TRUE) {
   P <- as.integer(patch_len)
@@ -120,6 +172,17 @@ attention_cost <- function(L, patch_len, stride = NULL, D = 1,
 }
 
 # The full front end: instance norm, patch, per-channel tokens.
+#' The full front end: instance norm, patch, per-channel tokens
+#'
+#' Part of the patchT_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param patch_len See Usage.
+#' @param stride Defaults to \code{NULL}.
+#' @param normalise Defaults to \code{TRUE}.
+#' @return A list with \code{estimate}, \code{tokens}, \code{D}, \code{n_patches}, \code{n_tokens_total}, \code{norm_stats}, \code{normalised}, \code{cost}, \code{method}.
+#' @export
 patchtst_encode <- function(X, patch_len, stride = NULL,
                             normalise = TRUE) {
   Xm <- as.matrix(X)

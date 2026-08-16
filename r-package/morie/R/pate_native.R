@@ -16,6 +16,16 @@
 # The vote histogram n_j(x) for each record. teacher_predicts is a
 # list of callables mapping rows to labels (or to probability
 # vectors, in which case the argmax is the vote).
+#' The vote histogram n_j(x) for each record. teacher_predicts is a
+#'
+#' list of callables mapping rows to labels (or to probability vectors,
+#' in which case the argmax is the vote).
+#'
+#' @param teacher_predicts See Usage.
+#' @param rows See Usage.
+#' @param n_classes Defaults to \code{NULL}.
+#' @return The value of \code{split}.
+#' @export
 teacher_votes <- function(teacher_predicts, rows, n_classes = NULL) {
   teachers <- as.list(teacher_predicts)
   if (length(teachers) == 0L)
@@ -50,6 +60,15 @@ teacher_votes <- function(teacher_predicts, rows, n_classes = NULL) {
 
 # Equation 1: argmax_j {n_j + Lap(1/gamma)}. One independent
 # Laplace draw per class with scale 1/gamma.
+#' Equation 1: argmax_j {n_j + Lap(1/gamma)}. One independent
+#'
+#' Laplace draw per class with scale 1/gamma.
+#'
+#' @param counts See Usage.
+#' @param gamma See Usage.
+#' @param seed Defaults to \code{0}.
+#' @return A numeric value.
+#' @export
 noisy_argmax <- function(counts, gamma, seed = 0) {
   gamma <- as.numeric(gamma)
   if (gamma <= 0) stop("pate: gamma must be positive")
@@ -63,6 +82,16 @@ noisy_argmax <- function(counts, gamma, seed = 0) {
 # Section 3.2: 4 T gamma^2 + 2 gamma sqrt(2 T ln(1/delta)). The
 # composition of T queries, each (2 gamma, 0)-DP, without looking
 # at the votes.
+#' Section 3.2: 4 T gamma^2 + 2 gamma sqrt(2 T ln(1/delta)). The
+#'
+#' composition of T queries, each (2 gamma, 0)-DP, without looking at
+#' the votes.
+#'
+#' @param T See Usage.
+#' @param gamma See Usage.
+#' @param delta See Usage.
+#' @return A numeric value.
+#' @export
 epsilon_data_independent <- function(T, gamma, delta) {
   T <- as.numeric(T); gamma <- as.numeric(gamma)
   delta <- as.numeric(delta)
@@ -76,6 +105,15 @@ epsilon_data_independent <- function(T, gamma, delta) {
 # Lemma 4: sum_{j != j*} (2 + gamma (n_j* - n_j)) /
 # (4 exp(gamma (n_j* - n_j))), j* the plurality winner. The bound
 # is a bound, so the raw value is also returned.
+#' Lemma 4: sum_{j != j*} (2 + gamma (n_j* - n_j)) /
+#'
+#' (4 exp(gamma (n_j* - n_j))), j* the plurality winner. The bound is a
+#' bound, so the raw value is also returned.
+#'
+#' @param counts See Usage.
+#' @param gamma See Usage.
+#' @return A list with \code{bound}, \code{raw}.
+#' @export
 lemma4_bound <- function(counts, gamma) {
   gamma <- as.numeric(gamma)
   if (gamma <= 0) stop("pate: gamma must be positive")
@@ -94,6 +132,16 @@ lemma4_bound <- function(counts, gamma) {
 # Theorem 3's data-dependent moment bound, or NA when its
 # condition fails. The accountant must fall back on Theorem 2
 # outside that range.
+#' Theorem 3\'s data-dependent moment bound, or NA when its
+#'
+#' condition fails. The accountant must fall back on Theorem 2 outside
+#' that range.
+#'
+#' @param q See Usage.
+#' @param gamma See Usage.
+#' @param l See Usage.
+#' @return A numeric value.
+#' @export
 theorem3_moment <- function(q, gamma, l) {
   q <- as.numeric(q); gamma <- as.numeric(gamma)
   if (gamma <= 0) stop("pate: gamma must be positive")
@@ -107,6 +155,18 @@ theorem3_moment <- function(q, gamma, l) {
 }
 
 # Compose the per-query moment bounds and convert to (eps, delta).
+#' Compose the per-query moment bounds and convert to (eps, delta)
+#'
+#' Part of the pate_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param vote_counts See Usage.
+#' @param gamma See Usage.
+#' @param delta See Usage.
+#' @param lambdas Defaults to \code{NULL}.
+#' @param data_dependent Defaults to \code{TRUE}.
+#' @return A list with \code{epsilon}, \code{lambda}, \code{alpha}, \code{delta}, \code{queries}, \code{used}.
+#' @export
 moments_accountant <- function(vote_counts, gamma, delta,
                                lambdas = NULL,
                                data_dependent = TRUE) {
@@ -148,6 +208,21 @@ moments_accountant <- function(vote_counts, gamma, delta,
 
 # Label `queries` by noisy teacher aggregation and account for the
 # privacy cost.
+#' Label `queries` by noisy teacher aggregation and account for the
+#'
+#' privacy cost.
+#'
+#' @param teacher_predicts See Usage.
+#' @param queries See Usage.
+#' @param gamma Defaults to \code{0.05}.
+#' @param delta Defaults to \code{1e-05}.
+#' @param n_classes Defaults to \code{NULL}.
+#' @param student_train_fn Defaults to \code{NULL}.
+#' @param student_features Defaults to \code{NULL}.
+#' @param seed Defaults to \code{0}.
+#' @param lambdas Defaults to \code{NULL}.
+#' @return A list with \code{estimate}, \code{labels}, \code{clean_labels}, \code{votes}, \code{agreement}, \code{epsilon}, \code{epsilon_accountant}, \code{epsilon_data_independent}, \code{accountant}, \code{delta}, \code{gamma}, \code{n_teachers}, \code{n_queries}, \code{student}, \code{note}, \code{method}.
+#' @export
 pate <- function(teacher_predicts, queries, gamma = 0.05, delta = 1e-5,
                  n_classes = NULL, student_train_fn = NULL,
                  student_features = NULL, seed = 0, lambdas = NULL) {

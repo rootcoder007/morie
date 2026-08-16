@@ -44,6 +44,14 @@
   as.numeric(x)
 }
 
+#' causal_mask
+#'
+#' Part of the sasRec_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n See Usage.
+#' @return The value of \code{M}, as built in the body.
+#' @export
 causal_mask <- function(n) {
   m <- as.integer(n)
   if (m < 1L)
@@ -54,6 +62,18 @@ causal_mask <- function(n) {
   M
 }
 
+#' self_attention
+#'
+#' Part of the sasRec_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param E See Usage.
+#' @param WQ See Usage.
+#' @param WK See Usage.
+#' @param WV See Usage.
+#' @param mask Defaults to \code{NULL}.
+#' @return A list with \code{output}, \code{weights}, \code{note}.
+#' @export
 self_attention <- function(E, WQ, WK, WV, mask = NULL) {
   X <- .sasrec_mat(E)
   n <- nrow(X); d <- ncol(X)
@@ -79,6 +99,15 @@ self_attention <- function(E, WQ, WK, WV, mask = NULL) {
        note = "the mask is a correctness condition, not an optimisation")
 }
 
+#' attention_span
+#'
+#' Part of the sasRec_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param weights See Usage.
+#' @param position Defaults to \code{NULL}.
+#' @return A list with \code{mean_lookback}, \code{mass_on_last}, \code{effective_order}, \code{note}.
+#' @export
 attention_span <- function(weights, position = NULL) {
   W <- .sasrec_mat(weights)
   i <- if (is.null(position)) nrow(W) else as.integer(position) + 1L
@@ -93,6 +122,17 @@ attention_span <- function(weights, position = NULL) {
        note = "a short span IS Markov behaviour; a long one is RNN behaviour, chosen per sequence")
 }
 
+#' predict_next
+#'
+#' Part of the sasRec_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param state See Usage.
+#' @param item_embeddings See Usage.
+#' @param top_k Defaults to \code{5}.
+#' @param exclude Defaults to \code{list()}.
+#' @return A list with \code{estimate}, \code{ranking}, \code{n_scored}, \code{method}.
+#' @export
 predict_next <- function(state, item_embeddings, top_k = 5,
                          exclude = list()) {
   s <- .sasrec_vec(state)
@@ -110,6 +150,15 @@ predict_next <- function(state, item_embeddings, top_k = 5,
        method = "self-attentive sequential recommendation; Kang & McAuley (2018)")
 }
 
+#' complexity
+#'
+#' Part of the sasRec_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n See Usage.
+#' @param d See Usage.
+#' @return A list with \code{attention_ops}, \code{rnn_ops}, \code{attention_sequential_steps}, \code{rnn_sequential_steps}, \code{note}.
+#' @export
 complexity <- function(n, d) {
   nn <- as.integer(n); dd <- as.integer(d)
   if (nn < 1L || dd < 1L)
@@ -119,6 +168,18 @@ complexity <- function(n, d) {
        note = "the parallelism, not the operation count, is where the order-of-magnitude speed-up comes from")
 }
 
+#' morie_sasRec
+#'
+#' Part of the sasRec_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param E See Usage.
+#' @param WQ See Usage.
+#' @param WK See Usage.
+#' @param WV See Usage.
+#' @param mask Defaults to \code{NULL}.
+#' @return The value of \code{self_attention}.
+#' @export
 morie_sasRec <- function(E, WQ, WK, WV, mask = NULL) {
   self_attention(E, WQ, WK, WV, mask = mask)
 }

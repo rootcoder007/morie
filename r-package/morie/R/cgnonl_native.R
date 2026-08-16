@@ -15,12 +15,31 @@
 
 .cgnonl_dot <- function(a, b) sum(a * b)
 
+#' cgnonl_beta_fletcher_reeves
+#'
+#' Part of the cgnonl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param g_new See Usage.
+#' @param g_old See Usage.
+#' @return A numeric value.
+#' @export
 cgnonl_beta_fletcher_reeves <- function(g_new, g_old) {
   den <- .cgnonl_dot(g_old, g_old)
   if (den <= 0.0) return(0.0)
   .cgnonl_dot(g_new, g_new) / den
 }
 
+#' cgnonl_beta_polak_ribiere
+#'
+#' Part of the cgnonl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param g_new See Usage.
+#' @param g_old See Usage.
+#' @param plus Defaults to \code{FALSE}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 cgnonl_beta_polak_ribiere <- function(g_new, g_old, plus = FALSE) {
   den <- .cgnonl_dot(g_old, g_old)
   if (den <= 0.0) return(0.0)
@@ -38,6 +57,19 @@ cgnonl_beta_polak_ribiere <- function(g_new, g_old, plus = FALSE) {
                paste(.CGNONL_BETA_RULES, collapse = ", ")))
 }
 
+#' cgnonl_cubic_interpolate
+#'
+#' Part of the cgnonl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ta See Usage.
+#' @param fa See Usage.
+#' @param da See Usage.
+#' @param tb See Usage.
+#' @param fb See Usage.
+#' @param db See Usage.
+#' @return The value of \code{t}, as built in the body.
+#' @export
 cgnonl_cubic_interpolate <- function(ta, fa, da, tb, fb, db) {
   h <- tb - ta
   if (h == 0.0) return(ta)
@@ -54,6 +86,23 @@ cgnonl_cubic_interpolate <- function(ta, fa, da, tb, fb, db) {
   t
 }
 
+#' cgnonl_line_search_fr
+#'
+#' Part of the cgnonl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param f See Usage.
+#' @param grad See Usage.
+#' @param x See Usage.
+#' @param p See Usage.
+#' @param f0 See Usage.
+#' @param g0 See Usage.
+#' @param est Defaults to \code{NULL}.
+#' @param max_double Defaults to \code{60L}.
+#' @param max_cubic Defaults to \code{40L}.
+#' @param tol Defaults to \code{1e-12}.
+#' @return A list with \code{t}, \code{x}, \code{f}, \code{g}, \code{n_eval}.
+#' @export
 cgnonl_line_search_fr <- function(f, grad, x, p, f0, g0, est = NULL,
                                   max_double = 60L, max_cubic = 40L,
                                   tol = 1e-12) {
@@ -155,6 +204,24 @@ cgnonl_line_search_fr <- function(f, grad, x, p, f0, g0, est = NULL,
   -.cgnonl_dot(p, g) / den
 }
 
+#' cgnonl_nonlinear_cg
+#'
+#' Part of the cgnonl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param f See Usage.
+#' @param grad See Usage.
+#' @param x0 See Usage.
+#' @param beta Defaults to \code{"fletcher-reeves"}.
+#' @param restart Defaults to \code{NULL}.
+#' @param max_iter Defaults to \code{NULL}.
+#' @param tol Defaults to \code{1e-10}.
+#' @param est Defaults to \code{NULL}.
+#' @param line_search Defaults to \code{"fletcher-reeves"}.
+#' @param hess_vec Defaults to \code{NULL}.
+#' @param keep_path Defaults to \code{FALSE}.
+#' @return A list with \code{x}, \code{fun}, \code{grad}, \code{gnorm}, \code{n_iter}, \code{n_restart}, \code{n_feval}, \code{converged}, \code{betas}, \code{path}, \code{beta_rule}, \code{line_search}, \code{restart_every}, \code{method}, \code{note}.
+#' @export
 cgnonl_nonlinear_cg <- function(f, grad, x0, beta = "fletcher-reeves",
                                 restart = NULL, max_iter = NULL,
                                 tol = 1e-10, est = NULL,
@@ -249,6 +316,24 @@ cgnonl_nonlinear_cg <- function(f, grad, x0, beta = "fletcher-reeves",
   )
 }
 
+#' morie_cgnonl
+#'
+#' Part of the cgnonl_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param f See Usage.
+#' @param grad See Usage.
+#' @param x0 See Usage.
+#' @param beta Defaults to \code{"fletcher-reeves"}.
+#' @param restart Defaults to \code{NULL}.
+#' @param max_iter Defaults to \code{NULL}.
+#' @param tol Defaults to \code{1e-10}.
+#' @param est Defaults to \code{NULL}.
+#' @param line_search Defaults to \code{"fletcher-reeves"}.
+#' @param hess_vec Defaults to \code{NULL}.
+#' @param keep_path Defaults to \code{FALSE}.
+#' @return The value of \code{cgnonl_nonlinear_cg}.
+#' @export
 morie_cgnonl <- function(f, grad, x0, beta = "fletcher-reeves",
                          restart = NULL, max_iter = NULL,
                          tol = 1e-10, est = NULL,

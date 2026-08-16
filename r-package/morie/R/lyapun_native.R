@@ -29,6 +29,15 @@
   out
 }
 
+#' autocorrelation_lag
+#'
+#' Part of the lyapun_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param y See Usage.
+#' @param threshold Defaults to \code{NULL}.
+#' @return A numeric value.
+#' @export
 autocorrelation_lag <- function(y, threshold = NULL) {
   y <- .as_series(y)
   n <- length(y)
@@ -46,6 +55,15 @@ autocorrelation_lag <- function(y, threshold = NULL) {
   1L
 }
 
+#' mean_period
+#'
+#' Part of the lyapun_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param y See Usage.
+#' @param dt Defaults to \code{1}.
+#' @return A numeric value.
+#' @export
 mean_period <- function(y, dt = 1.0) {
   y <- .as_series(y)
   n <- length(y)
@@ -100,6 +118,19 @@ mean_period <- function(y, dt = 1.0) {
   sqrt(s)
 }
 
+#' divergence_curve
+#'
+#' Part of the lyapun_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param y See Usage.
+#' @param m Defaults to \code{NULL}.
+#' @param tau Defaults to \code{NULL}.
+#' @param dt Defaults to \code{1}.
+#' @param min_sep Defaults to \code{NULL}.
+#' @param max_steps Defaults to \code{NULL}.
+#' @return A list with \code{time}, \code{log_divergence}, \code{log_ratio}, \code{n_pairs}, \code{neighbour}, \code{d0}, \code{points}, \code{m}, \code{tau}, \code{min_sep}, \code{n_points}, \code{n_obs}.
+#' @export
 divergence_curve <- function(y, m = NULL, tau = NULL, dt = 1.0,
                               min_sep = NULL, max_steps = NULL) {
   y <- .as_series(y)
@@ -181,6 +212,22 @@ divergence_curve <- function(y, m = NULL, tau = NULL, dt = 1.0,
   c(slope = slope, intercept = intercept, se = se, r2 = r2)
 }
 
+#' lyapunov_exponent
+#'
+#' Part of the lyapun_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param y See Usage.
+#' @param embedding Defaults to \code{NULL}.
+#' @param tau Defaults to \code{NULL}.
+#' @param dt Defaults to \code{1}.
+#' @param fit Defaults to \code{NULL}.
+#' @param min_sep Defaults to \code{NULL}.
+#' @param max_steps Defaults to \code{NULL}.
+#' @param method Defaults to \code{"rosenstein"}.
+#' @param k Defaults to \code{NULL}.
+#' @return A list with \code{estimate}, \code{lambda1}, \code{rosenstein}, \code{sato}, \code{sato_k}, \code{sato_k_curve}, \code{se}, \code{r_squared}, \code{intercept}, \code{time}, \code{log_divergence}, \code{log_ratio}, \code{n_pairs}, \code{fit_range}, \code{k}, \code{m}, \code{tau}, \code{min_sep}, \code{n_points}, \code{n}, \code{dt}, \code{method}, \code{note}.
+#' @export
 lyapunov_exponent <- function(y, embedding = NULL, tau = NULL, dt = 1.0,
                                fit = NULL, min_sep = NULL, max_steps = NULL,
                                method = "rosenstein", k = NULL) {
@@ -260,6 +307,22 @@ largest_lyapunov <- lyapunov_exponent
   "lyapun: largest Lyapunov exponent (Rosenstein, Collins & De Luca 1993). Embed with delay J and dimension m, find each point's nearest neighbour at least a mean period away, and take lambda_1 as the slope of <ln d_j(i)> against i*dt over the initial rise -- no normalisation by d_j(0) is needed, since a constant offset does not change a slope. Expected values from the paper's table 1: 0.693 for the logistic map at mu = 4, 0.418 for the Henon map. Routes: 'rosenstein' (eq. 13, default), 'sato' (eq. 9), 'sato_k' (eq. 10, whose plateau the paper itself calls unreliable)."
 }
 
+#' morie_lyapun
+#'
+#' Part of the lyapun_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param y See Usage.
+#' @param embedding Defaults to \code{NULL}.
+#' @param tau Defaults to \code{NULL}.
+#' @param dt Defaults to \code{1}.
+#' @param fit Defaults to \code{NULL}.
+#' @param min_sep Defaults to \code{NULL}.
+#' @param max_steps Defaults to \code{NULL}.
+#' @param method Defaults to \code{"rosenstein"}.
+#' @param k Defaults to \code{NULL}.
+#' @return The value of \code{lyapunov_exponent}.
+#' @export
 morie_lyapun <- function(y, embedding = NULL, tau = NULL, dt = 1.0,
                         fit = NULL, min_sep = NULL, max_steps = NULL,
                         method = "rosenstein", k = NULL) {

@@ -20,6 +20,14 @@
 
 .benRea_NEG <- -Inf
 
+#' bio_labels
+#'
+#' Part of the benRea_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param types See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 bio_labels <- function(types) {
   ts <- as.list(types)
   if (length(ts) == 0L) stop("benRea: no entity types given")
@@ -37,6 +45,14 @@ bio_labels <- function(types) {
   strsplit(label, "-", fixed = TRUE)[[1]]
 }
 
+#' valid_transitions
+#'
+#' Part of the benRea_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param labels See Usage.
+#' @return The value of \code{T}, as built in the body.
+#' @export
 valid_transitions <- function(labels) {
   n <- length(labels)
   T <- matrix(TRUE, n, n)
@@ -51,10 +67,27 @@ valid_transitions <- function(labels) {
   T
 }
 
+#' start_allowed
+#'
+#' Part of the benRea_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param labels See Usage.
+#' @return A vector, from \code{sapply}.
+#' @export
 start_allowed <- function(labels) {
   sapply(labels, function(v) .parts(v)[[1]] != "I")
 }
 
+#' is_valid_bio
+#'
+#' Part of the benRea_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param path See Usage.
+#' @param labels Defaults to \code{NULL}.
+#' @return A logical value.
+#' @export
 is_valid_bio <- function(path, labels = NULL) {
   prev <- "O"; prev_t <- NA
   for (lab in path) {
@@ -66,6 +99,15 @@ is_valid_bio <- function(path, labels = NULL) {
   TRUE
 }
 
+#' greedy_decode
+#'
+#' Part of the benRea_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param emissions See Usage.
+#' @param labels See Usage.
+#' @return A vector, from \code{sapply}.
+#' @export
 greedy_decode <- function(emissions, labels) {
   sapply(seq_along(emissions), function(t) {
     row <- emissions[[t]]
@@ -73,6 +115,17 @@ greedy_decode <- function(emissions, labels) {
   })
 }
 
+#' viterbi_decode
+#'
+#' Part of the benRea_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param emissions See Usage.
+#' @param labels See Usage.
+#' @param transitions Defaults to \code{NULL}.
+#' @param transition_scores Defaults to \code{NULL}.
+#' @return A list with \code{path}, \code{score}.
+#' @export
 viterbi_decode <- function(emissions, labels, transitions = NULL,
                            transition_scores = NULL) {
   L <- length(emissions)
@@ -112,6 +165,14 @@ viterbi_decode <- function(emissions, labels, transitions = NULL,
   list(path = labels[rev_idx], score = dp[L, end])
 }
 
+#' extract_spans
+#'
+#' Part of the benRea_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param path See Usage.
+#' @return The value of \code{spans}, as built in the body.
+#' @export
 extract_spans <- function(path) {
   spans <- list()
   cur_t <- NULL; cur_s <- NULL
@@ -139,6 +200,15 @@ extract_spans <- function(path) {
   spans
 }
 
+#' span_f1
+#'
+#' Part of the benRea_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param pred See Usage.
+#' @param gold See Usage.
+#' @return A list with \code{precision}, \code{recall}, \code{f1}, \code{true_positives}, \code{n_pred}, \code{n_gold}.
+#' @export
 span_f1 <- function(pred, gold) {
   p <- extract_spans(pred); g <- extract_spans(gold)
   sp <- function(spans) {
@@ -153,6 +223,18 @@ span_f1 <- function(pred, gold) {
        true_positives = tp, n_pred = length(pset), n_gold = length(gset))
 }
 
+#' ner_decode
+#'
+#' Part of the benRea_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param emissions See Usage.
+#' @param types See Usage.
+#' @param decoder Defaults to \code{"viterbi"}.
+#' @param transition_scores Defaults to \code{NULL}.
+#' @param gold Defaults to \code{NULL}.
+#' @return The value of \code{payload}, as built in the body.
+#' @export
 ner_decode <- function(emissions, types, decoder = "viterbi",
                        transition_scores = NULL, gold = NULL) {
   if (!(decoder %in% c("viterbi", "greedy")))
@@ -180,4 +262,12 @@ nerdecode <- ner_decode
 named_entity <- ner_decode
 namedentity <- ner_decode
 
+#' morie_benRea
+#'
+#' Part of the benRea_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ... Passed through.
+#' @return The value of \code{ner_decode}.
+#' @export
 morie_benRea <- function(...) ner_decode(...)

@@ -82,14 +82,44 @@
   pay
 }
 
+#' rND
+#'
+#' Part of the fairRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param protected See Usage.
+#' @param step Defaults to \code{10L}.
+#' @param normalize Defaults to \code{TRUE}.
+#' @return The value of \code{.measure}.
+#' @export
 rND <- function(protected, step = 10L, normalize = TRUE) {
   .measure(protected, "rND", step, normalize)
 }
 
+#' rKL
+#'
+#' Part of the fairRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param protected See Usage.
+#' @param step Defaults to \code{10L}.
+#' @param normalize Defaults to \code{TRUE}.
+#' @return The value of \code{.measure}.
+#' @export
 rKL <- function(protected, step = 10L, normalize = TRUE) {
   .measure(protected, "rKL", step, normalize)
 }
 
+#' rRD
+#'
+#' Part of the fairRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param protected See Usage.
+#' @param step Defaults to \code{10L}.
+#' @param normalize Defaults to \code{TRUE}.
+#' @return The value of \code{.measure}.
+#' @export
 rRD <- function(protected, step = 10L, normalize = TRUE) {
   p <- as.integer(as.logical(protected))
   cav <- NULL
@@ -99,6 +129,16 @@ rRD <- function(protected, step = 10L, normalize = TRUE) {
   .measure(p, "rRD", step, normalize, cav)
 }
 
+#' morie_fairRC
+#'
+#' Part of the fairRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param protected See Usage.
+#' @param step Defaults to \code{10L}.
+#' @param normalize Defaults to \code{TRUE}.
+#' @return The value of \code{rND}.
+#' @export
 morie_fairRC <- function(protected, step = 10L, normalize = TRUE) {
   rND(protected, step = step, normalize = normalize)
 }

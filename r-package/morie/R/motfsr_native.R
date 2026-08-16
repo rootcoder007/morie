@@ -4,6 +4,15 @@
 #   Bailey & Elkan (1995) ISMB-95, 21-29.
 # Base R only.
 
+#' motfsr_alphabet_of
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param seqs See Usage.
+#' @param alphabet See Usage.
+#' @return A vector, from \code{sort}.
+#' @export
 motfsr_alphabet_of <- function(seqs, alphabet) {
   if (!is.null(alphabet)) {
     a <- as.character(alphabet)
@@ -17,6 +26,16 @@ motfsr_alphabet_of <- function(seqs, alphabet) {
   sort(unique(seen))
 }
 
+#' motfsr_prepare
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param sequences See Usage.
+#' @param w See Usage.
+#' @param alphabet See Usage.
+#' @return A list with \code{coded}, \code{alpha}, \code{starts}.
+#' @export
 motfsr_prepare <- function(sequences, w, alphabet) {
   seqs <- as.character(sequences)
   if (length(seqs) == 0L) stop("motfsr: sequences must be non-empty")
@@ -49,6 +68,15 @@ motfsr_prepare <- function(sequences, w, alphabet) {
   list(coded = coded, alpha = alpha, starts = starts)
 }
 
+#' motfsr_mu
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param coded See Usage.
+#' @param L See Usage.
+#' @return A numeric value.
+#' @export
 motfsr_mu <- function(coded, L) {
   c_ <- numeric(L)
   for (row in coded) for (k in row) c_[k + 1L] <- c_[k + 1L] + 1
@@ -56,6 +84,16 @@ motfsr_mu <- function(coded, L) {
   c_ / tot
 }
 
+#' motfsr_uniform_theta
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param w See Usage.
+#' @param L See Usage.
+#' @param mu See Usage.
+#' @return The value of \code{theta}, as built in the body.
+#' @export
 motfsr_uniform_theta <- function(w, L, mu) {
   theta <- vector("list", w + 1L)
   theta[[1L]] <- as.numeric(mu)
@@ -63,6 +101,20 @@ motfsr_uniform_theta <- function(w, L, mu) {
   theta
 }
 
+#' motfsr_theta_from_subsequence
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param coded See Usage.
+#' @param i See Usage.
+#' @param j See Usage.
+#' @param w See Usage.
+#' @param L See Usage.
+#' @param mu See Usage.
+#' @param weight See Usage.
+#' @return The value of \code{theta}, as built in the body.
+#' @export
 motfsr_theta_from_subsequence <- function(coded, i, j, w, L, mu, weight) {
   theta <- list(as.numeric(mu))
   for (t in seq_len(w)) {
@@ -75,6 +127,19 @@ motfsr_theta_from_subsequence <- function(coded, i, j, w, L, mu, weight) {
   theta
 }
 
+#' motfsr_log_component
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param theta See Usage.
+#' @param coded See Usage.
+#' @param i See Usage.
+#' @param j See Usage.
+#' @param w See Usage.
+#' @param comp See Usage.
+#' @return The value of \code{tot}, as built in the body.
+#' @export
 motfsr_log_component <- function(theta, coded, i, j, w, comp) {
   tot <- 0
   for (t in seq_len(w)) {
@@ -86,6 +151,16 @@ motfsr_log_component <- function(theta, coded, i, j, w, comp) {
   tot
 }
 
+#' motfsr_normalise_windows
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param z See Usage.
+#' @param w See Usage.
+#' @param max_sweeps Defaults to \code{100}.
+#' @return The value of \code{z}, as built in the body.
+#' @export
 motfsr_normalise_windows <- function(z, w, max_sweeps = 100) {
   if (w < 2L) return(z)
   for (iter in seq_len(max_sweeps)) {
@@ -113,6 +188,24 @@ motfsr_normalise_windows <- function(z, w, max_sweeps = 100) {
   z
 }
 
+#' motfsr_mm_fit
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param sequences See Usage.
+#' @param w See Usage.
+#' @param alphabet Defaults to \code{NULL}.
+#' @param theta0 Defaults to \code{NULL}.
+#' @param lambda0 Defaults to \code{NULL}.
+#' @param beta Defaults to \code{0.01}.
+#' @param erasing Defaults to \code{NULL}.
+#' @param max_iter Defaults to \code{1000}.
+#' @param tol Defaults to \code{1e-06}.
+#' @param normalize_overlaps Defaults to \code{TRUE}.
+#' @param erase_by Defaults to \code{"letter"}.
+#' @return A list with \code{theta}, \code{motif}, \code{background}, \code{lambda1}, \code{z}, \code{log_likelihood}, \code{log_likelihood_trace}, \code{n_iter}, \code{converged}, \code{alphabet}, \code{w}.
+#' @export
 motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
                           lambda0 = NULL, beta = 0.01, erasing = NULL,
                           max_iter = 1000, tol = 1e-6,
@@ -219,6 +312,15 @@ motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
        w = w)
 }
 
+#' motfsr_log_odds_matrix
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param motif See Usage.
+#' @param background See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 motfsr_log_odds_matrix <- function(motif, background) {
   out <- lapply(motif, function(row) {
     sapply(seq_along(row), function(k) {
@@ -229,6 +331,15 @@ motfsr_log_odds_matrix <- function(motif, background) {
   out
 }
 
+#' motfsr_bayes_threshold
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param lambda1 See Usage.
+#' @param loss Defaults to \code{NULL}.
+#' @return A numeric value.
+#' @export
 motfsr_bayes_threshold <- function(lambda1, loss = NULL) {
   lambda1 <- as.numeric(lambda1)
   if (!(lambda1 > 0 && lambda1 < 1)) {
@@ -245,6 +356,17 @@ motfsr_bayes_threshold <- function(lambda1, loss = NULL) {
   t_ + log(num / den)
 }
 
+#' motfsr_score_sequence
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param spec See Usage.
+#' @param sequence See Usage.
+#' @param alphabet See Usage.
+#' @param threshold Defaults to \code{NULL}.
+#' @return A list with \code{scores}, \code{hits}.
+#' @export
 motfsr_score_sequence <- function(spec, sequence, alphabet, threshold = NULL) {
   idx <- setNames(seq_along(alphabet) - 1L, alphabet)
   w <- length(spec)
@@ -266,6 +388,17 @@ motfsr_score_sequence <- function(spec, sequence, alphabet, threshold = NULL) {
   list(scores = scores, hits = hits - 1L)
 }
 
+#' motfsr_lambda_grid
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n_starts_total See Usage.
+#' @param n_seqs See Usage.
+#' @param w See Usage.
+#' @param lambda0 See Usage.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 motfsr_lambda_grid <- function(n_starts_total, n_seqs, w, lambda0) {
   if (!is.null(lambda0)) return(as.numeric(lambda0))
   lo <- sqrt(n_seqs) / n_starts_total
@@ -278,6 +411,28 @@ motfsr_lambda_grid <- function(n_starts_total, n_seqs, w, lambda0) {
   out
 }
 
+#' motfsr_run
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param sequences See Usage.
+#' @param w See Usage.
+#' @param alphabet Defaults to \code{NULL}.
+#' @param n_motifs Defaults to \code{1}.
+#' @param beta Defaults to \code{0.01}.
+#' @param lambda0 Defaults to \code{NULL}.
+#' @param max_iter Defaults to \code{1000}.
+#' @param tol Defaults to \code{1e-06}.
+#' @param normalize_overlaps Defaults to \code{TRUE}.
+#' @param starts Defaults to \code{"subsequences"}.
+#' @param start_weight Defaults to \code{0.5}.
+#' @param max_starts Defaults to \code{200}.
+#' @param start_scoring Defaults to \code{"one_step"}.
+#' @param erase_by Defaults to \code{"letter"}.
+#' @param loss Defaults to \code{NULL}.
+#' @return A list with \code{estimate}, \code{motifs}, \code{alphabet}, \code{w}, \code{n_subsequences}, \code{erasing}, \code{method}.
+#' @export
 motfsr_run <- function(sequences, w, alphabet = NULL, n_motifs = 1,
                        beta = 0.01, lambda0 = NULL, max_iter = 1000,
                        tol = 1e-6, normalize_overlaps = TRUE,
@@ -386,6 +541,13 @@ motfsr_run <- function(sequences, w, alphabet = NULL, n_motifs = 1,
        method = "MM two-component mixture EM (Bailey & Elkan 1994)")
 }
 
+#' motfsr_cheatsheet
+#'
+#' Part of the motfsr_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 motfsr_cheatsheet <- function() {
   paste("motfsr: MEME/MM motif discovery (Bailey & Elkan 1994). Break the sequences into ALL overlapping W-mers and fit a two-component mixture -- motif vs background -- by EM, so a sequence may contain zero, one or many occurrences and lambda1 estimates how often. E-step eq.4; M-step eq.5 for lambda and eq.13 for the letter frequencies, whose pseudo-counts exist because a frequency that hits 0 can never leave. z is normalised to sum to <= 1 over any W-window or EM collapses onto 'AAAAAA'. Multiple motifs come from erasing. Output is a Bayes-optimal classifier: log-odds matrix plus t = log((1 - lambda1)/lambda1).")
 }

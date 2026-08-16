@@ -16,6 +16,16 @@
 # the same num_walks walks from every node, and the same skip-gram
 # pairs within the window.
 
+#' node2v_alpha_pq
+#'
+#' Part of the node2v_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param d_tx See Usage.
+#' @param p See Usage.
+#' @param q See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 node2v_alpha_pq <- function(d_tx, p, q) {
   d <- as.integer(d_tx)
   pp <- as.numeric(p)
@@ -29,6 +39,16 @@ node2v_alpha_pq <- function(d_tx, p, q) {
        d)
 }
 
+#' node2v_dist
+#'
+#' Part of the node2v_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param adj See Usage.
+#' @param t See Usage.
+#' @param x See Usage.
+#' @return A numeric value.
+#' @export
 node2v_dist <- function(adj, t, x) {
   if (isTRUE(t == x)) return(0L)
   nb_t <- adj[[as.character(t)]]
@@ -37,6 +57,19 @@ node2v_dist <- function(adj, t, x) {
   2L
 }
 
+#' node2v_transition_probabilities
+#'
+#' Part of the node2v_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param adj See Usage.
+#' @param t See Usage.
+#' @param v See Usage.
+#' @param p See Usage.
+#' @param q See Usage.
+#' @param weights Defaults to \code{NULL}.
+#' @return A list with \code{nodes}, \code{probabilities}, \code{unnormalized}, \code{Z}.
+#' @export
 node2v_transition_probabilities <- function(adj, t, v, p, q,
                                             weights = NULL) {
   v_key <- v
@@ -71,6 +104,20 @@ node2v_transition_probabilities <- function(adj, t, v, p, q,
        unnormalized = pi, Z = Z)
 }
 
+#' node2v_walk
+#'
+#' Part of the node2v_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param adj See Usage.
+#' @param start See Usage.
+#' @param length See Usage.
+#' @param p Defaults to \code{1}.
+#' @param q Defaults to \code{1}.
+#' @param rng Defaults to \code{NULL}.
+#' @param weights Defaults to \code{NULL}.
+#' @return The value of \code{path}, as built in the body.
+#' @export
 node2v_walk <- function(adj, start, length, p = 1, q = 1, rng = NULL,
                         weights = NULL) {
   if (is.null(rng)) {
@@ -97,6 +144,20 @@ node2v_walk <- function(adj, start, length, p = 1, q = 1, rng = NULL,
   path
 }
 
+#' morie_node2v
+#'
+#' Part of the node2v_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param adj See Usage.
+#' @param num_walks Defaults to \code{10}.
+#' @param length Defaults to \code{10}.
+#' @param p Defaults to \code{1}.
+#' @param q Defaults to \code{1}.
+#' @param seed Defaults to \code{0}.
+#' @param weights Defaults to \code{NULL}.
+#' @return A list with \code{estimate}, \code{walks}, \code{p}, \code{q}, \code{n_walks}, \code{length}, \code{method}, \code{note}.
+#' @export
 morie_node2v <- function(adj, num_walks = 10, length = 10, p = 1, q = 1,
                          seed = 0, weights = NULL) {
   rng <- .ghc_rng(as.numeric(seed))
@@ -126,6 +187,15 @@ morie_node2v <- function(adj, num_walks = 10, length = 10, p = 1, q = 1,
 
 node2v_generate_walks <- morie_node2v
 
+#' node2v_skipgram_pairs
+#'
+#' Part of the node2v_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param walks See Usage.
+#' @param window Defaults to \code{2}.
+#' @return The value of \code{pairs}, as built in the body.
+#' @export
 node2v_skipgram_pairs <- function(walks, window = 2) {
   w <- as.integer(window)
   if (w < 1L)
@@ -144,6 +214,13 @@ node2v_skipgram_pairs <- function(walks, window = 2) {
   pairs
 }
 
+#' node2v_cheatsheet
+#'
+#' Part of the node2v_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 node2v_cheatsheet <- function() {
   paste("node2v: graph as document, walk as sentence, skip-gram on ",
         "top. The point is that NO sampling strategy wins everywhere: ",

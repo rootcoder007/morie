@@ -42,6 +42,16 @@
   as.numeric(x)
 }
 
+#' pool
+#'
+#' Part of the sbert_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param token_vectors See Usage.
+#' @param mode Defaults to \code{"mean"}.
+#' @param mask Defaults to \code{NULL}.
+#' @return A numeric value.
+#' @export
 pool <- function(token_vectors, mode = "mean", mask = NULL) {
   if (!(mode %in% .SBERT_POOLING))
     stop("sbert: pooling must be one of mean, cls, max, got ", format(mode))
@@ -66,6 +76,15 @@ pool <- function(token_vectors, mode = "mean", mask = NULL) {
   out / length(keep)
 }
 
+#' cosine_similarity
+#'
+#' Part of the sbert_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param u See Usage.
+#' @param v See Usage.
+#' @return A numeric value.
+#' @export
 cosine_similarity <- function(u, v) {
   a <- as.numeric(.sbert_vec(u))
   b <- as.numeric(.sbert_vec(v))
@@ -78,6 +97,15 @@ cosine_similarity <- function(u, v) {
   sum(a * b) / (na * nb)
 }
 
+#' classification_features
+#'
+#' Part of the sbert_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param u See Usage.
+#' @param v See Usage.
+#' @return A list with \code{features}, \code{u}, \code{v}, \code{abs_diff}, \code{dim}, \code{note}.
+#' @export
 classification_features <- function(u, v) {
   a <- as.numeric(.sbert_vec(u))
   b <- as.numeric(.sbert_vec(v))
@@ -89,6 +117,15 @@ classification_features <- function(u, v) {
        note = "|u - v| is the term neither u nor v supplies")
 }
 
+#' pair_cost
+#'
+#' Part of the sbert_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n See Usage.
+#' @param mode Defaults to \code{"cross-encoder"}.
+#' @return A list with \code{forward_passes}, \code{cross_encoder}, \code{bi_encoder}, \code{speedup}, \code{n}, \code{note}.
+#' @export
 pair_cost <- function(n, mode = "cross-encoder") {
   N <- as.integer(n)
   if (N < 2L)
@@ -102,6 +139,16 @@ pair_cost <- function(n, mode = "cross-encoder") {
        note = "the bi-encoder also does O(n^2) dot products, but those are arithmetic, not network passes")
 }
 
+#' rank_by_similarity
+#'
+#' Part of the sbert_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param query See Usage.
+#' @param corpus_embeddings See Usage.
+#' @param top_k Defaults to \code{5}.
+#' @return A list with \code{ranking}, \code{n_corpus}, \code{forward_passes}, \code{note}.
+#' @export
 rank_by_similarity <- function(query, corpus_embeddings, top_k = 5) {
   E <- .sbert_mat(corpus_embeddings)
   if (nrow(E) == 0L)
@@ -116,6 +163,15 @@ rank_by_similarity <- function(query, corpus_embeddings, top_k = 5) {
        note = "no network passes at query time -- the corpus was embedded once")
 }
 
+#' sts_score
+#'
+#' Part of the sbert_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param pairs See Usage.
+#' @param embed See Usage.
+#' @return A list with \code{estimate}, \code{scores}, \code{embed_calls}, \code{n_pairs}, \code{cross_encoder_calls}, \code{method}.
+#' @export
 sts_score <- function(pairs, embed) {
   cache <- list()
   out <- numeric(length(pairs))
@@ -138,6 +194,15 @@ sts_score <- function(pairs, embed) {
        method = "siamese bi-encoder scored by cosine; Reimers & Gurevych (2019)")
 }
 
+#' morie_sbert
+#'
+#' Part of the sbert_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param pairs See Usage.
+#' @param embed See Usage.
+#' @return The value of \code{sts_score}.
+#' @export
 morie_sbert <- function(pairs, embed) {
   sts_score(pairs, embed)
 }
