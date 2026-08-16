@@ -15,3 +15,7 @@ The command name, invisibly.
 \description{
 Register a stat_command in the package-level registry
 }
+\examples{
+cmd <- stat_command("test_bridge_throw", "T", "u", "d", handler_repl = function(...) stop("boom"))
+register_stat_command(cmd)
+}

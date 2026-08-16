@@ -24,3 +24,11 @@ estimated \code{pi0} and \code{lambda_param} (see
 Estimates the proportion of true null hypotheses (pi0) and
 tightens the BH thresholds by that factor.
 }
+\examples{
+make_p <- function(n_null = 80, n_sig = 20, seed = 1) {
+    set.seed(seed)
+    c(runif(n_null), pmin(runif(n_sig, 0, 0.005), 1))
+}
+p <- make_p(50, 10)
+storey_q(p, lambda_param = 0.5)
+}

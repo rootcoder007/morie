@@ -41,3 +41,7 @@ A \code{morie_ovb} named-list.
 Applies the closed-form Cinelli-Hazlett robustness-value formulas
 natively in base R.
 }
+\examples{
+omitted_variable_bias(estimate = 1, se = 0.1, dof = 100, r2_yd_x = 0.3, 
+    partial_r2_treatment = 0.1)
+}
