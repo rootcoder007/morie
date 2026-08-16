@@ -32,3 +32,6 @@ upstream schema described in
 \description{
 Incident-type lookup
 }
+\examples{
+morie_datasets_corrections_uof_incident_type()
+}

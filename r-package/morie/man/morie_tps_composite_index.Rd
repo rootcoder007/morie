@@ -27,3 +27,7 @@ yield a single composite per neighbourhood.  Positive composite =
 neighbourhood with elevated incidence across many crime types;
 near-zero = average; negative = below-average exposure.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_composite_index(D)
+}

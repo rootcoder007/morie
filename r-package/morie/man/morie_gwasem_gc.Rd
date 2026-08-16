@@ -18,3 +18,7 @@ The ratio of the median test statistic to its null median.
 Scalar lambda.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_gwasem_gc(V)
+}

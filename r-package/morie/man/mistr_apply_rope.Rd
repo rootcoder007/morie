@@ -29,3 +29,7 @@ The value of \code{out}, as built in the body.
 Base R only.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+mistr_apply_rope(V, V)
+}

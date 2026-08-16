@@ -17,3 +17,7 @@ placement-count x gender crosstab of individual counts.
 \description{
 Individuals by number of placements x gender (b09)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_analyze_b09(V)
+}

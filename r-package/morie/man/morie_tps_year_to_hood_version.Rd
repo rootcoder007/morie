@@ -21,3 +21,7 @@ with the 158-scheme. TPS often back-fills both columns onto the
 same record via lat/lon re-geocoding, but the polygon boundaries
 do not match.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_tps_year_to_hood_version(V)
+}

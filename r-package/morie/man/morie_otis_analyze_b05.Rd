@@ -17,3 +17,7 @@ fiscal-year crosstab of placement counts.
 \description{
 Distribution of placements by binned duration (b05)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_analyze_b05(V)
+}

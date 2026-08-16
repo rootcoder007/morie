@@ -33,3 +33,7 @@ A \code{morie_permutation_test_result}.
 Shuffles the combined samples \code{n_permutations} times to
 construct the null distribution of the chosen test statistic.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+permutation_test(V, V)
+}

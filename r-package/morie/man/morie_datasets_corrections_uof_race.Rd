@@ -32,3 +32,6 @@ upstream schema described in
 \description{
 Inmate-participant race
 }
+\examples{
+morie_datasets_corrections_uof_race()
+}

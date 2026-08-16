@@ -20,3 +20,7 @@ Part of the masrcn_native implementation; see the file header for the source it 
 A list with \code{pooled}, \code{quantised_box}, \code{quantisation_shift}, \code{caveat}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+roi_pool(V, V)
+}

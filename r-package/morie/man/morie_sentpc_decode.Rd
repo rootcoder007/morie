@@ -19,3 +19,7 @@ Haddow, B. & Birch, A. (2016) ACL 1715-1725 (BPE merges); Kudo, T.
 (2018) ACL 66-75 (unigram LM and Viterbi).
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_sentpc_decode(V)
+}

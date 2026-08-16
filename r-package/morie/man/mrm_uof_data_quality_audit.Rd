@@ -23,3 +23,7 @@ Named list with \code{per_column}, \code{missing_columns},
 \description{
 Schema, null, and suspect-value audit
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+mrm_uof_data_quality_audit(D)
+}

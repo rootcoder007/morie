@@ -14,3 +14,6 @@ Compact one-line summary of the tmldta recipe
 A character string.
 }
 \keyword{internal}
+\examples{
+morie_tmldta_cheatsheet()
+}

@@ -15,3 +15,7 @@ RichResult with summary + medical-cause-by-alert crosstab.
 \description{
 Custodial deaths by alert x medical cause (d06)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_analyze_d06(V)
+}

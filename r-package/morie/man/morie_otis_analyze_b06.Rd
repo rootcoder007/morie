@@ -17,3 +17,7 @@ reason x gender crosstabs.
 \description{
 Reasons for placement x institution x gender (b06)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_analyze_b06(V)
+}

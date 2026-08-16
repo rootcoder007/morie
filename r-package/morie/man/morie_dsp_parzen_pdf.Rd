@@ -24,3 +24,7 @@ Silverman's \code{1.06 * sd(x) * n^{-1/5}}.
 Rangayyan & Krishnan (2015), Ch. 5, sec. 5.6;
 Parzen (1962); Silverman (1986).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_dsp_parzen_pdf(V)
+}

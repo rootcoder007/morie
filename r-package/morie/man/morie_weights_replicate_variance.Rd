@@ -34,3 +34,7 @@ A named list with elements \code{variance}, \code{se}
 \description{
 \code{method} selects the rescaling: "JK1", "JKn", "BRR", "Fay", "bootstrap", "SDR".
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_replicate_variance(V, V)
+}

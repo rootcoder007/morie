@@ -17,3 +17,7 @@ crosstab of placement durations.
 \description{
 Placement durations by region & gender (b04)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_analyze_b04(V)
+}

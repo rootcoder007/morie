@@ -36,3 +36,7 @@ requested format.
 \description{
 Descriptive statistics for a set of variables
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+summary_statistics_table(V)
+}

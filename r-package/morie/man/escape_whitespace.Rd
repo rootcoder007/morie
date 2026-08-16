@@ -14,3 +14,7 @@ Escape whitespace as U+2581, optionally prefixing the marker
 The value of \code{.escape_whitespace}.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+escape_whitespace(V)
+}

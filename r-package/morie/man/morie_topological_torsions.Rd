@@ -19,3 +19,8 @@ Returns a list keyed by the canonical 4-tuple of \code{(NPI, TYPE, NBR)} codes; 
 A named list mapping canonical codes to integer counts.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_topological_torsions(V, D)
+}

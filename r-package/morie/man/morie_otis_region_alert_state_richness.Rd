@@ -15,3 +15,7 @@ morie_otis_region_alert_state_richness(df)
 \description{
 Distinct (region x alert-combo) states occupied per person-year.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_region_alert_state_richness(V)
+}

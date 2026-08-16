@@ -17,3 +17,7 @@ G=0 perfectly even, G=1 perfectly concentrated.  Used for the
 neighbourhood-concentration callable below; exposed because tests
 and downstream code may want it directly.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_tps_gini_concentration(V)
+}

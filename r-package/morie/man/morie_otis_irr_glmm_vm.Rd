@@ -25,3 +25,7 @@ reported.
 No random effect / cluster-robust SE -- for paper-grade inference,
 use the dedicated OTIS DML pipeline.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_irr_glmm_vm(V)
+}

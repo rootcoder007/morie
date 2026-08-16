@@ -14,3 +14,6 @@ the ARSAU registry.
 \description{
 Known ARSAU year/range keys.
 }
+\examples{
+ARSAU_YEARS()
+}

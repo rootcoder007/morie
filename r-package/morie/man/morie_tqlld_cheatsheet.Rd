@@ -14,3 +14,6 @@ One-line rationale mirroring the Python cheatsheet
 Character.
 }
 \keyword{internal}
+\examples{
+morie_tqlld_cheatsheet()
+}

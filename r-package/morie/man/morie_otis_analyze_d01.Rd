@@ -17,3 +17,7 @@ region, housing-unit type, medical cause, and means of death.
 \description{
 Person-level custodial deaths (d01)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_analyze_d01(V)
+}

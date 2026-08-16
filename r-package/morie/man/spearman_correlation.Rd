@@ -19,3 +19,7 @@ Fisher-z CI, and rho-squared effect size.
 \description{
 Spearman rank correlation
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+spearman_correlation(V, V)
+}

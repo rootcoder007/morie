@@ -14,3 +14,6 @@ morie_qrntcq
 Nothing; the function is called for its effect.
 }
 \keyword{internal}
+\examples{
+morie_qrntcq()
+}

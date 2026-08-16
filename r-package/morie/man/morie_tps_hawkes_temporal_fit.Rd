@@ -25,3 +25,7 @@ process to incident times. Optimisation runs in base R
 (\code{stats::optim}, Nelder-Mead). Reports background rate mu,
 branching ratio kappa, decay omega, and the AIC / BIC of the fit.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_hawkes_temporal_fit(D)
+}

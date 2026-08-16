@@ -25,3 +25,7 @@ recording the stratum of each replicate.
 When the \code{survey} package is installed and \code{strata} is supplied, defers
 to \code{survey::as.svrepdesign(..., type = "JKn")} for variance compatibility.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_jackknife(V)
+}

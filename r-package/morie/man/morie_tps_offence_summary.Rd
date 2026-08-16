@@ -18,3 +18,7 @@ A \code{morie_tps_result} named list.
 Top-20 OFFENCE / UCR_CODE / CSI_CATEGORY tables (whichever are
 present).
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_offence_summary(D)
+}

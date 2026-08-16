@@ -24,3 +24,7 @@ U_t = sum_i sum_j sign(x_i - x_j) for i <= t < j, then reports
 the year maximising |U_t| and an approximate p-value. No external
 change-point dependency is required.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_changepoint_detection(D)
+}

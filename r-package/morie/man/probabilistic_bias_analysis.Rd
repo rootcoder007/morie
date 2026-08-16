@@ -31,3 +31,7 @@ Named list with bias-adjusted distribution summaries.
 Draws bias parameters from prior distributions and returns the
 distribution of bias-adjusted estimates.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+probabilistic_bias_analysis(V, V)
+}

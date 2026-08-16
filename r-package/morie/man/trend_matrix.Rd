@@ -18,3 +18,7 @@ The delta column is \code{a_j(t)(t - s_j)}, which already carries the \code{-s_j
 A list of rows, each a numeric vector.
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+trend_matrix(V, V)
+}

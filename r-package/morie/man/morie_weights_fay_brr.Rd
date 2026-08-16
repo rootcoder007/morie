@@ -31,3 +31,7 @@ A numeric matrix of Fay-perturbed replicate weights with
 \description{
 Fay's BRR weights with perturbation coefficient \code{fay_coefficient} in [0,1).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_fay_brr(V, V)
+}

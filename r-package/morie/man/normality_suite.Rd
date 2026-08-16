@@ -15,3 +15,7 @@ A list of \code{morie_test_result}.
 \description{
 Run a suite of normality tests
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+normality_suite(V)
+}

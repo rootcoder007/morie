@@ -32,3 +32,7 @@ Kalbfleisch & Prentice (2002), The Statistical Analysis
 of Failure Time Data, 2nd ed., Wiley, section 8.2; Aalen &
 Johansen (1978), Scand. J. Statist. 5(3):141-150.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Crrcim(V, V)
+}

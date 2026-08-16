@@ -20,3 +20,7 @@ Chains temporal + spatial + offence + concentration into a single
 nested result.  This is the function the 13 convenience aliases
 (\code{morie_tps_analyze_assault()}, etc.) wrap.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_analyze_one(D)
+}

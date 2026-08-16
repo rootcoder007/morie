@@ -14,3 +14,6 @@ Part of the node2v_native implementation; see the file header for the source it 
 A character value.
 }
 \keyword{internal}
+\examples{
+node2v_cheatsheet()
+}

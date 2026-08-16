@@ -21,3 +21,6 @@ Defaults are a shape/scale pair in the range reported for SARS-CoV-2; they are a
 A list with \code{t} and \code{density}.
 }
 \keyword{internal}
+\examples{
+gamma_generation_time()
+}

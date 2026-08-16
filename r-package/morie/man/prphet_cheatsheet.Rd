@@ -14,3 +14,6 @@ prphet_cheatsheet
 A character value.
 }
 \keyword{internal}
+\examples{
+prphet_cheatsheet()
+}

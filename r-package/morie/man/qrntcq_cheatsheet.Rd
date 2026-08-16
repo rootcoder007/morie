@@ -14,3 +14,6 @@ qrntcq_cheatsheet
 A character value.
 }
 \keyword{internal}
+\examples{
+qrntcq_cheatsheet()
+}

@@ -36,3 +36,7 @@ Fits an OU process \eqn{dX_t = theta(mu - X_t) dt + sigma dW_t}
 to daily incident counts via OLS on first-differences, then runs
 \code{n_paths} forward simulations of length \code{T_days}.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_langevin_simulate(D)
+}

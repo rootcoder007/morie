@@ -32,3 +32,6 @@ Columns mirror the upstream schema described in
 \description{
 Inmate-participant Indigenous identity
 }
+\examples{
+morie_datasets_corrections_uof_indigenous()
+}

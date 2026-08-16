@@ -19,3 +19,7 @@ Sample the steps that actually carry loss instead of drawing uniformly.
 A list with \code{weights}, \code{uniform},   \code{effective_steps} (and \code{note} for the importance path).
 }
 \keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+importance_weights(V)
+}

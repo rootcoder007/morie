@@ -32,3 +32,6 @@ resource (or the bundled sample / synthetic fallback per
 \description{
 Institution-level annual incident summary
 }
+\examples{
+morie_datasets_corrections_uof_institution_summary()
+}

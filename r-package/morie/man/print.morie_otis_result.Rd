@@ -17,3 +17,7 @@ Invisibly returns \code{x} unchanged.
 \description{
 Print method for OTIS results
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+print.morie_otis_result(V)
+}

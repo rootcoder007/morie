@@ -20,3 +20,6 @@ Release time maximising utility
 A list with \code{estimate}, \code{optimal_t_R},   \code{efficacy_at_optimum}, \code{utility_at_optimum}, \code{curve},   \code{t_Q}, \code{method}.
 }
 \keyword{internal}
+\examples{
+optimal_duration()
+}

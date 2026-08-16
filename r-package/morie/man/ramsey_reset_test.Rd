@@ -20,3 +20,7 @@ A \code{morie_specification_test}.
 \description{
 Ramsey RESET test for functional-form misspecification
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+ramsey_reset_test(V, V)
+}
