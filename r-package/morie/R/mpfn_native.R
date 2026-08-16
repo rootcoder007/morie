@@ -27,7 +27,7 @@ mpfn_sig <- function(x) {
 #' @param h_v Accepted by the signature and not used anywhere in the body.
 #' @param h_w Coerced to numeric by the body, with \code{as.numeric}.
 #' @param e_vw A vector; its length is taken and its elements indexed.
-#' @param A Defaults to \code{NULL}.
+#' @param A Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 mpfn_message <- function(h_v, h_w, e_vw, A = NULL) {
@@ -47,13 +47,13 @@ mpfn_message <- function(h_v, h_w, e_vw, A = NULL) {
 #' source it follows.
 #'
 #' @param h A vector; its length is taken.
-#' @param m See Usage.
-#' @param Wz See Usage.
-#' @param Uz See Usage.
-#' @param Wr See Usage.
-#' @param Ur See Usage.
-#' @param Wh See Usage.
-#' @param Uh See Usage.
+#' @param m Passed to \code{lin}.
+#' @param Wz Passed to \code{lin}.
+#' @param Uz Passed to \code{lin}.
+#' @param Wr Passed to \code{lin}.
+#' @param Ur Passed to \code{lin}.
+#' @param Wh Passed to \code{lin}.
+#' @param Uh Passed to \code{lin}.
 #' @return A numeric value.
 #' @export
 mpfn_update_gru <- function(h, m, Wz, Uz, Wr, Ur, Wh, Uh) {
@@ -77,8 +77,8 @@ mpfn_update_gru <- function(h, m, Wz, Uz, Wr, Ur, Wh, Uh) {
 #' @param adj A vector; indexed elementwise.
 #' @param edge_features A vector; indexed elementwise.
 #' @param T Coerced to integer by the body, with \code{as.integer}. Defaults to \code{3}.
-#' @param A Defaults to \code{NULL}.
-#' @param update Defaults to \code{NULL}.
+#' @param A Passed to \code{mpfn_message}.
+#' @param update Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{H}, as built in the body.
 #' @export
 mpfn_message_passing <- function(H0, adj, edge_features, T = 3, A = NULL,
@@ -159,8 +159,8 @@ mpfn_readout <- function(H, how = "sum", H0 = NULL, i_fn = NULL, j_fn = NULL) {
 #' @param adj A vector; its length is taken and its elements indexed.
 #' @param edge_features A vector; its length is taken and its elements indexed.
 #' @param perm A vector; indexed elementwise.
-#' @param T Defaults to \code{3}.
-#' @param how Defaults to \code{"sum"}.
+#' @param T Passed to \code{mpfn_message_passing}. Defaults to \code{3}.
+#' @param how Passed to \code{mpfn_readout}. Defaults to \code{"sum"}.
 #' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.
 #' @return A list with \code{invariant}, \code{max_deviation}, \code{readout}.
 #' @export

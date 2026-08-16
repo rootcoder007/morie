@@ -8,7 +8,7 @@
 .Random.seed_restore(old)
 }
 \arguments{
-\item{old}{See Usage.}
+\item{old}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the xavir implementation; see the file header for the source it follows.

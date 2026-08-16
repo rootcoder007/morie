@@ -8,7 +8,7 @@
 t3relu(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Passed to \code{ifelse}.}
 }
 \description{
 Part of the t3util implementation; see the file header for the source it follows.

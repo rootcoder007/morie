@@ -8,7 +8,7 @@
 .robust_formula(response, terms, data)
 }
 \arguments{
-\item{response}{See Usage.}
+\item{response}{Passed to \code{paste}.}
 \item{terms}{A vector; its length is taken.}
 \item{data}{Passed to \code{.viable_terms}.}
 }

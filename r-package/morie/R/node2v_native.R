@@ -48,7 +48,7 @@ node2v_alpha_pq <- function(d_tx, p, q) {
 #'
 #' @param adj A vector; indexed elementwise.
 #' @param t Coerced to character by the body, with \code{as.character}.
-#' @param x See Usage.
+#' @param x Passed to \code{==}.
 #' @return A numeric value.
 #' @export
 node2v_dist <- function(adj, t, x) {
@@ -66,10 +66,10 @@ node2v_dist <- function(adj, t, x) {
 #' source it follows.
 #'
 #' @param adj A vector; indexed elementwise.
-#' @param t See Usage.
+#' @param t Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param v Coerced to character by the body, with \code{as.character}.
-#' @param p See Usage.
-#' @param q See Usage.
+#' @param p Passed to \code{node2v_alpha_pq}.
+#' @param q Passed to \code{node2v_alpha_pq}.
 #' @param weights Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @return A list with \code{nodes}, \code{probabilities}, \code{unnormalized}, \code{Z}.
 #' @export
@@ -113,13 +113,13 @@ node2v_transition_probabilities <- function(adj, t, v, p, q,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param adj See Usage.
-#' @param start See Usage.
+#' @param adj Passed to \code{node2v_transition_probabilities}.
+#' @param start Passed to \code{c}.
 #' @param length Coerced to integer by the body, with \code{as.integer}.
-#' @param p Defaults to \code{1}.
-#' @param q Defaults to \code{1}.
+#' @param p Passed to \code{node2v_transition_probabilities}. Defaults to \code{1}.
+#' @param q Passed to \code{node2v_transition_probabilities}. Defaults to \code{1}.
 #' @param rng Optional; may be \code{NULL}. Passed to \code{.ghc_unif}.
-#' @param weights Defaults to \code{NULL}.
+#' @param weights Passed to \code{node2v_transition_probabilities}.
 #' @return The value of \code{path}, as built in the body.
 #' @export
 node2v_walk <- function(adj, start, length, p = 1, q = 1, rng = NULL,
@@ -160,7 +160,7 @@ node2v_walk <- function(adj, start, length, p = 1, q = 1, rng = NULL,
 #' @param p Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @param q Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
-#' @param weights Defaults to \code{NULL}.
+#' @param weights Passed to \code{node2v_walk}.
 #' @return A list with \code{estimate}, \code{walks}, \code{p}, \code{q}, \code{n_walks}, \code{length}, \code{method}, \code{note}.
 #' @export
 morie_node2v <- function(adj, num_walks = 10, length = 10, p = 1, q = 1,

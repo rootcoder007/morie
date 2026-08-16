@@ -8,7 +8,7 @@
 .tlsate_logit(p)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{Passed to \code{pmax}.}
 }
 \description{
 Part of the tlsate_native implementation; see the file header for the source it follows.

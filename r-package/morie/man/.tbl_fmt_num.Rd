@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{x}{Numeric; passed to \code{abs}.}
-\item{digits}{Defaults to \code{2L}.}
+\item{digits}{Passed to \code{formatC}. Defaults to \code{2L}.}
 \item{apa}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{

@@ -10,8 +10,8 @@ mistr_apply_rope(x, pos, theta = NULL, base = 10000)
 \arguments{
 \item{x}{A vector; its length is taken and its elements indexed.}
 \item{pos}{Numeric; combined arithmetically in the body.}
-\item{theta}{Defaults to \code{NULL}.}
-\item{base}{Defaults to \code{10000}.}
+\item{theta}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
+\item{base}{Passed to \code{mistr_rope_angles}. Defaults to \code{10000}.}
 }
 \description{
 Part of the mistr_native implementation; see the file header for the source it follows.

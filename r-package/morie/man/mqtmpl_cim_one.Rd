@@ -9,10 +9,10 @@ mqtmpl_cim_one(y, left, right, r_left, r_right, cofactors)
 }
 \arguments{
 \item{y}{A vector; its length is taken.}
-\item{left}{See Usage.}
-\item{right}{See Usage.}
-\item{r_left}{See Usage.}
-\item{r_right}{See Usage.}
+\item{left}{Passed to \code{mqtmpl_genotype_probabilities}.}
+\item{right}{Passed to \code{mqtmpl_genotype_probabilities}.}
+\item{r_left}{Passed to \code{mqtmpl_genotype_probabilities}.}
+\item{r_right}{Passed to \code{mqtmpl_genotype_probabilities}.}
 \item{cofactors}{See Usage.}
 }
 \description{

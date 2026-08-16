@@ -11,7 +11,7 @@ offlrl_as_dist(d, S, A, name)
 \item{d}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 \item{S}{See Usage.}
 \item{A}{See Usage.}
-\item{name}{See Usage.}
+\item{name}{Passed to \code{stop}.}
 }
 \description{
 Part of the offlrl_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 .siu_translate_impl(target_lang, source_lang, case_numbers, model, fields, cache_dir, progress)
 }
 \arguments{
-\item{target_lang}{See Usage.}
-\item{source_lang}{See Usage.}
+\item{target_lang}{Passed to \code{!=}.}
+\item{source_lang}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 \item{case_numbers}{Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.}
 \item{model}{Passed to \code{.siu_llm_call}.}
 \item{fields}{Iterated over elementwise, with \code{lapply}.}

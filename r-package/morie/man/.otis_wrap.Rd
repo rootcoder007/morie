@@ -11,7 +11,7 @@
 \item{title}{Carried through into a list the body builds.}
 \item{summary_lines}{Carried through into a list the body builds.}
 \item{tables}{Iterated over elementwise, with \code{Filter}. Defaults to \code{list()}.}
-\item{interpretation}{Defaults to \code{NULL}.}
+\item{interpretation}{Passed to \code{\%||\%}.}
 \item{warnings}{Carried through into a list the body builds. Defaults to \code{character(0)}.}
 \item{payload}{Carried through into a list the body builds.}
 }

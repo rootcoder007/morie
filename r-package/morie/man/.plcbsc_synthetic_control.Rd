@@ -13,7 +13,7 @@
 \item{v}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 \item{max_iter}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5000}.}
 \item{tol}{Numeric; combined arithmetically in the body. Defaults to \code{1e-12}.}
-\item{step}{Defaults to \code{NULL}.}
+\item{step}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the plcbsc_native implementation; see the file header for the source it follows.

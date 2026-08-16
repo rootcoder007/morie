@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{df}{A matrix; indexed by row and column.}
-\item{lat_col}{See Usage.}
-\item{lon_col}{See Usage.}
+\item{lat_col}{Passed to \code{c}.}
+\item{lon_col}{Passed to \code{c}.}
 }
 \description{
 Part of the tps_spatial_advanced implementation; see the file header for the source it follows.

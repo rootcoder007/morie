@@ -92,7 +92,7 @@ morie_smatch_poisson_design <- function(cases, risk_periods,
 #' @param risk_periods Passed to \code{morie_smatch_poisson_design}.
 #' @param age_breaks Passed to \code{morie_smatch_poisson_design}. Defaults to \code{numeric(0)}.
 #' @param iters Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.
-#' @param tol Defaults to \code{1e-12}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-12}.
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-09}.
 #' @return A list with \code{estimate}, \code{relative_incidence}, \code{log_ri}, \code{age_effects}, \code{individual_effects}, \code{coef}, \code{converged}, \code{iterations}, \code{n_rows}, \code{n_people}, \code{method}, \code{identical_to}.
 #' @export

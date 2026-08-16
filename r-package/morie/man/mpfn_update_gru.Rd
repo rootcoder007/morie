@@ -9,13 +9,13 @@ mpfn_update_gru(h, m, Wz, Uz, Wr, Ur, Wh, Uh)
 }
 \arguments{
 \item{h}{A vector; its length is taken.}
-\item{m}{See Usage.}
-\item{Wz}{See Usage.}
-\item{Uz}{See Usage.}
-\item{Wr}{See Usage.}
-\item{Ur}{See Usage.}
-\item{Wh}{See Usage.}
-\item{Uh}{See Usage.}
+\item{m}{Passed to \code{lin}.}
+\item{Wz}{Passed to \code{lin}.}
+\item{Uz}{Passed to \code{lin}.}
+\item{Wr}{Passed to \code{lin}.}
+\item{Ur}{Passed to \code{lin}.}
+\item{Wh}{Passed to \code{lin}.}
+\item{Uh}{Passed to \code{lin}.}
 }
 \description{
 Part of the mpfn_native implementation; see the file header for the source it follows.

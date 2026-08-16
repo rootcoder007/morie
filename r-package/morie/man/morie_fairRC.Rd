@@ -8,9 +8,9 @@
 morie_fairRC(protected, step = 10L, normalize = TRUE)
 }
 \arguments{
-\item{protected}{See Usage.}
-\item{step}{Defaults to \code{10L}.}
-\item{normalize}{Defaults to \code{TRUE}.}
+\item{protected}{Passed to \code{rND}.}
+\item{step}{Passed to \code{rND}. Defaults to \code{10L}.}
+\item{normalize}{Passed to \code{rND}. Defaults to \code{TRUE}.}
 }
 \description{
 A step of the fairRC_native implementation. No other function in the package calls it. See the file header for the source the module follows.

@@ -8,10 +8,10 @@
 nashq_pick(M, A, who, epsilon, rng)
 }
 \arguments{
-\item{M}{See Usage.}
+\item{M}{Passed to \code{rowMeans}.}
 \item{A}{A vector; its length is taken.}
-\item{who}{See Usage.}
-\item{epsilon}{See Usage.}
+\item{who}{Passed to \code{==}.}
+\item{epsilon}{Passed to \code{<}.}
 \item{rng}{Accepted by the signature and not used anywhere in the body.}
 }
 \description{

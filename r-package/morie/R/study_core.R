@@ -51,7 +51,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param response See Usage.
+#' @param response Passed to \code{paste}.
 #' @param terms A vector; its length is taken.
 #' @param data Passed to \code{.viable_terms}.
 #' @return The value of \code{stats::reformulate}.
@@ -174,7 +174,7 @@
 #' source it follows.
 #'
 #' @param fit Passed to \code{.safe_confint}.
-#' @param model Defaults to \code{NULL}.
+#' @param model Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param lower_se_name A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -212,7 +212,7 @@
 #' source it follows.
 #'
 #' @param fit Passed to \code{.safe_confint}.
-#' @param model See Usage.
+#' @param model Passed to \code{data.frame}.
 #' @return A data frame.
 #' @export
 .linear_coef_table <- function(fit, model) {
@@ -277,7 +277,7 @@
 #'
 #' @param data A matrix; passed to \code{nrow}.
 #' @param cpads_csv Optional; may be \code{NULL}. Passed to \code{.resolve_cpads_csv}.
-#' @param output_dir Defaults to \code{NULL}.
+#' @param output_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{data_na_summary}, \code{data_wrangling_log}.
 #' @export
 .run_data_wrangling_module_internal <- function(data, cpads_csv = NULL, output_dir = NULL) {

@@ -55,7 +55,7 @@ offlrl_softmax <- function(v) {
 #' @param d Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @param S See Usage.
 #' @param A See Usage.
-#' @param name See Usage.
+#' @param name Passed to \code{stop}.
 #' @return A list with \code{matrix}, \code{lookup}.
 #' @export
 offlrl_as_dist <- function(d, S, A, name) {
@@ -89,8 +89,8 @@ offlrl_as_dist <- function(d, S, A, name) {
 #' source it follows.
 #'
 #' @param mat A vector; indexed elementwise.
-#' @param s See Usage.
-#' @param a See Usage.
+#' @param s Passed to \code{paste0}.
+#' @param a Passed to \code{paste0}.
 #' @return The value of \code{[[}.
 #' @export
 offlrl_lookup <- function(mat, s, a) {
@@ -104,7 +104,7 @@ offlrl_lookup <- function(mat, s, a) {
 #' source it follows.
 #'
 #' @param qmap A vector; indexed elementwise.
-#' @param s See Usage.
+#' @param s Passed to \code{paste0}.
 #' @param A A vector; indexed elementwise.
 #' @return The value of \code{best_a}, as built in the body.
 #' @export
@@ -135,7 +135,7 @@ offlrl_safe_max_key <- function(qmap, s, A) {
 #' @param mu The body requires: offlrl: variant must be one of c('H','rho','mu'), got '.
 #' @param lr Numeric; combined arithmetically in the body. Defaults to \code{0.5}.
 #' @param iters Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000}.
-#' @param tol Defaults to \code{1e-12}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-12}.
 #' @return A list with \code{estimate}, \code{q}, \code{value}, \code{greedy}, \code{behavior}, \code{counts}, \code{penalty}, \code{bellman_error}, \code{objective}, \code{alpha}, \code{variant}, \code{backup}, \code{n_transitions}, \code{method}.
 #' @export
 morie_offlrl <- function(dataset, states = NULL, actions = NULL,

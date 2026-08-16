@@ -137,8 +137,8 @@ greedy_decode <- function(emissions, labels) {
 #'
 #' @param emissions A vector; its length is taken and its elements indexed.
 #' @param labels A vector; its length is taken and its elements indexed.
-#' @param transitions Defaults to \code{NULL}.
-#' @param transition_scores Defaults to \code{NULL}.
+#' @param transitions Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param transition_scores Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{path}, \code{score}.
 #' @export
 viterbi_decode <- function(emissions, labels, transitions = NULL,
@@ -222,8 +222,8 @@ extract_spans <- function(path) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param pred See Usage.
-#' @param gold See Usage.
+#' @param pred Passed to \code{extract_spans}.
+#' @param gold Passed to \code{extract_spans}.
 #' @return A list with \code{precision}, \code{recall}, \code{f1}, \code{true_positives}, \code{n_pred}, \code{n_gold}.
 #' @export
 span_f1 <- function(pred, gold) {
@@ -247,9 +247,9 @@ span_f1 <- function(pred, gold) {
 #' source it follows.
 #'
 #' @param emissions A vector; its length is taken and its elements indexed.
-#' @param types See Usage.
+#' @param types Passed to \code{bio_labels}.
 #' @param decoder One of \code{"greedy"}, \code{"viterbi"}. Defaults to \code{"viterbi"}.
-#' @param transition_scores Defaults to \code{NULL}.
+#' @param transition_scores Passed to \code{viterbi_decode}.
 #' @param gold Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.
 #' @return The value of \code{payload}, as built in the body.
 #' @export

@@ -8,7 +8,7 @@
 .NOT_PORTED(name)
 }
 \arguments{
-\item{name}{See Usage.}
+\item{name}{Passed to \code{sprintf}.}
 }
 \description{
 Part of the spatial_voting implementation; see the file header for the source it follows.

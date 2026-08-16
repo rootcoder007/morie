@@ -29,7 +29,7 @@ GEMINI_BASE_URL <- "https://generativelanguage.googleapis.com/v1beta/openai"
 #' See the file header for the source the module follows.
 #' follows.
 #'
-#' @param name See Usage.
+#' @param name Passed to \code{Sys.getenv}.
 #' @param default Defaults to \code{""}.
 #' @return One of two values, depending on the branch taken.
 #' @export
@@ -127,7 +127,7 @@ morie_llm_probe_ollama <- function(timeout = 2) {
 #' See the file header for the source the module follows.
 #' follows.
 #'
-#' @param context_block Defaults to \code{""}.
+#' @param context_block Passed to \code{paste0}. Defaults to \code{""}.
 #' @return A character value.
 #' @export
 .morie_llm_system_prompt <- function(context_block = "") {
@@ -523,7 +523,7 @@ morie_llm_detect_provider <- function() {
 #' failure.
 #'
 #' @param messages Carried through into a list the body builds.
-#' @param model Defaults to \code{NULL}.
+#' @param model Passed to \code{\%||\%}.
 #' @param timeout Defaults to \code{180}.
 #' @return The value of \code{.morie_llm_strip_think}.
 #' @export

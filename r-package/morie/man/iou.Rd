@@ -10,7 +10,7 @@ iou(a, b, threshold = 0.5)
 \arguments{
 \item{a}{Passed to \code{.sammkr_flat}.}
 \item{b}{Passed to \code{.sammkr_flat}.}
-\item{threshold}{Defaults to \code{0.5}.}
+\item{threshold}{Passed to \code{>}. Defaults to \code{0.5}.}
 }
 \description{
 Part of the sammkr_native implementation; see the file header for the source it follows.

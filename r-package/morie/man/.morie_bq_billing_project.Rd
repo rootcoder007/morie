@@ -8,7 +8,7 @@
 .morie_bq_billing_project(billing_project = NULL)
 }
 \arguments{
-\item{billing_project}{Defaults to \code{NULL}.}
+\item{billing_project}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 A step of the ingest_bigquery implementation. Called by \code{morie_ingest_bigquery_query}. See the file header for the source the module follows.

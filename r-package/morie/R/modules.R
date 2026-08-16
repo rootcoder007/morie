@@ -90,7 +90,7 @@ morie_list_morie_modules <- function() {
 #' dir happened to sit inside the repo, and silently surprised everyone
 #' else.
 #'
-#' @param cpads_csv See Usage.
+#' @param cpads_csv Passed to \code{file.exists}.
 #' @return Nothing; this branch always raises.
 #' @export
 .resolve_cpads_csv <- function(cpads_csv) {
@@ -181,7 +181,7 @@ morie_load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
 #' source it follows.
 #'
 #' @param outputs A vector; indexed elementwise.
-#' @param output_dir Defaults to \code{NULL}.
+#' @param output_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{outputs}, as built in the body.
 #' @export
 .write_module_outputs <- function(outputs, output_dir = NULL) {

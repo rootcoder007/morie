@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{fit}{Passed to \code{.safe_confint}.}
-\item{model}{Defaults to \code{NULL}.}
+\item{model}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 \item{lower_se_name}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \description{

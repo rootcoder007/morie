@@ -91,7 +91,7 @@ causal_mask <- function(n) {
 #' @param WQ A matrix; passed to \code{nrow}.
 #' @param WK A matrix; passed to \code{ncol}.
 #' @param WV A matrix; passed to \code{ncol}.
-#' @param mask Defaults to \code{NULL}.
+#' @param mask Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{output}, \code{weights}, \code{note}.
 #' @export
 self_attention <- function(E, WQ, WK, WV, mask = NULL) {
@@ -152,7 +152,7 @@ attention_span <- function(weights, position = NULL) {
 #' @param state Passed to \code{.sasrec_vec}.
 #' @param item_embeddings Passed to \code{.sasrec_mat}.
 #' @param top_k Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.
-#' @param exclude Defaults to \code{list()}.
+#' @param exclude Passed to \code{unlist}. Defaults to \code{list()}.
 #' @return A list with \code{estimate}, \code{ranking}, \code{n_scored}, \code{method}.
 #' @export
 predict_next <- function(state, item_embeddings, top_k = 5,
@@ -197,11 +197,11 @@ complexity <- function(n, d) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param E See Usage.
-#' @param WQ See Usage.
-#' @param WK See Usage.
-#' @param WV See Usage.
-#' @param mask Defaults to \code{NULL}.
+#' @param E Passed to \code{self_attention}.
+#' @param WQ Passed to \code{self_attention}.
+#' @param WK Passed to \code{self_attention}.
+#' @param WV Passed to \code{self_attention}.
+#' @param mask Passed to \code{self_attention}.
 #' @return The value of \code{self_attention}.
 #' @export
 morie_sasRec <- function(E, WQ, WK, WV, mask = NULL) {

@@ -8,7 +8,7 @@
 .surxgb_check_dist(dist)
 }
 \arguments{
-\item{dist}{See Usage.}
+\item{dist}{Passed to \code{\%in\%}.}
 }
 \description{
 Part of the surxgb_native implementation; see the file header for the source it follows.

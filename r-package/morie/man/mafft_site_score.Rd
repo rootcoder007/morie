@@ -8,7 +8,7 @@
 mafft_site_score(M, ga, gb, wa, wb, i, j)
 }
 \arguments{
-\item{M}{See Usage.}
+\item{M}{Passed to \code{mafft_lookup}.}
 \item{ga}{A vector; its length is taken and its elements indexed.}
 \item{gb}{A vector; its length is taken and its elements indexed.}
 \item{wa}{A vector; indexed elementwise.}

@@ -8,8 +8,8 @@
 .tps_sp_hist2d(x, y, gx, gy)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{y}{See Usage.}
+\item{x}{Passed to \code{findInterval}.}
+\item{y}{Passed to \code{findInterval}.}
 \item{gx}{A vector; its length is taken.}
 \item{gy}{A vector; its length is taken.}
 }

@@ -8,7 +8,7 @@
 .gh_have(pkg)
 }
 \arguments{
-\item{pkg}{See Usage.}
+\item{pkg}{Passed to \code{requireNamespace}.}
 }
 \description{
 A step of the helpers_ghosal_bnp implementation. No other function in the package calls it. See the file header for the source the module follows.

@@ -8,8 +8,8 @@
 .rnacov_can_pair(a, b)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{a}{Passed to \code{==}.}
+\item{b}{Passed to \code{==}.}
 }
 \description{
 Part of the rnacov_native implementation; see the file header for the source it follows.

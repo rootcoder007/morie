@@ -66,7 +66,7 @@ NULL
 #' @param alpha Passed to \code{.mt_result}.
 #' @param adjusted Numeric; passed to \code{max}.
 #' @param labels Passed to \code{.mt_result}.
-#' @param note Defaults to \code{NULL}.
+#' @param note Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{.mt_result}.
 #' @export
 .mt_adjusted <- function(method, p, alpha, adjusted, labels = NULL,
@@ -348,7 +348,7 @@ storey_q <- function(p_values, alpha = 0.05, lambda_param = 0.5,
 #' @param stat Carried through into a list the body builds.
 #' @param p_comb Carried through into a list the body builds.
 #' @param interp Carried through into a list the body builds.
-#' @param extra Defaults to \code{list()}.
+#' @param extra Passed to \code{c}. Defaults to \code{list()}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .mt_combine_result <- function(method, stat, p_comb, interp,

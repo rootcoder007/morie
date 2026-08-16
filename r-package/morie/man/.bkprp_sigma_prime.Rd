@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{z}{A matrix; passed to \code{nrow}.}
-\item{activation}{See Usage.}
+\item{activation}{Passed to \code{switch}.}
 \item{a}{Numeric; combined arithmetically in the body.}
 }
 \description{

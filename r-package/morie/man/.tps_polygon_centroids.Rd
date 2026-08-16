@@ -8,7 +8,7 @@
 .tps_polygon_centroids(polygons)
 }
 \arguments{
-\item{polygons}{See Usage.}
+\item{polygons}{Passed to \code{inherits}.}
 }
 \description{
 available Part of the tps_spatial_advanced implementation; see the file header for the source it follows.

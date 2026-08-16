@@ -10,7 +10,7 @@
 \arguments{
 \item{yv}{A vector; indexed elementwise.}
 \item{dv}{A vector; indexed elementwise.}
-\item{cellv}{See Usage.}
+\item{cellv}{Passed to \code{unique}.}
 \item{lo}{Passed to \code{.bnd_wc_arm}.}
 \item{hi}{Passed to \code{.bnd_wc_arm}.}
 }

@@ -8,7 +8,7 @@
 motfsr_alphabet_of(seqs, alphabet)
 }
 \arguments{
-\item{seqs}{See Usage.}
+\item{seqs}{Passed to \code{unlist}.}
 \item{alphabet}{Optional; may be \code{NULL}. Coerced to character by the body, with \code{as.character}.}
 }
 \description{

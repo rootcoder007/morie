@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{name}{Passed to \code{.morie_tps_canonical}.}
-\item{fmt_subdir}{See Usage.}
+\item{fmt_subdir}{Passed to \code{file.path}.}
 }
 \description{
 Part of the tps_io implementation; see the file header for the source it follows.

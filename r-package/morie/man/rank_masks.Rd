@@ -10,7 +10,7 @@ rank_masks(masks, predicted_iou, target = NULL)
 \arguments{
 \item{masks}{A vector; its length is taken.}
 \item{predicted_iou}{Coerced to numeric by the body, with \code{as.numeric}.}
-\item{target}{Defaults to \code{NULL}.}
+\item{target}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the sammkr_native implementation; see the file header for the source it follows.

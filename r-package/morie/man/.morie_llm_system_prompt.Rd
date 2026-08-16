@@ -8,7 +8,7 @@
 .morie_llm_system_prompt(context_block = "")
 }
 \arguments{
-\item{context_block}{Defaults to \code{""}.}
+\item{context_block}{Passed to \code{paste0}. Defaults to \code{""}.}
 }
 \description{
 Part of the llm implementation; see the file header for the source it follows.

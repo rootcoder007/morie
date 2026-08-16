@@ -9,7 +9,7 @@ offlrl_safe_max_key(qmap, s, A)
 }
 \arguments{
 \item{qmap}{A vector; indexed elementwise.}
-\item{s}{See Usage.}
+\item{s}{Passed to \code{paste0}.}
 \item{A}{A vector; indexed elementwise.}
 }
 \description{

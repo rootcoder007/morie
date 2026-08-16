@@ -11,7 +11,7 @@
 \item{estimator}{Accepted by the signature and not used anywhere in the body.}
 \item{d}{A list; the body reads \code{$weights} from it.}
 \item{rep}{A list; the body reads \code{$method}, \code{$scale}, \code{$weights} from it.}
-\item{values}{Defaults to \code{NULL}.}
+\item{values}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the replwt_native implementation; see the file header for the source it follows.

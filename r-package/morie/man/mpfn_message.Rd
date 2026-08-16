@@ -11,7 +11,7 @@ mpfn_message(h_v, h_w, e_vw, A = NULL)
 \item{h_v}{Accepted by the signature and not used anywhere in the body.}
 \item{h_w}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{e_vw}{A vector; its length is taken and its elements indexed.}
-\item{A}{Defaults to \code{NULL}.}
+\item{A}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the mpfn_native implementation; see the file header for the source it follows.

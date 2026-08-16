@@ -49,10 +49,10 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param endpoint See Usage.
+#' @param endpoint Passed to \code{data.frame}.
 #' @param required_n Numeric; combined arithmetically in the body.
 #' @param strata_levels A vector; its length is taken.
-#' @param target_power Defaults to \code{0.8}.
+#' @param target_power Passed to \code{data.frame}. Defaults to \code{0.8}.
 #' @return The value of \code{do.call}.
 #' @export
 .block_schedule <- function(endpoint, required_n, strata_levels, target_power = 0.8) {
@@ -444,8 +444,8 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param output_dir See Usage.
-#' @param file_name See Usage.
+#' @param output_dir Passed to \code{file.path}.
+#' @param file_name Passed to \code{file.path}.
 #' @param fallback Defaults to \code{NULL}.
 #' @return The value of \code{fallback}, as built in the body.
 #' @export
@@ -482,8 +482,8 @@
 #' the source it follows.
 #'
 #' @param relative_paths See Usage.
-#' @param output_dir See Usage.
-#' @param root Defaults to \code{file.path(.legacy_reference_root(), "six", "outputs")}.
+#' @param output_dir Passed to \code{file.path}.
+#' @param root Passed to \code{file.path}.
 #' @return The value of \code{copied}, as built in the body.
 #' @export
 .copy_legacy_artifacts <- function(relative_paths, output_dir, root = file.path(.legacy_reference_root(), "six", "outputs")) {
@@ -506,7 +506,7 @@
 #' the source it follows.
 #'
 #' @param data A list; the body reads \code{$alcohol_past12m}, \code{$cannabis_any_use}, \code{$ebac_tot}, \code{$weight} from it.
-#' @param output_dir Defaults to \code{NULL}.
+#' @param output_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{ebac_final_domain_samples}, \code{ebac_final_formula_input_audit}, \code{ebac_final_formula_validation}, \code{ebac_final_interaction_tests}, \code{ebac_final_weighted_descriptives}, \code{ebac_final_weighted_linear}, \code{ebac_final_weighted_or}, \code{ebac_final_smote_compare}, \code{ebac_final_smote_or}, \code{ebac_final_smote_status}, \code{ebac_final_causal_effects}, \code{ebac_final_cate}, \code{ebac_final_consistency_checks}, \code{ebac_final_crosswalk_previous}, \code{ebac_final_dml_results}, \code{ebac_final_dml_status}, \code{ebac_final_key_summary}, \code{ebac_final_user_guide_variable_map}, \code{ebac_final_variable_audit}.
 #' @export
 .run_ebac_integrations_module_internal <- function(data, output_dir = NULL) {
@@ -617,8 +617,8 @@
 #' relative paths written, or character(0) if the draw function errored
 #' (the half-written file is removed and a warning names the figure).
 #'
-#' @param fig_dir See Usage.
-#' @param name See Usage.
+#' @param fig_dir Passed to \code{file.path}.
+#' @param name Passed to \code{warning}.
 #' @param draw Accepted by the signature and not used anywhere in the body.
 #' @param png_too A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @param width Numeric; combined arithmetically in the body. Defaults to \code{8}.
@@ -901,7 +901,7 @@
 #' the source it follows.
 #'
 #' @param data A list; the body reads \code{$cannabis_any_use} from it.
-#' @param output_dir Defaults to \code{NULL}.
+#' @param output_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return Invisibly,the value of \code{list}.
 #' @export
 .run_tables_module_internal <- function(data, output_dir = NULL) {
@@ -977,8 +977,8 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param data See Usage.
-#' @param output_dir Defaults to \code{NULL}.
+#' @param data Passed to \code{names}.
+#' @param output_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{ebac_final_output_coverage}, \code{ebac_final_output_shapes}, \code{ebac_final_script_run_status}, \code{ebac_final_audit_checks}, \code{ebac_final_user_guide_excerpt}.
 #' @export
 .run_final_report_module_internal <- function(data, output_dir = NULL) {

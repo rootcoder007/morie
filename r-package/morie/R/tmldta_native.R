@@ -52,7 +52,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Passed to \code{qnorm}.
 #' @return The value of \code{qnorm}.
 #' @export
 .tmldta_qnorm <- function(p) {
@@ -70,7 +70,7 @@
 #' @param a A vector; its length is taken.
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
 #' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
-#' @param tol Defaults to \code{1e-10}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-10}.
 #' @return The value of \code{b}, as built in the body.
 #' @export
 .tmldta_logit_irls <- function(Z, a, ridge = 1e-8, max_iter = 50L,
@@ -153,8 +153,8 @@
 #'
 #' @param A_ A vector; its length is taken.
 #' @param W A vector; its length is taken.
-#' @param aL See Usage.
-#' @param aH See Usage.
+#' @param aL Passed to \code{==}.
+#' @param aH Passed to \code{==}.
 #' @param rows See Usage.
 #' @param ridge Numeric; passed to \code{max}.
 #' @param trim Numeric; passed to \code{max}.

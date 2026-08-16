@@ -17,7 +17,7 @@
 \item{kind}{Carried through into a list the body builds.}
 \item{language}{Carried through into a list the body builds.}
 \item{is_valid}{A flag; the body branches on it.}
-\item{extra_interpretation}{Defaults to \code{""}.}
+\item{extra_interpretation}{Passed to \code{paste}. Defaults to \code{""}.}
 }
 \description{
 A step of the arsau_analyze implementation. Called by \code{morie_arsau_analyze_aggregate_summary}, \code{morie_arsau_analyze_detailed_dataset}, \code{morie_arsau_analyze_individual_records} and 3 others in the module. See the file header for the source the module follows.

@@ -203,7 +203,7 @@ preprocess_fmri <- function(record,
 #' the source it follows.
 #'
 #' @param x A vector; indexed elementwise.
-#' @param threshold See Usage.
+#' @param threshold Passed to \code{>}.
 #' @return A list with \code{arr}, \code{n_bad}.
 #' @export
 .entheo_asr_trim <- function(x, threshold) {

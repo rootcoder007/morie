@@ -139,7 +139,7 @@ NULL
 #' (chi2, p, v) with NA entries when the table is too sparse.
 #'
 #' @param tbl A matrix; passed to \code{dim}.
-#' @param min_cell Defaults to \code{5L}.
+#' @param min_cell Passed to \code{<}. Defaults to \code{5L}.
 #' @return A list with \code{chi2}, \code{p}, \code{v}.
 #' @export
 .churn_chi2_v <- function(tbl, min_cell = 5L) {

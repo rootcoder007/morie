@@ -20,7 +20,7 @@
 \item{ll}{A list; the body reads \code{$loglik}, \code{$sigma2} from it.}
 \item{cs}{A list; the body reads \code{$residuals}, \code{$sigma2}, \code{$ssq} from it.}
 \item{method}{One of \code{"ml"}, \code{"uls"}.}
-\item{res}{See Usage.}
+\item{res}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the sarima_native implementation; see the file header for the source it follows.

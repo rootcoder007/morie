@@ -5,7 +5,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param path See Usage.
+#' @param path Passed to \code{stop}.
 #' @param ... Passed through.
 #' @return The value of \code{best_df}, as built in the body.
 #' @export

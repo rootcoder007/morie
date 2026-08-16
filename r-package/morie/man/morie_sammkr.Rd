@@ -8,9 +8,9 @@
 morie_sammkr(masks, predicted_iou, target = NULL)
 }
 \arguments{
-\item{masks}{See Usage.}
-\item{predicted_iou}{See Usage.}
-\item{target}{Defaults to \code{NULL}.}
+\item{masks}{Passed to \code{rank_masks}.}
+\item{predicted_iou}{Passed to \code{rank_masks}.}
+\item{target}{Passed to \code{rank_masks}.}
 }
 \description{
 Part of the sammkr_native implementation; see the file header for the source it follows.

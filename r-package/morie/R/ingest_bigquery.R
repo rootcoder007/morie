@@ -51,7 +51,7 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param billing_project Defaults to \code{NULL}.
+#' @param billing_project Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return Nothing; the function is called for its effect.
 #' @export
 .morie_bq_billing_project <- function(billing_project = NULL) {

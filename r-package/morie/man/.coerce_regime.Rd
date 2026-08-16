@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{regime}{Optional; may be \code{NULL}. Character; passed to \code{tolower}.}
-\item{n}{See Usage.}
+\item{n}{Passed to \code{==}.}
 }
 \description{
 Part of the tmldyn_native implementation; see the file header for the source it follows.

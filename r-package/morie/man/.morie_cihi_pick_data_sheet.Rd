@@ -8,7 +8,7 @@
 .morie_cihi_pick_data_sheet(path, ...)
 }
 \arguments{
-\item{path}{See Usage.}
+\item{path}{Passed to \code{stop}.}
 \item{...}{Passed through.}
 }
 \description{

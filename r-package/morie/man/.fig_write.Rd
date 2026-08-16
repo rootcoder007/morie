@@ -8,8 +8,8 @@
 .fig_write(fig_dir, name, draw, png_too = FALSE, width = 8, height = 6)
 }
 \arguments{
-\item{fig_dir}{See Usage.}
-\item{name}{See Usage.}
+\item{fig_dir}{Passed to \code{file.path}.}
+\item{name}{Passed to \code{warning}.}
 \item{draw}{Accepted by the signature and not used anywhere in the body.}
 \item{png_too}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 \item{width}{Numeric; combined arithmetically in the body. Defaults to \code{8}.}

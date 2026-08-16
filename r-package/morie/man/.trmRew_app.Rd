@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{symbol}{Carried through into a list the body builds.}
-\item{args}{See Usage.}
+\item{args}{Passed to \code{c}.}
 }
 \description{
 Part of the trmRew_native implementation; see the file header for the source it follows.

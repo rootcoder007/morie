@@ -18,7 +18,7 @@
 #'
 #' analyzers speak the lower-snake schema of the canonical loader.
 #'
-#' @param df See Usage.
+#' @param df Passed to \code{names}.
 #' @return The value of \code{df}, as built in the body.
 #' @export
 .otis_b01_canonical <- function(df) {
@@ -128,8 +128,8 @@
 #' driven by epistemic attitudes and a modest gender gap -- so the DML
 #' stage has a real signal to recover.
 #'
-#' @param n Defaults to \code{400L}.
-#' @param seed Defaults to \code{2026L}.
+#' @param n Passed to \code{sample}. Defaults to \code{400L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{2026L}.
 #' @return The value of \code{panel}, as built in the body.
 #' @export
 .morie_mapq_synth_panel <- function(n = 400L, seed = 2026L) {

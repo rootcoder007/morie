@@ -9,8 +9,8 @@ mafft_lookup(M, a, b)
 }
 \arguments{
 \item{M}{A vector; indexed elementwise.}
-\item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{a}{Passed to \code{paste0}.}
+\item{b}{Passed to \code{paste0}.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

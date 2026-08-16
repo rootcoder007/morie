@@ -198,7 +198,7 @@ dipole_moment <- function(charges, R, centre = NULL) {
 #' its vector channel.
 #'
 #' @param model Accepted by the signature and not used anywhere in the body.
-#' @param s See Usage.
+#' @param s Passed to \code{model}.
 #' @param v A matrix; passed to \code{as.matrix}.
 #' @param R A matrix; passed to \code{as.matrix}.
 #' @param Q A matrix; passed to \code{as.matrix}.

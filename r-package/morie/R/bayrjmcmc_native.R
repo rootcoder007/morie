@@ -225,8 +225,8 @@ rj_log_acceptance <- function(logpost_from, logpost_to, log_j_from,
 #' the source it follows.
 #'
 #' @param models A vector; indexed elementwise.
-#' @param moves See Usage.
-#' @param init_model See Usage.
+#' @param moves Passed to \code{check_dimension_matching}.
+#' @param init_model Passed to \code{sprintf}.
 #' @param init_theta Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{numeric(0)}.
 #' @param n_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{10000}.
 #' @param burn_in Numeric; combined arithmetically in the body. Defaults to \code{0}.
@@ -235,7 +235,7 @@ rj_log_acceptance <- function(logpost_from, logpost_to, log_j_from,
 #' @param within Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @param within_scale Passed to \code{.rw_within}. Defaults to \code{0.5}.
 #' @param within_weight Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
-#' @param move_weight Defaults to \code{1}.
+#' @param move_weight Passed to \code{\%||\%}. Defaults to \code{1}.
 #' @param jacobian One of \code{"analytic"}, \code{"numeric"}. Defaults to \code{"analytic"}.
 #' @param keep_chain A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{model_freq}, \code{visits}, \code{n_kept}, \code{accept}, \code{tried}, \code{chain}, \code{jacobian}, \code{method}, \code{note}.
@@ -551,7 +551,7 @@ birth_log_jacobian <- function(h_j, h_new_left, h_new_right) {
 #' @param alpha Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @param beta Numeric; passed to \code{log}. Defaults to \code{200}.
 #' @param seed Passed to \code{.unif_stream}. Defaults to \code{0}.
-#' @param cap Defaults to \code{0.9}.
+#' @param cap Passed to \code{changepoint_move_probabilities}. Defaults to \code{0.9}.
 #' @param use_likelihood A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param k_init A count; the body uses it as \code{seq_len(...)}. Defaults to \code{0}.
 #' @param thin Numeric; combined arithmetically in the body. Defaults to \code{1}.

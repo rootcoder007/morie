@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{friends}{A vector; indexed elementwise.}
-\item{i}{See Usage.}
+\item{i}{Passed to \code{setdiff}.}
 }
 \description{
 Part of the tlnet1_native implementation; see the file header for the source it follows.

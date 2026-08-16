@@ -10,7 +10,7 @@
 \arguments{
 \item{M}{A matrix; indexed by row and column.}
 \item{shift}{Numeric; combined arithmetically in the body.}
-\item{axis}{See Usage.}
+\item{axis}{Passed to \code{==}.}
 }
 \description{
 Part of the tps_statphysics implementation; see the file header for the source it follows.

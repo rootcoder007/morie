@@ -59,7 +59,7 @@
 #'
 #' given resource_id; return a parsed data.frame. Mock this in tests.
 #'
-#' @param resource_id See Usage.
+#' @param resource_id Passed to \code{sprintf}.
 #' @param limit Accepted by the signature and not used anywhere in the body. Defaults to \code{200000L}.
 #' @return Nothing; this branch always raises.
 #' @export
@@ -340,11 +340,11 @@ morie_datasets_tps_mha_apprehensions <- function(year = NULL,
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param kind See Usage.
+#' @param kind Passed to \code{sprintf}.
 #' @param year Coerced to character by the body, with \code{as.character}.
 #' @param offline A flag; the body branches on it.
 #' @param resource_id Optional; may be \code{NULL}. Passed to \code{.morie_ontario_ckan_dump_csv}.
-#' @param fixture_name See Usage.
+#' @param fixture_name Passed to \code{system.file}.
 #' @return The value of \code{.morie_ontario_ckan_dump_csv}.
 #' @export
 .morie_arsau_uof_dispatch <- function(kind, year, offline,
@@ -716,11 +716,11 @@ morie_datasets_ontario_ckan_layers <- function() {
 #' the caller doesn\'t pass an explicit override; if the registry entry
 #' is also missing or NA the function errors with a clear message.
 #'
-#' @param dataset_label See Usage.
+#' @param dataset_label Passed to \code{sprintf}.
 #' @param fixture Character; passed to \code{sub}.
 #' @param offline A flag; the body branches on it.
 #' @param resource_id See Usage.
-#' @param registry_key Defaults to \code{NULL}.
+#' @param registry_key Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param source Optional; may be \code{NULL}. Passed to \code{.morie_load_chain}.
 #' @return The value of \code{.morie_load_chain}.
 #' @export

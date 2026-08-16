@@ -8,7 +8,7 @@
 .siu_p_find_case_number(text)
 }
 \arguments{
-\item{text}{See Usage.}
+\item{text}{Passed to \code{regmatches}.}
 }
 \description{
 3 digits.

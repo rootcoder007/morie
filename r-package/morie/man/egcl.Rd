@@ -10,8 +10,8 @@ egcl(H, X, phi_e, phi_x, phi_h, A = NULL, C = NULL, V = NULL, mode = "position",
 \arguments{
 \item{H}{A matrix; indexed by row and column.}
 \item{X}{A matrix; indexed by row and column.}
-\item{phi_e}{See Usage.}
-\item{phi_x}{See Usage.}
+\item{phi_e}{Passed to \code{edge_message}.}
+\item{phi_x}{Passed to \code{coord_update}.}
 \item{phi_h}{Accepted by the signature and not used anywhere in the body.}
 \item{A}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
 \item{C}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}

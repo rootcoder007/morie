@@ -8,7 +8,7 @@
 .survrsf_check_rule(rule)
 }
 \arguments{
-\item{rule}{See Usage.}
+\item{rule}{Passed to \code{\%in\%}.}
 }
 \description{
 Part of the survrsf_native implementation; see the file header for the source it follows.

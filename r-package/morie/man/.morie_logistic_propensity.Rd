@@ -8,8 +8,8 @@
 .morie_logistic_propensity(D, X)
 }
 \arguments{
-\item{D}{See Usage.}
-\item{X}{See Usage.}
+\item{D}{Passed to \code{data.frame}.}
+\item{X}{Passed to \code{data.frame}.}
 }
 \description{
 Part of the mrm_diagnostics implementation; see the file header for the source it follows.

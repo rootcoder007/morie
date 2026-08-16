@@ -8,9 +8,9 @@
 motfsr_mm_fit(sequences, w, alphabet = NULL, theta0 = NULL, lambda0 = NULL, beta = 0.01, erasing = NULL, max_iter = 1000, tol = 1e-06, normalize_overlaps = TRUE, erase_by = "letter")
 }
 \arguments{
-\item{sequences}{See Usage.}
+\item{sequences}{Passed to \code{motfsr_prepare}.}
 \item{w}{A count; the body uses it as \code{seq_len(...)}.}
-\item{alphabet}{Defaults to \code{NULL}.}
+\item{alphabet}{Passed to \code{motfsr_prepare}.}
 \item{theta0}{Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.}
 \item{lambda0}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 \item{beta}{Numeric; combined arithmetically in the body. Defaults to \code{0.01}.}

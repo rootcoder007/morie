@@ -8,7 +8,7 @@
 .siu_p_label_value(text, label)
 }
 \arguments{
-\item{text}{See Usage.}
+\item{text}{Passed to \code{regmatches}.}
 \item{label}{Passed to \code{.siu_p_re_escape}.}
 }
 \description{

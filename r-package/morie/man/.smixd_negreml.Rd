@@ -11,8 +11,8 @@
 \item{theta}{A vector; indexed elementwise.}
 \item{D}{Numeric; combined arithmetically in the body.}
 \item{n}{A matrix; passed to \code{diag}.}
-\item{X}{See Usage.}
-\item{y}{See Usage.}
+\item{X}{Passed to \code{backsolve}.}
+\item{y}{Passed to \code{backsolve}.}
 \item{p}{Numeric; combined arithmetically in the body.}
 }
 \description{

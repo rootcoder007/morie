@@ -8,8 +8,8 @@
 .vepan_seqrange(lo, hi)
 }
 \arguments{
-\item{lo}{See Usage.}
-\item{hi}{See Usage.}
+\item{lo}{Passed to \code{>=}.}
+\item{hi}{Passed to \code{>=}.}
 }
 \description{
 Part of the vepan_native implementation; see the file header for the source it follows.

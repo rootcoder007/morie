@@ -8,8 +8,8 @@
 precision_recall(pred, truth)
 }
 \arguments{
-\item{pred}{See Usage.}
-\item{truth}{See Usage.}
+\item{pred}{Passed to \code{==}.}
+\item{truth}{Passed to \code{==}.}
 }
 \description{
 Part of the memb_native implementation; see the file header for the source it follows.

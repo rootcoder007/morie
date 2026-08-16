@@ -52,7 +52,7 @@
 #' @param A A vector; its length is taken.
 #' @param S1 A vector; its length is taken.
 #' @param LP A vector; its length is taken.
-#' @param name See Usage.
+#' @param name Passed to \code{stop}.
 #' @return A list with \code{S}, \code{A}, \code{S1}, \code{LP}.
 #' @export
 .airl_prep <- function(S, A, S1, LP, name) {

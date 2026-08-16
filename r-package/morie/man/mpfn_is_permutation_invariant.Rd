@@ -12,8 +12,8 @@ mpfn_is_permutation_invariant(H, adj, edge_features, perm, T = 3, how = "sum", t
 \item{adj}{A vector; its length is taken and its elements indexed.}
 \item{edge_features}{A vector; its length is taken and its elements indexed.}
 \item{perm}{A vector; indexed elementwise.}
-\item{T}{Defaults to \code{3}.}
-\item{how}{Defaults to \code{"sum"}.}
+\item{T}{Passed to \code{mpfn_message_passing}. Defaults to \code{3}.}
+\item{how}{Passed to \code{mpfn_readout}. Defaults to \code{"sum"}.}
 \item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.}
 }
 \description{

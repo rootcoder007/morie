@@ -14,8 +14,8 @@
 #' @param log_phi Numeric; passed to \code{exp}.
 #' @param D Numeric; combined arithmetically in the body.
 #' @param n A matrix; passed to \code{diag}.
-#' @param X See Usage.
-#' @param y See Usage.
+#' @param X Passed to \code{backsolve}.
+#' @param y Passed to \code{backsolve}.
 #' @return A numeric value.
 #' @export
 .sglm_negll <- function(log_phi, D, n, X, y) {

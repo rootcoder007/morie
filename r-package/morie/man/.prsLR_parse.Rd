@@ -11,7 +11,7 @@
 \item{g}{Passed to \code{.prsLR_build_tables}.}
 \item{tokens}{Coerced to character by the body, with \code{as.character}.}
 \item{method}{Passed to \code{.prsLR_build_tables}.}
-\item{tables}{See Usage.}
+\item{tables}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the prsLR_native implementation; see the file header for the source it follows.

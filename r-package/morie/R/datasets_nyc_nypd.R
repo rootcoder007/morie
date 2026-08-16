@@ -174,7 +174,7 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param dataset_key See Usage.
+#' @param dataset_key Passed to \code{\%in\%}.
 #' @param year Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @param max_features Optional; may be \code{NULL}. Passed to \code{.morie_dataset_socrata_fetch}.
 #' @param offline A flag; the body branches on it.
@@ -761,8 +761,8 @@ morie_datasets_nyc_nypd_boro_crosswalk <- function() {
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param fname See Usage.
-#' @param expected_rows Defaults to \code{NULL}.
+#' @param fname Passed to \code{system.file}.
+#' @param expected_rows Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{df}, as built in the body.
 #' @export
 .morie_nyc_boundary_fixture <- function(fname, expected_rows = NULL) {
@@ -902,8 +902,8 @@ morie_datasets_nyc_ntas_2020 <- function(offline = TRUE,
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param fname See Usage.
-#' @param expected_rows Defaults to \code{221L}.
+#' @param fname Passed to \code{system.file}.
+#' @param expected_rows Passed to \code{!=}. Defaults to \code{221L}.
 #' @return The value of \code{df}, as built in the body.
 #' @export
 .morie_nyc_zcta_fixture <- function(fname, expected_rows = 221L) {

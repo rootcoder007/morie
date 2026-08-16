@@ -8,11 +8,11 @@
 .morie_otis_lookup_pending_dispatch(dataset_label, fixture, offline, resource_id, registry_key = NULL, source = NULL)
 }
 \arguments{
-\item{dataset_label}{See Usage.}
+\item{dataset_label}{Passed to \code{sprintf}.}
 \item{fixture}{Character; passed to \code{sub}.}
 \item{offline}{A flag; the body branches on it.}
 \item{resource_id}{See Usage.}
-\item{registry_key}{Defaults to \code{NULL}.}
+\item{registry_key}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 \item{source}{Optional; may be \code{NULL}. Passed to \code{.morie_load_chain}.}
 }
 \description{

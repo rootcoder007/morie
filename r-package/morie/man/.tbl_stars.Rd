@@ -8,7 +8,7 @@
 .tbl_stars(p)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{Passed to \code{is.finite}.}
 }
 \description{
 Part of the tables_pub implementation; see the file header for the source it follows.

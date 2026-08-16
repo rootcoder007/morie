@@ -55,7 +55,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Passed to \code{qnorm}.
 #' @return The value of \code{qnorm}.
 #' @export
 .tmldyn_qnorm <- function(p) qnorm(p, 0, 1)
@@ -260,7 +260,7 @@
 #' @param a Numeric; combined arithmetically in the body.
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
 #' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
-#' @param tol Defaults to \code{1e-10}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-10}.
 #' @return The value of \code{b}, as built in the body.
 #' @export
 .tmldyn_logit_irls <- function(X, a, ridge = 1e-8, max_iter = 50L,
@@ -295,8 +295,8 @@
 #' @param A0 A vector; indexed elementwise.
 #' @param L1 Passed to \code{.fit_q2}.
 #' @param A1 Passed to \code{.fit_q2}.
-#' @param V0 See Usage.
-#' @param V1 See Usage.
+#' @param V0 Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param V1 Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param ridge Passed to \code{.fit_q2}.
 #' @return A list with \code{blip1}, \code{blip2}, \code{d0}, \code{d1}, \code{q2}, \code{q1}, \code{coef_q2}, \code{coef_q1}, \code{pseudo}.
 #' @export
@@ -338,7 +338,7 @@
 #' @param H A vector; indexed elementwise.
 #' @param rows A vector; its length is taken.
 #' @param iters A count; the body uses it as \code{seq_len(...)}. Defaults to \code{100L}.
-#' @param tol Defaults to \code{1e-12}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-12}.
 #' @return The value of \code{eps}, as built in the body.
 #' @export
 .fluctuate <- function(outcome, off, H, rows, iters = 100L,
@@ -407,7 +407,7 @@
 #' source it follows.
 #'
 #' @param blips A vector; its length is taken.
-#' @param tol Defaults to \code{0.01}.
+#' @param tol Passed to \code{<=}. Defaults to \code{0.01}.
 #' @return A numeric value.
 #' @export
 .exceptional_law_share <- function(blips, tol = 0.01) {
@@ -422,7 +422,7 @@
 #' source it follows.
 #'
 #' @param regime Optional; may be \code{NULL}. Character; passed to \code{tolower}.
-#' @param n See Usage.
+#' @param n Passed to \code{==}.
 #' @return Nothing; this branch always raises.
 #' @export
 .coerce_regime <- function(regime, n) {

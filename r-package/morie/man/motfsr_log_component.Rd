@@ -13,7 +13,7 @@ motfsr_log_component(theta, coded, i, j, w, comp)
 \item{i}{See Usage.}
 \item{j}{Numeric; combined arithmetically in the body.}
 \item{w}{A count; the body uses it as \code{seq_len(...)}.}
-\item{comp}{See Usage.}
+\item{comp}{Passed to \code{==}.}
 }
 \description{
 Part of the motfsr_native implementation; see the file header for the source it follows.

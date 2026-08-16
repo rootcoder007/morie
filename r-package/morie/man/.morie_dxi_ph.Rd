@@ -8,7 +8,7 @@
 .morie_dxi_ph(s)
 }
 \arguments{
-\item{s}{See Usage.}
+\item{s}{Passed to \code{pmin}.}
 }
 \description{
 Part of the twostg_native implementation; see the file header for the source it follows.

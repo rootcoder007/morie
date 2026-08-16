@@ -152,8 +152,8 @@
 #' @param headers A vector; its length is taken. Defaults to \code{list()}.
 #' @param timeout Coerced to integer by the body, with \code{as.integer}.
 #' @param user_agent Accepted by the signature and not used anywhere in the body.
-#' @param auth_signup_url Defaults to \code{NULL}.
-#' @param label Defaults to \code{"forensics"}.
+#' @param auth_signup_url Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param label Passed to \code{stop}. Defaults to \code{"forensics"}.
 #' @return The value of \code{.morie_from_json}.
 #' @export
 .morie_forensics_get_json <- function(url,

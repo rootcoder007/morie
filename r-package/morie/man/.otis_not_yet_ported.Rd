@@ -8,8 +8,8 @@
 .otis_not_yet_ported(fn_name, reason = "")
 }
 \arguments{
-\item{fn_name}{See Usage.}
-\item{reason}{Defaults to \code{""}.}
+\item{fn_name}{Passed to \code{sprintf}.}
+\item{reason}{Passed to \code{nzchar}. Defaults to \code{""}.}
 }
 \description{
 Part of the otis_all_analyze implementation; see the file header for the source it follows.

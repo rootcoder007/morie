@@ -66,7 +66,7 @@ morie_tps_list_categories <- function() {
 #'
 #' list (raises on HTTP / JSON failure).
 #'
-#' @param base_url See Usage.
+#' @param base_url Passed to \code{paste0}.
 #' @param where See Usage.
 #' @param offset Coerced to integer by the body, with \code{as.integer}.
 #' @param max_records Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000L}.

@@ -8,7 +8,7 @@
 mqtmpl_scan_cim(y, markers, positions, cofactors = list(), window = 0, step = 0.02)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{Passed to \code{mqtmpl_cim_one}.}
 \item{markers}{A vector; its length is taken and its elements indexed.}
 \item{positions}{A vector; indexed elementwise.}
 \item{cofactors}{A vector; its length is taken. Defaults to \code{list()}.}

@@ -8,7 +8,7 @@
 .otis_clip_ps(e, eps = 0.02)
 }
 \arguments{
-\item{e}{See Usage.}
+\item{e}{Passed to \code{pmax}.}
 \item{eps}{Numeric; combined arithmetically in the body. Defaults to \code{0.02}.}
 }
 \description{

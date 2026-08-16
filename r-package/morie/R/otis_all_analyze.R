@@ -35,7 +35,7 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param df See Usage.
+#' @param df Accepted by the signature and not used anywhere in the body.
 #' @return Nothing; the function is called for its effect.
 #' @export
 #' @keywords internal
@@ -62,6 +62,14 @@ NULL
   res
 }
 
+#' .otis_year_col
+#'
+#' Internal helper in otis_all_analyze.R; see the file header for
+#' the source the module follows.
+#'
+#' @param df Passed to \code{names}.
+#' @return Nothing; called for its effect.
+#' @export
 .otis_year_col <- function(df) {
   for (c in c("EndFiscalYear", "Year")) {
     if (c %in% names(df)) return(c)
@@ -105,10 +113,10 @@ NULL
 #' the source it follows.
 #'
 #' @param df A matrix; passed to \code{nrow}.
-#' @param ds_id See Usage.
-#' @param description Defaults to \code{NULL}.
-#' @param series Defaults to \code{NULL}.
-#' @param primary_metric Defaults to \code{NULL}.
+#' @param ds_id Passed to \code{sprintf}.
+#' @param description Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param series Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param primary_metric Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .otis_summary_lines <- function(df, ds_id, description = NULL,
@@ -144,9 +152,9 @@ NULL
 #' the source it follows.
 #'
 #' @param df A matrix; indexed by row and column.
-#' @param row See Usage.
-#' @param col See Usage.
-#' @param value See Usage.
+#' @param row Passed to \code{c}.
+#' @param col Passed to \code{c}.
+#' @param value Passed to \code{c}.
 #' @param aggfunc Compared against \code{"max"}. Defaults to \code{c("sum", "max")}.
 #' @param top_rows Numeric; passed to \code{min}. Defaults to \code{20L}.
 #' @return A list with \code{title}, \code{headers}, \code{rows}.
@@ -186,8 +194,8 @@ NULL
 #' the source it follows.
 #'
 #' @param df A vector; indexed elementwise.
-#' @param value See Usage.
-#' @param year_col Defaults to \code{NULL}.
+#' @param value Passed to \code{\%in\%}.
+#' @param year_col Passed to \code{\%||\%}.
 #' @return A list with \code{title}, \code{headers}, \code{rows}.
 #' @export
 .otis_year_trend <- function(df, value, year_col = NULL) {
@@ -219,7 +227,7 @@ NULL
 #' @param title Carried through into a list the body builds.
 #' @param summary_lines Carried through into a list the body builds.
 #' @param tables Iterated over elementwise, with \code{Filter}. Defaults to \code{list()}.
-#' @param interpretation Defaults to \code{NULL}.
+#' @param interpretation Passed to \code{\%||\%}.
 #' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
 #' @param payload Carried through into a list the body builds.
 #' @return The value of \code{out}, as built in the body.
@@ -1038,8 +1046,8 @@ print.morie_otis_analysis_result <- function(x, ...) {
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param fn_name See Usage.
-#' @param reason Defaults to \code{""}.
+#' @param fn_name Passed to \code{sprintf}.
+#' @param reason Passed to \code{nzchar}. Defaults to \code{""}.
 #' @return The value of \code{.otis_wrap}.
 #' @export
 .otis_not_yet_ported <- function(fn_name, reason = "") {
@@ -1286,13 +1294,13 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
 #' @param work A matrix; indexed by row and column.
 #' @param treatment Carried through into a list the body builds.
 #' @param outcome Carried through into a list the body builds.
-#' @param covariates Defaults to \code{character(0)}.
+#' @param covariates Passed to \code{\%||\%}. Defaults to \code{character(0)}.
 #' @param year_col Carried through into a list the body builds. Defaults to \code{"EndFiscalYear"}.
 #' @param cluster_group Optional; may be \code{NULL}. Carried through into a list the body builds.
 #' @param ds_id Carried through into a list the body builds.
 #' @param source_label Carried through into a list the body builds.
 #' @param title Passed to \code{.otis_wrap}.
-#' @param interpretation See Usage.
+#' @param interpretation Passed to \code{paste0}.
 #' @return The value of \code{.otis_wrap}.
 #' @export
 .otis_aggregate_glm <- function(work, treatment, outcome,
@@ -2910,9 +2918,9 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
 #' the source it follows.
 #'
 #' @param df A matrix; indexed by row and column.
-#' @param row See Usage.
-#' @param col See Usage.
-#' @param value See Usage.
+#' @param row Passed to \code{c}.
+#' @param col Passed to \code{c}.
+#' @param value Passed to \code{c}.
 #' @return A list with \code{table}, \code{stats}.
 #' @export
 .otis_contingency_chi2 <- function(df, row, col, value) {

@@ -8,7 +8,7 @@
 .dbpow2(n)
 }
 \arguments{
-\item{n}{See Usage.}
+\item{n}{Passed to \code{>=}.}
 }
 \description{
 Part of the wave implementation; see the file header for the source it follows.

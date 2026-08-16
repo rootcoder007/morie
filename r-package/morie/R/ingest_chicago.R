@@ -58,12 +58,12 @@ morie_ingest_chicago_resources <- function() {
 #' the source it follows.
 #'
 #' @param resource_url Passed to \code{.morie_dataset_http_text}.
-#' @param where Defaults to \code{NULL}.
-#' @param select Defaults to \code{NULL}.
-#' @param order Defaults to \code{NULL}.
+#' @param where Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param select Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param order Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param limit Coerced to integer by the body, with \code{as.integer}.
 #' @param offset Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.
-#' @param app_token Defaults to \code{NULL}.
+#' @param app_token Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param user_agent Accepted by the signature and not used anywhere in the body.
 #' @param timeout Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{payload}, as built in the body.

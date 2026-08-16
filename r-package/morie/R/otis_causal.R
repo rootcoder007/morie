@@ -110,7 +110,7 @@ NULL
 #' @param d Numeric; combined arithmetically in the body.
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{0.001}.
 #' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
-#' @param tol Defaults to \code{1e-06}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-06}.
 #' @return The value of \code{beta}, as built in the body.
 #' @export
 .otis_logit_fit <- function(X, d, ridge = 1e-3, max_iter = 50L, tol = 1e-6) {
@@ -140,7 +140,7 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param e See Usage.
+#' @param e Passed to \code{pmax}.
 #' @param eps Numeric; combined arithmetically in the body. Defaults to \code{0.02}.
 #' @return The value of \code{pmin}.
 #' @export
@@ -194,7 +194,7 @@ NULL
 #' source it follows.
 #'
 #' @param scores A vector; its length is taken.
-#' @param cluster See Usage.
+#' @param cluster Passed to \code{tapply}.
 #' @return A numeric value.
 #' @export
 .otis_cluster_se <- function(scores, cluster) {

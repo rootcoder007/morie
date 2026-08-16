@@ -9,9 +9,9 @@
 }
 \arguments{
 \item{df}{A matrix; indexed by row and column.}
-\item{row}{See Usage.}
-\item{col}{See Usage.}
-\item{value}{See Usage.}
+\item{row}{Passed to \code{c}.}
+\item{col}{Passed to \code{c}.}
+\item{value}{Passed to \code{c}.}
 }
 \description{
 Part of the otis_all_analyze implementation; see the file header for the source it follows.

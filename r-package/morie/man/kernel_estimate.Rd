@@ -8,10 +8,10 @@
 kernel_estimate(x, y, omegas, kind = "positive")
 }
 \arguments{
-\item{x}{See Usage.}
-\item{y}{See Usage.}
-\item{omegas}{See Usage.}
-\item{kind}{Defaults to \code{"positive"}.}
+\item{x}{Passed to \code{rbind}.}
+\item{y}{Passed to \code{rbind}.}
+\item{omegas}{Passed to \code{favor_features}.}
+\item{kind}{Passed to \code{favor_features}. Defaults to \code{"positive"}.}
 }
 \description{
 Part of the perfat_native implementation; see the file header for the source it follows.

@@ -311,7 +311,7 @@ bootstrap <- function(data, statistic, n_boot = 2000L, ci_level = 0.95,
 #' @param data Passed to \code{.nrow_like}.
 #' @param statistic Accepted by the signature and not used anywhere in the body.
 #' @param boot_stats Passed to \code{.pct}.
-#' @param original See Usage.
+#' @param original Passed to \code{<}.
 #' @param ci_level Numeric; combined arithmetically in the body.
 #' @return A list with \code{ci_lo}, \code{ci_hi}, \code{acc}.
 #' @export

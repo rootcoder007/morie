@@ -631,7 +631,7 @@ cochrans_q <- function(...) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param r See Usage.
+#' @param r Passed to \code{atanh}.
 #' @param n Numeric; combined arithmetically in the body.
 #' @param confidence Numeric; combined arithmetically in the body.
 #' @return A vector, from \code{c}.

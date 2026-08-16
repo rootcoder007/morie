@@ -59,7 +59,7 @@ morie_trfbl_transformer_block <- function(x, num_heads = 2L, d_ff = NULL,
 #' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param x See Usage.
+#' @param x Passed to \code{rowMeans}.
 #' @param eps Numeric; combined arithmetically in the body. Defaults to \code{1e-05}.
 #' @return The value of \code{sweep}.
 #' @export

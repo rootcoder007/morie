@@ -8,7 +8,7 @@
 .morie_env(name)
 }
 \arguments{
-\item{name}{See Usage.}
+\item{name}{Passed to \code{Sys.getenv}.}
 }
 \description{
 A step of the arsau implementation. Called by \code{.morie_resolve_arsau_dir}. See the file header for the source the module follows.

@@ -8,8 +8,8 @@
 .tps_sp_toronto_grid(nx = 90L, ny = 60L)
 }
 \arguments{
-\item{nx}{Defaults to \code{90L}.}
-\item{ny}{Defaults to \code{60L}.}
+\item{nx}{Passed to \code{seq}. Defaults to \code{90L}.}
+\item{ny}{Passed to \code{seq}. Defaults to \code{60L}.}
 }
 \description{
 Part of the tps_statphysics implementation; see the file header for the source it follows.

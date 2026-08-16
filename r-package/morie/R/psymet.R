@@ -26,7 +26,7 @@
 #' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param fn See Usage.
+#' @param fn Passed to \code{sprintf}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .psych_or_stop <- function(fn) {

@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{table}{A vector; indexed elementwise.}
-\item{A}{See Usage.}
-\item{a}{See Usage.}
+\item{A}{Passed to \code{paste}.}
+\item{a}{Passed to \code{paste}.}
 }
 \description{
 Part of the prsLL_native implementation; see the file header for the source it follows.

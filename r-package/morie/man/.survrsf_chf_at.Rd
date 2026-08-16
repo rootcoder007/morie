@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{na}{A list; the body reads \code{$chf}, \code{$time} from it.}
-\item{t}{See Usage.}
+\item{t}{Passed to \code{<=}.}
 }
 \description{
 Part of the survrsf_native implementation; see the file header for the source it follows.

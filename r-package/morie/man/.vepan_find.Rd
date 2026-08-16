@@ -8,8 +8,8 @@
 .vepan_find(s, ch)
 }
 \arguments{
-\item{s}{See Usage.}
-\item{ch}{See Usage.}
+\item{s}{Passed to \code{regexpr}.}
+\item{ch}{Passed to \code{regexpr}.}
 }
 \description{
 Part of the vepan_native implementation; see the file header for the source it follows.

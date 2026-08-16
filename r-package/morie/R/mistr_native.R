@@ -86,8 +86,8 @@ mistr_rope_angles <- function(d, base = 10000) {
 #'
 #' @param x A vector; its length is taken and its elements indexed.
 #' @param pos Numeric; combined arithmetically in the body.
-#' @param theta Defaults to \code{NULL}.
-#' @param base Defaults to \code{10000}.
+#' @param theta Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param base Passed to \code{mistr_rope_angles}. Defaults to \code{10000}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 mistr_apply_rope <- function(x, pos, theta = NULL, base = 10000) {
@@ -114,7 +114,7 @@ mistr_apply_rope <- function(x, pos, theta = NULL, base = 10000) {
 #' source it follows.
 #'
 #' @param L A count; the body uses it as \code{seq_len(...)}.
-#' @param window See Usage.
+#' @param window Passed to \code{<}.
 #' @param causal A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return The value of \code{mask}, as built in the body.
 #' @export
@@ -159,7 +159,7 @@ mistr_attention_span <- function(window, n_layers) {
 #' @param n_kv_heads Numeric; combined arithmetically in the body.
 #' @param mask Optional; may be \code{NULL}. A matrix; indexed by row and column.
 #' @param positions Optional; may be \code{NULL}. A vector; its length is taken.
-#' @param base Defaults to \code{10000}.
+#' @param base Passed to \code{mistr_apply_rope}. Defaults to \code{10000}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 mistr_grouped_query_attention <- function(Q, K, V, n_heads, n_kv_heads,
@@ -234,19 +234,19 @@ mistr_grouped_query_attention <- function(Q, K, V, n_heads, n_kv_heads,
 #' source it follows.
 #'
 #' @param X A matrix; passed to \code{as.matrix}.
-#' @param Wq See Usage.
-#' @param Wk See Usage.
-#' @param Wv See Usage.
-#' @param Wo See Usage.
-#' @param W1 See Usage.
-#' @param W2 See Usage.
-#' @param W3 See Usage.
+#' @param Wq Passed to \code{proj}.
+#' @param Wk Passed to \code{proj}.
+#' @param Wv Passed to \code{proj}.
+#' @param Wo Passed to \code{proj}.
+#' @param W1 Passed to \code{mistr_swiglu}.
+#' @param W2 Passed to \code{mistr_swiglu}.
+#' @param W3 Passed to \code{mistr_swiglu}.
 #' @param n_heads Carried through into a list the body builds.
 #' @param n_kv_heads Numeric; combined arithmetically in the body.
 #' @param window Coerced to integer by the body, with \code{as.integer}.
-#' @param norm1 Defaults to \code{NULL}.
-#' @param norm2 Defaults to \code{NULL}.
-#' @param base Defaults to \code{10000}.
+#' @param norm1 Optional; may be \code{NULL}. Passed to \code{mistr_rms_norm}.
+#' @param norm2 Passed to \code{mistr_rms_norm}.
+#' @param base Passed to \code{mistr_grouped_query_attention}. Defaults to \code{10000}.
 #' @return A list with \code{estimate}, \code{output}, \code{attention_mask}, \code{L}, \code{d}, \code{n_heads}, \code{n_kv_heads}, \code{window}, \code{kv_cache_entries}, \code{method}.
 #' @export
 mistr_mistral_block <- function(X, Wq, Wk, Wv, Wo, W1, W2, W3,

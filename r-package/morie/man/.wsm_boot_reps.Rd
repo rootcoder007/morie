@@ -11,7 +11,7 @@
 \item{data}{A matrix; the body checks with \code{is.matrix}.}
 \item{statistic}{Accepted by the signature and not used anywhere in the body.}
 \item{B}{A count; the body uses it as \code{seq_len(...)}.}
-\item{seed}{See Usage.}
+\item{seed}{Passed to \code{set.seed}.}
 }
 \description{
 Part of the wsm_native implementation; see the file header for the source it follows.

@@ -12,8 +12,8 @@ mqtmpl_sample_genotypes(genotypes, positions, grid, n_imp = 16, error_rate = 0, 
 \item{positions}{A vector; its length is taken and its elements indexed.}
 \item{grid}{A vector; its length is taken and its elements indexed.}
 \item{n_imp}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{16}.}
-\item{error_rate}{Defaults to \code{0}.}
-\item{seed}{Defaults to \code{0}.}
+\item{error_rate}{Passed to \code{mqtmpl_hmm_genotype_probabilities}. Defaults to \code{0}.}
+\item{seed}{Passed to \code{set.seed}. Defaults to \code{0}.}
 }
 \description{
 Part of the mqtmpl_native implementation; see the file header for the source it follows.

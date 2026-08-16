@@ -10,7 +10,7 @@
 \arguments{
 \item{data}{A matrix; passed to \code{nrow}.}
 \item{cpads_csv}{Optional; may be \code{NULL}. Passed to \code{.resolve_cpads_csv}.}
-\item{output_dir}{Defaults to \code{NULL}.}
+\item{output_dir}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

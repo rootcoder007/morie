@@ -11,8 +11,8 @@
 \item{y}{A vector; its length is taken and its elements indexed.}
 \item{w}{A vector; indexed elementwise.}
 \item{e}{A vector; indexed elementwise.}
-\item{keep}{See Usage.}
-\item{weights}{See Usage.}
+\item{keep}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
+\item{weights}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the tmlefp_native implementation; see the file header for the source it follows.

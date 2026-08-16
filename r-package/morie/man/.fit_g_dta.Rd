@@ -10,8 +10,8 @@
 \arguments{
 \item{A_}{A vector; its length is taken.}
 \item{W}{A vector; its length is taken.}
-\item{aL}{See Usage.}
-\item{aH}{See Usage.}
+\item{aL}{Passed to \code{==}.}
+\item{aH}{Passed to \code{==}.}
 \item{rows}{See Usage.}
 \item{ridge}{Numeric; passed to \code{max}.}
 \item{trim}{Numeric; passed to \code{max}.}

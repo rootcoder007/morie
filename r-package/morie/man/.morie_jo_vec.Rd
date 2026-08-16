@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
-\item{name}{Defaults to \code{"x"}.}
+\item{name}{Passed to \code{sprintf}. Defaults to \code{"x"}.}
 }
 \description{
 Part of the ts_joseph implementation; see the file header for the source it follows.

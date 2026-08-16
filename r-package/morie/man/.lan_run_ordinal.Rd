@@ -12,7 +12,7 @@
 \item{outcome_col}{Passed to \code{.lan_ard_result}.}
 \item{race_cols}{Passed to \code{.lan_ard_result}.}
 \item{gender_col}{Passed to \code{.lan_ard_result}.}
-\item{control_cols}{See Usage.}
+\item{control_cols}{Passed to \code{c}.}
 \item{ordinal_levels}{A vector; its length is taken and its elements indexed.}
 \item{split_by_gender}{A flag; the body branches on it.}
 }

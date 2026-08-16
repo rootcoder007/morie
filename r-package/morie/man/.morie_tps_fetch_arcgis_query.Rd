@@ -8,7 +8,7 @@
 .morie_tps_fetch_arcgis_query(base_url, where, offset, max_records = 2000L, timeout = 120)
 }
 \arguments{
-\item{base_url}{See Usage.}
+\item{base_url}{Passed to \code{paste0}.}
 \item{where}{See Usage.}
 \item{offset}{Coerced to integer by the body, with \code{as.integer}.}
 \item{max_records}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000L}.}

@@ -221,7 +221,7 @@ morie_tps_project_xy <- function(lat, lon,
 #' source it follows.
 #'
 #' @param p_or_recordedplot See Usage.
-#' @param outfile See Usage.
+#' @param outfile Passed to \code{path.expand}.
 #' @param fig_w Numeric; combined arithmetically in the body.
 #' @param fig_h Numeric; combined arithmetically in the body.
 #' @param use_gg A flag; the body branches on it.
@@ -640,7 +640,7 @@ morie_tps_render_yearly_grid <- function(polys,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Passed to \code{c}.
 #' @param y Numeric; combined arithmetically in the body.
 #' @param size Numeric; combined arithmetically in the body. Defaults to \code{1.5}.
 #' @param use_gg A flag; the body branches on it. Defaults to \code{FALSE}.

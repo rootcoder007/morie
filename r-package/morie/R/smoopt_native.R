@@ -256,7 +256,7 @@ compute_threshold <- function(i1, i2, a1_new, a2_new, alpha, y, E, K,
 #' @param y Coerced to numeric by the body, with \code{as.numeric}.
 #' @param K Passed to \code{.smoopt_K}.
 #' @param C Passed to \code{.smoopt_bounds}. Defaults to \code{1}.
-#' @param tol Defaults to \code{0.001}.
+#' @param tol Passed to \code{violates_kkt}. Defaults to \code{0.001}.
 #' @param eps Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-05}.
 #' @param max_passes Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200L}.
 #' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0L}.

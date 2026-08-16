@@ -9,9 +9,9 @@
 }
 \arguments{
 \item{portal}{Passed to \code{.morie_ckan_portal}.}
-\item{action}{See Usage.}
+\item{action}{Passed to \code{sprintf}.}
 \item{params}{Passed to \code{.morie_dataset_http_text}.}
-\item{api_key}{Defaults to \code{NULL}.}
+\item{api_key}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 \item{user_agent}{Accepted by the signature and not used anywhere in the body. Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.}
 \item{timeout}{Coerced to integer by the body, with \code{as.integer}.}
 }

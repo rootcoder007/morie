@@ -11,8 +11,8 @@ morie_vepan_annotate(variant, transcripts, genome, upstream = 5000, downstream =
 \item{variant}{Passed to \code{.vepan_variant}.}
 \item{transcripts}{Iterated over elementwise, with \code{lapply}.}
 \item{genome}{Coerced to character by the body, with \code{as.character}.}
-\item{upstream}{Defaults to \code{5000}.}
-\item{downstream}{Defaults to \code{5000}.}
+\item{upstream}{Passed to \code{<}. Defaults to \code{5000}.}
+\item{downstream}{Passed to \code{<}. Defaults to \code{5000}.}
 }
 \description{
 Part of the vepan_native implementation; see the file header for the source it follows.

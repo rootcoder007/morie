@@ -8,8 +8,8 @@
 .prsLL_union(a, b)
 }
 \arguments{
-\item{a}{See Usage.}
-\item{b}{See Usage.}
+\item{a}{Passed to \code{c}.}
+\item{b}{Passed to \code{c}.}
 }
 \description{
 Part of the prsLL_native implementation; see the file header for the source it follows.

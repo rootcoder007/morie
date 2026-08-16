@@ -8,7 +8,7 @@
 .morie_to_ckan_dump_csv(resource_id, limit = 100000L)
 }
 \arguments{
-\item{resource_id}{See Usage.}
+\item{resource_id}{Passed to \code{sprintf}.}
 \item{limit}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100000L}.}
 }
 \description{

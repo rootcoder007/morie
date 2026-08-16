@@ -8,7 +8,7 @@
 .sv_nanmean_col(M)
 }
 \arguments{
-\item{M}{See Usage.}
+\item{M}{Passed to \code{apply}.}
 }
 \description{
 Part of the spatial_voting implementation; see the file header for the source it follows.

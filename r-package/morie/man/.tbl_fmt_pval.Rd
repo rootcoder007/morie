@@ -8,7 +8,7 @@
 .tbl_fmt_pval(p, digits = 3L, apa = FALSE)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{Passed to \code{is.finite}.}
 \item{digits}{Numeric; combined arithmetically in the body. Defaults to \code{3L}.}
 \item{apa}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }

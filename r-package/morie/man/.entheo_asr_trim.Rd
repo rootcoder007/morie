@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{x}{A vector; indexed elementwise.}
-\item{threshold}{See Usage.}
+\item{threshold}{Passed to \code{>}.}
 }
 \description{
 A step of the entheo_preprocess implementation. Called by \code{preprocess_eeg}. See the file header for the source the module follows.

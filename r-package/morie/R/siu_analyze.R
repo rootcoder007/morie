@@ -524,8 +524,8 @@ morie_siu_mental_health_race_indicators <- function(data = NULL) {
 #' ---------------------------------------------------------------------------
 #'
 #' @param label Carried through into a list the body builds.
-#' @param a_iso See Usage.
-#' @param b_iso See Usage.
+#' @param a_iso Passed to \code{as.Date}.
+#' @param b_iso Passed to \code{as.Date}.
 #' @return The value of \code{list}.
 #' @export
 .siu_an_interval <- function(label, a_iso, b_iso) {

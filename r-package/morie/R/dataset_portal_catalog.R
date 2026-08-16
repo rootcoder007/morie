@@ -469,7 +469,7 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
 #' Part of the dataset_portal_catalog implementation; see the file
 #' header for the source it follows.
 #'
-#' @param fname See Usage.
+#' @param fname Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A numeric value.
 #' @export
 .morie_portal_fixture_rows <- function(fname) {

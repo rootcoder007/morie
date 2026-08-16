@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{url}{Character; passed to \code{sub}.}
-\item{ext}{Defaults to \code{""}.}
+\item{ext}{Passed to \code{nzchar}. Defaults to \code{""}.}
 }
 \description{
 A step of the data_access implementation. Called by \code{morie_fetch}. See the file header for the source the module follows.
