@@ -48,6 +48,17 @@
   out
 }
 
+#' encode_point_prompt
+#'
+#' Part of the samseg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param points See Usage.
+#' @param labels See Usage.
+#' @param dim Defaults to \code{8}.
+#' @param type_embeddings Defaults to \code{NULL}.
+#' @return A list with \code{tokens}, \code{n_prompts}, \code{sparse}, \code{note}.
+#' @export
 encode_point_prompt <- function(points, labels, dim = 8,
                                 type_embeddings = NULL) {
   P <- lapply(points, function(p) c(as.numeric(p[1]), as.numeric(p[2])))
@@ -74,6 +85,16 @@ encode_point_prompt <- function(points, labels, dim = 8,
        note = "a background click at the same place is a DIFFERENT token, by the type embedding")
 }
 
+#' encode_box_prompt
+#'
+#' Part of the samseg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param box See Usage.
+#' @param dim Defaults to \code{8}.
+#' @param type_embeddings Defaults to \code{NULL}.
+#' @return A list with \code{tokens}, \code{n_prompts}, \code{sparse}.
+#' @export
 encode_box_prompt <- function(box, dim = 8, type_embeddings = NULL) {
   b <- as.numeric(box)
   x0 <- b[1]; y0 <- b[2]; x1 <- b[3]; y1 <- b[4]
@@ -92,6 +113,16 @@ encode_box_prompt <- function(box, dim = 8, type_embeddings = NULL) {
   list(tokens = M, n_prompts = 2L, sparse = TRUE)
 }
 
+#' encode_mask_prompt
+#'
+#' Part of the samseg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param mask See Usage.
+#' @param image_embedding See Usage.
+#' @param weight Defaults to \code{1}.
+#' @return A list with \code{embedding}, \code{sparse}, \code{note}.
+#' @export
 encode_mask_prompt <- function(mask, image_embedding, weight = 1.0) {
   M <- .samseg_mat(mask)
   E <- .samseg_mat(image_embedding)
@@ -104,6 +135,16 @@ encode_mask_prompt <- function(mask, image_embedding, weight = 1.0) {
        note = "summed, so the decoder input shape is unchanged")
 }
 
+#' amortised_cost
+#'
+#' Part of the samseg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param encoder_ms See Usage.
+#' @param decoder_ms See Usage.
+#' @param n_prompts See Usage.
+#' @return A list with \code{total_ms}, \code{per_prompt_ms}, \code{naive_ms}, \code{speedup}, \code{interactive}, \code{note}.
+#' @export
 amortised_cost <- function(encoder_ms, decoder_ms, n_prompts) {
   e <- as.numeric(encoder_ms)
   d <- as.numeric(decoder_ms)
@@ -120,6 +161,17 @@ amortised_cost <- function(encoder_ms, decoder_ms, n_prompts) {
        note = "the image embedding is computed once and reused")
 }
 
+#' promptable_segment
+#'
+#' Part of the samseg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param image_embedding See Usage.
+#' @param prompt_tokens See Usage.
+#' @param decoder See Usage.
+#' @param multimask Defaults to \code{TRUE}.
+#' @return A list with \code{estimate}, \code{masks}, \code{n_masks}, \code{multimask}, \code{method}, \code{note}.
+#' @export
 promptable_segment <- function(image_embedding, prompt_tokens, decoder,
                                multimask = TRUE) {
   masks <- decoder(image_embedding, prompt_tokens, multimask)
@@ -131,6 +183,17 @@ promptable_segment <- function(image_embedding, prompt_tokens, decoder,
        note = "a valid mask for any prompt, and for an ambiguous prompt a valid mask for at least one intended object")
 }
 
+#' morie_samseg
+#'
+#' Part of the samseg_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param image_embedding See Usage.
+#' @param prompt_tokens See Usage.
+#' @param decoder See Usage.
+#' @param multimask Defaults to \code{TRUE}.
+#' @return The value of \code{promptable_segment}.
+#' @export
 morie_samseg <- function(image_embedding, prompt_tokens, decoder,
                          multimask = TRUE) {
   promptable_segment(image_embedding, prompt_tokens, decoder,

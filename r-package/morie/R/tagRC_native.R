@@ -29,6 +29,14 @@
 
 .tagRC.EPS <- 1e-12
 
+#' tagRC_tripartite_graph
+#'
+#' Part of the tagRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param triples See Usage.
+#' @return A list with \code{adjacency}, \code{nodes}, \code{n_nodes}, \code{n_triples}, \code{note}.
+#' @export
 tagRC_tripartite_graph <- function(triples) {
   nodes <- character(0)
   edges <- new.env(hash = TRUE, parent = emptyenv())
@@ -82,6 +90,16 @@ tagRC_tripartite_graph <- function(triples) {
                     "undirected edges, so weight flows both ways"))
 }
 
+#' tagRC_preference_vector
+#'
+#' Part of the tagRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param nodes See Usage.
+#' @param focus See Usage.
+#' @param weight Defaults to \code{0.9}.
+#' @return A list with \code{p}, \code{focus}, \code{mass}.
+#' @export
 tagRC_preference_vector <- function(nodes, focus, weight = 0.9) {
   N <- as.list(nodes)
   Nset <- unique(as.character(nodes))
@@ -105,6 +123,19 @@ tagRC_preference_vector <- function(nodes, focus, weight = 0.9) {
   list(p = p, focus = F, mass = mass)
 }
 
+#' tagRC_adapted_pagerank
+#'
+#' Part of the tagRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param adjacency See Usage.
+#' @param nodes See Usage.
+#' @param p Defaults to \code{NULL}.
+#' @param d Defaults to \code{0.7}.
+#' @param iters Defaults to \code{200}.
+#' @param tol Defaults to \code{1e-12}.
+#' @return A list with \code{w}, \code{ranking}.
+#' @export
 tagRC_adapted_pagerank <- function(adjacency, nodes, p = NULL,
                                    d = 0.7, iters = 200,
                                    tol = 1e-12) {
@@ -165,6 +196,18 @@ tagRC_adapted_pagerank <- function(adjacency, nodes, p = NULL,
   list(w = w, ranking = ranking)
 }
 
+#' morie_tagRC
+#'
+#' Part of the tagRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param triples See Usage.
+#' @param focus See Usage.
+#' @param d Defaults to \code{0.7}.
+#' @param weight Defaults to \code{0.9}.
+#' @param iters Defaults to \code{200}.
+#' @return A list with \code{estimate}, \code{ranking}, \code{difference}, \code{with_preference}, \code{without_preference}, \code{undifferenced_ranking}, \code{baseline_ranking}, \code{focus}, \code{n_nodes}, \code{method}, \code{note}.
+#' @export
 morie_tagRC <- function(triples, focus, d = 0.7, weight = 0.9,
                         iters = 200) {
   g <- tagRC_tripartite_graph(triples)
@@ -195,6 +238,13 @@ tagRC_folkrank_search <- morie_tagRC
 tagRC_tag_aware_rec <- morie_tagRC
 tagRC_tagawarerec <- morie_tagRC
 
+#' tagRC_cheatsheet
+#'
+#' Part of the tagRC_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 tagRC_cheatsheet <- function() {
   paste("tagRC: a folksonomy is (user, tag, resource) TRIPLES, so ",
         "the structure is an undirected triadic HYPEREDGE, not a ",

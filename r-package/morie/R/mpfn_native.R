@@ -5,10 +5,29 @@
 #   Vinyals et al. (2016) "Order Matters: Sequence to sequence for sets" arXiv:1511.06391
 # Base R only.
 
+#' mpfn_sig
+#'
+#' Part of the mpfn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param x See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 mpfn_sig <- function(x) {
   if (x > -700) 1 / (1 + exp(-x)) else 0
 }
 
+#' mpfn_message
+#'
+#' Part of the mpfn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param h_v See Usage.
+#' @param h_w See Usage.
+#' @param e_vw See Usage.
+#' @param A Defaults to \code{NULL}.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 mpfn_message <- function(h_v, h_w, e_vw, A = NULL) {
   hw <- as.numeric(h_w)
   if (is.null(A)) {
@@ -19,6 +38,21 @@ mpfn_message <- function(h_v, h_w, e_vw, A = NULL) {
   as.numeric(M %*% hw)
 }
 
+#' mpfn_update_gru
+#'
+#' Part of the mpfn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param h See Usage.
+#' @param m See Usage.
+#' @param Wz See Usage.
+#' @param Uz See Usage.
+#' @param Wr See Usage.
+#' @param Ur See Usage.
+#' @param Wh See Usage.
+#' @param Uh See Usage.
+#' @return A numeric value.
+#' @export
 mpfn_update_gru <- function(h, m, Wz, Uz, Wr, Ur, Wh, Uh) {
   n <- length(h)
   lin <- function(W, U, a, b) {
@@ -30,6 +64,19 @@ mpfn_update_gru <- function(h, m, Wz, Uz, Wr, Ur, Wh, Uh) {
   (1 - z) * h + z * hh
 }
 
+#' mpfn_message_passing
+#'
+#' Part of the mpfn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param H0 See Usage.
+#' @param adj See Usage.
+#' @param edge_features See Usage.
+#' @param T Defaults to \code{3}.
+#' @param A Defaults to \code{NULL}.
+#' @param update Defaults to \code{NULL}.
+#' @return The value of \code{H}, as built in the body.
+#' @export
 mpfn_message_passing <- function(H0, adj, edge_features, T = 3, A = NULL,
                                  update = NULL) {
   H <- lapply(H0, as.numeric)
@@ -57,6 +104,18 @@ mpfn_message_passing <- function(H0, adj, edge_features, T = 3, A = NULL,
   H
 }
 
+#' mpfn_readout
+#'
+#' Part of the mpfn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param H See Usage.
+#' @param how Defaults to \code{"sum"}.
+#' @param H0 Defaults to \code{NULL}.
+#' @param i_fn Defaults to \code{NULL}.
+#' @param j_fn Defaults to \code{NULL}.
+#' @return The value of \code{acc}, as built in the body.
+#' @export
 mpfn_readout <- function(H, how = "sum", H0 = NULL, i_fn = NULL, j_fn = NULL) {
   if (!(how %in% c("sum", "mean", "gated"))) {
     stop(sprintf("mpfn: readout must be one of sum, mean, gated, got %s", how))
@@ -85,6 +144,20 @@ mpfn_readout <- function(H, how = "sum", H0 = NULL, i_fn = NULL, j_fn = NULL) {
   acc
 }
 
+#' mpfn_is_permutation_invariant
+#'
+#' Part of the mpfn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param H See Usage.
+#' @param adj See Usage.
+#' @param edge_features See Usage.
+#' @param perm See Usage.
+#' @param T Defaults to \code{3}.
+#' @param how Defaults to \code{"sum"}.
+#' @param tol Defaults to \code{1e-09}.
+#' @return A list with \code{invariant}, \code{max_deviation}, \code{readout}.
+#' @export
 mpfn_is_permutation_invariant <- function(H, adj, edge_features, perm, T = 3,
                                           how = "sum", tol = 1e-9) {
   base <- mpfn_readout(mpfn_message_passing(H, adj, edge_features, T), how)
@@ -110,6 +183,13 @@ mpfn_is_permutation_invariant <- function(H, adj, edge_features, perm, T = 3,
   list(invariant = dev < as.numeric(tol), max_deviation = dev, readout = base)
 }
 
+#' mpfn_cheatsheet
+#'
+#' Part of the mpfn_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 mpfn_cheatsheet <- function() {
   paste("mpfn: at least EIGHT published graph models are the same algorithm with different M_t, U_t and R. Message phase: m_v = sum_{w in N(v)} M_t(h_v, h_w, e_vw), then h_v <- U_t(h_v, m_v); readout R over the final states. The sum makes messages permutation-invariant and the READOUT MUST BE TOO, or the graph prediction changes when atoms are renumbered. Edge features carry bond type -- without them a single and a double bond between the same atoms are identical.")
 }

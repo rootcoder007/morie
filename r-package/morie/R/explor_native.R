@@ -36,6 +36,25 @@
   e / s
 }
 
+#' explor
+#'
+#' Part of the explor_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param states See Usage.
+#' @param actions See Usage.
+#' @param next_states See Usage.
+#' @param n_actions Defaults to \code{NULL}.
+#' @param n_features Defaults to \code{8L}.
+#' @param eta Defaults to \code{1}.
+#' @param beta Defaults to \code{0.2}.
+#' @param lr Defaults to \code{0.05}.
+#' @param epochs Defaults to \code{1L}.
+#' @param features Defaults to \code{"inverse"}.
+#' @param discrete Defaults to \code{TRUE}.
+#' @param seed Defaults to \code{0L}.
+#' @return The value of \code{payload}, as built in the body.
+#' @export
 explor <- function(states, actions, next_states, n_actions = NULL,
                    n_features = 8L, eta = 1.0, beta = 0.2, lr = 0.05,
                    epochs = 1L, features = "inverse", discrete = TRUE,
@@ -200,6 +219,25 @@ explor <- function(states, actions, next_states, n_actions = NULL,
   payload
 }
 
+#' morie_explor
+#'
+#' Part of the explor_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param states See Usage.
+#' @param actions See Usage.
+#' @param next_states See Usage.
+#' @param n_actions Defaults to \code{NULL}.
+#' @param n_features Defaults to \code{8L}.
+#' @param eta Defaults to \code{1}.
+#' @param beta Defaults to \code{0.2}.
+#' @param lr Defaults to \code{0.05}.
+#' @param epochs Defaults to \code{1L}.
+#' @param features Defaults to \code{"inverse"}.
+#' @param discrete Defaults to \code{TRUE}.
+#' @param seed Defaults to \code{0L}.
+#' @return The value of \code{explor}.
+#' @export
 morie_explor <- function(states, actions, next_states, n_actions = NULL,
                          n_features = 8L, eta = 1.0, beta = 0.2,
                          lr = 0.05, epochs = 1L, features = "inverse",

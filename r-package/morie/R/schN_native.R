@@ -11,6 +11,18 @@
 
 .schN_EPS <- 1e-12
 
+#' gaussian_expansion
+#'
+#' Part of the schN_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param r See Usage.
+#' @param mu_min Defaults to \code{0}.
+#' @param mu_max Defaults to \code{6}.
+#' @param n_gaussians Defaults to \code{25}.
+#' @param gamma Defaults to \code{NULL}.
+#' @return A numeric value.
+#' @export
 gaussian_expansion <- function(r, mu_min = 0.0, mu_max = 6.0,
                                n_gaussians = 25, gamma = NULL) {
   n <- as.integer(n_gaussians)
@@ -24,6 +36,15 @@ gaussian_expansion <- function(r, mu_min = 0.0, mu_max = 6.0,
   exp(-g * (v - mus) ^ 2)
 }
 
+#' cosine_cutoff
+#'
+#' Part of the schN_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param r See Usage.
+#' @param cutoff Defaults to \code{5}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 cosine_cutoff <- function(r, cutoff = 5.0) {
   rc <- as.numeric(cutoff)
   if (rc <= 0.0) stop("schN: the cutoff must be positive")
@@ -31,6 +52,18 @@ cosine_cutoff <- function(r, cutoff = 5.0) {
   if (v < rc) 0.5 * (cos(pi * v / rc) + 1.0) else 0.0
 }
 
+#' cfconv
+#'
+#' Part of the schN_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param X See Usage.
+#' @param R See Usage.
+#' @param filter_net See Usage.
+#' @param cutoff Defaults to \code{5}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 cfconv <- function(X, R, filter_net, cutoff = 5.0, ...) {
   feats <- lapply(X, function(r) as.numeric(r))
   pos <- lapply(R, function(r) as.numeric(r))
@@ -59,6 +92,16 @@ cfconv <- function(X, R, filter_net, cutoff = 5.0, ...) {
   out
 }
 
+#' forces_from_energy
+#'
+#' Part of the schN_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param energy_fn See Usage.
+#' @param R See Usage.
+#' @param h Defaults to \code{1e-05}.
+#' @return A list with \code{estimate}, \code{forces}, \code{net_force}, \code{method}, \code{note}.
+#' @export
 forces_from_energy <- function(energy_fn, R, h = 1e-5) {
   pos <- lapply(R, function(r) as.numeric(r))
   n <- length(pos)
@@ -82,6 +125,17 @@ forces_from_energy <- function(energy_fn, R, h = 1e-5) {
        note = "conservative and equivariant by construction; a separate force head would be neither")
 }
 
+#' invariance_error
+#'
+#' Part of the schN_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param energy_fn See Usage.
+#' @param R See Usage.
+#' @param Q See Usage.
+#' @param g Defaults to \code{NULL}.
+#' @return A list with \code{energy_error}, \code{force_error}, \code{energy_invariant}, \code{forces_equivariant}, \code{note}.
+#' @export
 invariance_error <- function(energy_fn, R, Q, g = NULL) {
   pos <- lapply(R, function(r) as.numeric(r))
   d <- length(pos[[1L]])
@@ -119,6 +173,14 @@ invariance_error <- function(energy_fn, R, Q, g = NULL) {
         "cutoff keeps neighbourhood changes continuous.")
 }
 
+#' morie_schN
+#'
+#' Part of the schN_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param ... Passed through.
+#' @return The value of \code{cfconv}.
+#' @export
 morie_schN <- function(...) {
   cfconv(...)
 }

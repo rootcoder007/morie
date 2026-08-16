@@ -12,6 +12,14 @@
 #   Gaussian Splatting for Real-Time Radiance Field Rendering", ACM
 #   TOG 42(4), doi:10.1145/3592433.
 
+#' morie_nrfrad
+#'
+#' Part of the nrfrad_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param payload See Usage.
+#' @return Nothing; this branch always raises.
+#' @export
 morie_nrfrad <- function(payload) {
   if (!is.list(payload) || is.null(payload$op)) {
     stop("nrfrad: payload must be a list with an 'op' field")
@@ -69,6 +77,16 @@ morie_nrfrad <- function(payload) {
   as.numeric(p)
 }
 
+#' positional_encoding
+#'
+#' Part of the nrfrad_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param p See Usage.
+#' @param L Defaults to \code{10}.
+#' @param include_input Defaults to \code{TRUE}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 positional_encoding <- function(p, L = 10, include_input = TRUE) {
   v <- .as_numeric_vec(p)
   if (as.integer(L) < 1L) {
@@ -84,6 +102,20 @@ positional_encoding <- function(p, L = 10, include_input = TRUE) {
   out
 }
 
+#' ray_points
+#'
+#' Part of the nrfrad_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param origin See Usage.
+#' @param direction See Usage.
+#' @param t_near See Usage.
+#' @param t_far See Usage.
+#' @param n_samples See Usage.
+#' @param rng Defaults to \code{NULL}.
+#' @param stratified Defaults to \code{TRUE}.
+#' @return A list with \code{t}, \code{points}, \code{direction}.
+#' @export
 ray_points <- function(origin, direction, t_near, t_far, n_samples,
                         rng = NULL, stratified = TRUE) {
   o <- .as_numeric_vec(origin)
@@ -115,6 +147,16 @@ ray_points <- function(origin, direction, t_near, t_far, n_samples,
   list(t = ts, points = pts, direction = d)
 }
 
+#' volume_render
+#'
+#' Part of the nrfrad_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param sigma See Usage.
+#' @param colour See Usage.
+#' @param t See Usage.
+#' @return A list with \code{colour}, \code{weights}, \code{accumulated_alpha}, \code{transmittance_final}, \code{note}.
+#' @export
 volume_render <- function(sigma, colour, t) {
   s <- .as_numeric_vec(sigma)
   if (is.matrix(colour)) {
@@ -156,6 +198,18 @@ volume_render <- function(sigma, colour, t) {
                     "are needed -- no 3D supervision"))
 }
 
+#' sample_pdf
+#'
+#' Part of the nrfrad_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param bins See Usage.
+#' @param weights See Usage.
+#' @param n_samples See Usage.
+#' @param rng See Usage.
+#' @param eps Defaults to \code{1e-05}.
+#' @return A vector, from \code{sort}.
+#' @export
 sample_pdf <- function(bins, weights, n_samples, rng, eps = 1e-5) {
   b <- .as_numeric_vec(bins)
   w <- .as_numeric_vec(weights) + as.numeric(eps)
@@ -185,6 +239,17 @@ sample_pdf <- function(bins, weights, n_samples, rng, eps = 1e-5) {
   sort(out)
 }
 
+#' density_is_view_independent
+#'
+#' Part of the nrfrad_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param model See Usage.
+#' @param point See Usage.
+#' @param directions See Usage.
+#' @param tol Defaults to \code{1e-09}.
+#' @return A list with \code{sigmas}, \code{max_deviation}, \code{view_independent}, \code{note}.
+#' @export
 density_is_view_independent <- function(model, point, directions, tol = 1e-9) {
   p <- .as_numeric_vec(point)
   ss <- numeric(length(directions))

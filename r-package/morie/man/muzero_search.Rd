@@ -1,0 +1,31 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{muzero_search}
+\alias{muzero_search}
+\title{muzero_search}
+\usage{
+muzero_search(observation, actions, representation, dynamics, prediction, simulations = 50, gamma = 0.997, c1 = 1.25, c2 = 19652, dirichlet_alpha = NULL, exploration_fraction = 0.25, temperature = 1, seed = 0)
+}
+\arguments{
+\item{observation}{See Usage.}
+\item{actions}{See Usage.}
+\item{representation}{See Usage.}
+\item{dynamics}{See Usage.}
+\item{prediction}{See Usage.}
+\item{simulations}{Defaults to \code{50}.}
+\item{gamma}{Defaults to \code{0.997}.}
+\item{c1}{Defaults to \code{1.25}.}
+\item{c2}{Defaults to \code{19652}.}
+\item{dirichlet_alpha}{Defaults to \code{NULL}.}
+\item{exploration_fraction}{Defaults to \code{0.25}.}
+\item{temperature}{Defaults to \code{1}.}
+\item{seed}{Defaults to \code{0}.}
+}
+\description{
+Part of the muzero_native implementation; see the file header for the source it follows.
+}
+\value{
+A list with \code{estimate}, \code{policy}, \code{action}, \code{value}, \code{visits}, \code{Q}, \code{prior}, \code{n_dynamics_calls}, \code{n_prediction_calls}, \code{simulations}, \code{method}.
+}
+\keyword{internal}

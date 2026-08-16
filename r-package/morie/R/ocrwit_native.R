@@ -15,6 +15,17 @@
 # units, the same patch-of-box mapping, and the same unmasked-only
 # word-patch alignment labels.
 
+#' ocrwit_normalise_bbox
+#'
+#' Part of the ocrwit_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param box See Usage.
+#' @param width See Usage.
+#' @param height See Usage.
+#' @param scale Defaults to \code{1000}.
+#' @return A vector, from \code{c}.
+#' @export
 ocrwit_normalise_bbox <- function(box, width, height, scale = 1000) {
   x0 <- as.numeric(box[[1]]); y0 <- as.numeric(box[[2]])
   x1 <- as.numeric(box[[3]]); y1 <- as.numeric(box[[4]])
@@ -28,6 +39,18 @@ ocrwit_normalise_bbox <- function(box, width, height, scale = 1000) {
     clamp(x1 / W * s), clamp(y1 / H * s))
 }
 
+#' ocrwit_segment_layout_boxes
+#'
+#' Part of the ocrwit_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param boxes See Usage.
+#' @param segment_ids See Usage.
+#' @param width See Usage.
+#' @param height See Usage.
+#' @param scale Defaults to \code{1000}.
+#' @return A list with \code{segment_boxes}, \code{per_token}, \code{n_segments}, \code{note}.
+#' @export
 ocrwit_segment_layout_boxes <- function(boxes, segment_ids, width, height,
                                          scale = 1000) {
   segs <- as.list(segment_ids); B <- as.list(boxes)
@@ -52,6 +75,17 @@ ocrwit_segment_layout_boxes <- function(boxes, segment_ids, width, height,
        note = "one box per segment, cheaper than per word and closer to the document's structure")
 }
 
+#' ocrwit_mask_units
+#'
+#' Part of the ocrwit_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param n_units See Usage.
+#' @param rate Defaults to \code{0.3}.
+#' @param seed Defaults to \code{0}.
+#' @param block Defaults to \code{1}.
+#' @return A list with \code{masked}, \code{kept}, \code{rate}, \code{block}, \code{note}.
+#' @export
 ocrwit_mask_units <- function(n_units, rate = 0.3, seed = 0, block = 1) {
   n <- as.integer(n_units)
   r <- as.numeric(rate)
@@ -76,6 +110,17 @@ ocrwit_mask_units <- function(n_units, rate = 0.3, seed = 0, block = 1) {
        note = "the same recipe for both modalities, which is the unification")
 }
 
+#' ocrwit_patch_of_box
+#'
+#' Part of the ocrwit_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param box See Usage.
+#' @param width See Usage.
+#' @param height See Usage.
+#' @param patch_grid Defaults to \code{14}.
+#' @return A vector, from \code{sort}.
+#' @export
 ocrwit_patch_of_box <- function(box, width, height, patch_grid = 14) {
   g <- as.integer(patch_grid)
   bb <- ocrwit_normalise_bbox(box, width, height, g)
@@ -93,6 +138,19 @@ ocrwit_patch_of_box <- function(box, width, height, patch_grid = 14) {
   sort(unique(out))
 }
 
+#' morie_ocrwit
+#'
+#' Part of the ocrwit_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param text_boxes See Usage.
+#' @param masked_patches See Usage.
+#' @param width See Usage.
+#' @param height See Usage.
+#' @param patch_grid Defaults to \code{14}.
+#' @param masked_text Defaults to \code{list()}.
+#' @return A list with \code{estimate}, \code{labels}, \code{patches}, \code{n_examples}, \code{positive_rate}, \code{method}, \code{note}.
+#' @export
 morie_ocrwit <- function(text_boxes, masked_patches, width, height,
                          patch_grid = 14, masked_text = list()) {
   mp <- as.integer(unlist(masked_patches))
@@ -119,6 +177,13 @@ layoutlmv3 <- morie_ocrwit
 ocr_wit_layout <- morie_ocrwit
 ocrwitlayout <- morie_ocrwit
 
+#' ocrwit_cheatsheet
+#'
+#' Part of the ocrwit_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
 ocrwit_cheatsheet <- function() {
   paste("ocrwit: document models pre-trained text and image with ",
         "DIFFERENT objectives, giving two spaces and a bridge. ",

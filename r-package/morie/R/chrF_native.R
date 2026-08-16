@@ -36,6 +36,19 @@
   c(m / length(hyp_grams), m / length(ref_grams))
 }
 
+#' chrf_score
+#'
+#' Part of the chrF_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param hypothesis See Usage.
+#' @param reference See Usage.
+#' @param n_char Defaults to \code{6L}.
+#' @param beta Defaults to \code{2}.
+#' @param remove_whitespace Defaults to \code{TRUE}.
+#' @param word_order Defaults to \code{0L}.
+#' @return The value of \code{best}, as built in the body.
+#' @export
 chrf_score <- function(hypothesis, reference, n_char = 6L, beta = 2.0,
                        remove_whitespace = TRUE, word_order = 0L) {
   N <- as.integer(n_char)
@@ -92,6 +105,19 @@ chrf_score <- function(hypothesis, reference, n_char = 6L, beta = 2.0,
   best
 }
 
+#' morie_chrF
+#'
+#' Part of the chrF_native implementation; see the file header for the
+#' source it follows.
+#'
+#' @param hypothesis See Usage.
+#' @param reference See Usage.
+#' @param n_char Defaults to \code{6L}.
+#' @param beta Defaults to \code{2}.
+#' @param remove_whitespace Defaults to \code{TRUE}.
+#' @param word_order Defaults to \code{0L}.
+#' @return The value of \code{chrf_score}.
+#' @export
 morie_chrF <- function(hypothesis, reference, n_char = 6L, beta = 2.0,
                        remove_whitespace = TRUE, word_order = 0L) {
   chrf_score(hypothesis, reference, n_char, beta, remove_whitespace, word_order)

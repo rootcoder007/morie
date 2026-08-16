@@ -355,6 +355,13 @@ morie_llm_list_freeapi_models <- function() {
 # We deliberately overwrite the earlier morie_llm_detect_provider() so the
 # ordering matches Python: ollama -> freeapi -> gemini -> api -> openai -> local.
 
+#' morie_llm_detect_provider
+#'
+#' Part of the llm implementation; see the file header for the source it
+#' follows.
+#'
+#' @return A character value.
+#' @export
 morie_llm_detect_provider <- function() {
   if (morie_llm_probe_ollama())                  return("ollama")
   if (morie_llm_probe_freeapi())                 return("freeapi")
