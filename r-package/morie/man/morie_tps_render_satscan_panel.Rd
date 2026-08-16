@@ -21,3 +21,9 @@ Currently a thin layer over centroids + radius circles; the full
 likelihood-ratio overlay and significance ranking depend on the Python
 \code{morie.tps_satscan} module and are stubbed.
 }
+\examples{
+clusters <- data.frame(lat = c(43.7, 43.75, 43.65), lon = c(-79.4, 
+    -79.35, -79.5), radius_km = c(1, 0.5, 1.5), llr = c(5.2, 
+    3.8, 7.1), stringsAsFactors = FALSE)
+morie_tps_render_satscan_panel(clusters, outfile = NULL)
+}

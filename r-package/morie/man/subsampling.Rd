@@ -33,3 +33,7 @@ A \code{morie_bootstrap_result}.
 Draws without replacement at a smaller sample size; valid under
 weaker conditions than the bootstrap.
 }
+\examples{
+x_vec <- rnorm(40)
+subsampling(x_vec, mean, n_subsamples = 30L)
+}

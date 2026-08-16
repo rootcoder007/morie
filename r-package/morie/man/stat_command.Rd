@@ -46,3 +46,6 @@ A list with class \code{morie_stat_command}.
 \description{
 Construct a stat_command entry
 }
+\examples{
+stat_command("test_bridge_throw", "T", "u", "d", handler_repl = function(...) stop("boom"))
+}

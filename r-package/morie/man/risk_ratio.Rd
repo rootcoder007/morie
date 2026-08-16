@@ -17,3 +17,6 @@ A \code{morie_effect_size}.
 \description{
 Risk ratio (relative risk) for a 2x2 table
 }
+\examples{
+risk_ratio(10, 5, 5, 10)
+}

@@ -19,3 +19,8 @@ An object of class \code{"class_name"}.
 \description{
 Validate a data frame against a list of column rules
 }
+\examples{
+d <- data.frame(x = 1:5, y = letters[1:5], stringsAsFactors = FALSE)
+validate_schema(d, list(column_rule("x", dtype = "numeric"), 
+    column_rule("y", dtype = "character")))
+}

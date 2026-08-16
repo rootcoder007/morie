@@ -19,3 +19,6 @@ A \code{morie_effect_size}.
 \description{
 Omega-squared — less biased than eta-squared
 }
+\examples{
+omega_squared(0, 0, 1, 1)
+}

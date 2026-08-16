@@ -25,3 +25,6 @@ work with base R / \code{readxl}; all spatial formats (\code{geojson},
 \code{requireNamespace("sf")} and surface a clean install message if
 the dependency is missing.
 }
+\examples{
+morie_tps_load("Assault", format = "csv", nrows = 2L)
+}
