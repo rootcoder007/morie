@@ -8,9 +8,9 @@
 chronos_forecast_summary(token_probs, bins, quantiles = c(0.1, 0.5, 0.9))
 }
 \arguments{
-\item{token_probs}{See Usage.}
+\item{token_probs}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{bins}{A list; the body reads \code{$centers} from it.}
-\item{quantiles}{Defaults to \code{c(0.1, 0.5, 0.9)}.}
+\item{quantiles}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{c(0.1, 0.5, 0.9)}.}
 }
 \description{
 A step of the chronos_native implementation. No other function in the package calls it. See the file header for the source the module follows.

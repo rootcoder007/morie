@@ -9,7 +9,7 @@ coherence(A, rank = NULL)
 }
 \arguments{
 \item{A}{A matrix; passed to \code{as.matrix}.}
-\item{rank}{Defaults to \code{NULL}.}
+\item{rank}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the meglt_native implementation; see the file header for the source it follows.

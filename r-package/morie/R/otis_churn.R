@@ -92,7 +92,7 @@ NULL
 #' "1 placement" -> 1 "2 placements" -> 2 "6 to 10 placements" -> 8
 #' (midpoint) "Greater than 40" -> 50 (boundary + 10)
 #'
-#' @param label See Usage.
+#' @param label Coerced to character by the body, with \code{as.character}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .churn_parse_placement_bin <- function(label) {

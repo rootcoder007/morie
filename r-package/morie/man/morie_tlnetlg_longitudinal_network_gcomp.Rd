@@ -12,7 +12,7 @@ morie_tlnetlg_longitudinal_network_gcomp(Q_seq, friends, W, policy, T)
 \item{friends}{Passed to \code{morie_tlnetlg_community_estimand}.}
 \item{W}{Passed to \code{.tlnetlg_mat}.}
 \item{policy}{Passed to \code{morie_tlnetlg_community_estimand}.}
-\item{T}{See Usage.}
+\item{T}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the tlnetlg_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 .phylml_pi(pi)
 }
 \arguments{
-\item{pi}{See Usage.}
+\item{pi}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the phylml_native implementation; see the file header for the source it follows.

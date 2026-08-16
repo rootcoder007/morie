@@ -25,7 +25,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Optional; may be \code{NULL}. Character; the body checks with \code{is.character}.
 #' @return Nothing; this branch always raises.
 #' @export
 .sechsh_as_bytes <- function(x) {
@@ -41,7 +41,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param bs See Usage.
+#' @param bs Coerced to integer by the body, with \code{as.integer}.
 #' @return A character value.
 #' @export
 .sechsh_hexlify <- function(bs) {

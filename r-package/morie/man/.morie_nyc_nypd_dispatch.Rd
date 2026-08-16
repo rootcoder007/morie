@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{dataset_key}{See Usage.}
-\item{year}{See Usage.}
+\item{year}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 \item{max_features}{Optional; may be \code{NULL}. Passed to \code{.morie_dataset_socrata_fetch}.}
 \item{offline}{A flag; the body branches on it.}
 \item{resource_id}{Optional; may be \code{NULL}. Passed to \code{.morie_dataset_soda3_query}.}

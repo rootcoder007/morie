@@ -14,9 +14,9 @@ easy_only_fit(X, y, difficulty, X_test, y_test, quantile = 0.5, updates = 200, s
 \item{X_test}{Passed to \code{.prgrl_to_rows}.}
 \item{y_test}{Passed to \code{.prgrl_to_vec}.}
 \item{quantile}{Numeric; combined arithmetically in the body. Defaults to \code{0.5}.}
-\item{updates}{Defaults to \code{200}.}
+\item{updates}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.}
 \item{seed}{Passed to \code{.prgrl_rng}. Defaults to \code{0}.}
-\item{n_repeats}{Defaults to \code{50}.}
+\item{n_repeats}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{50}.}
 }
 \description{
 Part of the prgrl_native implementation; see the file header for the source it follows.

@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{coords}{A matrix; passed to \code{as.matrix}.}
-\item{z}{See Usage.}
+\item{z}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the schaben_native implementation; see the file header for the source it follows.

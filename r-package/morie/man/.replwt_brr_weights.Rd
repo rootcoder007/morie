@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{d}{A list; the body reads \code{$psu_units}, \code{$stratum_order}, \code{$stratum_psus}, \code{$weights} from it.}
-\item{fay}{Defaults to \code{0}.}
+\item{fay}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.}
 }
 \description{
 Part of the replwt_native implementation; see the file header for the source it follows.

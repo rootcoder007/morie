@@ -8,7 +8,7 @@
 validate_workflow_map(script_map)
 }
 \arguments{
-\item{script_map}{See Usage.}
+\item{script_map}{Character; the body checks with \code{is.character}.}
 }
 \description{
 Part of the workflow implementation; see the file header for the source it follows.

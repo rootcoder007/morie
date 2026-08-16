@@ -12,7 +12,7 @@ ner_decode(emissions, types, decoder = "viterbi", transition_scores = NULL, gold
 \item{types}{See Usage.}
 \item{decoder}{One of \code{"greedy"}, \code{"viterbi"}. Defaults to \code{"viterbi"}.}
 \item{transition_scores}{Defaults to \code{NULL}.}
-\item{gold}{Defaults to \code{NULL}.}
+\item{gold}{Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.}
 }
 \description{
 A step of the benRea_native implementation. Called by \code{morie_benRea}. See the file header for the source the module follows.

@@ -8,8 +8,8 @@
 .psy_fixed_pool(yi, vi)
 }
 \arguments{
-\item{yi}{See Usage.}
-\item{vi}{See Usage.}
+\item{yi}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{vi}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the psycho_native implementation; see the file header for the source it follows.

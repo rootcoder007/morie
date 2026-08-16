@@ -8,9 +8,9 @@
 make_blocks(n_markers, chromosomes = NULL, block_size = 1000)
 }
 \arguments{
-\item{n_markers}{See Usage.}
-\item{chromosomes}{Defaults to \code{NULL}.}
-\item{block_size}{Defaults to \code{1000}.}
+\item{n_markers}{Coerced to integer by the body, with \code{as.integer}.}
+\item{chromosomes}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
+\item{block_size}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1000}.}
 }
 \description{
 Part of the regmlm_native implementation; see the file header for the source it follows.

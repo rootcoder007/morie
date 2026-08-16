@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{seq}{A vector; its length is taken and its elements indexed.}
-\item{burn_in}{See Usage.}
+\item{burn_in}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the tsbF_native implementation; see the file header for the source it follows.

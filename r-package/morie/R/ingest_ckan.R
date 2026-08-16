@@ -47,7 +47,7 @@
 #' @param params Passed to \code{.morie_dataset_http_text}.
 #' @param api_key Defaults to \code{NULL}.
 #' @param user_agent Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.
-#' @param timeout Defaults to \code{.MORIE_CKAN_DEFAULT_TIMEOUT}.
+#' @param timeout Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{$}.
 #' @export
 .morie_ckan_call <- function(portal,

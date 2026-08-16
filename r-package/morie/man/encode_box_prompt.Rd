@@ -8,7 +8,7 @@
 encode_box_prompt(box, dim = 8, type_embeddings = NULL)
 }
 \arguments{
-\item{box}{See Usage.}
+\item{box}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{dim}{Passed to \code{.samseg_pos_enc}. Defaults to \code{8}.}
 \item{type_embeddings}{Defaults to \code{NULL}.}
 }

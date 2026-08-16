@@ -10,7 +10,7 @@ one_minus_km(hazards, times, cause)
 \arguments{
 \item{hazards}{A vector; indexed elementwise.}
 \item{times}{A vector; its length is taken.}
-\item{cause}{See Usage.}
+\item{cause}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tmlcmp_native implementation; see the file header for the source it follows.

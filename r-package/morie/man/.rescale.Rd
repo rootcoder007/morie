@@ -8,9 +8,9 @@
 .rescale(y, lower, upper)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{lower}{See Usage.}
-\item{upper}{See Usage.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{lower}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{upper}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tmldyk_native implementation; see the file header for the source it follows.

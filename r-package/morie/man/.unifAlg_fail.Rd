@@ -10,7 +10,7 @@
 \arguments{
 \item{sub}{See Usage.}
 \item{why}{See Usage.}
-\item{oc}{See Usage.}
+\item{oc}{Coerced to logical by the body, with \code{as.logical}.}
 }
 \description{
 Part of the unifAlg_native implementation; see the file header for the source it follows.

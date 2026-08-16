@@ -10,7 +10,7 @@ narm_bilinear_scores(embeddings, B, c_t)
 \arguments{
 \item{embeddings}{A matrix; passed to \code{as.matrix}.}
 \item{B}{A matrix; passed to \code{ncol}.}
-\item{c_t}{See Usage.}
+\item{c_t}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the narm_native implementation; see the file header for the source it follows.

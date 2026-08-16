@@ -8,7 +8,7 @@
 .as_numeric_vec(p)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{Optional; may be \code{NULL}. A list; the body checks with \code{is.list}.}
 }
 \description{
 k.vec() which iterates over the input.

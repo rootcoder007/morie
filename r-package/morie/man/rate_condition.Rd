@@ -8,9 +8,9 @@
 rate_condition(rate_Q, rate_g, n)
 }
 \arguments{
-\item{rate_Q}{See Usage.}
-\item{rate_g}{See Usage.}
-\item{n}{See Usage.}
+\item{rate_Q}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{rate_g}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{n}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the tlhaltm_native implementation; see the file header for the source it follows.

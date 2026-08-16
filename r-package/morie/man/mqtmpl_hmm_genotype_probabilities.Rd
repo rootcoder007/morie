@@ -8,9 +8,9 @@
 mqtmpl_hmm_genotype_probabilities(genotypes, positions, error_rate = 0)
 }
 \arguments{
-\item{genotypes}{See Usage.}
+\item{genotypes}{Iterated over elementwise, with \code{sapply}.}
 \item{positions}{A vector; its length is taken and its elements indexed.}
-\item{error_rate}{Defaults to \code{0}.}
+\item{error_rate}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.}
 }
 \description{
 Part of the mqtmpl_native implementation; see the file header for the source it follows.

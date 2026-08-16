@@ -20,8 +20,8 @@ maximise_acquisition(X, y, best, box, acq = "ei", kernel = "matern52", amplitude
 \item{kappa}{Defaults to \code{2}.}
 \item{xi}{Defaults to \code{0}.}
 \item{starts}{Optional; may be \code{NULL}. A vector; its length is taken.}
-\item{n_starts}{Defaults to \code{8}.}
-\item{max_iter}{Defaults to \code{60}.}
+\item{n_starts}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8}.}
+\item{max_iter}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{60}.}
 \item{tol}{Defaults to \code{1e-08}.}
 \item{rnd}{Defaults to \code{NULL}.}
 }

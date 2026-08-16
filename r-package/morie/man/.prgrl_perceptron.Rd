@@ -11,8 +11,8 @@
 \item{X}{A vector; indexed elementwise.}
 \item{y}{A vector; indexed elementwise.}
 \item{order}{A vector; its length is taken and its elements indexed.}
-\item{updates}{See Usage.}
-\item{w0}{See Usage.}
+\item{updates}{Coerced to integer by the body, with \code{as.integer}.}
+\item{w0}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the prgrl_native implementation; see the file header for the source it follows.

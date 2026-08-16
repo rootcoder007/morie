@@ -9,7 +9,7 @@ channel_independent_tokens(X, patch_len, stride = NULL)
 }
 \arguments{
 \item{X}{A matrix; passed to \code{as.matrix}.}
-\item{patch_len}{See Usage.}
+\item{patch_len}{Coerced to integer by the body, with \code{as.integer}.}
 \item{stride}{Defaults to \code{NULL}.}
 }
 \description{

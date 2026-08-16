@@ -8,13 +8,13 @@
 composite_distance(tnf_a, tnf_b, cov_a = NULL, cov_b = NULL, len_a = NULL, len_b = NULL, w_abundance = 0.5)
 }
 \arguments{
-\item{tnf_a}{See Usage.}
-\item{tnf_b}{See Usage.}
+\item{tnf_a}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{tnf_b}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{cov_a}{Optional; may be \code{NULL}. A vector; its length is taken.}
 \item{cov_b}{Defaults to \code{NULL}.}
 \item{len_a}{Defaults to \code{NULL}.}
 \item{len_b}{Defaults to \code{NULL}.}
-\item{w_abundance}{Defaults to \code{0.5}.}
+\item{w_abundance}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.5}.}
 }
 \description{
 Part of the metabd_native implementation; see the file header for the source it follows.

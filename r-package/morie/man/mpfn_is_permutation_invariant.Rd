@@ -14,7 +14,7 @@ mpfn_is_permutation_invariant(H, adj, edge_features, perm, T = 3, how = "sum", t
 \item{perm}{A vector; indexed elementwise.}
 \item{T}{Defaults to \code{3}.}
 \item{how}{Defaults to \code{"sum"}.}
-\item{tol}{Defaults to \code{1e-09}.}
+\item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.}
 }
 \description{
 Part of the mpfn_native implementation; see the file header for the source it follows.

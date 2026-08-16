@@ -93,10 +93,10 @@ morie_ingest_tps_layers <- function() {
 #' @param where Defaults to \code{"1=1"}.
 #' @param out_fields Defaults to \code{"*"}.
 #' @param return_geometry A flag; the body branches on it. Defaults to \code{FALSE}.
-#' @param result_offset Defaults to \code{0L}.
-#' @param result_record_count Defaults to \code{2000L}.
+#' @param result_offset Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.
+#' @param result_record_count Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000L}.
 #' @param user_agent Defaults to \code{.MORIE_TPS_DEFAULT_UA}.
-#' @param timeout Defaults to \code{.MORIE_TPS_DEFAULT_TIMEOUT}.
+#' @param timeout Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{payload}, as built in the body.
 #' @export
 .morie_tps_arcgis_query <- function(layer_url,

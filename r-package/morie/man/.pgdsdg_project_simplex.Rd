@@ -8,8 +8,8 @@
 .pgdsdg_project_simplex(x, total = 1)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{total}{Defaults to \code{1}.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{total}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 }
 \description{
 Part of the pgdsdg_native implementation; see the file header for the source it follows.

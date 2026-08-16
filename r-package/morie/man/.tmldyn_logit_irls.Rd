@@ -8,7 +8,7 @@
 .tmldyn_logit_irls(X, a, ridge = 1e-08, max_iter = 50L, tol = 1e-10)
 }
 \arguments{
-\item{X}{See Usage.}
+\item{X}{A matrix; the body checks with \code{is.matrix}.}
 \item{a}{Numeric; combined arithmetically in the body.}
 \item{ridge}{Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.}
 \item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.}

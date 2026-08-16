@@ -42,10 +42,10 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param h_i See Usage.
-#' @param h_j See Usage.
-#' @param x_i See Usage.
-#' @param x_j See Usage.
+#' @param h_i Coerced to numeric by the body, with \code{as.numeric}.
+#' @param h_j Coerced to numeric by the body, with \code{as.numeric}.
+#' @param x_i Coerced to numeric by the body, with \code{as.numeric}.
+#' @param x_j Coerced to numeric by the body, with \code{as.numeric}.
 #' @param phi_e See Usage.
 #' @param a_ij Defaults to \code{NULL}.
 #' @return The value of \code{phi_e}.
@@ -65,7 +65,7 @@ edge_message <- function(h_i, h_j, x_i, x_j, phi_e, a_ij = NULL) {
 #' @param X A matrix; indexed by row and column.
 #' @param M A vector; indexed elementwise.
 #' @param phi_x See Usage.
-#' @param C Defaults to \code{NULL}.
+#' @param C Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{lapply}.
 #' @export
 coord_update <- function(X, M, phi_x, C = NULL) {
@@ -99,11 +99,11 @@ coord_update <- function(X, M, phi_x, C = NULL) {
 #' @param phi_x See Usage.
 #' @param phi_h See Usage.
 #' @param A Optional; may be \code{NULL}. A vector; indexed elementwise.
-#' @param C Defaults to \code{NULL}.
+#' @param C Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param V Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @param mode Compared against \code{"position"}. Defaults to \code{"position"}.
 #' @param phi_v Defaults to \code{NULL}.
-#' @param dt Defaults to \code{1}.
+#' @param dt Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @return A list with \code{H}, \code{X}, \code{V}, \code{messages}.
 #' @export
 egcl <- function(H, X, phi_e, phi_x, phi_h, A = NULL, C = NULL,
@@ -169,7 +169,7 @@ egcl <- function(H, X, phi_e, phi_x, phi_h, A = NULL, C = NULL,
 #'
 #' @param H A matrix; passed to \code{as.matrix}.
 #' @param X A matrix; passed to \code{as.matrix}.
-#' @param layers See Usage.
+#' @param layers Coerced to integer by the body, with \code{as.integer}.
 #' @param phi_e See Usage.
 #' @param phi_x See Usage.
 #' @param phi_h See Usage.

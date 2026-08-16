@@ -12,7 +12,7 @@ level1_stack(preds, y, cv = "kfold", k = 5, lam = NULL)
 \item{y}{A vector; its length is taken and its elements indexed.}
 \item{cv}{Passed to \code{.regmlm_folds}. Defaults to \code{"kfold"}.}
 \item{k}{Passed to \code{.regmlm_folds}. Defaults to \code{5}.}
-\item{lam}{Defaults to \code{NULL}.}
+\item{lam}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the regmlm_native implementation; see the file header for the source it follows.

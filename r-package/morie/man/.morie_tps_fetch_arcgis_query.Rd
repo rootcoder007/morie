@@ -10,8 +10,8 @@
 \arguments{
 \item{base_url}{See Usage.}
 \item{where}{See Usage.}
-\item{offset}{See Usage.}
-\item{max_records}{Defaults to \code{2000L}.}
+\item{offset}{Coerced to integer by the body, with \code{as.integer}.}
+\item{max_records}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000L}.}
 \item{timeout}{Defaults to \code{120}.}
 }
 \description{

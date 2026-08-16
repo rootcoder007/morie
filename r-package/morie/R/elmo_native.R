@@ -49,12 +49,12 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param h A vector; its length is taken.
 #' @param c A vector; its length is taken.
 #' @param Wx A matrix; passed to \code{as.matrix}.
 #' @param Wh A matrix; passed to \code{as.matrix}.
-#' @param b See Usage.
+#' @param b Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{h}, \code{c}.
 #' @export
 .lstm_step <- function(x, h, c, Wx, Wh, b) {
@@ -133,7 +133,7 @@
 #' @param reps A vector; its length is taken and its elements indexed.
 #' @param raw_weights A vector; its length is taken.
 #' @param gamma Numeric; combined arithmetically in the body. Defaults to \code{1}.
-#' @param position Defaults to \code{NULL}.
+#' @param position Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .elmo_mix <- function(reps, raw_weights, gamma = 1.0, position = NULL) {
@@ -170,7 +170,7 @@
 #'
 #' @param X Passed to \code{.bilm_forward}.
 #' @param layers Passed to \code{.bilm_forward}.
-#' @param raw_weights Defaults to \code{NULL}.
+#' @param raw_weights Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param gamma Passed to \code{.elmo_mix}. Defaults to \code{1}.
 #' @return A list with \code{estimate}, \code{elmo}, \code{layers}, \code{weights}, \code{gamma}, \code{n_layers}, \code{L}, \code{d}, \code{top_layer}, \code{method}.
 #' @export

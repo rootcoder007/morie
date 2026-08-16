@@ -8,8 +8,8 @@
 .tloilr_blip(Q1, Q0)
 }
 \arguments{
-\item{Q1}{See Usage.}
-\item{Q0}{See Usage.}
+\item{Q1}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{Q0}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tloilr_native implementation; see the file header for the source it follows.

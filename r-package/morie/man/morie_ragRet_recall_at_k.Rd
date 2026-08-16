@@ -8,8 +8,8 @@
 morie_ragRet_recall_at_k(approximate, exact)
 }
 \arguments{
-\item{approximate}{See Usage.}
-\item{exact}{See Usage.}
+\item{approximate}{Coerced to integer by the body, with \code{as.integer}.}
+\item{exact}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the ragRet_native implementation; see the file header for the source it follows.

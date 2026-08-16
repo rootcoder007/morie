@@ -10,7 +10,7 @@
 \arguments{
 \item{ut}{See Usage.}
 \item{H}{A vector; indexed elementwise.}
-\item{t}{See Usage.}
+\item{t}{Iterated over elementwise, with \code{vapply}.}
 }
 \description{
 Part of the survival_more implementation; see the file header for the source it follows.

@@ -27,8 +27,8 @@
 #' endpoint is unreachable) is set to 6000 so cold-start sweeps still
 #' capture everything currently published.
 #'
-#' @param default Defaults to \code{6000L}.
-#' @param margin Defaults to \code{300L}.
+#' @param default Coerced to integer by the body, with \code{as.integer}. Defaults to \code{6000L}.
+#' @param margin Coerced to integer by the body, with \code{as.integer}. Defaults to \code{300L}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .siu_discover_max_drid <- function(default = 6000L, margin = 300L) {
@@ -2279,7 +2279,7 @@ morie_siu_translate_fr_to_en <- function(
 #' @param source_lang See Usage.
 #' @param case_numbers Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.
 #' @param model Passed to \code{.siu_llm_call}.
-#' @param fields See Usage.
+#' @param fields Iterated over elementwise, with \code{lapply}.
 #' @param cache_dir Passed to \code{.siu_load_canonical_overrides}.
 #' @param progress A flag; the body branches on it.
 #' @return Invisibly,the value of \code{out}, as built in the body.

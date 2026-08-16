@@ -22,7 +22,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A numeric value.
 #' @export
 .tmldyk_logit <- function(p) {
@@ -50,7 +50,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param Z See Usage.
+#' @param Z A matrix; the body checks with \code{is.matrix}.
 #' @param a A vector; its length is taken.
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
 #' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
@@ -85,7 +85,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param Z See Usage.
+#' @param Z A matrix; the body checks with \code{is.matrix}.
 #' @param yv A matrix; passed to \code{crossprod}.
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
 #' @return A matrix, from \code{solve}.
@@ -122,9 +122,9 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
-#' @param lower See Usage.
-#' @param upper See Usage.
+#' @param y Coerced to numeric by the body, with \code{as.numeric}.
+#' @param lower Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param upper Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{scaled}, \code{lower}, \code{upper}, \code{range}.
 #' @export
 .rescale <- function(y, lower, upper) {
@@ -144,9 +144,9 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param value See Usage.
-#' @param lower See Usage.
-#' @param upper See Usage.
+#' @param value Coerced to numeric by the body, with \code{as.numeric}.
+#' @param lower Coerced to numeric by the body, with \code{as.numeric}.
+#' @param upper Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A numeric value.
 #' @export
 .unscale <- function(value, lower, upper) {
@@ -164,9 +164,9 @@
 #' @param yv A vector; its length is taken.
 #' @param a A vector; indexed elementwise.
 #' @param W A matrix; indexed by row and column.
-#' @param g See Usage.
-#' @param Q1 See Usage.
-#' @param Q0 See Usage.
+#' @param g Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param Q1 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param Q0 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param lower Passed to \code{.rescale}.
 #' @param upper Passed to \code{.rescale}.
 #' @return A list with \code{psi}, \code{se}, \code{range}.

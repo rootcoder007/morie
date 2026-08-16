@@ -8,7 +8,7 @@
 .tt_poisson_draw(lam, rng)
 }
 \arguments{
-\item{lam}{See Usage.}
+\item{lam}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{rng}{Passed to \code{.ghc_norm}.}
 }
 \description{

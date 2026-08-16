@@ -10,7 +10,7 @@ node2v_transition_probabilities(adj, t, v, p, q, weights = NULL)
 \arguments{
 \item{adj}{A vector; indexed elementwise.}
 \item{t}{See Usage.}
-\item{v}{See Usage.}
+\item{v}{Coerced to character by the body, with \code{as.character}.}
 \item{p}{See Usage.}
 \item{q}{See Usage.}
 \item{weights}{Optional; may be \code{NULL}. A vector; indexed elementwise.}

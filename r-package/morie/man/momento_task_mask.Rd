@@ -8,10 +8,10 @@
 momento_task_mask(n_patches, task = "forecast", span = 1, start = NULL)
 }
 \arguments{
-\item{n_patches}{See Usage.}
+\item{n_patches}{Coerced to integer by the body, with \code{as.integer}.}
 \item{task}{One of \code{"forecast"}, \code{"impute"}. Defaults to \code{"forecast"}.}
-\item{span}{Defaults to \code{1}.}
-\item{start}{Defaults to \code{NULL}.}
+\item{span}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1}.}
+\item{start}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the momento_native implementation; see the file header for the source it follows.

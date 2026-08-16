@@ -9,7 +9,7 @@ upsample(grid, factor = 2)
 }
 \arguments{
 \item{grid}{Passed to \code{.samdec_mat}.}
-\item{factor}{Defaults to \code{2}.}
+\item{factor}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2}.}
 }
 \description{
 Part of the samdec_native implementation; see the file header for the source it follows.

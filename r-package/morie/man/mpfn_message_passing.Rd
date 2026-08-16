@@ -8,10 +8,10 @@
 mpfn_message_passing(H0, adj, edge_features, T = 3, A = NULL, update = NULL)
 }
 \arguments{
-\item{H0}{See Usage.}
+\item{H0}{Iterated over elementwise, with \code{lapply}.}
 \item{adj}{A vector; indexed elementwise.}
 \item{edge_features}{A vector; indexed elementwise.}
-\item{T}{Defaults to \code{3}.}
+\item{T}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{3}.}
 \item{A}{Defaults to \code{NULL}.}
 \item{update}{Defaults to \code{NULL}.}
 }

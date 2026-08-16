@@ -212,9 +212,9 @@ mqtmpl_check_method <- function(method) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param genotypes See Usage.
+#' @param genotypes Iterated over elementwise, with \code{sapply}.
 #' @param positions A vector; its length is taken and its elements indexed.
-#' @param error_rate Defaults to \code{0}.
+#' @param error_rate Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 mqtmpl_hmm_genotype_probabilities <- function(genotypes, positions, error_rate = 0) {
@@ -284,7 +284,7 @@ mqtmpl_hmm_genotype_probabilities <- function(genotypes, positions, error_rate =
 #' @param genotypes A vector; its length is taken.
 #' @param positions A vector; its length is taken and its elements indexed.
 #' @param grid A vector; its length is taken and its elements indexed.
-#' @param n_imp Defaults to \code{16}.
+#' @param n_imp Coerced to integer by the body, with \code{as.integer}. Defaults to \code{16}.
 #' @param error_rate Defaults to \code{0}.
 #' @param seed Defaults to \code{0}.
 #' @return The value of \code{out}, as built in the body.
@@ -366,7 +366,7 @@ mqtmpl_imputation_weights <- function(y, genotype_column, model_dimension = 2) {
 #' @param markers A vector; its length is taken and its elements indexed.
 #' @param positions A vector; its length is taken and its elements indexed.
 #' @param step Numeric; combined arithmetically in the body.
-#' @param n_imp See Usage.
+#' @param n_imp Coerced to integer by the body, with \code{as.integer}.
 #' @param error_rate See Usage.
 #' @param seed See Usage.
 #' @return A list with \code{estimate}, \code{peak_lod}, \code{peak_position}, \code{position}, \code{lod}, \code{method_used}, \code{n_imputations}, \code{note}, \code{method}.
@@ -428,7 +428,7 @@ mqtmpl_kw_n_imp <- function(covariates) {
 #' @param method One of \code{"imp"}, \code{"mr"}. Defaults to \code{"em"}.
 #' @param step Defaults to \code{0.02}.
 #' @param covariates A vector; its length is taken. Defaults to \code{list()}.
-#' @param error_rate Defaults to \code{0}.
+#' @param error_rate Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
 #' @return A list with \code{estimate}, \code{peak_lod}, \code{peak_position}, \code{position}, \code{lod}, \code{method_used}, \code{n_covariates}, \code{error_rate}, \code{method}.
 #' @export
 mqtmpl_scanone <- function(y, markers, positions, method = "em", step = 0.02,
@@ -476,11 +476,11 @@ mqtmpl_scanone <- function(y, markers, positions, method = "em", step = 0.02,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
+#' @param y Coerced to numeric by the body, with \code{as.numeric}.
 #' @param markers See Usage.
 #' @param positions See Usage.
-#' @param n_perm Defaults to \code{100}.
-#' @param alpha Defaults to \code{0.05}.
+#' @param n_perm Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100}.
+#' @param alpha Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.05}.
 #' @param method Defaults to \code{"em"}.
 #' @param step Defaults to \code{0.05}.
 #' @param seed Defaults to \code{0}.
@@ -515,7 +515,7 @@ mqtmpl_permutation_threshold <- function(y, markers, positions, n_perm = 100,
 #' source it follows.
 #'
 #' @param scan_result A list; the body reads \code{$lod}, \code{$position} from it.
-#' @param drop Defaults to \code{1.5}.
+#' @param drop Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1.5}.
 #' @return A list with \code{peak}, \code{lower}, \code{upper}, \code{drop}, \code{peak_lod}.
 #' @export
 mqtmpl_lod_support_interval <- function(scan_result, drop = 1.5) {

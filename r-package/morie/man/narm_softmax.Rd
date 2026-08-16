@@ -8,7 +8,7 @@
 narm_softmax(z)
 }
 \arguments{
-\item{z}{See Usage.}
+\item{z}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the narm_native implementation; see the file header for the source it follows.

@@ -11,8 +11,8 @@ miprgr_enumerate_integer(A, b, c, integer_vars, upper = 10, maximise = TRUE)
 \item{A}{A matrix; indexed by row and column.}
 \item{b}{A vector; indexed elementwise.}
 \item{c}{A vector; its length is taken.}
-\item{integer_vars}{See Usage.}
-\item{upper}{Defaults to \code{10}.}
+\item{integer_vars}{Coerced to integer by the body, with \code{as.integer}.}
+\item{upper}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{10}.}
 \item{maximise}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{

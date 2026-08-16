@@ -242,7 +242,7 @@ correlation <- function(group1, group2, weights1 = NULL, weights2 = NULL,
 #'
 #' @param lags A vector; indexed elementwise.
 #' @param c Numeric; passed to \code{order}.
-#' @param n_peaks See Usage.
+#' @param n_peaks Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{[}.
 #' @export
 mafft_peaks <- function(lags, c, n_peaks) {
@@ -299,7 +299,7 @@ mafft_jtt_exchangeability <- function() {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param pam Defaults to \code{200}.
+#' @param pam Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{200}.
 #' @param scale Numeric; combined arithmetically in the body. Defaults to \code{10}.
 #' @return A list with \code{matrix}, \code{freqs}, \code{P}, \code{Q}, \code{pam}, \code{rate}.
 #' @export
@@ -611,10 +611,10 @@ mafft_nw <- function(g1, g2, M, w1, w2, s_op) {
 #' @param group1 See Usage.
 #' @param group2 See Usage.
 #' @param scoring A list; the body reads \code{$matrix} from it.
-#' @param weights1 Defaults to \code{NULL}.
-#' @param weights2 Defaults to \code{NULL}.
+#' @param weights1 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param weights2 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param s_op Defaults to \code{2.4}.
-#' @param anchors Defaults to \code{NULL}.
+#' @param anchors Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.
 #' @return The value of \code{mafft_nw}.
 #' @export
 group_align <- function(group1, group2, scoring, weights1 = NULL,
@@ -669,8 +669,8 @@ group_align <- function(group1, group2, scoring, weights1 = NULL,
 #' @param group1 See Usage.
 #' @param group2 See Usage.
 #' @param scoring A list; the body reads \code{$matrix} from it.
-#' @param weights1 Defaults to \code{NULL}.
-#' @param weights2 Defaults to \code{NULL}.
+#' @param weights1 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param weights2 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param seq_type Defaults to \code{"aa"}.
 #' @param window Numeric; combined arithmetically in the body. Defaults to \code{30L}.
 #' @param n_peaks Defaults to \code{20L}.
@@ -977,7 +977,7 @@ progressive_align <- function(seqs, scoring, tree = NULL, seq_type = "aa",
 #' @param alignment See Usage.
 #' @param scoring A list; the body reads \code{$matrix} from it.
 #' @param s_op Numeric; combined arithmetically in the body. Defaults to \code{2.4}.
-#' @param weights Defaults to \code{NULL}.
+#' @param weights Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{total}, as built in the body.
 #' @export
 wsp_score <- function(alignment, scoring, s_op = 2.4, weights = NULL) {
@@ -1107,7 +1107,7 @@ iterative_refine <- function(alignment, scoring, tree = NULL, s_op = 2.4,
 #' @param raw_matrix Defaults to \code{NULL}.
 #' @param freqs Defaults to \code{NULL}.
 #' @param s_a Defaults to \code{0.06}.
-#' @param s_op Defaults to \code{2.4}.
+#' @param s_op Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{2.4}.
 #' @param matrix Defaults to \code{"normalized"}.
 #' @param window Defaults to \code{30L}.
 #' @param n_peaks Defaults to \code{20L}.

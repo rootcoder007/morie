@@ -8,14 +8,14 @@
 gp_posterior(X, y, Xs, kernel = "matern52", amplitude = 1, length_scale = 1, noise = 1e-08, mean = NULL)
 }
 \arguments{
-\item{X}{See Usage.}
-\item{y}{See Usage.}
+\item{X}{Iterated over elementwise, with \code{lapply}.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{Xs}{A vector; its length is taken and its elements indexed.}
 \item{kernel}{Passed to \code{.kernel}. Defaults to \code{"matern52"}.}
 \item{amplitude}{Defaults to \code{1}.}
 \item{length_scale}{Defaults to \code{1}.}
 \item{noise}{Defaults to \code{1e-08}.}
-\item{mean}{Defaults to \code{NULL}.}
+\item{mean}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 A step of the bayopt_native implementation. Called by \code{bayopt}, \code{maximise_acquisition}. See the file header for the source the module follows.

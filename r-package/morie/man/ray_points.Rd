@@ -10,9 +10,9 @@ ray_points(origin, direction, t_near, t_far, n_samples, rng = NULL, stratified =
 \arguments{
 \item{origin}{Passed to \code{.as_numeric_vec}.}
 \item{direction}{Passed to \code{.as_numeric_vec}.}
-\item{t_near}{See Usage.}
-\item{t_far}{See Usage.}
-\item{n_samples}{See Usage.}
+\item{t_near}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{t_far}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{n_samples}{Coerced to integer by the body, with \code{as.integer}.}
 \item{rng}{Optional; may be \code{NULL}. Passed to \code{.ghc_unif}.}
 \item{stratified}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }

@@ -32,7 +32,7 @@
 #' source it follows.
 #'
 #' @param l2 Numeric; combined arithmetically in the body. Defaults to \code{0.001}.
-#' @param epochs Defaults to \code{300L}.
+#' @param epochs Coerced to integer by the body, with \code{as.integer}. Defaults to \code{300L}.
 #' @param lr Numeric; combined arithmetically in the body. Defaults to \code{0.5}.
 #' @param seed Defaults to \code{0}.
 #' @return The value of \code{function}.
@@ -133,7 +133,7 @@ knn_trainer <- function(k = 1L, smoothing = 1e-3) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param model_predict See Usage.
+#' @param model_predict Numeric; the body checks with \code{is.numeric}.
 #' @param in_X A vector; its length is taken.
 #' @param in_y A vector; indexed elementwise.
 #' @param out_X A vector; its length is taken.
@@ -175,10 +175,10 @@ attack_dataset <- function(model_predict, in_X, in_y, out_X, out_y) {
 #' @param c Numeric; combined arithmetically in the body.
 #' @param n_features A count; the body uses it as \code{seq_len(...)}.
 #' @param feature_values Defaults to \code{NULL}.
-#' @param k_max Defaults to \code{NULL}.
+#' @param k_max Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @param k_min Numeric; passed to \code{max}. Defaults to \code{1L}.
 #' @param conf_min Defaults to \code{0.8}.
-#' @param iter_max Defaults to \code{1000L}.
+#' @param iter_max Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1000L}.
 #' @param rej_max Defaults to \code{10L}.
 #' @param seed Passed to \code{.memb_rng}. Defaults to \code{0}.
 #' @return Nothing; the function is called for its effect.
@@ -249,7 +249,7 @@ synthesize <- function(target_predict, c, n_features, feature_values = NULL,
 #' source it follows.
 #'
 #' @param X A vector; its length is taken and its elements indexed.
-#' @param n See Usage.
+#' @param n Coerced to integer by the body, with \code{as.integer}.
 #' @param seed Passed to \code{.memb_rng}. Defaults to \code{0}.
 #' @return The value of \code{split}.
 #' @export
@@ -339,14 +339,14 @@ precision_recall <- function(pred, truth) {
 #' source it follows.
 #'
 #' @param target_predict See Usage.
-#' @param shadow_data See Usage.
+#' @param shadow_data Coerced to list by the body, with \code{as.list}.
 #' @param eval_in A vector; indexed elementwise.
 #' @param eval_out A vector; indexed elementwise.
 #' @param train_fn Defaults to \code{NULL}.
 #' @param attack_train_fn Defaults to \code{NULL}.
-#' @param n_shadow Defaults to \code{NULL}.
+#' @param n_shadow Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @param sort_features A flag; the body branches on it. Defaults to \code{FALSE}.
-#' @param threshold Defaults to \code{0.5}.
+#' @param threshold Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.5}.
 #' @return A list with \code{estimate}, \code{metrics}, \code{per_class}, \code{predictions}, \code{scores}, \code{truth}, \code{n_shadow}, \code{attack_train_size}, \code{attack_classes}, \code{threshold}, \code{note}, \code{method}.
 #' @export
 memb <- function(target_predict, shadow_data, eval_in, eval_out,

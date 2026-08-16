@@ -145,8 +145,8 @@ san_score <- function(eeg, fmri = NULL) {
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param e See Usage.
-#' @param f See Usage.
+#' @param e A matrix; the body checks with \code{is.matrix}.
+#' @param f A matrix; the body checks with \code{is.matrix}.
 #' @return A list with \code{e}, \code{f}.
 #' @export
 .entheo_align <- function(e, f) {

@@ -9,7 +9,7 @@ momento_harmonise(series_list, patch_len, normalise = TRUE)
 }
 \arguments{
 \item{series_list}{A vector; its length is taken.}
-\item{patch_len}{See Usage.}
+\item{patch_len}{Coerced to integer by the body, with \code{as.integer}.}
 \item{normalise}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{

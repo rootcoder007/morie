@@ -8,9 +8,9 @@
 .unscale(value, lower, upper)
 }
 \arguments{
-\item{value}{See Usage.}
-\item{lower}{See Usage.}
-\item{upper}{See Usage.}
+\item{value}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{lower}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{upper}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tmldyk_native implementation; see the file header for the source it follows.

@@ -8,12 +8,12 @@
 .lstm_step(x, h, c, Wx, Wh, b)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{h}{A vector; its length is taken.}
 \item{c}{A vector; its length is taken.}
 \item{Wx}{A matrix; passed to \code{as.matrix}.}
 \item{Wh}{A matrix; passed to \code{as.matrix}.}
-\item{b}{See Usage.}
+\item{b}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 A step of the elmo_native implementation. Called by \code{.bilm_forward}. See the file header for the source the module follows.

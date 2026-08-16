@@ -175,7 +175,7 @@ NULL
 #' the source it follows.
 #'
 #' @param dataset_key See Usage.
-#' @param year See Usage.
+#' @param year Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @param max_features Optional; may be \code{NULL}. Passed to \code{.morie_dataset_socrata_fetch}.
 #' @param offline A flag; the body branches on it.
 #' @param resource_id Optional; may be \code{NULL}. Passed to \code{.morie_dataset_soda3_query}.

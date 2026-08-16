@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{layer_key}{See Usage.}
-\item{year}{See Usage.}
+\item{year}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 \item{max_features}{Optional; may be \code{NULL}. Passed to \code{.morie_tps_psdp_feature_query}.}
 \item{offline}{A flag; the body branches on it.}
 \item{layer_url}{Optional; may be \code{NULL}. Passed to \code{.morie_tps_psdp_feature_query}.}

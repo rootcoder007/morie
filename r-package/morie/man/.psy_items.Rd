@@ -9,9 +9,9 @@
 }
 \arguments{
 \item{m}{A count; the body uses it as \code{rep(...)}.}
-\item{a}{See Usage.}
-\item{b}{See Usage.}
-\item{cc}{See Usage.}
+\item{a}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{b}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{cc}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the psycho_native implementation; see the file header for the source it follows.

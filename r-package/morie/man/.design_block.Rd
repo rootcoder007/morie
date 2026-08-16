@@ -8,7 +8,7 @@
 .design_block(L, n)
 }
 \arguments{
-\item{L}{See Usage.}
+\item{L}{A matrix; the body checks with \code{is.matrix}.}
 \item{n}{See Usage.}
 }
 \description{

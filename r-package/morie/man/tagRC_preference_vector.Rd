@@ -8,9 +8,9 @@
 tagRC_preference_vector(nodes, focus, weight = 0.9)
 }
 \arguments{
-\item{nodes}{See Usage.}
-\item{focus}{See Usage.}
-\item{weight}{Defaults to \code{0.9}.}
+\item{nodes}{Coerced to character by the body, with \code{as.character}.}
+\item{focus}{Coerced to character by the body, with \code{as.character}.}
+\item{weight}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.9}.}
 }
 \description{
 Part of the tagRC_native implementation; see the file header for the source it follows.

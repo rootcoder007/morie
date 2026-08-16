@@ -68,8 +68,8 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param num See Usage.
-#' @param den See Usage.
+#' @param num Coerced to numeric by the body, with \code{as.numeric}.
+#' @param den Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A numeric value.
 #' @export
 .safe_divide <- function(num, den) {
@@ -143,7 +143,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A numeric value.
 #' @export
 .clip_exp <- function(x) {

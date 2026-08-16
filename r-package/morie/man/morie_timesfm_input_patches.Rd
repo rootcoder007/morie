@@ -9,8 +9,8 @@ morie_timesfm_input_patches(x, patch_len, pad_value = 0)
 }
 \arguments{
 \item{x}{See Usage.}
-\item{patch_len}{See Usage.}
-\item{pad_value}{Defaults to \code{0}.}
+\item{patch_len}{Coerced to integer by the body, with \code{as.integer}.}
+\item{pad_value}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.}
 }
 \description{
 Part of the timesfm_native implementation; see the file header for the source it follows.

@@ -8,10 +8,10 @@
 .polyak_hard_update(target, online, step, C = 10000)
 }
 \arguments{
-\item{target}{See Usage.}
-\item{online}{See Usage.}
-\item{step}{See Usage.}
-\item{C}{Defaults to \code{10000}.}
+\item{target}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{online}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{step}{Coerced to integer by the body, with \code{as.integer}.}
+\item{C}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{10000}.}
 }
 \description{
 Part of the polyak_native implementation; see the file header for the source it follows.

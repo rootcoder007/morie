@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{df}{A matrix; indexed by row and column.}
-\item{nrows}{See Usage.}
+\item{nrows}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the tps_io implementation; see the file header for the source it follows.

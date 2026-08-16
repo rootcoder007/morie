@@ -12,10 +12,10 @@ synthesize(target_predict, c, n_features, feature_values = NULL, k_max = NULL, k
 \item{c}{Numeric; combined arithmetically in the body.}
 \item{n_features}{A count; the body uses it as \code{seq_len(...)}.}
 \item{feature_values}{Defaults to \code{NULL}.}
-\item{k_max}{Defaults to \code{NULL}.}
+\item{k_max}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 \item{k_min}{Numeric; passed to \code{max}. Defaults to \code{1L}.}
 \item{conf_min}{Defaults to \code{0.8}.}
-\item{iter_max}{Defaults to \code{1000L}.}
+\item{iter_max}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1000L}.}
 \item{rej_max}{Defaults to \code{10L}.}
 \item{seed}{Passed to \code{.memb_rng}. Defaults to \code{0}.}
 }

@@ -10,7 +10,7 @@ morie_safrl_worst_case_violation(delta, gamma, epsilon)
 \arguments{
 \item{delta}{Numeric; combined arithmetically in the body.}
 \item{gamma}{Numeric; combined arithmetically in the body.}
-\item{epsilon}{See Usage.}
+\item{epsilon}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the safrl_native implementation; see the file header for the source it follows.

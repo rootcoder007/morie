@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{y}{A vector; indexed elementwise.}
-\item{group}{See Usage.}
+\item{group}{Coerced to character by the body, with \code{as.character}.}
 }
 \description{
 Part of the ranova_native implementation; see the file header for the source it follows.

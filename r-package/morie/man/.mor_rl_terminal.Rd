@@ -8,7 +8,7 @@
 .mor_rl_terminal(terminal)
 }
 \arguments{
-\item{terminal}{See Usage.}
+\item{terminal}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the qlearn_native implementation; see the file header for the source it follows.

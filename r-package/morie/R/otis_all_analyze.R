@@ -51,7 +51,7 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Coerced to integer by the body, with \code{as.integer}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .otis_to_int <- function(x) {
@@ -65,7 +65,7 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Numeric; the body checks with \code{is.numeric}.
 #' @return The value of \code{as.integer}.
 #' @export
 .otis_is_truthy <- function(x) {
@@ -194,7 +194,7 @@ NULL
 #'
 #' @param title See Usage.
 #' @param summary_lines See Usage.
-#' @param tables Defaults to \code{list()}.
+#' @param tables Iterated over elementwise, with \code{Filter}. Defaults to \code{list()}.
 #' @param interpretation Defaults to \code{NULL}.
 #' @param warnings Defaults to \code{character(0)}.
 #' @param payload Defaults to \code{NULL}.
@@ -225,7 +225,7 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{as.integer}.
 #' @export
 .otis_female_indicator <- function(x) {
@@ -238,7 +238,7 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{as.integer}.
 #' @export
 .otis_toronto_indicator <- function(x) {
@@ -251,7 +251,7 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{as.integer}.
 #' @export
 .otis_age_50plus_indicator <- function(x) {
@@ -264,7 +264,7 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{as.integer}.
 #' @export
 .otis_indigenous_indicator <- function(x) {
@@ -277,7 +277,7 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{as.integer}.
 #' @export
 .otis_minority_religion_indicator <- function(x) {
@@ -2529,7 +2529,7 @@ morie_otis_analyze_b01_ruhela_subgroup_male <- function(data = NULL,
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .otis_classify_bin <- function(x) {

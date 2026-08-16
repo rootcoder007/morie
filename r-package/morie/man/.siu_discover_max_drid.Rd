@@ -8,8 +8,8 @@
 .siu_discover_max_drid(default = 6000L, margin = 300L)
 }
 \arguments{
-\item{default}{Defaults to \code{6000L}.}
-\item{margin}{Defaults to \code{300L}.}
+\item{default}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{6000L}.}
+\item{margin}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{300L}.}
 }
 \description{
 of 300 gives substantial headroom for reports added between manifest refreshes, and the `default` fallback (used only when the discovery endpoint is unreachable) is set to 6000 so cold-start sweeps still capture everything currently published.

@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{X}{A matrix; indexed by row and column.}
-\item{iters}{Defaults to \code{200}.}
+\item{iters}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.}
 \item{prior_var}{Numeric; combined arithmetically in the body. Defaults to \code{4}.}
 }
 \description{

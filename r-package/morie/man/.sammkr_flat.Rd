@@ -8,7 +8,7 @@
 .sammkr_flat(m)
 }
 \arguments{
-\item{m}{See Usage.}
+\item{m}{A matrix; the body checks with \code{is.matrix}.}
 }
 \description{
 Part of the sammkr_native implementation; see the file header for the source it follows.

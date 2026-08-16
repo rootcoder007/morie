@@ -8,7 +8,7 @@
 .morie_to_normalise_hood_code(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to character by the body, with \code{as.character}.}
 }
 \description{
 the crosswalk uses ("82" -> "082"; "0082" -> "082"; "Niagara" -> NA).

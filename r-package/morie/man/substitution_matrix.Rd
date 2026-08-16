@@ -10,7 +10,7 @@ substitution_matrix(t, pi = NULL, u = 1)
 \arguments{
 \item{t}{Numeric; combined arithmetically in the body.}
 \item{pi}{Passed to \code{.phylml_pi}.}
-\item{u}{Defaults to \code{1}.}
+\item{u}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 }
 \description{
 Part of the phylml_native implementation; see the file header for the source it follows.

@@ -15,7 +15,7 @@
 \item{a}{See Usage.}
 \item{trim}{Numeric; combined arithmetically in the body.}
 \item{ridge}{Numeric; passed to \code{max}.}
-\item{known_g}{See Usage.}
+\item{known_g}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tmlcic_native implementation; see the file header for the source it follows.

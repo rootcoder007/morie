@@ -14,7 +14,7 @@
 #'
 #' @param time Passed to \code{.s03vec}.
 #' @param event_type Passed to \code{.s03vec}.
-#' @param cause Defaults to \code{1}.
+#' @param cause Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @return A list with \code{times}, \code{F}, \code{S}, \code{Y}, \code{dk}, \code{n}.
 #' @export
 .aalen_johansen <- function(time, event_type, cause = 1) {

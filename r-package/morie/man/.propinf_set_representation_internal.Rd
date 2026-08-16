@@ -8,7 +8,7 @@
 .propinf_set_representation_internal(net)
 }
 \arguments{
-\item{net}{See Usage.}
+\item{net}{Iterated over elementwise, with \code{lapply}.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

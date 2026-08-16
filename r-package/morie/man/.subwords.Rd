@@ -8,9 +8,9 @@
 .subwords(word, n_min = 3L, n_max = 6L, boundary = TRUE, whole_word = TRUE)
 }
 \arguments{
-\item{word}{See Usage.}
-\item{n_min}{Defaults to \code{3L}.}
-\item{n_max}{Defaults to \code{6L}.}
+\item{word}{Coerced to character by the body, with \code{as.character}.}
+\item{n_min}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{3L}.}
+\item{n_max}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{6L}.}
 \item{boundary}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 \item{whole_word}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }

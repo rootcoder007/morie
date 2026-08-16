@@ -9,7 +9,7 @@ sasimi_fingerprint(bits, n_bits = NULL)
 }
 \arguments{
 \item{bits}{A vector; its length is taken.}
-\item{n_bits}{Defaults to \code{NULL}.}
+\item{n_bits}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the sasimi_native implementation; see the file header for the source it follows.

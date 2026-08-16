@@ -8,9 +8,9 @@
 .timeRS_time_bin(t, bin_days = 70, n_bins = 30)
 }
 \arguments{
-\item{t}{See Usage.}
-\item{bin_days}{Defaults to \code{70}.}
-\item{n_bins}{Defaults to \code{30}.}
+\item{t}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{bin_days}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{70}.}
+\item{n_bins}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{30}.}
 }
 \description{
 Part of the timeRS_native implementation; see the file header for the source it follows.

@@ -18,9 +18,9 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param word See Usage.
-#' @param n_min Defaults to \code{3L}.
-#' @param n_max Defaults to \code{6L}.
+#' @param word Coerced to character by the body, with \code{as.character}.
+#' @param n_min Coerced to integer by the body, with \code{as.integer}. Defaults to \code{3L}.
+#' @param n_max Coerced to integer by the body, with \code{as.integer}. Defaults to \code{6L}.
 #' @param boundary A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param whole_word A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return The value of \code{grams}, as built in the body.
@@ -77,7 +77,7 @@
 #'
 #' @param g Passed to \code{.fnv1a}.
 #' @param gram_index A vector; indexed elementwise.
-#' @param hash_buckets See Usage.
+#' @param hash_buckets Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{gi}, as built in the body.
 #' @export
 .gram_slot <- function(g, gram_index, hash_buckets) {
@@ -151,18 +151,18 @@
 #' source it follows.
 #'
 #' @param corpus Passed to \code{.as_docs}.
-#' @param dim Defaults to \code{50L}.
+#' @param dim Coerced to integer by the body, with \code{as.integer}. Defaults to \code{50L}.
 #' @param n_min Passed to \code{.subwords}. Defaults to \code{3L}.
 #' @param n_max Passed to \code{.subwords}. Defaults to \code{6L}.
-#' @param window Defaults to \code{5L}.
-#' @param epochs Defaults to \code{5L}.
-#' @param lr Defaults to \code{0.05}.
-#' @param negative Defaults to \code{5L}.
-#' @param min_count Defaults to \code{1L}.
+#' @param window Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5L}.
+#' @param epochs Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5L}.
+#' @param lr Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.05}.
+#' @param negative Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5L}.
+#' @param min_count Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1L}.
 #' @param boundary Passed to \code{.subwords}. Defaults to \code{TRUE}.
 #' @param whole_word Passed to \code{.subwords}. Defaults to \code{TRUE}.
 #' @param hash_buckets Optional; may be \code{NULL}. Passed to \code{.gram_slot}.
-#' @param seed Defaults to \code{0L}.
+#' @param seed Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.
 #' @return A list with \code{estimate}, \code{vectors}, \code{vocab}, \code{index}, \code{ngrams}, \code{ngram_index}, \code{Z}, \code{context}, \code{loss_history}, \code{final_loss}, \code{oov}, \code{n_vocab}, \code{n_ngrams}, \code{dim}, \code{n_min}, \code{n_max}, \code{hash_buckets}, \code{method}.
 #' @export
 fasttext <- function(corpus, dim = 50L, n_min = 3L, n_max = 6L,

@@ -8,7 +8,7 @@
 .dbfilter(name)
 }
 \arguments{
-\item{name}{See Usage.}
+\item{name}{Coerced to character by the body, with \code{as.character}.}
 }
 \description{
 Part of the wave implementation; see the file header for the source it follows.

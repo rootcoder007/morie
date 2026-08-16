@@ -47,7 +47,7 @@ NULL
 #' .siu_an_load -- accept a data frame, a path, or NULL (defaults).
 #' ---------------------------------------------------------------------------
 #'
-#' @param x Defaults to \code{NULL}.
+#' @param x Optional; may be \code{NULL}. A data frame; the body checks with \code{is.data.frame}.
 #' @return The value of \code{utils::read.csv}.
 #' @export
 .siu_an_load <- function(x = NULL) {
@@ -115,7 +115,7 @@ NULL
 #' Truthy / falsy counters tolerant of CSV-roundtripped booleans.
 #' ---------------------------------------------------------------------------
 #'
-#' @param v See Usage.
+#' @param v A logical; the body checks with \code{is.logical}.
 #' @return A numeric value.
 #' @export
 .siu_an_truthy <- function(v) {
@@ -130,7 +130,7 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param v See Usage.
+#' @param v A logical; the body checks with \code{is.logical}.
 #' @return A numeric value.
 #' @export
 .siu_an_falsy <- function(v) {

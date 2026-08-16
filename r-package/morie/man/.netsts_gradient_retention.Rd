@@ -8,8 +8,8 @@
 .netsts_gradient_retention(forget_value, steps)
 }
 \arguments{
-\item{forget_value}{See Usage.}
-\item{steps}{See Usage.}
+\item{forget_value}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{steps}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the netsts_native implementation; see the file header for the source it follows.

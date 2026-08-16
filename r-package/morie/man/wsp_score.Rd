@@ -11,7 +11,7 @@ wsp_score(alignment, scoring, s_op = 2.4, weights = NULL)
 \item{alignment}{See Usage.}
 \item{scoring}{A list; the body reads \code{$matrix} from it.}
 \item{s_op}{Numeric; combined arithmetically in the body. Defaults to \code{2.4}.}
-\item{weights}{Defaults to \code{NULL}.}
+\item{weights}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

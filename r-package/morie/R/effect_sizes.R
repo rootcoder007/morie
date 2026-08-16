@@ -68,7 +68,7 @@ effect_size_result <- function(measure, estimate,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{[}.
 #' @export
 .arr <- function(x) {
@@ -83,7 +83,7 @@ effect_size_result <- function(measure, estimate,
 #' source it follows.
 #'
 #' @param func See Usage.
-#' @param args See Usage.
+#' @param args Iterated over elementwise, with \code{lapply}.
 #' @param n_boot A count; the body uses it as \code{seq_len(...)}. Defaults to \code{2000L}.
 #' @param confidence Numeric; combined arithmetically in the body. Defaults to \code{0.95}.
 #' @param seed Defaults to \code{42L}.

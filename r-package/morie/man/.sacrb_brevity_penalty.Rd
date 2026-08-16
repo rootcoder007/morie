@@ -8,8 +8,8 @@
 .sacrb_brevity_penalty(c, r)
 }
 \arguments{
-\item{c}{See Usage.}
-\item{r}{See Usage.}
+\item{c}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{r}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the sacrb_native implementation; see the file header for the source it follows.

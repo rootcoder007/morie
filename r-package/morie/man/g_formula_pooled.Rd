@@ -8,8 +8,8 @@
 g_formula_pooled(Q_final, weights = NULL)
 }
 \arguments{
-\item{Q_final}{See Usage.}
-\item{weights}{Defaults to \code{NULL}.}
+\item{Q_final}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{weights}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tlclust_native implementation; see the file header for the source it follows.

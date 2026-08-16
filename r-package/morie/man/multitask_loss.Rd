@@ -8,9 +8,9 @@
 multitask_loss(l_cls, l_box, l_mask)
 }
 \arguments{
-\item{l_cls}{See Usage.}
-\item{l_box}{See Usage.}
-\item{l_mask}{See Usage.}
+\item{l_cls}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{l_box}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{l_mask}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the masrcn_native implementation; see the file header for the source it follows.

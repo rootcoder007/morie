@@ -8,8 +8,8 @@
 .smoopt_dual_objective(alpha, y, K)
 }
 \arguments{
-\item{alpha}{See Usage.}
-\item{y}{See Usage.}
+\item{alpha}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{K}{Passed to \code{.smoopt_K}.}
 }
 \description{

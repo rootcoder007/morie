@@ -8,7 +8,7 @@
 .vepan_exons(ex)
 }
 \arguments{
-\item{ex}{See Usage.}
+\item{ex}{A matrix; the body checks with \code{is.matrix}.}
 }
 \description{
 Part of the vepan_native implementation; see the file header for the source it follows.

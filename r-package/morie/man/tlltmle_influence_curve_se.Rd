@@ -8,7 +8,7 @@
 tlltmle_influence_curve_se(d)
 }
 \arguments{
-\item{d}{See Usage.}
+\item{d}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tlltmle_native implementation; see the file header for the source it follows.

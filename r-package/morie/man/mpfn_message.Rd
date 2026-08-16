@@ -9,7 +9,7 @@ mpfn_message(h_v, h_w, e_vw, A = NULL)
 }
 \arguments{
 \item{h_v}{See Usage.}
-\item{h_w}{See Usage.}
+\item{h_w}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{e_vw}{A vector; its length is taken and its elements indexed.}
 \item{A}{Defaults to \code{NULL}.}
 }

@@ -11,18 +11,18 @@
 \item{sim}{See Usage.}
 \item{obs}{Passed to \code{.gp_summarise}.}
 \item{log_prior}{Passed to \code{.gp_alpha_terms}.}
-\item{theta0}{See Usage.}
-\item{n_iter}{See Usage.}
-\item{n_sim}{See Usage.}
+\item{theta0}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{n_iter}{Coerced to integer by the body, with \code{as.integer}.}
+\item{n_sim}{Coerced to integer by the body, with \code{as.integer}.}
 \item{epsilon}{See Usage.}
-\item{proposal_sd}{See Usage.}
+\item{proposal_sd}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{summary}{Passed to \code{.gp_summarise}.}
 \item{seed}{Passed to \code{.ghc_rng}.}
 \item{adaptive}{A flag; the body branches on it.}
 \item{xi}{See Usage.}
-\item{delta_s}{See Usage.}
+\item{delta_s}{Coerced to integer by the body, with \code{as.integer}.}
 \item{n_alpha}{A count; the body uses it as \code{seq_len(...)}.}
-\item{max_sim}{Defaults to \code{NULL}.}
+\item{max_sim}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 A step of the abcgp_native implementation. Called by \code{gps_abc}, \code{synthetic_abc}. See the file header for the source the module follows.

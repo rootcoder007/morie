@@ -11,7 +11,7 @@ alignment_error(features, box, out_size = 2L, stride = 1)
 \item{features}{See Usage.}
 \item{box}{See Usage.}
 \item{out_size}{Defaults to \code{2L}.}
-\item{stride}{Defaults to \code{1}.}
+\item{stride}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 }
 \description{
 Part of the masrcn_native implementation; see the file header for the source it follows.

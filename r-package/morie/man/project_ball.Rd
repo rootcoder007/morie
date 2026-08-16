@@ -8,9 +8,9 @@
 project_ball(x, radius = 1, centre = NULL)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{radius}{Defaults to \code{1}.}
-\item{centre}{Defaults to \code{NULL}.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{radius}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
+\item{centre}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the pgdsdg_native implementation; see the file header for the source it follows.

@@ -18,8 +18,8 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param N See Usage.
-#' @param step Defaults to \code{10L}.
+#' @param N Coerced to integer by the body, with \code{as.integer}.
+#' @param step Coerced to integer by the body, with \code{as.integer}. Defaults to \code{10L}.
 #' @return The value of \code{seq}.
 #' @export
 .cutoffs <- function(N, step = 10L) {
@@ -91,7 +91,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param protected See Usage.
+#' @param protected Coerced to logical by the body, with \code{as.logical}.
 #' @param measure One of \code{"rKL"}, \code{"rND"}, \code{"rRD"}.
 #' @param step Passed to \code{.raw}.
 #' @param normalize A flag; the body branches on it.
@@ -163,7 +163,7 @@ rKL <- function(protected, step = 10L, normalize = TRUE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param protected See Usage.
+#' @param protected Coerced to logical by the body, with \code{as.logical}.
 #' @param step Passed to \code{.measure}. Defaults to \code{10L}.
 #' @param normalize Passed to \code{.measure}. Defaults to \code{TRUE}.
 #' @return The value of \code{.measure}.

@@ -12,11 +12,11 @@
 \item{where}{Defaults to \code{NULL}.}
 \item{select}{Defaults to \code{NULL}.}
 \item{order}{Defaults to \code{NULL}.}
-\item{limit}{Defaults to \code{.MORIE_CHICAGO_DEFAULT_PAGE_SIZE}.}
-\item{offset}{Defaults to \code{0L}.}
+\item{limit}{Coerced to integer by the body, with \code{as.integer}.}
+\item{offset}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.}
 \item{app_token}{Defaults to \code{NULL}.}
 \item{user_agent}{Defaults to \code{.MORIE_CHICAGO_DEFAULT_UA}.}
-\item{timeout}{Defaults to \code{.MORIE_CHICAGO_DEFAULT_TIMEOUT}.}
+\item{timeout}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 A step of the ingest_chicago implementation. Called by \code{morie_ingest_chicago_socrata}. See the file header for the source the module follows.

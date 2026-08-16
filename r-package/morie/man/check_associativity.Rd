@@ -11,7 +11,7 @@ check_associativity(a, b, c, tol = 1e-12)
 \item{a}{Passed to \code{.ssmpar_compose}.}
 \item{b}{Passed to \code{.ssmpar_compose}.}
 \item{c}{Passed to \code{.ssmpar_compose}.}
-\item{tol}{Defaults to \code{1e-12}.}
+\item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-12}.}
 }
 \description{
 Part of the ssmpar_native implementation; see the file header for the source it follows.

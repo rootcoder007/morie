@@ -8,7 +8,7 @@
 average_of_valid_masks(masks)
 }
 \arguments{
-\item{masks}{See Usage.}
+\item{masks}{Iterated over elementwise, with \code{lapply}.}
 }
 \description{
 Part of the sammkr_native implementation; see the file header for the source it follows.

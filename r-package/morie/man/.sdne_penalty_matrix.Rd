@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{adjacency}{Passed to \code{.sdne_mat}.}
-\item{beta}{Defaults to \code{5}.}
+\item{beta}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{5}.}
 }
 \description{
 Part of the sdne_native implementation; see the file header for the source it follows.

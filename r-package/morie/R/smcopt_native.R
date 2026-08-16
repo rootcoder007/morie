@@ -17,7 +17,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n_steps See Usage.
+#' @param n_steps Coerced to integer by the body, with \code{as.integer}.
 #' @param phi_max Numeric; combined arithmetically in the body. Defaults to \code{50}.
 #' @param phi_min Numeric; combined arithmetically in the body. Defaults to \code{0.1}.
 #' @param kind One of \code{"geometric"}, \code{"linear"}. Defaults to \code{"geometric"}.
@@ -78,7 +78,7 @@ annealing_ladder <- function(n_steps, phi_max = 50.0, phi_min = 0.1,
 #'
 #' @param objective See Usage.
 #' @param initial See Usage.
-#' @param n_particles Defaults to \code{200L}.
+#' @param n_particles Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200L}.
 #' @param n_steps Defaults to \code{30L}.
 #' @param phi_max Defaults to \code{50}.
 #' @param phi_min Defaults to \code{0.1}.

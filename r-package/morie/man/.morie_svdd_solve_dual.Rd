@@ -12,7 +12,7 @@
 \item{C}{Numeric; combined arithmetically in the body.}
 \item{n}{A count; the body uses it as \code{seq_len(...)}.}
 \item{tol}{See Usage.}
-\item{max_iter}{See Usage.}
+\item{max_iter}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the svdd_native implementation; see the file header for the source it follows.

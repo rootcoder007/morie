@@ -12,7 +12,7 @@
 \item{Wins}{Passed to \code{.resnxt_aggregated_block}.}
 \item{Wmids}{Passed to \code{.resnxt_aggregated_block}.}
 \item{Wouts}{A vector; indexed elementwise.}
-\item{tol}{Defaults to \code{1e-09}.}
+\item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.}
 }
 \description{
 Part of the resnxt_native implementation; see the file header for the source it follows.

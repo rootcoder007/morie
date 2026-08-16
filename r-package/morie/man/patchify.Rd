@@ -8,9 +8,9 @@
 patchify(x, patch_len, stride = NULL)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{patch_len}{See Usage.}
-\item{stride}{Defaults to \code{NULL}.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{patch_len}{Coerced to integer by the body, with \code{as.integer}.}
+\item{stride}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 equal to patch_len the patches are disjoint; a smaller stride overlaps them. The number of patches is N = floor((L-P)/S) + 1, which is what makes the attention map shrink.

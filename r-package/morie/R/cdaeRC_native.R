@@ -70,7 +70,7 @@
 #' source it follows.
 #'
 #' @param y A vector; its length is taken.
-#' @param q See Usage.
+#' @param q Coerced to numeric by the body, with \code{as.numeric}.
 #' @param e Passed to \code{.ghc_unif}.
 #' @return The value of \code{ifelse}.
 #' @export
@@ -118,7 +118,7 @@ encode <- function(y_tilde, W, V_u, b, activation = "sigmoid") {
 #' @param z A vector; its length is taken and its elements indexed.
 #' @param Wp A matrix; indexed by row and column.
 #' @param bp A vector; its length is taken and its elements indexed.
-#' @param items Defaults to \code{NULL}.
+#' @param items Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @param activation Passed to \code{.cdae_act}. Defaults to \code{"sigmoid"}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -142,8 +142,8 @@ morie_cdaeRC_decode <- function(z, Wp, bp, items = NULL, activation = "sigmoid")
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
-#' @param y_hat See Usage.
+#' @param y Coerced to numeric by the body, with \code{as.numeric}.
+#' @param y_hat Coerced to numeric by the body, with \code{as.numeric}.
 #' @param kind One of \code{"hinge"}, \code{"log"}, \code{"square"}. Defaults to \code{"square"}.
 #' @return One of two values, depending on the branch taken.
 #' @export
@@ -174,15 +174,15 @@ loss <- function(y, y_hat, kind = "square") {
 #' source it follows.
 #'
 #' @param pos A vector; indexed elementwise.
-#' @param n_users See Usage.
-#' @param n_items See Usage.
-#' @param k_dim Defaults to \code{8L}.
-#' @param q Defaults to \code{0.2}.
-#' @param alpha Defaults to \code{0.05}.
-#' @param lam Defaults to \code{0.01}.
-#' @param iters Defaults to \code{30L}.
-#' @param n_neg Defaults to \code{5L}.
-#' @param seed Defaults to \code{0}.
+#' @param n_users Coerced to integer by the body, with \code{as.integer}.
+#' @param n_items Coerced to integer by the body, with \code{as.integer}.
+#' @param k_dim Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8L}.
+#' @param q Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.2}.
+#' @param alpha Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.05}.
+#' @param lam Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.01}.
+#' @param iters Coerced to integer by the body, with \code{as.integer}. Defaults to \code{30L}.
+#' @param n_neg Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5L}.
+#' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
 #' @param activation Passed to \code{.cdae_act}. Defaults to \code{"sigmoid"}.
 #' @param init_scale Numeric; combined arithmetically in the body. Defaults to \code{0.1}.
 #' @return A list with \code{estimate}, \code{W}, \code{W_prime}, \code{V}, \code{b}, \code{b_prime}, \code{loss_history}, \code{final_loss}, \code{k}, \code{q}, \code{n_neg}, \code{activation}, \code{method}, \code{note}.
@@ -284,9 +284,9 @@ fit_cdae <- function(pos, n_users, n_items, k_dim = 8L, q = 0.2,
 #'
 #' @param model A list; the body reads \code{$b}, \code{$b_prime}, \code{$V}, \code{$W}, \code{$W_prime} from it.
 #' @param pos A vector; indexed elementwise.
-#' @param u See Usage.
-#' @param n_items See Usage.
-#' @param top_k Defaults to \code{5L}.
+#' @param u Coerced to integer by the body, with \code{as.integer}.
+#' @param n_items Coerced to integer by the body, with \code{as.integer}.
+#' @param top_k Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5L}.
 #' @param activation Passed to \code{.cdae_act}. Defaults to \code{"sigmoid"}.
 #' @return A list with \code{ranking}, \code{n_scored}.
 #' @export

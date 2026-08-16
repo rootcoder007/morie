@@ -9,7 +9,7 @@ mqtmpl_lod_support_interval(scan_result, drop = 1.5)
 }
 \arguments{
 \item{scan_result}{A list; the body reads \code{$lod}, \code{$position} from it.}
-\item{drop}{Defaults to \code{1.5}.}
+\item{drop}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1.5}.}
 }
 \description{
 Part of the mqtmpl_native implementation; see the file header for the source it follows.

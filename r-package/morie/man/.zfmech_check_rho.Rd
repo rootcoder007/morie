@@ -8,7 +8,7 @@
 .zfmech_check_rho(rho)
 }
 \arguments{
-\item{rho}{See Usage.}
+\item{rho}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the zfmech_native implementation; see the file header for the source it follows.

@@ -341,7 +341,7 @@ morie_datasets_tps_mha_apprehensions <- function(year = NULL,
 #' for the source it follows.
 #'
 #' @param kind See Usage.
-#' @param year See Usage.
+#' @param year Coerced to character by the body, with \code{as.character}.
 #' @param offline A flag; the body branches on it.
 #' @param resource_id Optional; may be \code{NULL}. Passed to \code{.morie_ontario_ckan_dump_csv}.
 #' @param fixture_name See Usage.

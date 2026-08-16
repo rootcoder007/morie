@@ -8,7 +8,7 @@
 distance_matrix(fps)
 }
 \arguments{
-\item{fps}{See Usage.}
+\item{fps}{Iterated over elementwise, with \code{lapply}.}
 }
 \description{
 Part of the tncomp_native implementation; see the file header for the source it follows.

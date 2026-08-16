@@ -9,18 +9,18 @@ fasttext(corpus, dim = 50L, n_min = 3L, n_max = 6L, window = 5L, epochs = 5L, lr
 }
 \arguments{
 \item{corpus}{Passed to \code{.as_docs}.}
-\item{dim}{Defaults to \code{50L}.}
+\item{dim}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{50L}.}
 \item{n_min}{Passed to \code{.subwords}. Defaults to \code{3L}.}
 \item{n_max}{Passed to \code{.subwords}. Defaults to \code{6L}.}
-\item{window}{Defaults to \code{5L}.}
-\item{epochs}{Defaults to \code{5L}.}
-\item{lr}{Defaults to \code{0.05}.}
-\item{negative}{Defaults to \code{5L}.}
-\item{min_count}{Defaults to \code{1L}.}
+\item{window}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5L}.}
+\item{epochs}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5L}.}
+\item{lr}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.05}.}
+\item{negative}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5L}.}
+\item{min_count}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1L}.}
 \item{boundary}{Passed to \code{.subwords}. Defaults to \code{TRUE}.}
 \item{whole_word}{Passed to \code{.subwords}. Defaults to \code{TRUE}.}
 \item{hash_buckets}{Optional; may be \code{NULL}. Passed to \code{.gram_slot}.}
-\item{seed}{Defaults to \code{0L}.}
+\item{seed}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.}
 }
 \description{
 A step of the fastxt_native implementation. Called by \code{morie_fastxt}. See the file header for the source the module follows.

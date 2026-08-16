@@ -350,7 +350,7 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param nugget See Usage.
+#' @param nugget Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param n A count; the body uses it as \code{rep(...)}.
 #' @return The value of \code{pmax}.
 #' @export
@@ -654,18 +654,18 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
 #' @param sim See Usage.
 #' @param obs Passed to \code{.gp_summarise}.
 #' @param log_prior Passed to \code{.gp_alpha_terms}.
-#' @param theta0 See Usage.
-#' @param n_iter See Usage.
-#' @param n_sim See Usage.
+#' @param theta0 Coerced to numeric by the body, with \code{as.numeric}.
+#' @param n_iter Coerced to integer by the body, with \code{as.integer}.
+#' @param n_sim Coerced to integer by the body, with \code{as.integer}.
 #' @param epsilon See Usage.
-#' @param proposal_sd See Usage.
+#' @param proposal_sd Coerced to numeric by the body, with \code{as.numeric}.
 #' @param summary Passed to \code{.gp_summarise}.
 #' @param seed Passed to \code{.ghc_rng}.
 #' @param adaptive A flag; the body branches on it.
 #' @param xi See Usage.
-#' @param delta_s See Usage.
+#' @param delta_s Coerced to integer by the body, with \code{as.integer}.
 #' @param n_alpha A count; the body uses it as \code{seq_len(...)}.
-#' @param max_sim Defaults to \code{NULL}.
+#' @param max_sim Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @return A list with \code{chain}, \code{acceptance_rate}, \code{n_simulations}, \code{unresolved_steps}.
 #' @export
 .gp_mw_sampler <- function(sim, obs, log_prior, theta0, n_iter, n_sim,

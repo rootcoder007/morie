@@ -8,8 +8,8 @@
 abundance_correlation(cov_a, cov_b)
 }
 \arguments{
-\item{cov_a}{See Usage.}
-\item{cov_b}{See Usage.}
+\item{cov_a}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{cov_b}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the metabd_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 gated_update(s, v, U, V, phi)
 }
 \arguments{
-\item{s}{See Usage.}
+\item{s}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{v}{A matrix; passed to \code{as.matrix}.}
 \item{U}{A matrix; passed to \code{as.matrix}.}
 \item{V}{A matrix; passed to \code{as.matrix}.}

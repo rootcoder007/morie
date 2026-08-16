@@ -483,7 +483,7 @@ morie_llm_detect_provider <- function() {
 #' See the file header for the source the module follows.
 #' follows.
 #'
-#' @param messages See Usage.
+#' @param messages Iterated over elementwise, with \code{vapply}.
 #' @return A character value.
 #' @export
 .morie_llm_messages_to_prompt <- function(messages) {

@@ -9,7 +9,7 @@ morie_se3T_rotation_matrix(axis, angle)
 }
 \arguments{
 \item{axis}{Passed to \code{.se3T_vec}.}
-\item{angle}{See Usage.}
+\item{angle}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the se3T_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 symbolic_representation(captions, boxes)
 }
 \arguments{
-\item{captions}{See Usage.}
-\item{boxes}{See Usage.}
+\item{captions}{Coerced to character by the body, with \code{as.character}.}
+\item{boxes}{Coerced to list by the body, with \code{as.list}.}
 }
 \description{
 Part of the llavx_native implementation; see the file header for the source it follows.
