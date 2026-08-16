@@ -152,8 +152,8 @@ morie_owate_weights <- function(pscore, sigma2_treated = NULL,
 #' @param y A vector; its length is taken and its elements indexed.
 #' @param w A vector; indexed elementwise.
 #' @param e A vector; indexed elementwise.
-#' @param keep See Usage.
-#' @param weights See Usage.
+#' @param keep Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param weights Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{est}, \code{n_kept}.
 #' @export
 .ipw_dta <- function(y, w, e, keep, weights) {

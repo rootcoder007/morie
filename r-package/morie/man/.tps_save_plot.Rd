@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{p_or_recordedplot}{See Usage.}
-\item{outfile}{See Usage.}
+\item{outfile}{Passed to \code{path.expand}.}
 \item{fig_w}{Numeric; combined arithmetically in the body.}
 \item{fig_h}{Numeric; combined arithmetically in the body.}
 \item{use_gg}{A flag; the body branches on it.}

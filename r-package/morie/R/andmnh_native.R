@@ -68,7 +68,7 @@ tukey_hanning_kernel <- function(x) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param kernel See Usage.
+#' @param kernel Passed to \code{\%in\%}.
 #' @return A list with \code{fn}, \code{const}.
 #' @export
 .morie_check_kernel <- function(kernel) {

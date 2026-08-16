@@ -12,7 +12,7 @@ morie_vidgen_reconstruction_guidance(x_hat, observed, index, weight = 2, downsam
 \item{observed}{Iterated over elementwise, with \code{lapply}.}
 \item{index}{Coerced to integer by the body, with \code{as.integer}.}
 \item{weight}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{2}.}
-\item{downsample}{Defaults to \code{NULL}.}
+\item{downsample}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the vidgen_native implementation; see the file header for the source it follows.

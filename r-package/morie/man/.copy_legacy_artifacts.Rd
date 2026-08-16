@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{relative_paths}{See Usage.}
-\item{output_dir}{See Usage.}
-\item{root}{Defaults to \code{file.path(.legacy_reference_root(), "six", "outputs")}.}
+\item{output_dir}{Passed to \code{file.path}.}
+\item{root}{Passed to \code{file.path}.}
 }
 \description{
 Part of the study_reporting implementation; see the file header for the source it follows.

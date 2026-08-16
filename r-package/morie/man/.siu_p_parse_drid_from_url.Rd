@@ -8,7 +8,7 @@
 .siu_p_parse_drid_from_url(url)
 }
 \arguments{
-\item{url}{See Usage.}
+\item{url}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 URL helpers (drid / nrid extractors). ---------------------------------------------------------------------------

@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{taxonomies}{A vector; its length is taken.}
-\item{analyzed_set}{See Usage.}
+\item{analyzed_set}{Passed to \code{\%in\%}.}
 \item{domain}{Character; passed to \code{toupper}.}
 }
 \description{

@@ -161,8 +161,8 @@ morie_compare_nested_logistic_models <- function(data, outcome,
 #' source it follows.
 #'
 #' @param data See Usage.
-#' @param treatment See Usage.
-#' @param covariates See Usage.
+#' @param treatment Passed to \code{paste}.
+#' @param covariates Passed to \code{paste}.
 #' @return The value of \code{pmin}.
 #' @export
 .morie_fit_propensity <- function(data, treatment, covariates) {

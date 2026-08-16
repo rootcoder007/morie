@@ -8,7 +8,7 @@
 .resnxt_relu(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{Passed to \code{pmax}.}
 }
 \description{
 Part of the resnxt_native implementation; see the file header for the source it follows.

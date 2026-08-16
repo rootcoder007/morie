@@ -8,7 +8,7 @@
 .siu_load_canonical_overrides(user_cache_dir = NULL)
 }
 \arguments{
-\item{user_cache_dir}{Defaults to \code{NULL}.}
+\item{user_cache_dir}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 the shipped one and is merged in too -- so individual users can record their own corrections without touching the package source. Maintainer-confirmed corrections get promoted into the shipped table; user-side corrections stay local until then.

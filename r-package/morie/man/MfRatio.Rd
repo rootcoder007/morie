@@ -11,7 +11,7 @@ MfRatio(X, H, freqs, t0, noise_power)
 \item{X}{Coerced to complex by the body, with \code{as.complex}.}
 \item{H}{Coerced to complex by the body, with \code{as.complex}.}
 \item{freqs}{Coerced to numeric by the body, with \code{as.numeric}.}
-\item{t0}{See Usage.}
+\item{t0}{Passed to \code{MfPeak}.}
 \item{noise_power}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{

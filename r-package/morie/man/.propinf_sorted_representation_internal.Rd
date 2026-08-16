@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{net}{Iterated over elementwise, with \code{lapply}.}
-\item{metric}{Defaults to \code{NULL}.}
+\item{metric}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

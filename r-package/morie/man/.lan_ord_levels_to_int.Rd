@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{y}{Coerced to character by the body, with \code{as.character}.}
-\item{levels_}{See Usage.}
+\item{levels_}{Passed to \code{match}.}
 }
 \description{
 Part of the laniyonu_actuarial_risk_disparity implementation; see the file header for the source it follows.

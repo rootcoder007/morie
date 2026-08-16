@@ -99,7 +99,7 @@ NULL
 #'
 #' testthat::local_mocked_bindings(.morie_to_ckan_dump_csv = ...).
 #'
-#' @param resource_id See Usage.
+#' @param resource_id Passed to \code{sprintf}.
 #' @param limit Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100000L}.
 #' @return One of two values, depending on the branch taken.
 #' @export

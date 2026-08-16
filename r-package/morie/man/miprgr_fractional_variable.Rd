@@ -10,7 +10,7 @@ miprgr_fractional_variable(x, integer_vars, tol = 1e-07)
 \arguments{
 \item{x}{A vector; indexed elementwise.}
 \item{integer_vars}{See Usage.}
-\item{tol}{Defaults to \code{1e-07}.}
+\item{tol}{Passed to \code{>}. Defaults to \code{1e-07}.}
 }
 \description{
 Part of the miprgr_native implementation; see the file header for the source it follows.

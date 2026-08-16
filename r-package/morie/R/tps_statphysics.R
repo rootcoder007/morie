@@ -106,8 +106,8 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
-#' @param k Defaults to \code{3L}.
+#' @param x Passed to \code{is.finite}.
+#' @param k Passed to \code{round}. Defaults to \code{3L}.
 #' @return A numeric value.
 #' @export
 .tps_sp_round <- function(x, k = 3L) {
@@ -148,8 +148,8 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param nx Defaults to \code{90L}.
-#' @param ny Defaults to \code{60L}.
+#' @param nx Passed to \code{seq}. Defaults to \code{90L}.
+#' @param ny Passed to \code{seq}. Defaults to \code{60L}.
 #' @return A list with \code{gx}, \code{gy}.
 #' @export
 .tps_sp_toronto_grid <- function(nx = 90L, ny = 60L) {
@@ -168,7 +168,7 @@ NULL
 #'
 #' @param M A matrix; indexed by row and column.
 #' @param shift Numeric; combined arithmetically in the body.
-#' @param axis See Usage.
+#' @param axis Passed to \code{==}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .tps_sp_roll <- function(M, shift, axis) {
@@ -247,8 +247,8 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
-#' @param y See Usage.
+#' @param x Passed to \code{findInterval}.
+#' @param y Passed to \code{findInterval}.
 #' @param gx A vector; its length is taken.
 #' @param gy A vector; its length is taken.
 #' @return The value of \code{H}, as built in the body.
@@ -279,8 +279,8 @@ NULL
 #' for the result\'s Figure line; with fig_dir = NULL nothing is written
 #' and the returned note says exactly that (no silent claims).
 #'
-#' @param fig_dir See Usage.
-#' @param name See Usage.
+#' @param fig_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param name Passed to \code{file.path}.
 #' @param draw Accepted by the signature and not used anywhere in the body.
 #' @param save_fig A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param width Defaults to \code{1140}.

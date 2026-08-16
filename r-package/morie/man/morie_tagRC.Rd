@@ -8,11 +8,11 @@
 morie_tagRC(triples, focus, d = 0.7, weight = 0.9, iters = 200)
 }
 \arguments{
-\item{triples}{See Usage.}
-\item{focus}{See Usage.}
-\item{d}{Defaults to \code{0.7}.}
-\item{weight}{Defaults to \code{0.9}.}
-\item{iters}{Defaults to \code{200}.}
+\item{triples}{Passed to \code{tagRC_tripartite_graph}.}
+\item{focus}{Passed to \code{tagRC_preference_vector}.}
+\item{d}{Passed to \code{tagRC_adapted_pagerank}. Defaults to \code{0.7}.}
+\item{weight}{Passed to \code{tagRC_preference_vector}. Defaults to \code{0.9}.}
+\item{iters}{Passed to \code{tagRC_adapted_pagerank}. Defaults to \code{200}.}
 }
 \description{
 Part of the tagRC_native implementation; see the file header for the source it follows.

@@ -126,9 +126,9 @@ difference <- function(y, d = 0, D = 0, s = 1) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param phi Defaults to \code{list()}.
+#' @param phi Passed to \code{unlist}. Defaults to \code{list()}.
 #' @param Phi A vector; its length is taken. Defaults to \code{list()}.
-#' @param theta Defaults to \code{list()}.
+#' @param theta Passed to \code{unlist}. Defaults to \code{list()}.
 #' @param Theta A vector; its length is taken. Defaults to \code{list()}.
 #' @param s Passed to \code{.sarima_seasonal_lift}. Defaults to \code{12}.
 #' @return A list with \code{ar}, \code{ma}.
@@ -243,7 +243,7 @@ moment_estimate <- function(rho) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param w See Usage.
+#' @param w Passed to \code{sample_acf}.
 #' @param s Coerced to integer by the body, with \code{as.integer}. Defaults to \code{12}.
 #' @return A list with \code{estimate}, \code{theta}, \code{Theta}, \code{r_1}, \code{r_s}, \code{method}.
 #' @export
@@ -393,7 +393,7 @@ loglik <- function(w, ar = list(), ma = list()) {
 #' source it follows.
 #'
 #' @param coefs A vector; its length is taken.
-#' @param tol Defaults to \code{1.001}.
+#' @param tol Passed to \code{<}. Defaults to \code{1.001}.
 #' @return A logical value.
 #' @export
 .sarima_roots_ok <- function(coefs, tol = 1.001) {
@@ -419,7 +419,7 @@ loglik <- function(w, ar = list(), ma = list()) {
 #' restart-until-stuck shape as the Python arm\'s call to
 #' _sci_core.minimize(method="Nelder-Mead").
 #'
-#' @param fn See Usage.
+#' @param fn Passed to \code{apply}.
 #' @param x0 A vector; its length is taken and its elements indexed.
 #' @param maxit A count; the body uses it as \code{seq_len(...)}. Defaults to \code{200L}.
 #' @return A list with \code{x}, \code{fun}, \code{success}.
@@ -614,7 +614,7 @@ loglik <- function(w, ar = list(), ma = list()) {
 #' @param ll A list; the body reads \code{$loglik}, \code{$sigma2} from it.
 #' @param cs A list; the body reads \code{$residuals}, \code{$sigma2}, \code{$ssq} from it.
 #' @param method One of \code{"ml"}, \code{"uls"}.
-#' @param res See Usage.
+#' @param res Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{estimate}, \code{sigma2}, \code{phi}, \code{theta}, \code{Phi}, \code{Theta}, \code{ar}, \code{ma}, \code{loglik}, \code{aic}, \code{n_used}, \code{n_par}, \code{residuals}, \code{ssq}, \code{order}, \code{seasonal_order}, \code{s}, \code{y}, \code{w}, \code{fit_method}, \code{converged}, \code{method}.
 #' @export
 .sarima_package <- function(y, w, phi, theta, Phi, Theta, s, order,
@@ -669,7 +669,7 @@ loglik <- function(w, ar = list(), ma = list()) {
 #'
 #' @param ar A vector; its length is taken and its elements indexed.
 #' @param ma A vector; its length is taken and its elements indexed.
-#' @param h See Usage.
+#' @param h Passed to \code{:}.
 #' @return The value of \code{psi}, as built in the body.
 #' @export
 .sarima_psi_weights <- function(ar, ma, h) {

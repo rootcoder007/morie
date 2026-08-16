@@ -8,7 +8,7 @@
 .parse_iso(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Passed to \code{as.Date}.}
 }
 \description{
 Part of the mrm_siu implementation; see the file header for the source it follows.

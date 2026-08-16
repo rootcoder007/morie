@@ -12,7 +12,7 @@
 \item{a}{Numeric; combined arithmetically in the body.}
 \item{ridge}{Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.}
 \item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.}
-\item{tol}{Defaults to \code{1e-10}.}
+\item{tol}{Passed to \code{<}. Defaults to \code{1e-10}.}
 }
 \description{
 A step of the tmldyn_native implementation. Called by \code{.intervention_mechanism}. See the file header for the source the module follows. source it follows.

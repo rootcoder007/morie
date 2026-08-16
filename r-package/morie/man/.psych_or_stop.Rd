@@ -8,7 +8,7 @@
 .psych_or_stop(fn)
 }
 \arguments{
-\item{fn}{See Usage.}
+\item{fn}{Passed to \code{sprintf}.}
 }
 \description{
 Part of the psymet implementation; see the file header for the source it follows.

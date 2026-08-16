@@ -8,7 +8,7 @@
 .fisher_z_ci(r, n, confidence)
 }
 \arguments{
-\item{r}{See Usage.}
+\item{r}{Passed to \code{atanh}.}
 \item{n}{Numeric; combined arithmetically in the body.}
 \item{confidence}{Numeric; combined arithmetically in the body.}
 }

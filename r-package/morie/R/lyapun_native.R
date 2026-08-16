@@ -56,7 +56,7 @@
 #' source it follows.
 #'
 #' @param y A vector; its length is taken and its elements indexed.
-#' @param threshold Defaults to \code{NULL}.
+#' @param threshold Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A numeric value.
 #' @export
 autocorrelation_lag <- function(y, threshold = NULL) {
@@ -112,7 +112,7 @@ mean_period <- function(y, dt = 1.0) {
 #' source it follows.
 #'
 #' @param pts A vector; its length is taken and its elements indexed.
-#' @param min_sep See Usage.
+#' @param min_sep Passed to \code{<=}.
 #' @return A list with \code{nn}, \code{d0}.
 #' @export
 .nearest_neighbours <- function(pts, min_sep) {
@@ -283,13 +283,13 @@ divergence_curve <- function(y, m = NULL, tau = NULL, dt = 1.0,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
-#' @param embedding Defaults to \code{NULL}.
-#' @param tau Defaults to \code{NULL}.
+#' @param y Passed to \code{divergence_curve}.
+#' @param embedding Passed to \code{divergence_curve}.
+#' @param tau Passed to \code{divergence_curve}.
 #' @param dt Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @param fit Optional; may be \code{NULL}. A vector; indexed elementwise.
-#' @param min_sep Defaults to \code{NULL}.
-#' @param max_steps Defaults to \code{NULL}.
+#' @param min_sep Passed to \code{divergence_curve}.
+#' @param max_steps Passed to \code{divergence_curve}.
 #' @param method One of \code{"rosenstein"}, \code{"sato"}, \code{"sato_k"}. Defaults to \code{"rosenstein"}.
 #' @param k Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.
 #' @return A list with \code{estimate}, \code{lambda1}, \code{rosenstein}, \code{sato}, \code{sato_k}, \code{sato_k_curve}, \code{se}, \code{r_squared}, \code{intercept}, \code{time}, \code{log_divergence}, \code{log_ratio}, \code{n_pairs}, \code{fit_range}, \code{k}, \code{m}, \code{tau}, \code{min_sep}, \code{n_points}, \code{n}, \code{dt}, \code{method}, \code{note}.
@@ -387,15 +387,15 @@ largest_lyapunov <- lyapunov_exponent
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
-#' @param embedding Defaults to \code{NULL}.
-#' @param tau Defaults to \code{NULL}.
-#' @param dt Defaults to \code{1}.
-#' @param fit Defaults to \code{NULL}.
-#' @param min_sep Defaults to \code{NULL}.
-#' @param max_steps Defaults to \code{NULL}.
-#' @param method Defaults to \code{"rosenstein"}.
-#' @param k Defaults to \code{NULL}.
+#' @param y Passed to \code{lyapunov_exponent}.
+#' @param embedding Passed to \code{lyapunov_exponent}.
+#' @param tau Passed to \code{lyapunov_exponent}.
+#' @param dt Passed to \code{lyapunov_exponent}. Defaults to \code{1}.
+#' @param fit Passed to \code{lyapunov_exponent}.
+#' @param min_sep Passed to \code{lyapunov_exponent}.
+#' @param max_steps Passed to \code{lyapunov_exponent}.
+#' @param method Passed to \code{lyapunov_exponent}. Defaults to \code{"rosenstein"}.
+#' @param k Passed to \code{lyapunov_exponent}.
 #' @return The value of \code{lyapunov_exponent}.
 #' @export
 morie_lyapun <- function(y, embedding = NULL, tau = NULL, dt = 1.0,

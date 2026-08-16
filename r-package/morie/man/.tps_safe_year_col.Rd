@@ -8,7 +8,7 @@
 .tps_safe_year_col(df)
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{Passed to \code{names}.}
 }
 \description{
 Part of the tps_all_analyze implementation; see the file header for the source it follows.

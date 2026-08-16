@@ -8,7 +8,7 @@
 .morie_raw_to_hex(r)
 }
 \arguments{
-\item{r}{See Usage.}
+\item{r}{Passed to \code{is.raw}.}
 }
 \description{
 A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_store}. See the file header for the source the module follows.

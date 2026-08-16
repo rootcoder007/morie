@@ -8,7 +8,7 @@
 .rgemgf_zcr(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Passed to \code{>=}.}
 }
 \description{
 Part of the rgemgf implementation; see the file header for the source it follows.

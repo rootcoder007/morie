@@ -153,9 +153,9 @@ chronos_dequantize <- function(tokens, bins) {
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
+#' @param x Passed to \code{chronos_mean_scale}.
 #' @param bins A list; the body reads \code{$n_bins} from it.
-#' @param context Defaults to \code{NULL}.
+#' @param context Passed to \code{chronos_mean_scale}.
 #' @param add_eos A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param pad_to Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @return A list with \code{estimate}, \code{tokens}, \code{scale}, \code{n_clipped}, \code{clipped_fraction}, \code{vocab_size}, \code{method}, \code{ignores}.
@@ -183,8 +183,8 @@ chronos_tokenize <- function(x, bins, context = NULL, add_eos = TRUE,
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param tokens See Usage.
-#' @param bins See Usage.
+#' @param tokens Passed to \code{chronos_dequantize}.
+#' @param bins Passed to \code{chronos_dequantize}.
 #' @param scale Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A numeric value.
 #' @export
@@ -241,11 +241,11 @@ chronos_forecast_summary <- function(token_probs, bins,
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param x See Usage.
-#' @param bins See Usage.
-#' @param context Defaults to \code{NULL}.
-#' @param add_eos Defaults to \code{TRUE}.
-#' @param pad_to Defaults to \code{NULL}.
+#' @param x Passed to \code{chronos_tokenize}.
+#' @param bins Passed to \code{chronos_tokenize}.
+#' @param context Passed to \code{chronos_tokenize}.
+#' @param add_eos Passed to \code{chronos_tokenize}. Defaults to \code{TRUE}.
+#' @param pad_to Passed to \code{chronos_tokenize}.
 #' @return The value of \code{chronos_tokenize}.
 #' @export
 morie_chronos <- function(x, bins, context = NULL, add_eos = TRUE,

@@ -90,7 +90,7 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param df See Usage.
+#' @param df Passed to \code{names}.
 #' @param target Character; passed to \code{tolower}.
 #' @return The value of \code{[}.
 #' @export
@@ -125,7 +125,7 @@ NULL
 #' @param kind Carried through into a list the body builds.
 #' @param language Carried through into a list the body builds.
 #' @param is_valid A flag; the body branches on it.
-#' @param extra_interpretation Defaults to \code{""}.
+#' @param extra_interpretation Passed to \code{paste}. Defaults to \code{""}.
 #' @return The value of \code{payload}, as built in the body.
 #' @export
 .morie_arsau_wrap <- function(title, call, sub_results, data, sidecar,

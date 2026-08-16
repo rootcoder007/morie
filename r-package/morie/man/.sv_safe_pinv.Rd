@@ -8,8 +8,8 @@
 .sv_safe_pinv(M, tol = 1e-12)
 }
 \arguments{
-\item{M}{See Usage.}
-\item{tol}{Defaults to \code{1e-12}.}
+\item{M}{Passed to \code{svd}.}
+\item{tol}{Passed to \code{>}. Defaults to \code{1e-12}.}
 }
 \description{
 Part of the spatial_voting implementation; see the file header for the source it follows.

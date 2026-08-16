@@ -12,8 +12,8 @@ mpfn_message_passing(H0, adj, edge_features, T = 3, A = NULL, update = NULL)
 \item{adj}{A vector; indexed elementwise.}
 \item{edge_features}{A vector; indexed elementwise.}
 \item{T}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{3}.}
-\item{A}{Defaults to \code{NULL}.}
-\item{update}{Defaults to \code{NULL}.}
+\item{A}{Passed to \code{mpfn_message}.}
+\item{update}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the mpfn_native implementation; see the file header for the source it follows.

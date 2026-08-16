@@ -8,7 +8,7 @@
 .morie_arsau_locate_outcome_col(df, target)
 }
 \arguments{
-\item{df}{See Usage.}
+\item{df}{Passed to \code{names}.}
 \item{target}{Character; passed to \code{tolower}.}
 }
 \description{

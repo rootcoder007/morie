@@ -8,7 +8,7 @@
 .hawkes_start(kernel, times, end_time)
 }
 \arguments{
-\item{kernel}{See Usage.}
+\item{kernel}{Passed to \code{switch}.}
 \item{times}{A vector; its length is taken.}
 \item{end_time}{Numeric; combined arithmetically in the body.}
 }

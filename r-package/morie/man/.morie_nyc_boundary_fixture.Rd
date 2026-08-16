@@ -8,8 +8,8 @@
 .morie_nyc_boundary_fixture(fname, expected_rows = NULL)
 }
 \arguments{
-\item{fname}{See Usage.}
-\item{expected_rows}{Defaults to \code{NULL}.}
+\item{fname}{Passed to \code{system.file}.}
+\item{expected_rows}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 A step of the datasets_nyc_nypd implementation. Called by \code{morie_datasets_nyc_community_districts}, \code{morie_datasets_nyc_council_districts}, \code{morie_datasets_nyc_ntas_2020} and 1 others in the module. See the file header for the source the module follows.

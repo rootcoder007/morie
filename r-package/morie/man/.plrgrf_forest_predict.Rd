@@ -12,9 +12,9 @@
 \item{y}{A vector; indexed elementwise.}
 \item{train}{See Usage.}
 \item{at_rows}{A vector; its length is taken and its elements indexed.}
-\item{n_trees}{See Usage.}
-\item{min_leaf}{See Usage.}
-\item{seed}{See Usage.}
+\item{n_trees}{Passed to \code{grow_forest}.}
+\item{min_leaf}{Passed to \code{grow_forest}.}
+\item{seed}{Passed to \code{grow_forest}.}
 }
 \description{
 Part of the plrgrf_native implementation; see the file header for the source it follows.

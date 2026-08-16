@@ -15,7 +15,7 @@ mistr_grouped_query_attention(Q, K, V, n_heads, n_kv_heads, mask = NULL, positio
 \item{n_kv_heads}{Numeric; combined arithmetically in the body.}
 \item{mask}{Optional; may be \code{NULL}. A matrix; indexed by row and column.}
 \item{positions}{Optional; may be \code{NULL}. A vector; its length is taken.}
-\item{base}{Defaults to \code{10000}.}
+\item{base}{Passed to \code{mistr_apply_rope}. Defaults to \code{10000}.}
 }
 \description{
 Part of the mistr_native implementation; see the file header for the source it follows.

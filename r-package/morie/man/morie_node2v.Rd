@@ -14,7 +14,7 @@ morie_node2v(adj, num_walks = 10, length = 10, p = 1, q = 1, seed = 0, weights =
 \item{p}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 \item{q}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 \item{seed}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.}
-\item{weights}{Defaults to \code{NULL}.}
+\item{weights}{Passed to \code{node2v_walk}.}
 }
 \description{
 Part of the node2v_native implementation; see the file header for the source it follows.

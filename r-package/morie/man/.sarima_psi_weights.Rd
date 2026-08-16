@@ -10,7 +10,7 @@
 \arguments{
 \item{ar}{A vector; its length is taken and its elements indexed.}
 \item{ma}{A vector; its length is taken and its elements indexed.}
-\item{h}{See Usage.}
+\item{h}{Passed to \code{:}.}
 }
 \description{
 Part of the sarima_native implementation; see the file header for the source it follows.

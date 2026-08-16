@@ -204,12 +204,12 @@ matrix_completion_low_rank <- svt
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param M See Usage.
-#' @param observed See Usage.
-#' @param tau Defaults to \code{NULL}.
-#' @param step Defaults to \code{1.9}.
-#' @param iters Defaults to \code{200L}.
-#' @param tol Defaults to \code{1e-06}.
+#' @param M Passed to \code{svt}.
+#' @param observed Passed to \code{svt}.
+#' @param tau Passed to \code{svt}.
+#' @param step Passed to \code{svt}. Defaults to \code{1.9}.
+#' @param iters Passed to \code{svt}. Defaults to \code{200L}.
+#' @param tol Passed to \code{svt}. Defaults to \code{1e-06}.
 #' @return A list with \code{estimate}, \code{X}, \code{residual_history}, \code{final_residual}, \code{tau}, \code{n_observed}, \code{nuclear_norm}, \code{relative_error}, \code{method}.
 #' @export
 morie_meglt <- function(M, observed, tau = NULL, step = 1.9, iters = 200L,

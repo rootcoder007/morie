@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{sorted_v}{A vector; its length is taken.}
-\item{x}{See Usage.}
+\item{x}{Passed to \code{<=}.}
 }
 \description{
 Part of the pibmd_native implementation; see the file header for the source it follows.

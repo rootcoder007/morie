@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{t}{A vector; its length is taken.}
-\item{ev}{See Usage.}
+\item{ev}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 \item{c}{Numeric; combined arithmetically in the body.}
 \item{lam0}{Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.}
 }

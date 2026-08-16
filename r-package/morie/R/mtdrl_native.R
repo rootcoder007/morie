@@ -10,7 +10,7 @@
 #'
 #' @param n_arms Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2}.
 #' @param n_tasks Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100}.
-#' @param seed Defaults to \code{0}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{0}.
 #' @param structure One of \code{"independent"}, \code{"paired"}. Defaults to \code{"independent"}.
 #' @return The value of \code{tasks}, as built in the body.
 #' @export
@@ -107,7 +107,7 @@ mtdrl_TabularHistoryAgent <- function(n_arms, epsilon = 0.1, optimistic = 1) {
 #' @param agent A list; the body reads \code{$act}, \code{$observe}, \code{$reset} from it.
 #' @param episode_length Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100}.
 #' @param n_arms Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
-#' @param seed Defaults to \code{0}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{0}.
 #' @param reset_between_episodes A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{estimate}, \code{mean_reward}, \code{total_reward}, \code{regret}, \code{reward_by_step}, \code{optimal_action_rate}, \code{episode_reward}, \code{n_episodes}, \code{episode_length}, \code{n_arms}, \code{method}.
 #' @export

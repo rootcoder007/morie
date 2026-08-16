@@ -161,10 +161,10 @@ llava_visual_chat <- build_sequence
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param captions Defaults to \code{NULL}.
-#' @param boxes Defaults to \code{NULL}.
-#' @param kind Defaults to \code{"conversation"}.
-#' @param stage Defaults to \code{NULL}.
+#' @param captions Passed to \code{symbolic_representation}.
+#' @param boxes Passed to \code{symbolic_representation}.
+#' @param kind Passed to \code{instruction_prompt}. Defaults to \code{"conversation"}.
+#' @param stage Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{instruction_prompt}.
 #' @export
 morie_llavx <- function(captions = NULL, boxes = NULL, kind = "conversation",

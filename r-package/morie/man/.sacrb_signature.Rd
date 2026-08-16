@@ -12,7 +12,7 @@
 \item{lowercase}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 \item{max_n}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{4L}.}
 \item{n_refs}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1L}.}
-\item{version}{Defaults to \code{"morie-sacrb-1"}.}
+\item{version}{Passed to \code{paste0}. Defaults to \code{"morie-sacrb-1"}.}
 }
 \description{
 Part of the sacrb_native implementation; see the file header for the source it follows.

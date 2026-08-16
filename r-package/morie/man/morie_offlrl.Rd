@@ -19,7 +19,7 @@ morie_offlrl(dataset, states = NULL, actions = NULL, alpha = 1, gamma = 0.99, va
 \item{mu}{The body requires: offlrl: variant must be one of c('H','rho','mu'), got '.}
 \item{lr}{Numeric; combined arithmetically in the body. Defaults to \code{0.5}.}
 \item{iters}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000}.}
-\item{tol}{Defaults to \code{1e-12}.}
+\item{tol}{Passed to \code{<}. Defaults to \code{1e-12}.}
 }
 \description{
 Part of the offlrl_native implementation; see the file header for the source it follows.

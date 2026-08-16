@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{coefs}{A vector; its length is taken.}
-\item{tol}{Defaults to \code{1.001}.}
+\item{tol}{Passed to \code{<}. Defaults to \code{1.001}.}
 }
 \description{
 Part of the sarima_native implementation; see the file header for the source it follows.

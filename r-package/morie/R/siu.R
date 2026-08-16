@@ -576,7 +576,7 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
 #' Maintainer-confirmed corrections get promoted into the shipped table;
 #' user-side corrections stay local until then.
 #'
-#' @param user_cache_dir Defaults to \code{NULL}.
+#' @param user_cache_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .siu_load_canonical_overrides <- function(user_cache_dir = NULL) {
@@ -896,9 +896,9 @@ morie_siu_refresh_manifest <- function(
 #'
 #' from morie_fetch_siu() when cache_html = TRUE.
 #'
-#' @param html_dir See Usage.
-#' @param name See Usage.
-#' @param html See Usage.
+#' @param html_dir Passed to \code{file.path}.
+#' @param name Passed to \code{file.path}.
+#' @param html Passed to \code{writeChar}.
 #' @return The value of \code{writeChar}.
 #' @export
 .siu_write_html_cache <- function(html_dir, name, html) {
@@ -1613,7 +1613,7 @@ morie_siu_compare <- function(case_number, external,
 #' @param model A vector; its length is taken.
 #' @param prompt Passed to \code{.siu_llm_call_one}.
 #' @param timeout_s Passed to \code{.siu_llm_call_one}.
-#' @param mock_response_text Defaults to \code{NULL}.
+#' @param mock_response_text Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return Nothing; this branch always raises.
 #' @export
 .siu_llm_call <- function(model, prompt,
@@ -2275,8 +2275,8 @@ morie_siu_translate_fr_to_en <- function(
 #' See the file header for the source the module follows.
 #' follows.
 #'
-#' @param target_lang See Usage.
-#' @param source_lang See Usage.
+#' @param target_lang Passed to \code{!=}.
+#' @param source_lang Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param case_numbers Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.
 #' @param model Passed to \code{.siu_llm_call}.
 #' @param fields Iterated over elementwise, with \code{lapply}.

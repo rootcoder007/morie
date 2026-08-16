@@ -10,7 +10,7 @@
 \arguments{
 \item{seq}{Coerced to character by the body, with \code{as.character}.}
 \item{g}{Passed to \code{.prsLL_first_sets}.}
-\item{first}{Defaults to \code{NULL}.}
+\item{first}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the prsLL_native implementation; see the file header for the source it follows.

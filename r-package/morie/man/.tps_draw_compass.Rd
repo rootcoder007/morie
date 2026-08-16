@@ -8,7 +8,7 @@
 .tps_draw_compass(x, y, size = 1.5, use_gg = FALSE)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Passed to \code{c}.}
 \item{y}{Numeric; combined arithmetically in the body.}
 \item{size}{Numeric; combined arithmetically in the body. Defaults to \code{1.5}.}
 \item{use_gg}{A flag; the body branches on it. Defaults to \code{FALSE}.}

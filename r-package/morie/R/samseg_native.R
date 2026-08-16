@@ -192,8 +192,8 @@ amortised_cost <- function(encoder_ms, decoder_ms, n_prompts) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param image_embedding See Usage.
-#' @param prompt_tokens See Usage.
+#' @param image_embedding Passed to \code{decoder}.
+#' @param prompt_tokens Passed to \code{decoder}.
 #' @param decoder The body requires: samseg: the decoder returned no mask; the task requires a valid mask for ANY prompt.
 #' @param multimask Coerced to logical by the body, with \code{as.logical}. Defaults to \code{TRUE}.
 #' @return A list with \code{estimate}, \code{masks}, \code{n_masks}, \code{multimask}, \code{method}, \code{note}.
@@ -215,10 +215,10 @@ promptable_segment <- function(image_embedding, prompt_tokens, decoder,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param image_embedding See Usage.
-#' @param prompt_tokens See Usage.
-#' @param decoder See Usage.
-#' @param multimask Defaults to \code{TRUE}.
+#' @param image_embedding Passed to \code{promptable_segment}.
+#' @param prompt_tokens Passed to \code{promptable_segment}.
+#' @param decoder Passed to \code{promptable_segment}.
+#' @param multimask Passed to \code{promptable_segment}. Defaults to \code{TRUE}.
 #' @return The value of \code{promptable_segment}.
 #' @export
 morie_samseg <- function(image_embedding, prompt_tokens, decoder,

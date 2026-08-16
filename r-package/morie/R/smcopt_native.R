@@ -77,16 +77,16 @@ annealing_ladder <- function(n_steps, phi_max = 50.0, phi_min = 0.1,
 #' source it follows.
 #'
 #' @param objective The body requires: smcopt: the objective was never evaluated.
-#' @param initial See Usage.
+#' @param initial Passed to \code{smcsam}.
 #' @param n_particles Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200L}.
-#' @param n_steps Defaults to \code{30L}.
-#' @param phi_max Defaults to \code{50}.
-#' @param phi_min Defaults to \code{0.1}.
-#' @param kind Defaults to \code{"geometric"}.
-#' @param kernel Defaults to \code{NULL}.
-#' @param ess_threshold Defaults to \code{0.5}.
-#' @param scheme Defaults to \code{"systematic"}.
-#' @param seed Defaults to \code{0L}.
+#' @param n_steps Passed to \code{annealing_ladder}. Defaults to \code{30L}.
+#' @param phi_max Passed to \code{annealing_ladder}. Defaults to \code{50}.
+#' @param phi_min Passed to \code{annealing_ladder}. Defaults to \code{0.1}.
+#' @param kind Passed to \code{annealing_ladder}. Defaults to \code{"geometric"}.
+#' @param kernel Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param ess_threshold Passed to \code{smcsam}. Defaults to \code{0.5}.
+#' @param scheme Passed to \code{smcsam}. Defaults to \code{"systematic"}.
+#' @param seed Passed to \code{smcsam}. Defaults to \code{0L}.
 #' @param maximise A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{estimate}, \code{best_x}, \code{best_value}, \code{particles}, \code{weights}, \code{particle_mean}, \code{ladder}, \code{ess_trace}, \code{resampled}, \code{accept_trace}, \code{n_particles}, \code{maximise}, \code{note}, \code{method}.
 #' @export

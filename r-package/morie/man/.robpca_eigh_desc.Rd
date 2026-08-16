@@ -8,7 +8,7 @@
 .robpca_eigh_desc(C)
 }
 \arguments{
-\item{C}{See Usage.}
+\item{C}{Passed to \code{eigen}.}
 }
 \description{
 Part of the robpca_native implementation; see the file header for the source it follows.

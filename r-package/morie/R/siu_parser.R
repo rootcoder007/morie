@@ -206,7 +206,7 @@ NULL
 #' Label / value primitives.
 #' ---------------------------------------------------------------------------
 #'
-#' @param text See Usage.
+#' @param text Passed to \code{regmatches}.
 #' @param label Passed to \code{.siu_p_re_escape}.
 #' @return One of two values, depending on the branch taken.
 #' @export
@@ -481,7 +481,7 @@ NULL
 #' URL helpers (drid / nrid extractors).
 #' ---------------------------------------------------------------------------
 #'
-#' @param url See Usage.
+#' @param url Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{as.integer}.
 #' @export
 .siu_p_parse_drid_from_url <- function(url) {
@@ -497,7 +497,7 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param url See Usage.
+#' @param url Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{as.integer}.
 #' @export
 .siu_p_parse_nrid_from_url <- function(url) {
@@ -572,7 +572,7 @@ NULL
 #'
 #' 3 digits.
 #'
-#' @param text See Usage.
+#' @param text Passed to \code{regmatches}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 .siu_p_find_case_number <- function(text) {
@@ -700,7 +700,7 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param html See Usage.
+#' @param html Passed to \code{regmatches}.
 #' @param source_url Optional; may be \code{NULL}. Character; passed to \code{sub}.
 #' @return The value of \code{m}, as built in the body.
 #' @export

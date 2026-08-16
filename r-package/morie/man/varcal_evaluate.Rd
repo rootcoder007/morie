@@ -10,7 +10,7 @@ varcal_evaluate(called, truth, candidates = NULL)
 \arguments{
 \item{called}{See Usage.}
 \item{truth}{See Usage.}
-\item{candidates}{Defaults to \code{NULL}.}
+\item{candidates}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the varcal_native implementation; see the file header for the source it follows.

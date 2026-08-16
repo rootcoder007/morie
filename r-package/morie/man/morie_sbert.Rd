@@ -8,8 +8,8 @@
 morie_sbert(pairs, embed)
 }
 \arguments{
-\item{pairs}{See Usage.}
-\item{embed}{See Usage.}
+\item{pairs}{Passed to \code{sts_score}.}
+\item{embed}{Passed to \code{sts_score}.}
 }
 \description{
 Part of the sbert_native implementation; see the file header for the source it follows.

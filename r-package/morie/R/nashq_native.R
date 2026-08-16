@@ -11,7 +11,7 @@ nashq_selections <- c("global_optimal", "saddle", "first", "best_for_agent")
 #' source it follows.
 #'
 #' @param M A matrix; passed to \code{nrow}.
-#' @param name See Usage.
+#' @param name Passed to \code{sprintf}.
 #' @return The value of \code{M}, as built in the body.
 #' @export
 nashq_mat <- function(M, name) {
@@ -29,7 +29,7 @@ nashq_mat <- function(M, name) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param A See Usage.
+#' @param A Passed to \code{cbind}.
 #' @param b A vector; its length is taken.
 #' @return The value of \code{[}.
 #' @export
@@ -184,9 +184,9 @@ nashq_equilibria_bimatrix <- function(A, B, tol = 1e-9) {
 #' source it follows.
 #'
 #' @param A A matrix; passed to \code{nrow}.
-#' @param B See Usage.
-#' @param p See Usage.
-#' @param q See Usage.
+#' @param B Passed to \code{nashq_payoff}.
+#' @param p Passed to \code{nashq_payoff}.
+#' @param q Passed to \code{nashq_payoff}.
 #' @param tol Numeric; combined arithmetically in the body.
 #' @return A logical value.
 #' @export
@@ -239,7 +239,7 @@ nashq_stage_game_type <- function(A, B, tol = 1e-9) {
 #' @param A Numeric; passed to \code{max}.
 #' @param B Numeric; passed to \code{max}.
 #' @param selection One of \code{"best_for_agent"}, \code{"first"}, \code{"global_optimal"}.
-#' @param agent See Usage.
+#' @param agent Passed to \code{==}.
 #' @param tol Numeric; combined arithmetically in the body.
 #' @return The value of \code{[[}.
 #' @export
@@ -269,10 +269,10 @@ nashq_select_eq <- function(A, B, selection, agent, tol) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param M See Usage.
+#' @param M Passed to \code{rowMeans}.
 #' @param A A vector; its length is taken.
-#' @param who See Usage.
-#' @param epsilon See Usage.
+#' @param who Passed to \code{==}.
+#' @param epsilon Passed to \code{<}.
 #' @param rng Accepted by the signature and not used anywhere in the body.
 #' @return One of two values, depending on the branch taken.
 #' @export
@@ -300,15 +300,15 @@ nashq_pick <- function(M, A, who, epsilon, rng) {
 #' @param rewards A function; the body checks with \code{is.function}.
 #' @param gamma Numeric; combined arithmetically in the body. Defaults to \code{0.9}.
 #' @param alpha Numeric; combined arithmetically in the body. Defaults to \code{0.5}.
-#' @param epsilon Defaults to \code{0.1}.
+#' @param epsilon Passed to \code{nashq_pick}. Defaults to \code{0.1}.
 #' @param episodes Coerced to integer by the body, with \code{as.integer}. Defaults to \code{500}.
 #' @param horizon Coerced to integer by the body, with \code{as.integer}. Defaults to \code{50}.
 #' @param start Optional; may be \code{NULL}. A function; the body checks with \code{is.function}.
 #' @param selection Carried through into a list the body builds. Defaults to \code{"global_optimal"}.
 #' @param terminal Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.
-#' @param seed Defaults to \code{0}.
-#' @param agent Defaults to \code{0}.
-#' @param tol Defaults to \code{1e-09}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{0}.
+#' @param agent Passed to \code{nashq_select_eq}. Defaults to \code{0}.
+#' @param tol Passed to \code{nashq_select_eq}. Defaults to \code{1e-09}.
 #' @return A list with \code{estimate}, \code{q}, \code{policy}, \code{nash_values}, \code{stage_game_types}, \code{returns}, \code{mean_return_last}, \code{selection}, \code{method}.
 #' @export
 nashq_run <- function(states, actions, step, rewards, gamma = 0.9, alpha = 0.5,

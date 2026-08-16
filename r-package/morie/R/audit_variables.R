@@ -76,7 +76,7 @@ NULL
 #' the source it follows.
 #'
 #' @param taxonomies A vector; its length is taken.
-#' @param analyzed_set See Usage.
+#' @param analyzed_set Passed to \code{\%in\%}.
 #' @param domain Character; passed to \code{toupper}.
 #' @return The value of \code{out}, as built in the body.
 #' @export

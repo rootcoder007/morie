@@ -9,8 +9,8 @@ offlrl_lookup(mat, s, a)
 }
 \arguments{
 \item{mat}{A vector; indexed elementwise.}
-\item{s}{See Usage.}
-\item{a}{See Usage.}
+\item{s}{Passed to \code{paste0}.}
+\item{a}{Passed to \code{paste0}.}
 }
 \description{
 Part of the offlrl_native implementation; see the file header for the source it follows.

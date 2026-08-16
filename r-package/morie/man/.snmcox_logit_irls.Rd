@@ -12,7 +12,7 @@
 \item{y}{Numeric; combined arithmetically in the body.}
 \item{iters}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{60L}.}
 \item{ridge}{Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.}
-\item{tol}{Defaults to \code{1e-13}.}
+\item{tol}{Passed to \code{<}. Defaults to \code{1e-13}.}
 }
 \description{
 Part of the snmcox_native implementation; see the file header for the source it follows.

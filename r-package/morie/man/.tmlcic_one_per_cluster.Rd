@@ -10,7 +10,7 @@
 \arguments{
 \item{v}{A vector; indexed elementwise.}
 \item{groups}{A vector; its length is taken and its elements indexed.}
-\item{name}{See Usage.}
+\item{name}{Passed to \code{sprintf}.}
 }
 \description{
 Part of the tmlcic_native implementation; see the file header for the source it follows.

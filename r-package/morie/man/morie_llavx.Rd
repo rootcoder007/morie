@@ -8,10 +8,10 @@
 morie_llavx(captions = NULL, boxes = NULL, kind = "conversation", stage = NULL)
 }
 \arguments{
-\item{captions}{Defaults to \code{NULL}.}
-\item{boxes}{Defaults to \code{NULL}.}
-\item{kind}{Defaults to \code{"conversation"}.}
-\item{stage}{Defaults to \code{NULL}.}
+\item{captions}{Passed to \code{symbolic_representation}.}
+\item{boxes}{Passed to \code{symbolic_representation}.}
+\item{kind}{Passed to \code{instruction_prompt}. Defaults to \code{"conversation"}.}
+\item{stage}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the llavx_native implementation; see the file header for the source it follows.

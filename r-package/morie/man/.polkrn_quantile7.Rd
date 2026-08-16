@@ -8,8 +8,8 @@
 .polkrn_quantile7(x, q)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{q}{See Usage.}
+\item{x}{Passed to \code{quantile}.}
+\item{q}{Passed to \code{quantile}.}
 }
 \description{
 Part of the polkrn_native implementation; see the file header for the source it follows.

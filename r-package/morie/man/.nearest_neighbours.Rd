@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{pts}{A vector; its length is taken and its elements indexed.}
-\item{min_sep}{See Usage.}
+\item{min_sep}{Passed to \code{<=}.}
 }
 \description{
 Part of the lyapun_native implementation; see the file header for the source it follows.

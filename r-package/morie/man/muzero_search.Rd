@@ -8,19 +8,19 @@
 muzero_search(observation, actions, representation, dynamics, prediction, simulations = 50, gamma = 0.997, c1 = 1.25, c2 = 19652, dirichlet_alpha = NULL, exploration_fraction = 0.25, temperature = 1, seed = 0)
 }
 \arguments{
-\item{observation}{See Usage.}
+\item{observation}{Passed to \code{representation}.}
 \item{actions}{Coerced to list by the body, with \code{as.list}.}
-\item{representation}{See Usage.}
-\item{dynamics}{See Usage.}
-\item{prediction}{See Usage.}
+\item{representation}{Passed to \code{c}.}
+\item{dynamics}{Passed to \code{c}.}
+\item{prediction}{Passed to \code{c}.}
 \item{simulations}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50}.}
-\item{gamma}{Defaults to \code{0.997}.}
-\item{c1}{Defaults to \code{1.25}.}
+\item{gamma}{Passed to \code{muzero_backup}. Defaults to \code{0.997}.}
+\item{c1}{Passed to \code{muzero_select}. Defaults to \code{1.25}.}
 \item{c2}{The body requires: muzero: c2 must be > 0. Defaults to \code{19652}.}
 \item{dirichlet_alpha}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 \item{exploration_fraction}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.25}.}
 \item{temperature}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
-\item{seed}{Defaults to \code{0}.}
+\item{seed}{Passed to \code{muzero_add_noise}. Defaults to \code{0}.}
 }
 \description{
 Part of the muzero_native implementation; see the file header for the source it follows.

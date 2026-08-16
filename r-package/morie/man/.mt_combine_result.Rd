@@ -12,7 +12,7 @@
 \item{stat}{Carried through into a list the body builds.}
 \item{p_comb}{Carried through into a list the body builds.}
 \item{interp}{Carried through into a list the body builds.}
-\item{extra}{Defaults to \code{list()}.}
+\item{extra}{Passed to \code{c}. Defaults to \code{list()}.}
 }
 \description{
 Part of the multiple_testing implementation; see the file header for the source it follows.

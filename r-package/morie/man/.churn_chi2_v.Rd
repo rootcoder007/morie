@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{tbl}{A matrix; passed to \code{dim}.}
-\item{min_cell}{Defaults to \code{5L}.}
+\item{min_cell}{Passed to \code{<}. Defaults to \code{5L}.}
 }
 \description{
 (chi2, p, v) with NA entries when the table is too sparse.

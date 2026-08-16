@@ -13,8 +13,8 @@
 \item{A0}{A vector; indexed elementwise.}
 \item{L1}{Passed to \code{.fit_q2}.}
 \item{A1}{Passed to \code{.fit_q2}.}
-\item{V0}{See Usage.}
-\item{V1}{See Usage.}
+\item{V0}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
+\item{V1}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 \item{ridge}{Passed to \code{.fit_q2}.}
 }
 \description{

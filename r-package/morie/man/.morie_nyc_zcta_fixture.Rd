@@ -8,8 +8,8 @@
 .morie_nyc_zcta_fixture(fname, expected_rows = 221L)
 }
 \arguments{
-\item{fname}{See Usage.}
-\item{expected_rows}{Defaults to \code{221L}.}
+\item{fname}{Passed to \code{system.file}.}
+\item{expected_rows}{Passed to \code{!=}. Defaults to \code{221L}.}
 }
 \description{
 A step of the datasets_nyc_nypd implementation. Called by \code{morie_datasets_nyc_zctas}. See the file header for the source the module follows.

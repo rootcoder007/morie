@@ -141,9 +141,9 @@ muzero_gamma_rv <- function(alpha) {
 #' source it follows.
 #'
 #' @param prior Numeric; combined arithmetically in the body.
-#' @param alpha See Usage.
+#' @param alpha Passed to \code{<=}.
 #' @param frac Numeric; combined arithmetically in the body.
-#' @param seed See Usage.
+#' @param seed Passed to \code{set.seed}.
 #' @return A numeric value.
 #' @export
 muzero_add_noise <- function(prior, alpha, frac, seed) {
@@ -162,19 +162,19 @@ muzero_add_noise <- function(prior, alpha, frac, seed) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param observation See Usage.
+#' @param observation Passed to \code{representation}.
 #' @param actions Coerced to list by the body, with \code{as.list}.
-#' @param representation See Usage.
-#' @param dynamics See Usage.
-#' @param prediction See Usage.
+#' @param representation Passed to \code{c}.
+#' @param dynamics Passed to \code{c}.
+#' @param prediction Passed to \code{c}.
 #' @param simulations A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50}.
-#' @param gamma Defaults to \code{0.997}.
-#' @param c1 Defaults to \code{1.25}.
+#' @param gamma Passed to \code{muzero_backup}. Defaults to \code{0.997}.
+#' @param c1 Passed to \code{muzero_select}. Defaults to \code{1.25}.
 #' @param c2 The body requires: muzero: c2 must be > 0. Defaults to \code{19652}.
 #' @param dirichlet_alpha Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param exploration_fraction Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.25}.
 #' @param temperature Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
-#' @param seed Defaults to \code{0}.
+#' @param seed Passed to \code{muzero_add_noise}. Defaults to \code{0}.
 #' @return A list with \code{estimate}, \code{policy}, \code{action}, \code{value}, \code{visits}, \code{Q}, \code{prior}, \code{n_dynamics_calls}, \code{n_prediction_calls}, \code{simulations}, \code{method}.
 #' @export
 muzero_search <- function(observation, actions, representation, dynamics,

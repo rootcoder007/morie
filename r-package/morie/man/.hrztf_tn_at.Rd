@@ -11,8 +11,8 @@
 \item{yv}{Numeric; combined arithmetically in the body.}
 \item{ygrid}{A vector; its length is taken and its elements indexed.}
 \item{T}{A vector; indexed elementwise.}
-\item{y2}{See Usage.}
-\item{y1}{See Usage.}
+\item{y2}{Passed to \code{<}.}
+\item{y1}{Passed to \code{>}.}
 }
 \description{
 an arbitrarily large negative number if y < y2 and an arbitrarily large positive number if y > y1".  Inside [y2, y1] the grid values are interpolated.

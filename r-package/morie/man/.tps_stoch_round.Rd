@@ -8,8 +8,8 @@
 .tps_stoch_round(x, k)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{k}{See Usage.}
+\item{x}{Passed to \code{is.finite}.}
+\item{k}{Passed to \code{round}.}
 }
 \description{
 Part of the tps_stochastic implementation; see the file header for the source it follows.

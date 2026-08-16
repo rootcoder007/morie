@@ -56,7 +56,7 @@
 #'
 #' Using pnorm is exactly the closed form below.
 #'
-#' @param z See Usage.
+#' @param z Passed to \code{pnorm}.
 #' @return A numeric value.
 #' @export
 .Phi <- function(z) 0.5 * (1.0 + 2 * pnorm(z) - 1.0)
@@ -231,8 +231,8 @@ squared_exponential <- function(a, b, amplitude = 1.0, length_scale = 1.0) {
 #' @param y Coerced to numeric by the body, with \code{as.numeric}.
 #' @param Xs A vector; its length is taken and its elements indexed.
 #' @param kernel Passed to \code{.kernel}. Defaults to \code{"matern52"}.
-#' @param amplitude Defaults to \code{1}.
-#' @param length_scale Defaults to \code{1}.
+#' @param amplitude Passed to \code{k}. Defaults to \code{1}.
+#' @param length_scale Passed to \code{k}. Defaults to \code{1}.
 #' @param noise The body requires: bayopt: noise must be non-negative. Defaults to \code{1e-08}.
 #' @param mean Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{mean}, \code{variance}, \code{sd}.
@@ -376,22 +376,22 @@ acquisition_gradient <- function(gmu, gsd, mu, sd, best, acq = "ei",
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
-#' @param y See Usage.
-#' @param best See Usage.
+#' @param X Passed to \code{gp_posterior}.
+#' @param y Passed to \code{gp_posterior}.
+#' @param best Passed to \code{acquire}.
 #' @param box A vector; its length is taken and its elements indexed.
-#' @param acq Defaults to \code{"ei"}.
-#' @param kernel Defaults to \code{"matern52"}.
-#' @param amplitude Defaults to \code{1}.
-#' @param length_scale Defaults to \code{1}.
-#' @param noise Defaults to \code{1e-08}.
-#' @param kappa Defaults to \code{2}.
-#' @param xi Defaults to \code{0}.
+#' @param acq Passed to \code{acquire}. Defaults to \code{"ei"}.
+#' @param kernel Passed to \code{gp_posterior}. Defaults to \code{"matern52"}.
+#' @param amplitude Passed to \code{gp_posterior}. Defaults to \code{1}.
+#' @param length_scale Passed to \code{gp_posterior}. Defaults to \code{1}.
+#' @param noise Passed to \code{gp_posterior}. Defaults to \code{1e-08}.
+#' @param kappa Passed to \code{acquire}. Defaults to \code{2}.
+#' @param xi Passed to \code{acquire}. Defaults to \code{0}.
 #' @param starts Optional; may be \code{NULL}. A vector; its length is taken.
 #' @param n_starts Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8}.
 #' @param max_iter Coerced to integer by the body, with \code{as.integer}. Defaults to \code{60}.
-#' @param tol Defaults to \code{1e-08}.
-#' @param rnd Defaults to \code{NULL}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-08}.
+#' @param rnd Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{x}, \code{acq}, \code{n_starts}, \code{evaluations}.
 #' @export
 maximise_acquisition <- function(X, y, best, box, acq = "ei", kernel = "matern52",
@@ -511,12 +511,12 @@ lower_confidence_bound <- function(mu, sd, kappa = 2.0) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param mu See Usage.
-#' @param sd See Usage.
-#' @param best See Usage.
+#' @param mu Passed to \code{expected_improvement}.
+#' @param sd Passed to \code{expected_improvement}.
+#' @param best Passed to \code{expected_improvement}.
 #' @param acq One of \code{"ei"}, \code{"pi"}. Defaults to \code{"ei"}.
-#' @param kappa Defaults to \code{2}.
-#' @param xi Defaults to \code{0}.
+#' @param kappa Passed to \code{lower_confidence_bound}. Defaults to \code{2}.
+#' @param xi Passed to \code{expected_improvement}. Defaults to \code{0}.
 #' @return A numeric value.
 #' @export
 acquire <- function(mu, sd, best, acq = "ei", kappa = 2.0, xi = 0.0) {
@@ -539,11 +539,11 @@ acquire <- function(mu, sd, best, acq = "ei", kappa = 2.0, xi = 0.0) {
 #' @param n_init Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.
 #' @param acq Carried through into a list the body builds. Defaults to \code{"ei"}.
 #' @param kernel Carried through into a list the body builds. Defaults to \code{"matern52"}.
-#' @param amplitude Defaults to \code{1}.
-#' @param length_scale Defaults to \code{1}.
-#' @param noise Defaults to \code{1e-08}.
-#' @param kappa Defaults to \code{2}.
-#' @param xi Defaults to \code{0}.
+#' @param amplitude Passed to \code{maximise_acquisition}. Defaults to \code{1}.
+#' @param length_scale Passed to \code{maximise_acquisition}. Defaults to \code{1}.
+#' @param noise Passed to \code{maximise_acquisition}. Defaults to \code{1e-08}.
+#' @param kappa Passed to \code{maximise_acquisition}. Defaults to \code{2}.
+#' @param xi Passed to \code{maximise_acquisition}. Defaults to \code{0}.
 #' @param n_candidates Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.
 #' @param seed Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0}.
 #' @param X0 Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.

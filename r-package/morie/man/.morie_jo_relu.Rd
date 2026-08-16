@@ -8,7 +8,7 @@
 .morie_jo_relu(t)
 }
 \arguments{
-\item{t}{See Usage.}
+\item{t}{Passed to \code{ifelse}.}
 }
 \description{
 Part of the ts_joseph implementation; see the file header for the source it follows.

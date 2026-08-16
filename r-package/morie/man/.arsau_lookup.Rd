@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{year_or_range}{Coerced to character by the body, with \code{as.character}.}
-\item{kind}{See Usage.}
+\item{kind}{Passed to \code{paste}.}
 }
 \description{
 A step of the arsau implementation. Called by \code{morie_arsau_describe}, \code{morie_arsau_load_aggregate_summary}, \code{morie_arsau_load_detailed_dataset} and 4 others in the module. See the file header for the source the module follows.

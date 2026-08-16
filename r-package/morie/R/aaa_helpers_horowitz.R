@@ -83,8 +83,8 @@ NULL
 #'
 #' @param D Numeric; combined arithmetically in the body.
 #' @param Z A matrix; passed to \code{ncol}.
-#' @param maxit Defaults to \code{50}.
-#' @param tol Defaults to \code{1e-08}.
+#' @param maxit Passed to \code{:}. Defaults to \code{50}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-08}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .hrz_probit_newton <- function(D, Z, maxit = 50, tol = 1e-8) {
@@ -116,8 +116,8 @@ NULL
 #'
 #' @param D Numeric; combined arithmetically in the body.
 #' @param X A matrix; passed to \code{ncol}.
-#' @param maxit Defaults to \code{50}.
-#' @param tol Defaults to \code{1e-08}.
+#' @param maxit Passed to \code{:}. Defaults to \code{50}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-08}.
 #' @return A numeric value.
 #' @export
 .hrz_logit_newton <- function(D, X, maxit = 50, tol = 1e-8) {
@@ -148,8 +148,8 @@ NULL
 #' @param X A matrix; passed to \code{t}.
 #' @param y Numeric; combined arithmetically in the body.
 #' @param tau Numeric; combined arithmetically in the body. Defaults to \code{0.5}.
-#' @param maxit Defaults to \code{50}.
-#' @param tol Defaults to \code{1e-06}.
+#' @param maxit Passed to \code{:}. Defaults to \code{50}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-06}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .hrz_qreg_irls <- function(X, y, tau = 0.5, maxit = 50, tol = 1e-6) {

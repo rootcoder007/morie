@@ -8,7 +8,7 @@
 .morie_py_call(fn_name, ...)
 }
 \arguments{
-\item{fn_name}{See Usage.}
+\item{fn_name}{Passed to \code{paste}.}
 \item{...}{Passed through.}
 }
 \description{

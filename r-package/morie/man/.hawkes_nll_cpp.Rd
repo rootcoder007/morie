@@ -11,7 +11,7 @@
 \item{theta}{A vector; indexed elementwise.}
 \item{times}{Passed to \code{morie_hawkes_ll_exp_const_cpp}.}
 \item{end_time}{Passed to \code{morie_hawkes_ll_exp_const_cpp}.}
-\item{kernel}{See Usage.}
+\item{kernel}{Passed to \code{switch}.}
 }
 \description{
 A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}. See the file header for the source the module follows.

@@ -9,13 +9,13 @@ mqtmpl_permutation_threshold(y, markers, positions, n_perm = 100, alpha = 0.05, 
 }
 \arguments{
 \item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
-\item{markers}{See Usage.}
-\item{positions}{See Usage.}
+\item{markers}{Passed to \code{mqtmpl_scanone}.}
+\item{positions}{Passed to \code{mqtmpl_scanone}.}
 \item{n_perm}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100}.}
 \item{alpha}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.05}.}
-\item{method}{Defaults to \code{"em"}.}
-\item{step}{Defaults to \code{0.05}.}
-\item{seed}{Defaults to \code{0}.}
+\item{method}{Passed to \code{mqtmpl_scanone}. Defaults to \code{"em"}.}
+\item{step}{Passed to \code{mqtmpl_scanone}. Defaults to \code{0.05}.}
+\item{seed}{Passed to \code{set.seed}. Defaults to \code{0}.}
 \item{...}{Passed through.}
 }
 \description{

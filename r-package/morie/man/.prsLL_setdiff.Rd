@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{a}{A vector; indexed elementwise.}
-\item{b}{See Usage.}
+\item{b}{Passed to \code{\%in\%}.}
 }
 \description{
 Part of the prsLL_native implementation; see the file header for the source it follows.

@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{X}{A matrix; passed to \code{nrow}.}
-\item{y}{See Usage.}
+\item{y}{Passed to \code{<=}.}
 \item{K}{Numeric; combined arithmetically in the body.}
 \item{max_iter}{Carried through into a list the body builds.}
 \item{tol}{Carried through into a list the body builds.}

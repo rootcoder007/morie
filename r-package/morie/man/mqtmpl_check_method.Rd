@@ -8,7 +8,7 @@
 mqtmpl_check_method(method)
 }
 \arguments{
-\item{method}{See Usage.}
+\item{method}{Passed to \code{\%in\%}.}
 }
 \description{
 Part of the mqtmpl_native implementation; see the file header for the source it follows.

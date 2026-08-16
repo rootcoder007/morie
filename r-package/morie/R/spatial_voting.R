@@ -76,7 +76,7 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param M See Usage.
+#' @param M Passed to \code{apply}.
 #' @return The value of \code{apply}.
 #' @export
 .sv_nanmean_col <- function(M) {
@@ -120,8 +120,8 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param M See Usage.
-#' @param tol Defaults to \code{1e-12}.
+#' @param M Passed to \code{svd}.
+#' @param tol Passed to \code{>}. Defaults to \code{1e-12}.
 #' @return The value of \code{%*%}.
 #' @export
 .sv_safe_pinv <- function(M, tol = 1e-12) {
@@ -1019,7 +1019,7 @@ morie_spatial_voting_procrustes <- function(X, X_target) {
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param name See Usage.
+#' @param name Passed to \code{sprintf}.
 #' @return Nothing; this branch always raises.
 #' @export
 .NOT_PORTED <- function(name) {

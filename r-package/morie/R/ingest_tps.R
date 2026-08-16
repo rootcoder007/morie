@@ -89,7 +89,7 @@ morie_ingest_tps_layers <- function() {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param layer_url See Usage.
+#' @param layer_url Passed to \code{paste0}.
 #' @param where Carried through into a list the body builds. Defaults to \code{"1=1"}.
 #' @param out_fields Carried through into a list the body builds. Defaults to \code{"*"}.
 #' @param return_geometry A flag; the body branches on it. Defaults to \code{FALSE}.

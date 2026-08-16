@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{blips}{A vector; its length is taken.}
-\item{tol}{Defaults to \code{0.01}.}
+\item{tol}{Passed to \code{<=}. Defaults to \code{0.01}.}
 }
 \description{
 Part of the tmldyn_native implementation; see the file header for the source it follows.

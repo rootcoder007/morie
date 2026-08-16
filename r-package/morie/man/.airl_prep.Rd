@@ -12,7 +12,7 @@
 \item{A}{A vector; its length is taken.}
 \item{S1}{A vector; its length is taken.}
 \item{LP}{A vector; its length is taken.}
-\item{name}{See Usage.}
+\item{name}{Passed to \code{stop}.}
 }
 \description{
 A step of the airl_native implementation. Called by \code{airl}. See the file header for the source the module follows.

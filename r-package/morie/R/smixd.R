@@ -13,8 +13,8 @@
 #' @param theta A vector; indexed elementwise.
 #' @param D Numeric; combined arithmetically in the body.
 #' @param n A matrix; passed to \code{diag}.
-#' @param X See Usage.
-#' @param y See Usage.
+#' @param X Passed to \code{backsolve}.
+#' @param y Passed to \code{backsolve}.
 #' @param p Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export

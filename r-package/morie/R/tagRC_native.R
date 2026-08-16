@@ -205,11 +205,11 @@ tagRC_adapted_pagerank <- function(adjacency, nodes, p = NULL,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param triples See Usage.
-#' @param focus See Usage.
-#' @param d Defaults to \code{0.7}.
-#' @param weight Defaults to \code{0.9}.
-#' @param iters Defaults to \code{200}.
+#' @param triples Passed to \code{tagRC_tripartite_graph}.
+#' @param focus Passed to \code{tagRC_preference_vector}.
+#' @param d Passed to \code{tagRC_adapted_pagerank}. Defaults to \code{0.7}.
+#' @param weight Passed to \code{tagRC_preference_vector}. Defaults to \code{0.9}.
+#' @param iters Passed to \code{tagRC_adapted_pagerank}. Defaults to \code{200}.
 #' @return A list with \code{estimate}, \code{ranking}, \code{difference}, \code{with_preference}, \code{without_preference}, \code{undifferenced_ranking}, \code{baseline_ranking}, \code{focus}, \code{n_nodes}, \code{method}, \code{note}.
 #' @export
 morie_tagRC <- function(triples, focus, d = 0.7, weight = 0.9,

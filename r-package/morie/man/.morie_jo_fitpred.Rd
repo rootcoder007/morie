@@ -10,7 +10,7 @@
 \arguments{
 \item{rows}{A matrix; passed to \code{nrow}.}
 \item{y}{Passed to \code{.morie_jo_ols}.}
-\item{newrow}{See Usage.}
+\item{newrow}{Passed to \code{c}.}
 }
 \description{
 Part of the ts_joseph implementation; see the file header for the source it follows.

@@ -8,15 +8,15 @@
 morie_lyapun(y, embedding = NULL, tau = NULL, dt = 1, fit = NULL, min_sep = NULL, max_steps = NULL, method = "rosenstein", k = NULL)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{embedding}{Defaults to \code{NULL}.}
-\item{tau}{Defaults to \code{NULL}.}
-\item{dt}{Defaults to \code{1}.}
-\item{fit}{Defaults to \code{NULL}.}
-\item{min_sep}{Defaults to \code{NULL}.}
-\item{max_steps}{Defaults to \code{NULL}.}
-\item{method}{Defaults to \code{"rosenstein"}.}
-\item{k}{Defaults to \code{NULL}.}
+\item{y}{Passed to \code{lyapunov_exponent}.}
+\item{embedding}{Passed to \code{lyapunov_exponent}.}
+\item{tau}{Passed to \code{lyapunov_exponent}.}
+\item{dt}{Passed to \code{lyapunov_exponent}. Defaults to \code{1}.}
+\item{fit}{Passed to \code{lyapunov_exponent}.}
+\item{min_sep}{Passed to \code{lyapunov_exponent}.}
+\item{max_steps}{Passed to \code{lyapunov_exponent}.}
+\item{method}{Passed to \code{lyapunov_exponent}. Defaults to \code{"rosenstein"}.}
+\item{k}{Passed to \code{lyapunov_exponent}.}
 }
 \description{
 Part of the lyapun_native implementation; see the file header for the source it follows.

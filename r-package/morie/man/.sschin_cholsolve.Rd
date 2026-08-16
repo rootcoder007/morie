@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{A}{A matrix; passed to \code{chol}.}
-\item{b}{See Usage.}
+\item{b}{Passed to \code{forwardsolve}.}
 }
 \description{
 Part of the sschin_native implementation; see the file header for the source it follows.

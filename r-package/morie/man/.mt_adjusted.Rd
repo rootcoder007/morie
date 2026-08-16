@@ -13,7 +13,7 @@
 \item{alpha}{Passed to \code{.mt_result}.}
 \item{adjusted}{Numeric; passed to \code{max}.}
 \item{labels}{Passed to \code{.mt_result}.}
-\item{note}{Defaults to \code{NULL}.}
+\item{note}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the multiple_testing implementation; see the file header for the source it follows.

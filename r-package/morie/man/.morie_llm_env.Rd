@@ -8,7 +8,7 @@
 .morie_llm_env(name, default = "")
 }
 \arguments{
-\item{name}{See Usage.}
+\item{name}{Passed to \code{Sys.getenv}.}
 \item{default}{Defaults to \code{""}.}
 }
 \description{

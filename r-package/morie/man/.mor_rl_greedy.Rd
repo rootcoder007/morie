@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{Qs}{A vector; indexed elementwise.}
-\item{A}{See Usage.}
+\item{A}{Passed to \code{seq.int}.}
 }
 \description{
 Part of the qlearn_native implementation; see the file header for the source it follows.

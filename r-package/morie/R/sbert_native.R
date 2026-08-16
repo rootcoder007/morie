@@ -167,7 +167,7 @@ pair_cost <- function(n, mode = "cross-encoder") {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param query See Usage.
+#' @param query Passed to \code{cosine_similarity}.
 #' @param corpus_embeddings Passed to \code{.sbert_mat}.
 #' @param top_k Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.
 #' @return A list with \code{ranking}, \code{n_corpus}, \code{forward_passes}, \code{note}.
@@ -224,8 +224,8 @@ sts_score <- function(pairs, embed) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param pairs See Usage.
-#' @param embed See Usage.
+#' @param pairs Passed to \code{sts_score}.
+#' @param embed Passed to \code{sts_score}.
 #' @return The value of \code{sts_score}.
 #' @export
 morie_sbert <- function(pairs, embed) {

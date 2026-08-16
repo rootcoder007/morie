@@ -76,8 +76,8 @@ NULL
 #' for the source it follows.
 #'
 #' @param df A matrix; indexed by row and column.
-#' @param lat_col See Usage.
-#' @param lon_col See Usage.
+#' @param lat_col Passed to \code{c}.
+#' @param lon_col Passed to \code{c}.
 #' @return A matrix, from \code{as.matrix}.
 #' @export
 .tps_coords <- function(df, lat_col, lon_col) {
@@ -563,7 +563,7 @@ morie_tps_dbscan_clusters <- function(df,
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
-#' @param polygons See Usage.
+#' @param polygons Passed to \code{inherits}.
 #' @return Nothing; the function is called for its effect.
 #' @export
 .tps_polygon_centroids <- function(polygons) {

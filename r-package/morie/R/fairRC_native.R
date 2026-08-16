@@ -95,7 +95,7 @@
 #' @param measure One of \code{"rKL"}, \code{"rND"}, \code{"rRD"}.
 #' @param step Passed to \code{.raw}.
 #' @param normalize A flag; the body branches on it.
-#' @param caveat Defaults to \code{NULL}.
+#' @param caveat Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{pay}, as built in the body.
 #' @export
 .measure <- function(protected, measure, step, normalize, caveat = NULL) {
@@ -183,9 +183,9 @@ rRD <- function(protected, step = 10L, normalize = TRUE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param protected See Usage.
-#' @param step Defaults to \code{10L}.
-#' @param normalize Defaults to \code{TRUE}.
+#' @param protected Passed to \code{rND}.
+#' @param step Passed to \code{rND}. Defaults to \code{10L}.
+#' @param normalize Passed to \code{rND}. Defaults to \code{TRUE}.
 #' @return The value of \code{rND}.
 #' @export
 morie_fairRC <- function(protected, step = 10L, normalize = TRUE) {

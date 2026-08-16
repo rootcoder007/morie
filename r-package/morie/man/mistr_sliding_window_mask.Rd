@@ -9,7 +9,7 @@ mistr_sliding_window_mask(L, window, causal = TRUE)
 }
 \arguments{
 \item{L}{A count; the body uses it as \code{seq_len(...)}.}
-\item{window}{See Usage.}
+\item{window}{Passed to \code{<}.}
 \item{causal}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }
 \description{

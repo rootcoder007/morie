@@ -61,7 +61,7 @@ NULL
 #' cutpoint intercepts differ.  Mirrors _logit_fit_no_intercept().
 #'
 #' @param X A matrix; passed to \code{nrow}.
-#' @param y See Usage.
+#' @param y Passed to \code{<=}.
 #' @param K Numeric; combined arithmetically in the body.
 #' @param max_iter Carried through into a list the body builds.
 #' @param tol Carried through into a list the body builds.

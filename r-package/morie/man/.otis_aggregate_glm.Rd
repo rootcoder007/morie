@@ -11,13 +11,13 @@
 \item{work}{A matrix; indexed by row and column.}
 \item{treatment}{Carried through into a list the body builds.}
 \item{outcome}{Carried through into a list the body builds.}
-\item{covariates}{Defaults to \code{character(0)}.}
+\item{covariates}{Passed to \code{\%||\%}. Defaults to \code{character(0)}.}
 \item{year_col}{Carried through into a list the body builds. Defaults to \code{"EndFiscalYear"}.}
 \item{cluster_group}{Optional; may be \code{NULL}. Carried through into a list the body builds.}
 \item{ds_id}{Carried through into a list the body builds.}
 \item{source_label}{Carried through into a list the body builds.}
 \item{title}{Passed to \code{.otis_wrap}.}
-\item{interpretation}{See Usage.}
+\item{interpretation}{Passed to \code{paste0}.}
 }
 \description{
 Part of the otis_all_analyze implementation; see the file header for the source it follows.

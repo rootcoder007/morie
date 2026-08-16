@@ -54,7 +54,7 @@
 #' @param a A vector; its length is taken.
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
 #' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
-#' @param tol Defaults to \code{1e-10}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-10}.
 #' @return The value of \code{b}, as built in the body.
 #' @export
 .tmldyk_logit_irls <- function(Z, a, ridge = 1e-8, max_iter = 50L,

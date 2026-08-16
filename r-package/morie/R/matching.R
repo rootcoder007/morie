@@ -38,7 +38,7 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param pkg See Usage.
+#' @param pkg Passed to \code{requireNamespace}.
 #' @return The value of \code{requireNamespace}.
 #' @export
 .morie_matching_have <- function(pkg) {

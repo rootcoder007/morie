@@ -8,7 +8,7 @@
 invariance_error(energy_fn, R, Q, g = NULL)
 }
 \arguments{
-\item{energy_fn}{See Usage.}
+\item{energy_fn}{Passed to \code{forces_from_energy}.}
 \item{R}{Iterated over elementwise, with \code{lapply}.}
 \item{Q}{A matrix; passed to \code{as.matrix}.}
 \item{g}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}

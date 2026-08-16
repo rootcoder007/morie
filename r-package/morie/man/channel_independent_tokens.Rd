@@ -10,7 +10,7 @@ channel_independent_tokens(X, patch_len, stride = NULL)
 \arguments{
 \item{X}{A matrix; passed to \code{as.matrix}.}
 \item{patch_len}{Coerced to integer by the body, with \code{as.integer}.}
-\item{stride}{Defaults to \code{NULL}.}
+\item{stride}{Passed to \code{patchify}.}
 }
 \description{
 Nothing is mixed across channels, so the channel identity survives -- and because the downstream weights are shared, the whole model is equivariant to permuting them.

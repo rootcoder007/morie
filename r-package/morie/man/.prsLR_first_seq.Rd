@@ -10,7 +10,7 @@
 \arguments{
 \item{seq}{A vector; its length is taken.}
 \item{first}{A vector; indexed elementwise.}
-\item{nts}{See Usage.}
+\item{nts}{Passed to \code{\%in\%}.}
 }
 \description{
 Part of the prsLR_native implementation; see the file header for the source it follows.

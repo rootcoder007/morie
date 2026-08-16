@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{outputs}{A vector; indexed elementwise.}
-\item{output_dir}{Defaults to \code{NULL}.}
+\item{output_dir}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the modules implementation; see the file header for the source it follows.

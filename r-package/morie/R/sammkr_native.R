@@ -70,7 +70,7 @@ average_of_valid_masks <- function(masks) {
 #'
 #' @param a Passed to \code{.sammkr_flat}.
 #' @param b Passed to \code{.sammkr_flat}.
-#' @param threshold Defaults to \code{0.5}.
+#' @param threshold Passed to \code{>}. Defaults to \code{0.5}.
 #' @return A numeric value.
 #' @export
 iou <- function(a, b, threshold = 0.5) {
@@ -91,7 +91,7 @@ iou <- function(a, b, threshold = 0.5) {
 #' source it follows.
 #'
 #' @param predictions A vector; its length is taken.
-#' @param target See Usage.
+#' @param target Passed to \code{loss_fn}.
 #' @param loss_fn Accepted by the signature and not used anywhere in the body.
 #' @return A list with \code{loss}, \code{index}, \code{losses}, \code{mean_loss}, \code{gap}, \code{note}.
 #' @export
@@ -151,7 +151,7 @@ whole_part_subpart <- function(masks, target_hierarchy = NULL) {
 #'
 #' @param masks A vector; its length is taken.
 #' @param predicted_iou Coerced to numeric by the body, with \code{as.numeric}.
-#' @param target Defaults to \code{NULL}.
+#' @param target Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 rank_masks <- function(masks, predicted_iou, target = NULL) {
@@ -183,9 +183,9 @@ rank_masks <- function(masks, predicted_iou, target = NULL) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param masks See Usage.
-#' @param predicted_iou See Usage.
-#' @param target Defaults to \code{NULL}.
+#' @param masks Passed to \code{rank_masks}.
+#' @param predicted_iou Passed to \code{rank_masks}.
+#' @param target Passed to \code{rank_masks}.
 #' @return The value of \code{rank_masks}.
 #' @export
 morie_sammkr <- function(masks, predicted_iou, target = NULL) {

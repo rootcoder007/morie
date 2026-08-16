@@ -8,14 +8,14 @@
 miprgr_branch_and_bound(A, b, c, integer_vars, maximise = TRUE, prune = TRUE, max_nodes = 5000, solver = "simplex")
 }
 \arguments{
-\item{A}{See Usage.}
-\item{b}{See Usage.}
+\item{A}{Passed to \code{miprgr_solve_relaxation}.}
+\item{b}{Passed to \code{miprgr_solve_relaxation}.}
 \item{c}{A vector; its length is taken.}
 \item{integer_vars}{Coerced to integer by the body, with \code{as.integer}.}
 \item{maximise}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 \item{prune}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 \item{max_nodes}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5000}.}
-\item{solver}{Defaults to \code{"simplex"}.}
+\item{solver}{Passed to \code{miprgr_solve_relaxation}. Defaults to \code{"simplex"}.}
 }
 \description{
 Part of the miprgr_native implementation; see the file header for the source it follows.

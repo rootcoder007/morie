@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{fit}{Passed to \code{.safe_confint}.}
-\item{model}{See Usage.}
+\item{model}{Passed to \code{data.frame}.}
 }
 \description{
 Part of the study_core implementation; see the file header for the source it follows.

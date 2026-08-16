@@ -11,8 +11,8 @@
 \item{log_phi}{Numeric; passed to \code{exp}.}
 \item{D}{Numeric; combined arithmetically in the body.}
 \item{n}{A matrix; passed to \code{diag}.}
-\item{X}{See Usage.}
-\item{y}{See Usage.}
+\item{X}{Passed to \code{backsolve}.}
+\item{y}{Passed to \code{backsolve}.}
 }
 \description{
 Extracted from the sglm() optimiser closure so the non-positive- -definite-covariance guard is directly unit-testable. `D` is the distance matrix, `n` the sample size, `X`/`y` the design and response.

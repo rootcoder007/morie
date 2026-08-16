@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{data}{A list; the body reads \code{$cannabis_any_use} from it.}
-\item{output_dir}{Defaults to \code{NULL}.}
+\item{output_dir}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \description{
 Part of the study_reporting implementation; see the file header for the source it follows.

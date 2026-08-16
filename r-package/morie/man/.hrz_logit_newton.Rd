@@ -10,8 +10,8 @@
 \arguments{
 \item{D}{Numeric; combined arithmetically in the body.}
 \item{X}{A matrix; passed to \code{ncol}.}
-\item{maxit}{Defaults to \code{50}.}
-\item{tol}{Defaults to \code{1e-08}.}
+\item{maxit}{Passed to \code{:}. Defaults to \code{50}.}
+\item{tol}{Passed to \code{<}. Defaults to \code{1e-08}.}
 }
 \description{
 A step of the helpers_horowitz implementation. Called by \code{hrzt1}. See the file header for the source the module follows.

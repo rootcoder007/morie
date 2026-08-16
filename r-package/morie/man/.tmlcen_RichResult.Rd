@@ -8,7 +8,7 @@
 .tmlcen_RichResult(payload)
 }
 \arguments{
-\item{payload}{See Usage.}
+\item{payload}{Passed to \code{class}.}
 }
 \description{
 Part of the tmlcen_native implementation; see the file header for the source it follows.

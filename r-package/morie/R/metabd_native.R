@@ -99,9 +99,9 @@ length_weight <- function(length, l_min = 2500.0, l_ref = 100000.0) {
 #' @param tnf_a Coerced to numeric by the body, with \code{as.numeric}.
 #' @param tnf_b Coerced to numeric by the body, with \code{as.numeric}.
 #' @param cov_a Optional; may be \code{NULL}. A vector; its length is taken.
-#' @param cov_b Defaults to \code{NULL}.
-#' @param len_a Defaults to \code{NULL}.
-#' @param len_b Defaults to \code{NULL}.
+#' @param cov_b Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param len_a Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param len_b Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param w_abundance Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.5}.
 #' @return A list with \code{distance}, \code{composition}, \code{abundance}, \code{abundance_usable}, \code{confidence}, \code{effective_weight}, \code{note}.
 #' @export
@@ -223,11 +223,11 @@ metagenome_binning <- bin_contigs
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param tnfs See Usage.
-#' @param coverages Defaults to \code{NULL}.
-#' @param lengths Defaults to \code{NULL}.
-#' @param threshold Defaults to \code{0.15}.
-#' @param min_bin_size Defaults to \code{2e+05}.
+#' @param tnfs Passed to \code{bin_contigs}.
+#' @param coverages Passed to \code{bin_contigs}.
+#' @param lengths Passed to \code{bin_contigs}.
+#' @param threshold Passed to \code{bin_contigs}. Defaults to \code{0.15}.
+#' @param min_bin_size Passed to \code{bin_contigs}. Defaults to \code{2e+05}.
 #' @return The value of \code{bin_contigs}.
 #' @export
 morie_metabd <- function(tnfs, coverages = NULL, lengths = NULL,

@@ -71,7 +71,7 @@ NULL
 #' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param name See Usage.
+#' @param name Passed to \code{Sys.getenv}.
 #' @return The value of \code{trimws}.
 #' @export
 .morie_env <- function(name) {
@@ -355,7 +355,7 @@ morie_arsau_read_sidecar <- function(path) {
 #' it follows.
 #'
 #' @param year_or_range Coerced to character by the body, with \code{as.character}.
-#' @param kind See Usage.
+#' @param kind Passed to \code{paste}.
 #' @return The value of \code{[[}.
 #' @export
 .arsau_lookup <- function(year_or_range, kind) {

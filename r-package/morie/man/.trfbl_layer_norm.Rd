@@ -8,7 +8,7 @@
 .trfbl_layer_norm(x, eps = 1e-05)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Passed to \code{rowMeans}.}
 \item{eps}{Numeric; combined arithmetically in the body. Defaults to \code{1e-05}.}
 }
 \description{

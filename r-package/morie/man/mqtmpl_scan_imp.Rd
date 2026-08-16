@@ -13,8 +13,8 @@ mqtmpl_scan_imp(y, markers, positions, step, n_imp, error_rate, seed)
 \item{positions}{A vector; its length is taken and its elements indexed.}
 \item{step}{Numeric; combined arithmetically in the body.}
 \item{n_imp}{Coerced to integer by the body, with \code{as.integer}.}
-\item{error_rate}{See Usage.}
-\item{seed}{See Usage.}
+\item{error_rate}{Passed to \code{mqtmpl_sample_genotypes}.}
+\item{seed}{Passed to \code{mqtmpl_sample_genotypes}.}
 }
 \description{
 Part of the mqtmpl_native implementation; see the file header for the source it follows.

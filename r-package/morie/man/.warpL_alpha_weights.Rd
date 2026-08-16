@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{n}{Coerced to integer by the body, with \code{as.integer}.}
-\item{scheme}{Defaults to \code{"reciprocal"}.}
+\item{scheme}{Passed to \code{identical}. Defaults to \code{"reciprocal"}.}
 }
 \description{
 Part of the warpL_native implementation; see the file header for the source it follows.

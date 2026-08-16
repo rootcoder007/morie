@@ -84,7 +84,7 @@ GRANTHAM_VOLUME <- list(
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param seqs See Usage.
+#' @param seqs Passed to \code{unlist}.
 #' @param seq_type Optional; may be \code{NULL}. One of \code{"aa"}, \code{"nt"}.
 #' @return A list with \code{seqs}, \code{seq_type}.
 #' @export
@@ -201,11 +201,11 @@ mafft_xcorr_direct <- function(a, b, size) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param group1 See Usage.
-#' @param group2 See Usage.
-#' @param weights1 Defaults to \code{NULL}.
-#' @param weights2 Defaults to \code{NULL}.
-#' @param seq_type Defaults to \code{"aa"}.
+#' @param group1 Passed to \code{residue_vectors}.
+#' @param group2 Passed to \code{residue_vectors}.
+#' @param weights1 Passed to \code{residue_vectors}.
+#' @param weights2 Passed to \code{residue_vectors}.
+#' @param seq_type Passed to \code{residue_vectors}. Defaults to \code{"aa"}.
 #' @param method One of \code{"direct"}, \code{"fft"}. Defaults to \code{"fft"}.
 #' @return A list with \code{lags}, \code{c}, \code{size}.
 #' @export
@@ -383,8 +383,8 @@ mafft_default_raw <- function(seq_type, which = "jtt200") {
 #' source it follows.
 #'
 #' @param M A vector; indexed elementwise.
-#' @param a See Usage.
-#' @param b See Usage.
+#' @param a Passed to \code{paste0}.
+#' @param b Passed to \code{paste0}.
 #' @return One of two values, depending on the branch taken.
 #' @export
 mafft_lookup <- function(M, a, b) {
@@ -459,7 +459,7 @@ normalized_similarity_matrix <- function(raw_matrix = NULL, freqs = NULL,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param M See Usage.
+#' @param M Passed to \code{mafft_lookup}.
 #' @param ga A vector; its length is taken and its elements indexed.
 #' @param gb A vector; its length is taken and its elements indexed.
 #' @param wa A vector; indexed elementwise.
@@ -519,9 +519,9 @@ mafft_gap_profiles <- function(group, weights) {
 #'
 #' @param g1 A vector; its length is taken and its elements indexed.
 #' @param g2 A vector; its length is taken and its elements indexed.
-#' @param M See Usage.
-#' @param w1 See Usage.
-#' @param w2 See Usage.
+#' @param M Passed to \code{mafft_site_score}.
+#' @param w1 Passed to \code{mafft_gap_profiles}.
+#' @param w2 Passed to \code{mafft_gap_profiles}.
 #' @param s_op Numeric; combined arithmetically in the body.
 #' @return A list with \code{out1}, \code{out2}.
 #' @export
@@ -608,12 +608,12 @@ mafft_nw <- function(g1, g2, M, w1, w2, s_op) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param group1 See Usage.
-#' @param group2 See Usage.
+#' @param group1 Passed to \code{unlist}.
+#' @param group2 Passed to \code{unlist}.
 #' @param scoring A list; the body reads \code{$matrix} from it.
 #' @param weights1 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param weights2 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
-#' @param s_op Defaults to \code{2.4}.
+#' @param s_op Passed to \code{mafft_nw}. Defaults to \code{2.4}.
 #' @param anchors Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.
 #' @return The value of \code{mafft_nw}.
 #' @export
@@ -666,17 +666,17 @@ group_align <- function(group1, group2, scoring, weights1 = NULL,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param group1 See Usage.
-#' @param group2 See Usage.
+#' @param group1 Passed to \code{unlist}.
+#' @param group2 Passed to \code{unlist}.
 #' @param scoring A list; the body reads \code{$matrix} from it.
 #' @param weights1 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param weights2 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
-#' @param seq_type Defaults to \code{"aa"}.
+#' @param seq_type Passed to \code{correlation}. Defaults to \code{"aa"}.
 #' @param window Numeric; combined arithmetically in the body. Defaults to \code{30L}.
 #' @param n_peaks The body requires: mafft: window, n_peaks and max_len must be positive. Defaults to \code{20L}.
-#' @param threshold Defaults to \code{0.7}.
+#' @param threshold Passed to \code{>}. Defaults to \code{0.7}.
 #' @param max_len Numeric; combined arithmetically in the body. Defaults to \code{150L}.
-#' @param corr_method Defaults to \code{"fft"}.
+#' @param corr_method Passed to \code{correlation}. Defaults to \code{"fft"}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 find_homologous_segments <- function(group1, group2, scoring,
@@ -917,10 +917,10 @@ mafft_weights <- function(k) rep(1.0 / k, k)
 #' source it follows.
 #'
 #' @param seqs A vector; its length is taken and its elements indexed.
-#' @param scoring See Usage.
-#' @param tree Defaults to \code{NULL}.
-#' @param seq_type Defaults to \code{"aa"}.
-#' @param s_op Defaults to \code{2.4}.
+#' @param scoring Passed to \code{find_homologous_segments}.
+#' @param tree Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param seq_type Passed to \code{find_homologous_segments}. Defaults to \code{"aa"}.
+#' @param s_op Passed to \code{group_align}. Defaults to \code{2.4}.
 #' @param use_fft A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param ... Passed through.
 #' @return The value of \code{out}, as built in the body.
@@ -1035,12 +1035,12 @@ mafft_degap <- function(group) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param alignment See Usage.
-#' @param scoring See Usage.
+#' @param alignment Passed to \code{unlist}.
+#' @param scoring Passed to \code{wsp_score}.
 #' @param tree Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.
-#' @param s_op Defaults to \code{2.4}.
+#' @param s_op Passed to \code{wsp_score}. Defaults to \code{2.4}.
 #' @param max_iterate A count; the body uses it as \code{seq_len(...)}. Defaults to \code{16L}.
-#' @param seq_type Defaults to \code{"aa"}.
+#' @param seq_type Passed to \code{find_homologous_segments}. Defaults to \code{"aa"}.
 #' @param use_fft A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param ... Passed through.
 #' @return A list with \code{aln}, \code{score}, \code{rounds}.
@@ -1103,17 +1103,17 @@ iterative_refine <- function(alignment, scoring, tree = NULL, s_op = 2.4,
 #'
 #' @param sequences The body requires: mafft: at least two sequences are needed.
 #' @param method One of \code{"FFT-NS-2"}, \code{"FFT-NS-i"}, \code{"NW-NS-2"}. Defaults to \code{"FFT-NS-2"}.
-#' @param seq_type Defaults to \code{NULL}.
-#' @param raw_matrix Defaults to \code{NULL}.
-#' @param freqs Defaults to \code{NULL}.
-#' @param s_a Defaults to \code{0.06}.
+#' @param seq_type Passed to \code{mafft_clean}.
+#' @param raw_matrix Passed to \code{normalized_similarity_matrix}.
+#' @param freqs Passed to \code{normalized_similarity_matrix}.
+#' @param s_a Passed to \code{normalized_similarity_matrix}. Defaults to \code{0.06}.
 #' @param s_op Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{2.4}.
 #' @param matrix Carried through into a list the body builds. Defaults to \code{"normalized"}.
 #' @param window Carried through into a list the body builds. Defaults to \code{30L}.
 #' @param n_peaks Carried through into a list the body builds. Defaults to \code{20L}.
 #' @param threshold Carried through into a list the body builds. Defaults to \code{0.7}.
 #' @param max_len Carried through into a list the body builds. Defaults to \code{150L}.
-#' @param max_iterate Defaults to \code{16L}.
+#' @param max_iterate Passed to \code{iterative_refine}. Defaults to \code{16L}.
 #' @return A list with \code{estimate}, \code{alignment}, \code{score}, \code{method}, \code{seq_type}, \code{length}, \code{n}, \code{s_a}, \code{s_op}, \code{matrix_mode}, \code{tree}, \code{refine_rounds}, \code{note}.
 #' @export
 mafft_alignment <- function(sequences, method = "FFT-NS-2",
@@ -1193,13 +1193,13 @@ mafftalignment <- mafft_alignment
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param sequences See Usage.
-#' @param method Defaults to \code{"FFT-NS-2"}.
-#' @param seq_type Defaults to \code{NULL}.
-#' @param s_a Defaults to \code{0.06}.
-#' @param s_op Defaults to \code{2.4}.
-#' @param matrix Defaults to \code{"normalized"}.
-#' @param max_iterate Defaults to \code{16L}.
+#' @param sequences Passed to \code{mafft_alignment}.
+#' @param method Passed to \code{mafft_alignment}. Defaults to \code{"FFT-NS-2"}.
+#' @param seq_type Passed to \code{mafft_alignment}.
+#' @param s_a Passed to \code{mafft_alignment}. Defaults to \code{0.06}.
+#' @param s_op Passed to \code{mafft_alignment}. Defaults to \code{2.4}.
+#' @param matrix Passed to \code{mafft_alignment}. Defaults to \code{"normalized"}.
+#' @param max_iterate Passed to \code{mafft_alignment}. Defaults to \code{16L}.
 #' @return The value of \code{mafft_alignment}.
 #' @export
 morie_mafft <- function(sequences, method = "FFT-NS-2", seq_type = NULL,

@@ -8,7 +8,7 @@
 mafft_clean(seqs, seq_type = NULL)
 }
 \arguments{
-\item{seqs}{See Usage.}
+\item{seqs}{Passed to \code{unlist}.}
 \item{seq_type}{Optional; may be \code{NULL}. One of \code{"aa"}, \code{"nt"}.}
 }
 \description{
