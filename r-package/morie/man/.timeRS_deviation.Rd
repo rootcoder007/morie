@@ -8,9 +8,9 @@
 .timeRS_deviation(t, t_user, beta = .timeRS_BETA)
 }
 \arguments{
-\item{t}{See Usage.}
-\item{t_user}{See Usage.}
-\item{beta}{Defaults to \code{.timeRS_BETA}.}
+\item{t}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{t_user}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{beta}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{.timeRS_BETA}.}
 }
 \description{
 Part of the timeRS_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 project_nonneg(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the pgdsdg_native implementation; see the file header for the source it follows.

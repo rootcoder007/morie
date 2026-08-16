@@ -8,7 +8,7 @@
 causal_mask(n)
 }
 \arguments{
-\item{n}{See Usage.}
+\item{n}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the sasRec_native implementation; see the file header for the source it follows.

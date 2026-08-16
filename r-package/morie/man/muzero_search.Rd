@@ -9,7 +9,7 @@ muzero_search(observation, actions, representation, dynamics, prediction, simula
 }
 \arguments{
 \item{observation}{See Usage.}
-\item{actions}{See Usage.}
+\item{actions}{Coerced to list by the body, with \code{as.list}.}
 \item{representation}{See Usage.}
 \item{dynamics}{See Usage.}
 \item{prediction}{See Usage.}
@@ -17,9 +17,9 @@ muzero_search(observation, actions, representation, dynamics, prediction, simula
 \item{gamma}{Defaults to \code{0.997}.}
 \item{c1}{Defaults to \code{1.25}.}
 \item{c2}{Defaults to \code{19652}.}
-\item{dirichlet_alpha}{Defaults to \code{NULL}.}
-\item{exploration_fraction}{Defaults to \code{0.25}.}
-\item{temperature}{Defaults to \code{1}.}
+\item{dirichlet_alpha}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{exploration_fraction}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.25}.}
+\item{temperature}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 \item{seed}{Defaults to \code{0}.}
 }
 \description{

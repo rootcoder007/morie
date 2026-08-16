@@ -8,7 +8,7 @@
 momento_reconstruction_curve(patches, reconstructor, rates, seed = 0)
 }
 \arguments{
-\item{patches}{See Usage.}
+\item{patches}{Iterated over elementwise, with \code{lapply}.}
 \item{reconstructor}{See Usage.}
 \item{rates}{See Usage.}
 \item{seed}{Defaults to \code{0}.}

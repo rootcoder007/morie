@@ -9,8 +9,8 @@ morie_plsqs_pls_regression(X, Y, n_components = 2)
 }
 \arguments{
 \item{X}{A matrix; passed to \code{as.matrix}.}
-\item{Y}{See Usage.}
-\item{n_components}{Defaults to \code{2}.}
+\item{Y}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{n_components}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2}.}
 }
 \description{
 Part of the plsqs_native implementation; see the file header for the source it follows.

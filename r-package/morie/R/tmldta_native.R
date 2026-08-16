@@ -25,7 +25,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A numeric value.
 #' @export
 .tmldta_logit <- function(p) {
@@ -66,7 +66,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param Z See Usage.
+#' @param Z A matrix; the body checks with \code{is.matrix}.
 #' @param a A vector; its length is taken.
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
 #' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
@@ -111,7 +111,7 @@
 #' @param A_ A vector; indexed elementwise.
 #' @param W A matrix; indexed by row and column.
 #' @param levels A vector; indexed elementwise.
-#' @param rows See Usage.
+#' @param rows Iterated over elementwise, with \code{lapply}.
 #' @param ridge Numeric; passed to \code{max}.
 #' @return A list with \code{q}, \code{b}.
 #' @export
@@ -199,7 +199,7 @@
 #' @param W Passed to \code{.fit_q_dta}.
 #' @param levels A vector; indexed elementwise.
 #' @param rows Passed to \code{.fit_q_dta}.
-#' @param eval_rows See Usage.
+#' @param eval_rows Iterated over elementwise, with \code{vapply}.
 #' @param ridge Passed to \code{.fit_q_dta}.
 #' @return A list with \code{aL}, \code{aH}, \code{info}.
 #' @export
@@ -287,7 +287,7 @@
 #' source it follows.
 #'
 #' @param n A count; the body uses it as \code{seq_len(...)}.
-#' @param n_folds See Usage.
+#' @param n_folds Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{lapply}.
 #' @export
 .folds_dta <- function(n, n_folds) {

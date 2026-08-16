@@ -9,7 +9,7 @@ purity_completeness(bins, truth)
 }
 \arguments{
 \item{bins}{See Usage.}
-\item{truth}{See Usage.}
+\item{truth}{Coerced to character by the body, with \code{as.character}.}
 }
 \description{
 Part of the metabd_native implementation; see the file header for the source it follows.

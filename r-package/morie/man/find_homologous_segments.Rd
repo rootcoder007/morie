@@ -11,8 +11,8 @@ find_homologous_segments(group1, group2, scoring, weights1 = NULL, weights2 = NU
 \item{group1}{See Usage.}
 \item{group2}{See Usage.}
 \item{scoring}{A list; the body reads \code{$matrix} from it.}
-\item{weights1}{Defaults to \code{NULL}.}
-\item{weights2}{Defaults to \code{NULL}.}
+\item{weights1}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{weights2}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 \item{seq_type}{Defaults to \code{"aa"}.}
 \item{window}{Numeric; combined arithmetically in the body. Defaults to \code{30L}.}
 \item{n_peaks}{Defaults to \code{20L}.}

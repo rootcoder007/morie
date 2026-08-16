@@ -10,7 +10,7 @@ pool(token_vectors, mode = "mean", mask = NULL)
 \arguments{
 \item{token_vectors}{Passed to \code{.sbert_mat}.}
 \item{mode}{One of \code{"cls"}, \code{"max"}. Defaults to \code{"mean"}.}
-\item{mask}{Defaults to \code{NULL}.}
+\item{mask}{Optional; may be \code{NULL}. Coerced to logical by the body, with \code{as.logical}.}
 }
 \description{
 Part of the sbert_native implementation; see the file header for the source it follows.

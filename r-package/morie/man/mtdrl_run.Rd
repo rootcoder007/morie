@@ -8,10 +8,10 @@
 mtdrl_run(tasks, agent, episode_length = 100, n_arms = NULL, seed = 0, reset_between_episodes = TRUE)
 }
 \arguments{
-\item{tasks}{See Usage.}
+\item{tasks}{Iterated over elementwise, with \code{lapply}.}
 \item{agent}{A list; the body reads \code{$act}, \code{$observe}, \code{$reset} from it.}
-\item{episode_length}{Defaults to \code{100}.}
-\item{n_arms}{Defaults to \code{NULL}.}
+\item{episode_length}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100}.}
+\item{n_arms}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 \item{seed}{Defaults to \code{0}.}
 \item{reset_between_episodes}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 }

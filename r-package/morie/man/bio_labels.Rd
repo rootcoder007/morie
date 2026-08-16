@@ -8,7 +8,7 @@
 bio_labels(types)
 }
 \arguments{
-\item{types}{See Usage.}
+\item{types}{Coerced to list by the body, with \code{as.list}.}
 }
 \description{
 A step of the benRea_native implementation. Called by \code{ner_decode}. See the file header for the source the module follows.

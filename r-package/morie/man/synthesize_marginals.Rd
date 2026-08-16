@@ -9,7 +9,7 @@ synthesize_marginals(X, n, seed = 0)
 }
 \arguments{
 \item{X}{A vector; its length is taken and its elements indexed.}
-\item{n}{See Usage.}
+\item{n}{Coerced to integer by the body, with \code{as.integer}.}
 \item{seed}{Passed to \code{.memb_rng}. Defaults to \code{0}.}
 }
 \description{

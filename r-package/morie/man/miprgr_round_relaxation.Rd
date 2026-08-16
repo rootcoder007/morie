@@ -8,7 +8,7 @@
 miprgr_round_relaxation(x, A, b, integer_vars)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{A}{A matrix; indexed by row and column.}
 \item{b}{A vector; indexed elementwise.}
 \item{integer_vars}{See Usage.}

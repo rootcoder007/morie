@@ -11,7 +11,7 @@ density_is_view_independent(model, point, directions, tol = 1e-09)
 \item{model}{See Usage.}
 \item{point}{Passed to \code{.as_numeric_vec}.}
 \item{directions}{A vector; its length is taken and its elements indexed.}
-\item{tol}{Defaults to \code{1e-09}.}
+\item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.}
 }
 \description{
 Part of the nrfrad_native implementation; see the file header for the source it follows.

@@ -104,7 +104,7 @@ NULL
 #'
 #' @param title See Usage.
 #' @param summary_lines See Usage.
-#' @param tables Defaults to \code{list()}.
+#' @param tables Iterated over elementwise, with \code{Filter}. Defaults to \code{list()}.
 #' @param interpretation Defaults to \code{""}.
 #' @param warnings Defaults to \code{character(0)}.
 #' @param payload Defaults to \code{NULL}.

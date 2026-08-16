@@ -10,8 +10,8 @@ sasimi_tversky(fp_a, fp_b, alpha = 1, beta = 1)
 \arguments{
 \item{fp_a}{See Usage.}
 \item{fp_b}{See Usage.}
-\item{alpha}{Defaults to \code{1}.}
-\item{beta}{Defaults to \code{1}.}
+\item{alpha}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
+\item{beta}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 }
 \description{
 Part of the sasimi_native implementation; see the file header for the source it follows.

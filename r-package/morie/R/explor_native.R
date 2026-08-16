@@ -74,12 +74,12 @@
 #' @param states Passed to \code{.mat}.
 #' @param actions Passed to \code{.mat}.
 #' @param next_states Passed to \code{.mat}.
-#' @param n_actions Defaults to \code{NULL}.
-#' @param n_features Defaults to \code{8L}.
+#' @param n_actions Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
+#' @param n_features Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8L}.
 #' @param eta Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @param beta Numeric; combined arithmetically in the body. Defaults to \code{0.2}.
 #' @param lr Numeric; combined arithmetically in the body. Defaults to \code{0.05}.
-#' @param epochs Defaults to \code{1L}.
+#' @param epochs Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1L}.
 #' @param features One of \code{"identity"}, \code{"inverse"}. Defaults to \code{"inverse"}.
 #' @param discrete A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param seed Passed to \code{.ghc_rng}. Defaults to \code{0L}.

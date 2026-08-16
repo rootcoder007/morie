@@ -11,7 +11,7 @@ neighbours(order, seasonal_order, constant, s)
 \item{order}{A vector; indexed elementwise.}
 \item{seasonal_order}{A vector; indexed elementwise.}
 \item{constant}{A flag; the body branches on it.}
-\item{s}{See Usage.}
+\item{s}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the sarimax_native implementation; see the file header for the source it follows.

@@ -8,8 +8,8 @@
 morie_vidgen_attention_cost(frames, spatial_positions)
 }
 \arguments{
-\item{frames}{See Usage.}
-\item{spatial_positions}{See Usage.}
+\item{frames}{Coerced to integer by the body, with \code{as.integer}.}
+\item{spatial_positions}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the vidgen_native implementation; see the file header for the source it follows.

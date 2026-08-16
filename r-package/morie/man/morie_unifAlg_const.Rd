@@ -8,7 +8,7 @@
 morie_unifAlg_const(symbol)
 }
 \arguments{
-\item{symbol}{See Usage.}
+\item{symbol}{Coerced to character by the body, with \code{as.character}.}
 }
 \description{
 Part of the unifAlg_native implementation; see the file header for the source it follows.

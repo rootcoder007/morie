@@ -8,9 +8,9 @@
 morie_sdxlcd_fourier_embedding(value, dim = 8, scale = 0.001)
 }
 \arguments{
-\item{value}{See Usage.}
-\item{dim}{Defaults to \code{8}.}
-\item{scale}{Defaults to \code{0.001}.}
+\item{value}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{dim}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8}.}
+\item{scale}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.001}.}
 }
 \description{
 Part of the sdxlcd_native implementation; see the file header for the source it follows.

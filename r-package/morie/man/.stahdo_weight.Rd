@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{r}{Numeric; combined arithmetically in the body.}
-\item{cutoff}{See Usage.}
+\item{cutoff}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the stahdo_native implementation; see the file header for the source it follows.

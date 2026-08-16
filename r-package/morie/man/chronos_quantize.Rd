@@ -8,7 +8,7 @@
 chronos_quantize(x, bins)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{bins}{A list; the body reads \code{$centers}, \code{$edges} from it.}
 }
 \description{

@@ -11,7 +11,7 @@ morie_trmRew_normal_form(t, rules, strategy = "innermost", max_steps = 10000)
 \item{t}{See Usage.}
 \item{rules}{Passed to \code{morie_trmRew_rewrite_step}.}
 \item{strategy}{Passed to \code{morie_trmRew_rewrite_step}. Defaults to \code{"innermost"}.}
-\item{max_steps}{Defaults to \code{10000}.}
+\item{max_steps}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{10000}.}
 }
 \description{
 Part of the trmRew_native implementation; see the file header for the source it follows.

@@ -22,9 +22,9 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param d_tx See Usage.
-#' @param p See Usage.
-#' @param q See Usage.
+#' @param d_tx Coerced to integer by the body, with \code{as.integer}.
+#' @param p Coerced to numeric by the body, with \code{as.numeric}.
+#' @param q Coerced to numeric by the body, with \code{as.numeric}.
 #' @return Nothing; this branch always raises.
 #' @export
 node2v_alpha_pq <- function(d_tx, p, q) {
@@ -47,7 +47,7 @@ node2v_alpha_pq <- function(d_tx, p, q) {
 #' source it follows.
 #'
 #' @param adj A vector; indexed elementwise.
-#' @param t See Usage.
+#' @param t Coerced to character by the body, with \code{as.character}.
 #' @param x See Usage.
 #' @return A numeric value.
 #' @export
@@ -67,7 +67,7 @@ node2v_dist <- function(adj, t, x) {
 #'
 #' @param adj A vector; indexed elementwise.
 #' @param t See Usage.
-#' @param v See Usage.
+#' @param v Coerced to character by the body, with \code{as.character}.
 #' @param p See Usage.
 #' @param q See Usage.
 #' @param weights Optional; may be \code{NULL}. A vector; indexed elementwise.
@@ -115,7 +115,7 @@ node2v_transition_probabilities <- function(adj, t, v, p, q,
 #'
 #' @param adj See Usage.
 #' @param start See Usage.
-#' @param length See Usage.
+#' @param length Coerced to integer by the body, with \code{as.integer}.
 #' @param p Defaults to \code{1}.
 #' @param q Defaults to \code{1}.
 #' @param rng Optional; may be \code{NULL}. Passed to \code{.ghc_unif}.
@@ -155,11 +155,11 @@ node2v_walk <- function(adj, start, length, p = 1, q = 1, rng = NULL,
 #' source it follows.
 #'
 #' @param adj A vector; its length is taken.
-#' @param num_walks Defaults to \code{10}.
-#' @param length Defaults to \code{10}.
-#' @param p Defaults to \code{1}.
-#' @param q Defaults to \code{1}.
-#' @param seed Defaults to \code{0}.
+#' @param num_walks Coerced to integer by the body, with \code{as.integer}. Defaults to \code{10}.
+#' @param length Coerced to integer by the body, with \code{as.integer}. Defaults to \code{10}.
+#' @param p Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
+#' @param q Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
+#' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
 #' @param weights Defaults to \code{NULL}.
 #' @return A list with \code{estimate}, \code{walks}, \code{p}, \code{q}, \code{n_walks}, \code{length}, \code{method}, \code{note}.
 #' @export
@@ -199,7 +199,7 @@ node2v_generate_walks <- morie_node2v
 #' source it follows.
 #'
 #' @param walks See Usage.
-#' @param window Defaults to \code{2}.
+#' @param window Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2}.
 #' @return The value of \code{pairs}, as built in the body.
 #' @export
 node2v_skipgram_pairs <- function(walks, window = 2) {

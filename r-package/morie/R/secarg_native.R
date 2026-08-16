@@ -27,7 +27,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n See Usage.
+#' @param n Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{as.raw}.
 #' @export
 .le32 <- function(n) {
@@ -276,7 +276,7 @@ morie_secarg_compress <- function(X, Y) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param ws See Usage.
+#' @param ws Iterated over elementwise, with \code{lapply}.
 #' @return The value of \code{do.call}.
 #' @export
 .to_bytes <- function(ws) {
@@ -346,7 +346,7 @@ morie_secarg_argon2 <- function(password, salt, memory = 32, passes = 3,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param bs See Usage.
+#' @param bs Coerced to integer by the body, with \code{as.integer}.
 #' @return A character value.
 #' @export
 .secarg_hexlify <- function(bs) {

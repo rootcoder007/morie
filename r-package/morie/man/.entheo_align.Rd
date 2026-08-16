@@ -8,8 +8,8 @@
 .entheo_align(e, f)
 }
 \arguments{
-\item{e}{See Usage.}
-\item{f}{See Usage.}
+\item{e}{A matrix; the body checks with \code{is.matrix}.}
+\item{f}{A matrix; the body checks with \code{is.matrix}.}
 }
 \description{
 A step of the entheo_analysis implementation. Called by \code{.entheo_binding_per_frame}, \code{.entheo_san_per_frame}. See the file header for the source the module follows.

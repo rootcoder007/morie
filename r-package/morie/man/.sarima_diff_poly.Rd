@@ -8,8 +8,8 @@
 .sarima_diff_poly(k, s)
 }
 \arguments{
-\item{k}{See Usage.}
-\item{s}{See Usage.}
+\item{k}{Coerced to integer by the body, with \code{as.integer}.}
+\item{s}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the sarima_native implementation; see the file header for the source it follows.

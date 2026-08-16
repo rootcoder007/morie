@@ -8,7 +8,7 @@
 motfsr_prepare(sequences, w, alphabet)
 }
 \arguments{
-\item{sequences}{See Usage.}
+\item{sequences}{Coerced to character by the body, with \code{as.character}.}
 \item{w}{Numeric; combined arithmetically in the body.}
 \item{alphabet}{See Usage.}
 }

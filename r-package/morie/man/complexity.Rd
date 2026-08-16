@@ -8,8 +8,8 @@
 complexity(n, d)
 }
 \arguments{
-\item{n}{See Usage.}
-\item{d}{See Usage.}
+\item{n}{Coerced to integer by the body, with \code{as.integer}.}
+\item{d}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the sasRec_native implementation; see the file header for the source it follows.

@@ -8,10 +8,10 @@
 t5enc_format_regression(value, increment = 0.2, lo = 1, hi = 5)
 }
 \arguments{
-\item{value}{See Usage.}
-\item{increment}{Defaults to \code{0.2}.}
-\item{lo}{Defaults to \code{1}.}
-\item{hi}{Defaults to \code{5}.}
+\item{value}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{increment}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.2}.}
+\item{lo}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
+\item{hi}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{5}.}
 }
 \description{
 Part of the t5enc_native implementation; see the file header for the source it follows.

@@ -8,7 +8,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y See Usage.
+#' @param y Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .as_series <- function(y) {

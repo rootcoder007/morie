@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{rules}{See Usage.}
-\item{start}{Defaults to \code{NULL}.}
+\item{start}{Optional; may be \code{NULL}. Coerced to character by the body, with \code{as.character}.}
 }
 \description{
 Part of the prsLL_native implementation; see the file header for the source it follows.

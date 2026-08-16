@@ -10,7 +10,7 @@ indicator_basis(X, knots = NULL, max_order = 2L)
 \arguments{
 \item{X}{A matrix; passed to \code{as.matrix}.}
 \item{knots}{Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.}
-\item{max_order}{Defaults to \code{2L}.}
+\item{max_order}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2L}.}
 }
 \description{
 Part of the tlhal_native implementation; see the file header for the source it follows.

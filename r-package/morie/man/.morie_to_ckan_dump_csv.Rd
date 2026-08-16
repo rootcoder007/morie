@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{resource_id}{See Usage.}
-\item{limit}{Defaults to \code{100000L}.}
+\item{limit}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100000L}.}
 }
 \description{
 testthat::local_mocked_bindings(.morie_to_ckan_dump_csv = ...).

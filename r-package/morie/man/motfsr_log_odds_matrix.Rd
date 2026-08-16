@@ -8,7 +8,7 @@
 motfsr_log_odds_matrix(motif, background)
 }
 \arguments{
-\item{motif}{See Usage.}
+\item{motif}{Iterated over elementwise, with \code{lapply}.}
 \item{background}{A vector; indexed elementwise.}
 }
 \description{

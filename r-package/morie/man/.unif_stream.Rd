@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{seed}{Passed to \code{.ghc_rng}.}
-\item{block}{Defaults to \code{8192L}.}
+\item{block}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8192L}.}
 }
 \description{
 A step of the bayrjmcmc_native implementation. Called by \code{changepoint_rjmcmc}, \code{reversible_jump_mcmc}. See the file header for the source the module follows.

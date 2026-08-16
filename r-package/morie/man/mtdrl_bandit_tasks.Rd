@@ -8,8 +8,8 @@
 mtdrl_bandit_tasks(n_arms = 2, n_tasks = 100, seed = 0, structure = "independent")
 }
 \arguments{
-\item{n_arms}{Defaults to \code{2}.}
-\item{n_tasks}{Defaults to \code{100}.}
+\item{n_arms}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2}.}
+\item{n_tasks}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100}.}
 \item{seed}{Defaults to \code{0}.}
 \item{structure}{One of \code{"independent"}, \code{"paired"}. Defaults to \code{"independent"}.}
 }

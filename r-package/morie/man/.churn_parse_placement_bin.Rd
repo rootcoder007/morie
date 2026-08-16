@@ -8,7 +8,7 @@
 .churn_parse_placement_bin(label)
 }
 \arguments{
-\item{label}{See Usage.}
+\item{label}{Coerced to character by the body, with \code{as.character}.}
 }
 \description{
 "1 placement" -> 1 "2 placements" -> 2 "6 to 10 placements" -> 8 (midpoint) "Greater than 40" -> 50 (boundary + 10)

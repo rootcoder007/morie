@@ -10,8 +10,8 @@ smoothing_bias(true_density, x0, h, smoothness = 2)
 \arguments{
 \item{true_density}{See Usage.}
 \item{x0}{See Usage.}
-\item{h}{See Usage.}
-\item{smoothness}{Defaults to \code{2}.}
+\item{h}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{smoothness}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{2}.}
 }
 \description{
 Part of the tlcvnp_native implementation; see the file header for the source it follows.

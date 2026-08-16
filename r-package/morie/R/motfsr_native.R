@@ -11,7 +11,7 @@
 #' source it follows.
 #'
 #' @param seqs See Usage.
-#' @param alphabet See Usage.
+#' @param alphabet Optional; may be \code{NULL}. Coerced to character by the body, with \code{as.character}.
 #' @return A vector, from \code{sort}.
 #' @export
 motfsr_alphabet_of <- function(seqs, alphabet) {
@@ -33,7 +33,7 @@ motfsr_alphabet_of <- function(seqs, alphabet) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param sequences See Usage.
+#' @param sequences Coerced to character by the body, with \code{as.character}.
 #' @param w Numeric; combined arithmetically in the body.
 #' @param alphabet See Usage.
 #' @return A list with \code{coded}, \code{alpha}, \code{starts}.
@@ -95,7 +95,7 @@ motfsr_mu <- function(coded, L) {
 #'
 #' @param w A count; the body uses it as \code{seq_len(...)}.
 #' @param L See Usage.
-#' @param mu See Usage.
+#' @param mu Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{theta}, as built in the body.
 #' @export
 motfsr_uniform_theta <- function(w, L, mu) {
@@ -116,7 +116,7 @@ motfsr_uniform_theta <- function(w, L, mu) {
 #' @param j Numeric; combined arithmetically in the body.
 #' @param w A count; the body uses it as \code{seq_len(...)}.
 #' @param L A count; the body uses it as \code{rep(...)}.
-#' @param mu See Usage.
+#' @param mu Coerced to numeric by the body, with \code{as.numeric}.
 #' @param weight Numeric; combined arithmetically in the body.
 #' @return The value of \code{theta}, as built in the body.
 #' @export
@@ -204,12 +204,12 @@ motfsr_normalise_windows <- function(z, w, max_sweeps = 100) {
 #' @param sequences See Usage.
 #' @param w A count; the body uses it as \code{seq_len(...)}.
 #' @param alphabet Defaults to \code{NULL}.
-#' @param theta0 Defaults to \code{NULL}.
-#' @param lambda0 Defaults to \code{NULL}.
+#' @param theta0 Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.
+#' @param lambda0 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param beta Numeric; combined arithmetically in the body. Defaults to \code{0.01}.
-#' @param erasing Defaults to \code{NULL}.
+#' @param erasing Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.
 #' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{1000}.
-#' @param tol Defaults to \code{1e-06}.
+#' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-06}.
 #' @param normalize_overlaps A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param erase_by One of \code{"letter"}, \code{"start"}. Defaults to \code{"letter"}.
 #' @return A list with \code{theta}, \code{motif}, \code{background}, \code{lambda1}, \code{z}, \code{log_likelihood}, \code{log_likelihood_trace}, \code{n_iter}, \code{converged}, \code{alphabet}, \code{w}.
@@ -326,7 +326,7 @@ motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param motif See Usage.
+#' @param motif Iterated over elementwise, with \code{lapply}.
 #' @param background A vector; indexed elementwise.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -373,7 +373,7 @@ motfsr_bayes_threshold <- function(lambda1, loss = NULL) {
 #' source it follows.
 #'
 #' @param spec A vector; its length is taken and its elements indexed.
-#' @param sequence See Usage.
+#' @param sequence Coerced to character by the body, with \code{as.character}.
 #' @param alphabet A vector; its length is taken.
 #' @param threshold Defaults to \code{NULL}.
 #' @return A list with \code{scores}, \code{hits}.
@@ -408,7 +408,7 @@ motfsr_score_sequence <- function(spec, sequence, alphabet, threshold = NULL) {
 #' @param n_starts_total Numeric; combined arithmetically in the body.
 #' @param n_seqs Numeric; passed to \code{sqrt}.
 #' @param w Numeric; combined arithmetically in the body.
-#' @param lambda0 See Usage.
+#' @param lambda0 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 motfsr_lambda_grid <- function(n_starts_total, n_seqs, w, lambda0) {
@@ -439,8 +439,8 @@ motfsr_lambda_grid <- function(n_starts_total, n_seqs, w, lambda0) {
 #' @param tol Defaults to \code{1e-06}.
 #' @param normalize_overlaps Defaults to \code{TRUE}.
 #' @param starts One of \code{"subsequences"}, \code{"uniform"}. Defaults to \code{"subsequences"}.
-#' @param start_weight Defaults to \code{0.5}.
-#' @param max_starts Defaults to \code{200}.
+#' @param start_weight Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.5}.
+#' @param max_starts Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.
 #' @param start_scoring One of \code{"none"}, \code{"one_step"}. Defaults to \code{"one_step"}.
 #' @param erase_by Defaults to \code{"letter"}.
 #' @param loss Defaults to \code{NULL}.

@@ -8,7 +8,7 @@
 .mfovsm_mat(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Optional; may be \code{NULL}. A matrix; the body checks with \code{is.matrix}.}
 }
 \description{
 Part of the mfovsm_native implementation; see the file header for the source it follows.

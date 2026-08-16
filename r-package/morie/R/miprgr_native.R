@@ -157,7 +157,7 @@ miprgr_simplex <- function(A, b, c, tol = 1e-9, max_iter = 20000) {
 #' @param b A vector; its length is taken and its elements indexed.
 #' @param c A vector; its length is taken.
 #' @param bounds A vector; its length is taken. Defaults to \code{list()}.
-#' @param n Defaults to \code{NULL}.
+#' @param n Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @param maximise A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param solver Compared against \code{"simplex"}. Defaults to \code{"simplex"}.
 #' @return A list with \code{feasible}, \code{x}, \code{value}, \code{note}.
@@ -235,7 +235,7 @@ miprgr_fractional_variable <- function(x, integer_vars, tol = 1e-7) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param A A matrix; indexed by row and column.
 #' @param b A vector; indexed elementwise.
 #' @param integer_vars See Usage.
@@ -264,8 +264,8 @@ miprgr_round_relaxation <- function(x, A, b, integer_vars) {
 #' @param A A matrix; indexed by row and column.
 #' @param b A vector; indexed elementwise.
 #' @param c A vector; its length is taken.
-#' @param integer_vars See Usage.
-#' @param upper Defaults to \code{10}.
+#' @param integer_vars Coerced to integer by the body, with \code{as.integer}.
+#' @param upper Coerced to integer by the body, with \code{as.integer}. Defaults to \code{10}.
 #' @param maximise A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{value}, \code{x}, \code{note}.
 #' @export
@@ -315,10 +315,10 @@ miprgr_enumerate_integer <- function(A, b, c, integer_vars, upper = 10,
 #' @param A See Usage.
 #' @param b See Usage.
 #' @param c A vector; its length is taken.
-#' @param integer_vars See Usage.
+#' @param integer_vars Coerced to integer by the body, with \code{as.integer}.
 #' @param maximise A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param prune A flag; the body branches on it. Defaults to \code{TRUE}.
-#' @param max_nodes Defaults to \code{5000}.
+#' @param max_nodes Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5000}.
 #' @param solver Defaults to \code{"simplex"}.
 #' @return A list with \code{estimate}, \code{value}, \code{x}, \code{feasible}, \code{nodes}, \code{pruned}, \code{pruning}, \code{max_list_length}, \code{root_bound}, \code{truncated}, \code{method}, \code{note}.
 #' @export

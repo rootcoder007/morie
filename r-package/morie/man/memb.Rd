@@ -9,14 +9,14 @@ memb(target_predict, shadow_data, eval_in, eval_out, train_fn = NULL, attack_tra
 }
 \arguments{
 \item{target_predict}{See Usage.}
-\item{shadow_data}{See Usage.}
+\item{shadow_data}{Coerced to list by the body, with \code{as.list}.}
 \item{eval_in}{A vector; indexed elementwise.}
 \item{eval_out}{A vector; indexed elementwise.}
 \item{train_fn}{Defaults to \code{NULL}.}
 \item{attack_train_fn}{Defaults to \code{NULL}.}
-\item{n_shadow}{Defaults to \code{NULL}.}
+\item{n_shadow}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 \item{sort_features}{A flag; the body branches on it. Defaults to \code{FALSE}.}
-\item{threshold}{Defaults to \code{0.5}.}
+\item{threshold}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.5}.}
 }
 \description{
 Part of the memb_native implementation; see the file header for the source it follows.

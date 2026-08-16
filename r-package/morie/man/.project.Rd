@@ -8,8 +8,8 @@
 .project(values, basis, n, ridge)
 }
 \arguments{
-\item{values}{See Usage.}
-\item{basis}{See Usage.}
+\item{values}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{basis}{Optional; may be \code{NULL}. A matrix; the body checks with \code{is.matrix}.}
 \item{n}{See Usage.}
 \item{ridge}{Passed to \code{.tmldyn_lstsq}.}
 }

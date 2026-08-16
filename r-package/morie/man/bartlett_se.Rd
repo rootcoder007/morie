@@ -8,7 +8,7 @@
 bartlett_se(rho, n)
 }
 \arguments{
-\item{rho}{See Usage.}
+\item{rho}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{n}{Numeric; combined arithmetically in the body.}
 }
 \description{

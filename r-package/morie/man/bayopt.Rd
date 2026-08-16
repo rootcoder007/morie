@@ -8,10 +8,10 @@
 bayopt(f, bounds, n_iter = 20, n_init = 5, acq = "ei", kernel = "matern52", amplitude = 1, length_scale = 1, noise = 1e-08, kappa = 2, xi = 0, n_candidates = 200, seed = 0, X0 = NULL, y0 = NULL, inner = "gradient", n_starts = 8)
 }
 \arguments{
-\item{f}{See Usage.}
-\item{bounds}{See Usage.}
-\item{n_iter}{Defaults to \code{20}.}
-\item{n_init}{Defaults to \code{5}.}
+\item{f}{Iterated over elementwise, with \code{sapply}.}
+\item{bounds}{Iterated over elementwise, with \code{lapply}.}
+\item{n_iter}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{20}.}
+\item{n_init}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.}
 \item{acq}{Defaults to \code{"ei"}.}
 \item{kernel}{Defaults to \code{"matern52"}.}
 \item{amplitude}{Defaults to \code{1}.}
@@ -19,10 +19,10 @@ bayopt(f, bounds, n_iter = 20, n_init = 5, acq = "ei", kernel = "matern52", ampl
 \item{noise}{Defaults to \code{1e-08}.}
 \item{kappa}{Defaults to \code{2}.}
 \item{xi}{Defaults to \code{0}.}
-\item{n_candidates}{Defaults to \code{200}.}
-\item{seed}{Defaults to \code{0}.}
-\item{X0}{Defaults to \code{NULL}.}
-\item{y0}{Defaults to \code{NULL}.}
+\item{n_candidates}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.}
+\item{seed}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0}.}
+\item{X0}{Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.}
+\item{y0}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 \item{inner}{One of \code{"gradient"}, \code{"random"}. Defaults to \code{"gradient"}.}
 \item{n_starts}{Defaults to \code{8}.}
 }

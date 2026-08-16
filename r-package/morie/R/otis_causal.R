@@ -245,11 +245,11 @@ NULL
 #' @param estimator See Usage.
 #' @param ate Numeric; combined arithmetically in the body.
 #' @param ate_se Numeric; combined arithmetically in the body.
-#' @param ate_pval See Usage.
-#' @param n See Usage.
-#' @param n_treated See Usage.
-#' @param p_treat See Usage.
-#' @param notes Defaults to \code{list()}.
+#' @param ate_pval Coerced to numeric by the body, with \code{as.numeric}.
+#' @param n Coerced to integer by the body, with \code{as.integer}.
+#' @param n_treated Coerced to integer by the body, with \code{as.integer}.
+#' @param p_treat Coerced to numeric by the body, with \code{as.numeric}.
+#' @param notes Coerced to list by the body, with \code{as.list}. Defaults to \code{list()}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .otis_causal_estimate <- function(estimator, ate, ate_se, ate_pval,

@@ -15,7 +15,7 @@
 \item{delta}{Numeric; combined arithmetically in the body.}
 \item{m}{A count; the body uses it as \code{seq_len(...)}.}
 \item{tol}{See Usage.}
-\item{max_iter}{See Usage.}
+\item{max_iter}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the safrl_native implementation; see the file header for the source it follows.

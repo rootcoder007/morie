@@ -8,8 +8,8 @@
 dice_loss(prob, target)
 }
 \arguments{
-\item{prob}{See Usage.}
-\item{target}{See Usage.}
+\item{prob}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{target}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the samdec_native implementation; see the file header for the source it follows.

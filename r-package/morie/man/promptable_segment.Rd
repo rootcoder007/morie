@@ -11,7 +11,7 @@ promptable_segment(image_embedding, prompt_tokens, decoder, multimask = TRUE)
 \item{image_embedding}{See Usage.}
 \item{prompt_tokens}{See Usage.}
 \item{decoder}{See Usage.}
-\item{multimask}{Defaults to \code{TRUE}.}
+\item{multimask}{Coerced to logical by the body, with \code{as.logical}. Defaults to \code{TRUE}.}
 }
 \description{
 Part of the samseg_native implementation; see the file header for the source it follows.

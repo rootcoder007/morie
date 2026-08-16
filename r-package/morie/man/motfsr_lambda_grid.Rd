@@ -11,7 +11,7 @@ motfsr_lambda_grid(n_starts_total, n_seqs, w, lambda0)
 \item{n_starts_total}{Numeric; combined arithmetically in the body.}
 \item{n_seqs}{Numeric; passed to \code{sqrt}.}
 \item{w}{Numeric; combined arithmetically in the body.}
-\item{lambda0}{See Usage.}
+\item{lambda0}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the motfsr_native implementation; see the file header for the source it follows.

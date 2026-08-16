@@ -9,9 +9,9 @@ loco_predictions(preds, meta, weights, chromosomes = NULL)
 }
 \arguments{
 \item{preds}{A vector; indexed elementwise.}
-\item{meta}{See Usage.}
+\item{meta}{Iterated over elementwise, with \code{sapply}.}
 \item{weights}{A vector; indexed elementwise.}
-\item{chromosomes}{Defaults to \code{NULL}.}
+\item{chromosomes}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the regmlm_native implementation; see the file header for the source it follows.

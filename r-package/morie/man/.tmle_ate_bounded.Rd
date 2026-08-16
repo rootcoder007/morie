@@ -11,9 +11,9 @@
 \item{yv}{A vector; its length is taken.}
 \item{a}{A vector; indexed elementwise.}
 \item{W}{A matrix; indexed by row and column.}
-\item{g}{See Usage.}
-\item{Q1}{See Usage.}
-\item{Q0}{See Usage.}
+\item{g}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{Q1}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{Q0}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 \item{lower}{Passed to \code{.rescale}.}
 \item{upper}{Passed to \code{.rescale}.}
 }

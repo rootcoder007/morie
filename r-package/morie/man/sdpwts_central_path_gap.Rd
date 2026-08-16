@@ -8,8 +8,8 @@
 sdpwts_central_path_gap(t, m)
 }
 \arguments{
-\item{t}{See Usage.}
-\item{m}{See Usage.}
+\item{t}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{m}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the sdpwts_native implementation; see the file header for the source it follows.

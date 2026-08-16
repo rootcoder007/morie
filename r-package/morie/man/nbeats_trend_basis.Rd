@@ -11,7 +11,7 @@ nbeats_trend_basis(length, degree, offset = 0, scale = NULL)
 \item{length}{A count; the body uses it as \code{seq_len(...)}.}
 \item{degree}{Numeric; combined arithmetically in the body.}
 \item{offset}{Numeric; combined arithmetically in the body. Defaults to \code{0}.}
-\item{scale}{Defaults to \code{NULL}.}
+\item{scale}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the nbeats_native implementation; see the file header for the source it follows.

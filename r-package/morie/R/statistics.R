@@ -66,14 +66,14 @@ NULL
 #' source it follows.
 #'
 #' @param method See Usage.
-#' @param test_statistic See Usage.
-#' @param p_value See Usage.
-#' @param df Defaults to \code{NA_real_}.
-#' @param ci_lower Defaults to \code{NA_real_}.
-#' @param ci_upper Defaults to \code{NA_real_}.
-#' @param effect_size Defaults to \code{NA_real_}.
-#' @param estimate Defaults to \code{NA_real_}.
-#' @param n Defaults to \code{NA_integer_}.
+#' @param test_statistic Coerced to numeric by the body, with \code{as.numeric}.
+#' @param p_value Coerced to numeric by the body, with \code{as.numeric}.
+#' @param df Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param ci_lower Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param ci_upper Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param effect_size Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param estimate Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param n Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}. Defaults to \code{NA_integer_}.
 #' @param extra Defaults to \code{list()}.
 #' @return The value of \code{out}, as built in the body.
 #' @export

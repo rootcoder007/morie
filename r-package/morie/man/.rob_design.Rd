@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{X}{A matrix; passed to \code{as.matrix}.}
-\item{y}{See Usage.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the robust_native implementation; see the file header for the source it follows.

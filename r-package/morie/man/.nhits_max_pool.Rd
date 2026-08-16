@@ -8,9 +8,9 @@
 .nhits_max_pool(x, kernel, stride = NULL)
 }
 \arguments{
-\item{x}{See Usage.}
-\item{kernel}{See Usage.}
-\item{stride}{Defaults to \code{NULL}.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{kernel}{Coerced to integer by the body, with \code{as.integer}.}
+\item{stride}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the nhits_native implementation; see the file header for the source it follows.

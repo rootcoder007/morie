@@ -8,7 +8,7 @@
 .siu_an_truthy(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{A logical; the body checks with \code{is.logical}.}
 }
 \description{
 Truthy / falsy counters tolerant of CSV-roundtripped booleans. ---------------------------------------------------------------------------

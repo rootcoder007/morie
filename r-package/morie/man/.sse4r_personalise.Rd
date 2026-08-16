@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{item_embeddings}{A matrix; passed to \code{as.matrix}.}
-\item{user_embedding}{See Usage.}
+\item{user_embedding}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the sse4r_native implementation; see the file header for the source it follows.

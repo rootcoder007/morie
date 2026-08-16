@@ -10,7 +10,7 @@
 \arguments{
 \item{time}{Passed to \code{.s03vec}.}
 \item{event_type}{Passed to \code{.s03vec}.}
-\item{cause}{Defaults to \code{1}.}
+\item{cause}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 }
 \description{
 F_k(t) = sum_{u <= t} S(u-) dN_k(u) / Y(u).  The S(u-) factor is the ALL-CAUSE Kaplan-Meier: leaving it out gives 1 - KM computed on the cause alone, which over-states the incidence whenever a competing event can happen first.

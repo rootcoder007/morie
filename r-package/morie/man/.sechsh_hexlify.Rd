@@ -8,7 +8,7 @@
 .sechsh_hexlify(bs)
 }
 \arguments{
-\item{bs}{See Usage.}
+\item{bs}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the sechsh_native implementation; see the file header for the source it follows.

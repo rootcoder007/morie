@@ -8,7 +8,7 @@
 .lan_ord_levels_to_int(y, levels_)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{Coerced to character by the body, with \code{as.character}.}
 \item{levels_}{See Usage.}
 }
 \description{

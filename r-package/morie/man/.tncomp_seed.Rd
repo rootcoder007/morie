@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{D}{A matrix; passed to \code{nrow}.}
-\item{seed}{See Usage.}
+\item{seed}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the tncomp_native implementation; see the file header for the source it follows.

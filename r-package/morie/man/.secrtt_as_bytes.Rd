@@ -8,7 +8,7 @@
 .secrtt_as_bytes(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Optional; may be \code{NULL}. Character; the body checks with \code{is.character}.}
 }
 \description{
 Part of the secrtt_native implementation; see the file header for the source it follows.

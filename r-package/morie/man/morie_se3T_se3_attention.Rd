@@ -13,7 +13,7 @@ morie_se3T_se3_attention(positions, type0, type1, weights = NULL, sigma = 1, tem
 \item{type1}{Passed to \code{.se3T_mat}.}
 \item{weights}{Passed to \code{morie_se3T_radial_kernel}.}
 \item{sigma}{Passed to \code{morie_se3T_radial_kernel}. Defaults to \code{1}.}
-\item{temperature}{Defaults to \code{1}.}
+\item{temperature}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 }
 \description{
 Part of the se3T_native implementation; see the file header for the source it follows.

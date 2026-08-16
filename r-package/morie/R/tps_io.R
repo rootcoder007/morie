@@ -86,7 +86,7 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 #' it follows.
 #'
 #' @param df A matrix; indexed by row and column.
-#' @param nrows See Usage.
+#' @param nrows Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{[}.
 #' @export
 .morie_tps_apply_nrows <- function(df, nrows) {
@@ -106,7 +106,7 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 #' it follows.
 #'
 #' @param name Passed to \code{.morie_tps_io_category_dir}.
-#' @param nrows See Usage.
+#' @param nrows Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{do.call}.
 #' @export
 .morie_tps_read_csv <- function(name, nrows) {
@@ -126,7 +126,7 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 #' it follows.
 #'
 #' @param name Passed to \code{.morie_tps_io_category_dir}.
-#' @param nrows See Usage.
+#' @param nrows Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{df}, as built in the body.
 #' @export
 .morie_tps_read_excel <- function(name, nrows) {

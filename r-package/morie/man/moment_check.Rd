@@ -8,10 +8,10 @@
 moment_check(replicates, target_mean, target_se, tol = 0.15)
 }
 \arguments{
-\item{replicates}{See Usage.}
-\item{target_mean}{See Usage.}
-\item{target_se}{See Usage.}
-\item{tol}{Defaults to \code{0.15}.}
+\item{replicates}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{target_mean}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{target_se}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.15}.}
 }
 \description{
 Part of the tlboot_native implementation; see the file header for the source it follows.

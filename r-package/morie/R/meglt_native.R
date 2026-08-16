@@ -60,7 +60,7 @@ nuclear_norm <- function(A) {
 #' source it follows.
 #'
 #' @param A A matrix; passed to \code{as.matrix}.
-#' @param rank Defaults to \code{NULL}.
+#' @param rank Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @return A list with \code{mu_row}, \code{mu_col}, \code{mu}, \code{rank}, \code{note}.
 #' @export
 coherence <- function(A, rank = NULL) {
@@ -84,10 +84,10 @@ coherence <- function(A, rank = NULL) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n See Usage.
-#' @param r See Usage.
-#' @param C Defaults to \code{1}.
-#' @param exponent Defaults to \code{1.2}.
+#' @param n Coerced to integer by the body, with \code{as.integer}.
+#' @param r Coerced to integer by the body, with \code{as.integer}.
+#' @param C Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
+#' @param exponent Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1.2}.
 #' @return A list with \code{m}, \code{fraction}, \code{n}, \code{r}, \code{exponent}, \code{note}.
 #' @export
 sample_bound <- function(n, r, C = 1.0, exponent = 1.2) {
@@ -111,10 +111,10 @@ sample_bound <- function(n, r, C = 1.0, exponent = 1.2) {
 #'
 #' @param M A matrix; passed to \code{as.matrix}.
 #' @param observed A matrix; indexed by row and column.
-#' @param tau Defaults to \code{NULL}.
-#' @param step Defaults to \code{1.9}.
-#' @param iters Defaults to \code{200L}.
-#' @param tol Defaults to \code{1e-06}.
+#' @param tau Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param step Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1.9}.
+#' @param iters Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200L}.
+#' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-06}.
 #' @return A list with \code{estimate}, \code{X}, \code{residual_history}, \code{final_residual}, \code{tau}, \code{n_observed}, \code{fraction_observed}, \code{nuclear_norm}, \code{method}.
 #' @export
 svt <- function(M, observed, tau = NULL, step = 1.9, iters = 200L,

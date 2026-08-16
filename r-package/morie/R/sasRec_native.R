@@ -68,7 +68,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n See Usage.
+#' @param n Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{M}, as built in the body.
 #' @export
 causal_mask <- function(n) {
@@ -126,7 +126,7 @@ self_attention <- function(E, WQ, WK, WV, mask = NULL) {
 #' source it follows.
 #'
 #' @param weights Passed to \code{.sasrec_mat}.
-#' @param position Defaults to \code{NULL}.
+#' @param position Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @return A list with \code{mean_lookback}, \code{mass_on_last}, \code{effective_order}, \code{note}.
 #' @export
 attention_span <- function(weights, position = NULL) {
@@ -151,7 +151,7 @@ attention_span <- function(weights, position = NULL) {
 #'
 #' @param state Passed to \code{.sasrec_vec}.
 #' @param item_embeddings Passed to \code{.sasrec_mat}.
-#' @param top_k Defaults to \code{5}.
+#' @param top_k Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.
 #' @param exclude Defaults to \code{list()}.
 #' @return A list with \code{estimate}, \code{ranking}, \code{n_scored}, \code{method}.
 #' @export
@@ -178,8 +178,8 @@ predict_next <- function(state, item_embeddings, top_k = 5,
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param n See Usage.
-#' @param d See Usage.
+#' @param n Coerced to integer by the body, with \code{as.integer}.
+#' @param d Coerced to integer by the body, with \code{as.integer}.
 #' @return A list with \code{attention_ops}, \code{rnn_ops}, \code{attention_sequential_steps}, \code{rnn_sequential_steps}, \code{note}.
 #' @export
 complexity <- function(n, d) {

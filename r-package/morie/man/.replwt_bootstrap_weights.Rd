@@ -10,7 +10,7 @@
 \arguments{
 \item{d}{A list; the body reads \code{$psu_units}, \code{$stratum_order}, \code{$stratum_psus}, \code{$weights} from it.}
 \item{R}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{200}.}
-\item{seed}{Defaults to \code{1}.}
+\item{seed}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1}.}
 }
 \description{
 Part of the replwt_native implementation; see the file header for the source it follows.

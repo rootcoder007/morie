@@ -9,9 +9,9 @@
 }
 \arguments{
 \item{A}{Passed to \code{.tlstoch_vec}.}
-\item{delta}{See Usage.}
-\item{lower}{Defaults to \code{NULL}.}
-\item{upper}{Defaults to \code{NULL}.}
+\item{delta}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{lower}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{upper}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tlstoch_native implementation; see the file header for the source it follows.

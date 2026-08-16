@@ -8,7 +8,7 @@
 .wenge_key(row)
 }
 \arguments{
-\item{row}{See Usage.}
+\item{row}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the wenge_native implementation; see the file header for the source it follows.

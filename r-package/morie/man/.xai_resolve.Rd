@@ -8,7 +8,7 @@
 .xai_resolve(feature, names)
 }
 \arguments{
-\item{feature}{See Usage.}
+\item{feature}{Character; the body checks with \code{is.character}.}
 \item{names}{A vector; its length is taken.}
 }
 \description{

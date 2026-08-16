@@ -28,7 +28,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A numeric value.
 #' @export
 .tmldyn_logit <- function(p) {
@@ -77,7 +77,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
+#' @param X A matrix; the body checks with \code{is.matrix}.
 #' @param yv A matrix; passed to \code{crossprod}.
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
 #' @return A matrix, from \code{solve}.
@@ -94,7 +94,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param L See Usage.
+#' @param L A matrix; the body checks with \code{is.matrix}.
 #' @param n See Usage.
 #' @return The value of \code{do.call}.
 #' @export
@@ -114,7 +114,7 @@
 #' @param A0 A vector; indexed elementwise.
 #' @param L1 A matrix; indexed by row and column.
 #' @param A1 A vector; indexed elementwise.
-#' @param idx See Usage.
+#' @param idx Iterated over elementwise, with \code{lapply}.
 #' @param ridge Passed to \code{.tmldyn_lstsq}.
 #' @return A list with \code{q2}, \code{b}.
 #' @export
@@ -154,7 +154,7 @@
 #' @param pseudo A vector; indexed elementwise.
 #' @param L0 A matrix; indexed by row and column.
 #' @param A0 A vector; indexed elementwise.
-#' @param idx See Usage.
+#' @param idx Iterated over elementwise, with \code{lapply}.
 #' @param ridge Passed to \code{.tmldyn_lstsq}.
 #' @return A list with \code{q1}, \code{b}.
 #' @export
@@ -186,8 +186,8 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param values See Usage.
-#' @param basis See Usage.
+#' @param values Coerced to numeric by the body, with \code{as.numeric}.
+#' @param basis Optional; may be \code{NULL}. A matrix; the body checks with \code{is.matrix}.
 #' @param n See Usage.
 #' @param ridge Passed to \code{.tmldyn_lstsq}.
 #' @return A vector, from \code{as.numeric}.
@@ -251,7 +251,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param X See Usage.
+#' @param X A matrix; the body checks with \code{is.matrix}.
 #' @param a Numeric; combined arithmetically in the body.
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
 #' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
@@ -363,7 +363,7 @@
 #' source it follows.
 #'
 #' @param n A count; the body uses it as \code{seq_len(...)}.
-#' @param n_folds See Usage.
+#' @param n_folds Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{lapply}.
 #' @export
 .folds <- function(n, n_folds) {

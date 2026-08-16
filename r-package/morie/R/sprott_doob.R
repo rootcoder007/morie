@@ -59,7 +59,7 @@ NULL
 #' @param summary_lines Defaults to \code{list()}.
 #' @param tables Defaults to \code{list()}.
 #' @param interpretation Defaults to \code{""}.
-#' @param warnings Defaults to \code{character()}.
+#' @param warnings Coerced to character by the body, with \code{as.character}. Defaults to \code{character()}.
 #' @param payload Defaults to \code{list()}.
 #' @return The value of \code{out}, as built in the body.
 #' @export

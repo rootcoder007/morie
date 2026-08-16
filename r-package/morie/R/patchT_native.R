@@ -32,9 +32,9 @@
 #' overlaps them. The number of patches is N = floor((L-P)/S) + 1, which
 #' is what makes the attention map shrink.
 #'
-#' @param x See Usage.
-#' @param patch_len See Usage.
-#' @param stride Defaults to \code{NULL}.
+#' @param x Coerced to numeric by the body, with \code{as.numeric}.
+#' @param patch_len Coerced to integer by the body, with \code{as.integer}.
+#' @param stride Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @return A list with \code{patches}, \code{n_patches}, \code{patch_len}, \code{stride}, \code{L}, \code{covers}.
 #' @export
 patchify <- function(x, patch_len, stride = NULL) {
@@ -67,7 +67,7 @@ patchify <- function(x, patch_len, stride = NULL) {
 #' equivariant to permuting them.
 #'
 #' @param X A matrix; passed to \code{as.matrix}.
-#' @param patch_len See Usage.
+#' @param patch_len Coerced to integer by the body, with \code{as.integer}.
 #' @param stride Defaults to \code{NULL}.
 #' @return A list with \code{tokens}, \code{D}, \code{n_patches}, \code{patch_len}, \code{n_tokens_total}, \code{design}, \code{note}.
 #' @export
@@ -121,7 +121,7 @@ channel_mixed_tokens <- function(X, patch_len, stride = NULL) {
 #'
 #' per instance before patching and reversed afterwards.
 #'
-#' @param x See Usage.
+#' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{normalised}, \code{mean}, \code{sd}, \code{degenerate}.
 #' @export
 instance_norm <- function(x) {
@@ -145,10 +145,10 @@ instance_norm <- function(x) {
 #' attention over a look-back of L costs L^2 per channel. Patching
 #' reduces the sequence to N tokens, so the cost falls to N^2.
 #'
-#' @param L See Usage.
-#' @param patch_len See Usage.
-#' @param stride Defaults to \code{NULL}.
-#' @param D Defaults to \code{1}.
+#' @param L Coerced to integer by the body, with \code{as.integer}.
+#' @param patch_len Coerced to integer by the body, with \code{as.integer}.
+#' @param stride Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
+#' @param D Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1}.
 #' @param channel_independent A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{n_patches}, \code{pointwise}, \code{patched}, \code{reduction}, \code{stride}, \code{patch_len}, \code{note}.
 #' @export

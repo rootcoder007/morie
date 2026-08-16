@@ -8,7 +8,7 @@
 instance_norm(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 per instance before patching and reversed afterwards.

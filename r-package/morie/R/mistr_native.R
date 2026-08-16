@@ -138,8 +138,8 @@ mistr_sliding_window_mask <- function(L, window, causal = TRUE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param window See Usage.
-#' @param n_layers See Usage.
+#' @param window Coerced to integer by the body, with \code{as.integer}.
+#' @param n_layers Coerced to integer by the body, with \code{as.integer}.
 #' @return A numeric value.
 #' @export
 mistr_attention_span <- function(window, n_layers) {
@@ -243,7 +243,7 @@ mistr_grouped_query_attention <- function(Q, K, V, n_heads, n_kv_heads,
 #' @param W3 See Usage.
 #' @param n_heads See Usage.
 #' @param n_kv_heads Numeric; combined arithmetically in the body.
-#' @param window See Usage.
+#' @param window Coerced to integer by the body, with \code{as.integer}.
 #' @param norm1 Defaults to \code{NULL}.
 #' @param norm2 Defaults to \code{NULL}.
 #' @param base Defaults to \code{10000}.

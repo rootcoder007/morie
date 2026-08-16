@@ -47,7 +47,7 @@ NULL
 #' Part of the laniyonu_gentrification_policing implementation; see the
 #' file header for the source it follows.
 #'
-#' @param year See Usage.
+#' @param year Coerced to character by the body, with \code{as.character}.
 #' @param n_tracts See Usage.
 #' @param rho See Usage.
 #' @param moran_i_ols See Usage.

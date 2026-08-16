@@ -9,8 +9,8 @@
 }
 \arguments{
 \item{name}{See Usage.}
-\item{estimate}{See Usage.}
-\item{std_error}{See Usage.}
+\item{estimate}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{std_error}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the laniyonu_smi_force_disparity implementation; see the file header for the source it follows.

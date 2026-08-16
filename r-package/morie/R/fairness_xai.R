@@ -68,7 +68,7 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param feature_names See Usage.
+#' @param feature_names Optional; may be \code{NULL}. Coerced to character by the body, with \code{as.character}.
 #' @param d A count; the body uses it as \code{seq_len(...)}.
 #' @return The value of \code{nm}, as built in the body.
 #' @export
@@ -88,7 +88,7 @@ NULL
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param feature See Usage.
+#' @param feature Character; the body checks with \code{is.character}.
 #' @param names A vector; its length is taken.
 #' @return The value of \code{idx}, as built in the body.
 #' @export

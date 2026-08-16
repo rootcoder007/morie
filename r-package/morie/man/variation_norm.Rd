@@ -8,7 +8,7 @@
 variation_norm(beta)
 }
 \arguments{
-\item{beta}{See Usage.}
+\item{beta}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tlhal_native implementation; see the file header for the source it follows.

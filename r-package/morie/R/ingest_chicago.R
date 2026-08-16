@@ -61,11 +61,11 @@ morie_ingest_chicago_resources <- function() {
 #' @param where Defaults to \code{NULL}.
 #' @param select Defaults to \code{NULL}.
 #' @param order Defaults to \code{NULL}.
-#' @param limit Defaults to \code{.MORIE_CHICAGO_DEFAULT_PAGE_SIZE}.
-#' @param offset Defaults to \code{0L}.
+#' @param limit Coerced to integer by the body, with \code{as.integer}.
+#' @param offset Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.
 #' @param app_token Defaults to \code{NULL}.
 #' @param user_agent Defaults to \code{.MORIE_CHICAGO_DEFAULT_UA}.
-#' @param timeout Defaults to \code{.MORIE_CHICAGO_DEFAULT_TIMEOUT}.
+#' @param timeout Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{payload}, as built in the body.
 #' @export
 .morie_chicago_socrata_get <- function(resource_url,

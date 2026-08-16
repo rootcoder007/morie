@@ -12,8 +12,8 @@
 \item{kind}{See Usage.}
 \item{csv_filename}{See Usage.}
 \item{sidecar_filename}{See Usage.}
-\item{expected_rows}{See Usage.}
-\item{expected_cols}{See Usage.}
+\item{expected_rows}{Coerced to integer by the body, with \code{as.integer}.}
+\item{expected_cols}{Coerced to integer by the body, with \code{as.integer}.}
 \item{is_valid}{A flag; the body branches on it.}
 \item{description_en}{See Usage.}
 \item{description_fr}{See Usage.}

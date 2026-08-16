@@ -11,12 +11,12 @@ motfsr_mm_fit(sequences, w, alphabet = NULL, theta0 = NULL, lambda0 = NULL, beta
 \item{sequences}{See Usage.}
 \item{w}{A count; the body uses it as \code{seq_len(...)}.}
 \item{alphabet}{Defaults to \code{NULL}.}
-\item{theta0}{Defaults to \code{NULL}.}
-\item{lambda0}{Defaults to \code{NULL}.}
+\item{theta0}{Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.}
+\item{lambda0}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 \item{beta}{Numeric; combined arithmetically in the body. Defaults to \code{0.01}.}
-\item{erasing}{Defaults to \code{NULL}.}
+\item{erasing}{Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.}
 \item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{1000}.}
-\item{tol}{Defaults to \code{1e-06}.}
+\item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-06}.}
 \item{normalize_overlaps}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 \item{erase_by}{One of \code{"letter"}, \code{"start"}. Defaults to \code{"letter"}.}
 }

@@ -11,7 +11,7 @@ morie_survrsf_logrank_score_statistic(times, events, group, scores = NULL)
 \item{times}{A vector; its length is taken.}
 \item{events}{Passed to \code{morie_survrsf_logrank_scores}.}
 \item{group}{A vector; its length is taken.}
-\item{scores}{Defaults to \code{NULL}.}
+\item{scores}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the survrsf_native implementation; see the file header for the source it follows.

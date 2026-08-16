@@ -138,7 +138,7 @@
 #' the source it follows.
 #'
 #' @param y A vector; its length is taken.
-#' @param w Defaults to \code{NULL}.
+#' @param w Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .sv_isotonic_pava <- function(y, w = NULL) {

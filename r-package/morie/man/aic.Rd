@@ -8,8 +8,8 @@
 aic(loglik, n_par)
 }
 \arguments{
-\item{loglik}{See Usage.}
-\item{n_par}{See Usage.}
+\item{loglik}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{n_par}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the sarimax_native implementation; see the file header for the source it follows.

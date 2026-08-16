@@ -9,7 +9,7 @@ forces_from_energy(energy_fn, R, h = 1e-05)
 }
 \arguments{
 \item{energy_fn}{See Usage.}
-\item{R}{See Usage.}
+\item{R}{Iterated over elementwise, with \code{lapply}.}
 \item{h}{Numeric; combined arithmetically in the body. Defaults to \code{1e-05}.}
 }
 \description{

@@ -8,7 +8,7 @@
 morie_unclr_dft_amp(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the unclr implementation; see the file header for the source it follows.

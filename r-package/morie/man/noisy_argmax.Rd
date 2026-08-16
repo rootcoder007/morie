@@ -8,9 +8,9 @@
 noisy_argmax(counts, gamma, seed = 0)
 }
 \arguments{
-\item{counts}{See Usage.}
+\item{counts}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{gamma}{Numeric; combined arithmetically in the body.}
-\item{seed}{Defaults to \code{0}.}
+\item{seed}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.}
 }
 \description{
 Laplace draw per class with scale 1/gamma.

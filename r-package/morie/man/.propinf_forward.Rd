@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{net}{A vector; its length is taken and its elements indexed.}
-\item{x}{See Usage.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

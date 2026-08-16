@@ -10,7 +10,7 @@ morie_twoT_corrected_logits(scores, probabilities, temperature = 1)
 \arguments{
 \item{scores}{Passed to \code{.twoT_as_vec}.}
 \item{probabilities}{Passed to \code{.twoT_as_vec}.}
-\item{temperature}{Defaults to \code{1}.}
+\item{temperature}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
 }
 \description{
 Part of the twoT_native implementation; see the file header for the source it follows.

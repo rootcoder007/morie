@@ -12,7 +12,7 @@ miprgr_solve_relaxation(A, b, c, bounds = list(), n = NULL, maximise = TRUE, sol
 \item{b}{A vector; its length is taken and its elements indexed.}
 \item{c}{A vector; its length is taken.}
 \item{bounds}{A vector; its length is taken. Defaults to \code{list()}.}
-\item{n}{Defaults to \code{NULL}.}
+\item{n}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
 \item{maximise}{A flag; the body branches on it. Defaults to \code{TRUE}.}
 \item{solver}{Compared against \code{"simplex"}. Defaults to \code{"simplex"}.}
 }

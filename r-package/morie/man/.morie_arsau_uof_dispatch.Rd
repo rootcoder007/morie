@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{kind}{See Usage.}
-\item{year}{See Usage.}
+\item{year}{Coerced to character by the body, with \code{as.character}.}
 \item{offline}{A flag; the body branches on it.}
 \item{resource_id}{Optional; may be \code{NULL}. Passed to \code{.morie_ontario_ckan_dump_csv}.}
 \item{fixture_name}{See Usage.}

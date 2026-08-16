@@ -8,7 +8,7 @@
 .propinf_rng(seed)
 }
 \arguments{
-\item{seed}{See Usage.}
+\item{seed}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the propinf_native implementation; see the file header for the source it follows.

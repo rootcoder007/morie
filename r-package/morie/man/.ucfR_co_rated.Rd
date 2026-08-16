@@ -8,8 +8,8 @@
 .ucfR_co_rated(ratings_a, ratings_b)
 }
 \arguments{
-\item{ratings_a}{See Usage.}
-\item{ratings_b}{See Usage.}
+\item{ratings_a}{Coerced to list by the body, with \code{as.list}.}
+\item{ratings_b}{Coerced to list by the body, with \code{as.list}.}
 }
 \description{
 Part of the ucfR_native implementation; see the file header for the source it follows.

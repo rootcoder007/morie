@@ -8,8 +8,8 @@
 .tlsate_paired_variance(pair_ids, ic)
 }
 \arguments{
-\item{pair_ids}{See Usage.}
-\item{ic}{See Usage.}
+\item{pair_ids}{Coerced to character by the body, with \code{as.character}.}
+\item{ic}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tlsate_native implementation; see the file header for the source it follows.

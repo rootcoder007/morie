@@ -9,7 +9,7 @@ morie_sdxlcd_discarded_fraction(sizes, minimum = 256)
 }
 \arguments{
 \item{sizes}{A matrix; indexed by row and column.}
-\item{minimum}{Defaults to \code{256}.}
+\item{minimum}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{256}.}
 }
 \description{
 Part of the sdxlcd_native implementation; see the file header for the source it follows.

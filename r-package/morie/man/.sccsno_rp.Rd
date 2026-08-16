@@ -8,7 +8,7 @@
 .sccsno_rp(risk_periods)
 }
 \arguments{
-\item{risk_periods}{See Usage.}
+\item{risk_periods}{A matrix; the body checks with \code{is.matrix}.}
 }
 \description{
 Part of the sccsno_native implementation; see the file header for the source it follows.

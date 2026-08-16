@@ -8,7 +8,7 @@
 morie_tlhoest_remainder_order(order)
 }
 \arguments{
-\item{order}{See Usage.}
+\item{order}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the tlhoest_native implementation; see the file header for the source it follows.

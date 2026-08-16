@@ -8,9 +8,9 @@
 length_weight(length, l_min = 2500, l_ref = 1e+05)
 }
 \arguments{
-\item{length}{See Usage.}
-\item{l_min}{Defaults to \code{2500}.}
-\item{l_ref}{Defaults to \code{1e+05}.}
+\item{length}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{l_min}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{2500}.}
+\item{l_ref}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e+05}.}
 }
 \description{
 Part of the metabd_native implementation; see the file header for the source it follows.

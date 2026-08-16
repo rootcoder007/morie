@@ -10,7 +10,7 @@ rank_by_similarity(query, corpus_embeddings, top_k = 5)
 \arguments{
 \item{query}{See Usage.}
 \item{corpus_embeddings}{Passed to \code{.sbert_mat}.}
-\item{top_k}{Defaults to \code{5}.}
+\item{top_k}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5}.}
 }
 \description{
 Part of the sbert_native implementation; see the file header for the source it follows.

@@ -81,7 +81,7 @@ morie_nrfrad <- function(payload) {
 #'
 #' k.vec() which iterates over the input.
 #'
-#' @param p See Usage.
+#' @param p Optional; may be \code{NULL}. A list; the body checks with \code{is.list}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .as_numeric_vec <- function(p) {
@@ -101,7 +101,7 @@ morie_nrfrad <- function(payload) {
 #' source it follows.
 #'
 #' @param p Passed to \code{.as_numeric_vec}.
-#' @param L Defaults to \code{10}.
+#' @param L Coerced to integer by the body, with \code{as.integer}. Defaults to \code{10}.
 #' @param include_input A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -128,9 +128,9 @@ positional_encoding <- function(p, L = 10, include_input = TRUE) {
 #'
 #' @param origin Passed to \code{.as_numeric_vec}.
 #' @param direction Passed to \code{.as_numeric_vec}.
-#' @param t_near See Usage.
-#' @param t_far See Usage.
-#' @param n_samples See Usage.
+#' @param t_near Coerced to numeric by the body, with \code{as.numeric}.
+#' @param t_far Coerced to numeric by the body, with \code{as.numeric}.
+#' @param n_samples Coerced to integer by the body, with \code{as.integer}.
 #' @param rng Optional; may be \code{NULL}. Passed to \code{.ghc_unif}.
 #' @param stratified A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A list with \code{t}, \code{points}, \code{direction}.
@@ -226,9 +226,9 @@ volume_render <- function(sigma, colour, t) {
 #'
 #' @param bins Passed to \code{.as_numeric_vec}.
 #' @param weights Passed to \code{.as_numeric_vec}.
-#' @param n_samples See Usage.
+#' @param n_samples Coerced to integer by the body, with \code{as.integer}.
 #' @param rng Passed to \code{.ghc_unif}.
-#' @param eps Defaults to \code{1e-05}.
+#' @param eps Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-05}.
 #' @return A vector, from \code{sort}.
 #' @export
 sample_pdf <- function(bins, weights, n_samples, rng, eps = 1e-5) {
@@ -269,7 +269,7 @@ sample_pdf <- function(bins, weights, n_samples, rng, eps = 1e-5) {
 #' @param model See Usage.
 #' @param point Passed to \code{.as_numeric_vec}.
 #' @param directions A vector; its length is taken and its elements indexed.
-#' @param tol Defaults to \code{1e-09}.
+#' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.
 #' @return A list with \code{sigmas}, \code{max_deviation}, \code{view_independent}, \code{note}.
 #' @export
 density_is_view_independent <- function(model, point, directions, tol = 1e-9) {

@@ -8,9 +8,9 @@
 .saigeg_score_statistic(y, G, mu)
 }
 \arguments{
-\item{y}{See Usage.}
-\item{G}{See Usage.}
-\item{mu}{See Usage.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{G}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{mu}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the saigeg_native implementation; see the file header for the source it follows.

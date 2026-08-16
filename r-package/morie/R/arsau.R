@@ -173,8 +173,8 @@ NULL
 #' @param kind See Usage.
 #' @param csv_filename See Usage.
 #' @param sidecar_filename See Usage.
-#' @param expected_rows See Usage.
-#' @param expected_cols See Usage.
+#' @param expected_rows Coerced to integer by the body, with \code{as.integer}.
+#' @param expected_cols Coerced to integer by the body, with \code{as.integer}.
 #' @param is_valid A flag; the body branches on it.
 #' @param description_en See Usage.
 #' @param description_fr See Usage.
@@ -354,7 +354,7 @@ morie_arsau_read_sidecar <- function(path) {
 #' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param year_or_range See Usage.
+#' @param year_or_range Coerced to character by the body, with \code{as.character}.
 #' @param kind See Usage.
 #' @return The value of \code{[[}.
 #' @export
@@ -372,7 +372,7 @@ morie_arsau_read_sidecar <- function(path) {
 #' See the file header for the source the module follows.
 #' it follows.
 #'
-#' @param year See Usage.
+#' @param year Coerced to character by the body, with \code{as.character}.
 #' @param range_ok A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return Nothing; this branch always raises.
 #' @export

@@ -8,7 +8,7 @@
 .as_num_vec(p)
 }
 \arguments{
-\item{p}{See Usage.}
+\item{p}{Optional; may be \code{NULL}. A list; the body checks with \code{is.list}.}
 }
 \description{
 Part of the opnclp_native implementation; see the file header for the source it follows.

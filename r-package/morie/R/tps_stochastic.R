@@ -94,7 +94,7 @@ NULL
 #' OCC_DATE / REPORT_DATE.
 #'
 #' @param df A list; the body reads \code{$OCC_DAY}, \code{$OCC_MONTH}, \code{$OCC_YEAR} from it.
-#' @param min_year Defaults to \code{2014L}.
+#' @param min_year Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2014L}.
 #' @return A vector, from \code{sort}.
 #' @export
 .tps_stoch_date_series <- function(df, min_year = 2014L) {

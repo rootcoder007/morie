@@ -163,7 +163,7 @@ muzero_add_noise <- function(prior, alpha, frac, seed) {
 #' source it follows.
 #'
 #' @param observation See Usage.
-#' @param actions See Usage.
+#' @param actions Coerced to list by the body, with \code{as.list}.
 #' @param representation See Usage.
 #' @param dynamics See Usage.
 #' @param prediction See Usage.
@@ -171,9 +171,9 @@ muzero_add_noise <- function(prior, alpha, frac, seed) {
 #' @param gamma Defaults to \code{0.997}.
 #' @param c1 Defaults to \code{1.25}.
 #' @param c2 Defaults to \code{19652}.
-#' @param dirichlet_alpha Defaults to \code{NULL}.
-#' @param exploration_fraction Defaults to \code{0.25}.
-#' @param temperature Defaults to \code{1}.
+#' @param dirichlet_alpha Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param exploration_fraction Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.25}.
+#' @param temperature Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @param seed Defaults to \code{0}.
 #' @return A list with \code{estimate}, \code{policy}, \code{action}, \code{value}, \code{visits}, \code{Q}, \code{prior}, \code{n_dynamics_calls}, \code{n_prediction_calls}, \code{simulations}, \code{method}.
 #' @export

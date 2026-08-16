@@ -11,7 +11,7 @@ ocrwit_patch_of_box(box, width, height, patch_grid = 14)
 \item{box}{See Usage.}
 \item{width}{See Usage.}
 \item{height}{See Usage.}
-\item{patch_grid}{Defaults to \code{14}.}
+\item{patch_grid}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{14}.}
 }
 \description{
 Part of the ocrwit_native implementation; see the file header for the source it follows.

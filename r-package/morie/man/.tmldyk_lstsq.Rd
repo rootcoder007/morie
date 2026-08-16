@@ -8,7 +8,7 @@
 .tmldyk_lstsq(Z, yv, ridge = 1e-08)
 }
 \arguments{
-\item{Z}{See Usage.}
+\item{Z}{A matrix; the body checks with \code{is.matrix}.}
 \item{yv}{A matrix; passed to \code{crossprod}.}
 \item{ridge}{Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.}
 }

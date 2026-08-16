@@ -13,7 +13,7 @@
 \item{params}{Passed to \code{.morie_dataset_http_text}.}
 \item{api_key}{Defaults to \code{NULL}.}
 \item{user_agent}{Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.}
-\item{timeout}{Defaults to \code{.MORIE_CKAN_DEFAULT_TIMEOUT}.}
+\item{timeout}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 3YY: collapsed .morie_ckan_build_req + _call into a single function that routes through .morie_dataset_http_text (libcurl with httr2 fallback) + .morie_from_json(simplifyVector=FALSE).

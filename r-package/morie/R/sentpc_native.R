@@ -23,7 +23,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param text See Usage.
+#' @param text Coerced to character by the body, with \code{as.character}.
 #' @param add_prefix A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -40,7 +40,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param text See Usage.
+#' @param text Coerced to character by the body, with \code{as.character}.
 #' @param strip_prefix A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return The value of \code{gsub}.
 #' @export

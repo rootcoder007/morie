@@ -19,7 +19,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Optional; may be \code{NULL}. Character; the body checks with \code{is.character}.
 #' @return Nothing; this branch always raises.
 #' @export
 .secrtt_as_bytes <- function(x) {

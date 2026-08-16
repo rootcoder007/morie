@@ -10,9 +10,9 @@
 \arguments{
 \item{M}{A matrix; passed to \code{\%*\%}.}
 \item{W1}{A matrix; passed to \code{\%*\%}.}
-\item{b1}{See Usage.}
+\item{b1}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{W2}{A matrix; passed to \code{\%*\%}.}
-\item{b2}{See Usage.}
+\item{b2}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the setT_mixedcase_native implementation; see the file header for the source it follows.

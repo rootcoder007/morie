@@ -8,8 +8,8 @@
 .ms_check(time, event)
 }
 \arguments{
-\item{time}{See Usage.}
-\item{event}{See Usage.}
+\item{time}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{event}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the survival_more implementation; see the file header for the source it follows.

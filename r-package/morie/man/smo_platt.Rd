@@ -8,13 +8,13 @@
 smo_platt(y, K, C = 1, tol = 0.001, eps = 1e-05, max_passes = 200L, seed = 0L)
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{K}{Passed to \code{.smoopt_K}.}
 \item{C}{Passed to \code{.smoopt_bounds}. Defaults to \code{1}.}
 \item{tol}{Defaults to \code{0.001}.}
-\item{eps}{Defaults to \code{1e-05}.}
-\item{max_passes}{Defaults to \code{200L}.}
-\item{seed}{Defaults to \code{0L}.}
+\item{eps}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-05}.}
+\item{max_passes}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200L}.}
+\item{seed}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0L}.}
 }
 \description{
 Part of the smoopt_native implementation; see the file header for the source it follows.

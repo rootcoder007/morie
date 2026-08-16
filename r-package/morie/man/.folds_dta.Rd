@@ -9,7 +9,7 @@
 }
 \arguments{
 \item{n}{A count; the body uses it as \code{seq_len(...)}.}
-\item{n_folds}{See Usage.}
+\item{n_folds}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the tmldta_native implementation; see the file header for the source it follows.

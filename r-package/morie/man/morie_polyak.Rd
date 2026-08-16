@@ -8,8 +8,8 @@
 morie_polyak(iterates, burn_in = 0)
 }
 \arguments{
-\item{iterates}{See Usage.}
-\item{burn_in}{Defaults to \code{0}.}
+\item{iterates}{Iterated over elementwise, with \code{lapply}.}
+\item{burn_in}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0}.}
 }
 \description{
 Part of the polyak_native implementation; see the file header for the source it follows.

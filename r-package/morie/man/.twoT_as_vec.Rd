@@ -8,7 +8,7 @@
 .twoT_as_vec(v)
 }
 \arguments{
-\item{v}{See Usage.}
+\item{v}{Optional; may be \code{NULL}. A matrix; the body checks with \code{is.matrix}.}
 }
 \description{
 Part of the twoT_native implementation; see the file header for the source it follows.

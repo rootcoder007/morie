@@ -10,7 +10,7 @@ infonce(image_embeddings, text_embeddings, temperature = 0.07)
 \arguments{
 \item{image_embeddings}{Passed to \code{.coerce_mat}.}
 \item{text_embeddings}{Passed to \code{.coerce_mat}.}
-\item{temperature}{Defaults to \code{0.07}.}
+\item{temperature}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.07}.}
 }
 \description{
 Part of the opnclp_native implementation; see the file header for the source it follows.

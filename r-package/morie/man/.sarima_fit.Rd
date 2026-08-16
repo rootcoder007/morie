@@ -13,7 +13,7 @@
 \item{seasonal_order}{A vector; indexed elementwise. Defaults to \code{c(0, 1, 1)}.}
 \item{s}{Passed to \code{.sarima_package}. Defaults to \code{12}.}
 \item{method}{One of \code{"css"}, \code{"moment"}, \code{"uls"}. Defaults to \code{"ml"}.}
-\item{start}{Defaults to \code{NULL}.}
+\item{start}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the sarima_native implementation; see the file header for the source it follows.

@@ -8,9 +8,9 @@
 phmmsr_gumbel_pvalue(score, mu, lam)
 }
 \arguments{
-\item{score}{See Usage.}
-\item{mu}{See Usage.}
-\item{lam}{See Usage.}
+\item{score}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{mu}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{lam}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the phmmsr_native implementation; see the file header for the source it follows.

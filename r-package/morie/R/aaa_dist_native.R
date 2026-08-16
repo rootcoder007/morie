@@ -77,7 +77,7 @@
 #' fraction of its own, and the tail comes straight from the CF branch
 #' of the incomplete gamma, which computes Q without forming 1 - P.
 #'
-#' @param x See Usage.
+#' @param x Iterated over elementwise, with \code{vapply}.
 #' @return A vector, from \code{vapply}.
 #' @export
 .morie_erfc <- function(x) {
@@ -96,7 +96,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param x See Usage.
+#' @param x Iterated over elementwise, with \code{vapply}.
 #' @return A vector, from \code{vapply}.
 #' @export
 .morie_erf <- function(x) {
@@ -432,7 +432,7 @@ Dgamma <- function(x, shape, rate = 1, log = FALSE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param q See Usage.
+#' @param q Iterated over elementwise, with \code{vapply}.
 #' @param shape Passed to \code{.morie_gammainc_p}.
 #' @param rate Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
@@ -451,7 +451,7 @@ Pgamma <- function(q, shape, rate = 1, lower_tail = TRUE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Iterated over elementwise, with \code{vapply}.
 #' @param shape See Usage.
 #' @param rate Defaults to \code{1}.
 #' @return A vector, from \code{vapply}.
@@ -527,7 +527,7 @@ Dpois <- function(x, lambda, log = FALSE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param q See Usage.
+#' @param q Iterated over elementwise, with \code{vapply}.
 #' @param lambda Passed to \code{.morie_gammainc_p}.
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
@@ -547,7 +547,7 @@ Ppois <- function(q, lambda, lower_tail = TRUE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Iterated over elementwise, with \code{vapply}.
 #' @param lambda See Usage.
 #' @return A vector, from \code{vapply}.
 #' @export
@@ -592,7 +592,7 @@ Dbinom <- function(x, size, prob, log = FALSE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param q See Usage.
+#' @param q Iterated over elementwise, with \code{vapply}.
 #' @param size Numeric; combined arithmetically in the body.
 #' @param prob Numeric; combined arithmetically in the body.
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
@@ -615,7 +615,7 @@ Pbinom <- function(q, size, prob, lower_tail = TRUE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Iterated over elementwise, with \code{vapply}.
 #' @param size See Usage.
 #' @param prob See Usage.
 #' @return A vector, from \code{vapply}.
@@ -657,7 +657,7 @@ Dbeta <- function(x, shape1, shape2, log = FALSE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param q See Usage.
+#' @param q Iterated over elementwise, with \code{vapply}.
 #' @param shape1 Passed to \code{.morie_betainc}.
 #' @param shape2 Passed to \code{.morie_betainc}.
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
@@ -674,7 +674,7 @@ Pbeta <- function(q, shape1, shape2, lower_tail = TRUE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Iterated over elementwise, with \code{vapply}.
 #' @param shape1 See Usage.
 #' @param shape2 See Usage.
 #' @return A vector, from \code{vapply}.
@@ -710,7 +710,7 @@ Dt <- function(x, df, log = FALSE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param q See Usage.
+#' @param q Iterated over elementwise, with \code{vapply}.
 #' @param df Numeric; combined arithmetically in the body.
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return One of two values, depending on the branch taken.
@@ -730,7 +730,7 @@ Pt <- function(q, df, lower_tail = TRUE) {
 #' betainc\'s 1 - xb underflows for |v| < ~1e-8, the cdf sits at exactly
 #' 0.5 there, and both bisection and Newton are blind inside it.
 #'
-#' @param p See Usage.
+#' @param p Iterated over elementwise, with \code{vapply}.
 #' @param df See Usage.
 #' @return A vector, from \code{vapply}.
 #' @export
@@ -753,7 +753,7 @@ Qt <- function(p, df) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param q See Usage.
+#' @param q Iterated over elementwise, with \code{vapply}.
 #' @param df1 Numeric; combined arithmetically in the body.
 #' @param df2 Numeric; combined arithmetically in the body.
 #' @param lower_tail A flag; the body branches on it. Defaults to \code{TRUE}.
@@ -773,7 +773,7 @@ Pf <- function(q, df1, df2, lower_tail = TRUE) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p See Usage.
+#' @param p Iterated over elementwise, with \code{vapply}.
 #' @param df1 See Usage.
 #' @param df2 See Usage.
 #' @return A vector, from \code{vapply}.

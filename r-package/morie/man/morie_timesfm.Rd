@@ -11,8 +11,8 @@ morie_timesfm(history, predictor, horizon, input_patch_len, output_patch_len)
 \item{history}{See Usage.}
 \item{predictor}{See Usage.}
 \item{horizon}{Passed to \code{morie_timesfm_rollout_steps}.}
-\item{input_patch_len}{See Usage.}
-\item{output_patch_len}{See Usage.}
+\item{input_patch_len}{Coerced to integer by the body, with \code{as.integer}.}
+\item{output_patch_len}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the timesfm_native implementation; see the file header for the source it follows.

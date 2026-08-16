@@ -8,9 +8,9 @@
 morie_potM(y, u, return_periods = c(10, 100))
 }
 \arguments{
-\item{y}{See Usage.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 \item{u}{Numeric; combined arithmetically in the body.}
-\item{return_periods}{Defaults to \code{c(10, 100)}.}
+\item{return_periods}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{c(10, 100)}.}
 }
 \description{
 Part of the potM_mixedcase_native implementation; see the file header for the source it follows.

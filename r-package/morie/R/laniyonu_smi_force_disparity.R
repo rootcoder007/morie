@@ -127,8 +127,8 @@ NULL
 #' header for the source it follows.
 #'
 #' @param name See Usage.
-#' @param estimate See Usage.
-#' @param std_error See Usage.
+#' @param estimate Coerced to numeric by the body, with \code{as.numeric}.
+#' @param std_error Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{name}, \code{estimate}, \code{std_error}.
 #' @export
 .lan_smi_coef <- function(name, estimate, std_error) {

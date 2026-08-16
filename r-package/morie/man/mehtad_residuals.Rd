@@ -9,11 +9,11 @@ mehtad_residuals(A, b, c, x, y, s)
 }
 \arguments{
 \item{A}{A matrix; passed to \code{as.matrix}.}
-\item{b}{See Usage.}
-\item{c}{See Usage.}
-\item{x}{See Usage.}
-\item{y}{See Usage.}
-\item{s}{See Usage.}
+\item{b}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{c}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{x}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{s}{Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the mehtad_native implementation; see the file header for the source it follows.

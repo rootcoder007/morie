@@ -8,9 +8,9 @@
 project_patches(patch_features, W, b = NULL)
 }
 \arguments{
-\item{patch_features}{See Usage.}
+\item{patch_features}{Iterated over elementwise, with \code{lapply}.}
 \item{W}{A matrix; indexed by row and column.}
-\item{b}{Defaults to \code{NULL}.}
+\item{b}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the llavx_native implementation; see the file header for the source it follows.

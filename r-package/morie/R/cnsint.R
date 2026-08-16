@@ -11,7 +11,7 @@
 #' perfectly separated response patterns.
 #'
 #' @param X A matrix; indexed by row and column.
-#' @param iters Defaults to \code{200}.
+#' @param iters Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.
 #' @param prior_var Numeric; combined arithmetically in the body. Defaults to \code{4}.
 #' @return A list with \code{b}, \code{th}.
 #' @export

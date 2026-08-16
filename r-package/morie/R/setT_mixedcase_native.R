@@ -42,9 +42,9 @@
 #'
 #' @param M A matrix; passed to \code{\%*\%}.
 #' @param W1 A matrix; passed to \code{\%*\%}.
-#' @param b1 See Usage.
+#' @param b1 Coerced to numeric by the body, with \code{as.numeric}.
 #' @param W2 A matrix; passed to \code{\%*\%}.
-#' @param b2 See Usage.
+#' @param b2 Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A numeric value.
 #' @export
 .rff <- function(M, W1, b1, W2, b2) {

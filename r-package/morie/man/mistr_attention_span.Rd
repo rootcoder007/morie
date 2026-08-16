@@ -8,8 +8,8 @@
 mistr_attention_span(window, n_layers)
 }
 \arguments{
-\item{window}{See Usage.}
-\item{n_layers}{See Usage.}
+\item{window}{Coerced to integer by the body, with \code{as.integer}.}
+\item{n_layers}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the mistr_native implementation; see the file header for the source it follows.

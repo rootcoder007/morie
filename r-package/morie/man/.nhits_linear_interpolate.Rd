@@ -8,8 +8,8 @@
 .nhits_linear_interpolate(knots, horizon)
 }
 \arguments{
-\item{knots}{See Usage.}
-\item{horizon}{See Usage.}
+\item{knots}{Coerced to numeric by the body, with \code{as.numeric}.}
+\item{horizon}{Coerced to integer by the body, with \code{as.integer}.}
 }
 \description{
 Part of the nhits_native implementation; see the file header for the source it follows.

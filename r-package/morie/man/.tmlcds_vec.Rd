@@ -8,7 +8,7 @@
 .tmlcds_vec(x)
 }
 \arguments{
-\item{x}{See Usage.}
+\item{x}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
 }
 \description{
 Part of the tmlcds_native implementation; see the file header for the source it follows.

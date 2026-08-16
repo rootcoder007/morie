@@ -21,7 +21,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param m See Usage.
+#' @param m A matrix; the body checks with \code{is.matrix}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
 .sammkr_flat <- function(m) {
@@ -40,7 +40,7 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param masks See Usage.
+#' @param masks Iterated over elementwise, with \code{lapply}.
 #' @return A list with \code{mask}, \code{ambiguous_fraction}, \code{n_averaged}, \code{note}.
 #' @export
 average_of_valid_masks <- function(masks) {
@@ -150,7 +150,7 @@ whole_part_subpart <- function(masks, target_hierarchy = NULL) {
 #' source it follows.
 #'
 #' @param masks A vector; its length is taken.
-#' @param predicted_iou See Usage.
+#' @param predicted_iou Coerced to numeric by the body, with \code{as.numeric}.
 #' @param target Defaults to \code{NULL}.
 #' @return The value of \code{out}, as built in the body.
 #' @export

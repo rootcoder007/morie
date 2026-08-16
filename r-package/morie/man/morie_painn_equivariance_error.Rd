@@ -13,7 +13,7 @@ morie_painn_equivariance_error(model, s, v, R, Q, tol = 1e-09)
 \item{v}{A matrix; passed to \code{as.matrix}.}
 \item{R}{A matrix; passed to \code{as.matrix}.}
 \item{Q}{A matrix; passed to \code{as.matrix}.}
-\item{tol}{Defaults to \code{1e-09}.}
+\item{tol}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.}
 }
 \description{
 Checking only the scalars would pass a model that has silently lost its vector channel.
