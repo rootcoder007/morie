@@ -30,3 +30,6 @@ Closed-form linear calibration to match population totals on auxiliary X.
 When \code{survey} is installed, defers to \code{survey::calibrate()} for a fully
 design-aware result; otherwise computes the linear adjustment in base R.
 }
+\examples{
+morie_weights_greg(weights = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), population_totals = 5L)
+}

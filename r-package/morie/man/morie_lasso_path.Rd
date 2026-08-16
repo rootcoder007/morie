@@ -20,3 +20,6 @@ Returns the L1-penalised least squares fit at a single \code{lambda}, with inter
 A list with \code{beta}, \code{intercept}, \code{support},   \code{lambda}.
 }
 \keyword{internal}
+\examples{
+morie_lasso_path(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), lam = 5L)
+}

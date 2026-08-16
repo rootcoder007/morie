@@ -29,3 +29,6 @@ A list with \code{estimate}, \code{value}, \code{x}, \code{feasible}, \code{node
 Base R only.
 }
 \keyword{internal}
+\examples{
+miprgr_branch_and_bound(A = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), b = 5L, c = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), integer_vars = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2))
+}

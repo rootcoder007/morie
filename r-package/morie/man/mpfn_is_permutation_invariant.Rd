@@ -29,3 +29,6 @@ A list with \code{invariant}, \code{max_deviation}, \code{readout}.
 Base R only.
 }
 \keyword{internal}
+\examples{
+mpfn_is_permutation_invariant(H = 0.5, adj = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), edge_features = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), perm = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
