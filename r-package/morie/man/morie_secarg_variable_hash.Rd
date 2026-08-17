@@ -18,3 +18,7 @@ Argon2\'s variable-length hash H\' (BLAKE2b stretched past 64 bytes)
 Raw bytes of that length.
 }
 \keyword{internal}
+\examples{
+r <- morie_secarg_variable_hash(charToRaw("hello"), 64L)
+length(r)
+}

@@ -20,3 +20,12 @@ Part of the svmopt_native implementation; see the file header for the source it 
 A list with \code{gap}, \code{i}, \code{j}, \code{n_up}, \code{n_low}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+X <- rbind(matrix(rnorm(10, -1), 5, 2), matrix(rnorm(10, 1), 5, 2))
+y <- rep(c(-1, 1), each = 5)
+K <- X \%*\% t(X)
+a <- rep(0.1, 10)
+grad <- as.numeric(K \%*\% (a * y) * y) - 1
+str(kkt_violation(a, y, grad, C = 1), max.level = 1)
+}
