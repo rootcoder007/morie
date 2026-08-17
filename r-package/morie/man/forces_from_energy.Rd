@@ -19,3 +19,10 @@ Part of the schN_native implementation; see the file header for the source it fo
 A list with \code{estimate}, \code{forces}, \code{net_force}, \code{method}, \code{note}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+R <- lapply(1:4, function(i) rnorm(3))
+energy_fn <- function(pos) sum(vapply(pos, function(p) sum(p^2), 0))
+Fm <- forces_from_energy(energy_fn, R)
+length(Fm$forces) == 4L
+}

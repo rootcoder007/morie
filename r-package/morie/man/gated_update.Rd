@@ -21,3 +21,13 @@ is the only path from the vector channel back to the scalar one, and it is invar
 A list with \code{ds}, \code{dv}, \code{scalar_from_vectors}, \code{note}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+F <- 4; D <- 3
+s <- rnorm(F)
+v <- matrix(rnorm(D * F), D, F)
+U <- diag(F); V <- diag(F)
+phi <- function(sv, dot, nrm) list(ds = sv + dot, gate = rep(0.5, length(sv)))
+u <- gated_update(s, v, U, V, phi)
+c(length(u$ds), nrow(u$dv))
+}
