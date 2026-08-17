@@ -14,3 +14,6 @@ Asymptotic efficiency against the cohort design (Sec. 7.5)
 A list with \code{rho}, \code{efficiency}, \code{r}, \code{log_ri}, \code{interpretation}.
 }
 \keyword{internal}
+\examples{
+morie_smatch_relative_efficiency(r = 0.1, log_ri = log(2))
+}

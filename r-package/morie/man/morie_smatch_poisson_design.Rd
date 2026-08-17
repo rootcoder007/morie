@@ -19,3 +19,11 @@ Counts, log-time offset, and factor columns for risk period, age band, and one p
 List with \code{y, offset, X, n_risk, n_age, n_people, n_rows}.
 }
 \keyword{internal}
+\examples{
+cases <- list(
+  list(start = 0, end = 365, exposure = 100, events = c(110, 250)),
+  list(start = 0, end = 365, exposure = 200, events = c(215)),
+  list(start = 0, end = 365, exposure = 50, events = c(60, 70)))
+r <- morie_smatch_poisson_design(cases, risk_periods = list(c(0, 30)))
+str(r, max.level = 1)
+}
