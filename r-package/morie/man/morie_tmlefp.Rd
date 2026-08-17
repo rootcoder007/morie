@@ -21,3 +21,13 @@ Returns the OSATE (Theorem 5.2 or 5.3), the untrimmed full-sample effect, the OW
 A list with the OSATE, full-sample, and OWATE estimates, the   trim rule, and the variance bound.
 }
 \keyword{internal}
+\examples{
+set.seed(2)
+n <- 120
+X <- rnorm(n)
+e <- plogis(0.8 * X)
+w <- rbinom(n, 1, e)
+y <- 1 + 0.8 * w + X + rnorm(n, 0, 0.5)
+r <- morie_tmlefp(y, w, e)
+str(r, max.level = 1)
+}

@@ -19,3 +19,7 @@ Part of the ttrace_native implementation; see the file header for the source it 
 The value of \code{.tt_poisson_draw}.
 }
 \keyword{internal}
+\examples{
+e <- .ghc_rng(1)
+replicate(5, negbinom_offspring(R0 = 2.5, dispersion = 0.16, e))
+}
