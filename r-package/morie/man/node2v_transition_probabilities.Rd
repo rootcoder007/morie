@@ -22,3 +22,9 @@ Part of the node2v_native implementation; see the file header for the source it 
 A list with \code{nodes}, \code{probabilities}, \code{unnormalized}, \code{Z}.
 }
 \keyword{internal}
+\examples{
+adj <- list(`0` = c("1", "3"), `1` = c("0", "2"),
+            `2` = c("1", "3"), `3` = c("0", "2"))
+tp <- node2v_transition_probabilities(adj, "0", "1", p = 1, q = 2)
+is.numeric(tp) || is.list(tp)
+}

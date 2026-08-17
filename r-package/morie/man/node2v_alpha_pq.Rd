@@ -19,3 +19,7 @@ Part of the node2v_native implementation; see the file header for the source it 
 Nothing; this branch always raises.
 }
 \keyword{internal}
+\examples{
+c(node2v_alpha_pq(0, 1, 1), node2v_alpha_pq(1, 1, 1),
+  node2v_alpha_pq(2, 1, 2))
+}

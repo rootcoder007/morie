@@ -26,3 +26,11 @@ population total), \code{se}, \code{ci_lower}, \code{ci_upper}
 \description{
 Ratio estimator of a population total using known X_pop.
 }
+\examples{
+set.seed(1)
+x <- runif(50, 1, 10)
+y <- 2 * x + rnorm(50, 0, 0.5)
+w <- rep(2, 50)
+r <- morie_survey_ratio(y, x, w, X_population_total = sum(x) * 2)
+abs(r$ratio - 2) < 0.3
+}
