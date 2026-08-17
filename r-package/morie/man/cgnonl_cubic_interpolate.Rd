@@ -22,3 +22,7 @@ A step of the cgnonl_native implementation. Called by \code{cgnonl_line_search_f
 The value of \code{t}, as built in the body.
 }
 \keyword{internal}
+\examples{
+t <- cgnonl_cubic_interpolate(0, 1, -1, 1, 0.5, 0.2)
+is.numeric(t)
+}

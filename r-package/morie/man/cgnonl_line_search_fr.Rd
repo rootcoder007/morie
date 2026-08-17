@@ -26,3 +26,11 @@ A step of the cgnonl_native implementation. Called by \code{cgnonl_nonlinear_cg}
 A list with \code{t}, \code{x}, \code{f}, \code{g}, \code{n_eval}.
 }
 \keyword{internal}
+\examples{
+f <- function(x) sum((x - c(1, 2))^2)
+grad <- function(x) 2 * (x - c(1, 2))
+x <- c(0, 0)
+g0 <- grad(x)
+ls <- cgnonl_line_search_fr(f, grad, x, -g0, f(x), g0)
+is.list(ls) || is.numeric(ls)
+}
