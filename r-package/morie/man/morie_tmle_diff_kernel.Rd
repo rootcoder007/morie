@@ -21,3 +21,12 @@ The propensity score is truncated at \code{g_min} -- which bounds the sensitivit
 A list with the private estimate, the non-private TMLE for   comparison, the sensitivity, and the private interval.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+n <- 120
+X <- matrix(rnorm(n * 2), n, 2)
+D <- rbinom(n, 1, plogis(0.4 * X[, 1]))
+y <- plogis(0.5 * D + X[, 1] + rnorm(n, 0, 0.3))
+r <- morie_tmle_diff_kernel(y, D, X, epsilon = 1, g_min = 0.05, seed = 1)
+is.list(r)
+}

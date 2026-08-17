@@ -20,3 +20,8 @@ Returns \code{f(D) + Lap(sensitivity/epsilon)} from the shared generator so the 
 A list with the released value, the noise, the scale, the   noise variance, and the epsilon.
 }
 \keyword{internal}
+\examples{
+r <- morie_private_release(value = 2.5, sensitivity = 0.1,
+                           epsilon = 1, seed = 1)
+c(is.numeric(r$noise_variance), r$noise_variance > 0)
+}
