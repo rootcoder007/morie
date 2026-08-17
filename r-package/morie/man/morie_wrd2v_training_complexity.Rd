@@ -22,3 +22,7 @@ Part of the wrd2v_native implementation; see the file header for the source it f
 A numeric value.
 }
 \keyword{internal}
+\examples{
+morie_wrd2v_training_complexity(architecture = "skip-gram", D = 100L,
+                                V = 10000L, C = 5L)
+}
