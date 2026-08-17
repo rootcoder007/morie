@@ -52,3 +52,8 @@ officers arrive to the scene.
 
 Tags: rbdc; race; race based data
 }
+\examples{
+\donttest{
+morie_datasets_tps_use_of_force_occurrence_category()
+}
+}

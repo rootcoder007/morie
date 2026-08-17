@@ -52,3 +52,8 @@ an enforcement action and/or reported use of force.
 
 Tags: RBDC; race based data; race
 }
+\examples{
+\donttest{
+morie_datasets_tps_use_of_force_call_sources_by_month()
+}
+}
