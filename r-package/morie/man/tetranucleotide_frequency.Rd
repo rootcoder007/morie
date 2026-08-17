@@ -19,3 +19,6 @@ Part of the metabd_native implementation; see the file header for the source it 
 A list with \code{frequency}, \code{vector}, \code{kmers}, \code{n_kmers}, \code{canonical}.
 }
 \keyword{internal}
+\examples{
+tetranucleotide_frequency("ACGTACGTACGTTGCAACGT")
+}
