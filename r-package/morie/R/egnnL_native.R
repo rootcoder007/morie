@@ -115,7 +115,7 @@ egcl <- function(H, X, phi_e, phi_x, phi_h, A = NULL, C = NULL,
   H <- as.matrix(H)
   X <- as.matrix(X)
   n <- nrow(H)
-  M <- replicate(n, replicate(n, NULL), simplify = FALSE)
+  M <- lapply(seq_len(n), function(i) vector("list", n))
   for (i in seq_len(n)) {
     for (j in seq_len(n)) {
       if (i != j) {
@@ -179,8 +179,10 @@ egcl <- function(H, X, phi_e, phi_x, phi_h, A = NULL, C = NULL,
 #' @export
 run_egnn <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
                      C = NULL) {
-  h <- apply(as.matrix(H), 1, as.numeric)
-  x <- apply(as.matrix(X), 1, as.numeric)
+  if (is.list(H) && !is.data.frame(H)) H <- do.call(rbind, H)
+  if (is.list(X) && !is.data.frame(X)) X <- do.call(rbind, X)
+  h <- as.matrix(H); storage.mode(h) <- "double"
+  x <- as.matrix(X); storage.mode(x) <- "double" 
   if (is.null(dim(h))) h <- matrix(h, ncol = 1)
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   for (k in seq_len(as.integer(layers))) {
