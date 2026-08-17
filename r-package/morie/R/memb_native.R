@@ -149,7 +149,8 @@ attack_dataset <- function(model_predict, in_X, in_y, out_X, out_y) {
       vecs <- model_predict(in_X)
     }
     for (i in seq_along(in_X)) {
-      rows[[length(rows) + 1L]] <- as.numeric(vecs[i, ])
+      rows[[length(rows) + 1L]] <- as.numeric(
+        if (is.matrix(vecs)) vecs[i, ] else vecs[[i]])
       lab <- c(lab, 1L)
       cls <- c(cls, as.character(in_y[i]))
     }
@@ -157,7 +158,8 @@ attack_dataset <- function(model_predict, in_X, in_y, out_X, out_y) {
   if (length(out_X) > 0L) {
     vecs2 <- model_predict(out_X)
     for (i in seq_along(out_X)) {
-      rows[[length(rows) + 1L]] <- as.numeric(vecs2[i, ])
+      rows[[length(rows) + 1L]] <- as.numeric(
+        if (is.matrix(vecs2)) vecs2[i, ] else vecs2[[i]])
       lab <- c(lab, 0L)
       cls <- c(cls, as.character(out_y[i]))
     }

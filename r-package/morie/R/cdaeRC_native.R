@@ -36,7 +36,8 @@
 #' @export
 .cdae_act <- function(name, x) {
   if (name == "sigmoid") {
-    if (x >= -700) 1.0 / (1.0 + exp(-x)) else 0.0
+    # vectorised clamp: the scalar if() errors on vector activations
+    1.0 / (1.0 + exp(-pmax(x, -700)))
   } else if (name == "identity") {
     x
   } else if (name == "tanh") {
