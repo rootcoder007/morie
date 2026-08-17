@@ -23,3 +23,8 @@ Part of the snmtst_native implementation; see the file header for the source it 
 A list with \code{lower}, \code{upper}, \code{estimate}, \code{pre_max_change}, \code{bound}, \code{M}, \code{family}, \code{width}, \code{note}.
 }
 \keyword{internal}
+\examples{
+beta <- c(-0.05, 0.02, 0.5, 0.55, 0.6)
+r <- identified_set(beta, n_pre = 2, n_post = 3, M = 0.1)
+str(r, max.level = 1)
+}
