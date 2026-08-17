@@ -21,3 +21,9 @@ Part of the nashq_native implementation; see the file header for the source it f
 The value of \code{[[}.
 }
 \keyword{internal}
+\examples{
+A <- matrix(c(2, 0, 0, 1), 2, 2, byrow = TRUE)
+B <- matrix(c(1, 0, 0, 2), 2, 2, byrow = TRUE)
+eq <- nashq_select_eq(A, B, "first", 0L, 1e-9)
+eq$p
+}

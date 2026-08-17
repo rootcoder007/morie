@@ -14,3 +14,7 @@ RFC 6962 Merkle Tree Hash
 The value of \code{sha256}.
 }
 \keyword{internal}
+\examples{
+root <- merkle_root(list("a", "b", "c", "d"))
+length(root) == 32L
+}

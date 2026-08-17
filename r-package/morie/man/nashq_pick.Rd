@@ -21,3 +21,7 @@ Part of the nashq_native implementation; see the file header for the source it f
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+A <- matrix(c(2, 0, 0, 1), 2, 2, byrow = TRUE)
+nashq_pick(A, 0:1, 0L, 0.0, function() 0.99)
+}

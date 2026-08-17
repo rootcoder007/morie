@@ -21,3 +21,8 @@ Part of the nashq_native implementation; see the file header for the source it f
 A logical value.
 }
 \keyword{internal}
+\examples{
+A <- matrix(c(1, -1, -1, 1), 2, 2, byrow = TRUE)
+B <- -A
+nashq_is_saddle(A, B, c(0.5, 0.5), c(0.5, 0.5), 1e-9)
+}

@@ -285,7 +285,8 @@ nashq_pick <- function(M, A, who, epsilon, rng) {
   }
   bv <- max(vals)
   best <- which(vals >= bv - 1e-15)
-  if (length(best) > 1L) best[as.integer(rng() * length(best)) + 1L] else best
+  pick <- if (length(best) > 1L) best[as.integer(rng() * length(best)) + 1L] else best
+  pick - 1L
 }
 
 #' nashq_run

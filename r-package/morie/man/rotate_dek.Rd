@@ -14,3 +14,9 @@ Rotate a DEK: re-encrypt one record
 A list with \code{sealed}, \code{records_reencrypted}, \code{note}.
 }
 \keyword{internal}
+\examples{
+old_dek <- as.raw(101:132); new_dek <- as.raw(11:42); nonce <- as.raw(1:12)
+s <- seal_record(charToRaw("payload"), old_dek, nonce)
+rd <- rotate_dek(s, old_dek, new_dek, as.raw(71:82))
+rawToChar(open_record(rd$sealed, new_dek))
+}
