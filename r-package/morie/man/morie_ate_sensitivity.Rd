@@ -19,3 +19,7 @@ The bound carries :math:`1/g_{\min}`, so it is :math:`2R/(n g_{\min})` and NOT :
 A list with the sensitivity and a few related quantities.
 }
 \keyword{internal}
+\examples{
+s <- morie_ate_sensitivity(n = 100, g_min = 0.05, y_range = 1)
+is.numeric(s) || is.list(s)
+}

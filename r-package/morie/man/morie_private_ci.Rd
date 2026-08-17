@@ -20,3 +20,8 @@ Combines the sampling variance with the noise variance of the Laplace mechanism.
 A list with \code{estimate}, \code{se_private},   \code{se_sampling}, \code{ci}, \code{width_ratio},   \code{epsilon}.
 }
 \keyword{internal}
+\examples{
+ci <- morie_private_ci(value = 2.5, sensitivity = 0.1, epsilon = 1,
+                       se = 0.2, seed = 1)
+is.list(ci)
+}
