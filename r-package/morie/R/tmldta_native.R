@@ -121,9 +121,9 @@
   ref <- levels[1]
   others <- levels[-1]
   p <- if (is.matrix(W)) ncol(W) else
-    if (length(W) > 0L) ncol(W[[1L]]) else 0L
+    if (length(W) > 0L) length(W[[1L]]) else 0L
   rowf <- function(a, i) {
-    d <- as.numeric(levels(others) == a) * 1.0
+    d <- as.numeric(others == a) * 1.0
     if (is.matrix(W)) {
       r <- c(1, d, W[i, ])
       if (p > 0) {

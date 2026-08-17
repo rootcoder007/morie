@@ -34,3 +34,13 @@ Thomas, N., Smidt, T., Kearnes, S., Yang, L., Li, L., Kohlhoff, K. &
 Riley, P. (2018) "Tensor Field Networks", arXiv:1802.08219.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+H <- lapply(1:4, function(i) rnorm(2))
+X <- lapply(1:4, function(i) rnorm(3))
+phi_e <- function(hi, hj, d2, a) c(hi + hj, d2)
+phi_x <- function(m) sum(m) * 0.01
+phi_h <- function(hi, agg) hi + 0.1 * agg[seq_along(hi)]
+r <- morie_egcn(H, X, layers = 2L, phi_e, phi_x, phi_h)
+str(r, max.level = 1)
+}
