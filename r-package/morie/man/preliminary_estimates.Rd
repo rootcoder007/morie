@@ -18,3 +18,9 @@ Part of the sarima_native implementation; see the file header for the source it 
 A list with \code{estimate}, \code{theta}, \code{Theta}, \code{r_1}, \code{r_s}, \code{method}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+w <- rnorm(120)
+pe <- preliminary_estimates(w, s = 12)
+is.list(pe)
+}
