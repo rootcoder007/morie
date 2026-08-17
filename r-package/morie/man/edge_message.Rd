@@ -22,3 +22,7 @@ A step of the egnnL_native implementation. Called by \code{egcl}. See the file h
 The value of \code{phi_e}.
 }
 \keyword{internal}
+\examples{
+phi_e <- function(hi, hj, d2, a) c(hi + hj, d2)
+edge_message(c(0.2, -0.1), c(0.4, 0.3), c(1, 0, 0), c(0, 1, 0), phi_e)
+}
