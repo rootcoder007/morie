@@ -28,3 +28,6 @@ callable (\code{morie.fn.mcint}) retains a legacy \emph{spatial} signature;
 this R parity targets the index-listed crude-MC estimator instead.
 }
 \keyword{internal}
+\examples{
+morie_monte_carlo_integration(function(x) x^2, 0, 1, N = 1000L)
+}

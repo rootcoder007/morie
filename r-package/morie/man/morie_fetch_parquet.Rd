@@ -26,3 +26,13 @@ types, other codecs).
 Apache Parquet format specification (thrift compact
 protocol footer; PLAIN encoding; Snappy framing).
 }
+\examples{
+if (requireNamespace("arrow", quietly = TRUE)) {
+  tf <- tempfile(fileext = ".parquet")
+  arrow::write_parquet(data.frame(a = 1:3), tf,
+    use_dictionary = FALSE,
+    compression = "snappy"
+  )
+  morie_fetch_parquet(tf)
+}
+}

@@ -29,3 +29,6 @@ Native gray-code Sobol sequence with Joe-Kuo direction numbers
 \code{randtoolbox::sobol}'s unscrambled output exactly.
 }
 \keyword{internal}
+\examples{
+morie_sobol_sequence(N = 128L, d = 2L)
+}

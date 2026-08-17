@@ -34,3 +34,10 @@ Data frame with \code{Gamma}, \code{p_lower}, \code{p_upper}.
 Computes normal-approximation Wilcoxon signed-rank bounds natively
 in base R.
 }
+\examples{
+set.seed(1)
+df <- data.frame(d = rbinom(60, 1, 0.5), x1 = rnorm(60))
+df$y <- df$d * 0.5 + df$x1 + rnorm(60)
+res <- try(sensitivity_rosenbaum(df, "d", "y", "x1"))
+if (!inherits(res, "try-error")) str(res, max.level = 1)
+}
