@@ -14,3 +14,10 @@ Wilkinson (2014) history matching + GP-emulated log-posterior on a grid, or one 
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+sim <- function(theta, e) rnorm(1, mean = theta[1])
+em <- abc_gp_emulator(sim, obs = 0.3, method = "wilkinson",
+                      prior_ppf = list(-2, 2), n_waves = 2L,
+                      n_design = 8L, n_sim = 20L, seed = 1L)
+is.list(em)
+}

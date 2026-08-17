@@ -14,3 +14,9 @@ Wilkinson (2014) Sec. 3: waves of design, emulate, rule out, redesign. Returns t
 A list with \code{fit}, \code{waves}.
 }
 \keyword{internal}
+\examples{
+sim <- function(theta, e) rnorm(1, mean = theta[1])
+hm <- history_match(sim, obs = 0.3, prior_ppf = list(-2, 2),
+                    n_waves = 2L, n_design = 8L, n_sim = 20L, seed = 1L)
+length(hm$waves) == 2L
+}

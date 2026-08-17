@@ -20,3 +20,7 @@ Sobol design pushed through the prior\'s inverse CDF
 Numeric matrix with \code{n} rows.
 }
 \keyword{internal}
+\examples{
+d <- design_from_prior(6, list(c(-2, -2), c(2, 2)))
+c(nrow(d), ncol(d))
+}
