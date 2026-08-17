@@ -17,3 +17,7 @@ Invisibly returns \code{x} unchanged.
 \description{
 Print method for \code{morie_mrm_uof_result} objects
 }
+\examples{
+inc <- morie_datasets_corrections_uof_incidents()
+print(mrm_uof_data_quality_audit(inc))
+}
