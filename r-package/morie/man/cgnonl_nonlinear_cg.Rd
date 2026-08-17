@@ -27,3 +27,9 @@ A step of the cgnonl_native implementation. Called by \code{morie_cgnonl}. See t
 A list with \code{x}, \code{fun}, \code{grad}, \code{gnorm}, \code{n_iter}, \code{n_restart}, \code{n_feval}, \code{converged}, \code{betas}, \code{path}, \code{beta_rule}, \code{line_search}, \code{restart_every}, \code{method}, \code{note}.
 }
 \keyword{internal}
+\examples{
+f <- function(x) sum((x - c(1, 2))^2)
+grad <- function(x) 2 * (x - c(1, 2))
+r <- cgnonl_nonlinear_cg(f, grad, c(0, 0), max_iter = 50L)
+max(abs((r$x \%||\% r$estimate \%||\% r[[1]]) - c(1, 2))) < 1e-4
+}

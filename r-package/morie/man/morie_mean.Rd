@@ -14,3 +14,6 @@ Single-pass C++ kernel.  Equivalent to \code{mean(x)}.
 The value of \code{if}.
 }
 \keyword{internal}
+\examples{
+c(morie_mean(c(1, 2, 3, 4)) == 2.5, morie_mean(1:10) == 5.5)
+}

@@ -14,3 +14,6 @@ Single-pass C++ kernel.  Equivalent to \code{cor(x, y)} when both vectors are eq
 The value of \code{if}.
 }
 \keyword{internal}
+\examples{
+abs(morie_cor_pearson(1:10, 2 * (1:10) + 3) - 1) < 1e-9
+}
