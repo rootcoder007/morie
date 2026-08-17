@@ -20,3 +20,7 @@ Part of the snpqc1_native implementation; see the file header for the source it 
 A numeric value.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+r <- morie_snpqc1_hwe_pvalue(n_hom_minor = 8L, n_het = 8L, n_hom_major = 8L); TRUE
+}

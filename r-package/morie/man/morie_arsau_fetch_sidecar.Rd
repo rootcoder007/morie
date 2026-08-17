@@ -27,3 +27,8 @@ existing \code{\link{morie_arsau_read_sidecar}} contract).
 \references{
 Ontario Data Catalogue CKAN API.
 }
+\examples{
+\donttest{
+sidecar <- morie_arsau_fetch_sidecar("assault", 2020L)
+}
+}

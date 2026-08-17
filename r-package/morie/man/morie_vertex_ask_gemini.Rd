@@ -37,3 +37,8 @@ R port of \code{morie.vertex.ask_gemini}. POSTs to the Vertex AI REST
 endpoint \verb{:generateContent} and returns the concatenated text from
 the first candidate.
 }
+\examples{
+\donttest{
+ans <- morie_vertex_ask_gemini("Summarize recent assault trends in Toronto.")
+}
+}

@@ -18,3 +18,7 @@ Coefficient vector.
 Least squares through the normal equations, small p (internal)
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+r <- .ik_ols(rows = rnorm(10), y = rnorm(10)); TRUE
+}

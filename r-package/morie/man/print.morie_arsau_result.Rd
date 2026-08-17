@@ -17,3 +17,9 @@ Invisibly returns \code{x} unchanged.
 \description{
 Print method for \code{morie_arsau_result} objects
 }
+\examples{
+\donttest{
+res <- morie_arsau_describe("assault", 2020L)
+print(res)
+}
+}

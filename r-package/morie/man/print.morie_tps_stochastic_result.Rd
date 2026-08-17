@@ -17,3 +17,9 @@
 \description{
 Print method for \code{morie_tps_stochastic_result} objects
 }
+\examples{
+set.seed(1); n <- 200
+df <- data.frame(OCC_DATE = as.Date("2018-01-01") + sample(0:2000, n, TRUE))
+res <- morie_tps_hawkes_temporal_fit(df)
+print(res)
+}

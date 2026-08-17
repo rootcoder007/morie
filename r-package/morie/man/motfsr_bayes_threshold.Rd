@@ -23,3 +23,7 @@ A numeric value.
 Base R only.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+r <- motfsr_bayes_threshold(lambda1 = 0.5); TRUE
+}

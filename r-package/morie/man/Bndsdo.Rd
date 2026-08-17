@@ -38,3 +38,7 @@ Handbook of Econometrics 7A (arXiv:2004.11751 p. 17). The derivation
 above is written out because the paper was not accessible: what is
 cited to Manski and Pepper is the assumption, not a copied formula.
 }
+\examples{
+set.seed(1)
+r <- Bndsdo(y = rnorm(10), D = rbinom(10, 1, 0.5)); TRUE
+}

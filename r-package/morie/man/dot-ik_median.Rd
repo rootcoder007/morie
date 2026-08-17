@@ -16,3 +16,7 @@ The median, IK (2012) p.9 convention.
 Median with the even case averaged (internal)
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+r <- .ik_median(v = rnorm(10)); TRUE
+}
