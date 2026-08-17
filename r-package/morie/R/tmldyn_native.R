@@ -46,7 +46,9 @@
 #' @return One of two values, depending on the branch taken.
 #' @export
 .tmldyn_expit <- function(x) {
-  if (x > -700) 1 / (1 + exp(-x)) else 0
+  # vectorised clamp: the scalar if() errors on any vector input
+  xc <- pmax(x, -700)
+  1 / (1 + exp(-xc))
 }
 
 #' .tmldyn_qnorm
@@ -214,7 +216,8 @@
 #' @param known Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @return A list with \code{g0}, \code{g1}, \code{info}.
 #' @export
-.intervention_mechanism <- function(L0, A0, L1, A1, trim, known) {
+.intervention_mechanism <- function(L0, A0, L1, A1, trim, known,
+                                    penalty = 0) {
   n <- length(A0)
   if (!is.null(known)) {
     p0 <- as.numeric(known[[1]]); p1 <- as.numeric(known[[2]])
@@ -542,7 +545,11 @@ morie_tmle_dynamic_regime <- function(y, treatment_history,
     rules <- list(list(d0 = d0, d1 = d1))
   }
   follow0 <- ifelse(A0 == d0, 1, 0)
-  follow1 <- ifelse(A1 == d1[[A0 + 1L]], 1, 0)
+  # d1 is a list of two second-stage rules keyed by the FIRST
+  # treatment; [[A0-vector + 1]] is recursive indexing and errors for
+  # any n above 1
+  d1_obs <- vapply(seq_len(n), function(i) d1[[A0[i] + 1L]][i], numeric(1))
+  follow1 <- ifelse(A1 == d1_obs, 1, 0)
   H1 <- follow0 / g$g0
   H2 <- follow0 * follow1 / (g$g0 * g$g1)
   if (method == "ipw") {
@@ -594,7 +601,7 @@ morie_tmle_dynamic_regime <- function(y, treatment_history,
        ci = c(psi - z * se, psi + z * se), level = level,
        d0 = d0, d1 = d1, blip1 = blip1, blip2 = blip2,
        treated_first = mean(d0),
-       treated_second = mean(d1[[A0 + 1L]]),
+       treated_second = mean(d1_obs),
        eic_mean = mean(eic), epsilon = c(eps1, eps2),
        max_weight = g$info$max_weight, min_g0 = g$info$min_g0,
        min_g1 = g$info$min_g1, known_g = g$info$known,

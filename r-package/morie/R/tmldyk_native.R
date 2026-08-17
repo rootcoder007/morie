@@ -40,7 +40,9 @@
 #' @return One of two values, depending on the branch taken.
 #' @export
 .tmldyk_expit <- function(x) {
-  if (x > -700) 1 / (1 + exp(-x)) else 0
+  # vectorised clamp: the scalar if() errors on any vector input
+  xc <- pmax(x, -700)
+  1 / (1 + exp(-xc))
 }
 
 # Logistic IRLS that returns a coefficient vector.
