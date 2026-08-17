@@ -19,3 +19,7 @@ Part of the tlgcmp_native implementation; see the file header for the source it 
 A numeric value.
 }
 \keyword{internal}
+\examples{
+g_computation(list("a", "b"), outcome_means = c(0.3, 0.7),
+              covariate_probs = c(0.4, 0.6))
+}
