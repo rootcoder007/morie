@@ -14,3 +14,7 @@ Derive a distinct DEK per record
 A list with \code{dek}, \code{dek_hex}, \code{record_id}, \code{note}.
 }
 \keyword{internal}
+\examples{
+g <- generate_dek(as.raw(1:16), "record-42")
+c(length(g$dek), nchar(g$dek_hex))
+}

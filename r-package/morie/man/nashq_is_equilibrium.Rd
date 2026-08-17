@@ -21,3 +21,8 @@ Part of the nashq_native implementation; see the file header for the source it f
 A logical value.
 }
 \keyword{internal}
+\examples{
+A <- matrix(c(2, 0, 0, 1), 2, 2, byrow = TRUE)
+B <- matrix(c(1, 0, 0, 2), 2, 2, byrow = TRUE)
+nashq_is_equilibrium(A, B, c(1, 0), c(1, 0), 1e-9)
+}

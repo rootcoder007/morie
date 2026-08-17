@@ -14,3 +14,11 @@ Recompute the root from a leaf and an audit path
 A list with \code{root}, \code{root_hex}, \code{valid}, \code{path_used}.
 }
 \keyword{internal}
+\examples{
+leaves <- list("a", "b", "c", "d", "e")
+root <- merkle_root(leaves)
+pr <- inclusion_proof(leaves, index = 2)
+good <- verify_inclusion("c", 2, 5, pr$path, root)
+bad <- verify_inclusion("x", 2, 5, pr$path, root)
+c(good, bad)
+}

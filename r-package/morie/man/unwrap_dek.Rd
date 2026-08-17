@@ -14,3 +14,9 @@ Unwrap a DEK, optionally logging the call
 A list with \code{dek}, \code{kek_id}, \code{audited}.
 }
 \keyword{internal}
+\examples{
+kek <- as.raw(1:32); nonce <- as.raw(1:12); dek <- as.raw(101:132)
+w <- wrap_dek(dek, kek, nonce)
+u <- unwrap_dek(w, kek)
+identical(as.raw(u$dek), dek)
+}
