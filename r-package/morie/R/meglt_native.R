@@ -34,7 +34,10 @@
 #' @return A list with \code{u}, \code{d}, \code{vt}.
 #' @export
 .meglt_svd <- function(A) {
-  s <- svd(A, nu = nrow(A), nv = 0)
+  if (is.list(A)) A <- do.call(rbind, lapply(A, as.numeric))
+  # nv = 0 threw the right factor away, so the SVT shrinkage had no V
+  # to rebuild X from
+  s <- svd(A, nu = nrow(A), nv = ncol(A))
   list(u = s$u, d = s$d, vt = t(s$v))
 }
 
