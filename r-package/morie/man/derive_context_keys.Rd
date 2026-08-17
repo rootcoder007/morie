@@ -14,3 +14,9 @@ Derive one key per context, all independent
 A list with \code{keys}, \code{hex}, \code{prk}, \code{all_distinct}, \code{note}.
 }
 \keyword{internal}
+\examples{
+ikm <- as.raw(rep(0x0b, 22))
+keys <- derive_context_keys(ikm, contexts = c("app-encrypt", "app-mac"),
+                            salt = as.raw(0:12), length = 32L)
+c(length(keys), length(keys[["app-mac"]]) == 32L)
+}
