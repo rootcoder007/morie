@@ -27,3 +27,11 @@ These functions mirror, in R, the implementations in the Python package
 tests in \code{tests/testthat/}.
 }
 \keyword{models}
+\examples{
+set.seed(1)
+n <- 30; p <- 3
+X <- matrix(rnorm(n * p), n, p)
+y <- as.numeric(X \%*\% c(1, -0.5, 0.3) + rnorm(n, 0, 0.5))
+r <- morie_brr_gibbs(y, X, n_iter = 200L, burn_in = 50L, seed = 1L)
+length(r$beta) == p
+}
