@@ -17,3 +17,7 @@ Part of the vepan_native implementation; see the file header for the source it f
 The value of \code{[}.
 }
 \keyword{internal}
+\examples{
+morie_vepan_most_severe_consequence(c("missense_variant",
+                                      "synonymous_variant"))
+}
