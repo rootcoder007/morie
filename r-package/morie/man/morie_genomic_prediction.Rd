@@ -37,3 +37,9 @@ These functions mirror, in R, the implementations in the Python package
 tests in \code{tests/testthat/}.
 }
 \keyword{models}
+\examples{
+set.seed(1)
+M <- matrix(rbinom(20 * 8, 2, 0.3), 20, 8)
+G <- morie_grm(M)
+dim(G)
+}

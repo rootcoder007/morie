@@ -39,3 +39,9 @@ These functions mirror, in R, the implementations in the Python package
 tests in \code{tests/testthat/}.
 }
 \keyword{models}
+\examples{
+set.seed(1)
+M <- matrix(rnorm(20 * 8), 20, 8)
+p <- morie_pca(M, k = 3)
+is.list(p)
+}

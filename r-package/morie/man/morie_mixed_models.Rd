@@ -37,3 +37,7 @@ These functions mirror, in R, the implementations in the Python package
 tests in \code{tests/testthat/}.
 }
 \keyword{models}
+\examples{
+r <- morie_one_way(list(c(5, 6, 7), c(6, 7, 8), c(9, 10, 11)))
+is.list(r)
+}
