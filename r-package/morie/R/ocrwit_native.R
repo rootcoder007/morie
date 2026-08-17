@@ -162,7 +162,7 @@ morie_ocrwit <- function(text_boxes, masked_patches, width, height,
   mt <- as.integer(unlist(masked_text))
   labels <- list(); covered <- list()
   for (i in seq_along(text_boxes)) {
-    if (i - 1L %in% mt) next
+    if ((i - 1L) %in% mt) next
     ps <- ocrwit_patch_of_box(text_boxes[[i]], width, height, patch_grid)
     covered[[as.character(i - 1L)]] <- ps
     labels[[as.character(i - 1L)]] <- as.integer(any(ps %in% mp))
