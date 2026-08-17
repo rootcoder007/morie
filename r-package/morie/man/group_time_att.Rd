@@ -19,3 +19,14 @@ Group-time ATT(g,t) under staggered adoption
 A list with \code{att} (named list keyed by \code{(g,t)}),   \code{cohorts}, \code{T}, \code{n}, \code{comparison},   \code{estimate}, \code{method}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+n <- 40; Tt <- 5
+treated <- rep(c(0, 1), each = n / 2)
+first_treated <- ifelse(treated == 1, 3L, NA_integer_)
+Y <- matrix(0, n, Tt)
+for (i in seq_len(n)) Y[i, ] <- rnorm(1) + 0.2 * seq_len(Tt) +
+  treated[i] * (seq_len(Tt) >= 3) * 1.5 + rnorm(Tt, 0, 0.3)
+gt <- group_time_att(Y, first_treated)
+length(gt$att) >= 1L
+}

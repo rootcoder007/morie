@@ -19,3 +19,14 @@ With no weights the estimator is the textbook difference of group means; passing
 A list with \code{estimate}, \code{treated_change},   \code{control_change}, \code{treated_weight},   \code{control_weight}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+n <- 40; Tt <- 5
+treated <- rep(c(0, 1), each = n / 2)
+Y <- matrix(0, n, Tt)
+for (i in seq_len(n)) Y[i, ] <- rnorm(1) + 0.2 * seq_len(Tt) +
+  treated[i] * (seq_len(Tt) >= 3) * 1.5 + rnorm(Tt, 0, 0.3)
+d <- panel_differences(Y, event_time = 3)
+est <- did_estimate(d, treated)
+abs(est$att - 1.5) < 0.5
+}
