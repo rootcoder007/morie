@@ -32,3 +32,12 @@ A step of the bayopt_native implementation. Called by \code{bayopt}. See the fil
 A list with \code{x}, \code{acq}, \code{n_starts}, \code{evaluations}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+Xl <- lapply(1:10, function(i) runif(2))
+y <- sapply(Xl, function(x) sin(3 * x[1]) + x[2])
+r <- maximise_acquisition(Xl, y, best = max(y),
+                          box = list(c(0, 1), c(0, 1)),
+                          acq = "ei", n_starts = 3, max_iter = 20)
+str(r, max.level = 1)
+}
