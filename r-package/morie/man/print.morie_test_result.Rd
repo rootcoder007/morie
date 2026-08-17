@@ -17,3 +17,8 @@ Invisibly returns \code{x} unchanged.
 \description{
 Print method for \code{morie_test_result} objects
 }
+\examples{
+set.seed(1)
+res <- one_sample_ttest(rnorm(20, 0.3))
+print(res)
+}
