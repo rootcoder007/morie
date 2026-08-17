@@ -19,3 +19,9 @@ Proof-of-Work Applications", RFC 9106, doi:10.17487/RFC9106; the
 the BLAKE2 hash in Saarinen & Aumasson (2015) RFC 7693.
 }
 \keyword{internal}
+\examples{
+r <- morie_secarg_prehash(charToRaw("password"), charToRaw("somesalt"),
+                          parallelism = 1L, tag_length = 32L,
+                          memory = 32L, passes = 3L)
+str(r, max.level = 1)
+}
