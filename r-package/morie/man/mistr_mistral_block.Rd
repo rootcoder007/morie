@@ -39,3 +39,18 @@ A list with \code{estimate}, \code{output}, \code{attention_mask}, \code{L}, \co
 Base R only.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+d <- 8; nh <- 4; nkv <- 2; hd <- 2; dff <- 16; L <- 4
+X <- matrix(rnorm(L * d), L, d)
+Wq <- matrix(rnorm(d * d, 0, 0.2), d, d)
+Wk <- matrix(rnorm(d * nkv * hd, 0, 0.2), d, nkv * hd)
+Wv <- matrix(rnorm(d * nkv * hd, 0, 0.2), d, nkv * hd)
+Wo <- matrix(rnorm(d * d, 0, 0.2), d, d)
+W1 <- matrix(rnorm(d * dff, 0, 0.2), d, dff)
+W3 <- matrix(rnorm(d * dff, 0, 0.2), d, dff)
+W2 <- matrix(rnorm(dff * d, 0, 0.2), dff, d)
+r <- mistr_mistral_block(X, Wq, Wk, Wv, Wo, W1, W2, W3, nh, nkv,
+                         window = 3)
+dim(r$output)
+}

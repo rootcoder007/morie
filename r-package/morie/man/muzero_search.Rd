@@ -29,3 +29,11 @@ Part of the muzero_native implementation; see the file header for the source it 
 A list with \code{estimate}, \code{policy}, \code{action}, \code{value}, \code{visits}, \code{Q}, \code{prior}, \code{n_dynamics_calls}, \code{n_prediction_calls}, \code{simulations}, \code{method}.
 }
 \keyword{internal}
+\examples{
+representation <- function(obs) 0
+dynamics <- function(s, a) list(0.1, s + 1)
+prediction <- function(s) list(c(0.5, 0.5), 0.0)
+res <- muzero_search(0, list(0, 1), representation, dynamics,
+                     prediction, simulations = 20, seed = 1)
+c(length(res$policy), abs(sum(res$policy) - 1) < 1e-9)
+}

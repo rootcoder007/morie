@@ -230,7 +230,7 @@ muzero_search <- function(observation, actions, representation, dynamics,
       path[[length(path) + 1L]] <- node
     }
     parent <- path[[length(path) - 1L]]
-    calls[[1]] <<- calls[[1]] + 1L
+    calls[[1]] <- calls[[1]] + 1L
     out <- dynamics(parent$state, acts[[length(acts)]])
     r <- as.numeric(out[[1]]); s <- out[[2]]
     node$reward <- r

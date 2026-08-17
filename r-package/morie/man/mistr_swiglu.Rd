@@ -29,3 +29,12 @@ A vector, from \code{as.numeric}.
 Base R only.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+x <- rnorm(4)
+W1 <- matrix(rnorm(4 * 8, 0, 0.3), 4, 8)
+W3 <- matrix(rnorm(4 * 8, 0, 0.3), 4, 8)
+W2 <- matrix(rnorm(8 * 4, 0, 0.3), 8, 4)
+y <- mistr_swiglu(x, W1, W2, W3)
+length(y) == 4L
+}
