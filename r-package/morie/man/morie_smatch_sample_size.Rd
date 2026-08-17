@@ -21,3 +21,6 @@ Assumes age effects are negligible. \code{r} is the ratio of risk period to obse
 List with \code{n_events}, \code{n_events_ceiling},   \code{rho, A, B, C, z_alpha_2, z_power, ...}.
 }
 \keyword{internal}
+\examples{
+morie_smatch_sample_size(log_ri = log(2), r = 0.1, p_exposed = 0.8)
+}
