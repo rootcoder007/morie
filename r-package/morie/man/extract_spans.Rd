@@ -17,3 +17,7 @@ A step of the benRea_native implementation. Called by \code{ner_decode}, \code{s
 The value of \code{spans}, as built in the body.
 }
 \keyword{internal}
+\examples{
+sp <- extract_spans(c("O", "B-PER", "I-PER", "O", "B-LOC"))
+c(length(sp), sp[[1]]$type)
+}

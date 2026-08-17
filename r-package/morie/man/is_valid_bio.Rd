@@ -18,3 +18,7 @@ A step of the benRea_native implementation. Called by \code{ner_decode}. See the
 A logical value.
 }
 \keyword{internal}
+\examples{
+c(is_valid_bio(c("O", "B-PER", "I-PER", "O")),
+  is_valid_bio(c("O", "I-PER", "O")))
+}
