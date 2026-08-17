@@ -19,3 +19,6 @@ Part of the prgrl_native implementation; see the file header for the source it f
 A list with \code{is_curriculum}, \code{entropy_increasing}, \code{strictly_increasing}, \code{weights_monotone}, \code{final_step_is_p}, \code{entropies}.
 }
 \keyword{internal}
+\examples{
+is_curriculum(list(c(1, 1, 1), c(1, 1, 0), c(1, 0, 0)))
+}
