@@ -27,3 +27,15 @@ Mean outcome under the (V-)optimal dynamic treatment rule
 A list with the mean outcome, SE, CI, the rule, blips, and   the four static comparators.
 }
 \keyword{internal}
+\examples{
+set.seed(2)
+n <- 80
+L0 <- rnorm(n)
+A0 <- rbinom(n, 1, 0.5)
+L1 <- rnorm(n) + 0.4 * A0
+A1 <- rbinom(n, 1, 0.5)
+y <- plogis(0.3 * A0 + 0.5 * A1 + 0.4 * L0 + rnorm(n, 0, 0.4))
+r <- morie_tmle_dynamic_regime(y, cbind(A0, A1), list(L0, L1),
+                               method = "tmle")
+str(r, max.level = 1)
+}
