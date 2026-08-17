@@ -21,3 +21,8 @@ Part of the nrfrad_native implementation; see the file header for the source it 
 A vector, from \code{sort}.
 }
 \keyword{internal}
+\examples{
+s <- sample_pdf(bins = seq(0, 1, length.out = 6), weights = c(1, 3, 2, 1, 1),
+                n_samples = 12, rng = .ghc_rng(1))
+length(as.numeric(unlist(s)))
+}

@@ -27,3 +27,11 @@ Part of the mafft_native implementation; see the file header for the source it f
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+scoring <- list(A_A = 1, C_C = 1, G_G = 1, T_T = 1)
+g1 <- c("ACGTACGTAC")
+g2 <- c("ACGTACGTAC")
+r <- find_homologous_segments(g1, g2, scoring, seq_type = "dna",
+                              window = 5L)
+is.list(r)
+}

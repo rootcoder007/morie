@@ -22,3 +22,8 @@ Part of the mafft_native implementation; see the file header for the source it f
 A list with \code{out1}, \code{out2}.
 }
 \keyword{internal}
+\examples{
+M <- list(A_A = 1, C_C = 1, G_G = 1, T_T = 1)
+al <- mafft_nw(c("ACGT"), c("AGT"), M, w1 = 1, w2 = 1, s_op = -1)
+is.list(al)
+}

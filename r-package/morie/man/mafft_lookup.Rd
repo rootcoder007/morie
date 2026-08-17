@@ -19,3 +19,8 @@ Part of the mafft_native implementation; see the file header for the source it f
 One of two values, depending on the branch taken.
 }
 \keyword{internal}
+\examples{
+M <- list(A_A = 4, A_C = -1, C_C = 4)
+c(mafft_lookup(M, "A", "A"), mafft_lookup(M, "A", "C"),
+  mafft_lookup(M, "G", "T"))
+}

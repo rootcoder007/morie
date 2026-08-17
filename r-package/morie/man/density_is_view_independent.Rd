@@ -20,3 +20,10 @@ Part of the nrfrad_native implementation; see the file header for the source it 
 A list with \code{sigmas}, \code{max_deviation}, \code{view_independent}, \code{note}.
 }
 \keyword{internal}
+\examples{
+model <- function(p, d) list(sigma = sum(p^2), rgb = c(0.5, 0.5, 0.5))
+r <- density_is_view_independent(model, point = c(1, 2, 3),
+                                 directions = list(c(1, 0, 0), c(0, 1, 0),
+                                                   c(0, 0, 1)))
+r$max_deviation < 1e-9
+}
