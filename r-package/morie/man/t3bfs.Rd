@@ -18,3 +18,10 @@ Part of the t3util implementation; see the file header for the source it follows
 The value of \code{d}, as built in the body.
 }
 \keyword{internal}
+\examples{
+A <- matrix(0, 4, 4)
+A[1, 2] <- A[2, 1] <- 1
+A[2, 3] <- A[3, 2] <- 1
+A[3, 4] <- A[4, 3] <- 1
+t3bfs(A, 1)
+}
