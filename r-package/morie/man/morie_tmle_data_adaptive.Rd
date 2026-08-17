@@ -24,3 +24,7 @@ Contrast between data-discovered exposure levels, done honestly
 A list with \code{estimate}, \code{se}, \code{ci}, the   per-split levels and estimates, and the separation diagnostics.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+r <- morie_tmle_data_adaptive(y = rnorm(10), D = rbinom(10, 1, 0.5), X = rnorm(10)); TRUE
+}

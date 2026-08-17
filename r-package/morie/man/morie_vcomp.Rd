@@ -20,3 +20,7 @@ Part of the vcomp_native implementation; see the file header for the source it f
 A list with \code{sigma2_a}, \code{sigma2_e}, \code{icc}, \code{icc_lower}, \code{icc_upper}, \code{method_used}, \code{balanced}, \code{a}, \code{N}, \code{fit}, \code{method}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+r <- morie_vcomp(y = rnorm(10), group = rbinom(10, 1, 0.5)); TRUE
+}

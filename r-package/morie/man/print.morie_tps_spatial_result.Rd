@@ -17,3 +17,11 @@
 \description{
 Print method for \code{morie_tps_spatial_result} objects
 }
+\examples{
+set.seed(1); n <- 200
+df <- data.frame(HOOD_158 = sample(sprintf("\%03d", 1:20), n, TRUE),
+                 LAT_WGS84 = 43.65 + rnorm(n, 0, 0.05),
+                 LONG_WGS84 = -79.38 + rnorm(n, 0, 0.05))
+res <- morie_tps_morans_i_neighbourhood(df)
+print(res)
+}

@@ -25,3 +25,8 @@ tested R analogue; per the morie maintenance policy, network bulk
 fetches must be reproducible across CRAN test environments before
 the wrapper is exposed.  Stubbed for now.
 }
+\examples{
+\donttest{
+path <- morie_arsau_download(tempdir())
+}
+}

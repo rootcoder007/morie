@@ -17,3 +17,9 @@ Invisibly returns \code{x} unchanged.
 \description{
 Print method for TPS temporal-analysis results
 }
+\examples{
+set.seed(1)
+df <- data.frame(OCC_YEAR = sample(2018:2023, 200, TRUE))
+res <- morie_tps_year_over_year_trend(df, year_col = "OCC_YEAR")
+print(res)
+}

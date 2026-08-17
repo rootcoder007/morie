@@ -19,3 +19,7 @@ Mean \code{sqrt(alpha_bar_t) * x_0}, variance \code{1 - alpha_bar_t}. No simulat
 A list with \code{x_t}, \code{mean}, \code{std},   \code{sampled}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+r <- forward_corrupt(x0 = rnorm(10), alpha_bar_t = 0.5); TRUE
+}

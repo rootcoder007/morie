@@ -31,3 +31,8 @@ dependency.
 Ontario Ministry of the Solicitor General data
 dictionaries accompanying the ARSAU CSV releases.
 }
+\examples{
+\donttest{
+dict <- morie_arsau_read_xlsx_dictionary(tempdir())
+}
+}
