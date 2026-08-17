@@ -18,3 +18,8 @@ Every reachable parameter value is positive semi-definite by construction; gradi
 A list with \code{covariance}, \code{rotation},   \code{scale} and \code{note}.
 }
 \keyword{internal}
+\examples{
+r <- morie_gsplat_covariance(scale = c(1, 2, 0.5),
+                             quaternion = c(1, 0, 0, 0))
+dim(r$covariance)
+}

@@ -19,3 +19,8 @@ morie_gtrf_laplacian(adj, n, normalized = TRUE)
 Square numeric matrix.
 }
 \keyword{internal}
+\examples{
+adj <- list(`0` = c(1, 3), `1` = c(0, 2), `2` = c(1, 3), `3` = c(0, 2))
+L <- morie_gtrf_laplacian(adj, n = 4)
+c(nrow(L), all(abs(diag(L) - 1) < 1e-9))
+}

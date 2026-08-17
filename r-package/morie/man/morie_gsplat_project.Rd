@@ -19,3 +19,10 @@ morie_gsplat_project(S, W, J)
 A list with \code{projected} (2x2) and \code{dim}.
 }
 \keyword{internal}
+\examples{
+r <- morie_gsplat_covariance(c(1, 2, 0.5), c(1, 0, 0, 0))
+W <- diag(3)
+J <- matrix(c(1, 0, 0, 0, 1, 0), nrow = 2, ncol = 3, byrow = TRUE)
+pr <- morie_gsplat_project(r$covariance, W, J)
+dim(pr$projected)
+}
