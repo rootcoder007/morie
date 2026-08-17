@@ -20,3 +20,12 @@ Part of the schN_native implementation; see the file header for the source it fo
 A list with \code{energy_error}, \code{force_error}, \code{energy_invariant}, \code{forces_equivariant}, \code{note}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+R <- lapply(1:4, function(i) rnorm(3))
+energy_fn <- function(pos) sum(vapply(pos, function(p) sum(p^2), 0))
+th <- pi / 4
+Q <- matrix(c(cos(th), -sin(th), 0, sin(th), cos(th), 0, 0, 0, 1), 3, 3)
+ie <- invariance_error(energy_fn, R, Q)
+is.list(ie) || is.numeric(ie)
+}
