@@ -32,7 +32,7 @@
 #' @return A numeric value.
 #' @export
 .tmldyn_logit <- function(p) {
-  q <- min(max(as.numeric(p), .tmldyn_EPS), 1 - .tmldyn_EPS)
+  q <- pmin(pmax(as.numeric(p), .tmldyn_EPS), 1 - .tmldyn_EPS)
   log(q / (1 - q))
 }
 
