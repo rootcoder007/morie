@@ -25,3 +25,7 @@ One of two values, depending on the branch taken.
 Base R only.
 }
 \keyword{internal}
+\examples{
+r <- tryCatch(mqtmpl_check_method("em"), error = function(e) "bad")
+is.null(r)
+}

@@ -30,3 +30,13 @@ The value of \code{out}, as built in the body.
 Base R only.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+pos <- c(0, 10, 20, 30, 40); m <- length(pos)
+G <- matrix(0L, 8, m); G[, 1] <- rbinom(8, 1, 0.5)
+for (j in 2:m) { r <- 0.5 * (1 - exp(-2 * (pos[j] - pos[j - 1]) / 100))
+  fl <- rbinom(8, 1, r); G[, j] <- ifelse(fl == 1, 1L - G[, j - 1], G[, j - 1]) }
+genos <- lapply(seq_len(8), function(i) G[i, ])
+s <- mqtmpl_sample_genotypes(genos, pos, grid = pos, n_imp = 8, seed = 1)
+is.list(s)
+}
