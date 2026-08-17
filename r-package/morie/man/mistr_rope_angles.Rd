@@ -27,3 +27,7 @@ A numeric value.
 Base R only.
 }
 \keyword{internal}
+\examples{
+th <- mistr_rope_angles(8)
+c(length(th), th[1] == 1)
+}

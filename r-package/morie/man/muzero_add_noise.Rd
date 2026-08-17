@@ -20,3 +20,8 @@ Part of the muzero_native implementation; see the file header for the source it 
 A numeric value.
 }
 \keyword{internal}
+\examples{
+p <- muzero_add_noise(c(0.25, 0.25, 0.25, 0.25), alpha = 0.3,
+                      frac = 0.25, seed = 1)
+c(length(p), abs(sum(p) - 1) < 1e-9)
+}

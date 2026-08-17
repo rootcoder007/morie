@@ -21,3 +21,10 @@ Part of the muzero_native implementation; see the file header for the source it 
 The value of \code{best_a}, as built in the body.
 }
 \keyword{internal}
+\examples{
+root <- muzero_Node()
+root$expand("s0", c(0.4, 0.3, 0.3), list(0, 1, 2))
+mm <- muzero_MinMax()
+a <- muzero_select(root, c("0", "1", "2"), mm, c1 = 1.25, c2 = 19652)
+a \%in\% c("0", "1", "2")
+}

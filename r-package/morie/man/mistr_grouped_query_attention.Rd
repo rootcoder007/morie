@@ -33,3 +33,12 @@ The value of \code{out}, as built in the body.
 Base R only.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+d <- 8; nh <- 4; nkv <- 2; hd <- 2
+Q <- matrix(rnorm(3 * d), 3, d)
+K <- matrix(rnorm(3 * nkv * hd), 3, nkv * hd)
+V <- matrix(rnorm(3 * nkv * hd), 3, nkv * hd)
+a <- mistr_grouped_query_attention(Q, K, V, nh, nkv)
+dim(a)
+}
