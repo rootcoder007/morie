@@ -29,3 +29,13 @@ Whitaker, H. J., Farrington, C. P., Spiessens, B. & Musonda, P.
 method", Statistics in Medicine 25, 1768-1797, doi:10.1002/sim.2302.
 }
 \keyword{internal}
+\examples{
+cases <- list(
+  list(start = 0, end = 365, exposure = 100, events = c(110, 250)),
+  list(start = 0, end = 365, exposure = 200, events = c(215)),
+  list(start = 0, end = 365, exposure = 50, events = c(60, 70)))
+fit <- morie_sccsno_fit(cases,
+                        risk_periods = list(c(-30, 0), c(0, 30)))
+r <- morie_sccsno_check_assumptions(fit, pre_index = 0)
+str(r, max.level = 1)
+}
