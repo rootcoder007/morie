@@ -19,3 +19,6 @@ Part of the tlhaltm_native implementation; see the file header for the source it
 A list with \code{folds}, \code{training}, \code{V}, \code{note}.
 }
 \keyword{internal}
+\examples{
+cv_tmle_split(50, V = 5, seed = 1L)
+}
