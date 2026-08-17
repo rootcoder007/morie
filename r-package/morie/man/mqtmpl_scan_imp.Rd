@@ -31,3 +31,15 @@ A list with \code{estimate}, \code{peak_lod}, \code{peak_position}, \code{positi
 Base R only.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+n <- 60; pos <- c(0, 10, 20, 30, 40); m <- length(pos)
+G <- matrix(0L, n, m); G[, 1] <- rbinom(n, 1, 0.5)
+for (j in 2:m) { r <- 0.5 * (1 - exp(-2 * (pos[j] - pos[j - 1]) / 100))
+  fl <- rbinom(n, 1, r); G[, j] <- ifelse(fl == 1, 1L - G[, j - 1], G[, j - 1]) }
+y <- 1.5 * G[, 3] + rnorm(n, 0, 0.7)
+markers <- lapply(seq_len(m), function(j) G[, j])
+sc <- mqtmpl_scan_imp(y, markers, pos, step = 5, n_imp = 8,
+                      error_rate = 0.01, seed = 1)
+is.list(sc)
+}

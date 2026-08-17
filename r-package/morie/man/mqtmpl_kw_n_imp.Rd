@@ -25,3 +25,6 @@ A numeric value.
 Base R only.
 }
 \keyword{internal}
+\examples{
+mqtmpl_kw_n_imp(list())
+}

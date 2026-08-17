@@ -28,3 +28,7 @@ A vector, from \code{c}.
 Base R only.
 }
 \keyword{internal}
+\examples{
+mqtmpl_genotype_probabilities(s_left = 0, s_right = 1,
+                             r_left = 0.1, r_right = 0.1)
+}
