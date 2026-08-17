@@ -23,3 +23,9 @@ Part of the node2v_native implementation; see the file header for the source it 
 A list with \code{estimate}, \code{walks}, \code{p}, \code{q}, \code{n_walks}, \code{length}, \code{method}, \code{note}.
 }
 \keyword{internal}
+\examples{
+adj <- list(`0` = c("1", "3"), `1` = c("0", "2"),
+            `2` = c("1", "3"), `3` = c("0", "2"))
+r <- morie_node2v(adj, num_walks = 5, length = 6, seed = 1)
+is.list(r)
+}

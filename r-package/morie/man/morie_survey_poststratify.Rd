@@ -25,3 +25,11 @@ stratum's share of \code{population_counts}.
 Delegates to \code{survey::postStratify()} when given a design; otherwise
 computes raw post-stratification factors in base R.
 }
+\examples{
+set.seed(1)
+df <- data.frame(stratum = sample(c("A", "B"), 40, replace = TRUE),
+                 w = rep(1, 40))
+pc <- c(A = 100, B = 150)
+r <- morie_survey_poststratify(df, "stratum", pc)
+is.list(r) || is.data.frame(r) || is.numeric(r)
+}
