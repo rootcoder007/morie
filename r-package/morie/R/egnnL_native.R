@@ -218,6 +218,7 @@ run_egnn <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
 #' @export
 morie_egnnL_equivariance_error <- function(H, X, phi_e, phi_x, phi_h, Q, g,
                                layers = 2, C = NULL) {
+  if (is.list(X) && !is.data.frame(X)) X <- do.call(rbind, X)
   X <- as.matrix(X)
   n <- nrow(X)
   d <- ncol(X)
