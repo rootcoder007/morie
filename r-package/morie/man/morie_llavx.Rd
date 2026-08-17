@@ -20,3 +20,7 @@ Part of the llavx_native implementation; see the file header for the source it f
 The value of \code{instruction_prompt}.
 }
 \keyword{internal}
+\examples{
+r <- morie_llavx(stage = 2)
+r$stage == 2L
+}
