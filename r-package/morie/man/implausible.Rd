@@ -14,3 +14,10 @@ Wilkinson implausibility rule, eq. (3)
 The value of \code{as.logical}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+design <- sobol_sequence(16, 1)
+values <- as.numeric(sin(4 * design[, 1]))
+fit <- gp_fit(design, values)
+is.logical(implausible(fit, 0.5, threshold = 1))
+}

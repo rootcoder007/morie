@@ -87,7 +87,7 @@ sobol_sequence <- function(n, dim, skip = 0L) {
       m <- as.integer(entry$m_init)
       for (k in (degree + 1L):bits) {
         val <- bitwXor(m[k - degree], bitwShiftL(m[k - degree], degree))
-        for (j in 1L:(degree - 1L)) {
+        for (j in seq_len(degree - 1L)) {
           if (bitwAnd(bitwShiftR(coeff, degree - 1L - j), 1L) == 1L)
             val <- bitwXor(val, bitwShiftL(m[k - j], j))
         }
@@ -96,7 +96,7 @@ sobol_sequence <- function(n, dim, skip = 0L) {
     }
     v[[d]] <- as.numeric(m) * (2 ^ (seq.int(bits, 1L, by = -1L) - 1L))
   }
-  out <- matrix(0, nrow = total, ncol = dim)
+  out <- matrix(0, nrow = n, ncol = dim)
   x <- integer(dim)
   denom <- 2 ^ bits
   for (i in 0L:(total - 1L)) {
