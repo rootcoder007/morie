@@ -18,3 +18,8 @@ Part of the meglt_native implementation; see the file header for the source it f
 A list with \code{mu_row}, \code{mu_col}, \code{mu}, \code{rank}, \code{note}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+r <- coherence(matrix(rnorm(20), 5, 4), rank = 2)
+str(r, max.level = 1)
+}

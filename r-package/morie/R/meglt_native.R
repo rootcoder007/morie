@@ -68,7 +68,8 @@ nuclear_norm <- function(A) {
 #' @export
 coherence <- function(A, rank = NULL) {
   M <- as.matrix(A); storage.mode(M) <- "double"
-  s_full <- svd(M, nu = nrow(M), nv = 0)
+  # nv = 0 discards V and t(NULL) errors; keep the right factor
+  s_full <- svd(M, nu = nrow(M), nv = ncol(M))
   U <- s_full$u; s <- s_full$d; Vt <- t(s_full$v)
   tol <- max(nrow(M), ncol(M)) * (if (length(s) > 0L) s[1] else 0) * 1e-12
   if (is.null(rank)) r <- sum(s > tol) else r <- as.integer(rank)
