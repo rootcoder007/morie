@@ -26,3 +26,8 @@ schema.
 Phase 3FFF3. Generic SODA2 fetch wrapper for arbitrary Calgary
 Socrata resources.
 }
+\examples{
+\donttest{
+df <- morie_datasets_calgary_socrata_by_id("848s-4m4z", limit = 100L)
+}
+}

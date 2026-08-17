@@ -20,3 +20,7 @@ Part of the sarimax_native implementation; see the file header for the source it
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+r <- neighbours(order = rnorm(10), seasonal_order = rnorm(10), constant = rnorm(10), s = rnorm(10)); TRUE
+}

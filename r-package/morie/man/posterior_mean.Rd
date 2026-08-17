@@ -21,3 +21,7 @@ posterior_mean(x_t, x0_hat, alpha_bar_t, alpha_bar_prev, beta_t)
 A list with \code{mean}, \code{coef_x0}, \code{coef_xt},   \code{degenerate}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+r <- posterior_mean(x_t = rnorm(10), x0_hat = rnorm(10), alpha_bar_t = 0.5, alpha_bar_prev = 0.5, beta_t = 0.5); TRUE
+}

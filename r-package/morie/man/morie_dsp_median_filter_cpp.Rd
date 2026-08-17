@@ -18,3 +18,7 @@ Part of the RcppExports implementation; see the file header for the source it fo
 The value of \code{.Call}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+r <- morie_dsp_median_filter_cpp(x = rnorm(10), kernel_size = 8L); TRUE
+}

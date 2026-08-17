@@ -30,3 +30,11 @@ table; callers are expected to merge in the City of Toronto Open
 Data NeighbourhoodCrimeRates per-ward population for per-capita
 rates.  Returns the un-normalised weighted sum + total count.
 }
+\examples{
+counts <- data.frame(
+  HOOD_158 = c("001", "001", "002", "002", "003", "003"),
+  category = c("Assault", "Homicide", "Assault", "Homicide",
+               "Assault", "Homicide"),
+  count = c(60, 2, 45, 1, 80, 3))
+morie_tps_csi_per_neighbourhood(counts, variant = "total")
+}

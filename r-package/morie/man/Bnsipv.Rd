@@ -39,3 +39,7 @@ already ships as \code{morie_bnd_lp} and is not duplicated here. The
 component bounds are equations (2.15) and (2.13) of Molinari, F.
 (2021), Handbook of Econometrics 7A (arXiv:2004.11751 pp. 18-19).
 }
+\examples{
+set.seed(1)
+r <- Bnsipv(y = rnorm(10), D = rbinom(10, 1, 0.5), Z = rnorm(10)); TRUE
+}
