@@ -50,3 +50,8 @@ Police stations and other TPS facilities.
 
 Tags: Police Facilities; TPS Facilities; Facilities
 }
+\examples{
+\donttest{
+morie_datasets_tps_facilities()
+}
+}

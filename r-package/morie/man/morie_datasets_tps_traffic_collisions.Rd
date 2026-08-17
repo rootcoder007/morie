@@ -50,3 +50,8 @@ Collision occurrences by occurrence date.
 
 Tags: Traffic; Collision; Traffic Collisions; Motor Vehicle Collisions; Toronto; TPS; Toronto Police
 }
+\examples{
+\donttest{
+morie_datasets_tps_traffic_collisions()
+}
+}

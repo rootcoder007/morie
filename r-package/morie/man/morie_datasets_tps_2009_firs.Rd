@@ -50,3 +50,8 @@ hub item_id \code{de8ba3b4899b48bc8fbf4421f4945ed6}.
 
 Tags: FIRS; Freedom of Information Requests
 }
+\examples{
+\donttest{
+morie_datasets_tps_2009_firs()
+}
+}

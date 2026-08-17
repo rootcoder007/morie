@@ -51,3 +51,8 @@ interactions.
 
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Regulated Interactions
 }
+\examples{
+\donttest{
+morie_datasets_tps_regulated_interactions()
+}
+}

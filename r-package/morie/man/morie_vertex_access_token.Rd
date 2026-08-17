@@ -15,3 +15,8 @@ Character bearer token.
 \description{
 Fetch and cache a Google Cloud access token via gcloud
 }
+\examples{
+\donttest{
+morie_vertex_access_token()
+}
+}

@@ -52,3 +52,8 @@ use of force.
 
 Tags: race; race based data; RBDC
 }
+\examples{
+\donttest{
+morie_datasets_tps_use_of_force_call_for_service_types()
+}
+}
