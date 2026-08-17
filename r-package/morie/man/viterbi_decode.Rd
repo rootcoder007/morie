@@ -20,3 +20,9 @@ A step of the benRea_native implementation. Called by \code{ner_decode}. See the
 A list with \code{path}, \code{score}.
 }
 \keyword{internal}
+\examples{
+labels <- bio_labels(list("PER"))
+emissions <- list(c(2, 0, 0), c(0, 2, 0), c(0, 0, 2), c(2, 0, 0))
+r <- viterbi_decode(emissions, labels)
+identical(unlist(r$path), c("O", "B-PER", "I-PER", "O"))
+}
