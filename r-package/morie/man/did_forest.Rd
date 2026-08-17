@@ -28,3 +28,14 @@ Heterogeneous ATT: DiD taken locally under forest weights
 A list mirroring the Python \code{RichResult} payload.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+n <- 60; Tt <- 5
+treated <- rep(c(0, 1), each = n / 2)
+X <- matrix(rnorm(n * 2), n, 2)
+Y <- matrix(0, n, Tt)
+for (i in seq_len(n)) Y[i, ] <- rnorm(1) + 0.2 * seq_len(Tt) +
+  treated[i] * (seq_len(Tt) >= 3) * 1.5 + rnorm(Tt, 0, 0.3)
+f <- did_forest(Y, treated, X, event_time = 3, n_trees = 20L, seed = 1L)
+is.numeric(f$att)
+}

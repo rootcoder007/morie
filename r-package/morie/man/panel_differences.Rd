@@ -18,3 +18,13 @@ The differenced outcome \code{Delta_i} of eq. (13.7) under the block-adoption de
 Numeric vector of length n.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+n <- 40; Tt <- 5
+treated <- rep(c(0, 1), each = n / 2)
+Y <- matrix(0, n, Tt)
+for (i in seq_len(n)) Y[i, ] <- rnorm(1) + 0.2 * seq_len(Tt) +
+  treated[i] * (seq_len(Tt) >= 3) * 1.5 + rnorm(Tt, 0, 0.3)
+d <- panel_differences(Y, event_time = 3)
+length(d) == n
+}
