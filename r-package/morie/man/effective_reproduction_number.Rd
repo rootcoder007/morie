@@ -25,3 +25,9 @@ Part of the ttrace_native implementation; see the file header for the source it 
 A list with \code{R_eff}, \code{R0}, \code{fraction_before_isolation}, \code{controlled_in_expectation}, \code{note}.
 }
 \keyword{internal}
+\examples{
+r <- effective_reproduction_number(R0 = 2.5, si_mean = 5, si_sd = 1.9,
+                                   delay_mean = 2, delay_sd = 1,
+                                   trace_prob = 0.7, draws = 2000)
+str(r, max.level = 1)
+}
