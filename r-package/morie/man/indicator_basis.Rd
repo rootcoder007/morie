@@ -19,3 +19,9 @@ Part of the tlhal_native implementation; see the file header for the source it f
 A list with \code{design}, \code{columns}, \code{n_basis}, \code{max_order}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+X <- matrix(runif(20), 10, 2)
+b <- indicator_basis(X, max_order = 1L)
+str(b, max.level = 1)
+}
