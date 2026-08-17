@@ -19,3 +19,8 @@ Part of the node2v_native implementation; see the file header for the source it 
 A numeric value.
 }
 \keyword{internal}
+\examples{
+adj <- list(`0` = c("1", "3"), `1` = c("0", "2"),
+            `2` = c("1", "3"), `3` = c("0", "2"))
+c(node2v_dist(adj, "0", "0"), node2v_dist(adj, "0", "1"))
+}
