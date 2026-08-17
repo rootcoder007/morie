@@ -17,3 +17,9 @@ Part of the nrfrad_native implementation; see the file header for the source it 
 Nothing; this branch always raises.
 }
 \keyword{internal}
+\examples{
+r <- morie_nrfrad(list(op = "ray_points", origin = c(0, 0, 0),
+                       direction = c(0, 0, 1), t_near = 1, t_far = 5,
+                       n_samples = 8, seed = 1))
+is.list(r)
+}
