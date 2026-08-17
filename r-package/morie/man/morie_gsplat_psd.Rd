@@ -18,3 +18,8 @@ Computes the eigenvalues of a symmetric matrix and tests the smallest against a 
 A list with \code{eigenvalues}, \code{min_eigenvalue} and   \code{psd}.
 }
 \keyword{internal}
+\examples{
+r <- morie_gsplat_covariance(c(1, 2, 0.5), c(0.9, 0.1, 0.2, 0.3))
+p <- morie_gsplat_psd(r$covariance)
+p$psd
+}

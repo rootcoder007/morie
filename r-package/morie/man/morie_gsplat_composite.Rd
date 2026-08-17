@@ -19,3 +19,9 @@ Same image formation as volume rendering, which is why the two representations a
 A list with \code{colour}, \code{transmittance},   \code{coverage} and \code{note}.
 }
 \keyword{internal}
+\examples{
+colours <- matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1), nrow = 3, byrow = TRUE)
+alphas <- c(0.5, 0.5, 0.5)
+comp <- morie_gsplat_composite(colours, alphas, depths = c(0.1, 0.2, 0.3))
+c(length(comp$colour), comp$coverage > 0.8)
+}
