@@ -19,3 +19,6 @@ Part of the timesfm_native implementation; see the file header for the source it
 A list with \code{steps_asymmetric}, \code{steps_symmetric}, \code{steps_direct}, \code{input_patch_len}, \code{output_patch_len}, \code{horizon}, \code{speedup_vs_symmetric}, \code{note}.
 }
 \keyword{internal}
+\examples{
+morie_timesfm_horizon_plan(24, 32, 8)
+}
