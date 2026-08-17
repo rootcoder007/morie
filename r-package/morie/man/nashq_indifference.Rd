@@ -18,3 +18,7 @@ Part of the nashq_native implementation; see the file header for the source it f
 The value of \code{[}.
 }
 \keyword{internal}
+\examples{
+A <- matrix(c(2, 0, 0, 1), 2, 2, byrow = TRUE)
+nashq_indifference(A, 2)
+}

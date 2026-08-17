@@ -19,3 +19,7 @@ Part of the nashq_native implementation; see the file header for the source it f
 The value of \code{tot}, as built in the body.
 }
 \keyword{internal}
+\examples{
+A <- matrix(c(2, 0, 0, 1), 2, 2, byrow = TRUE)
+nashq_payoff(A, c(0.5, 0.5), c(0.5, 0.5))
+}

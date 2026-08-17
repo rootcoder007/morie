@@ -72,7 +72,7 @@ chain_entry <- function(previous_hash, entry, key = NULL) {
   p <- .sechsh_as_bytes(previous_hash)
   e <- .sechsh_as_bytes(entry)
   if (is.null(key)) {
-    return(list(hash = sha256(c(p, e)), keyed = FALSE))
+    return(list(hash = .morie_sha256_impl(c(p, e)), keyed = FALSE))
   }
   list(hash = .morie_hmac_sha256_impl(key, c(p, e)), keyed = TRUE,
        note = paste("forward rewriting now needs the KEY as well ",
@@ -130,13 +130,13 @@ verify_chain <- function(entries, hashes, key = NULL,
 #' @export
 merkle_root <- function(leaves) {
   L <- lapply(leaves, .sechsh_as_bytes)
-  if (length(L) == 0L) return(sha256(raw(0)))
-  if (length(L) == 1L) return(sha256(c(.LEAF, L[[1L]])))
+  if (length(L) == 0L) return(.morie_sha256_impl(raw(0)))
+  if (length(L) == 1L) return(.morie_sha256_impl(c(.LEAF, L[[1L]])))
   k <- 1L
   while (k * 2L < length(L)) k <- k * 2L
   c1 <- do.call(merkle_root, list(L[seq_len(k)]))
   c2 <- do.call(merkle_root, list(L[(k + 1L):length(L)]))
-  sha256(c(.NODE, c1, c2))
+  .morie_sha256_impl(c(.NODE, c1, c2))
 }
 
 #' Build an inclusion proof (audit path) for the given leaf
@@ -175,7 +175,7 @@ verify_inclusion <- function(leaf, index, size, path, root) {
   if (m < 0L || m >= n) {
     stop("sechsh: index ", m, " is outside a log of ", n)
   }
-  node <- sha256(c(.LEAF, .sechsh_as_bytes(leaf)))
+  node <- .morie_sha256_impl(c(.LEAF, .sechsh_as_bytes(leaf)))
   # The Python collects the descent top-down, then folds bottom-up.
   lo <- 0L; hi <- n
   steps <- list(); used <- 0L
@@ -199,9 +199,9 @@ verify_inclusion <- function(leaf, index, size, path, root) {
   for (j in rev(seq_along(steps))) {
     st <- steps[[j]]
     if (st$on_right) {
-      node <- sha256(c(.NODE, node, st$sib))
+      node <- .morie_sha256_impl(c(.NODE, node, st$sib))
     } else {
-      node <- sha256(c(.NODE, st$sib, node))
+      node <- .morie_sha256_impl(c(.NODE, st$sib, node))
     }
   }
   list(root = node, root_hex = .sechsh_hexlify(node),

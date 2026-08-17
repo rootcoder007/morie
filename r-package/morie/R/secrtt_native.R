@@ -31,6 +31,26 @@
 
 #' Derive a distinct DEK per record
 #' @export
+.secrtt_hex <- function(bs) paste(sprintf("%02x", as.integer(bs)),
+                                 collapse = "")
+
+.secrtt_aead_encrypt <- function(key, nonce, plaintext, aad = raw(0)) {
+  r <- morie_crypto_chacha20_poly1305_encrypt(as.raw(key), as.raw(nonce),
+                                              as.raw(plaintext), as.raw(aad))
+  list(ciphertext = r$ct, tag = r$tag,
+       ciphertext_hex = .secrtt_hex(r$ct))
+}
+
+.secrtt_aead_decrypt <- function(key, nonce, ciphertext, tag,
+                                 aad = raw(0)) {
+  pt <- tryCatch(
+    morie_crypto_chacha20_poly1305_decrypt(as.raw(key), as.raw(nonce),
+      c(as.raw(ciphertext), as.raw(tag)), as.raw(aad)),
+    error = function(e) NULL)
+  list(valid = !is.null(pt),
+       plaintext = if (is.null(pt)) raw(0) else pt)
+}
+
 generate_dek <- function(master_seed, record_id, salt = NULL) {
   r <- hkdf(master_seed, salt,
             c(charToRaw("dek:"), .secrtt_as_bytes(record_id)), 32L)
@@ -49,7 +69,7 @@ wrap_dek <- function(dek, kek, nonce, kek_id = "kek-1",
     stop("secrtt: a DEK must be 32 bytes, got ", length(d))
   }
   bound <- c(.secrtt_as_bytes(aad), .secrtt_as_bytes(kek_id))
-  r <- aead_encrypt(kek, nonce, d, bound)
+  r <- .secrtt_aead_encrypt(kek, nonce, d, bound)
   list(wrapped = r$ciphertext, tag = r$tag,
        nonce = .secrtt_as_bytes(nonce), kek_id = kek_id,
        wrapped_hex = r$ciphertext_hex,
@@ -60,7 +80,7 @@ wrap_dek <- function(dek, kek, nonce, kek_id = "kek-1",
 #' Unwrap a DEK, optionally logging the call
 #' @export
 unwrap_dek <- function(wrapped, kek, audit_log = NULL) {
-  r <- aead_decrypt(kek, wrapped$nonce, wrapped$wrapped, wrapped$tag,
+  r <- .secrtt_aead_decrypt(kek, wrapped$nonce, wrapped$wrapped, wrapped$tag,
                     c(.secrtt_as_bytes(wrapped$aad %||% raw(0)),
                       .secrtt_as_bytes(wrapped$kek_id)))
   if (!is.null(audit_log)) {
@@ -80,7 +100,7 @@ unwrap_dek <- function(wrapped, kek, audit_log = NULL) {
 #' Seal a record under its DEK
 #' @export
 seal_record <- function(plaintext, dek, nonce, aad = raw(0)) {
-  r <- aead_encrypt(dek, nonce, plaintext, aad)
+  r <- .secrtt_aead_encrypt(dek, nonce, plaintext, aad)
   list(ciphertext = r$ciphertext, tag = r$tag,
        nonce = .secrtt_as_bytes(nonce), aad = .secrtt_as_bytes(aad))
 }
@@ -88,7 +108,7 @@ seal_record <- function(plaintext, dek, nonce, aad = raw(0)) {
 #' Open a sealed record
 #' @export
 open_record <- function(sealed, dek) {
-  r <- aead_decrypt(dek, sealed$nonce, sealed$ciphertext,
+  r <- .secrtt_aead_decrypt(dek, sealed$nonce, sealed$ciphertext,
                     sealed$tag, .secrtt_as_bytes(sealed$aad %||% raw(0)))
   if (!r$valid) {
     stop("secrtt: the record failed authentication")

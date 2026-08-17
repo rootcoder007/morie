@@ -14,3 +14,8 @@ Build an inclusion proof (audit path) for the given leaf
 A list with \code{path}, \code{path_hex}, \code{length}, \code{index}, \code{size}, \code{note}.
 }
 \keyword{internal}
+\examples{
+leaves <- list("a", "b", "c", "d", "e")
+pr <- inclusion_proof(leaves, index = 2)
+c(pr$index, pr$size, pr$length)
+}

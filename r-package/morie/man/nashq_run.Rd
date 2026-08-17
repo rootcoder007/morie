@@ -31,3 +31,13 @@ Part of the nashq_native implementation; see the file header for the source it f
 A list with \code{estimate}, \code{q}, \code{policy}, \code{nash_values}, \code{stage_game_types}, \code{returns}, \code{mean_return_last}, \code{selection}, \code{method}.
 }
 \keyword{internal}
+\examples{
+A <- matrix(c(2, 0, 0, 1), 2, 2, byrow = TRUE)
+B <- matrix(c(1, 0, 0, 2), 2, 2, byrow = TRUE)
+res <- nashq_run(list("s"), list(0:1, 0:1),
+                 function(s, a1, a2) "s",
+                 function(s, a1, a2, s1) c(A[a1 + 1, a2 + 1],
+                                           B[a1 + 1, a2 + 1]),
+                 episodes = 20, horizon = 5, seed = 1)
+res$selection
+}

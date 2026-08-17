@@ -14,3 +14,9 @@ Verify a chain, returning the FIRST bad index (not just a boolean)
 A list with \code{estimate}, \code{intact}, \code{first_bad}, \code{verified_through}, \code{n}, \code{method}, \code{note}.
 }
 \keyword{internal}
+\examples{
+ch <- build_chain(list("alpha", "beta", "gamma"))
+ok <- verify_chain(list("alpha", "beta", "gamma"), ch$hashes)
+bad <- verify_chain(list("alpha", "beta", "GAMMA"), ch$hashes)
+c(ok$intact, bad$intact, bad$first_bad)
+}
