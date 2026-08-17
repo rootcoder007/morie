@@ -20,3 +20,11 @@ Part of the muzero_native implementation; see the file header for the source it 
 The value of \code{for}.
 }
 \keyword{internal}
+\examples{
+root <- muzero_Node()
+root$expand("s", c(0.5, 0.5), list(0, 1))
+child <- root$children[["0"]]
+mm <- muzero_MinMax()
+muzero_backup(list(root, child), value = 1.0, gamma = 0.99, mm)
+c(root$visits, child$visits)
+}
