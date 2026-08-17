@@ -26,3 +26,15 @@ Part of the memb_native implementation; see the file header for the source it fo
 Nothing; the function is called for its effect.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+target <- function(X) {
+  z <- cbind(rowSums(X), -rowSums(X))
+  p <- exp(z - apply(z, 1, max))
+  p / rowSums(p)
+}
+r <- synthesize(target, c = 0L, n_features = 3,
+                feature_values = list(c(-1, 0, 1), c(-1, 0, 1),
+                                      c(-1, 0, 1)))
+str(r, max.level = 1)
+}

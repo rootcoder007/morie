@@ -12,7 +12,9 @@
 #' @param n Numeric; combined arithmetically in the body.
 #' @return The value of \code{floor}.
 #' @export
-.ghc_unif_int <- function(e, n) floor(.ghc_unif(e, n) * n)
+# ONE integer in [0, n): the old body drew n uniforms and handed a
+# whole vector to every scalar call site
+.ghc_unif_int <- function(e, n) as.integer(floor(.ghc_unif(e, 1L) * n)) %% as.integer(n)
 
 #' .memb_rng
 #'
@@ -210,8 +212,9 @@ synthesize <- function(target_predict, c, n_features, feature_values = NULL,
       if (!(p %in% picks)) picks <- c(picks, p)
     }
     for (j in picks) {
-      choices <- vals[[j]][vals[[j]] != x[j + 1L]]
-      if (length(choices) == 0L) choices <- vals[[j]]
+      # picks are 0-based feature ids; vals is a 1-based R list
+      choices <- vals[[j + 1L]][vals[[j + 1L]] != x[j + 1L]]
+      if (length(choices) == 0L) choices <- vals[[j + 1L]]
       x[j + 1L] <- choices[.ghc_unif_int(e, length(choices)) + 1L]
     }
     x
