@@ -17,3 +17,8 @@ A step of the benRea_native implementation. No other function in the package cal
 The value of \code{ner_decode}.
 }
 \keyword{internal}
+\examples{
+emissions <- list(c(2, 0, 0), c(0, 2, 0), c(0, 0, 2))
+r <- morie_benRea(emissions, types = list("PER"))
+r$path[[2]]
+}

@@ -21,3 +21,8 @@ A step of the benRea_native implementation. Called by \code{morie_benRea}. See t
 The value of \code{payload}, as built in the body.
 }
 \keyword{internal}
+\examples{
+emissions <- list(c(2, 0, 0), c(0, 2, 0), c(0, 0, 2), c(2, 0, 0))
+r <- ner_decode(emissions, types = list("PER"), decoder = "viterbi")
+c(r$n_spans, r$valid)
+}

@@ -17,3 +17,8 @@ A step of the benRea_native implementation. Called by \code{viterbi_decode}. See
 The value of \code{T}, as built in the body.
 }
 \keyword{internal}
+\examples{
+labels <- bio_labels(list("PER", "LOC"))
+T <- valid_transitions(labels)
+c(nrow(T), T[1, 3])
+}

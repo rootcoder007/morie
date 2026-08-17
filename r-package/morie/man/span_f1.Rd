@@ -18,3 +18,8 @@ A step of the benRea_native implementation. Called by \code{ner_decode}. See the
 A list with \code{precision}, \code{recall}, \code{f1}, \code{true_positives}, \code{n_pred}, \code{n_gold}.
 }
 \keyword{internal}
+\examples{
+r <- span_f1(c("O", "B-PER", "I-PER", "O"),
+             c("O", "B-PER", "I-PER", "O"))
+r$f1
+}
