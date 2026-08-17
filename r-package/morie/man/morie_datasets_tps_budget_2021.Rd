@@ -50,3 +50,8 @@ Toronto Police Service dataset.
 
 Tags: Budget; Toronto Police Service; TPS
 }
+\examples{
+\donttest{
+morie_datasets_tps_budget_2021()
+}
+}

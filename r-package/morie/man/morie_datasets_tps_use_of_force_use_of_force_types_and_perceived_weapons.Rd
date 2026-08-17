@@ -52,3 +52,8 @@ officers perceived weapons were carried by people involved.
 
 Tags: race; race based data; rbdc
 }
+\examples{
+\donttest{
+morie_datasets_tps_use_of_force_use_of_force_types_and_perceived_weapons()
+}
+}
