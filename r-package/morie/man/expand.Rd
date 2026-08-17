@@ -14,3 +14,13 @@ HKDF Expand: counter-mode OKM
 A list with \code{okm}, \code{blocks}, \code{length}.
 }
 \keyword{internal}
+\examples{
+ikm <- as.raw(rep(0x0b, 22))
+salt <- as.raw(0:12)
+info <- as.raw(0xf0:0xf9)
+prk <- extract(ikm, salt)$prk
+r <- expand(prk, info, 42L)
+okm_hex <- paste(sprintf("\%02x", as.integer(r$okm)), collapse = "")
+okm_hex == paste0("3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4c5db0",
+                  "2d56ecc4c5bf34007208d5b887185865")
+}
