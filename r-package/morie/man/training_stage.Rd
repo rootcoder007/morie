@@ -17,3 +17,7 @@ Part of the llavx_native implementation; see the file header for the source it f
 A list, whose contents depend on the branch taken; across the branches its names are \code{stage}, \code{trainable}, \code{frozen}, \code{data}, \code{note}.
 }
 \keyword{internal}
+\examples{
+s <- training_stage(1)
+s$stage == 1L
+}
