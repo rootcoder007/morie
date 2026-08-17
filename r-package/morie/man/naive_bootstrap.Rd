@@ -20,3 +20,9 @@ Part of the tlboot_native implementation; see the file header for the source it 
 The value of \code{morie_tlboot}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+d <- rnorm(50, 1)
+r <- naive_bootstrap(d, estimator = function(s) mean(unlist(s)), B = 200L)
+str(r, max.level = 1)
+}

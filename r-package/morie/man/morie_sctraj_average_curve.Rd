@@ -19,3 +19,9 @@ Part of the sctraj_native implementation; see the file header for the source it 
 The value of \code{out}, as built in the body.
 }
 \keyword{internal}
+\examples{
+c1 <- cbind(seq(0, 1, length.out = 20), seq(0, 2, length.out = 20))
+c2 <- cbind(seq(0, 1, length.out = 20), seq(0, 2.2, length.out = 20))
+r <- morie_sctraj_average_curve(list(c1, c2), n_points = 10)
+dim(r)
+}

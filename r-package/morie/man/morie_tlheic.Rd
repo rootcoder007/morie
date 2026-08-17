@@ -25,3 +25,10 @@ Part of the tlheic_native implementation; see the file header for the source it 
 The value of \code{estimate_eic}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+B <- cbind(1, matrix(rnorm(40), 20, 2))
+psi <- function(w) sum(w * B[, 2])
+r <- morie_tlheic(psi_of_P = psi, basis = B, mode = "estimate")
+str(r, max.level = 1)
+}

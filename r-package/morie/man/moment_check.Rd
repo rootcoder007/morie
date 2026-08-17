@@ -20,3 +20,9 @@ Part of the tlboot_native implementation; see the file header for the source it 
 A list with \code{mean}, \code{se}, \code{mean_error}, \code{se_ratio}, \code{first_two_moments_ok}, \code{note}.
 }
 \keyword{internal}
+\examples{
+set.seed(3)
+reps <- rnorm(500, 2, 0.3)
+r <- moment_check(reps, target_mean = 2, target_se = 0.3)
+str(r, max.level = 1)
+}
