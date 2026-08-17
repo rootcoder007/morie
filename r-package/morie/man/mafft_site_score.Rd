@@ -23,3 +23,10 @@ Part of the mafft_native implementation; see the file header for the source it f
 The value of \code{tot}, as built in the body.
 }
 \keyword{internal}
+\examples{
+M <- list(A_A = 1, C_C = 1, G_G = 1, T_T = 1)
+ga <- c("ACGT")
+gb <- c("ACGT")
+s <- mafft_site_score(M, ga, gb, wa = 1, wb = 1, i = 1, j = 1)
+is.numeric(s)
+}
