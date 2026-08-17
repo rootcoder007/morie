@@ -25,3 +25,9 @@ Monte Carlo estimate of the GABC likelihood of Wilkinson (2014) eq. (1) and the 
 List \code{log_lik, nugget_variance}.
 }
 \keyword{internal}
+\examples{
+sim <- function(theta, e) rnorm(1, mean = theta[1])
+ll <- gabc_log_likelihood(sim, obs = 0.5, theta = 0.4, n_sim = 30L,
+                          epsilon = 1, seed = 1L)
+is.numeric(ll$log_likelihood)
+}

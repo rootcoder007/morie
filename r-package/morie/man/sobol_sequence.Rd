@@ -19,3 +19,7 @@ The first \code{n} points of the Sobol sequence in the requested dimension. The 
 Numeric matrix with \code{n} rows and \code{dim} columns.
 }
 \keyword{internal}
+\examples{
+s <- sobol_sequence(8, 2)
+c(nrow(s), ncol(s), all(s >= 0 & s <= 1))
+}

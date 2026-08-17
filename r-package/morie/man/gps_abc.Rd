@@ -14,3 +14,10 @@ GPS-ABC adaptive sampler, Meeds & Welling Algorithm 2
 The value of \code{.gp_mw_sampler}.
 }
 \keyword{internal}
+\examples{
+sim <- function(theta, e) rnorm(1, mean = theta[1])
+log_prior <- function(theta) sum(dnorm(theta, 0, 2, log = TRUE))
+r <- gps_abc(sim, obs = 0.3, log_prior, theta0 = 0, n_iter = 30L,
+             n_sim = 8L, epsilon = 1, seed = 1L)
+is.list(r)
+}
