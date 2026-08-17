@@ -22,3 +22,15 @@ Attention, residual, normalisation, feed-forward, residual, normalisation, with 
 New node feature matrix.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+adj <- list(`0` = c(1, 3), `1` = c(0, 2), `2` = c(1, 3), `3` = c(0, 2))
+H <- matrix(rnorm(12), 4, 3)
+WQ <- matrix(rnorm(6, 0, 0.3), 2, 3)
+WK <- matrix(rnorm(6, 0, 0.3), 2, 3)
+WV <- matrix(rnorm(9, 0, 0.3), 3, 3)
+W1 <- matrix(rnorm(12, 0, 0.3), 4, 3)
+W2 <- matrix(rnorm(12, 0, 0.3), 3, 4)
+out <- morie_gtrf_layer(H, adj, WQ, WK, WV, W1, W2, norm = "layer")
+dim(out)
+}

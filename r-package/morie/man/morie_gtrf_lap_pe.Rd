@@ -20,3 +20,8 @@ The smallest non-trivial eigenvectors of the Laplacian: on a path graph these ar
 A list with \code{encoding} (n x dim), \code{eigenvalues}   and the sign caveat.
 }
 \keyword{internal}
+\examples{
+adj <- list(`0` = c(1, 3), `1` = c(0, 2), `2` = c(1, 3), `3` = c(0, 2))
+pe <- morie_gtrf_lap_pe(adj, n = 4, dim = 2L)
+dim(pe$encoding)
+}

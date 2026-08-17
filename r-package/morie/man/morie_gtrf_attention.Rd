@@ -20,3 +20,13 @@ Standard scaled dot-product softmax attention, but only over the neighbours: den
 A list with \code{output} and \code{note}.
 }
 \keyword{internal}
+\examples{
+set.seed(1)
+adj <- list(`0` = c(1, 3), `1` = c(0, 2), `2` = c(1, 3), `3` = c(0, 2))
+H <- matrix(rnorm(12), 4, 3)
+WQ <- matrix(rnorm(6, 0, 0.3), 2, 3)
+WK <- matrix(rnorm(6, 0, 0.3), 2, 3)
+WV <- matrix(rnorm(9, 0, 0.3), 3, 3)
+a <- morie_gtrf_attention(H, adj, WQ, WK, WV)
+dim(a$output)
+}
