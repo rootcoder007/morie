@@ -883,6 +883,7 @@ abc_gp_emulator <- function(sim, obs, X_grid = NULL, kernel = "sqexp",
 
 #' Compact alias for abc_gp_emulator, per ledger/NAMING.md
 #' @export
+#' @noRd
 abcgpemulator <- abc_gp_emulator
 
 # house entry point: the package exports one morie_<module>

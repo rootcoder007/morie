@@ -300,10 +300,12 @@ prophet_predict <- function(fit, t_new, seasonalities = NULL,
 
 #' Compact alias per ledger/NAMING.md
 #' @export
+#' @noRd
 prophetfit <- morie_prphet
 
 #' Public alias resolved by fn/_lazy_map.json
 #' @export
+#' @noRd
 prophet <- morie_prphet
 
 #' @export
