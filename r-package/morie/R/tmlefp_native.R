@@ -29,7 +29,7 @@ morie_alpha_from_gamma <- function(gamma) {
 
 #' Theorem 5.2: the variance-minimising trimming threshold
 #'
-#' Solves gamma = 2 E[k(X) | k(X) < gamma] for gamma by fixed point
+#' Solves gamma = 2 E\[k(X) | k(X) < gamma\] for gamma by fixed point
 #' iteration. Homoskedastic unless conditional variances are supplied.
 #'
 #' @param pscore Numeric vector of propensity scores in (0, 1).

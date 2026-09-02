@@ -7,7 +7,7 @@
 #' y_i = alpha + integral beta(t) x_i(t) dt + eps_i.
 #'
 #' Expanding beta(t) = sum_k b_k phi_k(t) makes the integral linear in b,
-#' integral beta x_i = sum_k b_k J[i, k] with J[i, k] = integral phi_k x_i, so
+#' integral beta x_i = sum_k b_k J\[i, k\] with J\[i, k\] = integral phi_k x_i, so
 #' the model is the ordinary linear regression of y on the design \[1, J\].
 #' That basis-expansion reduction is what makes the problem finite
 #' dimensional, and is the same device Reiss and Ogden use before choosing the

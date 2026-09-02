@@ -11,7 +11,7 @@ Tmlecat(Y, A, Q, G, ref = 1, gbound = 0.025, level = 0.95)
 
 \item{A}{One-based treatment level of each observation.}
 
-\item{Q}{Initial E\link{Y | A = a, W}, one column per level.}
+\item{Q}{Initial E[Y | A = a, W], one column per level.}
 
 \item{G}{Initial P(A = a | W), rows summing to 1.}
 

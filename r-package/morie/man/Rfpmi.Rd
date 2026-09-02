@@ -44,7 +44,7 @@ defines the out-of-bag set: "Each tree makes use of around two-thirds
 are referred to as Out-Of-Bag (OOB)."
 
 Implemented exactly as that prose reads:
-Imp(X_j) = mean_b [ PE_b(X_j permuted) - PE_b ] / sd_b \link{ same }, with PE_b
+Imp(X_j) = mean_b [ PE_b(X_j permuted) - PE_b ] / sd_b [ same ], with PE_b
 the mean squared error over tree b's own out-of-bag rows.  The normalisation
 by the standard deviation across trees is the book's, and is what makes the
 result a z-like score rather than a raw error difference; pass

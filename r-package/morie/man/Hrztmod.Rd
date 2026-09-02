@@ -36,7 +36,7 @@ U independent of X with unknown CDF F.
 }
 \details{
 With Z = X'beta and G(. | z) the CDF of Y given Z = z, the model
-implies G(y | z) = F\link{T(y) - z}, hence G_y = T' F' and G_z = -F', so
+implies G(y | z) = F[T(y) - z], hence G_y = T' F' and G_z = -F', so
 T'(y) = -G_y(y | z) / G_z(y | z) and
 
 T(y) = - int_{y0}^{y} G_y(v|z) / G_z(v|z) dv               (6.57)

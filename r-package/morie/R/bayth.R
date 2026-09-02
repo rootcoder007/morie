@@ -10,7 +10,7 @@
 #'   f(theta|y) = f(y, theta)/f(y) = f(theta) f(y|theta) / f(y)
 #'              proportional to f(theta) L(theta; y),
 #'
-#' "where f(y) = integral f(y|theta) f(theta) d theta = E_theta[f(y|theta)] is
+#' "where f(y) = integral f(y|theta) f(theta) d theta = E_theta\[f(y|theta)\] is
 #' the marginal distribution".  It adds that "once a sample of the posterior
 #' distribution is obtained, estimation of a parameter is often found by
 #' averaging the sample values", which is the posterior mean reported here.

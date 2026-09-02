@@ -36,7 +36,7 @@
 #'
 #' DETERMINISM.  Nothing is sampled.  Every step is taken at the exact mean of
 #' its own full conditional -- the normal steps at the means written above, and
-#' the two inverse-Wishart steps at E[IW(v, S)] = S/(v - n_T - 1), the mean the
+#' the two inverse-Wishart steps at E\[IW(v, S)\] = S/(v - n_T - 1), the mean the
 #' book's own exponent |Sigma|^{-(v+n_T+1)/2} implies.  Iterating those
 #' conditional means is the EM fixed point of the same sampler, so both arms
 #' land on identical numbers rather than on the same posterior.

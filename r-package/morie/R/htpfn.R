@@ -22,9 +22,9 @@
 #'   (14.5) sigma2hat = (1/n) (y - Xstar betahat)' (y - Xstar betahat)
 #'   (14.6) x_i(t) = sum_{o=1}^{L2} c_io psi_o(t)
 #'   (14.7) chat_i = (Psi' Psi)^-1 Psi' x_i(t)            <- p.581 and p.583
-#'   (14.8) Psi is m-by-L2 with Psi[j, o] = psi_o(t_j)
+#'   (14.8) Psi is m-by-L2 with Psi\[j, o\] = psi_o(t_j)
 #'   (14.9) Xstar = \[1n X\], X = Xtilde Psi (Psi'Psi)^-1 Q',
-#'          Q[l, o] = int_0^T phi_l(t) psi_o(t) dt
+#'          Q\[l, o\] = int_0^T phi_l(t) psi_o(t) dt
 #'   p.582  BIC = -2 loglik(betahat, sigma2hat; y) + (L1 + 1) log(n)
 #'   p.583  CV1(L2) = sum_j (x(t_j) - xhat_j(t_j))^2, xhat_j the
 #'          leave-point-j-out representation with L2 bases

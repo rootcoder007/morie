@@ -36,8 +36,8 @@ in applications" (p. 178).  The basis is KNOWN and only coefficients
 are estimated.
 }
 \details{
-With rho(w, h) = E\link{Y - h(X) | W = w} the model implies rho(w, g) = 0,
-so g minimises E\link{rho(W, h)}^2 (5.80).  Writing the conditional-mean
+With rho(w, h) = E[Y - h(X) | W = w] the model implies rho(w, g) = 0,
+so g minimises E[rho(W, h)]^2 (5.80).  Writing the conditional-mean
 operator as m = A g (5.84) and expanding both sides in the basis
 gives the finite linear system
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tmldyn_native.R
 \name{.fit_q2}
 \alias{.fit_q2}
-\title{Fit Q2 (E\link{Y | Abar(1), Lbar(1)}) on the rows in idx, with full}
+\title{Fit Q2 (E[Y | Abar(1), Lbar(1)]) on the rows in idx, with full}
 \usage{
 .fit_q2(ys, L0, A0, L1, A1, idx, ridge)
 }

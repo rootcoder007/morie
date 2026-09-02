@@ -18,8 +18,8 @@
 #'
 #' DECODER. p(x|z) = N(x; W z + b, s^2 I), the Gaussian decoder of
 #' Appendix C.2, for which the reconstruction term is also closed form:
-#' E_q[log p(x|z)] = -(1/2) sum_k \[log(2 pi s^2) + ((x_k - (W mu + b)_k)^2
-#' + sum_j sigma_j^2 W[j,k\]^2)/s^2], returned as \code{recon_analytic}.
+#' E_q\[log p(x|z)\] = -(1/2) sum_k \[log(2 pi s^2) + ((x_k - (W mu + b)_k)^2
+#' + sum_j sigma_j^2 W\[j,k\\]^2)/s^2], returned as \code{recon_analytic}.
 #' The Monte Carlo estimate must approach it as \code{n_samples} grows --
 #' an anchor that does not run through the other language arm.
 #'

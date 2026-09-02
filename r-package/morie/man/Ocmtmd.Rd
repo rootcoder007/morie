@@ -37,7 +37,7 @@ overlap there is no data at some treatment levels and any weight is
 an extrapolation. Crump et al. give the subsample worth analysing,
 \code{alpha <= e(x) <= 1 - alpha}, with \code{alpha} the smallest
 value satisfying \code{1 / (alpha (1 - alpha)) <=
-2 E[1 / (e (1 - e)); alpha <= e <= 1 - alpha]}, solved here by a
+2 E\[1 / (e (1 - e)); alpha <= e <= 1 - alpha\]}, solved here by a
 deterministic ascending scan over the observed propensities. The
 propensity is fitted by logistic regression of \code{A} on \code{H}.
 }

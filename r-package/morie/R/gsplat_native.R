@@ -98,7 +98,7 @@ morie_gsplat_project <- function(S, W, J) {
 #' representations are interchangeable at the pixel.
 #'
 #' @param colours Matrix of per-Gaussian colours (n x 3 or n x d).
-#' @param alphas Numeric vector of opacities in [0, 1].
+#' @param alphas Numeric vector of opacities in \[0, 1\].
 #' @param depths Optional depth per Gaussian; sorts back-to-front.
 #' @return A list with \code{colour}, \code{transmittance},
 #'   \code{coverage} and \code{note}.

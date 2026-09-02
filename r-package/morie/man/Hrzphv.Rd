@@ -74,7 +74,7 @@ step 4' asks for "Z_nj exp(-X_j b)" in place of Z_nj, which under the
 printed reading would be exp(-Z_nj exp(-X_j b)).  The consistent
 reading, and the one used here, is the sum of Z_nj exp(-X_j b_n) over
 the risk set.
-\item (6.40) prints the second term as (1 + 1/t) log\link{1 + t dA(Y_i)}, with the
+\item (6.40) prints the second term as (1 + 1/t) log[1 + t dA(Y_i)], with the
 jump dA rather than the level A.  (6.39), directly above it, has
 [1 + theta Lambda_0(y)]^(1 + 1/theta) with the level.  The level is used
 here.
@@ -86,7 +86,7 @@ observations, which contribute no event, get the correct E step.
 }
 
 The likelihood maximised in step 2' is therefore the sum over i of
-log dA(Y_i) - X_i b - (1 + 1/t) log\link{1 + t A(Y_i) exp(-X_i b)}, maximised
+log dA(Y_i) - X_i b - (1 + 1/t) log[1 + t A(Y_i) exp(-X_i b)], maximised
 over (log t, b) by cyclic coordinate golden-section search.  Nothing is
 random.
 }

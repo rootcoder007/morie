@@ -222,10 +222,10 @@ Caustmle <- function(y, T, ps, Q1, Q0, n_iter = 100L) {
 
 #' Controlled direct effect at a fixed mediator value
 #'
-#' \deqn{CDE(m) = E[Y(1,m)] - E[Y(0,m)]}{CDE(m) = E[Y(1,m)] - E[Y(0,m)]}
+#' \deqn{CDE(m) = E\[Y(1,m)\] - E\[Y(0,m)\]}{CDE(m) = E\[Y(1,m)\] - E\[Y(0,m)\]}
 #' The mediator is set for everybody, not left where it would have
 #' fallen -- that is what separates this from the natural direct
-#' effect.  Under \eqn{E[Y|X,M] = b_0 + b_X X + b_M M + b_{XM} XM} the
+#' effect.  Under \eqn{E\[Y|X,M\] = b_0 + b_X X + b_M M + b_{XM} XM} the
 #' contrast is \eqn{b_X + b_{XM} m}, so with no interaction it does not
 #' depend on m at all.
 #'
@@ -274,7 +274,7 @@ Cde <- function(Y, X, M, m) {
 #' @param y Outcomes.
 #' @param treatment_history Subjects by time.
 #' @param covariate_history,time Accepted for signature compatibility.
-#' @param propensity \eqn{E[A|H]} for cumulative treatment; sample mean
+#' @param propensity \eqn{E\[A|H\]} for cumulative treatment; sample mean
 #'   if omitted (correct only under randomization).
 #' @return Named list with `estimate`, `psi`, `se`, `ci_lower`,
 #'   `ci_upper`, `ols_slope`, `residual_treatment`, `n`, `method`.

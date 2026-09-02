@@ -29,7 +29,7 @@ separate step and is deliberately not folded in, since it would make
 a closed form stochastic for no reason.
 }
 \details{
-Formula: P\link{i,j} = prod_l Theta\link{i_l, j_l} over the base-n0 digits.
+Formula: P[i,j] = prod_l Theta[i_l, j_l] over the base-n0 digits.
 }
 \examples{
 Krfgrp(seed = 1, k = 5L)

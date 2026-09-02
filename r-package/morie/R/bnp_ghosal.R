@@ -391,8 +391,8 @@ morie_gh_renyi <- function(p, q, alpha = 0.5) {
 #' First two moments of a Dirichlet distribution for a pair of cells
 #'
 #' For \eqn{(\pi_1, \ldots, \pi_k) \sim Dir(\alpha)} with
-#' \eqn{A = \sum_i \alpha_i}, returns \eqn{E[\pi_j]},
-#' \eqn{Var[\pi_j]} and \eqn{Cov[\pi_j, \pi_{j'}]}. The covariance is
+#' \eqn{A = \sum_i \alpha_i}, returns \eqn{E\[\pi_j\]},
+#' \eqn{Var\[\pi_j\]} and \eqn{Cov\[\pi_j, \pi_{j'}\]}. The covariance is
 #' computed from the formula for distinct cells; passing
 #' \code{j == jp} therefore does not reproduce the variance.
 #'

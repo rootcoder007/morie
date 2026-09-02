@@ -22,7 +22,7 @@ the fit stops chasing it.
 }
 \details{
 Formula: \code{rho(r) = (c^2/6)(1 - \[1 - (r/c)^2\]^3)} for
-\code{|r| <= c}, else \code{c^2/6}; \code{psi(r) = r[1 - (r/c)^2]^2}
+\code{|r| <= c}, else \code{c^2/6}; \code{psi(r) = r\[1 - (r/c)^2\]^2}
 inside and 0 outside.
 }
 \examples{

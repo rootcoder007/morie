@@ -55,14 +55,12 @@ implementation's choice; the paper draws eps at random.
 
 DECODER. p(x|z) = N(x; W z + b, s^2 I), the Gaussian decoder of
 Appendix C.2, for which the reconstruction term is also closed form:
-E_q\link{log p(x|z)} = -(1/2) sum_k [log(2 pi s^2) + ((x_k - (W mu + b)_k)^2
+E_q[log p(x|z)] = -(1/2) sum_k [log(2 pi s^2) + ((x_k - (W mu + b)_k)^2
 \itemize{
-\item sum_j sigma_j^2 W[j,k]^2)/s^2], returned as \code{recon_analytic}.
+\item sum_j sigma_j^2 W[j,k\]^2)/s^2], returned as \code{recon_analytic}.
 The Monte Carlo estimate must approach it as \code{n_samples} grows --
 an anchor that does not run through the other language arm.
 }
-
-[j,k]: R:j,k\%5C
 }
 \examples{
 Vaeber(matrix(c(0.5, -0.2, 0.3, 1.1), 2, 2), latent_dim = 1)$kl

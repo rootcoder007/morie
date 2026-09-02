@@ -135,7 +135,7 @@ morie_topological_torsions <- function(elements, bonds, common_types = NULL) {
 #' The paper's similarity score S = 2 D / (d_i + d_j)
 #'
 #' @param t1,t2 Either torsion dictionaries or iterables of codes.
-#' @return A numeric similarity in \code{[0, 1]}.
+#' @return A numeric similarity in \code{\[0, 1\]}.
 #' @references Nilakantan, R. et al. (1987).
 #' @export
 morie_torsion_similarity <- function(t1, t2) {
