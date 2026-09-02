@@ -53,7 +53,6 @@ NULL
 #' .siu_p_has_rvest
 #'
 #' .siu_p_has_rvest -- gate rvest/xml2 use (suggested, not required).
-#' ---------------------------------------------------------------------------
 #'
 #' @return A logical value.
 #' @export
@@ -73,7 +72,6 @@ NULL
 #' .siu_p_blank_row -- minimal SIU_COLUMNS row template. Keys match the
 #' Python BLANK_ROW; extra keys appearing only here are populated by
 #' this parser specifically.
-#' ---------------------------------------------------------------------------
 #'
 #' @return A list with \code{parser_version}, \code{source_url_report}, \code{source_url_news}, \code{drid}, \code{nrid}, \code{case_number}, \code{police_service}, \code{number_of_officers_involved}, \code{number_of_subject_officials}, \code{number_of_witness_officials}, \code{number_of_civilian_witnesses}, \code{siu_investigators}, \code{siu_forensics_investigators}, \code{subject_official_interviewed_or_notes}, \code{location_of_call}, \code{reason_for_interaction}, \code{date_of_incident_iso}, \code{date_of_incident_raw}, \code{date_siu_notified_iso}, \code{date_siu_notified_raw}, \code{notifying_party}, \code{date_of_director_decision_iso}, \code{date_of_director_decision_raw}, \code{injuries_sustained}, \code{specific_injuries}, \code{sex_gender_affected}, \code{age_affected}, \code{relevant_legislation}, \code{charges_recommended}, \code{directors_decision_reasonable}, \code{mental_health_or_race_indications}, \code{supplemental_materials}, \code{narrative_full}, \code{narrative_summary}, \code{_language}.
 #' @export
@@ -124,7 +122,6 @@ NULL
 #' .siu_p_stripped_text
 #'
 #' Stripped-text + body-slice primitives.
-#' ---------------------------------------------------------------------------
 #'
 #' @param html See Usage.
 #' @return The value of \code{trimws}.
@@ -204,7 +201,6 @@ NULL
 #' .siu_p_label_value
 #'
 #' Label / value primitives.
-#' ---------------------------------------------------------------------------
 #'
 #' @param text Passed to \code{regmatches}.
 #' @param label Passed to \code{.siu_p_re_escape}.
@@ -264,7 +260,6 @@ NULL
 #'
 #' Section slicer -- pulls text between `header` and the first
 #' end-marker. Pure-R equivalent of _section_text.
-#' ---------------------------------------------------------------------------
 #'
 #' @param text A vector; its length is taken.
 #' @param header Passed to \code{.siu_p_re_escape}.
@@ -479,7 +474,6 @@ NULL
 #' .siu_p_parse_drid_from_url
 #'
 #' URL helpers (drid / nrid extractors).
-#' ---------------------------------------------------------------------------
 #'
 #' @param url Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{as.integer}.
@@ -514,7 +508,6 @@ NULL
 #' .siu_p_normalise_sex
 #'
 #' Normalisation helpers (mirror morie.siu._normalize).
-#' ---------------------------------------------------------------------------
 #'
 #' @param s Optional; may be \code{NULL}. Character; passed to \code{trimws}.
 #' @return The value of \code{s}, as built in the body.

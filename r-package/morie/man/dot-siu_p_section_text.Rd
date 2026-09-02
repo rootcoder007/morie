@@ -17,7 +17,6 @@
 The value of \code{substr}.
 }
 \description{
-\subsection{Section slicer -- pulls text between \code{header} and the first
-end-marker. Pure-R equivalent of _section_text.}{
-}
+Section slicer -- pulls text between \code{header} and the first
+end-marker. Pure-R equivalent of _section_text.
 }

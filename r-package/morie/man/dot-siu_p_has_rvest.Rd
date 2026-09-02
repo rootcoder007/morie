@@ -10,6 +10,5 @@
 A logical value.
 }
 \description{
-\subsection{.siu_p_has_rvest -- gate rvest/xml2 use (suggested, not required).}{
-}
+.siu_p_has_rvest -- gate rvest/xml2 use (suggested, not required).
 }

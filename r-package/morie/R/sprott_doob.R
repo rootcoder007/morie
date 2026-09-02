@@ -49,7 +49,6 @@ NULL
 #' .morie_siu_rich
 #'
 #' RichResult-style constructor for the R side
-#' ---------------------------------------------------------------------------
 #' Returns a named list classed for morie\'s rich-output dispatch.
 #' Mirrors the structure of morie.fn._richresult.RichResult so that
 #' downstream `describe()` / `morie_print_rich()` consumers can render

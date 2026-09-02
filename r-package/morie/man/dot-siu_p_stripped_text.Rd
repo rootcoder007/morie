@@ -13,6 +13,5 @@
 The value of \code{trimws}.
 }
 \description{
-\subsection{Stripped-text + body-slice primitives.}{
-}
+Stripped-text + body-slice primitives.
 }

@@ -13,6 +13,5 @@
 The value of \code{utils::read.csv}.
 }
 \description{
-\subsection{.siu_an_load -- accept a data frame, a path, or NULL (defaults).}{
-}
+.siu_an_load -- accept a data frame, a path, or NULL (defaults).
 }
