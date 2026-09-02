@@ -23,7 +23,7 @@ morie_svm_label_matrix(X, y)
 }
 \arguments{
 \item{X}{numeric matrix of inputs, one row per observation}
-\item{y}{vector of class labels in {-1, 1}}
+\item{y}{vector of class labels in \{-1, 1\}}
 \item{C}{box constraint on the dual coefficients}
 \item{alpha}{vector of dual coefficients}
 
