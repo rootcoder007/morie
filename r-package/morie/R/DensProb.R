@@ -8,7 +8,7 @@
 #'
 #' @param grid strictly increasing abscissae, length >= 2.
 #' @param density non-negative density values on grid.
-#' @param a,b interval bounds, grid[1] <= a <= b <= grid[length(grid)].
+#' @param a,b interval bounds, grid\[1\] <= a <= b <= grid\[length(grid)\].
 #' @return list(probability, a, b).
 #' @references Morin, D. J. (2016). Probability: For the Enthusiastic
 #'   Beginner. Createspace. Eq (4.2).

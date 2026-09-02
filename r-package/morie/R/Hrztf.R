@@ -9,7 +9,7 @@
 #' T_n evaluated at an observation.  Page 219: T_n(y) "is replaced with
 #'
 #' an arbitrarily large negative number if y < y2 and an arbitrarily
-#' large positive number if y > y1".  Inside [y2, y1] the grid values
+#' large positive number if y > y1".  Inside \[y2, y1\] the grid values
 #' are interpolated.
 #'
 #' @param yv Numeric; combined arithmetically in the body.
@@ -52,9 +52,9 @@
 #' independent of X, P(U <= u | a < Z <= b) = F(u) for any a, b in the
 #' support of Z, so for any y2 < y1
 #'
-#'   F(u) = P[U <= u | T(y2) - u < Z <= T(y1) - u] = A(u)/B(u)   (6.63)
-#'   A(u) = E{I(U <= u) I[T(y2) - u < Z <= T(y1) - u]}           (6.64)
-#'   B(u) = E{I[T(y2) - u < Z <= T(y1) - u]}                     (6.65)
+#'   F(u) = P\[U <= u | T(y2) - u < Z <= T(y1) - u\] = A(u)/B(u)   (6.63)
+#'   A(u) = E{I(U <= u) I\[T(y2) - u < Z <= T(y1) - u\]}           (6.64)
+#'   B(u) = E{I\[T(y2) - u < Z <= T(y1) - u\]}                     (6.65)
 #'
 #' and the estimator replaces these by sample analogues (6.66) with
 #' U_ni = T_n(Y_i) - Z_ni.

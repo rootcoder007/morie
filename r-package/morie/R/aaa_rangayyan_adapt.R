@@ -29,7 +29,7 @@
     .morie_fsum(x[seq_len(n - m)] * x[seq_len(n - m) + m]) / n, numeric(1))
 }
 
-#' Theta(k) = E[x(n-k) d(n)], the right-hand side of eq. (3.168)
+#' Theta(k) = E\[x(n-k) d(n)\], the right-hand side of eq. (3.168)
 #'
 #' A step of the rangayyan_adapt implementation. Called by \code{Whopf}.
 #' See the file header for the source the module follows.

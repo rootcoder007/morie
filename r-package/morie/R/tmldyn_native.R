@@ -107,7 +107,7 @@
 
 # Fit Q2 (E[Y | Abar(1), Lbar(1)]) on the rows in idx, with full
 # treatment-by-covariate and treatment-by-treatment interactions.
-#' Fit Q2 (E[Y | Abar(1), Lbar(1)]) on the rows in idx, with full
+#' Fit Q2 (E\[Y | Abar(1), Lbar(1)\]) on the rows in idx, with full
 #'
 #' treatment-by-covariate and treatment-by-treatment interactions.
 #'
@@ -146,7 +146,7 @@
 }
 
 # Fit Q1 (E[Q2(A(0), d_{A(1)}, Lbar(1)) | A(0), L(0)]) on the rows in idx.
-#' Fit Q1 (E[Q2(A(0), d_{A(1)}, Lbar(1)) | A(0), L(0)]) on the rows in
+#' Fit Q1 (E\[Q2(A(0), d_{A(1)}, Lbar(1)) | A(0), L(0)\]) on the rows in
 #' idx
 #'
 #' A step of the tmldyn_native implementation. Called by \code{.rule_value_seq}, \code{.sequential_blips}, \code{morie_tmle_dynamic_regime}.

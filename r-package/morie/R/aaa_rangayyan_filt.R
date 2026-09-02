@@ -385,7 +385,7 @@ MaTf <- function(b_k, z, N = NULL) {
        method = "Rangayyan (2024) eq. (3.99)")
 }
 
-#' Eq (3.100): y(n) = (1/4)[x(n) + 2x(n-1) + x(n-2)].  Three taps in the
+#' Eq (3.100): y(n) = (1/4)\[x(n) + 2x(n-1) + x(n-2)\].  Three taps in the
 #'
 #' ratio 1:2:1.  It is a delaying smoother, not a symmetric one: the
 #' output lags the input by exactly one sample.

@@ -11,7 +11,7 @@ DensProb(grid, density, a, b)
 
 \item{density}{non-negative density values on grid.}
 
-\item{a, b}{interval bounds, grid\link{1} <= a <= b <= grid\link{length(grid)}.}
+\item{a, b}{interval bounds, grid[1] <= a <= b <= grid[length(grid)].}
 }
 \value{
 list(probability, a, b).

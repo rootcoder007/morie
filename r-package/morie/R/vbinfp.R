@@ -7,7 +7,7 @@
 #'
 #' Write I(X;Y) = H(X) - H(X|Y) and replace the intractable posterior
 #' p(x|y) by a variational decoder q(x|y). Since H(X|Y) =
-#' -E[log q(x|y)] - E_{p(y)}\[KL(p(.|y) || q(.|y))\] and the KL is
+#' -E\[log q(x|y)\] - E_{p(y)}\[KL(p(.|y) || q(.|y))\] and the KL is
 #' non-negative, dropping it can only lower the value:
 #' I(X;Y) >= H(X) + E_{p(x,y)}\[log q(x|y)\], with equality exactly when
 #' q(x|y) = p(x|y) for every y that occurs. The gap is the average KL, so
@@ -21,7 +21,7 @@
 #' continuous version would need a parametric decoder and an optimiser
 #' and is not implemented -- this implementation's scope choice.
 #'
-#' The form I(X;Y) >= E[log q(y|x)/p(y)] is the same bound with X and Y
+#' The form I(X;Y) >= E\[log q(y|x)/p(y)\] is the same bound with X and Y
 #' exchanged; call the function with the arguments swapped.
 #'
 #' @param X,Y Paired discrete observations of equal length.
