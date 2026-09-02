@@ -5,7 +5,7 @@
 \alias{morie_surxgb_cheatsheet}
 \title{morie_surxgb_cheatsheet}
 \usage{
-morie_surxgb_cheatsheet()
+morie_surxgb_cheatsheet() 
 }
 \description{
 Part of the surxgb_native implementation; see the file header for the source it follows.

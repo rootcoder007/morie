@@ -12,6 +12,7 @@ two_way_anova(data, outcome, factor_a, factor_b)
 \item{outcome}{Name of dependent-variable column.}
 
 \item{factor_a, factor_b}{Names of factor columns.}
+
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})

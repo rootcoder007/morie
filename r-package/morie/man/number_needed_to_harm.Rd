@@ -2,7 +2,7 @@
 % Please edit documentation in R/effect_sizes.R
 \name{number_needed_to_harm}
 \alias{number_needed_to_harm}
-\title{Number needed to harm (NNH) — sign-reversed NNT}
+\title{Number needed to harm (NNH) -- sign-reversed NNT}
 \usage{
 number_needed_to_harm(a, b, c, d, confidence = 0.95)
 }
@@ -10,12 +10,15 @@ number_needed_to_harm(a, b, c, d, confidence = 0.95)
 \item{a, b, c, d}{Cell counts.}
 
 \item{confidence}{Confidence level. Default 0.95.}
+
+
+
 }
 \value{
 A \code{morie_effect_size}.
 }
 \description{
-Number needed to harm (NNH) — sign-reversed NNT
+Number needed to harm (NNH) -- sign-reversed NNT
 }
 \examples{
 number_needed_to_harm(10, 5, 5, 10)

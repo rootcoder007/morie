@@ -4,10 +4,14 @@
 \alias{morie_sentpc_decode}
 \title{SentencePiece: subword tokenisation that is losslessly reversible}
 \usage{
-morie_sentpc_decode(pieces, strip_prefix = TRUE)
+morie_sentpc_decode(pieces, strip_prefix = TRUE) 
 }
 \description{
 SentencePiece: subword tokenisation that is losslessly reversible. and language independent subword tokenizer and detokenizer for Neural Text Processing", EMNLP 2018 System Demonstrations, 66-71, whitespace, BPE and unigram, fixed vocabulary size); Sennrich, R., Native R arm mirroring the Python arm exactly: the same U+2581 escaping and the same _units split that keeps every unit starting at the marker so runs of spaces do not collapse, the same greedy BPE trainer that merges the most frequent pair until the vocabulary is full, the same Viterbi over the split lattice for the unigram model, and morie_sentpc_decode/unescape as a pure string operation.
+}
+\arguments{
+\item{pieces}{Argument \code{pieces}; see Usage.}
+\item{strip_prefix}{Argument \code{strip_prefix}; see Usage.}
 }
 \value{
 A list with components \code{collapse}.

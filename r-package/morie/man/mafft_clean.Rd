@@ -5,7 +5,7 @@
 \alias{mafft_clean}
 \title{mafft_clean}
 \usage{
-mafft_clean(seqs, seq_type = NULL)
+mafft_clean(seqs, seq_type = NULL) 
 }
 \arguments{
 \item{seqs}{Passed to \code{unlist}.}

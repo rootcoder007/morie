@@ -5,7 +5,7 @@
 \alias{rRD}
 \title{rRD}
 \usage{
-rRD(protected, step = 10L, normalize = TRUE)
+rRD(protected, step = 10L, normalize = TRUE) 
 }
 \arguments{
 \item{protected}{Coerced to logical by the body, with \code{as.logical}.}

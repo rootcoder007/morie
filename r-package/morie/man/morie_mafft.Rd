@@ -5,7 +5,8 @@
 \alias{morie_mafft}
 \title{morie_mafft}
 \usage{
-morie_mafft(sequences, method = "FFT-NS-2", seq_type = NULL, s_a = 0.06, s_op = 2.4, matrix = "normalized", max_iterate = 16L)
+morie_mafft(sequences, method = "FFT-NS-2", seq_type = NULL, s_a = 0.06, 
+    s_op = 2.4, matrix = "normalized", max_iterate = 16L) 
 }
 \arguments{
 \item{sequences}{Passed to \code{mafft_alignment}.}

@@ -21,6 +21,9 @@ morie_rlm(
 \item{maxit}{Max IRLS iterations.}
 
 \item{acc}{Convergence tolerance on the residual change.}
+
+\item{add_intercept}{See Usage.}
+
 }
 \value{
 A \code{morie_rlm} object.

@@ -7,11 +7,7 @@
 .gsage_rows(x)
 }
 \arguments{
-\item{vectors}{A list of numeric vectors.}
-
-\item{how}{One of \code{"mean"}, \code{"max_pool"}, \code{"lstm_order"}.}
-
-\item{W}{Optional weight matrix used by \code{max_pool}.}
+\item{x}{See Usage.}
 }
 \value{
 A single numeric vector.

@@ -175,7 +175,7 @@ morie_grphmr_sp <- function(adj, n) {
 
 #' Spatial bias from the shortest-path distance matrix
 #'
-#' Looks up \code{b_table[d]} (clipped to the table size) and uses
+#' Looks up \code{b_table\[d\]} (clipped to the table size) and uses
 #' \code{unreachable_bias} for disconnected pairs.
 #'
 #' @param distance N x N matrix from \code{shortest_path_matrix}.
@@ -208,7 +208,7 @@ morie_grphmr_spatial <- function(distance, b_table, unreachable_bias = -10) {
 #' Edge-feature bias averaged along the shortest path
 #'
 #' For each pair the edge features along the path are weighted by
-#' \code{w_table[step]} and averaged across the path length. Bond
+#' \code{w_table\[step\]} and averaged across the path length. Bond
 #' type is a property of neither endpoint, so it has to enter the
 #' model here.
 #'

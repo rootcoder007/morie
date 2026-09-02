@@ -62,6 +62,8 @@ gamma_generation_time <- function(shape = 2.83, scale = 1.86, grid = NULL,
   list(t = ts, density = as.numeric(dens) / z)
 }
 
+#' @param ts See Usage.
+#' @param ys See Usage.
 #' @keywords internal
 .trapz <- function(ts, ys) {
   tot <- 0.0
@@ -70,6 +72,10 @@ gamma_generation_time <- function(shape = 2.83, scale = 1.86, grid = NULL,
   tot
 }
 
+#' @param ts See Usage.
+#' @param ys See Usage.
+#' @param lo See Usage.
+#' @param hi See Usage.
 #' @keywords internal
 .mass <- function(ts, ys, lo, hi) {
   if (hi <= lo) return(0.0)

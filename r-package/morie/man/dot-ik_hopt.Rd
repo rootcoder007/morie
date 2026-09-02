@@ -18,6 +18,8 @@
 \item{n}{Sample size.}
 
 \item{ck}{Kernel constant.}
+
+
 }
 \value{
 The bandwidth.

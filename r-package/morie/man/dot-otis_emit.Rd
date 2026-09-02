@@ -7,7 +7,11 @@
 .otis_emit(res, out_dir, id)
 }
 \arguments{
-\item{df}{Accepted by the signature and not used anywhere in the body.}
+\item{res}{See Usage.}
+
+\item{out_dir}{See Usage.}
+
+\item{id}{See Usage.}
 }
 \value{
 Nothing; the function is called for its effect.

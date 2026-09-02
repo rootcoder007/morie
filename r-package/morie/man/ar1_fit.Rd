@@ -5,10 +5,13 @@
 \alias{ar1_fit}
 \title{AR(1) by least squares (no intercept)}
 \usage{
-ar1_fit(x)
+ar1_fit(x) 
 }
 \description{
 AR(1) by least squares (no intercept)
+}
+\arguments{
+\item{x}{Argument \code{x}; see Usage.}
 }
 \value{
 A vector.

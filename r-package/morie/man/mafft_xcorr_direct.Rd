@@ -5,7 +5,7 @@
 \alias{mafft_xcorr_direct}
 \title{mafft_xcorr_direct}
 \usage{
-mafft_xcorr_direct(a, b, size)
+mafft_xcorr_direct(a, b, size) 
 }
 \arguments{
 \item{a}{A vector; its length is taken and its elements indexed.}

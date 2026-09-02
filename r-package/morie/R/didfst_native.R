@@ -277,6 +277,11 @@ aggregate_att <- function(gt, scheme = "simple", horizon = NULL) {
   list(profile = flat, scheme = scheme, estimate = mean(flat))
 }
 
+#' Cheat sheet for the didfst module
+#'
+#' One-screen reminder of the module's entry points, printed to the console.
+#'
+#' @return The cheat sheet text, invisibly.
 #' @export
 .didfst_cheatsheet <- function() {
   paste("didfst: DiD forest. Delta_i = post-mean - pre-mean; the",

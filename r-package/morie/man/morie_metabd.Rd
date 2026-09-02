@@ -5,7 +5,7 @@
 \alias{morie_metabd}
 \title{morie_metabd}
 \usage{
-morie_metabd(tnfs, coverages = NULL, lengths = NULL, threshold = 0.15, min_bin_size = 2e+05)
+morie_metabd(tnfs, coverages = NULL, lengths = NULL, threshold = 0.15, min_bin_size = 2e+05) 
 }
 \arguments{
 \item{tnfs}{Passed to \code{bin_contigs}.}

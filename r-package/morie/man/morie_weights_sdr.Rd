@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_sdr}
 \alias{morie_weights_sdr}
-\title{Successive Difference Replication (SDR) weights.}
+\title{Successive Difference Replication (SDR) weights}
 \usage{
 morie_weights_sdr(weights, n_replicates = 100, seed = 42)
 }
@@ -19,7 +19,7 @@ A numeric matrix of SDR replicate weights with
 (negative values clipped to 0).
 }
 \description{
-Successive Difference Replication (SDR) weights.
+Successive Difference Replication (SDR) weights
 }
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)

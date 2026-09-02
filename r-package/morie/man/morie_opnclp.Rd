@@ -5,7 +5,7 @@
 \alias{morie_opnclp}
 \title{morie_opnclp}
 \usage{
-morie_opnclp(payload)
+morie_opnclp(payload) 
 }
 \arguments{
 \item{payload}{A list; the body reads \code{$compute}, \code{$fit}, \code{$image_embeddings}, \code{$label_a}, \code{$label_b}, \code{$model_params}, \code{$op}, \code{$samples_seen}, \code{$temperature}, \code{$text_embeddings}, \code{$x}, \code{$x_a}, \code{$x_b}, \code{$y}, \code{$y_a}, \code{$y_b} from it.}

@@ -5,7 +5,8 @@
 \alias{morie_gsplat_density}
 \title{Adaptive density control}
 \usage{
-morie_gsplat_density(gradients, scales, opacities, grad_threshold = 2e-04, scale_threshold = 0.01, opacity_threshold = 0.005)
+morie_gsplat_density(gradients, scales, opacities, grad_threshold = 2e-04, scale_threshold = 0.01, 
+    opacity_threshold = 0.005) 
 }
 \arguments{
 \item{gradients}{Per-Gaussian positional gradient magnitudes.}

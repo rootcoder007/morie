@@ -5,7 +5,7 @@
 \alias{mtdrl_history_features}
 \title{mtdrl_history_features}
 \usage{
-mtdrl_history_features(history, n_arms)
+mtdrl_history_features(history, n_arms) 
 }
 \arguments{
 \item{history}{A vector; its length is taken and its elements indexed.}

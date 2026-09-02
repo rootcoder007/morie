@@ -174,6 +174,11 @@ morie_smatch_sample_size <- function(log_ri, r, p_exposed,
 }
 
 #' Power at a given number of events
+#' @param n_events See Usage.
+#' @param log_ri See Usage.
+#' @param r See Usage.
+#' @param p_exposed See Usage.
+#' @param alpha See Usage.
 #' @export
 morie_smatch_power <- function(n_events, log_ri, r, p_exposed,
                                 alpha = 0.05) {
@@ -187,6 +192,8 @@ morie_smatch_power <- function(n_events, log_ri, r, p_exposed,
 }
 
 #' Asymptotic efficiency against the cohort design (Sec. 7.5)
+#' @param r See Usage.
+#' @param log_ri See Usage.
 #' @export
 morie_smatch_relative_efficiency <- function(r, log_ri) {
   rr <- as.numeric(r); b <- as.numeric(log_ri)

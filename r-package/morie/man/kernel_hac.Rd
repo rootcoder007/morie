@@ -5,10 +5,17 @@
 \alias{kernel_hac}
 \title{Equation 2.3, kernel HAC on already-prewhitened vectors}
 \usage{
-kernel_hac(v, bandwidth, kernel = "qs", n_params = 0L, n = NULL)
+kernel_hac(v, bandwidth, kernel = "qs", n_params = 0L, n = NULL) 
 }
 \description{
 Equation 2.3, kernel HAC on already-prewhitened vectors
+}
+\arguments{
+\item{v}{Argument \code{v}; see Usage.}
+\item{bandwidth}{Argument \code{bandwidth}; see Usage.}
+\item{kernel}{Argument \code{kernel}; see Usage.}
+\item{n_params}{Argument \code{n_params}; see Usage.}
+\item{n}{Argument \code{n}; see Usage.}
 }
 \value{
 A numeric value.

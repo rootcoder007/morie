@@ -5,7 +5,7 @@
 \alias{did_estimate}
 \title{DiD contrast of eq. (13.7) under arbitrary unit weights}
 \usage{
-did_estimate(delta, D, weights = NULL)
+did_estimate(delta, D, weights = NULL) 
 }
 \arguments{
 \item{delta}{Numeric vector of \code{Delta_i}.}

@@ -10,6 +10,7 @@ semi_partial_correlation(x, y, covariates)
 \item{x, y}{Numeric vectors of interest.}
 
 \item{covariates}{Matrix or data frame of covariates.}
+
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})

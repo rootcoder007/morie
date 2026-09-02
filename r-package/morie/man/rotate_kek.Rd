@@ -5,10 +5,19 @@
 \alias{rotate_kek}
 \title{Rotate the KEK: re-wrap every DEK, no record ciphertext touched}
 \usage{
-rotate_kek(wrapped_deks, old_kek, new_kek, new_nonces, new_kek_id = "kek-2", audit_log = NULL)
+rotate_kek(wrapped_deks, old_kek, new_kek, new_nonces, new_kek_id = "kek-2", 
+    audit_log = NULL) 
 }
 \description{
 Rotate the KEK: re-wrap every DEK, no record ciphertext touched
+}
+\arguments{
+\item{wrapped_deks}{Argument \code{wrapped_deks}; see Usage.}
+\item{old_kek}{Argument \code{old_kek}; see Usage.}
+\item{new_kek}{Argument \code{new_kek}; see Usage.}
+\item{new_nonces}{Argument \code{new_nonces}; see Usage.}
+\item{new_kek_id}{Argument \code{new_kek_id}; see Usage.}
+\item{audit_log}{Argument \code{audit_log}; see Usage.}
 }
 \value{
 A list with \code{estimate}, \code{wrapped}, \code{n}, \code{records_reencrypted}, \code{kek_id}, \code{method}, \code{note}.

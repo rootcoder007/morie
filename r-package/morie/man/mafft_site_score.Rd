@@ -5,7 +5,7 @@
 \alias{mafft_site_score}
 \title{mafft_site_score}
 \usage{
-mafft_site_score(M, ga, gb, wa, wb, i, j)
+mafft_site_score(M, ga, gb, wa, wb, i, j) 
 }
 \arguments{
 \item{M}{Passed to \code{mafft_lookup}.}

@@ -5,7 +5,7 @@
 \alias{muzero_Node}
 \title{muzero_Node}
 \usage{
-muzero_Node(prior = 0)
+muzero_Node(prior = 0) 
 }
 \arguments{
 \item{prior}{A vector; indexed elementwise. Defaults to \code{0}.}

@@ -5,7 +5,7 @@
 \alias{loglik}
 \title{loglik}
 \usage{
-loglik(w, ar = list(), ma = list())
+loglik(w, ar = list(), ma = list()) 
 }
 \arguments{
 \item{w}{A vector; its length is taken and its elements indexed.}

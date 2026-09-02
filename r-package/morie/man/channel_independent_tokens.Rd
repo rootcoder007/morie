@@ -5,7 +5,7 @@
 \alias{channel_independent_tokens}
 \title{One token stream per channel, weights shared across channels}
 \usage{
-channel_independent_tokens(X, patch_len, stride = NULL)
+channel_independent_tokens(X, patch_len, stride = NULL) 
 }
 \arguments{
 \item{X}{A matrix; passed to \code{as.matrix}.}

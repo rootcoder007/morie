@@ -5,7 +5,7 @@
 \alias{node2v_walk}
 \title{node2v_walk}
 \usage{
-node2v_walk(adj, start, length, p = 1, q = 1, rng = NULL, weights = NULL)
+node2v_walk(adj, start, length, p = 1, q = 1, rng = NULL, weights = NULL) 
 }
 \arguments{
 \item{adj}{Passed to \code{node2v_transition_probabilities}.}

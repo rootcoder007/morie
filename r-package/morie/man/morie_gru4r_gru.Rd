@@ -5,7 +5,7 @@
 \alias{morie_gru4r_gru}
 \title{One GRU update (single layer)}
 \usage{
-morie_gru4r_gru(x, h, Wz, Uz, Wr, Ur, Wh, Uh)
+morie_gru4r_gru(x, h, Wz, Uz, Wr, Ur, Wh, Uh) 
 }
 \arguments{
 \item{x}{Input vector (length d).}

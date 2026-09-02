@@ -186,6 +186,7 @@ rRD <- function(protected, step = 10L, normalize = TRUE) {
 #' @param protected Passed to \code{rND}.
 #' @param step Passed to \code{rND}. Defaults to \code{10L}.
 #' @param normalize Passed to \code{rND}. Defaults to \code{TRUE}.
+#' @param measure See Usage.
 #' @return The value of \code{rND}.
 #' @export
 morie_fairRC <- function(protected, measure = "rND", step = 10L,

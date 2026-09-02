@@ -5,7 +5,7 @@
 \alias{morie_schN}
 \title{morie_schN}
 \usage{
-morie_schN(...)
+morie_schN(...) 
 }
 \arguments{
 \item{...}{Passed through.}

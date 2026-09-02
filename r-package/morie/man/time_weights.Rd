@@ -5,7 +5,7 @@
 \alias{time_weights}
 \title{time_weights}
 \usage{
-time_weights(Y, treated, t_post)
+time_weights(Y, treated, t_post) 
 }
 \arguments{
 \item{Y}{A matrix; indexed by row and column.}

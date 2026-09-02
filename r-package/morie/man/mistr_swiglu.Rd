@@ -5,7 +5,7 @@
 \alias{mistr_swiglu}
 \title{mistr_swiglu}
 \usage{
-mistr_swiglu(x, W1, W2, W3)
+mistr_swiglu(x, W1, W2, W3) 
 }
 \arguments{
 \item{x}{A matrix; passed to \code{crossprod}.}

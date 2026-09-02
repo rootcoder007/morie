@@ -5,7 +5,7 @@
 \alias{coord_update}
 \title{coord_update}
 \usage{
-coord_update(X, M, phi_x, C = NULL)
+coord_update(X, M, phi_x, C = NULL) 
 }
 \arguments{
 \item{X}{A matrix; indexed by row and column.}

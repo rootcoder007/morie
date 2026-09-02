@@ -5,7 +5,7 @@
 \alias{morie_wenge_cheatsheet}
 \title{morie_wenge_cheatsheet}
 \usage{
-morie_wenge_cheatsheet()
+morie_wenge_cheatsheet() 
 }
 \description{
 Part of the wenge_native implementation; see the file header for the source it follows.

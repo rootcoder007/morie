@@ -20,6 +20,7 @@
 .EIGENVALUE_CAP <- 0.97
 
 #' Bartlett (triangular) kernel
+#' @param x See Usage.
 #' @export
 bartlett_kernel <- function(x) {
   ax <- abs(as.numeric(x))
@@ -27,6 +28,7 @@ bartlett_kernel <- function(x) {
 }
 
 #' Parzen kernel
+#' @param x See Usage.
 #' @export
 parzen_kernel <- function(x) {
   ax <- abs(as.numeric(x))
@@ -36,6 +38,7 @@ parzen_kernel <- function(x) {
 }
 
 #' Quadratic spectral kernel
+#' @param x See Usage.
 #' @export
 quadratic_spectral_kernel <- function(x) {
   x <- as.numeric(x)
@@ -45,6 +48,7 @@ quadratic_spectral_kernel <- function(x) {
 }
 
 #' Tukey-Hanning kernel
+#' @param x See Usage.
 #' @export
 tukey_hanning_kernel <- function(x) {
   ax <- abs(as.numeric(x))
@@ -80,6 +84,8 @@ tukey_hanning_kernel <- function(x) {
 }
 
 #' Section 3 moment vectors
+#' @param e See Usage.
+#' @param X See Usage.
 #' @export
 moment_vectors <- function(e, X) {
   e <- as.numeric(e)
@@ -120,6 +126,8 @@ moment_vectors <- function(e, X) {
 }
 
 #' SVD cap on the prewhitening matrix
+#' @param a See Usage.
+#' @param cap See Usage.
 #' @export
 singular_value_adjust <- function(a, cap = .EIGENVALUE_CAP) {
   cap <- as.numeric(cap)
@@ -131,6 +139,10 @@ singular_value_adjust <- function(a, cap = .EIGENVALUE_CAP) {
 }
 
 #' VAR prewhitening, equation 2.2
+#' @param v See Usage.
+#' @param order See Usage.
+#' @param cap See Usage.
+#' @param adjust See Usage.
 #' @export
 prewhiten_var <- function(v, order = 1L, cap = .EIGENVALUE_CAP,
                           adjust = TRUE) {
@@ -191,6 +203,7 @@ prewhiten_var <- function(v, order = 1L, cap = .EIGENVALUE_CAP,
 }
 
 #' AR(1) by least squares (no intercept)
+#' @param x See Usage.
 #' @export
 ar1_fit <- function(x) {
   x <- as.numeric(x)
@@ -204,6 +217,9 @@ ar1_fit <- function(x) {
 }
 
 #' Andrews (1991) eq. 6.4, alpha(q) from p AR(1) fits
+#' @param v See Usage.
+#' @param q See Usage.
+#' @param weights See Usage.
 #' @export
 alpha_ar1 <- function(v, q = 2L, weights = NULL) {
   rows <- as.matrix(v); storage.mode(rows) <- "double"
@@ -241,6 +257,10 @@ alpha_ar1 <- function(v, q = 2L, weights = NULL) {
 }
 
 #' Andrews (1991) eq. 6.1, automatic plug-in bandwidth
+#' @param v See Usage.
+#' @param kernel See Usage.
+#' @param weights See Usage.
+#' @param n See Usage.
 #' @export
 automatic_bandwidth <- function(v, kernel = "qs", weights = NULL,
                                 n = NULL) {
@@ -253,6 +273,11 @@ automatic_bandwidth <- function(v, kernel = "qs", weights = NULL,
 }
 
 #' Equation 2.3, kernel HAC on already-prewhitened vectors
+#' @param v See Usage.
+#' @param bandwidth See Usage.
+#' @param kernel See Usage.
+#' @param n_params See Usage.
+#' @param n See Usage.
 #' @export
 kernel_hac <- function(v, bandwidth, kernel = "qs", n_params = 0L,
                        n = NULL) {
@@ -292,6 +317,16 @@ kernel_hac <- function(v, bandwidth, kernel = "qs", n_params = 0L,
 }
 
 #' The full VAR prewhitened kernel HAC estimator, eq. 2.4
+#' @param e See Usage.
+#' @param X See Usage.
+#' @param prewhiten See Usage.
+#' @param var_order See Usage.
+#' @param kernel See Usage.
+#' @param bandwidth See Usage.
+#' @param weights See Usage.
+#' @param n_params See Usage.
+#' @param cap See Usage.
+#' @param adjust See Usage.
 #' @export
 andrews_monahan_hac <- function(e, X = NULL, prewhiten = TRUE,
                                 var_order = 1L, kernel = "qs",

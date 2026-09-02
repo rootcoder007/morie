@@ -5,7 +5,7 @@
 \alias{print.morie_dml_clustered}
 \title{Print method for \code{morie_dml_clustered} objects}
 \usage{
-print.morie_dml_clustered(x, ...)
+\method{print}{morie_dml_clustered}(x, ...) 
 }
 \arguments{
 \item{x}{A \code{morie_dml_clustered} object.}

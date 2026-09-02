@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_calibrate_to_totals}
 \alias{morie_weights_calibrate_to_totals}
-\title{Dispatch helper -- calibrate to totals via "raking" or "greg".}
+\title{Dispatch helper -- calibrate to totals via "raking" or "greg"}
 \usage{
 morie_weights_calibrate_to_totals(
   weights,
@@ -34,7 +34,7 @@ numeric vector, same length as input), \code{converged},
 \code{\link{morie_weights_greg}}).
 }
 \description{
-Dispatch helper -- calibrate to totals via "raking" or "greg".
+Dispatch helper -- calibrate to totals via "raking" or "greg"
 }
 \examples{
 morie_weights_calibrate_to_totals(weights = c(1, 2, 3, 4, 5, 6, 7, 8), df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), totals = c(1, 2, 3, 4, 5, 6, 7, 8))

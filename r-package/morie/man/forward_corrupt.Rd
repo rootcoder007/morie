@@ -5,7 +5,7 @@
 \alias{forward_corrupt}
 \title{Forward corruption (closed form)}
 \usage{
-forward_corrupt(x0, alpha_bar_t, e = NULL)
+forward_corrupt(x0, alpha_bar_t, e = NULL) 
 }
 \arguments{
 \item{x0}{Original history.}

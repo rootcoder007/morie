@@ -5,7 +5,9 @@
 \alias{morie_ttrace}
 \title{morie_ttrace}
 \usage{
-morie_ttrace(seed = 0, R0 = 2.5, dispersion = 0.16, n_initial = 20, trace_prob = 0.8, delay_mean = 3.83, delay_sd = 2.4, si_mean = 4.7, si_sd = 2.9, subclinical = 0, max_cases = 5000, max_weeks = 12, allow_presymptomatic = TRUE, reps = 200)
+morie_ttrace(seed = 0, R0 = 2.5, dispersion = 0.16, n_initial = 20, trace_prob = 0.8, 
+    delay_mean = 3.83, delay_sd = 2.4, si_mean = 4.7, si_sd = 2.9, subclinical = 0, 
+    max_cases = 5000, max_weeks = 12, allow_presymptomatic = TRUE, reps = 200) 
 }
 \arguments{
 \item{seed}{Passed to \code{simulate_outbreak}. Defaults to \code{0}.}

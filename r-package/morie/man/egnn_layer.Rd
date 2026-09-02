@@ -5,7 +5,7 @@
 \alias{egnn_layer}
 \title{egnn_layer}
 \usage{
-egnn_layer(H, X, layers, phi_e, phi_x, phi_h, A = NULL, C = NULL)
+egnn_layer(H, X, layers, phi_e, phi_x, phi_h, A = NULL, C = NULL) 
 }
 \arguments{
 \item{H}{Passed to \code{run_egnn}.}

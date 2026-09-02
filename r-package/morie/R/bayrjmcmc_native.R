@@ -1,12 +1,12 @@
 # Reversible-jump MCMC: sampling across models of differing dimension.
 # Sources: Green, P. J. (1995) "Reversible jump Markov chain Monte Carlo
 # computation and Bayesian model determination", *Biometrika* 82(4),
-# 711-732, doi:10.1093/biomet/82.4.711, for the §3-2 general theory
+# 711-732, doi:10.1093/biomet/82.4.711, for the Section 3-2 general theory
 # (the acceptance ratio of eq. 7, the symmetric-measure dimension
-# matching Assumption), §3-3 the switching template with bijective
-# (theta, u) tuples of equal total length, and §4 the change-point
-# application: Equation 9 (the step-function log-likelihood), §4-3
-# (move probabilities and the birth/death acceptance ratio), §4-4 (the
+# matching Assumption), Section 3-3 the switching template with bijective
+# (theta, u) tuples of equal total length, and Section 4 the change-point
+# application: Equation 9 (the step-function log-likelihood), Section 4-3
+# (move probabilities and the birth/death acceptance ratio), Section 4-4 (the
 # reported run, the defaults here). Peskun, P. H. (1973) "Optimum
 # Monte-Carlo sampling using Markov chains", *Biometrika* 60(3),
 # 607-612, for the optimality of the acceptance probability. The
@@ -731,7 +731,7 @@ changepoint_rjmcmc <- function(y = numeric(0), L = 1.0, n_iter = 40000,
     chain = chain,
     n_kept = kept,
     use_likelihood = as.logical(use_likelihood),
-    method = "Green (1995) §4 change-point sampler: height, position, birth and death moves on a step-function rate, with the §4-3 acceptance ratios",
+    method = "Green (1995) Section 4 change-point sampler: height, position, birth and death moves on a step-function rate, with the Section 4-3 acceptance ratios",
     note = "with use_likelihood=False the target is the prior, so k must come back Poisson(lam) truncated at k_max and the heights Gamma(alpha, beta)"
   )
 }

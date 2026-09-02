@@ -5,7 +5,7 @@
 \alias{morie_private_release}
 \title{Laplace mechanism release}
 \usage{
-morie_private_release(value, sensitivity, epsilon, seed = 0)
+morie_private_release(value, sensitivity, epsilon, seed = 0) 
 }
 \arguments{
 \item{value}{The (non-private) output to release.}

@@ -78,18 +78,24 @@
 }
 
 #' Escape whitespace as U+2581, optionally prefixing the marker
+#' @param text See Usage.
+#' @param add_prefix See Usage.
 #' @export
 escape_whitespace <- function(text, add_prefix = TRUE) {
   .escape_whitespace(text, add_prefix)
 }
 
 #' Invert the whitespace escape
+#' @param text See Usage.
+#' @param strip_prefix See Usage.
 #' @export
 unescape_whitespace <- function(text, strip_prefix = TRUE) {
   .unescape_whitespace(text, strip_prefix)
 }
 
 #' Decode pieces back to text (pure string operation)
+#' @param pieces See Usage.
+#' @param strip_prefix See Usage.
 #' @export
 morie_sentpc_decode <- function(pieces, strip_prefix = TRUE) {
   .unescape_whitespace(paste0(as.character(pieces), collapse = ""),
@@ -97,6 +103,9 @@ morie_sentpc_decode <- function(pieces, strip_prefix = TRUE) {
 }
 
 #' Train a BPE model: merge the most frequent adjacent pair greedily
+#' @param corpus See Usage.
+#' @param vocab_size See Usage.
+#' @param add_prefix See Usage.
 #' @export
 train_bpe <- function(corpus, vocab_size, add_prefix = TRUE) {
   V <- as.integer(vocab_size)
@@ -162,6 +171,9 @@ train_bpe <- function(corpus, vocab_size, add_prefix = TRUE) {
 }
 
 #' Encode text with a trained BPE model
+#' @param text See Usage.
+#' @param model See Usage.
+#' @param add_prefix See Usage.
 #' @export
 encode_bpe <- function(text, model, add_prefix = TRUE) {
   esc <- .escape_whitespace(text, add_prefix)
@@ -188,6 +200,9 @@ encode_bpe <- function(text, model, add_prefix = TRUE) {
 }
 
 #' Unigram LM segmentation by Viterbi over the split lattice
+#' @param text See Usage.
+#' @param piece_logp See Usage.
+#' @param add_prefix See Usage.
 #' @export
 viterbi_segment <- function(text, piece_logp, add_prefix = TRUE) {
   s <- .escape_whitespace(text, add_prefix)

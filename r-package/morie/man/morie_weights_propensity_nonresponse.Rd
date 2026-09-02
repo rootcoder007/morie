@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_propensity_nonresponse}
 \alias{morie_weights_propensity_nonresponse}
-\title{Propensity-score non-response weights (logistic).}
+\title{Propensity-score non-response weights (logistic)}
 \usage{
 morie_weights_propensity_nonresponse(weights, responded, X)
 }
@@ -20,7 +20,7 @@ as \code{weights}; respondent weights are divided by the fitted
 response probability and non-respondents receive weight 0.
 }
 \description{
-Propensity-score non-response weights (logistic).
+Propensity-score non-response weights (logistic)
 }
 \examples{
 p <- c(0.1, 0.2, 0.5, 1)

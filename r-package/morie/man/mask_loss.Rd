@@ -5,7 +5,7 @@
 \alias{mask_loss}
 \title{mask_loss}
 \usage{
-mask_loss(logits, target, decoupled = TRUE)
+mask_loss(logits, target, decoupled = TRUE) 
 }
 \arguments{
 \item{logits}{A matrix; passed to \code{as.matrix}.}

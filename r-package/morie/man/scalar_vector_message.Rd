@@ -5,7 +5,7 @@
 \alias{scalar_vector_message}
 \title{The message: scalars from scalars, vectors from s*hat_r and s*v}
 \usage{
-scalar_vector_message(s_j, v_j, r_ij, phi_s, phi_v, W_rbf)
+scalar_vector_message(s_j, v_j, r_ij, phi_s, phi_v, W_rbf) 
 }
 \arguments{
 \item{s_j}{Coerced to numeric by the body, with \code{as.numeric}.}

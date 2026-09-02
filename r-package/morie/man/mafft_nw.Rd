@@ -5,7 +5,7 @@
 \alias{mafft_nw}
 \title{mafft_nw}
 \usage{
-mafft_nw(g1, g2, M, w1, w2, s_op)
+mafft_nw(g1, g2, M, w1, w2, s_op) 
 }
 \arguments{
 \item{g1}{A vector; its length is taken and its elements indexed.}

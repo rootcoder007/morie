@@ -5,7 +5,7 @@
 \alias{mqtmpl_check_method}
 \title{mqtmpl_check_method}
 \usage{
-mqtmpl_check_method(method)
+mqtmpl_check_method(method) 
 }
 \arguments{
 \item{method}{Passed to \code{\%in\%}.}

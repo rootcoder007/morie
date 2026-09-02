@@ -5,7 +5,7 @@
 \alias{morie_qrntcq}
 \title{morie_qrntcq}
 \usage{
-morie_qrntcq(...)
+morie_qrntcq(...) 
 }
 \description{
 morie_qrntcq

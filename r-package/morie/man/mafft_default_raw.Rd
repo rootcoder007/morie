@@ -5,7 +5,7 @@
 \alias{mafft_default_raw}
 \title{mafft_default_raw}
 \usage{
-mafft_default_raw(seq_type, which = "jtt200")
+mafft_default_raw(seq_type, which = "jtt200") 
 }
 \arguments{
 \item{seq_type}{Compared against \code{"nt"}.}

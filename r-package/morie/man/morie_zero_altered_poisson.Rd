@@ -8,11 +8,15 @@
 \alias{morie_zap_link}
 \title{Zero-altered Poisson models}
 \usage{
-morie_zap_predict(theta_hat, mu_hat, threshold = NULL)
-morie_zap_mean_variance(theta, mu)
-morie_zap_loglik(y_positive, mu = NULL, x = NULL)
-morie_zap_mle(y_positive, tol = 1e-12, max_iter = 200)
-morie_zap_link(mu_pred, theta_pred)
+morie_zap_predict(theta_hat, mu_hat, threshold = NULL) 
+
+morie_zap_mean_variance(theta, mu) 
+
+morie_zap_loglik(y_positive, mu = NULL, x = NULL) 
+
+morie_zap_mle(y_positive, tol = 1e-12, max_iter = 200) 
+
+morie_zap_link(mu_pred, theta_pred) 
 }
 \arguments{
 \item{theta}{probability of the zero state}
@@ -21,7 +25,17 @@ morie_zap_link(mu_pred, theta_pred)
 \item{mu_hat}{estimated count means}
 \item{y_positive}{strictly positive counts}
 \item{threshold}{classification cut-off for the ZAPC rule}
-\item{...}{further arguments controlling the fit}
+
+
+\item{x}{Argument \code{x}; see Usage.}
+
+\item{tol}{Argument \code{tol}; see Usage.}
+
+\item{max_iter}{Argument \code{max_iter}; see Usage.}
+
+\item{mu_pred}{Argument \code{mu_pred}; see Usage.}
+
+\item{theta_pred}{Argument \code{theta_pred}; see Usage.}
 }
 \value{
 A list holding the fitted quantities for the method called: point

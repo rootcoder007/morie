@@ -5,7 +5,7 @@
 \alias{morie_smatch_sample_size}
 \title{Events required to detect a log relative incidence (Sec. 7.6)}
 \usage{
-morie_smatch_sample_size(log_ri, r, p_exposed, alpha = 0.05, power = 0.8)
+morie_smatch_sample_size(log_ri, r, p_exposed, alpha = 0.05, power = 0.8) 
 }
 \arguments{
 \item{log_ri}{Effect size on the log scale.}

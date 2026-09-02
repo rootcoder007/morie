@@ -5,7 +5,7 @@
 \alias{mistr_rope_angles}
 \title{mistr_rope_angles}
 \usage{
-mistr_rope_angles(d, base = 10000)
+mistr_rope_angles(d, base = 10000) 
 }
 \arguments{
 \item{d}{Numeric; combined arithmetically in the body.}

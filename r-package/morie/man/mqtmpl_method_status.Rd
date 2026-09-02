@@ -5,7 +5,7 @@
 \alias{mqtmpl_method_status}
 \title{mqtmpl_method_status}
 \usage{
-mqtmpl_method_status(method = NULL)
+mqtmpl_method_status(method = NULL) 
 }
 \arguments{
 \item{method}{Optional; may be \code{NULL}. Carried through into a list the body builds.}

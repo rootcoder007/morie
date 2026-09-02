@@ -5,7 +5,7 @@
 \alias{channel_mixed_tokens}
 \title{The alternative: one token per time position, all channels}
 \usage{
-channel_mixed_tokens(X, patch_len, stride = NULL)
+channel_mixed_tokens(X, patch_len, stride = NULL) 
 }
 \arguments{
 \item{X}{A matrix; passed to \code{as.matrix}.}

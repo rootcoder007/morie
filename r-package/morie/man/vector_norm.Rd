@@ -5,7 +5,7 @@
 \alias{vector_norm}
 \title{||v|| -- an invariant built from an equivariant}
 \usage{
-vector_norm(v)
+vector_norm(v) 
 }
 \arguments{
 \item{v}{A matrix; passed to \code{as.matrix}.}

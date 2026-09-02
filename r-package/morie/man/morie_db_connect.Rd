@@ -17,7 +17,7 @@ A DBI connection object.
 }
 \description{
 Opens (or creates) the per-user cache database. The default backend
-is \strong{DuckDB} — zero-config like SQLite, but vectorised + columnar,
+is \strong{DuckDB} -- zero-config like SQLite, but vectorised + columnar,
 so it handles the multi-GB-scale open-data PUMFs (TPS, CPADS bulk)
 that morie ingests without breaking down on analytical queries. For
 back-compat, an existing SQLite cache at \code{morie.db} is reused; if

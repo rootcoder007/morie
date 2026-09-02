@@ -5,7 +5,7 @@
 \alias{motfsr_uniform_theta}
 \title{motfsr_uniform_theta}
 \usage{
-motfsr_uniform_theta(w, L, mu)
+motfsr_uniform_theta(w, L, mu) 
 }
 \arguments{
 \item{w}{A count; the body uses it as \code{seq_len(...)}.}

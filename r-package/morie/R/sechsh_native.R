@@ -67,6 +67,9 @@
 }
 
 #' One step of the hash chain
+#' @param previous_hash See Usage.
+#' @param entry See Usage.
+#' @param key See Usage.
 #' @export
 chain_entry <- function(previous_hash, entry, key = NULL) {
   p <- .sechsh_as_bytes(previous_hash)
@@ -80,6 +83,9 @@ chain_entry <- function(previous_hash, entry, key = NULL) {
 }
 
 #' Build a complete chain from a list of entries
+#' @param entries See Usage.
+#' @param key See Usage.
+#' @param genesis See Usage.
 #' @export
 build_chain <- function(entries, key = NULL, genesis = .GENESIS) {
   prev <- .sechsh_as_bytes(genesis)
@@ -97,6 +103,10 @@ build_chain <- function(entries, key = NULL, genesis = .GENESIS) {
 }
 
 #' Verify a chain, returning the FIRST bad index (not just a boolean)
+#' @param entries See Usage.
+#' @param hashes See Usage.
+#' @param key See Usage.
+#' @param genesis See Usage.
 #' @export
 verify_chain <- function(entries, hashes, key = NULL,
                          genesis = .GENESIS) {
@@ -127,6 +137,7 @@ verify_chain <- function(entries, hashes, key = NULL,
 }
 
 #' RFC 6962 Merkle Tree Hash
+#' @param leaves See Usage.
 #' @export
 merkle_root <- function(leaves) {
   L <- lapply(leaves, .sechsh_as_bytes)
@@ -140,6 +151,8 @@ merkle_root <- function(leaves) {
 }
 
 #' Build an inclusion proof (audit path) for the given leaf
+#' @param leaves See Usage.
+#' @param index See Usage.
 #' @export
 inclusion_proof <- function(leaves, index) {
   L <- lapply(leaves, .sechsh_as_bytes)
@@ -169,6 +182,11 @@ inclusion_proof <- function(leaves, index) {
 }
 
 #' Recompute the root from a leaf and an audit path
+#' @param leaf See Usage.
+#' @param index See Usage.
+#' @param size See Usage.
+#' @param path See Usage.
+#' @param root See Usage.
 #' @export
 verify_inclusion <- function(leaf, index, size, path, root) {
   m <- as.integer(index); n <- as.integer(size)

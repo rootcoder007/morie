@@ -5,7 +5,8 @@
 \alias{morie_tmle_data_adaptive}
 \title{Contrast between data-discovered exposure levels, done honestly}
 \usage{
-morie_tmle_data_adaptive(y, D, X, candidate_strata = NULL, method = "cv-tmle", n_folds = 10, trim = 0.01, ridge = 1e-08, level = 0.95, bounds = NULL)
+morie_tmle_data_adaptive(y, D, X, candidate_strata = NULL, method = "cv-tmle", n_folds = 10, 
+    trim = 0.01, ridge = 1e-08, level = 0.95, bounds = NULL) 
 }
 \arguments{
 \item{y,D,X}{Outcome, exposure, covariates.}

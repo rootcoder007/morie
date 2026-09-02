@@ -5,7 +5,7 @@
 \alias{mqtmpl_cheatsheet}
 \title{mqtmpl_cheatsheet}
 \usage{
-mqtmpl_cheatsheet()
+mqtmpl_cheatsheet() 
 }
 \description{
 Part of the mqtmpl_native implementation; see the file header for the source it follows.

@@ -5,7 +5,7 @@
 \alias{predict_next}
 \title{predict_next}
 \usage{
-predict_next(state, item_embeddings, top_k = 5, exclude = list())
+predict_next(state, item_embeddings, top_k = 5, exclude = list()) 
 }
 \arguments{
 \item{state}{Passed to \code{.sasrec_vec}.}

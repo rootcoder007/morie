@@ -5,7 +5,7 @@
 \alias{morie_sasRec}
 \title{morie_sasRec}
 \usage{
-morie_sasRec(E, WQ, WK, WV, mask = NULL)
+morie_sasRec(E, WQ, WK, WV, mask = NULL) 
 }
 \arguments{
 \item{E}{Passed to \code{self_attention}.}

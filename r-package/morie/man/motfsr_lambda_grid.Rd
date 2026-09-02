@@ -5,7 +5,7 @@
 \alias{motfsr_lambda_grid}
 \title{motfsr_lambda_grid}
 \usage{
-motfsr_lambda_grid(n_starts_total, n_seqs, w, lambda0)
+motfsr_lambda_grid(n_starts_total, n_seqs, w, lambda0) 
 }
 \arguments{
 \item{n_starts_total}{Numeric; combined arithmetically in the body.}

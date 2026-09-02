@@ -5,7 +5,7 @@
 \alias{morie_gru4r_recall}
 \title{Recall at k}
 \usage{
-morie_gru4r_recall(ranked, target, kk = 20)
+morie_gru4r_recall(ranked, target, kk = 20) 
 }
 \arguments{
 \item{ranked}{Ordered integer vector of recommended item ids.}

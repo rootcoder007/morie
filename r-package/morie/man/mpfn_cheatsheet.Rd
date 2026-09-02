@@ -5,7 +5,7 @@
 \alias{mpfn_cheatsheet}
 \title{mpfn_cheatsheet}
 \usage{
-mpfn_cheatsheet()
+mpfn_cheatsheet() 
 }
 \description{
 Part of the mpfn_native implementation; see the file header for the source it follows.

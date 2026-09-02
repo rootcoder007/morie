@@ -5,10 +5,15 @@
 \alias{train_bpe}
 \title{Train a BPE model: merge the most frequent adjacent pair greedily}
 \usage{
-train_bpe(corpus, vocab_size, add_prefix = TRUE)
+train_bpe(corpus, vocab_size, add_prefix = TRUE) 
 }
 \description{
 Train a BPE model: merge the most frequent adjacent pair greedily
+}
+\arguments{
+\item{corpus}{Argument \code{corpus}; see Usage.}
+\item{vocab_size}{Argument \code{vocab_size}; see Usage.}
+\item{add_prefix}{Argument \code{add_prefix}; see Usage.}
 }
 \value{
 A list with \code{merges}, \code{vocab}, \code{vocab_size}, \code{requested}, \code{algorithm}, \code{note}.

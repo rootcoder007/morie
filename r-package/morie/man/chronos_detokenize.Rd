@@ -5,7 +5,7 @@
 \alias{chronos_detokenize}
 \title{chronos_detokenize}
 \usage{
-chronos_detokenize(tokens, bins, scale)
+chronos_detokenize(tokens, bins, scale) 
 }
 \arguments{
 \item{tokens}{Passed to \code{chronos_dequantize}.}

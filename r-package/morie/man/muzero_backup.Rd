@@ -5,7 +5,7 @@
 \alias{muzero_backup}
 \title{muzero_backup}
 \usage{
-muzero_backup(path, value, gamma, mm)
+muzero_backup(path, value, gamma, mm) 
 }
 \arguments{
 \item{path}{A vector; its length is taken and its elements indexed.}

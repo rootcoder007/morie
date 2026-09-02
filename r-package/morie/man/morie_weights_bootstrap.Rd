@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_bootstrap}
 \alias{morie_weights_bootstrap}
-\title{Bootstrap replicate weights (Rao-Wu rescaling within strata).}
+\title{Bootstrap replicate weights (Rao-Wu rescaling within strata)}
 \usage{
 morie_weights_bootstrap(weights, n_replicates = 200, strata = NULL, seed = 42)
 }
@@ -21,7 +21,7 @@ A numeric matrix of bootstrap replicate weights with
 \code{length(weights)} rows and \code{n_replicates} columns.
 }
 \description{
-Bootstrap replicate weights (Rao-Wu rescaling within strata).
+Bootstrap replicate weights (Rao-Wu rescaling within strata)
 }
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)

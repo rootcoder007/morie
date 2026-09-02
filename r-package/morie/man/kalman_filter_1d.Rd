@@ -5,7 +5,7 @@
 \alias{kalman_filter_1d}
 \title{Kalman filter for the scalar linear-Gaussian state-space model}
 \usage{
-kalman_filter_1d(y, a, q, c, r, m0 = 0, p0 = 1)
+kalman_filter_1d(y, a, q, c, r, m0 = 0, p0 = 1) 
 }
 \arguments{
 \item{y}{Numeric vector of observations.}

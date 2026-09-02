@@ -287,6 +287,10 @@ gabc_log_likelihood <- function(sim, obs, theta, n_sim = 50L, epsilon = 1.0,
 #'
 #' Returns \code{log_lik, mu, cov} per Wilkinson eq. (2) and
 #' Meeds & Welling eq. (9).
+#' @param draws See Usage.
+#' @param obs See Usage.
+#' @param epsilon See Usage.
+#' @param summary See Usage.
 #' @export
 synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
   rows <- lapply(draws, function(z) .gp_summarise(z, summary))
@@ -441,6 +445,12 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
 #'
 #' Wilkinson (2014) Sec. 2.1: quadratic mean, conjugate improper
 #' \eqn{1/tau^2} prior on \eqn{(beta, tau^2)}, plug-in MLE length-scale.
+#' @param design See Usage.
+#' @param values See Usage.
+#' @param nugget See Usage.
+#' @param lengthscale See Usage.
+#' @param kernel See Usage.
+#' @param tau2 See Usage.
 #' @export
 gp_fit <- function(design, values, nugget = NULL, lengthscale = NULL,
                    kernel = "sqexp", tau2 = NULL) {
@@ -487,6 +497,8 @@ gp_fit <- function(design, values, nugget = NULL, lengthscale = NULL,
 }
 
 #' Posterior mean and sd at theta
+#' @param fit See Usage.
+#' @param theta See Usage.
 #' @export
 gp_predict <- function(fit, theta) {
   X <- fit$design; ls <- fit$lengthscale; kern <- fit$kernel
@@ -509,6 +521,10 @@ gp_predict <- function(fit, theta) {
 }
 
 #' Wilkinson implausibility rule, eq. (3)
+#' @param fit See Usage.
+#' @param theta See Usage.
+#' @param threshold See Usage.
+#' @param n_sd See Usage.
 #' @export
 implausible <- function(fit, theta, threshold = 10, n_sd = 3) {
   pr <- gp_predict(fit, theta)
@@ -520,6 +536,19 @@ implausible <- function(fit, theta, threshold = 10, n_sd = 3) {
 #'
 #' Wilkinson (2014) Sec. 3: waves of design, emulate, rule out,
 #' redesign. Returns the GP fit and a list of per-wave summaries.
+#' @param sim See Usage.
+#' @param obs See Usage.
+#' @param prior_ppf See Usage.
+#' @param n_waves See Usage.
+#' @param n_design See Usage.
+#' @param n_sim See Usage.
+#' @param epsilon See Usage.
+#' @param summary See Usage.
+#' @param threshold See Usage.
+#' @param n_sd See Usage.
+#' @param kernel See Usage.
+#' @param accept_kernel See Usage.
+#' @param seed See Usage.
 #' @export
 history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
                           n_sim = 50L, epsilon = 1, summary = NULL,
@@ -718,6 +747,16 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
 }
 
 #' Synthetic-likelihood ABC, Meeds & Welling Algorithm 1
+#' @param sim See Usage.
+#' @param obs See Usage.
+#' @param log_prior See Usage.
+#' @param theta0 See Usage.
+#' @param n_iter See Usage.
+#' @param n_sim See Usage.
+#' @param epsilon See Usage.
+#' @param proposal_sd See Usage.
+#' @param summary See Usage.
+#' @param seed See Usage.
 #' @export
 synthetic_abc <- function(sim, obs, log_prior, theta0, n_iter = 200L,
                           n_sim = 20L, epsilon = 0, proposal_sd = 0.5,
@@ -728,6 +767,20 @@ synthetic_abc <- function(sim, obs, log_prior, theta0, n_iter = 200L,
 }
 
 #' GPS-ABC adaptive sampler, Meeds & Welling Algorithm 2
+#' @param sim See Usage.
+#' @param obs See Usage.
+#' @param log_prior See Usage.
+#' @param theta0 See Usage.
+#' @param n_iter See Usage.
+#' @param n_sim See Usage.
+#' @param epsilon See Usage.
+#' @param proposal_sd See Usage.
+#' @param summary See Usage.
+#' @param seed See Usage.
+#' @param xi See Usage.
+#' @param delta_s See Usage.
+#' @param n_alpha See Usage.
+#' @param max_sim See Usage.
 #' @export
 gps_abc <- function(sim, obs, log_prior, theta0, n_iter = 200L, n_sim = 10L,
                     epsilon = 0, proposal_sd = 0.5, summary = NULL,
@@ -742,6 +795,28 @@ gps_abc <- function(sim, obs, log_prior, theta0, n_iter = 200L, n_sim = 10L,
 #'
 #' Wilkinson (2014) history matching + GP-emulated log-posterior on a
 #' grid, or one of the Meeds & Welling (2014) samplers.
+#' @param sim See Usage.
+#' @param obs See Usage.
+#' @param X_grid See Usage.
+#' @param kernel See Usage.
+#' @param method See Usage.
+#' @param prior_ppf See Usage.
+#' @param log_prior See Usage.
+#' @param theta0 See Usage.
+#' @param n_sim See Usage.
+#' @param epsilon See Usage.
+#' @param summary See Usage.
+#' @param n_waves See Usage.
+#' @param n_design See Usage.
+#' @param threshold See Usage.
+#' @param n_sd See Usage.
+#' @param accept_kernel See Usage.
+#' @param n_iter See Usage.
+#' @param proposal_sd See Usage.
+#' @param xi See Usage.
+#' @param delta_s See Usage.
+#' @param n_alpha See Usage.
+#' @param seed See Usage.
 #' @export
 abc_gp_emulator <- function(sim, obs, X_grid = NULL, kernel = "sqexp",
                             method = "wilkinson", prior_ppf = NULL,

@@ -5,7 +5,7 @@
 \alias{node2v_transition_probabilities}
 \title{node2v_transition_probabilities}
 \usage{
-node2v_transition_probabilities(adj, t, v, p, q, weights = NULL)
+node2v_transition_probabilities(adj, t, v, p, q, weights = NULL) 
 }
 \arguments{
 \item{adj}{A vector; indexed elementwise.}

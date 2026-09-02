@@ -28,6 +28,7 @@ morie_matching_variable_ratio(
 \item{ps}{Optional propensity scores. When supplied they REPLACE
 the fitted model and become the matching distance directly,
 aligned to the rows that survive the NA drop.}
+
 }
 \value{
 A list of class \code{morie_match_result}.

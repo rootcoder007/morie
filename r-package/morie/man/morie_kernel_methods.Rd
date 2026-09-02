@@ -14,24 +14,78 @@
 \alias{morie_sparse_kernel_design}
 \title{Kernel and RKHS methods}
 \usage{
-morie_kernel_matrix(X, kernel = "linear", gamma = NULL, degree = 2, coef0 = 1, Z = NULL)
-morie_rkhs_fit(K, y, lambda = 1)
-morie_rkhs_predict(K_new, beta, eta0 = 0)
-morie_rkhs_mixed_equations(C, K, y, lambda = 1, sigma2_e = 1, form = "direct")
-morie_arccos_kernel(X, Z = NULL, depth = 1L, normalize_median = FALSE)
-morie_bayesian_kernel_blup(y, K, sigma2_u = 1, sigma2_e = 1, mu = NULL)
-morie_kernel_blup_gxe(Z_u1, K, Z_E, sigma2_u1 = 1, sigma2_u2 = 1)
-morie_kernel_blup_replicated(Z, K, sigma2_u = 1)
-morie_kernel_eigen_design(K, tol = 1e-10)
-morie_nystrom(X, m_index, kernel = "linear", gamma = NULL)
-morie_sparse_kernel_design(X, m_index, kernel = "linear", gamma = NULL, tol = 1e-10)
+morie_kernel_matrix(X, kernel = "linear", gamma = NULL, degree = 2, coef0 = 1, Z = NULL) 
+
+morie_rkhs_fit(K, y, lambda = 1) 
+
+morie_rkhs_predict(K_new, beta, eta0 = 0) 
+
+morie_rkhs_mixed_equations(C, K, y, lambda = 1, sigma2_e = 1, form = "direct") 
+
+morie_arccos_kernel(X, Z = NULL, depth = 1L, normalize_median = FALSE) 
+
+morie_bayesian_kernel_blup(y, K, sigma2_u = 1, sigma2_e = 1, mu = NULL) 
+
+morie_kernel_blup_gxe(Z_u1, K, Z_E, sigma2_u1 = 1, sigma2_u2 = 1) 
+
+morie_kernel_blup_replicated(Z, K, sigma2_u = 1) 
+
+morie_kernel_eigen_design(K, tol = 1e-10) 
+
+morie_nystrom(X, m_index, kernel = "linear", gamma = NULL) 
+
+morie_sparse_kernel_design(X, m_index, kernel = "linear", gamma = NULL, tol = 1e-10) 
 }
 \arguments{
 \item{X}{numeric matrix of inputs, one row per observation}
 \item{y}{numeric response vector}
 \item{kernel}{kernel name, one of linear, gaussian, polynomial, exponential, sigmoid or arccos}
-\item{bandwidth}{kernel bandwidth or scale parameter}
-\item{...}{further arguments passed to the kernel}
+
+
+
+\item{gamma}{Argument \code{gamma}; see Usage.}
+
+\item{degree}{Argument \code{degree}; see Usage.}
+
+\item{coef0}{Argument \code{coef0}; see Usage.}
+
+\item{Z}{Argument \code{Z}; see Usage.}
+
+\item{K}{Argument \code{K}; see Usage.}
+
+\item{lambda}{Argument \code{lambda}; see Usage.}
+
+\item{K_new}{Argument \code{K_new}; see Usage.}
+
+\item{beta}{Argument \code{beta}; see Usage.}
+
+\item{eta0}{Argument \code{eta0}; see Usage.}
+
+\item{C}{Argument \code{C}; see Usage.}
+
+\item{sigma2_e}{Argument \code{sigma2_e}; see Usage.}
+
+\item{form}{Argument \code{form}; see Usage.}
+
+\item{depth}{Argument \code{depth}; see Usage.}
+
+\item{normalize_median}{Argument \code{normalize_median}; see Usage.}
+
+\item{sigma2_u}{Argument \code{sigma2_u}; see Usage.}
+
+\item{mu}{Argument \code{mu}; see Usage.}
+
+\item{Z_u1}{Argument \code{Z_u1}; see Usage.}
+
+\item{Z_E}{Argument \code{Z_E}; see Usage.}
+
+\item{sigma2_u1}{Argument \code{sigma2_u1}; see Usage.}
+
+\item{sigma2_u2}{Argument \code{sigma2_u2}; see Usage.}
+
+\item{tol}{Argument \code{tol}; see Usage.}
+
+\item{m_index}{Argument \code{m_index}; see Usage.}
 }
 \value{
 A list holding the fitted quantities for the method called: point

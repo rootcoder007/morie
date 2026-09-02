@@ -5,7 +5,9 @@
 \alias{cgnonl_nonlinear_cg}
 \title{cgnonl_nonlinear_cg}
 \usage{
-cgnonl_nonlinear_cg(f, grad, x0, beta = "fletcher-reeves", restart = NULL, max_iter = NULL, tol = 1e-10, est = NULL, line_search = "fletcher-reeves", hess_vec = NULL, keep_path = FALSE)
+cgnonl_nonlinear_cg(f, grad, x0, beta = "fletcher-reeves", restart = NULL, max_iter = NULL, 
+    tol = 1e-10, est = NULL, line_search = "fletcher-reeves", hess_vec = NULL, 
+    keep_path = FALSE) 
 }
 \arguments{
 \item{f}{Passed to \code{cgnonl_line_search_fr}.}

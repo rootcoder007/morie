@@ -242,9 +242,16 @@ airl <- function(expert_states, expert_actions, expert_next,
 
 #' Soft value iteration on a deterministic tabular MDP
 #'
-#' The maximum-entropy :math:`V^*` of eq. Q(s, a) = r(s) + gamma V(s'),
+#' The maximum-entropy \eqn{V^*} of eq. Q(s, a) = r(s) + gamma V(s'),
 #' V(s) = log sum_a exp Q(s, a). Provided so callers can validate
 #' AIRL's recovered reward independently of the fit.
+#' @param states See Usage.
+#' @param actions See Usage.
+#' @param step See Usage.
+#' @param reward See Usage.
+#' @param gamma See Usage.
+#' @param iters See Usage.
+#' @param tol See Usage.
 #' @export
 soft_value_iteration <- function(states, actions, step, reward, gamma = 0.9,
                                  iters = 2000L, tol = 1e-14) {

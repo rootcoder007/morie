@@ -5,7 +5,7 @@
 \alias{mqtmpl_kw_n_imp}
 \title{mqtmpl_kw_n_imp}
 \usage{
-mqtmpl_kw_n_imp(covariates)
+mqtmpl_kw_n_imp(covariates) 
 }
 \arguments{
 \item{covariates}{A vector; its length is taken.}

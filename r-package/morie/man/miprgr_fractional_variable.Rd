@@ -5,7 +5,7 @@
 \alias{miprgr_fractional_variable}
 \title{miprgr_fractional_variable}
 \usage{
-miprgr_fractional_variable(x, integer_vars, tol = 1e-07)
+miprgr_fractional_variable(x, integer_vars, tol = 1e-07) 
 }
 \arguments{
 \item{x}{A vector; indexed elementwise.}

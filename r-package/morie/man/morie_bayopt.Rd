@@ -5,7 +5,7 @@
 \alias{morie_bayopt}
 \title{morie_bayopt}
 \usage{
-morie_bayopt(...)
+morie_bayopt(...) 
 }
 \arguments{
 \item{...}{Passed through.}

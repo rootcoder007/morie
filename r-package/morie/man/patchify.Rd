@@ -5,7 +5,7 @@
 \alias{patchify}
 \title{Cut one univariate series into patches of length P. With stride}
 \usage{
-patchify(x, patch_len, stride = NULL)
+patchify(x, patch_len, stride = NULL) 
 }
 \arguments{
 \item{x}{Coerced to numeric by the body, with \code{as.numeric}.}

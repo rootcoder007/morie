@@ -5,7 +5,7 @@
 \alias{morie_pratt_cheatsheet}
 \title{morie_pratt_cheatsheet}
 \usage{
-morie_pratt_cheatsheet()
+morie_pratt_cheatsheet() 
 }
 \description{
 Part of the pratt_native implementation; see the file header for the source it follows.

@@ -5,7 +5,7 @@
 \alias{dipole_moment}
 \title{Mu = sum_i q_i (r_i - r_c). A tensorial (here vector) property,}
 \usage{
-dipole_moment(charges, R, centre = NULL)
+dipole_moment(charges, R, centre = NULL) 
 }
 \arguments{
 \item{charges}{Coerced to numeric by the body, with \code{as.numeric}.}

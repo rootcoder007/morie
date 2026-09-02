@@ -5,7 +5,7 @@
 \alias{morie_grphmr_sp}
 \title{All-pairs shortest path distances}
 \usage{
-morie_grphmr_sp(adj, n)
+morie_grphmr_sp(adj, n) 
 }
 \arguments{
 \item{adj}{Adjacency list: list of numeric neighbour vectors.}

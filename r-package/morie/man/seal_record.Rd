@@ -5,10 +5,16 @@
 \alias{seal_record}
 \title{Seal a record under its DEK}
 \usage{
-seal_record(plaintext, dek, nonce, aad = raw(0))
+seal_record(plaintext, dek, nonce, aad = raw(0)) 
 }
 \description{
 Seal a record under its DEK
+}
+\arguments{
+\item{plaintext}{Argument \code{plaintext}; see Usage.}
+\item{dek}{Argument \code{dek}; see Usage.}
+\item{nonce}{Argument \code{nonce}; see Usage.}
+\item{aad}{Argument \code{aad}; see Usage.}
 }
 \value{
 A list with \code{ciphertext}, \code{tag}, \code{nonce}, \code{aad}.

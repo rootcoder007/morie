@@ -5,7 +5,7 @@
 \alias{mafft_gap_profiles}
 \title{mafft_gap_profiles}
 \usage{
-mafft_gap_profiles(group, weights)
+mafft_gap_profiles(group, weights) 
 }
 \arguments{
 \item{group}{A vector; its length is taken and its elements indexed.}

@@ -5,7 +5,7 @@
 \alias{chronos_mean_scale}
 \title{chronos_mean_scale}
 \usage{
-chronos_mean_scale(x, context = NULL)
+chronos_mean_scale(x, context = NULL) 
 }
 \arguments{
 \item{x}{Coerced to numeric by the body, with \code{as.numeric}.}

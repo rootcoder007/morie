@@ -5,7 +5,9 @@
 \alias{nashq_run}
 \title{nashq_run}
 \usage{
-nashq_run(states, actions, step, rewards, gamma = 0.9, alpha = 0.5, epsilon = 0.1, episodes = 500, horizon = 50, start = NULL, selection = "global_optimal", terminal = NULL, seed = 0, agent = 0, tol = 1e-09)
+nashq_run(states, actions, step, rewards, gamma = 0.9, alpha = 0.5, epsilon = 0.1, 
+    episodes = 500, horizon = 50, start = NULL, selection = "global_optimal", 
+    terminal = NULL, seed = 0, agent = 0, tol = 1e-09) 
 }
 \arguments{
 \item{states}{Coerced to list by the body, with \code{as.list}.}

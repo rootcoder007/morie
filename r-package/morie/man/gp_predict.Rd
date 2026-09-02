@@ -5,10 +5,14 @@
 \alias{gp_predict}
 \title{Posterior mean and sd at theta}
 \usage{
-gp_predict(fit, theta)
+gp_predict(fit, theta) 
 }
 \description{
 Posterior mean and sd at theta
+}
+\arguments{
+\item{fit}{Argument \code{fit}; see Usage.}
+\item{theta}{Argument \code{theta}; see Usage.}
 }
 \value{
 A vector.

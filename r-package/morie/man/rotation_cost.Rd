@@ -5,10 +5,15 @@
 \alias{rotation_cost}
 \title{Cost model: single-key vs envelope rotation}
 \usage{
-rotation_cost(n_records, mean_record_bytes, dek_bytes = 32L)
+rotation_cost(n_records, mean_record_bytes, dek_bytes = 32L) 
 }
 \description{
 Cost model: single-key vs envelope rotation
+}
+\arguments{
+\item{n_records}{Argument \code{n_records}; see Usage.}
+\item{mean_record_bytes}{Argument \code{mean_record_bytes}; see Usage.}
+\item{dek_bytes}{Argument \code{dek_bytes}; see Usage.}
 }
 \value{
 A list with \code{single_key_bytes}, \code{envelope_kek_bytes}, \code{ratio}, \code{records_touched_single}, \code{records_touched_envelope}, \code{note}.

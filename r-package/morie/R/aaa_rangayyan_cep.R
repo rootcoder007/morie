@@ -172,7 +172,7 @@ MultModel <- function(x, p) {
        method = "Rangayyan (2024) eq. (4.58)")
 }
 
-#' Eq (4.59): log[y] = log[x] + log[p], for x != 0 and p != 0.  The
+#' Eq (4.59): log\[y\] = log\[x\] + log\[p\], for x != 0 and p != 0.  The
 #'
 #' book states that side condition, so a zero is rejected rather than
 #' giving -Inf; a negative factor needs the complex-log route.

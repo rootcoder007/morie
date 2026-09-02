@@ -5,7 +5,7 @@
 \alias{precision_recall}
 \title{precision_recall}
 \usage{
-precision_recall(pred, truth)
+precision_recall(pred, truth) 
 }
 \arguments{
 \item{pred}{Passed to \code{==}.}

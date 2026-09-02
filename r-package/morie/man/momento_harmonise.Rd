@@ -5,7 +5,7 @@
 \alias{momento_harmonise}
 \title{momento_harmonise}
 \usage{
-momento_harmonise(series_list, patch_len, normalise = TRUE)
+momento_harmonise(series_list, patch_len, normalise = TRUE) 
 }
 \arguments{
 \item{series_list}{A vector; its length is taken.}

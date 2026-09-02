@@ -5,7 +5,7 @@
 \alias{tagRC_preference_vector}
 \title{tagRC_preference_vector}
 \usage{
-tagRC_preference_vector(nodes, focus, weight = 0.9)
+tagRC_preference_vector(nodes, focus, weight = 0.9) 
 }
 \arguments{
 \item{nodes}{Coerced to character by the body, with \code{as.character}.}

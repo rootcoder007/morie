@@ -5,7 +5,7 @@
 \alias{morie_gsageemd_sample}
 \title{Fixed-size neighbour sample}
 \usage{
-morie_gsageemd_sample(adj, v, size, rng)
+morie_gsageemd_sample(adj, v, size, rng) 
 }
 \arguments{
 \item{adj}{Adjacency list keyed by node.}

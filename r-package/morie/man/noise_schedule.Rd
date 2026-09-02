@@ -5,7 +5,7 @@
 \alias{noise_schedule}
 \title{Linear noise schedule, scaled down}
 \usage{
-noise_schedule(T, scale = 0.001, beta_min = 1e-04, beta_max = 0.02)
+noise_schedule(T, scale = 0.001, beta_min = 1e-04, beta_max = 0.02) 
 }
 \arguments{
 \item{T}{Number of diffusion steps.}

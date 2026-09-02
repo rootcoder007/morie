@@ -55,6 +55,11 @@
 }
 
 #' Doubly-robust AIPW score
+#' @param Y See Usage.
+#' @param W See Usage.
+#' @param mu1 See Usage.
+#' @param mu0 See Usage.
+#' @param e See Usage.
 #' @export
 aipw_scores <- function(Y, W, mu1, mu0, e) {
   y <- .slvgrf_vec(Y); w <- .slvgrf_vec(W)
@@ -87,6 +92,8 @@ aipw_scores <- function(Y, W, mu1, mu0, e) {
 }
 
 #' TOC at u = j/n for j = 1..n (Definition 2)
+#' @param scores See Usage.
+#' @param priority See Usage.
 #' @export
 toc_curve <- function(scores, priority) {
   ch <- .check(scores, priority)
@@ -104,6 +111,9 @@ toc_curve <- function(scores, priority) {
 }
 
 #' RATE: int alpha(u) TOC(u) du
+#' @param scores See Usage.
+#' @param priority See Usage.
+#' @param weight See Usage.
 #' @export
 rate <- function(scores, priority, weight = "autoc") {
   if (!(weight %in% .slvgrf_WEIGHTS)) {
@@ -121,18 +131,25 @@ rate <- function(scores, priority, weight = "autoc") {
 }
 
 #' Area under the TOC (RATE with a flat weight)
+#' @param scores See Usage.
+#' @param priority See Usage.
 #' @export
 autoc <- function(scores, priority) {
   rate(scores, priority, weight = "autoc")$estimate
 }
 
 #' Qini coefficient (RATE with alpha(u) = u)
+#' @param scores See Usage.
+#' @param priority See Usage.
 #' @export
 qini_coefficient <- function(scores, priority) {
   rate(scores, priority, weight = "qini")$estimate
 }
 
 #' Qini curve: cumulative gain from treating the top fraction
+#' @param scores See Usage.
+#' @param priority See Usage.
+#' @param cost See Usage.
 #' @export
 qini_curve <- function(scores, priority, cost = NULL) {
   ch <- .check(scores, priority)
@@ -164,6 +181,11 @@ qini_curve <- function(scores, priority, cost = NULL) {
 }
 
 #' Half-sample bootstrap test of RATE = 0
+#' @param scores See Usage.
+#' @param priority See Usage.
+#' @param weight See Usage.
+#' @param reps See Usage.
+#' @param seed See Usage.
 #' @export
 rate_test <- function(scores, priority, weight = "autoc", reps = 500L,
                       seed = 0) {

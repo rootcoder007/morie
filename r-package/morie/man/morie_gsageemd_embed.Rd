@@ -5,7 +5,7 @@
 \alias{morie_gsageemd_embed}
 \title{K-hop GraphSAGE embedding}
 \usage{
-morie_gsageemd_embed(features, adj, Ws, how = "mean", sizes = NULL, seed = 0)
+morie_gsageemd_embed(features, adj, Ws, how = "mean", sizes = NULL, seed = 0) 
 }
 \arguments{
 \item{features}{Node feature matrix (n x d).}

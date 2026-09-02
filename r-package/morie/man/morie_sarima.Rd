@@ -5,7 +5,8 @@
 \alias{morie_sarima}
 \title{morie_sarima}
 \usage{
-morie_sarima(y, order = c(0, 1, 1), seasonal_order = c(0, 1, 1), s = 12, method = "ml", start = NULL)
+morie_sarima(y, order = c(0, 1, 1), seasonal_order = c(0, 1, 1), s = 12, method = "ml", 
+    start = NULL) 
 }
 \arguments{
 \item{y}{Passed to \code{.sarima_fit}.}

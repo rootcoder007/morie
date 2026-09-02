@@ -5,7 +5,7 @@
 \alias{morie_penalised_tmle}
 \title{Penalised doubly robust TMLE}
 \usage{
-morie_penalised_tmle(y, D, X, penalty = 0.05, iters = 100)
+morie_penalised_tmle(y, D, X, penalty = 0.05, iters = 100) 
 }
 \arguments{
 \item{y}{Numeric outcome in \code{[0,1]}.}

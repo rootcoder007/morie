@@ -5,7 +5,7 @@
 \alias{group_time_att}
 \title{Group-time ATT(g,t) under staggered adoption}
 \usage{
-group_time_att(Y, first_treated, comparison = "not-yet-treated")
+group_time_att(Y, first_treated, comparison = "not-yet-treated") 
 }
 \arguments{
 \item{Y}{Balanced panel.}

@@ -5,7 +5,7 @@
 \alias{mafft_jtt_exchangeability}
 \title{mafft_jtt_exchangeability}
 \usage{
-mafft_jtt_exchangeability()
+mafft_jtt_exchangeability() 
 }
 \description{
 Part of the mafft_native implementation; see the file header for the source it follows.

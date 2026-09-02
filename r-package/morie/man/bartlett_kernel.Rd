@@ -5,10 +5,13 @@
 \alias{bartlett_kernel}
 \title{Bartlett (triangular) kernel}
 \usage{
-bartlett_kernel(x)
+bartlett_kernel(x) 
 }
 \description{
 Bartlett (triangular) kernel
+}
+\arguments{
+\item{x}{Argument \code{x}; see Usage.}
 }
 \value{
 The value of \code{if}.

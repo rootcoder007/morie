@@ -5,7 +5,7 @@
 \alias{miprgr_solve_relaxation}
 \title{miprgr_solve_relaxation}
 \usage{
-miprgr_solve_relaxation(A, b, c, bounds = list(), n = NULL, maximise = TRUE, solver = "simplex")
+miprgr_solve_relaxation(A, b, c, bounds = list(), n = NULL, maximise = TRUE, solver = "simplex") 
 }
 \arguments{
 \item{A}{A matrix; indexed by row and column.}

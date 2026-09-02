@@ -5,7 +5,8 @@
 \alias{gabc_log_likelihood}
 \title{Wilkinson\'s GABC log-likelihood}
 \usage{
-gabc_log_likelihood(sim, obs, theta, n_sim = 50L, epsilon = 1, summary = NULL, kernel = "gaussian", seed = 0L, bootstrap = 25L)
+gabc_log_likelihood(sim, obs, theta, n_sim = 50L, epsilon = 1, summary = NULL, kernel = "gaussian", 
+    seed = 0L, bootstrap = 25L) 
 }
 \arguments{
 \item{sim}{Simulator, signature \code{(theta, rng)}.}

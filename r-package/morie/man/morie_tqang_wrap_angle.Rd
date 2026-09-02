@@ -5,7 +5,7 @@
 \alias{morie_tqang_wrap_angle}
 \title{Wrap an angle to \code{[-pi, pi)}}
 \usage{
-morie_tqang_wrap_angle(theta)
+morie_tqang_wrap_angle(theta) 
 }
 \arguments{
 \item{theta}{Numeric scalar.}

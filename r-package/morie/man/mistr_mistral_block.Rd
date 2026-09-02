@@ -5,7 +5,8 @@
 \alias{mistr_mistral_block}
 \title{mistr_mistral_block}
 \usage{
-mistr_mistral_block(X, Wq, Wk, Wv, Wo, W1, W2, W3, n_heads, n_kv_heads, window, norm1 = NULL, norm2 = NULL, base = 10000)
+mistr_mistral_block(X, Wq, Wk, Wv, Wo, W1, W2, W3, n_heads, n_kv_heads, window, norm1 = NULL, 
+    norm2 = NULL, base = 10000) 
 }
 \arguments{
 \item{X}{A matrix; passed to \code{as.matrix}.}

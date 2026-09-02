@@ -5,10 +5,15 @@
 \alias{expand}
 \title{HKDF Expand: counter-mode OKM}
 \usage{
-expand(prk, info = raw(0), length = 32L)
+expand(prk, info = raw(0), length = 32L) 
 }
 \description{
 HKDF Expand: counter-mode OKM
+}
+\arguments{
+\item{prk}{Argument \code{prk}; see Usage.}
+\item{info}{Argument \code{info}; see Usage.}
+\item{length}{Argument \code{length}; see Usage.}
 }
 \value{
 A list with \code{okm}, \code{blocks}, \code{length}.

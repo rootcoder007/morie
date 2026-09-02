@@ -5,7 +5,7 @@
 \alias{rKL}
 \title{rKL}
 \usage{
-rKL(protected, step = 10L, normalize = TRUE)
+rKL(protected, step = 10L, normalize = TRUE) 
 }
 \arguments{
 \item{protected}{Passed to \code{.measure}.}

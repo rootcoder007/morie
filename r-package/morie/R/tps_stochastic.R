@@ -154,7 +154,7 @@ NULL
 # Closed-form integral: mu*T + kappa * sum_i (1 - exp(-omega*(T - t_i)))
 #' Negative log-likelihood of exponential-kernel Hawkes:
 #'
-#' lambda(t) = mu + kappa*omega * sum_{t_i<t} exp(-omega*(t - t_i))
+#' lambda(t) = mu + kappa*omega * sum_\{t_i<t\} exp(-omega*(t - t_i))
 #' Closed-form integral: mu*T + kappa * sum_i (1 - exp(-omega*(T -
 #' t_i)))
 #'

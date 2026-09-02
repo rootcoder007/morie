@@ -5,7 +5,7 @@
 \alias{morie_sbert}
 \title{morie_sbert}
 \usage{
-morie_sbert(pairs, embed)
+morie_sbert(pairs, embed) 
 }
 \arguments{
 \item{pairs}{Passed to \code{sts_score}.}

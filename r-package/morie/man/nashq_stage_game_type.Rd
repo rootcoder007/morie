@@ -5,7 +5,7 @@
 \alias{nashq_stage_game_type}
 \title{nashq_stage_game_type}
 \usage{
-nashq_stage_game_type(A, B, tol = 1e-09)
+nashq_stage_game_type(A, B, tol = 1e-09) 
 }
 \arguments{
 \item{A}{Numeric; passed to \code{max}.}

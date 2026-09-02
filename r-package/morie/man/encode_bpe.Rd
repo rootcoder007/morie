@@ -5,10 +5,15 @@
 \alias{encode_bpe}
 \title{Encode text with a trained BPE model}
 \usage{
-encode_bpe(text, model, add_prefix = TRUE)
+encode_bpe(text, model, add_prefix = TRUE) 
 }
 \description{
 Encode text with a trained BPE model
+}
+\arguments{
+\item{text}{Argument \code{text}; see Usage.}
+\item{model}{Argument \code{model}; see Usage.}
+\item{add_prefix}{Argument \code{add_prefix}; see Usage.}
 }
 \value{
 The value of \code{out}, as built in the body.

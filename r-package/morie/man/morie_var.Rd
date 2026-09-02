@@ -5,7 +5,7 @@
 \alias{morie_var}
 \title{Fast variance}
 \usage{
-morie_var(x, ddof = 1)
+morie_var(x, ddof = 1) 
 }
 \arguments{
 \item{x}{numeric vector}

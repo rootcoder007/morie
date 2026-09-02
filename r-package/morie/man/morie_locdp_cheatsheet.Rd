@@ -5,7 +5,7 @@
 \alias{morie_locdp_cheatsheet}
 \title{Morie_locdp_cheatsheet: short description string}
 \usage{
-morie_locdp_cheatsheet()
+morie_locdp_cheatsheet() 
 }
 \description{
 Part of the locdp_native implementation; see the file header for the source it follows.

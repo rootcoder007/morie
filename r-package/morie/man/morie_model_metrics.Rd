@@ -6,24 +6,47 @@
 \alias{morie_mcc}
 \alias{morie_brier}
 \alias{morie_pca}
-\alias{morie_ols}
 \alias{morie_ridge}
 \title{Model evaluation metrics}
 \usage{
-morie_binary_metrics(y_true, y_pred, positive = 1)
-morie_class_metrics(conf, i)
-morie_mcc(y_true, y_pred, positive = 1)
-morie_brier(probs, y_true, halved = FALSE)
-morie_pca(X, k = NULL)
-morie_ols(X, y, add_intercept = TRUE)
-morie_ridge(X, y, lambda, add_intercept = TRUE)
+morie_binary_metrics(y_true, y_pred, positive = 1) 
+
+morie_class_metrics(conf, i) 
+
+morie_mcc(y_true, y_pred, positive = 1) 
+
+morie_brier(probs, y_true, halved = FALSE) 
+
+morie_pca(X, k = NULL) 
+
+morie_ridge(X, y, lambda, add_intercept = TRUE) 
 }
 \arguments{
-\item{observed}{observed labels or values}
-\item{predicted}{predicted labels, probabilities or values}
+
+
 \item{X}{predictor matrix}
 \item{y}{response vector}
-\item{...}{further arguments passed to the underlying fit}
+
+
+\item{y_true}{Argument \code{y_true}; see Usage.}
+
+\item{y_pred}{Argument \code{y_pred}; see Usage.}
+
+\item{positive}{Argument \code{positive}; see Usage.}
+
+\item{conf}{Argument \code{conf}; see Usage.}
+
+\item{i}{Argument \code{i}; see Usage.}
+
+\item{probs}{Argument \code{probs}; see Usage.}
+
+\item{halved}{Argument \code{halved}; see Usage.}
+
+\item{k}{Argument \code{k}; see Usage.}
+
+\item{lambda}{Argument \code{lambda}; see Usage.}
+
+\item{add_intercept}{Argument \code{add_intercept}; see Usage.}
 }
 \value{
 A list holding the fitted quantities for the method called: point

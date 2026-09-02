@@ -6,16 +6,16 @@
 \description{
 Provides:
 \itemize{
-\item \code{estimate_ate()} — IPW-weighted OLS ATE.
-\item \code{estimate_plr()} — Partially Linear Regression via
+\item \code{estimate_ate()} -- IPW-weighted OLS ATE.
+\item \code{estimate_plr()} -- Partially Linear Regression via
 native cross-fitting with ridge nuisance learners.
-\item \code{estimate_pliv()} — Partially Linear IV (LATE) via
+\item \code{estimate_pliv()} -- Partially Linear IV (LATE) via
 native cross-fit partialling-out.
-\item \code{estimate_ate_gcomputation()} — G-computation
+\item \code{estimate_ate_gcomputation()} -- G-computation
 (outcome-regression / standardisation) ATE with bootstrap SE.
-\item \code{sensitivity_rosenbaum()} — Rosenbaum bounds for hidden
+\item \code{sensitivity_rosenbaum()} -- Rosenbaum bounds for hidden
 confounding (native Rosenbaum signed-rank bounds).
-\item \code{e_value()} — VanderWeele-Ding E-value (wraps
+\item \code{e_value()} -- VanderWeele-Ding E-value (wraps
 \pkg{EValue} when available, else base R).
 }
 }

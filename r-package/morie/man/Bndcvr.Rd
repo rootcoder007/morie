@@ -12,6 +12,7 @@ Bndcvr(lower, upper, theta_true, alpha = 0.05)
 \item{theta_true}{The data-generating parameter value.}
 
 \item{alpha}{Nominal miss probability, default 0.05.}
+
 }
 \value{
 List with \code{coverage}, \code{nominal}, \code{n_covered},

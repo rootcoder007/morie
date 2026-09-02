@@ -5,7 +5,7 @@
 \alias{morie_tdcvar_cheatsheet}
 \title{morie_tdcvar_cheatsheet}
 \usage{
-morie_tdcvar_cheatsheet()
+morie_tdcvar_cheatsheet() 
 }
 \description{
 Part of the tdcvar_native implementation; see the file header for the source it follows.

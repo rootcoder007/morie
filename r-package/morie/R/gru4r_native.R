@@ -92,7 +92,7 @@ morie_gru4r <- function(sessions, batch_size) {
 
 #' BPR ranking loss
 #'
-#' :math:`-1/N_S \\sum_j \\log\\sigma(r_i - r_j)`, with the
+#' \eqn{-1/N_S \\sum_j \\log\\sigma(r_i - r_j)}, with the
 #' log floored at 1e-12 for numerical stability.
 #'
 #' @param r_target Score of the target item.
@@ -110,8 +110,8 @@ morie_gru4r_bpr <- function(r_target, r_negatives) {
 #' TOP1 ranking loss
 #'
 #' The smoothed relative rank
-#' :math:`\\sigma(r_j - r_i)` plus, when \code{regularize=TRUE}, the
-#' load-bearing :math:`\\sigma(r_j^2)` term that stops scores from
+#' \eqn{\\sigma(r_j - r_i)} plus, when \code{regularize=TRUE}, the
+#' load-bearing \eqn{\\sigma(r_j^2)} term that stops scores from
 #' running away.
 #'
 #' @param r_target Score of the target item.

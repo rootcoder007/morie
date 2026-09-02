@@ -5,7 +5,10 @@
 \alias{motfsr_run}
 \title{motfsr_run}
 \usage{
-motfsr_run(sequences, w, alphabet = NULL, n_motifs = 1, beta = 0.01, lambda0 = NULL, max_iter = 1000, tol = 1e-06, normalize_overlaps = TRUE, starts = "subsequences", start_weight = 0.5, max_starts = 200, start_scoring = "one_step", erase_by = "letter", loss = NULL)
+motfsr_run(sequences, w, alphabet = NULL, n_motifs = 1, beta = 0.01, lambda0 = NULL, 
+    max_iter = 1000, tol = 1e-06, normalize_overlaps = TRUE, starts = "subsequences", 
+    start_weight = 0.5, max_starts = 200, start_scoring = "one_step", erase_by = "letter", 
+    loss = NULL) 
 }
 \arguments{
 \item{sequences}{Passed to \code{motfsr_prepare}.}

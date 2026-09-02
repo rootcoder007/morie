@@ -5,7 +5,7 @@
 \alias{morie_sdne_cheatsheet}
 \title{morie_sdne_cheatsheet}
 \usage{
-morie_sdne_cheatsheet()
+morie_sdne_cheatsheet() 
 }
 \description{
 Part of the sdne_native implementation; see the file header for the source it follows.

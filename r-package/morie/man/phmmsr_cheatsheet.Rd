@@ -5,7 +5,7 @@
 \alias{phmmsr_cheatsheet}
 \title{phmmsr_cheatsheet}
 \usage{
-phmmsr_cheatsheet()
+phmmsr_cheatsheet() 
 }
 \description{
 Part of the phmmsr_native implementation; see the file header for the source it follows.

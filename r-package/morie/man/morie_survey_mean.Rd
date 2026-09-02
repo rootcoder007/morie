@@ -2,7 +2,7 @@
 % Please edit documentation in R/survey.R
 \name{morie_survey_mean}
 \alias{morie_survey_mean}
-\title{Survey-weighted mean (delegates to \code{survey::svymean} when available).}
+\title{Survey-weighted mean (delegates to \code{survey::svymean} when available)}
 \usage{
 morie_survey_mean(design, variable)
 }
@@ -18,7 +18,7 @@ A named list with elements \code{mean} and \code{se} (and,
 in the fallback path, also \code{ci_lower}, \code{ci_upper}).
 }
 \description{
-Survey-weighted mean (delegates to \code{survey::svymean} when available).
+Survey-weighted mean (delegates to \code{survey::svymean} when available)
 }
 \examples{
 .make_survey_df <- function(n = 100L, seed = 1L) {

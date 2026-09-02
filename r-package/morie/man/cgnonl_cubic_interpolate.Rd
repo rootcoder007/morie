@@ -5,7 +5,7 @@
 \alias{cgnonl_cubic_interpolate}
 \title{cgnonl_cubic_interpolate}
 \usage{
-cgnonl_cubic_interpolate(ta, fa, da, tb, fb, db)
+cgnonl_cubic_interpolate(ta, fa, da, tb, fb, db) 
 }
 \arguments{
 \item{ta}{Numeric; passed to \code{max}.}

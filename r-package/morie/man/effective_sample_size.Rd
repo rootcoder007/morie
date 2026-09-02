@@ -5,7 +5,7 @@
 \alias{effective_sample_size}
 \title{Effective sample size}
 \usage{
-effective_sample_size(weights)
+effective_sample_size(weights) 
 }
 \arguments{
 \item{weights}{Numeric vector of positive weights.}

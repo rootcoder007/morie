@@ -5,7 +5,7 @@
 \alias{morie_tmldta_cheatsheet}
 \title{Compact one-line summary of the tmldta recipe}
 \usage{
-morie_tmldta_cheatsheet()
+morie_tmldta_cheatsheet() 
 }
 \description{
 Compact one-line summary of the tmldta recipe

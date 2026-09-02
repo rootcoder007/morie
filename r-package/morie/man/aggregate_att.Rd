@@ -5,7 +5,7 @@
 \alias{aggregate_att}
 \title{Aggregate ATT(g,t)}
 \usage{
-aggregate_att(gt, scheme = "simple", horizon = NULL)
+aggregate_att(gt, scheme = "simple", horizon = NULL) 
 }
 \arguments{
 \item{gt}{Result of \code{group_time_att}.}

@@ -5,7 +5,8 @@
 \alias{morie_variable_importance}
 \title{Rank the columns of X by data-adaptive importance}
 \usage{
-morie_variable_importance(y, X, candidate_strata = NULL, method = "cv-tmle", n_folds = 10, names = NULL, ...)
+morie_variable_importance(y, X, candidate_strata = NULL, method = "cv-tmle", n_folds = 10, 
+    names = NULL, ...) 
 }
 \arguments{
 \item{y}{Numeric outcome.}

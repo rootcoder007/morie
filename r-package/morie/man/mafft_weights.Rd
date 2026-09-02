@@ -5,7 +5,7 @@
 \alias{mafft_weights}
 \title{mafft_weights}
 \usage{
-mafft_weights(k)
+mafft_weights(k) 
 }
 \arguments{
 \item{k}{A count; the body uses it as \code{rep(...)}.}

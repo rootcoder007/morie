@@ -5,7 +5,7 @@
 \alias{attention_cost}
 \title{Attention-map size, patched against point-wise. Point-wise}
 \usage{
-attention_cost(L, patch_len, stride = NULL, D = 1, channel_independent = TRUE)
+attention_cost(L, patch_len, stride = NULL, D = 1, channel_independent = TRUE) 
 }
 \arguments{
 \item{L}{Coerced to integer by the body, with \code{as.integer}.}

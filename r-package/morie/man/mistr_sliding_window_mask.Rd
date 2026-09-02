@@ -5,7 +5,7 @@
 \alias{mistr_sliding_window_mask}
 \title{mistr_sliding_window_mask}
 \usage{
-mistr_sliding_window_mask(L, window, causal = TRUE)
+mistr_sliding_window_mask(L, window, causal = TRUE) 
 }
 \arguments{
 \item{L}{A count; the body uses it as \code{seq_len(...)}.}

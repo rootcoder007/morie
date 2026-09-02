@@ -5,7 +5,7 @@
 \alias{mafft_xcorr_fft}
 \title{mafft_xcorr_fft}
 \usage{
-mafft_xcorr_fft(a, b)
+mafft_xcorr_fft(a, b) 
 }
 \arguments{
 \item{a}{A vector; its length is taken.}

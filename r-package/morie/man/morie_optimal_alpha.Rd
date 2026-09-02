@@ -5,7 +5,8 @@
 \alias{morie_optimal_alpha}
 \title{Theorem 5.2: the variance-minimising trimming threshold}
 \usage{
-morie_optimal_alpha(pscore, sigma2_treated = NULL, sigma2_control = NULL, tol = 1e-12, max_iter = 200)
+morie_optimal_alpha(pscore, sigma2_treated = NULL, sigma2_control = NULL, tol = 1e-12, 
+    max_iter = 200) 
 }
 \arguments{
 \item{pscore}{Numeric vector of propensity scores in (0, 1).}

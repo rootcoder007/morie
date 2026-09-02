@@ -5,7 +5,7 @@
 \alias{mpfn_message}
 \title{mpfn_message}
 \usage{
-mpfn_message(h_v, h_w, e_vw, A = NULL)
+mpfn_message(h_v, h_w, e_vw, A = NULL) 
 }
 \arguments{
 \item{h_v}{Accepted by the signature and not used anywhere in the body.}

@@ -5,7 +5,7 @@
 \alias{t5enc_cheatsheet}
 \title{t5enc_cheatsheet}
 \usage{
-t5enc_cheatsheet()
+t5enc_cheatsheet() 
 }
 \description{
 Part of the t5enc_native implementation; see the file header for the source it follows.

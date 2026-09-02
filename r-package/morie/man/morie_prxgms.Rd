@@ -3,9 +3,22 @@
 % the formals.
 \name{morie_prxgms}
 \alias{morie_prxgms}
+\alias{prox_gradient}
+\alias{proximal_gradient_method}
+\alias{prxgms}
 \title{Proximal gradient / FISTA on \code{f + g}}
 \usage{
-morie_prxgms(fun, grad, prox, x0, L = 1, max_iter = 500L, tol = 1e-10, accelerate = TRUE, backtrack = FALSE, eta = 2, g_fun = NULL)
+morie_prxgms(fun, grad, prox, x0, L = 1, max_iter = 500L, tol = 1e-10, accelerate = TRUE, 
+    backtrack = FALSE, eta = 2, g_fun = NULL) 
+
+prox_gradient(fun, grad, prox, x0, L = 1, max_iter = 500L, tol = 1e-10, accelerate = TRUE, 
+    backtrack = FALSE, eta = 2, g_fun = NULL) 
+
+proximal_gradient_method(fun, grad, prox, x0, L = 1, max_iter = 500L, tol = 1e-10, accelerate = TRUE, 
+    backtrack = FALSE, eta = 2, g_fun = NULL) 
+
+prxgms(fun, grad, prox, x0, L = 1, max_iter = 500L, tol = 1e-10, accelerate = TRUE, 
+    backtrack = FALSE, eta = 2, g_fun = NULL) 
 }
 \arguments{
 \item{fun}{Function \code{(x) -> float}, the smooth part \code{f}.}

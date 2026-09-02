@@ -5,7 +5,8 @@
 \alias{morie_memb}
 \title{morie_memb}
 \usage{
-morie_memb(target_predict, shadow_data, eval_in, eval_out, train_fn = NULL, attack_train_fn = NULL, n_shadow = NULL, sort_features = FALSE, threshold = 0.5)
+morie_memb(target_predict, shadow_data, eval_in, eval_out, train_fn = NULL, 
+    attack_train_fn = NULL, n_shadow = NULL, sort_features = FALSE, threshold = 0.5) 
 }
 \arguments{
 \item{target_predict}{Passed to \code{memb}.}

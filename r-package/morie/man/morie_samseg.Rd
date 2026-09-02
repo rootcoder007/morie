@@ -5,7 +5,7 @@
 \alias{morie_samseg}
 \title{morie_samseg}
 \usage{
-morie_samseg(image_embedding, prompt_tokens, decoder, multimask = TRUE)
+morie_samseg(image_embedding, prompt_tokens, decoder, multimask = TRUE) 
 }
 \arguments{
 \item{image_embedding}{Passed to \code{promptable_segment}.}

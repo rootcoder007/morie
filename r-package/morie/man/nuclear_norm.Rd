@@ -5,7 +5,7 @@
 \alias{nuclear_norm}
 \title{nuclear_norm}
 \usage{
-nuclear_norm(A)
+nuclear_norm(A) 
 }
 \arguments{
 \item{A}{A matrix; passed to \code{as.matrix}.}
