@@ -86,6 +86,16 @@ NULL
 #'   \code{weights}, optional \code{strata}, and optional
 #'   \code{cluster}.
 #' @export
+#' @examples
+#' .make_survey_df <- function(n = 100L, seed = 1L) {
+#'     set.seed(seed)
+#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n, 
+#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"), 
+#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE), 
+#'         fpc = rep(1000L, n))
+#' }
+#' df <- .make_survey_df()
+#' morie_survey_design(df, weights_col = "w")
 morie_survey_design <- function(data, weights_col, strata_col = NULL,
                                 cluster_col = NULL, fpc_col = NULL,
                                 nest = FALSE) {
@@ -113,6 +123,10 @@ morie_survey_design <- function(data, weights_col, strata_col = NULL,
 #' @return list with `total`, `se`, `ci_lower`, `ci_upper`.
 #' @inheritParams morie_survey_params
 #' @export
+#' @examples
+#' y <- c(1, 2, 3, 4, 5)
+#' pi <- rep(0.5, 5)
+#' morie_survey_ht_total(y, pi)
 morie_survey_ht_total <- function(y, inclusion_probs) {
   y <- as.numeric(y)
   pi <- as.numeric(inclusion_probs)
@@ -134,6 +148,9 @@ morie_survey_ht_total <- function(y, inclusion_probs) {
 #' @return A named list with elements \code{mean}, \code{se},
 #'   \code{ci_lower}, \code{ci_upper} (95\% Wald confidence interval).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_survey_hajek_mean(V, V)
 morie_survey_hajek_mean <- function(y, weights) {
   y <- as.numeric(y)
   w <- as.numeric(weights)
@@ -156,6 +173,18 @@ morie_survey_hajek_mean <- function(y, weights) {
 #' @return A named list with elements \code{mean} and \code{se} (and,
 #'   in the fallback path, also \code{ci_lower}, \code{ci_upper}).
 #' @export
+#' @examples
+#' .make_survey_df <- function(n = 100L, seed = 1L) {
+#'     set.seed(seed)
+#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n, 
+#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"), 
+#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE), 
+#'         fpc = rep(1000L, n))
+#' }
+#' df <- .make_survey_df()
+#' w <- rep(1, 4)
+#' design_fb <- structure(list(data = df, weights = df$w), class = "morie_survey_design_fallback")
+#' morie_survey_mean(design_fb, "y")
 morie_survey_mean <- function(design, variable) {
   if (inherits(design, "survey.design") ||
       inherits(design, "survey.design2")) {
@@ -176,6 +205,13 @@ morie_survey_mean <- function(design, variable) {
 #'   population total), \code{se}, \code{ci_lower}, \code{ci_upper}
 #'   (95\% Wald confidence interval).
 #' @export
+#' @examples
+#' set.seed(1)
+#' x <- runif(50, 1, 10)
+#' y <- 2 * x + rnorm(50, 0, 0.5)
+#' w <- rep(2, 50)
+#' r <- morie_survey_ratio(y, x, w, X_population_total = sum(x) * 2)
+#' abs(r$ratio - 2) < 0.3
 morie_survey_ratio <- function(y, x, weights, X_population_total) {
   y <- as.numeric(y)
   x <- as.numeric(x)
@@ -207,6 +243,13 @@ morie_survey_ratio <- function(y, x, weights, X_population_total) {
 #'   of \code{df}, scaled so each stratum's weighted share matches the
 #'   stratum's share of \code{population_counts}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(stratum = sample(c("A", "B"), 40, replace = TRUE),
+#'                  w = rep(1, 40))
+#' pc <- c(A = 100, B = 150)
+#' r <- morie_survey_poststratify(df, "stratum", pc)
+#' is.list(r) || is.data.frame(r) || is.numeric(r)
 morie_survey_poststratify <- function(df, strata_col, population_counts) {
   if (!strata_col %in% names(df))
     stop(sprintf("strata_col '%s' not in df.", strata_col), call. = FALSE)
@@ -240,6 +283,16 @@ morie_survey_poststratify <- function(df, strata_col, population_counts) {
 #'   \code{nrow(df)} (one weight per row); a warning is emitted if the
 #'   raking loop did not converge within \code{max_iter}.
 #' @export
+#' @examples
+#' .make_survey_df <- function(n = 100L, seed = 1L) {
+#'     set.seed(seed)
+#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n, 
+#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"), 
+#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE), 
+#'         fpc = rep(1000L, n))
+#' }
+#' df <- .make_survey_df()
+#' morie_survey_calibrate(df, "x", list(x = 100), max_iter = 20)
 morie_survey_calibrate <- function(df, aux_vars, population_totals,
                                    max_iter = 50, tol = 1e-6) {
   for (v in aux_vars) {
@@ -284,6 +337,12 @@ morie_survey_calibrate <- function(df, aux_vars, population_totals,
 #'   \code{ci_lower}, \code{ci_upper} (95\% Wald confidence interval),
 #'   and \code{n_domain} (number of sample units in the subpopulation).
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(region = sample(c("N", "S"), 60, replace = TRUE),
+#'                  y = rnorm(60, 5), w = rep(2, 60))
+#' r <- morie_survey_subpop(df, "region", "N", "y", "w")
+#' is.list(r)
 morie_survey_subpop <- function(df, domain_col, domain_value,
                                 outcome_col, weight_col) {
   needed <- c(domain_col, outcome_col, weight_col)
@@ -343,6 +402,18 @@ morie_survey_glm <- function(design, formula,
 #'   \code{svyglm} / \code{glm}) with cluster- / stratum-robust
 #'   design-based standard errors.
 #' @export
+#' @examples
+#' .make_survey_df <- function(n = 100L, seed = 1L) {
+#'     set.seed(seed)
+#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n, 
+#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"), 
+#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE), 
+#'         fpc = rep(1000L, n))
+#' }
+#' df <- .make_survey_df()
+#' y <- c(1, 2, 3, 4, 5)
+#' x <- runif(100, 1, 10)
+#' morie_survey_complex_glm(df, y ~ x, weight_col = "w", family = "gaussian")
 morie_survey_complex_glm <- function(df, formula, weight_col,
                                      family = "gaussian",
                                      cluster_col = NULL, strata_col = NULL) {

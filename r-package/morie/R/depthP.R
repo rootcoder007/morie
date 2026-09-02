@@ -21,6 +21,8 @@
 #'   qualifying paper, Harvard; Zuo & Serfling (2000), Ann. Statist.
 #'   28(2):461-482.
 #' @export
+#' @examples
+#' DepthP(x = 5L, X = c(1, 2, 3, 4, 5, 6, 7, 8))
 DepthP <- function(x, X, n_dir = 180) {
   p <- .s03vec(x)
   M <- .s03mat(X)

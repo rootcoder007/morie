@@ -27,8 +27,8 @@ list: coef, fitted, residuals, sse, r2, edf, lambda, n, method.
 min_b ||y - Bb||^2 + lambda b' D' D b, with cubic B-spline basis and
 second-order difference penalty.
 }
-\keyword{internal}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 pspln(V, V)
 }
+\keyword{internal}

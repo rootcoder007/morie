@@ -21,7 +21,7 @@ SentencePiece when loaded; otherwise greedy longest-match BPE with
 UTF-8 byte fallback (\verb{<0xHH>} tokens), matching the Python reference.
 }
 \examples{
-vocab <- c("<unk>", "<s>", "</s>", "\\u2581", "hi", "world")
+vocab <- c("<unk>", "<s>", "</s>", "\u2581", "hi", "world")
 tok <- morie_tokenizer_new(vocab = vocab, bos_id = 1L, eos_id = 2L)
 morie_tokenizer_encode(tok, "hi")
 }

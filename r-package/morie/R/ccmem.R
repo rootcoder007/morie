@@ -21,6 +21,9 @@
 #'   22(3):364-375; Browne, Goldstein & Rasbash (2001), Statistical
 #'   Modelling 1(2):103-124.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Ccmem(V, V)
 Ccmem <- function(y, cluster1, cluster2 = NULL, weights = NULL) {
   yv <- .s03vec(y)
   n <- length(yv)

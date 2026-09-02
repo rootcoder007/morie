@@ -142,6 +142,9 @@ NULL
 #'   \code{intercept}, \code{r2}, \code{direction}, \code{years},
 #'   \code{counts}, \code{fitted}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_year_over_year_trend(D)
 morie_tps_year_over_year_trend <- function(df,
                                             year_col = "OCC_YEAR",
                                             ds_name = "?") {
@@ -248,6 +251,9 @@ morie_tps_year_over_year_trend <- function(df,
 #' @return A \code{morie_rich_result} list with per-cycle counts and
 #'   chi-square p-values.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_seasonal_pattern(D)
 morie_tps_seasonal_pattern <- function(df, ds_name = "?") {
   stopifnot(is.data.frame(df))
   call_str <- sprintf("morie_tps_seasonal_pattern(df=<%dr>)", nrow(df))
@@ -332,6 +338,9 @@ morie_tps_seasonal_pattern <- function(df, ds_name = "?") {
 #'   \code{changepoint_year}, \code{K_statistic}, \code{p_value},
 #'   \code{pre_mean}, \code{post_mean}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_changepoint_detection(D)
 morie_tps_changepoint_detection <- function(df,
                                              year_col = "OCC_YEAR",
                                              ds_name = "?") {
@@ -446,6 +455,9 @@ morie_tps_changepoint_detection <- function(df,
 #' @return A \code{morie_rich_result} list with \code{forecast},
 #'   \code{aic}, \code{bic}, \code{n_train}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_arima_forecast(D)
 morie_tps_arima_forecast <- function(df, h = 12L, ds_name = "?") {
   stopifnot(is.data.frame(df))
   call_str <- sprintf("morie_tps_arima_forecast(df=<%dr>, h=%d)",
@@ -537,6 +549,11 @@ morie_tps_arima_forecast <- function(df, h = 12L, ds_name = "?") {
 #' @param ... Unused.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(OCC_YEAR = sample(2018:2023, 200, TRUE))
+#' res <- morie_tps_year_over_year_trend(df, year_col = "OCC_YEAR")
+#' print(res)
 print.morie_tps_temporal_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\

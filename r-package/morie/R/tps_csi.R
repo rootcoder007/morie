@@ -98,21 +98,29 @@ NULL
 #' Total-CSI weights for the 9 TPS open-data categories.
 #' @return Named numeric vector.
 #' @export
+#' @examples
+#' MORIE_TPS_TOTAL_CSI_WEIGHTS()
 MORIE_TPS_TOTAL_CSI_WEIGHTS <- function() .TOTAL_CSI_WEIGHTS
 
 #' Violent-CSI weights for the 9 TPS open-data categories.
 #' @return Named numeric vector.
 #' @export
+#' @examples
+#' MORIE_TPS_VIOLENT_CSI_WEIGHTS()
 MORIE_TPS_VIOLENT_CSI_WEIGHTS <- function() .VIOLENT_CSI_WEIGHTS
 
 #' Toronto reference population by fiscal year (StatsCan 17-10-0009-01).
 #' @return Named integer vector (year-as-string -> population).
 #' @export
+#' @examples
+#' MORIE_TPS_TORONTO_POPULATION_BY_YEAR()
 MORIE_TPS_TORONTO_POPULATION_BY_YEAR <- function() .TORONTO_POPULATION_BY_YEAR
 
 #' Canonical CSI category names (the 9 TPS open-data feeds).
 #' @return Character vector.
 #' @export
+#' @examples
+#' MORIE_TPS_CSI_CATEGORIES()
 MORIE_TPS_CSI_CATEGORIES <- function() names(.TOTAL_CSI_WEIGHTS)
 
 
@@ -128,6 +136,8 @@ MORIE_TPS_CSI_CATEGORIES <- function() names(.TOTAL_CSI_WEIGHTS)
 #'   tables.  When supplied, takes precedence over \code{variant}.
 #' @return Numeric scalar (0 if unknown).
 #' @export
+#' @examples
+#' morie_tps_csi_weight(category = 5L)
 morie_tps_csi_weight <- function(category, variant = c("total", "violent"),
                                    weights = NULL) {
   variant <- match.arg(variant)
@@ -224,6 +234,12 @@ morie_tps_csi_weight <- function(category, variant = c("total", "violent"),
 #' @param rebase_to_value Index value at the anchor year (default 100).
 #' @return A data.frame with one row per year.
 #' @export
+#' @examples
+#' counts <- data.frame(OCC_YEAR = rep(2020:2023, 2),
+#'                      category = rep(c("Assault", "Robbery"), each = 4),
+#'                      n = rpois(8, 50))
+#' res <- try(morie_tps_csi_per_year(counts))
+#' if (!inherits(res, "try-error")) str(res, max.level = 1)
 morie_tps_csi_per_year <- function(counts_per_year,
                                      variant = c("total", "violent"),
                                      weights = NULL, population = NULL,
@@ -291,6 +307,13 @@ morie_tps_csi_per_year <- function(counts_per_year,
 #' @param weights Optional override vector of weights.
 #' @return A data.frame with one row per neighbourhood.
 #' @export
+#' @examples
+#' counts <- data.frame(
+#'   HOOD_158 = c("001", "001", "002", "002", "003", "003"),
+#'   category = c("Assault", "Homicide", "Assault", "Homicide",
+#'                "Assault", "Homicide"),
+#'   count = c(60, 2, 45, 1, 80, 3))
+#' morie_tps_csi_per_neighbourhood(counts, variant = "total")
 morie_tps_csi_per_neighbourhood <- function(counts_per_hood,
                                               variant = c("total", "violent"),
                                               weights = NULL) {
@@ -331,6 +354,9 @@ morie_tps_csi_per_neighbourhood <- function(counts_per_hood,
 #' @return A \code{morie_tps_result} named list carrying \code{by_year}
 #'   and \code{by_hood} data.frames in \code{payload}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_analyze_csi_from_dataframes(D)
 morie_tps_analyze_csi_from_dataframes <- function(dfs,
                                                      year_col = "OCC_YEAR",
                                                      hood_col = "HOOD_158",

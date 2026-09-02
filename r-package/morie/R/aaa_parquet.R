@@ -1028,6 +1028,11 @@
 #'   the rest are skipped entirely.
 #' @return A `data.frame`.
 #' @export
+#' @examples
+#' df <- data.frame(a = 1:3, b = c("x", "y", "z"), stringsAsFactors = FALSE)
+#' p <- tempfile(fileext = ".parquet")
+#' morie_write_parquet(df, p)
+#' morie_read_parquet(p)
 morie_read_parquet <- function(path, columns = NULL) {
   size <- file.info(path)$size
   if (is.na(size)) stop("no such file: ", path, call. = FALSE)
@@ -1242,6 +1247,10 @@ morie_read_parquet <- function(path, columns = NULL) {
 #' @param compression `"snappy"` (default) or `NULL` for uncompressed.
 #' @return `path`, invisibly.
 #' @export
+#' @examples
+#' df <- data.frame(a = 1:3, b = c("x", "y", "z"), stringsAsFactors = FALSE)
+#' p <- tempfile(fileext = ".parquet")
+#' morie_write_parquet(df, p)
 morie_write_parquet <- function(df, path, compression = "snappy") {
   if (!is.null(compression) && !identical(compression, "snappy"))
     stop("compression must be \"snappy\" or NULL; got ",

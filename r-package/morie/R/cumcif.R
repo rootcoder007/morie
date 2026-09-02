@@ -17,6 +17,9 @@
 #' @references Aalen & Johansen (1978), Scand. J. Statist.
 #'   5(3):141-150.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Cumcif(V, V)
 Cumcif <- function(time, cause, event_type = NULL) {
   k <- if (is.null(event_type)) 1 else event_type
   Crrcim(time, cause, k)

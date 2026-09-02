@@ -24,19 +24,19 @@ Missingness is a second intervention node.  Writing \code{Delta = 1}
 for an observed outcome, the joint intervention is "set \code{A = a}
 and \code{Delta = 1}", so the clever covariate carries both
 probabilities,
-\code{H = Delta/pi(A, X) * [A/g(X) - (1 - A)/(1 - g(X))]}, with
+\code{H = Delta/pi(A, X) * \[A/g(X) - (1 - A)/(1 - g(X))\]}, with
 \code{pi(a, X)} evaluated at the counterfactual arm.  The initial
 outcome regression is fitted on complete cases only, and the
 fluctuation \code{Q*(a, X) = Q(a, X) + eps/(g_a(X) pi(a, X))} uses the
 arm-specific denominator.  With no missingness \code{pi == 1} and the
 estimator collapses onto the standard point-treatment TMLE.
 }
+\examples{
+set.seed(1)
+r <- Tmlmda(y = rnorm(10), D = rbinom(10, 1, 0.5), X = rnorm(10), missing = rnorm(10)); TRUE
+}
 \references{
 Rotnitzky, A., Robins, J. M. & Scharfstein, D. O. (1998).
 JASA 93(444):1321-1339; Bang, H. & Robins, J. M. (2005). Biometrics
 61(4):962-973.
-}
-\examples{
-set.seed(1)
-r <- Tmlmda(y = rnorm(10), D = rbinom(10, 1, 0.5), X = rnorm(10), missing = rnorm(10)); TRUE
 }

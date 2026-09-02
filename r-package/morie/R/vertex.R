@@ -20,6 +20,9 @@ if (!exists("%||%", mode = "function")) {
 #' Resolve Vertex AI configuration from environment variables
 #' @return Named list: project / location / model / token_ttl_s / gcloud_path.
 #' @export
+#' @examples
+#' cfg <- try(morie_vertex_resolve_config())
+#' class(cfg)
 morie_vertex_resolve_config <- function() {
   project <- Sys.getenv("GOOGLE_CLOUD_PROJECT", unset = "")
   if (!nzchar(project)) project <- Sys.getenv("MORIE_EE_PROJECT", unset = "")
@@ -55,6 +58,10 @@ morie_vertex_resolve_config <- function() {
 #' @param cfg Config list, or NULL to resolve.
 #' @return Character bearer token.
 #' @export
+#' @examples
+#' \donttest{
+#' morie_vertex_access_token()
+#' }
 morie_vertex_access_token <- function(cfg = NULL) {
   if (is.null(cfg)) cfg <- morie_vertex_resolve_config()
   now <- as.numeric(Sys.time())
@@ -96,6 +103,10 @@ morie_vertex_access_token <- function(cfg = NULL) {
 #' @param cfg Pre-resolved config list, or NULL to auto-resolve.
 #' @return Character scalar -- trimmed generated text.
 #' @export
+#' @examples
+#' \donttest{
+#' ans <- morie_vertex_ask_gemini("Summarize recent assault trends in Toronto.")
+#' }
 morie_vertex_ask_gemini <- function(prompt, model = NULL, system = NULL,
                                     temperature = 0.1,
                                     max_output_tokens = 2048L,
@@ -156,6 +167,8 @@ morie_vertex_ask_gemini <- function(prompt, model = NULL, system = NULL,
 #' Tiny smoke test for the Vertex AI client
 #' @return Named list (ok / error / model / project / location / reply).
 #' @export
+#' @examples
+#' morie_vertex_health_check()
 morie_vertex_health_check <- function() {
   out <- list(ok = FALSE, error = NULL, model = NULL)
   tryCatch({

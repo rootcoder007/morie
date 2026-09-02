@@ -24,8 +24,8 @@ Named list with tensor (additive mask), boolean, density, method.
 \description{
 Child-2019 sparse attention mask
 }
-\keyword{internal}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 sparse_attention(V)
 }
+\keyword{internal}

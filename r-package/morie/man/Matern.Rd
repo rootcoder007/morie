@@ -34,7 +34,7 @@ m and variance tau^2; f(x - y) is the density of a satellite position
 about a centre at y; and gamma(u) = Integral f(u + y) f(y) dy is the
 autoconvolution.  With Z(S) the number of satellites in S and mu the
 volume, E\link{Z(S)} = lambda m mu(S), eq. (3.6.1), and
-Cov\[Z(S1), Z(S2)\] = lambda m mu(S1 ^ S2)
+Cov\link{Z(S1), Z(S2)} = lambda m mu(S1 ^ S2)
 \itemize{
 \item lambda (m^2 + tau^2 - m) Int Int gamma(u - y) du dy, eq. (3.6.2).
 }
@@ -65,11 +65,6 @@ Hence for every t >= 2r, K(t) = pi t^2 + 1 / lambda exactly, which is the
 anchor this function is checked against.  It also says what the process
 is: K exceeds the Poisson pi t^2 by 1/lambda, one whole excess neighbour
 per parent, all of it accumulated inside 2r.
-}
-
-[ (S^2/2) acos S + (1/8) asin S - (1/8) S sqrt(1 - S^2)
-\itemize{
-\item (1/4) S^3 sqrt(1 - S^2) ]: R:\%20(S\%5E2/2)\%20acos\%20S\%20+\%20(1/8)\%20asin\%20S\%20-\%20(1/8)\%20S\%20sqrt(1\%20-\%20S\%5E2)\%0A-\%20(1/4)\%20S\%5E3\%20sqrt(1\%20-\%20S\%5E2)\%20
 }
 }
 \examples{

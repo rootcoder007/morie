@@ -21,6 +21,8 @@
 #' @references Cornfield (1951), Proc. 2nd Berkeley Symp. 4:135-148;
 #'   Woolf (1955), Ann. Human Genetics 19(4):251-253.
 #' @export
+#' @examples
+#' Ccdsgn(cases = list(a = 1, b = 2), controls = list(a = 1, b = 2))
 Ccdsgn <- function(cases, controls, exposed = NULL, unexposed = NULL,
                    conf = 0.95) {
   cs <- .s03vec(cases); ct <- .s03vec(controls)

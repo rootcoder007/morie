@@ -17,15 +17,15 @@ List with \code{statistic} (z), \code{p_value}, \code{S},
 }
 \description{
 Formula: \eqn{S = \sum_{i<j} \mathrm{sign}(x_j - x_i)} with null
-variance \eqn{[n(n-1)(2n+5) - \sum t(t-1)(2t+5)]/18} over the tie
+variance \eqn{\[n(n-1)(2n+5) - \sum t(t-1)(2t+5)\]/18} over the tie
 multiplicities \eqn{t}, and \eqn{z = \mathrm{sign}(S)(|S|-1)/
 \sqrt{\mathrm{var} S}} under the continuity correction.  Kendall's
 tau uses the tie-adjusted denominator.
 }
-\references{
-Mann (1945), Econometrica 13:245-259; Kendall (1975), Rank Correlation Methods.  Both paywalled; the coded form was read from Pohlert's CRAN package trend (R/mk.test.R, R/utilfn.R), whose .varmk and .Dfn give the tie corrections verbatim.
-}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 Mktest(V)
+}
+\references{
+Mann (1945), Econometrica 13:245-259; Kendall (1975), Rank Correlation Methods.  Both paywalled; the coded form was read from Pohlert's CRAN package trend (R/mk.test.R, R/utilfn.R), whose .varmk and .Dfn give the tie corrections verbatim.
 }

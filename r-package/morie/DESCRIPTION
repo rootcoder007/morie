@@ -42,7 +42,7 @@ Imports:
   utils,
   graphics,
   Rcpp,
-  rmoriebricklayer (>= 0.3.5),
+  rmoriebricklayer (>= 0.3.8),
   rmoriedata (>= 0.2.5)
 LinkingTo: Rcpp, RcppArmadillo, rmoriebricklayer
 SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
@@ -158,6 +158,7 @@ biocViews:
   MultipleComparison,
   Visualization
 Remotes:
+    rootcoder007/rmorie-bricklayer@feat/native-specializations,
   rootcoder007/rmoriedata,
   synth-inference/synthdid
 Config/roxygen2/version: 8.0.0

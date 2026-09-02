@@ -25,6 +25,9 @@
 #'   above is written out because the paper was not accessible: what is
 #'   cited to Manski and Pepper is the assumption, not a copied formula.
 #' @export
+#' @examples
+#' set.seed(1)
+#' r <- Bndsdo(y = rnorm(10), D = rbinom(10, 1, 0.5)); TRUE
 Bndsdo <- function(y, D, skew = 1) {
   z <- .bnd_yd(y, D, "Bndsdo")
   cm <- .bnd_cellmeans(z$y, z$d)

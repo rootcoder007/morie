@@ -22,8 +22,8 @@ Named list with estimate (h), n, sigma, c, method.
 \description{
 Silverman bandwidth selector for PLR
 }
-\keyword{internal}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 hrzp2(V, V)
 }
+\keyword{internal}

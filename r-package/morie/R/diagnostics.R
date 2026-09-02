@@ -525,6 +525,9 @@ collinearity_diagnostics <- function(X, column_names = NULL) {
 #'   to the auxiliary regression (default \code{c(2, 3)}).
 #' @return A \code{morie_specification_test}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' ramsey_reset_test(V, V)
 ramsey_reset_test <- function(y, X, powers = c(2, 3)) {
   y <- as.numeric(y)
   X <- as.matrix(X)
@@ -766,6 +769,8 @@ compute_goodness_of_fit <- function(y, y_hat, X,
 #' @return A list of \code{morie_specification_test} objects, one per
 #'   covariate.
 #' @export
+#' @examples
+#' ph_assumption_test(survival_times = c(1, 2, 3, 4, 5, 6, 7, 8), event_indicator = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
 ph_assumption_test <- function(survival_times, event_indicator,
                                covariates, covariate_names = NULL) {
   times <- as.numeric(survival_times)
@@ -840,6 +845,8 @@ likelihood_ratio_test <- function(ll_restricted, ll_full, df_diff) {
 #' @param r Optional restriction vector (default zeros).
 #' @return A \code{morie_specification_test}.
 #' @export
+#' @examples
+#' wald_test(estimates = 5L, vcov = 5L)
 wald_test <- function(estimates, vcov, R = NULL, r = NULL) {
   beta <- as.numeric(estimates)
   V <- as.matrix(vcov)
@@ -870,6 +877,8 @@ wald_test <- function(estimates, vcov, R = NULL, r = NULL) {
 #' @param information_matrix Information matrix under H0.
 #' @return A \code{morie_specification_test}.
 #' @export
+#' @examples
+#' score_test(score_vector = 5L, information_matrix = 5L)
 score_test <- function(score_vector, information_matrix) {
   U <- as.numeric(score_vector)
   I_mat <- as.matrix(information_matrix)

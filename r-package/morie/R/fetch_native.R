@@ -332,6 +332,12 @@ morie_json_stringify <- function(x, auto_unbox = TRUE) {
 #'   \code{on_end(tag)}.
 #' @return Invisibly, the number of elements seen.
 #' @export
+#' @examples
+#' starts <- character(0)
+#' morie_xml_sax("<a><b>hi</b></a>",
+#'   on_start = function(tag, attrs) starts <<- c(starts, tag)
+#' )
+#' starts
 morie_xml_sax <- function(txt, on_start = NULL, on_text = NULL,
                           on_end = NULL) {
   stopifnot(is.character(txt), length(txt) == 1L)
@@ -531,6 +537,12 @@ morie_fetch_html <- function(txt) {
 #' @param sep Field separator ("," or "\\t").
 #' @return A data frame.
 #' @export
+#' @examples
+#' tf <- tempfile(fileext = ".csv")
+#' utils::write.csv(data.frame(a = 1:3, b = c("x", "y", "z")), tf,
+#'   row.names = FALSE
+#' )
+#' morie_fetch_csv(tf)
 morie_fetch_csv <- function(path, sep = ",") {
   utils::read.table(path, header = TRUE, sep = sep,
                     stringsAsFactors = FALSE, check.names = FALSE,
@@ -562,6 +574,15 @@ morie_fetch_csv <- function(path, sep = ",") {
 #' @references Apache Parquet format specification (thrift compact
 #'   protocol footer; PLAIN encoding; Snappy framing).
 #' @export
+#' @examples
+#' if (requireNamespace("arrow", quietly = TRUE)) {
+#'   tf <- tempfile(fileext = ".parquet")
+#'   arrow::write_parquet(data.frame(a = 1:3), tf,
+#'     use_dictionary = FALSE,
+#'     compression = "snappy"
+#'   )
+#'   morie_fetch_parquet(tf)
+#' }
 morie_fetch_parquet <- function(path) {
   con <- file(path, "rb")
   on.exit(close(con))

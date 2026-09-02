@@ -29,11 +29,11 @@ whose projection is the median in every direction.  In one dimension
 the supremum is attained at u = +/-1, so the depth is available in
 closed form.
 }
+\examples{
+DepthP(x = 5L, X = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
 \references{
 Stahel (1981), PhD thesis, ETH Zurich; Donoho (1982),
 qualifying paper, Harvard; Zuo & Serfling (2000), Ann. Statist.
 28(2):461-482.
-}
-\examples{
-DepthP(x = 5L, X = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

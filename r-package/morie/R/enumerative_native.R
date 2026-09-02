@@ -29,6 +29,8 @@
 #' @return A `morie_bigint`, or a list of them when `k` is NULL.
 #' @references Stanley RP (2011) vol. 1, Sec 1.9.
 #' @export
+#' @examples
+#' morie_stirling_second(n = 5L)
 morie_stirling_second <- function(n, k = NULL) {
   n <- as.integer(n)
   if (is.na(n) || n < 0L) {
@@ -66,6 +68,8 @@ morie_stirling_second <- function(n, k = NULL) {
 #' @return A `morie_bigint`, or a list of them when `k` is NULL.
 #' @references Stanley RP (2011) vol. 1, Sec 1.3.
 #' @export
+#' @examples
+#' morie_stirling_first(n = 5L)
 morie_stirling_first <- function(n, k = NULL, signed = FALSE) {
   n <- as.integer(n)
   if (is.na(n) || n < 0L) {
@@ -109,6 +113,8 @@ morie_stirling_first <- function(n, k = NULL, signed = FALSE) {
 #' @return A `morie_bigint`.
 #' @references Stanley RP (2011) vol. 1, Sec 1.9.
 #' @export
+#' @examples
+#' morie_bell_number(n = 5L)
 morie_bell_number <- function(n) {
   n <- as.integer(n)
   if (is.na(n) || n < 0L) {
@@ -136,6 +142,8 @@ morie_bell_number <- function(n) {
 #' @param n Non-negative whole number.
 #' @return A `morie_bigint`.
 #' @export
+#' @examples
+#' morie_catalan_number(n = 5L)
 morie_catalan_number <- function(n) {
   n <- as.integer(n)
   if (is.na(n) || n < 0L) {
@@ -160,6 +168,8 @@ morie_catalan_number <- function(n) {
 #' @return A `morie_bigint`.
 #' @references Andrews GE (1976), The Theory of Partitions.
 #' @export
+#' @examples
+#' morie_partition_count(n = 5L)
 morie_partition_count <- function(n, distinct = FALSE, odd_only = FALSE) {
   n <- as.integer(n)
   if (is.na(n) || n < 0L) {
@@ -233,6 +243,8 @@ morie_partition_count <- function(n, distinct = FALSE, odd_only = FALSE) {
 #' @param n,k Non-negative whole numbers.
 #' @return A `morie_bigint`.
 #' @export
+#' @examples
+#' morie_partitions_into_parts(n = 5L, k = 5L)
 morie_partitions_into_parts <- function(n, k) {
   n <- as.integer(n); k <- as.integer(k)
   if (is.na(n) || is.na(k) || n < 0L || k < 0L) {
@@ -261,6 +273,8 @@ morie_partitions_into_parts <- function(n, k) {
 #' @param n Non-negative whole number.
 #' @return A `morie_bigint`.
 #' @export
+#' @examples
+#' morie_derangements(n = 5L)
 morie_derangements <- function(n) {
   n <- as.integer(n)
   if (is.na(n) || n < 0L) {
@@ -290,6 +304,8 @@ morie_derangements <- function(n) {
 #' @return A list with `count` (a `morie_bigint`), `formula`, `cell`.
 #' @references Stanley RP (2011) vol. 1, Sec 1.9.
 #' @export
+#' @examples
+#' morie_twelvefold_way(n = 5L, k = 5L)
 morie_twelvefold_way <- function(n, k, balls = c("labelled", "unlabelled"),
                                  boxes = c("labelled", "unlabelled"),
                                  condition = c("any", "injective",
@@ -364,6 +380,9 @@ morie_twelvefold_way <- function(n, k, balls = c("labelled", "unlabelled"),
 #'   `mobius_identity_residual`, `divisor_sums`.
 #' @references Stanley RP (2011) vol. 1, Sec 3.7.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_mobius_inversion(V)
 morie_mobius_inversion <- function(f_values) {
   f <- as.numeric(f_values)
   n <- length(f)

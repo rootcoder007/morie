@@ -29,6 +29,10 @@ E[y(1) | D = 0] P(D = 0) <= E[y | D = 1]}, and symmetrically
 without the assumption bounds nothing, becomes an exact upper bound on
 the ATE. The other end is left at the worst case.
 }
+\examples{
+set.seed(1)
+r <- Bndsdo(y = rnorm(10), D = rbinom(10, 1, 0.5)); TRUE
+}
 \references{
 Manski, C. F. and Pepper, J. V. (2000). Monotone
 instrumental variables, with an application to the returns to
@@ -37,8 +41,4 @@ The worst-case end is equation (2.11) of Molinari, F. (2021),
 Handbook of Econometrics 7A (arXiv:2004.11751 p. 17). The derivation
 above is written out because the paper was not accessible: what is
 cited to Manski and Pepper is the assumption, not a copied formula.
-}
-\examples{
-set.seed(1)
-r <- Bndsdo(y = rnorm(10), D = rbinom(10, 1, 0.5)); TRUE
 }

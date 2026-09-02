@@ -24,11 +24,11 @@ A list with \code{fields} and \code{records}, ready for
 Optional helper.  Requires \pkg{httr2} (and \pkg{jsonlite} via the
 existing \code{\link{morie_arsau_read_sidecar}} contract).
 }
-\references{
-Ontario Data Catalogue CKAN API.
-}
 \examples{
 \donttest{
 sidecar <- morie_arsau_fetch_sidecar("assault", 2020L)
 }
+}
+\references{
+Ontario Data Catalogue CKAN API.
 }

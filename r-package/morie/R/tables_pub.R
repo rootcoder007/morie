@@ -241,6 +241,9 @@ NULL
 #'   format (\pkg{knitr::kable} output for latex / html / markdown /
 #'   text; CSV text for "csv").
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' table1(M)
 table1 <- function(data, group_col = NULL,
                     continuous_vars = NULL, categorical_vars = NULL,
                     continuous_summary = c("mean_sd", "median_iqr", "mean_ci"),
@@ -462,6 +465,10 @@ table1 <- function(data, group_col = NULL,
 #'   Otherwise a character string holding the rendered table in the
 #'   requested format.
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(y = rnorm(60), x = rnorm(60))
+#' regression_table(list(ols = stats::lm(y ~ x, data = df)))
 regression_table <- function(models, exponentiate = FALSE,
                               show_ci = TRUE, show_stars = TRUE,
                               confidence = 0.95, digits = 3L,
@@ -572,6 +579,11 @@ regression_table <- function(models, exponentiate = FALSE,
 #'   Otherwise a character string holding the rendered table in the
 #'   requested format.
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(y = rbinom(80, 1, 0.4), x = rnorm(80))
+#' fit <- stats::glm(y ~ x, family = binomial(), data = df)
+#' odds_ratio_table(fit)
 odds_ratio_table <- function(model, confidence = 0.95, digits = 3L,
                               apa = FALSE, output_format = "dataframe",
                               title = "Odds Ratios") {
@@ -953,6 +965,9 @@ format_dataframe <- function(df, numeric_fmt = "%.2f",
 #'   Otherwise a character string holding the rendered table in the
 #'   requested format.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' summary_statistics_table(V)
 summary_statistics_table <- function(data, variables = NULL,
                                         stats = c("n", "mean", "sd",
                                                    "median", "min",
@@ -1025,6 +1040,9 @@ summary_statistics_table <- function(data, variables = NULL,
 #'   character string holding the rendered table in the requested
 #'   format.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' treatment_effect_table(V)
 treatment_effect_table <- function(estimators, digits = 3L,
                                       output_format = "dataframe",
                                       title = "Treatment Effect Estimates") {

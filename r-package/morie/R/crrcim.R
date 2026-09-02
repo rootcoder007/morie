@@ -72,6 +72,9 @@
 #'   of Failure Time Data, 2nd ed., Wiley, section 8.2; Aalen &
 #'   Johansen (1978), Scand. J. Statist. 5(3):141-150.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Crrcim(V, V)
 Crrcim <- function(time, event_type, cause = 1) {
   a <- .aalen_johansen(time, event_type, cause)
   .t1_result(estimate = if (length(a$F)) a$F[length(a$F)] else 0,

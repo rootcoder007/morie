@@ -22,13 +22,13 @@ at c can stall them.
 }
 \details{
 Formula: \code{w(r) = exp(-(r/c)^2)},
-\code{rho(r) = (c^2/2)[1 - exp(-(r/c)^2)]}, \code{psi = r w(r)}.
-}
-\references{
-Dennis, J. E. & Welsch, R. E. (1978). Commun Statist B
-7:345-359.
+\code{rho(r) = (c^2/2)\[1 - exp(-(r/c)^2)\]}, \code{psi = r w(r)}.
 }
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 Welshw(V)
+}
+\references{
+Dennis, J. E. & Welsch, R. E. (1978). Commun Statist B
+7:345-359.
 }

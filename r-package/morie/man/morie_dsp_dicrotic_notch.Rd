@@ -18,10 +18,10 @@ Integer vector of notch indices.
 Finds prominent minima in the second derivative outside the
 systolic onset window (native peak detector, module 20).
 }
-\references{
-Rangayyan & Krishnan (2015), Ch. 4, sec. 4.8.
-}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 morie_dsp_dicrotic_notch(V)
+}
+\references{
+Rangayyan & Krishnan (2015), Ch. 4, sec. 4.8.
 }

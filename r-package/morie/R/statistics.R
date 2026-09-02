@@ -104,6 +104,10 @@ NULL
 #' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' set.seed(1)
+#' res <- one_sample_ttest(rnorm(20, 0.3))
+#' print(res)
 print.morie_test_result <- function(x, ...) {
   cat(x$method, "\
 ", sep = "")
@@ -236,6 +240,9 @@ print.morie_test_result <- function(x, ...) {
 #' @param confidence Confidence level (default 0.95).
 #' @return A \code{morie_test_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' one_sample_ttest(V)
 one_sample_ttest <- function(x, mu0 = 0, confidence = 0.95) {
   x <- .stat_validate(x)
   n <- length(x)
@@ -260,6 +267,9 @@ one_sample_ttest <- function(x, mu0 = 0, confidence = 0.95) {
 #'   with the t statistic, p-value, degrees of freedom, mean-difference CI,
 #'   Cohen's d effect size, and combined sample size.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' two_sample_ttest(V, V)
 two_sample_ttest <- function(x, y, equal_var = TRUE, confidence = 0.95) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)
@@ -295,6 +305,9 @@ two_sample_ttest <- function(x, y, equal_var = TRUE, confidence = 0.95) {
 #'   with Welch's t statistic, p-value, Satterthwaite df, mean-difference CI,
 #'   Cohen's d, and combined sample size.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' welch_ttest(V, V)
 welch_ttest <- function(x, y, confidence = 0.95) {
   two_sample_ttest(x, y, equal_var = FALSE, confidence = confidence)
 }
@@ -306,6 +319,9 @@ welch_ttest <- function(x, y, confidence = 0.95) {
 #'   with the paired t statistic, p-value, df, mean-difference CI,
 #'   Cohen's d on the differences, and n (number of pairs).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' paired_ttest(V, V)
 paired_ttest <- function(x, y, confidence = 0.95) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)
@@ -333,6 +349,9 @@ paired_ttest <- function(x, y, confidence = 0.95) {
 #' @param ... Two or more numeric vectors (groups).
 #' @return \code{morie_test_result} with eta-squared effect size.
 #' @export
+#' @examples
+#' set.seed(1)
+#' one_way_anova(rnorm(15), rnorm(15, 0.5), rnorm(15, 1))
 one_way_anova <- function(...) {
   groups <- list(...)
   if (length(groups) < 2L) stop("ANOVA requires at least 2 groups.")
@@ -369,6 +388,10 @@ one_way_anova <- function(...) {
 #'   with the interaction F statistic and p-value, the \code{factor_a} partial
 #'   eta-squared, and the full ANOVA table in \code{extra$anova_table}.
 #' @export
+#' @examples
+#' d <- data.frame(y = rnorm(120), a = rep(letters[1:3], each = 40), 
+#'     b = rep(letters[4:5], 60))
+#' two_way_anova(d, "y", "a", "b")
 two_way_anova <- function(data, outcome, factor_a, factor_b) {
   data <- stats::na.omit(data[, c(outcome, factor_a, factor_b)])
   data[[factor_a]] <- factor(data[[factor_a]])
@@ -403,6 +426,11 @@ two_way_anova <- function(data, outcome, factor_a, factor_b) {
 #'   and \code{extra} list carrying \code{df_error}, \code{ss_cond} and
 #'   \code{ss_error}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(y = rnorm(30), id = rep(1:10, 3),
+#'                  cond = rep(c("t1", "t2", "t3"), each = 10))
+#' repeated_measures_anova(df, "y", "id", "cond")
 repeated_measures_anova <- function(data, outcome, subject, within) {
   df <- stats::na.omit(data[, c(outcome, subject, within)])
   levels_w <- unique(df[[within]])
@@ -650,6 +678,9 @@ cochrans_q <- function(...) {
 #'   with the Pearson correlation r as the test statistic and estimate,
 #'   p-value, df, Fisher-z confidence interval, and r-squared effect size.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' pearson_correlation(V, V)
 pearson_correlation <- function(x, y, confidence = 0.95) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)
@@ -673,6 +704,9 @@ pearson_correlation <- function(x, y, confidence = 0.95) {
 #'   with Spearman's rho as the test statistic and estimate, p-value, df,
 #'   Fisher-z CI, and rho-squared effect size.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' spearman_correlation(V, V)
 spearman_correlation <- function(x, y, confidence = 0.95) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)
@@ -723,6 +757,14 @@ kendall_correlation <- function(x, y) {
 #'   with the point-biserial r as the test statistic and estimate, p-value,
 #'   df, Fisher-z CI, and r-squared effect size.
 #' @export
+#' @examples
+#' set.seed(1)
+#' v1 <- rbinom(30, 1, 0.4)
+#' v2 <- rbinom(30, 1, 0.5)
+#' v3 <- rbinom(30, 1, 0.6)
+#' res <- cochrans_q(v1, v2, v3)
+#' res$p_value
+#' point_biserial_correlation(binary = v1, continuous = v1)
 point_biserial_correlation <- function(binary, continuous, confidence = 0.95) {
   b <- .stat_validate(binary)
   c <- .stat_validate(continuous)
@@ -750,6 +792,8 @@ point_biserial_correlation <- function(binary, continuous, confidence = 0.95) {
 #'   with the partial correlation r as the test statistic and estimate,
 #'   p-value, residual df, Fisher-z CI, and r-squared effect size.
 #' @export
+#' @examples
+#' partial_correlation(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
 partial_correlation <- function(x, y, covariates, confidence = 0.95) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)
@@ -782,6 +826,8 @@ partial_correlation <- function(x, y, covariates, confidence = 0.95) {
 #'   with the semi-partial correlation r as the test statistic and estimate,
 #'   p-value, and r-squared effect size.
 #' @export
+#' @examples
+#' semi_partial_correlation(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
 semi_partial_correlation <- function(x, y, covariates) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)
@@ -844,6 +890,9 @@ mann_whitney_u <- function(x, y, alternative = "two.sided") {
 #'   with the signed-rank V statistic, p-value, an r effect size derived
 #'   from the normal approximation, and n.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' wilcoxon_signed_rank(V)
 wilcoxon_signed_rank <- function(x, y = NULL, alternative = "two.sided") {
   alternative <- sub("-", ".", alternative, fixed = TRUE)
   x <- .stat_validate(x)
@@ -1148,6 +1197,9 @@ bartlett_test <- function(...) {
 #'   size n, and \code{extra} list carrying \code{n_runs} and
 #'   \code{expected_runs}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' runs_test(V)
 runs_test <- function(x, cutoff = NULL) {
   x <- .stat_validate(x)
   n <- length(x)
@@ -1180,6 +1232,9 @@ runs_test <- function(x, cutoff = NULL) {
 #' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
 #'   with the Shapiro-Wilk W statistic, p-value, and sample size n.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' shapiro_wilk(V)
 shapiro_wilk <- function(x) {
   x <- .stat_validate(x)
   sw <- stats::shapiro.test(x)
@@ -1341,6 +1396,8 @@ lilliefors_test <- function(x, dist = c("norm", "expon")) {
 #'   with the z statistic, two-sided p-value, Wilson CI for the proportion,
 #'   the sample proportion as \code{estimate}, and sample size n.
 #' @export
+#' @examples
+#' one_proportion_ztest(count = c(1, 2, 3, 4, 5, 6, 7, 8), nobs = 5L)
 one_proportion_ztest <- function(count, nobs, value = 0.5, confidence = 0.95) {
   p_hat <- if (nobs > 0) count / nobs else 0
   se <- if (nobs > 0) sqrt(value * (1 - value) / nobs) else 0
@@ -1367,6 +1424,8 @@ one_proportion_ztest <- function(count, nobs, value = 0.5, confidence = 0.95) {
 #'   with the z statistic, two-sided p-value, Wald CI for the difference,
 #'   the proportion difference as \code{estimate}, and combined n.
 #' @export
+#' @examples
+#' two_proportion_ztest(40, 100, 25, 100)
 two_proportion_ztest <- function(count1, nobs1, count2, nobs2,
                                   confidence = 0.95) {
   p1 <- if (nobs1 > 0) count1 / nobs1 else 0
@@ -1579,6 +1638,9 @@ intraclass_correlation <- function(data, targets, raters, ratings,
 #' @param x Numeric vector.
 #' @return A list of \code{morie_test_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' normality_suite(V)
 normality_suite <- function(x) {
   x <- .stat_validate(x)
   out <- list()
@@ -1594,6 +1656,8 @@ normality_suite <- function(x) {
 #' @return A length-2 list of \code{morie_test_result} objects:
 #'   the Levene (Brown-Forsythe) test followed by Bartlett's test.
 #' @export
+#' @examples
+#' variance_equality_suite(rnorm(40), rnorm(40, sd = 2))
 variance_equality_suite <- function(...) {
   list(levene_test(..., center = "median"),
        bartlett_test(...))

@@ -34,13 +34,16 @@ List with \code{pvalue}, \code{lambda_local},
 \description{
 For a candidate peak of the given width with k ChIP tags, the
 uniform background rate lambda_BG is replaced by the dynamic
-\eqn{\lambda_{local} = \max(\lambda_{BG}, [\lambda_{1k},]
+\eqn{\lambda_{local} = \max(\lambda_{BG}, \[\lambda_{1k},\]
 \lambda_{5k}, \lambda_{10k})}, where \eqn{\lambda_{Xk}} is the
 control tag count of the X-kb window centred on the peak rescaled
 to the peak width (count * width / X000). When no control sample
 exists the 1 kb term is omitted (\code{use_1k = FALSE}). The peak
 p-value is the Poisson upper tail \eqn{P(X \ge k)} under
 lambda_local and fold_enrichment is k / lambda_local.
+}
+\examples{
+Chipsq(count = c(1, 2, 3, 4, 5, 6, 7, 8), width = 5L, lambda_bg = 5L)
 }
 \references{
 Zhang, Y., Liu, T., Meyer, C. A., Eeckhoute, J.,
@@ -49,7 +52,4 @@ Brown, M., Li, W. and Liu, X. S. (2008), Model-based Analysis
 of ChIP-Seq (MACS), Genome Biology 9(9), R137. Dynamic lambda
 and Poisson p-value, Methods, Peak detection. Local source:
 library/pdf/fetched-wave3/Zhang-2008-MACS-GenomeBiology.pdf.
-}
-\examples{
-Chipsq(count = c(1, 2, 3, 4, 5, 6, 7, 8), width = 5L, lambda_bg = 5L)
 }

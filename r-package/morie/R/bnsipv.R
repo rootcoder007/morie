@@ -25,6 +25,9 @@
 #'   component bounds are equations (2.15) and (2.13) of Molinari, F.
 #'   (2021), Handbook of Econometrics 7A (arXiv:2004.11751 pp. 18-19).
 #' @export
+#' @examples
+#' set.seed(1)
+#' r <- Bnsipv(y = rnorm(10), D = rbinom(10, 1, 0.5), Z = rnorm(10)); TRUE
 Bnsipv <- function(y, D, Z) {
   z <- .bnd_yd(y, D, "Bnsipv")
   zv <- unlist(Z)

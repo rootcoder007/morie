@@ -126,6 +126,8 @@
 #'   `arcgis_url`, `fixture`, `hub_id` (3TT+ canonical id matching
 #'   the TPS Hub catalog).
 #' @export
+#' @examples
+#' morie_tps_psdp_layers()
 morie_tps_psdp_layers <- function() {
   rows <- lapply(names(.MORIE_TPS_PSDP_REGISTRY), function(k) {
     e <- .MORIE_TPS_PSDP_REGISTRY[[k]]
@@ -255,6 +257,8 @@ morie_datasets_tps_assault <- function(year = NULL,
 #'   `offline = FALSE`. Columns mirror the upstream 31-column
 #'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
+#' @examples
+#' morie_datasets_tps_autotheft()
 morie_datasets_tps_autotheft <- function(year = NULL,
                                            max_features = NULL,
                                            offline = TRUE,
@@ -293,6 +297,8 @@ morie_datasets_tps_bicycletheft <- function(year = NULL,
 #'   `offline = FALSE`. Columns mirror the upstream 31-column
 #'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
+#' @examples
+#' morie_datasets_tps_breakandenter()
 morie_datasets_tps_breakandenter <- function(year = NULL,
                                                max_features = NULL,
                                                offline = TRUE,
@@ -413,6 +419,8 @@ morie_datasets_tps_shooting_firearm_discharges <- function(
 #'   `offline = FALSE`. Columns mirror the upstream 31-column
 #'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
+#' @examples
+#' morie_datasets_tps_theft_from_motor_vehicle()
 morie_datasets_tps_theft_from_motor_vehicle <- function(
   year = NULL, max_features = NULL,
   offline = TRUE, layer_url = NULL) {
@@ -429,6 +437,8 @@ morie_datasets_tps_theft_from_motor_vehicle <- function(
 #'   upstream 31-column Cluster-A crime schema with HOOD_158 +
 #'   HOOD_140 attached.
 #' @export
+#' @examples
+#' morie_datasets_tps_theft_over()
 morie_datasets_tps_theft_over <- function(year = NULL,
                                             max_features = NULL,
                                             offline = TRUE,

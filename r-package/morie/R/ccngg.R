@@ -22,6 +22,9 @@
 #' @references Nakagawa & Schielzeth (2013), Methods Ecol. Evol.
 #'   4(2):133-142.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Ccngg(V)
 Ccngg <- function(y, X = NULL, Z = NULL, cluster = NULL) {
   yv <- .s03vec(y)
   n <- length(yv)

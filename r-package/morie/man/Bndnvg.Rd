@@ -24,8 +24,12 @@ look like, which is the point: the bound shows how little the data alone
 deliver.
 }
 \details{
-Formula: \code{[E(y | D = 1) - y_1, E(y | D = 1) - y_0]} with
+Formula: \code{\[E(y | D = 1) - y_1, E(y | D = 1) - y_0\]} with
 \code{y_0 = min y} and \code{y_1 = max y}.
+}
+\examples{
+set.seed(1)
+r <- Bndnvg(y = rnorm(10), D = rbinom(10, 1, 0.5)); TRUE
 }
 \references{
 Manski, C. F. (1990). Nonparametric bounds on treatment
@@ -33,8 +37,4 @@ effects. American Economic Review Papers and Proceedings 80(2),
 319-323. Restated as equation (2.11) of Molinari, F. (2021),
 Microeconometrics with partial identification, Handbook of Econometrics
 7A, 355-486 (arXiv:2004.11751 p. 17).
-}
-\examples{
-set.seed(1)
-r <- Bndnvg(y = rnorm(10), D = rbinom(10, 1, 0.5)); TRUE
 }

@@ -19,12 +19,16 @@ morie_matching_subclassify(
 
 \item{covariates}{Character vector of covariates.}
 
-\item{ps}{Optional propensity scores. When supplied they REPLACE the fitted model and become the matching distance directly, aligned to the rows that survive the NA drop.}
+\item{ps}{Optional propensity scores. When supplied they REPLACE
+the fitted model and become the matching distance directly,
+aligned to the rows that survive the NA drop.}
 
 \item{n_strata}{Number of quantile-based strata (default 5).}
 }
 \value{
-A list with components \code{data_with_strata} (the original data with a \code{._stratum} column appended) and \code{stratum_effects} (per-stratum sample sizes and PS ranges).
+A list with components \code{data_with_strata} (the original
+data with a \code{._stratum} column appended) and
+\code{stratum_effects} (per-stratum sample sizes and PS ranges).
 }
 \description{
 Divides observations into propensity-score strata and reports within-

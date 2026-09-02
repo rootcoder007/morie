@@ -28,10 +28,10 @@ real CKAN sample at
 \description{
 Use-of-force incidents (head dataset)
 }
+\examples{
+morie_datasets_corrections_uof_incidents()
+}
 \references{
 \url{https://data.ontario.ca/dataset/use-of-force-in-correctional-institutions};
 Open Government Licence -- Ontario.
-}
-\examples{
-morie_datasets_corrections_uof_incidents()
 }

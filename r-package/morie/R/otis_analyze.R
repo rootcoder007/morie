@@ -176,6 +176,9 @@ morie_otis_all_analyses <- function(df, year,
 #' @return A single character string (newline-joined) representing the
 #'   formatted result, suitable for \code{cat()} or \code{print()}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' format.morie_otis_result(D)
 format.morie_otis_result <- function(x, ...) {
   lines <- character(0)
   lines <- c(lines, sprintf("== %s ==", x$title %||% "(untitled)"))
@@ -214,6 +217,9 @@ format.morie_otis_result <- function(x, ...) {
 #' @param ... Passed to \code{format.morie_otis_result()}.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' print.morie_otis_result(V)
 print.morie_otis_result <- function(x, ...) {
   cat(format(x, ...), "\
 ", sep = "")

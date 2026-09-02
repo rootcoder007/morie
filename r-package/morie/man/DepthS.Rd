@@ -26,9 +26,9 @@ simplex is an interval, so the depth is the fraction of pairs
 straddling theta and its population value is exactly
 2 F(theta) (1 - F(theta)) -- maximised at the median.
 }
-\references{
-Liu (1990), Ann. Statist. 18(1):405-414.
-}
 \examples{
 DepthS(X = c(1, 2, 3, 4, 5, 6, 7, 8), theta = 0.5)
+}
+\references{
+Liu (1990), Ann. Statist. 18(1):405-414.
 }

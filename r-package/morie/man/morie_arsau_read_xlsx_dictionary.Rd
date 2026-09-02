@@ -27,12 +27,12 @@ the CSV that holds the column-level data dictionary (variable name
 dependency.
 }
 }
-\references{
-Ontario Ministry of the Solicitor General data
-dictionaries accompanying the ARSAU CSV releases.
-}
 \examples{
 \donttest{
 dict <- morie_arsau_read_xlsx_dictionary(tempdir())
 }
+}
+\references{
+Ontario Ministry of the Solicitor General data
+dictionaries accompanying the ARSAU CSV releases.
 }

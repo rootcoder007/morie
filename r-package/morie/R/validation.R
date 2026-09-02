@@ -106,6 +106,10 @@ column_rule <- function(name, dtype = NULL, required = TRUE,
 #' @param raise_on_error If TRUE, throw on first error.
 #' @return An object of class \code{"class_name"}.
 #' @export
+#' @examples
+#' d <- data.frame(x = 1:5, y = letters[1:5], stringsAsFactors = FALSE)
+#' validate_schema(d, list(column_rule("x", dtype = "numeric"), 
+#'     column_rule("y", dtype = "character")))
 validate_schema <- function(data, rules, raise_on_error = FALSE) {
   errors <- character(0)
   warnings_ <- character(0)
@@ -268,6 +272,9 @@ check_referential_integrity <- function(child, parent, child_key, parent_key) {
 #' @param consistency_rules List of functions \code{(df) -> logical(1)}.
 #' @return An object of class \code{"class_name"}.
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' score_data_quality(M)
 score_data_quality <- function(data, date_cols = NULL, freshness_days = 365L,
                                 key_cols = NULL, consistency_rules = NULL) {
   details <- list()
@@ -859,6 +866,16 @@ detect_overfitting <- function(fit_fn, predict_fn, X, y,
 #' @param scoring Scoring metric.
 #' @return An object of class \code{"class_name"}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' X <- data.frame(x = rnorm(60), date = seq.Date(as.Date("2020-01-01"),
+#'                                               by = "day", length.out = 60))
+#' y <- X$x + rnorm(60)
+#' res <- try(temporal_validate(
+#'   fit_fn = function(Xt, yt) stats::lm(yt ~ x, data = cbind(Xt, yt = yt)),
+#'   predict_fn = function(m, Xt) stats::predict(m, Xt),
+#'   X = X, y = y, date_col = "date"))
+#' if (!inherits(res, "try-error")) str(res, max.level = 1)
 temporal_validate <- function(fit_fn, predict_fn, X, y, date_col,
                                split_date = NULL,
                                split_quantile = 0.7,
