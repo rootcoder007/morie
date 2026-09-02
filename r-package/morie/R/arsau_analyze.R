@@ -802,7 +802,7 @@ morie_arsau_analyze_detailed_dataset <- function(year_range = "2020-2022",
 #' @export
 #' @examples
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' print.morie_arsau_analysis_result(D)
+#' morie:::print.morie_arsau_analysis_result(D)
 print.morie_arsau_analysis_result <- function(x, ...) {
   cat(x$title, "\n", strrep("=", nchar(x$title)), "\n", sep = "")
   if (length(x$summary_lines) > 0L) {

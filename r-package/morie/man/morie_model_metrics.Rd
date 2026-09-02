@@ -65,6 +65,6 @@ tests in \code{tests/testthat/}.
 \examples{
 set.seed(1)
 M <- matrix(rnorm(20 * 8), 20, 8)
-p <- morie_pca(M, k = 3)
+p <- morie:::morie_pca(M, k = 3)
 is.list(p)
 }

@@ -19,5 +19,5 @@ The value of \code{if}.
 }
 \keyword{internal}
 \examples{
-abs(morie_cor_pearson(1:10, 2 * (1:10) + 3) - 1) < 1e-9
+abs(morie:::morie_cor_pearson(1:10, 2 * (1:10) + 3) - 1) < 1e-9
 }

@@ -19,5 +19,5 @@ The value of \code{if}.
 }
 \keyword{internal}
 \examples{
-abs(morie_var(c(1, 2, 3, 4, 5), ddof = 1) - 2.5) < 1e-9
+abs(morie:::morie_var(c(1, 2, 3, 4, 5), ddof = 1) - 2.5) < 1e-9
 }

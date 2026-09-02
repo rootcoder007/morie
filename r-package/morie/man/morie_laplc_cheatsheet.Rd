@@ -15,5 +15,5 @@ The terminal expression of the body.
 }
 \keyword{internal}
 \examples{
-morie_laplc_cheatsheet()
+morie:::morie_laplc_cheatsheet()
 }

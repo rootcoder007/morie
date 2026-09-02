@@ -71,6 +71,6 @@ tests in \code{tests/testthat/}.
 }
 \keyword{models}
 \examples{
-P <- morie_ordinal_probs(c(-1, 0, 1), thresholds = c(-0.5, 0.5))
+P <- morie:::morie_ordinal_probs(c(-1, 0, 1), thresholds = c(-0.5, 0.5))
 c(ncol(P), all(abs(rowSums(P) - 1) < 1e-9))
 }

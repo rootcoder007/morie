@@ -326,7 +326,7 @@ morie_write_audit_markdown <- function(out_path, audit_result) {
 #' @export
 #' @examples
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' print.morie_audit_result(D)
+#' morie:::print.morie_audit_result(D)
 print.morie_audit_result <- function(x, ...) {
   cat(x$title, "\n", strrep("=", nchar(x$title)), "\n", sep = "")
   for (k in names(x$summary_lines)) {
