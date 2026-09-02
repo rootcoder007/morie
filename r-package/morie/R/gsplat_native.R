@@ -36,7 +36,10 @@ morie_gsplat_covariance <- function(scale, quaternion) {
   n <- sqrt(sum(v * v))
   if (n <= .GSPLAT_EPS)
     stop("gsplat: the rotation quaternion is zero")
-  w <- v[1L] / n; x <- v[2L] / n; y <- v[3L] / n; z <- v[4L] / n
+  w <- v[1L] / n
+  x <- v[2L] / n
+  y <- v[3L] / n
+  z <- v[4L] / n
   R <- matrix(c(1 - 2 * (y * y + z * z), 2 * (x * y - w * z),
                 2 * (x * z + w * y),
                 2 * (x * y + w * z), 1 - 2 * (x * x + z * z),
@@ -149,11 +152,14 @@ morie_gsplat_density <- function(gradients, scales, opacities,
                                  grad_threshold = 2e-4,
                                  scale_threshold = 0.01,
                                  opacity_threshold = 0.005) {
-  g <- as.numeric(gradients); s <- as.numeric(scales)
+  g <- as.numeric(gradients)
+  s <- as.numeric(scales)
   o <- as.numeric(opacities)
   if (length(g) != length(s) || length(g) != length(o))
     stop("gsplat: the inputs differ in length")
-  clone <- integer(0); split <- integer(0); prune <- integer(0)
+  clone <- integer(0)
+  split <- integer(0)
+  prune <- integer(0)
   for (i in seq_along(g)) {
     if (o[i] < as.numeric(opacity_threshold)) {
       prune <- c(prune, i)

@@ -27,7 +27,8 @@
 #' @return Numeric matrix (n by m).
 #' @noRd
 .sp_cross_dist <- function(a, b) {
-  a <- as.matrix(a); b <- as.matrix(b)
+  a <- as.matrix(a)
+  b <- as.matrix(b)
   out <- matrix(0, nrow(a), nrow(b))
   for (j in seq_len(nrow(b))) {
     out[, j] <- sqrt(colSums((t(a) - b[j, ])^2))

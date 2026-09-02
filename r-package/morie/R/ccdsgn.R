@@ -25,22 +25,27 @@
 #' Ccdsgn(cases = list(a = 1, b = 2), controls = list(a = 1, b = 2))
 Ccdsgn <- function(cases, controls, exposed = NULL, unexposed = NULL,
                    conf = 0.95) {
-  cs <- .s03vec(cases); ct <- .s03vec(controls)
+  cs <- .s03vec(cases)
+  ct <- .s03vec(controls)
   if (!length(cs) || !length(ct))
     stop("empty input: cases and controls are required")
   if (length(cs) == 2L && all(cs == as.integer(cs)) && all(cs >= 0)) {
-    a <- cs[1]; b <- cs[2]
+    a <- cs[1]
+    b <- cs[2]
   } else {
     if (any(!(cs %in% c(0, 1))))
       stop("cases must be counts (a, b) or 0/1 indicators")
-    a <- sum(cs); b <- length(cs) - a
+    a <- sum(cs)
+    b <- length(cs) - a
   }
   if (length(ct) == 2L && all(ct == as.integer(ct)) && all(ct >= 0)) {
-    cc <- ct[1]; d <- ct[2]
+    cc <- ct[1]
+    d <- ct[2]
   } else {
     if (any(!(ct %in% c(0, 1))))
       stop("controls must be counts (c, d) or 0/1 indicators")
-    cc <- sum(ct); d <- length(ct) - cc
+    cc <- sum(ct)
+    d <- length(ct) - cc
   }
   if (!(conf > 0 && conf < 1)) stop("conf must lie strictly in (0, 1)")
   n <- a + b + cc + d
@@ -50,11 +55,18 @@ Ccdsgn <- function(cases, controls, exposed = NULL, unexposed = NULL,
     se <- sqrt(1 / a + 1 / b + 1 / cc + 1 / d)
     lo <- log(orr)
     z <- .s03qnorm(0.5 + conf / 2)
-    ci_l <- exp(lo - z * se); ci_h <- exp(lo + z * se)
+    ci_l <- exp(lo - z * se)
+    ci_h <- exp(lo + z * se)
   } else {
-    se <- NaN; lo <- NaN; ci_l <- NaN; ci_h <- NaN
+    se <- NaN
+    lo <- NaN
+    ci_l <- NaN
+    ci_h <- NaN
   }
-  r1 <- a + b; r2 <- cc + d; c1 <- a + cc; c2 <- b + d
+  r1 <- a + b
+  r2 <- cc + d
+  c1 <- a + cc
+  c2 <- b + d
   chi <- if (min(r1, r2, c1, c2) > 0)
     n * (a * d - b * cc)^2 / (r1 * r2 * c1 * c2) else NaN
   .t1_result(estimate = orr, a = a, b = b, c = cc, d = d, log_or = lo,

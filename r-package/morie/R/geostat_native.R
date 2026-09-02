@@ -48,7 +48,8 @@ morie_spatial_variogram <- function(coords, values, n_bins = 15L,
   sq <- (outer(values, values, "-")^2)[upper.tri(d)] / 2
   if (is.null(cutoff)) cutoff <- max(dv) / 3
   keep <- dv <= cutoff & dv > 0
-  dv <- dv[keep]; sq <- sq[keep]
+  dv <- dv[keep]
+  sq <- sq[keep]
   breaks <- seq(0, cutoff, length.out = n_bins + 1L)
   bin <- cut(dv, breaks, include.lowest = TRUE)
   gamma <- tapply(sq, bin, mean)
@@ -86,7 +87,9 @@ morie_spatial_variogram_fit <- function(coords, values,
   v0 <- stats::var(y)
   r0 <- max(D) / 4
   negll <- function(p) {
-    nug <- exp(p[1]); ps <- exp(p[2]); rg <- exp(p[3])
+    nug <- exp(p[1])
+    ps <- exp(p[2])
+    rg <- exp(p[3])
     # covariance = (nug+ps) - gamma(h)
     C <- (nug + ps) - .morie_vgm_gamma(D, model, nug, ps, rg)
     ch <- tryCatch(chol(C + diag(1e-8 * v0, n)),
@@ -126,10 +129,14 @@ morie_spatial_variogram_fit <- function(coords, values,
   g <- emp$gamma
   w <- emp$np / pmax(h^2, 1e-12)
   ok <- is.finite(h) & is.finite(g) & is.finite(w) & h > 0
-  h <- h[ok]; g <- g[ok]; w <- w[ok]
+  h <- h[ok]
+  g <- g[ok]
+  w <- w[ok]
   v0 <- max(g, na.rm = TRUE)
   obj <- function(p) {
-    nug <- exp(p[1]); ps <- exp(p[2]); rg <- exp(p[3])
+    nug <- exp(p[1])
+    ps <- exp(p[2])
+    rg <- exp(p[3])
     fit <- .morie_vgm_gamma(h, model, nug, ps, rg)
     sum(w * (g - fit)^2)
   }

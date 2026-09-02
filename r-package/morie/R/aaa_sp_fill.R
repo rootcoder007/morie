@@ -84,7 +84,9 @@
   for (cc in seq_len(n)) {
     p <- cc - 1L + which.max(abs(M[cc:n, cc]))
     if (abs(M[p, cc]) < 1e-300) stop("linear system is singular")
-    if (p != cc) { tmp <- M[cc, ]; M[cc, ] <- M[p, ]; M[p, ] <- tmp }
+    if (p != cc) { tmp <- M[cc, ]
+    M[cc, ] <- M[p, ]
+    M[p, ] <- tmp }
     pv <- M[cc, cc]
     for (r in seq_len(n)) {
       if (r == cc) next
@@ -115,7 +117,10 @@
   for (cc in seq_len(n)) {
     p <- cc - 1L + which.max(abs(M[cc:n, cc]))
     if (abs(M[p, cc]) < 1e-300) return(c(0, -Inf))
-    if (p != cc) { tmp <- M[cc, ]; M[cc, ] <- M[p, ]; M[p, ] <- tmp; sgn <- -sgn }
+    if (p != cc) { tmp <- M[cc, ]
+    M[cc, ] <- M[p, ]
+    M[p, ] <- tmp
+    sgn <- -sgn }
     pv <- M[cc, cc]
     if (pv < 0) sgn <- -sgn
     acc <- acc + log(abs(pv))
@@ -341,7 +346,8 @@ SpAcf <- function(coords, z, bins = NULL, cutoff = NULL) {
   d <- zz - .morie_fsum(zz) / n
   c0 <- .morie_fsum(d * d) / n
   if (c0 <= 0) stop("`z` is constant; C(0) is zero and R(h) undefined")
-  h <- numeric(0); prod <- numeric(0)
+  h <- numeric(0)
+  prod <- numeric(0)
   for (i in seq_len(n - 1L)) for (j in (i + 1L):n) {
     h <- c(h, .morie_spx_dist(cc[i, ], cc[j, ]))
     prod <- c(prod, d[i] * d[j])
@@ -361,17 +367,22 @@ SpAcf <- function(coords, z, bins = NULL, cutoff = NULL) {
     edges <- as.numeric(bins)
     if (any(diff(edges) <= 0)) stop("`bins` edges must increase")
   }
-  lo <- 0; cov <- numeric(0); acf <- numeric(0)
-  npairs <- numeric(0); centres <- numeric(0)
+  lo <- 0
+  cov <- numeric(0)
+  acf <- numeric(0)
+  npairs <- numeric(0)
+  centres <- numeric(0)
   for (e in edges) {
     keep <- which(h > lo & h <= e)
     npairs <- c(npairs, length(keep))
     centres <- c(centres, 0.5 * (lo + e))
     if (length(keep)) {
       cv <- .morie_fsum(prod[keep]) / length(keep)
-      cov <- c(cov, cv); acf <- c(acf, cv / c0)
+      cov <- c(cov, cv)
+      acf <- c(acf, cv / c0)
     } else {
-      cov <- c(cov, NaN); acf <- c(acf, NaN)
+      cov <- c(cov, NaN)
+      acf <- c(acf, NaN)
     }
     lo <- e
   }
@@ -639,7 +650,8 @@ Pcf <- function(points, region = NULL, r = NULL, correction = "border") {
       kv <- c(kv, (cnt / n) / lam)
     } else if (identical(correction, "border")) {
       keep <- which(bd > h)
-      if (!length(keep)) { kv <- c(kv, NaN); next }
+      if (!length(keep)) { kv <- c(kv, NaN)
+      next }
       cnt <- 0
       for (i in seq_len(n)) for (j in keep)
         if (i != j && D[i, j] <= h) cnt <- cnt + 1
@@ -685,19 +697,25 @@ SphVario <- function(h, c0 = 0, c = 1, a = 1) {
   # the h = 0 case is the usual way to lose it.
   hh <- .morie_spx_chkv(h, "h")
   if (any(hh < 0)) stop("`h` must be non-negative")
-  c0 <- as.numeric(c0); c <- as.numeric(c); a <- as.numeric(a)
+  c0 <- as.numeric(c0)
+  c <- as.numeric(c)
+  a <- as.numeric(a)
   if (a <= 0) stop("`a` (the range) must be positive")
   if (c0 < 0) stop("`c0` (the nugget) must be non-negative")
   if (c < 0) stop("`c` (the partial sill) must be non-negative")
-  gam <- numeric(length(hh)); cov <- numeric(length(hh))
+  gam <- numeric(length(hh))
+  cov <- numeric(length(hh))
   for (i in seq_along(hh)) {
     t <- hh[i]
-    if (t == 0) { gam[i] <- 0; cov[i] <- c0 + c }
+    if (t == 0) { gam[i] <- 0
+    cov[i] <- c0 + c }
     else if (t <= a) {
       u <- t / a
       s <- 1.5 * u - 0.5 * u * u * u
-      gam[i] <- c0 + c * s; cov[i] <- c * (1 - s)
-    } else { gam[i] <- c0 + c; cov[i] <- 0 }
+      gam[i] <- c0 + c * s
+      cov[i] <- c * (1 - s)
+    } else { gam[i] <- c0 + c
+    cov[i] <- 0 }
   }
   list(h = hh, gamma = gam, cov = cov, nugget = c0, psill = c,
        sill = c0 + c, range = a, true_range = TRUE, n = length(hh),
@@ -913,11 +931,13 @@ SpErrMod <- function(x, y, w, n_grid = 201L, refine = 60L) {
   if (srad <= 0) stop("`w` has spectral radius 0; rho is unidentified")
   hi <- (1 / srad) * (1 - 1e-6)
   lo <- -hi
-  bestv <- Inf; bestr <- lo
+  bestv <- Inf
+  bestr <- lo
   for (gi in seq_len(n_grid)) {
     rho <- lo + (hi - lo) * (gi - 1L) / (n_grid - 1L)
     f <- .morie_spx_sarneg2(yy, X, W, rho)
-    if (f$v < bestv) { bestv <- f$v; bestr <- rho }
+    if (f$v < bestv) { bestv <- f$v
+    bestr <- rho }
   }
   step <- (hi - lo) / (n_grid - 1L)
   a <- max(lo, bestr - step)
@@ -929,11 +949,15 @@ SpErrMod <- function(x, y, w, n_grid = 201L, refine = 60L) {
   fd <- .morie_spx_sarneg2(yy, X, W, dd)$v
   for (it in seq_len(as.integer(refine))) {
     if (fc < fd) {
-      b <- dd; dd <- cc; fd <- fc
+      b <- dd
+      dd <- cc
+      fd <- fc
       cc <- b - inv * (b - a)
       fc <- .morie_spx_sarneg2(yy, X, W, cc)$v
     } else {
-      a <- cc; cc <- dd; fc <- fd
+      a <- cc
+      cc <- dd
+      fc <- fd
       dd <- a + inv * (b - a)
       fd <- .morie_spx_sarneg2(yy, X, W, dd)$v
     }
@@ -973,7 +997,8 @@ SpKappa <- function(x, y, w) {
   n <- length(xv)
   if (length(yv) != n) stop("`x` and `y` must have the same length")
   if (n < 2L) stop("at least 2 sites are needed")
-  xi <- round(xv); yi <- round(yv)
+  xi <- round(xv)
+  yi <- round(yv)
   if (any(abs(xv - xi) > 1e-9)) stop("`x` must hold integer category codes")
   if (any(abs(yv - yi) > 1e-9)) stop("`y` must hold integer category codes")
   W <- .morie_spx_chkw(w, n)
@@ -1032,8 +1057,11 @@ LisaClust <- function(x, w, alpha = 0.05) {
   d <- z - m
   ss <- .morie_fsum(d * d)
   if (ss <= 0) stop("`x` is constant; local Moran's I is undefined")
-  labels <- character(n); local <- numeric(n); zs <- numeric(n)
-  ps <- numeric(n); lagm <- numeric(n)
+  labels <- character(n)
+  local <- numeric(n)
+  zs <- numeric(n)
+  ps <- numeric(n)
+  lagm <- numeric(n)
   for (i in seq_len(n)) {
     li <- .morie_fsum(W[i, ] * d)
     local[i] <- n * d[i] * li / ss
@@ -1046,11 +1074,15 @@ LisaClust <- function(x, w, alpha = 0.05) {
     nb <- sum(W[i, ] != 0)
     lagm[i] <- if (nb > 0) li / nb else 0
     if (varl <= 0) {
-      zs[i] <- NaN; ps[i] <- 1; labels[i] <- "NS"; next
+      zs[i] <- NaN
+      ps[i] <- 1
+      labels[i] <- "NS"
+      next
     }
     zi <- (li - mb * s1) / sqrt(varl)
     pv <- .morie_spx_p2(zi)
-    zs[i] <- zi; ps[i] <- pv
+    zs[i] <- zi
+    ps[i] <- pv
     labels[i] <- if (pv >= alpha) "NS"
       else if (d[i] >= 0 && lagm[i] >= 0) "HH"
       else if (d[i] < 0 && lagm[i] < 0) "LL"
@@ -1100,12 +1132,15 @@ MedPolish <- function(values, grid = NULL, iters = 10L) {
   } else {
     Y <- as.matrix(values)
   }
-  nr <- nrow(Y); nc <- ncol(Y)
+  nr <- nrow(Y)
+  nc <- ncol(Y)
   if (nr < 2L || nc < 2L) stop("median polish needs at least a 2 by 2 grid")
   iters <- as.integer(iters)
   if (iters < 1L) stop("`iters` must be positive")
   res <- Y
-  row <- numeric(nr); col <- numeric(nc); overall <- 0
+  row <- numeric(nr)
+  col <- numeric(nc)
+  overall <- 0
   for (it in seq_len(iters)) {
     for (i in seq_len(nr)) {
       d <- .morie_spx_median(res[i, ])
@@ -1162,21 +1197,26 @@ ShrinkPred <- function(y, cluster, sigma2_u, sigma2_e) {
   if (length(cv) != n) stop("`y` and `cluster` must have the same length")
   ci <- round(cv)
   if (any(abs(cv - ci) > 1e-9)) stop("`cluster` must hold integer codes")
-  su <- as.numeric(sigma2_u); se <- as.numeric(sigma2_e)
+  su <- as.numeric(sigma2_u)
+  se <- as.numeric(sigma2_e)
   if (su < 0) stop("`sigma2_u` must be non-negative")
   if (se <= 0) stop("`sigma2_e` must be positive")
   keys <- sort(unique(ci))
   if (length(keys) < 2L)
     stop("at least 2 clusters are needed for shrinkage to mean anything")
   grand <- .morie_fsum(yy) / n
-  sizes <- numeric(0); raw <- numeric(0)
-  lam <- numeric(0); shrunk <- numeric(0)
+  sizes <- numeric(0)
+  raw <- numeric(0)
+  lam <- numeric(0)
+  shrunk <- numeric(0)
   for (cval in keys) {
     vals <- yy[ci == cval]
     nj <- length(vals)
     mj <- .morie_fsum(vals) / nj
     lj <- se / (se + nj * su)
-    sizes <- c(sizes, nj); raw <- c(raw, mj); lam <- c(lam, lj)
+    sizes <- c(sizes, nj)
+    raw <- c(raw, mj)
+    lam <- c(lam, lj)
     shrunk <- c(shrunk, grand + (1 - lj) * (mj - grand))
   }
   list(clusters = as.numeric(keys), shrunk = shrunk, raw = raw,
@@ -1222,12 +1262,17 @@ SparseVector <- function(queries, threshold, c = 1L, epsilon = 1,
     .morie_spx_chkv(query_noise, "query_noise")
   if (length(qn) != m) stop("`query_noise` must have one entry per query")
   tn <- t + as.numeric(threshold_noise)
-  above <- rep(NA, m); released <- rep(NA_real_, m)
-  hits <- 0L; halted <- m
+  above <- rep(NA, m)
+  released <- rep(NA_real_, m)
+  hits <- 0L
+  halted <- m
   for (i in seq_len(m)) {
-    if (hits >= cc) { halted <- i - 1L; break }
+    if (hits >= cc) { halted <- i - 1L
+    break }
     if (q[i] + qn[i] >= tn) {
-      above[i] <- TRUE; released[i] <- q[i] + qn[i]; hits <- hits + 1L
+      above[i] <- TRUE
+      released[i] <- q[i] + qn[i]
+      hits <- hits + 1L
     } else {
       above[i] <- FALSE
     }
@@ -1312,7 +1357,8 @@ CrossSpec <- function(x, y) {
   dy <- yv - .morie_fsum(yv) / n
   if (.morie_fsum(dx * dx) <= 0 || .morie_fsum(dy * dy) <= 0)
     stop("`x` and `y` must not be constant")
-  fx <- .morie_spx_dft(dx); fy <- .morie_spx_dft(dy)
+  fx <- .morie_spx_dft(dx)
+  fy <- .morie_spx_dft(dy)
   scale <- 2 * pi * n
   ks <- seq_len(n %/% 2L)
   omega <- 2 * pi * ks / n
@@ -1364,16 +1410,21 @@ MsCoh <- function(x, y, nperseg = NULL, overlap = 0.5) {
                "records"))
   win <- 0.5 - 0.5 * cos(2 * pi * (seq_len(m) - 1L) / (m - 1))
   ks <- seq_len(m %/% 2L)
-  sxx <- rep(0, length(ks)); syy <- rep(0, length(ks))
-  cre <- rep(0, length(ks)); cim <- rep(0, length(ks))
+  sxx <- rep(0, length(ks))
+  syy <- rep(0, length(ks))
+  cre <- rep(0, length(ks))
+  cim <- rep(0, length(ks))
   for (s in starts) {
     sx <- xv[(s + 1L):(s + m)]
     sy <- yv[(s + 1L):(s + m)]
     wx <- (sx - .morie_fsum(sx) / m) * win
     wy <- (sy - .morie_fsum(sy) / m) * win
-    fx <- .morie_spx_dft(wx); fy <- .morie_spx_dft(wy)
-    xr <- fx$re[ks + 1L]; xi <- fx$im[ks + 1L]
-    yr <- fy$re[ks + 1L]; yi <- fy$im[ks + 1L]
+    fx <- .morie_spx_dft(wx)
+    fy <- .morie_spx_dft(wy)
+    xr <- fx$re[ks + 1L]
+    xi <- fx$im[ks + 1L]
+    yr <- fy$re[ks + 1L]
+    yi <- fy$im[ks + 1L]
     sxx <- sxx + xr * xr + xi * xi
     syy <- syy + yr * yr + yi * yi
     cre <- cre + xr * yr + xi * yi
@@ -1522,7 +1573,8 @@ SpatialPca <- function(x, w, naxes = 2L) {
   # symmetric eigensolver would read one triangle only.  Dray, Said &
   # Debias (2008).  NOT in Schabenberger & Gotway.
   X <- as.matrix(x)
-  n <- nrow(X); p <- ncol(X)
+  n <- nrow(X)
+  p <- ncol(X)
   if (n < 3L) stop("at least 3 sites are needed")
   naxes <- as.integer(naxes)
   if (naxes < 1L || naxes > p)
@@ -1663,7 +1715,8 @@ SpikeInfo <- function(spike, stim, nbins = 2L) {
     h <- 0
     for (b in seq_len(nbins) - 1L) {
       cnt <- sum(codes == b)
-      if (cnt) { p <- cnt / mm; h <- h - p * log(p, 2) }
+      if (cnt) { p <- cnt / mm
+      h <- h - p * log(p, 2) }
     }
     h
   }

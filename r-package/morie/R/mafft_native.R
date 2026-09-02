@@ -68,8 +68,10 @@ GRANTHAM_VOLUME <- list(
 
 .MAFFT_P <- .mafft_norm(unlist(GRANTHAM_POLARITY[.MAFFT_AA_CHARS]))
 .MAFFT_V <- .mafft_norm(unlist(GRANTHAM_VOLUME[.MAFFT_AA_CHARS]))
-.MAFFT_PMU <- .MAFFT_P[1]; .MAFFT_PSD <- .MAFFT_P[2]
-.MAFFT_VMU <- .MAFFT_V[1]; .MAFFT_VSD <- .MAFFT_V[2]
+.MAFFT_PMU <- .MAFFT_P[1]
+.MAFFT_PSD <- .MAFFT_P[2]
+.MAFFT_VMU <- .MAFFT_V[1]
+.MAFFT_VSD <- .MAFFT_V[2]
 
 .MAFFT_VHAT <- setNames(
   (unlist(GRANTHAM_VOLUME[.MAFFT_AA_CHARS]) - .MAFFT_VMU) / .MAFFT_VSD,
@@ -161,7 +163,8 @@ residue_vectors <- function(group, weights = NULL, seq_type = "aa") {
 #' @return A list with \code{c}, \code{size}.
 #' @export
 mafft_xcorr_fft <- function(a, b) {
-  n <- length(a); m <- length(b)
+  n <- length(a)
+  m <- length(b)
   size <- 1L
   while (size < n + m) size <- size * 2L
   fa <- fft(c(as.numeric(a), rep(0, size - n)))
@@ -183,7 +186,8 @@ mafft_xcorr_fft <- function(a, b) {
 #' @export
 mafft_xcorr_direct <- function(a, b, size) {
   out <- rep(0.0, size)
-  n <- length(a); m <- length(b)
+  n <- length(a)
+  m <- length(b)
   for (k in 0:(size - 1L)) {
     tot <- 0.0
     for (i in 0:(n - 1L)) {
@@ -215,11 +219,15 @@ correlation <- function(group1, group2, weights1 = NULL, weights2 = NULL,
     stop("mafft: method must be 'fft' or 'direct'")
   c1 <- residue_vectors(group1, weights1, seq_type)
   c2 <- residue_vectors(group2, weights2, seq_type)
-  total <- NULL; size <- NULL
+  total <- NULL
+  size <- NULL
   for (i in seq_along(c1)) {
-    a <- c1[[i]]; b <- c2[[i]]
+    a <- c1[[i]]
+    b <- c2[[i]]
     if (method == "fft") {
-      r <- mafft_xcorr_fft(a, b); part <- r$c; size <- r$size
+      r <- mafft_xcorr_fft(a, b)
+      part <- r$c
+      size <- r$size
     } else {
       if (is.null(size)) {
         size <- 1L
@@ -306,7 +314,8 @@ mafft_jtt_exchangeability <- function() {
 jtt_matrix <- function(pam = 200, scale = 10.0) {
   if (pam <= 0) stop("mafft: pam must be positive")
   ex <- mafft_jtt_exchangeability()
-  S <- ex$S; f <- ex$f
+  S <- ex$S
+  f <- ex$f
   Q <- matrix(0, 20, 20)
   for (i in 1:20) {
     off <- 0.0
@@ -322,7 +331,8 @@ jtt_matrix <- function(pam = 200, scale = 10.0) {
   rt <- sqrt(f)
   A <- Q * (rt / rep(rt, each = 20))
   es <- eigen(A, symmetric = TRUE)
-  w <- es$values; V <- es$vectors
+  w <- es$values
+  V <- es$vectors
   e <- exp(w * as.numeric(pam))
   P <- matrix(0, 20, 20)
   for (i in 1:20) {
@@ -332,7 +342,8 @@ jtt_matrix <- function(pam = 200, scale = 10.0) {
   }
   M <- list()
   for (i in 1:20) for (j in 1:20) {
-    a <- substr(.MAFFT_AA, i, i); b <- substr(.MAFFT_AA, j, j)
+    a <- substr(.MAFFT_AA, i, i)
+    b <- substr(.MAFFT_AA, j, j)
     p <- max(P[i, j], 1e-300)
     M[[paste0(a, "_", b)]] <- scale * log10(p / f[j])
   }
@@ -419,7 +430,8 @@ normalized_similarity_matrix <- function(raw_matrix = NULL, freqs = NULL,
   default_f <- NULL
   if (is.null(raw_matrix)) {
     d <- mafft_default_raw(seq_type, default)
-    M <- d$M; default_f <- d$f
+    M <- d$M
+    default_f <- d$f
   } else {
     M <- raw_matrix
   }
@@ -494,7 +506,8 @@ mafft_site_score <- function(M, ga, gb, wa, wb, i, j) {
 #' @export
 mafft_gap_profiles <- function(group, weights) {
   L <- nchar(group[1])
-  gs <- rep(0.0, L + 1L); ge <- rep(0.0, L + 1L)
+  gs <- rep(0.0, L + 1L)
+  ge <- rep(0.0, L + 1L)
   for (idx in seq_along(group)) {
     s <- group[idx]
     w <- weights[idx]
@@ -526,7 +539,8 @@ mafft_gap_profiles <- function(group, weights) {
 #' @return A list with \code{out1}, \code{out2}.
 #' @export
 mafft_nw <- function(g1, g2, M, w1, w2, s_op) {
-  n <- nchar(g1[1]); m <- nchar(g2[1])
+  n <- nchar(g1[1])
+  m <- nchar(g2[1])
   if (n == 0) {
     return(list(out1 = rep(strrep("-", m), length(g1)),
                 out2 = as.list(g2)))
@@ -537,8 +551,10 @@ mafft_nw <- function(g1, g2, M, w1, w2, s_op) {
   }
   gp1 <- mafft_gap_profiles(g1, w1)
   gp2 <- mafft_gap_profiles(g2, w2)
-  gs1 <- gp1$gs; ge1 <- gp1$ge
-  gs2 <- gp2$gs; ge2 <- gp2$ge
+  gs1 <- gp1$gs
+  ge1 <- gp1$ge
+  gs2 <- gp2$gs
+  ge2 <- gp2$ge
   neg <- -Inf
   P <- matrix(neg, n + 1L, m + 1L)
   back <- vector("list", (n + 1L) * (m + 1L))
@@ -578,7 +594,8 @@ mafft_nw <- function(g1, g2, M, w1, w2, s_op) {
     }
   }
   cols <- list()
-  i <- n + 1L; j <- m + 1L
+  i <- n + 1L
+  j <- m + 1L
   while (i > 1L && j > 1L) {
     b <- back[[i, j]]
     cols[[length(cols) + 1L]] <- c(i - 1L, j - 1L)
@@ -587,7 +604,8 @@ mafft_nw <- function(g1, g2, M, w1, w2, s_op) {
     } else if (b$kind == "D") {
       if (j - 2L >= b$pj) for (t in (j - 2L):(b$pj)) cols[[length(cols) + 1L]] <- c(NA, t)
     }
-    i <- b$pi + 1L; j <- b$pj + 1L
+    i <- b$pi + 1L
+    j <- b$pj + 1L
   }
   # guard the tails: the colon ASCENDS from 0 when i or j is already 1
   if (i > 1L) for (t in (i - 1L):1) cols[[length(cols) + 1L]] <- c(t, NA)
@@ -636,7 +654,8 @@ group_align <- function(group1, group2, scoring, weights1 = NULL,
     stop("mafft: one weight per sequence is required")
   M <- if (is.list(scoring)) scoring$matrix else scoring
   if (!is.null(anchors)) {
-    n <- nchar(g1[1]); m <- nchar(g2[1])
+    n <- nchar(g1[1])
+    m <- nchar(g2[1])
     given <- unique(do.call(rbind, lapply(anchors, function(a) a[1:2])))
     given <- given[order(given[, 1]), , drop = FALSE]
     for (k in 2:nrow(given))
@@ -647,13 +666,15 @@ group_align <- function(group1, group2, scoring, weights1 = NULL,
         stop("mafft: an anchor is outside the groups")
     }
     pts <- rbind(c(0, 0), given, c(n, m))
-    out1 <- rep("", length(g1)); out2 <- rep("", length(g2))
+    out1 <- rep("", length(g1))
+    out2 <- rep("", length(g2))
     prev <- pts[1, , drop = FALSE]
     for (idx in 2:nrow(pts)) {
       pt <- pts[idx, , drop = FALSE]
       a1 <- substr(g1, prev[1, 1] + 1L, pt[1])
       a2 <- substr(g2, prev[1, 2] + 1L, pt[2])
-      if (pt[1] == prev[1, 1] && pt[2] == prev[1, 2]) { prev <- pt; next }
+      if (pt[1] == prev[1, 1] && pt[2] == prev[1, 2]) { prev <- pt
+      next }
       r <- mafft_nw(a1, a2, M, w1, w2, s_op)
       out1 <- paste0(out1, unlist(r$out1))
       out2 <- paste0(out2, unlist(r$out2))
@@ -695,11 +716,13 @@ find_homologous_segments <- function(group1, group2, scoring,
   g2 <- as.character(toupper(unlist(group2)))
   w1 <- if (is.null(weights1)) rep(1.0 / length(g1), length(g1)) else as.numeric(weights1)
   w2 <- if (is.null(weights2)) rep(1.0 / length(g2), length(g2)) else as.numeric(weights2)
-  n <- nchar(g1[1]); m <- nchar(g2[1])
+  n <- nchar(g1[1])
+  m <- nchar(g2[1])
   cr <- correlation(g1, g2, w1, w2, seq_type, corr_method)
   segs <- list()
   for (k in mafft_peaks(cr$lags, cr$c, n_peaks)) {
-    lo <- max(0, -k); hi <- min(n, m - k)
+    lo <- max(0, -k)
+    hi <- min(n, m - k)
     if (hi - lo < window) next
     run <- NULL
     for (start in lo:(hi - window)) {
@@ -730,10 +753,16 @@ find_homologous_segments <- function(group1, group2, scoring,
   }
   cut <- list()
   for (s in segs) {
-    s1 <- s[1]; s2 <- s[2]; ln <- s[3]; sc <- s[4]; k <- s[5]
+    s1 <- s[1]
+    s2 <- s[2]
+    ln <- s[3]
+    sc <- s[4]
+    k <- s[5]
     while (ln > max_len) {
       cut[[length(cut) + 1L]] <- c(s1, s2, max_len, sc, k)
-      s1 <- s1 + max_len; s2 <- s2 + max_len; ln <- ln - max_len
+      s1 <- s1 + max_len
+      s2 <- s2 + max_len
+      ln <- ln - max_len
     }
     if (ln > 0) cut[[length(cut) + 1L]] <- c(s1, s2, ln, sc, k)
   }
@@ -768,10 +797,12 @@ arrange_segments <- function(segments) {
     # seq_len, not 1:(i-1) -- the colon counts DOWN at i = 1 and
     # indexes row 0
     for (j in seq_len(i - 1L)) {
-      a <- segments[j, ]; b <- segments[i, ]
+      a <- segments[j, ]
+      b <- segments[i, ]
       if (a[1] + a[3] <= b[1] && a[2] + a[3] <= b[2]) {
         v <- best[j] + segments[i, 3] * segments[i, 4]
-        if (v > best[i]) { best[i] <- v; prev[i] <- j }
+        if (v > best[i]) { best[i] <- v
+        prev[i] <- j }
       }
     }
   }
@@ -821,7 +852,8 @@ sixtuple_distance <- function(seqs) {
       for (gi in seq_along(.MAFFT_SIX_GROUPS)) {
         if (ch %in% strsplit(.MAFFT_SIX_GROUPS[gi], "")[[1]]) {
           t <- paste0(t, rawToChar(as.raw(96L + gi)))
-          matched <- TRUE; break
+          matched <- TRUE
+          break
         }
       }
       if (!matched) t <- paste0(t, "z")
@@ -881,7 +913,8 @@ guide_tree <- function(D) {
       # seq_len guard: the colon counts DOWN when k is last and
       # indexes active[[length + 1]]
       for (kk in seq_len(length(active) - k) + k) {
-        i <- active[[k]]; j <- active[[kk]]
+        i <- active[[k]]
+        j <- active[[kk]]
         d <- dist[[paste(i, j)]]
         key <- c(d, i, j)
         if (is.null(best) || d < best[1] ||
@@ -889,14 +922,16 @@ guide_tree <- function(D) {
           best <- key
       }
     }
-    i <- best[2]; j <- best[3]
+    i <- best[2]
+    j <- best[3]
     members <- c(clusters[[i]], clusters[[j]])
     merges[[length(merges) + 1L]] <- list(i = i, j = j, new = nxt,
                                           members = members)
     for (k in seq_along(active)) {
       idx <- active[[k]]
       if (idx %in% c(i, j)) next
-      ni <- length(clusters[[i]]); nj <- length(clusters[[j]])
+      ni <- length(clusters[[i]])
+      nj <- length(clusters[[j]])
       d <- (ni * dist[[paste(i, idx)]] + nj * dist[[paste(j, idx)]]) /
            (ni + nj)
       dist[[paste(nxt, idx)]] <- d
@@ -941,13 +976,16 @@ progressive_align <- function(seqs, scoring, tree = NULL, seq_type = "aa",
   if (length(seqs) < 2L)
     stop("mafft: at least two sequences are needed")
   if (is.null(tree)) tree <- guide_tree(sixtuple_distance(seqs))
-  profiles <- list(); members <- list()
+  profiles <- list()
+  members <- list()
   for (i in seq_along(seqs)) {
     profiles[[as.character(i)]] <- seqs[i]
     members[[as.character(i)]] <- i
   }
   for (m in tree) {
-    i <- m$i; j <- m$j; new <- m$new
+    i <- m$i
+    j <- m$j
+    new <- m$new
     g1 <- profiles[[as.character(i)]]
     g2 <- profiles[[as.character(j)]]
     if (!is.list(g1)) g1 <- list(g1)
@@ -1002,11 +1040,14 @@ wsp_score <- function(alignment, scoring, s_op = 2.4, weights = NULL) {
     for (j in (i + 1L):k) {
       pair <- w[i] * w[j]
       opened <- FALSE
-      ai <- strsplit(aln[i], "")[[1]]; bj <- strsplit(aln[j], "")[[1]]
+      ai <- strsplit(aln[i], "")[[1]]
+      bj <- strsplit(aln[j], "")[[1]]
       for (idx in seq_along(ai)) {
-        a <- ai[idx]; b <- bj[idx]
+        a <- ai[idx]
+        b <- bj[idx]
         if (a == "-" || b == "-") {
-          if (!opened) { total <- total - pair * s_op; opened <- TRUE }
+          if (!opened) { total <- total - pair * s_op
+          opened <- TRUE }
         } else {
           opened <- FALSE
           total <- total + pair * mafft_lookup(M, a, b)
@@ -1076,7 +1117,8 @@ iterative_refine <- function(alignment, scoring, tree = NULL, s_op = 2.4,
   for (it in seq_len(max_iterate)) {
     improved <- FALSE
     for (g in groups) {
-      members <- g$members; rest <- g$rest
+      members <- g$members
+      rest <- g$rest
       g1 <- mafft_degap(aln[members])
       g2 <- mafft_degap(aln[rest])
       anchors <- NULL
@@ -1097,7 +1139,9 @@ iterative_refine <- function(alignment, scoring, tree = NULL, s_op = 2.4,
       for (pos in seq_along(rest)) cand[[rest[pos]]] <- a$out2[[pos]]
       cand <- unlist(cand)
       sc <- wsp_score(cand, scoring, s_op)
-      if (sc > best + 1e-12) { aln <- cand; best <- sc; improved <- TRUE }
+      if (sc > best + 1e-12) { aln <- cand
+      best <- sc
+      improved <- TRUE }
     }
     rounds <- rounds + 1L
     if (!improved) break
@@ -1136,7 +1180,8 @@ mafft_alignment <- function(sequences, method = "FFT-NS-2",
     stop(sprintf("mafft: method must be one of %s",
                  paste(.MAFFT_METHODS, collapse = ", ")))
   cl <- mafft_clean(sequences, seq_type)
-  seqs <- cl$seqs; kind <- cl$seq_type
+  seqs <- cl$seqs
+  kind <- cl$seq_type
   if (length(seqs) < 2L) stop("mafft: at least two sequences are needed")
   sc <- normalized_similarity_matrix(raw_matrix, freqs, s_a, kind, matrix)
   use_fft <- startsWith(method, "FFT")
@@ -1146,7 +1191,8 @@ mafft_alignment <- function(sequences, method = "FFT-NS-2",
   tree1 <- guide_tree(sixtuple_distance(seqs))
   aln <- progressive_align(seqs, sc, tree1, kind, s_op, use_fft, kw$window,
                            kw$n_peaks, kw$threshold, kw$max_len)
-  tree_used <- tree1; rounds <- 0L
+  tree_used <- tree1
+  rounds <- 0L
   if (method %in% c("FFT-NS-2", "NW-NS-2", "FFT-NS-i")) {
     tree2 <- guide_tree(sixtuple_distance(aln))
     aln <- progressive_align(seqs, sc, tree2, kind, s_op, use_fft,
@@ -1158,7 +1204,9 @@ mafft_alignment <- function(sequences, method = "FFT-NS-2",
     rr <- iterative_refine(aln, sc, tree_used, s_op, max_iterate, kind,
                            use_fft, kw$window, kw$n_peaks, kw$threshold,
                            kw$max_len)
-    aln <- rr$aln; score <- rr$score; rounds <- rr$rounds
+    aln <- rr$aln
+    score <- rr$score
+    rounds <- rr$rounds
   }
   list(estimate = aln, alignment = aln, score = as.numeric(score),
        method = method, seq_type = kind, length = nchar(aln[[1]]),

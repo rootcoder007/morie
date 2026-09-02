@@ -38,7 +38,8 @@ LsiSerH <- function(h_1, h_2, n = NULL) {
   # eq (3.45): cascading two LSI systems convolves their impulse
   # responses.  Convolution commutes, so a filter chain may be reordered,
   # and the result is len(h1) + len(h2) - 1 long.
-  a <- as.numeric(h_1); b <- as.numeric(h_2)
+  a <- as.numeric(h_1)
+  b <- as.numeric(h_2)
   if (!length(a) || !length(b))
     stop("both impulse responses need at least one tap")
   m <- length(a) + length(b) - 1L
@@ -71,7 +72,8 @@ LsiParH <- function(h_1, h_2, n = NULL) {
   # eq (3.49): parallel branches add their impulse responses, and the
   # result is as long as the LONGER branch -- not longer, the contrast
   # with the series case where the lengths add.
-  a <- as.numeric(h_1); b <- as.numeric(h_2)
+  a <- as.numeric(h_1)
+  b <- as.numeric(h_2)
   if (!length(a) || !length(b))
     stop("both impulse responses need at least one tap")
   m <- max(length(a), length(b))
@@ -102,7 +104,8 @@ Laplace <- function(h, t, s) {
   # eq (3.50), by the trapezoidal rule over the samples supplied.  What
   # is returned is the transform OF THE SAMPLED RECORD over the interval
   # it covers, which is why the limits come back with it.
-  hs <- as.numeric(h); ts <- as.numeric(t)
+  hs <- as.numeric(h)
+  ts <- as.numeric(t)
   if (length(hs) != length(ts))
     stop("h and t must have the same length")
   if (length(hs) < 2L) stop("need at least two samples to integrate")
@@ -271,7 +274,8 @@ PzMag <- function(l_k, r_k, N = NULL, M = NULL) {
   if (any(rs <= 1e-300))
     stop("a pole lies on the evaluation point; the magnitude response ",
          "is unbounded there")
-  num <- prod(ls); den <- prod(rs)
+  num <- prod(ls)
+  den <- prod(rs)
   list(magnitude = num / den, zero_product = num, pole_product = den,
        n_zeros = length(ls), n_poles = length(rs),
        on_a_zero = any(ls <= 1e-300),

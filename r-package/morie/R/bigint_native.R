@@ -81,7 +81,8 @@ morie_bigint <- function(x) {
   }
   s <- trimws(as.character(x))
   sign <- 1
-  if (startsWith(s, "-")) { sign <- -1; s <- substring(s, 2) }
+  if (startsWith(s, "-")) { sign <- -1
+  s <- substring(s, 2) }
   else if (startsWith(s, "+")) s <- substring(s, 2)
   if (!nzchar(s) || grepl("[^0-9]", s)) {
     stop(sprintf("not a decimal integer: '%s'", x), call. = FALSE)
@@ -143,7 +144,8 @@ format.morie_bigint <- function(x, ...) as.character(x)
 #' @return A numeric value.
 #' @export
 .morie_big_cmp_abs <- function(a, b) {
-  la <- length(a); lb <- length(b)
+  la <- length(a)
+  lb <- length(b)
   if (la != lb) return(if (la > lb) 1L else -1L)
   for (i in seq.int(la, 1L)) {
     if (a[i] != b[i]) return(if (a[i] > b[i]) 1L else -1L)
@@ -169,8 +171,10 @@ format.morie_bigint <- function(x, ...) as.character(x)
   carry <- 0
   for (i in seq_len(n)) {
     t <- a[i] + b[i] + carry
-    if (t >= .MORIE_BIG_BASE) { out[i] <- t - .MORIE_BIG_BASE; carry <- 1 }
-    else { out[i] <- t; carry <- 0 }
+    if (t >= .MORIE_BIG_BASE) { out[i] <- t - .MORIE_BIG_BASE
+    carry <- 1 }
+    else { out[i] <- t
+    carry <- 0 }
   }
   out[n + 1L] <- carry
   .morie_big_trim(out)
@@ -194,8 +198,10 @@ format.morie_bigint <- function(x, ...) as.character(x)
   borrow <- 0
   for (i in seq_len(n)) {
     t <- a[i] - b[i] - borrow
-    if (t < 0) { out[i] <- t + .MORIE_BIG_BASE; borrow <- 1 }
-    else { out[i] <- t; borrow <- 0 }
+    if (t < 0) { out[i] <- t + .MORIE_BIG_BASE
+    borrow <- 1 }
+    else { out[i] <- t
+    borrow <- 0 }
   }
   .morie_big_trim(out)
 }
@@ -209,7 +215,8 @@ format.morie_bigint <- function(x, ...) as.character(x)
 #' morie_big_cmp(morie_bigint("123456789012345678901234567890"),
 #'               morie_bigint("123456789012345678901234567891"))
 morie_big_cmp <- function(a, b) {
-  a <- morie_bigint(a); b <- morie_bigint(b)
+  a <- morie_bigint(a)
+  b <- morie_bigint(b)
   if (a$sign != b$sign) return(if (a$sign > b$sign) 1L else -1L)
   if (a$sign == 0) return(0L)
   c <- .morie_big_cmp_abs(a$limbs, b$limbs)
@@ -226,7 +233,8 @@ morie_big_cmp <- function(a, b) {
 #' b <- morie_bigint("1")
 #' as.character(morie_big_add(a, b))
 morie_big_add <- function(a, b) {
-  a <- morie_bigint(a); b <- morie_bigint(b)
+  a <- morie_bigint(a)
+  b <- morie_bigint(b)
   if (a$sign == 0) return(b)
   if (b$sign == 0) return(a)
   if (a$sign == b$sign) {
@@ -266,9 +274,11 @@ morie_big_sub <- function(a, b) {
 #' b <- morie_bigint("987654321")
 #' as.character(morie_big_mul(a, b))
 morie_big_mul <- function(a, b) {
-  a <- morie_bigint(a); b <- morie_bigint(b)
+  a <- morie_bigint(a)
+  b <- morie_bigint(b)
   if (a$sign == 0 || b$sign == 0) return(.morie_big_new(0, 0))
-  la <- length(a$limbs); lb <- length(b$limbs)
+  la <- length(a$limbs)
+  lb <- length(b$limbs)
   res <- numeric(la + lb)
   for (i in seq_len(la)) {
     carry <- 0
@@ -377,7 +387,8 @@ morie_big_factorial <- function(n) {
 #' @examples
 #' morie_big_binom(n = 5L, k = 5L)
 morie_big_binom <- function(n, k) {
-  n <- as.integer(n); k <- as.integer(k)
+  n <- as.integer(n)
+  k <- as.integer(k)
   if (is.na(n) || is.na(k) || n < 0L) {
     stop("n must be a non-negative whole number.", call. = FALSE)
   }

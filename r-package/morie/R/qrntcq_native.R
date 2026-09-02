@@ -46,7 +46,8 @@ gamma_generation_time <- function(shape = 2.83, scale = 1.86, grid = NULL,
   } else {
     ts <- as.numeric(grid)
   }
-  a <- as.numeric(shape); b <- as.numeric(scale)
+  a <- as.numeric(shape)
+  b <- as.numeric(scale)
   dens <- numeric(length(ts))
   for (i in seq_along(ts)) {
     t <- ts[i]
@@ -81,9 +82,11 @@ gamma_generation_time <- function(shape = 2.83, scale = 1.86, grid = NULL,
   if (hi <= lo) return(0.0)
   tot <- 0.0
   for (i in seq_len(length(ts) - 1L)) {
-    a <- ts[i]; b <- ts[i + 1L]
+    a <- ts[i]
+    b <- ts[i + 1L]
     if (b <= lo || a >= hi) next
-    l <- max(a, lo); r <- min(b, hi)
+    l <- max(a, lo)
+    r <- min(b, hi)
     if (r <= l) next
     w <- b - a
     if (w > 0) {
@@ -114,8 +117,10 @@ quarantine_efficacy <- function(t_Q, t_R, generation_time = NULL,
                                 t_E = 0.0) {
   g <- if (is.null(generation_time)) gamma_generation_time()
        else generation_time
-  ts <- g$t; ys <- g$density
-  q <- as.numeric(t_Q); r <- as.numeric(t_R)
+  ts <- g$t
+  ys <- g$density
+  q <- as.numeric(t_Q)
+  r <- as.numeric(t_R)
   if (r < q)
     stop(sprintf("qrntcq: release at %g precedes quarantine ",
                  "start at %g", r, q))

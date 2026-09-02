@@ -64,7 +64,8 @@ morie_has_clique <- function(adjacency, k) {
 #' @examples
 #' morie_turan_graph(n = 5L, r = 5L)
 morie_turan_graph <- function(n, r) {
-  n <- as.integer(n); r <- as.integer(r)
+  n <- as.integer(n)
+  r <- as.integer(r)
   if (n < 0L) stop(sprintf("n must be non-negative; got %d", n), call. = FALSE)
   if (r < 1L) stop(sprintf("r must be at least 1; got %d", r), call. = FALSE)
   A <- matrix(0L, n, n)
@@ -72,7 +73,8 @@ morie_turan_graph <- function(n, r) {
   if (n > 1L) {
     for (i in seq_len(n - 1L)) {
       for (j in seq.int(i + 1L, n)) {
-        if (part_of[i] != part_of[j]) { A[i, j] <- 1L; A[j, i] <- 1L }
+        if (part_of[i] != part_of[j]) { A[i, j] <- 1L
+        A[j, i] <- 1L }
       }
     }
   }
@@ -100,7 +102,8 @@ morie_turan_graph <- function(n, r) {
 #' @examples
 #' morie_turan_number(n = 5L, r = 5L)
 morie_turan_number <- function(n, r) {
-  n <- as.integer(n); r <- as.integer(r)
+  n <- as.integer(n)
+  r <- as.integer(r)
   if (n < 0L) stop(sprintf("n must be non-negative; got %d", n), call. = FALSE)
   if (r < 1L) stop(sprintf("r must be at least 1; got %d", r), call. = FALSE)
   sizes <- (n %/% r) + as.integer(seq_len(r) <= (n %% r))
@@ -176,7 +179,8 @@ morie_sperner_width <- function(n) {
 #' @examples
 #' morie_erdos_ko_rado(n = 5L, k = 5L)
 morie_erdos_ko_rado <- function(n, k) {
-  n <- as.integer(n); k <- as.integer(k)
+  n <- as.integer(n)
+  k <- as.integer(k)
   if (n < 0L || k < 0L) stop("n and k must be non-negative.", call. = FALSE)
   if (k > n) {
     stop(sprintf("k must not exceed n; got k = %d, n = %d", k, n),
@@ -267,12 +271,15 @@ morie_dilworth_decomposition <- function(leq) {
     found <- NULL
     for (c in seq_len(ncol(cmb))) {
       v <- cmb[, c]
-      if (sz == 1L) { found <- v; break }
+      if (sz == 1L) { found <- v
+      break }
       pr <- utils::combn(v, 2)
       if (!any(strict[cbind(pr[1, ], pr[2, ])] |
-               strict[cbind(pr[2, ], pr[1, ])])) { found <- v; break }
+               strict[cbind(pr[2, ], pr[1, ])])) { found <- v
+               break }
     }
-    if (!is.null(found)) { best <- as.integer(found); break }
+    if (!is.null(found)) { best <- as.integer(found)
+    break }
   }
   warns <- character(0)
   if (length(best) != chain_cover) {
@@ -305,7 +312,9 @@ morie_dilworth_decomposition <- function(leq) {
 #' @examples
 #' morie_bibd_parameters(v = 5L, k = 5L, lam = 5L)
 morie_bibd_parameters <- function(v, k, lam) {
-  v <- as.integer(v); k <- as.integer(k); lam <- as.integer(lam)
+  v <- as.integer(v)
+  k <- as.integer(k)
+  lam <- as.integer(lam)
   if (v < 1L || k < 1L || lam < 1L) {
     stop("v, k and lambda must be positive.", call. = FALSE)
   }
@@ -316,10 +325,12 @@ morie_bibd_parameters <- function(v, k, lam) {
   if (k < 2L) {
     stop(sprintf("block size k must be at least 2; got %d", k), call. = FALSE)
   }
-  num_r <- lam * (v - 1L); den_r <- k - 1L
+  num_r <- lam * (v - 1L)
+  den_r <- k - 1L
   r_ok <- num_r %% den_r == 0L
   r <- if (r_ok) num_r %/% den_r else NULL
-  b_ok <- FALSE; b <- NULL
+  b_ok <- FALSE
+  b <- NULL
   if (!is.null(r)) {
     b_ok <- (v * r) %% k == 0L
     if (b_ok) b <- (v * r) %/% k
@@ -328,9 +339,11 @@ morie_bibd_parameters <- function(v, k, lam) {
   fisher_ok <- !is.null(b) && b >= v
   feasible <- div_ok && fisher_ok
 
-  exists <- NULL; note <- ""
+  exists <- NULL
+  note <- ""
   if (!feasible) {
-    exists <- FALSE; note <- "ruled out by the counting or Fisher conditions"
+    exists <- FALSE
+    note <- "ruled out by the counting or Fisher conditions"
   } else if (v == 22L && k == 7L && lam == 2L) {
     exists <- FALSE
     note <- paste("ruled out by Bruck-Ryser-Chowla despite passing every",
@@ -380,7 +393,8 @@ morie_steiner_triple_system <- function(v, construct = TRUE) {
   if (v < 0L) stop(sprintf("v must be non-negative; got %d", v), call. = FALSE)
   exists <- v %in% c(0L, 1L) || (v %% 6L) %in% c(1L, 3L)
   n_triples <- if (exists) (v * (v - 1L)) %/% 6L else NULL
-  triples <- NULL; verified <- NULL
+  triples <- NULL
+  verified <- NULL
 
   if (isTRUE(construct) && exists && v >= 3L && v %% 6L == 3L) {
     m <- v %/% 3L
@@ -485,7 +499,8 @@ morie_is_latin_square <- function(square) {
 #' @examples
 #' morie_are_orthogonal(square_a = 5L, square_b = 5L)
 morie_are_orthogonal <- function(square_a, square_b) {
-  A <- as.matrix(square_a); B <- as.matrix(square_b)
+  A <- as.matrix(square_a)
+  B <- as.matrix(square_b)
   n <- nrow(A)
   if (nrow(B) != n) {
     stop("the two squares must have the same order.", call. = FALSE)
@@ -522,7 +537,9 @@ morie_are_orthogonal <- function(square_a, square_b) {
 #' @examples
 #' morie_hamming_bound(n = 5L, d = 5L)
 morie_hamming_bound <- function(n, d, q = 2) {
-  n <- as.integer(n); d <- as.integer(d); q <- as.integer(q)
+  n <- as.integer(n)
+  d <- as.integer(d)
+  q <- as.integer(q)
   if (n < 1L || d < 1L || q < 2L) {
     stop("n and d must be positive and q at least 2.", call. = FALSE)
   }
@@ -559,7 +576,9 @@ morie_hamming_bound <- function(n, d, q = 2) {
 #' @examples
 #' morie_singleton_bound(n = 5L, d = 5L)
 morie_singleton_bound <- function(n, d, q = 2) {
-  n <- as.integer(n); d <- as.integer(d); q <- as.integer(q)
+  n <- as.integer(n)
+  d <- as.integer(d)
+  q <- as.integer(q)
   if (n < 1L || d < 1L || q < 2L) {
     stop("n and d must be positive and q at least 2.", call. = FALSE)
   }

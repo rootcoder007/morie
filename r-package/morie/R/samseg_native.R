@@ -120,7 +120,10 @@ encode_point_prompt <- function(points, labels, dim = 8,
 #' @export
 encode_box_prompt <- function(box, dim = 8, type_embeddings = NULL) {
   b <- as.numeric(box)
-  x0 <- b[1]; y0 <- b[2]; x1 <- b[3]; y1 <- b[4]
+  x0 <- b[1]
+  y0 <- b[2]
+  x1 <- b[3]
+  y1 <- b[4]
   if (x1 <= x0 || y1 <= y0)
     stop("samseg: the box is empty or inverted")
   te <- type_embeddings
@@ -131,7 +134,8 @@ encode_box_prompt <- function(box, dim = 8, type_embeddings = NULL) {
   if (is.null(ta)) ta <- rep(0, length(a))
   tb <- te[["box_br"]]
   if (is.null(tb)) tb <- rep(0, length(bb))
-  ta <- as.numeric(ta); tb <- as.numeric(tb)
+  ta <- as.numeric(ta)
+  tb <- as.numeric(tb)
   M <- rbind(a + ta, bb + tb)
   list(tokens = M, n_prompts = 2L, sparse = TRUE)
 }

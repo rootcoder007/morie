@@ -19,7 +19,5 @@ Outcome Y_b = 1 iff Number_Of_Placements >= 2 (proxy for any future
 readmission).
 }
 \examples{
-\dontrun{
-  morie_otis_make_pair_b(morie_otis_load())
-}
+morie_otis_make_pair_b(morie_otis_load())
 }

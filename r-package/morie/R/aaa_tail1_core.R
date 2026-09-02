@@ -123,8 +123,10 @@ NULL
   # column order: permuting that design to (3, 1, 2) moved the answer
   # from (0.55, 1.35, 0) to (1.35, -0.80, 0). The minimum-norm solution
   # is unique and permutation-invariant.
-  X <- as.matrix(X); y <- as.numeric(y)
-  n <- nrow(X); k <- ncol(X)
+  X <- as.matrix(X)
+  y <- as.numeric(y)
+  n <- nrow(X)
+  k <- ncol(X)
   sv <- svd(X)
   eps <- .Machine$double.eps
   cut <- if (length(sv$d)) max(sv$d) * eps * max(n, k) else 0

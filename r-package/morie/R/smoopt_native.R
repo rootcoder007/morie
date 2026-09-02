@@ -183,7 +183,8 @@ compute_threshold <- function(i1, i2, a1_new, a2_new, alpha, y, E, K,
                               b, C) {
   yy <- as.numeric(y)
   a <- as.numeric(alpha)
-  i <- as.integer(i1); j <- as.integer(i2)
+  i <- as.integer(i1)
+  j <- as.integer(i2)
   d1 <- as.numeric(a1_new) - a[i]
   d2 <- as.numeric(a2_new) - a[j]
   Km <- .smoopt_K(K)
@@ -216,7 +217,9 @@ compute_threshold <- function(i1, i2, a1_new, a2_new, alpha, y, E, K,
 #' @return A vector, from \code{c}.
 #' @export
 .smoopt_bounds <- function(i1, i2, alpha, y, C) {
-  yy <- as.numeric(y); a <- as.numeric(alpha); C <- as.numeric(C)
+  yy <- as.numeric(y)
+  a <- as.numeric(alpha)
+  C <- as.numeric(C)
   if (yy[i1] == yy[i2]) {
     L <- max(0, a[i1] + a[i2] - C)
     H <- min(C, a[i1] + a[i2])
@@ -242,7 +245,9 @@ compute_threshold <- function(i1, i2, a1_new, a2_new, alpha, y, E, K,
 #' @return A numeric value.
 #' @export
 .smoopt_dual_objective <- function(alpha, y, K) {
-  a <- as.numeric(alpha); yy <- as.numeric(y); n <- length(a)
+  a <- as.numeric(alpha)
+  yy <- as.numeric(y)
+  n <- length(a)
   Km <- .smoopt_K(K)
   sum(a) - 0.5 * as.numeric(t(a * yy) %*% Km %*% (a * yy))
 }
@@ -292,7 +297,8 @@ smo_platt <- function(y, K, C = 1.0, tol = 1e-3, eps = 1e-5,
       i2 <- pick$index
       if (is.na(i2)) next
       LH <- .smoopt_bounds(i1, i2, a, yy, C)
-      L <- LH[1]; H <- LH[2]
+      L <- LH[1]
+      H <- LH[2]
       if (H <= L + .SMOOPT_EPS) next
       eta <- Km[i1, i1] + Km[i2, i2] - 2 * Km[i1, i2]
       if (eta <= .SMOOPT_EPS) next
@@ -302,7 +308,8 @@ smo_platt <- function(y, K, C = 1.0, tol = 1e-3, eps = 1e-5,
           (a2_new + a[i2] + as.numeric(eps))) next
       a1_new <- a[i1] - yy[i1] * yy[i2] * (a2_new - a[i2])
       th <- compute_threshold(i1, i2, a1_new, a2_new, a, yy, E, Km, b, C)
-      a[i1] <- a1_new; a[i2] <- a2_new
+      a[i1] <- a1_new
+      a[i2] <- a2_new
       b <- th$b
       E <- error_cache(a, yy, Km, b)
       changed <- changed + 1L

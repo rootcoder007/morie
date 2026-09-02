@@ -34,7 +34,8 @@
 #' @return A numeric value.
 #' @export
 .morie_al_cos <- function(a, b) {
-  na <- sqrt(sum(a^2)); nb <- sqrt(sum(b^2))
+  na <- sqrt(sum(a^2))
+  nb <- sqrt(sum(b^2))
   if (na == 0 || nb == 0) {
     stop("a zero vector has no direction; cosine similarity with it is undefined.",
          call. = FALSE)
@@ -68,7 +69,9 @@
 #' @examples
 #' morie_alammar_sdp_attention(Q = 0.5, K = c(1, 2, 3, 4, 5, 6, 7, 8), V = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_alammar_sdp_attention <- function(Q, K, V, mask = NULL) {
-  Q <- as.matrix(Q); K <- as.matrix(K); V <- as.matrix(V)
+  Q <- as.matrix(Q)
+  K <- as.matrix(K)
+  V <- as.matrix(V)
   if (ncol(Q) != ncol(K)) {
     stop(sprintf("Q and K must share d_k; got %d and %d.", ncol(Q),
                  ncol(K)), call. = FALSE)
@@ -115,7 +118,9 @@ morie_alammar_multi_head_attention <- function(Q, K, V, Wq, Wk, Wv, Wo,
                    nm, length(W), heads), call. = FALSE)
     }
   }
-  Q <- as.matrix(Q); K <- as.matrix(K); V <- as.matrix(V)
+  Q <- as.matrix(Q)
+  K <- as.matrix(K)
+  V <- as.matrix(V)
   outs <- vector("list", heads)
   for (i in seq_len(heads)) {
     h <- morie_alammar_sdp_attention(Q %*% as.matrix(Wq[[i]]),
@@ -147,7 +152,8 @@ morie_alammar_multi_head_attention <- function(Q, K, V, Wq, Wk, Wv, Wo,
 morie_alammar_grouped_query_attention <- function(Q_heads, K_groups,
                                                   V_groups, n_query_heads,
                                                   n_kv_groups) {
-  H <- as.integer(n_query_heads); G <- as.integer(n_kv_groups)
+  H <- as.integer(n_query_heads)
+  G <- as.integer(n_kv_groups)
   if (H < 1L || G < 1L) stop("head and group counts must be positive.",
                              call. = FALSE)
   if (H %% G != 0L) {
@@ -199,7 +205,8 @@ morie_alammar_multi_query_attention <- function(Q_heads, K_shared,
 #' @param window_size W.
 #' @export
 morie_alammar_sliding_window_attention <- function(Q, K, V, window_size) {
-  Q <- as.matrix(Q); K <- as.matrix(K)
+  Q <- as.matrix(Q)
+  K <- as.matrix(K)
   W <- as.integer(window_size)
   if (W < 1L) stop("window_size must be positive.", call. = FALSE)
   n <- nrow(Q)
@@ -228,7 +235,8 @@ morie_alammar_kv_cache_lookup <- function(K_cache, V_cache, k_new, v_new,
   v_new <- matrix(as.numeric(v_new), nrow = 1)
   q_new <- matrix(as.numeric(q_new), nrow = 1)
   if (is.null(K_cache) || length(K_cache) == 0L) {
-    K <- k_new; V <- v_new
+    K <- k_new
+    V <- v_new
   } else {
     K <- rbind(as.matrix(K_cache), k_new)
     V <- rbind(as.matrix(V_cache), v_new)
@@ -250,7 +258,9 @@ morie_alammar_kv_cache_lookup <- function(K_cache, V_cache, k_new, v_new,
 #' @param b Bias.
 #' @export
 morie_alammar_classification_head <- function(h_cls, W_cls, b) {
-  h <- as.numeric(h_cls); W <- as.matrix(W_cls); b <- as.numeric(b)
+  h <- as.numeric(h_cls)
+  W <- as.matrix(W_cls)
+  b <- as.numeric(b)
   if (ncol(W) != length(h)) {
     stop(sprintf("W has %d columns but h_cls has %d entries.", ncol(W),
                  length(h)), call. = FALSE)
@@ -272,7 +282,9 @@ morie_alammar_classification_head <- function(h_cls, W_cls, b) {
 #' @param W,tags Weight matrix and 0-based tag targets (or NULL).
 #' @export
 morie_alammar_ner_token_head <- function(h_tokens, W, b, tags = NULL) {
-  H <- as.matrix(h_tokens); W <- as.matrix(W); b <- as.numeric(b)
+  H <- as.matrix(h_tokens)
+  W <- as.matrix(W)
+  b <- as.numeric(b)
   if (ncol(W) != ncol(H)) {
     stop("W columns must match hidden dimensions.", call. = FALSE)
   }
@@ -344,8 +356,10 @@ morie_alammar_contextualized_embedding <- function(layer_outputs,
   if (length(dim(L)) != 3L) {
     stop("layer_outputs must be (n_layers, seq_len, dim).", call. = FALSE)
   }
-  nl <- dim(L)[1]; sq <- dim(L)[2]
-  li <- as.integer(layer_idx); pos <- as.integer(position)
+  nl <- dim(L)[1]
+  sq <- dim(L)[2]
+  li <- as.integer(layer_idx)
+  pos <- as.integer(position)
   if (li < -nl || li >= nl) {
     stop(sprintf("layer %d out of range for %d layers.", li, nl),
          call. = FALSE)
@@ -378,7 +392,8 @@ morie_alammar_vit_patch_embedding <- function(image, patch_size, E,
   P <- as.integer(patch_size)
   E <- as.matrix(E)
   if (P < 1L) stop("patch_size must be positive.", call. = FALSE)
-  H <- nrow(img); W <- ncol(img)
+  H <- nrow(img)
+  W <- ncol(img)
   if (H %% P != 0L || W %% P != 0L) {
     stop(sprintf("a %d x %d image does not tile into %d x %d patches; a remainder row would silently shift every later patch.",
                  H, W, P, P), call. = FALSE)
@@ -426,7 +441,9 @@ morie_alammar_vit_patch_embedding <- function(image, patch_size, E,
 #'   targets in \\[-1, 1\\].
 #' @export
 morie_alammar_cosine_similarity_loss <- function(a, b, y_true) {
-  A <- as.matrix(a); B <- as.matrix(b); y <- as.numeric(y_true)
+  A <- as.matrix(a)
+  B <- as.matrix(b)
+  y <- as.numeric(y_true)
   if (!all(dim(A) == dim(B)) || nrow(A) != length(y)) {
     stop("need matched pairs and one target per pair.", call. = FALSE)
   }
@@ -449,7 +466,9 @@ morie_alammar_cosine_similarity_loss <- function(a, b, y_true) {
 #' @export
 morie_alammar_sbert_triplet_loss <- function(anchor, positive, negative,
                                              margin = 1.0) {
-  A <- as.matrix(anchor); P <- as.matrix(positive); N <- as.matrix(negative)
+  A <- as.matrix(anchor)
+  P <- as.matrix(positive)
+  N <- as.matrix(negative)
   m <- as.numeric(margin)
   if (!all(dim(A) == dim(P)) || !all(dim(A) == dim(N))) {
     stop("anchor, positive and negative must align.", call. = FALSE)
@@ -471,7 +490,8 @@ morie_alammar_infonce_loss <- function(anchor, positive, negatives,
                                        tau = 0.07) {
   t <- as.numeric(tau)
   if (t <= 0) stop("the temperature must be positive.", call. = FALSE)
-  a <- as.numeric(anchor); p <- as.numeric(positive)
+  a <- as.numeric(anchor)
+  p <- as.numeric(positive)
   N <- as.matrix(negatives)
   sp <- .morie_al_cos(a, p) / t
   sn <- vapply(seq_len(nrow(N)), function(i) {
@@ -508,7 +528,8 @@ morie_alammar_multiple_negatives_ranking <- function(anchors, positives,
                                                      tau = 0.05) {
   t <- as.numeric(tau)
   if (t <= 0) stop("the temperature must be positive.", call. = FALSE)
-  A <- as.matrix(anchors); P <- as.matrix(positives)
+  A <- as.matrix(anchors)
+  P <- as.matrix(positives)
   if (!all(dim(A) == dim(P))) {
     stop("anchors and positives must align.", call. = FALSE)
   }
@@ -555,16 +576,19 @@ morie_alammar_simcse_dropout_aug <- function(embeddings_dropout1,
 morie_alammar_openclip_contrastive <- function(I_emb, T_emb, tau = 0.07) {
   t <- as.numeric(tau)
   if (t <= 0) stop("the temperature must be positive.", call. = FALSE)
-  I <- as.matrix(I_emb); Tm <- as.matrix(T_emb)
+  I <- as.matrix(I_emb)
+  Tm <- as.matrix(T_emb)
   if (!all(dim(I) == dim(Tm))) {
     stop("image and text batches must align.", call. = FALSE)
   }
   if (nrow(I) < 2L) stop("need a batch of at least 2.", call. = FALSE)
-  ni <- sqrt(rowSums(I^2)); nt <- sqrt(rowSums(Tm^2))
+  ni <- sqrt(rowSums(I^2))
+  nt <- sqrt(rowSums(Tm^2))
   if (any(ni == 0) || any(nt == 0)) {
     stop("zero embedding vectors have no direction.", call. = FALSE)
   }
-  I <- I / ni; Tm <- Tm / nt
+  I <- I / ni
+  Tm <- Tm / nt
   S <- I %*% t(Tm) / t
   li <- .morie_al_inbatch_ce(S)
   lt <- .morie_al_inbatch_ce(t(S))
@@ -580,7 +604,8 @@ morie_alammar_openclip_contrastive <- function(I_emb, T_emb, tau = 0.07) {
 morie_alammar_negative_sampling_skipgram <- function(center_vec,
                                                      context_vec,
                                                      negative_vecs) {
-  c <- as.numeric(center_vec); w <- as.numeric(context_vec)
+  c <- as.numeric(center_vec)
+  w <- as.numeric(context_vec)
   N <- as.matrix(negative_vecs)
   if (length(c) != length(w) || ncol(N) != length(c)) {
     stop("all vectors must share one dimension.", call. = FALSE)
@@ -599,7 +624,8 @@ morie_alammar_negative_sampling_skipgram <- function(center_vec,
 #' @param scores_w,scores_l Winner and loser reward scores.
 #' @export
 morie_alammar_reward_model_bt <- function(scores_w, scores_l) {
-  rw <- as.numeric(scores_w); rl <- as.numeric(scores_l)
+  rw <- as.numeric(scores_w)
+  rl <- as.numeric(scores_l)
   if (length(rw) != length(rl)) {
     stop("need one loser score per winner score.", call. = FALSE)
   }
@@ -709,7 +735,8 @@ morie_alammar_mteb_benchmark_score <- function(task_scores, category_map) {
 #' @export
 morie_alammar_greedy_decoding <- function(logits) {
   Z <- as.matrix(logits)
-  toks <- integer(nrow(Z)); ties <- logical(nrow(Z))
+  toks <- integer(nrow(Z))
+  ties <- logical(nrow(Z))
   for (i in seq_len(nrow(Z))) {
     m <- max(Z[i, ])
     winners <- which(Z[i, ] == m)
@@ -726,7 +753,8 @@ morie_alammar_greedy_decoding <- function(logits) {
 morie_alammar_sampling_decoding <- function(logits, seed = 0) {
   Z <- as.matrix(logits)
   s <- as.numeric(seed) %% 2^32
-  toks <- integer(nrow(Z)); us <- numeric(nrow(Z))
+  toks <- integer(nrow(Z))
+  us <- numeric(nrow(Z))
   for (i in seq_len(nrow(Z))) {
     z <- Z[i, ] - max(Z[i, ])
     p <- exp(z) / sum(exp(z))
@@ -748,7 +776,8 @@ morie_alammar_sampling_decoding <- function(logits, seed = 0) {
 #' @param tokens,vocab Character vectors.
 #' @export
 morie_alammar_bag_of_words <- function(tokens, vocab) {
-  toks <- as.character(tokens); voc <- as.character(vocab)
+  toks <- as.character(tokens)
+  voc <- as.character(vocab)
   if (anyDuplicated(voc)) stop("the vocabulary contains duplicates.",
                                call. = FALSE)
   if (length(voc) == 0L) stop("the vocabulary is empty.", call. = FALSE)
@@ -801,7 +830,8 @@ morie_alammar_bio_tagging <- function(tokens, entity_spans,
   tags <- rep("O", n)
   claimed <- rep(FALSE, n)
   for (span in entity_spans) {
-    s <- as.integer(span[[1]]); e <- as.integer(span[[2]])
+    s <- as.integer(span[[1]])
+    e <- as.integer(span[[2]])
     typ <- as.character(span[[3]])
     if (s < 0L || e <= s || e > n) {
       stop(sprintf("span (%d, %d) is out of range for %d tokens (end exclusive).",
@@ -834,11 +864,13 @@ morie_alammar_bio_tagging <- function(tokens, entity_spans,
 #' @param vocab_a,vocab_b Token vocabularies.
 #' @export
 morie_alammar_tokenizer_vocab_overlap <- function(vocab_a, vocab_b) {
-  A <- unique(as.character(vocab_a)); B <- unique(as.character(vocab_b))
+  A <- unique(as.character(vocab_a))
+  B <- unique(as.character(vocab_b))
   if (length(A) == 0L && length(B) == 0L) {
     stop("both vocabularies are empty; 0/0.", call. = FALSE)
   }
-  inter <- length(intersect(A, B)); un <- length(union(A, B))
+  inter <- length(intersect(A, B))
+  un <- length(union(A, B))
   list(estimate = inter / un, intersection = inter, union = un,
        only_a = length(setdiff(A, B)), only_b = length(setdiff(B, A)),
        n = un, method = "Jaccard vocabulary overlap (Alammar Ch 2)")
@@ -935,7 +967,8 @@ morie_alammar_chat_template <- function(turns, template_tokens = NULL) {
 #' @export
 morie_alammar_chosen_rejected_template <- function(prompts, chosen,
                                                    rejected) {
-  P <- as.character(prompts); C <- as.character(chosen)
+  P <- as.character(prompts)
+  C <- as.character(chosen)
   R <- as.character(rejected)
   if (length(P) != length(C) || length(P) != length(R)) {
     stop("prompts, chosen and rejected must align.", call. = FALSE)
@@ -964,7 +997,8 @@ morie_alammar_instruction_data_template <- function(records,
     "### Instruction:\n{instruction}\n### Input:\n{input}\n### Response:\n"
   } else template
   if (length(records) == 0L) stop("no records supplied.", call. = FALSE)
-  texts <- character(0); spans <- list()
+  texts <- character(0)
+  spans <- list()
   for (i in seq_along(records)) {
     rec <- records[[i]]
     for (key in c("instruction", "output")) {
@@ -1014,10 +1048,12 @@ morie_alammar_tokenization_pipeline <- function(text, vocab,
       while (j >= i) {
         cand <- if (i == 1L) substr(w, i, j) else
           paste0("##", substr(w, i, j))
-        if (cand %in% voc) { found <- cand; break }
+        if (cand %in% voc) { found <- cand
+        break }
         j <- j - 1L
       }
-      if (is.null(found)) { ok <- FALSE; break }
+      if (is.null(found)) { ok <- FALSE
+      break }
       pieces <- c(pieces, found)
       i <- j + 1L
     }
@@ -1068,9 +1104,12 @@ morie_alammar_hdbscan_cluster <- function(X, min_cluster_size = 3,
   core <- apply(D, 1, function(r) sort(r)[ms + 1L])
   MR <- pmax(outer(core, rep(1, n)), outer(rep(1, n), core), D)
   diag(MR) <- 0
-  visited <- rep(FALSE, n); visited[1] <- TRUE
+  visited <- rep(FALSE, n)
+  visited[1] <- TRUE
   edges <- matrix(0, n - 1L, 3L)
-  dist_ <- MR[1, ]; src <- rep(1L, n); dist_[1] <- Inf
+  dist_ <- MR[1, ]
+  src <- rep(1L, n)
+  dist_[1] <- Inf
   for (step in seq_len(n - 1L)) {
     j <- which.min(dist_)
     edges[step, ] <- c(dist_[j], src[j], j)
@@ -1092,18 +1131,21 @@ morie_alammar_hdbscan_cluster <- function(X, min_cluster_size = 3,
     }
     for (e in seq_len(nrow(edges))) {
       if (edges[e, 1] < threshold) {
-        ra <- find(edges[e, 2]); rb <- find(edges[e, 3])
+        ra <- find(edges[e, 2])
+        rb <- find(edges[e, 3])
         if (ra != rb) parent[ra] <- rb
       }
     }
     split(seq_len(n), vapply(seq_len(n), find, numeric(1)))
   }
   cands <- c(sort(unique(edges[, 1])), Inf)
-  best <- -1L; threshold <- Inf
+  best <- -1L
+  threshold <- Inf
   for (cand in cands) {
     comps <- components(cand)
     score <- sum(vapply(comps, length, integer(1)) >= mcs)
-    if (score > best) { best <- score; threshold <- cand }
+    if (score > best) { best <- score
+    threshold <- cand }
   }
   labels <- rep(-1L, n)
   lab <- 0L
@@ -1147,7 +1189,8 @@ morie_alammar_umap_projection <- function(X, n_neighbors = 5,
     nb <- ord[2:(k + 1L)]
     dists <- D[i, nb]
     rho <- dists[1]
-    lo <- 1e-8; hi <- 1e4
+    lo <- 1e-8
+    hi <- 1e4
     for (it in seq_len(64L)) {
       sig <- (lo + hi) / 2
       s <- sum(exp(-pmax(dists - rho, 0) / sig))
@@ -1212,7 +1255,8 @@ morie_alammar_lda_topic_distribution <- function(documents, n_topics,
   if (length(docs) == 0L || any(vapply(docs, length, integer(1)) == 0L)) {
     stop("every document must contain at least one token.", call. = FALSE)
   }
-  a <- as.numeric(alpha); b <- as.numeric(beta)
+  a <- as.numeric(alpha)
+  b <- as.numeric(beta)
   if (a <= 0 || b <= 0) stop("alpha and beta must be positive.",
                              call. = FALSE)
   vocab <- sort(unique(unlist(docs)))
@@ -1284,8 +1328,10 @@ morie_alammar_embedding_classifier <- function(embeddings, labels,
   }
   K <- length(classes)
   if (K < 2L) stop("need at least 2 classes.", call. = FALSE)
-  n <- nrow(X); d <- ncol(X)
-  W <- matrix(0, K, d); b <- numeric(K)
+  n <- nrow(X)
+  d <- ncol(X)
+  W <- matrix(0, K, d)
+  b <- numeric(K)
   lr <- as.numeric(learning_rate)
   for (step in seq_len(as.integer(n_steps))) {
     Zl <- X %*% t(W) + matrix(b, n, K, byrow = TRUE)
@@ -1312,7 +1358,8 @@ morie_alammar_setfit_twostep <- function(embeddings, labels) {
   if (nrow(X) != length(y)) stop("need one label per embedding.",
                                  call. = FALSE)
   n <- length(y)
-  pos <- list(); neg <- list()
+  pos <- list()
+  neg <- list()
   for (i in seq_len(n - 1L)) {
     for (j in (i + 1L):n) {
       pair <- c(i - 1L, j - 1L)    # 0-based, matching Python

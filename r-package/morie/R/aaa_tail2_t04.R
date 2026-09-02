@@ -262,14 +262,17 @@ Dpll <- function(cnf) {
   allv <- sort(unique(abs(unlist(clauses))))
   nvars <- if (length(allv)) max(allv) else 0L
   st <- new.env()
-  st$decisions <- 0L; st$propagations <- 0L; st$pure <- 0L
+  st$decisions <- 0L
+  st$propagations <- 0L
+  st$pure <- 0L
 
   search <- function(cls, assign) {
     repeat {
       if (is.null(cls)) return(NULL)
       if (length(cls) == 0L) return(assign)
       unit <- NA_integer_
-      for (cl in cls) if (length(cl) == 1L) { unit <- cl[1L]; break }
+      for (cl in cls) if (length(cl) == 1L) { unit <- cl[1L]
+      break }
       if (!is.na(unit)) {
         st$propagations <- st$propagations + 1L
         assign[[as.character(abs(unit))]] <- unit > 0L
@@ -281,8 +284,10 @@ Dpll <- function(cnf) {
       for (v in vs) {
         pos <- any(vapply(cls, function(cl) v %in% cl, logical(1)))
         neg <- any(vapply(cls, function(cl) -v %in% cl, logical(1)))
-        if (pos && !neg) { pure <- v; break }
-        if (neg && !pos) { pure <- -v; break }
+        if (pos && !neg) { pure <- v
+        break }
+        if (neg && !pos) { pure <- -v
+        break }
       }
       if (!is.na(pure)) {
         st$pure <- st$pure + 1L
@@ -449,8 +454,11 @@ SimplexLP <- function(c, A, b, max_iter = 1000L, tol = 1e-12) {
   for (step in seq_len(budget)) {
     it <- step
     enter <- -1L
-    for (j in seq_len(total)) if (z[j] < -tol) { enter <- j; break }
-    if (enter == -1L) { it <- step - 1L; done <- TRUE; break }
+    for (j in seq_len(total)) if (z[j] < -tol) { enter <- j
+    break }
+    if (enter == -1L) { it <- step - 1L
+    done <- TRUE
+    break }
     leave <- -1L
     best <- NA_real_
     for (i in seq_len(ncon)) {
@@ -463,7 +471,9 @@ SimplexLP <- function(c, A, b, max_iter = 1000L, tol = 1e-12) {
         }
       }
     }
-    if (leave == -1L) { status <- "unbounded"; done <- TRUE; break }
+    if (leave == -1L) { status <- "unbounded"
+    done <- TRUE
+    break }
     piv <- T[leave, enter]
     T[leave, ] <- T[leave, ] / piv
     for (i in seq_len(ncon)) {

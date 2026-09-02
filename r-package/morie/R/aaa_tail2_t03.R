@@ -37,7 +37,9 @@
     if (abs(M[piv, cc]) < 1e-300)
       stop("matrix is singular")
     if (piv != cc) {
-      tmp <- M[cc, ]; M[cc, ] <- M[piv, ]; M[piv, ] <- tmp
+      tmp <- M[cc, ]
+      M[cc, ] <- M[piv, ]
+      M[piv, ] <- tmp
     }
     pv <- M[cc, cc]
     for (r in seq_len(k)) {
@@ -91,12 +93,15 @@
 #' @return A list with \code{d}, \code{s_pooled}, \code{var_d}, \code{se_d}, \code{j}, \code{j_approx}, \code{hedges_g}, \code{var_g}, \code{se_g}, \code{df}, \code{n}, \code{method}.
 #' @export
 CohensD <- function(m1, m2, s1, s2, n1, n2) {
-  n1 <- as.integer(n1); n2 <- as.integer(n2)
+  n1 <- as.integer(n1)
+  n2 <- as.integer(n2)
   if (n1 < 2L || n2 < 2L)
     stop("each group needs at least 2 observations")
   df <- n1 + n2 - 2L
-  m1 <- as.numeric(m1); m2 <- as.numeric(m2)
-  s1 <- as.numeric(s1); s2 <- as.numeric(s2)
+  m1 <- as.numeric(m1)
+  m2 <- as.numeric(m2)
+  s1 <- as.numeric(s1)
+  s2 <- as.numeric(s2)
   if (s1 < 0 || s2 < 0)
     stop("standard deviations must be non-negative")
   sp2 <- ((n1 - 1L) * s1 * s1 + (n2 - 1L) * s2 * s2) / df
@@ -376,7 +381,8 @@ CoxPL <- function(time, event, X, beta = NULL, max_iter = 50L,
 .morie_t2_fdgrad <- function(fun, x, h) {
   g <- numeric(length(x))
   for (k in seq_along(x)) {
-    xp <- x; xm <- x
+    xp <- x
+    xm <- x
     xp[k] <- xp[k] + h
     xm[k] <- xm[k] - h
     g[k] <- (fun(xp) - fun(xm)) / (2 * h)
@@ -569,8 +575,10 @@ ProxGrad <- function(f, grad_f, prox_g, x0, lr, n_iter = 200L,
 #' @return A list with \code{Xs_adapted}, \code{gamma}, \code{cost}, \code{transport_cost}, \code{row_error}, \code{col_error}, \code{ns}, \code{nt}, \code{d}, \code{epsilon}, \code{n_iter}, \code{method}.
 #' @export
 OtAdapt <- function(Xs, Xt, epsilon, n_iter = 1000L) {
-  Xs <- as.matrix(Xs); Xt <- as.matrix(Xt)
-  ns <- nrow(Xs); nt <- nrow(Xt)
+  Xs <- as.matrix(Xs)
+  Xt <- as.matrix(Xt)
+  ns <- nrow(Xs)
+  nt <- nrow(Xt)
   if (ns == 0L || nt == 0L)
     stop("both sample sets must be non-empty")
   d <- ncol(Xs)

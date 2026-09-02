@@ -15,7 +15,9 @@
 Comptotvar <- function(X) {
   X <- as.matrix(X)
   if (any(X <= 0)) stop("compositions must be strictly positive")
-  L <- log(X); D <- ncol(X); n <- nrow(X)
+  L <- log(X)
+  D <- ncol(X)
+  n <- nrow(X)
   tot <- 0
   for (i in seq_len(D - 1)) for (j in (i + 1):D)
     tot <- tot + stats::var(L[, i] - L[, j])

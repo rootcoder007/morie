@@ -33,7 +33,8 @@ Alfschn <- function(frames, angles, littf, parent, litx, frameof) {
   # what makes the result a rotation.
   rotx <- function(a) {
     nrm <- sqrt(a[1]^2 + a[2]^2)
-    cs <- a[1] / nrm; sn <- a[2] / nrm
+    cs <- a[1] / nrm
+    sn <- a[2] / nrm
     list(R = matrix(c(1, 0, 0, 0, cs, -sn, 0, sn, cs), 3, 3, byrow = TRUE),
          t = c(0, 0, 0))
   }

@@ -99,11 +99,13 @@
 #' @return The value of \code{g}, as built in the body.
 #' @export
 .rfgain <- function(Y, left, right, q) {
-  nL <- length(left); nR <- length(right)
+  nL <- length(left)
+  nR <- length(right)
   if (nL == 0L || nR == 0L) return(NULL)
   g <- 0
   for (j in seq_len(q)) {
-    sL <- sum(Y[left, j]); sR <- sum(Y[right, j])
+    sL <- sum(Y[left, j])
+    sR <- sum(Y[right, j])
     g <- g + sL * sL / nL + sR * sR / nR
   }
   g
@@ -250,7 +252,9 @@
   for (b in seq_len(n_trees) - 1L) {
     rows <- .rfboot(b, n)
     env <- new.env()
-    env$nodes <- list(); env$k <- 0L; env$s <- 0L
+    env$nodes <- list()
+    env$k <- 0L
+    env$s <- 0L
     root <- .rfgrow(X, Y, rows, b, nodesize, mtry, q, env)
     trees[[b + 1L]] <- list(nodes = env$nodes, root = root)
     oob[[b + 1L]] <- setdiff(seq_len(n), unique(rows))
@@ -354,7 +358,8 @@
     for (b in seq_along(trees)) {
       ob <- oob[[b]]
       if (length(ob) < 2L) next
-      nodes <- trees[[b]]$nodes; root <- trees[[b]]$root
+      nodes <- trees[[b]]$nodes
+      root <- trees[[b]]$root
       base <- 0
       for (i in ob) {
         v <- .rfpredtree(nodes, root, X[i, ])
@@ -373,7 +378,8 @@
       perm <- perm / length(ob)
       diffs <- c(diffs, perm - base)
     }
-    if (length(diffs) == 0L) { imp[j] <- NaN; next }
+    if (length(diffs) == 0L) { imp[j] <- NaN
+    next }
     m <- sum(diffs) / length(diffs)
     if (normalise && length(diffs) > 1L) {
       sdv <- sqrt(sum((diffs - m)^2) / (length(diffs) - 1L))

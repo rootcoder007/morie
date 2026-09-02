@@ -95,7 +95,8 @@
 #' @return A list with \code{value}, \code{gradient}, \code{sigma2}, \code{beta}.
 #' @export
 .schab_profiled_reml <- function(coords, z, X, nugget_ratio, rng, model) {
-  n <- nrow(X); k <- ncol(X)
+  n <- nrow(X)
+  k <- ncol(X)
   bad <- list(value = Inf, gradient = c(0, 0), sigma2 = NA_real_,
               beta = rep(NA_real_, k))
   if (nugget_ratio < 0 || nugget_ratio > 1 || rng <= 0) return(bad)
@@ -195,7 +196,8 @@
   # and a = exp(u2) keeps the range positive, so the constraints of Sec. 4.3
   # hold by construction rather than by clipping.
   wrapped <- function(u) {
-    xi <- .schab_logistic(u[1]); a <- exp(u[2])
+    xi <- .schab_logistic(u[1])
+    a <- exp(u[2])
     res <- .schab_profiled_reml(coords, z, X, xi, a, model)
     if (!is.finite(res$value)) {
       return(list(value = Inf, gradient = c(0, 0), sigma2 = res$sigma2,
@@ -219,7 +221,8 @@
     }
     step <- 1
     moved <- FALSE
-    trial <- NULL; tr <- NULL
+    trial <- NULL
+    tr <- NULL
     # Armijo backtracking with the textbook constants c1 = 1e-4, rho = 1/2
     # (Nocedal & Wright), fixed rather than tuned.
     for (b in seq_len(60L)) {

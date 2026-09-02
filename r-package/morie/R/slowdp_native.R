@@ -44,7 +44,9 @@ stick_breaking <- function(alpha, K, seed = 0) {
   if (a <= 0) stop("slowdp: alpha must be positive")
   if (n < 1L) stop("slowdp: at least one stick is needed")
   e <- .ghc_rng(seed)
-  p <- numeric(n); Vs <- numeric(n); rest <- 1
+  p <- numeric(n)
+  Vs <- numeric(n)
+  rest <- 1
   for (k in seq_len(n)) {
     v <- .beta_1_alpha(e, a)
     Vs[k] <- v

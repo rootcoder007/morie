@@ -48,8 +48,10 @@
       gain_pt <- -1 + 0i                     # Nyquist (z = -1)
     }
   } else if (type == "pass") {
-    w1 <- tan(pi * W[1] / 2); w2 <- tan(pi * W[2] / 2)
-    bw <- w2 - w1; w0 <- sqrt(w1 * w2)
+    w1 <- tan(pi * W[1] / 2)
+    w2 <- tan(pi * W[2] / 2)
+    bw <- w2 - w1
+    w0 <- sqrt(w1 * w2)
     # s -> (s^2 + w0^2) / (bw * s)
     p_a <- c()
     for (p in p_proto) {
@@ -60,8 +62,10 @@
     gain_pt <- exp(1i * 2 * atan(w0))        # z at center frequency
   } else {
     # band-stop: s -> (bw * s) / (s^2 + w0^2)
-    w1 <- tan(pi * W[1] / 2); w2 <- tan(pi * W[2] / 2)
-    bw <- w2 - w1; w0 <- sqrt(w1 * w2)
+    w1 <- tan(pi * W[1] / 2)
+    w2 <- tan(pi * W[2] / 2)
+    bw <- w2 - w1
+    w0 <- sqrt(w1 * w2)
     p_a <- c()
     for (p in p_proto) {
       q <- bw / (2 * p)
@@ -89,8 +93,10 @@
 #' Internal helper: direct-form II transposed IIR/FIR filter
 #' @noRd
 .morie_dsp_filter <- function(b, a, x) {
-  b <- as.numeric(b); a <- as.numeric(a)
-  if (a[1] != 1) { b <- b / a[1]; a <- a / a[1] }
+  b <- as.numeric(b)
+  a <- as.numeric(a)
+  if (a[1] != 1) { b <- b / a[1]
+  a <- a / a[1] }
   if (length(a) == 1L) {
     # pure FIR: convolution
     y <- stats::convolve(x, rev(b), type = "open")[seq_along(x)]
@@ -160,7 +166,8 @@
   sinc <- function(fc) ifelse(m == 0, fc, sin(pi * fc * m) / (pi * m))
   h <- switch(type,
     low = sinc(W[1]),
-    high = { d <- ifelse(m == 0, 1, 0); d - sinc(W[1]) },
+    high = { d <- ifelse(m == 0, 1, 0)
+    d - sinc(W[1]) },
     pass = sinc(W[2]) - sinc(W[1]))
   w <- if (is.function(window)) {
     window
@@ -299,7 +306,8 @@
   N <- length(v)
   L <- length(g)
   half <- N %/% 2
-  W <- numeric(half); V <- numeric(half)
+  W <- numeric(half)
+  V <- numeric(half)
   tt <- seq_len(half)
   for (l in seq_len(L)) {
     idx <- (2L * tt - l) %% N + 1L

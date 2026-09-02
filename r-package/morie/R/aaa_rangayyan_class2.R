@@ -188,7 +188,9 @@
     p <- c - 1L + which.max(abs(M[c:n, c]))
     if (abs(M[p, c]) < 1e-300) stop("linear system is singular")
     if (p != c) {
-      tmp <- M[c, ]; M[c, ] <- M[p, ]; M[p, ] <- tmp
+      tmp <- M[c, ]
+      M[c, ] <- M[p, ]
+      M[p, ] <- tmp
     }
     pv <- M[c, c]
     for (r in seq_len(n)) {
@@ -246,13 +248,16 @@
         (abs(theta) + sqrt(theta * theta + 1))
       cc <- 1 / sqrt(tt * tt + 1)
       ss <- tt * cc
-      akp <- A[, p]; akq <- A[, q]
+      akp <- A[, p]
+      akq <- A[, q]
       A[, p] <- cc * akp - ss * akq
       A[, q] <- ss * akp + cc * akq
-      apk <- A[p, ]; aqk <- A[q, ]
+      apk <- A[p, ]
+      aqk <- A[q, ]
       A[p, ] <- cc * apk - ss * aqk
       A[q, ] <- ss * apk + cc * aqk
-      vkp <- V[, p]; vkq <- V[, q]
+      vkp <- V[, p]
+      vkq <- V[, q]
       V[, p] <- cc * vkp - ss * vkq
       V[, q] <- ss * vkp + cc * vkq
     }
@@ -330,7 +335,8 @@
 #' @return A list with \code{mu}, \code{C}.
 #' @export
 .morie_bx_cov <- function(X, unbiased = TRUE) {
-  n <- nrow(X); p <- ncol(X)
+  n <- nrow(X)
+  p <- ncol(X)
   if (unbiased && n < 2L)
     stop("covariance needs at least two observations")
   mu <- vapply(seq_len(p), function(j) .morie_fsum(X[, j]) / n, numeric(1))
@@ -359,7 +365,8 @@
 .morie_bx_nmfmu <- function(V, r, maxiter, tol, seed, cost) {
   # Lee-Seung multiplicative updates: "ls" is eqs (9.49)-(9.50), "kld" is
   # eqs (9.54)-(9.55)
-  m <- nrow(V); n <- ncol(V)
+  m <- nrow(V)
+  n <- ncol(V)
   if (any(V < 0)) stop("NMF requires a nonnegative matrix V")
   r <- as.integer(r)
   if (r < 1L || r > min(m, n))
@@ -431,11 +438,13 @@
   if (k < 1L) stop("sparsity must be a positive integer")
   for (step in seq_len(min(k, nd, n))) {
     if (.morie_bx_nrm(r) <= tol) break
-    best <- -1L; bv <- -1
+    best <- -1L
+    bv <- -1
     for (j in seq_len(nd)) {
       if (j %in% sup) next
       v <- abs(.morie_bx_dot(D[j, ], r)) / norms[j]
-      if (v > bv) { best <- j; bv <- v }
+      if (v > bv) { best <- j
+      bv <- v }
     }
     if (best < 0L) break
     sup <- c(sup, best)
@@ -534,16 +543,21 @@
   win <- 0.5 - 0.5 * cos(2 * pi * (seq_len(nwin) - 1L) / nwin)
   nb <- nwin %/% 2L + 1L
   tt <- seq_len(nwin) - 1L
-  re_f <- list(); im_f <- list(); mag_f <- list()
+  re_f <- list()
+  im_f <- list()
+  mag_f <- list()
   st <- 0L
   while (st + nwin <= n) {
     seg <- x[st + seq_len(nwin)] * win
-    re_r <- numeric(nb); im_r <- numeric(nb); mg_r <- numeric(nb)
+    re_r <- numeric(nb)
+    im_r <- numeric(nb)
+    mg_r <- numeric(nb)
     for (k in seq_len(nb)) {
       w <- -2 * pi * (k - 1L) / nwin
       re <- .morie_fsum(seg * cos(w * tt))
       im <- .morie_fsum(seg * sin(w * tt))
-      re_r[k] <- re; im_r[k] <- im
+      re_r[k] <- re
+      im_r[k] <- im
       mg_r[k] <- sqrt(re * re + im * im)
     }
     re_f[[length(re_f) + 1L]] <- re_r
@@ -687,7 +701,8 @@ MlpBp <- function(X, y, hidden = 4, eta = 0.5, alpha = 0.9, maxiter = 500,
     stop("y must contain at least two distinct classes")
   K <- if (length(labels) == 2L) 1L else length(labels)
   idx <- match(as.integer(yv), labels) - 1L
-  n <- nrow(Xm); I <- ncol(Xm)
+  n <- nrow(Xm)
+  I <- ncol(Xm)
   D <- matrix(0, n, K)
   for (s in seq_len(n)) {
     if (K == 1L) D[s, 1L] <- idx[s]
@@ -699,8 +714,10 @@ MlpBp <- function(X, y, hidden = 4, eta = 0.5, alpha = 0.9, maxiter = 500,
   T1 <- vapply(seq_len(hidden), function(i) u() - 0.5, numeric(1))
   W2 <- .morie_bx_fill(hidden, K, u, function(z) z - 0.5)
   T2 <- vapply(seq_len(K), function(i) u() - 0.5, numeric(1))
-  dW1 <- matrix(0, I, hidden); dT1 <- numeric(hidden)
-  dW2 <- matrix(0, hidden, K); dT2 <- numeric(K)
+  dW1 <- matrix(0, I, hidden)
+  dT1 <- numeric(hidden)
+  dW2 <- matrix(0, hidden, K)
+  dT2 <- numeric(K)
 
   mse <- NaN
   it <- 0L
@@ -847,11 +864,15 @@ PvcBayes <- function(features, labels, priors = NULL, query = NULL) {
   }
 
   scale <- vapply(seq_len(p), function(j) {
-    sd <- .morie_bx_sd(F[, j]); if (sd > 0) sd else 1
+    sd <- .morie_bx_sd(F[, j])
+    if (sd > 0) sd else 1
   }, numeric(1))
   Z <- F / rep(scale, each = nrow(F))
 
-  means <- list(); covs <- list(); invs <- list(); dets <- numeric(2)
+  means <- list()
+  covs <- list()
+  invs <- list()
+  dets <- numeric(2)
   for (ci in seq_along(classes)) {
     rows <- Z[y == classes[ci], , drop = FALSE]
     if (nrow(rows) < p + 1L)
@@ -950,7 +971,8 @@ PvcBayes <- function(features, labels, priors = NULL, query = NULL) {
   rmsd <- numeric(nch)
   for (j in seq_len(nch)) {
     row <- W[j, ]
-    lo <- min(row); hi <- max(row)
+    lo <- min(row)
+    hi <- max(row)
     nr <- if (hi - lo <= 0) rep(0.5, length(row)) else (row - lo) / (hi - lo)
     Wn[j, ] <- nr
     rmsd[j] <- sqrt(.morie_fsum((nr - 0.5)^2) / length(nr))
@@ -1093,7 +1115,8 @@ CadPipe <- function(features, labels, k = 5, standardize = TRUE) {
     stop("features and labels must have the same length")
   if (!identical(sort(unique(y)), c(0L, 1L)))
     stop("labels must contain both 0 (without) and 1 (with) the disease")
-  n <- nrow(F); p <- ncol(F)
+  n <- nrow(F)
+  p <- ncol(F)
   k <- as.integer(k)
   if (!(k >= 2L && k <= n))
     stop("k must satisfy 2 <= k <= number of patterns")
@@ -1119,7 +1142,8 @@ CadPipe <- function(features, labels, k = 5, standardize = TRUE) {
     sc <- rep(1, p)
     if (isTRUE(standardize))
       sc <- vapply(seq_len(p), function(j) {
-        s <- .morie_bx_sd(F[train, j]); if (s > 0) s else 1
+        s <- .morie_bx_sd(F[train, j])
+        if (s > 0) s else 1
       }, numeric(1))
     proto <- lapply(c(0L, 1L), function(cc) {
       rows <- train[y[train] == cc]
@@ -1197,7 +1221,8 @@ CnnSig <- function(x, kernels, bias = NULL, pool = 2, dense = NULL) {
   }
 
   feat <- unlist(pooled, use.names = FALSE)
-  scores <- NULL; best <- NULL
+  scores <- NULL
+  best <- NULL
   if (!is.null(dense)) {
     Wd <- .morie_bx_mat(dense, "dense")
     if (ncol(Wd) != length(feat))
@@ -1257,7 +1282,8 @@ FecgNmf <- function(x, fs, nwin = 64, hop = NULL, rank = 4, lam = 0,
   V <- t(sp$mag)
   fac <- .morie_bx_nmfmu(V, rank, maxiter, 1e-10, seed,
                          if (as.numeric(lam) == 0) "ls" else "kld")
-  W <- fac$W; H <- fac$H
+  W <- fac$W
+  H <- fac$H
   if (as.numeric(lam) > 0) {
     eps <- 1e-12
     for (i in seq_len(20L)) {
@@ -1331,7 +1357,9 @@ PvcLinDf <- function(rr, ff, train = NULL) {
     stop("rr and ff must have the same length")
 
   if (is.null(train)) {
-    a <- 1; b <- -5.56; cc <- 11.44
+    a <- 1
+    b <- -5.56
+    cc <- 11.44
     proto <- list(normal = c(0.66, 1.58), pvc = c(0.45, 2.74))
     src <- "published coefficients of eq. (10.131)"
   } else {
@@ -1350,7 +1378,8 @@ PvcLinDf <- function(rr, ff, train = NULL) {
     if (abs(d[1L]) < 1e-12 && abs(d[2L]) < 1e-12)
       stop("the two class prototypes coincide")
     mid <- 0.5 * (p0 + p1)
-    a <- -d[1L]; b <- -d[2L]
+    a <- -d[1L]
+    b <- -d[2L]
     cc <- d[1L] * mid[1L] + d[2L] * mid[2L]
     proto <- list(normal = p0, pvc = p1)
     src <- "coefficients derived from the supplied training set"
@@ -1400,12 +1429,14 @@ EegBands <- function(x, fs, bands = NULL) {
   psd <- mag * mag
   total <- .morie_fsum(psd)
 
-  power <- list(); frac <- list()
+  power <- list()
+  frac <- list()
   for (nm in names(bands)) {
     lim <- as.numeric(bands[[nm]])
     if (length(lim) < 2L || any(is.na(lim)))
       stop("band ", nm, " must be an (f1, f2) pair")
-    f1 <- lim[1L]; f2 <- lim[2L]
+    f1 <- lim[1L]
+    f2 <- lim[2L]
     if (f1 < 0 || f2 <= f1)
       stop("band ", nm, " must satisfy 0 <= f1 < f2")
     p <- .morie_fsum(psd[freqs >= f1 & freqs <= f2])
@@ -1477,16 +1508,19 @@ SeizDict <- function(signals, labels, iterations = 7, atoms = NULL,
     x <- S[s, ]
     for (i in seq_len(iterations)) {
       if (!nrow(raw)) break
-      best <- -1L; bv <- -1
+      best <- -1L
+      bv <- -1
       for (j in seq_len(nrow(raw))) {
         v <- abs(.morie_bx_dot(x, raw[j, ]))
-        if (v > bv) { best <- j; bv <- v }
+        if (v > bv) { best <- j
+        bv <- v }
       }
       if (best < 0L) break
       psi <- raw[best, ]
       raw <- raw[-best, , drop = FALSE]
       dup <- FALSE
-      for (d in trained) if (all(abs(psi - d) < 1e-12)) { dup <- TRUE; break }
+      for (d in trained) if (all(abs(psi - d) < 1e-12)) { dup <- TRUE
+      break }
       if (!dup) trained[[length(trained) + 1L]] <- psi
       a <- .morie_bx_dot(x, psi)
       x <- x - a * psi
@@ -1563,7 +1597,8 @@ IcaFix <- function(X, ncomp = NULL, maxiter = 200, tol = 1e-8, seed = 1) {
   # away from Gaussianity is what unmixes them.  Fixed-point update from
   # Hyvarinen and Oja, Neural Networks 13, 2000, ref [50] of that section.
   Y <- .morie_bx_mat(X, "X")
-  K <- nrow(Y); T <- ncol(Y)
+  K <- nrow(Y)
+  T <- ncol(Y)
   if (T < 4L) stop("need at least four samples per channel")
   L <- if (is.null(ncomp)) K else as.integer(ncomp)
   if (!(L >= 1L && L <= K))
@@ -1608,7 +1643,8 @@ IcaFix <- function(X, ncomp = NULL, maxiter = 200, tol = 1e-8, seed = 1) {
         nr <- 1
       }
       wn <- wn / nr
-      if (abs(abs(.morie_bx_dot(wn, w)) - 1) < tol) { w <- wn; break }
+      if (abs(abs(.morie_bx_dot(wn, w)) - 1) < tol) { w <- wn
+      break }
       w <- wn
     }
     Wm <- rbind(Wm, w)
@@ -1659,7 +1695,8 @@ IcaClean <- function(X, ncomp = NULL, kurtosis = 3, drop = NULL,
   S <- ica$sources
   A <- ica$mixing
   mu <- ica$mean
-  L <- nrow(S); T <- ncol(S)
+  L <- nrow(S)
+  T <- ncol(S)
 
   kv <- vapply(seq_len(L), function(c) .morie_bx_kurt(S[c, ]), numeric(1))
   if (is.null(drop)) {
@@ -1711,7 +1748,8 @@ Infomax <- function(X, ncomp = NULL, eta = 0.05, maxiter = 300, tol = 1e-8,
   # on sub-Gaussian ones it separates only partially -- use IcaFix when the
   # kurtosis sign is unknown.
   Y <- .morie_bx_mat(X, "X")
-  K <- nrow(Y); T <- ncol(Y)
+  K <- nrow(Y)
+  T <- ncol(Y)
   if (T < 4L) stop("need at least four samples per channel")
   L <- if (is.null(ncomp)) K else as.integer(ncomp)
   if (!(L >= 1L && L <= K))
@@ -1798,8 +1836,11 @@ VagClass <- function(segments, durations = NULL, segclass = NULL,
                    numeric(1))
   vms <- if (ns > 1L) .morie_bx_sd(smeans)^2 else 0
 
-  dec <- NULL; stage <- NULL; abn <- NULL
-  fabn <- NaN; fnor <- NaN
+  dec <- NULL
+  stage <- NULL
+  abn <- NULL
+  fabn <- NaN
+  fnor <- NaN
   if (!is.null(segclass)) {
     sc <- as.integer(.morie_bx_vec(segclass, "segclass"))
     if (length(sc) != ns)
@@ -1809,21 +1850,30 @@ VagClass <- function(segments, durations = NULL, segclass = NULL,
     fabn <- .morie_fsum(d[sc == 1L]) / total
     fnor <- 1 - fabn
     if (fnor > 0.90) {
-      dec <- "normal"; stage <- 1L; abn <- FALSE
+      dec <- "normal"
+      stage <- 1L
+      abn <- FALSE
     } else if (fabn > 0.90) {
-      dec <- "abnormal"; stage <- 1L; abn <- TRUE
+      dec <- "abnormal"
+      stage <- 1L
+      abn <- TRUE
     } else if (is.null(arthro)) {
       dec <- "undecided, four-group classifier required"
-      stage <- 1L; abn <- NULL
+      stage <- 1L
+      abn <- NULL
     } else {
       aa <- as.integer(.morie_bx_vec(arthro, "arthro"))
       if (length(aa) != ns)
         stop("arthro must have one entry per segment")
       faa <- .morie_fsum(d[aa == 1L]) / total
       if (faa > 0.10) {
-        dec <- "abnormal"; stage <- 2L; abn <- TRUE
+        dec <- "abnormal"
+        stage <- 2L
+        abn <- TRUE
       } else {
-        dec <- "normal"; stage <- 2L; abn <- FALSE
+        dec <- "normal"
+        stage <- 2L
+        abn <- FALSE
       }
     }
   }
@@ -1859,7 +1909,8 @@ KsvdFit <- function(Y, natoms, sparsity, maxiter = 15, tol = 1e-10,
   # dictionary represents whatever its functions happen to match; K-SVD
   # re-fits each atom to exactly the signals that currently use it.
   S <- .morie_bx_mat(Y, "Y")
-  m <- nrow(S); n <- ncol(S)
+  m <- nrow(S)
+  n <- ncol(S)
   natoms <- as.integer(natoms)
   sparsity <- as.integer(sparsity)
   if (natoms < 1L) stop("natoms must be a positive integer")
@@ -1879,7 +1930,9 @@ KsvdFit <- function(Y, natoms, sparsity, maxiter = 15, tol = 1e-10,
     D[k, ] <- if (nr > 1e-12) a / nr else as.numeric(seq_len(n) == k0 %% n + 1L)
   }
 
-  prev <- NULL; err <- NaN; it <- 0L
+  prev <- NULL
+  err <- NaN
+  it <- 0L
   Xc <- matrix(0, m, natoms)
   for (it in seq_len(maxiter)) {
     Xc <- t(vapply(seq_len(m), function(i)
@@ -1959,7 +2012,10 @@ DictCode <- function(Y, D, sparsity, tol = 1e-12) {
   if (!(sparsity >= 1L && sparsity <= nrow(A)))
     stop("sparsity must satisfy 1 <= sparsity <= number of atoms")
 
-  coefs <- list(); sups <- list(); recs <- list(); res <- list()
+  coefs <- list()
+  sups <- list()
+  recs <- list()
+  res <- list()
   for (i in seq_len(nrow(S))) {
     r <- .morie_bx_omp(S[i, ], A, sparsity, as.numeric(tol))
     coefs[[i]] <- r$coefficients
@@ -2042,7 +2098,8 @@ Lstm <- function(sequences, labels = NULL, hidden = 8, ridge = 1e-6,
   hs <- matrix(0, length(steps), H)
   cs <- matrix(0, length(steps), H)
   for (si in seq_along(steps)) {
-    h <- numeric(H); cvec <- numeric(H)
+    h <- numeric(H)
+    cvec <- numeric(H)
     for (ti in seq_len(nrow(steps[[si]]))) {
       z <- c(h, steps[[si]][ti, ])
       gi <- .morie_bx_sig(.morie_bx_mv(W$i, z) + B$i)
@@ -2056,7 +2113,10 @@ Lstm <- function(sequences, labels = NULL, hidden = 8, ridge = 1e-6,
     cs[si, ] <- cvec
   }
 
-  pred <- NULL; acc <- NaN; read <- NULL; classes <- NULL
+  pred <- NULL
+  acc <- NaN
+  read <- NULL
+  classes <- NULL
   if (!is.null(labels)) {
     y <- as.integer(.morie_bx_vec(labels, "labels"))
     if (length(y) != length(steps))
@@ -2128,13 +2188,17 @@ MPursuit <- function(x, dictionary = NULL, natoms = 20, tol = 1e-10,
   e_prev <- .morie_fsum(r * r)
   if (e_prev <= 0) stop("x has zero energy")
   e0 <- e_prev
-  coef <- numeric(0); idx <- integer(0); decay <- numeric(0)
+  coef <- numeric(0)
+  idx <- integer(0)
+  decay <- numeric(0)
   for (step in seq_len(min(natoms, nrow(D)))) {
-    best <- -1L; bv <- -1
+    best <- -1L
+    bv <- -1
     for (j in seq_len(nrow(D))) {
       if (j %in% idx) next
       v <- abs(.morie_bx_dot(D[j, ], r))
-      if (v > bv) { best <- j; bv <- v }
+      if (v > bv) { best <- j
+      bv <- v }
     }
     if (best < 0L) break
     a <- .morie_bx_dot(D[best, ], r)
@@ -2184,7 +2248,8 @@ BmiDec <- function(y, C, a = NULL, procnoise = 1e-4, obsnoise = 1e-2,
   # xtilde(1|Y_0) = 0 and phi_ep(1, 0) = D_0.
   Y <- .morie_bx_mat(y, "y")
   Cm <- .morie_bx_mat(C, "C")
-  K <- nrow(Cm); L <- ncol(Cm)
+  K <- nrow(Cm)
+  L <- ncol(Cm)
   if (ncol(Y) != K)
     stop("each observation row must have ", K, " entries")
   if (is.null(a)) {
@@ -2212,7 +2277,10 @@ BmiDec <- function(y, C, a = NULL, procnoise = 1e-4, obsnoise = 1e-2,
   xh <- numeric(L)
   P <- diag(as.numeric(p0), L)
   Ct <- t(Cm)
-  states <- list(); innov <- list(); gains <- list(); preds <- list()
+  states <- list()
+  innov <- list()
+  gains <- list()
+  preds <- list()
   for (t in seq_len(nrow(Y))) {
     PCt <- .morie_bx_mm(P, Ct)
     Sm <- .morie_bx_mm(Cm, PCt) + Qo
@@ -2275,7 +2343,8 @@ NmfMu <- function(V, r, maxiter = 200, tol = 1e-10, cost = "ls", seed = 1) {
          "use cost='ls'")
   fac <- .morie_bx_nmfmu(M, r, as.integer(maxiter), as.numeric(tol), seed,
                          cost)
-  W <- fac$W; H <- fac$H
+  W <- fac$W
+  H <- fac$H
   subs <- lapply(seq_len(nrow(H)), function(k) outer(W[, k], H[k, ]))
   list(W = W, H = H, submatrices = subs, error = fac$error,
        iterations = fac$iterations, cost = cost,
@@ -2376,7 +2445,8 @@ PcaSig <- function(X, ncomp = NULL) {
   # components and makes the truncation error the sum of the DISCARDED
   # eigenvalues, which is why decreasing order minimises the MSE.
   Y <- .morie_bx_mat(X, "X")
-  K <- nrow(Y); T <- ncol(Y)
+  K <- nrow(Y)
+  T <- ncol(Y)
   if (T < 2L) stop("need at least two samples per channel")
   L <- if (is.null(ncomp)) K else as.integer(ncomp)
   if (!(L >= 1L && L <= K))
@@ -2421,7 +2491,8 @@ MixCmp <- function(X, ncomp = NULL, maxiter = 200, seed = 1) {
   # which to use is empirical, so reconstruct with each and measure.  NMF
   # runs on the nonnegatively shifted mixture, as eq (9.46) requires.
   Y <- .morie_bx_mat(X, "X")
-  K <- nrow(Y); T <- ncol(Y)
+  K <- nrow(Y)
+  T <- ncol(Y)
   L <- if (is.null(ncomp)) K else as.integer(ncomp)
   if (!(L >= 1L && L <= K))
     stop("ncomp must satisfy 1 <= ncomp <= number of channels")
@@ -2481,7 +2552,8 @@ Rbfn <- function(X, y, ncenters = NULL, spread = 1, centers = NULL,
   tv <- .morie_bx_vec(y, "y")
   if (nrow(F) != length(tv))
     stop("X and y must have the same number of rows")
-  n <- nrow(F); p <- ncol(F)
+  n <- nrow(F)
+  p <- ncol(F)
   spread <- as.numeric(spread)
   if (spread <= 0) stop("spread must be positive")
   lg2 <- log(2)
@@ -2498,7 +2570,8 @@ Rbfn <- function(X, y, ncenters = NULL, spread = 1, centers = NULL,
     chosen <- integer(0)
     resid <- tv
     for (step in seq_len(J)) {
-      best <- -1L; bv <- -1
+      best <- -1L
+      bv <- -1
       for (i in seq_len(n)) {
         if (i %in% chosen) next
         col <- vapply(seq_len(n), function(k) phi(F[k, ], F[i, ]),
@@ -2506,7 +2579,8 @@ Rbfn <- function(X, y, ncenters = NULL, spread = 1, centers = NULL,
         den <- .morie_fsum(col * col)
         if (den <= 1e-14) next
         v <- .morie_fsum(col * resid)^2 / den
-        if (v > bv) { best <- i; bv <- v }
+        if (v > bv) { best <- i
+        bv <- v }
       }
       if (best < 0L) break
       chosen <- c(chosen, best)
@@ -2761,7 +2835,10 @@ VagTfd <- function(x, fs, natoms = 12, nfreq = 32, ntime = NULL, lag = 12) {
 
   freqs <- (seq_len(nfreq) - 1L) * fs / (2 * nfreq)
   times <- tidx / fs
-  ep <- numeric(nt); esp <- numeric(nt); fp <- numeric(nt); fsp <- numeric(nt)
+  ep <- numeric(nt)
+  esp <- numeric(nt)
+  fp <- numeric(nt)
+  fsp <- numeric(nt)
   for (ti in seq_len(nt)) {
     row <- tfd[ti, ]
     e <- .morie_fsum(row) / nfreq

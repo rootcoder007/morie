@@ -41,7 +41,9 @@ morie_dag <- function(edges, exposure, outcome, latent = character()) {
   seen <- 0L
   indeg2 <- indeg
   while (length(q)) {
-    v <- q[1]; q <- q[-1]; seen <- seen + 1L
+    v <- q[1]
+    q <- q[-1]
+    seen <- seen + 1L
     for (w in em[em[, "from"] == v, "to"]) {
       indeg2[w] <- indeg2[w] - 1L
       if (indeg2[w] == 0L) q <- c(q, w)
@@ -105,11 +107,13 @@ print.morie_dag <- function(x, ...) {
   visit <- list(c(x, "up"))
   seen <- character(0)
   while (length(visit)) {
-    cur <- visit[[1]]; visit <- visit[-1]
+    cur <- visit[[1]]
+    visit <- visit[-1]
     key <- paste(cur, collapse = "|")
     if (key %in% seen) next
     seen <- c(seen, key)
-    v <- cur[1]; dir <- cur[2]
+    v <- cur[1]
+    dir <- cur[2]
     if (v %in% y && !(v %in% z)) return(FALSE)
     if (dir == "up" && !(v %in% z)) {
       for (p in g$edges[g$edges[, "to"] == v, "from"])
@@ -146,7 +150,8 @@ print.morie_dag <- function(x, ...) {
 #' morie_dag_identify(g)
 #' @export
 morie_dag_identify <- function(dag) {
-  x <- dag$exposure; y <- dag$outcome
+  x <- dag$exposure
+  y <- dag$outcome
   cand <- setdiff(
     intersect(dag$nodes,
               .morie_dag_anc(dag, c(x, y))),
@@ -186,17 +191,20 @@ morie_dag_estimate <- function(dag, data,
     stop("effect not identified by the backdoor criterion in this DAG",
          call. = FALSE)
   zs <- id$adjustment_set
-  x <- dag$exposure; y <- dag$outcome
+  x <- dag$exposure
+  y <- dag$outcome
   res <- if (!length(zs) && method != "backdoor.linear") {
     # unconfounded: difference in means with a linear fallback shape
     f <- stats::lm(stats::as.formula(paste(y, "~", x)), data = data)
-    est <- unname(stats::coef(f)[x]); se <- summary(f)$coefficients[x, 2]
+    est <- unname(stats::coef(f)[x])
+    se <- summary(f)$coefficients[x, 2]
     list(ate = est, se = se, ci_lower = est - 1.96 * se,
          ci_upper = est + 1.96 * se, n = nrow(data))
   } else if (method == "backdoor.linear") {
     rhs <- paste(c(x, zs), collapse = " + ")
     f <- stats::lm(stats::as.formula(paste(y, "~", rhs)), data = data)
-    est <- unname(stats::coef(f)[x]); se <- summary(f)$coefficients[x, 2]
+    est <- unname(stats::coef(f)[x])
+    se <- summary(f)$coefficients[x, 2]
     list(ate = est, se = se, ci_lower = est - 1.96 * se,
          ci_upper = est + 1.96 * se, n = nrow(data))
   } else if (method == "backdoor.aipw") {

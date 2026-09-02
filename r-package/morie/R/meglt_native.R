@@ -51,7 +51,8 @@
 #' @return A numeric value.
 #' @export
 nuclear_norm <- function(A) {
-  M <- as.matrix(A); storage.mode(M) <- "double"
+  M <- as.matrix(A)
+  storage.mode(M) <- "double"
   s <- svd(M, nu = 0, nv = 0)$d
   sum(s)
 }
@@ -67,14 +68,18 @@ nuclear_norm <- function(A) {
 #' @return A list with \code{mu_row}, \code{mu_col}, \code{mu}, \code{rank}, \code{note}.
 #' @export
 coherence <- function(A, rank = NULL) {
-  M <- as.matrix(A); storage.mode(M) <- "double"
+  M <- as.matrix(A)
+  storage.mode(M) <- "double"
   # nv = 0 discards V and t(NULL) errors; keep the right factor
   s_full <- svd(M, nu = nrow(M), nv = ncol(M))
-  U <- s_full$u; s <- s_full$d; Vt <- t(s_full$v)
+  U <- s_full$u
+  s <- s_full$d
+  Vt <- t(s_full$v)
   tol <- max(nrow(M), ncol(M)) * (if (length(s) > 0L) s[1] else 0) * 1e-12
   if (is.null(rank)) r <- sum(s > tol) else r <- as.integer(rank)
   if (r < 1L) stop("meglt: the matrix is numerically zero")
-  n1 <- nrow(M); n2 <- ncol(M)
+  n1 <- nrow(M)
+  n2 <- ncol(M)
   mu_u <- max(colSums(U[, seq_len(r), drop = FALSE]^2))
   mu_v <- max(colSums(Vt[, seq_len(r), drop = FALSE]^2))
   list(mu_row = n1 * mu_u / r, mu_col = n2 * mu_v / r,
@@ -98,7 +103,8 @@ sample_bound <- function(n, r, C = 1.0, exponent = 1.2) {
   if (!(exponent %in% c(1.2, 1.25)))
     stop(sprintf("meglt: the exponent must be 1.2 (moderate rank) or 1.25 (all ranks), got '%s'",
                  paste0("'", as.character(exponent), "'")))
-  nn <- as.integer(n); rr <- as.integer(r)
+  nn <- as.integer(n)
+  rr <- as.integer(r)
   if (nn < 2L || rr < 1L)
     stop("meglt: need n >= 2 and r >= 1")
   m <- as.numeric(C) * (nn ^ as.numeric(exponent)) * rr * log(nn)
@@ -123,8 +129,10 @@ sample_bound <- function(n, r, C = 1.0, exponent = 1.2) {
 #' @export
 svt <- function(M, observed, tau = NULL, step = 1.9, iters = 200L,
                 tol = 1e-6) {
-  A <- as.matrix(M); storage.mode(A) <- "double"
-  n1 <- nrow(A); n2 <- ncol(A)
+  A <- as.matrix(M)
+  storage.mode(A) <- "double"
+  n1 <- nrow(A)
+  n2 <- ncol(A)
   obs <- unique(lapply(seq_len(nrow(observed)), function(k) {
     c(as.integer(observed[k, 1]) + 1L, as.integer(observed[k, 2]) + 1L)
   }))
@@ -135,7 +143,9 @@ svt <- function(M, observed, tau = NULL, step = 1.9, iters = 200L,
   hist <- c()
   for (it in seq_len(as.integer(iters))) {
     sv <- .meglt_svd(Y)
-    U <- sv$u; s <- sv$d; Vt <- sv$vt
+    U <- sv$u
+    s <- sv$d
+    Vt <- sv$vt
     sh <- pmax(0, s - t)
     r <- length(sh)
     if (r > 0L) {
@@ -173,7 +183,8 @@ svt <- function(M, observed, tau = NULL, step = 1.9, iters = 200L,
 #' @return A numeric value.
 #' @export
 relative_error <- function(X, M) {
-  A <- as.matrix(M); storage.mode(A) <- "double"
+  A <- as.matrix(M)
+  storage.mode(A) <- "double"
   num <- sqrt(sum((X - A)^2))
   den <- sqrt(sum(A^2))
   if (den <= .meglt_eps) stop("meglt: the reference matrix is zero")

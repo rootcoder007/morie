@@ -79,7 +79,7 @@ them up.
 
 \examples{
 \dontrun{
-  # Interactive: install whichever Suggests are missing
+# Interactive: install whichever Suggests are missing
   morie_install_extras()
 
   # CI / scripted: install all, no prompt
@@ -88,5 +88,4 @@ them up.
   # Just one family
   morie_install_extras(which = c("hawkes", "sf", "spdep"))
 }
-
 }

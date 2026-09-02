@@ -29,7 +29,8 @@ tetranucleotide_frequency <- function(seq, kk = 4L, canonical = TRUE) {
   if (K < 1L) stop("metabd: k must be at least 1")
   if (nchar(s) < K) stop("metabd: the sequence is shorter than k")
   chars <- strsplit(s, "")[[1]]
-  counts <- list(); tot <- 0L
+  counts <- list()
+  tot <- 0L
   for (i in seq_len(nchar(s) - K + 1L)) {
     m <- substring(s, i, i + K - 1L)
     if (any(!(strsplit(m, "")[[1]] %in% names(.comp_map)))) next
@@ -59,11 +60,13 @@ tetranucleotide_frequency <- function(seq, kk = 4L, canonical = TRUE) {
 #' @return A list with \code{correlation}, \code{n_samples}.
 #' @export
 abundance_correlation <- function(cov_a, cov_b) {
-  a <- as.numeric(cov_a); b <- as.numeric(cov_b)
+  a <- as.numeric(cov_a)
+  b <- as.numeric(cov_b)
   if (length(a) != length(b)) stop("metabd: the coverage vectors differ in length")
   if (length(a) < 2L)
     stop("metabd: abundance covariance needs at least 2 samples; with one sample only composition is informative")
-  ma <- mean(a); mb <- mean(b)
+  ma <- mean(a)
+  mb <- mean(b)
   num <- sum((a - ma) * (b - mb))
   den <- sqrt(sum((a - ma) ^ 2) * sum((b - mb) ^ 2))
   list(correlation = if (den > .metabd_EPS) num / den else 0.0, n_samples = length(a))
@@ -107,11 +110,13 @@ length_weight <- function(length, l_min = 2500.0, l_ref = 100000.0) {
 #' @export
 composite_distance <- function(tnf_a, tnf_b, cov_a = NULL, cov_b = NULL,
                                len_a = NULL, len_b = NULL, w_abundance = 0.5) {
-  a <- as.numeric(tnf_a); b <- as.numeric(tnf_b)
+  a <- as.numeric(tnf_a)
+  b <- as.numeric(tnf_b)
   if (length(a) != length(b)) stop("metabd: the composition vectors differ in length")
   d_tnf <- sqrt(sum((a - b) ^ 2))
   wa <- as.numeric(w_abundance)
-  d_abd <- 0.0; usable <- FALSE
+  d_abd <- 0.0
+  usable <- FALSE
   if (!is.null(cov_a) && !is.null(cov_b) && length(cov_a) >= 2L) {
     r <- abundance_correlation(cov_a, cov_b)$correlation
     d_abd <- 1.0 - r
@@ -144,20 +149,24 @@ composite_distance <- function(tnf_a, tnf_b, cov_a = NULL, cov_b = NULL,
 #' @export
 bin_contigs <- function(tnfs, coverages = NULL, lengths = NULL, threshold = 0.15,
                         min_bin_size = 200000.0) {
-  T <- as.matrix(tnfs); n <- nrow(T)
+  T <- as.matrix(tnfs)
+  n <- nrow(T)
   L <- if (is.null(lengths)) rep(1e5, n) else as.numeric(lengths)
-  bins <- list(); assigned <- rep(FALSE, n)
+  bins <- list()
+  assigned <- rep(FALSE, n)
   order <- order(-L)
   for (i in order) {
     if (assigned[i]) next
-    cur <- c(i); assigned[i] <- TRUE
+    cur <- c(i)
+    assigned[i] <- TRUE
     for (j in order) {
       if (assigned[j]) next
       d <- composite_distance(T[i, ], T[j, ],
                               if (is.null(coverages)) NULL else coverages[[i]],
                               if (is.null(coverages)) NULL else coverages[[j]],
                               L[i], L[j])$distance
-      if (d < as.numeric(threshold)) { cur <- c(cur, j); assigned[j] <- TRUE }
+      if (d < as.numeric(threshold)) { cur <- c(cur, j)
+      assigned[j] <- TRUE }
     }
     bins[[length(bins) + 1L]] <- cur
   }

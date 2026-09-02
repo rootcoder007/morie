@@ -181,8 +181,10 @@ run_egnn <- function(H, X, layers, phi_e, phi_x, phi_h, A = NULL,
                      C = NULL) {
   if (is.list(H) && !is.data.frame(H)) H <- do.call(rbind, H)
   if (is.list(X) && !is.data.frame(X)) X <- do.call(rbind, X)
-  h <- as.matrix(H); storage.mode(h) <- "double"
-  x <- as.matrix(X); storage.mode(x) <- "double" 
+  h <- as.matrix(H)
+  storage.mode(h) <- "double"
+  x <- as.matrix(X)
+  storage.mode(x) <- "double"
   if (is.null(dim(h))) h <- matrix(h, ncol = 1)
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   for (k in seq_len(as.integer(layers))) {

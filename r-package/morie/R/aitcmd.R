@@ -20,7 +20,9 @@
 #' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
 #' Clrmedian(M)
 Clrmedian <- function(X, steps = 100, eps = 1e-12) {
-  M <- .t1_mat(X); n <- nrow(M); D <- ncol(M)
+  M <- .t1_mat(X)
+  n <- nrow(M)
+  D <- ncol(M)
   if (n == 0 || D < 2)
     stop("need at least one composition with two parts")
   if (any(M <= 0)) stop("compositions must be strictly positive")

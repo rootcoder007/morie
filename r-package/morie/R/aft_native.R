@@ -59,10 +59,18 @@
   H <- matrix(0, k, k)
   for (i in seq_len(k)) {
     for (j in i:k) {
-      tp <- theta; tp[i] <- tp[i] + h[i]; tp[j] <- tp[j] + h[j]
-      tm <- theta; tm[i] <- tm[i] - h[i]; tm[j] <- tm[j] - h[j]
-      tpm <- theta; tpm[i] <- tpm[i] + h[i]; tpm[j] <- tpm[j] - h[j]
-      tmp <- theta; tmp[i] <- tmp[i] - h[i]; tmp[j] <- tmp[j] + h[j]
+      tp <- theta
+      tp[i] <- tp[i] + h[i]
+      tp[j] <- tp[j] + h[j]
+      tm <- theta
+      tm[i] <- tm[i] - h[i]
+      tm[j] <- tm[j] - h[j]
+      tpm <- theta
+      tpm[i] <- tpm[i] + h[i]
+      tpm[j] <- tpm[j] - h[j]
+      tmp <- theta
+      tmp[i] <- tmp[i] - h[i]
+      tmp[j] <- tmp[j] + h[j]
       H[i, j] <- H[j, i] <- (fn(tp) - fn(tpm) - fn(tmp) + fn(tm)) /
         (4 * h[i] * h[j])
     }

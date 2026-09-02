@@ -68,9 +68,11 @@ valid_transitions <- function(labels) {
   n <- length(labels)
   T <- matrix(TRUE, n, n)
   for (a in seq_len(n)) {
-    pa <- .parts(labels[[a]])[[1]]; ta <- .parts(labels[[a]])[[2]]
+    pa <- .parts(labels[[a]])[[1]]
+    ta <- .parts(labels[[a]])[[2]]
     for (b in seq_len(n)) {
-      pb <- .parts(labels[[b]])[[1]]; tb <- .parts(labels[[b]])[[2]]
+      pb <- .parts(labels[[b]])[[1]]
+      tb <- .parts(labels[[b]])[[2]]
       if (pb == "I")
         T[a, b] <- (pa %in% c("B", "I")) && ta == tb
     }
@@ -102,12 +104,15 @@ start_allowed <- function(labels) {
 #' @return A logical value.
 #' @export
 is_valid_bio <- function(path, labels = NULL) {
-  prev <- "O"; prev_t <- NA
+  prev <- "O"
+  prev_t <- NA
   for (lab in path) {
-    p <- .parts(lab)[[1]]; t <- .parts(lab)[[2]]
+    p <- .parts(lab)[[1]]
+    t <- .parts(lab)[[2]]
     if (p == "I" && !(prev %in% c("B", "I") && prev_t == t))
       return(FALSE)
-    prev <- p; prev_t <- t
+    prev <- p
+    prev_t <- t
   }
   TRUE
 }
@@ -158,11 +163,13 @@ viterbi_decode <- function(emissions, labels, transitions = NULL,
   }
   for (t in 2:L) {
     for (j in seq_len(n)) {
-      best <- .benRea_NEG; arg <- -1L
+      best <- .benRea_NEG
+      arg <- -1L
       for (i in seq_len(n)) {
         if (!T_mat[i, j] || dp[t - 1L, i] == .benRea_NEG) next
         v <- dp[t - 1L, i] + S[i, j]
-        if (v > best) { best <- v; arg <- i }
+        if (v > best) { best <- v
+        arg <- i }
       }
       if (arg >= 1L) {
         dp[t, j] <- best + emissions[[t]][j]
@@ -191,24 +198,29 @@ viterbi_decode <- function(emissions, labels, transitions = NULL,
 #' @export
 extract_spans <- function(path) {
   spans <- list()
-  cur_t <- NULL; cur_s <- NULL
+  cur_t <- NULL
+  cur_s <- NULL
   for (i in seq_along(path)) {
     lab <- path[[i]]
-    p <- .parts(lab)[[1]]; ty <- .parts(lab)[[2]]
+    p <- .parts(lab)[[1]]
+    ty <- .parts(lab)[[2]]
     if (p == "B") {
       if (!is.null(cur_t))
         spans[[length(spans) + 1L]] <- list(type = cur_t, start = cur_s, end = i - 1L)
-      cur_t <- ty; cur_s <- i
+      cur_t <- ty
+      cur_s <- i
     } else if (p == "I") {
       if (!identical(cur_t, ty)) {
         if (!is.null(cur_t))
           spans[[length(spans) + 1L]] <- list(type = cur_t, start = cur_s, end = i - 1L)
-        cur_t <- ty; cur_s <- i
+        cur_t <- ty
+        cur_s <- i
       }
     } else {
       if (!is.null(cur_t))
         spans[[length(spans) + 1L]] <- list(type = cur_t, start = cur_s, end = i - 1L)
-      cur_t <- NULL; cur_s <- NULL
+      cur_t <- NULL
+      cur_s <- NULL
     }
   }
   if (!is.null(cur_t))
@@ -227,11 +239,13 @@ extract_spans <- function(path) {
 #' @return A list with \code{precision}, \code{recall}, \code{f1}, \code{true_positives}, \code{n_pred}, \code{n_gold}.
 #' @export
 span_f1 <- function(pred, gold) {
-  p <- extract_spans(pred); g <- extract_spans(gold)
+  p <- extract_spans(pred)
+  g <- extract_spans(gold)
   sp <- function(spans) {
     sapply(spans, function(s) paste0(s$type, "|", s$start, "|", s$end))
   }
-  pset <- sp(p); gset <- sp(g)
+  pset <- sp(p)
+  gset <- sp(g)
   tp <- length(intersect(pset, gset))
   prec <- if (length(pset) > 0L) tp / length(pset) else 0.0
   rec <- if (length(gset) > 0L) tp / length(gset) else 0.0
@@ -260,7 +274,8 @@ ner_decode <- function(emissions, types, decoder = "viterbi",
   labels <- bio_labels(types)
   if (decoder == "viterbi") {
     res <- viterbi_decode(emissions, labels, transition_scores = transition_scores)
-    path <- res$path; score <- res$score
+    path <- res$path
+    score <- res$score
   } else {
     path <- greedy_decode(emissions, labels)
     score <- sum(sapply(seq_along(path), function(t) emissions[[t]][match(path[[t]], labels)]))

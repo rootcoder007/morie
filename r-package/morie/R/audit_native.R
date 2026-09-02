@@ -49,9 +49,11 @@ morie_km_native <- function(time, event, alpha = 0.05,
   if (any(t < 0)) stop("time must be non-negative.", call. = FALSE)
 
   ord <- order(t, method = "radix")
-  t <- t[ord]; e <- e[ord]
+  t <- t[ord]
+  e <- e[ord]
   uniq <- sort(unique(t[e == 1]))
-  S <- 1; vs <- 0
+  S <- 1
+  vs <- 0
   times <- surv <- ses <- numeric(0)
   risk <- evs <- integer(0)
   for (u in uniq) {
@@ -60,9 +62,11 @@ morie_km_native <- function(time, event, alpha = 0.05,
     if (nr <= 0L) next
     S <- S * (1 - di / nr)
     vs <- if (nr > di) vs + di / (nr * (nr - di)) else Inf
-    times <- c(times, u); surv <- c(surv, S)
+    times <- c(times, u)
+    surv <- c(surv, S)
     ses <- c(ses, if (is.finite(vs)) S * sqrt(vs) else NA_real_)
-    risk <- c(risk, nr); evs <- c(evs, di)
+    risk <- c(risk, nr)
+    evs <- c(evs, di)
   }
   z <- stats::qnorm(1 - alpha / 2)
   if (conf_type == "plain") {
@@ -73,11 +77,13 @@ morie_km_native <- function(time, event, alpha = 0.05,
     se_ll <- ifelse(surv > 0, ses / (surv * abs(ls)), NA_real_)
     lo <- pmin(pmax(surv^exp(z * se_ll), 0), 1)
     hi <- pmin(pmax(surv^exp(-z * se_ll), 0), 1)
-    lo[is.na(lo)] <- 0; hi[is.na(hi)] <- 1
+    lo[is.na(lo)] <- 0
+    hi[is.na(hi)] <- 1
   }
   med <- if (any(surv <= 0.5)) times[which(surv <= 0.5)[1]] else NA_real_
   rmst <- if (length(times)) {
-    edges <- c(0, times); heights <- c(1, surv)[-(length(surv) + 1L)]
+    edges <- c(0, times)
+    heights <- c(1, surv)[-(length(surv) + 1L)]
     sum(diff(edges) * heights)
   } else 0
   list(times = times, survival = surv, se = ses,
@@ -111,7 +117,8 @@ morie_km_native <- function(time, event, alpha = 0.05,
 #' @examples
 #' morie_mediation_difference(c = 0.5, c_prime = 0.3)
 morie_mediation_difference <- function(c, c_prime, a = NULL, b = NULL) {
-  cv <- as.numeric(c); cp <- as.numeric(c_prime)
+  cv <- as.numeric(c)
+  cp <- as.numeric(c_prime)
   ind <- cv - cp
   prod <- if (is.null(a) || is.null(b)) NULL else as.numeric(a) * as.numeric(b)
   resid <- if (is.null(prod)) NULL else abs(ind - prod)
@@ -145,7 +152,8 @@ morie_mediation_difference <- function(c, c_prime, a = NULL, b = NULL) {
 #' morie_mediation_product(V, V)
 morie_mediation_product <- function(a, b, se_a = NULL, se_b = NULL,
                                     alpha = 0.05) {
-  av <- as.numeric(a); bv <- as.numeric(b)
+  av <- as.numeric(a)
+  bv <- as.numeric(b)
   ind <- av * bv
   se <- ci <- NULL
   if (!is.null(se_a) && !is.null(se_b)) {
@@ -185,7 +193,8 @@ morie_mediation_product <- function(a, b, se_a = NULL, se_b = NULL,
 morie_knn_entropy <- function(x, k = 3L) {
   X <- as.matrix(x)
   if (ncol(X) > 1L && nrow(X) == 1L) X <- t(X)
-  n <- nrow(X); d <- ncol(X)
+  n <- nrow(X)
+  d <- ncol(X)
   k <- as.integer(k)
   if (k < 1L) stop("k must be at least 1.", call. = FALSE)
   if (n <= k) {

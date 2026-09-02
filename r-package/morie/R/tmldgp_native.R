@@ -72,9 +72,11 @@
 #' @references Belloni, A. & Chernozhukov, V. (2013).
 #' @export
 morie_lasso_path <- function(X, y, lam, iters = 500L, tol = 1e-9) {
-  rows <- as.matrix(X); storage.mode(rows) <- "double"
+  rows <- as.matrix(X)
+  storage.mode(rows) <- "double"
   t_ <- as.numeric(y)
-  n <- nrow(rows); p <- ncol(rows)
+  n <- nrow(rows)
+  p <- ncol(rows)
   if (length(t_) != n) stop("tmldgp: row/outcome length mismatch")
   if (as.numeric(lam) < 0) stop("tmldgp: lambda cannot be negative")
   b <- rep(0, p)
@@ -119,7 +121,8 @@ morie_lasso_path <- function(X, y, lam, iters = 500L, tol = 1e-9) {
 #' @references Belloni, A. & Chernozhukov, V. (2013).
 #' @export
 morie_post_lasso <- function(X, y, lam) {
-  rows <- as.matrix(X); storage.mode(rows) <- "double"
+  rows <- as.matrix(X)
+  storage.mode(rows) <- "double"
   t_ <- as.numeric(y)
   sel <- morie_lasso_path(rows, t_, lam)
   S <- sel$support
@@ -154,7 +157,9 @@ morie_post_lasso <- function(X, y, lam) {
 #'   and the un-targeted mean score.
 #' @export
 morie_shrunk_targeting_unsafe <- function(Q, H, Y, ridge = 1.0) {
-  q <- as.numeric(Q); h <- as.numeric(H); y <- as.numeric(Y)
+  q <- as.numeric(Q)
+  h <- as.numeric(H)
+  y <- as.numeric(Y)
   n <- length(q)
   if (!(length(h) == n && length(y) == n))
     stop("tmldgp: Q, H, Y must be the same length")
@@ -189,8 +194,10 @@ morie_shrunk_targeting_unsafe <- function(Q, H, Y, ridge = 1.0) {
 #'   M. J. & Gruber, S. (2016).
 #' @export
 morie_penalised_tmle <- function(y, D, X, penalty = 0.05, iters = 100) {
-  yv <- as.numeric(y); a <- as.numeric(D)
-  W <- as.matrix(X); storage.mode(W) <- "double"
+  yv <- as.numeric(y)
+  a <- as.numeric(D)
+  W <- as.matrix(X)
+  storage.mode(W) <- "double"
   n <- length(yv)
   if (!(length(a) == nrow(W) && nrow(W) == n))
     stop("tmldgp: the inputs differ in length")

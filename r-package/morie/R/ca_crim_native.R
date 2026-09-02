@@ -270,7 +270,8 @@ morie_count_glm <- function(b0 = 0, b1 = 0, x1 = 0, exposure = 1,
   out <- list(predict = exp(b0 + b1 * x1), irr = exp(b1),
               predict_offset = exp(b0 + b1 * x1 + log(exposure)))
   if (!is.null(y) && !is.null(yhat)) {
-    y <- as.numeric(y); yhat <- as.numeric(yhat)
+    y <- as.numeric(y)
+    yhat <- as.numeric(yhat)
     stopifnot(length(y) == length(yhat), all(yhat > 0),
               length(y) > k + 1)
     out$theta <- sum((y - yhat)^2 / yhat) / (length(y) - k - 1)

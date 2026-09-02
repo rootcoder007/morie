@@ -25,7 +25,10 @@
 #' Admixq(G, K = 2, steps = 20)
 Admixq <- function(G, K = 2, steps = 50, Q0 = NULL, P0 = NULL) {
   Gm <- matrix(as.numeric(as.matrix(G)), nrow = nrow(as.matrix(G)))
-  I <- nrow(Gm); J <- ncol(Gm); K <- as.integer(K); steps <- as.integer(steps)
+  I <- nrow(Gm)
+  J <- ncol(Gm)
+  K <- as.integer(K)
+  steps <- as.integer(steps)
   if (I == 0 || J == 0) stop("G must be non-empty")
   if (K < 1) stop("K must be at least 1")
   if (any(Gm < 0 | Gm > 2)) stop("genotype counts must lie in [0, 2]")

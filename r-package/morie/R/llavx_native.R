@@ -26,8 +26,10 @@ symbolic_representation <- function(captions, boxes) {
   lines <- as.list(caps)
   for (rec in bx) {
     name <- as.character(rec[[1]])
-    x <- as.numeric(rec[[2]]); y <- as.numeric(rec[[3]])
-    w <- as.numeric(rec[[4]]); h <- as.numeric(rec[[5]])
+    x <- as.numeric(rec[[2]])
+    y <- as.numeric(rec[[3]])
+    w <- as.numeric(rec[[4]])
+    h <- as.numeric(rec[[5]])
     lines[[length(lines) + 1L]] <- sprintf("%s: [%.3f, %.3f, %.3f, %.3f]", name, x, y, w, h)
   }
   list(text = paste(unlist(lines), collapse = "\n"),

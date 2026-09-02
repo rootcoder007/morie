@@ -31,7 +31,8 @@ morie_smatch_poisson_design <- function(cases, risk_periods,
                                          age_breaks = numeric(0)) {
   rp <- lapply(risk_periods, function(r) c(as.numeric(r[1]), as.numeric(r[2])))
   ab <- as.numeric(age_breaks)
-  n_risk <- length(rp); n_age <- length(ab) + 1L
+  n_risk <- length(rp)
+  n_age <- length(ab) + 1L
   # Build intervals for each case
   people <- list()
   for (c in cases) {
@@ -44,18 +45,24 @@ morie_smatch_poisson_design <- function(cases, risk_periods,
   if (length(people) == 0L) stop("smatch: no case contributed an event")
   P <- length(people)
   ncol <- n_risk + (n_age - 1L) + P
-  y <- numeric(0); off <- numeric(0); X <- matrix(0, 0, ncol)
+  y <- numeric(0)
+  off <- numeric(0)
+  X <- matrix(0, 0, ncol)
   for (i in seq_along(people)) {
     cells <- people[[i]]
     for (cell in cells) {
-      j <- cell$age; r <- cell$risk; e <- cell$exposure; n <- cell$n
+      j <- cell$age
+      r <- cell$risk
+      e <- cell$exposure
+      n <- cell$n
       if (e <= .smatch_EPS) next
       row <- numeric(ncol)
       if (r > 0L) row[r] <- 1
       if (j > 0L) row[n_risk + j] <- 1
       row[n_risk + n_age - 1L + i] <- 1
       X <- rbind(X, row)
-      y <- c(y, n); off <- c(off, log(e))
+      y <- c(y, n)
+      off <- c(off, log(e))
     }
   }
   list(y = y, offset = off, X = X, n_risk = n_risk, n_age = n_age,
@@ -101,8 +108,13 @@ morie_smatch_sccs_poisson_fit <- function(cases, risk_periods,
                                            iters = 200, tol = 1e-12,
                                            ridge = 1e-9) {
   d <- morie_smatch_poisson_design(cases, risk_periods, age_breaks)
-  y <- d$y; off <- d$offset; X <- d$X; p <- ncol(X)
-  beta <- rep(0, p); conv <- FALSE; it <- 0L
+  y <- d$y
+  off <- d$offset
+  X <- d$X
+  p <- ncol(X)
+  beta <- rep(0, p)
+  conv <- FALSE
+  it <- 0L
   for (kk in seq_len(as.integer(iters))) {
     it <- kk
     eta <- off + as.numeric(X %*% beta)
@@ -115,7 +127,9 @@ morie_smatch_sccs_poisson_fit <- function(cases, risk_periods,
     diag(XtWX) <- diag(XtWX) + ridge
     nb <- tryCatch(solve(XtWX, XtWz), error = function(e)
       stop("smatch: the Poisson design is singular -- an interval has no exposure time or an individual has no variation"))
-    if (max(abs(nb - beta)) < tol) { beta <- nb; conv <- TRUE; break }
+    if (max(abs(nb - beta)) < tol) { beta <- nb
+    conv <- TRUE
+    break }
     beta <- nb
   }
   nr <- d$n_risk
@@ -147,7 +161,9 @@ morie_smatch_sccs_poisson_fit <- function(cases, risk_periods,
 #' @export
 morie_smatch_sample_size <- function(log_ri, r, p_exposed,
                                       alpha = 0.05, power = 0.8) {
-  b <- as.numeric(log_ri); rr <- as.numeric(r); p <- as.numeric(p_exposed)
+  b <- as.numeric(log_ri)
+  rr <- as.numeric(r)
+  p <- as.numeric(p_exposed)
   if (b == 0) stop("smatch: the sample size is unbounded at a log relative incidence of 0")
   if (rr <= 0 || rr >= 1)
     stop("smatch: r must lie strictly in (0, 1), got ", rr,
@@ -156,7 +172,8 @@ morie_smatch_sample_size <- function(log_ri, r, p_exposed,
     stop("smatch: p_exposed must lie in (0, 1], got ", p)
   if (alpha <= 0 || alpha >= 1) stop("smatch: alpha must lie in (0, 1)")
   if (power <= 0 || power >= 1) stop("smatch: power must lie in (0, 1)")
-  eb <- exp(b); den <- rr * eb + 1 - rr
+  eb <- exp(b)
+  den <- rr * eb + 1 - rr
   rho <- rr * eb / den
   A <- 2 * (rho * b - log(den))
   if (A <= .smatch_EPS)
@@ -184,7 +201,10 @@ morie_smatch_power <- function(n_events, log_ri, r, p_exposed,
                                 alpha = 0.05) {
   s <- morie_smatch_sample_size(log_ri, r, p_exposed, alpha = alpha,
                                  power = 0.5)
-  A <- s$A; B <- s$B; C <- s$C; za <- s$z_alpha_2
+  A <- s$A
+  B <- s$B
+  C <- s$C
+  za <- s$z_alpha_2
   root <- sqrt(max(n_events * A / C, 0))
   zg <- if (B > .smatch_EPS) (root - za) / sqrt(B) else Inf
   list(power = pnorm(zg), z_power = zg, n_events = n_events,
@@ -196,9 +216,11 @@ morie_smatch_power <- function(n_events, log_ri, r, p_exposed,
 #' @param log_ri See Usage.
 #' @export
 morie_smatch_relative_efficiency <- function(r, log_ri) {
-  rr <- as.numeric(r); b <- as.numeric(log_ri)
+  rr <- as.numeric(r)
+  b <- as.numeric(log_ri)
   if (rr <= 0 || rr >= 1) stop("smatch: r must lie strictly in (0, 1)")
-  eb <- exp(b); den <- rr * eb + 1 - rr
+  eb <- exp(b)
+  den <- rr * eb + 1 - rr
   rho <- rr * eb / den
   list(rho = rho, efficiency = 1 - rho, r = rr, log_ri = b,
        interpretation = "the fraction of cases falling in the risk period is rho; the marginal information lost grows with it, so a SHORT risk period keeps efficiency high (Sec. 7.5)")

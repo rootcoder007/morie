@@ -28,7 +28,8 @@ gaussian_expansion <- function(r, mu_min = 0.0, mu_max = 6.0,
                                n_gaussians = 25, gamma = NULL) {
   n <- as.integer(n_gaussians)
   if (n < 2L) stop("schN: at least 2 Gaussians are needed")
-  lo <- as.numeric(mu_min); hi <- as.numeric(mu_max)
+  lo <- as.numeric(mu_min)
+  hi <- as.numeric(mu_max)
   if (hi <= lo) stop("schN: mu_max must exceed mu_min")
   step <- (hi - lo) / (n - 1L)
   g <- if (is.null(gamma)) 1.0 / (2.0 * step ^ 2) else as.numeric(gamma)

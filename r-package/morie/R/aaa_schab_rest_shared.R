@@ -141,7 +141,9 @@
 .schab_moran_moments <- function(z, w) {
   z <- as.numeric(z)
   s <- .schab_weight_sums(w)
-  s0 <- s$S0; s1 <- s$S1; s2 <- s$S2
+  s0 <- s$S0
+  s1 <- s$S1
+  s2 <- s$S2
   n <- length(z)
   if (n < 4) stop("at least 4 sites are needed")
   i_obs <- .schab_moran_i(z, w)
@@ -179,13 +181,18 @@
 .schab_ripley_weights <- function(points, region, radii) {
   p <- matrix(as.numeric(points), ncol = 2)
   t_ <- as.numeric(radii)
-  xmin <- region[1]; ymin <- region[2]; xmax <- region[3]; ymax <- region[4]
+  xmin <- region[1]
+  ymin <- region[2]
+  xmax <- region[3]
+  ymax <- region[4]
   if (nrow(p) == 1L && length(t_) > 1L) {
     p <- p[rep(1L, length(t_)), , drop = FALSE]
   }
   n <- length(t_)
-  dxm <- p[, 1] - xmin; dxp <- xmax - p[, 1]
-  dym <- p[, 2] - ymin; dyp <- ymax - p[, 2]
+  dxm <- p[, 1] - xmin
+  dxp <- xmax - p[, 1]
+  dym <- p[, 2] - ymin
+  dyp <- ymax - p[, 2]
 
   tt <- ifelse(t_ > 0, t_, 1)                 # avoid 0/0; fixed up below
   cos_b <- cbind(-dxm / tt, dxp / tt)
@@ -234,12 +241,14 @@
   if (!correction %in% c("ripley", "none")) {
     stop("`correction` must be 'ripley' or 'none'")
   }
-  n1 <- nrow(p1); n2 <- nrow(p2)
+  n1 <- nrow(p1)
+  n2 <- nrow(p2)
   if (n1 == 0L || n2 == 0L) {
     stop("both patterns must contain at least one event")
   }
   area <- (region[3] - region[1]) * (region[4] - region[2])
-  lam1 <- n1 / area; lam2 <- n2 / area
+  lam1 <- n1 / area
+  lam2 <- n2 / area
   d <- sqrt(outer(p1[, 1], p2[, 1], "-")^2 + outer(p1[, 2], p2[, 2], "-")^2)
   if (correction == "none") {
     winv <- matrix(1, n1, n2)
@@ -269,7 +278,8 @@
   p1 <- matrix(as.numeric(p1), ncol = 2)
   p2 <- matrix(as.numeric(p2), ncol = 2)
   area <- (region[3] - region[1]) * (region[4] - region[2])
-  lam1 <- nrow(p1) / area; lam2 <- nrow(p2) / area
+  lam1 <- nrow(p1) / area
+  lam2 <- nrow(p2) / area
   k12 <- .schab_cross_k(p1, p2, region, r, correction)
   k21 <- .schab_cross_k(p2, p1, region, r, correction)
   kstar <- (lam2 * k12 + lam1 * k21) / (lam1 + lam2)
@@ -371,7 +381,8 @@
 #' @export
 .schab_sample_cov2d <- function(z) {
   z <- .schab_lattice_check(z)
-  r <- nrow(z); c_ <- ncol(z)
+  r <- nrow(z)
+  c_ <- ncol(z)
   d <- z - mean(z)
   lags_j <- seq.int(-(r - 1), r - 1)
   lags_k <- seq.int(-(c_ - 1), c_ - 1)
@@ -380,8 +391,10 @@
     jj <- lags_j[a]
     for (b in seq_along(lags_k)) {
       kk <- lags_k[b]
-      u0 <- max(0L, -jj); u1 <- min(r, r - jj)
-      v0 <- max(0L, -kk); v1 <- min(c_, c_ - kk)
+      u0 <- max(0L, -jj)
+      u1 <- min(r, r - jj)
+      v0 <- max(0L, -kk)
+      v1 <- min(c_, c_ - kk)
       if (u1 <= u0 || v1 <= v0) next
       left <- d[(u0 + 1):u1, (v0 + 1):v1, drop = FALSE]
       right <- d[(u0 + jj + 1):(u1 + jj), (v0 + kk + 1):(v1 + kk),
@@ -404,9 +417,11 @@
 #' @export
 .schab_periodogram <- function(z, omit_zero_frequency = TRUE) {
   z <- .schab_lattice_check(z)
-  r <- nrow(z); c_ <- ncol(z)
+  r <- nrow(z)
+  c_ <- ncol(z)
   f <- .schab_fourier_freq(r, c_)
-  u <- seq_len(r); v <- seq_len(c_)
+  u <- seq_len(r)
+  v <- seq_len(c_)
   spec <- function(field) {
     eu <- exp(-1i * outer(f$w1, u))
     ev <- exp(-1i * outer(f$w2, v))
@@ -415,7 +430,8 @@
   }
   inten <- spec(z)
   inten_c <- spec(z - mean(z))
-  zj <- which(f$j == 0L); zk <- which(f$k == 0L)
+  zj <- which(f$j == 0L)
+  zk <- which(f$k == 0L)
   mask <- matrix(TRUE, length(f$w1), length(f$w2))
   mask[zj, ] <- FALSE
   mask[, zk] <- FALSE
@@ -566,7 +582,8 @@
                          nbins = nlag)
       filled <- all(counts > 0)
     } else {
-      counts <- integer(nlag); filled <- FALSE
+      counts <- integer(nlag)
+      filled <- FALSE
     }
     if (filled || k >= cap) {
       return(list(index = idx, n_sites = k, radius = radius,
@@ -602,12 +619,15 @@
   n_lags <- as.integer(n_lags)
   edges <- seq(0, max(h), length.out = n_lags + 1L)
   which_bin <- pmin(pmax(findInterval(h, edges), 1L), n_lags)
-  hbar <- numeric(n_lags); gbar <- rep(NA_real_, n_lags); cnt <- numeric(n_lags)
+  hbar <- numeric(n_lags)
+  gbar <- rep(NA_real_, n_lags)
+  cnt <- numeric(n_lags)
   for (b in seq_len(n_lags)) {
     m <- which_bin == b
     cnt[b] <- sum(m)
     if (cnt[b]) {
-      hbar[b] <- mean(h[m]); gbar[b] <- mean(sq[m])
+      hbar[b] <- mean(h[m])
+      gbar[b] <- mean(sq[m])
     }
   }
   list(h = hbar, gamma = gbar, counts = cnt)
@@ -625,14 +645,19 @@
 #' @return A list with \code{sill}, \code{range}, \code{converged}, \code{wls}.
 #' @export
 .schab_variogram_wls <- function(h, gamma, counts) {
-  h <- as.numeric(h); g <- as.numeric(gamma); w <- as.numeric(counts)
+  h <- as.numeric(h)
+  g <- as.numeric(gamma)
+  w <- as.numeric(counts)
   ok <- is.finite(g) & (w > 0) & (h > 0)
   if (sum(ok) < 2L) {
     return(list(sill = NA_real_, range = NA_real_, converged = FALSE))
   }
-  h <- h[ok]; g <- g[ok]; w <- w[ok]
+  h <- h[ok]
+  g <- g[ok]
+  w <- w[ok]
   grid <- exp(seq(log(max(min(h), 1e-9)), log(max(h) * 3), length.out = 60L))
-  best <- NULL; loss <- Inf
+  best <- NULL
+  loss <- Inf
   for (rng in grid) {
     basis <- 1 - exp(-3 * h / rng)
     denom <- sum(w * basis * basis)
@@ -641,7 +666,8 @@
     if (sill <= 0) next
     resid <- g - sill * basis
     val <- sum(w * resid * resid)
-    if (val < loss) { loss <- val; best <- c(sill, rng) }
+    if (val < loss) { loss <- val
+    best <- c(sill, rng) }
   }
   if (is.null(best)) {
     return(list(sill = NA_real_, range = NA_real_, converged = FALSE))
@@ -716,8 +742,10 @@
     mu <- if (local_mean) mean(z[idx]) else mean(z)
     preds[i] <- .schab_krige_at(s[idx, , drop = FALSE], z[idx], tg[i, ],
                                 fit$sill, fit$range, mu)
-    sills[i] <- fit$sill; ranges[i] <- fit$range
-    sizes[i] <- win$n_sites; conv[i] <- isTRUE(fit$converged)
+    sills[i] <- fit$sill
+    ranges[i] <- fit$range
+    sizes[i] <- win$n_sites
+    conv[i] <- isTRUE(fit$converged)
   }
   list(prediction = preds, local_sill = sills, local_range = ranges,
        window_sizes = sizes, converged = conv,

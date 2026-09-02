@@ -35,12 +35,16 @@
 #' @return A numeric value.
 #' @export
 .masrcn_bilinear <- function(F, y, x) {
-  h <- nrow(F); w <- ncol(F)
+  h <- nrow(F)
+  w <- ncol(F)
   y <- min(max(as.numeric(y), 0.0), h - 1.0)
   x <- min(max(as.numeric(x), 0.0), w - 1.0)
-  y0 <- as.integer(floor(y)); x0 <- as.integer(floor(x))
-  y1 <- min(y0 + 1L, h - 1L); x1 <- min(x0 + 1L, w - 1L)
-  dy <- y - y0; dx <- x - x0
+  y0 <- as.integer(floor(y))
+  x0 <- as.integer(floor(x))
+  y1 <- min(y0 + 1L, h - 1L)
+  x1 <- min(x0 + 1L, w - 1L)
+  dy <- y - y0
+  dx <- x - x0
   F[y0 + 1L, x0 + 1L] * (1 - dy) * (1 - dx) +
     F[y1 + 1L, x0 + 1L] * dy * (1 - dx) +
     F[y0 + 1L, x1 + 1L] * (1 - dy) * dx +
@@ -60,17 +64,21 @@
 #' @return A list with \code{pooled}, \code{quantised_box}, \code{quantisation_shift}, \code{caveat}.
 #' @export
 roi_pool <- function(features, box, out_size = 2L, stride = 1.0) {
-  F <- as.matrix(features); storage.mode(F) <- "double"
+  F <- as.matrix(features)
+  storage.mode(F) <- "double"
   y0 <- as.numeric(box[1]) / as.numeric(stride)
   x0 <- as.numeric(box[2]) / as.numeric(stride)
   y1 <- as.numeric(box[3]) / as.numeric(stride)
   x1 <- as.numeric(box[4]) / as.numeric(stride)
-  qy0 <- as.integer(floor(y0)); qx0 <- as.integer(floor(x0))
-  qy1 <- as.integer(floor(y1)); qx1 <- as.integer(floor(x1))
+  qy0 <- as.integer(floor(y0))
+  qx0 <- as.integer(floor(x0))
+  qy1 <- as.integer(floor(y1))
+  qx1 <- as.integer(floor(x1))
   if (qy1 <= qy0 || qx1 <= qx0)
     stop("masrcn: the box collapsed under quantisation, which is itself the problem")
   n <- as.integer(out_size)
-  bh <- (qy1 - qy0) / n; bw <- (qx1 - qx0) / n
+  bh <- (qy1 - qy0) / n
+  bw <- (qx1 - qx0) / n
   out <- matrix(0, n, n)
   for (i in 0:(n - 1L)) {
     for (j in 0:(n - 1L)) {
@@ -78,7 +86,8 @@ roi_pool <- function(features, box, out_size = 2L, stride = 1.0) {
       a1 <- max(a0 + 1L, qy0 + as.integer(floor((i + 1L) * bh)))
       b0 <- qx0 + as.integer(floor(j * bw))
       b1 <- max(b0 + 1L, qx0 + as.integer(floor((j + 1L) * bw)))
-      a1c <- min(a1, nrow(F)); b1c <- min(b1, ncol(F))
+      a1c <- min(a1, nrow(F))
+      b1c <- min(b1, ncol(F))
       if (a0 < a1c && b0 < b1c) {
         vals <- as.numeric(F[(a0 + 1L):a1c, (b0 + 1L):b1c])
         out[i + 1L, j + 1L] <- if (length(vals)) max(vals) else 0
@@ -108,15 +117,18 @@ roi_pool <- function(features, box, out_size = 2L, stride = 1.0) {
 #' @export
 roi_align <- function(features, box, out_size = 2L, stride = 1.0,
                       samples = 2L) {
-  F <- as.matrix(features); storage.mode(F) <- "double"
+  F <- as.matrix(features)
+  storage.mode(F) <- "double"
   y0 <- as.numeric(box[1]) / as.numeric(stride)
   x0 <- as.numeric(box[2]) / as.numeric(stride)
   y1 <- as.numeric(box[3]) / as.numeric(stride)
   x1 <- as.numeric(box[4]) / as.numeric(stride)
   if (y1 <= y0 || x1 <= x0)
     stop("masrcn: the box has non-positive extent")
-  n <- as.integer(out_size); s <- as.integer(samples)
-  bh <- (y1 - y0) / n; bw <- (x1 - x0) / n
+  n <- as.integer(out_size)
+  s <- as.integer(samples)
+  bh <- (y1 - y0) / n
+  bw <- (x1 - x0) / n
   out <- matrix(0, n, n)
   for (i in 0:(n - 1L)) {
     for (j in 0:(n - 1L)) {
@@ -152,7 +164,8 @@ roi_align <- function(features, box, out_size = 2L, stride = 1.0,
 #' @export
 alignment_error <- function(features, box, out_size = 2L, stride = 1.0) {
   p <- roi_pool(features, box, out_size, stride)
-  dy <- p$quantisation_shift[1]; dx <- p$quantisation_shift[2]
+  dy <- p$quantisation_shift[1]
+  dx <- p$quantisation_shift[2]
   list(feature_shift = c(dy, dx),
        input_pixel_shift = c(dy * as.numeric(stride),
                               dx * as.numeric(stride)),
@@ -174,11 +187,14 @@ alignment_error <- function(features, box, out_size = 2L, stride = 1.0) {
 #' @return A list, whose contents depend on the branch taken; across the branches its names are \code{loss}, \code{kind}, \code{note}, \code{caveat}.
 #' @export
 mask_loss <- function(logits, target, decoupled = TRUE) {
-  L <- as.matrix(logits); storage.mode(L) <- "double"
-  T <- as.matrix(target); storage.mode(T) <- "double"
+  L <- as.matrix(logits)
+  storage.mode(L) <- "double"
+  T <- as.matrix(target)
+  storage.mode(T) <- "double"
   if (nrow(L) != nrow(T) || ncol(L) != ncol(T))
     stop("masrcn: the logits and target differ in shape")
-  tot <- 0.0; m <- 0L
+  tot <- 0.0
+  m <- 0L
   if (decoupled) {
     for (i in seq_len(nrow(L)))
       for (j in seq_len(ncol(L))) {
@@ -191,7 +207,8 @@ mask_loss <- function(logits, target, decoupled = TRUE) {
          note = "classes do not compete; the class branch decides the category")
   } else {
     flat <- as.numeric(L)
-    mx <- max(flat); z <- sum(exp(flat - mx))
+    mx <- max(flat)
+    z <- sum(exp(flat - mx))
     for (i in seq_len(nrow(L)))
       for (j in seq_len(ncol(L))) {
         p <- exp(L[i, j] - mx) / z

@@ -135,8 +135,10 @@ NULL
 #' @return The value of \code{beta}, as built in the body.
 #' @export
 .s4_glmbin <- function(X, y, iters = 25L, ridge = 1e-8) {
-  X <- as.matrix(X); y <- as.numeric(y)
-  n <- nrow(X); p <- ncol(X)
+  X <- as.matrix(X)
+  y <- as.numeric(y)
+  n <- nrow(X)
+  p <- ncol(X)
   beta <- rep(0, p)
   for (it in seq_len(iters)) {
     eta <- as.numeric(X %*% beta)
@@ -162,7 +164,8 @@ NULL
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .s4_rbf <- function(X, Z, ell = 1) {
-  X <- as.matrix(X); Z <- as.matrix(Z)
+  X <- as.matrix(X)
+  Z <- as.matrix(Z)
   out <- matrix(0, nrow(X), nrow(Z))
   for (i in seq_len(nrow(X))) {
     for (j in seq_len(nrow(Z))) {
@@ -186,7 +189,8 @@ NULL
 #' @return A list with \code{mean}, \code{var}.
 #' @export
 .s4_gppost <- function(K, Ks, Kss, y, noise = 1e-6) {
-  K <- as.matrix(K); Ks <- as.matrix(Ks)
+  K <- as.matrix(K)
+  Ks <- as.matrix(Ks)
   n <- nrow(K)
   A <- K + diag(noise, n)
   alpha <- as.numeric(solve(A, as.numeric(y)))
@@ -266,7 +270,8 @@ NULL
 #' @export
 .s4_qr_mgs <- function(A) {
   A <- as.matrix(A)
-  n <- nrow(A); p <- ncol(A)
+  n <- nrow(A)
+  p <- ncol(A)
   Q <- A
   R <- matrix(0, p, p)
   for (j in seq_len(p)) {
@@ -313,7 +318,9 @@ NULL
 #' @return A list with \code{theta}, \code{beta}, \code{cbar}.
 #' @export
 .s4_medmodels <- function(Y, A, M, Cc = NULL) {
-  Y <- as.numeric(Y); A <- as.numeric(A); M <- as.numeric(M)
+  Y <- as.numeric(Y)
+  A <- as.numeric(A)
+  M <- as.numeric(M)
   n <- length(Y)
   Cm <- if (is.null(Cc)) NULL else as.matrix(Cc)
   XO <- if (is.null(Cm)) cbind(1, A, M, A * M) else cbind(1, A, M, A * M, Cm)
@@ -365,7 +372,10 @@ NULL
 #' @return A list with \code{psi}, \code{se}, \code{eps}, \code{g}, \code{H}, \code{Q1}, \code{Q0}, \code{ic}, \code{n}.
 #' @export
 .s4_tmle <- function(y, D, W, gbound = 0.025) {
-  y <- as.numeric(y); D <- as.numeric(D); W <- as.matrix(W); n <- length(y)
+  y <- as.numeric(y)
+  D <- as.numeric(D)
+  W <- as.matrix(W)
+  n <- length(y)
   gb <- .s4_glmbin(W, D)
   g <- .s4_clip(.s4_expit(as.numeric(W %*% gb)), gbound, 1 - gbound)
   qb <- .s4_ols(cbind(D, W), y)$beta
@@ -401,10 +411,13 @@ NULL
 #' @return A list with \code{beta}, \code{fitted}, \code{resid}, \code{xtxinv}.
 #' @export
 .s4_ols <- function(X, y) {
-  X <- as.matrix(X); y <- as.numeric(y)
-  n <- nrow(X); p <- ncol(X)
+  X <- as.matrix(X)
+  y <- as.numeric(y)
+  n <- nrow(X)
+  p <- ncol(X)
   qr_ <- .s4_qr_mgs(X)
-  Q <- qr_$Q; R <- qr_$R
+  Q <- qr_$Q
+  R <- qr_$R
   qty <- as.numeric(crossprod(Q, y))
   beta <- numeric(p)
   for (j in seq(p, 1L)) {
@@ -457,22 +470,30 @@ NULL
 #' @return The value of \code{ans}, as built in the body.
 #' @export
 .s4_hungarian <- function(cost) {
-  Cst <- as.matrix(cost); n <- nrow(Cst)
+  Cst <- as.matrix(cost)
+  n <- nrow(Cst)
   INF <- Inf
-  u <- rep(0, n + 1L); v <- rep(0, n + 1L)
-  p <- rep(0L, n + 1L); way <- rep(0L, n + 1L)
+  u <- rep(0, n + 1L)
+  v <- rep(0, n + 1L)
+  p <- rep(0L, n + 1L)
+  way <- rep(0L, n + 1L)
   for (i in seq_len(n)) {
     p[1L] <- i
     j0 <- 0L
-    minv <- rep(INF, n + 1L); used <- rep(FALSE, n + 1L)
+    minv <- rep(INF, n + 1L)
+    used <- rep(FALSE, n + 1L)
     repeat {
       used[j0 + 1L] <- TRUE
-      i0 <- p[j0 + 1L]; delta <- INF; j1 <- 0L
+      i0 <- p[j0 + 1L]
+      delta <- INF
+      j1 <- 0L
       for (j in seq_len(n)) {
         if (!used[j + 1L]) {
           cur <- Cst[i0, j] - u[i0 + 1L] - v[j + 1L]
-          if (cur < minv[j + 1L]) { minv[j + 1L] <- cur; way[j + 1L] <- j0 }
-          if (minv[j + 1L] < delta) { delta <- minv[j + 1L]; j1 <- j }
+          if (cur < minv[j + 1L]) { minv[j + 1L] <- cur
+          way[j + 1L] <- j0 }
+          if (minv[j + 1L] < delta) { delta <- minv[j + 1L]
+          j1 <- j }
         }
       }
       for (j in 0:n) {
@@ -512,8 +533,10 @@ NULL
   yv <- as.numeric(y)
   sv <- as.integer(round(as.numeric(subject)))
   rv <- as.integer(round(as.numeric(rater)))
-  subs <- unique(sv); rats <- unique(rv)
-  n <- length(subs); k <- length(rats)
+  subs <- unique(sv)
+  rats <- unique(rv)
+  n <- length(subs)
+  k <- length(rats)
   grand <- sum(yv) / length(yv)
   rm_ <- vapply(subs, function(s) mean(yv[sv == s]), 0)
   cm_ <- vapply(rats, function(r) mean(yv[rv == r]), 0)
@@ -571,7 +594,8 @@ NULL
 #' @return A list with \code{lw}, \code{k}.
 #' @export
 .s4_psis <- function(lw) {
-  lw <- as.numeric(lw); Sn <- length(lw)
+  lw <- as.numeric(lw)
+  Sn <- length(lw)
   lw <- lw - max(lw)
   M <- as.integer(min(0.2 * Sn, 3 * sqrt(Sn)))
   if (M < 5L) return(list(lw = lw, k = NaN))

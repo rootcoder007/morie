@@ -91,7 +91,9 @@ morie_evt_gev_mle <- function(x) {
   fit <- stats::optim(c(mu0, log(sigma0), 0.1), nll,
                       method = "Nelder-Mead",
                       control = list(maxit = 4000))
-  mu <- fit$par[1]; sigma <- exp(fit$par[2]); xi <- fit$par[3]
+  mu <- fit$par[1]
+  sigma <- exp(fit$par[2])
+  xi <- fit$par[3]
   nll_nat <- function(th) -morie_evt_gev_loglik(x, th[1], th[2], th[3])
   H <- .evt_num_hessian(nll_nat, c(mu, sigma, xi))
   covm <- tryCatch(solve(H), error = function(e) MASS_ginv_fallback(H))
@@ -114,12 +116,17 @@ morie_evt_gev_mle <- function(x) {
   k <- length(theta)
   H <- matrix(0, k, k)
   for (i in seq_len(k)) for (j in i:k) {
-    hi <- h * max(1, abs(theta[i])); hj <- h * max(1, abs(theta[j]))
+    hi <- h * max(1, abs(theta[i]))
+    hj <- h * max(1, abs(theta[j]))
     tpp <- tpm <- tmp <- tmm <- theta
-    tpp[i] <- tpp[i] + hi; tpp[j] <- tpp[j] + hj
-    tpm[i] <- tpm[i] + hi; tpm[j] <- tpm[j] - hj
-    tmp[i] <- tmp[i] - hi; tmp[j] <- tmp[j] + hj
-    tmm[i] <- tmm[i] - hi; tmm[j] <- tmm[j] - hj
+    tpp[i] <- tpp[i] + hi
+    tpp[j] <- tpp[j] + hj
+    tpm[i] <- tpm[i] + hi
+    tpm[j] <- tpm[j] - hj
+    tmp[i] <- tmp[i] - hi
+    tmp[j] <- tmp[j] + hj
+    tmm[i] <- tmm[i] - hi
+    tmm[j] <- tmm[j] - hj
     H[i, j] <- H[j, i] <- (f(tpp) - f(tpm) - f(tmp) + f(tmm)) /
       (4 * hi * hj)
   }
@@ -191,7 +198,8 @@ morie_evt_gpd_mle <- function(y) {
   y <- as.numeric(y)
   n <- length(y)
   stopifnot(n >= 2)
-  ybar <- mean(y); s2 <- stats::var(y)
+  ybar <- mean(y)
+  s2 <- stats::var(y)
   xi0 <- 0.5 * (1 - ybar^2 / s2)
   sigma0 <- max(if (xi0 < 1) ybar * (1 - xi0) else ybar, 1e-8)
   nll <- function(th) -morie_evt_gpd_loglik(y, exp(th[1]), th[2])
@@ -199,7 +207,8 @@ morie_evt_gpd_mle <- function(y) {
                         if (abs(xi0) < 0.9) xi0 else 0.1),
                       nll, method = "Nelder-Mead",
                       control = list(maxit = 4000))
-  sigma <- exp(fit$par[1]); xi <- fit$par[2]
+  sigma <- exp(fit$par[1])
+  xi <- fit$par[2]
   nll_nat <- function(th) -morie_evt_gpd_loglik(y, th[1], th[2])
   H <- .evt_num_hessian(nll_nat, c(sigma, xi))
   covm <- tryCatch(solve(H), error = function(e) MASS_ginv_fallback(H))
@@ -259,7 +268,8 @@ morie_evt_return_level_pot <- function(u, sigma, xi, zeta_u, m) {
 morie_evt_chi <- function(x, y, u = 0.95) {
   n <- length(x)
   stopifnot(length(y) == n, n >= 4)
-  rx <- rank(x) / (n + 1); ry <- rank(y) / (n + 1)
+  rx <- rank(x) / (n + 1)
+  ry <- rank(y) / (n + 1)
   joint <- sum(rx < u & ry < u) / n
   joint <- min(max(joint, 1 / (2 * n)), 1 - 1 / (2 * n))
   min(max(2 - log(joint) / log(u), 0), 1)
@@ -273,7 +283,8 @@ morie_evt_chibar <- function(x, y, u_grid = seq(0.5, 0.95,
                                                 length.out = 20)) {
   n <- length(x)
   stopifnot(length(y) == n, n >= 4)
-  rx <- rank(x) / (n + 1); ry <- rank(y) / (n + 1)
+  rx <- rank(x) / (n + 1)
+  ry <- rank(y) / (n + 1)
   vapply(u_grid, function(u) {
     joint <- sum(rx > u & ry > u) / n
     joint <- min(max(joint, 1 / (2 * n)), 1 - 1 / (2 * n))
@@ -306,13 +317,16 @@ morie_evt_xi_ci_profile <- function(x, alpha = 0.05, model = "gev") {
                     upper = log(fit$sigma) + 6)$value
     }
   }
-  l_hat <- fit$loglik; xi_hat <- fit$xi
+  l_hat <- fit$loglik
+  xi_hat <- fit$xi
   edge <- function(dir) {
-    xi <- xi_hat; step <- 0.01 * dir
+    xi <- xi_hat
+    step <- 0.01 * dir
     for (i in 1:400) {
       xi <- xi + step
       if (l_hat - prof(xi) > crit) {
-        lo <- xi - step; hi <- xi
+        lo <- xi - step
+        hi <- xi
         for (j in 1:40) {
           mid <- (lo + hi) / 2
           if (l_hat - prof(mid) > crit) hi <- mid else lo <- mid
@@ -322,7 +336,8 @@ morie_evt_xi_ci_profile <- function(x, alpha = 0.05, model = "gev") {
     }
     xi
   }
-  lo <- edge(-1); hi <- edge(1)
+  lo <- edge(-1)
+  hi <- edge(1)
   list(ci_lo = min(lo, hi), ci_hi = max(lo, hi), xi_hat = xi_hat)
 }
 
@@ -348,13 +363,19 @@ morie_evt_bayes_gev <- function(x, n_draws = 2000, seed = 42,
   lp <- logpost(th)
   warm <- max(200, n_draws %/% 2)
   draws <- matrix(0, n_draws, 3)
-  acc <- 0L; tot <- 0L; kept <- 0L
+  acc <- 0L
+  tot <- 0L
+  kept <- 0L
   for (it in seq_len(warm + n_draws)) {
     for (j in 1:3) {
-      prop <- th; prop[j] <- prop[j] + step[j] * stats::rnorm(1)
-      lp_new <- logpost(prop); tot <- tot + 1L
+      prop <- th
+      prop[j] <- prop[j] + step[j] * stats::rnorm(1)
+      lp_new <- logpost(prop)
+      tot <- tot + 1L
       if (log(stats::runif(1)) < lp_new - lp) {
-        th <- prop; lp <- lp_new; acc <- acc + 1L
+        th <- prop
+        lp <- lp_new
+        acc <- acc + 1L
         if (it <= warm) step[j] <- step[j] * 1.05
       } else if (it <= warm) step[j] <- step[j] * 0.97
     }

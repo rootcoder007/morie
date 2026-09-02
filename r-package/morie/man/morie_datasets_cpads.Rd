@@ -62,10 +62,8 @@ Sister surveys (CSADS, CSUS, CTADS) are at
 \url{https://health-infobase.canada.ca/substance-use/}.
 }
 \examples{
-\donttest{
 df <- try(suppressWarnings(morie_datasets_cpads()))
 if (!inherits(df, "try-error")) head(df)
-}
 }
 \seealso{
 \code{\link[=morie_cpads_contract]{morie_cpads_contract()}} for the canonical schema +

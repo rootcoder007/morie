@@ -28,7 +28,8 @@ Aitilri <- function(y, V = NULL, kappa = 1) {
   if (!(kappa > 0)) stop("aitchison_ilr_inverse: kappa must be positive")
   Vm <- if (is.null(V)) .aitilri_basis(length(yy) + 1L) else
     matrix(as.numeric(as.matrix(V)), nrow = nrow(as.matrix(V)))
-  D <- nrow(Vm); p <- ncol(Vm)
+  D <- nrow(Vm)
+  p <- ncol(Vm)
   if (p != length(yy)) {
     stop(sprintf("aitchison_ilr_inverse: V has %d columns but y has %d entries", p, length(yy)))
   }

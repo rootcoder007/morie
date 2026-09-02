@@ -341,7 +341,8 @@ morie_gh_pt_posterior_density <- function(x, data, depth = 4L) {
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_gh_hellinger2(V, V)
 morie_gh_hellinger2 <- function(p, q) {
-  p <- p / sum(p); q <- q / sum(q)
+  p <- p / sum(p)
+  q <- q / sum(q)
   1 - sum(sqrt(p * q))
 }
 
@@ -362,7 +363,8 @@ morie_gh_hellinger2 <- function(p, q) {
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_gh_kl(V, V)
 morie_gh_kl <- function(p, q) {
-  p <- p / sum(p); q <- q / sum(q)
+  p <- p / sum(p)
+  q <- q / sum(q)
   keep <- p > 0
   sum(p[keep] * log(p[keep] / pmax(q[keep], 1e-300)))
 }
@@ -384,7 +386,8 @@ morie_gh_kl <- function(p, q) {
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_gh_renyi(V, V)
 morie_gh_renyi <- function(p, q, alpha = 0.5) {
-  p <- p / sum(p); q <- q / sum(q)
+  p <- p / sum(p)
+  q <- q / sum(q)
   log(sum(p^alpha * q^(1 - alpha))) / (alpha - 1)
 }
 

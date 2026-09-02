@@ -81,7 +81,9 @@
         score <- score - imbalance_penalty * (1 / length(lsp) + 1 / length(rsp))
       }
       if (score > best_score) {
-        best_score <- score; best_f <- f; best_thr <- thr
+        best_score <- score
+        best_f <- f
+        best_thr <- thr
       }
     }
   }
@@ -270,8 +272,10 @@ morie_causal_forest_predict <- function(forest, newx) {
 morie_causal_forest_bootstrap <- function(y, d, x, B = 40L, n_trees = 60L,
                                           min_leaf = 10L, seed = 0L,
                                           alpha = 0.05) {
-  y <- as.numeric(y); d <- as.numeric(d)
-  X <- as.matrix(x); storage.mode(X) <- "double"
+  y <- as.numeric(y)
+  d <- as.numeric(d)
+  X <- as.matrix(x)
+  storage.mode(X) <- "double"
   n <- length(y)
   if (B < 2L) stop("B must be at least 2.", call. = FALSE)
   if (alpha <= 0 || alpha >= 1) {
@@ -325,7 +329,8 @@ morie_causal_forest_bootstrap <- function(y, d, x, B = 40L, n_trees = 60L,
 #' tau <- 0.5 + X[, 2] + rnorm(n, 0, 0.2)
 #' morie_hte_blp_test(y, d, tau)
 morie_hte_blp_test <- function(y, d, cate_predictions, propensity = NULL) {
-  y <- as.numeric(y); d <- as.numeric(d)
+  y <- as.numeric(y)
+  d <- as.numeric(d)
   tau <- as.numeric(cate_predictions)
   n <- length(y)
   if (length(d) != n || length(tau) != n) {
@@ -336,14 +341,17 @@ morie_hte_blp_test <- function(y, d, cate_predictions, propensity = NULL) {
   if (sum(ok) < 10L) {
     stop("need at least 10 finite CATE predictions.", call. = FALSE)
   }
-  y <- y[ok]; d <- d[ok]; tau <- tau[ok]
+  y <- y[ok]
+  d <- d[ok]
+  tau <- tau[ok]
   m <- length(y)
   e <- if (is.null(propensity)) rep(mean(d), m) else as.numeric(propensity)[ok]
   rd <- d - e
   tc <- tau - mean(tau)
   fit <- stats::lm(I(y - mean(y)) ~ rd + I(rd * tc))
   co <- stats::coef(summary(fit))
-  beta <- unname(co[3, 1]); se <- unname(co[3, 2])
+  beta <- unname(co[3, 1])
+  se <- unname(co[3, 2])
   p <- stats::pt(beta / se, df = m - 3L, lower.tail = FALSE)
   list(alpha = unname(co[2, 1]), beta = beta, se_beta = se,
        p_value = p, heterogeneous = p < 0.05, n = m)
@@ -382,7 +390,9 @@ morie_hte_blp_test <- function(y, d, cate_predictions, propensity = NULL) {
 morie_causal_survival_forest <- function(time, event, d, x, horizon = NULL,
                                          n_trees = 200L, min_leaf = 15L,
                                          seed = 0L) {
-  time <- as.numeric(time); event <- as.numeric(event); d <- as.numeric(d)
+  time <- as.numeric(time)
+  event <- as.numeric(event)
+  d <- as.numeric(d)
   n <- length(time)
   if (length(event) != n || length(d) != n) {
     stop("time, event and d must have equal length.", call. = FALSE)
@@ -509,7 +519,8 @@ morie_quantile_causal_forest <- function(y, d, x, quantile = 0.5,
 morie_monotone_causal_forest <- function(y, d, x, monotone_feature = NULL,
                                          direction = 1L, n_trees = 200L,
                                          min_leaf = 10L, seed = 0L) {
-  X <- as.matrix(x); storage.mode(X) <- "double"
+  X <- as.matrix(x)
+  storage.mode(X) <- "double"
   fit <- morie_causal_forest(y, d, X, n_trees = n_trees,
                              min_leaf = min_leaf, seed = seed)
   raw <- fit$cate
@@ -567,8 +578,10 @@ morie_monotone_causal_forest <- function(y, d, x, monotone_feature = NULL,
 #' r <- morie_dr_learner(y, t, X, n_folds = 4L)
 #' str(r, max.level = 1)
 morie_dr_learner <- function(y, t, x, n_folds = 5L, seed = 0L, trunc = 0.01) {
-  y <- as.numeric(y); t <- as.numeric(t)
-  X <- as.matrix(x); storage.mode(X) <- "double"
+  y <- as.numeric(y)
+  t <- as.numeric(t)
+  X <- as.matrix(x)
+  storage.mode(X) <- "double"
   n <- length(y)
   if (length(t) != n || nrow(X) != n) {
     stop("y, t and x must share their first dimension.", call. = FALSE)
@@ -639,7 +652,9 @@ morie_dr_learner <- function(y, t, x, n_folds = 5L, seed = 0L, trunc = 0.01) {
 #' str(r, max.level = 1)
 morie_interventional_effects <- function(y, x, m, c = NULL, n_draws = 2000L,
                                          seed = 0L) {
-  y <- as.numeric(y); x <- as.numeric(x); m <- as.numeric(m)
+  y <- as.numeric(y)
+  x <- as.numeric(x)
+  m <- as.numeric(m)
   n <- length(y)
   if (length(x) != n || length(m) != n) {
     stop("y, x and m must have equal length.", call. = FALSE)
@@ -656,9 +671,11 @@ morie_interventional_effects <- function(y, x, m, c = NULL, n_draws = 2000L,
   }
 
   Dy <- cbind(1, x, m, x * m, C)
-  by <- qr.coef(qr(Dy), y); by[is.na(by)] <- 0
+  by <- qr.coef(qr(Dy), y)
+  by[is.na(by)] <- 0
   Dm <- cbind(1, x, C)
-  bm <- qr.coef(qr(Dm), m); bm[is.na(bm)] <- 0
+  bm <- qr.coef(qr(Dm), m)
+  bm[is.na(bm)] <- 0
   resid <- m - as.vector(Dm %*% bm)
   cbar <- if (ncol(C)) colMeans(C) else numeric(0)
 
@@ -673,7 +690,8 @@ morie_interventional_effects <- function(y, x, m, c = NULL, n_draws = 2000L,
     } else matrix(numeric(0), nrow = length(mv), ncol = 0)
     as.vector(cbind(1, xv, mv, xv * mv, Cmat) %*% by)
   }
-  g0 <- draw(0); g1 <- draw(1)
+  g0 <- draw(0)
+  g1 <- draw(1)
   ide <- mean(predict_y(1, g0)) - mean(predict_y(0, g0))
   iie <- mean(predict_y(1, g1)) - mean(predict_y(1, g0))
   list(ide = ide, iie = iie, overall = ide + iie, n_draws = B, n = n)

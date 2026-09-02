@@ -22,7 +22,8 @@
 #' @examples
 #' Lgtnpdf(c(0.3, 0.3, 0.4), mu = c(0, 0), Sigma = diag(2))
 Lgtnpdf <- function(x, mu, Sigma) {
-  x <- .t1_vec(x); D <- length(x)
+  x <- .t1_vec(x)
+  D <- length(x)
   if (D < 2L) stop("a composition needs at least two parts")
   if (any(x <= 0)) stop("compositions must be strictly positive")
   mu <- .t1_vec(mu)

@@ -188,8 +188,10 @@ patchtst_encode <- function(X, patch_len, stride = NULL,
                             normalise = TRUE) {
   Xm <- as.matrix(X)
   if (nrow(Xm) == 0L) stop("patchT: the input series is empty")
-  D <- ncol(Xm); Lr <- nrow(Xm)
-  stats <- list(); cols <- list()
+  D <- ncol(Xm)
+  Lr <- nrow(Xm)
+  stats <- list()
+  cols <- list()
   for (d in seq_len(D)) {
     col <- Xm[, d]
     if (isTRUE(normalise)) {

@@ -47,13 +47,16 @@ morie_crim_etas <- function(times, magnitudes = NULL, m0 = NULL,
     # Bounded transforms keep every intermediate finite (optim
     # aborts outright on a non-finite objective).
     if (any(!is.finite(par))) return(1e10)
-    mu <- exp(min(par[1], 20)); K <- exp(min(par[2], 20))
+    mu <- exp(min(par[1], 20))
+    K <- exp(min(par[2], 20))
     alpha <- if (alpha_free) max(min(par[3], 10), -10) else 0
-    cc <- exp(min(par[4], 20)); p <- 1 + exp(min(par[5], 5)) # p > 1
+    cc <- exp(min(par[4], 20))
+    p <- 1 + exp(min(par[5], 5)) # p > 1
     prod_m <- exp(pmin(alpha * dm, 30))
     lam <- numeric(n)
     for (i in seq_len(n)) {
-      if (i == 1L) { lam[i] <- mu; next }
+      if (i == 1L) { lam[i] <- mu
+      next }
       dt <- t[i] - t[seq_len(i - 1L)]
       lam[i] <- mu + K * sum(prod_m[seq_len(i - 1L)] * (dt + cc)^(-p))
     }
@@ -72,9 +75,11 @@ morie_crim_etas <- function(times, magnitudes = NULL, m0 = NULL,
                       control = list(maxit = 2000L))
   opt <- stats::optim(opt$par, negll, method = "Nelder-Mead",
                       control = list(maxit = 2000L))
-  mu <- exp(opt$par[1]); K <- exp(opt$par[2])
+  mu <- exp(opt$par[1])
+  K <- exp(opt$par[2])
   alpha <- if (alpha_free) opt$par[3] else 0
-  cc <- exp(opt$par[4]); p <- 1 + exp(opt$par[5])
+  cc <- exp(opt$par[4])
+  p <- 1 + exp(opt$par[5])
   # Branching ratio: E[offspring] = K E[e^{a dm}] c^{1-p} / (p-1).
   br <- K * mean(exp(alpha * dm)) * cc^(1 - p) / (p - 1)
   out <- list(par = c(mu = mu, K = K, alpha = alpha, c = cc, p = p),
@@ -162,7 +167,8 @@ morie_crim_hawkes_multivariate <- function(times, marks, t_max = NULL,
     grid <- c(0.25, 0.5, 1, 2, 4)
     fits <- lapply(grid, fit_b)
     best <- which.min(vapply(fits, `[[`, numeric(1), "value"))
-    beta <- grid[best]; opt <- fits[[best]]
+    beta <- grid[best]
+    opt <- fits[[best]]
   } else {
     opt <- fit_b(beta)
   }
@@ -216,7 +222,9 @@ print.morie_mv_hawkes <- function(x, ...) {
 morie_crim_near_repeat <- function(x, y, times, s_threshold,
                                    t_threshold, n_perm = 499L,
                                    seed = 42L) {
-  x <- as.numeric(x); y <- as.numeric(y); tt <- as.numeric(times)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  tt <- as.numeric(times)
   n <- length(x)
   stopifnot(length(y) == n, length(tt) == n, n >= 10L)
   ds <- as.matrix(stats::dist(cbind(x, y)))

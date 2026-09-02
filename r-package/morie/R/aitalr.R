@@ -13,7 +13,8 @@
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' Alr(V)
 Alr <- function(x, ref = NULL) {
-  x <- .t1_vec(x); D <- length(x)
+  x <- .t1_vec(x)
+  D <- length(x)
   if (D < 2L) stop("an additive log-ratio needs at least two parts")
   if (any(x <= 0)) stop("compositions must be strictly positive")
   k <- if (is.null(ref)) D else as.integer(ref)

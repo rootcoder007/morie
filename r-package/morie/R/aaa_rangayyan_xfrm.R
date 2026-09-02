@@ -24,7 +24,8 @@ Ztrans <- function(x, z = NULL, n0 = 0) {
               degree = length(xs) - 1L,
               method = "Rangayyan (2024) eqs. (3.54)-(3.55)")
   if (is.null(z)) {
-    out$X <- NULL; out$z <- NULL
+    out$X <- NULL
+    out$z <- NULL
     return(out)
   }
   zs <- as.complex(z)
@@ -47,9 +48,11 @@ Ztrans <- function(x, z = NULL, n0 = 0) {
 #' @return A vector, from \code{vapply}.
 #' @export
 .morie_rg_conv <- function(xs, hs) {
-  n <- length(xs); m <- length(hs)
+  n <- length(xs)
+  m <- length(hs)
   vapply(seq_len(n + m - 1L), function(k) {
-    lo <- max(1L, k - m + 1L); hi <- min(k, n)
+    lo <- max(1L, k - m + 1L)
+    hi <- min(k, n)
     idx <- lo:hi
     .morie_fsum(xs[idx] * hs[k - idx + 1L])
   }, numeric(1))
@@ -67,7 +70,8 @@ Ztrans <- function(x, z = NULL, n0 = 0) {
 ZtConv <- function(x, h, z) {
   # eq (3.56): y = x * h  =>  Y(z) = X(z) H(z).  Both sides computed
   # separately so the property is demonstrated, not assumed.
-  xs <- as.numeric(x); hs <- as.numeric(h)
+  xs <- as.numeric(x)
+  hs <- as.numeric(h)
   if (!length(xs) || !length(hs))
     stop("both sequences need at least one sample")
   zs <- as.complex(z)
@@ -77,7 +81,8 @@ ZtConv <- function(x, h, z) {
   lhs <- vapply(zs, function(zv) zt(y, zv), complex(1))
   rhs <- vapply(zs, function(zv) zt(xs, zv) * zt(hs, zv), complex(1))
   gap <- max(Mod(lhs - rhs))
-  scale <- max(Mod(rhs)); if (scale == 0) scale <- 1
+  scale <- max(Mod(rhs))
+  if (scale == 0) scale <- 1
   list(y = y, Y = if (length(lhs) == 1L) lhs[[1]] else lhs,
        XH = if (length(rhs) == 1L) rhs[[1]] else rhs,
        z = if (length(zs) == 1L) zs[[1]] else zs,
@@ -123,11 +128,13 @@ DtftZ <- function(x, omega, fs = NULL) {
 #' @export
 Euler <- function(omega, t = 0) {
   # eq (3.74): exp(j omega t) = cos(omega t) + j sin(omega t)
-  ws <- as.numeric(omega); ts <- as.numeric(t)
+  ws <- as.numeric(omega)
+  ts <- as.numeric(t)
   if (length(ws) > 1L && length(ts) > 1L && length(ws) != length(ts))
     stop("omega and t must broadcast: equal lengths or one of them scalar")
   ang <- ws * ts
-  re <- cos(ang); im <- sin(ang)
+  re <- cos(ang)
+  im <- sin(ang)
   vals <- complex(real = re, imaginary = im)
   one <- length(vals) == 1L
   list(value = if (one) vals[[1]] else vals,
@@ -160,9 +167,13 @@ Ctft <- function(x, t = NULL, omega = NULL, f = NULL, dt = NULL) {
   ts <- if (is.null(t)) (seq_along(xs) - 1) * step else as.numeric(t)
   if (length(ts) != length(xs)) stop("t and x must have the same length")
   if (!is.null(omega)) {
-    ws <- as.numeric(omega); fs_ <- ws / (2 * pi); variable <- "omega"
+    ws <- as.numeric(omega)
+    fs_ <- ws / (2 * pi)
+    variable <- "omega"
   } else {
-    fs_ <- as.numeric(f); ws <- 2 * pi * fs_; variable <- "f"
+    fs_ <- as.numeric(f)
+    ws <- 2 * pi * fs_
+    variable <- "f"
   }
   vals <- vapply(ws, function(w) {
     complex(real = .morie_rg_gridint(xs * cos(-w * ts), ts),
@@ -225,10 +236,15 @@ Ictft <- function(X, t, omega = NULL, f = NULL) {
   Xs <- as.complex(X)
   if (is.null(omega) == is.null(f)) stop("give exactly one of omega, f")
   if (!is.null(omega)) {
-    grid <- as.numeric(omega); scale <- 1 / (2 * pi); k <- 1
+    grid <- as.numeric(omega)
+    scale <- 1 / (2 * pi)
+    k <- 1
     variable <- "omega"
   } else {
-    grid <- as.numeric(f); scale <- 1; k <- 2 * pi; variable <- "f"
+    grid <- as.numeric(f)
+    scale <- 1
+    k <- 2 * pi
+    variable <- "f"
   }
   if (length(grid) != length(Xs))
     stop("X and the frequency grid must have equal length")
@@ -390,7 +406,8 @@ DftTw <- function(x) {
     acc <- complex(real = 0, imaginary = 0)
     wk <- complex(real = 1, imaginary = 0)
     step <- w^k
-    for (v in xs) { acc <- acc + v * wk; wk <- wk * step }
+    for (v in xs) { acc <- acc + v * wk
+    wk <- wk * step }
     acc
   }, complex(1))
   direct <- Dft(xs)$X
@@ -417,7 +434,8 @@ TwidCS <- function(npoints, n, k) {
   nn <- as.integer(npoints)
   if (nn < 1L) stop("N must be positive")
   ang <- 2 * pi * as.integer(n) * as.integer(k) / nn
-  cc <- cos(ang); ss <- sin(ang)
+  cc <- cos(ang)
+  ss <- sin(ang)
   list(W = complex(real = cc, imaginary = -ss), cos = cc, sin = ss,
        angle = ang, N = nn, n = as.integer(n), k = as.integer(k),
        method = "Rangayyan (2024) eq. (3.84)")
@@ -487,16 +505,20 @@ DftConv <- function(x, h) {
   # PERIODIC: multiplying N-point DFTs gives the circular convolution of
   # eq (3.90), and the linear one needs L >= Nx + Nh - 1 with both
   # sequences zero-padded.  Both are returned so the wrap is visible.
-  xs <- as.numeric(x); hs <- as.numeric(h)
+  xs <- as.numeric(x)
+  hs <- as.numeric(h)
   if (!length(xs) || !length(hs))
     stop("both sequences need at least one sample")
-  nx <- length(xs); nh <- length(hs)
+  nx <- length(xs)
+  nh <- length(hs)
   lin <- .morie_rg_conv(xs, hs)
   L <- nx + nh - 1L
-  xp <- c(xs, numeric(L - nx)); hp <- c(hs, numeric(L - nh))
+  xp <- c(xs, numeric(L - nx))
+  hp <- c(hs, numeric(L - nh))
   rec <- IdftRI(Dft(xp)$X * Dft(hp)$X)$x
   n <- max(nx, nh)
-  xc <- c(xs, numeric(n - nx)); hc <- c(hs, numeric(n - nh))
+  xc <- c(xs, numeric(n - nx))
+  hc <- c(hs, numeric(n - nh))
   circ <- vapply(seq_len(n) - 1L, function(k)
     .morie_fsum(xc * hc[((k - (seq_len(n) - 1L)) %% n) + 1L]), numeric(1))
   gap <- max(abs(rec - lin))
@@ -544,10 +566,13 @@ TwidPer <- function(npoints, n, k) {
   # reused at every FFT stage, and why every DFT relation is periodic.
   nn <- as.integer(npoints)
   if (nn < 1L) stop("N must be positive")
-  ni <- as.integer(n); ki <- as.integer(k)
+  ni <- as.integer(n)
+  ki <- as.integer(k)
   w <- function(p) complex(real = cos(-2 * pi * p / nn),
                            imaginary = sin(-2 * pi * p / nn))
-  base <- w(ni * ki); sk <- w(ni * (ki + nn)); sn <- w((ni + nn) * ki)
+  base <- w(ni * ki)
+  sk <- w(ni * (ki + nn))
+  sn <- w((ni + nn) * ki)
   gap <- max(Mod(base - sk), Mod(base - sn))
   list(base = base, shift_k = sk, shift_n = sn, max_difference = gap,
        holds = gap < 1e-9, N = nn, n = ni, k = ki,
@@ -568,14 +593,16 @@ CircConv <- function(x, h, npoints = NULL) {
   # eq (3.90): y_p(n) = sum_k x_p(k) h_p[(n-k) mod N], defined only for
   # equal periods.  Both routes -- the modular sum and the inverse DFT of
   # X(k)H(k) -- are computed; their agreement is eq (3.87) at equal N.
-  xs <- as.numeric(x); hs <- as.numeric(h)
+  xs <- as.numeric(x)
+  hs <- as.numeric(h)
   if (!length(xs) || !length(hs))
     stop("both signals need at least one sample")
   n <- if (is.null(npoints)) max(length(xs), length(hs)) else
     as.integer(npoints)
   if (n < max(length(xs), length(hs)))
     stop("N must be at least the length of both signals")
-  xp <- c(xs, numeric(n - length(xs))); hp <- c(hs, numeric(n - length(hs)))
+  xp <- c(xs, numeric(n - length(xs)))
+  hp <- c(hs, numeric(n - length(hs)))
   k0 <- seq_len(n) - 1L
   direct <- vapply(k0, function(i)
     .morie_fsum(xp * hp[((i - k0) %% n) + 1L]), numeric(1))
@@ -683,7 +710,8 @@ LogFT <- function(x, p, omega, t = NULL, dt = NULL) {
   # eqs (4.58)-(4.60): y = x p, log y = log x + log p, and so
   # Y_l(omega) = X_l(omega) + P_l(omega).  Eq (4.59) needs both factors
   # nonzero, so zeros are rejected rather than yielding -Inf.
-  xs <- as.numeric(x); ps <- as.numeric(p)
+  xs <- as.numeric(x)
+  ps <- as.numeric(p)
   if (length(xs) != length(ps)) stop("x and p must have the same length")
   if (any(xs == 0) || any(ps == 0))
     stop("eq. (4.59) needs x(t) != 0 and p(t) != 0 for all t")
@@ -717,7 +745,8 @@ FtConv <- function(x, h, omega, dt = 1) {
   # product, which eq (4.63) then turns into a sum.  The convolution is
   # scaled by dt as in eq (3.30), so the identity holds in the
   # continuous-time sense rather than up to a sampling-interval factor.
-  xs <- as.numeric(x); hs <- as.numeric(h)
+  xs <- as.numeric(x)
+  hs <- as.numeric(h)
   if (!length(xs) || !length(hs))
     stop("both signals need at least one sample")
   step <- as.numeric(dt)
@@ -731,7 +760,9 @@ FtConv <- function(x, h, omega, dt = 1) {
               imaginary = .morie_fsum(sig * sin(-w * idx * step))) * step,
       complex(1))
   }
-  Y <- tf(y); X <- tf(xs); H <- tf(hs)
+  Y <- tf(y)
+  X <- tf(xs)
+  H <- tf(hs)
   prod <- X * H
   gap <- max(Mod(Y - prod))
   one <- length(ws) == 1L
@@ -757,7 +788,8 @@ ClogSum <- function(x, h, z) {
   # principal value in (-pi, pi], so the two sides can differ by an
   # integer multiple of 2 pi j; that is reported as branch_offset rather
   # than papered over -- it is the phase-unwrapping problem itself.
-  xs <- as.numeric(x); hs <- as.numeric(h)
+  xs <- as.numeric(x)
+  hs <- as.numeric(h)
   if (!length(xs) || !length(hs))
     stop("both sequences need at least one sample")
   y <- .morie_rg_conv(xs, hs)
@@ -765,12 +797,17 @@ ClogSum <- function(x, h, z) {
   if (any(zs == 0)) stop("z = 0 is a pole of a causal sequence")
   zt <- function(s, zv) sum(as.complex(s) * zv^(-(seq_along(s) - 1L)))
   clog <- function(v) complex(real = log(Mod(v)), imaginary = Arg(v))
-  Yh <- Xh <- Hh <- complex(length(zs)); off <- numeric(length(zs))
+  Yh <- Xh <- Hh <- complex(length(zs))
+  off <- numeric(length(zs))
   for (i in seq_along(zs)) {
-    Y <- zt(y, zs[i]); X <- zt(xs, zs[i]); H <- zt(hs, zs[i])
+    Y <- zt(y, zs[i])
+    X <- zt(xs, zs[i])
+    H <- zt(hs, zs[i])
     if (Y == 0 || X == 0 || H == 0)
       stop("the complex log needs X(z) != 0 and H(z) != 0")
-    Yh[i] <- clog(Y); Xh[i] <- clog(X); Hh[i] <- clog(H)
+    Yh[i] <- clog(Y)
+    Xh[i] <- clog(X)
+    Hh[i] <- clog(H)
     off[i] <- (Im(Yh[i]) - Im(Xh[i]) - Im(Hh[i])) / (2 * pi)
   }
   mag_gap <- max(abs(Re(Yh) - Re(Xh) - Re(Hh)))
@@ -801,8 +838,10 @@ LogSeries <- function(x, terms = 20) {
   if (any(Mod(xs) >= 1))
     stop("the series converges only for |x| < 1")
   res <- vapply(xs, function(v) {
-    s <- complex(real = 0, imaginary = 0); p <- complex(real = 1)
-    for (n in seq_len(k)) { p <- p * v; s <- s + (-1)^(n + 1) * p / n }
+    s <- complex(real = 0, imaginary = 0)
+    p <- complex(real = 1)
+    for (n in seq_len(k)) { p <- p * v
+    s <- s + (-1)^(n + 1) * p / n }
     s
   }, complex(1))
   bound <- vapply(xs, function(v) Mod(v)^(k + 1) / (k + 1), numeric(1))
@@ -841,7 +880,9 @@ LogMinPh <- function(alpha, terms = 20, z = NULL) {
     if (Mod(zv) <= Mod(a)) stop("the expansion needs |z| > |alpha|")
     s <- sum(coeffs * zv^(-ns))
     exact <- log(1 - a / zv)
-    out$value <- s; out$exact <- exact; out$error <- Mod(s - exact)
+    out$value <- s
+    out$exact <- exact
+    out$error <- Mod(s - exact)
     out$z <- zv
   }
   out
@@ -876,7 +917,9 @@ LogMaxPh <- function(beta, terms = 20, z = NULL) {
       stop("the expansion needs |z| < 1/|beta|")
     s <- sum(coeffs * zv^ns)
     exact <- log(1 - b * zv)
-    out$value <- s; out$exact <- exact; out$error <- Mod(s - exact)
+    out$value <- s
+    out$exact <- exact
+    out$error <- Mod(s - exact)
     out$z <- zv
   }
   out

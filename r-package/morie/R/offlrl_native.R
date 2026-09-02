@@ -113,7 +113,8 @@ offlrl_safe_max_key <- function(qmap, s, A) {
   best_a <- A[1]
   for (a in A) {
     v <- qmap[[paste0(s, "|", a)]]
-    if (v > best_v) { best_v <- v; best_a <- a }
+    if (v > best_v) { best_v <- v
+    best_a <- a }
   }
   best_a
 }
@@ -155,10 +156,16 @@ morie_offlrl <- function(dataset, states = NULL, actions = NULL,
   D <- list()
   for (t in dataset) {
     if (length(t) == 4L) {
-      s <- t[[1]]; a <- t[[2]]; r <- as.numeric(t[[3]]); s1 <- t[[4]]
+      s <- t[[1]]
+      a <- t[[2]]
+      r <- as.numeric(t[[3]])
+      s1 <- t[[4]]
       done <- FALSE
     } else if (length(t) == 5L) {
-      s <- t[[1]]; a <- t[[2]]; r <- as.numeric(t[[3]]); s1 <- t[[4]]
+      s <- t[[1]]
+      a <- t[[2]]
+      r <- as.numeric(t[[3]])
+      s1 <- t[[4]]
       done <- as.logical(t[[5]])
     } else {
       stop("offlrl: each transition must be (s, a, r, s_next) or (s, a, r, s_next, done)")
@@ -187,7 +194,8 @@ morie_offlrl <- function(dataset, states = NULL, actions = NULL,
   if (length(S) == 0L || length(A) == 0L)
     stop("offlrl: states and actions must be non-empty")
 
-  n_sa <- list(); n_s <- list()
+  n_sa <- list()
+  n_s <- list()
   for (t in D) {
     k <- paste0(t$s, "|", t$a)
     n_sa[[k]] <- if (is.null(n_sa[[k]])) 1L else n_sa[[k]] + 1L
@@ -219,7 +227,8 @@ morie_offlrl <- function(dataset, states = NULL, actions = NULL,
   N <- as.numeric(length(D))
 
   for (it in seq_len(as.integer(iters))) {
-    target <- list(); cnt <- list()
+    target <- list()
+    cnt <- list()
     for (t in D) {
       k <- paste0(t$s, "|", t$a)
       if (isTRUE(t$done)) {
@@ -278,12 +287,15 @@ morie_offlrl <- function(dataset, states = NULL, actions = NULL,
     if (delta < tol) break
   }
 
-  value <- list(); greedy <- list()
+  value <- list()
+  greedy <- list()
   for (s in S) {
-    best_v <- -Inf; best_a <- NULL
+    best_v <- -Inf
+    best_a <- NULL
     for (a in A) {
       v <- Q[[paste0(s, "|", a)]]
-      if (v > best_v) { best_v <- v; best_a <- a }
+      if (v > best_v) { best_v <- v
+      best_a <- a }
     }
     value[[as.character(s)]] <- best_v
     greedy[[as.character(s)]] <- best_a

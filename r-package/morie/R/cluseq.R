@@ -48,7 +48,8 @@ Cluseq <- function(sequences, snp_threshold = 5) {
   D <- matrix(0L, n, n)
   if (n > 1L) for (i in seq_len(n - 1L)) for (j in seq(i + 1L, n)) {
     d <- .seq_hamming(seqs[[i]], seqs[[j]])
-    D[i, j] <- d; D[j, i] <- d
+    D[i, j] <- d
+    D[j, i] <- d
   }
   parent <- seq_len(n)
   find <- function(a) {
@@ -60,10 +61,12 @@ Cluseq <- function(sequences, snp_threshold = 5) {
   }
   if (n > 1L) for (i in seq_len(n - 1L)) for (j in seq(i + 1L, n))
     if (D[i, j] <= thr) {
-      ra <- find(i); rb <- find(j)
+      ra <- find(i)
+      rb <- find(j)
       if (ra != rb) parent[max(ra, rb)] <- min(ra, rb)
     }
-  roots <- c(); z <- integer(n)
+  roots <- c()
+  z <- integer(n)
   for (i in seq_len(n)) {
     r <- find(i)
     if (!(r %in% roots)) roots <- c(roots, r)

@@ -89,9 +89,13 @@
 #' @export
 .schab_objective <- function(kind, lags, ghat, counts, model) {
   ok <- is.finite(ghat) & is.finite(lags) & counts > 0
-  h <- lags[ok]; g <- ghat[ok]; n <- counts[ok]
+  h <- lags[ok]
+  g <- ghat[ok]
+  n <- counts[ok]
   function(theta) {
-    nugget <- theta[1]; sill <- theta[2]; rng <- theta[3]
+    nugget <- theta[1]
+    sill <- theta[2]
+    rng <- theta[3]
     if (nugget < 0 || sill < 0 || rng <= 0) return(Inf)
     fitted <- .sp_semivariogram(h, nugget, sill, rng, model)
     resid <- g - fitted
@@ -191,7 +195,8 @@
   # orthogonal complement of the column space of X gives one such K for any
   # linear mean structure.
   X <- as.matrix(X)
-  n <- nrow(X); p <- ncol(X)
+  n <- nrow(X)
+  p <- ncol(X)
   s <- svd(X, nu = n, nv = p)
   tol <- max(n, p) * .Machine$double.eps * (if (length(s$d)) s$d[1] else 1)
   rank <- sum(s$d > tol)

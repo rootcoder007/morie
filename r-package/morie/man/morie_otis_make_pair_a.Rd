@@ -18,7 +18,5 @@ subsequent suicide-risk-alert occurrence, conditional on
 demographics and region?
 }
 \examples{
-\dontrun{
-  morie_otis_make_pair_a(morie_otis_load())
-}
+morie_otis_make_pair_a(morie_otis_load())
 }

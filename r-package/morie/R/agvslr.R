@@ -21,7 +21,8 @@
 #' Coslrate(50, 100)$lr
 #' @export
 Coslrate <- function(t, T, lr_0 = 0.2, kind = "cosine", floor = 0) {
-  tt <- as.numeric(t); TT <- as.numeric(T)
+  tt <- as.numeric(t)
+  TT <- as.numeric(T)
   frac <- if (TT > 0) tt / TT else 0
   if (frac < 0) frac <- 0
   if (frac > 1) frac <- 1

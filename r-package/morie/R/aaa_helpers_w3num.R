@@ -31,7 +31,8 @@
 #' @return A numeric value.
 #' @export
 .w3_csum <- function(v) {
-  s <- 0; cc <- 0
+  s <- 0
+  cc <- 0
   for (t in v) {
     u <- s + t
     if (abs(s) >= abs(t)) cc <- cc + ((s - u) + t) else cc <- cc + ((t - u) + s)
@@ -54,7 +55,8 @@
 .w3_dot <- function(a, b) {
   n <- length(a)
   if (n == 0L) return(0)
-  s <- 0; cc <- 0
+  s <- 0
+  cc <- 0
   for (i in seq_len(n)) {
     t <- a[i] * b[i]
     u <- s + t
@@ -147,7 +149,8 @@
 .w3_inv_from_chol <- function(lo) {
   p <- nrow(lo)
   cols <- lapply(seq_len(p), function(j) {
-    e <- numeric(p); e[j] <- 1
+    e <- numeric(p)
+    e[j] <- 1
     .w3_solve_chol(lo, e)
   })
   out <- matrix(0, p, p)
@@ -352,7 +355,9 @@
 #' @export
 .w3_betacf <- function(a, b, x) {
   tiny <- 1e-30
-  qab <- a + b; qap <- a + 1; qam <- a - 1
+  qab <- a + b
+  qap <- a + 1
+  qam <- a - 1
   cc <- 1
   d <- 1 - qab * x / qap
   if (abs(d) < tiny) d <- tiny
@@ -434,7 +439,8 @@
 #' @return A numeric value.
 #' @export
 .w3_bisect <- function(f, lo, hi, iters = 200L) {
-  flo <- f(lo); fhi <- f(hi)
+  flo <- f(lo)
+  fhi <- f(hi)
   if (flo == 0) return(lo)
   if (fhi == 0) return(hi)
   if ((flo > 0) == (fhi > 0))
@@ -443,7 +449,8 @@
     mid <- 0.5 * (lo + hi)
     fm <- f(mid)
     if (fm == 0) return(mid)
-    if ((fm > 0) == (flo > 0)) { lo <- mid; flo <- fm } else hi <- mid
+    if ((fm > 0) == (flo > 0)) { lo <- mid
+    flo <- fm } else hi <- mid
   }
   0.5 * (lo + hi)
 }
@@ -519,7 +526,8 @@
     # order(): ties broken by index, matching Python's stable sort on
     # (value, index).
     o <- order(vals, seq_len(n + 1L))
-    pts <- pts[o]; vals <- vals[o]
+    pts <- pts[o]
+    vals <- vals[o]
     cen <- vapply(seq_len(n), function(j)
       .w3_csum(vapply(seq_len(n), function(i) pts[[i]][j], numeric(1))) / n,
       numeric(1))
@@ -528,20 +536,28 @@
     if (fr < vals[1]) {
       xe <- cen + gamma * (xr - cen)
       fe <- f(xe)
-      if (fe < fr) { pts[[n + 1L]] <- xe; vals[n + 1L] <- fe }
-      else { pts[[n + 1L]] <- xr; vals[n + 1L] <- fr }
+      if (fe < fr) { pts[[n + 1L]] <- xe
+      vals[n + 1L] <- fe }
+      else { pts[[n + 1L]] <- xr
+      vals[n + 1L] <- fr }
       next
     }
-    if (fr < vals[n]) { pts[[n + 1L]] <- xr; vals[n + 1L] <- fr; next }
+    if (fr < vals[n]) { pts[[n + 1L]] <- xr
+    vals[n + 1L] <- fr
+    next }
     shrink <- TRUE
     if (fr < vals[n + 1L]) {
       xc <- cen + rho * (xr - cen)
       fc <- f(xc)
-      if (fc <= fr) { pts[[n + 1L]] <- xc; vals[n + 1L] <- fc; shrink <- FALSE }
+      if (fc <= fr) { pts[[n + 1L]] <- xc
+      vals[n + 1L] <- fc
+      shrink <- FALSE }
     } else {
       xc <- cen + rho * (pts[[n + 1L]] - cen)
       fc <- f(xc)
-      if (fc < vals[n + 1L]) { pts[[n + 1L]] <- xc; vals[n + 1L] <- fc; shrink <- FALSE }
+      if (fc < vals[n + 1L]) { pts[[n + 1L]] <- xc
+      vals[n + 1L] <- fc
+      shrink <- FALSE }
     }
     if (!shrink) next
     for (i in 2:(n + 1L)) {

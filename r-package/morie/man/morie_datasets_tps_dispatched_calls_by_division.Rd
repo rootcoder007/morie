@@ -54,7 +54,5 @@ reporting.
 Tags: ASR; TPS; Annual Statistical Report; Toronto Police; Dispatched Calls
 }
 \examples{
-\donttest{
 morie_datasets_tps_dispatched_calls_by_division()
-}
 }

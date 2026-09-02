@@ -845,12 +845,10 @@ morie_otis_classify_mandela_combo <- function(mh, sr, sw,
 #'   \code{covariates} = c("Gender", "Age_Category", "EndFiscalYear").
 #' @export
 #' @examples
-#' \dontrun{
 #'   df <- morie_otis_load()
 #'   pair <- morie_otis_make_pair_alert_to_volatility_ruhela(df)
 #'   morie_otis_irm_dml(pair$data, treatment = pair$T,
 #'                      outcome = pair$Y, covariates = pair$covariates)
-#' }
 morie_otis_make_pair_alert_to_volatility_ruhela <- function(df) {
   base <- .otis_alert_volatility_frame(df)
 
@@ -900,10 +898,8 @@ morie_otis_make_pair_alert_to_volatility_ruhela <- function(df) {
 #'   c("Gender", "Age_Category", "EndFiscalYear").
 #' @export
 #' @examples
-#' \dontrun{
 #'   df <- morie_otis_load()
 #'   morie_otis_make_pair_alert_to_volatility_naive(df)
-#' }
 morie_otis_make_pair_alert_to_volatility_naive <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear", "Gender",
               "Age_Category", "Region_AtTimeOfPlacement",
@@ -955,9 +951,7 @@ morie_otis_make_pair_alert_to_volatility_naive <- function(df) {
 #'   each element is the output of the corresponding make-pair builder.
 #' @export
 #' @examples
-#' \dontrun{
 #'   morie_otis_make_pair_alert_to_volatility_all(morie_otis_load())
-#' }
 morie_otis_make_pair_alert_to_volatility_all <- function(df) {
   list(
     ruhela = morie_otis_make_pair_alert_to_volatility_ruhela(df),
@@ -1008,9 +1002,7 @@ morie_otis_make_pair_alert_to_volatility_a01 <- function(df = NULL) {
 #' @return Named list \code{list(data, T = "T_a", Y = "Y_a", covariates)}.
 #' @export
 #' @examples
-#' \dontrun{
 #'   morie_otis_make_pair_a(morie_otis_load())
-#' }
 morie_otis_make_pair_a <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear", "Gender",
               "Age_Category", "Region_AtTimeOfPlacement",
@@ -1039,9 +1031,7 @@ morie_otis_make_pair_a <- function(df) {
 #' @return Named list \code{list(data, T = "T_b", Y = "Y_b", covariates)}.
 #' @export
 #' @examples
-#' \dontrun{
 #'   morie_otis_make_pair_b(morie_otis_load())
-#' }
 morie_otis_make_pair_b <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear", "Gender",
               "Age_Category", "Region_AtTimeOfPlacement",
@@ -1289,7 +1279,8 @@ morie_otis_aipw_superlearner <- function(df, treatment, outcome,
     inner <- sample(rep(1:3, length.out = length(train)))
     Z <- matrix(NA_real_, length(train), length(ps_learners))
     for (f in 1:3) {
-      itr <- train[inner != f]; ite <- train[inner == f]
+      itr <- train[inner != f]
+      ite <- train[inner == f]
       for (li in seq_along(ps_learners)) {
         Z[inner == f, li] <- tryCatch(ps_learners[[li]](itr, ite),
           error = function(e) rep(mean(d[itr]), length(ite)))
@@ -1311,7 +1302,8 @@ morie_otis_aipw_superlearner <- function(df, treatment, outcome,
     inner <- sample(rep(1:3, length.out = length(train)))
     Z <- matrix(NA_real_, length(train), length(reg_learners))
     for (f in 1:3) {
-      itr <- train[inner != f]; ite <- train[inner == f]
+      itr <- train[inner != f]
+      ite <- train[inner == f]
       for (li in seq_along(reg_learners)) {
         Z[inner == f, li] <- tryCatch(reg_learners[[li]](yy, itr, ite),
           error = function(e) rep(mean(yy[itr]), length(ite)))
@@ -1331,7 +1323,9 @@ morie_otis_aipw_superlearner <- function(df, treatment, outcome,
 
   set.seed(seed)
   folds <- sample(rep(seq_len(n_folds), length.out = n))
-  e_hat <- numeric(n); mu1_hat <- numeric(n); mu0_hat <- numeric(n)
+  e_hat <- numeric(n)
+  mu1_hat <- numeric(n)
+  mu0_hat <- numeric(n)
   for (k in seq_len(n_folds)) {
     test <- which(folds == k)
     train <- setdiff(seq_len(n), test)
@@ -1496,12 +1490,17 @@ morie_otis_psm_subclass <- function(df, treatment, outcome,
                                                length.out = n_strata + 1L)))
   strata <- cut(ps, breaks = qs, include.lowest = TRUE, labels = FALSE)
   n <- length(y)
-  est <- 0; var_acc <- 0; used_n <- 0L; dropped <- 0L
+  est <- 0
+  var_acc <- 0
+  used_n <- 0L
+  dropped <- 0L
   per <- list()
   for (s in sort(unique(strata))) {
     idx <- which(strata == s)
-    y1 <- y[idx][d[idx] == 1L]; y0 <- y[idx][d[idx] == 0L]
-    if (length(y1) < 2L || length(y0) < 2L) { dropped <- dropped + 1L; next }
+    y1 <- y[idx][d[idx] == 1L]
+    y0 <- y[idx][d[idx] == 0L]
+    if (length(y1) < 2L || length(y0) < 2L) { dropped <- dropped + 1L
+    next }
     w <- length(idx)
     est <- est + w * (mean(y1) - mean(y0))
     var_acc <- var_acc +

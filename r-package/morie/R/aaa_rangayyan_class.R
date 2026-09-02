@@ -26,8 +26,11 @@
 #' @return The value of \code{a}, as built in the body.
 #' @export
 .morie_rg_gcd <- function(a, b) {
-  a <- abs(a); b <- abs(b)
-  while (b > 0) { t <- b; b <- a %% b; a <- t }
+  a <- abs(a)
+  b <- abs(b)
+  while (b > 0) { t <- b
+  b <- a %% b
+  a <- t }
   a
 }
 
@@ -44,7 +47,8 @@
 .morie_rg_frac <- function(n, d) {
   # an exact rational as a list, so counts-based ratios are not rounded
   if (d == 0) stop("a rational cannot have a zero denominator")
-  if (d < 0) { n <- -n; d <- -d }
+  if (d < 0) { n <- -n
+  d <- -d }
   g <- .morie_rg_gcd(n, d)
   if (g == 0) g <- 1
   structure(list(n = n / g, d = d / g), class = "morie_frac")
@@ -160,7 +164,8 @@ print.morie_frac <- function(x, ...) cat(format(x), "\n")
 #' @export
 #' @method == morie_frac
 "==.morie_frac" <- function(e1, e2) {
-  a <- .morie_rg_asfrac(e1); b <- .morie_rg_asfrac(e2)
+  a <- .morie_rg_asfrac(e1)
+  b <- .morie_rg_asfrac(e2)
   a$n == b$n && a$d == b$d
 }
 
@@ -216,9 +221,11 @@ Sens <- function(tp, fn = NULL) {
     t <- as.matrix(tp)
     if (nrow(t) != 2L || ncol(t) != 2L)
       stop("give TP and FN, or a 2x2 table [[TP, FN], [FP, TN]]")
-    TP <- t[1, 1]; FN <- t[1, 2]
+    TP <- t[1, 1]
+    FN <- t[1, 2]
   } else {
-    TP <- as.numeric(tp); FN <- as.numeric(fn)
+    TP <- as.numeric(tp)
+    FN <- as.numeric(fn)
   }
   if (TP < 0 || FN < 0) stop("counts cannot be negative")
   n <- TP + FN
@@ -246,9 +253,11 @@ Spec <- function(tn, fp = NULL) {
     t <- as.matrix(tn)
     if (nrow(t) != 2L || ncol(t) != 2L)
       stop("give TN and FP, or a 2x2 table [[TP, FN], [FP, TN]]")
-    TN <- t[2, 2]; FP <- t[2, 1]
+    TN <- t[2, 2]
+    FP <- t[2, 1]
   } else {
-    TN <- as.numeric(tn); FP <- as.numeric(fp)
+    TN <- as.numeric(tn)
+    FP <- as.numeric(fp)
   }
   if (TN < 0 || FP < 0) stop("counts cannot be negative")
   n <- TN + FP
@@ -282,10 +291,12 @@ Ppv <- function(tp, fp = NULL, prevalence = NULL, sensitivity = NULL,
     t <- as.matrix(tp)
     if (nrow(t) != 2L || ncol(t) != 2L)
       stop("give TP and FP, or a 2x2 table [[TP, FN], [FP, TN]]")
-    TP <- t[1, 1]; FP <- t[2, 1]
+    TP <- t[1, 1]
+    FP <- t[2, 1]
   } else {
     if (is.null(fp)) stop("give TP and FP, or a 2x2 table")
-    TP <- as.numeric(tp); FP <- as.numeric(fp)
+    TP <- as.numeric(tp)
+    FP <- as.numeric(fp)
   }
   if (TP < 0 || FP < 0) stop("counts cannot be negative")
   n <- TP + FP
@@ -299,7 +310,8 @@ Ppv <- function(tp, fp = NULL, prevalence = NULL, sensitivity = NULL,
            "specificity")
     p <- as.numeric(prevalence)
     if (p < 0 || p > 1) stop("the prevalence must lie in [0, 1]")
-    se <- as.numeric(sensitivity); sp <- as.numeric(specificity)
+    se <- as.numeric(sensitivity)
+    sp <- as.numeric(specificity)
     den <- se * p + (1 - sp) * (1 - p)
     out$prevalence <- p
     out$ppv_at_prevalence <- if (den > 0) se * p / den else NULL
@@ -341,17 +353,25 @@ Accuracy <- function(table = NULL, tp = NULL, tn = NULL, fp = NULL,
     t <- as.matrix(table)
     if (nrow(t) != 2L || ncol(t) != 2L)
       stop("the table must be 2x2, [[TP, FN], [FP, TN]]")
-    TP <- t[1, 1]; FN <- t[1, 2]; FP <- t[2, 1]; TN <- t[2, 2]
+    TP <- t[1, 1]
+    FN <- t[1, 2]
+    FP <- t[2, 1]
+    TN <- t[2, 2]
   } else {
     if (is.null(tp) || is.null(tn) || is.null(fp) || is.null(fn))
       stop("give a 2x2 table or all four of tp, tn, fp, fn")
-    TP <- tp; TN <- tn; FP <- fp; FN <- fn
+    TP <- tp
+    TN <- tn
+    FP <- fp
+    FN <- fn
   }
   cts <- c(TP, TN, FP, FN)
   if (any(cts < 0)) stop("counts cannot be negative")
   if (any(cts != round(cts))) stop("counts must be whole numbers")
-  TP <- as.integer(TP); TN <- as.integer(TN)
-  FP <- as.integer(FP); FN <- as.integer(FN)
+  TP <- as.integer(TP)
+  TN <- as.integer(TN)
+  FP <- as.integer(FP)
+  FN <- as.integer(FN)
   total <- TP + TN + FP + FN
   if (total <= 0L) stop("the table is empty")
   if (TP + FN <= 0L || TN + FP <= 0L)
@@ -368,12 +388,15 @@ Accuracy <- function(table = NULL, tp = NULL, tn = NULL, fp = NULL,
     balanced <- .morie_rg_fmul(.morie_rg_frac(1, 2),
                                .morie_rg_fadd(se, sp))
   } else {
-    se <- TP / (TP + FN); sp <- TN / (TN + FP)
-    raw <- (TP + TN) / total; tprev <- (TP + FN) / total
+    se <- TP / (TP + FN)
+    sp <- TN / (TN + FP)
+    raw <- (TP + TN) / total
+    tprev <- (TP + FN) / total
     balanced <- 0.5 * (se + sp)
   }
 
-  weighted <- NULL; prev <- NULL
+  weighted <- NULL
+  prev <- NULL
   if (!is.null(prevalence)) {
     if (exact) {
       prev <- .morie_rg_asfrac(prevalence)
@@ -485,10 +508,13 @@ McNemar <- function(table, correct = NULL) {
   if (k < 2L || ncol(t) != k) stop("the table must be square and at least 2x2")
   if (any(t < 0)) stop("counts cannot be negative")
   yates <- if (is.null(correct)) (k == 2L) else isTRUE(correct)
-  stat <- 0; df <- 0L; pairs <- list()
+  stat <- 0
+  df <- 0L
+  pairs <- list()
   for (i in seq_len(k)) for (j in seq_len(k)) {
     if (j <= i) next
-    a <- t[i, j]; b <- t[j, i]
+    a <- t[i, j]
+    b <- t[j, i]
     if (a + b <= 0) next
     d <- abs(a - b)
     if (yates) d <- max(0, d - 1)
@@ -528,8 +554,10 @@ NormDist <- function(m1, m2, s1, s2) {
   # Fisher criterion.  The book states the limitation: d_n = 0 whenever
   # m1 = m2, however different the dispersions, so classes separated only
   # by variance score zero.  The divergence has no such blind spot.
-  a <- as.numeric(m1); b <- as.numeric(m2)
-  p <- as.numeric(s1); q <- as.numeric(s2)
+  a <- as.numeric(m1)
+  b <- as.numeric(m2)
+  p <- as.numeric(s1)
+  q <- as.numeric(s2)
   if (p < 0 || q < 0) stop("a standard deviation cannot be negative")
   if (p + q <= 0)
     stop("both standard deviations are zero; the normalized distance is ",
@@ -565,13 +593,16 @@ Divergence <- function(m1, m2, C1, C2) {
   # the FIRST does not, so unlike d_n the divergence still separates
   # classes differing only in covariance.  This is the measure the book
   # uses; Bhattacharyya appears nowhere in it.
-  a <- as.numeric(m1); b <- as.numeric(m2)
-  A <- as.matrix(C1); B <- as.matrix(C2)
+  a <- as.numeric(m1)
+  b <- as.numeric(m2)
+  A <- as.matrix(C1)
+  B <- as.matrix(C2)
   p <- length(a)
   if (length(b) != p) stop("the two mean vectors must have the same length")
   if (nrow(A) != p || ncol(A) != p || nrow(B) != p || ncol(B) != p)
     stop("the covariance matrices must be ", p, " x ", p)
-  Ai <- solve(A); Bi <- solve(B)
+  Ai <- solve(A)
+  Bi <- solve(B)
   term1 <- 0.5 * sum(diag((A - B) %*% (Bi - Ai)))
   dm <- matrix(a - b, ncol = 1)
   term2 <- 0.5 * sum(diag((Ai + Bi) %*% (dm %*% t(dm))))
@@ -602,7 +633,8 @@ DivAv <- function(means, covs) {
   m <- length(means)
   if (m < 2L) stop("need at least two classes")
   if (length(covs) != m) stop("give one covariance matrix per class")
-  vals <- c(); pairs <- list()
+  vals <- c()
+  pairs <- list()
   for (i in seq_len(m)) for (j in seq_len(m)) {
     if (j <= i) next
     d <- Divergence(means[[i]], means[[j]], covs[[i]], covs[[j]])$divergence
@@ -645,7 +677,8 @@ Kld <- function(p1, p2) {
   # The book uses this as a FEATURE: Rangayyan and Wu computed the KLD
   # between a signal's PDF and Parzen-window models of the normal and
   # abnormal VAG classes, reaching 73 per cent with the KLD alone.
-  a <- as.numeric(p1); b <- as.numeric(p2)
+  a <- as.numeric(p1)
+  b <- as.numeric(p2)
   if (length(a) != length(b))
     stop("the two PDFs must be sampled on the same grid")
   if (!length(a)) stop("need at least one bin")
@@ -683,7 +716,8 @@ PdfOverlap <- function(p1, p2) {
   # from, D_B = -ln BC, and what makes the error bound work: the overlap
   # of the two class-conditional densities IS the region where the
   # optimal classifier must make mistakes.  NOT FROM THIS BOOK.
-  a <- as.numeric(p1); b <- as.numeric(p2)
+  a <- as.numeric(p1)
+  b <- as.numeric(p2)
   if (length(a) != length(b))
     stop("the two PDFs must be sampled on the same grid")
   if (!length(a)) stop("need at least one bin")
@@ -730,7 +764,8 @@ Chernoff <- function(p1, p2, alpha = NULL, n_grid = 201) {
   # rather than the best a.  Every a gives a valid bound
   # P_e <= P1^a P2^(1-a) rho_a; the minimum gives the best of them.
   # NOT FROM RANGAYYAN (2024).
-  a <- as.numeric(p1); b <- as.numeric(p2)
+  a <- as.numeric(p1)
+  b <- as.numeric(p2)
   if (length(a) != length(b))
     stop("the two PDFs must be sampled on the same grid")
   if (!length(a)) stop("need at least one bin")
@@ -740,14 +775,18 @@ Chernoff <- function(p1, p2, alpha = NULL, n_grid = 201) {
   if (!is.null(alpha)) {
     av <- as.numeric(alpha)
     if (av < 0 || av > 1) stop("alpha must lie in [0, 1]")
-    best_a <- av; best_rho <- rho(av); searched <- FALSE
+    best_a <- av
+    best_rho <- rho(av)
+    searched <- FALSE
   } else {
     m <- as.integer(n_grid)
     if (m < 3L) stop("need at least three grid points")
     grid <- (seq_len(m) - 1) / (m - 1)
     vals <- vapply(grid, rho, numeric(1))
     i <- which.min(vals)
-    best_a <- grid[i]; best_rho <- vals[i]; searched <- TRUE
+    best_a <- grid[i]
+    best_rho <- vals[i]
+    searched <- TRUE
   }
   bc <- rho(0.5)
   list(coefficient = best_rho, alpha = best_a,
@@ -793,7 +832,8 @@ Hellinger <- function(p1, p2) {
   # distributions needs this and not D_B.  The 1/2 normalization is the
   # usual one; unnormalized gives H^2 = 2(1 - BC), so the convention is
   # reported rather than assumed.  NOT FROM RANGAYYAN (2024).
-  a <- as.numeric(p1); b <- as.numeric(p2)
+  a <- as.numeric(p1)
+  b <- as.numeric(p2)
   if (length(a) != length(b))
     stop("the two PDFs must be sampled on the same grid")
   if (!length(a)) stop("need at least one bin")
@@ -849,15 +889,19 @@ GaussOverlap <- function(m1, m2, C1, C2) {
   # bounds nothing.  The two answer different questions: the divergence
   # says how far apart the classes are, this says how well ANY
   # classifier could possibly do.
-  a <- as.numeric(m1); b <- as.numeric(m2)
-  A <- as.matrix(C1); B <- as.matrix(C2)
+  a <- as.numeric(m1)
+  b <- as.numeric(m2)
+  A <- as.matrix(C1)
+  B <- as.matrix(C2)
   p <- length(a)
   if (length(b) != p) stop("the two mean vectors must have the same length")
   if (nrow(A) != p || nrow(B) != p) stop("the covariances must be ", p, " x ", p)
   M <- 0.5 * (A + B)
   dm <- matrix(a - b, ncol = 1)
   quad <- as.numeric(t(dm) %*% solve(M) %*% dm)
-  dA <- det(A); dB <- det(B); dM <- det(M)
+  dA <- det(A)
+  dB <- det(B)
+  dM <- det(M)
   if (dA <= 0 || dB <= 0 || dM <= 0)
     stop("a covariance matrix is not positive definite")
   list(bhattacharyya = 0.125 * quad + 0.5 * log(dM / sqrt(dA * dB)),
@@ -894,7 +938,8 @@ ErrBound <- function(p1, p2, db) {
   # the divergence does not bound the error this way, and substituting it
   # would give a number that looks like a bound and is not one.  The
   # bound is on the OPTIMAL classifier, a floor no real one can beat.
-  a <- as.numeric(p1); b <- as.numeric(p2)
+  a <- as.numeric(p1)
+  b <- as.numeric(p2)
   if (a < 0 || b < 0) stop("prior probabilities cannot be negative")
   if (abs(a + b - 1) > 1e-9) stop("the two priors must sum to 1")
   d <- as.numeric(db)
@@ -925,13 +970,18 @@ FishCrit <- function(x1, x2) {
   # J = (m1 - m2)^2 / (s1^2 + s2^2).  Close kin to eq (10.112) but NOT
   # the same measure: that divides |m1 - m2| by (s1 + s2).  They rank
   # features identically only when the dispersions are equal.
-  a <- as.numeric(x1); b <- as.numeric(x2)
+  a <- as.numeric(x1)
+  b <- as.numeric(x2)
   if (length(a) < 2L || length(b) < 2L)
     stop("each class needs at least two samples")
-  m1 <- mean(a); m2 <- mean(b); v1 <- stats::var(a); v2 <- stats::var(b)
+  m1 <- mean(a)
+  m2 <- mean(b)
+  v1 <- stats::var(a)
+  v2 <- stats::var(b)
   if (v1 + v2 <= 0)
     stop("both classes have zero variance; the criterion is undefined")
-  s1 <- sqrt(v1); s2 <- sqrt(v2)
+  s1 <- sqrt(v1)
+  s2 <- sqrt(v2)
   list(j = (m1 - m2)^2 / (v1 + v2), means = c(m1, m2),
        variances = c(v1, v2),
        normalized_distance = if (s1 + s2 > 0) abs(m1 - m2) / (s1 + s2)
@@ -965,7 +1015,8 @@ SepIndex <- function(X, y) {
   if (length(g$order) < 2L) stop("need at least two classes")
   p <- ncol(Xs)
   grand <- colMeans(Xs)
-  SW <- matrix(0, p, p); SB <- matrix(0, p, p)
+  SW <- matrix(0, p, p)
+  SB <- matrix(0, p, p)
   for (rows in g$groups) {
     mu <- colMeans(rows)
     SW <- SW + .morie_rg_scatter(rows, mu)
@@ -1007,16 +1058,22 @@ FishLda <- function(X, y) {
   if (length(g$order) != 2L)
     stop("Fisher's linear discriminant as stated is a two-class method; ",
          "got ", length(g$order), " classes")
-  a <- g$groups[[1]]; b <- g$groups[[2]]
+  a <- g$groups[[1]]
+  b <- g$groups[[2]]
   if (nrow(a) < 2L || nrow(b) < 2L)
     stop("each class needs at least two samples")
-  m1 <- colMeans(a); m2 <- colMeans(b)
+  m1 <- colMeans(a)
+  m2 <- colMeans(b)
   SW <- .morie_rg_scatter(a, m1) + .morie_rg_scatter(b, m2)
   w <- as.numeric(solve(SW, m1 - m2))
-  pa <- as.numeric(a %*% w); pb <- as.numeric(b %*% w)
-  ma <- mean(pa); mb <- mean(pb)
-  va <- sum((pa - ma)^2); vb <- sum((pb - mb)^2)
-  proj <- list(pa, pb); names(proj) <- as.character(g$order)
+  pa <- as.numeric(a %*% w)
+  pb <- as.numeric(b %*% w)
+  ma <- mean(pa)
+  mb <- mean(pb)
+  va <- sum((pa - ma)^2)
+  vb <- sum((pb - mb)^2)
+  proj <- list(pa, pb)
+  names(proj) <- as.character(g$order)
   list(w = w, threshold = 0.5 * (ma + mb), classes = g$order,
        means = list(m1, m2), s_within = SW, projected = proj,
        projected_means = c(ma, mb),
@@ -1042,7 +1099,9 @@ Mahal <- function(x, mu, C) {
   # the data's own scatter: a point far along an axis of natural
   # variation is NEAR, one close by across the grain is far.  Euclidean
   # distance would quietly favour whichever feature has the largest units.
-  xs <- as.numeric(x); m <- as.numeric(mu); S <- as.matrix(C)
+  xs <- as.numeric(x)
+  m <- as.numeric(mu)
+  S <- as.matrix(C)
   p <- length(xs)
   if (length(m) != p) stop("x and mu must have the same length")
   if (nrow(S) != p || ncol(S) != p)
@@ -1111,8 +1170,10 @@ LinDSep <- function(X, y) {
   # data that chose the cut -- so they are optimistic; Section 10.10.3 is
   # the book's warning, and KFoldCv or LooCv gives an honest figure.
   f <- FishLda(X, y)
-  a <- f$projected[[1]]; b <- f$projected[[2]]
-  ma <- f$projected_means[1]; mb <- f$projected_means[2]
+  a <- f$projected[[1]]
+  b <- f$projected[[2]]
+  ma <- f$projected_means[1]
+  mb <- f$projected_means[2]
   mid <- 0.5 * (ma + mb)
   hi_first <- ma > mb
   cand <- sort(unique(c(a, b)))
@@ -1272,7 +1333,8 @@ BayesNorm <- function(x, means, covs, priors = NULL, full = FALSE) {
   const <- 0.5 * n * log(2 * pi)
   dshort <- numeric(m)
   for (i in seq_len(m)) {
-    if (pr[i] <= 0) { dshort[i] <- -Inf; next }
+    if (pr[i] <= 0) { dshort[i] <- -Inf
+    next }
     S <- as.matrix(covs[[i]])
     dt <- det(S)
     if (dt <= 0) stop("covariance ", i, " is not positive definite")
@@ -1445,7 +1507,9 @@ KMeans <- function(X, k, maxiter = 100, tol = 1e-10, init = NULL) {
     cent <- as.matrix(init)
     if (nrow(cent) != kk || ncol(cent) != p) stop("init must be k x p")
   }
-  lab <- integer(n); prev <- NA_real_; it <- 0L
+  lab <- integer(n)
+  prev <- NA_real_
+  it <- 0L
   for (it in seq_len(as.integer(maxiter))) {
     for (i in seq_len(n)) {
       d <- rowSums(sweep(cent, 2, Xs[i, ], "-")^2)
@@ -1465,7 +1529,8 @@ KMeans <- function(X, k, maxiter = 100, tol = 1e-10, init = NULL) {
     }
     wcss <- sum(vapply(seq_len(n), function(i)
       sum((Xs[i, ] - cent[lab[i], ])^2), numeric(1)))
-    if (!is.na(prev) && abs(prev - wcss) <= tol) { prev <- wcss; break }
+    if (!is.na(prev) && abs(prev - wcss) <= tol) { prev <- wcss
+    break }
     prev <- wcss
   }
   list(labels = lab - 1L, centroids = cent, wcss = prev, k = kk,
@@ -1499,14 +1564,17 @@ Elbow <- function(X, kmax = 8, kmin = 1) {
   # the knee is wherever the arithmetic puts it.
   Xs <- as.matrix(X)
   n <- nrow(Xs)
-  lo <- as.integer(kmin); hi <- as.integer(kmax)
+  lo <- as.integer(kmin)
+  hi <- as.integer(kmax)
   if (lo < 1L) stop("kmin must be at least 1")
   if (hi > n) stop("kmax exceeds the number of patterns")
   if (hi <= lo) stop("kmax must exceed kmin")
   ks <- lo:hi
   wcss <- vapply(ks, function(k) KMeans(Xs, k)$wcss, numeric(1))
-  x1 <- ks[1]; y1 <- wcss[1]
-  x2 <- ks[length(ks)]; y2 <- wcss[length(wcss)]
+  x1 <- ks[1]
+  y1 <- wcss[1]
+  x2 <- ks[length(ks)]
+  y2 <- wcss[length(wcss)]
   den <- sqrt((x2 - x1)^2 + (y2 - y1)^2)
   knee <- if (den <= 0) ks[1] else
     ks[which.max(abs((y2 - y1) * ks - (x2 - x1) * wcss +
@@ -1552,7 +1620,8 @@ HClust <- function(X, linkage = "single", k = NULL) {
     best <- NULL
     for (a in seq_along(keys)) for (b in seq_along(keys)) {
       if (b <= a) next
-      ga <- groups[[keys[a]]]; gb <- groups[[keys[b]]]
+      ga <- groups[[keys[a]]]
+      gb <- groups[[keys[b]]]
       ds <- as.numeric(D[ga, gb])
       dd <- switch(linkage, single = min(ds), complete = max(ds),
                    average = mean(ds))
@@ -1638,7 +1707,8 @@ KFoldCv <- function(X, y, k = 5, classifier = NULL, stratified = TRUE) {
     for (f in seq_len(kk))
       folds[[f]] <- seq_len(n)[seq_len(n) %% kk == (f - 1L)]
   }
-  errors <- 0L; per_fold <- list()
+  errors <- 0L
+  per_fold <- list()
   for (f in seq_len(kk)) {
     test <- folds[[f]]
     if (!length(test)) next
@@ -1719,7 +1789,9 @@ LooCv <- function(X, y, classifier = NULL) {
   # equality constraint sum a_i y_i = 0 that single-coordinate updates
   # cannot
   n <- length(ys)
-  a <- numeric(n); b <- 0; it <- 0L
+  a <- numeric(n)
+  b <- 0
+  it <- 0L
   for (it in seq_len(as.integer(maxiter))) {
     changed <- 0L
     for (i in seq_len(n)) {
@@ -1730,11 +1802,14 @@ LooCv <- function(X, y, classifier = NULL) {
         j <- (i + it) %% n + 1L
         if (j == i) next
         Ej <- sum(a * ys * K[, j]) + b - ys[j]
-        ai <- a[i]; aj <- a[j]
+        ai <- a[i]
+        aj <- a[j]
         if (ys[i] != ys[j]) {
-          L <- max(0, aj - ai); H <- min(Cv, Cv + aj - ai)
+          L <- max(0, aj - ai)
+          H <- min(Cv, Cv + aj - ai)
         } else {
-          L <- max(0, ai + aj - Cv); H <- min(Cv, ai + aj)
+          L <- max(0, ai + aj - Cv)
+          H <- min(Cv, ai + aj)
         }
         if (H - L < 1e-12) next
         eta <- 2 * K[i, j] - K[i, i] - K[j, j]
@@ -1748,7 +1823,8 @@ LooCv <- function(X, y, classifier = NULL) {
           ys[j] * (anj - aj) * K[j, j]
         b <- if (ani > 0 && ani < Cv) b1 else
           if (anj > 0 && anj < Cv) b2 else 0.5 * (b1 + b2)
-        a[i] <- ani; a[j] <- anj
+        a[i] <- ani
+        a[j] <- anj
         changed <- changed + 1L
       }
     }

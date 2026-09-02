@@ -125,7 +125,9 @@
                                 kind = "wls", max_iter = 200L, tol = 1e-12,
                                 max_halvings = 40L) {
   ok <- is.finite(lags) & is.finite(ghat) & counts > 0
-  h <- lags[ok]; g <- ghat[ok]; n <- counts[ok]
+  h <- lags[ok]
+  g <- ghat[ok]
+  n <- counts[ok]
   if (length(h) < 3L) {
     stop("need at least 3 usable lag classes to fit 3 parameters", call. = FALSE)
   }

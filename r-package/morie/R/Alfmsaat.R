@@ -34,8 +34,10 @@ Alfmsaat <- function(m, wq, wk, wv, wg, wo, z = NULL, wb = NULL,
 
   q <- k <- v <- g <- vector("list", nh)
   for (h in seq_len(nh)) {
-    q[[h]] <- array(0, c(s, n, cc)); k[[h]] <- array(0, c(s, n, cc))
-    v[[h]] <- array(0, c(s, n, cc)); g[[h]] <- array(0, c(s, n, cc))
+    q[[h]] <- array(0, c(s, n, cc))
+    k[[h]] <- array(0, c(s, n, cc))
+    v[[h]] <- array(0, c(s, n, cc))
+    g[[h]] <- array(0, c(s, n, cc))
     for (si in seq_len(s)) for (i in seq_len(n)) {
       x <- mn[si, i, ]
       q[[h]][si, i, ] <- alfLin(x, wq[[h]])

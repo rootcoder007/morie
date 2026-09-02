@@ -113,7 +113,8 @@ morie_permutation_lm_loss <- function(logits, targets, permutation,
                                       reduction = c("mean", "sum", "none")) {
   reduction <- match.arg(reduction)
   L <- as.matrix(logits)
-  T_ <- nrow(L); V <- ncol(L)
+  T_ <- nrow(L)
+  V <- ncol(L)
   y <- as.integer(targets)
   if (length(y) != T_) {
     stop(sprintf("targets has length %d but logits has %d positions.",
@@ -317,7 +318,8 @@ morie_dp_mean <- function(y, C = NULL, epsilon = 1, n = NULL,
 #' @examples
 #' morie_minimax_regret_constant()
 morie_minimax_regret_constant <- function(tol = 1e-14) {
-  lo <- 0; hi <- 5
+  lo <- 0
+  hi <- 5
   for (i in seq_len(400L)) {
     mid <- (lo + hi) / 2
     if (stats::pnorm(-mid) - mid * stats::dnorm(mid) > 0) lo <- mid else
@@ -422,15 +424,18 @@ morie_efficiency_bound_ate <- function(y, D, X, family = c("gaussian",
     dof <- max(sum(mask) - ncol(Xd), 1L)
     list(mu = mu, s2 = rep(sum(r^2) / dof, n))
   }
-  a1 <- arm(d == 1); a0 <- arm(d == 0)
+  a1 <- arm(d == 1)
+  a0 <- arm(d == 0)
   tau_x <- a1$mu - a0$mu
 
   psi <- tau_x + d * (yv - a1$mu) / e - (1 - d) * (yv - a0$mu) / (1 - e)
   tau <- mean(psi)
   var_aipw <- mean((psi - tau)^2)
 
-  w1 <- d / e; w0 <- (1 - d) / (1 - e)
-  mu1_h <- sum(w1 * yv) / sum(w1); mu0_h <- sum(w0 * yv) / sum(w0)
+  w1 <- d / e
+  w0 <- (1 - d) / (1 - e)
+  mu1_h <- sum(w1 * yv) / sum(w1)
+  mu0_h <- sum(w0 * yv) / sum(w0)
   tau_ipw <- mu1_h - mu0_h
   psi_ipw <- w1 * (yv - mu1_h) - w0 * (yv - mu0_h)
   var_ipw <- mean((psi_ipw - mean(psi_ipw))^2)

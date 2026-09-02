@@ -37,7 +37,8 @@
 #' morie_ate_potential_outcomes(rnorm(50, 2), rnorm(50))$ate
 #' @export
 morie_ate_potential_outcomes <- function(y1, y0, paired = TRUE, alpha = 0.05) {
-  a <- as.numeric(y1); b <- as.numeric(y0)
+  a <- as.numeric(y1)
+  b <- as.numeric(y0)
   if (!length(a) || !length(b)) stop("y1 and y0 must not be empty.", call. = FALSE)
   if (!all(is.finite(a)) || !all(is.finite(b))) stop("y1 and y0 must be finite.", call. = FALSE)
   if (alpha <= 0 || alpha >= 1) stop("alpha must lie in (0, 1), got ", alpha, ".", call. = FALSE)
@@ -53,9 +54,11 @@ morie_ate_potential_outcomes <- function(y1, y0, paired = TRUE, alpha = 0.05) {
     se <- stats::sd(d) / sqrt(length(d))
     df <- length(d) - 1
   } else {
-    n1 <- length(a); n0 <- length(b)
+    n1 <- length(a)
+    n0 <- length(b)
     if (n1 < 2L || n0 < 2L) stop("Need at least 2 observations per arm.", call. = FALSE)
-    v1 <- stats::var(a) / n1; v0 <- stats::var(b) / n0
+    v1 <- stats::var(a) / n1
+    v0 <- stats::var(b) / n0
     se <- sqrt(v1 + v0)
     df <- (v1 + v0)^2 / (v1^2 / (n1 - 1) + v0^2 / (n0 - 1))
   }
@@ -94,7 +97,8 @@ morie_ate_potential_outcomes <- function(y1, y0, paired = TRUE, alpha = 0.05) {
 #' morie_backdoor_adjustment(c(1,1,0,0), c(1,0,1,0), c(0,0,1,1))$distribution
 #' @export
 morie_backdoor_adjustment <- function(x, y, z, at = NULL) {
-  xa <- as.vector(x); ya <- as.vector(y)
+  xa <- as.vector(x)
+  ya <- as.vector(y)
   za <- if (is.null(dim(z))) matrix(z, ncol = 1L) else as.matrix(z)
   n <- length(xa)
   if (length(ya) != n || nrow(za) != n) {
@@ -105,20 +109,23 @@ morie_backdoor_adjustment <- function(x, y, z, at = NULL) {
   zlab <- apply(za, 1L, function(r) paste(r, collapse = "|"))
   lev <- sort(unique(zlab))
   pz <- as.numeric(table(factor(zlab, levels = lev))) / n
-  sup_x <- sort(unique(xa)); sup_y <- sort(unique(ya))
+  sup_x <- sort(unique(xa))
+  sup_y <- sort(unique(ya))
   targets <- if (is.null(at)) sup_x else at
   for (t in targets) {
     if (!any(xa == t)) {
       stop("at = ", t, " does not occur in x; the conditional is undefined.", call. = FALSE)
     }
   }
-  dist <- list(); incomplete <- list()
+  dist <- list()
+  incomplete <- list()
   for (t in targets) {
     acc <- stats::setNames(rep(0, length(sup_y)), as.character(sup_y))
     for (i in seq_along(lev)) {
       sel <- zlab == lev[i] & xa == t
       m <- sum(sel)
-      if (m == 0L) { incomplete[[length(incomplete) + 1L]] <- c(as.character(t), lev[i]); next }
+      if (m == 0L) { incomplete[[length(incomplete) + 1L]] <- c(as.character(t), lev[i])
+      next }
       yz <- ya[sel]
       for (yv in sup_y) {
         acc[[as.character(yv)]] <- acc[[as.character(yv)]] + pz[i] * sum(yz == yv) / m
@@ -167,10 +174,13 @@ morie_backdoor_adjustment <- function(x, y, z, at = NULL) {
 #' @return The value of \code{seen}, as built in the body.
 #' @export
 .bd_desc <- function(node, ch) {
-  seen <- character(0); stack <- node
+  seen <- character(0)
+  stack <- node
   while (length(stack)) {
-    cur <- stack[1]; stack <- stack[-1]
-    for (c in ch[[cur]]) if (!(c %in% seen)) { seen <- c(seen, c); stack <- c(stack, c) }
+    cur <- stack[1]
+    stack <- stack[-1]
+    for (c in ch[[cur]]) if (!(c %in% seen)) { seen <- c(seen, c)
+    stack <- c(stack, c) }
   }
   seen
 }
@@ -188,10 +198,13 @@ morie_backdoor_adjustment <- function(x, y, z, at = NULL) {
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .bd_paths <- function(x, y, ch, pa) {
-  out <- list(); stack <- list(list(cur = x, path = x, dirs = character(0)))
+  out <- list()
+  stack <- list(list(cur = x, path = x, dirs = character(0)))
   while (length(stack)) {
-    s <- stack[[1]]; stack <- stack[-1]
-    if (s$cur == y) { out[[length(out) + 1L]] <- s; next }
+    s <- stack[[1]]
+    stack <- stack[-1]
+    if (s$cur == y) { out[[length(out) + 1L]] <- s
+    next }
     for (nx in ch[[s$cur]]) if (!(nx %in% s$path)) {
       stack <- c(stack, list(list(cur = nx, path = c(s$path, nx), dirs = c(s$dirs, "->"))))
     }
@@ -313,7 +326,9 @@ morie_backdoor_criterion <- function(dag, x, y, z = character(0)) {
 #' morie_baron_kenny(0.3 * x + 0.6 * m + rnorm(200), x, m)$mediation
 #' @export
 morie_baron_kenny <- function(y, x, m, alpha = 0.05) {
-  y <- as.numeric(y); x <- as.numeric(x); m <- as.numeric(m)
+  y <- as.numeric(y)
+  x <- as.numeric(x)
+  m <- as.numeric(m)
   n <- length(y)
   if (length(x) != n || length(m) != n) {
     stop("y, x and m must be the same length; got ", n, ", ", length(x),
@@ -325,8 +340,14 @@ morie_baron_kenny <- function(y, x, m, alpha = 0.05) {
   s1 <- summary(stats::lm(y ~ x))$coefficients
   s2 <- summary(stats::lm(m ~ x))$coefficients
   s3 <- summary(stats::lm(y ~ x + m))$coefficients
-  cc <- s1["x", 1]; a <- s2["x", 1]; cp <- s3["x", 1]; b <- s3["m", 1]
-  p_c <- s1["x", 4]; p_a <- s2["x", 4]; p_cp <- s3["x", 4]; p_b <- s3["m", 4]
+  cc <- s1["x", 1]
+  a <- s2["x", 1]
+  cp <- s3["x", 1]
+  b <- s3["m", 1]
+  p_c <- s1["x", 4]
+  p_a <- s2["x", 4]
+  p_cp <- s3["x", 4]
+  p_b <- s3["m", 4]
 
   steps <- list(step1_total_effect_significant = p_c < alpha,
                 step2_x_predicts_m = p_a < alpha,
@@ -417,7 +438,9 @@ morie_indirect_effect_sobel <- function(a, b, se_a = NULL, se_b = NULL, alpha = 
 #' morie_dr_did(u + rnorm(n), u + 0.9 * xx + 2 * d + rnorm(n), d, xx)$att
 #' @export
 morie_dr_did <- function(y_pre, y_post, d, x, trim = 0.995, alpha = 0.05) {
-  pre <- as.numeric(y_pre); post <- as.numeric(y_post); dd <- as.numeric(d)
+  pre <- as.numeric(y_pre)
+  post <- as.numeric(y_post)
+  dd <- as.numeric(d)
   X <- if (is.null(dim(x))) matrix(as.numeric(x), ncol = 1L) else as.matrix(x)
   n <- length(pre)
   if (length(post) != n || length(dd) != n || nrow(X) != n) {
@@ -502,7 +525,8 @@ morie_dr_did <- function(y_pre, y_post, d, x, trim = 0.995, alpha = 0.05) {
 #' morie_binary_mediation(xx, mm, yy)$indirect
 #' @export
 morie_binary_mediation <- function(x, m, y, covariates = NULL, B = 0L, alpha = 0.05) {
-  xx <- as.numeric(x); yy <- as.numeric(y)
+  xx <- as.numeric(x)
+  yy <- as.numeric(y)
   M <- if (is.null(dim(m))) matrix(as.numeric(m), ncol = 1L) else as.matrix(m)
   n <- length(xx)
   if (length(yy) != n || nrow(M) != n) {
@@ -523,7 +547,9 @@ morie_binary_mediation <- function(x, m, y, covariates = NULL, B = 0L, alpha = 0
   C <- if (is.null(covariates)) NULL else as.matrix(covariates)
 
   point <- function(idx) {
-    xs <- xx[idx]; ys <- yy[idx]; ms <- M[idx, , drop = FALSE]
+    xs <- xx[idx]
+    ys <- yy[idx]
+    ms <- M[idx, , drop = FALSE]
     cs <- if (is.null(C)) NULL else C[idx, , drop = FALSE]
     base <- if (is.null(cs)) ms else cbind(ms, cs)
     g <- stats::coef(suppressWarnings(stats::glm(xs ~ base, family = stats::binomial())))
@@ -539,7 +565,9 @@ morie_binary_mediation <- function(x, m, y, covariates = NULL, B = 0L, alpha = 0
   }
 
   pt <- point(seq_len(n))
-  total <- pt[["total"]]; direct <- pt[["direct"]]; indirect <- total - direct
+  total <- pt[["total"]]
+  direct <- pt[["direct"]]
+  indirect <- total - direct
   se <- ci_lo <- ci_hi <- NULL
   B <- as.integer(B)
   if (B > 0L) {
@@ -579,7 +607,8 @@ morie_binary_mediation <- function(x, m, y, covariates = NULL, B = 0L, alpha = 0
 #' set.seed(1); morie_hsic(rnorm(100), rnorm(100))
 #' @export
 morie_hsic <- function(a, b) {
-  a <- as.numeric(a); b <- as.numeric(b)
+  a <- as.numeric(a)
+  b <- as.numeric(b)
   if (length(a) != length(b)) {
     stop("a and b must be the same length; got ", length(a), " and ", length(b), ".", call. = FALSE)
   }
@@ -610,7 +639,8 @@ morie_hsic <- function(a, b) {
   h <- sqrt(max(stats::median(d2[upper.tri(d2)]), 1e-12)) * 0.5
   W <- exp(-d2 / (2 * max(h, 1e-9)^2))
   diag(W) <- 0
-  den <- rowSums(W); den[den <= 0] <- 1
+  den <- rowSums(W)
+  den[den <= 0] <- 1
   y - as.vector(W %*% y) / den
 }
 
@@ -641,7 +671,8 @@ morie_hsic <- function(a, b) {
 #' morie_anm_direction(xv, xv^3 + rnorm(150, 0, 0.5), B = 49)$direction
 #' @export
 morie_anm_direction <- function(x, y, B = 200L) {
-  x <- as.numeric(x); y <- as.numeric(y)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
   if (length(x) != length(y)) {
     stop("x and y must be the same length; got ", length(x), " and ", length(y), ".", call. = FALSE)
   }
@@ -661,11 +692,14 @@ morie_anm_direction <- function(x, y, B = 200L) {
   p_yx <- pp(y, r_yx, h_yx)
 
   if (p_xy > 0.05 && p_yx <= 0.05) {
-    dir <- "X->Y"; conc <- TRUE
+    dir <- "X->Y"
+    conc <- TRUE
   } else if (p_yx > 0.05 && p_xy <= 0.05) {
-    dir <- "Y->X"; conc <- TRUE
+    dir <- "Y->X"
+    conc <- TRUE
   } else {
-    dir <- if (h_xy < h_yx) "X->Y" else "Y->X"; conc <- FALSE
+    dir <- if (h_xy < h_yx) "X->Y" else "Y->X"
+    conc <- FALSE
   }
   list(direction = dir, conclusive = conc, hsic_xy = h_xy, hsic_yx = h_yx,
        p_xy = p_xy, p_yx = p_yx, n = n, B = B,

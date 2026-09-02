@@ -93,11 +93,17 @@ morie_alf3df_schedule <- function(n_steps, sigma_min = 0.002,
 #' @return A three by three rotation matrix.
 #' @export
 morie_alf3df_rotation <- function(e) {
-  u1 <- .ghc_unif(e, 1L); u2 <- .ghc_unif(e, 1L); u3 <- .ghc_unif(e, 1L)
-  s1 <- sqrt(1 - u1); s2 <- sqrt(u1)
-  t1 <- 2 * pi * u2; t2 <- 2 * pi * u3
-  x <- s1 * sin(t1); y <- s1 * cos(t1)
-  z <- s2 * sin(t2); w <- s2 * cos(t2)
+  u1 <- .ghc_unif(e, 1L)
+  u2 <- .ghc_unif(e, 1L)
+  u3 <- .ghc_unif(e, 1L)
+  s1 <- sqrt(1 - u1)
+  s2 <- sqrt(u1)
+  t1 <- 2 * pi * u2
+  t2 <- 2 * pi * u3
+  x <- s1 * sin(t1)
+  y <- s1 * cos(t1)
+  z <- s2 * sin(t2)
+  w <- s2 * cos(t2)
   matrix(c(1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w),
            2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w),
            2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)),
@@ -157,7 +163,8 @@ morie_alf3df_step <- function(x, t, score_fn, sigma_next = NULL,
   if (t <= 0) stop("the current noise level must be positive")
   sn <- if (is.null(sigma_next)) 0 else as.numeric(sigma_next)
   if (sn < 0 || sn > t) stop("the next level must lie in [0, t]")
-  cur <- as.matrix(x); storage.mode(cur) <- "double"
+  cur <- as.matrix(x)
+  storage.mode(cur) <- "double"
   if (augment) {
     if (is.null(e)) stop("the augmentation needs a random stream")
     cur <- morie_alf3df_augment(cur, e)$x
