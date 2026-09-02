@@ -5,7 +5,7 @@
 \alias{xdeep_cheatsheet}
 \title{xdeep_cheatsheet}
 \usage{
-xdeep_cheatsheet()
+xdeep_cheatsheet() 
 }
 \description{
 Part of the xdeep_native implementation; see the file header for the source it follows.

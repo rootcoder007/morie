@@ -5,7 +5,7 @@
 \alias{momento_reconstruction_curve}
 \title{momento_reconstruction_curve}
 \usage{
-momento_reconstruction_curve(patches, reconstructor, rates, seed = 0)
+momento_reconstruction_curve(patches, reconstructor, rates, seed = 0) 
 }
 \arguments{
 \item{patches}{Iterated over elementwise, with \code{lapply}.}

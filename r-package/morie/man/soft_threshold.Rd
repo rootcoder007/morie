@@ -5,7 +5,7 @@
 \alias{soft_threshold}
 \title{Soft-thresholding}
 \usage{
-soft_threshold(v, tau)
+soft_threshold(v, tau) 
 }
 \arguments{
 \item{v}{Numeric vector.}

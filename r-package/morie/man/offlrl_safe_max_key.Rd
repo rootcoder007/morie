@@ -5,7 +5,7 @@
 \alias{offlrl_safe_max_key}
 \title{offlrl_safe_max_key}
 \usage{
-offlrl_safe_max_key(qmap, s, A)
+offlrl_safe_max_key(qmap, s, A) 
 }
 \arguments{
 \item{qmap}{A vector; indexed elementwise.}

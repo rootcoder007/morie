@@ -355,7 +355,7 @@ morie_datasets_tps_arcgis_hub_download <- function(hub_id,
 # ---------------------------------------------------------------------------
 
 #' Resolve any ArcGIS Online item id to its FeatureServer URL +
-#' canonical metadata.
+#' canonical metadata
 #'
 #' Lightweight discovery helper -- one network call to the ArcGIS
 #' Online items API (`/sharing/rest/content/items/<item_id>?f=json`),
@@ -393,7 +393,7 @@ morie_datasets_arcgis_item_metadata <- function(item_id) {
     stringsAsFactors = FALSE)
 }
 
-#' Generic by-id loader for any ArcGIS Online Feature Service item.
+#' Generic by-id loader for any ArcGIS Online Feature Service item
 #'
 #' Portal-agnostic sibling to
 #' [morie_datasets_tps_arcgis_hub_by_id()]. Works for ANY ArcGIS

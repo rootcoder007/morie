@@ -63,6 +63,7 @@
   as.raw(b)
 }
 
+#' @param x See Usage.
 #' @keywords internal
 .secarg_as_bytes <- function(x) {
   if (is.raw(x)) return(x)
@@ -98,6 +99,16 @@ morie_secarg_variable_hash <- function(data, length) {
 
 #' Pre-hashing digest H_0 over every parameter
 #'
+#' @param password See Usage.
+#' @param salt See Usage.
+#' @param parallelism See Usage.
+#' @param tag_length See Usage.
+#' @param memory See Usage.
+#' @param passes See Usage.
+#' @param variant See Usage.
+#' @param secret See Usage.
+#' @param associated See Usage.
+#' @param version See Usage.
 #' @return Raw 64-byte digest.
 #' @references RFC 9106 Sec. 3.1.
 #' @export
@@ -220,6 +231,8 @@ morie_secarg_prehash <- function(password, salt, parallelism, tag_length, memory
 }
 
 #' Compression function G(X, Y) = R xor Q
+#' @param X See Usage.
+#' @param Y See Usage.
 #' @export
 morie_secarg_compress <- function(X, Y) {
   R <- mapply(bitwXor, X, Y, SIMPLIFY = FALSE)
@@ -313,6 +326,15 @@ morie_secarg_compress <- function(X, Y) {
 }
 
 #' Argon2 password hash (RFC 9106)
+#' @param password See Usage.
+#' @param salt See Usage.
+#' @param memory See Usage.
+#' @param passes See Usage.
+#' @param parallelism See Usage.
+#' @param tag_length See Usage.
+#' @param variant See Usage.
+#' @param secret See Usage.
+#' @param associated See Usage.
 #' @export
 morie_secarg_argon2 <- function(password, salt, memory = 32, passes = 3,
                                 parallelism = 4, tag_length = 32,
@@ -355,6 +377,7 @@ morie_secarg_argon2 <- function(password, salt, memory = 32, passes = 3,
 }
 
 #' Recommended Argon2 configurations from RFC 9106 Sec. 4
+#' @param profile See Usage.
 #' @export
 morie_secarg_parameter_advice <- function(profile = "first") {
   rec <- list(

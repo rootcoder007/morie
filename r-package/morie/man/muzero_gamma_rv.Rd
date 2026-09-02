@@ -5,7 +5,7 @@
 \alias{muzero_gamma_rv}
 \title{muzero_gamma_rv}
 \usage{
-muzero_gamma_rv(alpha)
+muzero_gamma_rv(alpha) 
 }
 \arguments{
 \item{alpha}{Numeric; combined arithmetically in the body.}

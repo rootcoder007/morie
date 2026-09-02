@@ -5,10 +5,14 @@
 \alias{open_record}
 \title{Open a sealed record}
 \usage{
-open_record(sealed, dek)
+open_record(sealed, dek) 
 }
 \description{
 Open a sealed record
+}
+\arguments{
+\item{sealed}{Argument \code{sealed}; see Usage.}
+\item{dek}{Argument \code{dek}; see Usage.}
 }
 \value{
 The value of \code{$}.

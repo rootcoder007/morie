@@ -144,7 +144,10 @@ Suggests:
   withr,
   writexl,
   xgboost,
-  xml2
+  xml2,
+  jsonlite,
+  changepoint,
+  portes
 VignetteBuilder: knitr
 URL: https://github.com/rootcoder007/morie
 BugReports: https://github.com/rootcoder007/morie/issues

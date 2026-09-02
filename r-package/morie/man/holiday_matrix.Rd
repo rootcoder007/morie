@@ -3,9 +3,12 @@
 % the formals.
 \name{holiday_matrix}
 \alias{holiday_matrix}
+\alias{morie_prphet_holiday_matrix}
 \title{One indicator per holiday, optionally widened by a window}
 \usage{
-holiday_matrix(t, holidays, lower = 0, upper = 0)
+holiday_matrix(t, holidays, lower = 0, upper = 0) 
+
+morie_prphet_holiday_matrix(t, holidays, lower = 0, upper = 0) 
 }
 \arguments{
 \item{t}{Numeric vector of times.}

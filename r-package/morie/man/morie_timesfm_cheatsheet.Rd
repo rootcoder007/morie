@@ -5,7 +5,7 @@
 \alias{morie_timesfm_cheatsheet}
 \title{morie_timesfm_cheatsheet}
 \usage{
-morie_timesfm_cheatsheet()
+morie_timesfm_cheatsheet() 
 }
 \description{
 Part of the timesfm_native implementation; see the file header for the source it follows.

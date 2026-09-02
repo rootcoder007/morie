@@ -5,10 +5,14 @@
 \alias{morie_tqang_angular_difference}
 \title{Signed shortest difference \code{a - b}, in \code{[-pi, pi)}}
 \usage{
-morie_tqang_angular_difference(a, b)
+morie_tqang_angular_difference(a, b) 
 }
 \description{
 Signed shortest difference \code{a - b}, in \code{[-pi, pi)}
+}
+\arguments{
+\item{a}{Argument \code{a}; see Usage.}
+\item{b}{Argument \code{b}; see Usage.}
 }
 \value{
 Numeric scalar.

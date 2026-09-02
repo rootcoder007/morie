@@ -5,7 +5,7 @@
 \alias{miprgr_cheatsheet}
 \title{miprgr_cheatsheet}
 \usage{
-miprgr_cheatsheet()
+miprgr_cheatsheet() 
 }
 \description{
 Part of the miprgr_native implementation; see the file header for the source it follows.

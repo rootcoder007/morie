@@ -99,6 +99,7 @@ morie_bigint <- function(x) {
   .morie_big_new(sign, limbs)
 }
 
+#' @param x See Usage.
 #' @export
 as.character.morie_bigint <- function(x, ...) {
   if (x$sign == 0) return("0")

@@ -27,6 +27,10 @@ mqtmpl_cim_em(
 \item{r_right}{Passed to \code{mqtmpl_genotype_probabilities}.}
 
 \item{cofactors}{See Usage.}
+
+\item{max_iter}{Argument \code{max_iter}; see Usage.}
+
+\item{tol}{Argument \code{tol}; see Usage.}
 }
 \value{
 A list with \code{lod}, \code{rss}, \code{coef}.

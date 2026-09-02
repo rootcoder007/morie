@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_ess}
 \alias{morie_weights_ess}
-\title{Kish effective sample size: \eqn{(\sum w_i)^2 / \sum w_i^2}{(sum w_i)^2 / sum w_i^2}.}
+\title{Kish effective sample size: \eqn{(\sum w_i)^2 / \sum w_i^2}{(sum w_i)^2 / sum w_i^2}}
 \usage{
 morie_weights_ess(weights)
 }
@@ -14,7 +14,7 @@ Length-1 numeric: the Kish effective sample size (0 when
 \code{sum(weights) == 0}).
 }
 \description{
-Kish effective sample size: \eqn{(\sum w_i)^2 / \sum w_i^2}{(sum w_i)^2 / sum w_i^2}.
+Kish effective sample size: \eqn{(\sum w_i)^2 / \sum w_i^2}{(sum w_i)^2 / sum w_i^2}
 }
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)

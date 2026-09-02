@@ -5,7 +5,7 @@
 \alias{relative_utility}
 \title{Utility of one standard quarantine relative to another}
 \usage{
-relative_utility(t_R_a, t_R_b, t_Q = 3, generation_time = NULL, infected_fraction = NULL)
+relative_utility(t_R_a, t_R_b, t_Q = 3, generation_time = NULL, infected_fraction = NULL) 
 }
 \arguments{
 \item{t_R_a}{Release time of strategy A.}

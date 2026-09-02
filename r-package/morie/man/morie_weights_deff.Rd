@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_deff}
 \alias{morie_weights_deff}
-\title{Kish design effect (n / ESS).}
+\title{Kish design effect (n / ESS)}
 \usage{
 morie_weights_deff(weights)
 }
@@ -14,7 +14,7 @@ Length-1 numeric: \code{n / ESS} (or \code{Inf} when ESS is
 zero).
 }
 \description{
-Kish design effect (n / ESS).
+Kish design effect (n / ESS)
 }
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)

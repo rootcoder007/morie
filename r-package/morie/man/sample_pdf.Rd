@@ -5,7 +5,7 @@
 \alias{sample_pdf}
 \title{sample_pdf}
 \usage{
-sample_pdf(bins, weights, n_samples, rng, eps = 1e-05)
+sample_pdf(bins, weights, n_samples, rng, eps = 1e-05) 
 }
 \arguments{
 \item{bins}{Passed to \code{.as_numeric_vec}.}

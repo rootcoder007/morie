@@ -5,10 +5,13 @@
 \alias{quadratic_spectral_kernel}
 \title{Quadratic spectral kernel}
 \usage{
-quadratic_spectral_kernel(x)
+quadratic_spectral_kernel(x) 
 }
 \description{
 Quadratic spectral kernel
+}
+\arguments{
+\item{x}{Argument \code{x}; see Usage.}
 }
 \value{
 A numeric value.

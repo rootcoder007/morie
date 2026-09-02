@@ -10,6 +10,7 @@ spearman_correlation(x, y, confidence = 0.95)
 \item{x, y}{Numeric vectors.}
 
 \item{confidence}{Confidence level.}
+
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})

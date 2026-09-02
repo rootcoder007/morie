@@ -5,7 +5,7 @@
 \alias{mafft_degap}
 \title{mafft_degap}
 \usage{
-mafft_degap(group)
+mafft_degap(group) 
 }
 \arguments{
 \item{group}{A vector; its length is taken and its elements indexed.}

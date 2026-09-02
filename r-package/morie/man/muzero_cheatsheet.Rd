@@ -5,7 +5,7 @@
 \alias{muzero_cheatsheet}
 \title{muzero_cheatsheet}
 \usage{
-muzero_cheatsheet()
+muzero_cheatsheet() 
 }
 \description{
 Part of the muzero_native implementation; see the file header for the source it follows.

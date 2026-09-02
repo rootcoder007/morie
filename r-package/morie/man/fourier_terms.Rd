@@ -3,9 +3,12 @@
 % the formals.
 \name{fourier_terms}
 \alias{fourier_terms}
+\alias{morie_prphet_fourier_terms}
 \title{Cosine and sine Fourier pairs, exactly periodic with \code{period}}
 \usage{
-fourier_terms(t, period, order)
+fourier_terms(t, period, order) 
+
+morie_prphet_fourier_terms(t, period, order) 
 }
 \arguments{
 \item{t}{Numeric vector of times.}

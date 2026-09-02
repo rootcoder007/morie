@@ -5,7 +5,7 @@
 \alias{average_of_valid_masks}
 \title{average_of_valid_masks}
 \usage{
-average_of_valid_masks(masks)
+average_of_valid_masks(masks) 
 }
 \arguments{
 \item{masks}{Iterated over elementwise, with \code{lapply}.}

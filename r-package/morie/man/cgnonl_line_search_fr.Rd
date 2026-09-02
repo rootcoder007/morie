@@ -5,7 +5,8 @@
 \alias{cgnonl_line_search_fr}
 \title{cgnonl_line_search_fr}
 \usage{
-cgnonl_line_search_fr(f, grad, x, p, f0, g0, est = NULL, max_double = 60L, max_cubic = 40L, tol = 1e-12)
+cgnonl_line_search_fr(f, grad, x, p, f0, g0, est = NULL, max_double = 60L, max_cubic = 40L, 
+    tol = 1e-12) 
 }
 \arguments{
 \item{f}{Accepted by the signature and not used anywhere in the body.}

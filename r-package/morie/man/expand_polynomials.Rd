@@ -5,7 +5,7 @@
 \alias{expand_polynomials}
 \title{expand_polynomials}
 \usage{
-expand_polynomials(phi = list(), Phi = list(), theta = list(), Theta = list(), s = 12)
+expand_polynomials(phi = list(), Phi = list(), theta = list(), Theta = list(), s = 12) 
 }
 \arguments{
 \item{phi}{Passed to \code{unlist}. Defaults to \code{list()}.}

@@ -5,7 +5,7 @@
 \alias{edge_message}
 \title{edge_message}
 \usage{
-edge_message(h_i, h_j, x_i, x_j, phi_e, a_ij = NULL)
+edge_message(h_i, h_j, x_i, x_j, phi_e, a_ij = NULL) 
 }
 \arguments{
 \item{h_i}{Coerced to numeric by the body, with \code{as.numeric}.}

@@ -5,7 +5,7 @@
 \alias{motfsr_score_sequence}
 \title{motfsr_score_sequence}
 \usage{
-motfsr_score_sequence(spec, sequence, alphabet, threshold = NULL)
+motfsr_score_sequence(spec, sequence, alphabet, threshold = NULL) 
 }
 \arguments{
 \item{spec}{A vector; its length is taken and its elements indexed.}

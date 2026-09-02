@@ -5,7 +5,7 @@
 \alias{morie_gsageemd_layer}
 \title{One GraphSAGE layer}
 \usage{
-morie_gsageemd_layer(H, adj, W, how = "mean", sizes = NULL, rng = NULL, normalize = TRUE)
+morie_gsageemd_layer(H, adj, W, how = "mean", sizes = NULL, rng = NULL, normalize = TRUE) 
 }
 \arguments{
 \item{H}{Node feature matrix (n x d).}

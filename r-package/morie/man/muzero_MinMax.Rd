@@ -5,7 +5,7 @@
 \alias{muzero_MinMax}
 \title{muzero_MinMax}
 \usage{
-muzero_MinMax()
+muzero_MinMax() 
 }
 \description{
 Part of the muzero_native implementation; see the file header for the source it follows.

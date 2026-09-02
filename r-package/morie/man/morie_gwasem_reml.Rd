@@ -5,7 +5,7 @@
 \alias{morie_gwasem_reml}
 \title{REML estimation of the variance components}
 \usage{
-morie_gwasem_reml(y, Kinship, covariates = NULL, ml = FALSE)
+morie_gwasem_reml(y, Kinship, covariates = NULL, ml = FALSE) 
 }
 \arguments{
 \item{y}{Phenotype vector.}

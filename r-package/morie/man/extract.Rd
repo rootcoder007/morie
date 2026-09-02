@@ -5,10 +5,14 @@
 \alias{extract}
 \title{HKDF Extract: PRK = HMAC(salt, IKM)}
 \usage{
-extract(ikm, salt = NULL)
+extract(ikm, salt = NULL) 
 }
 \description{
 HKDF Extract: PRK = HMAC(salt, IKM)
+}
+\arguments{
+\item{ikm}{Argument \code{ikm}; see Usage.}
+\item{salt}{Argument \code{salt}; see Usage.}
 }
 \value{
 A list with \code{prk}, \code{salt_supplied}, \code{note}.

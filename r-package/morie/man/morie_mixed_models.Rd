@@ -9,19 +9,46 @@
 \alias{morie_reml_loglik}
 \title{Linear mixed-model estimation}
 \usage{
-morie_one_way(groups)
-morie_mme(X, Z, y, Sigma_inv, R_inv = NULL)
-morie_blue_blup_v(X, Z, y, Sigma, R = NULL)
-morie_em_lmm(X, Z, y, D0 = NULL, sigma2_0 = 1, n_iter = 200L, tol = 1e-10)
-morie_lmm_loglik(X, Z, y, D, R = NULL, beta = NULL)
-morie_reml_loglik(X, Z, y, D, R = NULL)
+morie_one_way(groups) 
+
+morie_mme(X, Z, y, Sigma_inv, R_inv = NULL) 
+
+morie_blue_blup_v(X, Z, y, Sigma, R = NULL) 
+
+morie_em_lmm(X, Z, y, D0 = NULL, sigma2_0 = 1, n_iter = 200L, tol = 1e-10) 
+
+morie_lmm_loglik(X, Z, y, D, R = NULL, beta = NULL) 
+
+morie_reml_loglik(X, Z, y, D, R = NULL) 
 }
 \arguments{
 \item{y}{numeric response vector}
 \item{X}{fixed-effect design matrix}
 \item{Z}{random-effect design matrix}
-\item{K}{relationship or covariance matrix of the random effect}
-\item{...}{further arguments passed to the underlying solver}
+
+
+
+\item{groups}{Argument \code{groups}; see Usage.}
+
+\item{Sigma_inv}{Argument \code{Sigma_inv}; see Usage.}
+
+\item{R_inv}{Argument \code{R_inv}; see Usage.}
+
+\item{Sigma}{Argument \code{Sigma}; see Usage.}
+
+\item{R}{Argument \code{R}; see Usage.}
+
+\item{D0}{Argument \code{D0}; see Usage.}
+
+\item{sigma2_0}{Argument \code{sigma2_0}; see Usage.}
+
+\item{n_iter}{Argument \code{n_iter}; see Usage.}
+
+\item{tol}{Argument \code{tol}; see Usage.}
+
+\item{D}{Argument \code{D}; see Usage.}
+
+\item{beta}{Argument \code{beta}; see Usage.}
 }
 \value{
 A list holding the fitted quantities for the method called: point

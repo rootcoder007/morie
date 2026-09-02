@@ -3,7 +3,7 @@
 \name{morie_survey_complex_glm}
 \alias{morie_survey_complex_glm}
 \title{Complex-survey GLM constructor (single-shot wrapper that builds a design
-and fits a \code{svyglm} in one call). Cluster-robust SEs via the design.}
+and fits a \code{svyglm} in one call). Cluster-robust SEs via the design}
 \usage{
 morie_survey_complex_glm(
   df,
@@ -40,7 +40,7 @@ design-based standard errors.
 }
 \description{
 Complex-survey GLM constructor (single-shot wrapper that builds a design
-and fits a \code{svyglm} in one call). Cluster-robust SEs via the design.
+and fits a \code{svyglm} in one call). Cluster-robust SEs via the design
 }
 \examples{
 .make_survey_df <- function(n = 100L, seed = 1L) {

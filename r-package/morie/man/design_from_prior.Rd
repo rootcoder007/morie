@@ -5,7 +5,7 @@
 \alias{design_from_prior}
 \title{Sobol design pushed through the prior\'s inverse CDF}
 \usage{
-design_from_prior(n, prior_ppf, dim = NULL, skip = 1L)
+design_from_prior(n, prior_ppf, dim = NULL, skip = 1L) 
 }
 \arguments{
 \item{n}{Number of points.}

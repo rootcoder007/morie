@@ -5,10 +5,15 @@
 \alias{chain_entry}
 \title{One step of the hash chain}
 \usage{
-chain_entry(previous_hash, entry, key = NULL)
+chain_entry(previous_hash, entry, key = NULL) 
 }
 \description{
 One step of the hash chain
+}
+\arguments{
+\item{previous_hash}{Argument \code{previous_hash}; see Usage.}
+\item{entry}{Argument \code{entry}; see Usage.}
+\item{key}{Argument \code{key}; see Usage.}
 }
 \value{
 A list with \code{hash}, \code{keyed}, \code{note}.

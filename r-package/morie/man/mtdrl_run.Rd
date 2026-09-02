@@ -5,7 +5,8 @@
 \alias{mtdrl_run}
 \title{mtdrl_run}
 \usage{
-mtdrl_run(tasks, agent, episode_length = 100, n_arms = NULL, seed = 0, reset_between_episodes = TRUE)
+mtdrl_run(tasks, agent, episode_length = 100, n_arms = NULL, seed = 0, 
+    reset_between_episodes = TRUE) 
 }
 \arguments{
 \item{tasks}{Iterated over elementwise, with \code{lapply}.}

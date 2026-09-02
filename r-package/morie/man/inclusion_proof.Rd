@@ -5,10 +5,14 @@
 \alias{inclusion_proof}
 \title{Build an inclusion proof (audit path) for the given leaf}
 \usage{
-inclusion_proof(leaves, index)
+inclusion_proof(leaves, index) 
 }
 \description{
 Build an inclusion proof (audit path) for the given leaf
+}
+\arguments{
+\item{leaves}{Argument \code{leaves}; see Usage.}
+\item{index}{Argument \code{index}; see Usage.}
 }
 \value{
 A list with \code{path}, \code{path_hex}, \code{length}, \code{index}, \code{size}, \code{note}.

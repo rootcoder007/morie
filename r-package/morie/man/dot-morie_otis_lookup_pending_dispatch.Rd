@@ -30,7 +30,7 @@
 The value of \code{.morie_load_chain}.
 }
 \description{
-auto-resolved from .MORIE_ONTARIO_CKAN_REGISTRY[\link{registry_key}] when
+auto-resolved from .MORIE_ONTARIO_CKAN_REGISTRY[[registry_key]] when
 the caller doesn\'t pass an explicit override; if the registry entry
 is also missing or NA the function errors with a clear message.
 }

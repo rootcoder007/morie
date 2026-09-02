@@ -5,7 +5,7 @@
 \alias{morie_masrcn}
 \title{morie_masrcn}
 \usage{
-morie_masrcn(features, box, out_size = 2L, stride = 1, samples = 2L)
+morie_masrcn(features, box, out_size = 2L, stride = 1, samples = 2L) 
 }
 \arguments{
 \item{features}{Passed to \code{roi_align}.}

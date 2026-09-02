@@ -5,7 +5,7 @@
 \alias{systematic_resample}
 \title{Systematic resampling}
 \usage{
-systematic_resample(weights, u = NULL)
+systematic_resample(weights, u = NULL) 
 }
 \arguments{
 \item{weights}{Numeric vector of positive weights.}

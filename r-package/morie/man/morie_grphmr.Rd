@@ -5,7 +5,7 @@
 \alias{morie_grphmr}
 \title{Graphormer attention with structural encodings}
 \usage{
-morie_grphmr(H, WQ, WK, WV, bias, edge_bias = NULL)
+morie_grphmr(H, WQ, WK, WV, bias, edge_bias = NULL) 
 }
 \arguments{
 \item{H}{Node features, an N x d matrix.}

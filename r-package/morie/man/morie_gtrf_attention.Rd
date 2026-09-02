@@ -5,7 +5,7 @@
 \alias{morie_gtrf_attention}
 \title{Neighbourhood-restricted attention}
 \usage{
-morie_gtrf_attention(H, adj, WQ, WK, WV, edge_bias = NULL)
+morie_gtrf_attention(H, adj, WQ, WK, WV, edge_bias = NULL) 
 }
 \arguments{
 \item{H}{Node feature matrix (n x d).}

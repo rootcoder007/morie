@@ -5,7 +5,7 @@
 \alias{morie_wrd2v_cheatsheet}
 \title{morie_wrd2v_cheatsheet}
 \usage{
-morie_wrd2v_cheatsheet()
+morie_wrd2v_cheatsheet() 
 }
 \description{
 Part of the wrd2v_native implementation; see the file header for the source it follows.

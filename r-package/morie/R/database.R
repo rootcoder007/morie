@@ -171,7 +171,7 @@ morie_builtin_db <- function() {
 #' Connect to the MORIE cache database
 #'
 #' Opens (or creates) the per-user cache database. The default backend
-#' is **DuckDB** — zero-config like SQLite, but vectorised + columnar,
+#' is **DuckDB** -- zero-config like SQLite, but vectorised + columnar,
 #' so it handles the multi-GB-scale open-data PUMFs (TPS, CPADS bulk)
 #' that morie ingests without breaking down on analytical queries. For
 #' back-compat, an existing SQLite cache at `morie.db` is reused; if

@@ -3,9 +3,12 @@
 % the formals.
 \name{trend_matrix}
 \alias{trend_matrix}
+\alias{morie_prphet_trend_matrix}
 \title{Design columns for k, m and each delta_j}
 \usage{
-trend_matrix(t, cps)
+trend_matrix(t, cps) 
+
+morie_prphet_trend_matrix(t, cps) 
 }
 \arguments{
 \item{t}{Numeric vector of times.}

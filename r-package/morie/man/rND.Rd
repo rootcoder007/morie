@@ -5,7 +5,7 @@
 \alias{rND}
 \title{rND}
 \usage{
-rND(protected, step = 10L, normalize = TRUE)
+rND(protected, step = 10L, normalize = TRUE) 
 }
 \arguments{
 \item{protected}{Passed to \code{.measure}.}

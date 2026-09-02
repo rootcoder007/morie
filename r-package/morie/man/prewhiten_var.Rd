@@ -5,10 +5,16 @@
 \alias{prewhiten_var}
 \title{VAR prewhitening, equation 2.2}
 \usage{
-prewhiten_var(v, order = 1L, cap = .EIGENVALUE_CAP, adjust = TRUE)
+prewhiten_var(v, order = 1L, cap = .EIGENVALUE_CAP, adjust = TRUE) 
 }
 \description{
 VAR prewhitening, equation 2.2
+}
+\arguments{
+\item{v}{Argument \code{v}; see Usage.}
+\item{order}{Argument \code{order}; see Usage.}
+\item{cap}{Argument \code{cap}; see Usage.}
+\item{adjust}{Argument \code{adjust}; see Usage.}
 }
 \value{
 A list with \code{a_list}, \code{resid}, \code{D}.

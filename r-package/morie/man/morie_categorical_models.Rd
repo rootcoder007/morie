@@ -9,19 +9,52 @@
 \alias{morie_penalized_poisson}
 \title{Ordinal and multinomial models}
 \usage{
-morie_ordinal_probs(eta, thresholds, link = "probit")
-morie_ordinal_probit_gibbs(y, X, n_iter = 1500L, burn_in = 400L, nu_beta = 5, S_beta = 1, seed = 42L)
-morie_multinomial_probs(X, beta0, beta, baseline_last = TRUE)
-morie_multinomial_loglik(X, y, beta0, beta, baseline_last = TRUE)
-morie_penalized_multinomial(X, y, beta0, beta, lambda, penalty = "ridge", baseline_last = TRUE)
-morie_penalized_poisson(X, y, lambda = 1, penalty = "ridge", n_iter = 100L, tol = 1e-10, add_intercept = TRUE)
+morie_ordinal_probs(eta, thresholds, link = "probit") 
+
+morie_ordinal_probit_gibbs(y, X, n_iter = 1500L, burn_in = 400L, nu_beta = 5, S_beta = 1, 
+    seed = 42L) 
+
+morie_multinomial_probs(X, beta0, beta, baseline_last = TRUE) 
+
+morie_multinomial_loglik(X, y, beta0, beta, baseline_last = TRUE) 
+
+morie_penalized_multinomial(X, y, beta0, beta, lambda, penalty = "ridge", baseline_last = TRUE) 
+
+morie_penalized_poisson(X, y, lambda = 1, penalty = "ridge", n_iter = 100L, tol = 1e-10, 
+    add_intercept = TRUE) 
 }
 \arguments{
 \item{y}{response vector of category codes}
 \item{X}{predictor matrix}
 \item{n_iter}{number of Gibbs iterations}
 \item{lambda}{penalty parameter}
-\item{...}{further arguments controlling the fit}
+
+
+\item{eta}{Argument \code{eta}; see Usage.}
+
+\item{thresholds}{Argument \code{thresholds}; see Usage.}
+
+\item{link}{Argument \code{link}; see Usage.}
+
+\item{burn_in}{Argument \code{burn_in}; see Usage.}
+
+\item{nu_beta}{Argument \code{nu_beta}; see Usage.}
+
+\item{S_beta}{Argument \code{S_beta}; see Usage.}
+
+\item{seed}{Argument \code{seed}; see Usage.}
+
+\item{beta0}{Argument \code{beta0}; see Usage.}
+
+\item{beta}{Argument \code{beta}; see Usage.}
+
+\item{baseline_last}{Argument \code{baseline_last}; see Usage.}
+
+\item{penalty}{Argument \code{penalty}; see Usage.}
+
+\item{tol}{Argument \code{tol}; see Usage.}
+
+\item{add_intercept}{Argument \code{add_intercept}; see Usage.}
 }
 \value{
 A list holding the fitted quantities for the method called: point

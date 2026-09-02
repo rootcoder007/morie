@@ -5,7 +5,7 @@
 \alias{morie_linwlr_cheatsheet}
 \title{morie_linwlr_cheatsheet}
 \usage{
-morie_linwlr_cheatsheet()
+morie_linwlr_cheatsheet() 
 }
 \description{
 Part of the linwlr_native implementation; see the file header for the source it follows.

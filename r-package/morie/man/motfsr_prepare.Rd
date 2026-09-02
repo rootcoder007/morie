@@ -5,7 +5,7 @@
 \alias{motfsr_prepare}
 \title{motfsr_prepare}
 \usage{
-motfsr_prepare(sequences, w, alphabet)
+motfsr_prepare(sequences, w, alphabet) 
 }
 \arguments{
 \item{sequences}{Coerced to character by the body, with \code{as.character}.}

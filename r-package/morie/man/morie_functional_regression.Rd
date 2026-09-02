@@ -8,11 +8,15 @@
 \alias{morie_fda_loocv}
 \title{Functional data analysis}
 \usage{
-morie_fda_design(t, X_curves, L1 = 3, L2 = 5, kind = "fourier")
-morie_fda_fit(t, X_curves, y, L1 = 3, L2 = 5, kind = "fourier")
-morie_fda_beta_function(t, beta_coefs, L1, kind = "fourier")
-morie_fda_bic(loglik, n_params, n_obs)
-morie_fda_loocv(t, x_t, L2, kind = "fourier")
+morie_fda_design(t, X_curves, L1 = 3, L2 = 5, kind = "fourier") 
+
+morie_fda_fit(t, X_curves, y, L1 = 3, L2 = 5, kind = "fourier") 
+
+morie_fda_beta_function(t, beta_coefs, L1, kind = "fourier") 
+
+morie_fda_bic(loglik, n_params, n_obs) 
+
+morie_fda_loocv(t, x_t, L2, kind = "fourier") 
 }
 \arguments{
 \item{t}{numeric grid of observation points}
@@ -21,7 +25,17 @@ morie_fda_loocv(t, x_t, L2, kind = "fourier")
 \item{L1}{number of coefficient-function basis terms}
 \item{L2}{number of curve basis terms}
 \item{kind}{basis kind, "fourier" or "poly"}
-\item{...}{further arguments passed to the basis}
+
+
+\item{beta_coefs}{Argument \code{beta_coefs}; see Usage.}
+
+\item{loglik}{Argument \code{loglik}; see Usage.}
+
+\item{n_params}{Argument \code{n_params}; see Usage.}
+
+\item{n_obs}{Argument \code{n_obs}; see Usage.}
+
+\item{x_t}{Argument \code{x_t}; see Usage.}
 }
 \value{
 A list holding the fitted quantities for the method called: point

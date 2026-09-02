@@ -5,7 +5,7 @@
 \alias{nbeats_cheatsheet}
 \title{nbeats_cheatsheet}
 \usage{
-nbeats_cheatsheet()
+nbeats_cheatsheet() 
 }
 \description{
 Part of the nbeats_native implementation; see the file header for the source it follows.

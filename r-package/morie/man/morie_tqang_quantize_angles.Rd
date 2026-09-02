@@ -3,9 +3,15 @@
 % the formals.
 \name{morie_tqang_quantize_angles}
 \alias{morie_tqang_quantize_angles}
+\alias{morie_tqang_tqang}
+\alias{morie_tqang_turboquant_angle_quantization}
 \title{Uniform quantisation of angles to \code{2^bits} equal sectors}
 \usage{
-morie_tqang_quantize_angles(theta, bits = 4L)
+morie_tqang_quantize_angles(theta, bits = 4L) 
+
+morie_tqang_tqang(theta, bits = 4L) 
+
+morie_tqang_turboquant_angle_quantization(theta, bits = 4L) 
 }
 \arguments{
 \item{theta}{Numeric vector of angles.}

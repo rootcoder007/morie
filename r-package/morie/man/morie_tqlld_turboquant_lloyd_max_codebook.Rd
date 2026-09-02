@@ -18,3 +18,14 @@ morie_tqlld_turboquant_lloyd_max_codebook(
 \description{
 Backward-compatible alias for the generated stub
 }
+\arguments{
+\item{levels}{Argument \code{levels}; see Usage.}
+\item{source}{Argument \code{source}; see Usage.}
+\item{data}{Argument \code{data}; see Usage.}
+\item{lo}{Argument \code{lo}; see Usage.}
+\item{hi}{Argument \code{hi}; see Usage.}
+\item{max_iter}{Argument \code{max_iter}; see Usage.}
+\item{tol}{Argument \code{tol}; see Usage.}
+\item{n_grid}{Argument \code{n_grid}; see Usage.}
+}
+

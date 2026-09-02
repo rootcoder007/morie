@@ -5,7 +5,9 @@
 \alias{morie_tmle_dynamic_regime}
 \title{Mean outcome under the (V-)optimal dynamic treatment rule}
 \usage{
-morie_tmle_dynamic_regime(y, treatment_history, covariate_history, regime = "optimal", method = "cv-tmle", n_folds = 10, V0 = NULL, V1 = NULL, trim = 0.01, known_g = NULL, ridge = 1e-08, level = 0.95)
+morie_tmle_dynamic_regime(y, treatment_history, covariate_history, regime = "optimal", 
+    method = "cv-tmle", n_folds = 10, V0 = NULL, V1 = NULL, trim = 0.01, 
+    known_g = NULL, ridge = 1e-08, level = 0.95) 
 }
 \arguments{
 \item{y}{Numeric outcome vector.}

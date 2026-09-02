@@ -5,7 +5,7 @@
 \alias{narm_cheatsheet}
 \title{narm_cheatsheet}
 \usage{
-narm_cheatsheet()
+narm_cheatsheet() 
 }
 \description{
 Part of the narm_native implementation; see the file header for the source it follows.

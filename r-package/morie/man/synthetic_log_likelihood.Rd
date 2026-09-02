@@ -5,10 +5,16 @@
 \alias{synthetic_log_likelihood}
 \title{Synthetic log-likelihood}
 \usage{
-synthetic_log_likelihood(draws, obs, epsilon = 0, summary = NULL)
+synthetic_log_likelihood(draws, obs, epsilon = 0, summary = NULL) 
 }
 \description{
 Returns \code{log_lik, mu, cov} per Wilkinson eq. (2) and Meeds & Welling eq. (9).
+}
+\arguments{
+\item{draws}{Argument \code{draws}; see Usage.}
+\item{obs}{Argument \code{obs}; see Usage.}
+\item{epsilon}{Argument \code{epsilon}; see Usage.}
+\item{summary}{Argument \code{summary}; see Usage.}
 }
 \value{
 A list with \code{log_lik}, \code{mu}, \code{cov}.

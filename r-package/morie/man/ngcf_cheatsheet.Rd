@@ -5,7 +5,7 @@
 \alias{ngcf_cheatsheet}
 \title{ngcf_cheatsheet}
 \usage{
-ngcf_cheatsheet()
+ngcf_cheatsheet() 
 }
 \description{
 Part of the ngcf_native implementation; see the file header for the source it follows.

@@ -3,9 +3,18 @@
 % the formals.
 \name{morie_tqlld_lloyd_max_codebook}
 \alias{morie_tqlld_lloyd_max_codebook}
+\alias{morie_tqlld_tqlld}
+\alias{morie_tqlld_turboquant_lloyd_max_codebook}
 \title{Lloyd-Max optimal scalar codebook}
 \usage{
-morie_tqlld_lloyd_max_codebook(levels = 4L, source = "gaussian", data = NULL, lo = NULL, hi = NULL, max_iter = 200L, tol = 1e-12, n_grid = 20000L)
+morie_tqlld_lloyd_max_codebook(levels = 4L, source = "gaussian", data = NULL, lo = NULL, hi = NULL, 
+    max_iter = 200L, tol = 1e-12, n_grid = 20000L) 
+
+morie_tqlld_tqlld(levels = 4L, source = "gaussian", data = NULL, lo = NULL, hi = NULL, 
+    max_iter = 200L, tol = 1e-12, n_grid = 20000L) 
+
+morie_tqlld_turboquant_lloyd_max_codebook(levels = 4L, source = "gaussian", data = NULL, lo = NULL, hi = NULL, 
+    max_iter = 200L, tol = 1e-12, n_grid = 20000L) 
 }
 \arguments{
 \item{levels}{Number of codewords.}

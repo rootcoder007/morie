@@ -5,7 +5,7 @@
 \alias{greedy_decode}
 \title{greedy_decode}
 \usage{
-greedy_decode(emissions, labels)
+greedy_decode(emissions, labels) 
 }
 \arguments{
 \item{emissions}{A vector; its length is taken and its elements indexed.}

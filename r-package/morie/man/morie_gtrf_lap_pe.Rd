@@ -5,7 +5,7 @@
 \alias{morie_gtrf_lap_pe}
 \title{Laplacian positional encoding}
 \usage{
-morie_gtrf_lap_pe(adj, n, dim = 2L, normalized = TRUE)
+morie_gtrf_lap_pe(adj, n, dim = 2L, normalized = TRUE) 
 }
 \arguments{
 \item{adj}{Adjacency list.}

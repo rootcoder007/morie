@@ -2,7 +2,7 @@
 % Please edit documentation in R/audit_variables.R
 \name{print.morie_audit_result}
 \alias{print.morie_audit_result}
-\title{Print method for audit results.}
+\title{Print method for audit results}
 \usage{
 \method{print}{morie_audit_result}(x, ...)
 }
@@ -15,7 +15,7 @@
 Invisibly returns \code{x} unchanged.
 }
 \description{
-Print method for audit results.
+Print method for audit results
 }
 \examples{
 D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))

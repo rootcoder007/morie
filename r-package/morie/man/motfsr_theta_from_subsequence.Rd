@@ -5,7 +5,7 @@
 \alias{motfsr_theta_from_subsequence}
 \title{motfsr_theta_from_subsequence}
 \usage{
-motfsr_theta_from_subsequence(coded, i, j, w, L, mu, weight)
+motfsr_theta_from_subsequence(coded, i, j, w, L, mu, weight) 
 }
 \arguments{
 \item{coded}{A vector; indexed elementwise.}

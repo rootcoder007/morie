@@ -5,7 +5,8 @@
 \alias{miprgr_branch_and_bound}
 \title{miprgr_branch_and_bound}
 \usage{
-miprgr_branch_and_bound(A, b, c, integer_vars, maximise = TRUE, prune = TRUE, max_nodes = 5000, solver = "simplex")
+miprgr_branch_and_bound(A, b, c, integer_vars, maximise = TRUE, prune = TRUE, max_nodes = 5000, 
+    solver = "simplex") 
 }
 \arguments{
 \item{A}{Passed to \code{miprgr_solve_relaxation}.}

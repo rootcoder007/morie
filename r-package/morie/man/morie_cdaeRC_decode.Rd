@@ -5,7 +5,7 @@
 \alias{morie_cdaeRC_decode}
 \title{morie_cdaeRC_decode}
 \usage{
-morie_cdaeRC_decode(z, Wp, bp, items = NULL, activation = "sigmoid")
+morie_cdaeRC_decode(z, Wp, bp, items = NULL, activation = "sigmoid") 
 }
 \arguments{
 \item{z}{A vector; its length is taken and its elements indexed.}

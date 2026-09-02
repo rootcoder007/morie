@@ -3,9 +3,26 @@
 % the formals.
 \name{morie_prphet}
 \alias{morie_prphet}
+\alias{morie_prphet_fit}
+\alias{prophetfit}
+\alias{prophet}
 \title{Fit a Prophet model by penalised least squares}
 \usage{
-morie_prphet(t, y, n_changepoints = 10L, changepoint_range = 0.8, changepoints = NULL, seasonalities = NULL, holidays = NULL, holiday_window = c(0, 0), changepoint_prior = 0.05, ridge = 1e-08)
+morie_prphet(t, y, n_changepoints = 10L, changepoint_range = 0.8, changepoints = NULL, 
+    seasonalities = NULL, holidays = NULL, holiday_window = c(0, 0), changepoint_prior = 0.05, 
+    ridge = 1e-08) 
+
+morie_prphet_fit(t, y, n_changepoints = 10L, changepoint_range = 0.8, changepoints = NULL, 
+    seasonalities = NULL, holidays = NULL, holiday_window = c(0, 0), changepoint_prior = 0.05, 
+    ridge = 1e-08) 
+
+prophetfit(t, y, n_changepoints = 10L, changepoint_range = 0.8, changepoints = NULL, 
+    seasonalities = NULL, holidays = NULL, holiday_window = c(0, 0), changepoint_prior = 0.05, 
+    ridge = 1e-08) 
+
+prophet(t, y, n_changepoints = 10L, changepoint_range = 0.8, changepoints = NULL, 
+    seasonalities = NULL, holidays = NULL, holiday_window = c(0, 0), changepoint_prior = 0.05, 
+    ridge = 1e-08) 
 }
 \arguments{
 \item{t}{Numeric vector of times.}

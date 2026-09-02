@@ -5,7 +5,7 @@
 \alias{morie_node2v}
 \title{morie_node2v}
 \usage{
-morie_node2v(adj, num_walks = 10, length = 10, p = 1, q = 1, seed = 0, weights = NULL)
+morie_node2v(adj, num_walks = 10, length = 10, p = 1, q = 1, seed = 0, weights = NULL) 
 }
 \arguments{
 \item{adj}{A vector; its length is taken.}

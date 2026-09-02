@@ -5,10 +5,15 @@
 \alias{viterbi_segment}
 \title{Unigram LM segmentation by Viterbi over the split lattice}
 \usage{
-viterbi_segment(text, piece_logp, add_prefix = TRUE)
+viterbi_segment(text, piece_logp, add_prefix = TRUE) 
 }
 \description{
 Unigram LM segmentation by Viterbi over the split lattice
+}
+\arguments{
+\item{text}{Argument \code{text}; see Usage.}
+\item{piece_logp}{Argument \code{piece_logp}; see Usage.}
+\item{add_prefix}{Argument \code{add_prefix}; see Usage.}
 }
 \value{
 A list with \code{pieces}, \code{logp}, \code{n_pieces}, \code{algorithm}.

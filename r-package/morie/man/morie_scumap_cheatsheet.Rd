@@ -5,7 +5,7 @@
 \alias{morie_scumap_cheatsheet}
 \title{morie_scumap_cheatsheet}
 \usage{
-morie_scumap_cheatsheet()
+morie_scumap_cheatsheet() 
 }
 \description{
 Part of the scumap_native implementation; see the file header for the source it follows.

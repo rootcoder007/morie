@@ -5,7 +5,8 @@
 \alias{pate}
 \title{Label `queries` by noisy teacher aggregation and account for the}
 \usage{
-pate(teacher_predicts, queries, gamma = 0.05, delta = 1e-05, n_classes = NULL, student_train_fn = NULL, student_features = NULL, seed = 0, lambdas = NULL)
+pate(teacher_predicts, queries, gamma = 0.05, delta = 1e-05, n_classes = NULL, 
+    student_train_fn = NULL, student_features = NULL, seed = 0, lambdas = NULL) 
 }
 \arguments{
 \item{teacher_predicts}{Coerced to list by the body, with \code{as.list}.}

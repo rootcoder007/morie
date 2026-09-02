@@ -5,7 +5,8 @@
 \alias{morie_lyapun}
 \title{morie_lyapun}
 \usage{
-morie_lyapun(y, embedding = NULL, tau = NULL, dt = 1, fit = NULL, min_sep = NULL, max_steps = NULL, method = "rosenstein", k = NULL)
+morie_lyapun(y, embedding = NULL, tau = NULL, dt = 1, fit = NULL, min_sep = NULL, 
+    max_steps = NULL, method = "rosenstein", k = NULL) 
 }
 \arguments{
 \item{y}{Passed to \code{lyapunov_exponent}.}

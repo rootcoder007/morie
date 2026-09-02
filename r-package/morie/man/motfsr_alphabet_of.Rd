@@ -5,7 +5,7 @@
 \alias{motfsr_alphabet_of}
 \title{motfsr_alphabet_of}
 \usage{
-motfsr_alphabet_of(seqs, alphabet)
+motfsr_alphabet_of(seqs, alphabet) 
 }
 \arguments{
 \item{seqs}{Passed to \code{unlist}.}

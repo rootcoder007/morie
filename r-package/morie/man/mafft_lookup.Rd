@@ -5,7 +5,7 @@
 \alias{mafft_lookup}
 \title{mafft_lookup}
 \usage{
-mafft_lookup(M, a, b)
+mafft_lookup(M, a, b) 
 }
 \arguments{
 \item{M}{A vector; indexed elementwise.}

@@ -5,10 +5,16 @@
 \alias{verify_chain}
 \title{Verify a chain, returning the FIRST bad index (not just a boolean)}
 \usage{
-verify_chain(entries, hashes, key = NULL, genesis = .GENESIS)
+verify_chain(entries, hashes, key = NULL, genesis = .GENESIS) 
 }
 \description{
 Verify a chain, returning the FIRST bad index (not just a boolean)
+}
+\arguments{
+\item{entries}{Argument \code{entries}; see Usage.}
+\item{hashes}{Argument \code{hashes}; see Usage.}
+\item{key}{Argument \code{key}; see Usage.}
+\item{genesis}{Argument \code{genesis}; see Usage.}
 }
 \value{
 A list with \code{estimate}, \code{intact}, \code{first_bad}, \code{verified_through}, \code{n}, \code{method}, \code{note}.

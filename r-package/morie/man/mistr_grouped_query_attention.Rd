@@ -5,7 +5,8 @@
 \alias{mistr_grouped_query_attention}
 \title{mistr_grouped_query_attention}
 \usage{
-mistr_grouped_query_attention(Q, K, V, n_heads, n_kv_heads, mask = NULL, positions = NULL, base = 10000)
+mistr_grouped_query_attention(Q, K, V, n_heads, n_kv_heads, mask = NULL, positions = NULL, 
+    base = 10000) 
 }
 \arguments{
 \item{Q}{A matrix; passed to \code{as.matrix}.}

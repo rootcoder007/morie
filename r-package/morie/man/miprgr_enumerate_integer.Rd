@@ -5,7 +5,7 @@
 \alias{miprgr_enumerate_integer}
 \title{miprgr_enumerate_integer}
 \usage{
-miprgr_enumerate_integer(A, b, c, integer_vars, upper = 10, maximise = TRUE)
+miprgr_enumerate_integer(A, b, c, integer_vars, upper = 10, maximise = TRUE) 
 }
 \arguments{
 \item{A}{A matrix; indexed by row and column.}

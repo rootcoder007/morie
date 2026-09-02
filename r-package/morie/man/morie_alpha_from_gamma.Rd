@@ -5,7 +5,7 @@
 \alias{morie_alpha_from_gamma}
 \title{Invert gamma = 1 / (alpha (1 - alpha)) for alpha}
 \usage{
-morie_alpha_from_gamma(gamma)
+morie_alpha_from_gamma(gamma) 
 }
 \arguments{
 \item{gamma}{Threshold, must be at least 4.}

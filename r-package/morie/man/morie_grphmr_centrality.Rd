@@ -5,7 +5,7 @@
 \alias{morie_grphmr_centrality}
 \title{Graphormer centrality encoding}
 \usage{
-morie_grphmr_centrality(adj, n, z_in, z_out = NULL, directed = FALSE)
+morie_grphmr_centrality(adj, n, z_in, z_out = NULL, directed = FALSE) 
 }
 \arguments{
 \item{adj}{Adjacency list: list of numeric neighbour vectors.}

@@ -5,7 +5,7 @@
 \alias{chronos_quantize}
 \title{chronos_quantize}
 \usage{
-chronos_quantize(x, bins)
+chronos_quantize(x, bins) 
 }
 \arguments{
 \item{x}{Coerced to numeric by the body, with \code{as.numeric}.}

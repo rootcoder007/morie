@@ -5,7 +5,7 @@
 \alias{morie_smatch_poisson_design}
 \title{Build the SCCS Poisson design matrix (Sec. 4)}
 \usage{
-morie_smatch_poisson_design(cases, risk_periods, age_breaks = numeric(0))
+morie_smatch_poisson_design(cases, risk_periods, age_breaks = numeric(0)) 
 }
 \arguments{
 \item{cases}{List of case dicts with \code{start, end, events,   exposure}.}

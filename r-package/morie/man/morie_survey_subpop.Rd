@@ -2,7 +2,7 @@
 % Please edit documentation in R/survey.R
 \name{morie_survey_subpop}
 \alias{morie_survey_subpop}
-\title{Subpopulation (domain) mean with Woodruff linearised SE.}
+\title{Subpopulation (domain) mean with Woodruff linearised SE}
 \usage{
 morie_survey_subpop(df, domain_col, domain_value, outcome_col, weight_col)
 }
@@ -24,11 +24,11 @@ variable in \code{df}.}
 }
 \value{
 A named list with elements \code{mean}, \code{se},
-\code{ci_lower}, \code{ci_upper} (95\\% Wald confidence interval),
+\code{ci_lower}, \code{ci_upper} (95\% Wald confidence interval),
 and \code{n_domain} (number of sample units in the subpopulation).
 }
 \description{
-Subpopulation (domain) mean with Woodruff linearised SE.
+Subpopulation (domain) mean with Woodruff linearised SE
 }
 \examples{
 set.seed(1)

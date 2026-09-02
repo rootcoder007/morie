@@ -5,7 +5,7 @@
 \alias{prxgms_cheatsheet}
 \title{prxgms_cheatsheet}
 \usage{
-prxgms_cheatsheet()
+prxgms_cheatsheet() 
 }
 \description{
 prxgms_cheatsheet

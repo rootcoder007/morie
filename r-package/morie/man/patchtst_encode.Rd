@@ -5,7 +5,7 @@
 \alias{patchtst_encode}
 \title{The full front end: instance norm, patch, per-channel tokens}
 \usage{
-patchtst_encode(X, patch_len, stride = NULL, normalise = TRUE)
+patchtst_encode(X, patch_len, stride = NULL, normalise = TRUE) 
 }
 \arguments{
 \item{X}{A matrix; passed to \code{as.matrix}.}

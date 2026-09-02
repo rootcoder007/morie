@@ -5,10 +5,16 @@
 \alias{implausible}
 \title{Wilkinson implausibility rule, eq. (3)}
 \usage{
-implausible(fit, theta, threshold = 10, n_sd = 3)
+implausible(fit, theta, threshold = 10, n_sd = 3) 
 }
 \description{
 Wilkinson implausibility rule, eq. (3)
+}
+\arguments{
+\item{fit}{Argument \code{fit}; see Usage.}
+\item{theta}{Argument \code{theta}; see Usage.}
+\item{threshold}{Argument \code{threshold}; see Usage.}
+\item{n_sd}{Argument \code{n_sd}; see Usage.}
 }
 \value{
 The value of \code{as.logical}.

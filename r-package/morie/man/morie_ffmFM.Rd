@@ -5,7 +5,8 @@
 \alias{morie_ffmFM}
 \title{morie_ffmFM}
 \usage{
-morie_ffmFM(rows, labels, fields, n_features, n_fields, k_dim = 4L, eta = 0.1, lam = 2e-05, epochs = 10L, seed = 0L)
+morie_ffmFM(rows, labels, fields, n_features, n_fields, k_dim = 4L, eta = 0.1, 
+    lam = 2e-05, epochs = 10L, seed = 0L) 
 }
 \arguments{
 \item{rows}{Passed to \code{.fit_ffm}.}
@@ -31,7 +32,7 @@ Factorization Machines for CTR Prediction", Proceedings of the Tenth
 ACM Conference on Recommender Systems (RecSys \'16), 43-50,
 doi:10.1145/2959100.2959134. Sec. 2 (FM and its limitation), Sec. 3
 (the FFM model equation with the crossed field indices, the nfk
-parameter count, the logistic loss with y in {-1,1}, and the AdaGrad
+parameter count, the logistic loss with y in \{-1,1\}, and the AdaGrad
 updates of eqs. (8)-(9)), and Sec. 3.3 (overfitting and early
 stopping).
 Rendle, S. (2010) "Factorization Machines", ICDM 2010, 995-1000,

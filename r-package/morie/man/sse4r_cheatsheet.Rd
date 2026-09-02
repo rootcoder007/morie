@@ -5,7 +5,7 @@
 \alias{sse4r_cheatsheet}
 \title{sse4r_cheatsheet}
 \usage{
-sse4r_cheatsheet()
+sse4r_cheatsheet() 
 }
 \description{
 Part of the sse4r_native implementation; see the file header for the source it follows.

@@ -60,7 +60,7 @@ teacher_votes <- function(teacher_predicts, rows, n_classes = NULL) {
 
 # Equation 1: argmax_j {n_j + Lap(1/gamma)}. One independent
 # Laplace draw per class with scale 1/gamma.
-#' Equation 1: argmax_j {n_j + Lap(1/gamma)}. One independent
+#' Equation 1: argmax_j \{n_j + Lap(1/gamma)\}. One independent
 #'
 #' Laplace draw per class with scale 1/gamma.
 #'
@@ -105,7 +105,7 @@ epsilon_data_independent <- function(T, gamma, delta) {
 # Lemma 4: sum_{j != j*} (2 + gamma (n_j* - n_j)) /
 # (4 exp(gamma (n_j* - n_j))), j* the plurality winner. The bound
 # is a bound, so the raw value is also returned.
-#' Lemma 4: sum_{j != j*} (2 + gamma (n_j* - n_j)) /
+#' Lemma 4: sum_\{j != j*\} (2 + gamma (n_j* - n_j)) /
 #'
 #' (4 exp(gamma (n_j* - n_j))), j* the plurality winner. The bound is a
 #' bound, so the raw value is also returned.

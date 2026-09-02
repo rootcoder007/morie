@@ -5,7 +5,7 @@
 \alias{tagRC_adapted_pagerank}
 \title{tagRC_adapted_pagerank}
 \usage{
-tagRC_adapted_pagerank(adjacency, nodes, p = NULL, d = 0.7, iters = 200, tol = 1e-12)
+tagRC_adapted_pagerank(adjacency, nodes, p = NULL, d = 0.7, iters = 200, tol = 1e-12) 
 }
 \arguments{
 \item{adjacency}{A vector; indexed elementwise.}

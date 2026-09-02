@@ -5,7 +5,7 @@
 \alias{momento_mask_patches}
 \title{momento_mask_patches}
 \usage{
-momento_mask_patches(patches, mask_idx, fill = 0)
+momento_mask_patches(patches, mask_idx, fill = 0) 
 }
 \arguments{
 \item{patches}{A vector; its length is taken and its elements indexed.}

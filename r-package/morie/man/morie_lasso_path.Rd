@@ -5,13 +5,15 @@
 \alias{morie_lasso_path}
 \title{Coordinate-descent lasso path}
 \usage{
-morie_lasso_path(X, y, lam, iters = 500L, tol = 1e-09)
+morie_lasso_path(X, y, lam, iters = 500L, tol = 1e-09) 
 }
 \arguments{
 \item{X}{Numeric matrix of predictors (without intercept).}
 \item{y}{Numeric response vector.}
 \item{lam}{Non-negative penalty strength.}
 \item{iters}{Maximum coordinate-descent iterations.}
+
+\item{tol}{Argument \code{tol}; see Usage.}
 }
 \description{
 Returns the L1-penalised least squares fit at a single \code{lambda}, with intercept and the selected support.

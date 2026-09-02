@@ -2,7 +2,7 @@
 % Please edit documentation in R/psymet.R
 \name{morie_psymet_splithalf}
 \alias{morie_psymet_splithalf}
-\title{Spearman-Brown split-half reliability.}
+\title{Spearman-Brown split-half reliability}
 \usage{
 morie_psymet_splithalf(data, method = c("first_last", "odd_even"))
 }
@@ -16,7 +16,7 @@ Single numeric scalar: the Spearman-Brown corrected split-half
 reliability coefficient.
 }
 \description{
-Spearman-Brown split-half reliability.
+Spearman-Brown split-half reliability
 }
 \examples{
 set.seed(1)

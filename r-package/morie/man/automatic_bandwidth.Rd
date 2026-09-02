@@ -5,10 +5,16 @@
 \alias{automatic_bandwidth}
 \title{Andrews (1991) eq. 6.1, automatic plug-in bandwidth}
 \usage{
-automatic_bandwidth(v, kernel = "qs", weights = NULL, n = NULL)
+automatic_bandwidth(v, kernel = "qs", weights = NULL, n = NULL) 
 }
 \description{
 Andrews (1991) eq. 6.1, automatic plug-in bandwidth
+}
+\arguments{
+\item{v}{Argument \code{v}; see Usage.}
+\item{kernel}{Argument \code{kernel}; see Usage.}
+\item{weights}{Argument \code{weights}; see Usage.}
+\item{n}{Argument \code{n}; see Usage.}
 }
 \value{
 A list with \code{bandwidth}, \code{alpha}, \code{fits}.

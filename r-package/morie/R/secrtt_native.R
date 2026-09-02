@@ -30,6 +30,7 @@
 }
 
 #' Derive a distinct DEK per record
+#' @param bs See Usage.
 #' @export
 .secrtt_hex <- function(bs) paste(sprintf("%02x", as.integer(bs)),
                                  collapse = "")
@@ -61,6 +62,11 @@ generate_dek <- function(master_seed, record_id, salt = NULL) {
 }
 
 #' Wrap a DEK under a KEK
+#' @param dek See Usage.
+#' @param kek See Usage.
+#' @param nonce See Usage.
+#' @param kek_id See Usage.
+#' @param aad See Usage.
 #' @export
 wrap_dek <- function(dek, kek, nonce, kek_id = "kek-1",
                      aad = raw(0)) {
@@ -78,6 +84,9 @@ wrap_dek <- function(dek, kek, nonce, kek_id = "kek-1",
 }
 
 #' Unwrap a DEK, optionally logging the call
+#' @param wrapped See Usage.
+#' @param kek See Usage.
+#' @param audit_log See Usage.
 #' @export
 unwrap_dek <- function(wrapped, kek, audit_log = NULL) {
   r <- .secrtt_aead_decrypt(kek, wrapped$nonce, wrapped$wrapped, wrapped$tag,
@@ -98,6 +107,10 @@ unwrap_dek <- function(wrapped, kek, audit_log = NULL) {
 `%||%` <- function(a, b) if (is.null(a)) b else a
 
 #' Seal a record under its DEK
+#' @param plaintext See Usage.
+#' @param dek See Usage.
+#' @param nonce See Usage.
+#' @param aad See Usage.
 #' @export
 seal_record <- function(plaintext, dek, nonce, aad = raw(0)) {
   r <- .secrtt_aead_encrypt(dek, nonce, plaintext, aad)
@@ -106,6 +119,8 @@ seal_record <- function(plaintext, dek, nonce, aad = raw(0)) {
 }
 
 #' Open a sealed record
+#' @param sealed See Usage.
+#' @param dek See Usage.
 #' @export
 open_record <- function(sealed, dek) {
   r <- .secrtt_aead_decrypt(dek, sealed$nonce, sealed$ciphertext,
@@ -117,6 +132,12 @@ open_record <- function(sealed, dek) {
 }
 
 #' Rotate the KEK: re-wrap every DEK, no record ciphertext touched
+#' @param wrapped_deks See Usage.
+#' @param old_kek See Usage.
+#' @param new_kek See Usage.
+#' @param new_nonces See Usage.
+#' @param new_kek_id See Usage.
+#' @param audit_log See Usage.
 #' @export
 rotate_kek <- function(wrapped_deks, old_kek, new_kek, new_nonces,
                        new_kek_id = "kek-2", audit_log = NULL) {
@@ -139,6 +160,10 @@ rotate_kek <- function(wrapped_deks, old_kek, new_kek, new_nonces,
 }
 
 #' Rotate a DEK: re-encrypt one record
+#' @param sealed See Usage.
+#' @param old_dek See Usage.
+#' @param new_dek See Usage.
+#' @param new_nonce See Usage.
 #' @export
 rotate_dek <- function(sealed, old_dek, new_dek, new_nonce) {
   pt <- open_record(sealed, old_dek)
@@ -150,6 +175,9 @@ rotate_dek <- function(sealed, old_dek, new_dek, new_nonce) {
 }
 
 #' Cost model: single-key vs envelope rotation
+#' @param n_records See Usage.
+#' @param mean_record_bytes See Usage.
+#' @param dek_bytes See Usage.
 #' @export
 rotation_cost <- function(n_records, mean_record_bytes,
                           dek_bytes = 32L) {
@@ -168,6 +196,8 @@ rotation_cost <- function(n_records, mean_record_bytes,
 }
 
 #' Crypto-shred: destroy a KEK and report what that covers
+#' @param kek_id See Usage.
+#' @param wrapped_deks See Usage.
 #' @export
 crypto_shred <- function(kek_id, wrapped_deks) {
   covered <- which(vapply(wrapped_deks,

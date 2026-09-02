@@ -3,9 +3,12 @@
 % the formals.
 \name{quarantine_efficacy}
 \alias{quarantine_efficacy}
+\alias{quarantineefficacy}
 \title{Quarantine efficacy (eq. 1 of Ashcroft et al. 2021)}
 \usage{
-quarantine_efficacy(t_Q, t_R, generation_time = NULL, t_E = 0)
+quarantine_efficacy(t_Q, t_R, generation_time = NULL, t_E = 0) 
+
+quarantineefficacy(t_Q, t_R, generation_time = NULL, t_E = 0) 
 }
 \arguments{
 \item{t_Q}{Quarantine start.}

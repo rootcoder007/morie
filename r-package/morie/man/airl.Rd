@@ -5,7 +5,9 @@
 \alias{airl}
 \title{Adversarial Inverse Reinforcement Learning}
 \usage{
-airl(expert_states, expert_actions, expert_next, expert_log_policy, policy_states, policy_actions, policy_next, policy_log_policy, gamma = 0.99, state_only = TRUE, lr = 0.1, epochs = 500L, l2 = 0)
+airl(expert_states, expert_actions, expert_next, expert_log_policy, 
+    policy_states, policy_actions, policy_next, policy_log_policy, gamma = 0.99, 
+    state_only = TRUE, lr = 0.1, epochs = 500L, l2 = 0) 
 }
 \arguments{
 \item{expert_states,expert_actions,expert_next}{Expert transitions.}

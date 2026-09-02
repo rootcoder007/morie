@@ -5,10 +5,16 @@
 \alias{rotate_dek}
 \title{Rotate a DEK: re-encrypt one record}
 \usage{
-rotate_dek(sealed, old_dek, new_dek, new_nonce)
+rotate_dek(sealed, old_dek, new_dek, new_nonce) 
 }
 \description{
 Rotate a DEK: re-encrypt one record
+}
+\arguments{
+\item{sealed}{Argument \code{sealed}; see Usage.}
+\item{old_dek}{Argument \code{old_dek}; see Usage.}
+\item{new_dek}{Argument \code{new_dek}; see Usage.}
+\item{new_nonce}{Argument \code{new_nonce}; see Usage.}
 }
 \value{
 A list with \code{sealed}, \code{records_reencrypted}, \code{note}.

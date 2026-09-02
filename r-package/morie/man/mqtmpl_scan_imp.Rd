@@ -5,7 +5,7 @@
 \alias{mqtmpl_scan_imp}
 \title{mqtmpl_scan_imp}
 \usage{
-mqtmpl_scan_imp(y, markers, positions, step, n_imp, error_rate, seed)
+mqtmpl_scan_imp(y, markers, positions, step, n_imp, error_rate, seed) 
 }
 \arguments{
 \item{y}{A vector; its length is taken.}

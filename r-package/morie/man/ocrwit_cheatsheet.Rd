@@ -5,7 +5,7 @@
 \alias{ocrwit_cheatsheet}
 \title{ocrwit_cheatsheet}
 \usage{
-ocrwit_cheatsheet()
+ocrwit_cheatsheet() 
 }
 \description{
 Part of the ocrwit_native implementation; see the file header for the source it follows.

@@ -11,16 +11,16 @@
 #'
 #' Provides:
 #' \itemize{
-#'   \item \code{estimate_ate()} — IPW-weighted OLS ATE.
-#'   \item \code{estimate_plr()} — Partially Linear Regression via
+#'   \item \code{estimate_ate()} -- IPW-weighted OLS ATE.
+#'   \item \code{estimate_plr()} -- Partially Linear Regression via
 #'     native cross-fitting with ridge nuisance learners.
-#'   \item \code{estimate_pliv()} — Partially Linear IV (LATE) via
+#'   \item \code{estimate_pliv()} -- Partially Linear IV (LATE) via
 #'     native cross-fit partialling-out.
-#'   \item \code{estimate_ate_gcomputation()} — G-computation
+#'   \item \code{estimate_ate_gcomputation()} -- G-computation
 #'     (outcome-regression / standardisation) ATE with bootstrap SE.
-#'   \item \code{sensitivity_rosenbaum()} — Rosenbaum bounds for hidden
+#'   \item \code{sensitivity_rosenbaum()} -- Rosenbaum bounds for hidden
 #'     confounding (native Rosenbaum signed-rank bounds).
-#'   \item \code{e_value()} — VanderWeele-Ding E-value (wraps
+#'   \item \code{e_value()} -- VanderWeele-Ding E-value (wraps
 #'     \pkg{EValue} when available, else base R).
 #' }
 #'
@@ -435,8 +435,8 @@ e_value <- function(ate, se, null = 0) {
   if (z == 0) return(1)
   # Pre-2026-05-22, this also tried EValue::evalues.OLS with a hardcoded
   # sd_y=1 (assumed standardised outcome). That diverged from Python's
-  # exp(z) proxy: same input, three different paths (R-with-EValue ≠
-  # R-without ≠ Python). Removed; both ports now use the closed-form
+  # exp(z) proxy: same input, three different paths (R-with-EValue ?
+  # R-without ? Python). Removed; both ports now use the closed-form
   # VanderWeele-Ding E-value for the continuous-scale RR proxy.
   # Users who want the EValue OLS path with a real sd_y should call
   # EValue::evalues.OLS directly.

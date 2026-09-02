@@ -5,7 +5,7 @@
 \alias{motfsr_cheatsheet}
 \title{motfsr_cheatsheet}
 \usage{
-motfsr_cheatsheet()
+motfsr_cheatsheet() 
 }
 \description{
 Part of the motfsr_native implementation; see the file header for the source it follows.

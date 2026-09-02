@@ -5,7 +5,7 @@
 \alias{muzero_select}
 \title{muzero_select}
 \usage{
-muzero_select(node, A_keys, mm, c1, c2)
+muzero_select(node, A_keys, mm, c1, c2) 
 }
 \arguments{
 \item{node}{A list; the body reads \code{$children} from it.}

@@ -5,7 +5,7 @@
 \alias{momento_task_mask}
 \title{momento_task_mask}
 \usage{
-momento_task_mask(n_patches, task = "forecast", span = 1, start = NULL)
+momento_task_mask(n_patches, task = "forecast", span = 1, start = NULL) 
 }
 \arguments{
 \item{n_patches}{Coerced to integer by the body, with \code{as.integer}.}

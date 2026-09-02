@@ -5,10 +5,15 @@
 \alias{generate_dek}
 \title{Derive a distinct DEK per record}
 \usage{
-generate_dek(master_seed, record_id, salt = NULL)
+generate_dek(master_seed, record_id, salt = NULL) 
 }
 \description{
 Derive a distinct DEK per record
+}
+\arguments{
+\item{master_seed}{Argument \code{master_seed}; see Usage.}
+\item{record_id}{Argument \code{record_id}; see Usage.}
+\item{salt}{Argument \code{salt}; see Usage.}
 }
 \value{
 A list with \code{dek}, \code{dek_hex}, \code{record_id}, \code{note}.

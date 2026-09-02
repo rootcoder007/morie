@@ -5,7 +5,7 @@
 \alias{morie_painn_equivariance_error}
 \title{Rotate the input; scalars must not move, vectors must rotate}
 \usage{
-morie_painn_equivariance_error(model, s, v, R, Q, tol = 1e-09)
+morie_painn_equivariance_error(model, s, v, R, Q, tol = 1e-09) 
 }
 \arguments{
 \item{model}{Accepted by the signature and not used anywhere in the body.}

@@ -5,7 +5,7 @@
 \alias{qrntcq_cheatsheet}
 \title{qrntcq_cheatsheet}
 \usage{
-qrntcq_cheatsheet()
+qrntcq_cheatsheet() 
 }
 \description{
 qrntcq_cheatsheet

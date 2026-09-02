@@ -20,3 +20,16 @@ andmnh(
 \description{
 Compact alias for andrews_monahan_hac
 }
+\arguments{
+\item{e}{Argument \code{e}; see Usage.}
+\item{X}{Argument \code{X}; see Usage.}
+\item{prewhiten}{Argument \code{prewhiten}; see Usage.}
+\item{var_order}{Argument \code{var_order}; see Usage.}
+\item{kernel}{Argument \code{kernel}; see Usage.}
+\item{bandwidth}{Argument \code{bandwidth}; see Usage.}
+\item{weights}{Argument \code{weights}; see Usage.}
+\item{n_params}{Argument \code{n_params}; see Usage.}
+\item{cap}{Argument \code{cap}; see Usage.}
+\item{adjust}{Argument \code{adjust}; see Usage.}
+}
+

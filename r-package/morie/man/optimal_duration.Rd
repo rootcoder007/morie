@@ -5,7 +5,7 @@
 \alias{optimal_duration}
 \title{Release time maximising utility}
 \usage{
-optimal_duration(t_Q = 3, generation_time = NULL, t_max = 20, step = 0.25)
+optimal_duration(t_Q = 3, generation_time = NULL, t_max = 20, step = 0.25) 
 }
 \arguments{
 \item{t_Q}{Quarantine start.}

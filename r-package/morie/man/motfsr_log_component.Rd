@@ -5,7 +5,7 @@
 \alias{motfsr_log_component}
 \title{motfsr_log_component}
 \usage{
-motfsr_log_component(theta, coded, i, j, w, comp)
+motfsr_log_component(theta, coded, i, j, w, comp) 
 }
 \arguments{
 \item{theta}{A vector; indexed elementwise.}

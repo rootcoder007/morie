@@ -5,7 +5,7 @@
 \alias{morie_timeRS_cheatsheet}
 \title{morie_timeRS_cheatsheet}
 \usage{
-morie_timeRS_cheatsheet()
+morie_timeRS_cheatsheet() 
 }
 \description{
 Part of the timeRS_native implementation; see the file header for the source it follows.

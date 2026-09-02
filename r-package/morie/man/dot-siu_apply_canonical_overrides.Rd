@@ -16,7 +16,7 @@ The value of \code{df}, as built in the body.
 }
 \description{
 frame. Each row of \code{overrides} is (case_number, field,
-verified_value); for any match, overwrite df[\link{field}] at the row
+verified_value); for any match, overwrite df[[field]] at the row
 whose case_number matches. Silent on misses (override for a case not
 in the parse, or field not in the schema).
 }

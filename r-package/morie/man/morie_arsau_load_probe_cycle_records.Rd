@@ -2,7 +2,7 @@
 % Please edit documentation in R/arsau.R
 \name{morie_arsau_load_probe_cycle_records}
 \alias{morie_arsau_load_probe_cycle_records}
-\title{Load ARSAU probe_cycle_records CSV (CEW telemetry).}
+\title{Load ARSAU probe_cycle_records CSV (CEW telemetry)}
 \usage{
 morie_arsau_load_probe_cycle_records(year, language = "en", data_dir = NULL)
 }
@@ -21,7 +21,7 @@ rich-result metadata fields described in
 \code{\link{morie_arsau_load_main_records}}.
 }
 \description{
-Load ARSAU probe_cycle_records CSV (CEW telemetry).
+Load ARSAU probe_cycle_records CSV (CEW telemetry)
 }
 \examples{
 \donttest{

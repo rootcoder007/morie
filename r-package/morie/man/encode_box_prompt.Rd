@@ -5,7 +5,7 @@
 \alias{encode_box_prompt}
 \title{encode_box_prompt}
 \usage{
-encode_box_prompt(box, dim = 8, type_embeddings = NULL)
+encode_box_prompt(box, dim = 8, type_embeddings = NULL) 
 }
 \arguments{
 \item{box}{Coerced to numeric by the body, with \code{as.numeric}.}

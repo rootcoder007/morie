@@ -5,7 +5,7 @@
 \alias{offlrl_logsumexp}
 \title{offlrl_logsumexp}
 \usage{
-offlrl_logsumexp(v)
+offlrl_logsumexp(v) 
 }
 \arguments{
 \item{v}{Numeric; passed to \code{max}.}

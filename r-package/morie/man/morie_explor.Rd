@@ -5,7 +5,9 @@
 \alias{morie_explor}
 \title{morie_explor}
 \usage{
-morie_explor(states, actions, next_states, n_actions = NULL, n_features = 8L, eta = 1, beta = 0.2, lr = 0.05, epochs = 1L, features = "inverse", discrete = TRUE, seed = 0L)
+morie_explor(states, actions, next_states, n_actions = NULL, n_features = 8L, 
+    eta = 1, beta = 0.2, lr = 0.05, epochs = 1L, features = "inverse", 
+    discrete = TRUE, seed = 0L) 
 }
 \arguments{
 \item{states}{Passed to \code{explor}.}

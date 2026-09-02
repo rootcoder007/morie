@@ -5,7 +5,9 @@
 \alias{motfsr_mm_fit}
 \title{motfsr_mm_fit}
 \usage{
-motfsr_mm_fit(sequences, w, alphabet = NULL, theta0 = NULL, lambda0 = NULL, beta = 0.01, erasing = NULL, max_iter = 1000, tol = 1e-06, normalize_overlaps = TRUE, erase_by = "letter")
+motfsr_mm_fit(sequences, w, alphabet = NULL, theta0 = NULL, lambda0 = NULL, 
+    beta = 0.01, erasing = NULL, max_iter = 1000, tol = 1e-06, normalize_overlaps = TRUE, 
+    erase_by = "letter") 
 }
 \arguments{
 \item{sequences}{Passed to \code{motfsr_prepare}.}

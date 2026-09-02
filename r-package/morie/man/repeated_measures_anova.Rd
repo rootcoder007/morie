@@ -10,6 +10,8 @@ repeated_measures_anova(data, outcome, subject, within)
 \item{data}{Long-format data frame.}
 
 \item{outcome, subject, within}{Column names.}
+
+
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})

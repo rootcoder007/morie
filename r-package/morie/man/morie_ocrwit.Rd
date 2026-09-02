@@ -5,7 +5,7 @@
 \alias{morie_ocrwit}
 \title{morie_ocrwit}
 \usage{
-morie_ocrwit(text_boxes, masked_patches, width, height, patch_grid = 14, masked_text = list())
+morie_ocrwit(text_boxes, masked_patches, width, height, patch_grid = 14, masked_text = list()) 
 }
 \arguments{
 \item{text_boxes}{A vector; its length is taken and its elements indexed.}

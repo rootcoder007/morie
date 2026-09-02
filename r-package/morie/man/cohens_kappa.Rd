@@ -10,6 +10,7 @@ cohens_kappa(rater1, rater2, confidence = 0.95)
 \item{rater1, rater2}{Equal-length categorical vectors.}
 
 \item{confidence}{Confidence level.}
+
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})

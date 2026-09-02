@@ -5,7 +5,7 @@
 \alias{morie_torsion_similarity}
 \title{The paper\'s similarity score S = 2 D / (d_i + d_j)}
 \usage{
-morie_torsion_similarity(t1, t2)
+morie_torsion_similarity(t1, t2) 
 }
 \arguments{
 \item{t1,t2}{Either torsion dictionaries or iterables of codes.}

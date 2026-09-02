@@ -5,7 +5,7 @@
 \alias{morie_nrfrad}
 \title{morie_nrfrad}
 \usage{
-morie_nrfrad(payload)
+morie_nrfrad(payload) 
 }
 \arguments{
 \item{payload}{A list; the body reads \code{$bins}, \code{$colour}, \code{$direction}, \code{$directions}, \code{$eps}, \code{$include_input}, \code{$L}, \code{$model}, \code{$n_samples}, \code{$op}, \code{$origin}, \code{$p}, \code{$point}, \code{$rng}, \code{$sigma}, \code{$stratified}, \code{$t}, \code{$t_far}, \code{$t_near}, \code{$tol}, \code{$weights} from it.}

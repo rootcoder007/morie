@@ -5,7 +5,7 @@
 \alias{css}
 \title{css}
 \usage{
-css(w, ar = list(), ma = list(), full = FALSE)
+css(w, ar = list(), ma = list(), full = FALSE) 
 }
 \arguments{
 \item{w}{A vector; its length is taken and its elements indexed.}

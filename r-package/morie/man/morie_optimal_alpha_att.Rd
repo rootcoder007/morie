@@ -5,7 +5,7 @@
 \alias{morie_optimal_alpha_att}
 \title{Theorem 5.3: the one-sided threshold for the effect on the treated}
 \usage{
-morie_optimal_alpha_att(pscore, treated, tol = 1e-12, max_iter = 200)
+morie_optimal_alpha_att(pscore, treated, tol = 1e-12, max_iter = 200) 
 }
 \arguments{
 \item{pscore}{Numeric propensity scores.}

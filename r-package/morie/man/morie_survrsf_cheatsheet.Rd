@@ -5,7 +5,7 @@
 \alias{morie_survrsf_cheatsheet}
 \title{morie_survrsf_cheatsheet}
 \usage{
-morie_survrsf_cheatsheet()
+morie_survrsf_cheatsheet() 
 }
 \description{
 Part of the survrsf_native implementation; see the file header for the source it follows.

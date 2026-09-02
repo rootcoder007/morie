@@ -5,7 +5,7 @@
 \alias{placebo_did}
 \title{Pre-period placebo DiD}
 \usage{
-placebo_did(Y, D, event_time, split = NULL)
+placebo_did(Y, D, event_time, split = NULL) 
 }
 \arguments{
 \item{Y}{Balanced panel.}

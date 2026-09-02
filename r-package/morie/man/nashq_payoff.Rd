@@ -5,7 +5,7 @@
 \alias{nashq_payoff}
 \title{nashq_payoff}
 \usage{
-nashq_payoff(M, p, q)
+nashq_payoff(M, p, q) 
 }
 \arguments{
 \item{M}{A matrix; indexed by row and column.}

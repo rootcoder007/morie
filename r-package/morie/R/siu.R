@@ -456,7 +456,7 @@ morie_fetch_siu <- function(cache_dir = file.path(tempdir(), "morie", "siu"),
   out_path
 }
 
-#' SIU drid → case_number → language index
+#' SIU drid ? case_number ? language index
 #'
 #' Returns the shipped drid manifest as a data frame -- one row per
 #' director's-report id morie has verified, with the parsed case
@@ -646,7 +646,7 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
 #' Internal: apply a canonical-overrides table to a parsed SIU data
 #'
 #' frame. Each row of `overrides` is (case_number, field,
-#' verified_value); for any match, overwrite df[[field]] at the row
+#' verified_value); for any match, overwrite df[\[field\]] at the row
 #' whose case_number matches. Silent on misses (override for a case not
 #' in the parse, or field not in the schema).
 #'
@@ -825,7 +825,7 @@ morie_siu_refresh_manifest <- function(
 ) {
   # Manifest refresh sweeps a generous range so the resulting snapshot
   # stays useful for several months without re-probing. Default is
-  # max(live-discovery + margin, 6000) — the live max currently sits
+  # max(live-discovery + margin, 6000) -- the live max currently sits
   # around drid ~5100, and 6000 gives headroom for ~one year of new
   # reports at the SIU's historical publish cadence.
   if (is.null(max_drid)) max_drid <- max(.siu_discover_max_drid(), 6000L)

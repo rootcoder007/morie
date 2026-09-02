@@ -5,7 +5,7 @@
 \alias{mpfn_is_permutation_invariant}
 \title{mpfn_is_permutation_invariant}
 \usage{
-mpfn_is_permutation_invariant(H, adj, edge_features, perm, T = 3, how = "sum", tol = 1e-09)
+mpfn_is_permutation_invariant(H, adj, edge_features, perm, T = 3, how = "sum", tol = 1e-09) 
 }
 \arguments{
 \item{H}{A vector; its length is taken and its elements indexed.}

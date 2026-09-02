@@ -9,3 +9,8 @@ morie_tqang_tqang(theta, bits = 4L)
 \description{
 Compact alias \code{tqang}
 }
+\arguments{
+\item{theta}{Argument \code{theta}; see Usage.}
+\item{bits}{Argument \code{bits}; see Usage.}
+}
+

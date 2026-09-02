@@ -5,7 +5,7 @@
 \alias{mqtmpl_lod_support_interval}
 \title{mqtmpl_lod_support_interval}
 \usage{
-mqtmpl_lod_support_interval(scan_result, drop = 1.5)
+mqtmpl_lod_support_interval(scan_result, drop = 1.5) 
 }
 \arguments{
 \item{scan_result}{A list; the body reads \code{$lod}, \code{$position} from it.}

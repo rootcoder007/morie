@@ -5,7 +5,7 @@
 \alias{morie_shrunk_targeting_unsafe}
 \title{The thing not to do: penalise the fluctuation}
 \usage{
-morie_shrunk_targeting_unsafe(Q, H, Y, ridge = 1)
+morie_shrunk_targeting_unsafe(Q, H, Y, ridge = 1) 
 }
 \arguments{
 \item{Q,H,Y}{Numeric vectors of equal length.}

@@ -4,10 +4,13 @@
 \alias{morie_secarg_parameter_advice}
 \title{Argon2: make the attacker pay for memory, not just for time}
 \usage{
-morie_secarg_parameter_advice(profile = "first")
+morie_secarg_parameter_advice(profile = "first") 
 }
 \description{
 Argon2: make the attacker pay for memory, not just for time. Sources: Biryukov, A., Dinu, D., Khovratovich, D. & Josefsson, S. design and trade-off analysis in Biryukov, Dinu & Khovratovich Native R arm mirroring the Python arm exactly: the same block permutation P applied to the 16-word rows and to the indexed columns, the same pre-hashing digest H_0 over every parameter so changing the variant, the memory, the passes or the lanes changes the tag, and the same data-independent addressing rule for Argon2i and for the first half of the first pass of Argon2id.
+}
+\arguments{
+\item{profile}{Argument \code{profile}; see Usage.}
 }
 \value{
 A list with components \code{first}, \code{variant}, \code{memory}, \code{passes}, \code{parallelism}, \code{tag_length}, \code{salt_bytes}, \code{note}, \code{t}, \code{p}, \code{second}.

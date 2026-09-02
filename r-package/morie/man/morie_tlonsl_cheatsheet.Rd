@@ -5,7 +5,7 @@
 \alias{morie_tlonsl_cheatsheet}
 \title{morie_tlonsl_cheatsheet}
 \usage{
-morie_tlonsl_cheatsheet()
+morie_tlonsl_cheatsheet() 
 }
 \description{
 Part of the tlonsl_native implementation; see the file header for the source it follows.

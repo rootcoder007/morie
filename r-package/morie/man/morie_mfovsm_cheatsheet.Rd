@@ -5,7 +5,7 @@
 \alias{morie_mfovsm_cheatsheet}
 \title{Cheatsheet}
 \usage{
-morie_mfovsm_cheatsheet()
+morie_mfovsm_cheatsheet() 
 }
 \description{
 Part of the mfovsm_native implementation; see the file header for the source it follows.

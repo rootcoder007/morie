@@ -5,7 +5,7 @@
 \alias{nashq_solve}
 \title{nashq_solve}
 \usage{
-nashq_solve(A, b)
+nashq_solve(A, b) 
 }
 \arguments{
 \item{A}{Passed to \code{cbind}.}

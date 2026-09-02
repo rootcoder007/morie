@@ -26,9 +26,7 @@
 #' vectors in the order given -- the paper's point that an LSTM
 #' aggregator is not symmetric and must be fed a random permutation).
 #'
-#' @param vectors A list of numeric vectors.
-#' @param how One of \code{"mean"}, \code{"max_pool"}, \code{"lstm_order"}.
-#' @param W Optional weight matrix used by \code{max_pool}.
+#' @param x See Usage.
 #' @return A single numeric vector.
 #' @references Hamilton, W. L. et al. (2017).
 #' @export

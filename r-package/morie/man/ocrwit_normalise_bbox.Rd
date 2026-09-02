@@ -5,7 +5,7 @@
 \alias{ocrwit_normalise_bbox}
 \title{ocrwit_normalise_bbox}
 \usage{
-ocrwit_normalise_bbox(box, width, height, scale = 1000)
+ocrwit_normalise_bbox(box, width, height, scale = 1000) 
 }
 \arguments{
 \item{box}{A vector; indexed elementwise.}

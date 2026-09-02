@@ -5,7 +5,7 @@
 \alias{gamma_generation_time}
 \title{Build a gamma generation-time density on a grid, normalised}
 \usage{
-gamma_generation_time(shape = 2.83, scale = 1.86, grid = NULL, t_max = 30, n = 3001L)
+gamma_generation_time(shape = 2.83, scale = 1.86, grid = NULL, t_max = 30, n = 3001L) 
 }
 \arguments{
 \item{shape}{Positive shape.}

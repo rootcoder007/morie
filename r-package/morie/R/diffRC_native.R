@@ -168,6 +168,11 @@ denoise <- function(x_t, model, schedule, t_start = NULL) {
                     "history survives the forward process"))
 }
 
+#' Cheat sheet for the diffRC module
+#'
+#' One-screen reminder of the module's entry points, printed to the console.
+#'
+#' @return The cheat sheet text, invisibly.
 #' @export
 .diffRC_cheatsheet <- function() {
   paste("diffRC: GAN recommenders are unstable and VAE ones trade",

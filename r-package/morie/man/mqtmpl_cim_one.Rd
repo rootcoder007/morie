@@ -5,7 +5,7 @@
 \alias{mqtmpl_cim_one}
 \title{mqtmpl_cim_one}
 \usage{
-mqtmpl_cim_one(y, left, right, r_left, r_right, cofactors)
+mqtmpl_cim_one(y, left, right, r_left, r_right, cofactors) 
 }
 \arguments{
 \item{y}{A vector; its length is taken.}

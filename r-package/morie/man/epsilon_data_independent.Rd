@@ -5,7 +5,7 @@
 \alias{epsilon_data_independent}
 \title{Section 3.2: 4 T gamma^2 + 2 gamma sqrt(2 T ln(1/delta)). The}
 \usage{
-epsilon_data_independent(T, gamma, delta)
+epsilon_data_independent(T, gamma, delta) 
 }
 \arguments{
 \item{T}{Numeric; combined arithmetically in the body.}

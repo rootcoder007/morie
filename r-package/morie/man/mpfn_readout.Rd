@@ -5,7 +5,7 @@
 \alias{mpfn_readout}
 \title{mpfn_readout}
 \usage{
-mpfn_readout(H, how = "sum", H0 = NULL, i_fn = NULL, j_fn = NULL)
+mpfn_readout(H, how = "sum", H0 = NULL, i_fn = NULL, j_fn = NULL) 
 }
 \arguments{
 \item{H}{Iterated over elementwise, with \code{lapply}.}

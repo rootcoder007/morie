@@ -9,19 +9,34 @@
 \alias{morie_svm_label_matrix}
 \title{Support vector machines}
 \usage{
-morie_svm_fit_dual(X, y, C = NULL, n_iter = 4000L, tol = 1e-9, K = NULL)
-morie_svm_dual_objective(alpha, X, y, K = NULL)
-morie_svm_beta(alpha, X, y)
-morie_svm_intercept(alpha, X, y, K = NULL, tol = 1e-8)
-morie_svm_decision(X, beta0, beta)
-morie_svm_label_matrix(X, y) as.matrix(X) * as.numeric(y) #' @noRd morie_svm_decision <- function(X, beta0, beta)
+morie_svm_fit_dual(X, y, C = NULL, n_iter = 4000L, tol = 1e-09, K = NULL) 
+
+morie_svm_dual_objective(alpha, X, y, K = NULL) 
+
+morie_svm_beta(alpha, X, y) 
+
+morie_svm_intercept(alpha, X, y, K = NULL, tol = 1e-08) 
+
+morie_svm_decision(X, beta0, beta) 
+
+morie_svm_label_matrix(X, y) 
 }
 \arguments{
 \item{X}{numeric matrix of inputs, one row per observation}
 \item{y}{vector of class labels in {-1, 1}}
 \item{C}{box constraint on the dual coefficients}
 \item{alpha}{vector of dual coefficients}
-\item{...}{further arguments controlling the optimiser}
+
+
+\item{n_iter}{Argument \code{n_iter}; see Usage.}
+
+\item{tol}{Argument \code{tol}; see Usage.}
+
+\item{K}{Argument \code{K}; see Usage.}
+
+\item{beta0}{Argument \code{beta0}; see Usage.}
+
+\item{beta}{Argument \code{beta}; see Usage.}
 }
 \value{
 A list holding the fitted quantities for the method called: point

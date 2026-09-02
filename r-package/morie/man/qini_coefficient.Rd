@@ -5,10 +5,14 @@
 \alias{qini_coefficient}
 \title{Qini coefficient (RATE with alpha(u) = u)}
 \usage{
-qini_coefficient(scores, priority)
+qini_coefficient(scores, priority) 
 }
 \description{
 Qini coefficient (RATE with alpha(u) = u)
+}
+\arguments{
+\item{scores}{Argument \code{scores}; see Usage.}
+\item{priority}{Argument \code{priority}; see Usage.}
 }
 \value{
 The value of \code{$}.

@@ -5,7 +5,7 @@
 \alias{mpfn_update_gru}
 \title{mpfn_update_gru}
 \usage{
-mpfn_update_gru(h, m, Wz, Uz, Wr, Ur, Wh, Uh)
+mpfn_update_gru(h, m, Wz, Uz, Wr, Ur, Wh, Uh) 
 }
 \arguments{
 \item{h}{A vector; its length is taken.}

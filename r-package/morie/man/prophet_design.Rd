@@ -3,9 +3,14 @@
 % the formals.
 \name{prophet_design}
 \alias{prophet_design}
+\alias{morie_prphet_design}
 \title{Stack trend, seasonality and holiday columns into one design}
 \usage{
-prophet_design(t, cps, seasonalities = NULL, holidays = NULL, holiday_window = c(0, 0))
+prophet_design(t, cps, seasonalities = NULL, holidays = NULL, holiday_window = c(0, 
+    0)) 
+
+morie_prphet_design(t, cps, seasonalities = NULL, holidays = NULL, holiday_window = c(0, 
+    0)) 
 }
 \arguments{
 \item{t}{Numeric vector of times.}

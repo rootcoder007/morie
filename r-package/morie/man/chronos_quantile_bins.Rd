@@ -5,7 +5,7 @@
 \alias{chronos_quantile_bins}
 \title{chronos_quantile_bins}
 \usage{
-chronos_quantile_bins(samples, n_bins = 4096L)
+chronos_quantile_bins(samples, n_bins = 4096L) 
 }
 \arguments{
 \item{samples}{Coerced to numeric by the body, with \code{as.numeric}.}

@@ -5,7 +5,7 @@
 \alias{morie_private_ci}
 \title{An interval that accounts for the mechanism\'s own variance}
 \usage{
-morie_private_ci(value, sensitivity, epsilon, se, seed = 0, level = 1.96)
+morie_private_ci(value, sensitivity, epsilon, se, seed = 0, level = 1.96) 
 }
 \arguments{
 \item{value,se}{Non-private value and standard error.}

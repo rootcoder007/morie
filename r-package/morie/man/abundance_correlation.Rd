@@ -5,7 +5,7 @@
 \alias{abundance_correlation}
 \title{abundance_correlation}
 \usage{
-abundance_correlation(cov_a, cov_b)
+abundance_correlation(cov_a, cov_b) 
 }
 \arguments{
 \item{cov_a}{Coerced to numeric by the body, with \code{as.numeric}.}

@@ -104,6 +104,9 @@
 }
 
 #' PMA_k attention pooling from Lee et al. (2019)
+#' @param Z See Usage.
+#' @param S See Usage.
+#' @param params See Usage.
 #' @export
 setT <- function(Z, S, params) {
   Za <- as.matrix(Z); storage.mode(Za) <- "double"
@@ -130,6 +133,10 @@ setT <- function(Z, S, params) {
 }
 
 #' Back-compatible wrapper over `setT` (old stub name)
+#' @param X See Usage.
+#' @param k See Usage.
+#' @param S See Usage.
+#' @param params See Usage.
 #' @export
 set_transformer <- function(X = NULL, k = NULL, S = NULL,
                             params = NULL) {

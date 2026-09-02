@@ -5,7 +5,7 @@
 \alias{mpfn_message_passing}
 \title{mpfn_message_passing}
 \usage{
-mpfn_message_passing(H0, adj, edge_features, T = 3, A = NULL, update = NULL)
+mpfn_message_passing(H0, adj, edge_features, T = 3, A = NULL, update = NULL) 
 }
 \arguments{
 \item{H0}{Iterated over elementwise, with \code{lapply}.}

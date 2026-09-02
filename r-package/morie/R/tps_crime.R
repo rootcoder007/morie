@@ -39,7 +39,7 @@ NULL
 # ---------------------------------------------------------------------------
 
 
-#' Build a rich-result named list with the morie_tps_result class.
+#' Build a rich-result named list with the morie_tps_result class
 #' @keywords internal
 #' @noRd
 .tps_result <- function(title, summary_lines = list(), tables = list(),
@@ -61,7 +61,7 @@ NULL
   out
 }
 
-#' Detect the year column (OCC_YEAR or REPORT_YEAR).
+#' Detect the year column (OCC_YEAR or REPORT_YEAR)
 #' @keywords internal
 #' @noRd
 .tps_year_col <- function(df) {
@@ -512,7 +512,7 @@ morie_tps_category_correlation_matrix <- function(dfs) {
 # print method (shared with tps_csi.R via the morie_tps_result class)
 # ---------------------------------------------------------------------------
 
-#' Pretty-print method for \code{morie_tps_result} objects.
+#' Pretty-print method for \code{morie_tps_result} objects
 #'
 #' @param x A \code{morie_tps_result} list.
 #' @param ... Ignored.

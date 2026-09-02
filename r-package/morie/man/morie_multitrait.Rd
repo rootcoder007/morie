@@ -8,18 +8,65 @@
 \alias{morie_bmtme_conditionals}
 \title{Multi-trait and genotype-by-environment models}
 \usage{
-morie_multitrait(Y, Z, G, Sigma_T, R_T, X = NULL)
-morie_multitrait_ridge(Z1, G)
-morie_gxe_multitrait(Y, Z_L, Z_EL, G, Sigma_T, Sigma_E, Sigma_2T, R_T, X = NULL)
-morie_gxe_blup(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e = 1)
-morie_bmtme_conditionals(Y, Z1, Z2, G, Sigma_T, Sigma_E, R, b1 = NULL, b2 = NULL, nu_T = NULL, S_T = NULL, nu_E = NULL, S_E = NULL)
+morie_multitrait(Y, Z, G, Sigma_T, R_T, X = NULL) 
+
+morie_multitrait(Y, Z, G, Sigma_T, R_T, X = NULL) 
+
+morie_multitrait_ridge(Z1, G) 
+
+morie_gxe_multitrait(Y, Z_L, Z_EL, G, Sigma_T, Sigma_E, Sigma_2T, R_T, X = NULL) 
+
+morie_gxe_blup(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e = 1) 
+
+morie_bmtme_conditionals(Y, Z1, Z2, G, Sigma_T, Sigma_E, R, b1 = NULL, b2 = NULL, nu_T = NULL, 
+    S_T = NULL, nu_E = NULL, S_E = NULL) 
 }
 \arguments{
 \item{Y}{response matrix, one column per trait}
 \item{X}{fixed-effect design matrix}
 \item{Z}{random-effect design matrix}
-\item{K}{relationship matrix}
-\item{...}{further arguments passed to the underlying solver}
+
+
+
+\item{G}{Argument \code{G}; see Usage.}
+
+\item{Sigma_T}{Argument \code{Sigma_T}; see Usage.}
+
+\item{R_T}{Argument \code{R_T}; see Usage.}
+
+\item{Z1}{Argument \code{Z1}; see Usage.}
+
+\item{Z_L}{Argument \code{Z_L}; see Usage.}
+
+\item{Z_EL}{Argument \code{Z_EL}; see Usage.}
+
+\item{Sigma_E}{Argument \code{Sigma_E}; see Usage.}
+
+\item{Sigma_2T}{Argument \code{Sigma_2T}; see Usage.}
+
+\item{y}{Argument \code{y}; see Usage.}
+
+\item{X_E}{Argument \code{X_E}; see Usage.}
+
+\item{sigma2_g}{Argument \code{sigma2_g}; see Usage.}
+
+\item{sigma2_e}{Argument \code{sigma2_e}; see Usage.}
+
+\item{Z2}{Argument \code{Z2}; see Usage.}
+
+\item{R}{Argument \code{R}; see Usage.}
+
+\item{b1}{Argument \code{b1}; see Usage.}
+
+\item{b2}{Argument \code{b2}; see Usage.}
+
+\item{nu_T}{Argument \code{nu_T}; see Usage.}
+
+\item{S_T}{Argument \code{S_T}; see Usage.}
+
+\item{nu_E}{Argument \code{nu_E}; see Usage.}
+
+\item{S_E}{Argument \code{S_E}; see Usage.}
 }
 \value{
 A list holding the fitted quantities for the method called: point

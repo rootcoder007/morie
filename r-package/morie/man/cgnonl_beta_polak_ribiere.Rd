@@ -5,7 +5,7 @@
 \alias{cgnonl_beta_polak_ribiere}
 \title{cgnonl_beta_polak_ribiere}
 \usage{
-cgnonl_beta_polak_ribiere(g_new, g_old, plus = FALSE)
+cgnonl_beta_polak_ribiere(g_new, g_old, plus = FALSE) 
 }
 \arguments{
 \item{g_new}{Numeric; combined arithmetically in the body.}

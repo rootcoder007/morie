@@ -5,7 +5,7 @@
 \alias{mqtmpl_hmm_genotype_probabilities}
 \title{mqtmpl_hmm_genotype_probabilities}
 \usage{
-mqtmpl_hmm_genotype_probabilities(genotypes, positions, error_rate = 0)
+mqtmpl_hmm_genotype_probabilities(genotypes, positions, error_rate = 0) 
 }
 \arguments{
 \item{genotypes}{Iterated over elementwise, with \code{sapply}.}

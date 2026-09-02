@@ -5,10 +5,15 @@
 \alias{alpha_ar1}
 \title{Andrews (1991) eq. 6.4, alpha(q) from p AR(1) fits}
 \usage{
-alpha_ar1(v, q = 2L, weights = NULL)
+alpha_ar1(v, q = 2L, weights = NULL) 
 }
 \description{
 Andrews (1991) eq. 6.4, alpha(q) from p AR(1) fits
+}
+\arguments{
+\item{v}{Argument \code{v}; see Usage.}
+\item{q}{Argument \code{q}; see Usage.}
+\item{weights}{Argument \code{weights}; see Usage.}
 }
 \value{
 A list with \code{alpha}, \code{fits}.

@@ -5,7 +5,7 @@
 \alias{nashq_is_equilibrium}
 \title{nashq_is_equilibrium}
 \usage{
-nashq_is_equilibrium(A, B, p, q, tol)
+nashq_is_equilibrium(A, B, p, q, tol) 
 }
 \arguments{
 \item{A}{A matrix; indexed by row and column.}

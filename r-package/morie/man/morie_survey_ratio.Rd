@@ -2,7 +2,7 @@
 % Please edit documentation in R/survey.R
 \name{morie_survey_ratio}
 \alias{morie_survey_ratio}
-\title{Ratio estimator of a population total using known X_pop.}
+\title{Ratio estimator of a population total using known X_pop}
 \usage{
 morie_survey_ratio(y, x, weights, X_population_total)
 }
@@ -21,10 +21,10 @@ variable \code{x} (ratio estimator).}
 A named list with elements \code{ratio} (estimated ratio
 \eqn{r = Y_{HT}/X_{HT}}), \code{total_estimate} (ratio-estimated
 population total), \code{se}, \code{ci_lower}, \code{ci_upper}
-(95\\% Wald confidence interval).
+(95\% Wald confidence interval).
 }
 \description{
-Ratio estimator of a population total using known X_pop.
+Ratio estimator of a population total using known X_pop
 }
 \examples{
 set.seed(1)

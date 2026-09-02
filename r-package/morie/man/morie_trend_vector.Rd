@@ -5,7 +5,7 @@
 \alias{morie_trend_vector}
 \title{The trend vector T = (1/N) sum (a_i - A) S_i and its randomisation test}
 \usage{
-morie_trend_vector(torsion_sets, activities, permutations = 40, seed = 0)
+morie_trend_vector(torsion_sets, activities, permutations = 40, seed = 0) 
 }
 \arguments{
 \item{torsion_sets}{List of torsion dictionaries.}

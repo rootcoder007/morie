@@ -5,10 +5,14 @@
 \alias{decay_diagnostics}
 \title{Realised tail vs the expected geometric tail}
 \usage{
-decay_diagnostics(weights, alpha)
+decay_diagnostics(weights, alpha) 
 }
 \description{
 Realised tail vs the expected geometric tail
+}
+\arguments{
+\item{weights}{Argument \code{weights}; see Usage.}
+\item{alpha}{Argument \code{alpha}; see Usage.}
 }
 \value{
 A list with \code{realised_tail}, \code{expected_tail}, \code{ratio}, \code{largest_index}, \code{monotone}, \code{note}.
