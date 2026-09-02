@@ -158,7 +158,7 @@ biocViews:
   MultipleComparison,
   Visualization
 Remotes:
-    rootcoder007/rmorie-bricklayer@feat/native-specializations,
+    rootcoder007/rmorie-bricklayer,
   rootcoder007/rmoriedata,
   synth-inference/synthdid
 Config/roxygen2/version: 8.0.0
