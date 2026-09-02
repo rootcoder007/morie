@@ -36,12 +36,19 @@ mqtmpl_haldane <- function(d) {
 #' @return A vector, from \code{c}.
 #' @export
 mqtmpl_genotype_probabilities <- function(s_left, s_right, r_left, r_right) {
-  # qk left, qk+1 right
-  p1 <- (1 - r_left) * (1 - r_right)
-  p2 <- r_left * r_right
-  n_tot <- p1 + p2
-  if (n_tot <= 0) return(c(0, 0))
-  c(p2 / n_tot, p1 / n_tot)
+  # Backcross coding, 0/1 at each flanking marker, no interference: the
+  # QTL genotype given the flanks is the normalised product of the two
+  # interval transmission probabilities (Broman et al. 2003). Returns
+  # c(P(q = 1), P(q = 0)) for ONE individual -- the same closed form the
+  # rmorie arm (.ghc_geno_prob) and the Python arm (rqtmpl) use.
+  gL <- as.integer(s_left); gR <- as.integer(s_right)
+  p1  <- if (gL == 1L) 1 - r_left  else r_left
+  p2  <- if (gR == 1L) 1 - r_right else r_right
+  p10 <- if (gL == 1L) r_left      else 1 - r_left
+  p20 <- if (gR == 1L) r_right     else 1 - r_right
+  tot <- p1 * p2 + p10 * p20
+  if (tot <= 0) return(c(0, 0))
+  c(p1 * p2 / tot, p10 * p20 / tot)
 }
 
 #' mqtmpl_single_marker
@@ -86,21 +93,60 @@ mqtmpl_single_marker <- function(y, g) {
 #' @param cofactors See Usage.
 #' @return A list with \code{lod}, \code{rss}, \code{coef}.
 #' @export
+# EM interval / composite interval mapping at one QTL position -- the
+# Zeng (1994) eqs (5)-(6) composite likelihood, mirrored line for line
+# from the Python arm (morie.fn.cqtmpl.cim). An empty `cofactors` is
+# exactly Lander-Botstein interval mapping, which is what
+# Broman et al. (2003) scanone(method = "em") computes.
+mqtmpl_cim_em <- function(y, left, right, r_left, r_right, cofactors = list(),
+                     max_iter = 200L, tol = 1e-10) {
+  n <- length(y); y <- as.numeric(y)
+  cof <- lapply(cofactors, as.numeric)
+  gL <- vapply(seq_len(n), function(i) if (is.na(left[i]))  0L else as.integer(left[i]),  integer(1))
+  gR <- vapply(seq_len(n), function(i) if (is.na(right[i])) 0L else as.integer(right[i]), integer(1))
+  # G[i, ] = c(P(q = 0), P(q = 1)) given the flanking markers (backcross)
+  G <- t(vapply(seq_len(n), function(i) {
+    out <- numeric(2)
+    for (q in 0:1) {
+      p <- if (gL[i] != q) r_left  else 1 - r_left
+      p <- p * (if (gR[i] != q) r_right else 1 - r_right)
+      out[q + 1L] <- p
+    }
+    tot <- out[1] + out[2]
+    if (tot <= 0) stop("mqtmpl: the flanking marker configuration has probability zero")
+    out / tot
+  }, numeric(2)))
+  my <- sum(y) / n
+  beta <- c(my, 0.1 * (max(y) - min(y) + 1e-12), rep(0, length(cof)))
+  s2 <- sum((y - my)^2) / n
+  history <- numeric(0); post <- rep(0.5, n)
+  cofmat <- if (length(cof)) do.call(cbind, cof) else matrix(0, n, 0)
+  wls <- function(X, yy, w) { A <- crossprod(X * w, X); b <- crossprod(X * w, yy); as.numeric(solve(A, b)) }
+  for (iter in seq_len(as.integer(max_iter))) {
+    base <- beta[1] + if (length(cof)) as.numeric(cofmat %*% beta[-(1:2)]) else 0
+    m0 <- base; m1 <- base + beta[2]
+    d0 <- exp(-((y - m0)^2) / (2 * s2)); d1 <- exp(-((y - m1)^2) / (2 * s2))
+    w0 <- G[, 1] * d0; w1 <- G[, 2] * d1; tot <- w0 + w1
+    if (any(tot <= 0)) stop("mqtmpl: the mixture vanished at individual ", which(tot <= 0)[1])
+    post <- w1 / tot
+    ll <- sum(log(tot / sqrt(2 * pi * s2)))
+    history <- c(history, ll)
+    if (length(history) > 1 && abs(history[length(history)] - history[length(history) - 1]) < tol) break
+    X <- rbind(cbind(1, 0, cofmat), cbind(1, 1, cofmat)); Y <- c(y, y); W <- c(1 - post, post)
+    beta <- wls(X, Y, W)
+    s2 <- sum(W * (Y - as.numeric(X %*% beta))^2) / n
+  }
+  X0 <- cbind(1, cofmat); b0 <- wls(X0, y, rep(1, n))
+  r0 <- y - as.numeric(X0 %*% b0); s0 <- sum(r0^2) / n
+  ll0 <- -0.5 * n * (log(2 * pi * s0) + 1)
+  lod <- (history[length(history)] - ll0) * (1 / log(10))
+  list(lod = lod, b0 = beta[1], b = beta[2], cofactor_coefficients = beta[-(1:2)],
+       sigma2 = s2, sigma2_null = s0, loglik = history[length(history)], loglik_null = ll0,
+       iterations = length(history), posterior = post, rss = s2 * n, coef = beta)
+}
+
 mqtmpl_cim_one <- function(y, left, right, r_left, r_right, cofactors) {
-  n <- length(y)
-  pr <- mqtmpl_genotype_probabilities(left, right, r_left, r_right)
-  # Q matrix
-  Q <- cbind(rep(1, n), pr[1], pr[2])
-  for (co in cofactors) Q <- cbind(Q, co)
-  qa <- qr(Q)
-  coef <- as.numeric(qr.coef(qa, y))
-  fitted <- as.numeric(Q %*% coef)
-  rss <- sum((y - fitted)^2)
-  rss0 <- sum((y - mean(y))^2)
-  rss <- max(rss, 1e-300); rss0 <- max(rss0, 1e-300)
-  v <- ncol(Q)
-  lod <- 0.5 * (n * log(rss0) - n * log(rss) - (v - 1) * log(n)) * mqtmpl_LOG10E
-  list(lod = lod, rss = rss, coef = coef)
+  mqtmpl_cim_em(y, left, right, r_left, r_right, cofactors)
 }
 
 #' mqtmpl_scan_cim
