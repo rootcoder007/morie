@@ -339,7 +339,8 @@ morie_polya_tree_mixture <- function(x, grid = NULL, levels = 6L,
   sc <- as.numeric(a_scale)
   if (sc <= 0) stop(sprintf("a_scale must be positive, got %g.", sc),
                     call. = FALSE)
-  lo <- min(xv); hi <- max(xv)
+  lo <- min(xv)
+  hi <- max(xv)
   span <- hi - lo
   if (span <= 0) stop("the sample has zero spread.", call. = FALSE)
   g <- if (is.null(grid)) seq(lo, hi, length.out = 200L) else as.numeric(grid)
@@ -480,12 +481,17 @@ morie_gp_density_rate <- function(x, s = NULL, n = NULL,
   }
   mm <- .morie_gh_minimax_rate(nn, sv)
   if (kernel == "matern") {
-    rate <- mm; kind <- "polynomial (minimax)"; attains <- TRUE
+    rate <- mm
+    kind <- "polynomial (minimax)"
+    attains <- TRUE
   } else if (kernel == "rescaled_se") {
     rate <- mm * log(nn)^((sv + 1) / (2 * sv + 1))
-    kind <- "polynomial up to a log factor"; attains <- FALSE
+    kind <- "polynomial up to a log factor"
+    attains <- FALSE
   } else {
-    rate <- log(nn)^(-sv); kind <- "LOGARITHMIC"; attains <- FALSE
+    rate <- log(nn)^(-sv)
+    kind <- "LOGARITHMIC"
+    attains <- FALSE
   }
   list(n = nn, smoothness = sv, kernel = kernel, rate = rate,
        minimax_rate = mm, attains_minimax = attains,

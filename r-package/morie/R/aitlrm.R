@@ -17,7 +17,8 @@
 Complrm <- function(X, total = 1) {
   X <- as.matrix(X)
   if (any(X <= 0)) stop("compositions must be strictly positive")
-  n <- nrow(X); D <- ncol(X)
+  n <- nrow(X)
+  D <- ncol(X)
   L <- log(X)
   Z <- L - rowSums(L) / D
   zm <- colMeans(Z)

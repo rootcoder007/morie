@@ -27,8 +27,10 @@
 #'   comparison of floating-point values.
 #' @noRd
 .morie_twfe_demean <- function(M, f1, f2, tol = 1e-11, max_iter = 500L) {
-  M <- as.matrix(M); storage.mode(M) <- "double"
-  i1 <- as.integer(as.factor(f1)); i2 <- as.integer(as.factor(f2))
+  M <- as.matrix(M)
+  storage.mode(M) <- "double"
+  i1 <- as.integer(as.factor(f1))
+  i2 <- as.integer(as.factor(f2))
   # Fused Armadillo alternating-projection sweep (0-based codes). Same
   # unique within-projection as the R rowsum path, to `tol`.
   out <- .morie_twfe_demean_cpp(M, i1 - 1L, i2 - 1L,
@@ -69,7 +71,8 @@
   meat <- crossprod(scores)
   # K: slopes + FE coefficients not nested in the cluster. Unit FEs are
   # nested when clustering on unit (the default); time FEs never are.
-  n_unit <- length(unique(unit)); n_time <- length(unique(time))
+  n_unit <- length(unique(unit))
+  n_time <- length(unique(time))
   unit_nested <- all(vapply(split(as.character(cluster_ids),
                                   as.character(unit)),
                             function(z) length(unique(z)) == 1L,
@@ -78,8 +81,10 @@
   K <- length(keep) + fe_K
   adj <- (n - 1) / (n - K) * G / (G - 1)
   V <- adj * (XtX_inv %*% meat %*% XtX_inv)
-  beta <- rep(NA_real_, ncol(Xd)); beta[keep] <- beta_k
-  se <- rep(NA_real_, ncol(Xd)); se[keep] <- sqrt(pmax(diag(V), 0))
+  beta <- rep(NA_real_, ncol(Xd))
+  beta[keep] <- beta_k
+  se <- rep(NA_real_, ncol(Xd))
+  se[keep] <- sqrt(pmax(diag(V), 0))
   names(beta) <- names(se) <- colnames(Xd)
   list(beta = beta, se = se, vcov = V, keep = keep, residuals = resid,
        n = n, n_clusters = G, df_t = G - 1L,
@@ -131,7 +136,8 @@
   # influence-function linear rep stay full-length.
   n <- length(y)
   sel <- subset_w != 0
-  Xs <- X[sel, , drop = FALSE]; wXs <- Xs * subset_w[sel]
+  Xs <- X[sel, , drop = FALSE]
+  wXs <- Xs * subset_w[sel]
   XpX <- crossprod(wXs, Xs) / n
   XpX_inv <- tryCatch(solve(XpX), error = function(e) .morie_ginv(XpX))
   beta <- as.numeric(XpX_inv %*% (crossprod(wXs, y[sel]) / n))
@@ -235,8 +241,10 @@
   or_c1 <- .morie_did_or_fit(y, X, as.numeric(D == 0 & post == 1))
   or_t0 <- .morie_did_or_fit(y, X, as.numeric(D == 1 & post == 0))
   or_t1 <- .morie_did_or_fit(y, X, as.numeric(D == 1 & post == 1))
-  mu_c0 <- or_c0$fitted; mu_c1 <- or_c1$fitted
-  mu_t0 <- or_t0$fitted; mu_t1 <- or_t1$fitted
+  mu_c0 <- or_c0$fitted
+  mu_c1 <- or_c1$fitted
+  mu_t0 <- or_t0$fitted
+  mu_t1 <- or_t1$fitted
   mu_c <- post * mu_c1 + (1 - post) * mu_c0
   lam <- mean(post)
   # Weights (DRDID::drdid_rc)
@@ -328,7 +336,8 @@
   }
   if (!is.null(seed)) set.seed(seed)
   sq5 <- sqrt(5)
-  k1 <- 0.5 * (1 - sq5); k2 <- 0.5 * (1 + sq5)
+  k1 <- 0.5 * (1 - sq5)
+  k2 <- 0.5 * (1 + sq5)
   p_k1 <- 0.5 * (1 + sq5) / sq5
   boot <- matrix(NA_real_, biters, ncol(IF_mat))
   for (b in seq_len(biters)) {
@@ -383,7 +392,8 @@
   y_all <- as.numeric(df[[outcome]])
   Xcov_all <- if (length(covariates)) {
     m <- as.matrix(df[, covariates, drop = FALSE])
-    storage.mode(m) <- "double"; m
+    storage.mode(m) <- "double"
+    m
   } else NULL
   rows <- list()
   IF_cols <- list()
@@ -406,15 +416,22 @@
       }
       keep_unit <- (g_all == g) | is_control
       cidx <- which(keep_unit & (time_all == pret | time_all == tt))
-      su <- uid_all[cidx]; st <- time_all[cidx]
+      su <- uid_all[cidx]
+      st <- time_all[cidx]
       # Units observed in both periods (appear exactly twice in the cell).
       keep2 <- tabulate(su, nbins = n_ids)[su] == 2L
-      cidx <- cidx[keep2]; su <- su[keep2]; st <- st[keep2]
+      cidx <- cidx[keep2]
+      su <- su[keep2]
+      st <- st[keep2]
       if (!length(su)) next
       # Order by (unit, time); ids is sorted so unit-code order matches
       # unit-value order, and pret < tt gives pre then post per unit.
-      o <- order(su, st); cidx <- cidx[o]; su <- su[o]; st <- st[o]
-      is_pre <- st == pret; is_post <- st == tt
+      o <- order(su, st)
+      cidx <- cidx[o]
+      su <- su[o]
+      st <- st[o]
+      is_pre <- st == pret
+      is_post <- st == tt
       if (!any(is_pre)) next
       pre_idx <- cidx[is_pre]
       dy <- y_all[cidx[is_post]] - y_all[pre_idx]
@@ -485,9 +502,11 @@
                           FUN = sum)
   cell <- merge(cell, cnt, by = c(".g", ".t"))
   tlist <- sort(unique(cell$.t))
-  num <- 0; den <- 0
+  num <- 0
+  den <- 0
   for (k in seq_along(tlist)[-1L]) {
-    t0 <- tlist[k - 1L]; t1 <- tlist[k]
+    t0 <- tlist[k - 1L]
+    t1 <- tlist[k]
     a <- cell[cell$.t == t0, , drop = FALSE]
     b <- cell[cell$.t == t1, , drop = FALSE]
     m <- merge(a, b, by = ".g", suffixes = c("_0", "_1"))
@@ -575,7 +594,8 @@
     # 2x2 DiD via FWL on the demeaned system; also return the weight
     # ingredient n^2 * var(demeaned D).
     Dd <- .morie_twfe_demean(cbind(sub$.d, sub$.y), sub$.g, sub$.t)
-    dtil <- Dd[, 1L]; ytil <- Dd[, 2L]
+    dtil <- Dd[, 1L]
+    ytil <- Dd[, 2L]
     vd <- sum(dtil^2)
     if (vd < 1e-12) return(NULL)
     list(est = sum(dtil * ytil) / vd,
@@ -585,7 +605,8 @@
   for (i in seq_along(cohorts)) {
     for (j in seq_along(cohorts)) {
       if (i == j) next
-      k <- cohorts[i]; l <- cohorts[j]
+      k <- cohorts[i]
+      l <- cohorts[j]
       if (!is.finite(k)) next   # "treated" side must be a real cohort
       if (is.finite(l) && k >= l) {
         # k = later-treated vs l = earlier-treated: usable window is

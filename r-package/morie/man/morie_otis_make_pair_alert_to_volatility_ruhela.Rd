@@ -27,10 +27,8 @@ Outcome \code{Y_vm_count} sums the within-row and across-row
 regional-volatility-move indicators.
 }
 \examples{
-\dontrun{
-  df <- morie_otis_load()
+df <- morie_otis_load()
   pair <- morie_otis_make_pair_alert_to_volatility_ruhela(df)
   morie_otis_irm_dml(pair$data, treatment = pair$T,
                      outcome = pair$Y, covariates = pair$covariates)
-}
 }

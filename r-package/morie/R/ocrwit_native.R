@@ -28,9 +28,12 @@
 #' @return A vector, from \code{c}.
 #' @export
 ocrwit_normalise_bbox <- function(box, width, height, scale = 1000) {
-  x0 <- as.numeric(box[[1]]); y0 <- as.numeric(box[[2]])
-  x1 <- as.numeric(box[[3]]); y1 <- as.numeric(box[[4]])
-  W <- as.numeric(width); H <- as.numeric(height)
+  x0 <- as.numeric(box[[1]])
+  y0 <- as.numeric(box[[2]])
+  x1 <- as.numeric(box[[3]])
+  y1 <- as.numeric(box[[4]])
+  W <- as.numeric(width)
+  H <- as.numeric(height)
   if (W <= 0 || H <= 0)
     stop("ocrwit: the page dimensions must be positive")
   if (x1 < x0 || y1 < y0) stop("ocrwit: the box is inverted")
@@ -55,7 +58,8 @@ ocrwit_normalise_bbox <- function(box, width, height, scale = 1000) {
 #' @export
 ocrwit_segment_layout_boxes <- function(boxes, segment_ids, width, height,
                                          scale = 1000) {
-  segs <- as.list(segment_ids); B <- as.list(boxes)
+  segs <- as.list(segment_ids)
+  B <- as.list(boxes)
   if (length(segs) != length(B))
     stop("ocrwit: ", length(B), " boxes but ", length(segs),
          " segment ids")
@@ -128,7 +132,10 @@ ocrwit_mask_units <- function(n_units, rate = 0.3, seed = 0, block = 1) {
 ocrwit_patch_of_box <- function(box, width, height, patch_grid = 14) {
   g <- as.integer(patch_grid)
   bb <- ocrwit_normalise_bbox(box, width, height, g)
-  x0 <- bb[1]; y0 <- bb[2]; x1 <- bb[3]; y1 <- bb[4]
+  x0 <- bb[1]
+  y0 <- bb[2]
+  x1 <- bb[3]
+  y1 <- bb[4]
   r0 <- min(y0, g - 1L)
   r1 <- min(max(y1, y0 + 1L), g)
   c0 <- min(x0, g - 1L)
@@ -160,7 +167,8 @@ morie_ocrwit <- function(text_boxes, masked_patches, width, height,
                          patch_grid = 14, masked_text = list()) {
   mp <- as.integer(unlist(masked_patches))
   mt <- as.integer(unlist(masked_text))
-  labels <- list(); covered <- list()
+  labels <- list()
+  covered <- list()
   for (i in seq_along(text_boxes)) {
     if ((i - 1L) %in% mt) next
     ps <- ocrwit_patch_of_box(text_boxes[[i]], width, height, patch_grid)

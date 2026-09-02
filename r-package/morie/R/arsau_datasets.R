@@ -278,7 +278,7 @@ morie_arsau_sidecar_to_frame <- function(sidecar) {
 #'   dictionaries accompanying the ARSAU CSV releases.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' dict <- morie_arsau_read_xlsx_dictionary(tempdir())
 #' }
 morie_arsau_read_xlsx_dictionary <- function(path, sheet = 1L) {
@@ -442,7 +442,7 @@ morie_arsau_ckan_url <- function(kind, year, limit = 5000L) {
 #' @references Ontario Data Catalogue CKAN API.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' sidecar <- morie_arsau_fetch_sidecar("assault", 2020L)
 #' }
 morie_arsau_fetch_sidecar <- function(kind, year, limit = 5000L,
@@ -509,7 +509,7 @@ morie_arsau_fetch_sidecar <- function(kind, year, limit = 5000L,
 #' @return Stops with \code{NotYetPorted}.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' path <- morie_arsau_download(tempdir())
 #' }
 morie_arsau_download <- function(target_dir, ...) {

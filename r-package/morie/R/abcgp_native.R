@@ -103,7 +103,8 @@ sobol_sequence <- function(n, dim, skip = 0L) {
     if (i >= as.integer(skip)) out[i + 1L - as.integer(skip), ] <- x / denom
     c <- 0L
     value <- i
-    while (bitwAnd(value, 1L) == 1L) { value <- bitwShiftR(value, 1L); c <- c + 1L }
+    while (bitwAnd(value, 1L) == 1L) { value <- bitwShiftR(value, 1L)
+    c <- c + 1L }
     for (d in seq_len(dim)) x[d] <- bitwXor(x[d], v[[d]][c + 1L])
   }
   out
@@ -389,7 +390,8 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
   L <- tryCatch(.gp_chol(A), error = function(e) NULL)
   if (is.null(L)) return(Inf)
   H <- t(apply(X, 1, .gp_basis))
-  if (is.matrix(H)) q <- ncol(H) else { q <- length(H); H <- t(H) }
+  if (is.matrix(H)) q <- ncol(H) else { q <- length(H)
+  H <- t(H) }
   if (n <= q) return(Inf)
   Ainv_y <- .gp_chol_solve(L, y)
   Ainv_H <- matrix(0, n, q)
@@ -420,9 +422,11 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
 #' @return The value of \code{ls}, as built in the body.
 #' @export
 .gp_mle_lengthscale <- function(X, y, nug, kernel) {
-  n <- nrow(X); p <- ncol(X)
+  n <- nrow(X)
+  p <- ncol(X)
   spans <- vapply(seq_len(p), function(j) {
-    s <- max(X[, j]) - min(X[, j]); if (s > 0) s else 1
+    s <- max(X[, j]) - min(X[, j])
+    if (s > 0) s else 1
   }, numeric(1))
   ls <- 0.5 * spans
   best <- .gp_profile_nll(X, y, ls, nug, kernel)
@@ -431,9 +435,12 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
     improved <- FALSE
     for (j in seq_len(p)) {
       for (g in grid) {
-        trial <- ls; trial[j] <- g * spans[j]
+        trial <- ls
+        trial[j] <- g * spans[j]
         val <- .gp_profile_nll(X, y, trial, nug, kernel)
-        if (val < best - 1e-12) { best <- val; ls <- trial; improved <- TRUE }
+        if (val < best - 1e-12) { best <- val
+        ls <- trial
+        improved <- TRUE }
       }
     }
     if (!improved) break
@@ -456,7 +463,8 @@ gp_fit <- function(design, values, nugget = NULL, lengthscale = NULL,
                    kernel = "sqexp", tau2 = NULL) {
   if (!(kernel %in% .MORIE_GP_KERNELS))
     stop("gp_fit: kernel must be one of sqexp, matern32, matern52")
-  X <- as.matrix(design); storage.mode(X) <- "double"
+  X <- as.matrix(design)
+  storage.mode(X) <- "double"
   y <- as.numeric(values)
   n <- nrow(X)
   if (n != length(y)) stop("gp_fit: design/values length mismatch")
@@ -478,7 +486,8 @@ gp_fit <- function(design, values, nugget = NULL, lengthscale = NULL,
   }
   L <- .gp_chol(A)
   H <- t(apply(X, 1, .gp_basis))
-  if (is.matrix(H)) q <- ncol(H) else { q <- length(H); H <- t(H) }
+  if (is.matrix(H)) q <- ncol(H) else { q <- length(H)
+  H <- t(H) }
   if (n <= q) stop("gp_fit: quadratic mean not identified by design")
   Ainv_y <- .gp_chol_solve(L, y)
   Ainv_H <- matrix(0, n, q)
@@ -501,7 +510,9 @@ gp_fit <- function(design, values, nugget = NULL, lengthscale = NULL,
 #' @param theta See Usage.
 #' @export
 gp_predict <- function(fit, theta) {
-  X <- fit$design; ls <- fit$lengthscale; kern <- fit$kernel
+  X <- fit$design
+  ls <- fit$lengthscale
+  kern <- fit$kernel
   t <- as.numeric(theta)
   if (length(t) != fit$dim)
     stop("gp_predict: theta has wrong dimension")
@@ -554,8 +565,11 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
                           n_sim = 50L, epsilon = 1, summary = NULL,
                           threshold = 10, n_sd = 3, kernel = "sqexp",
                           accept_kernel = "gaussian", seed = 0L) {
-  ensemble_x <- list(); ensemble_y <- numeric(0); ensemble_v <- numeric(0)
-  waves <- list(); fit <- NULL
+  ensemble_x <- list()
+  ensemble_y <- numeric(0)
+  ensemble_v <- numeric(0)
+  waves <- list()
+  fit <- NULL
   for (w in seq_len(as.integer(n_waves))) {
     cand <- design_from_prior(as.integer(n_design) * 4L, prior_ppf,
                               skip = 1L + (w - 1L) *
@@ -650,7 +664,8 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
 #' @return One of two values, depending on the branch taken.
 #' @export
 .gp_median <- function(v) {
-  s <- sort(v); n <- length(s)
+  s <- sort(v)
+  n <- length(s)
   if (n %% 2L == 1L) s[(n + 1L) %/% 2L] else 0.5 * (s[n %/% 2L] + s[n %/% 2L + 1L])
 }
 
@@ -701,15 +716,19 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
                            epsilon, proposal_sd, summary, seed, adaptive,
                            xi, delta_s, n_alpha, max_sim = NULL) {
   e <- .ghc_rng(seed)
-  theta <- as.numeric(theta0); p <- length(theta)
+  theta <- as.numeric(theta0)
+  p <- length(theta)
   sd <- as.numeric(proposal_sd)
   if (length(sd) == 1L) sd <- rep(sd, p)
   chain <- matrix(0, as.integer(n_iter) + 1L, p)
   chain[1, ] <- theta
-  n_accept <- 0L; unresolved <- 0L; sims_used <- 0L
+  n_accept <- 0L
+  unresolved <- 0L
+  sims_used <- 0L
   for (it in seq_len(as.integer(n_iter))) {
     prop <- theta + sd * .ghc_norm(e, p)
-    if (log_prior(prop) == -Inf) { chain[it + 1L, ] <- theta; next }
+    if (log_prior(prop) == -Inf) { chain[it + 1L, ] <- theta
+    next }
     S <- as.integer(n_sim)
     repeat {
       cur <- lapply(seq_len(S), function(k) sim(theta, e))
@@ -719,10 +738,12 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
                                        summary = summary)
       sl_p <- synthetic_log_likelihood(new, obs, epsilon = epsilon,
                                        summary = summary)
-      ll_c <- sl_c$log_lik; ll_p <- sl_p$log_lik
+      ll_c <- sl_c$log_lik
+      ll_p <- sl_p$log_lik
       if (!adaptive) {
         loga <- .gp_alpha_terms(log_prior, theta, prop, ll_c, ll_p, 0, 0)
-        tau <- exp(loga); break
+        tau <- exp(loga)
+        break
       }
       y <- .gp_summarise(obs, summary)
       alphas <- numeric(n_alpha)
@@ -736,10 +757,12 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
       tau <- .gp_median(alphas)
       err <- .gp_expected_error(alphas, tau)
       if (err < xi) break
-      if (!is.null(max_sim) && S >= as.integer(max_sim)) { unresolved <- unresolved + 1L; break }
+      if (!is.null(max_sim) && S >= as.integer(max_sim)) { unresolved <- unresolved + 1L
+      break }
       S <- S + as.integer(delta_s)
     }
-    if (.ghc_unif(e, 1L) <= tau) { theta <- prop; n_accept <- n_accept + 1L }
+    if (.ghc_unif(e, 1L) <= tau) { theta <- prop
+    n_accept <- n_accept + 1L }
     chain[it + 1L, ] <- theta
   }
   list(chain = chain, acceptance_rate = n_accept / as.integer(n_iter),
@@ -839,7 +862,8 @@ abc_gp_emulator <- function(sim, obs, X_grid = NULL, kernel = "sqexp",
                         seed = seed)
     fit <- hm$fit
     if (is.null(X_grid)) grid <- fit$design
-    else grid <- as.matrix(X_grid); storage.mode(grid) <- "double"
+    else grid <- as.matrix(X_grid)
+    storage.mode(grid) <- "double"
     means <- sapply(seq_len(nrow(grid)), function(i) gp_predict(fit, grid[i, ])["mean"])
     sds <- sapply(seq_len(nrow(grid)), function(i) gp_predict(fit, grid[i, ])["sd"])
     top <- which.max(means)
@@ -876,7 +900,9 @@ abc_gp_emulator <- function(sim, obs, X_grid = NULL, kernel = "sqexp",
   burn <- nrow(chain) %/% 2L
   kept <- chain[(burn + 1L):nrow(chain), , drop = FALSE]
   est <- colMeans(kept)
-  out$estimate <- est; out$posterior_mean <- est; out$burn_in <- burn
+  out$estimate <- est
+  out$posterior_mean <- est
+  out$burn_in <- burn
   out$method <- label
   out
 }

@@ -28,7 +28,9 @@ Elorating <- function(games, ladder = NULL, anchor = 0, base = "e",
                       c_elo = 1 / 400) {
   g <- .s03vec(games)
   if (length(g) >= 3L) {
-    w <- g[1]; d <- g[2]; l <- g[3]
+    w <- g[1]
+    d <- g[2]
+    l <- g[3]
     tot <- w + d + l
     score <- if (tot > 0) (w + 0.5 * d) / tot else NaN
   } else {

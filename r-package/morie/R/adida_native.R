@@ -131,7 +131,8 @@ intermittent_forecast <- function(y, method = "tsb", alpha = 0.1,
   # recursion, identical in both arms.
   pos <- yv[yv > 0]
   if (length(pos) == 0L) {
-    z <- 0; p <- 0
+    z <- 0
+    p <- 0
   } else {
     z <- pos[1L]
     p <- length(pos) / length(yv)

@@ -60,7 +60,9 @@ morie_att_weights <- function(treat, ps) {
 #' y <- x + stats::rnorm(n) + 3 * tr
 #' morie_qte_firpo(y, tr, e, tau = c(0.25, 0.5, 0.75))
 morie_qte_firpo <- function(y, treat, ps, tau = 0.5) {
-  y <- as.numeric(y); treat <- as.numeric(treat); ps <- as.numeric(ps)
+  y <- as.numeric(y)
+  treat <- as.numeric(treat)
+  ps <- as.numeric(ps)
   if (length(unique(c(length(y), length(treat), length(ps)))) != 1L) {
     stop("y, treat, ps must have equal length.", call. = FALSE)
   }
@@ -103,7 +105,8 @@ morie_qte_firpo <- function(y, treat, ps, tau = 0.5) {
 #' a <- as.numeric(stats::runif(n) < 1/(1 + exp(-1.5 * L)))
 #' morie_g_formula(y, a, L)
 morie_g_formula <- function(y, a, l) {
-  y <- as.numeric(y); a <- as.numeric(a)
+  y <- as.numeric(y)
+  a <- as.numeric(a)
   L <- as.matrix(l)
   n <- length(y)
   if (length(a) != n || nrow(L) != n) {
@@ -137,7 +140,8 @@ morie_g_formula <- function(y, a, l) {
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_granger_test(V, V)
 morie_granger_test <- function(x, y, p = 1L) {
-  x <- as.numeric(x); y <- as.numeric(y)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
   if (length(x) != length(y)) stop("x and y must have equal length.", call. = FALSE)
   p <- as.integer(p)
   if (p < 1L) stop("p must be at least 1.", call. = FALSE)
@@ -155,7 +159,8 @@ morie_granger_test <- function(x, y, p = 1L) {
   Xr <- cbind(1, lagmat(y))
   Xu <- cbind(Xr, lagmat(x))
   rss <- function(X) sum(stats::lm.fit(X, target)$residuals^2)
-  rss_r <- rss(Xr); rss_u <- rss(Xu)
+  rss_r <- rss(Xr)
+  rss_u <- rss(Xu)
   if (rss_u <= 0) stop("unrestricted model fits exactly.", call. = FALSE)
   f <- ((rss_r - rss_u) / p) / (rss_u / dof2)
   list(
@@ -182,7 +187,9 @@ morie_granger_test <- function(x, y, p = 1L) {
 #' morie_transfer_entropy_gaussian(V, V)
 morie_transfer_entropy_gaussian <- function(x, y, lag = 1L) {
   g <- morie_granger_test(x, y, p = lag)
-  n <- length(y); p <- as.integer(lag); m <- n - p
+  n <- length(y)
+  p <- as.integer(lag)
+  m <- n - p
   # recompute the two RSS values from the same design as the F-test
   lagmat <- function(v) {
     do.call(cbind, lapply(seq_len(p), function(j) v[(p - j + 1L):(n - j)]))
@@ -217,17 +224,24 @@ morie_transfer_entropy_gaussian <- function(x, y, lag = 1L) {
 #' @examples
 #' morie_serial_mediation(x = c(1, 2, 3, 4, 5, 6, 7, 8), m1 = c(1, 2, 3, 4, 5, 6, 7, 8), m2 = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_serial_mediation <- function(x, m1, m2, y) {
-  x <- as.numeric(x); m1 <- as.numeric(m1)
-  m2 <- as.numeric(m2); y <- as.numeric(y)
+  x <- as.numeric(x)
+  m1 <- as.numeric(m1)
+  m2 <- as.numeric(m2)
+  y <- as.numeric(y)
   if (length(unique(c(length(x), length(m1), length(m2), length(y)))) != 1L) {
     stop("x, m1, m2, y must have equal length.", call. = FALSE)
   }
   a1 <- unname(stats::coef(stats::lm(m1 ~ x))[2L])
   cm2 <- stats::coef(stats::lm(m2 ~ x + m1))
-  a2 <- unname(cm2[2L]); d <- unname(cm2[3L])
+  a2 <- unname(cm2[2L])
+  d <- unname(cm2[3L])
   cy <- stats::coef(stats::lm(y ~ x + m1 + m2))
-  cprime <- unname(cy[2L]); b1 <- unname(cy[3L]); b2 <- unname(cy[4L])
-  via1 <- a1 * b1; via2 <- a2 * b2; serial <- a1 * d * b2
+  cprime <- unname(cy[2L])
+  b1 <- unname(cy[3L])
+  b2 <- unname(cy[4L])
+  via1 <- a1 * b1
+  via2 <- a2 * b2
+  serial <- a1 * d * b2
   list(
     direct = cprime, via_m1 = via1, via_m2 = via2, serial = serial,
     indirect_total = via1 + via2 + serial,
@@ -259,7 +273,8 @@ morie_serial_mediation <- function(x, m1, m2, y) {
 #' morie_g_formula(y, a, L)
 #' morie_cluster_robust_effect(y = y, d = a, cluster = e)
 morie_cluster_robust_effect <- function(y, d, cluster) {
-  y <- as.numeric(y); d <- as.numeric(d)
+  y <- as.numeric(y)
+  d <- as.numeric(d)
   g <- as.factor(cluster)
   n <- length(y)
   if (length(d) != n || length(g) != n) {
@@ -305,7 +320,9 @@ morie_cluster_robust_effect <- function(y, d, cluster) {
 #' @examples
 #' morie_partial_tau(x = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5), y = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5), z = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_partial_tau <- function(x, y, z) {
-  x <- as.numeric(x); y <- as.numeric(y); z <- as.numeric(z)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  z <- as.numeric(z)
   if (length(unique(c(length(x), length(y), length(z)))) != 1L) {
     stop("x, y, z must have equal length.", call. = FALSE)
   }

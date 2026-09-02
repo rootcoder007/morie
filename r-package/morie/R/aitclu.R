@@ -25,7 +25,9 @@
 Compkm <- function(X, k = 2, max_iter = 50) {
   X <- as.matrix(X)
   if (any(X <= 0)) stop("compositions must be strictly positive")
-  n <- nrow(X); D <- ncol(X); k <- as.integer(k)
+  n <- nrow(X)
+  D <- ncol(X)
+  k <- as.integer(k)
   if (k < 2L || k > n) stop("k must satisfy 2 <= k <= n")
   L <- log(X)
   Z <- L - rowSums(L) / D
@@ -37,7 +39,8 @@ Compkm <- function(X, k = 2, max_iter = 50) {
     for (i in seq_len(n)) {
       d <- rowSums((cen - matrix(Z[i, ], k, D, byrow = TRUE))^2)
       best <- which.min(d)
-      if (lab[i] != best) { lab[i] <- best; moved <- TRUE }
+      if (lab[i] != best) { lab[i] <- best
+      moved <- TRUE }
     }
     for (cc in seq_len(k)) {
       mem <- which(lab == cc)

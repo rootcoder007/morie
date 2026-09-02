@@ -24,7 +24,8 @@
 #' @return The value of \code{out}, as built in the body.
 #' @export
 morie_khatri_rao_rows <- function(A, B) {
-  A <- as.matrix(A); B <- as.matrix(B)
+  A <- as.matrix(A)
+  B <- as.matrix(B)
   out <- matrix(0, nrow(A), ncol(A) * ncol(B))
   for (i in seq_len(nrow(A)))
     out[i, ] <- as.numeric(t(outer(A[i, ], B[i, ])))
@@ -42,7 +43,8 @@ morie_khatri_rao_rows <- function(A, B) {
 Apxkern <- function(X, m_index, Z_u1, Z_E, kernel = "linear",
                     gamma = NULL, tol = 1e-10) {
   sk <- morie_sparse_kernel_design(X, m_index, kernel, gamma, tol)
-  Zu1 <- as.matrix(Z_u1); ZE <- as.matrix(Z_E)
+  Zu1 <- as.matrix(Z_u1)
+  ZE <- as.matrix(Z_E)
   Pu1 <- Zu1 %*% sk$P
   Pu2 <- morie_khatri_rao_rows(Pu1, ZE)
   list(P = sk$P, P_u1 = Pu1, P_u2 = Pu2,
@@ -62,7 +64,8 @@ Apxkern <- function(X, m_index, Z_u1, Z_E, kernel = "linear",
 #' (9.4) and puts it on the other.
 #' @noRd
 Hyperpl <- function(X, beta0, beta) {
-  X <- as.matrix(X); b <- as.numeric(beta)
+  X <- as.matrix(X)
+  b <- as.numeric(beta)
   nb <- sqrt(sum(b^2))
   v <- as.numeric(beta0) + as.numeric(X %*% b)
   list(value = v, side = sign(v), below = v < 0, above = v > 0,
@@ -82,7 +85,8 @@ Hyperpl <- function(X, beta0, beta) {
 #' @noRd
 Hardsvm <- function(X, y, ...) {
   fit <- morie_svm_fit_dual(X, y, C = NULL, ...)
-  X <- as.matrix(X); ys <- as.numeric(y)
+  X <- as.matrix(X)
+  ys <- as.numeric(y)
   nb <- sqrt(sum(fit$beta^2))
   f <- fit$beta0 + as.numeric(X %*% fit$beta)
   fm <- ys * f
@@ -141,7 +145,8 @@ Wolfedual <- function(f, grad_f, h = NULL, grad_h = NULL, g = NULL,
 #' c = 2.  The two are the same problem, so one routine answers both.
 #' @noRd
 Qplincon <- function(a, c) {
-  av <- as.numeric(a); aa <- sum(av^2)
+  av <- as.numeric(a)
+  aa <- sum(av^2)
   if (aa <= 0) stop("constraint vector a must be nonzero")
   alpha <- as.numeric(c) / aa
   z <- alpha * av
@@ -161,7 +166,9 @@ Qplincon <- function(a, c) {
 #' both zero at the optimum.
 #' @noRd
 Svmlagr <- function(X, y, beta0, beta, alpha) {
-  X <- as.matrix(X); b <- as.numeric(beta); ys <- as.numeric(y)
+  X <- as.matrix(X)
+  b <- as.numeric(beta)
+  ys <- as.numeric(y)
   al <- as.numeric(alpha)
   f <- as.numeric(beta0) + as.numeric(X %*% b)
   slack <- ys * f - 1
@@ -184,7 +191,8 @@ Svmlagr <- function(X, y, beta0, beta, alpha) {
 #' @noRd
 Softsvm <- function(X, y, T, ...) {
   fit <- morie_svm_fit_dual(X, y, C = as.numeric(T), ...)
-  X <- as.matrix(X); ys <- as.numeric(y)
+  X <- as.matrix(X)
+  ys <- as.numeric(y)
   nb <- sqrt(sum(fit$beta^2))
   f <- fit$beta0 + as.numeric(X %*% fit$beta)
   zeta <- pmax(0, 1 - ys * f)
@@ -213,9 +221,13 @@ Softsvm <- function(X, y, T, ...) {
 #' that requires the term to enter with a minus, and it does so here.
 #' @noRd
 Svmkkt <- function(X, y, beta0, beta, alpha, delta, zeta, T) {
-  X <- as.matrix(X); b <- as.numeric(beta); ys <- as.numeric(y)
-  al <- as.numeric(alpha); dl <- as.numeric(delta)
-  zt <- as.numeric(zeta); Tv <- as.numeric(T)
+  X <- as.matrix(X)
+  b <- as.numeric(beta)
+  ys <- as.numeric(y)
+  al <- as.numeric(alpha)
+  dl <- as.numeric(delta)
+  zt <- as.numeric(zeta)
+  Tv <- as.numeric(T)
   f <- as.numeric(beta0) + as.numeric(X %*% b)
   inner <- ys * f - 1 + zt
   L <- 0.5 * sum(b^2) + Tv * sum(zt) - sum(al * inner) - sum(dl * zt)
@@ -282,7 +294,8 @@ Ksvmdual <- function(X, y, T, kernel = "linear", gamma = NULL,
 #' chapter uses for its inner products on p.581.
 #' @noRd
 Flmint <- function(t, x_values, beta_values, mu = 0) {
-  tt <- as.numeric(t); xs <- as.numeric(x_values)
+  tt <- as.numeric(t)
+  xs <- as.numeric(x_values)
   bs <- as.numeric(beta_values)
   m <- length(tt)
   s <- sum(0.5 * diff(tt) * (xs[-m] * bs[-m] + xs[-1] * bs[-1]))
@@ -344,21 +357,27 @@ Basmat <- function(t, n_basis, kind = "fourier", period = NULL) {
 #' @export
 morie_fda_basis_deriv <- function(t, n_basis, p = 1L, kind = "fourier",
                                   period = NULL) {
-  tt <- as.numeric(t); L <- as.integer(n_basis); p <- as.integer(p)
-  lo <- min(tt); hi <- max(tt)
-  span <- hi - lo; if (span == 0) span <- 1
+  tt <- as.numeric(t)
+  L <- as.integer(n_basis)
+  p <- as.integer(p)
+  lo <- min(tt)
+  hi <- max(tt)
+  span <- hi - lo
+  if (span == 0) span <- 1
   P <- if (is.null(period)) span else as.numeric(period)
   out <- matrix(0, length(tt), L)
   for (l in seq_len(L) - 1L) {
     if (identical(kind, "fourier")) {
-      if (l == 0L) { out[, 1L] <- if (p == 0L) 1 else 0; next }
+      if (l == 0L) { out[, 1L] <- if (p == 0L) 1 else 0
+      next }
       k <- if (l %% 2L == 1L) (l + 1L) %/% 2L else l %/% 2L
       w <- 2 * pi * k / P
       phase <- w * tt + 0.5 * pi * p
       out[, l + 1L] <- (w^p) * (if (l %% 2L == 1L) sin(phase) else
         cos(phase))
     } else {
-      if (p > l) { out[, l + 1L] <- 0; next }
+      if (p > l) { out[, l + 1L] <- 0
+      next }
       cf <- 1
       if (p > 0L) for (j in seq_len(p) - 1L) cf <- cf * (l - j)
       out[, l + 1L] <- cf * (((tt - lo) / span)^(l - p)) / span^p
@@ -376,13 +395,16 @@ morie_fda_basis_deriv <- function(t, n_basis, p = 1L, kind = "fourier",
 #' @noRd
 Penmat <- function(t, L1, p = 2L, kind = "fourier", period = NULL,
                    beta = NULL) {
-  tt <- as.numeric(t); L <- as.integer(L1)
+  tt <- as.numeric(t)
+  L <- as.integer(L1)
   D <- morie_fda_basis_deriv(tt, L, p, kind, period)
-  m <- length(tt); dt <- diff(tt)
+  m <- length(tt)
+  dt <- diff(tt)
   P <- matrix(0, L, L)
   for (i in seq_len(L)) for (j in i:L) {
     s <- sum(0.5 * dt * (D[-m, i] * D[-m, j] + D[-1, i] * D[-1, j]))
-    P[i, j] <- s; P[j, i] <- s
+    P[i, j] <- s
+    P[j, i] <- s
   }
   out <- list(P = P, order = p, L1 = L)
   if (!is.null(beta)) {
@@ -402,7 +424,9 @@ Penmat <- function(t, L1, p = 2L, kind = "fourier", period = NULL,
 #' grows beta(t) is driven towards a constant.
 #' @noRd
 Pensse <- function(y, X, beta, lam, P, mu = 0) {
-  ys <- as.numeric(y); X <- as.matrix(X); b <- as.numeric(beta)
+  ys <- as.numeric(y)
+  X <- as.matrix(X)
+  b <- as.numeric(beta)
   P <- as.matrix(P)
   fitted <- as.numeric(mu) + as.numeric(X %*% b)
   resid <- ys - fitted
@@ -425,10 +449,14 @@ Pensse <- function(y, X, beta, lam, P, mu = 0) {
 #' contribute nothing, the reduction the book notes.
 #' @noRd
 Penfreg <- function(y, X, P, lam, mu = NULL, tol = 1e-10) {
-  ys <- as.numeric(y); X <- as.matrix(X); P <- as.matrix(P)
-  n <- length(ys); L <- ncol(P)
+  ys <- as.numeric(y)
+  X <- as.matrix(X)
+  P <- as.matrix(P)
+  n <- length(ys)
+  L <- ncol(P)
   e <- eigen((P + t(P)) / 2, symmetric = TRUE)
-  d <- e$values; G <- e$vectors
+  d <- e$values
+  G <- e$vectors
   m <- if (is.null(mu)) mean(ys) else as.numeric(mu)
   Xs <- X %*% G
   A <- t(Xs) %*% Xs + diag(as.numeric(lam) * d, L)
@@ -500,7 +528,9 @@ morie_fda_env_interaction <- function(X, env, reference = TRUE) {
 #' that block alone, which is why one routine covers both.
 #' @noRd
 Fregenv <- function(y, X, X_E, X_EF = NULL, lam = 0, P = NULL) {
-  ys <- as.numeric(y); X <- as.matrix(X); XE <- as.matrix(X_E)
+  ys <- as.numeric(y)
+  X <- as.matrix(X)
+  XE <- as.matrix(X_E)
   n <- length(ys)
   D <- cbind(1, XE, X)
   widths <- c(intercept = 1L, environments = ncol(XE),

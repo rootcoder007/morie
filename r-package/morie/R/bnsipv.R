@@ -33,7 +33,8 @@ Bnsipv <- function(y, D, Z) {
   zv <- unlist(Z)
   n <- length(z$y)
   if (length(zv) != n) stop("Bnsipv: Z must have one value per unit")
-  y0 <- min(z$y); y1 <- max(z$y)
+  y0 <- min(z$y)
+  y1 <- max(z$y)
   iv <- .bnd_wc_intersect(z$y, z$d, zv, y0, y1)
   iv_lo <- iv[1] - iv[4]
   iv_hi <- iv[2] - iv[3]

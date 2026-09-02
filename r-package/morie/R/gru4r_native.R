@@ -58,7 +58,8 @@ morie_gru4r <- function(sessions, batch_size) {
   nxt <- B
   steps <- list()
   repeat {
-    x <- vector("list", B); y <- vector("list", B)
+    x <- vector("list", B)
+    y <- vector("list", B)
     reset <- rep(FALSE, B)
     alive <- FALSE
     for (b in seq_len(B)) {
@@ -66,7 +67,9 @@ morie_gru4r <- function(sessions, batch_size) {
       s <- S[[slot[[b]] + 1L]]
       if (pos[b] + 1L >= length(s)) {
         if (nxt < length(S)) {
-          slot[[b]] <- nxt; pos[b] <- 0L; nxt <- nxt + 1L
+          slot[[b]] <- nxt
+          pos[b] <- 0L
+          nxt <- nxt + 1L
           reset[b] <- TRUE
           s <- S[[slot[[b]] + 1L]]
         } else {
@@ -141,10 +144,14 @@ morie_gru4r_top1 <- function(r_target, r_negatives, regularize = TRUE) {
 #' @return New hidden state.
 #' @export
 morie_gru4r_gru <- function(x, h, Wz, Uz, Wr, Ur, Wh, Uh) {
-  x <- as.numeric(x); h <- as.numeric(h)
-  Wz <- as.matrix(Wz); Uz <- as.matrix(Uz)
-  Wr <- as.matrix(Wr); Ur <- as.matrix(Ur)
-  Wh <- as.matrix(Wh); Uh <- as.matrix(Uh)
+  x <- as.numeric(x)
+  h <- as.numeric(h)
+  Wz <- as.matrix(Wz)
+  Uz <- as.matrix(Uz)
+  Wr <- as.matrix(Wr)
+  Ur <- as.matrix(Ur)
+  Wh <- as.matrix(Wh)
+  Uh <- as.matrix(Uh)
   n <- length(h)
   lin <- function(W, U, xv, hv) as.numeric(W %*% xv + U %*% hv)
   z <- .gru4r_sigmoid(lin(Wz, Uz, x, h))

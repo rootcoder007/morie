@@ -89,7 +89,8 @@ tukey_hanning_kernel <- function(x) {
 #' @export
 moment_vectors <- function(e, X) {
   e <- as.numeric(e)
-  rows <- as.matrix(X); storage.mode(rows) <- "double"
+  rows <- as.matrix(X)
+  storage.mode(rows) <- "double"
   if (length(e) != nrow(rows))
     stop("andmnh: length(e) must match nrow(X)")
   if (nrow(rows) == 0L) stop("andmnh: no observations")
@@ -111,7 +112,9 @@ moment_vectors <- function(e, X) {
 #' @export
 .morie_svd <- function(a) {
   a <- as.matrix(a)
-  m <- nrow(a); n <- ncol(a); k <- min(m, n)
+  m <- nrow(a)
+  n <- ncol(a)
+  k <- min(m, n)
   AtA <- crossprod(a)
   ev <- eigen(AtA, symmetric = TRUE)
   s <- sqrt(pmax(ev$values, 0))
@@ -146,7 +149,8 @@ singular_value_adjust <- function(a, cap = .EIGENVALUE_CAP) {
 #' @export
 prewhiten_var <- function(v, order = 1L, cap = .EIGENVALUE_CAP,
                           adjust = TRUE) {
-  rows <- as.matrix(v); storage.mode(rows) <- "double"
+  rows <- as.matrix(v)
+  storage.mode(rows) <- "double"
   n <- nrow(rows)
   if (n == 0L) stop("andmnh: no observations")
   p <- ncol(rows)
@@ -163,7 +167,9 @@ prewhiten_var <- function(v, order = 1L, cap = .EIGENVALUE_CAP,
     }
   }
   # lstsq via QR for stability
-  qr_z <- qr(z); Q <- qr.Q(qr_z); R <- qr.R(qr_z)
+  qr_z <- qr(z)
+  Q <- qr.Q(qr_z)
+  R <- qr.R(qr_z)
   coef <- backsolve(R, crossprod(Q, y))
   a_list <- vector("list", order)
   for (r in seq_len(order)) {
@@ -222,7 +228,8 @@ ar1_fit <- function(x) {
 #' @param weights See Usage.
 #' @export
 alpha_ar1 <- function(v, q = 2L, weights = NULL) {
-  rows <- as.matrix(v); storage.mode(rows) <- "double"
+  rows <- as.matrix(v)
+  storage.mode(rows) <- "double"
   if (nrow(rows) == 0L) stop("andmnh: no observations")
   p <- ncol(rows)
   if (is.null(weights)) w <- rep(1, p)
@@ -236,12 +243,14 @@ alpha_ar1 <- function(v, q = 2L, weights = NULL) {
   q <- as.integer(q)
   if (!(q %in% c(1L, 2L)))
     stop("andmnh: alpha(q) is given for q = 1 or 2")
-  num <- 0; den <- 0
+  num <- 0
+  den <- 0
   fits <- list()
   for (a in seq_len(p)) {
     fit <- ar1_fit(rows[, a])
     fits[[a]] <- list(rho = unname(fit["rho"]), sigma2 = unname(fit["sigma2"]))
-    rho <- fit["rho"]; s2 <- fit["sigma2"]
+    rho <- fit["rho"]
+    s2 <- fit["sigma2"]
     s4 <- s2 * s2
     if (w[a] == 0) next
     if (q == 2L) {
@@ -265,7 +274,9 @@ alpha_ar1 <- function(v, q = 2L, weights = NULL) {
 automatic_bandwidth <- function(v, kernel = "qs", weights = NULL,
                                 n = NULL) {
   ck <- .morie_check_kernel(kernel)
-  q <- ck$const[1]; kq <- ck$const[2]; ik2 <- ck$const[3]
+  q <- ck$const[1]
+  kq <- ck$const[2]
+  ik2 <- ck$const[3]
   t <- if (is.null(n)) nrow(v) else as.integer(n)
   al <- alpha_ar1(v, q = q, weights = weights)
   s <- (q * kq * kq * al$alpha * t / ik2) ^ (1 / (2 * q + 1))
@@ -282,8 +293,10 @@ automatic_bandwidth <- function(v, kernel = "qs", weights = NULL,
 kernel_hac <- function(v, bandwidth, kernel = "qs", n_params = 0L,
                        n = NULL) {
   ck <- .morie_check_kernel(kernel)
-  kfun <- ck$fn; bounded <- as.logical(ck$const[4])
-  rows <- as.matrix(v); storage.mode(rows) <- "double"
+  kfun <- ck$fn
+  bounded <- as.logical(ck$const[4])
+  rows <- as.matrix(v)
+  storage.mode(rows) <- "double"
   m <- nrow(rows)
   if (m == 0L) stop("andmnh: no observations")
   p <- ncol(rows)
@@ -301,7 +314,8 @@ kernel_hac <- function(v, bandwidth, kernel = "qs", n_params = 0L,
     if (kj == 0) next
     gam <- matrix(0, p, p)
     for (tt in (j + 1L):m) {
-      a <- rows[tt, ]; b <- rows[tt - j, ]
+      a <- rows[tt, ]
+      b <- rows[tt - j, ]
       for (i in seq_len(p)) if (a[i] != 0)
         for (k in seq_len(p)) gam[i, k] <- gam[i, k] + a[i] * b[k]
     }
@@ -337,7 +351,8 @@ andrews_monahan_hac <- function(e, X = NULL, prewhiten = TRUE,
     v <- moment_vectors(e, X)
     if (is.null(n_params)) n_params <- ncol(v)
   } else {
-    v <- as.matrix(e); storage.mode(v) <- "double"
+    v <- as.matrix(e)
+    storage.mode(v) <- "double"
     if (is.null(n_params)) n_params <- 0L
   }
   n <- nrow(v)
@@ -348,9 +363,15 @@ andrews_monahan_hac <- function(e, X = NULL, prewhiten = TRUE,
   if (is.null(bandwidth)) {
     ab <- automatic_bandwidth(pw$resid, kernel = kernel, weights = weights,
                               n = n)
-    s <- ab$bandwidth; alpha <- ab$alpha; fits <- ab$fits; auto <- TRUE
+    s <- ab$bandwidth
+    alpha <- ab$alpha
+    fits <- ab$fits
+    auto <- TRUE
   } else {
-    s <- as.numeric(bandwidth); alpha <- NULL; fits <- NULL; auto <- FALSE
+    s <- as.numeric(bandwidth)
+    alpha <- NULL
+    fits <- NULL
+    auto <- FALSE
   }
   jstar <- kernel_hac(pw$resid, s, kernel = kernel, n_params = n_params, n = n)
   D <- as.matrix(pw$D)

@@ -16,7 +16,7 @@ Character bearer token.
 Fetch and cache a Google Cloud access token via gcloud
 }
 \examples{
-\donttest{
+\dontrun{
 morie_vertex_access_token()
 }
 }

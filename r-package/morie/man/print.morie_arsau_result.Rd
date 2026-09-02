@@ -19,7 +19,7 @@ Print method for \code{morie_arsau_result} objects
 }
 \examples{
 \donttest{
-res <- morie_arsau_describe("assault", 2020L)
+res <- morie_arsau_describe("main_records", "2023")
 print(res)
 }
 }

@@ -96,9 +96,12 @@ causal_mask <- function(n) {
 #' @export
 self_attention <- function(E, WQ, WK, WV, mask = NULL) {
   X <- .sasrec_mat(E)
-  n <- nrow(X); d <- ncol(X)
+  n <- nrow(X)
+  d <- ncol(X)
   M <- if (is.null(mask)) causal_mask(n) else mask
-  WQ <- as.matrix(WQ); WK <- as.matrix(WK); WV <- as.matrix(WV)
+  WQ <- as.matrix(WQ)
+  WK <- as.matrix(WK)
+  WV <- as.matrix(WV)
   dk <- ncol(WQ)
   if (ncol(WK) != dk || nrow(WQ) != dk)
     stop("sasRec: WQ/WK must share the key dimension")
@@ -162,7 +165,8 @@ predict_next <- function(state, item_embeddings, top_k = 5,
   ex <- as.integer(unlist(exclude))
   sc <- numeric(nrow(E))
   for (i in seq_len(nrow(E))) {
-    if (i %in% ex) { sc[i] <- -Inf; next }
+    if (i %in% ex) { sc[i] <- -Inf
+    next }
     sc[i] <- sum(s * E[i, ])
   }
   ord <- order(-sc, seq_along(sc))
@@ -183,7 +187,8 @@ predict_next <- function(state, item_embeddings, top_k = 5,
 #' @return A list with \code{attention_ops}, \code{rnn_ops}, \code{attention_sequential_steps}, \code{rnn_sequential_steps}, \code{note}.
 #' @export
 complexity <- function(n, d) {
-  nn <- as.integer(n); dd <- as.integer(d)
+  nn <- as.integer(n)
+  dd <- as.integer(d)
   if (nn < 1L || dd < 1L)
     stop("sasRec: n and d must be positive")
   list(attention_ops = nn * nn * dd, rnn_ops = nn * dd * dd,

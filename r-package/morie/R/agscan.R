@@ -38,7 +38,8 @@ Selfconsis <- function(policy_net, seeds = NULL) {
     return(list(estimate = NaN, jsd = NaN, entropies = numeric(0), n = 0L,
                 method = "Policy self-consistency"))
   }
-  norm <- lapply(rows, function(p) { t <- 0; for (x in p) t <- t + x
+  norm <- lapply(rows, function(p) { t <- 0
+  for (x in p) t <- t + x
                                      if (t > 0) p / t else p })
   K <- length(norm[[1]])
   pbar <- numeric(K)

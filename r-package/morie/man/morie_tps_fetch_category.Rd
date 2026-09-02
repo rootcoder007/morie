@@ -35,7 +35,7 @@ FeatureServer layer, accumulates all features in memory, and
 writes a single CSV file to \code{cache_dir}. Returns the CSV path.
 }
 \examples{
-\donttest{
+\dontrun{
 cat <- morie_tps_list_categories()[1]
 df <- morie_tps_fetch_category(cat)
 }

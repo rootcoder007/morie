@@ -535,7 +535,8 @@
   n <- 0
   shift <- 0
   repeat {
-    b <- as.integer(data[pos]); pos <- pos + 1L
+    b <- as.integer(data[pos])
+    pos <- pos + 1L
     n <- n + bitwAnd(b, 127L) * 2^shift
     if (bitwAnd(b, 128L) == 0L) break
     shift <- shift + 7
@@ -545,7 +546,8 @@
   o <- 0L
   total <- length(data)
   while (pos <= total) {
-    tag <- as.integer(data[pos]); pos <- pos + 1L
+    tag <- as.integer(data[pos])
+    pos <- pos + 1L
     kind <- bitwAnd(tag, 3L)
     if (kind == 0L) {                                   # literal
       ln <- bitwShiftR(tag, 2L)
@@ -611,11 +613,13 @@
   hdr <- raw(0)
   m <- n
   repeat {
-    if (m < 128) { hdr <- c(hdr, as.raw(m)); break }
+    if (m < 128) { hdr <- c(hdr, as.raw(m))
+    break }
     hdr <- c(hdr, as.raw(bitwOr(as.integer(m %% 128), 128L)))
     m <- m %/% 128
   }
-  k <- k + 1L; out[[k]] <- hdr
+  k <- k + 1L
+  out[[k]] <- hdr
 
   pos <- 0L
   while (pos < n) {
@@ -628,8 +632,10 @@
     } else {
       tag <- c(as.raw(244L), as.raw(ln %% 256L), as.raw(ln %/% 256L))
     }
-    k <- k + 1L; out[[k]] <- tag
-    k <- k + 1L; out[[k]] <- data[seq.int(pos + 1L, length.out = chunk)]
+    k <- k + 1L
+    out[[k]] <- tag
+    k <- k + 1L
+    out[[k]] <- data[seq.int(pos + 1L, length.out = chunk)]
     pos <- pos + chunk
   }
   do.call(base::c, out)
@@ -637,15 +643,32 @@
 
 # ------------------------------------------------------------- constants
 
-.pqBoolean <- 0L; .pqInt32 <- 1L; .pqInt64 <- 2L; .pqInt96 <- 3L
-.pqFloat <- 4L; .pqDouble <- 5L; .pqByteArray <- 6L; .pqFlba <- 7L
-.pqEPlain <- 0L; .pqEPlainDict <- 2L; .pqERle <- 3L; .pqEBitPacked <- 4L
+.pqBoolean <- 0L
+.pqInt32 <- 1L
+.pqInt64 <- 2L
+.pqInt96 <- 3L
+.pqFloat <- 4L
+.pqDouble <- 5L
+.pqByteArray <- 6L
+.pqFlba <- 7L
+.pqEPlain <- 0L
+.pqEPlainDict <- 2L
+.pqERle <- 3L
+.pqEBitPacked <- 4L
 .pqERleDict <- 8L
-.pqCUncompressed <- 0L; .pqCSnappy <- 1L
-.pqRequired <- 0L; .pqOptional <- 1L; .pqRepeated <- 2L
-.pqPData <- 0L; .pqPIndex <- 1L; .pqPDict <- 2L; .pqPDataV2 <- 3L
-.pqCtUtf8 <- 0L; .pqCtDate <- 6L
-.pqCtTsMillis <- 9L; .pqCtTsMicros <- 10L
+.pqCUncompressed <- 0L
+.pqCSnappy <- 1L
+.pqRequired <- 0L
+.pqOptional <- 1L
+.pqRepeated <- 2L
+.pqPData <- 0L
+.pqPIndex <- 1L
+.pqPDict <- 2L
+.pqPDataV2 <- 3L
+.pqCtUtf8 <- 0L
+.pqCtDate <- 6L
+.pqCtTsMillis <- 9L
+.pqCtTsMicros <- 10L
 
 # --------------------------------------------------------------- decoding
 
@@ -678,7 +701,8 @@
 #' @export
 .pq_bit_width <- function(n) {
   w <- 0L
-  while (n > 0) { w <- w + 1L; n <- bitwShiftR(n, 1L) }
+  while (n > 0) { w <- w + 1L
+  n <- bitwShiftR(n, 1L) }
   w
 }
 
@@ -704,7 +728,8 @@
     header <- 0
     shift <- 0
     repeat {
-      b <- as.integer(buf[pos]); pos <- pos + 1L
+      b <- as.integer(buf[pos])
+      pos <- pos + 1L
       header <- header + bitwAnd(b, 127L) * 2^shift
       if (bitwAnd(b, 128L) == 0L) break
       shift <- shift + 7
@@ -987,7 +1012,8 @@
       if (is.null(dictionary))
         stop("dictionary-encoded page with no dictionary page",
              call. = FALSE)
-      width <- as.integer(page[p]); p <- p + 1L
+      width <- as.integer(page[p])
+      p <- p + 1L
       idx <- .pq_read_rle(page, p, width, present, length(page))$values
       vals <- dictionary[idx + 1L]
     } else if (encoding == .pqEPlain) {
@@ -1228,7 +1254,8 @@ morie_read_parquet <- function(path, columns = NULL) {
   h <- groups * 2 + 1
   header <- raw(0)
   repeat {
-    if (h < 128) { header <- c(header, as.raw(h)); break }
+    if (h < 128) { header <- c(header, as.raw(h))
+    break }
     header <- c(header, as.raw(bitwOr(as.integer(h %% 128), 128L)))
     h <- h %/% 128
   }

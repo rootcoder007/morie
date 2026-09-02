@@ -106,7 +106,8 @@ NULL
 #' @export
 .b1_curves <- function(Y, A, fit) {
   n <- length(Y)
-  mu1 <- mean(fit$Q1star); mu0 <- mean(fit$Q0star)
+  mu1 <- mean(fit$Q1star)
+  mu0 <- mean(fit$Q0star)
   ic1 <- A / fit$g1 * (Y - fit$QAstar) + fit$Q1star - mu1
   ic0 <- (1 - A) / fit$g0 * (Y - fit$QAstar) + fit$Q0star - mu0
   list(mu1 = mu1, mu0 = mu0, ic1 = ic1, ic0 = ic0)

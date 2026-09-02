@@ -52,11 +52,13 @@
 .tf_dft <- function(x) {
   z <- as.complex(x)
   n <- length(z)
-  a <- Re(z); b <- Im(z)
+  a <- Re(z)
+  b <- Im(z)
   i0 <- seq_len(n) - 1
   vapply(i0, function(k) {
     w <- -2 * pi * k / n
-    cs <- cos(w * i0); sn <- sin(w * i0)
+    cs <- cos(w * i0)
+    sn <- sin(w * i0)
     complex(real = .morie_fsum(a * cs - b * sn),
             imaginary = .morie_fsum(a * sn + b * cs))
   }, complex(1))
@@ -74,11 +76,13 @@
 .tf_idft <- function(X) {
   z <- as.complex(X)
   n <- length(z)
-  a <- Re(z); b <- Im(z)
+  a <- Re(z)
+  b <- Im(z)
   k0 <- seq_len(n) - 1
   vapply(k0, function(i) {
     w <- 2 * pi * i / n
-    cs <- cos(w * k0); sn <- sin(w * k0)
+    cs <- cos(w * k0)
+    sn <- sin(w * k0)
     complex(real = .morie_fsum(a * cs - b * sn) / n,
             imaginary = .morie_fsum(b * cs + a * sn) / n)
   }, complex(1))
@@ -249,10 +253,12 @@
 .tf_dwtstep <- function(a, h, g) {
   a <- as.numeric(a)
   n <- length(a)
-  if (n %% 2L == 1L) { a <- c(a, a[n]); n <- n + 1L }
+  if (n %% 2L == 1L) { a <- c(a, a[n])
+  n <- n + 1L }
   half <- n %/% 2L
   j0 <- seq_along(h) - 1
-  lo <- numeric(half); hi <- numeric(half)
+  lo <- numeric(half)
+  hi <- numeric(half)
   for (k in seq_len(half)) {
     v <- a[((2 * (k - 1) + j0) %% n) + 1L]
     lo[k] <- .morie_fsum(h * v)
@@ -369,7 +375,8 @@
   j0 <- seq_along(f$h) - 1
   for (lev in seq_len(levels)) {
     step <- 2 ^ (lev - 1)
-    lo <- numeric(n); hi <- numeric(n)
+    lo <- numeric(n)
+    hi <- numeric(n)
     for (i in seq_len(n)) {
       v <- a[(((i - 1) + j0 * step) %% n) + 1L]
       lo[i] <- .morie_fsum(f$h * v)
@@ -396,7 +403,9 @@
 #' @return A numeric value.
 #' @export
 .tf_spline <- function(xs, ys, xq) {
-  xs <- as.numeric(xs); ys <- as.numeric(ys); xq <- as.numeric(xq)
+  xs <- as.numeric(xs)
+  ys <- as.numeric(ys)
+  xq <- as.numeric(xq)
   n <- length(xs)
   if (n < 2L) stop("need at least two knots for a spline")
   if (n == 2L) {
@@ -407,15 +416,19 @@
   alpha <- numeric(n)
   for (i in 2L:(n - 1L))
     alpha[i] <- 3 * ((ys[i + 1] - ys[i]) / hh[i] - (ys[i] - ys[i - 1]) / hh[i - 1])
-  l <- numeric(n); l[1] <- 1
-  mu <- numeric(n); z <- numeric(n)
+  l <- numeric(n)
+  l[1] <- 1
+  mu <- numeric(n)
+  z <- numeric(n)
   for (i in 2L:(n - 1L)) {
     l[i] <- 2 * (xs[i + 1] - xs[i - 1]) - hh[i - 1] * mu[i - 1]
     mu[i] <- hh[i] / l[i]
     z[i] <- (alpha[i] - hh[i - 1] * z[i - 1]) / l[i]
   }
   l[n] <- 1
-  cc <- numeric(n); b <- numeric(n - 1L); d <- numeric(n - 1L)
+  cc <- numeric(n)
+  b <- numeric(n - 1L)
+  d <- numeric(n - 1L)
   for (j in (n - 1L):1L) {
     cc[j] <- z[j] - mu[j] * cc[j + 1]
     b[j] <- (ys[j + 1] - ys[j]) / hh[j] - hh[j] * (cc[j + 1] + 2 * cc[j]) / 3
@@ -441,7 +454,8 @@
 #' @export
 .tf_extrema <- function(x) {
   n <- length(x)
-  mx <- integer(0); mn <- integer(0)
+  mx <- integer(0)
+  mn <- integer(0)
   i <- 2L
   while (i <= n - 1L) {
     if (x[i] > x[i - 1L]) {
@@ -475,7 +489,8 @@
 .tf_zerox <- function(x) {
   n <- length(x)
   if (n < 2L) return(0L)
-  a <- x[seq_len(n - 1L)]; b <- x[-1L]
+  a <- x[seq_len(n - 1L)]
+  b <- x[-1L]
   sum((a < 0 & b >= 0) | (a > 0 & b <= 0))
 }
 
@@ -607,7 +622,8 @@
     half <- as.integer(trunc(rad * s)) + 1L
     row <- complex(length.out = n)
     for (tau in seq_len(n)) {
-      lo <- max(1L, tau - half); hi <- min(n, tau + half)
+      lo <- max(1L, tau - half)
+      hi <- min(n, tau + half)
       idx <- lo:hi
       row[tau] <- sum(v[idx] * Conj(.tf_mother(wavelet, (idx - tau) / s, w0))) / sqrt(s)
     }
@@ -660,7 +676,8 @@
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .tf_smooth2d <- function(tfd, tlen, flen) {
-  nt <- nrow(tfd); nf <- ncol(tfd)
+  nt <- nrow(tfd)
+  nf <- ncol(tfd)
   gauss <- function(L) {
     L <- as.integer(L)
     if (L <= 1L) return(1)
@@ -668,7 +685,8 @@
     w <- exp(-0.5 * (((seq_len(L) - 1) - (L - 1) / 2) / sig) ^ 2)
     w / .morie_fsum(w)
   }
-  g <- gauss(tlen); H <- gauss(flen)
+  g <- gauss(tlen)
+  H <- gauss(flen)
   ht <- (length(g) - 1L) %/% 2L
   hf <- (length(H) - 1L) %/% 2L
   tmp <- matrix(0, nt, nf)
@@ -825,7 +843,8 @@ CDemod <- function(x, fs = 1, f0 = NULL, bandwidth = NULL) {
   y0 <- .tf_idft(Z)
   amp <- Mod(y0)
   ph <- atan2(Im(y0), Re(y0))
-  unw <- numeric(n); unw[1L] <- ph[1L]
+  unw <- numeric(n)
+  unw[1L] <- ph[1L]
   for (i in 2L:n) {
     d <- ph[i] - ph[i - 1L]
     while (d > pi) d <- d - 2 * pi
@@ -862,7 +881,8 @@ BiorDwt <- function(x, wavelet = "bior2.2", levels = 3) {
   fwd <- function(a) {
     n <- length(a)
     if (n < 2L) stop("signal too short for another level")
-    if (n %% 2L == 1L) { a <- c(a, a[n]); n <- n + 1L }
+    if (n %% 2L == 1L) { a <- c(a, a[n])
+    n <- n + 1L }
     half <- n %/% 2L
     s <- a[2L * seq_len(half) - 1L]
     d <- a[2L * seq_len(half)]
@@ -882,7 +902,8 @@ BiorDwt <- function(x, wavelet = "bior2.2", levels = 3) {
   }
 
   a <- v
-  details <- vector("list", lv); lengths <- integer(lv)
+  details <- vector("list", lv)
+  lengths <- integer(lv)
   for (i in seq_len(lv)) {
     if (length(a) < 2L)
       stop(sprintf("levels=%d is too many for a signal of length %d", lv, length(v)))
@@ -891,7 +912,8 @@ BiorDwt <- function(x, wavelet = "bior2.2", levels = 3) {
     a <- st$s
     details[[i]] <- st$d
   }
-  details <- rev(details); lengths <- rev(lengths)
+  details <- rev(details)
+  lengths <- rev(lengths)
   rec <- a
   for (i in seq_along(details)) rec <- inv(rec, details[[i]], lengths[i])
   err <- max(abs(rec - v))
@@ -920,7 +942,8 @@ BiorDwt <- function(x, wavelet = "bior2.2", levels = 3) {
 #' @export
 ExpKerTfd <- function(x, fs = 1, sigma = 1, nfreq = NULL, maxlag = NULL) {
   v <- .tf_need(x, "x", 8L)
-  fs <- as.numeric(fs); sigma <- as.numeric(sigma)
+  fs <- as.numeric(fs)
+  sigma <- as.numeric(sigma)
   if (fs <= 0) stop("fs must be positive")
   if (sigma <= 0) stop("sigma must be positive")
   n <- length(v)
@@ -931,25 +954,30 @@ ExpKerTfd <- function(x, fs = 1, sigma = 1, nfreq = NULL, maxlag = NULL) {
   freqs <- (seq_len(nf) - 1) * fs / (2 * nf)
   tfd <- matrix(0, n, nf)
   for (i in seq_len(n)) {
-    kv <- complex(length.out = 0); lv <- numeric(0)
+    kv <- complex(length.out = 0)
+    lv <- numeric(0)
     for (tau in (-ml):ml) {
       if (i + tau < 1L || i - tau < 1L || i + tau > n || i - tau > n) next
       if (tau == 0L) {
-        kv <- c(kv, z[i] * Conj(z[i])); lv <- c(lv, 0)
+        kv <- c(kv, z[i] * Conj(z[i]))
+        lv <- c(lv, 0)
         next
       }
       sdv <- 2 * abs(tau) / sqrt(2 * sigma)
       span <- max(1L, as.integer(trunc(3 * sdv)))
-      acc <- as.complex(0); wsum <- 0
+      acc <- as.complex(0)
+      wsum <- 0
       for (mu in (-span):span) {
-        a <- i + mu + tau; b <- i + mu - tau
+        a <- i + mu + tau
+        b <- i + mu - tau
         if (a < 1L || b < 1L || a > n || b > n) next
         wgt <- exp(-sigma * mu * mu / (4 * tau * tau))
         acc <- acc + wgt * z[a] * Conj(z[b])
         wsum <- wsum + wgt
       }
       if (wsum <= 0) next
-      kv <- c(kv, acc / wsum); lv <- c(lv, tau)
+      kv <- c(kv, acc / wsum)
+      lv <- c(lv, tau)
     }
     for (k in seq_len(nf)) {
       w <- -2 * pi * (k - 1) / nf
@@ -986,7 +1014,8 @@ CprWt <- function(ecg, fs = 250, scales = NULL, w0 = 5, band = c(3, 21)) {
   v <- .tf_need(ecg, "ecg", 16L)
   fs <- as.numeric(fs)
   if (fs <= 0) stop("fs must be positive")
-  lo <- as.numeric(band[1L]); hi <- as.numeric(band[2L])
+  lo <- as.numeric(band[1L])
+  hi <- as.numeric(band[2L])
   if (!(0 < lo && lo < hi))
     stop(sprintf("band must satisfy 0 < low < high, got (%s, %s)", lo, hi))
   if (hi > fs / 2)
@@ -1058,8 +1087,10 @@ Cwt <- function(x, fs = 1, wavelet = "morlet", scales = NULL, w0 = 5) {
   fs <- as.numeric(fs)
   if (fs <= 0) stop("fs must be positive")
   if (is.null(scales)) {
-    sc <- numeric(0); s <- 1
-    while (s <= max(1, length(v) / 8)) { sc <- c(sc, s); s <- s * 2 }
+    sc <- numeric(0)
+    s <- 1
+    while (s <= max(1, length(v) / 8)) { sc <- c(sc, s)
+    s <- s * 2 }
     scales <- if (length(sc)) sc else 1
   }
   sc <- as.numeric(scales)
@@ -1105,11 +1136,13 @@ Gtfd <- function(x, fs = 1, kernel = "spwvd", nfreq = NULL,
     stop(sprintf("unknown kernel '%s'; use 'wvd', 'pwvd', 'swvd' or 'spwvd'", k))
   nf <- as.integer(if (is.null(nfreq) || nfreq == 0) length(v) else nfreq)
   w <- .tf_wvd(v, fs, nf)
-  tfd <- w$tfd; freqs <- w$freqs
+  tfd <- w$tfd
+  freqs <- w$freqs
   tl <- if (is.null(tsmooth)) max(3L, length(v) %/% 8L) else as.integer(tsmooth)
   fl <- if (is.null(fsmooth)) max(3L, nf %/% 8L) else as.integer(fsmooth)
   if (tl < 1L || fl < 1L) stop("tsmooth and fsmooth must be >= 1")
-  if (k == "wvd") { tl <- 1L; fl <- 1L
+  if (k == "wvd") { tl <- 1L
+  fl <- 1L
   } else if (k == "pwvd") { tl <- 1L
   } else if (k == "swvd") { fl <- 1L }
   if (tl > 1L || fl > 1L) tfd <- .tf_smooth2d(tfd, tl, fl)
@@ -1140,7 +1173,8 @@ OrthFilt <- function(order = 4) {
   if (is.null(.TF_DBTAPS[[as.character(k)]]))
     stop(sprintf("order must be an integer in 1..10, got %s", as.character(order)))
   f <- .tf_filters(paste0("db", k))
-  h <- f$h; L <- length(h)
+  h <- f$h
+  L <- length(h)
   worst <- 0
   if (L %/% 2L >= 2L) {
     for (m in seq_len(L %/% 2L - 1L)) {
@@ -1214,7 +1248,8 @@ AtomTfd <- function(x, fs = 1, dictionary = "gabor", max_atoms = 8,
   prev <- e0
   atoms <- list()
   for (rep_i in seq_len(ma)) {
-    bestval <- -1; best <- NULL
+    bestval <- -1
+    best <- NULL
     for (s in scales) {
       for (tau in shifts) {
         for (k in seq_len(kmax - 1L)) {
@@ -1319,8 +1354,10 @@ EmdEns <- function(x, n_ensembles = 20, noise_std = 0.2, max_imfs = 8, seed = 0)
   for (kk in seq_len(ne)) {
     noise <- numeric(0)
     while (length(noise) < n) {
-      st <- .tf_lcg_step(st); u1 <- .tf_lcg_unif(st)
-      st <- .tf_lcg_step(st); u2 <- .tf_lcg_unif(st)
+      st <- .tf_lcg_step(st)
+      u1 <- .tf_lcg_unif(st)
+      st <- .tf_lcg_step(st)
+      u2 <- .tf_lcg_unif(st)
       r <- sqrt(-2 * log(u1))
       noise <- c(noise, amp * r * cos(2 * pi * u2), amp * r * sin(2 * pi * u2))
     }
@@ -1421,7 +1458,8 @@ Imf <- function(x, max_iter = 50, tol = 0.05) {
     lo <- .tf_spline(c(1L, ex$mn, n), c(c[1L], c[ex$mn], c[n]), tt)
     menv <- (up + lo) / 2
   } else menv <- numeric(n)
-  amp <- max(abs(c)); if (amp == 0) amp <- 1
+  amp <- max(abs(c))
+  if (amp == 0) amp <- 1
   mem <- max(abs(menv))
   cond2 <- mem <= 0.05 * amp
   za <- .tf_analytic(c)
@@ -1454,7 +1492,8 @@ TwaEmd <- function(ecg, fs = 250, r_peaks = NULL, twa_window = c(0.15, 0.40),
   v <- .tf_need(ecg, "ecg", 32L)
   fs <- as.numeric(fs)
   if (fs <= 0) stop("fs must be positive")
-  t0 <- as.numeric(twa_window[1L]); t1 <- as.numeric(twa_window[2L])
+  t0 <- as.numeric(twa_window[1L])
+  t1 <- as.numeric(twa_window[2L])
   if (!(0 <= t0 && t0 < t1))
     stop(sprintf("twa_window must satisfy 0 <= start < end, got (%s, %s)", t0, t1))
   n <- length(v)
@@ -1464,10 +1503,12 @@ TwaEmd <- function(ecg, fs = 250, r_peaks = NULL, twa_window = c(0.15, 0.40),
   if (supplied) {
     rp <- as.integer(r_peaks)
   } else {
-    mx <- max(abs(v)); if (mx == 0) mx <- 1
+    mx <- max(abs(v))
+    if (mx == 0) mx <- 1
     thr <- 0.5 * mx
     refr <- max(1L, as.integer(trunc(0.2 * fs)))
-    rp <- integer(0); i <- 1L
+    rp <- integer(0)
+    i <- 1L
     while (i <= n) {
       if (abs(v[i]) >= thr) {
         j <- i
@@ -1482,9 +1523,11 @@ TwaEmd <- function(ecg, fs = 250, r_peaks = NULL, twa_window = c(0.15, 0.40),
   if (length(rp) < 4L)
     stop(sprintf(paste0("only %d R peaks available; at least 4 are needed for ",
                         "an odd/even T-wave comparison"), length(rp)))
-  a <- as.integer(trunc(t0 * fs)); b <- as.integer(trunc(t1 * fs))
+  a <- as.integer(trunc(t0 * fs))
+  b <- as.integer(trunc(t1 * fs))
   if (b <= a) stop("the T-wave window is empty at this sampling rate")
-  odd <- list(); even <- list()
+  odd <- list()
+  even <- list()
   for (bi in seq_along(rp)) {
     p <- rp[bi]
     if (p + b - 1L > n) next
@@ -1589,7 +1632,8 @@ WtEntropy <- function(x, wavelet = "db4", levels = 3, base = "e") {
     stop("the signal has zero energy; wavelet entropy is undefined")
   ent <- -.morie_fsum(p[p > 0] * log(p[p > 0]))
   mx <- log(length(p))
-  if (b == "2") { ent <- ent / log(2); mx <- mx / log(2) }
+  if (b == "2") { ent <- ent / log(2)
+  mx <- mx / log(2) }
   list(entropy = ent, max_entropy = mx,
        normalized_entropy = if (mx > 0) ent / mx else 0,
        relative_energy = p, labels = r$labels, levels = as.integer(levels),
@@ -1657,7 +1701,8 @@ EmdSpec <- function(x, fs = 1, max_imfs = 8, nfreq = 32, tol = 0.05) {
     za <- .tf_analytic(c)
     a <- Mod(za)
     ph <- atan2(Im(za), Re(za))
-    unw <- numeric(n); unw[1L] <- ph[1L]
+    unw <- numeric(n)
+    unw[1L] <- ph[1L]
     for (i in 2L:n) {
       d <- ph[i] - ph[i - 1L]
       while (d > pi) d <- d - 2 * pi
@@ -1718,7 +1763,8 @@ HrvTv <- function(rr_intervals, fs_resamp = 4, window_len = 64,
   # enough to move int(dur * fs_resamp) by a whole sample.
   beat_t <- numeric(length(rr))
   acc <- 0
-  for (i in seq_along(rr)) { acc <- acc + rr[i]; beat_t[i] <- acc }
+  for (i in seq_along(rr)) { acc <- acc + rr[i]
+  beat_t[i] <- acc }
   dur <- beat_t[length(beat_t)]
   m <- as.integer(trunc(dur * fsr))
   if (m < 4L) stop("the RR series is too short to resample at this rate")
@@ -1729,8 +1775,10 @@ HrvTv <- function(rr_intervals, fs_resamp = 4, window_len = 64,
   for (q in seq_len(m)) {
     g <- grid[q]
     while (j <= nb - 2L && beat_t[j + 1L] < g) j <- j + 1L
-    tt0 <- beat_t[j]; tt1 <- beat_t[j + 1L]
-    y0 <- rr[j]; y1 <- rr[j + 1L]
+    tt0 <- beat_t[j]
+    tt1 <- beat_t[j + 1L]
+    y0 <- rr[j]
+    y1 <- rr[j + 1L]
     w <- if (tt1 == tt0) 0 else (g - tt0) / (tt1 - tt0)
     w <- max(0, min(1, w))
     resamp[q] <- y0 + (y1 - y0) * w
@@ -1750,7 +1798,8 @@ HrvTv <- function(rr_intervals, fs_resamp = 4, window_len = 64,
   tot <- numeric(0)
   for (ri in seq_len(nrow(sp$spectrogram))) {
     row <- sp$spectrogram[ri, ]
-    s <- numeric(3); names(s) <- c("vlf", "lf", "hf")
+    s <- numeric(3)
+    names(s) <- c("vlf", "lf", "hf")
     for (nmb in c("vlf", "lf", "hf")) {
       ab <- bands[[nmb]]
       sel <- fr >= ab[1L] & fr < ab[2L]
@@ -1801,7 +1850,8 @@ IStft <- function(stft, window = "hann", hop = NULL) {
   if (length(w) != m)
     stop("explicit window length must equal the frame length")
   n <- (length(frames) - 1L) * h + m
-  num <- numeric(n); den <- numeric(n)
+  num <- numeric(n)
+  den <- numeric(n)
   for (fi in seq_along(frames)) {
     seg <- .tf_idft(frames[[fi]])
     off <- (fi - 1L) * h
@@ -1897,13 +1947,16 @@ PcgEnvAvg <- function(pcg, ecg, fs = 1000, cycle_len = NULL,
   if (w < 1L) stop("envelope_smoothing must be >= 1")
   hw <- w %/% 2L
   sm <- vapply(seq_len(n), function(i) {
-    a <- max(1L, i - hw); b <- min(n, i + hw)
+    a <- max(1L, i - hw)
+    b <- min(n, i + hw)
     .morie_fsum(env[a:b]) / (b - a + 1L)
   }, numeric(1))
-  mx <- max(abs(e)); if (mx == 0) mx <- 1
+  mx <- max(abs(e))
+  if (mx == 0) mx <- 1
   thr <- 0.6 * mx
   refr <- max(1L, as.integer(trunc(0.25 * fs)))
-  trig <- integer(0); i <- 1L
+  trig <- integer(0)
+  i <- 1L
   while (i <= n) {
     if (abs(e[i]) >= thr) {
       j <- i
@@ -2035,7 +2088,8 @@ SeizWt <- function(eeg, fs = 1, wavelet = "db4", levels = 5,
       stop(sprintf("scale %d is outside 1..levels=%d", s, lv))
   r <- .tf_dwt(v, wavelet, lv)
   fine_to_coarse <- rev(r$details)
-  fi <- numeric(length(sc)); ener <- numeric(length(sc))
+  fi <- numeric(length(sc))
+  ener <- numeric(length(sc))
   bands <- vector("list", length(sc))
   for (q in seq_along(sc)) {
     s <- sc[q]
@@ -2070,7 +2124,8 @@ SeizWt <- function(eeg, fs = 1, wavelet = "db4", levels = 5,
 #' @return A list with \code{nperseg_time}, \code{nperseg_freq}, \code{nperseg}, \code{achieved_t_res}, \code{achieved_f_res}, \code{tf_product}, \code{heisenberg_bound}, \code{feasible}, \code{method}.
 #' @export
 StftParam <- function(fs, desired_t_res, desired_f_res) {
-  fs <- as.numeric(fs); dt <- as.numeric(desired_t_res)
+  fs <- as.numeric(fs)
+  dt <- as.numeric(desired_t_res)
   df <- as.numeric(desired_f_res)
   if (fs <= 0) stop("fs must be positive")
   if (dt <= 0) stop("desired_t_res must be positive")
@@ -2116,7 +2171,9 @@ Spectrogram <- function(x, fs = 1, nperseg = 64, noverlap = NULL,
   w <- .tf_win(window, m)
   nf <- m %/% 2L + 1L
   freqs <- (seq_len(nf) - 1) * fs / m
-  frames <- list(); times <- numeric(0); spec <- list()
+  frames <- list()
+  times <- numeric(0)
+  spec <- list()
   start <- 1L
   while (start + m - 1L <= length(v)) {
     X <- .tf_dft(v[start:(start + m - 1L)] * w)
@@ -2205,7 +2262,9 @@ SwtDen <- function(x, wavelet = "db4", levels = 3, threshold = NULL,
   }
   shrink <- function(w) ifelse(abs(w) < T, 0,
                                if (tt == "hard") w else sign(w) * (abs(w) - T))
-  acc <- numeric(n); zeroed <- 0L; ncoef <- 0L
+  acc <- numeric(n)
+  zeroed <- 0L
+  ncoef <- 0L
   for (sh in 0:(nshift - 1L)) {
     rolled <- v[((seq_len(n) - 1L + sh) %% n) + 1L]
     r <- .tf_dwt(rolled, wavelet, lv)
@@ -2268,7 +2327,8 @@ VModes <- function(x, K = 3, alpha = 2000, tau = 0, init = "uniform",
   wk <- if (ini == "uniform") 0.5 * ((seq_len(k) - 1) + 0.5) / k else numeric(k)
   uk <- lapply(seq_len(k), function(j) complex(length.out = half))
   lam <- complex(length.out = half)
-  it <- 0L; conv <- FALSE
+  it <- 0L
+  conv <- FALSE
   for (itr in seq_len(mi)) {
     it <- itr
     change <- 0
@@ -2290,7 +2350,8 @@ VModes <- function(x, K = 3, alpha = 2000, tau = 0, init = "uniform",
       for (q in seq_len(k)) tot <- tot + uk[[q]]
       lam <- lam + ta * (fh - tot)
     }
-    if (change < as.numeric(tol)) { conv <- TRUE; break }
+    if (change < as.numeric(tol)) { conv <- TRUE
+    break }
   }
   modes <- vector("list", k)
   for (j in seq_len(k)) {
@@ -2303,7 +2364,8 @@ VModes <- function(x, K = 3, alpha = 2000, tau = 0, init = "uniform",
     modes[[j]] <- Re(.tf_idft(full))
   }
   ord <- order(wk)
-  modes <- modes[ord]; wk <- wk[ord]
+  modes <- modes[ord]
+  wk <- wk[ord]
   tot <- vapply(seq_len(n), function(i)
     .morie_fsum(vapply(modes, function(m) m[i], numeric(1))), numeric(1))
   list(modes = modes, center_freqs = wk, K = k, alpha = al, tau = ta,
@@ -2336,7 +2398,8 @@ CwtRidge <- function(x, fs = 1, scales = NULL, wavelet = "mexh", w0 = 5,
   if (!(p > 0 && p <= 1)) stop("min_prominence must lie in (0, 1]")
   r <- Scalogram(x, fs = fs, scales = scales, wavelet = wavelet, w0 = w0)
   sg <- r$scalogram
-  ns <- nrow(sg); n <- ncol(sg)
+  ns <- nrow(sg)
+  n <- ncol(sg)
   gmax <- max(sg)
   if (gmax <= 0) stop("the signal has no wavelet energy at any scale")
   found <- list()
@@ -2406,16 +2469,24 @@ WtXcor <- function(x, y, wavelet = "db4", levels = 3, max_lag = 0) {
     c(if (su > 0 && sw > 0) cov / (su * sw) else 0, cov)
   }
 
-  cors <- numeric(lv); lags <- integer(lv); covs <- numeric(lv)
+  cors <- numeric(lv)
+  lags <- integer(lv)
+  covs <- numeric(lv)
   for (j in seq_len(lv)) {
-    best <- -2; bl <- 0L; bc <- 0
+    best <- -2
+    bl <- 0L
+    bc <- 0
     for (lag in (-ml):ml) {
       cv <- corr(da[[j]], db[[j]], lag)
       if (abs(cv[1L]) > abs(best) || best == -2) {
-        best <- cv[1L]; bl <- lag; bc <- cv[2L]
+        best <- cv[1L]
+        bl <- lag
+        bc <- cv[2L]
       }
     }
-    cors[j] <- best; lags[j] <- bl; covs[j] <- bc
+    cors[j] <- best
+    lags[j] <- bl
+    covs[j] <- bc
   }
   mu <- .morie_fsum(a) / n
   mw <- .morie_fsum(b) / n
@@ -2517,7 +2588,8 @@ WtMoment <- function(x, wavelet = "db4", levels = 3) {
     mu <- .morie_fsum(c) / n
     var <- .morie_fsum((c - mu) ^ 2) / n
     sdv <- sqrt(var)
-    sk <- NULL; ku <- NULL
+    sk <- NULL
+    ku <- NULL
     if (n >= 3L && sdv > 0) {
       sk <- .morie_fsum(((c - mu) / sdv) ^ 3) / n
       ku <- .morie_fsum(((c - mu) / sdv) ^ 4) / n
@@ -2650,7 +2722,8 @@ WtVar <- function(x, wavelet = "db1", levels = 3) {
   L <- length(.tf_filters(wavelet)$h)
   n <- length(v)
   det <- .tf_swt(v, wavelet, lv)$details
-  variances <- numeric(lv); used <- integer(lv)
+  variances <- numeric(lv)
+  used <- integer(lv)
   for (j in seq_len(lv)) {
     span <- (L - 1L) * (2 ^ (j - 1L))          # 0-based level j-1 in Python
     keep <- if (span < n) det[[j]][(span + 1L):n] else numeric(0)
@@ -2863,7 +2936,8 @@ EchoLogSp <- function(a, n_0, omega, H_hat = NULL, n_terms = NULL) {
   elog <- log(t)
   Yh <- hs + elog
   valid <- abs(a) < 1
-  ser <- NULL; err <- NULL
+  ser <- NULL
+  err <- NULL
   if (valid) {
     ser <- complex(length.out = length(ws))
     for (i in seq_along(ws)) {

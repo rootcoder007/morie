@@ -37,7 +37,8 @@ Actorcrit <- function(env, actor = NULL, critic = NULL, rewards = NULL,
   th <- if (!is.null(theta)) .s03vec(theta) else numeric(ncol(G))
   ww <- if (!is.null(w)) .s03vec(w) else numeric(ncol(Gv))
   g <- as.numeric(gamma)
-  deltas <- numeric(Tn); I <- 1
+  deltas <- numeric(Tn)
+  I <- 1
   for (t in seq_len(Tn)) {
     vt <- if (t <= length(V)) V[t] else 0
     vn <- if (t + 1L <= length(V)) V[t + 1L] else 0

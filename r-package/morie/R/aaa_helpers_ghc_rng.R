@@ -88,8 +88,10 @@
 #' @export
 .ghc_mul32 <- function(a, b) {
   # exact 32x32 -> 64 via 16-bit limbs; `a` a vector, `b` a scalar
-  a0 <- a %% 65536; a1 <- a %/% 65536
-  b0 <- b %% 65536; b1 <- b %/% 65536
+  a0 <- a %% 65536
+  a1 <- a %/% 65536
+  b0 <- b %% 65536
+  b1 <- b %/% 65536
   mid <- a0 * b1 + a1 * b0
   lo <- a0 * b0 + (mid %% 65536) * 65536
   list(hi = (a1 * b1 + mid %/% 65536 + lo %/% .ghc_M32) %% .ghc_M32,

@@ -172,20 +172,27 @@ motfsr_normalise_windows <- function(z, w, max_sweeps = 100) {
   if (w < 2L) return(z)
   for (iter in seq_len(max_sweeps)) {
     worst <- 1 + 1e-12
-    wi <- -1L; wj <- -1L
+    wi <- -1L
+    wj <- -1L
     for (i in seq_along(z)) {
       row <- z[[i]]
       m <- length(row)
       if (m < w) {
         run <- sum(row)
-        if (run > worst) { worst <- run; wi <- i; wj <- 0L }
+        if (run > worst) { worst <- run
+        wi <- i
+        wj <- 0L }
         next
       }
       run <- sum(row[seq_len(w)])
-      if (run > worst) { worst <- run; wi <- i; wj <- 0L }
+      if (run > worst) { worst <- run
+      wi <- i
+      wj <- 0L }
       for (j in seq.int(2L, m - w + 1L)) {
         run <- run + row[j + w - 1L] - row[j - 1L]
-        if (run > worst) { worst <- run; wi <- i; wj <- j - 1L }
+        if (run > worst) { worst <- run
+        wi <- i
+        wj <- j - 1L }
       }
     }
     if (wi < 0L) break
@@ -219,7 +226,9 @@ motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
                           max_iter = 1000, tol = 1e-6,
                           normalize_overlaps = TRUE, erase_by = "letter") {
   prep <- motfsr_prepare(sequences, w, alphabet)
-  coded <- prep$coded; alpha <- prep$alpha; starts <- prep$starts
+  coded <- prep$coded
+  alpha <- prep$alpha
+  starts <- prep$starts
   L <- length(alpha)
   w <- as.integer(w)
   beta <- as.numeric(beta)
@@ -258,12 +267,15 @@ motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
     log_l1 <- log(lam1)
     log_l2 <- log(1 - lam1)
     for (s in seq_along(starts)) {
-      i <- starts[[s]][1]; j <- starts[[s]][2]
+      i <- starts[[s]][1]
+      j <- starts[[s]][2]
       a <- log_l1 + motfsr_log_component(theta, coded, i, j, w, 1L)
       b <- log_l2 + motfsr_log_component(theta, coded, i, j, w, 2L)
       m <- max(a, b)
-      if (is.infinite(m) && m < 0) { z_by_seq[[i]][j] <- 0; next }
-      ea <- exp(a - m); eb <- exp(b - m)
+      if (is.infinite(m) && m < 0) { z_by_seq[[i]][j] <- 0
+      next }
+      ea <- exp(a - m)
+      eb <- exp(b - m)
       z_by_seq[[i]][j] <- ea / (ea + eb)
       loglik <- loglik + m + log(ea + eb)
     }
@@ -272,14 +284,16 @@ motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
 
     z_sum <- 0
     for (s in seq_along(starts)) {
-      i <- starts[[s]][1]; j <- starts[[s]][2]
+      i <- starts[[s]][1]
+      j <- starts[[s]][2]
       z_sum <- z_sum + z_by_seq[[i]][j]
     }
     lam1 <- min(max(z_sum / n, 1e-12), 1 - 1e-12)
 
     c_mat <- matrix(0, nrow = w + 1L, ncol = L)
     for (s in seq_along(starts)) {
-      i <- starts[[s]][1]; j <- starts[[s]][2]
+      i <- starts[[s]][1]
+      j <- starts[[s]][2]
       z1 <- z_by_seq[[i]][j]
       z2 <- 1 - z1
       e_start <- if (is.null(eps)) 1 else (if (erase_by == "start") eps[[i]][j] else NA)
@@ -294,7 +308,8 @@ motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
     new_theta <- vector("list", w + 1L)
     for (r in seq_len(w + 1L)) {
       denom <- sum(c_mat[r, ]) + beta
-      if (denom <= 0) { new_theta[[r]] <- as.numeric(mu); next }
+      if (denom <= 0) { new_theta[[r]] <- as.numeric(mu)
+      next }
       new_theta[[r]] <- (c_mat[r, ] + beta * mu) / denom
     }
     delta <- 0
@@ -304,7 +319,8 @@ motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
     }
     delta <- sqrt(delta)
     theta <- new_theta
-    if (delta < tol) { converged <- TRUE; break }
+    if (delta < tol) { converged <- TRUE
+    break }
   }
 
   list(theta = theta,
@@ -333,7 +349,8 @@ motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
 motfsr_log_odds_matrix <- function(motif, background) {
   out <- lapply(motif, function(row) {
     sapply(seq_along(row), function(k) {
-      f <- row[k]; b <- background[k]
+      f <- row[k]
+      b <- background[k]
       if (f <= 0) -Inf else if (b <= 0) Inf else log(f / b)
     })
   })
@@ -357,9 +374,12 @@ motfsr_bayes_threshold <- function(lambda1, loss = NULL) {
   }
   t_ <- log((1 - lambda1) / lambda1)
   if (is.null(loss)) return(t_)
-  r11 <- loss[[1]][1]; r12 <- loss[[1]][2]
-  r21 <- loss[[2]][1]; r22 <- loss[[2]][2]
-  num <- r12 - r22; den <- r21 - r11
+  r11 <- loss[[1]][1]
+  r12 <- loss[[1]][2]
+  r21 <- loss[[2]][1]
+  r22 <- loss[[2]][2]
+  num <- r12 - r22
+  den <- r21 - r11
   if (num <= 0 || den <= 0) {
     stop("motfsr: the loss matrix must have r12 > r22 and r21 > r11 for the threshold to be defined")
   }
@@ -417,8 +437,10 @@ motfsr_lambda_grid <- function(n_starts_total, n_seqs, w, lambda0) {
   hi <- 1 / (2 * w)
   lo <- min(max(lo, 1e-9), 0.5)
   hi <- min(max(hi, lo), 0.5)
-  out <- c(); v <- lo
-  while (v < hi) { out <- c(out, v); v <- v * 2 }
+  out <- c()
+  v <- lo
+  while (v < hi) { out <- c(out, v)
+  v <- v * 2 }
   out <- c(out, hi)
   out
 }
@@ -465,7 +487,9 @@ motfsr_run <- function(sequences, w, alphabet = NULL, n_motifs = 1,
     stop("motfsr: start_weight must lie in (0, 1)")
   }
   prep <- motfsr_prepare(sequences, w, alphabet)
-  coded <- prep$coded; alpha <- prep$alpha; all_starts <- prep$starts
+  coded <- prep$coded
+  alpha <- prep$alpha
+  all_starts <- prep$starts
   L <- length(alpha)
   w <- as.integer(w)
   mu <- motfsr_mu(coded, L)
@@ -502,7 +526,9 @@ motfsr_run <- function(sequences, w, alphabet = NULL, n_motifs = 1,
         }
       }
     }
-    th0 <- best[[2]]; lam <- best[[3]]; probe <- best[[4]]
+    th0 <- best[[2]]
+    lam <- best[[3]]
+    probe <- best[[4]]
     fit <- if (start_scoring == "none") probe else
       motfsr_mm_fit(sequences, w, alpha, th0, lam, beta, erasing,
                     max_iter, tol, normalize_overlaps, erase_by)

@@ -41,7 +41,8 @@ mqtmpl_genotype_probabilities <- function(s_left, s_right, r_left, r_right) {
   # interval transmission probabilities (Broman et al. 2003). Returns
   # c(P(q = 1), P(q = 0)) for ONE individual -- the same closed form the
   # rmorie arm (.ghc_geno_prob) and the Python arm (rqtmpl) use.
-  gL <- as.integer(s_left); gR <- as.integer(s_right)
+  gL <- as.integer(s_left)
+  gR <- as.integer(s_right)
   p1  <- if (gL == 1L) 1 - r_left  else r_left
   p2  <- if (gR == 1L) 1 - r_right else r_right
   p10 <- if (gL == 1L) r_left      else 1 - r_left
@@ -63,7 +64,8 @@ mqtmpl_genotype_probabilities <- function(s_left, s_right, r_left, r_right) {
 #' @export
 mqtmpl_single_marker <- function(y, g) {
   n <- length(y)
-  my <- mean(y); mg <- mean(g)
+  my <- mean(y)
+  mg <- mean(g)
   sgg <- sum((g - mg)^2)
   if (sgg <= 0) {
     rss <- sum((y - my)^2)
@@ -100,7 +102,8 @@ mqtmpl_single_marker <- function(y, g) {
 # Broman et al. (2003) scanone(method = "em") computes.
 mqtmpl_cim_em <- function(y, left, right, r_left, r_right, cofactors = list(),
                      max_iter = 200L, tol = 1e-10) {
-  n <- length(y); y <- as.numeric(y)
+  n <- length(y)
+  y <- as.numeric(y)
   cof <- lapply(cofactors, as.numeric)
   gL <- vapply(seq_len(n), function(i) if (is.na(left[i]))  0L else as.integer(left[i]),  integer(1))
   gR <- vapply(seq_len(n), function(i) if (is.na(right[i])) 0L else as.integer(right[i]), integer(1))
@@ -119,25 +122,36 @@ mqtmpl_cim_em <- function(y, left, right, r_left, r_right, cofactors = list(),
   my <- sum(y) / n
   beta <- c(my, 0.1 * (max(y) - min(y) + 1e-12), rep(0, length(cof)))
   s2 <- sum((y - my)^2) / n
-  history <- numeric(0); post <- rep(0.5, n)
+  history <- numeric(0)
+  post <- rep(0.5, n)
   cofmat <- if (length(cof)) do.call(cbind, cof) else matrix(0, n, 0)
-  wls <- function(X, yy, w) { A <- crossprod(X * w, X); b <- crossprod(X * w, yy); as.numeric(solve(A, b)) }
+  wls <- function(X, yy, w) { A <- crossprod(X * w, X)
+  b <- crossprod(X * w, yy)
+  as.numeric(solve(A, b)) }
   for (iter in seq_len(as.integer(max_iter))) {
     base <- beta[1] + if (length(cof)) as.numeric(cofmat %*% beta[-(1:2)]) else 0
-    m0 <- base; m1 <- base + beta[2]
-    d0 <- exp(-((y - m0)^2) / (2 * s2)); d1 <- exp(-((y - m1)^2) / (2 * s2))
-    w0 <- G[, 1] * d0; w1 <- G[, 2] * d1; tot <- w0 + w1
+    m0 <- base
+    m1 <- base + beta[2]
+    d0 <- exp(-((y - m0)^2) / (2 * s2))
+    d1 <- exp(-((y - m1)^2) / (2 * s2))
+    w0 <- G[, 1] * d0
+    w1 <- G[, 2] * d1
+    tot <- w0 + w1
     if (any(tot <= 0)) stop("mqtmpl: the mixture vanished at individual ", which(tot <= 0)[1])
     post <- w1 / tot
     ll <- sum(log(tot / sqrt(2 * pi * s2)))
     history <- c(history, ll)
     if (length(history) > 1 && abs(history[length(history)] - history[length(history) - 1]) < tol) break
-    X <- rbind(cbind(1, 0, cofmat), cbind(1, 1, cofmat)); Y <- c(y, y); W <- c(1 - post, post)
+    X <- rbind(cbind(1, 0, cofmat), cbind(1, 1, cofmat))
+    Y <- c(y, y)
+    W <- c(1 - post, post)
     beta <- wls(X, Y, W)
     s2 <- sum(W * (Y - as.numeric(X %*% beta))^2) / n
   }
-  X0 <- cbind(1, cofmat); b0 <- wls(X0, y, rep(1, n))
-  r0 <- y - as.numeric(X0 %*% b0); s0 <- sum(r0^2) / n
+  X0 <- cbind(1, cofmat)
+  b0 <- wls(X0, y, rep(1, n))
+  r0 <- y - as.numeric(X0 %*% b0)
+  s0 <- sum(r0^2) / n
   ll0 <- -0.5 * n * (log(2 * pi * s0) + 1)
   lod <- (history[length(history)] - ll0) * (1 / log(10))
   list(lod = lod, b0 = beta[1], b = beta[2], cofactor_coefficients = beta[-(1:2)],
@@ -166,7 +180,9 @@ mqtmpl_cim_one <- function(y, left, right, r_left, r_right, cofactors) {
 mqtmpl_scan_cim <- function(y, markers, positions, cofactors = list(),
                             window = 0, step = 0.02) {
   m <- length(markers)
-  out_pos <- c(); out_lod <- c(); fits <- list()
+  out_pos <- c()
+  out_lod <- c()
+  fits <- list()
   if (length(cofactors) == 0L) {
     for (j in seq_len(m - 1L)) {
       span <- positions[j + 1L] - positions[j]
@@ -359,7 +375,8 @@ mqtmpl_sample_genotypes <- function(genotypes, positions, grid, n_imp = 16,
         g <- grid[gi]
         js <- which(positions <= g + 1e-12)
         j <- max(js)
-        if (j == m) { row[gi] <- states[j]; next }
+        if (j == m) { row[gi] <- states[j]
+        next }
         d1 <- max(g - positions[j], 0)
         d2 <- max(positions[j + 1L] - g, 0)
         pr <- mqtmpl_genotype_probabilities(states[j], states[j + 1L],
@@ -389,7 +406,8 @@ mqtmpl_imputation_weights <- function(y, genotype_column, model_dimension = 2) {
   n <- length(y)
   if (n != length(genotype_column)) stop("mqtmpl: one genotype per phenotype")
   g <- as.numeric(genotype_column)
-  my <- mean(y); mg <- mean(g)
+  my <- mean(y)
+  mg <- mean(g)
   sgg <- sum((g - mg)^2)
   if (sgg <= 0) {
     rss <- sum((y - my)^2)
@@ -423,7 +441,8 @@ mqtmpl_scan_imp <- function(y, markers, positions, step, n_imp,
   grid <- c()
   g <- positions[1L]
   end <- positions[length(positions)]
-  while (g <= end + 1e-12) { grid <- c(grid, g); g <- g + step }
+  while (g <= end + 1e-12) { grid <- c(grid, g)
+  g <- g + step }
   geno <- lapply(seq_len(n), function(i) {
     sapply(seq_along(markers), function(j) markers[[j]][i])
   })
@@ -489,7 +508,8 @@ mqtmpl_scanone <- function(y, markers, positions, method = "em", step = 0.02,
                            mqtmpl_kw_n_imp(covariates), error_rate, 0))
   }
   if (method == "mr") {
-    out_pos <- c(); out_lod <- c()
+    out_pos <- c()
+    out_lod <- c()
     for (j in seq_along(markers)) {
       typed <- which(!sapply(markers[[j]], is.null))
       if (length(typed) < 3L) next

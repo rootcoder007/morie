@@ -124,14 +124,17 @@ EegAdapt <- function(x, fs, window = NULL, step = NULL, order = 4,
   if (w <= p) stop("the window must hold more samples than the order")
   if (hop < 1L) stop("step must be at least one sample")
 
-  dists <- numeric(0); times <- numeric(0)
-  start <- 0L; pos <- w
+  dists <- numeric(0)
+  times <- numeric(0)
+  start <- 0L
+  pos <- w
   while (pos + w <= N) {
     seg <- xs[(start + 1L):(pos + w)]
     mrel <- pos - start + 1L
     d <- if (mrel - 1L > p && w > p)
       Glr(seg, mrel, length(seg), order = p)$d else 0
-    dists <- c(dists, d); times <- c(times, pos / fsv)
+    dists <- c(dists, d)
+    times <- c(times, pos / fsv)
     pos <- pos + hop
   }
   if (!length(dists))
@@ -141,7 +144,10 @@ EegAdapt <- function(x, fs, window = NULL, step = NULL, order = 4,
   thr <- if (!is.null(threshold)) as.numeric(threshold)
          else med + 3 * 1.4826 * mad
 
-  start <- 0L; pos <- w; adaptive <- numeric(0); bounds <- integer(0)
+  start <- 0L
+  pos <- w
+  adaptive <- numeric(0)
+  bounds <- integer(0)
   while (pos + w <= N) {
     seg <- xs[(start + 1L):(pos + w)]
     mrel <- pos - start + 1L
@@ -181,21 +187,24 @@ EegAdapt <- function(x, fs, window = NULL, step = NULL, order = 4,
 #' @export
 XCorr <- function(x, y, maxlag = NULL, normalize = FALSE, biased = TRUE) {
   # R_xy(m) = (1/N) sum_n x(n) y(n + m).  A POSITIVE lag means y trails x.
-  xs <- as.numeric(x); ys <- as.numeric(y)
+  xs <- as.numeric(x)
+  ys <- as.numeric(y)
   if (!length(xs) || !length(ys)) stop("need at least one sample")
   n <- length(xs)
   lim <- if (is.null(maxlag)) (n - 1L) else as.integer(maxlag)
   if (lim < 0L) stop("maxlag must not be negative")
   lags <- (-lim):lim
   vals <- vapply(lags, function(k) {
-    i <- seq_len(n); j <- i + k
+    i <- seq_len(n)
+    j <- i + k
     keep <- j >= 1L & j <= length(ys)
     if (!any(keep)) return(0)
     s <- .morie_fsum(xs[i[keep]] * ys[j[keep]])
     if (biased) s / n else s / sum(keep)
   }, numeric(1))
   if (normalize) {
-    ex <- .morie_fsum(xs * xs); ey <- .morie_fsum(ys * ys)
+    ex <- .morie_fsum(xs * xs)
+    ey <- .morie_fsum(ys * ys)
     if (ex > 0 && ey > 0) vals <- vals * (n / sqrt(ex * ey))
   }
   k <- which.max(abs(vals))
@@ -222,13 +231,15 @@ XCorrDisc <- function(x, y, delays = NULL) {
   # instant IS this sum, so its peak locates the pattern.  Neither XCorr
   # mode gives it (biased divides by n, unbiased by the overlap count),
   # so it is computed here rather than delegated.
-  xs <- as.numeric(x); ys <- as.numeric(y)
+  xs <- as.numeric(x)
+  ys <- as.numeric(y)
   if (!length(xs) || !length(ys))
     stop("both signals need at least one sample")
   ks <- if (is.null(delays)) (-(length(xs) - 1L)):(length(ys) - 1L)
         else as.integer(delays)
   out <- vapply(ks, function(k) {
-    i <- seq_len(length(xs)); j <- i + k
+    i <- seq_len(length(xs))
+    j <- i + k
     keep <- j >= 1L & j <= length(ys)
     if (!any(keep)) 0 else .morie_fsum(xs[i[keep]] * ys[j[keep]])
   }, numeric(1))
@@ -257,7 +268,9 @@ XCorrCont <- function(x, y, t, delays) {
   # The continuous-time form, evaluated by the trapezoidal rule on the
   # samples that BOTH signals cover.  Long delays use less data, so the
   # overlap fraction travels with the estimate.
-  xs <- as.numeric(x); ys <- as.numeric(y); tv <- as.numeric(t)
+  xs <- as.numeric(x)
+  ys <- as.numeric(y)
+  tv <- as.numeric(t)
   if (length(xs) != length(tv) || length(ys) != length(tv))
     stop("x, y and t must have the same length")
   dl <- as.numeric(delays)
@@ -296,11 +309,13 @@ XCorrCont <- function(x, y, t, delays) {
 XCorrProc <- function(x, y, lags = NULL, remove_mean = TRUE) {
   # The ensemble expectation is estimated by a TIME average, which is only
   # legitimate under joint stationarity and ergodicity.
-  xs <- as.numeric(x); ys <- as.numeric(y)
+  xs <- as.numeric(x)
+  ys <- as.numeric(y)
   if (length(xs) != length(ys)) stop("x and y must have the same length")
   n <- length(xs)
   lim <- if (is.null(lags)) (n - 1L) else as.integer(lags)
-  mx <- .morie_fsum(xs) / n; my <- .morie_fsum(ys) / n
+  mx <- .morie_fsum(xs) / n
+  my <- .morie_fsum(ys) / n
   ax <- if (remove_mean) xs - mx else xs
   ay <- if (remove_mean) ys - my else ys
   r <- XCorr(ax, ay, maxlag = lim)
@@ -324,10 +339,12 @@ XCorrProc <- function(x, y, lags = NULL, remove_mean = TRUE) {
 #' @export
 CorrConv <- function(x, y) {
   # Correlation IS convolution with one sequence reversed.
-  xs <- as.numeric(x); ys <- as.numeric(y)
+  xs <- as.numeric(x)
+  ys <- as.numeric(y)
   r <- XCorr(xs, ys, biased = FALSE)
   direct <- vapply(r$lags, function(k) {
-    i <- seq_len(length(xs)); j <- i + k
+    i <- seq_len(length(xs))
+    j <- i + k
     keep <- j >= 1L & j <= length(ys)
     if (!any(keep)) 0 else .morie_fsum(xs[i[keep]] * ys[j[keep]])
   }, numeric(1))
@@ -366,8 +383,10 @@ CorrConv <- function(x, y) {
 NccfTpl <- function(x, template) {
   # Normalized per shift, so a LOUD stretch cannot outscore a matching one
   # -- that is the whole reason to normalize rather than take the raw CCF.
-  xs <- as.numeric(x); tp <- as.numeric(template)
-  m <- length(tp); n <- length(xs)
+  xs <- as.numeric(x)
+  tp <- as.numeric(template)
+  m <- length(tp)
+  n <- length(xs)
   if (m < 1L) stop("the template needs at least one sample")
   if (m > n) stop("the template is longer than the signal")
   et <- .morie_fsum(tp * tp)
@@ -426,7 +445,8 @@ EegAcf <- function(x, fs, maxlag = NULL) {
   # normalized rho are returned: rho is what a threshold can be set on,
   # phi is what the equation says, and conflating them makes any
   # threshold depend on the signal amplitude.
-  xs <- as.numeric(x); fsv <- as.numeric(fs)
+  xs <- as.numeric(x)
+  fsv <- as.numeric(fs)
   if (fsv <= 0) stop("fs must be positive")
   n <- length(xs)
   if (n < 4L) stop("need at least four samples")
@@ -442,7 +462,8 @@ EegAcf <- function(x, fs, maxlag = NULL) {
   pk <- NULL
   for (m in 2:(lim - 1L)) {
     if (rho[m + 1L] > rho[m] && rho[m + 1L] >= rho[m + 2L] &&
-        rho[m + 1L] > 0) { pk <- m; break }
+        rho[m + 1L] > 0) { pk <- m
+        break }
   }
   list(acf = phi, normalized = rho, lags = 0:lim, fs = fsv,
        peak_lag = pk,
@@ -471,9 +492,11 @@ AlphaRhy <- function(x, fs, band = c(8, 13), threshold = 0.3) {
   # so the band is an argument, not a constant.  Both the band AND the
   # amplitude have to be satisfied -- a lag in band with a tiny peak is
   # not a rhythm.
-  xs <- as.numeric(x); fsv <- as.numeric(fs)
+  xs <- as.numeric(x)
+  fsv <- as.numeric(fs)
   if (fsv <= 0) stop("fs must be positive")
-  lo <- as.numeric(band)[1L]; hi <- as.numeric(band)[2L]
+  lo <- as.numeric(band)[1L]
+  hi <- as.numeric(band)[2L]
   if (!(lo > 0 && hi > lo)) stop("the band must be an increasing pair")
   klo <- max(1L, as.integer(floor(fsv / hi)))
   khi <- as.integer(ceiling(fsv / lo))
@@ -584,7 +607,8 @@ CorrCoef <- function(x, y) {
   # Pearson's r.  The MEANS ARE REMOVED, which is what separates it from
   # the Chapter 4 dot-product cosine; both are returned so the difference
   # is visible.  Delegates to DotProd -- one copy of eqs (4.24)-(4.25).
-  xs <- as.numeric(x); ys <- as.numeric(y)
+  xs <- as.numeric(x)
+  ys <- as.numeric(y)
   if (length(xs) != length(ys)) stop("x and y must have the same length")
   n <- length(xs)
   if (n < 2L) stop("need at least two paired observations")

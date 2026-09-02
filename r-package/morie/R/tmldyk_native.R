@@ -74,7 +74,8 @@
     XtWz <- crossprod(X, W * z)
     b_new <- tryCatch(solve(XtWX, XtWz),
                       error = function(e) solve(XtWX + 1e-8 * diag(p), XtWz))
-    if (max(abs(b_new - b)) < tol) { b <- b_new; break }
+    if (max(abs(b_new - b)) < tol) { b <- b_new
+    break }
     b <- b_new
   }
   b
@@ -349,8 +350,10 @@ morie_composition_budget <- function(epsilons) {
 morie_tmle_diff_kernel <- function(y, D, X, epsilon = 1.0, g_min = 0.05,
                                    seed = 0, g = NULL, Q1 = NULL,
                                    Q0 = NULL) {
-  yv <- as.numeric(y); a <- as.numeric(D)
-  W <- as.matrix(X); storage.mode(W) <- "double"
+  yv <- as.numeric(y)
+  a <- as.numeric(D)
+  W <- as.matrix(X)
+  storage.mode(W) <- "double"
   n <- length(yv)
   if (!(length(a) == nrow(W) && nrow(W) == n))
     stop("tmldyk: the inputs differ in length")

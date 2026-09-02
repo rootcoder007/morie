@@ -143,7 +143,9 @@ knn_trainer <- function(k = 1L, smoothing = 1e-3) {
 #' @return A list with \code{rows}, \code{labels}, \code{classes}.
 #' @export
 attack_dataset <- function(model_predict, in_X, in_y, out_X, out_y) {
-  rows <- list(); lab <- integer(0); cls <- character(0)
+  rows <- list()
+  lab <- integer(0)
+  cls <- character(0)
   if (length(in_X) > 0L) {
     if (is.matrix(model_predict) || is.numeric(model_predict)) {
       vecs <- model_predict
@@ -363,13 +365,20 @@ memb <- function(target_predict, shadow_data, eval_in, eval_out,
   if (!is.null(n_shadow)) specs <- specs[seq_len(min(as.integer(n_shadow), length(specs)))]
   if (length(specs) == 0L) stop("memb: at least one shadow model is needed")
 
-  rows <- list(); labels <- integer(0); classes <- character(0)
+  rows <- list()
+  labels <- integer(0)
+  classes <- character(0)
   for (spec in specs) {
-    tr_X <- spec[[1]]; tr_y <- spec[[2]]; te_X <- spec[[3]]; te_y <- spec[[4]]
+    tr_X <- spec[[1]]
+    tr_y <- spec[[2]]
+    te_X <- spec[[3]]
+    te_y <- spec[[4]]
     if (length(tr_X) == 0L) stop("memb: a shadow model has no training data")
     shadow <- train_fn(tr_X, tr_y)
     ds <- attack_dataset(shadow, tr_X, tr_y, te_X, te_y)
-    rows <- c(rows, ds$rows); labels <- c(labels, ds$labels); classes <- c(classes, ds$classes)
+    rows <- c(rows, ds$rows)
+    labels <- c(labels, ds$labels)
+    classes <- c(classes, ds$classes)
   }
   if (length(rows) == 0L) stop("memb: the shadow models produced no attack data")
 
@@ -387,12 +396,15 @@ memb <- function(target_predict, shadow_data, eval_in, eval_out,
   eval_y <- c(as.character(eval_in[[2]]), as.character(eval_out[[2]]))
   truth <- c(rep(1L, length(eval_in[[1]])), rep(0L, length(eval_out[[1]])))
   outputs <- if (length(eval_X) > 0L) target_predict(do.call(rbind, lapply(eval_X, function(r) as.numeric(r)))) else matrix(0, 0, 0)
-  scores <- numeric(0); preds <- integer(0)
+  scores <- numeric(0)
+  preds <- integer(0)
   if (length(eval_X) > 0L) {
     for (i in seq_along(eval_X)) {
       c <- eval_y[i]
       model <- per_class[[c]]
-      if (is.null(model)) { scores <- c(scores, NaN); preds <- c(preds, 0L); next }
+      if (is.null(model)) { scores <- c(scores, NaN)
+      preds <- c(preds, 0L)
+      next }
       feat <- if (sort_features) .sorted_features(as.numeric(outputs[i, ])) else as.numeric(outputs[i, ])
       pr <- model(matrix(feat, nrow = 1L))[1, ]
       member <- if (length(pr) > 1L) pr[2L] else pr[1L]

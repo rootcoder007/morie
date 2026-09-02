@@ -96,7 +96,8 @@
 #' @export
 .mab <- function(X, Y, p) {
   out <- .attend(X, Y, p$Wq, p$Wk, p$Wv)
-  A <- out$O; W <- out$W
+  A <- out$O
+  W <- out$W
   H <- t(apply(X + A, 1, .ln))
   F <- .rff(H, p$W1, p$b1, p$W2, p$b2)
   O <- t(apply(H + F, 1, .ln))
@@ -109,8 +110,10 @@
 #' @param params See Usage.
 #' @export
 setT <- function(Z, S, params) {
-  Za <- as.matrix(Z); storage.mode(Za) <- "double"
-  Sa <- as.matrix(S); storage.mode(Sa) <- "double"
+  Za <- as.matrix(Z)
+  storage.mode(Za) <- "double"
+  Sa <- as.matrix(S)
+  storage.mode(Sa) <- "double"
   if (ncol(Za) != ncol(Sa)) {
     stop("setT: Z width ", ncol(Za), " != seed width ", ncol(Sa))
   }
@@ -119,7 +122,9 @@ setT <- function(Z, S, params) {
   if (length(miss) > 0L) stop("setT: params is missing ",
                               paste(miss, collapse = ", "))
   p <- lapply(params, function(v) {
-    m <- as.matrix(v); storage.mode(m) <- "double"; m
+    m <- as.matrix(v)
+    storage.mode(m) <- "double"
+    m
   })
   Zl <- Za
   Sl <- Sa

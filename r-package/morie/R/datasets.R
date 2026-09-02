@@ -432,10 +432,8 @@ morie_datasets_tps_major_crime <- function(year = NULL,
 #' @inheritParams morie_datasets_tps_major_crime
 #' @return A `data.frame`.
 #' @examples
-#' \donttest{
 #' res <- try(morie_datasets_tps_shootings(year = 2024, max_features = 5L))
 #' if (!inherits(res, "try-error")) head(res)
-#' }
 #' @export
 morie_datasets_tps_shootings <- function(year = NULL, max_features = NULL) {
   .morie_dataset_tps_fetch(
@@ -450,10 +448,8 @@ morie_datasets_tps_shootings <- function(year = NULL, max_features = NULL) {
 #' @inheritParams morie_datasets_tps_major_crime
 #' @return A `data.frame`.
 #' @examples
-#' \donttest{
 #' res <- try(morie_datasets_tps_homicide(year = 2024, max_features = 5L))
 #' if (!inherits(res, "try-error")) head(res)
-#' }
 #' @export
 morie_datasets_tps_homicide <- function(year = NULL, max_features = NULL) {
   .morie_dataset_tps_fetch(
@@ -529,10 +525,8 @@ morie_datasets_tps_layers <- function() {
 #'   column map; [morie_datasets_load_by_key()] for catalog-wide
 #'   dispatch.
 #' @examples
-#' \donttest{
 #' df <- try(suppressWarnings(morie_datasets_cpads()))
 #' if (!inherits(df, "try-error")) head(df)
-#' }
 #' @export
 morie_datasets_cpads <- function(offline = TRUE,
                                  mode = c("datastore_search", "csv"),
@@ -613,10 +607,8 @@ morie_datasets_otis_a01 <- function(offline = TRUE, ...) {
 #'
 #' @return A `data.frame` with columns `case_number`, `url`, `posted_date`.
 #' @examples
-#' \donttest{
 #' reports <- try(morie_datasets_siu_director_reports())
 #' if (!inherits(reports, "try-error")) head(reports)
-#' }
 #' @export
 morie_datasets_siu_director_reports <- function() {
   if (!requireNamespace("rvest", quietly = TRUE) ||

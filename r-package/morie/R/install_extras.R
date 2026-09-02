@@ -76,8 +76,8 @@
 #'
 #'   # Just one family
 #'   morie_install_extras(which = c("hawkes", "sf", "spdep"))
-#' }
 #'
+#' }
 #' @export
 morie_install_extras <- function(which = "missing",
                                  ask = interactive(),
@@ -262,13 +262,11 @@ morie_install_extras <- function(which = "missing",
 #'   otherwise.
 #'
 #' @examples
-#' \dontrun{
 #'   # Interactive (RStudio / R console): prompts to install if needed
 #'   morie_ensure_extras(c("DoubleML", "ranger"))
 #'
 #'   # CI / Rscript: errors with install-hint instead of installing
 #'   morie_ensure_extras(c("DoubleML"), ask = FALSE)
-#' }
 #'
 #' @seealso [morie_install_extras()] for the user-facing bulk installer.
 #' @export

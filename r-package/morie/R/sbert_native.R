@@ -201,7 +201,8 @@ sts_score <- function(pairs, embed) {
   out <- numeric(length(pairs))
   calls <- 0L
   for (i in seq_along(pairs)) {
-    a <- pairs[[i]][1]; b <- pairs[[i]][2]
+    a <- pairs[[i]][1]
+    b <- pairs[[i]][2]
     for (s in c(a, b)) {
       key <- as.character(s)
       if (is.null(cache[[key]])) {

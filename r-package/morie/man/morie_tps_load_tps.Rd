@@ -31,7 +31,5 @@ with the same exceededTransferLimit-driven pager contract as
 \code{\link[=morie_fetch_tps]{morie_fetch_tps()}}.
 }
 \examples{
-\donttest{
 try(nrow(morie_tps_load_tps("NeighbourhoodCrimeRates")))
-}
 }

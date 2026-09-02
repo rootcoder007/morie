@@ -27,7 +27,8 @@ Pertarget <- function(replay_buffer, priorities = NULL, z = NULL, v = NULL,
   if (!is.null(priorities)) {
     raw <- .s03vec(priorities)
   } else if (!is.null(z) && !is.null(v)) {
-    zz <- .s03vec(z); vv <- .s03vec(v)
+    zz <- .s03vec(z)
+    vv <- .s03vec(v)
     raw <- abs(zz - vv)
   } else {
     rows <- .s03mat(replay_buffer)

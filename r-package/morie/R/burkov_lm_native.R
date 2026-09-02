@@ -29,7 +29,8 @@ morie_burkov_linear_function <- function(x, w, b) {
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_burkov_squared_error(V, V)
 morie_burkov_squared_error <- function(y_hat, y) {
-  y_hat <- as.numeric(y_hat); y <- as.numeric(y)
+  y_hat <- as.numeric(y_hat)
+  y <- as.numeric(y)
   if (length(y_hat) != length(y)) {
     stop("y_hat and y must have the same length.", call. = FALSE)
   }
@@ -47,7 +48,8 @@ morie_burkov_squared_error <- function(y_hat, y) {
 #' @examples
 #' morie_burkov_mse_cost(w = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L, x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_burkov_mse_cost <- function(w, b, x, y, N = NULL) {
-  x <- as.numeric(x); y <- as.numeric(y)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
   if (length(x) != length(y)) {
     stop("x and y must have the same length.", call. = FALSE)
   }
@@ -66,7 +68,8 @@ morie_burkov_mse_cost <- function(w, b, x, y, N = NULL) {
 #' @param b Bias.
 #' @export
 morie_burkov_linear_vector <- function(w, x, b) {
-  w <- as.numeric(w); x <- as.numeric(x)
+  w <- as.numeric(w)
+  x <- as.numeric(x)
   if (length(w) != length(x)) {
     stop("w and x must have the same length.", call. = FALSE)
   }
@@ -78,11 +81,13 @@ morie_burkov_linear_vector <- function(w, x, b) {
 #' @param x,y Vectors; neither may be zero.
 #' @export
 morie_burkov_cosine_similarity <- function(x, y) {
-  x <- as.numeric(x); y <- as.numeric(y)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
   if (length(x) != length(y)) {
     stop("x and y must have the same length.", call. = FALSE)
   }
-  nx <- sqrt(sum(x^2)); ny <- sqrt(sum(y^2))
+  nx <- sqrt(sum(x^2))
+  ny <- sqrt(sum(y^2))
   if (nx == 0 || ny == 0) {
     stop("a zero vector has no direction; cosine similarity with it is undefined.",
          call. = FALSE)
@@ -119,7 +124,9 @@ morie_burkov_cosine_similarity <- function(x, y) {
 #' @param phi Activation name or function.
 #' @export
 morie_burkov_layer1_output <- function(W_1, x, b_1, phi = "relu") {
-  W <- as.matrix(W_1); x <- as.numeric(x); b <- as.numeric(b_1)
+  W <- as.matrix(W_1)
+  x <- as.numeric(x)
+  b <- as.numeric(b_1)
   if (ncol(W) != length(x)) {
     stop(sprintf("W_1 has %d columns but x has %d entries.", ncol(W),
                  length(x)), call. = FALSE)
@@ -141,7 +148,8 @@ morie_burkov_layer1_output <- function(W_1, x, b_1, phi = "relu") {
 #' @param phi Activation.
 #' @export
 morie_burkov_layer2_output <- function(W_2, y_1, b_2_1, phi = "identity") {
-  w <- as.numeric(W_2); y1 <- as.numeric(y_1)
+  w <- as.numeric(W_2)
+  y1 <- as.numeric(y_1)
   if (length(w) != length(y1)) {
     stop(sprintf("W_2 has %d weights but y_1 has %d entries.", length(w),
                  length(y1)), call. = FALSE)
@@ -157,7 +165,8 @@ morie_burkov_layer2_output <- function(W_2, y_1, b_2_1, phi = "identity") {
 #' @param b Bias.
 #' @export
 morie_burkov_logistic <- function(w, x, b) {
-  w <- as.numeric(w); x <- as.numeric(x)
+  w <- as.numeric(w)
+  x <- as.numeric(x)
   if (length(w) != length(x)) {
     stop("w and x must have the same length.", call. = FALSE)
   }
@@ -173,7 +182,8 @@ morie_burkov_logistic <- function(w, x, b) {
 #' @param y Targets, 0 or 1.
 #' @export
 morie_burkov_binary_cross_entropy <- function(y_hat, y) {
-  yh <- as.numeric(y_hat); y <- as.numeric(y)
+  yh <- as.numeric(y_hat)
+  y <- as.numeric(y)
   if (length(yh) != length(y)) {
     stop("y_hat and y must have the same length.", call. = FALSE)
   }
@@ -198,7 +208,8 @@ morie_burkov_binary_cross_entropy <- function(y_hat, y) {
 #'   0-based coordinate for `estimate` (matching the Python mirror).
 #' @export
 morie_burkov_bce_gradients <- function(y_hat, y, x, N = NULL, j = NULL) {
-  yh <- as.numeric(y_hat); y <- as.numeric(y)
+  yh <- as.numeric(y_hat)
+  y <- as.numeric(y)
   X <- as.matrix(x)
   if (nrow(X) != length(yh)) X <- t(X)
   if (nrow(X) != length(yh) || length(y) != length(yh)) {
@@ -223,7 +234,8 @@ morie_burkov_bce_gradients <- function(y_hat, y, x, N = NULL, j = NULL) {
 #'   0-based to match the Python mirror.
 #' @export
 morie_burkov_categorical_cross_entropy <- function(y_hat, c) {
-  p <- as.numeric(y_hat); c <- as.integer(c)
+  p <- as.numeric(y_hat)
+  c <- as.integer(c)
   if (c < 0L || c >= length(p)) {
     stop(sprintf("class %d is out of range for %d classes.", c,
                  length(p)), call. = FALSE)
@@ -274,7 +286,8 @@ morie_burkov_next_token <- function(t_next, s) {
 #' @param counts_ngram,counts_prefix Counts.
 #' @export
 morie_burkov_ngram_mle <- function(counts_ngram, counts_prefix) {
-  c <- as.numeric(counts_ngram); p <- as.numeric(counts_prefix)
+  c <- as.numeric(counts_ngram)
+  p <- as.numeric(counts_prefix)
   if (c < 0 || p < 0) stop("counts must be non-negative.", call. = FALSE)
   if (p == 0) {
     stop(paste("the prefix was never observed, so the MLE conditional is",
@@ -294,7 +307,8 @@ morie_burkov_ngram_mle <- function(counts_ngram, counts_prefix) {
 #' @param V Vocabulary size.
 #' @export
 morie_burkov_laplace <- function(counts_ngram, counts_prefix, V) {
-  c <- as.numeric(counts_ngram); p <- as.numeric(counts_prefix)
+  c <- as.numeric(counts_ngram)
+  p <- as.numeric(counts_prefix)
   v <- as.integer(V)
   if (c < 0 || p < 0) stop("counts must be non-negative.", call. = FALSE)
   if (v < 1L) stop("vocabulary size must be positive.", call. = FALSE)
@@ -310,8 +324,10 @@ morie_burkov_laplace <- function(counts_ngram, counts_prefix, V) {
 #' @param k Pseudo-count, positive.
 #' @export
 morie_burkov_add_k <- function(counts_ngram, counts_prefix, V, k = 0.5) {
-  c <- as.numeric(counts_ngram); p <- as.numeric(counts_prefix)
-  v <- as.integer(V); k <- as.numeric(k)
+  c <- as.numeric(counts_ngram)
+  p <- as.numeric(counts_prefix)
+  v <- as.integer(V)
+  k <- as.numeric(k)
   if (c < 0 || p < 0) stop("counts must be non-negative.", call. = FALSE)
   if (v < 1L) stop("vocabulary size must be positive.", call. = FALSE)
   if (k <= 0) {
@@ -330,7 +346,8 @@ morie_burkov_add_k <- function(counts_ngram, counts_prefix, V, k = 0.5) {
 #' @param lambdas Weights, sum 1.
 #' @export
 morie_burkov_interpolation <- function(probs_by_order, lambdas) {
-  ps <- as.numeric(probs_by_order); ls <- as.numeric(lambdas)
+  ps <- as.numeric(probs_by_order)
+  ls <- as.numeric(lambdas)
   if (length(ps) != length(ls)) {
     stop("need one lambda per order.", call. = FALSE)
   }
@@ -361,7 +378,8 @@ morie_burkov_backoff <- function(counts_by_order, alpha = 0.4) {
   discount <- 1
   for (level in seq_along(counts_by_order)) {
     pair <- as.numeric(counts_by_order[[level]])
-    c <- pair[1]; p <- pair[2]
+    c <- pair[1]
+    p <- pair[2]
     if (c < 0 || p < 0) stop("counts must be non-negative.", call. = FALSE)
     if (c > p) stop("count(ngram) cannot exceed count(prefix).", call. = FALSE)
     if (c > 0) {
@@ -385,7 +403,8 @@ morie_burkov_backoff <- function(counts_by_order, alpha = 0.4) {
 #' @export
 morie_burkov_kneser_ney <- function(counts_ngram, counts_prefix,
                                     continuation_counts, d = 0.75) {
-  c <- as.numeric(counts_ngram); p <- as.numeric(counts_prefix)
+  c <- as.numeric(counts_ngram)
+  p <- as.numeric(counts_prefix)
   dd <- as.numeric(d)
   if (c < 0 || p <= 0) {
     stop("need non-negative count and positive prefix.", call. = FALSE)
@@ -396,7 +415,9 @@ morie_burkov_kneser_ney <- function(counts_ngram, counts_prefix,
          call. = FALSE)
   }
   cc <- as.numeric(continuation_counts)
-  n_after <- cc[1]; cont_w <- cc[2]; total_types <- cc[3]
+  n_after <- cc[1]
+  cont_w <- cc[2]
+  total_types <- cc[3]
   if (total_types <= 0 || cont_w < 0 || n_after < 0) {
     stop("continuation counts must be non-negative with positive total bigram types.",
          call. = FALSE)
@@ -419,7 +440,8 @@ morie_burkov_kneser_ney <- function(counts_ngram, counts_prefix,
 #' @export
 morie_burkov_bits_per_character <- function(ce_loss, n_tokens,
                                             n_characters) {
-  l <- as.numeric(ce_loss); nt <- as.integer(n_tokens)
+  l <- as.numeric(ce_loss)
+  nt <- as.integer(n_tokens)
   nc <- as.integer(n_characters)
   if (l < 0) stop("cross-entropy cannot be negative.", call. = FALSE)
   if (nt < 1L || nc < 1L) {
@@ -434,7 +456,8 @@ morie_burkov_bits_per_character <- function(ce_loss, n_tokens,
 #' @param a,b Vectors.
 #' @export
 morie_burkov_dot_product <- function(a, b) {
-  a <- as.numeric(a); b <- as.numeric(b)
+  a <- as.numeric(a)
+  b <- as.numeric(b)
   if (length(a) != length(b)) {
     stop("vectors must have the same length.", call. = FALSE)
   }
@@ -557,9 +580,13 @@ morie_burkov_weight_tying <- function(h_last, E) {
 #' @param bh,by Biases.
 #' @export
 morie_burkov_elman_rnn <- function(x_t, h_prev, Wh, Wx, Wy, bh, by) {
-  x <- as.numeric(x_t); h0 <- as.numeric(h_prev)
-  Wh <- as.matrix(Wh); Wx <- as.matrix(Wx); Wy <- as.matrix(Wy)
-  bh <- as.numeric(bh); by <- as.numeric(by)
+  x <- as.numeric(x_t)
+  h0 <- as.numeric(h_prev)
+  Wh <- as.matrix(Wh)
+  Wx <- as.matrix(Wx)
+  Wy <- as.matrix(Wy)
+  bh <- as.numeric(bh)
+  by <- as.numeric(by)
   if (!all(dim(Wh) == c(length(h0), length(h0)))) {
     stop(sprintf("Wh must be %d x %d.", length(h0), length(h0)),
          call. = FALSE)

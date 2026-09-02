@@ -83,14 +83,18 @@
     if (fr < fv[1]) {
       xe <- centroid + 2 * (centroid - simplex[n + 1, ])
       fe <- f(xe)
-      if (fe < fr) { simplex[n + 1, ] <- xe; fv[n + 1] <- fe }
-      else { simplex[n + 1, ] <- xr; fv[n + 1] <- fr }
+      if (fe < fr) { simplex[n + 1, ] <- xe
+      fv[n + 1] <- fe }
+      else { simplex[n + 1, ] <- xr
+      fv[n + 1] <- fr }
     } else if (fr < fv[n]) {
-      simplex[n + 1, ] <- xr; fv[n + 1] <- fr
+      simplex[n + 1, ] <- xr
+      fv[n + 1] <- fr
     } else {
       xc <- centroid + 0.5 * (simplex[n + 1, ] - centroid)
       fc <- f(xc)
-      if (fc < fv[n + 1]) { simplex[n + 1, ] <- xc; fv[n + 1] <- fc }
+      if (fc < fv[n + 1]) { simplex[n + 1, ] <- xc
+      fv[n + 1] <- fc }
       else {
         for (i in 2:(n + 1)) {
           simplex[i, ] <- simplex[1, ] + 0.5 * (simplex[i, ] - simplex[1, ])
@@ -180,7 +184,8 @@ Counterfactual <- function(evidence, equations, exogenous, do, query,
   for (v in names(do)) {
     val <- do[[v]]
     mutilated[[v]] <- list(parents = character(0),
-                           fn = local({ vv <- val; function() vv }))
+                           fn = local({ vv <- val
+                           function() vv }))
   }
   cfs <- vapply(solutions, function(u)
     as.numeric(solve_at(u, mutilated)[[query]]), numeric(1))

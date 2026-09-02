@@ -38,7 +38,9 @@
     j <- i
     while (j > 1L && (v[idx[j - 1L]] > v[idx[j]] ||
                       (v[idx[j - 1L]] == v[idx[j]] && idx[j - 1L] > idx[j]))) {
-      tmp <- idx[j - 1L]; idx[j - 1L] <- idx[j]; idx[j] <- tmp
+      tmp <- idx[j - 1L]
+      idx[j - 1L] <- idx[j]
+      idx[j] <- tmp
       j <- j - 1L
     }
   }
@@ -80,11 +82,17 @@
   for (cc in seq_len(n)) {
     best <- cc
     bv <- abs(M[cc, cc])
-    if (cc < n) for (r in seq(cc + 1L, n)) if (abs(M[r, cc]) > bv) { bv <- abs(M[r, cc]); best <- r }
-    if (bv <= thresh) { singular <- TRUE; next }
+    if (cc < n) for (r in seq(cc + 1L, n)) if (abs(M[r, cc]) > bv) { bv <- abs(M[r, cc])
+    best <- r }
+    if (bv <= thresh) { singular <- TRUE
+    next }
     if (best != cc) {
-      tmp <- M[cc, ]; M[cc, ] <- M[best, ]; M[best, ] <- tmp
-      tp <- piv[cc]; piv[cc] <- piv[best]; piv[best] <- tp
+      tmp <- M[cc, ]
+      M[cc, ] <- M[best, ]
+      M[best, ] <- tmp
+      tp <- piv[cc]
+      piv[cc] <- piv[best]
+      piv[best] <- tp
       sgn <- -sgn
     }
     if (cc < n) for (r in seq(cc + 1L, n)) {
@@ -158,7 +166,8 @@
   n <- nrow(A)
   f <- .rslufactor(A)
   if (f$singular) return(NULL)
-  M <- f$M; piv <- f$piv
+  M <- f$M
+  piv <- f$piv
   y <- numeric(n)
   for (i in seq_len(n)) {
     s <- b[piv[i]]
@@ -215,10 +224,12 @@
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .rsmahal2 <- function(X, mu, S) {
-  n <- nrow(X); p <- length(mu)
+  n <- nrow(X)
+  p <- length(mu)
   f <- .rslufactor(S)
   if (f$singular) return(NULL)
-  M <- f$M; piv <- f$piv
+  M <- f$M
+  piv <- f$piv
   out <- numeric(n)
   for (i in seq_len(n)) {
     b <- X[i, ] - mu
@@ -372,7 +383,8 @@
   bw <- s[h] - s[1]
   if (n > h) for (a in 2:(n - h + 1L)) {
     w <- s[a + h - 1L] - s[a]
-    if (w < bw) { bw <- w; best <- a }
+    if (w < bw) { bw <- w
+    best <- a }
   }
   list(start = best, width = bw, sorted = s)
 }
@@ -431,7 +443,8 @@
 .rsintercept <- function(Xm, n, p) {
   for (j in seq_len(p)) {
     allone <- TRUE
-    for (i in seq_len(n)) if (Xm[i, j] != 1) { allone <- FALSE; break }
+    for (i in seq_len(n)) if (Xm[i, j] != 1) { allone <- FALSE
+    break }
     if (allone) return(j)
   }
   0L

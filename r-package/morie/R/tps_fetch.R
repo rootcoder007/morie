@@ -130,7 +130,7 @@ morie_tps_list_categories <- function() {
 #'
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' cat <- morie_tps_list_categories()[1]
 #' df <- morie_tps_fetch_category(cat)
 #' }
@@ -222,7 +222,7 @@ morie_tps_fetch_category <- function(category,
 #'
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' df <- morie_tps_fetch_dataframe(morie_tps_list_categories()[1])
 #' }
 morie_tps_fetch_dataframe <- function(category, ...) {

@@ -43,7 +43,8 @@ Alfipa <- function(s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb, gamma, wo) {
     q[[h]] <- t(vapply(seq_len(n), function(i) alfLin(s[i, ], wq[[h]]), numeric(cc)))
     k[[h]] <- t(vapply(seq_len(n), function(i) alfLin(s[i, ], wk[[h]]), numeric(cc)))
     v[[h]] <- t(vapply(seq_len(n), function(i) alfLin(s[i, ], wv[[h]]), numeric(cc)))
-    gq[[h]] <- array(0, c(n, nqp, 3)); gk[[h]] <- array(0, c(n, nqp, 3))
+    gq[[h]] <- array(0, c(n, nqp, 3))
+    gk[[h]] <- array(0, c(n, nqp, 3))
     gv[[h]] <- array(0, c(n, npv, 3))
     for (i in seq_len(n)) {
       for (p in seq_len(nqp)) {

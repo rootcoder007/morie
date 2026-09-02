@@ -79,7 +79,9 @@ expand <- function(prk, info = raw(0), length = 32L) {
          " -- Extract was probably skipped on non-uniform input")
   }
   inf <- .seckdf_as_bytes(info)
-  out <- raw(0); t <- raw(0); i <- 1L
+  out <- raw(0)
+  t <- raw(0)
+  i <- 1L
   while (length(out) < L) {
     t <- .morie_hmac_sha256_impl(p, c(t, inf, as.raw(i)))
     out <- c(out, t)
@@ -98,10 +100,12 @@ expand <- function(prk, info = raw(0), length = 32L) {
 hkdf <- function(ikm, salt = NULL, info = raw(0), length = 32L,
                  skip_extract = FALSE) {
   if (isTRUE(skip_extract)) {
-    prk <- .seckdf_as_bytes(ikm); salted <- FALSE
+    prk <- .seckdf_as_bytes(ikm)
+    salted <- FALSE
   } else {
     e <- extract(ikm, salt)
-    prk <- e$prk; salted <- e$salt_supplied
+    prk <- e$prk
+    salted <- e$salt_supplied
   }
   r <- expand(prk, info, length)
   list(estimate = .seckdf_hexlify(r$okm), okm = r$okm,

@@ -29,7 +29,9 @@ Resblock <- function(x, filters = 1) {
     (v - m) / sqrt(va + 1e-5)
   }
   conv1d <- function(v, kern) {
-    n <- length(v); K <- length(kern); off <- K %/% 2L
+    n <- length(v)
+    K <- length(kern)
+    off <- K %/% 2L
     out <- numeric(n)
     for (i in seq_len(n)) {
       s <- 0

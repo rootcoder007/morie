@@ -152,7 +152,8 @@ loss <- function(y, y_hat, kind = "square") {
   if (!(kind %in% .CDAE_LOSSES))
     stop(sprintf("cdaeRC: loss must be one of %s, got '%s'",
                  paste(.CDAE_LOSSES, collapse = ", "), kind))
-  yv <- as.numeric(y); yh <- as.numeric(y_hat)
+  yv <- as.numeric(y)
+  yh <- as.numeric(y_hat)
   if (kind %in% c("log", "hinge") && yv == 0.0)
     stop(sprintf("cdaeRC: the %s loss needs y = -1 for negatives, not 0", kind))
   if (kind == "square")
@@ -192,7 +193,9 @@ fit_cdae <- function(pos, n_users, n_items, k_dim = 8L, q = 0.2,
                      alpha = 0.05, lam = 0.01, iters = 30L,
                      n_neg = 5L, seed = 0, activation = "sigmoid",
                      init_scale = 0.1) {
-  U <- as.integer(n_users); I <- as.integer(n_items); K <- as.integer(k_dim)
+  U <- as.integer(n_users)
+  I <- as.integer(n_items)
+  K <- as.integer(k_dim)
   if (U < 1L || I < 2L || K < 1L)
     stop("cdaeRC: need at least 1 user, 2 items and 1 hidden node")
   e <- .ghc_rng(as.numeric(seed))
@@ -204,10 +207,12 @@ fit_cdae <- function(pos, n_users, n_items, k_dim = 8L, q = 0.2,
   V  <- matrix(0.0, nrow = U, ncol = K)
   b  <- numeric(K)
   bp <- numeric(I)
-  for (i in seq_len(I)) for (f in seq_len(K)) { W[i, f]  <- rand(); Wp[i, f] <- rand() }
+  for (i in seq_len(I)) for (f in seq_len(K)) { W[i, f]  <- rand()
+  Wp[i, f] <- rand() }
   for (u in seq_len(U)) for (f in seq_len(K)) V[u, f] <- rand()
 
-  a  <- as.numeric(alpha); lm <- as.numeric(lam)
+  a  <- as.numeric(alpha)
+  lm <- as.numeric(lam)
   hist <- numeric(as.integer(iters))
   qq <- as.numeric(q)
   if (is.na(qq) || qq < 0 || qq >= 1)
@@ -293,8 +298,11 @@ fit_cdae <- function(pos, n_users, n_items, k_dim = 8L, q = 0.2,
 #' @export
 recommend <- function(model, pos, u, n_items, top_k = 5L,
                       activation = "sigmoid") {
-  W <- model$W; Wp <- model$W_prime; V <- model$V
-  b <- model$b; bp <- model$b_prime
+  W <- model$W
+  Wp <- model$W_prime
+  V <- model$V
+  b <- model$b
+  bp <- model$b_prime
   u <- as.integer(u)
   seen <- if (is.null(pos[[as.character(u)]])) integer(0) else
             sort(unique(as.integer(pos[[as.character(u)]])))

@@ -93,7 +93,8 @@ noisy_argmax <- function(counts, gamma, seed = 0) {
 #' @return A numeric value.
 #' @export
 epsilon_data_independent <- function(T, gamma, delta) {
-  T <- as.numeric(T); gamma <- as.numeric(gamma)
+  T <- as.numeric(T)
+  gamma <- as.numeric(gamma)
   delta <- as.numeric(delta)
   if (T < 0 || gamma <= 0)
     stop("pate: need T >= 0 and gamma > 0")
@@ -143,7 +144,8 @@ lemma4_bound <- function(counts, gamma) {
 #' @return A numeric value.
 #' @export
 theorem3_moment <- function(q, gamma, l) {
-  q <- as.numeric(q); gamma <- as.numeric(gamma)
+  q <- as.numeric(q)
+  gamma <- as.numeric(gamma)
   if (gamma <= 0) stop("pate: gamma must be positive")
   if (q < 0) stop("pate: q must be non-negative")
   limit <- (exp(2 * gamma) - 1) / (exp(4 * gamma) - 1)
@@ -171,7 +173,8 @@ theorem3_moment <- function(q, gamma, l) {
 moments_accountant <- function(vote_counts, gamma, delta,
                                lambdas = NULL,
                                data_dependent = TRUE) {
-  gamma <- as.numeric(gamma); delta <- as.numeric(delta)
+  gamma <- as.numeric(gamma)
+  delta <- as.numeric(delta)
   if (!(delta > 0 && delta < 1))
     stop("pate: delta must lie in (0, 1)")
   lams <- if (is.null(lambdas)) seq_len(8L) else as.integer(lambdas)
@@ -196,11 +199,13 @@ moments_accountant <- function(vote_counts, gamma, delta,
     }
   }
   log_inv_delta <- log(1 / delta)
-  best <- NULL; best_l <- lams[1L]
+  best <- NULL
+  best_l <- lams[1L]
   for (l in lams) {
     eps <- (alpha[[as.character(l)]] + log_inv_delta) / l
     if (is.null(best) || eps < best) {
-      best <- eps; best_l <- l
+      best <- eps
+      best_l <- l
     }
   }
   list(epsilon = best, lambda = best_l, alpha = alpha,

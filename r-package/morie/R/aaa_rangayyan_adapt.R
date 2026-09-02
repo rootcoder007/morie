@@ -98,10 +98,12 @@ WienerOut <- function(w, x) {
   # eq. (3.154): the estimate is the convolution of the tap weights with
   # the input.  The first M-1 outputs run on a partly empty delay line and
   # are reported as unsettled rather than trimmed away.
-  ws <- as.numeric(w); xs <- as.numeric(x)
+  ws <- as.numeric(w)
+  xs <- as.numeric(x)
   if (!length(ws) || !length(xs))
     stop("both the tap weights and the input need samples")
-  m <- length(ws); n <- length(xs)
+  m <- length(ws)
+  n <- length(xs)
   out <- vapply(seq_len(n), function(i)
     .morie_fsum(ws * .morie_rg_lagvec(xs, i, m)), numeric(1))
   list(d_hat = out, n = n, order = m, settled_from = m - 1L,
@@ -124,7 +126,8 @@ WienerDot <- function(w, xvec) {
   # BACKWARDS in time, its first entry being the current sample; getting
   # that order wrong reverses the filter without any error being raised,
   # which is why the length check is not the only thing recorded.
-  ws <- as.numeric(w); xv <- as.numeric(xvec)
+  ws <- as.numeric(w)
+  xv <- as.numeric(xvec)
   if (length(ws) != length(xv))
     stop("w and x(n) must have the same length; x(n) runs backwards in ",
          "time, x[1] being the current sample")
@@ -148,7 +151,9 @@ MseGrad <- function(phi, theta, w) {
   # eq. (3.167): grad J = -2 Theta + 2 Phi w.  The surface is quadratic
   # with a single minimum, so a vanishing gradient is the optimum and not
   # merely a stationary point.
-  P <- as.matrix(phi); t <- as.numeric(theta); ws <- as.numeric(w)
+  P <- as.matrix(phi)
+  t <- as.numeric(theta)
+  ws <- as.numeric(w)
   m <- length(ws)
   if (length(t) != m || nrow(P) != m || ncol(P) != m)
     stop("Phi must be M x M and Theta, w of length M")
@@ -173,7 +178,8 @@ WienerHopf <- function(phi, theta) {
   # eq. (3.168): Phi w = Theta.  At the solution the input vector and the
   # error are orthogonal, and so are the output and the error -- the
   # orthogonality principle, which is what makes the solution optimal.
-  P <- as.matrix(phi); t <- as.numeric(theta)
+  P <- as.matrix(phi)
+  t <- as.numeric(theta)
   m <- length(t)
   if (nrow(P) != m || ncol(P) != m)
     stop("Phi must be M x M and Theta of length M")
@@ -253,14 +259,17 @@ WienerConv <- function(w, phi, theta) {
   # eqs. (3.173)-(3.174): the normal equations written as a convolution of
   # the tap weights with the ACF.  It holds only for a stationary process;
   # that premise is recorded because nothing in the arithmetic checks it.
-  ws <- as.numeric(w); p <- as.numeric(phi); t <- as.numeric(theta)
+  ws <- as.numeric(w)
+  p <- as.numeric(phi)
+  t <- as.numeric(theta)
   m <- length(ws)
   if (length(p) < m || length(t) < m)
     stop("need at least M lags of phi and theta")
   lhs <- vapply(seq_len(m) - 1L, function(k)
     .morie_fsum(ws * p[abs(k - (seq_len(m) - 1L)) + 1L]), numeric(1))
   gap <- max(abs(lhs - t[seq_len(m)]))
-  scale <- max(abs(t[seq_len(m)])); if (!scale) scale <- 1
+  scale <- max(abs(t[seq_len(m)]))
+  if (!scale) scale <- 1
   list(lhs = lhs, theta = t[seq_len(m)], max_difference = gap,
        holds = gap <= 1e-8 * scale, order = m,
        requires_stationarity = TRUE,
@@ -279,12 +288,15 @@ WienerConv <- function(w, phi, theta) {
 WienerFreqR <- function(W, sxx, sxd) {
   # eq. (3.175): W(w) S_xx(w) = S_xd(w).  Bins where S_xx vanishes carry
   # no information about W and are listed, not silently satisfied.
-  Ws <- as.complex(W); a <- as.complex(sxx); b <- as.complex(sxd)
+  Ws <- as.complex(W)
+  a <- as.complex(sxx)
+  b <- as.complex(sxd)
   if (length(Ws) != length(a) || length(a) != length(b))
     stop("W, S_xx and S_xd must have the same length")
   lhs <- Ws * a
   gap <- max(Mod(lhs - b))
-  scale <- max(Mod(b)); if (!scale) scale <- 1
+  scale <- max(Mod(b))
+  if (!scale) scale <- 1
   und <- which(Mod(a) <= 1e-300) - 1L
   list(lhs = lhs, sxd = b, max_difference = gap,
        holds = gap <= 1e-8 * scale,
@@ -306,7 +318,8 @@ WienerFreq <- function(sxx, sxd) {
   # eq. (3.176): W(w) = S_xd(w) / S_xx(w).  Where the denominator vanishes
   # the ratio is undefined; returning zero there is a choice, and it is
   # flagged so a caller can tell it apart from a genuine zero response.
-  a <- as.complex(sxx); b <- as.complex(sxd)
+  a <- as.complex(sxx)
+  b <- as.complex(sxd)
   if (length(a) != length(b))
     stop("S_xx and S_xd must have the same length")
   if (!length(a)) stop("need at least one bin")
@@ -332,7 +345,8 @@ WienerSnr <- function(sd, seta) {
   # stresses and this checks: zero where the signal is absent (nothing to
   # restore), unity where the noise is absent (nothing to suppress), and
   # falling monotonically with the SNR in between.
-  d <- as.numeric(sd); e <- as.numeric(seta)
+  d <- as.numeric(sd)
+  e <- as.numeric(seta)
   if (length(d) != length(e))
     stop("S_d and S_eta must have the same length")
   if (!length(d)) stop("need at least one bin")
@@ -363,7 +377,8 @@ Whopf <- function(x, d, order) {
   # cross-correlation vector from data and solve for the tap weights.  The
   # biased (1/N) ACF estimate is used, which is what makes Phi
   # nonnegative-definite and so keeps the system solvable.
-  xs <- as.numeric(x); ds <- as.numeric(d)
+  xs <- as.numeric(x)
+  ds <- as.numeric(d)
   if (length(xs) != length(ds))
     stop("input and desired response must have equal length")
   m <- as.integer(order)
@@ -434,7 +449,8 @@ WienerFilt <- function(x, desired = NULL, order = 8, sd = NULL,
   im <- vapply(k, function(kk)
     .morie_fsum(xs * sin(-step * (seq_len(n) - 1L) * kk)), numeric(1))
   g <- ifelse(k < half, W[pmin(k, half - 1L) + 1L], W[n - k + 1L])
-  re <- re * g; im <- im * g
+  re <- re * g
+  im <- im * g
   y <- vapply(seq_len(n) - 1L, function(i) {
     ang <- step * i * k
     .morie_fsum(re * cos(ang) - im * sin(ang)) / n
@@ -460,12 +476,14 @@ AncInput <- function(v, m) {
   # signal and the interference statistically independent; the sample
   # correlation between them is returned so that premise is testable
   # instead of assumed.
-  vs <- as.numeric(v); ms <- as.numeric(m)
+  vs <- as.numeric(v)
+  ms <- as.numeric(m)
   if (length(vs) != length(ms))
     stop("signal and noise must have the same length")
   n <- length(vs)
   if (!n) stop("need at least one sample")
-  mv <- .morie_fsum(vs) / n; mm <- .morie_fsum(ms) / n
+  mv <- .morie_fsum(vs) / n
+  mm <- .morie_fsum(ms) / n
   cov <- .morie_fsum((vs - mv) * (ms - mm)) / n
   sv <- sqrt(.morie_fsum((vs - mv)^2) / n)
   sm <- sqrt(.morie_fsum((ms - mm)^2) / n)
@@ -494,12 +512,14 @@ AncOut <- function(x, y) {
   # is the step that surprises: the quantity being minimized is the thing
   # you keep, because minimizing it drives y toward the interference and
   # leaves the signal behind in e.
-  xs <- as.numeric(x); ys <- as.numeric(y)
+  xs <- as.numeric(x)
+  ys <- as.numeric(y)
   if (length(xs) != length(ys))
     stop("primary input and filter output must have the same length")
   if (!length(xs)) stop("need at least one sample")
   e <- xs - ys
-  px <- .morie_fsum(xs * xs); pe <- .morie_fsum(e * e)
+  px <- .morie_fsum(xs * xs)
+  pe <- .morie_fsum(e * e)
   list(e = e, v_hat = e, n = length(e), input_power = px,
        output_power = pe,
        power_reduction = if (px > 0) pe / px else NULL,
@@ -518,7 +538,8 @@ AncOut <- function(x, y) {
 LmsOut <- function(w, r) {
   # eq. (3.195): the adaptive filter runs on the REFERENCE, not on the
   # primary input.  Filtering the primary would cancel the signal too.
-  ws <- as.numeric(w); rs <- as.numeric(r)
+  ws <- as.numeric(w)
+  rs <- as.numeric(r)
   if (!length(ws) || !length(rs))
     stop("both the tap weights and the reference need samples")
   m <- length(ws)
@@ -546,7 +567,8 @@ LmsSqErr <- function(x, rvec, w) {
   # against the square itself.  This is the INSTANTANEOUS squared error
   # standing in for the expectation -- that substitution is the whole of
   # LMS, and the reason the algorithm converges only in the mean.
-  rv <- as.numeric(rvec); ws <- as.numeric(w)
+  rv <- as.numeric(rvec)
+  ws <- as.numeric(w)
   if (length(rv) != length(ws))
     stop("r(n) and w must have the same length")
   if (!length(rv)) stop("need at least one tap")
@@ -575,7 +597,8 @@ LmsSqErr <- function(x, rvec, w) {
 LmsDescent <- function(w, e, rvec, mu) {
   # eqs. (3.201)-(3.202): the instantaneous gradient is -2 e r, so
   # steepest descent gives w - mu grad, which is exactly Widrow-Hoff.
-  ws <- as.numeric(w); rv <- as.numeric(rvec)
+  ws <- as.numeric(w)
+  rv <- as.numeric(rvec)
   if (length(ws) != length(rv))
     stop("w and r(n) must have the same length")
   if (!length(ws)) stop("need at least one tap")
@@ -604,11 +627,13 @@ WidrowHoff <- function(w, e, rvec, mu) {
   # the book's equation and is kept; folding it into mu silently halves
   # every step size a reader transcribes from the text.  The stability
   # bound 0 < mu < 1/lambda_max is reported against the input power.
-  ws <- as.numeric(w); rv <- as.numeric(rvec)
+  ws <- as.numeric(w)
+  rv <- as.numeric(rvec)
   if (length(ws) != length(rv))
     stop("w and r(n) must have the same length")
   if (!length(ws)) stop("need at least one tap")
-  mv <- as.numeric(mu); ev <- as.numeric(e)
+  mv <- as.numeric(mu)
+  ev <- as.numeric(e)
   power <- .morie_fsum(rv * rv)
   bound <- if (power > 0) 1 / power else Inf
   list(w_next = ws + 2 * mv * ev * rv, mu = mv, e = ev, order = length(ws),
@@ -631,11 +656,13 @@ WidrowHoff <- function(w, e, rvec, mu) {
 #' @export
 LmsVarStep <- function(w, e, rvec, mu_n) {
   # eq. (3.204): eq. (3.203) with a step size that changes each sample.
-  ws <- as.numeric(w); rv <- as.numeric(rvec)
+  ws <- as.numeric(w)
+  rv <- as.numeric(rvec)
   if (length(ws) != length(rv))
     stop("w and r(n) must have the same length")
   if (!length(ws)) stop("need at least one tap")
-  mv <- as.numeric(mu_n); ev <- as.numeric(e)
+  mv <- as.numeric(mu_n)
+  ev <- as.numeric(e)
   list(w_next = ws + 2 * mv * ev * rv, mu = mv, e = ev,
        order = length(ws), time_varying = TRUE,
        method = "Rangayyan (2024) eq. (3.204)")
@@ -703,7 +730,8 @@ LmsFilt <- function(primary, reference, order = 8, mu = 0.01,
   # Convergence is in the MEAN only -- the taps keep jittering around the
   # Wiener solution forever by an amount proportional to mu, so
   # final_weights is one sample of that jitter and not a converged answer.
-  xs <- as.numeric(primary); rs <- as.numeric(reference)
+  xs <- as.numeric(primary)
+  rs <- as.numeric(reference)
   if (length(xs) != length(rs))
     stop("primary and reference must have the same length")
   m <- as.integer(order)
@@ -715,7 +743,9 @@ LmsFilt <- function(primary, reference, order = 8, mu = 0.01,
   rpow <- .morie_fsum(rs * rs) / n
   bound <- if (rpow > 0) 1 / (m * rpow) else Inf
   w <- numeric(m)
-  y <- numeric(n); e <- numeric(n); hist <- numeric(n)
+  y <- numeric(n)
+  e <- numeric(n)
+  hist <- numeric(n)
   # eq. (3.205) states no initial value; the reference's mean square is
   # the natural seed and the only one that survives r(1) = 0
   power_prev <- if (variable) rpow else NULL
@@ -732,9 +762,12 @@ LmsFilt <- function(primary, reference, order = 8, mu = 0.01,
       mu_i <- mv
     }
     w <- w + 2 * mu_i * ei * rv
-    y[i] <- yi; e[i] <- ei; hist[i] <- mu_i
+    y[i] <- yi
+    e[i] <- ei
+    hist[i] <- mu_i
   }
-  px <- .morie_fsum(xs * xs); pe <- .morie_fsum(e * e)
+  px <- .morie_fsum(xs * xs)
+  pe <- .morie_fsum(e * e)
   list(e = e, output = e, y = y, final_weights = w, order = m, mu = mv,
        variable_step = isTRUE(variable),
        step_history = if (variable) hist else NULL,
@@ -812,7 +845,9 @@ AbcdLemma <- function(A, B, C, D) {
   # Both sides are formed and compared.  Its value in RLS is that with
   # k = 1 the only inverse left is of a SCALAR, which turns an O(M^3)
   # inversion per sample into O(M^2).
-  Am <- as.matrix(A); Bm <- as.matrix(B); Cm <- as.matrix(C)
+  Am <- as.matrix(A)
+  Bm <- as.matrix(B)
+  Cm <- as.matrix(C)
   Dm <- as.matrix(D)
   n <- nrow(Am)
   if (ncol(Am) != n) stop("A must be square")
@@ -830,7 +865,8 @@ AbcdLemma <- function(A, B, C, D) {
   inner <- Dm %*% Ai %*% Bm + inv(Cm)
   lemma <- Ai - Ai %*% Bm %*% inv(inner) %*% Dm %*% Ai
   gap <- max(abs(direct - lemma))
-  scale <- max(abs(direct)); if (!scale) scale <- 1
+  scale <- max(abs(direct))
+  if (!scale) scale <- 1
   list(direct = direct, lemma = lemma, max_difference = gap,
        holds = gap <= 1e-6 * scale, n = n, k = k,
        scalar_when_k_is_one = k == 1L,
@@ -855,7 +891,8 @@ RlsUpdate <- function(w_prev, k, alpha) {
   # contradicts its own second line and eq. (3.225).  The plus form is the
   # correct one -- with the minus the recursion drives the error up rather
   # than down -- and is what is implemented here.
-  ws <- as.numeric(w_prev); kv <- as.numeric(k)
+  ws <- as.numeric(w_prev)
+  kv <- as.numeric(k)
   if (length(ws) != length(kv)) stop("w and k must have the same length")
   if (!length(ws)) stop("need at least one tap")
   a <- as.numeric(alpha)
@@ -884,7 +921,8 @@ RlsApriori <- function(x, rvec, w_prev) {
   # with the PREVIOUS weights.  Using the updated weights gives the a
   # posteriori error, a different and always smaller quantity, and the
   # recursion is not valid with it.
-  rv <- as.numeric(rvec); ws <- as.numeric(w_prev)
+  rv <- as.numeric(rvec)
+  ws <- as.numeric(w_prev)
   if (length(rv) != length(ws))
     stop("r(n) and w must have the same length")
   if (!length(rv)) stop("need at least one tap")
@@ -914,7 +952,8 @@ RlsFilt <- function(primary, reference, order = 8, lam = 0.98, delta = 1) {
   # symmetry, in floating point it does not, and the asymmetry grows until
   # P loses positive definiteness and the filter diverges.  The size of
   # that drift is returned rather than hidden.
-  xs <- as.numeric(primary); rs <- as.numeric(reference)
+  xs <- as.numeric(primary)
+  rs <- as.numeric(reference)
   if (length(xs) != length(rs))
     stop("primary and reference must have the same length")
   m <- as.integer(order)
@@ -927,7 +966,9 @@ RlsFilt <- function(primary, reference, order = 8, lam = 0.98, delta = 1) {
   if (dv <= 0) stop("delta must be positive")
   P <- diag(dv, m)
   w <- numeric(m)
-  e <- numeric(n); y <- numeric(n); asym <- 0
+  e <- numeric(n)
+  y <- numeric(n)
+  asym <- 0
   for (i in seq_len(n)) {
     rv <- .morie_rg_lagvec(rs, i, m)
     pred <- .morie_fsum(w * rv)
@@ -945,9 +986,11 @@ RlsFilt <- function(primary, reference, order = 8, lam = 0.98, delta = 1) {
     asym <- max(asym, max(abs(newP - t(newP))))
     P <- (newP + t(newP)) / 2
     w <- w + kg * alpha
-    y[i] <- pred; e[i] <- alpha
+    y[i] <- pred
+    e[i] <- alpha
   }
-  px <- .morie_fsum(xs * xs); pe <- .morie_fsum(e * e)
+  px <- .morie_fsum(xs * xs)
+  pe <- .morie_fsum(e * e)
   list(e = e, output = e, y = y, final_weights = w, P = P, order = m,
        lam = lv, delta = dv,
        memory = if (lv < 1) 1 / (1 - lv) else Inf,
@@ -986,12 +1029,18 @@ RlsLattice <- function(x, order = 4, lam = 0.98, delta = 0.01) {
   if (!(lv > 0 && lv <= 1)) stop("lambda must satisfy 0 < lambda <= 1")
   dv <- as.numeric(delta)
   if (dv <= 0) stop("delta must be positive")
-  fe <- rep(dv, m + 1L); be <- rep(dv, m + 1L)
-  cross <- numeric(m + 1L); bprev <- numeric(m + 1L); gam <- numeric(m + 1L)
-  ferr <- matrix(0, n, m + 1L); berr <- matrix(0, n, m + 1L)
+  fe <- rep(dv, m + 1L)
+  be <- rep(dv, m + 1L)
+  cross <- numeric(m + 1L)
+  bprev <- numeric(m + 1L)
+  gam <- numeric(m + 1L)
+  ferr <- matrix(0, n, m + 1L)
+  berr <- matrix(0, n, m + 1L)
   for (i in seq_len(n)) {
-    f <- numeric(m + 1L); b <- numeric(m + 1L)
-    f[1] <- xs[i]; b[1] <- xs[i]
+    f <- numeric(m + 1L)
+    b <- numeric(m + 1L)
+    f[1] <- xs[i]
+    b[1] <- xs[i]
     for (s in seq_len(m) + 1L) {
       cross[s] <- lv * cross[s] + f[s - 1L] * bprev[s - 1L]
       fe[s] <- lv * fe[s] + f[s - 1L] * f[s - 1L]
@@ -1002,7 +1051,8 @@ RlsLattice <- function(x, order = 4, lam = 0.98, delta = 0.01) {
       f[s] <- f[s - 1L] - gam[s] * bprev[s - 1L]
       b[s] <- bprev[s - 1L] - gam[s] * f[s - 1L]
     }
-    ferr[i, ] <- f; berr[i, ] <- b
+    ferr[i, ] <- f
+    berr[i, ] <- b
     bprev <- b
   }
   refl <- gam[-1]
@@ -1055,7 +1105,8 @@ RlsMonitor <- function(x, reference = NULL, order = 8, lam = 0.98,
   mu <- .morie_fsum(base) / length(base)
   sdv <- sqrt(.morie_fsum((base - mu)^2) / length(base))
   thr <- mu + as.numeric(threshold) * sdv
-  hits <- integer(0); i <- s + 1L
+  hits <- integer(0)
+  i <- s + 1L
   while (i <= n) {
     if (power[i] > thr) {
       j <- i
@@ -1097,9 +1148,12 @@ Kalman <- function(z, F, H, Q, R, x0 = NULL, P0 = NULL) {
   # and the asymmetry it removed is returned.  The plain covariance update
   # is used rather than the Joseph form, which is recorded because the
   # Joseph form is the numerically safer one when R is small.
-  Fm <- as.matrix(F); Hm <- as.matrix(H)
-  Qm <- as.matrix(Q); Rm <- as.matrix(R)
-  ns <- nrow(Fm); p <- nrow(Hm)
+  Fm <- as.matrix(F)
+  Hm <- as.matrix(H)
+  Qm <- as.matrix(Q)
+  Rm <- as.matrix(R)
+  ns <- nrow(Fm)
+  p <- nrow(Hm)
   if (ncol(Fm) != ns || ncol(Hm) != ns)
     stop("F must be n x n and H must be p x n")
   if (nrow(Qm) != ns || ncol(Qm) != ns) stop("Q must be n x n")
@@ -1125,7 +1179,10 @@ Kalman <- function(z, F, H, Q, R, x0 = NULL, P0 = NULL) {
     Pn <- Pp - K %*% Hm %*% Pp
     asym <- max(asym, max(abs(Pn - t(Pn))))
     P <- (Pn + t(Pn)) / 2
-    states[[t]] <- x; covs[[t]] <- P; gains[[t]] <- K; innov[[t]] <- y
+    states[[t]] <- x
+    covs[[t]] <- P
+    gains[[t]] <- K
+    innov[[t]] <- y
   }
   list(states = states, covariances = covs, gains = gains,
        innovations = innov, n = length(states), state_dim = ns,
@@ -1163,11 +1220,14 @@ Riccati <- function(F, H, Q, R, maxiter = 1000L, tol = 1e-12) {
   #
   # P here is the PREDICTED covariance; the filter stores the UPDATED one,
   # P - K H P.
-  Fm <- as.matrix(F); Hm <- as.matrix(H)
-  Qm <- as.matrix(Q); Rm <- as.matrix(R)
+  Fm <- as.matrix(F)
+  Hm <- as.matrix(H)
+  Qm <- as.matrix(Q)
+  Rm <- as.matrix(R)
   n <- nrow(Fm)
   P <- Qm
-  change <- Inf; it <- 0L
+  change <- Inf
+  it <- 0L
   for (it in seq_len(as.integer(maxiter))) {
     S <- Hm %*% P %*% t(Hm) + Rm
     G <- P %*% t(Hm) %*% solve(S)
@@ -1204,7 +1264,8 @@ Sem <- function(psd, reference) {
   # of the LOG spectra.  Taking logs is what makes it scale-free -- a pure
   # gain change shifts every log bin by the same constant, so it lands
   # entirely in mean_offset and leaves shape_only at zero.
-  a <- as.numeric(psd); b <- as.numeric(reference)
+  a <- as.numeric(psd)
+  b <- as.numeric(reference)
   if (length(a) != length(b))
     stop("the two PSDs must have the same length")
   if (!length(a)) stop("need at least one bin")
@@ -1252,7 +1313,8 @@ Acfseg <- function(test, reference, lags = NULL, thp = 1, thf = 1) {
   # same condition rather than trusted.  The two distances answer
   # different questions: d_P moves when the signal gets louder at the same
   # shape, d_F when the shape changes at the same power.
-  a <- as.numeric(test); b <- as.numeric(reference)
+  a <- as.numeric(test)
+  b <- as.numeric(reference)
   if (length(a) < 2L || length(b) < 2L)
     stop("each window needs at least two samples")
   if (as.numeric(thp) <= 0) stop("Th_P must be positive")
@@ -1277,7 +1339,8 @@ Acfseg <- function(test, reference, lags = NULL, thp = 1, thf = 1) {
   }
   if (q < 1L)
     stop("both ACFs turn negative at lag 1; no lags to compare")
-  st <- sqrt(rt[1]); sr <- sqrt(rr[1])
+  st <- sqrt(rt[1])
+  sr <- sqrt(rr[1])
   dp <- abs(st - sr) / min(st, sr)
   k <- seq_len(q) + 1L
   num <- .morie_fsum(abs(rt[k] - rr[k]))
@@ -1411,7 +1474,8 @@ PsdAcf <- function(x) {
   lin <- .morie_rg_acf(xs, n)
   lr <- vapply(i0, function(k) .morie_fsum(lin * cos(-step * i0 * k)),
                numeric(1))
-  scale <- max(direct); if (!scale) scale <- 1
+  scale <- max(direct)
+  if (!scale) scale <- 1
   list(psd = direct, via_circular_acf = cr, acf_circular = circ,
        acf_linear = lin, max_difference = gap,
        holds = gap <= 1e-6 * scale,
@@ -1453,7 +1517,8 @@ Anc <- function(primary, reference, order = 8, mu = 0.01,
   e <- r$e
   rs <- as.numeric(reference)
   n <- length(e)
-  me <- .morie_fsum(e) / n; mr <- .morie_fsum(rs) / n
+  me <- .morie_fsum(e) / n
+  mr <- .morie_fsum(rs) / n
   ve <- .morie_fsum((e - me)^2) / n
   vr <- .morie_fsum((rs - mr)^2) / n
   cov <- .morie_fsum((e - me) * (rs - mr)) / n
@@ -1486,11 +1551,13 @@ FetalEcg <- function(abdominal, chest, order = 32, mu = 0.005,
   # SEVERAL chest references to capture the maternal signal from more than
   # one projection; a single reference is a simplification, and it is
   # recorded rather than left implied.
-  abd <- as.numeric(abdominal); ref <- as.numeric(chest)
+  abd <- as.numeric(abdominal)
+  ref <- as.numeric(chest)
   if (length(abd) != length(ref))
     stop("the abdominal and chest leads must have the same length")
   r <- Anc(abd, ref, order = order, mu = mu, method = method)
-  px <- r$input_power; pe <- r$output_power
+  px <- r$input_power
+  pe <- r$output_power
   list(fetal = r$e, maternal_estimate = r$y, order = order,
        input_power = px, output_power = pe,
        suppression_db = if (pe > 0 && px > 0) 10 * log10(px / pe) else NULL,

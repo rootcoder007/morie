@@ -29,7 +29,8 @@
   for (i in seq_len(n_atoms)) adj[[i]] <- integer(0)
   for (b in bonds) {
     if (length(b) < 2L) stop("toptor: a bond must have at least two atoms")
-    i <- as.integer(b[[1]]); j <- as.integer(b[[2]])
+    i <- as.integer(b[[1]])
+    j <- as.integer(b[[2]])
     if (i == j) stop("toptor: a bond from an atom to itself")
     if (i < 0L || i >= n_atoms || j < 0L || j >= n_atoms)
       stop("toptor: bond refers to an atom outside the molecule")
@@ -55,7 +56,8 @@
   for (b in bonds) {
     order <- if (length(b) >= 3L) as.numeric(b[[3]]) else 1.0
     if (order < 1.0) stop("toptor: bond order below 1")
-    i <- as.integer(b[[1]]) + 1L; j <- as.integer(b[[2]]) + 1L
+    i <- as.integer(b[[1]]) + 1L
+    j <- as.integer(b[[2]]) + 1L
     npi[i] <- npi[i] + (order - 1.0)
     npi[j] <- npi[j] + (order - 1.0)
   }
@@ -76,7 +78,8 @@
 .lex_le <- function(a, b) {
   for (k in seq_along(a)) {
     if (a[[k]][[1]] != b[[k]][[1]]) return(a[[k]][[1]] < b[[k]][[1]])
-    ta <- a[[k]][[2]]; tb <- b[[k]][[2]]
+    ta <- a[[k]][[2]]
+    tb <- b[[k]][[2]]
     if (ta != tb) return(ta < tb)
     if (a[[k]][[3]] != b[[k]][[3]]) return(a[[k]][[3]] < b[[k]][[3]])
   }
@@ -186,7 +189,8 @@ morie_trend_vector <- function(torsion_sets, activities,
     for (t in (n - 1L):1L) {
       u <- as.integer(.ghc_unif(e, 1L) * (t + 1L))
       if (u > t) u <- t
-      tmp <- order[t + 1L]; order[t + 1L] <- order[u + 1L]
+      tmp <- order[t + 1L]
+      order[t + 1L] <- order[u + 1L]
       order[u + 1L] <- tmp
     }
     v <- build(order)

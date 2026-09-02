@@ -128,7 +128,8 @@ Ma8Rec <- function(x, n = NULL) {
   # forgets, where the direct form flushes a perturbation after 8 samples.
   xs <- as.numeric(x)
   if (!length(xs)) stop("need at least one sample")
-  out <- numeric(length(xs)); acc <- 0
+  out <- numeric(length(xs))
+  acc <- 0
   for (i in seq_along(xs)) {
     acc <- acc + 0.125 * xs[i]
     if (i > 8L) acc <- acc - 0.125 * xs[i - 8L]
@@ -229,7 +230,8 @@ RunInt <- function(x, t, tau) {
   # eq (3.112): the continuous counterpart of the moving-average sum.  The
   # window is clipped at the start of the record, and how many windows
   # that affects is reported rather than left to be discovered.
-  xs <- as.numeric(x); ts <- as.numeric(t)
+  xs <- as.numeric(x)
+  ts <- as.numeric(t)
   if (length(xs) != length(ts))
     stop("x and t must have the same length")
   if (length(xs) < 2L) stop("need at least two samples to integrate")
@@ -240,13 +242,17 @@ RunInt <- function(x, t, tau) {
   out <- numeric(length(ts))
   for (i in seq_along(ts)) {
     lo <- ts[i] - tv
-    if (lo < ts[1]) { lo <- ts[1]; clipped <- clipped + 1L }
+    if (lo < ts[1]) { lo <- ts[1]
+    clipped <- clipped + 1L }
     acc <- 0
     if (i > 1L) for (j in seq_len(i - 1L)) {
-      a <- ts[j]; b <- ts[j + 1L]
+      a <- ts[j]
+      b <- ts[j + 1L]
       if (b <= lo) next
-      fa <- xs[j]; fb <- xs[j + 1L]
-      if (a < lo) { fa <- fa + (fb - fa) * (lo - a) / (b - a); a <- lo }
+      fa <- xs[j]
+      fb <- xs[j + 1L]
+      if (a < lo) { fa <- fa + (fb - fa) * (lo - a) / (b - a)
+      a <- lo }
       acc <- acc + 0.5 * (fa + fb) * (b - a)
     }
     out[i] <- acc
@@ -273,7 +279,8 @@ RunIntAll <- function(x, t) {
   # so any mass before it is unobserved and the constant of integration is
   # arbitrary.  The discrete counterpart has a pole ON the unit circle at
   # DC, which is why the book says it is seldom used for filtering.
-  xs <- as.numeric(x); ts <- as.numeric(t)
+  xs <- as.numeric(x)
+  ts <- as.numeric(t)
   if (length(xs) != length(ts))
     stop("x and t must have the same length")
   if (length(xs) < 2L) stop("need at least two samples to integrate")
@@ -1130,7 +1137,8 @@ BwDigital <- function(Omega_c = NULL, N = NULL, T = 1, fc = NULL,
          "fs, not both and not neither")
   if (!is.null(fc)) {
     if (is.null(fs)) stop("fc needs the sampling rate fs")
-    fsv <- as.numeric(fs); fcv <- as.numeric(fc)
+    fsv <- as.numeric(fs)
+    fcv <- as.numeric(fc)
     if (!(fcv > 0 && fcv < fsv / 2))
       stop("the cutoff must lie strictly between 0 and the Nyquist ",
            "frequency")
@@ -1148,7 +1156,8 @@ BwDigital <- function(Omega_c = NULL, N = NULL, T = 1, fc = NULL,
   den <- den / den[length(den)]
   a <- rev(den)
   b <- rev(Re(.morie_rg_polyroots(rep(-1, n))))
-  dcn <- .morie_fsum(b); dcd <- .morie_fsum(a)
+  dcn <- .morie_fsum(b)
+  dcd <- .morie_fsum(a)
   if (abs(dcn) <= 1e-300) stop("the numerator vanishes at DC")
   Gp <- dcd / dcn
   b <- Gp * b
@@ -1240,7 +1249,8 @@ BwLpDft <- function(K, kc = NULL, N = 2, fc = NULL, fs = NULL) {
          "both and not neither")
   if (!is.null(fc)) {
     if (is.null(fs)) stop("fc needs the sampling rate fs")
-    fsv <- as.numeric(fs); fcv <- as.numeric(fc)
+    fsv <- as.numeric(fs)
+    fcv <- as.numeric(fc)
     if (!(fcv > 0 && fcv < fsv / 2))
       stop("the cutoff must lie strictly between 0 and the Nyquist ",
            "frequency")
@@ -1283,7 +1293,8 @@ BwHpDft <- function(K, kc = NULL, N = 2, fc = NULL, fs = NULL) {
          "both and not neither")
   if (!is.null(fc)) {
     if (is.null(fs)) stop("fc needs the sampling rate fs")
-    fsv <- as.numeric(fs); fcv <- as.numeric(fc)
+    fsv <- as.numeric(fs)
+    fcv <- as.numeric(fc)
     if (!(fcv > 0 && fcv < fsv / 2))
       stop("the cutoff must lie strictly between 0 and the Nyquist ",
            "frequency")
@@ -1426,7 +1437,9 @@ Comb <- function(period_samples, fs = 1000, z = NULL) {
   if (N < 1L) stop("the period must be at least one sample")
   fsv <- as.numeric(fs)
   if (fsv <= 0) stop("fs must be positive")
-  b <- numeric(N + 1L); b[1] <- 0.5; b[N + 1L] <- -0.5
+  b <- numeric(N + 1L)
+  b[1] <- 0.5
+  b[N + 1L] <- -0.5
   Hz <- NULL
   if (!is.null(z)) {
     Hz <- .morie_rg_polyz(b, z)
@@ -1512,7 +1525,8 @@ PhaseResp <- function(b, a = NULL, fs = 1000, n_freqs = 512,
   mag <- r$magnitude
   scale <- max(mag)
   defined <- if (scale > 0) mag > 1e-9 * scale else rep(FALSE, length(mag))
-  unw <- numeric(length(wrapped)); last <- NA_integer_
+  unw <- numeric(length(wrapped))
+  last <- NA_integer_
   for (i in seq_along(wrapped)) {
     if (!defined[i]) {
       unw[i] <- if (i > 1L) unw[i - 1L] else wrapped[i]
@@ -1571,11 +1585,14 @@ GrpDelay <- function(b, a = NULL, fs = 1000, n_freqs = 512) {
     e <- complex(real = cos(-v * k), imaginary = sin(-v * k))
     c(sum(k * coefs * e), sum(coefs * e))
   }
-  tau <- numeric(m); defined <- logical(m)
+  tau <- numeric(m)
+  defined <- logical(m)
   for (i in seq_len(m)) {
-    bb <- ratio(bs, w[i]); aa <- ratio(az, w[i])
+    bb <- ratio(bs, w[i])
+    aa <- ratio(az, w[i])
     if (Mod(bb[2]) <= 1e-12 || Mod(aa[2]) <= 1e-12) {
-      tau[i] <- NA_real_; defined[i] <- FALSE
+      tau[i] <- NA_real_
+      defined[i] <- FALSE
     } else {
       tau[i] <- Re(bb[1] / bb[2]) - Re(aa[1] / aa[2])
       defined[i] <- TRUE
@@ -1613,7 +1630,8 @@ BwLp <- function(cutoff_hz, order = 4, fs = 1000, z = NULL) {
   # eq (3.137), keep the left-half-plane ones by eq (3.138), apply the
   # bilinear transform of eq (3.139) to reach eq (3.143).  Prewarping is
   # done here; without it the realized cutoff sits below the request.
-  fsv <- as.numeric(fs); fcv <- as.numeric(cutoff_hz)
+  fsv <- as.numeric(fs)
+  fcv <- as.numeric(cutoff_hz)
   if (fsv <= 0) stop("fs must be positive")
   if (!(fcv > 0 && fcv < fsv / 2))
     stop("the cutoff must lie strictly between 0 and the Nyquist ",
@@ -1646,7 +1664,8 @@ BwHp <- function(cutoff_hz, order = 4, fs = 1000, z = NULL) {
   # pole radius -- and the N zeros move from z = -1 to z = +1.  The gain
   # is renormalized at NYQUIST, since a highpass has no DC gain to
   # normalize against and dividing there would be division by zero.
-  fsv <- as.numeric(fs); fcv <- as.numeric(cutoff_hz)
+  fsv <- as.numeric(fs)
+  fcv <- as.numeric(cutoff_hz)
   if (fsv <= 0) stop("fs must be positive")
   if (!(fcv > 0 && fcv < fsv / 2))
     stop("the cutoff must lie strictly between 0 and the Nyquist ",

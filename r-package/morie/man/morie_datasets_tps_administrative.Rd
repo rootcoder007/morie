@@ -53,7 +53,5 @@ Toronto Police Service.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Administrative
 }
 \examples{
-\donttest{
 morie_datasets_tps_administrative()
-}
 }

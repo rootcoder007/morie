@@ -50,7 +50,8 @@ morie_abcrej <- function(sim, obs, eps, prior, n_draws = 1000L, seed = 0) {
   if (any(vapply(bounds, function(b) b[2] <= b[1], logical(1))))
     stop("each prior pair must satisfy low < high")
   e <- .ghc_rng(seed)
-  accepted <- list(); dists <- numeric(0)
+  accepted <- list()
+  dists <- numeric(0)
   for (k in seq_len(as.integer(n_draws))) {
     theta <- vapply(bounds, function(b) .ghc_unif(e, 1L, b[1], b[2]), numeric(1))
     s <- as.numeric(sim(theta, e))

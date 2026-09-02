@@ -34,12 +34,14 @@ Policyhead <- function(x, action_space = NULL, W = NULL, legal = NULL) {
     shifted[mask <= 0] <- -Inf
   }
   p <- .s03softmax(shifted[is.finite(shifted)])
-  out <- numeric(m); j <- 1L
+  out <- numeric(m)
+  j <- 1L
   for (i in seq_len(m)) {
     if (!is.finite(shifted[i])) {
       out[i] <- 0
     } else {
-      out[i] <- p[j]; j <- j + 1L
+      out[i] <- p[j]
+      j <- j + 1L
     }
   }
   h <- 0

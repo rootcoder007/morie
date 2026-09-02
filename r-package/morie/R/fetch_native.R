@@ -60,9 +60,12 @@ morie_fetch_json <- function(txt, simplify = TRUE) {
   if (ch == "{") return(.mj_object(st))
   if (ch == "[") return(.mj_array(st))
   if (ch == "\"") return(.mj_string(st))
-  if (ch == "t") { .mj_lit(st, "true"); return(TRUE) }
-  if (ch == "f") { .mj_lit(st, "false"); return(FALSE) }
-  if (ch == "n") { .mj_lit(st, "null"); return(NULL) }
+  if (ch == "t") { .mj_lit(st, "true")
+  return(TRUE) }
+  if (ch == "f") { .mj_lit(st, "false")
+  return(FALSE) }
+  if (ch == "n") { .mj_lit(st, "null")
+  return(NULL) }
   .mj_number(st)
 }
 
@@ -133,7 +136,8 @@ morie_fetch_json <- function(txt, simplify = TRUE) {
   st$i <- st$i + 1L                     # consume [
   out <- list()
   .mj_ws(st)
-  if (substr(st$s, st$i, st$i) == "]") { st$i <- st$i + 1L; return(out) }
+  if (substr(st$s, st$i, st$i) == "]") { st$i <- st$i + 1L
+  return(out) }
   repeat {
     v <- .mj_value(st)
     out[[length(out) + 1L]] <- if (is.null(v)) NA else v
@@ -152,7 +156,8 @@ morie_fetch_json <- function(txt, simplify = TRUE) {
   out <- list()
   nms <- character(0)
   .mj_ws(st)
-  if (substr(st$s, st$i, st$i) == "}") { st$i <- st$i + 1L; return(out) }
+  if (substr(st$s, st$i, st$i) == "}") { st$i <- st$i + 1L
+  return(out) }
   repeat {
     .mj_ws(st)
     if (substr(st$s, st$i, st$i) != "\"") {
@@ -170,7 +175,8 @@ morie_fetch_json <- function(txt, simplify = TRUE) {
     .mj_ws(st)
     ch <- substr(st$s, st$i, st$i)
     st$i <- st$i + 1L
-    if (ch == "}") { names(out) <- nms; return(out) }
+    if (ch == "}") { names(out) <- nms
+    return(out) }
     if (ch != ",") stop("JSON parse error: expected , or } at ",
                         st$i - 1L, call. = FALSE)
   }
@@ -669,23 +675,29 @@ morie_fetch_parquet <- function(path) {
 #' Decode a Parquet RLE/bit-packed hybrid run of 1-bit definition levels
 #' @noRd
 .mpq_def_levels <- function(payload, n) {
-  out <- integer(0); i <- 1L
+  out <- integer(0)
+  i <- 1L
   while (length(out) < n && i <= length(payload)) {
     # ULEB128 header
-    hdr <- 0; shift <- 0
+    hdr <- 0
+    shift <- 0
     repeat {
-      b <- as.integer(payload[i]); i <- i + 1L
-      hdr <- hdr + bitwAnd(b, 127L) * 2^shift; shift <- shift + 7
+      b <- as.integer(payload[i])
+      i <- i + 1L
+      hdr <- hdr + bitwAnd(b, 127L) * 2^shift
+      shift <- shift + 7
       if (b < 128L) break
     }
     if (hdr %% 2 == 0) {              # RLE run: count, then one value byte
       cnt <- hdr %/% 2
-      val <- as.integer(payload[i]); i <- i + 1L
+      val <- as.integer(payload[i])
+      i <- i + 1L
       out <- c(out, rep(val, cnt))
     } else {                          # bit-packed: hdr>>1 groups of 8 values
       groups <- (hdr - 1) %/% 2
       for (g in seq_len(groups)) {
-        b <- as.integer(payload[i]); i <- i + 1L
+        b <- as.integer(payload[i])
+        i <- i + 1L
         out <- c(out, bitwAnd(bitwShiftR(b, 0:7), 1L))
       }
     }
@@ -718,7 +730,9 @@ morie_fetch_parquet <- function(path) {
   present <- sum(defs != 0L)
   splice <- function(vals) {
     if (present == n) return(vals)
-    out <- rep(vals[NA_integer_][1L], n); out[defs != 0L] <- vals; out
+    out <- rep(vals[NA_integer_][1L], n)
+    out[defs != 0L] <- vals
+    out
   }
   n <- present
   body <- buf[(off + 1L):length(buf)]
@@ -759,9 +773,11 @@ morie_fetch_parquet <- function(path) {
 .mpq_snappy <- function(buf) {
   i <- 1L
   # uncompressed length: varint
-  out_len <- 0L; shift <- 0L
+  out_len <- 0L
+  shift <- 0L
   repeat {
-    b <- as.integer(buf[i]); i <- i + 1L
+    b <- as.integer(buf[i])
+    i <- i + 1L
     out_len <- out_len + bitwAnd(b, 127L) * 2^shift
     if (b < 128L) break
     shift <- shift + 7L
@@ -770,7 +786,8 @@ morie_fetch_parquet <- function(path) {
   o <- 1L
   n <- length(buf)
   while (i <= n) {
-    tag <- as.integer(buf[i]); i <- i + 1L
+    tag <- as.integer(buf[i])
+    i <- i + 1L
     typ <- bitwAnd(tag, 3L)
     if (typ == 0L) {                    # literal
       len <- bitwShiftR(tag, 2L) + 1L
@@ -784,12 +801,14 @@ morie_fetch_parquet <- function(path) {
         len <- len + 1L
       }
       out[o:(o + len - 1L)] <- buf[i:(i + len - 1L)]
-      i <- i + len; o <- o + len
+      i <- i + len
+      o <- o + len
     } else {
       if (typ == 1L) {                  # copy, 1-byte offset
         len <- bitwAnd(bitwShiftR(tag, 2L), 7L) + 4L
         offset <- bitwAnd(bitwShiftR(tag, 5L), 7L) * 256L +
-          as.integer(buf[i]); i <- i + 1L
+          as.integer(buf[i])
+          i <- i + 1L
       } else if (typ == 2L) {           # copy, 2-byte offset
         len <- bitwShiftR(tag, 2L) + 1L
         offset <- as.integer(buf[i]) + as.integer(buf[i + 1L]) * 256L
@@ -804,7 +823,8 @@ morie_fetch_parquet <- function(path) {
       src <- o - offset
       for (k in seq_len(len)) {         # byte-wise: overlaps allowed
         out[o] <- out[src]
-        o <- o + 1L; src <- src + 1L
+        o <- o + 1L
+        src <- src + 1L
       }
     }
   }
@@ -816,9 +836,11 @@ morie_fetch_parquet <- function(path) {
 
 #' @noRd
 .mpq_varint <- function(buf, pos) {
-  val <- 0; shift <- 0L
+  val <- 0
+  shift <- 0L
   repeat {
-    b <- as.integer(buf[pos]); pos <- pos + 1L
+    b <- as.integer(buf[pos])
+    pos <- pos + 1L
     val <- val + bitwAnd(b, 127L) * 2^shift
     if (b < 128L) break
     shift <- shift + 7L
@@ -836,12 +858,14 @@ morie_fetch_parquet <- function(path) {
   out <- list()
   fid <- 0L
   repeat {
-    b <- as.integer(buf[pos]); pos <- pos + 1L
+    b <- as.integer(buf[pos])
+    pos <- pos + 1L
     if (b == 0L) break                  # STOP
     delta <- bitwShiftR(b, 4L)
     typ <- bitwAnd(b, 15L)
     if (delta == 0L) {
-      z <- .mpq_varint(buf, pos); pos <- z$pos
+      z <- .mpq_varint(buf, pos)
+      pos <- z$pos
       fid <- as.integer(.mpq_zigzag(z$value))
     } else {
       fid <- fid + delta
@@ -867,16 +891,20 @@ morie_fetch_parquet <- function(path) {
   }
   if (typ == 8L) {                      # binary/string
     z <- .mpq_varint(buf, pos)
-    len <- z$value; pos <- z$pos
+    len <- z$value
+    pos <- z$pos
     val <- if (len > 0) buf[pos:(pos + len - 1L)] else raw(0)
     return(list(value = val, pos = pos + len))
   }
   if (typ == 9L) {                      # list
-    b <- as.integer(buf[pos]); pos <- pos + 1L
+    b <- as.integer(buf[pos])
+    pos <- pos + 1L
     n <- bitwShiftR(b, 4L)
     etyp <- bitwAnd(b, 15L)
     if (n == 15L) {
-      z <- .mpq_varint(buf, pos); n <- z$value; pos <- z$pos
+      z <- .mpq_varint(buf, pos)
+      n <- z$value
+      pos <- z$pos
     }
     items <- vector("list", n)
     for (k in seq_len(n)) {

@@ -54,14 +54,11 @@ morie_estimate_irm <- function(...) {
 }
 }
 \examples{
-\dontrun{
-  # Interactive (RStudio / R console): prompts to install if needed
+# Interactive (RStudio / R console): prompts to install if needed
   morie_ensure_extras(c("DoubleML", "ranger"))
 
   # CI / Rscript: errors with install-hint instead of installing
   morie_ensure_extras(c("DoubleML"), ask = FALSE)
-}
-
 }
 \seealso{
 \code{\link[=morie_install_extras]{morie_install_extras()}} for the user-facing bulk installer.

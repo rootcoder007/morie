@@ -181,7 +181,8 @@ rotate_dek <- function(sealed, old_dek, new_dek, new_nonce) {
 #' @export
 rotation_cost <- function(n_records, mean_record_bytes,
                           dek_bytes = 32L) {
-  n <- as.integer(n_records); b <- as.numeric(mean_record_bytes)
+  n <- as.integer(n_records)
+  b <- as.numeric(mean_record_bytes)
   if (n < 1L || b <= 0) {
     stop("secrtt: the record count and size must be positive")
   }

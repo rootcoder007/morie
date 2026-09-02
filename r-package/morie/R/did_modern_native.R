@@ -140,9 +140,12 @@ morie_did_sun_abraham <- function(data, outcome, unit, time,
     gm_new <- tapply(y0 - a_new[u0], t0, mean)
     gm_new[is.na(gm_new)] <- 0
     if (max(abs(a_new - a), abs(gm_new - gm)) < 1e-10) {
-      a <- a_new; gm <- gm_new; break
+      a <- a_new
+      gm <- gm_new
+      break
     }
-    a <- a_new; gm <- gm_new
+    a <- a_new
+    gm <- gm_new
   }
   list(a = a, g = gm)
 }

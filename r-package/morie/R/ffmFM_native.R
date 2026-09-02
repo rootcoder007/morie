@@ -28,7 +28,8 @@
 #' @return One of two values, depending on the branch taken.
 #' @export
 .n_parameters <- function(n_features, n_fields, k_dim, model = "ffm") {
-  n <- as.integer(n_features); f <- as.integer(n_fields)
+  n <- as.integer(n_features)
+  f <- as.integer(n_fields)
   kk <- as.integer(k_dim)
   if (!(model %in% c("ffm", "fm"))) {
     stop(sprintf("ffmFM: model must be ffm or fm, got %s", sQuote(model)))
@@ -50,7 +51,8 @@
 .ffmFM_phi <- function(x, fields, W) {
   nz <- list()
   for (kv in x) {
-    j <- as.integer(kv[[1L]]); v <- as.numeric(kv[[2L]])
+    j <- as.integer(kv[[1L]])
+    v <- as.numeric(kv[[2L]])
     if (v != 0) nz[[length(nz) + 1L]] <- list(j = j, v = v)
   }
   tot <- 0
@@ -59,10 +61,14 @@
     # seq_len guard: the colon counts DOWN when a is the last
     # non-zero and reads nz[[na + 1]]
     for (b in seq_len(na - a) + a) {
-      j1 <- nz[[a]]$j; v1 <- nz[[a]]$v
-      j2 <- nz[[b]]$j; v2 <- nz[[b]]$v
-      f1 <- as.integer(fields[j1 + 1L]); f2 <- as.integer(fields[j2 + 1L])
-      w1 <- W[[j1 + 1L]][[f2 + 1L]]; w2 <- W[[j2 + 1L]][[f1 + 1L]]
+      j1 <- nz[[a]]$j
+      v1 <- nz[[a]]$v
+      j2 <- nz[[b]]$j
+      v2 <- nz[[b]]$v
+      f1 <- as.integer(fields[j1 + 1L])
+      f2 <- as.integer(fields[j2 + 1L])
+      w1 <- W[[j1 + 1L]][[f2 + 1L]]
+      w2 <- W[[j2 + 1L]][[f1 + 1L]]
       kk <- length(w1)
       s <- 0
       for (d in seq_len(kk)) s <- s + w1[d] * w2[d]
@@ -112,7 +118,8 @@
 .fit_ffm <- function(rows, labels, fields, n_features, n_fields,
                      k_dim = 4L, eta = 0.1, lam = 2e-5, epochs = 10L,
                      seed = 0L) {
-  n <- as.integer(n_features); F_ <- as.integer(n_fields)
+  n <- as.integer(n_features)
+  F_ <- as.integer(n_fields)
   kk <- as.integer(k_dim)
   if (n < 1L || F_ < 1L || kk < 1L) {
     stop("ffmFM: n_features, n_fields and k must all be at least 1")
@@ -133,7 +140,8 @@
       Wj[[f]] <- raw[(lo + 1L):(lo + kk)]
       Gj[[f]] <- rep(1, kk)
     }
-    W[[j]] <- Wj; G[[j]] <- Gj
+    W[[j]] <- Wj
+    G[[j]] <- Gj
   }
   hist <- numeric(0)
   for (ep in seq_len(as.integer(epochs))) {
@@ -146,7 +154,8 @@
       g0 <- -y / (1 + exp(min(700, yp)))
       nz <- list()
       for (kv in rows[[r]]) {
-        j <- as.integer(kv[[1L]]); v <- as.numeric(kv[[2L]])
+        j <- as.integer(kv[[1L]])
+        v <- as.numeric(kv[[2L]])
         if (v != 0) nz[[length(nz) + 1L]] <- list(j = j, v = v)
       }
       na <- length(nz)
@@ -154,8 +163,10 @@
         # seq_len guard: the colon counts DOWN when a is the last
     # non-zero and reads nz[[na + 1]]
     for (b in seq_len(na - a) + a) {
-          j1 <- nz[[a]]$j + 1L; v1 <- nz[[a]]$v
-          j2 <- nz[[b]]$j + 1L; v2 <- nz[[b]]$v
+          j1 <- nz[[a]]$j + 1L
+          v1 <- nz[[a]]$v
+          j2 <- nz[[b]]$j + 1L
+          v2 <- nz[[b]]$v
           f1 <- as.integer(fields[j1]) + 1L
           f2 <- as.integer(fields[j2]) + 1L
           for (d in seq_len(kk)) {

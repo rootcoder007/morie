@@ -113,7 +113,8 @@ NULL
 #' @return A list with \code{beta}, \code{fitted}, \code{resid}, \code{xtxinv}.
 #' @export
 .t4_olsfit <- function(X, y) {
-  X <- as.matrix(X); y <- as.numeric(y)
+  X <- as.matrix(X)
+  y <- as.numeric(y)
   xtx <- crossprod(X)
   xtxinv <- solve(xtx)
   beta <- as.numeric(xtxinv %*% crossprod(X, y))
@@ -152,7 +153,8 @@ NULL
 .t4_kendalltaub <- function(x, y) {
   n <- length(x)
   S <- .t4_kendallS(x, y)
-  tx <- .t4_tiecounts(x); ty <- .t4_tiecounts(y)
+  tx <- .t4_tiecounts(x)
+  ty <- .t4_tiecounts(y)
   n0 <- n * (n - 1) / 2
   n1 <- sum(tx * (tx - 1)) / 2
   n2 <- sum(ty * (ty - 1)) / 2

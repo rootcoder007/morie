@@ -97,7 +97,8 @@ morie_opnclp <- function(payload) {
 #' @return A list with \code{compute}, \code{samples_seen}, \code{params}, \code{gmac_scale}.
 #' @export
 total_compute <- function(samples_seen, model_params) {
-  s <- as.numeric(samples_seen); p <- as.numeric(model_params)
+  s <- as.numeric(samples_seen)
+  p <- as.numeric(model_params)
   if (s <= 0.0 || p <= 0.0) {
     stop("opnclp: both quantities must be positive")
   }
@@ -116,7 +117,8 @@ total_compute <- function(samples_seen, model_params) {
 #' @return A list with \code{alpha}, \code{beta}, \code{slope}, \code{r_squared}, \code{range}, \code{n}.
 #' @export
 fit_power_law <- function(x, y) {
-  X <- .as_num_vec(x); Y <- .as_num_vec(y)
+  X <- .as_num_vec(x)
+  Y <- .as_num_vec(y)
   if (length(X) != length(Y)) {
     stop(sprintf("opnclp: %d x values but %d y values", length(X), length(Y)))
   }
@@ -126,9 +128,11 @@ fit_power_law <- function(x, y) {
   if (any(X <= 0.0) || any(Y <= 0.0)) {
     stop("opnclp: a power law is fitted on the logs, so both axes must be strictly positive")
   }
-  lx <- log(X); ly <- log(Y)
+  lx <- log(X)
+  ly <- log(Y)
   n <- length(lx)
-  mx <- sum(lx) / n; my <- sum(ly) / n
+  mx <- sum(lx) / n
+  my <- sum(ly) / n
   sxx <- sum((lx - mx) ^ 2)
   if (sxx <= 1e-12) {
     stop("opnclp: every x is the same, so no slope is identified")
@@ -161,7 +165,8 @@ fit_power_law <- function(x, y) {
     stop("opnclp: compute must be positive")
   }
   rng <- fit$range
-  lo <- rng[1]; hi <- rng[2]
+  lo <- rng[1]
+  hi <- rng[2]
   decades <- if (c < lo) log10(lo / c) else if (c > hi) log10(c / hi) else 0.0
   list(value = fit$beta * c ^ (-fit$alpha),
        extrapolation_decades = decades,

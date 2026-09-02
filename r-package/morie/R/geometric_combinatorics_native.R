@@ -121,7 +121,9 @@ morie_pick_theorem <- function(vertices, verify_by_enumeration = TRUE,
   nxt <- c(2:n, 1L)
   twice <- sum(v[, 1] * v[nxt, 2] - v[nxt, 1] * v[, 2])
   gcd2 <- function(a, b) {
-    while (b != 0) { t <- b; b <- a %% b; a <- t }
+    while (b != 0) { t <- b
+    b <- a %% b
+    a <- t }
     a
   }
   boundary <- sum(vapply(seq_len(n), function(i) {
@@ -137,8 +139,10 @@ morie_pick_theorem <- function(vertices, verify_by_enumeration = TRUE,
   strictly_inside <- function(px, py) {
     cnt <- 0L
     for (i in seq_len(n)) {
-      ax <- v[i, 1]; ay <- v[i, 2]
-      bx <- v[nxt[i], 1]; by <- v[nxt[i], 2]
+      ax <- v[i, 1]
+      ay <- v[i, 2]
+      bx <- v[nxt[i], 1]
+      by <- v[nxt[i], 2]
       cr <- (bx - ax) * (py - ay) - (by - ay) * (px - ax)
       if (cr == 0 &&
           px >= min(ax, bx) && px <= max(ax, bx) &&
@@ -162,7 +166,8 @@ morie_pick_theorem <- function(vertices, verify_by_enumeration = TRUE,
   verified <- NA
   warns <- character(0)
   if (isTRUE(verify_by_enumeration)) {
-    xr <- range(v[, 1]); yr <- range(v[, 2])
+    xr <- range(v[, 1])
+    yr <- range(v[, 2])
     box <- (xr[2] - xr[1] + 1) * (yr[2] - yr[1] + 1)
     if (box > enumeration_cap) {
       warns <- c(warns, sprintf(paste(
@@ -222,7 +227,8 @@ morie_erdos_szekeres_check <- function(sequence, r = NULL, s = NULL) {
     stop("the theorem needs distinct values; ties were supplied.",
          call. = FALSE)
   }
-  inc <- rep(1L, n); dec <- rep(1L, n)
+  inc <- rep(1L, n)
+  dec <- rep(1L, n)
   for (i in seq_len(n)) {
     if (i > 1L) {
       for (j in seq_len(i - 1L)) {
@@ -234,10 +240,14 @@ morie_erdos_szekeres_check <- function(sequence, r = NULL, s = NULL) {
       }
     }
   }
-  li <- max(inc); ld <- max(dec)
-  threshold <- NULL; applies <- NULL; met <- NULL
+  li <- max(inc)
+  ld <- max(dec)
+  threshold <- NULL
+  applies <- NULL
+  met <- NULL
   if (!is.null(r) && !is.null(s)) {
-    r <- as.integer(r); s <- as.integer(s)
+    r <- as.integer(r)
+    s <- as.integer(s)
     if (is.na(r) || is.na(s) || r < 2L || s < 2L) {
       stop("r and s must be at least 2.", call. = FALSE)
     }
@@ -280,7 +290,9 @@ morie_happy_ending_quadrilateral <- function(points) {
   np <- nrow(p)
   trip <- utils::combn(np, 3L)
   for (t in seq_len(ncol(trip))) {
-    a <- p[trip[1, t], ]; b <- p[trip[2, t], ]; cc <- p[trip[3, t], ]
+    a <- p[trip[1, t], ]
+    b <- p[trip[2, t], ]
+    cc <- p[trip[3, t], ]
     if (.morie_cross3(a, b, cc) == 0) {
       stop(sprintf(
         "points (%d, %d), (%d, %d), (%d, %d) are collinear; the theorem assumes general position.",
@@ -322,7 +334,8 @@ morie_happy_ending_quadrilateral <- function(points) {
         break
       }
     }
-    if (!found_here) { all_five_ok <- FALSE; break }
+    if (!found_here) { all_five_ok <- FALSE
+    break }
   }
   list(found = !is.null(witness), witness = witness,
        every_five_subset = all_five_ok,
@@ -360,14 +373,16 @@ morie_helly_intervals <- function(intervals) {
   if (nrow(iv) >= 2L) {
     pr <- utils::combn(nrow(iv), 2L)
     for (k in seq_len(ncol(pr))) {
-      i <- pr[1, k]; j <- pr[2, k]
+      i <- pr[1, k]
+      j <- pr[2, k]
       if (iv[i, 2] < iv[j, 1] || iv[j, 2] < iv[i, 1]) {
         disjoint <- c(i, j) - 1L   # 0-based, matching Python
         break
       }
     }
   }
-  lo <- max(iv[, 1]); hi <- min(iv[, 2])
+  lo <- max(iv[, 1])
+  hi <- min(iv[, 2])
   common <- lo <= hi
   holds <- common || !is.null(disjoint)
   list(pairwise_intersecting = is.null(disjoint), disjoint_pair = disjoint,

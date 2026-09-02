@@ -355,7 +355,8 @@ morie_rsk_inverse <- function(p_tableau, q_tableau) {
   for (step in seq.int(n, 1L)) {
     row <- NA_integer_
     for (i in seq_along(q)) {
-      if (length(q[[i]]) && q[[i]][length(q[[i]])] == step) { row <- i; break }
+      if (length(q[[i]]) && q[[i]][length(q[[i]])] == step) { row <- i
+      break }
     }
     if (is.na(row)) {
       stop(sprintf("%d is not at the end of any row of Q.", step),
@@ -433,7 +434,8 @@ morie_burnside_orbit_count <- function(group_permutations, n_colours) {
       if (seen[i]) next
       count <- count + 1L
       j <- i
-      while (!seen[j]) { seen[j] <- TRUE; j <- el[j] + 1L }
+      while (!seen[j]) { seen[j] <- TRUE
+      j <- el[j] + 1L }
     }
     count
   }, integer(1))
@@ -484,7 +486,8 @@ morie_burnside_orbit_count <- function(group_permutations, n_colours) {
 #' @examples
 #' morie_cycle_index_necklaces(n = 5L, k = 5L)
 morie_cycle_index_necklaces <- function(n, k) {
-  n <- as.integer(n); k <- as.integer(k)
+  n <- as.integer(n)
+  k <- as.integer(k)
   if (is.na(n) || n < 1L) {
     stop(sprintf("n must be positive; got %s", n), call. = FALSE)
   }
@@ -492,7 +495,9 @@ morie_cycle_index_necklaces <- function(n, k) {
     stop(sprintf("k must be positive; got %s", k), call. = FALSE)
   }
   phi <- function(m) {
-    r <- m; mm <- m; p <- 2L
+    r <- m
+    mm <- m
+    p <- 2L
     while (p * p <= mm) {
       if (mm %% p == 0L) {
         while (mm %% p == 0L) mm <- mm %/% p

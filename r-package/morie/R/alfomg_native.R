@@ -100,7 +100,10 @@ morie_alfomg_softmax <- function(logits) {
 #' @return A list of lists of numeric vectors.
 #' @export
 morie_alfomg_opm <- function(msa) {
-  sh <- .alfomg_shape(msa); s <- sh[1]; r <- sh[2]; cc <- sh[3]
+  sh <- .alfomg_shape(msa)
+  s <- sh[1]
+  r <- sh[2]
+  cc <- sh[3]
   out <- vector("list", r)
   for (i in seq_len(r)) {
     row <- vector("list", r)
@@ -164,17 +167,22 @@ morie_alfomg_bias <- function(pair, w = NULL) {
 #' @export
 morie_alfomg_row_attention <- function(msa, bias, scale = NULL,
                                        gate = NULL) {
-  sh <- .alfomg_shape(msa); s <- sh[1]; r <- sh[2]; cc <- sh[3]
+  sh <- .alfomg_shape(msa)
+  s <- sh[1]
+  r <- sh[2]
+  cc <- sh[3]
   if (is.null(scale)) scale <- 1 / sqrt(as.numeric(cc))
   scale <- as.numeric(scale)
   if (nrow(bias) != r || ncol(bias) != r)
     stop("the bias must be one scalar per ordered pair of positions")
   if (!is.null(gate) && length(gate) != cc)
     stop("the gate must be one multiplier per channel")
-  attn <- vector("list", s); out <- vector("list", s)
+  attn <- vector("list", s)
+  out <- vector("list", s)
   for (k in seq_len(s)) {
     sq <- msa[[k]]
-    A <- vector("list", r); O <- vector("list", r)
+    A <- vector("list", r)
+    O <- vector("list", r)
     for (i in seq_len(r)) {
       logits <- vapply(seq_len(r),
                        function(j) .w3_dot(sq[[i]], sq[[j]]) * scale +
@@ -187,7 +195,8 @@ morie_alfomg_row_attention <- function(msa, bias, scale = NULL,
       if (!is.null(gate)) row <- row * as.numeric(gate)
       O[[i]] <- row
     }
-    attn[[k]] <- A; out[[k]] <- O
+    attn[[k]] <- A
+    out[[k]] <- O
   }
   list(attn = attn, out = out)
 }
@@ -210,7 +219,10 @@ morie_alfomg_row_attention <- function(msa, bias, scale = NULL,
 #' @export
 morie_alfomg <- function(msa, pair, w_bias = NULL, w_opm = NULL,
                          scale = NULL, gate = NULL) {
-  sh <- .alfomg_shape(msa); s <- sh[1]; r <- sh[2]; cc <- sh[3]
+  sh <- .alfomg_shape(msa)
+  s <- sh[1]
+  r <- sh[2]
+  cc <- sh[3]
   if (length(pair) != r || any(vapply(pair, length, integer(1)) != r))
     stop("the pair representation must be square over the alignment's ",
          "positions")

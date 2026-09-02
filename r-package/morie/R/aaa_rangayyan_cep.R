@@ -58,11 +58,14 @@
 .morie_rg_unwrap <- function(phase) {
   out <- numeric(length(phase))
   if (!length(phase)) return(out)
-  out[1] <- phase[1]; off <- 0
+  out[1] <- phase[1]
+  off <- 0
   for (i in seq_along(phase)[-1]) {
     d <- phase[i] - phase[i - 1L]
-    while (d > pi) { off <- off - 2 * pi; d <- d - 2 * pi }
-    while (d < -pi) { off <- off + 2 * pi; d <- d + 2 * pi }
+    while (d > pi) { off <- off - 2 * pi
+    d <- d - 2 * pi }
+    while (d < -pi) { off <- off + 2 * pi
+    d <- d + 2 * pi }
     out[i] <- phase[i] + off
   }
   out
@@ -164,7 +167,8 @@ CCepX <- function(x) {
 MultModel <- function(x, p) {
   # eq (4.58): y(t) = x(t) p(t), the model a multiplicative homomorphic
   # system addresses.
-  xs <- as.numeric(x); ps <- as.numeric(p)
+  xs <- as.numeric(x)
+  ps <- as.numeric(p)
   if (length(xs) != length(ps)) stop("x and p must have the same length")
   if (!length(xs)) stop("need at least one sample")
   list(y = xs * ps, x = xs, p = ps, n = length(xs),
@@ -185,13 +189,15 @@ LogSep <- function(x, p) {
   # eq (4.59): log[y] = log[x] + log[p], for x != 0 and p != 0.  The
   # book states that side condition, so a zero is rejected rather than
   # giving -Inf; a negative factor needs the complex-log route.
-  xs <- as.numeric(x); ps <- as.numeric(p)
+  xs <- as.numeric(x)
+  ps <- as.numeric(p)
   if (length(xs) != length(ps)) stop("x and p must have the same length")
   if (!length(xs)) stop("need at least one sample")
   if (any(xs <= 0) || any(ps <= 0))
     stop("eq. (4.59) needs x(t) != 0 and p(t) != 0; the real logarithm ",
          "also needs them positive")
-  lhs <- log(xs * ps); rhs <- log(xs) + log(ps)
+  lhs <- log(xs * ps)
+  rhs <- log(xs) + log(ps)
   gap <- max(abs(lhs - rhs))
   list(log_y = lhs, log_x = log(xs), log_p = log(ps), sum = rhs,
        max_difference = gap, additive = gap <= 1e-12 * (1 + max(abs(lhs))),
@@ -209,7 +215,8 @@ LogSep <- function(x, p) {
 ConvModel <- function(x, h) {
   # eq (4.61): y(t) = x(t) * h(t), the model homomorphic DEconvolution
   # addresses.
-  xs <- as.numeric(x); hs <- as.numeric(h)
+  xs <- as.numeric(x)
+  hs <- as.numeric(h)
   if (!length(xs) || !length(hs))
     stop("both signals need at least one sample")
   y <- .morie_rg_conv(xs, hs)
@@ -230,7 +237,8 @@ CCepSum <- function(x, h) {
   # eq (4.66): y_hat = x_hat + h_hat.  The residual is not exactly zero
   # because the cepstrum is of infinite duration (eq 4.73) and the DFT
   # truncates it; the size of the residual is the useful number.
-  xs <- as.numeric(x); hs <- as.numeric(h)
+  xs <- as.numeric(x)
+  hs <- as.numeric(h)
   if (!length(xs) || !length(hs))
     stop("both signals need at least one sample")
   n <- length(xs) + length(hs) - 1L
@@ -239,7 +247,8 @@ CCepSum <- function(x, h) {
   cx <- CCepstrum(c(xs, numeric(n - length(xs))))$cepstrum
   ch <- CCepstrum(c(hs, numeric(n - length(hs))))$cepstrum
   resid <- cy - cx - ch
-  scale <- max(abs(cy)); if (scale == 0) scale <- 1
+  scale <- max(abs(cy))
+  if (scale == 0) scale <- 1
   list(y = y, cepstrum_y = cy, cepstrum_x = cx, cepstrum_h = ch,
        residual = resid, max_residual = max(abs(resid)),
        relative_residual = max(abs(resid)) / scale,
@@ -271,8 +280,10 @@ RatZ <- function(gain, r, zeros_in, zeros_out, poles_in, poles_out,
   # closed form for each group, and it decides whether the cepstrum is
   # causal, anticausal or two-sided.  Membership is checked, since an
   # "inside" root with modulus above 1 makes the series diverge.
-  ai <- as.complex(zeros_in); bo <- as.complex(zeros_out)
-  ci <- as.complex(poles_in); do_ <- as.complex(poles_out)
+  ai <- as.complex(zeros_in)
+  bo <- as.complex(zeros_out)
+  ci <- as.complex(poles_in)
+  do_ <- as.complex(poles_out)
   for (nm in c("zeros_in", "poles_in")) {
     g <- if (nm == "zeros_in") ai else ci
     if (any(Mod(g) >= 1)) stop(nm, " must lie inside the unit circle")
@@ -288,7 +299,8 @@ RatZ <- function(gain, r, zeros_in, zeros_out, poles_in, poles_out,
               minimum_phase = !length(bo) && !length(do_),
               maximum_phase = !length(ai) && !length(ci),
               method = "Rangayyan (2024) the rational form expanded at eq. (4.68)")
-  if (is.null(z)) { out$X <- NULL; return(out) }
+  if (is.null(z)) { out$X <- NULL
+  return(out) }
   pts <- as.complex(z)
   if (any(pts == 0)) stop("z = 0 is a pole of the z^-1 factors")
   vals <- vapply(pts, function(zv) {
@@ -328,8 +340,10 @@ CCepClosed <- function(gain, zeros_in, zeros_out, poles_in, poles_out,
   # minimum-phase signal has a CAUSAL cepstrum, a maximum-phase one an
   # anticausal cepstrum, and the cepstrum is of infinite duration even
   # for a finite signal -- so nmax is a truncation, not the whole thing.
-  ai <- as.complex(zeros_in); bo <- as.complex(zeros_out)
-  ci <- as.complex(poles_in); do_ <- as.complex(poles_out)
+  ai <- as.complex(zeros_in)
+  bo <- as.complex(zeros_out)
+  ci <- as.complex(poles_in)
+  do_ <- as.complex(poles_out)
   k <- as.integer(nmax)
   if (k < 1L) stop("nmax must be positive")
   g <- Mod(as.complex(gain))
@@ -473,7 +487,8 @@ PCepSum <- function(x, h, square = FALSE) {
   # squaring of eq (4.81) is omitted.  square defaults to FALSE here for
   # that reason; TRUE reproduces the book's definition and shows how
   # large the neglected cross-term is on the caller's own data.
-  xs <- as.numeric(x); hs <- as.numeric(h)
+  xs <- as.numeric(x)
+  hs <- as.numeric(h)
   if (!length(xs) || !length(hs))
     stop("both signals need at least one sample")
   n <- length(xs) + length(hs) - 1L
@@ -482,7 +497,8 @@ PCepSum <- function(x, h, square = FALSE) {
   cx <- PCepstrum(c(xs, numeric(n - length(xs))), square = square)$cepstrum
   ch <- PCepstrum(c(hs, numeric(n - length(hs))), square = square)$cepstrum
   resid <- cy - cx - ch
-  scale <- max(abs(cy)); if (scale == 0) scale <- 1
+  scale <- max(abs(cy))
+  if (scale == 0) scale <- 1
   list(y = y, cepstrum_y = cy, cepstrum_x = cx, cepstrum_h = ch,
        residual = resid, max_residual = max(abs(resid)),
        relative_residual = max(abs(resid)) / scale,
@@ -512,7 +528,8 @@ PCepRel <- function(x) {
   folded <- (c0 + c0[((-idx) %% n) + 1L])^2
   direct <- PCepstrum(xs, square = TRUE)$cepstrum
   resid <- folded - direct
-  scale <- max(abs(direct)); if (scale == 0) scale <- 1
+  scale <- max(abs(direct))
+  if (scale == 0) scale <- 1
   list(from_complex = folded, direct = direct, residual = resid,
        max_residual = max(abs(resid)),
        relative_residual = max(abs(resid)) / scale,
@@ -616,7 +633,8 @@ HomDeconv <- function(y, cutoff, keep = "low") {
   lf <- Lifter(cep$cepstrum, high = cutoff, low = cutoff, keep = keep)$liftered
   f <- .morie_rg_dft(lf)
   m <- exp(f$re)
-  out_re <- m * cos(f$im); out_im <- m * sin(f$im)
+  out_re <- m * cos(f$im)
+  out_im <- m * sin(f$im)
   list(y = .morie_rg_idft_re(out_re, out_im), cepstrum = cep$cepstrum,
        liftered = lf, cutoff = as.integer(cutoff), keep = keep, n = n,
        linear_phase_removed = cep$linear_phase_removed,
@@ -656,7 +674,8 @@ HomPred <- function(y, cutoff) {
   conv <- vapply(idx, function(i)
     .morie_fsum(low * high[((i - idx) %% n) + 1L]), numeric(1))
   err <- max(abs(conv - ys))
-  scale <- max(abs(ys)); if (scale == 0) scale <- 1
+  scale <- max(abs(ys))
+  if (scale == 0) scale <- 1
   list(low_time = low, high_time = high, cutoff = k, n = n,
        reconstruction = conv, reconstruction_error = err,
        relative_error = err / scale,
@@ -750,7 +769,8 @@ MinPhase <- function(x) {
   d <- .morie_rg_dft(y)
   dst <- sqrt(d$re^2 + d$im^2)
   gap <- max(abs(src - dst))
-  scale <- max(src); if (scale == 0) scale <- 1
+  scale <- max(src)
+  if (scale == 0) scale <- 1
   list(y = y, cepstrum = cc, n = n, magnitude_error = gap,
        magnitude_preserved = gap <= 1e-6 * scale,
        energy_front_loaded = sum(y[seq_len(half)]^2) >=
@@ -786,7 +806,8 @@ Mfcc <- function(x, fs, n_filters = 26, n_coeffs = 13, fmin = 0,
   fsv <- as.numeric(fs)
   if (fsv <= 0) stop("fs must be positive")
   if (n < 8L) stop("need at least eight samples")
-  nf <- as.integer(n_filters); nc <- as.integer(n_coeffs)
+  nf <- as.integer(n_filters)
+  nc <- as.integer(n_coeffs)
   if (nf < 2L) stop("need at least two mel filters")
   if (nc < 1L || nc > nf) stop("n_coeffs must lie in 1..n_filters")
   top <- if (is.null(fmax)) fsv / 2 else as.numeric(fmax)
@@ -798,10 +819,13 @@ Mfcc <- function(x, fs, n_filters = 26, n_coeffs = 13, fmin = 0,
   freqs <- (seq_len(half) - 1L) * fsv / n
   to_mel <- function(v) 2595 * log10(1 + v / 700)
   from_mel <- function(v) 700 * (10^(v / 2595) - 1)
-  m_lo <- to_mel(fmin); m_hi <- to_mel(top)
+  m_lo <- to_mel(fmin)
+  m_hi <- to_mel(top)
   edges <- from_mel(m_lo + (m_hi - m_lo) * (0:(nf + 1L)) / (nf + 1L))
   energies <- vapply(seq_len(nf), function(i) {
-    lo <- edges[i]; mid <- edges[i + 1L]; hi <- edges[i + 2L]
+    lo <- edges[i]
+    mid <- edges[i + 1L]
+    hi <- edges[i + 2L]
     up <- freqs >= lo & freqs <= mid & mid > lo
     dn <- freqs > mid & freqs <= hi & hi > mid
     .morie_fsum(power[up] * (freqs[up] - lo) / (mid - lo)) +

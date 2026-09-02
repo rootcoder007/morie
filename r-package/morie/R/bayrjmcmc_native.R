@@ -69,12 +69,15 @@
     best <- abs(m[col, col])
     if (col < n) {
       for (r in (col + 1L):n) {
-        if (abs(m[r, col]) > best) { piv <- r; best <- abs(m[r, col]) }
+        if (abs(m[r, col]) > best) { piv <- r
+        best <- abs(m[r, col]) }
       }
     }
     if (best < 1e-300) return(-Inf)
     if (piv != col) {
-      tmp <- m[col, ]; m[col, ] <- m[piv, ]; m[piv, ] <- tmp
+      tmp <- m[col, ]
+      m[col, ] <- m[piv, ]
+      m[piv, ] <- tmp
     }
     total <- total + log(abs(m[col, col]))
     if (col < n) {
@@ -110,10 +113,12 @@ numeric_log_jacobian <- function(mapfun, z, h = 1e-6) {
   jac <- matrix(0.0, n, n)
   for (j in seq_len(n)) {
     step <- h * max(1.0, abs(z[j]))
-    zp <- z; zm <- z
+    zp <- z
+    zm <- z
     zp[j] <- zp[j] + step
     zm[j] <- zm[j] - step
-    fp <- mapfun(zp); fm <- mapfun(zm)
+    fp <- mapfun(zp)
+    fm <- mapfun(zm)
     jac[, j] <- (fp - fm) / (2.0 * step)
   }
   .logabsdet(jac)
@@ -211,7 +216,8 @@ rj_log_acceptance <- function(logpost_from, logpost_to, log_j_from,
 .rw_within <- function(theta, uni, scale) {
   out <- numeric(length(theta))
   for (i in seq_along(theta)) {
-    u1 <- uni(); u2 <- uni()
+    u1 <- uni()
+    u2 <- uni()
     z <- sqrt(-2.0 * log(u1)) * cos(2.0 * pi * u2)
     out[i] <- theta[i] + scale * z
   }
@@ -289,15 +295,19 @@ reversible_jump_mcmc <- function(models, moves, init_model, init_theta = numeric
 
   for (it in seq_len(n_iter)) {
     op <- avail[[cur]]
-    opts <- op$opts; tot <- op$tot
+    opts <- op$opts
+    tot <- op$tot
     pick <- uni() * tot
     acc <- 0.0
     choice <- opts[[length(opts)]]
     for (k in seq_along(opts)) {
       acc <- acc + opts[[k]]$w
-      if (pick < acc) { choice <- opts[[k]]; break }
+      if (pick < acc) { choice <- opts[[k]]
+      break }
     }
-    kind <- choice$kind; mv <- choice$mv; w <- choice$w
+    kind <- choice$kind
+    mv <- choice$mv
+    w <- choice$w
 
     if (kind == "within") {
       label <- sprintf("within:%s", cur)
@@ -305,14 +315,16 @@ reversible_jump_mcmc <- function(models, moves, init_model, init_theta = numeric
       if (length(theta) > 0L) {
         if (!is.null(within) && !is.null(within[[cur]])) {
           tmp <- within[[cur]](theta, uni)
-          prop <- as.numeric(tmp[[1]]); log_ratio <- as.numeric(tmp[[2]])
+          prop <- as.numeric(tmp[[1]])
+          log_ratio <- as.numeric(tmp[[2]])
         } else {
           prop <- .rw_within(theta, uni, within_scale)
           log_ratio <- 0.0
         }
         lp_new <- as.numeric(models[[cur]]$logpost(prop))
         if (log(uni()) < (lp_new - logp) + log_ratio) {
-          theta <- prop; logp <- lp_new
+          theta <- prop
+          logp <- lp_new
           accepted[[label]] <- (accepted[[label]] %||% 0L) + 1L
         }
       }
@@ -324,7 +336,8 @@ reversible_jump_mcmc <- function(models, moves, init_model, init_theta = numeric
         stop(sprintf("bayrjmcmc: move %s proposed %d values of u but declares n_u = %d",
                      label, length(u), as.integer(mv$n_u)))
       tmp <- mv$transform(theta, u)
-      theta2 <- as.numeric(tmp[[1]]); u2 <- as.numeric(tmp[[2]])
+      theta2 <- as.numeric(tmp[[1]])
+      u2 <- as.numeric(tmp[[2]])
       dim2 <- as.integer(models[[mv$to]]$dim)
       if (length(theta2) != dim2 || length(u2) != as.integer(mv$n_u_rev))
         stop(sprintf("bayrjmcmc: move %s produced theta of length %d and u2 of length %d; the model has dim %d and the move declares n_u_rev = %d",
@@ -361,7 +374,9 @@ reversible_jump_mcmc <- function(models, moves, init_model, init_theta = numeric
       log_alpha <- rj_log_acceptance(logp, lp_new, log_j_from, log_j_to,
                                      logq_u, logq_rev, logjac)
       if (log(uni()) < log_alpha) {
-        cur <- mv$to; theta <- theta2; logp <- lp_new
+        cur <- mv$to
+        theta <- theta2
+        logp <- lp_new
         accepted[[label]] <- (accepted[[label]] %||% 0L) + 1L
       }
     }
@@ -454,11 +469,14 @@ changepoint_move_probabilities <- function(lam, k_max, cap = 0.9) {
   cfac <- if (worst > 0.0) cap / worst else cap
   b <- cfac * raw_b
   d <- cfac * raw_d
-  eta <- numeric(k_max + 1L); pi_ <- numeric(k_max + 1L)
+  eta <- numeric(k_max + 1L)
+  pi_ <- numeric(k_max + 1L)
   for (k in seq_len(k_max + 1L) - 1L) {
     rest <- 1.0 - b[k + 1L] - d[k + 1L]
-    if (k == 0L) { eta[k + 1L] <- rest; pi_[k + 1L] <- 0.0 }
-    else { eta[k + 1L] <- 0.5 * rest; pi_[k + 1L] <- 0.5 * rest }
+    if (k == 0L) { eta[k + 1L] <- rest
+    pi_[k + 1L] <- 0.0 }
+    else { eta[k + 1L] <- 0.5 * rest
+    pi_[k + 1L] <- 0.5 * rest }
   }
   list(eta = eta, pi = pi_, b = b, d = d, c = cfac)
 }
@@ -565,10 +583,12 @@ changepoint_rjmcmc <- function(y = numeric(0), L = 1.0, n_iter = 40000,
                                keep_chain = FALSE) {
   L <- as.numeric(L)
   if (L <= 0.0) stop("bayrjmcmc: L must be positive")
-  alpha <- as.numeric(alpha); beta <- as.numeric(beta)
+  alpha <- as.numeric(alpha)
+  beta <- as.numeric(beta)
   if (alpha <= 0.0 || beta <= 0.0)
     stop("bayrjmcmc: alpha and beta must be positive")
-  n_iter <- as.integer(n_iter); burn_in <- as.integer(burn_in)
+  n_iter <- as.integer(n_iter)
+  burn_in <- as.integer(burn_in)
   if (n_iter < 1) stop("bayrjmcmc: n_iter must be at least 1")
   if (burn_in < 0 || burn_in >= n_iter)
     stop("bayrjmcmc: burn_in must be in [0, n_iter)")
@@ -579,7 +599,11 @@ changepoint_rjmcmc <- function(y = numeric(0), L = 1.0, n_iter = 40000,
     if (v < 0.0 || v > L)
       stop(sprintf("bayrjmcmc: point %g lies outside [0, %g]", v, L))
   mp <- changepoint_move_probabilities(lam, k_max, cap = cap)
-  eta <- mp$eta; pi_ <- mp$pi; b <- mp$b; d <- mp$d; cfac <- mp$c
+  eta <- mp$eta
+  pi_ <- mp$pi
+  b <- mp$b
+  d <- mp$d
+  cfac <- mp$c
   k_init <- as.integer(k_init)
   if (k_init < 0 || k_init > k_max)
     stop("bayrjmcmc: k_init must be in [0, k_max]")
@@ -598,8 +622,11 @@ changepoint_rjmcmc <- function(y = numeric(0), L = 1.0, n_iter = 40000,
   acc <- new.env(hash = TRUE, parent = emptyenv())
   for (k in c("height", "position", "birth", "death")) acc[[k]] <- 0L
   chain <- list()
-  s1_sum <- 0.0; s1_sq <- 0.0; s1_n <- 0L
-  h_sum <- 0.0; h_n <- 0L
+  s1_sum <- 0.0
+  s1_sq <- 0.0
+  s1_n <- 0L
+  h_sum <- 0.0
+  h_n <- 0L
 
   for (it in seq_len(n_iter)) {
     k <- length(s)
@@ -613,7 +640,8 @@ changepoint_rjmcmc <- function(y = numeric(0), L = 1.0, n_iter = 40000,
       while (j < length(edges) - 1L && s_star >= edges[j + 1L]) j <- j + 1L
       u <- uni()
       h_split <- birth_split_heights(h[j], u, edges[j], s_star, edges[j + 1L])
-      hl <- h_split[1]; hr <- h_split[2]
+      hl <- h_split[1]
+      hr <- h_split[2]
       s_new <- c(s[seq_len(j - 1L)], s_star, (if (j <= length(s)) s[j:length(s)] else numeric(0)))
       h_new <- c(h[seq_len(j - 1L)], hl, hr, (if (j + 1L <= length(h)) h[(j + 1L):length(h)] else numeric(0)))
       new_ll <- loglik_fn(s_new, h_new)
@@ -630,7 +658,9 @@ changepoint_rjmcmc <- function(y = numeric(0), L = 1.0, n_iter = 40000,
       log_jac <- birth_log_jacobian(h[j], hl, hr)
       log_alpha <- (new_ll - cur_ll) + log_prior + log_prop + log_jac
       if (k + 1L <= k_max && log(uni()) < log_alpha) {
-        s <- s_new; h <- h_new; cur_ll <- new_ll
+        s <- s_new
+        h <- h_new
+        cur_ll <- new_ll
         acc[["birth"]] <- acc[["birth"]] + 1L
       }
     } else if (pick < b[k + 1L] + d[k + 1L]) {
@@ -657,7 +687,9 @@ changepoint_rjmcmc <- function(y = numeric(0), L = 1.0, n_iter = 40000,
       log_jac <- birth_log_jacobian(h_merged, h[i + 1L], h[i + 2L])
       log_alpha <- -((cur_ll - new_ll) + log_prior + log_prop + log_jac)
       if (log(uni()) < log_alpha) {
-        s <- s_new; h <- h_new; cur_ll <- new_ll
+        s <- s_new
+        h <- h_new
+        cur_ll <- new_ll
         acc[["death"]] <- acc[["death"]] + 1L
       }
     } else if (pick < b[k + 1L] + d[k + 1L] + eta[k + 1L]) {
@@ -670,7 +702,8 @@ changepoint_rjmcmc <- function(y = numeric(0), L = 1.0, n_iter = 40000,
       new_ll <- loglik_fn(s, h_new)
       log_alpha <- ((new_ll - cur_ll) + alpha * log(hj / h[j + 1L]) - beta * (hj - h[j + 1L]))
       if (log(uni()) < log_alpha) {
-        h <- h_new; cur_ll <- new_ll
+        h <- h_new
+        cur_ll <- new_ll
         acc[["height"]] <- acc[["height"]] + 1L
       }
     } else if (k >= 1L) {
@@ -687,7 +720,8 @@ changepoint_rjmcmc <- function(y = numeric(0), L = 1.0, n_iter = 40000,
                     + log((hi - s_star) * (s_star - lo)
                           / ((hi - s[j + 1L]) * (s[j + 1L] - lo))))
       if (log(uni()) < log_alpha) {
-        s <- s_new; cur_ll <- new_ll
+        s <- s_new
+        cur_ll <- new_ll
         acc[["position"]] <- acc[["position"]] + 1L
       }
     }
@@ -699,7 +733,8 @@ changepoint_rjmcmc <- function(y = numeric(0), L = 1.0, n_iter = 40000,
         s1_sq <- s1_sq + s[1L] * s[1L]
         s1_n <- s1_n + 1L
       }
-      for (v in h) { h_sum <- h_sum + v; h_n <- h_n + 1L }
+      for (v in h) { h_sum <- h_sum + v
+      h_n <- h_n + 1L }
       if (keep_chain && ((it - burn_in - 1L) %% thin) == 0L)
         chain[[length(chain) + 1L]] <- list(s = list(s), h = list(h))
     }

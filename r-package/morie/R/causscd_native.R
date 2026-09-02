@@ -132,7 +132,11 @@
 #' @export
 unit_weights <- function(Y, treated, t_post, zeta = NULL) {
   g <- .causscd_check_grid(Y, treated, t_post)
-  Y <- g$Y; n <- g$n; T <- g$T; tr <- g$tr; t_post <- g$t_post
+  Y <- g$Y
+  n <- g$n
+  T <- g$T
+  tr <- g$tr
+  t_post <- g$t_post
   co <- which(!tr)
   trt <- which(tr)
   pre <- seq_len(t_post) - 1L
@@ -174,7 +178,11 @@ unit_weights <- function(Y, treated, t_post, zeta = NULL) {
 #' @export
 time_weights <- function(Y, treated, t_post) {
   g <- .causscd_check_grid(Y, treated, t_post)
-  Y <- g$Y; n <- g$n; T <- g$T; tr <- g$tr; t_post <- g$t_post
+  Y <- g$Y
+  n <- g$n
+  T <- g$T
+  tr <- g$tr
+  t_post <- g$t_post
   co <- which(!tr)
   post <- seq.int(t_post + 1L, T)
   target <- rowSums(Y[co, post, drop = FALSE]) / length(post)
@@ -201,7 +209,11 @@ time_weights <- function(Y, treated, t_post) {
 #' @export
 sdid <- function(Y, treated, t_post, method = "sdid", zeta = NULL) {
   g <- .causscd_check_grid(Y, treated, t_post)
-  Y <- g$Y; n <- g$n; T <- g$T; tr <- g$tr; t_post <- g$t_post
+  Y <- g$Y
+  n <- g$n
+  T <- g$T
+  tr <- g$tr
+  t_post <- g$t_post
   if (!(method %in% c("sdid", "did", "sc")))
     stop("causscd: method must be 'sdid', 'did' or 'sc'")
   co <- which(!tr)

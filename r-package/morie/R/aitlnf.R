@@ -21,7 +21,9 @@
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 #' Lgtnfit(D)
 Lgtnfit <- function(X, ddof = 1) {
-  X <- as.matrix(X); n <- nrow(X); D <- ncol(X)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  D <- ncol(X)
   if (n < 2L) stop("at least two compositions are required")
   if (D < 2L) stop("a composition needs at least two parts")
   if (any(X <= 0)) stop("compositions must be strictly positive")

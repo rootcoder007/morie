@@ -95,7 +95,8 @@ morie_optimal_alpha <- function(pscore, sigma2_treated = NULL,
 #' @export
 morie_optimal_alpha_att <- function(pscore, treated, tol = 1e-12,
                                     max_iter = 200) {
-  e <- as.numeric(pscore); w <- as.integer(treated)
+  e <- as.numeric(pscore)
+  w <- as.integer(treated)
   n <- length(e)
   if (n != length(w)) stop("tmlefp: one treatment indicator per unit")
   if (any(!(e > 0 & e < 1)))
@@ -113,7 +114,8 @@ morie_optimal_alpha_att <- function(pscore, treated, tol = 1e-12,
     if (length(sel) == 0L)
       stop("tmlefp: the fixed point excluded every treated unit")
     new <- 2 * sum(sel) / length(sel)
-    if (abs(new - thr) < tol * max(1, abs(thr))) { thr <- new; break }
+    if (abs(new - thr) < tol * max(1, abs(thr))) { thr <- new
+    break }
     thr <- new
   }
   alpha_t <- 1 - 1 / thr
@@ -189,7 +191,9 @@ morie_owate_weights <- function(pscore, sigma2_treated = NULL,
 morie_tmlefp <- function(y, treatment, pscore,
                           sigma2_treated = NULL, sigma2_control = NULL,
                           estimand = "ate") {
-  y <- as.numeric(y); w <- as.integer(treatment); e <- as.numeric(pscore)
+  y <- as.numeric(y)
+  w <- as.integer(treatment)
+  e <- as.numeric(pscore)
   n <- length(y)
   if (!(n == length(w) && length(w) == length(e)))
     stop("tmlefp: y, treatment and pscore must have the same length")
@@ -198,10 +202,14 @@ morie_tmlefp <- function(y, treatment, pscore,
     stop("tmlefp: estimand must be 'ate' or 'att'")
   if (estimand == "ate") {
     rule <- morie_optimal_alpha(e, sigma2_treated, sigma2_control)
-    keep <- rule$keep; alpha <- rule$alpha; gamma <- rule$gamma
+    keep <- rule$keep
+    alpha <- rule$alpha
+    gamma <- rule$gamma
   } else {
     rule <- morie_optimal_alpha_att(e, w)
-    keep <- rule$keep; alpha <- rule$alpha_t; gamma <- NaN
+    keep <- rule$keep
+    alpha <- rule$alpha_t
+    gamma <- NaN
   }
   k <- if (is.null(sigma2_treated) && is.null(sigma2_control)) {
     1 / (e * (1 - e))

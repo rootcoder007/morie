@@ -96,7 +96,8 @@
     XtWz <- crossprod(X, W * z)
     b_new <- tryCatch(solve(XtWX, XtWz),
                       error = function(e) solve(XtWX + 1e-8 * diag(p), XtWz))
-    if (max(abs(b_new - b)) < tol) { b <- b_new; break }
+    if (max(abs(b_new - b)) < tol) { b <- b_new
+    break }
     b <- b_new
   }
   b
@@ -182,7 +183,9 @@
   gH <- gL <- numeric(n)
   for (i in seq_len(n)) {
     tot <- pH[i] + pL[i] + pO[i]
-    if (tot <= 0) { gH[i] <- 0.5; gL[i] <- 0.5; next }
+    if (tot <= 0) { gH[i] <- 0.5
+    gL[i] <- 0.5
+    next }
     gH[i] <- min(max(pH[i] / tot, trim), 1 - trim)
     gL[i] <- min(max(pL[i] / tot, trim), 1 - trim)
   }
@@ -321,7 +324,8 @@ morie_tmle_data_adaptive <- function(y, D, X, candidate_strata = NULL,
                                      level = 0.95, bounds = NULL) {
   if (!(method %in% .TMLDTA_METHODS))
     stop("tmldta: method must be one of cv-tmle/sample-split/naive")
-  yv <- as.numeric(y); Av <- as.numeric(D)
+  yv <- as.numeric(y)
+  Av <- as.numeric(D)
   n <- length(yv)
   if (length(Av) != n) stop("tmldta: outcome/exposure length mismatch")
   Wm <- if (is.null(X)) matrix(0, n, 0) else as.matrix(X)
@@ -338,8 +342,10 @@ morie_tmle_data_adaptive <- function(y, D, X, candidate_strata = NULL,
   missing_ <- setdiff(lv, Av)
   if (length(missing_) > 0L)
     stop("tmldta: candidate levels never occur")
-  if (is.null(bounds)) { lo <- min(yv); hi <- max(yv) }
-  else { lo <- as.numeric(bounds[1]); hi <- as.numeric(bounds[2]) }
+  if (is.null(bounds)) { lo <- min(yv)
+  hi <- max(yv) }
+  else { lo <- as.numeric(bounds[1])
+  hi <- as.numeric(bounds[2]) }
   rng <- hi - lo
   if (rng <= 0) stop("tmldta: the outcome has no range")
   if (any(yv < lo - 1e-12 | yv > hi + 1e-12))
@@ -359,7 +365,10 @@ morie_tmle_data_adaptive <- function(y, D, X, candidate_strata = NULL,
     eps_all <- c(0)
   } else {
     folds <- .folds_dta(n, n_folds)
-    splits <- list(); per_split <- list(); ics <- list(); eps_all <- c()
+    splits <- list()
+    per_split <- list()
+    ics <- list()
+    eps_all <- c()
     for (est in folds) {
       gen <- setdiff(all_rows, est)
       if (length(gen) == 0L || length(est) == 0L) next
@@ -430,7 +439,8 @@ morie_tmle_data_adaptive <- function(y, D, X, candidate_strata = NULL,
 morie_variable_importance <- function(y, X, candidate_strata = NULL,
                                       method = "cv-tmle", n_folds = 10,
                                       names = NULL, ...) {
-  Xm <- as.matrix(X); n <- nrow(Xm)
+  Xm <- as.matrix(X)
+  n <- nrow(Xm)
   p <- ncol(Xm)
   if (p < 2L) stop("variable_importance: need at least 2 columns")
   nm <- if (is.null(names)) paste0("X", seq_len(p)) else names

@@ -140,7 +140,8 @@ node2v_walk <- function(adj, start, length, p = 1, q = 1, rng = NULL,
     nxt <- tp$nodes[length(tp$nodes)]
     for (i in seq_along(tp$nodes)) {
       acc <- acc + tp$probabilities[i]
-      if (u <= acc) { nxt <- tp$nodes[i]; break }
+      if (u <= acc) { nxt <- tp$nodes[i]
+      break }
     }
     prev <- path[length(path)]
     path <- c(path, nxt)

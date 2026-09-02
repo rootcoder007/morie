@@ -47,7 +47,8 @@ vector_norm <- function(v) {
     out
   } else {
     # v is a list of length d, each element a length-f vector
-    d <- length(a); f <- length(a[[1]])
+    d <- length(a)
+    f <- length(a[[1]])
     out <- numeric(f)
     for (k in seq_len(f))
       out[k] <- sqrt(sum(sapply(a, function(r) r[k]) ^ 2))
@@ -126,20 +127,24 @@ gated_update <- function(s, v, U, V, phi) {
   sv <- as.numeric(s)
   Vv <- as.matrix(v)
   if (nrow(Vv) != 3L) Vv <- t(Vv)
-  D <- nrow(Vv); F <- ncol(Vv)
-  Um <- as.matrix(U); Vm <- as.matrix(V)
+  D <- nrow(Vv)
+  F <- ncol(Vv)
+  Um <- as.matrix(U)
+  Vm <- as.matrix(V)
   if (nrow(Um) != F) Um <- t(Um)
   if (nrow(Vm) != F) Vm <- t(Vm)
   Uv <- matrix(0, nrow = D, ncol = F)
   Vw <- matrix(0, nrow = D, ncol = F)
   for (a in seq_len(D)) {
     for (f in seq_len(F)) {
-      acc1 <- 0; acc2 <- 0
+      acc1 <- 0
+      acc2 <- 0
       for (g in seq_len(F)) {
         acc1 <- acc1 + Um[f, g] * Vv[a, g]
         acc2 <- acc2 + Vm[f, g] * Vv[a, g]
       }
-      Uv[a, f] <- acc1; Vw[a, f] <- acc2
+      Uv[a, f] <- acc1
+      Vw[a, f] <- acc2
     }
   }
   dot <- numeric(F)

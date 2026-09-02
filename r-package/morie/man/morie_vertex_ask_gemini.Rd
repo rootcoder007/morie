@@ -38,7 +38,7 @@ endpoint \verb{:generateContent} and returns the concatenated text from
 the first candidate.
 }
 \examples{
-\donttest{
+\dontrun{
 ans <- morie_vertex_ask_gemini("Summarize recent assault trends in Toronto.")
 }
 }

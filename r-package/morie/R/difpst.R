@@ -29,26 +29,36 @@ Difpst <- function(X, group, focal = 1) {
   g <- group
   if (length(g) != n) stop("X and group must have the same length")
   if (any(!(M %in% c(0, 1)))) stop("responses must be 0/1")
-  fi <- which(g == focal); ri <- which(g != focal)
+  fi <- which(g == focal)
+  ri <- which(g != focal)
   if (!length(fi) || !length(ri))
     stop("both a focal and a reference group are required")
   total <- numeric(n)
   for (i in seq_len(n)) total[i] <- sum(M[i, ])
-  pf <- numeric(k); pr <- numeric(k); pd <- numeric(k)
-  alpha <- numeric(k); delta <- numeric(k)
-  ets <- integer(k); flag <- integer(k)
+  pf <- numeric(k)
+  pr <- numeric(k)
+  pd <- numeric(k)
+  alpha <- numeric(k)
+  delta <- numeric(k)
+  ets <- integer(k)
+  flag <- integer(k)
   for (j in seq_len(k)) {
     a <- sum(M[fi, j]) / length(fi)
     b <- sum(M[ri, j]) / length(ri)
-    pf[j] <- a; pr[j] <- b; pd[j] <- a - b
-    num <- 0; den <- 0
+    pf[j] <- a
+    pr[j] <- b
+    pd[j] <- a - b
+    num <- 0
+    den <- 0
     for (s in 0:k) {
       f <- fi[total[fi] == s]
       r <- ri[total[ri] == s]
       ns <- length(f) + length(r)
       if (ns == 0L) next
-      af <- sum(M[f, j]); bf <- length(f) - af
-      ar <- sum(M[r, j]); br <- length(r) - ar
+      af <- sum(M[f, j])
+      bf <- length(f) - af
+      ar <- sum(M[r, j])
+      br <- length(r) - ar
       num <- num + ar * bf / ns
       den <- den + af * br / ns
     }

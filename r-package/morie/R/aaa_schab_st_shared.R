@@ -32,7 +32,8 @@
 #' @return A list with \code{h}, \code{k}.
 #' @export
 .schab_st_as_lags <- function(h, k) {
-  h <- as.numeric(h); k <- abs(as.numeric(k))
+  h <- as.numeric(h)
+  k <- abs(as.numeric(k))
   if (any(h < 0)) stop("spatial lag `h` must be non-negative", call. = FALSE)
   n <- max(length(h), length(k))
   list(h = rep_len(h, n), k = rep_len(k, n))
@@ -49,7 +50,8 @@
 #' @return A list with \code{d}, \code{k}.
 #' @export
 .schab_st_lag_matrices <- function(coords, times) {
-  coords <- as.matrix(coords); times <- as.numeric(times)
+  coords <- as.matrix(coords)
+  times <- as.numeric(times)
   if (nrow(coords) != length(times)) {
     stop("`coords` and `times` must have the same length", call. = FALSE)
   }
@@ -76,7 +78,8 @@
 .schab_st_separable_covariance <- function(h, k, cov_spatial, cov_temporal,
                                            form = "product") {
   lg <- .schab_st_as_lags(h, k)
-  cs <- as.numeric(cov_spatial(lg$h)); ct <- as.numeric(cov_temporal(lg$k))
+  cs <- as.numeric(cov_spatial(lg$h))
+  ct <- as.numeric(cov_temporal(lg$k))
   switch(form,
     product = cs * ct,
     sum = cs + ct,
@@ -243,7 +246,9 @@
 #' @return Nothing; this branch always raises.
 #' @export
 .schab_st_power_mixture <- function(rs, rt, distribution = "poisson", ...) {
-  rs <- as.numeric(rs); rt <- as.numeric(rt); p <- list(...)
+  rs <- as.numeric(rs)
+  rt <- as.numeric(rt)
+  p <- list(...)
   if (any(abs(rs) > 1 + 1e-12) || any(abs(rt) > 1 + 1e-12)) {
     stop("`rs` and `rt` must be correlations in [-1, 1]", call. = FALSE)
   }
@@ -276,13 +281,16 @@
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .schab_st_bivariate_power_mixture <- function(rs, rt, pmf) {
-  rs <- as.numeric(rs); rt <- as.numeric(rt); pmf <- as.matrix(pmf)
+  rs <- as.numeric(rs)
+  rt <- as.numeric(rt)
+  pmf <- as.matrix(pmf)
   if (any(pmf < 0)) stop("`pmf` must be non-negative", call. = FALSE)
   if (!isTRUE(all.equal(sum(pmf), 1, tolerance = 1e-8))) {
     stop(sprintf("`pmf` must sum to 1 (got %.12g)", sum(pmf)), call. = FALSE)
   }
   n <- max(length(rs), length(rt))
-  rs <- rep_len(rs, n); rt <- rep_len(rt, n)
+  rs <- rep_len(rs, n)
+  rt <- rep_len(rt, n)
   out <- numeric(n)                                          # eq (9.13)
   for (i in seq_len(nrow(pmf))) {
     for (j in seq_len(ncol(pmf))) {
@@ -310,7 +318,8 @@
 .schab_st_scale_mixture <- function(h, k, cov_spatial, cov_temporal, nodes,
                                     weights) {
   lg <- .schab_st_as_lags(h, k)
-  u <- as.numeric(nodes); w <- as.numeric(weights)
+  u <- as.numeric(nodes)
+  w <- as.numeric(weights)
   if (length(u) != length(w)) {
     stop("`nodes` and `weights` must have the same length", call. = FALSE)
   }
@@ -376,7 +385,9 @@
   # R's besselJ() is deliberately not used, see the file header.
   x <- as.numeric(x)
   theta <- seq(0, pi, length.out = as.integer(n_quad) + 1L)
-  wt <- rep(1, length(theta)); wt[1] <- 0.5; wt[length(wt)] <- 0.5
+  wt <- rep(1, length(theta))
+  wt[1] <- 0.5
+  wt[length(wt)] <- 0.5
   step <- pi / as.integer(n_quad)
   vapply(x, function(xi) sum(wt * cos(xi * sin(theta))) * step / pi, numeric(1))
 }
@@ -395,7 +406,8 @@
 .schab_bessel_k1 <- function(z, upper = 40, n_quad = 400L) {
   # K_1(z) = integral_0^inf exp{-z cosh u} cosh u du
   gl <- .schab_gauss_legendre(n_quad)
-  u <- 0.5 * upper * (gl$nodes + 1); wu <- 0.5 * upper * gl$weights
+  u <- 0.5 * upper * (gl$nodes + 1)
+  wu <- 0.5 * upper * gl$weights
   ch <- cosh(u)
   vapply(as.numeric(z), function(zi) sum(wu * exp(-zi * ch) * ch), numeric(1))
 }
@@ -469,16 +481,22 @@
   gl <- .schab_gauss_legendre(n_quad)
   panel <- if (hval > 0) min(pi / hval, max(1, 2 * theta)) else max(1, 2 * theta)
   panel <- max(panel, 1e-3)
-  acc <- 0; t <- 0; quiet <- 0L; panels <- 0L; last_rel <- Inf
+  acc <- 0
+  t <- 0
+  quiet <- 0L
+  panels <- 0L
+  last_rel <- Inf
   while (panels < max_panels) {
-    a0 <- t; b0 <- t + panel
+    a0 <- t
+    b0 <- t + panel
     tau <- 0.5 * (b0 - a0) * (gl$nodes + 1) + a0
     wt <- 0.5 * (b0 - a0) * gl$weights
     q <- tau^2 + theta^2
     core <- tau * exp(-(kval / c) * q^p) / q^p
     contrib <- sum(wt * core * .schab_bessel_j0(tau * hval))
     acc <- acc + contrib
-    t <- b0; panels <- panels + 1L
+    t <- b0
+    panels <- panels + 1L
     last_rel <- abs(contrib) / max(abs(acc), 1e-300)
     quiet <- if (last_rel < rtol) quiet + 1L else 0L
     if (quiet >= quiet_runs) break
@@ -514,11 +532,14 @@
                         "eq (9.17) to converge (got p = %g)"),
                  max(1, d / 2), p), call. = FALSE)
   }
-  vals <- numeric(length(lg$h)); reach <- rels <- bnds <- numeric(length(lg$h))
+  vals <- numeric(length(lg$h))
+  reach <- rels <- bnds <- numeric(length(lg$h))
   for (i in seq_along(lg$h)) {
     r <- .schab_st_hankel_panels(lg$h[i], lg$k[i], theta, c, p, n_quad = n_quad)
-    vals[i] <- r$value; reach[i] <- r$upper
-    rels[i] <- r$last_rel; bnds[i] <- r$tail_bound
+    vals[i] <- r$value
+    reach[i] <- r$upper
+    rels[i] <- r$last_rel
+    bnds[i] <- r$tail_bound
   }
   scale <- sigma2 / (4 * c * pi)
   list(covariance = vals * scale,
@@ -573,7 +594,8 @@
                 reason = "covariance matrix is not symmetric"))
   }
   vals <- eigen(sigma, symmetric = TRUE, only.values = TRUE)$values
-  lo <- min(vals); scale <- max(abs(vals))
+  lo <- min(vals)
+  scale <- max(abs(vals))
   if (is.null(tol)) tol <- -1e-10 * max(scale, 1)
   list(valid = lo >= tol, min_eigenvalue = lo, max_eigenvalue = max(vals),
        tolerance = tol,
@@ -617,14 +639,17 @@
 .schab_st_empirical_semivariogram <- function(coords, times, z, n_space_bins = 10L,
                                               n_time_bins = 5L, max_dist = NULL,
                                               max_time = NULL) {
-  coords <- as.matrix(coords); times <- as.numeric(times); z <- as.numeric(z)
+  coords <- as.matrix(coords)
+  times <- as.numeric(times)
+  z <- as.numeric(z)
   n <- length(z)
   if (nrow(coords) != n || length(times) != n) {
     stop("`coords`, `times` and `z` must have the same length", call. = FALSE)
   }
   if (n < 2L) stop("need at least two observations", call. = FALSE)
   idx <- which(upper.tri(matrix(0, n, n)), arr.ind = TRUE)
-  i <- idx[, 1]; j <- idx[, 2]
+  i <- idx[, 1]
+  j <- idx[, 2]
   d <- sqrt(rowSums((coords[i, , drop = FALSE] - coords[j, , drop = FALSE])^2))
   u <- abs(times[i] - times[j])
   sq <- (z[i] - z[j])^2
@@ -634,15 +659,19 @@
     stop("`max_dist` and `max_time` must be positive", call. = FALSE)
   }
   keep <- d <= max_dist & u <= max_time
-  d <- d[keep]; u <- u[keep]; sq <- sq[keep]
+  d <- d[keep]
+  u <- u[keep]
+  sq <- sq[keep]
 
-  ns <- as.integer(n_space_bins); nt <- as.integer(n_time_bins)
+  ns <- as.integer(n_space_bins)
+  nt <- as.integer(n_time_bins)
   d_edges <- seq(0, max_dist, length.out = ns + 1L)
   u_edges <- seq(0, max_time, length.out = nt + 1L)
   di <- pmin(pmax(findInterval(d, d_edges, rightmost.closed = FALSE), 1L), ns)
   ui <- pmin(pmax(findInterval(u, u_edges, rightmost.closed = FALSE), 1L), nt)
 
-  counts <- matrix(0L, ns, nt); total <- matrix(0, ns, nt)
+  counts <- matrix(0L, ns, nt)
+  total <- matrix(0, ns, nt)
   for (m in seq_along(d)) {
     counts[di[m], ui[m]] <- counts[di[m], ui[m]] + 1L
     total[di[m], ui[m]] <- total[di[m], ui[m]] + sq[m]
@@ -674,27 +703,36 @@
 .schab_st_conditional_semivariogram <- function(coords, times, z, at_time,
                                                 n_bins = 10L, max_dist = NULL,
                                                 tol = 0) {
-  coords <- as.matrix(coords); times <- as.numeric(times); z <- as.numeric(z)
+  coords <- as.matrix(coords)
+  times <- as.numeric(times)
+  z <- as.numeric(z)
   sel <- abs(times - as.numeric(at_time)) <= as.numeric(tol)
   if (sum(sel) < 2L) {
     stop(sprintf("fewer than two observations at time %g", at_time), call. = FALSE)
   }
-  cc <- coords[sel, , drop = FALSE]; y <- z[sel]; m <- length(y)
+  cc <- coords[sel, , drop = FALSE]
+  y <- z[sel]
+  m <- length(y)
   idx <- which(upper.tri(matrix(0, m, m)), arr.ind = TRUE)
-  i <- idx[, 1]; j <- idx[, 2]
+  i <- idx[, 1]
+  j <- idx[, 2]
   d <- sqrt(rowSums((cc[i, , drop = FALSE] - cc[j, , drop = FALSE])^2))
   sq <- (y[i] - y[j])^2                                      # eq (9.19)
   if (is.null(max_dist)) max_dist <- max(d) / 2
-  keep <- d <= max_dist; d <- d[keep]; sq <- sq[keep]
+  keep <- d <= max_dist
+  d <- d[keep]
+  sq <- sq[keep]
   nb <- as.integer(n_bins)
   edges <- seq(0, max_dist, length.out = nb + 1L)
   bi <- pmin(pmax(findInterval(d, edges, rightmost.closed = FALSE), 1L), nb)
-  counts <- integer(nb); total <- numeric(nb)
+  counts <- integer(nb)
+  total <- numeric(nb)
   for (q in seq_along(d)) {
     counts[bi[q]] <- counts[bi[q]] + 1L
     total[bi[q]] <- total[bi[q]] + sq[q]
   }
-  gamma <- rep(NA_real_, nb); nz <- counts > 0L
+  gamma <- rep(NA_real_, nb)
+  nz <- counts > 0L
   gamma[nz] <- total[nz] / (2 * counts[nz])
   list(gamma = gamma, counts = counts, n_at_time = sum(sel),
        lags = 0.5 * (edges[-1] + edges[-length(edges)]), edges = edges)
@@ -711,7 +749,8 @@
 #' @return A numeric value.
 #' @export
 .schab_st_wls_objective <- function(emp, model_fn) {
-  gamma_hat <- emp$gamma; counts <- emp$counts
+  gamma_hat <- emp$gamma
+  counts <- emp$counts
   hh <- outer(emp$space_lags, rep(1, length(emp$time_lags)))
   kk <- outer(rep(1, length(emp$space_lags)), emp$time_lags)
   model <- matrix(as.numeric(model_fn(as.numeric(hh), as.numeric(kk))),
@@ -755,7 +794,8 @@
 #' @return A list with \code{intensity}, \code{n}, \code{area}, \code{duration}, \code{volume}.
 #' @export
 .schab_st_intensity <- function(points, times, region, time_interval) {
-  pts <- as.matrix(points); t <- as.numeric(times)
+  pts <- as.matrix(points)
+  t <- as.numeric(times)
   if (nrow(pts) != length(t)) {
     stop("`points` and `times` must have the same length", call. = FALSE)
   }
@@ -783,18 +823,23 @@
 #' @export
 .schab_st_marginal_intensities <- function(points, times, region, time_interval,
                                            n_space_bins = 4L, n_time_bins = 4L) {
-  pts <- as.matrix(points); t <- as.numeric(times)
+  pts <- as.matrix(points)
+  t <- as.numeric(times)
   r <- .schab_st_region_box(region)
-  t0 <- as.numeric(time_interval[1]); t1 <- as.numeric(time_interval[2])
-  ns <- as.integer(n_space_bins); nt <- as.integer(n_time_bins)
+  t0 <- as.numeric(time_interval[1])
+  t1 <- as.numeric(time_interval[2])
+  ns <- as.integer(n_space_bins)
+  nt <- as.integer(n_time_bins)
   xe <- seq(r[1], r[2], length.out = ns + 1L)
   ye <- seq(r[3], r[4], length.out = ns + 1L)
   te <- seq(t0, t1, length.out = nt + 1L)
-  cell_area <- (xe[2] - xe[1]) * (ye[2] - ye[1]); bin_width <- te[2] - te[1]
+  cell_area <- (xe[2] - xe[1]) * (ye[2] - ye[1])
+  bin_width <- te[2] - te[1]
   xi <- pmin(pmax(findInterval(pts[, 1], xe), 1L), ns)
   yi <- pmin(pmax(findInterval(pts[, 2], ye), 1L), ns)
   ti <- pmin(pmax(findInterval(t, te), 1L), nt)
-  spatial <- matrix(0, ns, ns); temporal <- numeric(nt)
+  spatial <- matrix(0, ns, ns)
+  temporal <- numeric(nt)
   for (m in seq_len(nrow(pts))) {
     spatial[xi[m], yi[m]] <- spatial[xi[m], yi[m]] + 1
     temporal[ti[m]] <- temporal[ti[m]] + 1
@@ -817,7 +862,9 @@
 #' @return A list with \code{expected_count}, \code{variance}, \code{intensity}, \code{second_order_intensity}, \code{volume}.
 #' @export
 .schab_cstr_reference <- function(area, duration, lam) {
-  area <- as.numeric(area); duration <- as.numeric(duration); lam <- as.numeric(lam)
+  area <- as.numeric(area)
+  duration <- as.numeric(duration)
+  lam <- as.numeric(lam)
   if (area <= 0 || duration <= 0 || lam < 0) {
     stop("`area`, `duration` must be positive and `lam` >= 0", call. = FALSE)
   }
@@ -847,10 +894,13 @@
   # X^2 = (rc-1) s^2 / nbar with s^2 the SAMPLE variance, reference
   # chi^2_{rc-1}; extended from quadrats in D to cells in D x T by the
   # analogy Sec. 9.5.3 itself draws.
-  pts <- as.matrix(points); t <- as.numeric(times)
+  pts <- as.matrix(points)
+  t <- as.numeric(times)
   r <- .schab_st_region_box(region)
-  t0 <- as.numeric(time_interval[1]); t1 <- as.numeric(time_interval[2])
-  ns <- as.integer(n_space_bins); nt <- as.integer(n_time_bins)
+  t0 <- as.numeric(time_interval[1])
+  t1 <- as.numeric(time_interval[2])
+  ns <- as.integer(n_space_bins)
+  nt <- as.integer(n_time_bins)
   xe <- seq(r[1], r[2], length.out = ns + 1L)
   ye <- seq(r[3], r[4], length.out = ns + 1L)
   te <- seq(t0, t1, length.out = nt + 1L)
@@ -861,7 +911,9 @@
   for (m in seq_len(nrow(pts))) {
     counts[xi[m], yi[m], ti[m]] <- counts[xi[m], yi[m], ti[m]] + 1
   }
-  flat <- as.numeric(counts); m <- length(flat); mean_ <- mean(flat)
+  flat <- as.numeric(counts)
+  m <- length(flat)
+  mean_ <- mean(flat)
   if (mean_ <= 0) {
     return(list(index_of_dispersion = NA_real_, df = m - 1L, p_value = NA_real_,
                 counts = counts, mean_count = mean_))
@@ -887,10 +939,13 @@
   # P(chi^2_df > x) = Q(df/2, x/2). The HALVING of x is the whole content of
   # the mapping and is easy to drop: Q(df/2, x) is a perfectly well-behaved
   # number, just not this one.
-  x <- 0.5 * as.numeric(x); a <- 0.5 * as.numeric(df)
+  x <- 0.5 * as.numeric(x)
+  a <- 0.5 * as.numeric(df)
   if (x <= 0) return(1)
   if (x < a + 1) {                                   # series for P(a, x)
-    term <- 1 / a; total <- term; n <- 0L
+    term <- 1 / a
+    total <- term
+    n <- 0L
     while (n < 10000L) {
       n <- n + 1L
       term <- term * x / (a + n)
@@ -900,7 +955,10 @@
     return(1 - total * exp(-x + a * log(x) - lgamma(a)))
   }
   tiny <- 1e-300                                     # Lentz, continued fraction
-  b <- x + 1 - a; cc <- 1 / tiny; d <- 1 / b; hh <- d
+  b <- x + 1 - a
+  cc <- 1 / tiny
+  d <- 1 / b
+  hh <- d
   for (i in seq_len(10000L)) {
     an <- -i * (i - a)
     b <- b + 2
