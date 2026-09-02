@@ -3,7 +3,7 @@
 % the formals.
 \name{lemma4_bound}
 \alias{lemma4_bound}
-\title{Lemma 4: sum_{j != j*} (2 + gamma (n_j* - n_j)) /}
+\title{Lemma 4: sum_\{j != j*\} (2 + gamma (n_j* - n_j)) /}
 \usage{
 lemma4_bound(counts, gamma) 
 }

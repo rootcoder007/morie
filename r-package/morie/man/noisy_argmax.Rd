@@ -3,7 +3,7 @@
 % the formals.
 \name{noisy_argmax}
 \alias{noisy_argmax}
-\title{Equation 1: argmax_j {n_j + Lap(1/gamma)}. One independent}
+\title{Equation 1: argmax_j \{n_j + Lap(1/gamma)\}. One independent}
 \usage{
 noisy_argmax(counts, gamma, seed = 0) 
 }
