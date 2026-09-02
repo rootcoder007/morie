@@ -31,7 +31,8 @@ Searchhoriz <- function(depth_limit, state, rewards = NULL, values = NULL,
   if (l > length(r)) l <- if (length(r)) length(r) else l
   kk <- as.integer(k_start)
   g <- as.numeric(gamma)
-  part <- 0; tau <- 0L
+  part <- 0
+  tau <- 0L
   while (kk + tau < l) {
     part <- part + (g^tau) * r[kk + tau + 1L]
     tau <- tau + 1L

@@ -690,7 +690,8 @@
   }
   t1 <- treat[keep] == 1
   smd <- vapply(out, function(x) {
-    m1 <- mean(x[t1], na.rm = TRUE); m0 <- mean(x[!t1], na.rm = TRUE)
+    m1 <- mean(x[t1], na.rm = TRUE)
+    m0 <- mean(x[!t1], na.rm = TRUE)
     s <- sqrt((stats::var(x[t1], na.rm = TRUE) +
                  stats::var(x[!t1], na.rm = TRUE)) / 2)
     if (!is.finite(s) || s == 0) return(NA_real_)
@@ -786,7 +787,8 @@
 
   ## 4-5. Outcome prevalence by demographic / mental-health strata.
   draw_by <- function(cols, main) {
-    force(cols); force(main)
+    force(cols)
+    force(main)
     function() {
       graphics::par(mar = c(9, 4, 3, 2))
       rates <- unlist(lapply(cols, function(cn) {
@@ -850,16 +852,19 @@
               age = "Age", gender = "Gender", region = "Region",
               mental = "Mental health", physical = "Physical health")
     edge <- function(from, to) {
-      p1 <- nodes[[from]]; p2 <- nodes[[to]]
+      p1 <- nodes[[from]]
+      p2 <- nodes[[to]]
       shrink <- 0.82
-      mx <- (p1[1] + p2[1]) / 2; my <- (p1[2] + p2[2]) / 2
+      mx <- (p1[1] + p2[1]) / 2
+      my <- (p1[2] + p2[2]) / 2
       graphics::arrows(mx + (p1[1] - mx) * shrink, my + (p1[2] - my) * shrink,
                        mx + (p2[1] - mx) * shrink, my + (p2[2] - my) * shrink,
                        length = 0.12, col = "grey25")
     }
     edge("cannabis", "heavy")
     for (conf in c("age", "gender", "region", "mental", "physical")) {
-      edge(conf, "cannabis"); edge(conf, "heavy")
+      edge(conf, "cannabis")
+      edge(conf, "heavy")
     }
     for (nm in names(nodes)) {
       graphics::points(nodes[[nm]][1], nodes[[nm]][2], pch = 21,

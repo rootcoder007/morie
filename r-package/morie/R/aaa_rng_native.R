@@ -52,8 +52,10 @@
 .morie_xor32 <- function(a, b) {
   # XOR of two 32-bit words held as doubles. bitwXor() only accepts values
   # inside the signed 32-bit range, so split into 16-bit halves first.
-  ah <- a %/% 65536; al <- a %% 65536
-  bh <- b %/% 65536; bl <- b %% 65536
+  ah <- a %/% 65536
+  al <- a %% 65536
+  bh <- b %/% 65536
+  bl <- b %% 65536
   bitwXor(ah, bh) * 65536 + bitwXor(al, bl)
 }
 
@@ -71,8 +73,10 @@
   # Exact 32x32 -> 64 bit product, returned as (hi, lo) 32-bit halves. The
   # full product can reach 2^64, past the 2^53 where doubles stop being exact
   # integers, so it is assembled from 16-bit partial products.
-  ah <- a %/% 65536; al <- a %% 65536
-  bh <- b %/% 65536; bl <- b %% 65536
+  ah <- a %/% 65536
+  al <- a %% 65536
+  bh <- b %/% 65536
+  bl <- b %% 65536
   ll <- al * bl
   lh <- al * bh
   hl <- ah * bl

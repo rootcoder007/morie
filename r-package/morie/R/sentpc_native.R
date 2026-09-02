@@ -63,7 +63,8 @@
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .units <- function(escaped) {
-  out <- character(0); cur <- ""
+  out <- character(0)
+  cur <- ""
   chars <- strsplit(escaped, "")[[1]]
   for (ch in chars) {
     if (ch == .SPACE) {
@@ -147,7 +148,8 @@ train_bpe <- function(corpus, vocab_size, add_prefix = TRUE) {
     for (key in names(words)) {
       w <- strsplit(key, "")[[1]]
       f <- words[[key]]
-      out <- character(0); i <- 1L
+      out <- character(0)
+      i <- 1L
       while (i <= length(w)) {
         if (i < length(w) && w[i] == best[1L] && w[i + 1L] == best[2L]) {
           out <- c(out, paste0(w[i], w[i + 1L]))
@@ -181,8 +183,10 @@ encode_bpe <- function(text, model, add_prefix = TRUE) {
   for (w in .units(esc)) {
     toks <- strsplit(w, "")[[1]]
     for (m in model$merges) {
-      a <- m[1L]; b <- m[2L]
-      i <- 1L; neww <- character(0)
+      a <- m[1L]
+      b <- m[2L]
+      i <- 1L
+      neww <- character(0)
       while (i <= length(toks)) {
         if (i < length(toks) && toks[i] == a && toks[i + 1L] == b) {
           neww <- c(neww, paste0(toks[i], toks[i + 1L]))
@@ -228,7 +232,8 @@ viterbi_segment <- function(text, piece_logp, add_prefix = TRUE) {
     stop("sentpc: no segmentation covers the input -- the piece set ",
          "must include every character")
   }
-  pieces <- character(0); i <- n + 1L
+  pieces <- character(0)
+  i <- n + 1L
   while (i > 1L) {
     st <- back[[i]]
     pieces <- c(st[2L], pieces)

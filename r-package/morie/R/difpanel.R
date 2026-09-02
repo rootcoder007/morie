@@ -95,16 +95,20 @@ morie_sibtest <- function(x, group, matching = NULL, min_per_cell = 2L,
       }
     }
 
-    b <- 0; v <- 0; used <- 0L
+    b <- 0
+    v <- 0
+    used <- 0L
     for (k in sort(unique(score))) {
       sel <- score == k
       yr <- y[sel & is_ref]
       yf <- y[sel & !is_ref]
       if (length(yr) < min_per_cell || length(yf) < min_per_cell) next
       pi_k <- (length(yr) + length(yf)) / n
-      mr <- mean(yr); mf <- mean(yf)
+      mr <- mean(yr)
+      mf <- mean(yf)
       if (correct) {
-        a <- adj[["ref"]]; f <- adj[["foc"]]
+        a <- adj[["ref"]]
+        f <- adj[["foc"]]
         tr <- a[["vbar"]] + a[["rho"]] * (k - a[["vbar"]])
         tf <- f[["vbar"]] + f[["rho"]] * (k - f[["vbar"]])
         target <- (tr + tf) / 2
@@ -303,12 +307,14 @@ morie_panel_cointegration <- function(x, groups, lags = 1L,
     yv <- X[sel, 1L]
     Zx <- X[sel, -1L, drop = FALSE]
     e <- stats::lm.fit(cbind(1, Zx), yv)$residuals
-    if (length(e) < 4L * (lags + 1L)) { skipped <- c(skipped, u); next }
+    if (length(e) < 4L * (lags + 1L)) { skipped <- c(skipped, u)
+    next }
     nz <- .pdcoin_nuisance(yv, Zx, e, bandwidth)
     lag_e <- e[-length(e)]
     de <- diff(e)
     ss <- sum(lag_e^2)
-    if (ss <= 0 || nz[["L11_sq"]] <= 0) { skipped <- c(skipped, u); next }
+    if (ss <= 0 || nz[["L11_sq"]] <= 0) { skipped <- c(skipped, u)
+    next }
     cross <- sum(lag_e * de) - length(lag_e) * nz[["lambda"]]
 
     A_den <- A_den + ss / nz[["L11_sq"]]
@@ -344,7 +350,8 @@ morie_panel_cointegration <- function(x, groups, lags = 1L,
 
   m <- ncol(X) - 1L
   key <- as.character(m)
-  z <- list(); pv <- list()
+  z <- list()
+  pv <- list()
   if (!is.null(.PEDRONI_T2[[case]][[key]])) {
     for (nm in names(stats_raw)) {
       mv <- .PEDRONI_T2[[case]][[key]][[nm]]

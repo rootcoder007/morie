@@ -17,7 +17,10 @@
 Clrpca <- function(X, k = 2) {
   X <- as.matrix(X)
   if (any(X <= 0)) stop("compositions must be strictly positive")
-  L <- log(X); D <- ncol(X); n <- nrow(X); k <- as.integer(k)
+  L <- log(X)
+  D <- ncol(X)
+  n <- nrow(X)
+  k <- as.integer(k)
   Z <- L - rowMeans(L)
   Zc <- sweep(Z, 2, colMeans(Z), "-")
   e <- .t1_eigsym(stats::cov(Zc))

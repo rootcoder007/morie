@@ -61,10 +61,13 @@
 #' @export
 .morie_smo <- function(K, y, C = 1, tol = 1e-3, max_passes = 50L,
                        max_iter = 10000L, seed = 0L) {
-  y <- as.numeric(y); n <- length(y)
-  alpha <- numeric(n); b <- 0
+  y <- as.numeric(y)
+  n <- length(y)
+  alpha <- numeric(n)
+  b <- 0
   set.seed(seed)
-  passes <- 0L; it <- 0L
+  passes <- 0L
+  it <- 0L
   while (passes < max_passes && it < max_iter) {
     changed <- 0L
     for (i in seq_len(n)) {
@@ -74,17 +77,21 @@
         j <- sample.int(n - 1L, 1L)
         if (j >= i) j <- j + 1L
         Ej <- sum(K[j, ] * alpha * y) + b - y[j]
-        ai_old <- alpha[i]; aj_old <- alpha[j]
+        ai_old <- alpha[i]
+        aj_old <- alpha[j]
         if (y[i] != y[j]) {
-          L <- max(0, aj_old - ai_old); Hi <- min(C, C + aj_old - ai_old)
+          L <- max(0, aj_old - ai_old)
+          Hi <- min(C, C + aj_old - ai_old)
         } else {
-          L <- max(0, ai_old + aj_old - C); Hi <- min(C, ai_old + aj_old)
+          L <- max(0, ai_old + aj_old - C)
+          Hi <- min(C, ai_old + aj_old)
         }
         if (L >= Hi) next
         eta <- 2 * K[i, j] - K[i, i] - K[j, j]
         if (eta >= 0) next
         alpha[j] <- min(max(aj_old - y[j] * (Ei - Ej) / eta, L), Hi)
-        if (abs(alpha[j] - aj_old) < 1e-12) { alpha[j] <- aj_old; next }
+        if (abs(alpha[j] - aj_old) < 1e-12) { alpha[j] <- aj_old
+        next }
         alpha[i] <- ai_old + y[i] * y[j] * (aj_old - alpha[j])
         b1 <- b - Ei - y[i] * (alpha[i] - ai_old) * K[i, i] -
           y[j] * (alpha[j] - aj_old) * K[i, j]
@@ -132,7 +139,8 @@ morie_esl_svm_kernel <- function(X, y, C = 1, kernel = "rbf", gamma = NULL,
                                  degree = 3, coef0 = 1, newdata = NULL,
                                  tol = 1e-3, max_passes = 50L, seed = 0L) {
   if (C <= 0) stop("C must be positive", call. = FALSE)
-  X <- as.matrix(X); yr <- as.vector(y)
+  X <- as.matrix(X)
+  yr <- as.vector(y)
   if (nrow(X) != length(yr)) {
     stop(sprintf("X has %d rows but y has %d", nrow(X), length(yr)), call. = FALSE)
   }
@@ -145,7 +153,8 @@ morie_esl_svm_kernel <- function(X, y, C = 1, kernel = "rbf", gamma = NULL,
   K <- .morie_kernel_matrix(X, kernel = kernel, gamma = gamma,
                             degree = degree, coef0 = coef0)
   fit <- .morie_smo(K, ypm, C = C, tol = tol, max_passes = max_passes, seed = seed)
-  alpha <- fit$alpha; b <- fit$b
+  alpha <- fit$alpha
+  b <- fit$b
   Z <- if (is.null(newdata)) X else as.matrix(newdata)
   dec <- as.numeric(.morie_kernel_matrix(Z, X, kernel = kernel, gamma = gamma,
                                          degree = degree, coef0 = coef0) %*%
@@ -186,7 +195,8 @@ morie_esl_svm_kernel <- function(X, y, C = 1, kernel = "rbf", gamma = NULL,
 morie_esl_svc <- function(X, y, C = 1, newdata = NULL, tol = 1e-3,
                           max_passes = 50L, seed = 0L) {
   if (C <= 0) stop("C must be positive", call. = FALSE)
-  X <- as.matrix(X); yr <- as.vector(y)
+  X <- as.matrix(X)
+  yr <- as.vector(y)
   if (nrow(X) != length(yr)) {
     stop(sprintf("X has %d rows but y has %d", nrow(X), length(yr)), call. = FALSE)
   }
@@ -198,7 +208,8 @@ morie_esl_svc <- function(X, y, C = 1, newdata = NULL, tol = 1e-3,
   ypm <- ifelse(yr == classes[2L], 1, -1)
   K <- .morie_kernel_matrix(X, kernel = "linear")
   fit <- .morie_smo(K, ypm, C = C, tol = tol, max_passes = max_passes, seed = seed)
-  alpha <- fit$alpha; b <- fit$b
+  alpha <- fit$alpha
+  b <- fit$b
   w <- as.numeric(crossprod(X, alpha * ypm))
   wn <- sqrt(sum(w^2))
   Z <- if (is.null(newdata)) X else as.matrix(newdata)
@@ -243,8 +254,10 @@ morie_esl_svc <- function(X, y, C = 1, newdata = NULL, tol = 1e-3,
 #' @export
 morie_esl_least_angle_reg <- function(X, y, max_steps = NULL,
                                       standardize = TRUE) {
-  X <- as.matrix(X); y <- as.numeric(y)
-  n <- nrow(X); p <- ncol(X)
+  X <- as.matrix(X)
+  y <- as.numeric(y)
+  n <- nrow(X)
+  p <- ncol(X)
   if (n != length(y)) stop(sprintf("X has %d rows but y has %d", n, length(y)),
                            call. = FALSE)
   cap <- min(p, n - 1L)
@@ -252,15 +265,19 @@ morie_esl_least_angle_reg <- function(X, y, max_steps = NULL,
   if (max_steps < 1L || max_steps > cap) {
     stop(sprintf("max_steps must be between 1 and %d", cap), call. = FALSE)
   }
-  xbar <- colMeans(X); Xc <- sweep(X, 2L, xbar, "-")
+  xbar <- colMeans(X)
+  Xc <- sweep(X, 2L, xbar, "-")
   scale <- if (standardize) sqrt(colSums(Xc^2)) else rep(1, p)
   scale[scale <= 0] <- 1
   Xs <- sweep(Xc, 2L, scale, "/")
-  ybar <- mean(y); yc <- y - ybar
+  ybar <- mean(y)
+  yc <- y - ybar
 
-  beta <- numeric(p); mu <- numeric(n)
+  beta <- numeric(p)
+  mu <- numeric(n)
   active <- integer(0)
-  path <- list(beta); cors <- list(as.numeric(crossprod(Xs, yc)))
+  path <- list(beta)
+  cors <- list(as.numeric(crossprod(Xs, yc)))
 
   for (step in seq_len(max_steps)) {
     cc <- as.numeric(crossprod(Xs, yc - mu))
@@ -330,17 +347,23 @@ morie_esl_least_angle_reg <- function(X, y, max_steps = NULL,
 #' @export
 morie_esl_sparse_pca <- function(X, k = 2, lambda_ = 0.1, max_iter = 500L,
                                  tol = 1e-8, center = TRUE, scale = FALSE) {
-  X <- as.matrix(X); n <- nrow(X); p <- ncol(X); k <- as.integer(k)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  p <- ncol(X)
+  k <- as.integer(k)
   if (k < 1L || k > min(n, p)) stop("k must be between 1 and min(n, p)",
                                     call. = FALSE)
   if (lambda_ < 0) stop("lambda_ must be non-negative", call. = FALSE)
   Z <- if (center) sweep(X, 2L, colMeans(X), "-") else X
   if (scale) {
-    sd <- apply(Z, 2L, stats::sd); sd[sd <= 0] <- 1
+    sd <- apply(Z, 2L, stats::sd)
+    sd[sd <= 0] <- 1
     Z <- sweep(Z, 2L, sd, "/")
   }
   S <- matrix(stats::cov(Z), p, p)
-  loadings <- matrix(0, p, k); iters <- integer(k); Sd <- S
+  loadings <- matrix(0, p, k)
+  iters <- integer(k)
+  Sd <- S
   for (j in seq_len(k)) {
     ev <- eigen(Sd, symmetric = TRUE)
     v <- ev$vectors[, 1L]
@@ -352,12 +375,14 @@ morie_esl_sparse_pca <- function(X, k = 2, lambda_ = 0.1, max_iter = 500L,
       if (nrm < 1e-12) break
       new <- t / nrm
       if (sqrt(sum((new - v)^2)) < tol || sqrt(sum((new + v)^2)) < tol) {
-        v <- new; break
+        v <- new
+        break
       }
       v <- new
     }
     if (sum(abs(v)) > 0 && v[which.max(abs(v))] < 0) v <- -v
-    loadings[, j] <- v; iters[j] <- it
+    loadings[, j] <- v
+    iters[j] <- it
     Sd <- Sd - as.numeric(t(v) %*% Sd %*% v) * tcrossprod(v)
   }
   scores <- Z %*% loadings
@@ -400,7 +425,9 @@ morie_esl_sparse_pca <- function(X, k = 2, lambda_ = 0.1, max_iter = 500L,
 #' @export
 morie_esl_thin_plate_spline <- function(X, y, lambda_ = 1, newdata = NULL) {
   if (lambda_ < 0) stop("lambda_ must be non-negative", call. = FALSE)
-  X <- as.matrix(X); y <- as.numeric(y); n <- length(y)
+  X <- as.matrix(X)
+  y <- as.numeric(y)
+  n <- length(y)
   if (nrow(X) != n) stop(sprintf("X has %d rows but y has %d", nrow(X), n),
                          call. = FALSE)
   if (ncol(X) != 2L) {
@@ -483,15 +510,19 @@ morie_esl_thin_plate_spline <- function(X, y, lambda_ = 1, newdata = NULL) {
 #' @export
 morie_esl_ica <- function(X, k = NULL, fun = "logcosh", max_iter = 500L,
                           tol = 1e-8, seed = 0L) {
-  X <- as.matrix(X); n <- nrow(X); p <- ncol(X)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  p <- ncol(X)
   k <- if (is.null(k)) p else as.integer(k)
   if (k < 1L || k > p) stop(sprintf("k must be between 1 and p=%d", p),
                             call. = FALSE)
   if (n < 2L) stop("need at least 2 observations", call. = FALSE)
-  mu <- colMeans(X); Xc <- sweep(X, 2L, mu, "-")
+  mu <- colMeans(X)
+  Xc <- sweep(X, 2L, mu, "-")
   ev <- eigen(matrix(stats::cov(Xc), p, p), symmetric = TRUE)
   idx <- seq_len(k)
-  d <- pmax(ev$values[idx], 1e-12); E <- ev$vectors[, idx, drop = FALSE]
+  d <- pmax(ev$values[idx], 1e-12)
+  E <- ev$vectors[, idx, drop = FALSE]
   K <- t(sweep(E, 2L, sqrt(d), "/"))
   Z <- Xc %*% t(K)
 
@@ -504,10 +535,14 @@ morie_esl_ica <- function(X, k = NULL, fun = "logcosh", max_iter = 500L,
                cube = function(u) 3 * u^2)
 
   set.seed(seed)
-  W <- matrix(0, k, k); iters <- integer(k); converged <- TRUE
+  W <- matrix(0, k, k)
+  iters <- integer(k)
+  converged <- TRUE
   for (j in seq_len(k)) {
-    w <- stats::rnorm(k); w <- w / sqrt(sum(w^2))
-    it <- 0L; ok <- FALSE
+    w <- stats::rnorm(k)
+    w <- w / sqrt(sum(w^2))
+    it <- 0L
+    ok <- FALSE
     for (it in seq_len(max_iter)) {
       wx <- as.numeric(Z %*% w)
       new <- colMeans(Z * g(wx)) - mean(gp(wx)) * w
@@ -518,11 +553,14 @@ morie_esl_ica <- function(X, k = NULL, fun = "logcosh", max_iter = 500L,
       nrm <- sqrt(sum(new^2))
       if (nrm < 1e-12) break
       new <- new / nrm
-      if (abs(abs(sum(new * w)) - 1) < tol) { w <- new; ok <- TRUE; break }
+      if (abs(abs(sum(new * w)) - 1) < tol) { w <- new
+      ok <- TRUE
+      break }
       w <- new
     }
     if (!ok) converged <- FALSE
-    W[j, ] <- w; iters[j] <- it
+    W[j, ] <- w
+    iters[j] <- it
   }
   S <- Z %*% t(W)
   sdv <- apply(S, 2L, function(z) sqrt(mean((z - mean(z))^2)))
@@ -560,15 +598,18 @@ morie_esl_ica <- function(X, k = NULL, fun = "logcosh", max_iter = 500L,
 #' abs(stats::cor(morie_esl_isomap(X, k = 2, neighbors = 8)$embedding[, 1], tt)) > 0.9
 #' @export
 morie_esl_isomap <- function(X, k = 2, neighbors = 5) {
-  X <- as.matrix(X); n <- nrow(X)
-  k <- as.integer(k); neighbors <- as.integer(neighbors)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  k <- as.integer(k)
+  neighbors <- as.integer(neighbors)
   if (k < 1L || k >= n) stop(sprintf("k must be between 1 and %d", n - 1L),
                              call. = FALSE)
   if (neighbors < 1L || neighbors >= n) {
     stop(sprintf("neighbors must be between 1 and %d", n - 1L), call. = FALSE)
   }
   D <- sqrt(pmax(outer(rowSums(X^2), rowSums(X^2), "+") - 2 * tcrossprod(X), 0))
-  G <- matrix(Inf, n, n); diag(G) <- 0
+  G <- matrix(Inf, n, n)
+  diag(G) <- 0
   for (i in seq_len(n)) {
     nb <- order(D[i, ])[2L:(neighbors + 1L)]
     G[i, nb] <- D[i, nb]
@@ -603,14 +644,20 @@ morie_esl_isomap <- function(X, k = 2, neighbors = 5) {
 #' @return The value of \code{comps}, as built in the body.
 #' @export
 .morie_n_components <- function(adj) {
-  n <- nrow(adj); seen <- logical(n); comps <- 0L
+  n <- nrow(adj)
+  seen <- logical(n)
+  comps <- 0L
   for (s in seq_len(n)) {
     if (seen[s]) next
-    comps <- comps + 1L; stack <- s; seen[s] <- TRUE
+    comps <- comps + 1L
+    stack <- s
+    seen[s] <- TRUE
     while (length(stack)) {
-      u <- stack[length(stack)]; stack <- stack[-length(stack)]
+      u <- stack[length(stack)]
+      stack <- stack[-length(stack)]
       nb <- which(adj[u, ] & !seen)
-      seen[nb] <- TRUE; stack <- c(stack, nb)
+      seen[nb] <- TRUE
+      stack <- c(stack, nb)
     }
   }
   comps
@@ -644,21 +691,25 @@ morie_esl_isomap <- function(X, k = 2, neighbors = 5) {
 #' all(abs(rowSums(morie_esl_lle(X, k = 2, neighbors = 10)$weights) - 1) < 1e-8)
 #' @export
 morie_esl_lle <- function(X, k = 2, neighbors = 5, reg = 1e-3) {
-  X <- as.matrix(X); n <- nrow(X)
-  k <- as.integer(k); m <- as.integer(neighbors)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  k <- as.integer(k)
+  m <- as.integer(neighbors)
   if (k < 1L || k >= n) stop(sprintf("k must be between 1 and %d", n - 1L),
                              call. = FALSE)
   if (m < 1L || m >= n) stop(sprintf("neighbors must be between 1 and %d", n - 1L),
                              call. = FALSE)
   D <- outer(rowSums(X^2), rowSums(X^2), "+") - 2 * tcrossprod(X)
-  W <- matrix(0, n, n); err <- 0
+  W <- matrix(0, n, n)
+  err <- 0
   for (i in seq_len(n)) {
     nb <- order(D[i, ])[2L:(m + 1L)]
     Zn <- sweep(X[nb, , drop = FALSE], 2L, X[i, ], "-")
     Cm <- tcrossprod(Zn)
     tr <- sum(diag(Cm))
     Cm <- if (tr > 0) Cm + reg * tr * diag(m) else Cm + reg * diag(m)
-    w <- solve(Cm, rep(1, m)); w <- w / sum(w)
+    w <- solve(Cm, rep(1, m))
+    w <- w / sum(w)
     W[i, nb] <- w
     err <- err + sum((X[i, ] - as.numeric(crossprod(X[nb, , drop = FALSE], w)))^2)
   }
@@ -699,8 +750,10 @@ morie_esl_lle <- function(X, k = 2, neighbors = 5, reg = 1e-3) {
 morie_esl_self_organize <- function(X, grid = c(5L, 5L), eta = 0.5,
                                     n_epochs = 50L, sigma0 = NULL, seed = 0L) {
   if (eta <= 0 || eta > 1) stop("eta must be in (0, 1]", call. = FALSE)
-  X <- as.matrix(X); n <- nrow(X)
-  rows <- as.integer(grid[1L]); cols <- as.integer(grid[2L])
+  X <- as.matrix(X)
+  n <- nrow(X)
+  rows <- as.integer(grid[1L])
+  cols <- as.integer(grid[2L])
   if (rows < 1L || cols < 1L) stop("grid dimensions must be positive",
                                    call. = FALSE)
   K <- rows * cols
@@ -768,12 +821,15 @@ morie_esl_prototype_lvq <- function(X, y, n_prototypes = 2, eta = 0.1,
                                     n_epochs = 50L, newdata = NULL, seed = 0L) {
   if (n_prototypes < 1) stop("n_prototypes must be at least 1", call. = FALSE)
   if (eta <= 0 || eta > 1) stop("eta must be in (0, 1]", call. = FALSE)
-  X <- as.matrix(X); yr <- as.vector(y); n <- nrow(X)
+  X <- as.matrix(X)
+  yr <- as.vector(y)
+  n <- nrow(X)
   if (length(yr) != n) stop(sprintf("X has %d rows but y has %d", n, length(yr)),
                             call. = FALSE)
   classes <- sort(unique(yr))
   set.seed(seed)
-  protos <- NULL; mc <- NULL
+  protos <- NULL
+  mc <- NULL
   for (cl in classes) {
     idx <- which(yr == cl)
     if (length(idx) < n_prototypes) {
@@ -835,7 +891,9 @@ morie_esl_prototype_lvq <- function(X, y, n_prototypes = 2, eta = 0.1,
 #' @export
 morie_esl_partial_dependence <- function(model, X, S, grid = NULL,
                                          n_grid = 20L) {
-  X <- as.matrix(X); n <- nrow(X); p <- ncol(X)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  p <- ncol(X)
   S <- as.integer(S)
   if (any(S < 1L | S > p)) {
     stop(sprintf("S contains a column index outside 1..%d", p), call. = FALSE)
@@ -856,7 +914,8 @@ morie_esl_partial_dependence <- function(model, X, S, grid = NULL,
   diag(Dxx) <- Inf
   ref_nn <- stats::median(apply(Dxx, 1L, min))
 
-  pd <- numeric(nrow(G)); warn <- logical(nrow(G))
+  pd <- numeric(nrow(G))
+  warn <- logical(nrow(G))
   for (t in seq_len(nrow(G))) {
     Z <- X
     Z[, S] <- matrix(G[t, ], n, length(S), byrow = TRUE)
@@ -912,7 +971,10 @@ morie_esl_neural_net <- function(X, y, M = 5L, lambda_ = 0, lr = 0.1,
                                  standardize = TRUE) {
   if (M < 1) stop("M must be at least 1", call. = FALSE)
   if (lambda_ < 0) stop("lambda_ must be non-negative", call. = FALSE)
-  X <- as.matrix(X); yr <- as.vector(y); n <- nrow(X); p <- ncol(X)
+  X <- as.matrix(X)
+  yr <- as.vector(y)
+  n <- nrow(X)
+  p <- ncol(X)
   M <- as.integer(M)
   if (length(yr) != n) stop(sprintf("X has %d rows but y has %d", n, length(yr)),
                             call. = FALSE)
@@ -923,11 +985,13 @@ morie_esl_neural_net <- function(X, y, M = 5L, lambda_ = 0, lr = 0.1,
   Xs <- sweep(sweep(X, 2L, mu, "-"), 2L, sd, "/")
 
   if (task == "classification") {
-    classes <- sort(unique(yr)); K <- length(classes)
+    classes <- sort(unique(yr))
+    K <- length(classes)
     Y <- matrix(0, n, K)
     Y[cbind(seq_len(n), match(yr, classes))] <- 1
   } else if (task == "regression") {
-    classes <- NULL; K <- 1L
+    classes <- NULL
+    K <- 1L
     Y <- matrix(as.numeric(yr), n, 1L)
   } else {
     stop('task must be "regression" or "classification"', call. = FALSE)
@@ -945,10 +1009,13 @@ morie_esl_neural_net <- function(X, y, M = 5L, lambda_ = 0, lr = 0.1,
     Zh <- sigm(sweep(Xs %*% a, 2L, a0, "+"))
     T  <- sweep(Zh %*% b, 2L, b0, "+")
     if (task == "regression") {
-      P <- T; err <- P - Y; loss <- mean(err^2)
+      P <- T
+      err <- P - Y
+      loss <- mean(err^2)
     } else {
       e <- exp(T - apply(T, 1L, max))
-      P <- e / rowSums(e); err <- P - Y
+      P <- e / rowSums(e)
+      err <- P - Y
       loss <- -mean(rowSums(Y * log(P + 1e-300)))
     }
     losses[ep] <- loss + lambda_ * (sum(a^2) + sum(b^2))
@@ -958,8 +1025,10 @@ morie_esl_neural_net <- function(X, y, M = 5L, lambda_ = 0, lr = 0.1,
     gZ  <- (gT %*% t(b)) * Zh * (1 - Zh)
     ga  <- crossprod(Xs, gZ) + 2 * lambda_ * a
     ga0 <- colSums(gZ)
-    a <- a - lr * ga; a0 <- a0 - lr * ga0
-    b <- b - lr * gb; b0 <- b0 - lr * gb0
+    a <- a - lr * ga
+    a0 <- a0 - lr * ga0
+    b <- b - lr * gb
+    b0 <- b0 - lr * gb0
   }
 
   Zt <- if (is.null(newdata)) X else as.matrix(newdata)
@@ -978,8 +1047,10 @@ morie_esl_neural_net <- function(X, y, M = 5L, lambda_ = 0, lr = 0.1,
     out$fitted <- as.numeric(T)
     out$r_squared <- if (ss > 0) 1 - sum((yr - as.numeric(Ttr))^2) / ss else NA_real_
   } else {
-    e <- exp(T - apply(T, 1L, max)); prob <- e / rowSums(e)
-    etr <- exp(Ttr - apply(Ttr, 1L, max)); ptr <- etr / rowSums(etr)
+    e <- exp(T - apply(T, 1L, max))
+    prob <- e / rowSums(e)
+    etr <- exp(Ttr - apply(Ttr, 1L, max))
+    ptr <- etr / rowSums(etr)
     out$prob <- prob
     out$class <- classes[max.col(prob)]
     out$classes <- classes
@@ -1014,7 +1085,9 @@ morie_esl_neural_net <- function(X, y, M = 5L, lambda_ = 0, lr = 0.1,
 #' dim(morie_esl_backprop(X, y, W)$grad_alpha)
 #' @export
 morie_esl_backprop <- function(X, y, weights, task = "regression") {
-  X <- as.matrix(X); n <- nrow(X); p <- ncol(X)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  p <- ncol(X)
   for (key in c("alpha", "alpha0", "beta", "beta0")) {
     if (is.null(weights[[key]])) {
       stop(sprintf("weights is missing '%s'", key), call. = FALSE)
@@ -1028,7 +1101,8 @@ morie_esl_backprop <- function(X, y, weights, task = "regression") {
     stop(sprintf("alpha has %d rows but X has %d columns", nrow(a), p),
          call. = FALSE)
   }
-  M <- nrow(b); K <- ncol(b)
+  M <- nrow(b)
+  K <- ncol(b)
   if (ncol(a) != M) {
     stop(sprintf("alpha has %d hidden units but beta has %d", ncol(a), M),
          call. = FALSE)
@@ -1044,7 +1118,8 @@ morie_esl_backprop <- function(X, y, weights, task = "regression") {
   } else if (task == "classification") {
     Y <- matrix(0, n, K)
     Y[cbind(seq_len(n), as.integer(yr))] <- 1
-    e <- exp(T - apply(T, 1L, max)); P <- e / rowSums(e)
+    e <- exp(T - apply(T, 1L, max))
+    P <- e / rowSums(e)
     delta <- (P - Y) / n
     loss <- -mean(rowSums(Y * log(P + 1e-300)))
   } else {
@@ -1091,13 +1166,16 @@ morie_esl_boltzmann <- function(v, h = 4L, lr = 0.1, n_epochs = 200L,
                                 k_cd = 1L, seed = 0L, batch_size = NULL) {
   V <- as.matrix(v)
   if (!all(V %in% c(0, 1))) stop("v must be binary (0/1)", call. = FALSE)
-  n <- nrow(V); d <- ncol(V); h <- as.integer(h)
+  n <- nrow(V)
+  d <- ncol(V)
+  h <- as.integer(h)
   if (h < 1L) stop("h must be at least 1", call. = FALSE)
   if (k_cd < 1L) stop("k_cd must be at least 1", call. = FALSE)
   bs <- if (is.null(batch_size)) n else min(as.integer(batch_size), n)
   set.seed(seed)
   W <- matrix(stats::rnorm(d * h, 0, 0.01), d, h)
-  a <- numeric(d); b <- numeric(h)
+  a <- numeric(d)
+  b <- numeric(h)
   sigm <- function(u) 1 / (1 + exp(-pmin(pmax(u, -500), 500)))
   path <- numeric(n_epochs)
   for (ep in seq_len(n_epochs)) {
@@ -1107,7 +1185,8 @@ morie_esl_boltzmann <- function(v, h = 4L, lr = 0.1, n_epochs = 200L,
       m <- nrow(B)
       ph0 <- sigm(sweep(B %*% W, 2L, b, "+"))
       hs <- matrix(as.numeric(stats::runif(length(ph0)) < ph0), m, h)
-      vk <- B; hk <- hs
+      vk <- B
+      hk <- hs
       for (t in seq_len(k_cd)) {
         pv <- sigm(sweep(hk %*% t(W), 2L, a, "+"))
         vk <- matrix(as.numeric(stats::runif(length(pv)) < pv), m, d)
@@ -1234,11 +1313,13 @@ morie_esl_markov_rf <- function(edges, psi = NULL, states = 2L) {
     stop(sprintf("exact enumeration needs %d^%d configurations; the cap is 2^22",
                  s, V), call. = FALSE)
   }
-  default <- matrix(exp(-1), s, s); diag(default) <- exp(1)
+  default <- matrix(exp(-1), s, s)
+  diag(default) <- exp(1)
   key <- function(i, j) paste0(i, "-", j)
   pot <- list()
   for (r in seq_len(nrow(E))) {
-    i <- E[r, 1L]; j <- E[r, 2L]
+    i <- E[r, 1L]
+    j <- E[r, 2L]
     P <- if (!is.null(psi[[key(i, j)]])) psi[[key(i, j)]] else
       if (!is.null(psi[[key(j, i)]])) psi[[key(j, i)]] else default
     if (!all(dim(as.matrix(P)) == c(s, s))) {
@@ -1251,7 +1332,8 @@ morie_esl_markov_rf <- function(edges, psi = NULL, states = 2L) {
   dimnames(cfgs) <- NULL
   logw <- numeric(nrow(cfgs))
   for (r in seq_len(nrow(E))) {
-    i <- E[r, 1L]; j <- E[r, 2L]
+    i <- E[r, 1L]
+    j <- E[r, 2L]
     logw <- logw + log(pot[[r]][cbind(cfgs[, i] + 1L, cfgs[, j] + 1L)] + 1e-300)
   }
   mx <- max(logw)
@@ -1294,7 +1376,9 @@ morie_esl_markov_rf <- function(edges, psi = NULL, states = 2L) {
 #' which.min(J)
 #' @export
 morie_esl_score_match <- function(score, X, grad_score = NULL, eps = 1e-5) {
-  X <- as.matrix(X); n <- nrow(X); d <- ncol(X)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  d <- ncol(X)
   psi <- as.matrix(score(X))
   if (!all(dim(psi) == dim(X))) {
     stop(sprintf("score returned %d by %d, expected %d by %d",
@@ -1303,7 +1387,8 @@ morie_esl_score_match <- function(score, X, grad_score = NULL, eps = 1e-5) {
   if (is.null(grad_score)) {
     diagJ <- matrix(0, n, d)
     for (j in seq_len(d)) {
-      Xp <- X; Xm <- X
+      Xp <- X
+      Xm <- X
       Xp[, j] <- Xp[, j] + eps
       Xm[, j] <- Xm[, j] - eps
       diagJ[, j] <- (as.matrix(score(Xp))[, j] - as.matrix(score(Xm))[, j]) /

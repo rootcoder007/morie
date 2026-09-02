@@ -51,7 +51,5 @@ Police patrol zones.
 Tags: Patrol Zone; Boundary Files; Patrol Zones
 }
 \examples{
-\donttest{
 morie_datasets_tps_patrol_zone()
-}
 }

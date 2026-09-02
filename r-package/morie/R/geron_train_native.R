@@ -95,8 +95,10 @@
   out <- numeric(2L * n_pairs)
   s <- as.numeric(seed) %% 2^32
   for (i in seq_len(n_pairs)) {
-    s <- .morie_al_lcg(s); u1 <- (s + 0.5) / 2^32
-    s <- .morie_al_lcg(s); u2 <- (s + 0.5) / 2^32
+    s <- .morie_al_lcg(s)
+    u1 <- (s + 0.5) / 2^32
+    s <- .morie_al_lcg(s)
+    u2 <- (s + 0.5) / 2^32
     if (clamp) u1 <- max(u1, 1e-12)
     rad <- sqrt(-2 * log(u1))
     out[2L * i - 1L] <- rad * cos(2 * pi * u2)
@@ -126,7 +128,9 @@
     s <- .morie_al_lcg(s)
     u <- (s + 0.5) / 2^32
     j <- min(as.integer(u * (i + 1)), i)
-    tmp <- perm[i + 1L]; perm[i + 1L] <- perm[j + 1L]; perm[j + 1L] <- tmp
+    tmp <- perm[i + 1L]
+    perm[i + 1L] <- perm[j + 1L]
+    perm[j + 1L] <- tmp
   }
   perm
 }
@@ -183,10 +187,14 @@
 #' @return A list with \code{output}, \code{weights}, \code{scores}.
 #' @export
 .morie_gr_attend <- function(Q, K, V, mask = NULL) {
-  Q <- .morie_gr_a2d(Q); K <- .morie_gr_a2d(K); V <- .morie_gr_a2d(V)
+  Q <- .morie_gr_a2d(Q)
+  K <- .morie_gr_a2d(K)
+  V <- .morie_gr_a2d(V)
   .morie_gr_need(ncol(Q) == ncol(K), "Q and K must share d_k.")
   .morie_gr_need(nrow(K) == nrow(V), "K and V must have the same rows.")
-  .morie_gr_fin(Q, "Q"); .morie_gr_fin(K, "K"); .morie_gr_fin(V, "V")
+  .morie_gr_fin(Q, "Q")
+  .morie_gr_fin(K, "K")
+  .morie_gr_fin(V, "V")
   dk <- ncol(K)
   .morie_gr_need(dk > 0L, "d_k is zero.")
   scores <- Q %*% t(K) / sqrt(dk)
@@ -214,12 +222,16 @@
 #' @export
 .morie_gr_mse_core <- function(X, y, theta) {
   X <- .morie_gr_a2d(X)
-  y <- as.numeric(y); theta <- as.numeric(theta)
-  m <- nrow(X); n <- ncol(X)
+  y <- as.numeric(y)
+  theta <- as.numeric(theta)
+  m <- nrow(X)
+  n <- ncol(X)
   .morie_gr_need(m > 0L, "X has no rows; MSE over zero instances is undefined.")
   .morie_gr_need(length(y) == m, "y length must equal nrow(X).")
   .morie_gr_need(length(theta) == n, "theta length must equal ncol(X).")
-  .morie_gr_fin(X, "X"); .morie_gr_fin(y, "y"); .morie_gr_fin(theta, "theta")
+  .morie_gr_fin(X, "X")
+  .morie_gr_fin(y, "y")
+  .morie_gr_fin(theta, "theta")
   pred <- as.numeric(X %*% theta)
   resid <- pred - y
   cost <- mean(resid^2)
@@ -260,14 +272,18 @@
 #' morie_geron_dino_self_distillation(sl, tl, tau_s = 0.1, tau_t = 0.04)
 morie_geron_dino_self_distillation <- function(student_logits, teacher_logits,
                                                tau_s, tau_t, center = NULL) {
-  S <- .morie_gr_a2d(student_logits); Tl <- .morie_gr_a2d(teacher_logits)
+  S <- .morie_gr_a2d(student_logits)
+  Tl <- .morie_gr_a2d(teacher_logits)
   .morie_gr_need(all(dim(S) == dim(Tl)),
                  "student_logits and teacher_logits must match.")
-  .morie_gr_fin(S, "logits"); .morie_gr_fin(Tl, "logits")
-  ts <- as.numeric(tau_s); tt <- as.numeric(tau_t)
+  .morie_gr_fin(S, "logits")
+  .morie_gr_fin(Tl, "logits")
+  ts <- as.numeric(tau_s)
+  tt <- as.numeric(tau_t)
   .morie_gr_need(is.finite(ts) && ts > 0, "tau_s must be a positive finite temperature.")
   .morie_gr_need(is.finite(tt) && tt > 0, "tau_t must be a positive finite temperature.")
-  m <- nrow(S); K <- ncol(S)
+  m <- nrow(S)
+  K <- ncol(S)
   if (!is.null(center)) {
     cc <- as.numeric(center)
     .morie_gr_need(length(cc) == K, paste0("center must have ", K, " entries."))
@@ -276,7 +292,8 @@ morie_geron_dino_self_distillation <- function(student_logits, teacher_logits,
   }
   logp_t <- .morie_gr_log_softmax_rows(Tl / tt)
   logp_s <- .morie_gr_log_softmax_rows(S / ts)
-  P <- exp(logp_t); Q <- exp(logp_s)
+  P <- exp(logp_t)
+  Q <- exp(logp_s)
   per <- -rowSums(P * logp_s)
   loss <- mean(per)
   drop1 <- function(M) if (m == 1L) as.numeric(M) else M
@@ -307,7 +324,8 @@ morie_geron_dino_self_distillation <- function(student_logits, teacher_logits,
 #' morie_geron_dataloader_minibatch(n = 5L, b = 5L)
 morie_geron_dataloader_minibatch <- function(n, b, shuffle = TRUE, seed = 0,
                                              drop_last = FALSE) {
-  n <- as.integer(n); b <- as.integer(b)
+  n <- as.integer(n)
+  b <- as.integer(b)
   .morie_gr_need(n >= 1L, "n must be at least 1.")
   .morie_gr_need(b >= 1L && b <= n, paste0("b must lie in [1, ", n, "]."))
   perm <- if (isTRUE(shuffle)) .morie_gr_lcg_perm(n, seed) else seq_len(n) - 1L
@@ -364,7 +382,8 @@ morie_geron_ddpm_forward_process <- function(x0, t, alpha_bar, noise = NULL,
     .morie_gr_need(length(eps) == length(X), "noise shape != x0 shape.")
     .morie_gr_fin(eps, "noise")
   }
-  sc <- sqrt(a); nc <- sqrt(1 - a)
+  sc <- sqrt(a)
+  nc <- sqrt(1 - a)
   xt <- sc * X + nc * eps
   snr <- if (a == 1) Inf else a / (1 - a)
   list(x_t = xt, noise = eps, signal_coef = sc, noise_coef = nc, snr = snr,
@@ -384,13 +403,17 @@ morie_geron_ddpm_forward_process <- function(x0, t, alpha_bar, noise = NULL,
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_geron_ddpm_simple_loss(V, V)
 morie_geron_ddpm_simple_loss <- function(eps, eps_pred, reduction = "mean") {
-  E <- .morie_gr_a2d(eps); P <- .morie_gr_a2d(eps_pred)
+  E <- .morie_gr_a2d(eps)
+  P <- .morie_gr_a2d(eps_pred)
   .morie_gr_need(all(dim(E) == dim(P)), "eps and eps_pred must have the same shape.")
   .morie_gr_need(length(E) > 0L, "eps is empty.")
-  .morie_gr_fin(E, "eps"); .morie_gr_fin(P, "eps_pred")
+  .morie_gr_fin(E, "eps")
+  .morie_gr_fin(P, "eps_pred")
   .morie_gr_need(reduction %in% c("mean", "sum"), "reduction must be 'mean' or 'sum'.")
-  res <- E - P; sq <- res^2
-  loss <- mean(sq); total <- sum(sq)
+  res <- E - P
+  sq <- res^2
+  loss <- mean(sq)
+  total <- sum(sq)
   list(loss = loss, sum_squared_error = total, per_sample = rowSums(sq),
        residual = res, rmse = sqrt(loss),
        estimate = if (reduction == "mean") loss else total, n = nrow(E))
@@ -421,15 +444,19 @@ morie_geron_ddpm_simple_loss <- function(eps, eps_pred, reduction = "mean") {
 #'                               z = c(0.3, -0.1, 0.2))
 morie_geron_ddpm_reverse_step <- function(x_t, t, eps_pred, alpha, alpha_bar,
                                           sigma, z = NULL, seed = 0) {
-  X <- x_t; E <- eps_pred
+  X <- x_t
+  E <- eps_pred
   .morie_gr_need(length(E) == length(X), "eps_pred shape != x_t shape.")
   .morie_gr_need(length(X) > 0L, "x_t is empty.")
-  .morie_gr_fin(X, "x_t"); .morie_gr_fin(E, "eps_pred")
-  a <- as.numeric(alpha); ab <- as.numeric(alpha_bar)
+  .morie_gr_fin(X, "x_t")
+  .morie_gr_fin(E, "eps_pred")
+  a <- as.numeric(alpha)
+  ab <- as.numeric(alpha_bar)
   t <- as.integer(t)
   .morie_gr_need(t >= 0L && t < length(a) && t < length(ab),
                  "t must index both alpha and alpha_bar.")
-  at <- a[t + 1L]; abt <- ab[t + 1L]
+  at <- a[t + 1L]
+  abt <- ab[t + 1L]
   .morie_gr_need(at > 0 && at <= 1, "alpha[t] must lie in (0, 1].")
   .morie_gr_need(abt >= 0 && abt < 1, "alpha_bar[t] must lie in [0, 1).")
   sigma <- as.numeric(sigma)
@@ -471,8 +498,10 @@ morie_geron_ddpm_reverse_step <- function(x_t, t, eps_pred, alpha, alpha_bar,
 #'                      logp_ref_w = -1.4, logp_ref_l = -2.2, beta = 0.1)
 morie_geron_dpo_loss <- function(logp_w, logp_l, logp_ref_w, logp_ref_l,
                                  beta = 0.1) {
-  a <- as.numeric(logp_w); b <- as.numeric(logp_l)
-  ra <- as.numeric(logp_ref_w); rb <- as.numeric(logp_ref_l)
+  a <- as.numeric(logp_w)
+  b <- as.numeric(logp_l)
+  ra <- as.numeric(logp_ref_w)
+  rb <- as.numeric(logp_ref_l)
   .morie_gr_need(length(unique(c(length(a), length(b), length(ra), length(rb)))) == 1L,
                  "all four log-probability arrays must have the same length.")
   for (nm in c("logp_w", "logp_l", "logp_ref_w", "logp_ref_l")) {
@@ -482,7 +511,8 @@ morie_geron_dpo_loss <- function(logp_w, logp_l, logp_ref_w, logp_ref_l,
   }
   beta <- as.numeric(beta)
   .morie_gr_need(is.finite(beta) && beta > 0, "beta must be a positive finite float.")
-  rw <- a - ra; rl <- b - rb
+  rw <- a - ra
+  rl <- b - rb
   margin <- rw - rl
   per <- .morie_gr_logaddexp0(-beta * margin)
   loss <- mean(per)
@@ -508,22 +538,29 @@ morie_geron_dpo_loss <- function(logp_w, logp_l, logp_ref_w, logp_ref_l,
 #' batch <- list(c(0L, 0L, 1, 1L, 0L), c(1L, 1L, 0, 2L, 1L))
 #' morie_geron_dqn_loss(Q, Qt, batch, gamma = 0.9)
 morie_geron_dqn_loss <- function(Q, Q_target, batch, gamma = 0.99) {
-  Qa <- .morie_gr_a2d(Q); Qt <- .morie_gr_a2d(Q_target)
+  Qa <- .morie_gr_a2d(Q)
+  Qt <- .morie_gr_a2d(Q_target)
   .morie_gr_need(all(dim(Qa) == dim(Qt)), "Q and Q_target must have the same shape.")
   .morie_gr_need(length(Qa) > 0L, "Q must be a non-empty table.")
-  .morie_gr_fin(Qa, "Q"); .morie_gr_fin(Qt, "Q_target")
-  nS <- nrow(Qa); nA <- ncol(Qa)
+  .morie_gr_fin(Qa, "Q")
+  .morie_gr_fin(Qt, "Q_target")
+  nS <- nrow(Qa)
+  nA <- ncol(Qa)
   gamma <- as.numeric(gamma)
   .morie_gr_need(gamma >= 0 && gamma <= 1, "gamma must lie in [0, 1].")
   rows <- batch
   .morie_gr_need(length(rows) > 0L, "batch is empty.")
-  targets <- numeric(length(rows)); preds <- numeric(length(rows)); n_term <- 0L
+  targets <- numeric(length(rows))
+  preds <- numeric(length(rows))
+  n_term <- 0L
   for (k in seq_along(rows)) {
     tr <- rows[[k]]
     .morie_gr_need(length(tr) %in% c(4L, 5L),
                    "batch rows must be (s, a, r, s_next[, done]).")
-    s <- as.integer(tr[[1]]); a <- as.integer(tr[[2]])
-    r <- as.numeric(tr[[3]]); s2 <- as.integer(tr[[4]])
+    s <- as.integer(tr[[1]])
+    a <- as.integer(tr[[2]])
+    r <- as.numeric(tr[[3]])
+    s2 <- as.integer(tr[[4]])
     done <- if (length(tr) == 5L) as.logical(tr[[5]]) else FALSE
     .morie_gr_need(s >= 0L && s < nS && s2 >= 0L && s2 < nS, "state out of range.")
     .morie_gr_need(a >= 0L && a < nA, "action out of range.")
@@ -618,18 +655,24 @@ morie_geron_dueling_dqn <- function(V, A) {
 #' @examples
 #' morie_geron_dynamic_quantization(x = 5L, w = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_dynamic_quantization <- function(x, w) {
-  X <- .morie_gr_a2d(x); W <- .morie_gr_a2d(w)
+  X <- .morie_gr_a2d(x)
+  W <- .morie_gr_a2d(w)
   .morie_gr_need(ncol(X) == nrow(W), "x columns must equal w rows.")
   .morie_gr_need(length(X) > 0L && length(W) > 0L, "x and w must be non-empty.")
-  .morie_gr_fin(X, "x"); .morie_gr_fin(W, "w")
-  mx <- max(abs(X)); mw <- max(abs(W))
+  .morie_gr_fin(X, "x")
+  .morie_gr_fin(W, "w")
+  mx <- max(abs(X))
+  mw <- max(abs(W))
   .morie_gr_need(mx != 0 && mw != 0, "x or w is all zeros.")
-  sx <- mx / 127; sw <- mw / 127
-  Xq <- round(X / sx); Wq <- round(W / sw)
+  sx <- mx / 127
+  sw <- mw / 127
+  Xq <- round(X / sx)
+  Wq <- round(W / sw)
   acc <- Xq %*% Wq
   out <- acc * sx * sw
   ref <- X %*% W
-  err <- max(abs(out - ref)); denom <- max(abs(ref))
+  err <- max(abs(out - ref))
+  denom <- max(abs(ref))
   list(output = out, reference = ref, max_abs_error = err,
        relative_error = if (denom > 0) err / denom else 0,
        scale_x = sx, scale_w = sw, x_quantized = Xq, w_quantized = Wq,
@@ -660,8 +703,10 @@ morie_geron_dynamic_quantization <- function(x, w) {
 #'                            n_iter = 50, eta = 0.05)
 morie_geron_early_stopping <- function(X_train, y_train, X_val, y_val, n_iter,
                                        eta, theta0 = NULL) {
-  A <- .morie_gr_a2d(X_train); V <- .morie_gr_a2d(X_val)
-  ytr <- as.numeric(y_train); yva <- as.numeric(y_val)
+  A <- .morie_gr_a2d(X_train)
+  V <- .morie_gr_a2d(X_val)
+  ytr <- as.numeric(y_train)
+  yva <- as.numeric(y_val)
   .morie_gr_need(ncol(A) == ncol(V), "X_train and X_val must have the same columns.")
   .morie_gr_need(length(ytr) == nrow(A), "y_train length must equal nrow(X_train).")
   .morie_gr_need(length(yva) == nrow(V), "y_val length must equal nrow(X_val).")
@@ -674,7 +719,8 @@ morie_geron_early_stopping <- function(X_train, y_train, X_val, y_val, n_iter,
   .morie_gr_need(length(th) == ncol(A), "theta0 length must equal ncol(X_train).")
   tr_hist <- .morie_gr_mse_core(A, ytr, th)$rmse
   va_hist <- .morie_gr_mse_core(V, yva, th)$rmse
-  best_theta <- th; best_it <- 0L
+  best_theta <- th
+  best_it <- 0L
   for (it in seq_len(n_iter)) {
     fit <- .morie_gr_mse_core(A, ytr, th)
     g <- 2 / nrow(A) * as.numeric(t(A) %*% fit$residuals)
@@ -683,7 +729,8 @@ morie_geron_early_stopping <- function(X_train, y_train, X_val, y_val, n_iter,
     tr_hist <- c(tr_hist, .morie_gr_mse_core(A, ytr, th)$rmse)
     v <- .morie_gr_mse_core(V, yva, th)$rmse
     va_hist <- c(va_hist, v)
-    if (v < va_hist[best_it + 1L]) { best_theta <- th; best_it <- it }
+    if (v < va_hist[best_it + 1L]) { best_theta <- th
+    best_it <- it }
   }
   list(theta = best_theta, best_iteration = best_it,
        best_val_rmse = va_hist[best_it + 1L],
@@ -725,7 +772,9 @@ morie_geron_encoder_decoder_seq2seq <- function(encoder, decoder, x, max_out_len
   .morie_gr_need(length(cc) > 0L, "encoder returned an empty context vector.")
   .morie_gr_fin(cc, "context")
   y_prev <- if (is.null(start_token)) rep(0, length(cc)) else as.numeric(start_token)
-  outputs <- list(); stopped <- FALSE; first_len <- NULL
+  outputs <- list()
+  stopped <- FALSE
+  first_len <- NULL
   for (t in seq_len(max_out_len)) {
     y <- decoder(y_prev, cc, t)
     .morie_gr_fin(y, paste0("decoder output at step ", t))
@@ -734,7 +783,8 @@ morie_geron_encoder_decoder_seq2seq <- function(encoder, decoder, x, max_out_len
     outputs[[length(outputs) + 1L]] <- if (length(y) == 1L) as.numeric(y) else y
     y_prev <- y
     if (!is.null(eos_token) && length(y) == 1L &&
-        as.numeric(y) == as.numeric(eos_token)) { stopped <- TRUE; break }
+        as.numeric(y) == as.numeric(eos_token)) { stopped <- TRUE
+        break }
   }
   list(outputs = outputs, context = cc, context_dim = length(cc),
        n_steps = length(outputs), stopped_early = stopped,
@@ -764,7 +814,8 @@ morie_geron_lasso_cost <- function(X, y, theta, alpha,
   w <- if (isTRUE(penalize_intercept)) theta else theta[-1L]
   .morie_gr_need(length(w) > 0L || isTRUE(penalize_intercept),
                  "theta has only the intercept, which is not penalised.")
-  l1 <- sum(abs(w)); penalty <- alpha * l1
+  l1 <- sum(abs(w))
+  penalty <- alpha * l1
   list(cost = fit$cost + penalty, mse = fit$cost, l1_penalty = penalty,
        l1_norm = l1, n_zero = sum(w == 0), alpha = alpha,
        estimate = fit$cost + penalty, n = fit$n)
@@ -789,7 +840,8 @@ morie_geron_lasso_cost <- function(X, y, theta, alpha,
 #' morie_geron_elastic_net_cost(X, y, th, 0.4, 0.6)
 morie_geron_elastic_net_cost <- function(X, y, theta, alpha, r,
                                          penalize_intercept = FALSE) {
-  alpha <- as.numeric(alpha); r <- as.numeric(r)
+  alpha <- as.numeric(alpha)
+  r <- as.numeric(r)
   .morie_gr_need(is.finite(alpha) && alpha >= 0, "alpha must be non-negative and finite.")
   .morie_gr_need(r >= 0 && r <= 1, "r must lie in [0, 1].")
   inner <- morie_geron_lasso_cost(X, y, theta, r * alpha,
@@ -842,7 +894,8 @@ morie_geron_ch4_lasso_regression_cost_function <- function(X, y, theta, alpha,
 #' morie_geron_ch4_elastic_net_cost_function(X, y, th, 0.4, 0.6)
 morie_geron_ch4_elastic_net_cost_function <- function(X, y, theta, alpha, r,
                                                       penalize_intercept = FALSE) {
-  alpha <- as.numeric(alpha); r <- as.numeric(r)
+  alpha <- as.numeric(alpha)
+  r <- as.numeric(r)
   .morie_gr_need(is.finite(alpha) && alpha >= 0, "alpha must be non-negative and finite.")
   .morie_gr_need(r >= 0 && r <= 1, "r must lie in [0, 1].")
   inner <- morie_geron_lasso_cost(X, y, theta, 2 * r * alpha,
@@ -872,7 +925,8 @@ morie_geron_embedding_lookup <- function(ids, E) {
   Tm <- .morie_gr_a2d(E)
   .morie_gr_need(length(Tm) > 0L, "E must be a non-empty (V, d) table.")
   .morie_gr_fin(Tm, "E")
-  V <- nrow(Tm); d <- ncol(Tm)
+  V <- nrow(Tm)
+  d <- ncol(Tm)
   I <- as.numeric(ids)
   .morie_gr_need(length(I) > 0L, "ids is empty.")
   .morie_gr_need(all(I == floor(I)), "token ids must be integers.")
@@ -993,7 +1047,8 @@ morie_geron_explained_variance_ratio <- function(singular_values,
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_geron_f1_score(V, V)
 morie_geron_f1_score <- function(y_true, y_pred, positive_class = 1) {
-  yt <- as.vector(y_true); yp <- as.vector(y_pred)
+  yt <- as.vector(y_true)
+  yp <- as.vector(y_pred)
   .morie_gr_need(length(yt) == length(yp), "y_true and y_pred must be equal length.")
   .morie_gr_need(length(yt) > 0L, "F1 over zero instances is undefined.")
   labels <- sort(unique(as.integer(c(yt, yp))))
@@ -1051,7 +1106,8 @@ Ops.morie_gr_dual <- function(e1, e2) {
     if (.Generic == "+") return(e1)
     stop("unsupported unary operator ", .Generic, call. = FALSE)
   }
-  a <- .morie_gr_lift(e1); b <- .morie_gr_lift(e2)
+  a <- .morie_gr_lift(e1)
+  b <- .morie_gr_lift(e2)
   switch(.Generic,
     "+" = morie_gr_dual(a$value + b$value, a$deriv + b$deriv),
     "-" = morie_gr_dual(a$value - b$value, a$deriv - b$deriv),
@@ -1080,18 +1136,21 @@ Ops.morie_gr_dual <- function(e1, e2) {
 #' c(y$value, y$deriv)
 Math.morie_gr_dual <- function(x, ...) {
   switch(.Generic,
-    "exp" = { e <- exp(x$value); morie_gr_dual(e, e * x$deriv) },
+    "exp" = { e <- exp(x$value)
+    morie_gr_dual(e, e * x$deriv) },
     "log" = {
       .morie_gr_need(x$value > 0, "log is undefined at a non-positive value.")
       morie_gr_dual(log(x$value), x$deriv / x$value)
     },
     "sqrt" = {
       .morie_gr_need(x$value > 0, "sqrt derivative is undefined here.")
-      s <- sqrt(x$value); morie_gr_dual(s, x$deriv / (2 * s))
+      s <- sqrt(x$value)
+      morie_gr_dual(s, x$deriv / (2 * s))
     },
     "sin" = morie_gr_dual(sin(x$value), cos(x$value) * x$deriv),
     "cos" = morie_gr_dual(cos(x$value), -sin(x$value) * x$deriv),
-    "tanh" = { t <- tanh(x$value); morie_gr_dual(t, (1 - t * t) * x$deriv) },
+    "tanh" = { t <- tanh(x$value)
+    morie_gr_dual(t, (1 - t * t) * x$deriv) },
     stop("unsupported function ", .Generic, call. = FALSE))
 }
 
@@ -1110,7 +1169,8 @@ Math.morie_gr_dual <- function(x, ...) {
 #'     3)/(z + 1))
 morie_geron_forward_mode_autodiff <- function(x, x_prime, f) {
   .morie_gr_need(is.function(f), "f must be a function.")
-  x <- as.numeric(x); x_prime <- as.numeric(x_prime)
+  x <- as.numeric(x)
+  x_prime <- as.numeric(x_prime)
   .morie_gr_need(is.finite(x) && is.finite(x_prime), "x and x_prime must be finite.")
   out <- f(morie_gr_dual(x, x_prime))
   .morie_gr_need(inherits(out, "morie_gr_dual"), "f must return a morie_gr_dual.")
@@ -1141,14 +1201,21 @@ morie_geron_forward_mode_autodiff <- function(x, x_prime, f) {
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_geron_fcn_upsample(V, V)
 morie_geron_fcn_upsample <- function(X, W, stride = 2) {
-  A <- .morie_gr_a2d(X); K <- .morie_gr_a2d(W)
+  A <- .morie_gr_a2d(X)
+  K <- .morie_gr_a2d(W)
   .morie_gr_need(length(A) > 0L && length(K) > 0L, "X and W must be non-empty.")
-  .morie_gr_fin(A, "X"); .morie_gr_fin(K, "W")
+  .morie_gr_fin(A, "X")
+  .morie_gr_fin(K, "W")
   s <- as.integer(stride)
   .morie_gr_need(s >= 1L, "stride must be a positive integer.")
-  H <- nrow(A); Wi <- ncol(A); kh <- nrow(K); kw <- ncol(K)
-  oh <- (H - 1L) * s + kh; ow <- (Wi - 1L) * s + kw
-  Y <- matrix(0, oh, ow); counts <- matrix(0L, oh, ow)
+  H <- nrow(A)
+  Wi <- ncol(A)
+  kh <- nrow(K)
+  kw <- ncol(K)
+  oh <- (H - 1L) * s + kh
+  ow <- (Wi - 1L) * s + kw
+  Y <- matrix(0, oh, ow)
+  counts <- matrix(0L, oh, ow)
   for (i in seq_len(H)) for (j in seq_len(Wi)) {
     ri <- ((i - 1L) * s + 1L):((i - 1L) * s + kh)
     rj <- ((j - 1L) * s + 1L):((j - 1L) * s + kw)
@@ -1177,7 +1244,8 @@ morie_geron_fcn_upsample <- function(X, W, stride = 2) {
 #' morie_geron_linear_layer_forward(X = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L)
 morie_geron_linear_layer_forward <- function(X, W, b) {
   W <- .morie_gr_a2d(W)
-  out_f <- nrow(W); in_f <- ncol(W)
+  out_f <- nrow(W)
+  in_f <- ncol(W)
   batch <- is.matrix(X)
   Xm <- if (batch) X else matrix(as.numeric(X), nrow = 1L)
   storage.mode(Xm) <- "double"
@@ -1185,7 +1253,9 @@ morie_geron_linear_layer_forward <- function(X, W, b) {
   bv <- as.numeric(b)
   if (length(bv) == 1L) bv <- rep(bv, out_f)
   .morie_gr_need(length(bv) == out_f, "b length must equal the layer outputs.")
-  .morie_gr_fin(Xm, "X"); .morie_gr_fin(W, "W"); .morie_gr_fin(bv, "b")
+  .morie_gr_fin(Xm, "X")
+  .morie_gr_fin(W, "W")
+  .morie_gr_fin(bv, "b")
   Y <- Xm %*% t(W)
   Y <- sweep(Y, 2L, bv, "+")
   list(output = if (batch) Y else as.numeric(Y),
@@ -1216,7 +1286,8 @@ morie_geron_linear_layer_forward <- function(X, W, b) {
 #' W2 <- matrix(0.1, 4, 2); b2 <- rep(0, 2)
 #' morie_geron_transformer_feedforward(x, W1, b1, W2, b2)
 morie_geron_transformer_feedforward <- function(x, W1, b1, W2, b2) {
-  W1 <- .morie_gr_a2d(W1); W2 <- .morie_gr_a2d(W2)
+  W1 <- .morie_gr_a2d(W1)
+  W2 <- .morie_gr_a2d(W2)
   .morie_gr_need(ncol(W1) == nrow(W2), "W1 hidden width must match W2 rows.")
   .morie_gr_need(ncol(W2) == nrow(W1), "the sublayer must be shape-preserving.")
   first <- morie_geron_linear_layer_forward(x, t(W1), b1)
@@ -1225,7 +1296,8 @@ morie_geron_transformer_feedforward <- function(x, W1, b1, W2, b2) {
   second <- morie_geron_linear_layer_forward(
     if (first$batch) H else as.numeric(H), t(W2), b2)
   Y <- second$output
-  d_model <- nrow(W1); d_ff <- ncol(W1)
+  d_model <- nrow(W1)
+  d_ff <- ncol(W1)
   list(output = Y, hidden = if (first$batch) H else as.numeric(H),
        d_model = d_model, d_ff = d_ff, expansion_ratio = d_ff / d_model,
        sparsity = mean(H == 0),
@@ -1290,14 +1362,19 @@ morie_geron_feature_importance_mdi <- function(tree_importances) {
 #' str(r, max.level = 1)
 morie_geron_flamingo_cross_modal_attn <- function(h, visual_features, alpha,
                                                   weights, mask = NULL) {
-  H <- .morie_gr_a2d(h); Vf <- .morie_gr_a2d(visual_features)
+  H <- .morie_gr_a2d(h)
+  Vf <- .morie_gr_a2d(visual_features)
   alpha <- as.numeric(alpha)
   .morie_gr_need(is.finite(alpha), "alpha must be finite.")
   if (!is.null(names(weights)) && all(c("WQ", "WK", "WV") %in% names(weights))) {
-    WQ <- weights$WQ; WK <- weights$WK; WV <- weights$WV
+    WQ <- weights$WQ
+    WK <- weights$WK
+    WV <- weights$WV
   } else {
     .morie_gr_need(length(weights) == 3L, "weights must hold exactly WQ, WK, WV.")
-    WQ <- weights[[1L]]; WK <- weights[[2L]]; WV <- weights[[3L]]
+    WQ <- weights[[1L]]
+    WK <- weights[[2L]]
+    WV <- weights[[3L]]
   }
   .morie_gr_need(ncol(.morie_gr_a2d(WV)) == ncol(H),
                  "WV must map to d_model for the residual add.")
@@ -1348,19 +1425,29 @@ morie_geron_scaled_dot_product_attention <- function(Q, K, V, mask = NULL) {
 #' @examples
 #' morie_geron_flash_attention_tile(Q = 0.5, K = 5L, V = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_flash_attention_tile <- function(Q, K, V, block_size = 2) {
-  Qa <- .morie_gr_a2d(Q); Ka <- .morie_gr_a2d(K); Va <- .morie_gr_a2d(V)
+  Qa <- .morie_gr_a2d(Q)
+  Ka <- .morie_gr_a2d(K)
+  Va <- .morie_gr_a2d(V)
   .morie_gr_need(ncol(Qa) == ncol(Ka), "Q and K must share d_k.")
   .morie_gr_need(nrow(Ka) == nrow(Va), "K and V must have the same rows.")
-  .morie_gr_fin(Qa, "Q"); .morie_gr_fin(Ka, "K"); .morie_gr_fin(Va, "V")
+  .morie_gr_fin(Qa, "Q")
+  .morie_gr_fin(Ka, "K")
+  .morie_gr_fin(Va, "V")
   bs <- as.integer(block_size)
   .morie_gr_need(bs >= 1L, "block_size must be a positive integer.")
-  Tq <- nrow(Qa); dk <- ncol(Qa); Tk <- nrow(Ka); dv <- ncol(Va)
+  Tq <- nrow(Qa)
+  dk <- ncol(Qa)
+  Tk <- nrow(Ka)
+  dv <- ncol(Va)
   scale <- 1 / sqrt(dk)
-  m <- rep(-Inf, Tq); l <- rep(0, Tq); O <- matrix(0, Tq, dv)
+  m <- rep(-Inf, Tq)
+  l <- rep(0, Tq)
+  O <- matrix(0, Tq, dv)
   n_blocks <- 0L
   for (start in seq.int(0L, Tk - 1L, by = bs)) {
     idx <- (start + 1L):min(start + bs, Tk)
-    Kj <- Ka[idx, , drop = FALSE]; Vj <- Va[idx, , drop = FALSE]
+    Kj <- Ka[idx, , drop = FALSE]
+    Vj <- Va[idx, , drop = FALSE]
     S <- Qa %*% t(Kj) * scale
     m_tilde <- apply(S, 1L, max)
     P <- exp(S - m_tilde)
@@ -1370,7 +1457,8 @@ morie_geron_flash_attention_tile <- function(Q, K, V, block_size = 2) {
     b <- exp(m_tilde - m_new)
     l_new <- a * l + b * l_tilde
     O <- (a * l * O + b * (P %*% Vj)) / l_new
-    m <- m_new; l <- l_new
+    m <- m_new
+    l <- l_new
     n_blocks <- n_blocks + 1L
   }
   R <- .morie_gr_attend(Qa, Ka, Va)$output
@@ -1395,10 +1483,13 @@ morie_geron_flash_attention_tile <- function(Q, K, V, block_size = 2) {
 #'     batch_size = 32)
 morie_geron_feature_map_dim <- function(H_out, W_out, C_out,
                                         bytes_per_value = 4, batch_size = 1) {
-  H_out <- as.integer(H_out); W_out <- as.integer(W_out); C_out <- as.integer(C_out)
+  H_out <- as.integer(H_out)
+  W_out <- as.integer(W_out)
+  C_out <- as.integer(C_out)
   .morie_gr_need(H_out >= 1L && W_out >= 1L && C_out >= 1L,
                  "H_out, W_out and C_out must be positive integers.")
-  bpv <- as.integer(bytes_per_value); bs <- as.integer(batch_size)
+  bpv <- as.integer(bytes_per_value)
+  bs <- as.integer(batch_size)
   .morie_gr_need(bpv >= 1L, "bytes_per_value must be a positive integer.")
   .morie_gr_need(bs >= 1L, "batch_size must be a positive integer.")
   dim <- as.numeric(H_out) * W_out * C_out
@@ -1432,7 +1523,11 @@ morie_geron_fp16_mixed_precision <- function(loss, S, gradients = NULL) {
   .morie_gr_need(is.finite(S) && S > 0, "S must be a positive finite loss scale.")
   ls <- loss * S
   overflow <- ls > FP16_MAX
-  sg <- NULL; rg <- NULL; err <- 0; n_before <- 0L; n_after <- 0L
+  sg <- NULL
+  rg <- NULL
+  err <- 0
+  n_before <- 0L
+  n_after <- 0L
   if (!is.null(gradients)) {
     g <- gradients
     .morie_gr_fin(g, "gradients")
@@ -1442,7 +1537,8 @@ morie_geron_fp16_mixed_precision <- function(loss, S, gradients = NULL) {
     n_before <- sum(g != 0 & abs(g) < FP16_TINY)
     n_after <- sum(scaled != 0 & abs(scaled) < FP16_SUB)
     err <- if (length(g)) max(abs(recovered - g)) else 0
-    sg <- scaled; rg <- recovered
+    sg <- scaled
+    rg <- recovered
   }
   list(loss_scaled = ls, overflow = overflow, scaled_gradients = sg,
        recovered_gradients = rg, max_roundtrip_error = err,
@@ -1470,10 +1566,12 @@ morie_geron_fp16_mixed_precision <- function(loss, S, gradients = NULL) {
 #' morie_geron_ddpm_forward_process(x0, t = 5, alpha_bar = alpha_bar, seed = 1)
 #' morie_geron_gan_minimax(real = alpha_bar, fake = alpha_bar, D_real = alpha_bar, D_fake = alpha_bar)
 morie_geron_gan_minimax <- function(real, fake, D_real, D_fake, eps = 1e-12) {
-  dr <- as.numeric(D_real); df <- as.numeric(D_fake)
+  dr <- as.numeric(D_real)
+  df <- as.numeric(D_fake)
   .morie_gr_need(length(dr) > 0L && length(df) > 0L,
                  "D_real and D_fake must be non-empty.")
-  .morie_gr_fin(dr, "D_real"); .morie_gr_fin(df, "D_fake")
+  .morie_gr_fin(dr, "D_real")
+  .morie_gr_fin(df, "D_fake")
   .morie_gr_need(all(dr >= 0 & dr <= 1), "D_real must lie in [0, 1].")
   .morie_gr_need(all(df >= 0 & df <= 1), "D_fake must lie in [0, 1].")
   eps <- as.numeric(eps)
@@ -1518,13 +1616,16 @@ morie_geron_gan_minimax <- function(real, fake, D_real, D_fake, eps = 1e-12) {
 #' morie_geron_gradient_boosting_residual(X = X, y = y, F_prev = y)
 morie_geron_gradient_boosting_residual <- function(X, y, F_prev, learner = NULL,
                                                    learning_rate = 1) {
-  A <- .morie_gr_a2d(X); y <- as.numeric(y)
+  A <- .morie_gr_a2d(X)
+  y <- as.numeric(y)
   m <- nrow(A)
   .morie_gr_need(length(y) == m, "y length must equal nrow(X).")
   Fv <- as.numeric(F_prev)
   if (length(Fv) == 1L) Fv <- rep(Fv, m)
   .morie_gr_need(length(Fv) == m, "F_prev length must equal nrow(X).")
-  .morie_gr_fin(A, "X"); .morie_gr_fin(y, "y"); .morie_gr_fin(Fv, "F_prev")
+  .morie_gr_fin(A, "X")
+  .morie_gr_fin(y, "y")
+  .morie_gr_fin(Fv, "F_prev")
   nu <- as.numeric(learning_rate)
   .morie_gr_need(nu > 0 && nu <= 1, "learning_rate must lie in (0, 1].")
   resid <- y - Fv
@@ -1538,7 +1639,8 @@ morie_geron_gradient_boosting_residual <- function(X, y, F_prev, learner = NULL,
       for (tt in cuts) {
         left <- A[, j] <= tt
         if (!any(left) || all(left)) next
-        lv <- mean(resid[left]); rv <- mean(resid[!left])
+        lv <- mean(resid[left])
+        rv <- mean(resid[!left])
         sse <- sum((resid[left] - lv)^2) + sum((resid[!left] - rv)^2)
         if (is.null(best) || sse < best$sse)
           best <- list(sse = sse, feature = j - 1L, threshold = tt,
@@ -1642,9 +1744,13 @@ morie_geron_gini_impurity_grgin <- function(y) {
 #'                                means = rbind(c(0, 0), c(3, 3)),
 #'                                covars = list(diag(2), diag(2)))
 morie_geron_gmm_log_likelihood <- function(X, pi, means, covars) {
-  A <- .morie_gr_a2d(X); w <- as.numeric(pi); M <- .morie_gr_a2d(means)
+  A <- .morie_gr_a2d(X)
+  w <- as.numeric(pi)
+  M <- .morie_gr_a2d(means)
   .morie_gr_need(length(A) > 0L, "X must be a non-empty 2-D array.")
-  m <- nrow(A); d <- ncol(A); K <- length(w)
+  m <- nrow(A)
+  d <- ncol(A)
+  K <- length(w)
   .morie_gr_need(all(dim(M) == c(K, d)), "means must have shape (K, d).")
   S <- if (is.list(covars)) covars else {
     arr <- covars
@@ -1654,10 +1760,12 @@ morie_geron_gmm_log_likelihood <- function(X, pi, means, covars) {
   .morie_gr_need(length(S) == K, "covars must have K entries.")
   .morie_gr_need(all(w >= 0), "mixing weights must be non-negative.")
   .morie_gr_need(abs(sum(w) - 1) <= 1e-08, "mixing weights must sum to 1.")
-  .morie_gr_fin(A, "X"); .morie_gr_fin(M, "means")
+  .morie_gr_fin(A, "X")
+  .morie_gr_fin(M, "means")
   logp <- matrix(0, m, K)
   for (k in seq_len(K)) {
-    if (w[k] == 0) { logp[, k] <- -Inf; next }
+    if (w[k] == 0) { logp[, k] <- -Inf
+    next }
     Sk <- matrix(as.numeric(S[[k]]), d, d)
     .morie_gr_fin(Sk, "covars")
     L <- tryCatch(t(chol(Sk)), error = function(e)
@@ -1704,7 +1812,9 @@ morie_geron_gmm_em_step <- function(X, pi, means, covars, reg = 1e-06) {
   A <- .morie_gr_a2d(X)
   before <- morie_geron_gmm_log_likelihood(A, pi, means, covars)
   logp <- before$component_log_densities
-  m <- nrow(A); d <- ncol(A); K <- ncol(logp)
+  m <- nrow(A)
+  d <- ncol(A)
+  K <- ncol(logp)
   reg <- as.numeric(reg)
   .morie_gr_need(reg >= 0, "reg must be non-negative.")
   mx <- apply(logp, 1L, max)
@@ -1747,7 +1857,8 @@ morie_geron_gpt_autoregressive_loss <- function(logits, targets,
   Z <- .morie_gr_a2d(logits)
   .morie_gr_need(length(Z) > 0L, "logits must be a non-empty (T, V) array.")
   .morie_gr_fin(Z, "logits")
-  Tn <- nrow(Z); V <- ncol(Z)
+  Tn <- nrow(Z)
+  V <- ncol(Z)
   t <- as.integer(as.numeric(targets))
   .morie_gr_need(length(t) == Tn, "targets length must equal the logit positions.")
   .morie_gr_need(min(t) >= 0L && max(t) < V,
@@ -1756,7 +1867,8 @@ morie_geron_gpt_autoregressive_loss <- function(logits, targets,
   logp <- .morie_gr_log_softmax_rows(Z)
   chosen <- logp[cbind(seq_len(Tn), t + 1L)]
   per <- -chosen
-  total <- sum(per); mn <- mean(per)
+  total <- sum(per)
+  mn <- mean(per)
   list(loss = total, mean_loss = mn, perplexity = exp(mn),
        per_token_loss = per, target_logprob = chosen,
        estimate = if (reduction == "sum") total else mn, n = Tn)
@@ -1784,7 +1896,8 @@ morie_geron_gaussian_random_projection <- function(X, d, seed = 0) {
   .morie_gr_fin(A, "X")
   d <- as.integer(d)
   .morie_gr_need(d >= 1L, "d must be a positive integer.")
-  m <- nrow(A); n <- ncol(A)
+  m <- nrow(A)
+  n <- ncol(A)
   R <- matrix(.morie_gr_lcg_normals(n * d, seed), nrow = n, ncol = d,
               byrow = TRUE) * sqrt(1 / d)
   Z <- A %*% R
@@ -1825,10 +1938,13 @@ morie_geron_gaussian_random_projection <- function(X, d, seed = 0) {
 #' Wz <- matrix(0.1, 2, 4); Wr <- matrix(0.1, 2, 4); W <- matrix(0.1, 2, 4)
 #' morie_geron_gru_cell(x_t, h_prev, Wz, Wr, W)
 morie_geron_gru_cell <- function(x_t, h_prev, Wz, Wr, W) {
-  x <- as.numeric(x_t); h <- as.numeric(h_prev)
-  H <- length(h); n <- length(x)
+  x <- as.numeric(x_t)
+  h <- as.numeric(h_prev)
+  H <- length(h)
+  n <- length(x)
   .morie_gr_need(H > 0L, "h_prev is empty.")
-  .morie_gr_fin(x, "x_t"); .morie_gr_fin(h, "h_prev")
+  .morie_gr_fin(x, "x_t")
+  .morie_gr_fin(h, "h_prev")
   mats <- list(Wz = .morie_gr_a2d(Wz), Wr = .morie_gr_a2d(Wr), W = .morie_gr_a2d(W))
   for (nm in names(mats)) {
     .morie_gr_need(all(dim(mats[[nm]]) == c(H, H + n)),
@@ -1875,7 +1991,8 @@ morie_geron_gru_cell <- function(x_t, h_prev, Wz, Wr, W) {
 #'                            K = 3, fit_score = fs)
 morie_geron_grid_search_cv <- function(X, y, param_grid, K, fit_score,
                                        shuffle = FALSE, seed = 0) {
-  A <- X; y_arr <- y
+  A <- X
+  y_arr <- y
   m <- if (is.matrix(A)) nrow(A) else length(A)
   ylen <- if (is.matrix(y_arr)) nrow(y_arr) else length(y_arr)
   .morie_gr_need(ylen == m, "y rows must equal X rows.")
@@ -1893,7 +2010,8 @@ morie_geron_grid_search_cv <- function(X, y, param_grid, K, fit_score,
   splits <- morie_geron_kfold_cv(m, K, shuffle = shuffle, seed = seed)$splits
   scores <- matrix(0, length(combos), length(splits))
   for (i in seq_along(combos)) for (k in seq_along(splits)) {
-    tr <- splits[[k]]$train + 1L; va <- splits[[k]]$val + 1L
+    tr <- splits[[k]]$train + 1L
+    va <- splits[[k]]$val + 1L
     Xtr <- if (is.matrix(A)) A[tr, , drop = FALSE] else A[tr]
     Xva <- if (is.matrix(A)) A[va, , drop = FALSE] else A[va]
     s <- as.numeric(fit_score(Xtr, y_arr[tr], Xva, y_arr[va], combos[[i]]))
@@ -1927,7 +2045,9 @@ morie_geron_grid_search_cv <- function(X, y, param_grid, K, fit_score,
 #' morie_geron_hebb_rule_grhbb(c(1, 2), c(1, 0), c(0, 1), matrix(c(0.5, 
 #'     0.5, 1, -1), 2, byrow = TRUE), 0.1)
 morie_geron_hebb_rule_grhbb <- function(x, y_true, y_pred, w, eta) {
-  x <- as.numeric(x); y_true <- as.numeric(y_true); y_pred <- as.numeric(y_pred)
+  x <- as.numeric(x)
+  y_true <- as.numeric(y_true)
+  y_pred <- as.numeric(y_pred)
   W <- .morie_gr_a2d(w)
   .morie_gr_need(length(y_true) == length(y_pred), "y_true and y_pred must match.")
   .morie_gr_need(all(dim(W) == c(length(x), length(y_true))),
@@ -2023,11 +2143,14 @@ morie_geron_information_gain <- function(y, left_mask, criterion = "entropy") {
   }
   .morie_gr_need(length(mask) == length(y), "left_mask length must equal y.")
   .morie_gr_need(length(y) > 0L, "y is empty.")
-  mL <- sum(mask); mR <- sum(!mask)
+  mL <- sum(mask)
+  mR <- sum(!mask)
   .morie_gr_need(mL > 0L && mR > 0L, "the split sends every instance to one side.")
   imp <- function(arr) if (criterion == "entropy")
     morie_geron_shannon_entropy(arr)$entropy else morie_geron_gini_impurity_grgin(arr)$gini
-  parent <- imp(y); left <- imp(y[mask]); right <- imp(y[!mask])
+  parent <- imp(y)
+  left <- imp(y[mask])
+  right <- imp(y[!mask])
   m <- length(y)
   child <- mL / m * left + mR / m * right
   ig <- parent - child
@@ -2070,7 +2193,8 @@ morie_geron_simple_imputer <- function(X, strategy = "mean") {
     col <- A[!miss[, j], j]
     stats_v[j] <- if (strategy == "mean") mean(col)
       else if (strategy == "median") stats::median(col)
-      else { vals <- sort(unique(col)); cnt <- tabulate(match(col, vals))
+      else { vals <- sort(unique(col))
+      cnt <- tabulate(match(col, vals))
              vals[which.max(cnt)] }
   }
   out <- A
@@ -2179,10 +2303,13 @@ morie_geron_johnson_lindenstrauss_bound <- function(n_samples, eps) {
 #'                                         alpha = 0.5, T = 2)
 morie_geron_knowledge_distillation_loss <- function(student_logits,
                                                     teacher_logits, y, alpha, T) {
-  S <- .morie_gr_a2d(student_logits); Tl <- .morie_gr_a2d(teacher_logits)
+  S <- .morie_gr_a2d(student_logits)
+  Tl <- .morie_gr_a2d(teacher_logits)
   .morie_gr_need(all(dim(S) == dim(Tl)), "student and teacher logits must match.")
-  .morie_gr_fin(S, "logits"); .morie_gr_fin(Tl, "logits")
-  m <- nrow(S); K <- ncol(S)
+  .morie_gr_fin(S, "logits")
+  .morie_gr_fin(Tl, "logits")
+  m <- nrow(S)
+  K <- ncol(S)
   lab <- as.integer(as.numeric(y))
   .morie_gr_need(length(lab) == m, "y length must equal the instances.")
   .morie_gr_need(min(lab) >= 0L && max(lab) < K,
@@ -2195,7 +2322,8 @@ morie_geron_knowledge_distillation_loss <- function(student_logits,
   ce <- -mean(logp_hard[cbind(seq_len(m), lab + 1L)])
   logq <- .morie_gr_log_softmax_rows(S / Temp)
   logt <- .morie_gr_log_softmax_rows(Tl / Temp)
-  q <- exp(logq); p <- exp(logt)
+  q <- exp(logq)
+  p <- exp(logt)
   kl_st <- mean(rowSums(q * (logq - logt)))
   kl_ts <- mean(rowSums(p * (logt - logq)))
   soft <- Temp^2 * kl_st
@@ -2224,7 +2352,8 @@ morie_geron_knowledge_distillation_loss <- function(student_logits,
 #' @examples
 #' morie_geron_kfold_cv(n = 5L, K = 5L)
 morie_geron_kfold_cv <- function(n, K, shuffle = FALSE, seed = 0) {
-  n <- as.integer(n); K <- as.integer(K)
+  n <- as.integer(n)
+  K <- as.integer(K)
   .morie_gr_need(n >= 2L, "n must be at least 2 to split at all.")
   .morie_gr_need(K >= 2L && K <= n, paste0("K must lie in [2, ", n, "]."))
   order0 <- if (isTRUE(shuffle)) .morie_gr_lcg_perm(n, seed) else seq_len(n) - 1L
@@ -2254,10 +2383,12 @@ morie_geron_kfold_cv <- function(n, K, shuffle = FALSE, seed = 0) {
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_geron_kl_divergence_gaussian(V, V)
 morie_geron_kl_divergence_gaussian <- function(mu, logvar) {
-  m_arr <- mu; lv <- logvar
+  m_arr <- mu
+  lv <- logvar
   .morie_gr_need(length(m_arr) == length(lv), "mu and logvar must have the same shape.")
   .morie_gr_need(length(m_arr) > 0L, "mu is empty.")
-  .morie_gr_fin(m_arr, "mu"); .morie_gr_fin(lv, "logvar")
+  .morie_gr_fin(m_arr, "mu")
+  .morie_gr_fin(lv, "logvar")
   .morie_gr_need(all(lv <= 80), "logvar would overflow exp().")
   var <- exp(lv)
   per_dim <- -0.5 * (1 + lv - m_arr^2 - var)
@@ -2287,14 +2418,17 @@ morie_geron_kl_divergence_gaussian <- function(mu, logvar) {
 #' morie_geron_kmeans_objective(X, centroids = rbind(c(0, 0), c(4, 4)),
 #'                              labels = rep(c(0L, 1L), each = 10))
 morie_geron_kmeans_objective <- function(X, centroids, labels) {
-  A <- .morie_gr_a2d(X); C <- .morie_gr_a2d(centroids)
+  A <- .morie_gr_a2d(X)
+  C <- .morie_gr_a2d(centroids)
   lab <- as.integer(as.numeric(labels))
   .morie_gr_need(ncol(A) == ncol(C), "X and centroids must share the feature count.")
-  m <- nrow(A); k <- nrow(C)
+  m <- nrow(A)
+  k <- nrow(C)
   .morie_gr_need(length(lab) == m, "labels length must equal nrow(X).")
   .morie_gr_need(min(lab) >= 0L && max(lab) < k,
                  paste0("labels must lie in [0, ", k - 1L, "]."))
-  .morie_gr_fin(A, "X"); .morie_gr_fin(C, "centroids")
+  .morie_gr_fin(A, "X")
+  .morie_gr_fin(C, "centroids")
   d2 <- rowSums((A - C[lab + 1L, , drop = FALSE])^2)
   per <- vapply(seq_len(k) - 1L, function(j) sum(d2[lab == j]), numeric(1L))
   sizes <- vapply(seq_len(k) - 1L, function(j) sum(lab == j), integer(1L))
@@ -2302,7 +2436,8 @@ morie_geron_kmeans_objective <- function(X, centroids, labels) {
   for (j in seq_len(k) - 1L) {
     if (sizes[j + 1L] > 0L &&
         !isTRUE(all(abs(colMeans(A[lab == j, , drop = FALSE]) - C[j + 1L, ]) <= 1e-10))) {
-      is_mean <- FALSE; break
+      is_mean <- FALSE
+      break
     }
   }
   list(inertia = sum(d2), per_cluster_inertia = per, cluster_sizes = sizes,
@@ -2332,7 +2467,8 @@ morie_geron_kmeans_pp_seeding <- function(X, k, seed = 0) {
   A <- .morie_gr_a2d(X)
   .morie_gr_need(length(A) > 0L, "X must be a non-empty 2-D array.")
   .morie_gr_fin(A, "X")
-  m <- nrow(A); k <- as.integer(k)
+  m <- nrow(A)
+  k <- as.integer(k)
   .morie_gr_need(k >= 1L && k <= m, paste0("k must lie in [1, ", m, "]."))
   u <- .morie_gr_lcg_u(k, seed)
   first <- min(as.integer(u[1L] * m), m - 1L)
@@ -2389,7 +2525,8 @@ morie_geron_kernel_pca_rbf <- function(X, gamma = 1, d = 2) {
   .morie_gr_fin(A, "X")
   gamma <- as.numeric(gamma)
   .morie_gr_need(is.finite(gamma) && gamma > 0, "gamma must be a positive finite float.")
-  m <- nrow(A); d <- as.integer(d)
+  m <- nrow(A)
+  d <- as.integer(d)
   .morie_gr_need(d >= 1L && d <= m, paste0("d must lie in [1, ", m, "]."))
   sq <- as.matrix(stats::dist(A))^2
   K <- exp(-gamma * sq)
@@ -2432,7 +2569,8 @@ morie_geron_kv_cache_compression <- function(seq_len, num_layers, num_heads,
   iv <- vapply(list(seq_len, num_layers, num_heads, d_head),
                function(v) as.numeric(as.integer(v)), numeric(1L))
   .morie_gr_need(all(iv >= 1), "seq_len, num_layers, num_heads and d_head must be positive.")
-  bits <- as.integer(bits); baseline_bits <- as.integer(baseline_bits)
+  bits <- as.integer(bits)
+  baseline_bits <- as.integer(baseline_bits)
   bs <- as.integer(batch_size)
   .morie_gr_need(bits >= 1L, "bits must be a positive integer.")
   .morie_gr_need(baseline_bits >= 1L, "baseline_bits must be a positive integer.")
@@ -2472,7 +2610,8 @@ morie_geron_layer_normalization <- function(X, gamma = 1, beta = 0, eps = 1e-05)
   eps <- as.numeric(eps)
   .morie_gr_need(eps >= 0, "eps must be non-negative.")
   d <- ncol(A)
-  g <- as.numeric(gamma); b <- as.numeric(beta)
+  g <- as.numeric(gamma)
+  b <- as.numeric(beta)
   if (length(g) == 1L) g <- rep(g, d)
   if (length(b) == 1L) b <- rep(b, d)
   .morie_gr_need(length(g) == d && length(b) == d,
@@ -2512,7 +2651,8 @@ morie_geron_local_outlier_factor <- function(X, k = 5) {
   A <- .morie_gr_a2d(X)
   .morie_gr_need(nrow(A) > 0L, "X must be a non-empty 2-D array.")
   .morie_gr_fin(A, "X")
-  m <- nrow(A); k <- as.integer(k)
+  m <- nrow(A)
+  k <- as.integer(k)
   .morie_gr_need(k >= 1L && k <= m - 1L,
                  paste0("k must lie in [1, ", m - 1L, "]."))
   D <- as.matrix(stats::dist(A))
@@ -2567,7 +2707,8 @@ morie_geron_logistic_regression_probability <- function(X, theta) {
   theta <- as.numeric(theta)
   .morie_gr_need(nrow(Xm) > 0L, "X has no rows.")
   .morie_gr_need(ncol(Xm) == length(theta), "X columns must equal length(theta).")
-  .morie_gr_fin(Xm, "X"); .morie_gr_fin(theta, "theta")
+  .morie_gr_fin(Xm, "X")
+  .morie_gr_fin(theta, "theta")
   z <- as.numeric(Xm %*% theta)
   p <- .morie_gr_sigmoid_vec(z)
   list(probability = p, logit = z, prediction = as.integer(p >= 0.5),
@@ -2642,7 +2783,8 @@ morie_geron_logistic_cost_gradient <- function(X, y, theta) {
 #' @examples
 #' morie_geron_lr_cosine_annealing(0.001, 0.1, 3, 10)
 morie_geron_lr_cosine_annealing <- function(eta_min, eta_max, t, T) {
-  eta_min <- as.numeric(eta_min); eta_max <- as.numeric(eta_max)
+  eta_min <- as.numeric(eta_min)
+  eta_max <- as.numeric(eta_max)
   .morie_gr_need(is.finite(eta_min) && is.finite(eta_max),
                  "eta_min and eta_max must be finite.")
   .morie_gr_need(eta_min >= 0 && eta_max >= 0, "learning rates must be non-negative.")
@@ -2710,8 +2852,10 @@ morie_geron_lr_exponential_schedule <- function(eta0, gamma, t) {
 #' morie_geron_learning_curves(X = X, y = y)
 morie_geron_learning_curves <- function(X, y, n_splits = 10,
                                         val_fraction = 0.2) {
-  A <- .morie_gr_a2d(X); y_arr <- as.numeric(y)
-  m <- nrow(A); n_feat <- ncol(A)
+  A <- .morie_gr_a2d(X)
+  y_arr <- as.numeric(y)
+  m <- nrow(A)
+  n_feat <- ncol(A)
   .morie_gr_need(length(y_arr) == m, "y length must equal nrow(X).")
   val_fraction <- as.numeric(val_fraction)
   .morie_gr_need(val_fraction > 0 && val_fraction < 1,
@@ -2723,12 +2867,15 @@ morie_geron_learning_curves <- function(X, y, n_splits = 10,
   .morie_gr_need(n_train >= n_feat, "too few training rows for the parameters.")
   n_splits <- as.integer(n_splits)
   .morie_gr_need(n_splits >= 1L, "n_splits must be at least 1.")
-  Xtr <- A[seq_len(n_train), , drop = FALSE]; ytr <- y_arr[seq_len(n_train)]
-  Xva <- A[(n_train + 1L):m, , drop = FALSE]; yva <- y_arr[(n_train + 1L):m]
+  Xtr <- A[seq_len(n_train), , drop = FALSE]
+  ytr <- y_arr[seq_len(n_train)]
+  Xva <- A[(n_train + 1L):m, , drop = FALSE]
+  yva <- y_arr[(n_train + 1L):m]
   lin <- if (n_splits == 1L) n_feat else
     seq(n_feat, n_train, length.out = n_splits)
   sizes <- sort(unique(as.integer(lin)))
-  tr_rmse <- numeric(0); va_rmse <- numeric(0)
+  tr_rmse <- numeric(0)
+  va_rmse <- numeric(0)
   for (s in sizes) {
     th <- morie_geron_ch4_normal_equation(Xtr[seq_len(s), , drop = FALSE],
                                           ytr[seq_len(s)])$theta
@@ -2762,9 +2909,12 @@ morie_geron_learning_curves <- function(X, y, n_splits = 10,
 #'                       bg = rep(0, 2), bo = rep(0, 2))
 morie_geron_lstm_cell <- function(x_t, h_prev, c_prev, Wf, Wi, Wg, Wo,
                                   bf, bi, bg, bo) {
-  x <- as.numeric(x_t); h <- as.numeric(h_prev); cc <- as.numeric(c_prev)
+  x <- as.numeric(x_t)
+  h <- as.numeric(h_prev)
+  cc <- as.numeric(c_prev)
   .morie_gr_need(length(h) == length(cc), "h_prev and c_prev must have equal length.")
-  H <- length(h); n <- length(x)
+  H <- length(h)
+  n <- length(x)
   .morie_gr_need(H > 0L, "h_prev is empty.")
   z <- c(h, x)
   gates <- list()
@@ -2777,12 +2927,15 @@ morie_geron_lstm_cell <- function(x_t, h_prev, c_prev, Wf, Wi, Wg, Wo,
     bv <- as.numeric(bs[[nm]])
     if (length(bv) == 1L) bv <- rep(bv, H)
     .morie_gr_need(length(bv) == H, paste0("b", nm, " must be scalar or length H."))
-    .morie_gr_fin(M, paste0("W", nm)); .morie_gr_fin(bv, paste0("b", nm))
+    .morie_gr_fin(M, paste0("W", nm))
+    .morie_gr_fin(bv, paste0("b", nm))
     gates[[nm]] <- as.numeric(M %*% z) + bv
   }
   .morie_gr_fin(c(x, h, cc), "x_t, h_prev and c_prev")
-  f <- .morie_gr_sigmoid_vec(gates$f); i <- .morie_gr_sigmoid_vec(gates$i)
-  g <- tanh(gates$g); o <- .morie_gr_sigmoid_vec(gates$o)
+  f <- .morie_gr_sigmoid_vec(gates$f)
+  i <- .morie_gr_sigmoid_vec(gates$i)
+  g <- tanh(gates$g)
+  o <- .morie_gr_sigmoid_vec(gates$o)
   c_new <- f * cc + i * g
   h_new <- o * tanh(c_new)
   list(h = h_new, c = c_new, f = f, i = i, g = g, o = o,
@@ -2801,11 +2954,14 @@ morie_geron_lstm_cell <- function(x_t, h_prev, c_prev, Wf, Wi, Wg, Wo,
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_geron_mae_grmae(V, V)
 morie_geron_mae_grmae <- function(y_true, y_pred) {
-  yt <- as.numeric(y_true); yp <- as.numeric(y_pred)
+  yt <- as.numeric(y_true)
+  yp <- as.numeric(y_pred)
   .morie_gr_need(length(yt) == length(yp), "y_true and y_pred must be equal length.")
   .morie_gr_need(length(yt) > 0L, "MAE over zero instances is undefined.")
-  .morie_gr_fin(yt, "y_true"); .morie_gr_fin(yp, "y_pred")
-  resid <- yp - yt; a <- abs(resid)
+  .morie_gr_fin(yt, "y_true")
+  .morie_gr_fin(yp, "y_pred")
+  resid <- yp - yt
+  a <- abs(resid)
   list(mae = mean(a), rmse = sqrt(mean(resid^2)), max_error = max(a),
        median_absolute_error = stats::median(a), residuals = resid,
        estimate = mean(a), n = length(a))
@@ -2830,11 +2986,13 @@ morie_geron_mae_grmae <- function(y_true, y_pred) {
 #' morie_geron_gan_mode_collapse_metric(M, M)
 morie_geron_gan_mode_collapse_metric <- function(samples, true_modes,
                                                  tol = NULL) {
-  S <- .morie_gr_a2d(samples); M <- .morie_gr_a2d(true_modes)
+  S <- .morie_gr_a2d(samples)
+  M <- .morie_gr_a2d(true_modes)
   if (nrow(S) == 1L && ncol(M) != ncol(S) && ncol(S) == nrow(M)) S <- t(S)
   .morie_gr_need(ncol(S) == ncol(M), "samples and modes must share the dimension.")
   .morie_gr_need(length(S) > 0L && length(M) > 0L, "samples and true_modes must be non-empty.")
-  .morie_gr_fin(S, "samples"); .morie_gr_fin(M, "true_modes")
+  .morie_gr_fin(S, "samples")
+  .morie_gr_fin(M, "true_modes")
   K <- nrow(M)
   if (is.null(tol)) {
     .morie_gr_need(K >= 2L, "with a single true mode pass tol explicitly.")
@@ -2883,15 +3041,21 @@ morie_geron_gan_mode_collapse_metric <- function(samples, true_modes,
 #'     5, seed = 3)
 morie_geron_minibatch_gradient_descent <- function(X, y, theta, eta, b, n_iter,
                                                    seed = 0) {
-  A <- .morie_gr_a2d(X); y_arr <- as.numeric(y); th <- as.numeric(theta)
+  A <- .morie_gr_a2d(X)
+  y_arr <- as.numeric(y)
+  th <- as.numeric(theta)
   start <- .morie_gr_mse_core(A, y_arr, th)
-  m <- nrow(A); b <- as.integer(b)
+  m <- nrow(A)
+  b <- as.integer(b)
   .morie_gr_need(b >= 1L && b <= m, paste0("b must lie in [1, ", m, "]."))
   n_iter <- as.integer(n_iter)
   .morie_gr_need(n_iter >= 1L, "n_iter must be at least 1.")
   eta <- as.numeric(eta)
   .morie_gr_need(is.finite(eta) && eta > 0, "eta must be a positive finite float.")
-  costs <- start$cost; hist <- list(th); epoch <- 0L; queue <- list()
+  costs <- start$cost
+  hist <- list(th)
+  epoch <- 0L
+  queue <- list()
   for (step in seq_len(n_iter)) {
     if (length(queue) == 0L) {
       queue <- morie_geron_dataloader_minibatch(m, b, shuffle = TRUE,
@@ -2934,7 +3098,9 @@ morie_geron_minibatch_gradient_descent <- function(X, y, theta, eta, b, n_iter,
 #'                                  WO = W, h = 2)
 morie_geron_multi_head_attention <- function(Q, K, V, WQ, WK, WV, WO, h,
                                              mask = NULL) {
-  Qa <- .morie_gr_a2d(Q); Ka <- .morie_gr_a2d(K); Va <- .morie_gr_a2d(V)
+  Qa <- .morie_gr_a2d(Q)
+  Ka <- .morie_gr_a2d(K)
+  Va <- .morie_gr_a2d(V)
   .morie_gr_need(nrow(Ka) == nrow(Va), "K and V must have equal rows.")
   d_model <- ncol(Qa)
   .morie_gr_need(ncol(Ka) == d_model && ncol(Va) == d_model,
@@ -2951,14 +3117,20 @@ morie_geron_multi_head_attention <- function(Q, K, V, WQ, WK, WV, WO, h,
                                    paste0(nm, " must have d_model columns."))
     .morie_gr_fin(mats[[nm]], nm)
   }
-  .morie_gr_fin(Qa, "Q"); .morie_gr_fin(Ka, "K"); .morie_gr_fin(Va, "V")
-  Qp <- Qa %*% mats$WQ; Kp <- Ka %*% mats$WK; Vp <- Va %*% mats$WV
-  heads <- vector("list", h); weights <- vector("list", h)
+  .morie_gr_fin(Qa, "Q")
+  .morie_gr_fin(Ka, "K")
+  .morie_gr_fin(Va, "V")
+  Qp <- Qa %*% mats$WQ
+  Kp <- Ka %*% mats$WK
+  Vp <- Va %*% mats$WV
+  heads <- vector("list", h)
+  weights <- vector("list", h)
   for (i in seq_len(h)) {
     sl <- ((i - 1L) * d_head + 1L):(i * d_head)
     r <- .morie_gr_attend(Qp[, sl, drop = FALSE], Kp[, sl, drop = FALSE],
                           Vp[, sl, drop = FALSE], mask)
-    heads[[i]] <- r$output; weights[[i]] <- r$weights
+    heads[[i]] <- r$output
+    weights[[i]] <- r$weights
   }
   concat <- do.call(cbind, heads)
   out <- concat %*% mats$WO
@@ -2987,27 +3159,38 @@ morie_geron_multi_head_attention <- function(Q, K, V, WQ, WK, WV, WO, h,
 #' morie_geron_dino_self_distillation(sl, tl, tau_s = 0.1, tau_t = 0.04)
 #' morie_geron_multilabel_classification(X = sl, Y = tl)
 morie_geron_multilabel_classification <- function(X, Y, thresholds = 0.5) {
-  S <- .morie_gr_a2d(X); Ti <- .morie_gr_a2d(Y)
+  S <- .morie_gr_a2d(X)
+  Ti <- .morie_gr_a2d(Y)
   .morie_gr_need(all(dim(Ti) == dim(S)), "Y must have the same shape as X.")
   .morie_gr_fin(S, "X (scores)")
   storage.mode(Ti) <- "integer"
   .morie_gr_need(all(Ti %in% c(0L, 1L)), "Y must contain only 0 and 1.")
-  m <- nrow(S); K <- ncol(S)
+  m <- nrow(S)
+  K <- ncol(S)
   t <- as.numeric(thresholds)
   if (length(t) == 1L) t <- rep(t, K)
   .morie_gr_need(length(t) == K, "thresholds must have one entry per label.")
   P <- matrix(0L, m, K)
   for (k in seq_len(K)) P[, k] <- as.integer(S[, k] > t[k])
-  f1s <- numeric(K); precs <- numeric(K); recs <- numeric(K)
+  f1s <- numeric(K)
+  precs <- numeric(K)
+  recs <- numeric(K)
   for (k in seq_len(K)) {
-    yk <- Ti[, k]; pk <- P[, k]
+    yk <- Ti[, k]
+    pk <- P[, k]
     if (!any(yk == 1L) && !any(pk == 1L)) {
-      f1s[k] <- 0; precs[k] <- NA_real_; recs[k] <- NA_real_; next
+      f1s[k] <- 0
+      precs[k] <- NA_real_
+      recs[k] <- NA_real_
+      next
     }
     rk <- morie_geron_f1_score(yk, pk, positive_class = 1)
-    f1s[k] <- rk$f1; precs[k] <- rk$precision; recs[k] <- rk$recall
+    f1s[k] <- rk$f1
+    precs[k] <- rk$precision
+    recs[k] <- rk$recall
   }
-  tp <- sum(P == 1L & Ti == 1L); fp <- sum(P == 1L & Ti == 0L)
+  tp <- sum(P == 1L & Ti == 1L)
+  fp <- sum(P == 1L & Ti == 0L)
   fn <- sum(P == 0L & Ti == 1L)
   micro <- if (2 * tp + fp + fn == 0) 0 else 2 * tp / (2 * tp + fp + fn)
   list(predictions = P, per_label_f1 = f1s, per_label_precision = precs,
@@ -3177,9 +3360,11 @@ morie_geron_minmax_scaler <- function(X, feature_range = c(0, 1)) {
   storage.mode(A) <- "double"
   .morie_gr_need(nrow(A) > 0L, "X has no rows.")
   .morie_gr_fin(A, "X")
-  lo <- as.numeric(feature_range[1L]); hi <- as.numeric(feature_range[2L])
+  lo <- as.numeric(feature_range[1L])
+  hi <- as.numeric(feature_range[2L])
   .morie_gr_need(hi > lo, "feature_range must be increasing.")
-  mn <- apply(A, 2L, min); mx <- apply(A, 2L, max)
+  mn <- apply(A, 2L, min)
+  mx <- apply(A, 2L, max)
   rng <- mx - mn
   .morie_gr_need(all(rng != 0), "a constant column divides by zero.")
   unit <- sweep(sweep(A, 2L, mn, "-"), 2L, rng, "/")
@@ -3244,7 +3429,9 @@ morie_geron_momentum_update <- function(theta, grad, v, eta, beta = 0.9) {
   .morie_gr_need(length(grad) == length(theta) && length(v) == length(theta),
                  "grad and v must match theta's shape.")
   .morie_gr_need(length(theta) > 0L, "theta is empty.")
-  .morie_gr_fin(theta, "theta"); .morie_gr_fin(grad, "grad"); .morie_gr_fin(v, "v")
+  .morie_gr_fin(theta, "theta")
+  .morie_gr_fin(grad, "grad")
+  .morie_gr_fin(v, "v")
   eta <- as.numeric(eta)
   .morie_gr_need(is.finite(eta) && eta > 0, "eta must be a positive finite float.")
   beta <- as.numeric(beta)
@@ -3279,10 +3466,13 @@ morie_geron_max_pooling <- function(X, k = 2, stride = NULL) {
   .morie_gr_need(k >= 1L, "k must be a positive integer.")
   s <- if (is.null(stride)) k else as.integer(stride)
   .morie_gr_need(s >= 1L, "stride must be a positive integer.")
-  H <- nrow(A); W <- ncol(A)
+  H <- nrow(A)
+  W <- ncol(A)
   .morie_gr_need(k <= H && k <= W, "the window does not fit in the input.")
-  out_h <- (H - k) %/% s + 1L; out_w <- (W - k) %/% s + 1L
-  Y <- matrix(0, out_h, out_w); arg <- matrix(0L, out_h, out_w)
+  out_h <- (H - k) %/% s + 1L
+  out_w <- (W - k) %/% s + 1L
+  Y <- matrix(0, out_h, out_w)
+  arg <- matrix(0L, out_h, out_w)
   for (i in seq_len(out_h)) for (j in seq_len(out_w)) {
     win <- A[((i - 1L) * s + 1L):((i - 1L) * s + k),
              ((j - 1L) * s + 1L):((j - 1L) * s + k), drop = FALSE]
@@ -3329,7 +3519,8 @@ morie_geron_linreg_mse_cost_grmse <- function(X, y, theta) {
 morie_geron_ch4_linear_regression_prediction <- function(theta, x) {
   theta <- as.numeric(theta)
   .morie_gr_need(length(theta) >= 1L, "theta must contain at least theta_0.")
-  .morie_gr_fin(theta, "theta"); .morie_gr_fin(x, "x")
+  .morie_gr_fin(theta, "theta")
+  .morie_gr_fin(x, "x")
   n <- length(theta) - 1L
   batch <- is.matrix(x)
   Xm <- if (batch) x else matrix(as.numeric(x), nrow = 1L)
@@ -3354,7 +3545,8 @@ morie_geron_ch4_linear_regression_prediction <- function(theta, x) {
 #' morie_geron_ch4_simple_linear_life_satisfaction(theta_0 = 5L, theta_1 = 5L, GDP_per_capita = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_ch4_simple_linear_life_satisfaction <- function(theta_0, theta_1,
                                                             GDP_per_capita) {
-  theta_0 <- as.numeric(theta_0); theta_1 <- as.numeric(theta_1)
+  theta_0 <- as.numeric(theta_0)
+  theta_1 <- as.numeric(theta_1)
   .morie_gr_need(is.finite(theta_0) && is.finite(theta_1),
                  "theta_0 and theta_1 must be finite.")
   g <- as.numeric(GDP_per_capita)
@@ -3382,11 +3574,14 @@ morie_geron_ch4_simple_linear_life_satisfaction <- function(theta_0, theta_1,
 #' @examples
 #' morie_geron_ch4_normal_equation(X = 5L, y = 5L)
 morie_geron_ch4_normal_equation <- function(X, y) {
-  X <- .morie_gr_a2d(X); y <- as.numeric(y)
-  m <- nrow(X); n <- ncol(X)
+  X <- .morie_gr_a2d(X)
+  y <- as.numeric(y)
+  m <- nrow(X)
+  n <- ncol(X)
   .morie_gr_need(m > 0L && n > 0L, "X must be non-empty.")
   .morie_gr_need(length(y) == m, "y length must equal nrow(X).")
-  .morie_gr_fin(X, "X"); .morie_gr_fin(y, "y")
+  .morie_gr_fin(X, "X")
+  .morie_gr_fin(y, "y")
   .morie_gr_need(m >= n, "X^T X is singular whenever m < n.")
   G <- t(X) %*% X
   sv <- svd(G, nu = 0L, nv = 0L)$d
@@ -3483,7 +3678,8 @@ morie_geron_ch4_softmax_function <- function(s, k, K = NULL) {
   storage.mode(Tm) <- "double"
   .morie_gr_need(length(X) > 0L, "X must be a non-empty (m, n) matrix.")
   .morie_gr_need(nrow(Tm) == ncol(X), "theta must be (n_features, K).")
-  .morie_gr_fin(X, "X"); .morie_gr_fin(Tm, "theta")
+  .morie_gr_fin(X, "X")
+  .morie_gr_fin(Tm, "theta")
   list(X = X, theta = Tm, scores = X %*% Tm)
 }
 
@@ -3581,7 +3777,8 @@ morie_geron_softmax_probability <- function(X, theta) {
 morie_geron_softmax_cross_entropy_cost <- function(X, Y, theta) {
   r <- .morie_gr_probability_matrix(X, theta)
   P <- r$probabilities
-  m <- nrow(P); K <- ncol(P)
+  m <- nrow(P)
+  K <- ncol(P)
   Yh <- .morie_gr_one_hot(Y, K, m)
   logp <- log(pmax(P, 1e-300))
   per <- -rowSums(Yh * logp)
@@ -3605,7 +3802,8 @@ morie_geron_softmax_cross_entropy_cost <- function(X, Y, theta) {
 .morie_gr_gradient_matrix <- function(X, Y, theta) {
   r <- .morie_gr_probability_matrix(X, theta)
   P <- r$probabilities
-  m <- nrow(P); K <- ncol(P)
+  m <- nrow(P)
+  K <- ncol(P)
   Yh <- .morie_gr_one_hot(Y, K, m)
   list(X = r$X, P = P, Yh = Yh, G = t(r$X) %*% (P - Yh) / m)
 }
@@ -3676,10 +3874,12 @@ morie_geron_ch4_cross_entropy_gradient_vector <- function(X, Y, Theta, k) {
 #'     t, c(0, 0), 0.1, 0.9, n_steps = 3)
 morie_geron_nesterov_accelerated_gradient <- function(theta, grad_fn, v, eta,
                                                       beta = 0.9, n_steps = 1) {
-  th <- as.numeric(theta); vv <- as.numeric(v)
+  th <- as.numeric(theta)
+  vv <- as.numeric(v)
   .morie_gr_need(length(th) > 0L, "theta is empty.")
   .morie_gr_need(length(vv) == length(th), "v length must equal theta.")
-  .morie_gr_fin(th, "theta"); .morie_gr_fin(vv, "v")
+  .morie_gr_fin(th, "theta")
+  .morie_gr_fin(vv, "v")
   .morie_gr_need(is.function(grad_fn), "grad_fn must be a function.")
   eta <- as.numeric(eta)
   .morie_gr_need(is.finite(eta) && eta > 0, "eta must be a positive finite float.")
@@ -3687,7 +3887,9 @@ morie_geron_nesterov_accelerated_gradient <- function(theta, grad_fn, v, eta,
   .morie_gr_need(beta >= 0 && beta < 1, "beta must lie in [0, 1).")
   n_steps <- as.integer(n_steps)
   .morie_gr_need(n_steps >= 1L, "n_steps must be at least 1.")
-  path <- list(); look <- NULL; grads <- NULL
+  path <- list()
+  look <- NULL
+  grads <- NULL
   for (i in seq_len(n_steps)) {
     ahead <- th - eta * beta * vv
     g <- as.numeric(grad_fn(ahead))
@@ -3696,7 +3898,8 @@ morie_geron_nesterov_accelerated_gradient <- function(theta, grad_fn, v, eta,
     vv <- beta * vv + g
     th <- th - eta * vv
     path[[length(path) + 1L]] <- th
-    look <- ahead; grads <- g
+    look <- ahead
+    grads <- g
   }
   step <- eta * vv
   list(theta_new = th, v_new = vv, lookahead = look, gradient = grads,
@@ -3714,9 +3917,13 @@ morie_geron_nesterov_accelerated_gradient <- function(theta, grad_fn, v, eta,
 #' @examples
 #' morie_geron_nmf_objective(X = 5L, W = 5L, H = 0.5)
 morie_geron_nmf_objective <- function(X, W, H) {
-  A <- .morie_gr_a2d(X); Wm <- .morie_gr_a2d(W); Hm <- .morie_gr_a2d(H)
+  A <- .morie_gr_a2d(X)
+  Wm <- .morie_gr_a2d(W)
+  Hm <- .morie_gr_a2d(H)
   .morie_gr_need(length(A) > 0L, "X must be a non-empty (m, n) matrix.")
-  .morie_gr_fin(A, "X"); .morie_gr_fin(Wm, "W"); .morie_gr_fin(Hm, "H")
+  .morie_gr_fin(A, "X")
+  .morie_gr_fin(Wm, "W")
+  .morie_gr_fin(Hm, "H")
   .morie_gr_need(all(A >= 0), "X has negative entries; NMF requires X >= 0.")
   .morie_gr_need(all(Wm >= 0), "W has negative entries.")
   .morie_gr_need(all(Hm >= 0), "H has negative entries.")
@@ -3725,7 +3932,8 @@ morie_geron_nmf_objective <- function(X, W, H) {
   .morie_gr_need(ncol(Wm) == nrow(Hm), "W and H inner dimensions must agree.")
   R <- Wm %*% Hm
   E <- A - R
-  obj <- sum(E^2); denom <- sum(A^2)
+  obj <- sum(E^2)
+  denom <- sum(A^2)
   list(objective = obj, reconstruction = R, residual = E,
        relative_error = if (denom > 0) sqrt(obj / denom) else 0,
        rank = ncol(Wm), estimate = obj, n = nrow(A))
@@ -3748,11 +3956,13 @@ morie_geron_nmf_objective <- function(X, W, H) {
 #' morie_geron_normal_equation_grnorm(X = 5L, y = 5L)
 morie_geron_normal_equation_grnorm <- function(X, y, add_intercept = FALSE,
                                         rcond = 1e-12) {
-  A <- .morie_gr_a2d(X); yv <- as.numeric(y)
+  A <- .morie_gr_a2d(X)
+  yv <- as.numeric(y)
   .morie_gr_need(length(A) > 0L, "X must be a non-empty (m, n) matrix.")
   if (isTRUE(add_intercept)) A <- cbind(1, A)
   .morie_gr_need(nrow(A) == length(yv), "X rows must equal length(y).")
-  .morie_gr_fin(A, "X"); .morie_gr_fin(yv, "y")
+  .morie_gr_fin(A, "X")
+  .morie_gr_fin(yv, "y")
   .morie_gr_need(nrow(A) >= ncol(A), "X^T X cannot have full rank.")
   G <- t(A) %*% A
   sv <- svd(G, nu = 0L, nv = 0L)$d
@@ -3822,8 +4032,10 @@ morie_geron_numerical_differentiation <- function(f, x, h = 1e-05) {
   .diff <- function(step) {
     out <- numeric(length(xa))
     for (i in seq_along(xa)) {
-      xu <- xa; xd <- xa
-      xu[i] <- xu[i] + step; xd[i] <- xd[i] - step
+      xu <- xa
+      xd <- xa
+      xu[i] <- xu[i] + step
+      xd[i] <- xd[i] - step
       up <- as.numeric(f(if (scalar) xu[1L] else xu))
       dn <- as.numeric(f(if (scalar) xd[1L] else xd))
       .morie_gr_need(is.finite(up) && is.finite(dn), "f returned a non-finite value.")
@@ -3831,7 +4043,8 @@ morie_geron_numerical_differentiation <- function(f, x, h = 1e-05) {
     }
     out
   }
-  d1 <- .diff(h); d2 <- .diff(2 * h)
+  d1 <- .diff(h)
+  d2 <- .diff(2 * h)
   rich <- (4 * d1 - d2) / 3
   list(derivative = d1, derivative_2h = d2, richardson = rich,
        step_error = max(abs(d1 - d2)), estimate = d1,
@@ -3853,10 +4066,12 @@ morie_geron_numerical_differentiation <- function(f, x, h = 1e-05) {
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_geron_overfitting_gap(V, V)
 morie_geron_overfitting_gap <- function(train_scores, val_scores) {
-  tr <- as.numeric(train_scores); va <- as.numeric(val_scores)
+  tr <- as.numeric(train_scores)
+  va <- as.numeric(val_scores)
   .morie_gr_need(length(tr) > 0L, "train_scores is empty.")
   .morie_gr_need(length(tr) == length(va), "score vectors must be equal length.")
-  .morie_gr_fin(tr, "train_scores"); .morie_gr_fin(va, "val_scores")
+  .morie_gr_fin(tr, "train_scores")
+  .morie_gr_fin(va, "val_scores")
   gap <- tr - va
   list(gap = gap, final_gap = gap[length(gap)], max_gap = max(gap),
        max_gap_epoch = which.max(gap) - 1L,
@@ -3889,7 +4104,8 @@ morie_geron_one_hot_encoding_grohe <- function(categories, levels = NULL,
   kept <- lv
   if (isTRUE(drop_first)) {
     .morie_gr_need(length(lv) >= 2L, "drop_first needs at least two levels.")
-    M <- M[, -1L, drop = FALSE]; kept <- lv[-1L]
+    M <- M[, -1L, drop = FALSE]
+    kept <- lv[-1L]
   }
   list(encoded = M, levels = lv, columns = kept, n_columns = ncol(M),
        estimate = M, n = length(cats))
@@ -3968,7 +4184,8 @@ morie_geron_train_logreg <- function(X, y, eta = 0.5, n_iter = 400, l2 = 0) {
 #' morie_geron_one_vs_rest(X = X, y = y)
 morie_geron_one_vs_rest <- function(X, y, base_fit = NULL, eta = 0.5,
                                     n_iter = 400) {
-  A <- .morie_gr_a2d(X); yv <- as.numeric(y)
+  A <- .morie_gr_a2d(X)
+  yv <- as.numeric(y)
   .morie_gr_need(length(A) > 0L, "X must be a non-empty (m, n) matrix.")
   .morie_gr_need(length(yv) == nrow(A), "y length must equal nrow(X).")
   .morie_gr_need(all(yv == round(yv)), "y must hold integer class labels.")
@@ -4021,18 +4238,21 @@ morie_geron_one_vs_rest <- function(X, y, base_fit = NULL, eta = 0.5,
 #' morie_geron_one_vs_one(X = X, y = y)
 morie_geron_one_vs_one <- function(X, y, base_fit = NULL, eta = 0.5,
                                    n_iter = 400) {
-  A <- .morie_gr_a2d(X); yv <- as.numeric(y)
+  A <- .morie_gr_a2d(X)
+  yv <- as.numeric(y)
   .morie_gr_need(length(A) > 0L, "X must be a non-empty (m, n) matrix.")
   .morie_gr_need(length(yv) == nrow(A), "y length must equal nrow(X).")
   .morie_gr_need(all(yv == round(yv)), "y must hold integer class labels.")
   yv <- as.integer(yv)
-  classes <- sort(unique(yv)); K <- length(classes)
+  classes <- sort(unique(yv))
+  K <- length(classes)
   .morie_gr_need(K >= 2L, "OvO needs at least 2 classes.")
   .morie_gr_fin(A, "X")
   votes <- matrix(0L, nrow(A), K)
   pairs <- list()
   for (i in seq_len(K - 1L)) for (j in (i + 1L):K) {
-    ci <- classes[i]; cj <- classes[j]
+    ci <- classes[i]
+    cj <- classes[j]
     sel <- yv == ci | yv == cj
     .morie_gr_need(any(sel), "no instances for a pair.")
     Xp <- A[sel, , drop = FALSE]
@@ -4083,7 +4303,9 @@ morie_geron_pca_projection <- function(X, d) {
   A <- .morie_gr_a2d(X)
   .morie_gr_need(length(A) > 0L, "X must be a non-empty (m, n) matrix.")
   .morie_gr_fin(A, "X")
-  m <- nrow(A); n <- ncol(A); d <- as.integer(d)
+  m <- nrow(A)
+  n <- ncol(A)
+  d <- as.integer(d)
   .morie_gr_need(d >= 1L && d <= min(m, n),
                  paste0("d must lie in [1, ", min(m, n), "]."))
   mu <- colMeans(A)
@@ -4118,7 +4340,8 @@ morie_geron_pca_projection <- function(X, d) {
 #' morie_geron_sinusoidal_positional_encoding(5, 6)
 morie_geron_sinusoidal_positional_encoding <- function(seq_len, d_model,
                                                        base = 10000) {
-  seq_len <- as.integer(seq_len); d_model <- as.integer(d_model)
+  seq_len <- as.integer(seq_len)
+  d_model <- as.integer(d_model)
   .morie_gr_need(seq_len >= 1L, "seq_len must be at least 1.")
   .morie_gr_need(d_model >= 2L, "d_model must be at least 2.")
   .morie_gr_need(d_model %% 2L == 0L, "d_model must be even.")
@@ -4157,7 +4380,9 @@ morie_geron_sinusoidal_positional_encoding <- function(seq_len, d_model,
 #'                                bf = b, bi = b, bg = b, bo = b)
 morie_geron_peephole_lstm_cell <- function(x_t, h_prev, c_prev, Wf, Wi, Wg, Wo,
                                            Uf, Ui, Uo, bf, bi, bg, bo) {
-  x <- as.numeric(x_t); h <- as.numeric(h_prev); cc <- as.numeric(c_prev)
+  x <- as.numeric(x_t)
+  h <- as.numeric(h_prev)
+  cc <- as.numeric(c_prev)
   n_h <- length(h)
   .morie_gr_need(n_h > 0L && length(x) > 0L, "x_t and h_prev must be non-empty.")
   .morie_gr_need(length(cc) == n_h, "c_prev must match h_prev.")
@@ -4209,7 +4434,8 @@ morie_geron_prioritized_experience_weight <- function(priorities, N = NULL,
   d <- as.numeric(priorities)
   .morie_gr_need(length(d) > 0L, "priorities is empty.")
   .morie_gr_fin(d, "priorities")
-  alpha <- as.numeric(alpha); beta <- as.numeric(beta)
+  alpha <- as.numeric(alpha)
+  beta <- as.numeric(beta)
   .morie_gr_need(alpha >= 0 && alpha <= 1, "alpha must lie in [0, 1].")
   .morie_gr_need(beta >= 0 && beta <= 1, "beta must lie in [0, 1].")
   eps <- as.numeric(eps)
@@ -4249,7 +4475,8 @@ morie_geron_prioritized_experience_weight <- function(priorities, N = NULL,
 #' @examples
 #' morie_geron_perceiver_io(X = c(1, 2, 3, 4, 5, 6, 7, 8), Z_latent = c(1, 2, 3, 4, 5, 6, 7, 8), output_queries = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_perceiver_io <- function(X, Z_latent, output_queries, n_iter = 1) {
-  A <- .morie_gr_a2d(X); Z <- .morie_gr_a2d(Z_latent)
+  A <- .morie_gr_a2d(X)
+  Z <- .morie_gr_a2d(Z_latent)
   O <- .morie_gr_a2d(output_queries)
   for (nm in c("X", "Z_latent", "output_queries")) {
     M <- switch(nm, X = A, Z_latent = Z, O)
@@ -4261,11 +4488,15 @@ morie_geron_perceiver_io <- function(X, Z_latent, output_queries, n_iter = 1) {
   .morie_gr_need(nrow(Z) <= nrow(A), "the latent array must not exceed the input.")
   n_iter <- as.integer(n_iter)
   .morie_gr_need(n_iter >= 1L, "n_iter must be at least 1.")
-  z <- Z; cross_w <- list(); self_w <- list()
+  z <- Z
+  cross_w <- list()
+  self_w <- list()
   for (i in seq_len(n_iter)) {
-    r <- .morie_gr_attend(z, A, A); z <- r$output
+    r <- .morie_gr_attend(z, A, A)
+    z <- r$output
     cross_w[[i]] <- r$weights
-    r2 <- .morie_gr_attend(z, z, z); z <- r2$output
+    r2 <- .morie_gr_attend(z, z, z)
+    z <- r2$output
     self_w[[i]] <- r2$weights
   }
   ro <- .morie_gr_attend(O, z, z)
@@ -4298,9 +4529,11 @@ morie_geron_polynomial_features <- function(X, degree, include_bias = TRUE) {
   .morie_gr_fin(A, "X")
   degree <- as.integer(degree)
   .morie_gr_need(degree >= 1L, "degree must be at least 1.")
-  cols <- list(); powers <- list()
+  cols <- list()
+  powers <- list()
   if (isTRUE(include_bias)) {
-    cols[[1L]] <- matrix(1, nrow(A), 1L); powers[[1L]] <- c(0L, 0L)
+    cols[[1L]] <- matrix(1, nrow(A), 1L)
+    powers[[1L]] <- c(0L, 0L)
   }
   for (p in seq_len(degree)) for (j in seq_len(ncol(A))) {
     cols[[length(cols) + 1L]] <- A[, j, drop = FALSE]^p
@@ -4329,10 +4562,12 @@ morie_geron_polynomial_features <- function(X, degree, include_bias = TRUE) {
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_geron_ppo_clipped_objective(V, V)
 morie_geron_ppo_clipped_objective <- function(ratios, advantages, eps = 0.2) {
-  r <- as.numeric(ratios); A <- as.numeric(advantages)
+  r <- as.numeric(ratios)
+  A <- as.numeric(advantages)
   .morie_gr_need(length(r) > 0L, "ratios is empty.")
   .morie_gr_need(length(r) == length(A), "ratios and advantages must match.")
-  .morie_gr_fin(r, "ratios"); .morie_gr_fin(A, "advantages")
+  .morie_gr_fin(r, "ratios")
+  .morie_gr_fin(A, "advantages")
   .morie_gr_need(all(r > 0), "probability ratios must be positive.")
   eps <- as.numeric(eps)
   .morie_gr_need(eps > 0 && eps < 1, "eps must lie in (0, 1).")
@@ -4358,12 +4593,14 @@ morie_geron_ppo_clipped_objective <- function(ratios, advantages, eps = 0.2) {
 #' @return A list with \code{y}, \code{s}, \code{P}, \code{N}.
 #' @export
 .morie_gr_sorted_counts <- function(y_true, y_scores) {
-  yt <- as.vector(y_true); s <- as.numeric(y_scores)
+  yt <- as.vector(y_true)
+  s <- as.numeric(y_scores)
   .morie_gr_need(length(yt) > 0L, "y_true is empty.")
   .morie_gr_need(length(yt) == length(s), "y_true and y_scores must match.")
   .morie_gr_fin(s, "y_scores")
   .morie_gr_need(all(unique(yt) %in% c(0, 1)), "y_true must be binary 0/1.")
-  P <- sum(yt == 1); N <- sum(yt == 0)
+  P <- sum(yt == 1)
+  N <- sum(yt == 0)
   .morie_gr_need(P > 0L && N > 0L, "need both classes present.")
   ord <- order(-s, method = "radix")
   list(y = as.integer(yt)[ord], s = s[ord], P = P, N = N)
@@ -4385,16 +4622,24 @@ morie_geron_ppo_clipped_objective <- function(ratios, advantages, eps = 0.2) {
 #' morie_geron_roc_curve(y_true = y, y_scores = y)
 morie_geron_roc_curve <- function(y_true, y_scores) {
   r <- .morie_gr_sorted_counts(y_true, y_scores)
-  ys <- r$y; ss <- r$s; P <- r$P; N <- r$N
-  tp <- 0L; fp <- 0L
-  fpr <- 0; tpr <- 0; thr <- Inf
+  ys <- r$y
+  ss <- r$s
+  P <- r$P
+  N <- r$N
+  tp <- 0L
+  fp <- 0L
+  fpr <- 0
+  tpr <- 0
+  thr <- Inf
   i <- 1L
   while (i <= length(ys)) {
     j <- i
     while (j + 1L <= length(ys) && ss[j + 1L] == ss[i]) j <- j + 1L
     tp <- tp + sum(ys[i:j] == 1L)
     fp <- fp + sum(ys[i:j] == 0L)
-    fpr <- c(fpr, fp / N); tpr <- c(tpr, tp / P); thr <- c(thr, ss[i])
+    fpr <- c(fpr, fp / N)
+    tpr <- c(tpr, tp / P)
+    thr <- c(thr, ss[i])
     i <- j + 1L
   }
   auc <- sum(diff(fpr) * (tpr[-1L] + tpr[-length(tpr)]) / 2)
@@ -4419,16 +4664,23 @@ morie_geron_roc_curve <- function(y_true, y_scores) {
 #' morie_geron_precision_recall_curve(y_true = y, y_scores = y)
 morie_geron_precision_recall_curve <- function(y_true, y_scores) {
   r <- .morie_gr_sorted_counts(y_true, y_scores)
-  ys <- r$y; ss <- r$s; P <- r$P
-  tp <- 0L; fp <- 0L
-  prec <- numeric(0); rec <- numeric(0); thr <- numeric(0)
+  ys <- r$y
+  ss <- r$s
+  P <- r$P
+  tp <- 0L
+  fp <- 0L
+  prec <- numeric(0)
+  rec <- numeric(0)
+  thr <- numeric(0)
   i <- 1L
   while (i <= length(ys)) {
     j <- i
     while (j + 1L <= length(ys) && ss[j + 1L] == ss[i]) j <- j + 1L
     tp <- tp + sum(ys[i:j] == 1L)
     fp <- fp + sum(ys[i:j] == 0L)
-    prec <- c(prec, tp / (tp + fp)); rec <- c(rec, tp / P); thr <- c(thr, ss[i])
+    prec <- c(prec, tp / (tp + fp))
+    rec <- c(rec, tp / P)
+    thr <- c(thr, ss[i])
     i <- j + 1L
   }
   ap <- sum(diff(c(0, rec)) * prec)
@@ -4456,7 +4708,8 @@ morie_geron_precision_recall_curve <- function(y_true, y_scores) {
 #' morie_geron_precision(V, V)
 morie_geron_precision <- function(y_true, y_pred, positive = 1,
                                   average = NULL) {
-  yt <- as.integer(as.numeric(y_true)); yp <- as.integer(as.numeric(y_pred))
+  yt <- as.integer(as.numeric(y_true))
+  yp <- as.integer(as.numeric(y_pred))
   .morie_gr_need(length(yt) > 0L, "y_true is empty.")
   .morie_gr_need(length(yt) == length(yp), "y_true and y_pred must match.")
   n_classes <- max(yt, yp) + 1L
@@ -4478,7 +4731,8 @@ morie_geron_precision <- function(y_true, y_pred, positive = 1,
     seen <- predicted > 0
     .morie_gr_need(any(seen), "no class was ever predicted.")
     val <- mean(per_class[seen])
-    tp <- sum(diag(M)); fp <- sum(M) - sum(diag(M))
+    tp <- sum(diag(M))
+    fp <- sum(M) - sum(diag(M))
   }
   list(precision = val, tp = as.integer(tp), fp = as.integer(fp),
        per_class = per_class, estimate = val, n = length(yt))
@@ -4495,7 +4749,8 @@ morie_geron_precision <- function(y_true, y_pred, positive = 1,
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_geron_recall(V, V)
 morie_geron_recall <- function(y_true, y_pred, positive = 1, average = NULL) {
-  yt <- as.integer(as.numeric(y_true)); yp <- as.integer(as.numeric(y_pred))
+  yt <- as.integer(as.numeric(y_true))
+  yp <- as.integer(as.numeric(y_pred))
   .morie_gr_need(length(yt) > 0L, "y_true is empty.")
   .morie_gr_need(length(yt) == length(yp), "y_true and y_pred must match.")
   n_classes <- max(yt, yp) + 1L
@@ -4514,7 +4769,8 @@ morie_geron_recall <- function(y_true, y_pred, positive = 1, average = NULL) {
     .morie_gr_need(identical(average, "macro"), "average must be NULL or 'macro'.")
     seen <- support > 0
     val <- mean(per_class[seen])
-    tp <- sum(diag(M)); fn <- sum(M) - sum(diag(M))
+    tp <- sum(diag(M))
+    fn <- sum(M) - sum(diag(M))
   }
   list(recall = val, tp = as.integer(tp), fn = as.integer(fn),
        per_class = per_class, f1 = cm$f1, estimate = val, n = length(yt))
@@ -4605,7 +4861,8 @@ morie_geron_int8_quantization <- function(x, bits = 8) {
   r <- morie_geron_quantize_symmetric(x, bits)
   a <- x
   err <- r$dequantized - a
-  signal <- sum(a^2); noise <- sum(err^2)
+  signal <- sum(a^2)
+  noise <- sum(err^2)
   list(q = r$q, scale = r$scale, dequantized = r$dequantized,
        max_abs_error = max(abs(err)),
        snr_db = if (noise == 0) Inf else 10 * log10(signal / noise),
@@ -4677,8 +4934,11 @@ morie_geron_q_learning_update <- function(Q, s, a, r, s_next, alpha, gamma,
   Qm <- .morie_gr_a2d(Q)
   .morie_gr_need(length(Qm) > 0L, "Q must be a non-empty table.")
   .morie_gr_fin(Qm, "Q")
-  S <- nrow(Qm); A <- ncol(Qm)
-  s <- as.integer(s); a <- as.integer(a); s_next <- as.integer(s_next)
+  S <- nrow(Qm)
+  A <- ncol(Qm)
+  s <- as.integer(s)
+  a <- as.integer(a)
+  s_next <- as.integer(s_next)
   .morie_gr_need(s >= 0L && s < S && s_next >= 0L && s_next < S,
                  "states out of range.")
   .morie_gr_need(a >= 0L && a < A, "action out of range.")
@@ -4735,7 +4995,8 @@ morie_geron_static_ptq <- function(model, calibration_data, bits = 8,
                                                   percentile / 100,
                                                   names = FALSE, type = 7L))
   acts <- A
-  ranges <- rng(acts); outputs <- list(acts)
+  ranges <- rng(acts)
+  outputs <- list(acts)
   nrows <- function(z) if (is.matrix(z)) nrow(z) else length(z)
   for (i in seq_along(layers)) {
     nxt <- layers[[i]](acts)
@@ -4781,7 +5042,9 @@ morie_geron_pyramid_vit_stage <- function(X, WQ, WK, WV, reduction_ratio = 2) {
   .morie_gr_need(length(dim(A)) == 3L && length(A) > 0L,
                  "X must be a non-empty (H, W, d_model) array.")
   .morie_gr_fin(A, "X")
-  H <- dim(A)[1L]; W <- dim(A)[2L]; d <- dim(A)[3L]
+  H <- dim(A)[1L]
+  W <- dim(A)[2L]
+  d <- dim(A)[3L]
   R <- as.integer(reduction_ratio)
   .morie_gr_need(R >= 1L, "reduction_ratio must be at least 1.")
   .morie_gr_need(H %% R == 0L && W %% R == 0L,
@@ -4793,7 +5056,8 @@ morie_geron_pyramid_vit_stage <- function(X, WQ, WK, WV, reduction_ratio = 2) {
   tokens <- matrix(0, H * W, d)
   for (i in seq_len(H)) for (j in seq_len(W))
     tokens[(i - 1L) * W + j, ] <- A[i, j, ]
-  hh <- H %/% R; ww <- W %/% R
+  hh <- H %/% R
+  ww <- W %/% R
   SR <- matrix(0, hh * ww, d)
   for (bi in seq_len(hh)) for (bj in seq_len(ww)) {
     blk <- A[((bi - 1L) * R + 1L):(bi * R), ((bj - 1L) * R + 1L):(bj * R), ,
@@ -4823,7 +5087,8 @@ morie_geron_pyramid_vit_stage <- function(X, WQ, WK, WV, reduction_ratio = 2) {
 .morie_gr_check_mdp <- function(policy, transitions, rewards, gamma) {
   P <- transitions
   .morie_gr_need(length(dim(P)) == 3L, "transitions must be (S, A, S').")
-  S <- dim(P)[1L]; A <- dim(P)[2L]
+  S <- dim(P)[1L]
+  A <- dim(P)[2L]
   .morie_gr_need(dim(P)[3L] == S, "transitions last axis must equal the states.")
   R <- rewards
   if (length(dim(R)) != 3L) {
@@ -4866,7 +5131,8 @@ morie_geron_pyramid_vit_stage <- function(X, WQ, WK, WV, reduction_ratio = 2) {
 #' @export
 .morie_gr_policy_evaluation <- function(policy, transitions, rewards, gamma) {
   m <- .morie_gr_check_mdp(policy, transitions, rewards, gamma)
-  S <- m$S; A <- m$A
+  S <- m$S
+  A <- m$A
   r_sa <- apply(m$P * m$R, c(1L, 2L), sum)
   r_pi <- rowSums(m$pi * r_sa)
   P_pi <- matrix(0, S, S)
@@ -4927,8 +5193,10 @@ morie_geron_state_value_function <- function(state, policy, transitions,
 morie_geron_action_value_function <- function(state, action, policy,
                                               transitions, rewards, gamma) {
   pe <- .morie_gr_policy_evaluation(policy, transitions, rewards, gamma)
-  S <- pe$S; A <- pe$A
-  s <- as.integer(state); a <- as.integer(action)
+  S <- pe$S
+  A <- pe$A
+  s <- as.integer(state)
+  a <- as.integer(action)
   .morie_gr_need(s >= 0L && s < S, "state out of range.")
   .morie_gr_need(a >= 0L && a < A, "action out of range.")
   Q <- pe$r_sa
@@ -4983,7 +5251,9 @@ morie_geron_reverse_mode_autodiff <- function(graph, loss_grad = 1,
   } else {
     .morie_gr_need(output %in% nodes, "output node is not in the graph.")
   }
-  order_v <- character(0); seen <- character(0); temp <- character(0)
+  order_v <- character(0)
+  seen <- character(0)
+  temp <- character(0)
   visit <- function(n) {
     if (n %in% seen) return(invisible(NULL))
     .morie_gr_need(!(n %in% temp), "graph has a cycle; this is not a DAG.")
@@ -5031,12 +5301,15 @@ morie_geron_reverse_mode_autodiff <- function(graph, loss_grad = 1,
 #'                                       baseline = "mean")
 morie_geron_reinforce_policy_gradient <- function(theta, log_probs, returns_G,
                                                   alpha, baseline = NULL) {
-  th <- as.numeric(theta); S <- .morie_gr_a2d(log_probs)
+  th <- as.numeric(theta)
+  S <- .morie_gr_a2d(log_probs)
   G <- as.numeric(returns_G)
   .morie_gr_need(length(th) > 0L, "theta is empty.")
   .morie_gr_need(ncol(S) == length(th), "log_probs rows must be score vectors.")
   .morie_gr_need(nrow(S) == length(G), "log_probs steps must equal returns_G.")
-  .morie_gr_fin(S, "log_probs"); .morie_gr_fin(G, "returns_G"); .morie_gr_fin(th, "theta")
+  .morie_gr_fin(S, "log_probs")
+  .morie_gr_fin(G, "returns_G")
+  .morie_gr_fin(th, "theta")
   alpha <- as.numeric(alpha)
   .morie_gr_need(is.finite(alpha) && alpha > 0, "alpha must be a positive finite float.")
   b <- if (is.null(baseline)) 0 else if (is.character(baseline)) {
@@ -5073,10 +5346,12 @@ morie_geron_reinforce_policy_gradient <- function(theta, log_probs, returns_G,
 #' morie_geron_reparameterization_trick(V, V)
 morie_geron_reparameterization_trick <- function(mu, logvar, eps = NULL,
                                                  seed = 42) {
-  M <- mu; LV <- logvar
+  M <- mu
+  LV <- logvar
   .morie_gr_need(length(M) > 0L, "mu is empty.")
   .morie_gr_need(length(M) == length(LV), "mu and logvar must have the same shape.")
-  .morie_gr_fin(M, "mu"); .morie_gr_fin(LV, "logvar")
+  .morie_gr_fin(M, "mu")
+  .morie_gr_fin(LV, "logvar")
   sigma <- exp(0.5 * LV)
   if (is.null(eps)) {
     E <- .morie_gr_lcg_normals(length(M), seed, clamp = TRUE)
@@ -5113,8 +5388,10 @@ morie_geron_discounted_return <- function(rewards, gamma) {
   .morie_gr_fin(r, "rewards")
   gamma <- as.numeric(gamma)
   .morie_gr_need(gamma >= 0 && gamma <= 1, "gamma must lie in [0, 1].")
-  G <- numeric(length(r)); acc <- 0
-  for (t in rev(seq_along(r))) { acc <- r[t] + gamma * acc; G[t] <- acc }
+  G <- numeric(length(r))
+  acc <- 0
+  for (t in rev(seq_along(r))) { acc <- r[t] + gamma * acc
+  G[t] <- acc }
   list(returns = G, G0 = G[1L], gamma = gamma,
        effective_horizon = if (gamma == 1) Inf else 1 / (1 - gamma),
        estimate = G[1L], n = length(G))
@@ -5135,11 +5412,15 @@ morie_geron_discounted_return <- function(rewards, gamma) {
 #' @examples
 #' morie_geron_ridge_cost_grridg(X = 5L, y = 5L, theta = 0.5, alpha = 0.5)
 morie_geron_ridge_cost_grridg <- function(X, y, theta, alpha, intercept = TRUE) {
-  A <- .morie_gr_a2d(X); yv <- as.numeric(y); th <- as.numeric(theta)
+  A <- .morie_gr_a2d(X)
+  yv <- as.numeric(y)
+  th <- as.numeric(theta)
   .morie_gr_need(length(A) > 0L, "X must be a non-empty (m, n) matrix.")
   .morie_gr_need(nrow(A) == length(yv), "X rows must equal length(y).")
   .morie_gr_need(ncol(A) == length(th), "X features must equal length(theta).")
-  .morie_gr_fin(A, "X"); .morie_gr_fin(yv, "y"); .morie_gr_fin(th, "theta")
+  .morie_gr_fin(A, "X")
+  .morie_gr_fin(yv, "y")
+  .morie_gr_fin(th, "theta")
   alpha <- as.numeric(alpha)
   .morie_gr_need(is.finite(alpha) && alpha >= 0, "alpha must be finite and non-negative.")
   res <- as.numeric(A %*% th) - yv
@@ -5167,10 +5448,12 @@ morie_geron_ridge_cost_grridg <- function(X, y, theta, alpha, intercept = TRUE) 
 #' @examples
 #' morie_geron_ridge_normal_equation(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = 5L, alpha = 0.5)
 morie_geron_ridge_normal_equation <- function(X, y, alpha, intercept = TRUE) {
-  A <- .morie_gr_a2d(X); yv <- as.numeric(y)
+  A <- .morie_gr_a2d(X)
+  yv <- as.numeric(y)
   .morie_gr_need(length(A) > 0L, "X must be a non-empty (m, n) matrix.")
   .morie_gr_need(nrow(A) == length(yv), "X rows must equal length(y).")
-  .morie_gr_fin(A, "X"); .morie_gr_fin(yv, "y")
+  .morie_gr_fin(A, "X")
+  .morie_gr_fin(yv, "y")
   alpha <- as.numeric(alpha)
   .morie_gr_need(is.finite(alpha) && alpha >= 0, "alpha must be finite and non-negative.")
   n <- ncol(A)
@@ -5208,12 +5491,14 @@ morie_geron_ridge_normal_equation <- function(X, y, alpha, intercept = TRUE) {
 #'     -1, -0.3), c(-0.8, -0.9, -0.5), 0.2)
 morie_geron_rlhf_reward_kl_objective <- function(rewards, policy_logprobs,
                                                  ref_logprobs, beta = 0.1) {
-  r <- as.numeric(rewards); lp <- as.numeric(policy_logprobs)
+  r <- as.numeric(rewards)
+  lp <- as.numeric(policy_logprobs)
   lr <- as.numeric(ref_logprobs)
   .morie_gr_need(length(r) > 0L, "rewards is empty.")
   .morie_gr_need(length(r) == length(lp) && length(r) == length(lr),
                  "all three vectors must have equal length.")
-  .morie_gr_fin(r, "rewards"); .morie_gr_fin(lp, "policy_logprobs")
+  .morie_gr_fin(r, "rewards")
+  .morie_gr_fin(lp, "policy_logprobs")
   .morie_gr_fin(lr, "ref_logprobs")
   .morie_gr_need(all(lp <= 0) && all(lr <= 0),
                  "log-probabilities must be non-positive.")
@@ -5237,10 +5522,12 @@ morie_geron_rlhf_reward_kl_objective <- function(rewards, policy_logprobs,
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_geron_rmse_grrmse(V, V)
 morie_geron_rmse_grrmse <- function(y_true, y_pred) {
-  yt <- as.numeric(y_true); yp <- as.numeric(y_pred)
+  yt <- as.numeric(y_true)
+  yp <- as.numeric(y_pred)
   .morie_gr_need(length(yt) > 0L, "y_true is empty.")
   .morie_gr_need(length(yt) == length(yp), "y_true and y_pred must match.")
-  .morie_gr_fin(yt, "y_true"); .morie_gr_fin(yp, "y_pred")
+  .morie_gr_fin(yt, "y_true")
+  .morie_gr_fin(yp, "y_pred")
   res <- yp - yt
   mse <- mean(res^2)
   list(rmse = sqrt(mse), mse = mse, mae = mean(abs(res)),
@@ -5285,7 +5572,8 @@ morie_geron_randomized_search_cv <- function(X, y, param_dist, n_iter, K,
   .morie_gr_need(length(A) > 0L, "X is empty.")
   .morie_gr_need(nrow(A) == length(yv), "X rows must equal length(y).")
   .morie_gr_need(is.function(fit_score), "fit_score is required and must be a function.")
-  n_iter <- as.integer(n_iter); K <- as.integer(K)
+  n_iter <- as.integer(n_iter)
+  K <- as.integer(K)
   .morie_gr_need(n_iter >= 1L, "n_iter must be at least 1.")
   .morie_gr_need(K >= 2L && K <= nrow(A), "K must lie in [2, n_samples].")
   .morie_gr_need(is.list(param_dist) && length(param_dist) > 0L,
@@ -5293,7 +5581,8 @@ morie_geron_randomized_search_cv <- function(X, y, param_dist, n_iter, K,
   n_draws <- nrow(A) + n_iter * length(param_dist)
   stream <- .morie_gr_lcg_u(n_draws, seed)
   pos <- 0L
-  take <- function() { pos <<- pos + 1L; stream[pos] }
+  take <- function() { pos <<- pos + 1L
+  stream[pos] }
   perm <- order(vapply(seq_len(nrow(A)), function(i) take(), numeric(1L)),
                 method = "radix") - 1L
   folds <- .morie_gr_array_split(perm, K)
@@ -5303,7 +5592,8 @@ morie_geron_randomized_search_cv <- function(X, y, param_dist, n_iter, K,
     u <- take()
     if (is.function(spec)) return(spec(u))
     if (is.numeric(spec) && length(spec) == 2L && !is.list(spec)) {
-      lo <- as.numeric(spec[1L]); hi <- as.numeric(spec[2L])
+      lo <- as.numeric(spec[1L])
+      hi <- as.numeric(spec[2L])
       .morie_gr_need(hi > lo, "range must have high > low.")
       return(lo + u * (hi - lo))
     }
@@ -5354,8 +5644,11 @@ morie_geron_randomized_search_cv <- function(X, y, param_dist, n_iter, K,
 #'                             Whh = matrix(0.2, 3, 3),
 #'                             Wxh = matrix(0.1, 3, 2), b = rep(0, 3))
 morie_geron_simple_rnn_cell <- function(x_t, h_prev, Whh, Wxh, b) {
-  x <- as.numeric(x_t); h <- as.numeric(h_prev)
-  A <- .morie_gr_a2d(Whh); B <- .morie_gr_a2d(Wxh); bv <- as.numeric(b)
+  x <- as.numeric(x_t)
+  h <- as.numeric(h_prev)
+  A <- .morie_gr_a2d(Whh)
+  B <- .morie_gr_a2d(Wxh)
+  bv <- as.numeric(b)
   n_h <- length(h)
   .morie_gr_need(n_h > 0L && length(x) > 0L, "x_t and h_prev must be non-empty.")
   .morie_gr_need(all(dim(A) == c(n_h, n_h)), "Whh must be (H, H).")
@@ -5386,9 +5679,11 @@ morie_geron_simple_rnn_cell <- function(x_t, h_prev, Whh, Wxh, b) {
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_geron_resnet_skip(V, V)
 morie_geron_resnet_skip <- function(x, Fx, projection = NULL) {
-  xa <- x; fa <- Fx
+  xa <- x
+  fa <- Fx
   .morie_gr_need(length(xa) > 0L, "x is empty.")
-  .morie_gr_fin(xa, "x"); .morie_gr_fin(fa, "F(x)")
+  .morie_gr_fin(xa, "x")
+  .morie_gr_fin(fa, "F(x)")
   short <- xa
   same <- identical(dim(fa), dim(xa)) && length(fa) == length(xa)
   if (!same) {
@@ -5402,7 +5697,8 @@ morie_geron_resnet_skip <- function(x, Fx, projection = NULL) {
                    "projected shortcut does not match F(x).")
   }
   out <- fa + short
-  fn <- sqrt(sum(fa^2)); sn <- sqrt(sum(short^2))
+  fn <- sqrt(sum(fa^2))
+  sn <- sqrt(sum(short^2))
   list(output = out, shortcut = short, residual_norm = fn,
        shortcut_norm = sn,
        residual_fraction = if (fn + sn > 0) fn / (fn + sn) else 0,
@@ -5430,7 +5726,9 @@ morie_geron_self_attention <- function(X, WQ, WK, WV, mask = NULL) {
   for (nm in names(mats)) .morie_gr_need(nrow(mats[[nm]]) == ncol(X),
                                          paste0(nm, " must have d_model rows."))
   .morie_gr_need(ncol(mats$WQ) == ncol(mats$WK), "WQ and WK must share d_k.")
-  Q <- X %*% mats$WQ; K <- X %*% mats$WK; V <- X %*% mats$WV
+  Q <- X %*% mats$WQ
+  K <- X %*% mats$WK
+  V <- X %*% mats$WV
   r <- .morie_gr_attend(Q, K, V, mask)
   list(output = r$output, weights = r$weights, Q = Q, K = K, V = V,
        estimate = r$output, n = nrow(X))
@@ -5452,11 +5750,15 @@ morie_geron_self_attention <- function(X, WQ, WK, WV, mask = NULL) {
 #' @examples
 #' morie_geron_sparse_autoencoder(x = c(1, 2, 3, 4, 5, 6, 7, 8), hidden = c(1, 2, 3, 4, 5, 6, 7, 8), decoded = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_sparse_autoencoder <- function(x, hidden, decoded, lam = 0.001) {
-  X <- .morie_gr_a2d(x); H <- .morie_gr_a2d(hidden); D <- .morie_gr_a2d(decoded)
+  X <- .morie_gr_a2d(x)
+  H <- .morie_gr_a2d(hidden)
+  D <- .morie_gr_a2d(decoded)
   .morie_gr_need(length(X) > 0L, "x is empty.")
   .morie_gr_need(all(dim(D) == dim(X)), "decoded must match x.")
   .morie_gr_need(nrow(H) == nrow(X), "hidden rows must equal x rows.")
-  .morie_gr_fin(X, "x"); .morie_gr_fin(H, "hidden"); .morie_gr_fin(D, "decoded")
+  .morie_gr_fin(X, "x")
+  .morie_gr_fin(H, "hidden")
+  .morie_gr_fin(D, "decoded")
   lam <- as.numeric(lam)
   .morie_gr_need(is.finite(lam) && lam >= 0, "lam must be finite and non-negative.")
   recon <- sum((X - D)^2)
@@ -5488,10 +5790,12 @@ morie_geron_sparse_autoencoder <- function(x, hidden, decoded, lam = 0.001) {
 #' morie_geron_score_matching_loss(x0 = W, sigma = h_prev, eps = W, score_pred = W)
 morie_geron_score_matching_loss <- function(x0, sigma, eps, score_pred,
                                             weight = NULL) {
-  X <- .morie_gr_a2d(x0); E <- .morie_gr_a2d(eps)
+  X <- .morie_gr_a2d(x0)
+  E <- .morie_gr_a2d(eps)
   .morie_gr_need(length(X) > 0L, "x0 is empty.")
   .morie_gr_need(all(dim(E) == dim(X)), "eps must match x0.")
-  .morie_gr_fin(X, "x0"); .morie_gr_fin(E, "eps")
+  .morie_gr_fin(X, "x0")
+  .morie_gr_fin(E, "eps")
   s <- as.numeric(sigma)
   if (length(s) == 1L) s <- rep(s, nrow(X))
   .morie_gr_need(length(s) == nrow(X), "sigma length must equal the rows of x0.")
@@ -5544,11 +5848,13 @@ morie_geron_senet_squeeze_excite <- function(X, W1, W2) {
                  "X must be a non-empty (H, W, C) array.")
   .morie_gr_fin(A, "X")
   C <- dim(A)[3L]
-  A1 <- .morie_gr_a2d(W1); A2 <- .morie_gr_a2d(W2)
+  A1 <- .morie_gr_a2d(W1)
+  A2 <- .morie_gr_a2d(W2)
   .morie_gr_need(ncol(A1) == C, "W1 must have C columns.")
   .morie_gr_need(ncol(A2) == nrow(A1), "W2 must match the bottleneck.")
   .morie_gr_need(nrow(A2) == C, "W2 must produce C channel gates.")
-  .morie_gr_fin(A1, "W1"); .morie_gr_fin(A2, "W2")
+  .morie_gr_fin(A1, "W1")
+  .morie_gr_fin(A2, "W2")
   z <- apply(A, 3L, mean)
   hidden <- pmax(0, as.numeric(A1 %*% z))
   s <- .morie_gr_sigmoid_vec(as.numeric(A2 %*% hidden))
@@ -5580,7 +5886,8 @@ morie_geron_sft_objective <- function(logits, response_mask, targets) {
   Z <- .morie_gr_a2d(logits)
   .morie_gr_need(length(Z) > 0L, "logits must be a non-empty (T, V) matrix.")
   .morie_gr_fin(Z, "logits")
-  Tn <- nrow(Z); V <- ncol(Z)
+  Tn <- nrow(Z)
+  V <- ncol(Z)
   tgt <- as.numeric(targets)
   .morie_gr_need(length(tgt) == Tn, "targets length must equal the positions.")
   .morie_gr_need(all(tgt == round(tgt)), "targets must be integer token ids.")
@@ -5623,18 +5930,23 @@ morie_geron_sft_objective <- function(logits, response_mask, targets) {
 morie_geron_stochastic_gradient_descent <- function(X, y, theta, eta, n_iter,
                                                     seed = 42, t0 = NULL,
                                                     t1 = NULL) {
-  A <- .morie_gr_a2d(X); yv <- as.numeric(y); th <- as.numeric(theta)
+  A <- .morie_gr_a2d(X)
+  yv <- as.numeric(y)
+  th <- as.numeric(theta)
   .morie_gr_need(length(A) > 0L, "X must be a non-empty (m, n) matrix.")
   .morie_gr_need(nrow(A) == length(yv), "X rows must equal length(y).")
   .morie_gr_need(ncol(A) == length(th), "X features must equal length(theta).")
-  .morie_gr_fin(A, "X"); .morie_gr_fin(yv, "y"); .morie_gr_fin(th, "theta")
+  .morie_gr_fin(A, "X")
+  .morie_gr_fin(yv, "y")
+  .morie_gr_fin(th, "theta")
   n_iter <- as.integer(n_iter)
   .morie_gr_need(n_iter >= 1L, "n_iter must be at least 1.")
   scheduled <- !is.null(t0) && !is.null(t1)
   .morie_gr_need(is.null(t0) == is.null(t1),
                  "t0 and t1 must be supplied together or not at all.")
   if (scheduled) {
-    t0 <- as.numeric(t0); t1 <- as.numeric(t1)
+    t0 <- as.numeric(t0)
+    t1 <- as.numeric(t1)
     .morie_gr_need(t0 > 0 && t1 > 0, "t0 and t1 must be positive.")
   } else {
     eta <- as.numeric(eta)
@@ -5642,8 +5954,10 @@ morie_geron_stochastic_gradient_descent <- function(X, y, theta, eta, n_iter,
   }
   m <- nrow(A)
   u <- .morie_gr_lcg_u(n_iter, seed)
-  path <- list(); costs <- mean((as.numeric(A %*% th) - yv)^2)
-  rates <- numeric(0); order_v <- integer(0)
+  path <- list()
+  costs <- mean((as.numeric(A %*% th) - yv)^2)
+  rates <- numeric(0)
+  order_v <- integer(0)
   for (t in seq_len(n_iter)) {
     i <- as.integer(u[t] * m)
     if (i == m) i <- m - 1L
@@ -5677,7 +5991,8 @@ morie_geron_stochastic_gradient_descent <- function(X, y, theta, eta, n_iter,
 #' lab <- rep(c(0L, 1L), each = 10)
 #' morie_geron_silhouette_score(X, lab)
 morie_geron_silhouette_score <- function(X, labels) {
-  A <- .morie_gr_a2d(X); lab <- as.vector(labels)
+  A <- .morie_gr_a2d(X)
+  lab <- as.vector(labels)
   .morie_gr_need(length(A) > 0L, "X must be a non-empty (m, n) matrix.")
   .morie_gr_need(length(lab) == nrow(A), "labels length must equal nrow(X).")
   .morie_gr_fin(A, "X")
@@ -5686,13 +6001,17 @@ morie_geron_silhouette_score <- function(X, labels) {
   .morie_gr_need(length(uniq) < nrow(A), "too many clusters for the points.")
   D <- as.matrix(stats::dist(A))
   m <- nrow(A)
-  a <- numeric(m); b <- numeric(m); s <- numeric(m)
+  a <- numeric(m)
+  b <- numeric(m)
+  s <- numeric(m)
   for (i in seq_len(m)) {
     own <- lab == lab[i]
     n_own <- sum(own)
     b[i] <- min(vapply(uniq[uniq != lab[i]],
                        function(cl) mean(D[i, lab == cl]), numeric(1L)))
-    if (n_own <= 1L) { a[i] <- 0; s[i] <- 0; next }
+    if (n_own <= 1L) { a[i] <- 0
+    s[i] <- 0
+    next }
     a[i] <- sum(D[i, own]) / (n_own - 1L)
     denom <- max(a[i], b[i])
     s[i] <- if (denom == 0) 0 else (b[i] - a[i]) / denom
@@ -5749,7 +6068,8 @@ morie_geron_silhouette_score <- function(X, labels) {
   a <- .morie_gr_sym_eval(e[[2L]], env)
   b <- .morie_gr_sym_eval(e[[3L]], env)
   switch(op, "+" = a + b, "-" = a - b, "*" = a * b,
-         "/" = { .morie_gr_need(b != 0, "division by zero."); a / b },
+         "/" = { .morie_gr_need(b != 0, "division by zero.")
+         a / b },
          a^b)
 }
 
@@ -5926,7 +6246,8 @@ morie_geron_sentiment_binary <- function(token_ids, E, w, b = 0,
   .morie_gr_need(min(ids) >= 0L && max(ids) < nrow(Em), "token ids out of range.")
   wv <- as.numeric(w)
   .morie_gr_need(length(wv) == ncol(Em), "w length must equal the embedding width.")
-  .morie_gr_fin(Em, "E"); .morie_gr_fin(wv, "w")
+  .morie_gr_fin(Em, "E")
+  .morie_gr_fin(wv, "w")
   b <- as.numeric(b)
   .morie_gr_need(is.finite(b), "b must be finite.")
   threshold <- as.numeric(threshold)
@@ -5984,7 +6305,8 @@ morie_geron_stacked_autoencoder <- function(x, layer_weights,
     .morie_gr_need(length(mats) %% 2L == 0L,
                    "untied weights need an encoder and decoder matrix per level.")
     half <- length(mats) %/% 2L
-    enc <- mats[seq_len(half)]; dec <- mats[(half + 1L):length(mats)]
+    enc <- mats[seq_len(half)]
+    dec <- mats[(half + 1L):length(mats)]
   }
   width <- ncol(X)
   for (W in enc) {
@@ -5998,8 +6320,10 @@ morie_geron_stacked_autoencoder <- function(x, layer_weights,
     width <- ncol(W)
   }
   .morie_gr_need(width == ncol(X), "the tower is not symmetric.")
-  acts <- list(X); h <- X
-  for (W in enc) { h <- act(h %*% W, activation); acts[[length(acts) + 1L]] <- h }
+  acts <- list(X)
+  h <- X
+  for (W in enc) { h <- act(h %*% W, activation)
+  acts[[length(acts) + 1L]] <- h }
   code <- h
   for (i in seq_along(dec)) {
     kind <- if (i == length(dec)) output_activation else activation
@@ -6062,10 +6386,12 @@ morie_geron_standardization_grstd <- function(X, ddof = 0) {
 #' morie_geron_stacking_predictor(base_preds = c(1, 2, 3, 4, 5, 6, 7, 8), y = 5L)
 morie_geron_stacking_predictor <- function(base_preds, y, blender = NULL,
                                            include_intercept = TRUE) {
-  P <- .morie_gr_a2d(base_preds); yv <- as.numeric(y)
+  P <- .morie_gr_a2d(base_preds)
+  yv <- as.numeric(y)
   .morie_gr_need(length(P) > 0L, "base_preds must be a non-empty (m, L) matrix.")
   .morie_gr_need(nrow(P) == length(yv), "base_preds rows must equal length(y).")
-  .morie_gr_fin(P, "base_preds"); .morie_gr_fin(yv, "y")
+  .morie_gr_fin(P, "base_preds")
+  .morie_gr_fin(yv, "y")
   base_rmse <- sqrt(colMeans((P - yv)^2))
   if (is.null(blender)) {
     D <- if (isTRUE(include_intercept)) cbind(1, P) else P
@@ -6115,7 +6441,9 @@ morie_geron_swin_window_attention <- function(X, window_size, WQ, WK, WV,
   .morie_gr_need(length(dim(A)) == 3L && length(A) > 0L,
                  "X must be a non-empty (H, W, d_model) array.")
   .morie_gr_fin(A, "X")
-  H <- dim(A)[1L]; W <- dim(A)[2L]; d <- dim(A)[3L]
+  H <- dim(A)[1L]
+  W <- dim(A)[2L]
+  d <- dim(A)[3L]
   M <- as.integer(window_size)
   .morie_gr_need(M >= 1L, "window_size must be at least 1.")
   .morie_gr_need(H %% M == 0L && W %% M == 0L, "window_size must divide the map.")
@@ -6173,7 +6501,8 @@ morie_geron_td_zero_update <- function(V, state, next_state, reward, alpha,
   Vv <- as.numeric(V)
   .morie_gr_need(length(Vv) > 0L, "V is empty.")
   .morie_gr_fin(Vv, "V")
-  s <- as.integer(state); sn <- as.integer(next_state)
+  s <- as.integer(state)
+  sn <- as.integer(next_state)
   .morie_gr_need(s >= 0L && s < length(Vv) && sn >= 0L && sn < length(Vv),
                  "states out of range.")
   reward <- as.numeric(reward)
@@ -6248,19 +6577,26 @@ morie_geron_block_multi_head_attention <- function(Q_in, KV_in, weights,
   .morie_gr_need(is.list(weights), "attention weights must be a named list.")
   .morie_gr_need(all(c("WQ", "WK", "WV", "WO") %in% names(weights)),
                  "attention weights missing WQ/WK/WV/WO.")
-  Qi <- .morie_gr_a2d(Q_in); Ki <- .morie_gr_a2d(KV_in)
-  hq <- weights$WQ; hk <- weights$WK; hv <- weights$WV
+  Qi <- .morie_gr_a2d(Q_in)
+  Ki <- .morie_gr_a2d(KV_in)
+  hq <- weights$WQ
+  hk <- weights$WK
+  hv <- weights$WV
   .morie_gr_need(length(hq) == length(hk) && length(hq) == length(hv),
                  "WQ/WK/WV must list the same number of heads.")
   .morie_gr_need(length(hq) > 0L, "no attention heads supplied.")
-  outs <- list(); ws <- list()
+  outs <- list()
+  ws <- list()
   for (i in seq_along(hq)) {
-    A <- .morie_gr_a2d(hq[[i]]); B <- .morie_gr_a2d(hk[[i]]); C <- .morie_gr_a2d(hv[[i]])
+    A <- .morie_gr_a2d(hq[[i]])
+    B <- .morie_gr_a2d(hk[[i]])
+    C <- .morie_gr_a2d(hv[[i]])
     .morie_gr_need(nrow(A) == ncol(Qi), "a WQ head has the wrong width.")
     .morie_gr_need(nrow(B) == ncol(Ki) && nrow(C) == ncol(Ki),
                    "WK/WV heads must match the key input width.")
     r <- .morie_gr_attend(Qi %*% A, Ki %*% B, Ki %*% C, mask)
-    outs[[i]] <- r$output; ws[[i]] <- r$weights
+    outs[[i]] <- r$output
+    ws[[i]] <- r$weights
   }
   concat <- do.call(cbind, outs)
   WO <- .morie_gr_a2d(weights$WO)
@@ -6286,7 +6622,8 @@ morie_geron_block_feed_forward <- function(X, weights) {
   .morie_gr_need(all(c("W1", "W2") %in% names(weights)),
                  "ffn weights missing W1/W2.")
   A <- .morie_gr_a2d(X)
-  W1 <- .morie_gr_a2d(weights$W1); W2 <- .morie_gr_a2d(weights$W2)
+  W1 <- .morie_gr_a2d(weights$W1)
+  W2 <- .morie_gr_a2d(weights$W2)
   .morie_gr_need(nrow(W1) == ncol(A), "W1 must have d_model rows.")
   .morie_gr_need(nrow(W2) == ncol(W1), "W2 must match the hidden width.")
   .morie_gr_need(ncol(W2) == ncol(A), "W2 must map back to d_model.")
@@ -6369,10 +6706,12 @@ morie_geron_transformer_encoder_block <- function(x, mha_weights, ffn_weights,
 #' str(r, max.level = 1)
 morie_geron_transformer_decoder_block <- function(x, encoder_output, weights,
                                                   eps = 1e-05) {
-  X <- .morie_gr_a2d(x); E <- .morie_gr_a2d(encoder_output)
+  X <- .morie_gr_a2d(x)
+  E <- .morie_gr_a2d(encoder_output)
   .morie_gr_need(length(X) > 0L, "x must be a non-empty (T, d_model) matrix.")
   .morie_gr_need(length(E) > 0L, "encoder_output must be non-empty.")
-  .morie_gr_fin(X, "x"); .morie_gr_fin(E, "encoder_output")
+  .morie_gr_fin(X, "x")
+  .morie_gr_fin(E, "encoder_output")
   .morie_gr_need(is.list(weights), "weights must be a named list.")
   .morie_gr_need(all(c("self", "cross", "ffn") %in% names(weights)),
                  "weights missing self/cross/ffn.")
@@ -6415,7 +6754,8 @@ morie_geron_threshold_logic_unit <- function(x, w, b = 0) {
   wv <- as.numeric(w)
   .morie_gr_need(length(A) > 0L, "x must be non-empty.")
   .morie_gr_need(length(wv) == ncol(A), "w length must equal the features of x.")
-  .morie_gr_fin(A, "x"); .morie_gr_fin(wv, "w")
+  .morie_gr_fin(A, "x")
+  .morie_gr_fin(wv, "w")
   b <- as.numeric(b)
   .morie_gr_need(is.finite(b), "b must be finite.")
   z <- as.numeric(A %*% wv) + b
@@ -6590,14 +6930,18 @@ morie_geron_tree_regression_leaf <- function(y, leaf_mask = NULL) {
 #' morie_geron_vae_elbo(x = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2, 3, 4, 5, 6, 7, 8), logvar = c(1, 2, 3, 4, 5, 6, 7, 8), recon = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_vae_elbo <- function(x, mu, logvar, recon,
                                  likelihood = "gaussian", beta = 1) {
-  X <- .morie_gr_a2d(x); M <- .morie_gr_a2d(mu)
-  LV <- .morie_gr_a2d(logvar); R <- .morie_gr_a2d(recon)
+  X <- .morie_gr_a2d(x)
+  M <- .morie_gr_a2d(mu)
+  LV <- .morie_gr_a2d(logvar)
+  R <- .morie_gr_a2d(recon)
   .morie_gr_need(length(X) > 0L, "x is empty.")
   .morie_gr_need(all(dim(R) == dim(X)), "recon must match x.")
   .morie_gr_need(all(dim(M) == dim(LV)), "mu must match logvar.")
   .morie_gr_need(nrow(M) == nrow(X), "mu rows must equal x rows.")
-  .morie_gr_fin(X, "x"); .morie_gr_fin(M, "mu")
-  .morie_gr_fin(LV, "logvar"); .morie_gr_fin(R, "recon")
+  .morie_gr_fin(X, "x")
+  .morie_gr_fin(M, "mu")
+  .morie_gr_fin(LV, "logvar")
+  .morie_gr_fin(R, "recon")
   beta <- as.numeric(beta)
   .morie_gr_need(is.finite(beta) && beta >= 0, "beta must be finite and non-negative.")
   m <- nrow(X)
@@ -6646,7 +6990,9 @@ morie_geron_vit_patch_embedding <- function(image, patch_size, E, E_pos = NULL,
   .morie_gr_fin(A, "image")
   p <- as.integer(patch_size)
   .morie_gr_need(p >= 1L, "patch_size must be at least 1.")
-  H <- dim(A)[1L]; W <- dim(A)[2L]; C <- dim(A)[3L]
+  H <- dim(A)[1L]
+  W <- dim(A)[2L]
+  C <- dim(A)[3L]
   .morie_gr_need(H %% p == 0L && W %% p == 0L, "patch_size must divide the image.")
   Em <- .morie_gr_a2d(E)
   dimn <- p * p * C
@@ -6694,7 +7040,9 @@ morie_geron_hard_voting <- function(predictions) {
   .morie_gr_need(all(P == round(P)), "hard voting needs integer class labels.")
   storage.mode(P) <- "integer"
   .morie_gr_need(min(P) >= 0L, "class labels must be non-negative.")
-  L <- nrow(P); m <- ncol(P); K <- max(P) + 1L
+  L <- nrow(P)
+  m <- ncol(P)
+  K <- max(P) + 1L
   counts <- matrix(0L, m, K)
   for (j in seq_len(m)) counts[j, ] <- tabulate(P[, j] + 1L, nbins = K)
   yhat <- max.col(counts, ties.method = "first") - 1L
@@ -6812,13 +7160,15 @@ morie_geron_wordpiece_tokenizer_score <- function(counts, pairs) {
          c = as.numeric(row[[3L]]))
   })
   .morie_gr_need(length(items) > 0L, "pairs is empty.")
-  keys <- character(length(items)); vals <- numeric(length(items))
+  keys <- character(length(items))
+  vals <- numeric(length(items))
   for (i in seq_along(items)) {
     it <- items[[i]]
     for (sym in c(it$a, it$b))
       .morie_gr_need(!is.null(cnt[[sym]]), "a pair symbol is absent from counts.")
     .morie_gr_need(is.finite(it$c) && it$c > 0, "pair counts must be positive.")
-    ca <- as.numeric(cnt[[it$a]]); cb <- as.numeric(cnt[[it$b]])
+    ca <- as.numeric(cnt[[it$a]])
+    cb <- as.numeric(cnt[[it$b]])
     .morie_gr_need(it$c <= min(ca, cb), "a pair cannot outnumber its parts.")
     keys[i] <- paste0("('", it$a, "', '", it$b, "')")
     vals[i] <- it$c / (ca * cb)
@@ -6847,11 +7197,14 @@ morie_geron_wordpiece_tokenizer_score <- function(counts, pairs) {
 #' @examples
 #' morie_geron_xgboost_gain(3, 2, -1, 1.5, lam = 1, gamma = 0.2)
 morie_geron_xgboost_gain <- function(GL, HL, GR, HR, lam = 1, gamma = 0) {
-  GL <- as.numeric(GL); HL <- as.numeric(HL)
-  GR <- as.numeric(GR); HR <- as.numeric(HR)
+  GL <- as.numeric(GL)
+  HL <- as.numeric(HL)
+  GR <- as.numeric(GR)
+  HR <- as.numeric(HR)
   .morie_gr_need(all(is.finite(c(GL, HL, GR, HR))), "GL, HL, GR and HR must be finite.")
   .morie_gr_need(HL >= 0 && HR >= 0, "Hessian sums must be non-negative.")
-  lam <- as.numeric(lam); gamma <- as.numeric(gamma)
+  lam <- as.numeric(lam)
+  gamma <- as.numeric(gamma)
   .morie_gr_need(lam >= 0 && gamma >= 0, "lam and gamma must be non-negative.")
   .morie_gr_need(HL + lam > 0 && HR + lam > 0 && HL + HR + lam > 0,
                  "a denominator H + lambda is non-positive; raise lam.")
@@ -6887,7 +7240,8 @@ morie_geron_xgboost_gain <- function(GL, HL, GR, HR, lam = 1, gamma = 0) {
 #' morie_geron_glorot_xavier_init(fan_in = 5L, fan_out = 5L)
 morie_geron_glorot_xavier_init <- function(fan_in, fan_out,
                                            distribution = "normal", seed = 42) {
-  fan_in <- as.integer(fan_in); fan_out <- as.integer(fan_out)
+  fan_in <- as.integer(fan_in)
+  fan_out <- as.integer(fan_out)
   .morie_gr_need(fan_in >= 1L && fan_out >= 1L, "fan_in and fan_out must be positive.")
   target <- 2 / (fan_in + fan_out)
   n <- fan_in * fan_out
@@ -6934,12 +7288,15 @@ morie_geron_glorot_xavier_init <- function(fan_in, fan_out,
 #' str(r, max.level = 1)
 morie_geron_yolo_grid_loss <- function(predictions, targets, lam_coord = 5,
                                        lam_noobj = 0.5) {
-  P <- predictions; Tg <- targets
+  P <- predictions
+  Tg <- targets
   .morie_gr_need(length(dim(P)) == 3L && dim(P)[3L] >= 5L,
                  "predictions must be (S, S, 5 + C).")
   .morie_gr_need(identical(dim(P), dim(Tg)), "targets must match predictions.")
-  .morie_gr_fin(P, "predictions"); .morie_gr_fin(Tg, "targets")
-  lam_coord <- as.numeric(lam_coord); lam_noobj <- as.numeric(lam_noobj)
+  .morie_gr_fin(P, "predictions")
+  .morie_gr_fin(Tg, "targets")
+  lam_coord <- as.numeric(lam_coord)
+  lam_noobj <- as.numeric(lam_noobj)
   .morie_gr_need(lam_coord >= 0 && lam_noobj >= 0,
                  "lam_coord and lam_noobj must be non-negative.")
   .morie_gr_need(all(P[, , 3:4] >= 0) && all(Tg[, , 3:4] >= 0),

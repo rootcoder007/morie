@@ -162,7 +162,8 @@ inclusion_proof <- function(leaves, index) {
          length(L))
   }
   path <- list()
-  lo <- 0L; hi <- length(L)
+  lo <- 0L
+  hi <- length(L)
   while (hi - lo > 1L) {
     k <- 1L
     while (k * 2L < hi - lo) k <- k * 2L
@@ -189,14 +190,17 @@ inclusion_proof <- function(leaves, index) {
 #' @param root See Usage.
 #' @export
 verify_inclusion <- function(leaf, index, size, path, root) {
-  m <- as.integer(index); n <- as.integer(size)
+  m <- as.integer(index)
+  n <- as.integer(size)
   if (m < 0L || m >= n) {
     stop("sechsh: index ", m, " is outside a log of ", n)
   }
   node <- .morie_sha256_impl(c(.LEAF, .sechsh_as_bytes(leaf)))
   # The Python collects the descent top-down, then folds bottom-up.
-  lo <- 0L; hi <- n
-  steps <- list(); used <- 0L
+  lo <- 0L
+  hi <- n
+  steps <- list()
+  used <- 0L
   p <- as.list(path)
   while (hi - lo > 1L) {
     if (used >= length(p)) {

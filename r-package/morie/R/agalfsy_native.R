@@ -82,16 +82,28 @@
 .agalfsy_rotate <- function(P, axis, deg) {
   cen <- .agalfsy_centroid(P)
   t <- deg * pi / 180.0
-  ct <- cos(t); st <- sin(t)
+  ct <- cos(t)
+  st <- sin(t)
   out <- P
   for (i in seq_len(nrow(P))) {
-    x <- P[i, 1] - cen[1]; y <- P[i, 2] - cen[2]; z <- P[i, 3] - cen[3]
+    x <- P[i, 1] - cen[1]
+    y <- P[i, 2] - cen[2]
+    z <- P[i, 3] - cen[3]
     if (axis == 0L) {
-      ny <- ct * y - st * z; nz <- st * y + ct * z; y <- ny; z <- nz
+      ny <- ct * y - st * z
+      nz <- st * y + ct * z
+      y <- ny
+      z <- nz
     } else if (axis == 1L) {
-      nx <- ct * x + st * z; nz <- -st * x + ct * z; x <- nx; z <- nz
+      nx <- ct * x + st * z
+      nz <- -st * x + ct * z
+      x <- nx
+      z <- nz
     } else {
-      nx <- ct * x - st * y; ny <- st * x + ct * y; x <- nx; y <- ny
+      nx <- ct * x - st * y
+      ny <- st * x + ct * y
+      x <- nx
+      y <- ny
     }
     out[i, ] <- c(x + cen[1], y + cen[2], z + cen[3])
   }
@@ -208,12 +220,16 @@ morie_agalfsy_rl_pose_search <- function(receptor, ligand, site = NULL,
                             "space is 0..11"), a))
       nxt <- .agalfsy_apply(L, a)
     } else {
-      best_a <- 0L; best_r <- NULL; nxt <- NULL
+      best_a <- 0L
+      best_r <- NULL
+      nxt <- NULL
       for (cand in 0:11) {
         trial <- .agalfsy_apply(L, as.integer(cand))
         r <- .agalfsy_reward(S, L, trial)
         if (is.null(best_r) || r > best_r) {
-          best_a <- as.integer(cand); best_r <- r; nxt <- trial
+          best_a <- as.integer(cand)
+          best_r <- r
+          nxt <- trial
         }
       }
       a <- best_a

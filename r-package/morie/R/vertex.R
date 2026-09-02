@@ -59,7 +59,7 @@ morie_vertex_resolve_config <- function() {
 #' @return Character bearer token.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_vertex_access_token()
 #' }
 morie_vertex_access_token <- function(cfg = NULL) {
@@ -104,7 +104,7 @@ morie_vertex_access_token <- function(cfg = NULL) {
 #' @return Character scalar -- trimmed generated text.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' ans <- morie_vertex_ask_gemini("Summarize recent assault trends in Toronto.")
 #' }
 morie_vertex_ask_gemini <- function(prompt, model = NULL, system = NULL,

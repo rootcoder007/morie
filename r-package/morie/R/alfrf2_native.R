@@ -73,7 +73,9 @@ morie_alfrf2_schedule <- function(T, beta_start = 1e-4, beta_end = 0.02) {
   if (T < 1L) stop("a diffusion needs at least one step")
   if (!(beta_start > 0 && beta_start <= beta_end && beta_end < 1))
     stop("the variance schedule must rise through the open unit interval")
-  betas <- numeric(T + 1L); alphas <- rep(1, T + 1L); abar <- rep(1, T + 1L)
+  betas <- numeric(T + 1L)
+  alphas <- rep(1, T + 1L)
+  abar <- rep(1, T + 1L)
   for (t in seq_len(T)) {
     b <- beta_start + (beta_end - beta_start) * (t - 1) / max(T - 1L, 1L)
     betas[t + 1L] <- b
@@ -95,7 +97,8 @@ morie_alfrf2_schedule <- function(T, beta_start = 1e-4, beta_end = 0.02) {
 #' @return The noised structure.
 #' @export
 morie_alfrf2_noise <- function(x0, abar_t, eps) {
-  a <- sqrt(abar_t); b <- sqrt(1 - abar_t)
+  a <- sqrt(abar_t)
+  b <- sqrt(1 - abar_t)
   a * x0 + b * eps
 }
 
@@ -143,13 +146,16 @@ morie_alfrf2_noise <- function(x0, abar_t, eps) {
 #'   square deviation and the moved points.
 #' @export
 morie_alfrf2_kabsch <- function(P, Q) {
-  P <- as.matrix(P); Q <- as.matrix(Q)
+  P <- as.matrix(P)
+  Q <- as.matrix(Q)
   n <- nrow(P)
   if (n != nrow(Q))
     stop("superposition needs the same number of points on both sides")
   if (n < 3L) stop("three points are the fewest that fix a rotation")
-  cp <- .alfrf2_centre(P); cq <- .alfrf2_centre(Q)
-  p <- cp$P; q <- cq$P
+  cp <- .alfrf2_centre(P)
+  cq <- .alfrf2_centre(Q)
+  p <- cp$P
+  q <- cq$P
   C <- matrix(0, 3, 3)
   for (a in 1:3) for (b in 1:3)
     C[a, b] <- .w3_csum(q[, a] * p[, b])
@@ -158,7 +164,8 @@ morie_alfrf2_kabsch <- function(P, Q) {
     S[a, b] <- .w3_csum(vapply(1:3, function(k) C[k, a] * C[k, b],
                                numeric(1)))
   je <- morie_manfd_jacobi(S)
-  lam <- je$values; V <- je$vectors
+  lam <- je$values
+  V <- je$vectors
   if (lam[3] <= 1e-12 * (if (lam[1] > 0) lam[1] else 1))
     stop("the points do not span three dimensions, so the polar factor ",
          "does not determine a rotation")
@@ -175,7 +182,8 @@ morie_alfrf2_kabsch <- function(P, Q) {
     R
   }
   R <- build(inv)
-  if (.alfrf2_det3(R) < 0) { inv[3] <- -inv[3]; R <- build(inv) }
+  if (.alfrf2_det3(R) < 0) { inv[3] <- -inv[3]
+  R <- build(inv) }
   moved <- matrix(0, n, 3)
   for (i in seq_len(n)) for (a in 1:3)
     moved[i, a] <- .w3_csum(vapply(1:3, function(b) R[a, b] * p[i, b],
@@ -289,9 +297,11 @@ morie_alfrf2 <- function(target_motif, scaffold, T = 20L,
   pos <- lapply(target_motif, function(p) as.numeric(p[[2]]))
   if (length(scaffold) == 1L && is.numeric(scaffold) &&
       scaffold == round(scaffold)) {
-    n <- as.integer(scaffold); start <- NULL
+    n <- as.integer(scaffold)
+    start <- NULL
   } else {
-    start <- as.matrix(scaffold); n <- nrow(start)
+    start <- as.matrix(scaffold)
+    n <- nrow(start)
   }
   if (n < 3L)
     stop("a backbone of fewer than three residues has no geometry to ",
@@ -303,7 +313,9 @@ morie_alfrf2 <- function(target_motif, scaffold, T = 20L,
   fixed <- idx
 
   sc <- morie_alfrf2_schedule(T, beta_start, beta_end)
-  betas <- sc$betas; alphas <- sc$alphas; abar <- sc$abar
+  betas <- sc$betas
+  alphas <- sc$alphas
+  abar <- sc$abar
   T <- as.integer(T)
   e <- .ghc_rng(seed)
   drw <- function() matrix(.ghc_norm(e, n * 3L), n, 3L, byrow = TRUE)
@@ -344,7 +356,8 @@ morie_alfrf2 <- function(target_motif, scaffold, T = 20L,
   want <- matrix(unlist(pos), length(pos), 3L, byrow = TRUE)
   mdev <- if (length(idx)) max(abs(got - want)) else 0
   spac <- vapply(seq_len(n - 1L), function(i) {
-    d <- x[i + 1L, ] - x[i, ]; sqrt(.w3_csum(d * d))
+    d <- x[i + 1L, ] - x[i, ]
+    sqrt(.w3_csum(d * d))
   }, numeric(1))
   # Three or fewer motif residues, or coplanar ones, do not pin a
   # rotation, and the superposition says so rather than returning a

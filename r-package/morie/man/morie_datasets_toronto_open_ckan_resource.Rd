@@ -19,7 +19,7 @@ Phase 3EEE2. Generic loader hitting CKAN's \code{datastore_search}
 endpoint for an arbitrary Toronto package resource.
 }
 \examples{
-\donttest{
+\dontrun{
 data(ckan_metadata, package = "morie")
 recs <- morie_datasets_toronto_open_ckan_resource(ckan_metadata$package_id[1])
 }

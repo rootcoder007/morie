@@ -88,7 +88,8 @@ miprgr_simplex <- function(A, b, c, tol = 1e-9, max_iter = 20000) {
       z <- reduced(obj)
       enter <- NA_integer_
       for (j in allowed) {
-        if (z[j] < -tol) { enter <- j; break }
+        if (z[j] < -tol) { enter <- j
+        break }
       }
       if (is.na(enter)) return(TRUE)
       ratio <- Inf
@@ -283,7 +284,8 @@ miprgr_enumerate_integer <- function(A, b, c, integer_vars, upper = 10,
       ok <- TRUE
       for (i in seq_len(nrow(A))) {
         lhs <- sum(as.numeric(A[i, ]) * pre)
-        if (lhs > as.numeric(b[i]) + 1e-7) { ok <- FALSE; break }
+        if (lhs > as.numeric(b[i]) + 1e-7) { ok <- FALSE
+        break }
       }
       if (ok) {
         val <- sum(as.numeric(c) * pre)

@@ -40,7 +40,9 @@ nashq_solve <- function(A, b) {
     p <- which.max(abs(M[c:n, c]))
     if (abs(M[p + c - 1L, c]) < 1e-12) return(NULL)
     if (p + c - 1L != c) {
-      tmp <- M[c, ]; M[c, ] <- M[p + c - 1L, ]; M[p + c - 1L, ] <- tmp
+      tmp <- M[c, ]
+      M[c, ] <- M[p + c - 1L, ]
+      M[p + c - 1L, ] <- tmp
     }
     pv <- M[c, c]
     M[c, ] <- M[c, ] / pv
@@ -139,11 +141,13 @@ nashq_is_equilibrium <- function(A, B, p, q, tol) {
 #' @return The value of \code{out}, as built in the body.
 #' @export
 nashq_equilibria_bimatrix <- function(A, B, tol = 1e-9) {
-  A <- nashq_mat(A, "A"); B <- nashq_mat(B, "B")
+  A <- nashq_mat(A, "A")
+  B <- nashq_mat(B, "B")
   if (nrow(B) != nrow(A) || ncol(B) != ncol(A)) {
     stop("nashq: A and B must have the same shape")
   }
-  m <- nrow(A); n <- ncol(A)
+  m <- nrow(A)
+  n <- ncol(A)
   out <- list()
   seen <- list()
   for (k in seq_len(min(m, n))) {
@@ -159,12 +163,15 @@ nashq_equilibria_bimatrix <- function(A, B, tol = 1e-9) {
         p <- nashq_indifference(subB, k)
         if (is.null(q) || is.null(p)) next
         if (min(q) < -tol || min(p) < -tol) next
-        P <- numeric(m); Q <- numeric(n)
+        P <- numeric(m)
+        Q <- numeric(n)
         for (a in seq_along(I)) P[I[a]] <- max(0, p[a])
         for (a in seq_along(J)) Q[J[a]] <- max(0, q[a])
-        sp <- sum(P); sq <- sum(Q)
+        sp <- sum(P)
+        sq <- sum(Q)
         if (sp <= tol || sq <= tol) next
-        P <- P / sp; Q <- Q / sq
+        P <- P / sp
+        Q <- Q / sq
         if (!nashq_is_equilibrium(A, B, P, Q, tol)) next
         key <- paste(paste(round(P, 9), collapse = ","),
                      paste(round(Q, 9), collapse = ","), sep = "|")
@@ -192,11 +199,13 @@ nashq_equilibria_bimatrix <- function(A, B, tol = 1e-9) {
 #' @export
 nashq_is_saddle <- function(A, B, p, q, tol) {
   for (j in seq_len(ncol(A))) {
-    pure <- numeric(ncol(A)); pure[j] <- 1
+    pure <- numeric(ncol(A))
+    pure[j] <- 1
     if (nashq_payoff(A, p, pure) < nashq_payoff(A, p, q) - tol) return(FALSE)
   }
   for (i in seq_len(nrow(A))) {
-    pure <- numeric(nrow(A)); pure[i] <- 1
+    pure <- numeric(nrow(A))
+    pure[i] <- 1
     if (nashq_payoff(B, pure, q) < nashq_payoff(B, p, q) - tol) return(FALSE)
   }
   TRUE
@@ -214,13 +223,18 @@ nashq_is_saddle <- function(A, B, p, q, tol) {
 #' @return A list with \code{estimate}, \code{equilibria}, \code{n_equilibria}, \code{has_global_optimal}, \code{has_saddle}, \code{global_optimal}, \code{saddle}, \code{method}.
 #' @export
 nashq_stage_game_type <- function(A, B, tol = 1e-9) {
-  A <- nashq_mat(A, "A"); B <- nashq_mat(B, "B")
+  A <- nashq_mat(A, "A")
+  B <- nashq_mat(B, "B")
   eqs <- nashq_equilibria_bimatrix(A, B, tol)
-  best_a <- max(A); best_b <- max(B)
-  glob <- list(); sad <- list()
+  best_a <- max(A)
+  best_b <- max(B)
+  glob <- list()
+  sad <- list()
   for (eq in eqs) {
-    p <- eq$p; q <- eq$q
-    va <- nashq_payoff(A, p, q); vb <- nashq_payoff(B, p, q)
+    p <- eq$p
+    q <- eq$q
+    va <- nashq_payoff(A, p, q)
+    vb <- nashq_payoff(B, p, q)
     if (va >= best_a - tol && vb >= best_b - tol) glob[[length(glob) + 1L]] <- eq
     if (nashq_is_saddle(A, B, p, q, tol)) sad[[length(sad) + 1L]] <- eq
   }
@@ -252,7 +266,8 @@ nashq_select_eq <- function(A, B, selection, agent, tol) {
     return(eqs[[which.max(sapply(eqs, function(e) nashq_payoff(M, e$p, e$q)))]])
   }
   if (selection == "global_optimal") {
-    ba <- max(A); bb <- max(B)
+    ba <- max(A)
+    bb <- max(B)
     for (eq in eqs) {
       if (nashq_payoff(A, eq$p, eq$q) >= ba - tol &&
           nashq_payoff(B, eq$p, eq$q) >= bb - tol) return(eq)
@@ -324,7 +339,8 @@ nashq_run <- function(states, actions, step, rewards, gamma = 0.9, alpha = 0.5,
   if (length(actions) != 2L) {
     stop("nashq: this implementation covers two players; pass actions as (A1, A2)")
   }
-  A1 <- as.list(actions[[1]]); A2 <- as.list(actions[[2]])
+  A1 <- as.list(actions[[1]])
+  A2 <- as.list(actions[[2]])
   if (length(S) == 0L || length(A1) == 0L || length(A2) == 0L) {
     stop("nashq: states and both action sets must be non-empty")
   }
@@ -349,13 +365,16 @@ nashq_run <- function(states, actions, step, rewards, gamma = 0.9, alpha = 0.5,
     tot <- c(0, 0)
     for (t in seq_len(as.integer(horizon))) {
       if (s %in% term) break
-      M0 <- q_get(0L, s); M1 <- q_get(1L, s)
+      M0 <- q_get(0L, s)
+      M1 <- q_get(1L, s)
       i <- nashq_pick(M0, A1, 0L, epsilon, rng) + 1L
       j <- nashq_pick(M1, A2, 1L, epsilon, rng) + 1L
       s1 <- step(s, A1[[i]], A2[[j]])
-      r1 <- 0; r2 <- 0
+      r1 <- 0
+      r2 <- 0
       rr <- rewards(s, A1[[i]], A2[[j]], s1)
-      r1 <- as.numeric(rr[[1]]); r2 <- as.numeric(rr[[2]])
+      r1 <- as.numeric(rr[[1]])
+      r2 <- as.numeric(rr[[2]])
       tot[1L] <- tot[1L] + r1
       tot[2L] <- tot[2L] + r2
       if (s1 %in% term) {
@@ -370,7 +389,8 @@ nashq_run <- function(states, actions, step, rewards, gamma = 0.9, alpha = 0.5,
         }
       }
       for (pair in list(c(0L, r1), c(1L, r2))) {
-        pl <- pair[1]; r <- pair[2]
+        pl <- pair[1]
+        r <- pair[2]
         cur <- q_get(pl, s)[i, j]
         q_set(pl, s, q_get(pl, s))
         M <- q_get(pl, s)
@@ -381,7 +401,9 @@ nashq_run <- function(states, actions, step, rewards, gamma = 0.9, alpha = 0.5,
     }
     returns[[length(returns) + 1L]] <- tot
   }
-  policy <- list(); nash_values <- list(); types <- list()
+  policy <- list()
+  nash_values <- list()
+  types <- list()
   for (s in S) {
     cls <- nashq_stage_game_type(q_get(0L, s), q_get(1L, s), tol)
     types[[as.character(s)]] <- if (cls$has_global_optimal) "global_optimal"

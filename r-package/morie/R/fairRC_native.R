@@ -23,7 +23,8 @@
 #' @return The value of \code{seq}.
 #' @export
 .cutoffs <- function(N, step = 10L) {
-  n <- as.integer(N); s <- as.integer(step)
+  n <- as.integer(N)
+  s <- as.integer(step)
   if (n < s) {
     stop(sprintf("fairRC: the ranking of %d is shorter than the first cut-off %d", n, s))
   }
@@ -58,7 +59,8 @@
       npos <- sum(protected[seq_len(i)])
       nneg <- i - npos
       r1 <- if (nneg == 0 || npos == 0) 0 else npos / nneg
-      NP <- sum(protected); NN <- N - NP
+      NP <- sum(protected)
+      NN <- N - NP
       r2 <- if (NN == 0 || NP == 0) 0 else NP / NN
       tot <- tot + w * abs(r1 - r2)
     }

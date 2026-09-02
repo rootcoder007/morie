@@ -95,7 +95,8 @@
   di <- 0L
   for (si in seq_along(sigmas)) {
     s <- sigmas[si]
-    num <- 0.0; den <- 0.0
+    num <- 0.0
+    den <- 0.0
     for (X in clean) {
       for (i in seq_len(n)) for (a in 1:3) {
         xi <- draws[(di %% length(draws)) + 1L]
@@ -166,9 +167,11 @@ morie_alfbnp_af3_sample <- function(n_atoms = NULL, denoiser = NULL,
                                     gamma_min = 1.0, noise_scale = 1.003,
                                     step_scale = 1.5, noise = NULL, seed = 2,
                                     x_init = NULL, ridge = 1e-6) {
-  X0 <- NULL; ref <- NULL
+  X0 <- NULL
+  ref <- NULL
   if (!is.null(x_init)) {
-    X0 <- .alfbnp_atoms(x_init, "alfbnp x_init"); n <- nrow(X0)
+    X0 <- .alfbnp_atoms(x_init, "alfbnp x_init")
+    n <- nrow(X0)
   } else if (!is.null(clean)) {
     ref <- .alfbnp_clean_list(clean)
     n <- nrow(ref[[1]])
@@ -189,8 +192,10 @@ morie_alfbnp_af3_sample <- function(n_atoms = NULL, denoiser = NULL,
     if (sigma_data != "fit")
       stop("alfbnp: sigma_data must be a number or 'fit'")
     if (is.null(ref)) stop("alfbnp: sigma_data='fit' needs `clean`")
-    tot <- 0.0; cnt <- 0.0
-    for (X in ref) { tot <- tot + sum(X * X); cnt <- cnt + length(X) }
+    tot <- 0.0
+    cnt <- 0.0
+    for (X in ref) { tot <- tot + sum(X * X)
+    cnt <- cnt + length(X) }
     sd_ <- if (cnt > 0) sqrt(tot / cnt) else .alfbnp_SIGMA_DATA
   } else {
     sd_ <- as.numeric(sigma_data)

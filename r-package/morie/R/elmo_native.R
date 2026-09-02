@@ -97,25 +97,33 @@
   cur <- Xm
   for (li in seq_along(layers)) {
     lyr <- layers[[li]]
-    Wxf <- as.matrix(lyr[[1L]]); Whf <- as.matrix(lyr[[2L]]); bf <- as.numeric(lyr[[3L]])
-    Wxb <- as.matrix(lyr[[4L]]); Whb <- as.matrix(lyr[[5L]]); bb <- as.numeric(lyr[[6L]])
+    Wxf <- as.matrix(lyr[[1L]])
+    Whf <- as.matrix(lyr[[2L]])
+    bf <- as.numeric(lyr[[3L]])
+    Wxb <- as.matrix(lyr[[4L]])
+    Whb <- as.matrix(lyr[[5L]])
+    bb <- as.numeric(lyr[[6L]])
     d <- ncol(Whf)
     if (ncol(reps[[1L]]) != 2L * d) {
       stop(sprintf("elmo: token dimension %d but hidden dimension %d; layer 0 is [x; x] so they must match",
                    ncol(Xm), d))
     }
-    h <- rep(0, d); c <- rep(0, d)
+    h <- rep(0, d)
+    c <- rep(0, d)
     fwd <- matrix(0, nrow = L, ncol = d)
     for (t in seq_len(L)) {
       r <- .lstm_step(cur[t, , drop = FALSE], h, c, Wxf, Whf, bf)
-      h <- r$h; c <- r$c
+      h <- r$h
+      c <- r$c
       fwd[t, ] <- h
     }
-    h <- rep(0, d); c <- rep(0, d)
+    h <- rep(0, d)
+    c <- rep(0, d)
     bwd <- matrix(0, nrow = L, ncol = d)
     for (t in L:1L) {
       r <- .lstm_step(cur[t, , drop = FALSE], h, c, Wxb, Whb, bb)
-      h <- r$h; c <- r$c
+      h <- r$h
+      c <- r$c
       bwd[t, ] <- h
     }
     cur <- cbind(fwd, bwd)

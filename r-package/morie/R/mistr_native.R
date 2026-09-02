@@ -99,8 +99,10 @@ mistr_apply_rope <- function(x, pos, theta = NULL, base = 10000) {
   out <- numeric(d)
   for (i in seq_len(d %/% 2L)) {
     ang <- pos * th[i]
-    c_ <- cos(ang); s_ <- sin(ang)
-    a <- x[2 * i - 1L]; b <- x[2 * i]
+    c_ <- cos(ang)
+    s_ <- sin(ang)
+    a <- x[2 * i - 1L]
+    b <- x[2 * i]
     out[2 * i - 1L] <- a * c_ - b * s_
     out[2 * i]     <- a * s_ + b * c_
   }

@@ -24,12 +24,15 @@ morie_conv2d <- function(image, kernel, bias = 0, stride = 1,
   if (length(dim(img)) == 2L) dim(img) <- c(dim(img), 1L)
   ker <- as.array(kernel)
   if (length(dim(ker)) == 2L) dim(ker) <- c(dim(ker), 1L)
-  kh <- dim(ker)[1]; kw <- dim(ker)[2]; kc <- dim(ker)[3]
+  kh <- dim(ker)[1]
+  kw <- dim(ker)[2]
+  kc <- dim(ker)[3]
   oh <- (dim(img)[1] - kh) %/% stride + 1L
   ow <- (dim(img)[2] - kw) %/% stride + 1L
   out <- matrix(0, oh, ow)
   for (i in seq_len(oh)) for (j in seq_len(ow)) {
-    r0 <- (i - 1L) * stride; c0 <- (j - 1L) * stride
+    r0 <- (i - 1L) * stride
+    c0 <- (j - 1L) * stride
     s <- bias
     for (a in seq_len(kh)) for (b in seq_len(kw)) for (d in seq_len(kc))
       s <- s + img[r0 + a, c0 + b, d] * ker[a, b, d]
@@ -187,7 +190,8 @@ morie_fda_fit <- function(t, X_curves, y, L1 = 3, L2 = 5,
   # eq. (14.4): beta-hat = (X*'X*)^-1 X*'y and
   # sigma2-hat = (1/n)(y - X*beta-hat)'(y - X*beta-hat)
   d <- morie_fda_design(t, X_curves, L1, L2, kind)
-  Xs <- d$X_star; yy <- as.numeric(y)
+  Xs <- d$X_star
+  yy <- as.numeric(y)
   beta <- as.numeric(morie_solve(crossprod(Xs), crossprod(Xs, yy)))
   fitted <- as.numeric(Xs %*% beta)
   resid <- yy - fitted
@@ -236,7 +240,8 @@ morie_fda_bic <- function(loglik, n_params, n_obs) {
 #' @noRd
 morie_fda_loocv <- function(t, x_t, L2, kind = "fourier") {
   # eq. (14.8): leave one grid point out, refit the basis, predict it
-  tt <- as.numeric(t); xx <- as.numeric(x_t)
+  tt <- as.numeric(t)
+  xx <- as.numeric(x_t)
   err <- 0
   for (i in seq_along(tt)) {
     Psi <- morie_fda_basis(tt[-i], L2, kind, period = max(tt) - min(tt))
@@ -297,7 +302,8 @@ morie_zap_mle <- function(y_positive, tol = 1e-12,
   if (!length(yy)) stop("need at least one positive observation")
   target <- mean(yy)
   if (target <= 1) return(0)
-  lo <- 1e-9; hi <- 1
+  lo <- 1e-9
+  hi <- 1
   while (hi / (1 - exp(-hi)) < target && hi <= 1e6) hi <- hi * 2
   for (it in seq_len(max_iter)) {
     mid <- (lo + hi) / 2
@@ -333,7 +339,8 @@ morie_zap_predict <- function(theta_hat, mu_hat, threshold = NULL) {
   #
   # eq. (15.4): ZAPC_RF predicts 0 when theta-hat > threshold and the
   # estimated count mu-hat otherwise -- mu-hat, not the ZAP mean.
-  th <- as.numeric(theta_hat); mu <- pmax(as.numeric(mu_hat), 1e-9)
+  th <- as.numeric(theta_hat)
+  mu <- pmax(as.numeric(mu_hat), 1e-9)
   pred <- (1 - th) * mu / (1 - exp(-mu))
   out <- list(prediction = pred, zero_probability = th)
   if (!is.null(threshold)) {
@@ -352,7 +359,8 @@ morie_zap_predict <- function(theta_hat, mu_hat, threshold = NULL) {
 #' @return list with `mean` and `variance`
 #' @noRd
 morie_zap_mean_variance <- function(theta, mu) {
-  th <- as.numeric(theta); m <- pmax(as.numeric(mu), 1e-9)
+  th <- as.numeric(theta)
+  m <- pmax(as.numeric(mu), 1e-9)
   k <- (1 - th) / (1 - exp(-m))
   mean_ <- k * m
   list(mean = mean_, variance = k * (m + m^2) - mean_^2)
@@ -376,13 +384,16 @@ morie_msm_weighted_glm <- function(y, X, weights = NULL,
                                    n_iter = 60, tol = 1e-10) {
   # weighted IRLS: fitting the outcome model in the pseudo-population
   # created by the IPT weights estimates the causal MSM parameter
-  Xm <- as.matrix(X); yy <- as.numeric(y); n <- length(yy)
+  Xm <- as.matrix(X)
+  yy <- as.numeric(y)
+  n <- length(yy)
   w <- if (is.null(weights)) rep(1, n) else as.numeric(weights)
   off <- if (is.null(offset)) rep(0, n) else as.numeric(offset)
   if (identical(family, "gaussian")) {
     beta <- as.numeric(morie_solve(crossprod(Xm, Xm * w),
                                          crossprod(Xm, w * (yy - off))))
-    eta <- off + as.numeric(Xm %*% beta); mu <- eta
+    eta <- off + as.numeric(Xm %*% beta)
+    mu <- eta
   } else {
     beta <- rep(0, ncol(Xm))
     if (identical(family, "poisson"))
@@ -393,13 +404,15 @@ morie_msm_weighted_glm <- function(y, X, weights = NULL,
         mu <- 1 / (1 + exp(-pmax(pmin(eta, 700), -700)))
         Wd <- pmax(mu * (1 - mu), 1e-9)
       } else if (identical(family, "poisson")) {
-        mu <- exp(pmin(eta, 700)); Wd <- pmax(mu, 1e-9)
+        mu <- exp(pmin(eta, 700))
+        Wd <- pmax(mu, 1e-9)
       } else stop("unknown family: ", family)
       z <- eta - off + (yy - mu) / Wd
       ww <- w * Wd
       new <- as.numeric(morie_solve(crossprod(Xm, Xm * ww),
                                           crossprod(Xm, ww * z)))
-      gap <- max(abs(new - beta)); beta <- new
+      gap <- max(abs(new - beta))
+      beta <- new
       if (gap < tol) break
     }
     eta <- off + as.numeric(Xm %*% beta)
@@ -415,13 +428,16 @@ morie_msm_cox_weighted <- function(time, event, treatment_history,
                                    tol = 1e-10) {
   # the partial likelihood weighted by the stabilized IPT weights, so
   # exp(beta) is a marginal rather than conditional hazard ratio
-  ts <- as.numeric(time); ev <- as.numeric(event)
-  d <- morie_msm_design(treatment_history); a <- d$a_bar
+  ts <- as.numeric(time)
+  ev <- as.numeric(event)
+  d <- morie_msm_design(treatment_history)
+  a <- d$a_bar
   n <- length(ts)
   w <- if (is.null(weights)) rep(1, n) else as.numeric(weights)
   beta <- 0
   for (it in seq_len(n_iter)) {
-    g <- 0; h <- 0
+    g <- 0
+    h <- 0
     for (i in order(ts)) {
       if (ev[i] <= 0) next
       risk <- which(ts >= ts[i])
@@ -434,7 +450,8 @@ morie_msm_cox_weighted <- function(time, event, treatment_history,
       h <- h + w[i] * (m2 - m1^2)
     }
     if (h <= 1e-12) break
-    step <- g / h; beta <- beta + step
+    step <- g / h
+    beta <- beta + step
     if (abs(step) < tol) break
   }
   list(beta = beta, hazard_ratio = exp(beta))
@@ -444,7 +461,9 @@ morie_msm_cox_weighted <- function(time, event, treatment_history,
 morie_msm_gmm <- function(y, X, Z, weights = NULL) {
   # E[Z (Y - g(a-bar; beta))] = 0 with the IPT weights inside the
   # moment condition (Hansen 1982; Robins 1999)
-  Xm <- as.matrix(X); Zm <- as.matrix(Z); yy <- as.numeric(y)
+  Xm <- as.matrix(X)
+  Zm <- as.matrix(Z)
+  yy <- as.numeric(y)
   w <- if (is.null(weights)) rep(1, length(yy)) else as.numeric(weights)
   ZtWX <- crossprod(Zm, Xm * w)
   ZtWy <- crossprod(Zm, w * yy)
@@ -543,7 +562,8 @@ morie_msm_cox_marginal <- function(time, event, treatment_history,
 #' @noRd
 morie_msm_accelerated_failure <- function(time, event, treatment_history,
                                           weights = NULL) {
-  ts <- as.numeric(time); ev <- as.numeric(event)
+  ts <- as.numeric(time)
+  ev <- as.numeric(event)
   d <- morie_msm_design(treatment_history)
   keep <- which(ev > 0 & ts > 0)
   if (!length(keep)) stop("need at least one uncensored positive time")

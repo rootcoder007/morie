@@ -64,7 +64,9 @@ morie_gwasem <- function(y, genotypes, kinship = NULL, covariates = NULL,
 
   K <- if (is.null(kinship)) morie_gwasem_kinship_ibs(G) else kinship
   vc <- morie_gwasem_reml(yv, K, covariates, ml)
-  evals <- vc$evals; evecs <- vc$evecs; delta <- vc$delta
+  evals <- vc$evals
+  evecs <- vc$evecs
+  delta <- vc$delta
 
   rotate <- function(vec) as.numeric(t(evecs) %*% vec)
 
@@ -76,20 +78,27 @@ morie_gwasem <- function(y, genotypes, kinship = NULL, covariates = NULL,
   base_t <- t(apply(base, 2L, rotate))
   y_t <- rotate(yv)
 
-  beta <- numeric(m); se <- numeric(m); stat <- numeric(m)
-  pval <- numeric(m); skipped <- integer(0)
+  beta <- numeric(m)
+  se <- numeric(m)
+  stat <- numeric(m)
+  pval <- numeric(m)
+  skipped <- integer(0)
   for (j in seq_len(m)) {
     col <- G[, j]
     p_hat <- sum(col) / (2.0 * n)
     if (min(p_hat, 1 - p_hat) < min_maf || max(col) == min(col)) {
       skipped <- c(skipped, j)
-      beta[j] <- NA_real_; se[j] <- NA_real_
-      stat[j] <- 0.0; pval[j] <- 1.0
+      beta[j] <- NA_real_
+      se[j] <- NA_real_
+      stat[j] <- 0.0
+      pval[j] <- 1.0
       next
     }
     if (per_marker_reml) {
       vcj <- morie_gwasem_reml(yv, K, covariates, ml)
-      dj <- vcj$delta; ev <- vcj$evals; ev2 <- vcj$evecs
+      dj <- vcj$delta
+      ev <- vcj$evals
+      ev2 <- vcj$evecs
       Xfull <- cbind(base, col)
       rot <- t(apply(Xfull, 1L, function(r) t(ev2) %*% r))
       yr <- as.numeric(t(ev2) %*% yv)
@@ -110,8 +119,10 @@ morie_gwasem <- function(y, genotypes, kinship = NULL, covariates = NULL,
     bb <- tryCatch(solve(M, v), error = function(e) NULL)
     if (is.null(bb)) {
       skipped <- c(skipped, j)
-      beta[j] <- NA_real_; se[j] <- NA_real_
-      stat[j] <- 0.0; pval[j] <- 1.0
+      beta[j] <- NA_real_
+      se[j] <- NA_real_
+      stat[j] <- 0.0
+      pval[j] <- 1.0
       next
     }
     inv <- solve(M)
@@ -121,7 +132,8 @@ morie_gwasem <- function(y, genotypes, kinship = NULL, covariates = NULL,
     b_k <- bb[p]
     var_k <- s2 * inv[p, p]
     se_k <- sqrt(max(var_k, 0.0))
-    beta[j] <- b_k; se[j] <- se_k
+    beta[j] <- b_k
+    se[j] <- se_k
     if (test == "f") {
       f <- if (var_k > 0) (b_k * b_k / var_k) else 0.0
       stat[j] <- f
@@ -171,7 +183,8 @@ morie_gwasem <- function(y, genotypes, kinship = NULL, covariates = NULL,
 #' @export
 morie_gwasem_kinship_ibs <- function(genotypes) {
   G <- apply(genotypes, c(1L, 2L), as.numeric)
-  n <- nrow(G); m <- ncol(G)
+  n <- nrow(G)
+  m <- ncol(G)
   if (n == 0L || m == 0L)
     stop("gwasem: genotypes must be a non-empty individual x marker matrix")
   S <- matrix(0.0, nrow = n, ncol = n)
@@ -240,13 +253,19 @@ morie_gwasem_reml <- function(y, Kinship, covariates = NULL, ml = FALSE) {
     cbind(1.0, apply(covariates, c(1L, 2L), as.numeric))
   }
   ev <- eigen(K, symmetric = TRUE)
-  evals <- ev$values; evecs <- ev$vectors
+  evals <- ev$values
+  evecs <- ev$vectors
   shift <- if (min(evals) <= 0) -min(evals) + 1e-8 else 0.0
   evals <- evals + shift
   delta <- sigma_a2 <- sigma_e2 <- ll <- NULL
-  delta <- 0; sigma_a2 <- 0; sigma_e2 <- 0; ll <- 0
+  delta <- 0
+  sigma_a2 <- 0
+  sigma_e2 <- 0
+  ll <- 0
   r <- .gwasem_reml_delta(yv, X, evals, evecs, ml)
-  delta <- r$delta; sigma_a2 <- r$sigma_a2; sigma_e2 <- r$sigma_e2
+  delta <- r$delta
+  sigma_a2 <- r$sigma_a2
+  sigma_e2 <- r$sigma_e2
   ll <- r$ll
   p <- ncol(X)
   M0 <- crossprod(X)
@@ -304,7 +323,8 @@ morie_gwasem_gc <- function(stats, df = 1) {
 #' @return A list with \code{delta}, \code{sigma_a2}, \code{sigma_e2}, \code{ll}.
 #' @export
 .gwasem_reml_delta <- function(y, X, evals, evecs, ml) {
-  n <- length(y); p <- ncol(X)
+  n <- length(y)
+  p <- ncol(X)
   yt <- as.numeric(t(evecs) %*% y)
   # apply(X, 1L, ...) walks the ROWS of X, which have length p,
   # but t(evecs) is n x n and needs length-n vectors. Rotating the
@@ -338,23 +358,38 @@ morie_gwasem_gc <- function(stats, df = 1) {
       -0.5 * (df * log(2 * pi * rss / df) + df + logdetV + as.numeric(ldM))
     }
   }
-  lo <- -10.0; hi <- 10.0; n_grid <- 100L
-  best_u <- lo; best_v <- loglik(exp(lo))
+  lo <- -10.0
+  hi <- 10.0
+  n_grid <- 100L
+  best_u <- lo
+  best_v <- loglik(exp(lo))
   for (g in seq_len(n_grid)) {
     u <- lo + (hi - lo) * g / n_grid
     val <- loglik(exp(u))
-    if (val > best_v) { best_u <- u; best_v <- val }
+    if (val > best_v) { best_u <- u
+    best_v <- val }
   }
   step <- (hi - lo) / n_grid
-  a <- best_u - step; b <- best_u + step
+  a <- best_u - step
+  b <- best_u + step
   phi <- (sqrt(5.0) - 1.0) / 2.0
-  c <- b - phi * (b - a); d <- a + phi * (b - a)
-  fc <- loglik(exp(c)); fd <- loglik(exp(d))
+  c <- b - phi * (b - a)
+  d <- a + phi * (b - a)
+  fc <- loglik(exp(c))
+  fd <- loglik(exp(d))
   for (kk in seq_len(60L)) {
-    if (fc > fd) { b <- d; fd <- fc; d <- c; fd <- loglik(exp(d));
-                   c <- b - phi * (b - a); fc <- loglik(exp(c)) }
-    else { a <- c; fc <- fd; c <- d; fc <- loglik(exp(c));
-           d <- a + phi * (b - a); fd <- loglik(exp(d)) }
+    if (fc > fd) { b <- d
+    fd <- fc
+    d <- c
+    fd <- loglik(exp(d))
+                   c <- b - phi * (b - a)
+                   fc <- loglik(exp(c)) }
+    else { a <- c
+    fc <- fd
+    c <- d
+    fc <- loglik(exp(c))
+           d <- a + phi * (b - a)
+           fd <- loglik(exp(d)) }
   }
   delta <- exp(0.5 * (a + b))
   d_ <- evals + delta
@@ -398,12 +433,16 @@ morie_gwasem_gc <- function(stats, df = 1) {
 .gwasem_f_sf <- function(f, df1, df2) {
   if (f <= 0) return(1.0)
   x <- df2 / (df2 + df1 * f)
-  a <- 0.5 * df2; b <- 0.5 * df1
+  a <- 0.5 * df2
+  b <- 0.5 * df1
   lbeta <- (lgamma(a + b) - lgamma(a) - lgamma(b) +
             a * log(x) + b * log(1.0 - x))
   betacf <- function(a, b, x) {
-    qab <- a + b; qap <- a + 1.0; qam <- a - 1.0
-    c <- 1.0; d <- 1.0 - qab * x / qap
+    qab <- a + b
+    qap <- a + 1.0
+    qam <- a - 1.0
+    c <- 1.0
+    d <- 1.0 - qab * x / qap
     d <- if (abs(d) > 1e-300) 1.0 / d else 1e300
     h <- d
     for (mm in seq_len(300L)) {

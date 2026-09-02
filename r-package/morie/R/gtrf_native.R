@@ -74,7 +74,8 @@ morie_gtrf_laplacian <- function(adj, n, normalized = TRUE) {
 morie_gtrf_lap_pe <- function(adj, n, dim = 2L, normalized = TRUE) {
   L <- morie_gtrf_laplacian(adj, n, normalized)
   ev <- eigen(L, symmetric = TRUE)
-  vals <- ev$values; vecs <- ev$vectors
+  vals <- ev$values
+  vecs <- ev$vectors
   order <- order(vals)
   take <- order[seq_len(as.integer(dim) + 1L)[-1L]]
   if (length(take) < as.integer(dim))
@@ -194,7 +195,8 @@ morie_gtrf_layer <- function(H, adj, WQ, WK, WV, W1, W2,
 #' @export
 .gtrf_normalize <- function(X, how) {
   if (how == "none") return(X)
-  n <- nrow(X); d <- ncol(X)
+  n <- nrow(X)
+  d <- ncol(X)
   if (how == "batch") {
     mu <- colSums(X) / n
     sd <- sqrt(colSums((X - matrix(mu, nrow = n, ncol = d, byrow = TRUE))^2) /

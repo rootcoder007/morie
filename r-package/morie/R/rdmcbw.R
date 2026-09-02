@@ -16,11 +16,15 @@
   n <- length(b)
   M <- cbind(as.matrix(A), b)
   for (k in seq_len(n)) {
-    piv <- k; best <- abs(M[k, k])
-    if (k < n) for (i in (k + 1L):n) if (abs(M[i, k]) > best) { best <- abs(M[i, k]); piv <- i }
+    piv <- k
+    best <- abs(M[k, k])
+    if (k < n) for (i in (k + 1L):n) if (abs(M[i, k]) > best) { best <- abs(M[i, k])
+    piv <- i }
     if (best < 1e-300)
       stop("mse_optimal_bandwidth_rdd: singular design in a pilot regression")
-    if (piv != k) { tmp <- M[k, ]; M[k, ] <- M[piv, ]; M[piv, ] <- tmp }
+    if (piv != k) { tmp <- M[k, ]
+    M[k, ] <- M[piv, ]
+    M[piv, ] <- tmp }
     pk <- M[k, k]
     if (k < n) for (i in (k + 1L):n) {
       f <- M[i, k] / pk
@@ -46,11 +50,14 @@
 #' set.seed(1)
 #' r <- morie:::.ik_ols(rows = rnorm(10), y = rnorm(10)); TRUE
 .ik_ols <- function(rows, y) {
-  rows <- as.matrix(rows); y <- as.numeric(y)
+  rows <- as.matrix(rows)
+  y <- as.numeric(y)
   p <- ncol(rows)
-  A <- matrix(0, p, p); b <- numeric(p)
+  A <- matrix(0, p, p)
+  b <- numeric(p)
   for (r in seq_len(nrow(rows))) {
-    ri <- rows[r, ]; yi <- y[r]
+    ri <- rows[r, ]
+    yi <- y[r]
     for (i in seq_len(p)) {
       b[i] <- b[i] + ri[i] * yi
       for (j in seq_len(p)) A[i, j] <- A[i, j] + ri[i] * ri[j]
@@ -68,7 +75,8 @@
 #' set.seed(1)
 #' r <- morie:::.ik_median(v = rnorm(10)); TRUE
 .ik_median <- function(v) {
-  s <- sort(as.numeric(v)); m <- length(s)
+  s <- sort(as.numeric(v))
+  m <- length(s)
   if (m == 0L) stop("mse_optimal_bandwidth_rdd: median of an empty side")
   h <- m %/% 2L
   if (m %% 2L == 1L) s[h + 1L] else 0.5 * (s[h] + s[h + 1L])
@@ -140,11 +148,13 @@
 #'   version, pp.8-10 and pp.15-16.
 #' @export
 Rdmcbw <- function(y, x, cutoff = 0, kernel_constant = 3.4375) {
-  y <- as.numeric(unlist(y)); x <- as.numeric(unlist(x))
+  y <- as.numeric(unlist(y))
+  x <- as.numeric(unlist(x))
   n <- length(y)
   if (n == 0L) stop("mse_optimal_bandwidth_rdd: y is empty")
   if (length(x) != n) stop("mse_optimal_bandwidth_rdd: x must have one entry per observation")
-  c0 <- as.numeric(cutoff); ck <- as.numeric(kernel_constant)
+  c0 <- as.numeric(cutoff)
+  ck <- as.numeric(kernel_constant)
   r <- x - c0
 
   sx <- stats::sd(x)
@@ -152,7 +162,8 @@ Rdmcbw <- function(y, x, cutoff = 0, kernel_constant = 3.4375) {
   if (!is.finite(h1) || h1 <= 0) stop("mse_optimal_bandwidth_rdd: the running variable is constant")
   ip <- which(r >= 0 & r <= h1)
   im <- which(r >= -h1 & r < 0)
-  n1p <- length(ip); n1m <- length(im)
+  n1p <- length(ip)
+  n1m <- length(im)
   if (n1p < 2L || n1m < 2L)
     stop("mse_optimal_bandwidth_rdd: too few points inside the pilot window h1")
   ybp <- sum(y[ip]) / n1p
@@ -162,11 +173,14 @@ Rdmcbw <- function(y, x, cutoff = 0, kernel_constant = 3.4375) {
   sigma2 <- ss / (n1p + n1m)
   if (sigma2 <= 0) stop("mse_optimal_bandwidth_rdd: zero residual variance at the cutoff")
 
-  right <- which(r >= 0); left <- which(r < 0)
-  n_plus <- length(right); n_minus <- length(left)
+  right <- which(r >= 0)
+  left <- which(r < 0)
+  n_plus <- length(right)
+  n_minus <- length(left)
   if (n_plus < 4L || n_minus < 4L)
     stop("mse_optimal_bandwidth_rdd: each side needs at least four observations")
-  med_p <- .ik_median(x[right]); med_m <- .ik_median(x[left])
+  med_p <- .ik_median(x[right])
+  med_m <- .ik_median(x[left])
   keep <- which(x >= med_m & x <= med_p)
   if (length(keep) < 5L) stop("mse_optimal_bandwidth_rdd: too few points for the global cubic")
   rows <- cbind(1, ifelse(r[keep] >= 0, 1, 0), r[keep], r[keep]^2, r[keep]^3)
@@ -185,8 +199,10 @@ Rdmcbw <- function(y, x, cutoff = 0, kernel_constant = 3.4375) {
   }
   i2p <- which(r >= 0 & r <= h2p)
   i2m <- which(r >= -h2m & r < 0)
-  n2p <- length(i2p); n2m <- length(i2m)
-  m2p <- .curv(i2p, "right"); m2m <- .curv(i2m, "left")
+  n2p <- length(i2p)
+  n2m <- length(i2m)
+  m2p <- .curv(i2p, "right")
+  m2m <- .curv(i2m, "left")
 
   r_plus <- 720 * sigma2 / (n2p * h2p^4)
   r_minus <- 720 * sigma2 / (n2m * h2m^4)

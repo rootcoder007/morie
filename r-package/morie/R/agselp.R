@@ -34,11 +34,14 @@ Evalgate <- function(new_net, old_net = NULL, n_games = 100, wins = NULL,
     d <- as.numeric(draws)
     n <- w + l + d
   } else {
-    w <- as.numeric(wins); d <- as.numeric(draws); n <- as.numeric(n_games)
+    w <- as.numeric(wins)
+    d <- as.numeric(draws)
+    n <- as.numeric(n_games)
     l <- n - w - d
   }
   score <- if (n > 0) (w + 0.5 * d) / n else NaN
-  dec <- as.integer(round(w + l)); kk <- as.integer(round(w))
+  dec <- as.integer(round(w + l))
+  kk <- as.integer(round(w))
   p <- NaN
   if (dec > 0L) {
     tail <- 0

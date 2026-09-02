@@ -15,7 +15,8 @@
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' Perturb(V, V)
 Perturb <- function(x, y, total = 1) {
-  x <- .t1_vec(x); y <- .t1_vec(y)
+  x <- .t1_vec(x)
+  y <- .t1_vec(y)
   if (length(x) != length(y)) stop("x and y must have the same number of parts")
   if (any(x <= 0) || any(y <= 0)) stop("compositions must be strictly positive")
   p <- x * y

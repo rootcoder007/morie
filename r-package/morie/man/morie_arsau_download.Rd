@@ -26,7 +26,7 @@ fetches must be reproducible across CRAN test environments before
 the wrapper is exposed.  Stubbed for now.
 }
 \examples{
-\donttest{
+\dontrun{
 path <- morie_arsau_download(tempdir())
 }
 }

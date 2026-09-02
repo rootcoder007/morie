@@ -324,7 +324,8 @@ gp_posterior_gradient <- function(X, y, xs, kernel = "matern52", amplitude = 1.0
   mu <- m + sum(ks * alpha)
   var <- max(k(q, q, amplitude, length_scale) - sum(ks * v), 0.0)
   sd <- sqrt(var)
-  gmu <- numeric(d); gsd <- numeric(d)
+  gmu <- numeric(d)
+  gsd <- numeric(d)
   for (dd in seq_len(d)) {
     dk <- numeric(n)
     for (i in seq_len(n)) {
@@ -421,7 +422,9 @@ maximise_acquisition <- function(X, y, best, box, acq = "ei", kernel = "matern52
   }
   clip <- function(pt) mapply(function(v, b) min(max(v, b[1]), b[2]), pt, box)
 
-  best_pt <- NULL; best_val <- -Inf; evals <- 0L
+  best_pt <- NULL
+  best_val <- -Inf
+  evals <- 0L
   for (s0 in starts) {
     pt <- as.numeric(s0)
     pt <- mapply(function(v, b) min(max(v, b[1]), b[2]), pt, box)
@@ -441,7 +444,10 @@ maximise_acquisition <- function(X, y, best, box, acq = "ei", kernel = "matern52
         cval <- score(cand)
         evals <- evals + 1L
         if (cval > val + 1e-15) {
-          pt <- cand; val <- cval; step <- t * 1.3; moved <- TRUE
+          pt <- cand
+          val <- cval
+          step <- t * 1.3
+          moved <- TRUE
           break
         }
         t <- t * 0.5
@@ -449,7 +455,8 @@ maximise_acquisition <- function(X, y, best, box, acq = "ei", kernel = "matern52
       if (!moved) break
     }
     if (val > best_val) {
-      best_pt <- pt; best_val <- val
+      best_pt <- pt
+      best_val <- val
     }
   }
   list(x = best_pt, acq = best_val, n_starts = length(starts), evaluations = evals)
@@ -608,13 +615,15 @@ bayopt <- function(f, bounds, n_iter = 20, n_init = 5, acq = "ei",
                                   amplitude, length_scale, noise,
                                   kappa, xi, n_starts = n_starts,
                                   rnd = rnd)
-      x_new <- got$x; a_val <- got$acq
+      x_new <- got$x
+      a_val <- got$acq
     } else {
       cand <- lapply(seq_len(as.integer(n_candidates)), function(i) draw())
       post <- gp_posterior(X, Y, cand, kernel, amplitude, length_scale, noise)
       scores <- sapply(seq_along(cand), function(i) acquire(post$mean[i], post$sd[i], best, acq, kappa, xi))
       k <- which.max(scores)
-      x_new <- cand[[k]]; a_val <- scores[k]
+      x_new <- cand[[k]]
+      a_val <- scores[k]
     }
     X[[length(X) + 1L]] <- x_new
     Y <- c(Y, as.numeric(f(x_new)))

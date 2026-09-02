@@ -51,7 +51,5 @@ Toronto Police Service dataset.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Firearms
 }
 \examples{
-\donttest{
 morie_datasets_tps_miscellaneous_firearms()
-}
 }

@@ -184,7 +184,8 @@ morie_glm <- function(y, X, family = "binomial", add_intercept = TRUE,
     ll <- -0.5 * n * (log(2 * pi * s2) + 1)
     aic <- -2 * ll + 2 * (p + 1)
   } else {
-    ll <- NA_real_; aic <- NA_real_
+    ll <- NA_real_
+    aic <- NA_real_
   }
 
   list(coef = beta, se = se, statistic = stat, statistic_name = stat_name,

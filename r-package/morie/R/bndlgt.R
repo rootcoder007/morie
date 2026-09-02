@@ -29,7 +29,10 @@ Bndlgt <- function(y, D, X) {
   xv <- unlist(X)
   n <- length(z$y)
   if (length(xv) != n) stop("Bndlgt: X must have one value per unit")
-  p1lo <- 0; p1hi <- 0; p0lo <- 0; p0hi <- 0
+  p1lo <- 0
+  p1hi <- 0
+  p0lo <- 0
+  p0hi <- 0
   grp <- unique(xv)
   for (g in grp) {
     sel <- xv == g
@@ -37,8 +40,10 @@ Bndlgt <- function(y, D, X) {
     a1 <- .bnd_wc_arm(cm$m1, cm$p1, 0, 1)
     a0 <- .bnd_wc_arm(cm$m0, cm$p0, 0, 1)
     w <- sum(sel) / n
-    p1lo <- p1lo + w * a1[1]; p1hi <- p1hi + w * a1[2]
-    p0lo <- p0lo + w * a0[1]; p0hi <- p0hi + w * a0[2]
+    p1lo <- p1lo + w * a1[1]
+    p1hi <- p1hi + w * a1[2]
+    p0lo <- p0lo + w * a0[1]
+    p0hi <- p0hi + w * a0[2]
   }
   odds <- function(p) if (p <= 0) 0 else if (p >= 1) Inf else p / (1 - p)
   lo <- if (odds(p0hi) > 0) odds(p1lo) / odds(p0hi) else 0

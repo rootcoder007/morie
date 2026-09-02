@@ -45,9 +45,11 @@
 .tqlld_gaussian_cells <- function(bounds, lo, hi, n_grid) {
   edges <- c(lo, bounds, hi)
   m <- length(edges) - 1L
-  mass <- numeric(m); mom <- numeric(m)
+  mass <- numeric(m)
+  mom <- numeric(m)
   for (k in seq_len(m)) {
-    a <- edges[k]; b <- edges[k + 1L]
+    a <- edges[k]
+    b <- edges[k + 1L]
     if (b <= a) next
     cells <- max(2L, as.integer(n_grid * (b - a) / (hi - lo)) + 2L)
     h <- (b - a) / cells
@@ -120,7 +122,8 @@ morie_tqlld_lloyd_max_codebook <- function(levels = 4L,
       xs[min(length(xs), as.integer((k + 0.5) * length(xs) / N) + 1L)],
       numeric(1))
   } else {
-    LO <- -8; HI <- 8
+    LO <- -8
+    HI <- 8
     cb <- -3 + 6 * (seq_len(N) - 0.5) / N
   }
 
@@ -156,7 +159,8 @@ morie_tqlld_lloyd_max_codebook <- function(levels = 4L,
     hist <- c(hist, dist)
     shift <- max(abs(new - cb))
     cb <- new
-    if (shift <= tol || abs(prev - dist) <= tol) { converged <- TRUE; break }
+    if (shift <= tol || abs(prev - dist) <= tol) { converged <- TRUE
+    break }
     prev <- dist
   }
   cb <- sort(cb)
@@ -178,12 +182,16 @@ morie_tqlld_quantize_with_codebook <- function(x, codebook) {
   cb <- as.numeric(codebook)
   if (length(cb) == 0L) stop("quantize_with_codebook: codebook is empty")
   xv <- as.numeric(x)
-  idx <- integer(length(xv)); val <- numeric(length(xv))
+  idx <- integer(length(xv))
+  val <- numeric(length(xv))
   for (i in seq_along(xv)) {
-    v <- xv[i]; best <- 1L; bd <- abs(v - cb[1L])
+    v <- xv[i]
+    best <- 1L
+    bd <- abs(v - cb[1L])
     for (k in seq_along(cb)[-1L]) {
       d <- abs(v - cb[k])
-      if (d < bd) { bd <- d; best <- k }
+      if (d < bd) { bd <- d
+      best <- k }
     }
     idx[i] <- best - 1L
     val[i] <- cb[best]

@@ -23,10 +23,12 @@ LinConv <- function(x, h, causal = TRUE) {
   # causality assumed as the book states under eq (3.37).  eq (3.39)
   # reads the same sum as delayed, weighted copies of h; those copies
   # are returned so the overlap of Figure 3.19 is visible.
-  xs <- as.numeric(x); hs <- as.numeric(h)
+  xs <- as.numeric(x)
+  hs <- as.numeric(h)
   if (!length(xs) || !length(hs))
     stop("both sequences need at least one sample")
-  n <- length(xs); m <- length(hs)
+  n <- length(xs)
+  m <- length(hs)
   y <- .morie_rg_conv(xs, hs)
   swapped <- .morie_rg_conv(hs, xs)
   contributions <- matrix(0, nrow = n, ncol = n + m - 1L)
@@ -53,7 +55,9 @@ LsiSer <- function(x, h1, h2) {
   # eqs (3.43)-(3.45): s = x*h1, y = s*h2 = x*h, h = h1*h2.  One method,
   # so one function; the equivalence in eq (3.44) is measured, not
   # asserted -- filtering twice is compared against filtering once with h.
-  xs <- as.numeric(x); a <- as.numeric(h1); b <- as.numeric(h2)
+  xs <- as.numeric(x)
+  a <- as.numeric(h1)
+  b <- as.numeric(h2)
   if (!length(xs) || !length(a) || !length(b))
     stop("input and both impulse responses need samples")
   s <- .morie_rg_conv(xs, a)
@@ -100,12 +104,15 @@ LsiPar <- function(x, h1, h2) {
   # eqs (3.46)-(3.49): s1 = x*h1, s2 = x*h2, y = s1 + s2 = x*(h1+h2).
   # The shorter response is zero-extended before the addition; truncating
   # instead would silently drop the tail of the longer filter.
-  xs <- as.numeric(x); a <- as.numeric(h1); b <- as.numeric(h2)
+  xs <- as.numeric(x)
+  a <- as.numeric(h1)
+  b <- as.numeric(h2)
   if (!length(xs) || !length(a) || !length(b))
     stop("input and both impulse responses need samples")
   m <- max(length(a), length(b))
   h <- c(a, numeric(m - length(a))) + c(b, numeric(m - length(b)))
-  s1 <- .morie_rg_conv(xs, a); s2 <- .morie_rg_conv(xs, b)
+  s1 <- .morie_rg_conv(xs, a)
+  s2 <- .morie_rg_conv(xs, b)
   ny <- max(length(s1), length(s2))
   y <- c(s1, numeric(ny - length(s1))) + c(s2, numeric(ny - length(s2)))
   direct <- .morie_rg_conv(xs, h)
@@ -126,7 +133,8 @@ LsiPar <- function(x, h1, h2) {
 LsiPar2 <- function(x, h2) {
   # eq (3.47): identical in form to eq (3.46) -- both branches of a
   # parallel structure see the same input.
-  xs <- as.numeric(x); b <- as.numeric(h2)
+  xs <- as.numeric(x)
+  b <- as.numeric(h2)
   if (!length(xs) || !length(b))
     stop("input and impulse response need samples")
   out <- .morie_rg_conv(xs, b)
@@ -167,7 +175,8 @@ LtiProd <- function(x, h, s = NULL, omega = NULL, dt = 1) {
   # eqs (3.50), (3.53): convolution in time is multiplication in the s
   # and omega domains.  s = j omega recovers the frequency-domain form,
   # so one function covers both.
-  xs <- as.numeric(x); hs <- as.numeric(h)
+  xs <- as.numeric(x)
+  hs <- as.numeric(h)
   if (!length(xs) || !length(hs))
     stop("both signals need at least one sample")
   if (is.null(s) == is.null(omega)) stop("give exactly one of s, omega")
@@ -234,7 +243,8 @@ AmSig <- function(x, fc, fs, conventional = FALSE, depth = 1) {
   # it is available under conventional=TRUE rather than substituted.
   xs <- as.numeric(x)
   if (!length(xs)) stop("need at least one sample")
-  fsv <- as.numeric(fs); fcv <- as.numeric(fc)
+  fsv <- as.numeric(fs)
+  fcv <- as.numeric(fc)
   if (fsv <= 0) stop("fs must be positive")
   if (!(fcv > 0 && fcv < fsv / 2))
     stop(sprintf("the carrier must satisfy 0 < fc < fs/2, got fc=%g with fs=%g",
@@ -271,7 +281,8 @@ FmSig <- function(m, fc, fs, kf = 1, amplitude = 1) {
   # half a sample of m at each end, which drifts over a long record.
   ms <- as.numeric(m)
   if (!length(ms)) stop("need at least one sample")
-  fsv <- as.numeric(fs); fcv <- as.numeric(fc)
+  fsv <- as.numeric(fs)
+  fcv <- as.numeric(fc)
   if (fsv <= 0) stop("fs must be positive")
   if (!(fcv > 0 && fcv < fsv / 2))
     stop("the carrier must satisfy 0 < fc < fs/2")

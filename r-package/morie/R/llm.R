@@ -179,10 +179,8 @@ morie_llm_probe_ollama <- function(timeout = 2) {
 #' @param timeout Seconds. Default 120.
 #' @return Parsed JSON list (the response body).
 #' @examples
-#' \donttest{
 #' msgs <- list(list(role = "user", content = "Say hello"))
 #' res <- try(morie_llm_request_completion("http://localhost:11434", "llama3.2", msgs))
-#' }
 #' @export
 morie_llm_request_completion <- function(base_url, model, messages,
                                          api_key = NULL, timeout = 120) {
@@ -667,12 +665,10 @@ morie_llm_ask_multi <- function(messages, providers = NULL,
 #'   \code{quantization}. Zero rows when the server is unreachable or serves
 #'   no models (never errors), so it doubles as a connectivity test.
 #' @examples
-#' \donttest{
 #' # Point at your own Ollama server, then see what it serves:
 #' Sys.setenv(OLLAMA_HOST = "http://localhost:11434")
 #' models <- morie_llm_ollama_models()
 #' models$name
-#' }
 #' @export
 morie_llm_ollama_models <- function(base = .morie_llm_ollama_base(),
                                     timeout = 5) {

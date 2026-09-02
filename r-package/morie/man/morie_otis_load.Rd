@@ -33,9 +33,7 @@ To refresh the cache from the canonical
 repository script \code{scripts/export_otis_csv.R}.
 }
 \examples{
-\dontrun{
-  df <- morie_otis_load()
-}
+df <- morie_otis_load()
 }
 \seealso{
 \code{\link{morie_cache_dir}}.

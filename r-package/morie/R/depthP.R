@@ -38,7 +38,10 @@ DepthP <- function(x, X, n_dir = 180) {
     dirs <- lapply(0:(nd - 1L), function(t)
       c(cos(pi * t / nd), sin(pi * t / nd)))
   } else stop("projection depth here supports d = 1 or 2")
-  worst <- 0; wmed <- NaN; wmad <- NaN; wdir <- 0L
+  worst <- 0
+  wmed <- NaN
+  wmad <- NaN
+  wdir <- 0L
   for (q in seq_along(dirs)) {
     u <- dirs[[q]]
     proj <- numeric(n)
@@ -53,7 +56,10 @@ DepthP <- function(x, X, n_dir = 180) {
     mad <- .s03mad(proj)
     if (mad <= 0) next
     o <- abs(pu - med) / mad
-    if (o > worst) { worst <- o; wmed <- med; wmad <- mad; wdir <- q - 1L }
+    if (o > worst) { worst <- o
+    wmed <- med
+    wmad <- mad
+    wdir <- q - 1L }
   }
   .t1_result(estimate = 1 / (1 + worst), depth = 1 / (1 + worst),
              outlyingness = worst, med = wmed, mad = wmad,

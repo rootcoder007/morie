@@ -58,8 +58,11 @@ FormFactor <- function(x) {
     mu <- .morie_fsum(v) / length(v)
     .morie_fsum((v - mu)^2) / length(v)
   }
-  d1 <- diff(xs); d2 <- diff(d1)
-  a0 <- pvar(xs); a1 <- pvar(d1); a2 <- pvar(d2)
+  d1 <- diff(xs)
+  d2 <- diff(d1)
+  a0 <- pvar(xs)
+  a1 <- pvar(d1)
+  a2 <- pvar(d2)
   if (a0 <= 0)
     stop("a constant signal has zero activity; mobility and form factor are undefined")
   mob <- sqrt(a1 / a0)
@@ -83,13 +86,16 @@ FormFactor <- function(x) {
 #' @export
 .morie_rg_turns <- function(seg, threshold) {
   if (length(seg) < 3L) return(list(turns = 0L, positions = integer(0)))
-  turns <- 0L; idx <- integer(0)
-  last <- seg[1]; direction <- 0L
+  turns <- 0L
+  idx <- integer(0)
+  last <- seg[1]
+  direction <- 0L
   for (i in 2:length(seg)) {
     step <- seg[i] - seg[i - 1L]
     if (step == 0) next
     d <- if (step > 0) 1L else -1L
-    if (direction == 0L) { direction <- d; next }
+    if (direction == 0L) { direction <- d
+    next }
     if (d != direction) {
       if (abs(seg[i - 1L] - last) > threshold) {
         turns <- turns + 1L
@@ -155,7 +161,8 @@ Snr <- function(signal, noise, definition = "power") {
   # interchangeable: the power ratio (10 log10) and the peak-to-peak
   # amplitude over the noise RMS (20 log10, roughly 9 dB higher for a
   # sinusoid).  Both are returned; snr_db is the one named.
-  s <- as.numeric(signal); e <- as.numeric(noise)
+  s <- as.numeric(signal)
+  e <- as.numeric(noise)
   if (!length(s) || !length(e))
     stop("both signal and noise need at least one sample")
   if (!definition %in% c("power", "peak"))
@@ -188,12 +195,14 @@ SnrFilt <- function(clean, filtered) {
   # known clean reference.  This penalises distortion as well as leftover
   # noise -- comparing only noise power would flatter an over-smoothing
   # filter.
-  cc <- as.numeric(clean); ff <- as.numeric(filtered)
+  cc <- as.numeric(clean)
+  ff <- as.numeric(filtered)
   if (length(cc) != length(ff))
     stop("clean and filtered must have the same length")
   if (!length(cc)) stop("need at least one sample")
   resid <- ff - cc
-  ps <- .morie_fsum(cc * cc); pr <- .morie_fsum(resid * resid)
+  ps <- .morie_fsum(cc * cc)
+  pr <- .morie_fsum(resid * resid)
   list(snr_db = if (pr <= 0) Inf else 10 * log10(ps / pr),
        residual_power = pr, signal_power = ps, residual = resid,
        n = length(cc), method = "Rangayyan (2024) Section 3.2.1")
@@ -287,16 +296,19 @@ FdPsd <- function(psd, freqs, fmin = NULL, fmax = NULL) {
   # signal H = (beta-1)/2, FD = (5-beta)/2.  beta is MINUS the slope of
   # log10 P against log10 f.  The DC bin is dropped: log(0) is undefined
   # and DC carries the mean, not the scaling.
-  p <- as.numeric(psd); f <- as.numeric(freqs)
+  p <- as.numeric(psd)
+  f <- as.numeric(freqs)
   if (length(p) != length(f)) stop("psd and freqs must have the same length")
   keep <- f > 0 & p > 0
   if (!is.null(fmin)) keep <- keep & f >= fmin
   if (!is.null(fmax)) keep <- keep & f <= fmax
   if (sum(keep) < 3L)
     stop("need at least three positive-frequency bins in the band to fit a slope")
-  lx <- log10(f[keep]); ly <- log10(p[keep])
+  lx <- log10(f[keep])
+  ly <- log10(p[keep])
   n <- length(lx)
-  mx <- .morie_fsum(lx) / n; my <- .morie_fsum(ly) / n
+  mx <- .morie_fsum(lx) / n
+  my <- .morie_fsum(ly) / n
   sxx <- .morie_fsum((lx - mx)^2)
   if (sxx <= 0) stop("all retained bins share one frequency")
   slope <- .morie_fsum((lx - mx) * (ly - my)) / sxx
@@ -330,7 +342,8 @@ FdPsd <- function(psd, freqs, fmin = NULL, fmax = NULL) {
   k <- 0:(m %/% 2L)
   p <- vapply(k, function(kk) {
     ang <- -2 * pi * kk * idx / m
-    re <- .morie_fsum(seg * cos(ang)); im <- .morie_fsum(seg * sin(ang))
+    re <- .morie_fsum(seg * cos(ang))
+    im <- .morie_fsum(seg * sin(ang))
     (re * re + im * im) / m
   }, numeric(1))
   list(psd = p, freqs = k * fs / m)
@@ -361,7 +374,8 @@ FdVag <- function(x, fs, fmin = 100, fmax = 500, nperseg = NULL) {
   m <- if (is.null(nperseg)) length(xs) else min(as.integer(nperseg), length(xs))
   pg <- .morie_rg_periodogram(xs[seq_len(m)], fsv)
   r <- FdPsd(pg$psd, pg$freqs, fmin = fmin, fmax = fmax)
-  r$fs <- fsv; r$nperseg <- m
+  r$fs <- fsv
+  r$nperseg <- m
   r$method <- "Rangayyan (2024) Sections 6.6.2-6.6.3"
   r
 }

@@ -16,12 +16,14 @@
 #' @return A list with \code{lags}, \code{values}.
 #' @export
 .morie_rg_xcorr <- function(x, y, maxlag = NULL) {
-  n <- length(x); m <- length(y)
+  n <- length(x)
+  m <- length(y)
   lo <- if (is.null(maxlag)) -(n - 1L) else -as.integer(maxlag)
   hi <- if (is.null(maxlag)) (m - 1L) else as.integer(maxlag)
   lags <- lo:hi
   vals <- vapply(lags, function(k) {
-    i <- seq_len(n); j <- i + k
+    i <- seq_len(n)
+    j <- i + k
     keep <- j >= 1L & j <= m
     if (!any(keep)) 0 else .morie_fsum(x[i[keep]] * y[j[keep]])
   }, numeric(1))
@@ -44,7 +46,8 @@ DotProd <- function(x, y, subtract_mean = FALSE) {
   # it normalizes to.  The book notes the means may be removed first
   # (eq 3.97), which is a DIFFERENT quantity -- without removal gamma is
   # the cosine between the raw vectors, with it, Pearson's r.
-  xs <- as.numeric(x); ys <- as.numeric(y)
+  xs <- as.numeric(x)
+  ys <- as.numeric(y)
   if (length(xs) != length(ys)) stop("x and y must have the same length")
   if (!length(xs)) stop("need at least one sample")
   if (subtract_mean) {
@@ -52,7 +55,8 @@ DotProd <- function(x, y, subtract_mean = FALSE) {
     ys <- ys - .morie_fsum(ys) / length(ys)
   }
   dp <- .morie_fsum(xs * ys)
-  ex <- .morie_fsum(xs * xs); ey <- .morie_fsum(ys * ys)
+  ex <- .morie_fsum(xs * xs)
+  ey <- .morie_fsum(ys * ys)
   list(dot_product = dp,
        gamma = if (ex > 0 && ey > 0) dp / sqrt(ex * ey) else NULL,
        energy_x = ex, energy_y = ey, n = length(xs),
@@ -77,7 +81,8 @@ ContProj <- function(x, y, t = NULL, dt = 1) {
   # the discrete inner product SCALED BY dt; dropping the dt turns an
   # integral into a sum and leaves the answer wrong by a factor of the
   # sampling interval.
-  xs <- as.numeric(x); ys <- as.numeric(y)
+  xs <- as.numeric(x)
+  ys <- as.numeric(y)
   if (length(xs) != length(ys)) stop("x and y must have the same length")
   if (length(xs) < 2L) stop("need at least two samples to integrate")
   ts <- if (is.null(t)) (seq_along(xs) - 1) * as.numeric(dt) else as.numeric(t)
@@ -108,7 +113,8 @@ CcfOuter <- function(x, y, order, tol = 1e-3) {
   # Wiener and RLS normal equations.  Under stationarity the entries
   # depend only on i - j; that Toeplitz structure is MEASURED, and the
   # deviation is the number to look at, not the boolean.
-  xs <- as.numeric(x); ys <- as.numeric(y)
+  xs <- as.numeric(x)
+  ys <- as.numeric(y)
   if (length(xs) != length(ys)) stop("x and y must have the same length")
   n <- as.integer(order)
   if (n < 1L) stop("order must be at least 1")
@@ -121,12 +127,14 @@ CcfOuter <- function(x, y, order, tol = 1e-3) {
   }
   dev <- 0
   for (d in (-(n - 1L)):(n - 1L)) {
-    idx <- seq_len(n); jdx <- idx - d
+    idx <- seq_len(n)
+    jdx <- idx - d
     keep <- jdx >= 1L & jdx <= n
     band <- mat[cbind(idx[keep], jdx[keep])]
     if (length(band) > 1L) dev <- max(dev, max(abs(band - mean(band))))
   }
-  scale <- max(abs(mat)); if (scale == 0) scale <- 1
+  scale <- max(abs(mat))
+  if (scale == 0) scale <- 1
   list(theta = mat, order = n, n_positions = m, toeplitz_deviation = dev,
        relative_deviation = dev / scale, tol = as.numeric(tol),
        toeplitz = dev <= as.numeric(tol) * scale,
@@ -149,11 +157,13 @@ Csd <- function(x, y, fs = 1) {
   # CSD -- the transform of the CCF and the product -- are computed and
   # compared; they agree only for the full CIRCULAR lag range, since a
   # truncated CCF gives a smoothed CSD, a different estimator.
-  xs <- as.numeric(x); ys <- as.numeric(y)
+  xs <- as.numeric(x)
+  ys <- as.numeric(y)
   if (length(xs) != length(ys)) stop("x and y must have the same length")
   n <- length(xs)
   if (n < 2L) stop("need at least two samples")
-  fx <- .morie_rg_dft(xs); fy <- .morie_rg_dft(ys)
+  fx <- .morie_rg_dft(xs)
+  fy <- .morie_rg_dft(ys)
   prod <- complex(real = fx$re, imaginary = fx$im) *
     Conj(complex(real = fy$re, imaginary = fy$im))
   idx <- seq_len(n) - 1L
@@ -162,7 +172,8 @@ Csd <- function(x, y, fs = 1) {
   fc <- .morie_rg_dft(circ)
   viaccf <- complex(real = fc$re, imaginary = -fc$im)
   gap <- max(Mod(prod - viaccf))
-  scale <- max(Mod(prod)); if (scale == 0) scale <- 1
+  scale <- max(Mod(prod))
+  if (scale == 0) scale <- 1
   list(csd = prod, via_ccf = viaccf, ccf_circular = circ,
        freqs = idx * as.numeric(fs) / n, max_difference = gap,
        agrees = gap <= 1e-8 * scale, n = n,
@@ -189,7 +200,8 @@ Cohere <- function(x, y, fs = 1, nperseg = NULL, noverlap = NULL) {
   # incorrect; each density must be estimated by AVERAGING over several
   # observations.  So a single segment is refused rather than returning
   # the meaningless all-ones answer.
-  xs <- as.numeric(x); ys <- as.numeric(y)
+  xs <- as.numeric(x)
+  ys <- as.numeric(y)
   if (length(xs) != length(ys)) stop("x and y must have the same length")
   n <- length(xs)
   m <- if (is.null(nperseg)) max(8L, n %/% 8L) else as.integer(nperseg)
@@ -203,11 +215,14 @@ Cohere <- function(x, y, fs = 1, nperseg = NULL, noverlap = NULL) {
                        "a coherence of 1 at every frequency"),
                  length(starts), m))
   half <- m %/% 2L + 1L
-  sxx <- numeric(half); syy <- numeric(half)
+  sxx <- numeric(half)
+  syy <- numeric(half)
   sxy <- complex(half)
   for (s in starts) {
-    a <- xs[s:(s + m - 1L)]; b <- ys[s:(s + m - 1L)]
-    fa <- .morie_rg_dft(a - mean(a)); fb <- .morie_rg_dft(b - mean(b))
+    a <- xs[s:(s + m - 1L)]
+    b <- ys[s:(s + m - 1L)]
+    fa <- .morie_rg_dft(a - mean(a))
+    fb <- .morie_rg_dft(b - mean(b))
     A <- complex(real = fa$re[seq_len(half)],
                  imaginary = fa$im[seq_len(half)])
     B <- complex(real = fb$re[seq_len(half)],
@@ -217,7 +232,9 @@ Cohere <- function(x, y, fs = 1, nperseg = NULL, noverlap = NULL) {
     sxy <- sxy + A * Conj(B)
   }
   kn <- length(starts)
-  sxx <- sxx / kn; syy <- syy / kn; sxy <- sxy / kn
+  sxx <- sxx / kn
+  syy <- syy / kn
+  sxy <- sxy / kn
   den <- sxx * syy
   gam <- ifelse(den > 0, sqrt(Mod(sxy)^2 / den), 0)
   list(coherence = gam, phase = Arg(sxy), sxx = sxx, syy = syy, sxy = sxy,
@@ -266,8 +283,10 @@ Template <- function(x, ref, threshold = NULL, subtract_mean = TRUE) {
   # the template, which is what makes it a correlation rather than a
   # convolution -- a large low-frequency excursion cannot produce a
   # spurious match because the normalization divides the amplitude out.
-  xs <- as.numeric(x); ts <- as.numeric(ref)
-  n <- length(xs); m <- length(ts)
+  xs <- as.numeric(x)
+  ts <- as.numeric(ref)
+  n <- length(xs)
+  m <- length(ts)
   if (m < 2L) stop("the template needs at least two samples")
   if (n < m) stop("the signal is shorter than the template")
   if (subtract_mean) ts <- ts - mean(ts)
@@ -287,7 +306,8 @@ Template <- function(x, ref, threshold = NULL, subtract_mean = TRUE) {
   if (!is.null(threshold)) {
     thr <- as.numeric(threshold)
     above <- gam >= thr
-    hits <- integer(0); i <- 1L
+    hits <- integer(0)
+    i <- 1L
     while (i <= length(gam)) {
       if (above[i]) {
         j <- i
@@ -347,7 +367,8 @@ MfOutput <- function(x, h, dt = 1) {
   # eq (4.34), computed as y = x * h: exact for a finite record, where
   # the frequency-domain route would need fine enough sampling to avoid
   # wrap-around.  eq (4.38) reads M_y off the peak returned here.
-  xs <- as.numeric(x); hs <- as.numeric(h)
+  xs <- as.numeric(x)
+  hs <- as.numeric(h)
   if (!length(xs) || !length(hs))
     stop("both signals need at least one sample")
   step <- as.numeric(dt)
@@ -427,7 +448,9 @@ MfPeak <- function(X, H, freqs, t0) {
   # eq (4.38): M_y = |y(t0)|, the numerator of the SNR everything else
   # maximizes.  It is a MAGNITUDE, so the phase of X H at t0 is what the
   # optimal filter of eq (4.48) is chosen to align.
-  Xs <- as.complex(X); Hs <- as.complex(H); fv <- as.numeric(freqs)
+  Xs <- as.complex(X)
+  Hs <- as.complex(H)
+  fv <- as.numeric(freqs)
   if (!(length(Xs) == length(Hs) && length(Hs) == length(fv)))
     stop("X, H and freqs must have the same length")
   if (length(fv) < 2L)
@@ -456,7 +479,8 @@ MfSnr <- function(my, noise_power) {
   # SNR.  The matched filter maximizes the output at ONE INSTANT, which
   # is the right criterion for a known transient and the wrong one for a
   # continuous signal.
-  m <- as.numeric(my); p <- as.numeric(noise_power)
+  m <- as.numeric(my)
+  p <- as.numeric(noise_power)
   if (p <= 0) stop("the output noise power must be positive")
   ratio <- m * m / p
   list(snr = ratio, snr_db = if (ratio > 0) 10 * log10(ratio) else -Inf,
@@ -490,7 +514,8 @@ SigEnergy <- function(x = NULL, t = NULL, dt = 1, X = NULL, freqs = NULL) {
   }
   if (!is.null(X)) {
     if (is.null(freqs)) stop("give the frequency grid alongside X")
-    Xs <- as.complex(X); fv <- as.numeric(freqs)
+    Xs <- as.complex(X)
+    fv <- as.numeric(freqs)
     if (length(Xs) != length(fv))
       stop("X and freqs must have the same length")
     out$energy_freq <- .morie_rg_gridint(Mod(Xs)^2, fv)
@@ -521,7 +546,9 @@ MfRatio <- function(X, H, freqs, t0, noise_power) {
   # eq (4.41).  Dividing by the constant E_x is what turns eq (4.39) into
   # something Schwarz's inequality applies to; by eq (4.46) the ratio
   # cannot exceed 2/P_eta_i, with equality exactly at eq (4.48).
-  Xs <- as.complex(X); Hs <- as.complex(H); fv <- as.numeric(freqs)
+  Xs <- as.complex(X)
+  Hs <- as.complex(H)
+  fv <- as.numeric(freqs)
   if (!(length(Xs) == length(Hs) && length(Hs) == length(fv)))
     stop("X, H and freqs must have the same length")
   if (length(fv) < 2L) stop("need at least two frequency points")
@@ -532,7 +559,8 @@ MfRatio <- function(X, H, freqs, t0, noise_power) {
   ex <- .morie_rg_gridint(Mod(Xs)^2, fv)
   den <- (p / 2) * eh * ex
   if (den <= 0) stop("the denominator of eq. (4.41) vanishes")
-  ratio <- num / den; bound <- 2 / p
+  ratio <- num / den
+  bound <- 2 / p
   list(ratio = ratio, bound = bound,
        optimality = if (bound > 0) ratio / bound else NULL,
        numerator = num, energy_h = eh, energy_x = ex,
@@ -551,7 +579,9 @@ MfRatio <- function(X, H, freqs, t0, noise_power) {
 SchwarzC <- function(A, B, grid) {
   # eq (4.42), with equality exactly when A = K B* -- which, applied with
   # A = H and B = X exp(+j2 pi f t0), IS the matched-filter derivation.
-  As <- as.complex(A); Bs <- as.complex(B); g <- as.numeric(grid)
+  As <- as.complex(A)
+  Bs <- as.complex(B)
+  g <- as.numeric(grid)
   if (!(length(As) == length(Bs) && length(Bs) == length(g)))
     stop("A, B and the grid must have the same length")
   if (length(g) < 2L) stop("need at least two grid points to integrate")
@@ -560,7 +590,8 @@ SchwarzC <- function(A, B, grid) {
                    imaginary = .morie_rg_gridint(Im(prod), g))
   ea <- .morie_rg_gridint(Mod(As)^2, g)
   eb <- .morie_rg_gridint(Mod(Bs)^2, g)
-  lhs <- Mod(inner)^2; rhs <- ea * eb
+  lhs <- Mod(inner)^2
+  rhs <- ea * eb
   keep <- Mod(Bs) > 1e-300
   ks <- if (any(keep)) As[keep] / Conj(Bs[keep]) else complex(0)
   k <- if (length(ks)) ks[1] else NULL
@@ -585,14 +616,17 @@ SchwarzC <- function(A, B, grid) {
 SchwarzR <- function(a, b, grid = NULL, dt = 1) {
   # eq (4.43), the real case of eq (4.42); equality when a = K b, the two
   # functions collinear as vectors in function space.
-  av <- as.numeric(a); bv <- as.numeric(b)
+  av <- as.numeric(a)
+  bv <- as.numeric(b)
   if (length(av) != length(bv)) stop("a and b must have the same length")
   if (length(av) < 2L) stop("need at least two samples to integrate")
   g <- if (is.null(grid)) (seq_along(av) - 1) * as.numeric(dt) else
     as.numeric(grid)
   inner <- .morie_rg_gridint(av * bv, g)
-  ea <- .morie_rg_gridint(av * av, g); eb <- .morie_rg_gridint(bv * bv, g)
-  lhs <- inner * inner; rhs <- ea * eb
+  ea <- .morie_rg_gridint(av * av, g)
+  eb <- .morie_rg_gridint(bv * bv, g)
+  lhs <- inner * inner
+  rhs <- ea * eb
   keep <- abs(bv) > 1e-300
   ks <- if (any(keep)) av[keep] / bv[keep] else numeric(0)
   k <- if (length(ks)) ks[1] else NULL
@@ -615,11 +649,13 @@ CauchySch <- function(a, b) {
   # eq (4.44): |a.b| <= |a||b|.  The ratio of the two sides is the cosine
   # between the vectors, which is exactly the correlation coefficient of
   # eq (4.25) on mean-removed signals.
-  av <- as.numeric(a); bv <- as.numeric(b)
+  av <- as.numeric(a)
+  bv <- as.numeric(b)
   if (length(av) != length(bv)) stop("a and b must have the same length")
   if (!length(av)) stop("need at least one component")
   dp <- .morie_fsum(av * bv)
-  na <- sqrt(.morie_fsum(av * av)); nb <- sqrt(.morie_fsum(bv * bv))
+  na <- sqrt(.morie_fsum(av * av))
+  nb <- sqrt(.morie_fsum(bv * bv))
   list(lhs = abs(dp), rhs = na * nb, holds = abs(dp) <= na * nb * (1 + 1e-12),
        cosine = if (na > 0 && nb > 0) dp / (na * nb) else NULL,
        equality = na > 0 && nb > 0 &&
@@ -642,11 +678,13 @@ Triangle <- function(a, b) {
   # It is the statement that no combination of two signals carries more
   # amplitude than their amplitudes sum to -- the reason uncorrelated
   # noise adds in POWER, not in amplitude.
-  av <- as.numeric(a); bv <- as.numeric(b)
+  av <- as.numeric(a)
+  bv <- as.numeric(b)
   if (length(av) != length(bv)) stop("a and b must have the same length")
   if (!length(av)) stop("need at least one component")
   ns <- sqrt(.morie_fsum((av + bv)^2))
-  na <- sqrt(.morie_fsum(av * av)); nb <- sqrt(.morie_fsum(bv * bv))
+  na <- sqrt(.morie_fsum(av * av))
+  nb <- sqrt(.morie_fsum(bv * bv))
   list(lhs = ns, rhs = na + nb, holds = ns <= (na + nb) * (1 + 1e-12),
        equality = abs(ns - (na + nb)) <= 1e-9 * (na + nb + 1),
        norm_sum = ns, norm_a = na, norm_b = nb,
@@ -668,9 +706,11 @@ MfTf <- function(X, freqs, t0, gain = 1) {
   # eq (4.48): H(f) = K X*(f) exp(-j 2 pi f t0).  The CONJUGATE is what
   # cancels the signal's phase so every component arrives in step at t0 --
   # that coherent addition is the whole gain of the method.
-  Xs <- as.complex(X); fv <- as.numeric(freqs)
+  Xs <- as.complex(X)
+  fv <- as.numeric(freqs)
   if (length(Xs) != length(fv)) stop("X and freqs must have the same length")
-  k <- as.numeric(gain); t <- as.numeric(t0)
+  k <- as.numeric(gain)
+  t <- as.numeric(t0)
   ang <- -2 * pi * fv * t
   H <- k * Conj(Xs) * complex(real = cos(ang), imaginary = sin(ang))
   list(H = H, freqs = fv, t0 = t, gain = k, magnitude = Mod(H),
@@ -1239,11 +1279,13 @@ ErpArtifact <- function(epochs, reject = NULL) {
   if (any(vapply(recs, length, integer(1)) != n))
     stop("all epochs must have the same length")
   peaks <- vapply(recs, function(r) max(abs(r)), numeric(1))
-  kept <- seq_len(m); dropped <- integer(0)
+  kept <- seq_len(m)
+  dropped <- integer(0)
   if (!is.null(reject)) {
     thr <- as.numeric(reject)
     if (thr <= 0) stop("the rejection threshold must be positive")
-    kept <- which(peaks <= thr); dropped <- which(peaks > thr) - 1L
+    kept <- which(peaks <= thr)
+    dropped <- which(peaks > thr) - 1L
     if (!length(kept)) stop("every epoch exceeds the rejection threshold")
   }
   k <- length(kept)
@@ -1343,14 +1385,16 @@ CardioResp <- function(ecg_rate, resp, fs, band = c(0.15, 0.40),
   # respiratory sinus arrhythmia is a frequency modulation, so PLV sees
   # it where coherence may not.  Reporting only one is how a nonlinear
   # coupling gets missed.
-  a <- as.numeric(ecg_rate); b <- as.numeric(resp)
+  a <- as.numeric(ecg_rate)
+  b <- as.numeric(resp)
   if (length(a) != length(b))
     stop("the two signals must have the same length")
   n <- length(a)
   if (n < 16L) stop("need at least sixteen samples")
   fsv <- as.numeric(fs)
   if (fsv <= 0) stop("fs must be positive")
-  lo <- band[1]; hi <- band[2]
+  lo <- band[1]
+  hi <- band[2]
   if (!(lo >= 0 && lo < hi && hi <= fsv / 2))
     stop("the band must satisfy 0 <= lo < hi <= fs/2")
   analytic <- function(sig) {
@@ -1372,7 +1416,8 @@ CardioResp <- function(ecg_rate, resp, fs, band = c(0.15, 0.40),
     }, numeric(1))
     complex(real = xr, imaginary = xi)
   }
-  za <- analytic(a); zb <- analytic(b)
+  za <- analytic(a)
+  zb <- analytic(b)
   dphi <- Arg(za) - Arg(zb)
   cre <- .morie_fsum(cos(dphi)) / n
   cim <- .morie_fsum(sin(dphi)) / n

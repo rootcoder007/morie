@@ -49,7 +49,9 @@
 morie_esl_em_gmm <- function(X, k = 2, max_iter = 200L, tol = 1e-6,
                              reg = 1e-6, seed = 0L) {
   X <- if (is.matrix(X)) X else matrix(as.numeric(X), ncol = 1L)
-  n <- nrow(X); p <- ncol(X); k <- as.integer(k)
+  n <- nrow(X)
+  p <- ncol(X)
+  k <- as.integer(k)
   if (k < 1L) stop("k must be at least 1", call. = FALSE)
   if (k > n) stop(sprintf("k=%d exceeds the number of observations (%d)", k, n),
                   call. = FALSE)
@@ -62,11 +64,15 @@ morie_esl_em_gmm <- function(X, k = 2, max_iter = 200L, tol = 1e-6,
     centres <- rbind(centres, X[sample.int(n, 1L, prob = pr), , drop = FALSE])
   }
   mu <- centres
-  S0 <- stats::cov(X); S0 <- matrix(S0, p, p) + reg * diag(p)
+  S0 <- stats::cov(X)
+  S0 <- matrix(S0, p, p) + reg * diag(p)
   sigma <- array(rep(S0, k), dim = c(p, p, k))
   pik <- rep(1 / k, k)
 
-  path <- numeric(0); prev <- -Inf; converged <- FALSE; it <- 0L
+  path <- numeric(0)
+  prev <- -Inf
+  converged <- FALSE
+  it <- 0L
   for (it in seq_len(max_iter)) {
     logp <- matrix(0, n, k)
     for (j in seq_len(k)) {
@@ -82,7 +88,9 @@ morie_esl_em_gmm <- function(X, k = 2, max_iter = 200L, tol = 1e-6,
       stop(sprintf("EM log-likelihood decreased (%.10g -> %.10g); this is a bug",
                    prev, ll), call. = FALSE)
     }
-    if (abs(ll - prev) < tol) { converged <- TRUE; prev <- ll; break }
+    if (abs(ll - prev) < tol) { converged <- TRUE
+    prev <- ll
+    break }
     prev <- ll
     Nk <- colSums(resp) + 1e-300
     pik <- Nk / n
@@ -167,7 +175,8 @@ morie_esl_gaussian_mixture <- function(X, k = 2, newdata = NULL, ...) {
 #' @export
 morie_esl_iwls <- function(X, y, beta0 = NULL, family = "binomial",
                            max_iter = 50L, tol = 1e-8, add_intercept = TRUE) {
-  X <- as.matrix(X); y <- as.numeric(y)
+  X <- as.matrix(X)
+  y <- as.numeric(y)
   if (nrow(X) != length(y)) {
     stop(sprintf("X has %d rows but y has %d", nrow(X), length(y)), call. = FALSE)
   }
@@ -181,26 +190,31 @@ morie_esl_iwls <- function(X, y, beta0 = NULL, family = "binomial",
     stop("poisson y must be non-negative", call. = FALSE)
   }
   if (add_intercept) X <- cbind(1, X)
-  n <- nrow(X); p <- ncol(X)
+  n <- nrow(X)
+  p <- ncol(X)
   beta <- if (is.null(beta0)) numeric(p) else as.numeric(beta0)
   if (length(beta) != p) stop(sprintf("beta0 must have %d entries", p), call. = FALSE)
 
-  converged <- FALSE; it <- 0L
+  converged <- FALSE
+  it <- 0L
   for (it in seq_len(max_iter)) {
     eta <- as.numeric(X %*% beta)
     if (family == "binomial") {
       mu <- 1 / (1 + exp(-pmin(pmax(eta, -500), 500)))
       w <- pmax(mu * (1 - mu), 1e-10)
     } else {
-      mu <- exp(pmin(pmax(eta, -500), 500)); w <- pmax(mu, 1e-10)
+      mu <- exp(pmin(pmax(eta, -500), 500))
+      w <- pmax(mu, 1e-10)
     }
     z <- eta + (y - mu) / w
     WX <- X * w
     new <- tryCatch(solve(crossprod(X, WX), crossprod(WX, z)),
                     error = function(e) qr.solve(crossprod(X, WX), crossprod(WX, z)))
     new <- as.numeric(new)
-    delta <- max(abs(new - beta)); beta <- new
-    if (delta < tol) { converged <- TRUE; break }
+    delta <- max(abs(new - beta))
+    beta <- new
+    if (delta < tol) { converged <- TRUE
+    break }
   }
   eta <- as.numeric(X %*% beta)
   if (family == "binomial") {
@@ -208,7 +222,8 @@ morie_esl_iwls <- function(X, y, beta0 = NULL, family = "binomial",
     w <- pmax(mu * (1 - mu), 1e-10)
     ll <- sum(y * log(mu + 1e-300) + (1 - y) * log(1 - mu + 1e-300))
   } else {
-    mu <- exp(pmin(pmax(eta, -500), 500)); w <- pmax(mu, 1e-10)
+    mu <- exp(pmin(pmax(eta, -500), 500))
+    w <- pmax(mu, 1e-10)
     ll <- sum(y * log(mu + 1e-300) - mu - lgamma(y + 1))
   }
   separated <- family == "binomial" &&
@@ -296,7 +311,9 @@ morie_esl_logistic_reg <- function(X, y, newdata = NULL, threshold = 0.5, ...) {
 #' @export
 morie_esl_cv_score <- function(X, y, model = NULL, k = 5L, loss = "mse",
                                stratify = FALSE, seed = 0L) {
-  X <- as.matrix(X); y <- as.numeric(y); n <- length(y)
+  X <- as.matrix(X)
+  y <- as.numeric(y)
+  n <- length(y)
   if (nrow(X) != n) stop(sprintf("X has %d rows but y has %d", nrow(X), n),
                          call. = FALSE)
   k <- as.integer(k)
@@ -324,9 +341,11 @@ morie_esl_cv_score <- function(X, y, model = NULL, k = 5L, loss = "mse",
     `01` = function(a, b) as.numeric(a != b),
     stop(sprintf("loss must be mse, mae or 01, got '%s'", loss), call. = FALSE))
 
-  pred <- rep(NA_real_, n); scores <- numeric(k)
+  pred <- rep(NA_real_, n)
+  scores <- numeric(k)
   for (j in seq_len(k)) {
-    te <- fold == (j - 1L); tr <- !te
+    te <- fold == (j - 1L)
+    tr <- !te
     if (!any(tr)) stop(sprintf("fold %d leaves no training data", j), call. = FALSE)
     pred[te] <- as.numeric(model(X[tr, , drop = FALSE], y[tr], X[te, , drop = FALSE]))
     scores[j] <- mean(lf(y[te], pred[te]))
@@ -359,21 +378,25 @@ morie_esl_cv_score <- function(X, y, model = NULL, k = 5L, loss = "mse",
 #' sort(morie_esl_sis_screening(X, y, d = 5)$selected)[1:2]
 #' @export
 morie_esl_sis_screening <- function(X, y, d = NULL) {
-  X <- as.matrix(X); y <- as.numeric(y)
-  n <- nrow(X); p <- ncol(X)
+  X <- as.matrix(X)
+  y <- as.numeric(y)
+  n <- nrow(X)
+  p <- ncol(X)
   if (n != length(y)) stop(sprintf("X has %d rows but y has %d", n, length(y)),
                            call. = FALSE)
   if (n < 3L) stop("need at least 3 observations to screen", call. = FALSE)
   d <- if (is.null(d)) min(p, n - 1L) else as.integer(d)
   if (d < 1L || d > p) stop(sprintf("d must be between 1 and p=%d", p), call. = FALSE)
 
-  yc <- y - mean(y); sy <- sqrt(sum(yc^2))
+  yc <- y - mean(y)
+  sy <- sqrt(sum(yc^2))
   Xc <- sweep(X, 2L, colMeans(X), "-")
   sx <- sqrt(colSums(Xc^2))
   omega <- abs(colSums(Xc * yc) / (sx * sy))
   key <- ifelse(is.finite(omega), omega, -Inf)
   ord <- order(-key, seq_len(p))
-  rk <- integer(p); rk[ord] <- seq_len(p) - 1L
+  rk <- integer(p)
+  rk[ord] <- seq_len(p) - 1L
   list(selected = ord[seq_len(d)],
        omega = ifelse(is.finite(omega), omega, NA_real_),
        rank = rk, d = d, dropped = if (d < p) ord[(d + 1L):p] else integer(0),
@@ -401,9 +424,11 @@ morie_esl_weight_decay <- function(weights, lambda_ = 0.01, loss = 0,
   if (lambda_ < 0) stop("lambda_ must be non-negative", call. = FALSE)
   w <- as.numeric(weights)
   if (norm == "l2") {
-    pen <- lambda_ * sum(w^2); grad <- 2 * lambda_ * w
+    pen <- lambda_ * sum(w^2)
+    grad <- 2 * lambda_ * w
   } else if (norm == "l1") {
-    pen <- lambda_ * sum(abs(w)); grad <- lambda_ * sign(w)
+    pen <- lambda_ * sum(abs(w))
+    grad <- lambda_ * sign(w)
   } else {
     stop('norm must be "l2" or "l1"', call. = FALSE)
   }
@@ -514,14 +539,16 @@ morie_esl_wavelet_smooth <- function(y, mode = "soft", threshold = NULL,
                                      levels = NULL) {
   if (!mode %in% c("soft", "hard")) stop('mode must be "soft" or "hard"',
                                          call. = FALSE)
-  y <- as.numeric(y); n0 <- length(y)
+  y <- as.numeric(y)
+  n0 <- length(y)
   if (n0 < 2L) stop("need at least 2 observations", call. = FALSE)
   n <- 2^ceiling(log2(n0))
   pad <- if (n > n0) c(y, rev(y))[seq_len(n)] else y
   max_lev <- as.integer(log2(n))
   levels <- if (is.null(levels)) max_lev else min(as.integer(levels), max_lev)
 
-  approx <- pad; details <- list()
+  approx <- pad
+  details <- list()
   for (i in seq_len(levels)) {
     even <- approx[seq(1L, length(approx), by = 2L)]
     odd  <- approx[seq(2L, length(approx), by = 2L)]
@@ -532,7 +559,8 @@ morie_esl_wavelet_smooth <- function(y, mode = "soft", threshold = NULL,
   sigma <- stats::median(abs(d1 - stats::median(d1))) / 0.6745
   lam <- if (is.null(threshold)) sigma * sqrt(2 * log(n)) else as.numeric(threshold)
 
-  zeroed <- 0L; shrunk <- vector("list", levels)
+  zeroed <- 0L
+  shrunk <- vector("list", levels)
   for (i in seq_len(levels)) {
     d <- details[[i]]
     t <- if (mode == "soft") sign(d) * pmax(abs(d) - lam, 0) else
@@ -543,7 +571,8 @@ morie_esl_wavelet_smooth <- function(y, mode = "soft", threshold = NULL,
   rec <- approx
   for (i in rev(seq_len(levels))) {
     d <- shrunk[[i]]
-    even <- (rec + d) / sqrt(2); odd <- (rec - d) / sqrt(2)
+    even <- (rec + d) / sqrt(2)
+    odd <- (rec - d) / sqrt(2)
     out <- numeric(2L * length(rec))
     out[seq(1L, length(out), by = 2L)] <- even
     out[seq(2L, length(out), by = 2L)] <- odd

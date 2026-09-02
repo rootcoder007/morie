@@ -18,7 +18,9 @@
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' Mznstep(V, V)
 Mznstep <- function(rewards, values, n = 5, gamma = 0.997) {
-  u <- .t1_vec(rewards); v <- .t1_vec(values); T <- length(u)
+  u <- .t1_vec(rewards)
+  v <- .t1_vec(values)
+  T <- length(u)
   if (length(v) != T) stop("rewards and values must have the same length")
   n <- as.integer(n)
   if (n < 1L) stop("n must be at least 1")

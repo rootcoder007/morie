@@ -221,7 +221,8 @@
                                     penalty = 0) {
   n <- length(A0)
   if (!is.null(known)) {
-    p0 <- as.numeric(known[[1]]); p1 <- as.numeric(known[[2]])
+    p0 <- as.numeric(known[[1]])
+    p1 <- as.numeric(known[[2]])
     if (length(p0) != n || length(p1) != n)
       stop("tmldyn: known g has the wrong length")
   } else {
@@ -242,7 +243,8 @@
   }
   if (!(trim >= 0 && trim < 0.5))
     stop("tmldyn: trim must be in [0, 0.5)")
-  lo <- max(trim, .tmldyn_EPS); hi <- 1 - max(trim, .tmldyn_EPS)
+  lo <- max(trim, .tmldyn_EPS)
+  hi <- 1 - max(trim, .tmldyn_EPS)
   p0 <- pmin(pmax(p0, lo), hi)
   p1 <- pmin(pmax(p1, lo), hi)
   g0 <- ifelse(A0 == 1, p0, 1 - p0)
@@ -271,7 +273,8 @@
 .tmldyn_logit_irls <- function(X, a, ridge = 1e-8, max_iter = 50L,
                         tol = 1e-10, penalty = 0) {
   Xm <- if (is.matrix(X)) X else do.call(rbind, X)
-  n <- nrow(Xm); p <- ncol(Xm)
+  n <- nrow(Xm)
+  p <- ncol(Xm)
   b <- rep(0, p)
   for (it in seq_len(max_iter)) {
     eta <- as.numeric(Xm %*% b)
@@ -282,7 +285,8 @@
     XtWz <- crossprod(Xm, W * z)
     b_new <- tryCatch(solve(XtWX, XtWz),
                       error = function(e) solve(XtWX + 1e-8 * diag(p), XtWz))
-    if (max(abs(b_new - b)) < tol) { b <- b_new; break }
+    if (max(abs(b_new - b)) < tol) { b <- b_new
+    break }
     b <- b_new
   }
   b
@@ -490,29 +494,38 @@ morie_tmle_dynamic_regime <- function(y, treatment_history,
   yv <- as.numeric(y)
   n <- length(yv)
   if (n < 4L) stop("tmldyn: need at least 4 observations")
-  Am <- as.matrix(treatment_history); storage.mode(Am) <- "double"
+  Am <- as.matrix(treatment_history)
+  storage.mode(Am) <- "double"
   if (nrow(Am) != n || ncol(Am) != 2L)
     stop("tmldyn: treatment_history must be n-by-2")
-  A0 <- Am[, 1]; A1 <- Am[, 2]
+  A0 <- Am[, 1]
+  A1 <- Am[, 2]
   if (any(!(A0 %in% c(0, 1))) || any(!(A1 %in% c(0, 1))))
     stop("tmldyn: treatments must be binary 0/1")
-  L0 <- as.matrix(covariate_history[[1]]); storage.mode(L0) <- "double"
-  L1 <- as.matrix(covariate_history[[2]]); storage.mode(L1) <- "double"
+  L0 <- as.matrix(covariate_history[[1]])
+  storage.mode(L0) <- "double"
+  L1 <- as.matrix(covariate_history[[2]])
+  storage.mode(L1) <- "double"
   if (nrow(L0) != n || nrow(L1) != n)
     stop("tmldyn: covariate blocks have wrong row counts")
-  ymin <- min(yv); ymax <- max(yv); rng <- ymax - ymin
+  ymin <- min(yv)
+  ymax <- max(yv)
+  rng <- ymax - ymin
   if (rng <= 0) stop("tmldyn: the outcome is constant")
   ys <- (yv - ymin) / rng
   g <- .intervention_mechanism(L0, A0, L1, A1, trim, known_g)
   supplied <- .coerce_regime(regime, n)
   if (!is.null(supplied)) {
-    d0 <- supplied$d0; d1 <- supplied$d1
+    d0 <- supplied$d0
+    d1 <- supplied$d1
     full <- .sequential_blips(ys, L0, A0, L1, A1, V0, V1, ridge)
-    blip1 <- full$blip1; blip2 <- full$blip2
+    blip1 <- full$blip1
+    blip2 <- full$blip2
     splits <- list(c(seq_len(n), seq_len(n)))
     rules <- list(list(d0 = d0, d1 = d1))
   } else if (method == "cv-tmle") {
-    splits <- list(); rules <- list()
+    splits <- list()
+    rules <- list()
     d0 <- rep(0, n)
     d1 <- list(rep(0, n), rep(0, n))
     blip1 <- rep(0, n)
@@ -523,8 +536,11 @@ morie_tmle_dynamic_regime <- function(y, treatment_history,
       # refit on train only by re-running sequential_blips on a
       # restricted sample: emulate by zeroing-out the validation rows
       # through the design matrices via a row-weight trick.
-      train_ys <- ys; train_A0 <- A0; train_A1 <- A1
-      train_L0 <- L0; train_L1 <- L1
+      train_ys <- ys
+      train_A0 <- A0
+      train_A1 <- A1
+      train_L0 <- L0
+      train_L1 <- L1
       # Build the fit on train using the same recipe, just on train.
       fit_tr <- .sequential_blips(train_ys, train_L0, train_A0,
                                   train_L1, train_A1, V0, V1, ridge)
@@ -542,7 +558,10 @@ morie_tmle_dynamic_regime <- function(y, treatment_history,
     }
   } else {
     fit <- .sequential_blips(ys, L0, A0, L1, A1, V0, V1, ridge)
-    d0 <- fit$d0; d1 <- fit$d1; blip1 <- fit$blip1; blip2 <- fit$blip2
+    d0 <- fit$d0
+    d1 <- fit$d1
+    blip1 <- fit$blip1
+    blip2 <- fit$blip2
     splits <- list(c(seq_len(n), seq_len(n)))
     rules <- list(list(d0 = d0, d1 = d1))
   }
@@ -561,10 +580,13 @@ morie_tmle_dynamic_regime <- function(y, treatment_history,
     q1d <- rep(psi_s, n)
     eps1 <- eps2 <- 0
   } else {
-    q2d <- rep(0, n); q1d <- rep(0, n)
+    q2d <- rep(0, n)
+    q1d <- rep(0, n)
     for (k in seq_along(splits)) {
-      tr <- splits[[k]][[1]]; vl <- splits[[k]][[2]]
-      rd0 <- rules[[k]]$d0; rd1 <- rules[[k]]$d1
+      tr <- splits[[k]][[1]]
+      vl <- splits[[k]][[2]]
+      rd0 <- rules[[k]]$d0
+      rd1 <- rules[[k]]$d1
       f2 <- .fit_q2(ys, L0, A0, L1, A1, tr, ridge)
       pseudo <- vapply(seq_len(n), function(i)
         f2$q2(A0[i], rd1[[A0[i] + 1L]][i], i), numeric(1))

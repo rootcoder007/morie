@@ -59,7 +59,8 @@
 #' @return Nothing; this branch always raises.
 #' @export
 .alfqud_read <- function(st, loc) {
-  bank <- loc[[1]]; idx <- as.integer(loc[[2]])
+  bank <- loc[[1]]
+  idx <- as.integer(loc[[2]])
   if (identical(bank, "M")) {
     if (idx < 0L || idx >= length(st$mem))
       stop("the instruction reads outside memory")
@@ -85,7 +86,8 @@
 #' @return The value of \code{st}, as built in the body.
 #' @export
 .alfqud_write <- function(st, loc, v) {
-  bank <- loc[[1]]; idx <- as.integer(loc[[2]])
+  bank <- loc[[1]]
+  idx <- as.integer(loc[[2]])
   if (identical(bank, "M")) {
     if (idx < 0L || idx >= length(st$mem))
       stop("the instruction writes outside memory")
@@ -119,11 +121,13 @@
 morie_alfqud_step <- function(st, instr) {
   op <- instr[[1]]
   if (!(op %in% .alfqud_ops)) stop("unknown instruction: ", op)
-  a <- instr[[2]]; b <- instr[[3]]
+  a <- instr[[2]]
+  b <- instr[[3]]
   if (identical(op, "mov")) {
     st <- .alfqud_write(st, b, .alfqud_read(st, a))
   } else if (identical(op, "cmp")) {
-    x <- .alfqud_read(st, a); y <- .alfqud_read(st, b)
+    x <- .alfqud_read(st, a)
+    y <- .alfqud_read(st, b)
     st$flag <- if (x < y) -1L else if (x > y) 1L else 0L
   } else if (identical(op, "cmovl")) {
     if (st$flag < 0L) st <- .alfqud_write(st, b, .alfqud_read(st, a))
@@ -253,7 +257,8 @@ morie_alfqud_text <- function(program) {
 .alfqud_bfs <- function(inputs, targets, acts, n_reg, max_len, lw, rf) {
   best <- list()
   z <- .alfqud_score(list(), inputs, targets, n_reg, lw, rf)
-  best_s <- z[1]; best_c <- z[2]
+  best_s <- z[1]
+  best_c <- z[2]
   frontier <- list(list())
   seen <- 1L
   for (d in seq_len(as.integer(max_len))) {
@@ -262,7 +267,9 @@ morie_alfqud_text <- function(program) {
       cand <- c(prog, list(act))
       seen <- seen + 1L
       z <- .alfqud_score(cand, inputs, targets, n_reg, lw, rf)
-      if (z[1] > best_s) { best_s <- z[1]; best_c <- z[2]; best <- cand }
+      if (z[1] > best_s) { best_s <- z[1]
+      best_c <- z[2]
+      best <- cand }
       nxt[[length(nxt) + 1L]] <- cand
     }
     frontier <- nxt
@@ -305,7 +312,8 @@ morie_alfqud_text <- function(program) {
   key <- function(v) paste0("k", paste(v, collapse = ","))
   best <- list()
   z <- .alfqud_score(list(), inputs, targets, n_reg, lw, rf)
-  best_s <- z[1]; best_c <- z[2]
+  best_s <- z[1]
+  best_c <- z[2]
   nodes <- 0L
   for (it in seq_len(as.integer(n_sim))) {
     node <- integer(0)
@@ -314,14 +322,17 @@ morie_alfqud_text <- function(program) {
       k0 <- key(node)
       if (!exists(k0, envir = N, inherits = FALSE)) break
       if (length(node) >= as.integer(max_len)) break
-      nv <- get(k0, envir = N); wv <- get(k0, envir = W)
+      nv <- get(k0, envir = N)
+      wv <- get(k0, envir = W)
       sq <- sqrt(sum(nv))
-      bi <- 1L; bv <- NULL
+      bi <- 1L
+      bv <- NULL
       for (k in seq_len(a)) {
         nk <- nv[k]
         q <- if (nk > 0) wv[k] / nk else 0
         u <- q + c_puct * (1 / a) * sq / (1 + nk)
-        if (is.null(bv) || u > bv) { bv <- u; bi <- k }
+        if (is.null(bv) || u > bv) { bv <- u
+        bi <- k }
       }
       path[[length(path) + 1L]] <- list(k0, bi)
       node <- c(node, bi)
@@ -334,12 +345,19 @@ morie_alfqud_text <- function(program) {
     }
     prog <- if (!length(node)) list() else lapply(node, function(k) acts[[k]])
     z <- .alfqud_score(prog, inputs, targets, n_reg, lw, rf)
-    if (z[1] > best_s) { best_s <- z[1]; best_c <- z[2]; best <- prog }
+    if (z[1] > best_s) { best_s <- z[1]
+    best_c <- z[2]
+    best <- prog }
     v <- if (full > 0) z[2] / full else 0
     for (pp in path) {
-      kk <- pp[[1]]; ii <- pp[[2]]
-      nv <- get(kk, envir = N); nv[ii] <- nv[ii] + 1; assign(kk, nv, envir = N)
-      wv <- get(kk, envir = W); wv[ii] <- wv[ii] + v; assign(kk, wv, envir = W)
+      kk <- pp[[1]]
+      ii <- pp[[2]]
+      nv <- get(kk, envir = N)
+      nv[ii] <- nv[ii] + 1
+      assign(kk, nv, envir = N)
+      wv <- get(kk, envir = W)
+      wv[ii] <- wv[ii] + v
+      assign(kk, wv, envir = W)
     }
   }
   list(prog = best, s = best_s, c = best_c, seen = nodes)

@@ -33,7 +33,8 @@ Bndsdo <- function(y, D, skew = 1) {
   cm <- .bnd_cellmeans(z$y, z$d)
   if (cm$p1 <= 0 || cm$p0 <= 0)
     stop("Bndsdo: both treatment arms must be non-empty")
-  y0 <- min(z$y); y1 <- max(z$y)
+  y0 <- min(z$y)
+  y1 <- max(z$y)
   w <- .bnd_wc_ate(z$y, z$d, y0, y1)
   naive <- cm$m1 - cm$m0
   s <- as.numeric(skew)[1]

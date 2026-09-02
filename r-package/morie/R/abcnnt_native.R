@@ -46,7 +46,8 @@
   b1 <- rep(0, hidden)
   Wm <- matrix(.ghc_norm(e, dim_x * hidden, 0, s2), nrow = dim_x, ncol = hidden)
   Wa <- matrix(.ghc_norm(e, dim_x * hidden, 0, s2), nrow = dim_x, ncol = hidden)
-  bm <- rep(0, dim_x); ba <- rep(0, dim_x)
+  bm <- rep(0, dim_x)
+  ba <- rep(0, dim_x)
   M1 <- matrix(0, hidden, dim_x + dim_t)
   for (k in seq_len(hidden)) {
     for (j in seq_len(dim_x)) M1[k, j] <- if (deg_h[k] >= deg_in[j]) 1 else 0
@@ -73,7 +74,9 @@
 #' @return A list with \code{mu}, \code{al}, \code{h}.
 #' @export
 .abcnnt_layer_stats <- function(layer, x, t) {
-  dx <- layer$dim_x; dt <- layer$dim_t; H <- layer$hidden
+  dx <- layer$dim_x
+  dt <- layer$dim_t
+  H <- layer$hidden
   inp <- c(x, t)
   z <- layer$b1 + (layer$M1 * (layer$W1 %*% matrix(inp, ncol = 1)))[, 1]
   h <- tanh(z)
@@ -89,7 +92,8 @@
 #' @param t See Usage.
 #' @export
 flow_forward <- function(flow, x, t) {
-  u <- as.numeric(x); total <- 0
+  u <- as.numeric(x)
+  total <- 0
   for (layer in flow$layers) {
     st <- .abcnnt_layer_stats(layer, u, t)
     u <- (u - st$mu) * exp(-st$al)
@@ -190,10 +194,13 @@ train_flow <- function(flow, D, epochs = 40L, lr = 0.01, seed = 0L,
     idx <- pmin(idx, n)
     sample <- D[idx]
     for (p in ps) {
-      arr <- p[[1]]; j <- p[[2]]
+      arr <- p[[1]]
+      j <- p[[2]]
       old <- arr[j]
-      arr[j] <- old + h; up <- total(sample)
-      arr[j] <- old - h; dn <- total(sample)
+      arr[j] <- old + h
+      up <- total(sample)
+      arr[j] <- old - h
+      dn <- total(sample)
       arr[j] <- old + lr * (up - dn) / (2 * h)
     }
   }
@@ -213,13 +220,17 @@ mcmc_sample <- function(logpdf, x0, n, burn = 100L, step = 0.5,
   if (n < 1L) stop("abcnnt: n must be positive")
   if (step <= 0) stop("abcnnt: step must be positive")
   e <- .ghc_rng(seed + 31L)
-  cur <- as.numeric(x0); lc <- logpdf(cur)
-  out <- matrix(0, as.integer(n), length(cur)); acc <- 0L
+  cur <- as.numeric(x0)
+  lc <- logpdf(cur)
+  out <- matrix(0, as.integer(n), length(cur))
+  acc <- 0L
   for (it in seq_len(as.integer(burn) + as.integer(n))) {
     prop <- cur + step * .ghc_norm(e, length(cur))
     lp <- logpdf(prop)
     if (log(max(.ghc_unif(e, 1L), 1e-300)) < lp - lc) {
-      cur <- prop; lc <- lp; acc <- acc + 1L
+      cur <- prop
+      lc <- lp
+      acc <- acc + 1L
     }
     if (it > as.integer(burn)) out[it - as.integer(burn), ] <- cur
   }
@@ -246,7 +257,8 @@ abcnnt <- function(simulator, x_o, log_prior, theta0, n_rounds = 3L,
                    n_per_round = 50L, n_layers = 5L, hidden = 20L,
                    epochs = 40L, lr = 0.01, mcmc_burn = 100L,
                    mcmc_step = 0.5, seed = 0L, n_posterior = 200L) {
-  x_o <- as.numeric(x_o); theta0 <- as.numeric(theta0)
+  x_o <- as.numeric(x_o)
+  theta0 <- as.numeric(theta0)
   if (length(x_o) == 0L || length(theta0) == 0L)
     stop("abcnnt: x_o and theta0 must be non-empty")
   if (n_rounds < 1L || n_per_round < 1L)
@@ -278,10 +290,12 @@ abcnnt <- function(simulator, x_o, log_prior, theta0, n_rounds = 3L,
   }
   post <- mcmc_sample(logpost, theta0, as.integer(n_posterior), mcmc_burn,
                       mcmc_step, seed + 999L)
-  d <- length(theta0); M <- nrow(post$samples)
+  d <- length(theta0)
+  M <- nrow(post$samples)
   m <- colMeans(post$samples)
   v <- apply(post$samples, 2, function(z) {
-    mu <- mean(z); sum((z - mu) ^ 2) / max(M - 1, 1)
+    mu <- mean(z)
+    sum((z - mu) ^ 2) / max(M - 1, 1)
   })
   list(estimate = m, posterior_mean = m,
        posterior_sd = sqrt(v), posterior_samples = post$samples, flow = flow,

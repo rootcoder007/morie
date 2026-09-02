@@ -185,7 +185,10 @@
 #' @return A vector, from \code{c}.
 #' @export
 .bnd_wc_intersect <- function(yv, dv, cellv, lo, hi) {
-  lo1 <- -Inf; hi1 <- Inf; lo0 <- -Inf; hi0 <- Inf
+  lo1 <- -Inf
+  hi1 <- Inf
+  lo0 <- -Inf
+  hi0 <- Inf
   for (g in unique(cellv)) {
     sel <- cellv == g
     cm <- .bnd_cellmeans(yv[sel], dv[sel])

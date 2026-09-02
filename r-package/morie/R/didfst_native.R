@@ -76,7 +76,8 @@ panel_differences <- function(Y, event_time) {
 #'   \code{control_weight}.
 #' @export
 did_estimate <- function(delta, D, weights = NULL) {
-  d <- as.numeric(delta); Dv <- as.numeric(D)
+  d <- as.numeric(delta)
+  Dv <- as.numeric(D)
   n <- length(d)
   if (length(Dv) != n)
     stop(sprintf("didfst: %d differences but %d adoption indicators",
@@ -86,7 +87,8 @@ did_estimate <- function(delta, D, weights = NULL) {
   w <- if (is.null(weights)) rep(1, n) else as.numeric(weights)
   if (length(w) != n) stop(sprintf("didfst: %d weights for %d units", length(w), n))
   if (any(w < 0)) stop("didfst: weights must be non-negative")
-  st <- sum(w * Dv); sc <- sum(w * (1 - Dv))
+  st <- sum(w * Dv)
+  sc <- sum(w * (1 - Dv))
   if (st <= .ghc_DIDFST_EPS || sc <= .ghc_DIDFST_EPS)
     stop(sprintf("didfst: the comparison needs weight on both adopters and non-adopters (treated %.3g, control %.3g)",
                  st, sc))
@@ -133,7 +135,8 @@ did_forest <- function(Y, D, X, event_time, x_eval = NULL,
   trees <- grow$trees
   pts <- if (is.null(x_eval)) Xm else as.matrix(x_eval)
   taus <- numeric(nrow(pts))
-  wt_t <- numeric(nrow(pts)); wt_c <- numeric(nrow(pts))
+  wt_t <- numeric(nrow(pts))
+  wt_c <- numeric(nrow(pts))
   for (k in seq_len(nrow(pts))) {
     w <- forest_weights(trees, Xm, pts[k, ])
     e <- did_estimate(delta, Dv, weights = w)
@@ -206,7 +209,8 @@ group_time_att <- function(Y, first_treated, comparison = "not-yet-treated") {
   for (i in seq_along(first_treated)) {
     v <- first_treated[i]
     if (is.null(v) || is.na(v) || is.infinite(v)) {
-      G[[i]] <- NA_integer_; next
+      G[[i]] <- NA_integer_
+      next
     }
     g <- as.integer(v)
     if (!(2L <= g && g <= pp$T))
@@ -225,7 +229,8 @@ group_time_att <- function(Y, first_treated, comparison = "not-yet-treated") {
       else
         idx_c <- which(vapply(G, function(x) is.na(x) || x > t, logical(1)))
       if (length(idx_c) == 0L) next
-      a <- t; b <- g - 1L
+      a <- t
+      b <- g - 1L
       dg <- mean(pp$M[idx_g, a]) - mean(pp$M[idx_g, b])
       dc <- mean(pp$M[idx_c, a]) - mean(pp$M[idx_c, b])
       key <- paste0(g, ",", t)

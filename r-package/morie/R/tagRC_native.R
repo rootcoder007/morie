@@ -43,12 +43,17 @@ tagRC_tripartite_graph <- function(triples) {
   edges <- new.env(hash = TRUE, parent = emptyenv())
   n_triples <- 0L
   for (tr in triples) {
-    u <- tr[[1]]; t <- tr[[2]]; r <- tr[[3]]
-    nu <- paste0("u:", u); nt <- paste0("t:", t); nr <- paste0("r:", r)
+    u <- tr[[1]]
+    t <- tr[[2]]
+    r <- tr[[3]]
+    nu <- paste0("u:", u)
+    nt <- paste0("t:", t)
+    nr <- paste0("r:", r)
     nodes <- c(nodes, nu, nt, nr)
     pairs <- list(c(nu, nt), c(nt, nr), c(nu, nr))
     for (ab in pairs) {
-      a <- ab[1]; b <- ab[2]
+      a <- ab[1]
+      b <- ab[2]
       key_ab <- paste0(a, "|", b)
       key_ba <- paste0(b, "|", a)
       cur_ab <- if (exists(key_ab, envir = edges, inherits = FALSE))
@@ -64,7 +69,8 @@ tagRC_tripartite_graph <- function(triples) {
   adj <- new.env(hash = TRUE, parent = emptyenv())
   for (nm in ls(edges)) {
     ab <- strsplit(nm, "|", fixed = TRUE)[[1]]
-    a <- ab[1]; b <- ab[2]
+    a <- ab[1]
+    b <- ab[2]
     w <- get(nm, envir = edges)
     if (exists(a, envir = adj, inherits = FALSE)) {
       inner <- get(a, envir = adj)

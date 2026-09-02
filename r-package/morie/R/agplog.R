@@ -36,7 +36,8 @@ Gamelog <- function(game, path = NULL, values = NULL, visits = NULL) {
   }
   text <- paste(lines, collapse = "\n")
   written <- FALSE
-  if (!is.null(path)) { writeLines(text, path, sep = ""); written <- TRUE }
+  if (!is.null(path)) { writeLines(text, path, sep = "")
+  written <- TRUE }
   lv <- sort(unique(acts))
   h <- 0
   for (key in lv) {

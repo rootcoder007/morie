@@ -894,7 +894,7 @@ morie_arsau_describe <- function(kind, year, language = "en", data_dir = NULL,
 #' @export
 #' @examples
 #' \donttest{
-#' res <- morie_arsau_describe("assault", 2020L)
+#' res <- morie_arsau_describe("main_records", "2023")
 #' print(res)
 #' }
 print.morie_arsau_result <- function(x, ...) {

@@ -20,8 +20,10 @@
 #' Azloss(1, 0.5, c(0.7, 0.3), c(0.6, 0.4))$estimate
 #' @export
 Azloss <- function(z, v, pi, p, theta = NULL, c = 1e-4) {
-  zz <- as.numeric(z); vv <- as.numeric(v)
-  pp <- .s03vec(pi); qq <- .s03vec(p)
+  zz <- as.numeric(z)
+  vv <- as.numeric(v)
+  pp <- .s03vec(pi)
+  qq <- .s03vec(p)
   eps <- 1e-300
   vloss <- (zz - vv)^2
   ploss <- 0

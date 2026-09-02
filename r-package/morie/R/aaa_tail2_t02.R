@@ -36,8 +36,10 @@
 OddsRat <- function(a, b, c, d, conf_level = 0.95, correction = 0) {
   if (!(conf_level > 0 && conf_level < 1))
     stop("conf_level must lie strictly between 0 and 1")
-  aa <- a + correction; bb <- b + correction
-  cc <- c + correction; dd <- d + correction
+  aa <- a + correction
+  bb <- b + correction
+  cc <- c + correction
+  dd <- d + correction
   if (any(c(aa, bb, cc, dd) < 0))
     stop("2 x 2 cell counts must be non-negative")
   n <- a + b + c + d
@@ -116,11 +118,13 @@ OddsRat <- function(a, b, c, d, conf_level = 0.95, correction = 0) {
 #' CttAlpha(M)
 CttAlpha <- function(X) {
   X <- .t2_table(X)
-  n <- nrow(X); k <- ncol(X)
+  n <- nrow(X)
+  k <- ncol(X)
   if (k < 2L) stop("alpha needs at least two items")
   iv <- numeric(k)
   for (j in seq_len(k)) {
-    v <- X[, j]; m <- sum(v) / n
+    v <- X[, j]
+    m <- sum(v) / n
     iv[j] <- sum((v - m)^2) / (n - 1)
   }
   sv <- sum(iv)
@@ -145,7 +149,8 @@ CttAlpha <- function(X) {
 #' CttAlphaMax(M)
 CttAlphaMax <- function(X) {
   X <- .t2_table(X)
-  n <- nrow(X); k <- ncol(X)
+  n <- nrow(X)
+  k <- ncol(X)
   if (k < 3L) stop("alpha-if-item-deleted needs at least three items")
   full <- .t2_alpha_on(X, seq_len(k))
   drop <- numeric(k)
@@ -253,17 +258,20 @@ SnScale <- function(y, constant = 1.1926, finite_corr = TRUE) {
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' BrayCurt(V, V)
 BrayCurt <- function(x, y, close = TRUE) {
-  a <- as.numeric(x); b <- as.numeric(y)
+  a <- as.numeric(x)
+  b <- as.numeric(y)
   n <- length(a)
   if (n == 0L || length(b) != n)
     stop("x and y must be non-empty and of equal length")
   if (any(a < 0) || any(b < 0))
     stop("Bray-Curtis is defined for non-negative parts")
   if (close) {
-    sa <- sum(a); sb <- sum(b)
+    sa <- sum(a)
+    sb <- sum(b)
     if (sa <= 0 || sb <= 0)
       stop("a composition cannot be closed to a zero total")
-    a <- a / sa; b <- b / sb
+    a <- a / sa
+    b <- b / sb
   }
   num <- sum(abs(a - b))
   den <- sum(a + b)
@@ -322,7 +330,8 @@ BrayCurt <- function(x, y, close = TRUE) {
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' FDiverg(V, V)
 FDiverg <- function(p, q, f = "kl", f_inf = NULL, normalise = TRUE) {
-  a <- as.numeric(p); b <- as.numeric(q)
+  a <- as.numeric(p)
+  b <- as.numeric(q)
   n <- length(a)
   if (n == 0L || length(b) != n)
     stop("p and q must be non-empty and of equal length")
@@ -339,10 +348,12 @@ FDiverg <- function(p, q, f = "kl", f_inf = NULL, normalise = TRUE) {
     nm <- "callable"
   }
   if (normalise) {
-    sa <- sum(a); sb <- sum(b)
+    sa <- sum(a)
+    sb <- sum(b)
     if (sa <= 0 || sb <= 0)
       stop("p and q must each carry positive total mass")
-    a <- a / sa; b <- b / sb
+    a <- a / sa
+    b <- b / sb
   }
   terms <- numeric(n)
   for (i in seq_len(n)) {
@@ -384,8 +395,12 @@ MeanExc <- function(x, u_grid = NULL, conf_level = 0.95) {
   }
   zq <- qnorm(0.5 + 0.5 * conf_level)
   ng <- length(grid)
-  e <- rep(NaN, ng); se <- rep(NaN, ng); sd <- rep(NaN, ng)
-  lo <- rep(NaN, ng); hi <- rep(NaN, ng); cnt <- integer(ng)
+  e <- rep(NaN, ng)
+  se <- rep(NaN, ng)
+  sd <- rep(NaN, ng)
+  lo <- rep(NaN, ng)
+  hi <- rep(NaN, ng)
+  cnt <- integer(ng)
   for (g in seq_len(ng)) {
     u <- grid[g]
     ex <- xs[xs > u] - u
@@ -429,7 +444,8 @@ GrubbsT <- function(x, alpha = 0.05, opposite = FALSE) {
   m <- sum(xs) / n
   sd <- sqrt(sum((xs - m)^2) / (n - 1))
   if (sd <= 0) stop("x is constant; Grubbs' statistic is undefined")
-  imax <- 1L; imin <- 1L
+  imax <- 1L
+  imin <- 1L
   for (i in seq_len(n)) {
     if (xs[i] > xs[imax]) imax <- i
     if (xs[i] < xs[imin]) imin <- i
@@ -497,11 +513,13 @@ DixonQ <- function(x, type = 10, opposite = FALSE) {
   if (take_high) {
     num <- xs[n] - xs[n - num_off]
     den <- xs[n] - xs[den_off + 1L]
-    idx <- n; side <- "max"
+    idx <- n
+    side <- "max"
   } else {
     num <- xs[num_off + 1L] - xs[1L]
     den <- xs[n - den_off] - xs[1L]
-    idx <- 1L; side <- "min"
+    idx <- 1L
+    side <- "min"
   }
   if (den == 0) stop("Dixon's denominator is zero; the ratio is undefined")
   list(statistic = num / den, type = as.integer(type),

@@ -48,7 +48,8 @@ momento_harmonise <- function(series_list, patch_len, normalise = TRUE) {
           col <- (col - m) / sd_
         }
       } else {
-        m <- 0; sd_ <- 1
+        m <- 0
+        sd_ <- 1
       }
       patches <- split(col, (seq_along(col) - 1L) %/% P)
       out[[length(out) + 1L]] <- patches
@@ -112,7 +113,8 @@ momento_masked_loss <- function(truth, reconstruction, mask) {
     stop(sprintf("momento: truth, reconstruction and mask must agree in length (%d, %d, %d)",
                  n, length(reconstruction), length(mask)))
   }
-  tot <- 0; cnt <- 0
+  tot <- 0
+  cnt <- 0
   for (i in seq_len(n)) {
     if (!mask[[i]]) next
     if (length(truth[[i]]) != length(reconstruction[[i]])) {

@@ -68,8 +68,10 @@
   simp <- function(fa, fm, fb, a, b) (b - a) / 6 * (fa + 4 * fm + fb)
   rec <- function(a, b, fa, fm, fb, whole, tol, depth) {
     m <- 0.5 * (a + b)
-    lm <- 0.5 * (a + m); rm <- 0.5 * (m + b)
-    flm <- f(lm); frm <- f(rm)
+    lm <- 0.5 * (a + m)
+    rm <- 0.5 * (m + b)
+    flm <- f(lm)
+    frm <- f(rm)
     left <- simp(fa, flm, fm, a, m)
     right <- simp(fm, frm, fb, m, b)
     if (depth >= maxdepth || abs(left + right - whole) <= 15 * tol)
@@ -78,7 +80,9 @@
       rec(m, b, fm, frm, fb, right, tol / 2, depth + 1L)
   }
   m <- 0.5 * (a + b)
-  fa <- f(a); fm <- f(m); fb <- f(b)
+  fa <- f(a)
+  fm <- f(m)
+  fb <- f(b)
   rec(a, b, fa, fm, fb, simp(fa, fm, fb, a, b), tol, 0L)
 }
 
@@ -340,7 +344,9 @@ Shannon <- function(p, levels = NULL) {
   if (!is.null(levels)) {
     lv <- as.integer(levels)
     if (lv < 1L) stop("levels must be positive")
-    lo <- min(vals); hi <- max(vals); span <- hi - lo
+    lo <- min(vals)
+    hi <- max(vals)
+    span <- hi - lo
     counts <- integer(lv)
     for (v in vals) {
       k <- if (span == 0) 1L else min(lv, as.integer((v - lo) / span * lv) + 1L)
@@ -376,15 +382,19 @@ NoiseModel <- function(x, eta) {
   # eqs (3.12)-(3.14).  Eq (3.14) holds only if x and eta are
   # uncorrelated, so the sample correlation is measured and both the
   # observed and the additive variance are returned side by side.
-  xs <- .morie_rg_aslist(x); es <- .morie_rg_aslist(eta)
+  xs <- .morie_rg_aslist(x)
+  es <- .morie_rg_aslist(eta)
   if (length(xs) != length(es))
     stop("signal and noise must have the same length")
   n <- length(xs)
   if (!n) stop("need at least one sample")
   y <- xs + es
-  mx <- .morie_fsum(xs) / n; me <- .morie_fsum(es) / n
-  vx <- .morie_fsum((xs - mx)^2) / n; ve <- .morie_fsum((es - me)^2) / n
-  my <- .morie_fsum(y) / n; vy <- .morie_fsum((y - my)^2) / n
+  mx <- .morie_fsum(xs) / n
+  me <- .morie_fsum(es) / n
+  vx <- .morie_fsum((xs - mx)^2) / n
+  ve <- .morie_fsum((es - me)^2) / n
+  my <- .morie_fsum(y) / n
+  vy <- .morie_fsum((y - my)^2) / n
   cov <- .morie_fsum((xs - mx) * (es - me)) / n
   rho <- if (vx > 0 && ve > 0) cov / sqrt(vx * ve) else 0
   list(y = y, mean_signal = mx, mean_noise = me, mean_observed = my,
@@ -484,14 +494,17 @@ EnsAvg <- function(observations) {
 #' @export
 CovXY <- function(x, y, ddof = 0) {
   # eqs (3.21)-(3.22): C_xy and rho = C_xy / (sigma_x sigma_y)
-  xs <- .morie_rg_aslist(x); ys <- .morie_rg_aslist(y)
+  xs <- .morie_rg_aslist(x)
+  ys <- .morie_rg_aslist(y)
   if (length(xs) != length(ys)) stop("x and y must have the same length")
   n <- length(xs)
   d <- n - as.integer(ddof)
   if (d <= 0) stop(sprintf("not enough samples for ddof=%d", ddof))
-  mx <- .morie_fsum(xs) / n; my <- .morie_fsum(ys) / n
+  mx <- .morie_fsum(xs) / n
+  my <- .morie_fsum(ys) / n
   cov <- .morie_fsum((xs - mx) * (ys - my)) / d
-  vx <- .morie_fsum((xs - mx)^2) / d; vy <- .morie_fsum((ys - my)^2) / d
+  vx <- .morie_fsum((xs - mx)^2) / d
+  vy <- .morie_fsum((ys - my)^2) / d
   rho <- if (vx > 0 && vy > 0) cov / sqrt(vx * vy) else NULL
   list(covariance = cov, correlation = rho, sd_x = sqrt(vx), sd_y = sqrt(vy),
        mean_x = mx, mean_y = my, n = n, ddof = as.integer(ddof),
@@ -624,7 +637,9 @@ Sifting <- function(x, t0, lower, upper) {
   # T1 < to < T2, else 0.  Both inequalities are strict, so an impulse
   # sitting on a limit contributes nothing.
   if (!is.function(x)) stop("x must be a function continuous at t0")
-  lo <- as.numeric(lower); hi <- as.numeric(upper); tt <- as.numeric(t0)
+  lo <- as.numeric(lower)
+  hi <- as.numeric(upper)
+  tt <- as.numeric(t0)
   if (hi <= lo) stop("upper must exceed lower")
   inside <- lo < tt && tt < hi
   list(value = if (inside) as.numeric(x(tt)) else 0, inside = inside,
@@ -685,7 +700,8 @@ ContConv <- function(x, h, dt = 1, t = NULL) {
   # uniform grid this is the discrete convolution SCALED BY dt; dropping
   # the dt is how a continuous-time convolution comes out wrong by a
   # factor of the sampling interval.
-  xs <- .morie_rg_aslist(x); hs <- .morie_rg_aslist(h)
+  xs <- .morie_rg_aslist(x)
+  hs <- .morie_rg_aslist(h)
   if (!length(xs) || !length(hs))
     stop("both signals need at least one sample")
   step <- as.numeric(dt)
@@ -696,10 +712,12 @@ ContConv <- function(x, h, dt = 1, t = NULL) {
     if (length(ts) > 1L) step <- ts[2] - ts[1]
   }
   if (step <= 0) stop("dt must be positive")
-  n <- length(xs); m <- length(hs)
+  n <- length(xs)
+  m <- length(hs)
   y <- numeric(n + m - 1L)
   for (k in seq_len(n + m - 1L)) {
-    lo <- max(1L, k - m + 1L); hi <- min(k, n)
+    lo <- max(1L, k - m + 1L)
+    hi <- min(k, n)
     idx <- lo:hi
     y[k] <- .morie_fsum(xs[idx] * hs[k - idx + 1L]) * step
   }
@@ -748,7 +766,8 @@ KDelta <- function(n, shift = 0, amplitude = 1) {
   # is an ordinary sequence, evaluable at the origin.
   idx <- if (length(n) == 1L && n == as.integer(n) && n > 1L)
     seq.int(0L, as.integer(n) - 1L) else as.integer(n)
-  s <- as.integer(shift); a <- as.numeric(amplitude)
+  s <- as.integer(shift)
+  a <- as.numeric(amplitude)
   list(delta = ifelse(idx == s, a, 0), n = idx, shift = s, amplitude = a,
        method = "Rangayyan (2024) eq. (3.34)")
 }

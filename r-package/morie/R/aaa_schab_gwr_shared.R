@@ -420,11 +420,15 @@
   for (i in seq_len(max_iter)) {
     if (abs(b - a) < tol) break
     if (fc < fd) {
-      b <- dd; dd <- cc; fd <- fc
+      b <- dd
+      dd <- cc
+      fd <- fc
       cc <- b - invphi * (b - a)
       fc <- func(cc)
     } else {
-      a <- cc; cc <- dd; fc <- fd
+      a <- cc
+      cc <- dd
+      fc <- fd
       dd <- a + invphi * (b - a)
       fd <- func(dd)
     }

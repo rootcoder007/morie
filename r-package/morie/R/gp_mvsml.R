@@ -59,8 +59,12 @@ morie_one_way <- function(groups) {
 
 #' @noRd
 morie_mme <- function(X, Z, y, Sigma_inv, R_inv = NULL) {
-  X <- as.matrix(X); Z <- as.matrix(Z); y <- as.numeric(y)
-  n <- length(y); p <- ncol(X); q <- ncol(Z)
+  X <- as.matrix(X)
+  Z <- as.matrix(Z)
+  y <- as.numeric(y)
+  n <- length(y)
+  p <- ncol(X)
+  q <- ncol(Z)
   if (is.null(R_inv)) R_inv <- diag(n)
   XtRi <- t(X) %*% R_inv
   ZtRi <- t(Z) %*% R_inv
@@ -74,7 +78,9 @@ morie_mme <- function(X, Z, y, Sigma_inv, R_inv = NULL) {
 
 #' @noRd
 morie_blue_blup_v <- function(X, Z, y, Sigma, R = NULL) {
-  X <- as.matrix(X); Z <- as.matrix(Z); y <- as.numeric(y)
+  X <- as.matrix(X)
+  Z <- as.matrix(Z)
+  y <- as.numeric(y)
   n <- length(y)
   if (is.null(R)) R <- diag(n)
   V <- Z %*% as.matrix(Sigma) %*% t(Z) + R
@@ -92,7 +98,8 @@ morie_grm <- function(M) {
 
 #' @noRd
 morie_gblup <- function(X, y, G, sigma2_g, sigma2_e = 1) {
-  q <- nrow(G); n <- length(y)
+  q <- nrow(G)
+  n <- length(y)
   Z <- diag(n)[, seq_len(q), drop = FALSE]
   morie_blue_blup_v(X, Z, y, sigma2_g * G,
                           diag(sigma2_e, n))$blup
@@ -100,7 +107,9 @@ morie_gblup <- function(X, y, G, sigma2_g, sigma2_e = 1) {
 
 #' @noRd
 morie_snp_blup <- function(X, y, M, sigma2_m, sigma2_e = 1) {
-  M <- as.matrix(M); p <- ncol(M); n <- length(y)
+  M <- as.matrix(M)
+  p <- ncol(M)
+  n <- length(y)
   fit <- morie_blue_blup_v(X, M, y, diag(sigma2_m, p),
                                  diag(sigma2_e, n))
   list(marker_effects = fit$blup,
@@ -160,7 +169,8 @@ morie_epe <- function(sigma2, x_star, eigenvalues) {
 
 #' @noRd
 morie_binary_metrics <- function(y_true, y_pred, positive = 1) {
-  yt <- as.integer(y_true); yp <- as.integer(y_pred)
+  yt <- as.integer(y_true)
+  yp <- as.integer(y_pred)
   tp <- sum(yt == positive & yp == positive)
   tn <- sum(yt != positive & yp != positive)
   fp <- sum(yt != positive & yp == positive)
@@ -269,7 +279,9 @@ morie_reml_loglik <- function(X, Z, y, D, R = NULL) {
 }
 
 morie_lmm_loglik <- function(X, Z, y, D, R = NULL, beta = NULL) {
-  X <- as.matrix(X); y <- as.numeric(y); n <- length(y)
+  X <- as.matrix(X)
+  y <- as.numeric(y)
+  n <- length(y)
   V <- morie_lmm_v(Z, D, R)
   Vi <- morie_solve(V)
   if (is.null(beta)) {
@@ -285,8 +297,11 @@ morie_lmm_loglik <- function(X, Z, y, D, R = NULL, beta = NULL) {
 #' @noRd
 morie_em_lmm <- function(X, Z, y, D0 = NULL, sigma2_0 = 1,
                                n_iter = 200L, tol = 1e-10) {
-  X <- as.matrix(X); Z <- as.matrix(Z); y <- as.numeric(y)
-  n <- length(y); q <- ncol(Z)
+  X <- as.matrix(X)
+  Z <- as.matrix(Z)
+  y <- as.numeric(y)
+  n <- length(y)
+  q <- ncol(Z)
   D <- if (is.null(D0)) diag(q) else as.matrix(D0)
   s2 <- sigma2_0
   XtX <- t(X) %*% X
@@ -304,7 +319,9 @@ morie_em_lmm <- function(X, Z, y, D0 = NULL, sigma2_0 = 1,
     s2_new <- (sum(diag(ZDZ)) + sum(e^2)) / n
     D_new <- Dt + outer(bt, bt)
     gap <- max(abs(s2_new - s2), max(abs(beta_new - beta)))
-    beta <- beta_new; s2 <- s2_new; D <- D_new
+    beta <- beta_new
+    s2 <- s2_new
+    D <- D_new
     if (gap < tol) break
   }
   list(beta = as.numeric(beta), sigma2 = s2, D = D, b = bt,
@@ -314,7 +331,8 @@ morie_em_lmm <- function(X, Z, y, D0 = NULL, sigma2_0 = 1,
 #' @noRd
 morie_gblup_model <- function(y, Z_L, G, sigma2_g,
                                     sigma2_e = 1) {
-  y <- as.numeric(y); n <- length(y)
+  y <- as.numeric(y)
+  n <- length(y)
   X <- matrix(1, nrow = n, ncol = 1)
   fit <- morie_blue_blup_v(X, Z_L, y, sigma2_g * as.matrix(G),
                                  diag(sigma2_e, n))
@@ -324,11 +342,13 @@ morie_gblup_model <- function(y, Z_L, G, sigma2_g,
 #' @noRd
 morie_gxe_blup <- function(y, X_E, Z_L, Z_EL, G, sigma2_g,
                                  Sigma_E, sigma2_e = 1) {
-  y <- as.numeric(y); n <- length(y)
+  y <- as.numeric(y)
+  n <- length(y)
   X <- if (is.null(X_E) || length(X_E) == 0) {
     matrix(1, nrow = n, ncol = 1)
   } else cbind(1, as.matrix(X_E))
-  ZL <- as.matrix(Z_L); ZEL <- as.matrix(Z_EL)
+  ZL <- as.matrix(Z_L)
+  ZEL <- as.matrix(Z_EL)
   q1 <- ncol(ZL)
   S2 <- morie_kron(Sigma_E, G)
   q2 <- nrow(S2)
@@ -343,7 +363,9 @@ morie_gxe_blup <- function(y, X_E, Z_L, Z_EL, G, sigma2_g,
 
 #' @noRd
 morie_multitrait <- function(Y, Z, G, Sigma_T, R_T, X = NULL) {
-  Ym <- as.matrix(Y); J <- nrow(Ym); nT <- ncol(Ym)
+  Ym <- as.matrix(Y)
+  J <- nrow(Ym)
+  nT <- ncol(Ym)
   y <- as.numeric(t(Ym))
   Xm <- morie_kron(matrix(1, J, 1), diag(nT))
   if (!is.null(X)) Xm <- cbind(Xm, as.matrix(X))
@@ -361,7 +383,9 @@ morie_multitrait <- function(Y, Z, G, Sigma_T, R_T, X = NULL) {
 morie_gxe_multitrait <- function(Y, Z_L, Z_EL, G, Sigma_T,
                                        Sigma_E, Sigma_2T, R_T,
                                        X = NULL) {
-  Ym <- as.matrix(Y); rows <- nrow(Ym); nT <- ncol(Ym)
+  Ym <- as.matrix(Y)
+  rows <- nrow(Ym)
+  nT <- ncol(Ym)
   y <- as.numeric(t(Ym))
   Xm <- morie_kron(matrix(1, rows, 1), diag(nT))
   if (!is.null(X)) Xm <- cbind(Xm, as.matrix(X))
@@ -369,7 +393,8 @@ morie_gxe_multitrait <- function(Y, Z_L, Z_EL, G, Sigma_T,
   Z2 <- morie_kron(Z_EL, diag(nT))
   S1 <- morie_kron(G, Sigma_T)
   S2 <- morie_kron(morie_kron(Sigma_E, G), Sigma_2T)
-  q1 <- nrow(S1); q2 <- nrow(S2)
+  q1 <- nrow(S1)
+  q2 <- nrow(S2)
   Z <- cbind(Z1, Z2)
   Sigma <- matrix(0, q1 + q2, q1 + q2)
   Sigma[seq_len(q1), seq_len(q1)] <- S1
@@ -407,11 +432,15 @@ morie_brr_gibbs <- function(y, X, n_iter = 2000L,
                                   nu_beta = 5, R2 = 0.5,
                                   seed = 42L) {
   set.seed(seed)
-  y <- as.numeric(y); X <- as.matrix(X)
-  n <- length(y); p <- ncol(X)
+  y <- as.numeric(y)
+  X <- as.matrix(X)
+  n <- length(y)
+  p <- ncol(X)
   hp <- morie_brr_hyper(y, R2, nu, nu_beta)
-  mu <- mean(y); beta <- rep(0, p)
-  s2 <- hp$S / (nu + 2); s2b <- hp$S_beta / (nu_beta + 2)
+  mu <- mean(y)
+  beta <- rep(0, p)
+  s2 <- hp$S / (nu + 2)
+  s2b <- hp$S_beta / (nu_beta + 2)
   XtX <- t(X) %*% X
   acc <- list(mu = 0, beta = rep(0, p), s2 = 0, s2b = 0, k = 0L)
   for (it in seq_len(n_iter)) {
@@ -486,7 +515,8 @@ morie_extended_predictor <- function(n, X_E = NULL, X = NULL,
 
 #' @noRd
 morie_inv_wishart <- function(nu, S) {
-  S <- as.matrix(S); p <- nrow(S)
+  S <- as.matrix(S)
+  p <- nrow(S)
   L <- t(chol(morie_pinv(S)))
   A <- matrix(0, p, p)
   for (i in seq_len(p)) {
@@ -509,14 +539,18 @@ morie_bmtme_conditionals <- function(Y, Z1, Z2, G, Sigma_T,
                                            b2 = NULL, nu_T = NULL,
                                            S_T = NULL, nu_E = NULL,
                                            S_E = NULL) {
-  Y <- as.matrix(Y); nT <- ncol(Y)
-  G <- as.matrix(G); J <- nrow(G)
+  Y <- as.matrix(Y)
+  nT <- ncol(Y)
+  G <- as.matrix(G)
+  J <- nrow(G)
   Ginv <- morie_pinv(G)
   q2 <- ncol(as.matrix(Z2))
   if (is.null(b1)) b1 <- matrix(0, J, nT)
   if (is.null(b2)) b2 <- matrix(0, q2, nT)
-  b1 <- as.matrix(b1); b2 <- as.matrix(b2)
-  SEinv <- morie_pinv(Sigma_E); I <- nrow(SEinv)
+  b1 <- as.matrix(b1)
+  b2 <- as.matrix(b2)
+  SEinv <- morie_pinv(Sigma_E)
+  I <- nrow(SEinv)
   STinv <- morie_pinv(Sigma_T)
   if (is.null(nu_T)) nu_T <- nT + 2
   if (is.null(nu_E)) nu_E <- I + 2
@@ -567,14 +601,20 @@ morie_ordinal_probit_gibbs <- function(y, X, n_iter = 1500L,
                                              S_beta = 1,
                                              seed = 42L) {
   set.seed(seed)
-  y <- as.integer(y); X <- as.matrix(X)
-  n <- length(y); p <- ncol(X); C <- max(y)
-  beta <- rep(0, p); s2b <- 1
+  y <- as.integer(y)
+  X <- as.matrix(X)
+  n <- length(y)
+  p <- ncol(X)
+  C <- max(y)
+  beta <- rep(0, p)
+  s2b <- 1
   gamma <- seq_len(C - 1L) - C / 2
   l <- rep(0, n)
   col_ss <- colSums(X^2)
-  acc_beta <- rep(0, p); acc_gamma <- rep(0, C - 1L)
-  acc_s2b <- 0; kept <- 0L
+  acc_beta <- rep(0, p)
+  acc_gamma <- rep(0, C - 1L)
+  acc_s2b <- 0
+  kept <- 0L
   for (it in seq_len(n_iter)) {
     eta <- as.numeric(X %*% beta)
     for (i in seq_len(n)) {
@@ -655,7 +695,9 @@ morie_penalized_multinomial <- function(X, y, beta0, beta,
 morie_multinomial_block <- function(X, y, beta0, beta, lambda,
                                           cls,
                                           baseline_last = TRUE) {
-  X <- as.matrix(X); n <- nrow(X); p <- ncol(X)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  p <- ncol(X)
   P <- morie_multinomial_probs(X, beta0, beta, baseline_last)
   cc <- cls + 1L
   Xs <- cbind(1, X)
@@ -664,7 +706,8 @@ morie_multinomial_block <- function(X, y, beta0, beta, lambda,
   w <- pc * (1 - pc)
   eta <- as.numeric(Xs %*% b_cur)
   ystar <- eta + ((as.integer(y) == cls) - pc) / w
-  D <- diag(p + 1); D[1, 1] <- 0
+  D <- diag(p + 1)
+  D[1, 1] <- 0
   A <- t(Xs) %*% (Xs * w) + lambda * D
   sol <- as.numeric(morie_solve(A, t(Xs) %*% (w * ystar)))
   list(beta0 = sol[1], beta = sol[-1], weights = w,
@@ -684,7 +727,9 @@ morie_penalized_poisson <- function(X, y, lambda = 1,
                                           add_intercept = TRUE) {
   X <- as.matrix(X)
   if (add_intercept) X <- cbind(1, X)
-  y <- as.numeric(y); n <- length(y); p <- ncol(X)
+  y <- as.numeric(y)
+  n <- length(y)
+  p <- ncol(X)
   beta <- rep(0, p)
   if (add_intercept) beta[1] <- log(max(mean(y), 1e-6))
   D <- diag(p)
@@ -702,7 +747,8 @@ morie_penalized_poisson <- function(X, y, lambda = 1,
       idx <- if (add_intercept) -1L else seq_along(new)
       new[idx] <- sign(new[idx]) * pmax(abs(new[idx]) - lambda, 0)
     }
-    gap <- max(abs(new - beta)); beta <- new
+    gap <- max(abs(new - beta))
+    beta <- new
     if (gap < tol) break
   }
   eta <- as.numeric(X %*% beta)
@@ -753,8 +799,11 @@ morie_rkhs_predict <- function(K_new, beta, eta0 = 0) {
 
 #' @noRd
 morie_rkhs_fit <- function(K, y, lambda = 1) {
-  K <- as.matrix(K); y <- as.numeric(y); n <- length(y)
-  A <- matrix(0, n + 1, n + 1); rhs <- numeric(n + 1)
+  K <- as.matrix(K)
+  y <- as.numeric(y)
+  n <- length(y)
+  A <- matrix(0, n + 1, n + 1)
+  rhs <- numeric(n + 1)
   A[1, 1] <- 1
   A[1, -1] <- colSums(K) / n
   rhs[1] <- mean(y)
@@ -763,7 +812,8 @@ morie_rkhs_fit <- function(K, y, lambda = 1) {
   A[-1, -1] <- 2 * KtK / n + lambda * K
   rhs[-1] <- 2 * as.numeric(t(K) %*% y) / n
   sol <- as.numeric(morie_solve(A, rhs))
-  eta0 <- sol[1]; beta <- sol[-1]
+  eta0 <- sol[1]
+  beta <- sol[-1]
   fitted <- morie_rkhs_predict(K, beta, eta0)
   resid <- y - fitted
   loss <- mean(resid^2)
@@ -779,19 +829,23 @@ morie_arccos_kernel <- function(X, Z = NULL, depth = 1L,
   A <- as.matrix(X)
   same <- is.null(Z)
   B <- if (same) A else as.matrix(Z)
-  na <- sqrt(rowSums(A^2)); nb <- sqrt(rowSums(B^2))
+  na <- sqrt(rowSums(A^2))
+  nb <- sqrt(rowSums(B^2))
   Jf <- function(th) sin(th) + (pi - th) * cos(th)
   cosang <- (A %*% t(B)) / outer(na, nb)
-  cosang[cosang > 1] <- 1; cosang[cosang < -1] <- -1
+  cosang[cosang > 1] <- 1
+  cosang[cosang < -1] <- -1
   K <- outer(na, nb) * Jf(acos(cosang)) / pi
   dA <- if (same) diag(K) else na^2
   dB <- if (same) dA else nb^2
   if (depth > 1L) for (l in seq_len(depth - 1L)) {
     den <- sqrt(outer(dA, dB))
     cs <- K / den
-    cs[cs > 1] <- 1; cs[cs < -1] <- -1
+    cs[cs > 1] <- 1
+    cs[cs < -1] <- -1
     K <- den * Jf(acos(cs)) / pi
-    dA <- dA * Jf(0) / pi; dB <- dB * Jf(0) / pi
+    dA <- dA * Jf(0) / pi
+    dB <- dB * Jf(0) / pi
   }
   if (normalize_median) K <- K / median(K)
   K
@@ -806,7 +860,9 @@ morie_hadamard <- function(A, B) as.matrix(A) * as.matrix(B)
 morie_bayesian_kernel_blup <- function(y, K, sigma2_u = 1,
                                              sigma2_e = 1,
                                              mu = NULL) {
-  y <- as.numeric(y); K <- as.matrix(K); n <- length(y)
+  y <- as.numeric(y)
+  K <- as.matrix(K)
+  n <- length(y)
   if (is.null(mu)) mu <- mean(y)
   Kinv <- morie_pinv(K)
   A <- Kinv / sigma2_u + diag(1 / sigma2_e, n)
@@ -827,7 +883,8 @@ morie_kernel_blup_replicated <- function(Z, K,
 morie_kernel_blup_gxe <- function(Z_u1, K, Z_E,
                                         sigma2_u1 = 1,
                                         sigma2_u2 = 1) {
-  Zu <- as.matrix(Z_u1); ZE <- as.matrix(Z_E)
+  Zu <- as.matrix(Z_u1)
+  ZE <- as.matrix(Z_E)
   K1 <- Zu %*% as.matrix(K) %*% t(Zu)
   KE <- ZE %*% t(ZE)
   list(K1 = sigma2_u1 * K1,
@@ -850,7 +907,9 @@ morie_kernel_eigen_design <- function(K, tol = 1e-10) {
 #' @noRd
 morie_nystrom <- function(X, m_index, kernel = "linear",
                                 gamma = NULL) {
-  A <- as.matrix(X); p <- ncol(A); Xm <- A[m_index, , drop = FALSE]
+  A <- as.matrix(X)
+  p <- ncol(A)
+  Xm <- A[m_index, , drop = FALSE]
   if (kernel == "linear") {
     Kmm <- Xm %*% t(Xm) / p
     Knm <- A %*% t(Xm) / p
@@ -880,8 +939,11 @@ morie_sparse_kernel_design <- function(X, m_index,
 morie_rkhs_mixed_equations <- function(C, K, y, lambda = 1,
                                              sigma2_e = 1,
                                              form = "direct") {
-  C <- as.matrix(C); K <- as.matrix(K); y <- as.numeric(y)
-  n <- length(y); q <- ncol(C)
+  C <- as.matrix(C)
+  K <- as.matrix(K)
+  y <- as.numeric(y)
+  n <- length(y)
+  q <- ncol(C)
   if (form == "direct") {
     A <- rbind(cbind(t(C) %*% C, t(C) %*% K),
                cbind(t(K) %*% C,
@@ -893,7 +955,8 @@ morie_rkhs_mixed_equations <- function(C, K, y, lambda = 1,
     rhs <- c(t(C) %*% y, y)
   }
   sol <- as.numeric(morie_solve(A, rhs))
-  theta <- sol[seq_len(q)]; beta <- sol[-seq_len(q)]
+  theta <- sol[seq_len(q)]
+  beta <- sol[-seq_len(q)]
   u <- as.numeric(K %*% beta)
   list(theta = theta, beta = beta, u = u,
        fitted = as.numeric(C %*% theta) + u,
@@ -912,7 +975,8 @@ morie_svm_decision <- function(X, beta0, beta) {
 
 #' @noRd
 morie_svm_dual_objective <- function(alpha, X, y, K = NULL) {
-  a <- as.numeric(alpha); ys <- as.numeric(y)
+  a <- as.numeric(alpha)
+  ys <- as.numeric(y)
   G <- if (is.null(K)) as.matrix(X) %*% t(as.matrix(X)) else as.matrix(K)
   sum(a) - 0.5 * sum(outer(a * ys, a * ys) * G)
 }
@@ -925,7 +989,8 @@ morie_svm_beta <- function(alpha, X, y) {
 #' @noRd
 morie_svm_intercept <- function(alpha, X, y, K = NULL,
                                       tol = 1e-8) {
-  a <- as.numeric(alpha); ys <- as.numeric(y)
+  a <- as.numeric(alpha)
+  ys <- as.numeric(y)
   G <- if (is.null(K)) as.matrix(X) %*% t(as.matrix(X)) else as.matrix(K)
   S <- which(a > tol)
   if (!length(S)) return(0)
@@ -935,17 +1000,21 @@ morie_svm_intercept <- function(alpha, X, y, K = NULL,
 #' @noRd
 morie_svm_fit_dual <- function(X, y, C = NULL, n_iter = 4000L,
                                      tol = 1e-9, K = NULL) {
-  X <- as.matrix(X); ys <- as.numeric(y); n <- length(ys)
+  X <- as.matrix(X)
+  ys <- as.numeric(y)
+  n <- length(ys)
   G <- if (is.null(K)) X %*% t(X) else as.matrix(K)
   H <- outer(ys, ys) * G
   step <- 1 / (n * max(abs(diag(H))))
-  a <- rep(0, n); yy <- sum(ys^2)
+  a <- rep(0, n)
+  yy <- sum(ys^2)
   for (it in seq_len(n_iter)) {
     g <- 1 - as.numeric(H %*% a)
     g <- g - sum(g * ys) / yy * ys          # project onto g . y = 0
     new <- a + step * g
     new <- pmax(0, if (is.null(C)) new else pmin(new, C))
-    if (max(abs(new - a)) < tol) { a <- new; break }
+    if (max(abs(new - a)) < tol) { a <- new
+    break }
     a <- new
   }
   list(alpha = a, beta = morie_svm_beta(a, X, ys),
@@ -961,7 +1030,8 @@ morie_act <- function(name, z, deriv = FALSE) {
   if (name == "identity") return(if (deriv) rep(1, length(z)) else z)
   if (name == "logistic") { s <- 1 / (1 + exp(-pmax(pmin(z, 700), -700)))
     return(if (deriv) s * (1 - s) else s) }
-  if (name == "tanh") { t <- tanh(z); return(if (deriv) 1 - t^2 else t) }
+  if (name == "tanh") { t <- tanh(z)
+  return(if (deriv) 1 - t^2 else t) }
   if (name == "relu") return(if (deriv) as.numeric(z > 0) else pmax(0, z))
   stop("unknown activation: ", name)
 }
@@ -971,7 +1041,8 @@ morie_ann_forward <- function(X, W, activations = NULL) {
   A <- as.matrix(X)
   acts <- if (is.null(activations))
     c(rep("logistic", length(W) - 1), "identity") else activations
-  layers <- list(A); nets <- list()
+  layers <- list(A)
+  nets <- list()
   for (li in seq_along(W)) {
     z <- layers[[li]] %*% t(as.matrix(W[[li]]))
     nets[[li]] <- z
@@ -990,7 +1061,8 @@ morie_ann_sse <- function(y_hat, y) {
 #' @noRd
 morie_ann_gradients <- function(X, y, W, activations = NULL) {
   f <- morie_ann_forward(X, W, activations)
-  Y <- as.matrix(y); L <- length(W)
+  Y <- as.matrix(y)
+  L <- length(W)
   acts <- f$activations
   d <- (f$layers[[L + 1]] - Y) *
     matrix(morie_act(acts[L], as.numeric(f$nets[[L]]), TRUE),
@@ -1011,7 +1083,8 @@ morie_ann_gradients <- function(X, y, W, activations = NULL) {
 #' @noRd
 morie_ann_train <- function(X, y, W, eta = 0.1, n_iter = 500L,
                                   activations = NULL, tol = 1e-12) {
-  Wc <- lapply(W, as.matrix); hist <- numeric(0)
+  Wc <- lapply(W, as.matrix)
+  hist <- numeric(0)
   for (it in seq_len(n_iter)) {
     g <- morie_ann_gradients(X, y, Wc, activations)
     hist <- c(hist, g$loss)
@@ -1032,7 +1105,8 @@ morie_ann_numeric_gradient <- function(X, y, W,
     for (u in seq_len(nrow(Wm))) for (v in seq_len(ncol(Wm))) {
       acc <- 0
       for (s in c(1, -1)) {
-        Wp <- lapply(W, as.matrix); Wp[[li]][u, v] <- Wp[[li]][u, v] + s * eps
+        Wp <- lapply(W, as.matrix)
+        Wp[[li]][u, v] <- Wp[[li]][u, v] + s * eps
         acc <- acc + s * morie_ann_sse(
           morie_ann_forward(X, Wp, activations)$output, y)
       }

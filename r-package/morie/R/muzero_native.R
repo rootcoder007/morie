@@ -81,7 +81,8 @@ muzero_select <- function(node, A_keys, mm, c1, c2) {
       (c1 + log((total + c2 + 1) / c2))
     q <- if (ch$visits > 0) mm$normalize(ch$value()) else 0
     score <- q + explore
-    if (score > best) { best <- score; best_a <- k }
+    if (score > best) { best <- score
+    best_a <- k }
   }
   best_a
 }
@@ -232,7 +233,8 @@ muzero_search <- function(observation, actions, representation, dynamics,
     parent <- path[[length(path) - 1L]]
     calls[[1]] <- calls[[1]] + 1L
     out <- dynamics(parent$state, acts[[length(acts)]])
-    r <- as.numeric(out[[1]]); s <- out[[2]]
+    r <- as.numeric(out[[1]])
+    s <- out[[2]]
     node$reward <- r
     pr2 <- predict_fn(s)
     node$expand(s, pr2$p, A)

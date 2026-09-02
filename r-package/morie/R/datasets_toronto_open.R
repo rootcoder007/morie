@@ -149,7 +149,7 @@ morie_datasets_toronto_asr_miscellaneous <- function(offline = TRUE,
 #' @return A `data.frame` of records.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' data(ckan_metadata, package = "morie")
 #' recs <- morie_datasets_toronto_open_ckan_resource(ckan_metadata$package_id[1])
 #' }

@@ -67,7 +67,8 @@ morie_bracken_abundance <- function(kraken_output, kmer_distribution,
   r_use <- ifelse(reachable, r, 0)
 
   theta <- rep(1 / n_sp, n_sp)
-  it <- 0L; converged <- FALSE
+  it <- 0L
+  converged <- FALSE
   for (i in seq_len(max_iter)) {
     it <- i
     w <- P * rep(theta, each = nrow(P))
@@ -75,7 +76,9 @@ morie_bracken_abundance <- function(kraken_output, kmer_distribution,
     post <- w / ifelse(den > 0, den, 1)
     counts <- as.vector(crossprod(post, r_use))
     new <- counts / max(sum(counts), 1e-300)
-    if (max(abs(new - theta)) < tol) { theta <- new; converged <- TRUE; break }
+    if (max(abs(new - theta)) < tol) { theta <- new
+    converged <- TRUE
+    break }
     theta <- new
   }
   w <- P * rep(theta, each = nrow(P))
@@ -158,7 +161,9 @@ morie_ess_autocorrelation <- function(x, max_lag = NULL) {
   for (k in seq_len(m)) {
     rho[k + 1L] <- sum(cc[seq_len(n - k)] * cc[(k + 1L):n]) / denom
   }
-  totl <- 0; used <- 0L; k <- 1L
+  totl <- 0
+  used <- 0L
+  k <- 1L
   while (k + 1L <= m) {
     pair <- rho[k + 1L] + rho[k + 2L]
     if (pair <= 0) break
@@ -285,13 +290,15 @@ morie_tfidf <- function(texts, min_df = 1, max_df = 1) {
 #' morie_bspline_basis(V)
 morie_bspline_basis <- function(x, n_basis = 15L, degree = 3L) {
   x <- as.numeric(x)
-  n_basis <- as.integer(n_basis); degree <- as.integer(degree)
+  n_basis <- as.integer(n_basis)
+  degree <- as.integer(degree)
   if (degree < 0L) stop("degree must be non-negative.", call. = FALSE)
   if (n_basis < degree + 1L) {
     stop(sprintf("n_basis must be at least degree + 1 = %d; got %d",
                  degree + 1L, n_basis), call. = FALSE)
   }
-  a <- min(x); b <- max(x)
+  a <- min(x)
+  b <- max(x)
   if (!(b > a)) stop("the evaluation range is degenerate.", call. = FALSE)
   n_int <- n_basis - degree - 1L
   interior <- seq(a, b, length.out = n_int + 2L)
@@ -352,7 +359,8 @@ morie_face_smooth <- function(Y, argvals = NULL, n_basis = 12L, degree = 3L,
                               lambdas = NULL, pve = 0.99,
                               penalty_order = 2L) {
   M <- as.matrix(Y)
-  n <- nrow(M); p <- ncol(M)
+  n <- nrow(M)
+  p <- ncol(M)
   if (n < 2L) stop(sprintf("need at least two curves; got %d", n), call. = FALSE)
   if (p < 4L) {
     stop(sprintf("need at least four grid points; got %d", p), call. = FALSE)
@@ -382,7 +390,9 @@ morie_face_smooth <- function(Y, argvals = NULL, n_basis = 12L, degree = 3L,
   off <- !diag(TRUE, p)
   if (is.null(lambdas)) lambdas <- 10^seq(-6, 4, length.out = 21L)
 
-  best_gcv <- Inf; lam <- lambdas[1]; S <- NULL
+  best_gcv <- Inf
+  lam <- lambdas[1]
+  S <- NULL
   for (L in lambdas) {
     A <- crossprod(B) + L * P
     Smat <- B %*% tryCatch(solve(A, t(B)),
@@ -391,7 +401,9 @@ morie_face_smooth <- function(Y, argvals = NULL, n_basis = 12L, degree = 3L,
     resid <- (raw - fit)[off]
     denom <- (1 - sum(diag(Smat)) / p)^2
     gcv <- sum(resid^2) / max(denom, 1e-12)
-    if (gcv < best_gcv) { best_gcv <- gcv; lam <- L; S <- Smat }
+    if (gcv < best_gcv) { best_gcv <- gcv
+    lam <- L
+    S <- Smat }
   }
 
   idx <- cbind(seq_len(p), seq_len(p))
@@ -409,15 +421,19 @@ morie_face_smooth <- function(Y, argvals = NULL, n_basis = 12L, degree = 3L,
     filled[idx] <- diag(C)
     Cn <- S %*% filled %*% t(S)
     Cn <- (Cn + t(Cn)) / 2
-    if (max(abs(diag(Cn) - diag(C))) < 1e-12) { C <- Cn; break }
+    if (max(abs(diag(Cn) - diag(C))) < 1e-12) { C <- Cn
+    break }
     C <- Cn
   }
-  klo <- max(as.integer(0.1 * p), 1L); khi <- as.integer(0.9 * p)
-  if (khi <= klo) { klo <- 1L; khi <- p }
+  klo <- max(as.integer(0.1 * p), 1L)
+  khi <- as.integer(0.9 * p)
+  if (khi <= klo) { klo <- 1L
+  khi <- p }
   sigma2 <- mean(pmax((diag(raw) - diag(C))[klo:khi], 0))
 
   ev <- eigen(C, symmetric = TRUE)
-  vals <- ev$values; vecs <- ev$vectors
+  vals <- ev$values
+  vecs <- ev$vectors
   neg <- sum(abs(vals[vals < 0]))
   vals <- pmax(vals, 0)
   totalv <- sum(vals)
@@ -451,12 +467,15 @@ morie_face_smooth <- function(Y, argvals = NULL, n_basis = 12L, degree = 3L,
 #' @return The value of \code{seen}, as built in the body.
 #' @export
 .morie_descendants <- function(A, start) {
-  seen <- integer(0); stack <- start
+  seen <- integer(0)
+  stack <- start
   while (length(stack)) {
-    u <- stack[1]; stack <- stack[-1]
+    u <- stack[1]
+    stack <- stack[-1]
     ch <- which(A[u, ])
     new <- setdiff(ch, seen)
-    seen <- c(seen, new); stack <- c(stack, new)
+    seen <- c(seen, new)
+    stack <- c(stack, new)
   }
   seen
 }
@@ -473,17 +492,21 @@ morie_face_smooth <- function(Y, argvals = NULL, n_basis = 12L, degree = 3L,
 #' @export
 .morie_reachable <- function(A, x, Z) {
   n <- nrow(A)
-  anc <- integer(0); stack <- Z
+  anc <- integer(0)
+  stack <- Z
   while (length(stack)) {
-    u <- stack[1]; stack <- stack[-1]
+    u <- stack[1]
+    stack <- stack[-1]
     if (u %in% anc) next
     anc <- c(anc, u)
     stack <- c(stack, which(A[, u]))
   }
-  seen <- character(0); reach <- integer(0)
+  seen <- character(0)
+  reach <- integer(0)
   frontier <- list(list(u = x, d = "up"))
   while (length(frontier)) {
-    st <- frontier[[1]]; frontier <- frontier[-1]
+    st <- frontier[[1]]
+    frontier <- frontier[-1]
     key <- paste(st$u, st$d)
     if (key %in% seen) next
     seen <- c(seen, key)
@@ -523,7 +546,8 @@ morie_face_smooth <- function(Y, argvals = NULL, n_basis = 12L, degree = 3L,
 #' morie_is_backdoor_admissible(A, 2, 3, integer(0))
 morie_is_backdoor_admissible <- function(adj, treatment, outcome, Z) {
   A <- matrix(as.logical(adj), nrow(adj), ncol(adj))
-  t <- as.integer(treatment); y <- as.integer(outcome)
+  t <- as.integer(treatment)
+  y <- as.integer(outcome)
   Z <- as.integer(Z)
   if (t %in% Z || y %in% Z) return(FALSE)
   desc <- .morie_descendants(A, t)
@@ -549,7 +573,8 @@ morie_is_backdoor_admissible <- function(adj, treatment, outcome, Z) {
 morie_backdoor_sets <- function(adj, treatment, outcome, max_size = NULL) {
   A <- matrix(as.logical(adj), nrow(adj), ncol(adj))
   n <- nrow(A)
-  t <- as.integer(treatment); y <- as.integer(outcome)
+  t <- as.integer(treatment)
+  y <- as.integer(outcome)
   desc <- .morie_descendants(A, t)
   pool <- setdiff(seq_len(n), c(t, y, desc))
   lim <- if (is.null(max_size)) length(pool) else as.integer(max_size)
@@ -614,7 +639,8 @@ morie_identify_estimate_refute <- function(dag, data, treatment, outcome,
     }
   }
   n <- nrow(D)
-  t <- as.integer(treatment); y <- as.integer(outcome)
+  t <- as.integer(treatment)
+  y <- as.integer(outcome)
   if (t == y) stop("treatment and outcome must differ.", call. = FALSE)
   if (any(diag(A))) stop("the dag has a self-loop.", call. = FALSE)
   if (n < p + 3L) {
@@ -627,9 +653,11 @@ morie_identify_estimate_refute <- function(dag, data, treatment, outcome,
     Z <- sort(as.integer(adjustment))
     identified <- morie_is_backdoor_admissible(A, t, y, Z)
   } else if (length(sets)) {
-    Z <- sets[[1]]; identified <- TRUE
+    Z <- sets[[1]]
+    identified <- TRUE
   } else {
-    Z <- integer(0); identified <- FALSE
+    Z <- integer(0)
+    identified <- FALSE
   }
   desc_t <- .morie_descendants(A, t)
   mediators <- intersect(Z, desc_t)
@@ -638,7 +666,8 @@ morie_identify_estimate_refute <- function(dag, data, treatment, outcome,
   fit <- function(dat, tcol, zc) {
     X <- cbind(1, dat[, tcol])
     if (length(zc)) X <- cbind(X, dat[, zc, drop = FALSE])
-    b <- qr.coef(qr(X), dat[, y]); b[is.na(b)] <- 0
+    b <- qr.coef(qr(X), dat[, y])
+    b[is.na(b)] <- 0
     resid <- dat[, y] - as.vector(X %*% b)
     dof <- max(nrow(dat) - ncol(X), 1L)
     s2 <- sum(resid^2) / dof
@@ -646,21 +675,26 @@ morie_identify_estimate_refute <- function(dag, data, treatment, outcome,
     unname(c(b[2], sqrt(max(s2 * XtXi[2, 2], 0))))
   }
   ef <- fit(D, t, Z)
-  eff <- ef[1]; se <- ef[2]
+  eff <- ef[1]
+  se <- ef[2]
 
   set.seed(seed)
-  placebo <- numeric(n_refute); common <- numeric(n_refute)
+  placebo <- numeric(n_refute)
+  common <- numeric(n_refute)
   subset <- numeric(n_refute)
   for (i in seq_len(n_refute)) {
-    Dp <- D; Dp[, t] <- sample(D[, t])
+    Dp <- D
+    Dp[, t] <- sample(D[, t])
     placebo[i] <- fit(Dp, t, Z)[1]
     Dc <- cbind(D, stats::rnorm(n))
     common[i] <- fit(Dc, t, c(Z, p + 1L))[1]
     idx <- sample.int(n, max(as.integer(0.8 * n), p + 3L))
     subset[i] <- fit(D[idx, , drop = FALSE], t, Z)[1]
   }
-  pm <- mean(placebo); psd <- stats::sd(placebo)
-  cm <- mean(common); ssd <- stats::sd(subset)
+  pm <- mean(placebo)
+  psd <- stats::sd(placebo)
+  cm <- mean(common)
+  ssd <- stats::sd(subset)
   pass_p <- abs(pm) < 2 * max(psd, 1e-12)
   pass_c <- abs(cm - eff) < max(0.1 * abs(eff), 2 * se)
   pass_s <- ssd < 3 * max(se, 1e-12)
@@ -745,7 +779,8 @@ morie_identify_estimate_refute <- function(dag, data, treatment, outcome,
 #' str(r, max.level = 1)
 morie_text_ate <- function(texts, T, Y, X = NULL, n_components = 10L,
                            trim = 0.02, alpha = 0.05, embedding = NULL) {
-  tv <- as.numeric(T); yv <- as.numeric(Y)
+  tv <- as.numeric(T)
+  yv <- as.numeric(Y)
   n <- length(tv)
   if (length(yv) != n) {
     stop(sprintf("Y has length %d but T has %d.", length(yv), n), call. = FALSE)
@@ -787,15 +822,19 @@ morie_text_ate <- function(texts, T, Y, X = NULL, n_components = 10L,
   e <- pmin(pmax(e_raw, trim), 1 - trim)
   n_trim <- sum(e_raw < trim | e_raw > 1 - trim)
 
-  m1 <- tv == 1; m0 <- tv == 0
+  m1 <- tv == 1
+  m0 <- tv == 0
   if (sum(m1) < ncol(Wd) + 1L || sum(m0) < ncol(Wd) + 1L) {
     stop(sprintf(paste("an arm has too few units (%d treated, %d control)",
                        "for %d design columns. Reduce n_components."),
                  sum(m1), sum(m0), ncol(Wd)), call. = FALSE)
   }
-  b1 <- qr.coef(qr(Wd[m1, , drop = FALSE]), yv[m1]); b1[is.na(b1)] <- 0
-  b0 <- qr.coef(qr(Wd[m0, , drop = FALSE]), yv[m0]); b0[is.na(b0)] <- 0
-  mu1 <- as.vector(Wd %*% b1); mu0 <- as.vector(Wd %*% b0)
+  b1 <- qr.coef(qr(Wd[m1, , drop = FALSE]), yv[m1])
+  b1[is.na(b1)] <- 0
+  b0 <- qr.coef(qr(Wd[m0, , drop = FALSE]), yv[m0])
+  b0[is.na(b0)] <- 0
+  mu1 <- as.vector(Wd %*% b1)
+  mu0 <- as.vector(Wd %*% b0)
   psi <- mu1 - mu0 + tv * (yv - mu1) / e - (1 - tv) * (yv - mu0) / (1 - e)
   ate <- mean(psi)
   se <- sqrt(mean((psi - ate)^2) / n)
@@ -899,7 +938,8 @@ morie_wnominate_fit <- function(votes, n_dims = 1L, polarity = NULL,
   V <- V[, keep, drop = FALSE]
   obs <- is.finite(V)
   Y <- ifelse(obs, V, 0)
-  n <- nrow(V); m <- ncol(V)
+  n <- nrow(V)
+  m <- ncol(V)
   if (n < n_dims + 2L) {
     stop(sprintf("need at least %d legislators; got %d", n_dims + 2L, n),
          call. = FALSE)
@@ -908,7 +948,8 @@ morie_wnominate_fit <- function(votes, n_dims = 1L, polarity = NULL,
   Cm <- ifelse(obs, Y - 0.5, 0)
   sv <- svd(Cm)
   k <- min(n_dims, ncol(sv$u))
-  x <- matrix(0, n, n_dims); w <- matrix(0, m, n_dims)
+  x <- matrix(0, n, n_dims)
+  w <- matrix(0, m, n_dims)
   x[, seq_len(k)] <- sv$u[, seq_len(k), drop = FALSE]
   w[, seq_len(k)] <- sv$v[, seq_len(k), drop = FALSE] *
     rep(sv$d[seq_len(k)], each = m)
@@ -945,7 +986,10 @@ morie_wnominate_fit <- function(votes, n_dims = 1L, polarity = NULL,
     sum(obs * (Y * log(p) + (1 - Y) * log(1 - p)))
   }
 
-  ll_old <- -Inf; delta <- Inf; it <- 0L; converged <- FALSE
+  ll_old <- -Inf
+  delta <- Inf
+  it <- 0L
+  converged <- FALSE
   for (i in seq_len(max_iter)) {
     it <- i
     for (li in seq_len(n)) {
@@ -958,11 +1002,14 @@ morie_wnominate_fit <- function(votes, n_dims = 1L, polarity = NULL,
       if (sum(oj) < n_dims + 2L) next
       Dm <- cbind(1, x[oj, , drop = FALSE])
       bj <- pfit(Dm, Y[oj, j], c(a[j], w[j, ]))
-      a[j] <- bj[1]; w[j, ] <- bj[-1]
+      a[j] <- bj[1]
+      w[j, ] <- bj[-1]
     }
     ll <- loglik(matrix(a, n, m, byrow = TRUE) + x %*% t(w))
     delta <- abs(ll - ll_old)
-    if (delta < tol * (1 + abs(ll_old))) { ll_old <- ll; converged <- TRUE; break }
+    if (delta < tol * (1 + abs(ll_old))) { ll_old <- ll
+    converged <- TRUE
+    break }
     ll_old <- ll
   }
 
@@ -970,14 +1017,17 @@ morie_wnominate_fit <- function(votes, n_dims = 1L, polarity = NULL,
   a <- a + as.vector(centre %*% t(w))
   x <- x - rep(centre, each = n)
   rms <- sqrt(mean(rowSums(x^2)))
-  if (rms > 0) { x <- x / rms; w <- w * rms }
+  if (rms > 0) { x <- x / rms
+  w <- w * rms }
   flipped <- FALSE
   if (!is.null(polarity)) {
     kk <- as.integer(polarity)
     if (kk < 1L || kk > n) {
       stop(sprintf("polarity must lie in 1 .. %d; got %d", n, kk), call. = FALSE)
     }
-    if (x[kk, 1] < 0) { x[, 1] <- -x[, 1]; w[, 1] <- -w[, 1]; flipped <- TRUE }
+    if (x[kk, 1] < 0) { x[, 1] <- -x[, 1]
+    w[, 1] <- -w[, 1]
+    flipped <- TRUE }
   }
   eta <- matrix(a, n, m, byrow = TRUE) + x %*% t(w)
   pred <- (eta > 0) * 1

@@ -246,7 +246,8 @@ morie_partition_count <- function(n, distinct = FALSE, odd_only = FALSE) {
 #' @examples
 #' morie_partitions_into_parts(n = 5L, k = 5L)
 morie_partitions_into_parts <- function(n, k) {
-  n <- as.integer(n); k <- as.integer(k)
+  n <- as.integer(n)
+  k <- as.integer(k)
   if (is.na(n) || is.na(k) || n < 0L || k < 0L) {
     stop("n and k must be non-negative.", call. = FALSE)
   }
@@ -310,13 +311,16 @@ morie_twelvefold_way <- function(n, k, balls = c("labelled", "unlabelled"),
                                  boxes = c("labelled", "unlabelled"),
                                  condition = c("any", "injective",
                                                "surjective")) {
-  balls <- match.arg(balls); boxes <- match.arg(boxes)
+  balls <- match.arg(balls)
+  boxes <- match.arg(boxes)
   condition <- match.arg(condition)
-  n <- as.integer(n); k <- as.integer(k)
+  n <- as.integer(n)
+  k <- as.integer(k)
   if (is.na(n) || is.na(k) || n < 0L || k < 0L) {
     stop("n and k must be non-negative.", call. = FALSE)
   }
-  lb <- balls == "labelled"; lx <- boxes == "labelled"
+  lb <- balls == "labelled"
+  lx <- boxes == "labelled"
   falling <- function(a, b) {
     out <- morie_bigint(1)
     if (b > a) return(morie_bigint(0))
@@ -325,18 +329,22 @@ morie_twelvefold_way <- function(n, k, balls = c("labelled", "unlabelled"),
     out
   }
   if (lb && lx) {
-    if (condition == "any") { cnt <- morie_big_pow(k, n); f <- "k^n" }
+    if (condition == "any") { cnt <- morie_big_pow(k, n)
+    f <- "k^n" }
     else if (condition == "injective") {
-      cnt <- falling(k, n); f <- "k falling factorial n"
+      cnt <- falling(k, n)
+      f <- "k falling factorial n"
     } else {
       cnt <- morie_big_mul(morie_big_factorial(k), morie_stirling_second(n, k))
       f <- "k! S(n,k)"
     }
   } else if (!lb && lx) {
     if (condition == "any") {
-      cnt <- morie_big_binom(n + k - 1L, n); f <- "C(n+k-1, n)"
+      cnt <- morie_big_binom(n + k - 1L, n)
+      f <- "C(n+k-1, n)"
     } else if (condition == "injective") {
-      cnt <- morie_big_binom(k, n); f <- "C(k, n)"
+      cnt <- morie_big_binom(k, n)
+      f <- "C(k, n)"
     } else {
       cnt <- if (n >= k && k >= 1L) morie_big_binom(n - 1L, n - k) else
         morie_bigint(if (n == 0L && k == 0L) 1 else 0)
@@ -348,8 +356,10 @@ morie_twelvefold_way <- function(n, k, balls = c("labelled", "unlabelled"),
       for (j in 0:k) cnt <- morie_big_add(cnt, morie_stirling_second(n, j))
       f <- "sum_j S(n,j)"
     } else if (condition == "injective") {
-      cnt <- morie_bigint(if (n <= k) 1 else 0); f <- "[n <= k]"
-    } else { cnt <- morie_stirling_second(n, k); f <- "S(n,k)" }
+      cnt <- morie_bigint(if (n <= k) 1 else 0)
+      f <- "[n <= k]"
+    } else { cnt <- morie_stirling_second(n, k)
+    f <- "S(n,k)" }
   } else {
     if (condition == "any") {
       cnt <- morie_bigint(0)
@@ -357,8 +367,10 @@ morie_twelvefold_way <- function(n, k, balls = c("labelled", "unlabelled"),
                                           morie_partitions_into_parts(n, j))
       f <- "sum_j p(n,j)"
     } else if (condition == "injective") {
-      cnt <- morie_bigint(if (n <= k) 1 else 0); f <- "[n <= k]"
-    } else { cnt <- morie_partitions_into_parts(n, k); f <- "p(n,k)" }
+      cnt <- morie_bigint(if (n <= k) 1 else 0)
+      f <- "[n <= k]"
+    } else { cnt <- morie_partitions_into_parts(n, k)
+    f <- "p(n,k)" }
   }
   list(count = cnt, formula = f,
        cell = sprintf("%s balls, %s boxes, %s", balls, boxes, condition),
@@ -406,10 +418,14 @@ morie_mobius_inversion <- function(f_values) {
     g[m] <- sum(mu[m %/% d] * f[d])
   }
   rebuilt <- vapply(seq_len(n), function(m) {
-    d <- seq_len(m); d <- d[m %% d == 0]; sum(g[d])
+    d <- seq_len(m)
+    d <- d[m %% d == 0]
+    sum(g[d])
   }, numeric(1))
   sums <- vapply(seq_len(n), function(m) {
-    d <- seq_len(m); d <- d[m %% d == 0]; sum(mu[d])
+    d <- seq_len(m)
+    d <- d[m %% d == 0]
+    sum(mu[d])
   }, numeric(1))
   list(g = g, mobius = mu, divisor_sums = sums,
        reconstruction_residual = max(abs(f - rebuilt)),

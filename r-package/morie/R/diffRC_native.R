@@ -86,7 +86,8 @@ forward_corrupt <- function(x0, alpha_bar_t, e = NULL) {
 #' @export
 posterior_mean <- function(x_t, x0_hat, alpha_bar_t, alpha_bar_prev,
                             beta_t) {
-  xt <- as.numeric(x_t); x0 <- as.numeric(x0_hat)
+  xt <- as.numeric(x_t)
+  x0 <- as.numeric(x0_hat)
   if (length(xt) != length(x0))
     stop("diffRC: x_t and the estimate of x_0 differ in length")
   ab <- as.numeric(alpha_bar_t)

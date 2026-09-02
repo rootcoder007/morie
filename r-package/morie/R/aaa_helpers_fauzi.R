@@ -103,7 +103,8 @@
 #' the last bit rather than merely to plotting accuracy.
 #' @noRd
 .morie_fauzi_ksone <- function(d, n) {
-  d <- as.numeric(d); n <- as.integer(n)
+  d <- as.numeric(d)
+  n <- as.integer(n)
   if (d <= 0) return(0)
   if (d >= 1) return(1)
   limit <- as.integer(n * (1 - d))

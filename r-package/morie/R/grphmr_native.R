@@ -35,14 +35,19 @@
 morie_grphmr <- function(H, WQ, WK, WV, bias, edge_bias = NULL) {
   X <- as.matrix(H)
   storage.mode(X) <- "double"
-  n <- nrow(X); dk <- ncol(X)
-  bias <- as.matrix(bias); storage.mode(bias) <- "double"
+  n <- nrow(X)
+  dk <- ncol(X)
+  bias <- as.matrix(bias)
+  storage.mode(bias) <- "double"
   if (nrow(bias) != n || ncol(bias) != n)
     stop("grphmr: bias must be N x N")
 
-  WQ <- as.matrix(WQ); storage.mode(WQ) <- "double"
-  WK <- as.matrix(WK); storage.mode(WK) <- "double"
-  WV <- as.matrix(WV); storage.mode(WV) <- "double"
+  WQ <- as.matrix(WQ)
+  storage.mode(WQ) <- "double"
+  WK <- as.matrix(WK)
+  storage.mode(WK) <- "double"
+  WV <- as.matrix(WV)
+  storage.mode(WV) <- "double"
   if (nrow(WQ) != dk || ncol(WQ) != dk) stop("grphmr: WQ shape")
   if (nrow(WK) != dk || ncol(WK) != dk) stop("grphmr: WK shape")
   if (nrow(WV) != dk || ncol(WV) != dk) stop("grphmr: WV shape")
@@ -51,14 +56,16 @@ morie_grphmr <- function(H, WQ, WK, WV, bias, edge_bias = NULL) {
   if (!is.null(edge_bias)) {
     eb <- matrix(0, n, n)
     if (is.matrix(edge_bias) || is.numeric(edge_bias)) {
-      M <- as.matrix(edge_bias); storage.mode(M) <- "double"
+      M <- as.matrix(edge_bias)
+      storage.mode(M) <- "double"
       if (nrow(M) != n || ncol(M) != n) stop("grphmr: edge_bias shape")
       eb <- M
     } else {
       for (k in seq_along(edge_bias)) {
         key <- names(edge_bias)[k]
         ij <- strsplit(key, ",", fixed = TRUE)[[1]]
-        i <- as.integer(ij[1]); j <- as.integer(ij[2])
+        i <- as.integer(ij[1])
+        j <- as.integer(ij[2])
         eb[i + 1L, j + 1L] <- as.numeric(edge_bias[k])
       }
     }
@@ -150,7 +157,8 @@ morie_grphmr_sp <- function(adj, n) {
   D <- matrix(-1L, N, N)
   for (s in seq_len(N) - 1L) {
     D[s + 1L, s + 1L] <- 0L
-    seen <- rep(FALSE, N); seen[s + 1L] <- TRUE
+    seen <- rep(FALSE, N)
+    seen[s + 1L] <- TRUE
     frontier <- s
     d <- 0L
     while (length(frontier) > 0L) {
@@ -223,7 +231,8 @@ morie_grphmr_edge <- function(paths, edge_features, w_table) {
   out <- list()
   for (key in names(paths)) {
     path <- paths[[key]]
-    if (length(path) == 0L) { out[[key]] <- 0.0; next }
+    if (length(path) == 0L) { out[[key]] <- 0.0
+    next }
     acc <- 0.0
     for (step in seq_along(path)) {
       e <- path[step]

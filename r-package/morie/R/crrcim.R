@@ -26,14 +26,21 @@
   if (any(t < 0)) stop("times must be non-negative")
   cause <- as.numeric(cause)
   o <- order(t, seq_len(n))
-  ts <- t[o]; es <- ev[o]
-  times <- c(); F <- c(); S <- c(); atrisk <- c(); dk <- c()
-  surv <- 1; cif <- 0
+  ts <- t[o]
+  es <- ev[o]
+  times <- c()
+  F <- c()
+  S <- c()
+  atrisk <- c()
+  dk <- c()
+  surv <- 1
+  cif <- 0
   i <- 1L
   while (i <= n) {
     u <- ts[i]
     j <- i
-    d_all <- 0L; d_k <- 0L
+    d_all <- 0L
+    d_k <- 0L
     while (j <= n && ts[j] == u) {
       if (es[j] != 0) {
         d_all <- d_all + 1L
@@ -45,8 +52,11 @@
     if (d_all > 0L) {
       cif <- cif + surv * d_k / Y
       surv <- surv * (1 - d_all / Y)
-      times <- c(times, u); F <- c(F, cif); S <- c(S, surv)
-      atrisk <- c(atrisk, Y); dk <- c(dk, d_k)
+      times <- c(times, u)
+      F <- c(F, cif)
+      S <- c(S, surv)
+      atrisk <- c(atrisk, Y)
+      dk <- c(dk, d_k)
     }
     i <- j
   }

@@ -113,7 +113,8 @@
 #' @return A list with \code{W}, \code{b}.
 #' @export
 .alfesf_fit_multinomial <- function(X, y, n_bins, l2, iters, lr) {
-  n <- nrow(X); d <- ncol(X)
+  n <- nrow(X)
+  d <- ncol(X)
   W <- matrix(0.0, d, n_bins)
   b <- numeric(n_bins)
   for (it in seq_len(as.integer(iters))) {
@@ -201,7 +202,8 @@ morie_alfesf_esmfold_confidence <- function(lddt_logits = NULL,
                                             iters = 300L, lr = 0.5,
                                             pae_bin_width = 0.5) {
   route <- NULL
-  fitted_W <- NULL; fitted_b <- NULL
+  fitted_W <- NULL
+  fitted_b <- NULL
 
   if (!is.null(features) && !is.null(lddt)) {
     X <- .alfesf_rows(features, "alfesf features")
@@ -215,7 +217,8 @@ morie_alfesf_esmfold_confidence <- function(lddt_logits = NULL,
     y <- pmin(as.integer(obs / 100.0 * .alfesf_LDDT_BINS),
               .alfesf_LDDT_BINS - 1L)
     fit <- .alfesf_fit_multinomial(X, y, .alfesf_LDDT_BINS, l2, iters, lr)
-    fitted_W <- fit$W; fitted_b <- fit$b
+    fitted_W <- fit$W
+    fitted_b <- fit$b
     lddt_logits <- X %*% fitted_W
     for (cc in seq_len(ncol(lddt_logits)))
       lddt_logits[, cc] <- lddt_logits[, cc] + fitted_b[cc]
@@ -271,7 +274,10 @@ morie_alfesf_esmfold_confidence <- function(lddt_logits = NULL,
     plddt <- as.numeric(P %*% cen)
   }
 
-  ptm <- NULL; iptm <- NULL; pae <- NULL; d0 <- NULL
+  ptm <- NULL
+  iptm <- NULL
+  pae <- NULL
+  d0 <- NULL
   if (!is.null(pae_logits)) {
     flat <- .alfesf_rows(pae_logits, "alfesf pae_logits")
     n <- as.integer(round(sqrt(nrow(flat))))

@@ -37,25 +37,35 @@
     }
     j <- bitwOr(j, bit)
     if (i < j) {
-      tt <- re[i + 1L]; re[i + 1L] <- re[j + 1L]; re[j + 1L] <- tt
-      tt <- im[i + 1L]; im[i + 1L] <- im[j + 1L]; im[j + 1L] <- tt
+      tt <- re[i + 1L]
+      re[i + 1L] <- re[j + 1L]
+      re[j + 1L] <- tt
+      tt <- im[i + 1L]
+      im[i + 1L] <- im[j + 1L]
+      im[j + 1L] <- tt
     }
   }
   len <- 2L
   while (len <= n) {
     ang <- -2 * pi / len
-    wr <- cos(ang); wi <- sin(ang)
+    wr <- cos(ang)
+    wi <- sin(ang)
     half <- bitwShiftR(len, 1L)
     i <- 0L
     while (i < n) {
-      cr <- 1; ci <- 0
+      cr <- 1
+      ci <- 0
       for (k in i:(i + half - 1L)) {
-        ur <- re[k + 1L]; ui <- im[k + 1L]
-        br <- re[k + half + 1L]; bi <- im[k + half + 1L]
+        ur <- re[k + 1L]
+        ui <- im[k + 1L]
+        br <- re[k + half + 1L]
+        bi <- im[k + half + 1L]
         vr <- br * cr - bi * ci
         vi <- br * ci + bi * cr
-        re[k + 1L] <- ur + vr; im[k + 1L] <- ui + vi
-        re[k + half + 1L] <- ur - vr; im[k + half + 1L] <- ui - vi
+        re[k + 1L] <- ur + vr
+        im[k + 1L] <- ui + vi
+        re[k + half + 1L] <- ur - vr
+        im[k + half + 1L] <- ui - vi
         ncr <- cr * wr - ci * wi
         ci <- cr * wi + ci * wr
         cr <- ncr
@@ -131,16 +141,19 @@
 .bsapeaks <- function(freqs, power, count = 3L, minsep = 0) {
   # Local maxima of power, strongest first, at least minsep Hz apart.
   np <- length(power)
-  of <- numeric(0); op <- numeric(0)
+  of <- numeric(0)
+  op <- numeric(0)
   if (np >= 3L) {
     k <- 2:(np - 1L)
     sel <- k[power[k] > power[k - 1L] & power[k] >= power[k + 1L]]
     if (length(sel)) {
       o <- order(power[sel], freqs[sel], decreasing = TRUE)
-      cp <- power[sel][o]; cf <- freqs[sel][o]
+      cp <- power[sel][o]
+      cf <- freqs[sel][o]
       for (i in seq_along(cp)) {
         if (!length(of) || all(abs(cf[i] - of) >= minsep)) {
-          of <- c(of, cf[i]); op <- c(op, cp[i])
+          of <- c(of, cf[i])
+          op <- c(op, cp[i])
         }
         if (length(of) >= count) break
       }
@@ -204,7 +217,8 @@
     }
     a <- newa
     e <- e * (1 - k * k)
-    if (e <= 0) { e <- 1e-30; break }
+    if (e <= 0) { e <- 1e-30
+    break }
   }
   list(a = a[-1L], e = e)
 }
@@ -226,7 +240,8 @@
   i <- seq_len(npts) - 1L
   f <- 0.5 * fs * i / (npts - 1L)
   w <- 2 * pi * f / fs
-  dr <- rep(1, npts); di <- rep(0, npts)
+  dr <- rep(1, npts)
+  di <- rep(0, npts)
   for (k in seq_along(a)) {
     dr <- dr + a[k] * cos(-w * k)
     di <- di + a[k] * sin(-w * k)
@@ -281,9 +296,12 @@
   if (!length(freqs)) return(list(bandwidth_hz = NULL, q = NULL))
   i <- which.min(abs(freqs - fpeak))
   half <- power[i] / 2
-  lo <- NULL; hi <- NULL
-  for (k in i:1L) if (power[k] <= half) { lo <- freqs[k]; break }
-  for (k in i:length(freqs)) if (power[k] <= half) { hi <- freqs[k]; break }
+  lo <- NULL
+  hi <- NULL
+  for (k in i:1L) if (power[k] <= half) { lo <- freqs[k]
+  break }
+  for (k in i:length(freqs)) if (power[k] <= half) { hi <- freqs[k]
+  break }
   if (is.null(lo) || is.null(hi) || hi <= lo)
     return(list(bandwidth_hz = NULL, q = NULL))
   bw <- hi - lo
@@ -313,7 +331,9 @@
   }
   d1 <- diff(xs)
   d2 <- diff(d1)
-  a0 <- vr(xs); a1 <- vr(d1); a2 <- vr(d2)
+  a0 <- vr(xs)
+  a1 <- vr(d1)
+  a2 <- vr(d2)
   if (a0 <= 0 || a1 <= 0)
     stop("signal is constant; Hjorth parameters undefined")
   mob <- sqrt(a1 / a0)
@@ -429,9 +449,11 @@ ApWave <- function(t, v_rest = -70, v_peak = 30, t_rise = 0.5, t_fall = 1,
                    t_onset = 0, v_undershoot = NULL, t_recover = NULL) {
   ts <- as.numeric(t)
   if (!length(ts)) stop("t must contain at least one time point (ms)")
-  v_rest <- as.numeric(v_rest); v_peak <- as.numeric(v_peak)
+  v_rest <- as.numeric(v_rest)
+  v_peak <- as.numeric(v_peak)
   if (v_peak <= v_rest) stop("v_peak must exceed v_rest (mV)")
-  t_rise <- as.numeric(t_rise); t_fall <- as.numeric(t_fall)
+  t_rise <- as.numeric(t_rise)
+  t_fall <- as.numeric(t_fall)
   if (t_rise <= 0) stop("t_rise must be positive (ms)")
   if (t_fall <= 0) stop("t_fall must be positive (ms)")
   t_onset <- as.numeric(t_onset)
@@ -503,7 +525,9 @@ Ghk <- function(ion_concs, P_K = 1, P_Na = 0.04, P_Cl = 0.45, T = 310.15) {
   }
   T <- as.numeric(T)
   if (T <= 0) stop("T must be a positive absolute temperature in kelvin")
-  P_K <- as.numeric(P_K); P_Na <- as.numeric(P_Na); P_Cl <- as.numeric(P_Cl)
+  P_K <- as.numeric(P_K)
+  P_Na <- as.numeric(P_Na)
+  P_Cl <- as.numeric(P_Cl)
   if (min(P_K, P_Na, P_Cl) < 0) stop("permeabilities must be non-negative")
   if (P_K + P_Na + P_Cl <= 0)
     stop("at least one permeability must be positive")
@@ -540,8 +564,10 @@ Ghk <- function(ion_concs, P_K = 1, P_Na = 0.04, P_Cl = 0.45, T = 310.15) {
 #' @export
 Nernst <- function(T = 310.15, z = 1, conc_out = 5, conc_in = 140,
                    ion = "K+") {
-  T <- as.numeric(T); z <- as.numeric(z)
-  conc_out <- as.numeric(conc_out); conc_in <- as.numeric(conc_in)
+  T <- as.numeric(T)
+  z <- as.numeric(z)
+  conc_out <- as.numeric(conc_out)
+  conc_in <- as.numeric(conc_in)
   if (T <= 0) stop("T must be a positive absolute temperature in kelvin")
   if (z == 0) stop("z (ionic valence) must be non-zero")
   if (conc_out <= 0 || conc_in <= 0)
@@ -575,7 +601,8 @@ Nernst <- function(T = 310.15, z = 1, conc_out = 5, conc_in = 140,
 #' @return A list with \code{V_mV}, \code{dt_ms}, \code{steps}, \code{m}, \code{h}, \code{n}, \code{m_inf}, \code{h_inf}, \code{n_inf}, \code{tau_m_ms}, \code{tau_h_ms}, \code{tau_n_ms}, \code{alpha_per_ms}, \code{beta_per_ms}, \code{units}, \code{method}.
 #' @export
 HhGate <- function(V, dt = 0.01, m = NULL, h = NULL, n = NULL, steps = 1L) {
-  V <- as.numeric(V); dt <- as.numeric(dt)
+  V <- as.numeric(V)
+  dt <- as.numeric(dt)
   if (dt <= 0) stop("dt must be positive (ms)")
   steps <- as.integer(steps)
   if (steps < 1L) stop("steps must be at least 1")
@@ -585,7 +612,10 @@ HhGate <- function(V, dt = 0.01, m = NULL, h = NULL, n = NULL, steps = 1L) {
                list("h", rt[["ah"]], rt[["bh"]], h),
                list("n", rt[["an"]], rt[["bn"]], n))
   for (s in spec) {
-    nm <- s[[1L]]; a <- s[[2L]]; b <- s[[3L]]; x0 <- s[[4L]]
+    nm <- s[[1L]]
+    a <- s[[2L]]
+    b <- s[[3L]]
+    x0 <- s[[4L]]
     tot <- a + b
     if (tot <= 0) stop(paste0("degenerate rate constants for gate ", nm))
     xinf <- a / tot
@@ -641,7 +671,8 @@ HhGate <- function(V, dt = 0.01, m = NULL, h = NULL, n = NULL, steps = 1L) {
 HhModel <- function(duration = 30, dt = 0.01, I_ext = 10, stim_start = 5,
                     stim_stop = 6, C_m = 1, g_Na = 120, g_K = 36, g_L = 0.3,
                     E_Na = 50, E_K = -77, E_L = -54.387, V0 = -65) {
-  duration <- as.numeric(duration); dt <- as.numeric(dt)
+  duration <- as.numeric(duration)
+  dt <- as.numeric(dt)
   if (duration <= 0) stop("duration must be positive (ms)")
   if (!(dt > 0 && dt <= 1))
     stop("dt must be in (0, 1] ms for a stable RK4 integration")
@@ -650,10 +681,15 @@ HhModel <- function(duration = 30, dt = 0.01, I_ext = 10, stim_start = 5,
   if (min(as.numeric(g_Na), as.numeric(g_K), as.numeric(g_L)) < 0)
     stop("conductances must be non-negative (mS/cm^2)")
   C_m <- as.numeric(C_m)
-  g_Na <- as.numeric(g_Na); g_K <- as.numeric(g_K); g_L <- as.numeric(g_L)
-  E_Na <- as.numeric(E_Na); E_K <- as.numeric(E_K); E_L <- as.numeric(E_L)
+  g_Na <- as.numeric(g_Na)
+  g_K <- as.numeric(g_K)
+  g_L <- as.numeric(g_L)
+  E_Na <- as.numeric(E_Na)
+  E_K <- as.numeric(E_K)
+  E_L <- as.numeric(E_L)
   I_ext <- as.numeric(I_ext)
-  stim_start <- as.numeric(stim_start); stim_stop <- as.numeric(stim_stop)
+  stim_start <- as.numeric(stim_start)
+  stim_stop <- as.numeric(stim_stop)
   stim <- function(tt) if (stim_start <= tt && tt < stim_stop) I_ext else 0
   deriv <- function(tt, V, m, h, n) {
     rt <- .bsahhrates(V)
@@ -671,8 +707,16 @@ HhModel <- function(duration = 30, dt = 0.01, I_ext = 10, stim_start = 5,
   h <- rt[["ah"]] / (rt[["ah"]] + rt[["bh"]])
   n <- rt[["an"]] / (rt[["an"]] + rt[["bn"]])
   nsteps <- as.integer(round(duration / dt))
-  ts <- numeric(nsteps + 1L); Vs <- ts; ms <- ts; hs <- ts; ns <- ts
-  ts[1L] <- 0; Vs[1L] <- V; ms[1L] <- m; hs[1L] <- h; ns[1L] <- n
+  ts <- numeric(nsteps + 1L)
+  Vs <- ts
+  ms <- ts
+  hs <- ts
+  ns <- ts
+  ts[1L] <- 0
+  Vs[1L] <- V
+  ms[1L] <- m
+  hs[1L] <- h
+  ns[1L] <- n
   for (i in seq_len(nsteps)) {
     tt <- (i - 1L) * dt
     y <- c(V, m, h, n)
@@ -689,7 +733,10 @@ HhModel <- function(duration = 30, dt = 0.01, I_ext = 10, stim_start = 5,
     h <- min(1, max(0, y[3L]))
     n <- min(1, max(0, y[4L]))
     ts[i + 1L] <- i * dt
-    Vs[i + 1L] <- V; ms[i + 1L] <- m; hs[i + 1L] <- h; ns[i + 1L] <- n
+    Vs[i + 1L] <- V
+    ms[i + 1L] <- m
+    hs[i + 1L] <- h
+    ns[i + 1L] <- n
   }
   iNa <- g_Na * ms^3 * hs * (Vs - E_Na)
   iK <- g_K * ns^4 * (Vs - E_K)
@@ -734,11 +781,14 @@ HhModel <- function(duration = 30, dt = 0.01, I_ext = 10, stim_start = 5,
 Fhn <- function(duration = 200, dt = 0.01, I_ext = 0.5, a = 0.7, b = 0.8,
                 eps = 0.08, v0 = -1.2, w0 = -0.6, stim_start = 0,
                 stim_stop = NULL) {
-  duration <- as.numeric(duration); dt <- as.numeric(dt)
+  duration <- as.numeric(duration)
+  dt <- as.numeric(dt)
   if (duration <= 0) stop("duration must be positive")
   if (!(dt > 0 && dt <= 1))
     stop("dt must be in (0, 1] for a stable RK4 integration")
-  a <- as.numeric(a); b <- as.numeric(b); eps <- as.numeric(eps)
+  a <- as.numeric(a)
+  b <- as.numeric(b)
+  eps <- as.numeric(eps)
   if (eps <= 0) stop("eps must be positive (fast/slow time-scale ratio)")
   if (b <= 0) stop("b must be positive for a restoring recovery variable")
   I_ext <- as.numeric(I_ext)
@@ -749,10 +799,15 @@ Fhn <- function(duration = 200, dt = 0.01, I_ext = 0.5, a = 0.7, b = 0.8,
     cur <- if (stim_start <= tt && tt < stop_t) I_ext else 0
     c(v - v^3 / 3 - w + cur, eps * (v + a - b * w))
   }
-  v <- as.numeric(v0); w <- as.numeric(w0)
+  v <- as.numeric(v0)
+  w <- as.numeric(w0)
   nsteps <- as.integer(round(duration / dt))
-  ts <- numeric(nsteps + 1L); vs <- ts; ws <- ts
-  ts[1L] <- 0; vs[1L] <- v; ws[1L] <- w
+  ts <- numeric(nsteps + 1L)
+  vs <- ts
+  ws <- ts
+  ts[1L] <- 0
+  vs[1L] <- v
+  ws[1L] <- w
   for (i in seq_len(nsteps)) {
     tt <- (i - 1L) * dt
     k1 <- deriv(tt, v, w)
@@ -762,7 +817,8 @@ Fhn <- function(duration = 200, dt = 0.01, I_ext = 0.5, a = 0.7, b = 0.8,
     v <- v + dt / 6 * (k1[1L] + 2 * k2[1L] + 2 * k3[1L] + k4[1L])
     w <- w + dt / 6 * (k1[2L] + 2 * k2[2L] + 2 * k3[2L] + k4[2L])
     ts[i + 1L] <- i * dt
-    vs[i + 1L] <- v; ws[i + 1L] <- w
+    vs[i + 1L] <- v
+    ws[i + 1L] <- w
   }
   spikes <- ts[-1L][vs[-length(vs)] <= 1 & vs[-1L] > 1]
   period <- if (length(spikes) > 1L)
@@ -798,7 +854,9 @@ RcMemb <- function(t, I_inj = 0, C_m = 0.2, R_m = 100, V_rest = -65) {
   if (length(ts) < 1L)
     stop("t must contain at least one time point (ms)")
   if (any(diff(ts) < 0)) stop("t must be non-decreasing (ms)")
-  C_m <- as.numeric(C_m); R_m <- as.numeric(R_m); V_rest <- as.numeric(V_rest)
+  C_m <- as.numeric(C_m)
+  R_m <- as.numeric(R_m)
+  V_rest <- as.numeric(V_rest)
   if (C_m <= 0) stop("C_m must be positive (nF)")
   if (R_m <= 0) stop("R_m must be positive (MOhm)")
   cur <- as.numeric(I_inj)
@@ -860,17 +918,21 @@ BiDomain <- function(n_nodes = 100, dx_cm = 0.02, duration_ms = 60,
                      I_ion_peak = 10, threshold_frac = 0.25) {
   n <- as.integer(n_nodes)
   if (n < 5L) stop("n_nodes must be at least 5")
-  dx <- as.numeric(dx_cm); dt <- as.numeric(dt_ms)
+  dx <- as.numeric(dx_cm)
+  dt <- as.numeric(dt_ms)
   if (dx <= 0) stop("dx_cm must be positive (cm)")
   if (dt <= 0) stop("dt_ms must be positive (ms)")
   dur <- as.numeric(duration_ms)
   if (dur <= 0) stop("duration_ms must be positive (ms)")
-  si <- as.numeric(sigma_i); se <- as.numeric(sigma_e)
+  si <- as.numeric(sigma_i)
+  se <- as.numeric(sigma_e)
   if (si <= 0 || se <= 0) stop("sigma_i and sigma_e must be positive (mS/cm)")
-  C_m <- as.numeric(C_m); Sv <- as.numeric(Sv)
+  C_m <- as.numeric(C_m)
+  Sv <- as.numeric(Sv)
   if (C_m <= 0) stop("C_m must be positive (uF/cm^2)")
   if (Sv <= 0) stop("Sv must be positive (1/cm)")
-  v_rest <- as.numeric(v_rest); v_peak <- as.numeric(v_peak)
+  v_rest <- as.numeric(v_rest)
+  v_peak <- as.numeric(v_peak)
   if (v_peak <= v_rest) stop("v_peak must exceed v_rest (mV)")
   ns <- as.integer(stim_nodes)
   if (!(ns >= 1L && ns <= n))
@@ -921,13 +983,21 @@ BiDomain <- function(n_nodes = 100, dx_cm = 0.02, duration_ms = 60,
   rhs <- -si * (lo - 2 * V + hi) / (dx * dx)
   # Thomas algorithm on (si+se)/dx^2 * tridiag(1, -2, 1), node 1 pinned.
   k <- (si + se) / (dx * dx)
-  a <- rep(0, n); b <- rep(0, n); cc <- rep(0, n); d <- rhs
-  b[1L] <- 1; cc[1L] <- 0; d[1L] <- 0                # gauge pin
+  a <- rep(0, n)
+  b <- rep(0, n)
+  cc <- rep(0, n)
+  d <- rhs
+  b[1L] <- 1
+  cc[1L] <- 0
+  d[1L] <- 0                # gauge pin
   if (n > 2L) {
     mid <- 2:(n - 1L)
-    a[mid] <- k; b[mid] <- -2 * k; cc[mid] <- k
+    a[mid] <- k
+    b[mid] <- -2 * k
+    cc[mid] <- k
   }
-  a[n] <- k; b[n] <- -k
+  a[n] <- k
+  b[n] <- -k
   for (i in 2:n) {
     if (b[i - 1L] == 0)
       stop("singular extracellular system; check conductivities")
@@ -947,7 +1017,8 @@ BiDomain <- function(n_nodes = 100, dx_cm = 0.02, duration_ms = 60,
   keep <- !is.na(act)
   cv <- NULL
   if (sum(keep) > 2L) {
-    tt <- act[keep]; xx <- xs[keep]
+    tt <- act[keep]
+    xx <- xs[keep]
     mt <- .morie_fsum(tt) / length(tt)
     mx <- .morie_fsum(xx) / length(xx)
     den <- .morie_fsum((tt - mt) * (tt - mt))
@@ -1038,7 +1109,8 @@ CadAcou <- function(coronary_sound, fs, order = 8, hf_band = c(300, 900),
 #' @export
 CorSound <- function(diameter, flow_velocity, stenosis_pct = 0, p2max = 1,
                      freqs = NULL, nu = 3.5e-6) {
-  D <- as.numeric(diameter); U <- as.numeric(flow_velocity)
+  D <- as.numeric(diameter)
+  U <- as.numeric(flow_velocity)
   if (D <= 0) stop("diameter must be positive (m)")
   if (U <= 0) stop("flow_velocity must be positive (m/s)")
   s <- as.numeric(stenosis_pct)
@@ -1095,7 +1167,8 @@ InfantCry <- function(cry, fs, window_ms = 40, f0_range = c(200, 1000),
   xs <- as.numeric(cry)
   fs <- as.numeric(fs)
   if (fs <= 0) stop("fs must be positive (Hz)")
-  flo <- as.numeric(f0_range[1L]); fhi <- as.numeric(f0_range[2L])
+  flo <- as.numeric(f0_range[1L])
+  fhi <- as.numeric(f0_range[2L])
   if (!(flo > 0 && flo < fhi)) stop("f0_range must satisfy 0 < lo < hi (Hz)")
   if (fhi * 2 > fs)
     stop("fs must exceed twice the upper edge of f0_range")
@@ -1116,7 +1189,8 @@ InfantCry <- function(cry, fs, window_ms = 40, f0_range = c(200, 1000),
     stop("window is too short for the requested f0_range")
   track <- vector("list", nwin)
   tt <- numeric(nwin)
-  best_seg <- NULL; best_rms <- -1
+  best_seg <- NULL
+  best_rms <- -1
   for (i in seq_len(nwin)) {
     seg <- xs[((i - 1L) * w + 1L):(i * w)]
     tt[i] <- (i - 1L) * w / fs
@@ -1128,7 +1202,8 @@ InfantCry <- function(cry, fs, window_ms = 40, f0_range = c(200, 1000),
     if (acf[k + 1L] / acf[1L] < 0.3) next
     track[[i]] <- fs / k
     r <- .bsarms(seg)
-    if (r > best_rms) { best_rms <- r; best_seg <- seg }
+    if (r > best_rms) { best_rms <- r
+    best_seg <- seg }
   }
   voiced <- unlist(track[!vapply(track, is.null, logical(1))])
   if (!length(voiced))
@@ -1194,7 +1269,8 @@ InfantCry <- function(cry, fs, window_ms = 40, f0_range = c(200, 1000),
 EggFeat <- function(egg, fs, normal_band = c(0.0333, 0.0667)) {
   fs <- as.numeric(fs)
   if (fs <= 0) stop("fs must be positive (Hz)")
-  lo <- as.numeric(normal_band[1L]); hi <- as.numeric(normal_band[2L])
+  lo <- as.numeric(normal_band[1L])
+  hi <- as.numeric(normal_band[2L])
   if (!(lo > 0 && lo < hi)) stop("normal_band must satisfy 0 < lo < hi (Hz)")
   if (hi > fs / 2)
     stop("normal_band upper edge exceeds the Nyquist frequency")
@@ -1204,7 +1280,8 @@ EggFeat <- function(egg, fs, normal_band = c(0.0333, 0.0667)) {
     stop(sprintf(paste("recording of %.1f s is too short to resolve %g Hz;",
                        "need at least %.0f s"), dur, lo, 2 / lo))
   sp <- .bsapsd(xs, fs)
-  freqs <- sp$freqs; psd <- sp$power
+  freqs <- sp$freqs
+  psd <- sp$power
   mom <- .bsapsdmom(freqs, psd)
   tot <- mom$total_power
   fr_norm <- .bsabandpow(freqs, psd, lo, hi) / tot
@@ -1212,7 +1289,8 @@ EggFeat <- function(egg, fs, normal_band = c(0.0333, 0.0667)) {
   fr_tachy <- .bsabandpow(freqs, psd, hi, fs / 2 + 1) / tot
   sel <- freqs > 0 & freqs <= min(0.5, fs / 2)
   if (!any(sel)) stop("no spectral bins in the gastric frequency range")
-  bf <- freqs[sel]; bp <- psd[sel]
+  bf <- freqs[sel]
+  bp <- psd[sel]
   fdom <- bf[which.max(bp)]
   rhythm <- if (fdom >= lo && fdom < hi) "normogastria"
             else if (fdom < lo) "bradygastria" else "tachygastria"
@@ -1255,10 +1333,12 @@ EngCap <- function(t, distance_m = 0.1, n_fibers = 40, cv_range = c(45, 70),
   if (distance_m <= 0) stop("distance_m must be positive (m)")
   n_fibers <- as.integer(n_fibers)
   if (n_fibers < 1L) stop("n_fibers must be at least 1")
-  lo <- as.numeric(cv_range[1L]); hi <- as.numeric(cv_range[2L])
+  lo <- as.numeric(cv_range[1L])
+  hi <- as.numeric(cv_range[2L])
   if (lo <= 0 || hi <= 0 || lo > hi)
     stop("cv_range must be positive with low <= high (m/s)")
-  alo <- as.numeric(amp_range[1L]); ahi <- as.numeric(amp_range[2L])
+  alo <- as.numeric(amp_range[1L])
+  ahi <- as.numeric(amp_range[2L])
   width_ms <- as.numeric(width_ms)
   if (width_ms <= 0) stop("width_ms must be positive (ms)")
   i0 <- seq_len(n_fibers) - 1L
@@ -1367,7 +1447,8 @@ SeizDet <- function(eeg, fs, epoch_s = 1, ratio_threshold = 2,
     flg[i] <- rows[[i]]$slow_fraction > thr
     rows[[i]]$flagged <- flg[i]
   }
-  runs <- list(); start <- NULL
+  runs <- list()
+  start <- NULL
   for (i in seq_len(n_ep)) {
     if (flg[i] && is.null(start)) {
       start <- i - 1L
@@ -1428,7 +1509,8 @@ ErpFeat <- function(erp, fs, t0 = 0, components = NULL,
   rows <- list()
   for (nm in names(components)) {
     spec <- components[[nm]]
-    t1 <- as.numeric(spec[[1L]]); t2 <- as.numeric(spec[[2L]])
+    t1 <- as.numeric(spec[[1L]])
+    t2 <- as.numeric(spec[[2L]])
     pol <- as.integer(spec[[3L]])
     if (t2 <= t1) stop(sprintf("component %s has an empty window", nm))
     if (!(pol %in% c(1L, -1L)))
@@ -1472,12 +1554,14 @@ ErdErs <- function(eeg, fs, ref_window, active_window, band = c(8, 13)) {
   xs <- as.numeric(eeg)
   fs <- as.numeric(fs)
   if (fs <= 0) stop("fs must be positive (Hz)")
-  lo <- as.numeric(band[1L]); hi <- as.numeric(band[2L])
+  lo <- as.numeric(band[1L])
+  hi <- as.numeric(band[2L])
   if (!(lo >= 0 && lo < hi)) stop("band must satisfy 0 <= lo < hi (Hz)")
   if (hi > fs / 2) stop("band upper edge exceeds the Nyquist frequency")
   dur <- length(xs) / fs
   cut <- function(win, name) {
-    a <- as.numeric(win[1L]); b <- as.numeric(win[2L])
+    a <- as.numeric(win[1L])
+    b <- as.numeric(win[2L])
     if (b <= a) stop(sprintf("%s must have end > start (s)", name))
     if (a < 0 || b > dur)
       stop(sprintf("%s (%g, %g) s falls outside the %.3f s record",
@@ -1532,13 +1616,15 @@ ErdErs <- function(eeg, fs, ref_window, active_window, band = c(8, 13)) {
 CadSpec <- function(x, fs, bands = NULL) {
   fs <- as.numeric(fs)
   sp <- .bsapsd(x, fs)
-  freqs <- sp$freqs; power <- sp$power
+  freqs <- sp$freqs
+  power <- sp$power
   mom <- .bsapsdmom(freqs, power)
   if (is.null(bands))
     bands <- list(c(0, 100), c(100, 300), c(300, 600), c(600, fs / 2))
   frac <- list()
   for (bd in bands) {
-    lo <- as.numeric(bd[1L]); hi <- as.numeric(bd[2L])
+    lo <- as.numeric(bd[1L])
+    hi <- as.numeric(bd[2L])
     if (hi <= lo) stop("each band must have hi > lo (Hz)")
     frac[[length(frac) + 1L]] <-
       c(lo, hi, .bsabandpow(freqs, power, lo, hi) / mom$total_power)
@@ -1576,7 +1662,8 @@ CadSpec <- function(x, fs, bands = NULL) {
 #' @export
 VagClean <- function(vag, emg_ref, fs, n_taps = 8, mu = 0.05, alpha = 0.02,
                      adaptive_mu = TRUE) {
-  xs <- as.numeric(vag); rs <- as.numeric(emg_ref)
+  xs <- as.numeric(vag)
+  rs <- as.numeric(emg_ref)
   if (length(xs) != length(rs))
     stop("vag and emg_ref must have the same length")
   if (length(xs) < 8L) stop("need at least 8 samples")
@@ -1584,7 +1671,8 @@ VagClean <- function(vag, emg_ref, fs, n_taps = 8, mu = 0.05, alpha = 0.02,
   if (fs <= 0) stop("fs must be positive (Hz)")
   M1 <- as.integer(n_taps)
   if (M1 < 1L) stop("n_taps must be at least 1")
-  mu <- as.numeric(mu); alpha <- as.numeric(alpha)
+  mu <- as.numeric(mu)
+  alpha <- as.numeric(alpha)
   if (!(alpha >= 0 && alpha < 1))
     stop("alpha must satisfy 0 <= alpha < 1 (forgetting factor)")
   rpow <- .morie_fsum(rs * rs) / length(rs)
@@ -1604,7 +1692,9 @@ VagClean <- function(vag, emg_ref, fs, n_taps = 8, mu = 0.05, alpha = 0.02,
   N <- length(xs)
   w <- rep(0, M1)
   xbar2 <- rpow
-  out <- numeric(N); art <- numeric(N); mus <- numeric(N)
+  out <- numeric(N)
+  art <- numeric(N)
+  mus <- numeric(N)
   for (n in seq_len(N)) {
     ki <- n - (seq_len(M1) - 1L)          # Python n - k, k = 0..M1-1
     r <- ifelse(ki >= 1L, rs[pmax(ki, 1L)], 0)
@@ -1617,9 +1707,12 @@ VagClean <- function(vag, emg_ref, fs, n_taps = 8, mu = 0.05, alpha = 0.02,
       step <- mu
     }
     w <- w + 2 * step * e * r
-    out[n] <- e; art[n] <- y; mus[n] <- step
+    out[n] <- e
+    art[n] <- y
+    mus[n] <- step
   }
-  rb <- .bsarms(xs); ra <- .bsarms(out)
+  rb <- .bsarms(xs)
+  ra <- .bsarms(out)
   list(cleaned = out, artifact_estimate = art, weights = w,
        rms_before = rb, rms_after = ra,
        artifact_reduction_db = if (ra > 0 && rb > 0)
@@ -1720,12 +1813,15 @@ MuapModel <- function(t, n_fibers = 25, conduction_vel = 4, spread_mm = 3,
 #' @export
 MurmSpec <- function(pcg, fs, f1 = 25, f2 = 75, f3 = 150) {
   fs <- as.numeric(fs)
-  f1 <- as.numeric(f1); f2 <- as.numeric(f2); f3 <- as.numeric(f3)
+  f1 <- as.numeric(f1)
+  f2 <- as.numeric(f2)
+  f3 <- as.numeric(f3)
   if (!(f1 < f2 && f2 < f3))
     stop("band edges must satisfy f1 < f2 < f3 (Hz)")
   if (f3 > fs / 2) stop("f3 exceeds the Nyquist frequency")
   sp <- .bsapsd(pcg, fs)
-  freqs <- sp$freqs; psd <- sp$power
+  freqs <- sp$freqs
+  psd <- sp$power
   mag <- sqrt(psd)
   ca <- .morie_fsum(mag[freqs >= f1 & freqs < f2])
   pa <- .morie_fsum(mag[freqs >= f2 & freqs < f3])
@@ -1764,7 +1860,8 @@ OaeFeat <- function(oae, fs, noise_floor = NULL, bands = NULL) {
   if (fs <= 0) stop("fs must be positive (Hz)")
   xs <- as.numeric(oae)
   sp <- .bsapsd(xs, fs)
-  freqs <- sp$freqs; psd <- sp$power
+  freqs <- sp$freqs
+  psd <- sp$power
   mom <- .bsapsdmom(freqs, psd)
   npsd <- NULL
   if (!is.null(noise_floor)) {
@@ -1782,9 +1879,11 @@ OaeFeat <- function(oae, fs, noise_floor = NULL, bands = NULL) {
       stop(paste("fs is too low for any default OAE band;",
                  "supply bands explicitly"))
   }
-  rows <- list(); detected <- FALSE
+  rows <- list()
+  detected <- FALSE
   for (bd in bands) {
-    lo <- as.numeric(bd[1L]); hi <- as.numeric(bd[2L])
+    lo <- as.numeric(bd[1L])
+    hi <- as.numeric(bd[2L])
     if (hi <= lo) stop("each band must have hi > lo (Hz)")
     if (hi > fs / 2) stop("band upper edge exceeds the Nyquist frequency")
     p <- .bsabandpow(freqs, psd, lo, hi)
@@ -1834,7 +1933,8 @@ OaeFeat <- function(oae, fs, noise_floor = NULL, bands = NULL) {
 PdMonitor <- function(eeg, emg, gait, fs, tremor_band = c(3, 7)) {
   fs <- as.numeric(fs)
   if (fs < 60) stop("fs must be at least 60 Hz")
-  tlo <- as.numeric(tremor_band[1L]); thi <- as.numeric(tremor_band[2L])
+  tlo <- as.numeric(tremor_band[1L])
+  thi <- as.numeric(tremor_band[2L])
   if (!(tlo > 0 && tlo < thi))
     stop("tremor_band must satisfy 0 < lo < hi (Hz)")
   if (thi > fs / 2)
@@ -1862,7 +1962,8 @@ PdMonitor <- function(eeg, emg, gait, fs, tremor_band = c(3, 7)) {
   }
   mt <- tremor(emg, "emg")
   gt <- tremor(gait, "gait")
-  ma <- mt$xs; ga <- gt$xs
+  ma <- mt$xs
+  ga <- gt$xs
   hj <- .bsahjorth(ma)
   nm <- length(ma)
   turns <- if (nm >= 3L)
@@ -1912,7 +2013,8 @@ PdMonitor <- function(eeg, emg, gait, fs, tremor_band = c(3, 7)) {
 #' @return A list with \code{freq_hz}, \code{coherence}, \code{coherence_sq}, \code{phase_rad}, \code{peak_coherence}, \code{peak_freq_hz}, \code{mean_coherence}, \code{delay_ms_at_peak}, \code{significance_level}, \code{n_segments}, \code{segment_samples}, \code{band_hz}, \code{fs_hz}, \code{units}, \code{method}.
 #' @export
 PcgEeg <- function(pcg, eeg, fs, n_segments = 8, band = c(1, 100)) {
-  xs <- as.numeric(pcg); ys <- as.numeric(eeg)
+  xs <- as.numeric(pcg)
+  ys <- as.numeric(eeg)
   if (length(xs) != length(ys))
     stop("pcg and eeg must have the same length")
   fs <- as.numeric(fs)
@@ -1922,24 +2024,32 @@ PcgEeg <- function(pcg, eeg, fs, n_segments = 8, band = c(1, 100)) {
     stop(paste("n_segments must be at least 2: with one segment the",
                "coherence is identically unity (Rangayyan eq. 4.32)"))
   if (length(xs) < 8L * L) stop("need at least 8*n_segments samples")
-  lo <- as.numeric(band[1L]); hi <- as.numeric(band[2L])
+  lo <- as.numeric(band[1L])
+  hi <- as.numeric(band[2L])
   if (!(lo >= 0 && lo < hi)) stop("band must satisfy 0 <= lo < hi (Hz)")
   w <- length(xs) %/% L
   nfft <- 1L
   while (nfft < w) nfft <- bitwShiftL(nfft, 1L)
   m <- nfft %/% 2L + 1L
   idx <- seq_len(m)
-  Sxx <- rep(0, m); Syy <- rep(0, m); Sxyr <- rep(0, m); Sxyi <- rep(0, m)
+  Sxx <- rep(0, m)
+  Syy <- rep(0, m)
+  Sxyr <- rep(0, m)
+  Sxyi <- rep(0, m)
   han <- 0.5 - 0.5 * cos(2 * pi * (seq_len(w) - 1L) / (w - 1L))
   pad <- rep(0, nfft - w)
   for (s in seq_len(L)) {
     sl <- ((s - 1L) * w + 1L):(s * w)
-    a <- xs[sl]; b <- ys[sl]
-    ma <- .morie_fsum(a) / w; mb <- .morie_fsum(b) / w
+    a <- xs[sl]
+    b <- ys[sl]
+    ma <- .morie_fsum(a) / w
+    mb <- .morie_fsum(b) / w
     fa <- .bsafft(c((a - ma) * han, pad), rep(0, nfft))
     fb <- .bsafft(c((b - mb) * han, pad), rep(0, nfft))
-    ar <- fa$re[idx]; ai <- fa$im[idx]
-    br <- fb$re[idx]; bi <- fb$im[idx]
+    ar <- fa$re[idx]
+    ai <- fa$im[idx]
+    br <- fb$re[idx]
+    bi <- fb$im[idx]
     Sxx <- Sxx + ar * ar + ai * ai
     Syy <- Syy + br * br + bi * bi
     Sxyr <- Sxyr + ar * br + ai * bi          # X conj(Y)
@@ -1987,11 +2097,13 @@ MurmDet <- function(pcg, fs, threshold = 0.15, hf_band = c(150, 600)) {
   threshold <- as.numeric(threshold)
   if (!(threshold > 0 && threshold < 1))
     stop("threshold must be a power fraction in (0, 1)")
-  lo <- as.numeric(hf_band[1L]); hi <- as.numeric(hf_band[2L])
+  lo <- as.numeric(hf_band[1L])
+  hi <- as.numeric(hf_band[2L])
   if (hi <= lo) stop("hf_band must have hi > lo (Hz)")
   if (hi > fs / 2) stop("hf_band upper edge exceeds the Nyquist frequency")
   sp <- .bsapsd(pcg, fs)
-  freqs <- sp$freqs; psd <- sp$power
+  freqs <- sp$freqs
+  psd <- sp$power
   mom <- .bsapsdmom(freqs, psd)
   frac <- .bsabandpow(freqs, psd, lo, hi) / mom$total_power
   pk <- .bsapeaks(freqs, psd, count = 3L)
@@ -2023,7 +2135,9 @@ MurmDet <- function(pcg, fs, threshold = 0.15, hf_band = c(150, 600)) {
 #' @return A list with \code{epochs}, \code{stage_sequence}, \code{stage_minutes}, \code{total_sleep_time_min}, \code{recording_time_min}, \code{sleep_efficiency}, \code{n_epochs}, \code{epoch_len_s}, \code{fs_hz}, \code{heuristic}, \code{units}, \code{method}.
 #' @export
 PsgStage <- function(eeg, eog, emg, fs, epoch_len = 30) {
-  a <- as.numeric(eeg); b <- as.numeric(eog); cx <- as.numeric(emg)
+  a <- as.numeric(eeg)
+  b <- as.numeric(eog)
+  cx <- as.numeric(emg)
   if (!(length(a) == length(b) && length(b) == length(cx)))
     stop("eeg, eog and emg must have the same length")
   fs <- as.numeric(fs)
@@ -2126,7 +2240,8 @@ IeiStats <- function(event_times, T = NULL, n_bins = 20) {
   srt <- sort(ipi)
   med <- if (n %% 2L) srt[n %/% 2L + 1L]
          else 0.5 * (srt[n %/% 2L] + srt[n %/% 2L + 1L])
-  lo <- min(ipi); hi <- max(ipi)
+  lo <- min(ipi)
+  hi <- max(ipi)
   if (hi > lo) {
     width <- (hi - lo) / n_bins
     b <- pmin(as.integer((ipi - lo) / width), n_bins - 1L)
@@ -2250,7 +2365,8 @@ RespFeat <- function(resp, fs, signal_type = "flow", min_breath_s = 1) {
                "fs and min_breath_s"))
   breaths <- vector("list", length(kept) - 1L)
   for (b in seq_len(length(kept) - 1L)) {
-    i0 <- kept[b]; i1 <- kept[b + 1L]
+    i0 <- kept[b]
+    i1 <- kept[b + 1L]
     # end of inspiration = downward zero crossing of the drive signal
     iend <- i1
     if (i1 > i0 + 1L) {
@@ -2316,12 +2432,17 @@ RespFeat <- function(resp, fs, signal_type = "flow", min_breath_s = 1) {
 RespSound <- function(length_m = 0.1, radius_m = 0.009, freqs = NULL,
                       rho = 1.2, c = 343, mu = 1.8e-5, P0 = 101325,
                       eta = 1.4, lam = 0.026, cp = 1005) {
-  l <- as.numeric(length_m); r <- as.numeric(radius_m)
+  l <- as.numeric(length_m)
+  r <- as.numeric(radius_m)
   if (l <= 0) stop("length_m must be positive (m)")
   if (r <= 0) stop("radius_m must be positive (m)")
-  rho <- as.numeric(rho); c <- as.numeric(c); mu <- as.numeric(mu)
-  P0 <- as.numeric(P0); eta <- as.numeric(eta)
-  lam <- as.numeric(lam); cp <- as.numeric(cp)
+  rho <- as.numeric(rho)
+  c <- as.numeric(c)
+  mu <- as.numeric(mu)
+  P0 <- as.numeric(P0)
+  eta <- as.numeric(eta)
+  lam <- as.numeric(lam)
+  cp <- as.numeric(cp)
   if (min(rho, c, mu, P0, lam, cp) <= 0)
     stop("rho, c, mu, P0, lam and cp must all be positive")
   if (eta <= 1) stop("eta (adiabatic constant) must exceed 1")
@@ -2341,8 +2462,10 @@ RespSound <- function(length_m = 0.1, radius_m = 0.009, freqs = NULL,
   Ga <- (S * l / (rho * c * c)) * (eta - 1) *
     sqrt(lam * w / (2 * cp * rho))                            # eq. (7.129)
   # series impedance Ra + j w La, shunt admittance Ga + j w Ca; H = 1/(1 + ZY)
-  zr <- Ra; zi <- w * La
-  yr <- Ga; yi <- w * Ca
+  zr <- Ra
+  zi <- w * La
+  yr <- Ga
+  yi <- w * Ca
   dr <- 1 + (zr * yr - zi * yi)
   di <- zr * yi + zi * yr
   mag <- 1 / sqrt(dr * dr + di * di)
@@ -2376,7 +2499,9 @@ RespSound <- function(length_m = 0.1, radius_m = 0.009, freqs = NULL,
 #' @return A list with \code{epochs}, \code{n_flagged}, \code{apnea_suspected}, \code{events_per_hour}, \code{severity}, \code{n_epochs}, \code{epoch_s}, \code{fs_hz}, \code{desat_criterion_pct}, \code{heuristic}, \code{units}, \code{method}.
 #' @export
 ApneaDet <- function(ecg, spo2, snore, fs, epoch_s = 60, desat_pct = 4) {
-  e <- as.numeric(ecg); s <- as.numeric(spo2); q <- as.numeric(snore)
+  e <- as.numeric(ecg)
+  s <- as.numeric(spo2)
+  q <- as.numeric(snore)
   if (!(length(e) == length(s) && length(s) == length(q)))
     stop("ecg, spo2 and snore must have the same length")
   fs <- as.numeric(fs)
@@ -2401,11 +2526,13 @@ ApneaDet <- function(ecg, spo2, snore, fs, epoch_s = 60, desat_pct = 4) {
     sl <- ((k - 1L) * w + 1L):(k * w)
     seg <- sq[sl]
     thr <- if (max(seg) > 0) 0.6 * max(seg) else 1
-    peaks <- integer(0); last <- -refr           # 0-based, as in Python
+    peaks <- integer(0)
+    last <- -refr           # 0-based, as in Python
     for (i in seq_along(seg)) {
       i0 <- i - 1L
       if (seg[i] >= thr && i0 - last >= refr) {
-        peaks <- c(peaks, i0); last <- i0
+        peaks <- c(peaks, i0)
+        last <- i0
       }
     }
     rr <- if (length(peaks) > 1L) diff(peaks) / fs else numeric(0)
@@ -2418,7 +2545,8 @@ ApneaDet <- function(ecg, spo2, snore, fs, epoch_s = 60, desat_pct = 4) {
       tot <- .morie_fsum(sp$power)
       if (tot > 0) lf <- .bsabandpow(sp$freqs, sp$power, 0.01, 0.04) / tot
     }
-    base <- max(s[sl]); lo <- min(s[sl])
+    base <- max(s[sl])
+    lo <- min(s[sl])
     srms <- .bsarms(q[sl])
     snores[k] <- srms
     rows[[k]] <- list(t_start_s = (k - 1L) * epoch_s, min_spo2 = lo,
@@ -2481,7 +2609,8 @@ SpeechFeat <- function(speech, fs, order = NULL, n_formants = 4,
     stop("need at least 4*order samples for the all-pole fit")
   n_formants <- as.integer(n_formants)
   if (n_formants < 1L) stop("n_formants must be at least 1")
-  flo <- as.numeric(f0_range[1L]); fhi <- as.numeric(f0_range[2L])
+  flo <- as.numeric(f0_range[1L])
+  fhi <- as.numeric(f0_range[2L])
   if (!(flo > 0 && flo < fhi)) stop("f0_range must satisfy 0 < lo < hi (Hz)")
   if (fhi > fs / 2)
     stop("f0_range upper edge exceeds the Nyquist frequency")
@@ -2492,7 +2621,8 @@ SpeechFeat <- function(speech, fs, order = NULL, n_formants = 4,
   # formants: the strongest peaks, then re-sorted by frequency
   pk <- .bsapeaks(freqs, psd, count = n_formants, minsep = 90)
   o <- order(pk$freqs, pk$powers)
-  fmt <- pk$freqs[o]; pws <- pk$powers[o]
+  fmt <- pk$freqs[o]
+  pws <- pk$powers[o]
   bws <- lapply(fmt, function(f) .bsaqfactor(freqs, psd, f)$bandwidth_hz)
   lag_lo <- max(1L, as.integer(fs / fhi))
   lag_hi <- min(length(xs) - 1L, as.integer(fs / flo))
@@ -2559,7 +2689,8 @@ VagFeat <- function(vag, fs, n_segments = 8) {
     sum((xs[2:(nx - 1L)] - xs[seq_len(nx - 2L)]) *
         (xs[3:nx] - xs[2:(nx - 1L)]) < 0) else 0L
   # Shannon entropy of a 64-bin amplitude histogram, eq. (5.31) style
-  lo <- min(xs); hi <- max(xs)
+  lo <- min(xs)
+  hi <- max(xs)
   if (hi > lo) {
     nb <- 64L
     b <- pmin(as.integer((xs - lo) / (hi - lo) * nb), nb - 1L)
@@ -2675,7 +2806,8 @@ VagKnee <- function(vag, fs, weights = NULL, bias = NULL, n_segments = 8) {
 #' @return A list with \code{omega}, \code{Y_real}, \code{Y_imag}, \code{log_Y_real}, \code{log_Y_imag}, \code{log_X_real}, \code{log_X_imag}, \code{log_H_real}, \code{log_H_imag}, \code{max_abs_error}, \code{units}, \code{method}.
 #' @export
 CLogProd <- function(X, H, omega = NULL) {
-  xs <- as.complex(X); hs <- as.complex(H)
+  xs <- as.complex(X)
+  hs <- as.complex(H)
   if (length(xs) != length(hs))
     stop("X and H must have the same length")
   if (!length(xs)) stop("X and H must be non-empty")
@@ -2691,7 +2823,9 @@ CLogProd <- function(X, H, omega = NULL) {
   if (any(hs == 0))
     stop("H(omega) must be non-zero for all omega (eq. 4.63)")
   ys <- xs * hs
-  lxr <- log(Mod(xs)); lhr <- log(Mod(hs)); lyr <- log(Mod(ys))
+  lxr <- log(Mod(xs))
+  lhr <- log(Mod(hs))
+  lyr <- log(Mod(ys))
   lxi <- .bsaunwrap(atan2(Im(xs), Re(xs)))
   lhi <- .bsaunwrap(atan2(Im(hs), Re(hs)))
   lyi <- .bsaunwrap(atan2(Im(ys), Re(ys)))
@@ -2752,7 +2886,10 @@ CLogPz <- function(z, A = 1, r = 0, a_k = complex(0), b_k = complex(0),
     if (!is.null(cnt) && as.integer(cnt) != length(sets[[nm]]))
       stop(paste0("declared count does not match the length of ", nm))
   }
-  ak <- sets$a_k; bk <- sets$b_k; ck <- sets$c_k; dk <- sets$d_k
+  ak <- sets$a_k
+  bk <- sets$b_k
+  ck <- sets$c_k
+  dk <- sets$d_k
   if (r != 0L || length(ak) || length(ck))
     if (any(zs == 0))
       stop("z = 0 is a singularity of this expansion")
@@ -2763,7 +2900,9 @@ CLogPz <- function(z, A = 1, r = 0, a_k = complex(0), b_k = complex(0),
   csum <- function(v) if (!length(v)) complex(real = 0, imaginary = 0)
                       else sum(clog(v))
   n <- length(zs)
-  xhat <- complex(n); xval <- complex(n); first <- NULL
+  xhat <- complex(n)
+  xval <- complex(n)
+  first <- NULL
   for (i in seq_len(n)) {
     zi <- zs[i]
     gain <- clog(A) + (if (r) r * clog(zi) else

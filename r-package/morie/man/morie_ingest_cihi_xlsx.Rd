@@ -30,5 +30,5 @@ base R data.frame.
 Download a CIHI indicator .xlsx data table
 }
 \examples{
-\donttest{try(morie_ingest_cihi_xlsx(url = "https://example.org/data.xlsx"))}
+try(morie_ingest_cihi_xlsx(url = "https://example.org/data.xlsx"))
 }

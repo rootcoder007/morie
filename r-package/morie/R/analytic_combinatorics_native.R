@@ -118,11 +118,14 @@ morie_dominant_singularity_growth <- function(denominator,
     acc
   }
   q0 <- qat(0)
-  lo <- 0; hi <- 1e-6
+  lo <- 0
+  hi <- 1e-6
   found <- FALSE
   while (hi < 1e9) {
-    if (qat(hi) * q0 < 0) { found <- TRUE; break }
-    lo <- hi; hi <- hi * 2
+    if (qat(hi) * q0 < 0) { found <- TRUE
+    break }
+    lo <- hi
+    hi <- hi * 2
   }
   if (!found) {
     stop(paste("no positive real root of the denominator was found below",
@@ -136,7 +139,8 @@ morie_dominant_singularity_growth <- function(denominator,
   }
   rho <- 0.5 * (lo + hi)
   rate <- 1 / rho
-  measured <- NULL; gap <- NULL
+  measured <- NULL
+  gap <- NULL
   if (!is.null(coefficients)) {
     cs <- as.numeric(coefficients)
     nc <- length(cs)
@@ -266,7 +270,8 @@ morie_derangement_rounding <- function(n) {
   if (n >= 2L) {
     for (m in 2:n) {
       dn <- morie_big_mul(morie_bigint(m - 1), morie_big_add(dm1, dm2))
-      dm2 <- dm1; dm1 <- dn
+      dm2 <- dm1
+      dm1 <- dn
     }
   }
   # inclusion-exclusion: sum_k (-1)^k n!/k!, built as t_k = t_{k-1}

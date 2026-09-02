@@ -38,11 +38,13 @@ Bndnmt <- function(y, D, Z) {
     stop("Bndnmt: y, D and Z must have the same length")
   if (any(!(c(dv, zv) %in% c(0, 1))))
     stop("Bndnmt: D and Z must be coded 0/1")
-  n1 <- sum(zv == 1); n0 <- n - n1
+  n1 <- sum(zv == 1)
+  n0 <- n - n1
   if (n0 == 0L || n1 == 0L)
     stop("Bndnmt: the instrument takes only one value")
   itt_y <- mean(yv[zv == 1]) - mean(yv[zv == 0])
-  pd1 <- mean(dv[zv == 1]); pd0 <- mean(dv[zv == 0])
+  pd1 <- mean(dv[zv == 1])
+  pd0 <- mean(dv[zv == 0])
   net <- pd1 - pd0
   if (net <= 0) stop("Bndnmt: non-positive net first stage")
   pc_max <- min(pd1, 1 - pd0)

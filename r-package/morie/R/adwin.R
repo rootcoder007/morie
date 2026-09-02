@@ -19,9 +19,13 @@
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' Adwin(V)
 Adwin <- function(x, delta = 0.05) {
-  x <- .t1_vec(x); delta <- as.numeric(delta)
+  x <- .t1_vec(x)
+  delta <- as.numeric(delta)
   if (!(delta > 0 && delta < 1)) stop("delta must lie in (0, 1)")
-  W <- numeric(0); drops <- 0L; cuts <- integer(0); last <- NA_real_
+  W <- numeric(0)
+  drops <- 0L
+  cuts <- integer(0)
+  last <- NA_real_
   for (pos in seq_along(x)) {
     W <- c(W, x[pos])
     shrunk <- TRUE

@@ -326,7 +326,7 @@ morie_ingest_chicago_crime <- function(year = NULL,
 #' @seealso \code{\link{morie_ingest_chicago_crime}},
 #'   \code{\link{morie_ingest_bigquery_table}}
 #' @examples
-#' \donttest{try(morie_ingest_chicago_crime_bigquery())}
+#' \dontrun{
 #' @export
 morie_ingest_chicago_crime_bigquery <- function(where = NULL,
                                                 year = NULL,

@@ -23,15 +23,20 @@
 #' @examples
 #' Fistalasso(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), lam = 5L)
 Fistalasso <- function(X, y, lam, steps = 100, lipschitz = NULL) {
-  Xm <- .t1_mat(X); y <- .t1_vec(y)
-  lam <- as.numeric(lam); steps <- as.integer(steps)
-  n <- nrow(Xm); p <- ncol(Xm)
+  Xm <- .t1_mat(X)
+  y <- .t1_vec(y)
+  lam <- as.numeric(lam)
+  steps <- as.integer(steps)
+  n <- nrow(Xm)
+  p <- ncol(Xm)
   if (n != length(y)) stop("X must have one row per entry of y")
   if (lam < 0) stop("lam must be non-negative")
   if (steps < 0) stop("steps must be non-negative")
   L <- if (is.null(lipschitz)) .k01_speclip(Xm, p) else as.numeric(lipschitz)
   if (L <= 0) L <- 1
-  x <- rep(0, p); yv <- rep(0, p); t <- 1
+  x <- rep(0, p)
+  yv <- rep(0, p)
+  t <- 1
   for (k in seq_len(steps)) {
     r <- as.numeric(Xm %*% yv) - y
     g <- as.numeric(t(Xm) %*% r)

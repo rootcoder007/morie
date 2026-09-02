@@ -43,7 +43,8 @@
 #' @return A list with \code{g}, \code{s}.
 #' @export
 .check <- function(scores, priority) {
-  g <- .slvgrf_vec(scores); s <- .slvgrf_vec(priority)
+  g <- .slvgrf_vec(scores)
+  s <- .slvgrf_vec(priority)
   if (length(g) != length(s)) {
     stop("slvgrf: ", length(g), " scores but ", length(s),
          " priority values")
@@ -62,8 +63,10 @@
 #' @param e See Usage.
 #' @export
 aipw_scores <- function(Y, W, mu1, mu0, e) {
-  y <- .slvgrf_vec(Y); w <- .slvgrf_vec(W)
-  m1 <- .slvgrf_vec(mu1); m0 <- .slvgrf_vec(mu0)
+  y <- .slvgrf_vec(Y)
+  w <- .slvgrf_vec(W)
+  m1 <- .slvgrf_vec(mu1)
+  m0 <- .slvgrf_vec(mu0)
   n <- length(y)
   ev <- if (is.numeric(e) && length(e) == 1L) rep(as.numeric(e), n)
         else .slvgrf_vec(e)
@@ -97,10 +100,14 @@ aipw_scores <- function(Y, W, mu1, mu0, e) {
 #' @export
 toc_curve <- function(scores, priority) {
   ch <- .check(scores, priority)
-  g <- ch$g; s <- ch$s; n <- length(g)
+  g <- ch$g
+  s <- ch$s
+  n <- length(g)
   ord <- order(-s, seq_len(n))
   ate <- sum(g) / n
-  run <- 0; toc <- numeric(n); us <- numeric(n)
+  run <- 0
+  toc <- numeric(n)
+  us <- numeric(n)
   for (j in seq_along(ord)) {
     i <- ord[j]
     run <- run + g[i]
@@ -153,7 +160,9 @@ qini_coefficient <- function(scores, priority) {
 #' @export
 qini_curve <- function(scores, priority, cost = NULL) {
   ch <- .check(scores, priority)
-  g <- ch$g; s <- ch$s; n <- length(g)
+  g <- ch$g
+  s <- ch$s
+  n <- length(g)
   ord <- order(-s, seq_len(n))
   if (is.null(cost)) {
     cv <- rep(1, n)
@@ -168,7 +177,10 @@ qini_curve <- function(scores, priority, cost = NULL) {
     }
   }
   total <- sum(cv)
-  run <- 0; spent <- 0; xs <- numeric(n); ys <- numeric(n)
+  run <- 0
+  spent <- 0
+  xs <- numeric(n)
+  ys <- numeric(n)
   for (j in seq_along(ord)) {
     i <- ord[j]
     run <- run + g[i]
@@ -190,7 +202,9 @@ qini_curve <- function(scores, priority, cost = NULL) {
 rate_test <- function(scores, priority, weight = "autoc", reps = 500L,
                       seed = 0) {
   ch <- .check(scores, priority)
-  g <- ch$g; s <- ch$s; n <- length(g)
+  g <- ch$g
+  s <- ch$s
+  n <- length(g)
   if (n < 8L) {
     stop("slvgrf: the half-sample bootstrap needs at least 8 units, ",
          "got ", n)

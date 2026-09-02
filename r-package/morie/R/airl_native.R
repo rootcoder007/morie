@@ -95,7 +95,8 @@ airl <- function(expert_states, expert_actions, expert_next,
                       expert_log_policy, "expert")
   Pprep <- .airl_prep(policy_states, policy_actions, policy_next,
                       policy_log_policy, "policy")
-  nE <- length(Eprep$S); nP <- length(Pprep$S)
+  nE <- length(Eprep$S)
+  nP <- length(Pprep$S)
   Es <- lapply(seq_len(nE), function(k) list(S = Eprep$S[[k]],
                                              A = Eprep$A[[k]],
                                              S1 = Eprep$S1[[k]],
@@ -121,9 +122,13 @@ airl <- function(expert_states, expert_actions, expert_next,
   for (i in seq_along(all_states)) assign(deparse(all_states[[i]],
                                                   control = "useSource"),
                                           i, envir = hi)
-  ng <- length(gkeys); nh <- length(all_states)
-  g <- rep(0, ng); h <- rep(0, nh)
-  gamma <- as.numeric(gamma); lr <- as.numeric(lr); l2 <- as.numeric(l2)
+  ng <- length(gkeys)
+  nh <- length(all_states)
+  g <- rep(0, ng)
+  h <- rep(0, nh)
+  gamma <- as.numeric(gamma)
+  lr <- as.numeric(lr)
+  l2 <- as.numeric(l2)
 
   gkey_of <- function(t) if (state_only) t$S else list(t$S, t$A)
   gi_idx <- function(k)
@@ -134,12 +139,14 @@ airl <- function(expert_states, expert_actions, expert_next,
     h[hi_idx(t$S)]
   d_of <- function(t) {
     z <- f_of(t) - t$LP
-    if (z >= 0) 1 / (1 + exp(-z)) else { ez <- exp(z); ez / (1 + ez) }
+    if (z >= 0) 1 / (1 + exp(-z)) else { ez <- exp(z)
+    ez / (1 + ez) }
   }
 
   # Compress to unique transitions: identical rows contribute identical
   # gradients, so the fit is unchanged and the cost stays bounded.
-  Ec <- list(); Pc <- list()
+  Ec <- list()
+  Pc <- list()
   Ecount <- new.env(hash = TRUE, parent = emptyenv())
   for (t in Es) {
     key <- paste0(deparse(t$S, control = "useSource"), "|",
@@ -176,16 +183,19 @@ airl <- function(expert_states, expert_actions, expert_next,
   }
 
   for (ep in seq_len(max(1L, as.integer(epochs)))) {
-    dg <- rep(0, ng); dh <- rep(0, nh)
+    dg <- rep(0, ng)
+    dh <- rep(0, nh)
     for (row in Ec) {
-      t <- row$t; wgt <- row$w
+      t <- row$t
+      wgt <- row$w
       c <- (1 - d_of(t)) * wgt
       dg[gi_idx(gkey_of(t))] <- dg[gi_idx(gkey_of(t))] + c
       dh[hi_idx(t$S1)] <- dh[hi_idx(t$S1)] + c * gamma
       dh[hi_idx(t$S)] <- dh[hi_idx(t$S)] - c
     }
     for (row in Pc) {
-      t <- row$t; wgt <- row$w
+      t <- row$t
+      wgt <- row$w
       c <- -d_of(t) * wgt
       dg[gi_idx(gkey_of(t))] <- dg[gi_idx(gkey_of(t))] + c
       dh[hi_idx(t$S1)] <- dh[hi_idx(t$S1)] + c * gamma
@@ -255,7 +265,8 @@ airl <- function(expert_states, expert_actions, expert_next,
 #' @export
 soft_value_iteration <- function(states, actions, step, reward, gamma = 0.9,
                                  iters = 2000L, tol = 1e-14) {
-  S <- as.list(states); A <- as.list(actions)
+  S <- as.list(states)
+  A <- as.list(actions)
   V <- new.env(hash = TRUE, parent = emptyenv())
   for (s in S) assign(deparse(s, control = "useSource"), 0, envir = V)
   for (it in seq_len(as.integer(iters))) {

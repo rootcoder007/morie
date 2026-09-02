@@ -27,7 +27,8 @@
 #' @export
 .subwords <- function(word, n_min = 3L, n_max = 6L, boundary = TRUE,
                       whole_word = TRUE) {
-  lo <- as.integer(n_min); hi <- as.integer(n_max)
+  lo <- as.integer(n_min)
+  hi <- as.integer(n_max)
   if (lo < 1L) stop(sprintf("subwords: n_min must be at least 1, got %s", format(n_min)))
   if (hi < lo) stop(sprintf("subwords: n_max (%s) is below n_min (%s)", format(n_max), format(n_min)))
   w <- as.character(word)
@@ -206,7 +207,8 @@ fasttext <- function(corpus, dim = 50L, n_min = 3L, n_max = 6L,
 
   draw_negative <- function() {
     u <- .ghc_unif(rng, 1L)
-    lo <- 1L; hi <- length(cum)
+    lo <- 1L
+    hi <- length(cum)
     while (lo < hi) {
       mid <- (lo + hi) %/% 2L
       if (u > cum[mid]) lo <- mid + 1L else hi <- mid
@@ -217,7 +219,8 @@ fasttext <- function(corpus, dim = 50L, n_min = 3L, n_max = 6L,
   eta <- as.numeric(lr)
   losses <- numeric(0)
   for (ep in seq_len(as.integer(epochs))) {
-    total <- 0; n_upd <- 0L
+    total <- 0
+    n_upd <- 0L
     for (doc in docs) {
       ids <- as.integer(vapply(doc, function(t) {
         w <- windex[[t]]
