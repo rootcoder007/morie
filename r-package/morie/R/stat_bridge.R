@@ -52,6 +52,8 @@ stat_bridge_registry_json <- function() {
 #'
 #' @return A length-1 character string.
 #' @export
+#' @examples
+#' stat_bridge_help()
 stat_bridge_help <- function() {
   reg <- .morie_stat_commands$registry
   cats <- list()
@@ -105,6 +107,9 @@ stat_bridge_help <- function() {
 #'   \code{"bonferroni 0.01 0.04 0.05"}.
 #' @return Captured handler output as a single string.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' stat_bridge_exec(V)
 stat_bridge_exec <- function(cmd_str) {
   parts <- strsplit(trimws(cmd_str), "\\s+")[[1]]
   if (length(parts) == 0L) {
@@ -140,6 +145,9 @@ stat_bridge_exec <- function(cmd_str) {
 #' @param name Command name or alias.
 #' @return Multi-line description string or an explanatory error string.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' stat_bridge_fn_info(V)
 stat_bridge_fn_info <- function(name) {
   cmd <- resolve_stat_command(name)
   if (is.null(cmd)) {
@@ -167,6 +175,9 @@ stat_bridge_fn_info <- function(name) {
 #' @param max_results Cap on the number of matches returned.
 #' @return Multi-line summary string.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' stat_bridge_fn_search(V)
 stat_bridge_fn_search <- function(query, max_results = 20L) {
   q <- tolower(as.character(query))
   reg <- .morie_stat_commands$registry
@@ -203,6 +214,8 @@ stat_bridge_fn_search <- function(query, max_results = 20L) {
 #'
 #' @return A data.frame with columns \code{name}, \code{ok}, \code{message}.
 #' @export
+#' @examples
+#' stat_bridge_verify()
 stat_bridge_verify <- function() {
   reg <- .morie_stat_commands$registry
   rows <- vector("list", length(reg))
@@ -244,6 +257,8 @@ stat_bridge_verify <- function() {
 #' @return Invisibly returns the printed text; primarily called for
 #'   side effects (printing to stdout).
 #' @export
+#' @examples
+#' stat_bridge_main()
 stat_bridge_main <- function(args = NULL) {
   if (is.null(args)) {
     args <- commandArgs(trailingOnly = TRUE)

@@ -27,19 +27,19 @@ pairs, using a finite-dimensional projection kernel
 \code{K_k(x, x') = phi(x)' Omega^{-1} phi(x')},
 \code{Omega = n^{-1} sum_i phi(X_i) phi(X_i)'}, and adds it back:
 \code{IF22 = -[n(n-1)]^{-1} sum_{i != j} a_i K_k(X_i, X_j) b_j} with
-\code{a_i = (D_i - g_i)/[g_i(1 - g_i)]} and
+\code{a_i = (D_i - g_i)/\[g_i(1 - g_i)\]} and
 \code{b_j = H_j (y_j - Q*_j)}.
 }
 \details{
-The basis is \code{[1, X, X^2]} elementwise; \code{k} is the tuning
+The basis is \code{\[1, X, X^2\]} elementwise; \code{k} is the tuning
 parameter of the whole method.  When the outcome regression fits
 exactly the residuals are zero and the correction is identically
 zero -- the cheapest check of the sign convention.
 }
+\examples{
+Tmlres(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
 \references{
 Robins, J., Li, L., Mukherjee, R., Tchetgen Tchetgen, E.
 & van der Vaart, A. (2017). Annals of Statistics 45(5).
-}
-\examples{
-Tmlres(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

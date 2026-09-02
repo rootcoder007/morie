@@ -499,6 +499,8 @@ morie_siu_sprott_doob_table23 <- function() {
 #'
 #' @return A \code{morie_siu_result}.
 #' @export
+#' @examples
+#' morie_siu_sprott_doob_table4()
 morie_siu_sprott_doob_table4 <- function() {
   t <- .SD_TABLE4_LENGTH_OF_STAY
   short <- sum(t$pct[t$days %in% c("1-5", "6-15")])
@@ -530,6 +532,8 @@ morie_siu_sprott_doob_table4 <- function() {
 #'
 #' @return A \code{morie_siu_result}.
 #' @export
+#' @examples
+#' morie_siu_sprott_doob_table11()
 morie_siu_sprott_doob_table11 <- function() {
   .morie_siu_rich(
     title = "Sprott & Doob (Feb 2021) Table 11 -- Region x total days in SIU",
@@ -560,6 +564,8 @@ morie_siu_sprott_doob_table11 <- function() {
 #'
 #' @return A \code{morie_siu_result}.
 #' @export
+#' @examples
+#' morie_siu_sprott_doob_table12()
 morie_siu_sprott_doob_table12 <- function() {
   t <- .SD_TABLE12_REGIONAL_OVERREP
   t$over_under_ratio <- ifelse(t$pop_pct > 0,
@@ -592,6 +598,8 @@ morie_siu_sprott_doob_table12 <- function() {
 #'
 #' @return A \code{morie_siu_result}.
 #' @export
+#' @examples
+#' morie_siu_sprott_doob_table15()
 morie_siu_sprott_doob_table15 <- function() {
   .morie_siu_rich(
     title = paste0(
@@ -621,6 +629,8 @@ morie_siu_sprott_doob_table15 <- function() {
 #'
 #' @return A \code{morie_siu_result}.
 #' @export
+#' @examples
+#' morie_siu_sprott_doob_table22()
 morie_siu_sprott_doob_table22 <- function() {
   .morie_siu_rich(
     title = paste0(
@@ -654,6 +664,8 @@ morie_siu_sprott_doob_table22 <- function() {
 #'
 #' @return A \code{morie_siu_result}.
 #' @export
+#' @examples
+#' morie_siu_sprott_doob_iftene_table1()
 morie_siu_sprott_doob_iftene_table1 <- function() {
   sections <- list(
     list(title = "Gender (N=265)",
@@ -700,6 +712,8 @@ morie_siu_sprott_doob_iftene_table1 <- function() {
 #'
 #' @return A \code{morie_siu_result}.
 #' @export
+#' @examples
+#' morie_siu_sprott_doob_iftene_table9()
 morie_siu_sprott_doob_iftene_table9 <- function() {
   t <- .SD_TABLE9_MAY2021_IEDM_DECISIONS
   pct_non_removal <- sum(t$pct[grepl("remain|transferred", t$decision,
@@ -739,6 +753,8 @@ morie_siu_sprott_doob_iftene_table9 <- function() {
 #'
 #' @return A \code{morie_siu_result}.
 #' @export
+#' @examples
+#' morie_siu_sprott_doob_iftene_table10()
 morie_siu_sprott_doob_iftene_table10 <- function() {
   pcts <- .SD_TABLE10_MAY2021_PER_IEDM$remain_pct
   .morie_siu_rich(
@@ -776,6 +792,8 @@ morie_siu_sprott_doob_iftene_table10 <- function() {
 #'
 #' @return A \code{morie_siu_result}.
 #' @export
+#' @examples
+#' morie_siu_sprott_doob_iftene_table15()
 morie_siu_sprott_doob_iftene_table15 <- function() {
   .morie_siu_rich(
     title = paste0(

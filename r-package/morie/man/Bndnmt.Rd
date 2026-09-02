@@ -31,7 +31,7 @@ ratio exactly when the maximum equals the net share.
 \details{
 Derivation: \code{ITT_y = pi_c E[D | c] - pi_d E[D | d]} with
 \code{|E[D | d]| <= y_1 - y_0}, so with \code{pi_d = pi_c - ITT_D},
-\code{LATE in [(ITT_y - pi_d R) / pi_c, (ITT_y + pi_d R) / pi_c]} at
+\code{LATE in \[(ITT_y - pi_d R) / pi_c, (ITT_y + pi_d R) / pi_c\]} at
 \code{pi_c = pi_c_max}.
 }
 \references{

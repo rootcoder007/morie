@@ -22,10 +22,10 @@ Same as \code{morie_dsp_coherence}.
 Convenience pass-through so detection-side callers can stay within
 the \code{dsp_detection} namespace.
 }
-\references{
-Rangayyan & Krishnan (2015), Ch. 4 & Ch. 6.
-}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 morie_dsp_coherence_spectrum(V, V)
+}
+\references{
+Rangayyan & Krishnan (2015), Ch. 4 & Ch. 6.
 }

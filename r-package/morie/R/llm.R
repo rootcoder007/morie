@@ -626,3 +626,79 @@ morie_llm_ask_multi <- function(messages, providers = NULL,
   }
   .morie_llm_local_fallback(fallback_prompt())
 }
+
+# ---- ported from the rmorie arm on 2026-09-01 (SIU panel needs them) ----
+
+# Process-lifetime probe cache. Uses a package-internal environment rather
+# than options() so we never modify the user's global options (CRAN policy);
+# matches the .morie_*_env pattern used elsewhere in the package.
+.morie_llm_cache <- new.env(parent = emptyenv())
+
+
+# TRUE when live-network probes must be suppressed: under R CMD check /
+# examples / covr the result must be deterministic and must never hang on a
+# dead-but-open host. A caller (or a test) can force a real probe with
+# options(morie.llm.allow_net_probe = TRUE).
+#' @noRd
+.morie_llm_no_net <- function() {
+  nzchar(Sys.getenv("_R_CHECK_PACKAGE_NAME_")) &&
+    !isTRUE(getOption("morie.llm.allow_net_probe"))
+}
+
+#' List the models an Ollama server is serving
+#'
+#' Connects to an Ollama server over its REST API (\code{GET /api/tags}) and
+#' returns the models it has available. Use it to confirm rmorie can reach
+#' your Ollama instance and to see the exact model names you can pass as the
+#' \code{model} argument or via the \code{OLLAMA_MODEL} environment variable
+#' -- rmorie bundles no model and assumes none, so you bring your own.
+#'
+#' Point \code{OLLAMA_HOST} (or \code{OLLAMA_BASE_URL}) at ANY reachable
+#' Ollama-compatible server: a local daemon (\code{http://localhost:11434},
+#' the default), a machine on your network, or a remote / Cloudflare-tunnelled
+#' gateway. A local daemon needs no key; set \code{OLLAMA_API_KEY} for gateways
+#' that require a bearer token.
+#'
+#' @param base Ollama base URL. Defaults to \code{OLLAMA_HOST} /
+#'   \code{OLLAMA_BASE_URL}, else \code{http://localhost:11434}.
+#' @param timeout Request timeout in seconds. Default 5.
+#' @return A \code{data.frame}, one row per model, with columns \code{name},
+#'   \code{size_gb}, \code{family}, \code{parameter_size} and
+#'   \code{quantization}. Zero rows when the server is unreachable or serves
+#'   no models (never errors), so it doubles as a connectivity test.
+#' @examples
+#' \donttest{
+#' # Point at your own Ollama server, then see what it serves:
+#' Sys.setenv(OLLAMA_HOST = "http://localhost:11434")
+#' models <- morie_llm_ollama_models()
+#' models$name
+#' }
+#' @export
+morie_llm_ollama_models <- function(base = .morie_llm_ollama_base(),
+                                    timeout = 5) {
+  empty <- data.frame(name = character(), size_gb = numeric(),
+                      family = character(), parameter_size = character(),
+                      quantization = character(), stringsAsFactors = FALSE)
+  if (!requireNamespace("httr2", quietly = TRUE)) return(empty)
+  models <- tryCatch({
+    req <- httr2::req_timeout(httr2::request(paste0(base, "/api/tags")), timeout)
+    key <- .morie_llm_env("OLLAMA_API_KEY")
+    if (nzchar(key)) req <- httr2::req_headers(req,
+                                               Authorization = paste("Bearer", key))
+    body <- .morie_from_json(httr2::resp_body_string(httr2::req_perform(req)),
+                             simplifyVector = FALSE)
+    body$models %||% list()
+  }, error = function(e) list())
+  if (!length(models)) return(empty)
+  det <- function(m, k) as.character((m$details %||% list())[[k]] %||% NA)
+  data.frame(
+    name           = vapply(models, function(m)
+      as.character(m$name %||% m$model %||% NA), ""),
+    size_gb        = vapply(models, function(m)
+      round(as.numeric(m$size %||% NA_real_) / 1e9, 2), numeric(1)),
+    family         = vapply(models, det, "", k = "family"),
+    parameter_size = vapply(models, det, "", k = "parameter_size"),
+    quantization   = vapply(models, det, "", k = "quantization_level"),
+    stringsAsFactors = FALSE)
+}
+

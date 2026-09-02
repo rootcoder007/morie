@@ -238,6 +238,9 @@ morie_audit_all_variables <- function(otis_specs = NULL,
 #' @param df Loaded data.frame.
 #' @return List of column specs.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_specs_from_df(V)
 morie_specs_from_df <- function(df) {
   lapply(names(df), function(nm) {
     col <- df[[nm]]
@@ -259,6 +262,10 @@ morie_specs_from_df <- function(df) {
 #' @param audit_result A \code{morie_audit_result} or list of them.
 #' @return The path written.
 #' @export
+#' @examples
+#' res <- morie_audit_otis_variables()
+#' tmp <- tempfile(fileext = ".md")
+#' morie_write_audit_markdown(tmp, res)
 morie_write_audit_markdown <- function(out_path, audit_result) {
   if (!inherits(audit_result, "morie_audit_result") &&
       !all(vapply(audit_result, inherits,
@@ -317,6 +324,9 @@ morie_write_audit_markdown <- function(out_path, audit_result) {
 #' @param ... Unused.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' print.morie_audit_result(D)
 print.morie_audit_result <- function(x, ...) {
   cat(x$title, "\n", strrep("=", nchar(x$title)), "\n", sep = "")
   for (k in names(x$summary_lines)) {

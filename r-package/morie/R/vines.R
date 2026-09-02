@@ -10,6 +10,9 @@
 #'   partial_corr), n, d, method.
 #' @keywords internal
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' vines(V)
 vines <- function(x) {
   x <- as.matrix(x)
   if (nrow(x) < 3L || ncol(x) < 2L) {

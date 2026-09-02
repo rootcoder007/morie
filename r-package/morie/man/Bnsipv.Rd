@@ -28,7 +28,11 @@ and an empty intersection means the two are jointly refuted.
 }
 \details{
 Formula: instrument bound from Molinari (2021) equation (2.15), shape
-bound \code{[0, upper]} from equation (2.13), intersected.
+bound \code{\[0, upper\]} from equation (2.13), intersected.
+}
+\examples{
+set.seed(1)
+r <- Bnsipv(y = rnorm(10), D = rbinom(10, 1, 0.5), Z = rnorm(10)); TRUE
 }
 \references{
 Mogstad, M., Santos, A. and Torgovitsky, A. (2018). Using
@@ -38,8 +42,4 @@ the stub's attribution; their general linear-programming machinery
 already ships as \code{morie_bnd_lp} and is not duplicated here. The
 component bounds are equations (2.15) and (2.13) of Molinari, F.
 (2021), Handbook of Econometrics 7A (arXiv:2004.11751 pp. 18-19).
-}
-\examples{
-set.seed(1)
-r <- Bnsipv(y = rnorm(10), D = rbinom(10, 1, 0.5), Z = rnorm(10)); TRUE
 }

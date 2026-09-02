@@ -344,6 +344,9 @@ e_value_d <- function(d, se = NULL, n = NULL) {
 #' @param method One of `"wilcoxon"`, `"sign"`, `"mcnemar"`.
 #' @return A `morie_rosenbaum_bounds` named-list.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' rosenbaum_bounds(V, V)
 rosenbaum_bounds <- function(treated_outcomes, control_outcomes,
                                 gamma_range = NULL,
                                 method = "wilcoxon") {
@@ -430,6 +433,8 @@ rosenbaum_bounds <- function(treated_outcomes, control_outcomes,
 #' @param outcome_type `"continuous"` or `"binary"` (advisory only).
 #' @return A `morie_tipping_point` named-list.
 #' @export
+#' @examples
+#' tipping_point_analysis(estimate = 5L, se = c(1, 2, 3, 4, 5, 6, 7, 8), n_treated = c(1, 2, 3, 4, 5, 6, 7, 8), n_control = c(1, 2, 3, 4, 5, 6, 7, 8))
 tipping_point_analysis <- function(estimate, se, n_treated, n_control,
                                       delta_range = NULL,
                                       outcome_type = "continuous") {
@@ -487,6 +492,9 @@ tipping_point_analysis <- function(estimate, se, n_treated, n_control,
 #'   partial R^2.
 #' @return A `morie_ovb` named-list.
 #' @export
+#' @examples
+#' omitted_variable_bias(estimate = 1, se = 0.1, dof = 100, r2_yd_x = 0.3, 
+#'     partial_r2_treatment = 0.1)
 omitted_variable_bias <- function(estimate, se, dof, r2_yd_x,
                                      partial_r2_treatment,
                                      q = 1.0, alpha = 0.05,
@@ -546,6 +554,8 @@ omitted_variable_bias <- function(estimate, se, dof, r2_yd_x,
 #' @param alpha          Significance level. Default 0.05.
 #' @return A `morie_spec_curve` named-list.
 #' @export
+#' @examples
+#' specification_curve(data = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), outcome = c(1, 2, 3, 4, 5, 6, 7, 8), treatment = c(0, 1, 0, 1, 1, 0, 1, 0), covariate_sets = c(1, 2, 3, 4, 5, 6, 7, 8))
 specification_curve <- function(data, outcome, treatment,
                                   covariate_sets,
                                   sample_filters = NULL,
@@ -734,6 +744,9 @@ bias_adjusted_estimate <- function(estimate, se, rr_ud, rr_eu,
 #' @param seed          RNG seed. Default 42.
 #' @return Named list with bias-adjusted distribution summaries.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' probabilistic_bias_analysis(V, V)
 probabilistic_bias_analysis <- function(estimate, se,
                                            n_simulations = 10000L,
                                            bias_parms = NULL,
@@ -785,6 +798,8 @@ probabilistic_bias_analysis <- function(estimate, se,
 #' @param prevalence   Outcome prevalence (for OR-to-RR).
 #' @return A data.frame with `metric, value`.
 #' @export
+#' @examples
+#' sensitivity_summary(estimate = 5L, se = c(1, 2, 3, 4, 5, 6, 7, 8))
 sensitivity_summary <- function(estimate, se, rr = NULL,
                                   odds_ratio = NULL,
                                   hazard_ratio = NULL,

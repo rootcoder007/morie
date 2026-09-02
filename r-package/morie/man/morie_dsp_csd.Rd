@@ -22,10 +22,10 @@ List with \code{freqs} (Hz) and \code{csd} (complex).
 Hamming-windowed averaged CSD (morie native FFT loop,
 module 20).
 }
-\references{
-Rangayyan & Krishnan (2015), Ch. 4 & Ch. 6.
-}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 morie_dsp_csd(V, V)
+}
+\references{
+Rangayyan & Krishnan (2015), Ch. 4 & Ch. 6.
 }

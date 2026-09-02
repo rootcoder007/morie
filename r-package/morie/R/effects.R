@@ -349,6 +349,12 @@ estimate_ate_gcomputation <- function(data, treatment, outcome,
 #' @param n_gamma    Number of Gamma values. Default 20.
 #' @return Data frame with `Gamma`, `p_lower`, `p_upper`.
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(d = rbinom(60, 1, 0.5), x1 = rnorm(60))
+#' df$y <- df$d * 0.5 + df$x1 + rnorm(60)
+#' res <- try(sensitivity_rosenbaum(df, "d", "y", "x1"))
+#' if (!inherits(res, "try-error")) str(res, max.level = 1)
 sensitivity_rosenbaum <- function(data, treatment, outcome,
                                      covariates,
                                      gamma_range = c(1, 3),

@@ -34,7 +34,13 @@ so differencing in \code{z} leaves only compliers:
 \code{E[y(0) | c] = (E[y (1 - D) | Z = 0] - E[y (1 - D) | Z = 1]) / pi_c},
 with \code{pi_c = P(D = 1 | Z = 1) - P(D = 1 | Z = 0)}. Their difference
 is the Wald ratio. The ATE bound is
-\code{pi_c LATE + (1 - pi_c) [y_0 - y_1, y_1 - y_0]}.
+\code{pi_c LATE + (1 - pi_c) \[y_0 - y_1, y_1 - y_0\]}.
+}
+\examples{
+set.seed(1)
+Z <- rbinom(40, 1, 0.5)
+D <- rbinom(40, 1, 0.2 + 0.6 * Z)
+Bnscom(y = rbinom(40, 1, 0.4), D = D, Z = Z)
 }
 \references{
 Imbens, G. W. and Rubin, D. B. (1997). Estimating outcome
@@ -44,10 +50,4 @@ J. D., Imbens, G. W. and Rubin, D. B. (1996). Identification of causal
 effects using instrumental variables. Journal of the American
 Statistical Association 91(434), 444-455.
 \doi{10.1080/01621459.1996.10476902}.
-}
-\examples{
-set.seed(1)
-Z <- rbinom(40, 1, 0.5)
-D <- rbinom(40, 1, 0.2 + 0.6 * Z)
-Bnscom(y = rbinom(40, 1, 0.4), D = D, Z = Z)
 }

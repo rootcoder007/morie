@@ -164,6 +164,10 @@ morie_datasets_calgary_fire_stations <- function(offline = TRUE,
 #' @param limit Page size (default 1000).
 #' @return A `data.frame` of records.
 #' @export
+#' @examples
+#' \donttest{
+#' df <- morie_datasets_calgary_socrata_by_id("848s-4m4z", limit = 100L)
+#' }
 morie_datasets_calgary_socrata_by_id <- function(soda_id,
                                                    limit = 1000L) {
   url <- sprintf("%s/resource/%s.json?$limit=%d",

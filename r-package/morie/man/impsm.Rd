@@ -21,8 +21,8 @@ list: estimate, estimate_sn, se, ess, n, method.
 Given samples x ~ q, estimate E_p of h(X) with weights w = p(x)/q(x).
 Returns both unnormalised and self-normalised estimators plus ESS.
 }
-\keyword{internal}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 impsm(V)
 }
+\keyword{internal}

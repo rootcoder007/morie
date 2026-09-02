@@ -164,6 +164,13 @@ bonferroni <- function(p_values, alpha = 0.05, labels = NULL) {
 #' @inheritParams bonferroni
 #' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
 #' @export
+#' @examples
+#' make_p <- function(n_null = 80, n_sig = 20, seed = 1) {
+#'     set.seed(seed)
+#'     c(runif(n_null), pmin(runif(n_sig, 0, 0.005), 1))
+#' }
+#' p <- make_p(50, 10)
+#' sidak(p)
 sidak <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
   m <- length(p)
@@ -307,6 +314,13 @@ by_fdr <- benjamini_yekutieli
 #'   estimated \code{pi0} and \code{lambda_param} (see
 #'   \code{morie_multiple_testing}).
 #' @export
+#' @examples
+#' make_p <- function(n_null = 80, n_sig = 20, seed = 1) {
+#'     set.seed(seed)
+#'     c(runif(n_null), pmin(runif(n_sig, 0, 0.005), 1))
+#' }
+#' p <- make_p(50, 10)
+#' storey_q(p, lambda_param = 0.5)
 storey_q <- function(p_values, alpha = 0.05, lambda_param = 0.5,
                      labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -402,6 +416,8 @@ fisher_combined <- function(p_values) {
 #' @return A \code{morie_rich_result} list with elements \code{method},
 #'   \code{statistic} (combined Z), and \code{p_value} (combined p).
 #' @export
+#' @examples
+#' stouffer_combined(c(0.01, 0.5, 0.6), weights = c(2, 1, 1))
 stouffer_combined <- function(p_values, weights = NULL) {
   p <- .mt_check_p(p_values)
   p <- pmin(pmax(p, 1e-300), 1 - 1e-15)
@@ -426,6 +442,12 @@ stouffer_combined <- function(p_values, weights = NULL) {
 #' @return A \code{morie_rich_result} list with elements \code{method},
 #'   \code{statistic} (minimum p), and \code{p_value} (combined p).
 #' @export
+#' @examples
+#' set.seed(1)
+#' p <- c(runif(50), runif(10, 0, 0.005))
+#' res <- bonferroni(p, alpha = 0.05)
+#' res$n_rejected
+#' tippett_combined(p_values = p)
 tippett_combined <- function(p_values) {
   p <- .mt_check_p(p_values)
   m <- length(p)
@@ -444,6 +466,12 @@ tippett_combined <- function(p_values) {
 #' @return A \code{morie_rich_result} list with elements \code{method},
 #'   \code{statistic} (Simes statistic), and \code{p_value} (combined p).
 #' @export
+#' @examples
+#' set.seed(1)
+#' p <- c(runif(50), runif(10, 0, 0.005))
+#' res <- bonferroni(p, alpha = 0.05)
+#' res$n_rejected
+#' simes_combined(p_values = p)
 simes_combined <- function(p_values) {
   p <- .mt_check_p(p_values)
   m <- length(p)
@@ -799,6 +827,8 @@ adjust_p_values <- function(p_values, method = "bh", alpha = 0.05,
 #'   \code{"li_ji"} (Li and Ji 2005), or \code{"nyholt"} (Nyholt 2004).
 #' @return Effective number of tests (>= 1).
 #' @export
+#' @examples
+#' n_effective_tests(correlation_matrix = 5L)
 n_effective_tests <- function(correlation_matrix,
                                method = c("galwey", "li_ji", "nyholt")) {
   method <- match.arg(method)
@@ -840,6 +870,9 @@ n_effective_tests <- function(correlation_matrix,
 #' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' p <- c(0.001, 0.008, 0.02, 0.04, 0.2, 0.5)
+#' print(sidak(p))
 print.morie_multiple_testing_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\

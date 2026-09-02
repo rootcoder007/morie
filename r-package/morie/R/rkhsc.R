@@ -11,6 +11,9 @@
 #' @return list: alpha, fitted, residuals, sigma, lambda, sse, r2, n, method.
 #' @keywords internal
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' rkhsc(V, V)
 rkhsc <- function(x, y, sigma = NULL, lam = 1e-3) {
   if (!is.matrix(x)) x <- matrix(x, ncol = 1)
   y <- as.numeric(y)

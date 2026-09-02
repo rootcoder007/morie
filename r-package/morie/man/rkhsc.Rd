@@ -25,8 +25,8 @@ list: alpha, fitted, residuals, sigma, lambda, sse, r2, n, method.
 Solves min_f  (1/n) ||y - f(x)||^2 + lambda ||f||_H^2 in a Gaussian
 RKHS.  Closed form alpha = solve(K + n\emph{lambda}I) \%*\% y.
 }
-\keyword{internal}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 rkhsc(V, V)
 }
+\keyword{internal}

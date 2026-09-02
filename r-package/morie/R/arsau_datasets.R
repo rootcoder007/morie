@@ -277,6 +277,10 @@ morie_arsau_sidecar_to_frame <- function(sidecar) {
 #' @references Ontario Ministry of the Solicitor General data
 #'   dictionaries accompanying the ARSAU CSV releases.
 #' @export
+#' @examples
+#' \donttest{
+#' dict <- morie_arsau_read_xlsx_dictionary(tempdir())
+#' }
 morie_arsau_read_xlsx_dictionary <- function(path, sheet = 1L) {
   if (!requireNamespace("readxl", quietly = TRUE)) {
     stop(
@@ -437,6 +441,10 @@ morie_arsau_ckan_url <- function(kind, year, limit = 5000L) {
 #'   \code{\link{morie_arsau_sidecar_to_frame}}.
 #' @references Ontario Data Catalogue CKAN API.
 #' @export
+#' @examples
+#' \donttest{
+#' sidecar <- morie_arsau_fetch_sidecar("assault", 2020L)
+#' }
 morie_arsau_fetch_sidecar <- function(kind, year, limit = 5000L,
                                       timeout_sec = 30L) {
   if (!requireNamespace("httr2", quietly = TRUE)) {
@@ -500,6 +508,10 @@ morie_arsau_fetch_sidecar <- function(kind, year, limit = 5000L,
 #' @param ... Reserved.
 #' @return Stops with \code{NotYetPorted}.
 #' @export
+#' @examples
+#' \donttest{
+#' path <- morie_arsau_download(tempdir())
+#' }
 morie_arsau_download <- function(target_dir, ...) {
   stop(
     "NotYetPorted: morie_arsau_download() is not yet implemented in R. ",

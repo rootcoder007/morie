@@ -331,6 +331,9 @@ analyze_doob_table3_age_overrepresentation <- function() {
 #' @references Pettitt (1979). A non-parametric approach to the
 #'   change-point problem. *J. R. Stat. Soc. C*, 28(2), 126--135.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' pettitt_changepoint(V)
 pettitt_changepoint <- function(series) {
   arr <- as.numeric(series)
   arr <- arr[is.finite(arr)]

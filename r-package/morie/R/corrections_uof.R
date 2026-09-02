@@ -95,6 +95,8 @@ morie_corrections_uof_resource_ids <- function() {
 #'   \url{https://data.ontario.ca/dataset/use-of-force-in-correctional-institutions};
 #'   Open Government Licence -- Ontario.
 #' @export
+#' @examples
+#' morie_datasets_corrections_uof_incidents()
 morie_datasets_corrections_uof_incidents <- function(offline = TRUE,
                                                        resource_id = NULL,
                                                        source = NULL) {
@@ -109,6 +111,8 @@ morie_datasets_corrections_uof_incidents <- function(offline = TRUE,
 #'   upstream schema described in
 #'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
+#' @examples
+#' morie_datasets_corrections_uof_inmate_incident()
 morie_datasets_corrections_uof_inmate_incident <- function(offline = TRUE,
                                                              resource_id = NULL,
                                                              source = NULL) {
@@ -123,6 +127,8 @@ morie_datasets_corrections_uof_inmate_incident <- function(offline = TRUE,
 #'   upstream schema described in
 #'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
+#' @examples
+#' morie_datasets_corrections_uof_staff_incident()
 morie_datasets_corrections_uof_staff_incident <- function(offline = TRUE,
                                                             resource_id = NULL,
                                                             source = NULL) {
@@ -137,6 +143,8 @@ morie_datasets_corrections_uof_staff_incident <- function(offline = TRUE,
 #'   upstream schema described in
 #'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
+#' @examples
+#' morie_datasets_corrections_uof_incident_type()
 morie_datasets_corrections_uof_incident_type <- function(offline = TRUE,
                                                            resource_id = NULL,
                                                            source = NULL) {
@@ -151,6 +159,8 @@ morie_datasets_corrections_uof_incident_type <- function(offline = TRUE,
 #'   `source`). Columns mirror the upstream schema described in
 #'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
+#' @examples
+#' morie_datasets_corrections_uof_institution_summary()
 morie_datasets_corrections_uof_institution_summary <- function(offline = TRUE,
                                                                  resource_id = NULL,
                                                                  source = NULL) {
@@ -165,6 +175,8 @@ morie_datasets_corrections_uof_institution_summary <- function(offline = TRUE,
 #'   Columns mirror the upstream schema described in
 #'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
+#' @examples
+#' morie_datasets_corrections_uof_location_summary()
 morie_datasets_corrections_uof_location_summary <- function(offline = TRUE,
                                                               resource_id = NULL,
                                                               source = NULL) {
@@ -179,6 +191,8 @@ morie_datasets_corrections_uof_location_summary <- function(offline = TRUE,
 #'   Columns mirror the upstream schema described in
 #'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
+#' @examples
+#' morie_datasets_corrections_uof_select_incident_summary()
 morie_datasets_corrections_uof_select_incident_summary <- function(offline = TRUE,
                                                                      resource_id = NULL,
                                                                      source = NULL) {
@@ -194,6 +208,8 @@ morie_datasets_corrections_uof_select_incident_summary <- function(offline = TRU
 #'   Columns mirror the upstream schema described in
 #'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
+#' @examples
+#' morie_datasets_corrections_uof_inmate_participant()
 morie_datasets_corrections_uof_inmate_participant <- function(offline = TRUE,
                                                                 resource_id = NULL,
                                                                 source = NULL) {
@@ -208,6 +224,8 @@ morie_datasets_corrections_uof_inmate_participant <- function(offline = TRUE,
 #'   Columns mirror the upstream schema described in
 #'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
+#' @examples
+#' morie_datasets_corrections_uof_indigenous()
 morie_datasets_corrections_uof_indigenous <- function(offline = TRUE,
                                                        resource_id = NULL,
                                                        source = NULL) {
@@ -222,6 +240,8 @@ morie_datasets_corrections_uof_indigenous <- function(offline = TRUE,
 #'   mirror the upstream schema described in
 #'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
+#' @examples
+#' morie_datasets_corrections_uof_ethnic_origin()
 morie_datasets_corrections_uof_ethnic_origin <- function(offline = TRUE,
                                                            resource_id = NULL,
                                                            source = NULL) {
@@ -236,6 +256,8 @@ morie_datasets_corrections_uof_ethnic_origin <- function(offline = TRUE,
 #'   upstream schema described in
 #'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
+#' @examples
+#' morie_datasets_corrections_uof_race()
 morie_datasets_corrections_uof_race <- function(offline = TRUE,
                                                   resource_id = NULL,
                                                   source = NULL) {
@@ -250,6 +272,8 @@ morie_datasets_corrections_uof_race <- function(offline = TRUE,
 #'   mirror the upstream schema described in
 #'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
+#' @examples
+#' morie_datasets_corrections_uof_religion()
 morie_datasets_corrections_uof_religion <- function(offline = TRUE,
                                                      resource_id = NULL,
                                                      source = NULL) {

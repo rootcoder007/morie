@@ -22,10 +22,6 @@ levels of max depth 1. Falls back with a clear error naming
 \pkg{arrow} for anything richer (dictionary encoding, nested
 types, other codecs).
 }
-\references{
-Apache Parquet format specification (thrift compact
-protocol footer; PLAIN encoding; Snappy framing).
-}
 \examples{
 if (requireNamespace("arrow", quietly = TRUE)) {
   tf <- tempfile(fileext = ".parquet")
@@ -35,4 +31,8 @@ if (requireNamespace("arrow", quietly = TRUE)) {
   )
   morie_fetch_parquet(tf)
 }
+}
+\references{
+Apache Parquet format specification (thrift compact
+protocol footer; PLAIN encoding; Snappy framing).
 }

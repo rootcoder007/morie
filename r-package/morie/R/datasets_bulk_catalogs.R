@@ -132,6 +132,10 @@ morie_datasets_vancouver_opendata_bulk_layers <- function(offline = TRUE) {
 #' @param limit Page size.
 #' @return A `data.frame` of records.
 #' @export
+#' @examples
+#' \donttest{
+#' df <- morie_datasets_nyc_socrata_by_id("erm2-nwe9", limit = 100L)
+#' }
 morie_datasets_nyc_socrata_by_id <- function(soda_id,
                                                limit = 1000L) {
   url <- sprintf("https://data.cityofnewyork.us/resource/%s.json?$limit=%d",

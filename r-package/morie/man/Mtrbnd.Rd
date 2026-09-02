@@ -30,18 +30,18 @@ the direction switch and delegates.
 Under monotone treatment response \code{Y_i(d) >= y_i} when
 \code{d >= z_i} and \code{Y_i(d) <= y_i} when \code{d <= z_i}, giving
 \code{L_i = y_i if z_i <= d else ymin}, \code{U_i = y_i if z_i >= d
-else ymax} and \code{E[Y(d)] in [mean(L), mean(U)]}.
+else ymax} and \code{E[Y(d)] in \[mean(L), mean(U)\]}.
 
 \code{direction = "decreasing"} asserts the reverse monotonicity, which
 is the same statement about the level scale run backwards and is
 obtained by negating the treatment levels before delegating.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Mtrbnd(V, V)
+}
 \references{
 Manski (1997), Econometrica 65(6), 1311-1334; Manski and
 Pepper (2000), Econometrica 68(4), 997-1010. Standard published
 form; see \code{bdmnto} for the availability note.
-}
-\examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-Mtrbnd(V, V)
 }

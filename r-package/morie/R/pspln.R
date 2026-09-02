@@ -13,6 +13,9 @@
 #' @importFrom splines bs
 #' @keywords internal
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' pspln(V, V)
 pspln <- function(x, y, n_knots = 20L, degree = 3L, lam = 1) {
   x <- as.numeric(x)
   y <- as.numeric(y)

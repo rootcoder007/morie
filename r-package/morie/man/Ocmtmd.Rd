@@ -14,7 +14,7 @@ Ocmtmd(y, A, H, Q = NULL)
 \item{H}{Covariate history, no intercept column; one is added.}
 
 \item{Q}{Fitted values of the outcome model; if \code{NULL}, the
-outcome is regressed on \code{[1, A, H]} by least squares.}
+outcome is regressed on \code{\[1, A, H\]} by least squares.}
 }
 \value{
 List with \code{estimate}, \code{b0}, \code{b1},

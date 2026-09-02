@@ -55,6 +55,8 @@ MORIE_TPS_LAYER_URLS <- c(
 #' @return Character vector of category names, sorted.
 #'
 #' @export
+#' @examples
+#' morie_tps_list_categories()
 morie_tps_list_categories <- function() {
   sort(names(MORIE_TPS_LAYER_URLS))
 }
@@ -127,6 +129,11 @@ morie_tps_list_categories <- function() {
 #' @return Path to the written CSV file.
 #'
 #' @export
+#' @examples
+#' \donttest{
+#' cat <- morie_tps_list_categories()[1]
+#' df <- morie_tps_fetch_category(cat)
+#' }
 morie_tps_fetch_category <- function(category,
                                      cache_dir = NULL,
                                      where = "1=1",
@@ -214,6 +221,10 @@ morie_tps_fetch_category <- function(category,
 #' @return A `data.frame`.
 #'
 #' @export
+#' @examples
+#' \donttest{
+#' df <- morie_tps_fetch_dataframe(morie_tps_list_categories()[1])
+#' }
 morie_tps_fetch_dataframe <- function(category, ...) {
   p <- morie_tps_fetch_category(category, ...)
   utils::read.csv(p, stringsAsFactors = FALSE, check.names = FALSE)

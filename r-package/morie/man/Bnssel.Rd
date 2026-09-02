@@ -28,9 +28,13 @@ bound whenever selection rates differ by stratum, and reproduces the
 pooled bound when they do not.
 }
 \details{
-Formula, per stratum: \code{[E(y | D = 1, x) P(D = 1 | x) +
-y_0 P(D = 0 | x), E(y | D = 1, x) P(D = 1 | x) + y_1 P(D = 0 | x)]},
+Formula, per stratum: \code{\[E(y | D = 1, x) P(D = 1 | x) +
+y_0 P(D = 0 | x), E(y | D = 1, x) P(D = 1 | x) + y_1 P(D = 0 | x)\]},
 averaged with weights \code{P(x)}.
+}
+\examples{
+set.seed(1)
+r <- Bnssel(y = rnorm(10), D = rbinom(10, 1, 0.5), X = rnorm(10)); TRUE
 }
 \references{
 Heckman, J. J. (1979). Sample selection bias as a
@@ -39,8 +43,4 @@ specification error. Econometrica 47(1), 153-161.
 Probability Distributions. Springer. Worst-case region as Theorem
 SIR-2.1, equation (2.2), of Molinari, F. (2021), Handbook of
 Econometrics 7A (arXiv:2004.11751 p. 12).
-}
-\examples{
-set.seed(1)
-r <- Bnssel(y = rnorm(10), D = rbinom(10, 1, 0.5), X = rnorm(10)); TRUE
 }

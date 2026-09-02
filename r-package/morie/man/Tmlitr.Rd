@@ -26,16 +26,16 @@ because only its sign matters: \code{d*(V) = I(B(V) > 0)} with
 mean under a known deterministic regime, so the clever covariate is
 \code{H = I(D = d*(V)) / g_{d*(V)}(W)} and a linear fluctuation
 \code{Q* = Q + eps H}, \code{eps = sum H (y - Q)/sum H^2}, solves the
-efficient score.  \code{psi = mean_i [Q(d_i, W_i) + eps/g_{d_i}(W_i)]}.
+efficient score.  \code{psi = mean_i \[Q(d_i, W_i) + eps/g_{d_i}(W_i)\]}.
 }
 \details{
 The reported SE is the non-uniform influence-curve SE; it is honest
 away from the non-uniqueness boundary \code{B(V) = 0}.
 }
+\examples{
+Tmlitr(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
 \references{
 Luedtke, A. R. & van der Laan, M. J. (2016). Annals of
 Statistics 44(2):713-742.
-}
-\examples{
-Tmlitr(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

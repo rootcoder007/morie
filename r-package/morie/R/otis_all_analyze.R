@@ -329,6 +329,9 @@ NULL
 #'   year-trend tables. Within-year only -- \code{UniqueIndividual_ID}
 #'   is not cross-year-safe.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_otis_analyze_b01(D)
 morie_otis_analyze_b01 <- function(data) {
   stopifnot(is.data.frame(data))
   s <- .otis_summary_lines(data, "b01",
@@ -396,6 +399,9 @@ morie_otis_analyze_b01 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines, year-trend table and
 #'   gender x region crosstab of total segregation days.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b02(V)
 morie_otis_analyze_b02 <- function(data) {
   s <- .otis_summary_lines(data, "b02",
     description = "Segregation total days per person per fiscal year")
@@ -423,6 +429,9 @@ morie_otis_analyze_b02 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and alert-by-institution
 #'   crosstabs of segregation-placement counts.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b03(V)
 morie_otis_analyze_b03 <- function(data) {
   s <- .otis_summary_lines(data, "b03",
     description = "Placements by alert/hold flag x institution")
@@ -444,6 +453,9 @@ morie_otis_analyze_b03 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and a region x measure
 #'   crosstab of placement durations.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b04(V)
 morie_otis_analyze_b04 <- function(data) {
   s <- .otis_summary_lines(data, "b04",
     description = "Placement durations (max/median/mode) by region & gender")
@@ -462,6 +474,9 @@ morie_otis_analyze_b04 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and a duration-bin x
 #'   fiscal-year crosstab of placement counts.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b05(V)
 morie_otis_analyze_b05 <- function(data) {
   s <- .otis_summary_lines(data, "b05",
     description = "Distribution by binned duration")
@@ -479,6 +494,9 @@ morie_otis_analyze_b05 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and reason x year and
 #'   reason x gender crosstabs.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b06(V)
 morie_otis_analyze_b06 <- function(data) {
   s <- .otis_summary_lines(data, "b06",
     description = "Reasons for placement by institution & gender")
@@ -501,6 +519,9 @@ morie_otis_analyze_b06 <- function(data) {
 #'   alert x gender x year table including with/without-alert counts and
 #'   the rate of placements with an alert.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b07(V)
 morie_otis_analyze_b07 <- function(data) {
   s <- .otis_summary_lines(data, "b07",
     description = "Placements with/without alert x gender")
@@ -537,6 +558,9 @@ morie_otis_analyze_b07 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and an
 #'   institution x measure crosstab of placement durations.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b08(V)
 morie_otis_analyze_b08 <- function(data) {
   s <- .otis_summary_lines(data, "b08",
     description = "Placement durations by institution & gender")
@@ -555,6 +579,9 @@ morie_otis_analyze_b08 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and a
 #'   placement-count x gender crosstab of individual counts.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b09(V)
 morie_otis_analyze_b09 <- function(data) {
   s <- .otis_summary_lines(data, "b09",
     description = "Individuals by number of placements x gender")
@@ -577,6 +604,9 @@ morie_otis_analyze_b09 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and a year x gender
 #'   cohort-size table including RC/custody and Seg/custody ratios.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_otis_analyze_c01(D)
 morie_otis_analyze_c01 <- function(data) {
   s <- .otis_summary_lines(data, "c01",
     description = "Total individuals x custody/RC/seg x gender")
@@ -606,6 +636,9 @@ morie_otis_analyze_c01 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and an
 #'   institution x year crosstab of restrictive-confinement individual counts.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_c02(V)
 morie_otis_analyze_c02 <- function(data) {
   s <- .otis_summary_lines(data, "c02",
     description = "Individuals in RC/seg by institution x region x gender")
@@ -626,6 +659,9 @@ morie_otis_analyze_c02 <- function(data) {
 #'   paragraph, and a per-race table of custody / RC / segregation totals
 #'   plus RC/custody and Seg/custody ratios.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_c03(V)
 morie_otis_analyze_c03 <- function(data) {
   s <- .otis_summary_lines(data, "c03",
     description = "Individuals x race x gender")
@@ -695,18 +731,27 @@ morie_otis_analyze_c03 <- function(data) {
 #' @param data c04 data.frame from OTIS.
 #' @return RichResult with summary + race-by-region crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_c04(morie_synth_otis("c04", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_c04 <- .otis_c_simple(
   "c04", "Individuals in RC/seg x race x region", "Race")
 #' Individuals in RC/seg by religion x region (c05)
 #' @param data c05 data.frame from OTIS.
 #' @return RichResult with summary + religion-by-region crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_c05(morie_synth_otis("c05", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_c05 <- .otis_c_simple(
   "c05", "Individuals in RC/seg x religion x region", "Religion")
 #' Individuals in RC/seg by age category x region (c06)
 #' @param data c06 data.frame from OTIS.
 #' @return RichResult with summary + age-by-region crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_c06(morie_synth_otis("c06", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_c06 <- .otis_c_simple(
   "c06", "Individuals in RC/seg x age category x region", "Age_Category")
 
@@ -716,6 +761,9 @@ morie_otis_analyze_c06 <- .otis_c_simple(
 #'   \code{morie_rich_result}) with summary lines and alert x gender and
 #'   alert x year crosstabs of restrictive-confinement and segregation counts.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_c07(V)
 morie_otis_analyze_c07 <- function(data) {
   s <- .otis_summary_lines(data, "c07",
     description = "Individuals in custody/RC/seg x alert type x gender")
@@ -735,12 +783,18 @@ morie_otis_analyze_c07 <- function(data) {
 #' @param data c08 data.frame from OTIS.
 #' @return RichResult with summary + religion-by-gender crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_c08(morie_synth_otis("c08", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_c08 <- .otis_c_simple(
   "c08", "Individuals x religion x gender", "Religion", "Gender")
 #' Individuals by age category x gender (c09)
 #' @param data c09 data.frame from OTIS.
 #' @return RichResult with summary + age-by-gender crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_c09(morie_synth_otis("c09", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_c09 <- .otis_c_simple(
   "c09", "Individuals x age category x gender", "Age_Category", "Gender")
 
@@ -751,6 +805,9 @@ morie_otis_analyze_c09 <- .otis_c_simple(
 #'   institution x measure crosstab of restrictive-confinement aggregate
 #'   durations.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_c10(V)
 morie_otis_analyze_c10 <- function(data) {
   s <- .otis_summary_lines(data, "c10",
     description = "RC/seg aggregate durations by institution")
@@ -770,6 +827,9 @@ morie_otis_analyze_c10 <- function(data) {
 #'   aggregate-duration x year crosstab of restrictive-confinement
 #'   individual counts.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_c11(V)
 morie_otis_analyze_c11 <- function(data) {
   s <- .otis_summary_lines(data, "c11",
     description = "Individuals by binned aggregate duration")
@@ -787,6 +847,9 @@ morie_otis_analyze_c11 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and a region x measure
 #'   crosstab of restrictive-confinement aggregate durations.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_c12(V)
 morie_otis_analyze_c12 <- function(data) {
   s <- .otis_summary_lines(data, "c12",
     description = "RC/seg aggregate durations by region & gender")
@@ -810,6 +873,9 @@ morie_otis_analyze_c12 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and tables of deaths by
 #'   region, housing-unit type, medical cause, and means of death.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_d01(V)
 morie_otis_analyze_d01 <- function(data) {
   s <- .otis_summary_lines(data, "d01",
     description = "Custodial deaths (person-level)")
@@ -865,24 +931,36 @@ morie_otis_analyze_d01 <- function(data) {
 #' @param data d02 data.frame from OTIS.
 #' @return RichResult with summary + deaths-by-gender crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_d02(morie_synth_otis("d02", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_d02 <- .otis_d_simple(
   "d02", "Custodial deaths x gender", "Gender")
 #' Custodial deaths by race (d03)
 #' @param data d03 data.frame from OTIS.
 #' @return RichResult with summary + deaths-by-race crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_d03(morie_synth_otis("d03", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_d03 <- .otis_d_simple(
   "d03", "Custodial deaths x race", "Race")
 #' Custodial deaths by religion (d04)
 #' @param data d04 data.frame from OTIS.
 #' @return RichResult with summary + deaths-by-religion crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_d04(morie_synth_otis("d04", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_d04 <- .otis_d_simple(
   "d04", "Custodial deaths x religion", "Religion")
 #' Custodial deaths by age category (d05)
 #' @param data d05 data.frame from OTIS.
 #' @return RichResult with summary + deaths-by-age crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_d05(morie_synth_otis("d05", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_d05 <- .otis_d_simple(
   "d05", "Custodial deaths x age category", "Age_Category")
 
@@ -890,6 +968,9 @@ morie_otis_analyze_d05 <- .otis_d_simple(
 #' @param data d06 data.frame from OTIS.
 #' @return RichResult with summary + medical-cause-by-alert crosstab.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_d06(V)
 morie_otis_analyze_d06 <- function(data) {
   s <- .otis_summary_lines(data, "d06",
     description = "Custodial deaths x alert x medical cause")
@@ -904,6 +985,9 @@ morie_otis_analyze_d06 <- function(data) {
 #' @param data d07 data.frame from OTIS.
 #' @return RichResult with summary + housing-unit-by-alert crosstab.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_d07(V)
 morie_otis_analyze_d07 <- function(data) {
   s <- .otis_summary_lines(data, "d07",
     description = "Custodial deaths x alert x housing unit")
@@ -992,6 +1076,9 @@ morie_otis_analyze_all <- function(datasets, out_dir = NULL) {
 #' @param ... Unused.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' otis_b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+#' print(morie_otis_analyze_b01(otis_b01))
 print.morie_otis_analysis_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\

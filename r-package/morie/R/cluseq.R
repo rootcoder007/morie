@@ -35,6 +35,9 @@
 #' @references Croucher et al. (2015), Nucleic Acids Research
 #'   43(3):e15.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Cluseq(V)
 Cluseq <- function(sequences, snp_threshold = 5) {
   seqs <- lapply(sequences, function(s)
     if (is.character(s) && length(s) == 1L) strsplit(s, "")[[1]] else s)

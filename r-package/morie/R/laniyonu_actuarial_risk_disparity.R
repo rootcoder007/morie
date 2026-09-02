@@ -638,6 +638,9 @@ morie_laniyonu_actuarial_risk_disparity <- function(
 #' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' print.morie_laniyonu_ard_result(D)
 print.morie_laniyonu_ard_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\

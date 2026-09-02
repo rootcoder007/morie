@@ -16,10 +16,10 @@ Bandwidth (numeric scalar).
 Returns h equal to 0.9 times min of sigma-hat and IQR over 1.34
 times n to the negative one-fifth.
 }
-\references{
-Silverman, B. W. (1986), p. 48.
-}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 silverman_bandwidth(V)
+}
+\references{
+Silverman, B. W. (1986), p. 48.
 }

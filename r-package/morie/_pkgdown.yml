@@ -41,6 +41,8 @@ navbar:
           href: articles/siu-pipeline.html
         - text: MRM OTIS walkthrough
           href: articles/mrm-otis-walkthrough.html
+        - text: Bayesian regression priors
+          href: articles/bayesian-priors.html
         - text: Causal inference
           href: articles/causal-inference.html
         - text: Chi-square tests and ANOVA

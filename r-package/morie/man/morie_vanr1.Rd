@@ -21,17 +21,17 @@ A list with \code{estimate} (mean diagonal), \code{G},
 \code{n_markers}, \code{method}.
 }
 \description{
-Computes \eqn{G = ZZ'/[2\sum_j p_j(1-p_j)]} with \eqn{Z = M - 2P}
+Computes \eqn{G = ZZ'/\[2\sum_j p_j(1-p_j)\]} with \eqn{Z = M - 2P}
 (VanRaden 2008, method 1).  The mean diagonal of \eqn{G} is
 reported as \code{estimate}; it exceeds 1 when the sample is more
 inbred than the base population implied by \code{freq}.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_vanr1(V)
 }
 \references{
 VanRaden, P. M. (2008). Efficient methods to compute
 genomic predictions. Journal of Dairy Science, 91(11),
 4414-4423.
-}
-\examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_vanr1(V)
 }

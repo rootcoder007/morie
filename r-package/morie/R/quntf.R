@@ -10,6 +10,9 @@
 #' @return list: taus, quantiles, se, bandwidth, n, method.
 #' @keywords internal
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' quntf(V)
 quntf <- function(x, taus = NULL) {
   x <- as.numeric(x)
   n <- length(x)

@@ -148,6 +148,11 @@ morie_datasets_toronto_asr_miscellaneous <- function(offline = TRUE,
 #' @param limit Page size (max 32000 per CKAN; sane default 100).
 #' @return A `data.frame` of records.
 #' @export
+#' @examples
+#' \donttest{
+#' data(ckan_metadata, package = "morie")
+#' recs <- morie_datasets_toronto_open_ckan_resource(ckan_metadata$package_id[1])
+#' }
 morie_datasets_toronto_open_ckan_resource <- function(resource_id,
                                                         limit = 100L) {
   url <- sprintf("%s/action/datastore_search?resource_id=%s&limit=%d",

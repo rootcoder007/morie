@@ -100,6 +100,10 @@ morie_datasets_vancouver_opendata_layers <- function(offline = TRUE,
 #' `max_features` interface as the other morie dataset wrappers.
 #'
 #' @name vancouver_crime_adjacent
+#' @examples
+#' \donttest{
+#' morie_datasets_vancouver_graffiti()
+#' }
 NULL
 
 #' .morie_vancouver_fixture

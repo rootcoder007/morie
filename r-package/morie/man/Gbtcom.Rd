@@ -51,7 +51,7 @@ rel <- ifelse(is.finite(g), pmax(0, tt - g), 0)
 y <- u * 0.3 + tt * 0.2 + ifelse(tt >= g, 1 + 0.5 * rel, 0)
 d <- data.frame(y = y, d = as.numeric(tt >= g), unit = u, time = tt)
 out <- Gbtcom(d, "y", "d", "unit", "time")
-round(out$weight[["treated vs never-treated"]], 10)
+round(out$weight[\["treated vs never-treated"\]], 10)
 }
 \references{
 Goodman-Bacon, A. (2021). Difference-in-differences

@@ -17,6 +17,8 @@
 #' @return A length-1 character string -- the resolved (possibly
 #'   non-existent) filesystem path to the TPS data directory.
 #' @export
+#' @examples
+#' morie_tps_data_dir()
 morie_tps_data_dir <- function() {
   # Mirror Python's `Path(__file__).resolve().parents[5] / data/datasets/TPS`
   # but tolerant of the installed-package layout: prefer an env override.

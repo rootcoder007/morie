@@ -30,9 +30,14 @@ same number in both language arms.
 }
 \details{
 Formula: \code{CS = {theta : Q_n(theta) <= z^2}} with
-\code{Q_n(theta) = [sqrt(n)(mL - theta)/sL]_+^2 +
-[sqrt(n)(theta - mU)/sU]_+^2}, whose endpoints are
+\code{Q_n(theta) = \[sqrt(n)(mL - theta)/sL\]_+^2 +
+\[sqrt(n)(theta - mU)/sU\]_+^2}, whose endpoints are
 \code{mL - z sL / sqrt(n)} and \code{mU + z sU / sqrt(n)}.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+Bndinf(V, D)
 }
 \references{
 Romano, J. P. and Shaikh, A. M. (2008). Inference for
@@ -41,9 +46,4 @@ Journal of Statistical Planning and Inference 138(9), 2786-2807.
 \doi{10.1016/j.jspi.2008.03.015}. Criterion and level set as
 equations (4.2) and (4.10) of Molinari, F. (2021), Handbook of
 Econometrics 7A (arXiv:2004.11751 pp. 89, 97).
-}
-\examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-Bndinf(V, D)
 }
