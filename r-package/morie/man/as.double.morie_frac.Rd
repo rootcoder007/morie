@@ -20,5 +20,5 @@ A numeric value.
 \keyword{internal}
 \examples{
 D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-as.double.morie_frac(D)
+morie:::as.double.morie_frac(D)
 }

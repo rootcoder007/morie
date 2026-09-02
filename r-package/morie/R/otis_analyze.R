@@ -178,7 +178,7 @@ morie_otis_all_analyses <- function(df, year,
 #' @export
 #' @examples
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' format.morie_otis_result(D)
+#' morie:::format.morie_otis_result(D)
 format.morie_otis_result <- function(x, ...) {
   lines <- character(0)
   lines <- c(lines, sprintf("== %s ==", x$title %||% "(untitled)"))
@@ -219,7 +219,7 @@ format.morie_otis_result <- function(x, ...) {
 #' @export
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' print.morie_otis_result(V)
+#' morie:::print.morie_otis_result(V)
 print.morie_otis_result <- function(x, ...) {
   cat(format(x, ...), "\
 ", sep = "")

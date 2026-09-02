@@ -58,6 +58,6 @@ tests in \code{tests/testthat/}.
 \examples{
 set.seed(1)
 M <- matrix(rbinom(20 * 8, 2, 0.3), 20, 8)
-G <- morie_grm(M)
+G <- morie:::morie_grm(M)
 dim(G)
 }

@@ -65,6 +65,6 @@ tests in \code{tests/testthat/}.
 }
 \keyword{models}
 \examples{
-r <- morie_one_way(list(c(5, 6, 7), c(6, 7, 8), c(9, 10, 11)))
+r <- morie:::morie_one_way(list(c(5, 6, 7), c(6, 7, 8), c(9, 10, 11)))
 is.list(r)
 }

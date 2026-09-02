@@ -12,7 +12,7 @@
 #' @keywords internal
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-#' sparse_attention(V)
+#' morie:::sparse_attention(V)
 sparse_attention <- function(x, window = 4L, stride = 8L,
                              n_random = 0L, seed = 0L) {
   N <- if (length(x) == 1L && is.numeric(x)) {

@@ -17,6 +17,6 @@ Median with the even case averaged (internal)
 }
 \examples{
 set.seed(1)
-r <- .ik_median(v = rnorm(10)); TRUE
+r <- morie:::.ik_median(v = rnorm(10)); TRUE
 }
 \keyword{internal}

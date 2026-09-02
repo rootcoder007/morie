@@ -19,5 +19,5 @@ Print method for \code{morie_semipar_kernels} objects
 }
 \examples{
 D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-print.morie_semipar_kernels(D)
+morie:::print.morie_semipar_kernels(D)
 }

@@ -25,6 +25,6 @@ SwiGLU activation (Shazeer 2020)
 }
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-swiglu_activation(V)
+morie:::swiglu_activation(V)
 }
 \keyword{internal}
