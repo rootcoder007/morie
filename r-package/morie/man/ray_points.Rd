@@ -26,6 +26,6 @@ A list with \code{t}, \code{points}, \code{direction}.
 \examples{
 r <- ray_points(origin = c(0, 0, 0), direction = c(0, 0, 1),
                 t_near = 1, t_far = 5, n_samples = 8,
-                rng = .ghc_rng(1), stratified = TRUE)
+                rng = morie:::.ghc_rng(1), stratified = TRUE)
 c(length(r$t), nrow(as.matrix(r$points)))
 }

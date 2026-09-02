@@ -19,5 +19,5 @@ Pretty-print method for \code{morie_tps_result} objects
 }
 \examples{
 D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-print.morie_tps_result(D)
+morie:::print.morie_tps_result(D)
 }

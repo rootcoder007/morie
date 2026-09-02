@@ -19,5 +19,5 @@ A list with \code{support}, \code{pmf}, \code{pmf_s}, \code{cdf_s}, \code{sf_s},
 }
 \keyword{internal}
 \examples{
-Taunull(n = 5L)
+morie:::Taunull(n = 5L)
 }

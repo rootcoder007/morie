@@ -44,7 +44,7 @@
 #' @keywords internal
 #' @examples
 #' set.seed(1)
-#' r <- .ik_ols(rows = rnorm(10), y = rnorm(10)); TRUE
+#' r <- morie:::.ik_ols(rows = rnorm(10), y = rnorm(10)); TRUE
 .ik_ols <- function(rows, y) {
   rows <- as.matrix(rows); y <- as.numeric(y)
   p <- ncol(rows)
@@ -66,7 +66,7 @@
 #' @keywords internal
 #' @examples
 #' set.seed(1)
-#' r <- .ik_median(v = rnorm(10)); TRUE
+#' r <- morie:::.ik_median(v = rnorm(10)); TRUE
 .ik_median <- function(v) {
   s <- sort(as.numeric(v)); m <- length(s)
   if (m == 0L) stop("mse_optimal_bandwidth_rdd: median of an empty side")

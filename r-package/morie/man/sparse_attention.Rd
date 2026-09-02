@@ -26,6 +26,6 @@ Child-2019 sparse attention mask
 }
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-sparse_attention(V)
+morie:::sparse_attention(V)
 }
 \keyword{internal}

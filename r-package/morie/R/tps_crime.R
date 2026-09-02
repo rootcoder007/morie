@@ -520,7 +520,7 @@ morie_tps_category_correlation_matrix <- function(dfs) {
 #' @export
 #' @examples
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
-#' print.morie_tps_result(D)
+#' morie:::print.morie_tps_result(D)
 print.morie_tps_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\

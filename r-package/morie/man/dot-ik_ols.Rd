@@ -19,6 +19,6 @@ Least squares through the normal equations, small p (internal)
 }
 \examples{
 set.seed(1)
-r <- .ik_ols(rows = rnorm(10), y = rnorm(10)); TRUE
+r <- morie:::.ik_ols(rows = rnorm(10), y = rnorm(10)); TRUE
 }
 \keyword{internal}
