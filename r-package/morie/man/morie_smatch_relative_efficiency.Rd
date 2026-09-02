@@ -5,10 +5,14 @@
 \alias{morie_smatch_relative_efficiency}
 \title{Asymptotic efficiency against the cohort design (Sec. 7.5)}
 \usage{
-morie_smatch_relative_efficiency(r, log_ri)
+morie_smatch_relative_efficiency(r, log_ri) 
 }
 \description{
 Asymptotic efficiency against the cohort design (Sec. 7.5)
+}
+\arguments{
+\item{r}{Argument \code{r}; see Usage.}
+\item{log_ri}{Argument \code{log_ri}; see Usage.}
 }
 \value{
 A list with \code{rho}, \code{efficiency}, \code{r}, \code{log_ri}, \code{interpretation}.

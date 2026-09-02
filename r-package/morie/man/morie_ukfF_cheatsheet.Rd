@@ -5,7 +5,7 @@
 \alias{morie_ukfF_cheatsheet}
 \title{morie_ukfF_cheatsheet}
 \usage{
-morie_ukfF_cheatsheet()
+morie_ukfF_cheatsheet() 
 }
 \description{
 Part of the ukfF_mixedcase_native implementation; see the file header for the source it follows.

@@ -5,7 +5,7 @@
 \alias{morie_gtrf_laplacian}
 \title{Graph Laplacian}
 \usage{
-morie_gtrf_laplacian(adj, n, normalized = TRUE)
+morie_gtrf_laplacian(adj, n, normalized = TRUE) 
 }
 \arguments{
 \item{adj}{Adjacency list.}

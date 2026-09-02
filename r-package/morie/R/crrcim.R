@@ -7,7 +7,7 @@
 # event can happen first.
 #' Aalen-Johansen estimator of F_k(t) plus the overall KM survival
 #'
-#' F_k(t) = sum_{u <= t} S(u-) dN_k(u) / Y(u).  The S(u-) factor is the
+#' F_k(t) = sum_\{u <= t\} S(u-) dN_k(u) / Y(u).  The S(u-) factor is the
 #' ALL-CAUSE Kaplan-Meier: leaving it out gives 1 - KM computed on the
 #' cause alone, which over-states the incidence whenever a competing
 #' event can happen first.

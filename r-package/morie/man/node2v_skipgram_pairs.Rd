@@ -5,7 +5,7 @@
 \alias{node2v_skipgram_pairs}
 \title{node2v_skipgram_pairs}
 \usage{
-node2v_skipgram_pairs(walks, window = 2)
+node2v_skipgram_pairs(walks, window = 2) 
 }
 \arguments{
 \item{walks}{See Usage.}

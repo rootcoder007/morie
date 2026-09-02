@@ -5,7 +5,7 @@
 \alias{morie_sammkr}
 \title{morie_sammkr}
 \usage{
-morie_sammkr(masks, predicted_iou, target = NULL)
+morie_sammkr(masks, predicted_iou, target = NULL) 
 }
 \arguments{
 \item{masks}{Passed to \code{rank_masks}.}

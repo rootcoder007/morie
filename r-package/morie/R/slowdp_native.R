@@ -34,6 +34,9 @@
 }
 
 #' Sethuraman stick-breaking weights
+#' @param alpha See Usage.
+#' @param K See Usage.
+#' @param seed See Usage.
 #' @export
 stick_breaking <- function(alpha, K, seed = 0) {
   a <- as.numeric(alpha)
@@ -55,6 +58,8 @@ stick_breaking <- function(alpha, K, seed = 0) {
 }
 
 #' Closed-form expected tail (alpha/(1+alpha))^K
+#' @param alpha See Usage.
+#' @param K See Usage.
 #' @export
 truncation_error <- function(alpha, K) {
   a <- as.numeric(alpha)
@@ -69,6 +74,8 @@ truncation_error <- function(alpha, K) {
 }
 
 #' Smallest K with expected tail below the tolerance
+#' @param alpha See Usage.
+#' @param tol See Usage.
 #' @export
 sticks_for_tolerance <- function(alpha, tol = 1e-3) {
   a <- as.numeric(alpha)
@@ -86,6 +93,8 @@ sticks_for_tolerance <- function(alpha, tol = 1e-3) {
 }
 
 #' Realised tail vs the expected geometric tail
+#' @param weights See Usage.
+#' @param alpha See Usage.
 #' @export
 decay_diagnostics <- function(weights, alpha) {
   p <- as.numeric(weights)
@@ -103,6 +112,11 @@ decay_diagnostics <- function(weights, alpha) {
 }
 
 #' Truncated Dirichlet process draw
+#' @param alpha See Usage.
+#' @param K See Usage.
+#' @param base_sampler See Usage.
+#' @param seed See Usage.
+#' @param renormalise See Usage.
 #' @export
 truncated_dp <- function(alpha, K, base_sampler = NULL, seed = 0,
                          renormalise = TRUE) {

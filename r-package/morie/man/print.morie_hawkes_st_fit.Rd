@@ -5,7 +5,7 @@
 \alias{print.morie_hawkes_st_fit}
 \title{Print method for \code{morie_hawkes_st_fit} objects}
 \usage{
-print.morie_hawkes_st_fit(x, ...)
+\method{print}{morie_hawkes_st_fit}(x, ...) 
 }
 \arguments{
 \item{x}{A \code{morie_hawkes_st_fit} object.}

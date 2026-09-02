@@ -5,7 +5,7 @@
 \alias{morie_yolovx_cheatsheet}
 \title{morie_yolovx_cheatsheet}
 \usage{
-morie_yolovx_cheatsheet()
+morie_yolovx_cheatsheet() 
 }
 \description{
 Part of the yolovx_native implementation; see the file header for the source it follows.

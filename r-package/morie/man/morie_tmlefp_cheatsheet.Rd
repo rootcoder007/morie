@@ -5,7 +5,7 @@
 \alias{morie_tmlefp_cheatsheet}
 \title{Compact one-line summary of the tmlefp recipe}
 \usage{
-morie_tmlefp_cheatsheet()
+morie_tmlefp_cheatsheet() 
 }
 \description{
 Compact one-line summary of the tmlefp recipe

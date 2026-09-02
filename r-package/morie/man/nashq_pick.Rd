@@ -5,7 +5,7 @@
 \alias{nashq_pick}
 \title{nashq_pick}
 \usage{
-nashq_pick(M, A, who, epsilon, rng)
+nashq_pick(M, A, who, epsilon, rng) 
 }
 \arguments{
 \item{M}{Passed to \code{rowMeans}.}

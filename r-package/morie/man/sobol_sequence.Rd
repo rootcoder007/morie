@@ -5,7 +5,7 @@
 \alias{sobol_sequence}
 \title{Sobol low-discrepancy sequence in [0, 1)^dim}
 \usage{
-sobol_sequence(n, dim, skip = 0L)
+sobol_sequence(n, dim, skip = 0L) 
 }
 \arguments{
 \item{n}{Number of points, integer >= 1.}

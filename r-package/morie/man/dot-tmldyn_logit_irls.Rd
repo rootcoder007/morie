@@ -23,6 +23,8 @@
 \item{max_iter}{A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.}
 
 \item{tol}{Passed to \code{<}. Defaults to \code{1e-10}.}
+
+\item{penalty}{See Usage.}
 }
 \value{
 The value of \code{b}, as built in the body.

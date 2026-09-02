@@ -5,7 +5,7 @@
 \alias{theorem3_moment}
 \title{Theorem 3\'s data-dependent moment bound, or NA when its}
 \usage{
-theorem3_moment(q, gamma, l)
+theorem3_moment(q, gamma, l) 
 }
 \arguments{
 \item{q}{Numeric; combined arithmetically in the body.}

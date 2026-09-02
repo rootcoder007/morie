@@ -5,7 +5,8 @@
 \alias{morie_tmlefp}
 \title{Optimal-overlap estimands and their trimming rules}
 \usage{
-morie_tmlefp(y, treatment, pscore, sigma2_treated = NULL, sigma2_control = NULL, estimand = "ate")
+morie_tmlefp(y, treatment, pscore, sigma2_treated = NULL, sigma2_control = NULL, 
+    estimand = "ate") 
 }
 \arguments{
 \item{y}{Numeric outcome vector.}

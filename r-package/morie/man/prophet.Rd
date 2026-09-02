@@ -20,3 +20,16 @@ prophet(
 \description{
 Public alias resolved by fn/_lazy_map.json
 }
+\arguments{
+\item{t}{Argument \code{t}; see Usage.}
+\item{y}{Argument \code{y}; see Usage.}
+\item{n_changepoints}{Argument \code{n_changepoints}; see Usage.}
+\item{changepoint_range}{Argument \code{changepoint_range}; see Usage.}
+\item{changepoints}{Argument \code{changepoints}; see Usage.}
+\item{seasonalities}{Argument \code{seasonalities}; see Usage.}
+\item{holidays}{Argument \code{holidays}; see Usage.}
+\item{holiday_window}{Argument \code{holiday_window}; see Usage.}
+\item{changepoint_prior}{Argument \code{changepoint_prior}; see Usage.}
+\item{ridge}{Argument \code{ridge}; see Usage.}
+}
+

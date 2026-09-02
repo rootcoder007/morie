@@ -5,7 +5,8 @@
 \alias{morie_tmle_diff_kernel}
 \title{Differentially private TMLE of the ATE}
 \usage{
-morie_tmle_diff_kernel(y, D, X, epsilon = 1, g_min = 0.05, seed = 0, g = NULL, Q1 = NULL, Q0 = NULL)
+morie_tmle_diff_kernel(y, D, X, epsilon = 1, g_min = 0.05, seed = 0, g = NULL, Q1 = NULL, 
+    Q0 = NULL) 
 }
 \arguments{
 \item{y,D,X}{Outcome, treatment, covariates.}

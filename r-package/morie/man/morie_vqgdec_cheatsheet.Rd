@@ -5,7 +5,7 @@
 \alias{morie_vqgdec_cheatsheet}
 \title{Cheatsheet}
 \usage{
-morie_vqgdec_cheatsheet()
+morie_vqgdec_cheatsheet() 
 }
 \description{
 Part of the vqgdec_native implementation; see the file header for the source it follows.

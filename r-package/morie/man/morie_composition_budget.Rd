@@ -5,7 +5,7 @@
 \alias{morie_composition_budget}
 \title{Basic composition of privacy budgets}
 \usage{
-morie_composition_budget(epsilons)
+morie_composition_budget(epsilons) 
 }
 \arguments{
 \item{epsilons}{Numeric vector of positive epsilons.}

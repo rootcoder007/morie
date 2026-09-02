@@ -5,7 +5,7 @@
 \alias{node2v_alpha_pq}
 \title{node2v_alpha_pq}
 \usage{
-node2v_alpha_pq(d_tx, p, q)
+node2v_alpha_pq(d_tx, p, q) 
 }
 \arguments{
 \item{d_tx}{Coerced to integer by the body, with \code{as.integer}.}

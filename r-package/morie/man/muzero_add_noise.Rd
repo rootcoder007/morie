@@ -5,7 +5,7 @@
 \alias{muzero_add_noise}
 \title{muzero_add_noise}
 \usage{
-muzero_add_noise(prior, alpha, frac, seed)
+muzero_add_noise(prior, alpha, frac, seed) 
 }
 \arguments{
 \item{prior}{Numeric; combined arithmetically in the body.}

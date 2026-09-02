@@ -5,7 +5,7 @@
 \alias{morie_twoT_cheatsheet}
 \title{morie_twoT_cheatsheet}
 \usage{
-morie_twoT_cheatsheet()
+morie_twoT_cheatsheet() 
 }
 \description{
 Part of the twoT_native implementation; see the file header for the source it follows.

@@ -320,6 +320,7 @@ logLik.negbin <- function(object, ...) {
 #' @param k Huber tuning constant (default 1.345).
 #' @param maxit Max IRLS iterations.
 #' @param acc Convergence tolerance on the residual change.
+#' @param add_intercept See Usage.
 #' @return A \code{morie_rlm} object.
 #' @references Venables, W. N., & Ripley, B. D. (2002). \emph{Modern
 #'   Applied Statistics with S}. Springer.

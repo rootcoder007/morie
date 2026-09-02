@@ -5,7 +5,7 @@
 \alias{mqtmpl_genotype_probabilities}
 \title{Qk left, qk+1 right}
 \usage{
-mqtmpl_genotype_probabilities(s_left, s_right, r_left, r_right)
+mqtmpl_genotype_probabilities(s_left, s_right, r_left, r_right) 
 }
 \arguments{
 \item{s_left}{Accepted by the signature and not used anywhere in the body.}

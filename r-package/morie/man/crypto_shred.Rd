@@ -5,10 +5,14 @@
 \alias{crypto_shred}
 \title{Crypto-shred: destroy a KEK and report what that covers}
 \usage{
-crypto_shred(kek_id, wrapped_deks)
+crypto_shred(kek_id, wrapped_deks) 
 }
 \description{
 Crypto-shred: destroy a KEK and report what that covers
+}
+\arguments{
+\item{kek_id}{Argument \code{kek_id}; see Usage.}
+\item{wrapped_deks}{Argument \code{wrapped_deks}; see Usage.}
 }
 \value{
 A list with \code{kek_id}, \code{records_shredded}, \code{indices}, \code{still_recoverable}, \code{complete}, \code{note}.

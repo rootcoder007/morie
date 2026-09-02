@@ -5,7 +5,7 @@
 \alias{node2v_cheatsheet}
 \title{node2v_cheatsheet}
 \usage{
-node2v_cheatsheet()
+node2v_cheatsheet() 
 }
 \description{
 Part of the node2v_native implementation; see the file header for the source it follows.

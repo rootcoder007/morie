@@ -5,7 +5,7 @@
 \alias{mqtmpl_sample_genotypes}
 \title{mqtmpl_sample_genotypes}
 \usage{
-mqtmpl_sample_genotypes(genotypes, positions, grid, n_imp = 16, error_rate = 0, seed = 0)
+mqtmpl_sample_genotypes(genotypes, positions, grid, n_imp = 16, error_rate = 0, seed = 0) 
 }
 \arguments{
 \item{genotypes}{A vector; its length is taken.}

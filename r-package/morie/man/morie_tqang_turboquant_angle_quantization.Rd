@@ -9,3 +9,8 @@ morie_tqang_turboquant_angle_quantization(theta, bits = 4L)
 \description{
 Backward-compatible alias for the generated stub
 }
+\arguments{
+\item{theta}{Argument \code{theta}; see Usage.}
+\item{bits}{Argument \code{bits}; see Usage.}
+}
+

@@ -5,7 +5,9 @@
 \alias{smcopt}
 \title{smcopt}
 \usage{
-smcopt(objective, initial, n_particles = 200L, n_steps = 30L, phi_max = 50, phi_min = 0.1, kind = "geometric", kernel = NULL, ess_threshold = 0.5, scheme = "systematic", seed = 0L, maximise = TRUE)
+smcopt(objective, initial, n_particles = 200L, n_steps = 30L, phi_max = 50, 
+    phi_min = 0.1, kind = "geometric", kernel = NULL, ess_threshold = 0.5, 
+    scheme = "systematic", seed = 0L, maximise = TRUE) 
 }
 \arguments{
 \item{objective}{The body requires: smcopt: the objective was never evaluated.}

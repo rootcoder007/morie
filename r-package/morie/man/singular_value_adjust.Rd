@@ -5,10 +5,14 @@
 \alias{singular_value_adjust}
 \title{SVD cap on the prewhitening matrix}
 \usage{
-singular_value_adjust(a, cap = .EIGENVALUE_CAP)
+singular_value_adjust(a, cap = .EIGENVALUE_CAP) 
 }
 \description{
 SVD cap on the prewhitening matrix
+}
+\arguments{
+\item{a}{Argument \code{a}; see Usage.}
+\item{cap}{Argument \code{cap}; see Usage.}
 }
 \value{
 The value of \code{\%*\%}.

@@ -5,7 +5,7 @@
 \alias{nashq_select_eq}
 \title{nashq_select_eq}
 \usage{
-nashq_select_eq(A, B, selection, agent, tol)
+nashq_select_eq(A, B, selection, agent, tol) 
 }
 \arguments{
 \item{A}{Numeric; passed to \code{max}.}

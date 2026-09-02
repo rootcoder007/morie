@@ -4,10 +4,23 @@
 \alias{morie_secarg_prehash}
 \title{Argon2: make the attacker pay for memory, not just for time}
 \usage{
-morie_secarg_prehash(password, salt, parallelism, tag_length, memory, passes, variant = "argon2id", secret = raw(0), associated = raw(0), version = .VERSION)
+morie_secarg_prehash(password, salt, parallelism, tag_length, memory, passes, variant = "argon2id", 
+    secret = raw(0), associated = raw(0), version = .VERSION) 
 }
 \description{
 Argon2: make the attacker pay for memory, not just for time. Sources: Biryukov, A., Dinu, D., Khovratovich, D. & Josefsson, S. design and trade-off analysis in Biryukov, Dinu & Khovratovich Native R arm mirroring the Python arm exactly: the same block permutation P applied to the 16-word rows and to the indexed columns, the same pre-hashing digest H_0 over every parameter so changing the variant, the memory, the passes or the lanes changes the tag, and the same data-independent addressing rule for Argon2i and for the first half of the first pass of Argon2id.
+}
+\arguments{
+\item{password}{Argument \code{password}; see Usage.}
+\item{salt}{Argument \code{salt}; see Usage.}
+\item{parallelism}{Argument \code{parallelism}; see Usage.}
+\item{tag_length}{Argument \code{tag_length}; see Usage.}
+\item{memory}{Argument \code{memory}; see Usage.}
+\item{passes}{Argument \code{passes}; see Usage.}
+\item{variant}{Argument \code{variant}; see Usage.}
+\item{secret}{Argument \code{secret}; see Usage.}
+\item{associated}{Argument \code{associated}; see Usage.}
+\item{version}{Argument \code{version}; see Usage.}
 }
 \value{
 A list with components \code{collapse}.

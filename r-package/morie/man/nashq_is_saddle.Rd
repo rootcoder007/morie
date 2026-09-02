@@ -5,7 +5,7 @@
 \alias{nashq_is_saddle}
 \title{nashq_is_saddle}
 \usage{
-nashq_is_saddle(A, B, p, q, tol)
+nashq_is_saddle(A, B, p, q, tol) 
 }
 \arguments{
 \item{A}{A matrix; passed to \code{nrow}.}

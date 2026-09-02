@@ -5,10 +5,13 @@
 \alias{merkle_root}
 \title{RFC 6962 Merkle Tree Hash}
 \usage{
-merkle_root(leaves)
+merkle_root(leaves) 
 }
 \description{
 RFC 6962 Merkle Tree Hash
+}
+\arguments{
+\item{leaves}{Argument \code{leaves}; see Usage.}
 }
 \value{
 The value of \code{sha256}.

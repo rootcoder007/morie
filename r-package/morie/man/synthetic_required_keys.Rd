@@ -5,7 +5,7 @@
 \alias{synthetic_required_keys}
 \title{synthetic_required_keys}
 \usage{
-synthetic_required_keys()
+synthetic_required_keys() 
 }
 \description{
 Part of the synthetic implementation; see the file header for the source it follows.

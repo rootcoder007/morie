@@ -5,7 +5,7 @@
 \alias{morie_grphmr_spatial}
 \title{Spatial bias from the shortest-path distance matrix}
 \usage{
-morie_grphmr_spatial(distance, b_table, unreachable_bias = -10)
+morie_grphmr_spatial(distance, b_table, unreachable_bias = -10) 
 }
 \arguments{
 \item{distance}{N x N matrix from \code{shortest_path_matrix}.}

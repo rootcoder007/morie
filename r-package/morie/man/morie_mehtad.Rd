@@ -5,7 +5,8 @@
 \alias{morie_mehtad}
 \title{morie_mehtad}
 \usage{
-morie_mehtad(A, b, c, tol = 1e-09, max_iter = 100L, nu = 3, eta = 0.9995, corrector = TRUE)
+morie_mehtad(A, b, c, tol = 1e-09, max_iter = 100L, nu = 3, eta = 0.9995, 
+    corrector = TRUE) 
 }
 \arguments{
 \item{A}{Passed to \code{solve_lp}.}

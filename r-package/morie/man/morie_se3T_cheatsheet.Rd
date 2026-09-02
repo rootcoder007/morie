@@ -5,7 +5,7 @@
 \alias{morie_se3T_cheatsheet}
 \title{Cheatsheet}
 \usage{
-morie_se3T_cheatsheet()
+morie_se3T_cheatsheet() 
 }
 \description{
 Part of the se3T_native implementation; see the file header for the source it follows.

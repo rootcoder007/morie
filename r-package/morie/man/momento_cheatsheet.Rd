@@ -5,7 +5,7 @@
 \alias{momento_cheatsheet}
 \title{momento_cheatsheet}
 \usage{
-momento_cheatsheet()
+momento_cheatsheet() 
 }
 \description{
 Part of the momento_native implementation; see the file header for the source it follows.

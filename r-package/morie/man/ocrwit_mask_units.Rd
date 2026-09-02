@@ -5,7 +5,7 @@
 \alias{ocrwit_mask_units}
 \title{ocrwit_mask_units}
 \usage{
-ocrwit_mask_units(n_units, rate = 0.3, seed = 0, block = 1)
+ocrwit_mask_units(n_units, rate = 0.3, seed = 0, block = 1) 
 }
 \arguments{
 \item{n_units}{Coerced to integer by the body, with \code{as.integer}.}

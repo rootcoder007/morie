@@ -5,7 +5,7 @@
 \alias{mafft_anchors_from}
 \title{mafft_anchors_from}
 \usage{
-mafft_anchors_from(chain)
+mafft_anchors_from(chain) 
 }
 \arguments{
 \item{chain}{A matrix; indexed by row and column.}

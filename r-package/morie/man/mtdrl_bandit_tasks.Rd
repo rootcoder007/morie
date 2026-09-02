@@ -5,7 +5,7 @@
 \alias{mtdrl_bandit_tasks}
 \title{mtdrl_bandit_tasks}
 \usage{
-mtdrl_bandit_tasks(n_arms = 2, n_tasks = 100, seed = 0, structure = "independent")
+mtdrl_bandit_tasks(n_arms = 2, n_tasks = 100, seed = 0, structure = "independent") 
 }
 \arguments{
 \item{n_arms}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2}.}

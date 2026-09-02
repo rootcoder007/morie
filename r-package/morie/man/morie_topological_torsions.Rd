@@ -5,7 +5,7 @@
 \alias{morie_topological_torsions}
 \title{Every topological torsion in a molecule, with multiplicities}
 \usage{
-morie_topological_torsions(elements, bonds, common_types = NULL)
+morie_topological_torsions(elements, bonds, common_types = NULL) 
 }
 \arguments{
 \item{elements}{Character vector of heavy-atom element symbols.}

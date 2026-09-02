@@ -243,8 +243,8 @@ morie_laplace_noise <- function(scale, rng) {
 
 #' l1 sensitivity of a TMLE of the ATE
 #'
-#' The bound carries :math:`1/g_{\min}`, so it is
-#' :math:`2R/(n g_{\min})` and NOT :math:`O(1/n)`. Truncating the
+#' The bound carries \eqn{1/g_{\min}}, so it is
+#' \eqn{2R/(n g_{\min})} and NOT \eqn{O(1/n)}. Truncating the
 #' propensity score is part of the privacy guarantee.
 #'
 #' @param n Number of observations.

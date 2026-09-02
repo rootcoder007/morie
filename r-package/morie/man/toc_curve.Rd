@@ -5,10 +5,14 @@
 \alias{toc_curve}
 \title{TOC at u = j/n for j = 1..n (Definition 2)}
 \usage{
-toc_curve(scores, priority)
+toc_curve(scores, priority) 
 }
 \description{
 TOC at u = j/n for j = 1..n (Definition 2)
+}
+\arguments{
+\item{scores}{Argument \code{scores}; see Usage.}
+\item{priority}{Argument \code{priority}; see Usage.}
 }
 \value{
 A list with \code{u}, \code{toc}, \code{ate}, \code{order}, \code{n}.

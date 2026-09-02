@@ -5,7 +5,7 @@
 \alias{mpfn_sig}
 \title{mpfn_sig}
 \usage{
-mpfn_sig(x)
+mpfn_sig(x) 
 }
 \arguments{
 \item{x}{Numeric; combined arithmetically in the body.}

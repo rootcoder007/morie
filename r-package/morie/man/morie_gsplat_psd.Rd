@@ -5,7 +5,7 @@
 \alias{morie_gsplat_psd}
 \title{Positive semi-definiteness check}
 \usage{
-morie_gsplat_psd(S, tol = -1e-09)
+morie_gsplat_psd(S, tol = -1e-09) 
 }
 \arguments{
 \item{S}{3x3 symmetric matrix.}

@@ -5,7 +5,7 @@
 \alias{miprgr_simplex}
 \title{Two-phase simplex with Bland\'s rule, maximising c\'x}
 \usage{
-miprgr_simplex(A, b, c, tol = 1e-09, max_iter = 20000)
+miprgr_simplex(A, b, c, tol = 1e-09, max_iter = 20000) 
 }
 \arguments{
 \item{A}{A matrix; indexed by row and column.}

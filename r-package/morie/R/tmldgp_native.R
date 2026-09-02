@@ -66,6 +66,7 @@
 #' @param lam Non-negative penalty strength.
 #' @param iters Maximum coordinate-descent iterations.
 #' @tol Convergence tolerance on the maximum coefficient update.
+#' @param tol See Usage.
 #' @return A list with \code{beta}, \code{intercept}, \code{support},
 #'   \code{lambda}.
 #' @references Belloni, A. & Chernozhukov, V. (2013).

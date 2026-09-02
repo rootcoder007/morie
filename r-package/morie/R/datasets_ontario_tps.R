@@ -712,7 +712,7 @@ morie_datasets_ontario_ckan_layers <- function() {
 # is also missing or NA the function errors with a clear message.
 #' Internal shared dispatch for the OTIS wrappers. Resource ids are
 #'
-#' auto-resolved from .MORIE_ONTARIO_CKAN_REGISTRY[[registry_key]] when
+#' auto-resolved from .MORIE_ONTARIO_CKAN_REGISTRY[\[registry_key\]] when
 #' the caller doesn\'t pass an explicit override; if the registry entry
 #' is also missing or NA the function errors with a clear message.
 #'

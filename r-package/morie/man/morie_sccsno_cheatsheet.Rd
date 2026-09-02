@@ -5,7 +5,7 @@
 \alias{morie_sccsno_cheatsheet}
 \title{morie_sccsno_cheatsheet}
 \usage{
-morie_sccsno_cheatsheet()
+morie_sccsno_cheatsheet() 
 }
 \description{
 Part of the sccsno_native implementation; see the file header for the source it follows.

@@ -5,7 +5,7 @@
 \alias{mistr_apply_rope}
 \title{mistr_apply_rope}
 \usage{
-mistr_apply_rope(x, pos, theta = NULL, base = 10000)
+mistr_apply_rope(x, pos, theta = NULL, base = 10000) 
 }
 \arguments{
 \item{x}{A vector; its length is taken and its elements indexed.}

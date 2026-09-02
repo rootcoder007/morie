@@ -5,7 +5,7 @@
 \alias{offlrl_cheatsheet}
 \title{offlrl_cheatsheet}
 \usage{
-offlrl_cheatsheet()
+offlrl_cheatsheet() 
 }
 \description{
 Part of the offlrl_native implementation; see the file header for the source it follows.

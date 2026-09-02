@@ -5,7 +5,7 @@
 \alias{miprgr_round_relaxation}
 \title{miprgr_round_relaxation}
 \usage{
-miprgr_round_relaxation(x, A, b, integer_vars)
+miprgr_round_relaxation(x, A, b, integer_vars) 
 }
 \arguments{
 \item{x}{Coerced to numeric by the body, with \code{as.numeric}.}

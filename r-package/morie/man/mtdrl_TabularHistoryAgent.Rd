@@ -5,7 +5,7 @@
 \alias{mtdrl_TabularHistoryAgent}
 \title{mtdrl_TabularHistoryAgent}
 \usage{
-mtdrl_TabularHistoryAgent(n_arms, epsilon = 0.1, optimistic = 1)
+mtdrl_TabularHistoryAgent(n_arms, epsilon = 0.1, optimistic = 1) 
 }
 \arguments{
 \item{n_arms}{Coerced to integer by the body, with \code{as.integer}.}

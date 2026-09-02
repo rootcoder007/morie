@@ -8,20 +8,38 @@
 \alias{morie_bayes_gblup}
 \title{Genomic prediction models}
 \usage{
-morie_grm(M)
-morie_gblup(X, y, G, sigma2_g, sigma2_e = 1)
-morie_gblup_model(y, Z_L, G, sigma2_g, sigma2_e = 1)
-morie_snp_blup(X, y, M, sigma2_m, sigma2_e = 1)
-morie_bayes_gblup(y, G, n_iter = 2000L, burn_in = 500L, seed = 42L, ...)
+morie_grm(M) 
+
+morie_gblup(X, y, G, sigma2_g, sigma2_e = 1) 
+
+morie_gblup_model(y, Z_L, G, sigma2_g, sigma2_e = 1) 
+
+morie_snp_blup(X, y, M, sigma2_m, sigma2_e = 1) 
+
+morie_bayes_gblup(y, G, n_iter = 2000L, burn_in = 500L, seed = 42L, ...) 
 }
 \arguments{
 \item{y}{numeric response vector}
 \item{X}{fixed-effect design matrix}
-\item{Z}{marker or incidence matrix}
+
 \item{G}{genomic relationship matrix}
 \item{M}{centred and scaled marker matrix}
-\item{lambda}{variance ratio sigma2_e / sigma2_g}
+
 \item{...}{further arguments passed to the underlying solver}
+
+\item{sigma2_g}{Argument \code{sigma2_g}; see Usage.}
+
+\item{sigma2_e}{Argument \code{sigma2_e}; see Usage.}
+
+\item{Z_L}{Argument \code{Z_L}; see Usage.}
+
+\item{sigma2_m}{Argument \code{sigma2_m}; see Usage.}
+
+\item{n_iter}{Argument \code{n_iter}; see Usage.}
+
+\item{burn_in}{Argument \code{burn_in}; see Usage.}
+
+\item{seed}{Argument \code{seed}; see Usage.}
 }
 \value{
 A list holding the fitted quantities for the method called: point

@@ -5,7 +5,7 @@
 \alias{mistr_cheatsheet}
 \title{mistr_cheatsheet}
 \usage{
-mistr_cheatsheet()
+mistr_cheatsheet() 
 }
 \description{
 Part of the mistr_native implementation; see the file header for the source it follows.

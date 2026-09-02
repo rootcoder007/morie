@@ -5,7 +5,7 @@
 \alias{utility}
 \title{Utility = efficacy per person-day in quarantine (eq. 4)}
 \usage{
-utility(efficacy, days_in_quarantine)
+utility(efficacy, days_in_quarantine) 
 }
 \arguments{
 \item{efficacy}{Numeric efficacy.}

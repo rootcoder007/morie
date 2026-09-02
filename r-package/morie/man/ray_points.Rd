@@ -5,7 +5,7 @@
 \alias{ray_points}
 \title{ray_points}
 \usage{
-ray_points(origin, direction, t_near, t_far, n_samples, rng = NULL, stratified = TRUE)
+ray_points(origin, direction, t_near, t_far, n_samples, rng = NULL, stratified = TRUE) 
 }
 \arguments{
 \item{origin}{Passed to \code{.as_numeric_vec}.}

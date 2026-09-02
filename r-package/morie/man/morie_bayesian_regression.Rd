@@ -4,14 +4,23 @@
 \alias{morie_brr_gibbs}
 \title{Bayesian regression samplers}
 \usage{
-morie_brr_gibbs(y, X, n_iter = 2000L, burn_in = 500L, nu = 5, nu_beta = 5, R2 = 0.5, seed = 42L)
+morie_brr_gibbs(y, X, n_iter = 2000L, burn_in = 500L, nu = 5, nu_beta = 5, R2 = 0.5, 
+    seed = 42L) 
 }
 \arguments{
 \item{y}{numeric response vector}
 \item{X}{predictor matrix}
 \item{n_iter}{number of Gibbs iterations}
 \item{burn_in}{iterations discarded as burn-in}
-\item{...}{further arguments controlling the sampler}
+
+
+\item{nu}{Argument \code{nu}; see Usage.}
+
+\item{nu_beta}{Argument \code{nu_beta}; see Usage.}
+
+\item{R2}{Argument \code{R2}; see Usage.}
+
+\item{seed}{Argument \code{seed}; see Usage.}
 }
 \value{
 A list holding the fitted quantities for the method called: point

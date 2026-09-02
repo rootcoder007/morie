@@ -5,7 +5,7 @@
 \alias{tagRC_cheatsheet}
 \title{tagRC_cheatsheet}
 \usage{
-tagRC_cheatsheet()
+tagRC_cheatsheet() 
 }
 \description{
 Part of the tagRC_native implementation; see the file header for the source it follows.

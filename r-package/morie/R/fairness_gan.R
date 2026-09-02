@@ -144,7 +144,7 @@ NULL
 
 
 # ---------------------------------------------------------------------------
-# 1. Spatial GAN — counterfactual location generator
+# 1. Spatial GAN -- counterfactual location generator
 # ---------------------------------------------------------------------------
 
 #' Learn a 2-D crime/patrol location distribution

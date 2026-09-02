@@ -5,7 +5,7 @@
 \alias{motfsr_log_odds_matrix}
 \title{motfsr_log_odds_matrix}
 \usage{
-motfsr_log_odds_matrix(motif, background)
+motfsr_log_odds_matrix(motif, background) 
 }
 \arguments{
 \item{motif}{Iterated over elementwise, with \code{lapply}.}

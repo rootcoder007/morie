@@ -5,7 +5,7 @@
 \alias{offlrl_lookup}
 \title{offlrl_lookup}
 \usage{
-offlrl_lookup(mat, s, a)
+offlrl_lookup(mat, s, a) 
 }
 \arguments{
 \item{mat}{A vector; indexed elementwise.}

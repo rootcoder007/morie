@@ -5,7 +5,7 @@
 \alias{morie_llm_detect_provider}
 \title{morie_llm_detect_provider}
 \usage{
-morie_llm_detect_provider()
+morie_llm_detect_provider() 
 }
 \description{
 Part of the llm implementation; see the file header for the source it follows.

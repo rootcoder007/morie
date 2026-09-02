@@ -5,7 +5,7 @@
 \alias{morie_tqang_cheatsheet}
 \title{One-line rationale mirroring the Python cheatsheet}
 \usage{
-morie_tqang_cheatsheet()
+morie_tqang_cheatsheet() 
 }
 \description{
 One-line rationale mirroring the Python cheatsheet

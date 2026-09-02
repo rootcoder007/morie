@@ -5,7 +5,9 @@
 \alias{muzero_search}
 \title{muzero_search}
 \usage{
-muzero_search(observation, actions, representation, dynamics, prediction, simulations = 50, gamma = 0.997, c1 = 1.25, c2 = 19652, dirichlet_alpha = NULL, exploration_fraction = 0.25, temperature = 1, seed = 0)
+muzero_search(observation, actions, representation, dynamics, prediction, simulations = 50, 
+    gamma = 0.997, c1 = 1.25, c2 = 19652, dirichlet_alpha = NULL, exploration_fraction = 0.25, 
+    temperature = 1, seed = 0) 
 }
 \arguments{
 \item{observation}{Passed to \code{representation}.}

@@ -5,10 +5,17 @@
 \alias{hkdf}
 \title{HKDF: extract-then-expand, or expand-only on uniform input}
 \usage{
-hkdf(ikm, salt = NULL, info = raw(0), length = 32L, skip_extract = FALSE)
+hkdf(ikm, salt = NULL, info = raw(0), length = 32L, skip_extract = FALSE) 
 }
 \description{
 HKDF: extract-then-expand, or expand-only on uniform input
+}
+\arguments{
+\item{ikm}{Argument \code{ikm}; see Usage.}
+\item{salt}{Argument \code{salt}; see Usage.}
+\item{info}{Argument \code{info}; see Usage.}
+\item{length}{Argument \code{length}; see Usage.}
+\item{skip_extract}{Argument \code{skip_extract}; see Usage.}
 }
 \value{
 A list with \code{estimate}, \code{okm}, \code{okm_hex}, \code{prk}, \code{prk_hex}, \code{length}, \code{blocks}, \code{salt_supplied}, \code{extract_skipped}, \code{method}, \code{note}.

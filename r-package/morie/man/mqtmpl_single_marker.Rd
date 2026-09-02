@@ -5,7 +5,7 @@
 \alias{mqtmpl_single_marker}
 \title{mqtmpl_single_marker}
 \usage{
-mqtmpl_single_marker(y, g)
+mqtmpl_single_marker(y, g) 
 }
 \arguments{
 \item{y}{A vector; its length is taken.}

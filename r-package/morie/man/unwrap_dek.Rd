@@ -5,10 +5,15 @@
 \alias{unwrap_dek}
 \title{Unwrap a DEK, optionally logging the call}
 \usage{
-unwrap_dek(wrapped, kek, audit_log = NULL)
+unwrap_dek(wrapped, kek, audit_log = NULL) 
 }
 \description{
 Unwrap a DEK, optionally logging the call
+}
+\arguments{
+\item{wrapped}{Argument \code{wrapped}; see Usage.}
+\item{kek}{Argument \code{kek}; see Usage.}
+\item{audit_log}{Argument \code{audit_log}; see Usage.}
 }
 \value{
 A list with \code{dek}, \code{kek_id}, \code{audited}.

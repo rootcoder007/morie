@@ -5,7 +5,7 @@
 \alias{morie_owate_weights}
 \title{Theorem 5.4 / Corollary 5.2 OWATE weights}
 \usage{
-morie_owate_weights(pscore, sigma2_treated = NULL, sigma2_control = NULL)
+morie_owate_weights(pscore, sigma2_treated = NULL, sigma2_control = NULL) 
 }
 \arguments{
 \item{pscore}{Numeric propensity scores in (0, 1).}

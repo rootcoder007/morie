@@ -5,7 +5,7 @@
 \alias{morie_reinfc_cheatsheet}
 \title{morie_reinfc_cheatsheet}
 \usage{
-morie_reinfc_cheatsheet()
+morie_reinfc_cheatsheet() 
 }
 \description{
 Part of the reinfc_native implementation; see the file header for the source it follows.

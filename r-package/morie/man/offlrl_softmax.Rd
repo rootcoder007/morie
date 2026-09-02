@@ -5,7 +5,7 @@
 \alias{offlrl_softmax}
 \title{offlrl_softmax}
 \usage{
-offlrl_softmax(v)
+offlrl_softmax(v) 
 }
 \arguments{
 \item{v}{Numeric; passed to \code{max}.}

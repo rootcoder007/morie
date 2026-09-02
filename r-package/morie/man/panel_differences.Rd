@@ -5,7 +5,7 @@
 \alias{panel_differences}
 \title{Post-minus-pre panel differences}
 \usage{
-panel_differences(Y, event_time)
+panel_differences(Y, event_time) 
 }
 \arguments{
 \item{Y}{Balanced n-by-T panel.}

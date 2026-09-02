@@ -5,7 +5,9 @@
 \alias{morie_fastxt}
 \title{morie_fastxt}
 \usage{
-morie_fastxt(corpus, dim = 50L, n_min = 3L, n_max = 6L, window = 5L, epochs = 5L, lr = 0.05, negative = 5L, min_count = 1L, boundary = TRUE, whole_word = TRUE, hash_buckets = NULL, seed = 0L)
+morie_fastxt(corpus, dim = 50L, n_min = 3L, n_max = 6L, window = 5L, epochs = 5L, 
+    lr = 0.05, negative = 5L, min_count = 1L, boundary = TRUE, whole_word = TRUE, 
+    hash_buckets = NULL, seed = 0L) 
 }
 \arguments{
 \item{corpus}{Passed to \code{fasttext}.}

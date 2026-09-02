@@ -12,6 +12,8 @@ two_proportion_ztest(count1, nobs1, count2, nobs2, confidence = 0.95)
 \item{count2, nobs2}{Second sample.}
 
 \item{confidence}{Confidence level.}
+
+
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})

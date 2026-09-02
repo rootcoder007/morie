@@ -2,7 +2,7 @@
 % Please edit documentation in R/arsau.R
 \name{ARSAU_KINDS}
 \alias{ARSAU_KINDS}
-\title{Known ARSAU dataset kinds.}
+\title{Known ARSAU dataset kinds}
 \usage{
 ARSAU_KINDS()
 }
@@ -12,7 +12,7 @@ Character vector of sorted unique dataset kinds (e.g.
 \code{"weapon_records"}) drawn from the ARSAU registry.
 }
 \description{
-Known ARSAU dataset kinds.
+Known ARSAU dataset kinds
 }
 \examples{
 ARSAU_KINDS()

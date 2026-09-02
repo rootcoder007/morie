@@ -5,7 +5,7 @@
 \alias{posterior_mean}
 \title{DDPM posterior mean}
 \usage{
-posterior_mean(x_t, x0_hat, alpha_bar_t, alpha_bar_prev, beta_t)
+posterior_mean(x_t, x0_hat, alpha_bar_t, alpha_bar_prev, beta_t) 
 }
 \arguments{
 \item{x_t}{Current noisy state.}

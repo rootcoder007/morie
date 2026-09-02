@@ -5,7 +5,7 @@
 \alias{morie_gtrf_sign_flip}
 \title{Random sign flip}
 \usage{
-morie_gtrf_sign_flip(pe, rng)
+morie_gtrf_sign_flip(pe, rng) 
 }
 \arguments{
 \item{pe}{Positional encoding matrix (n x d).}

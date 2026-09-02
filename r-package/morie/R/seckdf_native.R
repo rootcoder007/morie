@@ -47,6 +47,8 @@
 }
 
 #' HKDF Extract: PRK = HMAC(salt, IKM)
+#' @param ikm See Usage.
+#' @param salt See Usage.
 #' @export
 extract <- function(ikm, salt = NULL) {
   s <- if (is.null(salt)) raw(.HASH_LEN) else .seckdf_as_bytes(salt)
@@ -57,6 +59,9 @@ extract <- function(ikm, salt = NULL) {
 }
 
 #' HKDF Expand: counter-mode OKM
+#' @param prk See Usage.
+#' @param info See Usage.
+#' @param length See Usage.
 #' @export
 expand <- function(prk, info = raw(0), length = 32L) {
   L <- as.integer(length)
@@ -84,6 +89,11 @@ expand <- function(prk, info = raw(0), length = 32L) {
 }
 
 #' HKDF: extract-then-expand, or expand-only on uniform input
+#' @param ikm See Usage.
+#' @param salt See Usage.
+#' @param info See Usage.
+#' @param length See Usage.
+#' @param skip_extract See Usage.
 #' @export
 hkdf <- function(ikm, salt = NULL, info = raw(0), length = 32L,
                  skip_extract = FALSE) {
@@ -105,6 +115,10 @@ hkdf <- function(ikm, salt = NULL, info = raw(0), length = 32L,
 }
 
 #' Derive one key per context, all independent
+#' @param ikm See Usage.
+#' @param contexts See Usage.
+#' @param salt See Usage.
+#' @param length See Usage.
 #' @export
 derive_context_keys <- function(ikm, contexts, salt = NULL,
                                 length = 32L) {

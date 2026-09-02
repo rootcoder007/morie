@@ -5,7 +5,7 @@
 \alias{morie_survnnr_cheatsheet}
 \title{morie_survnnr_cheatsheet}
 \usage{
-morie_survnnr_cheatsheet()
+morie_survnnr_cheatsheet() 
 }
 \description{
 Part of the survnnr_native implementation; see the file header for the source it follows.

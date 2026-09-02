@@ -3,9 +3,12 @@
 % the formals.
 \name{efficacy_test_and_release}
 \alias{efficacy_test_and_release}
+\alias{testandrelease}
 \title{Test-and-release efficacy (eq. 2 of Ashcroft et al. 2021)}
 \usage{
-efficacy_test_and_release(t_Q, t_T, t_R, false_negative, generation_time = NULL, t_R_positive = NULL)
+efficacy_test_and_release(t_Q, t_T, t_R, false_negative, generation_time = NULL, t_R_positive = NULL) 
+
+testandrelease(t_Q, t_T, t_R, false_negative, generation_time = NULL, t_R_positive = NULL) 
 }
 \arguments{
 \item{t_Q}{Quarantine start.}

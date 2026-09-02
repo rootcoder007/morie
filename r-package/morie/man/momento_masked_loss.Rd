@@ -5,7 +5,7 @@
 \alias{momento_masked_loss}
 \title{momento_masked_loss}
 \usage{
-momento_masked_loss(truth, reconstruction, mask)
+momento_masked_loss(truth, reconstruction, mask) 
 }
 \arguments{
 \item{truth}{A vector; its length is taken and its elements indexed.}

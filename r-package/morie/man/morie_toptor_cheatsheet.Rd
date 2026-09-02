@@ -5,7 +5,7 @@
 \alias{morie_toptor_cheatsheet}
 \title{Compact one-line summary of the toptor recipe}
 \usage{
-morie_toptor_cheatsheet()
+morie_toptor_cheatsheet() 
 }
 \description{
 Compact one-line summary of the toptor recipe

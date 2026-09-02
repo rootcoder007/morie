@@ -5,7 +5,7 @@
 \alias{ocrwit_segment_layout_boxes}
 \title{ocrwit_segment_layout_boxes}
 \usage{
-ocrwit_segment_layout_boxes(boxes, segment_ids, width, height, scale = 1000)
+ocrwit_segment_layout_boxes(boxes, segment_ids, width, height, scale = 1000) 
 }
 \arguments{
 \item{boxes}{Coerced to list by the body, with \code{as.list}.}

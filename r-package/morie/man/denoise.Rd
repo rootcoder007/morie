@@ -3,9 +3,18 @@
 % the formals.
 \name{denoise}
 \alias{denoise}
+\alias{diffusion_rec}
+\alias{diffusionrec}
+\alias{diffusionrecommender}
 \title{Reverse chain}
 \usage{
-denoise(x_t, model, schedule, t_start = NULL)
+denoise(x_t, model, schedule, t_start = NULL) 
+
+diffusion_rec(x_t, model, schedule, t_start = NULL) 
+
+diffusionrec(x_t, model, schedule, t_start = NULL) 
+
+diffusionrecommender(x_t, model, schedule, t_start = NULL) 
 }
 \arguments{
 \item{x_t}{Noisy state to start from.}

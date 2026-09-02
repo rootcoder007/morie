@@ -5,7 +5,7 @@
 \alias{mafft_peaks}
 \title{mafft_peaks}
 \usage{
-mafft_peaks(lags, c, n_peaks)
+mafft_peaks(lags, c, n_peaks) 
 }
 \arguments{
 \item{lags}{A vector; indexed elementwise.}

@@ -17,7 +17,7 @@
 A numeric value.
 }
 \description{
-lambda(t) = mu + kappa\emph{omega * sum_{t_i<t} exp(-omega}(t - t_i))
+lambda(t) = mu + kappa\emph{omega * sum_\{t_i<t\} exp(-omega}(t - t_i))
 Closed-form integral: mu\emph{T + kappa * sum_i (1 - exp(-omega}(T -
 t_i)))
 }

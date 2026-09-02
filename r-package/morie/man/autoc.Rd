@@ -5,10 +5,14 @@
 \alias{autoc}
 \title{Area under the TOC (RATE with a flat weight)}
 \usage{
-autoc(scores, priority)
+autoc(scores, priority) 
 }
 \description{
 Area under the TOC (RATE with a flat weight)
+}
+\arguments{
+\item{scores}{Argument \code{scores}; see Usage.}
+\item{priority}{Argument \code{priority}; see Usage.}
 }
 \value{
 The value of \code{$}.

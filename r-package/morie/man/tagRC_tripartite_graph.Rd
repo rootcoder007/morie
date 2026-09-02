@@ -5,7 +5,7 @@
 \alias{tagRC_tripartite_graph}
 \title{tagRC_tripartite_graph}
 \usage{
-tagRC_tripartite_graph(triples)
+tagRC_tripartite_graph(triples) 
 }
 \arguments{
 \item{triples}{See Usage.}

@@ -5,7 +5,7 @@
 \alias{prphet_cheatsheet}
 \title{prphet_cheatsheet}
 \usage{
-prphet_cheatsheet()
+prphet_cheatsheet() 
 }
 \description{
 prphet_cheatsheet

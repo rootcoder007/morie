@@ -146,7 +146,7 @@
 }
 
 # Fit Q1 (E[Q2(A(0), d_{A(1)}, Lbar(1)) | A(0), L(0)]) on the rows in idx.
-#' Fit Q1 (E\[Q2(A(0), d_{A(1)}, Lbar(1)) | A(0), L(0)\]) on the rows in
+#' Fit Q1 (E\[Q2(A(0), d_\{A(1)\}, Lbar(1)) | A(0), L(0)\]) on the rows in
 #' idx
 #'
 #' A step of the tmldyn_native implementation. Called by \code{.rule_value_seq}, \code{.sequential_blips}, \code{morie_tmle_dynamic_regime}.
@@ -202,7 +202,7 @@
 }
 
 # Intervention mechanism g_{A(0)} and g_{A(1)}, with positivity trim.
-#' Intervention mechanism g_{A(0)} and g_{A(1)}, with positivity trim
+#' Intervention mechanism g_\{A(0)\} and g_\{A(1)\}, with positivity trim
 #'
 #' A step of the tmldyn_native implementation. Called by \code{morie_tmle_dynamic_regime}.
 #' See the file header for the source the module follows.
@@ -214,6 +214,7 @@
 #' @param A1 Passed to \code{.tmldyn_logit_irls}.
 #' @param trim Numeric; passed to \code{max}.
 #' @param known Optional; may be \code{NULL}. A vector; indexed elementwise.
+#' @param penalty See Usage.
 #' @return A list with \code{g0}, \code{g1}, \code{info}.
 #' @export
 .intervention_mechanism <- function(L0, A0, L1, A1, trim, known,
@@ -264,6 +265,7 @@
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.
 #' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
 #' @param tol Passed to \code{<}. Defaults to \code{1e-10}.
+#' @param penalty See Usage.
 #' @return The value of \code{b}, as built in the body.
 #' @export
 .tmldyn_logit_irls <- function(X, a, ridge = 1e-8, max_iter = 50L,

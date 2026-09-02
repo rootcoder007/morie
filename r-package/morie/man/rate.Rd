@@ -5,10 +5,15 @@
 \alias{rate}
 \title{RATE: int alpha(u) TOC(u) du}
 \usage{
-rate(scores, priority, weight = "autoc")
+rate(scores, priority, weight = "autoc") 
 }
 \description{
 RATE: int alpha(u) TOC(u) du
+}
+\arguments{
+\item{scores}{Argument \code{scores}; see Usage.}
+\item{priority}{Argument \code{priority}; see Usage.}
+\item{weight}{Argument \code{weight}; see Usage.}
 }
 \value{
 A list with \code{estimate}, \code{weight}, \code{curve}, \code{n}.

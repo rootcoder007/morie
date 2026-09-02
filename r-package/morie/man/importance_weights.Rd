@@ -5,7 +5,7 @@
 \alias{importance_weights}
 \title{Importance weights over diffusion steps}
 \usage{
-importance_weights(step_losses, uniform = FALSE, smoothing = 0.1)
+importance_weights(step_losses, uniform = FALSE, smoothing = 0.1) 
 }
 \arguments{
 \item{step_losses}{Numeric per-step losses.}

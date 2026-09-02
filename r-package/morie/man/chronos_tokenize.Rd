@@ -5,7 +5,7 @@
 \alias{chronos_tokenize}
 \title{chronos_tokenize}
 \usage{
-chronos_tokenize(x, bins, context = NULL, add_eos = TRUE, pad_to = NULL)
+chronos_tokenize(x, bins, context = NULL, add_eos = TRUE, pad_to = NULL) 
 }
 \arguments{
 \item{x}{Passed to \code{chronos_mean_scale}.}

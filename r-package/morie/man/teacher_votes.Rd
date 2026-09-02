@@ -5,7 +5,7 @@
 \alias{teacher_votes}
 \title{The vote histogram n_j(x) for each record. teacher_predicts is a}
 \usage{
-teacher_votes(teacher_predicts, rows, n_classes = NULL)
+teacher_votes(teacher_predicts, rows, n_classes = NULL) 
 }
 \arguments{
 \item{teacher_predicts}{Coerced to list by the body, with \code{as.list}.}

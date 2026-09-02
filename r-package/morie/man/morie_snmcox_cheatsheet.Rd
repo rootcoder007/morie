@@ -5,7 +5,7 @@
 \alias{morie_snmcox_cheatsheet}
 \title{morie_snmcox_cheatsheet}
 \usage{
-morie_snmcox_cheatsheet()
+morie_snmcox_cheatsheet() 
 }
 \description{
 Part of the snmcox_native implementation; see the file header for the source it follows.

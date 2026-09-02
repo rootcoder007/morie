@@ -5,7 +5,7 @@
 \alias{morie_ncfRS_cheatsheet}
 \title{morie_ncfRS_cheatsheet}
 \usage{
-morie_ncfRS_cheatsheet()
+morie_ncfRS_cheatsheet() 
 }
 \description{
 Part of the ncfRS_native implementation; see the file header for the source it follows.

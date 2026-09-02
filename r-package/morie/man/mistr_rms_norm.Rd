@@ -5,7 +5,7 @@
 \alias{mistr_rms_norm}
 \title{mistr_rms_norm}
 \usage{
-mistr_rms_norm(x, weight = NULL, eps = 1e-06)
+mistr_rms_norm(x, weight = NULL, eps = 1e-06) 
 }
 \arguments{
 \item{x}{A vector; its length is taken.}

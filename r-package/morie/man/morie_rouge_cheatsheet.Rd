@@ -5,7 +5,7 @@
 \alias{morie_rouge_cheatsheet}
 \title{morie_rouge_cheatsheet}
 \usage{
-morie_rouge_cheatsheet()
+morie_rouge_cheatsheet() 
 }
 \description{
 Part of the rouge_native implementation; see the file header for the source it follows.

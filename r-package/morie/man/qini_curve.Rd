@@ -5,10 +5,15 @@
 \alias{qini_curve}
 \title{Qini curve: cumulative gain from treating the top fraction}
 \usage{
-qini_curve(scores, priority, cost = NULL)
+qini_curve(scores, priority, cost = NULL) 
 }
 \description{
 Qini curve: cumulative gain from treating the top fraction
+}
+\arguments{
+\item{scores}{Argument \code{scores}; see Usage.}
+\item{priority}{Argument \code{priority}; see Usage.}
+\item{cost}{Argument \code{cost}; see Usage.}
 }
 \value{
 A list with \code{spend}, \code{gain}, \code{ate}, \code{n}, \code{constrained}.

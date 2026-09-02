@@ -5,10 +5,17 @@
 \alias{morie_smatch_power}
 \title{Power at a given number of events}
 \usage{
-morie_smatch_power(n_events, log_ri, r, p_exposed, alpha = 0.05)
+morie_smatch_power(n_events, log_ri, r, p_exposed, alpha = 0.05) 
 }
 \description{
 Power at a given number of events
+}
+\arguments{
+\item{n_events}{Argument \code{n_events}; see Usage.}
+\item{log_ri}{Argument \code{log_ri}; see Usage.}
+\item{r}{Argument \code{r}; see Usage.}
+\item{p_exposed}{Argument \code{p_exposed}; see Usage.}
+\item{alpha}{Argument \code{alpha}; see Usage.}
 }
 \value{
 A list with \code{power}, \code{z_power}, \code{n_events}, \code{A}, \code{B}, \code{C}.

@@ -5,7 +5,7 @@
 \alias{morie_gru4r_mrr}
 \title{Mean reciprocal rank at k}
 \usage{
-morie_gru4r_mrr(ranked, target, kk = 20)
+morie_gru4r_mrr(ranked, target, kk = 20) 
 }
 \arguments{
 \item{ranked}{Ordered integer vector of recommended item ids.}

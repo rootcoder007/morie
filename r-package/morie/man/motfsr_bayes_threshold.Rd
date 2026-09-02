@@ -5,7 +5,7 @@
 \alias{motfsr_bayes_threshold}
 \title{motfsr_bayes_threshold}
 \usage{
-motfsr_bayes_threshold(lambda1, loss = NULL)
+motfsr_bayes_threshold(lambda1, loss = NULL) 
 }
 \arguments{
 \item{lambda1}{Numeric; combined arithmetically in the body.}

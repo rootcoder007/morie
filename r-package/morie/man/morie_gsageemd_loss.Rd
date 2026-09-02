@@ -5,7 +5,7 @@
 \alias{morie_gsageemd_loss}
 \title{Unsupervised graph-based loss}
 \usage{
-morie_gsageemd_loss(z_u, z_v, z_negatives)
+morie_gsageemd_loss(z_u, z_v, z_negatives) 
 }
 \arguments{
 \item{z_u}{Anchor embedding.}

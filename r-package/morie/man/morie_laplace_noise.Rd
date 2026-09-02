@@ -5,7 +5,7 @@
 \alias{morie_laplace_noise}
 \title{One draw from Lap(0, b) by inverse transform}
 \usage{
-morie_laplace_noise(scale, rng)
+morie_laplace_noise(scale, rng) 
 }
 \arguments{
 \item{scale}{Positive scale parameter.}

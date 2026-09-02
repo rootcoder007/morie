@@ -5,7 +5,7 @@
 \alias{mtdrl_cheatsheet}
 \title{mtdrl_cheatsheet}
 \usage{
-mtdrl_cheatsheet()
+mtdrl_cheatsheet() 
 }
 \description{
 Part of the mtdrl_native implementation; see the file header for the source it follows.

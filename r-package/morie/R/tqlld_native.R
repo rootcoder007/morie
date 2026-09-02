@@ -169,6 +169,8 @@ morie_tqlld_lloyd_max_codebook <- function(levels = 4L,
 }
 
 #' Quantise samples with a fixed codebook
+#' @param x See Usage.
+#' @param codebook See Usage.
 #' @return A list with \code{estimate}, \code{indices}, \code{values},
 #'   \code{mse}, \code{levels}, \code{method}.
 #' @export

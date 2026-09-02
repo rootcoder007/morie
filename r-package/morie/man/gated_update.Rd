@@ -5,7 +5,7 @@
 \alias{gated_update}
 \title{The update block: v1 . v2 re-enters the scalars. That inner product}
 \usage{
-gated_update(s, v, U, V, phi)
+gated_update(s, v, U, V, phi) 
 }
 \arguments{
 \item{s}{Coerced to numeric by the body, with \code{as.numeric}.}

@@ -5,7 +5,8 @@
 \alias{morie_toptor}
 \title{Topological torsions for a molecule, or for a set of molecules}
 \usage{
-morie_toptor(elements, bonds, reference = NULL, common_types = NULL, activities = NULL, permutations = 40, seed = 0)
+morie_toptor(elements, bonds, reference = NULL, common_types = NULL, activities = NULL, 
+    permutations = 40, seed = 0) 
 }
 \arguments{
 \item{elements}{Heavy-atom element symbols, either one molecule\'s   or a list of several.}

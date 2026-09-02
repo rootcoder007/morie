@@ -6,6 +6,9 @@
 \usage{
 .secrtt_hex(bs)
 }
+\arguments{
+\item{bs}{See Usage.}
+}
 \description{
 Derive a distinct DEK per record
 }

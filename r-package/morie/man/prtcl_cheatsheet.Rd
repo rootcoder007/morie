@@ -5,7 +5,7 @@
 \alias{prtcl_cheatsheet}
 \title{prtcl_cheatsheet}
 \usage{
-prtcl_cheatsheet()
+prtcl_cheatsheet() 
 }
 \description{
 prtcl_cheatsheet

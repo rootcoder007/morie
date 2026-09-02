@@ -5,10 +5,13 @@
 \alias{tukey_hanning_kernel}
 \title{Tukey-Hanning kernel}
 \usage{
-tukey_hanning_kernel(x)
+tukey_hanning_kernel(x) 
 }
 \description{
 Tukey-Hanning kernel
+}
+\arguments{
+\item{x}{Argument \code{x}; see Usage.}
 }
 \value{
 The value of \code{if}.

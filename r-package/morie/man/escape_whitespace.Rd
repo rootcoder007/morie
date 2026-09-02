@@ -5,10 +5,14 @@
 \alias{escape_whitespace}
 \title{Escape whitespace as U+2581, optionally prefixing the marker}
 \usage{
-escape_whitespace(text, add_prefix = TRUE)
+escape_whitespace(text, add_prefix = TRUE) 
 }
 \description{
 Escape whitespace as U+2581, optionally prefixing the marker
+}
+\arguments{
+\item{text}{Argument \code{text}; see Usage.}
+\item{add_prefix}{Argument \code{add_prefix}; see Usage.}
 }
 \value{
 The value of \code{.escape_whitespace}.

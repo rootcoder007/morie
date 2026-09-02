@@ -5,7 +5,7 @@
 \alias{morie_gtrf_layer}
 \title{Graph transformer layer}
 \usage{
-morie_gtrf_layer(H, adj, WQ, WK, WV, W1, W2, edge_bias = NULL, norm = "batch")
+morie_gtrf_layer(H, adj, WQ, WK, WV, W1, W2, edge_bias = NULL, norm = "batch") 
 }
 \arguments{
 \item{H}{Node feature matrix (n x d).}

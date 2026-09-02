@@ -5,10 +5,13 @@
 \alias{morie_mean}
 \title{Fast mean}
 \usage{
-morie_mean(x)
+morie_mean(x) 
 }
 \description{
 Single-pass C++ kernel.  Equivalent to \code{mean(x)}.
+}
+\arguments{
+\item{x}{Argument \code{x}; see Usage.}
 }
 \value{
 The value of \code{if}.

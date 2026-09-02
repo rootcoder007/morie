@@ -5,7 +5,7 @@
 \alias{mistr_attention_span}
 \title{mistr_attention_span}
 \usage{
-mistr_attention_span(window, n_layers)
+mistr_attention_span(window, n_layers) 
 }
 \arguments{
 \item{window}{Coerced to integer by the body, with \code{as.integer}.}

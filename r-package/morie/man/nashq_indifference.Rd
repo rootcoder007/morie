@@ -5,7 +5,7 @@
 \alias{nashq_indifference}
 \title{nashq_indifference}
 \usage{
-nashq_indifference(payoff, k)
+nashq_indifference(payoff, k) 
 }
 \arguments{
 \item{payoff}{A matrix; indexed by row and column.}

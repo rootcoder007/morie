@@ -30,6 +30,8 @@ morie_tqang_wrap_angle <- function(theta) {
 }
 
 #' Signed shortest difference \code{a - b}, in \code{[-pi, pi)}
+#' @param a See Usage.
+#' @param b See Usage.
 #' @return Numeric scalar.
 #' @export
 morie_tqang_angular_difference <- function(a, b) {

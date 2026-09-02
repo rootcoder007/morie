@@ -5,7 +5,7 @@
 \alias{nashq_cheatsheet}
 \title{nashq_cheatsheet}
 \usage{
-nashq_cheatsheet()
+nashq_cheatsheet() 
 }
 \description{
 Part of the nashq_native implementation; see the file header for the source it follows.

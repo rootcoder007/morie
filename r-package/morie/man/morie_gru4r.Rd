@@ -5,7 +5,7 @@
 \alias{morie_gru4r}
 \title{Session-parallel mini-batches}
 \usage{
-morie_gru4r(sessions, batch_size)
+morie_gru4r(sessions, batch_size) 
 }
 \arguments{
 \item{sessions}{List of integer vectors (length >= 2 each).}

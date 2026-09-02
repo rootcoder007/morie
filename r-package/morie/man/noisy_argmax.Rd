@@ -5,7 +5,7 @@
 \alias{noisy_argmax}
 \title{Equation 1: argmax_j {n_j + Lap(1/gamma)}. One independent}
 \usage{
-noisy_argmax(counts, gamma, seed = 0)
+noisy_argmax(counts, gamma, seed = 0) 
 }
 \arguments{
 \item{counts}{Coerced to numeric by the body, with \code{as.numeric}.}

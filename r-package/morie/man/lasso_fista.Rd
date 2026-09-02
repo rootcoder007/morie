@@ -5,7 +5,7 @@
 \alias{lasso_fista}
 \title{Lasso via ISTA / FISTA}
 \usage{
-lasso_fista(A, b, lam, max_iter = 500L, tol = 1e-10, accelerate = TRUE)
+lasso_fista(A, b, lam, max_iter = 500L, tol = 1e-10, accelerate = TRUE) 
 }
 \arguments{
 \item{A}{Numeric matrix.}

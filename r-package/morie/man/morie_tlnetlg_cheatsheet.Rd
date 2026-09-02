@@ -5,7 +5,7 @@
 \alias{morie_tlnetlg_cheatsheet}
 \title{morie_tlnetlg_cheatsheet}
 \usage{
-morie_tlnetlg_cheatsheet()
+morie_tlnetlg_cheatsheet() 
 }
 \description{
 Part of the tlnetlg_native implementation; see the file header for the source it follows.

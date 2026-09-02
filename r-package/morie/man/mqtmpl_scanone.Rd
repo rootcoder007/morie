@@ -5,7 +5,8 @@
 \alias{mqtmpl_scanone}
 \title{mqtmpl_scanone}
 \usage{
-mqtmpl_scanone(y, markers, positions, method = "em", step = 0.02, covariates = list(), error_rate = 0)
+mqtmpl_scanone(y, markers, positions, method = "em", step = 0.02, covariates = list(), 
+    error_rate = 0) 
 }
 \arguments{
 \item{y}{A vector; its length is taken and its elements indexed.}

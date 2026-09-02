@@ -5,7 +5,7 @@
 \alias{morie_grphmr_edge}
 \title{Edge-feature bias averaged along the shortest path}
 \usage{
-morie_grphmr_edge(paths, edge_features, w_table)
+morie_grphmr_edge(paths, edge_features, w_table) 
 }
 \arguments{
 \item{paths}{Named list of integer vectors, one per (i, j) pair.}

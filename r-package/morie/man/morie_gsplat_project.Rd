@@ -5,7 +5,7 @@
 \alias{morie_gsplat_project}
 \title{EWA projection of the 3D covariance}
 \usage{
-morie_gsplat_project(S, W, J)
+morie_gsplat_project(S, W, J) 
 }
 \arguments{
 \item{S}{3x3 covariance.}

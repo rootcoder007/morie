@@ -5,7 +5,7 @@
 \alias{node2v_dist}
 \title{node2v_dist}
 \usage{
-node2v_dist(adj, t, x)
+node2v_dist(adj, t, x) 
 }
 \arguments{
 \item{adj}{A vector; indexed elementwise.}

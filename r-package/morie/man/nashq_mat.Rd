@@ -5,7 +5,7 @@
 \alias{nashq_mat}
 \title{nashq_mat}
 \usage{
-nashq_mat(M, name)
+nashq_mat(M, name) 
 }
 \arguments{
 \item{M}{A matrix; passed to \code{nrow}.}

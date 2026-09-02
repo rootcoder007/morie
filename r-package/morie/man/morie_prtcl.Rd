@@ -3,9 +3,14 @@
 % the formals.
 \name{morie_prtcl}
 \alias{morie_prtcl}
+\alias{particlefilter}
 \title{Bootstrap particle filter (Algorithm 1 of King, Nguyen & Ionides 2016)}
 \usage{
-morie_prtcl(y, n_particles, init, step, loglik, seed = 0L, resample_threshold = 1, systematic = TRUE)
+morie_prtcl(y, n_particles, init, step, loglik, seed = 0L, resample_threshold = 1, 
+    systematic = TRUE) 
+
+particlefilter(y, n_particles, init, step, loglik, seed = 0L, resample_threshold = 1, 
+    systematic = TRUE) 
 }
 \arguments{
 \item{y}{Numeric vector of observations.}

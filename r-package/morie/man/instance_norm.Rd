@@ -5,7 +5,7 @@
 \alias{instance_norm}
 \title{Standardise one series to zero mean and unit variance. Applied}
 \usage{
-instance_norm(x)
+instance_norm(x) 
 }
 \arguments{
 \item{x}{Coerced to numeric by the body, with \code{as.numeric}.}

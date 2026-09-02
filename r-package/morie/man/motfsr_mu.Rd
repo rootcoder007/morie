@@ -5,7 +5,7 @@
 \alias{motfsr_mu}
 \title{motfsr_mu}
 \usage{
-motfsr_mu(coded, L)
+motfsr_mu(coded, L) 
 }
 \arguments{
 \item{coded}{See Usage.}

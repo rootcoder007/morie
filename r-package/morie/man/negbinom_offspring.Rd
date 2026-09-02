@@ -5,7 +5,7 @@
 \alias{negbinom_offspring}
 \title{negbinom_offspring}
 \usage{
-negbinom_offspring(R0, dispersion, rng)
+negbinom_offspring(R0, dispersion, rng) 
 }
 \arguments{
 \item{R0}{Coerced to numeric by the body, with \code{as.numeric}.}

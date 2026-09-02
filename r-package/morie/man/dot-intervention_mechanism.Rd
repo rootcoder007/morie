@@ -2,7 +2,7 @@
 % Please edit documentation in R/tmldyn_native.R
 \name{.intervention_mechanism}
 \alias{.intervention_mechanism}
-\title{Intervention mechanism g_{A(0)} and g_{A(1)}, with positivity trim}
+\title{Intervention mechanism g_\{A(0)\} and g_\{A(1)\}, with positivity trim}
 \usage{
 .intervention_mechanism(L0, A0, L1, A1, trim, known, penalty = 0)
 }
@@ -18,6 +18,8 @@
 \item{trim}{Numeric; passed to \code{max}.}
 
 \item{known}{Optional; may be \code{NULL}. A vector; indexed elementwise.}
+
+\item{penalty}{See Usage.}
 }
 \value{
 A list with \code{g0}, \code{g1}, \code{info}.

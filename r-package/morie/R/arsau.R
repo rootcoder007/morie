@@ -82,7 +82,7 @@ NULL
   trimws(v)
 }
 
-#' Resolve the ARSAU data directory.
+#' Resolve the ARSAU data directory
 #'
 #' Walks the documented cascade.  Returns a normalised absolute path.
 #' Stops with an informative error if nothing exists and
@@ -276,7 +276,7 @@ NULL
 )
 
 
-#' Return the ARSAU registry as a list of entries.
+#' Return the ARSAU registry as a list of entries
 #'
 #' Each entry is itself a named list with \code{year_or_range},
 #' \code{kind}, \code{csv_filename}, \code{sidecar_filename}, expected
@@ -290,7 +290,7 @@ ARSAU_REGISTRY <- function() {
   .ARSAU_REGISTRY_LIST
 }
 
-#' Known ARSAU year/range keys.
+#' Known ARSAU year/range keys
 #' @return Character vector of sorted unique year/range identifiers
 #'   (e.g. \code{"2023"}, \code{"2024"}, \code{"2020-2022"}) drawn from
 #'   the ARSAU registry.
@@ -301,7 +301,7 @@ ARSAU_YEARS <- function() {
   sort(unique(vapply(.ARSAU_REGISTRY_LIST, function(e) e$year_or_range, character(1))))
 }
 
-#' Known ARSAU dataset kinds.
+#' Known ARSAU dataset kinds
 #' @return Character vector of sorted unique dataset kinds (e.g.
 #'   \code{"main_records"}, \code{"individual_records"},
 #'   \code{"weapon_records"}) drawn from the ARSAU registry.
@@ -317,7 +317,7 @@ ARSAU_KINDS <- function() {
 # Internal: sidecar reader
 # ---------------------------------------------------------------------------
 
-#' Read a CKAN datastore_search JSON sidecar.
+#' Read a CKAN datastore_search JSON sidecar
 #'
 #' Handles both bare \code{{fields, records}} and the
 #' \code{{result: {fields, records}}} wrapper shape.
@@ -509,7 +509,7 @@ morie_arsau_read_sidecar <- function(path) {
 # Public loaders
 # ---------------------------------------------------------------------------
 
-#' Load ARSAU main_records CSV for the given year.
+#' Load ARSAU main_records CSV for the given year
 #' @param year 2023 or 2024.
 #' @param language "en" or "fr".
 #' @param data_dir Optional explicit ARSAU root.
@@ -536,7 +536,7 @@ morie_arsau_load_main_records <- function(year, language = "en", data_dir = NULL
   .arsau_load_one(entry, data_dir = data_dir, language = language)
 }
 
-#' Load ARSAU individual_records CSV.
+#' Load ARSAU individual_records CSV
 #' @inheritParams morie_arsau_load_main_records
 #' @return A \code{morie_arsau_result} object (subclass of
 #'   \code{morie_rich_result}) carrying the per-civilian
@@ -559,7 +559,7 @@ morie_arsau_load_individual_records <- function(year, language = "en", data_dir 
   .arsau_load_one(entry, data_dir = data_dir, language = language)
 }
 
-#' Load ARSAU probe_cycle_records CSV (CEW telemetry).
+#' Load ARSAU probe_cycle_records CSV (CEW telemetry)
 #' @inheritParams morie_arsau_load_main_records
 #' @return A \code{morie_arsau_result} object (subclass of
 #'   \code{morie_rich_result}) carrying the per-CEW-cycle
@@ -582,7 +582,7 @@ morie_arsau_load_probe_cycle_records <- function(year, language = "en", data_dir
   .arsau_load_one(entry, data_dir = data_dir, language = language)
 }
 
-#' Load ARSAU weapon_records CSV.
+#' Load ARSAU weapon_records CSV
 #'
 #' 2023 requires \code{allow_invalid = TRUE} (ministry-flagged invalid).
 #' @inheritParams morie_arsau_load_main_records
@@ -611,7 +611,7 @@ morie_arsau_load_weapon_records <- function(year, allow_invalid = FALSE,
                    allow_invalid = allow_invalid)
 }
 
-#' Load ARSAU aggregate-summary-by-year CSV (2020-2022 only).
+#' Load ARSAU aggregate-summary-by-year CSV (2020-2022 only)
 #' @param year_range "2020-2022".
 #' @param language "en" or "fr".
 #' @param data_dir Optional explicit ARSAU root.
@@ -637,7 +637,7 @@ morie_arsau_load_aggregate_summary <- function(year_range = "2020-2022",
   .arsau_load_one(entry, data_dir = data_dir, language = language)
 }
 
-#' Load ARSAU detailed-incident-level CSV (2020-2022 only).
+#' Load ARSAU detailed-incident-level CSV (2020-2022 only)
 #' @inheritParams morie_arsau_load_aggregate_summary
 #' @return A \code{morie_arsau_result} object (subclass of
 #'   \code{morie_rich_result}) carrying the detailed incident-level
@@ -666,7 +666,7 @@ morie_arsau_load_detailed_dataset <- function(year_range = "2020-2022",
 # Discovery callables
 # ---------------------------------------------------------------------------
 
-#' List ARSAU year / year-range buckets.
+#' List ARSAU year / year-range buckets
 #'
 #' @param data_dir Optional explicit ARSAU root.
 #' @param language "en" or "fr".
@@ -729,7 +729,7 @@ morie_arsau_available_years <- function(data_dir = NULL, language = "en") {
   out
 }
 
-#' List ARSAU dataset kinds, optionally restricted to one year.
+#' List ARSAU dataset kinds, optionally restricted to one year
 #'
 #' @param year Optional year; \code{NULL} lists everything.
 #' @param language "en" or "fr".
@@ -796,7 +796,7 @@ morie_arsau_available_datasets <- function(year = NULL, language = "en", data_di
   out
 }
 
-#' Describe a single ARSAU dataset entry.
+#' Describe a single ARSAU dataset entry
 #'
 #' @param kind One of \code{ARSAU_KINDS()}.
 #' @param year One of \code{ARSAU_YEARS()}.

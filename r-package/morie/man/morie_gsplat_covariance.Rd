@@ -5,7 +5,7 @@
 \alias{morie_gsplat_covariance}
 \title{Build the 3D covariance as Sigma = R S S\' R\'}
 \usage{
-morie_gsplat_covariance(scale, quaternion)
+morie_gsplat_covariance(scale, quaternion) 
 }
 \arguments{
 \item{scale}{Length-3 positive scale vector.}

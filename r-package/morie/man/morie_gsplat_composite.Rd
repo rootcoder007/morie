@@ -5,7 +5,7 @@
 \alias{morie_gsplat_composite}
 \title{Front-to-back alpha compositing}
 \usage{
-morie_gsplat_composite(colours, alphas, depths = NULL)
+morie_gsplat_composite(colours, alphas, depths = NULL) 
 }
 \arguments{
 \item{colours}{Matrix of per-Gaussian colours (n x 3 or n x d).}

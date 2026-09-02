@@ -5,7 +5,7 @@
 \alias{trclrn_cheatsheet}
 \title{trclrn_cheatsheet}
 \usage{
-trclrn_cheatsheet()
+trclrn_cheatsheet() 
 }
 \description{
 Part of the trclrn_native implementation; see the file header for the source it follows.

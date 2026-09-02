@@ -5,7 +5,7 @@
 \alias{morie_post_lasso}
 \title{Refit by OLS on the lasso\'s selected support}
 \usage{
-morie_post_lasso(X, y, lam)
+morie_post_lasso(X, y, lam) 
 }
 \arguments{
 \item{X}{Numeric predictor matrix.}

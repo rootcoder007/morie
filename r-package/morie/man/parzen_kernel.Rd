@@ -5,10 +5,13 @@
 \alias{parzen_kernel}
 \title{Parzen kernel}
 \usage{
-parzen_kernel(x)
+parzen_kernel(x) 
 }
 \description{
 Parzen kernel
+}
+\arguments{
+\item{x}{Argument \code{x}; see Usage.}
 }
 \value{
 The terminal expression of the body.

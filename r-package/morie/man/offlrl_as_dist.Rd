@@ -5,7 +5,7 @@
 \alias{offlrl_as_dist}
 \title{offlrl_as_dist}
 \usage{
-offlrl_as_dist(d, S, A, name)
+offlrl_as_dist(d, S, A, name) 
 }
 \arguments{
 \item{d}{Optional; may be \code{NULL}. A vector; indexed elementwise.}

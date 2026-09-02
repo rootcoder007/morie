@@ -5,7 +5,7 @@
 \alias{ocrwit_patch_of_box}
 \title{ocrwit_patch_of_box}
 \usage{
-ocrwit_patch_of_box(box, width, height, patch_grid = 14)
+ocrwit_patch_of_box(box, width, height, patch_grid = 14) 
 }
 \arguments{
 \item{box}{Passed to \code{ocrwit_normalise_bbox}.}

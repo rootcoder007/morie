@@ -5,7 +5,8 @@
 \alias{normalized_similarity_matrix}
 \title{normalized_similarity_matrix}
 \usage{
-normalized_similarity_matrix(raw_matrix = NULL, freqs = NULL, s_a = 0.06, seq_type = "aa", mode = "normalized", default = "jtt200")
+normalized_similarity_matrix(raw_matrix = NULL, freqs = NULL, s_a = 0.06, seq_type = "aa", 
+    mode = "normalized", default = "jtt200") 
 }
 \arguments{
 \item{raw_matrix}{The body requires: mafft: raw_matrix has no signal (average1 equals average2).}

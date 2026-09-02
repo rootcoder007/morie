@@ -5,10 +5,14 @@
 \alias{morie_tqlld_quantize_with_codebook}
 \title{Quantise samples with a fixed codebook}
 \usage{
-morie_tqlld_quantize_with_codebook(x, codebook)
+morie_tqlld_quantize_with_codebook(x, codebook) 
 }
 \description{
 Quantise samples with a fixed codebook
+}
+\arguments{
+\item{x}{Argument \code{x}; see Usage.}
+\item{codebook}{Argument \code{codebook}; see Usage.}
 }
 \value{
 A list with \code{estimate}, \code{indices}, \code{values},   \code{mse}, \code{levels}, \code{method}.

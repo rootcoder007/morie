@@ -5,7 +5,7 @@
 \alias{chronos_forecast_summary}
 \title{chronos_forecast_summary}
 \usage{
-chronos_forecast_summary(token_probs, bins, quantiles = c(0.1, 0.5, 0.9))
+chronos_forecast_summary(token_probs, bins, quantiles = c(0.1, 0.5, 0.9)) 
 }
 \arguments{
 \item{token_probs}{Coerced to numeric by the body, with \code{as.numeric}.}

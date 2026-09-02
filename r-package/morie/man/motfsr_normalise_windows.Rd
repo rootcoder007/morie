@@ -5,7 +5,7 @@
 \alias{motfsr_normalise_windows}
 \title{motfsr_normalise_windows}
 \usage{
-motfsr_normalise_windows(z, w, max_sweeps = 100)
+motfsr_normalise_windows(z, w, max_sweeps = 100) 
 }
 \arguments{
 \item{z}{A vector; its length is taken and its elements indexed.}

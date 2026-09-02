@@ -5,7 +5,7 @@
 \alias{mqtmpl_scan_cim}
 \title{mqtmpl_scan_cim}
 \usage{
-mqtmpl_scan_cim(y, markers, positions, cofactors = list(), window = 0, step = 0.02)
+mqtmpl_scan_cim(y, markers, positions, cofactors = list(), window = 0, step = 0.02) 
 }
 \arguments{
 \item{y}{Passed to \code{mqtmpl_cim_one}.}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/arsau.R
 \name{morie_arsau_available_datasets}
 \alias{morie_arsau_available_datasets}
-\title{List ARSAU dataset kinds, optionally restricted to one year.}
+\title{List ARSAU dataset kinds, optionally restricted to one year}
 \usage{
 morie_arsau_available_datasets(year = NULL, language = "en", data_dir = NULL)
 }
@@ -23,7 +23,7 @@ truncated \code{description}), plus the standard \code{title},
 \code{summary_lines}, \code{warnings}, and \code{interpretation}.
 }
 \description{
-List ARSAU dataset kinds, optionally restricted to one year.
+List ARSAU dataset kinds, optionally restricted to one year
 }
 \examples{
 r <- morie_arsau_available_datasets(year = "2023")

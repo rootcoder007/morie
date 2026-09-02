@@ -5,7 +5,7 @@
 \alias{morie_llavx}
 \title{morie_llavx}
 \usage{
-morie_llavx(captions = NULL, boxes = NULL, kind = "conversation", stage = NULL)
+morie_llavx(captions = NULL, boxes = NULL, kind = "conversation", stage = NULL) 
 }
 \arguments{
 \item{captions}{Passed to \code{symbolic_representation}.}

@@ -5,7 +5,7 @@
 \alias{codon_table}
 \title{codon_table}
 \usage{
-codon_table()
+codon_table() 
 }
 \description{
 Part of the snpeff_native implementation; see the file header for the source it follows.

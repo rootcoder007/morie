@@ -5,7 +5,7 @@
 \alias{mqtmpl_haldane}
 \title{mqtmpl_haldane}
 \usage{
-mqtmpl_haldane(d)
+mqtmpl_haldane(d) 
 }
 \arguments{
 \item{d}{Numeric; combined arithmetically in the body.}

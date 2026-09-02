@@ -5,7 +5,7 @@
 \alias{mqtmpl_imputation_weights}
 \title{mqtmpl_imputation_weights}
 \usage{
-mqtmpl_imputation_weights(y, genotype_column, model_dimension = 2)
+mqtmpl_imputation_weights(y, genotype_column, model_dimension = 2) 
 }
 \arguments{
 \item{y}{A vector; its length is taken.}
