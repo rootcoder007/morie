@@ -91,7 +91,7 @@ gamma_generation_time <- function(shape = 2.83, scale = 1.86, grid = NULL,
 
 #' Quarantine efficacy (eq. 1 of Ashcroft et al. 2021)
 #'
-#' \code{efficacy = mass of the density in [t_Q, t_R] /
+#' \code{efficacy = mass of the density in \[t_Q, t_R\] /
 #' mass remaining after t_Q}. Transmission before \code{t_Q} is
 #' already gone, so the denominator is the mass from \code{t_Q} on.
 #'
@@ -139,7 +139,7 @@ quarantine_efficacy <- function(t_Q, t_R, generation_time = NULL,
 #' @param t_Q Quarantine start.
 #' @param t_T Test time.
 #' @param t_R Release time.
-#' @param false_negative False-negative probability in \code{[0, 1]}.
+#' @param false_negative False-negative probability in \code{\[0, 1\]}.
 #' @param generation_time Output of \code{\link{gamma_generation_time}}.
 #' @param t_R_positive Release time for test-positives; defaults to
 #'   the end of the grid.

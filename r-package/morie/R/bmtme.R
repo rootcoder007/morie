@@ -42,7 +42,7 @@
 #'
 #' DETERMINISM.  Nothing is sampled.  Every step is taken at the exact mean of
 #' its own full conditional, the three inverse-Wishart steps at
-#' E[IW(v, S)] = S/(v - d - 1) with d the order of the matrix, the mean the
+#' E\[IW(v, S)\] = S/(v - d - 1) with d the order of the matrix, the mean the
 #' book's own exponents imply.  Iterating those conditional means is the EM
 #' fixed point of the same sampler, so both arms land on identical numbers
 #' rather than on the same posterior.

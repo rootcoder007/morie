@@ -5,7 +5,7 @@
 #' decreasing in the control risk, so the extreme odds ratios are attained
 #' at the corners of the two risk intervals: no search is needed and the
 #' bound is exact rather than conservative. The risks are the worst-case
-#' bounds on \code{E[y(t)]}, computed within stratum and averaged.
+#' bounds on \code{E\[y(t)\]}, computed within stratum and averaged.
 #'
 #' Formula: \code{OR = odds(p_1) / odds(p_0)}, so
 #' \code{OR_low = odds(p_1^L) / odds(p_0^U)} and

@@ -7,7 +7,7 @@
 #' Econometrics, Section 3.3, pages 77-80, implementing the estimator
 #' of Horowitz and Mammen (2007).  The model is
 #'
-#'   E(Y | X = x) = G[m_1(x^1) + ... + m_d(x^d)]
+#'   E(Y | X = x) = G\[m_1(x^1) + ... + m_d(x^d)\]
 #'
 #' with G and all m_j unknown.  This nests both the single-index model
 #' and the additive model with identity link.
@@ -32,7 +32,7 @@
 #'
 #' The estimator solves
 #'
-#'   min (1/n) sum_i {Y_i - G[m_1(X_i^1) + ... + m_d(X_i^d)]}^2
+#'   min (1/n) sum_i {Y_i - G\[m_1(X_i^1) + ... + m_d(X_i^d)\]}^2
 #'       + lambda_n^2 J(G, m_1, ..., m_d)                       (3.28)
 #'
 #' computed, as the text describes, "by a backfitting algorithm that

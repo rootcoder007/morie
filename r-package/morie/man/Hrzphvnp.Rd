@@ -113,8 +113,8 @@ these sequences.
 
 Then Lambda_0 and lambda_0 follow from
 
-Lambda_n0(y) = exp\link{sigma_n Tn(y)}                          (6.70)
-lambda_n0(y) = sigma_n Tn'(y) exp\link{sigma_n Tn(y)}           (6.71)
+Lambda_n0(y) = exp[sigma_n Tn(y)]                          (6.70)
+lambda_n0(y) = sigma_n Tn'(y) exp[sigma_n Tn(y)]           (6.71)
 
 and beta = sigma alpha.  Because Tn(y0) = 0 by construction,
 Lambda_n0(y0) = 1 exactly, which is the location normalisation the
@@ -138,7 +138,7 @@ actually imposes is Lambda_0(y0) = 1 for some finite y0 > 0
 (p. 223), together with |alpha_1| = 1 on the index.  E\link[dlm:V]{V} = 1 is
 never assumed; what is assumed is Ee^{-3V} < infinity (PHU3(ii)).
 \item h(t|X,V) = h_0(t) exp(X'beta) V.  Equation (6.72) writes the
-hazard as lambda(y|z,v) = lambda_0(y) exp\link{-(sigma z + v)}, i.e.
+hazard as lambda(y|z,v) = lambda_0(y) exp[-(sigma z + v)], i.e.
 with a NEGATIVE index and an exp(-v) frailty.  The published
 parameterisation is the one implemented.
 }

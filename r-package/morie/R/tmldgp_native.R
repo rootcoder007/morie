@@ -178,7 +178,7 @@ morie_shrunk_targeting_unsafe <- function(Q, H, Y, ridge = 1.0) {
 #' \code{bar Q} are fitted by post-lasso; the one-dimensional
 #' targeting step is unpenalised.
 #'
-#' @param y Numeric outcome in \code{[0,1]}.
+#' @param y Numeric outcome in \code{\[0,1\]}.
 #' @param D Numeric treatment vector.
 #' @param X Numeric covariate matrix.
 #' @param penalty Lasso penalty.

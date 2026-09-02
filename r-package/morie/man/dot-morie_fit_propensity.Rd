@@ -2,7 +2,7 @@
 % Please edit documentation in R/investigation.R
 \name{.morie_fit_propensity}
 \alias{.morie_fit_propensity}
-\title{Internal: fit a logistic propensity model and clip to \link{0.01, 0.99}}
+\title{Internal: fit a logistic propensity model and clip to [0.01, 0.99]}
 \usage{
 .morie_fit_propensity(data, treatment, covariates)
 }

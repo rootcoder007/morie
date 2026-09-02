@@ -21,12 +21,7 @@ Hendmme(X, Z, y, Sigma_inv, R_inv = NULL)
 List with \code{beta}, \code{u}, \code{fitted}, \code{n}, \code{p}, \code{q}.
 }
 \description{
-Formula: [[X'R^-1 X, X'R^-1 Z], [Z'R^-1 X, Z'R^-1 Z + Sigma^-1]] [beta; u] = [X'R^-1 y; Z'R^-1 y]
-
-[X'R^-1 X, X'R^-1 Z]: R:X'R\%5E-1\%20X,\%20X'R\%5E-1\%20Z\%5C
-[Z'R^-1 X, Z'R^-1 Z + Sigma^-1]: R:Z'R\%5E-1\%20X,\%20Z'R\%5E-1\%20Z\%20+\%20Sigma\%5E-1
-[beta; u]: R:beta;\%20u
-[X'R^-1 y; Z'R^-1 y]: R:X'R\%5E-1\%20y;\%20Z'R\%5E-1\%20y
+Formula: [[X'R^-1 X, X'R^-1 Z\], [Z'R^-1 X, Z'R^-1 Z + Sigma^-1]] [beta; u] = [X'R^-1 y; Z'R^-1 y]
 }
 \examples{
 set.seed(1)

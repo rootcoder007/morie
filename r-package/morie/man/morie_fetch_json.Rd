@@ -21,5 +21,5 @@ arrays of same-type scalars become vectors, arrays of consistently
 keyed objects become data frames (when \code{simplify = TRUE}).
 }
 \examples{
-morie_fetch_json('{"a": \[1, 2, 3\], "b": "x"}')
+morie_fetch_json('{"a": [1, 2, 3], "b": "x"}')
 }

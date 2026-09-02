@@ -157,7 +157,7 @@
 }
 
 # Underlying TMLE on the bounded-outcome scale (rescaled to [0,1]).
-#' Underlying TMLE on the bounded-outcome scale (rescaled to [0,1])
+#' Underlying TMLE on the bounded-outcome scale (rescaled to \[0,1\])
 #'
 #' A step of the tmldyk_native implementation. Called by \code{morie_tmle_diff_kernel}.
 #' See the file header for the source the module follows.

@@ -3,10 +3,10 @@
 #'
 #' Monotone treatment selection says the treated would have done at least
 #' as well as the untreated under either treatment,
-#' \code{E[y(t) | D = 1] >= E[y(t) | D = 0]}. The consequence is one line
-#' of algebra: \code{E[y(1)] = E[y | D = 1] P(D = 1) +
-#' E[y(1) | D = 0] P(D = 0) <= E[y | D = 1]}, and symmetrically
-#' \code{E[y(0)] >= E[y | D = 0]}, so the naive observed difference, which
+#' \code{E\[y(t) | D = 1\] >= E\[y(t) | D = 0\]}. The consequence is one line
+#' of algebra: \code{E\[y(1)\] = E\[y | D = 1\] P(D = 1) +
+#' E\[y(1) | D = 0\] P(D = 0) <= E\[y | D = 1\]}, and symmetrically
+#' \code{E\[y(0)\] >= E\[y | D = 0\]}, so the naive observed difference, which
 #' without the assumption bounds nothing, becomes an exact upper bound on
 #' the ATE. The other end is left at the worst case.
 #'

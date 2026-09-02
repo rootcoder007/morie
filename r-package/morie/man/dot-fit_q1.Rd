@@ -2,7 +2,7 @@
 % Please edit documentation in R/tmldyn_native.R
 \name{.fit_q1}
 \alias{.fit_q1}
-\title{Fit Q1 (E\link{Q2(A(0), d_{A(1)}, Lbar(1)) | A(0), L(0)}) on the rows in
+\title{Fit Q1 (E[Q2(A(0), d_{A(1)}, Lbar(1)) | A(0), L(0)]) on the rows in
 idx}
 \usage{
 .fit_q1(pseudo, L0, A0, idx, ridge)
