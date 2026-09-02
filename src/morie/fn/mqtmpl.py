@@ -153,7 +153,7 @@ def hmm_genotype_probabilities(genotypes, positions, error_rate=0.0):
         d = float(positions[j + 1]) - float(positions[j])
         if d <= 0.0:
             raise ValueError("mqtmpl: marker positions must increase")
-        trans.append(_im.haldane(d))
+        trans.append(_im.haldane(d / 100.0))  # cM -> Morgans
     out = []
     for row in genotypes:
         def emit(j, state):
@@ -215,8 +215,8 @@ def sample_genotypes(genotypes, positions, grid, n_imp=16,
             states = [0] * m
             states[m - 1] = 1 if rng.next() < post[i][m - 1][1] else 0
             for j in range(m - 2, -1, -1):
-                r = _im.haldane(float(positions[j + 1])
-                                - float(positions[j]))
+                r = _im.haldane((float(positions[j + 1])
+                                 - float(positions[j])) / 100.0)
                 w = [post[i][j][k]
                      * (1.0 - r if k == states[j + 1] else r)
                      for k in (0, 1)]
@@ -233,8 +233,8 @@ def sample_genotypes(genotypes, positions, grid, n_imp=16,
                 d1 = max(g - float(positions[j]), 0.0)
                 d2 = max(float(positions[j + 1]) - g, 0.0)
                 pr = _im.genotype_probabilities(
-                    states[j], states[j + 1], _im.haldane(d1),
-                    _im.haldane(d2))
+                    states[j], states[j + 1], _im.haldane(d1 / 100.0),
+                    _im.haldane(d2 / 100.0))
                 row.append(1 if rng.next() < pr[1] else 0)
             draw.append(row)
         out.append(draw)
@@ -345,12 +345,8 @@ def scanone(y, markers, positions, method="em", step=0.02,
             "method": "marker regression scan; Broman et al. (2003)",
         })
     cof = [list(c) for c in covariates]
-    res = _cim.scan(y, [[0 if v is None else int(v) for v in mk]
-                        for mk in markers],
-                    [float(p) for p in positions],
-                    cofactors=(), window=0.0, step=step) \
-        if not cof else None
-    if cof:
+    res = None
+    if True:  # one loop for both cases: positions are cM, haldane wants Morgans
         m = len(markers)
         out_pos, out_lod, fits = [], [], []
         for j in range(m - 1):
@@ -362,8 +358,8 @@ def scanone(y, markers, positions, method="em", step=0.02,
                               for v in markers[j]],
                              [0 if v is None else int(v)
                               for v in markers[j + 1]],
-                             _im.haldane(min(d, span)),
-                             _im.haldane(max(span - d, 0.0)), cof)
+                             _im.haldane(min(d, span) / 100.0),
+                             _im.haldane(max(span - d, 0.0) / 100.0), cof)
                 out_pos.append(float(positions[j]) + d)
                 out_lod.append(f["lod"])
                 fits.append(f)

@@ -585,7 +585,7 @@ changepoint_rjmcmc <- function(y = numeric(0), L = 1.0, n_iter = 40000,
     stop("bayrjmcmc: k_init must be in [0, k_max]")
 
   uni <- .unif_stream(seed)
-  s <- sapply(seq_len(k_init), function(i) L * (i) / (k_init + 1.0))
+  s <- vapply(seq_len(k_init), function(i) L * i / (k_init + 1.0), numeric(1))
   h <- rep(alpha / beta, k_init + 1L)
 
   loglik_fn <- function(s_, h_) {
@@ -610,12 +610,12 @@ changepoint_rjmcmc <- function(y = numeric(0), L = 1.0, n_iter = 40000,
       tried[["birth"]] <- tried[["birth"]] + 1L
       s_star <- L * uni()
       j <- 1L
-      while (j + 1L < length(edges) - 1L && s_star >= edges[j + 1L]) j <- j + 1L
+      while (j < length(edges) - 1L && s_star >= edges[j + 1L]) j <- j + 1L
       u <- uni()
       h_split <- birth_split_heights(h[j], u, edges[j], s_star, edges[j + 1L])
       hl <- h_split[1]; hr <- h_split[2]
-      s_new <- c(s[seq_len(j - 1L)], s_star, s[seq.int(j, length(s))])
-      h_new <- c(h[seq_len(j - 1L)], hl, hr, h[seq.int(j + 1L, length(h))])
+      s_new <- c(s[seq_len(j - 1L)], s_star, (if (j <= length(s)) s[j:length(s)] else numeric(0)))
+      h_new <- c(h[seq_len(j - 1L)], hl, hr, (if (j + 1L <= length(h)) h[(j + 1L):length(h)] else numeric(0)))
       new_ll <- loglik_fn(s_new, h_new)
 
       log_prior <- (
@@ -637,10 +637,10 @@ changepoint_rjmcmc <- function(y = numeric(0), L = 1.0, n_iter = 40000,
       tried[["death"]] <- tried[["death"]] + 1L
       i <- as.integer(uni() * k)
       if (i >= k) i <- k - 1L
-      s_new <- c(s[seq_len(i - 1L)], s[seq.int(i + 1L, length(s))])
+      s_new <- c(s[seq_len(i)], (if (i + 2L <= length(s)) s[(i + 2L):length(s)] else numeric(0)))
       h_merged <- .merge_height(edges[i + 1L], edges[i + 2L], edges[i + 3L],
                                 h[i + 1L], h[i + 2L])
-      h_new <- c(h[seq_len(i - 1L)], h_merged, h[seq.int(i + 2L, length(h))])
+      h_new <- c(h[seq_len(i)], h_merged, (if (i + 3L <= length(h)) h[(i + 3L):length(h)] else numeric(0)))
       new_ll <- loglik_fn(s_new, h_new)
       kk <- k - 1L
       s_star <- edges[i + 2L]
