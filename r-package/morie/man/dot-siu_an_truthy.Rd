@@ -13,6 +13,5 @@
 A numeric value.
 }
 \description{
-\subsection{Truthy / falsy counters tolerant of CSV-roundtripped booleans.}{
-}
+Truthy / falsy counters tolerant of CSV-roundtripped booleans.
 }

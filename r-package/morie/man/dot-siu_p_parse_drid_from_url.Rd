@@ -13,6 +13,5 @@
 The value of \code{as.integer}.
 }
 \description{
-\subsection{URL helpers (drid / nrid extractors).}{
-}
+URL helpers (drid / nrid extractors).
 }

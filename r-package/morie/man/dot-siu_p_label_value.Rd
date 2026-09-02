@@ -15,6 +15,5 @@
 One of two values, depending on the branch taken.
 }
 \description{
-\subsection{Label / value primitives.}{
-}
+Label / value primitives.
 }
