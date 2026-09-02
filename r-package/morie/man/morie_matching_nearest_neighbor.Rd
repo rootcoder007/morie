@@ -24,16 +24,21 @@ morie_matching_nearest_neighbor(
 
 \item{n_neighbors}{Number of matches per treated unit.}
 
-\item{caliper}{Maximum logit-propensity distance for a valid match, expressed in SD units of the logit (or \code{NULL} for no caliper).}
+\item{caliper}{Maximum logit-propensity distance for a valid match,
+expressed in SD units of the logit (or \code{NULL} for no caliper).}
 
 \item{replace}{If \code{TRUE}, controls may be re-used.}
 
-\item{ps}{Optional propensity scores. When supplied they REPLACE the fitted model and become the matching distance directly, aligned to the rows that survive the NA drop.}
+\item{ps}{Optional propensity scores. When supplied they REPLACE
+the fitted model and become the matching distance directly,
+aligned to the rows that survive the NA drop.}
 
 \item{alpha}{Significance level (carried through to \code{details}).}
 }
 \value{
-A list with class \code{morie_match_result} carrying \code{matched_data}, \code{n_treated}, \code{n_matched_control}, \code{match_pairs}, \code{method}, and \code{details}.
+A list with class \code{morie_match_result} carrying
+\code{matched_data}, \code{n_treated}, \code{n_matched_control},
+\code{match_pairs}, \code{method}, and \code{details}.
 }
 \description{
 For each treated unit, finds the \code{n_neighbors} closest control units

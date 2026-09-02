@@ -10,7 +10,7 @@ morie_fetch_json(txt, simplify = TRUE)
 \item{txt}{A single JSON string (or raw vector).}
 
 \item{simplify}{Simplify arrays to vectors / data frames
-(default TRUE, mirroring \code{jsonlite::fromJSON}).}
+(default TRUE, mirroring \code{.s03json_fromJSON}).}
 }
 \value{
 The parsed R object.
@@ -21,5 +21,5 @@ arrays of same-type scalars become vectors, arrays of consistently
 keyed objects become data frames (when \code{simplify = TRUE}).
 }
 \examples{
-morie_fetch_json('{"a": [1, 2, 3], "b": "x"}')
+morie_fetch_json('{"a": \[1, 2, 3\], "b": "x"}')
 }

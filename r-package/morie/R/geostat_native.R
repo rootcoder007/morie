@@ -36,6 +36,9 @@
 #' @references Matheron, G. (1963). Principles of geostatistics.
 #'   \emph{Economic Geology}, 58(8), 1246--1266.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_spatial_variogram(V, V)
 morie_spatial_variogram <- function(coords, values, n_bins = 15L,
                                     cutoff = NULL) {
   coords <- as.matrix(coords)
@@ -71,6 +74,9 @@ morie_spatial_variogram <- function(coords, values, n_bins = 15L,
 #' @srrstats {G1.0} ML covariance estimation per Mardia & Marshall
 #'   (1984), Biometrika 71(1).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_spatial_variogram_fit(V, V)
 morie_spatial_variogram_fit <- function(coords, values,
                                         model = "exponential") {
   coords <- as.matrix(coords)

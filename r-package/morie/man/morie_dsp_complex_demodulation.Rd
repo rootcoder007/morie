@@ -20,10 +20,10 @@ List with \code{envelope} and \code{phase}, both length(x).
 Multiplies \code{x} by \verb{exp(-j 2 pi fc t)}, low-passes via Butterworth
 (requires \code{signal}), and returns envelope and unwrapped phase.
 }
-\references{
-Rangayyan & Krishnan (2015), Ch. 5, sec. 5.8.
-}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 morie_dsp_complex_demodulation(V, V)
+}
+\references{
+Rangayyan & Krishnan (2015), Ch. 5, sec. 5.8.
 }

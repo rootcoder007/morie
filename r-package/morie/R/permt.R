@@ -13,6 +13,9 @@
 #' @return Named list: statistic, p_value, n_x, n_y, B, alternative, method.
 #' @keywords internal
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' permt(V, V)
 permt <- function(x, y, statistic = NULL, B = 5000L,
                   alternative = c("two-sided", "less", "greater"),
                   seed = 42L) {

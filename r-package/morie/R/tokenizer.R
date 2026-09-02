@@ -27,6 +27,9 @@
 #'   via `reticulate::import("sentencepiece")`.
 #' @return Tokenizer environment of class `morie_tokenizer`.
 #' @export
+#' @examples
+#' vocab <- c("<unk>", "<s>", "</s>", "\u2581", "hi", "world")
+#' morie_tokenizer_new(vocab = vocab, bos_id = 1L, eos_id = 2L)
 morie_tokenizer_new <- function(vocab = NULL, scores = NULL, merges = NULL,
                                 bos_id = 1L, eos_id = 2L,
                                 gguf_metadata = NULL,
@@ -100,6 +103,9 @@ morie_tokenizer_new <- function(vocab = NULL, scores = NULL, merges = NULL,
 #' @param tok Tokenizer environment.
 #' @return Integer scalar.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tokenizer_vocab_size(D)
 morie_tokenizer_vocab_size <- function(tok) {
   if (!is.null(tok$sp)) tok$sp$GetPieceSize() else length(tok$vocab)
 }
@@ -114,6 +120,10 @@ morie_tokenizer_vocab_size <- function(tok) {
 #' @param add_bos Prepend BOS ID. Default TRUE.
 #' @return Integer vector of token IDs.
 #' @export
+#' @examples
+#' vocab <- c("<unk>", "<s>", "</s>", "\u2581", "hi", "world")
+#' tok <- morie_tokenizer_new(vocab = vocab, bos_id = 1L, eos_id = 2L)
+#' morie_tokenizer_encode(tok, "hi")
 morie_tokenizer_encode <- function(tok, text, add_bos = TRUE) {
   text <- as.character(text)
   if (!is.null(tok$sp)) {
@@ -139,6 +149,10 @@ morie_tokenizer_encode <- function(tok, text, add_bos = TRUE) {
 #' @param ids Integer vector.
 #' @return Character scalar.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tokenizer_decode(D, V)
 morie_tokenizer_decode <- function(tok, ids) {
   ids <- as.integer(ids)
   if (!is.null(tok$sp)) {
@@ -208,6 +222,9 @@ morie_tokenizer_decode <- function(tok, ids) {
 #' @param ... Unused.
 #' @return Invisibly `x`.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' print.morie_tokenizer(D)
 print.morie_tokenizer <- function(x, ...) {
   src <- if (!is.null(x$sp)) "sentencepiece" else "gguf/vocab"
   cat(sprintf("morie_tokenizer(vocab_size=%d, source=%s)\

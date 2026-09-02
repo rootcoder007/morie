@@ -22,15 +22,15 @@ sums the outer products of cluster-summed score contributions,
 with the CR1 small-sample factor
 \eqn{\frac{G}{G-1}\cdot\frac{n-1}{n-k}} by default.
 }
-\references{
-Cameron, A. C., & Miller, D. L. (2015). A practitioner's
-guide to cluster-robust inference. \emph{Journal of Human
-Resources}, 50(2), 317-372.
-}
 \examples{
 set.seed(1)
 df <- data.frame(y = rnorm(60), x = rnorm(60),
                  cl = rep(1:6, each = 10))
 fit <- stats::lm(y ~ x, data = df)
 morie_vcov_cl(fit, cluster = df$cl)
+}
+\references{
+Cameron, A. C., & Miller, D. L. (2015). A practitioner's
+guide to cluster-robust inference. \emph{Journal of Human
+Resources}, 50(2), 317-372.
 }

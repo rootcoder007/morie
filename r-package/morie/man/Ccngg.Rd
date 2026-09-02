@@ -32,11 +32,11 @@ variance of exactly zero therefore forces R2_c = 1, the degenerate
 case used to check the algebra.  Variance components come from a
 one-way random-intercept fit by moments.
 }
-\references{
-Nakagawa & Schielzeth (2013), Methods Ecol. Evol.
-4(2):133-142.
-}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 Ccngg(V)
+}
+\references{
+Nakagawa & Schielzeth (2013), Methods Ecol. Evol.
+4(2):133-142.
 }

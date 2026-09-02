@@ -359,6 +359,9 @@ bootstrap <- function(data, statistic, n_boot = 2000L, ci_level = 0.95,
 #'   scale, shape).
 #' @return A \code{morie_bootstrap_result}.
 #' @export
+#' @examples
+#' x_vec <- rnorm(40)
+#' parametric_bootstrap(x_vec, mean, distribution = "normal", n_boot = 30L)
 parametric_bootstrap <- function(data, statistic, distribution = "normal",
                                  n_boot = 2000L, ci_level = 0.95,
                                  seed = 42L, ...) {
@@ -433,6 +436,11 @@ parametric_bootstrap <- function(data, statistic, distribution = "normal",
 #' @param seed Random seed.
 #' @return A \code{morie_bootstrap_result}.
 #' @export
+#' @examples
+#' n <- 30L
+#' X <- cbind(1, rnorm(n))
+#' y <- 1 + 0.5 * X[, 2] + rnorm(n)
+#' wild_bootstrap(y, X, statistic_idx = 2L, n_boot = 30L, weight_distribution = "rademacher")
 wild_bootstrap <- function(y, X, statistic_idx = 2L, n_boot = 999L,
                            ci_level = 0.95,
                            weight_distribution = "rademacher",
@@ -666,6 +674,9 @@ delete_d_jackknife <- function(data, statistic, d = 2L,
 #' @param seed Random seed.
 #' @return A \code{morie_permutation_test_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' permutation_test(V, V)
 permutation_test <- function(group1, group2, statistic = "mean_diff",
                              n_permutations = 9999L,
                              alternative = "two-sided", seed = 42L) {
@@ -726,6 +737,9 @@ permutation_test <- function(group1, group2, statistic = "mean_diff",
 #' @param seed Random seed.
 #' @return A \code{morie_permutation_test_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' paired_permutation_test(V, V)
 paired_permutation_test <- function(x, y, statistic = "mean_diff",
                                     n_permutations = 9999L,
                                     alternative = "two-sided", seed = 42L) {
@@ -773,6 +787,9 @@ paired_permutation_test <- function(x, y, statistic = "mean_diff",
 #' @param seed Random seed.
 #' @return A \code{morie_bootstrap_result}.
 #' @export
+#' @examples
+#' x_vec <- rnorm(40)
+#' subsampling(x_vec, mean, n_subsamples = 30L)
 subsampling <- function(data, statistic, subsample_size = NULL,
                         n_subsamples = 1000L, ci_level = 0.95,
                         seed = 42L) {

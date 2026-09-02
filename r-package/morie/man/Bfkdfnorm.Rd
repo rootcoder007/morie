@@ -31,7 +31,7 @@ Named list with \code{statistic}, \code{p_value}, \code{lower}, \code{upper}, \c
 }
 \description{
 Theorem 5.3: under D1-D5,
-\deqn{\frac{\tilde F_X(x) - F_X(x)}{\sqrt{\mathrm{Var}[\tilde F_X(x)]}} \to_D N(0,1).}{(Ftilde(x) - F(x)) / sqrt(Var[Ftilde(x)]) ->_D N(0,1).}
+\deqn{\frac{\tilde F_X(x) - F_X(x)}{\sqrt{\mathrm{Var}\[\tilde F_X(x)\]}} \to_D N(0,1).}{(Ftilde(x) - F(x)) / sqrt(Var[Ftilde(x)]) ->_D N(0,1).}
 }
 \details{
 The proof is a Lyapunov argument, easy for a reason worth keeping: because
@@ -40,7 +40,7 @@ bounded by \code{2^(2+delta) < Inf} with NO assumption on \code{F_X}. The estima
 averages bounded variables, so Lyapunov's condition is automatic.
 
 Returns the standardised statistic and a Wald interval for \code{F_X(x)}, clipped
-to \verb{[0,1]}: the estimand is a probability, and an unclipped Wald interval
+to \verb{\[0,1\]}: the estimand is a probability, and an unclipped Wald interval
 routinely leaves the unit interval near the boundary -- precisely the region
 this construction exists to handle.
 

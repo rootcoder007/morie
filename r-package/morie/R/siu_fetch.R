@@ -212,6 +212,25 @@ morie_siu_cache_path <- function(cache_dir = file.path(tempdir(), "morie", "siu"
   )
   if (!nzchar(html)) return(rec)
 
+  # Preferred path: the compiled SIU parser that lives in bricklayer
+  # (>= 0.3.5) -- the ecosystem's C/C++ foundation. It fills the canonical
+  # fields from the full 16-field schema parse; the conservative regex
+  # passes below only top up whatever it could not state. Older bricklayer
+  # (or none) falls straight through to the pure-R path.
+  if (requireNamespace("rmoriebricklayer", quietly = TRUE) &&
+      exists("bricklayer_parse_siu",
+             envir = asNamespace("rmoriebricklayer"))) {
+    bf <- tryCatch(rmoriebricklayer::bricklayer_parse_siu(html),
+                   error = function(e) NULL)
+    if (!is.null(bf)) {
+      take <- function(k) if (!is.na(bf[k]) && nzchar(bf[[k]])) bf[[k]] else ""
+      rec$police_service   <- take("police_service")
+      rec$incident_iso     <- take("date_of_incident_iso")
+      rec$notification_iso <- take("date_siu_notified_iso")
+      rec$decision_iso     <- take("date_of_director_decision_iso")
+    }
+  }
+
   date_pats <- list(
     incident_iso = paste0(
       "(?:Incident|incident occurred on)\\s*[:\\-]?\\s*",
@@ -227,6 +246,7 @@ morie_siu_cache_path <- function(cache_dir = file.path(tempdir(), "morie", "siu"
     )
   )
   for (k in names(date_pats)) {
+    if (nzchar(rec[[k]])) next  # already filled by the compiled parser
     m <- regmatches(html, regexec(date_pats[[k]], html, perl = TRUE))[[1L]]
     if (length(m) >= 2L) rec[[k]] <- .siu_fetch_to_iso(m[2L])
   }
@@ -275,7 +295,9 @@ morie_siu_cache_path <- function(cache_dir = file.path(tempdir(), "morie", "siu"
   )
   m <- regmatches(html, regexec(svc_pat, html, perl = TRUE,
     ignore.case = TRUE))[[1L]]
-  if (length(m) >= 2L) rec$police_service <- trimws(m[2L])
+  if (length(m) >= 2L && !nzchar(rec$police_service)) {
+    rec$police_service <- trimws(m[2L])
+  }
   if (!nzchar(rec$police_service)) {
     # 2026-07 layout: no labelled field, but the prose wraps every
     # force mention in <abbr title="Waterloo Regional Police Service">.

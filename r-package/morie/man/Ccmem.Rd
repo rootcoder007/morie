@@ -30,12 +30,12 @@ membership weight, and those weights must sum to one per unit or the
 random-effect variance is rescaled without anyone noticing.  With two
 classifications and no explicit weights each contributes 1/2.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Ccmem(V, V)
+}
 \references{
 Goldstein (1994), Sociological Methods & Research
 22(3):364-375; Browne, Goldstein & Rasbash (2001), Statistical
 Modelling 1(2):103-124.
-}
-\examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-Ccmem(V, V)
 }

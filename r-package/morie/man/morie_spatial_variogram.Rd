@@ -24,11 +24,11 @@ A data frame with \code{dist} (bin centre), \code{gamma}
 Classical Matheron estimator: half the average squared difference
 of values within each distance bin.
 }
-\references{
-Matheron, G. (1963). Principles of geostatistics.
-\emph{Economic Geology}, 58(8), 1246--1266.
-}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 morie_spatial_variogram(V, V)
+}
+\references{
+Matheron, G. (1963). Principles of geostatistics.
+\emph{Economic Geology}, 58(8), 1246--1266.
 }

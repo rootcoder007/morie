@@ -59,6 +59,8 @@ NULL
 #' @param is_r_bridge Logical; flags Python <-> R bridge calls.
 #' @return A list with class \code{morie_stat_command}.
 #' @export
+#' @examples
+#' stat_command("test_bridge_throw", "T", "u", "d", handler_repl = function(...) stop("boom"))
 stat_command <- function(name, category, usage, description,
                           handler_repl,
                           handler_stat = NULL,
@@ -117,6 +119,9 @@ stat_command <- function(name, category, usage, description,
 #' @param cmd A \code{morie_stat_command} constructed by \code{stat_command}.
 #' @return The command name, invisibly.
 #' @export
+#' @examples
+#' cmd <- stat_command("test_bridge_throw", "T", "u", "d", handler_repl = function(...) stop("boom"))
+#' register_stat_command(cmd)
 register_stat_command <- function(cmd) {
   if (!inherits(cmd, "morie_stat_command")) {
     stop("cmd must be a morie_stat_command")
@@ -143,6 +148,9 @@ register_stat_command <- function(cmd) {
 #' @param name Character scalar.
 #' @return A \code{morie_stat_command} or \code{NULL}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' resolve_stat_command(V)
 resolve_stat_command <- function(name) {
   if (!is.character(name) || length(name) != 1L) {
     return(NULL)
@@ -201,6 +209,12 @@ commands_by_category <- function() {
 #' @return Whatever the handler returns. Stops with an informative
 #'   error if the command is not registered.
 #' @export
+#' @examples
+#' cmd <- stat_command("demo_echo", "misc", "demo_echo",
+#'                     "Echo demo command",
+#'                     handler_repl = function(...) "ok")
+#' register_stat_command(cmd)
+#' run_stat_command("demo_echo")
 run_stat_command <- function(name, ...) {
   cmd <- resolve_stat_command(name)
   if (is.null(cmd)) {
@@ -214,6 +228,8 @@ run_stat_command <- function(name, ...) {
 #' @return A length-1 integer giving the number of commands currently in
 #'   the registry (aliases are not counted).
 #' @export
+#' @examples
+#' n_stat_commands()
 n_stat_commands <- function() {
   length(.morie_stat_commands$registry)
 }
@@ -410,6 +426,12 @@ local({
 #' @param ... Unused.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' cmd <- stat_command("demo_echo", "misc", "demo_echo",
+#'                     "Echo demo command",
+#'                     handler_repl = function(...) "ok")
+#' register_stat_command(cmd)
+#' print(cmd)
 print.morie_stat_command <- function(x, ...) {
   cat(sprintf("morie stat command: %s\
 ", x$name))
@@ -504,6 +526,9 @@ print.morie_stat_command <- function(x, ...) {
 #' @return Integer count of newly registered commands, invisibly.
 #' @keywords internal
 #' @export
+#' @examples
+#' set.seed(1)
+#' r <- .morie_auto_register_stat_commands(); TRUE
 .morie_auto_register_stat_commands <- function() {
   exports <- tryCatch(getNamespaceExports("morie"),
                       error = function(e) character(0))

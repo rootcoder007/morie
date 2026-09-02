@@ -156,6 +156,8 @@ morie_dataset_detect_role <- function(x, name) {
 #'   interval/ratio).
 #' @return Named list of summary statistics.
 #' @export
+#' @examples
+#' morie_dataset_summarize_column(x = c(1, 2, 3, 4, 5, 6, 7, 8), level = 0.5)
 morie_dataset_summarize_column <- function(x, level) {
   non_null <- x[!is.na(x)]
   if (level %in% c("interval", "ratio") && is.numeric(non_null) && length(non_null) > 0L) {

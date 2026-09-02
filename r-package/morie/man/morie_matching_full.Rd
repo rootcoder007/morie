@@ -13,12 +13,15 @@ morie_matching_full(data, treatment, covariates, ps = NULL, n_subclasses = 10L)
 
 \item{covariates}{Character vector of covariates.}
 
-\item{ps}{Optional propensity scores. When supplied they REPLACE the fitted model and become the matching distance directly, aligned to the rows that survive the NA drop.}
+\item{ps}{Optional propensity scores. When supplied they REPLACE
+the fitted model and become the matching distance directly,
+aligned to the rows that survive the NA drop.}
 
 \item{n_subclasses}{Number of propensity-score strata for the fallback.}
 }
 \value{
-A list of class \code{morie_match_result}; \code{matched_data} contains a \code{._full_weight} column.
+A list of class \code{morie_match_result}; \code{matched_data}
+contains a \code{._full_weight} column.
 }
 \description{
 Places every unit into a subclass containing at least one treated and one

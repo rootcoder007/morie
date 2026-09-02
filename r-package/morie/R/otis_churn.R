@@ -325,6 +325,9 @@ morie_otis_within_year_placement_count <- function(df) {
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_within_year_region_diversity(V)
 morie_otis_within_year_region_diversity <- function(df) {
   needed <- c("UniqueIndividual_ID", "Region_AtTimeOfPlacement")
   if (!all(needed %in% names(df))) {
@@ -386,6 +389,9 @@ morie_otis_within_year_region_diversity <- function(df) {
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_mortification_cooccurrence(V)
 morie_otis_mortification_cooccurrence <- function(df) {
   cols <- c("MentalHealth_Alert", "SuicideRisk_Alert", "SuicideWatch_Alert")
   have <- intersect(cols, names(df))
@@ -457,6 +463,9 @@ morie_otis_mortification_cooccurrence <- function(df) {
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_disciplinary_medical_overlap(V)
 morie_otis_disciplinary_medical_overlap <- function(df) {
   disc_cols <- grep("^SegReason_Disciplinary", names(df), value = TRUE)
   med_cols  <- grep("^SegReason_.*Medical", names(df), value = TRUE)
@@ -515,6 +524,9 @@ morie_otis_disciplinary_medical_overlap <- function(df) {
 #' @param df b02 data.frame.
 #' @return \code{morie_otis_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_embedding_distribution(V)
 morie_otis_embedding_distribution <- function(df) {
   if (!"TotalAggregatedDays_Segregation" %in% names(df)) {
     return(.churn_result(title = "Embedding distribution",
@@ -594,6 +606,9 @@ morie_otis_embedding_distribution <- function(df) {
 #' @param df a01 data.frame.
 #' @return \code{morie_otis_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_intra_year_transition_matrix(V)
 morie_otis_intra_year_transition_matrix <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear",
               "Region_AtTimeOfPlacement")
@@ -699,6 +714,9 @@ morie_otis_intra_year_transition_matrix <- function(df) {
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_path_complexity_gini(V)
 morie_otis_path_complexity_gini <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear",
               "Region_AtTimeOfPlacement")
@@ -774,6 +792,9 @@ morie_otis_path_complexity_gini <- function(df) {
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_region_alert_state_richness(V)
 morie_otis_region_alert_state_richness <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear",
               "Region_AtTimeOfPlacement", "MentalHealth_Alert",
@@ -837,6 +858,9 @@ morie_otis_region_alert_state_richness <- function(df) {
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_regC_demog_contingency(V)
 morie_otis_regC_demog_contingency <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear",
               "Region_AtTimeOfPlacement", "Gender", "Age_Category")
@@ -936,6 +960,9 @@ morie_otis_regC_demog_contingency <- function(df) {
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_irr_glmm_vm(V)
 morie_otis_irr_glmm_vm <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear",
               "Region_AtTimeOfPlacement", "MentalHealth_Alert",

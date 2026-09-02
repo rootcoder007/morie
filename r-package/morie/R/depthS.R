@@ -17,6 +17,8 @@
 #'   \code{closed_form_1d}, \code{n}, \code{d}, \code{method}.
 #' @references Liu (1990), Ann. Statist. 18(1):405-414.
 #' @export
+#' @examples
+#' DepthS(X = c(1, 2, 3, 4, 5, 6, 7, 8), theta = 0.5)
 DepthS <- function(X, theta) {
   M <- .s03mat(X)
   n <- nrow(M)

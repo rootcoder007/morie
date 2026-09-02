@@ -254,6 +254,9 @@ NULL
 #'   \code{kappa}, \code{omega}, \code{branching}, \code{nll},
 #'   \code{aic}, \code{bic}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_hawkes_temporal_fit(D)
 morie_tps_hawkes_temporal_fit <- function(df, ds_name = "?",
                                            max_n = 5000L) {
   stopifnot(is.data.frame(df))
@@ -381,6 +384,9 @@ morie_tps_hawkes_temporal_fit <- function(df, ds_name = "?",
 #'   \code{bic}, \code{mape_pct}, \code{rmse}, \code{forecast},
 #'   \code{actual}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_sarima_forecast(D)
 morie_tps_sarima_forecast <- function(df, ds_name = "?", h = 12L,
                                        order = c(1L, 1L, 1L),
                                        seasonal = c(0L, 1L, 1L, 12L)) {
@@ -514,6 +520,9 @@ morie_tps_sarima_forecast <- function(df, ds_name = "?", h = 12L,
 #'   \code{mu}, \code{sigma}, \code{paths} (matrix of n_paths x
 #'   n_steps), and final-day quantiles.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_langevin_simulate(D)
 morie_tps_langevin_simulate <- function(df, ds_name = "?",
                                          n_paths = 100L,
                                          T_days = 365L,
@@ -622,6 +631,9 @@ morie_tps_langevin_simulate <- function(df, ds_name = "?",
 #'   \code{mu}, \code{sigma}, \code{grid}, \code{density},
 #'   \code{stationary_peak}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_fokker_planck_grid(D)
 morie_tps_fokker_planck_grid <- function(df, ds_name = "?",
                                           n_grid = 64L,
                                           n_steps = 200L) {
@@ -733,6 +745,11 @@ morie_tps_fokker_planck_grid <- function(df, ds_name = "?",
 #' @param ... Ignored; accepted for S3 consistency.
 #' @return \code{x}, invisibly.
 #' @export
+#' @examples
+#' set.seed(1); n <- 200
+#' df <- data.frame(OCC_DATE = as.Date("2018-01-01") + sample(0:2000, n, TRUE))
+#' res <- morie_tps_hawkes_temporal_fit(df)
+#' print(res)
 print.morie_tps_stochastic_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\

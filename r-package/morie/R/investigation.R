@@ -141,6 +141,9 @@ morie_compare_nested_logistic_models <- function(data, outcome,
 #' @return list(ate, y1, y0).
 #' @keywords internal
 #' @export
+#' @examples
+#' set.seed(1)
+#' r <- .morie_hajek_ate(ps = rnorm(10), t = rnorm(10), y = rnorm(10)); TRUE
 .morie_hajek_ate <- function(ps, t, y) {
   treated <- t == 1
   control <- t == 0
@@ -196,6 +199,13 @@ morie_compare_nested_logistic_models <- function(data, outcome,
 #' @param covariates Character vector of covariate column names.
 #' @return Named list as described above.
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(d = rbinom(80, 1, 0.4), x1 = rnorm(80), x2 = rnorm(80))
+#' df$y <- df$d + df$x1 + rnorm(80)
+#' res <- try(morie_run_treatment_effects_analysis(df, "d", "y",
+#'                                                 c("x1", "x2")))
+#' if (!inherits(res, "try-error")) str(res, max.level = 1)
 morie_run_treatment_effects_analysis <- function(data, treatment, outcome,
                                                   covariates) {
   required <- unique(c(treatment, outcome, covariates))

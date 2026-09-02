@@ -22,8 +22,8 @@ Q(tau) = inf over x of F_n(x) at least tau; asymptotic SE
 se(Q(tau)) ~~ sqrt(tau(1-tau) / (n f(Q(tau))^2)),
 with f estimated by a Gaussian kernel (Silverman's rule bandwidth).
 }
-\keyword{internal}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 quntf(V)
 }
+\keyword{internal}

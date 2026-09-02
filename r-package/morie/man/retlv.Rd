@@ -23,8 +23,8 @@ is z_T = mu - (sigma/xi) (1 - (-log(1 - 1/T))^(-xi))  if xi != 0,
 else z_T = mu - sigma log(-log(1 - 1/T)).  Delta-method SE uses the
 diagonal of the observed information returned by \code{extvm}.
 }
-\keyword{internal}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 retlv(V)
 }
+\keyword{internal}

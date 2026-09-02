@@ -92,6 +92,10 @@ NULL
 #' @param require_exists If \code{TRUE} (default), error on no match.
 #' @return Character scalar path.
 #' @keywords internal
+#' @examples
+#' \donttest{
+#' .morie_resolve_arsau_dir()
+#' }
 .morie_resolve_arsau_dir <- function(data_dir = NULL, require_exists = TRUE) {
   candidates <- list()
 
@@ -280,6 +284,8 @@ NULL
 #'
 #' @return Named list-of-lists.
 #' @export
+#' @examples
+#' ARSAU_REGISTRY()
 ARSAU_REGISTRY <- function() {
   .ARSAU_REGISTRY_LIST
 }
@@ -289,6 +295,8 @@ ARSAU_REGISTRY <- function() {
 #'   (e.g. \code{"2023"}, \code{"2024"}, \code{"2020-2022"}) drawn from
 #'   the ARSAU registry.
 #' @export
+#' @examples
+#' ARSAU_YEARS()
 ARSAU_YEARS <- function() {
   sort(unique(vapply(.ARSAU_REGISTRY_LIST, function(e) e$year_or_range, character(1))))
 }
@@ -298,6 +306,8 @@ ARSAU_YEARS <- function() {
 #'   \code{"main_records"}, \code{"individual_records"},
 #'   \code{"weapon_records"}) drawn from the ARSAU registry.
 #' @export
+#' @examples
+#' ARSAU_KINDS()
 ARSAU_KINDS <- function() {
   sort(unique(vapply(.ARSAU_REGISTRY_LIST, function(e) e$kind, character(1))))
 }
@@ -884,6 +894,11 @@ morie_arsau_describe <- function(kind, year, language = "en", data_dir = NULL,
 #' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' \donttest{
+#' res <- morie_arsau_describe("assault", 2020L)
+#' print(res)
+#' }
 print.morie_arsau_result <- function(x, ...) {
   cat(x$title, "\n", strrep("=", nchar(x$title)), "\n", sep = "")
   if (!is.null(x$call) && nzchar(x$call)) {

@@ -26,11 +26,11 @@ estimator.  A second implementation would agree with the first at
 \code{cause} carries the per-subject event-type vector, matching this
 module's own stub signature.
 }
-\references{
-Aalen & Johansen (1978), Scand. J. Statist.
-5(3):141-150.
-}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 Cumcif(V, V)
+}
+\references{
+Aalen & Johansen (1978), Scand. J. Statist.
+5(3):141-150.
 }

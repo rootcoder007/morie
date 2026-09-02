@@ -114,6 +114,10 @@ NULL
 #' @name morie_rdd_kernels
 #' @rdname morie_rdd_kernels
 #' @export
+#' @examples
+#' u <- seq(-1, 1, by = 0.25)
+#' w <- morie_rdd_kernel_triangular(u)
+#' c(length(w), all(w >= 0))
 morie_rdd_kernel_triangular  <- function(u) pmax(1 - abs(u), 0)
 #' @rdname morie_rdd_kernels
 #' @return A \code{function} of one argument returning Epanechnikov kernel weights.
@@ -285,6 +289,7 @@ morie_rdd_bandwidth_rot <- function(x, y, cutoff = 0) {
 #' @return A list with \code{beta} (coefficients, intercept first) and
 #'   \code{V} (heteroskedasticity-robust covariance).
 #' @keywords internal
+#' @noRd
 .morie_rdd_local_poly <- function(x, y, x0, h, p = 1L,
                                   kernel = "triangular") {
   kf <- .morie_rdd_kernels[[kernel]]
@@ -333,6 +338,12 @@ morie_rdd_bandwidth_rot <- function(x, y, cutoff = 0) {
 #'   \code{details} carrying \code{h_mse}, \code{h_cer},
 #'   \code{bias_sq} and \code{variance}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' x <- runif(400, -1, 1)
+#' y <- 0.3 * x + 1.0 * (x >= 0) + rnorm(400, sd = 0.3)
+#' bw <- morie_rdd_bandwidth_cct(x, y)
+#' bw$bandwidth
 morie_rdd_bandwidth_cct <- function(x, y, cutoff = 0,
                                     kernel = "triangular", p = 1) {
   x <- as.numeric(x); y <- as.numeric(y)

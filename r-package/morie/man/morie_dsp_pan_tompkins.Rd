@@ -19,11 +19,11 @@ Bandpass (5-15 Hz) -> differentiate -> square -> moving-window
 integrate -> adaptive threshold with refractory period. Requires
 \code{signal} for the Butterworth bandpass.
 }
-\references{
-Rangayyan & Krishnan (2015), Ch. 4, sec. 4.7;
-Pan & Tompkins (1985).
-}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 morie_dsp_pan_tompkins(V)
+}
+\references{
+Rangayyan & Krishnan (2015), Ch. 4, sec. 4.7;
+Pan & Tompkins (1985).
 }

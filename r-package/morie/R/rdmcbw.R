@@ -42,6 +42,9 @@
 #' @param y Response.
 #' @return Coefficient vector.
 #' @keywords internal
+#' @examples
+#' set.seed(1)
+#' r <- .ik_ols(rows = rnorm(10), y = rnorm(10)); TRUE
 .ik_ols <- function(rows, y) {
   rows <- as.matrix(rows); y <- as.numeric(y)
   p <- ncol(rows)
@@ -61,6 +64,9 @@
 #' @param v Numeric vector.
 #' @return The median, IK (2012) p.9 convention.
 #' @keywords internal
+#' @examples
+#' set.seed(1)
+#' r <- .ik_median(v = rnorm(10)); TRUE
 .ik_median <- function(v) {
   s <- sort(as.numeric(v)); m <- length(s)
   if (m == 0L) stop("mse_optimal_bandwidth_rdd: median of an empty side")

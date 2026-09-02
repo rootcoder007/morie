@@ -353,6 +353,9 @@ mrm_uof_force_concentration <- function(df, force_col, count_col = NULL) {
 #'   \code{cramers_v}, \code{top_residuals} (list-of-lists), and an
 #'   \code{interpretation} paragraph.
 #' @export
+#' @examples
+#' df <- data.frame(f = character(0), cnt = integer(0))
+#' mrm_uof_weapon_diversity(df, "w", "f")
 mrm_uof_weapon_diversity <- function(df, weapon_col, force_col) {
   stopifnot(is.data.frame(df), is.character(weapon_col), is.character(force_col))
 
@@ -484,6 +487,8 @@ mrm_uof_weapon_diversity <- function(df, weapon_col, force_col) {
 #' @return Named list with \code{years}, \code{counts}, \code{yoy_pct},
 #'   \code{change_point_year}, \code{mean_abs_yoy_pct}.
 #' @export
+#' @examples
+#' mrm_uof_yoy_change()
 mrm_uof_yoy_change <- function(dfs_by_year = NULL, df = NULL,
                                 year_col = NULL, count_col = NULL) {
   warnings <- character(0)
@@ -630,6 +635,8 @@ mrm_uof_yoy_change <- function(dfs_by_year = NULL, df = NULL,
 #' @return Named list with \code{diagonal_share}, \code{chi2},
 #'   \code{pvalue}, \code{df}, \code{cramers_v}.
 #' @export
+#' @examples
+#' mrm_uof_region_locality(df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), region_at_col = c(1, 2, 3, 4, 5, 6, 7, 8), region_now_col = c(1, 2, 3, 4, 5, 6, 7, 8))
 mrm_uof_region_locality <- function(df, region_at_col, region_now_col) {
   stopifnot(is.data.frame(df))
   warnings <- character(0)
@@ -752,6 +759,8 @@ mrm_uof_region_locality <- function(df, region_at_col, region_now_col) {
 #' @return Named list with \code{baseline}, \code{baseline_rate},
 #'   \code{per_category} (list of lists), \code{risk_ratios}.
 #' @export
+#' @examples
+#' mrm_uof_demographic_disparity(df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), demo_col = c(1, 2, 3, 4, 5, 6, 7, 8), outcome_col = c(1, 2, 3, 4, 5, 6, 7, 8))
 mrm_uof_demographic_disparity <- function(df, demo_col, outcome_col,
                                            baseline = NULL,
                                            bootstrap_reps = 0L) {
@@ -945,6 +954,9 @@ mrm_uof_demographic_disparity <- function(df, demo_col, outcome_col,
 #' @return Named list with \code{per_column}, \code{missing_columns},
 #'   \code{extra_columns}, \code{dtype_mismatches}, \code{suspect_flags}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' mrm_uof_data_quality_audit(D)
 mrm_uof_data_quality_audit <- function(df, sidecar = NULL, expected_schema = NULL) {
   stopifnot(is.data.frame(df))
   warnings <- character(0)
@@ -1092,6 +1104,9 @@ mrm_uof_data_quality_audit <- function(df, sidecar = NULL, expected_schema = NUL
 #' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' inc <- morie_datasets_corrections_uof_incidents()
+#' print(mrm_uof_data_quality_audit(inc))
 print.morie_mrm_uof_result <- function(x, ...) {
   cat(x$title, "\n", strrep("=", nchar(x$title)), "\n", sep = "")
   if (!is.null(x$call) && nzchar(x$call)) {

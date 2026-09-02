@@ -38,8 +38,8 @@ A list with \code{estimate} (= \code{K_star}), \code{K_12}, \code{K_21}, \code{L
 random labelling \code{D}, \code{K_11}, \code{K_22}.
 }
 \description{
-eq (3.9): \eqn{\hat{K}_{ij}(h) = [\hat\lambda_i \hat\lambda_j
-\nu(A)]^{-1} \sum_k \sum_l w(s_k, u_l)^{-1} I(h_{kl} \le h)}, with
+eq (3.9): \eqn{\hat{K}_{ij}(h) = \[\hat\lambda_i \hat\lambda_j
+\nu(A)\]^{-1} \sum_k \sum_l w(s_k, u_l)^{-1} I(h_{kl} \le h)}, with
 \eqn{w} Ripley's isotropic weight -- the proportion of the circumference
 of a circle centred at \eqn{s_k} with radius \eqn{h_{kl}} inside the
 window, computed exactly rather than by sampling.
@@ -56,12 +56,12 @@ hypothesis the relationship is instead eq (3.10),
 Chetwynd's \eqn{D(h) = K_{ii}(h) - K_{jj}(h)}. The book is emphatic that
 the two nulls are different, so \code{hypothesis} must name one.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+spkcrs(V, V)
+}
 \references{
 Schabenberger Ch 3, Sec 3.4.4, eqs (3.9)-(3.10), pp. 103-105.
 Lotwick and Silverman (1982), JRSS B 44:406-413. Diggle (1983). Diggle
 and Chetwynd (1991), Biometrics 47:1155-1163.
-}
-\examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-spkcrs(V, V)
 }

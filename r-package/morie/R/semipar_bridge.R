@@ -234,6 +234,8 @@ kernel_eval <- function(u, kernel_type = KERNEL_GAUSSIAN) {
 #' @references Nadaraya, E. A. (1964). On Estimating Regression.
 #'   \emph{Theory of Probability and Its Applications}, 9(1), 141-142.
 #' @export
+#' @examples
+#' nw_regression(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), x_eval = c(1, 2, 3, 4, 5, 6, 7, 8), bandwidth = 0.5)
 nw_regression <- function(x, y, x_eval, bandwidth) {
   x <- as.numeric(x)
   y <- as.numeric(y)
@@ -367,6 +369,9 @@ kde <- function(x, x_eval, bandwidth, kernel_type = KERNEL_GAUSSIAN) {
 #' @return Bandwidth (numeric scalar).
 #' @references Silverman, B. W. (1986), p. 48.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' silverman_bandwidth(V)
 silverman_bandwidth <- function(x) {
   x <- as.numeric(x)
   n <- length(x)
@@ -557,6 +562,8 @@ gam_smoother <- function(x, y, x_eval = NULL, k = 10, family = stats::gaussian()
 #'   \code{silverman_bandwidth}, \code{loocv_bandwidth},
 #'   \code{kernel_cond_moments}, plus a \code{backend} string.
 #' @export
+#' @examples
+#' SemiparKernels()
 SemiparKernels <- function() {
   obj <- list(
     backend = "r",
@@ -590,6 +597,9 @@ SemiparKernels <- function() {
 #' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' print.morie_semipar_kernels(D)
 print.morie_semipar_kernels <- function(x, ...) {
   cat("morie SemiparKernels\
 ")

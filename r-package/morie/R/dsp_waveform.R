@@ -523,6 +523,9 @@ morie_dsp_ruler_fd <- function(x, n_rulers = 10L) {
 #' @references Rangayyan & Krishnan (2015), Ch. 5, sec. 5.6;
 #'   Parzen (1962); Silverman (1986).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_parzen_pdf(V)
 morie_dsp_parzen_pdf <- function(x, bandwidth = NULL, n_points = 100L) {
   if (is.null(bandwidth)) {
     bandwidth <- 1.06 * stats::sd(x) * length(x)^(-0.2)
@@ -549,6 +552,9 @@ morie_dsp_parzen_pdf <- function(x, bandwidth = NULL, n_points = 100L) {
 #' @return List with `envelope` and `phase`, both length(x).
 #' @references Rangayyan & Krishnan (2015), Ch. 5, sec. 5.8.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_complex_demodulation(V, V)
 morie_dsp_complex_demodulation <- function(x, fc, fs = 1) {
   t <- (seq_along(x) - 1L) / fs
   analytic <- x * exp(-1i * 2 * pi * fc * t)
@@ -572,6 +578,9 @@ morie_dsp_complex_demodulation <- function(x, fc, fs = 1) {
 #' @references Rangayyan & Krishnan (2015), Ch. 5;
 #'   Oppenheim & Schafer (2010).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_min_phase(V)
 morie_dsp_min_phase <- function(x) {
   X <- stats::fft(x)
   log_mag <- log(Mod(X) + 1e-10)

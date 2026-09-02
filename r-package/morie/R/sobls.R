@@ -19,6 +19,8 @@
 #' @importFrom utils getFromNamespace
 #' @keywords internal
 #' @export
+#' @examples
+#' morie_sobol_sequence(N = 128L, d = 2L)
 sobls <- function(N = 128L, d = 1L, f = NULL, scramble = TRUE, seed = 42L) {
   # Native gray-code Sobol with Joe-Kuo direction numbers (d <= 10);
   # matches randtoolbox's unscrambled sequence (cross-validated in

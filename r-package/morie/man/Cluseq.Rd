@@ -27,11 +27,11 @@ transitive closure rather than a set of cliques.  A threshold of zero
 leaves every distinct sequence on its own; a threshold at least as
 large as the diameter collapses everything into one cluster.
 }
-\references{
-Croucher et al. (2015), Nucleic Acids Research
-43(3):e15.
-}
 \examples{
 V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 Cluseq(V)
+}
+\references{
+Croucher et al. (2015), Nucleic Acids Research
+43(3):e15.
 }

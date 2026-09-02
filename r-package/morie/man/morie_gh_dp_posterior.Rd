@@ -8,7 +8,7 @@ morie_gh_dp_posterior(G0_A, alpha, n_in_A, n)
 }
 \arguments{
 \item{G0_A}{prior base-measure mass \eqn{G_0(A)} of the set, in
-\eqn{[0, 1]}}
+\eqn{\[0, 1\]}}
 
 \item{alpha}{Dirichlet-process precision (positive)}
 
@@ -30,11 +30,11 @@ observations falling in A, returns the mean and variance of the
 weighted mixture of prior and empirical mass; the variance is that of
 a beta with the updated precision \code{alpha + n}.
 }
+\examples{
+morie_gh_dp_posterior(G0_A = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5, n_in_A = c(1, 2, 3, 4, 5, 6, 7, 8), n = 5L)
+}
 \references{
 Ghosal, S. and van der Vaart, A. (2017).
 \emph{Fundamentals of Nonparametric Bayesian Inference}.
 Cambridge University Press.
-}
-\examples{
-morie_gh_dp_posterior(G0_A = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5, n_in_A = c(1, 2, 3, 4, 5, 6, 7, 8), n = 5L)
 }
