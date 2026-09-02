@@ -196,10 +196,12 @@ morie_tqlld_quantize_with_codebook <- function(x, codebook) {
 
 #' Compact alias \code{tqlld}
 #' @export
+#' @noRd
 morie_tqlld_tqlld <- morie_tqlld_lloyd_max_codebook
 
 #' Backward-compatible alias for the generated stub
 #' @export
+#' @noRd
 morie_tqlld_turboquant_lloyd_max_codebook <- morie_tqlld_lloyd_max_codebook
 
 #' One-line rationale mirroring the Python cheatsheet
