@@ -13,6 +13,5 @@
 The value of \code{s}, as built in the body.
 }
 \description{
-\subsection{Normalisation helpers (mirror morie.siu._normalize).}{
-}
+Normalisation helpers (mirror morie.siu._normalize).
 }

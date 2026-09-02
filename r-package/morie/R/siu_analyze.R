@@ -45,7 +45,6 @@ NULL
 #' .siu_an_load
 #'
 #' .siu_an_load -- accept a data frame, a path, or NULL (defaults).
-#' ---------------------------------------------------------------------------
 #'
 #' @param x Optional; may be \code{NULL}. A data frame; the body checks with \code{is.data.frame}.
 #' @return The value of \code{utils::read.csv}.
@@ -78,7 +77,6 @@ NULL
 #' .siu_an_rich -- thin RichResult constructor mirroring
 #' sprott_doob.R\'s .morie_siu_rich; reproduced here to keep this file
 #' self-contained.
-#' ---------------------------------------------------------------------------
 #'
 #' @param title Carried through into a list the body builds.
 #' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
@@ -113,7 +111,6 @@ NULL
 #' .siu_an_truthy
 #'
 #' Truthy / falsy counters tolerant of CSV-roundtripped booleans.
-#' ---------------------------------------------------------------------------
 #'
 #' @param v A logical; the body checks with \code{is.logical}.
 #' @return A numeric value.
@@ -521,7 +518,6 @@ morie_siu_mental_health_race_indicators <- function(data = NULL) {
 #' .siu_an_interval
 #'
 #' .siu_an_interval -- day-delta summary helper used by decision_timing.
-#' ---------------------------------------------------------------------------
 #'
 #' @param label Carried through into a list the body builds.
 #' @param a_iso Passed to \code{as.Date}.

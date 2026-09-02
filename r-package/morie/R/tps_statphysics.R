@@ -15,7 +15,6 @@
 #' available the routines fall back to a stop-stub explaining the gap.
 #'
 #' Functions
-#' ---------
 #'
 #' \itemize{
 #'   \item \code{\link{morie_tps_sdb_reaction_diffusion}} -- Short,

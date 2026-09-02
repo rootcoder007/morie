@@ -17,6 +17,5 @@
 The value of \code{list}.
 }
 \description{
-\subsection{.siu_an_interval -- day-delta summary helper used by decision_timing.}{
-}
+.siu_an_interval -- day-delta summary helper used by decision_timing.
 }
