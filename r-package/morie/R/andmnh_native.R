@@ -365,6 +365,7 @@ andrews_monahan_hac <- function(e, X = NULL, prewhiten = TRUE,
 
 #' Compact alias for andrews_monahan_hac
 #' @export
+#' @noRd
 andmnh <- andrews_monahan_hac
 
 # house entry point: the package exports one morie_<module>

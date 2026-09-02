@@ -82,10 +82,12 @@ morie_tqang_quantize_angles <- function(theta, bits = 4L) {
 
 #' Compact alias \code{tqang}
 #' @export
+#' @noRd
 morie_tqang_tqang <- morie_tqang_quantize_angles
 
 #' Backward-compatible alias for the generated stub
 #' @export
+#' @noRd
 morie_tqang_turboquant_angle_quantization <- morie_tqang_quantize_angles
 
 #' One-line rationale mirroring the Python cheatsheet
