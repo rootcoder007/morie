@@ -272,3 +272,7 @@ def cheatsheet():
     return ("qbcfgs: quantile-balanced score for forests. weightings "
             + ", ".join(WEIGHTS)
             + "; balancing weights normalised within propensity strata")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+qbcfscore = qb_cf_score

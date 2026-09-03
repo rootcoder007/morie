@@ -390,3 +390,7 @@ def ll_parser(grammar_, tokens, route="table"):
         "method": "Knuth (1971) top-down analysis with one token of "
                   "lookahead",
     })
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+llparser = ll_parser

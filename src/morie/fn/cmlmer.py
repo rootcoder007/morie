@@ -389,3 +389,7 @@ def cheatsheet():
     return ("cmlmer: compressed_lmm(y, M, K, clusters) -> compressed MLM "
             "genome scan with REML variance components (Zhang et al. 2010, "
             "Nature Genetics 42:355-360)")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+compressedlmm = compressed_lmm

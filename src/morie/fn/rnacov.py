@@ -326,3 +326,7 @@ def cheatsheet():
             + ", ".join(STRUCTURES)
             + "; mutual information in bits, conservation is not "
               "covariation")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+rnacovariance = rna_covariance

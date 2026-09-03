@@ -336,3 +336,7 @@ def cheatsheet():
     return ("rrblpr: rr_blup(y, M, lam) -> marker effects and breeding "
             "values from the mixed model equations, lambda by REML when "
             "None (Whittaker, Thompson & Denham 2000; Meuwissen et al. 2001)")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+rrblup = rr_blup

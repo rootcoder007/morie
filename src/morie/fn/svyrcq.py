@@ -139,3 +139,7 @@ def cheatsheet():
     return ("svyrcq: survey_quantile_regression(X, y, tau, weights) -> "
             "design-weighted quantile regression by MM (Koenker 2005, "
             "Quantile Regression, CUP; Lumley 2010, Complex Surveys)")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+survey_quantile_reg = survey_quantile_regression

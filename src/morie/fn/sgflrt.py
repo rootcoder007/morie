@@ -497,3 +497,7 @@ def cheatsheet():
     return ("sgflrt: spatial_glmm_fit(y, X, coords, family) -> spatial GLMM "
             "by Laplace, with the spatial random effect returned "
             "(Diggle, Tawn & Moyeed 1998; Breslow & Clayton 1993)")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+spatialglmmfit = spatial_glmm_fit

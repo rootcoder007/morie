@@ -180,3 +180,7 @@ def cheatsheet():
     return ("glmbay: bayesian_glm(X, y, family, prior_sd) -> posterior mode, "
             "Laplace covariance and log marginal likelihood (Gelman et al. "
             "2013, Bayesian Data Analysis 3rd ed., Ch. 16)")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+bayesianglm = bayesian_glm

@@ -120,3 +120,8 @@ def butina_clustering(fps, threshold=0.8, recount=False):
         "method": "Butina (1999) exclusion-sphere clustering at "
                   "Tanimoto >= %g" % float(threshold),
     })
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+butina_cluster = butina_clusters
+butinacluster = butina_clusters

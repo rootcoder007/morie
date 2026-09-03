@@ -362,3 +362,7 @@ def cheatsheet():
     return ("longrd: long-read consensus polishing. Needleman-Wunsch "
             "pileup with a column majority, or a progressive "
             "partial-order consensus; homopolymers reported run-length")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+longreadpolish = long_read_polish

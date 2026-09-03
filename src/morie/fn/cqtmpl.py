@@ -272,3 +272,8 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 composite_interval_mapping = scan
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+cim_qtl = cim
+cimqtl = cim

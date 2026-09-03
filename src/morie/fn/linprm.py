@@ -225,3 +225,7 @@ def linear_program(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
                    upper=None, method="auto", **kw):
     r"""Entry point: see :func:`solve_lp`."""
     return solve_lp(c, A_ub, b_ub, A_eq, b_eq, upper, method, **kw)
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+linear_programming = linear_program

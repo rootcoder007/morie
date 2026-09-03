@@ -405,3 +405,7 @@ def cheatsheet():
     return ("trupek: trust-region minimisation. subproblem = steihaug "
             "(truncated CG, the default) | cauchy | dogleg | exact "
             "(More-Sorensen by bisection).")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+trustregion = trust_region

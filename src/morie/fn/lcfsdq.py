@@ -300,3 +300,7 @@ lcfsdq = lc_first_sd_query
 def cheatsheet():
     return ("lcfsdq: first-order nearest-neighbour cluster query. "
             "metrics " + ", ".join(METRICS) + "; edge " + ", ".join(EDGE))
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+lcfirstsdquery = lc_first_sd_query
