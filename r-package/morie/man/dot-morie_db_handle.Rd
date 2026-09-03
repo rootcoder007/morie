@@ -20,6 +20,8 @@ See the file header for the source the module follows.
 source it follows.
 }
 \examples{
-res <- .morie_db_handle()
-res
+if (requireNamespace("DBI", quietly = TRUE)) {
+  res <- .morie_db_handle()
+  res
+}
 }

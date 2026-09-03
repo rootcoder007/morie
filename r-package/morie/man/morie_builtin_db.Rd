@@ -16,5 +16,7 @@ CCS, CSADS, CSUS, HealthInfobase, and CIHI datasets pre-loaded as
 SQLite tables.
 }
 \examples{
-morie_builtin_db()
+if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RPostgres", quietly = TRUE)) {
+  morie_builtin_db()
+}
 }

@@ -18,12 +18,14 @@ Character vector of identifiers.
 List key names in the morie keystore
 }
 \examples{
-if (morie_crypto_sodium_available()) {
-  path <- tempfile(fileext = ".keystore")
-  morie_crypto_keystore_create("pw", path = path)
-  morie_crypto_keystore_store("k1", as.raw(1:4), as.raw(5:8), "pw", path = path)
-  morie_crypto_keystore_store("k2", as.raw(1:4), as.raw(5:8), "pw", path = path)
-  print(morie_crypto_keystore_list("pw", path = path))
-  unlink(path)
+if (requireNamespace("sodium", quietly = TRUE)) {
+  if (morie_crypto_sodium_available()) {
+    path <- tempfile(fileext = ".keystore")
+    morie_crypto_keystore_create("pw", path = path)
+    morie_crypto_keystore_store("k1", as.raw(1:4), as.raw(5:8), "pw", path = path)
+    morie_crypto_keystore_store("k2", as.raw(1:4), as.raw(5:8), "pw", path = path)
+    print(morie_crypto_keystore_list("pw", path = path))
+    unlink(path)
+  }
 }
 }

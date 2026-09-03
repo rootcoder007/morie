@@ -45,7 +45,9 @@ are supplied AND the \pkg{dbscan} package is installed, points are
 coloured by DBSCAN cluster label.
 }
 \examples{
-df <- data.frame(LAT_WGS84 = 43.65 + rnorm(60, 0, 0.01), LONG_WGS84 = -79.4 + 
-    rnorm(60, 0, 0.01))
-morie_tps_render_points(df, category = "Synth")
+if (requireNamespace("dbscan", quietly = TRUE) && requireNamespace("ggplot2", quietly = TRUE)) {
+  df <- data.frame(LAT_WGS84 = 43.65 + rnorm(60, 0, 0.01), LONG_WGS84 = -79.4 + 
+      rnorm(60, 0, 0.01))
+  morie_tps_render_points(df, category = "Synth")
+}
 }

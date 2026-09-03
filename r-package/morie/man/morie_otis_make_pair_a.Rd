@@ -18,5 +18,7 @@ subsequent suicide-risk-alert occurrence, conditional on
 demographics and region?
 }
 \examples{
-morie_otis_make_pair_a(morie_otis_load())
+if (requireNamespace("readr", quietly = TRUE)) {
+  morie_otis_make_pair_a(morie_otis_load())
+}
 }
