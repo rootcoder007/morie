@@ -59,10 +59,87 @@ try:
     from morie.fn import _glm_core as sm
 except ImportError:
     sm = _MissingDep('sm')
-try:
-    from morie.fn._glm_core import formula as smf
-except ImportError:
-    smf = _MissingDep('smf')
+from morie.fn import _glm_core
+
+
+# ---------------------------------------------------------------------------
+# Native formula interface for weighted GLMs.
+#
+# survey.py used to call statsmodels' formula API (smf.glm). That dependency
+# is gone, so the formula is parsed here and handed to morie.fn._glm_core.glm,
+# which fits by IRLS and reports the sandwich standard errors. Weights are
+# ANALYTIC (variance-scaling) weights, the correct treatment for unequal
+# probability sampling: df_resid stays n - k rather than sum(w) - k.
+# ---------------------------------------------------------------------------
+
+
+def _formula_terms(formula):
+    """Split "y ~ x1 + x2" into ("y", ["x1", "x2"], intercept)."""
+    if "~" not in formula:
+        raise ValueError("formula must contain '~': %r" % formula)
+    lhs, rhs = formula.split("~", 1)
+    outcome = lhs.strip()
+    intercept = True
+    terms = []
+    for raw in rhs.split("+"):
+        t = raw.strip()
+        if not t:
+            continue
+        if t in ("1",):
+            continue
+        if t in ("0", "-1"):
+            intercept = False
+            continue
+        if t.startswith("-"):
+            stripped = t[1:].strip()
+            if stripped in ("1", "0"):
+                intercept = False
+                continue
+            raise ValueError("unsupported formula term: %r" % t)
+        terms.append(t)
+    if not outcome:
+        raise ValueError("formula has no outcome: %r" % formula)
+    return outcome, terms, intercept
+
+
+class _NativeGLMResult:
+    """The subset of the statsmodels result API that morie itself uses."""
+
+    def __init__(self, fit, names, nobs):
+        self._fit = fit
+        self.params = list(fit["coef"])
+        self.param_names = list(names)
+        self.bse = list(fit["se"])
+        self.tvalues = list(fit["statistic"])
+        self.pvalues = list(fit.get("p_value", fit.get("pvalues", [])))
+        self.df_resid = fit["df_residual"]
+        self.df_model = len(self.params) - 1
+        self.nobs = nobs
+        self.fittedvalues = fit.get("fitted")
+
+    def fit(self, *a, **k):          # statsmodels called model.fit()
+        return self
+
+    def summary(self):
+        rows = ["%-24s %12.6g %12.6g" % (n, b, se)
+                for n, b, se in zip(self.param_names, self.params, self.bse)]
+        return "\n".join(["%-24s %12s %12s" % ("term", "estimate", "std.error")]
+                          + rows)
+
+    def __getitem__(self, k):
+        return self._fit[k]
+
+
+def _native_glm_from_formula(formula, data, family, weights=None):
+    outcome, terms, intercept = _formula_terms(formula)
+    y = [float(v) for v in data[outcome]]
+    cols = [[float(v) for v in data[t]] for t in terms]
+    X = [[c[i] for c in cols] for i in range(len(y))]
+    fam = family if isinstance(family, str) else getattr(family, "name", "gaussian")
+    w = None if weights is None else [float(v) for v in weights]
+    fit = _glm_core.glm(y, X, family=fam, add_intercept=intercept, weights=w)
+    names = (["(Intercept)"] if intercept else []) + list(terms)
+    return _NativeGLMResult(fit, names, len(y))
 
 
 class SurveyDesign:
@@ -134,8 +211,8 @@ class SurveyDesign:
         # which is the appropriate treatment for unequal-probability sampling.
         # Do NOT use freq_weights, which expands the dataset by the weight
         # value and thus inflates n_effective and deflates standard errors.
-        model = smf.glm(formula=formula, data=self.data, family=family, var_weights=self.weights)
-        return model.fit()
+        return _native_glm_from_formula(formula, self.data, family,
+                                        weights=self.weights)
 
 
 # ===========================================================================
@@ -652,7 +729,7 @@ def complex_survey_glm(
     if np.any(w.values <= 0):
         raise ValueError("All survey weights must be > 0.")
 
-    model = smf.glm(formula=formula, data=df, family=family_obj, var_weights=w)
+    model = _native_glm_from_formula(formula, df, family_obj, weights=w)
 
     if cluster_col is not None:
         groups = df[cluster_col].values

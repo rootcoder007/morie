@@ -59,6 +59,19 @@ class Index(list):
         return list(self)
 
 
+def _pos(j):
+    """Positional index from the array core, which stores every value as a
+    float (np.where marks the result _is_index but keeps float storage).
+    Accept an integral float; reject a genuinely fractional one."""
+    if isinstance(j, bool):
+        return j
+    if isinstance(j, float):
+        if j != int(j):
+            raise IndexError("non-integer positional index: %r" % j)
+        return int(j)
+    return j
+
+
 class Series:
     def __init__(self, data=None, index=None, name=None, dtype=None):
         if isinstance(data, Series):
@@ -254,7 +267,16 @@ class Series:
     def _binop(self, other, fn):
         if isinstance(other, Series):
             other = other._data
+        # A native array (marr/oarr) is a sequence, not a scalar: without this
+        # it was broadcast whole against each element, so 
+        # produced a column OF ARRAYS instead of an elementwise sum.
+        if not isinstance(other, (str, bytes)) and hasattr(other, "__len__")                 and hasattr(other, "__iter__") and not isinstance(other, dict):
+            other = list(other)
         if isinstance(other, (list, tuple)):
+            if len(other) != len(self._data):
+                raise ValueError(
+                    "length mismatch in Series arithmetic: %d vs %d"
+                    % (len(self._data), len(other)))
             d = [fn(a, b) for a, b in zip(self._data, other)]
         else:
             d = [fn(a, other) for a in self._data]
@@ -340,7 +362,10 @@ class Series:
         return _math.fsum(self._clean())
 
     def count(self):
-        return len(self._clean())
+        # pandas counts non-missing values of any dtype; going through
+        # _clean() coerced to float and blew up on identifier columns.
+        return sum(0 if (v is None or (isinstance(v, float) and _isnan(v)))
+                   else 1 for v in self._data)
 
     def mean(self):
         c = self._clean()
@@ -563,10 +588,22 @@ class Series:
         # use it.
         if drop:
             return Series(list(self._data), name=self.name)
-        idx_name = getattr(self, "index_name", None) or "index"
+        idx = list(self.index)
         val_name = name if name is not None else (self.name or 0)
-        return DataFrame({idx_name: list(self.index),
-                          val_name: list(self._data)})
+        # A multi-key groupby leaves tuples in the index; pandas expands them
+        # into one column per key, and callers rely on that (otis.rplace does
+        # groupby([a, b])[c].nunique().reset_index() then names 3 columns).
+        if idx and all(isinstance(k, tuple) for k in idx):
+            width = len(idx[0])
+            if all(len(k) == width for k in idx):
+                names = getattr(self, "index_names", None)
+                if not names or len(names) != width:
+                    names = ["level_%d" % i for i in range(width)]
+                cols = {names[i]: [k[i] for k in idx] for i in range(width)}
+                cols[val_name] = list(self._data)
+                return DataFrame(cols)
+        idx_name = getattr(self, "index_name", None) or "index"
+        return DataFrame({idx_name: idx, val_name: list(self._data)})
 
     def rank(self, ascending=True):
         idx = sorted(range(len(self._data)),
@@ -805,7 +842,12 @@ class DataFrame:
 
     @columns.setter
     def columns(self, names):
-        self._cols = dict(zip(list(names), self._cols.values()))
+        names = list(names)
+        if len(names) != len(self._cols):
+            raise ValueError(
+                "length mismatch: frame has %d columns, got %d names"
+                % (len(self._cols), len(names)))
+        self._cols = dict(zip(names, self._cols.values()))
 
     @property
     def shape(self):
@@ -973,6 +1015,41 @@ class DataFrame:
                    for c, v in self._cols.items()}
         return DataFrame(out, index=list(self.index))
 
+    def _cmp_scalar(self, other, fn):
+        return DataFrame({c: [fn(v, other) for v in self._cols[c]]
+                          for c in self.columns}, index=list(self.index))
+
+    def __gt__(self, o):
+        return self._cmp_scalar(o, lambda a, b: a > b)
+
+    def __ge__(self, o):
+        return self._cmp_scalar(o, lambda a, b: a >= b)
+
+    def __lt__(self, o):
+        return self._cmp_scalar(o, lambda a, b: a < b)
+
+    def __le__(self, o):
+        return self._cmp_scalar(o, lambda a, b: a <= b)
+
+    def div(self, other, axis=0):
+        """Divide each row (axis=0) or column by , which may be a
+        Series aligned on the index or a scalar."""
+        if isinstance(other, Series):
+            denom = list(other._data)
+            return DataFrame(
+                {c: [(self._cols[c][i] / denom[i]) if denom[i] else _NAN
+                     for i in range(self.shape[0])] for c in self.columns},
+                index=list(self.index))
+        return DataFrame({c: [(v / other) if other else _NAN
+                              for v in self._cols[c]] for c in self.columns},
+                         index=list(self.index))
+
+    def __invert__(self):
+        # Elementwise logical NOT over every column, so (~df.isna()) works the
+        # way it does for a Series. Without this, unary ~ raised TypeError.
+        return DataFrame({c: [not bool(v) for v in self._cols[c]]
+                          for c in self.columns}, index=list(self.index))
+
     def isna(self):
         return DataFrame({c: [_isnan(v) for v in vals]
                           for c, vals in self._cols.items()},
@@ -1038,8 +1115,20 @@ class DataFrame:
     def reset_index(self, drop=False):
         out = DataFrame({c: list(v) for c, v in self._cols.items()})
         if not drop:
+            idx = list(self.index)
+            # a multi-key groupby leaves tuples in the index; expand them into
+            # one column per key, as pandas does
+            if idx and all(isinstance(k, tuple) for k in idx) \
+                    and len({len(k) for k in idx}) == 1:
+                width = len(idx[0])
+                names = getattr(self, "index_names", None)
+                if not names or len(names) != width:
+                    names = ["level_%d" % i for i in range(width)]
+                keycols = {names[i]: [k[i] for k in idx] for i in range(width)}
+                out._cols = {**keycols, **out._cols}
+                return out
             name = getattr(self, "index_name", None) or "index"
-            out._cols = {name: list(self.index), **out._cols}
+            out._cols = {name: idx, **out._cols}
         return out
 
     def set_index(self, col):
@@ -1112,11 +1201,31 @@ class DataFrame:
             ix.append(c)
         return Series(out, index=ix)
 
-    def sum(self, numeric_only=True):
+    def sum(self, numeric_only=True, axis=0):
+        if axis in (1, "columns"):
+            return self._row_reduce(lambda vals: _math.fsum(vals))
         return self._reduce(lambda s: s.sum(), numeric_only)
 
-    def mean(self, numeric_only=True):
+    def mean(self, numeric_only=True, axis=0):
+        if axis in (1, "columns"):
+            return self._row_reduce(
+                lambda vals: _math.fsum(vals) / len(vals) if vals else _NAN)
         return self._reduce(lambda s: s.mean(), numeric_only)
+
+    def _row_reduce(self, fn):
+        """Reduce across columns for each row (pandas axis=1)."""
+        # booleans count as 1/0 here: (df > 0).sum(axis=1) is the idiom for
+        # "how many columns satisfy the predicate", and excluding bool made it
+        # return 0 for every row
+        cols = [c for c in self._cols
+                if all(isinstance(v, (int, float, bool)) for v in self._cols[c])]
+        out = []
+        for i in range(self.shape[0]):
+            vals = [float(self._cols[c][i]) for c in cols
+                    if not (isinstance(self._cols[c][i], float)
+                            and _isnan(self._cols[c][i]))]
+            out.append(fn(vals))
+        return Series(out, index=list(self.index))
 
     def std(self, ddof=1, numeric_only=True):
         return self._reduce(lambda s: s.std(ddof=ddof), numeric_only)
@@ -1311,7 +1420,8 @@ class DataFrame:
                           for i in range(len(rows))},
                          index=list(self._cols.keys()))
 
-    def pivot_table(self, values, index, columns, aggfunc="mean"):
+    def pivot_table(self, values, index, columns, aggfunc="mean",
+                    fill_value=None, dropna=True, margins=False):
         gb = {}
         for i in range(self.shape[0]):
             key = (self._cols[index][i], self._cols[columns][i])
@@ -1321,8 +1431,11 @@ class DataFrame:
         agg = {"mean": lambda v: _math.fsum(v) / len(v),
                "sum": _math.fsum, "count": len,
                "min": min, "max": max}[aggfunc]
+        # fill_value replaces empty cells, as in pandas; without it the caller
+        # got a TypeError for passing a keyword this native version lacked.
+        empty = _NAN if fill_value is None else fill_value
         return DataFrame(
-            {c: [agg(gb[(r, c)]) if (r, c) in gb else _NAN
+            {c: [agg(gb[(r, c)]) if (r, c) in gb else empty
                  for r in rows] for c in cols}, index=rows)
 
     # ---- io / export
@@ -1400,6 +1513,8 @@ class _ILoc:
         if isinstance(key, tuple):
             rk, ck = key
             cols = list(df._cols)
+            ck = _pos(ck)
+            rk = _pos(rk) if not isinstance(rk, (slice, list, tuple)) else rk
             if isinstance(ck, int):
                 sel = cols[ck]
                 sub = df.iloc[rk] if not isinstance(rk, int) else None
@@ -1407,7 +1522,7 @@ class _ILoc:
                     return df._cols[sel][rk]
                 return sub[sel]
             sel = cols[ck] if isinstance(ck, slice) else \
-                [cols[j] for j in ck]
+                [cols[_pos(j)] for j in ck]
             base = df[sel if isinstance(sel, list) else list(sel)]
             return base.iloc[rk]
         if isinstance(key, int):
@@ -1546,6 +1661,8 @@ class GroupBy:
             yield k, self._df._take(self._groups[key])
 
     def __getitem__(self, col):
+        if isinstance(col, (list, tuple)):
+            return _GroupByFrame(self, list(col))
         return _GroupBySeries(self, col)
 
     @property
@@ -1560,9 +1677,16 @@ class GroupBy:
 
     def size(self):
         keys = self._keys()
-        return Series([len(self._groups[k]) for k in keys],
-                      index=[k[0] if len(self._by) == 1 else k
-                             for k in keys])
+        out = Series([len(self._groups[k]) for k in keys],
+                     index=[k[0] if len(self._by) == 1 else k
+                            for k in keys])
+        # keep the grouping names so reset_index() labels the key column(s)
+        # the way pandas does, instead of calling it "index"
+        if len(self._by) == 1:
+            out.index_name = self._by[0]
+        else:
+            out.index_names = list(self._by)
+        return out
 
     def ngroups(self):
         return len(self._groups)
@@ -1750,6 +1874,52 @@ class _SeriesOwnGroupBy:
                       name=self._s.name)
 
 
+class _GroupByFrame:
+    """df.groupby(keys)[[c1, c2]] -- aggregate several columns at once and
+    return a frame, as pandas does. Selecting a list used to be passed on as
+    a single column name and died with "unhashable type: 'list'"."""
+
+    def __init__(self, gb, cols):
+        self._gb = gb
+        self._cols_sel = cols
+
+    def _agg(self, fn):
+        gb = self._gb
+        keys = sorted(gb._groups)
+        data = {}
+        for c in self._cols_sel:
+            data[c] = [fn(Series([gb._df._cols[c][i] for i in gb._groups[k]]))
+                       for k in keys]
+        idx = [k[0] if len(gb._by) == 1 else k for k in keys]
+        out = DataFrame(data, index=idx)
+        if len(gb._by) == 1:
+            out.index_name = gb._by[0]
+        else:
+            out.index_names = list(gb._by)
+        return out
+
+    def sum(self):
+        return self._agg(lambda s: s.sum())
+
+    def mean(self):
+        return self._agg(lambda s: s.mean())
+
+    def min(self):
+        return self._agg(lambda s: s.min())
+
+    def max(self):
+        return self._agg(lambda s: s.max())
+
+    def count(self):
+        return self._agg(lambda s: len(s._data))
+
+    def nunique(self):
+        return self._agg(lambda s: s.nunique())
+
+    def std(self, ddof=1):
+        return self._agg(lambda s: s.std(ddof=ddof))
+
+
 class _GroupBySeries:
     def __init__(self, gb, col):
         self._gb = gb
@@ -1760,8 +1930,15 @@ class _GroupBySeries:
         keys = sorted(gb._groups)
         vals = [fn(Series([gb._df._cols[self._col][i]
                            for i in gb._groups[k]])) for k in keys]
-        return Series(vals, index=[k[0] if len(gb._by) == 1 else k
-                                   for k in keys], name=self._col)
+        out = Series(vals, index=[k[0] if len(gb._by) == 1 else k
+                                  for k in keys], name=self._col)
+        # carry the grouping column names so reset_index() can label the
+        # expanded key columns the way pandas does
+        if len(gb._by) == 1:
+            out.index_name = gb._by[0]
+        else:
+            out.index_names = list(gb._by)
+        return out
 
     def mean(self):
         return self._agg(lambda s: s.mean())
@@ -2458,9 +2635,10 @@ def to_parquet(df, path, compression="snappy"):
 
 
 def pivot_table(data, values=None, index=None, columns=None,
-                aggfunc="mean"):
-    return data.pivot_table(values=values, index=index,
-                            columns=columns, aggfunc=aggfunc)
+                aggfunc="mean", fill_value=None, dropna=True, margins=False):
+    return data.pivot_table(values=values, index=index, columns=columns,
+                            aggfunc=aggfunc, fill_value=fill_value,
+                            dropna=dropna, margins=margins)
 
 
 class MultiIndex:

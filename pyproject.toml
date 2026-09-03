@@ -67,6 +67,17 @@ dependencies = [
     "beautifulsoup4>=4.12",
 ]
 
+[project.optional-dependencies]
+# The CI matrix installs ".[test,interactive]"; without these tables pip
+# silently installs no extra at all, which is why pytest was missing.
+test = [
+  "pytest>=8.0",
+  "numpy>=1.26",
+]
+interactive = [
+  "textual>=0.60",
+]
+
 [project.urls]
 Homepage      = "https://rootcoder007.github.io/morie/"
 Documentation = "https://rootcoder007.github.io/morie/"
