@@ -224,7 +224,7 @@ viterbi_segment <- function(text, piece_logp, add_prefix = TRUE) {
   back <- vector("list", n + 1L)
   best[1L] <- 0
   for (i in 2:(n + 1L)) {
-    for (L in 1:min(maxlen, i - 1L)) {
+    for (L in seq_len(min(maxlen, i - 1L))) {
       piece <- substr(s, i - L, i - 1L)
       lp <- piece_logp[[piece]]
       if (is.null(lp)) next
