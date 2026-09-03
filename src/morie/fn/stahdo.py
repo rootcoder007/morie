@@ -318,3 +318,7 @@ def stahel_donoho_outlyingness(X, directions="subsample",
                                cutoff=None):
     r"""Entry point: see :func:`stahel_donoho`."""
     return stahel_donoho(X, directions, n_directions, seed, cutoff)
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+staheldonoho = stahel_donoho

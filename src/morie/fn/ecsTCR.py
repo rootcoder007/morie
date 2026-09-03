@@ -387,3 +387,7 @@ def cheatsheet():
             "route = parameters | gregory | emulate; "
             "solver = analytic | rk4 | euler. F_2xCO2 defaults to AR6's "
             "3.93 W m-2; Charney (1979) put ECS at 1.5-4.5 K.")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+ecstcr = ecsTCR

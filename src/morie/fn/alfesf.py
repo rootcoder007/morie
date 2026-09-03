@@ -365,3 +365,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 esmfold_lm_only = esmfold_confidence
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+esmfoldlmonly = esmfold_lm_only

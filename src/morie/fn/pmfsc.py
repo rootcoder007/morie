@@ -340,3 +340,7 @@ def cheatsheet():
             + ", ".join(REFERENCES) + "; corrections "
             + ", ".join(CORRECTIONS)
             + "; the potential is derived, not shipped")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+pmfpotential = pmf_potential

@@ -250,3 +250,7 @@ def cheatsheet():
     return ("funCA: functional_cca(X, Y, p, q) -> canonical correlations "
             "between two sets of curves, restricted to the leading FPCs "
             "(He, Muller & Wang 2003, J. Multivar. Anal. 85(1), 54-77)")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+functionalcca = functional_cca

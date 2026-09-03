@@ -239,3 +239,7 @@ def cheatsheet():
     return ("crsfst: cross-fitted random survival forest. K-fold "
             "out-of-fold prediction, effect on restricted mean survival "
             "time up to tau")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+crsforest = crs_forest

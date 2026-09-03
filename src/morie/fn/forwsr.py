@@ -371,3 +371,7 @@ def forward_search_regression(X, y, start=None, n_draw=500, seed=1,
         "method": "forward search (Atkinson & Riani 2000) from a "
                   "least-median-of-squares start",
     })
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+forwardsearch = forward_search

@@ -255,3 +255,7 @@ def cheatsheet():
     return ("prsclm: prs_cs_clump(sumstats, ld_ref, p_threshold) -> LD "
             "clumping plus thresholded polygenic scores (Purcell et al. "
             "2007 PLINK; Choi & O'Reilly 2019 PRSice-2)")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+prscsclump = prs_cs_clump

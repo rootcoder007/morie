@@ -274,3 +274,7 @@ def cheatsheet():
 
 # compact alias per ledger/NAMING.md
 rna_velocity = dynamical_fit
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+rnavelocity = rna_velocity

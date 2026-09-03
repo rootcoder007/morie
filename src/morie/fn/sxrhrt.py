@@ -345,3 +345,7 @@ def cheatsheet():
     return ("sxrhrt: sex_specific_h2(y, sex, K) -> per-sex heritability and "
             "the cross-sex genetic correlation by bivariate REML (Yang et "
             "al. 2011 GCTA; Lee et al. 2012)")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+sexspecifich2 = sex_specific_h2

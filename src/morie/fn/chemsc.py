@@ -512,3 +512,7 @@ def cheatsheet():
             + ", ".join(SMOOTHINGS)
             + "; coefficients hbond -3.34, metal -6.03, lipo -0.117, "
               "rot 2.56 (CCDC GOLD defaults)")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+chemscoredock = chemscore_dock
