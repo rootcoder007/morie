@@ -14,3 +14,7 @@ A step of the psymet implementation. Called by \code{.psych_or_stop}.
 See the file header for the source the module follows.
 it follows.
 }
+\examples{
+res <- .has_psych()
+res
+}

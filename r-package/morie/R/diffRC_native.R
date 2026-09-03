@@ -175,6 +175,9 @@ denoise <- function(x_t, model, schedule, t_start = NULL) {
 #'
 #' @return The cheat sheet text, invisibly.
 #' @export
+#' @examples
+#' res <- .diffRC_cheatsheet()
+#' res
 .diffRC_cheatsheet <- function() {
   paste("diffRC: GAN recommenders are unstable and VAE ones trade",
         "representation for tractability, so use diffusion -- but",

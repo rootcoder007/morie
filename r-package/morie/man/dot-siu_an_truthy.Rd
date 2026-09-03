@@ -15,3 +15,8 @@ A numeric value.
 \description{
 Truthy / falsy counters tolerant of CSV-roundtripped booleans.
 }
+\examples{
+x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+res <- .siu_an_truthy(v = x)
+res
+}

@@ -12,7 +12,8 @@ NULL
 
 #' .sim_result
 #'
-#' A step of the fairness_simulation implementation. Called by \code{morie_fairness_noisy_or_detection}.
+#' A step of the fairness_simulation implementation. Called by
+#' \code{morie_fairness_noisy_or_detection}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -124,7 +125,8 @@ morie_fairness_noisy_or_detection <- function(crime_xy, officer_xy,
 #' The \code{bias} input is the ground truth the audits should recover.
 #'
 #' @param n Number of records.
-#' @param groups Character vector of group labels (the first entry is treated as the reference group).
+#' @param groups Character vector of group labels (the first entry is treated as the
+#' reference group).
 #' @param group_props Optional sampling proportions.
 #' @param n_areas Number of areas (>= number of groups).
 #' @param base_rate Reference-group favourable-outcome rate in 0--1.

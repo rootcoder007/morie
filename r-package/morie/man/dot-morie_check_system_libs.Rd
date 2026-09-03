@@ -14,3 +14,7 @@ Uses configure-time flags written into DESCRIPTION at install (Phase
 3JJJ1/2: MORIE_HAVE_SODIUM / MORIE_HAVE_LIBOQS), with library-load
 fallback for libcurl (Imports R-side).
 }
+\examples{
+res <- .morie_check_system_libs()
+res
+}

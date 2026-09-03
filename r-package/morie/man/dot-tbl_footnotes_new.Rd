@@ -14,3 +14,7 @@ A step of the tables_pub implementation. Called by \code{anova_table}, \code{cor
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .tbl_footnotes_new()
+res
+}

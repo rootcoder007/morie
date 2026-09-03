@@ -14,3 +14,7 @@ A step of the survey implementation. Called by \code{morie_survey_glm}, \code{mo
 See the file header for the source the module follows.
 it follows.
 }
+\examples{
+res <- .req_survey()
+res
+}

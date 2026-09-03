@@ -28,5 +28,7 @@ covariate.
 Correlates each covariate with rank-transformed event times.
 }
 \examples{
-ph_assumption_test(survival_times = c(1, 2, 3, 4, 5, 6, 7, 8), event_indicator = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
+ph_assumption_test(survival_times = c(1, 2, 3, 4, 5, 6, 7, 8),
+  event_indicator = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2),
+  covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

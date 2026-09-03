@@ -19,3 +19,7 @@ A step of the synth_otis implementation. Called by \code{morie_synth_otis}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .morie_otis_b01_panel()
+res
+}

@@ -17,3 +17,8 @@ A step of the statistics implementation. Called by \code{paired_ttest}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+g <- c(0L, 1L, 0L, 1L, 1L, 0L, 1L, 0L)
+res <- .cohens_d_paired(d = g)
+res
+}

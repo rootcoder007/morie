@@ -14,3 +14,7 @@ A step of the install_extras implementation. Called by \code{morie_install_extra
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+res <- .morie_get_suggests()
+res
+}

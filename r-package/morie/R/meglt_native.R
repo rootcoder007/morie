@@ -33,6 +33,10 @@
 #' @param A A matrix; passed to \code{nrow}.
 #' @return A list with \code{u}, \code{d}, \code{vt}.
 #' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' res <- .meglt_svd(A = A)
+#' res
 .meglt_svd <- function(A) {
   if (is.list(A)) A <- do.call(rbind, lapply(A, as.numeric))
   # nv = 0 threw the right factor away, so the SVT shrinkage had no V
@@ -125,7 +129,9 @@ sample_bound <- function(n, r, C = 1.0, exponent = 1.2) {
 #' @param step Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1.9}.
 #' @param iters Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200L}.
 #' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-06}.
-#' @return A list with \code{estimate}, \code{X}, \code{residual_history}, \code{final_residual}, \code{tau}, \code{n_observed}, \code{fraction_observed}, \code{nuclear_norm}, \code{method}.
+#' @return A list with \code{estimate}, \code{X}, \code{residual_history},
+#' \code{final_residual}, \code{tau}, \code{n_observed}, \code{fraction_observed},
+#' \code{nuclear_norm}, \code{method}.
 #' @export
 svt <- function(M, observed, tau = NULL, step = 1.9, iters = 200L,
                 tol = 1e-6) {
@@ -202,6 +208,9 @@ matrix_completion_low_rank <- svt
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .meglt_cheatsheet()
+#' res
 .meglt_cheatsheet <- function() {
   paste("meglt: most low-rank matrices are recovered EXACTLY from ",
         "m >= C n^1.2 r log n sampled entries -- 1.25 covers all ",
@@ -225,7 +234,9 @@ matrix_completion_low_rank <- svt
 #' @param step Passed to \code{svt}. Defaults to \code{1.9}.
 #' @param iters Passed to \code{svt}. Defaults to \code{200L}.
 #' @param tol Passed to \code{svt}. Defaults to \code{1e-06}.
-#' @return A list with \code{estimate}, \code{X}, \code{residual_history}, \code{final_residual}, \code{tau}, \code{n_observed}, \code{nuclear_norm}, \code{relative_error}, \code{method}.
+#' @return A list with \code{estimate}, \code{X}, \code{residual_history},
+#' \code{final_residual}, \code{tau}, \code{n_observed}, \code{nuclear_norm},
+#' \code{relative_error}, \code{method}.
 #' @export
 morie_meglt <- function(M, observed, tau = NULL, step = 1.9, iters = 200L,
                         tol = 1e-6) {

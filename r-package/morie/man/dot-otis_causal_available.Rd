@@ -14,3 +14,7 @@ A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyz
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+res <- .otis_causal_available()
+res
+}

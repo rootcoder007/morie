@@ -115,6 +115,10 @@ NULL
 #' @param v A logical; the body checks with \code{is.logical}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .siu_an_truthy(v = x)
+#' res
 .siu_an_truthy <- function(v) {
   if (is.logical(v)) return(sum(v %in% TRUE, na.rm = TRUE))
   s <- tolower(trimws(as.character(v)))
@@ -123,13 +127,18 @@ NULL
 
 #' .siu_an_falsy
 #'
-#' A step of the siu_analyze implementation. Called by \code{morie_siu_by_police_service}, \code{morie_siu_by_year}.
+#' A step of the siu_analyze implementation. Called by
+#' \code{morie_siu_by_police_service}, \code{morie_siu_by_year}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param v A logical; the body checks with \code{is.logical}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .siu_an_falsy(v = x)
+#' res
 .siu_an_falsy <- function(v) {
   if (is.logical(v)) return(sum(v %in% FALSE, na.rm = TRUE))
   s <- tolower(trimws(as.character(v)))
@@ -696,7 +705,8 @@ morie_siu_charges_by_year_chi2 <- function(data = NULL) {
 #'   charges_recommended = rep(c(TRUE, FALSE), each = 4),
 #'   date_of_incident_iso = rep(c("2022-01-05", "2023-02-18", "2024-03-01", "2024-11-11"), 2),
 #'   date_siu_notified_iso = rep(c("2022-01-06", "2023-02-19", "2024-03-02", "2024-11-12"), 2),
-#'   date_of_director_decision_iso = rep(c("2022-08-01", "2023-09-10", "2024-09-01", "2025-02-14"), 2),
+#'   date_of_director_decision_iso = rep(c("2022-08-01", "2023-09-10", "2024-09-01",
+#' "2025-02-14"), 2),
 #'   sex_gender_affected = rep(c("Male", "Female"), 4),
 #'   age_affected = c("34", "27", "55", "19", "42", "31", "48", "29"),
 #'   mental_health_or_race_indications = rep(c("mental health; Indigenous", ""), 4))

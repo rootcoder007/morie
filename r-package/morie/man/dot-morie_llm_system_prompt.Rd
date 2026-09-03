@@ -17,3 +17,7 @@ A step of the llm implementation. Called by \code{.morie_llm_messages}.
 See the file header for the source the module follows.
 follows.
 }
+\examples{
+res <- .morie_llm_system_prompt()
+res
+}

@@ -249,7 +249,9 @@ mistr_grouped_query_attention <- function(Q, K, V, n_heads, n_kv_heads,
 #' @param norm1 Optional; may be \code{NULL}. Passed to \code{mistr_rms_norm}.
 #' @param norm2 Passed to \code{mistr_rms_norm}.
 #' @param base Passed to \code{mistr_grouped_query_attention}. Defaults to \code{10000}.
-#' @return A list with \code{estimate}, \code{output}, \code{attention_mask}, \code{L}, \code{d}, \code{n_heads}, \code{n_kv_heads}, \code{window}, \code{kv_cache_entries}, \code{method}.
+#' @return A list with \code{estimate}, \code{output}, \code{attention_mask}, \code{L},
+#' \code{d}, \code{n_heads}, \code{n_kv_heads}, \code{window}, \code{kv_cache_entries},
+#' \code{method}.
 #' @export
 mistr_mistral_block <- function(X, Wq, Wk, Wv, Wo, W1, W2, W3,
                                 n_heads, n_kv_heads, window,

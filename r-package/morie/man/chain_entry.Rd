@@ -20,6 +20,8 @@ A list with \code{hash}, \code{keyed}, \code{note}.
 }
 \keyword{internal}
 \examples{
-e1 <- chain_entry(charToRaw("genesis"), "first record")
-c(e1$keyed, length(e1$hash) == 32L)
+if (morie_crypto_sodium_available()) {
+  e1 <- chain_entry(charToRaw("genesis"), "first record")
+  c(e1$keyed, length(e1$hash) == 32L)
+}
 }

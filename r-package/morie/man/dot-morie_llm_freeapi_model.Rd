@@ -14,3 +14,7 @@ A step of the llm implementation. Called by \code{.morie_llm_freeapi_completion}
 See the file header for the source the module follows.
 follows.
 }
+\examples{
+res <- .morie_llm_freeapi_model()
+res
+}

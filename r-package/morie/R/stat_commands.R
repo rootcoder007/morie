@@ -119,7 +119,8 @@ stat_command <- function(name, category, usage, description,
 #' @return The command name, invisibly.
 #' @export
 #' @examples
-#' cmd <- stat_command("test_bridge_throw", "T", "u", "d", handler_repl = function(...) stop("boom"))
+#' cmd <- stat_command("test_bridge_throw", "T", "u", "d", handler_repl = function(...)
+#' stop("boom"))
 #' register_stat_command(cmd)
 register_stat_command <- function(cmd) {
   if (!inherits(cmd, "morie_stat_command")) {
@@ -271,6 +272,9 @@ clear_stat_commands <- function() {
 #'
 #' @return Invisibly,the value of \code{length}.
 #' @export
+#' @examples
+#' res <- .morie_seed_stat_commands()
+#' res
 .morie_seed_stat_commands <- function() {
   seeds <- list(
     list(

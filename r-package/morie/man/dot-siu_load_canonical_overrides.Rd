@@ -18,3 +18,7 @@ record their own corrections without touching the package source.
 Maintainer-confirmed corrections get promoted into the shipped table;
 user-side corrections stay local until then.
 }
+\examples{
+res <- .siu_load_canonical_overrides()
+res
+}

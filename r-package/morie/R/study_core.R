@@ -1,6 +1,9 @@
 #' .na_omit_cols
 #'
-#' A step of the study_core implementation. Called by \code{.run_causal_estimators_module_internal}, \code{.run_ebac_gender_smote_sensitivity_module_internal}, \code{.run_logistic_models_module_internal} and 3 others in the module.
+#' A step of the study_core implementation. Called by
+#' \code{.run_causal_estimators_module_internal},
+#' \code{.run_ebac_gender_smote_sensitivity_module_internal},
+#' \code{.run_logistic_models_module_internal} and 3 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -47,7 +50,9 @@
 #' Reformulate() with degenerate-term protection; intercept-only on
 #' total loss
 #'
-#' A step of the study_core implementation. Called by \code{.run_causal_estimators_module_internal}, \code{.run_ebac_core_module_internal}, \code{.run_regression_models_module_internal} and 1 others in the module.
+#' A step of the study_core implementation. Called by
+#' \code{.run_causal_estimators_module_internal}, \code{.run_ebac_core_module_internal},
+#' \code{.run_regression_models_module_internal} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -64,7 +69,9 @@
 
 #' .safe_divide
 #'
-#' A step of the study_core implementation. Called by \code{.binary_ci}, \code{.continuous_power_required_n}, \code{.run_ebac_gender_smote_sensitivity_module_internal} and 3 others in the module.
+#' A step of the study_core implementation. Called by \code{.binary_ci},
+#' \code{.continuous_power_required_n},
+#' \code{.run_ebac_gender_smote_sensitivity_module_internal} and 3 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -81,7 +88,9 @@
 
 #' .wald_ci
 #'
-#' A step of the study_core implementation. Called by \code{.binary_ci}, \code{.run_propensity_scores_module_internal}, \code{.weighted_binary_estimate} and 7 others in the module.
+#' A step of the study_core implementation. Called by \code{.binary_ci},
+#' \code{.run_propensity_scores_module_internal}, \code{.weighted_binary_estimate} and 7
+#' others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -98,7 +107,8 @@
 
 #' .binary_ci
 #'
-#' A step of the study_core implementation. Called by \code{.run_descriptive_statistics_module_internal}.
+#' A step of the study_core implementation. Called by
+#' \code{.run_descriptive_statistics_module_internal}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -115,7 +125,10 @@
 
 #' .weighted_binary_estimate
 #'
-#' A step of the study_core implementation. Called by \code{.run_descriptive_statistics_module_internal}, \code{.run_ebac_core_module_internal}, \code{.run_ebac_integrations_module_internal} and 2 others in the module.
+#' A step of the study_core implementation. Called by
+#' \code{.run_descriptive_statistics_module_internal},
+#' \code{.run_ebac_core_module_internal}, \code{.run_ebac_integrations_module_internal}
+#' and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -123,6 +136,10 @@
 #' @param w A vector; indexed elementwise.
 #' @return A list with \code{p}, \code{se}, \code{ci}, \code{n}, \code{n_eff}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .weighted_binary_estimate(x = x, w = x)
+#' res
 .weighted_binary_estimate <- function(x, w) {
   keep <- !(is.na(x) | is.na(w))
   x <- as.numeric(x[keep])
@@ -139,20 +156,26 @@
 
 #' .clip_exp
 #'
-#' A step of the study_core implementation. Called by \code{.or_table}, \code{.run_regression_models_module_internal}.
+#' A step of the study_core implementation. Called by \code{.or_table},
+#' \code{.run_regression_models_module_internal}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .clip_exp(x = x)
+#' res
 .clip_exp <- function(x) {
   exp(pmin(pmax(as.numeric(x), -700), 700))
 }
 
 #' .safe_confint
 #'
-#' A step of the study_core implementation. Called by \code{.linear_coef_table}, \code{.or_table}, \code{.run_regression_models_module_internal}.
+#' A step of the study_core implementation. Called by \code{.linear_coef_table},
+#' \code{.or_table}, \code{.run_regression_models_module_internal}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -169,7 +192,10 @@
 
 #' .or_table
 #'
-#' A step of the study_core implementation. Called by \code{.run_ebac_core_module_internal}, \code{.run_ebac_gender_smote_sensitivity_module_internal}, \code{.run_ebac_selection_adjustment_ipw_module_internal} and 2 others in the module.
+#' A step of the study_core implementation. Called by
+#' \code{.run_ebac_core_module_internal},
+#' \code{.run_ebac_gender_smote_sensitivity_module_internal},
+#' \code{.run_ebac_selection_adjustment_ipw_module_internal} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -233,7 +259,10 @@
 
 #' .cpads_labeled_data
 #'
-#' A step of the study_core implementation. Called by \code{.run_causal_estimators_module_internal}, \code{.run_descriptive_statistics_module_internal}, \code{.run_distribution_tests_module_internal} and 12 others in the module.
+#' A step of the study_core implementation. Called by
+#' \code{.run_causal_estimators_module_internal},
+#' \code{.run_descriptive_statistics_module_internal},
+#' \code{.run_distribution_tests_module_internal} and 12 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -280,6 +309,12 @@
 #' @param output_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{data_na_summary}, \code{data_wrangling_log}.
 #' @export
+#' @examples
+#' df <- data.frame(x = c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), y = c(2.9, 5.1, 6.8,
+#' 9.4, 11.2, 13.1, 15.0, 17.6), g = c('a', 'b', 'a', 'b', 'a', 'b', 'a', 'b'),
+#' stringsAsFactors = FALSE)
+#' res <- .run_data_wrangling_module_internal(data = df)
+#' res
 .run_data_wrangling_module_internal <- function(data, cpads_csv = NULL, output_dir = NULL) {
   resolved <- if (!is.null(cpads_csv)) .resolve_cpads_csv(cpads_csv) else NA_character_
   raw <- if (!is.na(resolved)) utils::read.csv(resolved, stringsAsFactors = FALSE) else data
@@ -321,8 +356,10 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data A list; the body reads \code{$cannabis_any_use}, \code{$heavy_drinking_30d}, \code{$weight} from it.
-#' @return A list with \code{binomial_summaries}, \code{binomial_summaries_survey_weighted}, \code{probability_estimates}.
+#' @param data A list; the body reads \code{$cannabis_any_use},
+#' \code{$heavy_drinking_30d}, \code{$weight} from it.
+#' @return A list with \code{binomial_summaries},
+#' \code{binomial_summaries_survey_weighted}, \code{probability_estimates}.
 #' @export
 .run_descriptive_statistics_module_internal <- function(data) {
   data <- .cpads_labeled_data(data)
@@ -399,8 +436,10 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data A list; the body reads \code{$alc06_valid}, \code{$ebac_tot}, \code{$heavy_drinking_30d} from it.
-#' @return A list with \code{distribution_tests}, \code{alcohol_correlation_matrix}, \code{clt_convergence}.
+#' @param data A list; the body reads \code{$alc06_valid}, \code{$ebac_tot},
+#' \code{$heavy_drinking_30d} from it.
+#' @return A list with \code{distribution_tests}, \code{alcohol_correlation_matrix},
+#' \code{clt_convergence}.
 #' @export
 .run_distribution_tests_module_internal <- function(data) {
   data <- .cpads_labeled_data(data)
@@ -476,8 +515,10 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param data A list; the body reads \code{$cannabis_any_use}, \code{$gender_label}, \code{$heavy_drinking_30d} from it.
-#' @return A list with \code{frequentist_heavy_drinking_prevalence_ci}, \code{frequentist_effect_sizes}, \code{frequentist_hypothesis_tests}.
+#' @param data A list; the body reads \code{$cannabis_any_use}, \code{$gender_label},
+#' \code{$heavy_drinking_30d} from it.
+#' @return A list with \code{frequentist_heavy_drinking_prevalence_ci},
+#' \code{frequentist_effect_sizes}, \code{frequentist_hypothesis_tests}.
 #' @export
 .run_frequentist_module_internal <- function(data) {
   data <- .cpads_labeled_data(data)
@@ -592,8 +633,15 @@
 #' source it follows.
 #'
 #' @param data A list; the body reads \code{$heavy_drinking_30d} from it.
-#' @return A list with \code{bayesian_posterior_summaries}, \code{bayesian_bayes_factors}, \code{bayesian_vs_frequentist_ci}.
+#' @return A list with \code{bayesian_posterior_summaries},
+#' \code{bayesian_bayes_factors}, \code{bayesian_vs_frequentist_ci}.
 #' @export
+#' @examples
+#' df <- data.frame(x = c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), y = c(2.9, 5.1, 6.8,
+#' 9.4, 11.2, 13.1, 15.0, 17.6), g = c('a', 'b', 'a', 'b', 'a', 'b', 'a', 'b'),
+#' stringsAsFactors = FALSE)
+#' res <- .run_bayesian_module_internal(data = df)
+#' res
 .run_bayesian_module_internal <- function(data) {
   x <- data$heavy_drinking_30d
   x <- x[!is.na(x)]
@@ -662,7 +710,9 @@
 #' source it follows.
 #'
 #' @param data Passed to \code{.cpads_labeled_data}.
-#' @return A list with \code{logistic_odds_ratios}, \code{logistic_interaction_odds_ratios}, \code{logistic_interaction_tests}, \code{logistic_smote_status}, \code{logistic_smote_odds_ratios}.
+#' @return A list with \code{logistic_odds_ratios},
+#' \code{logistic_interaction_odds_ratios}, \code{logistic_interaction_tests},
+#' \code{logistic_smote_status}, \code{logistic_smote_odds_ratios}.
 #' @export
 .run_logistic_models_module_internal <- function(data) {
   data <- .cpads_labeled_data(data)
@@ -723,7 +773,9 @@
 #' source it follows.
 #'
 #' @param data Passed to \code{.cpads_labeled_data}.
-#' @return A list with \code{model_comparison_summary}, \code{model_comparison_full_coefs}, \code{model_comparison_interaction}, \code{model_comparison_wald_tests}.
+#' @return A list with \code{model_comparison_summary},
+#' \code{model_comparison_full_coefs}, \code{model_comparison_interaction},
+#' \code{model_comparison_wald_tests}.
 #' @export
 .run_model_comparison_module_internal <- function(data) {
   data <- .cpads_labeled_data(data)
@@ -842,7 +894,8 @@
 
 #' .run_propensity_scores_module_internal
 #'
-#' A step of the study_core implementation. Called by \code{.run_causal_estimators_module_internal}, \code{morie_run_morie_module}.
+#' A step of the study_core implementation. Called by
+#' \code{.run_causal_estimators_module_internal}, \code{morie_run_morie_module}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -922,7 +975,8 @@
 
 #' .run_treatment_effects_module_internal
 #'
-#' A step of the study_core implementation. Called by \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
+#' A step of the study_core implementation. Called by
+#' \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -1015,6 +1069,10 @@
 #' @param data Accepted by the signature and not used anywhere in the body.
 #' @return A list with \code{official_doc_alignment_checklist}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .run_dag_specification_module_internal(data = x)
+#' res
 .run_dag_specification_module_internal <- function(data) {
   map_tbl <- data.frame(
     requirement_id = c("cpads-exposure", "cpads-outcome", "cpads-covariates", "cpads-ebac"),
@@ -1137,12 +1195,19 @@
 
 #' .run_ebac_core_module_internal
 #'
-#' A step of the study_core implementation. Called by \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
+#' A step of the study_core implementation. Called by
+#' \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param data A list; the body reads \code{$alcohol_past12m} from it.
-#' @return A list with \code{ebac_data_quality_checks}, \code{ebac_distribution_unweighted}, \code{ebac_model_samples}, \code{ebac_weighted_summaries}, \code{ebac_missingness_weighted}, \code{ebac_missingness_or}, \code{ebac_missingness_or_eligible_drinkers}, \code{ebac_logistic_or_primary}, \code{ebac_linear_coefficients_primary}, \code{ebac_logistic_or_sensitivity_with_heavy}, \code{ebac_linear_coefficients_sensitivity_with_heavy}.
+#' @return A list with \code{ebac_data_quality_checks},
+#' \code{ebac_distribution_unweighted}, \code{ebac_model_samples},
+#' \code{ebac_weighted_summaries}, \code{ebac_missingness_weighted},
+#' \code{ebac_missingness_or}, \code{ebac_missingness_or_eligible_drinkers},
+#' \code{ebac_logistic_or_primary}, \code{ebac_linear_coefficients_primary},
+#' \code{ebac_logistic_or_sensitivity_with_heavy},
+#' \code{ebac_linear_coefficients_sensitivity_with_heavy}.
 #' @export
 .run_ebac_core_module_internal <- function(data) {
   data <- .cpads_labeled_data(data)
@@ -1257,12 +1322,15 @@
 
 #' .run_ebac_gender_smote_sensitivity_module_internal
 #'
-#' A step of the study_core implementation. Called by \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
+#' A step of the study_core implementation. Called by
+#' \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param data A list; the body reads \code{$alcohol_past12m}, \code{$ebac_tot} from it.
-#' @return A list with \code{ebac_gender_interaction_svy_or}, \code{ebac_gender_interaction_tests}, \code{ebac_gender_marginal_probs}, \code{ebac_smote_status}, \code{ebac_smote_or}, \code{ebac_smote_compare}.
+#' @return A list with \code{ebac_gender_interaction_svy_or},
+#' \code{ebac_gender_interaction_tests}, \code{ebac_gender_marginal_probs},
+#' \code{ebac_smote_status}, \code{ebac_smote_or}, \code{ebac_smote_compare}.
 #' @export
 .run_ebac_gender_smote_sensitivity_module_internal <- function(data) {
   data <- .cpads_labeled_data(data)
@@ -1343,12 +1411,17 @@
 
 #' .run_ebac_selection_adjustment_ipw_module_internal
 #'
-#' A step of the study_core implementation. Called by \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
+#' A step of the study_core implementation. Called by
+#' \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param data A list; the body reads \code{$alcohol_past12m} from it.
-#' @return A list with \code{ebac_ipw_weight_diagnostics}, \code{ebac_ipw_logistic_or}, \code{ebac_ipw_linear_coefficients}, \code{ebac_ipw_cannabis_comparison}, \code{ebac_ipw_observation_model_or}, \code{ebac_ipw_covariate_balance}, \code{ebac_final_ipw_diagnostics}, \code{ebac_final_ipw_or}, \code{ebac_final_ipw_linear}, \code{ebac_final_ipw_comparison}.
+#' @return A list with \code{ebac_ipw_weight_diagnostics}, \code{ebac_ipw_logistic_or},
+#' \code{ebac_ipw_linear_coefficients}, \code{ebac_ipw_cannabis_comparison},
+#' \code{ebac_ipw_observation_model_or}, \code{ebac_ipw_covariate_balance},
+#' \code{ebac_final_ipw_diagnostics}, \code{ebac_final_ipw_or},
+#' \code{ebac_final_ipw_linear}, \code{ebac_final_ipw_comparison}.
 #' @export
 .run_ebac_selection_adjustment_ipw_module_internal <- function(data) {
   data <- .cpads_labeled_data(data)

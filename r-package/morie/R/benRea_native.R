@@ -43,7 +43,8 @@ bio_labels <- function(types) {
 
 #' .parts
 #'
-#' A step of the benRea_native implementation. Called by \code{extract_spans}, \code{is_valid_bio}, \code{start_allowed} and 1 others in the module.
+#' A step of the benRea_native implementation. Called by \code{extract_spans},
+#' \code{is_valid_bio}, \code{start_allowed} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -236,7 +237,8 @@ extract_spans <- function(path) {
 #'
 #' @param pred Passed to \code{extract_spans}.
 #' @param gold Passed to \code{extract_spans}.
-#' @return A list with \code{precision}, \code{recall}, \code{f1}, \code{true_positives}, \code{n_pred}, \code{n_gold}.
+#' @return A list with \code{precision}, \code{recall}, \code{f1}, \code{true_positives},
+#' \code{n_pred}, \code{n_gold}.
 #' @export
 span_f1 <- function(pred, gold) {
   p <- extract_spans(pred)

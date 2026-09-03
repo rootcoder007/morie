@@ -57,7 +57,8 @@ NULL
 
 #' .mt_adjusted
 #'
-#' A step of the multiple_testing implementation. Called by \code{benjamini_hochberg}, \code{benjamini_yekutieli}, \code{bonferroni} and 10 others in the module.
+#' A step of the multiple_testing implementation. Called by \code{benjamini_hochberg},
+#' \code{benjamini_yekutieli}, \code{bonferroni} and 10 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -111,13 +112,17 @@ NULL
 
 #' .mt_check_p
 #'
-#' A step of the multiple_testing implementation. Called by \code{benjamini_hochberg}, \code{benjamini_yekutieli}, \code{bonferroni} and 17 others in the module.
+#' A step of the multiple_testing implementation. Called by \code{benjamini_hochberg},
+#' \code{benjamini_yekutieli}, \code{bonferroni} and 17 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param p A vector; its length is taken.
 #' @return The value of \code{pmin}.
 #' @export
+#' @examples
+#' res <- .mt_check_p(p = 0.5)
+#' res
 .mt_check_p <- function(p) {
   p <- as.numeric(p)
   if (length(p) == 0L) {
@@ -354,7 +359,8 @@ storey_q <- function(p_values, alpha = 0.05, lambda_param = 0.5,
 
 #' .mt_combine_result
 #'
-#' A step of the multiple_testing implementation. Called by \code{cauchy_combination}, \code{fisher_combined}, \code{simes_combined} and 2 others in the module.
+#' A step of the multiple_testing implementation. Called by \code{cauchy_combination},
+#' \code{fisher_combined}, \code{simes_combined} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -919,7 +925,8 @@ print.morie_multiple_testing_result <- function(x, ...) {
 #'
 #' Estimates the local FDR for each test as
 #' \eqn{lfdr_i = \\pi_0 \\, f_0(z_i) / f(z_i)}{lfdr_i = pi_0 \ f_0(z_i) / f(z_i)}, where
-#' \eqn{z_i = \Phi^{-1}(1 - p_i/2)}{z_i = Phi^-1(1 - p_i/2)} are two-sided z-scores, \code{f_0} is the
+#' \eqn{z_i = \Phi^{-1}(1 - p_i/2)}{z_i = Phi^-1(1 - p_i/2)} are two-sided z-scores,
+#' \code{f_0} is the
 #' standard-normal null density, \eqn{f} is a kernel density estimate of the
 #' observed z-scores, and \eqn{\\pi_0}{pi_0} is the proportion of null hypotheses
 #' estimated by the Storey-style cutoff at \eqn{p > 0.5}.

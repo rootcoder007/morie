@@ -70,7 +70,9 @@ NULL
 
 #' .tps_vc_rows
 #'
-#' A step of the tps_all_analyze implementation. Called by \code{morie_tps_offence_summary}, \code{morie_tps_spatial_summary}, \code{morie_tps_temporal_summary}.
+#' A step of the tps_all_analyze implementation. Called by
+#' \code{morie_tps_offence_summary}, \code{morie_tps_spatial_summary},
+#' \code{morie_tps_temporal_summary}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -78,6 +80,10 @@ NULL
 #' @param top A count; the body uses it as \code{seq_len(...)}. Defaults to \code{20L}.
 #' @return The value of \code{lapply}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .tps_vc_rows(x = x)
+#' res
 .tps_vc_rows <- function(x, top = 20L) {
   counts <- sort(table(x, useNA = "ifany"), decreasing = TRUE)
   if (length(counts) > top) counts <- counts[seq_len(top)]
@@ -391,19 +397,19 @@ morie_tps_neighbourhood_concentration <- function(df, ds_name = "?") {
 #' @examples
 #' .mk_tps_full <- function(n = 200L, seed = 1L) {
 #'     set.seed(seed)
-#'     data.frame(OCC_YEAR = sample(2018:2024, n, replace = TRUE), 
-#'         OCC_MONTH = sample(1:12, n, replace = TRUE), OCC_DOW = sample(c("Mon", 
-#'             "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"), n, replace = TRUE), 
-#'         OCC_HOUR = sample(0:23, n, replace = TRUE), DIVISION = sample(paste0("D", 
-#'             11:55), n, replace = TRUE), HOOD_158 = sample(letters[1:20], 
-#'             n, replace = TRUE), PREMISES_TYPE = sample(c("House", 
-#'             "Apt", "Street"), n, replace = TRUE), LOCATION_TYPE = sample(c("Bar", 
-#'             "Park", "Road"), n, replace = TRUE), OFFENCE = sample(c("Assault", 
-#'             "Theft"), n, replace = TRUE), UCR_CODE = sample(c("1430", 
-#'             "2120"), n, replace = TRUE), LAT_WGS84 = 43.6 + runif(n, 
+#'     data.frame(OCC_YEAR = sample(2018:2024, n, replace = TRUE),
+#'         OCC_MONTH = sample(1:12, n, replace = TRUE), OCC_DOW = sample(c("Mon",
+#'             "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"), n, replace = TRUE),
+#'         OCC_HOUR = sample(0:23, n, replace = TRUE), DIVISION = sample(paste0("D",
+#'             11:55), n, replace = TRUE), HOOD_158 = sample(letters[1:20],
+#'             n, replace = TRUE), PREMISES_TYPE = sample(c("House",
+#'             "Apt", "Street"), n, replace = TRUE), LOCATION_TYPE = sample(c("Bar",
+#'             "Park", "Road"), n, replace = TRUE), OFFENCE = sample(c("Assault",
+#'             "Theft"), n, replace = TRUE), UCR_CODE = sample(c("1430",
+#'             "2120"), n, replace = TRUE), LAT_WGS84 = 43.6 + runif(n,
 #'             0, 0.2), LONG_WGS84 = -79.4 + runif(n, 0, 0.2), stringsAsFactors = FALSE)
 #' }
-#' dfs <- list(Assault = .mk_tps_full(80L, seed = 2L), Robbery = .mk_tps_full(40L, 
+#' dfs <- list(Assault = .mk_tps_full(80L, seed = 2L), Robbery = .mk_tps_full(40L,
 #'     seed = 3L))
 #' morie_tps_crime_compare(dfs)
 morie_tps_crime_compare <- function(dfs) {
@@ -536,6 +542,10 @@ morie_tps_analyze_one <- function(df, name = "?") {
 #' @param name Passed to \code{morie_tps_analyze_one}.
 #' @return The value of \code{function}.
 #' @export
+#' @examples
+#' txt <- c('alpha', 'beta', 'gamma', 'delta')
+#' res <- .tps_alias_factory(name = txt)
+#' res
 .tps_alias_factory <- function(name) {
   force(name)
   function(df) morie_tps_analyze_one(df, name = name)
@@ -686,5 +696,3 @@ morie_tps_analyze_all <- function(dfs, out_dir = NULL) {
   }
   results
 }
-
-

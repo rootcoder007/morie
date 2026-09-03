@@ -20,3 +20,7 @@ refreshes, and the \code{default} fallback (used only when the discovery
 endpoint is unreachable) is set to 6000 so cold-start sweeps still
 capture everything currently published.
 }
+\examples{
+res <- .siu_discover_max_drid()
+res
+}

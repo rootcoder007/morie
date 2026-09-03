@@ -363,7 +363,8 @@ NULL
 #' @param control_cols Passed to \code{c}.
 #' @param bootstrap_replicates A count; the body uses it as \code{seq_len(...)}.
 #' @param random_state Passed to \code{set.seed}.
-#' @return A list with \code{coefficients}, \code{std_errors}, \code{bootstrap_se}, \code{score_coefficient}, \code{n_obs}.
+#' @return A list with \code{coefficients}, \code{std_errors}, \code{bootstrap_se},
+#' \code{score_coefficient}, \code{n_obs}.
 #' @export
 .lan_score_net_residual <- function(sub, score_col, outcome_col,
                                      race_cols, control_cols,

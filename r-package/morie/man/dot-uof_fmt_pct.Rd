@@ -17,3 +17,7 @@ A step of the mrm_uof implementation. Called by \code{mrm_uof_data_quality_audit
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .uof_fmt_pct(p = 0.5)
+res
+}

@@ -34,8 +34,10 @@
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param patch_len Coerced to integer by the body, with \code{as.integer}.
-#' @param stride Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
-#' @return A list with \code{patches}, \code{n_patches}, \code{patch_len}, \code{stride}, \code{L}, \code{covers}.
+#' @param stride Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
+#' @return A list with \code{patches}, \code{n_patches}, \code{patch_len}, \code{stride},
+#' \code{L}, \code{covers}.
 #' @export
 patchify <- function(x, patch_len, stride = NULL) {
   v <- as.numeric(x)
@@ -69,7 +71,8 @@ patchify <- function(x, patch_len, stride = NULL) {
 #' @param X A matrix; passed to \code{as.matrix}.
 #' @param patch_len Coerced to integer by the body, with \code{as.integer}.
 #' @param stride Passed to \code{patchify}.
-#' @return A list with \code{tokens}, \code{D}, \code{n_patches}, \code{patch_len}, \code{n_tokens_total}, \code{design}, \code{note}.
+#' @return A list with \code{tokens}, \code{D}, \code{n_patches}, \code{patch_len},
+#' \code{n_tokens_total}, \code{design}, \code{note}.
 #' @export
 channel_independent_tokens <- function(X, patch_len, stride = NULL) {
   Xm <- as.matrix(X)
@@ -102,7 +105,8 @@ channel_independent_tokens <- function(X, patch_len, stride = NULL) {
 #' @param X A matrix; passed to \code{as.matrix}.
 #' @param patch_len Passed to \code{patchify}.
 #' @param stride Passed to \code{patchify}.
-#' @return A list with \code{tokens}, \code{n_patches}, \code{n_tokens_total}, \code{design}, \code{note}.
+#' @return A list with \code{tokens}, \code{n_patches}, \code{n_tokens_total},
+#' \code{design}, \code{note}.
 #' @export
 channel_mixed_tokens <- function(X, patch_len, stride = NULL) {
   Xm <- as.matrix(X)
@@ -147,10 +151,12 @@ instance_norm <- function(x) {
 #'
 #' @param L Coerced to integer by the body, with \code{as.integer}.
 #' @param patch_len Coerced to integer by the body, with \code{as.integer}.
-#' @param stride Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
+#' @param stride Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
 #' @param D Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1}.
 #' @param channel_independent A flag; the body branches on it. Defaults to \code{TRUE}.
-#' @return A list with \code{n_patches}, \code{pointwise}, \code{patched}, \code{reduction}, \code{stride}, \code{patch_len}, \code{note}.
+#' @return A list with \code{n_patches}, \code{pointwise}, \code{patched},
+#' \code{reduction}, \code{stride}, \code{patch_len}, \code{note}.
 #' @export
 attention_cost <- function(L, patch_len, stride = NULL, D = 1,
                            channel_independent = TRUE) {
@@ -182,7 +188,9 @@ attention_cost <- function(L, patch_len, stride = NULL, D = 1,
 #' @param patch_len Passed to \code{channel_independent_tokens}.
 #' @param stride Passed to \code{channel_independent_tokens}.
 #' @param normalise A flag; the body branches on it. Defaults to \code{TRUE}.
-#' @return A list with \code{estimate}, \code{tokens}, \code{D}, \code{n_patches}, \code{n_tokens_total}, \code{norm_stats}, \code{normalised}, \code{cost}, \code{method}.
+#' @return A list with \code{estimate}, \code{tokens}, \code{D}, \code{n_patches},
+#' \code{n_tokens_total}, \code{norm_stats}, \code{normalised}, \code{cost},
+#' \code{method}.
 #' @export
 patchtst_encode <- function(X, patch_len, stride = NULL,
                             normalise = TRUE) {
@@ -223,6 +231,9 @@ patchtst_encode <- function(X, patch_len, stride = NULL,
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .patchT_cheatsheet()
+#' res
 .patchT_cheatsheet <- function() {
   paste("patchT: PatchTST. A single time step is not a word, so ",
         "tokenise SUBSERIES: patches of length P, stride S, ",

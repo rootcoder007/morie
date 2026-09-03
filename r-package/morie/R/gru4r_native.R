@@ -17,13 +17,18 @@
 
 #' Numerically stable sigmoid: below -700 it is effectively 0
 #'
-#' A step of the gru4r_native implementation. Called by \code{morie_gru4r_bpr}, \code{morie_gru4r_gru}, \code{morie_gru4r_top1}.
+#' A step of the gru4r_native implementation. Called by \code{morie_gru4r_bpr},
+#' \code{morie_gru4r_gru}, \code{morie_gru4r_top1}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x Numeric; combined arithmetically in the body.
 #' @return The value of \code{ifelse}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .gru4r_sigmoid(x = x)
+#' res
 .gru4r_sigmoid <- function(x) {
   # Numerically stable sigmoid: below -700 it is effectively 0.
   ifelse(x > -700, 1 / (1 + exp(-x)), 0)

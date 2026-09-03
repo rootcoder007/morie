@@ -30,7 +30,8 @@
 
 #' .new_bootstrap_result
 #'
-#' A step of the bootstrap_methods implementation. Called by \code{block_bootstrap}, \code{bootstrap}, \code{parametric_bootstrap} and 2 others in the module.
+#' A step of the bootstrap_methods implementation. Called by \code{block_bootstrap},
+#' \code{bootstrap}, \code{parametric_bootstrap} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -64,7 +65,8 @@
 
 #' .new_jackknife_result
 #'
-#' A step of the bootstrap_methods implementation. Called by \code{delete_d_jackknife}, \code{jackknife}.
+#' A step of the bootstrap_methods implementation. Called by \code{delete_d_jackknife},
+#' \code{jackknife}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -94,7 +96,8 @@
 
 #' .new_permutation_test_result
 #'
-#' A step of the bootstrap_methods implementation. Called by \code{paired_permutation_test}, \code{permutation_test}.
+#' A step of the bootstrap_methods implementation. Called by
+#' \code{paired_permutation_test}, \code{permutation_test}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -124,7 +127,8 @@
 
 #' .new_cv_result
 #'
-#' A step of the bootstrap_methods implementation. Called by \code{.boot_cross_validate}, \code{repeated_cv}.
+#' A step of the bootstrap_methods implementation. Called by \code{.boot_cross_validate},
+#' \code{repeated_cv}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -151,7 +155,8 @@
 # Helper: percentile-of-vector (matches numpy.percentile linear interp).
 #' Helper: percentile-of-vector (matches numpy.percentile linear interp)
 #'
-#' A step of the bootstrap_methods implementation. Called by \code{.bca_interval}, \code{block_bootstrap}, \code{bootstrap} and 3 others in the module.
+#' A step of the bootstrap_methods implementation. Called by \code{.bca_interval},
+#' \code{block_bootstrap}, \code{bootstrap} and 3 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -159,13 +164,18 @@
 #' @param p Numeric; combined arithmetically in the body.
 #' @return The value of \code{unname}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .pct(x = x, p = 0.5)
+#' res
 .pct <- function(x, p) unname(stats::quantile(x, probs = p / 100,
                                               names = FALSE, type = 7))
 
 # Helper: subset rows of a vector or matrix.
 #' Helper: subset rows of a vector or matrix
 #'
-#' A step of the bootstrap_methods implementation. Called by \code{.bca_interval}, \code{block_bootstrap}, \code{bootstrap} and 3 others in the module.
+#' A step of the bootstrap_methods implementation. Called by \code{.bca_interval},
+#' \code{block_bootstrap}, \code{bootstrap} and 3 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -180,13 +190,18 @@
 
 #' .nrow_like
 #'
-#' A step of the bootstrap_methods implementation. Called by \code{.bca_interval}, \code{block_bootstrap}, \code{bootstrap} and 3 others in the module.
+#' A step of the bootstrap_methods implementation. Called by \code{.bca_interval},
+#' \code{block_bootstrap}, \code{bootstrap} and 3 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param data A matrix; passed to \code{nrow}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .nrow_like(data = x)
+#' res
 .nrow_like <- function(data) {
   if (is.matrix(data) || is.data.frame(data)) nrow(data) else length(data)
 }

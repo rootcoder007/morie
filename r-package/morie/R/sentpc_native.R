@@ -19,7 +19,8 @@
 
 #' .escape_whitespace
 #'
-#' A step of the sentpc_native implementation. Called by \code{encode_bpe}, \code{escape_whitespace}, \code{train_bpe} and 1 others in the module.
+#' A step of the sentpc_native implementation. Called by \code{encode_bpe},
+#' \code{escape_whitespace}, \code{train_bpe} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -27,6 +28,10 @@
 #' @param add_prefix A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' txt <- c('alpha', 'beta', 'gamma', 'delta')
+#' res <- .escape_whitespace(text = txt)
+#' res
 .escape_whitespace <- function(text, add_prefix = TRUE) {
   s <- as.character(text)
   out <- gsub(" ", .SPACE, s, fixed = TRUE)
@@ -36,7 +41,8 @@
 
 #' .unescape_whitespace
 #'
-#' A step of the sentpc_native implementation. Called by \code{morie_sentpc_decode}, \code{unescape_whitespace}.
+#' A step of the sentpc_native implementation. Called by \code{morie_sentpc_decode},
+#' \code{unescape_whitespace}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'

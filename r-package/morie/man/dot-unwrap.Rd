@@ -19,3 +19,7 @@ A step of the dsp_waveform implementation. Called by \code{morie_dsp_complex_dem
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .unwrap(p = 0.5)
+res
+}

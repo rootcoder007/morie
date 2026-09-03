@@ -64,13 +64,18 @@ effect_size_result <- function(measure, estimate,
 
 #' .arr
 #'
-#' A step of the effect_sizes implementation. Called by \code{cles}, \code{cliffs_delta}, \code{coefficient_of_variation} and 7 others in the module.
+#' A step of the effect_sizes implementation. Called by \code{cles}, \code{cliffs_delta},
+#' \code{coefficient_of_variation} and 7 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .arr(x = x)
+#' res
 .arr <- function(x) {
   v <- as.numeric(x)
   v[is.finite(v)]
@@ -78,7 +83,8 @@ effect_size_result <- function(measure, estimate,
 
 #' .bootstrap_ci
 #'
-#' A step of the effect_sizes implementation. Called by \code{bootstrap_effect_size_ci}, \code{cles}, \code{cliffs_delta} and 2 others in the module.
+#' A step of the effect_sizes implementation. Called by \code{bootstrap_effect_size_ci},
+#' \code{cles}, \code{cliffs_delta} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'

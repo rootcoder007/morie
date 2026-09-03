@@ -65,6 +65,9 @@ NULL
 #'
 #' @return The value of \code{morie_ensure_extras}.
 #' @export
+#' @examples
+#' res <- .req_survey()
+#' res
 .req_survey <- function() {
   morie_ensure_extras("survey")
 }
@@ -89,9 +92,9 @@ NULL
 #' @examples
 #' .make_survey_df <- function(n = 100L, seed = 1L) {
 #'     set.seed(seed)
-#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n, 
-#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"), 
-#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE), 
+#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,
+#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"),
+#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE),
 #'         fpc = rep(1000L, n))
 #' }
 #' df <- .make_survey_df()
@@ -176,9 +179,9 @@ morie_survey_hajek_mean <- function(y, weights) {
 #' @examples
 #' .make_survey_df <- function(n = 100L, seed = 1L) {
 #'     set.seed(seed)
-#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n, 
-#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"), 
-#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE), 
+#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,
+#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"),
+#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE),
 #'         fpc = rep(1000L, n))
 #' }
 #' df <- .make_survey_df()
@@ -286,9 +289,9 @@ morie_survey_poststratify <- function(df, strata_col, population_counts) {
 #' @examples
 #' .make_survey_df <- function(n = 100L, seed = 1L) {
 #'     set.seed(seed)
-#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n, 
-#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"), 
-#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE), 
+#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,
+#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"),
+#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE),
 #'         fpc = rep(1000L, n))
 #' }
 #' df <- .make_survey_df()
@@ -405,9 +408,9 @@ morie_survey_glm <- function(design, formula,
 #' @examples
 #' .make_survey_df <- function(n = 100L, seed = 1L) {
 #'     set.seed(seed)
-#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n, 
-#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"), 
-#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE), 
+#'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,
+#'         5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"),
+#'         n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE),
 #'         fpc = rep(1000L, n))
 #' }
 #' df <- .make_survey_df()

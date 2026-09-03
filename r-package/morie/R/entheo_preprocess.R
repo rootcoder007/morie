@@ -212,6 +212,11 @@ preprocess_fmri <- function(record,
 #' @param threshold Passed to \code{>}.
 #' @return A list with \code{arr}, \code{n_bad}.
 #' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+#' 2.6, 3.4, 3.9))
+#' res <- .entheo_asr_trim(x = X, threshold = 0.5)
+#' res
 .entheo_asr_trim <- function(x, threshold) {
   mu <- rowMeans(x)
   sd <- apply(x, 1, stats::sd) + 1e-9

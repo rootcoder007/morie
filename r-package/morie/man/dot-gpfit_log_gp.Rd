@@ -18,3 +18,9 @@ The value of \code{ll}, as built in the body.
 the gpfit() optimiser closure so the xi ~ 0 (exponential) and
 out-of-support branches are directly unit-testable.
 }
+\examples{
+x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+res <- .gpfit_log_gp(par = x, y = y)
+res
+}

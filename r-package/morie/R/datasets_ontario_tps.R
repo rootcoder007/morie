@@ -60,7 +60,8 @@
 #' given resource_id; return a parsed data.frame. Mock this in tests.
 #'
 #' @param resource_id Passed to \code{sprintf}.
-#' @param limit Accepted by the signature and not used anywhere in the body. Defaults to \code{200000L}.
+#' @param limit Accepted by the signature and not used anywhere in the body. Defaults to
+#' \code{200000L}.
 #' @return Nothing; this branch always raises.
 #' @export
 .morie_ontario_ckan_dump_csv <- function(resource_id, limit = 200000L) {
@@ -336,7 +337,10 @@ morie_datasets_tps_mha_apprehensions <- function(year = NULL,
 # Internal: shared offline+live dispatch for ARSAU UoF wrappers.
 #' Internal: shared offline+live dispatch for ARSAU UoF wrappers
 #'
-#' A step of the datasets_ontario_tps implementation. Called by \code{morie_datasets_arsau_aggregate_summary}, \code{morie_datasets_arsau_detailed_dataset}, \code{morie_datasets_arsau_uof_individual_records} and 2 others in the module.
+#' A step of the datasets_ontario_tps implementation. Called by
+#' \code{morie_datasets_arsau_aggregate_summary},
+#' \code{morie_datasets_arsau_detailed_dataset},
+#' \code{morie_datasets_arsau_uof_individual_records} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'

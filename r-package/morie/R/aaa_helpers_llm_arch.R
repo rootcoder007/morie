@@ -15,6 +15,10 @@ NULL
 #' @param x A matrix; passed to \code{dim}.
 #' @return The value of \code{aperm}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .softmax_last(x = x)
+#' res
 .softmax_last <- function(x) {
   # softmax along the last axis of an array
   d <- dim(x)

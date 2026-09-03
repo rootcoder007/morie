@@ -75,6 +75,10 @@ systematic_resample <- function(weights, u = NULL) {
 #' @param weights A vector; its length is taken.
 #' @return The value of \code{idx}, as built in the body.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .multinomial_resample(weights = x)
+#' res
 .multinomial_resample <- function(weights) {
   J <- length(weights)
   w <- as.numeric(weights) / sum(weights)

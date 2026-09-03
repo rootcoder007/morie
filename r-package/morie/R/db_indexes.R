@@ -185,6 +185,9 @@
 #'
 #' @return The value of \code{list}.
 #' @export
+#' @examples
+#' res <- .morie_db_indexes_tps_crime()
+#' res
 .morie_db_indexes_tps_crime <- function() {
   list(
     list(name_suffix = "_objectid",   cols = "OBJECTID",        unique = TRUE),

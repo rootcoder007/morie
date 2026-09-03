@@ -12,3 +12,7 @@ A logical value.
 \description{
 .siu_p_has_rvest -- gate rvest/xml2 use (suggested, not required).
 }
+\examples{
+res <- .siu_p_has_rvest()
+res
+}

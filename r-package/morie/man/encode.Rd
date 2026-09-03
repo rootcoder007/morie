@@ -22,5 +22,6 @@ The value of \code{z}, as built in the body.
 }
 \keyword{internal}
 \examples{
-encode(y_tilde = 5L, W = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), V_u = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L)
+encode(y_tilde = 5L, W = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2),
+  V_u = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L)
 }

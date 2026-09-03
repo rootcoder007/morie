@@ -45,7 +45,8 @@ NULL
 
 #' .stat_validate
 #'
-#' A step of the statistics implementation. Called by \code{anderson_darling}, \code{auto_test}, \code{dagostino_pearson} and 18 others in the module.
+#' A step of the statistics implementation. Called by \code{anderson_darling},
+#' \code{auto_test}, \code{dagostino_pearson} and 18 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -53,6 +54,10 @@ NULL
 #' @param name Accepted by the signature and not used anywhere in the body. Defaults to \code{"x"}.
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .stat_validate(x = x)
+#' res
 .stat_validate <- function(x, name = "x") {
   x <- suppressWarnings(as.numeric(x))
   x[is.finite(x)]
@@ -60,19 +65,26 @@ NULL
 
 #' .stat_result
 #'
-#' A step of the statistics implementation. Called by \code{anderson_darling}, \code{bartlett_test}, \code{chi2_goodness_of_fit} and 33 others in the module.
+#' A step of the statistics implementation. Called by \code{anderson_darling},
+#' \code{bartlett_test}, \code{chi2_goodness_of_fit} and 33 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param method Carried through into a list the body builds.
 #' @param test_statistic Coerced to numeric by the body, with \code{as.numeric}.
 #' @param p_value Coerced to numeric by the body, with \code{as.numeric}.
-#' @param df Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.
-#' @param ci_lower Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.
-#' @param ci_upper Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.
-#' @param effect_size Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.
-#' @param estimate Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.
-#' @param n Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}. Defaults to \code{NA_integer_}.
+#' @param df Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param ci_lower Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param ci_upper Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param effect_size Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param estimate Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param n Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}. Defaults to \code{NA_integer_}.
 #' @param extra Carried through into a list the body builds. Defaults to \code{list()}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -140,6 +152,11 @@ print.morie_test_result <- function(x, ...) {
 #' @param y A vector; its length is taken.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .cohens_d_ind(x = x, y = y)
+#' res
 .cohens_d_ind <- function(x, y) {
   nx <- length(x)
   ny <- length(y)
@@ -173,6 +190,10 @@ print.morie_test_result <- function(x, ...) {
 #' @param d Numeric; passed to \code{mean}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' g <- c(0L, 1L, 0L, 1L, 1L, 0L, 1L, 0L)
+#' res <- .cohens_d_paired(d = g)
+#' res
 .cohens_d_paired <- function(d) {
   s <- sd(d)
   if (s == 0) return(0)
@@ -189,6 +210,10 @@ print.morie_test_result <- function(x, ...) {
 #' @param confidence Numeric; combined arithmetically in the body. Defaults to \code{0.95}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .mean_ci(x = x)
+#' res
 .mean_ci <- function(x, confidence = 0.95) {
   n <- length(x)
   se <- sd(x) / sqrt(n)
@@ -208,6 +233,11 @@ print.morie_test_result <- function(x, ...) {
 #' @param equal_var A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .diff_ci(x = x, y = y)
+#' res
 .diff_ci <- function(x, y, confidence = 0.95, equal_var = TRUE) {
   nx <- length(x)
   ny <- length(y)
@@ -388,7 +418,7 @@ one_way_anova <- function(...) {
 #'   eta-squared, and the full ANOVA table in \code{extra$anova_table}.
 #' @export
 #' @examples
-#' d <- data.frame(y = rnorm(120), a = rep(letters[1:3], each = 40), 
+#' d <- data.frame(y = rnorm(120), a = rep(letters[1:3], each = 40),
 #'     b = rep(letters[4:5], 60))
 #' two_way_anova(d, "y", "a", "b")
 two_way_anova <- function(data, outcome, factor_a, factor_b) {
@@ -654,7 +684,8 @@ cochrans_q <- function(...) {
 
 #' .fisher_z_ci
 #'
-#' A step of the statistics implementation. Called by \code{pearson_correlation}, \code{point_biserial_correlation}, \code{spearman_correlation}.
+#' A step of the statistics implementation. Called by \code{pearson_correlation},
+#' \code{point_biserial_correlation}, \code{spearman_correlation}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -792,7 +823,8 @@ point_biserial_correlation <- function(binary, continuous, confidence = 0.95) {
 #'   p-value, residual df, Fisher-z CI, and r-squared effect size.
 #' @export
 #' @examples
-#' partial_correlation(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' partial_correlation(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
 partial_correlation <- function(x, y, covariates, confidence = 0.95) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)
@@ -826,7 +858,8 @@ partial_correlation <- function(x, y, covariates, confidence = 0.95) {
 #'   p-value, and r-squared effect size.
 #' @export
 #' @examples
-#' semi_partial_correlation(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' semi_partial_correlation(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
 semi_partial_correlation <- function(x, y, covariates) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)

@@ -162,7 +162,8 @@ node2v_walk <- function(adj, start, length, p = 1, q = 1, rng = NULL,
 #' @param q Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
 #' @param weights Passed to \code{node2v_walk}.
-#' @return A list with \code{estimate}, \code{walks}, \code{p}, \code{q}, \code{n_walks}, \code{length}, \code{method}, \code{note}.
+#' @return A list with \code{estimate}, \code{walks}, \code{p}, \code{q}, \code{n_walks},
+#' \code{length}, \code{method}, \code{note}.
 #' @export
 morie_node2v <- function(adj, num_walks = 10, length = 10, p = 1, q = 1,
                          seed = 0, weights = NULL) {

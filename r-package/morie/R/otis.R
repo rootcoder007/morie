@@ -64,7 +64,8 @@ NULL
 
 #' .otis_result
 #'
-#' A step of the otis implementation. Called by \code{morie_otis_astcmb}, \code{morie_otis_otdesc}, \code{morie_otis_otdml} and 3 others in the module.
+#' A step of the otis implementation. Called by \code{morie_otis_astcmb},
+#' \code{morie_otis_otdesc}, \code{morie_otis_otdml} and 3 others in the module.
 #' See the file header for the source the module follows.
 #' it follows.
 #'
@@ -98,13 +99,19 @@ NULL
 # Tolerant Yes/No/1/0/TRUE -> integer 0/1
 #' Tolerant Yes/No/1/0/TRUE -> integer 0/1
 #'
-#' A step of the otis implementation. Called by \code{.otis_alert_volatility_frame}, \code{.run_otis_analysis_module_internal}, \code{morie_otis_aipw_ate} and 10 others in the module.
+#' A step of the otis implementation. Called by \code{.otis_alert_volatility_frame},
+#' \code{.run_otis_analysis_module_internal}, \code{morie_otis_aipw_ate} and 10 others in
+#' the module.
 #' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @param s A vector; indexed elementwise.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' txt <- c('alpha', 'beta', 'gamma', 'delta')
+#' res <- .otis_binarise(s = txt)
+#' res
 .otis_binarise <- function(s) {
   if (is.logical(s)) {
     return(as.integer(s))

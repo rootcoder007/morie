@@ -26,5 +26,7 @@ Base R only.
 }
 \keyword{internal}
 \examples{
-motfsr_lambda_grid(n_starts_total = c(1, 2, 3, 4, 5, 6, 7, 8), n_seqs = c(1, 2, 3, 4, 5, 6, 7, 8), w = c(1, 2, 3, 4, 5, 6, 7, 8), lambda0 = c(1, 2, 3, 4, 5, 6, 7, 8))
+motfsr_lambda_grid(n_starts_total = c(1, 2, 3, 4, 5, 6, 7, 8),
+  n_seqs = c(1, 2, 3, 4, 5, 6, 7, 8), w = c(1, 2, 3, 4, 5, 6, 7, 8),
+  lambda0 = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

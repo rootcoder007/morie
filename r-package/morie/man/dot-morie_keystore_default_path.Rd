@@ -16,3 +16,7 @@ set MORIE_KEYSTORE_PATH (or pass path = ... explicitly to the
 keystore_create / load / store / wipe functions). morie 0.9.4 was
 archived from CRAN over this same issue; do not regress.
 }
+\examples{
+res <- .morie_keystore_default_path()
+res
+}

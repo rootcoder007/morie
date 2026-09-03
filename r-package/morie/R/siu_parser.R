@@ -56,6 +56,9 @@ NULL
 #'
 #' @return A logical value.
 #' @export
+#' @examples
+#' res <- .siu_p_has_rvest()
+#' res
 .siu_p_has_rvest <- function() {
   requireNamespace("rvest", quietly = TRUE) &&
     requireNamespace("xml2", quietly = TRUE)
@@ -73,7 +76,21 @@ NULL
 #' Python BLANK_ROW; extra keys appearing only here are populated by
 #' this parser specifically.
 #'
-#' @return A list with \code{parser_version}, \code{source_url_report}, \code{source_url_news}, \code{drid}, \code{nrid}, \code{case_number}, \code{police_service}, \code{number_of_officers_involved}, \code{number_of_subject_officials}, \code{number_of_witness_officials}, \code{number_of_civilian_witnesses}, \code{siu_investigators}, \code{siu_forensics_investigators}, \code{subject_official_interviewed_or_notes}, \code{location_of_call}, \code{reason_for_interaction}, \code{date_of_incident_iso}, \code{date_of_incident_raw}, \code{date_siu_notified_iso}, \code{date_siu_notified_raw}, \code{notifying_party}, \code{date_of_director_decision_iso}, \code{date_of_director_decision_raw}, \code{injuries_sustained}, \code{specific_injuries}, \code{sex_gender_affected}, \code{age_affected}, \code{relevant_legislation}, \code{charges_recommended}, \code{directors_decision_reasonable}, \code{mental_health_or_race_indications}, \code{supplemental_materials}, \code{narrative_full}, \code{narrative_summary}, \code{_language}.
+#' @return A list with \code{parser_version}, \code{source_url_report},
+#' \code{source_url_news}, \code{drid}, \code{nrid}, \code{case_number},
+#' \code{police_service}, \code{number_of_officers_involved},
+#' \code{number_of_subject_officials}, \code{number_of_witness_officials},
+#' \code{number_of_civilian_witnesses}, \code{siu_investigators},
+#' \code{siu_forensics_investigators}, \code{subject_official_interviewed_or_notes},
+#' \code{location_of_call}, \code{reason_for_interaction}, \code{date_of_incident_iso},
+#' \code{date_of_incident_raw}, \code{date_siu_notified_iso},
+#' \code{date_siu_notified_raw}, \code{notifying_party},
+#' \code{date_of_director_decision_iso}, \code{date_of_director_decision_raw},
+#' \code{injuries_sustained}, \code{specific_injuries}, \code{sex_gender_affected},
+#' \code{age_affected}, \code{relevant_legislation}, \code{charges_recommended},
+#' \code{directors_decision_reasonable}, \code{mental_health_or_race_indications},
+#' \code{supplemental_materials}, \code{narrative_full}, \code{narrative_summary},
+#' \code{_language}.
 #' @export
 .siu_p_blank_row <- function() {
   list(
@@ -240,13 +257,19 @@ NULL
 
 #' .siu_p_re_escape
 #'
-#' A step of the siu_parser implementation. Called by \code{.siu_p_detect_police_service}, \code{.siu_p_label_value}, \code{.siu_p_section_text}.
+#' A step of the siu_parser implementation. Called by
+#' \code{.siu_p_detect_police_service}, \code{.siu_p_label_value},
+#' \code{.siu_p_section_text}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param s Character; passed to \code{gsub}.
 #' @return The value of \code{gsub}.
 #' @export
+#' @examples
+#' txt <- c('alpha', 'beta', 'gamma', 'delta')
+#' res <- .siu_p_re_escape(s = txt)
+#' res
 .siu_p_re_escape <- function(s) {
   gsub("([\\\\.^$|()\\[\\]{}*+?])", "\\\\\\1", s, perl = TRUE)
 }
@@ -540,7 +563,8 @@ NULL
 
 #' .siu_p_parse_date
 #'
-#' A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}, \code{morie_siu_parse_news_html}.
+#' A step of the siu_parser implementation. Called by \code{morie_siu_parse_html},
+#' \code{morie_siu_parse_news_html}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -568,6 +592,10 @@ NULL
 #' @param text Passed to \code{regmatches}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' txt <- c('alpha', 'beta', 'gamma', 'delta')
+#' res <- .siu_p_find_case_number(text = txt)
+#' res
 .siu_p_find_case_number <- function(text) {
   # SIU case numbers: 2 digits, optional hyphen, 3-4 letters, hyphen,
   # 3 digits.
@@ -643,6 +671,10 @@ NULL
 #' @param text Character; passed to \code{strsplit}.
 #' @return The value of \code{substr}.
 #' @export
+#' @examples
+#' txt <- c('alpha', 'beta', 'gamma', 'delta')
+#' res <- .siu_p_extract_summary(text = txt)
+#' res
 .siu_p_extract_summary <- function(text) {
   paras <- strsplit(text, "\
 \

@@ -19,8 +19,10 @@ A list with \code{kek_id}, \code{records_shredded}, \code{indices}, \code{still_
 }
 \keyword{internal}
 \examples{
-kek <- as.raw(1:32); nonce <- as.raw(1:12); dek <- as.raw(101:132)
-w <- wrap_dek(dek, kek, nonce, kek_id = "kek-1")
-sh <- crypto_shred("kek-1", list(w))
-sh$shredded
+if (morie_crypto_sodium_available()) {
+  kek <- as.raw(1:32); nonce <- as.raw(1:12); dek <- as.raw(101:132)
+  w <- wrap_dek(dek, kek, nonce, kek_id = "kek-1")
+  sh <- crypto_shred("kek-1", list(w))
+  sh$shredded
+}
 }

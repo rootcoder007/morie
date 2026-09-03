@@ -14,3 +14,7 @@ A step of the study_otis_mapq implementation. Called by \code{morie_run_morie_mo
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+res <- .run_otis_analysis_module_internal()
+res
+}

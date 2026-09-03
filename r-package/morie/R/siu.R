@@ -31,6 +31,9 @@
 #' @param margin Coerced to integer by the body, with \code{as.integer}. Defaults to \code{300L}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' res <- .siu_discover_max_drid()
+#' res
 .siu_discover_max_drid <- function(default = 6000L, margin = 300L) {
   html <- tryCatch(
     .siu_http_get(paste0(
@@ -535,6 +538,9 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
 #'
 #' @return The value of \code{tryCatch}.
 #' @export
+#' @examples
+#' res <- .siu_load_manifest_raw()
+#' res
 .siu_load_manifest_raw <- function() {
   p <- system.file("extdata", "siu_drid_manifest.csv.gz",
     package = "morie"
@@ -579,6 +585,9 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
 #' @param user_cache_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' res <- .siu_load_canonical_overrides()
+#' res
 .siu_load_canonical_overrides <- function(user_cache_dir = NULL) {
   read_one <- function(p) {
     if (!nzchar(p) || !file.exists(p)) {
@@ -651,7 +660,8 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
 #' in the parse, or field not in the schema).
 #'
 #' @param df A list; the body reads \code{$case_number} from it.
-#' @param overrides Optional; may be \code{NULL}. A list; the body reads \code{$case_number}, \code{$field}, \code{$verified_value} from it.
+#' @param overrides Optional; may be \code{NULL}. A list; the body reads
+#' \code{$case_number}, \code{$field}, \code{$verified_value} from it.
 #' @return The value of \code{df}, as built in the body.
 #' @export
 .siu_apply_canonical_overrides <- function(df, overrides) {
@@ -755,6 +765,9 @@ morie_siu_record_correction <- function(case_number, field,
 #'
 #' @return The value of \code{m}, as built in the body.
 #' @export
+#' @examples
+#' res <- .siu_load_manifest()
+#' res
 .siu_load_manifest <- function() {
   p <- system.file("extdata", "siu_drid_manifest.csv.gz", package = "morie")
   if ((!nzchar(p) || !file.exists(p)) &&
@@ -1049,6 +1062,9 @@ morie_siu_audit_case <- function(case_number,
 #' @param h Character; passed to \code{trimws}.
 #' @return The value of \code{trimws}.
 #' @export
+#' @examples
+#' res <- .siu_html_to_text(h = 0.5)
+#' res
 .siu_html_to_text <- function(h) {
   if (!nzchar(h)) {
     return("")
@@ -1276,6 +1292,9 @@ morie_siu_compare <- function(case_number, external,
 #'
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' res <- .siu_llm_default_timeout()
+#' res
 .siu_llm_default_timeout <- function() {
   v <- Sys.getenv("MORIE_LLM_TIMEOUT_S", unset = "")
   t <- suppressWarnings(as.integer(v))
@@ -1288,8 +1307,12 @@ morie_siu_compare <- function(case_number, external,
 #' See the file header for the source the module follows.
 #' follows.
 #'
-#' @return A list with \code{gemini}, \code{claude}, \code{vertex}, \code{ollama}, \code{openai}, \code{openai_compatible}.
+#' @return A list with \code{gemini}, \code{claude}, \code{vertex}, \code{ollama},
+#' \code{openai}, \code{openai_compatible}.
 #' @export
+#' @examples
+#' res <- .siu_llm_providers()
+#' res
 .siu_llm_providers <- function() {
   list(
     gemini = list(
@@ -1652,6 +1675,9 @@ morie_siu_compare <- function(case_number, external,
 #'
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' res <- .siu_field_list()
+#' res
 .siu_field_list <- function() {
   c(
     "case_number", "drid", "nrid", "source_url_report", "source_url_news",
@@ -2271,13 +2297,15 @@ morie_siu_translate_fr_to_en <- function(
 
 #' .siu_translate_impl
 #'
-#' A step of the siu implementation. Called by \code{morie_siu_translate}, \code{morie_siu_translate_fr_to_en}.
+#' A step of the siu implementation. Called by \code{morie_siu_translate},
+#' \code{morie_siu_translate_fr_to_en}.
 #' See the file header for the source the module follows.
 #' follows.
 #'
 #' @param target_lang Passed to \code{!=}.
 #' @param source_lang Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param case_numbers Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.
+#' @param case_numbers Optional; may be \code{NULL}. A vector; its length is taken and
+#' its elements indexed.
 #' @param model Passed to \code{.siu_llm_call}.
 #' @param fields Iterated over elementwise, with \code{lapply}.
 #' @param cache_dir Passed to \code{.siu_load_canonical_overrides}.

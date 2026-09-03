@@ -101,7 +101,9 @@ morie_smatch_poisson_design <- function(cases, risk_periods,
 #' @param iters Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.
 #' @param tol Passed to \code{<}. Defaults to \code{1e-12}.
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-09}.
-#' @return A list with \code{estimate}, \code{relative_incidence}, \code{log_ri}, \code{age_effects}, \code{individual_effects}, \code{coef}, \code{converged}, \code{iterations}, \code{n_rows}, \code{n_people}, \code{method}, \code{identical_to}.
+#' @return A list with \code{estimate}, \code{relative_incidence}, \code{log_ri},
+#' \code{age_effects}, \code{individual_effects}, \code{coef}, \code{converged},
+#' \code{iterations}, \code{n_rows}, \code{n_people}, \code{method}, \code{identical_to}.
 #' @export
 morie_smatch_sccs_poisson_fit <- function(cases, risk_periods,
                                            age_breaks = numeric(0),
@@ -236,6 +238,9 @@ morie_smatch_relative_efficiency <- function(r, log_ri) {
 #' @param p A vector; its length is taken and its elements indexed.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' res <- .smatch_qnorm(p = 0.5)
+#' res
 .smatch_qnorm <- function(p) {
   p <- pmin(pmax(p, 1e-15), 1 - 1e-15)
   a <- c(-3.969683028665376e+01, 2.209460984245205e+02,

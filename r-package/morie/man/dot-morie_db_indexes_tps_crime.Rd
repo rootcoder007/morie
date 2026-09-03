@@ -12,3 +12,7 @@ The value of \code{list}.
 \description{
 applied via prefix dispatch.
 }
+\examples{
+res <- .morie_db_indexes_tps_crime()
+res
+}

@@ -33,7 +33,9 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_io_category_dir
 #'
-#' A step of the tps_io implementation. Called by \code{.morie_tps_read_csv}, \code{.morie_tps_read_excel}, \code{.morie_tps_read_featurecollection} and 6 others in the module.
+#' A step of the tps_io implementation. Called by \code{.morie_tps_read_csv},
+#' \code{.morie_tps_read_excel}, \code{.morie_tps_read_featurecollection} and 6 others in
+#' the module.
 #' See the file header for the source the module follows.
 #' it follows.
 #'
@@ -50,7 +52,9 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_io_pick_one
 #'
-#' A step of the tps_io implementation. Called by \code{.morie_tps_read_csv}, \code{.morie_tps_read_excel}, \code{.morie_tps_read_featurecollection} and 3 others in the module.
+#' A step of the tps_io implementation. Called by \code{.morie_tps_read_csv},
+#' \code{.morie_tps_read_excel}, \code{.morie_tps_read_featurecollection} and 3 others in
+#' the module.
 #' See the file header for the source the module follows.
 #' it follows.
 #'
@@ -81,12 +85,15 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_apply_nrows
 #'
-#' A step of the tps_io implementation. Called by \code{.morie_tps_read_featurecollection}, \code{.morie_tps_read_geojson}, \code{.morie_tps_read_kml} and 2 others in the module.
+#' A step of the tps_io implementation. Called by
+#' \code{.morie_tps_read_featurecollection}, \code{.morie_tps_read_geojson},
+#' \code{.morie_tps_read_kml} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @param df A matrix; indexed by row and column.
-#' @param nrows Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
+#' @param nrows Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
 #' @return The value of \code{[}.
 #' @export
 .morie_tps_apply_nrows <- function(df, nrows) {
@@ -106,7 +113,8 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 #' it follows.
 #'
 #' @param name Passed to \code{.morie_tps_io_category_dir}.
-#' @param nrows Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
+#' @param nrows Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
 #' @return The value of \code{do.call}.
 #' @export
 .morie_tps_read_csv <- function(name, nrows) {
@@ -126,7 +134,8 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 #' it follows.
 #'
 #' @param name Passed to \code{.morie_tps_io_category_dir}.
-#' @param nrows Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
+#' @param nrows Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
 #' @return The value of \code{df}, as built in the body.
 #' @export
 .morie_tps_read_excel <- function(name, nrows) {
@@ -278,7 +287,9 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 
 #' .morie_tps_read_sf_path
 #'
-#' A step of the tps_io implementation. Called by \code{.morie_tps_read_filegeodatabase}, \code{.morie_tps_read_geopackage}, \code{.morie_tps_read_shapefile} and 1 others in the module.
+#' A step of the tps_io implementation. Called by \code{.morie_tps_read_filegeodatabase},
+#' \code{.morie_tps_read_geopackage}, \code{.morie_tps_read_shapefile} and 1 others in
+#' the module.
 #' See the file header for the source the module follows.
 #' it follows.
 #'

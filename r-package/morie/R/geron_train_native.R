@@ -41,7 +41,8 @@
 
 #' .morie_gr_fin
 #'
-#' A step of the geron_train_native implementation. Called by \code{.morie_gr_attend}, \code{.morie_gr_check_mdp}, \code{.morie_gr_mse_core} and 105 others in the module.
+#' A step of the geron_train_native implementation. Called by \code{.morie_gr_attend},
+#' \code{.morie_gr_check_mdp}, \code{.morie_gr_mse_core} and 105 others in the module.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -49,6 +50,11 @@
 #' @param name Passed to \code{paste0}.
 #' @return Invisibly,a logical value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' txt <- c('alpha', 'beta', 'gamma', 'delta')
+#' res <- .morie_gr_fin(x = x, name = txt)
+#' res
 .morie_gr_fin <- function(x, name) {
   .morie_gr_need(all(is.finite(x)), paste0(name, " must be finite."))
   invisible(TRUE)
@@ -57,13 +63,18 @@
 # np.atleast_2d: a vector becomes a ONE-ROW matrix.
 #' Np.atleast_2d: a vector becomes a ONE-ROW matrix
 #'
-#' A step of the geron_train_native implementation. Called by \code{.morie_gr_attend}, \code{.morie_gr_check_mdp}, \code{.morie_gr_mse_core} and 71 others in the module.
+#' A step of the geron_train_native implementation. Called by \code{.morie_gr_attend},
+#' \code{.morie_gr_check_mdp}, \code{.morie_gr_mse_core} and 71 others in the module.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param x A matrix; passed to \code{dim}.
 #' @return The value of \code{m}, as built in the body.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .morie_gr_a2d(x = x)
+#' res
 .morie_gr_a2d <- function(x) {
   if (is.matrix(x)) {
     m <- x
@@ -79,7 +90,9 @@
 # Box-Muller normals off the reference LCG, cos then sin per pair.
 #' Box-Muller normals off the reference LCG, cos then sin per pair
 #'
-#' A step of the geron_train_native implementation. Called by \code{morie_geron_ddpm_forward_process}, \code{morie_geron_ddpm_reverse_step}, \code{morie_geron_gaussian_random_projection} and 2 others in the module.
+#' A step of the geron_train_native implementation. Called by
+#' \code{morie_geron_ddpm_forward_process}, \code{morie_geron_ddpm_reverse_step},
+#' \code{morie_geron_gaussian_random_projection} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -111,7 +124,8 @@
 #' LCG Fisher-Yates over 0..n-1, exactly the Python loop (i from n-1
 #' down)
 #'
-#' A step of the geron_train_native implementation. Called by \code{morie_geron_dataloader_minibatch}, \code{morie_geron_kfold_cv}.
+#' A step of the geron_train_native implementation. Called by
+#' \code{morie_geron_dataloader_minibatch}, \code{morie_geron_kfold_cv}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -119,6 +133,9 @@
 #' @param seed Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{perm}, as built in the body.
 #' @export
+#' @examples
+#' res <- .morie_gr_lcg_perm(n = 3L, seed = 1L)
+#' res
 .morie_gr_lcg_perm <- function(n, seed) {
   n <- as.integer(n)
   perm <- seq_len(n) - 1L
@@ -138,13 +155,19 @@
 # grsig kernel: the two-branch overflow-safe logistic.
 #' Grsig kernel: the two-branch overflow-safe logistic
 #'
-#' A step of the geron_train_native implementation. Called by \code{morie_geron_gru_cell}, \code{morie_geron_logistic_regression_probability}, \code{morie_geron_lstm_cell} and 6 others in the module.
+#' A step of the geron_train_native implementation. Called by
+#' \code{morie_geron_gru_cell}, \code{morie_geron_logistic_regression_probability},
+#' \code{morie_geron_lstm_cell} and 6 others in the module.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param z A vector; its length is taken and its elements indexed.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .morie_gr_sigmoid_vec(z = y)
+#' res
 .morie_gr_sigmoid_vec <- function(z) {
   z <- as.numeric(z)
   out <- numeric(length(z))
@@ -158,7 +181,9 @@
 # grn021 kernel.
 #' Grn021 kernel
 #'
-#' A step of the geron_train_native implementation. Called by \code{morie_geron_ch4_softmax_function}, \code{morie_geron_temperature_sampling}, \code{morie_geron_topk_sampling}.
+#' A step of the geron_train_native implementation. Called by
+#' \code{morie_geron_ch4_softmax_function}, \code{morie_geron_temperature_sampling},
+#' \code{morie_geron_topk_sampling}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -176,7 +201,10 @@
 # attsdp / grsdpa kernel. mask: logical matrix, TRUE = attend.
 #' Attsdp / grsdpa kernel. mask: logical matrix, TRUE = attend
 #'
-#' A step of the geron_train_native implementation. Called by \code{morie_geron_block_multi_head_attention}, \code{morie_geron_flash_attention_tile}, \code{morie_geron_multi_head_attention} and 5 others in the module.
+#' A step of the geron_train_native implementation. Called by
+#' \code{morie_geron_block_multi_head_attention},
+#' \code{morie_geron_flash_attention_tile}, \code{morie_geron_multi_head_attention} and 5
+#' others in the module.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -186,6 +214,10 @@
 #' @param mask Optional; may be \code{NULL}. Coerced to logical by the body, with \code{as.logical}.
 #' @return A list with \code{output}, \code{weights}, \code{scores}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .morie_gr_attend(Q = 0.5, K = 3L, V = x)
+#' res
 .morie_gr_attend <- function(Q, K, V, mask = NULL) {
   Q <- .morie_gr_a2d(Q)
   K <- .morie_gr_a2d(K)
@@ -211,7 +243,9 @@
 # grmse core, shared by every regularised cost and every GD driver here.
 #' Grmse core, shared by every regularised cost and every GD driver here
 #'
-#' A step of the geron_train_native implementation. Called by \code{morie_geron_ch4_mse_gradient_vector}, \code{morie_geron_ch4_normal_equation}, \code{morie_geron_early_stopping} and 4 others in the module.
+#' A step of the geron_train_native implementation. Called by
+#' \code{morie_geron_ch4_mse_gradient_vector}, \code{morie_geron_ch4_normal_equation},
+#' \code{morie_geron_early_stopping} and 4 others in the module.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -241,13 +275,18 @@
 
 #' .morie_gr_logaddexp0
 #'
-#' A step of the geron_train_native implementation. Called by \code{morie_geron_dpo_loss}, \code{morie_geron_regression_mlp_output}.
+#' A step of the geron_train_native implementation. Called by
+#' \code{morie_geron_dpo_loss}, \code{morie_geron_regression_mlp_output}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param z Numeric; passed to \code{abs}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .morie_gr_logaddexp0(z = y)
+#' res
 .morie_gr_logaddexp0 <- function(z) pmax(z, 0) + log1p(exp(-abs(z)))
 
 # ------------------------------------------------------------- grdino
@@ -758,8 +797,8 @@ morie_geron_early_stopping <- function(X_train, y_train, X_val, y_val, n_iter,
 #' @export
 #' @examples
 #' x <- matrix(c(1, 0, 0.5, 1), 2, byrow = TRUE)
-#' morie_geron_encoder_decoder_seq2seq(function(x) c(sum(x), 1), 
-#'     function(yp, cc, t) as.numeric(yp) * 0.5 + cc[1]/t, c(1, 
+#' morie_geron_encoder_decoder_seq2seq(function(x) c(sum(x), 1),
+#'     function(yp, cc, t) as.numeric(yp) * 0.5 + cc[1]/t, c(1,
 #'         2, 3), 4)
 morie_geron_encoder_decoder_seq2seq <- function(encoder, decoder, x, max_out_len,
                                                 start_token = NULL,
@@ -804,7 +843,8 @@ morie_geron_encoder_decoder_seq2seq <- function(encoder, decoder, x, max_out_len
 #' @return List with `cost`, `mse`, `l1_penalty`, `l1_norm`, `n_zero`.
 #' @export
 #' @examples
-#' morie_geron_lasso_cost(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = 5L, theta = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5)
+#' morie_geron_lasso_cost(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = 5L, theta = c(1, 2, 3, 4, 5,
+#' 6, 7, 8), alpha = 0.5)
 morie_geron_lasso_cost <- function(X, y, theta, alpha,
                                    penalize_intercept = FALSE) {
   fit <- .morie_gr_mse_core(X, y, theta)
@@ -864,7 +904,8 @@ morie_geron_elastic_net_cost <- function(X, y, theta, alpha, r,
 #'   `effective_alpha`.
 #' @export
 #' @examples
-#' morie_geron_ch4_lasso_regression_cost_function(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = 5L, theta = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5)
+#' morie_geron_ch4_lasso_regression_cost_function(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = 5L,
+#' theta = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5)
 morie_geron_ch4_lasso_regression_cost_function <- function(X, y, theta, alpha,
                                                            penalize_intercept = FALSE) {
   alpha <- as.numeric(alpha)
@@ -1165,7 +1206,7 @@ Math.morie_gr_dual <- function(x, ...) {
 #'   `check_abs_error`.
 #' @export
 #' @examples
-#' morie_geron_forward_mode_autodiff(1.3, 1, function(z) (z * z + 
+#' morie_geron_forward_mode_autodiff(1.3, 1, function(z) (z * z +
 #'     3)/(z + 1))
 morie_geron_forward_mode_autodiff <- function(x, x_prime, f) {
   .morie_gr_need(is.function(f), "f must be a function.")
@@ -1241,7 +1282,8 @@ morie_geron_fcn_upsample <- function(X, W, stride = 2) {
 #'   `out_features`, `n_parameters`, `batch`.
 #' @export
 #' @examples
-#' morie_geron_linear_layer_forward(X = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L)
+#' morie_geron_linear_layer_forward(X = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5,
+#' 6, 7, 8), b = 5L)
 morie_geron_linear_layer_forward <- function(X, W, b) {
   W <- .morie_gr_a2d(W)
   out_f <- nrow(W)
@@ -1479,7 +1521,7 @@ morie_geron_flash_attention_tile <- function(Q, K, V, block_size = 2) {
 #'   `batch_megabytes`, `shape`.
 #' @export
 #' @examples
-#' morie_geron_feature_map_dim(28, 28, 64, bytes_per_value = 4, 
+#' morie_geron_feature_map_dim(28, 28, 64, bytes_per_value = 4,
 #'     batch_size = 32)
 morie_geron_feature_map_dim <- function(H_out, W_out, C_out,
                                         bytes_per_value = 4, batch_size = 1) {
@@ -1564,7 +1606,8 @@ morie_geron_fp16_mixed_precision <- function(loss, S, gradients = NULL) {
 #' x0 <- c(0.5, -0.3, 1.2)
 #' alpha_bar <- cumprod(rep(0.98, 10))
 #' morie_geron_ddpm_forward_process(x0, t = 5, alpha_bar = alpha_bar, seed = 1)
-#' morie_geron_gan_minimax(real = alpha_bar, fake = alpha_bar, D_real = alpha_bar, D_fake = alpha_bar)
+#' morie_geron_gan_minimax(real = alpha_bar, fake = alpha_bar, D_real = alpha_bar, D_fake
+#' = alpha_bar)
 morie_geron_gan_minimax <- function(real, fake, D_real, D_fake, eps = 1e-12) {
   dr <- as.numeric(D_real)
   df <- as.numeric(D_fake)
@@ -1611,7 +1654,7 @@ morie_geron_gan_minimax <- function(real, fake, D_real, D_fake, eps = 1e-12) {
 #' @examples
 #' X <- matrix(c(1, 2, 1, 3, 1, 5, 1, 7), 4, byrow = TRUE)
 #' y <- c(2, 3, 6, 9)
-#' morie_geron_minibatch_gradient_descent(X, y, c(0, 0), 0.02, 2, 
+#' morie_geron_minibatch_gradient_descent(X, y, c(0, 0), 0.02, 2,
 #'     5, seed = 3)
 #' morie_geron_gradient_boosting_residual(X = X, y = y, F_prev = y)
 morie_geron_gradient_boosting_residual <- function(X, y, F_prev, learner = NULL,
@@ -2042,7 +2085,7 @@ morie_geron_grid_search_cv <- function(X, y, param_grid, K, fit_score,
 #'   `update_norm`.
 #' @export
 #' @examples
-#' morie_geron_hebb_rule_grhbb(c(1, 2), c(1, 0), c(0, 1), matrix(c(0.5, 
+#' morie_geron_hebb_rule_grhbb(c(1, 2), c(1, 0), c(0, 1), matrix(c(0.5,
 #'     0.5, 1, -1), 2, byrow = TRUE), 0.1)
 morie_geron_hebb_rule_grhbb <- function(x, y_true, y_pred, w, eta) {
   x <- as.numeric(x)
@@ -2218,7 +2261,7 @@ morie_geron_simple_imputer <- function(X, strategy = "mean") {
 #'   `prompt_words`, `example_order`.
 #' @export
 #' @examples
-#' morie_geron_in_context_learning(list(list("a", "1"), list("bb", 
+#' morie_geron_in_context_learning(list(list("a", "1"), list("bb",
 #'     "2")), "cc")
 morie_geron_in_context_learning <- function(examples, query, predict = NULL,
                                             separator = "\n",
@@ -2561,7 +2604,7 @@ morie_geron_kernel_pca_rbf <- function(X, gamma = 1, d = 2) {
 #'   `n_values`.
 #' @export
 #' @examples
-#' morie_geron_kv_cache_compression(2048, 32, 32, 128, bits = 8, 
+#' morie_geron_kv_cache_compression(2048, 32, 32, 128, bits = 8,
 #'     batch_size = 2)
 morie_geron_kv_cache_compression <- function(seq_len, num_layers, num_heads,
                                              d_head, bits = 16, batch_size = 1,
@@ -3037,7 +3080,7 @@ morie_geron_gan_mode_collapse_metric <- function(samples, true_modes,
 #' @examples
 #' X <- matrix(c(1, 2, 1, 3, 1, 5, 1, 7), 4, byrow = TRUE)
 #' y <- c(2, 3, 6, 9)
-#' morie_geron_minibatch_gradient_descent(X, y, c(0, 0), 0.02, 2, 
+#' morie_geron_minibatch_gradient_descent(X, y, c(0, 0), 0.02, 2,
 #'     5, seed = 3)
 morie_geron_minibatch_gradient_descent <- function(X, y, theta, eta, b, n_iter,
                                                    seed = 0) {
@@ -3211,8 +3254,8 @@ morie_geron_multilabel_classification <- function(X, Y, thresholds = 0.5) {
 #'   (0-based), `max_probability`, `n_classes`.
 #' @export
 #' @examples
-#' morie_geron_classification_mlp_output(matrix(c(1, 2, 0.5, -1), 
-#'     2, byrow = TRUE), matrix(c(1, -1, 0.5, 2, 0, 1), 3, byrow = TRUE), 
+#' morie_geron_classification_mlp_output(matrix(c(1, 2, 0.5, -1),
+#'     2, byrow = TRUE), matrix(c(1, -1, 0.5, 2, 0, 1), 3, byrow = TRUE),
 #'     c(0.1, 0.2, -0.1))
 morie_geron_classification_mlp_output <- function(a_last, W_out, b_out) {
   inner <- morie_geron_linear_layer_forward(a_last, W_out, b_out)
@@ -3282,7 +3325,8 @@ morie_geron_bert_mlm_loss <- function(logits, targets, mask) {
 #'   `n_parameters`, `dead_units`.
 #' @export
 #' @examples
-#' morie_geron_mlp_forward(x = 5L, weights = c(1, 2, 3, 4, 5, 6, 7, 8), biases = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_geron_mlp_forward(x = 5L, weights = c(1, 2, 3, 4, 5, 6, 7, 8), biases = c(1, 2,
+#' 3, 4, 5, 6, 7, 8))
 morie_geron_mlp_forward <- function(x, weights, biases, activation = "relu",
                                     output_activation = NULL) {
   acts_ok <- c("relu", "tanh", "sigmoid", "identity")
@@ -3326,8 +3370,8 @@ morie_geron_mlp_forward <- function(x, weights, biases, activation = "relu",
 #' @return List with `prediction`, `preactivation`, `out_features`.
 #' @export
 #' @examples
-#' morie_geron_regression_mlp_output(matrix(c(1, 2, -1, 0.5), 2, 
-#'     byrow = TRUE), matrix(c(1, -1, 0.5, 2), 2, byrow = TRUE), 
+#' morie_geron_regression_mlp_output(matrix(c(1, 2, -1, 0.5), 2,
+#'     byrow = TRUE), matrix(c(1, -1, 0.5, 2), 2, byrow = TRUE),
 #'     c(0.1, 0.2), activation = "softplus")
 morie_geron_regression_mlp_output <- function(a_last, W_out, b_out,
                                               activation = "identity") {
@@ -3423,7 +3467,7 @@ morie_geron_max_norm_regularization <- function(W, r, axis = 1) {
 #' @return List with `theta_new`, `v_new`, `step`, `terminal_speedup`.
 #' @export
 #' @examples
-#' morie_geron_momentum_update(c(1, -2), c(0.5, 0.25), c(0.1, -0.1), 
+#' morie_geron_momentum_update(c(1, -2), c(0.5, 0.25), c(0.1, -0.1),
 #'     0.05, 0.8)
 morie_geron_momentum_update <- function(theta, grad, v, eta, beta = 0.9) {
   .morie_gr_need(length(grad) == length(theta) && length(v) == length(theta),
@@ -3514,7 +3558,7 @@ morie_geron_linreg_mse_cost_grmse <- function(X, y, theta) {
 #'   only), `bias`.
 #' @export
 #' @examples
-#' morie_geron_ch4_linear_regression_prediction(c(1, 2, -0.5), matrix(c(1, 
+#' morie_geron_ch4_linear_regression_prediction(c(1, 2, -0.5), matrix(c(1,
 #'     4, 2, 0), 2, byrow = TRUE))
 morie_geron_ch4_linear_regression_prediction <- function(theta, x) {
   theta <- as.numeric(theta)
@@ -3542,7 +3586,8 @@ morie_geron_ch4_linear_regression_prediction <- function(theta, x) {
 #' @return List with `life_satisfaction`, `theta_0`, `theta_1`.
 #' @export
 #' @examples
-#' morie_geron_ch4_simple_linear_life_satisfaction(theta_0 = 5L, theta_1 = 5L, GDP_per_capita = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_geron_ch4_simple_linear_life_satisfaction(theta_0 = 5L, theta_1 = 5L,
+#' GDP_per_capita = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_ch4_simple_linear_life_satisfaction <- function(theta_0, theta_1,
                                                             GDP_per_capita) {
   theta_0 <- as.numeric(theta_0)
@@ -3622,7 +3667,7 @@ morie_geron_ch4_mse_gradient_vector <- function(X, y, theta) {
 #' @return List with `y_hat`, `positive_rate`, `margin`.
 #' @export
 #' @examples
-#' morie_geron_ch4_logistic_regression_prediction(c(0.2, 0.5, 0.9), 
+#' morie_geron_ch4_logistic_regression_prediction(c(0.2, 0.5, 0.9),
 #'     0.5)
 morie_geron_ch4_logistic_regression_prediction <- function(p_hat,
                                                            threshold = 0.5) {
@@ -3664,7 +3709,8 @@ morie_geron_ch4_softmax_function <- function(s, k, K = NULL) {
 
 #' .morie_gr_score_matrix
 #'
-#' A step of the geron_train_native implementation. Called by \code{.morie_gr_probability_matrix}, \code{morie_geron_softmax_score_grsmxs}.
+#' A step of the geron_train_native implementation. Called by
+#' \code{.morie_gr_probability_matrix}, \code{morie_geron_softmax_score_grsmxs}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -3672,6 +3718,10 @@ morie_geron_ch4_softmax_function <- function(s, k, K = NULL) {
 #' @param theta A matrix; the body checks with \code{is.matrix}.
 #' @return A list with \code{X}, \code{theta}, \code{scores}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .morie_gr_score_matrix(X = x, theta = x)
+#' res
 .morie_gr_score_matrix <- function(X, theta) {
   X <- .morie_gr_a2d(X)
   Tm <- if (is.matrix(theta)) theta else matrix(as.numeric(theta), ncol = 1L)
@@ -3700,7 +3750,9 @@ morie_geron_softmax_score_grsmxs <- function(X, theta) {
 
 #' .morie_gr_probability_matrix
 #'
-#' A step of the geron_train_native implementation. Called by \code{.morie_gr_gradient_matrix}, \code{morie_geron_softmax_cross_entropy_cost}, \code{morie_geron_softmax_probability}.
+#' A step of the geron_train_native implementation. Called by
+#' \code{.morie_gr_gradient_matrix}, \code{morie_geron_softmax_cross_entropy_cost},
+#' \code{morie_geron_softmax_probability}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -3708,6 +3760,10 @@ morie_geron_softmax_score_grsmxs <- function(X, theta) {
 #' @param theta Passed to \code{.morie_gr_score_matrix}.
 #' @return A list with \code{X}, \code{theta}, \code{probabilities}, \code{scores}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .morie_gr_probability_matrix(X = x, theta = x)
+#' res
 .morie_gr_probability_matrix <- function(X, theta) {
   r <- .morie_gr_score_matrix(X, theta)
   P <- t(apply(r$scores, 1L, .morie_gr_softmax_vec))
@@ -3734,7 +3790,8 @@ morie_geron_softmax_probability <- function(X, theta) {
 
 #' .morie_gr_one_hot
 #'
-#' A step of the geron_train_native implementation. Called by \code{.morie_gr_gradient_matrix}, \code{morie_geron_softmax_cross_entropy_cost}.
+#' A step of the geron_train_native implementation. Called by
+#' \code{.morie_gr_gradient_matrix}, \code{morie_geron_softmax_cross_entropy_cost}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -3790,7 +3847,9 @@ morie_geron_softmax_cross_entropy_cost <- function(X, Y, theta) {
 
 #' .morie_gr_gradient_matrix
 #'
-#' A step of the geron_train_native implementation. Called by \code{morie_geron_ch4_cross_entropy_gradient_vector}, \code{morie_geron_softmax_cost_gradient}.
+#' A step of the geron_train_native implementation. Called by
+#' \code{morie_geron_ch4_cross_entropy_gradient_vector},
+#' \code{morie_geron_softmax_cost_gradient}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -3870,7 +3929,7 @@ morie_geron_ch4_cross_entropy_gradient_vector <- function(X, Y, Theta, k) {
 #'   `path`, `step`.
 #' @export
 #' @examples
-#' morie_geron_nesterov_accelerated_gradient(c(1, -1), function(t) 2 * 
+#' morie_geron_nesterov_accelerated_gradient(c(1, -1), function(t) 2 *
 #'     t, c(0, 0), 0.1, 0.9, n_steps = 3)
 morie_geron_nesterov_accelerated_gradient <- function(theta, grad_fn, v, eta,
                                                       beta = 0.9, n_steps = 1) {
@@ -3988,7 +4047,7 @@ morie_geron_normal_equation_grnorm <- function(X, y, add_intercept = FALSE,
 #'   `baseline_loss`.
 #' @export
 #' @examples
-#' morie_geron_bert_nsp_loss(matrix(c(1, 2, 0.5, -1, 0, 0), 3, byrow = TRUE), 
+#' morie_geron_bert_nsp_loss(matrix(c(1, 2, 0.5, -1, 0, 0), 3, byrow = TRUE),
 #'     c(1, 0, 1))
 morie_geron_bert_nsp_loss <- function(logits, labels) {
   Z <- if (is.matrix(logits)) logits else
@@ -4473,7 +4532,8 @@ morie_geron_prioritized_experience_weight <- function(priorities, N = NULL,
 #'   `latent_self_weights`, `output_weights`, `complexity_ratio`.
 #' @export
 #' @examples
-#' morie_geron_perceiver_io(X = c(1, 2, 3, 4, 5, 6, 7, 8), Z_latent = c(1, 2, 3, 4, 5, 6, 7, 8), output_queries = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_geron_perceiver_io(X = c(1, 2, 3, 4, 5, 6, 7, 8), Z_latent = c(1, 2, 3, 4, 5, 6,
+#' 7, 8), output_queries = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_perceiver_io <- function(X, Z_latent, output_queries, n_iter = 1) {
   A <- .morie_gr_a2d(X)
   Z <- .morie_gr_a2d(Z_latent)
@@ -4584,7 +4644,8 @@ morie_geron_ppo_clipped_objective <- function(ratios, advantages, eps = 0.2) {
 
 #' .morie_gr_sorted_counts
 #'
-#' A step of the geron_train_native implementation. Called by \code{morie_geron_precision_recall_curve}, \code{morie_geron_roc_curve}.
+#' A step of the geron_train_native implementation. Called by
+#' \code{morie_geron_precision_recall_curve}, \code{morie_geron_roc_curve}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -5119,7 +5180,8 @@ morie_geron_pyramid_vit_stage <- function(X, WQ, WK, WV, reduction_ratio = 2) {
 
 #' .morie_gr_policy_evaluation
 #'
-#' A step of the geron_train_native implementation. Called by \code{morie_geron_action_value_function}, \code{morie_geron_state_value_function}.
+#' A step of the geron_train_native implementation. Called by
+#' \code{morie_geron_action_value_function}, \code{morie_geron_state_value_function}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -5127,7 +5189,8 @@ morie_geron_pyramid_vit_stage <- function(X, WQ, WK, WV, reduction_ratio = 2) {
 #' @param transitions Passed to \code{.morie_gr_check_mdp}.
 #' @param rewards Passed to \code{.morie_gr_check_mdp}.
 #' @param gamma Passed to \code{.morie_gr_check_mdp}.
-#' @return A list with \code{V}, \code{pi}, \code{P}, \code{R}, \code{r_sa}, \code{gamma}, \code{S}, \code{A}.
+#' @return A list with \code{V}, \code{pi}, \code{P}, \code{R}, \code{r_sa},
+#' \code{gamma}, \code{S}, \code{A}.
 #' @export
 .morie_gr_policy_evaluation <- function(policy, transitions, rewards, gamma) {
   m <- .morie_gr_check_mdp(policy, transitions, rewards, gamma)
@@ -5222,7 +5285,7 @@ morie_geron_action_value_function <- function(state, action, policy,
 #' @return List with `gradients`, `leaf_gradients`, `order`, `output`.
 #' @export
 #' @examples
-#' g <- list(L = list(a = 2, b = -1), a = list(x = 3), b = list(x = 0.5, 
+#' g <- list(L = list(a = 2, b = -1), a = list(x = 3), b = list(x = 0.5,
 #'     y = 1))
 #' morie_geron_reverse_mode_autodiff(g, 1)
 morie_geron_reverse_mode_autodiff <- function(graph, loss_grad = 1,
@@ -5487,7 +5550,7 @@ morie_geron_ridge_normal_equation <- function(X, y, alpha, intercept = TRUE) {
 #'   `per_sample`.
 #' @export
 #' @examples
-#' morie_geron_rlhf_reward_kl_objective(c(1, 0.5, -0.2), c(-0.5, 
+#' morie_geron_rlhf_reward_kl_objective(c(1, 0.5, -0.2), c(-0.5,
 #'     -1, -0.3), c(-0.8, -0.9, -0.5), 0.2)
 morie_geron_rlhf_reward_kl_objective <- function(rewards, policy_logprobs,
                                                  ref_logprobs, beta = 0.1) {
@@ -5718,7 +5781,8 @@ morie_geron_resnet_skip <- function(x, Fx, projection = NULL) {
 #' @return List with `output`, `weights`, `Q`, `K`, `V`.
 #' @export
 #' @examples
-#' morie_geron_self_attention(X = 5L, WQ = c(1, 2, 3, 4, 5, 6, 7, 8), WK = c(1, 2, 3, 4, 5, 6, 7, 8), WV = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_geron_self_attention(X = 5L, WQ = c(1, 2, 3, 4, 5, 6, 7, 8), WK = c(1, 2, 3, 4,
+#' 5, 6, 7, 8), WV = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_self_attention <- function(X, WQ, WK, WV, mask = NULL) {
   X <- .morie_gr_a2d(X)
   .morie_gr_need(length(X) > 0L, "X must be a non-empty (T, d_model) matrix.")
@@ -5748,7 +5812,8 @@ morie_geron_self_attention <- function(X, WQ, WK, WV, mask = NULL) {
 #'   `sparsity`, `mean_activation`, `code_size`.
 #' @export
 #' @examples
-#' morie_geron_sparse_autoencoder(x = c(1, 2, 3, 4, 5, 6, 7, 8), hidden = c(1, 2, 3, 4, 5, 6, 7, 8), decoded = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_geron_sparse_autoencoder(x = c(1, 2, 3, 4, 5, 6, 7, 8), hidden = c(1, 2, 3, 4,
+#' 5, 6, 7, 8), decoded = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_sparse_autoencoder <- function(x, hidden, decoded, lam = 0.001) {
   X <- .morie_gr_a2d(x)
   H <- .morie_gr_a2d(hidden)
@@ -5925,7 +5990,7 @@ morie_geron_sft_objective <- function(logits, response_mask, targets) {
 #' @examples
 #' X <- matrix(c(1, 2, 1, 3, 1, 5, 1, 7), 4, byrow = TRUE)
 #' y <- c(2, 3, 6, 9)
-#' morie_geron_stochastic_gradient_descent(X, y, c(0, 0), 0.01, 
+#' morie_geron_stochastic_gradient_descent(X, y, c(0, 0), 0.01,
 #'     6, seed = 23)
 morie_geron_stochastic_gradient_descent <- function(X, y, theta, eta, n_iter,
                                                     seed = 42, t0 = NULL,
@@ -6027,20 +6092,26 @@ morie_geron_silhouette_score <- function(X, labels) {
 
 #' .morie_gr_sym_is_const
 #'
-#' A step of the geron_train_native implementation. Called by \code{.morie_gr_sym_diff}, \code{.morie_gr_sym_eval}, \code{.morie_gr_sym_simplify} and 2 others in the module.
+#' A step of the geron_train_native implementation. Called by \code{.morie_gr_sym_diff},
+#' \code{.morie_gr_sym_eval}, \code{.morie_gr_sym_simplify} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param e A vector; its length is taken.
 #' @return A logical value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .morie_gr_sym_is_const(e = x)
+#' res
 .morie_gr_sym_is_const <- function(e) is.numeric(e) && length(e) == 1L
 .morie_gr_sym_unary <- c("sin", "cos", "exp", "log", "neg")
 .morie_gr_sym_binary <- c("+", "-", "*", "/", "^")
 
 #' .morie_gr_sym_eval
 #'
-#' A step of the geron_train_native implementation. Called by \code{.morie_gr_sym_simplify}, \code{morie_geron_symbolic_differentiation}.
+#' A step of the geron_train_native implementation. Called by
+#' \code{.morie_gr_sym_simplify}, \code{morie_geron_symbolic_differentiation}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -6075,13 +6146,18 @@ morie_geron_silhouette_score <- function(X, labels) {
 
 #' .morie_gr_sym_simplify
 #'
-#' A step of the geron_train_native implementation. Called by \code{morie_geron_symbolic_differentiation}.
+#' A step of the geron_train_native implementation. Called by
+#' \code{morie_geron_symbolic_differentiation}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param e A vector; its length is taken and its elements indexed.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .morie_gr_sym_simplify(e = x)
+#' res
 .morie_gr_sym_simplify <- function(e) {
   if (.morie_gr_sym_is_const(e) || (is.character(e) && length(e) == 1L)) return(e)
   op <- e[[1L]]
@@ -6113,7 +6189,8 @@ morie_geron_silhouette_score <- function(X, labels) {
 
 #' .morie_gr_sym_diff
 #'
-#' A step of the geron_train_native implementation. Called by \code{morie_geron_symbolic_differentiation}.
+#' A step of the geron_train_native implementation. Called by
+#' \code{morie_geron_symbolic_differentiation}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -6155,13 +6232,18 @@ morie_geron_silhouette_score <- function(X, labels) {
 
 #' .morie_gr_sym_str
 #'
-#' A step of the geron_train_native implementation. Called by \code{morie_geron_symbolic_differentiation}.
+#' A step of the geron_train_native implementation. Called by
+#' \code{morie_geron_symbolic_differentiation}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @param e A vector; its length is taken and its elements indexed.
 #' @return A character value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .morie_gr_sym_str(e = x)
+#' res
 .morie_gr_sym_str <- function(e) {
   if (.morie_gr_sym_is_const(e)) return(format(e))
   if (is.character(e) && length(e) == 1L) return(e)
@@ -6927,7 +7009,8 @@ morie_geron_tree_regression_leaf <- function(y, leaf_mask = NULL) {
 #'   `kl_per_dim`.
 #' @export
 #' @examples
-#' morie_geron_vae_elbo(x = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2, 3, 4, 5, 6, 7, 8), logvar = c(1, 2, 3, 4, 5, 6, 7, 8), recon = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_geron_vae_elbo(x = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' logvar = c(1, 2, 3, 4, 5, 6, 7, 8), recon = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_geron_vae_elbo <- function(x, mu, logvar, recon,
                                  likelihood = "gaussian", beta = 1) {
   X <- .morie_gr_a2d(x)
@@ -7113,7 +7196,7 @@ morie_geron_soft_voting <- function(probabilities, weights = NULL) {
 #'   `decay_step`, `step`.
 #' @export
 #' @examples
-#' morie_geron_adamw_decoupled_weight_decay(c(1, -2), c(0.5, 0.25), 
+#' morie_geron_adamw_decoupled_weight_decay(c(1, -2), c(0.5, 0.25),
 #'     c(0, 0), c(0, 0), 3, 0.01, lam = 0.05)
 morie_geron_adamw_decoupled_weight_decay <- function(theta, grad, m, s, t, eta,
                                                      b1 = 0.9, b2 = 0.999,
@@ -7145,8 +7228,8 @@ morie_geron_adamw_decoupled_weight_decay <- function(theta, grad, m, s, t, eta,
 #' @return List with `scores`, `best_pair`, `best_score`, `ranking`.
 #' @export
 #' @examples
-#' morie_geron_wordpiece_tokenizer_score(list(a = 10, b = 4, c = 6), 
-#'     list(list("a", "b", 3), list("b", "c", 4), list("a", "c", 
+#' morie_geron_wordpiece_tokenizer_score(list(a = 10, b = 4, c = 6),
+#'     list(list("a", "b", 3), list("b", "c", 4), list("a", "c",
 #'         5)))
 morie_geron_wordpiece_tokenizer_score <- function(counts, pairs) {
   cnt <- as.list(counts)

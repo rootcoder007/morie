@@ -170,7 +170,10 @@ NULL
 
 #' .morie_nyc_nypd_dispatch
 #'
-#' A step of the datasets_nyc_nypd implementation. Called by \code{morie_datasets_nyc_nypd_arrests_historic}, \code{morie_datasets_nyc_nypd_arrests_ytd}, \code{morie_datasets_nyc_nypd_by_key} and 6 others in the module.
+#' A step of the datasets_nyc_nypd implementation. Called by
+#' \code{morie_datasets_nyc_nypd_arrests_historic},
+#' \code{morie_datasets_nyc_nypd_arrests_ytd}, \code{morie_datasets_nyc_nypd_by_key} and
+#' 6 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -757,7 +760,10 @@ morie_datasets_nyc_nypd_boro_crosswalk <- function() {
 
 #' .morie_nyc_boundary_fixture
 #'
-#' A step of the datasets_nyc_nypd implementation. Called by \code{morie_datasets_nyc_community_districts}, \code{morie_datasets_nyc_council_districts}, \code{morie_datasets_nyc_ntas_2020} and 1 others in the module.
+#' A step of the datasets_nyc_nypd implementation. Called by
+#' \code{morie_datasets_nyc_community_districts},
+#' \code{morie_datasets_nyc_council_districts}, \code{morie_datasets_nyc_ntas_2020} and 1
+#' others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'

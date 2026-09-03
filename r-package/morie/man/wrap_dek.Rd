@@ -22,7 +22,9 @@ A list with \code{wrapped}, \code{tag}, \code{nonce}, \code{kek_id}, \code{wrapp
 }
 \keyword{internal}
 \examples{
-kek <- as.raw(1:32); nonce <- as.raw(1:12); dek <- as.raw(101:132)
-w <- wrap_dek(dek, kek, nonce, kek_id = "kek-1")
-c(length(w$wrapped), length(w$tag), w$kek_id)
+if (morie_crypto_sodium_available()) {
+  kek <- as.raw(1:32); nonce <- as.raw(1:12); dek <- as.raw(101:132)
+  w <- wrap_dek(dek, kek, nonce, kek_id = "kek-1")
+  c(length(w$wrapped), length(w$tag), w$kek_id)
+}
 }

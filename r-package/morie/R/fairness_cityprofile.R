@@ -45,12 +45,17 @@ MORIE_FAIRNESS_CANONICAL_FIELDS <- c(
 
 #' .morie_fairness_init_registry
 #'
-#' A step of the fairness_cityprofile implementation. Called by \code{morie_fairness_get_city}, \code{morie_fairness_list_cities}, \code{morie_fairness_register_city}.
+#' A step of the fairness_cityprofile implementation. Called by
+#' \code{morie_fairness_get_city}, \code{morie_fairness_list_cities},
+#' \code{morie_fairness_register_city}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' res <- .morie_fairness_init_registry()
+#' res
 .morie_fairness_init_registry <- function() {
   if (!exists("generic", envir = .morie_fairness_registry, inherits = FALSE)) {
     assign("generic",

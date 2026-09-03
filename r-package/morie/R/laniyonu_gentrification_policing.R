@@ -53,7 +53,8 @@ NULL
 #' @param moran_i_ols Carried through into a list the body builds.
 #' @param decompositions A vector; indexed elementwise.
 #' @param gent_distribution Carried through into a list the body builds.
-#' @param sensitivity_thresholds Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param sensitivity_thresholds Carried through into a list the body builds. Defaults to
+#' \code{list()}.
 #' @param note Carried through into a list the body builds. Defaults to \code{""}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
@@ -134,6 +135,10 @@ NULL
 #' @param W A matrix; passed to \code{dim}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .lan_gp_morans_i(resid = x, W = x)
+#' res
 .lan_gp_morans_i <- function(resid, W) {
   n <- length(resid)
   if (n < 2L || !all(dim(W) == n)) return(NA_real_)

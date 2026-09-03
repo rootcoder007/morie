@@ -18,7 +18,11 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param payload A list; the body reads \code{$bins}, \code{$colour}, \code{$direction}, \code{$directions}, \code{$eps}, \code{$include_input}, \code{$L}, \code{$model}, \code{$n_samples}, \code{$op}, \code{$origin}, \code{$p}, \code{$point}, \code{$rng}, \code{$sigma}, \code{$stratified}, \code{$t}, \code{$t_far}, \code{$t_near}, \code{$tol}, \code{$weights} from it.
+#' @param payload A list; the body reads \code{$bins}, \code{$colour}, \code{$direction},
+#' \code{$directions}, \code{$eps}, \code{$include_input}, \code{$L}, \code{$model},
+#' \code{$n_samples}, \code{$op}, \code{$origin}, \code{$p}, \code{$point}, \code{$rng},
+#' \code{$sigma}, \code{$stratified}, \code{$t}, \code{$t_far}, \code{$t_near},
+#' \code{$tol}, \code{$weights} from it.
 #' @return Nothing; this branch always raises.
 #' @export
 morie_nrfrad <- function(payload) {
@@ -69,6 +73,10 @@ morie_nrfrad <- function(payload) {
 #' @param x Optional; may be \code{NULL}. A list; the body reads \code{$sigma} from it.
 #' @return A vector, from \code{as.numeric}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .nrfrad_vec(x = x)
+#' res
 .nrfrad_vec <- function(x) {
   if (is.null(x)) return(numeric(0))
   if (is.list(x) && !is.null(x$sigma)) return(unlist(x$sigma)) # not used
@@ -84,6 +92,9 @@ morie_nrfrad <- function(payload) {
 #' @param p Optional; may be \code{NULL}. A list; the body checks with \code{is.list}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
+#' @examples
+#' res <- .as_numeric_vec(p = 0.5)
+#' res
 .as_numeric_vec <- function(p) {
   if (is.null(p)) return(numeric(0))
   if (is.list(p)) {
@@ -175,7 +186,8 @@ ray_points <- function(origin, direction, t_near, t_far, n_samples,
 #' @param sigma Passed to \code{.as_numeric_vec}.
 #' @param colour A matrix; indexed by row and column.
 #' @param t Passed to \code{.as_numeric_vec}.
-#' @return A list with \code{colour}, \code{weights}, \code{accumulated_alpha}, \code{transmittance_final}, \code{note}.
+#' @return A list with \code{colour}, \code{weights}, \code{accumulated_alpha},
+#' \code{transmittance_final}, \code{note}.
 #' @export
 volume_render <- function(sigma, colour, t) {
   s <- .as_numeric_vec(sigma)
@@ -295,6 +307,9 @@ density_is_view_independent <- function(model, point, directions, tol = 1e-9) {
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .nrfrad_cheatsheet()
+#' res
 .nrfrad_cheatsheet <- function() {
   paste("nrfrad: a scene IS a continuous 5D function -- position plus",
         "viewing direction to density and radiance -- stored in a plain",

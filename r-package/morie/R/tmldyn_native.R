@@ -31,6 +31,9 @@
 #' @param p Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' res <- .tmldyn_logit(p = 0.5)
+#' res
 .tmldyn_logit <- function(p) {
   q <- pmin(pmax(as.numeric(p), .tmldyn_EPS), 1 - .tmldyn_EPS)
   log(q / (1 - q))
@@ -38,13 +41,18 @@
 
 #' .tmldyn_expit
 #'
-#' A step of the tmldyn_native implementation. Called by \code{.fluctuate}, \code{.intervention_mechanism}, \code{.tmldyn_logit_irls} and 1 others in the module.
+#' A step of the tmldyn_native implementation. Called by \code{.fluctuate},
+#' \code{.intervention_mechanism}, \code{.tmldyn_logit_irls} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x Numeric; combined arithmetically in the body.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .tmldyn_expit(x = x)
+#' res
 .tmldyn_expit <- function(x) {
   # vectorised clamp: the scalar if() errors on any vector input
   xc <- pmax(x, -700)
@@ -60,6 +68,9 @@
 #' @param p Passed to \code{qnorm}.
 #' @return The value of \code{qnorm}.
 #' @export
+#' @examples
+#' res <- .tmldyn_qnorm(p = 0.5)
+#' res
 .tmldyn_qnorm <- function(p) qnorm(p, 0, 1)
 
 #' .sd
@@ -71,11 +82,16 @@
 #' @param x Numeric; passed to \code{mean}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .sd(x = x)
+#' res
 .sd <- function(x) sqrt(mean((x - mean(x))^2))
 
 #' .tmldyn_lstsq
 #'
-#' A step of the tmldyn_native implementation. Called by \code{.fit_q1}, \code{.fit_q2}, \code{.project}.
+#' A step of the tmldyn_native implementation. Called by \code{.fit_q1}, \code{.fit_q2},
+#' \code{.project}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -149,7 +165,8 @@
 #' Fit Q1 (E\[Q2(A(0), d_\{A(1)\}, Lbar(1)) | A(0), L(0)\]) on the rows in
 #' idx
 #'
-#' A step of the tmldyn_native implementation. Called by \code{.rule_value_seq}, \code{.sequential_blips}, \code{morie_tmle_dynamic_regime}.
+#' A step of the tmldyn_native implementation. Called by \code{.rule_value_seq},
+#' \code{.sequential_blips}, \code{morie_tmle_dynamic_regime}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -307,7 +324,8 @@
 #' @param V0 Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param V1 Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param ridge Passed to \code{.fit_q2}.
-#' @return A list with \code{blip1}, \code{blip2}, \code{d0}, \code{d1}, \code{q2}, \code{q1}, \code{coef_q2}, \code{coef_q1}, \code{pseudo}.
+#' @return A list with \code{blip1}, \code{blip2}, \code{d0}, \code{d1}, \code{q2},
+#' \code{q1}, \code{coef_q2}, \code{coef_q1}, \code{pseudo}.
 #' @export
 .sequential_blips <- function(ys, L0, A0, L1, A1, V0, V1, ridge) {
   n <- length(ys)

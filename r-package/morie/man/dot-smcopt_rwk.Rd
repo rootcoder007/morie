@@ -18,3 +18,7 @@ Normal(0, scale^2) and accept with the standard Metropolis-Hastings
 ratio.  No library calls; uses .ghc_norm so the run is reproducible
 from the seed.
 }
+\examples{
+res <- .smcopt_rwk(scale = TRUE)
+res
+}

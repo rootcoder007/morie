@@ -113,7 +113,8 @@
 #' @param lam Numeric; combined arithmetically in the body. Defaults to \code{2e-05}.
 #' @param epochs Coerced to integer by the body, with \code{as.integer}. Defaults to \code{10L}.
 #' @param seed Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.
-#' @return A list with \code{estimate}, \code{W}, \code{loss_history}, \code{final_loss}, \code{k}, \code{n_parameters}, \code{n_parameters_fm}, \code{method}, \code{caveat}.
+#' @return A list with \code{estimate}, \code{W}, \code{loss_history}, \code{final_loss},
+#' \code{k}, \code{n_parameters}, \code{n_parameters_fm}, \code{method}, \code{caveat}.
 #' @export
 .fit_ffm <- function(rows, labels, fields, n_features, n_fields,
                      k_dim = 4L, eta = 0.1, lam = 2e-5, epochs = 10L,

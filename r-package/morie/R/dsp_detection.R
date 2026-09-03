@@ -476,6 +476,9 @@ morie_dsp_csd <- function(x, y, fs = 1, nperseg = 256L) {
 #' @param tol Numeric; combined arithmetically in the body. Defaults to \code{pi}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' res <- .unwrap_d(p = 0.5)
+#' res
 .unwrap_d <- function(p, tol = pi) {
   d <- diff(p)
   adj <- ifelse(d >  tol, d - 2 * pi,

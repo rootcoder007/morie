@@ -40,7 +40,8 @@
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param y Coerced to numeric by the body, with \code{as.numeric}.
 #' @param s Coerced to numeric by the body, with \code{as.numeric}.
-#' @return A list with \code{primal}, \code{dual}, \code{mu}, \code{primal_norm}, \code{dual_norm}, \code{note}.
+#' @return A list with \code{primal}, \code{dual}, \code{mu}, \code{primal_norm},
+#' \code{dual_norm}, \code{note}.
 #' @export
 mehtad_residuals <- function(A, b, c, x, y, s) {
   M <- as.matrix(A)
@@ -118,6 +119,11 @@ centering_parameter <- function(mu, mu_affine, nu = 3.0) {
 #' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-11}.
 #' @return The value of \code{backsolve}.
 #' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' b <- c(1.5, 2.5, 3.5)
+#' res <- .mehtad_solve_normal(A = A, d = 3L, rhs = b)
+#' res
 .mehtad_solve_normal <- function(A, d, rhs, ridge = 1e-11) {
   M <- as.matrix(A)
   storage.mode(M) <- "double"
@@ -175,7 +181,10 @@ newton_direction <- function(A, x, s, rp, rd, rc) {
 #' @param nu Passed to \code{centering_parameter}. Defaults to \code{3}.
 #' @param eta Passed to \code{max_step}. Defaults to \code{0.9995}.
 #' @param corrector A flag; the body branches on it. Defaults to \code{TRUE}.
-#' @return A list with \code{estimate}, \code{x}, \code{y}, \code{s}, \code{mu}, \code{objective}, \code{dual_objective}, \code{iterations}, \code{corrector}, \code{primal_residual}, \code{dual_residual}, \code{converged}, \code{method}, \code{note}.
+#' @return A list with \code{estimate}, \code{x}, \code{y}, \code{s}, \code{mu},
+#' \code{objective}, \code{dual_objective}, \code{iterations}, \code{corrector},
+#' \code{primal_residual}, \code{dual_residual}, \code{converged}, \code{method},
+#' \code{note}.
 #' @export
 solve_lp <- function(A, b, c, tol = 1e-9, max_iter = 100L, nu = 3.0,
                      eta = 0.9995, corrector = TRUE) {
@@ -240,6 +249,9 @@ mehrotras_predictor <- solve_lp
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .mehtad_cheatsheet()
+#' res
 .mehtad_cheatsheet <- function() {
   paste("mehtad: the expensive part of an interior-point iteration ",
         "is ONE factorisation of A D A'; a second right-hand side ",

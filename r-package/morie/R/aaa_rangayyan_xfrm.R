@@ -39,7 +39,8 @@ Ztrans <- function(x, z = NULL, n0 = 0) {
 
 #' .morie_rg_conv
 #'
-#' A step of the rangayyan_xfrm implementation. Called by \code{CCepSum}, \code{ClogSum}, \code{ConvModel} and 13 others in the module.
+#' A step of the rangayyan_xfrm implementation. Called by \code{CCepSum}, \code{ClogSum},
+#' \code{ConvModel} and 13 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -65,7 +66,8 @@ Ztrans <- function(x, z = NULL, n0 = 0) {
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param h Coerced to numeric by the body, with \code{as.numeric}.
 #' @param z Coerced to complex by the body, with \code{as.complex}.
-#' @return A list with \code{y}, \code{Y}, \code{XH}, \code{z}, \code{max_difference}, \code{holds}, \code{method}.
+#' @return A list with \code{y}, \code{Y}, \code{XH}, \code{z}, \code{max_difference},
+#' \code{holds}, \code{method}.
 #' @export
 ZtConv <- function(x, h, z) {
   # eq (3.56): y = x * h  =>  Y(z) = X(z) H(z).  Both sides computed
@@ -97,7 +99,8 @@ ZtConv <- function(x, h, z) {
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param omega Coerced to numeric by the body, with \code{as.numeric}.
 #' @param fs Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
-#' @return A list with \code{X}, \code{z}, \code{omega}, \code{T}, \code{n}, \code{on_unit_circle}, \code{method}.
+#' @return A list with \code{X}, \code{z}, \code{omega}, \code{T}, \code{n},
+#' \code{on_unit_circle}, \code{method}.
 #' @export
 DtftZ <- function(x, omega, fs = NULL) {
   # eq (3.66): the Fourier transform is the z-transform on the unit
@@ -124,7 +127,8 @@ DtftZ <- function(x, omega, fs = NULL) {
 #'
 #' @param omega Coerced to numeric by the body, with \code{as.numeric}.
 #' @param t Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
-#' @return A list with \code{value}, \code{real}, \code{imag}, \code{angle}, \code{unit_modulus}, \code{method}.
+#' @return A list with \code{value}, \code{real}, \code{imag}, \code{angle},
+#' \code{unit_modulus}, \code{method}.
 #' @export
 Euler <- function(omega, t = 0) {
   # eq (3.74): exp(j omega t) = cos(omega t) + j sin(omega t)
@@ -151,10 +155,12 @@ Euler <- function(omega, t = 0) {
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param t Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
-#' @param omega Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param omega Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}.
 #' @param f Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @param dt Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
-#' @return A list with \code{X}, \code{omega}, \code{f}, \code{variable}, \code{duration}, \code{method}.
+#' @return A list with \code{X}, \code{omega}, \code{f}, \code{variable},
+#' \code{duration}, \code{method}.
 #' @export
 Ctft <- function(x, t = NULL, omega = NULL, f = NULL, dt = NULL) {
   # eqs (3.75)-(3.76): one transform in two frequency variables,
@@ -226,7 +232,8 @@ Fourier <- function(x, t = NULL, omega = NULL, f = NULL, dt = NULL) {
 #'
 #' @param X Coerced to complex by the body, with \code{as.complex}.
 #' @param t Coerced to numeric by the body, with \code{as.numeric}.
-#' @param omega Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param omega Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}.
 #' @param f Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
 #' @return A list with \code{x}, \code{t}, \code{variable}, \code{scale}, \code{method}.
 #' @export
@@ -320,7 +327,8 @@ DftK <- function(x, k_points) {
 #' into cos and sin parts, returned here so the two cannot disagree.
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
-#' @return A list with \code{X}, \code{real}, \code{imag}, \code{n}, \code{magnitude}, \code{conjugate_symmetric}, \code{method}.
+#' @return A list with \code{X}, \code{real}, \code{imag}, \code{n}, \code{magnitude},
+#' \code{conjugate_symmetric}, \code{method}.
 #' @export
 Dft <- function(x) {
   # eq (3.80), evaluated straight from the definition: exact at any N,
@@ -392,7 +400,8 @@ Twiddle <- function(npoints, power = 1) {
 #' against Dft() rather than assumed equal.
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
-#' @return A list with \code{X}, \code{W}, \code{n}, \code{max_difference}, \code{agrees_with_definition}, \code{method}.
+#' @return A list with \code{X}, \code{W}, \code{n}, \code{max_difference},
+#' \code{agrees_with_definition}, \code{method}.
 #' @export
 DftTw <- function(x) {
   # eq (3.83): the same transform written with twiddle factors, which is
@@ -425,7 +434,8 @@ DftTw <- function(x) {
 #' @param npoints Coerced to integer by the body, with \code{as.integer}.
 #' @param n Coerced to integer by the body, with \code{as.integer}.
 #' @param k Coerced to integer by the body, with \code{as.integer}.
-#' @return A list with \code{W}, \code{cos}, \code{sin}, \code{angle}, \code{N}, \code{n}, \code{k}, \code{method}.
+#' @return A list with \code{W}, \code{cos}, \code{sin}, \code{angle}, \code{N},
+#' \code{n}, \code{k}, \code{method}.
 #' @export
 TwidCS <- function(npoints, n, k) {
   # eq (3.84): W_N^(nk) = cos(.) - j sin(.).  Note the MINUS on the sine:
@@ -446,7 +456,8 @@ TwidCS <- function(npoints, n, k) {
 #' imaginary part is MINUS the projection onto the corresponding sine.
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
-#' @return A list with \code{X}, \code{cos_projection}, \code{sin_projection}, \code{real}, \code{imag}, \code{n}, \code{method}.
+#' @return A list with \code{X}, \code{cos_projection}, \code{sin_projection},
+#' \code{real}, \code{imag}, \code{n}, \code{method}.
 #' @export
 DftRI <- function(x) {
   # eq (3.85): the real part is the projection onto the k-th cosine, the
@@ -498,7 +509,9 @@ IdftRI <- function(X) {
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param h Coerced to numeric by the body, with \code{as.numeric}.
-#' @return A list with \code{linear}, \code{circular}, \code{from_dft}, \code{padded_length}, \code{n_linear}, \code{n_circular}, \code{max_difference}, \code{holds}, \code{wraps_if_unpadded}, \code{method}.
+#' @return A list with \code{linear}, \code{circular}, \code{from_dft},
+#' \code{padded_length}, \code{n_linear}, \code{n_circular}, \code{max_difference},
+#' \code{holds}, \code{wraps_if_unpadded}, \code{method}.
 #' @export
 DftConv <- function(x, h) {
   # eq (3.87).  The book is explicit that the convolution here is
@@ -536,7 +549,8 @@ DftConv <- function(x, h) {
 #' @param npoints Coerced to integer by the body, with \code{as.integer}.
 #' @param n Coerced to integer by the body, with \code{as.integer}.
 #' @param k Coerced to integer by the body, with \code{as.integer}.
-#' @return A list with \code{negative_power}, \code{conjugate}, \code{difference}, \code{holds}, \code{N}, \code{n}, \code{k}, \code{method}.
+#' @return A list with \code{negative_power}, \code{conjugate}, \code{difference},
+#' \code{holds}, \code{N}, \code{n}, \code{k}, \code{method}.
 #' @export
 TwidConj <- function(npoints, n, k) {
   # eq (3.88): W_N^(-nk) = conj(W_N^(nk)) -- a negative power costs only
@@ -559,7 +573,8 @@ TwidConj <- function(npoints, n, k) {
 #' @param npoints Coerced to integer by the body, with \code{as.integer}.
 #' @param n Coerced to integer by the body, with \code{as.integer}.
 #' @param k Coerced to integer by the body, with \code{as.integer}.
-#' @return A list with \code{base}, \code{shift_k}, \code{shift_n}, \code{max_difference}, \code{holds}, \code{N}, \code{n}, \code{k}, \code{method}.
+#' @return A list with \code{base}, \code{shift_k}, \code{shift_n},
+#' \code{max_difference}, \code{holds}, \code{N}, \code{n}, \code{k}, \code{method}.
 #' @export
 TwidPer <- function(npoints, n, k) {
   # eq (3.89): indices reduce modulo N -- why the same roots of unity are
@@ -586,8 +601,10 @@ TwidPer <- function(npoints, n, k) {
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param h Coerced to numeric by the body, with \code{as.numeric}.
-#' @param npoints Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
-#' @return A list with \code{y}, \code{via_dft}, \code{N}, \code{max_difference}, \code{agrees}, \code{equals_linear}, \code{linear_length}, \code{method}.
+#' @param npoints Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
+#' @return A list with \code{y}, \code{via_dft}, \code{N}, \code{max_difference},
+#' \code{agrees}, \code{equals_linear}, \code{linear_length}, \code{method}.
 #' @export
 CircConv <- function(x, h, npoints = NULL) {
   # eq (3.90): y_p(n) = sum_k x_p(k) h_p[(n-k) mod N], defined only for
@@ -617,7 +634,8 @@ CircConv <- function(x, h, npoints = NULL) {
 
 #' .morie_rg_evenodd
 #'
-#' A step of the rangayyan_xfrm implementation. Called by \code{EvenOdd}, \code{EvenPart}, \code{OddPart}.
+#' A step of the rangayyan_xfrm implementation. Called by \code{EvenOdd},
+#' \code{EvenPart}, \code{OddPart}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -625,6 +643,10 @@ CircConv <- function(x, h, npoints = NULL) {
 #' @param n Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
 #' @return A list with \code{n}, \code{even}, \code{odd}, \code{x}, \code{reconstruction_error}.
 #' @export
+#' @examples
+#' b <- c(1.5, 2.5, 3.5)
+#' res <- .morie_rg_evenodd(x = b)
+#' res
 .morie_rg_evenodd <- function(x, n = NULL) {
   xs <- as.numeric(x)
   m <- length(xs)
@@ -704,7 +726,8 @@ EvenOdd <- function(x, n = NULL) {
 #' @param omega Passed to \code{Ctft}.
 #' @param t The body requires: eq. (4.59) needs x(t) != 0 and p(t) != 0 for all t.
 #' @param dt Passed to \code{Ctft}.
-#' @return A list with \code{y}, \code{Yl}, \code{Xl}, \code{Pl}, \code{max_difference}, \code{additive}, \code{method}.
+#' @return A list with \code{y}, \code{Yl}, \code{Xl}, \code{Pl}, \code{max_difference},
+#' \code{additive}, \code{method}.
 #' @export
 LogFT <- function(x, p, omega, t = NULL, dt = NULL) {
   # eqs (4.58)-(4.60): y = x p, log y = log x + log p, and so
@@ -738,7 +761,8 @@ LogFT <- function(x, p, omega, t = NULL, dt = NULL) {
 #' @param h Coerced to numeric by the body, with \code{as.numeric}.
 #' @param omega Coerced to numeric by the body, with \code{as.numeric}.
 #' @param dt Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
-#' @return A list with \code{y}, \code{Y}, \code{X}, \code{H}, \code{XH}, \code{max_difference}, \code{holds}, \code{method}.
+#' @return A list with \code{y}, \code{Y}, \code{X}, \code{H}, \code{XH},
+#' \code{max_difference}, \code{holds}, \code{method}.
 #' @export
 FtConv <- function(x, h, omega, dt = 1) {
   # eqs (4.61)-(4.62): the Fourier transform turns the convolution into a
@@ -781,7 +805,9 @@ FtConv <- function(x, h, omega, dt = 1) {
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param h Coerced to numeric by the body, with \code{as.numeric}.
 #' @param z Coerced to complex by the body, with \code{as.complex}.
-#' @return A list with \code{y}, \code{Y_hat}, \code{X_hat}, \code{H_hat}, \code{magnitude_difference}, \code{branch_offset}, \code{holds_up_to_branch}, \code{method}.
+#' @return A list with \code{y}, \code{Y_hat}, \code{X_hat}, \code{H_hat},
+#' \code{magnitude_difference}, \code{branch_offset}, \code{holds_up_to_branch},
+#' \code{method}.
 #' @export
 ClogSum <- function(x, h, z) {
   # eqs (4.63), (4.65): complex logs of the z-transforms add.  Arg() is a
@@ -827,7 +853,8 @@ ClogSum <- function(x, h, z) {
 #'
 #' @param x Coerced to complex by the body, with \code{as.complex}.
 #' @param terms Coerced to integer by the body, with \code{as.integer}. Defaults to \code{20}.
-#' @return A list with \code{value}, \code{exact}, \code{error}, \code{error_bound}, \code{terms}, \code{method}.
+#' @return A list with \code{value}, \code{exact}, \code{error}, \code{error_bound},
+#' \code{terms}, \code{method}.
 #' @export
 LogSeries <- function(x, terms = 20) {
   # eq (4.69): log(1 + x) = x - x^2/2 + x^3/3 - ..., |x| < 1.  The radius

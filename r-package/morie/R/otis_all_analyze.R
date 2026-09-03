@@ -31,7 +31,8 @@ NULL
 
 #' .otis_year_col
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{.otis_summary_lines}, \code{.otis_year_trend}.
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_summary_lines},
+#' \code{.otis_year_trend}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -81,7 +82,9 @@ NULL
 
 #' .otis_to_int
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b07}, \code{morie_otis_analyze_c01}, \code{morie_otis_analyze_c03}.
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_b07}, \code{morie_otis_analyze_c01},
+#' \code{morie_otis_analyze_c03}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -102,6 +105,10 @@ NULL
 #' @param x Numeric; the body checks with \code{is.numeric}.
 #' @return The value of \code{as.integer}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_is_truthy(x = x)
+#' res
 .otis_is_truthy <- function(x) {
   if (is.logical(x)) return(as.integer(x))
   if (is.numeric(x)) return(as.integer(x == 1))
@@ -110,7 +117,8 @@ NULL
 
 #' .otis_summary_lines
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{.otis_c_simple}, \code{.otis_d_simple}, \code{morie_otis_analyze_b01} and 18 others in the module.
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_c_simple},
+#' \code{.otis_d_simple}, \code{morie_otis_analyze_b01} and 18 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -149,7 +157,8 @@ NULL
 
 #' .otis_crosstab
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{.otis_c_simple}, \code{.otis_d_simple}, \code{morie_otis_analyze_b02} and 13 others in the module.
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_c_simple},
+#' \code{.otis_d_simple}, \code{morie_otis_analyze_b02} and 13 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -191,7 +200,8 @@ NULL
 
 #' .otis_year_trend
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{.otis_d_simple}, \code{morie_otis_analyze_b01}, \code{morie_otis_analyze_b02}.
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_d_simple},
+#' \code{morie_otis_analyze_b01}, \code{morie_otis_analyze_b02}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -222,7 +232,8 @@ NULL
 
 #' .otis_wrap
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{.otis_aggregate_glm}, \code{.otis_c_simple}, \code{.otis_d_simple} and 35 others in the module.
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_aggregate_glm},
+#' \code{.otis_c_simple}, \code{.otis_d_simple} and 35 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -255,13 +266,20 @@ NULL
 # Indicator helpers (parallel to Python _female_indicator etc.)
 #' Indicator helpers (parallel to Python _female_indicator etc.)
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b04_ruhela_aggregate}, \code{morie_otis_analyze_b08_ruhela_aggregate}, \code{morie_otis_analyze_b09_ruhela_aggregate} and 6 others in the module.
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_b04_ruhela_aggregate},
+#' \code{morie_otis_analyze_b08_ruhela_aggregate},
+#' \code{morie_otis_analyze_b09_ruhela_aggregate} and 6 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{as.integer}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_female_indicator(x = x)
+#' res
 .otis_female_indicator <- function(x) {
   as.integer(tolower(as.character(x)) == "female")
 }
@@ -275,45 +293,71 @@ NULL
 #' @param x Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{as.integer}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_toronto_indicator(x = x)
+#' res
 .otis_toronto_indicator <- function(x) {
   as.integer(tolower(as.character(x)) == "toronto")
 }
 
 #' .otis_age_50plus_indicator
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_c06_ruhela_aggregate}, \code{morie_otis_analyze_c09_ruhela_aggregate}, \code{morie_otis_analyze_d05_ruhela_aggregate}.
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_c06_ruhela_aggregate},
+#' \code{morie_otis_analyze_c09_ruhela_aggregate},
+#' \code{morie_otis_analyze_d05_ruhela_aggregate}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{as.integer}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_age_50plus_indicator(x = x)
+#' res
 .otis_age_50plus_indicator <- function(x) {
   as.integer(grepl("50", as.character(x)))
 }
 
 #' .otis_indigenous_indicator
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_c03_ruhela_aggregate}, \code{morie_otis_analyze_c04_ruhela_aggregate}, \code{morie_otis_analyze_c04_ruhela_aggregate_region_cluster} and 1 others in the module.
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_c03_ruhela_aggregate},
+#' \code{morie_otis_analyze_c04_ruhela_aggregate},
+#' \code{morie_otis_analyze_c04_ruhela_aggregate_region_cluster} and 1 others in the
+#' module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{as.integer}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_indigenous_indicator(x = x)
+#' res
 .otis_indigenous_indicator <- function(x) {
   as.integer(tolower(as.character(x)) == "indigenous")
 }
 
 #' .otis_minority_religion_indicator
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_c05_ruhela_aggregate}, \code{morie_otis_analyze_c08_ruhela_aggregate}, \code{morie_otis_analyze_d04_ruhela_aggregate}.
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_c05_ruhela_aggregate},
+#' \code{morie_otis_analyze_c08_ruhela_aggregate},
+#' \code{morie_otis_analyze_d04_ruhela_aggregate}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{as.integer}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_minority_religion_indicator(x = x)
+#' res
 .otis_minority_religion_indicator <- function(x) {
   excluded <- c("christian", "no religion", "unknown or not reported")
   as.integer(!(tolower(trimws(as.character(x))) %in% excluded))
@@ -1123,6 +1167,9 @@ print.morie_otis_analysis_result <- function(x, ...) {
 #'
 #' @return A logical value.
 #' @export
+#' @examples
+#' res <- .otis_causal_available()
+#' res
 .otis_causal_available <- function() {
   exists("morie_otis_irm_dml", mode = "function") &&
     exists("morie_otis_make_pair_alert_to_volatility_ruhela",
@@ -1131,7 +1178,9 @@ print.morie_otis_analysis_result <- function(x, ...) {
 
 #' .otis_not_yet_ported
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_a01}, \code{morie_otis_analyze_a01_ruhela_alt_age}, \code{morie_otis_analyze_a01_ruhela_alt_gender} and 42 others in the module.
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_a01}, \code{morie_otis_analyze_a01_ruhela_alt_age},
+#' \code{morie_otis_analyze_a01_ruhela_alt_gender} and 42 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -1376,7 +1425,10 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
 
 #' .otis_aggregate_glm
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b03_ruhela_aggregate}, \code{morie_otis_analyze_b04_ruhela_aggregate}, \code{morie_otis_analyze_b06_ruhela_aggregate} and 21 others in the module.
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_b03_ruhela_aggregate},
+#' \code{morie_otis_analyze_b04_ruhela_aggregate},
+#' \code{morie_otis_analyze_b06_ruhela_aggregate} and 21 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -2650,13 +2702,19 @@ morie_otis_analyze_b01_ruhela_subgroup_male <- function(data = NULL,
 
 #' .otis_classify_bin
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b05_mandela_classification}, \code{morie_otis_analyze_c11_mandela_classification}.
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_b05_mandela_classification},
+#' \code{morie_otis_analyze_c11_mandela_classification}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x Coerced to character by the body, with \code{as.character}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_classify_bin(x = x)
+#' res
 .otis_classify_bin <- function(x) {
   s <- as.character(x)
   out <- rep("Unknown", length(s))
@@ -2970,7 +3028,8 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
 #' the source it follows.
 #'
 #' @param tbl A matrix; passed to \code{dim}.
-#' @return A list with \code{chi2}, \code{dof}, \code{pvalue}, \code{cramer_v}, \code{n}, \code{min_cell}, \code{min_expected}.
+#' @return A list with \code{chi2}, \code{dof}, \code{pvalue}, \code{cramer_v}, \code{n},
+#' \code{min_cell}, \code{min_expected}.
 #' @export
 .otis_chi2_cramer <- function(tbl) {
   if (length(tbl) == 0L || sum(tbl) == 0L)
@@ -3002,7 +3061,8 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
 
 #' .otis_contingency_chi2
 #'
-#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_c_chi2}, \code{morie_otis_analyze_d_chi2}.
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_c_chi2}, \code{morie_otis_analyze_d_chi2}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'

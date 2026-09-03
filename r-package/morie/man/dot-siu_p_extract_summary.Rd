@@ -17,3 +17,8 @@ A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+txt <- c('alpha', 'beta', 'gamma', 'delta')
+res <- .siu_p_extract_summary(text = txt)
+res
+}

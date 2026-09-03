@@ -17,3 +17,8 @@ A step of the llm implementation. Called by \code{.morie_llm_freeapi_completion}
 See the file header for the source the module follows.
 follows.
 }
+\examples{
+txt <- c('alpha', 'beta', 'gamma', 'delta')
+res <- .morie_llm_strip_think(text = txt)
+res
+}

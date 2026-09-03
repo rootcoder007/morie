@@ -31,5 +31,6 @@ When \code{survey} is installed, defers to \code{survey::calibrate()} for a full
 design-aware result; otherwise computes the linear adjustment in base R.
 }
 \examples{
-morie_weights_greg(weights = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), population_totals = 5L)
+morie_weights_greg(weights = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
+  population_totals = 5L)
 }

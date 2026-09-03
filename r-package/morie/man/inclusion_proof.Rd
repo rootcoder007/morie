@@ -19,7 +19,9 @@ A list with \code{path}, \code{path_hex}, \code{length}, \code{index}, \code{siz
 }
 \keyword{internal}
 \examples{
-leaves <- list("a", "b", "c", "d", "e")
-pr <- inclusion_proof(leaves, index = 2)
-c(pr$index, pr$size, pr$length)
+if (morie_crypto_sodium_available()) {
+  leaves <- list("a", "b", "c", "d", "e")
+  pr <- inclusion_proof(leaves, index = 2)
+  c(pr$index, pr$size, pr$length)
+}
 }

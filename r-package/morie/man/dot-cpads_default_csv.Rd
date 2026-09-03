@@ -14,3 +14,7 @@ A step of the modules implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .cpads_default_csv()
+res
+}

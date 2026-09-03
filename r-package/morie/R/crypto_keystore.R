@@ -20,6 +20,9 @@
 #'
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' res <- .morie_keystore_default_path()
+#' res
 .morie_keystore_default_path <- function() {
   override <- Sys.getenv("MORIE_KEYSTORE_PATH", "")
   if (nzchar(override)) {
@@ -36,7 +39,8 @@
 
 #' .morie_keystore_require
 #'
-#' A step of the crypto_keystore implementation. Called by \code{.morie_derive_key}, \code{.morie_read_store}, \code{.morie_write_store} and 4 others in the module.
+#' A step of the crypto_keystore implementation. Called by \code{.morie_derive_key},
+#' \code{.morie_read_store}, \code{.morie_write_store} and 4 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -55,7 +59,8 @@
 
 #' .morie_resolve_path
 #'
-#' A step of the crypto_keystore implementation. Called by \code{.morie_read_store}, \code{.morie_write_store}, \code{morie_crypto_keystore_create}.
+#' A step of the crypto_keystore implementation. Called by \code{.morie_read_store},
+#' \code{.morie_write_store}, \code{morie_crypto_keystore_create}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -68,7 +73,9 @@
 
 #' .morie_derive_key
 #'
-#' A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load} and 1 others in the module.
+#' A step of the crypto_keystore implementation. Called by
+#' \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_list},
+#' \code{morie_crypto_keystore_load} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -98,7 +105,9 @@
 
 #' .morie_hex_to_raw
 #'
-#' A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load}, \code{morie_crypto_keystore_store}.
+#' A step of the crypto_keystore implementation. Called by
+#' \code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load},
+#' \code{morie_crypto_keystore_store}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -119,7 +128,8 @@
 
 #' .morie_raw_to_hex
 #'
-#' A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_store}.
+#' A step of the crypto_keystore implementation. Called by
+#' \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_store}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -133,7 +143,9 @@
 
 #' .morie_read_store
 #'
-#' A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load}, \code{morie_crypto_keystore_store}.
+#' A step of the crypto_keystore implementation. Called by
+#' \code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load},
+#' \code{morie_crypto_keystore_store}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -151,7 +163,8 @@
 
 #' .morie_write_store
 #'
-#' A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_store}.
+#' A step of the crypto_keystore implementation. Called by
+#' \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_store}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'

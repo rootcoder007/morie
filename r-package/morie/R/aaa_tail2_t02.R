@@ -101,6 +101,10 @@ OddsRat <- function(a, b, c, d, conf_level = 0.95, correction = 0) {
 #' @param X A matrix; passed to \code{nrow}.
 #' @return The value of \code{X}, as built in the body.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .t2_table(X = x)
+#' res
 .t2_table <- function(X) {
   X <- as.matrix(X)
   storage.mode(X) <- "double"
@@ -180,6 +184,9 @@ CttAlphaMax <- function(X) {
 #' @param n Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' res <- .t2_qn_finite_c(n = 3L)
+#' res
 .t2_qn_finite_c <- function(n) {
   inner <- if (n %% 2L)  1.60188 + (-2.1284 - 5.172 / n) / n
            else          3.67561 + ( 1.9654 + (6.987 - 77 / n) / n) / n

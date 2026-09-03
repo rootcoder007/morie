@@ -36,5 +36,6 @@ arXiv:1705.05363. Eqs. 2-7.
 }
 \keyword{internal}
 \examples{
-morie_explor(states = c(1, 2, 3, 4, 5, 6, 7, 8), actions = c(1, 2, 3, 4, 5, 6, 7, 8), next_states = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_explor(states = c(1, 2, 3, 4, 5, 6, 7, 8), actions = c(1, 2, 3, 4, 5, 6, 7, 8),
+  next_states = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

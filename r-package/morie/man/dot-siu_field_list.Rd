@@ -12,3 +12,7 @@ A vector, from \code{c}.
 \description{
 exact field list and order the C++ parser emits.
 }
+\examples{
+res <- .siu_field_list()
+res
+}

@@ -58,7 +58,7 @@ Offline mode reads bundled 5-row synthetic fixtures
 \code{toronto_zoning_stats_sample.csv}) -- SYNTH-stamped, not
 attributable to actual Toronto neighbourhoods. Live mode hits
 the FeatureServer via the 3SS+ generic
-\code{\link[=morie_datasets_arcgis_item_by_id]{morie_datasets_arcgis_item_by_id()}} resolver.
+\code{morie_datasets_arcgis_item_by_id()} resolver.
 }
 \examples{
 df <- morie_datasets_toronto_zoning_per_neighbourhood(offline = TRUE)

@@ -26,6 +26,9 @@ NULL
 #'
 #' @return A length-1 character vector containing JSON text.
 #' @export
+#' @examples
+#' res <- stat_bridge_registry_json()
+#' res
 stat_bridge_registry_json <- function() {
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     stop("jsonlite is required for registry-json output")
@@ -86,6 +89,9 @@ stat_bridge_help <- function() {
 #'
 #' @return A list with \code{write}, \code{call}, \code{getvalue}.
 #' @export
+#' @examples
+#' res <- .bridge_log()
+#' res
 .bridge_log <- function() {
   parts <- character(0)
   list(

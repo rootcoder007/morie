@@ -19,3 +19,7 @@ compatible base URL), compatible.  optional OLLAMA_MODEL (default
 (10 min) accommodates slow CPU-only local inference on a Raspberry
 Pi. Override globally via MORIE_LLM_TIMEOUT_S env var.
 }
+\examples{
+res <- .siu_llm_default_timeout()
+res
+}

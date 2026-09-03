@@ -22,8 +22,10 @@
 #' the source it follows.
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
-#' @param context Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
-#' @return A list with \code{scaled}, \code{scale}, \code{degenerate}, \code{context}, \code{preserves_zero}.
+#' @param context Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
+#' @return A list with \code{scaled}, \code{scale}, \code{degenerate}, \code{context},
+#' \code{preserves_zero}.
 #' @export
 chronos_mean_scale <- function(x, context = NULL) {
   v <- as.numeric(x)
@@ -71,7 +73,8 @@ chronos_uniform_bins <- function(lo = -15.0, hi = 15.0, n_bins = 4096L) {
 #'
 #' @param samples Coerced to numeric by the body, with \code{as.numeric}.
 #' @param n_bins Coerced to integer by the body, with \code{as.integer}. Defaults to \code{4096L}.
-#' @return A list with \code{centers}, \code{edges}, \code{n_bins}, \code{scheme}, \code{range}, \code{caveat}.
+#' @return A list with \code{centers}, \code{edges}, \code{n_bins}, \code{scheme},
+#' \code{range}, \code{caveat}.
 #' @export
 chronos_quantile_bins <- function(samples, n_bins = 4096L) {
   v <- sort(as.numeric(samples))
@@ -101,7 +104,8 @@ chronos_quantile_bins <- function(samples, n_bins = 4096L) {
 #'
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @param bins A list; the body reads \code{$centers}, \code{$edges} from it.
-#' @return A list with \code{tokens}, \code{n_clipped}, \code{clipped_fraction}, \code{in_range}, \code{note}.
+#' @return A list with \code{tokens}, \code{n_clipped}, \code{clipped_fraction},
+#' \code{in_range}, \code{note}.
 #' @export
 chronos_quantize <- function(x, bins) {
   v <- as.numeric(x)
@@ -157,8 +161,10 @@ chronos_dequantize <- function(tokens, bins) {
 #' @param bins A list; the body reads \code{$n_bins} from it.
 #' @param context Passed to \code{chronos_mean_scale}.
 #' @param add_eos A flag; the body branches on it. Defaults to \code{TRUE}.
-#' @param pad_to Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
-#' @return A list with \code{estimate}, \code{tokens}, \code{scale}, \code{n_clipped}, \code{clipped_fraction}, \code{vocab_size}, \code{method}, \code{ignores}.
+#' @param pad_to Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
+#' @return A list with \code{estimate}, \code{tokens}, \code{scale}, \code{n_clipped},
+#' \code{clipped_fraction}, \code{vocab_size}, \code{method}, \code{ignores}.
 #' @export
 chronos_tokenize <- function(x, bins, context = NULL, add_eos = TRUE,
                              pad_to = NULL) {
@@ -200,7 +206,8 @@ chronos_detokenize <- function(tokens, bins, scale) {
 #'
 #' @param token_probs Coerced to numeric by the body, with \code{as.numeric}.
 #' @param bins A list; the body reads \code{$centers} from it.
-#' @param quantiles Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{c(0.1, 0.5, 0.9)}.
+#' @param quantiles Coerced to numeric by the body, with \code{as.numeric}. Defaults to
+#' \code{c(0.1, 0.5, 0.9)}.
 #' @return A list with \code{mean}, \code{quantiles}, \code{mode}, \code{note}.
 #' @export
 chronos_forecast_summary <- function(token_probs, bins,
