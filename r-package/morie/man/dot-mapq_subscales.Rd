@@ -12,3 +12,7 @@ A list with \code{EE}, \code{EA}, \code{UA}, \code{ER}.
 \description{
 mirror in src/morie/fn/_mapq_const.py).
 }
+\examples{
+res <- .mapq_subscales()
+res
+}

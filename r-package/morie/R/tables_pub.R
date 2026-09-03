@@ -34,7 +34,8 @@ NULL
 
 #' .tbl_fmt_num
 #'
-#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{format_number} and 7 others in the module.
+#' A step of the tables_pub implementation. Called by \code{anova_table},
+#' \code{correlation_table}, \code{format_number} and 7 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -55,7 +56,8 @@ NULL
 
 #' .tbl_fmt_pval
 #'
-#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{hazard_ratio_table}, \code{model_comparison_table} and 3 others in the module.
+#' A step of the tables_pub implementation. Called by \code{anova_table},
+#' \code{hazard_ratio_table}, \code{model_comparison_table} and 3 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -64,6 +66,9 @@ NULL
 #' @param apa A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return The value of \code{s}, as built in the body.
 #' @export
+#' @examples
+#' res <- .tbl_fmt_pval(p = 0.5)
+#' res
 .tbl_fmt_pval <- function(p, digits = 3L, apa = FALSE) {
   if (!is.finite(p)) return("")
   if (p < 10^(-digits))
@@ -77,13 +82,17 @@ NULL
 
 #' .tbl_stars
 #'
-#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{hazard_ratio_table} and 4 others in the module.
+#' A step of the tables_pub implementation. Called by \code{anova_table},
+#' \code{correlation_table}, \code{hazard_ratio_table} and 4 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p Passed to \code{is.finite}.
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .tbl_stars(p = 0.5)
+#' res
 .tbl_stars <- function(p) {
   if (!is.finite(p)) return("")
   if (p < 0.001) return("***")
@@ -117,12 +126,16 @@ NULL
 
 #' .tbl_footnotes_new
 #'
-#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
+#' A step of the tables_pub implementation. Called by \code{anova_table},
+#' \code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return The value of \code{e}, as built in the body.
 #' @export
+#' @examples
+#' res <- .tbl_footnotes_new()
+#' res
 .tbl_footnotes_new <- function() {
   e <- new.env(parent = emptyenv())
   e$notes <- character(0)
@@ -131,7 +144,8 @@ NULL
 
 #' .tbl_footnotes_add
 #'
-#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
+#' A step of the tables_pub implementation. Called by \code{anova_table},
+#' \code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -146,7 +160,8 @@ NULL
 
 #' .tbl_footnotes_render
 #'
-#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
+#' A step of the tables_pub implementation. Called by \code{anova_table},
+#' \code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -175,7 +190,8 @@ NULL
 
 #' .tbl_to_format
 #'
-#' A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{format_dataframe} and 7 others in the module.
+#' A step of the tables_pub implementation. Called by \code{anova_table},
+#' \code{correlation_table}, \code{format_dataframe} and 7 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -185,6 +201,12 @@ NULL
 #' @param footnotes Passed to \code{nzchar}. Defaults to \code{""}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' df <- data.frame(x = c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), y = c(2.9, 5.1, 6.8,
+#' 9.4, 11.2, 13.1, 15.0, 17.6), g = c('a', 'b', 'a', 'b', 'a', 'b', 'a', 'b'),
+#' stringsAsFactors = FALSE)
+#' res <- .tbl_to_format(df = df)
+#' res
 .tbl_to_format <- function(df, fmt = c("dataframe", "latex", "html",
                                         "markdown", "text", "csv"),
                             title = "", footnotes = "") {
@@ -423,7 +445,8 @@ table1 <- function(data, group_col = NULL,
 #' source it follows.
 #'
 #' @param m Passed to \code{summary}.
-#' @return A list with \code{params}, \code{se}, \code{pvalues}, \code{ci}, \code{nobs}, \code{rsquared}, \code{aic}, \code{bic}, \code{llf}.
+#' @return A list with \code{params}, \code{se}, \code{pvalues}, \code{ci}, \code{nobs},
+#' \code{rsquared}, \code{aic}, \code{bic}, \code{llf}.
 #' @export
 .tbl_extract_model <- function(m) {
   b <- stats::coef(m)

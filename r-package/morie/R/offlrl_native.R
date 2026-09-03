@@ -132,12 +132,16 @@ offlrl_safe_max_key <- function(qmap, s, A) {
 #' @param gamma Numeric; combined arithmetically in the body. Defaults to \code{0.99}.
 #' @param variant One of \code{"H"}, \code{"mu"}, \code{"rho"}. Defaults to \code{"H"}.
 #' @param backup One of \code{"max"}, \code{"pi"}. Defaults to \code{"max"}.
-#' @param policy The body requires: offlrl: variant='rho' needs policy(a|s) to play the role of pi^\{k-1\}.
+#' @param policy The body requires: offlrl: variant='rho' needs policy(a|s) to play the
+#' role of pi^\{k-1\}.
 #' @param mu The body requires: offlrl: variant must be one of c('H','rho','mu'), got '.
 #' @param lr Numeric; combined arithmetically in the body. Defaults to \code{0.5}.
 #' @param iters Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000}.
 #' @param tol Passed to \code{<}. Defaults to \code{1e-12}.
-#' @return A list with \code{estimate}, \code{q}, \code{value}, \code{greedy}, \code{behavior}, \code{counts}, \code{penalty}, \code{bellman_error}, \code{objective}, \code{alpha}, \code{variant}, \code{backup}, \code{n_transitions}, \code{method}.
+#' @return A list with \code{estimate}, \code{q}, \code{value}, \code{greedy},
+#' \code{behavior}, \code{counts}, \code{penalty}, \code{bellman_error},
+#' \code{objective}, \code{alpha}, \code{variant}, \code{backup}, \code{n_transitions},
+#' \code{method}.
 #' @export
 morie_offlrl <- function(dataset, states = NULL, actions = NULL,
                          alpha = 1.0, gamma = 0.99, variant = "H",

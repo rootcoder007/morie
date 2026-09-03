@@ -21,5 +21,6 @@ Named list with \code{diagonal_share}, \code{chi2},
 Region-at-time vs region-now locality contingency
 }
 \examples{
-mrm_uof_region_locality(df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), region_at_col = c(1, 2, 3, 4, 5, 6, 7, 8), region_now_col = c(1, 2, 3, 4, 5, 6, 7, 8))
+mrm_uof_region_locality(df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)),
+  region_at_col = c(1, 2, 3, 4, 5, 6, 7, 8), region_now_col = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

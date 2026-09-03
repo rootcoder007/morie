@@ -45,11 +45,13 @@ NULL
 #' constants directly to any C++ kernel routine.
 #'
 #' \itemize{
-#'   \item \code{KERNEL_GAUSSIAN}: \eqn{K(u) = (1/\sqrt{2\pi}) \exp(-u^2/2)}{K(u) = (1/sqrt(2 pi)) exp(-u^2 / 2)}
+#'   \item \code{KERNEL_GAUSSIAN}: \eqn{K(u) = (1/\sqrt{2\pi}) \exp(-u^2/2)}{K(u) =
+#' (1/sqrt(2 pi)) exp(-u^2 / 2)}
 #'   \item \code{KERNEL_EPANECHNIKOV}: \eqn{K(u) = (3/4)(1-u^2)}{K(u) = 0.75 (1 - u^2)} on |u| <= 1
 #'   \item \code{KERNEL_UNIFORM}: \eqn{K(u) = 1/2}{K(u) = 0.5} on |u| <= 1
 #'   \item \code{KERNEL_TRIANGULAR}: \eqn{K(u) = 1 - |u|}{K(u) = 1 - |u|} on |u| <= 1
-#'   \item \code{KERNEL_BIWEIGHT}: \eqn{K(u) = (15/16)(1-u^2)^2}{K(u) = (15/16) (1 - u^2)^2} on |u| <= 1
+#'   \item \code{KERNEL_BIWEIGHT}: \eqn{K(u) = (15/16)(1-u^2)^2}{K(u) = (15/16) (1 -
+#' u^2)^2} on |u| <= 1
 #' }
 #'
 #' @format Integer scalars (0L, 1L, 2L, 3L, 4L).
@@ -87,13 +89,18 @@ KERNEL_BIWEIGHT <- 4L
 
 #' .kernel_gaussian
 #'
-#' A step of the semipar_bridge implementation. Called by \code{kernel_cond_moments}, \code{local_linear}, \code{loocv_bandwidth} and 1 others in the module.
+#' A step of the semipar_bridge implementation. Called by \code{kernel_cond_moments},
+#' \code{local_linear}, \code{loocv_bandwidth} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param u Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .kernel_gaussian(u = x)
+#' res
 .kernel_gaussian <- function(u) {
   (1.0 / sqrt(2.0 * pi)) * exp(-0.5 * u * u)
 }
@@ -107,6 +114,10 @@ KERNEL_BIWEIGHT <- 4L
 #' @param u Numeric; passed to \code{abs}.
 #' @return The value of \code{ifelse}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .kernel_epanechnikov(u = x)
+#' res
 .kernel_epanechnikov <- function(u) {
   ifelse(abs(u) <= 1.0, 0.75 * (1.0 - u * u), 0.0)
 }
@@ -120,6 +131,10 @@ KERNEL_BIWEIGHT <- 4L
 #' @param u Numeric; passed to \code{abs}.
 #' @return The value of \code{ifelse}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .kernel_uniform(u = x)
+#' res
 .kernel_uniform <- function(u) {
   ifelse(abs(u) <= 1.0, 0.5, 0.0)
 }
@@ -133,6 +148,10 @@ KERNEL_BIWEIGHT <- 4L
 #' @param u Numeric; passed to \code{abs}.
 #' @return The value of \code{ifelse}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .kernel_triangular(u = x)
+#' res
 .kernel_triangular <- function(u) {
   ifelse(abs(u) <= 1.0, 1.0 - abs(u), 0.0)
 }
@@ -146,6 +165,10 @@ KERNEL_BIWEIGHT <- 4L
 #' @param u Numeric; passed to \code{abs}.
 #' @return The value of \code{ifelse}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .kernel_biweight(u = x)
+#' res
 .kernel_biweight <- function(u) {
   ifelse(abs(u) <= 1.0, (15.0 / 16.0) * (1.0 - u * u) ^ 2, 0.0)
 }
@@ -171,7 +194,8 @@ KERNEL_BIWEIGHT <- 4L
 
 #' .resolve_kernel
 #'
-#' A step of the semipar_bridge implementation. Called by \code{kde}, \code{kernel_eval}, \code{SemiparKernels}.
+#' A step of the semipar_bridge implementation. Called by \code{kde}, \code{kernel_eval},
+#' \code{SemiparKernels}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -234,7 +258,8 @@ kernel_eval <- function(u, kernel_type = KERNEL_GAUSSIAN) {
 #'   \emph{Theory of Probability and Its Applications}, 9(1), 141-142.
 #' @export
 #' @examples
-#' nw_regression(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), x_eval = c(1, 2, 3, 4, 5, 6, 7, 8), bandwidth = 0.5)
+#' nw_regression(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), x_eval =
+#' c(1, 2, 3, 4, 5, 6, 7, 8), bandwidth = 0.5)
 nw_regression <- function(x, y, x_eval, bandwidth) {
   x <- as.numeric(x)
   y <- as.numeric(y)

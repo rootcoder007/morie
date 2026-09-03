@@ -172,11 +172,15 @@ muzero_add_noise <- function(prior, alpha, frac, seed) {
 #' @param gamma Passed to \code{muzero_backup}. Defaults to \code{0.997}.
 #' @param c1 Passed to \code{muzero_select}. Defaults to \code{1.25}.
 #' @param c2 The body requires: muzero: c2 must be > 0. Defaults to \code{19652}.
-#' @param dirichlet_alpha Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
-#' @param exploration_fraction Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.25}.
+#' @param dirichlet_alpha Optional; may be \code{NULL}. Coerced to numeric by the body,
+#' with \code{as.numeric}.
+#' @param exploration_fraction Coerced to numeric by the body, with \code{as.numeric}.
+#' Defaults to \code{0.25}.
 #' @param temperature Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
 #' @param seed Passed to \code{muzero_add_noise}. Defaults to \code{0}.
-#' @return A list with \code{estimate}, \code{policy}, \code{action}, \code{value}, \code{visits}, \code{Q}, \code{prior}, \code{n_dynamics_calls}, \code{n_prediction_calls}, \code{simulations}, \code{method}.
+#' @return A list with \code{estimate}, \code{policy}, \code{action}, \code{value},
+#' \code{visits}, \code{Q}, \code{prior}, \code{n_dynamics_calls},
+#' \code{n_prediction_calls}, \code{simulations}, \code{method}.
 #' @export
 muzero_search <- function(observation, actions, representation, dynamics,
                           prediction, simulations = 50, gamma = 0.997,

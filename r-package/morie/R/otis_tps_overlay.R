@@ -46,7 +46,8 @@ NULL
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param df_b01 A list; the body reads \code{$EndFiscalYear}, \code{$Region_AtTimeOfPlacement} from it.
+#' @param df_b01 A list; the body reads \code{$EndFiscalYear},
+#' \code{$Region_AtTimeOfPlacement} from it.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .otis_tps_toronto_seg_by_year <- function(df_b01) {

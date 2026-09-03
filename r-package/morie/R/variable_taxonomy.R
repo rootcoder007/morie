@@ -157,7 +157,8 @@ NULL
 #' the source it follows.
 #'
 #' @param col_name Character; passed to \code{grepl}.
-#' @param dtype One of \code{"bool"}, \code{"date"}, \code{"datetime"}, \code{"float"}, \code{"int"}, \code{"string"}.
+#' @param dtype One of \code{"bool"}, \code{"date"}, \code{"datetime"}, \code{"float"},
+#' \code{"int"}, \code{"string"}.
 #' @param valid_values Optional; may be \code{NULL}. A vector; its length is taken.
 #' @param dataset_name Accepted by the signature and not used anywhere in the body.
 #' @return A character value.

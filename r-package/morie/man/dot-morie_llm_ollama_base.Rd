@@ -14,3 +14,7 @@ A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_ll
 See the file header for the source the module follows.
 follows.
 }
+\examples{
+res <- .morie_llm_ollama_base()
+res
+}

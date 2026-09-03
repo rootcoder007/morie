@@ -20,3 +20,9 @@ A numeric value.
 is directly comparable to svmopt.dual_objective up to the sign of the
 threshold term -- the threshold does not enter the dual itself.
 }
+\examples{
+b <- c(1.5, 2.5, 3.5)
+A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+res <- .smoopt_dual_objective(alpha = 0.5, y = b, K = A)
+res
+}

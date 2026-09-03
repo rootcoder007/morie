@@ -19,3 +19,7 @@ A step of the synth_otis implementation. No other function in the package calls 
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .morie_otis_c01_panel()
+res
+}

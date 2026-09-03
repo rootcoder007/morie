@@ -46,6 +46,10 @@
 #' @param values A vector; indexed elementwise.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .gp_lse(values = x)
+#' res
 .gp_lse <- function(values) {
   vals <- values[is.finite(values)]
   if (length(vals) == 0L) return(-Inf)
@@ -144,7 +148,8 @@ design_from_prior <- function(n, prior_ppf, dim = NULL, skip = 1L) {
 
 #' .gp_summarise
 #'
-#' A step of the abcgp_native implementation. Called by \code{.gp_mw_sampler}, \code{gabc_log_likelihood}, \code{synthetic_log_likelihood}.
+#' A step of the abcgp_native implementation. Called by \code{.gp_mw_sampler},
+#' \code{gabc_log_likelihood}, \code{synthetic_log_likelihood}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -213,7 +218,8 @@ gabc_log_likelihood <- function(sim, obs, theta, n_sim = 50L, epsilon = 1.0,
 
 #' .gp_chol
 #'
-#' A step of the abcgp_native implementation. Called by \code{.gp_draw_mean}, \code{.gp_mvn_logpdf}, \code{.gp_profile_nll} and 1 others in the module.
+#' A step of the abcgp_native implementation. Called by \code{.gp_draw_mean},
+#' \code{.gp_mvn_logpdf}, \code{.gp_profile_nll} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -221,6 +227,10 @@ gabc_log_likelihood <- function(sim, obs, theta, n_sim = 50L, epsilon = 1.0,
 #' @param jitter Defaults to \code{1e-12}.
 #' @return The value of \code{L}, as built in the body.
 #' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' res <- .gp_chol(a = A)
+#' res
 .gp_chol <- function(a, jitter = 1e-12) {
   n <- nrow(a)
   L <- matrix(0, n, n)
@@ -240,7 +250,8 @@ gabc_log_likelihood <- function(sim, obs, theta, n_sim = 50L, epsilon = 1.0,
 
 #' .gp_chol_solve
 #'
-#' A step of the abcgp_native implementation. Called by \code{.gp_mvn_logpdf}, \code{.gp_profile_nll}, \code{gp_fit} and 1 others in the module.
+#' A step of the abcgp_native implementation. Called by \code{.gp_mvn_logpdf},
+#' \code{.gp_profile_nll}, \code{gp_fit} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -265,7 +276,8 @@ gabc_log_likelihood <- function(sim, obs, theta, n_sim = 50L, epsilon = 1.0,
 
 #' .gp_mvn_logpdf
 #'
-#' A step of the abcgp_native implementation. Called by \code{.gp_mw_sampler}, \code{synthetic_log_likelihood}.
+#' A step of the abcgp_native implementation. Called by \code{.gp_mw_sampler},
+#' \code{synthetic_log_likelihood}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -316,7 +328,8 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
 
 #' .gp_corr
 #'
-#' A step of the abcgp_native implementation. Called by \code{.gp_profile_nll}, \code{gp_fit}, \code{gp_predict}.
+#' A step of the abcgp_native implementation. Called by \code{.gp_profile_nll},
+#' \code{gp_fit}, \code{gp_predict}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -347,6 +360,10 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
 #' @param theta Numeric; combined arithmetically in the body.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .gp_basis(theta = x)
+#' res
 .gp_basis <- function(theta) c(1, theta, theta * theta)
 
 #' .gp_as_nugget
@@ -355,7 +372,8 @@ synthetic_log_likelihood <- function(draws, obs, epsilon = 0, summary = NULL) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param nugget Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param nugget Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}.
 #' @param n A count; the body uses it as \code{rep(...)}.
 #' @return The value of \code{pmax}.
 #' @export
@@ -663,6 +681,10 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
 #' @param v Numeric; passed to \code{sort}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .gp_median(v = x)
+#' res
 .gp_median <- function(v) {
   s <- sort(v)
   n <- length(s)
@@ -709,8 +731,10 @@ history_match <- function(sim, obs, prior_ppf, n_waves = 3L, n_design = 32L,
 #' @param xi Passed to \code{<}.
 #' @param delta_s Coerced to integer by the body, with \code{as.integer}.
 #' @param n_alpha A count; the body uses it as \code{seq_len(...)}.
-#' @param max_sim Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
-#' @return A list with \code{chain}, \code{acceptance_rate}, \code{n_simulations}, \code{unresolved_steps}.
+#' @param max_sim Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
+#' @return A list with \code{chain}, \code{acceptance_rate}, \code{n_simulations},
+#' \code{unresolved_steps}.
 #' @export
 .gp_mw_sampler <- function(sim, obs, log_prior, theta0, n_iter, n_sim,
                            epsilon, proposal_sd, summary, seed, adaptive,

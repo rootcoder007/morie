@@ -21,7 +21,9 @@ NULL
 
 #' .fairness_result
 #'
-#' A step of the fairness_gan implementation. Called by \code{.fairness_no_backend_result}, \code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}.
+#' A step of the fairness_gan implementation. Called by
+#' \code{.fairness_no_backend_result}, \code{morie_fairness_ctgan_debiaser},
+#' \code{morie_fairness_spatial_gan}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -46,12 +48,16 @@ NULL
 
 #' Prefer native R torch; fall back to reticulate + JAX
 #'
-#' A step of the fairness_gan implementation. Called by \code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}.
+#' A step of the fairness_gan implementation. Called by
+#' \code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return A list with \code{kind}, \code{note}.
 #' @export
+#' @examples
+#' res <- .fairness_backend()
+#' res
 .fairness_backend <- function() {
   # Prefer native R torch; fall back to reticulate + JAX.
   if (requireNamespace("torch", quietly = TRUE)) {
@@ -77,7 +83,8 @@ NULL
 
 #' .fairness_no_backend_result
 #'
-#' A step of the fairness_gan implementation. Called by \code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}.
+#' A step of the fairness_gan implementation. Called by
+#' \code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'

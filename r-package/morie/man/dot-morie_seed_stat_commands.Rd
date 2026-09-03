@@ -15,3 +15,7 @@ entries even before downstream packages append their own. The full
 multiple-testing and semiparametric callables ported alongside this
 file.
 }
+\examples{
+res <- .morie_seed_stat_commands()
+res
+}

@@ -15,3 +15,7 @@ A vector, from \code{as.numeric}.
 \description{
 k.vec() which iterates over the input.
 }
+\examples{
+res <- .as_numeric_vec(p = 0.5)
+res
+}

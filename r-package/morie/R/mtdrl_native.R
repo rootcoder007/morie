@@ -105,11 +105,16 @@ mtdrl_TabularHistoryAgent <- function(n_arms, epsilon = 0.1, optimistic = 1) {
 #'
 #' @param tasks Iterated over elementwise, with \code{lapply}.
 #' @param agent A list; the body reads \code{$act}, \code{$observe}, \code{$reset} from it.
-#' @param episode_length Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100}.
-#' @param n_arms Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
+#' @param episode_length Coerced to integer by the body, with \code{as.integer}. Defaults
+#' to \code{100}.
+#' @param n_arms Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
 #' @param seed Passed to \code{set.seed}. Defaults to \code{0}.
 #' @param reset_between_episodes A flag; the body branches on it. Defaults to \code{TRUE}.
-#' @return A list with \code{estimate}, \code{mean_reward}, \code{total_reward}, \code{regret}, \code{reward_by_step}, \code{optimal_action_rate}, \code{episode_reward}, \code{n_episodes}, \code{episode_length}, \code{n_arms}, \code{method}.
+#' @return A list with \code{estimate}, \code{mean_reward}, \code{total_reward},
+#' \code{regret}, \code{reward_by_step}, \code{optimal_action_rate},
+#' \code{episode_reward}, \code{n_episodes}, \code{episode_length}, \code{n_arms},
+#' \code{method}.
 #' @export
 mtdrl_run <- function(tasks, agent, episode_length = 100, n_arms = NULL,
                       seed = 0, reset_between_episodes = TRUE) {

@@ -130,7 +130,8 @@ test_that("model_comparison_table compares lm fits", {
   set.seed(1)
   df <- data.frame(x = rnorm(30))
   df$y <- df$x + rnorm(30)
-  m1 <- lm(y ~ 1, data = df); m2 <- lm(y ~ x, data = df)
+  m1 <- lm(y ~ 1, data = df)
+  m2 <- lm(y ~ x, data = df)
   out <- tryCatch(model_comparison_table(list(null = m1, fit = m2)), error = function(e) NULL)
   skip_if(is.null(out), "model_comparison signature change")
   expect_s3_class(out, "data.frame")
@@ -161,7 +162,8 @@ test_that("table1 returns a data.frame for a simple grouped dataset", {
 
 test_that("regression_table latex output is a character vector", {
   set.seed(1)
-  df <- data.frame(x = rnorm(20)); df$y <- df$x + rnorm(20)
+  df <- data.frame(x = rnorm(20))
+  df$y <- df$x + rnorm(20)
   m <- lm(y ~ x, data = df)
   out <- regression_table(list(m = m), output_format = "latex", show_ci = FALSE)
   expect_type(as.character(out), "character")

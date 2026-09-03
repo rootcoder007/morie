@@ -322,7 +322,9 @@ miprgr_enumerate_integer <- function(A, b, c, integer_vars, upper = 10,
 #' @param prune A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param max_nodes Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5000}.
 #' @param solver Passed to \code{miprgr_solve_relaxation}. Defaults to \code{"simplex"}.
-#' @return A list with \code{estimate}, \code{value}, \code{x}, \code{feasible}, \code{nodes}, \code{pruned}, \code{pruning}, \code{max_list_length}, \code{root_bound}, \code{truncated}, \code{method}, \code{note}.
+#' @return A list with \code{estimate}, \code{value}, \code{x}, \code{feasible},
+#' \code{nodes}, \code{pruned}, \code{pruning}, \code{max_list_length},
+#' \code{root_bound}, \code{truncated}, \code{method}, \code{note}.
 #' @export
 miprgr_branch_and_bound <- function(A, b, c, integer_vars, maximise = TRUE,
                                     prune = TRUE, max_nodes = 5000,

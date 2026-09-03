@@ -35,5 +35,6 @@ How much would unobserved outcomes need to differ from observed
 ones for the treatment effect to become non-significant?
 }
 \examples{
-tipping_point_analysis(estimate = 5L, se = c(1, 2, 3, 4, 5, 6, 7, 8), n_treated = c(1, 2, 3, 4, 5, 6, 7, 8), n_control = c(1, 2, 3, 4, 5, 6, 7, 8))
+tipping_point_analysis(estimate = 5L, se = c(1, 2, 3, 4, 5, 6, 7, 8),
+  n_treated = c(1, 2, 3, 4, 5, 6, 7, 8), n_control = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

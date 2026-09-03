@@ -17,3 +17,7 @@ A step of the multiple_testing implementation. Called by \code{benjamini_hochber
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+res <- .mt_check_p(p = 0.5)
+res
+}

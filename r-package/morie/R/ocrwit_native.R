@@ -17,7 +17,8 @@
 
 #' ocrwit_normalise_bbox
 #'
-#' A step of the ocrwit_native implementation. Called by \code{ocrwit_patch_of_box}, \code{ocrwit_segment_layout_boxes}.
+#' A step of the ocrwit_native implementation. Called by \code{ocrwit_patch_of_box},
+#' \code{ocrwit_segment_layout_boxes}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -161,7 +162,8 @@ ocrwit_patch_of_box <- function(box, width, height, patch_grid = 14) {
 #' @param height Passed to \code{ocrwit_patch_of_box}.
 #' @param patch_grid Passed to \code{ocrwit_patch_of_box}. Defaults to \code{14}.
 #' @param masked_text Passed to \code{unlist}. Defaults to \code{list()}.
-#' @return A list with \code{estimate}, \code{labels}, \code{patches}, \code{n_examples}, \code{positive_rate}, \code{method}, \code{note}.
+#' @return A list with \code{estimate}, \code{labels}, \code{patches}, \code{n_examples},
+#' \code{positive_rate}, \code{method}, \code{note}.
 #' @export
 morie_ocrwit <- function(text_boxes, masked_patches, width, height,
                          patch_grid = 14, masked_text = list()) {

@@ -27,5 +27,6 @@ Base R only.
 }
 \keyword{internal}
 \examples{
-miprgr_simplex(A = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), b = 5L, c = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2))
+miprgr_simplex(A = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), b = 5L,
+  c = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2))
 }

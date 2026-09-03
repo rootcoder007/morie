@@ -19,3 +19,7 @@ A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reac
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+res <- .tps_sp_toronto_grid()
+res
+}

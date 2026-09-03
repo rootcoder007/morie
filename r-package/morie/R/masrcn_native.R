@@ -61,7 +61,8 @@
 #' @param box A vector; indexed elementwise.
 #' @param out_size Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2L}.
 #' @param stride Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.
-#' @return A list with \code{pooled}, \code{quantised_box}, \code{quantisation_shift}, \code{caveat}.
+#' @return A list with \code{pooled}, \code{quantised_box}, \code{quantisation_shift},
+#' \code{caveat}.
 #' @export
 roi_pool <- function(features, box, out_size = 2L, stride = 1.0) {
   F <- as.matrix(features)
@@ -184,7 +185,8 @@ alignment_error <- function(features, box, out_size = 2L, stride = 1.0) {
 #' @param logits A matrix; passed to \code{as.matrix}.
 #' @param target A matrix; passed to \code{as.matrix}.
 #' @param decoupled A flag; the body branches on it. Defaults to \code{TRUE}.
-#' @return A list, whose contents depend on the branch taken; across the branches its names are \code{loss}, \code{kind}, \code{note}, \code{caveat}.
+#' @return A list, whose contents depend on the branch taken; across the branches its
+#' names are \code{loss}, \code{kind}, \code{note}, \code{caveat}.
 #' @export
 mask_loss <- function(logits, target, decoupled = TRUE) {
   L <- as.matrix(logits)
@@ -249,6 +251,9 @@ mask_rcnn_segmentation <- roi_align
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .masrcn_cheatsheet()
+#' res
 .masrcn_cheatsheet <- function() {
   paste("masrcn: Faster R-CNN plus a THIRD branch predicting a ",
         "binary mask per RoI. Two details carry it. RoIPool ",

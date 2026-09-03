@@ -28,6 +28,6 @@ the user needs to follow to get a full-fidelity crime CSV that
 morie_vpd_download_instructions()
 }
 \seealso{
-\code{\link[=morie_datasets_vpd_crime]{morie_datasets_vpd_crime()}} for the loader that
+\code{morie_datasets_vpd_crime()} for the loader that
 accepts the downloaded file.
 }

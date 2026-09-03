@@ -17,3 +17,8 @@ A step of the mrm_siu implementation. Called by \code{mrm_siu_case_to_decision_k
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+res <- .parse_iso(x = x)
+res
+}

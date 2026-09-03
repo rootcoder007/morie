@@ -30,6 +30,10 @@
 #' @param v A vector; its length is taken and its elements indexed.
 #' @return The value of \code{idx}, as built in the body.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .rsosort(v = x)
+#' res
 .rsosort <- function(v) {
   idx <- seq_along(v)
   n <- length(idx)
@@ -70,6 +74,10 @@
 #' @param A A matrix; passed to \code{nrow}.
 #' @return A list with \code{M}, \code{piv}, \code{sign}, \code{singular}.
 #' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' res <- .rslufactor(A = A)
+#' res
 .rslufactor <- function(A) {
   n <- nrow(A)
   M <- matrix(as.numeric(A), n, n)
@@ -141,6 +149,10 @@
 #' @param A A matrix; passed to \code{nrow}.
 #' @return The value of \code{d}, as built in the body.
 #' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' res <- .rsludet(A = A)
+#' res
 .rsludet <- function(A) {
   n <- nrow(A)
   if (n == 0L) return(1)
@@ -154,7 +166,8 @@
 # Solve A x = b; NULL when A is singular.
 #' Solve A x = b; NULL when A is singular
 #'
-#' A step of the helpers_rouss implementation. Called by \code{.rsltsfit}, \code{Lmsreg}, \code{Ltsreg} and 2 others in the module.
+#' A step of the helpers_rouss implementation. Called by \code{.rsltsfit}, \code{Lmsreg},
+#' \code{Ltsreg} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -162,6 +175,11 @@
 #' @param b A vector; indexed elementwise.
 #' @return The value of \code{x}, as built in the body.
 #' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' b <- c(1.5, 2.5, 3.5)
+#' res <- .rslusolve(A = A, b = b)
+#' res
 .rslusolve <- function(A, b) {
   n <- nrow(A)
   f <- .rslufactor(A)
@@ -186,7 +204,8 @@
 # Mean vector and covariance matrix (divisor |idx| - 1) of a subset.
 #' Mean vector and covariance matrix (divisor |idx| - 1) of a subset
 #'
-#' A step of the helpers_rouss implementation. Called by \code{.rscstep}, \code{Fastm}, \code{Mcdcv} and 2 others in the module.
+#' A step of the helpers_rouss implementation. Called by \code{.rscstep}, \code{Fastm},
+#' \code{Mcdcv} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -214,7 +233,8 @@
 #' Squared Mahalanobis distances of every row of X; NULL if S is
 #' singular
 #'
-#' A step of the helpers_rouss implementation. Called by \code{.rscstep}, \code{Fastm}, \code{Mvedet}.
+#' A step of the helpers_rouss implementation. Called by \code{.rscstep}, \code{Fastm},
+#' \code{Mvedet}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -254,7 +274,8 @@
 
 #' .rsnchoosek
 #'
-#' A step of the helpers_rouss implementation. Called by \code{.rscombosstride}, \code{Lmsreg}, \code{Ltsreg} and 2 others in the module.
+#' A step of the helpers_rouss implementation. Called by \code{.rscombosstride},
+#' \code{Lmsreg}, \code{Ltsreg} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -262,6 +283,9 @@
 #' @param k Numeric; passed to \code{min}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' res <- .rsnchoosek(n = 3L, k = 3L)
+#' res
 .rsnchoosek <- function(n, k) {
   if (k < 0L || k > n) return(0)
   k <- min(k, n - k)
@@ -273,7 +297,8 @@
 # Lexicographic k-subsets of 1..n, at most cap of them.  Returns a list.
 #' Lexicographic k-subsets of 1..n, at most cap of them.  Returns a list
 #'
-#' A step of the helpers_rouss implementation. Called by \code{.rscombosstride}, \code{Lmsreg}, \code{Ltsreg} and 2 others in the module.
+#' A step of the helpers_rouss implementation. Called by \code{.rscombosstride},
+#' \code{Lmsreg}, \code{Ltsreg} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -282,6 +307,9 @@
 #' @param cap Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{repeat}.
 #' @export
+#' @examples
+#' res <- .rscombos(n = 3L, k = 3L)
+#' res
 .rscombos <- function(n, k, cap = NULL) {
   out <- list()
   if (k > n || k < 0L) return(out)
@@ -343,12 +371,16 @@
 #' @param p Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' res <- .rstrimmedh(n = 3L, p = 0.5)
+#' res
 .rstrimmedh <- function(n, p) n %/% 2L + (p + 1L) %/% 2L
 
 # The most robust MCD subset size, [(n + p + 1) / 2].
 #' The most robust MCD subset size, \[(n + p + 1) / 2\]
 #'
-#' A step of the helpers_rouss implementation. Called by \code{Fastm}, \code{Mcdcv}, \code{Mcdv} and 1 others in the module.
+#' A step of the helpers_rouss implementation. Called by \code{Fastm}, \code{Mcdcv},
+#' \code{Mcdv} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -356,6 +388,9 @@
 #' @param p Numeric; combined arithmetically in the body.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' res <- .rsmcdh(n = 3L, p = 0.5)
+#' res
 .rsmcdh <- function(n, p) (n + p + 1L) %/% 2L
 
 # Shortest window of h points in a sorted univariate sample.  Rousseeuw (1984)
@@ -404,6 +439,9 @@
 #' @param p Numeric; combined arithmetically in the body.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' res <- .rsconsistency(h = 0.5, n = 3L, p = 0.5)
+#' res
 .rsconsistency <- function(h, n, p) {
   alpha <- h / n
   if (alpha >= 1) return(1)

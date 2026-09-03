@@ -494,6 +494,9 @@ morie_dsp_fbm_synthesis <- function(N, H = 0.5) {
 #' @param beta Numeric; combined arithmetically in the body. Defaults to \code{14}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' res <- .kaiser_window(N = 3L)
+#' res
 .kaiser_window <- function(N, beta = 14) {
   if (N == 1L) return(1)
   n <- seq.int(0, N - 1L)
@@ -512,6 +515,10 @@ morie_dsp_fbm_synthesis <- function(N, H = 0.5) {
 #' @param x Numeric; passed to \code{abs}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .bessel_i0(x = x)
+#' res
 .bessel_i0 <- function(x) {
   ax <- abs(x)
   out <- numeric(length(ax))

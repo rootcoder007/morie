@@ -31,7 +31,8 @@ Formula: \code{coverage = mean(lower <= theta <= upper)} and
 \code{p = P(Bin(R, 1 - alpha) <= n_covered)}.
 }
 \examples{
-Bndcvr(lower = c(1, 2, 3, 4, 5, 6, 7, 8), upper = c(1, 2, 3, 4, 5, 6, 7, 8), theta_true = c(1, 2, 3, 4, 5, 6, 7, 8))
+Bndcvr(lower = c(1, 2, 3, 4, 5, 6, 7, 8), upper = c(1, 2, 3, 4, 5, 6, 7, 8),
+  theta_true = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 The coverage requirements distinguished here are equations

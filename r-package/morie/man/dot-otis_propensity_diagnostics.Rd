@@ -19,3 +19,8 @@ A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate}, 
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+g <- c(0L, 1L, 0L, 1L, 1L, 0L, 1L, 0L)
+res <- .otis_propensity_diagnostics(p = 0.5, d = g)
+res
+}

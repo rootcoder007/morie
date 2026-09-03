@@ -13,3 +13,7 @@ The value of \code{file.path}.
 installed package has no project root. Degrade to NA so callers
 (.copy_legacy_artifacts) simply copy nothing rather than erroring.
 }
+\examples{
+res <- .legacy_reference_root()
+res
+}

@@ -15,3 +15,7 @@ The value of \code{M}, as built in the body.
 \description{
 matrix if it isn\'t already.
 }
+\examples{
+res <- .smoopt_K(K = 3L)
+res
+}

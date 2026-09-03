@@ -20,5 +20,6 @@ A numeric value.
 }
 \keyword{internal}
 \examples{
-morie:::morie_epe(sigma2 = c(1, 2, 3, 4, 5, 6, 7, 8), x_star = c(1, 2, 3, 4, 5, 6, 7, 8), eigenvalues = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie:::morie_epe(sigma2 = c(1, 2, 3, 4, 5, 6, 7, 8), x_star = c(1, 2, 3, 4, 5, 6, 7, 8),
+  eigenvalues = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

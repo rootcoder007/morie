@@ -19,3 +19,7 @@ A step of the database implementation. Called by \code{morie_cache_list}, \code{
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .morie_db_handle()
+res
+}

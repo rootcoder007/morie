@@ -4,7 +4,8 @@
 
 #' .as_series
 #'
-#' A step of the lyapun_native implementation. Called by \code{.lyapun_embed}, \code{autocorrelation_lag}, \code{divergence_curve} and 1 others in the module.
+#' A step of the lyapun_native implementation. Called by \code{.lyapun_embed},
+#' \code{autocorrelation_lag}, \code{divergence_curve} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -147,7 +148,8 @@ mean_period <- function(y, dt = 1.0) {
 
 #' .distance
 #'
-#' A step of the lyapun_native implementation. Called by \code{divergence_curve}, \code{lyapunov_exponent}.
+#' A step of the lyapun_native implementation. Called by \code{divergence_curve},
+#' \code{lyapunov_exponent}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -179,7 +181,9 @@ mean_period <- function(y, dt = 1.0) {
 #' @param dt Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @param min_sep Optional; may be \code{NULL}. Passed to \code{.nearest_neighbours}.
 #' @param max_steps Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.
-#' @return A list with \code{time}, \code{log_divergence}, \code{log_ratio}, \code{n_pairs}, \code{neighbour}, \code{d0}, \code{points}, \code{m}, \code{tau}, \code{min_sep}, \code{n_points}, \code{n_obs}.
+#' @return A list with \code{time}, \code{log_divergence}, \code{log_ratio},
+#' \code{n_pairs}, \code{neighbour}, \code{d0}, \code{points}, \code{m}, \code{tau},
+#' \code{min_sep}, \code{n_points}, \code{n_obs}.
 #' @export
 divergence_curve <- function(y, m = NULL, tau = NULL, dt = 1.0,
                               min_sep = NULL, max_steps = NULL) {
@@ -304,9 +308,14 @@ divergence_curve <- function(y, m = NULL, tau = NULL, dt = 1.0,
 #' @param fit Optional; may be \code{NULL}. A vector; indexed elementwise.
 #' @param min_sep Passed to \code{divergence_curve}.
 #' @param max_steps Passed to \code{divergence_curve}.
-#' @param method One of \code{"rosenstein"}, \code{"sato"}, \code{"sato_k"}. Defaults to \code{"rosenstein"}.
+#' @param method One of \code{"rosenstein"}, \code{"sato"}, \code{"sato_k"}. Defaults to
+#' \code{"rosenstein"}.
 #' @param k Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.
-#' @return A list with \code{estimate}, \code{lambda1}, \code{rosenstein}, \code{sato}, \code{sato_k}, \code{sato_k_curve}, \code{se}, \code{r_squared}, \code{intercept}, \code{time}, \code{log_divergence}, \code{log_ratio}, \code{n_pairs}, \code{fit_range}, \code{k}, \code{m}, \code{tau}, \code{min_sep}, \code{n_points}, \code{n}, \code{dt}, \code{method}, \code{note}.
+#' @return A list with \code{estimate}, \code{lambda1}, \code{rosenstein}, \code{sato},
+#' \code{sato_k}, \code{sato_k_curve}, \code{se}, \code{r_squared}, \code{intercept},
+#' \code{time}, \code{log_divergence}, \code{log_ratio}, \code{n_pairs},
+#' \code{fit_range}, \code{k}, \code{m}, \code{tau}, \code{min_sep}, \code{n_points},
+#' \code{n}, \code{dt}, \code{method}, \code{note}.
 #' @export
 lyapunov_exponent <- function(y, embedding = NULL, tau = NULL, dt = 1.0,
                                fit = NULL, min_sep = NULL, max_steps = NULL,
@@ -403,6 +412,9 @@ largest_lyapunov <- lyapunov_exponent
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .lyapun_cheatsheet()
+#' res
 .lyapun_cheatsheet <- function() {
   "lyapun: largest Lyapunov exponent (Rosenstein, Collins & De Luca 1993). Embed with delay J and dimension m, find each point's nearest neighbour at least a mean period away, and take lambda_1 as the slope of <ln d_j(i)> against i*dt over the initial rise -- no normalisation by d_j(0) is needed, since a constant offset does not change a slope. Expected values from the paper's table 1: 0.693 for the logistic map at mu = 4, 0.418 for the Henon map. Routes: 'rosenstein' (eq. 13, default), 'sato' (eq. 9), 'sato_k' (eq. 10, whose plateau the paper itself calls unreliable)."
 }

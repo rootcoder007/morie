@@ -14,6 +14,10 @@
 #' @param x A vector; its length is taken.
 #' @return The value of \code{ll}, as built in the body.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .extvm_log_gev(par = x, x = x)
+#' res
 .extvm_log_gev <- function(par, x) {
   mu <- par[1]
   sigma <- exp(par[2])

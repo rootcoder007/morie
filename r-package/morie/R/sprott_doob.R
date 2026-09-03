@@ -58,7 +58,8 @@ NULL
 #' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
 #' @param tables Carried through into a list the body builds. Defaults to \code{list()}.
 #' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
-#' @param warnings Coerced to character by the body, with \code{as.character}. Defaults to \code{character()}.
+#' @param warnings Coerced to character by the body, with \code{as.character}. Defaults
+#' to \code{character()}.
 #' @param payload Carried through into a list the body builds. Defaults to \code{list()}.
 #' @return The value of \code{out}, as built in the body.
 #' @export

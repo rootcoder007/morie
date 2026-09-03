@@ -14,3 +14,7 @@ A step of the fairness_gan implementation. Called by \code{morie_fairness_ctgan_
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .fairness_backend()
+res
+}

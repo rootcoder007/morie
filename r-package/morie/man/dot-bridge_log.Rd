@@ -14,3 +14,7 @@ A step of the stat_bridge implementation. Called by \code{stat_bridge_exec}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .bridge_log()
+res
+}

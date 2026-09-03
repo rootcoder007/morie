@@ -22,7 +22,9 @@ NULL
 
 #' .xai_result
 #'
-#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale}, \code{morie_fairness_xai_ceteris_paribus}, \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
+#' \code{morie_fairness_xai_ceteris_paribus},
+#' \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -47,13 +49,19 @@ NULL
 
 #' .xai_as_2d
 #'
-#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale}, \code{morie_fairness_xai_ceteris_paribus}, \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
+#' \code{morie_fairness_xai_ceteris_paribus},
+#' \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param X A matrix; passed to \code{as.matrix}.
 #' @return The value of \code{m}, as built in the body.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .xai_as_2d(X = x)
+#' res
 .xai_as_2d <- function(X) {
   m <- as.matrix(X)
   if (!is.numeric(m)) storage.mode(m) <- "double"
@@ -64,11 +72,14 @@ NULL
 
 #' .xai_names
 #'
-#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale}, \code{morie_fairness_xai_ceteris_paribus}, \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
+#' \code{morie_fairness_xai_ceteris_paribus},
+#' \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param feature_names Optional; may be \code{NULL}. Coerced to character by the body, with \code{as.character}.
+#' @param feature_names Optional; may be \code{NULL}. Coerced to character by the body,
+#' with \code{as.character}.
 #' @param d A count; the body uses it as \code{seq_len(...)}.
 #' @return The value of \code{nm}, as built in the body.
 #' @export
@@ -84,7 +95,9 @@ NULL
 
 #' .xai_resolve
 #'
-#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale}, \code{morie_fairness_xai_ceteris_paribus}, \code{morie_fairness_xai_partial_dependence}.
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
+#' \code{morie_fairness_xai_ceteris_paribus},
+#' \code{morie_fairness_xai_partial_dependence}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -108,7 +121,9 @@ NULL
 
 #' .xai_predict
 #'
-#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale}, \code{morie_fairness_xai_ceteris_paribus}, \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
+#' \code{morie_fairness_xai_ceteris_paribus},
+#' \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -126,12 +141,16 @@ NULL
 
 #' .xai_have_iml
 #'
-#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_permutation_importance}.
+#' A step of the fairness_xai implementation. Called by
+#' \code{morie_fairness_xai_permutation_importance}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return The value of \code{requireNamespace}.
 #' @export
+#' @examples
+#' res <- .xai_have_iml()
+#' res
 .xai_have_iml <- function() {
   requireNamespace("iml", quietly = TRUE)
 }

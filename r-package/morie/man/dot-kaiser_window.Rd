@@ -17,3 +17,7 @@ A numeric value.
 \description{
 I0. Matches numpy.kaiser(N, beta).
 }
+\examples{
+res <- .kaiser_window(N = 3L)
+res
+}

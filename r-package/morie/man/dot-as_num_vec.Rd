@@ -17,3 +17,7 @@ A step of the opnclp_native implementation. Called by \code{fit_power_law}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .as_num_vec(p = 0.5)
+res
+}

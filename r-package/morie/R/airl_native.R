@@ -26,6 +26,10 @@
 #' @param floor Numeric; passed to \code{max}. Defaults to \code{1e-300}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .airl_log(x = x)
+#' res
 .airl_log <- function(x, floor = 1e-300) log(max(x, floor))
 
 #' .airl_key

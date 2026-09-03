@@ -20,6 +20,8 @@ A list with \code{hashes}, \code{head}, \code{n}, \code{head_hex}, \code{keyed}.
 }
 \keyword{internal}
 \examples{
-ch <- build_chain(list("alpha", "beta", "gamma"))
-c(ch$n, nchar(ch$head_hex))
+if (morie_crypto_sodium_available()) {
+  ch <- build_chain(list("alpha", "beta", "gamma"))
+  c(ch$n, nchar(ch$head_hex))
+}
 }

@@ -19,3 +19,7 @@ structure, plus gender/age demographics and a Knowledge Scale (KS)
 driven by epistemic attitudes and a modest gender gap -- so the DML
 stage has a real signal to recover.
 }
+\examples{
+res <- .morie_mapq_synth_panel()
+res
+}

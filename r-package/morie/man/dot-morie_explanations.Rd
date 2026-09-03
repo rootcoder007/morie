@@ -14,3 +14,7 @@ A step of the explain implementation. Called by \code{explain_file}, \code{expla
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .morie_explanations()
+res
+}

@@ -21,8 +21,10 @@ A list with \code{estimate}, \code{intact}, \code{first_bad}, \code{verified_thr
 }
 \keyword{internal}
 \examples{
-ch <- build_chain(list("alpha", "beta", "gamma"))
-ok <- verify_chain(list("alpha", "beta", "gamma"), ch$hashes)
-bad <- verify_chain(list("alpha", "beta", "GAMMA"), ch$hashes)
-c(ok$intact, bad$intact, bad$first_bad)
+if (morie_crypto_sodium_available()) {
+  ch <- build_chain(list("alpha", "beta", "gamma"))
+  ok <- verify_chain(list("alpha", "beta", "gamma"), ch$hashes)
+  bad <- verify_chain(list("alpha", "beta", "GAMMA"), ch$hashes)
+  c(ok$intact, bad$intact, bad$first_bad)
+}
 }

@@ -11,7 +11,8 @@
 #' source it follows.
 #'
 #' @param seqs Passed to \code{unlist}.
-#' @param alphabet Optional; may be \code{NULL}. Coerced to character by the body, with \code{as.character}.
+#' @param alphabet Optional; may be \code{NULL}. Coerced to character by the body, with
+#' \code{as.character}.
 #' @return A vector, from \code{sort}.
 #' @export
 motfsr_alphabet_of <- function(seqs, alphabet) {
@@ -212,14 +213,17 @@ motfsr_normalise_windows <- function(z, w, max_sweeps = 100) {
 #' @param w A count; the body uses it as \code{seq_len(...)}.
 #' @param alphabet Passed to \code{motfsr_prepare}.
 #' @param theta0 Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.
-#' @param lambda0 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param lambda0 Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}.
 #' @param beta Numeric; combined arithmetically in the body. Defaults to \code{0.01}.
 #' @param erasing Optional; may be \code{NULL}. Iterated over elementwise, with \code{lapply}.
 #' @param max_iter A count; the body uses it as \code{seq_len(...)}. Defaults to \code{1000}.
 #' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-06}.
 #' @param normalize_overlaps A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @param erase_by One of \code{"letter"}, \code{"start"}. Defaults to \code{"letter"}.
-#' @return A list with \code{theta}, \code{motif}, \code{background}, \code{lambda1}, \code{z}, \code{log_likelihood}, \code{log_likelihood_trace}, \code{n_iter}, \code{converged}, \code{alphabet}, \code{w}.
+#' @return A list with \code{theta}, \code{motif}, \code{background}, \code{lambda1},
+#' \code{z}, \code{log_likelihood}, \code{log_likelihood_trace}, \code{n_iter},
+#' \code{converged}, \code{alphabet}, \code{w}.
 #' @export
 motfsr_mm_fit <- function(sequences, w, alphabet = NULL, theta0 = NULL,
                           lambda0 = NULL, beta = 0.01, erasing = NULL,
@@ -428,7 +432,8 @@ motfsr_score_sequence <- function(spec, sequence, alphabet, threshold = NULL) {
 #' @param n_starts_total Numeric; combined arithmetically in the body.
 #' @param n_seqs Numeric; passed to \code{sqrt}.
 #' @param w Numeric; combined arithmetically in the body.
-#' @param lambda0 Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param lambda0 Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 motfsr_lambda_grid <- function(n_starts_total, n_seqs, w, lambda0) {
@@ -461,12 +466,14 @@ motfsr_lambda_grid <- function(n_starts_total, n_seqs, w, lambda0) {
 #' @param tol Passed to \code{motfsr_mm_fit}. Defaults to \code{1e-06}.
 #' @param normalize_overlaps Passed to \code{motfsr_mm_fit}. Defaults to \code{TRUE}.
 #' @param starts One of \code{"subsequences"}, \code{"uniform"}. Defaults to \code{"subsequences"}.
-#' @param start_weight Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.5}.
+#' @param start_weight Coerced to numeric by the body, with \code{as.numeric}. Defaults
+#' to \code{0.5}.
 #' @param max_starts Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.
 #' @param start_scoring One of \code{"none"}, \code{"one_step"}. Defaults to \code{"one_step"}.
 #' @param erase_by Passed to \code{motfsr_mm_fit}. Defaults to \code{"letter"}.
 #' @param loss Passed to \code{motfsr_bayes_threshold}.
-#' @return A list with \code{estimate}, \code{motifs}, \code{alphabet}, \code{w}, \code{n_subsequences}, \code{erasing}, \code{method}.
+#' @return A list with \code{estimate}, \code{motifs}, \code{alphabet}, \code{w},
+#' \code{n_subsequences}, \code{erasing}, \code{method}.
 #' @export
 motfsr_run <- function(sequences, w, alphabet = NULL, n_motifs = 1,
                        beta = 0.01, lambda0 = NULL, max_iter = 1000,

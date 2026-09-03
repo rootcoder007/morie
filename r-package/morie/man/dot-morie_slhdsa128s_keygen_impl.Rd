@@ -11,3 +11,7 @@ A step of the RcppExports implementation. Called by \code{morie_crypto_slhdsa_ke
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .morie_slhdsa128s_keygen_impl()
+res
+}

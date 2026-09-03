@@ -21,3 +21,7 @@ A step of the tables_pub implementation. Called by \code{anova_table}, \code{haz
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .tbl_fmt_pval(p = 0.5)
+res
+}

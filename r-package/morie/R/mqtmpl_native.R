@@ -11,7 +11,9 @@ mqtmpl_LOG10E <- log10(exp(1))
 
 #' mqtmpl_haldane
 #'
-#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_hmm_genotype_probabilities}, \code{mqtmpl_sample_genotypes}, \code{mqtmpl_scan_cim}.
+#' A step of the mqtmpl_native implementation. Called by
+#' \code{mqtmpl_hmm_genotype_probabilities}, \code{mqtmpl_sample_genotypes},
+#' \code{mqtmpl_scan_cim}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -25,7 +27,8 @@ mqtmpl_haldane <- function(d) {
 
 #' Qk left, qk+1 right
 #'
-#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_cim_one}, \code{mqtmpl_sample_genotypes}.
+#' A step of the mqtmpl_native implementation. Called by \code{mqtmpl_cim_one},
+#' \code{mqtmpl_sample_genotypes}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -175,7 +178,8 @@ mqtmpl_cim_one <- function(y, left, right, r_left, r_right, cofactors) {
 #' @param cofactors A vector; its length is taken. Defaults to \code{list()}.
 #' @param window Accepted by the signature and not used anywhere in the body. Defaults to \code{0}.
 #' @param step Numeric; combined arithmetically in the body. Defaults to \code{0.02}.
-#' @return A list with \code{estimate}, \code{peak_lod}, \code{peak_position}, \code{position}, \code{lod}, \code{fit}.
+#' @return A list with \code{estimate}, \code{peak_lod}, \code{peak_position},
+#' \code{position}, \code{lod}, \code{fit}.
 #' @export
 mqtmpl_scan_cim <- function(y, markers, positions, cofactors = list(),
                             window = 0, step = 0.02) {
@@ -433,7 +437,9 @@ mqtmpl_imputation_weights <- function(y, genotype_column, model_dimension = 2) {
 #' @param n_imp Coerced to integer by the body, with \code{as.integer}.
 #' @param error_rate Passed to \code{mqtmpl_sample_genotypes}.
 #' @param seed Passed to \code{mqtmpl_sample_genotypes}.
-#' @return A list with \code{estimate}, \code{peak_lod}, \code{peak_position}, \code{position}, \code{lod}, \code{method_used}, \code{n_imputations}, \code{note}, \code{method}.
+#' @return A list with \code{estimate}, \code{peak_lod}, \code{peak_position},
+#' \code{position}, \code{lod}, \code{method_used}, \code{n_imputations}, \code{note},
+#' \code{method}.
 #' @export
 mqtmpl_scan_imp <- function(y, markers, positions, step, n_imp,
                             error_rate, seed) {
@@ -494,7 +500,9 @@ mqtmpl_kw_n_imp <- function(covariates) {
 #' @param step Passed to \code{mqtmpl_scan_imp}. Defaults to \code{0.02}.
 #' @param covariates A vector; its length is taken. Defaults to \code{list()}.
 #' @param error_rate Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
-#' @return A list with \code{estimate}, \code{peak_lod}, \code{peak_position}, \code{position}, \code{lod}, \code{method_used}, \code{n_covariates}, \code{error_rate}, \code{method}.
+#' @return A list with \code{estimate}, \code{peak_lod}, \code{peak_position},
+#' \code{position}, \code{lod}, \code{method_used}, \code{n_covariates},
+#' \code{error_rate}, \code{method}.
 #' @export
 mqtmpl_scanone <- function(y, markers, positions, method = "em", step = 0.02,
                            covariates = list(), error_rate = 0) {
@@ -551,7 +559,8 @@ mqtmpl_scanone <- function(y, markers, positions, method = "em", step = 0.02,
 #' @param step Passed to \code{mqtmpl_scanone}. Defaults to \code{0.05}.
 #' @param seed Passed to \code{set.seed}. Defaults to \code{0}.
 #' @param ... Passed through.
-#' @return A list with \code{estimate}, \code{threshold}, \code{alpha}, \code{n_perm}, \code{null_maxima}, \code{median_null}, \code{method}.
+#' @return A list with \code{estimate}, \code{threshold}, \code{alpha}, \code{n_perm},
+#' \code{null_maxima}, \code{median_null}, \code{method}.
 #' @export
 mqtmpl_permutation_threshold <- function(y, markers, positions, n_perm = 100,
                                          alpha = 0.05, method = "em",

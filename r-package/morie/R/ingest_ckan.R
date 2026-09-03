@@ -46,7 +46,8 @@
 #' @param action Passed to \code{sprintf}.
 #' @param params Passed to \code{.morie_dataset_http_text}.
 #' @param api_key Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param user_agent Accepted by the signature and not used anywhere in the body. Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.
+#' @param user_agent Accepted by the signature and not used anywhere in the body.
+#' Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.
 #' @param timeout Coerced to integer by the body, with \code{as.integer}.
 #' @return The value of \code{$}.
 #' @export
@@ -124,7 +125,8 @@
 #' source it follows.
 #'
 #' @param path Passed to \code{.morie_from_json}.
-#' @param fmt One of \code{"csv"}, \code{"json"}, \code{"parquet"}, \code{"tab"}, \code{"tsv"}, \code{"xls"}, \code{"xlsx"}.
+#' @param fmt One of \code{"csv"}, \code{"json"}, \code{"parquet"}, \code{"tab"},
+#' \code{"tsv"}, \code{"xls"}, \code{"xlsx"}.
 #' @return The value of \code{utils::read.csv}.
 #' @export
 .morie_ckan_read_path <- function(path, fmt) {

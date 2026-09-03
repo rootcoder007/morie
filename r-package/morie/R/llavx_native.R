@@ -101,7 +101,8 @@ project_patches <- function(patch_features, W, b = NULL) {
 #'
 #' @param visual_tokens Iterated over elementwise, with \code{lapply}.
 #' @param text_embeddings Iterated over elementwise, with \code{lapply}.
-#' @return A list with \code{estimate}, \code{sequence}, \code{n_visual}, \code{n_text}, \code{method}, \code{note}.
+#' @return A list with \code{estimate}, \code{sequence}, \code{n_visual}, \code{n_text},
+#' \code{method}, \code{note}.
 #' @export
 build_sequence <- function(visual_tokens, text_embeddings) {
   V <- lapply(visual_tokens, function(r) as.numeric(r))
@@ -123,7 +124,8 @@ build_sequence <- function(visual_tokens, text_embeddings) {
 #' source it follows.
 #'
 #' @param stage Coerced to integer by the body, with \code{as.integer}.
-#' @return A list, whose contents depend on the branch taken; across the branches its names are \code{stage}, \code{trainable}, \code{frozen}, \code{data}, \code{note}.
+#' @return A list, whose contents depend on the branch taken; across the branches its
+#' names are \code{stage}, \code{trainable}, \code{frozen}, \code{data}, \code{note}.
 #' @export
 training_stage <- function(stage) {
   s <- as.integer(stage)
@@ -150,6 +152,9 @@ training_stage <- function(stage) {
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .llavx_cheatsheet()
+#' res
 .llavx_cheatsheet <- function() {
   "llavx: instruction tuning works in language and lacked MULTIMODAL data, so generate it with a LANGUAGE-ONLY GPT-4 fed a SYMBOLIC image -- captions and boxes. The image never reaches the generator, which is what makes the pipeline possible and also caps it: what the captions omit cannot be asked about. Architecture is deliberately thin: ONE projection matrix into the word-embedding space, projected patches used as tokens, no cross-attention. Stage 1 trains only the projection; stage 2 adds the language model."
 }

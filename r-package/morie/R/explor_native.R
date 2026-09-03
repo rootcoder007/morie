@@ -19,6 +19,11 @@
 #' @param name Passed to \code{sprintf}.
 #' @return The value of \code{X}, as built in the body.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' txt <- c('alpha', 'beta', 'gamma', 'delta')
+#' res <- .mat(x = x, name = txt)
+#' res
 .mat <- function(x, name) {
   if (is.data.frame(x)) x <- as.matrix(x)
   x <- as.matrix(x)
@@ -58,6 +63,10 @@
 #' @param z Numeric; passed to \code{max}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .explor_softmax(z = y)
+#' res
 .explor_softmax <- function(z) {
   m <- max(z)
   e <- exp(z - m)
@@ -74,7 +83,8 @@
 #' @param states Passed to \code{.mat}.
 #' @param actions Passed to \code{.mat}.
 #' @param next_states Passed to \code{.mat}.
-#' @param n_actions Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
+#' @param n_actions Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
 #' @param n_features Coerced to integer by the body, with \code{as.integer}. Defaults to \code{8L}.
 #' @param eta Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @param beta Numeric; combined arithmetically in the body. Defaults to \code{0.2}.

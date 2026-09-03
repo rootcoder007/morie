@@ -23,18 +23,24 @@
 
 #' .slvgrf_vec
 #'
-#' A step of the slvgrf_native implementation. Called by \code{.check}, \code{aipw_scores}, \code{qini_curve}.
+#' A step of the slvgrf_native implementation. Called by \code{.check},
+#' \code{aipw_scores}, \code{qini_curve}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x A matrix; passed to \code{as.matrix}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .slvgrf_vec(x = x)
+#' res
 .slvgrf_vec <- function(x) as.numeric(as.matrix(x))
 
 #' .check
 #'
-#' A step of the slvgrf_native implementation. Called by \code{qini_curve}, \code{rate_test}, \code{toc_curve}.
+#' A step of the slvgrf_native implementation. Called by \code{qini_curve},
+#' \code{rate_test}, \code{toc_curve}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'

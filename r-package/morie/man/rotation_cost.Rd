@@ -20,5 +20,7 @@ A list with \code{single_key_bytes}, \code{envelope_kek_bytes}, \code{ratio}, \c
 }
 \keyword{internal}
 \examples{
-rotation_cost(n_records = 5L, mean_record_bytes = 5L)
+if (morie_crypto_sodium_available()) {
+  rotation_cost(n_records = 5L, mean_record_bytes = 5L)
+}
 }

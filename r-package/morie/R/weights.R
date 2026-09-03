@@ -82,6 +82,9 @@ NULL
 #'
 #' @return The value of \code{requireNamespace}.
 #' @export
+#' @examples
+#' res <- .has_survey_pkg()
+#' res
 .has_survey_pkg <- function() requireNamespace("survey", quietly = TRUE)
 
 # ---------------------------------------------------------------------------
@@ -118,7 +121,8 @@ morie_weights_design <- function(selection_probs) {
 #'   matches \code{population_totals}.
 #' @export
 #' @examples
-#' morie_weights_poststratify(weights = c(1, 2, 3, 4, 5, 6, 7, 8), strata = c(1, 2, 3, 4, 5, 6, 7, 8), population_totals = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_weights_poststratify(weights = c(1, 2, 3, 4, 5, 6, 7, 8), strata = c(1, 2, 3, 4,
+#' 5, 6, 7, 8), population_totals = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_weights_poststratify <- function(weights, strata, population_totals) {
   w <- as.numeric(weights)
   s <- as.character(strata)
@@ -156,7 +160,8 @@ morie_weights_poststratify <- function(weights, strata, population_totals) {
 #'   `diagnostics` (from `morie_weights_diagnostics`).
 #' @export
 #' @examples
-#' morie_weights_rake(weights = c(1, 2, 3, 4, 5, 6, 7, 8), df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), margins = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_weights_rake(weights = c(1, 2, 3, 4, 5, 6, 7, 8), df = data.frame(x = c(1, 2, 3,
+#' 4), y = c(2, 4, 5, 9)), margins = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_weights_rake <- function(weights, df, margins,
                                max_iter = 100, tol = 1e-6, bounds = NULL) {
   w <- as.numeric(weights)
@@ -209,7 +214,8 @@ morie_weights_rake <- function(weights, df, margins,
 #'   (from \code{\link{morie_weights_diagnostics}}).
 #' @export
 #' @examples
-#' morie_weights_greg(weights = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), population_totals = 5L)
+#' morie_weights_greg(weights = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' population_totals = 5L)
 morie_weights_greg <- function(weights, X, population_totals,
                                max_iter = 50, tol = 1e-8) {
   w <- as.numeric(weights)
@@ -247,7 +253,8 @@ morie_weights_greg <- function(weights, X, population_totals,
 #'   \code{\link{morie_weights_greg}}).
 #' @export
 #' @examples
-#' morie_weights_calibrate_to_totals(weights = c(1, 2, 3, 4, 5, 6, 7, 8), df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), totals = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_weights_calibrate_to_totals(weights = c(1, 2, 3, 4, 5, 6, 7, 8), df =
+#' data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), totals = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_weights_calibrate_to_totals <- function(weights, df, totals,
                                               method = c("raking", "greg"),
                                               ...) {
@@ -831,7 +838,9 @@ morie_weights_replicate_variance <- function(full_estimate, replicate_estimates,
 #'   \code{1 - theta} respectively.
 #' @export
 #' @examples
-#' morie_weights_multiframe(weights_a = c(1, 2, 3, 4, 5, 6, 7, 8), weights_b = c(1, 2, 3, 4, 5, 6, 7, 8), overlap_a = c(1, 2, 3, 4, 5, 6, 7, 8), overlap_b = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_weights_multiframe(weights_a = c(1, 2, 3, 4, 5, 6, 7, 8), weights_b = c(1, 2, 3,
+#' 4, 5, 6, 7, 8), overlap_a = c(1, 2, 3, 4, 5, 6, 7, 8), overlap_b = c(1, 2, 3, 4, 5, 6,
+#' 7, 8))
 morie_weights_multiframe <- function(weights_a, weights_b,
                                      overlap_a, overlap_b,
                                      method = c("hartley", "optimal"),

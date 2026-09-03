@@ -18,3 +18,8 @@ A numeric value.
 Part of the laniyonu_gentrification_policing implementation; see the
 file header for the source it follows.
 }
+\examples{
+x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+res <- .lan_gp_morans_i(resid = x, W = x)
+res
+}

@@ -17,3 +17,8 @@ A step of the otis implementation. Called by \code{.otis_alert_volatility_frame}
 See the file header for the source the module follows.
 it follows.
 }
+\examples{
+txt <- c('alpha', 'beta', 'gamma', 'delta')
+res <- .otis_binarise(s = txt)
+res
+}

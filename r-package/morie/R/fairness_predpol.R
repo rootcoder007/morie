@@ -20,7 +20,9 @@ NULL
 
 #' .predpol_result
 #'
-#' A step of the fairness_predpol implementation. Called by \code{morie_fairness_predpol_calibration_audit}, \code{morie_fairness_predpol_score_disparity}.
+#' A step of the fairness_predpol implementation. Called by
+#' \code{morie_fairness_predpol_calibration_audit},
+#' \code{morie_fairness_predpol_score_disparity}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -45,13 +47,19 @@ NULL
 
 #' .predpol_ordered_unique
 #'
-#' A step of the fairness_predpol implementation. Called by \code{morie_fairness_predpol_calibration_audit}, \code{morie_fairness_predpol_score_disparity}.
+#' A step of the fairness_predpol implementation. Called by
+#' \code{morie_fairness_predpol_calibration_audit},
+#' \code{morie_fairness_predpol_score_disparity}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x A vector; indexed elementwise.
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .predpol_ordered_unique(x = x)
+#' res
 .predpol_ordered_unique <- function(x) {
   x <- as.character(x)
   x[!duplicated(x)]
@@ -59,13 +67,18 @@ NULL
 
 #' .predpol_mode
 #'
-#' A step of the fairness_predpol implementation. Called by \code{morie_fairness_predpol_aggregate_areas}.
+#' A step of the fairness_predpol implementation. Called by
+#' \code{morie_fairness_predpol_aggregate_areas}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x Passed to \code{table}.
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .predpol_mode(x = x)
+#' res
 .predpol_mode <- function(x) {
   tab <- table(x)
   names(tab)[which.max(tab)]

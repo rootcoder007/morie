@@ -14,3 +14,7 @@ A step of the siu implementation. Called by \code{.siu_llm_call_one}.
 See the file header for the source the module follows.
 follows.
 }
+\examples{
+res <- .siu_llm_providers()
+res
+}

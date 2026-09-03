@@ -58,6 +58,10 @@
 #' @param theta A vector; indexed elementwise.
 #' @return The value of \code{phi}, as built in the body.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .hawkes_to_phi(theta = x)
+#' res
 .hawkes_to_phi <- function(theta) {
   phi <- theta
   phi[2] <- stats::qlogis(theta[2])

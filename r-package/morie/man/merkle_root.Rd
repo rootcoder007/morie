@@ -18,6 +18,8 @@ The value of \code{sha256}.
 }
 \keyword{internal}
 \examples{
-root <- merkle_root(list("a", "b", "c", "d"))
-length(root) == 32L
+if (morie_crypto_sodium_available()) {
+  root <- merkle_root(list("a", "b", "c", "d"))
+  length(root) == 32L
+}
 }

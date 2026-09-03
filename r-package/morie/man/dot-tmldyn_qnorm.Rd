@@ -17,3 +17,7 @@ A step of the tmldyn_native implementation. Called by \code{morie_tmle_dynamic_r
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .tmldyn_qnorm(p = 0.5)
+res
+}

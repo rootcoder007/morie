@@ -19,3 +19,7 @@ A step of the dsp_detection implementation. Called by \code{morie_dsp_complex_ce
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .unwrap_d(p = 0.5)
+res
+}

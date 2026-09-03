@@ -21,7 +21,9 @@ A list with \code{ciphertext}, \code{tag}, \code{nonce}, \code{aad}.
 }
 \keyword{internal}
 \examples{
-dek <- as.raw(101:132); nonce <- as.raw(1:12)
-s <- seal_record(charToRaw("classified"), dek, nonce)
-length(s$tag) == 16L
+if (morie_crypto_sodium_available()) {
+  dek <- as.raw(101:132); nonce <- as.raw(1:12)
+  s <- seal_record(charToRaw("classified"), dek, nonce)
+  length(s$tag) == 16L
+}
 }

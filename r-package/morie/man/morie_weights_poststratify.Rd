@@ -24,5 +24,6 @@ matches \code{population_totals}.
 \eqn{w_i^{ps} = w_i \cdot N_h / \hat{N}_h}{w_i^ps = w_i * N_h / N_hat_h}.
 }
 \examples{
-morie_weights_poststratify(weights = c(1, 2, 3, 4, 5, 6, 7, 8), strata = c(1, 2, 3, 4, 5, 6, 7, 8), population_totals = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_weights_poststratify(weights = c(1, 2, 3, 4, 5, 6, 7, 8),
+  strata = c(1, 2, 3, 4, 5, 6, 7, 8), population_totals = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

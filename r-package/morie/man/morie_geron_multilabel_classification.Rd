@@ -20,7 +20,7 @@ List with \code{predictions}, \code{per_label_f1},
 }
 \description{
 Strict \code{>} thresholding per label; per-label F1 via
-\code{\link[=morie_geron_f1_score]{morie_geron_f1_score()}}, plus the micro F1 over pooled counts.
+\code{morie_geron_f1_score()}, plus the micro F1 over pooled counts.
 }
 \examples{
 sl <- matrix(c(2, 0.5, 0.1, 0.2, 1.5, 0.3), 2, 3, byrow = TRUE)

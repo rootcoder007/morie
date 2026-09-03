@@ -108,7 +108,7 @@ column_rule <- function(name, dtype = NULL, required = TRUE,
 #' @export
 #' @examples
 #' d <- data.frame(x = 1:5, y = letters[1:5], stringsAsFactors = FALSE)
-#' validate_schema(d, list(column_rule("x", dtype = "numeric"), 
+#' validate_schema(d, list(column_rule("x", dtype = "numeric"),
 #'     column_rule("y", dtype = "character")))
 validate_schema <- function(data, rules, raise_on_error = FALSE) {
   errors <- character(0)

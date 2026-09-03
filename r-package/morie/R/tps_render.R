@@ -211,19 +211,26 @@ morie_tps_project_xy <- function(lat, lon,
 
 #' .tps_has_ggplot2
 #'
-#' A step of the tps_render implementation. Called by \code{.tps_draw_compass}, \code{.tps_draw_scalebar}, \code{morie_tps_render_choropleth} and 6 others in the module.
+#' A step of the tps_render implementation. Called by \code{.tps_draw_compass},
+#' \code{.tps_draw_scalebar}, \code{morie_tps_render_choropleth} and 6 others in the
+#' module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @return The value of \code{requireNamespace}.
 #' @export
+#' @examples
+#' res <- .tps_has_ggplot2()
+#' res
 .tps_has_ggplot2 <- function() {
   requireNamespace("ggplot2", quietly = TRUE)
 }
 
 #' .tps_save_plot
 #'
-#' A step of the tps_render implementation. Called by \code{morie_tps_render_choropleth}, \code{morie_tps_render_dbscan}, \code{morie_tps_render_district_proportional} and 4 others in the module.
+#' A step of the tps_render implementation. Called by \code{morie_tps_render_choropleth},
+#' \code{morie_tps_render_dbscan}, \code{morie_tps_render_district_proportional} and 4
+#' others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -448,7 +455,7 @@ morie_tps_render_choropleth <- function(polys,
 #'   \code{invisible(NULL)} for the base-R path.
 #' @export
 #' @examples
-#' df <- data.frame(LAT_WGS84 = 43.65 + rnorm(60, 0, 0.01), LONG_WGS84 = -79.4 + 
+#' df <- data.frame(LAT_WGS84 = 43.65 + rnorm(60, 0, 0.01), LONG_WGS84 = -79.4 +
 #'     rnorm(60, 0, 0.01))
 #' morie_tps_render_points(df, category = "Synth")
 morie_tps_render_points <- function(df,
@@ -647,7 +654,8 @@ morie_tps_render_yearly_grid <- function(polys,
 # Internal: draw a north-arrow compass in plot coordinates.
 #' Internal: draw a north-arrow compass in plot coordinates
 #'
-#' A step of the tps_render implementation. Called by \code{morie_tps_render_dbscan}, \code{morie_tps_render_district_proportional}.
+#' A step of the tps_render implementation. Called by \code{morie_tps_render_dbscan},
+#' \code{morie_tps_render_district_proportional}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -792,9 +800,9 @@ morie_tps_render_quad <- function(data, outfile = NULL, ...) {
 #' @examples
 #' .make_synthetic_points <- function(n = 200L, seed = 2L) {
 #'     set.seed(seed)
-#'     data.frame(LAT_WGS84 = stats::runif(n, 43.58, 43.88), LONG_WGS84 = stats::runif(n, 
-#'         -79.62, -79.13), OCC_DATE = format(as.POSIXct("2023-01-01", 
-#'         tz = "UTC") + sample.int(86400L * 365L, n, replace = TRUE), 
+#'     data.frame(LAT_WGS84 = stats::runif(n, 43.58, 43.88), LONG_WGS84 = stats::runif(n,
+#'         -79.62, -79.13), OCC_DATE = format(as.POSIXct("2023-01-01",
+#'         tz = "UTC") + sample.int(86400L * 365L, n, replace = TRUE),
 #'         "%Y-%m-%d"), stringsAsFactors = FALSE)
 #' }
 #' pts <- .make_synthetic_points(n = 100L, seed = 5L)
@@ -915,8 +923,8 @@ morie_tps_render_district_proportional <- function(polys, count_col,
 #' @return ggplot object or invisible NULL.
 #' @export
 #' @examples
-#' clusters <- data.frame(lat = c(43.7, 43.75, 43.65), lon = c(-79.4, 
-#'     -79.35, -79.5), radius_km = c(1, 0.5, 1.5), llr = c(5.2, 
+#' clusters <- data.frame(lat = c(43.7, 43.75, 43.65), lon = c(-79.4,
+#'     -79.35, -79.5), radius_km = c(1, 0.5, 1.5), llr = c(5.2,
 #'     3.8, 7.1), stringsAsFactors = FALSE)
 #' morie_tps_render_satscan_panel(clusters, outfile = NULL)
 morie_tps_render_satscan_panel <- function(clusters, outfile = NULL) {

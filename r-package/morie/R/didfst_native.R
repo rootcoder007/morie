@@ -21,7 +21,8 @@
 
 #' .ghc_didfst_panel
 #'
-#' A step of the didfst_native implementation. Called by \code{group_time_att}, \code{panel_differences}, \code{placebo_did}.
+#' A step of the didfst_native implementation. Called by \code{group_time_att},
+#' \code{panel_differences}, \code{placebo_did}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -288,6 +289,9 @@ aggregate_att <- function(gt, scheme = "simple", horizon = NULL) {
 #'
 #' @return The cheat sheet text, invisibly.
 #' @export
+#' @examples
+#' res <- .didfst_cheatsheet()
+#' res
 .didfst_cheatsheet <- function() {
   paste("didfst: DiD forest. Delta_i = post-mean - pre-mean; the",
         "scalar estimator (Wager 2025 eq. 13.7) is the difference",

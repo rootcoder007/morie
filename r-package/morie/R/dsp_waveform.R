@@ -655,6 +655,9 @@ morie_dsp_baseline_correlation <- function(x, y) {
 #' @param tol Numeric; combined arithmetically in the body. Defaults to \code{pi}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' res <- .unwrap(p = 0.5)
+#' res
 .unwrap <- function(p, tol = pi) {
   d <- diff(p)
   adj <- ifelse(d >  tol, d - 2 * pi,

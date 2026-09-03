@@ -48,6 +48,10 @@ NULL
 #' @param x A vector; its length is taken.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .uof_gini(x = x)
+#' res
 .uof_gini <- function(x) {
   x <- sort(as.numeric(x))
   n <- length(x)
@@ -68,6 +72,10 @@ NULL
 #' @param x_min Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .uof_hill_alpha(x = x)
+#' res
 .uof_hill_alpha <- function(x, x_min = 1.0) {
   x <- as.numeric(x)
   x <- x[!is.na(x) & x >= x_min]
@@ -91,6 +99,10 @@ NULL
 #' @param k A count; the body uses it as \code{seq_len(...)}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .uof_topk_share(x = x, k = 3L)
+#' res
 .uof_topk_share <- function(x, k) {
   x <- as.numeric(x)
   s <- sum(x, na.rm = TRUE)
@@ -112,6 +124,9 @@ NULL
 #' @param z Numeric; combined arithmetically in the body. Defaults to \code{1.95996398454005}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' res <- .uof_wilson_ci(k = 3L, n = 3L)
+#' res
 .uof_wilson_ci <- function(k, n, z = 1.959963984540054) {
   if (n == 0L) {
     return(c(NA_real_, NA_real_))
@@ -130,7 +145,8 @@ NULL
 
 #' .uof_cramers_v
 #'
-#' A step of the mrm_uof implementation. Called by \code{mrm_uof_region_locality}, \code{mrm_uof_weapon_diversity}.
+#' A step of the mrm_uof implementation. Called by \code{mrm_uof_region_locality},
+#' \code{mrm_uof_weapon_diversity}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -150,13 +166,17 @@ NULL
 
 #' .uof_fmt_pct
 #'
-#' A step of the mrm_uof implementation. Called by \code{mrm_uof_data_quality_audit}, \code{mrm_uof_force_concentration}, \code{mrm_uof_region_locality}.
+#' A step of the mrm_uof implementation. Called by \code{mrm_uof_data_quality_audit},
+#' \code{mrm_uof_force_concentration}, \code{mrm_uof_region_locality}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p Numeric; combined arithmetically in the body.
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .uof_fmt_pct(p = 0.5)
+#' res
 .uof_fmt_pct <- function(p) {
   if (!is.finite(p)) {
     return("n/a")
@@ -166,7 +186,9 @@ NULL
 
 #' .uof_result
 #'
-#' A step of the mrm_uof implementation. Called by \code{mrm_uof_data_quality_audit}, \code{mrm_uof_demographic_disparity}, \code{mrm_uof_force_concentration} and 3 others in the module.
+#' A step of the mrm_uof implementation. Called by \code{mrm_uof_data_quality_audit},
+#' \code{mrm_uof_demographic_disparity}, \code{mrm_uof_force_concentration} and 3 others
+#' in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -635,7 +657,8 @@ mrm_uof_yoy_change <- function(dfs_by_year = NULL, df = NULL,
 #'   \code{pvalue}, \code{df}, \code{cramers_v}.
 #' @export
 #' @examples
-#' mrm_uof_region_locality(df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), region_at_col = c(1, 2, 3, 4, 5, 6, 7, 8), region_now_col = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' mrm_uof_region_locality(df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)),
+#' region_at_col = c(1, 2, 3, 4, 5, 6, 7, 8), region_now_col = c(1, 2, 3, 4, 5, 6, 7, 8))
 mrm_uof_region_locality <- function(df, region_at_col, region_now_col) {
   stopifnot(is.data.frame(df))
   warnings <- character(0)
@@ -759,7 +782,8 @@ mrm_uof_region_locality <- function(df, region_at_col, region_now_col) {
 #'   \code{per_category} (list of lists), \code{risk_ratios}.
 #' @export
 #' @examples
-#' mrm_uof_demographic_disparity(df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), demo_col = c(1, 2, 3, 4, 5, 6, 7, 8), outcome_col = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' mrm_uof_demographic_disparity(df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)),
+#' demo_col = c(1, 2, 3, 4, 5, 6, 7, 8), outcome_col = c(1, 2, 3, 4, 5, 6, 7, 8))
 mrm_uof_demographic_disparity <- function(df, demo_col, outcome_col,
                                            baseline = NULL,
                                            bootstrap_reps = 0L) {

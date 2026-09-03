@@ -360,12 +360,19 @@ morie_ingest_forensics_nibrs <- function(year,
 # Internal: pull morie's documented columns out of one NamUs record.
 #' Internal: pull morie\'s documented columns out of one NamUs record
 #'
-#' A step of the ingest_forensics implementation. Called by \code{morie_ingest_forensics_namus_missing}.
+#' A step of the ingest_forensics implementation. Called by
+#' \code{morie_ingest_forensics_namus_missing}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param rec A list; the body reads \code{$caseNumber}, \code{$circumstances}, \code{$circumstancesOfDisappearance}, \code{$county}, \code{$namUsCaseNumber}, \code{$sighting}, \code{$state}, \code{$subjectDescription}, \code{$subjectIdentification} from it.
-#' @return A list with \code{case_number}, \code{state}, \code{county}, \code{dlc_date}, \code{sex}, \code{race}, \code{age_min}, \code{age_max}, \code{height_cm_min}, \code{height_cm_max}, \code{weight_kg_min}, \code{weight_kg_max}, \code{first_name}, \code{last_name}, \code{city}, \code{circumstances}.
+#' @param rec A list; the body reads \code{$caseNumber}, \code{$circumstances},
+#' \code{$circumstancesOfDisappearance}, \code{$county}, \code{$namUsCaseNumber},
+#' \code{$sighting}, \code{$state}, \code{$subjectDescription},
+#' \code{$subjectIdentification} from it.
+#' @return A list with \code{case_number}, \code{state}, \code{county}, \code{dlc_date},
+#' \code{sex}, \code{race}, \code{age_min}, \code{age_max}, \code{height_cm_min},
+#' \code{height_cm_max}, \code{weight_kg_min}, \code{weight_kg_max}, \code{first_name},
+#' \code{last_name}, \code{city}, \code{circumstances}.
 #' @export
 .morie_forensics_flatten_namus <- function(rec) {
   sub_id <- rec$subjectIdentification
@@ -554,7 +561,10 @@ morie_ingest_forensics_namus_missing <- function(
 #' Height/weight are not projectable via Search -- NA by contract.
 #'
 #' @param rec A vector; indexed elementwise.
-#' @return A list with \code{case_number}, \code{state}, \code{county}, \code{dlc_date}, \code{sex}, \code{race}, \code{age_min}, \code{age_max}, \code{height_cm_min}, \code{height_cm_max}, \code{weight_kg_min}, \code{weight_kg_max}, \code{first_name}, \code{last_name}, \code{city}, \code{circumstances}.
+#' @return A list with \code{case_number}, \code{state}, \code{county}, \code{dlc_date},
+#' \code{sex}, \code{race}, \code{age_min}, \code{age_max}, \code{height_cm_min},
+#' \code{height_cm_max}, \code{weight_kg_min}, \code{weight_kg_max}, \code{first_name},
+#' \code{last_name}, \code{city}, \code{circumstances}.
 #' @export
 .morie_forensics_flatten_namus_search <- function(rec) {
   g <- function(k) if (is.null(rec[[k]])) NA else rec[[k]]
@@ -583,8 +593,13 @@ morie_ingest_forensics_namus_missing <- function(
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param rec A list; the body reads \code{$@id}, \code{$byteSize}, \code{$description}, \code{$ediid}, \code{$identifier}, \code{$issued}, \code{$keyword}, \code{$landing_page}, \code{$landingPage}, \code{$license}, \code{$modified}, \code{$publisher}, \code{$rights}, \code{$size}, \code{$theme}, \code{$title} from it.
-#' @return A list with \code{dataset_id}, \code{title}, \code{description}, \code{publisher}, \code{issued}, \code{modified}, \code{keyword}, \code{landing_page}, \code{size_bytes}, \code{license}.
+#' @param rec A list; the body reads \code{$@id}, \code{$byteSize}, \code{$description},
+#' \code{$ediid}, \code{$identifier}, \code{$issued}, \code{$keyword},
+#' \code{$landing_page}, \code{$landingPage}, \code{$license}, \code{$modified},
+#' \code{$publisher}, \code{$rights}, \code{$size}, \code{$theme}, \code{$title} from it.
+#' @return A list with \code{dataset_id}, \code{title}, \code{description},
+#' \code{publisher}, \code{issued}, \code{modified}, \code{keyword}, \code{landing_page},
+#' \code{size_bytes}, \code{license}.
 #' @export
 .morie_forensics_flatten_nist <- function(rec) {
   keyword <- rec$keyword

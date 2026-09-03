@@ -68,6 +68,9 @@ morie_list_morie_modules <- function() {
 #'
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' res <- .cpads_default_csv()
+#' res
 .cpads_default_csv <- function() {
   # Primary: built-in SQLite DB. Fallback: raw CSV in datasets/.
   candidates <- c(
