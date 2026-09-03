@@ -37,9 +37,9 @@ name: build
 
 on:
   push:
-    branches: ["main", "release/**"]
+    branches: ["main", "release/**", "feat/native-specializations"]
   pull_request:
-    branches: ["main", "release/**"]
+    branches: ["main", "release/**", "feat/native-specializations"]
   workflow_dispatch:
 
 # Permissions union of every child workflow's needs.  Reusable
