@@ -271,3 +271,7 @@ def survey_cox(time, event, X, weights=None, strata=None,
                cluster=None, **kw):
     r"""Entry point: see :func:`svycoxph`."""
     return svycoxph(time, event, X, weights, strata, cluster, **kw)
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+surveycox = survey_cox

@@ -274,3 +274,7 @@ def cheatsheet():
     return ("fgam: functional_gam(X, Y, n_x, n_t, lam_x, lam_t) -> "
             "E[Y|X] = theta0 + int F(X(t), t) dt by tensor-product "
             "penalised splines (McLean et al. 2014, JCGS 23(1), 249-269)")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+functionalgam = functional_gam

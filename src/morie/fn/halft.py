@@ -230,3 +230,7 @@ halft = half_life
 
 def cheatsheet():
     return "halft: plasma half-life. routes " + ", ".join(ROUTES)
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+halflife = half_life

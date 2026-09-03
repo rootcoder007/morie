@@ -306,3 +306,7 @@ def lr_parser(grammar_, tokens, method="lr1"):
         "tokens": [str(x) for x in tokens],
         "yield": linearise(tree),
     })
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+lrparser = lr_parser

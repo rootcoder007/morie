@@ -21,3 +21,7 @@ equivariantgraphconv = run_egnn
 
 # public names resolved by fn/_lazy_map.json
 e_gcn = run_egnn
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+egcn = e_gcn

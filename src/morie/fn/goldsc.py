@@ -308,3 +308,7 @@ def cheatsheet():
     return ("goldsc: GoldScore docking fitness. potentials "
             + ", ".join(POTENTIALS)
             + "; external van der Waals weighted 1.375 (CCDC GOLD)")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+goldscore = gold_score

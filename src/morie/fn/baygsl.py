@@ -232,3 +232,7 @@ def gibbs_slice(log_conditionals, x0, n=2000, w=None, burn=0, seed=1,
 def hybrid_gibbs_slice(log_conditionals, x0, n=2000, **kw):
     r"""Entry point: see :func:`gibbs_slice`."""
     return gibbs_slice(log_conditionals, x0, n, **kw)
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+gibbsslice = gibbs_slice

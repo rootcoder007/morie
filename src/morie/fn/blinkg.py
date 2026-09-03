@@ -397,3 +397,7 @@ blinkg = blink_gwas
 def cheatsheet():
     return ("blinkg: BLINK iterative fixed-effect GWAS. selections "
             + ", ".join(SELECTIONS) + "; criteria " + ", ".join(CRITERIA))
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+blinkgwas = blink_gwas

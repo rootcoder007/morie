@@ -411,3 +411,7 @@ def cheatsheet():
     return ("varqc1: variant quality filtering. methods "
             + ", ".join(METHODS) + "; covariances "
             + ", ".join(COVARIANCES))
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+vcffilter = vcf_filter

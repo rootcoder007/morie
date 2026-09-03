@@ -407,3 +407,7 @@ def cheatsheet():
             "vector for what to keep, Bemis-Murcko framework for what "
             "to change; a hop is close by the first and different by "
             "the second")
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+scaffoldhop = scaffold_hop

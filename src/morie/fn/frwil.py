@@ -215,3 +215,8 @@ def predict_activity(fit, compound):
         key = "P%d:%s" % (p + 1, g)
         total += coef.get(key, 0.0)
     return total
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+free_wilson_qsar = free_wilson
+freewilsonqsar = free_wilson

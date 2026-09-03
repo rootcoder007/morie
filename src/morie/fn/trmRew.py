@@ -412,3 +412,7 @@ def term_rewriting(term, rules, strategy="innermost",
         "strategy": strategy,
         "method": "leftmost-%s rewriting to normal form" % strategy,
     })
+
+
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+termrewriting = term_rewriting
