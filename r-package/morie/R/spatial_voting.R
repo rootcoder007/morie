@@ -56,13 +56,19 @@
 
 #' .sv_as_matrix
 #'
-#' A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_aldrich_mckelvey}, \code{morie_spatial_voting_blackbox}, \code{morie_spatial_voting_optimal_classification}.
+#' A step of the spatial_voting implementation. Called by
+#' \code{morie_spatial_voting_aldrich_mckelvey}, \code{morie_spatial_voting_blackbox},
+#' \code{morie_spatial_voting_optimal_classification}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param x Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.
 #' @return The value of \code{m}, as built in the body.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .sv_as_matrix(x = x)
+#' res
 .sv_as_matrix <- function(x) {
   if (is.null(x)) return(NULL)
   m <- as.matrix(x)
@@ -72,26 +78,39 @@
 
 #' .sv_nanmean_col
 #'
-#' A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_aldrich_mckelvey}, \code{morie_spatial_voting_anchoring_vignettes}, \code{morie_spatial_voting_blackbox}.
+#' A step of the spatial_voting implementation. Called by
+#' \code{morie_spatial_voting_aldrich_mckelvey},
+#' \code{morie_spatial_voting_anchoring_vignettes}, \code{morie_spatial_voting_blackbox}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param M Passed to \code{apply}.
 #' @return The value of \code{apply}.
 #' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+#' 2.6, 3.4, 3.9))
+#' res <- .sv_nanmean_col(M = X)
+#' res
 .sv_nanmean_col <- function(M) {
   apply(M, 2, function(v) mean(v, na.rm = TRUE))
 }
 
 #' .sv_pairwise_dist
 #'
-#' A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_classical_mds}, \code{morie_spatial_voting_indscal}, \code{morie_spatial_voting_nonmetric_mds} and 2 others in the module.
+#' A step of the spatial_voting implementation. Called by
+#' \code{morie_spatial_voting_classical_mds}, \code{morie_spatial_voting_indscal},
+#' \code{morie_spatial_voting_nonmetric_mds} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param X A matrix; passed to \code{as.matrix}.
 #' @return A matrix, from \code{as.matrix}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .sv_pairwise_dist(X = x)
+#' res
 .sv_pairwise_dist <- function(X) {
   X <- as.matrix(X)
   as.matrix(stats::dist(X))
@@ -99,13 +118,18 @@
 
 #' .sv_double_centering
 #'
-#' A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_classical_mds}, \code{morie_spatial_voting_double_centering}.
+#' A step of the spatial_voting implementation. Called by
+#' \code{morie_spatial_voting_classical_mds},
+#' \code{morie_spatial_voting_double_centering}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
 #' @param D A matrix; passed to \code{nrow}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' res <- .sv_double_centering(D = 3L)
+#' res
 .sv_double_centering <- function(D) {
   D <- as.matrix(D)
   n <- nrow(D)
@@ -116,7 +140,8 @@
 
 #' .sv_safe_pinv
 #'
-#' A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_smacof}, \code{morie_spatial_voting_smacof_unfolding}.
+#' A step of the spatial_voting implementation. Called by
+#' \code{morie_spatial_voting_smacof}, \code{morie_spatial_voting_smacof_unfolding}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -124,6 +149,11 @@
 #' @param tol Passed to \code{>}. Defaults to \code{1e-12}.
 #' @return The value of \code{%*%}.
 #' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+#' 2.6, 3.4, 3.9))
+#' res <- .sv_safe_pinv(M = X)
+#' res
 .sv_safe_pinv <- function(M, tol = 1e-12) {
   s <- svd(M)
   d <- s$d
@@ -141,6 +171,10 @@
 #' @param w Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .sv_isotonic_pava(y = y)
+#' res
 .sv_isotonic_pava <- function(y, w = NULL) {
   n <- length(y)
   if (is.null(w)) w <- rep(1, n)
@@ -1883,7 +1917,8 @@ morie_spatial_voting_ordinal_irt <- function(Y, n_dims = 1L,
 #'   Estimation via Markov Chain Monte Carlo for the U.S. Supreme Court,
 #'   1953-1999." *Political Analysis*, 10(2).
 #' @examples \dontrun{morie_spatial_voting_dynamic_irt(matrix(0, 4, 4), 1:4)}
-#' @param time_periods Integer vector of period indices (one per roll call) for the dynamic-IRT random-walk prior on ideal points.
+#' @param time_periods Integer vector of period indices (one per roll call) for the
+#' dynamic-IRT random-walk prior on ideal points.
 #' @param burn_in Integer; MCMC burn-in iterations.
 #' @export
 morie_spatial_voting_dynamic_irt <- function(votes, time_periods,

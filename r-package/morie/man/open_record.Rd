@@ -19,7 +19,9 @@ The value of \code{$}.
 }
 \keyword{internal}
 \examples{
-dek <- as.raw(101:132); nonce <- as.raw(1:12)
-s <- seal_record(charToRaw("classified"), dek, nonce)
-rawToChar(open_record(s, dek))
+if (morie_crypto_sodium_available()) {
+  dek <- as.raw(101:132); nonce <- as.raw(1:12)
+  s <- seal_record(charToRaw("classified"), dek, nonce)
+  rawToChar(open_record(s, dek))
+}
 }

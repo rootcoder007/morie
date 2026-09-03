@@ -44,6 +44,9 @@
 #' @param K A vector; its length is taken and its elements indexed.
 #' @return The value of \code{M}, as built in the body.
 #' @export
+#' @examples
+#' res <- .smoopt_K(K = 3L)
+#' res
 .smoopt_K <- function(K) {
   if (is.matrix(K)) return(K)
   n <- length(K)
@@ -244,6 +247,11 @@ compute_threshold <- function(i1, i2, a1_new, a2_new, alpha, y, E, K,
 #' @param K Passed to \code{.smoopt_K}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' b <- c(1.5, 2.5, 3.5)
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' res <- .smoopt_dual_objective(alpha = 0.5, y = b, K = A)
+#' res
 .smoopt_dual_objective <- function(alpha, y, K) {
   a <- as.numeric(alpha)
   yy <- as.numeric(y)
@@ -263,9 +271,13 @@ compute_threshold <- function(i1, i2, a1_new, a2_new, alpha, y, E, K,
 #' @param C Passed to \code{.smoopt_bounds}. Defaults to \code{1}.
 #' @param tol Passed to \code{violates_kkt}. Defaults to \code{0.001}.
 #' @param eps Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-05}.
-#' @param max_passes Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200L}.
+#' @param max_passes Coerced to integer by the body, with \code{as.integer}. Defaults to
+#' \code{200L}.
 #' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0L}.
-#' @return A list with \code{estimate}, \code{alpha}, \code{b}, \code{passes}, \code{full_passes}, \code{non_bound_passes}, \code{steps}, \code{support_vectors}, \code{n_sv}, \code{equality_residual}, \code{kkt_violations}, \code{objective}, \code{method}, \code{note}.
+#' @return A list with \code{estimate}, \code{alpha}, \code{b}, \code{passes},
+#' \code{full_passes}, \code{non_bound_passes}, \code{steps}, \code{support_vectors},
+#' \code{n_sv}, \code{equality_residual}, \code{kkt_violations}, \code{objective},
+#' \code{method}, \code{note}.
 #' @export
 smo_platt <- function(y, K, C = 1.0, tol = 1e-3, eps = 1e-5,
                       max_passes = 200L, seed = 0L) {
@@ -357,6 +369,9 @@ smo_platt <- function(y, K, C = 1.0, tol = 1e-3, eps = 1e-5,
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .smoopt_cheatsheet()
+#' res
 .smoopt_cheatsheet <- function() {
   paste("smoopt: same SVM dual as svmopt, different CHOICE of ",
         "pair. Two multipliers because the equality constraint ",

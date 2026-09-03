@@ -12,3 +12,7 @@ A length-1 character vector containing JSON text.
 \description{
 JSON enumeration of all registered commands
 }
+\examples{
+res <- stat_bridge_registry_json()
+res
+}

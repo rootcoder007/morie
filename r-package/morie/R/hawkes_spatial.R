@@ -25,7 +25,9 @@ NULL
 
 #' .hst_check_params
 #'
-#' A step of the hawkes_spatial implementation. Called by \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik}, \code{morie_hawkes_st_simulate}.
+#' A step of the hawkes_spatial implementation. Called by
+#' \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik},
+#' \code{morie_hawkes_st_simulate}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -46,7 +48,8 @@ NULL
 # Gaussian spatial density evaluated at squared distances.
 #' Gaussian spatial density evaluated at squared distances
 #'
-#' A step of the hawkes_spatial implementation. Called by \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik}.
+#' A step of the hawkes_spatial implementation. Called by
+#' \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'

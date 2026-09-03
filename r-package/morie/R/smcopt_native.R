@@ -55,6 +55,9 @@ annealing_ladder <- function(n_steps, phi_max = 50.0, phi_min = 0.1,
 #' @param scale Numeric; combined arithmetically in the body.
 #' @return The value of \code{function}.
 #' @export
+#' @examples
+#' res <- .smcopt_rwk(scale = TRUE)
+#' res
 .smcopt_rwk <- function(scale) {
   function(x, log_target, rng) {
     n <- length(x)
@@ -78,7 +81,8 @@ annealing_ladder <- function(n_steps, phi_max = 50.0, phi_min = 0.1,
 #'
 #' @param objective The body requires: smcopt: the objective was never evaluated.
 #' @param initial Passed to \code{smcsam}.
-#' @param n_particles Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200L}.
+#' @param n_particles Coerced to integer by the body, with \code{as.integer}. Defaults to
+#' \code{200L}.
 #' @param n_steps Passed to \code{annealing_ladder}. Defaults to \code{30L}.
 #' @param phi_max Passed to \code{annealing_ladder}. Defaults to \code{50}.
 #' @param phi_min Passed to \code{annealing_ladder}. Defaults to \code{0.1}.
@@ -88,7 +92,10 @@ annealing_ladder <- function(n_steps, phi_max = 50.0, phi_min = 0.1,
 #' @param scheme Passed to \code{smcsam}. Defaults to \code{"systematic"}.
 #' @param seed Passed to \code{smcsam}. Defaults to \code{0L}.
 #' @param maximise A flag; the body branches on it. Defaults to \code{TRUE}.
-#' @return A list with \code{estimate}, \code{best_x}, \code{best_value}, \code{particles}, \code{weights}, \code{particle_mean}, \code{ladder}, \code{ess_trace}, \code{resampled}, \code{accept_trace}, \code{n_particles}, \code{maximise}, \code{note}, \code{method}.
+#' @return A list with \code{estimate}, \code{best_x}, \code{best_value},
+#' \code{particles}, \code{weights}, \code{particle_mean}, \code{ladder},
+#' \code{ess_trace}, \code{resampled}, \code{accept_trace}, \code{n_particles},
+#' \code{maximise}, \code{note}, \code{method}.
 #' @export
 smcopt <- function(objective, initial, n_particles = 200L, n_steps = 30L,
                    phi_max = 50.0, phi_min = 0.1, kind = "geometric",
@@ -148,6 +155,9 @@ smcopt <- function(objective, initial, n_particles = 200L, n_steps = 30L,
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .smcopt_cheatsheet()
+#' res
 .smcopt_cheatsheet <- function() {
   paste("smcopt: SMC as a global optimiser (Del Moral, Doucet & Jasra ",
         "2006, sec 2.3.1c). Anneal pi_n = pi^phi_n with phi rising, so ",

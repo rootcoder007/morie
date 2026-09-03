@@ -16,3 +16,8 @@ The value of \code{x}, as built in the body.
 users can pass a vector predictor without hitting glmnet\'s "x should
 be a matrix with 2 or more columns" error.
 }
+\examples{
+x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+res <- .morie_ensure_design_matrix(x = x)
+res
+}

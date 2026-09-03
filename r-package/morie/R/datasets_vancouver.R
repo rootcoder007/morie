@@ -92,7 +92,8 @@ morie_datasets_vancouver_opendata_layers <- function(offline = TRUE,
 #'   `morie_datasets_vancouver_graffiti()` \tab `graffiti` \tab 100 (of 7683) \cr
 #'   `morie_datasets_vancouver_noise_control_areas()` \tab `noise-control-areas` \tab 3 \cr
 #'   `morie_datasets_vancouver_homeless_shelters()` \tab `homeless-shelter-locations` \tab 17 \cr
-#'   `morie_datasets_vancouver_property_use_inspection_districts()` \tab `property-use-inspection-districts` \tab 23 \cr
+#'   `morie_datasets_vancouver_property_use_inspection_districts()` \tab
+#' `property-use-inspection-districts` \tab 23 \cr
 #'   `morie_datasets_vancouver_fire_halls()` \tab `fire-halls` \tab 20 \cr
 #' }
 #'
@@ -108,7 +109,10 @@ NULL
 
 #' .morie_vancouver_fixture
 #'
-#' A step of the datasets_vancouver implementation. Called by \code{morie_datasets_vancouver_community_centres}, \code{morie_datasets_vancouver_community_food_markets}, \code{morie_datasets_vancouver_disability_parking} and 6 others in the module.
+#' A step of the datasets_vancouver implementation. Called by
+#' \code{morie_datasets_vancouver_community_centres},
+#' \code{morie_datasets_vancouver_community_food_markets},
+#' \code{morie_datasets_vancouver_disability_parking} and 6 others in the module.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'

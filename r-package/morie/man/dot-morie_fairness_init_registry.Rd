@@ -14,3 +14,7 @@ A step of the fairness_cityprofile implementation. Called by \code{morie_fairnes
 See the file header for the source the module follows.
 for the source it follows.
 }
+\examples{
+res <- .morie_fairness_init_registry()
+res
+}

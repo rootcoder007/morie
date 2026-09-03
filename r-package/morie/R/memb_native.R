@@ -4,7 +4,8 @@
 
 #' .ghc_unif_int
 #'
-#' A step of the memb_native implementation. Called by \code{synthesize}, \code{synthesize_marginals}, \code{synthesize_noisy}.
+#' A step of the memb_native implementation. Called by \code{synthesize},
+#' \code{synthesize_marginals}, \code{synthesize_noisy}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -18,13 +19,17 @@
 
 #' .memb_rng
 #'
-#' A step of the memb_native implementation. Called by \code{synthesize}, \code{synthesize_marginals}, \code{synthesize_noisy}.
+#' A step of the memb_native implementation. Called by \code{synthesize},
+#' \code{synthesize_marginals}, \code{synthesize_noisy}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param seed Passed to \code{.ghc_rng}.
 #' @return The value of \code{.ghc_rng}.
 #' @export
+#' @examples
+#' res <- .memb_rng(seed = 1L)
+#' res
 .memb_rng <- function(seed) .ghc_rng(seed)
 
 #' logistic_trainer
@@ -181,7 +186,8 @@ attack_dataset <- function(model_predict, in_X, in_y, out_X, out_y) {
 #' @param c Numeric; combined arithmetically in the body.
 #' @param n_features A count; the body uses it as \code{seq_len(...)}.
 #' @param feature_values The body requires: memb: feature_values must have one entry per feature.
-#' @param k_max Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
+#' @param k_max Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
 #' @param k_min Numeric; passed to \code{max}. Defaults to \code{1L}.
 #' @param conf_min The body requires: memb: conf_min must lie in (0, 1). Defaults to \code{0.8}.
 #' @param iter_max Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1000L}.
@@ -310,7 +316,8 @@ synthesize_noisy <- function(X, fraction = 0.1, feature_values = NULL, seed = 0)
 #'
 #' @param pred Passed to \code{==}.
 #' @param truth Passed to \code{==}.
-#' @return A list with \code{precision}, \code{recall}, \code{accuracy}, \code{tp}, \code{fp}, \code{fn}, \code{tn}.
+#' @return A list with \code{precision}, \code{recall}, \code{accuracy}, \code{tp},
+#' \code{fp}, \code{fn}, \code{tn}.
 #' @export
 precision_recall <- function(pred, truth) {
   tp <- sum(pred == 1L & truth == 1L)
@@ -334,6 +341,10 @@ precision_recall <- function(pred, truth) {
 #' @param top Optional; may be \code{NULL}. Numeric; passed to \code{min}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .sorted_features(vec = x)
+#' res
 .sorted_features <- function(vec, top = NULL) {
   s <- sort(vec, decreasing = TRUE)
   if (is.null(top)) s else s[seq_len(min(top, length(s)))]
@@ -351,10 +362,14 @@ precision_recall <- function(pred, truth) {
 #' @param eval_out A vector; indexed elementwise.
 #' @param train_fn Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @param attack_train_fn Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param n_shadow Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
+#' @param n_shadow Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
 #' @param sort_features A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @param threshold Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.5}.
-#' @return A list with \code{estimate}, \code{metrics}, \code{per_class}, \code{predictions}, \code{scores}, \code{truth}, \code{n_shadow}, \code{attack_train_size}, \code{attack_classes}, \code{threshold}, \code{note}, \code{method}.
+#' @return A list with \code{estimate}, \code{metrics}, \code{per_class},
+#' \code{predictions}, \code{scores}, \code{truth}, \code{n_shadow},
+#' \code{attack_train_size}, \code{attack_classes}, \code{threshold}, \code{note},
+#' \code{method}.
 #' @export
 memb <- function(target_predict, shadow_data, eval_in, eval_out,
                  train_fn = NULL, attack_train_fn = NULL, n_shadow = NULL,
@@ -434,6 +449,9 @@ memb <- function(target_predict, shadow_data, eval_in, eval_out,
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .memb_cheatsheet()
+#' res
 .memb_cheatsheet <- function() {
   "memb: membership inference (Shokri et al. 2017). Black-box output vector in, member/non-member out. Train k SHADOW models on data distributed like the target's, where you DO know membership; their outputs on their own training data are labelled 'in' and on a disjoint test set 'out'; that labelled set trains the attack model -- one per output class, since the tell is class-conditional. Shadow data from Algorithm 1 synthesis against the target, from feature marginals, or from noisy real data. Metrics are precision and recall over members. The attack lives on the train/test gap: no overfitting, no attack."
 }

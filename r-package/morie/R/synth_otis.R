@@ -29,6 +29,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_a01_panel()
+#' res
 .morie_otis_a01_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -56,6 +59,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_b01_panel()
+#' res
 .morie_otis_b01_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -91,6 +97,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_b02_panel()
+#' res
 .morie_otis_b02_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -114,6 +123,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_b03_panel()
+#' res
 .morie_otis_b03_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -137,6 +149,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_b04_panel()
+#' res
 .morie_otis_b04_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -159,6 +174,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_b05_panel()
+#' res
 .morie_otis_b05_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -179,6 +197,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_b06_panel()
+#' res
 .morie_otis_b06_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -202,6 +223,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_b07_panel()
+#' res
 .morie_otis_b07_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -224,6 +248,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_b08_panel()
+#' res
 .morie_otis_b08_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -247,6 +274,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_b09_panel()
+#' res
 .morie_otis_b09_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -268,6 +298,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_c01_panel()
+#' res
 .morie_otis_c01_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -290,6 +323,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_c02_panel()
+#' res
 .morie_otis_c02_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -313,6 +349,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_c03_panel()
+#' res
 .morie_otis_c03_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -336,6 +375,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_c04_panel()
+#' res
 .morie_otis_c04_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -358,6 +400,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_c05_panel()
+#' res
 .morie_otis_c05_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -380,6 +425,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_c06_panel()
+#' res
 .morie_otis_c06_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -402,6 +450,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_c07_panel()
+#' res
 .morie_otis_c07_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -425,6 +476,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_c08_panel()
+#' res
 .morie_otis_c08_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -448,6 +502,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_c09_panel()
+#' res
 .morie_otis_c09_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -471,6 +528,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_c10_panel()
+#' res
 .morie_otis_c10_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -495,6 +555,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_c11_panel()
+#' res
 .morie_otis_c11_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -516,6 +579,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_c12_panel()
+#' res
 .morie_otis_c12_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -539,6 +605,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_d01_panel()
+#' res
 .morie_otis_d01_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -562,6 +631,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_d02_panel()
+#' res
 .morie_otis_d02_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -582,6 +654,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_d03_panel()
+#' res
 .morie_otis_d03_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -602,6 +677,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_d04_panel()
+#' res
 .morie_otis_d04_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -622,6 +700,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_d05_panel()
+#' res
 .morie_otis_d05_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -642,6 +723,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_d06_panel()
+#' res
 .morie_otis_d06_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -663,6 +747,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
 #' @return A data frame.
 #' @export
+#' @examples
+#' res <- .morie_otis_d07_panel()
+#' res
 .morie_otis_d07_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(

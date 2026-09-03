@@ -102,7 +102,9 @@ NULL
 # Newton-Raphson logistic with ridge penalty.
 #' Newton-Raphson logistic with ridge penalty
 #'
-#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate}, \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate} and 3 others in the module.
+#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate},
+#' \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate} and 3 others in the
+#' module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -113,6 +115,11 @@ NULL
 #' @param tol Passed to \code{<}. Defaults to \code{1e-06}.
 #' @return The value of \code{beta}, as built in the body.
 #' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+#' 2.6, 3.4, 3.9))
+#' res <- .otis_logit_fit(X = X, d = 3L)
+#' res
 .otis_logit_fit <- function(X, d, ridge = 1e-3, max_iter = 50L, tol = 1e-6) {
   n <- nrow(X)
   p <- ncol(X)
@@ -144,6 +151,10 @@ NULL
 #' @param eps Numeric; combined arithmetically in the body. Defaults to \code{0.02}.
 #' @return The value of \code{pmin}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_clip_ps(e = x)
+#' res
 .otis_clip_ps <- function(e, eps = 0.02) {
   pmin(pmax(e, eps), 1 - eps)
 }
@@ -151,7 +162,9 @@ NULL
 # Predict propensity from fitted beta on a (possibly new) X.
 #' Predict propensity from fitted beta on a (possibly new) X
 #'
-#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate}, \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate} and 3 others in the module.
+#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate},
+#' \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate} and 3 others in the
+#' module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -168,14 +181,20 @@ NULL
 # Brier + log-loss + observed/predicted prevalence.
 #' Brier + log-loss + observed/predicted prevalence
 #'
-#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate}, \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate}.
+#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate},
+#' \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param p Numeric; passed to \code{mean}.
 #' @param d Numeric; passed to \code{mean}.
-#' @return A list with \code{brier}, \code{obs_prevalence}, \code{predicted_prevalence}, \code{log_loss}.
+#' @return A list with \code{brier}, \code{obs_prevalence}, \code{predicted_prevalence},
+#' \code{log_loss}.
 #' @export
+#' @examples
+#' g <- c(0L, 1L, 0L, 1L, 1L, 0L, 1L, 0L)
+#' res <- .otis_propensity_diagnostics(p = 0.5, d = g)
+#' res
 .otis_propensity_diagnostics <- function(p, d) {
   brier <- mean((p - d)^2)
   pc <- pmin(pmax(p, 1e-12), 1 - 1e-12)
@@ -238,7 +257,9 @@ NULL
 # CausalEstimate constructor (R analogue of the python dataclass).
 #' CausalEstimate constructor (R analogue of the python dataclass)
 #'
-#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate}, \code{morie_otis_aipw_superlearner}, \code{morie_otis_causal_grid} and 4 others in the module.
+#' A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate},
+#' \code{morie_otis_aipw_superlearner}, \code{morie_otis_causal_grid} and 4 others in the
+#' module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'

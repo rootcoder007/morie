@@ -23,13 +23,17 @@
 # little-endian 32-bit pack of an integer (returns raw bytes)
 #' Little-endian 32-bit pack of an integer (returns raw bytes)
 #'
-#' A step of the secarg_native implementation. Called by \code{morie_secarg_prehash}, \code{morie_secarg_variable_hash}.
+#' A step of the secarg_native implementation. Called by \code{morie_secarg_prehash},
+#' \code{morie_secarg_variable_hash}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param n Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{as.raw}.
 #' @export
+#' @examples
+#' res <- .le32(n = 3L)
+#' res
 .le32 <- function(n) {
   # bitwAnd(n, 0xffffffff) is NA in R: 4294967295 is past .Machine
   # integer.max, so the whole prefix came back as zero bytes and every
@@ -54,6 +58,9 @@
 #' @param n Numeric; combined arithmetically in the body.
 #' @return The value of \code{as.raw}.
 #' @export
+#' @examples
+#' res <- .le64(n = 3L)
+#' res
 .le64 <- function(n) {
   n <- as.numeric(n)
   v <- n %% .MASK64

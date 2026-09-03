@@ -186,6 +186,9 @@ morie_install_extras <- function(which = "missing",
 #'
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' res <- .morie_get_suggests()
+#' res
 .morie_get_suggests <- function() {
   desc_path <- system.file("DESCRIPTION", package = "morie")
   if (!nzchar(desc_path)) {
@@ -206,7 +209,8 @@ morie_install_extras <- function(which = "missing",
 # Internal: is a CRAN package installed locally?
 #' Internal: is a CRAN package installed locally?
 #'
-#' A step of the install_extras implementation. Called by \code{.morie_check_system_libs}, \code{morie_install_extras}.
+#' A step of the install_extras implementation. Called by
+#' \code{.morie_check_system_libs}, \code{morie_install_extras}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -330,6 +334,9 @@ morie_ensure_extras <- function(pkgs, ask = interactive(), repos = NULL) {
 #'
 #' @return A list with \code{libcurl}, \code{libsodium}, \code{liboqs}.
 #' @export
+#' @examples
+#' res <- .morie_check_system_libs()
+#' res
 .morie_check_system_libs <- function() {
   list(
     libcurl   = .morie_pkg_installed("curl") || .morie_pkg_installed("httr2"),

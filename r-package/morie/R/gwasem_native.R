@@ -415,6 +415,10 @@ morie_gwasem_gc <- function(stats, df = 1) {
 #' @param z Numeric; passed to \code{abs}.
 #' @return The value of \code{pnorm}.
 #' @export
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .gwasem_norm_sf(z = y)
+#' res
 .gwasem_norm_sf <- function(z) {
   pnorm(abs(z), lower.tail = FALSE)
 }

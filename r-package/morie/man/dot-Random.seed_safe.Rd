@@ -14,3 +14,7 @@ A step of the xavir implementation. Called by \code{morie_xavir_xavier_init}.
 See the file header for the source the module follows.
 it follows.
 }
+\examples{
+res <- .Random.seed_safe()
+res
+}

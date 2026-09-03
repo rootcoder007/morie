@@ -72,7 +72,9 @@ NULL
 
 #' .tps_sp_result
 #'
-#' A step of the tps_statphysics implementation. Called by \code{morie_tps_criminal_network_graph}, \code{morie_tps_inspection_game_phase}, \code{morie_tps_levy_flight_alpha} and 4 others in the module.
+#' A step of the tps_statphysics implementation. Called by
+#' \code{morie_tps_criminal_network_graph}, \code{morie_tps_inspection_game_phase},
+#' \code{morie_tps_levy_flight_alpha} and 4 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -101,7 +103,9 @@ NULL
 
 #' .tps_sp_round
 #'
-#' A step of the tps_statphysics implementation. Called by \code{morie_tps_inspection_game_phase}, \code{morie_tps_levy_flight_alpha}, \code{morie_tps_lotka_volterra_police_crime} and 3 others in the module.
+#' A step of the tps_statphysics implementation. Called by
+#' \code{morie_tps_inspection_game_phase}, \code{morie_tps_levy_flight_alpha},
+#' \code{morie_tps_lotka_volterra_police_crime} and 3 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -127,7 +131,8 @@ NULL
 #' @param lat Numeric; combined arithmetically in the body.
 #' @param lon Numeric; combined arithmetically in the body.
 #' @param lat_ref Numeric; combined arithmetically in the body. Defaults to \code{(43.55 + 43.9)/2}.
-#' @param lon_ref Numeric; combined arithmetically in the body. Defaults to \code{(-79.65 + -79.1)/2}.
+#' @param lon_ref Numeric; combined arithmetically in the body. Defaults to \code{(-79.65
+#' + -79.1)/2}.
 #' @return A list with \code{x}, \code{y}.
 #' @export
 .tps_sp_project_xy <- function(lat, lon,
@@ -151,6 +156,9 @@ NULL
 #' @param ny Passed to \code{seq}. Defaults to \code{60L}.
 #' @return A list with \code{gx}, \code{gy}.
 #' @export
+#' @examples
+#' res <- .tps_sp_toronto_grid()
+#' res
 .tps_sp_toronto_grid <- function(nx = 90L, ny = 60L) {
   prj <- .tps_sp_project_xy(c(43.55, 43.90), c(-79.65, -79.10))
   gx <- seq(min(prj$x) - 1, max(prj$x) + 1, length.out = nx)
@@ -161,7 +169,8 @@ NULL
 # Periodic-shift roll equivalent to NumPy np.roll along one axis.
 #' Periodic-shift roll equivalent to NumPy np.roll along one axis
 #'
-#' A step of the tps_statphysics implementation. Called by \code{.tps_sp_grad}, \code{.tps_sp_lap}, \code{.tps_sp_local_max3x3} and 1 others in the module.
+#' A step of the tps_statphysics implementation. Called by \code{.tps_sp_grad},
+#' \code{.tps_sp_lap}, \code{.tps_sp_local_max3x3} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -221,7 +230,8 @@ NULL
 # Pointwise 3x3 local-maximum filter.
 #' Pointwise 3x3 local-maximum filter
 #'
-#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}, \code{morie_tps_sdb_turing_demo}.
+#' A step of the tps_statphysics implementation. Called by
+#' \code{morie_tps_sdb_reaction_diffusion}, \code{morie_tps_sdb_turing_demo}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -415,9 +425,11 @@ morie_tps_load_tps <- function(name, format = "geojson",
 #' Short-D'Orsogna-Brantingham 2008 hot-spot PDE
 #'
 #' Solves the coupled reaction-diffusion system
-#' \deqn{\partial_t A = \eta \nabla^2 A - \omega A + \theta \rho,}{partial_t A = eta grad^2 A - omega A + theta rho,}
+#' \deqn{\partial_t A = \eta \nabla^2 A - \omega A + \theta \rho,}{partial_t A = eta
+#' grad^2 A - omega A + theta rho,}
 #' \deqn{\partial_t \rho = \nabla \cdot (D \nabla \rho - 2 \rho \nabla
-#'   \log A) - \rho A + \gamma,}{partial_t rho = grad * (D grad rho - 2 rho grad log A) - rho A + gamma,}
+#'   \log A) - \rho A + \gamma,}{partial_t rho = grad * (D grad rho - 2 rho grad log A) -
+#' rho A + gamma,}
 #' on a cosine-corrected Toronto grid seeded by the observed incident
 #' histogram. Localised attractiveness spikes emerge whenever
 #' \eqn{(\eta, \omega, \theta, D, \gamma)}{(eta, omega, theta, D, gamma)} place the system in the
@@ -595,7 +607,8 @@ morie_tps_sdb_reaction_diffusion <- function(category = "Assault",
 #' chronologically consecutive incidents, following Brockmann,
 #' Hufnagel & Geisel (2006). For a power-law tail \eqn{p(\ell) \propto
 #' \ell^{-\alpha}}{p(l) prop l^-alpha} on \eqn{\ell \ge \ell_{\min}}{l >= ell_min} the Hill MLE is
-#' \deqn{\hat\alpha = 1 + n / \sum_i \log(\ell_i / \ell_{\min}).}{hatalpha = 1 + n / sum_i log(ell_i / ell_min).}
+#' \deqn{\hat\alpha = 1 + n / \sum_i \log(\ell_i / \ell_{\min}).}{hatalpha = 1 + n /
+#' sum_i log(ell_i / ell_min).}
 #' Standard error is obtained by 200 nonparametric bootstrap resamples.
 #'
 #' @param category TPS category name.
@@ -725,7 +738,8 @@ morie_tps_levy_flight_alpha <- function(category = "Assault",
 #' Bettencourt urban-scaling exponent across the 158 Toronto wards
 #'
 #' Performs the standard log-log OLS scaling fit
-#' \deqn{\log y_i = \log Y_0 + \beta \log p_i + \varepsilon_i,}{log y_i = log Y_0 + beta log p_i + varepsilon_i,}
+#' \deqn{\log y_i = \log Y_0 + \beta \log p_i + \varepsilon_i,}{log y_i = log Y_0 + beta
+#' log p_i + varepsilon_i,}
 #' where \eqn{y_i} is the crime count and \eqn{p_i} is the population
 #' of ward \code{i}. \eqn{\beta > 1}{beta > 1} indicates super-linear (crime
 #' grows faster than population), \eqn{\beta = 1}{beta = 1} linear, and
@@ -860,9 +874,11 @@ morie_tps_urban_scaling_beta <- function(category = "Assault",
 #' rolling mean as a placeholder predator \eqn{y(t)} (TPS does not yet
 #' expose a public mass-stop / use-of-force time series). Under the
 #' classical Lotka-Volterra system,
-#' \deqn{\dot x = \alpha x - \beta x y, \quad \dot y = \delta x y - \gamma y,}{dot x = alpha x - beta x y, dot y = delta x y - gamma y,}
+#' \deqn{\dot x = \alpha x - \beta x y, \quad \dot y = \delta x y - \gamma y,}{dot x =
+#' alpha x - beta x y, dot y = delta x y - gamma y,}
 #' the small-amplitude oscillation around the equilibrium has period
-#' \eqn{T = 2 \pi / \sqrt{\alpha \gamma}}{T = 2 pi / sqrt(alpha gamma)}. Growth rate \eqn{\alpha}{alpha} is
+#' \eqn{T = 2 \pi / \sqrt{\alpha \gamma}}{T = 2 pi / sqrt(alpha gamma)}. Growth rate
+#' \eqn{\alpha}{alpha} is
 #' estimated from log-differences of \code{x}; \eqn{\gamma}{gamma} symmetrically
 #' from \code{y}; the interaction rates \eqn{\beta, \delta}{beta, delta} follow by
 #' the equilibrium relations.

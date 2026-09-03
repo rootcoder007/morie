@@ -25,7 +25,8 @@ GEMINI_BASE_URL <- "https://generativelanguage.googleapis.com/v1beta/openai"
 
 #' .morie_llm_env
 #'
-#' A step of the llm implementation. Called by \code{.morie_llm_api_base}, \code{.morie_llm_api_key}, \code{.morie_llm_gemini_key} and 3 others in the module.
+#' A step of the llm implementation. Called by \code{.morie_llm_api_base},
+#' \code{.morie_llm_api_key}, \code{.morie_llm_gemini_key} and 3 others in the module.
 #' See the file header for the source the module follows.
 #' follows.
 #'
@@ -39,18 +40,23 @@ GEMINI_BASE_URL <- "https://generativelanguage.googleapis.com/v1beta/openai"
 }
 #' .morie_llm_ollama_base
 #'
-#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}, \code{morie_llm_probe_ollama}.
+#' A step of the llm implementation. Called by \code{morie_llm_ask},
+#' \code{morie_llm_ask_multi}, \code{morie_llm_probe_ollama}.
 #' See the file header for the source the module follows.
 #' follows.
 #'
 #' @return The value of \code{sub}.
 #' @export
+#' @examples
+#' res <- .morie_llm_ollama_base()
+#' res
 .morie_llm_ollama_base <- function() {
   sub("/+$", "", .morie_llm_env("OLLAMA_BASE_URL", DEFAULT_OLLAMA_BASE_URL))
 }
 #' .morie_llm_gemini_key
 #'
-#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
+#' A step of the llm implementation. Called by \code{morie_llm_ask},
+#' \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
 #' See the file header for the source the module follows.
 #' follows.
 #'
@@ -60,7 +66,8 @@ GEMINI_BASE_URL <- "https://generativelanguage.googleapis.com/v1beta/openai"
 if (nzchar(v)) v else NULL }
 #' .morie_llm_openai_key
 #'
-#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
+#' A step of the llm implementation. Called by \code{morie_llm_ask},
+#' \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
 #' See the file header for the source the module follows.
 #' follows.
 #'
@@ -70,7 +77,8 @@ if (nzchar(v)) v else NULL }
 if (nzchar(v)) v else NULL }
 #' .morie_llm_api_base
 #'
-#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
+#' A step of the llm implementation. Called by \code{morie_llm_ask},
+#' \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
 #' See the file header for the source the module follows.
 #' follows.
 #'
@@ -80,7 +88,8 @@ if (nzchar(v)) v else NULL }
 if (nzchar(v)) sub("/+$", "", v) else NULL }
 #' .morie_llm_api_key
 #'
-#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
+#' A step of the llm implementation. Called by \code{morie_llm_ask},
+#' \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
 #' See the file header for the source the module follows.
 #' follows.
 #'
@@ -96,6 +105,9 @@ if (nzchar(v)) v else NULL }
 #'
 #' @return The value of \code{.morie_llm_env}.
 #' @export
+#' @examples
+#' res <- .morie_llm_gemini_model()
+#' res
 .morie_llm_gemini_model <- function() .morie_llm_env("GEMINI_MODEL", DEFAULT_GEMINI_MODEL)
 
 #' Probe a local Ollama instance
@@ -130,6 +142,9 @@ morie_llm_probe_ollama <- function(timeout = 2) {
 #' @param context_block Passed to \code{paste0}. Defaults to \code{""}.
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .morie_llm_system_prompt()
+#' res
 .morie_llm_system_prompt <- function(context_block = "") {
   paste0(
     "You are the MORIE agent for methods for observational inference and ",
@@ -209,13 +224,20 @@ morie_llm_request_completion <- function(base_url, model, messages,
 
 #' .morie_llm_extract_text
 #'
-#' A step of the llm implementation. Called by \code{.morie_llm_freeapi_completion}, \code{morie_llm_ask}, \code{morie_llm_ask_multi}.
+#' A step of the llm implementation. Called by \code{.morie_llm_freeapi_completion},
+#' \code{morie_llm_ask}, \code{morie_llm_ask_multi}.
 #' See the file header for the source the module follows.
 #' follows.
 #'
 #' @param data A list; the body reads \code{$choices} from it.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' df <- data.frame(x = c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), y = c(2.9, 5.1, 6.8,
+#' 9.4, 11.2, 13.1, 15.0, 17.6), g = c('a', 'b', 'a', 'b', 'a', 'b', 'a', 'b'),
+#' stringsAsFactors = FALSE)
+#' res <- .morie_llm_extract_text(data = df)
+#' res
 .morie_llm_extract_text <- function(data) {
   choices <- data$choices
   if (length(choices) == 0L) return("")
@@ -344,6 +366,9 @@ FREEAPI_BASE_URL      <- "https://ollamafreeapi.duckdns.org"  # community-hosted
 #'
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' res <- .morie_llm_freeapi_model()
+#' res
 .morie_llm_freeapi_model <- function() {
   v <- trimws(Sys.getenv("moriefam", unset = ""))
   if (nzchar(v)) v else DEFAULT_FREEAPI_MODEL
@@ -459,7 +484,8 @@ morie_llm_list_freeapi_models <- function() {
 
 #' morie_llm_detect_provider
 #'
-#' A step of the llm implementation. Called by \code{morie_llm_agent_available}, \code{morie_llm_ask}, \code{morie_llm_ask_multi}.
+#' A step of the llm implementation. Called by \code{morie_llm_agent_available},
+#' \code{morie_llm_ask}, \code{morie_llm_ask_multi}.
 #' See the file header for the source the module follows.
 #' follows.
 #'
@@ -506,6 +532,10 @@ morie_llm_detect_provider <- function() {
 #' @param text Character; passed to \code{gsub}.
 #' @return The value of \code{trimws}.
 #' @export
+#' @examples
+#' txt <- c('alpha', 'beta', 'gamma', 'delta')
+#' res <- .morie_llm_strip_think(text = txt)
+#' res
 .morie_llm_strip_think <- function(text) {
   trimws(gsub("(?s)<think>.*?</think>\\s*", "", text, perl = TRUE))
 }
@@ -697,4 +727,3 @@ morie_llm_ollama_models <- function(base = .morie_llm_ollama_base(),
     quantization   = vapply(models, det, "", k = "quantization_level"),
     stringsAsFactors = FALSE)
 }
-

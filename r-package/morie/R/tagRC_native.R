@@ -36,7 +36,8 @@
 #' source it follows.
 #'
 #' @param triples See Usage.
-#' @return A list with \code{adjacency}, \code{nodes}, \code{n_nodes}, \code{n_triples}, \code{note}.
+#' @return A list with \code{adjacency}, \code{nodes}, \code{n_nodes}, \code{n_triples},
+#' \code{note}.
 #' @export
 tagRC_tripartite_graph <- function(triples) {
   nodes <- character(0)
@@ -216,7 +217,9 @@ tagRC_adapted_pagerank <- function(adjacency, nodes, p = NULL,
 #' @param d Passed to \code{tagRC_adapted_pagerank}. Defaults to \code{0.7}.
 #' @param weight Passed to \code{tagRC_preference_vector}. Defaults to \code{0.9}.
 #' @param iters Passed to \code{tagRC_adapted_pagerank}. Defaults to \code{200}.
-#' @return A list with \code{estimate}, \code{ranking}, \code{difference}, \code{with_preference}, \code{without_preference}, \code{undifferenced_ranking}, \code{baseline_ranking}, \code{focus}, \code{n_nodes}, \code{method}, \code{note}.
+#' @return A list with \code{estimate}, \code{ranking}, \code{difference},
+#' \code{with_preference}, \code{without_preference}, \code{undifferenced_ranking},
+#' \code{baseline_ranking}, \code{focus}, \code{n_nodes}, \code{method}, \code{note}.
 #' @export
 morie_tagRC <- function(triples, focus, d = 0.7, weight = 0.9,
                         iters = 200) {

@@ -122,7 +122,8 @@
 
 #' .new_spec_test
 #'
-#' A step of the diagnostics implementation. Called by \code{hosmer_lemeshow_test}, \code{likelihood_ratio_test}, \code{link_test} and 4 others in the module.
+#' A step of the diagnostics implementation. Called by \code{hosmer_lemeshow_test},
+#' \code{likelihood_ratio_test}, \code{link_test} and 4 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -205,13 +206,18 @@
 # Solve / pseudo-inverse helper.
 #' Solve / pseudo-inverse helper
 #'
-#' A step of the diagnostics implementation. Called by \code{compute_influence}, \code{compute_residuals}, \code{compute_vif} and 2 others in the module.
+#' A step of the diagnostics implementation. Called by \code{compute_influence},
+#' \code{compute_residuals}, \code{compute_vif} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param A A matrix; passed to \code{solve}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' res <- .safe_solve(A = A)
+#' res
 .safe_solve <- function(A) {
   res <- try(solve(A), silent = TRUE)
   if (inherits(res, "try-error")) .morie_ginv(A) else res
@@ -770,7 +776,8 @@ compute_goodness_of_fit <- function(y, y_hat, X,
 #'   covariate.
 #' @export
 #' @examples
-#' ph_assumption_test(survival_times = c(1, 2, 3, 4, 5, 6, 7, 8), event_indicator = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' ph_assumption_test(survival_times = c(1, 2, 3, 4, 5, 6, 7, 8), event_indicator =
+#' matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
 ph_assumption_test <- function(survival_times, event_indicator,
                                covariates, covariate_names = NULL) {
   times <- as.numeric(survival_times)

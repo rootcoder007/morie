@@ -30,6 +30,10 @@
 #' @return A single numeric vector.
 #' @references Hamilton, W. L. et al. (2017).
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .gsage_rows(x = x)
+#' res
 .gsage_rows <- function(x) {
   # k.mat's contract: accept a list of vectors OR a matrix, yield rows.
   if (is.matrix(x) || is.data.frame(x)) {
@@ -118,6 +122,10 @@ morie_gsageemd_sample <- function(adj, v, size, rng) {
 #' @param v Numeric; combined arithmetically in the body.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .gsage_norm(v = x)
+#' res
 .gsage_norm <- function(v) {
   n <- sqrt(sum(v * v))
   if (n <= .GSAGE_EPS) v else v / n

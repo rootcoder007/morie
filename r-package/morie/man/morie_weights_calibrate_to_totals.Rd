@@ -37,5 +37,6 @@ numeric vector, same length as input), \code{converged},
 Dispatch helper -- calibrate to totals via "raking" or "greg"
 }
 \examples{
-morie_weights_calibrate_to_totals(weights = c(1, 2, 3, 4, 5, 6, 7, 8), df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), totals = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_weights_calibrate_to_totals(weights = c(1, 2, 3, 4, 5, 6, 7, 8),
+  df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), totals = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

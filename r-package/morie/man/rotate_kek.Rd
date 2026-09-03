@@ -24,10 +24,12 @@ A list with \code{estimate}, \code{wrapped}, \code{n}, \code{records_reencrypted
 }
 \keyword{internal}
 \examples{
-kek <- as.raw(1:32); nonce <- as.raw(1:12); dek <- as.raw(101:132)
-w <- wrap_dek(dek, kek, nonce)
-new_kek <- as.raw(201:232)
-rk <- rotate_kek(list(w), kek, new_kek, list(as.raw(51:62)))
-u <- unwrap_dek(rk$wrapped[[1]], new_kek)
-identical(as.raw(u$dek), dek)
+if (morie_crypto_sodium_available()) {
+  kek <- as.raw(1:32); nonce <- as.raw(1:12); dek <- as.raw(101:132)
+  w <- wrap_dek(dek, kek, nonce)
+  new_kek <- as.raw(201:232)
+  rk <- rotate_kek(list(w), kek, new_kek, list(as.raw(51:62)))
+  u <- unwrap_dek(rk$wrapped[[1]], new_kek)
+  identical(as.raw(u$dek), dek)
+}
 }

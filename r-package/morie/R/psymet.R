@@ -18,6 +18,9 @@
 #'
 #' @return The value of \code{requireNamespace}.
 #' @export
+#' @examples
+#' res <- .has_psych()
+#' res
 .has_psych <- function() requireNamespace("psych", quietly = TRUE)
 
 #' .psych_or_stop
@@ -40,13 +43,18 @@
 
 #' .as_item_matrix
 #'
-#' A step of the psymet implementation. Called by \code{morie_psymet_alpha}, \code{morie_psymet_alphadel}, \code{morie_psymet_bartlett} and 6 others in the module.
+#' A step of the psymet implementation. Called by \code{morie_psymet_alpha},
+#' \code{morie_psymet_alphadel}, \code{morie_psymet_bartlett} and 6 others in the module.
 #' See the file header for the source the module follows.
 #' it follows.
 #'
 #' @param data A matrix; passed to \code{as.matrix}.
 #' @return The value of \code{X}, as built in the body.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .as_item_matrix(data = x)
+#' res
 .as_item_matrix <- function(data) {
   X <- as.matrix(data)
   storage.mode(X) <- "double"
@@ -351,7 +359,8 @@ morie_psymet_splithalf <- function(data, method = c("first_last", "odd_even")) {
 #' Upper/lower groups by total score (default 27% per Kelley).
 #' @return data.frame with `item`, `d`.
 #' @param data Numeric matrix or data.frame of items.
-#' @param pct Numeric in (0, 0.5); proportion for the upper/lower group split (default 0.27, the Kelley-Cureton rule).
+#' @param pct Numeric in (0, 0.5); proportion for the upper/lower group split (default
+#' 0.27, the Kelley-Cureton rule).
 #' @examples
 #' set.seed(1)
 #' f <- rnorm(50)

@@ -15,3 +15,8 @@ One of two values, depending on the branch taken.
 \description{
 3 digits.
 }
+\examples{
+txt <- c('alpha', 'beta', 'gamma', 'delta')
+res <- .siu_p_find_case_number(text = txt)
+res
+}

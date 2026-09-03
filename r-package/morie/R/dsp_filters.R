@@ -616,7 +616,8 @@ morie_dsp_even_odd <- function(x) {
 # "same"-mode convolution matching numpy.convolve(x, k, "same").
 #' "same"-mode convolution matching numpy.convolve(x, k, "same")
 #'
-#' A step of the dsp_filters implementation. Called by \code{morie_dsp_hann_filter}, \code{morie_dsp_matched}, \code{morie_dsp_moving_average} and 2 others in the module.
+#' A step of the dsp_filters implementation. Called by \code{morie_dsp_hann_filter},
+#' \code{morie_dsp_matched}, \code{morie_dsp_moving_average} and 2 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -624,6 +625,10 @@ morie_dsp_even_odd <- function(x) {
 #' @param k A vector; its length is taken.
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .same_convolve(x = x, k = 3L)
+#' res
 .same_convolve <- function(x, k) {
   n <- length(x)
   m <- length(k)

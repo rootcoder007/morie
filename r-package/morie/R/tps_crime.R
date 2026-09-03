@@ -309,16 +309,16 @@ morie_tps_composite_index <- function(dfs, categories = NULL,
 #' @examples
 #' .mk_tps_cat <- function(n = 120L, seed = 1L, n_hoods = 15L) {
 #'     set.seed(seed)
-#'     data.frame(OCC_YEAR = sample(2018:2024, n, replace = TRUE), 
-#'         HOOD_158 = sample(letters[1:n_hoods], n, replace = TRUE), 
-#'         LAT_WGS84 = 43.6 + runif(n, 0, 0.2), LONG_WGS84 = -79.4 + 
+#'     data.frame(OCC_YEAR = sample(2018:2024, n, replace = TRUE),
+#'         HOOD_158 = sample(letters[1:n_hoods], n, replace = TRUE),
+#'         LAT_WGS84 = 43.6 + runif(n, 0, 0.2), LONG_WGS84 = -79.4 +
 #'             runif(n, 0, 0.2), stringsAsFactors = FALSE)
 #' }
 #' .mk_dfs <- function() {
-#'     list(Assault = .mk_tps_cat(seed = 2L), Robbery = .mk_tps_cat(seed = 3L), 
+#'     list(Assault = .mk_tps_cat(seed = 2L), Robbery = .mk_tps_cat(seed = 3L),
 #'         AutoTheft = .mk_tps_cat(seed = 4L))
 #' }
-#' morie_tps_bivariate_morans_i(.mk_dfs(), "Assault", "Robbery", 
+#' morie_tps_bivariate_morans_i(.mk_dfs(), "Assault", "Robbery",
 #'     k_neighbours = 3L)
 morie_tps_bivariate_morans_i <- function(dfs, cat_a, cat_b,
                                             k_neighbours = 5L) {

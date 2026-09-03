@@ -14,3 +14,7 @@ any failure. Unlike .siu_load_manifest() (which restricts to healthy
 200s for harvester use), this returns ALL columns + rows so
 morie_siu_index() can serve the full table.
 }
+\examples{
+res <- .siu_load_manifest_raw()
+res
+}

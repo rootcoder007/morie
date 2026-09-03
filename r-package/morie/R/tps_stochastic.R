@@ -38,7 +38,9 @@ NULL
 
 #' .tps_stoch_result
 #'
-#' A step of the tps_stochastic implementation. Called by \code{morie_tps_fokker_planck_grid}, \code{morie_tps_hawkes_temporal_fit}, \code{morie_tps_langevin_simulate} and 1 others in the module.
+#' A step of the tps_stochastic implementation. Called by
+#' \code{morie_tps_fokker_planck_grid}, \code{morie_tps_hawkes_temporal_fit},
+#' \code{morie_tps_langevin_simulate} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -69,7 +71,9 @@ NULL
 
 #' .tps_stoch_round
 #'
-#' A step of the tps_stochastic implementation. Called by \code{morie_tps_fokker_planck_grid}, \code{morie_tps_hawkes_temporal_fit}, \code{morie_tps_langevin_simulate} and 1 others in the module.
+#' A step of the tps_stochastic implementation. Called by
+#' \code{morie_tps_fokker_planck_grid}, \code{morie_tps_hawkes_temporal_fit},
+#' \code{morie_tps_langevin_simulate} and 1 others in the module.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -93,7 +97,8 @@ NULL
 #' OCC_DATE / REPORT_DATE.
 #'
 #' @param df A list; the body reads \code{$OCC_DAY}, \code{$OCC_MONTH}, \code{$OCC_YEAR} from it.
-#' @param min_year Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2014L}.
+#' @param min_year Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}. Defaults to \code{2014L}.
 #' @return A vector, from \code{sort}.
 #' @export
 .tps_stoch_date_series <- function(df, min_year = 2014L) {
@@ -189,7 +194,8 @@ NULL
 # Build daily counts from a POSIXct vector. Returns list(dates, counts).
 #' Build daily counts from a POSIXct vector. Returns list(dates, counts)
 #'
-#' A step of the tps_stochastic implementation. Called by \code{morie_tps_fokker_planck_grid}, \code{morie_tps_langevin_simulate}.
+#' A step of the tps_stochastic implementation. Called by
+#' \code{morie_tps_fokker_planck_grid}, \code{morie_tps_langevin_simulate}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'

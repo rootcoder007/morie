@@ -21,3 +21,7 @@ A step of the mrm_uof implementation. Called by \code{mrm_uof_demographic_dispar
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .uof_wilson_ci(k = 3L, n = 3L)
+res
+}

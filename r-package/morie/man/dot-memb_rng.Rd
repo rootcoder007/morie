@@ -17,3 +17,7 @@ A step of the memb_native implementation. Called by \code{synthesize}, \code{syn
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .memb_rng(seed = 1L)
+res
+}

@@ -434,7 +434,8 @@ rosenbaum_bounds <- function(treated_outcomes, control_outcomes,
 #' @return A `morie_tipping_point` named-list.
 #' @export
 #' @examples
-#' tipping_point_analysis(estimate = 5L, se = c(1, 2, 3, 4, 5, 6, 7, 8), n_treated = c(1, 2, 3, 4, 5, 6, 7, 8), n_control = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' tipping_point_analysis(estimate = 5L, se = c(1, 2, 3, 4, 5, 6, 7, 8), n_treated = c(1,
+#' 2, 3, 4, 5, 6, 7, 8), n_control = c(1, 2, 3, 4, 5, 6, 7, 8))
 tipping_point_analysis <- function(estimate, se, n_treated, n_control,
                                       delta_range = NULL,
                                       outcome_type = "continuous") {
@@ -493,7 +494,7 @@ tipping_point_analysis <- function(estimate, se, n_treated, n_control,
 #' @return A `morie_ovb` named-list.
 #' @export
 #' @examples
-#' omitted_variable_bias(estimate = 1, se = 0.1, dof = 100, r2_yd_x = 0.3, 
+#' omitted_variable_bias(estimate = 1, se = 0.1, dof = 100, r2_yd_x = 0.3,
 #'     partial_r2_treatment = 0.1)
 omitted_variable_bias <- function(estimate, se, dof, r2_yd_x,
                                      partial_r2_treatment,
@@ -555,7 +556,9 @@ omitted_variable_bias <- function(estimate, se, dof, r2_yd_x,
 #' @return A `morie_spec_curve` named-list.
 #' @export
 #' @examples
-#' specification_curve(data = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), outcome = c(1, 2, 3, 4, 5, 6, 7, 8), treatment = c(0, 1, 0, 1, 1, 0, 1, 0), covariate_sets = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' specification_curve(data = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), outcome =
+#' c(1, 2, 3, 4, 5, 6, 7, 8), treatment = c(0, 1, 0, 1, 1, 0, 1, 0), covariate_sets =
+#' c(1, 2, 3, 4, 5, 6, 7, 8))
 specification_curve <- function(data, outcome, treatment,
                                   covariate_sets,
                                   sample_filters = NULL,

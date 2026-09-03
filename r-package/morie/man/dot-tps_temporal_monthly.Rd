@@ -15,3 +15,10 @@ A list with \code{dates}, \code{counts}.
 \description{
 with $dates (POSIXct, first-of-month) and $counts (integer).
 }
+\examples{
+df <- data.frame(x = c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9),
+  y = c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6),
+  g = c('a', 'b', 'a', 'b', 'a', 'b', 'a', 'b'), stringsAsFactors = FALSE)
+res <- .tps_temporal_monthly(df = df)
+res
+}

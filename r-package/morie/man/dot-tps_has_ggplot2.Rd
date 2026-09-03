@@ -14,3 +14,7 @@ A step of the tps_render implementation. Called by \code{.tps_draw_compass}, \co
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .tps_has_ggplot2()
+res
+}

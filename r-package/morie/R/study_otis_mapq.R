@@ -21,6 +21,12 @@
 #' @param df Passed to \code{names}.
 #' @return The value of \code{df}, as built in the body.
 #' @export
+#' @examples
+#' df <- data.frame(x = c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), y = c(2.9, 5.1, 6.8,
+#' 9.4, 11.2, 13.1, 15.0, 17.6), g = c('a', 'b', 'a', 'b', 'a', 'b', 'a', 'b'),
+#' stringsAsFactors = FALSE)
+#' res <- .otis_b01_canonical(df = df)
+#' res
 .otis_b01_canonical <- function(df) {
   map <- c(
     EndFiscalYear = "end_fiscal_year",
@@ -46,8 +52,12 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @return A list with \code{otis_descriptives}, \code{otis_alert_combos}, \code{otis_dml_results}, \code{otis_trends}.
+#' @return A list with \code{otis_descriptives}, \code{otis_alert_combos},
+#' \code{otis_dml_results}, \code{otis_trends}.
 #' @export
+#' @examples
+#' res <- .run_otis_analysis_module_internal()
+#' res
 .run_otis_analysis_module_internal <- function() {
   df <- .otis_b01_canonical(morie_sample("otis_b01"))
 
@@ -109,6 +119,9 @@
 #'
 #' @return A list with \code{EE}, \code{EA}, \code{UA}, \code{ER}.
 #' @export
+#' @examples
+#' res <- .mapq_subscales()
+#' res
 .mapq_subscales <- function() {
   list(
     EE = paste0("EE", 1:5),  # Experiential Engagement
@@ -132,6 +145,9 @@
 #' @param seed Passed to \code{set.seed}. Defaults to \code{2026L}.
 #' @return The value of \code{panel}, as built in the body.
 #' @export
+#' @examples
+#' res <- .morie_mapq_synth_panel()
+#' res
 .morie_mapq_synth_panel <- function(n = 400L, seed = 2026L) {
   set.seed(seed)
   subscales <- .mapq_subscales()
@@ -162,8 +178,12 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @return A list with \code{mapq_reliability}, \code{mapq_factor_loadings}, \code{mapq_dml_results}.
+#' @return A list with \code{mapq_reliability}, \code{mapq_factor_loadings},
+#' \code{mapq_dml_results}.
 #' @export
+#' @examples
+#' res <- .run_mapq_psychometrics_module_internal()
+#' res
 .run_mapq_psychometrics_module_internal <- function() {
   panel <- .morie_mapq_synth_panel()
   subscales <- .mapq_subscales()

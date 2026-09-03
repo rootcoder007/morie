@@ -17,3 +17,8 @@ A step of the otis_churn implementation. Called by \code{morie_otis_irr_glmm_vm}
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+txt <- c('alpha', 'beta', 'gamma', 'delta')
+res <- .churn_yn(s = txt)
+res
+}

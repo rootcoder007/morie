@@ -14,3 +14,7 @@ A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_pe
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .xai_have_iml()
+res
+}

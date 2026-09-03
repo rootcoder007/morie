@@ -17,3 +17,7 @@ A step of the spatial_voting implementation. Called by \code{morie_spatial_votin
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+res <- .sv_double_centering(D = 3L)
+res
+}

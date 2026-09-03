@@ -17,3 +17,8 @@ A step of the siu_parser implementation. Called by \code{.siu_p_detect_police_se
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+txt <- c('alpha', 'beta', 'gamma', 'delta')
+res <- .siu_p_re_escape(s = txt)
+res
+}

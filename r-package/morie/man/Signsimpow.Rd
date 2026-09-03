@@ -20,5 +20,6 @@ A list with \code{power}, \code{rejections}, \code{nsim}, \code{kmean}, \code{kc
 }
 \keyword{internal}
 \examples{
-morie:::Signsimpow(samples = c(1, 2, 3, 4, 5, 6, 7, 8), m0 = c(1, 2, 3, 4, 5, 6, 7, 8), kcrit = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie:::Signsimpow(samples = c(1, 2, 3, 4, 5, 6, 7, 8), m0 = c(1, 2, 3, 4, 5, 6, 7, 8),
+  kcrit = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

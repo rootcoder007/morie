@@ -114,13 +114,18 @@ NULL
 # Yes/No/T/F/1/0 -> integer 0/1
 #' Yes/No/T/F/1/0 -> integer 0/1
 #'
-#' A step of the otis_churn implementation. Called by \code{morie_otis_irr_glmm_vm}, \code{morie_otis_region_alert_state_richness}.
+#' A step of the otis_churn implementation. Called by \code{morie_otis_irr_glmm_vm},
+#' \code{morie_otis_region_alert_state_richness}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param s A vector; indexed elementwise.
 #' @return The value of \code{as.integer}.
 #' @export
+#' @examples
+#' txt <- c('alpha', 'beta', 'gamma', 'delta')
+#' res <- .churn_yn(s = txt)
+#' res
 .churn_yn <- function(s) {
   if (is.logical(s)) return(as.integer(s))
   if (is.numeric(s)) {

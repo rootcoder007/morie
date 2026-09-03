@@ -16,12 +16,14 @@
 # Append a named list of query parameters to a URL, URL-encoding values.
 #' Append a named list of query parameters to a URL, URL-encoding values
 #'
-#' A step of the data_access implementation. Called by \code{morie_ckan_search}, \code{morie_fetch}, \code{morie_fetch_arcgis}.
+#' A step of the data_access implementation. Called by \code{morie_ckan_search},
+#' \code{morie_fetch}, \code{morie_fetch_arcgis}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param url Character; passed to \code{grepl}.
-#' @param params Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.
+#' @param params Optional; may be \code{NULL}. A vector; its length is taken and its
+#' elements indexed.
 #' @return A character value.
 #' @export
 .morie_url_with_params <- function(url, params = NULL) {
@@ -52,7 +54,8 @@
 
 #' .morie_ckan_portal
 #'
-#' A step of the data_access implementation. Called by \code{.morie_ckan_call}, \code{morie_ckan_search}, \code{morie_ingest_ckan_search_packages}.
+#' A step of the data_access implementation. Called by \code{.morie_ckan_call},
+#' \code{morie_ckan_search}, \code{morie_ingest_ckan_search_packages}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -76,7 +79,8 @@
 # Read text from a URL (used for JSON/XML/HTML API responses).
 #' Read text from a URL (used for JSON/XML/HTML API responses)
 #'
-#' A step of the data_access implementation. Called by \code{morie_ckan_search}, \code{morie_fetch}, \code{morie_fetch_arcgis}.
+#' A step of the data_access implementation. Called by \code{morie_ckan_search},
+#' \code{morie_fetch}, \code{morie_fetch_arcgis}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -172,7 +176,8 @@
 #' source it follows.
 #'
 #' @param path Passed to \code{.morie_from_json}.
-#' @param format One of \code{"csv"}, \code{"html"}, \code{"json"}, \code{"tsv"}, \code{"xlsx"}, \code{"xml"}.
+#' @param format One of \code{"csv"}, \code{"html"}, \code{"json"}, \code{"tsv"},
+#' \code{"xlsx"}, \code{"xml"}.
 #' @param simplify A flag; the body branches on it.
 #' @param ... Passed through.
 #' @return Nothing; this branch always raises.
@@ -405,13 +410,17 @@ morie_ckan_search <- function(query, portal = "open.canada.ca",
 # Small helper: first non-empty scalar, else "".
 #' Small helper: first non-empty scalar, else ""
 #'
-#' A step of the data_access implementation. Called by \code{morie_ckan_search}, \code{morie_fetch_arcgis}.
+#' A step of the data_access implementation. Called by \code{morie_ckan_search},
+#' \code{morie_fetch_arcgis}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param ... Passed through.
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .nz()
+#' res
 .nz <- function(...) {
   for (x in list(...)) {
     if (!is.null(x) && length(x) >= 1L && !is.na(x[[1L]]) &&

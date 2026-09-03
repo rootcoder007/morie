@@ -17,3 +17,7 @@ A step of the data_access implementation. Called by \code{morie_ckan_search}, \c
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+res <- .nz()
+res
+}

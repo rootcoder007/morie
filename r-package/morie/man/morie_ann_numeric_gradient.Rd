@@ -22,5 +22,6 @@ The value of \code{lapply}.
 }
 \keyword{internal}
 \examples{
-morie:::morie_ann_numeric_gradient(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie:::morie_ann_numeric_gradient(X = c(1, 2, 3, 4, 5, 6, 7, 8),
+  y = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

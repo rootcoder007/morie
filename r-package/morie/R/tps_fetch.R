@@ -71,7 +71,8 @@ morie_tps_list_categories <- function() {
 #' @param base_url Passed to \code{paste0}.
 #' @param where See Usage.
 #' @param offset Coerced to integer by the body, with \code{as.integer}.
-#' @param max_records Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000L}.
+#' @param max_records Coerced to integer by the body, with \code{as.integer}. Defaults to
+#' \code{2000L}.
 #' @param timeout Defaults to \code{120}.
 #' @return The value of \code{.morie_from_json}.
 #' @export

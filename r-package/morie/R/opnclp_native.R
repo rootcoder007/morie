@@ -18,7 +18,10 @@
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param payload A list; the body reads \code{$compute}, \code{$fit}, \code{$image_embeddings}, \code{$label_a}, \code{$label_b}, \code{$model_params}, \code{$op}, \code{$samples_seen}, \code{$temperature}, \code{$text_embeddings}, \code{$x}, \code{$x_a}, \code{$x_b}, \code{$y}, \code{$y_a}, \code{$y_b} from it.
+#' @param payload A list; the body reads \code{$compute}, \code{$fit},
+#' \code{$image_embeddings}, \code{$label_a}, \code{$label_b}, \code{$model_params},
+#' \code{$op}, \code{$samples_seen}, \code{$temperature}, \code{$text_embeddings},
+#' \code{$x}, \code{$x_a}, \code{$x_b}, \code{$y}, \code{$y_a}, \code{$y_b} from it.
 #' @return Nothing; this branch always raises.
 #' @export
 morie_opnclp <- function(payload) {
@@ -60,6 +63,9 @@ morie_opnclp <- function(payload) {
 #' @param p Optional; may be \code{NULL}. A list; the body checks with \code{is.list}.
 #' @return A vector, from \code{as.numeric}.
 #' @export
+#' @examples
+#' res <- .as_num_vec(p = 0.5)
+#' res
 .as_num_vec <- function(p) {
   if (is.null(p)) return(numeric(0))
   if (is.list(p)) {
@@ -79,6 +85,11 @@ morie_opnclp <- function(payload) {
 #' @param m Optional; may be \code{NULL}. A matrix; the body checks with \code{is.matrix}.
 #' @return The value of \code{do.call}.
 #' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+#' 2.6, 3.4, 3.9))
+#' res <- .as_num_mat(m = X)
+#' res
 .as_num_mat <- function(m) {
   if (is.matrix(m)) return(m)
   if (is.null(m)) return(matrix(numeric(0), 0, 0))
@@ -108,13 +119,15 @@ total_compute <- function(samples_seen, model_params) {
 
 #' fit_power_law
 #'
-#' A step of the opnclp_native implementation. Called by \code{compare_scaling}, \code{morie_opnclp}.
+#' A step of the opnclp_native implementation. Called by \code{compare_scaling},
+#' \code{morie_opnclp}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x Passed to \code{.as_num_vec}.
 #' @param y Passed to \code{.as_num_vec}.
-#' @return A list with \code{alpha}, \code{beta}, \code{slope}, \code{r_squared}, \code{range}, \code{n}.
+#' @return A list with \code{alpha}, \code{beta}, \code{slope}, \code{r_squared},
+#' \code{range}, \code{n}.
 #' @export
 fit_power_law <- function(x, y) {
   X <- .as_num_vec(x)
@@ -213,6 +226,11 @@ compare_scaling <- function(x_a, y_a, x_b, y_b, label_a = "A", label_b = "B") {
 #' @param m Optional; may be \code{NULL}. A vector; its length is taken.
 #' @return The value of \code{do.call}.
 #' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+#' 2.6, 3.4, 3.9))
+#' res <- .coerce_mat(m = X)
+#' res
 .coerce_mat <- function(m) {
   if (is.matrix(m)) return(m)
   if (is.null(m) || length(m) == 0L) return(matrix(numeric(0), 0, 0))
@@ -230,8 +248,10 @@ compare_scaling <- function(x_a, y_a, x_b, y_b, label_a = "A", label_b = "B") {
 #'
 #' @param image_embeddings Passed to \code{.coerce_mat}.
 #' @param text_embeddings Passed to \code{.coerce_mat}.
-#' @param temperature Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.07}.
-#' @return A list with \code{loss}, \code{image_to_text}, \code{text_to_image}, \code{logits}, \code{note}.
+#' @param temperature Coerced to numeric by the body, with \code{as.numeric}. Defaults to
+#' \code{0.07}.
+#' @return A list with \code{loss}, \code{image_to_text}, \code{text_to_image},
+#' \code{logits}, \code{note}.
 #' @export
 infonce <- function(image_embeddings, text_embeddings, temperature = 0.07) {
   I <- .coerce_mat(image_embeddings)
@@ -281,6 +301,9 @@ infonce <- function(image_embeddings, text_embeddings, temperature = 0.07) {
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .opnclp_cheatsheet()
+#' res
 .opnclp_cheatsheet <- function() {
   paste("opnclp: CLIP-scale laws had been measured on PRIVATE data and",
         "models; re-run on public LAION with an open implementation,",

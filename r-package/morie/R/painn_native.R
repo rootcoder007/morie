@@ -174,7 +174,8 @@ gated_update <- function(s, v, U, V, phi) {
 #'
 #' @param charges Coerced to numeric by the body, with \code{as.numeric}.
 #' @param R A matrix; passed to \code{as.matrix}.
-#' @param centre Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.
+#' @param centre Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}.
 #' @return A list with \code{dipole}, \code{magnitude}, \code{note}.
 #' @export
 dipole_moment <- function(charges, R, centre = NULL) {
@@ -208,7 +209,8 @@ dipole_moment <- function(charges, R, centre = NULL) {
 #' @param R A matrix; passed to \code{as.matrix}.
 #' @param Q A matrix; passed to \code{as.matrix}.
 #' @param tol Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1e-09}.
-#' @return A list with \code{scalar_error}, \code{vector_error}, \code{scalars_invariant}, \code{vectors_equivariant}, \code{note}.
+#' @return A list with \code{scalar_error}, \code{vector_error},
+#' \code{scalars_invariant}, \code{vectors_equivariant}, \code{note}.
 #' @export
 morie_painn_equivariance_error <- function(model, s, v, R, Q, tol = 1e-9) {
   pos <- as.matrix(R)
@@ -270,6 +272,9 @@ morie_painn_equivariance_error <- function(model, s, v, R, Q, tol = 1e-9) {
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .painn_cheatsheet()
+#' res
 .painn_cheatsheet <- function() {
   paste("painn: message passing was LESS DATA EFFICIENT than ",
         "kernel methods, and the diagnosis is INVARIANT ",

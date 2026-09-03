@@ -70,7 +70,8 @@ NULL
 # Internal: compute counts + flag lists from a flat taxonomy list
 #' Internal: compute counts + flag lists from a flat taxonomy list
 #'
-#' A step of the audit_variables implementation. Called by \code{morie_audit_arsau_variables}, \code{morie_audit_otis_variables}.
+#' A step of the audit_variables implementation. Called by
+#' \code{morie_audit_arsau_variables}, \code{morie_audit_otis_variables}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'

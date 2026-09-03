@@ -17,3 +17,8 @@ A step of the tps_all_analyze implementation. No other function in the package c
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+txt <- c('alpha', 'beta', 'gamma', 'delta')
+res <- .tps_alias_factory(name = txt)
+res
+}

@@ -12,3 +12,7 @@ The value of \code{m}, as built in the body.
 \description{
 any failure so the harvester degrades gracefully to a full sweep.
 }
+\examples{
+res <- .siu_load_manifest()
+res
+}

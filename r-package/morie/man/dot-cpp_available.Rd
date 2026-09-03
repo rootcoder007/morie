@@ -14,3 +14,7 @@ A step of the fast implementation. Called by \code{morie_cor_pearson}, \code{mor
 See the file header for the source the module follows.
 it follows.
 }
+\examples{
+res <- .cpp_available()
+res
+}

@@ -38,7 +38,9 @@ NULL
 
 #' .tps_adv_result
 #'
-#' A step of the tps_spatial_advanced implementation. Called by \code{morie_tps_bivariate_moran}, \code{morie_tps_dbscan_clusters}, \code{morie_tps_getis_ord_g_star} and 3 others in the module.
+#' A step of the tps_spatial_advanced implementation. Called by
+#' \code{morie_tps_bivariate_moran}, \code{morie_tps_dbscan_clusters},
+#' \code{morie_tps_getis_ord_g_star} and 3 others in the module.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -71,7 +73,8 @@ NULL
 
 #' .tps_coords
 #'
-#' A step of the tps_spatial_advanced implementation. Called by \code{morie_tps_dbscan_clusters}, \code{morie_tps_ripley_k}.
+#' A step of the tps_spatial_advanced implementation. Called by
+#' \code{morie_tps_dbscan_clusters}, \code{morie_tps_ripley_k}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -115,7 +118,8 @@ NULL
 
 #' .tps_knn_idx
 #'
-#' A step of the tps_spatial_advanced implementation. Called by \code{morie_tps_getis_ord_g_star}, \code{morie_tps_polygon_morans_i}.
+#' A step of the tps_spatial_advanced implementation. Called by
+#' \code{morie_tps_getis_ord_g_star}, \code{morie_tps_polygon_morans_i}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -559,7 +563,8 @@ morie_tps_dbscan_clusters <- function(df,
 #' `polygons` is an sf object with a geometry column. Use sf if
 #' available
 #'
-#' A step of the tps_spatial_advanced implementation. Called by \code{morie_tps_bivariate_moran}, \code{morie_tps_polygon_morans_i}.
+#' A step of the tps_spatial_advanced implementation. Called by
+#' \code{morie_tps_bivariate_moran}, \code{morie_tps_polygon_morans_i}.
 #' See the file header for the source the module follows.
 #' for the source it follows.
 #'
@@ -756,7 +761,9 @@ morie_tps_polygon_morans_i <- function(polygons,
 #' attributes: measures the cross-correlation between attribute X at
 #' location i and attribute Y at neighbouring locations j.
 #'
-#' \deqn{I_{xy} = \frac{n}{S_0}\,\frac{\sum_i \sum_j w_{ij}\, z^x_i\, z^y_j}{\sqrt{\sum_i (z^x_i)^2 \cdot \sum_i (z^y_i)^2}}}{I_xy = (n)/(S_0) frac{sum_i sum_j w_ij z^x_i z^y_j}{sqrt(sum_i (z^x_i)^2 * sum_i (z^y_i)^2)}}
+#' \deqn{I_{xy} = \frac{n}{S_0}\,\frac{\sum_i \sum_j w_{ij}\, z^x_i\, z^y_j}{\sqrt{\sum_i
+#' (z^x_i)^2 \cdot \sum_i (z^y_i)^2}}}{I_xy = (n)/(S_0) frac{sum_i sum_j w_ij z^x_i
+#' z^y_j}{sqrt(sum_i (z^x_i)^2 * sum_i (z^y_i)^2)}}
 #'
 #' Polygon centroids and k-NN weights are constructed exactly as in
 #' \code{\link{morie_tps_polygon_morans_i}}; distances use the

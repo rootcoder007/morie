@@ -16,6 +16,11 @@
 #' @param K Passed to \code{.morie_beta_weights}.
 #' @return One of two values, depending on the branch taken.
 #' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' b <- c(1.5, 2.5, 3.5)
+#' res <- .midas_sse(p = A, X = b, Y = b, K = A)
+#' res
 .midas_sse <- function(p, X, Y, K) {
   b0 <- p[1]
   b1 <- p[2]

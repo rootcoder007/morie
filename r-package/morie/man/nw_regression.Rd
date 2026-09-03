@@ -24,7 +24,8 @@ m-hat(x) = sum K_h(x - X_i) Y_i divided by sum K_h(x - X_i),
 with a Gaussian kernel.
 }
 \examples{
-nw_regression(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), x_eval = c(1, 2, 3, 4, 5, 6, 7, 8), bandwidth = 0.5)
+nw_regression(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+  x_eval = c(1, 2, 3, 4, 5, 6, 7, 8), bandwidth = 0.5)
 }
 \references{
 Nadaraya, E. A. (1964). On Estimating Regression.

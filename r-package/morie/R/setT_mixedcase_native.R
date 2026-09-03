@@ -91,7 +91,8 @@
 #'
 #' @param X Numeric; combined arithmetically in the body.
 #' @param Y Passed to \code{.attend}.
-#' @param p A list; the body reads \code{$b1}, \code{$b2}, \code{$W1}, \code{$W2}, \code{$Wk}, \code{$Wq}, \code{$Wv} from it.
+#' @param p A list; the body reads \code{$b1}, \code{$b2}, \code{$W1}, \code{$W2},
+#' \code{$Wk}, \code{$Wq}, \code{$Wv} from it.
 #' @return A list with \code{O}, \code{W}.
 #' @export
 .mab <- function(X, Y, p) {

@@ -86,7 +86,8 @@ NULL
 
 #' .morie_arsau_locate_outcome_col
 #'
-#' A step of the arsau_analyze implementation. Called by \code{morie_arsau_analyze_individual_records}.
+#' A step of the arsau_analyze implementation. Called by
+#' \code{morie_arsau_analyze_individual_records}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -112,7 +113,10 @@ NULL
 
 #' .morie_arsau_wrap
 #'
-#' A step of the arsau_analyze implementation. Called by \code{morie_arsau_analyze_aggregate_summary}, \code{morie_arsau_analyze_detailed_dataset}, \code{morie_arsau_analyze_individual_records} and 3 others in the module.
+#' A step of the arsau_analyze implementation. Called by
+#' \code{morie_arsau_analyze_aggregate_summary},
+#' \code{morie_arsau_analyze_detailed_dataset},
+#' \code{morie_arsau_analyze_individual_records} and 3 others in the module.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'

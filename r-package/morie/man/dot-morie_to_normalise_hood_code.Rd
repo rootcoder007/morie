@@ -15,3 +15,8 @@ The value of \code{ifelse}.
 \description{
 the crosswalk uses ("82" -> "082"; "0082" -> "082"; "Niagara" -> NA).
 }
+\examples{
+x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+res <- .morie_to_normalise_hood_code(x = x)
+res
+}

@@ -106,7 +106,9 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param data A list; the body reads \code{$alcohol_past12m}, \code{$ebac_legal}, \code{$ebac_tot}, \code{$gender_label}, \code{$heavy_drinking_30d}, \code{$weight} from it.
+#' @param data A list; the body reads \code{$alcohol_past12m}, \code{$ebac_legal},
+#' \code{$ebac_tot}, \code{$gender_label}, \code{$heavy_drinking_30d}, \code{$weight}
+#' from it.
 #' @return A vector, from \code{c}.
 #' @export
 .run_power_design_module_extended <- function(data) {
@@ -440,7 +442,8 @@
 
 #' .read_existing_output
 #'
-#' A step of the study_reporting implementation. Called by \code{.run_figures_module_internal}, \code{.run_meta_synthesis_module_internal}.
+#' A step of the study_reporting implementation. Called by
+#' \code{.run_figures_module_internal}, \code{.run_meta_synthesis_module_internal}.
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
@@ -464,6 +467,9 @@
 #'
 #' @return The value of \code{file.path}.
 #' @export
+#' @examples
+#' res <- .legacy_reference_root()
+#' res
 .legacy_reference_root <- function() {
   # The legacy migration tree exists only in a source checkout; an
   # installed package has no project root. Degrade to NA so callers
@@ -505,9 +511,19 @@
 #' See the file header for the source the module follows.
 #' the source it follows.
 #'
-#' @param data A list; the body reads \code{$alcohol_past12m}, \code{$cannabis_any_use}, \code{$ebac_tot}, \code{$weight} from it.
+#' @param data A list; the body reads \code{$alcohol_past12m}, \code{$cannabis_any_use},
+#' \code{$ebac_tot}, \code{$weight} from it.
 #' @param output_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @return A list with \code{ebac_final_domain_samples}, \code{ebac_final_formula_input_audit}, \code{ebac_final_formula_validation}, \code{ebac_final_interaction_tests}, \code{ebac_final_weighted_descriptives}, \code{ebac_final_weighted_linear}, \code{ebac_final_weighted_or}, \code{ebac_final_smote_compare}, \code{ebac_final_smote_or}, \code{ebac_final_smote_status}, \code{ebac_final_causal_effects}, \code{ebac_final_cate}, \code{ebac_final_consistency_checks}, \code{ebac_final_crosswalk_previous}, \code{ebac_final_dml_results}, \code{ebac_final_dml_status}, \code{ebac_final_key_summary}, \code{ebac_final_user_guide_variable_map}, \code{ebac_final_variable_audit}.
+#' @return A list with \code{ebac_final_domain_samples},
+#' \code{ebac_final_formula_input_audit}, \code{ebac_final_formula_validation},
+#' \code{ebac_final_interaction_tests}, \code{ebac_final_weighted_descriptives},
+#' \code{ebac_final_weighted_linear}, \code{ebac_final_weighted_or},
+#' \code{ebac_final_smote_compare}, \code{ebac_final_smote_or},
+#' \code{ebac_final_smote_status}, \code{ebac_final_causal_effects},
+#' \code{ebac_final_cate}, \code{ebac_final_consistency_checks},
+#' \code{ebac_final_crosswalk_previous}, \code{ebac_final_dml_results},
+#' \code{ebac_final_dml_status}, \code{ebac_final_key_summary},
+#' \code{ebac_final_user_guide_variable_map}, \code{ebac_final_variable_audit}.
 #' @export
 .run_ebac_integrations_module_internal <- function(data, output_dir = NULL) {
   if (is.null(output_dir)) {
@@ -984,8 +1000,14 @@
 #'
 #' @param data Passed to \code{names}.
 #' @param output_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @return A list with \code{ebac_final_output_coverage}, \code{ebac_final_output_shapes}, \code{ebac_final_script_run_status}, \code{ebac_final_audit_checks}, \code{ebac_final_user_guide_excerpt}.
+#' @return A list with \code{ebac_final_output_coverage},
+#' \code{ebac_final_output_shapes}, \code{ebac_final_script_run_status},
+#' \code{ebac_final_audit_checks}, \code{ebac_final_user_guide_excerpt}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .run_final_report_module_internal(data = x)
+#' res
 .run_final_report_module_internal <- function(data, output_dir = NULL) {
   if (is.null(output_dir)) {
     output_dir <- tempfile("morie-final-report-")

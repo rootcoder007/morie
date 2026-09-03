@@ -25,13 +25,18 @@
 
 #' .sasrec_mat
 #'
-#' A step of the sasRec_native implementation. Called by \code{attention_span}, \code{predict_next}, \code{self_attention}.
+#' A step of the sasRec_native implementation. Called by \code{attention_span},
+#' \code{predict_next}, \code{self_attention}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param x A matrix; passed to \code{as.matrix}.
 #' @return Nothing; this branch always raises.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .sasrec_mat(x = x)
+#' res
 .sasrec_mat <- function(x) {
   if (is.matrix(x)) return(x)
   if (is.numeric(x)) return(as.matrix(x))
@@ -54,6 +59,10 @@
 #' @param x A matrix; indexed by row and column.
 #' @return A vector, from \code{as.numeric}.
 #' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .sasrec_vec(x = x)
+#' res
 .sasrec_vec <- function(x) {
   if (is.matrix(x)) {
     if (nrow(x) == 1L) return(as.numeric(x[1, ]))
@@ -129,8 +138,10 @@ self_attention <- function(E, WQ, WK, WV, mask = NULL) {
 #' source it follows.
 #'
 #' @param weights Passed to \code{.sasrec_mat}.
-#' @param position Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
-#' @return A list with \code{mean_lookback}, \code{mass_on_last}, \code{effective_order}, \code{note}.
+#' @param position Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
+#' @return A list with \code{mean_lookback}, \code{mass_on_last}, \code{effective_order},
+#' \code{note}.
 #' @export
 attention_span <- function(weights, position = NULL) {
   W <- .sasrec_mat(weights)
@@ -184,7 +195,8 @@ predict_next <- function(state, item_embeddings, top_k = 5,
 #'
 #' @param n Coerced to integer by the body, with \code{as.integer}.
 #' @param d Coerced to integer by the body, with \code{as.integer}.
-#' @return A list with \code{attention_ops}, \code{rnn_ops}, \code{attention_sequential_steps}, \code{rnn_sequential_steps}, \code{note}.
+#' @return A list with \code{attention_ops}, \code{rnn_ops},
+#' \code{attention_sequential_steps}, \code{rnn_sequential_steps}, \code{note}.
 #' @export
 complexity <- function(n, d) {
   nn <- as.integer(n)
@@ -224,6 +236,9 @@ selfattentivesequential <- self_attention
 #'
 #' @return A character value.
 #' @export
+#' @examples
+#' res <- .sasRec_cheatsheet()
+#' res
 .sasRec_cheatsheet <- function() {
   paste("sasRec: Markov chains win where data are SPARSE (parsimony",
         "is critical), RNNs where they are DENSE (complexity is",
