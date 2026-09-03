@@ -40,6 +40,8 @@ Returns an environment holding tokenizer state (vocab, scores,
 merges, special-token IDs, optional SentencePiece processor).
 }
 \examples{
-vocab <- c("<unk>", "<s>", "</s>", "\u2581", "hi", "world")
-morie_tokenizer_new(vocab = vocab, bos_id = 1L, eos_id = 2L)
+if (requireNamespace("reticulate", quietly = TRUE)) {
+  vocab <- c("<unk>", "<s>", "</s>", "\u2581", "hi", "world")
+  morie_tokenizer_new(vocab = vocab, bos_id = 1L, eos_id = 2L)
+}
 }

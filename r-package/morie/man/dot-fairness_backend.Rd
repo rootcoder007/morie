@@ -15,6 +15,8 @@ See the file header for the source the module follows.
 source it follows.
 }
 \examples{
-res <- .fairness_backend()
-res
+if (requireNamespace("reticulate", quietly = TRUE)) {
+  res <- .fairness_backend()
+  res
+}
 }

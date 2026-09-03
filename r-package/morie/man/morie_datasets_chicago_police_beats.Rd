@@ -66,8 +66,10 @@ Live mode hits the SODA2 JSON endpoint via
 to include \code{the_geom}. Threads through the 3OO pagination args.
 }
 \examples{
-df <- morie_datasets_chicago_police_beats(offline = TRUE)
-head(df)
+if (requireNamespace("sf", quietly = TRUE)) {
+  df <- morie_datasets_chicago_police_beats(offline = TRUE)
+  head(df)
+}
 }
 \references{
 City of Chicago Data Portal, "Boundaries - Police
