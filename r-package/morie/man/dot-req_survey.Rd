@@ -15,6 +15,8 @@ See the file header for the source the module follows.
 it follows.
 }
 \examples{
-res <- .req_survey()
-res
+if (requireNamespace("survey", quietly = TRUE)) {
+  res <- .req_survey()
+  res
+}
 }

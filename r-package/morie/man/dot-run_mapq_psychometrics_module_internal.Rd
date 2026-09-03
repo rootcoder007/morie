@@ -15,6 +15,8 @@ See the file header for the source the module follows.
 the source it follows.
 }
 \examples{
-res <- .run_mapq_psychometrics_module_internal()
-res
+if (requireNamespace("psych", quietly = TRUE)) {
+  res <- .run_mapq_psychometrics_module_internal()
+  res
+}
 }

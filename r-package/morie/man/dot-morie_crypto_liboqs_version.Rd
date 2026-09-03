@@ -12,6 +12,8 @@ See the file header for the source the module follows.
 source it follows.
 }
 \examples{
-res <- .morie_crypto_liboqs_version()
-res
+if (morie_crypto_liboqs_available()) {
+  res <- .morie_crypto_liboqs_version()
+  res
+}
 }

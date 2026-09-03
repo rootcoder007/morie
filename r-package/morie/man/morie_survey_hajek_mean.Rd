@@ -19,6 +19,8 @@ A named list with elements \code{mean}, \code{se},
 Hajek (ratio) estimator of a population mean
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-morie_survey_hajek_mean(V, V)
+if (requireNamespace("survey", quietly = TRUE)) {
+  V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+  morie_survey_hajek_mean(V, V)
+}
 }
