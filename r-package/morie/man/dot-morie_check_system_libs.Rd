@@ -15,6 +15,8 @@ Uses configure-time flags written into DESCRIPTION at install (Phase
 fallback for libcurl (Imports R-side).
 }
 \examples{
-res <- .morie_check_system_libs()
-res
+if (morie_crypto_sodium_available()) {
+  res <- .morie_check_system_libs()
+  res
+}
 }
