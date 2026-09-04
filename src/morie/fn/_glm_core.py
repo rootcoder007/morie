@@ -19,7 +19,8 @@ No external numeric dependency.
 
 import math
 
-__all__ = ["glm", "glm_predict", "deviance_residuals", "FAMILIES"]
+__all__ = ["glm", "glm_predict", "deviance_residuals", "FAMILIES",
+           "add_constant", "OLS", "IV2SLS"]
 
 
 def _mat(X):
@@ -363,6 +364,60 @@ def deviance_residuals(fit, y):
 # Sciences* (2nd ed.), chapters 2 (t), 6 (z on proportions), 8 (F).
 
 
+def _gammainc_q(a, x):
+    """Regularised upper incomplete gamma Q(a, x).
+
+    Series below the crossover, continued fraction above (Numerical
+    Recipes 6.2). Written out here so the chi-square tail needs no
+    external special-function library.
+    """
+    if x < 0.0 or a <= 0.0:
+        raise ValueError("_gammainc_q needs a > 0 and x >= 0")
+    if x == 0.0:
+        return 1.0
+    gln = math.lgamma(a)
+    if x < a + 1.0:
+        ap = a
+        total = 1.0 / a
+        delta = total
+        for _ in range(1000):
+            ap += 1.0
+            delta *= x / ap
+            total += delta
+            if abs(delta) < abs(total) * 1e-16:
+                break
+        return 1.0 - total * math.exp(-x + a * math.log(x) - gln)
+    tiny = 1e-300
+    b = x + 1.0 - a
+    c = 1.0 / tiny
+    d = 1.0 / b
+    h = d
+    for i in range(1, 1000):
+        an = -i * (i - a)
+        b += 2.0
+        d = an * d + b
+        if abs(d) < tiny:
+            d = tiny
+        c = b + an / c
+        if abs(c) < tiny:
+            c = tiny
+        d = 1.0 / d
+        delta = d * c
+        h *= delta
+        if abs(delta - 1.0) < 1e-16:
+            break
+    return h * math.exp(-x + a * math.log(x) - gln)
+
+
+def _chi2_sf(x, df):
+    """Upper tail of the chi-square distribution."""
+    if df <= 0:
+        return float("nan")
+    if x <= 0.0:
+        return 1.0
+    return _gammainc_q(df / 2.0, x / 2.0)
+
+
 def _bisect(fn, lo, hi, tol=1e-7):
     """Bracketed bisection on an increasing function. ponytail: bisection
     is ~40 evaluations here; Brent would halve that and save no bugs."""
@@ -640,3 +695,236 @@ class _FamiliesNamespace(object):
 
 
 families = _FamiliesNamespace()
+
+
+# ---------------------------------------------------------------------
+# Linear models. These stand in for the statsmodels entry points the
+# causal module used to import; the arithmetic is written out here so
+# there is no external numeric dependency.
+# ---------------------------------------------------------------------
+
+def add_constant(X, prepend=True):
+    """statsmodels.add_constant: a column of ones on the design.
+
+    A design that already carries a constant column is returned
+    unchanged, which is what statsmodels does with has_constant='skip'.
+    """
+    M = _mat(X)
+    if not M:
+        return M
+    for j in range(len(M[0])):
+        col = [r[j] for r in M]
+        if col[0] != 0.0 and all(v == col[0] for v in col):
+            return M
+    if prepend:
+        return [[1.0] + r for r in M]
+    return [r + [1.0] for r in M]
+
+
+def _xtx_xty(X, y, W=None):
+    n = len(X)
+    k = len(X[0])
+    XtX = [[0.0] * k for _ in range(k)]
+    Xty = [0.0] * k
+    for i in range(n):
+        w = 1.0 if W is None else W[i]
+        xi = X[i]
+        for a in range(k):
+            xa = xi[a] * w
+            Xty[a] += xa * y[i]
+            for b in range(a, k):
+                XtX[a][b] += xa * xi[b]
+    for a in range(k):
+        for b in range(a):
+            XtX[a][b] = XtX[b][a]
+    return XtX, Xty
+
+
+class _LinearResult(object):
+    """The subset of a statsmodels results object morie actually reads."""
+
+    def __init__(self, params, cov, resid, y, n, k, has_const, method):
+        self.params = params
+        self.cov_params_ = cov
+        self.resid = resid
+        self.nobs = n
+        self.df_model = k - (1 if has_const else 0)
+        self.df_resid = n - k
+        self.method = method
+        self.bse = [math.sqrt(cov[j][j]) if cov[j][j] > 0 else float("nan")
+                    for j in range(k)]
+        self.tvalues = [
+            (params[j] / self.bse[j]) if self.bse[j] and
+            self.bse[j] == self.bse[j] else float("nan")
+            for j in range(k)]
+        self.pvalues = [2.0 * _t_sf(abs(t), self.df_resid)
+                        if self.df_resid > 0 and t == t else float("nan")
+                        for t in self.tvalues]
+        rss = sum(r * r for r in resid)
+        ybar = sum(y) / n if n else 0.0
+        tss = (sum((v - ybar) ** 2 for v in y) if has_const
+               else sum(v * v for v in y))
+        self.ssr = rss
+        self.centered_tss = tss
+        self.rsquared = 1.0 - rss / tss if tss > 0 else float("nan")
+        # Overall F: the model against the intercept-only fit.
+        if self.df_model > 0 and self.df_resid > 0 and rss > 0:
+            self.fvalue = ((tss - rss) / self.df_model) / (rss / self.df_resid)
+        else:
+            self.fvalue = float("nan")
+        self.mse_resid = rss / self.df_resid if self.df_resid > 0 else \
+            float("nan")
+
+    def fit(self):
+        return self
+
+    def cov_params(self):
+        return self.cov_params_
+
+    def conf_int(self, alpha=0.05):
+        # Normal critical value, matching the z interval morie reports
+        # elsewhere; alpha=0.05 gives the usual 1.959964.
+        from_z = _norm_ppf(1.0 - alpha / 2.0)
+        return [[self.params[j] - from_z * self.bse[j],
+                 self.params[j] + from_z * self.bse[j]]
+                for j in range(len(self.params))]
+
+    def predict(self, X=None):
+        if X is None:
+            raise ValueError("predict() needs a design matrix")
+        M = _mat(X)
+        return [sum(M[i][j] * self.params[j]
+                    for j in range(len(self.params)))
+                for i in range(len(M))]
+
+
+def _norm_ppf(p):
+    """Wichura's AS 241 (PPND16), the same routine the R arm uses."""
+    if not 0.0 < p < 1.0:
+        raise ValueError("`p` must lie strictly inside (0, 1)")
+    A = [3.3871328727963666080, 133.14166789178437745,
+         1971.5909503065514427, 13731.693765509461125,
+         45921.953931549871457, 67265.770927008700853,
+         33430.575583588128105, 2509.0809287301226727]
+    B = [1.0, 42.313330701600911252, 687.18700749205790830,
+         5394.1960214247511077, 21213.794301586595867,
+         39307.895800092710610, 28729.085735721942674,
+         5226.4952788528545610]
+    C = [1.42343711074968357734, 4.63033784615654529590,
+         5.76949722146069140550, 3.64784832476320460504,
+         1.27045825245236838258, 0.241780725177450611770,
+         0.0227238449892691845833, 7.74545014278341407640e-4]
+    D = [1.0, 2.05319162663775882187, 1.67638483018380384940,
+         0.689767334985100004550, 0.148103976427480074590,
+         0.0151986665636164571966, 5.47593808499534494600e-4,
+         1.05075007164441684324e-9]
+    E = [6.65790464350110377720, 5.46378491116411436990,
+         1.78482653991729133580, 0.296560571828504891230,
+         0.0265321895265761230930, 0.00124266094738807843860,
+         2.71155556874348757815e-5, 2.01033439929228813265e-7]
+    F = [1.0, 0.599832206555887937690, 0.136929880922735805310,
+         0.0148753612908506148525, 7.86869131145613259100e-4,
+         1.84631831751005468180e-5, 1.42151175831644588870e-7,
+         2.04426310338993978564e-15]
+
+    def poly(c, x):
+        out = c[-1]
+        for j in range(len(c) - 2, -1, -1):
+            out = out * x + c[j]
+        return out
+
+    q = p - 0.5
+    if abs(q) <= 0.425:
+        r = 0.180625 - q * q
+        return q * poly(A, r) / poly(B, r)
+    r = p if q < 0 else 1.0 - p
+    r = math.sqrt(-math.log(r))
+    if r <= 5.0:
+        val = poly(C, r - 1.6) / poly(D, r - 1.6)
+    else:
+        val = poly(E, r - 5.0) / poly(F, r - 5.0)
+    return -val if q < 0 else val
+
+
+def OLS(endog, exog, weights=None):  # noqa: N802  (statsmodels spelling)
+    """Ordinary least squares. Returns a result whose .fit() is itself."""
+    y = _flat(endog)
+    X = _mat(exog)
+    n = len(X)
+    if n != len(y):
+        raise ValueError("OLS: %d rows of design against %d responses"
+                         % (n, len(y)))
+    k = len(X[0])
+    W = None if weights is None else _flat(weights)
+    XtX, Xty = _xtx_xty(X, y, W)
+    beta = _solve(XtX, Xty)
+    resid = [y[i] - sum(X[i][j] * beta[j] for j in range(k))
+             for i in range(n)]
+    dfr = n - k
+    if dfr <= 0:
+        raise ValueError("OLS: %d observations cannot support %d "
+                         "parameters" % (n, k))
+    s2 = sum(r * r for r in resid) / dfr
+    inv = _inv(XtX)
+    cov = [[s2 * inv[a][b] for b in range(k)] for a in range(k)]
+    has_const = any(all(r[j] == X[0][j] for r in X) and X[0][j] != 0.0
+                    for j in range(k))
+    return _LinearResult(beta, cov, resid, y, n, k, has_const, "OLS")
+
+
+def IV2SLS(endog, exog, instrument):  # noqa: N802
+    """Two-stage least squares.
+
+    beta = (X' P_Z X)^-1 X' P_Z y with P_Z the projection onto the
+    instrument space, and the covariance formed from the SECOND-stage
+    residuals y - X beta (not the fitted-regressor residuals), which is
+    what makes the reported standard errors the 2SLS ones.
+    """
+    y = _flat(endog)
+    X = _mat(exog)
+    Z = _mat(instrument)
+    n = len(X)
+    if len(Z) != n or len(y) != n:
+        raise ValueError("IV2SLS: design, instruments and response "
+                         "disagree on the number of rows")
+    k = len(X[0])
+    kz = len(Z[0])
+    if kz < k:
+        raise ValueError("IV2SLS: %d instruments cannot identify %d "
+                         "parameters" % (kz, k))
+    ZtZ, _ = _xtx_xty(Z, [0.0] * n)
+    ZtZ_inv = _inv(ZtZ)
+    # Xhat = Z (Z'Z)^-1 Z'X, computed column by column of X.
+    ZtX = [[sum(Z[i][a] * X[i][b] for i in range(n)) for b in range(k)]
+           for a in range(kz)]
+    Pi = [[sum(ZtZ_inv[a][c] * ZtX[c][b] for c in range(kz))
+           for b in range(k)] for a in range(kz)]
+    Xhat = [[sum(Z[i][a] * Pi[a][b] for a in range(kz)) for b in range(k)]
+            for i in range(n)]
+    XhX, Xhy = _xtx_xty(Xhat, y)
+    beta = _solve(XhX, Xhy)
+    resid = [y[i] - sum(X[i][j] * beta[j] for j in range(k))
+             for i in range(n)]
+    dfr = n - k
+    if dfr <= 0:
+        raise ValueError("IV2SLS: %d observations cannot support %d "
+                         "parameters" % (n, k))
+    s2 = sum(r * r for r in resid) / dfr
+    inv = _inv(XhX)
+    cov = [[s2 * inv[a][b] for b in range(k)] for a in range(k)]
+    has_const = any(all(r[j] == X[0][j] for r in X) and X[0][j] != 0.0
+                    for j in range(k))
+    return _LinearResult(beta, cov, resid, y, n, k, has_const, "2SLS")
+
+
+def __getattr__(name):
+    """Expose the formula API as ``_glm_core.formula``.
+
+    causal.py and friends do ``from morie.fn._glm_core import formula as
+    smf``, mirroring statsmodels' ``statsmodels.formula.api``. Resolved
+    lazily so the import does not run at module load.
+    """
+    if name == "formula":
+        from . import _glm_formula
+        return _glm_formula
+    raise AttributeError(name)

@@ -443,7 +443,15 @@ nashq_run <- function(states, actions, step, rewards, gamma = 0.9, alpha = 0.5,
 #' @return A character value.
 #' @export
 nashq_cheatsheet <- function() {
-  paste("nashq: Q^i over JOINT actions; update with the stage-game Nash payoff instead of a max -- Q^i <- (1-a)Q^i + a[r^i + beta pi^1...pi^n Q^i(s')] (Hu & Wellman 2003 eqs. 6-7). Needs every agent's reward. Equilibrium selection changes the update: convergence is proved only for global optimal (Def 12) or saddle (Def 13) stage games. stage_game_type() reports which you have.")
+  paste(paste0(
+    "nashq: Q^i over JOINT actions; update with the stage-game Na",
+    "sh payoff instead of a max -- Q^i <- (1-a)Q^i + a[r^i + beta",
+    " pi^1...pi^n Q^i(s')] (Hu & Wellman 2003 eqs. 6-7). Needs ev",
+    "ery agent's reward. Equilibrium selection changes the update",
+    ": convergence is proved only for global optimal (Def 12) or ",
+    "saddle (Def 13) stage games. stage_game_type() reports which",
+    " you have."
+  ))
 }
 
 # house entry point: the package exports one morie_<module>

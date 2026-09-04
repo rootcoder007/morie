@@ -13,6 +13,7 @@
 # too.
 
 test_that("slhdsa128s signs and verifies its own signature", {
+  skip_if_not(morie_crypto_liboqs_available(), "no liboqs")
   k <- morie_crypto_slhdsa_keygen()
   expect_true(is.raw(k$pk))
   expect_true(is.raw(k$sk))
@@ -24,6 +25,7 @@ test_that("slhdsa128s signs and verifies its own signature", {
 })
 
 test_that("slhdsa128s rejects a tampered message", {
+  skip_if_not(morie_crypto_liboqs_available(), "no liboqs")
   k <- morie_crypto_slhdsa_keygen()
   sig <- morie_crypto_slhdsa_sign(k$sk, charToRaw("hello"))
   # verification that accepts anything is as broken as one that accepts
@@ -34,6 +36,7 @@ test_that("slhdsa128s rejects a tampered message", {
 })
 
 test_that("hqc128 encapsulation and decapsulation agree on the secret", {
+  skip_if_not(morie_crypto_liboqs_available(), "no liboqs")
   k <- morie_crypto_hqc_keygen()
   e <- morie_crypto_hqc_encaps(k$pk)
   d <- morie_crypto_hqc_decaps(k$sk, e$ct)
@@ -42,6 +45,9 @@ test_that("hqc128 encapsulation and decapsulation agree on the secret", {
 })
 
 test_that("the R call sites bind to implementations that exist", {
+  # No liboqs guard here on purpose: exists() needs no liboqs, and this
+  # is the check that catches the original .rmorie_/.morie_ rename. A
+  # skip would hand the regression back to the runners that lack liboqs.
   # the exact failure mode: a call site naming a function the C++ layer
   # never registered
   for (fn in c(".morie_slhdsa128s_keygen_impl", ".morie_slhdsa128s_sign_impl",

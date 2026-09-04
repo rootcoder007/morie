@@ -51,7 +51,7 @@ OddsRat <- function(a, b, c, d, conf_level = 0.95, correction = 0) {
                 method = paste("Cornfield (1951) cross-product odds ratio;",
                                "a zero cell leaves the Woolf variance undefined")))
   log_or <- log(est)
-  se <- sqrt(1/aa + 1/bb + 1/cc + 1/dd)
+  se <- sqrt(1 / aa + 1 / bb + 1 / cc + 1 / dd)
   zq <- qnorm(0.5 + 0.5 * conf_level)
   z <- log_or / se
   p <- 2 * (1 - pnorm(abs(z)))
@@ -189,7 +189,7 @@ CttAlphaMax <- function(X) {
 #' res
 .t2_qn_finite_c <- function(n) {
   inner <- if (n %% 2L)  1.60188 + (-2.1284 - 5.172 / n) / n
-           else          3.67561 + ( 1.9654 + (6.987 - 77 / n) / n) / n
+           else          3.67561 + (1.9654 + (6.987 - 77 / n) / n) / n
   inner / n + 1
 }
 

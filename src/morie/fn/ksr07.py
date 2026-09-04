@@ -10,7 +10,7 @@ from ._richresult import RichResult
 __all__ = ["bootemp", "kosorok_bootstrap_empirical"]
 
 
-def bootemp(x, B=200, seed=1):
+def bootemp(x, B=200, seed=1, deterministic_seed=None):
     """Nonparametric (multinomial) bootstrap of the empirical mean process.
 
     The bootstrap process is sqrt(n)(Phat_n - P_n), NOT
@@ -34,6 +34,10 @@ def bootemp(x, B=200, seed=1):
         Number of bootstrap replicates (fixed budget).
     seed : int
         Seed for the pinned generator.
+    deterministic_seed : int or None, optional
+        If given, the pinned generator is seeded from
+        SHA-256("ksr07_bootstrap:<deterministic_seed>") instead of ``seed``,
+        which is the cross-arm reproducible path.
 
     Returns
     -------
@@ -59,7 +63,15 @@ def bootemp(x, B=200, seed=1):
     if B < 2:
         raise ValueError("B must be at least 2")
     Pn = sum(x) / n
-    g = C.Lcg(seed)
+    if deterministic_seed is not None:
+        # SHA-keyed seed: morie._det_rng.r_seed and R's morie_det_rng
+        # derive the SAME integer from ("ksr07_bootstrap", deterministic_seed),
+        # so both arms drive the pinned Lcg from an identical start.
+        from morie._det_rng import r_seed
+
+        g = C.Lcg(r_seed("ksr07_bootstrap", deterministic_seed))
+    else:
+        g = C.Lcg(seed)
     stats = []
     for _ in range(B):
         s = 0.0

@@ -87,7 +87,13 @@ def alammar_umap_projection(X, n_neighbors=5, min_dist=0.1, d_out=2,
         # dCE/d(dz2): attractive from P, repulsive from (1-P)
         coeff = (P * a * Q - (1 - P) * a * Q * Q / (1 - Q + eps))
         np.fill_diagonal(coeff, 0.0)
-        grad = 2.0 * (coeff[:, :, None] * diff).sum(axis=1)
+        # Clip each pairwise contribution to [-4, 4] exactly as the
+        # reference implementation does (McInnes et al. 2018,
+        # umap-learn's _optimize_layout_euclidean). Without it the
+        # repulsive term 1/(1 - Q + eps) reaches ~1e12 for a
+        # near-coincident pair and the descent diverges: a one-ULP
+        # change in the input then flips the whole embedding.
+        grad = np.clip(2.0 * coeff[:, :, None] * diff, -4.0, 4.0).sum(axis=1)
         Z = Z - lr * grad
     obj1 = objective(Z)
     return RichResult(payload={

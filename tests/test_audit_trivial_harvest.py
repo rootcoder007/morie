@@ -29,9 +29,25 @@ def _load_harvest():
     return module
 
 
+def _load_conftest():
+    """Load tests/conftest.py by path.
+
+    `import tests.conftest` only resolves when the repository root is on
+    sys.path, which is true when pytest is run from the checkout and not
+    when it is run against an installed package -- that is why this
+    passed locally and failed in CI with "No module named 'tests'".
+    Loading by path works either way, and mirrors _load_harvest above.
+    """
+    spec = importlib.util.spec_from_file_location(
+        "morie_tests_conftest", REPO / "tests" / "conftest.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def test_pattern_set_matches_the_conftest_fixture():
     """The harvest's copy of _TRIVIAL_PATTERNS is identical to conftest's."""
-    import tests.conftest as tests_conftest
+    tests_conftest = _load_conftest()
 
     harvest = _load_harvest()
     assert harvest.TRIVIAL_PATTERNS == tests_conftest._TRIVIAL_PATTERNS, (

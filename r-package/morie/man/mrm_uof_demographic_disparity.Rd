@@ -32,6 +32,10 @@ Named list with \code{baseline}, \code{baseline_rate},
 Demographic disparity in outcome rates with risk-ratio CIs
 }
 \examples{
-mrm_uof_demographic_disparity(df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)),
-  demo_col = c(1, 2, 3, 4, 5, 6, 7, 8), outcome_col = c(1, 2, 3, 4, 5, 6, 7, 8))
+incidents <- data.frame(
+  race = c("A", "A", "B", "B", "A", "B", "A", "B"),
+  force_used = c(0, 1, 1, 1, 0, 1, 0, 0)
+)
+mrm_uof_demographic_disparity(incidents, demo_col = "race",
+                              outcome_col = "force_used")
 }

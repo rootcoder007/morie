@@ -80,7 +80,10 @@ def cox_counting_process(start, stop, event, X, strata=None,
                 loglik -= d * float(np.log(S0))
                 U = U - d * xbar
                 info = info + d * (S2 / S0 - np.outer(xbar, xbar))
-        step = np.linalg.solve(info, U)
+        try:
+            step = np.linalg.solve(info, U)
+        except Exception:
+            raise ValueError("partial likelihood is monotone or information singular")
         beta = beta + step
         if float(np.max(np.abs(step))) < tol:
             break

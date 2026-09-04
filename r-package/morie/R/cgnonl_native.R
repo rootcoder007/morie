@@ -362,7 +362,13 @@ cgnonl_nonlinear_cg <- function(f, grad, x0, beta = "fletcher-reeves",
     line_search = line_search,
     restart_every = restart,
     method = "Fletcher & Reeves (1964) eq. 20, nonlinear conjugate gradients",
-    note = "storage is three vectors -- x, g and p -- which is the paper's stated advantage over Davidon-Fletcher-Powell; restarts to steepest descent every n+1 iterations, which preserves quadratic convergence because they are no more frequent than every n"
+    note = paste0(
+      "storage is three vectors -- x, g and p -- which is the paper",
+      "'s stated advantage over Davidon-Fletcher-Powell; restarts t",
+      "o steepest descent every n+1 iterations, which preserves qua",
+      "dratic convergence because they are no more frequent than ev",
+      "ery n"
+    )
   )
 }
 
