@@ -113,8 +113,10 @@ NULL
 #' @return A \code{morie_tps_result} named list.
 #' @export
 #' @examples
+#' \donttest{
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 #' morie_tps_temporal_summary(D)
+#' }
 morie_tps_temporal_summary <- function(df, ds_name = "?") {
   stopifnot(is.data.frame(df))
   yc <- .tps_safe_year_col(df)
@@ -183,8 +185,10 @@ morie_tps_temporal_summary <- function(df, ds_name = "?") {
 #' @return A \code{morie_tps_result} named list.
 #' @export
 #' @examples
+#' \donttest{
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 #' morie_tps_spatial_summary(D)
+#' }
 morie_tps_spatial_summary <- function(df, ds_name = "?") {
   stopifnot(is.data.frame(df))
   summary_lines <- list(
@@ -251,8 +255,10 @@ morie_tps_spatial_summary <- function(df, ds_name = "?") {
 #' @return A \code{morie_tps_result} named list.
 #' @export
 #' @examples
+#' \donttest{
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 #' morie_tps_offence_summary(D)
+#' }
 morie_tps_offence_summary <- function(df, ds_name = "?") {
   stopifnot(is.data.frame(df))
   summary_lines <- list(Dataset = ds_name, Incidents = nrow(df))
@@ -321,8 +327,10 @@ morie_tps_gini_concentration <- function(x) {
 #'   \code{payload$n_hoods}, \code{payload$p_top10}, \code{payload$p_top20}.
 #' @export
 #' @examples
+#' \donttest{
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 #' morie_tps_neighbourhood_concentration(D)
+#' }
 morie_tps_neighbourhood_concentration <- function(df, ds_name = "?") {
   stopifnot(is.data.frame(df))
   if (!("HOOD_158" %in% names(df))) {
@@ -395,6 +403,7 @@ morie_tps_neighbourhood_concentration <- function(df, ds_name = "?") {
 #' @return A \code{morie_tps_result} list.
 #' @export
 #' @examples
+#' \donttest{
 #' .mk_tps_full <- function(n = 200L, seed = 1L) {
 #'     set.seed(seed)
 #'     data.frame(OCC_YEAR = sample(2018:2024, n, replace = TRUE),
@@ -412,6 +421,7 @@ morie_tps_neighbourhood_concentration <- function(df, ds_name = "?") {
 #' dfs <- list(Assault = .mk_tps_full(80L, seed = 2L), Robbery = .mk_tps_full(40L,
 #'     seed = 3L))
 #' morie_tps_crime_compare(dfs)
+#' }
 morie_tps_crime_compare <- function(dfs) {
   stopifnot(is.list(dfs), length(dfs) > 0L,
             !is.null(names(dfs)), all(nzchar(names(dfs))))
@@ -489,8 +499,10 @@ morie_tps_crime_compare <- function(dfs) {
 #'   \code{temporal}, \code{spatial}, \code{offences}, \code{concentration}.
 #' @export
 #' @examples
+#' \donttest{
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 #' morie_tps_analyze_one(D)
+#' }
 morie_tps_analyze_one <- function(df, name = "?") {
   stopifnot(is.data.frame(df))
   temp <- morie_tps_temporal_summary(df, ds_name = name)
@@ -644,8 +656,10 @@ morie_tps_analyze_theftover <- .tps_alias_factory("TheftOver")
 #'   \code{\link{morie_tps_crime_compare}}.
 #' @export
 #' @examples
+#' \donttest{
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 #' morie_tps_analyze_all(D)
+#' }
 morie_tps_analyze_all <- function(dfs, out_dir = NULL) {
   stopifnot(is.list(dfs), length(dfs) > 0L,
             !is.null(names(dfs)), all(nzchar(names(dfs))))

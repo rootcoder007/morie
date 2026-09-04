@@ -861,7 +861,7 @@ model_comparison_table <- function(models, nested = FALSE, digits = 3L,
 #'   / chi-square statistic, F or LR statistic, formatted p-value, and
 #'   a star column). Otherwise a character string holding the rendered
 #'   table in the requested format.
-#' @examples
+#' @examplesIf requireNamespace("car", quietly = TRUE)
 #' set.seed(1)
 #' df <- data.frame(x = rnorm(30))
 #' df$y <- df$x + rnorm(30)

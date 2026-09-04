@@ -19,7 +19,7 @@
 #' NYC OpenData bulk catalog (2851 entities)
 #' @param offline If `TRUE` (default), reads bundled CSV.
 #' @return Tabular catalog snapshot.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' d <- morie_datasets_nyc_opendata_bulk_layers(offline = TRUE)
 #' nrow(d)
 #' head(d[, c("soda_id", "type")])

@@ -93,7 +93,7 @@
 #'   root itself is returned.
 #' @return A file path string. The directory is \emph{not} created;
 #'   callers create it lazily only when they actually persist to disk.
-#' @examples
+#' @examplesIf requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)
 #' # Persistent cache root (does not write anything to disk):
 #' morie_cache_dir()
 #' # Per-subsystem persistent path:
@@ -160,7 +160,7 @@ morie_cache_clear <- function(subdir = NULL, confirm = interactive()) {
 #' SQLite tables.
 #'
 #' @return File path string.
-#' @examples
+#' @examplesIf requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)
 #' morie_builtin_db()
 #' @export
 morie_builtin_db <- function() {
@@ -781,7 +781,7 @@ morie_load_dataset <- function(key, db_path = NULL, refresh = FALSE,
 #' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return A data.frame with columns: key, name, source, survey, year, type,
 #'   cached (logical), rows (integer or NA).
-#' @examples
+#' @examplesIf requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)
 #' morie_list_datasets()
 #' @export
 morie_list_datasets <- function(db_path = NULL, con = NULL) {

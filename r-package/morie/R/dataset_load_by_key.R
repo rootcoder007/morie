@@ -60,7 +60,7 @@
 #'   is unique (the common case); pass when an ambiguous-key error
 #'   is raised to pick the intended portal.
 #' @return A `data.frame` (or, for StatCan, the WDS metadata list).
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' # All three calls below resolve to bundled offline fixtures (no
 #' # network). The first call warms the cross-portal catalog cache
 #' # (~2.8s); subsequent calls reuse it (<0.1s each).

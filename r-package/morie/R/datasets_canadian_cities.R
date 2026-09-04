@@ -30,7 +30,7 @@
 #' @param offline If `TRUE` (default), reads the bundled CSV.
 #' @return A `data.frame` with `soda_id`, `title`, `type`,
 #'   `search_keyword`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' d <- morie_datasets_calgary_open_crime_adjacent_layers(offline = TRUE)
 #' head(d)
 #' @export
@@ -103,7 +103,7 @@ morie_datasets_ottawa_open_crime_adjacent_layers <- function(offline = TRUE) {
 #' @param max_features Optional row cap.
 #' @return A `data.frame` with `community`, `category`, `crime_count`,
 #'   `year`, `month`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_calgary_community_crime_stats(offline = TRUE)
 #' head(df)
 #' @export

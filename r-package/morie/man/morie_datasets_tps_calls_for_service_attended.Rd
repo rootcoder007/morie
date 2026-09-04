@@ -52,5 +52,7 @@ aggregated by division and neighbourhood.
 Tags: ASR; TPS; Annual Statistical Report; Toronto Police; Calls for Service
 }
 \examples{
+\donttest{
 morie_datasets_tps_calls_for_service_attended()
+}
 }

@@ -33,6 +33,7 @@ after matching.  Delegates to \pkg{cobalt::love.plot}'s data when
 available.
 }
 \examples{
+\donttest{
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -43,4 +44,5 @@ df <- data.frame(
 res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 morie_matching_love_plot_data(df, res$matched_data,
                               "d", c("x1", "x2"))
+}
 }

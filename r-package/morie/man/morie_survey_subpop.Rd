@@ -31,6 +31,7 @@ and \code{n_domain} (number of sample units in the subpopulation).
 Subpopulation (domain) mean with Woodruff linearised SE
 }
 \examples{
+\dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 if (requireNamespace("survey", quietly = TRUE)) {
   set.seed(1)
   df <- data.frame(region = sample(c("N", "S"), 60, replace = TRUE),
@@ -38,4 +39,5 @@ if (requireNamespace("survey", quietly = TRUE)) {
   r <- morie_survey_subpop(df, "region", "N", "y", "w")
   is.list(r)
 }
+\dontshow{\}) # examplesIf}
 }

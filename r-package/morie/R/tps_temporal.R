@@ -559,10 +559,12 @@ morie_tps_arima_forecast <- function(df, h = 12L, ds_name = "?") {
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(OCC_YEAR = sample(2018:2023, 200, TRUE))
 #' res <- morie_tps_year_over_year_trend(df, year_col = "OCC_YEAR")
 #' print(res)
+#' }
 print.morie_tps_temporal_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\

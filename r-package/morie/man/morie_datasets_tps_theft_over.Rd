@@ -37,5 +37,7 @@ HOOD_140 attached.
 TPS PSDP -- Theft Over
 }
 \examples{
+\donttest{
 morie_datasets_tps_theft_over()
+}
 }

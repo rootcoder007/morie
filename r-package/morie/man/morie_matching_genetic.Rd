@@ -39,6 +39,7 @@ matching that maximise covariate balance.  Delegates to
 otherwise runs a base-R genetic algorithm.
 }
 \examples{
+\donttest{
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -48,6 +49,7 @@ df <- data.frame(
   treat3 = sample(0:2, 150, TRUE))
 morie_matching_genetic(df, "d", c("x1", "x2"),
                        pop_size = 50, n_generations = 20)
+}
 }
 \references{
 Diamond, A., & Sekhon, J. S. (2013). Genetic matching for

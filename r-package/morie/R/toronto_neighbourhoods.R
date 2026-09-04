@@ -233,7 +233,7 @@ morie_tps_resolve_hood_col <- function(df, prefer = c("158", "140"),
 #' @param expected Either `"158"` or `"140"`.
 #' @return Invisibly `TRUE` on success.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- data.frame(OCC_YEAR = 2024L, HOOD_158 = "82", HOOD_140 = "82")
 #' morie_tps_resolve_hood_col(df, prefer = "158")
 #' morie_tps_assert_hood_version(df = df)
@@ -273,7 +273,7 @@ morie_tps_assert_hood_version <- function(df,
 #' @return Character vector of `"158"` / `"140"` recommendations,
 #'   parallel to `year`.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_tps_year_to_hood_version(V)
 morie_tps_year_to_hood_version <- function(year) {
@@ -321,7 +321,7 @@ morie_tps_year_to_hood_version <- function(year) {
 #' @return A `data.frame` with the columns above. `hood_140` and
 #'   `hood_158` are character (zero-padded to 3 chars).
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' morie_to_hood_crosswalk()
 morie_to_hood_crosswalk <- function() {
   path <- system.file("extdata", "to_hood_158_140_crosswalk.csv",
@@ -440,7 +440,7 @@ morie_tps_add_hood_158_from_140 <- function(df, col_in = NULL,
 #' @param col_out Name of the new column. Default `"HOOD_140_equiv"`.
 #' @return `df` with the equivalent-code column appended.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- data.frame(OCC_YEAR = 2024L, HOOD_158 = "82", HOOD_140 = "82")
 #' morie_tps_resolve_hood_col(df, prefer = "158")
 #' morie_tps_add_hood_140_from_158(df = df)

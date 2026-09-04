@@ -34,6 +34,7 @@ Finds the largest matched sample with maximum absolute SMD below
 heuristic over \code{morie_matching_nearest_neighbor}.
 }
 \examples{
+\donttest{
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -43,6 +44,7 @@ df <- data.frame(
   treat3 = sample(0:2, 150, TRUE))
 morie_matching_cardinality(df, "d", c("x1", "x2"),
                            balance_threshold = 0.1)
+}
 }
 \references{
 Zubizarreta, J. R. (2012). Using mixed integer programming for

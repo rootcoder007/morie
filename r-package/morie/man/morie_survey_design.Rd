@@ -38,6 +38,7 @@ Returns a \code{survey::svydesign} object when \code{survey} is available; other
 returns a lightweight list with the same fields the morie helpers consume.
 }
 \examples{
+\dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 if (requireNamespace("survey", quietly = TRUE)) {
   .make_survey_df <- function(n = 100L, seed = 1L) {
       set.seed(seed)
@@ -49,4 +50,5 @@ if (requireNamespace("survey", quietly = TRUE)) {
   df <- .make_survey_df()
   morie_survey_design(df, weights_col = "w")
 }
+\dontshow{\}) # examplesIf}
 }

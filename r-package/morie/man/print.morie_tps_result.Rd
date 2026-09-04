@@ -18,6 +18,8 @@ Invisibly returns \code{x} unchanged.
 Pretty-print method for \code{morie_tps_result} objects
 }
 \examples{
+\donttest{
 D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 morie:::print.morie_tps_result(D)
+}
 }

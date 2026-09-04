@@ -21,6 +21,7 @@ in the fallback path, also \code{ci_lower}, \code{ci_upper}).
 Survey-weighted mean (delegates to \code{survey::svymean} when available)
 }
 \examples{
+\dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 if (requireNamespace("survey", quietly = TRUE)) {
   .make_survey_df <- function(n = 100L, seed = 1L) {
       set.seed(seed)
@@ -34,4 +35,5 @@ if (requireNamespace("survey", quietly = TRUE)) {
   design_fb <- structure(list(data = df, weights = df$w), class = "morie_survey_design_fallback")
   morie_survey_mean(design_fb, "y")
 }
+\dontshow{\}) # examplesIf}
 }

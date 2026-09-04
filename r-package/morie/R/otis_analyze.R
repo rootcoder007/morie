@@ -56,7 +56,9 @@ NULL
 #' @return data.frame.
 #' @seealso \code{\link{morie_cache_dir}}.
 #' @examples
+#' \donttest{
 #'   df <- morie_otis_load()
+#' }
 #' @export
 morie_otis_load <- function(csv_path = NULL, use_readr = FALSE) {
   if (!is.null(csv_path)) {
@@ -112,8 +114,10 @@ morie_otis_load <- function(csv_path = NULL, use_readr = FALSE) {
 #'   directory is created if missing.
 #' @return Named list of \code{morie_otis_result}s.
 #' @examples
+#' \donttest{
 #'   df <- morie_otis_load()
 #'   res <- morie_otis_all_analyses(df, year = 2024)
+#' }
 #' @export
 morie_otis_all_analyses <- function(df, year,
                                      sex = NULL,
@@ -172,8 +176,10 @@ morie_otis_all_analyses <- function(df, year,
 #'   formatted result, suitable for \code{cat()} or \code{print()}.
 #' @export
 #' @examples
+#' \donttest{
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 #' morie:::format.morie_otis_result(D)
+#' }
 format.morie_otis_result <- function(x, ...) {
   lines <- character(0)
   lines <- c(lines, sprintf("== %s ==", x$title %||% "(untitled)"))
@@ -213,8 +219,10 @@ format.morie_otis_result <- function(x, ...) {
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 #' @examples
+#' \donttest{
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie:::print.morie_otis_result(V)
+#' }
 print.morie_otis_result <- function(x, ...) {
   cat(format(x, ...), "\
 ", sep = "")

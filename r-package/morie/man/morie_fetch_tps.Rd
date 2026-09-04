@@ -37,6 +37,7 @@ the morie cache directory. Calls back to a cached file on subsequent
 calls unless \code{overwrite = TRUE}.
 }
 \examples{
+\dontshow{if (requireNamespace("jsonlite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Network: fetches major-crime indicators from the Toronto Police
 # ArcGIS open-data layer.
 csv <- morie_fetch_tps(
@@ -46,4 +47,5 @@ csv <- morie_fetch_tps(
 )
 tps <- utils::read.csv(csv)
 nrow(tps)
+\dontshow{\}) # examplesIf}
 }

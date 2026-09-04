@@ -38,7 +38,7 @@
 #' @param user_agent User-Agent string.
 #' @param ... forwarded to readxl::read_excel.
 #' @return base R data.frame.
-#' @examples
+#' @examplesIf requireNamespace("httr2", quietly = TRUE) && requireNamespace("readxl", quietly = TRUE)
 #' \dontrun{
 #' @export
 morie_ingest_cihi_xlsx <- function(url, sheet = NULL, timeout = 120,

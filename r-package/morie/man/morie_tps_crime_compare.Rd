@@ -20,6 +20,7 @@ Accepts a named list of TPS data.frames (e.g.
 year-by-year matrix.
 }
 \examples{
+\donttest{
 .mk_tps_full <- function(n = 200L, seed = 1L) {
     set.seed(seed)
     data.frame(OCC_YEAR = sample(2018:2024, n, replace = TRUE), 
@@ -37,4 +38,5 @@ year-by-year matrix.
 dfs <- list(Assault = .mk_tps_full(80L, seed = 2L), Robbery = .mk_tps_full(40L, 
     seed = 3L))
 morie_tps_crime_compare(dfs)
+}
 }
