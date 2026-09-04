@@ -20,6 +20,21 @@ def _event_times(n, rate, seed):
     return np.cumsum(rng.exponential(1.0 / rate, size=n))
 
 
+def _buf(t):
+    """A float64 buffer the compiled kernel can take on ANY Python.
+
+    morie's marr exposes a buffer through __buffer__, which is PEP 688
+    and therefore Python 3.12+ only; on 3.10 nanobind cannot see it and
+    rejects the call. array.array carries the buffer protocol on every
+    supported version, and is what tps_hawkes_jit hands the kernel in
+    production. The reference implementations keep taking the native
+    array, so only the kernel calls are wrapped.
+    """
+    import array as _pyarray
+
+    return _pyarray.array("d", [float(v) for v in t])
+
+
 @pytest.mark.parametrize(
     "a0,eta,beta",
     [
@@ -32,7 +47,7 @@ def _event_times(n, rate, seed):
 def test_hawkes_ll_exp_const_parity(a0, eta, beta):
     t = _event_times(400, rate=2.0, seed=11)
     T = float(t[-1]) + 1.0
-    got = core.hawkes_ll_exp_const(t, T, a0, eta, beta)
+    got = core.hawkes_ll_exp_const(_buf(t), T, a0, eta, beta)
     ref = float(_ll_exp_const(t, T, a0, eta, beta))
     assert np.isclose(got, ref, rtol=1e-12, atol=1e-9)
 
@@ -41,11 +56,11 @@ def test_hawkes_ll_exp_const_infeasible_returns_sentinel():
     t = _event_times(50, rate=1.0, seed=3)
     T = float(t[-1]) + 1.0
     # eta outside (1e-6, 0.999)
-    assert core.hawkes_ll_exp_const(t, T, 0.0, 1.5, 1.0) == 1e12
+    assert core.hawkes_ll_exp_const(_buf(t), T, 0.0, 1.5, 1.0) == 1e12
     # beta outside (0.05, 30.0)
-    assert core.hawkes_ll_exp_const(t, T, 0.0, 0.3, 100.0) == 1e12
+    assert core.hawkes_ll_exp_const(_buf(t), T, 0.0, 0.3, 100.0) == 1e12
     # a0 outside (-20, 20)
-    assert core.hawkes_ll_exp_const(t, T, 50.0, 0.3, 1.0) == 1e12
+    assert core.hawkes_ll_exp_const(_buf(t), T, 50.0, 0.3, 1.0) == 1e12
 
 
 def test_neg_loglik_jit_routes_through_core():
@@ -74,7 +89,7 @@ def test_hawkes_ll_weibull_const_parity(a0, eta, alpha, lam):
 
     t = _event_times(250, rate=2.0, seed=13)
     T = float(t[-1]) + 1.0
-    got = core.hawkes_ll_weibull_const(t, T, a0, eta, alpha, lam)
+    got = core.hawkes_ll_weibull_const(_buf(t), T, a0, eta, alpha, lam)
     ref = float(_ll_weibull_const(t, T, a0, eta, alpha, lam))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
@@ -82,8 +97,8 @@ def test_hawkes_ll_weibull_const_parity(a0, eta, alpha, lam):
 def test_hawkes_ll_weibull_const_infeasible_returns_sentinel():
     t = _event_times(40, rate=1.0, seed=5)
     T = float(t[-1]) + 1.0
-    assert core.hawkes_ll_weibull_const(t, T, 0.0, 1.5, 1.5, 2.0) == 1e12
-    assert core.hawkes_ll_weibull_const(t, T, 0.0, 0.3, 50.0, 2.0) == 1e12
+    assert core.hawkes_ll_weibull_const(_buf(t), T, 0.0, 1.5, 1.5, 2.0) == 1e12
+    assert core.hawkes_ll_weibull_const(_buf(t), T, 0.0, 0.3, 50.0, 2.0) == 1e12
 
 
 def test_neg_loglik_jit_routes_weibull_through_core():
@@ -112,8 +127,8 @@ def test_hawkes_weibull_trunc_is_exact(a0, eta, alpha, lam):
     # version -- the truncated terms underflow to exactly zero.
     t = _event_times(400, rate=2.0, seed=13)
     T = float(t[-1]) + 1.0
-    exact = core.hawkes_ll_weibull_const(t, T, a0, eta, alpha, lam)
-    trunc = core.hawkes_ll_weibull_const_trunc(t, T, a0, eta, alpha, lam)
+    exact = core.hawkes_ll_weibull_const(_buf(t), T, a0, eta, alpha, lam)
+    trunc = core.hawkes_ll_weibull_const_trunc(_buf(t), T, a0, eta, alpha, lam)
     assert trunc == exact
 
 
@@ -132,8 +147,8 @@ def test_hawkes_gamma_trunc_is_exact(a0, eta, alpha, beta):
     # gamma version -- the truncated terms underflow to exactly zero.
     t = _event_times(400, rate=2.0, seed=13)
     T = float(t[-1]) + 1.0
-    exact = core.hawkes_ll_gamma_const(t, T, a0, eta, alpha, beta)
-    trunc = core.hawkes_ll_gamma_const_trunc(t, T, a0, eta, alpha, beta)
+    exact = core.hawkes_ll_gamma_const(_buf(t), T, a0, eta, alpha, beta)
+    trunc = core.hawkes_ll_gamma_const_trunc(_buf(t), T, a0, eta, alpha, beta)
     assert trunc == exact
 
 
@@ -150,7 +165,7 @@ def test_hawkes_ll_lomax_const_parity(a0, eta, alpha, c):
 
     t = _event_times(250, rate=2.0, seed=17)
     T = float(t[-1]) + 1.0
-    got = core.hawkes_ll_lomax_const(t, T, a0, eta, alpha, c)
+    got = core.hawkes_ll_lomax_const(_buf(t), T, a0, eta, alpha, c)
     ref = float(_ll_lomax_const(t, T, a0, eta, alpha, c))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
@@ -183,7 +198,7 @@ def test_hawkes_ll_gamma_const_parity(a0, eta, alpha, beta):
 
     t = _event_times(250, rate=2.0, seed=23)
     T = float(t[-1]) + 1.0
-    got = core.hawkes_ll_gamma_const(t, T, a0, eta, alpha, beta)
+    got = core.hawkes_ll_gamma_const(_buf(t), T, a0, eta, alpha, beta)
     ref = float(_ll_gamma_const(t, T, a0, eta, alpha, beta))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
@@ -199,7 +214,7 @@ def test_neg_loglik_jit_routes_gamma_through_core():
     ref = float(_ll_gamma_const(t, T, -1.0, 0.4, 2.0, 1.5))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
     # alpha outside (0.05, 20) -> infeasible sentinel
-    assert core.hawkes_ll_gamma_const(t, T, 0.0, 0.3, 50.0, 1.5) == 1e12
+    assert core.hawkes_ll_gamma_const(_buf(t), T, 0.0, 0.3, 50.0, 1.5) == 1e12
 
 
 @pytest.mark.parametrize(
@@ -215,7 +230,7 @@ def test_hawkes_ll_exp_sin_parity(a0, a1, a2, a3, eta, beta):
     t = _event_times(250, rate=2.0, seed=31)
     T = float(t[-1]) + 1.0
     grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
-    got = core.hawkes_ll_exp_sin(t, T, a0, a1, a2, a3, eta, beta, grid, grid_vals)
+    got = core.hawkes_ll_exp_sin(_buf(t), T, a0, a1, a2, a3, eta, beta, grid, grid_vals)
     ref = float(_ll_exp_sin(t, T, a0, a1, a2, a3, eta, beta, grid, grid_vals))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
@@ -246,7 +261,7 @@ def test_hawkes_ll_weibull_sin_parity(a0, a1, a2, a3, eta, alpha, lam):
     t = _event_times(250, rate=2.0, seed=37)
     T = float(t[-1]) + 1.0
     grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
-    got = core.hawkes_ll_weibull_sin(t, T, a0, a1, a2, a3, eta, alpha, lam, grid, grid_vals)
+    got = core.hawkes_ll_weibull_sin(_buf(t), T, a0, a1, a2, a3, eta, alpha, lam, grid, grid_vals)
     ref = float(_ll_weibull_sin(t, T, a0, a1, a2, a3, eta, alpha, lam, grid, grid_vals))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
@@ -277,7 +292,7 @@ def test_hawkes_ll_lomax_sin_parity(a0, a1, a2, a3, eta, alpha, c):
     t = _event_times(250, rate=2.0, seed=41)
     T = float(t[-1]) + 1.0
     grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
-    got = core.hawkes_ll_lomax_sin(t, T, a0, a1, a2, a3, eta, alpha, c, grid, grid_vals)
+    got = core.hawkes_ll_lomax_sin(_buf(t), T, a0, a1, a2, a3, eta, alpha, c, grid, grid_vals)
     ref = float(_ll_lomax_sin(t, T, a0, a1, a2, a3, eta, alpha, c, grid, grid_vals))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
@@ -326,7 +341,7 @@ def test_hawkes_ll_soe_reduces_to_exponential():
     t = _event_times(300, rate=2.0, seed=51)
     T = float(t[-1]) + 1.0
     a0, eta, beta = -1.0, 0.4, 1.5
-    soe = core.hawkes_ll_soe(t, T, math.exp(a0), eta, np.array([beta]), np.array([beta]))
+    soe = core.hawkes_ll_soe(_buf(t), T, math.exp(a0), eta, np.array([beta]), np.array([beta]))
     ref = float(_ll_exp_const(t, T, a0, eta, beta))
     assert np.isclose(soe, ref, rtol=1e-9, atol=1e-6)
 
@@ -340,7 +355,7 @@ def test_hawkes_ll_soe_matches_bruteforce(seed):
     w = rng.uniform(0.05, 0.5, size=3)
     beta = rng.uniform(0.5, 5.0, size=3)
     nu, eta = 0.4, 0.3
-    got = core.hawkes_ll_soe(t, T, nu, eta, w, beta)
+    got = core.hawkes_ll_soe(_buf(t), T, nu, eta, w, beta)
     ref = _soe_ll_reference(t, T, nu, eta, w, beta)
     assert np.isclose(got, ref, rtol=1e-8, atol=1e-6)
 
@@ -375,9 +390,9 @@ def test_soe_fit_lomax_likelihood_matches_exact(alpha, c):
     t = _event_times(400, rate=2.0, seed=17)
     T = float(t[-1]) + 1.0
     a0, eta = -1.0, 0.4
-    exact = core.hawkes_ll_lomax_const(t, T, a0, eta, alpha, c)
+    exact = core.hawkes_ll_lomax_const(_buf(t), T, a0, eta, alpha, c)
     w, beta, err = soe_fit_lomax(alpha, c, T, tol=1e-8)
-    soe = core.hawkes_ll_soe(t, T, math.exp(a0), eta, w, beta)
+    soe = core.hawkes_ll_soe(_buf(t), T, math.exp(a0), eta, w, beta)
     assert np.isclose(soe, exact, rtol=1e-7)
 
 
@@ -391,7 +406,7 @@ def test_neg_loglik_jit_lomax_routes_through_soe():
     a0, eta, alpha, c = -1.0, 0.4, 2.5, 1.0
     theta = np.array([a0, eta, alpha, c])
     routed = neg_loglik_jit(theta, t, T, "lomax", "constant")
-    exact = core.hawkes_ll_lomax_const(t, T, a0, eta, alpha, c)
+    exact = core.hawkes_ll_lomax_const(_buf(t), T, a0, eta, alpha, c)
     assert np.isclose(routed, exact, rtol=1e-6)
 
 
@@ -404,7 +419,7 @@ def test_neg_loglik_jit_lomax_small_n_stays_exact():
     a0, eta, alpha, c = -1.0, 0.4, 2.5, 1.0
     theta = np.array([a0, eta, alpha, c])
     routed = neg_loglik_jit(theta, t, T, "lomax", "constant")
-    exact = core.hawkes_ll_lomax_const(t, T, a0, eta, alpha, c)
+    exact = core.hawkes_ll_lomax_const(_buf(t), T, a0, eta, alpha, c)
     assert routed == exact  # same code path, bit-identical
 
 
@@ -482,10 +497,10 @@ def test_hawkes_ll_soe_cplx_reduces_to_real():
     T = float(t[-1]) + 1.0
     w = np.array([0.5, 0.3, 0.15])
     beta = np.array([0.4, 1.5, 4.0])
-    real = core.hawkes_ll_soe(t, T, 0.4, 0.3, w, beta)
+    real = core.hawkes_ll_soe(_buf(t), T, 0.4, 0.3, w, beta)
     w_re, w_im = _ri(w)
     b_re, b_im = _ri(beta)
-    cplx = core.hawkes_ll_soe_cplx_ri(t, T, 0.4, 0.3, w_re, w_im,
+    cplx = core.hawkes_ll_soe_cplx_ri(_buf(t), T, 0.4, 0.3, w_re, w_im,
                                       b_re, b_im)
     assert np.isclose(cplx, real, rtol=1e-12, atol=1e-9)
 
@@ -499,7 +514,7 @@ def test_hawkes_ll_soe_cplx_conjugate_pair_matches_bruteforce():
     beta = [0.70 + 0j, 1.20 + 0.80j, 1.20 - 0.80j]
     w_re, w_im = _ri(w)
     b_re, b_im = _ri(beta)
-    got = core.hawkes_ll_soe_cplx_ri(t, T, nu, eta, w_re, w_im,
+    got = core.hawkes_ll_soe_cplx_ri(_buf(t), T, nu, eta, w_re, w_im,
                                      b_re, b_im)
     ref = _soe_ll_reference_cplx(t, T, nu, eta, w, beta)
     assert np.isclose(got, ref, rtol=1e-8, atol=1e-6)
@@ -543,11 +558,11 @@ def test_hawkes_ll_gamma_hybrid_matches_exact(alpha, beta):
     a0, eta = -1.0, 0.4
     u_split = 2.0 * (alpha - 1.0) / beta
     w, beta_soe, err = soe_fit_gamma_tail(alpha, beta, u_split)
-    exact = core.hawkes_ll_gamma_const(t, T, a0, eta, alpha, beta)
+    exact = core.hawkes_ll_gamma_const(_buf(t), T, a0, eta, alpha, beta)
     w_re, w_im = _ri(w)
     b_re, b_im = _ri(beta_soe)
     hybrid = core.hawkes_ll_gamma_hybrid_ri(
-        t, T, a0, eta, alpha, beta, u_split, w_re, w_im, b_re, b_im)
+        _buf(t), T, a0, eta, alpha, beta, u_split, w_re, w_im, b_re, b_im)
     assert np.isclose(hybrid, exact, rtol=1e-4)
 
 
@@ -562,7 +577,7 @@ def test_neg_loglik_jit_gamma_routes_through_hybrid():
     assert _gamma_trunc_cutoff(alpha, beta) >= t[-1] - t[0]  # hybrid route
     theta = np.array([a0, eta, alpha, beta])
     routed = neg_loglik_jit(theta, t, T, "gamma", "constant")
-    exact = core.hawkes_ll_gamma_const(t, T, a0, eta, alpha, beta)
+    exact = core.hawkes_ll_gamma_const(_buf(t), T, a0, eta, alpha, beta)
     assert np.isclose(routed, exact, rtol=1e-4)
 
 
@@ -575,5 +590,5 @@ def test_neg_loglik_jit_gamma_fast_decay_stays_exact():
     a0, eta, alpha, beta = -1.0, 0.4, 2.5, 5.0  # fast decay
     theta = np.array([a0, eta, alpha, beta])
     routed = neg_loglik_jit(theta, t, T, "gamma", "constant")
-    exact = core.hawkes_ll_gamma_const(t, T, a0, eta, alpha, beta)
+    exact = core.hawkes_ll_gamma_const(_buf(t), T, a0, eta, alpha, beta)
     assert routed == exact

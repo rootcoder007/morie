@@ -451,12 +451,28 @@ def _sin_grid(T: float, a0: float, a1: float, a2: float, a3: float) -> tuple[np.
     return grid, vals
 
 
+def _f64(x):
+    """A contiguous float64 buffer the compiled kernel can read on ANY
+    supported Python.
+
+    np.ascontiguousarray here returns morie's native array, which
+    exposes its buffer through __buffer__ -- that is PEP 688, so it only
+    exists on Python 3.12+. On 3.10 nanobind cannot see it and every
+    kernel call raised "incompatible function arguments", which is why
+    the Hawkes path worked on 3.13/3.14 and was broken on 3.10.
+    array.array carries the buffer protocol on every version.
+    """
+    import array as _pyarray
+
+    return _pyarray.array("d", [float(v) for v in x])
+
+
 def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, baseline: str) -> float:
     """JIT-routed negative log-likelihood.  Caller must check has_jit_path()."""
     # v0.9.1: constant-baseline kernels run on the compiled C++ core
     # when available -- no numba needed for these paths.
     if HAS_CORE and baseline == "constant":
-        t_c = np.ascontiguousarray(t, dtype=np.float64)
+        t_c = _f64(t)
         if kernel == "exponential":
             a0, eta, beta = float(theta[0]), float(theta[1]), float(theta[2])
             if eta <= 1e-6 or eta >= 0.999 or beta <= 1e-6:
@@ -479,7 +495,7 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, base
             # optimizer's tolerance), so the MLE is unchanged; the
             # exact O(n^2) kernel stays the reference path below the
             # crossover, where it is already cheap.
-            if t_c.shape[0] >= _SOE_MIN_N:
+            if len(t_c) >= _SOE_MIN_N:
                 w, beta_soe, _ = soe_fit_lomax(alpha, c, float(T), tol=1e-8)
                 return _core_ext.hawkes_ll_soe(t_c, float(T), float(np.exp(a0)), eta, w, beta_soe)
             return _core_ext.hawkes_ll_lomax_const(t_c, float(T), a0, eta, alpha, c)
@@ -493,7 +509,7 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, base
             # (exact peak window + matrix-pencil SoE tail). The hybrid
             # perturbs the likelihood by ~1e-6, below the optimizer's
             # tolerance. Truncation stays the exact path everywhere else.
-            if alpha > 1.0 and t_c.shape[0] >= _SOE_MIN_N and _gamma_trunc_cutoff(alpha, beta) >= t_c[-1] - t_c[0]:
+            if alpha > 1.0 and len(t_c) >= _SOE_MIN_N and _gamma_trunc_cutoff(alpha, beta) >= t_c[-1] - t_c[0]:
                 u_split = 2.0 * (alpha - 1.0) / beta
                 w, beta_soe, _ = soe_fit_gamma_tail(alpha, beta, u_split)
                 import array as _pyarray
@@ -508,9 +524,9 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, base
         a0, a1, a2, a3 = (float(theta[0]), float(theta[1]), float(theta[2]), float(theta[3]))
         eta = float(theta[4])
         grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
-        t_c = np.ascontiguousarray(t, dtype=np.float64)
-        g_c = np.ascontiguousarray(grid, dtype=np.float64)
-        gv_c = np.ascontiguousarray(grid_vals, dtype=np.float64)
+        t_c = _f64(t)
+        g_c = _f64(grid)
+        gv_c = _f64(grid_vals)
         if kernel == "exponential":
             beta = float(theta[5])
             if eta <= 1e-6 or eta >= 0.999 or beta <= 1e-6:
