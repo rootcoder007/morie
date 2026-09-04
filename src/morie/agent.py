@@ -346,7 +346,7 @@ def tool_describe_data(code: str = "") -> str:
 
         exec_globals: dict[str, Any] = {}
         guarded_exec(
-            "import pandas as pd; import numpy as np; from morie.data import load_dataset, DATASET_CATALOG; " + code,
+            "import morie.fn._frame_core as pd; import morie.fn._array_core as np; from morie.data import load_dataset, DATASET_CATALOG; " + code,
             exec_globals,
         )
         df = exec_globals.get("df")
