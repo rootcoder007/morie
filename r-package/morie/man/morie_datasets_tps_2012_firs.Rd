@@ -51,7 +51,7 @@ hub item_id \verb{7a690ba1d7714063983ed78024d5b2af}.
 Tags: FIRS; Freedom of Information Requests
 }
 \examples{
-\donttest{
+\dontrun{
 morie_datasets_tps_2012_firs()
 }
 }

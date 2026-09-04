@@ -165,7 +165,7 @@ morie_datasets_calgary_fire_stations <- function(offline = TRUE,
 #' @return A `data.frame` of records.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' df <- morie_datasets_calgary_socrata_by_id("848s-4m4z", limit = 100L)
 #' }
 morie_datasets_calgary_socrata_by_id <- function(soda_id,

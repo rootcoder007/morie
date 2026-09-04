@@ -260,7 +260,7 @@ morie_datasets_tps_assault <- function(year = NULL,
 #'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_autotheft()
 #' }
 morie_datasets_tps_autotheft <- function(year = NULL,
@@ -302,7 +302,7 @@ morie_datasets_tps_bicycletheft <- function(year = NULL,
 #'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_breakandenter()
 #' }
 morie_datasets_tps_breakandenter <- function(year = NULL,
@@ -426,7 +426,7 @@ morie_datasets_tps_shooting_firearm_discharges <- function(
 #'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_theft_from_motor_vehicle()
 #' }
 morie_datasets_tps_theft_from_motor_vehicle <- function(
@@ -446,7 +446,7 @@ morie_datasets_tps_theft_from_motor_vehicle <- function(
 #'   HOOD_140 attached.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_theft_over()
 #' }
 morie_datasets_tps_theft_over <- function(year = NULL,

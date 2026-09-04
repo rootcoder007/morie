@@ -52,7 +52,7 @@ strip searches.
 Tags: RBDC; race; race based data
 }
 \examples{
-\donttest{
+\dontrun{
 morie_datasets_tps_arrests_and_strip_searches()
 }
 }

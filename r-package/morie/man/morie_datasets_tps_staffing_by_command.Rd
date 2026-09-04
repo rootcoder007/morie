@@ -51,7 +51,7 @@ Toronto Police Service dataset.
 Tags: Staffing; Budget; Toronto Police Service; TPS
 }
 \examples{
-\donttest{
+\dontrun{
 morie_datasets_tps_staffing_by_command()
 }
 }

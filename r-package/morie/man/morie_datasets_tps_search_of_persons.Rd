@@ -52,7 +52,7 @@ conducted.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Search of Person
 }
 \examples{
-\donttest{
+\dontrun{
 morie_datasets_tps_search_of_persons()
 }
 }

@@ -52,7 +52,7 @@ classification for Uniform, Civilian, and Other Staff.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Personnel
 }
 \examples{
-\donttest{
+\dontrun{
 morie_datasets_tps_personnel_by_rank()
 }
 }
