@@ -128,16 +128,20 @@ print.morie_test_result <- function(x, ...) {
 ", x$test_statistic))
   cat(sprintf("  p-value   = %.6g\
 ", x$p_value))
-  if (is.finite(x$df))          cat(sprintf("  df        = %.6g\
+  # R 4.6 makes `if` on a length > 1 condition an ERROR, so every field
+  # is reduced to a single flag before it is tested: a vectorised call
+  # leaves length-n estimates behind and printing them used to abort.
+  ok <- function(v) length(v) == 1L && is.finite(v)
+  if (ok(x$df))          cat(sprintf("  df        = %.6g\
 ", x$df))
-  if (is.finite(x$estimate))    cat(sprintf("  estimate  = %.6g\
+  if (ok(x$estimate))    cat(sprintf("  estimate  = %.6g\
 ", x$estimate))
-  if (is.finite(x$effect_size)) cat(sprintf("  effect    = %.6g\
+  if (ok(x$effect_size)) cat(sprintf("  effect    = %.6g\
 ", x$effect_size))
-  if (is.finite(x$ci_lower) && is.finite(x$ci_upper))
+  if (ok(x$ci_lower) && ok(x$ci_upper))
     cat(sprintf("  CI        = [%.6g, %.6g]\
 ", x$ci_lower, x$ci_upper))
-  if (!is.na(x$n)) cat(sprintf("  n         = %d\
+  if (length(x$n) == 1L && !is.na(x$n)) cat(sprintf("  n         = %d\
 ", x$n))
   invisible(x)
 }
@@ -1429,8 +1433,22 @@ lilliefors_test <- function(x, dist = c("norm", "expon")) {
 #'   the sample proportion as \code{estimate}, and sample size n.
 #' @export
 #' @examples
-#' one_proportion_ztest(count = c(1, 2, 3, 4, 5, 6, 7, 8), nobs = 5L)
+#' # 7 successes out of 20 trials, against a null proportion of 0.5
+#' one_proportion_ztest(count = 7L, nobs = 20L)
 one_proportion_ztest <- function(count, nobs, value = 0.5, confidence = 0.95) {
+  # One sample means ONE count and ONE trial total. A vector count used
+  # to sail through and produce length-n statistics, which then broke
+  # printing; and count > nobs is not a proportion at all.
+  if (length(count) != 1L || length(nobs) != 1L) {
+    stop("`count` and `nobs` must each be a single number", call. = FALSE)
+  }
+  if (is.na(count) || is.na(nobs) || count < 0 || nobs < 0) {
+    stop("`count` and `nobs` must be non-negative", call. = FALSE)
+  }
+  if (count > nobs) {
+    stop(sprintf("`count` (%g) exceeds `nobs` (%g)", count, nobs),
+         call. = FALSE)
+  }
   p_hat <- if (nobs > 0) count / nobs else 0
   se <- if (nobs > 0) sqrt(value * (1 - value) / nobs) else 0
   z <- if (se > 0) (p_hat - value) / se else 0
