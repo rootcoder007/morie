@@ -5542,7 +5542,7 @@ File,Line,Status,Version,Context
 ./src/morie/tps_hawkes_advanced.py,86,STALE_OR_DEP,0.9.5.6,"# Pre-v0.9.5.6 used the (alpha-1) shifted form which gave"
 ./src/morie/tps_hawkes_advanced.py,107,STALE_OR_DEP,0.9.5.6,"# v0.9.5.6+: scipy CDF 1 - (c/(u+c))^alpha (was: alpha-1)."
 ./src/morie/tps_hawkes_jit.py,45,STALE_OR_DEP,0.9.1,"# Phase 2 (v0.9.1): the compiled C++ core (morie._core) provides the"
-./src/morie/tps_hawkes_jit.py,456,STALE_OR_DEP,0.9.1,"# v0.9.1: constant-baseline kernels run on the compiled C++ core"
+./src/morie/tps_hawkes_jit.py,472,STALE_OR_DEP,0.9.1,"# v0.9.1: constant-baseline kernels run on the compiled C++ core"
 ./src/morie/tps_statphysics.py,242,STALE_OR_DEP,0.9.5.6,"# terms don't bias alpha upward. v0.9.5.6+ uses strict `>` per"
 ./src/morie/viz.py,178,STALE_OR_DEP,322.7300.1479,"https://doi.org/10.1136/bmj.322.7300.1479"
 ./tests/fixtures/siu/drid_5074_rendered.txt,4,STALE_OR_DEP,1.800.787.8529,"1.800.787.8529"
