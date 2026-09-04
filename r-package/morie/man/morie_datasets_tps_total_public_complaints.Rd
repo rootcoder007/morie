@@ -54,7 +54,7 @@ investigated.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Complaints
 }
 \examples{
-\donttest{
+\dontrun{
 morie_datasets_tps_total_public_complaints()
 }
 }

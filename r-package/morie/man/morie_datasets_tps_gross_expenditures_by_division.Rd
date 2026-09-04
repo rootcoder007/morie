@@ -53,7 +53,7 @@ of reporting.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Budget
 }
 \examples{
-\donttest{
+\dontrun{
 morie_datasets_tps_gross_expenditures_by_division()
 }
 }

@@ -52,7 +52,7 @@ date aggregated by division.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Reported Crimes
 }
 \examples{
-\donttest{
+\dontrun{
 morie_datasets_tps_reported_crimes()
 }
 }

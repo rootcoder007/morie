@@ -137,7 +137,7 @@ All loaders accept the same \code{offline = TRUE} (default) /
 \code{max_features} interface as the other morie dataset wrappers.
 }
 \examples{
-\donttest{
+\dontrun{
 morie_datasets_vancouver_graffiti()
 }
 }

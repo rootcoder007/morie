@@ -102,7 +102,7 @@ morie_datasets_vancouver_opendata_layers <- function(offline = TRUE,
 #'
 #' @name vancouver_crime_adjacent
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_vancouver_graffiti()
 #' }
 NULL
