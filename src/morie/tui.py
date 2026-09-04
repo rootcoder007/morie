@@ -1505,7 +1505,7 @@ if _TEXTUAL_AVAILABLE:
             self._py_console = code_module.InteractiveConsole(self._py_console_ns)
             self._inject_repl_helpers()
             try:
-                self._py_console.runsource("import morie; import pandas as pd; import numpy as np")
+                self._py_console.runsource("import morie; import morie.fn._frame_core as pd; import morie.fn._array_core as np")
                 self._py_console.runsource("from morie import *")
                 log.write("[green]Python: morie, pandas (pd), numpy (np) loaded[/green]")
             except Exception as e:
@@ -3397,7 +3397,7 @@ if _TEXTUAL_AVAILABLE:
             self._py_console_ns = {"__name__": "__console__", "__builtins__": __builtins__}
             self._py_console = code_module.InteractiveConsole(self._py_console_ns)
             self._inject_repl_helpers()
-            self._py_console.runsource("import morie; import pandas as pd; import numpy as np")
+            self._py_console.runsource("import morie; import morie.fn._frame_core as pd; import morie.fn._array_core as np")
             self._py_console.runsource("from morie import *")
             if self._r_proc:
                 self._r_proc.terminate()
