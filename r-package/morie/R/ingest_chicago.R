@@ -182,7 +182,7 @@ morie_ingest_chicago_resources <- function() {
 #' @param user_agent,timeout Standard request knobs.
 #' @return A base R \code{data.frame}.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Chicago crimes (schema verified 2026-07: `year` is a real column)
 #' df <- try(morie_ingest_chicago_socrata(
 #'   "https://data.cityofchicago.org/resource/ijzp-q8t2.json",

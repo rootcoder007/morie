@@ -133,7 +133,7 @@ morie_datasets_vancouver_opendata_bulk_layers <- function(offline = TRUE) {
 #' @return A `data.frame` of records.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' df <- morie_datasets_nyc_socrata_by_id("erm2-nwe9", limit = 100L)
 #' }
 morie_datasets_nyc_socrata_by_id <- function(soda_id,

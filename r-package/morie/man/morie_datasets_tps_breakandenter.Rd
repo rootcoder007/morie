@@ -37,7 +37,7 @@ Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 TPS PSDP -- Break and Enter
 }
 \examples{
-\donttest{
+\dontrun{
 morie_datasets_tps_breakandenter()
 }
 }

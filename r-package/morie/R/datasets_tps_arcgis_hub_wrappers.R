@@ -29,7 +29,7 @@
 #' @return A data.frame / GeoJSON list / file path; see
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' df <- try(morie_datasets_tps_2008_firs(max_features = 5L))
 #' if (!inherits(df, "try-error")) head(df)
 #' }
@@ -64,7 +64,7 @@ morie_datasets_tps_2008_firs <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_2009_firs()
 #' }
 morie_datasets_tps_2009_firs <- function(format = "json",
@@ -97,7 +97,7 @@ morie_datasets_tps_2009_firs <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_2010_firs()
 #' }
 morie_datasets_tps_2010_firs <- function(format = "json",
@@ -130,7 +130,7 @@ morie_datasets_tps_2010_firs <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_2011_firs()
 #' }
 morie_datasets_tps_2011_firs <- function(format = "json",
@@ -163,7 +163,7 @@ morie_datasets_tps_2011_firs <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_2012_firs()
 #' }
 morie_datasets_tps_2012_firs <- function(format = "json",
@@ -196,7 +196,7 @@ morie_datasets_tps_2012_firs <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_2013_firs()
 #' }
 morie_datasets_tps_2013_firs <- function(format = "json",
@@ -231,7 +231,7 @@ morie_datasets_tps_2013_firs <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_administrative()
 #' }
 morie_datasets_tps_administrative <- function(format = "json",
@@ -266,7 +266,7 @@ morie_datasets_tps_administrative <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_arrested_and_charged_persons()
 #' }
 morie_datasets_tps_arrested_and_charged_persons <- function(format = "json",
@@ -300,7 +300,7 @@ morie_datasets_tps_arrested_and_charged_persons <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_arrests_and_strip_searches()
 #' }
 morie_datasets_tps_arrests_and_strip_searches <- function(format = "json",
@@ -333,7 +333,7 @@ morie_datasets_tps_arrests_and_strip_searches <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_automobile_ksi()
 #' }
 morie_datasets_tps_automobile_ksi <- function(format = "json",
@@ -366,7 +366,7 @@ morie_datasets_tps_automobile_ksi <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_bicycle_thefts()
 #' }
 morie_datasets_tps_bicycle_thefts <- function(format = "json",
@@ -399,7 +399,7 @@ morie_datasets_tps_bicycle_thefts <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_budget_2020()
 #' }
 morie_datasets_tps_budget_2020 <- function(format = "json",
@@ -432,7 +432,7 @@ morie_datasets_tps_budget_2020 <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_budget_2021()
 #' }
 morie_datasets_tps_budget_2021 <- function(format = "json",
@@ -465,7 +465,7 @@ morie_datasets_tps_budget_2021 <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_budget_2022()
 #' }
 morie_datasets_tps_budget_2022 <- function(format = "json",
@@ -498,7 +498,7 @@ morie_datasets_tps_budget_2022 <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_budget_2023()
 #' }
 morie_datasets_tps_budget_2023 <- function(format = "json",
@@ -531,7 +531,7 @@ morie_datasets_tps_budget_2023 <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_budget_2024()
 #' }
 morie_datasets_tps_budget_2024 <- function(format = "json",
@@ -564,7 +564,7 @@ morie_datasets_tps_budget_2024 <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_budget_2025()
 #' }
 morie_datasets_tps_budget_2025 <- function(format = "json",
@@ -596,7 +596,7 @@ morie_datasets_tps_budget_2025 <- function(format = "json",
 #' @return A data.frame / GeoJSON list / file path; see
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' df <- try(morie_datasets_tps_budget_2026(max_features = 5L))
 #' if (!inherits(df, "try-error")) head(df)
 #' }
@@ -631,7 +631,7 @@ morie_datasets_tps_budget_2026 <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_budget_by_command()
 #' }
 morie_datasets_tps_budget_by_command <- function(format = "json",
@@ -665,7 +665,7 @@ morie_datasets_tps_budget_by_command <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_calls_for_service_attended()
 #' }
 morie_datasets_tps_calls_for_service_attended <- function(format = "json",
@@ -698,7 +698,7 @@ morie_datasets_tps_calls_for_service_attended <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_community_safety_indicators()
 #' }
 morie_datasets_tps_community_safety_indicators <- function(format = "json",
@@ -732,7 +732,7 @@ morie_datasets_tps_community_safety_indicators <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_complaint_dispositions()
 #' }
 morie_datasets_tps_complaint_dispositions <- function(format = "json",
@@ -765,7 +765,7 @@ morie_datasets_tps_complaint_dispositions <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_cyclist_ksi()
 #' }
 morie_datasets_tps_cyclist_ksi <- function(format = "json",
@@ -801,7 +801,7 @@ morie_datasets_tps_cyclist_ksi <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_dispatched_calls_by_division()
 #' }
 morie_datasets_tps_dispatched_calls_by_division <- function(format = "json",
@@ -834,7 +834,7 @@ morie_datasets_tps_dispatched_calls_by_division <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_facilities()
 #' }
 morie_datasets_tps_facilities <- function(format = "json",
@@ -867,7 +867,7 @@ morie_datasets_tps_facilities <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_fatals_ksi()
 #' }
 morie_datasets_tps_fatals_ksi <- function(format = "json",
@@ -902,7 +902,7 @@ morie_datasets_tps_fatals_ksi <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_firearms_top_calibres()
 #' }
 morie_datasets_tps_firearms_top_calibres <- function(format = "json",
@@ -937,7 +937,7 @@ morie_datasets_tps_firearms_top_calibres <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_gross_expenditures_by_division()
 #' }
 morie_datasets_tps_gross_expenditures_by_division <- function(format = "json",
@@ -971,7 +971,7 @@ morie_datasets_tps_gross_expenditures_by_division <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_gross_operating_budget()
 #' }
 morie_datasets_tps_gross_operating_budget <- function(format = "json",
@@ -1005,7 +1005,7 @@ morie_datasets_tps_gross_operating_budget <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_investigated_alleged_misconduct()
 #' }
 morie_datasets_tps_investigated_alleged_misconduct <- function(format = "json",
@@ -1039,7 +1039,7 @@ morie_datasets_tps_investigated_alleged_misconduct <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_killed_and_seriously_injured()
 #' }
 morie_datasets_tps_killed_and_seriously_injured <- function(format = "json",
@@ -1073,7 +1073,7 @@ morie_datasets_tps_killed_and_seriously_injured <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_miscellaneous_calls_for_service()
 #' }
 morie_datasets_tps_miscellaneous_calls_for_service <- function(format = "json",
@@ -1107,7 +1107,7 @@ morie_datasets_tps_miscellaneous_calls_for_service <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_miscellaneous_data()
 #' }
 morie_datasets_tps_miscellaneous_data <- function(format = "json",
@@ -1140,7 +1140,7 @@ morie_datasets_tps_miscellaneous_data <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_miscellaneous_firearms()
 #' }
 morie_datasets_tps_miscellaneous_firearms <- function(format = "json",
@@ -1173,7 +1173,7 @@ morie_datasets_tps_miscellaneous_firearms <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_motorcylist_ksi()
 #' }
 morie_datasets_tps_motorcylist_ksi <- function(format = "json",
@@ -1206,7 +1206,7 @@ morie_datasets_tps_motorcylist_ksi <- function(format = "json",
 #' @return A data.frame / GeoJSON list / file path; see
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' df <- try(morie_datasets_tps_neighbourhood_crime_rates(max_features = 5L))
 #' if (!inherits(df, "try-error")) head(df)
 #' }
@@ -1241,7 +1241,7 @@ morie_datasets_tps_neighbourhood_crime_rates <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_passenger_ksi()
 #' }
 morie_datasets_tps_passenger_ksi <- function(format = "json",
@@ -1274,7 +1274,7 @@ morie_datasets_tps_passenger_ksi <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_patrol_zone()
 #' }
 morie_datasets_tps_patrol_zone <- function(format = "json",
@@ -1307,7 +1307,7 @@ morie_datasets_tps_patrol_zone <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_pedestrian_ksi()
 #' }
 morie_datasets_tps_pedestrian_ksi <- function(format = "json",
@@ -1341,7 +1341,7 @@ morie_datasets_tps_pedestrian_ksi <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_personnel_by_command()
 #' }
 morie_datasets_tps_personnel_by_command <- function(format = "json",
@@ -1375,7 +1375,7 @@ morie_datasets_tps_personnel_by_command <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_personnel_by_rank()
 #' }
 morie_datasets_tps_personnel_by_rank <- function(format = "json",
@@ -1410,7 +1410,7 @@ morie_datasets_tps_personnel_by_rank <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_personnel_by_rank_by_division()
 #' }
 morie_datasets_tps_personnel_by_rank_by_division <- function(format = "json",
@@ -1444,7 +1444,7 @@ morie_datasets_tps_personnel_by_rank_by_division <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_persons_in_crisis_calls_for_service_attended()
 #' }
 morie_datasets_tps_persons_in_crisis_calls_for_service_attended <- function(format = "json",
@@ -1481,7 +1481,7 @@ morie_datasets_tps_persons_in_crisis_calls_for_service_attended <- function(form
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_regulated_interactions()
 #' }
 morie_datasets_tps_regulated_interactions <- function(format = "json",
@@ -1515,7 +1515,7 @@ morie_datasets_tps_regulated_interactions <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_reported_crimes()
 #' }
 morie_datasets_tps_reported_crimes <- function(format = "json",
@@ -1549,7 +1549,7 @@ morie_datasets_tps_reported_crimes <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_search_of_persons()
 #' }
 morie_datasets_tps_search_of_persons <- function(format = "json",
@@ -1582,7 +1582,7 @@ morie_datasets_tps_search_of_persons <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_staffing_by_command()
 #' }
 morie_datasets_tps_staffing_by_command <- function(format = "json",
@@ -1617,7 +1617,7 @@ morie_datasets_tps_staffing_by_command <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_tickets_issued()
 #' }
 morie_datasets_tps_tickets_issued <- function(format = "json",
@@ -1651,7 +1651,7 @@ morie_datasets_tps_tickets_issued <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_top_20_offences_of_firearm_seizures()
 #' }
 morie_datasets_tps_top_20_offences_of_firearm_seizures <- function(format = "json",
@@ -1687,7 +1687,7 @@ morie_datasets_tps_top_20_offences_of_firearm_seizures <- function(format = "jso
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_total_public_complaints()
 #' }
 morie_datasets_tps_total_public_complaints <- function(format = "json",
@@ -1721,7 +1721,7 @@ morie_datasets_tps_total_public_complaints <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_traffic_collisions()
 #' }
 morie_datasets_tps_traffic_collisions <- function(format = "json",
@@ -1756,7 +1756,7 @@ morie_datasets_tps_traffic_collisions <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_use_of_force_call_for_service_types()
 #' }
 morie_datasets_tps_use_of_force_call_for_service_types <- function(format = "json",
@@ -1791,7 +1791,7 @@ morie_datasets_tps_use_of_force_call_for_service_types <- function(format = "jso
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_use_of_force_call_sources_by_month()
 #' }
 morie_datasets_tps_use_of_force_call_sources_by_month <- function(format = "json",
@@ -1825,7 +1825,7 @@ morie_datasets_tps_use_of_force_call_sources_by_month <- function(format = "json
 #' @return A data.frame / GeoJSON list / file path; see
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' df <- try(morie_datasets_tps_use_of_force_gender_composition(
 #'   max_features = 5L))
 #' if (!inherits(df, "try-error")) head(df)
@@ -1862,7 +1862,7 @@ morie_datasets_tps_use_of_force_gender_composition <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_use_of_force_location_of_occurrences()
 #' }
 morie_datasets_tps_use_of_force_location_of_occurrences <- function(format = "json",
@@ -1897,7 +1897,7 @@ morie_datasets_tps_use_of_force_location_of_occurrences <- function(format = "js
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_use_of_force_occurrence_category()
 #' }
 morie_datasets_tps_use_of_force_occurrence_category <- function(format = "json",
@@ -1932,7 +1932,7 @@ morie_datasets_tps_use_of_force_occurrence_category <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_use_of_force_time_of_day_trends()
 #' }
 morie_datasets_tps_use_of_force_time_of_day_trends <- function(format = "json",
@@ -1967,7 +1967,7 @@ morie_datasets_tps_use_of_force_time_of_day_trends <- function(format = "json",
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' morie_datasets_tps_use_of_force_use_of_force_types_and_perceived_weapons()
 #' }
 morie_datasets_tps_use_of_force_use_of_force_types_and_perceived_weapons <- function(format = "json",
@@ -2003,7 +2003,7 @@ morie_datasets_tps_use_of_force_use_of_force_types_and_perceived_weapons <- func
 #' @return A data.frame / GeoJSON list / file path; see
 #'   [morie_datasets_tps_arcgis_hub_by_id()] for per-format semantics.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' df <- try(morie_datasets_tps_victims_of_crime(max_features = 5L))
 #' if (!inherits(df, "try-error")) head(df)
 #' }

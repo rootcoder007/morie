@@ -28,7 +28,7 @@ Fetch a NYC OpenData Socrata dataset by ID
 Fetch a Chicago Open Data Socrata dataset by ID
 }
 \examples{
-\donttest{
+\dontrun{
 df <- morie_datasets_nyc_socrata_by_id("erm2-nwe9", limit = 100L)
 }
 }
