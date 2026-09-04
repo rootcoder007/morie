@@ -286,6 +286,18 @@ morie_db_connect <- function(db_path = NULL) {
 #' )
 #' file.remove(db)
 #' }
+#' @examples
+#' \dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
+#' db <- tempfile(fileext = ".db")
+#' morie_cache_store(
+#'   data = data.frame(x = rnorm(50), y = rnorm(50)),
+#'   table_name = "demo",
+#'   db_path = db
+#' )
+#' file.remove(db)
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_cache_store <- function(data, table_name, db_path = NULL, con = NULL) {
   h <- .morie_db_handle(con, db_path)
@@ -316,6 +328,19 @@ morie_cache_store <- function(data, table_name, db_path = NULL, con = NULL) {
 #' morie_cache_load(table_name = "demo", db_path = db)
 #' file.remove(db)
 #' }
+#' @examples
+#' \dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
+#' db <- tempfile(fileext = ".db")
+#' morie_cache_store(
+#'   data = data.frame(x = 1:5),
+#'   table_name = "demo",
+#'   db_path = db
+#' )
+#' morie_cache_load(table_name = "demo", db_path = db)
+#' file.remove(db)
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_cache_load <- function(table_name, db_path = NULL, con = NULL) {
   h <- .morie_db_handle(con, db_path)
@@ -338,6 +363,15 @@ morie_cache_load <- function(table_name, db_path = NULL, con = NULL) {
 #' morie_cache_list(db_path = db)
 #' file.remove(db)
 #' }
+#' @examples
+#' \dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
+#' db <- tempfile(fileext = ".db")
+#' morie_cache_store(data.frame(x = 1:3), "demo", db_path = db)
+#' morie_cache_list(db_path = db)
+#' file.remove(db)
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_cache_list <- function(db_path = NULL, con = NULL) {
   h <- .morie_db_handle(con, db_path)
@@ -373,6 +407,14 @@ morie_cache_list <- function(db_path = NULL, con = NULL) {
 #' f <- file.path(tdir, "demo.csv")
 #' write.csv(data.frame(x = 1:3, y = 4:6), f, row.names = FALSE)
 #' morie_cache_file(f, "demo", db_path = file.path(tdir, "cache.db"))
+#' @examples
+#' \dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' tdir <- tempfile("morie-cache-")
+#' dir.create(tdir)
+#' f <- file.path(tdir, "demo.csv")
+#' write.csv(data.frame(x = 1:3, y = 4:6), f, row.names = FALSE)
+#' morie_cache_file(f, "demo", db_path = file.path(tdir, "cache.db"))
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_cache_file <- function(path, table_name, db_path = NULL, con = NULL) {
   ext <- tolower(tools::file_ext(path))
