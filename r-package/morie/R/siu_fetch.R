@@ -32,6 +32,8 @@
 #' \code{\link{morie_cache_clear}} (no implicit writes to \code{~/.cache}).
 #'
 #' @name morie_siu_fetch
+#' @examples
+#' morie_siu_index_url()
 NULL
 
 
