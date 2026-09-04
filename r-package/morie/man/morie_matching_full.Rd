@@ -30,6 +30,7 @@ control unit.  Delegates to \pkg{MatchIt}'s \code{method = "full"}
 via quantile-based stratification of the propensity score.
 }
 \examples{
+\dontshow{if (requireNamespace("MatchIt", quietly = TRUE) && requireNamespace("optmatch", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 if (requireNamespace("MatchIt", quietly = TRUE)) {
   set.seed(1)
   df <- data.frame(
@@ -40,6 +41,7 @@ if (requireNamespace("MatchIt", quietly = TRUE)) {
     treat3 = sample(0:2, 150, TRUE))
   morie_matching_full(df, "d", c("x1", "x2"))
 }
+\dontshow{\}) # examplesIf}
 }
 \references{
 Hansen, B. B. (2004). Full matching in an observational

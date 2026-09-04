@@ -579,7 +579,7 @@ morie_datasets_nyc_nypd_vehicle_stops <- function(year = NULL,
 #' @param mode One of `"soda2"` (default JSON resource endpoint) or
 #'   `"soda3"` (SoQL `query` endpoint). 3AAA dual-mode dispatch.
 #' @return A `data.frame`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_nyc_police_precincts(offline = TRUE)
 #' head(df)
 #' @export
@@ -649,7 +649,7 @@ morie_datasets_nyc_police_precincts <- function(offline = TRUE,
 #'
 #' @inheritParams morie_datasets_nyc_police_precincts
 #' @return A `data.frame`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_nyc_boroughs(offline = TRUE)
 #' df[, c("borocode", "boroname")]
 #' @export
@@ -855,7 +855,7 @@ morie_datasets_nyc_council_districts <- function(offline = TRUE,
 #' @param offline If `TRUE` (default), reads the bundled CSV.
 #' @param max_features Optional row cap.
 #' @return A `data.frame` with `boro_cd`, `shape_leng`, `shape_area`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_nyc_community_districts(offline = TRUE)
 #' head(df)
 #' @export
@@ -884,7 +884,7 @@ morie_datasets_nyc_community_districts <- function(offline = TRUE,
 #' @param max_features Optional row cap.
 #' @return A `data.frame` with 11 cols including `nta2020`, `ntaname`,
 #'   `borocode`, `boroname`, `countyfips`, `cdta2020`, `cdtaname`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_nyc_ntas_2020(offline = TRUE)
 #' head(df[, c("nta2020", "ntaname", "boroname")])
 #' @export
@@ -948,7 +948,7 @@ morie_datasets_nyc_ntas_2020 <- function(offline = TRUE,
 #' @param max_features Optional row cap.
 #' @return A `data.frame` with `zcta5`, `arealand`, `areawater`,
 #'   `centlat`, `centlon`, `intptlat`, `intptlon`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_nyc_zctas(offline = TRUE)
 #' head(df[, c("zcta5", "centlat", "centlon")])
 #' @export
@@ -980,7 +980,7 @@ morie_datasets_nyc_zctas <- function(offline = TRUE,
 #' lightweight).
 #'
 #' @return A `data.frame` with one row per boundary fixture.
-#' @examples
+#' @examplesIf nzchar(system.file("extdata", "nyc_boundaries_catalog.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
 #' morie_datasets_nyc_boundaries_catalog()
 #' @export
 morie_datasets_nyc_boundaries_catalog <- function() {
@@ -1054,7 +1054,7 @@ morie_datasets_nyc_boundaries_catalog <- function() {
 #'
 #' @param max_features Optional row cap.
 #' @return A `data.frame` with 246 rows x 5 cols.
-#' @examples
+#' @examplesIf nzchar(system.file("extdata", "nyc_nypd_offense_codes.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
 #' codes <- morie_datasets_nyc_nypd_offense_codes()
 #' subset(codes, ky_cd == "104")  # all RAPE subcategories
 #' @export
@@ -1092,7 +1092,7 @@ morie_datasets_nyc_nypd_offense_codes <- function(max_features = NULL) {
 #' arrest data.
 #'
 #' @return A `data.frame` with columns `book`, `name`, `jurisdiction`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' books <- morie_datasets_nyc_nypd_law_books()
 #' subset(books, book == "PL")
 #' @export
@@ -1129,7 +1129,7 @@ morie_datasets_nyc_nypd_law_books <- function() {
 #' @param law_code Character vector of NYPD `law_code` strings.
 #' @return A `data.frame` with `book`, `section` columns aligned to
 #'   `law_code`. Length-preserving.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' morie_parse_nypd_law_code(c("PL 1601005", "AC 0019190", "ABC0064A00"))
 #' @export
 morie_parse_nypd_law_code <- function(law_code) {

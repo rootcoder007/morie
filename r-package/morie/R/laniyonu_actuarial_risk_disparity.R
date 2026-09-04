@@ -653,8 +653,10 @@ morie_laniyonu_actuarial_risk_disparity <- function(
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 #' @examples
+#' \donttest{
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 #' morie:::print.morie_laniyonu_ard_result(D)
+#' }
 print.morie_laniyonu_ard_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\

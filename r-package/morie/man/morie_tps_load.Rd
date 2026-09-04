@@ -26,5 +26,7 @@ work with base R / \code{readxl}; all spatial formats (\code{geojson},
 the dependency is missing.
 }
 \examples{
+\donttest{
 morie_tps_load("Assault", format = "csv", nrows = 2L)
+}
 }

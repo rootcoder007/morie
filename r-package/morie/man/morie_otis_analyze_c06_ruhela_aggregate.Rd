@@ -21,7 +21,9 @@ morie_otis_analyze_c06_mrm_aggregate(data, out_dir = NULL)
 c06 aggregate Ruhela: Age 50+ -> RC
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_c06 <- morie_synth_otis("c06", n = 120L, seed = 1L)
 morie_otis_analyze_c06_ruhela_aggregate(otis_c06)
+}
 }

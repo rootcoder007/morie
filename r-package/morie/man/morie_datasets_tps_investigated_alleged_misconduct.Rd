@@ -52,5 +52,7 @@ complaints by type of complaint submitted.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Misconduct
 }
 \examples{
+\donttest{
 morie_datasets_tps_investigated_alleged_misconduct()
+}
 }

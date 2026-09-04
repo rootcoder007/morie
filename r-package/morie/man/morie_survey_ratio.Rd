@@ -27,6 +27,7 @@ population total), \code{se}, \code{ci_lower}, \code{ci_upper}
 Ratio estimator of a population total using known X_pop
 }
 \examples{
+\dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 if (requireNamespace("survey", quietly = TRUE)) {
   set.seed(1)
   x <- runif(50, 1, 10)
@@ -35,4 +36,5 @@ if (requireNamespace("survey", quietly = TRUE)) {
   r <- morie_survey_ratio(y, x, w, X_population_total = sum(x) * 2)
   abs(r$ratio - 2) < 0.3
 }
+\dontshow{\}) # examplesIf}
 }

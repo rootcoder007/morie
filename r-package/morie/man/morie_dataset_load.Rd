@@ -24,6 +24,7 @@ File format is detected from the extension.  Supported extensions:
 \code{.jsonl}.
 }
 \examples{
+\dontshow{if (requireNamespace("readxl", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 if (requireNamespace("readxl", quietly = TRUE)) {
   tmp <- tempfile(fileext = ".csv")
   write.csv(data.frame(a = 1:3, b = c("x", "y", "z")), tmp, row.names = FALSE)
@@ -31,4 +32,5 @@ if (requireNamespace("readxl", quietly = TRUE)) {
   head(df)
   unlink(tmp)
 }
+\dontshow{\}) # examplesIf}
 }

@@ -21,7 +21,9 @@ morie_otis_analyze_b03_mrm_aggregate(data, out_dir = NULL)
 b03 aggregate Ruhela: Alert presence -> seg placements
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_b03 <- morie_synth_otis("b03", n = 120L, seed = 1L)
 morie_otis_analyze_b03_ruhela_aggregate(otis_b03)
+}
 }

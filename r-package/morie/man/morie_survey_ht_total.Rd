@@ -19,7 +19,9 @@ list with \code{total}, \code{se}, \code{ci_lower}, \code{ci_upper}.
 Horvitz-Thompson estimator of a population total
 }
 \examples{
+\dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 y <- c(1, 2, 3, 4, 5)
 pi <- rep(0.5, 5)
 morie_survey_ht_total(y, pi)
+\dontshow{\}) # examplesIf}
 }

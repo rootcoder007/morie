@@ -51,5 +51,7 @@ Bicycle Theft occurrences by reported date.
 Tags: Bike; Bicycle; Thefts; Crime; Toronto; TPS; Toronto Police
 }
 \examples{
+\donttest{
 morie_datasets_tps_bicycle_thefts()
+}
 }

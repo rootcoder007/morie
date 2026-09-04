@@ -46,6 +46,7 @@ by logit-propensity-score distance.  Delegates to \pkg{MatchIt} when
 installed; otherwise uses a base-R implementation.
 }
 \examples{
+\donttest{
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -58,4 +59,5 @@ df <- data.frame(d = rbinom(200, 1, 0.4),
                  x1 = rnorm(200), x2 = rnorm(200))
 res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"),
                                        caliper = 0.2)
+}
 }

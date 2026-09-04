@@ -51,5 +51,7 @@ hub item_id \verb{95a29d4453894944be7a79f537a432b1}.
 Tags: FIRS; Field Information Requests
 }
 \examples{
+\donttest{
 morie_datasets_tps_2013_firs()
+}
 }

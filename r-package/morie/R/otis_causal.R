@@ -866,10 +866,12 @@ morie_otis_classify_mandela_combo <- function(mh, sr, sw,
 #'   \code{covariates} = c("Gender", "Age_Category", "EndFiscalYear").
 #' @export
 #' @examples
+#' \donttest{
 #'   df <- morie_otis_load()
 #'   pair <- morie_otis_make_pair_alert_to_volatility_ruhela(df)
 #'   morie_otis_irm_dml(pair$data, treatment = pair$T,
 #'                      outcome = pair$Y, covariates = pair$covariates)
+#' }
 morie_otis_make_pair_alert_to_volatility_ruhela <- function(df) {
   base <- .otis_alert_volatility_frame(df)
 
@@ -919,8 +921,10 @@ morie_otis_make_pair_alert_to_volatility_ruhela <- function(df) {
 #'   c("Gender", "Age_Category", "EndFiscalYear").
 #' @export
 #' @examples
+#' \donttest{
 #'   df <- morie_otis_load()
 #'   morie_otis_make_pair_alert_to_volatility_naive(df)
+#' }
 morie_otis_make_pair_alert_to_volatility_naive <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear", "Gender",
               "Age_Category", "Region_AtTimeOfPlacement",
@@ -972,7 +976,9 @@ morie_otis_make_pair_alert_to_volatility_naive <- function(df) {
 #'   each element is the output of the corresponding make-pair builder.
 #' @export
 #' @examples
+#' \donttest{
 #'   morie_otis_make_pair_alert_to_volatility_all(morie_otis_load())
+#' }
 morie_otis_make_pair_alert_to_volatility_all <- function(df) {
   list(
     ruhela = morie_otis_make_pair_alert_to_volatility_ruhela(df),
@@ -1023,7 +1029,9 @@ morie_otis_make_pair_alert_to_volatility_a01 <- function(df = NULL) {
 #' @return Named list \code{list(data, T = "T_a", Y = "Y_a", covariates)}.
 #' @export
 #' @examples
+#' \donttest{
 #'   morie_otis_make_pair_a(morie_otis_load())
+#' }
 morie_otis_make_pair_a <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear", "Gender",
               "Age_Category", "Region_AtTimeOfPlacement",
@@ -1052,7 +1060,9 @@ morie_otis_make_pair_a <- function(df) {
 #' @return Named list \code{list(data, T = "T_b", Y = "Y_b", covariates)}.
 #' @export
 #' @examples
+#' \donttest{
 #'   morie_otis_make_pair_b(morie_otis_load())
+#' }
 morie_otis_make_pair_b <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear", "Gender",
               "Age_Category", "Region_AtTimeOfPlacement",
@@ -1086,9 +1096,11 @@ morie_otis_make_pair_b <- function(df) {
 #' @return Named list \code{list(data, T = "T_c", Y = "Y_c", covariates)}.
 #' @export
 #' @examples
+#' \donttest{
 #' pair <- morie_otis_make_pair_c(morie_synth_otis("b01", n = 120L,
 #'                                                  seed = 1L))
 #' head(pair)
+#' }
 morie_otis_make_pair_c <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear", "Gender",
               "Age_Category", "Region_AtTimeOfPlacement",
@@ -1131,9 +1143,11 @@ morie_otis_make_pair_c <- function(df) {
 #'   \code{ate_pval}, \code{ci95_lo}, \code{ci95_hi}, \code{notes}.
 #' @export
 #' @examples
+#' \donttest{
 #' df <- morie_synth_otis("b01", n = 200L, seed = 1L)
 #' grid <- morie_otis_causal_grid(df)
 #' names(grid)
+#' }
 morie_otis_causal_grid <- function(df = NULL, seed = 123L) {
   if (is.null(df)) {
     if (!exists("morie_otis_load", mode = "function")) {

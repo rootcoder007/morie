@@ -167,7 +167,7 @@ morie_vertex_ask_gemini <- function(prompt, model = NULL, system = NULL,
 #' Tiny smoke test for the Vertex AI client
 #' @return Named list (ok / error / model / project / location / reply).
 #' @export
-#' @examples
+#' @examplesIf nzchar(Sys.getenv("GOOGLE_CLOUD_PROJECT")) || nzchar(Sys.getenv("MORIE_EE_PROJECT"))
 #' morie_vertex_health_check()
 morie_vertex_health_check <- function() {
   out <- list(ok = FALSE, error = NULL, model = NULL)

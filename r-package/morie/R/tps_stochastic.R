@@ -751,10 +751,12 @@ morie_tps_fokker_planck_grid <- function(df, ds_name = "?",
 #' @return \code{x}, invisibly.
 #' @export
 #' @examples
+#' \donttest{
 #' set.seed(1); n <- 200
 #' df <- data.frame(OCC_DATE = as.Date("2018-01-01") + sample(0:2000, n, TRUE))
 #' res <- morie_tps_hawkes_temporal_fit(df)
 #' print(res)
+#' }
 print.morie_tps_stochastic_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\

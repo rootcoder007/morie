@@ -361,7 +361,9 @@ morie_tps_load_tps_dataset <- function(category, nrows = NULL,
 #'   directory.
 #' @return A `data.frame` of layer attributes.
 #' @examples
+#' \donttest{
 #' try(nrow(morie_tps_load_tps("NeighbourhoodCrimeRates")))
+#' }
 #' @export
 morie_tps_load_tps <- function(name, format = "geojson",
                                cache_dir = file.path(tempdir(),

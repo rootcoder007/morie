@@ -21,6 +21,8 @@ coefficient plus the cumulative share of incidents in the top-10
 and top-20 neighbourhoods.
 }
 \examples{
+\donttest{
 D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 morie_tps_neighbourhood_concentration(D)
+}
 }

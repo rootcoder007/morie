@@ -38,6 +38,7 @@ the covariates match those of the treated group.  Delegates to
 otherwise solves the dual problem via base-R Newton iteration.
 }
 \examples{
+\donttest{
 if (requireNamespace("Matching", quietly = TRUE) && requireNamespace("ebal", quietly = TRUE)) {
   set.seed(1)
   df <- data.frame(
@@ -47,6 +48,7 @@ if (requireNamespace("Matching", quietly = TRUE) && requireNamespace("ebal", qui
     year = sample(2020:2022, 150, TRUE),
     treat3 = sample(0:2, 150, TRUE))
   w <- morie_matching_entropy_balance(df, "d", c("x1", "x2"))
+}
 }
 }
 \references{

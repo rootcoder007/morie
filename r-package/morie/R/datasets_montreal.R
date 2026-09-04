@@ -40,7 +40,7 @@
 #'   `FALSE`, hits `/action/package_search` live.
 #' @return A `data.frame` with `package_name`, `title`,
 #'   `num_resources`, `metadata_modified`, `language`, `license`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' cat_df <- morie_datasets_montreal_justice_safety_layers()
 #' nrow(cat_df)  # 23
 #' head(cat_df$title)
@@ -106,7 +106,7 @@ morie_datasets_montreal_justice_safety_layers <- function(offline = TRUE) {
 #' @references CKAN package
 #'   `interventions-service-securite-incendie-montreal`,
 #'   \url{https://donnees.montreal.ca/dataset/interventions-service-securite-incendie-montreal}.
-#' @examples
+#' @examplesIf nzchar(system.file("extdata", "montreal_sim_interventions_sample.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_montreal_sim_interventions(offline = TRUE)
 #' nrow(df)              # 349
 #' table(df$DESCRIPTION_GROUPE)
@@ -149,7 +149,7 @@ morie_datasets_montreal_sim_interventions <- function(offline = TRUE,
 #'
 #' @return A `data.frame` with `INCIDENT_TYPE_DESCRIPTION` +
 #'   `Description`.
-#' @examples
+#' @examplesIf nzchar(system.file("extdata", "montreal_sim_intervention_types.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
 #' d <- morie_datasets_montreal_sim_intervention_types()
 #' nrow(d)
 #' head(d)

@@ -36,8 +36,10 @@ a version via \code{morie_tps_resolve_hood_col()} before downstream
 analysis.
 }
 \examples{
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_tps_mha_apprehensions(offline = TRUE)
 table(df$APPREHENSION_TYPE)
+\dontshow{\}) # examplesIf}
 }
 \references{
 TPS Public Safety Data Portal, "Mental Health Act

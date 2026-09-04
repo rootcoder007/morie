@@ -53,5 +53,7 @@ data includes the command level at the time of reporting.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Personnel
 }
 \examples{
+\donttest{
 morie_datasets_tps_personnel_by_rank_by_division()
+}
 }

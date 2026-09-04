@@ -31,6 +31,7 @@ configuration), fit diagnostics, and an \code{engine} tag.
 Bayesian MDS (stub) -- log-normal distances via Metropolis
 }
 \examples{
+\donttest{
 if (requireNamespace("smacof", quietly = TRUE)) {
   set.seed(1)
   X <- matrix(rnorm(30), 10, 3)
@@ -39,6 +40,7 @@ if (requireNamespace("smacof", quietly = TRUE)) {
                                            n_samples = 200L,
                                            burn_in = 50L)
   dim(fit$positions)
+}
 }
 }
 \references{

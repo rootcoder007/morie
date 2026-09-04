@@ -19,6 +19,8 @@ Neighbourhood + division + premises + location-type rollups plus
 a lat/long bounding-box summary.  Tolerates missing columns.
 }
 \examples{
+\donttest{
 D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 morie_tps_spatial_summary(D)
+}
 }

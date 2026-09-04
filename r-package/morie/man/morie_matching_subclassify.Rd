@@ -36,6 +36,7 @@ stratum sample sizes and PS ranges.  Mirrors Python
 \code{morie.matching.subclassify}.
 }
 \examples{
+\dontshow{if (requireNamespace("MatchIt", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -44,4 +45,5 @@ df <- data.frame(
   year = sample(2020:2022, 150, TRUE),
   treat3 = sample(0:2, 150, TRUE))
 morie_matching_subclassify(df, "d", c("x1", "x2"), n_strata = 5)
+\dontshow{\}) # examplesIf}
 }

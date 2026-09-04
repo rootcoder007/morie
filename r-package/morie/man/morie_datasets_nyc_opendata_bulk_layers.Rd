@@ -85,7 +85,9 @@ opendata.vancouver.ca with richer schema (publisher, theme,
 license, records_count).
 }
 \examples{
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 d <- morie_datasets_nyc_opendata_bulk_layers(offline = TRUE)
 nrow(d)
 head(d[, c("soda_id", "type")])
+\dontshow{\}) # examplesIf}
 }

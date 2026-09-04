@@ -51,5 +51,7 @@ Passenger-related KSI collisions (2006 - 2023).
 Tags: Killed or Seriously Injured; KSI; Passenger; Traffic; Collision; Traffic Collision
 }
 \examples{
+\donttest{
 morie_datasets_tps_passenger_ksi()
+}
 }
