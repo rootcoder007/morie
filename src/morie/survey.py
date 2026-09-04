@@ -73,73 +73,17 @@ from morie.fn import _glm_core
 # ---------------------------------------------------------------------------
 
 
-def _formula_terms(formula):
-    """Split "y ~ x1 + x2" into ("y", ["x1", "x2"], intercept)."""
-    if "~" not in formula:
-        raise ValueError("formula must contain '~': %r" % formula)
-    lhs, rhs = formula.split("~", 1)
-    outcome = lhs.strip()
-    intercept = True
-    terms = []
-    for raw in rhs.split("+"):
-        t = raw.strip()
-        if not t:
-            continue
-        if t in ("1",):
-            continue
-        if t in ("0", "-1"):
-            intercept = False
-            continue
-        if t.startswith("-"):
-            stripped = t[1:].strip()
-            if stripped in ("1", "0"):
-                intercept = False
-                continue
-            raise ValueError("unsupported formula term: %r" % t)
-        terms.append(t)
-    if not outcome:
-        raise ValueError("formula has no outcome: %r" % formula)
-    return outcome, terms, intercept
-
-
-class _NativeGLMResult:
-    """The subset of the statsmodels result API that morie itself uses."""
-
-    def __init__(self, fit, names, nobs):
-        self._fit = fit
-        self.params = list(fit["coef"])
-        self.param_names = list(names)
-        self.bse = list(fit["se"])
-        self.tvalues = list(fit["statistic"])
-        self.pvalues = list(fit.get("p_value", fit.get("pvalues", [])))
-        self.df_resid = fit["df_residual"]
-        self.df_model = len(self.params) - 1
-        self.nobs = nobs
-        self.fittedvalues = fit.get("fitted")
-
-    def fit(self, *a, **k):          # statsmodels called model.fit()
-        return self
-
-    def summary(self):
-        rows = ["%-24s %12.6g %12.6g" % (n, b, se)
-                for n, b, se in zip(self.param_names, self.params, self.bse)]
-        return "\n".join(["%-24s %12s %12s" % ("term", "estimate", "std.error")]
-                          + rows)
-
-    def __getitem__(self, k):
-        return self._fit[k]
-
-
 def _native_glm_from_formula(formula, data, family, weights=None):
-    outcome, terms, intercept = _formula_terms(formula)
-    y = [float(v) for v in data[outcome]]
-    cols = [[float(v) for v in data[t]] for t in terms]
-    X = [[c[i] for c in cols] for i in range(len(y))]
-    fam = family if isinstance(family, str) else getattr(family, "name", "gaussian")
+    """Fit a weighted GLM from a formula.
+
+    The formula parsing, the design build and the result wrapper all
+    live in morie.fn._glm_formula, which is the one native replacement
+    for statsmodels' formula API. survey.py had its own copy of all
+    three; keeping a second copy is how the two drift apart.
+    """
+    from morie.fn import _glm_formula
     w = None if weights is None else [float(v) for v in weights]
-    fit = _glm_core.glm(y, X, family=fam, add_intercept=intercept, weights=w)
-    names = (["(Intercept)"] if intercept else []) + list(terms)
-    return _NativeGLMResult(fit, names, len(y))
+    return _glm_formula.glm(formula, data, family=family, weights=w).fit()
 
 
 class SurveyDesign:

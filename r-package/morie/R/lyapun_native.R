@@ -399,7 +399,12 @@ lyapunov_exponent <- function(y, embedding = NULL, tau = NULL, dt = 1.0,
        min_sep = dv$min_sep, n_points = dv$n_points, n = dv$n_obs,
        dt = dt,
        method = sprintf("largest Lyapunov exponent, Rosenstein, Collins & De Luca (1993), route '%s'", method),
-       note = "the exponent is the slope of <ln d_j(i)> over the initial rise; a positive value indicates chaos, and the fitting window is the caller's to choose because the curve saturates once the neighbours are as far apart as the attractor allows")
+       note = paste0(
+         "the exponent is the slope of <ln d_j(i)> over the initial ri",
+         "se; a positive value indicates chaos, and the fitting window",
+         " is the caller's to choose because the curve saturates once ",
+         "the neighbours are as far apart as the attractor allows"
+       ))
 }
 
 largest_lyapunov <- lyapunov_exponent
@@ -416,7 +421,18 @@ largest_lyapunov <- lyapunov_exponent
 #' res <- .lyapun_cheatsheet()
 #' res
 .lyapun_cheatsheet <- function() {
-  "lyapun: largest Lyapunov exponent (Rosenstein, Collins & De Luca 1993). Embed with delay J and dimension m, find each point's nearest neighbour at least a mean period away, and take lambda_1 as the slope of <ln d_j(i)> against i*dt over the initial rise -- no normalisation by d_j(0) is needed, since a constant offset does not change a slope. Expected values from the paper's table 1: 0.693 for the logistic map at mu = 4, 0.418 for the Henon map. Routes: 'rosenstein' (eq. 13, default), 'sato' (eq. 9), 'sato_k' (eq. 10, whose plateau the paper itself calls unreliable)."
+  paste0(
+    "lyapun: largest Lyapunov exponent (Rosenstein, Collins & De ",
+    "Luca 1993). Embed with delay J and dimension m, find each po",
+    "int's nearest neighbour at least a mean period away, and tak",
+    "e lambda_1 as the slope of <ln d_j(i)> against i*dt over the",
+    " initial rise -- no normalisation by d_j(0) is needed, since",
+    " a constant offset does not change a slope. Expected values ",
+    "from the paper's table 1: 0.693 for the logistic map at mu =",
+    " 4, 0.418 for the Henon map. Routes: 'rosenstein' (eq. 13, d",
+    "efault), 'sato' (eq. 9), 'sato_k' (eq. 10, whose plateau the",
+    " paper itself calls unreliable)."
+  )
 }
 
 #' morie_lyapun

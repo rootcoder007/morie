@@ -209,7 +209,17 @@ momento_reconstruction_curve <- function(patches, reconstructor, rates, seed = 0
 #' @return A character value.
 #' @export
 momento_cheatsheet <- function() {
-  paste("momento: masked time-series pretraining. Mask patches with ZEROS and reconstruct; the loss counts the MASKED positions only, since scoring visible ones rewards copying. The hard part is multi-dataset pretraining: series differ in resolution, channel count, length and amplitude, so harmonise per-series and keep channels independent. Mask rate is a real knob -- too low is interpolation, too high leaves no context. Task changes only WHERE the mask goes: tail for forecasting, interior for imputation.")
+  paste(paste0(
+    "momento: masked time-series pretraining. Mask patches with Z",
+    "EROS and reconstruct; the loss counts the MASKED positions o",
+    "nly, since scoring visible ones rewards copying. The hard pa",
+    "rt is multi-dataset pretraining: series differ in resolution",
+    ", channel count, length and amplitude, so harmonise per-seri",
+    "es and keep channels independent. Mask rate is a real knob -",
+    "- too low is interpolation, too high leaves no context. Task",
+    " changes only WHERE the mask goes: tail for forecasting, int",
+    "erior for imputation."
+  ))
 }
 
 # house entry point: the package exports one morie_<module>

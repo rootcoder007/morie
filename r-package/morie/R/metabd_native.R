@@ -229,7 +229,17 @@ purity_completeness <- function(bins, truth) {
 #' res <- .metabd_cheatsheet()
 #' res
 .metabd_cheatsheet <- function() {
-  "metabd: bin contigs into draft genomes from TWO signals -- tetranucleotide composition (available always, noisy on short contigs) and abundance covariance ACROSS SAMPLES (strong, but undefined with one sample). Earlier tools needed manual parameter tuning and degraded on poor assemblies; the contribution is an ADAPTIVE algorithm that removes the tuning. Confidence must scale with contig LENGTH, since discarding short contigs discards most of the assembly. Purity and completeness are separate failures and are reported separately."
+  paste0(
+    "metabd: bin contigs into draft genomes from TWO signals -- t",
+    "etranucleotide composition (available always, noisy on short",
+    " contigs) and abundance covariance ACROSS SAMPLES (strong, b",
+    "ut undefined with one sample). Earlier tools needed manual p",
+    "arameter tuning and degraded on poor assemblies; the contrib",
+    "ution is an ADAPTIVE algorithm that removes the tuning. Conf",
+    "idence must scale with contig LENGTH, since discarding short",
+    " contigs discards most of the assembly. Purity and completen",
+    "ess are separate failures and are reported separately."
+  )
 }
 
 metabat2 <- bin_contigs

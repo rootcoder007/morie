@@ -10,7 +10,7 @@ from ._richresult import RichResult
 __all__ = ["multboot", "kosorok_multiplier_bootstrap"]
 
 
-def multboot(x, B=200, seed=1):
+def multboot(x, B=200, seed=1, deterministic_seed=None):
     """Multiplier bootstrap with exponential weights (Dirichlet weights).
 
     The weights are divided by their own mean, which is what keeps the
@@ -36,6 +36,10 @@ def multboot(x, B=200, seed=1):
         Number of replicates (fixed budget).
     seed : int
         Seed for the pinned generator.
+    deterministic_seed : int or None, optional
+        If given, the pinned generator is seeded from
+        SHA-256("ksr08_multiplier:<deterministic_seed>") instead of ``seed``,
+        which is the cross-arm reproducible path.
 
     Returns
     -------
@@ -60,7 +64,15 @@ def multboot(x, B=200, seed=1):
     if B < 2:
         raise ValueError("B must be at least 2")
     Pn = sum(x) / n
-    g = C.Lcg(seed)
+    if deterministic_seed is not None:
+        # SHA-keyed seed: morie._det_rng.r_seed and R's morie_det_rng
+        # derive the SAME integer from ("ksr08_multiplier", deterministic_seed),
+        # so both arms drive the pinned Lcg from an identical start.
+        from morie._det_rng import r_seed
+
+        g = C.Lcg(r_seed("ksr08_multiplier", deterministic_seed))
+    else:
+        g = C.Lcg(seed)
     stats = []
     for _ in range(B):
         w = []

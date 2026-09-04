@@ -289,7 +289,14 @@ mistr_mistral_block <- function(X, Wq, Wk, Wv, Wo, W1, W2, W3,
 #' @return A character value.
 #' @export
 mistr_cheatsheet <- function() {
-  paste("mistr: SWA -- token i attends to (i-W, i]; span grows to k*W over k layers because attention composes. RoPE rotates pairs (2i, 2i+1) by pos*theta_i, and <R_m q, R_n k> = <R_{m-n} q, k> EXACTLY. GQA shares one kv head across n_heads/n_kv query heads. SwiGLU gates; RMSNorm is scale-invariant but NOT shift-invariant.")
+  paste(paste0(
+    "mistr: SWA -- token i attends to (i-W, i]; span grows to k*W",
+    " over k layers because attention composes. RoPE rotates pair",
+    "s (2i, 2i+1) by pos*theta_i, and <R_m q, R_n k> = <R_{m-n} q",
+    ", k> EXACTLY. GQA shares one kv head across n_heads/n_kv que",
+    "ry heads. SwiGLU gates; RMSNorm is scale-invariant but NOT s",
+    "hift-invariant."
+  ))
 }
 
 # house entry point: the package exports one morie_<module>

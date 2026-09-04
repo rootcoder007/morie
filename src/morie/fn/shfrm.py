@@ -61,6 +61,12 @@ def shared_frailty_marginal(time, event, X, cluster, theta=None):
     K = len(ks)
     if K < 2:
         raise ValueError("need at least 2 clusters")
+    if len(set(cl)) == len(cl):
+        raise ValueError(
+            "shared frailty is unidentifiable: every cluster has a "
+            "single observation, so there is no within-cluster "
+            "replication to estimate theta from"
+        )
     kidx = {k: [i for i in range(n) if cl[i] == k] for k in ks}
     zeros = np.zeros(n)
 

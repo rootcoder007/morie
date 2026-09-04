@@ -188,27 +188,44 @@ def lloyd_max_codebook(d: int, bits: int, n_iter: int = 200) -> F64:
     pdf = _beta_pdf(grid, d)
     pdf = pdf / (np.sum(pdf) * dx + 1e-30)  # normalize to integrate to 1
 
+    # Prefix sums over the (sorted) grid, built once. The centroid update
+    # is a weighted mean over a CONTIGUOUS run of grid points, so each
+    # partition is two subtractions instead of a full 50,000-element mask
+    # scan: the masked form cost n_iter * K * len(grid) elementwise
+    # operations -- 160 million for the default (200, 16, 50000) -- which
+    # is minutes once there is no numpy underneath.
+    import bisect
+
+    gvals = [float(v) for v in grid]
+    pvals = [float(v) for v in pdf]
+    s0 = [0.0] * (len(gvals) + 1)
+    s1 = [0.0] * (len(gvals) + 1)
+    for i, (gv, pv) in enumerate(zip(gvals, pvals)):
+        s0[i + 1] = s0[i] + pv
+        s1[i + 1] = s1[i] + pv * gv
+
+    cvals = [float(v) for v in centroids]
     for _ in range(n_iter):
-        # Compute decision boundaries (midpoints)
-        boundaries = 0.5 * (centroids[:-1] + centroids[1:])
-        boundaries = np.concatenate([[lo], boundaries, [hi]])
-
-        # Update centroids: weighted mean within each partition
-        new_centroids = np.empty(K)
+        bounds = [lo] + [0.5 * (cvals[k] + cvals[k + 1])
+                         for k in range(K - 1)] + [hi]
+        new_cvals = [0.0] * K
         for k in range(K):
-            mask = (grid >= boundaries[k]) & (grid < boundaries[k + 1])
-            weighted = pdf[mask] * grid[mask]
-            total_weight = np.sum(pdf[mask]) * dx
-            if total_weight > 1e-30:
-                new_centroids[k] = np.sum(weighted) * dx / total_weight
+            # grid >= bounds[k] and grid < bounds[k + 1]
+            a = bisect.bisect_left(gvals, bounds[k])
+            b = bisect.bisect_left(gvals, bounds[k + 1])
+            w = s0[b] - s0[a]
+            # dx cancels between numerator and denominator
+            if w * dx > 1e-30:
+                new_cvals[k] = (s1[b] - s1[a]) / w
             else:
-                new_centroids[k] = centroids[k]
+                new_cvals[k] = cvals[k]
 
-        if np.allclose(centroids, new_centroids, atol=1e-12):
+        if all(abs(x - y) <= 1e-12 for x, y in zip(cvals, new_cvals)):
+            cvals = new_cvals
             break
-        centroids = new_centroids
+        cvals = new_cvals
 
-    return np.sort(centroids)
+    return np.sort(np.array(cvals))
 
 
 # Precomputed codebooks cache (dimension, bits) -> centroids

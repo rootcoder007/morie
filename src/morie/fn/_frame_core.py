@@ -54,6 +54,18 @@ class Index(list):
     def tolist(self):
         return list(self)
 
+    def isin(self, values):
+        """Boolean mask, as pandas Index.isin. Returned as a plain list
+        of bool so both Index.__getitem__ and .loc take it directly."""
+        try:
+            vs = set(values.tolist() if hasattr(values, "tolist") else values)
+        except TypeError:          # unhashable members: fall back to a scan
+            vs = None
+        if vs is None:
+            seq = list(values)
+            return [any(v == u for u in seq) for v in self]
+        return [v in vs for v in self]
+
     @property
     def values(self):
         return list(self)
@@ -531,6 +543,34 @@ class Series:
     def apply(self, fn):
         return self.map(fn)
 
+    def replace(self, to_replace, value=None):
+        """pandas Series.replace. Unlike map(), a value that matches
+        nothing is LEFT ALONE rather than turned into NaN."""
+        if isinstance(to_replace, dict):
+            table = dict(to_replace)
+        elif isinstance(to_replace, (list, tuple)):
+            if isinstance(value, (list, tuple)):
+                if len(value) != len(to_replace):
+                    raise ValueError(
+                        "replace: %d targets but %d replacements"
+                        % (len(to_replace), len(value)))
+                table = dict(zip(to_replace, value))
+            else:
+                table = {k: value for k in to_replace}
+        else:
+            table = {to_replace: value}
+
+        def one(v):
+            try:
+                if v in table:
+                    return table[v]
+            except TypeError:      # unhashable value: nothing can match
+                return v
+            return v
+
+        return Series([one(v) for v in self._data],
+                      index=list(self.index), name=self.name)
+
     def isin(self, values):
         vs = set(values.tolist() if hasattr(values, "tolist")
                  else values)
@@ -780,26 +820,36 @@ class DataFrame:
                 self._cols[c] = list(data._cols[c])
             index = list(data.index) if index is None else index
         elif isinstance(data, dict):
+            # Materialise every column-like value FIRST. A range (or any
+            # other lazy iterable) used to miss the list/tuple test and
+            # get broadcast as if it were a scalar, so DataFrame({"a":
+            # range(1, 5)}) silently produced four copies of the range
+            # object instead of the values 1..4.
+            def _column(v):
+                if isinstance(v, Series):
+                    return list(v._data)
+                if hasattr(v, "tolist"):
+                    vv = v.tolist()
+                    return list(vv) if isinstance(vv, list) else None
+                if isinstance(v, (list, tuple, range)):
+                    return list(v)
+                if isinstance(v, (str, bytes, dict)):
+                    return None
+                if hasattr(v, "__iter__"):
+                    return list(v)
+                return None
+
+            prepared = {k: _column(v) for k, v in data.items()}
             n = None
-            for v in data.values():
-                if isinstance(v, (list, tuple, Series)) \
-                        or hasattr(v, "tolist"):
-                    n = len(v.tolist() if hasattr(v, "tolist")
-                            and not isinstance(v, Series) else v)
+            for col in prepared.values():
+                if col is not None:
+                    n = len(col)
                     break
             if n is None:
                 n = len(index) if index is not None else 1
             for k, v in data.items():
-                if isinstance(v, Series):
-                    self._cols[k] = list(v._data)
-                elif hasattr(v, "tolist"):
-                    vv = v.tolist()
-                    self._cols[k] = list(vv) if isinstance(vv, list) \
-                        else [vv] * n
-                elif isinstance(v, (list, tuple)):
-                    self._cols[k] = list(v)
-                else:
-                    self._cols[k] = [v] * n
+                col = prepared[k]
+                self._cols[k] = list(col) if col is not None else [v] * n
         elif isinstance(data, list) and data \
                 and isinstance(data[0], dict):
             keys = []
@@ -1468,6 +1518,97 @@ class DataFrame:
             return s
         with open(path, "w") as f:
             f.write(s)
+
+    def to_sql(self, name, con, if_exists="fail", index=True,
+               index_label=None, **kw):
+        """Write the frame to a DB-API table (sqlite3 and friends).
+
+        Mirrors pandas: ``if_exists`` is "fail", "replace" or "append",
+        and ``index`` writes the row labels as their own column. Returns
+        the number of rows written.
+        """
+        del kw
+        if if_exists not in ("fail", "replace", "append"):
+            raise ValueError("if_exists must be 'fail', 'replace' or "
+                             "'append', got %r" % (if_exists,))
+        cur = con.cursor()
+        quoted = '"%s"' % str(name).replace('"', '""')
+
+        cur.execute("SELECT name FROM sqlite_master WHERE type='table' "
+                    "AND name=?", (str(name),))
+        exists = cur.fetchone() is not None
+        if exists and if_exists == "fail":
+            raise ValueError("table %r already exists" % (name,))
+        if exists and if_exists == "replace":
+            cur.execute("DROP TABLE %s" % quoted)
+            exists = False
+
+        idx_name = index_label or "index"
+        cols = ([idx_name] if index else []) + [str(c) for c in self._cols]
+
+        def sql_type(values):
+            seen = set()
+            for v in values:
+                if v is None or _isnan(v):
+                    continue
+                if isinstance(v, bool):
+                    seen.add("INTEGER")
+                elif isinstance(v, int):
+                    seen.add("INTEGER")
+                elif isinstance(v, float):
+                    seen.add("REAL")
+                else:
+                    seen.add("TEXT")
+            if not seen:
+                return "TEXT"
+            if seen == {"INTEGER"}:
+                return "INTEGER"
+            if seen <= {"INTEGER", "REAL"}:
+                return "REAL"
+            return "TEXT"
+
+        if not exists:
+            types = ([sql_type(list(self.index))] if index else []) + [
+                sql_type(self._cols[c]) for c in self._cols]
+            decl = ", ".join('"%s" %s' % (c.replace('"', '""'), t)
+                             for c, t in zip(cols, types))
+            cur.execute("CREATE TABLE %s (%s)" % (quoted, decl))
+
+        n = self.shape[0]
+        rows = []
+        for i in range(n):
+            row = ([self.index[i]] if index else []) + [
+                self._cols[c][i] for c in self._cols]
+            rows.append(tuple(None if (v is not None and _isnan(v)) else v
+                              for v in row))
+        placeholders = ", ".join(["?"] * len(cols))
+        collist = ", ".join('"%s"' % c.replace('"', '""') for c in cols)
+        cur.executemany("INSERT INTO %s (%s) VALUES (%s)"
+                        % (quoted, collist, placeholders), rows)
+        con.commit()
+        return n
+
+    def to_excel(self, writer, sheet_name="Sheet1", index=True,
+                 index_label=None, **kw):
+        """Write the frame as one sheet of an ExcelWriter workbook.
+
+        ``writer`` may also be a path or file object, in which case a
+        one-sheet workbook is written and closed here, as pandas does.
+        """
+        del kw
+        own = not isinstance(writer, ExcelWriter)
+        wr = ExcelWriter(writer) if own else writer
+        header = ([index_label or ""] if index else []) + [
+            str(c) for c in self._cols]
+        rows = [header]
+        for i in range(self.shape[0]):
+            row = ([self.index[i]] if index else []) + [
+                self._cols[c][i] for c in self._cols]
+            rows.append([None if (v is not None and _isnan(v)) else v
+                         for v in row])
+        wr.add_sheet(sheet_name, rows)
+        if own:
+            wr.close()
 
     def to_string(self):
         return self.to_csv(index=True, sep="\t")
@@ -2603,6 +2744,134 @@ def read_excel(path, sheet_name=0, header=0, **kw):
     body = rows[header + 1:]
     return DataFrame({cols[j]: [row[j] for row in body]
                       for j in range(maxc)})
+
+
+def _xml_escape(t):
+    return (str(t).replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;"))
+
+
+def _xlsx_col_ref(c):
+    """0-based column index to its spreadsheet letters (0 -> A)."""
+    out = ""
+    c += 1
+    while c:
+        c, r = divmod(c - 1, 26)
+        out = chr(65 + r) + out
+    return out
+
+
+class ExcelWriter:
+    """Native .xlsx writer (zip + XML, stdlib only).
+
+    The counterpart to read_excel(). Strings are written as inline
+    cells, which the reader already understands, so no shared-string
+    table is needed. Usable as a context manager, as pandas' is.
+    """
+
+    def __init__(self, path, mode="w", **kw):
+        del mode, kw
+        self._path = path
+        self._sheets = []
+        self._closed = False
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        self.close()
+        return False
+
+    def add_sheet(self, name, rows):
+        self._sheets.append((str(name), [list(r) for r in rows]))
+
+    # pandas calls the attribute `book`; keep the name available
+    @property
+    def book(self):
+        return self._sheets
+
+    def _sheet_xml(self, rows):
+        out = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+               '<worksheet xmlns="http://schemas.openxmlformats.org/'
+               'spreadsheetml/2006/main"><sheetData>']
+        for i, row in enumerate(rows):
+            out.append('<row r="%d">' % (i + 1))
+            for j, v in enumerate(row):
+                ref = "%s%d" % (_xlsx_col_ref(j), i + 1)
+                if v is None:
+                    continue
+                if isinstance(v, bool):
+                    out.append('<c r="%s" t="b"><v>%d</v></c>'
+                               % (ref, 1 if v else 0))
+                elif isinstance(v, (int, float)):
+                    out.append('<c r="%s"><v>%r</v></c>' % (ref, v))
+                else:
+                    out.append('<c r="%s" t="inlineStr"><is><t>%s</t>'
+                               '</is></c>' % (ref, _xml_escape(v)))
+            out.append('</row>')
+        out.append('</sheetData></worksheet>')
+        return "".join(out)
+
+    def close(self):
+        if self._closed:
+            return
+        self._closed = True
+        import zipfile
+        n = len(self._sheets)
+        names = ["xl/worksheets/sheet%03d.xml" % (i + 1) for i in range(n)]
+
+        ct = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+              '<Types xmlns="http://schemas.openxmlformats.org/'
+              'package/2006/content-types">',
+              '<Default Extension="rels" ContentType="application/'
+              'vnd.openxmlformats-package.relationships+xml"/>',
+              '<Default Extension="xml" ContentType="application/xml"/>',
+              '<Override PartName="/xl/workbook.xml" ContentType='
+              '"application/vnd.openxmlformats-officedocument.'
+              'spreadsheetml.sheet.main+xml"/>']
+        for nm in names:
+            ct.append('<Override PartName="/%s" ContentType="application/'
+                      'vnd.openxmlformats-officedocument.spreadsheetml.'
+                      'worksheet+xml"/>' % nm)
+        ct.append('</Types>')
+
+        rels = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+                '<Relationships xmlns="http://schemas.openxmlformats.org/'
+                'package/2006/relationships"><Relationship Id="rId1" '
+                'Type="http://schemas.openxmlformats.org/officeDocument/'
+                '2006/relationships/officeDocument" Target="xl/'
+                'workbook.xml"/></Relationships>')
+
+        wb = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+              '<workbook xmlns="http://schemas.openxmlformats.org/'
+              'spreadsheetml/2006/main" xmlns:r="http://schemas.'
+              'openxmlformats.org/officeDocument/2006/relationships">',
+              '<sheets>']
+        for i, (nm, _) in enumerate(self._sheets):
+            wb.append('<sheet name="%s" sheetId="%d" r:id="rId%d"/>'
+                      % (_xml_escape(nm), i + 1, i + 1))
+        wb.append('</sheets></workbook>')
+
+        wbrels = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+                  '<Relationships xmlns="http://schemas.openxmlformats.org/'
+                  'package/2006/relationships">']
+        for i in range(n):
+            wbrels.append('<Relationship Id="rId%d" Type="http://schemas.'
+                          'openxmlformats.org/officeDocument/2006/'
+                          'relationships/worksheet" Target="worksheets/'
+                          'sheet%03d.xml"/>' % (i + 1, i + 1))
+        wbrels.append('</Relationships>')
+
+        zf = zipfile.ZipFile(self._path, "w", zipfile.ZIP_DEFLATED)
+        try:
+            zf.writestr("[Content_Types].xml", "".join(ct))
+            zf.writestr("_rels/.rels", rels)
+            zf.writestr("xl/workbook.xml", "".join(wb))
+            zf.writestr("xl/_rels/workbook.xml.rels", "".join(wbrels))
+            for nm, (_, rows) in zip(names, self._sheets):
+                zf.writestr(nm, self._sheet_xml(rows))
+        finally:
+            zf.close()
 
 
 class ExcelFile:

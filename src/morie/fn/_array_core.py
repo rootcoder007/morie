@@ -23,6 +23,7 @@ Scope notes:
 from __future__ import annotations
 
 import builtins as _bi
+import cmath as _cmath
 import math as _math
 import struct as _struct
 
@@ -589,6 +590,29 @@ class marr:
                     for ci, c in enumerate(cols):
                         self.data[r][c] = vals[0] if scalar else \
                             vals[(ri * len(cols) + ci) % len(vals)]
+                return
+            if not isinstance(i, slice) \
+                    and isinstance(j, (marr, list, tuple)):
+                # one row, many columns: W[i, nb] = <vector>. Without
+                # this the tuple path fell through to the scalar store
+                # and float() rejected the vector right-hand side.
+                r2 = int(i)
+                raw = [v for v in (j._flat() if isinstance(j, marr) else j)]
+                if len(raw) == self.shape[1] \
+                        and all(isinstance(v, bool) for v in raw):
+                    cols = [c for c, fl in enumerate(raw) if fl]
+                else:
+                    cols = [int(v) for v in raw]
+                va = asarray(value)
+                vals = list(va._flat())
+                if len(vals) == 1:
+                    vals = vals * len(cols)
+                if len(vals) != len(cols):
+                    raise ValueError(
+                        "cannot assign %d values to %d columns"
+                        % (len(vals), len(cols)))
+                for c2, v2 in zip(cols, vals):
+                    self.data[r2][c2] = float(v2)
                 return
             if isinstance(i, slice) or isinstance(j, slice):
                 rows = range(*i.indices(self.shape[0])) \
@@ -1271,10 +1295,26 @@ def arange(start, stop=None, step=1, dtype=None):
     return marr([float(start) + i * float(step) for i in range(n)])
 
 
+def _nd_filled(shape, value):
+    """Nested lists of `value` with the given shape, for rank >= 3.
+
+    zeros((4, 2, 8)) used to build a (4, 2) marr and DISCARD the last
+    dimension, so a rank-3 allocation came back silently the wrong
+    shape. Rank 3 and above needs the n-D container.
+    """
+    def build(dims):
+        if len(dims) == 1:
+            return [value] * int(dims[0])
+        return [build(dims[1:]) for _ in range(int(dims[0]))]
+    return ndlist(build(list(shape)))
+
+
 def zeros(n, dtype=None):
-    if isinstance(n, tuple) and len(n) == 1:
+    if isinstance(n, (tuple, list)) and len(n) == 1:
         n = n[0]
-    if isinstance(n, tuple):
+    if isinstance(n, (tuple, list)):
+        if len(n) > 2:
+            return _nd_filled(n, 0.0)
         out = marr([[0.0] * n[1] for _ in range(n[0])]) \
             if n[0] else marr([])
         if not n[0]:
@@ -1284,9 +1324,11 @@ def zeros(n, dtype=None):
 
 
 def ones(n, dtype=None):
-    if isinstance(n, tuple) and len(n) == 1:
+    if isinstance(n, (tuple, list)) and len(n) == 1:
         n = n[0]
-    if isinstance(n, tuple):
+    if isinstance(n, (tuple, list)):
+        if len(n) > 2:
+            return _nd_filled(n, 1.0)
         return marr([[1.0] * n[1] for _ in range(n[0])])
     return marr([1.0] * int(n))
 
@@ -1383,10 +1425,62 @@ def _uf(fn):
     return wrapped
 
 
-sqrt = _uf(_math.sqrt)
-exp = _uf(_math.exp)
-log = _uf(_math.log)
-log1p = _uf(_math.log1p)
+def _ieee_exp(v):
+    """numpy's exp: overflow saturates to +inf, it does not raise.
+
+    math.exp raises OverflowError instead, which turned an ordinary
+    saturating expression -- exp(-exp(x)) in a Kaplan-Meier log-log
+    interval -- into a hard failure.
+    """
+    # Float path first: an isinstance() check on every element roughly
+    # doubles the per-element cost, and complex input is the rare case.
+    try:
+        return _math.exp(v)
+    except TypeError:
+        return _cmath.exp(v)
+    except OverflowError:
+        return _INF if v > 0 else 0.0
+
+
+def _ieee_log(v):
+    """numpy's log: log(0) is -inf and log(x < 0) is nan, not an error."""
+    try:
+        if v > 0:
+            return _math.log(v)
+        if v == 0:
+            return -_INF
+        return _NAN
+    except TypeError:
+        return _cmath.log(v) if v != 0 else complex(-_INF, 0.0)
+
+
+def _ieee_log1p(v):
+    """numpy's log1p: log1p(-1) is -inf and log1p(x < -1) is nan."""
+    try:
+        if v > -1.0:
+            return _math.log1p(v)
+        if v == -1.0:
+            return -_INF
+        return _NAN
+    except TypeError:
+        return (_cmath.log(1.0 + v) if (1.0 + v) != 0
+                else complex(-_INF, 0.0))
+
+
+def _ieee_sqrt(v):
+    """numpy's sqrt on a real negative is nan, not an error."""
+    try:
+        if v < 0:
+            return _NAN
+        return _math.sqrt(v)
+    except TypeError:
+        return _cmath.sqrt(v)
+
+
+sqrt = _uf(_ieee_sqrt)
+exp = _uf(_ieee_exp)
+log = _uf(_ieee_log)
+log1p = _uf(_ieee_log1p)
 abs = _uf(_bi.abs)  # noqa: A001  # builtin: complex -> magnitude
 
 
@@ -1401,6 +1495,14 @@ def clip(x, lo, hi):
     a = asarray(x)
     if isinstance(a, marr):
         return a._map(one)
+    if isinstance(x, ndlist) or isinstance(a, ndlist):
+        # n-D: recurse and keep the nesting, as numpy.clip does. The
+        # scalar store below cannot represent a 3-D right-hand side.
+        def walk(v):
+            if isinstance(v, (list, tuple, marr)):
+                return [walk(u) for u in v]
+            return one(float(v))
+        return ndlist(walk(list(x)))
     return one(float(a))
 
 
@@ -1905,6 +2007,25 @@ class _SplitMix64:
         return marr([_num(one()) for _ in range(int(size))])
 
     def uniform(self, low=0.0, high=1.0, size=None):
+        # Array-valued bounds broadcast, as in numpy.
+        if hasattr(low, "_flat") or isinstance(low, (list, tuple)) or \
+                hasattr(high, "_flat") or isinstance(high, (list, tuple)):
+            def _vals(v):
+                if hasattr(v, "_flat"):
+                    return [float(x) for x in v._flat()]
+                if isinstance(v, (list, tuple)):
+                    return [float(x) for x in v]
+                return [float(v)]
+            lo, hi = _vals(low), _vals(high)
+            n = max(len(lo), len(hi))
+            if size is not None:
+                n = int(size[0]) if isinstance(size, (tuple, list)) \
+                    else int(size)
+            return marr([lo[i % len(lo)] +
+                         (hi[i % len(hi)] - lo[i % len(lo)]) *
+                         ((self._next() >> 11) / (1 << 53))
+                         for i in range(n)])
+
         def one():
             return low + (high - low) * (self._next() >> 11) / (1 << 53)
         return self._fill(one, size)
@@ -2022,6 +2143,22 @@ class _SplitMix64:
         return self._fill(one, size)
 
     def exponential(self, scale=1.0, size=None):
+        # numpy draws one variate per element of an array-valued scale,
+        # which is how a Cox simulation writes rng.exponential(1 / lam).
+        # Without this branch float(scale) rejected the whole vector.
+        if hasattr(scale, "_flat") or isinstance(scale, (list, tuple)):
+            sv = list(scale._flat()) if hasattr(scale, "_flat") else \
+                [float(v) for v in scale]
+            if size is not None:
+                n = int(size[0]) if isinstance(size, (tuple, list)) \
+                    else int(size)
+                if n != len(sv):
+                    raise ValueError(
+                        "cannot broadcast a length-%d scale to size %d"
+                        % (len(sv), n))
+            return marr([-float(v) * _math.log(_pymax(self._u(), 1e-300))
+                         for v in sv])
+
         def one():
             return -float(scale) * _math.log(_pymax(self._u(), 1e-300))
         return self._fill(one, size)

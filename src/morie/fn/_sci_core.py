@@ -240,16 +240,34 @@ def _bfgs(fun, x0, args=(), maxiter=None, gtol=1e-6):
         # backtracking line search (Armijo)
         step = 1.0
         slope = _math.fsum(g[i] * p[i] for i in range(n))
+        accepted = False
         for _ in range(60):
             xn = [x[i] + step * p[i] for i in range(n)]
             fn_ = float(fun(_ac.marr(xn), *args))
             nfev += 1
             if fn_ <= f + 1e-4 * step * slope:
+                accepted = True
                 break
             step *= 0.5
+        if not accepted:
+            # Sixty halvings without sufficient decrease: the step has
+            # collapsed to ~1e-18 of p and there is no progress to make
+            # along this direction. Without this break the loop kept
+            # going to maxiter (200 * n) with s ~ 0, so the BFGS update
+            # was skipped every time and nothing changed -- a Cox fit
+            # that converges in 27 objective calls burned 6,468.
+            break
         s = [xn[i] - x[i] for i in range(n)]
         gn, fn2 = _num_grad(fun, xn, args)
         nfev += n + 1
+        # A numerical gradient has a noise floor, so gnorm alone may
+        # never reach gtol on a flat optimum. Stop when neither the
+        # objective nor the point is still moving.
+        if (abs(f - fn2) <= 1e-12 * max(1.0, abs(f))
+                and max(abs(v) for v in s)
+                <= 1e-12 * max(1.0, max(abs(v) for v in x))):
+            x, g, f = xn, gn, fn2
+            break
         yv = [gn[i] - g[i] for i in range(n)]
         sy = _math.fsum(s[i] * yv[i] for i in range(n))
         if sy > 1e-12:

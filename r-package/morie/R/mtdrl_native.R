@@ -184,7 +184,16 @@ mtdrl_run <- function(tasks, agent, episode_length = 100, n_arms = NULL,
 #' @return A character value.
 #' @export
 mtdrl_cheatsheet <- function() {
-  paste("mtdrl: deep meta-RL (Wang 2016). Train with one RL algorithm so the RECURRENT DYNAMICS implement a second, learned one. Policy conditions on the whole within-episode history H_t including the previous ACTION and REWARD; the recurrent state is RESET each episode, and after training the weights are frozen so all within-episode adaptation is in the activations. bandit_tasks(structure='paired') is the dependent-arm family whose structure an adapted inner algorithm can exploit.")
+  paste(paste0(
+    "mtdrl: deep meta-RL (Wang 2016). Train with one RL algorithm",
+    " so the RECURRENT DYNAMICS implement a second, learned one. ",
+    "Policy conditions on the whole within-episode history H_t in",
+    "cluding the previous ACTION and REWARD; the recurrent state ",
+    "is RESET each episode, and after training the weights are fr",
+    "ozen so all within-episode adaptation is in the activations.",
+    " bandit_tasks(structure='paired') is the dependent-arm famil",
+    "y whose structure an adapted inner algorithm can exploit."
+  ))
 }
 
 # house entry point: the package exports one morie_<module>
