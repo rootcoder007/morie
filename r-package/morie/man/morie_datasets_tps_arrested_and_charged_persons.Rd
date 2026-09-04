@@ -53,5 +53,7 @@ neighbourhood, sex, age, crime category, and crime subtype.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Arrests
 }
 \examples{
+\donttest{
 morie_datasets_tps_arrested_and_charged_persons()
+}
 }

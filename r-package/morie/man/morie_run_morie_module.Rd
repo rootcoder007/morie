@@ -24,6 +24,7 @@ Named list of data-frame outputs.
 Run one implemented MORIE module against CPADS data
 }
 \examples{
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Dispatch one MORIE module against the canonical CPADS CSV. The CSV
 # ships with a morie project tree, or is fetched via the CKAN endpoint
 # (morie_load_dataset("ocp21")). Wrapped in tryCatch so the example
@@ -32,4 +33,5 @@ tryCatch(
   morie_run_morie_module("descriptive-statistics"),
   error = function(e) message(conditionMessage(e))
 )
+\dontshow{\}) # examplesIf}
 }

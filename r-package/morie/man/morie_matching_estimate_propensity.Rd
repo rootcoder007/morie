@@ -36,6 +36,7 @@ gradient boosting on a set of covariates.  Mirrors Python
 \code{morie.matching.estimate_propensity_score}.
 }
 \examples{
+\donttest{
 if (requireNamespace("gbm", quietly = TRUE)) {
   set.seed(1)
   df <- data.frame(
@@ -47,6 +48,7 @@ if (requireNamespace("gbm", quietly = TRUE)) {
   df <- data.frame(d = rbinom(200, 1, 0.4),
                    x1 = rnorm(200), x2 = rnorm(200))
   ps <- morie_matching_estimate_propensity(df, "d", c("x1", "x2"))
+}
 }
 }
 \references{

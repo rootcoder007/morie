@@ -336,8 +336,10 @@ morie_recommended_pair_test <- function(tax_a, tax_b) {
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 #' @examples
+#' \donttest{
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 #' morie:::print.morie_variable_taxonomy(D)
+#' }
 print.morie_variable_taxonomy <- function(x, ...) {
   cat(sprintf("Variable taxonomy: %s :: %s\n", x$dataset_name, x$column_name))
   cat(sprintf("  level        : %s\n", x$level))

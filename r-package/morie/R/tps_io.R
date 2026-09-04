@@ -473,7 +473,9 @@ MORIE_TPS_SUPPORTED_FORMATS <- c(
 #'
 #' @export
 #' @examples
+#' \donttest{
 #' morie_tps_load("Assault", format = "csv", nrows = 2L)
+#' }
 morie_tps_load <- function(name, format = "csv", nrows = NULL) {
   fmt <- tolower(format)
   if (!(fmt %in% names(.MORIE_TPS_DISPATCH))) {

@@ -79,7 +79,7 @@
 #'   `feature_server_url`, `owner`, `tags`, `snippet`.
 #' @references TPS Public Safety Data Portal,
 #'   \url{https://data.tps.ca/search?collection=dataset}.
-#' @examples
+#' @examplesIf nzchar(system.file("extdata", "tps_arcgis_hub_catalog.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
 #' cat <- morie_datasets_tps_arcgis_hub_layers()
 #' nrow(cat)        # 71
 #' head(cat$title)
@@ -528,7 +528,7 @@ morie_datasets_arcgis_item_by_id <- function(item_id,
 #'   list, or file path (binary).
 #' @references Esri Canada Education -- ArcGIS Online item
 #'   `af06159170914808983959df6163fc86`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_toronto_zoning_per_neighbourhood(offline = TRUE)
 #' head(df[, c("Neighbourhood", "Total_Population", "Seniors65andover")])
 #' @export

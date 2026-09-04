@@ -53,5 +53,7 @@ seized by the Toronto Police Service.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Firearms
 }
 \examples{
+\donttest{
 morie_datasets_tps_firearms_top_calibres()
+}
 }

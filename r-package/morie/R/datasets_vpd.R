@@ -37,7 +37,7 @@
 #' web UI is not the same as the script user.
 #'
 #' @return A character vector (one element per line).
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' d <- morie_datasets_vpd_legal_disclaimer()
 #' head(d)
 #' @export
@@ -155,7 +155,7 @@ morie_datasets_vpd_legal_disclaimer <- function() {
 #' @return A `data.frame` with 10 columns.
 #' @references VPD GeoDASH Open Data,
 #'   \url{https://geodash.vpd.ca/opendata/}.
-#' @examples
+#' @examplesIf nzchar(system.file("extdata", "vpd_crime_sample.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_vpd_crime(offline = TRUE)
 #' nrow(df)              # 550
 #' table(df$TYPE)

@@ -29,12 +29,14 @@ Metropolis sampler when smacof is absent).
 Bayesian unfolding (stub) -- Bakker & Poole sampler
 }
 \examples{
+\donttest{
 if (requireNamespace("smacof", quietly = TRUE)) {
   set.seed(1)
   pref <- matrix(runif(12, 1, 9), 3, 4)
   fit <- morie_spatial_voting_bayesian_unfolding(pref,
     n_samples = 200L)
   names(fit)
+}
 }
 }
 \references{

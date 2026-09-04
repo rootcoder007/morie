@@ -52,5 +52,7 @@ Toronto Police Service.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Budget
 }
 \examples{
+\donttest{
 morie_datasets_tps_gross_operating_budget()
+}
 }

@@ -26,7 +26,9 @@ evidence of an identified causal effect under conditional
 exchangeability.
 }
 \examples{
+\donttest{
 df <- morie_synth_otis("b01", n = 200L, seed = 1L)
 grid <- morie_otis_causal_grid(df)
 names(grid)
+}
 }

@@ -616,7 +616,9 @@ morie_entheo_analyze_subject <- function(subject_id,
 #' @return Invisibly returns the destination path.
 #' @export
 #' @examples
+#' \donttest{
 #' morie_entheo_clone_dmt_imaging()
+#' }
 morie_entheo_clone_dmt_imaging <- function(root = NULL,
                                             overwrite = FALSE,
                                             branch = NULL) {

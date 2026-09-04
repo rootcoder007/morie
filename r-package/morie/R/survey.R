@@ -89,7 +89,7 @@ NULL
 #'   \code{weights}, optional \code{strata}, and optional
 #'   \code{cluster}.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("survey", quietly = TRUE)
 #' .make_survey_df <- function(n = 100L, seed = 1L) {
 #'     set.seed(seed)
 #'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,
@@ -126,7 +126,7 @@ morie_survey_design <- function(data, weights_col, strata_col = NULL,
 #' @return list with `total`, `se`, `ci_lower`, `ci_upper`.
 #' @inheritParams morie_survey_params
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("survey", quietly = TRUE)
 #' y <- c(1, 2, 3, 4, 5)
 #' pi <- rep(0.5, 5)
 #' morie_survey_ht_total(y, pi)
@@ -151,7 +151,7 @@ morie_survey_ht_total <- function(y, inclusion_probs) {
 #' @return A named list with elements \code{mean}, \code{se},
 #'   \code{ci_lower}, \code{ci_upper} (95\% Wald confidence interval).
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("survey", quietly = TRUE)
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
 #' morie_survey_hajek_mean(V, V)
 morie_survey_hajek_mean <- function(y, weights) {
@@ -176,7 +176,7 @@ morie_survey_hajek_mean <- function(y, weights) {
 #' @return A named list with elements \code{mean} and \code{se} (and,
 #'   in the fallback path, also \code{ci_lower}, \code{ci_upper}).
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("survey", quietly = TRUE)
 #' .make_survey_df <- function(n = 100L, seed = 1L) {
 #'     set.seed(seed)
 #'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,
@@ -208,7 +208,7 @@ morie_survey_mean <- function(design, variable) {
 #'   population total), \code{se}, \code{ci_lower}, \code{ci_upper}
 #'   (95\% Wald confidence interval).
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("survey", quietly = TRUE)
 #' set.seed(1)
 #' x <- runif(50, 1, 10)
 #' y <- 2 * x + rnorm(50, 0, 0.5)
@@ -246,7 +246,7 @@ morie_survey_ratio <- function(y, x, weights, X_population_total) {
 #'   of \code{df}, scaled so each stratum's weighted share matches the
 #'   stratum's share of \code{population_counts}.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("survey", quietly = TRUE)
 #' set.seed(1)
 #' df <- data.frame(stratum = sample(c("A", "B"), 40, replace = TRUE),
 #'                  w = rep(1, 40))
@@ -286,7 +286,7 @@ morie_survey_poststratify <- function(df, strata_col, population_counts) {
 #'   \code{nrow(df)} (one weight per row); a warning is emitted if the
 #'   raking loop did not converge within \code{max_iter}.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("survey", quietly = TRUE)
 #' .make_survey_df <- function(n = 100L, seed = 1L) {
 #'     set.seed(seed)
 #'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,
@@ -340,7 +340,7 @@ morie_survey_calibrate <- function(df, aux_vars, population_totals,
 #'   \code{ci_lower}, \code{ci_upper} (95\% Wald confidence interval),
 #'   and \code{n_domain} (number of sample units in the subpopulation).
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("survey", quietly = TRUE)
 #' set.seed(1)
 #' df <- data.frame(region = sample(c("N", "S"), 60, replace = TRUE),
 #'                  y = rnorm(60, 5), w = rep(2, 60))
@@ -419,7 +419,7 @@ morie_survey_glm <- function(design, formula,
 #'   \code{svyglm} / \code{glm}) with cluster- / stratum-robust
 #'   design-based standard errors.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("survey", quietly = TRUE)
 #' .make_survey_df <- function(n = 100L, seed = 1L) {
 #'     set.seed(seed)
 #'     data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n,

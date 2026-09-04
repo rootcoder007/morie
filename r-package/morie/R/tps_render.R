@@ -454,7 +454,7 @@ morie_tps_render_choropleth <- function(polys,
 #' @return A \code{ggplot} (when ggplot2 is available) or
 #'   \code{invisible(NULL)} for the base-R path.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' df <- data.frame(LAT_WGS84 = 43.65 + rnorm(60, 0, 0.01), LONG_WGS84 = -79.4 +
 #'     rnorm(60, 0, 0.01))
 #' morie_tps_render_points(df, category = "Synth")
@@ -738,7 +738,7 @@ morie_tps_render_yearly_grid <- function(polys,
 #' @param ... Forwarded to the underlying single-panel renderers.
 #' @return A patchwork-or-list object (ggplot2 path) or invisible NULL.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
 #' morie_tps_render_quad(D)
 morie_tps_render_quad <- function(data, outfile = NULL, ...) {
@@ -797,7 +797,7 @@ morie_tps_render_quad <- function(data, outfile = NULL, ...) {
 #' @param ... Extra plotting args (size, alpha, palette).
 #' @return ggplot object or invisible NULL.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' .make_synthetic_points <- function(n = 200L, seed = 2L) {
 #'     set.seed(seed)
 #'     data.frame(LAT_WGS84 = stats::runif(n, 43.58, 43.88), LONG_WGS84 = stats::runif(n,
@@ -922,7 +922,7 @@ morie_tps_render_district_proportional <- function(polys, count_col,
 #' @param outfile Optional output path.
 #' @return ggplot object or invisible NULL.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' clusters <- data.frame(lat = c(43.7, 43.75, 43.65), lon = c(-79.4,
 #'     -79.35, -79.5), radius_km = c(1, 0.5, 1.5), llr = c(5.2,
 #'     3.8, 7.1), stringsAsFactors = FALSE)

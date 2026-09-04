@@ -19,8 +19,10 @@ Character scalar (the plain text).
 Download an SIU director's-report PDF and return its plain text
 }
 \examples{
+\dontshow{if (requireNamespace("pdftools", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 if (requireNamespace("pdftools", quietly = TRUE)) {
   text <- morie_datasets_siu_report_text(offline = TRUE)
   substr(text, 1, 80)
 }
+\dontshow{\}) # examplesIf}
 }

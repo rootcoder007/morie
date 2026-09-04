@@ -33,6 +33,7 @@ label, with noise rendered grey.  Requires the suggested \pkg{dbscan}
 package; without it a base-graphics single-colour fallback is drawn.
 }
 \examples{
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 if (requireNamespace("dbscan", quietly = TRUE) && requireNamespace("ggplot2", quietly = TRUE)) {
   .make_synthetic_points <- function(n = 200L, seed = 2L) {
       set.seed(seed)
@@ -44,4 +45,5 @@ if (requireNamespace("dbscan", quietly = TRUE) && requireNamespace("ggplot2", qu
   pts <- .make_synthetic_points(n = 100L, seed = 5L)
   morie_tps_render_dbscan(pts, eps_km = 1, min_samples = 5L, outfile = NULL)
 }
+\dontshow{\}) # examplesIf}
 }

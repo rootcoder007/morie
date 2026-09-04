@@ -260,7 +260,9 @@ morie_datasets_tps_assault <- function(year = NULL,
 #'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
 #' @examples
+#' \donttest{
 #' morie_datasets_tps_autotheft()
+#' }
 morie_datasets_tps_autotheft <- function(year = NULL,
                                            max_features = NULL,
                                            offline = TRUE,
@@ -300,7 +302,9 @@ morie_datasets_tps_bicycletheft <- function(year = NULL,
 #'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
 #' @examples
+#' \donttest{
 #' morie_datasets_tps_breakandenter()
+#' }
 morie_datasets_tps_breakandenter <- function(year = NULL,
                                                max_features = NULL,
                                                offline = TRUE,
@@ -422,7 +426,9 @@ morie_datasets_tps_shooting_firearm_discharges <- function(
 #'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
 #' @examples
+#' \donttest{
 #' morie_datasets_tps_theft_from_motor_vehicle()
+#' }
 morie_datasets_tps_theft_from_motor_vehicle <- function(
   year = NULL, max_features = NULL,
   offline = TRUE, layer_url = NULL) {
@@ -440,7 +446,9 @@ morie_datasets_tps_theft_from_motor_vehicle <- function(
 #'   HOOD_140 attached.
 #' @export
 #' @examples
+#' \donttest{
 #' morie_datasets_tps_theft_over()
+#' }
 morie_datasets_tps_theft_over <- function(year = NULL,
                                             max_features = NULL,
                                             offline = TRUE,
@@ -465,7 +473,7 @@ morie_datasets_tps_theft_over <- function(year = NULL,
 #' @param max_features Optional row cap.
 #' @return A `data.frame` with `DIV`, `UNIT_NAME`, `ADDRESS`,
 #'   `CITY`, `AREA_SQKM`, plus shape area / perimeter fields.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_tps_police_divisions(offline = TRUE)
 #' nrow(df)  # 16
 #' @export

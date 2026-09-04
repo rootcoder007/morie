@@ -31,6 +31,7 @@ of treated and control units.  Mirrors Python
 \code{morie.matching.common_support}.
 }
 \examples{
+\donttest{
 if (requireNamespace("gbm", quietly = TRUE)) {
   set.seed(1)
   df <- data.frame(
@@ -42,5 +43,6 @@ if (requireNamespace("gbm", quietly = TRUE)) {
   df$propensity_score <- morie_matching_estimate_propensity(df, "d",
                                                             c("x1", "x2"))
   morie_matching_common_support(df, "d")
+}
 }
 }
