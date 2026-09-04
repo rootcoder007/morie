@@ -596,7 +596,19 @@ motfsr_run <- function(sequences, w, alphabet = NULL, n_motifs = 1,
 #' @return A character value.
 #' @export
 motfsr_cheatsheet <- function() {
-  paste("motfsr: MEME/MM motif discovery (Bailey & Elkan 1994). Break the sequences into ALL overlapping W-mers and fit a two-component mixture -- motif vs background -- by EM, so a sequence may contain zero, one or many occurrences and lambda1 estimates how often. E-step eq.4; M-step eq.5 for lambda and eq.13 for the letter frequencies, whose pseudo-counts exist because a frequency that hits 0 can never leave. z is normalised to sum to <= 1 over any W-window or EM collapses onto 'AAAAAA'. Multiple motifs come from erasing. Output is a Bayes-optimal classifier: log-odds matrix plus t = log((1 - lambda1)/lambda1).")
+  paste(paste0(
+    "motfsr: MEME/MM motif discovery (Bailey & Elkan 1994). Break",
+    " the sequences into ALL overlapping W-mers and fit a two-com",
+    "ponent mixture -- motif vs background -- by EM, so a sequenc",
+    "e may contain zero, one or many occurrences and lambda1 esti",
+    "mates how often. E-step eq.4; M-step eq.5 for lambda and eq.",
+    "13 for the letter frequencies, whose pseudo-counts exist bec",
+    "ause a frequency that hits 0 can never leave. z is normalise",
+    "d to sum to <= 1 over any W-window or EM collapses onto 'AAA",
+    "AAA'. Multiple motifs come from erasing. Output is a Bayes-o",
+    "ptimal classifier: log-odds matrix plus t = log((1 - lambda1",
+    ")/lambda1)."
+  ))
 }
 
 # house entry point: the package exports one morie_<module>

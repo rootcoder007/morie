@@ -1,5 +1,10 @@
 """Deterministic-seed plumbing tests for the Kosorok empirical-process suite.
 
+These assert on ``boot_sd``, not ``se``: the bootstrap standard error of
+the estimate IS the standard deviation of the bootstrap replicates, and
+``boot_sd`` is the key both language arms document and return. There has
+never been an ``se`` key in either arm.
+
 Verifies that the ``deterministic_seed`` kwarg added to ``ksr07`` /
 ``ksr08`` for morie v0.4.0:
 
@@ -54,9 +59,9 @@ def test_ksr07_deterministic_seed_reproducible():
 
     # Same deterministic_seed -> same numbers across runs.
     assert r1["estimate"] == r2["estimate"]
-    assert r1["se"] == r2["se"]
+    assert r1["boot_sd"] == r2["boot_sd"]
     # Different deterministic_seed -> different numbers.
-    assert r1["se"] != r3["se"]
+    assert r1["boot_sd"] != r3["boot_sd"]
 
 
 def test_ksr07_default_behaviour_unchanged():
@@ -66,7 +71,7 @@ def test_ksr07_default_behaviour_unchanged():
     r1 = kosorok_bootstrap_empirical(x, B=400, seed=42)
     r2 = kosorok_bootstrap_empirical(x, B=400, seed=42)
     assert r1["estimate"] == r2["estimate"]
-    assert r1["se"] == r2["se"]
+    assert r1["boot_sd"] == r2["boot_sd"]
 
 
 def test_ksr08_deterministic_seed_reproducible():
@@ -76,8 +81,8 @@ def test_ksr08_deterministic_seed_reproducible():
     r3 = kosorok_multiplier_bootstrap(x, B=400, deterministic_seed=999)
 
     assert r1["estimate"] == r2["estimate"]
-    assert r1["se"] == r2["se"]
-    assert r1["se"] != r3["se"]
+    assert r1["boot_sd"] == r2["boot_sd"]
+    assert r1["boot_sd"] != r3["boot_sd"]
 
 
 def test_ksr08_default_behaviour_unchanged():
@@ -85,4 +90,4 @@ def test_ksr08_default_behaviour_unchanged():
     r1 = kosorok_multiplier_bootstrap(x, B=400, seed=42)
     r2 = kosorok_multiplier_bootstrap(x, B=400, seed=42)
     assert r1["estimate"] == r2["estimate"]
-    assert r1["se"] == r2["se"]
+    assert r1["boot_sd"] == r2["boot_sd"]

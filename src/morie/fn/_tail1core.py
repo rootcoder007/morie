@@ -16,12 +16,21 @@ __all__ = []
 # --------------------------------------------------------------- shapes
 
 
+def _is_seq(v):
+    """Anything that iterates like a sequence, INCLUDING the native
+    array type. Testing for list/tuple alone sent a marr straight to
+    float(), which rejects anything longer than one element -- so every
+    tail1 entry point refused the package's own array."""
+    return (not isinstance(v, (str, bytes))
+            and hasattr(v, "__iter__"))
+
+
 def vec(x):
     """Flatten any nested sequence to a flat list of floats."""
     out = []
 
     def walk(v):
-        if isinstance(v, (list, tuple)):
+        if _is_seq(v):
             for e in v:
                 walk(e)
         else:
@@ -33,13 +42,14 @@ def vec(x):
 
 def mat(X):
     """Coerce to a list-of-rows matrix of floats."""
-    if not isinstance(X, (list, tuple)):
+    if not _is_seq(X):
         return [[float(X)]]
-    if len(X) == 0:
+    rows = list(X)
+    if len(rows) == 0:
         return []
-    if isinstance(X[0], (list, tuple)):
-        return [[float(v) for v in row] for row in X]
-    return [[float(v)] for v in X]
+    if _is_seq(rows[0]):
+        return [[float(v) for v in row] for row in rows]
+    return [[float(v)] for v in rows]
 
 
 def rowmat(x):

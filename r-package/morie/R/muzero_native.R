@@ -124,7 +124,7 @@ muzero_gamma_rv <- function(alpha) {
     u <- runif(1)
     return(muzero_gamma_rv(alpha + 1) * (u ^ (1 / alpha)))
   }
-  d <- alpha - 1/3
+  d <- alpha - 1 / 3
   cc <- 1 / sqrt(9 * d)
   repeat {
     x <- rnorm(1)
@@ -281,7 +281,16 @@ muzero_search <- function(observation, actions, representation, dynamics,
 #' @return A character value.
 #' @export
 muzero_cheatsheet <- function() {
-  paste("muzero: MCTS over a LEARNED latent model -- h (represent), g (dynamics -> reward, next latent), f (predict -> prior, value); no observation is ever reconstructed. pUCT eq. 2 with c1=1.25, c2=19652; backup eqs. 3-4 form the l-k step bootstrapped return G^k and fold it into a running mean; Q is min-max normalised over the whole tree (eq. 5) because values are unbounded. Search policy = visit counts. One g and one f call per simulation.")
+  paste(paste0(
+    "muzero: MCTS over a LEARNED latent model -- h (represent), g",
+    " (dynamics -> reward, next latent), f (predict -> prior, val",
+    "ue); no observation is ever reconstructed. pUCT eq. 2 with c",
+    "1=1.25, c2=19652; backup eqs. 3-4 form the l-k step bootstra",
+    "pped return G^k and fold it into a running mean; Q is min-ma",
+    "x normalised over the whole tree (eq. 5) because values are ",
+    "unbounded. Search policy = visit counts. One g and one f cal",
+    "l per simulation."
+  ))
 }
 
 # house entry point: the package exports one morie_<module>

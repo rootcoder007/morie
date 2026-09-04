@@ -200,7 +200,16 @@ mpfn_is_permutation_invariant <- function(H, adj, edge_features, perm, T = 3,
 #' @return A character value.
 #' @export
 mpfn_cheatsheet <- function() {
-  paste("mpfn: at least EIGHT published graph models are the same algorithm with different M_t, U_t and R. Message phase: m_v = sum_{w in N(v)} M_t(h_v, h_w, e_vw), then h_v <- U_t(h_v, m_v); readout R over the final states. The sum makes messages permutation-invariant and the READOUT MUST BE TOO, or the graph prediction changes when atoms are renumbered. Edge features carry bond type -- without them a single and a double bond between the same atoms are identical.")
+  paste(paste0(
+    "mpfn: at least EIGHT published graph models are the same alg",
+    "orithm with different M_t, U_t and R. Message phase: m_v = s",
+    "um_{w in N(v)} M_t(h_v, h_w, e_vw), then h_v <- U_t(h_v, m_v",
+    "); readout R over the final states. The sum makes messages p",
+    "ermutation-invariant and the READOUT MUST BE TOO, or the gra",
+    "ph prediction changes when atoms are renumbered. Edge featur",
+    "es carry bond type -- without them a single and a double bon",
+    "d between the same atoms are identical."
+  ))
 }
 
 # house entry point: the package exports one morie_<module>

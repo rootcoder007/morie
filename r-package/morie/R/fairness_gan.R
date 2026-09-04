@@ -403,7 +403,14 @@ morie_fairness_ctgan_debiaser <- function(df, outcome_col, feature_cols,
   names(debiased)[1L:2L] <- c(group_col, outcome_col)
 
   interp <- sprintf(
-    "Synthesised %d rows in which every group's favourable-outcome rate is rebalanced to the privileged group ('%s', observed rate %.3f). Backend in use: %s. The debiased frame is in $debiased and is auditable with morie.fairness metrics; this redistributes disparity but does not by itself remove structural bias.",
+    paste0(
+      "Synthesised %d rows in which every group's favourable-outcom",
+      "e rate is rebalanced to the privileged group ('%s', observed",
+      " rate %.3f). Backend in use: %s. The debiased frame is in $d",
+      "ebiased and is auditable with morie.fairness metrics; this r",
+      "edistributes disparity but does not by itself remove structu",
+      "ral bias."
+    ),
     n_out, privileged, target_rate, bk$kind
   )
 

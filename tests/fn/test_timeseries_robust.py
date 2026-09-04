@@ -116,7 +116,16 @@ def test_rlm_uses_mad_about_zero_like_mass():
     n = len(resid)
     mad0 = (resid[n // 2] if n % 2
             else 0.5 * (resid[n // 2 - 1] + resid[n // 2]))
-    assert abs(r["scale"] - mad0 / 0.6745) < 1e-12
+    # Two scales are reported, and they are not interchangeable:
+    # "scale" follows MASS, which computes the scale from the residuals
+    # of the PREVIOUS iteration, while "scale_final" is the one
+    # consistent with the residuals actually returned. mad0 above is
+    # taken from those returned residuals, so it pins scale_final. The
+    # result flags the distinction itself.
+    assert r["scale_follows_mass_not_the_final_residuals"]
+    assert abs(r["scale_final"] - mad0 / 0.6745) < 1e-9
+    # The MASS-convention scale is close but deliberately not equal.
+    assert r["scale"] != r["scale_final"]
 
 
 def test_rlm_validates_shapes():

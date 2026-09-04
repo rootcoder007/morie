@@ -227,7 +227,14 @@ mqtmpl_scan_cim <- function(y, markers, positions, cofactors = list(),
 mqtmpl_METHODS <- c("em", "mr", "hk", "imp")
 mqtmpl_AVAILABLE <- c("em", "mr", "imp")
 mqtmpl_UNSOURCED <- list(
-  hk = "Haley-Knott regression is named but not defined in Broman et al. (2003); the primary source, Haley, C. S. & Knott, S. A. (1992) 'A simple regression method for mapping quantitative trait loci in line crosses using flanking markers', Heredity 69(4), 315-324, doi:10.1038/hdy.1992.131, is not in the corpus"
+  hk = paste0(
+    "Haley-Knott regression is named but not defined in Broman et",
+    " al. (2003); the primary source, Haley, C. S. & Knott, S. A.",
+    " (1992) 'A simple regression method for mapping quantitative",
+    " trait loci in line crosses using flanking markers', Heredit",
+    "y 69(4), 315-324, doi:10.1038/hdy.1992.131, is not in the co",
+    "rpus"
+  )
 )
 
 #' mqtmpl_method_status
@@ -615,7 +622,16 @@ mqtmpl_lod_support_interval <- function(scan_result, drop = 1.5) {
 #' @return A character value.
 #' @export
 mqtmpl_cheatsheet <- function() {
-  paste("mqtmpl: the scanning layer. Genotypes come from a forward-backward HMM that tolerates missing calls and a genotyping error rate, and collapses to the flanking-marker formula when both are absent. Scans by EM or marker regression; Haley-Knott and multiple imputation are named and REFUSED, with citations. Genome-wide significance is a permutation threshold, because the maximum over correlated positions is not chi-squared anything.")
+  paste(paste0(
+    "mqtmpl: the scanning layer. Genotypes come from a forward-ba",
+    "ckward HMM that tolerates missing calls and a genotyping err",
+    "or rate, and collapses to the flanking-marker formula when b",
+    "oth are absent. Scans by EM or marker regression; Haley-Knot",
+    "t and multiple imputation are named and REFUSED, with citati",
+    "ons. Genome-wide significance is a permutation threshold, be",
+    "cause the maximum over correlated positions is not chi-squar",
+    "ed anything."
+  ))
 }
 
 # house entry point: the package exports one morie_<module>

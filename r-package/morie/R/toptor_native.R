@@ -127,7 +127,7 @@ morie_topological_torsions <- function(elements, bonds, common_types = NULL) {
             nbr <- degree[p] - if (k == 1L || k == 4L) 1L else 2L
             list(npi[p], types[p], nbr)
           })
-          rev_ <- code[length(code):1L]
+          rev_ <- rev(code)
           canon <- if (.lex_le(code, rev_)) code else rev_
           key <- paste0(vapply(canon, function(t)
             paste0(t[[1]], ":", t[[2]], ":", t[[3]]), character(1)),

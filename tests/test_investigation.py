@@ -7,20 +7,44 @@ from morie.investigation import (
 )
 
 
+def _draws(n, seed=20260903):
+    """Deterministic uniforms from a pinned LCG (Numerical Recipes).
+
+    Hand-written cyclic patterns (i % 3, i % 4, ...) look like data but
+    make one column an exact function of another -- the previous fixture
+    had the outcome equal to 1 exactly when province_region was 0, which
+    is perfect separation, and the fit was correctly refused as singular.
+    Independent pseudo-random draws avoid that.
+    """
+    s = seed
+    out = []
+    for _ in range(n):
+        s = (1664525 * s + 1013904223) % (2 ** 32)
+        out.append(s / 2 ** 32)
+    return out
+
+
+def _pick(u, values):
+    return [values[int(v * len(values)) % len(values)] for v in u]
+
+
 def _frame():
+    n = 120
+    u = _draws(n * 8)
+    c = [u[k * n:(k + 1) * n] for k in range(8)]
     return pd.DataFrame(
         {
-            "weight": [1.0, 1.2, 1.1, 0.9, 1.3, 0.8, 1.0, 1.1, 0.95, 1.05],
-            "alcohol_past12m": [1] * 10,
-            "heavy_drinking_30d": [0, 1, 0, 1, 1, 0, 0, 1, 0, 1],
-            "ebac_tot": [0.02, 0.11, 0.08, 0.04, 0.15, 0.07, 0.05, 0.12, 0.03, 0.10],
-            "ebac_legal": [0, 1, 0, 0, 1, 0, 0, 1, 0, 1],
-            "cannabis_any_use": [1, 1, 0, 0, 1, 0, 1, 0, 0, 1],
-            "age_group": [1, 2, 1, 2, 3, 4, 3, 4, 2, 1],
-            "gender": [0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-            "province_region": [0, 1, 0, 1, 2, 3, 2, 3, 1, 0],
-            "mental_health": [1, 2, 2, 3, 4, 4, 3, 2, 2, 3],
-            "physical_health": [1, 2, 2, 3, 4, 4, 3, 2, 2, 3],
+            "weight": [0.6 + 1.0 * v for v in c[0]],
+            "alcohol_past12m": [1] * n,
+            "heavy_drinking_30d": [int(v < 0.45) for v in c[1]],
+            "ebac_tot": [0.20 * v for v in c[2]],
+            "ebac_legal": [int(v < 0.40) for v in c[3]],
+            "cannabis_any_use": [int(v < 0.35) for v in c[4]],
+            "age_group": _pick(c[5], [1, 2, 3, 4]),
+            "gender": [int(v < 0.5) for v in c[6]],
+            "province_region": _pick(c[7], [0, 1, 2]),
+            "mental_health": _pick(c[0], [1, 2, 3, 4, 5]),
+            "physical_health": _pick(c[1], [1, 2, 3, 4, 5]),
         }
     )
 
