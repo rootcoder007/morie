@@ -341,7 +341,8 @@ def test_hawkes_ll_soe_reduces_to_exponential():
     t = _event_times(300, rate=2.0, seed=51)
     T = float(t[-1]) + 1.0
     a0, eta, beta = -1.0, 0.4, 1.5
-    soe = core.hawkes_ll_soe(_buf(t), T, math.exp(a0), eta, np.array([beta]), np.array([beta]))
+    soe = core.hawkes_ll_soe(_buf(t), T, math.exp(a0), eta,
+                             _buf([beta]), _buf([beta]))
     ref = float(_ll_exp_const(t, T, a0, eta, beta))
     assert np.isclose(soe, ref, rtol=1e-9, atol=1e-6)
 
@@ -355,7 +356,7 @@ def test_hawkes_ll_soe_matches_bruteforce(seed):
     w = rng.uniform(0.05, 0.5, size=3)
     beta = rng.uniform(0.5, 5.0, size=3)
     nu, eta = 0.4, 0.3
-    got = core.hawkes_ll_soe(_buf(t), T, nu, eta, _buf(w), beta)
+    got = core.hawkes_ll_soe(_buf(t), T, nu, eta, _buf(w), _buf(beta))
     ref = _soe_ll_reference(t, T, nu, eta, w, beta)
     assert np.isclose(got, ref, rtol=1e-8, atol=1e-6)
 
@@ -392,7 +393,7 @@ def test_soe_fit_lomax_likelihood_matches_exact(alpha, c):
     a0, eta = -1.0, 0.4
     exact = core.hawkes_ll_lomax_const(_buf(t), T, a0, eta, alpha, c)
     w, beta, err = soe_fit_lomax(alpha, c, T, tol=1e-8)
-    soe = core.hawkes_ll_soe(_buf(t), T, math.exp(a0), eta, _buf(w), beta)
+    soe = core.hawkes_ll_soe(_buf(t), T, math.exp(a0), eta, _buf(w), _buf(beta))
     assert np.isclose(soe, exact, rtol=1e-7)
 
 
@@ -497,7 +498,7 @@ def test_hawkes_ll_soe_cplx_reduces_to_real():
     T = float(t[-1]) + 1.0
     w = np.array([0.5, 0.3, 0.15])
     beta = np.array([0.4, 1.5, 4.0])
-    real = core.hawkes_ll_soe(_buf(t), T, 0.4, 0.3, _buf(w), beta)
+    real = core.hawkes_ll_soe(_buf(t), T, 0.4, 0.3, _buf(w), _buf(beta))
     w_re, w_im = _ri(w)
     b_re, b_im = _ri(beta)
     cplx = core.hawkes_ll_soe_cplx_ri(_buf(t), T, 0.4, 0.3, w_re, w_im,
