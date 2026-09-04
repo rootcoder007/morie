@@ -497,7 +497,9 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, base
             # crossover, where it is already cheap.
             if len(t_c) >= _SOE_MIN_N:
                 w, beta_soe, _ = soe_fit_lomax(alpha, c, float(T), tol=1e-8)
-                return _core_ext.hawkes_ll_soe(t_c, float(T), float(np.exp(a0)), eta, w, beta_soe)
+                return _core_ext.hawkes_ll_soe(t_c, float(T), float(np.exp(a0)),
+                                               eta, _f64(w),
+                                               _f64(beta_soe))
             return _core_ext.hawkes_ll_lomax_const(t_c, float(T), a0, eta, alpha, c)
         if kernel == "gamma":
             a0, eta = float(theta[0]), float(theta[1])
@@ -671,7 +673,7 @@ def hawkes_loglik_custom(t, T, nu, eta, kernel, kernel_integral):
         # C-function-pointer convention) still runs GIL-free in the
         # C++ O(n^2) engine.
         return _core_ext.hawkes_ll_custom(
-            np.ascontiguousarray(t, dtype=np.float64), float(T),
+            _f64(t), float(T),
             float(nu), float(eta), int(kernel.address),
             int(kernel_integral.address))
     # Plain Python callables evaluate in the pure-Python engine -- the

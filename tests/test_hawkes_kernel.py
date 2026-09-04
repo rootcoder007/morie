@@ -230,7 +230,7 @@ def test_hawkes_ll_exp_sin_parity(a0, a1, a2, a3, eta, beta):
     t = _event_times(250, rate=2.0, seed=31)
     T = float(t[-1]) + 1.0
     grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
-    got = core.hawkes_ll_exp_sin(_buf(t), T, a0, a1, a2, a3, eta, beta, grid, grid_vals)
+    got = core.hawkes_ll_exp_sin(_buf(t), T, a0, a1, a2, a3, eta, beta, _buf(grid), _buf(grid_vals))
     ref = float(_ll_exp_sin(t, T, a0, a1, a2, a3, eta, beta, grid, grid_vals))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
@@ -261,7 +261,7 @@ def test_hawkes_ll_weibull_sin_parity(a0, a1, a2, a3, eta, alpha, lam):
     t = _event_times(250, rate=2.0, seed=37)
     T = float(t[-1]) + 1.0
     grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
-    got = core.hawkes_ll_weibull_sin(_buf(t), T, a0, a1, a2, a3, eta, alpha, lam, grid, grid_vals)
+    got = core.hawkes_ll_weibull_sin(_buf(t), T, a0, a1, a2, a3, eta, alpha, lam, _buf(grid), _buf(grid_vals))
     ref = float(_ll_weibull_sin(t, T, a0, a1, a2, a3, eta, alpha, lam, grid, grid_vals))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
@@ -292,7 +292,7 @@ def test_hawkes_ll_lomax_sin_parity(a0, a1, a2, a3, eta, alpha, c):
     t = _event_times(250, rate=2.0, seed=41)
     T = float(t[-1]) + 1.0
     grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
-    got = core.hawkes_ll_lomax_sin(_buf(t), T, a0, a1, a2, a3, eta, alpha, c, grid, grid_vals)
+    got = core.hawkes_ll_lomax_sin(_buf(t), T, a0, a1, a2, a3, eta, alpha, c, _buf(grid), _buf(grid_vals))
     ref = float(_ll_lomax_sin(t, T, a0, a1, a2, a3, eta, alpha, c, grid, grid_vals))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
@@ -355,7 +355,7 @@ def test_hawkes_ll_soe_matches_bruteforce(seed):
     w = rng.uniform(0.05, 0.5, size=3)
     beta = rng.uniform(0.5, 5.0, size=3)
     nu, eta = 0.4, 0.3
-    got = core.hawkes_ll_soe(_buf(t), T, nu, eta, w, beta)
+    got = core.hawkes_ll_soe(_buf(t), T, nu, eta, _buf(w), beta)
     ref = _soe_ll_reference(t, T, nu, eta, w, beta)
     assert np.isclose(got, ref, rtol=1e-8, atol=1e-6)
 
@@ -392,7 +392,7 @@ def test_soe_fit_lomax_likelihood_matches_exact(alpha, c):
     a0, eta = -1.0, 0.4
     exact = core.hawkes_ll_lomax_const(_buf(t), T, a0, eta, alpha, c)
     w, beta, err = soe_fit_lomax(alpha, c, T, tol=1e-8)
-    soe = core.hawkes_ll_soe(_buf(t), T, math.exp(a0), eta, w, beta)
+    soe = core.hawkes_ll_soe(_buf(t), T, math.exp(a0), eta, _buf(w), beta)
     assert np.isclose(soe, exact, rtol=1e-7)
 
 
@@ -497,7 +497,7 @@ def test_hawkes_ll_soe_cplx_reduces_to_real():
     T = float(t[-1]) + 1.0
     w = np.array([0.5, 0.3, 0.15])
     beta = np.array([0.4, 1.5, 4.0])
-    real = core.hawkes_ll_soe(_buf(t), T, 0.4, 0.3, w, beta)
+    real = core.hawkes_ll_soe(_buf(t), T, 0.4, 0.3, _buf(w), beta)
     w_re, w_im = _ri(w)
     b_re, b_im = _ri(beta)
     cplx = core.hawkes_ll_soe_cplx_ri(_buf(t), T, 0.4, 0.3, w_re, w_im,
