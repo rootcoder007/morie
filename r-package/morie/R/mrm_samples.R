@@ -39,6 +39,11 @@ NULL
 #' @param name One of `"otis_b01"`, `"otis_b09"`, `"otis_c11"`,
 #'   `"tps_assault"`.
 #' @return A data.frame.
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' b01 <- morie_sample("otis_b01")
+#' head(b01)
+#' \dontshow{\}) # examplesIf}
 #' @export
 #' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' b01 <- morie_sample("otis_b01")

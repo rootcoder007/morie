@@ -801,6 +801,11 @@ morie_datasets_nyc_nypd_boro_crosswalk <- function() {
 #' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_nyc_school_districts(offline = TRUE)
 #' nrow(df)  # 33
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' df <- morie_datasets_nyc_school_districts(offline = TRUE)
+#' nrow(df)  # 33
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_nyc_school_districts <- function(offline = TRUE,
                                                   max_features = NULL) {
@@ -1187,6 +1192,12 @@ morie_parse_nypd_law_code <- function(law_code) {
 #' df <- morie_datasets_nyc_nypd_resolved("nypd_arrests_ytd",
 #'                                          offline = TRUE)
 #' names(df)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' df <- morie_datasets_nyc_nypd_resolved("nypd_arrests_ytd",
+#'                                          offline = TRUE)
+#' names(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_nyc_nypd_resolved <- function(
     dataset_key,

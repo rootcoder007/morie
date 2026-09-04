@@ -156,6 +156,11 @@ NULL
 #' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_to_neighbourhoods("158", offline = TRUE)
 #' head(df[, c("AREA_SHORT_CODE", "AREA_NAME")])
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' df <- morie_to_neighbourhoods("158", offline = TRUE)
+#' head(df[, c("AREA_SHORT_CODE", "AREA_NAME")])
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_to_neighbourhoods <- function(version = c("158", "140", "nia"),
                                      offline = TRUE,
@@ -397,6 +402,11 @@ morie_to_hood_crosswalk <- function() {
 #' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- data.frame(EVENT_ID = 1:3, HOOD_140 = c("082", "001", "075"))
 #' morie_tps_add_hood_158_from_140(df)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' df <- data.frame(EVENT_ID = 1:3, HOOD_140 = c("082", "001", "075"))
+#' morie_tps_add_hood_158_from_140(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_tps_add_hood_158_from_140 <- function(df, col_in = NULL,
                                               col_out = "HOOD_158_equiv",
@@ -487,6 +497,12 @@ morie_tps_add_hood_140_from_158 <- function(df, col_in = NULL,
 #' df <- data.frame(HOOD_140 = c("075", "001"),
 #'                  incidents = c(100, 42))
 #' morie_tps_disaggregate_140_to_158(df)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' df <- data.frame(HOOD_140 = c("075", "001"),
+#'                  incidents = c(100, 42))
+#' morie_tps_disaggregate_140_to_158(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_tps_disaggregate_140_to_158 <- function(df,
                                                 hood_140_col = "HOOD_140",
@@ -549,6 +565,12 @@ morie_tps_disaggregate_140_to_158 <- function(df,
 #' df <- data.frame(HOOD_158 = c("167", "168", "001"),
 #'                  incidents = c(40, 60, 42))
 #' morie_tps_aggregate_158_to_140(df)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' df <- data.frame(HOOD_158 = c("167", "168", "001"),
+#'                  incidents = c(40, 60, 42))
+#' morie_tps_aggregate_158_to_140(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_tps_aggregate_158_to_140 <- function(df,
                                              hood_158_col = "HOOD_158",

@@ -2683,6 +2683,50 @@ def _xlsx_col_index(ref):
     return col - 1
 
 
+def _xlsx_sheet_map(zf):
+    """Workbook sheet name -> worksheet part, via the relationship map.
+
+    The parts must NOT be resolved by sorting their filenames: a
+    workbook with ten or more sheets sorts "sheet10.xml" before
+    "sheet2.xml", so every sheet after the ninth resolved to the wrong
+    part. OOXML addresses them by r:id, so follow that.
+    """
+    import xml.etree.ElementTree as ET
+    M = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+    R = ("{http://schemas.openxmlformats.org/officeDocument/2006/"
+         "relationships}")
+    PR = ("{http://schemas.openxmlformats.org/package/2006/"
+          "relationships}")
+    rels = {}
+    try:
+        rt = ET.fromstring(zf.read("xl/_rels/workbook.xml.rels"))
+        for rel in rt.iter(PR + "Relationship"):
+            tgt = rel.get("Target") or ""
+            if tgt.startswith("/"):
+                tgt = tgt[1:]
+            elif not tgt.startswith("xl/"):
+                tgt = "xl/" + tgt
+            rels[rel.get("Id")] = tgt.replace("xl/./", "xl/")
+    except KeyError:
+        rels = {}
+    wb = ET.fromstring(zf.read("xl/workbook.xml"))
+    out = []
+    for sh in wb.iter(M + "sheet"):
+        rid = sh.get(R + "id")
+        part = rels.get(rid)
+        out.append((sh.get("name"), part))
+    if any(part is None for _, part in out):
+        # No usable rels: fall back to NUMERIC order of the parts.
+        parts = sorted(
+            (n for n in zf.namelist()
+             if n.startswith("xl/worksheets/sheet") and n.endswith(".xml")),
+            key=lambda n: int("".join(c for c in n.rsplit("/", 1)[-1]
+                                     if c.isdigit()) or 0))
+        out = [(nm, parts[i] if i < len(parts) else None)
+               for i, (nm, _) in enumerate(out)]
+    return out
+
+
 def read_excel(path, sheet_name=0, header=0, **kw):
     """Native .xlsx reader (zip + XML, stdlib only)."""
     del kw
@@ -2690,18 +2734,15 @@ def read_excel(path, sheet_name=0, header=0, **kw):
     import zipfile
     zf = zipfile.ZipFile(path)
     shared = _xlsx_shared_strings(zf)
-    sheets = sorted(n for n in zf.namelist()
-                    if n.startswith("xl/worksheets/sheet")
-                    and n.endswith(".xml"))
+    smap = _xlsx_sheet_map(zf)
     if isinstance(sheet_name, int):
-        target = sheets[sheet_name]
+        target = smap[sheet_name][1]
     else:
-        # map workbook sheet names to files via workbook.xml order
-        ns = {"m": "http://schemas.openxmlformats.org/"
-                   "spreadsheetml/2006/main"}
-        wb = ET.fromstring(zf.read("xl/workbook.xml"))
-        names = [s.get("name") for s in wb.find("m:sheets", ns)]
-        target = sheets[names.index(sheet_name)]
+        names = [nm for nm, _ in smap]
+        if sheet_name not in names:
+            raise ValueError("no sheet named %r; the workbook has %r"
+                             % (sheet_name, names))
+        target = smap[names.index(sheet_name)][1]
     ns = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
     root = ET.fromstring(zf.read(target))
     grid = {}
@@ -2880,11 +2921,7 @@ class ExcelFile:
         import zipfile
         self._path = path
         zf = zipfile.ZipFile(path)
-        ns = {"m": "http://schemas.openxmlformats.org/"
-                   "spreadsheetml/2006/main"}
-        wb = ET.fromstring(zf.read("xl/workbook.xml"))
-        self.sheet_names = [s.get("name")
-                            for s in wb.find("m:sheets", ns)]
+        self.sheet_names = [nm for nm, _ in _xlsx_sheet_map(zf)]
 
     def parse(self, sheet_name=0, **kw):
         return read_excel(self._path, sheet_name=sheet_name, **kw)
