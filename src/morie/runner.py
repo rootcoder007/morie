@@ -1268,7 +1268,16 @@ def _handle_exec(args: argparse.Namespace) -> int:
     import subprocess
     import tempfile
 
-    from morie._exec_guard import ExecGuardError, ensure_exec_allowed
+    # Absent from the published wheel by design: without the guard module
+    # there is no exec surface to authorise, so refuse rather than raise
+    # ModuleNotFoundError at the user.
+    try:
+        from morie._exec_guard import ExecGuardError, ensure_exec_allowed
+    except ModuleNotFoundError:
+        print("Error: 'morie exec' is not available in this build.",
+              file=sys.stderr)
+        return 1
+
 
     try:
         ensure_exec_allowed("'morie exec'")

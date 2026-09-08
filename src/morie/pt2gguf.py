@@ -257,7 +257,17 @@ def convert(checkpoint_path, output_path, tokenizer_dir=None, turbo_bits=0):
     # containers resolve, anything else refuses to unpickle -- with no
     # torch (and therefore no numpy) anywhere. Verified value-exact
     # against torch 2.13 including float16/bfloat16 and strided views.
-    from morie._exec_guard import checkpoint_trusted
+    # _exec_guard carries the interactive exec surface and is excluded
+    # from the published wheel, so it is absent for installed users. The
+    # trust gate itself is one environment read; keep it here rather than
+    # let a missing import decide a security question. Fails closed.
+    try:
+        from morie._exec_guard import checkpoint_trusted
+    except ModuleNotFoundError:
+        def checkpoint_trusted():
+            val = os.environ.get("MORIE_TRUST_CHECKPOINT", "").strip().lower()
+            return val in {"1", "true", "yes", "on"}
+
     from morie._pt_reader import load_checkpoint
 
     # The module docstring above promises the checkpoint is deserialized
