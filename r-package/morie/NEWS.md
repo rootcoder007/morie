@@ -1,4 +1,16 @@
-# morie 1.1.7 (development, feat/native-specializations)
+# morie 1.2.0 - 2026-09-08
+
+## Native specializations: the dependency-light release
+
+Locked to rmorie 1.2.0. Every estimator that delegated to a heavy runtime
+dependency now has a native implementation, cross-validated against the
+package it replaces. pandas, numpy, scipy, scikit-learn and statsmodels
+no longer appear in a single import statement in src/ or tests/, and the
+supply-chain lock shrank from 1,261 lines to 68 as a result. The
+reference implementations that remain (DoubleML, matplotlib) are
+cross-validation and plotting only, and live in requirements-parity.in
+outside the lock.
+
 
 ## Wave 3: every ledger module implemented three-way
 
