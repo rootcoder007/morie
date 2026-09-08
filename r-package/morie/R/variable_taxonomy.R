@@ -46,7 +46,7 @@ NULL
 # startsWith() so all OTIS series share the same UniqueIndividual_ID
 # entry.
 .MORIE_INVARIANT_OVERRIDES <- list(
-  # OTIS — random per-fiscal-year ID reassignment
+  # OTIS -- random per-fiscal-year ID reassignment
   list(ds_prefix = "b01", col = "UniqueIndividual_ID",
        patch = list(cross_year_safe = FALSE, role = "identifier",
                      notes = "Random per-fiscal-year reassignment (OTIS dict).",
@@ -55,7 +55,7 @@ NULL
        patch = list(cross_year_safe = FALSE, role = "identifier",
                      notes = "Random per-fiscal-year reassignment (OTIS dict).",
                      source = "override")),
-  # ARSAU — per-incident identifiers
+  # ARSAU -- per-incident identifiers
   list(ds_prefix = "uof_main_records", col = "BatchFileName",
        patch = list(role = "identifier",
                      notes = "Joins main<->individual<->weapon<->probe within year.",
@@ -68,7 +68,7 @@ NULL
        patch = list(role = "identifier", source = "override")),
   list(ds_prefix = "uof_individual_records", col = "Indiv_Index",
        patch = list(role = "identifier", source = "override")),
-  # ARSAU — outcome
+  # ARSAU -- outcome
   list(ds_prefix = "uof_individual_records",
        col = "IndivInjuries_PhysicalInjuries",
        patch = list(role = "outcome",
@@ -76,6 +76,16 @@ NULL
                      source = "override"))
 )
 
+#' .override_for
+#'
+#' A step of the variable_taxonomy implementation. Called by \code{morie_classify_variable}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param dataset_name Character; passed to \code{tolower}.
+#' @param col_name Character; passed to \code{trimws}.
+#' @return Nothing; the function is called for its effect.
+#' @export
 .override_for <- function(dataset_name, col_name) {
   ds_lc <- tolower(dataset_name)
   col_lc <- tolower(trimws(col_name))
@@ -104,6 +114,15 @@ NULL
                        c("0", "1"), c("1", "0"))
 
 
+#' .is_boolean_value_set
+#'
+#' A step of the variable_taxonomy implementation. Called by \code{.level_from_spec}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param vv Optional; may be \code{NULL}. A vector; its length is taken.
+#' @return A logical value.
+#' @export
 .is_boolean_value_set <- function(vv) {
   if (is.null(vv) || length(vv) == 0L) return(FALSE)
   lc <- tolower(trimws(as.character(vv)))
@@ -113,6 +132,15 @@ NULL
   FALSE
 }
 
+#' .cardinality_from_vv
+#'
+#' A step of the variable_taxonomy implementation. Called by \code{morie_classify_variable}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param vv Optional; may be \code{NULL}. A vector; its length is taken.
+#' @return A character value.
+#' @export
 .cardinality_from_vv <- function(vv) {
   if (is.null(vv) || length(vv) == 0L) return("unknown")
   n <- length(vv)
@@ -122,6 +150,19 @@ NULL
   "discrete_high"
 }
 
+#' .level_from_spec
+#'
+#' A step of the variable_taxonomy implementation. Called by \code{morie_classify_variable}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param col_name Character; passed to \code{grepl}.
+#' @param dtype One of \code{"bool"}, \code{"date"}, \code{"datetime"}, \code{"float"},
+#' \code{"int"}, \code{"string"}.
+#' @param valid_values Optional; may be \code{NULL}. A vector; its length is taken.
+#' @param dataset_name Accepted by the signature and not used anywhere in the body.
+#' @return A character value.
+#' @export
 .level_from_spec <- function(col_name, dtype, valid_values, dataset_name) {
   dtype <- tolower(dtype %||% "string")
   if (grepl(.RE_IDENTIFIER, col_name, ignore.case = TRUE)) return("identifier")
@@ -144,6 +185,15 @@ NULL
   "nominal"
 }
 
+#' .role_from_name
+#'
+#' A step of the variable_taxonomy implementation. Called by \code{morie_classify_variable}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param col_name Character; passed to \code{grepl}.
+#' @return A character value.
+#' @export
 .role_from_name <- function(col_name) {
   if (grepl(.RE_IDENTIFIER, col_name, ignore.case = TRUE)) return("identifier")
   if (grepl(.RE_OUTCOME,    col_name, ignore.case = TRUE)) return("outcome")
@@ -155,7 +205,7 @@ NULL
 # Public API
 # ---------------------------------------------------------------------------
 
-#' Classify one variable.
+#' Classify one variable
 #'
 #' @param col_name Character; the column name.
 #' @param dtype Character; one of \code{int} / \code{float} /
@@ -207,10 +257,10 @@ morie_classify_variable <- function(col_name, dtype = "string",
 }
 
 
-#' Recommended summary statistic for a single variable.
+#' Recommended summary statistic for a single variable
 #'
 #' @param tax A \code{morie_variable_taxonomy}.
-#' @return Character scalar — plain-language hint at which summary suits.
+#' @return Character scalar -- plain-language hint at which summary suits.
 #' @examples
 #' tax <- structure(
 #'   list(dataset_name = "X", column_name = "score", level = "ordinal",
@@ -236,13 +286,13 @@ morie_recommended_summary <- function(tax) {
 }
 
 
-#' Recommended bivariate test for a pair of variables.
+#' Recommended bivariate test for a pair of variables
 #'
 #' Looks up the (level_a, level_b) combination and returns the right
 #' default test (Stevens-1946 hierarchy).
 #'
 #' @param tax_a,tax_b Two \code{morie_variable_taxonomy} objects.
-#' @return Character scalar — recommended test name.
+#' @return Character scalar -- recommended test name.
 #' @examples
 #' tax <- structure(
 #'   list(dataset_name = "X", column_name = "colour", level = "nominal",
@@ -280,11 +330,16 @@ morie_recommended_pair_test <- function(tax_a, tax_b) {
 }
 
 
-#' Print method for taxonomy entries.
+#' Print method for taxonomy entries
 #' @param x A \code{morie_variable_taxonomy} object.
 #' @param ... Unused.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' \donttest{
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie:::print.morie_variable_taxonomy(D)
+#' }
 print.morie_variable_taxonomy <- function(x, ...) {
   cat(sprintf("Variable taxonomy: %s :: %s\n", x$dataset_name, x$column_name))
   cat(sprintf("  level        : %s\n", x$level))

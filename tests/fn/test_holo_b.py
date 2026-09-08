@@ -1,10 +1,10 @@
 """Tests for morie.fn.holo_b -- box plot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 plt = pytest.importorskip("matplotlib.pyplot")
-pd = pytest.importorskip("pandas")
+from morie.fn import _frame_core as pd
 
 from morie.fn.holo_b import holo_box
 

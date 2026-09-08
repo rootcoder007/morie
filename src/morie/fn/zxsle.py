@@ -1,6 +1,6 @@
 """Spatial elastic net"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -27,3 +27,7 @@ spat = spatial_elastic
 
 def cheatsheet() -> str:
     return "spatial_elastic({}) -> Spatial elastic net"
+
+
+# compact alias per ledger/NAMING.md
+spatialelastic = spatial_elastic

@@ -23,7 +23,7 @@ def quadrat_aggregation(counts_or_points, scales, window=None):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pts = np.asarray(counts_or_points, dtype=np.float64)
     scales = np.asarray(scales, dtype=int)

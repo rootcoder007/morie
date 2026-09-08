@@ -8,7 +8,7 @@ Journal of the Royal Statistical Society, Series C, 32(2), 165-171.
 
 __all__ = ["lglog"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def lglog(
@@ -72,7 +72,7 @@ def lglog(
     Bennett, S. (1983). Journal of the Royal Statistical Society, Series C,
     32(2), 165-171.
     """
-    from scipy import optimize as _opt
+    from ._sci_core import optimize as _opt
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)
@@ -149,7 +149,7 @@ def lglog(
 
     # SE via numerical Hessian
     try:
-        from scipy.optimize import approx_fprime
+        from ._sci_core import approx_fprime
 
         eps = 1e-5
         hess = np.zeros((p_full, p_full))

@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Full abridged life table."""
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 
@@ -87,3 +87,7 @@ ltabl = life_table_full
 
 def cheatsheet() -> str:
     return "life_table_full({}) -> Full abridged life table."
+
+
+# compact alias per ledger/NAMING.md
+lifetablefull = life_table_full

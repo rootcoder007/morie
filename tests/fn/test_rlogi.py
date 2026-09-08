@@ -1,6 +1,6 @@
 """Tests for morie.fn.rlogi -- Logistic random variates."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rlogi import rlogi

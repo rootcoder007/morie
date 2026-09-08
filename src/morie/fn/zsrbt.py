@@ -1,6 +1,6 @@
 """Thin plate spline RBF"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ rbf_ = rbf_thinplate
 
 def cheatsheet() -> str:
     return "rbf_thinplate({}) -> Thin plate spline RBF"
+
+
+# compact alias per ledger/NAMING.md
+rbfthinplate = rbf_thinplate

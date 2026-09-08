@@ -1,6 +1,6 @@
 """Tests for esmoeg.esem_target_rotation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.esmoeg import esem_target_rotation
 

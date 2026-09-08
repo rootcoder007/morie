@@ -3,8 +3,8 @@
 
 from typing import Union
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import TestResult
 
@@ -71,3 +71,7 @@ mood = mood_median_test
 
 def cheatsheet() -> str:
     return "mood_median_test({}) -> Mood's median test."
+
+
+# compact alias per ledger/NAMING.md
+moodmediantest = mood_median_test

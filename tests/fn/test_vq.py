@@ -1,6 +1,6 @@
 """Tests for morie.fn.vq — vector quantization."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vq import vector_quantize
 

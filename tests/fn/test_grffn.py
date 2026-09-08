@@ -1,6 +1,6 @@
 """Tests for grffn.geron_transformer_feedforward."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grffn import geron_transformer_feedforward
 

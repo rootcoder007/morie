@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -63,3 +63,7 @@ morsw = morse_wavelet
 
 def cheatsheet() -> str:
     return "morse_wavelet({}) -> Generalized Morse wavelet."
+
+
+# compact alias per ledger/NAMING.md
+morsewavelet = morse_wavelet

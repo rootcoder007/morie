@@ -1,6 +1,6 @@
 """Tests for bndmoq.bound_moment_qed."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndmoq import bound_moment_qed
 

@@ -5,7 +5,7 @@ Glacier retreat spatial
 Category: GeoClim
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gcglc(data=None, coords=None, n=50):

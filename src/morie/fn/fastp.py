@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -94,3 +94,7 @@ def fast_pca(
 
 def cheatsheet() -> str:
     return "fast_pca({}) -> Randomized PCA."
+
+
+# compact alias per ledger/NAMING.md
+fastpca = fast_pca

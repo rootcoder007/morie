@@ -1,6 +1,6 @@
 """Tests for baysab.bayes_a_alpha."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.baysab import bayes_a_alpha
 

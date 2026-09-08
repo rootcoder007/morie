@@ -8,6 +8,18 @@
 
 # Shared design helper: long panel -> cohort (first treated period,
 # NA = never), event time, and the treated-post indicator.
+#' Shared design helper: long panel -> cohort (first treated period,
+#'
+#' NA = never), event time, and the treated-post indicator.
+#'
+#' @param data A vector; indexed elementwise.
+#' @param outcome Passed to \code{c}.
+#' @param unit Passed to \code{c}.
+#' @param time Passed to \code{c}.
+#' @param treatment_time Passed to \code{c}.
+#' @return A list with \code{y}, \code{unit}, \code{time}, \code{g}, \code{rel},
+#' \code{treated_post}.
+#' @export
 .morie_did_modern_frame <- function(data, outcome, unit, time,
                                     treatment_time) {
   need <- c(outcome, unit, time, treatment_time)
@@ -110,6 +122,16 @@ morie_did_sun_abraham <- function(data, outcome, unit, time,
 
 # Solve additive unit/time FEs on (possibly unbalanced) untreated
 # cells by alternating projections; returns per-level lookups.
+#' Solve additive unit/time FEs on (possibly unbalanced) untreated
+#'
+#' cells by alternating projections; returns per-level lookups.
+#'
+#' @param y0 Numeric; combined arithmetically in the body.
+#' @param u0 Passed to \code{nlevels}.
+#' @param t0 Passed to \code{nlevels}.
+#' @param iters A count; the body uses it as \code{seq_len(...)}. Defaults to \code{50L}.
+#' @return A list with \code{a}, \code{g}.
+#' @export
 .morie_did_fe_solve <- function(y0, u0, t0, iters = 50L) {
   a <- stats::setNames(rep(0, nlevels(u0)), levels(u0))
   gm <- stats::setNames(rep(0, nlevels(t0)), levels(t0))
@@ -119,9 +141,12 @@ morie_did_sun_abraham <- function(data, outcome, unit, time,
     gm_new <- tapply(y0 - a_new[u0], t0, mean)
     gm_new[is.na(gm_new)] <- 0
     if (max(abs(a_new - a), abs(gm_new - gm)) < 1e-10) {
-      a <- a_new; gm <- gm_new; break
+      a <- a_new
+      gm <- gm_new
+      break
     }
-    a <- a_new; gm <- gm_new
+    a <- a_new
+    gm <- gm_new
   }
   list(a = a, g = gm)
 }

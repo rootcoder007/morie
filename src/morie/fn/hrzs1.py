@@ -16,8 +16,8 @@ Two-step semiparametric estimator (Powell-Newey-Vella):
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.stats import norm
+from . import _array_core as np
+from ._stats_core import norm
 
 from ._richresult import RichResult
 

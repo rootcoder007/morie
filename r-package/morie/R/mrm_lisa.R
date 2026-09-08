@@ -28,6 +28,18 @@
 NULL
 
 
+#' .haversine_km_lisa
+#'
+#' A step of the mrm_lisa implementation. Called by \code{.knn_weights_lisa}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param lat1 Numeric; combined arithmetically in the body.
+#' @param lon1 Numeric; combined arithmetically in the body.
+#' @param lat2 Numeric; combined arithmetically in the body.
+#' @param lon2 Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
 .haversine_km_lisa <- function(lat1, lon1, lat2, lon2) {
   R <- 6371
   rad <- pi / 180
@@ -38,6 +50,18 @@ NULL
 }
 
 
+#' .knn_weights_lisa
+#'
+#' A step of the mrm_lisa implementation. Called by \code{mrm_tps_lisa},
+#' \code{mrm_tps_polygon_moran_per_year}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param lat A vector; its length is taken and its elements indexed.
+#' @param lon A vector; indexed elementwise.
+#' @param k Numeric; combined arithmetically in the body.
+#' @return The value of \code{W}, as built in the body.
+#' @export
 .knn_weights_lisa <- function(lat, lon, k) {
   n <- length(lat)
   W <- matrix(0, n, n)
@@ -198,7 +222,7 @@ mrm_tps_polygon_moran_per_year <- function(
     )
     if (is.null(res)) next
     # Global p-value via permutation of the z-surface (mirrors
-    # mrm_lisa.py:204-219 — was missing in the R port; added 2026-05-22).
+    # mrm_lisa.py:204-219 -- was missing in the R port; added 2026-05-22).
     set.seed(seed)
     x <- as.numeric(data[[c]])
     x <- x[!is.na(x)]

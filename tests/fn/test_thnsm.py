@@ -1,6 +1,6 @@
 """Tests for morie.fn.thnsm -- random half-sampling estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.thnsm import snap_estimator, thnsm

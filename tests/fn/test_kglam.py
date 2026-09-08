@@ -1,6 +1,6 @@
 """Tests for morie.fn.kglam -- Kriging weights (lambda)"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kglam import kriging_lambda
 

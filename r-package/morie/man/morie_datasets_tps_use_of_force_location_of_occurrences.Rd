@@ -38,11 +38,11 @@ affects the hub_id -> FeatureServer URL lookup.}
 }
 \value{
 A data.frame / GeoJSON list / file path; see
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} for per-format semantics.
+\code{morie_datasets_tps_arcgis_hub_by_id()} for per-format semantics.
 }
 \description{
 Toronto PS ArcGIS Hub dataset wrapper. Thin dispatch to
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} with the canonical
+\code{morie_datasets_tps_arcgis_hub_by_id()} with the canonical
 hub item_id \verb{0e7f95cb45704c8e8c9a05973422211c}.
 }
 \details{
@@ -50,4 +50,9 @@ This table provides location information, aggregated to the
 division level.
 
 Tags: RBDC; race; race based data
+}
+\examples{
+\dontrun{
+morie_datasets_tps_use_of_force_location_of_occurrences()
+}
 }

@@ -3,8 +3,8 @@
 
 import math
 
-import numpy as np
-import scipy.stats as scipy_stats
+from . import _array_core as np
+from . import _stats_core as scipy_stats
 
 
 def hajek_mean(
@@ -77,3 +77,7 @@ h_mean_fn = hajek_mean
 
 def cheatsheet() -> str:
     return "hajek_mean({}) -> Hajek estimator for population mean."
+
+
+# compact alias per ledger/NAMING.md
+hajekmean = hajek_mean

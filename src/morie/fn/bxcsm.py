@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
-from scipy.optimize import minimize_scalar
+from . import _array_core as np
+from . import _stats_core as stats
+from ._sci_core import minimize_scalar
 
 
 def bxcsm(

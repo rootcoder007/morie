@@ -1,6 +1,6 @@
 """Tests for tstinf.test_information."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tstinf import test_information as _test_information
 

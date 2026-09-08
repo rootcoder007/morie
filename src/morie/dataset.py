@@ -34,7 +34,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 logger = logging.getLogger(__name__)
 
@@ -543,7 +543,13 @@ def profile_dataset(
     'treatment'
     """
     if not isinstance(df, pd.DataFrame):
-        raise TypeError(f"Expected pandas DataFrame, got {type(df).__name__}")
+        # accept a real pandas frame (tests, user code) by copying it
+        # into the native frame core
+        if hasattr(df, "columns") and hasattr(df, "__getitem__"):
+            df = pd.DataFrame({c: list(df[c]) for c in df.columns})
+        else:
+            raise TypeError(
+                f"Expected pandas DataFrame, got {type(df).__name__}")
     if df.shape[0] == 0 or df.shape[1] == 0:
         raise ValueError(f"DataFrame must have at least one row and one column; got shape {df.shape}")
 

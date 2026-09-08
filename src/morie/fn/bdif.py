@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats as sp
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as sp
 
 
 def bayesian_dif(
@@ -129,3 +129,7 @@ def bayesian_dif(
 
 def cheatsheet() -> str:
     return "bayesian_dif({}) -> Bayesian DIF detection via parameter posterior differences."
+
+
+# compact alias per ledger/NAMING.md
+bayesiandif = bayesian_dif

@@ -10,6 +10,19 @@
 # keys set MORIE_KEYSTORE_PATH (or pass path = ... explicitly to the
 # keystore_create / load / store / wipe functions). morie 0.9.4 was
 # archived from CRAN over this same issue; do not regress.
+#' CRAN policy: packages must not write outside tempdir() without
+#'
+#' explicit user opt-in. The keystore default path therefore resolves to
+#' a session-scoped tempdir() location; users who want persistent keys
+#' set MORIE_KEYSTORE_PATH (or pass path = ... explicitly to the
+#' keystore_create / load / store / wipe functions). morie 0.9.4 was
+#' archived from CRAN over this same issue; do not regress.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
+#' @examples
+#' res <- .morie_keystore_default_path()
+#' res
 .morie_keystore_default_path <- function() {
   override <- Sys.getenv("MORIE_KEYSTORE_PATH", "")
   if (nzchar(override)) {
@@ -24,6 +37,15 @@
 .MORIE_SCRYPT_DK <- 32L
 .MORIE_SODIUM_NONCE_LEN <- 24L
 
+#' .morie_keystore_require
+#'
+#' A step of the crypto_keystore implementation. Called by \code{.morie_derive_key},
+#' \code{.morie_read_store}, \code{.morie_write_store} and 4 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_keystore_require <- function() {
   if (!requireNamespace("sodium", quietly = TRUE)) {
     stop("morie_crypto requires sodium; install.packages('sodium')",
@@ -35,10 +57,32 @@
   }
 }
 
+#' .morie_resolve_path
+#'
+#' A step of the crypto_keystore implementation. Called by \code{.morie_read_store},
+#' \code{.morie_write_store}, \code{morie_crypto_keystore_create}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param path Passed to \code{path.expand}.
+#' @return The value of \code{normalizePath}.
+#' @export
 .morie_resolve_path <- function(path) {
   normalizePath(path.expand(path), mustWork = FALSE)
 }
 
+#' .morie_derive_key
+#'
+#' A step of the crypto_keystore implementation. Called by
+#' \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_list},
+#' \code{morie_crypto_keystore_load} and 1 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param password A vector; its length is taken.
+#' @param salt The body requires: salt must be a raw vector.
+#' @return Nothing; this branch always raises.
+#' @export
 .morie_derive_key <- function(password, salt) {
   .morie_keystore_require()
   if (!is.raw(salt)) stop("salt must be a raw vector", call. = FALSE)
@@ -59,6 +103,17 @@
   )
 }
 
+#' .morie_hex_to_raw
+#'
+#' A step of the crypto_keystore implementation. Called by
+#' \code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load},
+#' \code{morie_crypto_keystore_store}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param h A vector; its length is taken.
+#' @return The value of \code{as.raw}.
+#' @export
 .morie_hex_to_raw <- function(h) {
   if (!is.character(h) || length(h) != 1L) {
     stop("expected single hex string", call. = FALSE)
@@ -71,11 +126,32 @@
   as.raw(strtoi(pairs, 16L))
 }
 
+#' .morie_raw_to_hex
+#'
+#' A step of the crypto_keystore implementation. Called by
+#' \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_store}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param r Passed to \code{is.raw}.
+#' @return A character value.
+#' @export
 .morie_raw_to_hex <- function(r) {
   if (!is.raw(r)) stop("expected raw vector", call. = FALSE)
   paste(format(r), collapse = "")
 }
 
+#' .morie_read_store
+#'
+#' A step of the crypto_keystore implementation. Called by
+#' \code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load},
+#' \code{morie_crypto_keystore_store}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param path Passed to \code{.morie_resolve_path}.
+#' @return The value of \code{.morie_from_json}.
+#' @export
 .morie_read_store <- function(path) {
   .morie_keystore_require()
   p <- .morie_resolve_path(path)
@@ -85,6 +161,17 @@
   .morie_from_json(p, simplifyVector = FALSE)
 }
 
+#' .morie_write_store
+#'
+#' A step of the crypto_keystore implementation. Called by
+#' \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_store}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param data Passed to \code{.morie_to_json}.
+#' @param path Passed to \code{.morie_resolve_path}.
+#' @return Invisibly,nothing; the function is called for its effect.
+#' @export
 .morie_write_store <- function(data, path) {
   .morie_keystore_require()
   p <- .morie_resolve_path(path)
@@ -101,7 +188,7 @@
 #' @param password Character scalar: keystore password.
 #' @param path     File path.
 #' @return Invisibly, NULL.
-#' @examples
+#' @examplesIf requireNamespace("sodium", quietly = TRUE)
 #' if (morie_crypto_sodium_available()) {
 #'   path <- tempfile(fileext = ".keystore")
 #'   morie_crypto_keystore_create("open sesame", path = path)
@@ -130,7 +217,7 @@ morie_crypto_keystore_create <- function(password,
 #' @param password Character scalar.
 #' @param path     Keystore path.
 #' @return Invisibly, NULL.
-#' @examples
+#' @examplesIf requireNamespace("sodium", quietly = TRUE)
 #' if (morie_crypto_sodium_available()) {
 #'   path <- tempfile(fileext = ".keystore")
 #'   morie_crypto_keystore_create("pw", path = path)
@@ -170,7 +257,7 @@ morie_crypto_keystore_store <- function(name, pk, sk, password,
 #' @param password Character scalar.
 #' @param path     Keystore path.
 #' @return Named list with pk (raw) and sk (raw).
-#' @examples
+#' @examplesIf requireNamespace("sodium", quietly = TRUE)
 #' if (morie_crypto_sodium_available()) {
 #'   path <- tempfile(fileext = ".keystore")
 #'   morie_crypto_keystore_create("pw", path = path)
@@ -212,7 +299,7 @@ morie_crypto_keystore_load <- function(name, password,
 #' @param password Character scalar.
 #' @param path     Keystore path.
 #' @return Character vector of identifiers.
-#' @examples
+#' @examplesIf requireNamespace("sodium", quietly = TRUE)
 #' if (morie_crypto_sodium_available()) {
 #'   path <- tempfile(fileext = ".keystore")
 #'   morie_crypto_keystore_create("pw", path = path)

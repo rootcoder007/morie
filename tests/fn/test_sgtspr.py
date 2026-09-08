@@ -1,6 +1,6 @@
 """Tests for sgtspr.sgt_spectral_radius_bound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtspr import sgt_spectral_radius_bound
 

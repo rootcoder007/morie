@@ -1,8 +1,29 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Power analysis for t-tests."""
 
-import numpy as np
-from statsmodels.stats.power import TTestIndPower, TTestPower
+from . import _array_core as np
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from ._glm_core import TTestIndPower, TTestPower
+except ImportError:
+    TTestIndPower = _MissingDep('TTestIndPower')
+    TTestPower = _MissingDep('TTestPower')
 
 
 def power_t_test(
@@ -124,3 +145,7 @@ pwr_t = power_t_test
 
 def cheatsheet() -> str:
     return "power_t_test({}) -> Power analysis for t-tests."
+
+
+# compact alias per ledger/NAMING.md
+powerttest = power_t_test

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Orthogonal Procrustes rotation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ proc = procrustes_orth
 
 def cheatsheet() -> str:
     return "procrustes_orth({}) -> Orthogonal Procrustes rotation"
+
+
+# compact alias per ledger/NAMING.md
+procrustesorth = procrustes_orth

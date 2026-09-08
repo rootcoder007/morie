@@ -5,7 +5,7 @@ Genetic algorithm simulation
 Category: SpatialPat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gnsim(points=None, n=100, window=(0, 100, 0, 100)):

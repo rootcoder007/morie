@@ -1,6 +1,6 @@
 """Separable space-time covariance"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ st_c = st_cov_sep
 
 def cheatsheet() -> str:
     return "st_cov_sep({}) -> Separable space-time covariance"
+
+
+# compact alias per ledger/NAMING.md
+stcovsep = st_cov_sep

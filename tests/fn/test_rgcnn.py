@@ -1,8 +1,8 @@
 """Tests for rgcnn.rangayyan_cnn_signal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgcnn import rangayyan_cnn_signal
+from morie.fn.bsaclass import rangayyan_cnn_signal
 
 
 def test_rgcnn_basic():

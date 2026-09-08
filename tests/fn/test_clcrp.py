@@ -1,6 +1,6 @@
 """Tests for clcrp.clustered_crp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.clcrp import clustered_crp
 

@@ -1,6 +1,6 @@
 """Tests for sdurbm.spatial_durbin_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sdurbm import spatial_durbin_model
 

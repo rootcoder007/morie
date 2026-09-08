@@ -1,6 +1,6 @@
 """Tests for tmlnfp.tmle_non_inferiority."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlnfp import tmle_non_inferiority
 

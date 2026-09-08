@@ -1,6 +1,6 @@
 """Geographically weighted summary stats"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ gw_s = gw_summary
 
 def cheatsheet() -> str:
     return "gw_summary({}) -> Geographically weighted summary stats"
+
+
+# compact alias per ledger/NAMING.md
+gwsummary = gw_summary

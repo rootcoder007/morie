@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import DescriptiveResult
 
@@ -89,3 +89,7 @@ valfn = value_at_risk
 
 def cheatsheet() -> str:
     return "value_at_risk({}) -> Value at Risk (VaR)."
+
+
+# compact alias per ledger/NAMING.md
+valueatrisk = value_at_risk

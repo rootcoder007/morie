@@ -1,6 +1,6 @@
 """Tests for morie.fn.rcdfr — recidivism fairness."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.rcdfr import recidivism_fairness

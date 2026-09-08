@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import ESRes
 
@@ -46,3 +46,7 @@ odm_i = otis_demo_index
 
 def cheatsheet() -> str:
     return "otis_demo_index({}) -> Diversity index (Simpson/Shannon) for demographics."
+
+
+# compact alias per ledger/NAMING.md
+otisdemoindex = otis_demo_index

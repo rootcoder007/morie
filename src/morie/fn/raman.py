@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -76,3 +76,7 @@ def cheatsheet() -> str:
 
 
 raman = ramanujan_tau
+
+
+# compact alias per ledger/NAMING.md
+ramanujantau = ramanujan_tau

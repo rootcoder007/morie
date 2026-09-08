@@ -1,6 +1,6 @@
 """Tests for kmrwkv.kamath_rwkv_time_mix."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmrwkv import kamath_rwkv_time_mix
 

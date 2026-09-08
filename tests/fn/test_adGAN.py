@@ -1,6 +1,6 @@
 """Tests for adGAN.adversarial_anomaly."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.adGAN import adversarial_anomaly
 

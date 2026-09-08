@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxlam -- Lambert conformal conic projection"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxlam import lambert_proj
 

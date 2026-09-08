@@ -1,6 +1,6 @@
 """Tests for grduel.geron_dueling_dqn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grduel import geron_dueling_dqn
 

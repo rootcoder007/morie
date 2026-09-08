@@ -1,6 +1,6 @@
 """Tests for morie.fn.svagn -- 1D agenda setting equilibrium"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svagn import agenda_1d
 

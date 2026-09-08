@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.signal import butter, sosfiltfilt
+from . import _array_core as np
+from ._signal_core import butter, sosfiltfilt
 
 from ._containers import SignalResult
 
@@ -43,3 +43,7 @@ buttbp = butter_bandpass
 
 def cheatsheet() -> str:
     return "butter_bandpass({}) -> Butterworth bandpass filter."
+
+
+# compact alias per ledger/NAMING.md
+butterbandpass = butter_bandpass

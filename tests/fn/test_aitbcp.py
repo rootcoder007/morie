@@ -1,6 +1,6 @@
 """Tests for aitbcp.compositional_bray_curtis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitbcp import compositional_bray_curtis
 

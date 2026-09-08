@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MDS configuration flip check"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ mds_ = mds_flip
 
 def cheatsheet() -> str:
     return "mds_flip({}) -> MDS configuration flip check"
+
+
+# compact alias per ledger/NAMING.md
+mdsflip = mds_flip

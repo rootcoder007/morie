@@ -1,7 +1,7 @@
 """Spatial Durbin model estimation."""
 
-import numpy as np
-from scipy import optimize
+from . import _array_core as np
+from ._sci_core import optimize
 
 from ._containers import DescriptiveResult
 

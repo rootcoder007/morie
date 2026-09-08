@@ -15,7 +15,7 @@ def scatter_ideal_points(X, groups=None) -> DescriptiveResult:
 
     .. epigraph:: A journey of a thousand miles begins with a single step. -- Lao Tzu
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     if X.ndim == 1:

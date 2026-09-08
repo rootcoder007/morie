@@ -29,7 +29,7 @@ def test_sum1d_buffer_protocol():
     assert core.sum1d(array.array("d", [1.0, 2.0, 3.0, 4.0])) == 10.0
 
 
-def test_sum1d_numpy():
-    np = pytest.importorskip("numpy")
-    x = np.arange(100, dtype=np.float64)
-    assert core.sum1d(x) == 4950.0
+def test_sum1d_memoryview():
+    # same buffer-protocol path a numpy array would take
+    x = array.array("d", [float(v) for v in range(100)])
+    assert core.sum1d(memoryview(x)) == 4950.0

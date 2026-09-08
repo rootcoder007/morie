@@ -1,8 +1,8 @@
 """Tests for rng038.rangayyan_ch3_test_signal_sin_cos."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rng038 import rangayyan_ch3_test_signal_sin_cos
+from morie.fn.bsasig import rangayyan_ch3_test_signal_sin_cos
 
 
 def test_rng038_basic():

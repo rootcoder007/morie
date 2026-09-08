@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 
 def bayesian_ridge(
@@ -36,7 +36,8 @@ def bayesian_ridge(
 
     References
     ----------
-    MacKay, D. J. C. (1992). *Neural Computation*, 4(3), 415--447.
+    MacKay, D. J. C. (1992). Bayesian interpolation. *Neural
+    Computation*, 4(3), 415--447.
     """
     X_arr = np.asarray(X, dtype=float)
     y_arr = np.asarray(y, dtype=float).ravel()
@@ -86,3 +87,7 @@ brdge = bayesian_ridge
 
 def cheatsheet() -> str:
     return "bayesian_ridge({}) -> Bayesian ridge regression."
+
+
+# compact alias per ledger/NAMING.md
+bayesianridge = bayesian_ridge

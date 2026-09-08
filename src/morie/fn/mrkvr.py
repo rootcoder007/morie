@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .gmatv import grm_vanraden
@@ -115,3 +115,7 @@ def cheatsheet():
 # np.random.seed(16); M = np.random.randint(0,3,(20,8)).astype(float)
 # y = M @ np.random.randn(8) + 0.5*np.random.randn(20); x = np.zeros(20)
 # r = marker_variance(x, y, M); 0 < r.h2 < 1; sigma_m^2 finite.
+
+
+# compact alias per ledger/NAMING.md
+markervariance = marker_variance

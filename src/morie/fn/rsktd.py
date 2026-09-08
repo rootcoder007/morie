@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -49,3 +49,7 @@ rsktd = risk_trend
 
 def cheatsheet() -> str:
     return "risk_trend({}) -> Mean risk score trend over years."
+
+
+# compact alias per ledger/NAMING.md
+risktrend = risk_trend

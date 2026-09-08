@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -44,3 +44,7 @@ dft = dft_compute
 
 def cheatsheet() -> str:
     return "dft_compute({}) -> Discrete Fourier Transform."
+
+
+# compact alias per ledger/NAMING.md
+dftcompute = dft_compute

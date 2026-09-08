@@ -1,6 +1,6 @@
 """Sequential Gaussian simulation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ seq_ = seq_gauss_sim
 
 def cheatsheet() -> str:
     return "seq_gauss_sim({}) -> Sequential Gaussian simulation"
+
+
+# compact alias per ledger/NAMING.md
+seqgausssim = seq_gauss_sim

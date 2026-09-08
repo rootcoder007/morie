@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -61,3 +61,7 @@ short = polar_decompose
 
 def cheatsheet() -> str:
     return "polar_decompose({}) -> Polar decomposition A = UP."
+
+
+# compact alias per ledger/NAMING.md
+polardecompose = polar_decompose

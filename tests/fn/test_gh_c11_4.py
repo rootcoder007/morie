@@ -1,6 +1,6 @@
 """Tests for gh_c11_4.ghosal_gp_dens_crt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c11_4 import ghosal_gp_dens_crt
 

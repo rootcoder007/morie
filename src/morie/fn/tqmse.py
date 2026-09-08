@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -79,3 +79,7 @@ def cheatsheet() -> str:
 
 
 tqmse = turboquant_mse
+
+
+# compact alias per ledger/NAMING.md
+turboquantmse = turboquant_mse

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -37,7 +37,7 @@ def minimax_solve(
         shift = abs(A.min()) + 1.0
         A = A + shift
 
-    from scipy.optimize import linprog
+    from ._sci_core import linprog
 
     c = np.zeros(m + 1)
     c[-1] = -1
@@ -90,3 +90,7 @@ omsup = minimax_solve
 
 def cheatsheet() -> str:
     return "minimax_solve({}) -> Minimax optimization."
+
+
+# compact alias per ledger/NAMING.md
+minimaxsolve = minimax_solve

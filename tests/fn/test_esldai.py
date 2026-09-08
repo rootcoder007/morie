@@ -1,6 +1,6 @@
 """Tests for esldai.esl_dirichlet_proc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.esldai import esl_dirichlet_proc
 

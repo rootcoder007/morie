@@ -2,7 +2,7 @@
 % Please edit documentation in R/survey.R
 \name{morie_survey_design}
 \alias{morie_survey_design}
-\title{Construct a survey design object.}
+\title{Construct a survey design object}
 \usage{
 morie_survey_design(
   data,
@@ -36,4 +36,19 @@ package is installed; otherwise an S3 list of class
 \description{
 Returns a \code{survey::svydesign} object when \code{survey} is available; otherwise
 returns a lightweight list with the same fields the morie helpers consume.
+}
+\examples{
+\dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+if (requireNamespace("survey", quietly = TRUE)) {
+  .make_survey_df <- function(n = 100L, seed = 1L) {
+      set.seed(seed)
+      data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n, 
+          5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"), 
+          n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE), 
+          fpc = rep(1000L, n))
+  }
+  df <- .make_survey_df()
+  morie_survey_design(df, weights_col = "w")
+}
+\dontshow{\}) # examplesIf}
 }

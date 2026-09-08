@@ -1,6 +1,6 @@
 """Tests for kmtoxg.kamath_toxigen_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmtoxg import kamath_toxigen_score
 

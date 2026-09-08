@@ -1,6 +1,6 @@
 """Tests for grrnd.geron_randomized_search_cv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grrnd import geron_randomized_search_cv
 

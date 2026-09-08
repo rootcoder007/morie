@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -56,3 +56,7 @@ def cheatsheet():
 # >>> r = lr_warmup(500, lr_target=1.0, warmup_steps=1000)
 # >>> bool(np.isclose(float(r["value"]), 0.5))
 # True
+
+
+# compact alias per ledger/NAMING.md
+lrwarmup = lr_warmup

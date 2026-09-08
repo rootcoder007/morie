@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -91,3 +91,7 @@ paropt = pareto_optimize
 
 def cheatsheet() -> str:
     return "paropt() -> Identify the Pareto-optimal front from a set of multi-objective"
+
+
+# compact alias per ledger/NAMING.md
+paretooptimize = pareto_optimize

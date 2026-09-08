@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -35,7 +35,7 @@ def bandpass_filter(x, low, high, fs, order: int = 4) -> SignalResult:
     -------
     SignalResult
     """
-    from scipy.signal import butter, sosfiltfilt
+    from ._signal_core import butter, sosfiltfilt
 
     x = np.asarray(x, dtype=float)
     nyq = fs / 2.0
@@ -55,3 +55,7 @@ bpflt = bandpass_filter
 
 def cheatsheet() -> str:
     return "bandpass_filter({}) -> Bandpass Butterworth filter."
+
+
+# compact alias per ledger/NAMING.md
+bandpassfilter = bandpass_filter

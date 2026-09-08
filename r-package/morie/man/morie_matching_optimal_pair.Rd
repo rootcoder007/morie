@@ -21,7 +21,9 @@ morie_matching_optimal_pair(
 
 \item{distance}{One of \code{"propensity"} or \code{"mahalanobis"}.}
 
-\item{ps}{Optional pre-computed propensity scores.}
+\item{ps}{Optional propensity scores. When supplied they REPLACE
+the fitted model and become the matching distance directly,
+aligned to the rows that survive the NA drop.}
 }
 \value{
 A list of class \code{morie_match_result}.
@@ -32,6 +34,7 @@ Delegates to \pkg{MatchIt}'s \code{method = "optimal"} (which calls
 \pkg{optmatch}); otherwise uses a greedy approximation.
 }
 \examples{
+\donttest{
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -40,4 +43,5 @@ df <- data.frame(
   year = sample(2020:2022, 150, TRUE),
   treat3 = sample(0:2, 150, TRUE))
 morie_matching_optimal_pair(df, "d", c("x1", "x2"))
+}
 }

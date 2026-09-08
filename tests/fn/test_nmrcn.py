@@ -1,6 +1,6 @@
 """Tests for morie.fn.nmrcn -- Roll call normalization"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nmrcn import roll_call_normalize
 

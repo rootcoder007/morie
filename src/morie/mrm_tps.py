@@ -21,8 +21,8 @@ import math
 from dataclasses import dataclass
 from pathlib import Path
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 __all__ = [
     "mrm_tps_levy_scaling",
@@ -134,7 +134,7 @@ def mrm_tps_moran_clustering(
     n_noise = 0
     largest = 0
     try:
-        from sklearn.cluster import DBSCAN
+        from morie.fn._ml_core import DBSCAN
 
         pts = np.column_stack([lat * 111.0, lon * 111.0 * math.cos(np.deg2rad(lat.mean()))])
         labels = DBSCAN(eps=dbscan_eps, min_samples=dbscan_minpts).fit_predict(pts)

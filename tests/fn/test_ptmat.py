@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptmat -- Matern cluster process"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptmat import matern_process
 

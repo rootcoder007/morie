@@ -3,7 +3,7 @@
 \name{morie_otis_analyze_b07_ruhela_aggregate}
 \alias{morie_otis_analyze_b07_ruhela_aggregate}
 \alias{morie_otis_analyze_b07_mrm_aggregate}
-\title{b07 aggregate Ruhela (pivot to long): With-alert -> seg placements.}
+\title{b07 aggregate Ruhela (pivot to long): With-alert -> seg placements}
 \usage{
 morie_otis_analyze_b07_ruhela_aggregate(data, out_dir = NULL)
 
@@ -18,10 +18,12 @@ morie_otis_analyze_b07_mrm_aggregate(data, out_dir = NULL)
 \code{morie_otis_analysis_result}.
 }
 \description{
-b07 aggregate Ruhela (pivot to long): With-alert -> seg placements.
+b07 aggregate Ruhela (pivot to long): With-alert -> seg placements
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_b07 <- morie_synth_otis("b07", n = 120L, seed = 1L)
 morie_otis_analyze_b07_ruhela_aggregate(otis_b07)
+}
 }

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._otis_const import DEFAULT_COLS
 
@@ -40,3 +40,7 @@ rpl_g = rplace_by_gender
 
 def cheatsheet() -> str:
     return "rplace_by_gender({}) -> Placement counts by gender."
+
+
+# compact alias per ledger/NAMING.md
+rplacebygender = rplace_by_gender

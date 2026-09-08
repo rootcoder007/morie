@@ -1,6 +1,6 @@
 """Tests for gpkrn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gpkrn import gpkrn

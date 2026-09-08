@@ -1,6 +1,6 @@
 """Tests for cvxdle.boyd_dual_norm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxdle import boyd_dual_norm
 

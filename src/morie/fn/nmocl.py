@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Optimal Classification cutting line"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ oc_c = oc_cutline
 
 def cheatsheet() -> str:
     return "oc_cutline({}) -> Optimal Classification cutting line"
+
+
+# compact alias per ledger/NAMING.md
+occutline = oc_cutline

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.signal import savgol_filter
+from . import _array_core as np
+from ._signal_core import savgol_filter
 
 from ._containers import SignalResult
 

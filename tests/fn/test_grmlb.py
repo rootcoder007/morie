@@ -1,6 +1,6 @@
 """Tests for grmlb.geron_multilabel_classification."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grmlb import geron_multilabel_classification
 

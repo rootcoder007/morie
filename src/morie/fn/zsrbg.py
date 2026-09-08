@@ -1,6 +1,6 @@
 """Gaussian RBF interpolation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ rbf_ = rbf_gaussian
 
 def cheatsheet() -> str:
     return "rbf_gaussian({}) -> Gaussian RBF interpolation"
+
+
+# compact alias per ledger/NAMING.md
+rbfgaussian = rbf_gaussian

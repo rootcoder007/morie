@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import re
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -56,3 +56,7 @@ cloze = cloze_score
 
 def cheatsheet() -> str:
     return "cloze_score({}) -> Cloze test scoring."
+
+
+# compact alias per ledger/NAMING.md
+clozescore = cloze_score

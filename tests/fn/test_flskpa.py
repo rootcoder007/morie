@@ -1,6 +1,6 @@
 """Tests for flskpa.fleiss_kappa."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.flskpa import fleiss_kappa
 

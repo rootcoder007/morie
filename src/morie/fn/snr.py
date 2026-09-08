@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ snr = snr_estimate_fn
 
 def cheatsheet() -> str:
     return "snr_estimate_fn({}) -> SNR estimation."
+
+
+# compact alias per ledger/NAMING.md
+snrestimatefn = snr_estimate_fn

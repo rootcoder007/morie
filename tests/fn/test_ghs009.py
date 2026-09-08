@@ -1,6 +1,6 @@
 """Tests for ghs009.ghosal_ch3_stick_breaking_weights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs009 import ghosal_ch3_stick_breaking_weights
 

@@ -1,6 +1,6 @@
 """Tests for gb_cvo.gibbons_order_covariance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_cvo import gibbons_order_covariance
 

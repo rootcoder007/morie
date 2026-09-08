@@ -1,6 +1,6 @@
 """Veber rule for oral bioavailability."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def veber_rule(smiles):
 
 def cheatsheet():
     return "vebr3: Veber rule for oral bioavailability"
+
+
+# compact alias per ledger/NAMING.md
+veberrule = veber_rule

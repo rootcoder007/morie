@@ -1,42 +1,27 @@
-"""E(n)-equivariant GCN."""
+# morie.fn -- function file (rootcoder007/morie)
+r"""E(n)-equivariant graph convolution -- re-export of :mod:`egnnL`.
 
-import numpy as np
+``egcn`` and ``egnnL`` are two ledger rows citing the same paper
+(Satorras, Hoogeboom & Welling 2021). They are kept as one
+implementation with a re-export so the two entries cannot drift apart,
+exactly as ``timesf`` re-exports ``timesfm``.
 
-from ._richresult import RichResult
+See :mod:`egnnL` for the equations, the equivariance argument and the
+references.
+"""
 
-__all__ = ["e_gcn"]
+from .egnnL import (cheatsheet, coord_update, edge_message, egcl,
+                    equivariance_error, run_egnn)
 
+__all__ = ["edge_message", "coord_update", "egcl", "run_egnn",
+           "equivariance_error", "cheatsheet"]
 
-def e_gcn(G, X, coords):
-    """
-    E(n)-equivariant GCN
+# compact alias per ledger/NAMING.md
+equivariantgraphconv = run_egnn
 
-    Formula: E(n) equivariant message passing
-
-    Parameters
-    ----------
-    G : array-like
-        Input data.
-    X : array-like
-        Input data.
-    coords : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Satorras-Hoogeboom-Welling (2021)
-    """
-    G = np.atleast_1d(np.asarray(G, dtype=float))
-    n = len(G)
-    result = float(np.mean(G))
-    se = float(np.std(G, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "E(n)-equivariant GCN"})
+# public names resolved by fn/_lazy_map.json
+e_gcn = run_egnn
 
 
-def cheatsheet():
-    return "egcn: E(n)-equivariant GCN"
+# Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
+egcn = e_gcn

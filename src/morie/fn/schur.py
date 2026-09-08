@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import linalg as la
+from . import _array_core as np
+from ._sci_core import linalg as la
 
 from ._containers import DescriptiveResult
 
@@ -55,3 +55,7 @@ short = schur_decompose
 
 def cheatsheet() -> str:
     return "schur_decompose({}) -> Schur decomposition."
+
+
+# compact alias per ledger/NAMING.md
+schurdecompose = schur_decompose

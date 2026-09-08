@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -62,3 +62,7 @@ syndm = syndromic_score
 
 def cheatsheet() -> str:
     return "syndromic_score({}) -> Syndromic surveillance composite score."
+
+
+# compact alias per ledger/NAMING.md
+syndromicscore = syndromic_score

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -25,7 +25,7 @@ def trimmed_mean(
     -------
     ESRes
     """
-    from scipy.stats import trim_mean
+    from ._stats_core import trim_mean
 
     a = np.asarray(x, dtype=float)
     a = a[np.isfinite(a)]
@@ -47,3 +47,7 @@ tmean = trimmed_mean
 
 def cheatsheet() -> str:
     return "trimmed_mean(x, proportion=0.1) -> Trimmed mean."
+
+
+# compact alias per ledger/NAMING.md
+trimmedmean = trimmed_mean

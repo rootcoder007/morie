@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -103,3 +103,7 @@ timstr = time_stretch
 
 def cheatsheet() -> str:
     return "timstr() -> Phase vocoder time-stretching (no pitch change)"
+
+
+# compact alias per ledger/NAMING.md
+timestretch = time_stretch

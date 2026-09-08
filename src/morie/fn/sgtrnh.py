@@ -1,6 +1,6 @@
 """Randić connectivity index."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def sgt_randic_index(A):
 
 def cheatsheet():
     return "sgtrnh: Randić connectivity index"
+
+
+# compact alias per ledger/NAMING.md
+sgtrandicindex = sgt_randic_index

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -49,7 +49,7 @@ def edge_detect(
     kernel = np.exp(-(xx**2 + yy**2) / (2 * sigma**2))
     kernel /= kernel.sum()
 
-    from scipy.signal import convolve2d
+    from ._signal_core import convolve2d
 
     smoothed = convolve2d(img, kernel, mode="same", boundary="symm")
 
@@ -111,3 +111,7 @@ blade = edge_detect
 
 def cheatsheet() -> str:
     return "edge_detect({}) -> Edge detection (Canny variant)."
+
+
+# compact alias per ledger/NAMING.md
+edgedetect = edge_detect

@@ -1,6 +1,6 @@
 """Tests for morie.fn.ibs — identity by state."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ibs import identity_by_state

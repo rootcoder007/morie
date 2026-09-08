@@ -1,6 +1,6 @@
 """Tests for morie.fn.simin — Single-index minimum distance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.simin import simin
 

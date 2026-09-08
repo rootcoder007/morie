@@ -11,7 +11,7 @@ def chain_convergence_test(chains, alpha=0.05) -> DescriptiveResult:
 
     .. epigraph:: In the midst of chaos, there is also opportunity. -- Sun Tzu
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     chains = [np.asarray(c, dtype=float).ravel() for c in chains]
     m = len(chains)

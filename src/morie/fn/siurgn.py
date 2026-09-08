@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -43,3 +43,7 @@ siurgn = siu_by_region
 
 def cheatsheet() -> str:
     return "siu_by_region({}) -> SIU cases by geographic region."
+
+
+# compact alias per ledger/NAMING.md
+siubyregion = siu_by_region

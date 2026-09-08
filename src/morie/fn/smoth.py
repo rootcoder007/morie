@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def epidemic_smooth(
@@ -50,7 +50,7 @@ def epidemic_smooth(
         raise ValueError("incidence must be 1-D with >= 3 points.")
 
     if method == "savgol":
-        from scipy.signal import savgol_filter
+        from ._signal_core import savgol_filter
 
         if window % 2 == 0:
             window += 1
@@ -101,3 +101,7 @@ smoth = epidemic_smooth
 
 def cheatsheet() -> str:
     return "epidemic_smooth({}) -> Smooth epidemic curve (SavGol/LOESS)."
+
+
+# compact alias per ledger/NAMING.md
+epidemicsmooth = epidemic_smooth

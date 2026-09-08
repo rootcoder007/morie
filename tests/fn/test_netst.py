@@ -1,6 +1,6 @@
 """Tests for morie.fn.netst — Node strength centrality."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.netst import network_strength
 

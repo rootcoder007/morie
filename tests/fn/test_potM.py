@@ -1,6 +1,6 @@
 """Tests for potM.peaks_over_threshold."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.potM import peaks_over_threshold
 

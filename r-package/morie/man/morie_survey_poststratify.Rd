@@ -2,7 +2,7 @@
 % Please edit documentation in R/survey.R
 \name{morie_survey_poststratify}
 \alias{morie_survey_poststratify}
-\title{Post-stratification weights (sample-to-population alignment).}
+\title{Post-stratification weights (sample-to-population alignment)}
 \usage{
 morie_survey_poststratify(df, strata_col, population_counts)
 }
@@ -24,4 +24,14 @@ stratum's share of \code{population_counts}.
 \description{
 Delegates to \code{survey::postStratify()} when given a design; otherwise
 computes raw post-stratification factors in base R.
+}
+\examples{
+\dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+set.seed(1)
+df <- data.frame(stratum = sample(c("A", "B"), 40, replace = TRUE),
+                 w = rep(1, 40))
+pc <- c(A = 100, B = 150)
+r <- morie_survey_poststratify(df, "stratum", pc)
+is.list(r) || is.data.frame(r) || is.numeric(r)
+\dontshow{\}) # examplesIf}
 }

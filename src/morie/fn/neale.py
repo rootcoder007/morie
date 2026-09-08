@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 
 def neal_algorithm_8(
@@ -113,3 +113,7 @@ neale = neal_algorithm_8
 
 def cheatsheet() -> str:
     return "neal_algorithm_8(x, alpha=1.0, n_iter=1000) -> DP mixture MCMC results"
+
+
+# compact alias per ledger/NAMING.md
+nealalgorithm8 = neal_algorithm_8

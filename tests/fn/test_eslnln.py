@@ -1,6 +1,6 @@
 """Tests for eslnln.esl_elastic_net."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslnln import esl_elastic_net
 

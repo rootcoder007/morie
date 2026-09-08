@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -62,3 +62,7 @@ ppvpr = ppv_prevalence
 
 def cheatsheet() -> str:
     return "ppvpr() -> Compute positive and negative predictive values from prevalence"
+
+
+# compact alias per ledger/NAMING.md
+ppvprevalence = ppv_prevalence

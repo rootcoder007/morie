@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def bayesian_hazard(
@@ -51,7 +51,7 @@ def bayesian_hazard(
                 d_k[k] += d[i]
                 break
 
-    from scipy import stats as st
+    from . import _stats_core as st
 
     post_a = prior_a + d_k
     post_b = prior_b + e_k
@@ -79,3 +79,7 @@ bhawz = bayesian_hazard
 
 def cheatsheet() -> str:
     return "bayesian_hazard({}) -> Bayesian hazard estimation."
+
+
+# compact alias per ledger/NAMING.md
+bayesianhazard = bayesian_hazard

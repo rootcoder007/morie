@@ -1,6 +1,6 @@
 """Tests for drnpc.dr_did_neg_control."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drnpc import dr_did_neg_control
 

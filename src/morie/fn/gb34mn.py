@@ -1,7 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Mean of total runs up-and-down in a random sequence of n numbers."""
-
-import numpy as np
+"""Moments of the runs up-and-down count."""
 
 from ._richresult import RichResult
 
@@ -9,41 +7,42 @@ __all__ = ["gibbons_runs_ud_mean"]
 
 
 def gibbons_runs_ud_mean(n):
-    """
-    Mean of total runs up-and-down in a random sequence of n numbers
+    r"""Null moments of the number of runs up and down (Gibbons
+    Ch. 3.4):
 
-    Formula: E(R_ud) = (2n-1)/3
+    .. math:: E(R_{ud}) = \frac{2n - 1}{3}, \qquad
+              \mathrm{Var}(R_{ud}) = \frac{16n - 29}{90}.
+
+    A run up or down is a maximal monotone stretch of the sequence of
+    successive differences; there are n - 1 differences, so at most
+    n - 1 runs. The mean follows from each interior difference sign
+    changing with probability 2/3 under exchangeability.
 
     Parameters
     ----------
-    n : array-like
-        Input data.
+    n : int
+        Sequence length, at least 3.
 
     Returns
     -------
-    result : dict
-        Keys: mean
+    RichResult
+        keys: ``mean``, ``var``, ``max_runs`` (n - 1), ``n``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 3.4
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Ch. 3.4.
     """
-    data = np.asarray(n, dtype=float) if np.ndim(n) > 0 else None
-    n = int(n) if np.ndim(n) == 0 else len(n)
-    if data is None:
-        rng = np.random.default_rng(0)
-        data = rng.standard_normal(max(n, 2))
-    result = float(np.mean(data))
-    se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    n = int(n)
+    if n < 3:
+        raise ValueError(f"n must be at least 3, got {n}.")
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Mean of total runs up-and-down in a random sequence of n numbers",
-        }
+        payload={"mean": (2.0 * n - 1) / 3.0, "var": (16.0 * n - 29) / 90.0,
+                 "max_runs": n - 1, "n": n,
+                 "method": "E = (2n-1)/3, Var = (16n-29)/90 (Gibbons Ch. 3.4)"}
     )
 
 
 def cheatsheet():
-    return "gb34mn: Mean of total runs up-and-down in a random sequence of n numbers"
+    return "gb34mn: E(R_ud) = (2n-1)/3, Var = (16n-29)/90"

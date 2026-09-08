@@ -1,6 +1,6 @@
 """Tests for eslwgt.esl_weight_decay."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslwgt import esl_weight_decay
 

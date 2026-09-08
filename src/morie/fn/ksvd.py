@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -89,3 +89,7 @@ ksvd = ksvd_dictionary
 
 def cheatsheet() -> str:
     return "ksvd_dictionary({}) -> K-SVD dictionary learning."
+
+
+# compact alias per ledger/NAMING.md
+ksvddictionary = ksvd_dictionary

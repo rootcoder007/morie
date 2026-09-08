@@ -1,6 +1,6 @@
 """Tests for least_trimmed_squares."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ltses import least_trimmed_squares

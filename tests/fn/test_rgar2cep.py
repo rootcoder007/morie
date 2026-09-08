@@ -1,8 +1,8 @@
 """Tests for rgar2cep.rangayyan_ar_to_cepstrum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgar2cep import rangayyan_ar_to_cepstrum
+from morie.fn.bsacep import rangayyan_ar_to_cepstrum
 
 
 def test_rgar2cep_basic():

@@ -1,6 +1,6 @@
 """Multiquadric RBF interpolation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ rbf_ = rbf_multiquad
 
 def cheatsheet() -> str:
     return "rbf_multiquad({}) -> Multiquadric RBF interpolation"
+
+
+# compact alias per ledger/NAMING.md
+rbfmultiquad = rbf_multiquad

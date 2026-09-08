@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -70,3 +70,7 @@ risdt = rise_time_detect
 
 def cheatsheet() -> str:
     return "rise_time_detect({}) -> Measure rise time of detected events."
+
+
+# compact alias per ledger/NAMING.md
+risetimedetect = rise_time_detect

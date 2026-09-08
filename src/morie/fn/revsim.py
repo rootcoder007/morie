@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -48,7 +48,7 @@ def revised_simplex(
     c = np.asarray(c, dtype=float)
     n = int(c) if c.ndim == 0 else len(c)
     try:
-        from scipy.optimize import linprog
+        from ._sci_core import linprog
 
         res = linprog(
             c,
@@ -128,3 +128,7 @@ revsim = revised_simplex
 
 def cheatsheet() -> str:
     return "revsim() -> Solve a linear program via the revised simplex (Phase I / Phase II)"
+
+
+# compact alias per ledger/NAMING.md
+revisedsimplex = revised_simplex

@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_rake}
 \alias{morie_weights_rake}
-\title{Raking calibration (iterative proportional fitting).}
+\title{Raking calibration (iterative proportional fitting)}
 \usage{
 morie_weights_rake(
   weights,
@@ -35,4 +35,10 @@ Adjusts weights so that within each calibration variable the weighted sums
 match the supplied marginal targets. \code{margins} is a named list keyed by
 variable name; each entry is a named numeric vector mapping category values
 (as strings) to target totals.
+}
+\examples{
+if (requireNamespace("survey", quietly = TRUE)) {
+  morie_weights_rake(weights = c(1, 2, 3, 4, 5, 6, 7, 8),
+    df = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), margins = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
 }

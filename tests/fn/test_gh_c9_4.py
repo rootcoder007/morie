@@ -1,6 +1,6 @@
 """Tests for gh_c9_4.ghosal_dpm_norm_crt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c9_4 import ghosal_dpm_norm_crt
 

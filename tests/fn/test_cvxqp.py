@@ -1,6 +1,6 @@
 """Tests for cvxqp.boyd_quadratic_program."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxqp import boyd_quadratic_program
 

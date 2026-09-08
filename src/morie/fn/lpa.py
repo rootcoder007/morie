@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -86,3 +86,7 @@ lpa = latent_profile
 
 def cheatsheet() -> str:
     return "latent_profile({}) -> Latent profile analysis (GMM for continuous data)."
+
+
+# compact alias per ledger/NAMING.md
+latentprofile = latent_profile

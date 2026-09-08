@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._cfa_engine import (
     cov_from_data,
@@ -110,3 +110,7 @@ def mi_metric(
 
 def cheatsheet() -> str:
     return "mi_metric({}) -> Metric (weak) invariance: constrain loadings equal across gr"
+
+
+# compact alias per ledger/NAMING.md
+mimetric = mi_metric

@@ -11,6 +11,9 @@
 #' @return list: a, beta, fitted, residuals, sse, r2, lambda, n, d, method.
 #' @keywords internal
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' tpspn(V, V)
 tpspn <- function(x, y, lam = 0) {
   if (!is.matrix(x)) x <- matrix(x, ncol = 1)
   y <- as.numeric(y)

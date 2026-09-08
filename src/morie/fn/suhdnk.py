@@ -1,7 +1,7 @@
 """Heavy/binge drinking prevalence."""
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import ESRes
 
@@ -54,3 +54,7 @@ suhdnk = heavy_drinking
 
 def cheatsheet() -> str:
     return "heavy_drinking({}) -> Heavy/binge drinking prevalence."
+
+
+# compact alias per ledger/NAMING.md
+heavydrinking = heavy_drinking

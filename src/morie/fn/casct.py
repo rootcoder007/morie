@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import ESRes
 
@@ -70,3 +70,7 @@ casct = case_control_or
 
 def cheatsheet() -> str:
     return "case_control_or({}) -> Case-control odds ratio with Woolf CI."
+
+
+# compact alias per ledger/NAMING.md
+casecontrolor = case_control_or

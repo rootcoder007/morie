@@ -1,6 +1,6 @@
 """GP prediction"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ gp_p = gp_predict
 
 def cheatsheet() -> str:
     return "gp_predict({}) -> GP prediction"
+
+
+# compact alias per ledger/NAMING.md
+gppredict = gp_predict

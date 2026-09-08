@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -83,3 +83,7 @@ short = hermite_interp
 
 def cheatsheet() -> str:
     return "hermite_interp({}) -> Hermite interpolation."
+
+
+# compact alias per ledger/NAMING.md
+hermiteinterp = hermite_interp

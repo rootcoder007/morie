@@ -3,7 +3,7 @@
 
 __all__ = ["mkrsl"]
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import GenomicsResult
 
@@ -57,7 +57,7 @@ def mkrsl(
     scores = np.zeros(p)
 
     if method == "marginal":
-        from scipy.stats import t as _t_dist
+        from ._stats_core import t as _t_dist
 
         y_c = y - np.mean(y)
         for j in range(p):

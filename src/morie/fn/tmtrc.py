@@ -10,7 +10,7 @@ def trace_over_time(X_sessions, time_labels) -> DescriptiveResult:
 
     .. epigraph:: A journey of a thousand miles begins with a single step. -- Lao Tzu
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     trajectories = []
     for i, X in enumerate(X_sessions):
@@ -42,3 +42,7 @@ tmtrc = trace_over_time
 
 def cheatsheet() -> str:
     return "trace_over_time({}) -> Ideal point trajectories over time."
+
+
+# compact alias per ledger/NAMING.md
+traceovertime = trace_over_time

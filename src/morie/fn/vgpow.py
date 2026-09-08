@@ -1,6 +1,6 @@
 """Power variogram model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -42,3 +42,7 @@ vari = vario_power
 
 def cheatsheet() -> str:
     return "vario_power({}) -> Power variogram model"
+
+
+# compact alias per ledger/NAMING.md
+variopower = vario_power

@@ -1,6 +1,6 @@
 """Tests for morie.fn.nmwno -- W-NOMINATE estimation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nmwno import wnominate
 

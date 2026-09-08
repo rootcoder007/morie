@@ -5,7 +5,7 @@ Air quality index spatial
 Category: EnvStat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def enaqi(data=None, coords=None, n=50):

@@ -1,6 +1,6 @@
 """Test elpd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.elpd import expected_log_pred
 

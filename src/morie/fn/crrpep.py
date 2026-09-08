@@ -1,7 +1,7 @@
 """Pepe-Mori test of cumulative incidence."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -70,3 +70,7 @@ def pepe_mori(time, event_type, group, cause, cdf=None):
 
 def cheatsheet():
     return "crrpep: Pepe-Mori test of cumulative incidence"
+
+
+# compact alias per ledger/NAMING.md
+pepemori = pepe_mori

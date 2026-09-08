@@ -1,6 +1,6 @@
 """Logit spatial vote probability."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -19,7 +19,7 @@ def svlgp(voter, cA, cB=None, *, beta=1.0):
         cB = np.zeros_like(cA)
     else:
         cB = np.asarray(cB, dtype=float)
-    from scipy.special import expit
+    from ._sci_core import expit
 
     dA = float(np.sum((voter - cA) ** 2))
     dB = float(np.sum((voter - cB) ** 2))

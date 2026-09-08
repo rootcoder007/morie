@@ -7,7 +7,7 @@
 # either version 3 of the License, or (at your option) any later
 # version. See LICENSE for the full text.
 
-#' Doob Federal Court Affidavit — national-aggregate trend analyses
+#' Doob Federal Court Affidavit -- national-aggregate trend analyses
 #'
 #' Replicates the analytical contribution of Prof. Anthony N. Doob's
 #' expert-witness affidavit in *Canadian Civil Liberties Association
@@ -20,7 +20,7 @@
 #'
 #' @name doob_trends
 #' @references
-#' Doob, A. N. (2020). Affidavit (T-539-20) of Anthony Doob — Federal
+#' Doob, A. N. (2020). Affidavit (T-539-20) of Anthony Doob -- Federal
 #' Court of Canada, Application Record Vol. 3 of 5. CCLA et al. v.
 #' Attorney General of Canada.
 NULL
@@ -28,7 +28,7 @@ NULL
 
 # -- Table 1: 5-year average annual releases (CCRSO 2013/14-2017/18) --
 
-#' CCRSO Table 1 — 5-year average annual conditional releases
+#' CCRSO Table 1 -- 5-year average annual conditional releases
 #'
 #' @export
 CCRSO_TABLE1_RELEASES <- data.frame(
@@ -48,7 +48,7 @@ CCRSO_TABLE1_RELEASES <- data.frame(
 
 # -- Table 2: prisoner flow 2013/14-2017/18 (CCRSO) -------------------
 
-#' CCRSO Table 2 — prisoner flow 2013/14-2017/18
+#' CCRSO Table 2 -- prisoner flow 2013/14-2017/18
 #'
 #' @export
 CCRSO_TABLE2_FLOW <- data.frame(
@@ -64,7 +64,7 @@ CCRSO_TABLE2_FLOW <- data.frame(
 
 # -- Table 3: 2018 age distribution (CCRSO + StatsCan) ----------------
 
-#' CCRSO/StatsCan Table 3 — 2018 age distribution
+#' CCRSO/StatsCan Table 3 -- 2018 age distribution
 #'
 #' @export
 CCRSO_TABLE3_AGE <- data.frame(
@@ -81,6 +81,22 @@ CCRSO_TABLE3_AGE <- data.frame(
 
 # -- Helper: build a Rich-style named-list result --------------------
 
+#' .doob_result
+#'
+#' A step of the doob_trends implementation. Called by
+#' \code{analyze_doob_full_affidavit}, \code{analyze_doob_table1_releases},
+#' \code{analyze_doob_table2_flow} and 2 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds.
+#' @param tables Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param interpretation Carried through into a list the body builds.
+#' @param payload Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character()}.
+#' @return The value of \code{structure}.
+#' @export
 .doob_result <- function(title, summary_lines, tables = list(),
                           interpretation = NULL, payload = list(),
                           warnings = character()) {
@@ -100,7 +116,7 @@ CCRSO_TABLE3_AGE <- data.frame(
 
 # -- Table 1 analysis -------------------------------------------------
 
-#' Analyse Doob Affidavit Table 1 — 5-year average annual releases
+#' Analyse Doob Affidavit Table 1 -- 5-year average annual releases
 #'
 #' Renders Table 1 and computes overall success / revocation rates.
 #'
@@ -165,7 +181,7 @@ analyze_doob_table1_releases <- function() {
 
 # -- Table 2 analysis -------------------------------------------------
 
-#' Analyse Doob Affidavit Table 2 — prisoner flow
+#' Analyse Doob Affidavit Table 2 -- prisoner flow
 #'
 #' Renders Table 2 plus year-over-year changes and 5-year averages.
 #'
@@ -235,7 +251,7 @@ analyze_doob_table2_flow <- function() {
 
 # -- Table 3 analysis -------------------------------------------------
 
-#' Analyse Doob Affidavit Table 3 — age over-/under-representation
+#' Analyse Doob Affidavit Table 3 -- age over-/under-representation
 #'
 #' Renders Table 3 plus age-group IRRs for CSC custody and admissions
 #' vs Canadian adult population.
@@ -317,6 +333,9 @@ analyze_doob_table3_age_overrepresentation <- function() {
 #' @references Pettitt (1979). A non-parametric approach to the
 #'   change-point problem. *J. R. Stat. Soc. C*, 28(2), 126--135.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' pettitt_changepoint(V)
 pettitt_changepoint <- function(series) {
   arr <- as.numeric(series)
   arr <- arr[is.finite(arr)]

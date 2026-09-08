@@ -1,6 +1,6 @@
 """Test central_difference (cntdf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.cntdf import central_difference, cntdf

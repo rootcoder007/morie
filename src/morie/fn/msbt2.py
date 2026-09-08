@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MDS bootstrap confidence"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ mds_ = mds_bootstrap
 
 def cheatsheet() -> str:
     return "mds_bootstrap({}) -> MDS bootstrap confidence"
+
+
+# compact alias per ledger/NAMING.md
+mdsbootstrap = mds_bootstrap

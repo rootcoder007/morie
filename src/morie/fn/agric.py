@@ -5,7 +5,7 @@ Landscape richness
 Category: AreaGeo
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def agric(areas=None, perimeters=None, values=None, n=30):

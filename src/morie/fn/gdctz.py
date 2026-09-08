@@ -5,7 +5,7 @@ Citizenship spatial
 Category: GeoDem
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gdctz(population=None, births=None, deaths=None, coords=None, n=50):

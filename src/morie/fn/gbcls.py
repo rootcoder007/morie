@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 from ._richresult import RichResult
@@ -125,3 +125,7 @@ gbcls = gbm_classify_bio
 
 def cheatsheet() -> str:
     return "gbm_classify_bio({}) -> Gradient boosting classifier (pure NumPy)."
+
+
+# compact alias per ledger/NAMING.md
+gbmclassifybio = gbm_classify_bio

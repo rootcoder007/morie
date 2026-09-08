@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -48,3 +48,7 @@ fizz = fizzbuzz_stats
 
 def cheatsheet() -> str:
     return "fizzbuzz_stats({}) -> FizzBuzz proportions."
+
+
+# compact alias per ledger/NAMING.md
+fizzbuzzstats = fizzbuzz_stats

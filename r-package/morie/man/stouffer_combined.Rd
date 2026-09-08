@@ -18,3 +18,6 @@ A \code{morie_rich_result} list with elements \code{method},
 \description{
 Stouffer's z-score method
 }
+\examples{
+stouffer_combined(c(0.01, 0.5, 0.6), weights = c(2, 1, 1))
+}

@@ -1,6 +1,6 @@
 """Tests for gb1131.gibbons_spearman_rho."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1131 import gibbons_spearman_rho
 

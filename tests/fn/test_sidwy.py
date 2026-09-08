@@ -1,6 +1,6 @@
 """Tests for morie.fn.sidwy -- adversarial perturbation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.sidwy import adversarial_perturb, sidwy

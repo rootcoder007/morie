@@ -1,6 +1,6 @@
 """Separating hyperplane"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ sepa = separating_hyp
 
 def cheatsheet() -> str:
     return "separating_hyp({}) -> Separating hyperplane"
+
+
+# compact alias per ledger/NAMING.md
+separatinghyp = separating_hyp

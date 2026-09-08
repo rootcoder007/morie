@@ -1,6 +1,6 @@
 """Tests for colMet.recall_at_k."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.colMet import recall_at_k
 

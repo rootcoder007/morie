@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -92,3 +92,7 @@ lssmo = loess_smooth
 
 def cheatsheet() -> str:
     return "loess_smooth({}) -> LOESS/LOWESS smoother."
+
+
+# compact alias per ledger/NAMING.md
+loesssmooth = loess_smooth

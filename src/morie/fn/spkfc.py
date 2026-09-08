@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -43,3 +43,7 @@ spkfc = peak_factor
 
 def cheatsheet() -> str:
     return "peak_factor({}) -> Peak factor."
+
+
+# compact alias per ledger/NAMING.md
+peakfactor = peak_factor

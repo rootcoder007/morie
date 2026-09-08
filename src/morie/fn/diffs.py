@@ -1,6 +1,6 @@
 """Symbolic differentiation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -38,3 +38,7 @@ def symbolic_diff(expr, x):
 
 def cheatsheet():
     return "diffS: Symbolic differentiation"
+
+
+# compact alias per ledger/NAMING.md
+symbolicdiff = symbolic_diff

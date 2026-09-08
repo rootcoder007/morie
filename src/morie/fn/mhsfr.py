@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SF-12 mental component summary (simplified)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -49,3 +49,7 @@ mhsfr = sf12_mental
 
 def cheatsheet() -> str:
     return "sf12_mental({}) -> SF-12 mental component summary (simplified)."
+
+
+# compact alias per ledger/NAMING.md
+sf12mental = sf12_mental

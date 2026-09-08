@@ -1,6 +1,6 @@
 """Algebraic expansion."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def sympy_expand(expr):
 
 def cheatsheet():
     return "sympEx: Algebraic expansion"
+
+
+# compact alias per ledger/NAMING.md
+sympyexpand = sympy_expand

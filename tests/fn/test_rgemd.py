@@ -1,8 +1,8 @@
 """Tests for rgemd.rangayyan_emd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgemd import rangayyan_emd
+from morie.fn.bsatf import rangayyan_emd
 
 
 def test_rgemd_basic():

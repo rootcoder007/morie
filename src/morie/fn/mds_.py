@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -57,3 +57,7 @@ mds_ = metric_mds
 
 def cheatsheet() -> str:
     return "metric_mds({}) -> Classical (metric) multidimensional scaling."
+
+
+# compact alias per ledger/NAMING.md
+metricmds = metric_mds

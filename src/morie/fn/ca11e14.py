@@ -1,68 +1,22 @@
-"""Correlation expression involving 'ffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).."""
+"""Deprecated alias for :func:`morie.fn.r_from_fisher_z`.
 
-import numpy as np
-from scipy import stats
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import hypothesis_test_result
+import warnings
+
+from .r_from_fisher_z import r_from_fisher_z as _impl
 
 __all__ = ["ca_chapter_11_equation_14"]
 
 
-def ca_chapter_11_equation_14(x, y=None):
-    """
-    Correlation expression involving 'ffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).
-
-    Formula: r = e2 Zr() − 1
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca11e14')`` for the full guide.
-
-    References
-    ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.11 eq.11.14
-    """
-    if y is None:
-        # Auto-extracted single-input stub: correlate x against itself so
-        # the call is well-defined instead of raising UnboundLocalError.
-        y = x
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(x), len(y))
-    if n < 3:
-        return hypothesis_test_result(
-            test_name="Correlation expression involving 'ffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).",
-            statistic=float("nan"),
-            pvalue=float("nan"),
-            warnings=["n<3: insufficient pairs for correlation."],
-            extra_summary=[("n", n)],
-            extra_payload={
-                "n": n,
-                "method": "Correlation expression involving 'ffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).",
-            },
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return hypothesis_test_result(
-        test_name="Correlation expression involving 'ffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).",
-        statistic=float(result.statistic),
-        pvalue=float(result.pvalue),
-        extra_summary=[("n", n)],
-        extra_payload={
-            "n": n,
-            "method": "Correlation expression involving 'ffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).",
-            "p_value": float(result.pvalue),
-        },
+def ca_chapter_11_equation_14(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.r_from_fisher_z` instead."""
+    warnings.warn(
+        "ca_chapter_11_equation_14() is the book-coordinate name for r_from_fisher_z(); "
+        "it will be removed. Use morie.fn.r_from_fisher_z() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "ca11e14: Correlation expression involving 'ffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context)."
+    return _impl(*args, **kwargs)

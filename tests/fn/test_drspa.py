@@ -1,6 +1,6 @@
 """Tests for drspa.dr_spatial_did."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drspa import dr_spatial_did
 

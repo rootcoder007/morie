@@ -2,7 +2,7 @@
 % Please edit documentation in R/arsau.R
 \name{morie_arsau_load_individual_records}
 \alias{morie_arsau_load_individual_records}
-\title{Load ARSAU individual_records CSV.}
+\title{Load ARSAU individual_records CSV}
 \usage{
 morie_arsau_load_individual_records(year, language = "en", data_dir = NULL)
 }
@@ -21,7 +21,7 @@ standard rich-result metadata fields described in
 \code{\link{morie_arsau_load_main_records}}.
 }
 \description{
-Load ARSAU individual_records CSV.
+Load ARSAU individual_records CSV
 }
 \examples{
 \donttest{

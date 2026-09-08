@@ -1,11 +1,10 @@
 """GeneralStatistics equation extracted from Christopher Gandrud (Author) - Reproducible Research with R and RStudio."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import hypothesis_test_result
 
-__all__ = ["Knowledge itself is power. -- Francis Bacon"]
 
 
 def christopher_gandrud_author_reproducible_research_with_r_and__chapter_8_equation_24(x, cdf=None):

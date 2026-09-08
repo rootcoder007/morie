@@ -1,6 +1,6 @@
 """Tests for spconv.schabenberger_convolution_representation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spconv import schabenberger_convolution_representation
 

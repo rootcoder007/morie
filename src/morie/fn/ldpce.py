@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import CryptoResult
 
@@ -31,3 +31,7 @@ ldpce = ldpc_encode
 
 def cheatsheet() -> str:
     return "ldpc_encode({}) -> LDPC encoding."
+
+
+# compact alias per ledger/NAMING.md
+ldpcencode = ldpc_encode

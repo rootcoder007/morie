@@ -1,6 +1,6 @@
 """Fay-Herriot small area estimator"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ fay_ = fay_herriot
 
 def cheatsheet() -> str:
     return "fay_herriot({}) -> Fay-Herriot small area estimator"
+
+
+# compact alias per ledger/NAMING.md
+fayherriot = fay_herriot

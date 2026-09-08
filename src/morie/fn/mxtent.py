@@ -1,6 +1,6 @@
 """Maximum entropy distribution."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def max_entropy(constraints):
 
 def cheatsheet():
     return "mxtent: Maximum entropy distribution"
+
+
+# compact alias per ledger/NAMING.md
+maxentropy = max_entropy

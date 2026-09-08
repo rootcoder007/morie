@@ -1,6 +1,6 @@
 """Tests for astlb.astle_balding_grm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.astlb import astle_balding_grm
 

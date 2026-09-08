@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -112,3 +112,7 @@ varmd = var_model
 
 def cheatsheet() -> str:
     return "var_model(Y, p=1) -> VAR(p) model fit (OLS, equation-by-equation)."
+
+
+# compact alias per ledger/NAMING.md
+varmodel = var_model

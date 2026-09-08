@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Miller-Rabin probabilistic primality test."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -103,3 +103,7 @@ milrb = miller_rabin
 
 def cheatsheet() -> str:
     return "miller_rabin({}) -> Miller-Rabin probabilistic primality test."
+
+
+# compact alias per ledger/NAMING.md
+millerrabin = miller_rabin

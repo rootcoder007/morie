@@ -1,6 +1,6 @@
 """Tests for mvedet.mve."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mvedet import mve
 

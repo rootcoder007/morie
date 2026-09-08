@@ -1,6 +1,6 @@
 """Tests for eslsbt.esl_se_beta."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslsbt import esl_se_beta
 

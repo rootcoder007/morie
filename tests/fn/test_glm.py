@@ -1,6 +1,6 @@
 """Tests for glm.glr_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.glm import glr_test
 

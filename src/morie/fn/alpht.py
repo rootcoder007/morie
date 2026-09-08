@@ -3,8 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import optimize, stats
+from . import _array_core as np
+from ._sci_core import optimize
+from . import _stats_core as stats
 
 from ._containers import DescriptiveResult
 
@@ -116,3 +117,7 @@ alpht = prior_elicit
 
 def cheatsheet() -> str:
     return "prior_elicit({}) -> Bayesian prior elicitation."
+
+
+# compact alias per ledger/NAMING.md
+priorelicit = prior_elicit

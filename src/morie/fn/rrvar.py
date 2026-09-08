@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -53,3 +53,7 @@ rrvar = rr_variability
 
 def cheatsheet() -> str:
     return "rr_variability({}) -> R-R interval variability metrics."
+
+
+# compact alias per ledger/NAMING.md
+rrvariability = rr_variability

@@ -1,6 +1,6 @@
 """GWR basic estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ gwr_ = gwr_basic
 
 def cheatsheet() -> str:
     return "gwr_basic({}) -> GWR basic estimation"
+
+
+# compact alias per ledger/NAMING.md
+gwrbasic = gwr_basic

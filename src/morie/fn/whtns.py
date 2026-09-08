@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -40,3 +40,7 @@ whtns = white_noise_gen
 
 def cheatsheet() -> str:
     return "white_noise_gen({}) -> White Gaussian noise generator."
+
+
+# compact alias per ledger/NAMING.md
+whitenoisegen = white_noise_gen

@@ -47,3 +47,7 @@ vcteq = victim_equity
 
 def cheatsheet() -> str:
     return "victim_equity({}) -> Victimization equity across demographics."
+
+
+# compact alias per ledger/NAMING.md
+victimequity = victim_equity

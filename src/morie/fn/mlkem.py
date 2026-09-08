@@ -62,3 +62,15 @@ mlkem = mlkem768_keygen
 
 def cheatsheet() -> str:
     return "mlkem768_keygen({}) -> ML-KEM-768 post-quantum key encapsulation (fn/ wrapper)."
+
+
+# compact alias per ledger/NAMING.md
+mlkem768decaps = mlkem768_decaps
+
+
+# compact alias per ledger/NAMING.md
+mlkem768encaps = mlkem768_encaps
+
+
+# compact alias per ledger/NAMING.md
+mlkem768keygen = mlkem768_keygen

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Lotka-Volterra predator-prey model."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -92,3 +92,7 @@ lotka = lotka_volterra
 
 def cheatsheet() -> str:
     return "lotka_volterra({}) -> Lotka-Volterra predator-prey model."
+
+
+# compact alias per ledger/NAMING.md
+lotkavolterra = lotka_volterra

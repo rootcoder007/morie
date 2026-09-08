@@ -1,6 +1,6 @@
 """Tests for fzt42.fauzi_thm4_2_surv2_bias_var."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzt42 import fauzi_thm4_2_surv2_bias_var
 

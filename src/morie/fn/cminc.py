@@ -10,7 +10,7 @@ Journal of Statistics, 5(3), 141-150.
 
 __all__ = ["cminc"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def cminc(

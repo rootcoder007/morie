@@ -1,6 +1,6 @@
 """Tests for sgtpgr.sgt_pagerank_power."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtpgr import sgt_pagerank_power
 

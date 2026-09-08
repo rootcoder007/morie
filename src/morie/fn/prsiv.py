@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sieve of Eratosthenes for prime generation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -54,3 +54,7 @@ prsiv = prime_sieve
 
 def cheatsheet() -> str:
     return "prime_sieve({}) -> Sieve of Eratosthenes for prime generation."
+
+
+# compact alias per ledger/NAMING.md
+primesieve = prime_sieve

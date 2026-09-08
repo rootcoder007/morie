@@ -1,6 +1,6 @@
 """Tests for cvxprg.boyd_proximal_grad."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxprg import boyd_proximal_grad
 

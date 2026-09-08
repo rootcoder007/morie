@@ -12,8 +12,8 @@ variable bias (Cinelli-Hazlett), Manski bounds, probabilistic
 (Monte-Carlo) bias analysis, and specification curve analysis.
 }
 \details{
-Wraps CRAN \pkg{EValue} when available; falls back to base R
-otherwise.
+Implemented natively in base R from the published closed forms; no
+CRAN sensitivity package is loaded or called at runtime.
 }
 \references{
 Rosenbaum (2002); VanderWeele & Ding (2017); Cinelli & Hazlett

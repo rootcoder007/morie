@@ -1,6 +1,6 @@
 """Tests for morie.fn.dmtst -- Diebold-Mariano test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dmtst import dm_test
 

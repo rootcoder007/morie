@@ -3,7 +3,7 @@
 # Native double machine learning engines (feat/native-specializations,
 # module 10). Chernozhukov et al. (2018): Neyman-orthogonal scores +
 # K-fold cross-fitting. Nuisance learners are GCV-tuned ridge
-# regressions (outcome) and logistic regression (propensity) — fully
+# regressions (outcome) and logistic regression (propensity) -- fully
 # deterministic, no DoubleML/mlr3/ranger at runtime. Repetitions
 # aggregate by DoubleML's median rule.
 
@@ -12,21 +12,27 @@
 #' @noRd
 .morie_dml_xfit_ridge_gcv <- function(X, y, n_folds = 5L,
                                       random_state = 42L) {
-  n <- nrow(X); p <- ncol(X)
+  n <- nrow(X)
+  p <- ncol(X)
   set.seed(random_state)
   folds <- sample(rep(seq_len(n_folds), length.out = n))
   pred <- numeric(n)
   grid <- 10^seq(-3, 3, length.out = 13)
   Xs <- scale(X)
-  scl <- attr(Xs, "scaled:scale"); scl[scl == 0] <- 1
+  scl <- attr(Xs, "scaled:scale")
+  scl[scl == 0] <- 1
   Xs <- sweep(sweep(X, 2, attr(Xs, "scaled:center"), "-"), 2, scl, "/")
   for (k in seq_len(n_folds)) {
-    te <- which(folds == k); tr <- setdiff(seq_len(n), te)
-    Xt <- Xs[tr, , drop = FALSE]; yt <- y[tr]; yc <- mean(yt)
+    te <- which(folds == k)
+    tr <- setdiff(seq_len(n), te)
+    Xt <- Xs[tr, , drop = FALSE]
+    yt <- y[tr]
+    yc <- mean(yt)
     sv <- svd(Xt)
     d2 <- sv$d^2
     uty <- crossprod(sv$u, yt - yc)
-    best <- Inf; beta <- NULL
+    best <- Inf
+    beta <- NULL
     for (lam in grid) {
       shrink <- sv$d / (d2 + lam)
       # GCV = n * RSS / (n - edf)^2
@@ -53,7 +59,8 @@
   folds <- sample(rep(seq_len(n_folds), length.out = n))
   ps <- numeric(n)
   for (k in seq_len(n_folds)) {
-    te <- which(folds == k); tr <- setdiff(seq_len(n), te)
+    te <- which(folds == k)
+    tr <- setdiff(seq_len(n), te)
     dat_tr <- data.frame(d = d[tr], X[tr, , drop = FALSE])
     fit <- suppressWarnings(stats::glm(d ~ ., data = dat_tr,
                                        family = stats::binomial()))
@@ -83,7 +90,7 @@
 
 #' Internal helper: native PLR DML engine (median-aggregated reps)
 #' @srrstats {G1.0} Primary reference: Chernozhukov et al. (2018,
-#'   Econometrics J. 21(1)) — double/debiased ML, partially linear
+#'   Econometrics J. 21(1)) -- double/debiased ML, partially linear
 #'   model, Neyman-orthogonal score, cross-fitting; DoubleML (Bach et
 #'   al. 2024, JSS) is the reference implementation cross-validated
 #'   against in tests/cross/.
@@ -115,11 +122,14 @@
   n <- nrow(X)
   set.seed(random_state)
   folds <- sample(rep(seq_len(n_folds), length.out = n))
-  mu1 <- numeric(n); mu0 <- numeric(n)
+  mu1 <- numeric(n)
+  mu0 <- numeric(n)
   ps <- .morie_dml_xfit_logit(X, d, n_folds, random_state)
   for (k in seq_len(n_folds)) {
-    te <- which(folds == k); tr <- setdiff(seq_len(n), te)
-    tr1 <- tr[d[tr] == 1]; tr0 <- tr[d[tr] == 0]
+    te <- which(folds == k)
+    tr <- setdiff(seq_len(n), te)
+    tr1 <- tr[d[tr] == 1]
+    tr0 <- tr[d[tr] == 0]
     mu1[te] <- if (length(tr1) >= ncol(X) + 2L)
       .morie_dml_ridge_predict(X[tr1, , drop = FALSE], y[tr1],
                                X[te, , drop = FALSE]) else mean(y[tr1])
@@ -138,7 +148,8 @@
 #' @noRd
 .morie_dml_ridge_predict <- function(Xtr, ytr, Xte) {
   ctr <- colMeans(Xtr)
-  scl <- apply(Xtr, 2, stats::sd); scl[scl == 0] <- 1
+  scl <- apply(Xtr, 2, stats::sd)
+  scl[scl == 0] <- 1
   Xs <- sweep(sweep(Xtr, 2, ctr, "-"), 2, scl, "/")
   Zs <- sweep(sweep(Xte, 2, ctr, "-"), 2, scl, "/")
   yc <- mean(ytr)
@@ -146,7 +157,8 @@
   d2 <- sv$d^2
   uty <- crossprod(sv$u, ytr - yc)
   grid <- 10^seq(-3, 3, length.out = 13)
-  best <- Inf; beta <- NULL
+  best <- Inf
+  beta <- NULL
   for (lam in grid) {
     fitted <- sv$u %*% (uty * d2 / (d2 + lam))
     rss <- sum(((ytr - yc) - fitted)^2)

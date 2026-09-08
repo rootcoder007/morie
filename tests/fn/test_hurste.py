@@ -1,6 +1,6 @@
 """Tests for hurste.hurst_exponent."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hurste import hurst_exponent
 

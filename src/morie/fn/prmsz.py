@@ -16,7 +16,7 @@ def param_count(
     :param trainable_mask: Boolean mask; True = trainable. All trainable if None.
     :return: DescriptiveResult with parameter counts.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     total = 0
     trainable = 0
@@ -46,3 +46,7 @@ def cheatsheet() -> str:
 
 
 prmsz = param_count
+
+
+# compact alias per ledger/NAMING.md
+paramcount = param_count

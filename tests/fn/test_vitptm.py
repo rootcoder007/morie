@@ -1,6 +1,6 @@
 """Tests for vitptm.vit_patch_embed."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vitptm import vit_patch_embed
 

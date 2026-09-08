@@ -1,8 +1,8 @@
 """Tests for rgbartl.rangayyan_bartlett_psd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgbartl import rangayyan_bartlett_psd
+from morie.fn.bsacorr import rangayyan_bartlett_psd
 
 
 def test_rgbartl_basic():

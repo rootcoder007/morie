@@ -1,26 +1,20 @@
 """Tests for exchg.exchangeability_assumption."""
 
-import numpy as np
+import pytest
 
 from morie.fn.exchg import exchangeability_assumption
 
+DAG = {"U": ["T", "Y"], "T": ["Y"]}
+
 
 def test_exchg_basic():
-    """Test basic functionality."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    dag = {"A": [], "B": ["A"], "C": ["B"]}
-    result = exchangeability_assumption(Y, T, X, dag)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert exchangeability_assumption(DAG, "T", "Y")["holds"] is False
+    out = exchangeability_assumption(DAG, "T", "Y", X=("U",))
+    assert out["holds"] is True
+    assert out["adjustment_set"] == ("U",)
 
 
 def test_exchg_edge():
-    """Test edge cases."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    dag = {"A": [], "B": ["A"], "C": ["B"]}
-    result = exchangeability_assumption(Y, T, X, dag)
-    assert isinstance(result, dict)
+    # conditioning on a descendant of T violates the criterion
+    dag = {"U": ["T", "Y"], "T": ["Y", "M"]}
+    assert exchangeability_assumption(dag, "T", "Y", X=("U", "M"))["holds"] is False

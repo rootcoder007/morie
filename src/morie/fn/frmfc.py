@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -24,3 +24,7 @@ alias = form_factor_fn
 
 def cheatsheet() -> str:
     return "form_factor_fn({}) -> Form factor of a waveform."
+
+
+# compact alias per ledger/NAMING.md
+formfactorfn = form_factor_fn

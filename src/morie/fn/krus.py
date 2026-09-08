@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -83,3 +83,7 @@ krus = kruskal_mst
 
 def cheatsheet() -> str:
     return "kruskal_mst({}) -> Kruskal minimum spanning tree."
+
+
+# compact alias per ledger/NAMING.md
+kruskalmst = kruskal_mst

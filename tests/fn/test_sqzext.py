@@ -1,6 +1,6 @@
 """Tests for sqzext.squeeze_excite."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sqzext import squeeze_excite
 

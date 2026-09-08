@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def holo_km(
@@ -36,7 +36,7 @@ def holo_km(
         Association*, 53(282), 457--481.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_km requires matplotlib. Install via: pip install matplotlib")
         return None
@@ -86,3 +86,7 @@ def _draw_km(ax: Any, t: np.ndarray, e: np.ndarray, label: str | None = None) ->
 
 def cheatsheet() -> str:
     return "holo_km({}) -> Kaplan-Meier survival curve."
+
+
+# compact alias per ledger/NAMING.md
+holokm = holo_km

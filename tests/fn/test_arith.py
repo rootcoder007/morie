@@ -1,6 +1,6 @@
 """Tests for morie.fn.arith — arithmetic coding."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.arith import arith

@@ -1,6 +1,6 @@
 """Tests for morie.fn.zsgpk -- GP kernel selection"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zsgpk import gp_kernel
 

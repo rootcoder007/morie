@@ -24,7 +24,7 @@ import os
 import re
 from pathlib import Path
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from ..fn._richresult import RichResult
 
@@ -100,13 +100,13 @@ def _try_load_mat(path: Path) -> dict | None:
     fall back to the synthetic fixture and emit a warning.
     """
     try:
-        from scipy.io import loadmat  # type: ignore
+        from morie.fn._sci_core import loadmat  # type: ignore
 
         return dict(loadmat(str(path), squeeze_me=True, struct_as_record=False))
     except Exception:
         pass
     try:
-        from pymatreader import read_mat  # type: ignore
+        from morie._mat_reader import read_mat
 
         return dict(read_mat(str(path)))
     except Exception:

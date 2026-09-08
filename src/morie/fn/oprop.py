@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as sp_stats
 
 
 def otis_proportions(

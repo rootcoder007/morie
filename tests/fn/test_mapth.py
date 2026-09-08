@@ -1,6 +1,6 @@
 """Tests for mapth.map_theta_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mapth import map_theta_estimator
 

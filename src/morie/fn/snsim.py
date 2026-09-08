@@ -4,7 +4,7 @@ SNESIM MPS method
 Category: SpatialPat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def snsim(points=None, n=100, window=(0, 100, 0, 100)):

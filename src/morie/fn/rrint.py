@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -46,3 +46,7 @@ rrint = rr_intervals
 
 def cheatsheet() -> str:
     return "rr_intervals({}) -> RR interval series from R-peak indices."
+
+
+# compact alias per ledger/NAMING.md
+rrintervals = rr_intervals

@@ -1,6 +1,6 @@
 """Tests for morie.fn.loadds — load dataset from file."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.loadds import load_dataset, loadds

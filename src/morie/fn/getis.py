@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Getis-Ord Gi* hot spot statistic."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -77,3 +77,7 @@ getis_fn = getis_ord_gi_star
 
 def cheatsheet() -> str:
     return "getis_ord_gi_star({}) -> Getis-Ord Gi* hot spot statistic."
+
+
+# compact alias per ledger/NAMING.md
+getisordgistar = getis_ord_gi_star

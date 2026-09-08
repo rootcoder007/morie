@@ -31,7 +31,7 @@ morie_random_search_cv(
 \item{seed}{RNG seed.}
 
 \item{deterministic_seed}{Integer or NULL.  If supplied, the RNG state
-is derived from the SHA-keyed \code{\link[=morie_det_rng]{morie_det_rng()}} so Py<->R streams
+is derived from the SHA-keyed \code{morie_det_rng()} so Py<->R streams
 agree on the canonical fixture.  When \code{NULL} (default), behaviour
 is unchanged: \code{seed} drives \code{set.seed()} directly.}
 }
@@ -43,6 +43,8 @@ sampled_scores, n_iter, task, n, method.
 Uses \code{caret::train} with \code{search = "random"}.
 }
 \examples{
+\dontshow{if (requireNamespace("caret", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
+\dontshow{\}) # examplesIf}
 }

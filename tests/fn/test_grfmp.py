@@ -1,6 +1,6 @@
 """Tests for grfmp.geron_feature_map_dim."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grfmp import geron_feature_map_dim
 

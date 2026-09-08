@@ -1,6 +1,6 @@
 """Tests for intlpa.interior_point_lp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.intlpa import interior_point_lp
 

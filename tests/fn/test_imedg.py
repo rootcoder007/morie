@@ -1,6 +1,6 @@
 """Tests for morie.fn.imedg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.imedg import imedg
 

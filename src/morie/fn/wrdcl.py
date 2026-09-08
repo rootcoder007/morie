@@ -150,3 +150,7 @@ def word_cloud_data(
 
 def cheatsheet() -> str:
     return "word_cloud_data({}) -> Word frequency data for cloud visualization."
+
+
+# compact alias per ledger/NAMING.md
+wordclouddata = word_cloud_data

@@ -17,3 +17,10 @@ Invisibly returns \code{x} unchanged.
 \description{
 Print method for stat-command registry entries
 }
+\examples{
+cmd <- stat_command("demo_echo", "misc", "demo_echo",
+                    "Echo demo command",
+                    handler_repl = function(...) "ok")
+register_stat_command(cmd)
+print(cmd)
+}

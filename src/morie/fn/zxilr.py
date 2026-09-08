@@ -1,6 +1,6 @@
 """Isometric log-ratio spatial"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ ilr_ = ilr_spatial
 
 def cheatsheet() -> str:
     return "ilr_spatial({}) -> Isometric log-ratio spatial"
+
+
+# compact alias per ledger/NAMING.md
+ilrspatial = ilr_spatial

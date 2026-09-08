@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mutual information estimation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -56,3 +56,7 @@ def mutual_info(x, y, n_bins=20):
 
 def cheatsheet() -> str:
     return "mutual_info({}) -> Mutual information estimation."
+
+
+# compact alias per ledger/NAMING.md
+mutualinfo = mutual_info

@@ -1,6 +1,6 @@
 """Tests for eslzst.esl_z_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslzst import esl_z_score
 

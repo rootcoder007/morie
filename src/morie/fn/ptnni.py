@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nearest neighbor index (Clark-Evans)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ nn_i = nn_index
 
 def cheatsheet() -> str:
     return "nn_index({}) -> Nearest neighbor index (Clark-Evans)"
+
+
+# compact alias per ledger/NAMING.md
+nnindex = nn_index

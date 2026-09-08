@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ordinary kriging matrix system"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ ok_m = ok_matrix
 
 def cheatsheet() -> str:
     return "ok_matrix({}) -> Ordinary kriging matrix system"
+
+
+# compact alias per ledger/NAMING.md
+okmatrix = ok_matrix

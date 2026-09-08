@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SMACOF 2D MDS"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ smac = smacof_2d
 
 def cheatsheet() -> str:
     return "smacof_2d({}) -> SMACOF 2D MDS"
+
+
+# compact alias per ledger/NAMING.md
+smacof2d = smacof_2d

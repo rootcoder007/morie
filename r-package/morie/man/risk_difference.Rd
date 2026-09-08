@@ -10,10 +10,16 @@ risk_difference(a, b, c, d, confidence = 0.95)
 \item{a, b, c, d}{Cell counts.}
 
 \item{confidence}{Confidence level. Default 0.95.}
+
+
+
 }
 \value{
 A \code{morie_effect_size}.
 }
 \description{
 Risk difference for a 2x2 table
+}
+\examples{
+risk_difference(10, 5, 5, 10)
 }

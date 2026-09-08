@@ -1,6 +1,6 @@
 """Tests for grlstc.geron_lstm_cell."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grlstc import geron_lstm_cell
 

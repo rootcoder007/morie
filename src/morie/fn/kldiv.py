@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kullback-Leibler divergence."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -42,3 +42,7 @@ kldiv = kl_divergence
 
 def cheatsheet() -> str:
     return "kl_divergence({}) -> Kullback-Leibler divergence."
+
+
+# compact alias per ledger/NAMING.md
+kldivergence = kl_divergence

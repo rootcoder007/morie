@@ -1,6 +1,6 @@
 """Tests for rmci — reliable change index."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.rmci import rmci
 

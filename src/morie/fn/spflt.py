@@ -1,6 +1,6 @@
 """Eigenvector spatial filtering."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -59,3 +59,7 @@ spflt = spatial_filter
 
 def cheatsheet() -> str:
     return "spatial_filter({}) -> Eigenvector spatial filtering."
+
+
+# compact alias per ledger/NAMING.md
+spatialfilter = spatial_filter

@@ -1,6 +1,6 @@
 """Tests for hmlrl.geron_linear_regression_life."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmlrl import geron_linear_regression_life
 

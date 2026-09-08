@@ -1,6 +1,6 @@
 """GWR local t-values"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ gwr_ = gwr_tvalues
 
 def cheatsheet() -> str:
     return "gwr_tvalues({}) -> GWR local t-values"
+
+
+# compact alias per ledger/NAMING.md
+gwrtvalues = gwr_tvalues

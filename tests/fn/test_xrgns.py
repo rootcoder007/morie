@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrgns -- General Nesting Spatial model"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrgns import gns_ml
 

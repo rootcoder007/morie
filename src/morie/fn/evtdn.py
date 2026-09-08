@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -59,3 +59,7 @@ evtdn = event_density
 
 def cheatsheet() -> str:
     return "event_density({}) -> Kernel density estimate of event times."
+
+
+# compact alias per ledger/NAMING.md
+eventdensity = event_density

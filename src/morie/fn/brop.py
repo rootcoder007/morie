@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -70,3 +70,7 @@ brop = bayesian_rope
 
 def cheatsheet() -> str:
     return "bayesian_rope({}) -> Region of Practical Equivalence (ROPE) analysis."
+
+
+# compact alias per ledger/NAMING.md
+bayesianrope = bayesian_rope

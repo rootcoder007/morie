@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Maximum likelihood estimation for Gaussian."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -43,3 +43,7 @@ mle = mle_gaussian
 
 def cheatsheet() -> str:
     return "mle_gaussian({}) -> Maximum likelihood estimation for Gaussian."
+
+
+# compact alias per ledger/NAMING.md
+mlegaussian = mle_gaussian

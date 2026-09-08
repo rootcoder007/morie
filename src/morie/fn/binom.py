@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Exact binomial test."""
 
-import scipy.stats as stats
+from . import _stats_core as stats
 
 from ._containers import TestResult
 
@@ -56,3 +56,7 @@ binom = binomial_test
 
 def cheatsheet() -> str:
     return "binomial_test({}) -> Exact binomial test."
+
+
+# compact alias per ledger/NAMING.md
+binomialtest = binomial_test

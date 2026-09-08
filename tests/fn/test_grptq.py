@@ -1,6 +1,6 @@
 """Tests for grptq.geron_static_ptq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grptq import geron_static_ptq
 

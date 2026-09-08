@@ -11,7 +11,7 @@ A \code{data.frame} with columns \code{dataset_key}, \code{label},
 \code{portal}, \code{resource_url}, \code{fixture}.
 }
 \description{
-Sibling discovery helper to \code{\link[=morie_datasets_ontario_ckan_layers]{morie_datasets_ontario_ckan_layers()}},
+Sibling discovery helper to \code{morie_datasets_ontario_ckan_layers()},
 covering the non-Ontario open-data Socrata portals morie ships
 offline-mode fixtures + mocked live-mode dispatch for.
 }
@@ -43,6 +43,8 @@ human-readable alias (\verb{/resource/<alias>.json}, e.g.
 wrappers default to the UUID for stability; pass \code{resource_id = "<alias>"} to exercise the alias path.
 }
 \examples{
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 reg <- morie_datasets_external_socrata_layers()
 reg[, c("dataset_key", "resource_url")]
+\dontshow{\}) # examplesIf}
 }

@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.signal import hilbert
-from scipy.stats import linregress
+from . import _array_core as np
+from ._signal_core import hilbert
+from ._stats_core import linregress
 
 from ._containers import DescriptiveResult
 
@@ -57,3 +57,7 @@ chird = chirp_detect
 
 def cheatsheet() -> str:
     return "chirp_detect({}) -> Chirp (frequency sweep) detection via instantaneous frequenc"
+
+
+# compact alias per ledger/NAMING.md
+chirpdetect = chirp_detect

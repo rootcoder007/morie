@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -27,7 +27,7 @@ def freq_response_at(b, a, freqs, fs: float = 1.0) -> DescriptiveResult:
     -------
     DescriptiveResult
     """
-    from scipy.signal import freqz
+    from ._signal_core import freqz
 
     b = np.asarray(b, dtype=float)
     a = np.asarray(a, dtype=float)
@@ -48,3 +48,7 @@ ztfrq = freq_response_at
 
 def cheatsheet() -> str:
     return "freq_response_at({}) -> Frequency response at specific frequencies."
+
+
+# compact alias per ledger/NAMING.md
+freqresponseat = freq_response_at

@@ -8,7 +8,7 @@ __all__ = ["hamiltonian_mc", "hmc"]
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def hamiltonian_mc(
@@ -121,3 +121,7 @@ hmc = hamiltonian_mc
 
 def cheatsheet() -> str:
     return "hamiltonian_mc(log_target, grad, init) -> Hamiltonian Monte Carlo sampler."
+
+
+# compact alias per ledger/NAMING.md
+hamiltonianmc = hamiltonian_mc

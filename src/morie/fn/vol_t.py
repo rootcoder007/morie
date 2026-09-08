@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -58,3 +58,7 @@ short = vol_trd
 
 def cheatsheet() -> str:
     return "vol_trd({}) -> Volatility trend over time."
+
+
+# compact alias per ledger/NAMING.md
+voltrd = vol_trd

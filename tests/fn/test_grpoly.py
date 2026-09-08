@@ -1,6 +1,6 @@
 """Tests for grpoly.geron_polynomial_features."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grpoly import geron_polynomial_features
 

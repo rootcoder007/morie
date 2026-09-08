@@ -1,6 +1,6 @@
 """Cross-variogram estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -42,3 +42,7 @@ cros = cross_vario
 
 def cheatsheet() -> str:
     return "cross_vario({}) -> Cross-variogram estimation"
+
+
+# compact alias per ledger/NAMING.md
+crossvario = cross_vario

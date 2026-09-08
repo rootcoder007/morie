@@ -1,6 +1,6 @@
 """Laurent series (with negative powers)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def laurent_series(f, c, order):
 
 def cheatsheet():
     return "laurnt: Laurent series (with negative powers)"
+
+
+# compact alias per ledger/NAMING.md
+laurentseries = laurent_series

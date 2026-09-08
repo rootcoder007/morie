@@ -4,7 +4,7 @@ Manganese water spatial
 Category: WtrQual
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wqmn(data=None, coords=None, n=50):

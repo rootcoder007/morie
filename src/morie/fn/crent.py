@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cross-entropy."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -40,3 +40,7 @@ crent = cross_entropy
 
 def cheatsheet() -> str:
     return "cross_entropy({}) -> Cross-entropy."
+
+
+# compact alias per ledger/NAMING.md
+crossentropy = cross_entropy

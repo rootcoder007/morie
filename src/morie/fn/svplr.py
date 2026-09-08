@@ -1,6 +1,6 @@
 """1D ideological polarization index"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ pola = polarization_1d
 
 def cheatsheet() -> str:
     return "polarization_1d({}) -> 1D ideological polarization index"
+
+
+# compact alias per ledger/NAMING.md
+polarization1d = polarization_1d

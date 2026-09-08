@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import ESRes
 
@@ -39,3 +39,7 @@ eqthl = theil_index
 
 def cheatsheet() -> str:
     return "theil_index({}) -> Theil's entropy index."
+
+
+# compact alias per ledger/NAMING.md
+theilindex = theil_index

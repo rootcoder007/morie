@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -46,3 +46,7 @@ nflor = noise_floor
 
 def cheatsheet() -> str:
     return "noise_floor({}) -> Noise floor estimation."
+
+
+# compact alias per ledger/NAMING.md
+noisefloor = noise_floor

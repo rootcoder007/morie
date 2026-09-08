@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -100,7 +100,7 @@ def kbndr(
             mask &= x_eval <= upper
         density[~mask] = 0.0
     elif method == "renormalization":
-        from scipy.stats import norm
+        from ._stats_core import norm
 
         density = _gauss_kde(x_eval, data)
         a_lo = (lower - data[None, :]) / bw if not np.isneginf(lower) else -np.inf

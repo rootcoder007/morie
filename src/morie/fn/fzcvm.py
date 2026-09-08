@@ -7,8 +7,8 @@ Under H0, the smoothing bias is o(n^{-1/2}), so the classical
 CvM asymptotic distribution applies and we use its tabulated tail.
 """
 
-import numpy as np
-from scipy import stats as _sps
+from . import _array_core as np
+from . import _stats_core as _sps
 
 from ._richresult import RichResult
 
@@ -16,13 +16,16 @@ __all__ = ["fauzi_cvm_smoothed"]
 
 
 def _silverman_h(x):
-    n = len(x)
-    s = np.std(x, ddof=1)
-    iqr = np.subtract(*np.percentile(x, [75, 25])) / 1.34
-    sigma = min(s, iqr) if iqr > 0 else s
-    if sigma <= 0:
-        sigma = 1.0
-    return 1.06 * sigma * n ** (-1.0 / 5.0)
+    """DISTRIBUTION-function bandwidth, 4^(1/3) sigma n^(-1/3).
+
+    Not the n^(-1/5) density rule: this module smooths with the
+    INTEGRATED kernel, so the bandwidth enters the variance at
+    O(h/n) rather than O(1/(nh)) and the optimiser is a cube root.
+    See morie.fn._fauzi.kdfe_bandwidth for the derivation from the
+    book's (2.3), (2.4) and Sec. 5.3.2.
+    """
+    from ._fauzi import kdfe_bandwidth
+    return kdfe_bandwidth(x)
 
 
 def _cvm_pvalue(w2):
@@ -76,7 +79,16 @@ def fauzi_cvm_smoothed(x, cdf="norm", args=None, h=None):
         F_ref = dist.cdf(t_grid, *args)
     F_hat = np.array([np.mean(_sps.norm.cdf((g - x) / h)) for g in t_grid])
     w2 = float(n * np.mean((F_hat - F_ref) ** 2))
-    p = _cvm_pvalue(w2 / n)  # CvM table is in the per-obs scale
+    # The critical values in _cvm_pvalue are for the n-SCALED statistic
+    # W^2 = n * integral (F_hat - F)^2 dF, which is exactly what w2 already
+    # is. This used to pass w2 / n "because the CvM table is in the per-obs
+    # scale" -- it is not, and dividing undid the scaling: the argument then
+    # sat below the smallest tabulated value (0.347) for every realistic
+    # input, so _cvm_pvalue took its first branch and returned 0.5 always.
+    # Measured before the fix: uniform(-3,3) against N(0,1) gave W^2 = 6.61
+    # and a 2-sigma shift gave W^2 = 86.29, both reported as p = 0.5. The
+    # test could not reject anything.
+    p = _cvm_pvalue(w2)
 
     return RichResult(
         payload={

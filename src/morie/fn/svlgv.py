@@ -1,6 +1,6 @@
 """Logit spatial voting probability"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ logi = logit_vote
 
 def cheatsheet() -> str:
     return "logit_vote({}) -> Logit spatial voting probability"
+
+
+# compact alias per ledger/NAMING.md
+logitvote = logit_vote

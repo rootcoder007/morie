@@ -1,55 +1,16 @@
-r"""Numbered display equation (7.7) from MVSML chapter 7.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""eq. (7.7) p.226, re-exported from :mod:`morie.fn.msm109`.
 
-import numpy as np
+The stub generator stamped several extracted page
+fragments with this same function name, so the
+implementation lives once in msm109 and this module re-exports
+it.  Calling either path runs the same code.
+"""
 
-from ._richresult import RichResult
+from .msm109 import mvsml_bayesian_regression_pt2_eq_7_7
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_7"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_7(Like, the, penalized, logistic, regression, studied):
-    r"""
-    Numbered display equation (7.7) from MVSML chapter 7.
-
-    Formula: . Like the penalized logistic regression studied in Chap. 3, the more j=1 \betacj common approach for choosing the “optimal” regularization parameter \lambda in the penalized multinomial regression model in
-
-    Parameters
-    ----------
-    Like : array-like
-        Input data.
-    the : array-like
-        Input data.
-    penalized : array-like
-        Input data.
-    logistic : array-like
-        Input data.
-    regression : array-like
-        Input data.
-    studied : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (7.7) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    r"""
-    Like = np.atleast_1d(np.asarray(Like, dtype=float))
-    n = len(Like)
-    result = float(np.mean(Like))
-    se = float(np.std(Like, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (7.7) from MVSML chapter 7.",
-        }
-    )
-
-
 def cheatsheet():
-    return "msm117: Numbered display equation (7.7) from MVSML chapter 7."
+    return "msm117: see msm109"

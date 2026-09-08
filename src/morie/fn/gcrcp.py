@@ -5,7 +5,7 @@ RCP scenario spatial
 Category: GeoClim
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gcrcp(data=None, coords=None, n=50):

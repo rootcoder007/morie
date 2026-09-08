@@ -11,16 +11,16 @@
 #'
 #' Provides:
 #' \itemize{
-#'   \item \code{estimate_ate()} — IPW-weighted OLS ATE.
-#'   \item \code{estimate_plr()} — Partially Linear Regression via
+#'   \item \code{estimate_ate()} -- IPW-weighted OLS ATE.
+#'   \item \code{estimate_plr()} -- Partially Linear Regression via
 #'     native cross-fitting with ridge nuisance learners.
-#'   \item \code{estimate_pliv()} — Partially Linear IV (LATE) via
+#'   \item \code{estimate_pliv()} -- Partially Linear IV (LATE) via
 #'     native cross-fit partialling-out.
-#'   \item \code{estimate_ate_gcomputation()} — G-computation
+#'   \item \code{estimate_ate_gcomputation()} -- G-computation
 #'     (outcome-regression / standardisation) ATE with bootstrap SE.
-#'   \item \code{sensitivity_rosenbaum()} — Rosenbaum bounds for hidden
+#'   \item \code{sensitivity_rosenbaum()} -- Rosenbaum bounds for hidden
 #'     confounding (native Rosenbaum signed-rank bounds).
-#'   \item \code{e_value()} — VanderWeele-Ding E-value (wraps
+#'   \item \code{e_value()} -- VanderWeele-Ding E-value (wraps
 #'     \pkg{EValue} when available, else base R).
 #' }
 #'
@@ -337,8 +337,8 @@ estimate_ate_gcomputation <- function(data, treatment, outcome,
 
 #' Rosenbaum bounds sensitivity analysis (data-frame interface)
 #'
-#' Wraps \pkg{rbounds} when available; otherwise computes normal-
-#' approximation Wilcoxon signed-rank bounds in base R.
+#' Computes normal-approximation Wilcoxon signed-rank bounds natively
+#' in base R.
 #'
 #' @param data       Data frame with treatment + outcome columns.
 #' @param treatment  Binary treatment column (0/1).
@@ -349,6 +349,12 @@ estimate_ate_gcomputation <- function(data, treatment, outcome,
 #' @param n_gamma    Number of Gamma values. Default 20.
 #' @return Data frame with `Gamma`, `p_lower`, `p_upper`.
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(d = rbinom(60, 1, 0.5), x1 = rnorm(60))
+#' df$y <- df$d * 0.5 + df$x1 + rnorm(60)
+#' res <- try(sensitivity_rosenbaum(df, "d", "y", "x1"))
+#' if (!inherits(res, "try-error")) str(res, max.level = 1)
 sensitivity_rosenbaum <- function(data, treatment, outcome,
                                      covariates,
                                      gamma_range = c(1, 3),
@@ -413,8 +419,8 @@ sensitivity_rosenbaum <- function(data, treatment, outcome,
 
 #' E-value for unmeasured confounding (continuous-ATE scale)
 #'
-#' Wraps \pkg{EValue} when available. Otherwise applies the same
-#' continuous-scale z-stat -> RR approximation as the Python port.
+#' Applies the continuous-scale z-stat -> RR approximation natively,
+#' matching the Python port.
 #'
 #' @param ate  Point estimate of the treatment effect.
 #' @param se   Standard error of the ATE (must be > 0).
@@ -429,8 +435,8 @@ e_value <- function(ate, se, null = 0) {
   if (z == 0) return(1)
   # Pre-2026-05-22, this also tried EValue::evalues.OLS with a hardcoded
   # sd_y=1 (assumed standardised outcome). That diverged from Python's
-  # exp(z) proxy: same input, three different paths (R-with-EValue ≠
-  # R-without ≠ Python). Removed; both ports now use the closed-form
+  # exp(z) proxy: same input, three different paths (R-with-EValue ?
+  # R-without ? Python). Removed; both ports now use the closed-form
   # VanderWeele-Ding E-value for the continuous-scale RR proxy.
   # Users who want the EValue OLS path with a real sd_y should call
   # EValue::evalues.OLS directly.

@@ -1,7 +1,7 @@
 """Tests for morie.fn.rcddl — recidivism DML."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import ESRes
 from morie.fn.rcddl import recidivism_dml

@@ -50,3 +50,7 @@ gbdrf = gbd_risk_factor
 
 def cheatsheet() -> str:
     return "gbd_risk_factor({}) -> GBD risk factor attribution (population attributable fractio"
+
+
+# compact alias per ledger/NAMING.md
+gbdriskfactor = gbd_risk_factor

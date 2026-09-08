@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Power spectral density via FFT."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -50,3 +50,7 @@ dfts = dft_spectrum
 
 def cheatsheet() -> str:
     return "dft_spectrum({}) -> Power spectral density via FFT."
+
+
+# compact alias per ledger/NAMING.md
+dftspectrum = dft_spectrum

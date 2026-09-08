@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def item_difficulty(data: pd.DataFrame | np.ndarray) -> pd.DataFrame:
@@ -38,3 +38,7 @@ def item_difficulty(data: pd.DataFrame | np.ndarray) -> pd.DataFrame:
 
 def cheatsheet() -> str:
     return "item_difficulty({}) -> Item difficulty (classical)."
+
+
+# compact alias per ledger/NAMING.md
+itemdifficulty = item_difficulty

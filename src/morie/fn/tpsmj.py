@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -50,3 +50,7 @@ tpsmj = tps_major_crime
 
 def cheatsheet() -> str:
     return "tps_major_crime({}) -> Major crime indicators summary."
+
+
+# compact alias per ledger/NAMING.md
+tpsmajorcrime = tps_major_crime

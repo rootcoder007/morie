@@ -1,6 +1,6 @@
 """Tests for morie.fn.mlsms -- MLSMU6 missing impute."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mlsms import mlsms, mlsmu6_missing_impute
 

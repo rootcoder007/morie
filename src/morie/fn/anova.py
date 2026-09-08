@@ -1,8 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """One-way ANOVA F-test."""
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 
 def anova_one_way(*groups) -> dict:
@@ -54,3 +54,7 @@ anova = anova_one_way
 
 def cheatsheet() -> str:
     return "anova_one_way({}) -> One-way ANOVA F-test."
+
+
+# compact alias per ledger/NAMING.md
+anovaoneway = anova_one_way

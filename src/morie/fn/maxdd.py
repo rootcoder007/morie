@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -70,3 +70,7 @@ maxdd = max_drawdown
 
 def cheatsheet() -> str:
     return "max_drawdown({}) -> Maximum drawdown."
+
+
+# compact alias per ledger/NAMING.md
+maxdrawdown = max_drawdown

@@ -1,6 +1,6 @@
 """Yolk of spatial game"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ coal = coalition_yolk
 
 def cheatsheet() -> str:
     return "coalition_yolk({}) -> Yolk of spatial game"
+
+
+# compact alias per ledger/NAMING.md
+coalitionyolk = coalition_yolk

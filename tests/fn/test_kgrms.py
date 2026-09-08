@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgrms -- Kriging RMSE"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgrms import kriging_rmse
 

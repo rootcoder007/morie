@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -45,3 +45,7 @@ prsv = parseval_verify
 
 def cheatsheet() -> str:
     return "parseval_verify({}) -> Parseval's theorem verification."
+
+
+# compact alias per ledger/NAMING.md
+parsevalverify = parseval_verify

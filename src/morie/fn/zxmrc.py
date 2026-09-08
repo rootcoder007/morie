@@ -1,6 +1,6 @@
 """Mercator projection"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ merc = mercator_proj
 
 def cheatsheet() -> str:
     return "mercator_proj({}) -> Mercator projection"
+
+
+# compact alias per ledger/NAMING.md
+mercatorproj = mercator_proj

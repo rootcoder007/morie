@@ -1,6 +1,6 @@
 """Tests for morie.fn.umrev."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.umrev import umrev
 

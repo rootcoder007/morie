@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ acfds = acf_dist
 
 def cheatsheet() -> str:
     return "acf_dist({}) -> ACF-based distance between two signals."
+
+
+# compact alias per ledger/NAMING.md
+acfdist = acf_dist

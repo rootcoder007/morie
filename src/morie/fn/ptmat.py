@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Matern cluster process"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ mate = matern_process
 
 def cheatsheet() -> str:
     return "matern_process({}) -> Matern cluster process"
+
+
+# compact alias per ledger/NAMING.md
+maternprocess = matern_process

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -57,3 +57,7 @@ sqntz = quantize_signal
 
 def cheatsheet() -> str:
     return "quantize_signal({}) -> Uniform signal quantization."
+
+
+# compact alias per ledger/NAMING.md
+quantizesignal = quantize_signal

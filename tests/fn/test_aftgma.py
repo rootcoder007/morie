@@ -1,6 +1,6 @@
 """Tests for aftgma.aft_generalized_gamma."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aftgma import aft_generalized_gamma
 

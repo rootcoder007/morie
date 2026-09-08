@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gamma GLM regression via IRLS."""
 
-import numpy as np
-from scipy.stats import norm
+from . import _array_core as np
+from ._stats_core import norm
 
 from morie.fn._containers import RegressionResult
 
@@ -140,3 +140,7 @@ def rey_gm(
 
 def cheatsheet() -> str:
     return "rey_gm({}) -> Gamma GLM regression via IRLS."
+
+
+# compact alias per ledger/NAMING.md
+reygm = rey_gm

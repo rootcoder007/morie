@@ -1,6 +1,6 @@
 """Test learning_vq (lvq)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.lvq import learning_vq, lvq

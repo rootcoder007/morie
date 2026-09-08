@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -45,3 +45,7 @@ envdt = envelope_detect
 
 def cheatsheet() -> str:
     return "envelope_detect({}) -> Signal envelope via rectification and lowpass."
+
+
+# compact alias per ledger/NAMING.md
+envelopedetect = envelope_detect

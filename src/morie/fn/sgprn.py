@@ -23,7 +23,7 @@ def practical_range(model, params, threshold=0.95):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     nugget = params["nugget"]
     sill = params["sill"]
@@ -58,3 +58,7 @@ sgprn = practical_range
 
 def cheatsheet() -> str:
     return "practical_range({}) -> Practical (effective) range estimation."
+
+
+# compact alias per ledger/NAMING.md
+practicalrange = practical_range

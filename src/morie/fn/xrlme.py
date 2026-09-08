@@ -1,6 +1,6 @@
 """LM test for spatial error"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ lm_e = lm_error
 
 def cheatsheet() -> str:
     return "lm_error({}) -> LM test for spatial error"
+
+
+# compact alias per ledger/NAMING.md
+lmerror = lm_error

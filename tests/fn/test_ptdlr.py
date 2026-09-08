@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptdlr -- Delaunay residuals"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptdlr import pp_delaunay_resid
 

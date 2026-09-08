@@ -1,6 +1,6 @@
 """Tests for kerd.kernel_density_fda."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kerd import kernel_density_fda
 

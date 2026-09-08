@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -46,3 +46,7 @@ sent = sentence_stats
 
 def cheatsheet() -> str:
     return "sentence_stats({}) -> Sentence length distribution stats."
+
+
+# compact alias per ledger/NAMING.md
+sentencestats = sentence_stats

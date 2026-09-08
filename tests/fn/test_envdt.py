@@ -1,6 +1,6 @@
 """Test envelope_detect (envdt)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.envdt import envdt, envelope_detect

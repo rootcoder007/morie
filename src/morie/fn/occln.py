@@ -11,7 +11,7 @@ def oc_cutting_line(normal, cutpoint) -> DescriptiveResult:
 
     .. epigraph:: It does not matter how slowly you go as long as you do not stop. -- Confucius
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     n = np.asarray(normal, dtype=float)
     c = float(cutpoint)
@@ -38,3 +38,7 @@ occln = oc_cutting_line
 
 def cheatsheet() -> str:
     return "oc_cutting_line({}) -> OC cutting line equation."
+
+
+# compact alias per ledger/NAMING.md
+occuttingline = oc_cutting_line

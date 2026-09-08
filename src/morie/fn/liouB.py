@@ -1,7 +1,7 @@
 """Liouville's elementary-integral test."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -66,3 +66,7 @@ def liouville_test(expr, x, cdf=None):
 
 def cheatsheet():
     return "liouB: Liouville's elementary-integral test"
+
+
+# compact alias per ledger/NAMING.md
+liouvilletest = liouville_test

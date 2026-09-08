@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -61,3 +61,7 @@ wvpkt = wavelet_packets
 
 def cheatsheet() -> str:
     return "wavelet_packets({}) -> Wavelet packet decomposition (full tree)."
+
+
+# compact alias per ledger/NAMING.md
+waveletpackets = wavelet_packets

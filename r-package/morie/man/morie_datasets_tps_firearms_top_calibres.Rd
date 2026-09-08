@@ -38,11 +38,11 @@ affects the hub_id -> FeatureServer URL lookup.}
 }
 \value{
 A data.frame / GeoJSON list / file path; see
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} for per-format semantics.
+\code{morie_datasets_tps_arcgis_hub_by_id()} for per-format semantics.
 }
 \description{
 Toronto PS ArcGIS Hub dataset wrapper. Thin dispatch to
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} with the canonical
+\code{morie_datasets_tps_arcgis_hub_by_id()} with the canonical
 hub item_id \verb{9b1b38ed56764b968c25ce6b74e5dc0d}.
 }
 \details{
@@ -51,4 +51,9 @@ revolvers, rifles and shotguns that comprise the crime guns
 seized by the Toronto Police Service.
 
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Firearms
+}
+\examples{
+\dontrun{
+morie_datasets_tps_firearms_top_calibres()
+}
 }

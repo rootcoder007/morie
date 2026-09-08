@@ -1,6 +1,6 @@
 """Tests for morie.fn.inspct — inspect output file."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.inspct import inspct, inspect_output

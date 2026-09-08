@@ -14,9 +14,9 @@ from dataclasses import dataclass, field
 from io import StringIO
 from typing import Any, Literal
 
-import numpy as np
-import pandas as pd
-from scipy import stats as sp_stats
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as sp_stats
 
 logger = logging.getLogger(__name__)
 
@@ -916,7 +916,7 @@ def anova_table(
     -------
     DataFrame or str
     """
-    import statsmodels.api as sm_api
+    from morie.fn import _glm_core as sm_api
 
     anova_df = sm_api.stats.anova_lm(model, typ=typ)
 

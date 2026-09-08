@@ -1,6 +1,6 @@
 """Tests for hmtfm.geron_transformer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmtfm import geron_transformer
 

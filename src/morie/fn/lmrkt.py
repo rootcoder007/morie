@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -146,3 +146,7 @@ lmrkt = local_markov
 
 def cheatsheet() -> str:
     return "local_markov({}) -> Local Markov transition matrices for spatial regime dynamics"
+
+
+# compact alias per ledger/NAMING.md
+localmarkov = local_markov

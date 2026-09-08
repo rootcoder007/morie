@@ -1,24 +1,11 @@
-"""Tests for grdbs.geron_dbscan_core_point."""
+"""Tests for grdbs (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.grdbs import geron_dbscan_core_point
-
-
-def test_grdbs_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    eps = np.random.default_rng(42).normal(0, 1, 100)
-    min_samples = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_dbscan_core_point(X, eps, min_samples)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.grdbs as mod
 
 
-def test_grdbs_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    eps = np.random.default_rng(42).normal(0, 1, 100)
-    min_samples = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_dbscan_core_point(X, eps, min_samples)
-    assert isinstance(result, dict)
+def test_grdbs_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

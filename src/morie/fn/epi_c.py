@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Epidemic curve (epi curve) construction."""
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 
@@ -54,3 +54,7 @@ epi_c = epidemic_curve
 
 def cheatsheet() -> str:
     return "epidemic_curve({}) -> Epidemic curve (epi curve) construction."
+
+
+# compact alias per ledger/NAMING.md
+epidemiccurve = epidemic_curve

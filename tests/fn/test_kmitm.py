@@ -1,6 +1,6 @@
 """Tests for kmitm.kamath_image_text_matching."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmitm import kamath_image_text_matching
 

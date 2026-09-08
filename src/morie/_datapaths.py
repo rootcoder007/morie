@@ -20,8 +20,7 @@ The cascade (highest priority first):
 4. Persistent user cache (only if it already exists — never created
    here; created only by ``morie_<domain>_download(...)`` which is the
    user's explicit opt-in):
-     - prefer ``platformdirs.user_data_dir("morie")`` if installed
-     - else ``~/.local/share/morie`` on Linux,
+     - ``~/.local/share/morie`` on Linux (XDG),
        ``~/Library/Application Support/morie`` on macOS, or
        ``%APPDATA%/morie`` on Windows
 5. Bundled fixture under the morie installation
@@ -55,25 +54,20 @@ def _env(name: str) -> str | None:
 def _user_data_dir() -> Path:
     """Platform-appropriate persistent user-data directory for morie.
 
-    Tries ``platformdirs`` first (more accurate); falls back to a
-    hand-rolled per-platform default. Either way, this function does
+    Hand-rolled per-platform default (the same directories
+    platformdirs computes for these three platforms). Either way, this function does
     NOT create the directory — it only returns the path.
     """
-    try:
-        import platformdirs
-
-        return Path(platformdirs.user_data_dir("morie", appauthor=False))
-    except ImportError:
-        system = platform.system()
-        home = Path.home()
-        if system == "Darwin":
-            return home / "Library" / "Application Support" / "morie"
-        if system == "Windows":
-            base = _env("APPDATA")
-            return Path(base) / "morie" if base else home / "AppData" / "Roaming" / "morie"
-        # Linux / BSD / other unix
-        xdg = _env("XDG_DATA_HOME")
-        return Path(xdg) / "morie" if xdg else home / ".local" / "share" / "morie"
+    system = platform.system()
+    home = Path.home()
+    if system == "Darwin":
+        return home / "Library" / "Application Support" / "morie"
+    if system == "Windows":
+        base = _env("APPDATA")
+        return Path(base) / "morie" if base else home / "AppData" / "Roaming" / "morie"
+    # Linux / BSD / other unix
+    xdg = _env("XDG_DATA_HOME")
+    return Path(xdg) / "morie" if xdg else home / ".local" / "share" / "morie"
 
 
 def _bundled_fixture(domain: str) -> Path:

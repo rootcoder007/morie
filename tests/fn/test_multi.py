@@ -1,6 +1,6 @@
 """Tests for morie.fn.multi — Multinomial logit."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.multi import multinomial_logit

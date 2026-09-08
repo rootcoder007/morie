@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cramer-Rao bound."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -42,3 +42,7 @@ cramr = cramer_rao_bound
 
 def cheatsheet() -> str:
     return "cramer_rao_bound(fisher_info, n) -> Cramer-Rao lower bound."
+
+
+# compact alias per ledger/NAMING.md
+cramerraobound = cramer_rao_bound

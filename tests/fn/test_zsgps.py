@@ -1,6 +1,6 @@
 """Tests for morie.fn.zsgps -- Gaussian process spatial"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zsgps import gp_spatial
 

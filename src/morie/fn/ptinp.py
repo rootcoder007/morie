@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -53,3 +53,7 @@ ptinp = point_in_polygon
 
 def cheatsheet() -> str:
     return "point_in_polygon({}) -> Point-in-polygon test via ray casting."
+
+
+# compact alias per ledger/NAMING.md
+pointinpolygon = point_in_polygon

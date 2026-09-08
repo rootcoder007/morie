@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -62,7 +62,7 @@ def probability_resample(
     se = float(np.std(boot_thetas, ddof=1))
     bias = float(np.mean(boot_thetas) - theta_hat)
 
-    from scipy import stats
+    from . import _stats_core as stats
 
     z0 = stats.norm.ppf(np.mean(boot_thetas < theta_hat))
     if not np.isfinite(z0):

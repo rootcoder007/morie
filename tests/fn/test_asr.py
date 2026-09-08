@@ -1,6 +1,6 @@
 """Tests for morie.fn.asr -- age-standardized rate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.asr import age_standardized_rate

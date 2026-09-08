@@ -18,3 +18,7 @@ both punitive and therapeutic rationales. Detects any
 \code{SegReason_Disciplinary*} flag co-occurring with any
 \code{SegReason_*Medical*} flag.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_disciplinary_medical_overlap(V)
+}

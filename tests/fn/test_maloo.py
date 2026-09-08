@@ -1,6 +1,6 @@
 """Tests for maloo.ma_leave_one_out."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.maloo import ma_leave_one_out
 

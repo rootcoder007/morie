@@ -1,6 +1,6 @@
 """Carstairs deprivation index"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ cars = carstairs_index
 
 def cheatsheet() -> str:
     return "carstairs_index({}) -> Carstairs deprivation index"
+
+
+# compact alias per ledger/NAMING.md
+carstairsindex = carstairs_index

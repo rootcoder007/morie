@@ -1,6 +1,6 @@
 """Tests for gh_dp_kl_nbhd.ghosal_dp_kl_nbhd_mass."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_dp_kl_nbhd import ghosal_dp_kl_nbhd_mass
 

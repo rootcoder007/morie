@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.signal import stft as _stft
+from . import _array_core as np
+from ._signal_core import stft as _stft
 
 from ._containers import DescriptiveResult
 
@@ -75,3 +75,7 @@ reasn = reassigned_stft
 
 def cheatsheet() -> str:
     return "reassigned_stft({}) -> Reassigned spectrogram for sharper TF representation."
+
+
+# compact alias per ledger/NAMING.md
+reassignedstft = reassigned_stft

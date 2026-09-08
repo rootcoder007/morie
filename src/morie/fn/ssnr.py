@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -47,3 +47,7 @@ ssnr = snr_compute
 
 def cheatsheet() -> str:
     return "snr_compute({}) -> Signal-to-noise ratio."
+
+
+# compact alias per ledger/NAMING.md
+snrcompute = snr_compute

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Universal kriging trend"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ uk_t = uk_trend
 
 def cheatsheet() -> str:
     return "uk_trend({}) -> Universal kriging trend"
+
+
+# compact alias per ledger/NAMING.md
+uktrend = uk_trend

@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def knn_impute(
@@ -124,3 +124,7 @@ knn_i = knn_impute
 
 def cheatsheet() -> str:
     return "knn_impute({}) -> KNN imputation for missing data."
+
+
+# compact alias per ledger/NAMING.md
+knnimpute = knn_impute

@@ -1,6 +1,6 @@
 """Tests for hrzhot.horowitz_T_F_estimators."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzhot import horowitz_T_F_estimators
 

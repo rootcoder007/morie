@@ -1,7 +1,7 @@
 """Engle ARCH-LM test for heteroscedasticity."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -71,3 +71,7 @@ def arch_lm_engle(x, lags, cdf=None):
 
 def cheatsheet():
     return "archlm: Engle ARCH-LM test for heteroscedasticity"
+
+
+# compact alias per ledger/NAMING.md
+archlmengle = arch_lm_engle

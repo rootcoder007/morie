@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -38,7 +38,7 @@ def hazard_rate(
     Kalbfleisch, J. D. & Prentice, R. L. (2002). *The Statistical
     Analysis of Failure Time Data*, 2nd ed. Wiley, Ch. 1.
     """
-    import scipy.stats as stats
+    from . import _stats_core as stats
 
     d = np.asarray(deaths, dtype=float)
     py = np.asarray(person_years, dtype=float)

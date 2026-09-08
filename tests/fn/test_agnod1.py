@@ -1,6 +1,6 @@
 """Tests for agnod1.alphazero_node_init."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agnod1 import alphazero_node_init
 

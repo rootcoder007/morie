@@ -1,6 +1,6 @@
 """DDPM reverse step."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def ddpm_step(x_t, t, eps_theta):
 
 def cheatsheet():
     return "ddpmst: DDPM reverse step"
+
+
+# compact alias per ledger/NAMING.md
+ddpmstep = ddpm_step

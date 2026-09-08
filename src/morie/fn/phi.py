@@ -4,7 +4,7 @@
 import math
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def phi_coefficient(table_2x2: Union[list, np.ndarray]) -> float:
@@ -38,3 +38,7 @@ phi = phi_coefficient
 
 def cheatsheet() -> str:
     return "phi_coefficient({}) -> Phi coefficient for association in a 2x2 contingency table."
+
+
+# compact alias per ledger/NAMING.md
+phicoefficient = phi_coefficient

@@ -25,7 +25,7 @@ def sample_bound(confidence=0.95, margin=0.05, p=0.5, **kwargs) -> DescriptiveRe
     -------
     DescriptiveResult
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     if not (0 < confidence < 1):
         raise ValueError("Confidence must be in (0, 1).")
@@ -55,3 +55,7 @@ smpbd = sample_bound
 
 def cheatsheet() -> str:
     return "sample_bound({}) -> Sample size bound."
+
+
+# compact alias per ledger/NAMING.md
+samplebound = sample_bound

@@ -7,7 +7,7 @@ estimator: sum d_i / Y_i^2.  Returns Lambda_hat at the largest
 event time plus sqrt-variance SE.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

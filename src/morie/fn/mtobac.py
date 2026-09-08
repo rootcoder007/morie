@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 
@@ -50,3 +50,7 @@ mtobac = mto_bac_analysis
 
 def cheatsheet() -> str:
     return "mto_bac_analysis({}) -> BAC distribution in impaired driving."
+
+
+# compact alias per ledger/NAMING.md
+mtobacanalysis = mto_bac_analysis

@@ -1,6 +1,6 @@
 """Tests for gtrf.graph_transformer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gtrf import graph_transformer
 

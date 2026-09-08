@@ -1,6 +1,6 @@
 """Tests for gh_c14_4.ghosal_crf_def."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c14_4 import ghosal_crf_def
 

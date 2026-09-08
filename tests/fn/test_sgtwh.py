@@ -1,6 +1,6 @@
 """Tests for sgtwh.sgt_wiener_index."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtwh import sgt_wiener_index
 

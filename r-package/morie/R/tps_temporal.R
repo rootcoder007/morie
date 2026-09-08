@@ -10,7 +10,6 @@
 #' to a notebook.
 #'
 #' Functions
-#' ---------
 #'
 #' \itemize{
 #'   \item \code{\link{morie_tps_year_over_year_trend}}: OLS slope /
@@ -32,6 +31,22 @@ NULL
 # Internal helpers (NOT exported)
 # ---------------------------------------------------------------------------
 
+#' .tps_temporal_result
+#'
+#' A step of the tps_temporal implementation. Called by \code{morie_tps_arima_forecast},
+#' \code{morie_tps_changepoint_detection}, \code{morie_tps_seasonal_pattern} and 1 others
+#' in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param call Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .tps_temporal_result <- function(title, call, summary_lines = list(),
                                   warnings = character(0),
                                   interpretation = "",
@@ -48,6 +63,18 @@ NULL
   out
 }
 
+#' .tps_temporal_fmt_round
+#'
+#' A step of the tps_temporal implementation. Called by \code{morie_tps_arima_forecast},
+#' \code{morie_tps_changepoint_detection}, \code{morie_tps_seasonal_pattern} and 1 others
+#' in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x Passed to \code{is.finite}.
+#' @param k Passed to \code{round}.
+#' @return A numeric value.
+#' @export
 .tps_temporal_fmt_round <- function(x, k) {
   if (!is.finite(x)) return(NA_real_)
   round(x, k)
@@ -55,6 +82,19 @@ NULL
 
 # Build monthly counts from an arbitrary date column. Returns a list
 # with $dates (POSIXct, first-of-month) and $counts (integer).
+#' Build monthly counts from an arbitrary date column. Returns a list
+#'
+#' with $dates (POSIXct, first-of-month) and $counts (integer).
+#'
+#' @param df A list; the body reads \code{$OCC_DAY}, \code{$OCC_MONTH}, \code{$OCC_YEAR} from it.
+#' @return A list with \code{dates}, \code{counts}.
+#' @export
+#' @examples
+#' df <- data.frame(x = c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), y = c(2.9, 5.1, 6.8,
+#' 9.4, 11.2, 13.1, 15.0, 17.6), g = c('a', 'b', 'a', 'b', 'a', 'b', 'a', 'b'),
+#' stringsAsFactors = FALSE)
+#' res <- .tps_temporal_monthly(df = df)
+#' res
 .tps_temporal_monthly <- function(df) {
   dt <- NULL
   if (all(c("OCC_YEAR", "OCC_MONTH", "OCC_DAY") %in% names(df))) {
@@ -111,6 +151,9 @@ NULL
 #'   \code{intercept}, \code{r2}, \code{direction}, \code{years},
 #'   \code{counts}, \code{fitted}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_year_over_year_trend(D)
 morie_tps_year_over_year_trend <- function(df,
                                             year_col = "OCC_YEAR",
                                             ds_name = "?") {
@@ -217,6 +260,9 @@ morie_tps_year_over_year_trend <- function(df,
 #' @return A \code{morie_rich_result} list with per-cycle counts and
 #'   chi-square p-values.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_seasonal_pattern(D)
 morie_tps_seasonal_pattern <- function(df, ds_name = "?") {
   stopifnot(is.data.frame(df))
   call_str <- sprintf("morie_tps_seasonal_pattern(df=<%dr>)", nrow(df))
@@ -301,6 +347,9 @@ morie_tps_seasonal_pattern <- function(df, ds_name = "?") {
 #'   \code{changepoint_year}, \code{K_statistic}, \code{p_value},
 #'   \code{pre_mean}, \code{post_mean}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_changepoint_detection(D)
 morie_tps_changepoint_detection <- function(df,
                                              year_col = "OCC_YEAR",
                                              ds_name = "?") {
@@ -415,6 +464,9 @@ morie_tps_changepoint_detection <- function(df,
 #' @return A \code{morie_rich_result} list with \code{forecast},
 #'   \code{aic}, \code{bic}, \code{n_train}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_arima_forecast(D)
 morie_tps_arima_forecast <- function(df, h = 12L, ds_name = "?") {
   stopifnot(is.data.frame(df))
   call_str <- sprintf("morie_tps_arima_forecast(df=<%dr>, h=%d)",
@@ -506,11 +558,18 @@ morie_tps_arima_forecast <- function(df, h = 12L, ds_name = "?") {
 #' @param ... Unused.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' \donttest{
+#' set.seed(1)
+#' df <- data.frame(OCC_YEAR = sample(2018:2023, 200, TRUE))
+#' res <- morie_tps_year_over_year_trend(df, year_col = "OCC_YEAR")
+#' print(res)
+#' }
 print.morie_tps_temporal_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\
 ", sep = "")
-  if (!is.null(x$call) && nzchar(x$call)) {
+  if (!is.null(x$call) && length(x$call) == 1L && nzchar(x$call)) {
     cat("Call:", x$call, "\
 \
 ", sep = " ")

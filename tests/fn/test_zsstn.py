@@ -1,6 +1,6 @@
 """Tests for morie.fn.zsstn -- Non-separable space-time covariance"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zsstn import st_cov_nonsep
 

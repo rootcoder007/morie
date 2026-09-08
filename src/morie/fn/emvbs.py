@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def evidence_maximization(
@@ -30,7 +30,8 @@ def evidence_maximization(
     References
     ----------
     Bishop, C. (2006). *Pattern Recognition and Machine Learning*, Ch. 3.5.
-    MacKay, D. J. C. (1992). *Neural Computation*, 4(3), 415--447.
+    MacKay, D. J. C. (1992). Bayesian interpolation. *Neural
+    Computation*, 4(3), 415--447.
     """
     X_arr = np.asarray(X, dtype=float)
     y_arr = np.asarray(y, dtype=float).ravel()

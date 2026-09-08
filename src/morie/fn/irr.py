@@ -3,8 +3,8 @@
 
 import math
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import ESRes
 
@@ -51,3 +51,7 @@ irr = rate_ratio
 
 def cheatsheet() -> str:
     return "rate_ratio({}) -> Incidence rate ratio (IRR) effect size."
+
+
+# compact alias per ledger/NAMING.md
+rateratio = rate_ratio

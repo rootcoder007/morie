@@ -1,6 +1,6 @@
 """Spatial panel random effects"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -28,3 +28,7 @@ spat = spatial_panel_re
 
 def cheatsheet() -> str:
     return "spatial_panel_re({}) -> Spatial panel random effects"
+
+
+# compact alias per ledger/NAMING.md
+spatialpanelre = spatial_panel_re

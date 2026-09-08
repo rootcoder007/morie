@@ -5,7 +5,7 @@ Bisection method for root finding.
 Iteratively narrows an interval [a, b] where f changes sign.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["bsctn"]
 

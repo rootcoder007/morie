@@ -1,6 +1,6 @@
 """Bayesian LASSO for genomic prediction."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def bayes_lasso(y, M, lam):
 
 def cheatsheet():
     return "bayslo: Bayesian LASSO for genomic prediction"
+
+
+# compact alias per ledger/NAMING.md
+bayeslasso = bayes_lasso

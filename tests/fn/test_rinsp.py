@@ -1,6 +1,6 @@
 """Tests for morie.fn.rinsp — render inspection."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.rinsp import render_inspection, rinsp
 from morie.inspector import InspectionResult

@@ -1,6 +1,6 @@
 """Substance use trend over time periods."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -53,3 +53,7 @@ sutrn = substance_trend
 
 def cheatsheet() -> str:
     return "substance_trend({}) -> Substance use trend over time periods."
+
+
+# compact alias per ledger/NAMING.md
+substancetrend = substance_trend

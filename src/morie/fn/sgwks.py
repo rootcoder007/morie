@@ -25,7 +25,7 @@ def weak_stationarity_test(Z, coords, n_lags=10):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=np.float64).ravel()
     coords = np.asarray(coords, dtype=np.float64)
@@ -39,7 +39,7 @@ def weak_stationarity_test(Z, coords, n_lags=10):
     ]
 
     def _emp_vario(z, xy, n_l):
-        from scipy.spatial.distance import pdist, squareform
+        from ._sci_core import pdist, squareform
 
         D = squareform(pdist(xy))
         max_d = D.max() / 2

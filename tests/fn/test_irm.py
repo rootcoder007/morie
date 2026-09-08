@@ -1,19 +1,12 @@
 """Tests for morie.fn.irm — Interactive Regression Model via DoubleML."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
-try:
-    import doubleml  # noqa: F401
-
-    _HAS_DOUBLEML = True
-except ImportError:
-    _HAS_DOUBLEML = False
 
 from morie.fn.irm import estimate_irm
 
-pytestmark = pytest.mark.skipif(not _HAS_DOUBLEML, reason="DoubleML not installed")
 
 
 @pytest.fixture()

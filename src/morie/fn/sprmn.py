@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import ESRes
 
@@ -47,3 +47,7 @@ sprmn = spearman_corr
 
 def cheatsheet() -> str:
     return "spearman_corr(x, y) -> Spearman rank correlation."
+
+
+# compact alias per ledger/NAMING.md
+spearmancorr = spearman_corr

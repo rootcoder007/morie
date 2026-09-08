@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Draw a random sample from a binomial distribution."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def rbinom(n: int, size: int, prob: float, seed: int | None = None) -> np.ndarray:

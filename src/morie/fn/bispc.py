@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -36,3 +36,7 @@ bispc = bispectrum_fn
 
 def cheatsheet() -> str:
     return "bispectrum_fn({}) -> Bispectrum estimation for nonlinear coupling detection."
+
+
+# compact alias per ledger/NAMING.md
+bispectrumfn = bispectrum_fn

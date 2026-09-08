@@ -17,3 +17,7 @@ institution x year crosstab of restrictive-confinement individual counts.
 \description{
 Individuals in RC/seg by institution (c02)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_analyze_c02(V)
+}

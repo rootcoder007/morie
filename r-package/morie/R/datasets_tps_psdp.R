@@ -126,6 +126,8 @@
 #'   `arcgis_url`, `fixture`, `hub_id` (3TT+ canonical id matching
 #'   the TPS Hub catalog).
 #' @export
+#' @examples
+#' morie_tps_psdp_layers()
 morie_tps_psdp_layers <- function() {
   rows <- lapply(names(.MORIE_TPS_PSDP_REGISTRY), function(k) {
     e <- .MORIE_TPS_PSDP_REGISTRY[[k]]
@@ -146,6 +148,21 @@ morie_tps_psdp_layers <- function() {
 # escape hatch for callers who want a non-canonical FeatureServer URL).
 # ---------------------------------------------------------------------------
 
+#' .morie_tps_psdp_dispatch
+#'
+#' A step of the datasets_tps_psdp implementation. Called by
+#' \code{morie_datasets_tps_assault}, \code{morie_datasets_tps_autotheft},
+#' \code{morie_datasets_tps_bicycletheft} and 9 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param layer_key Passed to \code{\%in\%}.
+#' @param year Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.
+#' @param max_features Optional; may be \code{NULL}. Passed to \code{.morie_tps_psdp_feature_query}.
+#' @param offline A flag; the body branches on it.
+#' @param layer_url Optional; may be \code{NULL}. Passed to \code{.morie_tps_psdp_feature_query}.
+#' @return The value of \code{morie_datasets_tps_arcgis_hub_by_id}.
+#' @export
 .morie_tps_psdp_dispatch <- function(layer_key, year, max_features,
                                       offline, layer_url) {
   if (!(layer_key %in% names(.MORIE_TPS_PSDP_REGISTRY))) {
@@ -242,6 +259,10 @@ morie_datasets_tps_assault <- function(year = NULL,
 #'   `offline = FALSE`. Columns mirror the upstream 31-column
 #'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
+#' @examples
+#' \dontrun{
+#' morie_datasets_tps_autotheft()
+#' }
 morie_datasets_tps_autotheft <- function(year = NULL,
                                            max_features = NULL,
                                            offline = TRUE,
@@ -280,6 +301,10 @@ morie_datasets_tps_bicycletheft <- function(year = NULL,
 #'   `offline = FALSE`. Columns mirror the upstream 31-column
 #'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
+#' @examples
+#' \dontrun{
+#' morie_datasets_tps_breakandenter()
+#' }
 morie_datasets_tps_breakandenter <- function(year = NULL,
                                                max_features = NULL,
                                                offline = TRUE,
@@ -400,6 +425,10 @@ morie_datasets_tps_shooting_firearm_discharges <- function(
 #'   `offline = FALSE`. Columns mirror the upstream 31-column
 #'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
+#' @examples
+#' \dontrun{
+#' morie_datasets_tps_theft_from_motor_vehicle()
+#' }
 morie_datasets_tps_theft_from_motor_vehicle <- function(
   year = NULL, max_features = NULL,
   offline = TRUE, layer_url = NULL) {
@@ -416,6 +445,10 @@ morie_datasets_tps_theft_from_motor_vehicle <- function(
 #'   upstream 31-column Cluster-A crime schema with HOOD_158 +
 #'   HOOD_140 attached.
 #' @export
+#' @examples
+#' \dontrun{
+#' morie_datasets_tps_theft_over()
+#' }
 morie_datasets_tps_theft_over <- function(year = NULL,
                                             max_features = NULL,
                                             offline = TRUE,
@@ -440,7 +473,7 @@ morie_datasets_tps_theft_over <- function(year = NULL,
 #' @param max_features Optional row cap.
 #' @return A `data.frame` with `DIV`, `UNIT_NAME`, `ADDRESS`,
 #'   `CITY`, `AREA_SQKM`, plus shape area / perimeter fields.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_tps_police_divisions(offline = TRUE)
 #' nrow(df)  # 16
 #' @export
@@ -511,6 +544,11 @@ morie_datasets_tps_police_divisions <- function(offline = TRUE,
 #' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_tps_psdp_resolved("assault", offline = TRUE)
 #' names(df)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' df <- morie_datasets_tps_psdp_resolved("assault", offline = TRUE)
+#' names(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_tps_psdp_resolved <- function(
     layer_key,

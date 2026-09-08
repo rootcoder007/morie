@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -75,3 +75,7 @@ short = hash_table
 
 def cheatsheet() -> str:
     return "hash_table({}) -> Hash table with chaining."
+
+
+# compact alias per ledger/NAMING.md
+hashtable = hash_table

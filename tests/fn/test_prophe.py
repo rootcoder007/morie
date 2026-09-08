@@ -1,6 +1,6 @@
 """Tests for prophe.facebook_prophet."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.prophe import facebook_prophet
 

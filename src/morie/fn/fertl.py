@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Total fertility rate from age-specific fertility rates."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -46,3 +46,7 @@ fertl = fertility_rate
 
 def cheatsheet() -> str:
     return "fertility_rate({}) -> Total fertility rate from age-specific fertility rates."
+
+
+# compact alias per ledger/NAMING.md
+fertilityrate = fertility_rate

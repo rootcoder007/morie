@@ -1,6 +1,6 @@
 """Tests for hrznwrg.horowitz_nw_estimator_g."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrznwrg import horowitz_nw_estimator_g
 

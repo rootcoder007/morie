@@ -38,11 +38,11 @@ affects the hub_id -> FeatureServer URL lookup.}
 }
 \value{
 A data.frame / GeoJSON list / file path; see
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} for per-format semantics.
+\code{morie_datasets_tps_arcgis_hub_by_id()} for per-format semantics.
 }
 \description{
 Toronto PS ArcGIS Hub dataset wrapper. Thin dispatch to
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} with the canonical
+\code{morie_datasets_tps_arcgis_hub_by_id()} with the canonical
 hub item_id \verb{04633ebdaba941efaa82f2cdaaa00bb8}.
 }
 \details{
@@ -51,4 +51,9 @@ service which resulted in an enforcement action and/or reported
 use of force.
 
 Tags: race; race based data; RBDC
+}
+\examples{
+\dontrun{
+morie_datasets_tps_use_of_force_call_for_service_types()
+}
 }

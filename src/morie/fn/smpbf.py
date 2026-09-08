@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -87,3 +87,7 @@ smpbf = spatial_buffer
 
 def cheatsheet() -> str:
     return "spatial_buffer({}) -> Spatial distance buffer zones."
+
+
+# compact alias per ledger/NAMING.md
+spatialbuffer = spatial_buffer

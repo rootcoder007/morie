@@ -5,7 +5,7 @@ L50 percentile level
 Category: NoisBrd
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def nbl50(data=None, coords=None, n=50):

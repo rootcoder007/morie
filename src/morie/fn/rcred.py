@@ -11,7 +11,7 @@ def read_roll_call(votes, yea=1, nay=0) -> DescriptiveResult:
 
     .. epigraph:: It is not the strongest that survives, but the most adaptable. -- Charles Darwin
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     votes = np.asarray(votes, dtype=float)
     yea_count = int(np.nansum(votes == yea))
@@ -37,3 +37,7 @@ rcred = read_roll_call
 
 def cheatsheet() -> str:
     return "read_roll_call({}) -> Read roll-call vote matrix."
+
+
+# compact alias per ledger/NAMING.md
+readrollcall = read_roll_call

@@ -1,8 +1,8 @@
 """Tests for rgstftp.rangayyan_stft_params."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgstftp import rangayyan_stft_params
+from morie.fn.bsatf import rangayyan_stft_params
 
 
 def test_rgstftp_basic():

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -57,3 +57,7 @@ qtint = qt_interval
 
 def cheatsheet() -> str:
     return "qt_interval({}) -> QT interval measurement."
+
+
+# compact alias per ledger/NAMING.md
+qtinterval = qt_interval

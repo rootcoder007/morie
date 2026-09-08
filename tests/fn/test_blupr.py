@@ -1,6 +1,6 @@
 """Tests for blupr.blup_random_intercept."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.blupr import blup_random_intercept
 

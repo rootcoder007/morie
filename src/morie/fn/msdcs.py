@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cosine distance matrix"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -37,3 +37,7 @@ dist = dist_cosine
 
 def cheatsheet() -> str:
     return "dist_cosine({}) -> Cosine distance matrix"
+
+
+# compact alias per ledger/NAMING.md
+distcosine = dist_cosine

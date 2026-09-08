@@ -1,6 +1,6 @@
 """Tests for laplc.laplace_mechanism."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.laplc import laplace_mechanism
 

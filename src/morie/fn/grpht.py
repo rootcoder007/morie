@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -100,3 +100,7 @@ short = graph_from_edges
 
 def cheatsheet() -> str:
     return "graph_from_edges({}) -> Graph from edge list."
+
+
+# compact alias per ledger/NAMING.md
+graphfromedges = graph_from_edges

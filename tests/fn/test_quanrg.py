@@ -1,6 +1,6 @@
 """Tests for quanrg.quantile_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.quanrg import quantile_regression
 

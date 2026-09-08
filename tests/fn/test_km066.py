@@ -1,6 +1,6 @@
 """Tests for km066.kamath_ch5_reward_kl_penalty."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km066 import kamath_ch5_reward_kl_penalty
 

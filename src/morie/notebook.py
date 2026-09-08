@@ -342,8 +342,8 @@ _TEMPLATES["analysis"] = textwrap.dedent("""\
     ## Setup
 
     ```{{python}}
-    import pandas as pd
-    import numpy as np
+    from morie.fn import _frame_core as pd
+    from morie.fn import _array_core as np
     import morie
     ```
 
@@ -415,8 +415,8 @@ _TEMPLATES["report"] = textwrap.dedent("""\
 
     ```{{python}}
     #| echo: false
-    import pandas as pd
-    import numpy as np
+    from morie.fn import _frame_core as pd
+    from morie.fn import _array_core as np
     import morie
     ```
 
@@ -458,9 +458,9 @@ _TEMPLATES["causal"] = textwrap.dedent("""\
     ### Setup
 
     ```{{python}}
-    import pandas as pd
-    import numpy as np
-    from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
+    from morie.fn import _frame_core as pd
+    from morie.fn import _array_core as np
+    from morie.fn._ml_core import GradientBoostingClassifier, GradientBoostingRegressor
     import morie
     from morie.causal import compute_propensity_scores, calculate_ipw_weights
     from morie.effects import estimate_ate
@@ -517,8 +517,8 @@ _TEMPLATES["table1"] = textwrap.dedent("""\
     ---
 
     ```{{python}}
-    import pandas as pd
-    import numpy as np
+    from morie.fn import _frame_core as pd
+    from morie.fn import _array_core as np
     import morie
 
     # df = pd.read_csv("data/your_data.csv")
@@ -547,9 +547,9 @@ _TEMPLATES["survival"] = textwrap.dedent("""\
     ## Survival Analysis
 
     ```{{python}}
-    import pandas as pd
-    import numpy as np
-    from scipy import stats
+    from morie.fn import _frame_core as pd
+    from morie.fn import _array_core as np
+    from morie.fn import _stats_core as stats
     import morie
     ```
 

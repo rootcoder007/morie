@@ -1,6 +1,6 @@
 """Tests for gh_c2_2.ghosal_gp_prior_def."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c2_2 import ghosal_gp_prior_def
 

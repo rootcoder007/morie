@@ -1,6 +1,6 @@
 """Tests for hmgini.geron_gini_impurity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmgini import geron_gini_impurity
 

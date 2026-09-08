@@ -1,6 +1,6 @@
 """Tests for use_r8e4.use_r_chapter_8_equation_4."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.use_r8e4 import use_r_chapter_8_equation_4
 

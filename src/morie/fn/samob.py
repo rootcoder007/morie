@@ -5,7 +5,7 @@ Moran's I bias correction
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def samob(values=None, w=None, n=50):

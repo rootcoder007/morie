@@ -1,7 +1,7 @@
 """Tests for morie.fn.itdsc — item discrimination (corrected item-total r)."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn.itdsc import item_discrimination_all
 

@@ -15,8 +15,8 @@ log-likelihood.
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -97,3 +97,7 @@ def vine_copula(x):
 
 def cheatsheet():
     return "vines(X): Gaussian D-vine partial-corr matrix + log-likelihood."
+
+
+# compact alias per ledger/NAMING.md
+vinecopula = vine_copula

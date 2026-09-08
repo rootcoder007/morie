@@ -4,8 +4,8 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
-from scipy.stats import hmean
+from . import _array_core as np
+from ._stats_core import hmean
 
 
 def harmean(x: Union[Sequence[float], np.ndarray]):

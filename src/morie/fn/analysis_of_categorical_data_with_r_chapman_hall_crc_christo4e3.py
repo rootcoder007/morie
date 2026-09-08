@@ -1,54 +1,22 @@
-"""Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).."""
+"""Deprecated alias for :func:`morie.fn.poisson_loglik`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .poisson_loglik import poisson_loglik as _impl
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_3"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_3(x):
-    """
-    Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).
-
-    Formula: 7. For a Poisson regression withµi = exp(β0 +β1xi1 +... +βpxip), letxi1,xi2,...,x ip
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e3')`` for the full guide.
-
-    References
-    ----------
-    Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ), ch.4 eq.4.3
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        },
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_3(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.poisson_loglik` instead."""
+    warnings.warn(
+        "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_3() is the book-coordinate name for poisson_loglik(); "
+        "it will be removed. Use morie.fn.poisson_loglik() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e3: Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M )."
+    return _impl(*args, **kwargs)

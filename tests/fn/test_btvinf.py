@@ -1,6 +1,6 @@
 """Tests for btvinf.boot_influence_fn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btvinf import boot_influence_fn
 

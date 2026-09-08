@@ -4,8 +4,8 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
-from scipy.stats import f as _f
+from . import _array_core as np
+from ._stats_core import f as _f
 
 
 def hotelt2(X: Union[Sequence, np.ndarray], mu0: Union[Sequence, np.ndarray]):

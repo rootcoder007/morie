@@ -1,6 +1,6 @@
 """Tests for morie.fn.hecea -- CE plane."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hecea import cost_effectiveness_plane
 

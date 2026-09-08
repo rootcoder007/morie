@@ -4,7 +4,7 @@ Bus route spatial
 Category: TransSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def trbus(flow_volume=None, travel_time=None, coords=None, n=50):

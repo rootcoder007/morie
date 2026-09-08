@@ -2,8 +2,8 @@
 % Please edit documentation in R/arsau_datasets.R
 \name{morie_arsau_sidecar_schema}
 \alias{morie_arsau_sidecar_schema}
-\title{Extract a simplified \code{[name, type, notes]} schema from a
-parsed CKAN sidecar.}
+\title{Extract a simplified \code{\[name, type, notes\]} schema from a
+parsed CKAN sidecar}
 \usage{
 morie_arsau_sidecar_schema(sidecar)
 }

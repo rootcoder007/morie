@@ -20,7 +20,7 @@ def unfolding_r_squared(observed, predicted):
     DescriptiveResult
         value = R-squared (float).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     O = np.asarray(observed, dtype=float).ravel()
     P = np.asarray(predicted, dtype=float).ravel()

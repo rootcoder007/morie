@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MDS jackknife stability"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ mds_ = mds_jackknife
 
 def cheatsheet() -> str:
     return "mds_jackknife({}) -> MDS jackknife stability"
+
+
+# compact alias per ledger/NAMING.md
+mdsjackknife = mds_jackknife

@@ -1,6 +1,6 @@
 """Tests for jackvar.jackknife_variance_survey."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jackvar import jackknife_variance_survey
 

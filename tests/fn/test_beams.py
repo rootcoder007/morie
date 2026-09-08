@@ -1,6 +1,6 @@
 """Test beam search."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.beams import beams
 

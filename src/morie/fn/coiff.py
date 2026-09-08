@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -71,3 +71,7 @@ coiff = coiflet_coeffs
 
 def cheatsheet() -> str:
     return "coiflet_coeffs({}) -> Coiflet wavelet filter coefficients."
+
+
+# compact alias per ledger/NAMING.md
+coifletcoeffs = coiflet_coeffs

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -59,3 +59,7 @@ mvdr = mvdr_spectrum_fn
 
 def cheatsheet() -> str:
     return "mvdr_spectrum_fn({}) -> Minimum Variance Distortionless Response (Capon) spectral es"
+
+
+# compact alias per ledger/NAMING.md
+mvdrspectrumfn = mvdr_spectrum_fn

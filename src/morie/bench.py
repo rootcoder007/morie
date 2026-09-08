@@ -35,8 +35,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 logger = logging.getLogger(__name__)
 
@@ -775,7 +775,7 @@ def compare_benchmarks(
     -------
     BenchmarkComparison
     """
-    from scipy import stats as sp_stats
+    from morie.fn import _stats_core as sp_stats
 
     speedup = result_a.mean_time / result_b.mean_time if result_b.mean_time > 0 else float("inf")
     memory_ratio = result_b.peak_memory_mb / result_a.peak_memory_mb if result_a.peak_memory_mb > 0 else 0.0
@@ -1164,7 +1164,7 @@ def plot_benchmarks(
     matplotlib.figure.Figure
         The matplotlib figure object.
     """
-    import matplotlib.pyplot as plt
+    from morie.fn import _plot_core as plt
 
     df = suite.to_dataframe()
     if df.empty:
@@ -1218,7 +1218,7 @@ def plot_scalability(
     -------
     matplotlib.figure.Figure
     """
-    import matplotlib.pyplot as plt
+    from morie.fn import _plot_core as plt
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
 

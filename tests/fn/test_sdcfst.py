@@ -1,6 +1,6 @@
 """Tests for sdcfst.semi_doubly_robust_forest."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sdcfst import semi_doubly_robust_forest
 

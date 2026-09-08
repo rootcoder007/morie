@@ -1,6 +1,6 @@
 """Tests for hrzbr4a.horowitz_binary_response_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzbr4a import horowitz_binary_response_model
 

@@ -1,8 +1,28 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Power for one-way ANOVA."""
 
-import numpy as np
-from statsmodels.stats.power import FTestAnovaPower
+from . import _array_core as np
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from ._glm_core import FTestAnovaPower
+except ImportError:
+    FTestAnovaPower = _MissingDep('FTestAnovaPower')
 
 
 def power_anova(
@@ -94,3 +114,7 @@ pwr_av = power_anova
 
 def cheatsheet() -> str:
     return "power_anova({}) -> Power for one-way ANOVA."
+
+
+# compact alias per ledger/NAMING.md
+poweranova = power_anova

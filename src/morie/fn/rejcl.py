@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -69,3 +69,7 @@ rejcl = reject_option
 
 def cheatsheet() -> str:
     return "reject_option({}) -> Classifier with reject (ambiguity rejection) option."
+
+
+# compact alias per ledger/NAMING.md
+rejectoption = reject_option

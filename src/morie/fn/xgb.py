@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -54,29 +54,9 @@ def xgb_classify(
     if X.shape[0] != y.shape[0]:
         raise ValueError("X and y must have the same number of rows.")
 
-    # Try xgboost
+    # Native gradient boosting (the _ml_core arm)
     try:
-        from xgboost import XGBClassifier
-
-        model = XGBClassifier(
-            n_estimators=n_estimators,
-            max_depth=max_depth,
-            learning_rate=learning_rate,
-            random_state=random_state,
-            use_label_encoder=False,
-            eval_metric="logloss",
-        )
-        model.fit(X, y)
-        preds = model.predict(X)
-        imp = model.feature_importances_
-        acc = float(np.mean(preds == y))
-        return RichResult(payload={"predictions": preds, "feature_importance": imp, "accuracy": acc})
-    except ImportError:
-        pass
-
-    # Try sklearn
-    try:
-        from sklearn.ensemble import GradientBoostingClassifier
+        from ._ml_core import GradientBoostingClassifier
 
         model = GradientBoostingClassifier(
             n_estimators=n_estimators,
@@ -152,3 +132,7 @@ xgb = xgb_classify
 
 def cheatsheet() -> str:
     return "xgb_classify({}) -> XGBoost / gradient boosting classifier wrapper."
+
+
+# compact alias per ledger/NAMING.md
+xgbclassify = xgb_classify

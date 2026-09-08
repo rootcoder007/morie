@@ -1,6 +1,6 @@
 """Tests for hmigr.geron_information_gain."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmigr import geron_information_gain
 

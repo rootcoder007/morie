@@ -17,3 +17,7 @@ crosstab of restrictive-confinement aggregate durations.
 \description{
 RC/seg aggregate durations by region & gender (c12)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_analyze_c12(V)
+}

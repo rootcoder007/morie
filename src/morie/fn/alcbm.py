@@ -1,7 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Conversation buffer memory: maintain a rolling window of the last N turns."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Conversation buffer memory of the last N turns (Alammar Ch 7)."""
 
 from ._richresult import RichResult
 
@@ -9,40 +8,31 @@ __all__ = ["alammar_conversation_buffer_memory"]
 
 
 def alammar_conversation_buffer_memory(conversation, N):
+    """memory = the last N (user, assistant) turns, oldest first.
+
+    What was DROPPED is reported: buffer memory's failure mode is
+    silent amnesia, and the count of forgotten turns is the honest
+    number to surface.
+
+    Examples
+    --------
+    >>> out = alammar_conversation_buffer_memory(
+    ...     [("u1", "a1"), ("u2", "a2"), ("u3", "a3")], 2)
+    >>> out["memory"]
+    [('u2', 'a2'), ('u3', 'a3')]
+    >>> out["turns_forgotten"]
+    1
     """
-    Conversation buffer memory: maintain a rolling window of the last N turns
-
-    Formula: memory_t = [(u_{t-N+1}, a_{t-N+1}), ..., (u_t, a_t)]
-
-    Parameters
-    ----------
-    conversation : array-like
-        Input data.
-    N : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: window
-
-    References
-    ----------
-    Alammar Ch 7, Conversation Buffer Memory section
-    """
-    conversation = np.atleast_1d(np.asarray(conversation, dtype=float))
-    n = len(conversation)
-    result = float(np.mean(conversation))
-    se = float(np.std(conversation, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Conversation buffer memory: maintain a rolling window of the last N turns",
-        }
-    )
+    turns = [(str(u), str(a)) for (u, a) in conversation]
+    n = int(N)
+    if n < 1:
+        raise ValueError("N must be positive.")
+    kept = turns[-n:]
+    return RichResult(payload={
+        "memory": kept, "turns_forgotten": max(0, len(turns) - n),
+        "estimate": float(len(kept)), "n": len(turns),
+        "method": "Conversation buffer memory (Alammar Ch 7)"})
 
 
 def cheatsheet():
-    return "alcbm: Conversation buffer memory: maintain a rolling window of the last N turns"
+    return "alcbm: last-N turn window, forgotten turns counted"

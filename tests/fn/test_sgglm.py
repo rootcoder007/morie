@@ -1,6 +1,6 @@
 """Tests for spatial GLM Poisson."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgglm import sgglm
 

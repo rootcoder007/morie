@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import DescriptiveResult
 
@@ -53,7 +53,7 @@ def weibull_analysis(
 
     shape, loc, scale = stats.weibull_min.fit(uncensored, floc=0)
 
-    from scipy.special import gamma as gamma_fn
+    from ._sci_core import gamma as gamma_fn
 
     mttf = scale * gamma_fn(1 + 1 / shape)
 

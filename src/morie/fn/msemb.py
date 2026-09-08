@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Embedding quality measure"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ embe = embedding_qual
 
 def cheatsheet() -> str:
     return "embedding_qual({}) -> Embedding quality measure"
+
+
+# compact alias per ledger/NAMING.md
+embeddingqual = embedding_qual

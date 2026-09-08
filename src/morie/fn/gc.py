@@ -52,3 +52,7 @@ gc_content = gc_content_calc
 
 def cheatsheet() -> str:
     return "gc_content_calc({}) -> GC content of a DNA sequence."
+
+
+# compact alias per ledger/NAMING.md
+gccontentcalc = gc_content_calc

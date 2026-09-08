@@ -1,6 +1,6 @@
 """Tests for morie.fn.nnidx — nearest neighbor index."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nnidx import nearest_neighbor_index
 

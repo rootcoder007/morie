@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,7 +29,7 @@ def qq_plot_kriging(standardized_errors: np.ndarray) -> SpatialResult:
     .. epigraph::
 
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     se = np.sort(np.asarray(standardized_errors, dtype=np.float64).ravel())
     n = len(se)
@@ -49,3 +49,7 @@ sgqqk = qq_plot_kriging
 
 def cheatsheet() -> str:
     return "qq_plot_kriging({}) -> QQ plot data for kriging standardized errors."
+
+
+# compact alias per ledger/NAMING.md
+qqplotkriging = qq_plot_kriging

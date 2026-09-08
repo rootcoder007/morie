@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -60,3 +60,7 @@ isisz = isi_analyze
 
 def cheatsheet() -> str:
     return "isi_analyze({}) -> Inter-spike interval analysis."
+
+
+# compact alias per ledger/NAMING.md
+isianalyze = isi_analyze

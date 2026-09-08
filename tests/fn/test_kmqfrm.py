@@ -1,6 +1,6 @@
 """Tests for kmqfrm.kamath_q_former."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmqfrm import kamath_q_former
 

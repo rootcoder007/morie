@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import RegressionResult
 
@@ -90,3 +90,7 @@ wlsrg = wls_regression
 
 def cheatsheet() -> str:
     return "wls_regression({}) -> Weighted least squares regression."
+
+
+# compact alias per ledger/NAMING.md
+wlsregression = wls_regression

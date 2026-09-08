@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ordinary kriging interpolation."""
 
-import numpy as np
-from scipy.spatial.distance import cdist
+from . import _array_core as np
+from ._sci_core import cdist
 
 from ._containers import DescriptiveResult
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.gamma — Gamma GLM."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gamma import gamma_glm

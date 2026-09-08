@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -42,3 +42,7 @@ pwrsp = power_spectrum
 
 def cheatsheet() -> str:
     return "power_spectrum({}) -> Power spectrum (periodogram)."
+
+
+# compact alias per ledger/NAMING.md
+powerspectrum = power_spectrum

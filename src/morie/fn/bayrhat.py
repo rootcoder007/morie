@@ -1,6 +1,6 @@
 """Potential scale reduction R-hat."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def r_hat(chains):
 
 def cheatsheet():
     return "bayrhat: Potential scale reduction R-hat"
+
+
+# compact alias per ledger/NAMING.md
+rhat = r_hat

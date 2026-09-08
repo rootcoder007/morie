@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Empty space F-function"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ f_fu = f_function
 
 def cheatsheet() -> str:
     return "f_function({}) -> Empty space F-function"
+
+
+# compact alias per ledger/NAMING.md
+ffunction = f_function

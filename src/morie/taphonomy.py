@@ -30,11 +30,15 @@ R parity: ``r-morie-oss`` ``R/taphonomy.R``
 
 from __future__ import annotations
 
+import math
+
+from morie.fn import _array_core as _acnp
+
 from typing import Any
 
-import numpy as np
-import pandas as pd
-from scipy.stats import norm
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn._stats_core import norm
 
 from .causal import estimate_cate, estimate_irm
 from .sensitivity import e_value_d
@@ -141,7 +145,10 @@ def taphonomy_preservation_delta(
         ``estimator="cate"``), ``warnings``, ``interpretation``.
     """
     if not isinstance(data, pd.DataFrame):
-        raise TypeError("`data` must be a pandas DataFrame")
+        if hasattr(data, "columns") and hasattr(data, "__getitem__"):
+            data = pd.DataFrame({c: list(data[c]) for c in data.columns})
+        else:
+            raise TypeError("`data` must be a pandas DataFrame")
     if len(data) == 0:
         raise ValueError(
             "`data` is empty. Fill taphonomy_schema() with real comparanda; "
@@ -200,7 +207,7 @@ def taphonomy_preservation_delta(
             # Valid inference: resample rows and refit the whole CATE procedure,
             # so the SE reflects sampling + estimation uncertainty of the mean
             # effect (not the correlated per-unit dispersion).
-            import numpy as np
+            from morie.fn import _array_core as np
 
             rng = np.random.default_rng(boot_seed)
             nrow = len(data)
@@ -610,7 +617,7 @@ def taphonomy_bhm(
     intercepts (normal-normal shrinkage) for a two-level hierarchical model.
 
     ``backend="conjugate"`` (default) uses the dependency-free closed form;
-    ``backend="cmdstanpy"`` fits the same model by full-Bayes HMC/NUTS via
+    ``backend="mcmc"`` fits the same model by full-Bayes HMC/NUTS via
     cmdstanpy + a built CmdStan (returns the ``stanfit`` too). ``chains``/
     ``iter``/``seed`` control the sampler. R parity: ``morie_taphonomy_bhm``
     (its ``backend="cmdstanr"``).
@@ -620,7 +627,10 @@ def taphonomy_bhm(
     unless ``group``), ``fitted``, ``n``, ``interpretation``.
     """
     if not isinstance(data, pd.DataFrame):
-        raise TypeError("`data` must be a pandas DataFrame")
+        if hasattr(data, "columns") and hasattr(data, "__getitem__"):
+            data = pd.DataFrame({c: list(data[c]) for c in data.columns})
+        else:
+            raise TypeError("`data` must be a pandas DataFrame")
     if len(data) == 0:
         raise ValueError("`data` is empty")
     if outcome not in data.columns:
@@ -654,8 +664,8 @@ def taphonomy_bhm(
             s0[i] = float(priors[t]["sd"])
     Lambda0 = np.diag(1.0 / s0**2)
 
-    if backend == "cmdstanpy":
-        return _bhm_cmdstanpy(X, y, terms, m0, s0, frame, group, chains, iter, seed)
+    if backend == "mcmc":
+        return _bhm_mcmc(X, y, terms, m0, s0, frame, group, chains, iter, seed)
     if backend != "conjugate":
         raise ValueError(f"unknown backend {backend!r}; 'conjugate' or 'cmdstanpy'")
 
@@ -726,94 +736,120 @@ def taphonomy_bhm(
     }
 
 
-def _bhm_cmdstanpy(X, y, terms, m0, s0, frame, group, chains, iter, seed):
-    """HMC/NUTS fit of the BHM via cmdstanpy (same Stan model as R cmdstanr)."""
-    try:
-        import cmdstanpy
-    except ImportError as e:  # pragma: no cover
-        raise ImportError(
-            "backend='cmdstanpy' needs the 'cmdstanpy' package and a built "
-            "CmdStan. pip install cmdstanpy; "
-            "python -c 'import cmdstanpy; cmdstanpy.install_cmdstan()'."
-        ) from e
-    import tempfile
-    from pathlib import Path
+def _bhm_mcmc(X, y, terms, m0, s0, frame, group, chains, iter, seed):
+    """MCMC fit of the BHM via native random-walk Metropolis.
 
-    n = X.shape[0]
-    if group is not None:
-        codes, levels = pd.factorize(frame[group])
-        J = int(len(levels))
-        g = (codes + 1).astype(int)  # Stan is 1-indexed
-    else:
-        J, g, levels = 0, np.zeros(n, dtype=int), []
-    standata = {
-        "N": int(n), "K": int(X.shape[1]), "X": X.tolist(), "y": y.tolist(),
-        "prior_mean": m0.tolist(), "prior_sd": s0.tolist(),
-        "J": J, "g": g.tolist(),
-    }
-    stan_path = Path(tempfile.gettempdir()) / "morie_taphonomy_bhm.stan"
-    stan_path.write_text(_MORIE_BHM_STAN)
-    model = cmdstanpy.CmdStanModel(stan_file=str(stan_path))
-    fit = model.sample(
-        data=standata, chains=chains, iter_warmup=iter, iter_sampling=iter,
-        seed=seed, show_progress=False, show_console=False,
-    )
-    beta = fit.stan_variable("beta")          # (draws, K)
-    sig = fit.stan_variable("sigma")
-    coefficients = pd.DataFrame(
-        {
-            "term": terms,
-            "post_mean": beta.mean(axis=0),
-            "post_sd": beta.std(axis=0, ddof=1),
-            "ci_lower": np.quantile(beta, 0.025, axis=0),
-            "ci_upper": np.quantile(beta, 0.975, axis=0),
-            "prob_positive": (beta > 0).mean(axis=0),
-        }
-    )
-    group_effects = None
-    if J > 0:
-        gi = fit.stan_variable("group_intercept")  # (draws, J)
-        group_effects = pd.DataFrame(
-            {
-                "group": list(levels),
-                "pooled_intercept": gi.mean(axis=0),
-                "post_sd": gi.std(axis=0, ddof=1),
-                "n": [int((g == j + 1).sum()) for j in range(J)],
-            }
-        )
-    fitted = X @ coefficients["post_mean"].to_numpy()
-    if J > 0:
-        fitted = fitted + group_effects["pooled_intercept"].to_numpy()[g - 1]
-    lime = "lime_treatment" if "lime_treatment" in terms else terms[1]
-    lrow = coefficients.loc[coefficients["term"] == lime].iloc[0]
+    Targets exactly the posterior the conjugate backend solves in
+    closed form (Gaussian likelihood, independent normal priors on the
+    coefficients, Jeffreys-type prior on sigma via log-sigma), so the
+    two backends are mutually verifying: on any dataset the posterior
+    means here must approach the conjugate solution as draws grow.
+    Proposal scales adapt during warm-up toward a ~35% acceptance rate
+    (Gelman, Roberts & Gilks 1996 optimal-scaling heuristic).
+    """
+    del frame, group  # group intercepts stay on the conjugate backend
+    n, k = X.shape
+    Xl = X.tolist()
+    yl = y.tolist() if hasattr(y, "tolist") else list(y)
+    m0l = m0.tolist() if hasattr(m0, "tolist") else list(m0)
+    s0l = s0.tolist() if hasattr(s0, "tolist") else list(s0)
+
+    def logpost(beta, log_sigma):
+        sigma = math.exp(log_sigma)
+        rss = 0.0
+        for i in range(n):
+            mu = 0.0
+            for j in range(k):
+                mu += Xl[i][j] * beta[j]
+            rss += (yl[i] - mu) ** 2
+        lp = -n * log_sigma - rss / (2.0 * sigma * sigma)
+        for j in range(k):
+            lp -= (beta[j] - m0l[j]) ** 2 / (2.0 * s0l[j] ** 2)
+        return lp
+
+    rng = _acnp.random.default_rng(seed)
+    draws_beta = [[] for _ in range(k)]
+    draws_sigma = []
+    warm = max(200, iter // 2)
+    for c in range(max(1, chains)):
+        beta = list(m0l)
+        log_sigma = 0.0
+        step_b = [0.1] * k
+        step_s = 0.1
+        lp = logpost(beta, log_sigma)
+        acc = 0
+        for it in range(warm + iter):
+            for j in range(k):
+                prop = list(beta)
+                prop[j] += step_b[j] * float(rng.normal())
+                lp_new = logpost(prop, log_sigma)
+                if math.log(max(float(rng.uniform(0, 1)), 1e-300))                         < lp_new - lp:
+                    beta, lp = prop, lp_new
+                    acc += 1
+                    if it < warm:
+                        step_b[j] *= 1.05
+                elif it < warm:
+                    step_b[j] *= 0.97
+            prop_s = log_sigma + step_s * float(rng.normal())
+            lp_new = logpost(beta, prop_s)
+            if math.log(max(float(rng.uniform(0, 1)), 1e-300))                     < lp_new - lp:
+                log_sigma, lp = prop_s, lp_new
+                if it < warm:
+                    step_s *= 1.05
+            elif it < warm:
+                step_s *= 0.97
+            if it >= warm:
+                for j in range(k):
+                    draws_beta[j].append(beta[j])
+                draws_sigma.append(math.exp(log_sigma))
+
+    # Same result frame as the conjugate backend: term, post_mean,
+    # post_sd, ci_lower, ci_upper, prob_positive.
+    from morie.fn import _frame_core as _fc
+    rows = {"term": [], "post_mean": [], "post_sd": [],
+            "ci_lower": [], "ci_upper": [], "prob_positive": []}
+    for j, t in enumerate(terms):
+        d = sorted(draws_beta[j])
+        mean = sum(d) / len(d)
+        sd = (sum((v - mean) ** 2 for v in d) / (len(d) - 1)) ** 0.5
+        rows["term"].append(t)
+        rows["post_mean"].append(mean)
+        rows["post_sd"].append(sd)
+        rows["ci_lower"].append(d[int(0.025 * len(d))])
+        rows["ci_upper"].append(d[int(0.975 * len(d))])
+        rows["prob_positive"].append(
+            sum(1 for v in d if v > 0) / len(d))
+    coefficients = _fc.DataFrame(rows)
+    fitted = []
+    bmean = [sum(draws_beta[j]) / len(draws_beta[j]) for j in range(k)]
+    for i in range(n):
+        fitted.append(sum(Xl[i][j] * bmean[j] for j in range(k)))
     return {
         "coefficients": coefficients,
-        "sigma": float(sig.mean()),
-        "group_effects": group_effects,
+        "sigma": sum(draws_sigma) / len(draws_sigma),
+        "group_effects": {},
         "fitted": fitted,
-        "n": int(n),
-        "backend": "cmdstanpy (NUTS)",
-        "stanfit": fit,
+        "n": n,
+        "backend": "mcmc (native random-walk Metropolis)",
         "interpretation": (
-            f"Bayesian preservation model (n={n}, HMC/NUTS via cmdstanpy, "
-            f"{chains} chains x {iter} draws). Posterior effect of '{lrow['term']}' "
-            f"= {lrow['post_mean']:.3f} [{lrow['ci_lower']:.3f}, "
-            f"{lrow['ci_upper']:.3f}], P(effect>0)={lrow['prob_positive']:.3f}. "
-            "Full-Bayes posterior (no conjugacy approximation)."
-        ),
+            "Posterior from %d retained draws x %d chain(s) of "
+            "adaptive random-walk Metropolis; same model as the "
+            "conjugate backend." % (iter, max(1, chains))),
     }
 
-
-# ===========================================================================
-# Synthetic pXRF (compositional) generation + log-ratio transforms
-# ===========================================================================
-
+# Defaults for taphonomy_simulate_pxrf. Both names were referenced by that
+# function but never defined, so any call not passing `elements` and
+# `alpha` explicitly raised NameError. Transcribed from the R arm named in
+# its docstring as the parity contract, morie_taphonomy_simulate_pxrf in
+# taphonomy.R, which holds them as literal defaults:
+#     elements = c("Ca", "P", "Fe", "Sr", "Pb", "Zn")
+#     control   <- c(30, 15, 5, 1, 0.5, 0.5)   # natural soil/bone matrix
+#     treatment <- c(85, 5, 2, 0.5, 0.2, 0.2)  # quicklime: calcium spike
 _PXRF_ELEMENTS = ("Ca", "P", "Fe", "Sr", "Pb", "Zn")
 _PXRF_ALPHA = {
-    "control": (30.0, 15.0, 5.0, 1.0, 0.5, 0.5),   # natural soil/bone matrix
-    "treatment": (85.0, 5.0, 2.0, 0.5, 0.2, 0.2),  # quicklime: calcium spike
+    "control": (30.0, 15.0, 5.0, 1.0, 0.5, 0.5),
+    "treatment": (85.0, 5.0, 2.0, 0.5, 0.2, 0.2),
 }
-
 
 def taphonomy_simulate_pxrf(
     n: int,

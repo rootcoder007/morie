@@ -3,9 +3,10 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import optimize, special
-from scipy import stats as _st
+from . import _array_core as np
+from ._sci_core import optimize
+from ._sci_core import special
+from . import _stats_core as _st
 
 from ._containers import RegressionResult
 
@@ -109,3 +110,7 @@ betag = beta_regression
 
 def cheatsheet() -> str:
     return "beta_regression({}) -> Beta regression for rates/proportions in (0,1)."
+
+
+# compact alias per ledger/NAMING.md
+betaregression = beta_regression

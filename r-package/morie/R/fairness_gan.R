@@ -19,6 +19,22 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+#' .fairness_result
+#'
+#' A step of the fairness_gan implementation. Called by
+#' \code{.fairness_no_backend_result}, \code{morie_fairness_ctgan_debiaser},
+#' \code{morie_fairness_spatial_gan}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param call Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .fairness_result <- function(title, call, summary_lines = list(),
                               warnings = character(0),
                               interpretation = "", ...) {
@@ -30,6 +46,18 @@ NULL
   out
 }
 
+#' Prefer native R torch; fall back to reticulate + JAX
+#'
+#' A step of the fairness_gan implementation. Called by
+#' \code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @return A list with \code{kind}, \code{note}.
+#' @export
+#' @examples
+#' res <- .fairness_backend()
+#' res
 .fairness_backend <- function() {
   # Prefer native R torch; fall back to reticulate + JAX.
   if (requireNamespace("torch", quietly = TRUE)) {
@@ -53,6 +81,18 @@ NULL
                      "callable."))
 }
 
+#' .fairness_no_backend_result
+#'
+#' A step of the fairness_gan implementation. Called by
+#' \code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param title Passed to \code{.fairness_result}.
+#' @param call Passed to \code{.fairness_result}.
+#' @param note Passed to \code{.fairness_result}.
+#' @return The value of \code{.fairness_result}.
+#' @export
 .fairness_no_backend_result <- function(title, call, note) {
   .fairness_result(
     title, call,
@@ -69,6 +109,15 @@ NULL
   )
 }
 
+#' .fairness_he_init
+#'
+#' A step of the fairness_gan implementation. Called by \code{morie_fairness_spatial_gan}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param sizes A vector; its length is taken and its elements indexed.
+#' @return The value of \code{params}, as built in the body.
+#' @export
 .fairness_he_init <- function(sizes) {
   params <- vector("list", length(sizes) - 1L)
   for (i in seq_len(length(sizes) - 1L)) {
@@ -80,6 +129,16 @@ NULL
   params
 }
 
+#' .fairness_mlp_forward
+#'
+#' A step of the fairness_gan implementation. Called by \code{morie_fairness_spatial_gan}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param params A vector; its length is taken and its elements indexed.
+#' @param x A matrix; passed to \code{\%*\%}.
+#' @return The value of \code{x}, as built in the body.
+#' @export
 .fairness_mlp_forward <- function(params, x) {
   for (i in seq_along(params)) {
     x <- sweep(x %*% params[[i]]$W, 2L, params[[i]]$b, "+")
@@ -92,7 +151,7 @@ NULL
 
 
 # ---------------------------------------------------------------------------
-# 1. Spatial GAN — counterfactual location generator
+# 1. Spatial GAN -- counterfactual location generator
 # ---------------------------------------------------------------------------
 
 #' Learn a 2-D crime/patrol location distribution
@@ -344,7 +403,14 @@ morie_fairness_ctgan_debiaser <- function(df, outcome_col, feature_cols,
   names(debiased)[1L:2L] <- c(group_col, outcome_col)
 
   interp <- sprintf(
-    "Synthesised %d rows in which every group's favourable-outcome rate is rebalanced to the privileged group ('%s', observed rate %.3f). Backend in use: %s. The debiased frame is in $debiased and is auditable with morie.fairness metrics; this redistributes disparity but does not by itself remove structural bias.",
+    paste0(
+      "Synthesised %d rows in which every group's favourable-outcom",
+      "e rate is rebalanced to the privileged group ('%s', observed",
+      " rate %.3f). Backend in use: %s. The debiased frame is in $d",
+      "ebiased and is auditable with morie.fairness metrics; this r",
+      "edistributes disparity but does not by itself remove structu",
+      "ral bias."
+    ),
     n_out, privileged, target_rate, bk$kind
   )
 

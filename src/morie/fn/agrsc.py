@@ -1,41 +1,37 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Agreement score matrix from roll call votes."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Agreement score matrix from roll-call votes."""
 
 from ._richresult import RichResult
+from .agrmt import agreement_score
 
 __all__ = ["agreement_score_matrix"]
 
 
 def agreement_score_matrix(vote_matrix):
-    """
-    Agreement score matrix from roll call votes
+    """Pairwise agreement matrix; front-end to :mod:`morie.fn.agrmt`.
 
-    Formula: A_ij = #{v: vote_iv == vote_jv} / #{v: both i,j voted}; proportion same votes
-
-    Parameters
-    ----------
-    vote_matrix : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: {'A': 'matrix'}
+    ``A_ij`` = proportion of shared (both non-missing) votes on which
+    legislators i and j voted the same way (Armstrong Sec. 3.2.2,
+    p. 88). Returns the matrix directly rather than the descriptive
+    wrapper.
 
     References
     ----------
-    Armstrong Ch 3
+    Armstrong, D. A. et al. (2014). *Analyzing Spatial Models of
+    Choice and Judgment*. CRC Press. Sec. 3.2.2 (Agreement Scores),
+    p. 88.
     """
-    vote_matrix = np.asarray(vote_matrix, dtype=float)
-    n = int(vote_matrix) if vote_matrix.ndim == 0 else len(vote_matrix)
-    result = float(np.mean(vote_matrix))
-    se = float(np.std(vote_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    out = agreement_score(vote_matrix)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Agreement score matrix from roll call votes"}
+        payload={
+            "matrix": out.value["agreement_matrix"],
+            "n_shared_votes": out.extra["n_shared_votes"],
+            "mean_agreement": out.extra["mean_agreement"],
+            "n": out.extra["n_legislators"],
+            "method": "Agreement score matrix (Armstrong Sec 3.2.2 p.88)",
+        }
     )
 
 
 def cheatsheet():
-    return "agrsc: Agreement score matrix from roll call votes"
+    return "agrsc: A_ij = shared votes cast the same way / shared votes (front-end to agrmt)"

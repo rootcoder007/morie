@@ -1,6 +1,6 @@
 """Tests for km045.kamath_ch3_dante_cloze."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km045 import kamath_ch3_dante_cloze
 

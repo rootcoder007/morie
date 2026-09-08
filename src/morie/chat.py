@@ -38,7 +38,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    import pandas as pd
+    from morie.fn import _frame_core as pd
 
 from .llm import (
     _MORIE_SYSTEM_PROMPT_TEMPLATE,

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -76,3 +76,7 @@ mcavg = multiclass_avg
 
 def cheatsheet() -> str:
     return "multiclass_avg({}) -> Multiclass averaging (macro/micro/weighted)."
+
+
+# compact alias per ledger/NAMING.md
+multiclassavg = multiclass_avg

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import ESRes
 
@@ -48,3 +48,7 @@ prgef = program_effect
 
 def cheatsheet() -> str:
     return "program_effect({}) -> Pre-post program effect size (Cohen's d)."
+
+
+# compact alias per ledger/NAMING.md
+programeffect = program_effect

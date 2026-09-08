@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -39,3 +39,7 @@ arspc = ar_spectrum_fn
 
 def cheatsheet() -> str:
     return "ar_spectrum_fn({}) -> AR model power spectral density from estimated coefficients."
+
+
+# compact alias per ledger/NAMING.md
+arspectrumfn = ar_spectrum_fn

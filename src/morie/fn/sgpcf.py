@@ -27,8 +27,8 @@ def pair_correlation_function(points, window, r_values=None, bandwidth=None):
     -------
     DescriptiveResult
     """
-    import numpy as np
-    from scipy.spatial.distance import pdist
+    from morie.fn import _array_core as np
+    from ._sci_core import pdist
 
     pts = np.asarray(points, dtype=np.float64)
     n = pts.shape[0]

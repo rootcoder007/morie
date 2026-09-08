@@ -1,8 +1,8 @@
 """Tests for rgecgf.rangayyan_ecg_features."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgecgf import rangayyan_ecg_features
+from morie.fn.bsaqrs import rangayyan_ecg_features
 
 
 def test_rgecgf_basic():

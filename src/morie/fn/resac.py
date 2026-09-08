@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -46,3 +46,7 @@ resac = residual_acf_fn
 
 def cheatsheet() -> str:
     return "residual_acf_fn({}) -> Autocorrelation function of residuals for whiteness testing."
+
+
+# compact alias per ledger/NAMING.md
+residualacffn = residual_acf_fn

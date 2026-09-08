@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -58,3 +58,7 @@ lcgm = latent_growth
 
 def cheatsheet() -> str:
     return "latent_growth({}) -> Latent growth curve model (simplified OLS-based)."
+
+
+# compact alias per ledger/NAMING.md
+latentgrowth = latent_growth

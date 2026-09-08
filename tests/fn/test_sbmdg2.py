@@ -1,6 +1,6 @@
 """Tests for sbmdg2.degree_corrected_sbm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sbmdg2 import degree_corrected_sbm
 

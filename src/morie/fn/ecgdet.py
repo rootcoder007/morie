@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -20,7 +20,7 @@ def pan_tompkins(
     :param fs: Sampling frequency in Hz.
     :return: SignalResult with R-peak indices.
     """
-    from scipy.signal import butter, sosfiltfilt
+    from ._signal_core import butter, sosfiltfilt
 
     ecg = np.asarray(ecg, dtype=float).ravel()
     n = len(ecg)
@@ -79,3 +79,7 @@ ecgdet = pan_tompkins
 
 def cheatsheet() -> str:
     return "pan_tompkins({}) -> Pan-Tompkins QRS detector."
+
+
+# compact alias per ledger/NAMING.md
+pantompkins = pan_tompkins

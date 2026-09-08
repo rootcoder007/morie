@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -26,7 +26,7 @@ def resample_signal(x, up: int, down: int) -> SignalResult:
     -------
     SignalResult
     """
-    from scipy.signal import resample_poly
+    from ._signal_core import resample_poly
 
     x = np.asarray(x, dtype=float)
     y = resample_poly(x, up, down)
@@ -44,3 +44,7 @@ rsmpl = resample_signal
 
 def cheatsheet() -> str:
     return "resample_signal({}) -> Rational resampling."
+
+
+# compact alias per ledger/NAMING.md
+resamplesignal = resample_signal

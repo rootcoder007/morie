@@ -1,6 +1,6 @@
 """Tests for morie.fn.intrl -- Interrupted time series."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.intrl import interrupted_time_series

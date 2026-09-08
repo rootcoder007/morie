@@ -1,6 +1,6 @@
 """Tests for bm25.bm25."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bm25 import bm25
 

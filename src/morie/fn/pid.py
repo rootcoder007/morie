@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PID controller simulation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -97,3 +97,7 @@ pid = pid_controller
 
 def cheatsheet() -> str:
     return "pid_controller({}) -> PID controller simulation."
+
+
+# compact alias per ledger/NAMING.md
+pidcontroller = pid_controller

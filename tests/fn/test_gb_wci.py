@@ -1,6 +1,6 @@
 """Tests for gb_wci.gibbons_concordance_signif."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_wci import gibbons_concordance_signif
 

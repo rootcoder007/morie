@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kriging weights (lambda)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -35,3 +35,7 @@ krig = kriging_lambda
 
 def cheatsheet() -> str:
     return "kriging_lambda({}) -> Kriging weights (lambda)"
+
+
+# compact alias per ledger/NAMING.md
+kriginglambda = kriging_lambda

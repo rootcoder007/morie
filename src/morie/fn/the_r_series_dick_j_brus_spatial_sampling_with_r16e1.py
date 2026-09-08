@@ -1,54 +1,22 @@
-"""Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Deprecated alias for :func:`morie.fn.linear_model_prediction`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .linear_model_prediction import linear_model_prediction as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_16_equation_1"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_16_equation_1(x):
-    """
-    Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
-
-    Formula: [EQ] 𝑍𝑘 = 𝛽0 + 𝛽1𝑥𝑘 + 𝜖𝑘 , (16.1)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r16e1')`` for the full guide.
-
-    References
-    ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.16 eq.16.1
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_16_equation_1(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.linear_model_prediction` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_16_equation_1() is the book-coordinate name for linear_model_prediction(); "
+        "it will be removed. Use morie.fn.linear_model_prediction() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r16e1: Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return _impl(*args, **kwargs)

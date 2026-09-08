@@ -5,7 +5,7 @@ Adagrad optimizer with per-parameter adaptive learning rates.
 Accumulates squared gradients for adaptive learning rate scheduling.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["adagr"]
 

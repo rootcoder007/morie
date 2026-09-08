@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Levenshtein edit distance."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -80,3 +80,7 @@ edtds = edit_distance
 
 def cheatsheet() -> str:
     return "edit_distance({}) -> Levenshtein edit distance."
+
+
+# compact alias per ledger/NAMING.md
+editdistance = edit_distance

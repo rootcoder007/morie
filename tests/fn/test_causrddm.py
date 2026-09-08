@@ -1,6 +1,6 @@
 """Tests for causrddm.causal_rdd_manipulation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causrddm import causal_rdd_manipulation
 

@@ -1,6 +1,6 @@
 """Tests for grxent.geron_softmax_cross_entropy_cost."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grxent import geron_softmax_cross_entropy_cost
 

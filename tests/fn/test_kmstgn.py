@@ -1,6 +1,6 @@
 """Tests for kmstgn.kamath_summarize_from_feedback."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmstgn import kamath_summarize_from_feedback
 

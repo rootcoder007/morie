@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 
 def irt_likelihood(
@@ -59,3 +59,7 @@ def irt_likelihood(
 
 def cheatsheet() -> str:
     return "irt_likelihood({}) -> IRT log-likelihood at given theta."
+
+
+# compact alias per ledger/NAMING.md
+irtlikelihood = irt_likelihood

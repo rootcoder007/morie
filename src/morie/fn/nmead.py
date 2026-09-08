@@ -5,7 +5,7 @@ Nelder-Mead simplex optimization.
 Derivative-free optimization using a dynamic simplex in n dimensions.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["nmead"]
 

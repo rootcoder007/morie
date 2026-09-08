@@ -1,6 +1,6 @@
 """Tests for otemd.ot_emd_solver."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otemd import ot_emd_solver
 

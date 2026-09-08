@@ -2,7 +2,7 @@
 % Please edit documentation in R/survey.R
 \name{morie_survey_hajek_mean}
 \alias{morie_survey_hajek_mean}
-\title{Hajek (ratio) estimator of a population mean.}
+\title{Hajek (ratio) estimator of a population mean}
 \usage{
 morie_survey_hajek_mean(y, weights)
 }
@@ -13,8 +13,16 @@ morie_survey_hajek_mean(y, weights)
 }
 \value{
 A named list with elements \code{mean}, \code{se},
-\code{ci_lower}, \code{ci_upper} (95\\% Wald confidence interval).
+\code{ci_lower}, \code{ci_upper} (95\% Wald confidence interval).
 }
 \description{
-Hajek (ratio) estimator of a population mean.
+Hajek (ratio) estimator of a population mean
+}
+\examples{
+\dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+if (requireNamespace("survey", quietly = TRUE)) {
+  V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+  morie_survey_hajek_mean(V, V)
+}
+\dontshow{\}) # examplesIf}
 }

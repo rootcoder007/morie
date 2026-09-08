@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._cfa_engine import (
     cov_from_data,
@@ -108,3 +108,7 @@ def mi_strict(
 
 def cheatsheet() -> str:
     return "mi_strict({}) -> Strict invariance: constrain loadings + intercepts + residua"
+
+
+# compact alias per ledger/NAMING.md
+mistrict = mi_strict

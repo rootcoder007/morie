@@ -1,6 +1,6 @@
 """Tests for joavg.joseph_average_forecast."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.joavg import joseph_average_forecast
 

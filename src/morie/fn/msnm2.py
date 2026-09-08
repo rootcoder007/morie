@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nonmetric MDS 2D"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ nonm = nonmetric_2d
 
 def cheatsheet() -> str:
     return "nonmetric_2d({}) -> Nonmetric MDS 2D"
+
+
+# compact alias per ledger/NAMING.md
+nonmetric2d = nonmetric_2d

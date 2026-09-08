@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -71,3 +71,7 @@ stsgm = st_segment
 
 def cheatsheet() -> str:
     return "st_segment({}) -> ST segment level analysis."
+
+
+# compact alias per ledger/NAMING.md
+stsegment = st_segment

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -53,3 +53,7 @@ tfplt = plot_tfd_fn
 
 def cheatsheet() -> str:
     return "plot_tfd_fn({}) -> Time-frequency distribution plot."
+
+
+# compact alias per ledger/NAMING.md
+plottfdfn = plot_tfd_fn

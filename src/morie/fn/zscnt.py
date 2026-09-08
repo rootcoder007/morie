@@ -1,6 +1,6 @@
 """Contour line generation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ cont = contour_lines
 
 def cheatsheet() -> str:
     return "contour_lines({}) -> Contour line generation"
+
+
+# compact alias per ledger/NAMING.md
+contourlines = contour_lines

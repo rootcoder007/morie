@@ -1,6 +1,6 @@
 """Tests for nwstb -- network stability."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.nwstb import network_stability

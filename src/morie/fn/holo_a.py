@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def holo_acf(
@@ -36,7 +36,7 @@ def holo_acf(
         Analysis: Forecasting and Control* (5th ed.). Wiley.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_acf requires matplotlib. Install via: pip install matplotlib")
         return None
@@ -104,3 +104,7 @@ def _compute_pacf(acf: np.ndarray, nlags: int) -> np.ndarray:
 
 def cheatsheet() -> str:
     return "holo_acf({}) -> ACF / PACF plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holoacf = holo_acf

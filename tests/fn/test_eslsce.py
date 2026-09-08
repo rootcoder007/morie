@@ -1,6 +1,6 @@
 """Tests for eslsce.esl_score_match."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslsce import esl_score_match
 

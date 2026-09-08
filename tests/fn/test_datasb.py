@@ -1,6 +1,6 @@
 """Tests for datasb.data_subset_refutation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.datasb import data_subset_refutation
 

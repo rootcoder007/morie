@@ -1,6 +1,6 @@
 """Tests for wsmfis.wasserman_fisher_info."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmfis import wasserman_fisher_info
 

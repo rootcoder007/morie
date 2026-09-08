@@ -1,6 +1,6 @@
 """MGWR estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ mgwr = mgwr_estimate
 
 def cheatsheet() -> str:
     return "mgwr_estimate({}) -> MGWR estimation"
+
+
+# compact alias per ledger/NAMING.md
+mgwrestimate = mgwr_estimate

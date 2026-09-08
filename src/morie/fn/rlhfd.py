@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -55,3 +55,7 @@ def cheatsheet():
 # >>> r = rlhf_reward(np.array([[1.0, 1.0]]), w=np.array([0.5, 0.5]), b=0.0)
 # >>> float(r["value"])
 # 1.0
+
+
+# compact alias per ledger/NAMING.md
+rlhfreward = rlhf_reward

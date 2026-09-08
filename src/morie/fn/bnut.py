@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def nuts_sampler(
@@ -35,7 +35,9 @@ def nuts_sampler(
 
     References
     ----------
-    Hoffman, M. D. & Gelman, A. (2014). *JMLR*, 15, 1593--1623.
+    Hoffman, M. D. & Gelman, A. (2014). The No-U-Turn sampler:
+    adaptively setting path lengths in Hamiltonian Monte Carlo.
+    *JMLR*, 15, 1593--1623.
     """
     rng = np.random.default_rng(seed)
     theta = np.asarray(init, dtype=float).copy()
@@ -121,3 +123,7 @@ bnut = nuts_sampler
 
 def cheatsheet() -> str:
     return "nuts_sampler({}) -> No-U-Turn sampler (simplified NUTS)."
+
+
+# compact alias per ledger/NAMING.md
+nutssampler = nuts_sampler

@@ -4,7 +4,7 @@ WTP efficiency spatial
 Category: WtrQual
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wqwtp(data=None, coords=None, n=50):

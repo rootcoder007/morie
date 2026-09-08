@@ -1,6 +1,6 @@
 """Tests for htpfn.htp_functional_predictor."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.htpfn import htp_functional_predictor
 

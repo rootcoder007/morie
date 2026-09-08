@@ -1,6 +1,6 @@
 """Cressie-Huang space-time covariance"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ st_c = st_cressie_huang
 
 def cheatsheet() -> str:
     return "st_cressie_huang({}) -> Cressie-Huang space-time covariance"
+
+
+# compact alias per ledger/NAMING.md
+stcressiehuang = st_cressie_huang

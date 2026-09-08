@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """QQ-plot data for GWAS p-values."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -41,3 +41,7 @@ qq_ = qq_plot_data
 
 def cheatsheet() -> str:
     return "qq_plot_data({}) -> QQ-plot data for GWAS p-values."
+
+
+# compact alias per ledger/NAMING.md
+qqplotdata = qq_plot_data

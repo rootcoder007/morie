@@ -1,6 +1,6 @@
 """Tests for bcdblk.block_coordinate_descent."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bcdblk import block_coordinate_descent
 

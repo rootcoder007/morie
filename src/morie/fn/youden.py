@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DiagnosticResult
 
@@ -48,3 +48,7 @@ youden = youdens_j
 
 def cheatsheet() -> str:
     return "youdens_j({}) -> Youden's J index."
+
+
+# compact alias per ledger/NAMING.md
+youdensj = youdens_j

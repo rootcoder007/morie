@@ -1,6 +1,6 @@
 """Roll call vote probability model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ roll = roll_call_prob
 
 def cheatsheet() -> str:
     return "roll_call_prob({}) -> Roll call vote probability model"
+
+
+# compact alias per ledger/NAMING.md
+rollcallprob = roll_call_prob

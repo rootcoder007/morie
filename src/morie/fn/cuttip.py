@@ -1,6 +1,6 @@
 """Cutting plane method."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -42,3 +42,7 @@ def cutting_plane(c, A, b, integer_indices):
 
 def cheatsheet():
     return "cuttip: Cutting plane method"
+
+
+# compact alias per ledger/NAMING.md
+cuttingplane = cutting_plane

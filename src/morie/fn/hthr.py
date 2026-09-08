@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -43,3 +43,7 @@ hthr = hard_threshold
 
 def cheatsheet() -> str:
     return "hard_threshold({}) -> Hard thresholding operator."
+
+
+# compact alias per ledger/NAMING.md
+hardthreshold = hard_threshold

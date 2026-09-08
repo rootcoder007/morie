@@ -8,10 +8,34 @@ effects using meta-learner strategies with Random Forest base learners.
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from . import _array_core as np
+from . import _frame_core as pd
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from ._ml_core import RandomForestRegressor
+except ImportError:
+    RandomForestRegressor = _MissingDep('RandomForestRegressor')
+try:
+    from ._ml_core import LabelEncoder, StandardScaler
+except ImportError:
+    LabelEncoder = _MissingDep('LabelEncoder')
+    StandardScaler = _MissingDep('StandardScaler')
 
 
 def estimate_cate(
@@ -101,3 +125,7 @@ cate = estimate_cate
 
 def cheatsheet() -> str:
     return "estimate_cate({}) -> Conditional Average Treatment Effect (CATE) via T-learner or"
+
+
+# compact alias per ledger/NAMING.md
+estimatecate = estimate_cate

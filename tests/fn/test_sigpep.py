@@ -1,6 +1,6 @@
 """Tests for sigpep.signal_peptide."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sigpep import signal_peptide
 

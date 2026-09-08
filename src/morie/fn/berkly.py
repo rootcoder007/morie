@@ -1,6 +1,6 @@
 """Berkeley Earth Kriging surface T."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def berkeley_earth(stations):
 
 def cheatsheet():
     return "berkly: Berkeley Earth Kriging surface T"
+
+
+# compact alias per ledger/NAMING.md
+berkeleyearth = berkeley_earth

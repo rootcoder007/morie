@@ -1,6 +1,6 @@
 """Tests for dvres.deviance_residual_cox."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dvres import deviance_residual_cox
 

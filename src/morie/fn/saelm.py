@@ -5,7 +5,7 @@ Moran eigenvector spatial filter
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def saelm(values=None, w=None, n=50):

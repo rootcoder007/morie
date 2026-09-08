@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Party divergence measure"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ part = party_diverge
 
 def cheatsheet() -> str:
     return "party_diverge({}) -> Party divergence measure"
+
+
+# compact alias per ledger/NAMING.md
+partydiverge = party_diverge

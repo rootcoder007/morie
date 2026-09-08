@@ -1,6 +1,6 @@
 """Tests for grscm.geron_score_matching_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grscm import geron_score_matching_loss
 

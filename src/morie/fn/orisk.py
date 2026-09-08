@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as stats
 
 
 def otis_risk_table(
@@ -56,7 +56,8 @@ def otis_risk_table(
                 se_log = np.sqrt(1 / max(a, 1) + 1 / max(b, 1) + 1 / max(c, 1) + 1 / max(dd, 1))
         else:
             # OLS approximation for log(OR) per unit increase
-            from numpy.linalg import lstsq
+            from morie.fn._array_core import linalg as _acl
+            lstsq = _acl.lstsq
 
             X = np.column_stack([np.ones(n), x])
             beta, _, _, _ = lstsq(X, y, rcond=None)
@@ -94,3 +95,7 @@ def otis_risk_table(
 
 def cheatsheet() -> str:
     return "otis_risk_table({}) -> Univariate risk factor table for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisrisktable = otis_risk_table

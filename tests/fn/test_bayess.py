@@ -1,6 +1,6 @@
 """Tests for bayess.effective_sample_size_bayes."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bayess import effective_sample_size_bayes
 

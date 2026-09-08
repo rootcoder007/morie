@@ -1,6 +1,6 @@
 """Tests for gh_sup_norm_gp.ghosal_sup_norm_contraction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_sup_norm_gp import ghosal_sup_norm_contraction
 

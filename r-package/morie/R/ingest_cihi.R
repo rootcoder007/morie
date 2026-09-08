@@ -1,4 +1,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+#' SPDX-License-Identifier: AGPL-3.0-or-later
+#'
+#' A step of the ingest_cihi implementation. Called by \code{morie_ingest_cihi_xlsx}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param path Passed to \code{stop}.
+#' @param ... Passed through.
+#' @return The value of \code{best_df}, as built in the body.
+#' @export
 .morie_cihi_pick_data_sheet <- function(path, ...) {
   morie_ensure_extras("readxl")
   sheets <- readxl::excel_sheets(path)
@@ -28,8 +38,8 @@
 #' @param user_agent User-Agent string.
 #' @param ... forwarded to readxl::read_excel.
 #' @return base R data.frame.
-#' @examples
-#' \donttest{try(morie_ingest_cihi_xlsx(url = "https://example.org/data.xlsx"))}
+#' @examplesIf requireNamespace("httr2", quietly = TRUE) && requireNamespace("readxl", quietly = TRUE)
+#' \dontrun{
 #' @export
 morie_ingest_cihi_xlsx <- function(url, sheet = NULL, timeout = 120,
                                    user_agent = "morie/r (+https://github.com/rootcoder007/morie)", ...) {

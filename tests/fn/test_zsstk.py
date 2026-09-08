@@ -1,6 +1,6 @@
 """Tests for morie.fn.zsstk -- Space-time kriging prediction"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zsstk import st_kriging
 

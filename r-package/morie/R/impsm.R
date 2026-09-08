@@ -9,6 +9,9 @@
 #' @return list: estimate, estimate_sn, se, ess, n, method.
 #' @keywords internal
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' impsm(V)
 impsm <- function(x, h = NULL, p = NULL, q = NULL) {
   x <- as.numeric(x)
   n <- length(x)

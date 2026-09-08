@@ -1,6 +1,6 @@
 """Thomas cluster process."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def thomas_cluster(lambda_p, mu, sigma):
 
 def cheatsheet():
     return "thmksp: Thomas cluster process"
+
+
+# compact alias per ledger/NAMING.md
+thomascluster = thomas_cluster

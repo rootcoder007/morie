@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgdir -- Directional variogram"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgdir import directional_vario
 

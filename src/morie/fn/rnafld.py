@@ -1,6 +1,6 @@
 """RNA secondary structure (Zuker)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def rna_fold(sequence):
 
 def cheatsheet():
     return "rnafld: RNA secondary structure (Zuker)"
+
+
+# compact alias per ledger/NAMING.md
+rnafold = rna_fold

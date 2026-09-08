@@ -1,6 +1,6 @@
 """Tests for morie.fn.prdnt — Bootstrap prediction intervals."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.prdnt import prdnt, prediction_intervals

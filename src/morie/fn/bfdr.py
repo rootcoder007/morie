@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -47,3 +47,7 @@ bfdr = bayesian_fdr
 
 def cheatsheet() -> str:
     return "bayesian_fdr({}) -> Bayesian FDR."
+
+
+# compact alias per ledger/NAMING.md
+bayesianfdr = bayesian_fdr

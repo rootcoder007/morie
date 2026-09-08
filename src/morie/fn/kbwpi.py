@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,7 +40,7 @@ def kbwpi(data: np.ndarray) -> dict:
         selection method for kernel density estimation. *JRSS-B*,
         53(3), 683-690.
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]
@@ -58,7 +58,7 @@ def kbwpi(data: np.ndarray) -> dict:
         """Kernel estimate of int f^(r)(x)^2 dx using Gaussian kernel."""
         coeff = (-1) ** (r // 2)
         vals = norm.pdf(diffs / g, 0, 1)
-        from scipy.special import hermite
+        from ._sci_core import hermite
 
         H = hermite(r)
         vals = vals * H(diffs / g) / (g ** (r + 1))

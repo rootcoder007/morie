@@ -1,6 +1,6 @@
 """Tests for gb661c.gibbons_mw_ci."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb661c import gibbons_mw_ci
 

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -46,3 +46,7 @@ addns = add_noise
 
 def cheatsheet() -> str:
     return "add_noise({}) -> Add noise at specified SNR."
+
+
+# compact alias per ledger/NAMING.md
+addnoise = add_noise

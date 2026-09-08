@@ -1,22 +1,15 @@
 """Tests for altkp.alammar_tokenization_pipeline."""
 
-import numpy as np
-
 from morie.fn.altkp import alammar_tokenization_pipeline
 
 
 def test_altkp_basic():
-    """Test basic functionality."""
-    text = np.random.default_rng(42).normal(0, 1, 100)
-    tokenizer = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_tokenization_pipeline(text, tokenizer)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    v = ["[CLS]", "[SEP]", "[UNK]", "un", "##happy", "dog"]
+    out = alammar_tokenization_pipeline("Unhappy dog", v)
+    assert out["tokens"] == ["[CLS]", "un", "##happy", "dog", "[SEP]"]
 
 
 def test_altkp_edge():
-    """Test edge cases."""
-    text = np.random.default_rng(42).normal(0, 1, 100)
-    tokenizer = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_tokenization_pipeline(text, tokenizer)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="UNK"):
+        alammar_tokenization_pipeline("x", ["[CLS]", "[SEP]", "x"])

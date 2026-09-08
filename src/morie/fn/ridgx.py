@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -62,3 +62,7 @@ ridgx = ridge_extract
 
 def cheatsheet() -> str:
     return "ridge_extract({}) -> Ridge extraction from time-frequency representation."
+
+
+# compact alias per ledger/NAMING.md
+ridgeextract = ridge_extract

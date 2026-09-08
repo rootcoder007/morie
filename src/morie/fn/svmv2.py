@@ -1,6 +1,6 @@
 """Median voter in 2D (Plott conditions)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ medi = median_voter_2d
 
 def cheatsheet() -> str:
     return "median_voter_2d({}) -> Median voter in 2D (Plott conditions)"
+
+
+# compact alias per ledger/NAMING.md
+medianvoter2d = median_voter_2d

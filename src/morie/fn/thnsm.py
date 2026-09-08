@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -84,3 +84,7 @@ thnsm = snap_estimator
 
 def cheatsheet() -> str:
     return "snap_estimator({}) -> Random half-sampling estimator."
+
+
+# compact alias per ledger/NAMING.md
+snapestimator = snap_estimator

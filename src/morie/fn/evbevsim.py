@@ -1,6 +1,6 @@
 """Simulate from a bivariate extreme-value copula."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def evt_bv_evd_sim(alpha, n):
 
 def cheatsheet():
     return "evbevsim: Simulate from a bivariate extreme-value copula"
+
+
+# compact alias per ledger/NAMING.md
+evtbvevdsim = evt_bv_evd_sim

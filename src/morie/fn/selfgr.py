@@ -1,6 +1,6 @@
 """SELFIES encoding (robust to mutation)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def selfies_encode(smiles):
 
 def cheatsheet():
     return "selfgr: SELFIES encoding (robust to mutation)"
+
+
+# compact alias per ledger/NAMING.md
+selfiesencode = selfies_encode

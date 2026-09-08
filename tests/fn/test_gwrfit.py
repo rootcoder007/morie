@@ -1,6 +1,6 @@
 """Tests for morie.fn.gwrfit."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gwrfit import gwrfit
 

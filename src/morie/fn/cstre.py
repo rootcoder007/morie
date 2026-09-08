@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._richresult import RichResult
 
@@ -39,3 +39,7 @@ def custody_readmit(
 
 def cheatsheet() -> str:
     return "custody_readmit({}) -> Custody readmission rate."
+
+
+# compact alias per ledger/NAMING.md
+custodyreadmit = custody_readmit

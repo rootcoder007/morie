@@ -8,6 +8,9 @@
 #' @return Named list with estimate (h), n, sigma, c, method.
 #' @keywords internal
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' hrzp2(V, V)
 hrzp2 <- function(x, y, c = 1.06) {
   x <- as.numeric(x)
   n <- length(x)

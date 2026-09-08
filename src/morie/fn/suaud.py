@@ -1,6 +1,6 @@
 """AUDIT alcohol screening score."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -60,3 +60,7 @@ suaud = audit_score
 
 def cheatsheet() -> str:
     return "audit_score({}) -> AUDIT alcohol screening score."
+
+
+# compact alias per ledger/NAMING.md
+auditscore = audit_score

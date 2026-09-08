@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -39,3 +39,7 @@ srms = rms_value
 
 def cheatsheet() -> str:
     return "rms_value({}) -> Root mean square value."
+
+
+# compact alias per ledger/NAMING.md
+rmsvalue = rms_value

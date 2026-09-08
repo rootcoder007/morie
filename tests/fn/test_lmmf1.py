@@ -1,6 +1,6 @@
 """Tests for lmmf1.lmm_form_eq2_1."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lmmf1 import lmm_form_eq2_1
 

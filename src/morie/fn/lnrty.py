@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -51,3 +51,7 @@ lnrty = linearity_test
 
 def cheatsheet() -> str:
     return "linearity_test({}) -> System linearity test."
+
+
+# compact alias per ledger/NAMING.md
+linearitytest = linearity_test

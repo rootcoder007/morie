@@ -1,6 +1,6 @@
 """Tests for bndlmm.bound_linear_min_max."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndlmm import bound_linear_min_max
 

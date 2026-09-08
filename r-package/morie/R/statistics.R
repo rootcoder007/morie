@@ -8,7 +8,6 @@
 #' \code{extra} list, so downstream code can post-process programmatically.
 #'
 #' Categories
-#' ----------
 #' \itemize{
 #'   \item Location: \code{one_sample_ttest}, \code{two_sample_ttest},
 #'     \code{welch_ttest}, \code{paired_ttest}
@@ -44,11 +43,51 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+#' .stat_validate
+#'
+#' A step of the statistics implementation. Called by \code{anderson_darling},
+#' \code{auto_test}, \code{dagostino_pearson} and 18 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x A vector; indexed elementwise.
+#' @param name Accepted by the signature and not used anywhere in the body. Defaults to \code{"x"}.
+#' @return The value of \code{[}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .stat_validate(x = x)
+#' res
 .stat_validate <- function(x, name = "x") {
   x <- suppressWarnings(as.numeric(x))
   x[is.finite(x)]
 }
 
+#' .stat_result
+#'
+#' A step of the statistics implementation. Called by \code{anderson_darling},
+#' \code{bartlett_test}, \code{chi2_goodness_of_fit} and 33 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param method Carried through into a list the body builds.
+#' @param test_statistic Coerced to numeric by the body, with \code{as.numeric}.
+#' @param p_value Coerced to numeric by the body, with \code{as.numeric}.
+#' @param df Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param ci_lower Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param ci_upper Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param effect_size Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param estimate Optional; may be \code{NULL}. Coerced to numeric by the body, with
+#' \code{as.numeric}. Defaults to \code{NA_real_}.
+#' @param n Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}. Defaults to \code{NA_integer_}.
+#' @param extra Carried through into a list the body builds. Defaults to \code{list()}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .stat_result <- function(method, test_statistic, p_value,
                          df = NA_real_, ci_lower = NA_real_,
                          ci_upper = NA_real_, effect_size = NA_real_,
@@ -70,8 +109,16 @@ NULL
   out
 }
 
+#' Print method for \code{morie_test_result} objects
+#'
+#' @param x A \code{morie_test_result} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' set.seed(1)
+#' res <- one_sample_ttest(rnorm(20, 0.3))
+#' print(res)
 print.morie_test_result <- function(x, ...) {
   cat(x$method, "\
 ", sep = "")
@@ -81,20 +128,39 @@ print.morie_test_result <- function(x, ...) {
 ", x$test_statistic))
   cat(sprintf("  p-value   = %.6g\
 ", x$p_value))
-  if (is.finite(x$df))          cat(sprintf("  df        = %.6g\
+  # R 4.6 makes `if` on a length > 1 condition an ERROR, so every field
+  # is reduced to a single flag before it is tested: a vectorised call
+  # leaves length-n estimates behind and printing them used to abort.
+  ok <- function(v) length(v) == 1L && is.finite(v)
+  if (ok(x$df))          cat(sprintf("  df        = %.6g\
 ", x$df))
-  if (is.finite(x$estimate))    cat(sprintf("  estimate  = %.6g\
+  if (ok(x$estimate))    cat(sprintf("  estimate  = %.6g\
 ", x$estimate))
-  if (is.finite(x$effect_size)) cat(sprintf("  effect    = %.6g\
+  if (ok(x$effect_size)) cat(sprintf("  effect    = %.6g\
 ", x$effect_size))
-  if (is.finite(x$ci_lower) && is.finite(x$ci_upper))
+  if (ok(x$ci_lower) && ok(x$ci_upper))
     cat(sprintf("  CI        = [%.6g, %.6g]\
 ", x$ci_lower, x$ci_upper))
-  if (!is.na(x$n)) cat(sprintf("  n         = %d\
+  if (length(x$n) == 1L && !is.na(x$n)) cat(sprintf("  n         = %d\
 ", x$n))
   invisible(x)
 }
 
+#' .cohens_d_ind
+#'
+#' A step of the statistics implementation. Called by \code{two_sample_ttest}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x A vector; its length is taken.
+#' @param y A vector; its length is taken.
+#' @return A numeric value.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .cohens_d_ind(x = x, y = y)
+#' res
 .cohens_d_ind <- function(x, y) {
   nx <- length(x)
   ny <- length(y)
@@ -103,18 +169,55 @@ print.morie_test_result <- function(x, ...) {
   (mean(x) - mean(y)) / sp
 }
 
+#' .cohens_d_one
+#'
+#' A step of the statistics implementation. Called by \code{one_sample_ttest}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x Numeric; passed to \code{mean}.
+#' @param mu0 Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
 .cohens_d_one <- function(x, mu0) {
   s <- sd(x)
   if (s == 0) return(0)
   (mean(x) - mu0) / s
 }
 
+#' .cohens_d_paired
+#'
+#' A step of the statistics implementation. Called by \code{paired_ttest}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param d Numeric; passed to \code{mean}.
+#' @return A numeric value.
+#' @export
+#' @examples
+#' g <- c(0L, 1L, 0L, 1L, 1L, 0L, 1L, 0L)
+#' res <- .cohens_d_paired(d = g)
+#' res
 .cohens_d_paired <- function(d) {
   s <- sd(d)
   if (s == 0) return(0)
   mean(d) / s
 }
 
+#' .mean_ci
+#'
+#' A step of the statistics implementation. Called by \code{one_sample_ttest}, \code{paired_ttest}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x A vector; its length is taken.
+#' @param confidence Numeric; combined arithmetically in the body. Defaults to \code{0.95}.
+#' @return A vector, from \code{c}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .mean_ci(x = x)
+#' res
 .mean_ci <- function(x, confidence = 0.95) {
   n <- length(x)
   se <- sd(x) / sqrt(n)
@@ -122,6 +225,23 @@ print.morie_test_result <- function(x, ...) {
   c(mean(x) - tcrit * se, mean(x) + tcrit * se)
 }
 
+#' .diff_ci
+#'
+#' A step of the statistics implementation. Called by \code{two_sample_ttest}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x A vector; its length is taken.
+#' @param y A vector; its length is taken.
+#' @param confidence Numeric; combined arithmetically in the body. Defaults to \code{0.95}.
+#' @param equal_var A flag; the body branches on it. Defaults to \code{TRUE}.
+#' @return A vector, from \code{c}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .diff_ci(x = x, y = y)
+#' res
 .diff_ci <- function(x, y, confidence = 0.95, equal_var = TRUE) {
   nx <- length(x)
   ny <- length(y)
@@ -153,6 +273,9 @@ print.morie_test_result <- function(x, ...) {
 #' @param confidence Confidence level (default 0.95).
 #' @return A \code{morie_test_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' one_sample_ttest(V)
 one_sample_ttest <- function(x, mu0 = 0, confidence = 0.95) {
   x <- .stat_validate(x)
   n <- length(x)
@@ -177,6 +300,9 @@ one_sample_ttest <- function(x, mu0 = 0, confidence = 0.95) {
 #'   with the t statistic, p-value, degrees of freedom, mean-difference CI,
 #'   Cohen's d effect size, and combined sample size.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' two_sample_ttest(V, V)
 two_sample_ttest <- function(x, y, equal_var = TRUE, confidence = 0.95) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)
@@ -212,6 +338,9 @@ two_sample_ttest <- function(x, y, equal_var = TRUE, confidence = 0.95) {
 #'   with Welch's t statistic, p-value, Satterthwaite df, mean-difference CI,
 #'   Cohen's d, and combined sample size.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' welch_ttest(V, V)
 welch_ttest <- function(x, y, confidence = 0.95) {
   two_sample_ttest(x, y, equal_var = FALSE, confidence = confidence)
 }
@@ -223,6 +352,9 @@ welch_ttest <- function(x, y, confidence = 0.95) {
 #'   with the paired t statistic, p-value, df, mean-difference CI,
 #'   Cohen's d on the differences, and n (number of pairs).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' paired_ttest(V, V)
 paired_ttest <- function(x, y, confidence = 0.95) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)
@@ -250,6 +382,9 @@ paired_ttest <- function(x, y, confidence = 0.95) {
 #' @param ... Two or more numeric vectors (groups).
 #' @return \code{morie_test_result} with eta-squared effect size.
 #' @export
+#' @examples
+#' set.seed(1)
+#' one_way_anova(rnorm(15), rnorm(15, 0.5), rnorm(15, 1))
 one_way_anova <- function(...) {
   groups <- list(...)
   if (length(groups) < 2L) stop("ANOVA requires at least 2 groups.")
@@ -286,6 +421,10 @@ one_way_anova <- function(...) {
 #'   with the interaction F statistic and p-value, the \code{factor_a} partial
 #'   eta-squared, and the full ANOVA table in \code{extra$anova_table}.
 #' @export
+#' @examples
+#' d <- data.frame(y = rnorm(120), a = rep(letters[1:3], each = 40),
+#'     b = rep(letters[4:5], 60))
+#' two_way_anova(d, "y", "a", "b")
 two_way_anova <- function(data, outcome, factor_a, factor_b) {
   data <- stats::na.omit(data[, c(outcome, factor_a, factor_b)])
   data[[factor_a]] <- factor(data[[factor_a]])
@@ -320,6 +459,11 @@ two_way_anova <- function(data, outcome, factor_a, factor_b) {
 #'   and \code{extra} list carrying \code{df_error}, \code{ss_cond} and
 #'   \code{ss_error}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(y = rnorm(30), id = rep(1:10, 3),
+#'                  cond = rep(c("t1", "t2", "t3"), each = 10))
+#' repeated_measures_anova(df, "y", "id", "cond")
 repeated_measures_anova <- function(data, outcome, subject, within) {
   df <- stats::na.omit(data[, c(outcome, subject, within)])
   levels_w <- unique(df[[within]])
@@ -542,6 +686,18 @@ cochrans_q <- function(...) {
 # CORRELATION
 # ===================================================================
 
+#' .fisher_z_ci
+#'
+#' A step of the statistics implementation. Called by \code{pearson_correlation},
+#' \code{point_biserial_correlation}, \code{spearman_correlation}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param r Passed to \code{atanh}.
+#' @param n Numeric; combined arithmetically in the body.
+#' @param confidence Numeric; combined arithmetically in the body.
+#' @return A vector, from \code{c}.
+#' @export
 .fisher_z_ci <- function(r, n, confidence) {
   z <- atanh(r)
   se <- if (n > 3) 1 / sqrt(n - 3) else Inf
@@ -556,6 +712,9 @@ cochrans_q <- function(...) {
 #'   with the Pearson correlation r as the test statistic and estimate,
 #'   p-value, df, Fisher-z confidence interval, and r-squared effect size.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' pearson_correlation(V, V)
 pearson_correlation <- function(x, y, confidence = 0.95) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)
@@ -579,6 +738,9 @@ pearson_correlation <- function(x, y, confidence = 0.95) {
 #'   with Spearman's rho as the test statistic and estimate, p-value, df,
 #'   Fisher-z CI, and rho-squared effect size.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' spearman_correlation(V, V)
 spearman_correlation <- function(x, y, confidence = 0.95) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)
@@ -629,6 +791,14 @@ kendall_correlation <- function(x, y) {
 #'   with the point-biserial r as the test statistic and estimate, p-value,
 #'   df, Fisher-z CI, and r-squared effect size.
 #' @export
+#' @examples
+#' set.seed(1)
+#' v1 <- rbinom(30, 1, 0.4)
+#' v2 <- rbinom(30, 1, 0.5)
+#' v3 <- rbinom(30, 1, 0.6)
+#' res <- cochrans_q(v1, v2, v3)
+#' res$p_value
+#' point_biserial_correlation(binary = v1, continuous = v1)
 point_biserial_correlation <- function(binary, continuous, confidence = 0.95) {
   b <- .stat_validate(binary)
   c <- .stat_validate(continuous)
@@ -656,6 +826,9 @@ point_biserial_correlation <- function(binary, continuous, confidence = 0.95) {
 #'   with the partial correlation r as the test statistic and estimate,
 #'   p-value, residual df, Fisher-z CI, and r-squared effect size.
 #' @export
+#' @examples
+#' partial_correlation(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
 partial_correlation <- function(x, y, covariates, confidence = 0.95) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)
@@ -688,6 +861,9 @@ partial_correlation <- function(x, y, covariates, confidence = 0.95) {
 #'   with the semi-partial correlation r as the test statistic and estimate,
 #'   p-value, and r-squared effect size.
 #' @export
+#' @examples
+#' semi_partial_correlation(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+#' covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
 semi_partial_correlation <- function(x, y, covariates) {
   x <- .stat_validate(x)
   y <- .stat_validate(y)
@@ -750,6 +926,9 @@ mann_whitney_u <- function(x, y, alternative = "two.sided") {
 #'   with the signed-rank V statistic, p-value, an r effect size derived
 #'   from the normal approximation, and n.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' wilcoxon_signed_rank(V)
 wilcoxon_signed_rank <- function(x, y = NULL, alternative = "two.sided") {
   alternative <- sub("-", ".", alternative, fixed = TRUE)
   x <- .stat_validate(x)
@@ -812,43 +991,181 @@ ks_test_two_sample <- function(x, y) {
   )
 }
 
-#' Anderson-Darling test
+# ---------------------------------------------------------------------
+# Native EDF goodness-of-fit machinery (no CRAN dependency)
+#
+# Critical values are transcribed from Gibbons, J.D. & Chakraborti, S.
+# (2010), Nonparametric Statistical Inference, 5th edn, CRC Press:
+#   Table O  (p. 589)  Lilliefors's test, normal distribution
+#   Table T  (p. 598)  Lilliefors's test, exponential distribution
+#   Table 4.7.1 (p. 139) Anderson-Darling modifications + upper tail points
+# Tables O and T are adapted there from Edgeman & Scott (1987); Table
+# 4.7.1 from Stephens (1986) in D'Agostino & Stephens, Goodness-of-Fit
+# Techniques. Entries are reproduced verbatim, including the single
+# non-monotonicity in Table T (N = 18 and N = 20 at alpha = 0.001 are
+# .328 and .329); smoothing it would misreport the published table.
+# ---------------------------------------------------------------------
+
+# Sample sizes indexing Tables O and T.
+.GOF_LILLIE_N <- c(4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20,
+                   25, 30, 40, 50, 60, 75, 100)
+
+# Right-tail probabilities heading both tables.
+.GOF_LILLIE_ALPHA <- c(0.100, 0.050, 0.010, 0.001)
+
+# Table O -- normal distribution, mean and variance unknown.
+.GOF_LILLIE_NORM <- matrix(c(
+  .344, .375, .414, .432,   .320, .344, .398, .427,
+  .298, .323, .369, .421,   .281, .305, .351, .399,
+  .266, .289, .334, .383,   .252, .273, .316, .366,
+  .240, .261, .305, .350,   .231, .251, .291, .331,
+  .223, .242, .281, .327,   .208, .226, .262, .302,
+  .195, .213, .249, .291,   .185, .201, .234, .272,
+  .176, .192, .223, .266,   .159, .173, .202, .236,
+  .146, .159, .186, .219,   .127, .139, .161, .190,
+  .114, .125, .145, .173,   .105, .114, .133, .159,
+  .094, .102, .119, .138,   .082, .089, .104, .121
+), ncol = 4, byrow = TRUE)
+
+# Table T -- exponential distribution, mean unknown.
+.GOF_LILLIE_EXP <- matrix(c(
+  .444, .483, .556, .626,   .405, .443, .514, .585,
+  .374, .410, .477, .551,   .347, .381, .444, .509,
+  .327, .359, .421, .502,   .310, .339, .399, .460,
+  .296, .325, .379, .444,   .284, .312, .366, .433,
+  .271, .299, .350, .412,   .252, .277, .325, .388,
+  .237, .261, .311, .366,   .224, .247, .293, .328,
+  .213, .234, .279, .329,   .192, .211, .251, .296,
+  .176, .193, .229, .270,   .153, .168, .201, .241,
+  .137, .150, .179, .214,   .125, .138, .164, .193,
+  .113, .124, .146, .173,   .098, .108, .127, .150
+), ncol = 4, byrow = TRUE)
+
+# "Over 100" rows: critical value is the coefficient over sqrt(N).
+.GOF_LILLIE_ASYMP <- list(
+  norm  = c(.816, .888, 1.038, 1.212),
+  expon = c(.980, 1.077, 1.274, 1.501)
+)
+
+#' Internal helper: Lilliefors critical values at sample size n
+#' @noRd
+.gof_lillie_crit <- function(n, dist) {
+  asy <- .GOF_LILLIE_ASYMP[[dist]]
+  if (n > 100) {
+    return(asy / sqrt(n))
+  }
+  tab <- if (identical(dist, "norm")) .GOF_LILLIE_NORM else .GOF_LILLIE_EXP
+  if (n <= .GOF_LILLIE_N[1]) {
+    return(tab[1, ])
+  }
+  # Interpolate each tabulated significance level linearly in N.
+  vapply(seq_along(.GOF_LILLIE_ALPHA), function(j) {
+    stats::approx(.GOF_LILLIE_N, tab[, j], xout = n)$y
+  }, numeric(1))
+}
+
+#' Internal helper: p-value from a critical-value row
 #'
-#' For \code{dist != "norm"} this is an API stub returning NA p-values;
-#' Anderson-Darling for arbitrary distributions requires the
-#' \pkg{ADGofTest} or \pkg{goftest} packages. For the normal case we
-#' fall back on \code{nortest::ad.test} when available.
+#' Interpolates linearly in log(alpha) between the bracketing critical
+#' values. Outside the tabulated range the p-value is reported at the
+#' nearest tabulated bound; `bounded` records which side was clamped so
+#' callers can tell an exact 0.001 from "at most 0.001".
+#' @noRd
+.gof_p_from_crit <- function(stat, crit, alpha) {
+  ord <- order(crit)
+  crit <- crit[ord]
+  alpha <- alpha[ord]
+  if (stat <= crit[1]) {
+    return(list(p = max(alpha), bounded = "upper"))
+  }
+  k <- length(crit)
+  if (stat >= crit[k]) {
+    return(list(p = min(alpha), bounded = "lower"))
+  }
+  p <- exp(stats::approx(crit, log(alpha), xout = stat)$y)
+  list(p = p, bounded = NA_character_)
+}
+
+# Upper tail percentage points heading Table 4.7.1.
+.GOF_AD_ALPHA <- c(0.01, 0.025, 0.05, 0.10, 0.15)
+
+# Table 4.7.1 rows actually used here: the two composite-hypothesis cases.
+# Normal, case 3 (mean and variance unknown): A* = W2n(1 + 0.75/n + 2.25/n^2)
+# Exponential, mean unknown:                  A* = W2n(1 + 0.3/n)
+.GOF_AD_CRIT <- list(
+  norm  = c(1.035, 0.873, 0.752, 0.631, 0.561),
+  expon = c(1.959, 1.591, 1.321, 1.062, 0.916)
+)
+
+#' Anderson-Darling goodness-of-fit test
+#'
+#' Native implementation for the two composite null hypotheses that have
+#' published percentage points: the normal distribution with unknown mean
+#' and variance, and the exponential distribution with unknown mean. The
+#' statistic is
+#' \deqn{A^2 = -n - n^{-1}\sum (2i-1)\[\ln F(z_i) + \ln(1 - F(z_{n+1-i}))\]}
+#' and is then modified for the estimated parameters before being compared
+#' with the tabulated points (see \code{.gof_lillie_crit} for the table
+#' provenance).
+#'
+#' Because the fitted parameters are estimated from the same sample, the
+#' unmodified \eqn{A^2} is not referred to its own null distribution;
+#' \eqn{A^* = A^2(1 + 0.75/n + 2.25/n^2)} in the normal case and
+#' \eqn{A^* = A^2(1 + 0.3/n)} in the exponential case.
 #'
 #' @param x Numeric vector.
-#' @param dist Distribution name.
+#' @param dist Either \code{"norm"} (default) or \code{"expon"}.
 #' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
-#'   with the Anderson-Darling A^2 statistic, a p-value (NA when no
-#'   distribution-specific table is available), and sample size n.
+#'   with the modified statistic \eqn{A^*} as \code{test_statistic}, the
+#'   p-value, and sample size n. \code{extra} carries the unmodified
+#'   \code{a_squared} and, when the statistic falls outside the tabulated
+#'   range, \code{p_bounded} set to \code{"upper"} or \code{"lower"} --
+#'   the p-value is then the nearest tabulated bound, not an exact value.
+#' @references
+#' Gibbons, J. D. & Chakraborti, S. (2010). \emph{Nonparametric Statistical
+#' Inference}, 5th edn. CRC Press. Section 4.7 and Table 4.7.1.
+#'
+#' Stephens, M. A. (1986). Tests based on EDF statistics. In R. B.
+#' D'Agostino & M. A. Stephens (eds), \emph{Goodness-of-Fit Techniques}.
+#' Marcel Dekker.
 #' @examples
 #' set.seed(1)
 #' res <- anderson_darling(rnorm(60))
 #' res$test_statistic
+#' anderson_darling(rexp(60), dist = "expon")$p_value
 #' @export
-anderson_darling <- function(x, dist = "norm") {
+anderson_darling <- function(x, dist = c("norm", "expon")) {
   x <- .stat_validate(x)
-  stat <- NA_real_
-  p <- NA_real_
-  if (dist == "norm" && requireNamespace("nortest", quietly = TRUE)) {
-    res <- nortest::ad.test(x)
-    stat <- unname(res$statistic)
-    p <- res$p.value
+  dist <- match.arg(dist)
+  n <- length(x)
+  xs <- sort(x)
+  if (identical(dist, "norm")) {
+    s <- stats::sd(xs)
+    if (!is.finite(s) || s <= 0) {
+      stop("anderson_darling: 'x' has zero variance; the normal fit is degenerate.")
+    }
+    z <- (xs - mean(xs)) / s
+    lf <- stats::pnorm(z, log.p = TRUE)
+    lsf <- stats::pnorm(rev(z), lower.tail = FALSE, log.p = TRUE)
+    mult <- 1 + 0.75 / n + 2.25 / n^2
   } else {
-    # Compute statistic manually for normal; p approximate
-    n <- length(x)
-    z <- (sort(x) - mean(x)) / sd(x)
-    i <- seq_len(n)
-    A2 <- -n - mean((2 * i - 1) * (stats::pnorm(z, log.p = TRUE) +
-        stats::pnorm(z[n + 1 - i], lower.tail = FALSE, log.p = TRUE)))
-    stat <- A2
+    mu <- mean(xs)
+    if (!is.finite(mu) || mu <= 0 || xs[1] < 0) {
+      stop("anderson_darling: dist = \"expon\" needs non-negative 'x' with a positive mean.")
+    }
+    z <- xs / mu
+    lf <- stats::pexp(z, log.p = TRUE)
+    lsf <- stats::pexp(rev(z), lower.tail = FALSE, log.p = TRUE)
+    mult <- 1 + 0.3 / n
   }
+  i <- seq_len(n)
+  a2 <- -n - mean((2 * i - 1) * (lf + lsf))
+  astar <- a2 * mult
+  pr <- .gof_p_from_crit(astar, .GOF_AD_CRIT[[dist]], .GOF_AD_ALPHA)
   .stat_result(
     method = sprintf("Anderson-Darling test (%s)", dist),
-    test_statistic = stat, p_value = p, n = length(x)
+    test_statistic = astar, p_value = pr$p, n = n,
+    extra = list(a_squared = a2, p_bounded = pr$bounded)
   )
 }
 
@@ -916,6 +1233,9 @@ bartlett_test <- function(...) {
 #'   size n, and \code{extra} list carrying \code{n_runs} and
 #'   \code{expected_runs}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' runs_test(V)
 runs_test <- function(x, cutoff = NULL) {
   x <- .stat_validate(x)
   n <- length(x)
@@ -948,6 +1268,9 @@ runs_test <- function(x, cutoff = NULL) {
 #' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
 #'   with the Shapiro-Wilk W statistic, p-value, and sample size n.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' shapiro_wilk(V)
 shapiro_wilk <- function(x) {
   x <- .stat_validate(x)
   sw <- stats::shapiro.test(x)
@@ -1031,35 +1354,67 @@ jarque_bera <- function(x) {
   )
 }
 
-#' Lilliefors test for normality
+#' Lilliefors goodness-of-fit test
 #'
-#' Uses \pkg{nortest::lillie.test} when available; otherwise falls back
-#' to a plain KS test with estimated parameters (p-value approximate).
+#' Kolmogorov-Smirnov statistic referred to Lilliefors's null distribution
+#' rather than Kolmogorov's. When the parameters are estimated from the
+#' same sample the ordinary K-S critical values are badly conservative,
+#' which is what Lilliefors (1967) established; the correct points come
+#' from separate simulations, tabulated for the normal case and for the
+#' exponential case.
 #'
 #' @param x Numeric vector.
+#' @param dist Either \code{"norm"} (default, mean and variance unknown)
+#'   or \code{"expon"} (mean unknown).
 #' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
-#'   with the Lilliefors D statistic, p-value (approximate when
-#'   \pkg{nortest} is missing), and sample size n.
+#'   with the Lilliefors D statistic, p-value, and sample size n.
+#'   \code{extra$p_bounded} is \code{"upper"} or \code{"lower"} when D
+#'   falls outside the tabulated range, in which case the p-value is the
+#'   nearest tabulated bound (0.10 or 0.001) rather than an exact value.
+#' @references
+#' Lilliefors, H. W. (1967). On the Kolmogorov-Smirnov test for normality
+#' with mean and variance unknown. \emph{Journal of the American
+#' Statistical Association}, 62(318), 399-402.
+#'
+#' Lilliefors, H. W. (1969). On the Kolmogorov-Smirnov test for the
+#' exponential distribution with mean unknown. \emph{Journal of the
+#' American Statistical Association}, 64(325), 387-389.
+#'
+#' Gibbons, J. D. & Chakraborti, S. (2010). \emph{Nonparametric Statistical
+#' Inference}, 5th edn. CRC Press. Sections 4.5-4.6, Tables O and T.
 #' @examples
 #' set.seed(1)
 #' res <- lilliefors_test(rnorm(80))
 #' res
+#' lilliefors_test(rexp(80), dist = "expon")$p_value
 #' @export
-lilliefors_test <- function(x) {
+lilliefors_test <- function(x, dist = c("norm", "expon")) {
   x <- .stat_validate(x)
-  if (requireNamespace("nortest", quietly = TRUE)) {
-    res <- nortest::lillie.test(x)
-    stat <- unname(res$statistic)
-    p <- res$p.value
+  dist <- match.arg(dist)
+  n <- length(x)
+  xs <- sort(x)
+  if (identical(dist, "norm")) {
+    s <- stats::sd(xs)
+    if (!is.finite(s) || s <= 0) {
+      stop("lilliefors_test: 'x' has zero variance; the normal fit is degenerate.")
+    }
+    f <- stats::pnorm((xs - mean(xs)) / s)
   } else {
-    kt <- suppressWarnings(stats::ks.test(x, "pnorm", mean(x), sd(x)))
-    stat <- unname(kt$statistic)
-    p <- kt$p.value
-    warning("nortest not available; Lilliefors p-value approximate (plain KS).")
+    mu <- mean(xs)
+    if (!is.finite(mu) || mu <= 0 || xs[1] < 0) {
+      stop("lilliefors_test: dist = \"expon\" needs non-negative 'x' with a positive mean.")
+    }
+    f <- stats::pexp(xs / mu)
   }
+  i <- seq_len(n)
+  # Both one-sided gaps: the EDF jumps at each order statistic, so the
+  # supremum is attained just before or just at an observation.
+  d <- max(pmax(i / n - f, f - (i - 1) / n))
+  pr <- .gof_p_from_crit(d, .gof_lillie_crit(n, dist), .GOF_LILLIE_ALPHA)
   .stat_result(
-    method = "Lilliefors test",
-    test_statistic = stat, p_value = p, n = length(x)
+    method = sprintf("Lilliefors test (%s)", dist),
+    test_statistic = d, p_value = pr$p, n = n,
+    extra = list(p_bounded = pr$bounded)
   )
 }
 
@@ -1077,7 +1432,23 @@ lilliefors_test <- function(x) {
 #'   with the z statistic, two-sided p-value, Wilson CI for the proportion,
 #'   the sample proportion as \code{estimate}, and sample size n.
 #' @export
+#' @examples
+#' # 7 successes out of 20 trials, against a null proportion of 0.5
+#' one_proportion_ztest(count = 7L, nobs = 20L)
 one_proportion_ztest <- function(count, nobs, value = 0.5, confidence = 0.95) {
+  # One sample means ONE count and ONE trial total. A vector count used
+  # to sail through and produce length-n statistics, which then broke
+  # printing; and count > nobs is not a proportion at all.
+  if (length(count) != 1L || length(nobs) != 1L) {
+    stop("`count` and `nobs` must each be a single number", call. = FALSE)
+  }
+  if (is.na(count) || is.na(nobs) || count < 0 || nobs < 0) {
+    stop("`count` and `nobs` must be non-negative", call. = FALSE)
+  }
+  if (count > nobs) {
+    stop(sprintf("`count` (%g) exceeds `nobs` (%g)", count, nobs),
+         call. = FALSE)
+  }
   p_hat <- if (nobs > 0) count / nobs else 0
   se <- if (nobs > 0) sqrt(value * (1 - value) / nobs) else 0
   z <- if (se > 0) (p_hat - value) / se else 0
@@ -1103,6 +1474,8 @@ one_proportion_ztest <- function(count, nobs, value = 0.5, confidence = 0.95) {
 #'   with the z statistic, two-sided p-value, Wald CI for the difference,
 #'   the proportion difference as \code{estimate}, and combined n.
 #' @export
+#' @examples
+#' two_proportion_ztest(40, 100, 25, 100)
 two_proportion_ztest <- function(count1, nobs1, count2, nobs2,
                                   confidence = 0.95) {
   p1 <- if (nobs1 > 0) count1 / nobs1 else 0
@@ -1315,6 +1688,9 @@ intraclass_correlation <- function(data, targets, raters, ratings,
 #' @param x Numeric vector.
 #' @return A list of \code{morie_test_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' normality_suite(V)
 normality_suite <- function(x) {
   x <- .stat_validate(x)
   out <- list()
@@ -1330,6 +1706,8 @@ normality_suite <- function(x) {
 #' @return A length-2 list of \code{morie_test_result} objects:
 #'   the Levene (Brown-Forsythe) test followed by Bartlett's test.
 #' @export
+#' @examples
+#' variance_equality_suite(rnorm(40), rnorm(40, sd = 2))
 variance_equality_suite <- function(...) {
   list(levene_test(..., center = "median"),
        bartlett_test(...))

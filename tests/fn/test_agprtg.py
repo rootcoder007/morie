@@ -1,6 +1,6 @@
 """Tests for agprtg.alphazero_priority_target."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agprtg import alphazero_priority_target
 

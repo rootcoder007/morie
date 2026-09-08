@@ -1,6 +1,6 @@
 """K-nearest neighbors weights"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ w_k = w_knn
 
 def cheatsheet() -> str:
     return "w_knn({}) -> K-nearest neighbors weights"
+
+
+# compact alias per ledger/NAMING.md
+wknn = w_knn

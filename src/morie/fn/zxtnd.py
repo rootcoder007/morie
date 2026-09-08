@@ -1,6 +1,6 @@
 """Spatial tensor decomposition"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ tens = tensor_decomp_sp
 
 def cheatsheet() -> str:
     return "tensor_decomp_sp({}) -> Spatial tensor decomposition"
+
+
+# compact alias per ledger/NAMING.md
+tensordecompsp = tensor_decomp_sp

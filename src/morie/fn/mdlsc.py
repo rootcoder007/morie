@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -46,3 +46,7 @@ mdlsc = mdl_score_fn
 
 def cheatsheet() -> str:
     return "mdl_score_fn({}) -> Minimum Description Length for AR model order selection."
+
+
+# compact alias per ledger/NAMING.md
+mdlscorefn = mdl_score_fn

@@ -1,6 +1,6 @@
 """Tests for grxgbg.geron_xgboost_gain."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grxgbg import geron_xgboost_gain
 

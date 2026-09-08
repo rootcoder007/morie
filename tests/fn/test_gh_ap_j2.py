@@ -1,6 +1,6 @@
 """Tests for gh_ap_j2.ghosal_crm_laplace."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_ap_j2 import ghosal_crm_laplace
 

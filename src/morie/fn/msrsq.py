@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MDS R-squared goodness of fit"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ mds_ = mds_rsq
 
 def cheatsheet() -> str:
     return "mds_rsq({}) -> MDS R-squared goodness of fit"
+
+
+# compact alias per ledger/NAMING.md
+mdsrsq = mds_rsq

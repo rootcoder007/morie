@@ -11,7 +11,7 @@ def em_expectation_step(theta, alpha, beta, votes) -> DescriptiveResult:
 
     .. epigraph:: It is not what happens to you, but how you react, that matters. -- Epictetus
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     theta = np.asarray(theta, dtype=float)
     alpha = np.asarray(alpha, dtype=float)

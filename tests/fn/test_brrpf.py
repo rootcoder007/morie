@@ -1,6 +1,6 @@
 """Tests for brrpf.brr_prior_posterior."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.brrpf import brr_prior_posterior
 

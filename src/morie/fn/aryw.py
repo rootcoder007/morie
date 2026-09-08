@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -31,3 +31,7 @@ aryw = ar_yule_walker_fn
 
 def cheatsheet() -> str:
     return "ar_yule_walker_fn({}) -> AR model estimation via Yule-Walker equations."
+
+
+# compact alias per ledger/NAMING.md
+aryulewalkerfn = ar_yule_walker_fn

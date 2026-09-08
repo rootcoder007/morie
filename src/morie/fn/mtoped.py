@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -43,3 +43,7 @@ mtoped = mto_pedestrian
 
 def cheatsheet() -> str:
     return "mto_pedestrian({}) -> Pedestrian collision analysis."
+
+
+# compact alias per ledger/NAMING.md
+mtopedestrian = mto_pedestrian

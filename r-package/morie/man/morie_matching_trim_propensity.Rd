@@ -10,12 +10,13 @@ morie_matching_trim_propensity(ps, lower = 0.01, upper = 0.99)
 \item{ps}{Numeric vector of propensity scores.}
 
 \item{lower, upper}{Numeric clip bounds (defaults 0.01, 0.99).}
+
 }
 \value{
 A numeric vector of the same length as \code{ps}.
 }
 \description{
-Clips propensity scores to \code{[lower, upper]}.  Mirrors Python
+Clips propensity scores to \code{\[lower, upper\]}.  Mirrors Python
 \code{morie.matching.trim_propensity_scores}.
 }
 \examples{

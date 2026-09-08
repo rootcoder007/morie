@@ -1,6 +1,6 @@
 """Robust semivariogram (Cressie-Hawkins)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -42,3 +42,7 @@ vari = vario_robust
 
 def cheatsheet() -> str:
     return "vario_robust({}) -> Robust semivariogram (Cressie-Hawkins)"
+
+
+# compact alias per ledger/NAMING.md
+variorobust = vario_robust

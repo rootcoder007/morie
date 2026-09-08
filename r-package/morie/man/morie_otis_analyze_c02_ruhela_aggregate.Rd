@@ -3,7 +3,7 @@
 \name{morie_otis_analyze_c02_ruhela_aggregate}
 \alias{morie_otis_analyze_c02_ruhela_aggregate}
 \alias{morie_otis_analyze_c02_mrm_aggregate}
-\title{c02 aggregate Ruhela: Female -> RC (institution GEE).}
+\title{c02 aggregate Ruhela: Female -> RC (institution GEE)}
 \usage{
 morie_otis_analyze_c02_ruhela_aggregate(data, out_dir = NULL)
 
@@ -18,10 +18,12 @@ morie_otis_analyze_c02_mrm_aggregate(data, out_dir = NULL)
 \code{morie_otis_analysis_result}.
 }
 \description{
-c02 aggregate Ruhela: Female -> RC (institution GEE).
+c02 aggregate Ruhela: Female -> RC (institution GEE)
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_c02 <- morie_synth_otis("c02", n = 120L, seed = 1L)
 morie_otis_analyze_c02_ruhela_aggregate(otis_c02)
+}
 }

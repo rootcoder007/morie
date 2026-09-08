@@ -25,7 +25,7 @@ def anisotropy_correction(coords, ratio, angle):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     coords = np.asarray(coords, dtype=np.float64)
     theta = np.radians(-angle)

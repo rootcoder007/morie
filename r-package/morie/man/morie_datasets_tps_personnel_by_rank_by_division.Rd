@@ -38,11 +38,11 @@ affects the hub_id -> FeatureServer URL lookup.}
 }
 \value{
 A data.frame / GeoJSON list / file path; see
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} for per-format semantics.
+\code{morie_datasets_tps_arcgis_hub_by_id()} for per-format semantics.
 }
 \description{
 Toronto PS ArcGIS Hub dataset wrapper. Thin dispatch to
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} with the canonical
+\code{morie_datasets_tps_arcgis_hub_by_id()} with the canonical
 hub item_id \code{e29b8d05c4754b3b8fc234324811a897}.
 }
 \details{
@@ -51,4 +51,9 @@ classification for Uniform & Civilian staff by division. This
 data includes the command level at the time of reporting.
 
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Personnel
+}
+\examples{
+\dontrun{
+morie_datasets_tps_personnel_by_rank_by_division()
+}
 }

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -42,3 +42,7 @@ mtodr = mto_driver_risk
 
 def cheatsheet() -> str:
     return "mto_driver_risk({}) -> Driver risk profile by age/gender."
+
+
+# compact alias per ledger/NAMING.md
+mtodriverrisk = mto_driver_risk

@@ -1,6 +1,6 @@
 """Tests for rnkbs.rank_based_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rnkbs import rank_based_test
 

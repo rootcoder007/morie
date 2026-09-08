@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -99,3 +99,7 @@ pidsim = pid_simulate
 
 def cheatsheet() -> str:
     return "pid_simulate({}) -> Cybernetic control system simulation."
+
+
+# compact alias per ledger/NAMING.md
+pidsimulate = pid_simulate

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import TestResult
 
@@ -20,7 +20,7 @@ def kendall_concordance(ratings, cdf=None) -> TestResult:
     -------
     TestResult
     """
-    from scipy.stats import chi2
+    from ._stats_core import chi2
 
     R = np.asarray(ratings, dtype=float)
     if R.ndim != 2:

@@ -1,47 +1,22 @@
-"""Numbered display equation (2.4) from MVSML chapter 2.."""
+"""Deprecated alias for :func:`morie.fn.snp_blup_gebv`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .snp_blup_gebv import snp_blup_gebv as _impl
 
 __all__ = ["mvsml_preprocessing_eq_2_4"]
 
 
-def mvsml_preprocessing_eq_2_4(b, XTR):
-    """
-    Numbered display equation (2.4) from MVSML chapter 2.
-
-    Formula: ! b\beta XTR1X XTR1M XTR1y =
-
-    Parameters
-    ----------
-    b : array-like
-        Input data.
-    XTR : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (2.4) [Multivariate Statistical Machine Learnin [Pages 35-70] [2026-04-16].pdf]
-    """
-    b = np.atleast_1d(np.asarray(b, dtype=float))
-    n = len(b)
-    result = float(np.mean(b))
-    se = float(np.std(b, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (2.4) from MVSML chapter 2.",
-        }
+def mvsml_preprocessing_eq_2_4(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.snp_blup_gebv` instead."""
+    warnings.warn(
+        "mvsml_preprocessing_eq_2_4() is the book-coordinate name for snp_blup_gebv(); "
+        "it will be removed. Use morie.fn.snp_blup_gebv() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "msm243: Numbered display equation (2.4) from MVSML chapter 2."
+    return _impl(*args, **kwargs)

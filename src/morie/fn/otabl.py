@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import pandas as pd
-from scipy import stats
+from . import _frame_core as pd
+from . import _stats_core as stats
 
 
 def otis_table1(
@@ -84,3 +84,7 @@ def otis_table1(
 
 def cheatsheet() -> str:
     return "otis_table1({}) -> Table 1 (baseline characteristics by group) for OTIS data."
+
+
+# compact alias per ledger/NAMING.md
+otistable1 = otis_table1

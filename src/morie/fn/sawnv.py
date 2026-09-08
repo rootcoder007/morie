@@ -5,7 +5,7 @@ Spatial weight normalization (variance)
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def sawnv(values=None, w=None, n=50):

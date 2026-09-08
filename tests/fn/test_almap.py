@@ -1,6 +1,6 @@
 """Tests for almap.alammar_mean_average_precision."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.almap import alammar_mean_average_precision
 

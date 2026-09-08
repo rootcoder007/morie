@@ -32,3 +32,6 @@ mirror the upstream schema described in
 \description{
 Inmate-participant religion
 }
+\examples{
+morie_datasets_corrections_uof_religion()
+}

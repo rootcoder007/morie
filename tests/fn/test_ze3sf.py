@@ -1,6 +1,6 @@
 """Tests for morie.fn.ze3sf -- Three-step FCA"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ze3sf import three_step_fca
 

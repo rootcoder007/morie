@@ -8,7 +8,7 @@ Yule-Walker estimator. Provides AR coefficients, variance, and PACF.
 Category: TimeSeries
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def arfit(y, p=1, demean=True):

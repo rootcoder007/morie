@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -43,3 +43,7 @@ mexht = mexican_hat
 
 def cheatsheet() -> str:
     return "mexican_hat({}) -> Mexican hat (Ricker) wavelet."
+
+
+# compact alias per ledger/NAMING.md
+mexicanhat = mexican_hat

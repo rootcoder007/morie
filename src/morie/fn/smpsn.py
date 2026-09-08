@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -23,7 +23,7 @@ def simpson_integrate(x, dx=1.0, **kwargs) -> DescriptiveResult:
     -------
     DescriptiveResult
     """
-    from scipy.integrate import simpson
+    from ._sci_core import simpson
 
     x = np.asarray(x, dtype=float)
     if len(x) < 3:

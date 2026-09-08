@@ -1,22 +1,34 @@
-"""Spatial autocorrelation (Moran I/Geary C unified)."""
+"""Spatial autocorrelation: Moran's I with Cliff-Ord moments."""
 
-import numpy as np
-from scipy import stats as _scistats
+from . import _array_core as np
+from . import _stats_core as _scistats
 
 from ._richresult import RichResult
 
-__all__ = ["spatial_autocorrelation"]
+__all__ = ["spatial_autocorrelation", "morani"]
 
 
 def spatial_autocorrelation(x, w):
     """
-    Spatial autocorrelation (Moran I/Geary C unified).
+    Spatial autocorrelation: Moran's I under the randomisation
+    (Cliff-Ord) moments. Geary's C is NOT computed here.
 
     Formula: I = n/S0 * sum_ij w_ij(x_i-xbar)(x_j-xbar) / sum(x_i-xbar)^2
     where S0 = sum_ij w_ij.
 
     Inference uses the normal approximation with the standard randomization
-    variance for Moran's I (Cliff & Ord 1981; Schabenberger & Gotway 2005, Ch 1).
+    variance for Moran's I. E[I] = -1/(n-1); the randomization variance
+    depends on the sample kurtosis b2 through the usual S0, S1, S2 sums.
+
+    References
+    ----------
+    Moran, P. A. P. (1950). Notes on continuous stochastic phenomena.
+    *Biometrika*, 37(1/2), 17-23.
+    Cliff, A. D. & Ord, J. K. (1981). *Spatial Processes: Models and
+    Applications*. Pion, p. 21 (moments of I).
+    Schabenberger, O. & Gotway, C. A. (2005). *Statistical Methods for
+    Spatial Data Analysis*. Chapman & Hall/CRC. Sec. 1.3.2.2,
+    eq. (1.14) p. 21, moments p. 22.
 
     Parameters
     ----------
@@ -107,3 +119,7 @@ def cheatsheet():
 # W = 5x5 path-graph contiguity: W[i,j]=1 iff |i-j|==1, else 0  (S0 = 8)
 # Expected:  I = (5/8) * ( sum z_i z_{i+1} + sum z_{i+1} z_i ) / sum z_i^2
 #          ~ 0.4
+
+
+#: Catalogue alias for :func:`spatial_autocorrelation`.
+morani = spatial_autocorrelation

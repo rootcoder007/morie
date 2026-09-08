@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import DescriptiveResult
 
@@ -70,3 +70,7 @@ bldal = bland_altman
 
 def cheatsheet() -> str:
     return "bland_altman({}) -> Bland-Altman agreement analysis."
+
+
+# compact alias per ledger/NAMING.md
+blandaltman = bland_altman

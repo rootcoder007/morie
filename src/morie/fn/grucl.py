@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -114,3 +114,7 @@ def gru_cell(
 
 def cheatsheet():
     return "grucl: GRU h = (1-z)*n + z*h_prev, n=tanh(Wn+r*Un)"
+
+
+# compact alias per ledger/NAMING.md
+grucell = gru_cell

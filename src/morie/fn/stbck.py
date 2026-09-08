@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -40,3 +40,7 @@ stbck = stability_check
 
 def cheatsheet() -> str:
     return "stability_check({}) -> Stability check for a discrete-time system."
+
+
+# compact alias per ledger/NAMING.md
+stabilitycheck = stability_check

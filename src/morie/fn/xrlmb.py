@@ -1,6 +1,6 @@
 """Robust LM test for error"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ lm_r = lm_robust_error
 
 def cheatsheet() -> str:
     return "lm_robust_error({}) -> Robust LM test for error"
+
+
+# compact alias per ledger/NAMING.md
+lmrobusterror = lm_robust_error

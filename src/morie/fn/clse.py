@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import RegressionResult
 
@@ -96,3 +96,7 @@ clse = clustered_se
 
 def cheatsheet() -> str:
     return "clustered_se({}) -> OLS with cluster-robust standard errors."
+
+
+# compact alias per ledger/NAMING.md
+clusteredse = clustered_se

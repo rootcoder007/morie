@@ -1,42 +1,34 @@
-r"""Gpt combined obj.."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 2.37: the combined fine-tuning objective."""
 
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_gpt_combined_obj"]
 
 
-def kamath_ch2_gpt_combined_obj(L_1, L_2, lam):
-    r"""
-    Gpt combined obj.
+def kamath_ch2_gpt_combined_obj(L_1, L_2, lam=0.5):
+    """L3 = L2(C) + lambda L1(U): the auxiliary LM objective keeps the
+    representation from collapsing onto the task.
 
-    Formula: L_3 = L_2(C) + \lambda \cdot L_1(U)
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 2, Eq 2.37, printed
+    p. 70.
 
-    Parameters
-    ----------
-    L_1 : array-like
-        Input data.
-    L_2 : array-like
-        Input data.
-    lam : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 2, Eq 2.37, p. 70
-    r"""
-    L_1 = np.atleast_1d(np.asarray(L_1, dtype=float))
-    n = len(L_1)
-    result = float(np.mean(L_1))
-    se = float(np.std(L_1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gpt combined obj."})
+    Examples
+    --------
+    >>> kamath_ch2_gpt_combined_obj(-2.0, -1.0, 0.5)["estimate"]
+    -2.0
+    """
+    l1 = float(L_1); l2 = float(L_2); l = float(lam)
+    if l < 0:
+        raise ValueError("lambda must be non-negative; a negative weight "
+                         "turns the auxiliary objective into a penalty "
+                         "on likelihood.")
+    return RichResult(payload={
+        "estimate": l2 + l * l1, "L1": l1, "L2": l2, "lambda": l, "n": 2,
+        "method": "Combined objective L2 + lambda L1 (Kamath Eq 2.37)"})
 
 
 def cheatsheet():
-    return "km037: Gpt combined obj."
+    return "km037: L2 + lambda L1"

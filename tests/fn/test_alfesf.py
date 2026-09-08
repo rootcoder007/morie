@@ -1,6 +1,6 @@
 """Tests for alfesf.esmfold_lm_only."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alfesf import esmfold_lm_only
 

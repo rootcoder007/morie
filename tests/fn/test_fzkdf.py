@@ -1,6 +1,6 @@
 """Tests for fzkdf.fauzi_kdfe_properties."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzkdf import fauzi_kdfe_properties
 

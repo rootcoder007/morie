@@ -1,6 +1,6 @@
 """Tests for morie.fn.ppblk."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ppblk import ppblk
 

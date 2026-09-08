@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 
@@ -40,3 +40,7 @@ siutyp = siu_by_type
 
 def cheatsheet() -> str:
     return "siu_by_type({}) -> SIU cases by incident type."
+
+
+# compact alias per ledger/NAMING.md
+siubytype = siu_by_type

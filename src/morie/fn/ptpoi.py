@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Homogeneous Poisson point process"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ pois = poisson_process
 
 def cheatsheet() -> str:
     return "poisson_process({}) -> Homogeneous Poisson point process"
+
+
+# compact alias per ledger/NAMING.md
+poissonprocess = poisson_process

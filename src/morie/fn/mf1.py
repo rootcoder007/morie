@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -72,3 +72,7 @@ mf1 = multiclass_f1
 
 def cheatsheet() -> str:
     return "multiclass_f1({}) -> Macro/micro/weighted F1."
+
+
+# compact alias per ledger/NAMING.md
+multiclassf1 = multiclass_f1

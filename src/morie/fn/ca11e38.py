@@ -1,56 +1,44 @@
-"""CentralTendency expression involving 'confidence' (auto-extracted; see reference for full context).."""
+"""Lower confidence bound ybar - z_CV se.
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import math as _math  # noqa: F401
+
+from . import _ca_crim
 from ._richresult import RichResult
 
 __all__ = ["ca_chapter_11_equation_38"]
 
 
-def ca_chapter_11_equation_38(x):
-    """
-    CentralTendency expression involving 'confidence' (auto-extracted; see reference for full context).
+def ca_chapter_11_equation_38(ys, ws, z_cv):
+    """Lower confidence bound ybar - z_CV se
 
-    Formula: ȳlower = ȳ − zCVseȳ
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: ybar_lower = ybar - z_CV se_ybar
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca11e38')`` for the full guide.
+        dict subclass; headline key 'lower' plus the full payload.
 
     References
     ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.11 eq.11.38
+    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
+    ch.11 eq.11.38
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    payload = dict((lambda m: _ca_crim.coef_ci(m['mean'], m['se'], z_cv))(_ca_crim.mean_effect_size(ys, ws)))
+    value = payload['lower']
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Weisburd et al. (2022) eq. (11.38)"
     return RichResult(
-        title="CentralTendency expression involving 'confidence' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency expression involving 'confidence' (auto-extracted; see reference for full context).",
-        },
+        title='Lower confidence bound ybar - z_CV se',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return (
-        "ca11e38: CentralTendency expression involving 'confidence' (auto-extracted; see reference for full context)."
-    )
+    return 'ca11e38: ybar_lower = ybar - z_CV se_ybar [Weisburd et al. 2022, eq. 11.38]'

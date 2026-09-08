@@ -1,7 +1,7 @@
 """Bootstrap likelihood-ratio test for nested models."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -75,3 +75,7 @@ def boot_lr_test(x, fit0, fit1, B, cdf=None):
 
 def cheatsheet():
     return "btlrt: Bootstrap likelihood-ratio test for nested models"
+
+
+# compact alias per ledger/NAMING.md
+bootlrtest = boot_lr_test

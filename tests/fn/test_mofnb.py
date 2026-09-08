@@ -1,6 +1,6 @@
 """Tests for morie.fn.mofnb — m-out-of-n bootstrap."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mofnb import mofnb

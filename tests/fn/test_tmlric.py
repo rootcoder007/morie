@@ -1,6 +1,6 @@
 """Tests for tmlric.tmle_rare_outcome."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlric import tmle_rare_outcome
 

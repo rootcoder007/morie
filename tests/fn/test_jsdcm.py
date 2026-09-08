@@ -1,6 +1,6 @@
 """Test joint_sparse_decompose (jsdcm)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.jsdcm import joint_sparse_decompose, jsdcm

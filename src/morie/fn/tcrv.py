@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -42,3 +42,7 @@ def torus_curvature(
 
 def cheatsheet() -> str:
     return "torus_curvature(R, r, u, v) -> Gaussian & mean curvature"
+
+
+# compact alias per ledger/NAMING.md
+toruscurvature = torus_curvature

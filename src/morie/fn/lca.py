@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -85,3 +85,7 @@ lca = latent_class
 
 def cheatsheet() -> str:
     return "latent_class({}) -> Latent class analysis (EM for binary indicators)."
+
+
+# compact alias per ledger/NAMING.md
+latentclass = latent_class

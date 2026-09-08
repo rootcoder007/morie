@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -70,3 +70,7 @@ evtag = event_align
 
 def cheatsheet() -> str:
     return "event_align({}) -> Event alignment via cross-correlation."
+
+
+# compact alias per ledger/NAMING.md
+eventalign = event_align

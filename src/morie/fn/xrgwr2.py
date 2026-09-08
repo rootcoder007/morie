@@ -1,6 +1,6 @@
 """GWR local R-squared"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ gwr_ = gwr_rsquared
 
 def cheatsheet() -> str:
     return "gwr_rsquared({}) -> GWR local R-squared"
+
+
+# compact alias per ledger/NAMING.md
+gwrrsquared = gwr_rsquared

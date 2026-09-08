@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -63,3 +63,7 @@ modwt = modwt_decompose
 
 def cheatsheet() -> str:
     return "modwt_decompose({}) -> MODWT (maximal overlap DWT, translation-invariant)."
+
+
+# compact alias per ledger/NAMING.md
+modwtdecompose = modwt_decompose

@@ -1,6 +1,6 @@
 """Tests for morie.fn.svag2 -- 2D amendment agenda"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svag2 import agenda_2d
 

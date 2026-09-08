@@ -1,6 +1,6 @@
 """Tests for morie.fn.cvmsv -- Cramer-von Mises test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cvmsv import cramer_von_mises

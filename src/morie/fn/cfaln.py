@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._cfa_engine import (
     cov_from_data,
@@ -76,3 +76,7 @@ def cfa_loadings(
 
 def cheatsheet() -> str:
     return "cfa_loadings({}) -> Standardized factor loadings from CFA."
+
+
+# compact alias per ledger/NAMING.md
+cfaloadings = cfa_loadings

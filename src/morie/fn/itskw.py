@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats as sp
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as sp
 
 
 def item_skew_kurt(data: pd.DataFrame | np.ndarray) -> pd.DataFrame:
@@ -48,3 +48,7 @@ def item_skew_kurt(data: pd.DataFrame | np.ndarray) -> pd.DataFrame:
 
 def cheatsheet() -> str:
     return "item_skew_kurt({}) -> Item skewness and kurtosis."
+
+
+# compact alias per ledger/NAMING.md
+itemskewkurt = item_skew_kurt

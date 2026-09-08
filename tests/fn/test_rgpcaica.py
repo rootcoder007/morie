@@ -1,8 +1,8 @@
 """Tests for rgpcaica.rangayyan_pca_vs_ica."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgpcaica import rangayyan_pca_vs_ica
+from morie.fn.bsaclass import rangayyan_pca_vs_ica
 
 
 def test_rgpcaica_basic():

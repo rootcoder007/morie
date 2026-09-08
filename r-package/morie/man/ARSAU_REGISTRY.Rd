@@ -2,7 +2,7 @@
 % Please edit documentation in R/arsau.R
 \name{ARSAU_REGISTRY}
 \alias{ARSAU_REGISTRY}
-\title{Return the ARSAU registry as a list of entries.}
+\title{Return the ARSAU registry as a list of entries}
 \usage{
 ARSAU_REGISTRY()
 }
@@ -13,4 +13,7 @@ Named list-of-lists.
 Each entry is itself a named list with \code{year_or_range},
 \code{kind}, \code{csv_filename}, \code{sidecar_filename}, expected
 row / column counts, \code{is_valid}, and bilingual descriptions.
+}
+\examples{
+ARSAU_REGISTRY()
 }

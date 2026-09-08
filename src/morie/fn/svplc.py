@@ -1,6 +1,6 @@
 """Plott radial symmetry condition check"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ plot = plott_condition
 
 def cheatsheet() -> str:
     return "plott_condition({}) -> Plott radial symmetry condition check"
+
+
+# compact alias per ledger/NAMING.md
+plottcondition = plott_condition

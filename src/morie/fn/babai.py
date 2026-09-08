@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -38,3 +38,7 @@ babai = babai_cvp
 
 def cheatsheet() -> str:
     return "babai_cvp({}) -> Babai's nearest plane algorithm for CVP."
+
+
+# compact alias per ledger/NAMING.md
+babaicvp = babai_cvp

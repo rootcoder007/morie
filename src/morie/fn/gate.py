@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import logging as _logging
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn.aipw import estimate_aipw
 
@@ -25,6 +25,11 @@ def estimate_gate(
     covariates: list[str],
     group_col: str,
     propensity_col: str | None = None,
+    trim: tuple[float, float] | None = (0.01, 0.99),
+    trim_type: str = "value",
+    ps_model: str = "mle",
+    ridge_lambda: float = 1.0,
+    outcome_fit: str = "separate",
 ) -> pd.DataFrame:
     r"""Estimate Group Average Treatment Effects (GATE) via AIPW within strata.
 
@@ -77,6 +82,11 @@ def estimate_gate(
                 outcome=outcome,
                 covariates=covariates,
                 outcome_model="linear",
+                trim=trim,
+                trim_type=trim_type,
+                ps_model=ps_model,
+                ridge_lambda=ridge_lambda,
+                outcome_fit=outcome_fit,
             )
             results.append(
                 {
@@ -109,3 +119,7 @@ gate = estimate_gate
 
 def cheatsheet() -> str:
     return "estimate_gate({}) -> Group Average Treatment Effect (GATE) via AIPW within strata"
+
+
+# compact alias per ledger/NAMING.md
+estimategate = estimate_gate

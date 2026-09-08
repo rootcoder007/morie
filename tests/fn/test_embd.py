@@ -1,6 +1,6 @@
 """Tests for morie.fn.embd — embedding similarity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.embd import embedding_similarity
 

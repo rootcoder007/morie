@@ -1,6 +1,6 @@
 """Tests for hrzt1.horowitz_treatment_effect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzt1 import horowitz_treatment_effect
 

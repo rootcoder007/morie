@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DiagnosticResult
 
@@ -50,3 +50,7 @@ ppv = ppv_npv
 
 def cheatsheet() -> str:
     return "ppv_npv({}) -> Positive and negative predictive values."
+
+
+# compact alias per ledger/NAMING.md
+ppvnpv = ppv_npv

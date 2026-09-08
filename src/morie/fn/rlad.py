@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.optimize import linprog
+from . import _array_core as np
+from ._sci_core import linprog
 
 from ._containers import DescriptiveResult
 
@@ -60,3 +60,7 @@ rlad = lad_regression
 
 def cheatsheet() -> str:
     return "lad_regression({}) -> Least absolute deviations regression."
+
+
+# compact alias per ledger/NAMING.md
+ladregression = lad_regression

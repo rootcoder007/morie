@@ -51,7 +51,7 @@ def attributable_fraction(
     ci_lo, ci_hi = None, None
     se = None
     if se_RR is not None and se_RR > 0:
-        from scipy.stats import norm
+        from ._stats_core import norm
 
         dpaf_drr = pe / (pe * (RR - 1) + 1) ** 2
         se = abs(dpaf_drr) * se_RR

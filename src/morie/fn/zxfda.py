@@ -1,6 +1,6 @@
 """Functional data analysis spatial"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ fda_ = fda_spatial
 
 def cheatsheet() -> str:
     return "fda_spatial({}) -> Functional data analysis spatial"
+
+
+# compact alias per ledger/NAMING.md
+fdaspatial = fda_spatial

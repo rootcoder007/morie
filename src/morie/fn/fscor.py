@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """F-beta score."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -51,3 +51,7 @@ fscor = f_score
 
 def cheatsheet() -> str:
     return "f_score({}) -> F-beta score."
+
+
+# compact alias per ledger/NAMING.md
+fscore = f_score

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 
 def prohorov_metric(
@@ -101,3 +101,7 @@ prohv = prohorov_metric
 
 def cheatsheet() -> str:
     return "prohorov_metric({x}, {y}) -> Prohorov metric between distributions."
+
+
+# compact alias per ledger/NAMING.md
+prohorovmetric = prohorov_metric

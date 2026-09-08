@@ -5,8 +5,8 @@ Interior point (barrier) method for constrained optimization.
 Solves constrained optimization via logarithmic barrier penalties.
 """
 
-import numpy as np
-from scipy.optimize import minimize
+from . import _array_core as np
+from ._sci_core import minimize
 
 __all__ = ["ipopt"]
 

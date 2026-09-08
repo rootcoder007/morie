@@ -1,6 +1,6 @@
 """Tests for acpra.acceptance_rate_diagnostic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.acpra import acceptance_rate_diagnostic
 

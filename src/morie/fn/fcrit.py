@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """F critical value."""
 
-from scipy.stats import f as _f
+from ._stats_core import f as _f
 
 
 def fcrit(df1: int, df2: int, alpha: float = 0.05) -> float:

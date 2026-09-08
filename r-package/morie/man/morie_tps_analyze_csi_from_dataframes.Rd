@@ -30,3 +30,7 @@ High-level orchestration: takes a named list \code{dfs} of TPS
 open-data data.frames (one per CSI category) and returns both the
 per-year and per-ward CSI as a single rich-result object.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_analyze_csi_from_dataframes(D)
+}

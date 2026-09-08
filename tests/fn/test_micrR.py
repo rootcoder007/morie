@@ -1,6 +1,6 @@
 """Tests for micrR.microsoft_sr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.micrR import microsoft_sr
 

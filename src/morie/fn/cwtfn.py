@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -38,3 +38,7 @@ cwtfn = cwt_compute_fn
 
 def cheatsheet() -> str:
     return "cwt_compute_fn({}) -> Continuous wavelet transform."
+
+
+# compact alias per ledger/NAMING.md
+cwtcomputefn = cwt_compute_fn

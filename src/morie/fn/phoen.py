@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import TimeSeriesResult
 
@@ -121,3 +121,7 @@ phoen = phoenix_break
 
 def cheatsheet() -> str:
     return "phoenix_break({}) -> Time series structural break detection + recovery."
+
+
+# compact alias per ledger/NAMING.md
+phoenixbreak = phoenix_break

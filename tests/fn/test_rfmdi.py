@@ -1,6 +1,6 @@
 """Tests for rfmdi.rf_mdi_importance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rfmdi import rf_mdi_importance
 

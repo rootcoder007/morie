@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -56,3 +56,7 @@ def cheatsheet():
 # >>> r = word_embedding([0, 2], E=E)
 # >>> np.allclose(r["tensor"], np.array([[1,0,0,0],[0,0,1,0]]))
 # True
+
+
+# compact alias per ledger/NAMING.md
+wordembedding = word_embedding

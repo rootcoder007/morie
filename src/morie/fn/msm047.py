@@ -1,55 +1,16 @@
-r"""Numbered display equation (6.2) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""eq. (6.2) p.172, re-exported from :mod:`morie.fn.msm043`.
 
-import numpy as np
+The stub generator stamped several extracted page
+fragments with this same function name, so the
+implementation lives once in msm043 and this module re-exports
+it.  Calling either path runs the same code.
+"""
 
-from ._richresult import RichResult
+from .msm043 import mvsml_bayesian_regression_eq_6_2
 
 __all__ = ["mvsml_bayesian_regression_eq_6_2"]
 
 
-def mvsml_bayesian_regression_eq_6_2(T, j, Np, Ip, obtained, by):
-    r"""
-    Numbered display equation (6.2) from MVSML chapter 6.
-
-    Formula: - T j \sigma2 \beta  Np 0, Ip\sigma2 obtained by assuming that \beta1, . . . , \betap , ignoring the prior \beta distribution of \sigma2 \beta and setting this at a very high value (1010). Note that this model is very similar to the Bayesian model obtained by adopting the prior
-
-    Parameters
-    ----------
-    T : array-like
-        Input data.
-    j : array-like
-        Input data.
-    Np : array-like
-        Input data.
-    Ip : array-like
-        Input data.
-    obtained : array-like
-        Input data.
-    by : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.2) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    T = np.atleast_1d(np.asarray(T, dtype=float))
-    n = len(T)
-    result = float(np.mean(T))
-    se = float(np.std(T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.2) from MVSML chapter 6.",
-        }
-    )
-
-
 def cheatsheet():
-    return "msm047: Numbered display equation (6.2) from MVSML chapter 6."
+    return "msm047: see msm043"

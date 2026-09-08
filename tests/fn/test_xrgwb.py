@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrgwb -- GWR bandwidth selection"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrgwb import gwr_bandwidth
 

@@ -1,6 +1,6 @@
 """Tests for fzber.fauzi_berry_esseen_quantile."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzber import fauzi_berry_esseen_quantile
 

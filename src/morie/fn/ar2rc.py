@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -50,3 +50,7 @@ ar2rc = ar_to_reflection
 
 def cheatsheet() -> str:
     return "ar_to_reflection({}) -> AR coefficients to reflection coefficients."
+
+
+# compact alias per ledger/NAMING.md
+artoreflection = ar_to_reflection

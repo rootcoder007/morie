@@ -1,6 +1,6 @@
 """Tests for eslnnt.esl_neural_net."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslnnt import esl_neural_net
 

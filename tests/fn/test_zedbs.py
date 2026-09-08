@@ -1,6 +1,6 @@
 """Tests for morie.fn.zedbs -- Spatial DBSCAN cluster detection"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zedbs import spatial_dbscan
 

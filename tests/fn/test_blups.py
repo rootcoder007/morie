@@ -1,6 +1,6 @@
 """Tests for blups.blup_random_slope."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.blups import blup_random_slope
 

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -78,3 +78,7 @@ def conv1d_forward(x, w, b=0.0, stride: int = 1, padding: int = 0):
 
 def cheatsheet():
     return "cnn1d: 1D cross-correlation y[i] = sum w[k]*x[i*s+k]+b"
+
+
+# compact alias per ledger/NAMING.md
+conv1dforward = conv1d_forward

@@ -1,6 +1,6 @@
 """Tests for morie.fn.ssfbk."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ssfbk import ssfbk
 

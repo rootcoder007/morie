@@ -1,6 +1,6 @@
 """DAST drug screening score."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -53,3 +53,7 @@ sudast = dast_score
 
 def cheatsheet() -> str:
     return "dast_score({}) -> DAST drug screening score."
+
+
+# compact alias per ledger/NAMING.md
+dastscore = dast_score

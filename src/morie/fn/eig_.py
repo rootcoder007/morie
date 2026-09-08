@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Eigenvalue/eigenvector analysis."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -52,3 +52,7 @@ eig_ = eigen_analysis
 
 def cheatsheet() -> str:
     return "eigen_analysis({}) -> Eigenvalue/eigenvector analysis."
+
+
+# compact alias per ledger/NAMING.md
+eigenanalysis = eigen_analysis

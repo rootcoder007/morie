@@ -26,6 +26,9 @@ NULL
 #'
 #' @return A length-1 character vector containing JSON text.
 #' @export
+#' @examplesIf requireNamespace("jsonlite", quietly = TRUE)
+#' res <- stat_bridge_registry_json()
+#' res
 stat_bridge_registry_json <- function() {
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     stop("jsonlite is required for registry-json output")
@@ -52,6 +55,8 @@ stat_bridge_registry_json <- function() {
 #'
 #' @return A length-1 character string.
 #' @export
+#' @examples
+#' stat_bridge_help()
 stat_bridge_help <- function() {
   reg <- .morie_stat_commands$registry
   cats <- list()
@@ -76,6 +81,17 @@ stat_bridge_help <- function() {
 
 
 # Bridge log class used to capture handler output.
+#' Bridge log class used to capture handler output
+#'
+#' A step of the stat_bridge implementation. Called by \code{stat_bridge_exec}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @return A list with \code{write}, \code{call}, \code{getvalue}.
+#' @export
+#' @examples
+#' res <- .bridge_log()
+#' res
 .bridge_log <- function() {
   parts <- character(0)
   list(
@@ -97,6 +113,9 @@ stat_bridge_help <- function() {
 #'   \code{"bonferroni 0.01 0.04 0.05"}.
 #' @return Captured handler output as a single string.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' stat_bridge_exec(V)
 stat_bridge_exec <- function(cmd_str) {
   parts <- strsplit(trimws(cmd_str), "\\s+")[[1]]
   if (length(parts) == 0L) {
@@ -132,6 +151,9 @@ stat_bridge_exec <- function(cmd_str) {
 #' @param name Command name or alias.
 #' @return Multi-line description string or an explanatory error string.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' stat_bridge_fn_info(V)
 stat_bridge_fn_info <- function(name) {
   cmd <- resolve_stat_command(name)
   if (is.null(cmd)) {
@@ -159,6 +181,9 @@ stat_bridge_fn_info <- function(name) {
 #' @param max_results Cap on the number of matches returned.
 #' @return Multi-line summary string.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' stat_bridge_fn_search(V)
 stat_bridge_fn_search <- function(query, max_results = 20L) {
   q <- tolower(as.character(query))
   reg <- .morie_stat_commands$registry
@@ -193,14 +218,40 @@ stat_bridge_fn_search <- function(query, max_results = 20L) {
 #' \code{tryCatch}, reporting which entries can be invoked safely.
 #' Intended to be called from CI smoke tests.
 #'
+#' @param execute When TRUE, actually CALL every registered
+#'   handler with no arguments -- a smoke test that reaches the
+#'   network for the data-fetching commands. The default checks
+#'   that each command carries a callable handler and runs none
+#'   of them.
 #' @return A data.frame with columns \code{name}, \code{ok}, \code{message}.
+#' @examples
+#' \dontshow{if (nzchar(Sys.getenv("MORIE_RUN_FULL_SMOKE"))) withAutoprint(\{ # examplesIf}
+#' \donttest{
+#' # Invokes EVERY registered command handler -- some fetch live data over the
+#' # network -- so this is a smoke test, not a quick example. Opt in with
+#' # MORIE_RUN_FULL_SMOKE=1.
+#' str(stat_bridge_verify(), max.level = 1)
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
-stat_bridge_verify <- function() {
+stat_bridge_verify <- function(execute = FALSE) {
   reg <- .morie_stat_commands$registry
   rows <- vector("list", length(reg))
   i <- 1L
   for (cmd in reg) {
-    res <- tryCatch({
+    res <- if (!isTRUE(execute)) {
+      # Structural check: the command is sound if it carries a callable
+      # handler. This does NOT run it. Running every handler is not a
+      # cheap verification once .morie_auto_register_stat_commands() has
+      # filled the registry -- that takes it past 4,700 entries, and
+      # some of those handlers fetch live data over the network.
+      h <- cmd$handler_repl
+      if (is.function(h)) {
+        list(ok = TRUE, msg = "")
+      } else {
+        list(ok = FALSE, msg = "handler_repl is not a function")
+      }
+    } else tryCatch({
       cmd$handler_repl()
       list(ok = TRUE, msg = "")
     }, error = function(e) {
@@ -225,7 +276,7 @@ stat_bridge_verify <- function() {
 
 #' Command-line dispatcher
 #'
-#' Mirrors \code{python -m morie.stat_bridge <mode> [...]} so the same
+#' Mirrors \code{python -m morie.stat_bridge <mode> \[...\]} so the same
 #' invocation pattern is available via \code{Rscript -e}.
 #'
 #' Recognised modes: \code{"registry-json"}, \code{"help"},
@@ -236,6 +287,8 @@ stat_bridge_verify <- function() {
 #' @return Invisibly returns the printed text; primarily called for
 #'   side effects (printing to stdout).
 #' @export
+#' @examples
+#' stat_bridge_main()
 stat_bridge_main <- function(args = NULL) {
   if (is.null(args)) {
     args <- commandArgs(trailingOnly = TRUE)
@@ -273,7 +326,7 @@ stat_bridge_main <- function(args = NULL) {
       }
     },
     "verify" = {
-      df <- stat_bridge_verify()
+      df <- stat_bridge_verify(execute = TRUE)
       paste(
         apply(df, 1L, function(r) {
           sprintf("  %s  %s%s",

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tps_io.R
 \name{morie_tps_available_formats}
 \alias{morie_tps_available_formats}
-\title{List of formats this build can actually load.}
+\title{List of formats this build can actually load}
 \usage{
 morie_tps_available_formats()
 }
@@ -13,4 +13,7 @@ Character vector of available format names, sorted.
 Always returns \code{csv}. \code{excel} requires \code{readxl}; spatial formats
 require \code{sf}. If a needed namespace isn't installed, that format
 is omitted from the returned vector.
+}
+\examples{
+morie_tps_available_formats()
 }

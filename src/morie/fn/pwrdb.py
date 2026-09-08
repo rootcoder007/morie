@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -43,3 +43,7 @@ pwrdb = power_to_db
 
 def cheatsheet() -> str:
     return "power_to_db({}) -> Power to decibels."
+
+
+# compact alias per ledger/NAMING.md
+powertodb = power_to_db

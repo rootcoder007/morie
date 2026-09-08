@@ -1,7 +1,7 @@
 """Theil-Sen robust trend estimator."""
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import ESRes
 
@@ -55,3 +55,7 @@ theil = theil_sen
 
 def cheatsheet() -> str:
     return "theil_sen({}) -> Theil-Sen robust trend estimator."
+
+
+# compact alias per ledger/NAMING.md
+theilsen = theil_sen

@@ -1,6 +1,6 @@
 """Test convolution_theorem_verify (cnvth)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.cnvth import cnvth, convolution_theorem_verify

@@ -35,8 +35,8 @@ from ctypes import (
 from pathlib import Path
 from typing import Any
 
-import numpy as np
-from numpy.typing import NDArray
+from morie.fn import _array_core as np
+from morie.fn._array_core import NDArray
 
 logger = logging.getLogger(__name__)
 
@@ -231,7 +231,7 @@ class GGMLTurboQuant:
     def _quantize_numpy(vector: NDArray[np.float32], bits: int, seed: int) -> Any:
         from morie.quant import turboquant_mse
 
-        return turboquant_mse(vector.astype(np.float64), bits=bits, rotation_seed=seed)
+        return turboquant_mse(np.asarray(vector), bits=bits, rotation_seed=seed)
 
     @staticmethod
     def _dequantize_numpy(block: Any) -> NDArray[np.float32]:

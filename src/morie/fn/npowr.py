@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -46,3 +46,7 @@ npowr = noise_power
 
 def cheatsheet() -> str:
     return "noise_power({}) -> Noise power estimation."
+
+
+# compact alias per ledger/NAMING.md
+noisepower = noise_power

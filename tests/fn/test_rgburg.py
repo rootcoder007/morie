@@ -1,8 +1,8 @@
 """Tests for rgburg.rangayyan_burg_method."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgburg import rangayyan_burg_method
+from morie.fn.bsaar import rangayyan_burg_method
 
 
 def test_rgburg_basic():

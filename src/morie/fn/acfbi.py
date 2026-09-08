@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -48,3 +48,7 @@ acfbi = acf_biased
 
 def cheatsheet() -> str:
     return "acf_biased({}) -> Biased autocorrelation function."
+
+
+# compact alias per ledger/NAMING.md
+acfbiased = acf_biased

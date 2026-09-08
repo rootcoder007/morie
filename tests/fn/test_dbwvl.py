@@ -1,6 +1,6 @@
 """Tests for dbwvl.py - Daubechies wavelet."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dbwvl import daubechies_wavelet, dbwvl
 

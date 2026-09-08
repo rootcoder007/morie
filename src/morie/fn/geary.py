@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Geary's C spatial autocorrelation statistic."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -85,3 +85,7 @@ geary_fn = gearys_c
 
 def cheatsheet() -> str:
     return "gearys_c({}) -> Geary's C spatial autocorrelation statistic."
+
+
+# compact alias per ledger/NAMING.md
+gearysc = gearys_c

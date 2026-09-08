@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -93,3 +93,7 @@ short = binary_heap
 
 def cheatsheet() -> str:
     return "binary_heap({}) -> Binary heap operations."
+
+
+# compact alias per ledger/NAMING.md
+binaryheap = binary_heap

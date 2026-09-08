@@ -1,7 +1,7 @@
 """SVEIR compartmental model (vaccination + exposed)."""
 
-import numpy as np
-from scipy.integrate import odeint
+from . import _array_core as np
+from ._sci_core import odeint
 
 from ._containers import SIRResult
 
@@ -106,3 +106,7 @@ sveir = sveir_model
 
 def cheatsheet() -> str:
     return "sveir_model({}) -> SVEIR model with vaccination and exposed class."
+
+
+# compact alias per ledger/NAMING.md
+sveirmodel = sveir_model

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -62,3 +62,7 @@ imrsz = image_resize
 
 def cheatsheet() -> str:
     return "image_resize({}) -> Bilinear interpolation image resize."
+
+
+# compact alias per ledger/NAMING.md
+imageresize = image_resize

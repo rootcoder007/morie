@@ -24,7 +24,7 @@
 #'   (two-way). \code{NULL} gives the i.i.d. (non-clustered) SE.
 #' @param n_folds Cross-fitting folds (default 5).
 #' @param seed Integer seed (default 123).
-#' @param eps Propensity clip bound in \code{[eps, 1-eps]} (default 0.02).
+#' @param eps Propensity clip bound in \code{\[eps, 1-eps\]} (default 0.02).
 #' @param ps Optional length-\code{nrow(data)} vector of externally supplied
 #'   propensity scores (e.g. from a mixed-effects / cluster-level model); when
 #'   given it replaces the cross-fitted propensity.
@@ -125,6 +125,10 @@ morie_dml_clustered <- function(data, treatment, outcome, covariates,
   out
 }
 
+#' Print method for \code{morie_dml_clustered} objects
+#'
+#' @param x A \code{morie_dml_clustered} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_dml_clustered <- function(x, ...) {
   cat(sprintf("Cluster-robust DML (AIPW)\n  ATE = %.4g  SE = %.4g [%s]\n",
@@ -138,6 +142,19 @@ print.morie_dml_clustered <- function(x, ...) {
 }
 
 # Ridge-logistic propensity (tiny ridge for separation), predicted + clipped.
+#' Ridge-logistic propensity (tiny ridge for separation), predicted +
+#' clipped
+#'
+#' A step of the dml_clustered implementation. Called by \code{morie_dml_clustered}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param Xtr See Usage.
+#' @param dtr See Usage.
+#' @param Xte A matrix; passed to \code{\%*\%}.
+#' @param eps Numeric; combined arithmetically in the body.
+#' @return The value of \code{pmin}.
+#' @export
 .dmlc_ps <- function(Xtr, dtr, Xte, eps) {
   fit <- tryCatch(
     stats::glm.fit(Xtr, dtr, family = stats::binomial()),
@@ -150,6 +167,20 @@ print.morie_dml_clustered <- function(x, ...) {
 }
 
 # Per-arm OLS outcome regression; robust to rank-deficiency and thin arms.
+#' Per-arm OLS outcome regression; robust to rank-deficiency and thin
+#' arms
+#'
+#' A step of the dml_clustered implementation. Called by \code{morie_dml_clustered}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param X A matrix; indexed by row and column.
+#' @param idx A vector; its length is taken.
+#' @param y A vector; indexed elementwise.
+#' @param te A vector; its length is taken.
+#' @param p Numeric; combined arithmetically in the body.
+#' @return A vector, from \code{as.numeric}.
+#' @export
 .dmlc_ols <- function(X, idx, y, te, p) {
   if (length(idx) < p + 2L) {
     return(rep(if (length(idx)) mean(y[idx]) else mean(y), length(te)))
@@ -164,12 +195,35 @@ print.morie_dml_clustered <- function(x, ...) {
 }
 
 # Liang-Zeger one-way cluster-robust SE of a mean, from the influence function.
+#' Liang-Zeger one-way cluster-robust SE of a mean, from the influence
+#' function
+#'
+#' A step of the dml_clustered implementation. Called by \code{.dmlc_multiway_se}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param infl Passed to \code{tapply}.
+#' @param cluster Passed to \code{tapply}.
+#' @param n Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
 .dmlc_cluster_se <- function(infl, cluster, n) {
   grp <- tapply(infl, cluster, sum)
   sqrt(max(sum(grp^2, na.rm = TRUE) / (n^2), 0))
 }
 
 # Cameron-Gelbach-Miller up to two-way.
+#' Cameron-Gelbach-Miller up to two-way
+#'
+#' A step of the dml_clustered implementation. Called by \code{morie_dml_clustered}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param infl Passed to \code{.dmlc_cluster_se}.
+#' @param clusters A vector; its length is taken and its elements indexed.
+#' @param n Passed to \code{.dmlc_cluster_se}.
+#' @return A numeric value.
+#' @export
 .dmlc_multiway_se <- function(infl, clusters, n) {
   if (length(clusters) == 1L) return(.dmlc_cluster_se(infl, clusters[[1]], n))
   a <- clusters[[1]]

@@ -1,6 +1,6 @@
 """Tests for hmmms.geron_min_max_scaling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmmms import geron_min_max_scaling
 

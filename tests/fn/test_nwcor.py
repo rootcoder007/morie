@@ -1,6 +1,6 @@
 """Tests for nwcor -- partial correlation network."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.nwcor import network_correlation

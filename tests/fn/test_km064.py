@@ -1,6 +1,6 @@
 """Tests for km064.kamath_ch4_loftq_objective."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km064 import kamath_ch4_loftq_objective
 

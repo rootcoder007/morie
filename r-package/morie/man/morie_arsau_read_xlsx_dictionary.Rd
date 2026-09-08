@@ -2,7 +2,7 @@
 % Please edit documentation in R/arsau_datasets.R
 \name{morie_arsau_read_xlsx_dictionary}
 \alias{morie_arsau_read_xlsx_dictionary}
-\title{Read an Ontario-Catalogue XLSX data-dictionary sidecar.}
+\title{Read an Ontario-Catalogue XLSX data-dictionary sidecar}
 \usage{
 morie_arsau_read_xlsx_dictionary(path, sheet = 1L)
 }
@@ -25,6 +25,11 @@ the CSV that holds the column-level data dictionary (variable name
 \pkg{readxl} and normalises the column names to
 \code{name / type / notes}.  Requires the optional \pkg{readxl}
 dependency.
+}
+}
+\examples{
+\dontrun{
+dict <- morie_arsau_read_xlsx_dictionary(tempdir())
 }
 }
 \references{

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Stigma composite score from survey responses."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -46,3 +46,7 @@ mhstg = stigma_index
 
 def cheatsheet() -> str:
     return "stigma_index({}) -> Stigma composite score from survey responses."
+
+
+# compact alias per ledger/NAMING.md
+stigmaindex = stigma_index

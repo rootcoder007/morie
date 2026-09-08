@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
-from scipy import optimize
+from . import _array_core as np
+from ._sci_core import optimize
 
 __all__ = ["nusnc"]
 

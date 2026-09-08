@@ -16,7 +16,7 @@ def simulate_perceptions(true_positions, n_resp: int = 50, sigma: float = 0.5, s
 
     .. epigraph:: I think, therefore I am. -- Rene Descartes
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     rng = np.random.default_rng(seed)
     true = np.asarray(true_positions, dtype=float)

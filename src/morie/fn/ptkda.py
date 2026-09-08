@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Adaptive kernel density"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ kde_ = kde_adaptive
 
 def cheatsheet() -> str:
     return "kde_adaptive({}) -> Adaptive kernel density"
+
+
+# compact alias per ledger/NAMING.md
+kdeadaptive = kde_adaptive

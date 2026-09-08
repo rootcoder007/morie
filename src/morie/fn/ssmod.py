@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -42,7 +42,7 @@ def state_space_model(x):
         raise ValueError(f"Need at least 4 observations, got {n}.")
 
     try:
-        from statsmodels.tsa.statespace.structural import UnobservedComponents
+        from ._ts_core import UnobservedComponents
 
         mod = UnobservedComponents(y, level="local level")
         fit = mod.fit(disp=False)

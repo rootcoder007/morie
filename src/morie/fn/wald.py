@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wald single-coefficient test with R-style verbose result."""
 
-from scipy.stats import chi2, norm
+from ._stats_core import chi2, norm
 
 
 def wald(estimate: float, std_error: float, null_value: float = 0.0, test: str = "z"):

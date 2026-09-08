@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dynamic linear model (local level + local trend)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -78,3 +78,7 @@ dynic = dlm_fit
 
 def cheatsheet() -> str:
     return "dlm_fit({}) -> Dynamic linear model (local level/trend)."
+
+
+# compact alias per ledger/NAMING.md
+dlmfit = dlm_fit

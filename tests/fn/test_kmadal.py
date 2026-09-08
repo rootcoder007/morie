@@ -1,6 +1,6 @@
 """Tests for kmadal.kamath_adalora_rank_allocation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmadal import kamath_adalora_rank_allocation
 

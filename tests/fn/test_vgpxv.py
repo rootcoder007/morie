@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgpxv -- Pseudo-cross-variogram"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgpxv import pseudo_cross_vario
 

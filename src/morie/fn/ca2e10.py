@@ -1,54 +1,44 @@
-"""Regression expression involving 'coefficients' (auto-extracted; see reference for full context).."""
+"""Confidence interval for an OLS coefficient.
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import math as _math  # noqa: F401
+
+from . import _ca_crim
 from ._richresult import RichResult
 
 __all__ = ["ca_chapter_2_equation_10"]
 
 
-def ca_chapter_2_equation_10(x):
-    """
-    Regression expression involving 'coefficients' (auto-extracted; see reference for full context).
+def ca_chapter_2_equation_10(b, se, t_cv):
+    """Confidence interval for an OLS coefficient
 
-    Formula: Upper 95% b = b + se t CV()
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: b -/+ se * t_CV
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca2e10')`` for the full guide.
+        dict subclass; headline key 'lower' plus the full payload.
 
     References
     ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.2 eq.2.10
+    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
+    ch.2 eq.2.10
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    payload = dict(_ca_crim.coef_ci(b, se, t_cv))
+    value = payload['lower']
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Weisburd et al. (2022) eq. (2.10)"
     return RichResult(
-        title="Regression expression involving 'coefficients' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression expression involving 'coefficients' (auto-extracted; see reference for full context).",
-        },
+        title='Confidence interval for an OLS coefficient',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "ca2e10: Regression expression involving 'coefficients' (auto-extracted; see reference for full context)."
+    return 'ca2e10: b -/+ se * t_CV [Weisburd et al. 2022, eq. 2.10]'

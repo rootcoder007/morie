@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -98,3 +98,7 @@ mmddis = mmd_distance
 
 def cheatsheet() -> str:
     return "mmd_distance({}) -> Domain adaptation via MMD."
+
+
+# compact alias per ledger/NAMING.md
+mmddistance = mmd_distance

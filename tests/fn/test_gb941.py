@@ -1,6 +1,6 @@
 """Tests for gb941.gibbons_siegel_tukey."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb941 import gibbons_siegel_tukey
 

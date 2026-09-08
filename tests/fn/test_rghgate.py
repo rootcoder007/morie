@@ -1,8 +1,8 @@
 """Tests for rghgate.rangayyan_hh_gating."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rghgate import rangayyan_hh_gating
+from morie.fn.bsaphys import rangayyan_hh_gating
 
 
 def test_rghgate_basic():

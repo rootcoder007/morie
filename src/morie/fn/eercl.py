@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -66,3 +66,7 @@ eercl = equal_error_rate
 
 def cheatsheet() -> str:
     return "equal_error_rate({}) -> Equal error rate (EER) computation."
+
+
+# compact alias per ledger/NAMING.md
+equalerrorrate = equal_error_rate

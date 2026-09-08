@@ -15,3 +15,7 @@ Integer scalar.
 \description{
 Vocabulary size
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tokenizer_vocab_size(D)
+}

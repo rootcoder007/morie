@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -21,7 +21,8 @@ def effective_sample_size(
 
     References
     ----------
-    Geyer, C. J. (1992). *Statistical Science*, 7(4), 473--483.
+    Geyer, C. J. (1992). Practical Markov chain Monte Carlo.
+    *Statistical Science*, 7(4), 473--483.
     """
     x = np.asarray(samples, dtype=float).ravel()
     n = len(x)
@@ -35,8 +36,12 @@ def effective_sample_size(
     acf = np.correlate(centered, centered, mode="full")[n - 1 :]
     acf = acf / acf[0] if acf[0] > 0 else acf
 
-    tau = 1.0
-    for t in range(1, max_lag // 2):
+    # Geyer's initial positive sequence: tau = -1 + 2*sum_{t>=0} Gamma_t
+    # with Gamma_t = rho_{2t} + rho_{2t+1}. Starting the loop at t = 1
+    # silently dropped the 2*rho_1 inside Gamma_0 and overstated the
+    # ESS; the R arm and sibling ess.py include it.
+    tau = -1.0
+    for t in range(0, max_lag // 2):
         gamma_2t = acf[2 * t] if 2 * t < len(acf) else 0.0
         gamma_2t1 = acf[2 * t + 1] if 2 * t + 1 < len(acf) else 0.0
         pair_sum = gamma_2t + gamma_2t1

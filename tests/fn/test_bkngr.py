@@ -1,22 +1,13 @@
 """Tests for bkngr.burkov_ngram_mle."""
 
-import numpy as np
-
 from morie.fn.bkngr import burkov_ngram_mle
 
 
 def test_bkngr_basic():
-    """Test basic functionality."""
-    counts_ngram = np.random.default_rng(42).normal(0, 1, 100)
-    counts_prefix = np.random.default_rng(42).normal(0, 1, 100)
-    result = burkov_ngram_mle(counts_ngram, counts_prefix)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert burkov_ngram_mle(3, 4)["estimate"] == 0.75
 
 
 def test_bkngr_edge():
-    """Test edge cases."""
-    counts_ngram = np.random.default_rng(42).normal(0, 1, 100)
-    counts_prefix = np.random.default_rng(42).normal(0, 1, 100)
-    result = burkov_ngram_mle(counts_ngram, counts_prefix)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="undefined"):
+        burkov_ngram_mle(0, 0)

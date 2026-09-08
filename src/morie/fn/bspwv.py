@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -55,3 +55,7 @@ bspwv = bspline_wavelet
 
 def cheatsheet() -> str:
     return "_bspline({}) -> B-spline wavelet construction."
+
+
+# compact alias per ledger/NAMING.md
+bsplinewavelet = bspline_wavelet

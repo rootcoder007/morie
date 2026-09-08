@@ -1,6 +1,6 @@
 """Tests for morie.fn.infml — infer measurement level (NOIR)."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.dataset import MeasurementLevel
 from morie.fn.infml import infer_measurement_level, infml

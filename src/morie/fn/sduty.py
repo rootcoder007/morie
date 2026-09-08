@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -41,3 +41,7 @@ sduty = duty_cycle
 
 def cheatsheet() -> str:
     return "duty_cycle({}) -> Duty cycle."
+
+
+# compact alias per ledger/NAMING.md
+dutycycle = duty_cycle

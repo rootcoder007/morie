@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -46,3 +46,7 @@ xpsd = cross_psd
 
 def cheatsheet() -> str:
     return "cross_psd({}) -> Cross power spectral density."
+
+
+# compact alias per ledger/NAMING.md
+crosspsd = cross_psd

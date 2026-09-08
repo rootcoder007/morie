@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -39,3 +39,7 @@ wnhmm = hamming_window
 
 def cheatsheet() -> str:
     return "hamming_window({}) -> Hamming window."
+
+
+# compact alias per ledger/NAMING.md
+hammingwindow = hamming_window

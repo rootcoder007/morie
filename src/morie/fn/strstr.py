@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -83,3 +83,7 @@ strstr = stress_strain
 
 def cheatsheet() -> str:
     return "stress_strain({}) -> Material stress-strain curve analysis."
+
+
+# compact alias per ledger/NAMING.md
+stressstrain = stress_strain

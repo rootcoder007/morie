@@ -1,6 +1,6 @@
 """Spatial DBSCAN cluster detection"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -28,3 +28,7 @@ spat = spatial_dbscan
 
 def cheatsheet() -> str:
     return "spatial_dbscan({}) -> Spatial DBSCAN cluster detection"
+
+
+# compact alias per ledger/NAMING.md
+spatialdbscan = spatial_dbscan

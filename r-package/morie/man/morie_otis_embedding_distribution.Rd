@@ -17,3 +17,7 @@ Fits lognormal, Pareto, and exponential distributions to
 \code{TotalAggregatedDays_Segregation} by AIC and reports which
 family wins.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_embedding_distribution(V)
+}

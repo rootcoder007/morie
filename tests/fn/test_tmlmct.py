@@ -1,6 +1,6 @@
 """Tests for tmlmct.tmle_multivariate_treatment."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlmct import tmle_multivariate_treatment
 

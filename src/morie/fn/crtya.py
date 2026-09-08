@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -48,3 +48,7 @@ crtya = court_youth
 
 def cheatsheet() -> str:
     return "court_youth({}) -> Youth court special metrics (YCJA compliance)."
+
+
+# compact alias per ledger/NAMING.md
+courtyouth = court_youth

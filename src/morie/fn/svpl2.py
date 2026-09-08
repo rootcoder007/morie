@@ -1,6 +1,6 @@
 """2D spatial polarization"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ pola = polarization_2d
 
 def cheatsheet() -> str:
     return "polarization_2d({}) -> 2D spatial polarization"
+
+
+# compact alias per ledger/NAMING.md
+polarization2d = polarization_2d

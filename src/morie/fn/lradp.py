@@ -18,7 +18,7 @@ In ICLR.
 
 __all__ = ["lradp"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def lradp(

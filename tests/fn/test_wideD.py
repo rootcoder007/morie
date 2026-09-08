@@ -1,6 +1,6 @@
 """Tests for wideD.wide_and_deep."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wideD import wide_and_deep
 

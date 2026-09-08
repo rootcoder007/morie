@@ -1,6 +1,6 @@
 """Spatial Durbin model."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def spatial_durbin(y, X, W):
 
 def cheatsheet():
     return "sdmmod: Spatial Durbin model"
+
+
+# compact alias per ledger/NAMING.md
+spatialdurbin = spatial_durbin

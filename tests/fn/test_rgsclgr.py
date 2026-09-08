@@ -1,8 +1,8 @@
 """Tests for rgsclgr.rangayyan_scalogram."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgsclgr import rangayyan_scalogram
+from morie.fn.bsatf import rangayyan_scalogram
 
 
 def test_rgsclgr_basic():

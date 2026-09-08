@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Aggregate PRE"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ apre = apre_stat
 
 def cheatsheet() -> str:
     return "apre_stat({}) -> Aggregate PRE"
+
+
+# compact alias per ledger/NAMING.md
+aprestat = apre_stat

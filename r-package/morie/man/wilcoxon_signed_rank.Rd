@@ -21,3 +21,7 @@ from the normal approximation, and n.
 \description{
 Wilcoxon signed-rank test (one-sample or paired)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+wilcoxon_signed_rank(V)
+}

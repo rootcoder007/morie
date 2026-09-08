@@ -4,8 +4,8 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
-from scipy.stats import iqr as _scipy_iqr
+from . import _array_core as np
+from ._stats_core import iqr as _scipy_iqr
 
 
 def iqrng(x: Union[Sequence[float], np.ndarray], method: str = "linear"):

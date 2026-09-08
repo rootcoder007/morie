@@ -1,6 +1,6 @@
 """Tests for morie.fn.gmpst -- geometric mean probability."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gmpst import gmp_statistic, gmpst
 

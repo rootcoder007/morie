@@ -1,6 +1,6 @@
 """Tests for agstkb.alphazero_stockfish_baseline."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agstkb import alphazero_stockfish_baseline
 

@@ -39,7 +39,7 @@
 #'   `records_count`.
 #' @references Opendatasoft Explore API v2.1,
 #'   \url{https://opendata.vancouver.ca/api-console/explore/v2.1/}.
-#' @examples
+#' @examplesIf nzchar(system.file("extdata", "vancouver_opendata_catalog.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
 #' cat_df <- morie_datasets_vancouver_opendata_layers(offline = TRUE)
 #' nrow(cat_df)  # 190
 #' head(cat_df$title)
@@ -92,7 +92,8 @@ morie_datasets_vancouver_opendata_layers <- function(offline = TRUE,
 #'   `morie_datasets_vancouver_graffiti()` \tab `graffiti` \tab 100 (of 7683) \cr
 #'   `morie_datasets_vancouver_noise_control_areas()` \tab `noise-control-areas` \tab 3 \cr
 #'   `morie_datasets_vancouver_homeless_shelters()` \tab `homeless-shelter-locations` \tab 17 \cr
-#'   `morie_datasets_vancouver_property_use_inspection_districts()` \tab `property-use-inspection-districts` \tab 23 \cr
+#'   `morie_datasets_vancouver_property_use_inspection_districts()` \tab
+#' `property-use-inspection-districts` \tab 23 \cr
 #'   `morie_datasets_vancouver_fire_halls()` \tab `fire-halls` \tab 20 \cr
 #' }
 #'
@@ -100,8 +101,24 @@ morie_datasets_vancouver_opendata_layers <- function(offline = TRUE,
 #' `max_features` interface as the other morie dataset wrappers.
 #'
 #' @name vancouver_crime_adjacent
+#' @examples
+#' \dontrun{
+#' morie_datasets_vancouver_graffiti()
+#' }
 NULL
 
+#' .morie_vancouver_fixture
+#'
+#' A step of the datasets_vancouver implementation. Called by
+#' \code{morie_datasets_vancouver_community_centres},
+#' \code{morie_datasets_vancouver_community_food_markets},
+#' \code{morie_datasets_vancouver_disability_parking} and 6 others in the module.
+#' See the file header for the source the module follows.
+#' for the source it follows.
+#'
+#' @param fname Passed to \code{system.file}.
+#' @return The value of \code{utils::read.csv}.
+#' @export
 .morie_vancouver_fixture <- function(fname) {
   path <- system.file("extdata", fname, package = "morie")
   if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {

@@ -3,7 +3,7 @@
 \name{morie_otis_analyze_c11_ruhela_aggregate}
 \alias{morie_otis_analyze_c11_ruhela_aggregate}
 \alias{morie_otis_analyze_c11_mrm_aggregate}
-\title{c11 aggregate Ruhela: long-duration bin (>=16 days) -> RC.}
+\title{c11 aggregate Ruhela: long-duration bin (>=16 days) -> RC}
 \usage{
 morie_otis_analyze_c11_ruhela_aggregate(data, out_dir = NULL)
 
@@ -18,10 +18,12 @@ morie_otis_analyze_c11_mrm_aggregate(data, out_dir = NULL)
 \code{morie_otis_analysis_result}.
 }
 \description{
-c11 aggregate Ruhela: long-duration bin (>=16 days) -> RC.
+c11 aggregate Ruhela: long-duration bin (>=16 days) -> RC
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_c11 <- morie_synth_otis("c11", n = 120L, seed = 1L)
 morie_otis_analyze_c11_ruhela_aggregate(otis_c11)
+}
 }

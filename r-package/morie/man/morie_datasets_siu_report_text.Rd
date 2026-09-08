@@ -2,7 +2,7 @@
 % Please edit documentation in R/datasets.R
 \name{morie_datasets_siu_report_text}
 \alias{morie_datasets_siu_report_text}
-\title{Download an SIU director's-report PDF and return its plain text.}
+\title{Download an SIU director's-report PDF and return its plain text}
 \usage{
 morie_datasets_siu_report_text(url = NULL, offline = FALSE)
 }
@@ -16,9 +16,13 @@ morie_datasets_siu_report_text(url = NULL, offline = FALSE)
 Character scalar (the plain text).
 }
 \description{
-Download an SIU director's-report PDF and return its plain text.
+Download an SIU director's-report PDF and return its plain text
 }
 \examples{
-text <- morie_datasets_siu_report_text(offline = TRUE)
-substr(text, 1, 80)
+\dontshow{if (requireNamespace("pdftools", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+if (requireNamespace("pdftools", quietly = TRUE)) {
+  text <- morie_datasets_siu_report_text(offline = TRUE)
+  substr(text, 1, 80)
+}
+\dontshow{\}) # examplesIf}
 }

@@ -1,6 +1,6 @@
 """Tests for sa_opt.simulated_annealing."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sa_opt import simulated_annealing
 

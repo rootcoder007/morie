@@ -1,6 +1,6 @@
 """Delaunay triangulation mesh"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ dela = delaunay_mesh
 
 def cheatsheet() -> str:
     return "delaunay_mesh({}) -> Delaunay triangulation mesh"
+
+
+# compact alias per ledger/NAMING.md
+delaunaymesh = delaunay_mesh

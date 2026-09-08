@@ -1,6 +1,6 @@
 """Test noise_power (npowr)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.npowr import noise_power, npowr

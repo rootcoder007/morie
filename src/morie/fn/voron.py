@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.spatial import Voronoi
+from . import _array_core as np
+from ._sci_core import Voronoi
 
 from ._containers import DescriptiveResult
 
@@ -87,3 +87,7 @@ voron = voronoi_areas
 
 def cheatsheet() -> str:
     return "voronoi_areas({}) -> Voronoi tessellation areas."
+
+
+# compact alias per ledger/NAMING.md
+voronoiareas = voronoi_areas

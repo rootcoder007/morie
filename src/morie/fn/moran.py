@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Moran's I global spatial autocorrelation statistic."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -86,3 +86,7 @@ moran_fn = morans_i
 
 def cheatsheet() -> str:
     return "morans_i({}) -> Moran's I global spatial autocorrelation statistic."
+
+
+# compact alias per ledger/NAMING.md
+moransi = morans_i

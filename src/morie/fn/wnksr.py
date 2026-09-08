@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -38,3 +38,7 @@ wnksr = kaiser_window
 
 def cheatsheet() -> str:
     return "kaiser_window({}) -> Kaiser window."
+
+
+# compact alias per ledger/NAMING.md
+kaiserwindow = kaiser_window

@@ -20,6 +20,7 @@ morie_matching_quality(
 \item{covariates}{Character vector of covariates.}
 
 \item{weights}{Optional column of matching weights in \code{matched_data}.}
+
 }
 \value{
 A list with \code{balance_before}, \code{balance_after},
@@ -32,6 +33,7 @@ Compares balance before and after matching and reports percent bias
 reduction, count of balanced covariates, and overlap statistics.
 }
 \examples{
+\donttest{
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -41,4 +43,5 @@ df <- data.frame(
   treat3 = sample(0:2, 150, TRUE))
 res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 morie_matching_quality(df, res$matched_data, "d", c("x1", "x2"))
+}
 }

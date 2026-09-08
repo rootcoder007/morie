@@ -1,6 +1,6 @@
 """Tests for rdkkin.kink_rdd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rdkkin import kink_rdd
 

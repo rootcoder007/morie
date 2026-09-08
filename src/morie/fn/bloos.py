@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def psis_loo(
@@ -19,7 +19,9 @@ def psis_loo(
 
     References
     ----------
-    Vehtari, A., et al. (2017). *Statistics and Computing*, 27(5), 1413--1432.
+    Vehtari, A., Gelman, A., & Gabry, J. (2017). Practical Bayesian model
+        evaluation using leave-one-out cross-validation and WAIC.
+        *Statistics and Computing*, 27(5), 1413-1432.
     """
     ll = np.asarray(log_lik_matrix, dtype=float)
     if ll.ndim == 1:
@@ -80,3 +82,7 @@ bloos = psis_loo
 
 def cheatsheet() -> str:
     return "psis_loo({}) -> Bayesian LOO-CV with Pareto-smoothed importance sampling."
+
+
+# compact alias per ledger/NAMING.md
+psisloo = psis_loo

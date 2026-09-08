@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -56,3 +56,7 @@ def cheatsheet():
 # >>> r = top_k_decoding([1.0, 2.0, 3.0, 4.0, 5.0], k=2)
 # >>> int((r["tensor"] > 0).sum())
 # 2
+
+
+# compact alias per ledger/NAMING.md
+topkdecoding = top_k_decoding

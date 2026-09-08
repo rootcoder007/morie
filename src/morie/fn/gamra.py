@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
-from scipy.optimize import minimize
+from . import _array_core as np
+from . import _stats_core as stats
+from ._sci_core import minimize
 
 from ._containers import SurvivalResult
 
@@ -113,3 +113,7 @@ gamra = aft_model
 
 def cheatsheet() -> str:
     return "aft_model({}) -> Accelerated failure time (AFT) model."
+
+
+# compact alias per ledger/NAMING.md
+aftmodel = aft_model

@@ -178,7 +178,7 @@ morie_dsp_median_frequency <- function(psd, freqs) {
 #' (`pct = 0.95`) is a classical EEG depth-of-anaesthesia marker.
 #'
 #' @inheritParams morie_dsp_spectral_moment
-#' @param pct Cumulative fraction in (0, 1]. Default 0.95.
+#' @param pct Cumulative fraction in (0, 1\]. Default 0.95.
 #' @return Scalar (Hz).
 #' @references Rangayyan & Krishnan (2015), Ch. 6, sec. 6.6.
 #' @examples
@@ -226,7 +226,7 @@ morie_dsp_spectral_ratio <- function(psd, freqs, band1, band2) {
 #' concentration.
 #'
 #' @param psd PSD vector.
-#' @return Scalar in `[0, 1]`.
+#' @return Scalar in `\[0, 1\]`.
 #' @references Rangayyan & Krishnan (2015), Ch. 6, sec. 6.7.
 #' @examples
 #' uni <- rep(1, 64)
@@ -246,7 +246,7 @@ morie_dsp_spectral_flatness <- function(psd) {
 #' Shannon entropy in bits.
 #'
 #' @param psd PSD vector.
-#' @return Scalar in `[0, log2(length(psd))]`.
+#' @return Scalar in `\[0, log2(length(psd))\]`.
 #' @references Rangayyan & Krishnan (2015), Ch. 6, sec. 6.7;
 #'   Inouye et al. (1991).
 #' @examples
@@ -326,7 +326,7 @@ morie_dsp_acf_from_psd <- function(psd) {
   Re(stats::fft(full, inverse = TRUE) / N)
 }
 
-#' Bandpower over `[f_low, f_high]`
+#' Bandpower over `\[f_low, f_high\]`
 #'
 #' Trapezoid-equivalent rectangular integration of PSD over a band.
 #'
@@ -486,6 +486,17 @@ morie_dsp_fbm_synthesis <- function(N, H = 0.5) {
 
 # Kaiser window with shape `beta` using the modified Bessel function
 # I0. Matches numpy.kaiser(N, beta).
+#' Kaiser window with shape `beta` using the modified Bessel function
+#'
+#' I0. Matches numpy.kaiser(N, beta).
+#'
+#' @param N Numeric; combined arithmetically in the body.
+#' @param beta Numeric; combined arithmetically in the body. Defaults to \code{14}.
+#' @return A numeric value.
+#' @export
+#' @examples
+#' res <- .kaiser_window(N = 3L)
+#' res
 .kaiser_window <- function(N, beta = 14) {
   if (N == 1L) return(1)
   n <- seq.int(0, N - 1L)
@@ -495,6 +506,19 @@ morie_dsp_fbm_synthesis <- function(N, H = 0.5) {
 }
 
 # Polynomial expansion of I0 valid for beta up to ~16.
+#' Polynomial expansion of I0 valid for beta up to ~16
+#'
+#' A step of the dsp_spectral implementation. Called by \code{.kaiser_window}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x Numeric; passed to \code{abs}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .bessel_i0(x = x)
+#' res
 .bessel_i0 <- function(x) {
   ax <- abs(x)
   out <- numeric(length(ax))

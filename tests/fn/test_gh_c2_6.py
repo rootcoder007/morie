@@ -1,6 +1,6 @@
 """Tests for gh_c2_6.ghosal_mixture_basis_prior."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c2_6 import ghosal_mixture_basis_prior
 

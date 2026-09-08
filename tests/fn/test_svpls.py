@@ -1,6 +1,6 @@
 """Tests for morie.fn.svpls -- Party sorting index (Levendusky)"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svpls import party_sorting
 

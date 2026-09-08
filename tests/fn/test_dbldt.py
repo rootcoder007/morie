@@ -1,6 +1,6 @@
 """Tests for morie.fn.dbldt — double-threshold detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dbldt import dbldt, double_threshold
 

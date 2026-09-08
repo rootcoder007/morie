@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def f1_score(
@@ -58,3 +58,7 @@ f1_ = f1_score
 
 def cheatsheet() -> str:
     return "f1_score({}) -> F1 score, precision, and recall."
+
+
+# compact alias per ledger/NAMING.md
+f1score = f1_score

@@ -1,6 +1,6 @@
 """Tests for matrl.ma_three_level."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.matrl import ma_three_level
 

@@ -1,6 +1,6 @@
 """Tests for gb_frs.gibbons_friedman_chi2_approp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_frs import gibbons_friedman_chi2_approp
 

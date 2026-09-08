@@ -38,7 +38,7 @@ def extract_text(
         raise FileNotFoundError(f"PDF not found: {pdf_path}")
 
     try:
-        from pypdf import PdfReader
+        from morie._pdf_reader import PdfReader
     except ImportError as err:
         raise ImportError("pypdf is required: pip install pypdf") from err
 
@@ -102,7 +102,7 @@ def extract_pages(
 ) -> list[str]:
     """Extract text from specific pages (0-indexed)."""
     pdf_path = Path(pdf_path)
-    from pypdf import PdfReader
+    from morie._pdf_reader import PdfReader
 
     reader = PdfReader(str(pdf_path))
     results = []

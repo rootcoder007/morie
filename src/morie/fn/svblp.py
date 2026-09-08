@@ -1,6 +1,6 @@
 """Bliss point estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ blis = bliss_point
 
 def cheatsheet() -> str:
     return "bliss_point({}) -> Bliss point estimation"
+
+
+# compact alias per ledger/NAMING.md
+blisspoint = bliss_point

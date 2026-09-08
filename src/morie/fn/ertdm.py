@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.stats import wasserstein_distance
+from . import _array_core as np
+from ._stats_core import wasserstein_distance
 
 from ._containers import DescriptiveResult
 

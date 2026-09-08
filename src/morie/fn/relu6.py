@@ -12,7 +12,7 @@ In CVPR (pp. 4510-4520).
 
 __all__ = ["relu6"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def relu6(x, derivative=False):

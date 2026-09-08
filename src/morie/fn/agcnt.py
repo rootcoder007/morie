@@ -5,7 +5,7 @@ Connectivity index landscape
 Category: AreaGeo
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def agcnt(areas=None, perimeters=None, values=None, n=30):

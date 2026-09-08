@@ -42,3 +42,7 @@ tmdur = time_duration
 
 def cheatsheet() -> str:
     return "time_duration({}) -> Signal time duration."
+
+
+# compact alias per ledger/NAMING.md
+timeduration = time_duration

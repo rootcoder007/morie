@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -91,3 +91,7 @@ arrow = directed_layout
 
 def cheatsheet() -> str:
     return "directed_layout({}) -> Arrow plot / directed graph layout."
+
+
+# compact alias per ledger/NAMING.md
+directedlayout = directed_layout

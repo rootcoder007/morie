@@ -45,7 +45,7 @@ Uniform Crime Reporting (IUCR) Codes" reference table (Socrata
 resource id \verb{c7ck-438e}; portal landing
 \url{https://data.cityofchicago.org/Public-Safety/Chicago-Police-Department-Illinois-Uniform-Crime-R/c7ck-438e}).
 410 IUCR codes mapping the \code{iucr} foreign key carried by every
-\code{\link[=morie_datasets_chicago_crime]{morie_datasets_chicago_crime()}} row to a human-readable
+\code{morie_datasets_chicago_crime()} row to a human-readable
 description. Five columns:
 }
 \details{
@@ -65,8 +65,10 @@ Offline mode reads a bundled 410-row complete fixture
 (\code{inst/extdata/chicago_iucr_codes.csv}).
 }
 \examples{
+\dontshow{if (nzchar(system.file("extdata", "chicago_iucr_codes.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_chicago_iucr_codes(offline = TRUE)
 subset(df, primary_description == "HOMICIDE")
+\dontshow{\}) # examplesIf}
 }
 \references{
 City of Chicago Data Portal, "Chicago Police

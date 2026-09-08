@@ -26,7 +26,7 @@ specification_curve(
 \item{sample_filters}{Optional. Accepted shapes (for Python<->R parity):
 (a) \code{list(list(name = "...", fn = function(df) ...), ...)} (R native),
 (b) \code{list(c("name", fn), ...)} or \code{list(list("name", fn), ...)} (Python
-\code{list[tuple[str, callable]]} shape — positional pair). Default: full
+\verb{list\[tuple\[str, callable\]\]} shape -- positional pair). Default: full
 sample only.}
 
 \item{model_types}{Character vector of model families:
@@ -41,4 +41,9 @@ A \code{morie_spec_curve} named-list.
 Estimates the treatment effect across many reasonable model
 specifications to assess robustness. Combines covariate sets x
 sample filters x model families.
+}
+\examples{
+specification_curve(data = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)),
+  outcome = c(1, 2, 3, 4, 5, 6, 7, 8), treatment = c(0, 1, 0, 1, 1, 0, 1, 0),
+  covariate_sets = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

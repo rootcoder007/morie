@@ -49,3 +49,7 @@ gf2m = gf2m_arithmetic
 
 def cheatsheet() -> str:
     return "gf2m_arithmetic({}) -> GF(2^m) finite field arithmetic."
+
+
+# compact alias per ledger/NAMING.md
+gf2marithmetic = gf2m_arithmetic

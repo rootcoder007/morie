@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._containers import ESRes
 
@@ -52,3 +52,7 @@ ave_ea = subscale_ea_ave
 
 def cheatsheet() -> str:
     return "subscale_ea_ave({}) -> EA subscale average variance extracted."
+
+
+# compact alias per ledger/NAMING.md
+subscaleeaave = subscale_ea_ave

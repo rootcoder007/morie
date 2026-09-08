@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -49,3 +49,7 @@ netdg = network_degree
 
 def cheatsheet() -> str:
     return "network_degree({}) -> Network degree distribution."
+
+
+# compact alias per ledger/NAMING.md
+networkdegree = network_degree

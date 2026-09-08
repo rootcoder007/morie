@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.signal import fftconvolve
+from . import _array_core as np
+from ._signal_core import fftconvolve
 
 from ._containers import DescriptiveResult
 

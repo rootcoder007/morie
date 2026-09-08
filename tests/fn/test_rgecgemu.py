@@ -1,8 +1,8 @@
 """Tests for rgecgemu.rangayyan_ecg_emg_coupling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgecgemu import rangayyan_ecg_emg_coupling
+from morie.fn.bsaqrs import rangayyan_ecg_emg_coupling
 
 
 def test_rgecgemu_basic():

@@ -19,7 +19,7 @@
 #'   the most likely cluster, its Poisson log-likelihood-ratio statistic,
 #'   the Monte-Carlo permutation p-value, and a plain-language
 #'   \code{interpretation}.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' if (FALSE) {
 #'   tps <- morie_sample("tps_assault")
 #'   mrm_tps_kulldorff_scan(tps, n_permutations = 49)
@@ -28,6 +28,18 @@
 NULL
 
 
+#' .haversine_km_mat
+#'
+#' A step of the mrm_kulldorff implementation. Called by \code{mrm_tps_kulldorff_scan}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param lat1 Numeric; combined arithmetically in the body.
+#' @param lon1 Numeric; combined arithmetically in the body.
+#' @param lat2 Numeric; combined arithmetically in the body.
+#' @param lon2 Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
 .haversine_km_mat <- function(lat1, lon1, lat2, lon2) {
   R <- 6371
   rad <- pi / 180
@@ -38,6 +50,18 @@ NULL
 }
 
 
+#' .poisson_lrt
+#'
+#' A step of the mrm_kulldorff implementation. Called by \code{mrm_tps_kulldorff_scan}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n_obs Numeric; combined arithmetically in the body.
+#' @param n_in Passed to \code{==}.
+#' @param n_exp Numeric; combined arithmetically in the body.
+#' @param n_tot Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
 .poisson_lrt <- function(n_obs, n_in, n_exp, n_tot) {
   if (n_in == 0 || n_obs == 0 || n_obs <= n_exp) {
     return(0.0)
@@ -73,7 +97,7 @@ NULL
 #'   \code{t_start}, \code{t_end}, \code{n_observed}, \code{n_expected},
 #'   \code{relative_risk}, \code{log_lrt}, \code{p_value}.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' if (FALSE) {
 #'   tps <- morie_sample("tps_assault")
 #'   mrm_tps_kulldorff_scan(tps, n_permutations = 49)
@@ -94,7 +118,7 @@ mrm_tps_kulldorff_scan <- function(
   # mrm_kulldorff.py:188-198 currently `break`s out of the secondary-
   # cluster loop, so both ports return a single primary cluster as of
   # 2026-05-22.  Promoting this to TRUE multi-cluster requires masking
-  # out events in the primary cluster and rescanning — a separate task.
+  # out events in the primary cluster and rescanning -- a separate task.
   if (!is.numeric(n_top_clusters) || n_top_clusters < 1L) {
     stop("n_top_clusters must be a positive integer.", call. = FALSE)
   }

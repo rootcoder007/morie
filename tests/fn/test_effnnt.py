@@ -1,6 +1,6 @@
 """Tests for effnnt.efficientnet_block."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.effnnt import efficientnet_block
 

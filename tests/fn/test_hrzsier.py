@@ -1,6 +1,6 @@
 """Tests for hrzsier.horowitz_series_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzsier import horowitz_series_regression
 

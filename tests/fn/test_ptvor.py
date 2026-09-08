@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptvor -- Point pattern Voronoi intensities"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptvor import pp_voronoi
 

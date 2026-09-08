@@ -1,6 +1,6 @@
 """Test covariance_matrix (scorm)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.scorm import covariance_matrix, scorm

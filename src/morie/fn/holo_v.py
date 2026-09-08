@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def holo_violin(
@@ -31,7 +31,7 @@ def holo_violin(
         52(2), 181--184.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_violin requires matplotlib. Install via: pip install matplotlib")
         return None
@@ -63,3 +63,7 @@ def holo_violin(
 
 def cheatsheet() -> str:
     return "holo_violin({}) -> Violin plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holoviolin = holo_violin

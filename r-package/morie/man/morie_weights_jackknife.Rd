@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_jackknife}
 \alias{morie_weights_jackknife}
-\title{Jackknife replicate weights (JK1 delete-1 or JKn stratified delete-n).}
+\title{Jackknife replicate weights (JK1 delete-1 or JKn stratified delete-n)}
 \usage{
 morie_weights_jackknife(weights, strata = NULL, jk_type = c("JK1", "JKn"))
 }
@@ -24,4 +24,10 @@ recording the stratum of each replicate.
 \description{
 When the \code{survey} package is installed and \code{strata} is supplied, defers
 to \code{survey::as.svrepdesign(..., type = "JKn")} for variance compatibility.
+}
+\examples{
+if (requireNamespace("survey", quietly = TRUE)) {
+  V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+  morie_weights_jackknife(V)
+}
 }

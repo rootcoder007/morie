@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -26,7 +26,7 @@ def phase_delay(b, a, worN: int = 512) -> DescriptiveResult:
     -------
     DescriptiveResult
     """
-    from scipy.signal import freqz
+    from ._signal_core import freqz
 
     b = np.asarray(b, dtype=float)
     a = np.asarray(a, dtype=float)
@@ -46,3 +46,7 @@ phsdl = phase_delay
 
 def cheatsheet() -> str:
     return "phase_delay({}) -> Phase delay of a digital filter."
+
+
+# compact alias per ledger/NAMING.md
+phasedelay = phase_delay

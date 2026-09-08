@@ -1,9 +1,9 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Accelerated Failure Time model (Weibull AFT via MLE)."""
 
-import numpy as np
-from scipy.optimize import minimize
-from scipy.stats import norm
+from . import _array_core as np
+from ._sci_core import minimize
+from ._stats_core import norm
 
 
 def aft(

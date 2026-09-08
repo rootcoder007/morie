@@ -3,10 +3,10 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy.cluster.hierarchy import fcluster, linkage
-from scipy.spatial.distance import pdist
+from . import _array_core as np
+from . import _frame_core as pd
+from ._sci_core import fcluster, linkage
+from ._sci_core import pdist
 
 from morie.fn._containers import HclstRes
 

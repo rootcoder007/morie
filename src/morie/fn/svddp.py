@@ -1,6 +1,6 @@
 """Singular Value Decomposition."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -44,3 +44,7 @@ svddp = svd_decompose
 
 def cheatsheet() -> str:
     return "svd_decompose({}) -> Singular Value Decomposition."
+
+
+# compact alias per ledger/NAMING.md
+svddecompose = svd_decompose

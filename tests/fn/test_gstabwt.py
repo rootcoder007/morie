@@ -1,6 +1,6 @@
 """Tests for gstabwt.stabilized_weights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gstabwt import stabilized_weights
 

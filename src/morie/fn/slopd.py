@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -57,3 +57,7 @@ slopd = slope_detect
 
 def cheatsheet() -> str:
     return "slope_detect({}) -> Slope-based onset/offset detection."
+
+
+# compact alias per ledger/NAMING.md
+slopedetect = slope_detect

@@ -7,7 +7,7 @@ __all__ = ["effective_sample_size", "ess"]
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

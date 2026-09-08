@@ -3,7 +3,7 @@
 \name{morie_otis_analyze_b06_ruhela_aggregate}
 \alias{morie_otis_analyze_b06_ruhela_aggregate}
 \alias{morie_otis_analyze_b06_mrm_aggregate}
-\title{b06 aggregate Ruhela: Disciplinary reason -> seg placements.}
+\title{b06 aggregate Ruhela: Disciplinary reason -> seg placements}
 \usage{
 morie_otis_analyze_b06_ruhela_aggregate(data, out_dir = NULL)
 
@@ -18,10 +18,12 @@ morie_otis_analyze_b06_mrm_aggregate(data, out_dir = NULL)
 \code{morie_otis_analysis_result}.
 }
 \description{
-b06 aggregate Ruhela: Disciplinary reason -> seg placements.
+b06 aggregate Ruhela: Disciplinary reason -> seg placements
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_b06 <- morie_synth_otis("b06", n = 120L, seed = 1L)
 morie_otis_analyze_b06_ruhela_aggregate(otis_b06)
+}
 }

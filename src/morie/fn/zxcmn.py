@@ -1,6 +1,6 @@
 """Spatial circular mean"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ circ = circular_mean_sp
 
 def cheatsheet() -> str:
     return "circular_mean_sp({}) -> Spatial circular mean"
+
+
+# compact alias per ledger/NAMING.md
+circularmeansp = circular_mean_sp

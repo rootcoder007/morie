@@ -1,0 +1,24 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{escape_whitespace}
+\alias{escape_whitespace}
+\title{Escape whitespace as U+2581, optionally prefixing the marker}
+\usage{
+escape_whitespace(text, add_prefix = TRUE) 
+}
+\description{
+Escape whitespace as U+2581, optionally prefixing the marker
+}
+\arguments{
+\item{text}{Argument \code{text}; see Usage.}
+\item{add_prefix}{Argument \code{add_prefix}; see Usage.}
+}
+\value{
+The value of \code{.escape_whitespace}.
+}
+\keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+escape_whitespace(V)
+}

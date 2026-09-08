@@ -1,8 +1,8 @@
 """Tests for rgrespf.rangayyan_respiration_features."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgrespf import rangayyan_respiration_features
+from morie.fn.bsaphys import rangayyan_respiration_features
 
 
 def test_rgrespf_basic():

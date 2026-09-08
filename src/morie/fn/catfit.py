@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy.optimize import curve_fit
+from . import _array_core as np
+from . import _frame_core as pd
+from ._sci_core import curve_fit
 
 from ._containers import DescriptiveResult
 from ._helpers import _validate_df
@@ -76,3 +76,7 @@ catfit = catenary_fit
 
 def cheatsheet() -> str:
     return "_catenary({}) -> Catenary curve fitting."
+
+
+# compact alias per ledger/NAMING.md
+catenaryfit = catenary_fit

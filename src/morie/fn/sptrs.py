@@ -1,49 +1,40 @@
-"""Polynomial trend surface model for spatially varying mean."""
+"""Polynomial trend surface model (delegates to spatial_trend_surface)."""
 
-import numpy as np
-
-from ._richresult import RichResult
+from .sptrn import spatial_trend_surface
 
 __all__ = ["schabenberger_trend_surface"]
 
 
-def schabenberger_trend_surface(coords, z, poly_degree):
+def schabenberger_trend_surface(coords, z, poly_degree=2):
     """
-    Polynomial trend surface model for spatially varying mean
+    Polynomial trend surface model for a spatially varying mean.
 
-    Formula: mu(s) = sum_k beta_k * f_k(s) where f_k are polynomial basis functions in coords
+    This is the same estimator as
+    :func:`morie.fn.sptrn.spatial_trend_surface` and delegates to it rather
+    than carrying a second implementation.
 
     Parameters
     ----------
     coords : array-like
-        Input data.
+        Coordinates, shape (n, 2).
     z : array-like
-        Input data.
-    poly_degree : array-like
-        Input data.
+        Response, shape (n,).
+    poly_degree : int, default 2
+        Polynomial order of the trend surface.
 
     Returns
     -------
-    result : dict
-        Keys: coefficients, trend
+    The result of ``spatial_trend_surface``.
 
     References
     ----------
-    Schabenberger Ch 5, Sec 5.3.1
+    Schabenberger, O. & Gotway, C. A. (2005). Statistical Methods for
+    Spatial Data Analysis. Chapman & Hall/CRC. Sec. 5.3.1 "Trend Surface
+    Models".
     """
-    z = np.asarray(z, dtype=float)
-    n = int(z) if z.ndim == 0 else len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Polynomial trend surface model for spatially varying mean",
-        }
-    )
+    return spatial_trend_surface(z, coords, order=int(poly_degree))
 
 
 def cheatsheet():
-    return "sptrs: Polynomial trend surface model for spatially varying mean"
+    return ("sptrs: polynomial trend surface; delegates to "
+            "spatial_trend_surface (sptrn).")

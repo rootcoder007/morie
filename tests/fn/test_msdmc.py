@@ -1,6 +1,6 @@
 """Tests for morie.fn.msdmc -- Mahalanobis distance matrix"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msdmc import dist_mahal
 

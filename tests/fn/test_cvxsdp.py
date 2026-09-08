@@ -1,6 +1,6 @@
 """Tests for cvxsdp.boyd_sdp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxsdp import boyd_sdp
 

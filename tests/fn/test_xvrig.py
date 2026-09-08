@@ -1,6 +1,6 @@
 """Test xavier_init."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.xvrig import xavier_init, xvrig

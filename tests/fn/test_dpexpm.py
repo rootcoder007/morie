@@ -1,6 +1,6 @@
 """Tests for dpexpm.dp_exponential_mechanism."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dpexpm import dp_exponential_mechanism
 

@@ -1,6 +1,6 @@
 """Tests for wmtwgt.weights_matrix."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wmtwgt import weights_matrix
 

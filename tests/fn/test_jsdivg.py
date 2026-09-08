@@ -1,6 +1,6 @@
 """Tests for jsdivg.jensen_shannon_divergence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jsdivg import jensen_shannon_divergence
 

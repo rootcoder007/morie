@@ -1,6 +1,6 @@
 """Three-way spatial tensor"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ tens = tensor_3way_sp
 
 def cheatsheet() -> str:
     return "tensor_3way_sp({}) -> Three-way spatial tensor"
+
+
+# compact alias per ledger/NAMING.md
+tensor3waysp = tensor_3way_sp

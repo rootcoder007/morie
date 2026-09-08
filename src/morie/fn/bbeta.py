@@ -7,9 +7,9 @@ __all__ = ["bayesian_beta_binomial", "bbeta"]
 
 from typing import Any, Union
 
-import numpy as np
-from scipy import stats
-from scipy.special import betaln, gammaln
+from . import _array_core as np
+from . import _stats_core as stats
+from ._sci_core import betaln, gammaln
 
 
 def bayesian_beta_binomial(

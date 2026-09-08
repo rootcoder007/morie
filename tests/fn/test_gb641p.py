@@ -1,6 +1,6 @@
 """Tests for gb641p.gibbons_median_test_power."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb641p import gibbons_median_test_power
 

@@ -5,7 +5,7 @@ Sea level rise projection
 Category: GeoClim
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gcslr(data=None, coords=None, n=50):

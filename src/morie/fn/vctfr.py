@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 
@@ -43,3 +43,7 @@ vctfr = victim_fear
 
 def cheatsheet() -> str:
     return "victim_fear({}) -> Fear of crime index."
+
+
+# compact alias per ledger/NAMING.md
+victimfear = victim_fear

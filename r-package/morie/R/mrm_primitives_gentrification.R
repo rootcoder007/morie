@@ -33,6 +33,19 @@ NULL
 # Internal helper (shared wrapper for MRM primitives)
 # ---------------------------------------------------------------------------
 
+#' .mrm_result
+#'
+#' Part of the mrm_primitives_gentrification implementation; see the
+#' file header for the source it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param call Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .mrm_result <- function(title, call, summary_lines = list(),
                         warnings = character(0),
                         interpretation = "",
@@ -275,13 +288,17 @@ mrm_gentrification_panel <- function(df,
 # Print method (shared across MRM primitives)
 # ---------------------------------------------------------------------------
 
+#' Print method for \code{morie_mrm_result} objects
+#'
+#' @param x A \code{morie_mrm_result} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_mrm_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\
 ", sep = "")
-  if (!is.null(x$call) && nzchar(x$call)) {
+  if (!is.null(x$call) && length(x$call) == 1L && nzchar(x$call)) {
     cat("Call:", x$call, "\
 \
 ", sep = " ")

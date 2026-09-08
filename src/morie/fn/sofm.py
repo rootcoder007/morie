@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -89,3 +89,7 @@ sofm = self_org_map
 
 def cheatsheet() -> str:
     return "self_org_map({}) -> Self-organizing map (Kohonen network)."
+
+
+# compact alias per ledger/NAMING.md
+selforgmap = self_org_map

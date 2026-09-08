@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -79,3 +79,7 @@ hwint = holt_winters
 
 def cheatsheet() -> str:
     return "holt_winters({}) -> Holt-Winters additive seasonal method."
+
+
+# compact alias per ledger/NAMING.md
+holtwinters = holt_winters

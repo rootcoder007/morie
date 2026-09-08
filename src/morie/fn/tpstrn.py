@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from morie.fn._containers import DescriptiveResult
 
@@ -52,3 +52,7 @@ tpstrn = tps_crime_trend
 
 def cheatsheet() -> str:
     return "tps_crime_trend({}) -> Crime trend analysis."
+
+
+# compact alias per ledger/NAMING.md
+tpscrimetrend = tps_crime_trend

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -47,3 +47,7 @@ spslp = spectral_slope
 
 def cheatsheet() -> str:
     return "spectral_slope({}) -> Spectral slope."
+
+
+# compact alias per ledger/NAMING.md
+spectralslope = spectral_slope

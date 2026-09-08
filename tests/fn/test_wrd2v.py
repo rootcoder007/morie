@@ -1,6 +1,6 @@
 """Tests for wrd2v.word2vec."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wrd2v import word2vec
 

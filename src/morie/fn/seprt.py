@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -64,7 +64,7 @@ def detect_separation(
         ):
             sep_vars.append(j - (1 if add_intercept else 0))
 
-    from scipy import special
+    from ._sci_core import special
 
     beta = np.zeros(p)
     for _ in range(200):

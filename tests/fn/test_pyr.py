@@ -1,6 +1,6 @@
 """Tests for morie.fn.pyr -- person-years at risk."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pyr import person_years_at_risk

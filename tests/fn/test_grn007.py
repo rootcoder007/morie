@@ -1,6 +1,6 @@
 """Tests for grn007.geron_ch4_mse_gradient_vector."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grn007 import geron_ch4_mse_gradient_vector
 

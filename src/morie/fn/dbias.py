@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as stats
 
 from ._containers import ESRes
 from ._helpers import _validate_df
@@ -119,3 +119,7 @@ dbias = double_debias
 
 def cheatsheet() -> str:
     return "double_debias({}) -> Double debiasing estimator."
+
+
+# compact alias per ledger/NAMING.md
+doubledebias = double_debias

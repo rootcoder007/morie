@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import scipy.stats as stats
-from scipy.optimize import minimize
+from . import _array_core as np
+from . import _stats_core as stats
+from ._sci_core import minimize
 
 from ._containers import ESRes
 
@@ -77,7 +77,7 @@ def dose_response(
     ld50 = -alpha / beta if abs(beta) > 1e-10 else np.inf
 
     try:
-        from scipy.optimize import approx_fprime
+        from ._sci_core import approx_fprime
 
         hess_inv = np.linalg.inv(
             np.array([[approx_fprime([alpha, beta], lambda p: neg_ll(p), 1e-5)[i] for i in range(2)]])
@@ -109,3 +109,7 @@ doseq = dose_response
 
 def cheatsheet() -> str:
     return "dose_response({}) -> Dose-response analysis (logistic/probit)."
+
+
+# compact alias per ledger/NAMING.md
+doseresponse = dose_response

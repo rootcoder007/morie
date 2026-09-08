@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def bayesian_omega(
@@ -111,3 +111,7 @@ def bayesian_omega(
 
 def cheatsheet() -> str:
     return "bayesian_omega({}) -> Bayesian McDonald's omega."
+
+
+# compact alias per ledger/NAMING.md
+bayesianomega = bayesian_omega

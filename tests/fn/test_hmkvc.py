@@ -1,6 +1,6 @@
 """Tests for hmkvc.geron_kv_cache_compress."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmkvc import geron_kv_cache_compress
 

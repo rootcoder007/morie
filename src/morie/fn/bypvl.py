@@ -11,7 +11,7 @@ def bayesian_p_value(chain, test_stat) -> DescriptiveResult:
 
     .. epigraph:: We must know. We will know. -- David Hilbert
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     chain = np.asarray(chain, dtype=float).ravel()
     bp = float(np.mean(chain >= test_stat))
@@ -32,3 +32,7 @@ bypvl = bayesian_p_value
 
 def cheatsheet() -> str:
     return "bayesian_p_value({}) -> Bayesian p-value."
+
+
+# compact alias per ledger/NAMING.md
+bayesianpvalue = bayesian_p_value

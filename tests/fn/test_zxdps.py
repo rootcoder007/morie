@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxdps -- Dirichlet process spatial"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxdps import dirichlet_proc_sp
 

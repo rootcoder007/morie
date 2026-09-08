@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Weak instrument diagnostics for IV estimation."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import DescriptiveResult
 
@@ -70,3 +70,7 @@ def iv_weak_test(endogenous, instrument, covariates=None, cdf=None):
 
 def cheatsheet() -> str:
     return "iv_weak_test({}) -> Weak instrument diagnostics for IV estimation."
+
+
+# compact alias per ledger/NAMING.md
+ivweaktest = iv_weak_test

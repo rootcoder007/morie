@@ -31,11 +31,11 @@ import math
 from pathlib import Path
 from typing import Literal
 
-import numpy as np
-import pandas as pd
-from scipy import stats as sps
-from scipy.optimize import minimize
-from scipy.special import gammainc, gammaln  # noqa: F401 -- used inline
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as sps
+from morie.fn._sci_core import minimize
+from morie.fn._sci_core import gammainc, gammaln  # noqa: F401 -- used inline
 
 from .fn._richresult import RichResult
 from .tps_hawkes_jit import has_jit_path, neg_loglik_jit
@@ -411,7 +411,7 @@ def hawkes_advanced_fit(
     # QQ figure
     fig_path = None
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         u = np.array(result["rescaled_uniforms"])
         fig, ax = plt.subplots(1, 2, figsize=(10, 4))

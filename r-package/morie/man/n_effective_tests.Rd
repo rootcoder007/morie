@@ -18,3 +18,6 @@ Effective number of tests (>= 1).
 \description{
 Effective number of independent tests from a correlation matrix
 }
+\examples{
+n_effective_tests(correlation_matrix = 5L)
+}

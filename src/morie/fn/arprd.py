@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -33,3 +33,7 @@ arprd = ar_predict_fn
 
 def cheatsheet() -> str:
     return "ar_predict_fn({}) -> AR model multi-step ahead prediction."
+
+
+# compact alias per ledger/NAMING.md
+arpredictfn = ar_predict_fn

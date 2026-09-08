@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -31,3 +31,7 @@ prcor = parcor_fn
 
 def cheatsheet() -> str:
     return "parcor_fn({}) -> Partial autocorrelation (PARCOR) coefficients via lattice me"
+
+
+# compact alias per ledger/NAMING.md
+parcorfn = parcor_fn

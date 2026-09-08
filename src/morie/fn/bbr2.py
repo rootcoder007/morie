@@ -15,7 +15,7 @@ def bb_r2_per_issue(Z, fitted) -> DescriptiveResult:
 
     .. epigraph:: Give me a place to stand and I will move the earth. -- Archimedes
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     fitted = np.asarray(fitted, dtype=float)
@@ -41,3 +41,7 @@ bbr2 = bb_r2_per_issue
 
 def cheatsheet() -> str:
     return "bb_r2_per_issue({}) -> Blackbox R-squared per issue scale."
+
+
+# compact alias per ledger/NAMING.md
+bbr2perissue = bb_r2_per_issue

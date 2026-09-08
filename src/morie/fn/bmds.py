@@ -39,3 +39,7 @@ bmds = bayesian_mds_fn
 
 def cheatsheet() -> str:
     return "bayesian_mds_fn({}) -> Bayesian multidimensional scaling."
+
+
+# compact alias per ledger/NAMING.md
+bayesianmdsfn = bayesian_mds_fn

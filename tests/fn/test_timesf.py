@@ -1,6 +1,6 @@
 """Tests for timesf.timesfm_foundation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.timesf import timesfm_foundation
 

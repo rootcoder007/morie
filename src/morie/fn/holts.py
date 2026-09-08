@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -71,3 +71,7 @@ holts = holts_method
 
 def cheatsheet() -> str:
     return "holts_method({}) -> Holt's linear trend method."
+
+
+# compact alias per ledger/NAMING.md
+holtsmethod = holts_method

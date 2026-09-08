@@ -1,6 +1,6 @@
 """Tests for naivef.naive_forecast."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.naivef import naive_forecast
 

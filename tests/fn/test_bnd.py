@@ -1,6 +1,6 @@
 """Tests for morie.fn.bnd -- Manski partial identification bounds."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bnd import manski_bounds

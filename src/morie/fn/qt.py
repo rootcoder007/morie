@@ -3,8 +3,8 @@
 
 from typing import Union
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 
 def qt(p: Union[float, np.ndarray], df: float, lower_tail: bool = True, log: bool = False) -> Union[float, np.ndarray]:

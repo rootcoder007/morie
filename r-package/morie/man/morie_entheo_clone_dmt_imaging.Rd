@@ -2,7 +2,7 @@
 % Please edit documentation in R/entheo_dmt.R
 \name{morie_entheo_clone_dmt_imaging}
 \alias{morie_entheo_clone_dmt_imaging}
-\title{Clone the DMT_Imaging dataset (Timmerman et al.) into a local cache.}
+\title{Clone the DMT_Imaging dataset (Timmerman et al.) into a local cache}
 \usage{
 morie_entheo_clone_dmt_imaging(root = NULL, overwrite = FALSE, branch = NULL)
 }
@@ -39,5 +39,10 @@ Related upstream resources Vee surfaced 2026-05-25:
 \item \url{https://github.com/pnk314/psychedelics.git}     (analysis pipeline)
 \item \url{https://github.com/lisagirard/Psychedelics.git} (review repository)
 \item \url{https://github.com/kianenigma/awesome-psychedelics.git} (curated index)
+}
+}
+\examples{
+\donttest{
+tryCatch(morie_entheo_clone_dmt_imaging(), error = function(e) NULL)
 }
 }

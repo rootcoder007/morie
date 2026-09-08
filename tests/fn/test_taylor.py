@@ -1,6 +1,6 @@
 """Tests for taylor.taylor_linearization."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.taylor import taylor_linearization
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Weighted SMACOF MDS"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ smac = smacof_weight
 
 def cheatsheet() -> str:
     return "smacof_weight({}) -> Weighted SMACOF MDS"
+
+
+# compact alias per ledger/NAMING.md
+smacofweight = smacof_weight

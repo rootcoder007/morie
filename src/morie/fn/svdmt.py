@@ -1,6 +1,6 @@
 """Dimensionality test for spatial data"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ dim_ = dim_test
 
 def cheatsheet() -> str:
     return "dim_test({}) -> Dimensionality test for spatial data"
+
+
+# compact alias per ledger/NAMING.md
+dimtest = dim_test

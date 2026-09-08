@@ -1,6 +1,6 @@
 """Tests for gh_pt_adapt.ghosal_pt_adaptive."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_pt_adapt import ghosal_pt_adaptive
 

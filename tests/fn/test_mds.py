@@ -25,7 +25,7 @@ class TestMds:
 
     def test_distance_matrix_input(self, rng):
         """Accept pre-computed distance matrix."""
-        from scipy.spatial.distance import pdist, squareform
+        from morie.fn._sci_core import pdist, squareform
 
         X = rng.standard_normal((20, 3))
         D = squareform(pdist(X))

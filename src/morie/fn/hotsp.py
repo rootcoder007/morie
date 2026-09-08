@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from collections import Counter
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -50,3 +50,7 @@ hotsp = hot_spots
 
 def cheatsheet() -> str:
     return "hot_spots({}) -> Repeat-address / hot-spot analysis."
+
+
+# compact alias per ledger/NAMING.md
+hotspots = hot_spots

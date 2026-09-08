@@ -1,6 +1,6 @@
 """Spatial zero-inflated Poisson"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -28,3 +28,7 @@ spat = spatial_zip
 
 def cheatsheet() -> str:
     return "spatial_zip({}) -> Spatial zero-inflated Poisson"
+
+
+# compact alias per ledger/NAMING.md
+spatialzip = spatial_zip

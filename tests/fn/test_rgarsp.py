@@ -1,8 +1,8 @@
 """Tests for rgarsp.rangayyan_ar_spectrum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgarsp import rangayyan_ar_spectrum
+from morie.fn.bsaar import rangayyan_ar_spectrum
 
 
 def test_rgarsp_basic():

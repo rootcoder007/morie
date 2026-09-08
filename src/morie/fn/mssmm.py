@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SMACOF with missing data"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ smac = smacof_missing
 
 def cheatsheet() -> str:
     return "smacof_missing({}) -> SMACOF with missing data"
+
+
+# compact alias per ledger/NAMING.md
+smacofmissing = smacof_missing

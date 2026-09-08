@@ -1,54 +1,44 @@
-"""Inference expression involving 'ffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).."""
+"""Independent-samples t-test (pooled variance).
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import math as _math  # noqa: F401
+
+from . import _ca_crim
 from ._richresult import RichResult
 
 __all__ = ["ca_chapter_9_equation_3"]
 
 
-def ca_chapter_9_equation_3(x):
-    """
-    Inference expression involving 'ffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).
+def ca_chapter_9_equation_3(m1, m2, s1, s2, n1, n2):
+    """Independent-samples t-test (pooled variance)
 
-    Formula: n1+n2− 2
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: t = (x1 - x2) / sqrt(((s1^2(n1-1)+s2^2(n2-1))/(n1+n2-2)) ((n1+n2)/(n1 n2)))
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca9e3')`` for the full guide.
+        dict subclass; headline key 't' plus the full payload.
 
     References
     ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.9 eq.9.3
+    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
+    ch.9 eq.9.3
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    payload = dict(_ca_crim.t_independent(m1, m2, s1, s2, n1, n2))
+    value = payload['t']
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Weisburd et al. (2022) eq. (9.3)"
     return RichResult(
-        title="Inference expression involving 'ffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Inference expression involving 'ffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).",
-        },
+        title='Independent-samples t-test (pooled variance)',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "ca9e3: Inference expression involving 'ffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context)."
+    return 'ca9e3: t = (x1 - x2) / sqrt(((s1^2(n1-1)+s2^2(n2-1))/(n1+n2-2)) ((n1+n2)/(n1 n2))) [Weisburd et al. 2022, eq. 9.3]'

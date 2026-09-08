@@ -1,6 +1,6 @@
 """Tests for hedderich4e32.hedderich_chapter_4_equation_32."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hedderich4e32 import hedderich_chapter_4_equation_32
 

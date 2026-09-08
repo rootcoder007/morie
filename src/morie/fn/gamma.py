@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import RegressionResult
 
@@ -103,3 +103,7 @@ gamma_glm_fn = gamma_glm
 
 def cheatsheet() -> str:
     return "gamma_glm({}) -> Gamma GLM with log link via IRLS."
+
+
+# compact alias per ledger/NAMING.md
+gammaglm = gamma_glm

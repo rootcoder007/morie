@@ -1,6 +1,6 @@
 """Multi-party spatial competition"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ mult = multiparty_comp
 
 def cheatsheet() -> str:
     return "multiparty_comp({}) -> Multi-party spatial competition"
+
+
+# compact alias per ledger/NAMING.md
+multipartycomp = multiparty_comp

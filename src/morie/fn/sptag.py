@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Spatial agreement scores between legislators (Armstrong Ch 8)."""
+"""Spatial agreement scores between legislators (Armstrong sec. 3.2.2, p.88)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -21,6 +21,14 @@ def spatial_agreement(x):
     Returns
     -------
     RichResult with keys: agreement, mean_agreement, n, m
+
+    References
+    ----------
+    Armstrong, D. A., Bakker, R., Carroll, R., Hare, C., Poole, K. T., &
+        Rosenthal, H. *Analyzing Spatial Models of Choice and Judgment*.
+        Section 3.2.2, "90th US Senate Agreement Scores", printed p.88.
+        Verified against the PDF; the book has six chapters, so the module's
+        former "Armstrong Ch 8" citation was to a chapter that does not exist.
     """
     M = np.asarray(x, dtype=float)
     if M.ndim == 1:
@@ -44,9 +52,17 @@ def spatial_agreement(x):
     # Mean off-diagonal agreement
     iu = np.triu_indices(n, k=1)
     off = A[iu]
-    mean_a = float(np.nanmean(off)) if off.size else np.nan
+    # Every pair can be NaN when no two legislators were ever present for the
+    # same roll call. np.nanmean of an all-NaN slice returns NaN but emits a
+    # RuntimeWarning doing it; the NaN is the right answer here (an undefined
+    # mean of undefined agreements), so the warning is noise, not a signal.
+    mean_a = (
+        float(np.nanmean(off))
+        if off.size and not np.all(np.isnan(off))
+        else float("nan")
+    )
     return RichResult(
-        title="Pairwise vote agreement (Armstrong Ch 8)",
+        title="Pairwise vote agreement (Armstrong sec. 3.2.2, p.88)",
         summary_lines=[("Mean off-diagonal agreement", mean_a), ("n legislators", n), ("m votes", m)],
         payload={"agreement": A, "mean_agreement": mean_a, "n": int(n), "m": int(m), "method": "spatial_agreement"},
     )

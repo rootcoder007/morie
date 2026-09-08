@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def holo_scatter(
@@ -31,7 +31,7 @@ def holo_scatter(
     Tukey, J. W. (1977). *Exploratory Data Analysis*. Addison-Wesley.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_scatter requires matplotlib. Install via: pip install matplotlib")
         return None
@@ -62,3 +62,7 @@ def holo_scatter(
 
 def cheatsheet() -> str:
     return "holo_scatter({}) -> Scatter plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holoscatter = holo_scatter

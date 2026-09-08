@@ -1,6 +1,6 @@
 """Tests for ebfmi.energy_bayesian_fmi."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ebfmi import energy_bayesian_fmi
 

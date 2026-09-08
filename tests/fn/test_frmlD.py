@@ -1,6 +1,6 @@
 """Tests for frmlD.formal_derivative."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.frmlD import formal_derivative
 

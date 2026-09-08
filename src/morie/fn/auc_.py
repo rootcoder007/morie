@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def auc_score(
@@ -83,3 +83,7 @@ auc_ = auc_score
 
 def cheatsheet() -> str:
     return "auc_score({}) -> Area Under the ROC Curve (AUC) via trapezoidal integration."
+
+
+# compact alias per ledger/NAMING.md
+aucscore = auc_score

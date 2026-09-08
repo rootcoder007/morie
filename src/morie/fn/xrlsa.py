@@ -1,6 +1,6 @@
 """Local Moran's I (LISA)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ lisa = lisa_local
 
 def cheatsheet() -> str:
     return "lisa_local({}) -> Local Moran's I (LISA)"
+
+
+# compact alias per ledger/NAMING.md
+lisalocal = lisa_local

@@ -8,6 +8,7 @@ ks_test_two_sample(x, y)
 }
 \arguments{
 \item{x, y}{Numeric vectors.}
+
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})

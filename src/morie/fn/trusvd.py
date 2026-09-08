@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -72,3 +72,7 @@ trusvd = svd_rank_reduce
 
 def cheatsheet() -> str:
     return "svd_rank_reduce({}) -> Matrix decomposition (destructive rank reduction)."
+
+
+# compact alias per ledger/NAMING.md
+svdrankreduce = svd_rank_reduce

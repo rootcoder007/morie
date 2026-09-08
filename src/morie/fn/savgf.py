@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.signal import savgol_filter as _savgol
+from . import _array_core as np
+from ._signal_core import savgol_filter as _savgol
 
 from ._containers import DescriptiveResult
 
@@ -63,3 +63,7 @@ savgf = savgol_smooth
 
 def cheatsheet() -> str:
     return "savgol_smooth({}) -> Savitzky-Golay filter."
+
+
+# compact alias per ledger/NAMING.md
+savgolsmooth = savgol_smooth

@@ -1,6 +1,6 @@
 """Tests for morie.fn.svcpw -- Copeland spatial winner"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svcpw import copeland_winner
 

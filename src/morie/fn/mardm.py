@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import TestResult
 
@@ -64,3 +64,7 @@ mardm = mardia_test
 
 def cheatsheet() -> str:
     return "mardm() -> Mardia's test for multivariate normality"
+
+
+# compact alias per ledger/NAMING.md
+mardiatest = mardia_test

@@ -1,7 +1,7 @@
 """Placebo test for DR-DiD pre-trends."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -68,3 +68,7 @@ def placebo_test_did(y_pre, D, X, cdf=None):
 
 def cheatsheet():
     return "plctst: Placebo test for DR-DiD pre-trends"
+
+
+# compact alias per ledger/NAMING.md
+placebotestdid = placebo_test_did

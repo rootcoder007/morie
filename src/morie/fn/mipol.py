@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multiple imputation via predictive mean matching."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -51,3 +51,7 @@ def mi_pool(estimates, variances):
 
 def cheatsheet() -> str:
     return "mi_pool({}) -> Multiple imputation via predictive mean matching."
+
+
+# compact alias per ledger/NAMING.md
+mipool = mi_pool

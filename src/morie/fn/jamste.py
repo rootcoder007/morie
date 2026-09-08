@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -62,3 +62,7 @@ jamste = james_stein
 
 def cheatsheet() -> str:
     return "james_stein({}) -> James-Stein shrinkage estimator."
+
+
+# compact alias per ledger/NAMING.md
+jamesstein = james_stein

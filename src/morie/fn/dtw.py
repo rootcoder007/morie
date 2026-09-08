@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dynamic time warping distance."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -42,3 +42,7 @@ dtw = dtw_distance
 
 def cheatsheet() -> str:
     return "dtw_distance({}) -> Dynamic time warping distance."
+
+
+# compact alias per ledger/NAMING.md
+dtwdistance = dtw_distance

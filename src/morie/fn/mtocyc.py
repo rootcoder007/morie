@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -41,3 +41,7 @@ mtocyc = mto_cyclist
 
 def cheatsheet() -> str:
     return "mto_cyclist({}) -> Cyclist safety analysis."
+
+
+# compact alias per ledger/NAMING.md
+mtocyclist = mto_cyclist

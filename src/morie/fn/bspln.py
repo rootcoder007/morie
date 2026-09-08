@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def bayesian_spline(
@@ -65,7 +65,7 @@ def bayesian_spline(
     pred_var = noise_var + np.sum(B @ S * B, axis=1)
     pred_sd = np.sqrt(pred_var)
 
-    from scipy import stats as st
+    from . import _stats_core as st
 
     z = st.norm.ppf(1 - (1 - prob) / 2)
 
@@ -84,3 +84,7 @@ bspln = bayesian_spline
 
 def cheatsheet() -> str:
     return "bayesian_spline({}) -> Bayesian spline regression."
+
+
+# compact alias per ledger/NAMING.md
+bayesianspline = bayesian_spline

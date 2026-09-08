@@ -31,10 +31,27 @@ import math
 from collections.abc import Callable
 from typing import Union
 
-import numpy as np
-import pandas as pd
-import scipy.stats as stats
-from statsmodels.stats.power import (
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as stats
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+from morie.fn._glm_core import (
     FTestAnovaPower,
     NormalIndPower,
     TTestIndPower,
@@ -139,12 +156,16 @@ def bootstrap_ci(
     """
     # Set the random seed BEFORE any stochastic operation so that all
     # bootstrap draws are deterministic given the same (data, seed) pair.
-    np.random.seed(seed)
+    # Draw the row positions ourselves so the stream is seeded
+    # explicitly: data may be a native or a real pandas frame, and
+    # frame.sample() would follow whichever library's global RNG.
+    rng = np.random.default_rng(seed)
 
     estimates = []
     n = len(data)
     for _ in range(n_iterations):
-        sample = data.sample(n=n, replace=True)
+        pos = [int(v) for v in rng.integers(0, n, size=n)]
+        sample = data.iloc[pos]
         estimates.append(estimation_func(sample))
 
     lower = float(np.percentile(estimates, (alpha / 2) * 100))

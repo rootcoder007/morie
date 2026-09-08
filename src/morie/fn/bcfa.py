@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def bayesian_cfa(
@@ -145,3 +145,7 @@ def bayesian_cfa(
 
 def cheatsheet() -> str:
     return "bayesian_cfa({}) -> Bayesian Confirmatory Factor Analysis with posterior fit ind"
+
+
+# compact alias per ledger/NAMING.md
+bayesiancfa = bayesian_cfa

@@ -52,3 +52,7 @@ def cheatsheet() -> str:
 
 
 dednm = dedekind_sum
+
+
+# compact alias per ledger/NAMING.md
+dedekindsum = dedekind_sum

@@ -27,8 +27,8 @@ def cross_variogram(Z1, Z2, coords, n_lags=15, max_lag=None):
     -------
     DescriptiveResult
     """
-    import numpy as np
-    from scipy.spatial.distance import pdist, squareform
+    from morie.fn import _array_core as np
+    from ._sci_core import pdist, squareform
 
     Z1 = np.asarray(Z1, dtype=np.float64).ravel()
     Z2 = np.asarray(Z2, dtype=np.float64).ravel()
@@ -69,3 +69,7 @@ sgcrv = cross_variogram
 
 def cheatsheet() -> str:
     return "cross_variogram({}) -> Cross-variogram estimation."
+
+
+# compact alias per ledger/NAMING.md
+crossvariogram = cross_variogram

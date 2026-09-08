@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -60,3 +60,7 @@ swtfn = swt_decompose
 
 def cheatsheet() -> str:
     return "swt_decompose({}) -> Stationary (undecimated) Wavelet Transform."
+
+
+# compact alias per ledger/NAMING.md
+swtdecompose = swt_decompose

@@ -1,6 +1,6 @@
 """Tests for morie.fn.irtli — IRT log-likelihood."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.irtli import irt_likelihood

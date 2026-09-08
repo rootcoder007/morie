@@ -1,6 +1,6 @@
 """Tests for hrzk3.horowitz_local_linear."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzk3 import horowitz_local_linear
 

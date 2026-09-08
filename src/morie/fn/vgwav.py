@@ -1,6 +1,6 @@
 """Wave (hole-effect) variogram"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -42,3 +42,7 @@ vari = vario_wave
 
 def cheatsheet() -> str:
     return "vario_wave({}) -> Wave (hole-effect) variogram"
+
+
+# compact alias per ledger/NAMING.md
+variowave = vario_wave

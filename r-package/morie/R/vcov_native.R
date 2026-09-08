@@ -56,7 +56,10 @@
 #' @export
 morie_vcov_hc <- function(model, type = "HC3") {
   p <- .morie_vcov_pieces(model)
-  X <- p$X; ef <- p$estfun; n <- p$n; k <- p$k
+  X <- p$X
+  ef <- p$estfun
+  n <- p$n
+  k <- p$k
   br <- p$bread / n
   if (identical(type, "const")) {
     s2 <- sum(p$resid^2) / (n - k)
@@ -106,10 +109,18 @@ morie_vcov_hc <- function(model, type = "HC3") {
 #'   semi-definite, heteroskedasticity and autocorrelation consistent
 #'   covariance matrix. \emph{Econometrica}, 55(3), 703-708.
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(y = rnorm(60), x = rnorm(60),
+#'                  cl = rep(1:6, each = 10))
+#' fit <- stats::lm(y ~ x, data = df)
+#' morie_vcov_hac(fit, lag = 2L)
 morie_vcov_hac <- function(model, lag = NULL, prewhite = FALSE,
                            adjust = TRUE) {
   p <- .morie_vcov_pieces(model)
-  ef <- p$estfun; n <- p$n; k <- p$k
+  ef <- p$estfun
+  n <- p$n
+  k <- p$k
   if (is.null(lag)) lag <- floor(4 * (n / 100)^(2 / 9))
   meat <- crossprod(ef)
   for (l in seq_len(lag)) {
@@ -138,9 +149,17 @@ morie_vcov_hac <- function(model, lag = NULL, prewhite = FALSE,
 #'   guide to cluster-robust inference. \emph{Journal of Human
 #'   Resources}, 50(2), 317-372.
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(y = rnorm(60), x = rnorm(60),
+#'                  cl = rep(1:6, each = 10))
+#' fit <- stats::lm(y ~ x, data = df)
+#' morie_vcov_cl(fit, cluster = df$cl)
 morie_vcov_cl <- function(model, cluster, type = "HC1") {
   p <- .morie_vcov_pieces(model)
-  ef <- p$estfun; n <- p$n; k <- p$k
+  ef <- p$estfun
+  n <- p$n
+  k <- p$k
   cf <- as.factor(cluster)
   G <- nlevels(cf)
   scores <- rowsum(ef, cf, reorder = FALSE)
@@ -168,6 +187,12 @@ morie_vcov_cl <- function(model, cluster, type = "HC1") {
 #' @param ... Passed to the underlying estimator (e.g. \code{lag}).
 #' @return The coefficient covariance matrix.
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(y = rnorm(60), x = rnorm(60),
+#'                  cl = rep(1:6, each = 10))
+#' fit <- stats::lm(y ~ x, data = df)
+#' morie_vcov_robust(fit)
 morie_vcov_robust <- function(model, type = "HC3", cluster = NULL,
                               ...) {
   if (identical(type, "HAC")) return(morie_vcov_hac(model, ...))

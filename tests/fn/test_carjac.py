@@ -1,6 +1,6 @@
 """Tests for morie.fn.carjac."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.carjac import carjac
 

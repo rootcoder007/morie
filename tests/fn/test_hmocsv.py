@@ -1,6 +1,6 @@
 """Tests for hmocsv.geron_one_class_svm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmocsv import geron_one_class_svm
 

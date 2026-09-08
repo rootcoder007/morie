@@ -8,7 +8,7 @@ All operate on 1-D numpy arrays.
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 
 
 def moving_average(x: np.ndarray, window: int = 5) -> np.ndarray:
@@ -96,7 +96,7 @@ def notch_filter(
     fs: float,
     q: float = 30.0,
 ) -> np.ndarray:
-    from scipy.signal import filtfilt, iirnotch
+    from morie.fn._signal_core import filtfilt, iirnotch
 
     b, a = iirnotch(freq, q, fs)
     return filtfilt(b, a, x)
@@ -129,7 +129,7 @@ def median_filter(
     x: np.ndarray,
     kernel_size: int = 5,
 ) -> np.ndarray:
-    from scipy.signal import medfilt
+    from morie.fn._signal_core import medfilt
 
     return medfilt(x, kernel_size=kernel_size)
 

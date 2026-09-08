@@ -1,6 +1,6 @@
 """IDW interpolation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ idw_ = idw_interp
 
 def cheatsheet() -> str:
     return "idw_interp({}) -> IDW interpolation"
+
+
+# compact alias per ledger/NAMING.md
+idwinterp = idw_interp

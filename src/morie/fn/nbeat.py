@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -97,3 +97,7 @@ def nbeats_basis(x, horizon=1, n_trend=3, n_season=5, period=12):
 
 def cheatsheet():
     return "nbeat: N-BEATS basis-expansion forecasting (Oreshkin et al. 2020)."
+
+
+# compact alias per ledger/NAMING.md
+nbeatsbasis = nbeats_basis

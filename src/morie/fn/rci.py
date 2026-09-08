@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import DescriptiveResult
 
@@ -73,3 +73,7 @@ rci = reliable_change
 
 def cheatsheet() -> str:
     return "reliable_change({}) -> Jacobson-Truax Reliable Change Index."
+
+
+# compact alias per ledger/NAMING.md
+reliablechange = reliable_change

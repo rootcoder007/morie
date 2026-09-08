@@ -1,6 +1,6 @@
 """Tests for morie.fn.paslg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.paslg import paslg
 

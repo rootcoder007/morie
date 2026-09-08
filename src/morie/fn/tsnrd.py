@@ -1,6 +1,6 @@
 """t-SNE for non-linear dimension reduction / visualisation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -46,7 +46,7 @@ def tsne_reduction(
     RichResult with payload: estimate (embedding shape), embedding
     (n x n_components), kl_divergence, perplexity, n, method.
     """
-    from sklearn.manifold import TSNE
+    from ._ml_core import TSNE
 
     X = np.asarray(x, dtype=float)
     if X.ndim == 1:
@@ -105,3 +105,7 @@ if __name__ == "__main__":
     r = tsne_reduction(X, n_components=2, perplexity=10.0, n_iter=500, seed=0)
     print("embedding shape:", r.estimate)
     print("KL divergence:", r.kl_divergence)
+
+
+# compact alias per ledger/NAMING.md
+tsnereduction = tsne_reduction

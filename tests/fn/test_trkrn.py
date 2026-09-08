@@ -1,6 +1,6 @@
 """Tests for morie.fn.trkrn — triweight kernel."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.trkrn import trkrn

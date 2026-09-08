@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -48,3 +48,7 @@ sntrl = sentence_by_year
 
 def cheatsheet() -> str:
     return "sentence_by_year({}) -> Sentence length trends over years."
+
+
+# compact alias per ledger/NAMING.md
+sentencebyyear = sentence_by_year

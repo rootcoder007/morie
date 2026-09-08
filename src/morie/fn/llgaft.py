@@ -1,6 +1,6 @@
 """Log-logistic AFT model."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def log_logistic_aft(time, event, X):
 
 def cheatsheet():
     return "llgaft: Log-logistic AFT model"
+
+
+# compact alias per ledger/NAMING.md
+loglogisticaft = log_logistic_aft

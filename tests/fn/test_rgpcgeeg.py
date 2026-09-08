@@ -1,8 +1,8 @@
 """Tests for rgpcgeeg.rangayyan_pcg_eeg_coupling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgpcgeeg import rangayyan_pcg_eeg_coupling
+from morie.fn.bsaphys import rangayyan_pcg_eeg_coupling
 
 
 def test_rgpcgeeg_basic():

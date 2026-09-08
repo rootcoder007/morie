@@ -34,7 +34,7 @@ def point_prevalence(
     Wilson, E. B. (1927). Probable inference, the law of succession, and
     statistical inference. *JASA*, 22(158), 209--212.
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     if total <= 0:
         raise ValueError("total must be positive.")

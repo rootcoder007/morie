@@ -1,6 +1,6 @@
 """Tests for josmap.joseph_smape."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.josmap import joseph_smape
 

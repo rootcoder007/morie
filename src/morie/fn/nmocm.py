@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """OC Coombs mesh"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ oc_c = oc_coombs_mesh
 
 def cheatsheet() -> str:
     return "oc_coombs_mesh({}) -> OC Coombs mesh"
+
+
+# compact alias per ledger/NAMING.md
+occoombsmesh = oc_coombs_mesh

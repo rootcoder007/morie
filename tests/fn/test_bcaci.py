@@ -1,6 +1,6 @@
 """Tests for bcaci (BCa bootstrap CI)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bcaci import bca_ci
 

@@ -1,8 +1,8 @@
-"""Tests for plsqs.pls_qsar."""
+"""Tests for plsqs.pls_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.plsqs import pls_qsar
+from morie.fn.plsqs import pls_regression
 
 
 def test_plsqs_basic():
@@ -10,7 +10,7 @@ def test_plsqs_basic():
     activities = np.random.default_rng(42).normal(0, 1, 100)
     descriptors = np.random.default_rng(42).normal(0, 1, 100)
     n_components = 3
-    result = pls_qsar(activities, descriptors, n_components)
+    result = pls_regression(activities, descriptors, n_components)
     assert isinstance(result, dict)
     assert "estimate" in result or "statistic" in result
 
@@ -20,5 +20,5 @@ def test_plsqs_edge():
     activities = np.random.default_rng(42).normal(0, 1, 100)
     descriptors = np.random.default_rng(42).normal(0, 1, 100)
     n_components = 3
-    result = pls_qsar(activities, descriptors, n_components)
+    result = pls_regression(activities, descriptors, n_components)
     assert isinstance(result, dict)

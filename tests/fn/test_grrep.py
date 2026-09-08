@@ -1,6 +1,6 @@
 """Tests for grrep.geron_reparameterization_trick."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grrep import geron_reparameterization_trick
 

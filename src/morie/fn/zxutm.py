@@ -1,6 +1,6 @@
 """UTM coordinate conversion"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ utm_ = utm_convert
 
 def cheatsheet() -> str:
     return "utm_convert({}) -> UTM coordinate conversion"
+
+
+# compact alias per ledger/NAMING.md
+utmconvert = utm_convert

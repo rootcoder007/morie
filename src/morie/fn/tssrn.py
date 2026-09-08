@@ -4,7 +4,7 @@ Space-time recurrent NN proxy
 Category: TempSpat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def tssrn(data=None, coords=None, times=None, n=50, t=10):

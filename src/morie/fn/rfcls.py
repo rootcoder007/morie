@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 from ._richresult import RichResult
@@ -123,3 +123,7 @@ rfcls = rf_classify_bio
 
 def cheatsheet() -> str:
     return "rf_classify_bio({}) -> Random forest classifier (pure NumPy)."
+
+
+# compact alias per ledger/NAMING.md
+rfclassifybio = rf_classify_bio

@@ -1,6 +1,6 @@
 """Second dimensionality test"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ dim_ = dim_test_2
 
 def cheatsheet() -> str:
     return "dim_test_2({}) -> Second dimensionality test"
+
+
+# compact alias per ledger/NAMING.md
+dimtest2 = dim_test_2

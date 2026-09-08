@@ -1,7 +1,7 @@
 """SIR compartmental model (Susceptible-Infected-Recovered)."""
 
-import numpy as np
-from scipy.integrate import odeint
+from . import _array_core as np
+from ._sci_core import odeint
 
 from ._containers import SIRResult
 
@@ -83,3 +83,7 @@ sird = sir_model
 
 def cheatsheet() -> str:
     return "sir_model({}) -> SIR compartmental model (Susceptible-Infected-Recovered)."
+
+
+# compact alias per ledger/NAMING.md
+sirmodel = sir_model

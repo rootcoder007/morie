@@ -1,6 +1,6 @@
 """Tests for sammkr.sam_multi_mask_rank."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sammkr import sam_multi_mask_rank
 

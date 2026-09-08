@@ -1,6 +1,6 @@
 """Tests for km113.kamath_ch8_perplexity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km113 import kamath_ch8_perplexity
 

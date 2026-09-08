@@ -1,6 +1,6 @@
 """Tests for ksr05.kosorok_bracketing_number."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr05 import kosorok_bracketing_number
 

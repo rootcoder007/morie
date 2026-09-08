@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -41,3 +41,7 @@ iqr_ = iqr_statistic
 
 def cheatsheet() -> str:
     return "iqr_statistic({}) -> Interquartile range statistic."
+
+
+# compact alias per ledger/NAMING.md
+iqrstatistic = iqr_statistic

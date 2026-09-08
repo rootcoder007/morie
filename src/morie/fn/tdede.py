@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -43,3 +43,7 @@ def dedekind_eta(tau: complex = 1j, terms: int = 50) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "dedekind_eta(tau, terms) -> Dedekind eta function"
+
+
+# compact alias per ledger/NAMING.md
+dedekindeta = dedekind_eta

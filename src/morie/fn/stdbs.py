@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -114,3 +114,7 @@ def st_dbscan(
 
 def cheatsheet() -> str:
     return "st_dbscan({}) -> ST-DBSCAN spatiotemporal clustering (Birant & Kut 2007)."
+
+
+# compact alias per ledger/NAMING.md
+stdbscan = st_dbscan

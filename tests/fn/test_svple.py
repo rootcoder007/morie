@@ -1,6 +1,6 @@
 """Tests for morie.fn.svple -- Esteban-Ray polarization index"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svple import polarization_er
 

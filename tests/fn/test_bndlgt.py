@@ -1,6 +1,6 @@
 """Tests for bndlgt.bound_logistic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndlgt import bound_logistic
 

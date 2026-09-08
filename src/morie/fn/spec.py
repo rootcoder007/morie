@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import DiagnosticResult
 
@@ -52,3 +52,7 @@ spec = specificity_dx
 
 def cheatsheet() -> str:
     return "specificity_dx({}) -> Specificity."
+
+
+# compact alias per ledger/NAMING.md
+specificitydx = specificity_dx

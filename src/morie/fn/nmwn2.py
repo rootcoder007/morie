@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """W-NOMINATE 2D"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ wnom = wnominate_2d
 
 def cheatsheet() -> str:
     return "wnominate_2d({}) -> W-NOMINATE 2D"
+
+
+# compact alias per ledger/NAMING.md
+wnominate2d = wnominate_2d

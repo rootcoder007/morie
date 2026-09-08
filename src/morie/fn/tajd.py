@@ -95,3 +95,7 @@ tajd = tajimas_d
 
 def cheatsheet() -> str:
     return "tajimas_d({}) -> Tajima's D statistic for testing neutrality."
+
+
+# compact alias per ledger/NAMING.md
+tajimasd = tajimas_d

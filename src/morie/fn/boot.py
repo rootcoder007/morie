@@ -3,8 +3,8 @@
 
 from collections.abc import Callable
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def bootstrap_ci(
@@ -51,12 +51,16 @@ def bootstrap_ci(
     """
     # Set the random seed BEFORE any stochastic operation so that all
     # bootstrap draws are deterministic given the same (data, seed) pair.
-    np.random.seed(seed)
+    # Draw the row positions ourselves so the stream is seeded
+    # explicitly: data may be a native or a real pandas frame, and
+    # frame.sample() would follow whichever library's global RNG.
+    rng = np.random.default_rng(seed)
 
     estimates = []
     n = len(data)
     for _ in range(n_iterations):
-        sample = data.sample(n=n, replace=True)
+        pos = [int(v) for v in rng.integers(0, n, size=n)]
+        sample = data.iloc[pos]
         estimates.append(estimation_func(sample))
 
     lower = float(np.percentile(estimates, (alpha / 2) * 100))
@@ -69,3 +73,7 @@ boot = bootstrap_ci
 
 def cheatsheet() -> str:
     return "bootstrap_ci({}) -> Non-parametric percentile bootstrap confidence intervals."
+
+
+# compact alias per ledger/NAMING.md
+bootstrapci = bootstrap_ci

@@ -88,3 +88,7 @@ annty = annuity_value
 
 def cheatsheet() -> str:
     return "annuity_value({}) -> Present value of annuity."
+
+
+# compact alias per ledger/NAMING.md
+annuityvalue = annuity_value

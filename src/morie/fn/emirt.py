@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """EM algorithm IRT estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from .._spatial_voting import em_irt as _em_irt
 from ._containers import DescriptiveResult
@@ -34,3 +34,7 @@ em_irt_estimate = em_irt_estimate
 
 def cheatsheet() -> str:
     return "em_irt_estimate({}) -> EM algorithm IRT estimation"
+
+
+# compact alias per ledger/NAMING.md
+emirtestimate = em_irt_estimate

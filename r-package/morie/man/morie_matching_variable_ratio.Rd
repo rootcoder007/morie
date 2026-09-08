@@ -25,7 +25,10 @@ morie_matching_variable_ratio(
 
 \item{caliper}{Caliper on the propensity score (in SD units).}
 
-\item{ps}{Optional pre-computed propensity scores.}
+\item{ps}{Optional propensity scores. When supplied they REPLACE
+the fitted model and become the matching distance directly,
+aligned to the rows that survive the NA drop.}
+
 }
 \value{
 A list of class \code{morie_match_result}.
@@ -35,6 +38,7 @@ Matches each treated unit to between \code{min_ratio} and
 \code{max_ratio} controls within a caliper.
 }
 \examples{
+\dontshow{if (requireNamespace("MatchIt", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -44,4 +48,5 @@ df <- data.frame(
   treat3 = sample(0:2, 150, TRUE))
 morie_matching_variable_ratio(df, "d", c("x1", "x2"),
                               min_ratio = 1, max_ratio = 3)
+\dontshow{\}) # examplesIf}
 }

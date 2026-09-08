@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def dp_mixture_model(
@@ -28,7 +28,8 @@ def dp_mixture_model(
 
     References
     ----------
-    Ishwaran, H. & James, L. F. (2001). *JASA*, 96(453), 161--173.
+    Ishwaran, H. & James, L. F. (2001). Gibbs sampling methods for
+    stick-breaking priors. *JASA*, 96(453), 161--173.
     """
     rng = np.random.default_rng(seed)
     x = np.asarray(data, dtype=float)
@@ -97,3 +98,7 @@ dpmmx = dp_mixture_model
 
 def cheatsheet() -> str:
     return "dp_mixture_model({}) -> Dirichlet process mixture model."
+
+
+# compact alias per ledger/NAMING.md
+dpmixturemodel = dp_mixture_model

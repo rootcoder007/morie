@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import pandas as pd
-from scipy import stats as _st
+from . import _frame_core as pd
+from . import _stats_core as _st
 
 from ._containers import DescriptiveResult
 

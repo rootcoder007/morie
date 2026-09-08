@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -31,7 +31,7 @@ def matern_kernel(
     x1: np.ndarray, x2: np.ndarray, length_scale: float = 1.0, output_scale: float = 1.0, nu: float = 1.5
 ) -> np.ndarray:
     r"""Matern kernel; interpolates between exponential (nu=0.5) and SE (nu->inf)."""
-    from scipy.special import gamma, kv
+    from ._sci_core import gamma, kv
 
     x1 = np.atleast_1d(x1)
     x2 = np.atleast_1d(x2)
@@ -137,3 +137,15 @@ def gpkrn(
 
 def cheatsheet() -> str:
     return "gpkrn(data=None, coords=None, n=50, kernel_type='se') -> SpatialResult with kernel matrix summary"
+
+
+# compact alias per ledger/NAMING.md
+gpkernelmatrix = gp_kernel_matrix
+
+
+# compact alias per ledger/NAMING.md
+maternkernel = matern_kernel
+
+
+# compact alias per ledger/NAMING.md
+periodickernel = periodic_kernel

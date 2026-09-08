@@ -1,6 +1,6 @@
 """Tests for causrddf.causal_rdd_fuzzy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causrddf import causal_rdd_fuzzy
 

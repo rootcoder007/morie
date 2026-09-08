@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.ndimage import convolve
+from . import _array_core as np
+from ._sci_core import convolve
 
 from ._containers import DescriptiveResult
 

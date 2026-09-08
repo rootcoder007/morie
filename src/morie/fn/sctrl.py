@@ -3,10 +3,10 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats
-from scipy.optimize import minimize
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as stats
+from ._sci_core import minimize
 
 from ._containers import ESRes
 from ._helpers import _validate_df

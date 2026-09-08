@@ -1,6 +1,6 @@
 """Tests for icfR.item_cf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.icfR import item_cf
 

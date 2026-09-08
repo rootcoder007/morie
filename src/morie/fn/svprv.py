@@ -1,6 +1,6 @@
 """Probit spatial voting probability"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ prob = probit_vote
 
 def cheatsheet() -> str:
     return "probit_vote({}) -> Probit spatial voting probability"
+
+
+# compact alias per ledger/NAMING.md
+probitvote = probit_vote

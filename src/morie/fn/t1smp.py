@@ -2,8 +2,8 @@
 
 from typing import Union
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 
 def one_sample_t_test(
@@ -56,3 +56,7 @@ t1smp = one_sample_t_test
 
 def cheatsheet() -> str:
     return "one_sample_t_test({}) -> One-sample t-test against a specified null mean."
+
+
+# compact alias per ledger/NAMING.md
+onesamplettest = one_sample_t_test

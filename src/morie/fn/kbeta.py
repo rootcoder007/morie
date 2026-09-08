@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -62,7 +62,7 @@ def kbeta(
     Chen, S. X. (1999). Beta kernel estimators for density functions.
         *Computational Statistics & Data Analysis*, 31(2), 131-145.
     """
-    from scipy.special import betaln
+    from ._sci_core import betaln
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]

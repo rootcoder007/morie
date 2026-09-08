@@ -46,3 +46,7 @@ theta = watterson_theta
 
 def cheatsheet() -> str:
     return "watterson_theta({}) -> Watterson's theta estimator from segregating sites."
+
+
+# compact alias per ledger/NAMING.md
+wattersontheta = watterson_theta

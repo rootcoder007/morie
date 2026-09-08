@@ -1,6 +1,6 @@
 """Tests for grgs.geron_grid_search_cv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grgs import geron_grid_search_cv
 

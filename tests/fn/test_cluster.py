@@ -1,6 +1,6 @@
 """Tests for cluster.one_stage_cluster."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cluster import one_stage_cluster
 

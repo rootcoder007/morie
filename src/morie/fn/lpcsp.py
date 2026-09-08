@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -44,3 +44,7 @@ lpcsp = lpc_spectrum_fn
 
 def cheatsheet() -> str:
     return "lpc_spectrum_fn({}) -> LPC-derived power spectrum."
+
+
+# compact alias per ledger/NAMING.md
+lpcspectrumfn = lpc_spectrum_fn

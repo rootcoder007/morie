@@ -1,6 +1,6 @@
 """Spatial block bootstrap"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ bloc = block_bootstrap
 
 def cheatsheet() -> str:
     return "block_bootstrap({}) -> Spatial block bootstrap"
+
+
+# compact alias per ledger/NAMING.md
+blockbootstrap = block_bootstrap

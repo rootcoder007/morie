@@ -1,6 +1,6 @@
 """Tests for morie.fn.bfact -- Savage-Dickey Bayes factor."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bfact import bayes_factor_savage_dickey
 

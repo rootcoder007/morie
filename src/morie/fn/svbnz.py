@@ -1,6 +1,6 @@
 """Banzhaf power index spatial"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ banz = banzhaf_spatial
 
 def cheatsheet() -> str:
     return "banzhaf_spatial({}) -> Banzhaf power index spatial"
+
+
+# compact alias per ledger/NAMING.md
+banzhafspatial = banzhaf_spatial

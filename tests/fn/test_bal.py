@@ -1,6 +1,6 @@
 """Tests for morie.fn.bal -- Balance diagnostics."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bal import balance_diagnostics
 

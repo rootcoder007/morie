@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 from .kmcls import kmeans
@@ -63,3 +63,7 @@ elbmk = elbow_method
 
 def cheatsheet() -> str:
     return "elbow_method({}) -> Elbow method for optimal k."
+
+
+# compact alias per ledger/NAMING.md
+elbowmethod = elbow_method

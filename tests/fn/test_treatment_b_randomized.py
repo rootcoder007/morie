@@ -1,0 +1,20 @@
+"""Tests for treatment_b_randomized.treatment_b_randomized."""
+
+from morie.fn import _array_core as np
+
+from morie.fn.treatment_b_randomized import treatment_b_randomized
+
+
+def test_ca9e2_basic():
+    """Test basic functionality."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = treatment_b_randomized(x)
+    assert isinstance(result, dict)
+    assert "estimate" in result or "statistic" in result
+
+
+def test_ca9e2_edge():
+    """Test edge cases."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = treatment_b_randomized(x)
+    assert isinstance(result, dict)

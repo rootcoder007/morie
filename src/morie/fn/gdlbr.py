@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gdlbr."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def gdlbr(population=None, births=None, deaths=None, coords=None, n=50):

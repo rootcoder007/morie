@@ -1,6 +1,6 @@
 """Tests for crrpep.pepe_mori."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.crrpep import pepe_mori
 

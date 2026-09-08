@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -69,3 +69,7 @@ bpdn = basis_pursuit
 
 def cheatsheet() -> str:
     return "basis_pursuit({}) -> Basis Pursuit Denoising via L1 minimization."
+
+
+# compact alias per ledger/NAMING.md
+basispursuit = basis_pursuit

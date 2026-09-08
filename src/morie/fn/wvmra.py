@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -64,3 +64,7 @@ wvmra = wavelet_mra
 
 def cheatsheet() -> str:
     return "wavelet_mra({}) -> Wavelet multiresolution analysis."
+
+
+# compact alias per ledger/NAMING.md
+waveletmra = wavelet_mra

@@ -1,6 +1,6 @@
 """Tests for aitalri.aitchison_alr_inverse."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitalri import aitchison_alr_inverse
 

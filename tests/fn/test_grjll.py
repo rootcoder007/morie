@@ -1,6 +1,6 @@
 """Tests for grjll.geron_johnson_lindenstrauss_bound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grjll import geron_johnson_lindenstrauss_bound
 

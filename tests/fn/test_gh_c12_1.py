@@ -1,6 +1,6 @@
 """Tests for gh_c12_1.ghosal_infdim_bvm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c12_1 import ghosal_infdim_bvm
 

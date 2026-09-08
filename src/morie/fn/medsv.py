@@ -12,7 +12,7 @@ the median survival time. Biometrics, 38(1), 29-41.
 
 __all__ = ["medsv"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def medsv(
@@ -67,7 +67,7 @@ def medsv(
     Kaplan, E.L. & Meier, P. (1958). Journal of the American Statistical
     Association, 53(282), 457-481.
     """
-    from scipy import stats as _stats
+    from . import _stats_core as _stats
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)

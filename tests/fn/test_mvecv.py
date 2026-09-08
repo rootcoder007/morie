@@ -1,6 +1,6 @@
 """Tests for mvecv.min_volume_ellipsoid."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mvecv import min_volume_ellipsoid
 

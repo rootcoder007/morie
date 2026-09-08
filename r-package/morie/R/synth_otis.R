@@ -19,6 +19,19 @@
 # This helper draws every column name + every categorical level from
 # the authoritative dictionary.
 
+#' .morie_otis_a01_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Numeric; combined arithmetically in the body. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_a01_panel()
+#' res
 .morie_otis_a01_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -36,6 +49,19 @@
   )
 }
 
+#' .morie_otis_b01_panel
+#'
+#' A step of the synth_otis implementation. Called by \code{morie_synth_otis}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Numeric; combined arithmetically in the body. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_b01_panel()
+#' res
 .morie_otis_b01_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -61,6 +87,19 @@
   )
 }
 
+#' .morie_otis_b02_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Numeric; combined arithmetically in the body. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_b02_panel()
+#' res
 .morie_otis_b02_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -74,12 +113,28 @@
   )
 }
 
+#' .morie_otis_b03_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_b03_panel()
+#' res
 .morie_otis_b03_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
     EndFiscalYear = sample(2018:2024, n, replace = TRUE),
     Region_AtTimeOfPlacement = sample(c("Central", "Eastern", "Northern", "Toronto", "Western"), n, replace = TRUE),
-    Institution_AtTimeOfPlacement = sample(c("Algoma Treatment and Remand Centre", "Brockville Jail", "Central East Correctional Centre", "Central North Correctional Centre", "Elgin-Middlesex Detention Centre", "Fort Frances Jail", "Hamilton Wentworth Detention Centre", "Kenora Jail", "Maplehurst Correctional Complex", "Monteith Correctional Complex", "Niagara Detention Centre", "North Bay Jail", "Ontario Correctional Institute", "Ottawa-Carleton Detention Centre", "Quinte Detention Centre", "Sarnia Jail", "South West Detention Centre", "St. Lawrence Valley Correctional and Treatment Centre", "Stratford Jail", "Sudbury Jail", "Thunder Bay Correctional Centre", "Thunder Bay Jail", "Toronto East Detention Centre", "Toronto South Detention Centre", "Vanier Centre for Women"), n, replace = TRUE),
+    Institution_AtTimeOfPlacement = sample(c("Algoma Treatment and Remand Centre", "Brockville Jail", "Central East Correctional Centre", "Central North Correctional Centre", "Elgin-Middlesex Detention Centre", "Fort Frances Jail",
+      "Hamilton Wentworth Detention Centre", "Kenora Jail", "Maplehurst Correctional Complex", "Monteith Correctional Complex", "Niagara Detention Centre", "North Bay Jail", "Ontario Correctional Institute", "Ottawa-Carleton Detention Centre",
+      "Quinte Detention Centre", "Sarnia Jail", "South West Detention Centre", "St. Lawrence Valley Correctional and Treatment Centre", "Stratford Jail", "Sudbury Jail", "Thunder Bay Correctional Centre", "Thunder Bay Jail",
+      "Toronto East Detention Centre", "Toronto South Detention Centre", "Vanier Centre for Women"), n, replace = TRUE),
     Alert_Type = sample(c("Immigration Hold Flag", "Mental Health Alert", "Serious Mental Illness Alert", "Suicide Risk Alert", "Suicide Watch Alert", "Transgender Alert"), n, replace = TRUE),
     Alert_Presence = sample(c("Yes", "No"), n, replace = TRUE),
     Number_SegregationPlacements = sample(0:80, n, replace = TRUE),
@@ -87,6 +142,19 @@
   )
 }
 
+#' .morie_otis_b04_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_b04_panel()
+#' res
 .morie_otis_b04_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -99,6 +167,19 @@
   )
 }
 
+#' .morie_otis_b05_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_b05_panel()
+#' res
 .morie_otis_b05_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -109,19 +190,49 @@
   )
 }
 
+#' .morie_otis_b06_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_b06_panel()
+#' res
 .morie_otis_b06_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
     EndFiscalYear = sample(2018:2024, n, replace = TRUE),
     Region_AtTimeOfPlacement = sample(c("Central", "Eastern", "Northern", "Toronto", "Western"), n, replace = TRUE),
-    Institution_AtTimeOfPlacement = sample(c("Algoma Treatment and Remand Centre", "Brockville Jail", "Central East Correctional Centre", "Central North Correctional Centre", "Elgin-Middlesex Detention Centre", "Fort Frances Jail", "Hamilton Wentworth Detention Centre", "Kenora Jail", "Maplehurst Correctional Complex", "Monteith Correctional Complex", "Niagara Detention Centre", "North Bay Jail", "Ontario Correctional Institute", "Ottawa-Carleton Detention Centre", "Quinte Detention Centre", "Sarnia Jail", "South West Detention Centre", "St. Lawrence Valley Correctional and Treatment Centre", "Stratford Jail", "Sudbury Jail", "Thunder Bay Correctional Centre", "Thunder Bay Jail", "Toronto East Detention Centre", "Toronto South Detention Centre", "Vanier Centre for Women"), n, replace = TRUE),
+    Institution_AtTimeOfPlacement = sample(c("Algoma Treatment and Remand Centre", "Brockville Jail", "Central East Correctional Centre", "Central North Correctional Centre", "Elgin-Middlesex Detention Centre", "Fort Frances Jail",
+      "Hamilton Wentworth Detention Centre", "Kenora Jail", "Maplehurst Correctional Complex", "Monteith Correctional Complex", "Niagara Detention Centre", "North Bay Jail", "Ontario Correctional Institute", "Ottawa-Carleton Detention Centre",
+      "Quinte Detention Centre", "Sarnia Jail", "South West Detention Centre", "St. Lawrence Valley Correctional and Treatment Centre", "Stratford Jail", "Sudbury Jail", "Thunder Bay Correctional Centre", "Thunder Bay Jail",
+      "Toronto East Detention Centre", "Toronto South Detention Centre", "Vanier Centre for Women"), n, replace = TRUE),
     Gender = sample(c("Female", "Male"), n, replace = TRUE),
-    Reason = sample(c("Close Confinement (Disciplinary Segregation)", "Inmate Needs Protection", "Inmate Needs Protection: Medical", "Inmate Refused Search/Scan", "Security of Institution/Safety of Others", "Security of Institution/Safety of Others: Medical", "Other"), n, replace = TRUE),
+    Reason = sample(c("Close Confinement (Disciplinary Segregation)", "Inmate Needs Protection", "Inmate Needs Protection: Medical", "Inmate Refused Search/Scan", "Security of Institution/Safety of Others",
+      "Security of Institution/Safety of Others: Medical", "Other"), n, replace = TRUE),
     Number_SegregationPlacements = sample(0:80, n, replace = TRUE),
     stringsAsFactors = FALSE
   )
 }
 
+#' .morie_otis_b07_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_b07_panel()
+#' res
 .morie_otis_b07_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -134,12 +245,28 @@
   )
 }
 
+#' .morie_otis_b08_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_b08_panel()
+#' res
 .morie_otis_b08_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
     EndFiscalYear = sample(2018:2024, n, replace = TRUE),
     Region_AtTimeOfPlacement = sample(c("Central", "Eastern", "Northern", "Toronto", "Western"), n, replace = TRUE),
-    Institution_AtTimeOfPlacement = sample(c("Algoma Treatment and Remand Centre", "Brockville Jail", "Central East Correctional Centre", "Central North Correctional Centre", "Elgin-Middlesex Detention Centre", "Fort Frances Jail", "Hamilton Wentworth Detention Centre", "Kenora Jail", "Maplehurst Correctional Complex", "Monteith Correctional Complex", "Niagara Detention Centre", "North Bay Jail", "Ontario Correctional Institute", "Ottawa-Carleton Detention Centre", "Quinte Detention Centre", "Sarnia Jail", "South West Detention Centre", "St. Lawrence Valley Correctional and Treatment Centre", "Stratford Jail", "Sudbury Jail", "Thunder Bay Correctional Centre", "Thunder Bay Jail", "Toronto East Detention Centre", "Toronto South Detention Centre", "Vanier Centre for Women"), n, replace = TRUE),
+    Institution_AtTimeOfPlacement = sample(c("Algoma Treatment and Remand Centre", "Brockville Jail", "Central East Correctional Centre", "Central North Correctional Centre", "Elgin-Middlesex Detention Centre", "Fort Frances Jail",
+      "Hamilton Wentworth Detention Centre", "Kenora Jail", "Maplehurst Correctional Complex", "Monteith Correctional Complex", "Niagara Detention Centre", "North Bay Jail", "Ontario Correctional Institute", "Ottawa-Carleton Detention Centre",
+      "Quinte Detention Centre", "Sarnia Jail", "South West Detention Centre", "St. Lawrence Valley Correctional and Treatment Centre", "Stratford Jail", "Sudbury Jail", "Thunder Bay Correctional Centre", "Thunder Bay Jail",
+      "Toronto East Detention Centre", "Toronto South Detention Centre", "Vanier Centre for Women"), n, replace = TRUE),
     Gender = sample(c("Female", "Male", "All"), n, replace = TRUE),
     Measure = sample(c("Median", "Mode"), n, replace = TRUE),
     NumberConsecutiveDays_Segregation = sample(0:80, n, replace = TRUE),
@@ -147,17 +274,44 @@
   )
 }
 
+#' .morie_otis_b09_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_b09_panel()
+#' res
 .morie_otis_b09_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
     EndFiscalYear = sample(2018:2024, n, replace = TRUE),
-    NumberPlacements_Segregation = sample(c("1 placement", "2 placements", "3 placements", "4 placements", "5 placements", "6 to 10 placements", "11 to 15 placements", "16 to 20 placements", "21 to 25 placements", "26 to 30 placements", "31 to 35 placements", "36 to 40 placements", "more than 40 placements"), n, replace = TRUE),
+    NumberPlacements_Segregation = sample(c("1 placement", "2 placements", "3 placements", "4 placements", "5 placements", "6 to 10 placements", "11 to 15 placements", "16 to 20 placements", "21 to 25 placements", "26 to 30 placements",
+      "31 to 35 placements", "36 to 40 placements", "more than 40 placements"), n, replace = TRUE),
     Gender = sample(c("Female", "Male"), n, replace = TRUE),
     NumberIndividuals_Segregation = sample(0:80, n, replace = TRUE),
     stringsAsFactors = FALSE
   )
 }
 
+#' .morie_otis_c01_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_c01_panel()
+#' res
 .morie_otis_c01_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -170,12 +324,28 @@
   )
 }
 
+#' .morie_otis_c02_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_c02_panel()
+#' res
 .morie_otis_c02_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
     EndFiscalYear = sample(2018:2024, n, replace = TRUE),
     Region_MostRecentPlacement = sample(c("Central", "Eastern", "Northern", "Toronto", "Western"), n, replace = TRUE),
-    Institution_MostRecentPlacement = sample(c("Algoma Treatment and Remand Centre", "Brockville Jail", "Central East Correctional Centre", "Central North Correctional Centre", "Elgin-Middlesex Detention Centre", "Fort Frances Jail", "Hamilton Wentworth Detention Centre", "Kenora Jail", "Maplehurst Correctional Complex", "Monteith Correctional Complex", "Niagara Detention Centre", "North Bay Jail", "Ontario Correctional Institute", "Ottawa-Carleton Detention Centre", "Quinte Detention Centre", "Sarnia Jail", "South West Detention Centre", "St. Lawrence Valley Correctional and Treatment Centre", "Stratford Jail", "Sudbury Jail", "Thunder Bay Correctional Centre", "Thunder Bay Jail", "Toronto East Detention Centre", "Toronto South Detention Centre", "Vanier Centre for Women"), n, replace = TRUE),
+    Institution_MostRecentPlacement = sample(c("Algoma Treatment and Remand Centre", "Brockville Jail", "Central East Correctional Centre", "Central North Correctional Centre", "Elgin-Middlesex Detention Centre", "Fort Frances Jail",
+      "Hamilton Wentworth Detention Centre", "Kenora Jail", "Maplehurst Correctional Complex", "Monteith Correctional Complex", "Niagara Detention Centre", "North Bay Jail", "Ontario Correctional Institute", "Ottawa-Carleton Detention Centre",
+      "Quinte Detention Centre", "Sarnia Jail", "South West Detention Centre", "St. Lawrence Valley Correctional and Treatment Centre", "Stratford Jail", "Sudbury Jail", "Thunder Bay Correctional Centre", "Thunder Bay Jail",
+      "Toronto East Detention Centre", "Toronto South Detention Centre", "Vanier Centre for Women"), n, replace = TRUE),
     Gender = sample(c("Female", "Male"), n, replace = TRUE),
     NumberIndividuals_RestrictiveConfinement = sample(0:80, n, replace = TRUE),
     NumberIndividuals_Segregation = sample(0:80, n, replace = TRUE),
@@ -183,6 +353,19 @@
   )
 }
 
+#' .morie_otis_c03_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_c03_panel()
+#' res
 .morie_otis_c03_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -196,6 +379,19 @@
   )
 }
 
+#' .morie_otis_c04_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_c04_panel()
+#' res
 .morie_otis_c04_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -208,18 +404,45 @@
   )
 }
 
+#' .morie_otis_c05_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_c05_panel()
+#' res
 .morie_otis_c05_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
     EndFiscalYear = sample(2018:2024, n, replace = TRUE),
     Region_MostRecentPlacement = sample(c("Central", "Eastern", "Northern", "Toronto", "Western"), n, replace = TRUE),
-    Religion = sample(c("Another Religion/Spiritual Affiliation", "Buddhist", "Christian", "Hindu", "Indigenous Spirituality", "Jewish", "More Than One Reported Religion or Spiritual Affiliation", "Muslim", "No Religion", "Sikh", "Unknown Or Not Reported"), n, replace = TRUE),
+    Religion = sample(c("Another Religion/Spiritual Affiliation", "Buddhist", "Christian", "Hindu", "Indigenous Spirituality", "Jewish", "More Than One Reported Religion or Spiritual Affiliation", "Muslim", "No Religion", "Sikh",
+      "Unknown Or Not Reported"), n, replace = TRUE),
     NumberIndividuals_RestrictiveConfinement = sample(0:80, n, replace = TRUE),
     NumberIndividuals_Segregation = sample(0:80, n, replace = TRUE),
     stringsAsFactors = FALSE
   )
 }
 
+#' .morie_otis_c06_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_c06_panel()
+#' res
 .morie_otis_c06_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -232,6 +455,19 @@
   )
 }
 
+#' .morie_otis_c07_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_c07_panel()
+#' res
 .morie_otis_c07_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -245,11 +481,25 @@
   )
 }
 
+#' .morie_otis_c08_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_c08_panel()
+#' res
 .morie_otis_c08_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
     EndFiscalYear = sample(2018:2024, n, replace = TRUE),
-    Religion = sample(c("Another Religion/Spiritual Affiliation", "Buddhist", "Christian", "Hindu", "Indigenous Spirituality", "Jewish", "More Than One Reported Religion or Spiritual Affiliation", "Muslim", "No Religion", "Sikh", "Unknown Or Not Reported"), n, replace = TRUE),
+    Religion = sample(c("Another Religion/Spiritual Affiliation", "Buddhist", "Christian", "Hindu", "Indigenous Spirituality", "Jewish", "More Than One Reported Religion or Spiritual Affiliation", "Muslim", "No Religion", "Sikh",
+      "Unknown Or Not Reported"), n, replace = TRUE),
     Gender = sample(c("Female", "Male"), n, replace = TRUE),
     NumberIndividuals_InCustody = sample(0:80, n, replace = TRUE),
     NumberIndividuals_RestrictiveConfinement = sample(0:80, n, replace = TRUE),
@@ -258,6 +508,19 @@
   )
 }
 
+#' .morie_otis_c09_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_c09_panel()
+#' res
 .morie_otis_c09_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -271,12 +534,28 @@
   )
 }
 
+#' .morie_otis_c10_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_c10_panel()
+#' res
 .morie_otis_c10_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
     EndFiscalYear = sample(2018:2024, n, replace = TRUE),
     Region_MostRecentPlacement = sample(c("Central", "Eastern", "Northern", "Toronto", "Western"), n, replace = TRUE),
-    Institution_MostRecentPlacement = sample(c("Algoma Treatment and Remand Centre", "Brockville Jail", "Central East Correctional Centre", "Central North Correctional Centre", "Elgin-Middlesex Detention Centre", "Fort Frances Jail", "Hamilton Wentworth Detention Centre", "Kenora Jail", "Maplehurst Correctional Complex", "Monteith Correctional Complex", "Niagara Detention Centre", "North Bay Jail", "Ontario Correctional Institute", "Ottawa-Carleton Detention Centre", "Quinte Detention Centre", "Sarnia Jail", "South West Detention Centre", "St. Lawrence Valley Correctional and Treatment Centre", "Stratford Jail", "Sudbury Jail", "Thunder Bay Correctional Centre", "Thunder Bay Jail", "Toronto East Detention Centre", "Toronto South Detention Centre", "Vanier Centre for Women"), n, replace = TRUE),
+    Institution_MostRecentPlacement = sample(c("Algoma Treatment and Remand Centre", "Brockville Jail", "Central East Correctional Centre", "Central North Correctional Centre", "Elgin-Middlesex Detention Centre", "Fort Frances Jail",
+      "Hamilton Wentworth Detention Centre", "Kenora Jail", "Maplehurst Correctional Complex", "Monteith Correctional Complex", "Niagara Detention Centre", "North Bay Jail", "Ontario Correctional Institute", "Ottawa-Carleton Detention Centre",
+      "Quinte Detention Centre", "Sarnia Jail", "South West Detention Centre", "St. Lawrence Valley Correctional and Treatment Centre", "Stratford Jail", "Sudbury Jail", "Thunder Bay Correctional Centre", "Thunder Bay Jail",
+      "Toronto East Detention Centre", "Toronto South Detention Centre", "Vanier Centre for Women"), n, replace = TRUE),
     Gender = sample(c("Female", "Male", "All"), n, replace = TRUE),
     Measure = sample(c("Maximum", "Median", "Mode"), n, replace = TRUE),
     TotalAggregatedDays_RestrictiveConfinement = sample(0:80, n, replace = TRUE),
@@ -285,6 +564,19 @@
   )
 }
 
+#' .morie_otis_c11_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_c11_panel()
+#' res
 .morie_otis_c11_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -296,6 +588,19 @@
   )
 }
 
+#' .morie_otis_c12_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_c12_panel()
+#' res
 .morie_otis_c12_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -309,6 +614,19 @@
   )
 }
 
+#' .morie_otis_d01_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Numeric; combined arithmetically in the body. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_d01_panel()
+#' res
 .morie_otis_d01_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -322,6 +640,19 @@
   )
 }
 
+#' .morie_otis_d02_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_d02_panel()
+#' res
 .morie_otis_d02_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -332,6 +663,19 @@
   )
 }
 
+#' .morie_otis_d03_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_d03_panel()
+#' res
 .morie_otis_d03_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -342,16 +686,43 @@
   )
 }
 
+#' .morie_otis_d04_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_d04_panel()
+#' res
 .morie_otis_d04_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
     Year = sample(2018:2024, n, replace = TRUE),
-    Religion = sample(c("Another Religion/Spiritual Affiliation", "Buddhist", "Christian", "Hindu", "Indigenous Spirituality", "Jewish", "Muslim", "More Than One Reported Religion or Spiritual Affiliation", "No Religion", "Sikh", "Unknown Or Not Reported"), n, replace = TRUE),
+    Religion = sample(c("Another Religion/Spiritual Affiliation", "Buddhist", "Christian", "Hindu", "Indigenous Spirituality", "Jewish", "Muslim", "More Than One Reported Religion or Spiritual Affiliation", "No Religion", "Sikh",
+      "Unknown Or Not Reported"), n, replace = TRUE),
     Number_CustodialDeaths = sample(0:80, n, replace = TRUE),
     stringsAsFactors = FALSE
   )
 }
 
+#' .morie_otis_d05_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_d05_panel()
+#' res
 .morie_otis_d05_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -362,6 +733,19 @@
   )
 }
 
+#' .morie_otis_d06_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_d06_panel()
+#' res
 .morie_otis_d06_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -373,6 +757,19 @@
   )
 }
 
+#' .morie_otis_d07_panel
+#'
+#' A step of the synth_otis implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n Passed to \code{sample}. Defaults to \code{200L}.
+#' @param seed Passed to \code{set.seed}. Defaults to \code{1L}.
+#' @return A data frame.
+#' @export
+#' @examples
+#' res <- .morie_otis_d07_panel()
+#' res
 .morie_otis_d07_panel <- function(n = 200L, seed = 1L) {
   set.seed(seed)
   data.frame(
@@ -389,7 +786,7 @@
 # b01-style columns, the dispatcher falls through to b01 below when
 # the requested id has no dedicated panel.
 
-#' Build a synthetic OTIS data.frame for a given publication id.
+#' Build a synthetic OTIS data.frame for a given publication id
 #'
 #' Returns a data.frame mirroring the column shape + categorical level
 #' set of the published OTIS dataset for the given \code{id} (a01,
@@ -424,7 +821,7 @@ morie_synth_otis <- function(id, n = 200L, seed = 1L) {
   fn(n = n, seed = seed)
 }
 
-#' Build the full 29-dataset OTIS synthetic list.
+#' Build the full 29-dataset OTIS synthetic list
 #'
 #' Returns a named list of synthetic data.frames keyed by OTIS
 #' publication id (a01, b01..b09, c01..c12, d01..d07). Each frame is

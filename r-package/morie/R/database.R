@@ -27,6 +27,20 @@
 # open + own + close). The default path is the per-user cache.
 #
 # Returns: list(con = DBIConnection, close = logical).
+#' Returns: list(con = DBIConnection, close = logical)
+#'
+#' A step of the database implementation. Called by \code{morie_cache_list},
+#' \code{morie_cache_load}, \code{morie_cache_store}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param con The body requires: `con` must be a DBIConnection (see `?DBI::dbConnect`).
+#' @param db_path Passed to \code{morie_db_connect}.
+#' @return A list with \code{con}, \code{close}.
+#' @export
+#' @examples
+#' res <- .morie_db_handle()
+#' res
 .morie_db_handle <- function(con = NULL, db_path = NULL) {
   if (!is.null(con)) {
     if (!inherits(con, "DBIConnection")) {
@@ -79,7 +93,7 @@
 #'   root itself is returned.
 #' @return A file path string. The directory is \emph{not} created;
 #'   callers create it lazily only when they actually persist to disk.
-#' @examples
+#' @examplesIf requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)
 #' # Persistent cache root (does not write anything to disk):
 #' morie_cache_dir()
 #' # Per-subsystem persistent path:
@@ -146,7 +160,7 @@ morie_cache_clear <- function(subdir = NULL, confirm = interactive()) {
 #' SQLite tables.
 #'
 #' @return File path string.
-#' @examples
+#' @examplesIf requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)
 #' morie_builtin_db()
 #' @export
 morie_builtin_db <- function() {
@@ -161,7 +175,7 @@ morie_builtin_db <- function() {
 #' Connect to the MORIE cache database
 #'
 #' Opens (or creates) the per-user cache database. The default backend
-#' is **DuckDB** — zero-config like SQLite, but vectorised + columnar,
+#' is **DuckDB** -- zero-config like SQLite, but vectorised + columnar,
 #' so it handles the multi-GB-scale open-data PUMFs (TPS, CPADS bulk)
 #' that morie ingests without breaking down on analytical queries. For
 #' back-compat, an existing SQLite cache at `morie.db` is reused; if
@@ -272,6 +286,18 @@ morie_db_connect <- function(db_path = NULL) {
 #' )
 #' file.remove(db)
 #' }
+#' @examples
+#' \dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
+#' db <- tempfile(fileext = ".db")
+#' morie_cache_store(
+#'   data = data.frame(x = rnorm(50), y = rnorm(50)),
+#'   table_name = "demo",
+#'   db_path = db
+#' )
+#' file.remove(db)
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_cache_store <- function(data, table_name, db_path = NULL, con = NULL) {
   h <- .morie_db_handle(con, db_path)
@@ -302,6 +328,19 @@ morie_cache_store <- function(data, table_name, db_path = NULL, con = NULL) {
 #' morie_cache_load(table_name = "demo", db_path = db)
 #' file.remove(db)
 #' }
+#' @examples
+#' \dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
+#' db <- tempfile(fileext = ".db")
+#' morie_cache_store(
+#'   data = data.frame(x = 1:5),
+#'   table_name = "demo",
+#'   db_path = db
+#' )
+#' morie_cache_load(table_name = "demo", db_path = db)
+#' file.remove(db)
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_cache_load <- function(table_name, db_path = NULL, con = NULL) {
   h <- .morie_db_handle(con, db_path)
@@ -324,6 +363,15 @@ morie_cache_load <- function(table_name, db_path = NULL, con = NULL) {
 #' morie_cache_list(db_path = db)
 #' file.remove(db)
 #' }
+#' @examples
+#' \dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \donttest{
+#' db <- tempfile(fileext = ".db")
+#' morie_cache_store(data.frame(x = 1:3), "demo", db_path = db)
+#' morie_cache_list(db_path = db)
+#' file.remove(db)
+#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_cache_list <- function(db_path = NULL, con = NULL) {
   h <- .morie_db_handle(con, db_path)
@@ -359,6 +407,14 @@ morie_cache_list <- function(db_path = NULL, con = NULL) {
 #' f <- file.path(tdir, "demo.csv")
 #' write.csv(data.frame(x = 1:3, y = 4:6), f, row.names = FALSE)
 #' morie_cache_file(f, "demo", db_path = file.path(tdir, "cache.db"))
+#' @examples
+#' \dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' tdir <- tempfile("morie-cache-")
+#' dir.create(tdir)
+#' f <- file.path(tdir, "demo.csv")
+#' write.csv(data.frame(x = 1:3, y = 4:6), f, row.names = FALSE)
+#' morie_cache_file(f, "demo", db_path = file.path(tdir, "cache.db"))
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_cache_file <- function(path, table_name, db_path = NULL, con = NULL) {
   ext <- tolower(tools::file_ext(path))
@@ -548,6 +604,16 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
 # Unified load interface
 # ---------------------------------------------------------------------------
 
+#' .fuzzy_match_key
+#'
+#' A step of the database implementation. Called by \code{morie_dataset_info},
+#' \code{morie_load_dataset}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param key Character; passed to \code{gsub}.
+#' @return Nothing; the function is called for its effect.
+#' @export
 .fuzzy_match_key <- function(key) {
   catalog <- morie_dataset_catalog()
   key_lower <- tolower(gsub("-", "_", key))
@@ -715,7 +781,7 @@ morie_load_dataset <- function(key, db_path = NULL, refresh = FALSE,
 #' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return A data.frame with columns: key, name, source, survey, year, type,
 #'   cached (logical), rows (integer or NA).
-#' @examples
+#' @examplesIf requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)
 #' morie_list_datasets()
 #' @export
 morie_list_datasets <- function(db_path = NULL, con = NULL) {

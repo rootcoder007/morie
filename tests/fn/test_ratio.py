@@ -2,7 +2,7 @@
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ratio import ratio_estimator

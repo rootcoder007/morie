@@ -27,7 +27,7 @@ def mds_missing_data(D, W, n_dims=2, seed=42, max_iter=100):
     DescriptiveResult
         value = coordinate matrix, extra has final weighted stress.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     D = np.asarray(D, dtype=float)
     W = np.asarray(W, dtype=float)
@@ -68,3 +68,7 @@ mdsmm = mds_missing_data
 
 def cheatsheet() -> str:
     return "mds_missing_data({}) -> MDS with missing data (weighted stress)."
+
+
+# compact alias per ledger/NAMING.md
+mdsmissingdata = mds_missing_data

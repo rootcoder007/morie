@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -51,3 +51,7 @@ ancrm = anc_remove
 
 def cheatsheet() -> str:
     return "anc_remove({}) -> Adaptive noise cancellation via LMS."
+
+
+# compact alias per ledger/NAMING.md
+ancremove = anc_remove

@@ -1,6 +1,6 @@
 """Cholesky spatial simulation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ chol = chol_sim
 
 def cheatsheet() -> str:
     return "chol_sim({}) -> Cholesky spatial simulation"
+
+
+# compact alias per ledger/NAMING.md
+cholsim = chol_sim

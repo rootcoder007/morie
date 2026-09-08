@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import optimize
+from . import _array_core as np
+from ._sci_core import optimize
 
 from morie.fn._containers import DescriptiveResult
 
@@ -81,3 +81,7 @@ map_theta = irt_map_theta
 
 def cheatsheet() -> str:
     return "irt_map_theta({}) -> MAP theta estimation with normal prior."
+
+
+# compact alias per ledger/NAMING.md
+irtmaptheta = irt_map_theta

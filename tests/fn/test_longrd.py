@@ -1,6 +1,6 @@
 """Tests for longrd.long_read_polish."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.longrd import long_read_polish
 

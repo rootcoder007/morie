@@ -1,6 +1,6 @@
 """Tests for hmhfpi.geron_hf_pipelines."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmhfpi import geron_hf_pipelines
 

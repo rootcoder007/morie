@@ -1,0 +1,823 @@
+{
+ "wsmvar": {
+  "estimate": 1.25,
+  "sample_variance": 1.6666666666666667,
+  "mean": 2.5,
+  "second_moment": 7.5,
+  "sd": 1.118033988749895,
+  "n": 4,
+  "method": "Variance Var(X) = E[X^2] - E[X]^2"
+ },
+ "wsmcby": {
+  "estimate": 0.25,
+  "bounds": [
+   0.25,
+   1.0
+  ],
+  "raw_bounds": [
+   0.25,
+   4.0
+  ],
+  "k": [
+   2.0,
+   0.5
+  ],
+  "n": 2,
+  "method": "Chebyshev bound 1/k^2 (capped at 1)"
+ },
+ "wsmcdf": {
+  "estimate": 0.5,
+  "values": [
+   0.5,
+   0.5,
+   0.0
+  ],
+  "x": [
+   2.5,
+   2.0,
+   0.0
+  ],
+  "n": 4,
+  "method": "eCDF F_n(x) = (1/n) sum I(X_i <= x)"
+ },
+ "wsmexp": {
+  "estimate": 0.5,
+  "density_mass": 1.0,
+  "n": 1001,
+  "method": "E[X] = int x f(x) dx (trapezoid)"
+ },
+ "wsmcov": {
+  "estimate": 1.3333333333333333,
+  "sample_covariance": 2.0,
+  "correlation": 1.0,
+  "mean_x": 2.0,
+  "mean_y": 4.0,
+  "n": 3,
+  "method": "Cov(X,Y) = E[XY] - E[X]E[Y] (population divisor n)"
+ },
+ "wsmmrk": {
+  "estimate": 1.0,
+  "raw_bound": 1.5,
+  "mean": 3.0,
+  "a": 2.0,
+  "method": "Markov bound E[X]/a (capped at 1)"
+ },
+ "wsmhfd": {
+  "estimate": 0.2706705664732254,
+  "two_sided_raw": 0.2706705664732254,
+  "one_sided": 0.1353352832366127,
+  "one_sided_raw": 0.1353352832366127,
+  "n": 100,
+  "t": 0.1,
+  "a": 0.0,
+  "b": 1.0,
+  "method": "Hoeffding 2 exp(-2 n t^2/(b-a)^2) (capped at 1)"
+ },
+ "wsmmgf": {
+  "estimate": 1.0,
+  "values": [
+   1.0,
+   1.789001033053058,
+   3.702445975796565
+  ],
+  "t": [
+   0.0,
+   0.5,
+   1.0
+  ],
+  "n": 3,
+  "method": "empirical MGF (1/n) sum e^{tX_i}"
+ },
+ "wsmcfn": {
+  "estimate": 0.22658789326079745,
+  "real": [
+   0.20159033505723953,
+   -0.1584311105666634
+  ],
+  "imag": [
+   -0.1034572867606552,
+   0.4054832454302344
+  ],
+  "modulus": [
+   0.22658789326079745,
+   0.43533559367460645
+  ],
+  "t": [
+   0.5,
+   1.5
+  ],
+  "n": 3,
+  "method": "empirical phi(t) = mean cos(tX) + i mean sin(tX)"
+ },
+ "wsmclt": {
+  "estimate": 3.872983346207417,
+  "mean": 2.5,
+  "sd": 1.2909944487358056,
+  "se": 0.6454972243679028,
+  "n": 4,
+  "method": "CLT z = sqrt(n)(X_bar - mu0)/s, mu0 = 0"
+ },
+ "wsmlln": {
+  "estimate": 3.25,
+  "running_means": [
+   2.0,
+   3.0,
+   4.0,
+   3.25
+  ],
+  "last_gap": 0.75,
+  "n": 4,
+  "method": "LLN running means X_bar_1..X_bar_n"
+ },
+ "wsmdlm": {
+  "estimate": 3.0,
+  "variance": 9.0,
+  "theta_hat": 3.0,
+  "se_theta": 0.5,
+  "g_prime": 6.0,
+  "method": "delta method se(g) = |g'| se(theta)"
+ },
+ "wsmqtl": {
+  "estimate": 1.0,
+  "values": [
+   1.0,
+   2.0,
+   3.0,
+   4.0
+  ],
+  "p": [
+   0.25,
+   0.5,
+   0.51,
+   1.0
+  ],
+  "n": 4,
+  "method": "type-1 quantile q_p = X_(ceil(np))"
+ },
+ "wsmcb": {
+  "estimate": 0.7841002756996854,
+  "lower": [
+   0.0,
+   0.0,
+   0.21589972430031457
+  ],
+  "upper": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "ecdf": [
+   0.3333333333333333,
+   0.6666666666666666,
+   1.0
+  ],
+  "x_sorted": [
+   1.0,
+   2.0,
+   5.0
+  ],
+  "alpha": 0.05,
+  "n": 3,
+  "method": "DKW band F_n +/- sqrt(log(2/alpha)/(2n))"
+ },
+ "wsmnpb": {
+  "estimate": 2.5,
+  "se": 0.61,
+  "se_unbiased": 0.6161930521768485,
+  "replicates_mean": 2.48,
+  "B": 50,
+  "n": 4,
+  "method": "nonparametric bootstrap, LCG resampling, 1/B divisor"
+ },
+ "wsmbpc": {
+  "estimate": 2.5,
+  "lower": 1.5,
+  "upper": 3.5,
+  "alpha": 0.1,
+  "B": 50,
+  "n": 4,
+  "method": "bootstrap percentile CI, type-1 quantiles, LCG"
+ },
+ "wsmbpv": {
+  "estimate": 2.5,
+  "lower": 1.5,
+  "upper": 3.5,
+  "alpha": 0.1,
+  "B": 50,
+  "n": 4,
+  "method": "bootstrap pivotal CI (2 theta - q*_{1-a/2}, 2 theta - q*_{a/2})"
+ },
+ "wsmprb": {
+  "estimate": 2.5,
+  "se": 1.5435528386013286,
+  "se_unbiased": 1.5592238275639199,
+  "replicates_mean": 2.6661467423847554,
+  "B": 50,
+  "n": 4,
+  "method": "parametric bootstrap, inversion sampler f(theta,u), LCG"
+ },
+ "wsmifn": {
+  "estimate": 2.5,
+  "influence": [
+   -1.4999999999999991,
+   -0.5000000000000004,
+   0.5000000000000004,
+   1.4999999999999991
+  ],
+  "epsilon": 0.2,
+  "mean_influence": 0.0,
+  "n": 4,
+  "method": "sensitivity curve SC(x) = (n+1)(T(data+x) - T(data))"
+ },
+ "wsmlik": {
+  "estimate": 0.05578254003710745,
+  "log_likelihood": -2.886294361119891,
+  "theta": 2.0,
+  "n": 2,
+  "method": "L(theta) = prod f(X_i;theta) via log domain"
+ },
+ "wsmllk": {
+  "estimate": -2.886294361119891,
+  "per_observation": [
+   -1.1931471805599454,
+   -1.6931471805599452
+  ],
+  "likelihood": 0.05578254003710745,
+  "theta": 2.0,
+  "n": 2,
+  "method": "l(theta) = sum log f(X_i;theta)"
+ },
+ "wsmcrl": {
+  "estimate": 0.16,
+  "se_bound": 0.4,
+  "theta": 0.0,
+  "n": 25,
+  "information": 0.25,
+  "method": "Cramer-Rao Var(T) >= 1/(n I(theta))"
+ },
+ "wsmfis": {
+  "estimate": 0.2499999941224554,
+  "se_one_obs": 2.0000000235101787,
+  "theta": 2.0,
+  "h": 1e-05,
+  "grid_points": 200001,
+  "method": "I = -int f(x;th) d2 log f/dth2 dx (central diff + trapezoid)"
+ },
+ "wsmasm": {
+  "estimate": 2.0,
+  "se": 0.2000000023510179,
+  "information": 0.2499999941224554,
+  "ci_lower": 1.6080071984840787,
+  "ci_upper": 2.3919928015159213,
+  "n": 100,
+  "method": "MLE se = 1/sqrt(n I(theta_hat)), Wald 95 CI"
+ },
+ "wsmwhz": {
+  "estimate": 0.05,
+  "beta": [
+   0.9999999999999997,
+   1.9999999999999998
+  ],
+  "robust_se": [
+   0.05,
+   0.05
+  ],
+  "covariance": [
+   0.0025,
+   0.0,
+   0.0,
+   0.0025
+  ],
+  "bread": [
+   1.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "meat": [
+   0.25,
+   0.0,
+   0.0,
+   0.25
+  ],
+  "n": 100,
+  "p": 2,
+  "method": "White-Huber HC0 sandwich A^-1 B A^-1 / n"
+ },
+ "wsmemt": {
+  "estimate": 0.5,
+  "pi": 0.5,
+  "mu1": 0.0125,
+  "mu2": 10.012500000000001,
+  "sd1": 0.07395099728874521,
+  "sd2": 0.07395099728874505,
+  "log_likelihood": 3.9381351213164617,
+  "iterations": 3,
+  "converged": true,
+  "n": 8,
+  "method": "EM 2-component normal mixture, closed-form M-step"
+ },
+ "wsmchi": {
+  "estimate": 10.0,
+  "p_value": 0.006737946999085468,
+  "df": 2,
+  "per_cell": [
+   5.0,
+   0.0,
+   5.0
+  ],
+  "total_observed": 60.0,
+  "total_expected": 60.0,
+  "k": 3,
+  "method": "chi-square GOF sum (O-E)^2/E vs Chi2_{k-1}"
+ },
+ "wsmbay": {
+  "estimate": 0.9999999999913022,
+  "evidence": 0.07156256258057819,
+  "map_theta": 1.0,
+  "n": 3
+ },
+ "wsmbcr": {
+  "estimate": 0.8999999999999999,
+  "lower": 0.05,
+  "upper": 0.95,
+  "mass_drift": 0.0,
+  "alpha": 0.1,
+  "method": "equal-tail credible interval via trapezoid CDF inversion"
+ },
+ "wsmpst1": {
+  "estimate": 0.5,
+  "posterior_sd": 0.28867513748156415,
+  "mass_drift": 0.0,
+  "method": "posterior mean by trapezoid quadrature (self-normalising)"
+ },
+ "bfsd": {
+  "estimate": 2.9985007496251876,
+  "bf10": 0.33349999999999996,
+  "posterior_density_at_null": 0.49975012493753124,
+  "prior_density_at_null": 0.16666666666666666,
+  "bandwidth": 0.11369936771655677,
+  "n": 2001,
+  "method": "Savage-Dickey BF01 = KDE posterior(theta0) / prior(theta0)"
+ },
+ "wsment": {
+  "estimate": 1.0397207708399179,
+  "bits": 1.5,
+  "form": "discrete",
+  "n": 3,
+  "method": "discrete entropy, nats, 0 log 0 = 0"
+ },
+ "wsmkbk": {
+  "estimate": 0.14384103622589042,
+  "bits": 0.20751874963942185,
+  "reverse": 0.13081203594113697,
+  "form": "discrete",
+  "n": 2,
+  "method": "KL D(p||q); 0 log 0 = 0, p>0 & q=0 -> inf"
+ },
+ "wsmmtl": {
+  "estimate": 0.6931471805599453,
+  "bits": 1.0,
+  "levels_x": 2,
+  "levels_y": 2,
+  "n": 4,
+  "method": "I(X;Y) = KL(joint || product of marginals), empirical"
+ },
+ "wsmodd": {
+  "estimate": 9.0,
+  "log_or": 2.1972245773362196,
+  "se": 0.4714045207910317,
+  "ci_lower": 3.5725823957131437,
+  "ci_upper": 22.672675120717862,
+  "n": 100.0,
+  "method": "OR = n11 n00 / (n10 n01), Woolf log-scale CI"
+ },
+ "wsmrrr": {
+  "estimate": 2.9999999999999996,
+  "risk_exposed": 0.3,
+  "risk_unexposed": 0.1,
+  "log_rr": 1.0986122886681096,
+  "se": 0.33665016461206926,
+  "ci_lower": 1.5508297195435496,
+  "ci_upper": 5.803345065278306,
+  "n": 200.0,
+  "method": "RR = p_exposed/p_unexposed, Katz log-scale CI"
+ },
+ "densty": {
+  "estimate": 0.6666666666666666,
+  "n_edges": 2,
+  "n_possible": 3,
+  "n": 3,
+  "method": "density |E| / C(n,2), undirected simple graph"
+ },
+ "sgtclo": {
+  "estimate": 1.0,
+  "closeness": [
+   0.6666666666666666,
+   1.0,
+   0.6666666666666666
+  ],
+  "argmax": 1,
+  "n": 3,
+  "method": "closeness (n-1)/sum BFS distances; connected required"
+ },
+ "wsmlsr": {
+  "estimate": 1.039999999999998,
+  "beta": [
+   1.039999999999998,
+   2.005714285714286
+  ],
+  "se": [
+   0.1221240587037859,
+   0.05329930887479328
+  ],
+  "sigma2": 0.024857142857142907,
+  "rss": 0.049714285714285815,
+  "r_squared": 0.9985896656534954,
+  "n": 4,
+  "p": 2,
+  "method": "OLS via QR; classical se sigma2 (X'X)^-1"
+ },
+ "wsmrgr": {
+  "estimate": 1.0243902439024386,
+  "beta": [
+   1.0243902439024386,
+   1.8048780487804876
+  ],
+  "effective_df": 1.5609756097560972,
+  "rss": 0.16359309934562868,
+  "lambda": 0.5,
+  "n": 3,
+  "p": 2,
+  "method": "ridge (X'X + lambda I)^-1 X'y; edf = tr(H)"
+ },
+ "wsmlas": {
+  "estimate": 2.5,
+  "beta": [
+   2.5,
+   -0.5
+  ],
+  "n_nonzero": 2,
+  "objective": 1.75,
+  "iterations": 2,
+  "converged": true,
+  "lambda": 0.5,
+  "n": 2,
+  "p": 2,
+  "method": "lasso cyclic coordinate descent, soft threshold"
+ },
+ "wsmlgr": {
+  "estimate": 1.0986122886681098,
+  "beta": [
+   1.0986122886681098
+  ],
+  "se": [
+   1.1547005383792515
+  ],
+  "log_likelihood": -2.249340578475233,
+  "iterations": 5,
+  "converged": true,
+  "n": 4,
+  "p": 1,
+  "method": "logistic MLE by Newton-Raphson; separation refused"
+ },
+ "wsmpsr": {
+  "estimate": 0.6931471805599453,
+  "beta": [
+   0.6931471805599453
+  ],
+  "se": [
+   0.3535533905932738
+  ],
+  "log_likelihood": -5.632876385868382,
+  "deviance": 1.0464962875290957,
+  "iterations": 1,
+  "converged": true,
+  "n": 4,
+  "p": 1,
+  "method": "Poisson GLM Newton; ll includes lgamma constant"
+ },
+ "wsmaic": {
+  "estimate": 206.0,
+  "aic_wasserman": -103.0,
+  "loglik": -100.0,
+  "k": 3,
+  "method": "AIC = -2 log L + 2k (classical); Wasserman form alongside"
+ },
+ "wsmbic": {
+  "estimate": 211.73606901628443,
+  "bic_wasserman": -105.86803450814222,
+  "loglik": -100.0,
+  "k": 3,
+  "n": 50,
+  "method": "BIC = -2 log L + k log n; Wasserman form alongside"
+ },
+ "wsmcvr": {
+  "estimate": 0.011204855645955412,
+  "fold_mse": [
+   0.013061224489796047,
+   0.009348486802114492,
+   0.009348486802114515,
+   0.013061224489796597
+  ],
+  "fold_sizes": [
+   2,
+   2,
+   2,
+   2
+  ],
+  "k": 4,
+  "n": 8,
+  "method": "k-fold CV, contiguous deterministic folds, squared error"
+ },
+ "wsmmcd": {
+  "estimate": 0.27067056647322524,
+  "two_sided_raw": 0.27067056647322524,
+  "one_sided": 0.13533528323661262,
+  "sum_c_sq": 0.01,
+  "n": 100,
+  "t": 0.1,
+  "method": "McDiarmid 2 exp(-2t^2 / sum c_i^2) (capped at 1)"
+ },
+ "wsmkbw": {
+  "estimate": 10.39471468564849,
+  "h_normal_reference": 12.233699573265657,
+  "sd": 29.011491975882016,
+  "iqr": 50.0,
+  "n": 100,
+  "method": "Silverman 0.9 min(s, IQR/1.34) n^-1/5; normal reference alongside"
+ },
+ "wsmwlt": {
+  "estimate": [
+   9.999999999999998,
+   -9.999999999999998,
+   9.999999999999998,
+   -9.999999999999998
+  ],
+  "threshold": 1.6651092223153954,
+  "sigma_used": 1.0,
+  "n_kept": 2,
+  "n_detail": 3,
+  "n": 4,
+  "method": "Haar + hard universal threshold sigma sqrt(2 log n)"
+ },
+ "wsmcrk": {
+  "estimate": 4.000000000000001,
+  "values": [
+   4.000000000000001,
+   1.5728284661939722
+  ],
+  "effective_n": [
+   1.7510126573122942,
+   1.3774303753112305
+  ],
+  "h": 0.7,
+  "n": 4,
+  "method": "Nadaraya-Watson, Gaussian kernel; zero-weight -> nan"
+ },
+ "wsmlpr": {
+  "estimate": 3.9672475451880653,
+  "values": [
+   3.9672475451880653
+  ],
+  "derivatives": [
+   1.8976415989731414
+  ],
+  "h": 0.7,
+  "p": 1,
+  "n": 4,
+  "method": "local polynomial WLS, Gaussian kernel; b0 = fit, b1 = slope"
+ },
+ "wsmsmp": {
+  "estimate": [
+   0.36363636363636365,
+   0.9090909090909092,
+   1.090909090909091,
+   1.6363636363636365
+  ],
+  "effective_df": 2.4242424242424243,
+  "rss": 2.644628099173554,
+  "lambda": 1.0,
+  "n": 4,
+  "method": "discrete smoothing spline (I + lam D'D)^-1 y, uneven spacings"
+ },
+ "wsmpca": {
+  "estimate": 2.5752434833957802,
+  "eigenvalues": [
+   2.5752434833957802,
+   0.008089849937553129
+  ],
+  "components": [
+   0.6215988997712196,
+   0.7833356929204804,
+   0.7833356929204804,
+   -0.6215988997712196
+  ],
+  "explained_ratio": 1.0000000000000002,
+  "scores": [
+   -1.53549054151178,
+   -0.058136976520724165,
+   -0.13055594882008006,
+   0.1035998166285366,
+   1.6660464903318601,
+   -0.04546284010781232
+  ],
+  "n": 3,
+  "d": 2,
+  "k": 2,
+  "method": "eigh of (n-1)-covariance; sign fixed by max-|coord| positive"
+ },
+ "wsmkmn": {
+  "estimate": 0.15999999999999945,
+  "centers": [
+   0.0,
+   10.0
+  ],
+  "labels": [
+   0,
+   0,
+   0,
+   1,
+   1,
+   1
+  ],
+  "iterations": 2,
+  "converged": true,
+  "n": 6,
+  "d": 1,
+  "k": 2,
+  "method": "Lloyd k-means, farthest-first deterministic seeding"
+ },
+ "wsmgmm": {
+  "estimate": 3.9381351213164617,
+  "weights": [
+   0.5,
+   0.5
+  ],
+  "means": [
+   0.0125,
+   10.012500000000001
+  ],
+  "sds": [
+   0.07395099728874521,
+   0.07395099728874505
+  ],
+  "iterations": 6,
+  "converged": true,
+  "n": 8,
+  "k": 2,
+  "method": "GMM k=2 via wsmemt EM; quartile+pooled-sd deterministic init"
+ },
+ "wsmhmm": {
+  "estimate": -2.217049804887783,
+  "filtered": [
+   0.7923437069677776,
+   0.20765629303222252
+  ],
+  "T": 3,
+  "S": 2,
+  "method": "scaled forward algorithm; exact log-likelihood"
+ },
+ "wsmvit": {
+  "estimate": -3.0649537425959443,
+  "path": [
+   0,
+   1,
+   0
+  ],
+  "T": 3,
+  "S": 2,
+  "method": "log-space Viterbi, ties to lower state index"
+ },
+ "wsmgib": {
+  "estimate": 0.873672698202588,
+  "mean_x": 0.08630104113808292,
+  "mean_y": 0.017242435473474246,
+  "n": 200
+ },
+ "wsmmcm": {
+  "estimate": 0.10242216091055592,
+  "acceptance_rate": 0.73,
+  "n": 200
+ },
+ "wsmdir": {
+  "estimate": 0.27,
+  "log_joint": -1.3093333199837625,
+  "factors": [
+   0.3,
+   0.9
+  ],
+  "n_nodes": 2,
+  "method": "DAG factorisation prod p(x_i | pa_i), binary CPTs"
+ },
+ "wsmund": {
+  "estimate": 6.0,
+  "probabilities": [
+   0.3333333333333333,
+   0.16666666666666666,
+   0.16666666666666666,
+   0.3333333333333333
+  ],
+  "n_nodes": 2,
+  "n_cliques": 1,
+  "method": "exact undirected model; brute-force Z over 2^n configs"
+ },
+ "wsmgrp": {
+  "estimate": 0.3333333333333333,
+  "mode": [
+   0,
+   0
+  ],
+  "partition_function": 6.0,
+  "probabilities": [
+   0.3333333333333333,
+   0.16666666666666666,
+   0.16666666666666666,
+   0.3333333333333333
+  ],
+  "n_nodes": 2,
+  "method": "clique-potential joint via wsmund; mode decoded (ties -> lowest index)"
+ },
+ "wsmlgc": {
+  "estimate": 25.16073381895602,
+  "lambda0": 3.0546237913821828,
+  "lambda_row": [
+   -0.2027325540540823,
+   0.2027325540540823
+  ],
+  "lambda_col": [
+   0.0,
+   0.0
+  ],
+  "lambda_int": [
+   0.549306144334055,
+   -0.5493061443340546,
+   -0.549306144334055,
+   0.5493061443340546
+  ],
+  "independence_fit": [
+   18.0,
+   22.0,
+   27.0,
+   33.0
+  ],
+  "df": 1,
+  "n": 100.0,
+  "method": "saturated log-linear (zero-sum ANOVA of log counts) + G^2"
+ },
+ "wsmbst": {
+  "estimate": 0.0,
+  "prediction": [
+   1,
+   -1,
+   1,
+   -1
+  ],
+  "alphas": [
+   0.5493061443340549,
+   0.8047189562170503,
+   0.6931471805599454,
+   0.7331685343967135,
+   0.7175422626446613
+  ],
+  "rounds_used": 5,
+  "n": 4,
+  "method": "AdaBoost.M1, exhaustive stumps, deterministic ties; perfect-stump alpha capped at 10"
+ },
+ "wsmsvm": {
+  "estimate": 2.0,
+  "w": [
+   1.0,
+   0.0
+  ],
+  "b": 0.0,
+  "support_vectors": [
+   1,
+   2
+  ],
+  "alphas": [
+   0.0,
+   0.5,
+   0.5,
+   0.0
+  ],
+  "kkt_violation": 0.0,
+  "n": 4,
+  "d": 2,
+  "method": "linear SVM, cyclic pairwise dual ascent, C=1e6 ~ hard margin"
+ },
+ "wsmmin": {
+  "estimate": 2.0,
+  "minimax_estimator": "T2",
+  "worst_case": [
+   4.0,
+   2.0,
+   3.0
+  ],
+  "maximin": 1.0,
+  "has_pure_saddle": false,
+  "m": 3,
+  "k": 2,
+  "method": "exact min over rows of max over columns; maximin duality check"
+ }
+}

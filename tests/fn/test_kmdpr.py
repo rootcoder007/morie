@@ -1,6 +1,6 @@
 """Tests for kmdpr.kamath_dense_passage_retrieval."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmdpr import kamath_dense_passage_retrieval
 

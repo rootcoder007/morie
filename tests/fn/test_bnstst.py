@@ -1,6 +1,6 @@
 """Tests for bnstst.bound_test_inference."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bnstst import bound_test_inference
 

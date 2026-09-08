@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import ESRes
 
@@ -80,3 +80,7 @@ rcddl = recidivism_dml
 
 def cheatsheet() -> str:
     return "recidivism_dml({}) -> Double Machine Learning for recidivism treatment effect."
+
+
+# compact alias per ledger/NAMING.md
+recidivismdml = recidivism_dml

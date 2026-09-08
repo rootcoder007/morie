@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -82,3 +82,7 @@ adwdri = adwin_drift
 
 def cheatsheet() -> str:
     return "adwin_drift({}) -> Concept drift detection (ADWIN)."
+
+
+# compact alias per ledger/NAMING.md
+adwindrift = adwin_drift

@@ -1,6 +1,6 @@
 """Tests for baysprr.sparsity_horseshoe."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.baysprr import sparsity_horseshoe
 

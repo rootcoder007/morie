@@ -1,6 +1,6 @@
 """Party position 2D (Laver-Hunt)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ part = party_pos_2d
 
 def cheatsheet() -> str:
     return "party_pos_2d({}) -> Party position 2D (Laver-Hunt)"
+
+
+# compact alias per ledger/NAMING.md
+partypos2d = party_pos_2d

@@ -7,8 +7,8 @@ __all__ = ["bayesian_normal", "bnorm"]
 
 from typing import Any, Union
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 
 def bayesian_normal(
@@ -92,3 +92,7 @@ bnorm = bayesian_normal
 
 def cheatsheet() -> str:
     return "bayesian_normal(data) -> Normal-normal conjugate Bayesian analysis."
+
+
+# compact alias per ledger/NAMING.md
+bayesiannormal = bayesian_normal

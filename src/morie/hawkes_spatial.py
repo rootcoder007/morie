@@ -24,9 +24,9 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
-import pandas as pd
-from scipy.optimize import minimize
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn._sci_core import minimize
 
 
 def _check_params(p: dict[str, float]) -> None:
@@ -76,6 +76,21 @@ def hawkes_st_loglik(events, params: dict[str, float],
     T_h = float(np.max(t)) if end_time is None else float(end_time)
     if n == 0:
         return -params["mu"] * T_h * area
+
+    try:
+        from . import _core as _ck
+        _st = _ck.hawkes_st_loglik
+    except (ImportError, AttributeError):
+        _st = None
+    if _st is not None:
+        import array as _pa
+        return float(_st(
+            _pa.array("d", [float(v) for v in t.tolist()]),
+            _pa.array("d", [float(v) for v in x.tolist()]),
+            _pa.array("d", [float(v) for v in y.tolist()]),
+            float(params["mu"]), float(params["alpha"]),
+            float(params["beta"]), float(params["sigma"]),
+            T_h, float(area)))
 
     loglam = 0.0
     for j in range(n):

@@ -1,6 +1,6 @@
 """Bayesian outbreak detection"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ baye = bayes_outbreak
 
 def cheatsheet() -> str:
     return "bayes_outbreak({}) -> Bayesian outbreak detection"
+
+
+# compact alias per ledger/NAMING.md
+bayesoutbreak = bayes_outbreak

@@ -1,6 +1,6 @@
 """Continuous wavelet transform (Morlet)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -38,3 +38,7 @@ def cwt_morlet(y, scales):
 
 def cheatsheet():
     return "cwwsym: Continuous wavelet transform (Morlet)"
+
+
+# compact alias per ledger/NAMING.md
+cwtmorlet = cwt_morlet

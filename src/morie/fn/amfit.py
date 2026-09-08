@@ -17,7 +17,7 @@ def am_fit_statistic(Z, zhat, alpha, beta) -> DescriptiveResult:
 
     .. epigraph:: To understand God's thoughts we must study statistics. -- Florence Nightingale
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     zhat = np.asarray(zhat, dtype=float).ravel()
@@ -40,3 +40,7 @@ amfit = am_fit_statistic
 
 def cheatsheet() -> str:
     return "am_fit_statistic({}) -> A-M fit statistic (normalized variance reduction)."
+
+
+# compact alias per ledger/NAMING.md
+amfitstatistic = am_fit_statistic

@@ -1,6 +1,6 @@
 """Tests for bndsbs.bound_subset_inference."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndsbs import bound_subset_inference
 

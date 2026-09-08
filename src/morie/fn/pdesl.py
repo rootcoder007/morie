@@ -1,6 +1,6 @@
 """Separation of variables PDE."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def pde_separation(pde):
 
 def cheatsheet():
     return "pdesl: Separation of variables PDE"
+
+
+# compact alias per ledger/NAMING.md
+pdeseparation = pde_separation

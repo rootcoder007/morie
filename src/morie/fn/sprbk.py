@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -89,3 +89,7 @@ short = spring_mass
 
 def cheatsheet() -> str:
     return "spring_mass({}) -> Damped spring-mass system."
+
+
+# compact alias per ledger/NAMING.md
+springmass = spring_mass

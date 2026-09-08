@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def manski_bounds(
@@ -94,3 +94,7 @@ bnd = manski_bounds
 
 def cheatsheet() -> str:
     return "manski_bounds({}) -> Partial identification bounds (Manski bounds) under missing "
+
+
+# compact alias per ledger/NAMING.md
+manskibounds = manski_bounds

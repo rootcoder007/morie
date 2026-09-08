@@ -1,6 +1,6 @@
 """Tests for morie.fn.swtch -- label / one-hot encoding."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.swtch import encode_labels, swtch

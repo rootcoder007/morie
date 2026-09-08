@@ -1,6 +1,6 @@
 """Tests for sgtbtw.sgt_betweenness_centrality."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtbtw import sgt_betweenness_centrality
 

@@ -1,8 +1,8 @@
 """Tests for rng181.rangayyan_ch4_pan_tompkins_lowpass_transfer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rng181 import rangayyan_ch4_pan_tompkins_lowpass_transfer
+from morie.fn.bsaqrs import rangayyan_ch4_pan_tompkins_lowpass_transfer
 
 
 def test_rng181_basic():

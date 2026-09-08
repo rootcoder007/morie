@@ -1,6 +1,6 @@
 """Tests for morie.fn.nmds -- Non-metric MDS."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import MdsRes
 from morie.fn.nmds import nmds
@@ -26,7 +26,7 @@ class TestNmds:
         assert res.stress >= 0
 
     def test_from_distance_matrix(self):
-        from scipy.spatial.distance import pdist, squareform
+        from morie.fn._sci_core import pdist, squareform
 
         rng = np.random.default_rng(42)
         X = rng.standard_normal((15, 3))

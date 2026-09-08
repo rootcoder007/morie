@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -61,3 +61,7 @@ liftw = lifting_dwt
 
 def cheatsheet() -> str:
     return "lifting_dwt({}) -> Lifting scheme DWT (in-place, memory efficient)."
+
+
+# compact alias per ledger/NAMING.md
+liftingdwt = lifting_dwt

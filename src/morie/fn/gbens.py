@@ -1,6 +1,6 @@
 """Gradient Boosting ensemble (sequential additive model)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -47,7 +47,7 @@ def gradient_boosting_ensemble(
     RichResult with payload: estimate (train accuracy / R^2),
     feature_importances, n_estimators, learning_rate, n, method.
     """
-    from sklearn.ensemble import (
+    from ._ml_core import (
         GradientBoostingClassifier,
         GradientBoostingRegressor,
     )

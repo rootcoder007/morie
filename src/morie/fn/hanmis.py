@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 
@@ -51,3 +51,7 @@ hanmis = handle_missing
 
 def cheatsheet() -> str:
     return "handle_missing({}) -> Missing data handler."
+
+
+# compact alias per ledger/NAMING.md
+handlemissing = handle_missing

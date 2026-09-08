@@ -1,6 +1,6 @@
 """Tests for morie.fn.zscnt -- Contour line generation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zscnt import contour_lines
 

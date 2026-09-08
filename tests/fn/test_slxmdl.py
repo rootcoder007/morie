@@ -1,6 +1,6 @@
 """Tests for slxmdl.slx_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.slxmdl import slx_model
 

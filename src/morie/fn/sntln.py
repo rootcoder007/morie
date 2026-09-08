@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -57,3 +57,7 @@ sntln = sentence_length
 
 def cheatsheet() -> str:
     return "sentence_length({}) -> Sentence length distribution summary."
+
+
+# compact alias per ledger/NAMING.md
+sentencelength = sentence_length

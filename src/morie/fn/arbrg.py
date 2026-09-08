@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -33,3 +33,7 @@ arbrg = ar_burg_fn
 
 def cheatsheet() -> str:
     return "ar_burg_fn({}) -> AR model estimation via Burg algorithm."
+
+
+# compact alias per ledger/NAMING.md
+arburgfn = ar_burg_fn

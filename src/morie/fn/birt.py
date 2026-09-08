@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats as sp
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as sp
 
 
 def bayesian_irt_2pl(
@@ -136,3 +136,7 @@ def bayesian_irt_2pl(
 
 def cheatsheet() -> str:
     return "bayesian_irt_2pl({}) -> Bayesian 2PL IRT model via Gibbs sampler."
+
+
+# compact alias per ledger/NAMING.md
+bayesianirt2pl = bayesian_irt_2pl

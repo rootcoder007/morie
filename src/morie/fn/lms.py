@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -71,3 +71,7 @@ lms = least_median_sq
 
 def cheatsheet() -> str:
     return "least_median_sq({}) -> Least Median of Squares (LMS) robust regression."
+
+
+# compact alias per ledger/NAMING.md
+leastmediansq = least_median_sq

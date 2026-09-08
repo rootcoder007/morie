@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._cfa_engine import (
     cov_from_data,
@@ -71,3 +71,7 @@ def cfa_residuals(
 
 def cheatsheet() -> str:
     return "cfa_residuals({}) -> Residual correlation matrix from CFA."
+
+
+# compact alias per ledger/NAMING.md
+cfaresiduals = cfa_residuals

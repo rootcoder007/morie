@@ -1,6 +1,6 @@
 """Tests for vitlrn.vit_layer_norm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vitlrn import vit_layer_norm
 

@@ -1,6 +1,6 @@
 """Top cycle set computation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ top_ = top_cycle_set
 
 def cheatsheet() -> str:
     return "top_cycle_set({}) -> Top cycle set computation"
+
+
+# compact alias per ledger/NAMING.md
+topcycleset = top_cycle_set

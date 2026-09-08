@@ -30,8 +30,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 
 def project_root() -> Path:
@@ -376,6 +376,7 @@ def otdml(
     data = df[[outcome, treatment] + covariates].dropna().copy()
 
     # Encode categoricals as dummies
+    data = pd._coerce_frame(data)
     cat_cols = data.select_dtypes(include=["object", "string", "category"]).columns.tolist()
     if cat_cols:
         data = pd.get_dummies(data, columns=cat_cols, drop_first=True)
@@ -386,7 +387,8 @@ def otdml(
     n = len(y)
 
     # Simple Frisch-Waugh-Lovell partialling out (portable, no DoubleML dep)
-    from numpy.linalg import lstsq
+    from morie.fn._array_core import linalg as _la
+    lstsq = _la.lstsq
 
     rng = np.random.default_rng(seed)
 
@@ -419,7 +421,7 @@ def otdml(
     bread = np.mean(d_res**2)
     se = float(np.sqrt(meat / (bread**2 * n)))
 
-    from scipy import stats
+    from morie.fn import _stats_core as stats
 
     z = ate / se if se > 0 else 0
     pval = float(2 * (1 - stats.norm.cdf(abs(z))))

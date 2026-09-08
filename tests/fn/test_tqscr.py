@@ -1,6 +1,6 @@
 """Tests for tqscr.turboquant_score_distortion."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tqscr import turboquant_score_distortion
 

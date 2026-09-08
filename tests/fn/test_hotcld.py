@@ -1,6 +1,6 @@
 """Tests for hotcld.hot_cold_spots."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hotcld import hot_cold_spots
 

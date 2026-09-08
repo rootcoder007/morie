@@ -1,6 +1,6 @@
 """Tests for btcbb.boot_circular_block."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btcbb import boot_circular_block
 

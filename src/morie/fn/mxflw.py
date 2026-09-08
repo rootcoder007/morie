@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from collections import deque
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -98,3 +98,7 @@ mxflw = max_flow
 
 def cheatsheet() -> str:
     return "mxflw() -> Compute maximum flow using Edmonds-Karp (BFS-based Ford-Fulkerson)"
+
+
+# compact alias per ledger/NAMING.md
+maxflow = max_flow

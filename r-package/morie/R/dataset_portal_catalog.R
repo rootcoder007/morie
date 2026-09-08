@@ -91,7 +91,7 @@
 #' a registry in an interactive session.
 #'
 #' @return Invisibly `NULL`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' morie_dataset_portal_catalog_clear_cache()
 #' catalog <- morie_dataset_portal_catalog()
 #' nrow(catalog)
@@ -126,7 +126,7 @@ morie_dataset_portal_catalog_clear_cache <- function() {
 #'   warning when the companion is absent.
 #' @return A `data.frame` with columns `dataset_key`, `source`,
 #'   `id`, `api_modes`, `loader`, `dict_url`, `n_rows_bundled`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' # Per-portal slice: registry lives in code, fastest path.
 #' nypd <- morie_dataset_portal_catalog(portal = "nyc_nypd")
 #' nrow(nypd)
@@ -464,6 +464,14 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
 # Helpers
 # ---------------------------------------------------------------------------
 
+#' .morie_portal_fixture_rows
+#'
+#' Part of the dataset_portal_catalog implementation; see the file
+#' header for the source it follows.
+#'
+#' @param fname Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @return A numeric value.
+#' @export
 .morie_portal_fixture_rows <- function(fname) {
   if (is.null(fname) || is.na(fname) || !nzchar(fname))
     return(NA_integer_)

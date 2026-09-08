@@ -1,8 +1,8 @@
 """Tests for rgkneecl.rangayyan_knee_classify."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgkneecl import rangayyan_knee_classify
+from morie.fn.bsaclass import rangayyan_knee_classify
 
 
 def test_rgkneecl_basic():

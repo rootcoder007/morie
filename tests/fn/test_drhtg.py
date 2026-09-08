@@ -1,6 +1,6 @@
 """Tests for drhtg.dr_did_heterogeneity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drhtg import dr_did_heterogeneity
 

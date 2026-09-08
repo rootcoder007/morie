@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -23,3 +23,7 @@ alias = turns_count_fn
 
 def cheatsheet() -> str:
     return "turns_count_fn({}) -> Turns count of a signal."
+
+
+# compact alias per ledger/NAMING.md
+turnscountfn = turns_count_fn

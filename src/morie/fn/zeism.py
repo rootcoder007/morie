@@ -1,6 +1,6 @@
 """Indirect standardization"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ indi = indirect_std
 
 def cheatsheet() -> str:
     return "indirect_std({}) -> Indirect standardization"
+
+
+# compact alias per ledger/NAMING.md
+indirectstd = indirect_std

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -66,3 +66,7 @@ thd = thd_compute
 
 def cheatsheet() -> str:
     return "thd_compute({}) -> Total harmonic distortion."
+
+
+# compact alias per ledger/NAMING.md
+thdcompute = thd_compute

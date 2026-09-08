@@ -6,7 +6,7 @@ IF(x, y) = I_eff^{-1} S_eff(x, y) = (y - ybar - beta_hat (x - xbar))
 construction).
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -2,11 +2,11 @@
 % Please edit documentation in R/entheo_dmt.R
 \name{.morie_entheo_require_root}
 \alias{.morie_entheo_require_root}
-\title{Require the dataset root or stop with a curated error.}
+\title{Require the dataset root or stop with a curated error}
 \usage{
 .morie_entheo_require_root()
 }
 \description{
-Require the dataset root or stop with a curated error.
+Require the dataset root or stop with a curated error
 }
 \keyword{internal}

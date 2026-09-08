@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -41,3 +41,7 @@ pntmp = pan_tompkins_qrs
 
 def cheatsheet() -> str:
     return "pan_tompkins_qrs({}) -> Pan-Tompkins QRS detection."
+
+
+# compact alias per ledger/NAMING.md
+pantompkinsqrs = pan_tompkins_qrs

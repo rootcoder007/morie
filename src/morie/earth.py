@@ -43,7 +43,7 @@ import pathlib
 import typing as _t
 
 try:
-    import pandas as _pd
+    from morie.fn import _frame_core as _pd
 except ImportError:  # pragma: no cover
     _pd = None  # type: ignore
 

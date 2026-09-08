@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -81,3 +81,7 @@ coiwv = coiflet_wavelet
 
 def cheatsheet() -> str:
     return "coiflet_wavelet({}) -> Generate Coiflet wavelet filter coefficients."
+
+
+# compact alias per ledger/NAMING.md
+coifletwavelet = coiflet_wavelet

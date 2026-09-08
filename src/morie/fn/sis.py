@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.integrate import odeint
+from . import _array_core as np
+from ._sci_core import odeint
 
 from ._containers import SIRResult
 
@@ -78,3 +78,7 @@ sis = sis_model
 
 def cheatsheet() -> str:
     return "sis_model({}) -> SIS compartmental model (no immunity)."
+
+
+# compact alias per ledger/NAMING.md
+sismodel = sis_model

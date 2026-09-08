@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -48,3 +48,7 @@ ppint = pp_interval
 
 def cheatsheet() -> str:
     return "pp_interval({}) -> P-P interval computation."
+
+
+# compact alias per ledger/NAMING.md
+ppinterval = pp_interval

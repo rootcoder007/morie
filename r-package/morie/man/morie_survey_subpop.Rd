@@ -2,7 +2,7 @@
 % Please edit documentation in R/survey.R
 \name{morie_survey_subpop}
 \alias{morie_survey_subpop}
-\title{Subpopulation (domain) mean with Woodruff linearised SE.}
+\title{Subpopulation (domain) mean with Woodruff linearised SE}
 \usage{
 morie_survey_subpop(df, domain_col, domain_value, outcome_col, weight_col)
 }
@@ -13,7 +13,7 @@ any weight/strata/cluster/domain columns referenced by name.}
 \item{domain_col}{Character; column name of the subpopulation /
 domain indicator in \code{df}.}
 
-\item{domain_value}{Value (matching \code{df[[domain_col]]}) defining
+\item{domain_value}{Value (matching \verb{df\[\[domain_col\]\]}) defining
 the subpopulation to estimate.}
 
 \item{outcome_col}{Character; column name of the outcome variable
@@ -24,9 +24,20 @@ variable in \code{df}.}
 }
 \value{
 A named list with elements \code{mean}, \code{se},
-\code{ci_lower}, \code{ci_upper} (95\\% Wald confidence interval),
+\code{ci_lower}, \code{ci_upper} (95\% Wald confidence interval),
 and \code{n_domain} (number of sample units in the subpopulation).
 }
 \description{
-Subpopulation (domain) mean with Woodruff linearised SE.
+Subpopulation (domain) mean with Woodruff linearised SE
+}
+\examples{
+\dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+if (requireNamespace("survey", quietly = TRUE)) {
+  set.seed(1)
+  df <- data.frame(region = sample(c("N", "S"), 60, replace = TRUE),
+                   y = rnorm(60, 5), w = rep(2, 60))
+  r <- morie_survey_subpop(df, "region", "N", "y", "w")
+  is.list(r)
+}
+\dontshow{\}) # examplesIf}
 }

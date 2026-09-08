@@ -49,8 +49,8 @@ import warnings
 from dataclasses import dataclass, field
 from typing import Literal
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from ..mrm_primitives.ordinal import (
     ThresholdSpecificOrdinalResult,

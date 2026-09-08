@@ -1,6 +1,6 @@
 """Tests for morie.fn.rcpiv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rcpiv import rcpiv
 

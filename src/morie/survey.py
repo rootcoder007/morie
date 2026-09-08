@@ -35,11 +35,55 @@ Hájek, J. (1971). Comment on "An essay on the logical foundations of survey
 import math
 import warnings
 
-import numpy as np
-import pandas as pd
-import scipy.stats as scipy_stats
-import statsmodels.api as sm
-import statsmodels.formula.api as smf
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as scipy_stats
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from morie.fn import _glm_core as sm
+except ImportError:
+    sm = _MissingDep('sm')
+from morie.fn import _glm_core
+
+
+# ---------------------------------------------------------------------------
+# Native formula interface for weighted GLMs.
+#
+# survey.py used to call statsmodels' formula API (smf.glm). That dependency
+# is gone, so the formula is parsed here and handed to morie.fn._glm_core.glm,
+# which fits by IRLS and reports the sandwich standard errors. Weights are
+# ANALYTIC (variance-scaling) weights, the correct treatment for unequal
+# probability sampling: df_resid stays n - k rather than sum(w) - k.
+# ---------------------------------------------------------------------------
+
+
+def _native_glm_from_formula(formula, data, family, weights=None):
+    """Fit a weighted GLM from a formula.
+
+    The formula parsing, the design build and the result wrapper all
+    live in morie.fn._glm_formula, which is the one native replacement
+    for statsmodels' formula API. survey.py had its own copy of all
+    three; keeping a second copy is how the two drift apart.
+    """
+    from morie.fn import _glm_formula
+    w = None if weights is None else [float(v) for v in weights]
+    return _glm_formula.glm(formula, data, family=family, weights=w).fit()
 
 
 class SurveyDesign:
@@ -111,8 +155,8 @@ class SurveyDesign:
         # which is the appropriate treatment for unequal-probability sampling.
         # Do NOT use freq_weights, which expands the dataset by the weight
         # value and thus inflates n_effective and deflates standard errors.
-        model = smf.glm(formula=formula, data=self.data, family=family, var_weights=self.weights)
-        return model.fit()
+        return _native_glm_from_formula(formula, self.data, family,
+                                        weights=self.weights)
 
 
 # ===========================================================================
@@ -629,7 +673,7 @@ def complex_survey_glm(
     if np.any(w.values <= 0):
         raise ValueError("All survey weights must be > 0.")
 
-    model = smf.glm(formula=formula, data=df, family=family_obj, var_weights=w)
+    model = _native_glm_from_formula(formula, df, family_obj, weights=w)
 
     if cluster_col is not None:
         groups = df[cluster_col].values

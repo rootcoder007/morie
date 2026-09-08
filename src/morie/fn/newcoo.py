@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -90,3 +90,7 @@ newcoo = newton_cooling
 
 def cheatsheet() -> str:
     return "newton_cooling({}) -> Newton's law of cooling."
+
+
+# compact alias per ledger/NAMING.md
+newtoncooling = newton_cooling

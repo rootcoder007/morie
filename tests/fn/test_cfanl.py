@@ -1,6 +1,6 @@
 """Tests for morie.fn.cfanl -- Confirmatory factor analysis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import CfaRes
 from morie.fn.cfanl import cfa_uls, cfanl

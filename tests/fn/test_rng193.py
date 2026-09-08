@@ -1,8 +1,8 @@
 """Tests for rng193.rangayyan_ch4_heart_rate_from_count."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rng193 import rangayyan_ch4_heart_rate_from_count
+from morie.fn.bsaqrs import rangayyan_ch4_heart_rate_from_count
 
 
 def test_rng193_basic():

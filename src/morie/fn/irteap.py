@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -94,3 +94,7 @@ def irt_eap_theta(
 
 def cheatsheet() -> str:
     return "_icc_2pl({}) -> EAP theta estimation."
+
+
+# compact alias per ledger/NAMING.md
+irteaptheta = irt_eap_theta

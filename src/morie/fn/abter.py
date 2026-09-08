@@ -5,7 +5,7 @@ Thermal pollution spatial
 Category: AirBio
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def abter(data=None, coords=None, n=50):

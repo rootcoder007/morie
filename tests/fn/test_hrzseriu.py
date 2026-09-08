@@ -1,6 +1,6 @@
 """Tests for hrzseriu.horowitz_series_unknown_T."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzseriu import horowitz_series_unknown_T
 

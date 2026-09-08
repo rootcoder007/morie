@@ -1,6 +1,6 @@
 """Tests for morie.fn.isvlt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.isvlt import isvlt
 

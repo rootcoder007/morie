@@ -1,6 +1,6 @@
 """Tests for grtd0.geron_td_zero_update."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grtd0 import geron_td_zero_update
 

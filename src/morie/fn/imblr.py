@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.ndimage import gaussian_filter
+from . import _array_core as np
+from ._sci_core import gaussian_filter
 
 from ._containers import DescriptiveResult
 
@@ -52,3 +52,7 @@ imblr = gaussian_blur
 
 def cheatsheet() -> str:
     return "gaussian_blur({}) -> Gaussian blur via convolution."
+
+
+# compact alias per ledger/NAMING.md
+gaussianblur = gaussian_blur

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -62,9 +62,13 @@ def johansen_cointegration(x, k_ar_diff=1):
     if T < 20 or k < 2:
         raise ValueError(f"Need T>=20 and k>=2; got T={T}, k={k}.")
 
-    # Prefer statsmodels if available -- robust treatment of trends/lags.
+    # Native path via _ts_core. This comment previously read
+    # "prefer statsmodels if available", left behind by the
+    # de-externalization -- the import below is _ts_core. The stale
+    # note mattered because the `method` string it justified was
+    # also wrong, and that one is user-visible.
     try:
-        from statsmodels.tsa.vector_ar.vecm import coint_johansen
+        from ._ts_core import coint_johansen
 
         jres = coint_johansen(Y, det_order=0, k_ar_diff=k_ar_diff)
         eig = np.asarray(jres.eig)
@@ -79,7 +83,7 @@ def johansen_cointegration(x, k_ar_diff=1):
                 "rank": rank,
                 "n": int(T),
                 "k": int(k),
-                "method": "Johansen trace test via statsmodels (det_order=0)",
+                "method": "Johansen trace test, native _ts_core (det_order=0)",
             }
         )
     except Exception:

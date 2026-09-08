@@ -17,7 +17,7 @@ def alienation_index(voter, candidates) -> DescriptiveResult:
 
     .. epigraph:: In the midst of chaos, there is also opportunity. -- Sun Tzu
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     voter = np.asarray(voter, dtype=float).ravel()
     cands = np.atleast_2d(np.asarray(candidates, dtype=float))

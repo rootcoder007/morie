@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -28,3 +28,7 @@ brtlt = bartlett_psd_fn
 
 def cheatsheet() -> str:
     return "bartlett_psd_fn({}) -> Bartlett power spectral density estimate."
+
+
+# compact alias per ledger/NAMING.md
+bartlettpsdfn = bartlett_psd_fn

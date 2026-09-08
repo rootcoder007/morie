@@ -1,6 +1,6 @@
 """Tests for wsmllk.wasserman_log_likelihood."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmllk import wasserman_log_likelihood
 

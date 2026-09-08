@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import CrimeResult
 
@@ -55,3 +55,7 @@ crime = crime_rate
 
 def cheatsheet() -> str:
     return "crime_rate({}) -> Crime rate per 100K with Wilson CI."
+
+
+# compact alias per ledger/NAMING.md
+crimerate = crime_rate

@@ -1,11 +1,25 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 #' Internal helpers shared across the Horowitz semiparametric suite.
-#' Not exported; consumed by hrz* callables only.
+#' Not exported; consumed by hrz* callables only
 #' @keywords internal
 #' @name horowitz_helpers
 NULL
 
+#' .hrz_silverman
+#'
+#' A step of the helpers_horowitz implementation. Called by \code{hrzb2}, \code{Hrzctrl},
+#' \code{hrzi1} and 24 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x A vector; its length is taken.
+#' @return The value of \code{unname}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .hrz_silverman(x = x)
+#' res
 .hrz_silverman <- function(x) {
   x <- as.numeric(x)
   n <- length(x)
@@ -23,9 +37,38 @@ NULL
 .hrz_R_K_gaussian <- 1.0 / (2.0 * sqrt(pi))
 
 
+#' .hrz_gauss_kernel
+#'
+#' A step of the helpers_horowitz implementation. Called by \code{morie_kde_h},
+#' \code{morie_kernel_quantile}, \code{morie_lewbel_binary} and 2 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param u Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .hrz_gauss_kernel(u = x)
+#' res
 .hrz_gauss_kernel <- function(u) exp(-0.5 * u^2) / sqrt(2 * pi)
 
 
+#' .hrz_nw_loo
+#'
+#' A step of the helpers_horowitz implementation. Called by \code{hrzp1}, \code{morie_ichimura}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param z A matrix; indexed by row and column.
+#' @param y A matrix; passed to \code{\%*\%}.
+#' @param h Numeric; combined arithmetically in the body.
+#' @return A vector, from \code{as.numeric}.
+#' @export
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .hrz_nw_loo(z = y, y = y, h = 0.5)
+#' res
 .hrz_nw_loo <- function(z, y, h) {
   if (is.null(dim(z))) {
     u <- outer(z, z, `-`) / h
@@ -46,6 +89,23 @@ NULL
 }
 
 
+#' .hrz_probit_newton
+#'
+#' A step of the helpers_horowitz implementation. Called by \code{hrzs1}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param D Numeric; combined arithmetically in the body.
+#' @param Z A matrix; passed to \code{ncol}.
+#' @param maxit Passed to \code{:}. Defaults to \code{50}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-08}.
+#' @return A vector, from \code{as.numeric}.
+#' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+#' 2.6, 3.4, 3.9))
+#' res <- .hrz_probit_newton(D = 3L, Z = X)
+#' res
 .hrz_probit_newton <- function(D, Z, maxit = 50, tol = 1e-8) {
   q <- ncol(Z)
   beta <- rep(0, q)
@@ -67,6 +127,23 @@ NULL
 }
 
 
+#' .hrz_logit_newton
+#'
+#' A step of the helpers_horowitz implementation. Called by \code{hrzt1}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param D Numeric; combined arithmetically in the body.
+#' @param X A matrix; passed to \code{ncol}.
+#' @param maxit Passed to \code{:}. Defaults to \code{50}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-08}.
+#' @return A numeric value.
+#' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+#' 2.6, 3.4, 3.9))
+#' res <- .hrz_logit_newton(D = 3L, X = X)
+#' res
 .hrz_logit_newton <- function(D, X, maxit = 50, tol = 1e-8) {
   p <- ncol(X)
   beta <- rep(0, p)
@@ -86,6 +163,25 @@ NULL
 }
 
 
+#' .hrz_qreg_irls
+#'
+#' A step of the helpers_horowitz implementation. Called by \code{hrzc1}, \code{hrzq1}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param X A matrix; passed to \code{t}.
+#' @param y Numeric; combined arithmetically in the body.
+#' @param tau Numeric; combined arithmetically in the body. Defaults to \code{0.5}.
+#' @param maxit Passed to \code{:}. Defaults to \code{50}.
+#' @param tol Passed to \code{<}. Defaults to \code{1e-06}.
+#' @return A vector, from \code{as.numeric}.
+#' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+#' 2.6, 3.4, 3.9))
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .hrz_qreg_irls(X = X, y = y)
+#' res
 .hrz_qreg_irls <- function(X, y, tau = 0.5, maxit = 50, tol = 1e-6) {
   beta <- as.numeric(stats::coef(stats::lm.fit(X, y)))
   for (k in 1:maxit) {
@@ -107,6 +203,16 @@ NULL
 }
 
 
+#' .hrz_hermite
+#'
+#' A step of the helpers_horowitz implementation. Called by \code{hrzn1}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param t A vector; its length is taken.
+#' @param J A count; the body uses it as \code{matrix(...)}.
+#' @return The value of \code{H}, as built in the body.
+#' @export
 .hrz_hermite <- function(t, J) {
   n <- length(t)
   H <- matrix(0, n, J)

@@ -62,13 +62,13 @@ Sister surveys (CSADS, CSUS, CTADS) are at
 \url{https://health-infobase.canada.ca/substance-use/}.
 }
 \examples{
-\donttest{
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- try(suppressWarnings(morie_datasets_cpads()))
 if (!inherits(df, "try-error")) head(df)
-}
+\dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link[=morie_cpads_contract]{morie_cpads_contract()}} for the canonical schema +
-column map; \code{\link[=morie_datasets_load_by_key]{morie_datasets_load_by_key()}} for catalog-wide
+\code{morie_cpads_contract()} for the canonical schema +
+column map; \code{morie_datasets_load_by_key()} for catalog-wide
 dispatch.
 }

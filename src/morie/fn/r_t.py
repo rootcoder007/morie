@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -57,7 +57,7 @@ def realtime_rt(
     k = serial_mean**2 / serial_sd**2
     theta = serial_sd**2 / serial_mean
     max_si = int(serial_mean + 3 * serial_sd)
-    from scipy.stats import gamma as gamma_dist
+    from ._stats_core import gamma as gamma_dist
 
     si_pmf = np.zeros(max_si + 1)
     for j in range(1, max_si + 1):
@@ -97,3 +97,7 @@ r_t = realtime_rt
 
 def cheatsheet() -> str:
     return "realtime_rt({}) -> Real-time effective reproduction number (Rt) estimation."
+
+
+# compact alias per ledger/NAMING.md
+realtimert = realtime_rt

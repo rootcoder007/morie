@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -41,3 +41,7 @@ pcgenv = pcg_envelope
 
 def cheatsheet() -> str:
     return "pcg_envelope({}) -> PCG Shannon-energy envelope."
+
+
+# compact alias per ledger/NAMING.md
+pcgenvelope = pcg_envelope

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -107,3 +107,7 @@ hmm = hidden_markov
 
 def cheatsheet() -> str:
     return "hidden_markov({}) -> Hidden Markov model (forward-backward for discrete obs)."
+
+
+# compact alias per ledger/NAMING.md
+hiddenmarkov = hidden_markov

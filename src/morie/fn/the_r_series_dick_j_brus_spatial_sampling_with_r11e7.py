@@ -1,54 +1,22 @@
-"""Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Deprecated alias for :func:`morie.fn.twophase_regression_variance`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .twophase_regression_variance import twophase_regression_variance as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_7"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_7(x):
-    """
-    Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
-
-    Formula: [EQ] (𝑛2 − 1)∑
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r11e7')`` for the full guide.
-
-    References
-    ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.11 eq.11.7
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_7(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.twophase_regression_variance` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_7() is the book-coordinate name for twophase_regression_variance(); "
+        "it will be removed. Use morie.fn.twophase_regression_variance() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r11e7: Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return _impl(*args, **kwargs)

@@ -17,9 +17,9 @@ def ordinal_probit_coefficients(Y, X, cdf=None) -> DescriptiveResult:
 
     .. epigraph:: You have power over your mind, not outside events. -- Marcus Aurelius
     """
-    import numpy as np
-    from scipy.optimize import minimize
-    from scipy.stats import norm
+    from morie.fn import _array_core as np
+    from ._sci_core import minimize
+    from ._stats_core import norm
 
     Y = np.asarray(Y, dtype=float).ravel()
     X = np.asarray(X, dtype=float)

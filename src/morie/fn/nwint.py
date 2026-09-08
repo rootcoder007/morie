@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -66,3 +66,7 @@ short = newton_interp
 
 def cheatsheet() -> str:
     return "newton_interp({}) -> Newton divided-difference interpolation."
+
+
+# compact alias per ledger/NAMING.md
+newtoninterp = newton_interp

@@ -8,7 +8,7 @@ Royal Statistical Society, Series B, 34(2), 187-220.
 
 __all__ = ["cxphr"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def cxphr(
@@ -69,7 +69,7 @@ def cxphr(
     Breslow, N. (1974). Biometrics, 30, 89-99.
     Efron, B. (1977). Journal of the American Statistical Association, 72, 557-565.
     """
-    from scipy import stats as _stats
+    from . import _stats_core as _stats
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)

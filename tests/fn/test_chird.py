@@ -1,6 +1,6 @@
 """Tests for chird.py - Chirp detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.chird import chird, chirp_detect
 

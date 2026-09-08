@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
-from scipy import special
+from . import _array_core as np
+from ._sci_core import special
 
 __all__ = ["tgtpr"]
 

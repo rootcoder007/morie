@@ -1,8 +1,8 @@
 """Tests for rgwvvar.rangayyan_wavelet_variance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgwvvar import rangayyan_wavelet_variance
+from morie.fn.bsatf import rangayyan_wavelet_variance
 
 
 def test_rgwvvar_basic():

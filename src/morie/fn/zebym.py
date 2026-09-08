@@ -1,6 +1,6 @@
 """BYM (Besag-York-Mollie) model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ bym_ = bym_model
 
 def cheatsheet() -> str:
     return "bym_model({}) -> BYM (Besag-York-Mollie) model"
+
+
+# compact alias per ledger/NAMING.md
+bymmodel = bym_model

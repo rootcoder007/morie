@@ -4,7 +4,7 @@ Thin-plate spline interpolation
 Category: KrigFilt
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def spltps(x=None, y=None, values=None, grid_size=20, range_param=30.0, sill=1.0, nugget=0.1):

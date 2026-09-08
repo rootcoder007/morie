@@ -1,6 +1,6 @@
 """Tests for sqsgm.py - Synchrosqueezed transform."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sqsgm import sqsgm, synchrosqueezed_transform
 

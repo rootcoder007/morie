@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -68,3 +68,7 @@ spvut = spatial_utility
 
 def cheatsheet() -> str:
     return "spatial_utility({}) -> General spatial voting utility computation."
+
+
+# compact alias per ledger/NAMING.md
+spatialutility = spatial_utility

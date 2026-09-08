@@ -1,8 +1,8 @@
 """Tests for rgepiksv.rangayyan_epilepsy_ksvd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgepiksv import rangayyan_epilepsy_ksvd
+from morie.fn.bsaclass import rangayyan_epilepsy_ksvd
 
 
 def test_rgepiksv_basic():

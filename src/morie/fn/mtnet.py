@@ -5,7 +5,7 @@ Movement network analysis
 Category: MovTyp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def mtnet(trajectory=None, n=50, dt=1.0):

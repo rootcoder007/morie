@@ -23,10 +23,15 @@ paired_permutation_test(
 \item{alternative}{\code{"two-sided"}, \code{"greater"}, \code{"less"}.}
 
 \item{seed}{Random seed.}
+
 }
 \value{
 A \code{morie_permutation_test_result}.
 }
 \description{
 Paired permutation test (sign-flipping)
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+paired_permutation_test(V, V)
 }

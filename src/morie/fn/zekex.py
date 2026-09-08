@@ -1,6 +1,6 @@
 """Kernel density exposure"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ kern = kernel_exposure
 
 def cheatsheet() -> str:
     return "kernel_exposure({}) -> Kernel density exposure"
+
+
+# compact alias per ledger/NAMING.md
+kernelexposure = kernel_exposure

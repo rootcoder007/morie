@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -52,3 +52,7 @@ drfmg = drift_magnitude
 
 def cheatsheet() -> str:
     return "drift_magnitude({}) -> Baseline drift magnitude estimation."
+
+
+# compact alias per ledger/NAMING.md
+driftmagnitude = drift_magnitude

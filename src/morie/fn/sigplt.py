@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -46,3 +46,7 @@ sigplt = plot_signal_fn
 
 def cheatsheet() -> str:
     return "plot_signal_fn({}) -> Generic signal plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+plotsignalfn = plot_signal_fn

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -39,3 +39,7 @@ bkz = bkz_reduce
 
 def cheatsheet() -> str:
     return "bkz_reduce({}) -> BKZ lattice basis reduction."
+
+
+# compact alias per ledger/NAMING.md
+bkzreduce = bkz_reduce

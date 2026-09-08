@@ -1,6 +1,6 @@
 """Shunting-yard infix->RPN."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def shunting_yard(tokens):
 
 def cheatsheet():
     return "shYa: Shunting-yard infix->RPN"
+
+
+# compact alias per ledger/NAMING.md
+shuntingyard = shunting_yard

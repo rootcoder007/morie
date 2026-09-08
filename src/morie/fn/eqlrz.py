@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 
@@ -49,3 +49,7 @@ eqlrz = lorenz_curve
 
 def cheatsheet() -> str:
     return "lorenz_curve({}) -> Lorenz curve data."
+
+
+# compact alias per ledger/NAMING.md
+lorenzcurve = lorenz_curve

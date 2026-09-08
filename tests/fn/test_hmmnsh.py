@@ -1,6 +1,6 @@
 """Tests for hmmnsh.geron_mean_shift."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmmnsh import geron_mean_shift
 

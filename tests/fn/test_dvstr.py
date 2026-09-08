@@ -1,6 +1,6 @@
 """Tests for morie.fn.dvstr -- ensemble stacking."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.dvstr import dvstr, ensemble_stack

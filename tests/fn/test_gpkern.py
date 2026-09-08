@@ -1,6 +1,6 @@
 """Tests for gpkern.gp_kernel_compose."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gpkern import gp_kernel_compose
 

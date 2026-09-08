@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -67,3 +67,7 @@ tausc = tau_scale
 
 def cheatsheet() -> str:
     return "tau_scale(x) -> Tau scale estimator (Maronna-Zamar)."
+
+
+# compact alias per ledger/NAMING.md
+tauscale = tau_scale

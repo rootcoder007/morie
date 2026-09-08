@@ -5,7 +5,7 @@ Image fusion RS
 Category: RemSens
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def rsfus(pixels=None, bands=None, n=100):

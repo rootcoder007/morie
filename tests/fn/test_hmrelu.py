@@ -1,6 +1,6 @@
 """Tests for hmrelu.geron_relu."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmrelu import geron_relu
 

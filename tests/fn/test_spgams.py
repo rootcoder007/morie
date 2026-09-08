@@ -1,6 +1,6 @@
 """Tests for spgams.spatial_gams."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spgams import spatial_gams
 

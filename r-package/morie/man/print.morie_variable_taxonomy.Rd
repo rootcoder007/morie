@@ -2,7 +2,7 @@
 % Please edit documentation in R/variable_taxonomy.R
 \name{print.morie_variable_taxonomy}
 \alias{print.morie_variable_taxonomy}
-\title{Print method for taxonomy entries.}
+\title{Print method for taxonomy entries}
 \usage{
 \method{print}{morie_variable_taxonomy}(x, ...)
 }
@@ -15,5 +15,11 @@
 Invisibly returns \code{x} unchanged.
 }
 \description{
-Print method for taxonomy entries.
+Print method for taxonomy entries
+}
+\examples{
+\donttest{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie:::print.morie_variable_taxonomy(D)
+}
 }

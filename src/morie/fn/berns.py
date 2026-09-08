@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 
 def bernstein_bound(
@@ -71,3 +71,7 @@ berns = bernstein_bound
 
 def cheatsheet() -> str:
     return "bernstein_bound(n, t) -> Bernstein concentration inequality."
+
+
+# compact alias per ledger/NAMING.md
+bernsteinbound = bernstein_bound

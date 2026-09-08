@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -36,7 +36,7 @@ def elliptic_filter(x, cutoff, fs, order: int = 4, rp: float = 1.0, rs: float = 
     -------
     SignalResult
     """
-    from scipy.signal import ellip, sosfiltfilt
+    from ._signal_core import ellip, sosfiltfilt
 
     x = np.asarray(x, dtype=float)
     Wn = float(cutoff) / (fs / 2.0)
@@ -56,3 +56,7 @@ elflt = elliptic_filter
 
 def cheatsheet() -> str:
     return "elliptic_filter({}) -> Elliptic (Cauer) filter."
+
+
+# compact alias per ledger/NAMING.md
+ellipticfilter = elliptic_filter

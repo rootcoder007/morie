@@ -5,7 +5,7 @@ RTK repeat target analysis
 Category: CrimSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def csrtk(incidents=None, population=None, coords=None, n=50):

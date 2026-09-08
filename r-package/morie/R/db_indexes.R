@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # Per-dataset index registry. Empirical cardinality measurements from
-# the real bundled datasets drove these choices — high-cardinality
+# the real bundled datasets drove these choices -- high-cardinality
 # columns (>1000 distinct values + frequent point-lookup or join key)
 # get B-tree indexes; medium-cardinality columns (rollup dimensions
-# like year × region) get composite indexes with the high-card column.
-# Low-cardinality columns (Gender, Yes/No alerts, Measure ∈ {Max,
-# Median, Mode}) are intentionally not indexed — the index overhead
+# like year ? region) get composite indexes with the high-card column.
+# Low-cardinality columns (Gender, Yes/No alerts, Measure ? {Max,
+# Median, Mode}) are intentionally not indexed -- the index overhead
 # would exceed the lookup benefit.
 
 #' Recommended indexes per known morie cache table
@@ -16,6 +16,9 @@
 #'   Specs whose `cols` aren't all present in the actual table are
 #'   silently skipped at create time.
 #' @keywords internal
+#' @examples
+#' set.seed(1)
+#' r <- morie:::.morie_db_index_registry(); TRUE
 .morie_db_index_registry <- function() {
   list(
     # ------ SIU (case-level director's reports, 5074 cases x 64 cols) ----
@@ -176,6 +179,15 @@
 
 # TPS crime-table family shares a common base schema; one spec
 # applied via prefix dispatch.
+#' TPS crime-table family shares a common base schema; one spec
+#'
+#' applied via prefix dispatch.
+#'
+#' @return The value of \code{list}.
+#' @export
+#' @examples
+#' res <- .morie_db_indexes_tps_crime()
+#' res
 .morie_db_indexes_tps_crime <- function() {
   list(
     list(name_suffix = "_objectid",   cols = "OBJECTID",        unique = TRUE),
@@ -187,6 +199,15 @@
   )
 }
 
+#' .morie_db_indexes_for
+#'
+#' A step of the db_indexes implementation. Called by \code{morie_db_create_indexes}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param table_name Character; passed to \code{grepl}.
+#' @return The value of \code{list}.
+#' @export
 .morie_db_indexes_for <- function(table_name) {
   reg <- .morie_db_index_registry()
   if (table_name %in% names(reg)) {
@@ -217,7 +238,7 @@
 #' [.morie_db_index_registry()] for the full list) and creates each
 #' `CREATE INDEX IF NOT EXISTS` against `con`. Specs whose columns
 #' aren't present in the actual table are silently skipped, so this is
-#' safe to call on any morie cache table — including subsets that drop
+#' safe to call on any morie cache table -- including subsets that drop
 #' some columns. Returns the number of `CREATE INDEX` statements that
 #' actually ran (not the number registered).
 #'

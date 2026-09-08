@@ -1,6 +1,6 @@
 """Tests for morie.fn.chows -- Chow test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.chows import chow_test

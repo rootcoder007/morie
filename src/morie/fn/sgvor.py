@@ -19,8 +19,8 @@ def voronoi_tessellation(points):
     -------
     DescriptiveResult
     """
-    import numpy as np
-    from scipy.spatial import Voronoi
+    from morie.fn import _array_core as np
+    from ._sci_core import Voronoi
 
     pts = np.asarray(points, dtype=np.float64)
     vor = Voronoi(pts)

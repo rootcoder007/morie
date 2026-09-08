@@ -1,6 +1,6 @@
 """Tests for grmnr.geron_max_norm_regularization."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grmnr import geron_max_norm_regularization
 

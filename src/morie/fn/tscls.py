@@ -1,6 +1,6 @@
 """1-NN DTW time series classifier."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -59,3 +59,7 @@ tscls = ts_classify
 
 def cheatsheet() -> str:
     return "_dtw_dist({}) -> 1-NN DTW time series classifier."
+
+
+# compact alias per ledger/NAMING.md
+tsclassify = ts_classify

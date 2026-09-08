@@ -1,6 +1,6 @@
 """Haversine distance"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ have = haversine_dist
 
 def cheatsheet() -> str:
     return "haversine_dist({}) -> Haversine distance"
+
+
+# compact alias per ledger/NAMING.md
+haversinedist = haversine_dist

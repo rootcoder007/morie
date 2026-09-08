@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -67,3 +67,7 @@ lasrb = iou_metric
 
 def cheatsheet() -> str:
     return "iou_metric({}) -> IoU tracking metric."
+
+
+# compact alias per ledger/NAMING.md
+ioumetric = iou_metric

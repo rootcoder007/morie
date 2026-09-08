@@ -33,9 +33,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import numpy as np
-import pandas as pd
-from scipy import stats as sps
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as sps
 
 from .fn._richresult import RichResult
 from .otis import project_root
@@ -773,8 +773,8 @@ def irr_glmm_vm(df: pd.DataFrame | None = None) -> RichResult:
     """
     df = df if df is not None else _load("b01")
     try:
-        import statsmodels.api as sm
-        import statsmodels.formula.api as smf
+        from morie.fn import _glm_core as sm
+        from morie.fn._glm_core import formula as smf
 
         from .otis_causal import make_pair_alert_to_volatility_ruhela
     except ImportError as e:

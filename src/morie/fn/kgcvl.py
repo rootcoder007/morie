@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kriging LOO cross-validation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -35,3 +35,7 @@ krig = kriging_cv_loo
 
 def cheatsheet() -> str:
     return "kriging_cv_loo({}) -> Kriging LOO cross-validation"
+
+
+# compact alias per ledger/NAMING.md
+krigingcvloo = kriging_cv_loo

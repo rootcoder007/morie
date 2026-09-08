@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats as sp
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as sp
 
 from morie.fn._containers import DIFResult
 
@@ -108,3 +108,7 @@ uniform_dif = dif_uniform
 
 def cheatsheet() -> str:
     return "dif_uniform({}) -> Uniform DIF detection via logistic regression."
+
+
+# compact alias per ledger/NAMING.md
+difuniform = dif_uniform

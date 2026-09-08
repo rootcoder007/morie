@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Triangle inequality check"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ tria = triangle_ineq
 
 def cheatsheet() -> str:
     return "triangle_ineq({}) -> Triangle inequality check"
+
+
+# compact alias per ledger/NAMING.md
+triangleineq = triangle_ineq

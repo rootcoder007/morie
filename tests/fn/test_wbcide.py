@@ -1,6 +1,6 @@
 """Tests for wbcide.wooldridge_bjs_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wbcide import wooldridge_bjs_estimator
 

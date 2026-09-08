@@ -1,8 +1,8 @@
 """Tests for rgbayes.rangayyan_bayes_classifier."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgbayes import rangayyan_bayes_classifier
+from morie.fn.bsaclass import rangayyan_bayes_classifier
 
 
 def test_rgbayes_basic():

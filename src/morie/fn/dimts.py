@@ -11,7 +11,7 @@ def dimensionality_test(data, max_dims=5) -> DescriptiveResult:
 
     .. epigraph:: It is not the strongest that survives, but the most adaptable. -- Charles Darwin
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(data, dtype=float)
     if X.ndim == 1:

@@ -1,6 +1,6 @@
 """Tests for morie.fn.svblt -- Boltzmann (softmax) spatial voting"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svblt import boltzmann_vote
 

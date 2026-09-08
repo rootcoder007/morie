@@ -1,6 +1,6 @@
 """Tests for gh_c14_10.ghosal_py_eppf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c14_10 import ghosal_py_eppf
 

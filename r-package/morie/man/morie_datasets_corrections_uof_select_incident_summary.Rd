@@ -32,3 +32,6 @@ Columns mirror the upstream schema described in
 \description{
 Select-incident-type annual summary
 }
+\examples{
+morie_datasets_corrections_uof_select_incident_summary()
+}

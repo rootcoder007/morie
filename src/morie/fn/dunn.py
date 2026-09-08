@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import DescriptiveResult
 
@@ -82,3 +82,7 @@ dunn = dunn_test
 
 def cheatsheet() -> str:
     return "dunn_test({}) -> Dunn's post-hoc test."
+
+
+# compact alias per ledger/NAMING.md
+dunntest = dunn_test

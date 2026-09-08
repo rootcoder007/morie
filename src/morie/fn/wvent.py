@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -52,3 +52,7 @@ wvent = wavelet_entropy
 
 def cheatsheet() -> str:
     return "wavelet_entropy({}) -> Wavelet entropy from subband energy distribution."
+
+
+# compact alias per ledger/NAMING.md
+waveletentropy = wavelet_entropy

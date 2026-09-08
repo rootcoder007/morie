@@ -1,6 +1,6 @@
 """Tests for hmmcel.geron_memory_cell."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmmcel import geron_memory_cell
 

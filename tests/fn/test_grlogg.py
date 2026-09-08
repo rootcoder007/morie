@@ -1,6 +1,6 @@
 """Tests for grlogg.geron_logistic_cost_gradient."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grlogg import geron_logistic_cost_gradient
 

@@ -5,7 +5,7 @@ Spatial weight block
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def sawbl(values=None, w=None, n=50):

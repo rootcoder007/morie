@@ -1,6 +1,6 @@
 """Tests for gb_md3.gibbons_median_ties."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_md3 import gibbons_median_ties
 

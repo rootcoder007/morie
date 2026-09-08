@@ -1,6 +1,6 @@
 """Tests for kendall_tau_b."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.kendt import kendall_tau_b

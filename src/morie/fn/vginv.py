@@ -1,6 +1,6 @@
 """Indicator variogram"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -49,3 +49,7 @@ indi = indicator_vario
 
 def cheatsheet() -> str:
     return "indicator_vario({}) -> Indicator variogram"
+
+
+# compact alias per ledger/NAMING.md
+indicatorvario = indicator_vario

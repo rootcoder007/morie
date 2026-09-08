@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -38,3 +38,7 @@ arnrm = ar_normalize
 
 def cheatsheet() -> str:
     return "ar_normalize({}) -> Normalize AR coefficients."
+
+
+# compact alias per ledger/NAMING.md
+arnormalize = ar_normalize

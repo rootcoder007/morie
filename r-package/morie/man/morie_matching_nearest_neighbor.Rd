@@ -29,7 +29,9 @@ expressed in SD units of the logit (or \code{NULL} for no caliper).}
 
 \item{replace}{If \code{TRUE}, controls may be re-used.}
 
-\item{ps}{Optional pre-computed propensity scores.}
+\item{ps}{Optional propensity scores. When supplied they REPLACE
+the fitted model and become the matching distance directly,
+aligned to the rows that survive the NA drop.}
 
 \item{alpha}{Significance level (carried through to \code{details}).}
 }
@@ -44,6 +46,7 @@ by logit-propensity-score distance.  Delegates to \pkg{MatchIt} when
 installed; otherwise uses a base-R implementation.
 }
 \examples{
+\donttest{
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -56,4 +59,5 @@ df <- data.frame(d = rbinom(200, 1, 0.4),
                  x1 = rnorm(200), x2 = rnorm(200))
 res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"),
                                        caliper = 0.2)
+}
 }

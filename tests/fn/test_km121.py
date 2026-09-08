@@ -1,6 +1,6 @@
 """Tests for km121.kamath_ch8_bertscore_f1."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km121 import kamath_ch8_bertscore_f1
 

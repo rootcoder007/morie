@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -39,3 +39,7 @@ spp = peak_to_peak
 
 def cheatsheet() -> str:
     return "peak_to_peak({}) -> Peak-to-peak amplitude."
+
+
+# compact alias per ledger/NAMING.md
+peaktopeak = peak_to_peak

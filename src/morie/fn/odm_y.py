@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 
 def otis_demo_year(
@@ -52,3 +52,7 @@ def otis_demo_year(
 
 def cheatsheet() -> str:
     return "otis_demo_year({}) -> Demographic profile per fiscal year for OTIS correctional da"
+
+
+# compact alias per ledger/NAMING.md
+otisdemoyear = otis_demo_year

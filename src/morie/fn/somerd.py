@@ -4,8 +4,8 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
-from scipy.stats import somersd as _somersd
+from . import _array_core as np
+from ._stats_core import somersd as _somersd
 
 
 def somerd(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):

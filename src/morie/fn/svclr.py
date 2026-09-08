@@ -1,6 +1,6 @@
 """Condorcet loser identification"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ cond = condorcet_loser
 
 def cheatsheet() -> str:
     return "condorcet_loser({}) -> Condorcet loser identification"
+
+
+# compact alias per ledger/NAMING.md
+condorcetloser = condorcet_loser

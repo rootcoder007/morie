@@ -1,6 +1,6 @@
 """Tests for eslprc.esl_perceptron."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslprc import esl_perceptron
 

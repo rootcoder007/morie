@@ -1,6 +1,6 @@
 """Tests for scr_u -- UA composite reliability."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import ESRes
 from morie.fn.scr_u import subscale_ua_composite_rel

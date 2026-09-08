@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -70,3 +70,7 @@ pcaov = pca_overlap
 
 def cheatsheet() -> str:
     return "pca_overlap({}) -> PCA on overlapping signal windows."
+
+
+# compact alias per ledger/NAMING.md
+pcaoverlap = pca_overlap

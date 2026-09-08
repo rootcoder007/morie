@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -54,3 +54,7 @@ hrmnc = harmonic_ratio
 
 def cheatsheet() -> str:
     return "harmonic_ratio({}) -> Harmonics-to-noise ratio."
+
+
+# compact alias per ledger/NAMING.md
+harmonicratio = harmonic_ratio

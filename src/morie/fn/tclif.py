@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -45,3 +45,7 @@ def clifford_torus(n_points: int = 500) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "clifford_torus(n_points) -> Clifford torus in S^3 subset R^4"
+
+
+# compact alias per ledger/NAMING.md
+cliffordtorus = clifford_torus

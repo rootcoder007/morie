@@ -1,6 +1,6 @@
 """Tests for arbrg.py - AR Burg estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.arbrg import ar_burg_fn, arbrg
 

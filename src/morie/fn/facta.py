@@ -11,8 +11,8 @@ Fabrigar, L. R., et al. (1999). Evaluating the use of exploratory factor analysi
     in psychological research. Psychological Methods, 4(3), 272-299.
 """
 
-import numpy as np
-from scipy import linalg as la
+from . import _array_core as np
+from ._sci_core import linalg as la
 
 __all__ = ["facta"]
 

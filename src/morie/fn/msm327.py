@@ -1,55 +1,39 @@
-r"""Numbered display equation (15.3) from MVSML chapter 15.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""ZAP random-forest prediction.
 
-import numpy as np
+Implements eq. (15.3) p.652 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter; the
+canonical name below reflects the chapter this equation is actually in.
+"""
 
-__all__ = ["mvsml_functional_regression_eq_15_3"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_functional_regression_eq_15_3", "mvsml_zap_predict"]
 
 
-def mvsml_functional_regression_eq_15_3(LL, right, node, are, the, log):
-    r"""
-    Numbered display equation (15.3) from MVSML chapter 15.
+def mvsml_functional_regression_eq_15_3(theta_hat, mu_hat):
+    """Y-hat = (1 - theta-hat) mu-hat/(1 - exp(-mu-hat))
+    (eq. 15.3): under ZAP_RF the prediction is the mean of the
+    zero-altered Poisson model.
 
-    Formula: LL+ (right node) are the log-likelihood for each node. Once we have the estimates of \mu and \theta, the predicted values of Y under the ZAP_RF are obtained with   1  b\theta exp b\mu ( ) bY =
+    Equation (15.3) as printed drops the mu-hat from the numerator;
+    :func:`morie.fn._gp_core.zap_predict` documents the three places
+    on pp.651-652 where the book contradicts its own printed form.
+    Keys: estimate."""
+    v = _gp.zap_predict(theta_hat, mu_hat)
+    res = RichResult(payload={"estimate": v, "y_hat": v,
+                              "method": "ZAP_RF prediction (MVSML 2022 eq. 15.3)"})
+    return with_describe_pointer(res, "msm327")
 
-    Parameters
-    ----------
-    LL : array-like
-        Input data.
-    right : array-like
-        Input data.
-    node : array-like
-        Input data.
-    are : array-like
-        Input data.
-    the : array-like
-        Input data.
-    log : array-like
-        Input data.
 
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (15.3) [Multivariate Statistical Machine Learnin [Pages 633-681] [2026-04-16].pdf]
-    r"""
-    LL = np.atleast_1d(np.asarray(LL, dtype=float))
-    n = len(LL)
-    result = float(np.mean(LL))
-    se = float(np.std(LL, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (15.3) from MVSML chapter 15.",
-        }
-    )
+mvsml_zap_predict = mvsml_functional_regression_eq_15_3
 
 
 def cheatsheet():
-    return "msm327: Numbered display equation (15.3) from MVSML chapter 15."
+    return "msm327: ZAP random-forest prediction"

@@ -14,7 +14,7 @@
 \alias{morie_tps_analyze_shootingandfirearmdiscarges}
 \alias{morie_tps_analyze_theftfrommovingvehicle}
 \alias{morie_tps_analyze_theftover}
-\title{Convenience alias: full TPS bundle on the Assault dataset.}
+\title{Convenience alias: full TPS bundle on the Assault dataset}
 \usage{
 morie_tps_analyze_assault(df)
 
@@ -49,5 +49,23 @@ morie_tps_analyze_theftover(df)
 A \code{morie_tps_result}.
 }
 \description{
-Convenience alias: full TPS bundle on the Assault dataset.
+Convenience alias: full TPS bundle on the Assault dataset
+}
+\examples{
+set.seed(1)
+df <- data.frame(
+  OCC_YEAR  = sample(2018:2024, 200, replace = TRUE),
+  OCC_MONTH = sample(1:12, 200, replace = TRUE),
+  OCC_DOW   = sample(c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
+                     200, replace = TRUE),
+  OCC_HOUR  = sample(0:23, 200, replace = TRUE),
+  DIVISION  = sample(paste0("D", 11:55), 200, replace = TRUE),
+  HOOD_158  = sample(letters[1:20], 200, replace = TRUE),
+  OFFENCE   = sample(c("Assault", "Theft"), 200, replace = TRUE),
+  LAT_WGS84  = 43.6 + runif(200, 0, 0.2),
+  LONG_WGS84 = -79.4 + runif(200, 0, 0.2),
+  stringsAsFactors = FALSE
+)
+res <- morie_tps_analyze_assault(df)
+class(res)
 }

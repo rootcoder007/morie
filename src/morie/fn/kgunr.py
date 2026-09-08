@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Universal kriging residual"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ uk_r = uk_residual
 
 def cheatsheet() -> str:
     return "uk_residual({}) -> Universal kriging residual"
+
+
+# compact alias per ledger/NAMING.md
+ukresidual = uk_residual

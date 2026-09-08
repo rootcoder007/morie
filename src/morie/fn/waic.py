@@ -7,7 +7,7 @@ __all__ = ["compute_waic", "waic"]
 import math
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def compute_waic(
@@ -44,9 +44,12 @@ def compute_waic(
 
     References
     ----------
-    Watanabe, S. (2010). *JMLR*, 11, 3571--3594.
-    Gelman, A., Hwang, J., & Vehtari, A. (2014). *Statistics and
-    Computing*, 24(6), 997--1016.
+    Watanabe, S. (2010). Asymptotic equivalence of Bayes cross
+    validation and widely applicable information criterion in singular
+    learning theory. *JMLR*, 11, 3571--3594.
+    Gelman, A., Hwang, J., & Vehtari, A. (2014). Understanding
+    predictive information criteria for Bayesian models. *Statistics
+    and Computing*, 24(6), 997--1016.
     """
     ll = np.asarray(log_lik, dtype=float)
     if ll.ndim != 2:

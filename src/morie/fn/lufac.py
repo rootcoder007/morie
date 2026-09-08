@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -70,3 +70,7 @@ short = lu_factorize
 
 def cheatsheet() -> str:
     return "lu_factorize({}) -> LU factorization with partial pivoting."
+
+
+# compact alias per ledger/NAMING.md
+lufactorize = lu_factorize

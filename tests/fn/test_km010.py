@@ -1,22 +1,18 @@
-"""Tests for km010.kamath_ch2_attention_output."""
+"""Tests for km010.kamath_ch2_attention_output (re-fixtured from the doctest)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.km010 import kamath_ch2_attention_output
+import morie.fn.km010 as mod
 
 
-def test_km010_basic():
-    """Test basic functionality."""
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    result = kamath_ch2_attention_output(b, v)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_km010_doctest():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
 
 
 def test_km010_edge():
-    """Test edge cases."""
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    result = kamath_ch2_attention_output(b, v)
-    assert isinstance(result, dict)
+    import pytest
+    from morie.fn.km010 import kamath_ch2_attention_output
+    with pytest.raises(ValueError):
+        kamath_ch2_attention_output([0.5], [[1.0], [2.0]])

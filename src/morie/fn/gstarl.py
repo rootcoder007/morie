@@ -1,7 +1,7 @@
 """Local Getis-Ord G* hot-spot statistic."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -66,3 +66,7 @@ def local_g_star(x, W, cdf=None):
 
 def cheatsheet():
     return "gstarl: Local Getis-Ord G* hot-spot statistic"
+
+
+# compact alias per ledger/NAMING.md
+localgstar = local_g_star

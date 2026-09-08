@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -54,3 +54,7 @@ oladd = overlap_add
 
 def cheatsheet() -> str:
     return "overlap_add({}) -> Overlap-add fast convolution."
+
+
+# compact alias per ledger/NAMING.md
+overlapadd = overlap_add

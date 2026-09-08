@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Legislative polarity detection"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ leg_ = leg_polarity
 
 def cheatsheet() -> str:
     return "leg_polarity({}) -> Legislative polarity detection"
+
+
+# compact alias per ledger/NAMING.md
+legpolarity = leg_polarity

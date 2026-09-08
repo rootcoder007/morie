@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Generalized Procrustes analysis"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ proc = procrustes_gen
 
 def cheatsheet() -> str:
     return "procrustes_gen({}) -> Generalized Procrustes analysis"
+
+
+# compact alias per ledger/NAMING.md
+procrustesgen = procrustes_gen

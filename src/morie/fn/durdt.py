@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -51,3 +51,7 @@ durdt = duration_detect
 
 def cheatsheet() -> str:
     return "duration_detect({}) -> Filter events by duration."
+
+
+# compact alias per ledger/NAMING.md
+durationdetect = duration_detect

@@ -1,6 +1,6 @@
 """Tests for km061.kamath_ch4_krona_output."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km061 import kamath_ch4_krona_output
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bode magnitude and phase plot computation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -85,3 +85,7 @@ bode = bode_plot
 
 def cheatsheet() -> str:
     return "bode_plot({}) -> Bode magnitude and phase plot computation."
+
+
+# compact alias per ledger/NAMING.md
+bodeplot = bode_plot

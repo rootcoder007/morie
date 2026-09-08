@@ -20,7 +20,6 @@
 #' RichResult-shaped list from \code{otis_all_analyze.R}).
 #'
 #' Cross-year invariants
-#' ---------------------
 #' \itemize{
 #'   \item OTIS \code{UniqueIndividual_ID} is reassigned every fiscal
 #'     year (see \code{variable_taxonomy.R}); the overlay therefore
@@ -41,6 +40,16 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+#' .otis_tps_toronto_seg_by_year
+#'
+#' A step of the otis_tps_overlay implementation. Called by \code{morie_otis_tps_yoy_correlation}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param df_b01 A list; the body reads \code{$EndFiscalYear},
+#' \code{$Region_AtTimeOfPlacement} from it.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_tps_toronto_seg_by_year <- function(df_b01) {
   stopifnot(is.data.frame(df_b01))
   if (!("EndFiscalYear" %in% names(df_b01))) {
@@ -61,6 +70,15 @@ NULL
   out
 }
 
+#' .otis_tps_incidents_by_year
+#'
+#' A step of the otis_tps_overlay implementation. Called by \code{morie_otis_tps_yoy_correlation}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param df_tps A vector; indexed elementwise.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_tps_incidents_by_year <- function(df_tps) {
   stopifnot(is.data.frame(df_tps))
   yc <- if ("OCC_YEAR" %in% names(df_tps)) "OCC_YEAR" else
@@ -79,6 +97,19 @@ NULL
 # Wrap a list as a morie_otis_analysis_result (lazy reference to the
 # constructor defined in otis_all_analyze.R -- both files ship in the
 # same R/ collation order, so this resolves at package-load time).
+#' Wrap a list as a morie_otis_analysis_result (lazy reference to the
+#'
+#' constructor defined in otis_all_analyze.R -- both files ship in the
+#' same R/ collation order, so this resolves at package-load time).
+#'
+#' @param title Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds.
+#' @param tables Iterated over elementwise, with \code{Filter}. Defaults to \code{list()}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param payload Carried through into a list the body builds.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_overlay_wrap <- function(title, summary_lines,
                                 tables = list(),
                                 interpretation = "",

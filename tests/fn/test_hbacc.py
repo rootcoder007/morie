@@ -1,6 +1,6 @@
 """Tests for hbacc.hbond_acceptor_count."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hbacc import hbond_acceptor_count
 

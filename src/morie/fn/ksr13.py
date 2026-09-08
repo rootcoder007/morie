@@ -7,7 +7,7 @@ the rank of the centred-score covariance matrix.  We use the basis
 of moment scores {x - mean(x), x^2 - mean(x^2)} and return its rank.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

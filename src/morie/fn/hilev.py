@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.signal import hilbert
+from . import _array_core as np
+from ._signal_core import hilbert
 
 from ._containers import DescriptiveResult
 

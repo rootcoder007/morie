@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -140,3 +140,7 @@ rrtpla = rrt_plan
 
 def cheatsheet() -> str:
     return "rrtpla() -> Rapidly-exploring Random Tree (RRT) path planner in 2-D"
+
+
+# compact alias per ledger/NAMING.md
+rrtplan = rrt_plan

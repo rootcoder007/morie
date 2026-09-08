@@ -1,6 +1,6 @@
 """Tests for joint_entropy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.jnent import jnent, joint_entropy

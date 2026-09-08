@@ -1,6 +1,6 @@
 """Tests for morie.fn.qjlcs — QJL cosine similarity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.qjlcs import qjl_cosine_sim

@@ -16,9 +16,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-import numpy as np
-import pandas as pd
-from scipy import stats
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as stats
 
 # ---------------------------------------------------------------------------
 # Result containers
@@ -592,7 +592,7 @@ def specification_curve(
     -------
     SpecificationCurveResult
     """
-    import statsmodels.api as sm
+    from morie.fn import _glm_core as sm
 
     if model_types is None:
         model_types = ["ols"]

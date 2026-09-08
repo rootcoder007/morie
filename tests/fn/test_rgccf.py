@@ -1,8 +1,8 @@
 """Tests for rgccf.rangayyan_ccf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgccf import rangayyan_ccf
+from morie.fn.bsacorr import rangayyan_ccf
 
 
 def test_rgccf_basic():

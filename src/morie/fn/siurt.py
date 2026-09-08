@@ -37,3 +37,7 @@ siurt = siu_case_rate
 
 def cheatsheet() -> str:
     return "siu_case_rate({}) -> SIU case rate per 1000 officers."
+
+
+# compact alias per ledger/NAMING.md
+siucaserate = siu_case_rate

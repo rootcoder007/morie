@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -125,3 +125,7 @@ def lstm_cell(
 
 def cheatsheet():
     return "lstmc: LSTM cell f,i,o=sigmoid(...), c=f*c+i*g, h=o*tanh(c)"
+
+
+# compact alias per ledger/NAMING.md
+lstmcell = lstm_cell

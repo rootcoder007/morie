@@ -1,6 +1,6 @@
 """Symbolic limit."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def symbolic_limit(expr, x, x0):
 
 def cheatsheet():
     return "limT: Symbolic limit"
+
+
+# compact alias per ledger/NAMING.md
+symboliclimit = symbolic_limit

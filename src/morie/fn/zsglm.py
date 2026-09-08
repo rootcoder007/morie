@@ -1,6 +1,6 @@
 """Spatial GLMM simulation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -28,3 +28,7 @@ spat = spatial_glmm_sim
 
 def cheatsheet() -> str:
     return "spatial_glmm_sim({}) -> Spatial GLMM simulation"
+
+
+# compact alias per ledger/NAMING.md
+spatialglmmsim = spatial_glmm_sim

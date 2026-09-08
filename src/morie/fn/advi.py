@@ -8,7 +8,7 @@ __all__ = ["advi_meanfield", "advi"]
 from collections.abc import Callable
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def advi_meanfield(
@@ -132,3 +132,7 @@ advi = advi_meanfield
 
 def cheatsheet() -> str:
     return "advi_meanfield(log_target, dim) -> Mean-field ADVI."
+
+
+# compact alias per ledger/NAMING.md
+advimeanfield = advi_meanfield

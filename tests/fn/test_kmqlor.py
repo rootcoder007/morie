@@ -1,6 +1,6 @@
 """Tests for kmqlor.kamath_qlora_4bit."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmqlor import kamath_qlora_4bit
 

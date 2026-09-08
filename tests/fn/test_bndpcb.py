@@ -1,6 +1,6 @@
 """Tests for bndpcb.bound_pseudo_credible."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndpcb import bound_pseudo_credible
 

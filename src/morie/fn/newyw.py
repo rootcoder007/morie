@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import RegressionResult
 
@@ -97,3 +97,7 @@ newyw = newey_west
 
 def cheatsheet() -> str:
     return "newey_west({}) -> OLS with Newey-West HAC standard errors."
+
+
+# compact alias per ledger/NAMING.md
+neweywest = newey_west

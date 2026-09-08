@@ -4,8 +4,8 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
-from scipy.stats import fisher_exact
+from . import _array_core as np
+from ._stats_core import fisher_exact
 
 
 def fishex(table: Union[Sequence, np.ndarray], alternative: str = "two-sided"):

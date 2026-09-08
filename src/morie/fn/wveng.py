@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -45,3 +45,7 @@ wveng = wavelet_energy
 
 def cheatsheet() -> str:
     return "wavelet_energy({}) -> Wavelet energy distribution across subbands."
+
+
+# compact alias per ledger/NAMING.md
+waveletenergy = wavelet_energy

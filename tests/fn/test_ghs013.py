@@ -1,6 +1,6 @@
 """Tests for ghs013.ghosal_ch3_countable_dirichlet_posterior_k."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs013 import ghosal_ch3_countable_dirichlet_posterior_k
 

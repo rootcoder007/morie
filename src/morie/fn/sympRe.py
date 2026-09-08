@@ -1,6 +1,6 @@
 """SymPy simplify expression."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def sympy_simplify(expr):
 
 def cheatsheet():
     return "sympRe: SymPy simplify expression"
+
+
+# compact alias per ledger/NAMING.md
+sympysimplify = sympy_simplify

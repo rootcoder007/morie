@@ -1,6 +1,6 @@
 """Tests for mhlds.py - Mahalanobis distance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mhlds import mhlds, mhlds_fn
 

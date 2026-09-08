@@ -5,7 +5,7 @@ Formaldehyde spatial
 Category: AirBio
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def abhch(data=None, coords=None, n=50):

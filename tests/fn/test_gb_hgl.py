@@ -1,6 +1,6 @@
 """Tests for gb_hgl.gibbons_hodges_lehmann."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_hgl import gibbons_hodges_lehmann
 

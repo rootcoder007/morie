@@ -1,6 +1,6 @@
 """Tests for hmdpo.geron_dpo."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmdpo import geron_dpo
 

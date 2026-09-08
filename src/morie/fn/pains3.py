@@ -1,6 +1,6 @@
 """Pan-assay interference compound filter (PAINS)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -38,3 +38,7 @@ def pains_filter(smiles):
 
 def cheatsheet():
     return "pains3: Pan-assay interference compound filter (PAINS)"
+
+
+# compact alias per ledger/NAMING.md
+painsfilter = pains_filter

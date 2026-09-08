@@ -1,0 +1,26 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{automatic_bandwidth}
+\alias{automatic_bandwidth}
+\title{Andrews (1991) eq. 6.1, automatic plug-in bandwidth}
+\usage{
+automatic_bandwidth(v, kernel = "qs", weights = NULL, n = NULL) 
+}
+\description{
+Andrews (1991) eq. 6.1, automatic plug-in bandwidth
+}
+\arguments{
+\item{v}{Argument \code{v}; see Usage.}
+\item{kernel}{Argument \code{kernel}; see Usage.}
+\item{weights}{Argument \code{weights}; see Usage.}
+\item{n}{Argument \code{n}; see Usage.}
+}
+\value{
+A list with \code{bandwidth}, \code{alpha}, \code{fits}.
+}
+\keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+automatic_bandwidth(V)
+}

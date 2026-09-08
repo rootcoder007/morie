@@ -1,6 +1,6 @@
 """Tests for bnsipv.bound_iv_partial."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bnsipv import bound_iv_partial
 

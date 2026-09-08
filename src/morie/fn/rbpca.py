@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -81,3 +81,7 @@ rbpca = robust_pca_pp
 
 def cheatsheet() -> str:
     return "robust_pca_pp(X) -> Robust PCA via projection pursuit."
+
+
+# compact alias per ledger/NAMING.md
+robustpcapp = robust_pca_pp

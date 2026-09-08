@@ -1,6 +1,6 @@
 """Gravity-based accessibility"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ grav = gravity_access
 
 def cheatsheet() -> str:
     return "gravity_access({}) -> Gravity-based accessibility"
+
+
+# compact alias per ledger/NAMING.md
+gravityaccess = gravity_access

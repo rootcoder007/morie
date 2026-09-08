@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -49,3 +49,7 @@ cmbfl = comb_filter
 
 def cheatsheet() -> str:
     return "comb_filter({}) -> Comb filter."
+
+
+# compact alias per ledger/NAMING.md
+combfilter = comb_filter

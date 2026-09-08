@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -53,3 +53,7 @@ tpsdep = tps_deployment
 
 def cheatsheet() -> str:
     return "tps_deployment({}) -> Officer deployment analysis by division."
+
+
+# compact alias per ledger/NAMING.md
+tpsdeployment = tps_deployment

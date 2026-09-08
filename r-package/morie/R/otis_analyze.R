@@ -19,7 +19,6 @@
 #' covariates)} -- call it directly when needed.
 #'
 #' Year-lock invariant
-#' -------------------
 #' OTIS \code{UniqueIndividual_ID} is randomly reassigned every fiscal
 #' year. All analyses are computed within \code{EndFiscalYear};
 #' cross-year ID joins are forbidden (the
@@ -57,7 +56,7 @@ NULL
 #' @return data.frame.
 #' @seealso \code{\link{morie_cache_dir}}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   df <- morie_otis_load()
 #' }
 #' @export
@@ -103,7 +102,7 @@ morie_otis_load <- function(csv_path = NULL, use_readr = FALSE) {
 #' returns a named list of \code{morie_otis_result} objects. If
 #' \code{out_dir} is supplied, each result is also written to disk as a
 #' \code{.txt} (\code{format()}) and a \code{.json}
-#' (\code{jsonlite::toJSON} when available, else \code{dput}).
+#' (\code{.s03json_toJSON} when available, else \code{dput}).
 #'
 #' CRAN-safe: with \code{out_dir = NULL} (default) no files are written.
 #'
@@ -115,7 +114,7 @@ morie_otis_load <- function(csv_path = NULL, use_readr = FALSE) {
 #'   directory is created if missing.
 #' @return Named list of \code{morie_otis_result}s.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   df <- morie_otis_load()
 #'   res <- morie_otis_all_analyses(df, year = 2024)
 #' }
@@ -176,6 +175,11 @@ morie_otis_all_analyses <- function(df, year,
 #' @return A single character string (newline-joined) representing the
 #'   formatted result, suitable for \code{cat()} or \code{print()}.
 #' @export
+#' @examples
+#' \donttest{
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie:::format.morie_otis_result(D)
+#' }
 format.morie_otis_result <- function(x, ...) {
   lines <- character(0)
   lines <- c(lines, sprintf("== %s ==", x$title %||% "(untitled)"))
@@ -214,6 +218,11 @@ format.morie_otis_result <- function(x, ...) {
 #' @param ... Passed to \code{format.morie_otis_result()}.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' \donttest{
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie:::print.morie_otis_result(V)
+#' }
 print.morie_otis_result <- function(x, ...) {
   cat(format(x, ...), "\
 ", sep = "")

@@ -1,6 +1,6 @@
 """Simplified XGBoost (L2 regularized gradient boosting)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 from ._richresult import RichResult
@@ -91,3 +91,7 @@ xgb_ = xgboost_simple
 
 def cheatsheet() -> str:
     return "_xgb_build({}) -> Simplified XGBoost (L2 regularized gradient boosting)."
+
+
+# compact alias per ledger/NAMING.md
+xgboostsimple = xgboost_simple

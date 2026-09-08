@@ -1,6 +1,6 @@
 """Tests for hmkfd.geron_kfold."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmkfd import geron_kfold
 

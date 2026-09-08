@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def score_pmp(
@@ -54,3 +54,7 @@ def score_pmp(
 
 def cheatsheet() -> str:
     return "score_pmp({}) -> Percent of Maximum Possible (PMP) score."
+
+
+# compact alias per ledger/NAMING.md
+scorepmp = score_pmp

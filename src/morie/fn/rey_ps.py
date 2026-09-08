@@ -3,10 +3,11 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import optimize, stats
-from scipy.special import gammaln
+from . import _array_core as np
+from . import _frame_core as pd
+from ._sci_core import optimize
+from . import _stats_core as stats
+from ._sci_core import gammaln
 
 from ._containers import RegressionResult
 from ._helpers import _validate_df

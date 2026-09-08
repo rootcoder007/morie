@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as stats
 
 from ._containers import TestResult
 from ._helpers import _extract_col
@@ -36,3 +36,7 @@ jarber = jarque_bera
 
 def cheatsheet() -> str:
     return "jarque_bera({}) -> Jarque-Bera normality test."
+
+
+# compact alias per ledger/NAMING.md
+jarquebera = jarque_bera

@@ -1,6 +1,6 @@
 """Variogram rose diagram"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -42,3 +42,7 @@ vari = vario_rose
 
 def cheatsheet() -> str:
     return "vario_rose({}) -> Variogram rose diagram"
+
+
+# compact alias per ledger/NAMING.md
+variorose = vario_rose

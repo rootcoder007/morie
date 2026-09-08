@@ -1,6 +1,6 @@
 """SignalP signal peptide prediction."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def signal_peptide(sequence):
 
 def cheatsheet():
     return "sigpep: SignalP signal peptide prediction"
+
+
+# compact alias per ledger/NAMING.md
+signalpeptide = signal_peptide

@@ -1,6 +1,6 @@
 """Tests for morie.fn.sntmn — mandatory minimum sentence."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn._containers import DescriptiveResult

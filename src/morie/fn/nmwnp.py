@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """W-NOMINATE vote probability"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ wnom = wnominate_prob
 
 def cheatsheet() -> str:
     return "wnominate_prob({}) -> W-NOMINATE vote probability"
+
+
+# compact alias per ledger/NAMING.md
+wnominateprob = wnominate_prob

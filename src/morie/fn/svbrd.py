@@ -1,6 +1,6 @@
 """Borda count in spatial model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ bord = borda_spatial
 
 def cheatsheet() -> str:
     return "borda_spatial({}) -> Borda count in spatial model"
+
+
+# compact alias per ledger/NAMING.md
+bordaspatial = borda_spatial

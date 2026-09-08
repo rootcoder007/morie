@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SurvivalResult
 
@@ -52,3 +52,7 @@ hazard = hazard_rate
 
 def cheatsheet() -> str:
     return "hazard_rate({}) -> Hazard rate function."
+
+
+# compact alias per ledger/NAMING.md
+hazardrate = hazard_rate

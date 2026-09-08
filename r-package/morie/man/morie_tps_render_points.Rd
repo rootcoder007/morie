@@ -32,6 +32,7 @@ the plot.}
 \item{show_top}{Cap on how many clusters appear in the legend.}
 
 \item{fig_w, fig_h}{Figure size.}
+
 }
 \value{
 A \code{ggplot} (when ggplot2 is available) or
@@ -42,4 +43,13 @@ Projects (LAT_WGS84, LONG_WGS84) to the rotated Toronto canvas and
 draws one dot per incident.  When \code{eps_km} and \code{min_samples}
 are supplied AND the \pkg{dbscan} package is installed, points are
 coloured by DBSCAN cluster label.
+}
+\examples{
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+if (requireNamespace("dbscan", quietly = TRUE) && requireNamespace("ggplot2", quietly = TRUE)) {
+  df <- data.frame(LAT_WGS84 = 43.65 + rnorm(60, 0, 0.01), LONG_WGS84 = -79.4 + 
+      rnorm(60, 0, 0.01))
+  morie_tps_render_points(df, category = "Synth")
+}
+\dontshow{\}) # examplesIf}
 }

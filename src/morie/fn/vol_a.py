@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -63,3 +63,7 @@ short = vol_age
 
 def cheatsheet() -> str:
     return "vol_age({}) -> Volatility by age group."
+
+
+# compact alias per ledger/NAMING.md
+volage = vol_age

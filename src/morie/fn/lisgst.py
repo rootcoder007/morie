@@ -1,6 +1,6 @@
 """Local Getis-Ord G_i*."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -38,3 +38,7 @@ def local_getis_g(x, W):
 
 def cheatsheet():
     return "lisgst: Local Getis-Ord G_i*"
+
+
+# compact alias per ledger/NAMING.md
+localgetisg = local_getis_g

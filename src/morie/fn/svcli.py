@@ -1,6 +1,6 @@
 """Optimal cutting line"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ cut_ = cut_line
 
 def cheatsheet() -> str:
     return "cut_line({}) -> Optimal cutting line"
+
+
+# compact alias per ledger/NAMING.md
+cutline = cut_line

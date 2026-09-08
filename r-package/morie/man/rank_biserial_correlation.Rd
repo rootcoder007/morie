@@ -10,10 +10,15 @@ rank_biserial_correlation(x, y, confidence = 0.95)
 \item{x, y}{Numeric vectors (NA dropped).}
 
 \item{confidence}{Confidence level for CI. Default 0.95.}
+
 }
 \value{
 A \code{morie_effect_size}.
 }
 \description{
 Rank-biserial correlation (matched rank version)
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+rank_biserial_correlation(V, V)
 }

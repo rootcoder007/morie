@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -75,3 +75,7 @@ emimq = em_imputation
 
 def cheatsheet() -> str:
     return "em_imputation({}) -> EM algorithm imputation for missing data."
+
+
+# compact alias per ledger/NAMING.md
+emimputation = em_imputation

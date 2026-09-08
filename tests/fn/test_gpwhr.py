@@ -1,6 +1,6 @@
 """Tests for gpwhr.gp_warped."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gpwhr import gp_warped
 

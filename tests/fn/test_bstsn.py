@@ -1,6 +1,6 @@
 """Tests for morie.fn.bstsn — Bayesian structural time series."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bstsn import bstsn

@@ -1,6 +1,6 @@
 """Tests for morie.fn.agbck."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agbck import agbck
 

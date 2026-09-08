@@ -1,6 +1,6 @@
 """S-learner for CATE."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def s_learner(y, D, X):
 
 def cheatsheet():
     return "slearn: S-learner for CATE"
+
+
+# compact alias per ledger/NAMING.md
+slearner = s_learner

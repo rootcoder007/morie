@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -28,7 +28,7 @@ def pcg_murmur_score(
 
     pcg_envelope(pcg, fs)
 
-    from scipy.signal import butter, sosfiltfilt, welch
+    from ._signal_core import butter, sosfiltfilt, welch
 
     sos = butter(4, [100, 400], btype="band", fs=fs, output="sos")
     hf_band = sosfiltfilt(sos, pcg)
@@ -70,3 +70,7 @@ pcgmur = pcg_murmur_score
 
 def cheatsheet() -> str:
     return "pcg_murmur_score({}) -> PCG murmur detection score."
+
+
+# compact alias per ledger/NAMING.md
+pcgmurmurscore = pcg_murmur_score

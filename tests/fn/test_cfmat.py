@@ -1,6 +1,6 @@
 """Tests for cfmat.py - Confusion matrix metrics."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cfmat import cfmat, cfmat_fn
 

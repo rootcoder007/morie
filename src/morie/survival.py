@@ -38,10 +38,10 @@ import math
 from dataclasses import dataclass, field
 from typing import Union
 
-import numpy as np
-import pandas as pd
-import scipy.stats as stats
-from scipy.optimize import minimize
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as stats
+from morie.fn._sci_core import minimize
 
 logger = logging.getLogger(__name__)
 
@@ -528,7 +528,10 @@ def _cox_negative_log_partial_likelihood(
         elif ties == "efron":
             risk_sum = exp_eta[risk_mask].sum()
             event_sum = exp_eta[event_mask].sum()
-            for s in range(d_j):
+            # d_j counts tied events, so it indexes Efron's correction.
+            # A masked sum comes back as a float here, and range() needs
+            # the integer that count always was.
+            for s in range(int(d_j)):
                 nll += np.log(risk_sum - s / d_j * event_sum + 1e-15)
         else:
             raise ValueError(f"Unknown tie method: {ties}")

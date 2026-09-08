@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -28,3 +28,7 @@ acfps = acf_from_psd_fn
 
 def cheatsheet() -> str:
     return "acf_from_psd_fn({}) -> ACF estimated from power spectral density via inverse FFT."
+
+
+# compact alias per ledger/NAMING.md
+acffrompsdfn = acf_from_psd_fn

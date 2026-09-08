@@ -11,7 +11,7 @@ def autocorrelation_mcmc(chain, max_lag=50) -> DescriptiveResult:
 
     .. epigraph:: He who has a why to live can bear almost any how. -- Friedrich Nietzsche
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     chain = np.asarray(chain, dtype=float).ravel()
     n = len(chain)

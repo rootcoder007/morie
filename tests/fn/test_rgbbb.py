@@ -1,8 +1,8 @@
 """Tests for rgbbb.rangayyan_bundle_branch_block."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgbbb import rangayyan_bundle_branch_block
+from morie.fn.bsaclass import rangayyan_bundle_branch_block
 
 
 def test_rgbbb_basic():

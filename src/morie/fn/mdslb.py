@@ -21,7 +21,7 @@ def label_mds_points(X, labels):
     DescriptiveResult
         value = dict mapping label -> coordinate array.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     labeled = {str(lab): X[i].tolist() for i, lab in enumerate(labels)}
@@ -33,3 +33,7 @@ mdslb = label_mds_points
 
 def cheatsheet() -> str:
     return "mdslb() -> Attach labels to MDS coordinate matrix"
+
+
+# compact alias per ledger/NAMING.md
+labelmdspoints = label_mds_points

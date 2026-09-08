@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def doubly_robust_ate(
@@ -43,7 +43,7 @@ def doubly_robust_ate(
     Bang, H., & Robins, J. M. (2005). Doubly robust estimation in missing
     data and causal inference models. *Biometrics*, 61(4), 962--973.
     """
-    from scipy.special import expit
+    from ._sci_core import expit
 
     Y = np.asarray(outcome, dtype=float).ravel()
     T = np.asarray(treatment, dtype=float).ravel()

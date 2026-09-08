@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -55,3 +55,7 @@ esprt = esprit_freq_fn
 
 def cheatsheet() -> str:
     return "esprit_freq_fn({}) -> ESPRIT frequency estimation."
+
+
+# compact alias per ledger/NAMING.md
+espritfreqfn = esprit_freq_fn

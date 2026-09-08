@@ -1,6 +1,6 @@
 """Tests for morie.fn.tmlse — TMLE standard error."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.tmlse import tmlse

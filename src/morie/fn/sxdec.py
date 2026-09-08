@@ -2,7 +2,7 @@
 
 __all__ = ["sxdec"]
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import GenomicsResult
 
@@ -89,7 +89,7 @@ def sxdec(
         b_gs = beta[3]
         se_gs = np.sqrt(max(cov_beta[3, 3], 0))
 
-        from scipy.stats import t as t_dist
+        from ._stats_core import t as t_dist
 
         if se_gs > 1e-10:
             t_val = b_gs / se_gs

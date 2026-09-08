@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -33,3 +33,7 @@ kfcvl = kfcvl_fn
 
 def cheatsheet() -> str:
     return "kfcvl_fn({}) -> K-fold cross-validation."
+
+
+# compact alias per ledger/NAMING.md
+kfcvlfn = kfcvl_fn

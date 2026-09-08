@@ -1,6 +1,6 @@
 """Tests for morie.fn.exact — exact permutation test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.exact import exact_perm_test
 

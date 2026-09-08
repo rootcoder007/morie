@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import TestResult
 
@@ -80,3 +80,7 @@ ghosig = ghost_signal
 
 def cheatsheet() -> str:
     return "ghost_signal({}) -> Ghost signal detection in noise."
+
+
+# compact alias per ledger/NAMING.md
+ghostsignal = ghost_signal

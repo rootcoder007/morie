@@ -4,8 +4,8 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
-from scipy.stats import wilcoxon as _scipy_wilcoxon
+from . import _array_core as np
+from ._stats_core import wilcoxon as _scipy_wilcoxon
 
 
 def wilcoxn(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray] = None, alternative: str = "two-sided"):

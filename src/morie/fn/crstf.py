@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -21,3 +21,7 @@ alias = crest_factor_fn
 
 def cheatsheet() -> str:
     return "crest_factor_fn({}) -> Crest factor of a waveform."
+
+
+# compact alias per ledger/NAMING.md
+crestfactorfn = crest_factor_fn

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -42,3 +42,7 @@ def j_invariant(tau: complex = 1j, terms: int = 30) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "j_invariant(tau, terms) -> j-invariant of elliptic curve"
+
+
+# compact alias per ledger/NAMING.md
+jinvariant = j_invariant

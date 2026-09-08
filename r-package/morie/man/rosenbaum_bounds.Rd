@@ -25,6 +25,10 @@ rosenbaum_bounds(
 A \code{morie_rosenbaum_bounds} named-list.
 }
 \description{
-Wraps \pkg{rbounds} when available (and \code{method == "wilcoxon"});
-falls back to a base-R normal-approximation implementation.
+Native base-R implementation using the normal approximation to the
+Wilcoxon signed-rank statistic under the Rosenbaum Gamma model.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+rosenbaum_bounds(V, V)
 }

@@ -1,6 +1,6 @@
 """Bayesian shrinkage (horseshoe / Laplace)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -42,3 +42,7 @@ def shrinkage_bayes(X, y, prior_family):
 
 def cheatsheet():
     return "shrinkbm: Bayesian shrinkage (horseshoe / Laplace)"
+
+
+# compact alias per ledger/NAMING.md
+shrinkagebayes = shrinkage_bayes

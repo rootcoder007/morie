@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import DescriptiveResult
 
@@ -75,3 +75,7 @@ ckmra = cochran_mantel
 
 def cheatsheet() -> str:
     return "cochran_mantel({}) -> Cochran-Mantel-Haenszel test."
+
+
+# compact alias per ledger/NAMING.md
+cochranmantel = cochran_mantel

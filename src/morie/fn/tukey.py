@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -65,3 +65,7 @@ tukey = tukey_biweight
 
 def cheatsheet() -> str:
     return "tukey_biweight({}) -> Tukey biweight M-estimator of location."
+
+
+# compact alias per ledger/NAMING.md
+tukeybiweight = tukey_biweight

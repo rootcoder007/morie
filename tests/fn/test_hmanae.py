@@ -1,24 +1,11 @@
-"""Tests for hmanae.geron_anomaly_autoencoder."""
+"""Tests for hmanae (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.hmanae import geron_anomaly_autoencoder
-
-
-def test_hmanae_basic():
-    """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    threshold = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_anomaly_autoencoder(model, X, threshold)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.hmanae as mod
 
 
-def test_hmanae_edge():
-    """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    threshold = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_anomaly_autoencoder(model, X, threshold)
-    assert isinstance(result, dict)
+def test_hmanae_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

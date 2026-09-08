@@ -1,6 +1,6 @@
 """Tests for wsmbcr.wasserman_credible_interval."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmbcr import wasserman_credible_interval
 

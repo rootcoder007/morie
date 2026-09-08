@@ -1,6 +1,6 @@
 """Tests for hmsac.geron_sac."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmsac import geron_sac
 

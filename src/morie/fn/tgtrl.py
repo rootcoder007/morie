@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 
@@ -82,3 +82,7 @@ tgtrl = target_trial
 
 def cheatsheet() -> str:
     return "target_trial({}) -> Target trial emulation framework."
+
+
+# compact alias per ledger/NAMING.md
+targettrial = target_trial

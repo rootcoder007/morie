@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -36,7 +36,7 @@ def hilbert_spectrum(imfs, fs: float = 1.0, n_bins: int = 256, **kwargs) -> Desc
     Huang, N. E., et al. (1998). The empirical mode decomposition and
     the Hilbert spectrum. *Proc. R. Soc. Lond. A*, 454, 903-995.
     """
-    from scipy.signal import hilbert
+    from ._signal_core import hilbert
 
     imfs = np.asarray(imfs, dtype=float)
     if imfs.ndim == 1:

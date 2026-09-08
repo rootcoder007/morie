@@ -1,6 +1,6 @@
 """Test pages."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pages import page_trend_test
 

@@ -1,6 +1,6 @@
 """Tests for clstpp.clark_evans."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.clstpp import clark_evans
 

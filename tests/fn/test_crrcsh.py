@@ -1,6 +1,6 @@
 """Tests for crrcsh.cause_specific_hazard."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.crrcsh import cause_specific_hazard
 

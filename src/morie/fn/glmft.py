@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import RegressionResult
 
@@ -48,7 +48,7 @@ def glm_fit(
     :return: RegressionResult with coefficients, SE, p-values, deviance, AIC.
     :raises ValueError: If family is not recognized.
     """
-    from scipy import stats as sp_stats
+    from . import _stats_core as sp_stats
 
     family = family.lower()
     if family not in _FAMILIES:
@@ -226,3 +226,7 @@ glmft = glm_fit
 
 def cheatsheet() -> str:
     return "glm_fit({}) -> Generalized linear model fitting."
+
+
+# compact alias per ledger/NAMING.md
+glmfit = glm_fit

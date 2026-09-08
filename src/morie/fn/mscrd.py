@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MDS coordinate extraction"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ mds_ = mds_coords
 
 def cheatsheet() -> str:
     return "mds_coords({}) -> MDS coordinate extraction"
+
+
+# compact alias per ledger/NAMING.md
+mdscoords = mds_coords

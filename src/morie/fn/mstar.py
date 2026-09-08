@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Markov-switching AR model (Hamilton regime switching)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -87,3 +87,7 @@ mstar = ms_ar
 
 def cheatsheet() -> str:
     return "ms_ar({}) -> Markov-switching AR model."
+
+
+# compact alias per ledger/NAMING.md
+msar = ms_ar

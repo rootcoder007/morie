@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -37,3 +37,7 @@ cnnbs = cnnbs_fn
 
 def cheatsheet() -> str:
     return "cnnbs_fn({}) -> 1D Convolutional Neural Network for biosignal classification"
+
+
+# compact alias per ledger/NAMING.md
+cnnbsfn = cnnbs_fn

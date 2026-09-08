@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.signal import fftconvolve
+from . import _array_core as np
+from ._signal_core import fftconvolve
 
 from ._containers import DescriptiveResult
 
@@ -77,3 +77,7 @@ xwvlt = cross_wavelet
 
 def cheatsheet() -> str:
     return "_morlet({}) -> Cross-wavelet spectrum."
+
+
+# compact alias per ledger/NAMING.md
+crosswavelet = cross_wavelet

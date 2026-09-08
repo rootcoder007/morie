@@ -11,7 +11,7 @@ def invlgt(x):
     """
     if isinstance(x, (int, float)):
         return 1.0 / (1.0 + math.exp(-x))
-    import numpy as np
+    from morie.fn import _array_core as np
 
     a = np.asarray(x, dtype=float)
     return 1.0 / (1.0 + np.exp(-a))

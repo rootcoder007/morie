@@ -1,6 +1,6 @@
 """Tests for bknce.burkov_noise_contrastive_estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bknce import burkov_noise_contrastive_estimation
 

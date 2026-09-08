@@ -29,6 +29,50 @@ NULL
 # Internal helpers (mirror _summary_lines, _crosstab, _year_trend, _to_int)
 # ---------------------------------------------------------------------------
 
+#' .otis_year_col
+#'
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_summary_lines},
+#' \code{.otis_year_trend}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param res See Usage.
+#' @param out_dir See Usage.
+#' @param id See Usage.
+#' @return Nothing; the function is called for its effect.
+#' @export
+#' @keywords internal
+.otis_emit <- function(res, out_dir, id) {
+  # Mirrors the Python arm: a text rendering and the JSON payload, one
+  # pair per analysis. Writing is best-effort -- a failure to write must
+  # not destroy a result that took a DML fit to produce -- but it is
+  # reported, because a silent write failure is how a caller ends up
+  # believing an empty directory is an empty analysis.
+  if (is.null(out_dir)) return(res)
+  dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+  tryCatch(
+    writeLines(paste(utils::capture.output(print(res)), collapse = "\n"),
+               file.path(out_dir, sprintf("otis_%s.txt", id))),
+    error = function(e)
+      warning("could not write ", id, ".txt: ", conditionMessage(e),
+              call. = FALSE))
+  tryCatch(
+    writeLines(.morie_to_json(res$payload, auto_unbox = TRUE),
+               file.path(out_dir, sprintf("otis_%s.json", id))),
+    error = function(e)
+      warning("could not write ", id, ".json: ", conditionMessage(e),
+              call. = FALSE))
+  res
+}
+
+#' .otis_year_col
+#'
+#' Internal helper in otis_all_analyze.R; see the file header for
+#' the source the module follows.
+#'
+#' @param df Passed to \code{names}.
+#' @return Nothing; called for its effect.
+#' @export
 .otis_year_col <- function(df) {
   for (c in c("EndFiscalYear", "Year")) {
     if (c %in% names(df)) return(c)
@@ -36,17 +80,55 @@ NULL
   NULL
 }
 
+#' .otis_to_int
+#'
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_b07}, \code{morie_otis_analyze_c01},
+#' \code{morie_otis_analyze_c03}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x Coerced to integer by the body, with \code{as.integer}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .otis_to_int <- function(x) {
   v <- suppressWarnings(as.integer(x))
   if (length(v) == 0L || is.na(v)) 0L else v
 }
 
+#' .otis_is_truthy
+#'
+#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b01}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x Numeric; the body checks with \code{is.numeric}.
+#' @return The value of \code{as.integer}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_is_truthy(x = x)
+#' res
 .otis_is_truthy <- function(x) {
   if (is.logical(x)) return(as.integer(x))
   if (is.numeric(x)) return(as.integer(x == 1))
   as.integer(tolower(trimws(as.character(x))) %in% c("yes", "true", "1"))
 }
 
+#' .otis_summary_lines
+#'
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_c_simple},
+#' \code{.otis_d_simple}, \code{morie_otis_analyze_b01} and 18 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param df A matrix; passed to \code{nrow}.
+#' @param ds_id Passed to \code{sprintf}.
+#' @param description Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param series Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param primary_metric Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_summary_lines <- function(df, ds_id, description = NULL,
                                   series = NULL, primary_metric = NULL) {
   yc <- .otis_year_col(df)
@@ -73,6 +155,21 @@ NULL
   out
 }
 
+#' .otis_crosstab
+#'
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_c_simple},
+#' \code{.otis_d_simple}, \code{morie_otis_analyze_b02} and 13 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param df A matrix; indexed by row and column.
+#' @param row Passed to \code{c}.
+#' @param col Passed to \code{c}.
+#' @param value Passed to \code{c}.
+#' @param aggfunc Compared against \code{"max"}. Defaults to \code{c("sum", "max")}.
+#' @param top_rows Numeric; passed to \code{min}. Defaults to \code{20L}.
+#' @return A list with \code{title}, \code{headers}, \code{rows}.
+#' @export
 .otis_crosstab <- function(df, row, col, value,
                             aggfunc = c("sum", "max"),
                             top_rows = 20L) {
@@ -101,6 +198,18 @@ NULL
   )
 }
 
+#' .otis_year_trend
+#'
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_d_simple},
+#' \code{morie_otis_analyze_b01}, \code{morie_otis_analyze_b02}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param df A vector; indexed elementwise.
+#' @param value Passed to \code{\%in\%}.
+#' @param year_col Passed to \code{\%||\%}.
+#' @return A list with \code{title}, \code{headers}, \code{rows}.
+#' @export
 .otis_year_trend <- function(df, value, year_col = NULL) {
   yc <- year_col %||% .otis_year_col(df)
   if (is.null(yc) || !(value %in% names(df))) return(NULL)
@@ -121,6 +230,21 @@ NULL
 `%||%` <- function(a, b) if (is.null(a)) b else a
 
 
+#' .otis_wrap
+#'
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_aggregate_glm},
+#' \code{.otis_c_simple}, \code{.otis_d_simple} and 35 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds.
+#' @param tables Iterated over elementwise, with \code{Filter}. Defaults to \code{list()}.
+#' @param interpretation Passed to \code{\%||\%}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param payload Carried through into a list the body builds.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_wrap <- function(title, summary_lines, tables = list(),
                         interpretation = NULL, warnings = character(0),
                         payload = NULL) {
@@ -140,22 +264,100 @@ NULL
 
 
 # Indicator helpers (parallel to Python _female_indicator etc.)
+#' Indicator helpers (parallel to Python _female_indicator etc.)
+#'
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_b04_ruhela_aggregate},
+#' \code{morie_otis_analyze_b08_ruhela_aggregate},
+#' \code{morie_otis_analyze_b09_ruhela_aggregate} and 6 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x Coerced to character by the body, with \code{as.character}.
+#' @return The value of \code{as.integer}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_female_indicator(x = x)
+#' res
 .otis_female_indicator <- function(x) {
   as.integer(tolower(as.character(x)) == "female")
 }
 
+#' .otis_toronto_indicator
+#'
+#' A step of the otis_all_analyze implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x Coerced to character by the body, with \code{as.character}.
+#' @return The value of \code{as.integer}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_toronto_indicator(x = x)
+#' res
 .otis_toronto_indicator <- function(x) {
   as.integer(tolower(as.character(x)) == "toronto")
 }
 
+#' .otis_age_50plus_indicator
+#'
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_c06_ruhela_aggregate},
+#' \code{morie_otis_analyze_c09_ruhela_aggregate},
+#' \code{morie_otis_analyze_d05_ruhela_aggregate}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x Coerced to character by the body, with \code{as.character}.
+#' @return The value of \code{as.integer}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_age_50plus_indicator(x = x)
+#' res
 .otis_age_50plus_indicator <- function(x) {
   as.integer(grepl("50", as.character(x)))
 }
 
+#' .otis_indigenous_indicator
+#'
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_c03_ruhela_aggregate},
+#' \code{morie_otis_analyze_c04_ruhela_aggregate},
+#' \code{morie_otis_analyze_c04_ruhela_aggregate_region_cluster} and 1 others in the
+#' module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x Coerced to character by the body, with \code{as.character}.
+#' @return The value of \code{as.integer}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_indigenous_indicator(x = x)
+#' res
 .otis_indigenous_indicator <- function(x) {
   as.integer(tolower(as.character(x)) == "indigenous")
 }
 
+#' .otis_minority_religion_indicator
+#'
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_c05_ruhela_aggregate},
+#' \code{morie_otis_analyze_c08_ruhela_aggregate},
+#' \code{morie_otis_analyze_d04_ruhela_aggregate}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x Coerced to character by the body, with \code{as.character}.
+#' @return The value of \code{as.integer}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_minority_religion_indicator(x = x)
+#' res
 .otis_minority_religion_indicator <- function(x) {
   excluded <- c("christian", "no religion", "unknown or not reported")
   as.integer(!(tolower(trimws(as.character(x))) %in% excluded))
@@ -173,6 +375,9 @@ NULL
 #'   year-trend tables. Within-year only -- \code{UniqueIndividual_ID}
 #'   is not cross-year-safe.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_otis_analyze_b01(D)
 morie_otis_analyze_b01 <- function(data) {
   stopifnot(is.data.frame(data))
   s <- .otis_summary_lines(data, "b01",
@@ -240,6 +445,9 @@ morie_otis_analyze_b01 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines, year-trend table and
 #'   gender x region crosstab of total segregation days.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b02(V)
 morie_otis_analyze_b02 <- function(data) {
   s <- .otis_summary_lines(data, "b02",
     description = "Segregation total days per person per fiscal year")
@@ -267,6 +475,9 @@ morie_otis_analyze_b02 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and alert-by-institution
 #'   crosstabs of segregation-placement counts.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b03(V)
 morie_otis_analyze_b03 <- function(data) {
   s <- .otis_summary_lines(data, "b03",
     description = "Placements by alert/hold flag x institution")
@@ -288,6 +499,9 @@ morie_otis_analyze_b03 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and a region x measure
 #'   crosstab of placement durations.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b04(V)
 morie_otis_analyze_b04 <- function(data) {
   s <- .otis_summary_lines(data, "b04",
     description = "Placement durations (max/median/mode) by region & gender")
@@ -306,6 +520,9 @@ morie_otis_analyze_b04 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and a duration-bin x
 #'   fiscal-year crosstab of placement counts.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b05(V)
 morie_otis_analyze_b05 <- function(data) {
   s <- .otis_summary_lines(data, "b05",
     description = "Distribution by binned duration")
@@ -323,6 +540,9 @@ morie_otis_analyze_b05 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and reason x year and
 #'   reason x gender crosstabs.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b06(V)
 morie_otis_analyze_b06 <- function(data) {
   s <- .otis_summary_lines(data, "b06",
     description = "Reasons for placement by institution & gender")
@@ -345,6 +565,9 @@ morie_otis_analyze_b06 <- function(data) {
 #'   alert x gender x year table including with/without-alert counts and
 #'   the rate of placements with an alert.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b07(V)
 morie_otis_analyze_b07 <- function(data) {
   s <- .otis_summary_lines(data, "b07",
     description = "Placements with/without alert x gender")
@@ -381,6 +604,9 @@ morie_otis_analyze_b07 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and an
 #'   institution x measure crosstab of placement durations.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b08(V)
 morie_otis_analyze_b08 <- function(data) {
   s <- .otis_summary_lines(data, "b08",
     description = "Placement durations by institution & gender")
@@ -399,6 +625,9 @@ morie_otis_analyze_b08 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and a
 #'   placement-count x gender crosstab of individual counts.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_b09(V)
 morie_otis_analyze_b09 <- function(data) {
   s <- .otis_summary_lines(data, "b09",
     description = "Individuals by number of placements x gender")
@@ -421,6 +650,9 @@ morie_otis_analyze_b09 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and a year x gender
 #'   cohort-size table including RC/custody and Seg/custody ratios.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_otis_analyze_c01(D)
 morie_otis_analyze_c01 <- function(data) {
   s <- .otis_summary_lines(data, "c01",
     description = "Total individuals x custody/RC/seg x gender")
@@ -450,6 +682,9 @@ morie_otis_analyze_c01 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and an
 #'   institution x year crosstab of restrictive-confinement individual counts.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_c02(V)
 morie_otis_analyze_c02 <- function(data) {
   s <- .otis_summary_lines(data, "c02",
     description = "Individuals in RC/seg by institution x region x gender")
@@ -470,6 +705,9 @@ morie_otis_analyze_c02 <- function(data) {
 #'   paragraph, and a per-race table of custody / RC / segregation totals
 #'   plus RC/custody and Seg/custody ratios.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_c03(V)
 morie_otis_analyze_c03 <- function(data) {
   s <- .otis_summary_lines(data, "c03",
     description = "Individuals x race x gender")
@@ -509,6 +747,19 @@ morie_otis_analyze_c03 <- function(data) {
   )
 }
 
+#' .otis_c_simple
+#'
+#' A step of the otis_all_analyze implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param ds_id Passed to \code{.otis_summary_lines}.
+#' @param description Passed to \code{.otis_summary_lines}.
+#' @param row_col Passed to \code{.otis_crosstab}.
+#' @param col_col Passed to \code{.otis_crosstab}.
+#' @param value_col Passed to \code{.otis_crosstab}.
+#' @return The value of \code{function}.
+#' @export
 .otis_c_simple <- function(ds_id, description, row_col,
                             col_col = "Region_MostRecentPlacement",
                             value_col = "NumberIndividuals_RestrictiveConfinement") {
@@ -526,18 +777,27 @@ morie_otis_analyze_c03 <- function(data) {
 #' @param data c04 data.frame from OTIS.
 #' @return RichResult with summary + race-by-region crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_c04(morie_synth_otis("c04", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_c04 <- .otis_c_simple(
   "c04", "Individuals in RC/seg x race x region", "Race")
 #' Individuals in RC/seg by religion x region (c05)
 #' @param data c05 data.frame from OTIS.
 #' @return RichResult with summary + religion-by-region crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_c05(morie_synth_otis("c05", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_c05 <- .otis_c_simple(
   "c05", "Individuals in RC/seg x religion x region", "Religion")
 #' Individuals in RC/seg by age category x region (c06)
 #' @param data c06 data.frame from OTIS.
 #' @return RichResult with summary + age-by-region crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_c06(morie_synth_otis("c06", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_c06 <- .otis_c_simple(
   "c06", "Individuals in RC/seg x age category x region", "Age_Category")
 
@@ -547,6 +807,9 @@ morie_otis_analyze_c06 <- .otis_c_simple(
 #'   \code{morie_rich_result}) with summary lines and alert x gender and
 #'   alert x year crosstabs of restrictive-confinement and segregation counts.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_c07(V)
 morie_otis_analyze_c07 <- function(data) {
   s <- .otis_summary_lines(data, "c07",
     description = "Individuals in custody/RC/seg x alert type x gender")
@@ -566,12 +829,18 @@ morie_otis_analyze_c07 <- function(data) {
 #' @param data c08 data.frame from OTIS.
 #' @return RichResult with summary + religion-by-gender crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_c08(morie_synth_otis("c08", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_c08 <- .otis_c_simple(
   "c08", "Individuals x religion x gender", "Religion", "Gender")
 #' Individuals by age category x gender (c09)
 #' @param data c09 data.frame from OTIS.
 #' @return RichResult with summary + age-by-gender crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_c09(morie_synth_otis("c09", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_c09 <- .otis_c_simple(
   "c09", "Individuals x age category x gender", "Age_Category", "Gender")
 
@@ -582,6 +851,9 @@ morie_otis_analyze_c09 <- .otis_c_simple(
 #'   institution x measure crosstab of restrictive-confinement aggregate
 #'   durations.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_c10(V)
 morie_otis_analyze_c10 <- function(data) {
   s <- .otis_summary_lines(data, "c10",
     description = "RC/seg aggregate durations by institution")
@@ -601,6 +873,9 @@ morie_otis_analyze_c10 <- function(data) {
 #'   aggregate-duration x year crosstab of restrictive-confinement
 #'   individual counts.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_c11(V)
 morie_otis_analyze_c11 <- function(data) {
   s <- .otis_summary_lines(data, "c11",
     description = "Individuals by binned aggregate duration")
@@ -618,6 +893,9 @@ morie_otis_analyze_c11 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and a region x measure
 #'   crosstab of restrictive-confinement aggregate durations.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_c12(V)
 morie_otis_analyze_c12 <- function(data) {
   s <- .otis_summary_lines(data, "c12",
     description = "RC/seg aggregate durations by region & gender")
@@ -641,6 +919,9 @@ morie_otis_analyze_c12 <- function(data) {
 #'   \code{morie_rich_result}) with summary lines and tables of deaths by
 #'   region, housing-unit type, medical cause, and means of death.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_d01(V)
 morie_otis_analyze_d01 <- function(data) {
   s <- .otis_summary_lines(data, "d01",
     description = "Custodial deaths (person-level)")
@@ -669,6 +950,17 @@ morie_otis_analyze_d01 <- function(data) {
   )
 }
 
+#' .otis_d_simple
+#'
+#' A step of the otis_all_analyze implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param ds_id Passed to \code{.otis_summary_lines}.
+#' @param description Passed to \code{.otis_summary_lines}.
+#' @param by Passed to \code{.otis_crosstab}.
+#' @return The value of \code{function}.
+#' @export
 .otis_d_simple <- function(ds_id, description, by) {
   function(data) {
     s <- .otis_summary_lines(data, ds_id, description = description)
@@ -685,24 +977,36 @@ morie_otis_analyze_d01 <- function(data) {
 #' @param data d02 data.frame from OTIS.
 #' @return RichResult with summary + deaths-by-gender crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_d02(morie_synth_otis("d02", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_d02 <- .otis_d_simple(
   "d02", "Custodial deaths x gender", "Gender")
 #' Custodial deaths by race (d03)
 #' @param data d03 data.frame from OTIS.
 #' @return RichResult with summary + deaths-by-race crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_d03(morie_synth_otis("d03", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_d03 <- .otis_d_simple(
   "d03", "Custodial deaths x race", "Race")
 #' Custodial deaths by religion (d04)
 #' @param data d04 data.frame from OTIS.
 #' @return RichResult with summary + deaths-by-religion crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_d04(morie_synth_otis("d04", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_d04 <- .otis_d_simple(
   "d04", "Custodial deaths x religion", "Religion")
 #' Custodial deaths by age category (d05)
 #' @param data d05 data.frame from OTIS.
 #' @return RichResult with summary + deaths-by-age crosstab.
 #' @export
+#' @examples
+#' res <- morie_otis_analyze_d05(morie_synth_otis("d05", n = 120L, seed = 1L))
+#' class(res)
 morie_otis_analyze_d05 <- .otis_d_simple(
   "d05", "Custodial deaths x age category", "Age_Category")
 
@@ -710,6 +1014,9 @@ morie_otis_analyze_d05 <- .otis_d_simple(
 #' @param data d06 data.frame from OTIS.
 #' @return RichResult with summary + medical-cause-by-alert crosstab.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_d06(V)
 morie_otis_analyze_d06 <- function(data) {
   s <- .otis_summary_lines(data, "d06",
     description = "Custodial deaths x alert x medical cause")
@@ -724,6 +1031,9 @@ morie_otis_analyze_d06 <- function(data) {
 #' @param data d07 data.frame from OTIS.
 #' @return RichResult with summary + housing-unit-by-alert crosstab.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_otis_analyze_d07(V)
 morie_otis_analyze_d07 <- function(data) {
   s <- .otis_summary_lines(data, "d07",
     description = "Custodial deaths x alert x housing unit")
@@ -812,6 +1122,9 @@ morie_otis_analyze_all <- function(datasets, out_dir = NULL) {
 #' @param ... Unused.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' otis_b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+#' print(morie_otis_analyze_b01(otis_b01))
 print.morie_otis_analysis_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\
@@ -846,12 +1159,35 @@ print.morie_otis_analysis_result <- function(x, ...) {
 # falls back to stop("not yet ported -- requires morie causal helpers").
 # This mirrors the agent-prompt directive: never ship wrong math.
 
+#' .otis_causal_available
+#'
+#' A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_a01}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @return A logical value.
+#' @export
+#' @examples
+#' res <- .otis_causal_available()
+#' res
 .otis_causal_available <- function() {
   exists("morie_otis_irm_dml", mode = "function") &&
     exists("morie_otis_make_pair_alert_to_volatility_ruhela",
            mode = "function")
 }
 
+#' .otis_not_yet_ported
+#'
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_a01}, \code{morie_otis_analyze_a01_ruhela_alt_age},
+#' \code{morie_otis_analyze_a01_ruhela_alt_gender} and 42 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param fn_name Passed to \code{sprintf}.
+#' @param reason Passed to \code{nzchar}. Defaults to \code{""}.
+#' @return The value of \code{.otis_wrap}.
+#' @export
 .otis_not_yet_ported <- function(fn_name, reason = "") {
   msg <- sprintf("%s: not yet ported to R (%s)", fn_name,
                  if (nzchar(reason)) reason else
@@ -873,7 +1209,7 @@ print.morie_otis_analysis_result <- function(x, ...) {
 # High-level wrapper: analyze_a01 (causal pipeline)
 # ---------------------------------------------------------------------------
 
-#' OTIS a01 high-level causal analysis (MatchIt + IRM-DML).
+#' OTIS a01 high-level causal analysis (MatchIt + IRM-DML)
 #'
 #' Wraps the full causal pipeline for the canonical
 #' Restrictive Confinement Detailed Dataset: 8-state alert-combo
@@ -890,9 +1226,11 @@ print.morie_otis_analysis_result <- function(x, ...) {
 #'   helpers aren't loaded, returns a "not yet ported" stub.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_a01 <- morie_synth_otis("a01", n = 120L, seed = 1L)
 #' morie_otis_analyze_a01(otis_a01)
+#' }
 morie_otis_analyze_a01 <- function(data = NULL, out_dir = NULL) {
   if (!.otis_causal_available()) {
     return(.otis_not_yet_ported("morie_otis_analyze_a01",
@@ -919,17 +1257,19 @@ morie_otis_analyze_a01 <- function(data = NULL, out_dir = NULL) {
                               fit$atte_ci95[1], fit$atte_ci95[2]),
     "Standard error type" = fit$se_kind
   )
-  .otis_wrap(
-    title = paste0("OTIS a01 -- high alert complexity (ac >= 2) ",
-                    "-> regional volatility (vm count)"),
-    summary_lines = summary,
-    interpretation = paste(
-      "MatchIt-then-IRM-DML reproduction of the published",
-      "res_pool finding on the canonical Restrictive",
-      "Confinement Detailed Dataset."
+  .otis_emit(
+    .otis_wrap(
+      title = paste0("OTIS a01 -- high alert complexity (ac >= 2) ",
+                      "-> regional volatility (vm count)"),
+      summary_lines = summary,
+      interpretation = paste(
+        "MatchIt-then-IRM-DML reproduction of the published",
+        "res_pool finding on the canonical Restrictive",
+        "Confinement Detailed Dataset."
+      ),
+      payload = fit
     ),
-    payload = fit
-  )
+    out_dir, "a01")
 }
 
 
@@ -940,7 +1280,7 @@ morie_otis_analyze_a01 <- function(data = NULL, out_dir = NULL) {
 # These delegate to the morie causal helpers. When those helpers are
 # absent (R-only build), each entry point returns a stub RichResult.
 
-#' OTIS a01 Ruhela formulations (full DLRM).
+#' OTIS a01 Ruhela formulations (full DLRM)
 #'
 #' Runs the complete OTIS-RC methodology arc (IPW + AIPW + g-comp +
 #' PSM-NN + PSM-subclass + IRM-DML + match_first + ATC + PLR +
@@ -952,9 +1292,11 @@ morie_otis_analyze_a01 <- function(data = NULL, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_a01 <- morie_synth_otis("a01", n = 120L, seed = 1L)
 #' morie_otis_analyze_a01_ruhela_formulations(otis_a01)
+#' }
 morie_otis_analyze_a01_ruhela_formulations <- function(data = NULL,
                                                          out_dir = NULL) {
   .otis_not_yet_ported(
@@ -962,16 +1304,18 @@ morie_otis_analyze_a01_ruhela_formulations <- function(data = NULL,
     "DLRM stack (IPW/AIPW/g-comp/PSM/IRM-DML/PLR/SuperLearner)")
 }
 
-#' OTIS b01 Ruhela formulations (full DLRM).
+#' OTIS b01 Ruhela formulations (full DLRM)
 #'
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
 #' morie_otis_analyze_b01_ruhela_formulations(otis_b01)
+#' }
 morie_otis_analyze_b01_ruhela_formulations <- function(data = NULL,
                                                          out_dir = NULL) {
   .otis_not_yet_ported(
@@ -979,16 +1323,18 @@ morie_otis_analyze_b01_ruhela_formulations <- function(data = NULL,
     "DLRM stack (IPW/AIPW/g-comp/PSM/IRM-DML/PLR/SuperLearner)")
 }
 
-#' OTIS b02 Ruhela formulations: T=Female -> seg-day count.
+#' OTIS b02 Ruhela formulations: T=Female -> seg-day count
 #'
 #' @param data Optional b02 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
 #' morie_otis_analyze_b02_ruhela_formulations(otis_b02)
+#' }
 morie_otis_analyze_b02_ruhela_formulations <- function(data = NULL,
                                                          out_dir = NULL) {
   .otis_not_yet_ported(
@@ -1017,7 +1363,7 @@ morie_otis_analyze_b02_dlrm <- morie_otis_analyze_b02_ruhela_formulations
 # Per-year Ruhela formulations
 # ---------------------------------------------------------------------------
 
-#' Per-fiscal-year full-DLRM Ruhela formulation driver.
+#' Per-fiscal-year full-DLRM Ruhela formulation driver
 #'
 #' Runs the complete 10-estimator DLRM separately on each fiscal year.
 #' This is a heavy operation (~7x the single-year runtime).
@@ -1048,7 +1394,7 @@ morie_otis_analyze_ruhela_per_year <- function(data, ds_id,
     "per-year DLRM \u00d7 estimator triangulation")
 }
 
-#' Per-year full-DLRM on a01 canonical formulation.
+#' Per-year full-DLRM on a01 canonical formulation
 #'
 #' @param data Optional a01 data.frame.
 #' @param out_dir Optional output directory.
@@ -1062,7 +1408,7 @@ morie_otis_analyze_a01_ruhela_per_year <- function(data = NULL,
     "per-year DLRM on a01 cell frame")
 }
 
-#' Per-year full-DLRM on b01 canonical formulation.
+#' Per-year full-DLRM on b01 canonical formulation
 #'
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
@@ -1085,6 +1431,27 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
 # GEE clustering runs the native Liang-Zeger estimator (Poisson +
 # exchangeable working correlation, sandwich covariance).
 
+#' .otis_aggregate_glm
+#'
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_b03_ruhela_aggregate},
+#' \code{morie_otis_analyze_b04_ruhela_aggregate},
+#' \code{morie_otis_analyze_b06_ruhela_aggregate} and 21 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param work A matrix; indexed by row and column.
+#' @param treatment Carried through into a list the body builds.
+#' @param outcome Carried through into a list the body builds.
+#' @param covariates Passed to \code{\%||\%}. Defaults to \code{character(0)}.
+#' @param year_col Carried through into a list the body builds. Defaults to \code{"EndFiscalYear"}.
+#' @param cluster_group Optional; may be \code{NULL}. Carried through into a list the body builds.
+#' @param ds_id Carried through into a list the body builds.
+#' @param source_label Carried through into a list the body builds.
+#' @param title Passed to \code{.otis_wrap}.
+#' @param interpretation Passed to \code{paste0}.
+#' @return The value of \code{.otis_wrap}.
+#' @export
 .otis_aggregate_glm <- function(work, treatment, outcome,
                                   covariates = character(0),
                                   year_col = "EndFiscalYear",
@@ -1311,15 +1678,17 @@ IRR > 1 ==> treatment increases the count rate; IRR < 1 ",
 # on the relevant columns, constructs the treatment indicator, and
 # delegates to .otis_aggregate_glm.
 
-#' b03 aggregate Ruhela: Alert presence -> seg placements.
+#' b03 aggregate Ruhela: Alert presence -> seg placements
 #' @param data b03 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_b03 <- morie_synth_otis("b03", n = 120L, seed = 1L)
 #' morie_otis_analyze_b03_ruhela_aggregate(otis_b03)
+#' }
 morie_otis_analyze_b03_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("Alert_Presence", "Number_SegregationPlacements")
   if (!all(need %in% names(data)))
@@ -1346,15 +1715,17 @@ morie_otis_analyze_b03_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' b04 aggregate Ruhela: Female -> median seg duration.
+#' b04 aggregate Ruhela: Female -> median seg duration
 #' @param data b04 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_b04 <- morie_synth_otis("b04", n = 120L, seed = 1L)
 #' morie_otis_analyze_b04_ruhela_aggregate(otis_b04)
+#' }
 morie_otis_analyze_b04_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Region_AtTimeOfPlacement", "Gender",
             "Measure", "NumberConsecutiveDays_Segregation")
@@ -1383,7 +1754,7 @@ morie_otis_analyze_b04_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' b05 aggregate Ruhela: schema-no-demographic guard.
+#' b05 aggregate Ruhela: schema-no-demographic guard
 #'
 #' OTIS b05 (segregation placements by consecutive duration) does
 #' not carry a demographic treatment variable -- the published
@@ -1402,40 +1773,46 @@ morie_otis_analyze_b04_ruhela_aggregate <- function(data, out_dir = NULL) {
 #'   applicable" note in \code{warnings}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_b05 <- morie_synth_otis("b05", n = 120L, seed = 1L)
 #' morie_otis_analyze_b05_ruhela_aggregate(otis_b05)
+#' }
 morie_otis_analyze_b05_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Consecutive_Duration",
             "Number_SegregationPlacements")
   if (!all(need %in% names(data)))
     return(.otis_not_yet_ported("b05_ruhela_aggregate",
                                 "missing required columns"))
-  .otis_wrap(
-    "b05 aggregate Ruhela", list(),
-    warnings = paste(
-      "b05 has no demographic treatment column (Gender / Race /",
-      "Alert) in the published schema, so the Ruhela aggregate RF",
-      "formulation is not applicable here. Use the b05 panel for",
-      "consecutive-duration histograms instead."
+  .otis_emit(
+    .otis_wrap(
+      "b05 aggregate Ruhela", list(),
+      warnings = paste(
+        "b05 has no demographic treatment column (Gender / Race /",
+        "Alert) in the published schema, so the Ruhela aggregate RF",
+        "formulation is not applicable here. Use the b05 panel for",
+        "consecutive-duration histograms instead."
+      ),
+      interpretation = paste(
+        "OTIS b05 -- aggregate Ruhela formulation: not applicable.",
+        "b05 publishes Consecutive_Duration counts only, with no",
+        "demographic treatment column to contrast against."
+      )
     ),
-    interpretation = paste(
-      "OTIS b05 -- aggregate Ruhela formulation: not applicable.",
-      "b05 publishes Consecutive_Duration counts only, with no",
-      "demographic treatment column to contrast against."
-    )
-  )
+    out_dir, "b05_ruhela_aggregate")
 }
 
-#' b06 aggregate Ruhela: Disciplinary reason -> seg placements.
+#' b06 aggregate Ruhela: Disciplinary reason -> seg placements
 #' @param data b06 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_b06 <- morie_synth_otis("b06", n = 120L, seed = 1L)
 #' morie_otis_analyze_b06_ruhela_aggregate(otis_b06)
+#' }
 morie_otis_analyze_b06_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Reason", "Gender",
             "Region_AtTimeOfPlacement",
@@ -1463,15 +1840,17 @@ morie_otis_analyze_b06_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' b07 aggregate Ruhela (pivot to long): With-alert -> seg placements.
+#' b07 aggregate Ruhela (pivot to long): With-alert -> seg placements
 #' @param data b07 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_b07 <- morie_synth_otis("b07", n = 120L, seed = 1L)
 #' morie_otis_analyze_b07_ruhela_aggregate(otis_b07)
+#' }
 morie_otis_analyze_b07_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Alert_Type", "Gender",
             "Number_Segregation_Placements_With_Alert",
@@ -1513,15 +1892,17 @@ morie_otis_analyze_b07_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' b08 aggregate Ruhela: Female -> median seg duration (institution-clustered).
+#' b08 aggregate Ruhela: Female -> median seg duration (institution-clustered)
 #' @param data b08 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_b08 <- morie_synth_otis("b08", n = 120L, seed = 1L)
 #' morie_otis_analyze_b08_ruhela_aggregate(otis_b08)
+#' }
 morie_otis_analyze_b08_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Region_AtTimeOfPlacement",
             "Institution_AtTimeOfPlacement", "Gender",
@@ -1552,15 +1933,17 @@ morie_otis_analyze_b08_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' b09 aggregate Ruhela: Female -> individuals in segregation.
+#' b09 aggregate Ruhela: Female -> individuals in segregation
 #' @param data b09 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_b09 <- morie_synth_otis("b09", n = 120L, seed = 1L)
 #' morie_otis_analyze_b09_ruhela_aggregate(otis_b09)
+#' }
 morie_otis_analyze_b09_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "NumberPlacements_Segregation", "Gender",
             "NumberIndividuals_Segregation")
@@ -1584,15 +1967,17 @@ morie_otis_analyze_b09_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' c01 aggregate Ruhela: Female -> RC count.
+#' c01 aggregate Ruhela: Female -> RC count
 #' @param data c01 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c01 <- morie_synth_otis("c01", n = 120L, seed = 1L)
 #' morie_otis_analyze_c01_ruhela_aggregate(otis_c01)
+#' }
 morie_otis_analyze_c01_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Gender",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1612,15 +1997,17 @@ morie_otis_analyze_c01_ruhela_aggregate <- function(data, out_dir = NULL) {
     interpretation = "Aggregate RF on c01: gender disparity in RC totals.")
 }
 
-#' c01 region-cluster variant (year-clustered GEE).
+#' c01 region-cluster variant (year-clustered GEE)
 #' @param data c01 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c01 <- morie_synth_otis("c01", n = 120L, seed = 1L)
 #' morie_otis_analyze_c01_ruhela_aggregate_region_cluster(otis_c01)
+#' }
 morie_otis_analyze_c01_ruhela_aggregate_region_cluster <- function(data,
                                                           out_dir = NULL) {
   need <- c("EndFiscalYear", "Gender",
@@ -1645,15 +2032,17 @@ morie_otis_analyze_c01_ruhela_aggregate_region_cluster <- function(data,
     ))
 }
 
-#' c02 aggregate Ruhela: Female -> RC (institution GEE).
+#' c02 aggregate Ruhela: Female -> RC (institution GEE)
 #' @param data c02 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c02 <- morie_synth_otis("c02", n = 120L, seed = 1L)
 #' morie_otis_analyze_c02_ruhela_aggregate(otis_c02)
+#' }
 morie_otis_analyze_c02_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Region_MostRecentPlacement",
             "Institution_MostRecentPlacement", "Gender",
@@ -1679,15 +2068,17 @@ morie_otis_analyze_c02_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' c03 aggregate Ruhela: Indigenous -> RC.
+#' c03 aggregate Ruhela: Indigenous -> RC
 #' @param data c03 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c03 <- morie_synth_otis("c03", n = 120L, seed = 1L)
 #' morie_otis_analyze_c03_ruhela_aggregate(otis_c03)
+#' }
 morie_otis_analyze_c03_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Race", "Gender",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1711,15 +2102,17 @@ morie_otis_analyze_c03_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' c04 aggregate Ruhela: Indigenous -> RC (by region).
+#' c04 aggregate Ruhela: Indigenous -> RC (by region)
 #' @param data c04 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c04 <- morie_synth_otis("c04", n = 120L, seed = 1L)
 #' morie_otis_analyze_c04_ruhela_aggregate(otis_c04)
+#' }
 morie_otis_analyze_c04_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Race", "Region_MostRecentPlacement",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1743,15 +2136,17 @@ morie_otis_analyze_c04_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' c04 region-cluster variant.
+#' c04 region-cluster variant
 #' @param data c04 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c04 <- morie_synth_otis("c04", n = 120L, seed = 1L)
 #' morie_otis_analyze_c04_ruhela_aggregate_region_cluster(otis_c04)
+#' }
 morie_otis_analyze_c04_ruhela_aggregate_region_cluster <- function(data,
                                                           out_dir = NULL) {
   need <- c("EndFiscalYear", "Race", "Region_MostRecentPlacement",
@@ -1772,15 +2167,17 @@ morie_otis_analyze_c04_ruhela_aggregate_region_cluster <- function(data,
     interpretation = "Region-clustered GEE variant of c04.")
 }
 
-#' c05 aggregate Ruhela: non-majority religion -> RC.
+#' c05 aggregate Ruhela: non-majority religion -> RC
 #' @param data c05 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c05 <- morie_synth_otis("c05", n = 120L, seed = 1L)
 #' morie_otis_analyze_c05_ruhela_aggregate(otis_c05)
+#' }
 morie_otis_analyze_c05_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Religion", "Region_MostRecentPlacement",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1805,15 +2202,17 @@ morie_otis_analyze_c05_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' c06 aggregate Ruhela: Age 50+ -> RC.
+#' c06 aggregate Ruhela: Age 50+ -> RC
 #' @param data c06 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c06 <- morie_synth_otis("c06", n = 120L, seed = 1L)
 #' morie_otis_analyze_c06_ruhela_aggregate(otis_c06)
+#' }
 morie_otis_analyze_c06_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Age_Category", "Region_MostRecentPlacement",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1834,15 +2233,17 @@ morie_otis_analyze_c06_ruhela_aggregate <- function(data, out_dir = NULL) {
     interpretation = "Aggregate RF on c06: age-50+ overrepresentation by region.")
 }
 
-#' c07 aggregate Ruhela: Alert presence x Gender -> RC.
+#' c07 aggregate Ruhela: Alert presence x Gender -> RC
 #' @param data c07 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c07 <- morie_synth_otis("c07", n = 120L, seed = 1L)
 #' morie_otis_analyze_c07_ruhela_aggregate(otis_c07)
+#' }
 morie_otis_analyze_c07_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Alert_Type", "Gender",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1875,15 +2276,17 @@ morie_otis_analyze_c07_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' c08 aggregate Ruhela: non-majority religion x gender -> RC.
+#' c08 aggregate Ruhela: non-majority religion x gender -> RC
 #' @param data c08 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c08 <- morie_synth_otis("c08", n = 120L, seed = 1L)
 #' morie_otis_analyze_c08_ruhela_aggregate(otis_c08)
+#' }
 morie_otis_analyze_c08_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Religion", "Gender",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1905,15 +2308,17 @@ morie_otis_analyze_c08_ruhela_aggregate <- function(data, out_dir = NULL) {
     interpretation = "Aggregate RF on c08, parallel to c05 with gender control.")
 }
 
-#' c09 aggregate Ruhela: Age 50+ x gender -> RC.
+#' c09 aggregate Ruhela: Age 50+ x gender -> RC
 #' @param data c09 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c09 <- morie_synth_otis("c09", n = 120L, seed = 1L)
 #' morie_otis_analyze_c09_ruhela_aggregate(otis_c09)
+#' }
 morie_otis_analyze_c09_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Age_Category", "Gender",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1934,15 +2339,17 @@ morie_otis_analyze_c09_ruhela_aggregate <- function(data, out_dir = NULL) {
     interpretation = "Aggregate RF on c09: age-50+ overrepresentation by gender.")
 }
 
-#' c10 aggregate Ruhela: Female -> median RC days (institution GEE).
+#' c10 aggregate Ruhela: Female -> median RC days (institution GEE)
 #' @param data c10 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c10 <- morie_synth_otis("c10", n = 120L, seed = 1L)
 #' morie_otis_analyze_c10_ruhela_aggregate(otis_c10)
+#' }
 morie_otis_analyze_c10_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Region_MostRecentPlacement",
             "Institution_MostRecentPlacement", "Gender", "Measure",
@@ -1970,15 +2377,17 @@ morie_otis_analyze_c10_ruhela_aggregate <- function(data, out_dir = NULL) {
     interpretation = "Aggregate RF on c10: gender disparity in median RC days.")
 }
 
-#' c11 aggregate Ruhela: long-duration bin (>=16 days) -> RC.
+#' c11 aggregate Ruhela: long-duration bin (>=16 days) -> RC
 #' @param data c11 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c11 <- morie_synth_otis("c11", n = 120L, seed = 1L)
 #' morie_otis_analyze_c11_ruhela_aggregate(otis_c11)
+#' }
 morie_otis_analyze_c11_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Aggregate_Duration",
             "NumberIndividuals_RestrictiveConfinement")
@@ -2004,15 +2413,17 @@ morie_otis_analyze_c11_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' c12 aggregate Ruhela: Female -> median RC days (by region).
+#' c12 aggregate Ruhela: Female -> median RC days (by region)
 #' @param data c12 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c12 <- morie_synth_otis("c12", n = 120L, seed = 1L)
 #' morie_otis_analyze_c12_ruhela_aggregate(otis_c12)
+#' }
 morie_otis_analyze_c12_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Region_MostRecentPlacement", "Gender",
             "Measure", "TotalAggregatedDays_RestrictiveConfinement")
@@ -2038,15 +2449,17 @@ morie_otis_analyze_c12_ruhela_aggregate <- function(data, out_dir = NULL) {
     interpretation = "Aggregate RF on c12: region-level companion to c10.")
 }
 
-#' d02 aggregate Ruhela: Female -> custodial deaths.
+#' d02 aggregate Ruhela: Female -> custodial deaths
 #' @param data d02 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_d02 <- morie_synth_otis("d02", n = 120L, seed = 1L)
 #' morie_otis_analyze_d02_ruhela_aggregate(otis_d02)
+#' }
 morie_otis_analyze_d02_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("Year", "Gender", "Number_CustodialDeaths")
   if (!all(need %in% names(data)))
@@ -2067,15 +2480,17 @@ morie_otis_analyze_d02_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' d03 aggregate Ruhela: Indigenous -> custodial deaths.
+#' d03 aggregate Ruhela: Indigenous -> custodial deaths
 #' @param data d03 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_d03 <- morie_synth_otis("d03", n = 120L, seed = 1L)
 #' morie_otis_analyze_d03_ruhela_aggregate(otis_d03)
+#' }
 morie_otis_analyze_d03_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("Year", "Race", "Number_CustodialDeaths")
   if (!all(need %in% names(data)))
@@ -2096,15 +2511,17 @@ morie_otis_analyze_d03_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
-#' d04 aggregate Ruhela: non-majority religion -> custodial deaths.
+#' d04 aggregate Ruhela: non-majority religion -> custodial deaths
 #' @param data d04 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_d04 <- morie_synth_otis("d04", n = 120L, seed = 1L)
 #' morie_otis_analyze_d04_ruhela_aggregate(otis_d04)
+#' }
 morie_otis_analyze_d04_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("Year", "Religion", "Number_CustodialDeaths")
   if (!all(need %in% names(data)))
@@ -2123,15 +2540,17 @@ morie_otis_analyze_d04_ruhela_aggregate <- function(data, out_dir = NULL) {
     interpretation = "Aggregate RF on d04: religious-minority death counts.")
 }
 
-#' d05 aggregate Ruhela: Age 50+ -> custodial deaths.
+#' d05 aggregate Ruhela: Age 50+ -> custodial deaths
 #' @param data d05 data.frame.
 #' @param out_dir Optional.
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_d05 <- morie_synth_otis("d05", n = 120L, seed = 1L)
 #' morie_otis_analyze_d05_ruhela_aggregate(otis_d05)
+#' }
 morie_otis_analyze_d05_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("Year", "Age_Category", "Number_CustodialDeaths")
   if (!all(need %in% names(data)))
@@ -2158,7 +2577,7 @@ morie_otis_analyze_d05_ruhela_aggregate <- function(data, out_dir = NULL) {
 # ---------------------------------------------------------------------------
 # These require the morie causal cell frame; stubbed when unavailable.
 
-#' a01 alt-T Ruhela: Female -> vm count.
+#' a01 alt-T Ruhela: Female -> vm count
 #' @param data Optional a01 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
@@ -2171,7 +2590,7 @@ morie_otis_analyze_a01_ruhela_alt_gender <- function(data = NULL,
                        "DLRM on alt-T cell frame")
 }
 
-#' a01 alt-T Ruhela: Age 50+ -> vm count.
+#' a01 alt-T Ruhela: Age 50+ -> vm count
 #' @param data Optional a01 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
@@ -2184,7 +2603,7 @@ morie_otis_analyze_a01_ruhela_alt_age <- function(data = NULL,
                        "DLRM on alt-T cell frame")
 }
 
-#' a01 alt-T Ruhela: Toronto region -> vm count.
+#' a01 alt-T Ruhela: Toronto region -> vm count
 #' @param data Optional a01 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
@@ -2197,7 +2616,7 @@ morie_otis_analyze_a01_ruhela_alt_toronto <- function(data = NULL,
                        "DLRM on alt-T cell frame")
 }
 
-#' b01 alt-T Ruhela: Female -> vm count.
+#' b01 alt-T Ruhela: Female -> vm count
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
@@ -2210,7 +2629,7 @@ morie_otis_analyze_b01_ruhela_alt_gender <- function(data = NULL,
                        "DLRM on alt-T cell frame")
 }
 
-#' b01 alt-T Ruhela: Age 50+ -> vm count.
+#' b01 alt-T Ruhela: Age 50+ -> vm count
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
@@ -2223,7 +2642,7 @@ morie_otis_analyze_b01_ruhela_alt_age <- function(data = NULL,
                        "DLRM on alt-T cell frame")
 }
 
-#' b01 alt-T Ruhela: Toronto region -> vm count.
+#' b01 alt-T Ruhela: Toronto region -> vm count
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
@@ -2236,7 +2655,7 @@ morie_otis_analyze_b01_ruhela_alt_toronto <- function(data = NULL,
                        "DLRM on alt-T cell frame")
 }
 
-#' b02 alt-T Ruhela: Toronto region -> total seg days.
+#' b02 alt-T Ruhela: Toronto region -> total seg days
 #' @param data Optional b02 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
@@ -2249,7 +2668,7 @@ morie_otis_analyze_b02_ruhela_alt_region <- function(data = NULL,
                        "DLRM on b02 alt-T")
 }
 
-#' b02 alt-T Ruhela: Age 50+ -> total seg days.
+#' b02 alt-T Ruhela: Age 50+ -> total seg days
 #' @param data Optional b02 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
@@ -2267,7 +2686,7 @@ morie_otis_analyze_b02_ruhela_alt_age <- function(data = NULL,
 # Subgroup Ruhela formulations (effect heterogeneity by gender)
 # ---------------------------------------------------------------------------
 
-#' a01 subgroup Ruhela: Female-only cell frame.
+#' a01 subgroup Ruhela: Female-only cell frame
 #' @param data Optional a01 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
@@ -2281,7 +2700,7 @@ morie_otis_analyze_a01_ruhela_subgroup_female <- function(data = NULL,
     "DLRM on female subset of a01 cell frame")
 }
 
-#' a01 subgroup Ruhela: Male-only cell frame.
+#' a01 subgroup Ruhela: Male-only cell frame
 #' @param data Optional a01 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
@@ -2295,7 +2714,7 @@ morie_otis_analyze_a01_ruhela_subgroup_male <- function(data = NULL,
     "DLRM on male subset of a01 cell frame")
 }
 
-#' b01 subgroup Ruhela: Female-only cell frame.
+#' b01 subgroup Ruhela: Female-only cell frame
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
@@ -2309,7 +2728,7 @@ morie_otis_analyze_b01_ruhela_subgroup_female <- function(data = NULL,
     "DLRM on female subset of b01 cell frame")
 }
 
-#' b01 subgroup Ruhela: Male-only cell frame.
+#' b01 subgroup Ruhela: Male-only cell frame
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
 #' @return \code{morie_otis_analysis_result}.
@@ -2339,6 +2758,21 @@ morie_otis_analyze_b01_ruhela_subgroup_male <- function(data = NULL,
   "Greater than 30 days"
 )
 
+#' .otis_classify_bin
+#'
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_b05_mandela_classification},
+#' \code{morie_otis_analyze_c11_mandela_classification}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x Coerced to character by the body, with \code{as.character}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .otis_classify_bin(x = x)
+#' res
 .otis_classify_bin <- function(x) {
   s <- as.character(x)
   out <- rep("Unknown", length(s))
@@ -2347,7 +2781,7 @@ morie_otis_analyze_b01_ruhela_subgroup_male <- function(data = NULL,
   out
 }
 
-#' Mandela-RF on b05 -- per-placement Mandela classification by year.
+#' Mandela-RF on b05 -- per-placement Mandela classification by year
 #'
 #' Applies the Sprott-Doob 15-day Mandela threshold to OTIS b05
 #' (Ontario provincial segregation placement counts by binned
@@ -2358,9 +2792,11 @@ morie_otis_analyze_b01_ruhela_subgroup_male <- function(data = NULL,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_b05 <- morie_synth_otis("b05", n = 120L, seed = 1L)
 #' morie_otis_analyze_b05_mandela_classification(otis_b05)
+#' }
 morie_otis_analyze_b05_mandela_classification <- function(data,
                                                             out_dir = NULL) {
   need <- c("EndFiscalYear", "Consecutive_Duration",
@@ -2404,48 +2840,50 @@ morie_otis_analyze_b05_mandela_classification <- function(data,
     as.numeric(sub("%", "", rows[[length(rows)]][5]))
   } else NA_real_
 
-  .otis_wrap(
-    title = paste0("Mandela-RF on OTIS b05 -- per-placement Mandela ",
-                     "classification (Ontario provincial segregation, ",
-                     "by fiscal year)"),
-    summary_lines = list(
-      "Source" = "OTIS b05 (segregation placement counts x duration)",
-      "Mandela threshold" = paste("Rule 43 -- 15 days (<=15 = solitary;",
-                                      ">=16 = torture)"),
-      "Caveat" = paste("Duration-only proxy (no hours-out-of-cell in",
-                          "OTIS); treat as upper bound"),
-      "Federal SD-2021 reference (CSC SIUs N=1960)" = sprintf(
-        "Solitary %s%%, Torture %s%%",
-        sd_fed_sol_pct, sd_fed_tor_pct),
-      "Latest provincial torture rate" = if (is.na(prov_tor_pct))
-        "n/a" else sprintf("%.2f%% -- vs federal %s%%; %s",
-                            prov_tor_pct, sd_fed_tor_pct,
-                            if (prov_tor_pct > sd_fed_tor_pct)
-                              "higher" else "lower")
+  .otis_emit(
+    .otis_wrap(
+      title = paste0("Mandela-RF on OTIS b05 -- per-placement Mandela ",
+                       "classification (Ontario provincial segregation, ",
+                       "by fiscal year)"),
+      summary_lines = list(
+        "Source" = "OTIS b05 (segregation placement counts x duration)",
+        "Mandela threshold" = paste("Rule 43 -- 15 days (<=15 = solitary;",
+                                        ">=16 = torture)"),
+        "Caveat" = paste("Duration-only proxy (no hours-out-of-cell in",
+                            "OTIS); treat as upper bound"),
+        "Federal SD-2021 reference (CSC SIUs N=1960)" = sprintf(
+          "Solitary %s%%, Torture %s%%",
+          sd_fed_sol_pct, sd_fed_tor_pct),
+        "Latest provincial torture rate" = if (is.na(prov_tor_pct))
+          "n/a" else sprintf("%.2f%% -- vs federal %s%%; %s",
+                              prov_tor_pct, sd_fed_tor_pct,
+                              if (prov_tor_pct > sd_fed_tor_pct)
+                                "higher" else "lower")
+      ),
+      tables = list(list(
+        title = paste0("OTIS b05 Mandela-class by fiscal year ",
+                         "(placements as the unit):"),
+        headers = c("Fiscal year", "Solitary N", "Solitary %",
+                      "Torture N", "Torture %", "Total"),
+        rows = rows
+      )),
+      interpretation = paste(
+        "Applies the Sprott-Doob Mandela-Rules duration threshold",
+        "(15 days, Rule 43) to OTIS provincial segregation placements.",
+        "The 'torture' bin (>=16 days) counts placements crossing the",
+        "prolonged-solitary line."
+      ),
+      payload = list(
+        rows = rows,
+        federal_reference = list(solitary_pct = sd_fed_sol_pct,
+                                  torture_pct = sd_fed_tor_pct,
+                                  n = sd_fed_n)
+      )
     ),
-    tables = list(list(
-      title = paste0("OTIS b05 Mandela-class by fiscal year ",
-                       "(placements as the unit):"),
-      headers = c("Fiscal year", "Solitary N", "Solitary %",
-                    "Torture N", "Torture %", "Total"),
-      rows = rows
-    )),
-    interpretation = paste(
-      "Applies the Sprott-Doob Mandela-Rules duration threshold",
-      "(15 days, Rule 43) to OTIS provincial segregation placements.",
-      "The 'torture' bin (>=16 days) counts placements crossing the",
-      "prolonged-solitary line."
-    ),
-    payload = list(
-      rows = rows,
-      federal_reference = list(solitary_pct = sd_fed_sol_pct,
-                                torture_pct = sd_fed_tor_pct,
-                                n = sd_fed_n)
-    )
-  )
+    out_dir, "b05_mandela_classification")
 }
 
-#' Mandela-RF on c11 -- per-individual Mandela classification by year.
+#' Mandela-RF on c11 -- per-individual Mandela classification by year
 #'
 #' Applies the 15-day threshold to OTIS c11 (Ontario provincial counts
 #' of INDIVIDUALS by binned aggregate duration). Reports both
@@ -2456,9 +2894,11 @@ morie_otis_analyze_b05_mandela_classification <- function(data,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c11 <- morie_synth_otis("c11", n = 120L, seed = 1L)
 #' morie_otis_analyze_c11_mandela_classification(otis_c11)
+#' }
 morie_otis_analyze_c11_mandela_classification <- function(data,
                                                             out_dir = NULL) {
   need <- c("EndFiscalYear", "Aggregate_Duration",
@@ -2505,38 +2945,40 @@ morie_otis_analyze_c11_mandela_classification <- function(data,
     }
   }
 
-  .otis_wrap(
-    title = paste0("Mandela-RF on OTIS c11 -- per-individual Mandela ",
-                     "classification (Ontario provincial restrictive-",
-                     "confinement & segregation, by fiscal year)"),
-    summary_lines = list(
-      "Source" = "OTIS c11 (individuals x aggregate duration)",
-      "Mandela threshold" = paste("Rule 43 -- 15 days",
-                                      "(<=15 = solitary; >=16 = torture)"),
-      "Two views" = paste("Segregation (closer match to federal SIU);",
-                              "Restrictive Confinement (broader Ontario)"),
-      "Caveat" = "Duration-only proxy -- no hours-out-of-cell in OTIS",
-      "Federal SD-2021 reference (N=1960)" =
-        "Solitary 28.4%, Torture 9.9%"
+  .otis_emit(
+    .otis_wrap(
+      title = paste0("Mandela-RF on OTIS c11 -- per-individual Mandela ",
+                       "classification (Ontario provincial restrictive-",
+                       "confinement & segregation, by fiscal year)"),
+      summary_lines = list(
+        "Source" = "OTIS c11 (individuals x aggregate duration)",
+        "Mandela threshold" = paste("Rule 43 -- 15 days",
+                                        "(<=15 = solitary; >=16 = torture)"),
+        "Two views" = paste("Segregation (closer match to federal SIU);",
+                                "Restrictive Confinement (broader Ontario)"),
+        "Caveat" = "Duration-only proxy -- no hours-out-of-cell in OTIS",
+        "Federal SD-2021 reference (N=1960)" =
+          "Solitary 28.4%, Torture 9.9%"
+      ),
+      tables = list(list(
+        title = paste0("OTIS c11 Mandela-class by year x confinement ",
+                         "type (individuals as the unit):"),
+        headers = c("Year", "Type", "Solitary N", "Solitary %",
+                      "Torture N", "Torture %", "Total"),
+        rows = rows
+      )),
+      interpretation = paste(
+        "Per-individual Mandela classification on OTIS c11. The",
+        "'Segregation' view is most directly comparable to the",
+        "Sprott-Doob federal SIU classification (28.4% solitary,",
+        "9.9% torture across N=1960)."
+      ),
+      payload = list(rows = rows)
     ),
-    tables = list(list(
-      title = paste0("OTIS c11 Mandela-class by year x confinement ",
-                       "type (individuals as the unit):"),
-      headers = c("Year", "Type", "Solitary N", "Solitary %",
-                    "Torture N", "Torture %", "Total"),
-      rows = rows
-    )),
-    interpretation = paste(
-      "Per-individual Mandela classification on OTIS c11. The",
-      "'Segregation' view is most directly comparable to the",
-      "Sprott-Doob federal SIU classification (28.4% solitary,",
-      "9.9% torture across N=1960)."
-    ),
-    payload = list(rows = rows)
-  )
+    out_dir, "c11_mandela_classification")
 }
 
-#' Mandela-RF cross-comparison: Ontario provincial vs federal SIU.
+#' Mandela-RF cross-comparison: Ontario provincial vs federal SIU
 #'
 #' Cross-references the c11 Mandela classification against the
 #' Sprott-Doob Feb 2021 federal SIU figures (Table 19, N=1960).
@@ -2546,9 +2988,11 @@ morie_otis_analyze_c11_mandela_classification <- function(data,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c11 <- morie_synth_otis("c11", n = 120L, seed = 1L)
 #' morie_otis_analyze_otis_mandela_provincial_vs_federal(otis_c11)
+#' }
 morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
         data, out_dir = NULL) {
   c11_r <- morie_otis_analyze_c11_mandela_classification(data, out_dir)
@@ -2641,6 +3085,16 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
 #
 # Faithfully ported via stats::chisq.test (+ Cramer's V).
 
+#' .otis_chi2_cramer
+#'
+#' A step of the otis_all_analyze implementation. Called by \code{.otis_contingency_chi2}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param tbl A matrix; passed to \code{dim}.
+#' @return A list with \code{chi2}, \code{dof}, \code{pvalue}, \code{cramer_v}, \code{n},
+#' \code{min_cell}, \code{min_expected}.
+#' @export
 .otis_chi2_cramer <- function(tbl) {
   if (length(tbl) == 0L || sum(tbl) == 0L)
     return(list(chi2 = NA_real_, dof = 0L, pvalue = NA_real_,
@@ -2669,6 +3123,19 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
        min_expected = min_exp)
 }
 
+#' .otis_contingency_chi2
+#'
+#' A step of the otis_all_analyze implementation. Called by
+#' \code{morie_otis_analyze_c_chi2}, \code{morie_otis_analyze_d_chi2}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param df A matrix; indexed by row and column.
+#' @param row Passed to \code{c}.
+#' @param col Passed to \code{c}.
+#' @param value Passed to \code{c}.
+#' @return A list with \code{table}, \code{stats}.
+#' @export
 .otis_contingency_chi2 <- function(df, row, col, value) {
   if (!all(c(row, col, value) %in% names(df)))
     return(list(table = NULL,
@@ -2690,7 +3157,7 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
   list(table = tbl, stats = .otis_chi2_cramer(tbl))
 }
 
-#' MRM chi-square family on c-series.
+#' MRM chi-square family on c-series
 #'
 #' Pearson chi-square + Cramer's V on every meaningful 2-way slice of
 #' the c-series datasets. Honour to Prof. Doob's chi-square tradition
@@ -2704,10 +3171,12 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_c03 <- morie_synth_otis("c03", n = 120L, seed = 1L)
 #' otis_c04 <- morie_synth_otis("c04", n = 120L, seed = 1L)
 #' morie_otis_analyze_c_chi2(list(c03 = otis_c03, c04 = otis_c04))
+#' }
 morie_otis_analyze_c_chi2 <- function(datasets,
         contingency_value = "NumberIndividuals_RestrictiveConfinement",
         out_dir = NULL) {
@@ -2750,33 +3219,35 @@ morie_otis_analyze_c_chi2 <- function(datasets,
     payloads[[sl$ds]] <- list(row = sl$row, col = sl$col, stats = st)
   }
 
-  .otis_wrap(
-    title = paste0("OTIS c-series -- chi^2 + Cramer's V family on ",
-                     "demographic contingency tables"),
-    summary_lines = list(
-      "Contingency value column" = contingency_value,
-      "Slices tested" = length(rows)
+  .otis_emit(
+    .otis_wrap(
+      title = paste0("OTIS c-series -- chi^2 + Cramer's V family on ",
+                       "demographic contingency tables"),
+      summary_lines = list(
+        "Contingency value column" = contingency_value,
+        "Slices tested" = length(rows)
+      ),
+      tables = list(list(
+        title = sprintf(
+          "Contingency chi^2 and Cramer's V on c-series slices (value = %s):",
+          contingency_value),
+        headers = c("Dataset", "Slice", "n",
+                      "chi^2", "dof", "p", "Cramer's V", "min cell"),
+        rows = rows
+      )),
+      interpretation = paste(
+        "Cramer's V is the canonical effect-size measure for chi^2",
+        "independence on 2-way contingency tables: V~0 -> independence,",
+        "V->1 -> strong association. p<.05 with V<0.1 ==>",
+        "statistically detectable but practically tiny."
+      ),
+      payload = list(slices = payloads,
+                     contingency_value = contingency_value)
     ),
-    tables = list(list(
-      title = sprintf(
-        "Contingency chi^2 and Cramer's V on c-series slices (value = %s):",
-        contingency_value),
-      headers = c("Dataset", "Slice", "n",
-                    "chi^2", "dof", "p", "Cramer's V", "min cell"),
-      rows = rows
-    )),
-    interpretation = paste(
-      "Cramer's V is the canonical effect-size measure for chi^2",
-      "independence on 2-way contingency tables: V~0 -> independence,",
-      "V->1 -> strong association. p<.05 with V<0.1 ==>",
-      "statistically detectable but practically tiny."
-    ),
-    payload = list(slices = payloads,
-                   contingency_value = contingency_value)
-  )
+    out_dir, "c_chi2")
 }
 
-#' MRM chi-square family on d-series.
+#' MRM chi-square family on d-series
 #'
 #' Yearly trend (d01 Poisson CIs) + Alert x Cause / Housing
 #' contingency chi^2 + Cramer's V on d06 / d07.
@@ -2787,12 +3258,14 @@ morie_otis_analyze_c_chi2 <- function(datasets,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_d01 <- morie_synth_otis("d01", n = 120L, seed = 1L)
 #' otis_d06 <- morie_synth_otis("d06", n = 120L, seed = 1L)
 #' otis_d07 <- morie_synth_otis("d07", n = 120L, seed = 1L)
 #' morie_otis_analyze_d_chi2(list(d01 = otis_d01,
 #'                                  d06 = otis_d06, d07 = otis_d07))
+#' }
 morie_otis_analyze_d_chi2 <- function(datasets, out_dir = NULL) {
   stopifnot(is.list(datasets))
   d01 <- datasets$d01
@@ -2875,41 +3348,43 @@ morie_otis_analyze_d_chi2 <- function(datasets, out_dir = NULL) {
     sprintf("%d-%d", min(as.integer(names(yearly_payload))),
             max(as.integer(names(yearly_payload)))) else "n/a"
 
-  .otis_wrap(
-    title = paste0("OTIS d-series -- yearly death counts + ",
-                     "Alert x Cause/Housing chi^2"),
-    summary_lines = list(
-      "d01 total deaths" = total_n,
-      "d01 year range" = year_range,
-      "Year-over-year RR" = rr_text,
-      "d06 (Alert x MedicalCause) Cramer's V" =
-        if (is.finite(stats_d06$cramer_v %||% NA_real_))
-          round(stats_d06$cramer_v, 4) else "n/a",
-      "d07 (Alert x Housing_Type) Cramer's V" =
-        if (is.finite(stats_d07$cramer_v %||% NA_real_))
-          round(stats_d07$cramer_v, 4) else "n/a"
+  .otis_emit(
+    .otis_wrap(
+      title = paste0("OTIS d-series -- yearly death counts + ",
+                       "Alert x Cause/Housing chi^2"),
+      summary_lines = list(
+        "d01 total deaths" = total_n,
+        "d01 year range" = year_range,
+        "Year-over-year RR" = rr_text,
+        "d06 (Alert x MedicalCause) Cramer's V" =
+          if (is.finite(stats_d06$cramer_v %||% NA_real_))
+            round(stats_d06$cramer_v, 4) else "n/a",
+        "d07 (Alert x Housing_Type) Cramer's V" =
+          if (is.finite(stats_d07$cramer_v %||% NA_real_))
+            round(stats_d07$cramer_v, 4) else "n/a"
+      ),
+      tables = list(
+        list(title = "d01 yearly custodial-death counts (Poisson 95% CI):",
+             headers = c("Year", "Deaths", "95% CI"),
+             rows = yearly_rows),
+        list(title = paste0("d06 / d07 Alert-flag x outcome contingency ",
+                              "chi^2 + Cramer's V:"),
+             headers = c("Dataset", "Slice", "n",
+                           "chi^2", "dof", "p", "Cramer's V", "min cell"),
+             rows = chi_rows)
+      ),
+      interpretation = paste(
+        "d-series carries no per-individual alert columns -- the Ruhela",
+        "alert-complexity dual is structurally impossible. Natural",
+        "alternatives are: (1) yearly death-count trends, and (2)",
+        "Cramer's V on d06 / d07 aggregate contingency tables."
+      ),
+      payload = list(d01_yearly_counts = yearly_payload,
+                     yoy_rate_ratio = yoy,
+                     d06_chi2 = stats_d06,
+                     d07_chi2 = stats_d07)
     ),
-    tables = list(
-      list(title = "d01 yearly custodial-death counts (Poisson 95% CI):",
-           headers = c("Year", "Deaths", "95% CI"),
-           rows = yearly_rows),
-      list(title = paste0("d06 / d07 Alert-flag x outcome contingency ",
-                            "chi^2 + Cramer's V:"),
-           headers = c("Dataset", "Slice", "n",
-                         "chi^2", "dof", "p", "Cramer's V", "min cell"),
-           rows = chi_rows)
-    ),
-    interpretation = paste(
-      "d-series carries no per-individual alert columns -- the Ruhela",
-      "alert-complexity dual is structurally impossible. Natural",
-      "alternatives are: (1) yearly death-count trends, and (2)",
-      "Cramer's V on d06 / d07 aggregate contingency tables."
-    ),
-    payload = list(d01_yearly_counts = yearly_payload,
-                   yoy_rate_ratio = yoy,
-                   d06_chi2 = stats_d06,
-                   d07_chi2 = stats_d07)
-  )
+    out_dir, "d_chi2")
 }
 
 
@@ -2917,7 +3392,7 @@ morie_otis_analyze_d_chi2 <- function(datasets, out_dir = NULL) {
 # Ruhela grid + master orchestrator
 # ---------------------------------------------------------------------------
 
-#' Aggregate Ruhela grid: one-page IRR comparison across analyzers.
+#' Aggregate Ruhela grid: one-page IRR comparison across analyzers
 #'
 #' Runs every aggregate Ruhela formulation analyzer against the
 #' supplied named datasets list and presents a single primary-IRR
@@ -2928,10 +3403,12 @@ morie_otis_analyze_d_chi2 <- function(datasets, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_b03 <- morie_synth_otis("b03", n = 120L, seed = 1L)
 #' otis_c01 <- morie_synth_otis("c01", n = 120L, seed = 1L)
 #' morie_otis_analyze_ruhela_grid(list(b03 = otis_b03, c01 = otis_c01))
+#' }
 morie_otis_analyze_ruhela_grid <- function(datasets,
                                              out_dir = NULL) {
   stopifnot(is.list(datasets))
@@ -3034,35 +3511,37 @@ morie_otis_analyze_ruhela_grid <- function(datasets,
     }
   }
 
-  .otis_wrap(
-    title = paste0("OTIS Ruhela formulations grid summary -- one-page ",
-                     "IRR/ATE comparison across all aggregate RF analyzers"),
-    summary_lines = list(
-      "Aggregate datasets covered" = length(analyzers),
-      "Per-row datasets covered" = paste(
-        "see analyze_a01/b01/b02_ruhela_formulations + alt-T variants"),
-      "MRM chi^2 datasets (c, d)" =
-        "see analyze_c_chi2 / analyze_d_chi2",
-      "Primary estimator priority" =
-        "GEE-NB > GEE-Poisson > NB GLM > Poisson GLM"
+  .otis_emit(
+    .otis_wrap(
+      title = paste0("OTIS Ruhela formulations grid summary -- one-page ",
+                       "IRR/ATE comparison across all aggregate RF analyzers"),
+      summary_lines = list(
+        "Aggregate datasets covered" = length(analyzers),
+        "Per-row datasets covered" = paste(
+          "see analyze_a01/b01/b02_ruhela_formulations + alt-T variants"),
+        "MRM chi^2 datasets (c, d)" =
+          "see analyze_c_chi2 / analyze_d_chi2",
+        "Primary estimator priority" =
+          "GEE-NB > GEE-Poisson > NB GLM > Poisson GLM"
+      ),
+      tables = list(list(
+        title = paste0("Aggregate Ruhela formulations -- primary IRR per ",
+                         "dataset (GEE cluster-robust > NB GLM):"),
+        headers = c("DS", "Type", "Formulation", "IRR",
+                      "95% CI", "p", "Notes"),
+        rows = rows
+      )),
+      interpretation = paste(
+        "One-page comparison of every aggregate Ruhela formulation",
+        "currently shipped. Primary IRR is the GEE cluster-robust",
+        "estimate when available; otherwise the NB GLM estimate."
+      ),
+      payload = list(n_aggregates = length(analyzers))
     ),
-    tables = list(list(
-      title = paste0("Aggregate Ruhela formulations -- primary IRR per ",
-                       "dataset (GEE cluster-robust > NB GLM):"),
-      headers = c("DS", "Type", "Formulation", "IRR",
-                    "95% CI", "p", "Notes"),
-      rows = rows
-    )),
-    interpretation = paste(
-      "One-page comparison of every aggregate Ruhela formulation",
-      "currently shipped. Primary IRR is the GEE cluster-robust",
-      "estimate when available; otherwise the NB GLM estimate."
-    ),
-    payload = list(n_aggregates = length(analyzers))
-  )
+    out_dir, "ruhela_grid")
 }
 
-#' Paper-ready master report -- every Ruhela formulation in one result.
+#' Paper-ready master report -- every Ruhela formulation in one result
 #'
 #' Sections:
 #' \enumerate{
@@ -3079,10 +3558,12 @@ morie_otis_analyze_ruhela_grid <- function(datasets,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' datasets_list <- list(b01 = morie_synth_otis("b01", n = 120L,
 #'                                              seed = 1L))
 #' res <- morie_otis_analyze_ruhela_master(datasets_list)
 #' length(res$sections)
+#' }
 morie_otis_analyze_ruhela_master <- function(datasets,
                                                include_per_row = FALSE,
                                                out_dir = NULL) {
@@ -3209,7 +3690,7 @@ morie_otis_analyze_ruhela_master <- function(datasets,
 # CSI context (analyze_a01_with_csi_context)
 # ---------------------------------------------------------------------------
 
-#' OTIS a01 causal pipeline + Toronto Crime Severity Index context.
+#' OTIS a01 causal pipeline + Toronto Crime Severity Index context
 #'
 #' Wires together \code{morie_otis_analyze_a01} (causal IRM-DML) with
 #' the Toronto Police Service / StatsCan CSI context. The R port
@@ -3224,9 +3705,11 @@ morie_otis_analyze_ruhela_master <- function(datasets,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
+#' \donttest{
 #' # Synthetic OTIS-shaped panel (bundled generator)
 #' otis_a01 <- morie_synth_otis("a01", n = 120L, seed = 1L)
 #' morie_otis_analyze_a01_with_csi_context(otis_a01)
+#' }
 morie_otis_analyze_a01_with_csi_context <- function(data = NULL,
                                                      variant = "total",
                                                      rebase_to_year = 2023L,

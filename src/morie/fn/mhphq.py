@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PHQ-9 depression screening score."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -59,3 +59,7 @@ mhphq = phq9_score
 
 def cheatsheet() -> str:
     return "phq9_score({}) -> PHQ-9 depression screening score."
+
+
+# compact alias per ledger/NAMING.md
+phq9score = phq9_score

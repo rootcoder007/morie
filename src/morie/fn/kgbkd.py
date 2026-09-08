@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Block kriging discretization"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ bk_d = bk_discretize
 
 def cheatsheet() -> str:
     return "bk_discretize({}) -> Block kriging discretization"
+
+
+# compact alias per ledger/NAMING.md
+bkdiscretize = bk_discretize

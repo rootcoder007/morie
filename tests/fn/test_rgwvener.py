@@ -1,8 +1,8 @@
 """Tests for rgwvener.rangayyan_wavelet_energy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgwvener import rangayyan_wavelet_energy
+from morie.fn.bsatf import rangayyan_wavelet_energy
 
 
 def test_rgwvener_basic():

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kriging equivalence to GLS"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -35,3 +35,7 @@ krig = kriging_equiv
 
 def cheatsheet() -> str:
     return "kriging_equiv({}) -> Kriging equivalence to GLS"
+
+
+# compact alias per ledger/NAMING.md
+krigingequiv = kriging_equiv

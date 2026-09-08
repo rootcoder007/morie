@@ -1,54 +1,22 @@
-"""CentralTendency equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Deprecated alias for :func:`morie.fn.gausscount`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .gausscount import gausscount as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_28"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_28(x):
-    """
-    CentralTendency equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: [EQ] 2π(5.4)2 e−(x−35)2/2(5.4)2
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner5e28')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.5 eq.5.28
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="CentralTendency equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_28(x, n_reps=100000, mu=35.0, sigma=5.4):
+    """Deprecated; use :func:`morie.fn.gausscount` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_28() is the book-coordinate name for gausscount(); "
+        "it will be removed. Use morie.fn.gausscount() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner5e28: CentralTendency equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return _impl(x, n_reps, mu, sigma)

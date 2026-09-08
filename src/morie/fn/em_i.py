@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def em_impute(
@@ -142,3 +142,7 @@ em_i = em_impute
 
 def cheatsheet() -> str:
     return "em_impute({}) -> EM algorithm imputation for multivariate normal data."
+
+
+# compact alias per ledger/NAMING.md
+emimpute = em_impute

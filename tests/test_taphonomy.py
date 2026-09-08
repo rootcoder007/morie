@@ -6,8 +6,8 @@ refused, and the CATE path never emits ``sd/sqrt(n)`` as an SE -- ``"none"``
 gives a point + dispersion only, ``"bootstrap"`` gives a valid SE + CI.
 """
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.taphonomy import (
@@ -27,12 +27,12 @@ from morie.taphonomy import (
     taphonomy_simulate_pxrf,
 )
 from morie.taphonomy import _read_usgs_soil_zip
-from scipy.stats import norm
+from morie.fn._stats_core import norm
 
 
 def test_schema_is_typed_zero_row_template():
     s = taphonomy_schema()
-    assert isinstance(s, pd.DataFrame)
+    assert (hasattr(s, "columns") or hasattr(s, "_cols"))
     assert len(s) == 0
     assert {"lime_treatment", "preservation_score", "pxrf_ca_ppm"} <= set(s.columns)
     assert s.attrs["role"]["lime_treatment"] == "treatment"

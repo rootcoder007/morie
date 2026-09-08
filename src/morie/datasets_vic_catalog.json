@@ -1,0 +1,137 @@
+[
+  {
+    "key": "bail_justice_bail",
+    "file": "Bail_Justice_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Bail_Justice_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "children_s_court_bail",
+    "file": "Children's_Court_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Children%27s_Court_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "corrections_victoria_bail",
+    "file": "Corrections_Victoria_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Corrections_Victoria_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "county_court_bail",
+    "file": "County_Court_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/County_Court_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "alleged_offender_incidents",
+    "file": "Data_Tables_Alleged_Offender_Incidents_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Data_Tables_Alleged_Offender_Incidents_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "criminal_incidents",
+    "file": "Data_Tables_Criminal_Incidents_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Data_Tables_Criminal_Incidents_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "family_incidents",
+    "file": "Data_Tables_Family_Incidents_Visualisation_Year_Ending_March_2026.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Data_Tables_Family_Incidents_Visualisation_Year_Ending_March_2026.xlsx"
+  },
+  {
+    "key": "lga_alleged_offenders",
+    "file": "Data_Tables_LGA_Alleged_Offenders_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Data_Tables_LGA_Alleged_Offenders_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "lga_criminal_incidents",
+    "file": "Data_Tables_LGA_Criminal_Incidents_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Data_Tables_LGA_Criminal_Incidents_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "lga_family_incidents",
+    "file": "Data_Tables_LGA_Family_Incidents_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Data_Tables_LGA_Family_Incidents_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "lga_recorded_offences",
+    "file": "Data_Tables_LGA_Recorded_Offences_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Data_Tables_LGA_Recorded_Offences_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "lga_victim_reports",
+    "file": "Data_Tables_LGA_Victim_Reports_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Data_Tables_LGA_Victim_Reports_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "property_items",
+    "file": "Data_Tables_Property_Items_Visualisation_Year_Ending_March_2026.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Data_Tables_Property_Items_Visualisation_Year_Ending_March_2026.xlsx"
+  },
+  {
+    "key": "recorded_offences",
+    "file": "Data_Tables_Recorded_Offences_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Data_Tables_Recorded_Offences_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "victim_reports",
+    "file": "Data_Tables_Victim_Reports_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Data_Tables_Victim_Reports_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "indigenous_alleged_offender_incidents",
+    "file": "Indigenous_Data_Tables_Alleged_Offender_Incidents_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Indigenous_Data_Tables_Alleged_Offender_Incidents_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "indigenous_family_incidents",
+    "file": "Indigenous_Data_Tables_Family_Incidents_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Indigenous_Data_Tables_Family_Incidents_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "indigenous_lga_alleged_offenders",
+    "file": "Indigenous_Data_Tables_LGA_Alleged_Offenders_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Indigenous_Data_Tables_LGA_Alleged_Offenders_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "indigenous_lga_family_incidents_afms",
+    "file": "Indigenous_Data_Tables_LGA_Family_Incidents_AFMs_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Indigenous_Data_Tables_LGA_Family_Incidents_AFMs_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "indigenous_lga_family_incidents_oths",
+    "file": "Indigenous_Data_Tables_LGA_Family_Incidents_OTHs_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Indigenous_Data_Tables_LGA_Family_Incidents_OTHs_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "indigenous_lga_family_incidents",
+    "file": "Indigenous_Data_Tables_LGA_Family_Incidents_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Indigenous_Data_Tables_LGA_Family_Incidents_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "indigenous_lga_victim_reports",
+    "file": "Indigenous_Data_Tables_LGA_Victim_Reports_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Indigenous_Data_Tables_LGA_Victim_Reports_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "indigenous_victim_reports",
+    "file": "Indigenous_Data_Tables_Victim_Reports_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Indigenous_Data_Tables_Victim_Reports_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "magistrates_court_bail",
+    "file": "Magistrates'_Court_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Magistrates%27_Court_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "supreme_court_bail",
+    "file": "Supreme_Court_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Supreme_Court_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "victoria_police_bail",
+    "file": "Victoria_Police_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Victoria_Police_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx"
+  },
+  {
+    "key": "youth_justice_bail",
+    "file": "Youth_Justice_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx",
+    "url": "https://files.crimestatistics.vic.gov.au/2026-06/Youth_Justice_Data_Tables_Bail_Visualisation_Year_Ending_March_2026_0.xlsx"
+  }
+]

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tps_io.R
 \name{morie_tps_list_formats}
 \alias{morie_tps_list_formats}
-\title{Map TPS format name -> path of the file that would be loaded.}
+\title{Map TPS format name -> path of the file that would be loaded}
 \usage{
 morie_tps_list_formats(name)
 }
@@ -16,4 +16,8 @@ Named character vector (\code{format} -> file path).
 Formats whose sibling directory or file is not present on disk
 are omitted from the returned named character vector. Use this
 to discover which formats a given category actually exports.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_tps_list_formats(V)
 }

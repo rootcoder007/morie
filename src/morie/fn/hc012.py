@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import RegressionResult
 
@@ -104,3 +104,7 @@ hc012 = hc_robust_se
 
 def cheatsheet() -> str:
     return "hc_robust_se({}) -> OLS with HC0/HC1/HC2/HC3 robust SE."
+
+
+# compact alias per ledger/NAMING.md
+hcrobustse = hc_robust_se

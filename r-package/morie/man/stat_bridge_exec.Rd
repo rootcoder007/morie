@@ -16,3 +16,7 @@ Captured handler output as a single string.
 \description{
 Execute a single command and return the resulting text
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+stat_bridge_exec(V)
+}

@@ -1,6 +1,6 @@
 """Tests for morie.fn.ogate — GATE by age group."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.ogate import otis_gate_age
 

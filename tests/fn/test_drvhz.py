@@ -1,6 +1,6 @@
 """Test derivative_hz (drvhz)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.drvhz import derivative_hz, drvhz

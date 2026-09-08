@@ -1,6 +1,6 @@
 """Inverse distance weights matrix"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ w_in = w_inverse_dist
 
 def cheatsheet() -> str:
     return "w_inverse_dist({}) -> Inverse distance weights matrix"
+
+
+# compact alias per ledger/NAMING.md
+winversedist = w_inverse_dist

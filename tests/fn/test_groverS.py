@@ -1,6 +1,6 @@
 """Tests for groverS.grover_search."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.groverS import grover_search
 

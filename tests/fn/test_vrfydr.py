@@ -1,6 +1,6 @@
 """Tests for morie.fn.vrfydr — verify directory."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.vrfydr import verify_directory, vrfydr

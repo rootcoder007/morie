@@ -1,6 +1,6 @@
 """Temporal trend estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ tren = trend_temporal
 
 def cheatsheet() -> str:
     return "trend_temporal({}) -> Temporal trend estimation"
+
+
+# compact alias per ledger/NAMING.md
+trendtemporal = trend_temporal

@@ -1,6 +1,6 @@
 """Test hamming_code."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import CryptoResult
 from morie.fn.hamcd import hamcd, hamming_code

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -55,7 +55,7 @@ def kcvms(
         Cramer-von Mises criterion. *Annals of Mathematical Statistics*,
         33(3), 1148-1159.
     """
-    from scipy.stats import norm, uniform
+    from ._stats_core import norm, uniform
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]

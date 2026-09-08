@@ -1,8 +1,8 @@
 """Tests for rng180.rangayyan_ch4_qrs_smoothing_ma_filter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rng180 import rangayyan_ch4_qrs_smoothing_ma_filter
+from morie.fn.bsaqrs import rangayyan_ch4_qrs_smoothing_ma_filter
 
 
 def test_rng180_basic():

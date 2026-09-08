@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ sntpl = sentence_plea
 
 def cheatsheet() -> str:
     return "sentence_plea({}) -> Sentence length by plea type."
+
+
+# compact alias per ledger/NAMING.md
+sentenceplea = sentence_plea

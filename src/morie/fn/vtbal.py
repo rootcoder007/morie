@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -72,3 +72,7 @@ vtbal = viterbi_align
 
 def cheatsheet() -> str:
     return "viterbi_align({}) -> Viterbi algorithm for optimal state alignment."
+
+
+# compact alias per ledger/NAMING.md
+viterbialign = viterbi_align

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -28,3 +28,7 @@ hrvmt = hrv_metrics_fn
 
 def cheatsheet() -> str:
     return "hrv_metrics_fn({}) -> Heart rate variability metrics."
+
+
+# compact alias per ledger/NAMING.md
+hrvmetricsfn = hrv_metrics_fn

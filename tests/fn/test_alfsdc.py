@@ -1,6 +1,6 @@
 """Tests for alfsdc.alphafold_sidechain."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alfsdc import alphafold_sidechain
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -100,3 +100,7 @@ sgsar = sar_lag_model
 
 def cheatsheet() -> str:
     return "sar_lag_model({}) -> Spatial autoregressive lag model (SAR)."
+
+
+# compact alias per ledger/NAMING.md
+sarlagmodel = sar_lag_model

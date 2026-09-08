@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -33,3 +33,7 @@ ncfs = ncfs_fn
 
 def cheatsheet() -> str:
     return "ncfs_fn({}) -> Neighbourhood Component Feature Selection."
+
+
+# compact alias per ledger/NAMING.md
+ncfsfn = ncfs_fn

@@ -1,6 +1,6 @@
 """PSIS-LOO leave-one-out."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def loo_psi(log_lik):
 
 def cheatsheet():
     return "bayloo: PSIS-LOO leave-one-out"
+
+
+# compact alias per ledger/NAMING.md
+loopsi = loo_psi

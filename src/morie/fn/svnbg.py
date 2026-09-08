@@ -1,6 +1,6 @@
 """Nash bargaining in spatial game"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ nash = nash_bargain_sp
 
 def cheatsheet() -> str:
     return "nash_bargain_sp({}) -> Nash bargaining in spatial game"
+
+
+# compact alias per ledger/NAMING.md
+nashbargainsp = nash_bargain_sp

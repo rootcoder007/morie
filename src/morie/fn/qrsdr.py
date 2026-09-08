@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -54,3 +54,7 @@ qrsdr = qrs_duration
 
 def cheatsheet() -> str:
     return "qrs_duration({}) -> QRS complex duration measurement."
+
+
+# compact alias per ledger/NAMING.md
+qrsduration = qrs_duration

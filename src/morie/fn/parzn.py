@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -88,3 +88,7 @@ parzn = parzen_classify
 
 def cheatsheet() -> str:
     return "parzen_classify({}) -> Parzen window (kernel density) classifier."
+
+
+# compact alias per ledger/NAMING.md
+parzenclassify = parzen_classify

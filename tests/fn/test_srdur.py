@@ -1,6 +1,6 @@
 """Tests for morie.fn.srdur -- Survival duration statistics."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.srdur import srdur

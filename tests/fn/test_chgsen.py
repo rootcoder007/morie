@@ -1,6 +1,6 @@
 """Tests for chgsen.change_of_variance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.chgsen import change_of_variance
 

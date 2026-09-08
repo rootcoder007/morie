@@ -1,6 +1,6 @@
 """Tests for hmfth.geron_finetune_lm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmfth import geron_finetune_lm
 

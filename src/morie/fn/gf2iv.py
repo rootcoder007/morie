@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -36,3 +36,7 @@ gf2iv = gf2_matrix_inv
 
 def cheatsheet() -> str:
     return "gf2_matrix_inv({}) -> GF(2) matrix inverse."
+
+
+# compact alias per ledger/NAMING.md
+gf2matrixinv = gf2_matrix_inv

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -33,3 +33,7 @@ def torus_surface(R: float = 3.0, r: float = 1.0) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "torus_surface(R, r) -> surface area & volume of torus"
+
+
+# compact alias per ledger/NAMING.md
+torussurface = torus_surface

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Geometric Mean Probability"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ gmp_ = gmp_stat
 
 def cheatsheet() -> str:
     return "gmp_stat({}) -> Geometric Mean Probability"
+
+
+# compact alias per ledger/NAMING.md
+gmpstat = gmp_stat

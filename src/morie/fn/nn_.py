@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -113,3 +113,7 @@ nn_ = nn_classify
 
 def cheatsheet() -> str:
     return "nn_classify({}) -> Simple neural network (1 hidden layer, pure NumPy)."
+
+
+# compact alias per ledger/NAMING.md
+nnclassify = nn_classify

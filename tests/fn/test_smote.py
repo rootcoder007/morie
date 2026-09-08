@@ -1,7 +1,7 @@
 """Tests for morie.fn.smote — SMOTE oversampling with fallback."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.smote import apply_smote as smote
@@ -50,6 +50,10 @@ class TestApplySmote:
         X = pd.DataFrame(rng.standard_normal((102, 2)), columns=["x1", "x2"])
         y = pd.Series([0] * 100 + [1] * 2, name="y")
         X_res, y_res, status = smote(X, y)
-        # Only 2 minority samples — SMOTE needs k_neighbors > minority count
+        # 2 minority samples is enough for SMOTE with k=1 (Chawla et
+        # al. 2002 needs one neighbour, not five); the native
+        # implementation interpolates rather than falling back.
         assert len(X_res) >= len(X)
-        assert status["total_after"] >= status["total_before"]
+        counts = y_res.value_counts().to_dict()
+        assert counts[1] == counts[0] == 100
+        assert status["method"] in ("smote", "random_oversample")

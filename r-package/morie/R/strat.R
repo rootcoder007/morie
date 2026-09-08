@@ -15,6 +15,9 @@
 #'   n_strata, method.
 #' @keywords internal
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' strat(D)
 strat <- function(data, y = "y", strata = "stratum", pop_sizes = NULL) {
   yv <- as.numeric(data[[y]])
   sv <- data[[strata]]

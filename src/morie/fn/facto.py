@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from itertools import product as _product
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 

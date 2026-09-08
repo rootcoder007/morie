@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgind -- Indicator kriging"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgind import indicator_kriging
 

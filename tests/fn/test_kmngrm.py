@@ -1,6 +1,6 @@
 """Tests for kmngrm.kamath_ngram_language_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmngrm import kamath_ngram_language_model
 

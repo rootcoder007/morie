@@ -1,6 +1,6 @@
 """Tests for eslqda.esl_qda."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslqda import esl_qda
 

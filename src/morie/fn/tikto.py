@@ -1,6 +1,6 @@
 """tiktoken-style efficient BPE."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def tiktoken_bpe(corpus):
 
 def cheatsheet():
     return "tikto: tiktoken-style efficient BPE"
+
+
+# compact alias per ledger/NAMING.md
+tiktokenbpe = tiktoken_bpe

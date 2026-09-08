@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -28,3 +28,7 @@ alias = hjorth_params
 
 def cheatsheet() -> str:
     return "hjorth_params({}) -> Hjorth parameters of a signal."
+
+
+# compact alias per ledger/NAMING.md
+hjorthparams = hjorth_params

@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
-from scipy.optimize import brentq
+from . import _array_core as np
+from . import _stats_core as sp_stats
+from ._sci_core import brentq
 
 from ._containers import ESRes
 
@@ -49,7 +49,7 @@ def tetrachoric_corr(a: int, b: int, c: int, d: int) -> ESRes:
         k1 = sp_stats.norm.ppf((a + c) / n)
 
         def _eq(rho):
-            from scipy.stats import mvn
+            from ._stats_core import mvn
 
             lo = np.array([-np.inf, -np.inf])
             hi = np.array([h1, k1])

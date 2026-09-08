@@ -1,6 +1,6 @@
 """Tests for tagRC.tag_aware_rec."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tagRC import tag_aware_rec
 

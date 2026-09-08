@@ -1,6 +1,6 @@
 """MGWR variable bandwidths"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ mgwr = mgwr_bandwidths
 
 def cheatsheet() -> str:
     return "mgwr_bandwidths({}) -> MGWR variable bandwidths"
+
+
+# compact alias per ledger/NAMING.md
+mgwrbandwidths = mgwr_bandwidths

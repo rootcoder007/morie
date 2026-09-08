@@ -1,6 +1,6 @@
 """Tests for morie.fn.svwt2 -- Wittman model in 2D space"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svwt2 import wittman_2d
 

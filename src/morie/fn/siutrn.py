@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from morie.fn._containers import DescriptiveResult
 
@@ -42,3 +42,7 @@ siutrn = siu_trend
 
 def cheatsheet() -> str:
     return "siu_trend({}) -> SIU case trend over years."
+
+
+# compact alias per ledger/NAMING.md
+siutrend = siu_trend

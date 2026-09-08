@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Block kriging prediction"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -35,3 +35,7 @@ bloc = block_kriging
 
 def cheatsheet() -> str:
     return "block_kriging({}) -> Block kriging prediction"
+
+
+# compact alias per ledger/NAMING.md
+blockkriging = block_kriging

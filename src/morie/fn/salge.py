@@ -5,7 +5,7 @@ Local Geary's C
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def salge(values=None, w=None, n=50):

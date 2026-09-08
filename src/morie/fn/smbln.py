@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -93,3 +93,7 @@ smbln = smd_balance
 
 def cheatsheet() -> str:
     return "smd_balance({}) -> Standardized mean difference balance check."
+
+
+# compact alias per ledger/NAMING.md
+smdbalance = smd_balance

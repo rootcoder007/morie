@@ -1,6 +1,6 @@
 """Tests for fzb4t.fauzi_b4_coefficient_mrl."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzb4t import fauzi_b4_coefficient_mrl
 

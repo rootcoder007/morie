@@ -17,7 +17,7 @@ def am_weight_estimate(Z, zhat) -> DescriptiveResult:
 
     .. epigraph:: In the midst of chaos, there is also opportunity. -- Sun Tzu
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     zhat = np.asarray(zhat, dtype=float).ravel()

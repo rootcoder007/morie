@@ -1,6 +1,6 @@
 """Tests for randW.random_walk_kernel."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.randW import random_walk_kernel
 

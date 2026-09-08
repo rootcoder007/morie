@@ -28,6 +28,26 @@
 
 # ---- Result container constructors ----------------------------------------
 
+#' .new_bootstrap_result
+#'
+#' A step of the bootstrap_methods implementation. Called by \code{block_bootstrap},
+#' \code{bootstrap}, \code{parametric_bootstrap} and 2 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param estimate Carried through into a list the body builds.
+#' @param se Carried through into a list the body builds.
+#' @param ci_lower Carried through into a list the body builds.
+#' @param ci_upper Carried through into a list the body builds.
+#' @param bias Carried through into a list the body builds.
+#' @param n_boot Carried through into a list the body builds.
+#' @param method Carried through into a list the body builds.
+#' @param ci_method Carried through into a list the body builds.
+#' @param boot_distribution Carried through into a list the body builds.
+#' @param original_estimate Carried through into a list the body builds.
+#' @param acceleration Carried through into a list the body builds. Defaults to \code{0}.
+#' @return The value of \code{structure}.
+#' @export
 .new_bootstrap_result <- function(estimate, se, ci_lower, ci_upper, bias,
                                   n_boot, method, ci_method,
                                   boot_distribution, original_estimate,
@@ -43,6 +63,24 @@
   )
 }
 
+#' .new_jackknife_result
+#'
+#' A step of the bootstrap_methods implementation. Called by \code{delete_d_jackknife},
+#' \code{jackknife}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param estimate Carried through into a list the body builds.
+#' @param se Carried through into a list the body builds.
+#' @param ci_lower Carried through into a list the body builds.
+#' @param ci_upper Carried through into a list the body builds.
+#' @param bias Carried through into a list the body builds.
+#' @param n Carried through into a list the body builds.
+#' @param jackknife_estimates Carried through into a list the body builds.
+#' @param pseudovalues Carried through into a list the body builds.
+#' @param influence_values Carried through into a list the body builds.
+#' @return The value of \code{structure}.
+#' @export
 .new_jackknife_result <- function(estimate, se, ci_lower, ci_upper, bias,
                                   n, jackknife_estimates, pseudovalues,
                                   influence_values) {
@@ -56,6 +94,22 @@
   )
 }
 
+#' .new_permutation_test_result
+#'
+#' A step of the bootstrap_methods implementation. Called by
+#' \code{paired_permutation_test}, \code{permutation_test}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param observed_statistic Carried through into a list the body builds.
+#' @param p_value Carried through into a list the body builds.
+#' @param null_distribution Carried through into a list the body builds.
+#' @param n_permutations Carried through into a list the body builds.
+#' @param alternative Carried through into a list the body builds.
+#' @param ci_lower Carried through into a list the body builds. Defaults to \code{NA_real_}.
+#' @param ci_upper Carried through into a list the body builds. Defaults to \code{NA_real_}.
+#' @return The value of \code{structure}.
+#' @export
 .new_permutation_test_result <- function(observed_statistic, p_value,
                                          null_distribution, n_permutations,
                                          alternative,
@@ -71,6 +125,23 @@
   )
 }
 
+#' .new_cv_result
+#'
+#' A step of the bootstrap_methods implementation. Called by \code{.boot_cross_validate},
+#' \code{repeated_cv}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param scores Carried through into a list the body builds.
+#' @param mean_score Carried through into a list the body builds.
+#' @param se_score Carried through into a list the body builds.
+#' @param ci_lower Carried through into a list the body builds.
+#' @param ci_upper Carried through into a list the body builds.
+#' @param n_folds Carried through into a list the body builds.
+#' @param metric Carried through into a list the body builds.
+#' @param fold_sizes Carried through into a list the body builds.
+#' @return The value of \code{structure}.
+#' @export
 .new_cv_result <- function(scores, mean_score, se_score, ci_lower, ci_upper,
                            n_folds, metric, fold_sizes) {
   structure(
@@ -82,15 +153,55 @@
 }
 
 # Helper: percentile-of-vector (matches numpy.percentile linear interp).
+#' Helper: percentile-of-vector (matches numpy.percentile linear interp)
+#'
+#' A step of the bootstrap_methods implementation. Called by \code{.bca_interval},
+#' \code{block_bootstrap}, \code{bootstrap} and 3 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x See Usage.
+#' @param p Numeric; combined arithmetically in the body.
+#' @return The value of \code{unname}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .pct(x = x, p = 0.5)
+#' res
 .pct <- function(x, p) unname(stats::quantile(x, probs = p / 100,
                                               names = FALSE, type = 7))
 
 # Helper: subset rows of a vector or matrix.
+#' Helper: subset rows of a vector or matrix
+#'
+#' A step of the bootstrap_methods implementation. Called by \code{.bca_interval},
+#' \code{block_bootstrap}, \code{bootstrap} and 3 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param data A matrix; indexed by row and column.
+#' @param idx See Usage.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .idx <- function(data, idx) {
   if (is.matrix(data) || is.data.frame(data)) data[idx, , drop = FALSE]
   else data[idx]
 }
 
+#' .nrow_like
+#'
+#' A step of the bootstrap_methods implementation. Called by \code{.bca_interval},
+#' \code{block_bootstrap}, \code{bootstrap} and 3 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param data A matrix; passed to \code{nrow}.
+#' @return One of two values, depending on the branch taken.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .nrow_like(data = x)
+#' res
 .nrow_like <- function(data) {
   if (is.matrix(data) || is.data.frame(data)) nrow(data) else length(data)
 }
@@ -206,6 +317,19 @@ bootstrap <- function(data, statistic, n_boot = 2000L, ci_level = 0.95,
 }
 
 # BCa (bias-corrected and accelerated) percentile interval.
+#' BCa (bias-corrected and accelerated) percentile interval
+#'
+#' A step of the bootstrap_methods implementation. Called by \code{bootstrap}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param data Passed to \code{.nrow_like}.
+#' @param statistic Accepted by the signature and not used anywhere in the body.
+#' @param boot_stats Passed to \code{.pct}.
+#' @param original Passed to \code{<}.
+#' @param ci_level Numeric; combined arithmetically in the body.
+#' @return A list with \code{ci_lo}, \code{ci_hi}, \code{acc}.
+#' @export
 .bca_interval <- function(data, statistic, boot_stats, original, ci_level) {
   n <- .nrow_like(data)
   alpha <- 1 - ci_level
@@ -250,6 +374,9 @@ bootstrap <- function(data, statistic, n_boot = 2000L, ci_level = 0.95,
 #'   scale, shape).
 #' @return A \code{morie_bootstrap_result}.
 #' @export
+#' @examples
+#' x_vec <- rnorm(40)
+#' parametric_bootstrap(x_vec, mean, distribution = "normal", n_boot = 30L)
 parametric_bootstrap <- function(data, statistic, distribution = "normal",
                                  n_boot = 2000L, ci_level = 0.95,
                                  seed = 42L, ...) {
@@ -324,6 +451,11 @@ parametric_bootstrap <- function(data, statistic, distribution = "normal",
 #' @param seed Random seed.
 #' @return A \code{morie_bootstrap_result}.
 #' @export
+#' @examples
+#' n <- 30L
+#' X <- cbind(1, rnorm(n))
+#' y <- 1 + 0.5 * X[, 2] + rnorm(n)
+#' wild_bootstrap(y, X, statistic_idx = 2L, n_boot = 30L, weight_distribution = "rademacher")
 wild_bootstrap <- function(y, X, statistic_idx = 2L, n_boot = 999L,
                            ci_level = 0.95,
                            weight_distribution = "rademacher",
@@ -557,6 +689,9 @@ delete_d_jackknife <- function(data, statistic, d = 2L,
 #' @param seed Random seed.
 #' @return A \code{morie_permutation_test_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' permutation_test(V, V)
 permutation_test <- function(group1, group2, statistic = "mean_diff",
                              n_permutations = 9999L,
                              alternative = "two-sided", seed = 42L) {
@@ -617,6 +752,9 @@ permutation_test <- function(group1, group2, statistic = "mean_diff",
 #' @param seed Random seed.
 #' @return A \code{morie_permutation_test_result}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' paired_permutation_test(V, V)
 paired_permutation_test <- function(x, y, statistic = "mean_diff",
                                     n_permutations = 9999L,
                                     alternative = "two-sided", seed = 42L) {
@@ -664,6 +802,9 @@ paired_permutation_test <- function(x, y, statistic = "mean_diff",
 #' @param seed Random seed.
 #' @return A \code{morie_bootstrap_result}.
 #' @export
+#' @examples
+#' x_vec <- rnorm(40)
+#' subsampling(x_vec, mean, n_subsamples = 30L)
 subsampling <- function(data, statistic, subsample_size = NULL,
                         n_subsamples = 1000L, ci_level = 0.95,
                         seed = 42L) {
@@ -784,9 +925,9 @@ bootstrap_632 <- function(X, y, model_fn, score_fn,
 #'
 #' Bootstrap-flavoured K-fold cross-validation (internal).
 #'
-#' Lower-level CV used by [repeated_cv()] / [leave_one_out_cv()].
+#' Lower-level CV used by \[repeated_cv()\] / \[leave_one_out_cv()\].
 #' Public CV with `(fit_fn, predict_fn, X, y, ...)` signature lives in
-#' [cross_validate()] (validation.R). Renamed to avoid the symbol
+#' \[cross_validate()\] (validation.R). Renamed to avoid the symbol
 #' collision that R CMD check surfaced as unused-arg notes.
 #'
 #' @param X Numeric design matrix.
@@ -855,7 +996,6 @@ bootstrap_632 <- function(X, y, model_fn, score_fn,
 
 #' Repeated K-fold cross-validation
 #'
-#' @inheritParams .boot_cross_validate
 #' @param X Numeric matrix or data.frame of predictors.
 #' @param y Numeric or factor outcome vector aligned with rows of `X`.
 #' @param model_fn Function `(X, y) -> fitted-model` used on each training fold.
@@ -889,7 +1029,6 @@ repeated_cv <- function(X, y, model_fn, score_fn,
 
 #' Leave-one-out cross-validation
 #'
-#' @inheritParams .boot_cross_validate
 #' @param X Numeric matrix or data.frame of predictors.
 #' @param y Numeric or factor outcome vector aligned with rows of `X`.
 #' @param model_fn Function `(X, y) -> fitted-model` used on each training fold.

@@ -1,6 +1,6 @@
 """Tests for morie.fn.cload — cache load."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.cload import cache_load, cload
 from morie.fn.cstor import cstor

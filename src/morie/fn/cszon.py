@@ -5,7 +5,7 @@ Zone design police
 Category: CrimSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def cszon(incidents=None, population=None, coords=None, n=50):

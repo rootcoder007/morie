@@ -1,6 +1,6 @@
 """Tests for ksr054.kosorok_ch2_m_estimator_lipschitz_envelope."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr054 import kosorok_ch2_m_estimator_lipschitz_envelope
 

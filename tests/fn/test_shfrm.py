@@ -1,6 +1,6 @@
 """Tests for shfrm.shared_frailty_marginal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.shfrm import shared_frailty_marginal
 

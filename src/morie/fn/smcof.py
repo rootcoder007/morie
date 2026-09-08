@@ -1,6 +1,6 @@
 """SMACOF majorization scaling"""
 
-import numpy as np
+from . import _array_core as np
 
 from .._spatial_voting import smacof as _smacof
 from ._containers import DescriptiveResult
@@ -34,3 +34,7 @@ smacof_scale = smacof_scale
 
 def cheatsheet() -> str:
     return "smacof_scale({}) -> SMACOF majorization scaling"
+
+
+# compact alias per ledger/NAMING.md
+smacofscale = smacof_scale

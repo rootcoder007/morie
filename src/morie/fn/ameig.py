@@ -14,7 +14,7 @@ def am_eigensolve(M) -> DescriptiveResult:
 
     .. epigraph:: No man ever steps in the same river twice. -- Heraclitus
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     M = np.asarray(M, dtype=float)
     MtM = M.T @ M
@@ -38,3 +38,7 @@ ameig = am_eigensolve
 
 def cheatsheet() -> str:
     return "am_eigensolve({}) -> A-M eigensolve for stimulus positions."
+
+
+# compact alias per ledger/NAMING.md
+ameigensolve = am_eigensolve

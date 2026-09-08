@@ -1,6 +1,6 @@
 """EM ideal point estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ idea = ideal_point_em
 
 def cheatsheet() -> str:
     return "ideal_point_em({}) -> EM ideal point estimation"
+
+
+# compact alias per ledger/NAMING.md
+idealpointem = ideal_point_em

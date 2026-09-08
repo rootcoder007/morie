@@ -5,7 +5,7 @@ Mortality atlas construction
 Category: SpatEpi2
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def semtl(cases=None, population=None, coords=None, n=50):

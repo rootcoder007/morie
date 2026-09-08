@@ -1,6 +1,6 @@
 """Tests for otplan.ot_plan_to_map."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otplan import ot_plan_to_map
 

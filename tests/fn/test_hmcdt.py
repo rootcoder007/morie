@@ -1,6 +1,6 @@
 """Tests for hmcdt.geron_classification_tree."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmcdt import geron_classification_tree
 

@@ -1,6 +1,6 @@
 """Tests for grsft.geron_sft_objective."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grsft import geron_sft_objective
 

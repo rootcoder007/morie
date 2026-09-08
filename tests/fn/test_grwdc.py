@@ -1,6 +1,6 @@
 """Tests for grwdc.geron_adamw_decoupled_weight_decay."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grwdc import geron_adamw_decoupled_weight_decay
 

@@ -1,6 +1,6 @@
 """Spatial probit model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -28,3 +28,7 @@ spat = spatial_probit
 
 def cheatsheet() -> str:
     return "spatial_probit({}) -> Spatial probit model"
+
+
+# compact alias per ledger/NAMING.md
+spatialprobit = spatial_probit

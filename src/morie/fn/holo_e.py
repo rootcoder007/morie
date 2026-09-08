@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def holo_effect(
@@ -34,7 +34,7 @@ def holo_effect(
         Confidence Intervals, and Meta-Analysis*. Routledge.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_effect requires matplotlib. Install via: pip install matplotlib")
         return None
@@ -68,3 +68,7 @@ def holo_effect(
 
 def cheatsheet() -> str:
     return "holo_effect({}) -> Effect size forest plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holoeffect = holo_effect

@@ -1,6 +1,6 @@
 """Variogram cloud"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -42,3 +42,7 @@ vari = vario_cloud
 
 def cheatsheet() -> str:
     return "vario_cloud({}) -> Variogram cloud"
+
+
+# compact alias per ledger/NAMING.md
+variocloud = vario_cloud

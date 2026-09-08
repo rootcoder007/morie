@@ -1,6 +1,6 @@
 """Tests for hmgpt2.geron_gpt2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmgpt2 import geron_gpt2
 

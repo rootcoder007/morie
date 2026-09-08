@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def random_walk_mh(
@@ -79,3 +79,7 @@ rwmh = random_walk_mh
 
 def cheatsheet() -> str:
     return "random_walk_mh({}) -> Random walk Metropolis-Hastings with adaptive step size."
+
+
+# compact alias per ledger/NAMING.md
+randomwalkmh = random_walk_mh

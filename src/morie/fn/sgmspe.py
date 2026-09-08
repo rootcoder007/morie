@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -47,3 +47,7 @@ sgmspe = mspe_kriging
 
 def cheatsheet() -> str:
     return "mspe_kriging({}) -> Mean squared prediction error statistics."
+
+
+# compact alias per ledger/NAMING.md
+mspekriging = mspe_kriging

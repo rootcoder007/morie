@@ -1,20 +1,18 @@
-"""Tests for esstst.effective_sample_size."""
+"""Tests for esstst.effective_sample_size_weights (Kish ESS)."""
 
-import numpy as np
-
-from morie.fn.esstst import effective_sample_size
+from morie.fn.esstst import effective_sample_size_weights
 
 
-def test_esstst_basic():
-    """Test basic functionality."""
-    weights = np.random.default_rng(45).exponential(1, 100)
-    result = effective_sample_size(weights)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_esstst_equal_weights_full_n():
+    r = effective_sample_size_weights([2.0, 2.0, 2.0, 2.0])
+    assert r["ess"] == 4.0
+    assert r["efficiency"] == 1.0
 
 
-def test_esstst_edge():
-    """Test edge cases."""
-    weights = np.random.default_rng(45).exponential(1, 100)
-    result = effective_sample_size(weights)
-    assert isinstance(result, dict)
+def test_esstst_kish_formula_and_concentration():
+    # ESS = (sum w)^2 / sum w^2
+    w = [10.0, 1.0, 1.0, 1.0]
+    r = effective_sample_size_weights(w)
+    want = sum(w) ** 2 / sum(v * v for v in w)
+    assert abs(r["ess"] - want) < 1e-12
+    assert r["ess"] < 4.0

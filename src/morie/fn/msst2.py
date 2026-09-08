@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Normalized stress"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ stre = stress_norm
 
 def cheatsheet() -> str:
     return "stress_norm({}) -> Normalized stress"
+
+
+# compact alias per ledger/NAMING.md
+stressnorm = stress_norm

@@ -39,6 +39,14 @@ Hard-errors if \pkg{sandwich} is not installed -- the HC sandwich
 algebra is well-tested upstream and re-implementing it inline
 would be both lengthy and error-prone.
 }
+\examples{
+d <- data.frame(x = rnorm(30), y = rnorm(30))
+m <- stats::lm(y ~ x, data = d)
+n <- 80L
+x <- arima.sim(model = list(ar = 0.6), n = n)
+y <- as.numeric(x) + rnorm(n, sd = 0.2)
+morie_causal_robust_se(m, type = "HC3")
+}
 \references{
 Zeileis A, Koll S, Graham N (2020). Various Versatile Variances:
 An Object-Oriented Implementation of Clustered Covariances in R.

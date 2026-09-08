@@ -27,9 +27,9 @@ import re
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 
-import numpy as np
-import pandas as pd
-from scipy import stats
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as stats
 
 __all__ = [
     "mrm_classify_mandela",

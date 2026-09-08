@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -66,3 +66,7 @@ def zero_crossings(
 
 def cheatsheet() -> str:
     return "zero_crossings({}) -> Zero-crossing detection."
+
+
+# compact alias per ledger/NAMING.md
+zerocrossings = zero_crossings

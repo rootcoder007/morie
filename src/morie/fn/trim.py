@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def ps_trim(
@@ -43,3 +43,7 @@ trim = ps_trim
 
 def cheatsheet() -> str:
     return "ps_trim({}) -> Propensity score trimming for overlap enforcement."
+
+
+# compact alias per ledger/NAMING.md
+pstrim = ps_trim

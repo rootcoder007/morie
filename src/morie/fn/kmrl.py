@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -52,7 +52,7 @@ def kmrl(
         residual life. *Journal of Statistical Planning and Inference*,
         75(2), 223-236.
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]

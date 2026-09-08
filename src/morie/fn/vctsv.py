@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import ESRes
 
@@ -42,3 +42,7 @@ vctsv = victim_severity
 
 def cheatsheet() -> str:
     return "victim_severity({}) -> Victimization severity scale."
+
+
+# compact alias per ledger/NAMING.md
+victimseverity = victim_severity

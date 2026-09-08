@@ -26,7 +26,7 @@ def iir_design(order: int, cutoff, fs, ftype: str = "butter") -> DescriptiveResu
     -------
     DescriptiveResult
     """
-    from scipy.signal import iirfilter
+    from ._signal_core import iirfilter
 
     Wn = float(cutoff) / (fs / 2.0)
     b, a = iirfilter(order, Wn, btype="low", ftype=ftype, output="ba")
@@ -42,3 +42,7 @@ iirds = iir_design
 
 def cheatsheet() -> str:
     return "iir_design({}) -> IIR filter design."
+
+
+# compact alias per ledger/NAMING.md
+iirdesign = iir_design

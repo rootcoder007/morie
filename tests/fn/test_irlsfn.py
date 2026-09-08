@@ -1,6 +1,6 @@
 """Tests for irlsfn.irls_solver."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.irlsfn import irls_solver
 

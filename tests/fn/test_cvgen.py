@@ -1,6 +1,6 @@
 """Tests for morie.fn.cvgen -- Cross-validation for genomic prediction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cvgen import cvgen

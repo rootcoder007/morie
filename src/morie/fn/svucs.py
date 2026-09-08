@@ -1,6 +1,6 @@
 """Uncovered set in 2D"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ unco = uncovered_set
 
 def cheatsheet() -> str:
     return "uncovered_set({}) -> Uncovered set in 2D"
+
+
+# compact alias per ledger/NAMING.md
+uncoveredset = uncovered_set

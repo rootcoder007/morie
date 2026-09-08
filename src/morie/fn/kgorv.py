@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ordinary kriging variance"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ ok_v = ok_variance
 
 def cheatsheet() -> str:
     return "ok_variance({}) -> Ordinary kriging variance"
+
+
+# compact alias per ledger/NAMING.md
+okvariance = ok_variance

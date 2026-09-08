@@ -1,6 +1,6 @@
 """Tests for baysr.bayes_r_prior."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.baysr import bayes_r_prior
 

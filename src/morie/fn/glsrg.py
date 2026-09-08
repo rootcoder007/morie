@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import RegressionResult
 
@@ -88,3 +88,7 @@ glsrg = gls_regression
 
 def cheatsheet() -> str:
     return "gls_regression({}) -> Generalized least squares regression."
+
+
+# compact alias per ledger/NAMING.md
+glsregression = gls_regression

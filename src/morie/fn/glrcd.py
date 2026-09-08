@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -31,3 +31,7 @@ glrcd = glr_change
 
 def cheatsheet() -> str:
     return "glr_change({}) -> Generalized Likelihood Ratio change point detection."
+
+
+# compact alias per ledger/NAMING.md
+glrchange = glr_change

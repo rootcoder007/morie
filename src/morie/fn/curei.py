@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.optimize import minimize
+from . import _array_core as np
+from ._sci_core import minimize
 
 from ._containers import DescriptiveResult
 
@@ -84,3 +84,7 @@ curei = cure_model
 
 def cheatsheet() -> str:
     return "cure_model({}) -> Mixture cure model."
+
+
+# compact alias per ledger/NAMING.md
+curemodel = cure_model

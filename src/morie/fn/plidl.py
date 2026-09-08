@@ -21,7 +21,7 @@ def plot_ideal_and_stimuli(X_resp, X_stim):
     DescriptiveResult
         value = dict with 'respondents' and 'stimuli' arrays.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Xr = np.asarray(X_resp, dtype=float)
     Xs = np.asarray(X_stim, dtype=float)

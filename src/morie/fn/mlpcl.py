@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -109,3 +109,7 @@ mlpcl = mlp_classify
 
 def cheatsheet() -> str:
     return "mlp_classify({}) -> Multilayer perceptron classifier (pure NumPy)."
+
+
+# compact alias per ledger/NAMING.md
+mlpclassify = mlp_classify

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Joint entropy."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -47,3 +47,7 @@ jnent = joint_entropy
 
 def cheatsheet() -> str:
     return "joint_entropy({}) -> Joint entropy."
+
+
+# compact alias per ledger/NAMING.md
+jointentropy = joint_entropy

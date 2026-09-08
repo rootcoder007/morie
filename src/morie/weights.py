@@ -38,8 +38,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 logger = logging.getLogger(__name__)
 
@@ -715,7 +715,7 @@ def propensity_nonresponse_weights(
     propensity score in observational studies for causal effects.
     *Biometrika*, 70(1), 41--55.
     """
-    from sklearn.linear_model import LogisticRegression
+    from morie.fn._ml_core import LogisticRegression
 
     w = np.asarray(weights, dtype=float).copy()
     resp = np.asarray(responded, dtype=bool)

@@ -1,6 +1,6 @@
 """Weights islands detection"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ w_is = w_islands
 
 def cheatsheet() -> str:
     return "w_islands({}) -> Weights islands detection"
+
+
+# compact alias per ledger/NAMING.md
+wislands = w_islands

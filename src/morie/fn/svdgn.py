@@ -1,6 +1,6 @@
 """Deegan-Packel power index"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ deeg = deegan_packel
 
 def cheatsheet() -> str:
     return "deegan_packel({}) -> Deegan-Packel power index"
+
+
+# compact alias per ledger/NAMING.md
+deeganpackel = deegan_packel

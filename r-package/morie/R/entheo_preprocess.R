@@ -14,6 +14,9 @@
 #' @return Named list with cleaned \code{record}, \code{n_bad},
 #'   \code{sfreq}, and parameters.
 #' @keywords internal
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie:::preprocess_eeg(D)
 preprocess_eeg <- function(record,
                            bandpass = c(1, 40),
                            notch = 60,
@@ -67,6 +70,9 @@ preprocess_eeg <- function(record,
 #'   out as a toy AROMA stand-in.  Default 5.
 #' @return Named list with cleaned \code{record}, \code{n_scrubbed}.
 #' @keywords internal
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie:::preprocess_fmri(D)
 preprocess_fmri <- function(record,
                             motion_threshold_mm = 0.5,
                             n_noise_components = 5L) {
@@ -130,6 +136,19 @@ preprocess_fmri <- function(record,
 # Internal filter helpers
 # ---------------------------------------------------------------------------
 
+#' .entheo_bandpass
+#'
+#' A step of the entheo_preprocess implementation. Called by \code{preprocess_eeg}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x A matrix; indexed by row and column.
+#' @param sfreq Numeric; combined arithmetically in the body.
+#' @param low Numeric; combined arithmetically in the body.
+#' @param high Numeric; combined arithmetically in the body.
+#' @param order Passed to \code{.morie_dsp_butter}. Defaults to \code{4L}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .entheo_bandpass <- function(x, sfreq, low, high, order = 4L) {
   ny <- sfreq / 2
   bf <- .morie_dsp_butter(order, c(low / ny, high / ny), type = "pass")
@@ -148,6 +167,18 @@ preprocess_fmri <- function(record,
   out
 }
 
+#' .entheo_notch
+#'
+#' A step of the entheo_preprocess implementation. Called by \code{preprocess_eeg}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x A matrix; indexed by row and column.
+#' @param sfreq Numeric; combined arithmetically in the body.
+#' @param freq Numeric; combined arithmetically in the body.
+#' @param q Numeric; combined arithmetically in the body. Defaults to \code{30}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .entheo_notch <- function(x, sfreq, freq, q = 30) {
   bw <- freq / q
   bf <- .morie_dsp_butter(2, c(
@@ -171,6 +202,21 @@ preprocess_fmri <- function(record,
   out
 }
 
+#' .entheo_asr_trim
+#'
+#' A step of the entheo_preprocess implementation. Called by \code{preprocess_eeg}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x A vector; indexed elementwise.
+#' @param threshold Passed to \code{>}.
+#' @return A list with \code{arr}, \code{n_bad}.
+#' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+#' 2.6, 3.4, 3.9))
+#' res <- .entheo_asr_trim(x = X, threshold = 0.5)
+#' res
 .entheo_asr_trim <- function(x, threshold) {
   mu <- rowMeans(x)
   sd <- apply(x, 1, stats::sd) + 1e-9

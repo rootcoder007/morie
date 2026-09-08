@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import heapq
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -124,3 +124,7 @@ astpat = astar_path
 
 def cheatsheet() -> str:
     return "astar_path({}) -> A* pathfinding algorithm."
+
+
+# compact alias per ledger/NAMING.md
+astarpath = astar_path

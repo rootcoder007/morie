@@ -25,7 +25,7 @@ def ripley_k_function(points, window, r_values=None, correction="ripley"):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pts = np.asarray(points, dtype=np.float64)
     n = pts.shape[0]
@@ -39,7 +39,7 @@ def ripley_k_function(points, window, r_values=None, correction="ripley"):
     else:
         r_values = np.asarray(r_values, dtype=np.float64)
 
-    from scipy.spatial.distance import pdist, squareform
+    from ._sci_core import pdist, squareform
 
     D = squareform(pdist(pts))
 

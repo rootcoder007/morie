@@ -1,8 +1,8 @@
 """Tests for rghhtsp.rangayyan_hht_spectrum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rghhtsp import rangayyan_hht_spectrum
+from morie.fn.bsatf import rangayyan_hht_spectrum
 
 
 def test_rghhtsp_basic():

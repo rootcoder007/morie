@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 
 def effective_rt(
@@ -106,3 +106,7 @@ epirf = effective_rt
 
 def cheatsheet() -> str:
     return "effective_rt({}) -> Effective reproduction number Rt (Wallinga-Teunis)."
+
+
+# compact alias per ledger/NAMING.md
+effectivert = effective_rt

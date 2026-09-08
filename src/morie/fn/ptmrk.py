@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Marked point pattern analysis"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ mark = marked_pp
 
 def cheatsheet() -> str:
     return "marked_pp({}) -> Marked point pattern analysis"
+
+
+# compact alias per ledger/NAMING.md
+markedpp = marked_pp

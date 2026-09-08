@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_design}
 \alias{morie_weights_design}
-\title{Design weights from inclusion probabilities.}
+\title{Design weights from inclusion probabilities}
 \usage{
 morie_weights_design(selection_probs)
 }
@@ -16,4 +16,8 @@ Numeric vector of design weights, same length as
 }
 \description{
 \eqn{w_i = 1 / \pi_i}{w_i = 1 / pi_i}.
+}
+\examples{
+p <- c(0.1, 0.2, 0.5, 1)
+morie_weights_design(p)
 }

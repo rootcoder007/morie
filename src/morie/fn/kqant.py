@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -48,7 +48,7 @@ def kqant(
     Sheather, S. J. & Marron, J. S. (1990). Kernel quantile estimators.
         *JASA*, 85(410), 410-416.
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]

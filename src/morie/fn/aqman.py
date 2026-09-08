@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 from ._helpers import _validate_df
@@ -82,3 +82,7 @@ aqman = idw_interpolate
 
 def cheatsheet() -> str:
     return "idw_interpolate({}) -> Aquifer/water table interpolation."
+
+
+# compact alias per ledger/NAMING.md
+idwinterpolate = idw_interpolate

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import PcaRes
 
@@ -71,3 +71,7 @@ pcaev = pca_eigen
 
 def cheatsheet() -> str:
     return "pca_eigen({}) -> PCA via eigenvalue decomposition of covariance matrix."
+
+
+# compact alias per ledger/NAMING.md
+pcaeigen = pca_eigen

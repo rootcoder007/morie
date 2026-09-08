@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -57,7 +57,7 @@ def mtbf_estimate(
     mtbf_val = T / n
     failure_rate = n / T if T > 0 else float("inf")
 
-    from scipy.stats import chi2
+    from ._stats_core import chi2
 
     ci_lo = 2 * T / chi2.ppf(0.975, 2 * n + 2) if n > 0 else 0.0
     ci_hi = 2 * T / chi2.ppf(0.025, max(2 * n, 2)) if n > 0 else float("inf")
@@ -78,3 +78,7 @@ def mtbf_estimate(
 
 def cheatsheet() -> str:
     return "mtbf_estimate({}) -> Mean Time Between Failures."
+
+
+# compact alias per ledger/NAMING.md
+mtbfestimate = mtbf_estimate

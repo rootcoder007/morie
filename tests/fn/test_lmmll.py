@@ -1,6 +1,6 @@
 """Tests for lmmll.lmm_log_likelihood."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lmmll import lmm_log_likelihood
 

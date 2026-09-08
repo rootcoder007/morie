@@ -1,8 +1,8 @@
 """Tests for rgerrbd.rangayyan_bayes_error_bound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgerrbd import rangayyan_bayes_error_bound
+from morie.fn.bsaclass import rangayyan_bayes_error_bound
 
 
 def test_rgerrbd_basic():

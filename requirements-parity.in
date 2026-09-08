@@ -1,0 +1,19 @@
+# Reference implementations used ONLY to cross-validate and benchmark the
+# native arms -- never imported by morie itself. Deliberately unpinned and
+# outside requirements-lock.txt: these are the packages the native code
+# replaced, and a supply-chain lock over the runtime tree should not carry
+# them.
+#
+#   DoubleML    -- tests/fn/test_douml.py, tests/test_causal_new.py
+#                  (both pytest.skipif-guarded; the native DML runs
+#                  40-61x faster and is checked against it)
+#   matplotlib  -- pytest.importorskip in the plot tests, plus one
+#                  dynamic __import__ in src/morie/tps_render.py
+#   the rest    -- comparison baselines for the numeric arms
+DoubleML>=0.7.1
+matplotlib>=3.7.0
+numpy>=1.26
+scipy>=1.10
+pandas>=2.0
+scikit-learn>=1.3
+statsmodels>=0.14

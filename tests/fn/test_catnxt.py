@@ -1,6 +1,6 @@
 """Tests for catnxt.cat_next_item."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.catnxt import cat_next_item
 

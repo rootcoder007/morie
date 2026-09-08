@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgprv -- Pairwise relative variogram"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgprv import pairwise_rel_vario
 

@@ -4,9 +4,11 @@
 #'
 #' R parity for \code{morie.fn.xavir.xavier_init}.
 #'
-#' \deqn{W \sim \mathcal{N}\!\left(0, \tfrac{2}{n_{in} + n_{out}}\right)}{W ~ N(0, tfrac{2}{n_in + n_out})}
+#' \deqn{W \sim \mathcal{N}\!\left(0, \tfrac{2}{n_{in} + n_{out}}\right)}{W ~ N(0,
+#' tfrac{2}{n_in + n_out})}
 #' (normal) or
-#' \eqn{W \sim U[-\sqrt{6/(n_{in}+n_{out})}, +\sqrt{6/(n_{in}+n_{out})}]}{W ~ U[-sqrt{6/(n_in+n_out)}, +sqrt{6/(n_in+n_out)}]}
+#' \eqn{W \sim U\[-\sqrt{6/(n_{in}+n_{out})}, +\sqrt{6/(n_{in}+n_{out})}\]}{W ~
+#' U\[-sqrt{6/(n_in+n_out)}, +sqrt{6/(n_in+n_out)}\]}
 #' (uniform).
 #'
 #' @param fan_in Number of input units.
@@ -47,6 +49,17 @@ morie_xavir_xavier_init <- function(fan_in, fan_out, seed = 42L, uniform = TRUE)
   )
 }
 
+#' .Random.seed_safe
+#'
+#' A step of the xavir implementation. Called by \code{morie_xavir_xavier_init}.
+#' See the file header for the source the module follows.
+#' it follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
+#' @examples
+#' res <- .Random.seed_safe()
+#' res
 .Random.seed_safe <- function() {
   if (exists(".Random.seed", envir = globalenv())) {
     get(".Random.seed", envir = globalenv())
@@ -55,6 +68,15 @@ morie_xavir_xavier_init <- function(fan_in, fan_out, seed = 42L, uniform = TRUE)
   }
 }
 
+#' .Random.seed_restore
+#'
+#' A step of the xavir implementation. Called by \code{morie_xavir_xavier_init}.
+#' See the file header for the source the module follows.
+#' it follows.
+#'
+#' @param old Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .Random.seed_restore <- function(old) {
   if (is.null(old)) {
     if (exists(".Random.seed", envir = globalenv())) {

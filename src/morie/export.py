@@ -18,9 +18,9 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from typing import Any
 
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
+from morie.fn import _plot_core as plt
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 logger = logging.getLogger(__name__)
 
@@ -315,8 +315,8 @@ def df_to_docx(
         If ``python-docx`` is not installed.
     """
     try:
-        from docx import Document
-        from docx.shared import Inches, Pt
+        from morie._docx_writer import Document
+        from morie._docx_writer import Inches, Pt
     except ImportError:
         raise ImportError("python-docx is required for DOCX export. Install with: pip install python-docx")
 

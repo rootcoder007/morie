@@ -1,6 +1,6 @@
 """Tests for morie.fn.svvlm -- Valence advantage model (Groseclose)"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svvlm import valence_model
 

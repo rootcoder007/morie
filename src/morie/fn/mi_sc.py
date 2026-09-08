@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._cfa_engine import (
     cov_from_data,
@@ -108,3 +108,7 @@ def mi_scalar(
 
 def cheatsheet() -> str:
     return "mi_scalar({}) -> Scalar (strong) invariance: constrain loadings + intercepts."
+
+
+# compact alias per ledger/NAMING.md
+miscalar = mi_scalar

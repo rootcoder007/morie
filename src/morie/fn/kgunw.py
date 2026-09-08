@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Universal kriging weights"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ uk_w = uk_weights
 
 def cheatsheet() -> str:
     return "uk_weights({}) -> Universal kriging weights"
+
+
+# compact alias per ledger/NAMING.md
+ukweights = uk_weights

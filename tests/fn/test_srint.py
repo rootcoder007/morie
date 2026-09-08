@@ -1,6 +1,6 @@
 """Tests for morie.fn.srint -- Serial interval estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.srint import serial_interval

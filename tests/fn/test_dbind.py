@@ -1,6 +1,6 @@
 """Tests for morie.fn.dbind -- Davies-Bouldin index."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.dbind import davies_bouldin, dbind

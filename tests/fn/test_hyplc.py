@@ -1,6 +1,6 @@
 """Tests for hyplc.harmonic_mean_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hyplc import harmonic_mean_estimator
 

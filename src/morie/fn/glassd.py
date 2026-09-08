@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Glass's Δ effect size."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def glassd(treated, control) -> float:

@@ -1,6 +1,6 @@
 """Tests for gb_pgl.gibbons_page_exact."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_pgl import gibbons_page_exact
 

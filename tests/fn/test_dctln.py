@@ -1,6 +1,6 @@
 """Tests for dctln.py - Dictionary Learning."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dctln import dctln, dctln_fn
 

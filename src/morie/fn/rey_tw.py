@@ -1,9 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Tweedie regression (compound Poisson-gamma GLM)."""
 
-import numpy as np
-from scipy.optimize import minimize
-from scipy.stats import norm
+from . import _array_core as np
+from ._sci_core import minimize
+from ._stats_core import norm
 
 from morie.fn._containers import RegressionResult
 
@@ -123,3 +123,7 @@ def rey_tw(
 
 def cheatsheet() -> str:
     return "rey_tw({}) -> Tweedie regression (compound Poisson-gamma GLM)."
+
+
+# compact alias per ledger/NAMING.md
+reytw = rey_tw

@@ -1,6 +1,6 @@
 """Tests for gpvbo.gp_variational_bayes_opt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gpvbo import gp_variational_bayes_opt
 

@@ -2,9 +2,9 @@
 
 from typing import Union
 
-import numpy as np
-import pandas as pd
-import scipy.stats as stats
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as stats
 
 from ._containers import ESRes
 from ._helpers import _arr, _bootstrap_ci
@@ -52,3 +52,7 @@ vda = vargha_delaney_a
 
 def cheatsheet() -> str:
     return "vargha_delaney_a({}) -> Vargha-Delaney A statistic (non-parametric effect size)."
+
+
+# compact alias per ledger/NAMING.md
+varghadelaneya = vargha_delaney_a

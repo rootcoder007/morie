@@ -36,3 +36,7 @@ xmss = xmss_sign
 
 def cheatsheet() -> str:
     return "xmss_sign({}) -> XMSS extended Merkle signature scheme."
+
+
+# compact alias per ledger/NAMING.md
+xmsssign = xmss_sign

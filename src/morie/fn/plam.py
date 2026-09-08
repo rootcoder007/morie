@@ -16,7 +16,7 @@ def plot_am_summary(positions, weights=None, bins: int = 30) -> DescriptiveResul
 
     .. epigraph:: To understand God's thoughts we must study statistics. -- Florence Nightingale
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pos = np.asarray(positions, dtype=float).ravel()
     counts, edges = np.histogram(pos[~np.isnan(pos)], bins=bins)
@@ -38,3 +38,7 @@ plam = plot_am_summary
 
 def cheatsheet() -> str:
     return "plot_am_summary({}) -> Plot summary data for Aldrich-McKelvey results."
+
+
+# compact alias per ledger/NAMING.md
+plotamsummary = plot_am_summary

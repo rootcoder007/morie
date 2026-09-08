@@ -1,6 +1,6 @@
 """Tests for argen.py - AR process generation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.argen import ar_generate_fn, argen
 

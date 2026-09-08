@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Second-order point pattern stats"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ seco = second_order_pp
 
 def cheatsheet() -> str:
     return "second_order_pp({}) -> Second-order point pattern stats"
+
+
+# compact alias per ledger/NAMING.md
+secondorderpp = second_order_pp

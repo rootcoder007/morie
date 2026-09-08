@@ -1,6 +1,6 @@
 """Tests for rrblp.rrblup_marker_effects."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rrblp import rrblup_marker_effects
 

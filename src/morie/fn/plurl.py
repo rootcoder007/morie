@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -28,3 +28,7 @@ plurl = plurality_vote
 
 def cheatsheet() -> str:
     return "plurality_vote({}) -> Plurality (first-past-the-post) voting."
+
+
+# compact alias per ledger/NAMING.md
+pluralityvote = plurality_vote

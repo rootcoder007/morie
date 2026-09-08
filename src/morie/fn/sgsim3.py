@@ -1,6 +1,6 @@
 """SGS with ordinary kriging system."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

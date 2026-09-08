@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -54,3 +54,7 @@ sn_ = sn_estimator
 
 def cheatsheet() -> str:
     return "sn_estimator({}) -> Rousseeuw-Croux Sn scale estimator."
+
+
+# compact alias per ledger/NAMING.md
+snestimator = sn_estimator

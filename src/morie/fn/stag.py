@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def staggered_did(
@@ -112,3 +112,7 @@ stag = staggered_did
 
 def cheatsheet() -> str:
     return "staggered_did({}) -> Staggered Difference-in-Differences (Callaway-Sant'Anna styl"
+
+
+# compact alias per ledger/NAMING.md
+staggereddid = staggered_did

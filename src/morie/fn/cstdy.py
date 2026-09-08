@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 
 def custody_days(
@@ -34,3 +34,7 @@ def custody_days(
 
 def cheatsheet() -> str:
     return "custody_days({}) -> Total custody days per individual."
+
+
+# compact alias per ledger/NAMING.md
+custodydays = custody_days

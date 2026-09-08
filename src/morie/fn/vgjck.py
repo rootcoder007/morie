@@ -1,6 +1,6 @@
 """Variogram jackknife"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -49,3 +49,7 @@ vari = vario_jackknife
 
 def cheatsheet() -> str:
     return "vario_jackknife({}) -> Variogram jackknife"
+
+
+# compact alias per ledger/NAMING.md
+variojackknife = vario_jackknife

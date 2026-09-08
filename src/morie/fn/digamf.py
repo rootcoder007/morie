@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Digamma function."""
 
-from scipy.special import digamma
+from ._sci_core import digamma
 
 
 def digamf(x):

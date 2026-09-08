@@ -1,6 +1,6 @@
 """Cauchy kernel spatial voting"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ cauc = cauchy_vote
 
 def cheatsheet() -> str:
     return "cauchy_vote({}) -> Cauchy kernel spatial voting"
+
+
+# compact alias per ledger/NAMING.md
+cauchyvote = cauchy_vote

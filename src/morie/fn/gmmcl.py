@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -100,3 +100,7 @@ gmmcl = gmm_cluster
 
 def cheatsheet() -> str:
     return "gmm_cluster({}) -> Gaussian mixture model clustering (EM)."
+
+
+# compact alias per ledger/NAMING.md
+gmmcluster = gmm_cluster

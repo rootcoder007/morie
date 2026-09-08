@@ -19,7 +19,7 @@ def distance_to_squared(D):
     DescriptiveResult
         value = D_squared (ndarray), extra has shape.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     D = np.asarray(D, dtype=float)
     D2 = D**2

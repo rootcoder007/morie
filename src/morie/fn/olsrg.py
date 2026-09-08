@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import RegressionResult
 
@@ -102,3 +102,7 @@ olsrg = ols_regression
 
 def cheatsheet() -> str:
     return "ols_regression({}) -> OLS with full inference (coef, SE, t, p, R2, adj-R2)."
+
+
+# compact alias per ledger/NAMING.md
+olsregression = ols_regression

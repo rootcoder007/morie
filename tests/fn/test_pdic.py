@@ -1,6 +1,6 @@
 """Tests for pdic.effective_parameters_dic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pdic import effective_parameters_dic
 

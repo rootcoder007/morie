@@ -18,3 +18,7 @@ A data.frame with columns \verb{variable, beta, se, t, p_value}.
 Standardises X and y to zero mean and unit variance before OLS via
 \code{stats::lm}.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+standardized_coefficients(V, V)
+}

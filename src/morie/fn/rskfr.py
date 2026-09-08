@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -68,3 +68,7 @@ rskfr = risk_fairness
 
 def cheatsheet() -> str:
     return "risk_fairness({}) -> Risk score fairness analysis by group."
+
+
+# compact alias per ledger/NAMING.md
+riskfairness = risk_fairness

@@ -1,6 +1,6 @@
 """Quadratic spatial utility function"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ quad = quad_utility
 
 def cheatsheet() -> str:
     return "quad_utility({}) -> Quadratic spatial utility function"
+
+
+# compact alias per ledger/NAMING.md
+quadutility = quad_utility

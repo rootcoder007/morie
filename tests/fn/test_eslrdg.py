@@ -1,6 +1,6 @@
 """Tests for eslrdg.esl_ridge."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslrdg import esl_ridge
 

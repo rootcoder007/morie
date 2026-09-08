@@ -1,8 +1,8 @@
 """Tests for rgspr.rangayyan_spectral_power_ratio."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgspr import rangayyan_spectral_power_ratio
+from morie.fn.bsaqrs import rangayyan_spectral_power_ratio
 
 
 def test_rgspr_basic():

@@ -1,6 +1,6 @@
 """Tests for wsmkdn.wasserman_kde."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmkdn import wasserman_kde
 

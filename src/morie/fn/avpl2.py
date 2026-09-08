@@ -11,7 +11,7 @@ Deep learning. Nature, 521(7553), 436-444.
 
 __all__ = ["avpl2"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def avpl2(x, pool_size=2, stride=None, padding="valid"):

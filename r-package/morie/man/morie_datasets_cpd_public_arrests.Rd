@@ -27,7 +27,7 @@ A \code{data.frame} with the 10-col CPD schema.
 \description{
 Wraps the static historical arrests CSV published by the Chicago
 Police Department at
-\url{https://www.chicagopolice.org/statistics-data/public-arrest-data/}
+\url{https://data.cityofchicago.org/Public-Safety/Arrests/dpt3-jri9}
 covering adult and juvenile arrests from 01 JAN 2014 through 31
 DEC 2017, with all personally identifying information removed.
 Ten upper-case-coded columns matching the CPD data dictionary:
@@ -53,8 +53,10 @@ first loader; pass a \code{url} for live mode (visit the landing page
 to find the current direct-CSV URL).
 }
 \examples{
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_cpd_public_arrests(offline = TRUE)
 df$STAT_DESCR
+\dontshow{\}) # examplesIf}
 }
 \references{
 Chicago Police Department, "Public Arrest Data";

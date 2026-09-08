@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -55,7 +55,7 @@ def svm_genomic(x, y, markers, C: float = 1.0, epsilon: float = 0.1, gamma: floa
         feats = np.column_stack([Xa, M])
     method_used = "sklearn SVR (epsilon-SVR, RBF)"
     try:
-        from sklearn.svm import SVR
+        from ._ml_core import SVR
 
         svr = SVR(C=C, epsilon=epsilon, gamma=gamma, kernel="rbf").fit(feats, y)
         y_hat = svr.predict(feats)
@@ -111,3 +111,7 @@ def cheatsheet():
 # CANONICAL TEST
 # np.random.seed(12); M = np.random.randn(25, 4); y = np.sin(M[:,0]) + 0.2*np.random.randn(25)
 # r = svm_genomic(np.zeros(25), y, M); residual SE small.
+
+
+# compact alias per ledger/NAMING.md
+svmgenomic = svm_genomic

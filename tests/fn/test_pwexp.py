@@ -1,6 +1,6 @@
 """Tests for morie.fn.pwexp — Piecewise exponential model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pwexp import piecewise_exponential

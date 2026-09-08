@@ -1,8 +1,8 @@
 """Tests for rng250.rangayyan_ch4_log_signal_echo."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rng250 import rangayyan_ch4_log_signal_echo
+from morie.fn.bsatf import rangayyan_ch4_log_signal_echo
 
 
 def test_rng250_basic():

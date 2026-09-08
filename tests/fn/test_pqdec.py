@@ -1,6 +1,6 @@
 """Tests for morie.fn.pqdec — PolarQuant decoder."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pqdec import polarquant_decode

@@ -1,6 +1,6 @@
 """Unit-level Fay-Herriot"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ fay_ = fay_herriot_unit
 
 def cheatsheet() -> str:
     return "fay_herriot_unit({}) -> Unit-level Fay-Herriot"
+
+
+# compact alias per ledger/NAMING.md
+fayherriotunit = fay_herriot_unit

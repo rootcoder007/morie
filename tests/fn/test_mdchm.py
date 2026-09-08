@@ -1,6 +1,6 @@
 """Tests for morie.fn.mdchm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mdchm import mdchm
 

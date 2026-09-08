@@ -1,6 +1,6 @@
 """Test cross_spectral_density (xspec)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.xspec import cross_spectral_density, xspec

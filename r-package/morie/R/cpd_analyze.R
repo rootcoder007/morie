@@ -7,6 +7,20 @@
 # surfaces, each returning a rich-result-shaped list.
 
 # Build a rich-result-shaped surface payload.
+#' Build a rich-result-shaped surface payload
+#'
+#' A step of the cpd_analyze implementation. Called by \code{morie_cpd_all_analyses}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param tables Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{""}.
+#' @param payload Carried through into a list the body builds. Defaults to \code{list()}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .morie_cpd_result <- function(title, summary_lines = list(), tables = list(),
                               interpretation = "", warnings = "",
                               payload = list()) {
@@ -18,6 +32,18 @@
 }
 
 # Load a bundled CPD fixture (offline). `which` is "crime" or "arrests".
+#' Load a bundled CPD fixture (offline). `which` is "crime" or "arrests"
+#'
+#' A step of the cpd_analyze implementation. Called by \code{morie_cpd_all_analyses}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param which Passed to \code{match.arg}. Defaults to \code{c("crime", "arrests")}.
+#' @return The value of \code{utils::read.csv}.
+#' @export
+#' @examples
+#' res <- .morie_cpd_load_sample()
+#' res
 .morie_cpd_load_sample <- function(which = c("crime", "arrests")) {
   which <- match.arg(which)
   file <- switch(which,

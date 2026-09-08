@@ -1,54 +1,22 @@
-"""Regression expression involving 'treatment' (auto-extracted; see reference for full context).."""
+"""Deprecated alias for :func:`morie.fn.treatment_b_confounded`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .treatment_b_confounded import treatment_b_confounded as _impl
 
 __all__ = ["ca_chapter_9_equation_1"]
 
 
-def ca_chapter_9_equation_1(x):
-    """
-    Regression expression involving 'treatment' (auto-extracted; see reference for full context).
-
-    Formula: bt = ry,t − ry,x1 rt,x1
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca9e1')`` for the full guide.
-
-    References
-    ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.9 eq.9.1
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Regression expression involving 'treatment' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression expression involving 'treatment' (auto-extracted; see reference for full context).",
-        },
+def ca_chapter_9_equation_1(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.treatment_b_confounded` instead."""
+    warnings.warn(
+        "ca_chapter_9_equation_1() is the book-coordinate name for treatment_b_confounded(); "
+        "it will be removed. Use morie.fn.treatment_b_confounded() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "ca9e1: Regression expression involving 'treatment' (auto-extracted; see reference for full context)."
+    return _impl(*args, **kwargs)

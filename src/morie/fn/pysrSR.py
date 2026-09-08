@@ -1,6 +1,6 @@
 """PySR symbolic regression."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -38,3 +38,7 @@ def pysr_regression(X, y):
 
 def cheatsheet():
     return "pysrSR: PySR symbolic regression"
+
+
+# compact alias per ledger/NAMING.md
+pysrregression = pysr_regression

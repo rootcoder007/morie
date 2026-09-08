@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import DescriptiveResult
 
@@ -83,3 +83,7 @@ claim = claim_frequency
 
 def cheatsheet() -> str:
     return "claim_frequency({}) -> Poisson claim frequency model."
+
+
+# compact alias per ledger/NAMING.md
+claimfrequency = claim_frequency

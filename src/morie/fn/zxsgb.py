@@ -1,6 +1,6 @@
 """Spatial gradient boosting"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -27,3 +27,7 @@ spat = spatial_gbm
 
 def cheatsheet() -> str:
     return "spatial_gbm({}) -> Spatial gradient boosting"
+
+
+# compact alias per ledger/NAMING.md
+spatialgbm = spatial_gbm

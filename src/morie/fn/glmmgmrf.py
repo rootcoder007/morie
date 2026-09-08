@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spatial GLMM GMRF Gaussian Markov RF prior."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

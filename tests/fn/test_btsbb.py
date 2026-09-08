@@ -1,6 +1,6 @@
 """Tests for btsbb.boot_stationary_block."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btsbb import boot_stationary_block
 

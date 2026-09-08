@@ -1,6 +1,6 @@
 """Tests for fzt23.fauzi_thm2_3_var_brdkdfe."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzt23 import fauzi_thm2_3_var_brdkdfe
 

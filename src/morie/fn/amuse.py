@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -68,3 +68,7 @@ amuse = amuse_bss
 
 def cheatsheet() -> str:
     return "amuse_bss({}) -> AMUSE algorithm for blind source separation."
+
+
+# compact alias per ledger/NAMING.md
+amusebss = amuse_bss

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def rope_test(
@@ -75,3 +75,7 @@ rope = rope_test
 
 def cheatsheet() -> str:
     return "rope_test({}) -> Region of Practical Equivalence (ROPE) analysis."
+
+
+# compact alias per ledger/NAMING.md
+ropetest = rope_test

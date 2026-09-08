@@ -1,6 +1,6 @@
 """Banks set computation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ bank = banks_set
 
 def cheatsheet() -> str:
     return "banks_set({}) -> Banks set computation"
+
+
+# compact alias per ledger/NAMING.md
+banksset = banks_set

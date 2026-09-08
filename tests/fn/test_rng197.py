@@ -1,8 +1,8 @@
 """Tests for rng197.rangayyan_ch4_dicrotic_notch_smoothed_squared."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rng197 import rangayyan_ch4_dicrotic_notch_smoothed_squared
+from morie.fn.bsaqrs import rangayyan_ch4_dicrotic_notch_smoothed_squared
 
 
 def test_rng197_basic():

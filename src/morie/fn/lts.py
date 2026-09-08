@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -84,3 +84,7 @@ lts = least_trimmed_sq
 
 def cheatsheet() -> str:
     return "least_trimmed_sq({}) -> Least Trimmed Squares (LTS) robust regression."
+
+
+# compact alias per ledger/NAMING.md
+leasttrimmedsq = least_trimmed_sq

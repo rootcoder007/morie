@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import SurvivalResult
 
@@ -65,3 +65,7 @@ km = kaplan_meier
 
 def cheatsheet() -> str:
     return "kaplan_meier({}) -> Kaplan-Meier survival estimator."
+
+
+# compact alias per ledger/NAMING.md
+kaplanmeier = kaplan_meier

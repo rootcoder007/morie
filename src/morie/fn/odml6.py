@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import ESRes
 
@@ -70,3 +70,7 @@ odml6 = otis_dml_custody
 
 def cheatsheet() -> str:
     return "otis_dml_custody({}) -> DML: custody type effect on outcome."
+
+
+# compact alias per ledger/NAMING.md
+otisdmlcustody = otis_dml_custody

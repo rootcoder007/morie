@@ -42,3 +42,8 @@ kernel weighting around the cutoff.
 \item \code{morie_rdd_kernel_gaussian}: \eqn{K(u) = \phi(u)}{K(u) = phi(u)}, the standard normal density
 }
 }
+\examples{
+u <- seq(-1, 1, by = 0.25)
+w <- morie_rdd_kernel_triangular(u)
+c(length(w), all(w >= 0))
+}

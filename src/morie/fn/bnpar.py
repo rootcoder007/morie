@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def dp_density(
@@ -18,8 +18,11 @@ def dp_density(
     """
     Dirichlet process density estimation via the Polya urn (CRP) scheme.
 
-    Each data point is assigned to a cluster; cluster parameters are
-    drawn from a Normal-Inverse-Gamma base measure.
+    Each data point is assigned to a cluster by a CRP sweep. Cluster
+    means/variances are PLUG-IN empirical estimates recomputed after
+    each sweep (new clusters start at the point with unit variance),
+    and the new-cluster weight uses a fixed standard-normal kernel --
+    a pragmatic scheme, not a conjugate Normal-Inverse-Gamma sampler.
 
     :param data: Observed data (1-D array).
     :param alpha: Concentration parameter.
@@ -29,7 +32,8 @@ def dp_density(
 
     References
     ----------
-    Neal, R. M. (2000). *JCGS*, 9(2), 249--265.
+    Neal, R. M. (2000). Markov chain sampling methods for Dirichlet
+    process mixture models. *JCGS*, 9(2), 249--265.
     """
     rng = np.random.default_rng(seed)
     x = np.asarray(data, dtype=float).ravel()
@@ -93,3 +97,7 @@ bnpar = dp_density
 
 def cheatsheet() -> str:
     return "dp_density({}) -> Bayesian nonparametric density estimation via Dirichlet process."
+
+
+# compact alias per ledger/NAMING.md
+dpdensity = dp_density

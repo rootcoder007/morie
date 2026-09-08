@@ -2,7 +2,7 @@
 % Please edit documentation in R/survey.R
 \name{morie_survey_calibrate}
 \alias{morie_survey_calibrate}
-\title{Raking calibration to known marginal totals (iterative proportional fitting).}
+\title{Raking calibration to known marginal totals (iterative proportional fitting)}
 \usage{
 morie_survey_calibrate(
   df,
@@ -34,4 +34,17 @@ raking loop did not converge within \code{max_iter}.
 \description{
 For multi-variable marginals use \code{morie_weights_rake()}; this helper is the
 single-variable convenience.
+}
+\examples{
+\dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+.make_survey_df <- function(n = 100L, seed = 1L) {
+    set.seed(seed)
+    data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n, 
+        5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"), 
+        n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE), 
+        fpc = rep(1000L, n))
+}
+df <- .make_survey_df()
+morie_survey_calibrate(df, "x", list(x = 100), max_iter = 20)
+\dontshow{\}) # examplesIf}
 }

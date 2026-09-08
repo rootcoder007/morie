@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataset.R
 \name{morie_dataset_load}
 \alias{morie_dataset_load}
-\title{Load a dataset from a CSV / TSV / Excel / Parquet / JSON file.}
+\title{Load a dataset from a CSV / TSV / Excel / Parquet / JSON file}
 \usage{
 morie_dataset_load(path, encoding = "UTF-8", ...)
 }
@@ -24,9 +24,13 @@ File format is detected from the extension.  Supported extensions:
 \code{.jsonl}.
 }
 \examples{
-tmp <- tempfile(fileext = ".csv")
-write.csv(data.frame(a = 1:3, b = c("x", "y", "z")), tmp, row.names = FALSE)
-df <- morie_dataset_load(tmp)
-head(df)
-unlink(tmp)
+\dontshow{if (requireNamespace("readxl", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+if (requireNamespace("readxl", quietly = TRUE)) {
+  tmp <- tempfile(fileext = ".csv")
+  write.csv(data.frame(a = 1:3, b = c("x", "y", "z")), tmp, row.names = FALSE)
+  df <- morie_dataset_load(tmp)
+  head(df)
+  unlink(tmp)
+}
+\dontshow{\}) # examplesIf}
 }

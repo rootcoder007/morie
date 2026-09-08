@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -38,3 +38,7 @@ def theta_function(
 
 def cheatsheet() -> str:
     return "theta_function(z, tau, terms) -> Jacobi theta_3"
+
+
+# compact alias per ledger/NAMING.md
+thetafunction = theta_function

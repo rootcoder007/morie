@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 
@@ -63,7 +63,7 @@ def network_community(
 
     features = evecs[:, :n_communities]
 
-    from scipy.cluster.vq import kmeans2
+    from ._sci_core import kmeans2
 
     centroids, labels = kmeans2(features, n_communities, minit="points")
 

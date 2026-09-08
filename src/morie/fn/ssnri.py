@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -43,3 +43,7 @@ ssnri = snr_improvement
 
 def cheatsheet() -> str:
     return "snr_improvement({}) -> SNR improvement via synchronized averaging."
+
+
+# compact alias per ledger/NAMING.md
+snrimprovement = snr_improvement

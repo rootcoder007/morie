@@ -1,6 +1,6 @@
 """Tests for morie.fn.exrsp — exposure-response modeling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.exrsp import exposure_response
 

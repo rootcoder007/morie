@@ -46,3 +46,7 @@ def cheatsheet() -> str:
 
 
 tdual = t_duality
+
+
+# compact alias per ledger/NAMING.md
+tduality = t_duality

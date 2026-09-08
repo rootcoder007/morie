@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn.mi_cf import mi_configural
 from morie.fn.mi_mt import mi_metric
@@ -59,3 +59,7 @@ def mi_by_age(
 
 def cheatsheet() -> str:
     return "mi_by_age({}) -> Full measurement invariance ladder by age group."
+
+
+# compact alias per ledger/NAMING.md
+mibyage = mi_by_age

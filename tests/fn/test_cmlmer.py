@@ -1,6 +1,6 @@
 """Tests for cmlmer.compressed_lmm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cmlmer import compressed_lmm
 

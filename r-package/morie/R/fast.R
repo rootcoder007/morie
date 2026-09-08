@@ -1,4 +1,4 @@
-# morie/_fast.R — R-side wrappers for the Rcpp hot kernels.
+# morie/_fast.R -- R-side wrappers for the Rcpp hot kernels.
 #
 # This file shadows morie.fast in the Python side: users get the same
 # numerical results from `morie:::morie_normal_pdf(x, 0, 1)` as they do
@@ -33,6 +33,7 @@ morie_normal_pdf <- function(x, mean = 0, sd = 1) {
 #' Fast mean
 #'
 #' Single-pass C++ kernel.  Equivalent to \code{mean(x)}.
+#' @param x See Usage.
 #' @keywords internal
 #' @examples
 #' morie:::morie_mean(1:10)
@@ -66,6 +67,8 @@ morie_var <- function(x, ddof = 1) {
 #'
 #' Single-pass C++ kernel.  Equivalent to \code{cor(x, y)} when both
 #' vectors are equal-length and complete (no NA handling).
+#' @param x See Usage.
+#' @param y See Usage.
 #' @keywords internal
 #' @examples
 #' morie:::morie_cor_pearson(1:10, 1:10)
@@ -78,6 +81,18 @@ morie_cor_pearson <- function(x, y) {
 }
 
 # Internal: detect whether the Rcpp .so was successfully built.
+#' Internal: detect whether the Rcpp .so was successfully built
+#'
+#' A step of the fast implementation. Called by \code{morie_cor_pearson},
+#' \code{morie_fast_available}, \code{morie_hawkes_fit} and 3 others in the module.
+#' See the file header for the source the module follows.
+#' it follows.
+#'
+#' @return The value of \code{tryCatch}.
+#' @export
+#' @examples
+#' res <- .cpp_available()
+#' res
 .cpp_available <- function() {
   tryCatch(
     {

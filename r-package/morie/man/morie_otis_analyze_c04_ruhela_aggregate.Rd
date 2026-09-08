@@ -3,7 +3,7 @@
 \name{morie_otis_analyze_c04_ruhela_aggregate}
 \alias{morie_otis_analyze_c04_ruhela_aggregate}
 \alias{morie_otis_analyze_c04_mrm_aggregate}
-\title{c04 aggregate Ruhela: Indigenous -> RC (by region).}
+\title{c04 aggregate Ruhela: Indigenous -> RC (by region)}
 \usage{
 morie_otis_analyze_c04_ruhela_aggregate(data, out_dir = NULL)
 
@@ -18,10 +18,12 @@ morie_otis_analyze_c04_mrm_aggregate(data, out_dir = NULL)
 \code{morie_otis_analysis_result}.
 }
 \description{
-c04 aggregate Ruhela: Indigenous -> RC (by region).
+c04 aggregate Ruhela: Indigenous -> RC (by region)
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_c04 <- morie_synth_otis("c04", n = 120L, seed = 1L)
 morie_otis_analyze_c04_ruhela_aggregate(otis_c04)
+}
 }

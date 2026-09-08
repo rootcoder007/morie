@@ -1,6 +1,6 @@
 """Tests for hmmto.geron_multioutput."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmmto import geron_multioutput
 

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import TestResult
 
@@ -64,3 +64,7 @@ kpss = kpss_test
 
 def cheatsheet() -> str:
     return "kpss_test({}) -> KPSS stationarity test."
+
+
+# compact alias per ledger/NAMING.md
+kpsstest = kpss_test

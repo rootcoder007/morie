@@ -1,6 +1,6 @@
 """Spatial von Mises distribution"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ von_ = von_mises_sp
 
 def cheatsheet() -> str:
     return "von_mises_sp({}) -> Spatial von Mises distribution"
+
+
+# compact alias per ledger/NAMING.md
+vonmisessp = von_mises_sp

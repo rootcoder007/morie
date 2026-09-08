@@ -1,6 +1,6 @@
 """Intrinsic CAR (ICAR)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ icar = icar_model
 
 def cheatsheet() -> str:
     return "icar_model({}) -> Intrinsic CAR (ICAR)"
+
+
+# compact alias per ledger/NAMING.md
+icarmodel = icar_model

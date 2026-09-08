@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MDS anisotropy measure"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ mds_ = mds_aniso
 
 def cheatsheet() -> str:
     return "mds_aniso({}) -> MDS anisotropy measure"
+
+
+# compact alias per ledger/NAMING.md
+mdsaniso = mds_aniso

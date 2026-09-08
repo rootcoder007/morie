@@ -1,6 +1,6 @@
 """Tests for sse4r.ssepta_seq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sse4r import ssepta_seq
 

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import ESRes
 
@@ -50,3 +50,7 @@ eqatn = atkinson_index
 
 def cheatsheet() -> str:
     return "atkinson_index({}) -> Atkinson inequality index."
+
+
+# compact alias per ledger/NAMING.md
+atkinsonindex = atkinson_index

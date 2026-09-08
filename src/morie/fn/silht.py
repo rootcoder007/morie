@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.spatial.distance import cdist
+from . import _array_core as np
+from ._sci_core import cdist
 
 from ._containers import DescriptiveResult
 

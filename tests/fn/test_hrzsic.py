@@ -1,6 +1,6 @@
 """Tests for hrzsic.horowitz_sim_identification."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzsic import horowitz_sim_identification
 

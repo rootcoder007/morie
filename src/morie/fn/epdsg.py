@@ -5,9 +5,9 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
-from scipy import stats as _st
-from scipy.optimize import minimize
+from . import _array_core as np
+from . import _stats_core as _st
+from ._sci_core import minimize
 
 
 def epidemic_curve_fit(

@@ -1,6 +1,6 @@
 """Tests for cvxdwl.boyd_dual_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxdwl import boyd_dual_function
 

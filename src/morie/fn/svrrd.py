@@ -1,6 +1,6 @@
 """Roemer party unanimity model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ roem = roemer_model
 
 def cheatsheet() -> str:
     return "roemer_model({}) -> Roemer party unanimity model"
+
+
+# compact alias per ledger/NAMING.md
+roemermodel = roemer_model

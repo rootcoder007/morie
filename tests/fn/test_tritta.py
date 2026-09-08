@@ -1,6 +1,6 @@
 """Tests for tritta.alphafold_triangle_attn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tritta import alphafold_triangle_attn
 

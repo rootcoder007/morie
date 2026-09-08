@@ -1,6 +1,6 @@
 """Finite-sample breakdown point."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -38,3 +38,7 @@ def breakdown_point(estimator, n):
 
 def cheatsheet():
     return "breakd: Finite-sample breakdown point"
+
+
+# compact alias per ledger/NAMING.md
+breakdownpoint = breakdown_point

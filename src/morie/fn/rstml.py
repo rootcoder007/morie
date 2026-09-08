@@ -15,7 +15,7 @@ in Medicine, 30(19), 2409-2421.
 
 __all__ = ["rstml"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def rstml(
@@ -79,7 +79,7 @@ def rstml(
     Royston, P. & Parmar, M.K.B. (2011). Statistics in Medicine,
     30(19), 2409-2421.
     """
-    from scipy import stats as _stats
+    from . import _stats_core as _stats
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)

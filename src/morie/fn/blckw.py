@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -78,3 +78,7 @@ blckw = snr_degradation
 
 def cheatsheet() -> str:
     return "snr_degradation({}) -> SNR degradation model."
+
+
+# compact alias per ledger/NAMING.md
+snrdegradation = snr_degradation

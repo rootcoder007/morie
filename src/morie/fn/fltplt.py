@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -49,3 +49,7 @@ fltplt = plot_filter_io_fn
 
 def cheatsheet() -> str:
     return "plot_filter_io_fn({}) -> Filter input/output comparison plot."
+
+
+# compact alias per ledger/NAMING.md
+plotfilteriofn = plot_filter_io_fn

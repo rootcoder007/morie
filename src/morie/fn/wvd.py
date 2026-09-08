@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -31,3 +31,7 @@ wvd = wigner_ville_fn
 
 def cheatsheet() -> str:
     return "wigner_ville_fn({}) -> Wigner-Ville distribution (time-frequency representation)."
+
+
+# compact alias per ledger/NAMING.md
+wignervillefn = wigner_ville_fn

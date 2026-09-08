@@ -2,14 +2,14 @@
 % Please edit documentation in R/tps_io.R
 \name{morie_tps_load}
 \alias{morie_tps_load}
-\title{Load TPS dataset \code{name} in the given \code{format}.}
+\title{Load TPS dataset \code{name} in the given \code{format}}
 \usage{
 morie_tps_load(name, format = "csv", nrows = NULL)
 }
 \arguments{
 \item{name}{TPS category. Case-insensitive.}
 
-\item{format}{One of \link{MORIE_TPS_SUPPORTED_FORMATS}.}
+\item{format}{One of [MORIE_TPS_SUPPORTED_FORMATS].}
 
 \item{nrows}{Optional integer cap on rows.}
 }
@@ -24,4 +24,9 @@ work with base R / \code{readxl}; all spatial formats (\code{geojson},
 \code{shapefile}, \code{filegeodatabase}) are gated behind
 \code{requireNamespace("sf")} and surface a clean install message if
 the dependency is missing.
+}
+\examples{
+\donttest{
+morie_tps_load("Assault", format = "csv", nrows = 2L)
+}
 }

@@ -3,8 +3,8 @@
 
 import math
 
-import numpy as np
-import scipy.stats as scipy_stats
+from . import _array_core as np
+from . import _stats_core as scipy_stats
 
 
 def ratio_estimator(

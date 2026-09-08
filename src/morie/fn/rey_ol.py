@@ -1,9 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ordinal logistic regression (proportional odds model)."""
 
-import numpy as np
-from scipy.optimize import minimize
-from scipy.stats import norm
+from . import _array_core as np
+from ._sci_core import minimize
+from ._stats_core import norm
 
 
 def rey_ol(df, y: str = "y", x: list | str = "x", alpha: float = 0.05, cdf=None) -> dict:
@@ -133,3 +133,7 @@ def rey_ol(df, y: str = "y", x: list | str = "x", alpha: float = 0.05, cdf=None)
 
 def cheatsheet() -> str:
     return "rey_ol({}) -> Ordinal logistic regression (proportional odds model)."
+
+
+# compact alias per ledger/NAMING.md
+reyol = rey_ol

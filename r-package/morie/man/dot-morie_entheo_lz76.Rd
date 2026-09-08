@@ -2,11 +2,14 @@
 % Please edit documentation in R/entheo_dmt.R
 \name{.morie_entheo_lz76}
 \alias{.morie_entheo_lz76}
-\title{Lempel-Ziv (LZ76) complexity helper.}
+\title{Lempel-Ziv (LZ76) complexity helper}
 \usage{
 .morie_entheo_lz76(b)
 }
+\arguments{
+\item{b}{See Usage.}
+}
 \description{
-Lempel-Ziv (LZ76) complexity helper.
+Lempel-Ziv (LZ76) complexity helper
 }
 \keyword{internal}

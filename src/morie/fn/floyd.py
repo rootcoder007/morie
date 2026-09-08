@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -60,3 +60,7 @@ floyd = floyd_warshall
 
 def cheatsheet() -> str:
     return "floyd_warshall({}) -> Floyd-Warshall all-pairs shortest paths."
+
+
+# compact alias per ledger/NAMING.md
+floydwarshall = floyd_warshall

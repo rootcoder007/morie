@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """IRT-based 2PL spatial ideal-point model (Armstrong Ch 4)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -145,3 +145,7 @@ def cheatsheet():
 # >>> Y = (X_true[:, None] + rng.normal(size=(20, 10)) > 0).astype(int)
 # >>> r = irt_spatial(Y, n_iter=20)
 # >>> assert abs(np.corrcoef(r["x_hat"], X_true)[0,1]) > 0.6
+
+
+# compact alias per ledger/NAMING.md
+irtspatial = irt_spatial

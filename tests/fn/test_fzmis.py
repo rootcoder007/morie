@@ -1,6 +1,6 @@
 """Tests for fzmis.fauzi_mise_computation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzmis import fauzi_mise_computation
 

@@ -8,8 +8,8 @@ Tests whether a sequence is random by counting the number of runs
 Reference: Gibbons & Chakraborti (2011), Nonparametric Statistical Inference, 5th Ed. § 3.2
 """
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 __all__ = ["runsq"]
 

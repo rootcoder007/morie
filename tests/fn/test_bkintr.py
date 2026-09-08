@@ -1,22 +1,14 @@
 """Tests for bkintr.burkov_ngram_interpolation."""
 
-import numpy as np
-
 from morie.fn.bkintr import burkov_ngram_interpolation
 
 
 def test_bkintr_basic():
-    """Test basic functionality."""
-    probs_by_order = np.random.default_rng(42).normal(0, 1, 100)
-    lambdas = np.random.default_rng(42).normal(0, 1, 100)
-    result = burkov_ngram_interpolation(probs_by_order, lambdas)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = burkov_ngram_interpolation([0.8, 0.2], [0.75, 0.25])
+    assert abs(out["estimate"] - 0.65) < 1e-12
 
 
 def test_bkintr_edge():
-    """Test edge cases."""
-    probs_by_order = np.random.default_rng(42).normal(0, 1, 100)
-    lambdas = np.random.default_rng(42).normal(0, 1, 100)
-    result = burkov_ngram_interpolation(probs_by_order, lambdas)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="sum to 1"):
+        burkov_ngram_interpolation([0.5, 0.5], [0.5, 0.6])

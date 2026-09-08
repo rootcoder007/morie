@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def shap_values(
@@ -69,3 +69,7 @@ shap_ = shap_values
 
 def cheatsheet() -> str:
     return "shap_values({}) -> Simplified SHAP values via permutation-based feature attribu"
+
+
+# compact alias per ledger/NAMING.md
+shapvalues = shap_values

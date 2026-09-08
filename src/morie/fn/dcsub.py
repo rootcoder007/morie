@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -43,3 +43,7 @@ dcsub = dc_removal
 
 def cheatsheet() -> str:
     return "dc_removal({}) -> DC component removal."
+
+
+# compact alias per ledger/NAMING.md
+dcremoval = dc_removal

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 
@@ -41,3 +41,7 @@ siuot = siu_outcome
 
 def cheatsheet() -> str:
     return "siu_outcome({}) -> SIU case outcome distribution."
+
+
+# compact alias per ledger/NAMING.md
+siuoutcome = siu_outcome

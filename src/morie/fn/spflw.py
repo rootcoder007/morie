@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -140,3 +140,7 @@ spflw = spatial_flow
 
 def cheatsheet() -> str:
     return "spatial_flow({}) -> Spatial flow/interaction model (gravity model)."
+
+
+# compact alias per ledger/NAMING.md
+spatialflow = spatial_flow

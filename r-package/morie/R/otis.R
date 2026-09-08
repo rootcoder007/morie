@@ -24,7 +24,6 @@
 #' canonical loader.
 #'
 #' Year-lock invariant
-#' -------------------
 #' OTIS \code{UniqueIndividual_ID} (format \code{YYYY-XXXXX-AA}) is
 #' randomly reassigned every fiscal year and re-randomized per dataset
 #' file even within a year. The \code{variable_taxonomy.R} registry
@@ -63,6 +62,21 @@ NULL
 # Internal result constructor
 # ---------------------------------------------------------------------------
 
+#' .otis_result
+#'
+#' A step of the otis implementation. Called by \code{morie_otis_astcmb},
+#' \code{morie_otis_otdesc}, \code{morie_otis_otdml} and 3 others in the module.
+#' See the file header for the source the module follows.
+#' it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param tables Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param payload Carried through into a list the body builds. Defaults to \code{list()}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .otis_result <- function(title,
                           summary_lines = list(),
                           tables = list(),
@@ -83,6 +97,21 @@ NULL
 
 
 # Tolerant Yes/No/1/0/TRUE -> integer 0/1
+#' Tolerant Yes/No/1/0/TRUE -> integer 0/1
+#'
+#' A step of the otis implementation. Called by \code{.otis_alert_volatility_frame},
+#' \code{.run_otis_analysis_module_internal}, \code{morie_otis_aipw_ate} and 10 others in
+#' the module.
+#' See the file header for the source the module follows.
+#' it follows.
+#'
+#' @param s A vector; indexed elementwise.
+#' @return The value of \code{out}, as built in the body.
+#' @export
+#' @examples
+#' txt <- c('alpha', 'beta', 'gamma', 'delta')
+#' res <- .otis_binarise(s = txt)
+#' res
 .otis_binarise <- function(s) {
   if (is.logical(s)) {
     return(as.integer(s))
@@ -115,7 +144,7 @@ NULL
 #' @param id_col,age_col,region_col,year_col,gender_col Column names.
 #' @return \code{morie_otis_result} list.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   df <- morie_otis_load()
 #'   morie_otis_rplace(df, year = 2024)
 #' }
@@ -232,7 +261,7 @@ morie_otis_astcmb <- function(df,
   }
   a <- .otis_binarise(df[[alert_cols[1]]])
   b <- .otis_binarise(df[[alert_cols[2]]])
-  cc <- .otis_binarise(df[[alert_cols[3]]])  # not 'c' — shadows base c()
+  cc <- .otis_binarise(df[[alert_cols[3]]])  # not 'c' -- shadows base c()
   flags <- data.frame(
     id = df[[id_col]], yr = df[[year_col]],
     a1 = as.integer(a == 1 & b == 0 & cc == 0),
@@ -504,7 +533,7 @@ morie_otis_otdesc <- function(df,
 #'
 #' Wraps a Frisch-Waugh-Lovell partialling-out estimator with
 #' \code{n_folds} cross-fitting on the OLS nuisance functions
-#' \eqn{E[Y|X]} and \eqn{E[D|X]}, then regresses outcome residuals on
+#' \eqn{E\[Y|X\]} and \eqn{E\[D|X\]}, then regresses outcome residuals on
 #' treatment residuals for the ATE; heteroskedasticity-robust standard
 #' errors. ATT is the ATE divided by the treated share (a simple
 #' weighting approximation; for the production-grade DML use

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import CrimeResult
 
@@ -34,3 +34,7 @@ tpsuof = tps_use_of_force
 
 def cheatsheet() -> str:
     return "tpsuof() -> TPS use of force"
+
+
+# compact alias per ledger/NAMING.md
+tpsuseofforce = tps_use_of_force

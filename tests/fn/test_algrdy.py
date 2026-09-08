@@ -1,20 +1,14 @@
 """Tests for algrdy.alammar_greedy_decoding."""
 
-import numpy as np
-
 from morie.fn.algrdy import alammar_greedy_decoding
 
 
 def test_algrdy_basic():
-    """Test basic functionality."""
-    logits = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_greedy_decoding(logits)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_greedy_decoding([[0.1, 2.0, 0.3]])
+    assert out["tokens"] == [1]
 
 
 def test_algrdy_edge():
-    """Test edge cases."""
-    logits = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_greedy_decoding(logits)
-    assert isinstance(result, dict)
+    out = alammar_greedy_decoding([[1.0, 1.0]])
+    assert out["had_ties"] == [True]
+    assert out["tokens"] == [0]

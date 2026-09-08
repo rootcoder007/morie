@@ -2,7 +2,7 @@
 % Please edit documentation in R/survey.R
 \name{morie_survey_ht_total}
 \alias{morie_survey_ht_total}
-\title{Horvitz-Thompson estimator of a population total.}
+\title{Horvitz-Thompson estimator of a population total}
 \usage{
 morie_survey_ht_total(y, inclusion_probs)
 }
@@ -16,5 +16,12 @@ morie_survey_ht_total(y, inclusion_probs)
 list with \code{total}, \code{se}, \code{ci_lower}, \code{ci_upper}.
 }
 \description{
-Horvitz-Thompson estimator of a population total.
+Horvitz-Thompson estimator of a population total
+}
+\examples{
+\dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+y <- c(1, 2, 3, 4, 5)
+pi <- rep(0.5, 5)
+morie_survey_ht_total(y, pi)
+\dontshow{\}) # examplesIf}
 }

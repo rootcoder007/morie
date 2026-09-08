@@ -1,6 +1,6 @@
 """Tests for agbckp.alphazero_backup."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agbckp import alphazero_backup
 

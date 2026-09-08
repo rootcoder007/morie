@@ -1,6 +1,6 @@
 """Tests for spcont.schabenberger_spatial_continuity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spcont import schabenberger_spatial_continuity
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.oocls — Optimal classification."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.oocls import oocls
 

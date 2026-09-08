@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Seasonal ARIMA (SARIMA) model."""
 
-import numpy as np
-from scipy import optimize
+from . import _array_core as np
+from ._sci_core import optimize
 
 from ._containers import DescriptiveResult
 
@@ -111,3 +111,7 @@ sarim = sarima_fit
 
 def cheatsheet() -> str:
     return "sarima_fit({}) -> Seasonal ARIMA (SARIMA) model."
+
+
+# compact alias per ledger/NAMING.md
+sarimafit = sarima_fit

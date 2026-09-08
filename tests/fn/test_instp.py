@@ -1,6 +1,6 @@
 """Tests for instp.py - Instantaneous phase."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.instp import instantaneous_phase, instp
 

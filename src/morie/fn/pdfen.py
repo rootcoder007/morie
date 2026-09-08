@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Non-parametric PDF estimation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -44,3 +44,7 @@ pdfen = pdf_estimate
 
 def cheatsheet() -> str:
     return "pdf_estimate({}) -> Non-parametric PDF estimation."
+
+
+# compact alias per ledger/NAMING.md
+pdfestimate = pdf_estimate

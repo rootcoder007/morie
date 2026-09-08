@@ -1,6 +1,6 @@
 """Survey prevalence estimate with design effect."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -55,7 +55,7 @@ def survey_prevalence(
     se_srs = np.sqrt(p_hat * (1 - p_hat) / n) if n > 0 else 0.0
     se = se_srs * np.sqrt(deff)
 
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     z = norm.ppf((1 + confidence) / 2)
 

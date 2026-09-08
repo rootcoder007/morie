@@ -1,6 +1,6 @@
 """Tests for spgwr.schabenberger_gwr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spgwr import schabenberger_gwr
 

@@ -36,6 +36,9 @@
 #' @references Matheron, G. (1963). Principles of geostatistics.
 #'   \emph{Economic Geology}, 58(8), 1246--1266.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_spatial_variogram(V, V)
 morie_spatial_variogram <- function(coords, values, n_bins = 15L,
                                     cutoff = NULL) {
   coords <- as.matrix(coords)
@@ -45,7 +48,8 @@ morie_spatial_variogram <- function(coords, values, n_bins = 15L,
   sq <- (outer(values, values, "-")^2)[upper.tri(d)] / 2
   if (is.null(cutoff)) cutoff <- max(dv) / 3
   keep <- dv <= cutoff & dv > 0
-  dv <- dv[keep]; sq <- sq[keep]
+  dv <- dv[keep]
+  sq <- sq[keep]
   breaks <- seq(0, cutoff, length.out = n_bins + 1L)
   bin <- cut(dv, breaks, include.lowest = TRUE)
   gamma <- tapply(sq, bin, mean)
@@ -71,6 +75,9 @@ morie_spatial_variogram <- function(coords, values, n_bins = 15L,
 #' @srrstats {G1.0} ML covariance estimation per Mardia & Marshall
 #'   (1984), Biometrika 71(1).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_spatial_variogram_fit(V, V)
 morie_spatial_variogram_fit <- function(coords, values,
                                         model = "exponential") {
   coords <- as.matrix(coords)
@@ -80,7 +87,9 @@ morie_spatial_variogram_fit <- function(coords, values,
   v0 <- stats::var(y)
   r0 <- max(D) / 4
   negll <- function(p) {
-    nug <- exp(p[1]); ps <- exp(p[2]); rg <- exp(p[3])
+    nug <- exp(p[1])
+    ps <- exp(p[2])
+    rg <- exp(p[3])
     # covariance = (nug+ps) - gamma(h)
     C <- (nug + ps) - .morie_vgm_gamma(D, model, nug, ps, rg)
     ch <- tryCatch(chol(C + diag(1e-8 * v0, n)),
@@ -103,16 +112,31 @@ morie_spatial_variogram_fit <- function(coords, values,
 # (Cressie 1985 weights n_h / h^2) -- the gstat::fit.variogram
 # analogue. Milliseconds at any n; the full Gaussian-likelihood MLE
 # stays available via morie_spatial_variogram_fit().
+#' Fast WLS fit of a variogram model on the binned empirical variogram
+#'
+#' (Cressie 1985 weights n_h / h^2) -- the gstat::fit.variogram
+#' analogue. Milliseconds at any n; the full Gaussian-likelihood MLE
+#' stays available via morie_spatial_variogram_fit().
+#'
+#' @param coords Passed to \code{morie_spatial_variogram}.
+#' @param values Passed to \code{morie_spatial_variogram}.
+#' @param model Passed to \code{.morie_vgm_gamma}. Defaults to \code{"exponential"}.
+#' @return A list with \code{model}, \code{nugget}, \code{psill}, \code{range}, \code{method}.
+#' @export
 .morie_vgm_wls_fit <- function(coords, values, model = "exponential") {
   emp <- morie_spatial_variogram(coords, values)
   h <- emp$dist
   g <- emp$gamma
   w <- emp$np / pmax(h^2, 1e-12)
   ok <- is.finite(h) & is.finite(g) & is.finite(w) & h > 0
-  h <- h[ok]; g <- g[ok]; w <- w[ok]
+  h <- h[ok]
+  g <- g[ok]
+  w <- w[ok]
   v0 <- max(g, na.rm = TRUE)
   obj <- function(p) {
-    nug <- exp(p[1]); ps <- exp(p[2]); rg <- exp(p[3])
+    nug <- exp(p[1])
+    ps <- exp(p[2])
+    rg <- exp(p[3])
     fit <- .morie_vgm_gamma(h, model, nug, ps, rg)
     sum(w * (g - fit)^2)
   }

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["expsv"]
 
@@ -52,7 +52,7 @@ def expsv(
     X = np.asarray(X, dtype=float)
     p = X.shape[1]
 
-    from scipy.optimize import minimize
+    from ._sci_core import minimize
 
     def neg_loglik(params):
         mu = params[0]

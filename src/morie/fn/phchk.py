@@ -11,7 +11,7 @@ and diagnostics based on weighted residuals. Biometrika, 81(3), 515-526.
 
 __all__ = ["phchk"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def phchk(
@@ -73,7 +73,7 @@ def phchk(
     ----------
     Grambsch, P.M. & Therneau, T.M. (1994). Biometrika, 81(3), 515-526.
     """
-    from scipy import stats as _stats
+    from . import _stats_core as _stats
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)

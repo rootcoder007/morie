@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import ESRes
 
@@ -61,3 +61,7 @@ ordd1 = otis_rdd_age
 
 def cheatsheet() -> str:
     return "otis_rdd_age({}) -> Regression discontinuity at age cutoff."
+
+
+# compact alias per ledger/NAMING.md
+otisrddage = otis_rdd_age

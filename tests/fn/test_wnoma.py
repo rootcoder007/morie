@@ -1,6 +1,6 @@
 """Tests for wnoma.wnominate_alternating."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wnoma import wnominate_alternating
 

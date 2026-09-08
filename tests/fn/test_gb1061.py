@@ -1,6 +1,6 @@
 """Tests for gb1061.gibbons_jonckheere."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1061 import gibbons_jonckheere
 

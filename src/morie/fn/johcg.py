@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Johansen cointegration test."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -78,3 +78,7 @@ johcg = johansen_test
 
 def cheatsheet() -> str:
     return "johansen_test({}) -> Johansen cointegration trace test."
+
+
+# compact alias per ledger/NAMING.md
+johansentest = johansen_test

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -39,3 +39,7 @@ odm_t = otis_demo_trend
 
 def cheatsheet() -> str:
     return "otis_demo_trend({}) -> Demographic trend over time."
+
+
+# compact alias per ledger/NAMING.md
+otisdemotrend = otis_demo_trend

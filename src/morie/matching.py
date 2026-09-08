@@ -39,13 +39,39 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Any, Union
 
-import numpy as np
-import pandas as pd
-import scipy.stats as stats
-from scipy.spatial.distance import cdist
-from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import NearestNeighbors
-from sklearn.preprocessing import StandardScaler
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as stats
+from morie.fn._sci_core import cdist
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from morie.fn._ml_core import LogisticRegression
+except ImportError:
+    LogisticRegression = _MissingDep('LogisticRegression')
+try:
+    from morie.fn._ml_core import NearestNeighbors
+except ImportError:
+    NearestNeighbors = _MissingDep('NearestNeighbors')
+try:
+    from morie.fn._ml_core import StandardScaler
+except ImportError:
+    StandardScaler = _MissingDep('StandardScaler')
 
 logger = logging.getLogger(__name__)
 
@@ -200,7 +226,7 @@ def estimate_propensity_score(
     X_scaled = scaler.fit_transform(X)
 
     if model == "gbm":
-        from sklearn.ensemble import GradientBoostingClassifier
+        from morie.fn._ml_core import GradientBoostingClassifier
 
         clf = GradientBoostingClassifier(n_estimators=100, max_depth=3, random_state=42)
     else:
@@ -349,7 +375,7 @@ def match_nearest_neighbor(
     for i, t_idx in enumerate(treated_idx):
         matched = []
         for j in range(indices.shape[1]):
-            c_pos = indices[i, j]
+            c_pos = int(indices[i, j])
             c_idx = control_idx[c_pos]
             dist = distances[i, j]
 
@@ -1905,7 +1931,7 @@ def doubly_robust_matching(
     X_c = matched.loc[c_mask, covariates].values.astype(float)
     y_c = matched.loc[c_mask, outcome].values.astype(float)
 
-    from sklearn.linear_model import LinearRegression
+    from morie.fn._ml_core import LinearRegression
 
     or_model = LinearRegression()
     or_model.fit(X_c, y_c)

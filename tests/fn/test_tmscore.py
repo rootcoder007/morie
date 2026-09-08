@@ -1,6 +1,6 @@
 """Tests for tmscore.tm_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmscore import tm_score
 

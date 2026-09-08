@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_smooth}
 \alias{morie_weights_smooth}
-\title{Smooth survey weights via shrinkage toward the mean (or log-mean).}
+\title{Smooth survey weights via shrinkage toward the mean (or log-mean)}
 \usage{
 morie_weights_smooth(
   weights,
@@ -16,7 +16,7 @@ morie_weights_smooth(
 \item{method}{Character; calibration / smoothing / variance method.
 Allowed values depend on the caller.}
 
-\item{shrinkage_factor}{Numeric in \verb{[0, 1]}; smoothing pull-toward-
+\item{shrinkage_factor}{Numeric in \verb{\[0, 1\]}; smoothing pull-toward-
 mean factor.}
 }
 \value{
@@ -25,5 +25,9 @@ Numeric vector of smoothed weights, same length as
 rescaled to preserve the original weight sum.
 }
 \description{
-Smooth survey weights via shrinkage toward the mean (or log-mean).
+Smooth survey weights via shrinkage toward the mean (or log-mean)
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_smooth(V)
 }

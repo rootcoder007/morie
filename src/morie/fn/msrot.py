@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rotation of configuration"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ rota = rotate_config
 
 def cheatsheet() -> str:
     return "rotate_config({}) -> Rotation of configuration"
+
+
+# compact alias per ledger/NAMING.md
+rotateconfig = rotate_config

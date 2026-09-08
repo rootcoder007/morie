@@ -1,6 +1,6 @@
 """Tests for gb631a.gibbons_ks2_asymp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb631a import gibbons_ks2_asymp
 

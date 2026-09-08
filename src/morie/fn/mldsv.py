@@ -30,3 +30,7 @@ mldsv = mldsa_verify
 
 def cheatsheet() -> str:
     return "mldsa_verify({}) -> ML-DSA (Dilithium) post-quantum signature -- verify."
+
+
+# compact alias per ledger/NAMING.md
+mldsaverify = mldsa_verify

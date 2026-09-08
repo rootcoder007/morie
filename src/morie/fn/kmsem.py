@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 
 def kmsem(
@@ -75,7 +75,7 @@ def kmsem(
     ci_lo = np.ones(n_times)
     ci_hi = np.ones(n_times)
 
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     z = norm.ppf(1 - alpha / 2)
     cum_hazard_var = 0.0

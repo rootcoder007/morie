@@ -1,22 +1,11 @@
-"""Tests for hmbin.geron_binary_classification."""
+"""Tests for hmbin (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.hmbin import geron_binary_classification
-
-
-def test_hmbin_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    theta = 0.0
-    result = geron_binary_classification(X, theta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.hmbin as mod
 
 
-def test_hmbin_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    theta = 0.0
-    result = geron_binary_classification(X, theta)
-    assert isinstance(result, dict)
+def test_hmbin_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

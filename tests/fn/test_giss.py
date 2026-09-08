@@ -1,6 +1,6 @@
 """Tests for giss.giss_anomaly."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.giss import giss_anomaly
 

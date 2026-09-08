@@ -1,6 +1,6 @@
 """Confusion matrix with precision / recall / F1 (per class + macro)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -8,7 +8,13 @@ __all__ = ["confusion_matrix_metrics"]
 
 
 def confusion_matrix_metrics(y_true, y_pred, *, labels=None):
-    """Confusion matrix + classification report via sklearn.metrics.
+    """Confusion matrix
+
+    References
+    ----------
+    van Rijsbergen, C. J. (1979). *Information Retrieval*, 2nd edn.
+    Butterworths. Ch. 7 (the F-measure as the harmonic mean of
+    precision and recall). + classification report via sklearn.metrics.
 
     F1 = 2 P R / (P + R), P = TP / (TP + FP), R = TP / (TP + FN).
     Works for binary or multiclass.  Returns per-class precision/recall/F1
@@ -26,7 +32,7 @@ def confusion_matrix_metrics(y_true, y_pred, *, labels=None):
     RichResult with payload: estimate (accuracy), confusion_matrix, labels,
     precision, recall, f1, macro_f1, weighted_f1, accuracy, n, method.
     """
-    from sklearn.metrics import (
+    from ._ml_core import (
         accuracy_score,
         confusion_matrix,
         precision_recall_fscore_support,

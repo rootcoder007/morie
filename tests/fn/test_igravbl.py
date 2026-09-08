@@ -1,6 +1,6 @@
 """Tests for morie.fn.igravbl."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.igravbl import igravbl
 

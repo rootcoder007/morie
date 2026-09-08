@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._containers import ESRes
 
@@ -55,7 +55,8 @@ def g_formula(
     X = df[covariates].values.astype(float) if covariates else np.ones((len(Y), 1))
 
     XA = np.column_stack([np.ones(len(Y)), A, X])
-    from numpy.linalg import lstsq
+    from morie.fn._array_core import linalg as _acl
+    lstsq = _acl.lstsq
 
     beta, _, _, _ = lstsq(XA, Y, rcond=None)
 
@@ -83,3 +84,7 @@ gform = g_formula
 
 def cheatsheet() -> str:
     return "g_formula({}) -> Parametric g-formula (g-computation)."
+
+
+# compact alias per ledger/NAMING.md
+gformula = g_formula

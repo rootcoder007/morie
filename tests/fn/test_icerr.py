@@ -1,6 +1,6 @@
 """Tests for morie.fn.icerr -- ICER."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.icerr import incremental_cost_effectiveness_ratio

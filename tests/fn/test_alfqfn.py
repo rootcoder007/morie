@@ -1,6 +1,6 @@
 """Tests for alfqfn.alphazero_q_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alfqfn import alphazero_q_function
 

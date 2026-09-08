@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._otis_const import DEFAULT_COLS
 
@@ -47,3 +47,7 @@ rpl_r = rplace_by_region
 
 def cheatsheet() -> str:
     return "rplace_by_region({}) -> Placement counts filtered to a single region."
+
+
+# compact alias per ledger/NAMING.md
+rplacebyregion = rplace_by_region

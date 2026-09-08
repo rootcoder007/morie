@@ -1,6 +1,6 @@
 """Tests for grqpi.geron_action_value_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grqpi import geron_action_value_function
 

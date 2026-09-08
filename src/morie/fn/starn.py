@@ -1,6 +1,6 @@
 """Spatio-temporal autoregressive model (Schabenberger & Gotway Ch 9)."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def starn(

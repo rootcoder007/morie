@@ -1,6 +1,6 @@
 """Tests for morie.fn.pldst."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pldst import pldst
 

@@ -1,6 +1,6 @@
 """Tests for cluseff.intracluster_correlation_rho."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cluseff import intracluster_correlation_rho
 

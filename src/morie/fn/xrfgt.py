@@ -1,6 +1,6 @@
 """Getis spatial filtering"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ geti = getis_filter
 
 def cheatsheet() -> str:
     return "getis_filter({}) -> Getis spatial filtering"
+
+
+# compact alias per ledger/NAMING.md
+getisfilter = getis_filter

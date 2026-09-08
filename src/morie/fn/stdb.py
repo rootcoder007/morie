@@ -2,8 +2,8 @@
 
 from typing import Union
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def standardized_coefficients(
@@ -26,7 +26,7 @@ def standardized_coefficients(
     DataFrame
         Columns: variable, beta, se, t, p_value.
     """
-    import statsmodels.api as sm
+    from . import _glm_core as sm
 
     if isinstance(X, pd.DataFrame):
         names = X.columns.tolist()

@@ -1,6 +1,6 @@
 """Test rms_signal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.rmssg import alias, rms_signal

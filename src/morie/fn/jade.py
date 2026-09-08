@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -108,3 +108,7 @@ jade = jade_ica
 
 def cheatsheet() -> str:
     return "jade_ica({}) -> JADE ICA via joint approximate diagonalization of eigenmatri"
+
+
+# compact alias per ledger/NAMING.md
+jadeica = jade_ica

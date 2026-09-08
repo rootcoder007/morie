@@ -1,6 +1,6 @@
 """Tests for gh_ap_b3.ghosal_renyi_div."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_ap_b3 import ghosal_renyi_div
 

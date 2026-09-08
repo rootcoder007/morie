@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -68,3 +68,7 @@ short = lagrange_interp
 
 def cheatsheet() -> str:
     return "lagrange_interp({}) -> Lagrange interpolation."
+
+
+# compact alias per ledger/NAMING.md
+lagrangeinterp = lagrange_interp

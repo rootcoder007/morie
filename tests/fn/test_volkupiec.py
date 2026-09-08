@@ -1,6 +1,6 @@
 """Tests for volkupiec.vol_kupiec_var_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.volkupiec import vol_kupiec_var_test
 

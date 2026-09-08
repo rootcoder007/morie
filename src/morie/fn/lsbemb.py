@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -92,3 +92,11 @@ lsbemb = lsb_embed
 
 def cheatsheet() -> str:
     return "lsb_embed({}) -> LSB steganography."
+
+
+# compact alias per ledger/NAMING.md
+lsbembed = lsb_embed
+
+
+# compact alias per ledger/NAMING.md
+lsbextract = lsb_extract

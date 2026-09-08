@@ -12,3 +12,6 @@ A length-1 character string.
 \description{
 Formatted text dump of the command registry
 }
+\examples{
+stat_bridge_help()
+}

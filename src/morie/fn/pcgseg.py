@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -89,3 +89,7 @@ pcgseg = pcg_segment
 
 def cheatsheet() -> str:
     return "pcg_segment({}) -> S1/S2 heart sound segmentation from PCG envelope."
+
+
+# compact alias per ledger/NAMING.md
+pcgsegment = pcg_segment

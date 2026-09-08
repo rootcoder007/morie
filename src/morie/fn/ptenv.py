@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Point pattern Monte Carlo envelope"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ pp_e = pp_envelope
 
 def cheatsheet() -> str:
     return "pp_envelope({}) -> Point pattern Monte Carlo envelope"
+
+
+# compact alias per ledger/NAMING.md
+ppenvelope = pp_envelope

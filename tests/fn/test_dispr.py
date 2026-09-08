@@ -1,6 +1,6 @@
 """Tests for morie.fn.dispr -- disparity fit."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dispr import disparity_fit, dispr
 

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -98,3 +98,7 @@ def irt_mle_theta(
 
 def cheatsheet() -> str:
     return "_icc_2pl({}) -> MLE theta estimation."
+
+
+# compact alias per ledger/NAMING.md
+irtmletheta = irt_mle_theta

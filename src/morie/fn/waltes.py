@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from scipy import stats
+from . import _stats_core as stats
 
 from ._containers import TestResult
 
@@ -34,3 +34,7 @@ waltes = wald_test
 
 def cheatsheet() -> str:
     return "wald_test({}) -> Wald test."
+
+
+# compact alias per ledger/NAMING.md
+waldtest = wald_test

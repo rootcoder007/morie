@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -93,3 +93,7 @@ sgsps = spectral_grf_sim
 
 def cheatsheet() -> str:
     return "spectral_grf_sim({}) -> Spectral (FFT-based) Gaussian random field simulation."
+
+
+# compact alias per ledger/NAMING.md
+spectralgrfsim = spectral_grf_sim

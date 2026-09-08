@@ -53,12 +53,40 @@ morie_trfbl_transformer_block <- function(x, num_heads = 2L, d_ff = NULL,
   )
 }
 
+#' .trfbl_layer_norm
+#'
+#' A step of the trfbl implementation. Called by \code{morie_trfbl_transformer_block}.
+#' See the file header for the source the module follows.
+#' it follows.
+#'
+#' @param x Passed to \code{rowMeans}.
+#' @param eps Numeric; combined arithmetically in the body. Defaults to \code{1e-05}.
+#' @return The value of \code{sweep}.
+#' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+#' 2.6, 3.4, 3.9))
+#' res <- .trfbl_layer_norm(x = X)
+#' res
 .trfbl_layer_norm <- function(x, eps = 1e-5) {
   mu <- rowMeans(x)
   var <- apply(x, 1L, function(v) mean((v - mean(v))^2))
   sweep(sweep(x, 1L, mu, "-"), 1L, sqrt(var + eps), "/")
 }
 
+#' .trfbl_gelu
+#'
+#' A step of the trfbl implementation. Called by \code{morie_trfbl_transformer_block}.
+#' See the file header for the source the module follows.
+#' it follows.
+#'
+#' @param z Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .trfbl_gelu(z = y)
+#' res
 .trfbl_gelu <- function(z) {
   0.5 * z * (1 + tanh(sqrt(2 / pi) * (z + 0.044715 * z^3)))
 }

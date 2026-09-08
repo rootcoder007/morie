@@ -2,8 +2,8 @@
 
 from typing import Union
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import TestResult
 
@@ -81,3 +81,7 @@ sign = sign_test
 
 def cheatsheet() -> str:
     return "sign_test({}) -> Sign test for paired data."
+
+
+# compact alias per ledger/NAMING.md
+signtest = sign_test

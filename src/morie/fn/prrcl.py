@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Precision, recall, and F1 score."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 

@@ -1,8 +1,8 @@
 """Tests for rgap.rangayyan_action_potential."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgap import rangayyan_action_potential
+from morie.fn.bsaphys import rangayyan_action_potential
 
 
 def test_rgap_basic():

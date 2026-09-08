@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -92,3 +92,7 @@ sgsem = sem_error_model
 
 def cheatsheet() -> str:
     return "sem_error_model({}) -> Spatial error model (SEM)."
+
+
+# compact alias per ledger/NAMING.md
+semerrormodel = sem_error_model

@@ -1,6 +1,6 @@
 """Test tsstg2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tsstg2 import tsstg2
 

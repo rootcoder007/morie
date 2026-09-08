@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import ESRes
 
@@ -54,3 +54,7 @@ polyc = polychoric_corr
 
 def cheatsheet() -> str:
     return "polychoric_corr({}) -> Polychoric correlation (two-step approximation)."
+
+
+# compact alias per ledger/NAMING.md
+polychoriccorr = polychoric_corr

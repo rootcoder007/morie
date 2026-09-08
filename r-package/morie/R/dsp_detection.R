@@ -52,6 +52,9 @@ morie_dsp_threshold_detect <- function(x, threshold, min_distance = 1L,
 #' @return Integer vector of peak indices.
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.3.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_derivative_detect(V)
 morie_dsp_derivative_detect <- function(x, fs = 1,
                                         threshold_factor = 0.5) {
   dx <- diff(x) * fs
@@ -199,7 +202,7 @@ morie_dsp_shannon_energy <- function(x) {
 
 #' Teager-Kaiser energy operator
 #'
-#' `psi[n] = x[n]^2 - x[n-1] * x[n+1]`; sensitive to instantaneous
+#' `psi\[n\] = x\[n\]^2 - x\[n-1\] * x\[n+1\]`; sensitive to instantaneous
 #' amplitude AND frequency.
 #'
 #' @param x Numeric vector.
@@ -261,6 +264,9 @@ morie_dsp_hilbert_envelope <- function(x) {
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.7;
 #'   Pan & Tompkins (1985).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_pan_tompkins(V)
 morie_dsp_pan_tompkins <- function(ecg, fs = 360) {
   nyq <- fs / 2
   low <- 5 / nyq
@@ -293,6 +299,9 @@ morie_dsp_pan_tompkins <- function(ecg, fs = 360) {
 #' @return Integer vector of notch indices.
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.8.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_dicrotic_notch(V)
 morie_dsp_dicrotic_notch <- function(pulse, fs = 125) {
   # Module 20: native local-maxima detector with minimum spacing.
   d2 <- diff(pulse, differences = 2L)
@@ -305,7 +314,7 @@ morie_dsp_dicrotic_notch <- function(pulse, fs = 125) {
 
 #' T-wave detection by post-QRS argmax search
 #'
-#' For each QRS index, searches `[loc + 0.2 * fs, loc + 0.5 * fs]` for
+#' For each QRS index, searches `\[loc + 0.2 * fs, loc + 0.5 * fs\]` for
 #' the absolute maximum and records its global index.
 #'
 #' @param ecg ECG vector.
@@ -315,6 +324,9 @@ morie_dsp_dicrotic_notch <- function(pulse, fs = 125) {
 #' @return Integer vector of T-peak indices.
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.8.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_t_wave(V, V)
 morie_dsp_t_wave <- function(ecg, qrs_locs, fs = 360) {
   search_start <- as.integer(0.2 * fs)
   search_end <- as.integer(0.5 * fs)
@@ -341,6 +353,9 @@ morie_dsp_t_wave <- function(ecg, qrs_locs, fs = 360) {
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.9;
 #'   Oppenheim & Schafer (2010).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_homomorphic(V)
 morie_dsp_homomorphic <- function(x, cutoff = 0.1, fs = 1) {
   log_x <- log(abs(x) + 1e-10)
   n <- length(log_x)
@@ -369,6 +384,9 @@ morie_dsp_homomorphic <- function(x, cutoff = 0.1, fs = 1) {
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.10;
 #'   Oppenheim & Schafer (2010).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_complex_cepstrum(V)
 morie_dsp_complex_cepstrum <- function(x) {
   X <- stats::fft(x)
   log_X <- log(Mod(X) + 1e-10) + 1i * .unwrap_d(Arg(X))
@@ -401,6 +419,9 @@ morie_dsp_hr_from_rr <- function(rr_intervals) {
 #' @return Same as `morie_dsp_coherence`.
 #' @references Rangayyan & Krishnan (2015), Ch. 4 & Ch. 6.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_coherence_spectrum(V, V)
 morie_dsp_coherence_spectrum <- function(x, y, fs = 1, nperseg = 256L) {
   morie_dsp_coherence(x, y, fs = fs, nperseg = nperseg)
 }
@@ -417,6 +438,9 @@ morie_dsp_coherence_spectrum <- function(x, y, fs = 1, nperseg = 256L) {
 #' @return List with `freqs` (Hz) and `csd` (complex).
 #' @references Rangayyan & Krishnan (2015), Ch. 4 & Ch. 6.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_csd(V, V)
 morie_dsp_csd <- function(x, y, fs = 1, nperseg = 256L) {
   nperseg <- as.integer(min(nperseg, length(x)))
   noverlap <- nperseg %/% 2L
@@ -442,6 +466,19 @@ morie_dsp_csd <- function(x, y, fs = 1, nperseg = 256L) {
 # ---- internal helpers -------------------------------------------------
 
 # Local unwrap (numeric vector).
+#' Local unwrap (numeric vector)
+#'
+#' A step of the dsp_detection implementation. Called by \code{morie_dsp_complex_cepstrum}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param p A vector; indexed elementwise.
+#' @param tol Numeric; combined arithmetically in the body. Defaults to \code{pi}.
+#' @return A vector, from \code{c}.
+#' @export
+#' @examples
+#' res <- .unwrap_d(p = 0.5)
+#' res
 .unwrap_d <- function(p, tol = pi) {
   d <- diff(p)
   adj <- ifelse(d >  tol, d - 2 * pi,

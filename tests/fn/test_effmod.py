@@ -1,6 +1,6 @@
 """Tests for effmod.effect_modification."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.effmod import effect_modification
 

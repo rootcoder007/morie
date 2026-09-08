@@ -12,6 +12,15 @@
 # gamma. Parameter vector theta is (a0, eta, <shape/scale ...>): a0 is
 # the log baseline (nu = exp(a0)), eta the branching ratio in (0, 1).
 
+#' .hawkes_param_names
+#'
+#' A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param kernel The body requires: unknown kernel:.
+#' @return The value of \code{switch}.
+#' @export
 .hawkes_param_names <- function(kernel) {
   switch(kernel,
     exponential = c("a0", "eta", "beta"),
@@ -25,6 +34,14 @@
 # Optimisation runs in an unconstrained space phi to avoid the hard
 # feasibility cliffs: a0 is free, eta = plogis(phi) in (0, 1), and the
 # shape/scale parameters are exp(phi) > 0.
+#' Optimisation runs in an unconstrained space phi to avoid the hard
+#'
+#' feasibility cliffs: a0 is free, eta = plogis(phi) in (0, 1), and the
+#' shape/scale parameters are exp(phi) > 0.
+#'
+#' @param phi A vector; indexed elementwise.
+#' @return The value of \code{theta}, as built in the body.
+#' @export
 .hawkes_to_theta <- function(phi) {
   theta <- phi
   theta[2] <- stats::plogis(phi[2])
@@ -32,6 +49,19 @@
   theta
 }
 
+#' .hawkes_to_phi
+#'
+#' A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param theta A vector; indexed elementwise.
+#' @return The value of \code{phi}, as built in the body.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .hawkes_to_phi(theta = x)
+#' res
 .hawkes_to_phi <- function(theta) {
   phi <- theta
   phi[2] <- stats::qlogis(theta[2])
@@ -39,6 +69,18 @@
   phi
 }
 
+#' .hawkes_nll_cpp
+#'
+#' A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param theta A vector; indexed elementwise.
+#' @param times Passed to \code{morie_hawkes_ll_exp_const_cpp}.
+#' @param end_time Passed to \code{morie_hawkes_ll_exp_const_cpp}.
+#' @param kernel Passed to \code{switch}.
+#' @return The value of \code{switch}.
+#' @export
 .hawkes_nll_cpp <- function(theta, times, end_time, kernel) {
   switch(kernel,
     exponential = morie_hawkes_ll_exp_const_cpp(
@@ -58,6 +100,15 @@
 
 # Triggering kernel g(u) and its integral G(u) = integral_0^u g, for the
 # pure-R fallback. Returns NULL for an infeasible parameter vector.
+#' Triggering kernel g(u) and its integral G(u) = integral_0^u g, for
+#' the
+#'
+#' pure-R fallback. Returns NULL for an infeasible parameter vector.
+#'
+#' @param kernel One of \code{"exponential"}, \code{"lomax"}, \code{"weibull"}.
+#' @param theta A vector; indexed elementwise.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .hawkes_kernel_funs <- function(kernel, theta) {
   if (kernel == "exponential") {
     beta <- theta[3]
@@ -104,6 +155,18 @@
   }
 }
 
+#' .hawkes_nll_pureR
+#'
+#' A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param theta A vector; indexed elementwise.
+#' @param times A vector; its length is taken and its elements indexed.
+#' @param end_time Numeric; combined arithmetically in the body.
+#' @param kernel Passed to \code{.hawkes_kernel_funs}.
+#' @return A numeric value.
+#' @export
 .hawkes_nll_pureR <- function(theta, times, end_time, kernel) {
   nu <- exp(theta[1])
   eta <- theta[2]
@@ -133,6 +196,17 @@
   -(log_sum - integral)
 }
 
+#' .hawkes_start
+#'
+#' A step of the hawkes_fit implementation. Called by \code{morie_hawkes_fit}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param kernel Passed to \code{switch}.
+#' @param times A vector; its length is taken.
+#' @param end_time Numeric; combined arithmetically in the body.
+#' @return The value of \code{switch}.
+#' @export
 .hawkes_start <- function(kernel, times, end_time) {
   n <- length(times)
   dt_bar <- end_time / n # mean inter-arrival
@@ -150,6 +224,16 @@
 # (eta = 0): its MLE baseline is nu_hat = n / end_time, giving
 # logLik = n*log(n/T) - n. The Hawkes family nests this, so the Hawkes
 # MLE log-likelihood can never fall below it.
+#' Closed-form log-likelihood of the homogeneous Poisson submodel
+#'
+#' (eta = 0): its MLE baseline is nu_hat = n / end_time, giving logLik =
+#' n*log(n/T) - n. The Hawkes family nests this, so the Hawkes MLE
+#' log-likelihood can never fall below it.
+#'
+#' @param n Numeric; combined arithmetically in the body.
+#' @param end_time Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
 .hawkes_loglik_poisson <- function(n, end_time) {
   n * log(n / end_time) - n
 }
@@ -159,6 +243,16 @@
 # perturbations span lower / higher eta and shifted baseline / shape;
 # the lower-eta start in particular lets the optimiser reach the
 # Poisson submodel when the data carries no self-excitation.
+#' Deterministic multi-start set in the unconstrained space. No RNG, so
+#'
+#' the fit is reproducible regardless of the caller\'s random seed. The
+#' perturbations span lower / higher eta and shifted baseline / shape;
+#' the lower-eta start in particular lets the optimiser reach the
+#' Poisson submodel when the data carries no self-excitation.
+#'
+#' @param phi0 A vector; its length is taken.
+#' @return The value of \code{lapply}.
+#' @export
 .hawkes_restarts <- function(phi0) {
   offsets <- list(
     c(0, 0, 0, 0),
@@ -283,6 +377,10 @@ morie_hawkes_fit <- function(times, end_time = NULL,
   )
 }
 
+#' Print method for \code{morie_hawkes_fit} objects
+#'
+#' @param x A \code{morie_hawkes_fit} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_hawkes_fit <- function(x, ...) {

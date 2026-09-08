@@ -46,7 +46,7 @@ Wraps the City of Chicago "Boundaries - Wards (2023-)" open dataset
 \url{https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Wards-2023-/sp34-6z76}).
 50 wards in the current City Council district map. Resolves the
 \code{ward} foreign key carried by every
-\code{\link[=morie_datasets_chicago_crime]{morie_datasets_chicago_crime()}} row.
+\code{morie_datasets_chicago_crime()} row.
 }
 \details{
 \strong{SODA3-only.} The SODA2 endpoint \verb{/resource/sp34-6z76.json}
@@ -61,8 +61,10 @@ Offline mode reads a bundled 50-row attribute-only fixture
 \code{the_geom} MultiPolygon column.
 }
 \examples{
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_chicago_wards(offline = TRUE)
 head(df)
+\dontshow{\}) # examplesIf}
 }
 \references{
 City of Chicago Data Portal, "Boundaries - Wards

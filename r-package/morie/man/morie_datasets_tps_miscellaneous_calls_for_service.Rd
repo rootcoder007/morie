@@ -38,11 +38,11 @@ affects the hub_id -> FeatureServer URL lookup.}
 }
 \value{
 A data.frame / GeoJSON list / file path; see
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} for per-format semantics.
+\code{morie_datasets_tps_arcgis_hub_by_id()} for per-format semantics.
 }
 \description{
 Toronto PS ArcGIS Hub dataset wrapper. Thin dispatch to
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} with the canonical
+\code{morie_datasets_tps_arcgis_hub_by_id()} with the canonical
 hub item_id \verb{542374a83ea64b3ba222c41309445b8e}.
 }
 \details{
@@ -50,4 +50,9 @@ This dataset includes the following categories of data:
 Languages, Calls Received, and Alarm Calls
 
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Calls for Service
+}
+\examples{
+\dontrun{
+morie_datasets_tps_miscellaneous_calls_for_service()
+}
 }

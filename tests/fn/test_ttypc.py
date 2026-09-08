@@ -1,6 +1,6 @@
 """Tests for ttypc.typical_sampling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ttypc import typical_sampling
 

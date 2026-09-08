@@ -1,6 +1,6 @@
 """Tests for bndvld.bound_validity_check."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndvld import bound_validity_check
 

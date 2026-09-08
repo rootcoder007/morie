@@ -1,6 +1,6 @@
 """Spatial wavelet analysis"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ wave = wavelet_spatial
 
 def cheatsheet() -> str:
     return "wavelet_spatial({}) -> Spatial wavelet analysis"
+
+
+# compact alias per ledger/NAMING.md
+waveletspatial = wavelet_spatial

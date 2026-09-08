@@ -1,6 +1,6 @@
 """K-means clustering via Lloyd's algorithm."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -8,7 +8,17 @@ __all__ = ["kmeans_clustering"]
 
 
 def kmeans_clustering(x, *, n_clusters=3, n_init=10, max_iter=300, seed=0):
-    """K-means via sklearn.cluster.KMeans (Lloyd's algorithm, k-means++ init).
+    """K-means
+
+    References
+    ----------
+    Lloyd, S. P. (1982). Least squares quantization in PCM. *IEEE
+    Transactions on Information Theory*, 28(2), 129-137.
+    MacQueen, J. (1967). Some methods for classification and analysis
+    of multivariate observations. *Proc. 5th Berkeley Symposium*, 1,
+    281-297.
+    Hastie, T., Tibshirani, R. & Friedman, J. (2009). *The Elements of
+    Statistical Learning*, 2nd edn. Springer. Sec. 14.3.6, p. 509. via sklearn.cluster.KMeans (Lloyd's algorithm, k-means++ init).
 
     Minimises sum_i ||x_i - mu_{k(i)}||^2 by alternating assignment and
     centroid update steps.
@@ -30,7 +40,7 @@ def kmeans_clustering(x, *, n_clusters=3, n_init=10, max_iter=300, seed=0):
     RichResult with payload: estimate (inertia / WCSS), labels, centers
     (n_clusters x p), inertia, n_iter, n, method.
     """
-    from sklearn.cluster import KMeans
+    from ._ml_core import KMeans
 
     X = np.asarray(x, dtype=float)
     if X.ndim == 1:

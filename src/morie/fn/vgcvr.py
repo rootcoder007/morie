@@ -1,6 +1,6 @@
 """Covariance matrix from variogram"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -42,3 +42,7 @@ cova = covario_matrix
 
 def cheatsheet() -> str:
     return "covario_matrix({}) -> Covariance matrix from variogram"
+
+
+# compact alias per ledger/NAMING.md
+covariomatrix = covario_matrix

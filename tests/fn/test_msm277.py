@@ -1,6 +1,6 @@
 """Tests for msm277.mvsml_convolutional_nn_eq_14_10."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msm277 import mvsml_convolutional_nn_eq_14_10
 

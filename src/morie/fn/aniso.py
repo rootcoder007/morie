@@ -1,7 +1,7 @@
 """Anisotropy detection by comparison of directional variograms."""
 
-import numpy as np
-from scipy import stats as _scistats
+from . import _array_core as np
+from . import _stats_core as _scistats
 
 from ._richresult import RichResult
 
@@ -105,3 +105,7 @@ def cheatsheet():
 # CANONICAL TEST
 # 2D grid:  coords = [(i,j) for i in 0..3 for j in 0..3], 16 points
 # Isotropic x: x = i+j  -> Levene p should be > 0.05 (fail to reject)
+
+
+# compact alias per ledger/NAMING.md
+anisotropytest = anisotropy_test

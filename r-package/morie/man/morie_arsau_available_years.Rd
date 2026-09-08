@@ -2,7 +2,7 @@
 % Please edit documentation in R/arsau.R
 \name{morie_arsau_available_years}
 \alias{morie_arsau_available_years}
-\title{List ARSAU year / year-range buckets.}
+\title{List ARSAU year / year-range buckets}
 \usage{
 morie_arsau_available_years(data_dir = NULL, language = "en")
 }
@@ -20,7 +20,7 @@ vector of all known year/range keys), \code{present} + \code{missing}
 \code{summary_lines}, \code{warnings}, and \code{interpretation}.
 }
 \description{
-List ARSAU year / year-range buckets.
+List ARSAU year / year-range buckets
 }
 \examples{
 r <- morie_arsau_available_years(data_dir = tempdir())

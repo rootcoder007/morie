@@ -1,6 +1,6 @@
 """Tests for prcor.py - partial autocorrelation coefficients."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.prcor import parcor_fn, prcor
 

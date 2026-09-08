@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def irt_difficulty(item_params: dict) -> pd.DataFrame:
@@ -40,3 +40,7 @@ def irt_difficulty(item_params: dict) -> pd.DataFrame:
 
 def cheatsheet() -> str:
     return "irt_difficulty({}) -> Extract IRT difficulty parameters."
+
+
+# compact alias per ledger/NAMING.md
+irtdifficulty = irt_difficulty

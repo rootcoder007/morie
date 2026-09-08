@@ -1,6 +1,6 @@
 """IDW power parameter optimization"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ idw_ = idw_power
 
 def cheatsheet() -> str:
     return "idw_power({}) -> IDW power parameter optimization"
+
+
+# compact alias per ledger/NAMING.md
+idwpower = idw_power

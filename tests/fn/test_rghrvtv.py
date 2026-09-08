@@ -1,8 +1,8 @@
 """Tests for rghrvtv.rangayyan_hrv_time_varying."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rghrvtv import rangayyan_hrv_time_varying
+from morie.fn.bsatf import rangayyan_hrv_time_varying
 
 
 def test_rghrvtv_basic():

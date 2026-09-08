@@ -1,6 +1,6 @@
 """Years lived with disability."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def yld_calculation(prevalence, disability, duration):
 
 def cheatsheet():
     return "yldyear: Years lived with disability"
+
+
+# compact alias per ledger/NAMING.md
+yldcalculation = yld_calculation

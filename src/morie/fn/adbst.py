@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -108,3 +108,7 @@ adbst = adaboost_bio
 
 def cheatsheet() -> str:
     return "adaboost_bio({}) -> AdaBoost classifier with decision stumps."
+
+
+# compact alias per ledger/NAMING.md
+adaboostbio = adaboost_bio

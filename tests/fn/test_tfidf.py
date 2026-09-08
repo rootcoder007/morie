@@ -1,6 +1,6 @@
 """Tests for morie.fn.tfidf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tfidf import tfidf
 

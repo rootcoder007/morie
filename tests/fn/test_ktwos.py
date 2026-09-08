@@ -1,6 +1,6 @@
 """Tests for morie.fn.ktwos — kernel two-sample test (MMD)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ktwos import ktwos

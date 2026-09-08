@@ -4,7 +4,7 @@ Calcium soil spatial
 Category: SoilSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def socal(data=None, depth=None, coords=None, n=50):

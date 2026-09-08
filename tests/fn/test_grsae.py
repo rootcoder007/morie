@@ -1,6 +1,6 @@
 """Tests for grsae.geron_sparse_autoencoder."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grsae import geron_sparse_autoencoder
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def holo_corr(
@@ -32,7 +32,7 @@ def holo_corr(
         matrices. *The American Statistician*, 56(4), 316--324.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_corr requires matplotlib. Install via: pip install matplotlib")
         return None
@@ -64,3 +64,7 @@ def holo_corr(
 
 def cheatsheet() -> str:
     return "holo_corr({}) -> Correlation heatmap visualization."
+
+
+# compact alias per ledger/NAMING.md
+holocorr = holo_corr

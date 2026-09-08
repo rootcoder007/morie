@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Age-period-cohort (APC) decomposition via intrinsic estimator."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 

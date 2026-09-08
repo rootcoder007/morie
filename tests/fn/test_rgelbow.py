@@ -1,8 +1,8 @@
 """Tests for rgelbow.rangayyan_kmeans_elbow."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgelbow import rangayyan_kmeans_elbow
+from morie.fn.bsaclass import rangayyan_kmeans_elbow
 
 
 def test_rgelbow_basic():

@@ -1,6 +1,6 @@
 """Tests for hmper.geron_prioritized_replay."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmper import geron_prioritized_replay
 

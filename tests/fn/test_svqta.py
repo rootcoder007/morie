@@ -1,6 +1,6 @@
 """Tests for morie.fn.svqta -- Quota game equilibrium"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svqta import quota_game
 

@@ -1,6 +1,6 @@
 """SDM impacts decomposition"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ sdm_ = sdm_impacts
 
 def cheatsheet() -> str:
     return "sdm_impacts({}) -> SDM impacts decomposition"
+
+
+# compact alias per ledger/NAMING.md
+sdmimpacts = sdm_impacts

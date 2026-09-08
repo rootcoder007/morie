@@ -11,7 +11,7 @@ def nominate_score_types(X_w, X_dw) -> DescriptiveResult:
 
     .. epigraph:: The measure of a man is what he does with power. -- Plato
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     w = np.asarray(X_w, dtype=float)
     dw = np.asarray(X_dw, dtype=float)

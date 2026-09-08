@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Restricted Isometry Property (RIP) check."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -89,3 +89,7 @@ csrip = rip_check
 
 def cheatsheet() -> str:
     return "rip_check({}) -> Restricted Isometry Property (RIP) check."
+
+
+# compact alias per ledger/NAMING.md
+ripcheck = rip_check

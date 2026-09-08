@@ -1,6 +1,6 @@
 """GWR kernel function"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ gwr_ = gwr_kernel
 
 def cheatsheet() -> str:
     return "gwr_kernel({}) -> GWR kernel function"
+
+
+# compact alias per ledger/NAMING.md
+gwrkernel = gwr_kernel

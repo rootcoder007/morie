@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #' Per-record-type ARSAU analysis pipelines (R-side mirror of
-#' \code{morie.arsau_analyze}).
+#' \code{morie.arsau_analyze})
 #'
 #' Each public callable in this file loads one ARSAU dataset via the
 #' \code{morie_arsau_load_*} loaders defined in \code{R/arsau.R} and
@@ -84,6 +84,17 @@ NULL
 # Internal: locate a (possibly whitespace-corrupted) outcome column
 # ---------------------------------------------------------------------------
 
+#' .morie_arsau_locate_outcome_col
+#'
+#' A step of the arsau_analyze implementation. Called by
+#' \code{morie_arsau_analyze_individual_records}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param df Passed to \code{names}.
+#' @param target Character; passed to \code{tolower}.
+#' @return The value of \code{[}.
+#' @export
 .morie_arsau_locate_outcome_col <- function(df, target) {
   if (target %in% names(df)) return(target)
   trimmed <- tolower(trimws(names(df)))
@@ -100,6 +111,27 @@ NULL
 # the top so they appear in the wrapped result's printed banner.
 # ---------------------------------------------------------------------------
 
+#' .morie_arsau_wrap
+#'
+#' A step of the arsau_analyze implementation. Called by
+#' \code{morie_arsau_analyze_aggregate_summary},
+#' \code{morie_arsau_analyze_detailed_dataset},
+#' \code{morie_arsau_analyze_individual_records} and 3 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param call Carried through into a list the body builds.
+#' @param sub_results A vector; its length is taken and its elements indexed.
+#' @param data Optional; may be \code{NULL}. A matrix; passed to \code{nrow}.
+#' @param sidecar Carried through into a list the body builds.
+#' @param year_or_range Carried through into a list the body builds.
+#' @param kind Carried through into a list the body builds.
+#' @param language Carried through into a list the body builds.
+#' @param is_valid A flag; the body branches on it.
+#' @param extra_interpretation Passed to \code{paste}. Defaults to \code{""}.
+#' @return The value of \code{payload}, as built in the body.
+#' @export
 .morie_arsau_wrap <- function(title, call, sub_results, data, sidecar,
                               year_or_range, kind, language, is_valid,
                               extra_interpretation = "") {
@@ -178,7 +210,7 @@ NULL
 # 1. main_records analysis
 # ---------------------------------------------------------------------------
 
-#' End-to-end analysis of the ARSAU main_records CSV for one year.
+#' End-to-end analysis of the ARSAU main_records CSV for one year
 #'
 #' Chains:
 #' \itemize{
@@ -252,7 +284,7 @@ morie_arsau_analyze_main_records <- function(year, language = "en", data_dir = N
 # 2. individual_records analysis
 # ---------------------------------------------------------------------------
 
-#' End-to-end analysis of the ARSAU individual_records CSV for one year.
+#' End-to-end analysis of the ARSAU individual_records CSV for one year
 #'
 #' Chains demographic-disparity tests over Race, Gender, and
 #' AgeCategory against the \code{IndivInjuries_PhysicalInjuries}
@@ -365,7 +397,7 @@ morie_arsau_analyze_individual_records <- function(year, language = "en",
 # 3. probe_cycle_records analysis
 # ---------------------------------------------------------------------------
 
-#' Analysis of ARSAU probe_cycle_records (CEW telemetry).
+#' Analysis of ARSAU probe_cycle_records (CEW telemetry)
 #'
 #' The probe-cycle file is intentionally narrow (BatchFileName +
 #' Indiv_Index + a comma-separated cycle string).  This function
@@ -463,7 +495,7 @@ morie_arsau_analyze_probe_cycle_records <- function(year, language = "en",
 # 4. weapon_records analysis
 # ---------------------------------------------------------------------------
 
-#' Analysis of ARSAU weapon_records.
+#' Analysis of ARSAU weapon_records
 #'
 #' Chains \code{\link{mrm_uof_weapon_diversity}} over
 #' \code{Weapon x Location} (the only two categorical columns the file
@@ -599,7 +631,7 @@ morie_arsau_analyze_weapon_records <- function(year, allow_invalid = FALSE,
 # 5. aggregate_summary analysis
 # ---------------------------------------------------------------------------
 
-#' Analysis of the ARSAU aggregate-summary-by-year file (2020-2022).
+#' Analysis of the ARSAU aggregate-summary-by-year file (2020-2022)
 #'
 #' The aggregate file is a long-format
 #' \code{YEAR_2020 / YEAR_2021 / YEAR_2022} panel keyed by
@@ -694,7 +726,7 @@ morie_arsau_analyze_aggregate_summary <- function(year_range = "2020-2022",
 # 6. detailed_dataset analysis
 # ---------------------------------------------------------------------------
 
-#' Wide-format analysis of the 2020-2022 detailed-incident dataset.
+#' Wide-format analysis of the 2020-2022 detailed-incident dataset
 #'
 #' Chains:
 #' \itemize{
@@ -766,8 +798,17 @@ morie_arsau_analyze_detailed_dataset <- function(year_range = "2020-2022",
 }
 
 
+#' Print method for \code{morie_arsau_analysis_result} objects
+#'
+#' @param x A \code{morie_arsau_analysis_result} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' \donttest{
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie:::print.morie_arsau_analysis_result(D)
+#' }
 print.morie_arsau_analysis_result <- function(x, ...) {
   cat(x$title, "\n", strrep("=", nchar(x$title)), "\n", sep = "")
   if (length(x$summary_lines) > 0L) {

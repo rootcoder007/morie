@@ -1,8 +1,8 @@
 """Tests for rng177.rangayyan_ch4_qrs_second_derivative_balda."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rng177 import rangayyan_ch4_qrs_second_derivative_balda
+from morie.fn.bsaqrs import rangayyan_ch4_qrs_second_derivative_balda
 
 
 def test_rng177_basic():

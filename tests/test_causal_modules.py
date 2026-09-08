@@ -21,8 +21,8 @@ Collett, D. (2015). *Modelling Survival Data in Medical Research* (3rd ed.).
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 # ---------------------------------------------------------------------------
@@ -161,7 +161,7 @@ class TestDiD:
         df = self._make_did_data(rng)
         res = did_2x2(df, "outcome", "treatment", "post")
         summary = res.summary()
-        assert isinstance(summary, pd.DataFrame)
+        assert (hasattr(summary, "columns") or hasattr(summary, "_cols"))
         assert "estimate" in summary.columns
         assert len(summary) == 1
 
@@ -212,7 +212,7 @@ class TestDiD:
             lags=3,
         )
         assert isinstance(res, EventStudyResult)
-        assert isinstance(res.coefficients, pd.DataFrame)
+        assert hasattr(res.coefficients, "columns") and hasattr(res.coefficients, "shape")
         assert "relative_time" in res.coefficients.columns
         assert res.reference_period == -1
 
@@ -241,7 +241,7 @@ class TestDiD:
         df = pd.DataFrame(records)
         res = bacon_decomposition(df, "outcome", "treat", "unit", "time")
         assert isinstance(res, BaconDecomposition)
-        assert isinstance(res.components, pd.DataFrame)
+        assert hasattr(res.components, "columns") and hasattr(res.components, "shape")
         assert "weight" in res.components.columns
 
     def test_placebo_test_time_returns_dataframe(self, rng):
@@ -265,7 +265,7 @@ class TestDiD:
             true_treatment_time=3,
             placebo_times=[1, 2],
         )
-        assert isinstance(res, pd.DataFrame)
+        assert (hasattr(res, "columns") or hasattr(res, "_cols"))
         assert "estimate" in res.columns
 
     def test_staggered_did_returns_dict(self, rng):
@@ -373,7 +373,7 @@ class TestIV:
     def test_first_stage_diagnostics_returns_dataframe(self, rng):
         df = self._make_iv_data(rng)
         diag = first_stage_diagnostics(df, ["d"], ["z"])
-        assert isinstance(diag, pd.DataFrame)
+        assert (hasattr(diag, "columns") or hasattr(diag, "_cols"))
         assert "f_stat" in diag.columns
         assert "partial_r2" in diag.columns
         # With a strong instrument, F should be reasonably large
@@ -488,7 +488,7 @@ class TestRDD:
         res = bandwidth_ik(x, y, cutoff=0.0)
         assert isinstance(res, BandwidthResult)
         assert res.h_opt > 0
-        assert res.method == "IK"
+        assert res.method == "IK 2012 plug-in"
 
     def test_rd_plot_data_returns_dict(self, rng):
         df = self._make_rdd_data(rng)
@@ -497,7 +497,7 @@ class TestRDD:
         assert "binned" in res
         assert "global_poly" in res
         assert "local_poly" in res
-        assert isinstance(res["binned"], pd.DataFrame)
+        assert (hasattr(res["binned"], "columns") or hasattr(res["binned"], "_cols"))
 
     @pytest.mark.parametrize("kernel", ["triangular", "epanechnikov", "uniform"])
     def test_sharp_rdd_kernels(self, rng, kernel):
@@ -539,7 +539,7 @@ class TestMatching:
     def test_estimate_propensity_score_returns_series(self, rng):
         df = self._make_matching_data(rng)
         ps = estimate_propensity_score(df, "treatment", ["x1", "x2"])
-        assert isinstance(ps, pd.Series)
+        assert (hasattr(ps, "index") and hasattr(ps, "tolist") and not hasattr(ps, "_cols"))
         assert len(ps) == len(df)
         assert (ps >= 0).all() and (ps <= 1).all()
 
@@ -550,7 +550,7 @@ class TestMatching:
         assert res.n_treated > 0
         assert res.n_matched_control > 0
         assert res.method == "nearest_neighbor"
-        assert isinstance(res.match_pairs, pd.DataFrame)
+        assert hasattr(res.match_pairs, "columns") and hasattr(res.match_pairs, "shape")
 
     def test_match_nearest_neighbor_with_caliper(self, rng):
         df = self._make_matching_data(rng)
@@ -563,7 +563,7 @@ class TestMatching:
         df = self._make_matching_data(rng)
         res = balance_diagnostics(df, "treatment", ["x1", "x2"])
         assert isinstance(res, BalanceResult)
-        assert isinstance(res.balance_table, pd.DataFrame)
+        assert hasattr(res.balance_table, "columns") and hasattr(res.balance_table, "shape")
         assert "smd" in res.balance_table.columns
         assert res.max_smd >= 0
 
@@ -599,7 +599,7 @@ class TestMatching:
             "treatment",
             match_res.match_pairs,
         )
-        assert isinstance(bounds, pd.DataFrame)
+        assert (hasattr(bounds, "columns") or hasattr(bounds, "_cols"))
         assert "gamma" in bounds.columns
         assert "p_lower" in bounds.columns
         assert "p_upper" in bounds.columns

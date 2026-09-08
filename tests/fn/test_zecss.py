@@ -1,6 +1,6 @@
 """Tests for morie.fn.zecss -- Spatial CUSUM aberration detection"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zecss import cusum_spatial
 

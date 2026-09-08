@@ -42,6 +42,15 @@ NULL
 
 # ---- internal helpers -----------------------------------------------------
 
+#' .frns_check_aligned
+#'
+#' A step of the frns_metrics implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param ... Passed through.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .frns_check_aligned <- function(...) {
   args <- list(...)
   lengths <- vapply(args, function(a) length(a[[2]]), integer(1))
@@ -58,6 +67,17 @@ NULL
   if (lengths[1] == 0L) stop("inputs are empty", call. = FALSE)
 }
 
+#' .frns_favorable_rates
+#'
+#' A step of the frns_metrics implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param outcome A vector; indexed elementwise.
+#' @param group Passed to \code{unique}.
+#' @param favorable Passed to \code{==}.
+#' @return The value of \code{rates}, as built in the body.
+#' @export
 .frns_favorable_rates <- function(outcome, group, favorable) {
   groups <- unique(group)
   rates <- list()
@@ -70,6 +90,17 @@ NULL
   rates
 }
 
+#' Returns list(privileged = <key>, warning = <chr or NULL>)
+#'
+#' A step of the frns_metrics implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param privileged Optional; may be \code{NULL}. Coerced to character by the body, with
+#' \code{as.character}.
+#' @param rates Iterated over elementwise, with \code{vapply}.
+#' @return A list with \code{privileged}, \code{warning}.
+#' @export
 .frns_resolve_privileged <- function(privileged, rates) {
   # Returns list(privileged = <key>, warning = <chr or NULL>).
   keys <- names(rates)
@@ -94,6 +125,18 @@ NULL
   ))
 }
 
+#' .frns_rates_from_labels
+#'
+#' A step of the frns_metrics implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param y_true A vector; indexed elementwise.
+#' @param y_pred A vector; indexed elementwise.
+#' @param group Passed to \code{unique}.
+#' @param favorable Passed to \code{==}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .frns_rates_from_labels <- function(y_true, y_pred, group, favorable) {
   groups <- unique(group)
   out <- list()
@@ -113,6 +156,17 @@ NULL
   out
 }
 
+#' Gini via the sorted-rank formula; equals sum_i sum_j |x_i-x_j| /
+#'
+#' (2 n sum x). Returns 0 for all-zero or single-element input.
+#'
+#' @param x A vector; its length is taken.
+#' @return A numeric value.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .frns_gini(x = x)
+#' res
 .frns_gini <- function(x) {
   # Gini via the sorted-rank formula; equals sum_i sum_j |x_i-x_j| /
   # (2 n sum x). Returns 0 for all-zero or single-element input.
@@ -126,6 +180,19 @@ NULL
   (2 * sum(idx * x)) / (n * total) - (n + 1) / n
 }
 
+#' The element with the largest absolute value (finite only); NA if none
+#'
+#' A step of the frns_metrics implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param values A vector; indexed elementwise.
+#' @return The value of \code{[}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .frns_worst_abs(values = x)
+#' res
 .frns_worst_abs <- function(values) {
   # The element with the largest absolute value (finite only); NA if none.
   finite <- values[is.finite(values)]
@@ -159,6 +226,24 @@ NULL
 # ---- 6. bias amplification score ------------------------------------------
 
 
+#' .morie_fairness_as_1d
+#'
+#' A step of the frns_metrics implementation. Called by
+#' \code{morie_fairness_average_odds_difference},
+#' \code{morie_fairness_bias_amplification}, \code{morie_fairness_demographic_parity} and
+#' 3 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x Coerced to vector by the body, with \code{as.vector}.
+#' @param name Passed to \code{sprintf}.
+#' @return The value of \code{arr}, as built in the body.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' txt <- c('alpha', 'beta', 'gamma', 'delta')
+#' res <- .morie_fairness_as_1d(x = x, name = txt)
+#' res
 .morie_fairness_as_1d <- function(x, name) {
   arr <- as.vector(x)
   if (length(arr) == 0L) {
@@ -167,6 +252,18 @@ NULL
   arr
 }
 
+#' .morie_fairness_check_aligned
+#'
+#' A step of the frns_metrics implementation. Called by
+#' \code{morie_fairness_average_odds_difference},
+#' \code{morie_fairness_bias_amplification}, \code{morie_fairness_demographic_parity} and
+#' 3 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param ... Passed through.
+#' @return The value of \code{for}.
+#' @export
 .morie_fairness_check_aligned <- function(...) {
   pairs <- list(...)  # list of c(name, length)
   n <- pairs[[1L]]$len
@@ -180,11 +277,35 @@ NULL
   }
 }
 
+#' Python\'s "first-seen" order; unique() in R is already first-seen
+#'
+#' A step of the frns_metrics implementation. Called by
+#' \code{.morie_fairness_favorable_rates}, \code{.morie_fairness_rates_from_labels},
+#' \code{morie_fairness_gini} and 1 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param arr Passed to \code{unique}.
+#' @return The value of \code{unique}.
+#' @export
 .morie_fairness_ordered_unique <- function(arr) {
   # Python's "first-seen" order; unique() in R is already first-seen.
   unique(arr)
 }
 
+#' .morie_fairness_favorable_rates
+#'
+#' A step of the frns_metrics implementation. Called by
+#' \code{morie_fairness_bias_amplification}, \code{morie_fairness_demographic_parity},
+#' \code{morie_fairness_disparate_impact}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param outcome A vector; indexed elementwise.
+#' @param group Passed to \code{.morie_fairness_ordered_unique}.
+#' @param favorable Passed to \code{==}.
+#' @return The value of \code{rates}, as built in the body.
+#' @export
 .morie_fairness_favorable_rates <- function(outcome, group, favorable) {
   groups <- .morie_fairness_ordered_unique(group)
   rates <- vector("list", length(groups))
@@ -199,6 +320,21 @@ NULL
   rates
 }
 
+#' .morie_fairness_resolve_privileged
+#'
+#' A step of the frns_metrics implementation. Called by
+#' \code{morie_fairness_average_odds_difference},
+#' \code{morie_fairness_bias_amplification}, \code{morie_fairness_demographic_parity} and
+#' 2 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param privileged Optional; may be \code{NULL}. Coerced to character by the body, with
+#' \code{as.character}.
+#' @param rates Iterated over elementwise, with \code{vapply}.
+#' @param warnings_env A list; the body reads \code{$w} from it.
+#' @return The value of \code{inferred}, as built in the body.
+#' @export
 .morie_fairness_resolve_privileged <- function(privileged, rates, warnings_env) {
   group_keys <- vapply(rates, function(r) as.character(r$g), character(1))
   if (!is.null(privileged)) {
@@ -219,6 +355,19 @@ NULL
   inferred
 }
 
+#' .morie_fairness_rates_from_labels
+#'
+#' A step of the frns_metrics implementation. Called by
+#' \code{morie_fairness_average_odds_difference}, \code{morie_fairness_equalized_odds}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param y_true A vector; indexed elementwise.
+#' @param y_pred A vector; indexed elementwise.
+#' @param group Passed to \code{.morie_fairness_ordered_unique}.
+#' @param favorable Passed to \code{==}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .morie_fairness_rates_from_labels <- function(y_true, y_pred, group, favorable) {
   groups <- .morie_fairness_ordered_unique(group)
   out <- vector("list", length(groups))
@@ -238,6 +387,17 @@ NULL
   out
 }
 
+#' Sorted-rank formula. Returns 0.0 for an all-zero or single-element
+#'
+#' input (no inequality defined), matching the Python helper.
+#'
+#' @param x A vector; its length is taken.
+#' @return A numeric value.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .morie_fairness_gini_core(x = x)
+#' res
 .morie_fairness_gini_core <- function(x) {
   # Sorted-rank formula. Returns 0.0 for an all-zero or single-element
   # input (no inequality defined), matching the Python helper.

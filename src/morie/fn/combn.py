@@ -37,7 +37,7 @@ def combinations_count(n: int, k: int, **kwargs) -> DescriptiveResult:
 
     result = _comb(n, k)
 
-    from scipy.special import gammaln
+    from ._sci_core import gammaln
 
     log_binom = gammaln(n + 1) - gammaln(k + 1) - gammaln(n - k + 1)
 

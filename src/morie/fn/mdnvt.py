@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -54,3 +54,7 @@ mdnvt = median_voter
 
 def cheatsheet() -> str:
     return "median_voter({}) -> Median voter theorem computation."
+
+
+# compact alias per ledger/NAMING.md
+medianvoter = median_voter

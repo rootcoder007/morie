@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -59,3 +59,7 @@ cmorw = cmor_wavelet
 
 def cheatsheet() -> str:
     return "cmor_wavelet({}) -> Complex Morlet wavelet."
+
+
+# compact alias per ledger/NAMING.md
+cmorwavelet = cmor_wavelet

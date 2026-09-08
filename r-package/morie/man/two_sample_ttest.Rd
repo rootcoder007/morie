@@ -12,6 +12,7 @@ two_sample_ttest(x, y, equal_var = TRUE, confidence = 0.95)
 \item{equal_var}{If FALSE, use Welch's correction.}
 
 \item{confidence}{Confidence level.}
+
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})
@@ -20,4 +21,8 @@ Cohen's d effect size, and combined sample size.
 }
 \description{
 Independent two-sample t-test (equal or unequal variance)
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+two_sample_ttest(V, V)
 }

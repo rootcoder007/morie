@@ -1,8 +1,8 @@
 """Tests for rgwvcor.rangayyan_wavelet_corr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgwvcor import rangayyan_wavelet_corr
+from morie.fn.bsatf import rangayyan_wavelet_corr
 
 
 def test_rgwvcor_basic():

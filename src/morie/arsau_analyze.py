@@ -35,7 +35,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.arsau_datasets import (
     arsau_load_aggregate_summary,

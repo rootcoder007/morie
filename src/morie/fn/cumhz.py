@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cumulative hazard from Kaplan-Meier survival estimates."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def cumhz(

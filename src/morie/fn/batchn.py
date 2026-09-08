@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -61,3 +61,7 @@ short = batch_norm
 
 def cheatsheet() -> str:
     return "batch_norm({}) -> Batch normalization."
+
+
+# compact alias per ledger/NAMING.md
+batchnorm = batch_norm

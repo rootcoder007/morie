@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """K-nearest neighbors spatial weights matrix."""
 
-import numpy as np
-from scipy.spatial.distance import cdist
+from . import _array_core as np
+from ._sci_core import cdist
 
 from ._containers import DescriptiveResult
 
@@ -57,3 +57,7 @@ knear_fn = knn_weights
 
 def cheatsheet() -> str:
     return "knn_weights({}) -> K-nearest neighbors spatial weights matrix."
+
+
+# compact alias per ledger/NAMING.md
+knnweights = knn_weights

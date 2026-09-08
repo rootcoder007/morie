@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -56,3 +56,7 @@ sampen = sample_entropy
 
 def cheatsheet() -> str:
     return "sample_entropy({}) -> Sample entropy."
+
+
+# compact alias per ledger/NAMING.md
+sampleentropy = sample_entropy

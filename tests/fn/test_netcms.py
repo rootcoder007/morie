@@ -1,6 +1,6 @@
 """Tests for netcms.network_psychometrics."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.netcms import network_psychometrics
 

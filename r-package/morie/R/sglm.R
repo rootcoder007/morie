@@ -4,6 +4,20 @@
 # Extracted from the sglm() optimiser closure so the non-positive-
 # -definite-covariance guard is directly unit-testable. `D` is the
 # distance matrix, `n` the sample size, `X`/`y` the design and response.
+#' Internal: spatial-GLM profile negative log-likelihood in log(phi)
+#'
+#' Extracted from the sglm() optimiser closure so the non-positive-
+#' -definite-covariance guard is directly unit-testable. `D` is the
+#' distance matrix, `n` the sample size, `X`/`y` the design and
+#' response.
+#'
+#' @param log_phi Numeric; passed to \code{exp}.
+#' @param D Numeric; combined arithmetically in the body.
+#' @param n A matrix; passed to \code{diag}.
+#' @param X Passed to \code{backsolve}.
+#' @param y Passed to \code{backsolve}.
+#' @return A numeric value.
+#' @export
 .sglm_negll <- function(log_phi, D, n, X, y) {
   phi <- exp(log_phi)
   R <- exp(-D / phi) + 1e-8 * diag(n)
@@ -20,7 +34,7 @@
   0.5 * (n * log(2 * pi * sigma2) + logdet_R + n)
 }
 
-#' Spatial GLM (Gaussian-identity case via profile ML).
+#' Spatial GLM (Gaussian-identity case via profile ML)
 #'
 #' Y = X beta + delta + eps, delta ~ GP(0, sigma2 R_phi), R_phi exponential.
 #' Profile-likelihood ML over phi; beta via GLS.

@@ -5,9 +5,9 @@ Bayesian optimization using acquisition functions.
 Uses Gaussian process surrogate with upper confidence bound or expected improvement.
 """
 
-import numpy as np
-from scipy.optimize import minimize
-from scipy.stats import norm
+from . import _array_core as np
+from ._sci_core import minimize
+from ._stats_core import norm
 
 __all__ = ["bysop"]
 
@@ -75,7 +75,7 @@ def bysop(f, bounds, n_init=10, n_iter=20, acq="ucb", kappa=2.576, full_output=F
 
     for it in range(n_iter):
         # Simple GP: use kernel trick with RBF
-        from scipy.spatial.distance import cdist
+        from ._sci_core import cdist
 
         K = np.exp(-cdist(X, X, "sqeuclidean") / (2 * 1.0))
         K += np.eye(len(X)) * 1e-6

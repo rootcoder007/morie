@@ -1,6 +1,6 @@
 """North Atlantic Oscillation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def nao_index(slp):
 
 def cheatsheet():
     return "naoIdx: North Atlantic Oscillation"
+
+
+# compact alias per ledger/NAMING.md
+naoindex = nao_index

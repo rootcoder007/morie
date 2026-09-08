@@ -1,6 +1,6 @@
 """Tests for morie.fn.nmrca -- Roll call agreement score"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nmrca import roll_call_agree
 

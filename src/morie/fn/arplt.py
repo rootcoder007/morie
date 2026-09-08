@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -50,3 +50,7 @@ arplt = plot_ar_poles_fn
 
 def cheatsheet() -> str:
     return "plot_ar_poles_fn({}) -> AR model pole-zero and spectrum plot."
+
+
+# compact alias per ledger/NAMING.md
+plotarpolesfn = plot_ar_poles_fn

@@ -1,6 +1,6 @@
 """ROC curve and AUC computation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -29,8 +29,8 @@ def roc_auc_score(y_true, y_score):
     RichResult with payload: estimate (AUC), auc, fpr, tpr, thresholds,
     n, n_positive, n_negative, method.
     """
-    from sklearn.metrics import roc_auc_score as _roc_auc
-    from sklearn.metrics import roc_curve
+    from ._ml_core import roc_auc_score as _roc_auc
+    from ._ml_core import roc_curve
 
     yt = np.asarray(y_true).ravel()
     ys = np.asarray(y_score, dtype=float).ravel()
@@ -72,3 +72,7 @@ if __name__ == "__main__":
     print("n_positive:", r.n_positive, "  n_negative:", r.n_negative)
     print("FPR[0:5]:", r.fpr[:5])
     print("TPR[0:5]:", r.tpr[:5])
+
+
+# compact alias per ledger/NAMING.md
+rocaucscore = roc_auc_score

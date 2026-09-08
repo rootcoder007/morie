@@ -14,7 +14,7 @@ def bb_sum_squares(Z) -> DescriptiveResult:
 
     .. epigraph:: It is not what happens to you, but how you react, that matters. -- Epictetus
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     grand_mean = np.nanmean(Z)
@@ -31,3 +31,7 @@ bbss = bb_sum_squares
 
 def cheatsheet() -> str:
     return "bb_sum_squares({}) -> Blackbox total sum of squares."
+
+
+# compact alias per ledger/NAMING.md
+bbsumsquares = bb_sum_squares

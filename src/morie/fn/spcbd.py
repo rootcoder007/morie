@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -53,3 +53,7 @@ spcbd = spectral_bound
 
 def cheatsheet() -> str:
     return "spectral_bound({}) -> Spectral containment bandwidth."
+
+
+# compact alias per ledger/NAMING.md
+spectralbound = spectral_bound

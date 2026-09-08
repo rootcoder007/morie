@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Survey-weighted regression with robust (sandwich) standard errors."""
 
-import numpy as np
-from scipy.stats import t as t_dist
+from . import _array_core as np
+from ._stats_core import t as t_dist
 
 from morie.fn._containers import RegressionResult
 
@@ -105,3 +105,7 @@ def rey_sv(
 
 def cheatsheet() -> str:
     return "rey_sv({}) -> Survey-weighted regression with robust (sandwich) standard e"
+
+
+# compact alias per ledger/NAMING.md
+reysv = rey_sv

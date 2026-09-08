@@ -10,10 +10,15 @@ variance_ratio(x, y, confidence = 0.95)
 \item{x, y}{Numeric vectors (NA dropped).}
 
 \item{confidence}{Confidence level for CI. Default 0.95.}
+
 }
 \value{
 A \code{morie_effect_size}.
 }
 \description{
 Variance ratio (F-test for equality of variances)
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+variance_ratio(V, V)
 }

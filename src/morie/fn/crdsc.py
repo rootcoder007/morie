@@ -21,7 +21,7 @@ def scale_coordinates(eigvecs, eigvals):
     DescriptiveResult
         value = coordinate matrix Z (n x p).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     V = np.asarray(eigvecs, dtype=float)
     L = np.asarray(eigvals, dtype=float)

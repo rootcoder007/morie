@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -59,3 +59,7 @@ neter = erdos_renyi
 
 def cheatsheet() -> str:
     return "erdos_renyi({}) -> Erdos-Renyi random graph generator."
+
+
+# compact alias per ledger/NAMING.md
+erdosrenyi = erdos_renyi

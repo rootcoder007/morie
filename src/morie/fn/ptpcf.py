@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pair correlation function g(r)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ pair = pair_corr_fn
 
 def cheatsheet() -> str:
     return "pair_corr_fn({}) -> Pair correlation function g(r)"
+
+
+# compact alias per ledger/NAMING.md
+paircorrfn = pair_corr_fn

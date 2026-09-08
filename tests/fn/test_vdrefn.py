@@ -1,6 +1,6 @@
 """Tests for vdrefn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.vdrefn import vdrefn

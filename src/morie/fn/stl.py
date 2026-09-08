@@ -1,6 +1,6 @@
 """STL decomposition (seasonal, trend, residual)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -54,3 +54,7 @@ stl = stl_decompose
 
 def cheatsheet() -> str:
     return "stl_decompose({}) -> STL decomposition (seasonal, trend, residual)."
+
+
+# compact alias per ledger/NAMING.md
+stldecompose = stl_decompose

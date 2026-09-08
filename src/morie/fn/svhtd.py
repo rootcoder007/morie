@@ -1,6 +1,6 @@
 """Hotelling-Downs convergence equilibrium"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ hote = hotelling_downs
 
 def cheatsheet() -> str:
     return "hotelling_downs({}) -> Hotelling-Downs convergence equilibrium"
+
+
+# compact alias per ledger/NAMING.md
+hotellingdowns = hotelling_downs

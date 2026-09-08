@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -81,3 +81,7 @@ rcdkm = recidivism_km
 
 def cheatsheet() -> str:
     return "recidivism_km({}) -> Kaplan-Meier survival curve for recidivism."
+
+
+# compact alias per ledger/NAMING.md
+recidivismkm = recidivism_km

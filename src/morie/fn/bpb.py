@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -43,3 +43,7 @@ def cheatsheet() -> str:
 
 
 bpb = bits_per_byte
+
+
+# compact alias per ledger/NAMING.md
+bitsperbyte = bits_per_byte

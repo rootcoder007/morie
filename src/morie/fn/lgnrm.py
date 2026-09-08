@@ -8,7 +8,7 @@ of Failure Time Data, 2nd ed. Wiley.
 
 __all__ = ["lgnrm"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def lgnrm(
@@ -72,8 +72,8 @@ def lgnrm(
     Kalbfleisch, J.D. & Prentice, R.L. (2002). The Statistical Analysis of
     Failure Time Data (2nd ed.). Wiley.
     """
-    from scipy import optimize as _opt
-    from scipy import stats as _stats
+    from ._sci_core import optimize as _opt
+    from . import _stats_core as _stats
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)
@@ -165,7 +165,7 @@ def lgnrm(
 
         # Hessian via finite differences for SE
         try:
-            from scipy.optimize import approx_fprime
+            from ._sci_core import approx_fprime
 
             eps = 1e-5
             hess = np.zeros((p_full, p_full))

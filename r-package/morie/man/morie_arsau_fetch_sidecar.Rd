@@ -2,7 +2,7 @@
 % Please edit documentation in R/arsau_datasets.R
 \name{morie_arsau_fetch_sidecar}
 \alias{morie_arsau_fetch_sidecar}
-\title{Fetch the CKAN sidecar JSON for a registry entry.}
+\title{Fetch the CKAN sidecar JSON for a registry entry}
 \usage{
 morie_arsau_fetch_sidecar(kind, year, limit = 5000L, timeout_sec = 30L)
 }
@@ -23,6 +23,11 @@ A list with \code{fields} and \code{records}, ready for
 \description{
 Optional helper.  Requires \pkg{httr2} (and \pkg{jsonlite} via the
 existing \code{\link{morie_arsau_read_sidecar}} contract).
+}
+\examples{
+\dontrun{
+sidecar <- morie_arsau_fetch_sidecar("assault", 2020L)
+}
 }
 \references{
 Ontario Data Catalogue CKAN API.

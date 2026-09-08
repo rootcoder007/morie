@@ -1,8 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Brunner-Munzel test for stochastic equality."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import DescriptiveResult
 
@@ -67,3 +67,7 @@ def brunner_munzel(x, y):
 
 def cheatsheet() -> str:
     return "brunner_munzel({}) -> Brunner-Munzel test for stochastic equality."
+
+
+# compact alias per ledger/NAMING.md
+brunnermunzel = brunner_munzel

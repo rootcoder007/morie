@@ -3,8 +3,8 @@
 
 from typing import Union
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -44,3 +44,7 @@ rho = spearman_rho
 
 def cheatsheet() -> str:
     return "spearman_rho({}) -> Spearman rank correlation coefficient (rho)."
+
+
+# compact alias per ledger/NAMING.md
+spearmanrho = spearman_rho

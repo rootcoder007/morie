@@ -1,6 +1,6 @@
 """Tests for prtMK.prewhitening_mk."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.prtMK import prewhitening_mk
 

@@ -30,7 +30,7 @@
 #' @param offline If `TRUE` (default), reads the bundled CSV.
 #' @return A `data.frame` with `soda_id`, `title`, `type`,
 #'   `search_keyword`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' d <- morie_datasets_calgary_open_crime_adjacent_layers(offline = TRUE)
 #' head(d)
 #' @export
@@ -63,6 +63,15 @@ morie_datasets_ottawa_open_crime_adjacent_layers <- function(offline = TRUE) {
                                 offline)
 }
 
+#' .morie_canadian_cat_fixture
+#'
+#' Part of the datasets_canadian_cities implementation; see the file
+#' header for the source it follows.
+#'
+#' @param fname Passed to \code{sprintf}.
+#' @param offline A flag; the body branches on it.
+#' @return The value of \code{utils::read.csv}.
+#' @export
 .morie_canadian_cat_fixture <- function(fname, offline) {
   if (!isTRUE(offline)) {
     stop(sprintf(paste0(
@@ -94,7 +103,7 @@ morie_datasets_ottawa_open_crime_adjacent_layers <- function(offline = TRUE) {
 #' @param max_features Optional row cap.
 #' @return A `data.frame` with `community`, `category`, `crime_count`,
 #'   `year`, `month`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_calgary_community_crime_stats(offline = TRUE)
 #' head(df)
 #' @export
@@ -155,6 +164,10 @@ morie_datasets_calgary_fire_stations <- function(offline = TRUE,
 #' @param limit Page size (default 1000).
 #' @return A `data.frame` of records.
 #' @export
+#' @examples
+#' \dontrun{
+#' df <- morie_datasets_calgary_socrata_by_id("848s-4m4z", limit = 100L)
+#' }
 morie_datasets_calgary_socrata_by_id <- function(soda_id,
                                                    limit = 1000L) {
   url <- sprintf("%s/resource/%s.json?$limit=%d",
@@ -232,6 +245,14 @@ morie_datasets_edmonton_socrata_by_id <- function(soda_id,
 # Helpers
 # ---------------------------------------------------------------------------
 
+#' .morie_canadian_fixture
+#'
+#' Part of the datasets_canadian_cities implementation; see the file
+#' header for the source it follows.
+#'
+#' @param fname Passed to \code{system.file}.
+#' @return The value of \code{utils::read.csv}.
+#' @export
 .morie_canadian_fixture <- function(fname) {
   path <- system.file("extdata", fname, package = "morie")
   if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {

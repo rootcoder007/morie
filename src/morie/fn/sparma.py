@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -143,3 +143,7 @@ sparma = spatial_arma
 
 def cheatsheet() -> str:
     return "spatial_arma({}) -> Spatial ARMA model for areal time series."
+
+
+# compact alias per ledger/NAMING.md
+spatialarma = spatial_arma

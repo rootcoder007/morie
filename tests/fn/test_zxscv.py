@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxscv -- Spatial LOO cross-validation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxscv import spatial_cv_loo
 

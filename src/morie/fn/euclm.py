@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -34,3 +34,7 @@ euclm = euclidean_model
 
 def cheatsheet() -> str:
     return "euclidean_model({}) -> Euclidean spatial voting model."
+
+
+# compact alias per ledger/NAMING.md
+euclideanmodel = euclidean_model

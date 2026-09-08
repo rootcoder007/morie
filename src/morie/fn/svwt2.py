@@ -1,6 +1,6 @@
 """Wittman model in 2D space"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ witt = wittman_2d
 
 def cheatsheet() -> str:
     return "wittman_2d({}) -> Wittman model in 2D space"
+
+
+# compact alias per ledger/NAMING.md
+wittman2d = wittman_2d

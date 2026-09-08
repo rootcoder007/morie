@@ -1,6 +1,6 @@
 """Tests for morie.fn.nmocc -- OC classification rate"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nmocc import oc_classify
 

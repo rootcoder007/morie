@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats as sp
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as sp
 
 from morie.fn._containers import RlbRes
 
@@ -16,6 +16,14 @@ def crba(
     ci: float = 0.95,
 ) -> RlbRes:
     """Cronbach's coefficient alpha with Feldt CI.
+
+    References
+    ----------
+    Cronbach, L. J. (1951). Coefficient alpha and the internal
+    structure of tests. *Psychometrika*, 16(3), 297-334.
+    Feldt, L. S. (1965). The approximate sampling distribution of
+    Kuder-Richardson reliability coefficient twenty. *Psychometrika*,
+    30(3), 357-370.
 
     Parameters
     ----------

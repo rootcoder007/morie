@@ -1,6 +1,6 @@
 """Test spectral_edge_freq (spedf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.spedf import spectral_edge_freq, spedf

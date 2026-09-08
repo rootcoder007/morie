@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 
@@ -75,3 +75,7 @@ swtch = encode_labels
 
 def cheatsheet() -> str:
     return "encode_labels({}) -> Label / one-hot encoding."
+
+
+# compact alias per ledger/NAMING.md
+encodelabels = encode_labels

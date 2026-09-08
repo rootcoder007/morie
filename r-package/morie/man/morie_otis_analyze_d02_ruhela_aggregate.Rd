@@ -3,7 +3,7 @@
 \name{morie_otis_analyze_d02_ruhela_aggregate}
 \alias{morie_otis_analyze_d02_ruhela_aggregate}
 \alias{morie_otis_analyze_d02_mrm_aggregate}
-\title{d02 aggregate Ruhela: Female -> custodial deaths.}
+\title{d02 aggregate Ruhela: Female -> custodial deaths}
 \usage{
 morie_otis_analyze_d02_ruhela_aggregate(data, out_dir = NULL)
 
@@ -18,10 +18,12 @@ morie_otis_analyze_d02_mrm_aggregate(data, out_dir = NULL)
 \code{morie_otis_analysis_result}.
 }
 \description{
-d02 aggregate Ruhela: Female -> custodial deaths.
+d02 aggregate Ruhela: Female -> custodial deaths
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_d02 <- morie_synth_otis("d02", n = 120L, seed = 1L)
 morie_otis_analyze_d02_ruhela_aggregate(otis_d02)
+}
 }

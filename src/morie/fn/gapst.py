@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -44,7 +44,7 @@ def gap_statistic(
     max_k = min(max_k, n - 1)
 
     def _kmeans_wk(data: np.ndarray, k: int) -> float:
-        from scipy.cluster.vq import kmeans2
+        from ._sci_core import kmeans2
 
         centroids, lab = kmeans2(data, k, minit="points", seed=rng.integers(2**31))
         wk = 0.0
@@ -102,3 +102,7 @@ gapst = gap_statistic
 
 def cheatsheet() -> str:
     return "gap_statistic({}) -> Gap statistic for optimal k."
+
+
+# compact alias per ledger/NAMING.md
+gapstatistic = gap_statistic

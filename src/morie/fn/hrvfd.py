@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -19,7 +19,7 @@ def hrv_freq_domain(
     :param fs_interp: Interpolation frequency for uniform resampling (default 4 Hz).
     :return: DescriptiveResult with power bands in ``extra``.
     """
-    from scipy.signal import welch
+    from ._signal_core import welch
 
     rr = np.asarray(rr, dtype=float).ravel()
     if len(rr) < 10:
@@ -65,3 +65,7 @@ hrvfd = hrv_freq_domain
 
 def cheatsheet() -> str:
     return "hrv_freq_domain({}) -> HRV frequency-domain metrics."
+
+
+# compact alias per ledger/NAMING.md
+hrvfreqdomain = hrv_freq_domain

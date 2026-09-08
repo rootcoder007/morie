@@ -1,6 +1,6 @@
 """Tests for total information content."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ticmp import ticmp, total_information_content
 

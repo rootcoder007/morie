@@ -1,22 +1,11 @@
-"""Tests for hmbpet.geron_bpe_tokenizer."""
+"""Tests for hmbpet (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.hmbpet import geron_bpe_tokenizer
-
-
-def test_hmbpet_basic():
-    """Test basic functionality."""
-    corpus = np.random.default_rng(42).normal(0, 1, 100)
-    vocab_size = 100
-    result = geron_bpe_tokenizer(corpus, vocab_size)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.hmbpet as mod
 
 
-def test_hmbpet_edge():
-    """Test edge cases."""
-    corpus = np.random.default_rng(42).normal(0, 1, 100)
-    vocab_size = 100
-    result = geron_bpe_tokenizer(corpus, vocab_size)
-    assert isinstance(result, dict)
+def test_hmbpet_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

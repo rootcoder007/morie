@@ -1,6 +1,6 @@
 """Tests for sgtlpi.sgt_laplacian_pseudoinverse."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtlpi import sgt_laplacian_pseudoinverse
 

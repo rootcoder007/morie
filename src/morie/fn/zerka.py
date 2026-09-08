@@ -1,6 +1,6 @@
 """Adaptive bandwidth relative risk"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ risk = risk_adaptive_bw
 
 def cheatsheet() -> str:
     return "risk_adaptive_bw({}) -> Adaptive bandwidth relative risk"
+
+
+# compact alias per ledger/NAMING.md
+riskadaptivebw = risk_adaptive_bw

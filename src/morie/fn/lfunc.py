@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ripley's L function for spatial point patterns."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 from .kfunc import ripley_k
@@ -43,3 +43,7 @@ lfunc = ripley_l
 
 def cheatsheet() -> str:
     return "ripley_l({}) -> Ripley's L function for spatial point patterns."
+
+
+# compact alias per ledger/NAMING.md
+ripleyl = ripley_l

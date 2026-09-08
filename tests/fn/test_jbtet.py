@@ -1,6 +1,6 @@
 """Tests for jarque_bera_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.jbtet import jarque_bera_test

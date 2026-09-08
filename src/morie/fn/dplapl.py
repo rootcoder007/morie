@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -89,3 +89,7 @@ dplapl = dp_laplace
 
 def cheatsheet() -> str:
     return "dp_laplace({}) -> Differential privacy (Laplace mechanism)."
+
+
+# compact alias per ledger/NAMING.md
+dplaplace = dp_laplace

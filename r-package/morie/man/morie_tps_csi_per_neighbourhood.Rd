@@ -13,7 +13,7 @@ morie_tps_csi_per_neighbourhood(
 \arguments{
 \item{counts_per_hood}{Long data.frame (columns \code{HOOD_158},
 \code{category}, \code{count}) or nested list
-\code{[[hood]][[category]] = count}.}
+\code{\[\[hood\]\]\[\[category\]\] = count}.}
 
 \item{variant}{One of "total" or "violent".}
 
@@ -29,4 +29,12 @@ in here because TPS open data does not ship a per-ward population
 table; callers are expected to merge in the City of Toronto Open
 Data NeighbourhoodCrimeRates per-ward population for per-capita
 rates.  Returns the un-normalised weighted sum + total count.
+}
+\examples{
+counts <- data.frame(
+  HOOD_158 = c("001", "001", "002", "002", "003", "003"),
+  category = c("Assault", "Homicide", "Assault", "Homicide",
+               "Assault", "Homicide"),
+  count = c(60, 2, 45, 1, 80, 3))
+morie_tps_csi_per_neighbourhood(counts, variant = "total")
 }

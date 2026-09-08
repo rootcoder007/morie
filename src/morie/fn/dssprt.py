@@ -1,6 +1,6 @@
 """DSSP secondary structure assignment."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def dssp_secondary(coords):
 
 def cheatsheet():
     return "dssprt: DSSP secondary structure assignment"
+
+
+# compact alias per ledger/NAMING.md
+dsspsecondary = dssp_secondary
