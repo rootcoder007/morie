@@ -77,6 +77,17 @@ test = [
 interactive = [
   "textual>=0.60",
 ]
+# Restored after the 1.2.0 merge: the branch's leaner extras table replaced
+# main's, which silently dropped `docs`. .github/workflows/pages.yml installs
+# ".[docs]", so the Pages build failed with "sphinx-build: command not found"
+# -- pip treats an undefined extra as nothing to install rather than an error.
+docs = [
+  "sphinx>=7.0",
+  "sphinx-sitemap",
+  "sphinxext-opengraph",
+  "myst-parser",
+  "sphinxcontrib-mermaid",
+]
 
 [project.urls]
 Homepage      = "https://rootcoder007.github.io/morie/"
