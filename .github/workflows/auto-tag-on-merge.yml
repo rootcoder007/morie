@@ -20,6 +20,12 @@ env:
 # Manual override: put [skip auto-tag] in the merge commit, or use
 # workflow_dispatch with an explicit version.
 
+# NOTE: this fires on ANY push to main that touches pyproject.toml, not
+# only on a version bump -- a one-line edit to an optional-dependency
+# table is enough. The `check` job is what decides whether to tag, and
+# [skip auto-tag] in the commit message is the only brake. A 1.2.0 tag
+# was seconds from firing the publish chain on 2026-09-08 because a
+# follow-up fix to pyproject.toml carried no such marker.
 on:
   push:
     branches: [main]
