@@ -2914,7 +2914,26 @@ arccos = _uf(_math.acos)
 sign = _uf(lambda v: 0.0 if v == 0 else (1.0 if v > 0 else -1.0))
 floor = _uf(_math.floor)
 ceil = _uf(_math.ceil)
-round = _uf(lambda v: float(_bi.round(v)))  # noqa: A001
+_round0 = _uf(lambda v: float(_bi.round(v)))
+
+
+def round(x, decimals=0):  # noqa: A001
+    """numpy.round: round to `decimals` places, half to even.
+
+    The bare _uf wrapper took the array only, so np.round(a, 3) raised
+    "wrapped() takes 1 positional argument but 2 were given" -- the
+    second argument is part of numpy's signature and callers use it.
+    Python's builtin round() is half-to-even like numpy's, so the
+    tie-breaking matches; scaling by a power of ten is how numpy
+    implements the decimals argument too.
+    """
+    if decimals == 0:
+        return _round0(x)
+    f = 10.0 ** decimals
+    return _uf(lambda v: float(_bi.round(v * f)) / f)(x)
+
+
+around = round
 log2 = _uf(_math.log2)
 log10 = _uf(_math.log10)
 expm1 = _uf(_math.expm1)
