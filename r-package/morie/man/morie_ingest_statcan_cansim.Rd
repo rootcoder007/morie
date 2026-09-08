@@ -39,7 +39,7 @@ passed to \code{cansim::set_cansim_api_key()} so authenticated
 rate limits apply.
 }
 \examples{
-\dontrun{
+\donttest{
 # Requires the 'cansim' package and network access.
 df <- morie_ingest_statcan_cansim("35-10-0177")
 head(df)

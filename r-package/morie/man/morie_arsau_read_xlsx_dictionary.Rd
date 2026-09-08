@@ -28,7 +28,7 @@ dependency.
 }
 }
 \examples{
-\dontrun{
+\donttest{
 dict <- morie_arsau_read_xlsx_dictionary(tempdir())
 }
 }

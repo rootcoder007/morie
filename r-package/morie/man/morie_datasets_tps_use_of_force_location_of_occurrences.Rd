@@ -52,7 +52,7 @@ division level.
 Tags: RBDC; race; race based data
 }
 \examples{
-\dontrun{
+\donttest{
 morie_datasets_tps_use_of_force_location_of_occurrences()
 }
 }

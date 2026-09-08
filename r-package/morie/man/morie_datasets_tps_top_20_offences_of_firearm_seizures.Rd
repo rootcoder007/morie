@@ -52,7 +52,7 @@ volume, for occurrences linked to a firearm seizure.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Firearms
 }
 \examples{
-\dontrun{
+\donttest{
 morie_datasets_tps_top_20_offences_of_firearm_seizures()
 }
 }

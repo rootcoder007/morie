@@ -33,5 +33,5 @@ contains \code{title}, \code{notes}, \code{resources}, etc. -
 resources are the individual downloadable files in the package.
 }
 \examples{
-\dontrun{try(morie_ingest_ckan_package_show("https://open.canada.ca/data", "some-package-id"))}
+\donttest{try(morie_ingest_ckan_package_show("https://open.canada.ca/data", "some-package-id"))}
 }

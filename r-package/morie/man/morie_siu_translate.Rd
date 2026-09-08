@@ -99,7 +99,7 @@ fine-tuned for translation. Falls back to whatever model
 \code{OLLAMA_MODEL} points at.
 }
 \examples{
-\dontrun{
+\donttest{
 Sys.setenv(
   OLLAMA_HOST = "http://localhost:11434",
   OLLAMA_MODEL = "translategemma:latest"

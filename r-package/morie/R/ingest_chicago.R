@@ -182,7 +182,7 @@ morie_ingest_chicago_resources <- function() {
 #' @param user_agent,timeout Standard request knobs.
 #' @return A base R \code{data.frame}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Chicago crimes (schema verified 2026-07: `year` is a real column)
 #' df <- try(morie_ingest_chicago_socrata(
 #'   "https://data.cityofchicago.org/resource/ijzp-q8t2.json",
@@ -265,7 +265,7 @@ morie_ingest_chicago_socrata <- function(resource_url,
 #' @param user_agent,timeout Standard request knobs.
 #' @return A base R \code{data.frame}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' df <- morie_ingest_chicago_crime(year = 2024, max_features = 10000L)
 #' head(df)
 #' }
@@ -326,7 +326,7 @@ morie_ingest_chicago_crime <- function(year = NULL,
 #' @seealso \code{\link{morie_ingest_chicago_crime}},
 #'   \code{\link{morie_ingest_bigquery_table}}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' @export
 morie_ingest_chicago_crime_bigquery <- function(where = NULL,
                                                 year = NULL,

@@ -53,7 +53,7 @@ neighbourhood.
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Tickets
 }
 \examples{
-\dontrun{
+\donttest{
 morie_datasets_tps_tickets_issued()
 }
 }

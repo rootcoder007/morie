@@ -432,7 +432,7 @@ morie_datasets_tps_major_crime <- function(year = NULL,
 #' @inheritParams morie_datasets_tps_major_crime
 #' @return A `data.frame`.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' res <- try(morie_datasets_tps_shootings(year = 2024, max_features = 5L))
 #' if (!inherits(res, "try-error")) head(res)
 #' }
@@ -450,7 +450,7 @@ morie_datasets_tps_shootings <- function(year = NULL, max_features = NULL) {
 #' @inheritParams morie_datasets_tps_major_crime
 #' @return A `data.frame`.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' res <- try(morie_datasets_tps_homicide(year = 2024, max_features = 5L))
 #' if (!inherits(res, "try-error")) head(res)
 #' }
@@ -611,7 +611,7 @@ morie_datasets_otis_a01 <- function(offline = TRUE, ...) {
 #'
 #' @return A `data.frame` with columns `case_number`, `url`, `posted_date`.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' reports <- try(morie_datasets_siu_director_reports())
 #' if (!inherits(reports, "try-error")) head(reports)
 #' }
@@ -1221,7 +1221,7 @@ morie_datasets_nyc_stop_and_frisk <- function(year = NULL,
 #' @param billing_project GCP project to bill; `NULL` uses ADC-discovered.
 #' @return A `data.frame`.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Requires bigrquery, Google Cloud credentials, and a billing project.
 #' df <- morie_datasets_bigquery("bigquery-public-data", "chicago_crime",
 #'                               "crime", where = "year = 2024",
@@ -1260,7 +1260,7 @@ morie_datasets_bigquery <- function(project, dataset, table,
 #' @param rows Integer; max packages to return (default 50).
 #' @return A `data.frame` of package metadata.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' out <- try(morie_datasets_ckan_search(
 #'   portal = "https://open.canada.ca/data",
 #'   query = "policing", rows = 3L))
@@ -1286,7 +1286,7 @@ morie_datasets_ckan_search <- function(portal, query, rows = 50L) {
 #' @param package_id Character; CKAN package id or slug.
 #' @return Named list mapping `resource_name -> data.frame`.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' res <- try(morie_datasets_ckan_package("https://open.canada.ca/data",
 #'                                        "public-safety-canada-grants-and-contributions"))
 #' if (!inherits(res, "try-error")) str(res, max.level = 1)
