@@ -108,7 +108,7 @@
 #' @param progress Logical; print progress messages.
 #' @return Path to the written \code{SIU.csv}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Network: parses the full Ontario SIU corpus (~15-25 min at the
 #' # default polite rate of 4 RPS).
 #' csv <- morie_fetch_siu(cache_dir = tempdir())
@@ -825,7 +825,7 @@ morie_siu_record_correction <- function(case_number, field,
 #' @return Invisibly, a data frame of the full sweep (every probed drid,
 #'   including misses), parallel to what was written to \code{out_path}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Network: refreshes the manifest by probing the SIU site
 #' # (~25-40 min at the default polite rate of 4 RPS for ~6000 ids).
 #' df <- morie_siu_refresh_manifest(out_path = tempfile(fileext = ".csv.gz"))
@@ -972,7 +972,7 @@ morie_siu_refresh_manifest <- function(
 #'   \code{report_html}, \code{news_html}, \code{report_text}
 #'   (HTML-stripped plain text of the report) and \code{news_text}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' a <- morie_siu_audit_case(
 #'   "17-OVI-201",
 #'   cache_dir = file.path(tempdir(), "morie", "siu")
@@ -1131,7 +1131,7 @@ morie_siu_audit_case <- function(case_number,
 #'   parser and external disagree, the \code{html_excerpt} is the
 #'   tie-breaker.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Caller supplies their own external table; nothing about the
 #' # mapping or the file format is canonical to morie.
 #' external <- data.frame(case_id = "17-OVI-201", officers = 1L)
@@ -1753,7 +1753,7 @@ morie_siu_compare <- function(case_number, external,
 #'   field the model could not extract is the empty string
 #'   (matching the C++ parser's convention).
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' Sys.setenv(GOOGLE_API_KEY = "your-gemini-key")
 #' r <- morie_siu_llm_extract("17-OVI-201", model = "gemini")
 #' # Diff parser vs LLM against the HTML:
@@ -1875,7 +1875,7 @@ morie_siu_llm_extract <- function(case_number, model = c("ollama", "gemini"),
 #'   \code{"agree"} / \code{"disagree"} / \code{"unclear"}), and
 #'   \code{reason} (a short sentence pointing to the report passage).
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' Sys.setenv(GOOGLE_API_KEY = "your-gemini-key")
 #' a <- morie_siu_anomaly_check("17-OVI-201", model = "gemini")
 #' subset(a, verdict == "disagree")
@@ -2048,7 +2048,7 @@ morie_siu_anomaly_check <- function(case_number,
 #'   string of \code{field:reason} pairs). Ordered descending by
 #'   \code{issues_count}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' csv <- morie_fetch_siu(cache_dir = tempdir(), cache_html = TRUE)
 #' sanity <- morie_siu_sanity_check(csv)
 #' head(sanity, 10) # worst 10 rows -- inspect against HTML
@@ -2228,7 +2228,7 @@ morie_siu_sanity_check <- function(df) {
 #' @return Invisibly, a data frame of newly-recorded
 #'   (case_number, field, verified_value) translations.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' Sys.setenv(
 #'   OLLAMA_HOST = "http://localhost:11434",
 #'   OLLAMA_MODEL = "translategemma:latest"
@@ -2498,7 +2498,7 @@ morie_siu_translate_fr_to_en <- function(
 #'   most-broken fields land at the top. The \code{"examples"}
 #'   attribute holds nested data frames of flagged cases per field.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' Sys.setenv(
 #'   OLLAMA_HOST = "http://localhost:11434",
 #'   OLLAMA_MODEL = "gemma3:4b"

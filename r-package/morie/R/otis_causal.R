@@ -1000,7 +1000,7 @@ morie_otis_make_pair_alert_to_volatility_all <- function(df) {
 #'   \code{morie_otis_make_pair_alert_to_volatility_ruhela()}.
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   morie_otis_make_pair_alert_to_volatility_a01()
 #' }
 morie_otis_make_pair_alert_to_volatility_a01 <- function(df = NULL) {

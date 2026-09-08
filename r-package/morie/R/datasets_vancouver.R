@@ -102,7 +102,7 @@ morie_datasets_vancouver_opendata_layers <- function(offline = TRUE,
 #'
 #' @name vancouver_crime_adjacent
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' morie_datasets_vancouver_graffiti()
 #' }
 NULL
@@ -354,7 +354,7 @@ morie_datasets_vancouver_public_art <- function(offline = TRUE,
 #'   `"csv"` (`/exports/csv` endpoint, no row limit).
 #' @return A `data.frame` of records.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' df <- morie_datasets_vancouver_opendata_by_id("non-market-housing",
 #'                                                  limit = 50)
 #' nrow(df)

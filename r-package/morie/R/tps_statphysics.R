@@ -462,7 +462,7 @@ morie_tps_load_tps <- function(name, format = "geojson",
 #'   model of criminal behavior. \emph{M3AS} 18(supp01): 1249-1267.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   rr <- morie_tps_sdb_reaction_diffusion(
 #'     "Assault", sample_rows = 5000, n_steps = 200, save_fig = FALSE
 #'   )
@@ -628,7 +628,7 @@ morie_tps_sdb_reaction_diffusion <- function(category = "Assault",
 #'   laws of human travel. \emph{Nature} 439: 462-465.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   rr <- morie_tps_levy_flight_alpha("Assault", save_fig = FALSE)
 #'   print(rr$summary_lines$alpha)
 #' }
@@ -764,7 +764,7 @@ morie_tps_levy_flight_alpha <- function(category = "Assault",
 #'   cities. \emph{PNAS} 104: 7301-7306.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   rr <- morie_tps_urban_scaling_beta("Assault", year = 2024,
 #'                                       save_fig = FALSE)
 #'   print(rr$summary_lines)
@@ -898,7 +898,7 @@ morie_tps_urban_scaling_beta <- function(category = "Assault",
 #'   crime: A review. \emph{Physics of Life Reviews} 12: sec. 3.4.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   rr <- morie_tps_lotka_volterra_police_crime("Assault",
 #'                                                 save_fig = FALSE)
 #'   print(rr$summary_lines)
@@ -1017,7 +1017,7 @@ morie_tps_lotka_volterra_police_crime <- function(category = "Assault",
 #'   (2008). M3AS 18(supp01): 1249-1267.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   rr <- morie_tps_sdb_turing_demo(n = 32L, n_steps = 300L,
 #'                                     save_fig = FALSE)
 #'   print(rr$summary_lines$SteadySpikes)
@@ -1121,7 +1121,7 @@ morie_tps_sdb_turing_demo <- function(eta = 0.20, omega = 0.033,
 #'   but not too hard. \emph{New Journal of Physics} 12: 083005.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   rr <- morie_tps_inspection_game_phase(
 #'     n_temptations = 8L, n_costs = 8L, n_steps = 120L,
 #'     save_fig = FALSE)
@@ -1226,7 +1226,7 @@ morie_tps_inspection_game_phase <- function(n_temptations = 20L,
 #'   \emph{Trends in Organized Crime} 22: 274-297.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   rr <- morie_tps_criminal_network_graph("Assault",
 #'                                            top_n_premises = 10L,
 #'                                            save_fig = FALSE)
@@ -1352,7 +1352,7 @@ morie_tps_criminal_network_graph <- function(category = "Assault",
 #'   Reviews} 12: 1-21.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   res <- morie_tps_statphysics_analyze_all(c("Assault", "Robbery"),
 #'                                              save_fig = FALSE)
 #' }

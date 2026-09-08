@@ -51,7 +51,7 @@ Toronto Police Service dataset.
 Tags: Budget; Toronto Police Service; TPS
 }
 \examples{
-\dontrun{
+\donttest{
 morie_datasets_tps_budget_by_command()
 }
 }
