@@ -81,7 +81,7 @@ morie_baynav <- function(u, w, b, value, support, eps,
        "directly")
 }
 
-#' Project \code{u} so that \code{u'w >= -1}
+#' Project \code{u} so that \code{u\'w >= -1}
 #'
 #' Outside this region the planar flow is not invertible and the
 #' change-of-variables formula is simply wrong, so the reported bound
@@ -109,10 +109,10 @@ enforce_invertibility <- function(u, w) {
        note = "u'w >= -1 is required for invertibility")
 }
 
-#' Planar flow \code{z + u*tanh(w'z + b)} with its log-determinant
+#' Planar flow \code{z + u*tanh(w\'z + b)} with its log-determinant
 #'
 #' The Jacobian is rank-one, so the matrix determinant lemma gives
-#' \code{|1 + u'psi(z)|} in O(d) rather than O(d^3).
+#' \code{|1 + u\'psi(z)|} in O(d) rather than O(d^3).
 #'
 #' @param z,u,w Numeric vectors of equal length.
 #' @param b Numeric scalar.
@@ -208,7 +208,7 @@ transform_to_real <- function(value, support = "positive", eps = 1e-10) {
 
 #' Monte Carlo ELBO
 #'
-#' \code{E_q\[log p(x,z) - log q(z)\]}. The common yardstick: both
+#' \code{E_q[log p(x,z) - log q(z)]}. The common yardstick: both
 #' approaches optimise it, so a deeper flow must not lower it. The
 #' variance uses the (n-1) denominator so both arms agree to the
 #' last bit when the same samples are passed in.

@@ -1803,7 +1803,7 @@ HammingW <- function(N) {
        method = "Rangayyan (2024) Section 3.4 (Hamming window)")
 }
 
-#' W(n) = 0.5\[1 - cos(2 pi n/(N-1))\].  Reaches exactly zero at both
+#' W(n) = 0.5[1 - cos(2 pi n/(N-1))].  Reaches exactly zero at both
 #' ends,
 #'
 #' so overlapped Hann windows add to a constant at 50 per cent overlap

@@ -1,3 +1,24 @@
+# morie 1.2.2 - 2026-09-08
+
+## The Rd manual builds again
+
+The same Rd defects fixed in rmorie 1.2.2 were present here, and stopped
+`R CMD Rd2pdf` from producing a manual:
+
+* An apostrophe inside `\code{}` opens an R-style quoted string in Rd, so
+  a transpose or a derivative swallowed the closing brace. 90 spans in
+  `man/` and 38 in roxygen are now escaped as `\'`.
+* `\[` and `\]` are not Rd escapes: 181 `\eqn`/`\deqn` blocks in `man/`
+  and 184 in `R/` reached LaTeX as nested display-math delimiters, plus
+  351 and 1,137 further lines elsewhere.
+* 22 literal angle-bracket placeholders were emitted as raw HTML tags,
+  and RFC 7464's record separator was a control byte that had decayed to
+  U+FFFD, which pdflatex cannot typeset.
+
+`R CMD Rd2pdf` now builds the full manual with no LaTeX errors.
+
+Version stays locked to rmorie.
+
 # morie 1.2.1 - 2026-09-08
 
 ## CRAN compliance: \dontrun becomes \donttest

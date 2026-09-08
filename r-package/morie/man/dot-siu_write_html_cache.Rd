@@ -2,7 +2,7 @@
 % Please edit documentation in R/siu.R
 \name{.siu_write_html_cache}
 \alias{.siu_write_html_cache}
-\title{Internal: write one HTML page to <html_dir>/\if{html}{\out{<name>}}, gzipped. Called}
+\title{Internal: write one HTML page to <html_dir>/name, gzipped. Called}
 \usage{
 .siu_write_html_cache(html_dir, name, html)
 }

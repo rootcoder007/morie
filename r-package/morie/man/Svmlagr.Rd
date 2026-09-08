@@ -8,7 +8,7 @@
 Svmlagr(X, y, beta0, beta, alpha) 
 }
 \description{
-L = (1/2)||beta||^2 - sum_i alpha_i \[ y_i(beta_0 + x_i beta) - 1 \]. Its derivatives with respect to beta and beta_0 are (9.28) and (9.29), both zero at the optimum.
+L = (1/2)||beta||^2 - sum_i alpha_i [ y_i(beta_0 + x_i beta) - 1 ]. Its derivatives with respect to beta and beta_0 are (9.28) and (9.29), both zero at the optimum.
 }
 \arguments{
 \item{X}{Argument \code{X}; see Usage.}

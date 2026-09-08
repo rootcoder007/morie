@@ -8,7 +8,7 @@
 Penmat(t, L1, p = 2L, kind = "fourier", period = NULL, beta = NULL) 
 }
 \description{
-J_beta = int_0^T \[ d^p beta(t) / dt^p \]^2 dt.  Under the basis expansion (14.2) the book writes J_beta = beta\' P beta with P_ij = int_0^T phi_i^(p)(t) phi_j^(p)(t) dt.  The chapter says p is typically 1 or 2.  Integrals by the trapezoid rule on the grid t.
+J_beta = int_0^T [ d^p beta(t) / dt^p ]^2 dt.  Under the basis expansion (14.2) the book writes J_beta = beta\' P beta with P_ij = int_0^T phi_i^(p)(t) phi_j^(p)(t) dt.  The chapter says p is typically 1 or 2.  Integrals by the trapezoid rule on the grid t.
 }
 \arguments{
 \item{t}{Argument \code{t}; see Usage.}

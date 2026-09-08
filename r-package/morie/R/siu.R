@@ -655,7 +655,7 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
 #' Internal: apply a canonical-overrides table to a parsed SIU data
 #'
 #' frame. Each row of `overrides` is (case_number, field,
-#' verified_value); for any match, overwrite df[\[field\]] at the row
+#' verified_value); for any match, overwrite df[[field]] at the row
 #' whose case_number matches. Silent on misses (override for a case not
 #' in the parse, or field not in the schema).
 #'

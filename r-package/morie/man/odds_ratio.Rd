@@ -2,7 +2,7 @@
 % Please edit documentation in R/effect_sizes.R
 \name{odds_ratio}
 \alias{odds_ratio}
-\title{Odds ratio for a 2x2 table \verb{\[\[a, b\], \[c, d\]\]}}
+\title{Odds ratio for a 2x2 table \verb{[[a, b], [c, d]]}}
 \usage{
 odds_ratio(a, b, c, d, confidence = 0.95)
 }
@@ -18,7 +18,7 @@ odds_ratio(a, b, c, d, confidence = 0.95)
 A \code{morie_effect_size}.
 }
 \description{
-Odds ratio for a 2x2 table \verb{\[\[a, b\], \[c, d\]\]}
+Odds ratio for a 2x2 table \verb{[[a, b], [c, d]]}
 }
 \examples{
 odds_ratio(a = 40, b = 10, c = 20, d = 30)
