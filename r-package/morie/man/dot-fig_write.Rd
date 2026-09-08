@@ -2,7 +2,7 @@
 % Please edit documentation in R/study_reporting.R
 \name{.fig_write}
 \alias{.fig_write}
-\title{Render one figure to figures/\if{html}{\out{<name>}}.pdf (and optionally .png).
+\title{Render one figure to figures/name.pdf (and optionally .png).
 Returns the}
 \usage{
 .fig_write(fig_dir, name, draw, png_too = FALSE, width = 8, height = 6)

@@ -186,7 +186,7 @@ size_factors <- function(counts) {
 
 #' Cox-Reid adjusted log-likelihood (eq. 7)
 #'
-#' \code{ell(alpha) - 0.5 log det(X' W X)}. The adjustment is the
+#' \code{ell(alpha) - 0.5 log det(X\' W X)}. The adjustment is the
 #' GLM analogue of Bessel's correction.
 #'
 #' @param alpha Positive numeric.
@@ -338,7 +338,7 @@ dispersion_gene_wise <- function(K, X, s, alpha_init = 0.1) {
 #' Fit the dispersion trend (eq. 6)
 #'
 #' Gamma-family GLM with an identity link, iterating with genes whose
-#' dispersion/fit ratio falls outside \code{\[1e-4, 15\]} excluded.
+#' dispersion/fit ratio falls outside \code{[1e-4, 15]} excluded.
 #'
 #' @param mu_bar Per-gene mean of normalised counts.
 #' @param disp Gene-wise dispersion estimates.

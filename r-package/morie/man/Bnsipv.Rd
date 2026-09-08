@@ -28,7 +28,7 @@ and an empty intersection means the two are jointly refuted.
 }
 \details{
 Formula: instrument bound from Molinari (2021) equation (2.15), shape
-bound \code{\[0, upper\]} from equation (2.13), intersected.
+bound \code{[0, upper]} from equation (2.13), intersected.
 }
 \examples{
 set.seed(1)

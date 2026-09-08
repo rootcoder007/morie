@@ -11,8 +11,8 @@
 #' m and variance tau^2; f(x - y) is the density of a satellite position
 #' about a centre at y; and gamma(u) = Integral f(u + y) f(y) dy is the
 #' autoconvolution.  With Z(S) the number of satellites in S and mu the
-#' volume, E\[Z(S)\] = lambda m mu(S), eq. (3.6.1), and
-#' Cov\[Z(S1), Z(S2)\] = lambda m mu(S1 ^ S2)
+#' volume, E[Z(S)] = lambda m mu(S), eq. (3.6.1), and
+#' Cov[Z(S1), Z(S2)] = lambda m mu(S1 ^ S2)
 #' + lambda (m^2 + tau^2 - m) Int Int gamma(u - y) du dy, eq. (3.6.2).
 #'
 #' Taking the cluster size Poisson, so tau^2 = m, the bracket collapses to
@@ -31,8 +31,8 @@
 #' v >= 2r and pi r^2 at v = 0.
 #'
 #' H(t) integrates in closed form.  Substituting v = 2 r s and S = t / 2r,
-#' H(t) = (16 / pi) \[ (S^2/2) acos S + (1/8) asin S - (1/8) S sqrt(1 - S^2)
-#' - (1/4) S^3 sqrt(1 - S^2) \] with S = min(t / 2r, 1), and at S = 1 the
+#' H(t) = (16 / pi) [ (S^2/2) acos S + (1/8) asin S - (1/8) S sqrt(1 - S^2)
+#' - (1/4) S^3 sqrt(1 - S^2) ] with S = min(t / 2r, 1), and at S = 1 the
 #' bracket is pi/16, so H = 1 exactly.  That is forced: gamma is the
 #' autoconvolution of a probability density, so it integrates to 1 over the
 #' whole plane, and two discs of radius r more than 2r apart cannot overlap.
