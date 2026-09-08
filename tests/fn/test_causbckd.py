@@ -1,6 +1,6 @@
 """Tests for causbckd.causal_backdoor_estimate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causbckd import causal_backdoor_estimate
 

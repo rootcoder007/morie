@@ -20,7 +20,7 @@ def unfolding_residuals(observed, predicted):
     DescriptiveResult
         value = residual matrix, extra has rmse.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     O = np.asarray(observed, dtype=float)
     P = np.asarray(predicted, dtype=float)

@@ -1,8 +1,8 @@
 """Tests for rgspe.rangayyan_specificity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgspe import rangayyan_specificity
+from morie.fn.bsaclass import rangayyan_specificity
 
 
 def test_rgspe_basic():

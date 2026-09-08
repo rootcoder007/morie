@@ -11,6 +11,7 @@ morie_spatial_variogram_fit(coords, values, model = "exponential")
 
 \item{model}{\code{"exponential"} (default), \code{"spherical"},
 or \code{"gaussian"}.}
+
 }
 \value{
 A list with \code{model}, \code{nugget}, \code{psill},
@@ -21,4 +22,8 @@ Fits (nugget, partial sill, range) of a spherical / exponential /
 Gaussian covariance model by maximizing the Gaussian log-likelihood
 of the (constant-mean) data, via \code{stats::optim} on a log
 parameterization.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_spatial_variogram_fit(V, V)
 }

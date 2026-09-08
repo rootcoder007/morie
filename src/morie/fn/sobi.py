@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -99,3 +99,7 @@ sobi = sobi_bss
 
 def cheatsheet() -> str:
     return "sobi_bss({}) -> SOBI blind source separation."
+
+
+# compact alias per ledger/NAMING.md
+sobibss = sobi_bss

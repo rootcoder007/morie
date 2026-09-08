@@ -20,7 +20,7 @@ def stress1_measure(D_obs, D_model):
     DescriptiveResult
         value = stress-1 (float).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     D_obs = np.asarray(D_obs, dtype=float)
     D_model = np.asarray(D_model, dtype=float)
@@ -40,3 +40,7 @@ strs1 = stress1_measure
 
 def cheatsheet() -> str:
     return "stress1_measure({}) -> Kruskal stress-1."
+
+
+# compact alias per ledger/NAMING.md
+stress1measure = stress1_measure

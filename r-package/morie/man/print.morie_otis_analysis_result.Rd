@@ -17,3 +17,7 @@ Invisibly returns \code{x} unchanged.
 \description{
 Print method for OTIS analysis results
 }
+\examples{
+otis_b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
+print(morie_otis_analyze_b01(otis_b01))
+}

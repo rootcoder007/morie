@@ -1,6 +1,6 @@
 """Tests for secrtt.rotating_token_envelope."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.secrtt import rotating_token_envelope
 

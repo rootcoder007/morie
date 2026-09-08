@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nearest-neighbor G-function"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ g_fu = g_function
 
 def cheatsheet() -> str:
     return "g_function({}) -> Nearest-neighbor G-function"
+
+
+# compact alias per ledger/NAMING.md
+gfunction = g_function

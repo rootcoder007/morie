@@ -1,6 +1,6 @@
 """Tests for gb45lf.gibbons_lilliefors_normal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb45lf import gibbons_lilliefors_normal
 

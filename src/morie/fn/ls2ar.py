@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -59,3 +59,7 @@ ls2ar = lsf_to_ar
 
 def cheatsheet() -> str:
     return "lsf_to_ar({}) -> Line spectral frequencies to AR coefficients."
+
+
+# compact alias per ledger/NAMING.md
+lsftoar = lsf_to_ar

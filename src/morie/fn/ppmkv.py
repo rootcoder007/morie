@@ -5,7 +5,7 @@ Mark variogram PP
 Category: PointProc
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def ppmkv(points=None, n=80, window=(0, 1, 0, 1), intensity=None):

@@ -1,6 +1,6 @@
 """Threshold autoregression (TAR) model."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -72,3 +72,7 @@ tarlg = tar_fit
 
 def cheatsheet() -> str:
     return "tar_fit({}) -> Threshold autoregression (TAR) model."
+
+
+# compact alias per ledger/NAMING.md
+tarfit = tar_fit

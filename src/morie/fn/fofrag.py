@@ -5,7 +5,7 @@ Forest fragmentation
 Category: ForstSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def fofrag(dbh=None, height=None, coords=None, n=50):

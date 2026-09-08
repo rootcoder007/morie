@@ -1,6 +1,6 @@
 """Tests for hmmcd.geron_mc_dropout."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmmcd import geron_mc_dropout
 

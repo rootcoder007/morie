@@ -38,12 +38,41 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Any, Union
 
-import numpy as np
-import pandas as pd
-import scipy.stats as stats
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.experimental import enable_iterative_imputer  # noqa: F401
-from sklearn.linear_model import BayesianRidge, LinearRegression, LogisticRegression
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as stats
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from morie.fn._ml_core import RandomForestClassifier, RandomForestRegressor
+except ImportError:
+    RandomForestClassifier = _MissingDep('RandomForestClassifier')
+    RandomForestRegressor = _MissingDep('RandomForestRegressor')
+try:
+    from morie.fn._ml_core import enable_iterative_imputer  # noqa: F401
+except ImportError:
+    enable_iterative_imputer = _MissingDep('enable_iterative_imputer')
+try:
+    from morie.fn._ml_core import BayesianRidge, LinearRegression, LogisticRegression
+except ImportError:
+    BayesianRidge = _MissingDep('BayesianRidge')
+    LinearRegression = _MissingDep('LinearRegression')
+    LogisticRegression = _MissingDep('LogisticRegression')
 
 logger = logging.getLogger(__name__)
 
@@ -340,7 +369,7 @@ def classify_missing_mechanism(
     try:
         model = LogisticRegression(max_iter=1000, solver="lbfgs")
         model.fit(X, y)
-        from sklearn.metrics import log_loss
+        from morie.fn._ml_core import log_loss
 
         ll_full = -log_loss(y, model.predict_proba(X), normalize=False)
         p_hat = y.mean()
@@ -1221,7 +1250,7 @@ def tipping_point_analysis(
         Columns: ``delta``, ``estimate``, ``se``, ``ci_lower``, ``ci_upper``,
         ``p_value``, ``significant``.
     """
-    import statsmodels.formula.api as smf
+    from morie.fn._glm_core import formula as smf
 
     if delta_range is None:
         delta_range = np.linspace(-2, 2, 21)

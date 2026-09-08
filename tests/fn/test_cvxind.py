@@ -1,6 +1,6 @@
 """Tests for cvxind.boyd_indicator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxind import boyd_indicator
 

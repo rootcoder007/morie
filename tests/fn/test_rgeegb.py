@@ -1,8 +1,8 @@
 """Tests for rgeegb.rangayyan_eeg_rhythms."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgeegb import rangayyan_eeg_rhythms
+from morie.fn.bsaclass import rangayyan_eeg_rhythms
 
 
 def test_rgeegb_basic():

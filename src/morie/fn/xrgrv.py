@@ -1,6 +1,6 @@
 """Gravity spatial interaction"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ grav = gravity_model
 
 def cheatsheet() -> str:
     return "gravity_model({}) -> Gravity spatial interaction"
+
+
+# compact alias per ledger/NAMING.md
+gravitymodel = gravity_model

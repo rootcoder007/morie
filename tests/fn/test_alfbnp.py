@@ -1,6 +1,6 @@
 """Tests for alfbnp.af3_protein_ligand."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alfbnp import af3_protein_ligand
 

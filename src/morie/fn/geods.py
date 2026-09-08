@@ -3,8 +3,8 @@
 
 __all__ = ["geods"]
 
-import numpy as np
-from scipy.integrate import solve_ivp
+from . import _array_core as np
+from ._sci_core import solve_ivp
 
 
 def geods(

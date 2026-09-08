@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Granger causality test."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import DescriptiveResult
 
@@ -71,3 +71,7 @@ grang = granger_test
 
 def cheatsheet() -> str:
     return "granger_test({}) -> Granger causality F-test."
+
+
+# compact alias per ledger/NAMING.md
+grangertest = granger_test

@@ -346,7 +346,7 @@ def tool_describe_data(code: str = "") -> str:
 
         exec_globals: dict[str, Any] = {}
         guarded_exec(
-            "import pandas as pd; import numpy as np; from morie.data import load_dataset, DATASET_CATALOG; " + code,
+            "import morie.fn._frame_core as pd; import morie.fn._array_core as np; from morie.data import load_dataset, DATASET_CATALOG; " + code,
             exec_globals,
         )
         df = exec_globals.get("df")
@@ -1132,7 +1132,7 @@ def tool_compare_methods(methods: str, data_code: str = "") -> str:
     context: dict[str, Any] = {}
     if data_code:
         try:
-            import numpy as np
+            from morie.fn import _array_core as np
 
             from morie._exec_guard import guarded_exec
 
@@ -1193,7 +1193,7 @@ def tool_run_suite(domain: str, data_code: str = "") -> str:
     context: dict[str, Any] = {}
     if data_code:
         try:
-            import numpy as np
+            from morie.fn import _array_core as np
 
             from morie._exec_guard import guarded_exec
 

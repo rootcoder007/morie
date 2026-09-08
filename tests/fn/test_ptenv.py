@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptenv -- Point pattern Monte Carlo envelope"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptenv import pp_envelope
 

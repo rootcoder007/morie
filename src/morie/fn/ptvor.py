@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Point pattern Voronoi intensities"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ pp_v = pp_voronoi
 
 def cheatsheet() -> str:
     return "pp_voronoi({}) -> Point pattern Voronoi intensities"
+
+
+# compact alias per ledger/NAMING.md
+ppvoronoi = pp_voronoi

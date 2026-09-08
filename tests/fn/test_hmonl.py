@@ -1,6 +1,6 @@
 """Tests for hmonl.geron_online_learning."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmonl import geron_online_learning
 

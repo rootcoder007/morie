@@ -1,6 +1,6 @@
 """Tests for rpl_rt — region trend."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.rpl_rt import rplace_region_trend
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -75,3 +75,7 @@ knn = knn_classify
 
 def cheatsheet() -> str:
     return "knn_classify({}) -> k-Nearest Neighbors classifier (pure NumPy)."
+
+
+# compact alias per ledger/NAMING.md
+knnclassify = knn_classify

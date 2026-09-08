@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -59,3 +59,7 @@ chaos = logistic_map
 
 def cheatsheet() -> str:
     return "logistic_map({}) -> Logistic map iterations."
+
+
+# compact alias per ledger/NAMING.md
+logisticmap = logistic_map

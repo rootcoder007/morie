@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,7 +29,7 @@ def moran_residual_test(residuals: np.ndarray, W: np.ndarray, cdf=None) -> Spati
     .. epigraph::
 
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     e = np.asarray(residuals, dtype=np.float64).ravel()
     W = np.asarray(W, dtype=np.float64)

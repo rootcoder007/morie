@@ -1,6 +1,6 @@
 """Tests for nie.natural_indirect_effect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nie import natural_indirect_effect
 

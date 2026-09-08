@@ -3,8 +3,8 @@
 'He who would learn to fly one day must first learn to stand and walk. — Friedrich Nietzsche'
 """
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 
@@ -184,3 +184,67 @@ def ecg_synthetic(rng):
         ecg += 1.5 * np.exp(-0.5 * ((np.arange(n) - pk) / 10) ** 2)
     ecg += rng.standard_normal(n) * 0.05
     return ecg, fs, r_peaks
+
+
+
+# --- Schabenberger semivariogram-fitting family (spols / spwls / spreml) ---
+# A Gaussian field drawn from a KNOWN exponential covariance, so "does the fit
+# recover the truth" is a real question with a checkable answer rather than a
+# self-consistency check.
+
+SCHAB_NUGGET, SCHAB_SILL, SCHAB_RANGE = 0.3, 2.0, 6.0
+
+
+@pytest.fixture()
+def schab_truth():
+    return SCHAB_NUGGET, SCHAB_SILL, SCHAB_RANGE
+
+
+@pytest.fixture()
+def schab_sites():
+    def make(n=160, seed=7):
+        return np.random.default_rng(seed).random((n, 2)) * 20.0
+    return make
+
+
+@pytest.fixture()
+def schab_simulate():
+    from morie.fn._schab_fit import covariance_matrix
+
+    def make(coords, seed):
+        cov = covariance_matrix(coords, SCHAB_NUGGET, SCHAB_SILL, SCHAB_RANGE,
+                                "exponential")
+        chol = np.linalg.cholesky(cov + 1e-10 * np.eye(coords.shape[0]))
+        gen = np.random.default_rng(seed)
+        return 5.0 + chol @ gen.normal(size=coords.shape[0])
+    return make
+
+
+@pytest.fixture()
+def schab_ev():
+    from morie.fn._schab_vario import empirical_semivariogram
+
+    def make(coords, z, n_bins=15):
+        return empirical_semivariogram(coords, z, n_bins=n_bins)
+    return make
+
+# --- Schabenberger semivariogram fitting: a model-derived table -----------
+# The fit target is KNOWN because the table is built from the model itself,
+# perturbed deterministically. No RNG, no simulated field, so the R arm
+# receives byte-identical input and "did it recover the truth" has an actual
+# answer. A simulated field is the wrong fixture here: a trended or strongly
+# oscillating one has an unbounded or hole-effect variogram that no monotone
+# model fits, and the fit then wanders in a degenerate limb.
+
+SCHAB_FIT_TRUTH = (0.3, 2.0, 6.0)
+
+
+@pytest.fixture()
+def schab_fit_table():
+    from morie.fn._schab_vario import semivariogram
+    lags = np.arange(1, 13) * 0.5
+    gamma = semivariogram(lags, *SCHAB_FIT_TRUTH, "exponential") * (
+        1.0 + 0.02 * np.cos(np.arange(1, 13) * 1.0))
+    counts = np.array([40, 80, 120, 160, 200, 240,
+                       240, 200, 160, 120, 80, 40], float)
+    return lags, gamma, counts

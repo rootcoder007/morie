@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -54,3 +54,7 @@ ergod = ergodicity_test
 
 def cheatsheet() -> str:
     return "ergodicity_test({}) -> Ergodicity test."
+
+
+# compact alias per ledger/NAMING.md
+ergodicitytest = ergodicity_test

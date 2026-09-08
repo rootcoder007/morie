@@ -5,7 +5,7 @@ catalog as having textbook evidence but no existing morie.fn entry.
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn import (

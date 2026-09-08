@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.spatial.distance import pdist, squareform
+from . import _array_core as np
+from ._sci_core import pdist, squareform
 
 from ._containers import MdsRes
 

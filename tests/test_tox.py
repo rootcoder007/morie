@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie import tox
@@ -12,7 +12,7 @@ from morie import tox
 
 def test_matrix_schema_is_typed_zero_row():
     s = tox.tox_matrix_schema()
-    assert isinstance(s, pd.DataFrame)
+    assert (hasattr(s, "columns") or hasattr(s, "_cols"))
     assert len(s) == 0
     assert {"case_id", "analyte", "matrix", "conc", "lod", "loq"} <= set(s.columns)
     assert s.attrs["role"]["conc"] == "measurement"

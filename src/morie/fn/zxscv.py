@@ -1,6 +1,6 @@
 """Spatial LOO cross-validation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -27,3 +27,7 @@ spat = spatial_cv_loo
 
 def cheatsheet() -> str:
     return "spatial_cv_loo({}) -> Spatial LOO cross-validation"
+
+
+# compact alias per ledger/NAMING.md
+spatialcvloo = spatial_cv_loo

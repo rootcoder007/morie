@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 from ._helpers import _extract_col
@@ -70,3 +70,7 @@ cnstr = iqr_exorcise
 
 def cheatsheet() -> str:
     return "iqr_exorcise({}) -> Anomaly removal via IQR."
+
+
+# compact alias per ledger/NAMING.md
+iqrexorcise = iqr_exorcise

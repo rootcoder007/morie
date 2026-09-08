@@ -1,6 +1,6 @@
 """Test gram_schmidt_orth."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.gso import gram_schmidt_orth

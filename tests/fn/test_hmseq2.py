@@ -1,6 +1,6 @@
 """Tests for hmseq2.geron_seq2seq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmseq2 import geron_seq2seq
 

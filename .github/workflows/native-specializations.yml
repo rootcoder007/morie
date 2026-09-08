@@ -25,6 +25,8 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Static guards (fail fast before the 20-minute check)
+        run: Rscript scripts/audit/check_r_undefined.R r-package/morie
       - name: System libraries + toolchain
         run: |
           export DEBIAN_FRONTEND=noninteractive
@@ -40,7 +42,13 @@ jobs:
             runiverse = "https://rootcoder007.r-universe.dev",
             P3M = "https://packagemanager.posit.co/cran/__linux__/bookworm/latest",
             CRAN = "https://cloud.r-project.org")
-          pkgs <- c("here", "Rcpp", "RcppArmadillo", "rmoriebricklayer",
+          # rmoriedata is in DESCRIPTION Imports (a HARD dependency), so
+          # pkgload::load_all() cannot build the package without it. It was
+          # missing from this list, and the job failed with
+          #   ERROR: dependency 'rmoriedata' is not available for package 'morie'
+          # It is published on the r-universe repo already listed above.
+          pkgs <- c("here", "Rcpp", "RcppArmadillo",
+                    "rmoriedata", "rmoriebricklayer",
                     "testthat", "pkgload", "rcmdcheck")
           install.packages(pkgs, repos = repos, Ncpus = 2)
           missing <- setdiff(pkgs, rownames(installed.packages()))
@@ -64,10 +72,14 @@ jobs:
       # suite fails 111 tests without Suggests, which is main's debt, not
       # this branch's. The native tiers above ARE this branch's tests.
       - name: R CMD check (as-cran, no vignettes)
+        # Examples are checked on L14, not here: extracting and running
+        # 11k+ Rd pages costs ~2h on a GitHub runner, which is why every
+        # gate run so far was cancelled at timeout-minutes: 120. The local
+        # sweep (scripts run_examples3.R) runs every page to zero failures.
         run: |
           res <- rcmdcheck::rcmdcheck(path = "r-package/morie",
             args = c("--no-manual", "--as-cran", "--ignore-vignettes",
-                     "--no-tests"),
+                     "--no-tests", "--no-examples"),
             build_args = c("--no-build-vignettes", "--no-manual"),
             error_on = "error")
           print(res)
@@ -81,3 +93,4 @@ jobs:
             check/*.Rcheck/00check.log
             check/*.Rcheck/tests/
           if-no-files-found: ignore
+          retention-days: 7

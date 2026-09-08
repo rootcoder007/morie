@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptdgm -- Diggle-Cressie-Loosmore test"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptdgm import diggle_test
 

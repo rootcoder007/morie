@@ -1,6 +1,6 @@
 """Tests for gb_jnt.gibbons_joint_order."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_jnt import gibbons_joint_order
 

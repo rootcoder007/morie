@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Indicator kriging probability"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ ik_p = ik_probability
 
 def cheatsheet() -> str:
     return "ik_probability({}) -> Indicator kriging probability"
+
+
+# compact alias per ledger/NAMING.md
+ikprobability = ik_probability

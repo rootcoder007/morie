@@ -10,8 +10,8 @@ All emit RichResult.
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from .fn._richresult import RichResult
 
@@ -75,7 +75,7 @@ def seasonal_pattern(df: pd.DataFrame, *, ds_name: str = "?") -> RichResult:
     """Month / day-of-week / hour-of-day cyclic patterns + chi-square
     test of uniformity.
     """
-    from scipy.stats import chisquare
+    from morie.fn._stats_core import chisquare
 
     sections = []
 
@@ -176,7 +176,7 @@ def changepoint_detection(df: pd.DataFrame, *, year_col: str = "OCC_YEAR", ds_na
 def arima_forecast(df: pd.DataFrame, *, h: int = 12, ds_name: str = "?") -> RichResult:
     """ARIMA(1,1,1) on monthly counts; forecast `h` periods ahead."""
     try:
-        import statsmodels.api as sm
+        from morie.fn import _glm_core as sm
     except ImportError:
         return RichResult(title=f"ARIMA -- {ds_name}", warnings=["statsmodels not installed"])
     # Build monthly time series

@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_nonresponse}
 \alias{morie_weights_nonresponse}
-\title{Non-response adjustment within cells.}
+\title{Non-response adjustment within cells}
 \usage{
 morie_weights_nonresponse(weights, responded, adjustment_cells = NULL)
 }
@@ -22,4 +22,8 @@ are scaled up so each cell's weighted total is preserved.
 \description{
 Within each cell, scales respondent weights up by total/responder ratio.
 Non-respondents end up with weight 0.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_nonresponse(V, V)
 }

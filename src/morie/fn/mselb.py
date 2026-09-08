@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MDS elbow detection"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ mds_ = mds_elbow
 
 def cheatsheet() -> str:
     return "mds_elbow({}) -> MDS elbow detection"
+
+
+# compact alias per ledger/NAMING.md
+mdselbow = mds_elbow

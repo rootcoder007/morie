@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -46,3 +46,7 @@ rmsle = rms_log_error
 
 def cheatsheet() -> str:
     return "rms_log_error({}) -> RMS log spectral error."
+
+
+# compact alias per ledger/NAMING.md
+rmslogerror = rms_log_error

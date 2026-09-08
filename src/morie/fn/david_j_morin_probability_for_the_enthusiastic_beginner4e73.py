@@ -1,54 +1,22 @@
-"""CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Deprecated alias for :func:`morie.fn.hyperlim`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .hyperlim import hyperlim as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_73"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_73(x):
-    """
-    CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: [EQ] (K − k)! = K (K − 1)( K − 2) · · ·
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner4e73')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.4 eq.4.73
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_73(k, n, p, N):
+    """Deprecated; use :func:`morie.fn.hyperlim` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_73() is the book-coordinate name for hyperlim(); "
+        "it will be removed. Use morie.fn.hyperlim() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner4e73: CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return _impl(k, n, p, N)

@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import special
-from scipy import stats as _st
+from . import _array_core as np
+from ._sci_core import special
+from . import _stats_core as _st
 
 from ._containers import RegressionResult
 
@@ -116,3 +116,7 @@ nbglm = negbin_glm
 
 def cheatsheet() -> str:
     return "negbin_glm({}) -> Negative binomial GLM via IRLS."
+
+
+# compact alias per ledger/NAMING.md
+negbinglm = negbin_glm

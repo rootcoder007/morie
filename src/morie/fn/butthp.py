@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.signal import butter, sosfiltfilt
+from . import _array_core as np
+from ._signal_core import butter, sosfiltfilt
 
 from ._containers import SignalResult
 
@@ -41,3 +41,7 @@ butthp = butter_highpass
 
 def cheatsheet() -> str:
     return "butter_highpass({}) -> Butterworth highpass filter."
+
+
+# compact alias per ledger/NAMING.md
+butterhighpass = butter_highpass

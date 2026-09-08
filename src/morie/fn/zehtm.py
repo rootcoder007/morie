@@ -1,6 +1,6 @@
 """Hotspot detection map"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ hots = hotspot_map
 
 def cheatsheet() -> str:
     return "hotspot_map({}) -> Hotspot detection map"
+
+
+# compact alias per ledger/NAMING.md
+hotspotmap = hotspot_map

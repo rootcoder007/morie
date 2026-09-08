@@ -1,55 +1,16 @@
-r"""Numbered display equation (6.8) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""eq. (6.8) p.191, re-exported from :mod:`morie.fn.msm065`.
 
-import numpy as np
+The stub generator stamped several extracted page
+fragments with this same function name, so the
+implementation lives once in msm065 and this module re-exports
+it.  Calling either path runs the same code.
+"""
 
-from ._richresult import RichResult
+from .msm065 import mvsml_bayesian_regression_eq_6_8
 
 __all__ = ["mvsml_bayesian_regression_eq_6_8"]
 
 
-def mvsml_bayesian_regression_eq_6_8(implemented, a, multivariate, Ridge, regression, model):
-    r"""
-    Numbered display equation (6.8) from MVSML chapter 6.
-
-    Formula: implemented as a multivariate Ridge regression model, as follows: Y = 1J\muT + XB + X1B1 + E, (6.10) where X1 = Z1LG, G = LGLT G is the Cholesky factorization of G, B1 = L-1 G b1  MNJnT 0, IJ, \SigmaT ( ) , and the speciﬁcations for the rest of parameters and prior distribution are the same as given in model
-
-    Parameters
-    ----------
-    implemented : array-like
-        Input data.
-    a : array-like
-        Input data.
-    multivariate : array-like
-        Input data.
-    Ridge : array-like
-        Input data.
-    regression : array-like
-        Input data.
-    model : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.8) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    implemented = np.atleast_1d(np.asarray(implemented, dtype=float))
-    n = len(implemented)
-    result = float(np.mean(implemented))
-    se = float(np.std(implemented, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.8) from MVSML chapter 6.",
-        }
-    )
-
-
 def cheatsheet():
-    return "msm073: Numbered display equation (6.8) from MVSML chapter 6."
+    return "msm073: see msm065"

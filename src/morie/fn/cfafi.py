@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._cfa_engine import (
     cov_from_data,
@@ -69,3 +69,7 @@ def cfa_fit(
 
 def cheatsheet() -> str:
     return "cfa_fit({}) -> Compute all fit indices for any CFA structure."
+
+
+# compact alias per ledger/NAMING.md
+cfafit = cfa_fit

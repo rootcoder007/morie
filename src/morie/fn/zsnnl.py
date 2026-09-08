@@ -1,6 +1,6 @@
 """Laplace natural neighbor (Sibson)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ nn_l = nn_laplace
 
 def cheatsheet() -> str:
     return "nn_laplace({}) -> Laplace natural neighbor (Sibson)"
+
+
+# compact alias per ledger/NAMING.md
+nnlaplace = nn_laplace

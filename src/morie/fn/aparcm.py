@@ -1,6 +1,6 @@
 """Asymmetric power ARCH."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -38,3 +38,7 @@ def aparch_dge(x, delta):
 
 def cheatsheet():
     return "aparcm: Asymmetric power ARCH"
+
+
+# compact alias per ledger/NAMING.md
+aparchdge = aparch_dge

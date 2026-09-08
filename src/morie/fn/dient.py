@@ -3,9 +3,9 @@
 
 import math
 
-import numpy as np
-from scipy.special import erfc  # noqa: F401
-from scipy.stats import norm
+from . import _array_core as np
+from ._sci_core import erfc  # noqa: F401
+from ._stats_core import norm
 
 from ._containers import ESRes
 

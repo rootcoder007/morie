@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Moment matching: posterior mean and variance of G(A) for a DP."""
 
-import numpy as np
-from scipy.stats import norm
+from . import _array_core as np
+from ._stats_core import norm
 
 from ._richresult import RichResult
 

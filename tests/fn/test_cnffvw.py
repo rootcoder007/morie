@@ -1,6 +1,6 @@
 """Tests for cnffvw.cinelli_hazlett_robust."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cnffvw import cinelli_hazlett_robust
 

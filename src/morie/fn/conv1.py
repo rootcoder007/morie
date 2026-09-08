@@ -11,7 +11,7 @@ Deep learning. Nature, 521(7553), 436-444.
 
 __all__ = ["conv1"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def conv1(x, kernel, padding="valid", stride=1):

@@ -2,7 +2,7 @@
 
 __all__ = ["tsale"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def tsale(pmf: np.ndarray, q: float) -> dict:

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["mxinq"]
 
@@ -48,7 +48,7 @@ def mxinq(
         raise ValueError("x must be non-empty.")
 
     if cdf_func is None:
-        from scipy.stats import norm
+        from ._stats_core import norm
 
         cdf_func = norm.cdf
 

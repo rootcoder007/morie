@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -59,3 +59,7 @@ short = alrt_sw
 
 def cheatsheet() -> str:
     return "alrt_sw({}) -> Suicide watch alert prevalence by year."
+
+
+# compact alias per ledger/NAMING.md
+alrtsw = alrt_sw

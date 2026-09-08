@@ -41,3 +41,7 @@ codon = codon_usage
 
 def cheatsheet() -> str:
     return "codon_usage({}) -> Codon usage table from a DNA sequence."
+
+
+# compact alias per ledger/NAMING.md
+codonusage = codon_usage

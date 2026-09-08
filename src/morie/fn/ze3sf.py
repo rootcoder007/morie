@@ -1,6 +1,6 @@
 """Three-step FCA"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ thre = three_step_fca
 
 def cheatsheet() -> str:
     return "three_step_fca({}) -> Three-step FCA"
+
+
+# compact alias per ledger/NAMING.md
+threestepfca = three_step_fca

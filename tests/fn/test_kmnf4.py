@@ -1,6 +1,6 @@
 """Tests for kmnf4.kamath_nf4_datatype."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmnf4 import kamath_nf4_datatype
 

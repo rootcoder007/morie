@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -20,7 +20,10 @@ def agreement_score(vote_matrix) -> DescriptiveResult:
 
     References
     ----------
-    Armstrong (2014), Ch 7.
+    Armstrong, D. A., Bakker, R., Carroll, R., Hare, C., Poole, K. T.
+    & Rosenthal, H. (2014). *Analyzing Spatial Models of Choice and
+    Judgment*. CRC Press. Sec. 3.2.2 (Agreement Scores), p. 88. The
+    former "Ch 7" citation was fabricated: the book has six chapters.
 
     .. epigraph:: The Analytical Engine weaves algebraic patterns. -- Ada Lovelace
     """
@@ -59,3 +62,7 @@ agrmt = agreement_score
 
 def cheatsheet() -> str:
     return "agreement_score({}) -> Pairwise agreement score computation."
+
+
+# compact alias per ledger/NAMING.md
+agreementscore = agreement_score

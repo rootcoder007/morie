@@ -1,6 +1,6 @@
 """Tests for crrfgs.competing_risks_fg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.crrfgs import competing_risks_fg
 

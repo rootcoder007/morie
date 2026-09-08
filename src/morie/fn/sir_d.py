@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.integrate import odeint
+from . import _array_core as np
+from ._sci_core import odeint
 
 from ._containers import SIRResult
 
@@ -82,3 +82,7 @@ sir_d = sir_demography
 
 def cheatsheet() -> str:
     return "sir_demography({}) -> SIR model with vital dynamics (birth/death)."
+
+
+# compact alias per ledger/NAMING.md
+sirdemography = sir_demography

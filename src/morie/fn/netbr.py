@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 
 def network_bridge(
@@ -71,3 +71,7 @@ def network_bridge(
 
 def cheatsheet() -> str:
     return "network_bridge({}) -> Bridge centrality between communities in a network."
+
+
+# compact alias per ledger/NAMING.md
+networkbridge = network_bridge

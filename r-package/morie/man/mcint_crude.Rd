@@ -17,6 +17,7 @@ morie_monte_carlo_integration(f, a = 0, b = 1, N = 1000L, seed = 42L)
 \item{N}{integer; sample size (default 1000).}
 
 \item{seed}{integer.}
+
 }
 \value{
 Named list: estimate, se, N, method.
@@ -26,5 +27,8 @@ Estimates I = int_a^b f(u) du as I_hat = (b - a) * mean(f(U_i)) with
 U_i iid Uniform(a, b).  Returns the MC SE.  The corresponding Python
 callable (\code{morie.fn.mcint}) retains a legacy \emph{spatial} signature;
 this R parity targets the index-listed crude-MC estimator instead.
+}
+\examples{
+morie_monte_carlo_integration(function(x) x^2, 0, 1, N = 1000L)
 }
 \keyword{internal}

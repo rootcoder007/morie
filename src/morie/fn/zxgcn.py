@@ -1,6 +1,6 @@
 """Graph convolution spatial"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ grap = graph_conv_sp
 
 def cheatsheet() -> str:
     return "graph_conv_sp({}) -> Graph convolution spatial"
+
+
+# compact alias per ledger/NAMING.md
+graphconvsp = graph_conv_sp

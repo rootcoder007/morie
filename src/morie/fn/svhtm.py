@@ -1,6 +1,6 @@
 """Multi-candidate Hotelling model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ hote = hotelling_multi
 
 def cheatsheet() -> str:
     return "hotelling_multi({}) -> Multi-candidate Hotelling model"
+
+
+# compact alias per ledger/NAMING.md
+hotellingmulti = hotelling_multi

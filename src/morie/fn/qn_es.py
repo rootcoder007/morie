@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -59,3 +59,7 @@ qn_es = qn_estimator
 
 def cheatsheet() -> str:
     return "qn_estimator(x) -> Rousseeuw-Croux Qn scale estimator."
+
+
+# compact alias per ledger/NAMING.md
+qnestimator = qn_estimator

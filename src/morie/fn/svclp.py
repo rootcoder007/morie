@@ -1,6 +1,6 @@
 """Cutting plane in 3D"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ cut_ = cut_plane
 
 def cheatsheet() -> str:
     return "cut_plane({}) -> Cutting plane in 3D"
+
+
+# compact alias per ledger/NAMING.md
+cutplane = cut_plane

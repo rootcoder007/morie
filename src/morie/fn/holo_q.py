@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def holo_qq(
@@ -33,12 +33,12 @@ def holo_qq(
         for the analysis of data. *Biometrika*, 55(1), 1--17.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_qq requires matplotlib. Install via: pip install matplotlib")
         return None
     try:
-        from scipy import stats as sp_stats
+        from . import _stats_core as sp_stats
     except ImportError:
         print("holo_qq requires scipy. Install via: pip install scipy")
         return None
@@ -61,3 +61,7 @@ def holo_qq(
 
 def cheatsheet() -> str:
     return "holo_qq({}) -> QQ plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holoqq = holo_qq

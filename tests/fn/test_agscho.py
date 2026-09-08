@@ -1,6 +1,6 @@
 """Tests for agscho.alphazero_search_horizon."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agscho import alphazero_search_horizon
 

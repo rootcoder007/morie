@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -46,3 +46,7 @@ klmfn = kalman_filter_fn
 
 def cheatsheet() -> str:
     return "kalman_filter_fn({}) -> Kalman filter wrapper for adaptive state estimation."
+
+
+# compact alias per ledger/NAMING.md
+kalmanfilterfn = kalman_filter_fn

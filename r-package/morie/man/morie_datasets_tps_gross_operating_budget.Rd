@@ -38,11 +38,11 @@ affects the hub_id -> FeatureServer URL lookup.}
 }
 \value{
 A data.frame / GeoJSON list / file path; see
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} for per-format semantics.
+\code{morie_datasets_tps_arcgis_hub_by_id()} for per-format semantics.
 }
 \description{
 Toronto PS ArcGIS Hub dataset wrapper. Thin dispatch to
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} with the canonical
+\code{morie_datasets_tps_arcgis_hub_by_id()} with the canonical
 hub item_id \verb{8e95b932cd2d404b9d9d26c2ecc8ebec}.
 }
 \details{
@@ -50,4 +50,9 @@ This dataset provides the Gross Operating Budget incurred by the
 Toronto Police Service.
 
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Budget
+}
+\examples{
+\dontrun{
+morie_datasets_tps_gross_operating_budget()
+}
 }

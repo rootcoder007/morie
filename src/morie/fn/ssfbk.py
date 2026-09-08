@@ -1,6 +1,6 @@
 """State feedback gain via pole placement."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -80,3 +80,7 @@ ssfbk = state_feedback
 
 def cheatsheet() -> str:
     return "state_feedback({}) -> State feedback gain via pole placement."
+
+
+# compact alias per ledger/NAMING.md
+statefeedback = state_feedback

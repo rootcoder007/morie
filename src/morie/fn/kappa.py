@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import ESRes
 
@@ -54,3 +54,7 @@ kappa = cohens_kappa
 
 def cheatsheet() -> str:
     return "cohens_kappa({}) -> Cohen's kappa inter-rater agreement."
+
+
+# compact alias per ledger/NAMING.md
+cohenskappa = cohens_kappa

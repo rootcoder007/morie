@@ -1,6 +1,6 @@
 """Betti numbers computation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ bett = betti_numbers
 
 def cheatsheet() -> str:
     return "betti_numbers({}) -> Betti numbers computation"
+
+
+# compact alias per ledger/NAMING.md
+bettinumbers = betti_numbers

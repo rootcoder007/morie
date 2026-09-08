@@ -1,6 +1,6 @@
 """Tests for ripJ.ripley_j_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ripJ import ripley_j_function
 

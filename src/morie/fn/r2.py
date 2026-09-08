@@ -3,8 +3,8 @@
 
 from typing import Union
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._containers import ESRes
 from .r_es import r_effect_size
@@ -40,3 +40,7 @@ rsq = r_squared
 
 def cheatsheet() -> str:
     return "r_squared({}) -> R-squared (coefficient of determination) as effect size."
+
+
+# compact alias per ledger/NAMING.md
+rsquared = r_squared

@@ -1,6 +1,6 @@
 """Tests for hmiseg.geron_image_segmentation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmiseg import geron_image_segmentation
 

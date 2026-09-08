@@ -1,6 +1,6 @@
 """Weights symmetrization"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ w_sy = w_symmetrize
 
 def cheatsheet() -> str:
     return "w_symmetrize({}) -> Weights symmetrization"
+
+
+# compact alias per ledger/NAMING.md
+wsymmetrize = w_symmetrize

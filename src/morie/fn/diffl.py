@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult, DIFResult
 
@@ -70,3 +70,7 @@ flag_summary = dif_flag_summary
 
 def cheatsheet() -> str:
     return "dif_flag_summary({}) -> Summary of flagged DIF items across methods."
+
+
+# compact alias per ledger/NAMING.md
+difflagsummary = dif_flag_summary

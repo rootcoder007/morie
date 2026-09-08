@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -45,3 +45,7 @@ tkeo = teager_energy
 
 def cheatsheet() -> str:
     return "teager_energy({}) -> Teager-Kaiser energy operator."
+
+
+# compact alias per ledger/NAMING.md
+teagerenergy = teager_energy

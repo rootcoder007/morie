@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptqdr -- Quadrat count test"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptqdr import quadrat_test
 

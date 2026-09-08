@@ -1,6 +1,6 @@
 """Tests for jopacf.joseph_partial_autocorrelation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jopacf import joseph_partial_autocorrelation
 

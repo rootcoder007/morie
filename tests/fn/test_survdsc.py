@@ -1,6 +1,6 @@
 """Tests for survdsc.discrete_time_survival."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.survdsc import discrete_time_survival
 

@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp
+from . import _array_core as np
+from . import _stats_core as sp
 
 from ._richresult import RichResult
 
@@ -133,3 +133,7 @@ def bayesian_rci(
 
 def cheatsheet() -> str:
     return "bayesian_rci({}) -> Bayesian reliable change index."
+
+
+# compact alias per ledger/NAMING.md
+bayesianrci = bayesian_rci

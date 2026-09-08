@@ -1,6 +1,6 @@
 """Tests for morie.fn.fa — Exploratory Factor Analysis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import FaRes
 from morie.fn.fa import fa

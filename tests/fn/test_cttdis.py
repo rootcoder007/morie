@@ -1,6 +1,6 @@
 """Tests for cttdis.ctt_discrimination."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cttdis import ctt_discrimination
 

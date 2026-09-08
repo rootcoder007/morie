@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Discount future costs/effects."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -50,3 +50,7 @@ hedsc = discount_rate
 
 def cheatsheet() -> str:
     return "discount_rate({}) -> Discount future costs/effects."
+
+
+# compact alias per ledger/NAMING.md
+discountrate = discount_rate

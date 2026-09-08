@@ -1,8 +1,8 @@
 """Tests for rgcad.rangayyan_cad_pipeline."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgcad import rangayyan_cad_pipeline
+from morie.fn.bsaclass import rangayyan_cad_pipeline
 
 
 def test_rgcad_basic():

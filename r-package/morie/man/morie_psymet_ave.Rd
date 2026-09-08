@@ -2,7 +2,7 @@
 % Please edit documentation in R/psymet.R
 \name{morie_psymet_ave}
 \alias{morie_psymet_ave}
-\title{Average variance extracted (AVE) from factor loadings. Mean(lambda^2).}
+\title{Average variance extracted (AVE) from factor loadings. Mean(lambda^2)}
 \usage{
 morie_psymet_ave(loads)
 }
@@ -14,7 +14,7 @@ Single numeric scalar: the average variance extracted (mean of
 squared loadings).
 }
 \description{
-Average variance extracted (AVE) from factor loadings. Mean(lambda^2).
+Average variance extracted (AVE) from factor loadings. Mean(lambda^2)
 }
 \examples{
 lam <- c(0.7, 0.8, 0.6)

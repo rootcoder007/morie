@@ -1,8 +1,8 @@
 """Tests for rglr.rangayyan_logistic_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rglr import rangayyan_logistic_regression
+from morie.fn.bsaclass import rangayyan_logistic_regression
 
 
 def test_rglr_basic():

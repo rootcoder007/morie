@@ -1,6 +1,6 @@
 """Tests for fzse.fauzi_sign_moments."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzse import fauzi_sign_moments
 

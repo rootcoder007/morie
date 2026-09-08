@@ -1,6 +1,6 @@
 """Tests for adseqs.admixture_seq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.adseqs import admixture_seq
 

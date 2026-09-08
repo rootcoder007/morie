@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -77,3 +77,7 @@ taskm = dtw_match
 
 def cheatsheet() -> str:
     return "dtw_match({}) -> Dynamic time warping pattern matching."
+
+
+# compact alias per ledger/NAMING.md
+dtwmatch = dtw_match

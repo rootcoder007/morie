@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -54,3 +54,7 @@ itknf = itakura_dist
 
 def cheatsheet() -> str:
     return "itakura_dist({}) -> Itakura spectral distance."
+
+
+# compact alias per ledger/NAMING.md
+itakuradist = itakura_dist

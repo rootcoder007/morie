@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -99,3 +99,7 @@ rsrve = chain_ladder
 
 def cheatsheet() -> str:
     return "chain_ladder({}) -> Chain-ladder loss reserving."
+
+
+# compact alias per ledger/NAMING.md
+chainladder = chain_ladder

@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxsen -- Spatial stacking ensemble"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxsen import spatial_stacking
 

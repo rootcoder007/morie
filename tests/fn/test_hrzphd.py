@@ -1,6 +1,6 @@
 """Tests for hrzphd.horowitz_ph_discrete_obs."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzphd import horowitz_ph_discrete_obs
 

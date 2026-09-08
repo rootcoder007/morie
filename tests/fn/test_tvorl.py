@@ -1,6 +1,6 @@
 """Tests for morie.fn.tvorl — Voronoi on flat torus."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.tvorl import torus_voronoi

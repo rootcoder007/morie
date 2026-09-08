@@ -1,6 +1,6 @@
 """AI Feynman symbolic regression."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -38,3 +38,7 @@ def ai_feynman(X, y):
 
 def cheatsheet():
     return "feynAI: AI Feynman symbolic regression"
+
+
+# compact alias per ledger/NAMING.md
+aifeynman = ai_feynman

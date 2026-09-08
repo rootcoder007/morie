@@ -1,6 +1,6 @@
 """Hierarchical spatial (nested)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ hier = hier_spatial_fe
 
 def cheatsheet() -> str:
     return "hier_spatial_fe({}) -> Hierarchical spatial (nested)"
+
+
+# compact alias per ledger/NAMING.md
+hierspatialfe = hier_spatial_fe

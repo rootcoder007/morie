@@ -2,7 +2,7 @@
 
 from itertools import permutations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -53,3 +53,7 @@ shply = shapley_value
 
 def cheatsheet() -> str:
     return "shapley_value({}) -> Shapley values for cooperative games."
+
+
+# compact alias per ledger/NAMING.md
+shapleyvalue = shapley_value

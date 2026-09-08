@@ -3,7 +3,7 @@
 \name{morie_otis_analyze_c12_ruhela_aggregate}
 \alias{morie_otis_analyze_c12_ruhela_aggregate}
 \alias{morie_otis_analyze_c12_mrm_aggregate}
-\title{c12 aggregate Ruhela: Female -> median RC days (by region).}
+\title{c12 aggregate Ruhela: Female -> median RC days (by region)}
 \usage{
 morie_otis_analyze_c12_ruhela_aggregate(data, out_dir = NULL)
 
@@ -18,10 +18,12 @@ morie_otis_analyze_c12_mrm_aggregate(data, out_dir = NULL)
 \code{morie_otis_analysis_result}.
 }
 \description{
-c12 aggregate Ruhela: Female -> median RC days (by region).
+c12 aggregate Ruhela: Female -> median RC days (by region)
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_c12 <- morie_synth_otis("c12", n = 120L, seed = 1L)
 morie_otis_analyze_c12_ruhela_aggregate(otis_c12)
+}
 }

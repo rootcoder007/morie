@@ -1,6 +1,6 @@
 """Leroux CAR model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ lero = leroux_model
 
 def cheatsheet() -> str:
     return "leroux_model({}) -> Leroux CAR model"
+
+
+# compact alias per ledger/NAMING.md
+lerouxmodel = leroux_model

@@ -1,6 +1,6 @@
 """Tests for sgcL.sgc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgcL import sgc
 

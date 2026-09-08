@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fuzzy entropy."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -69,3 +69,7 @@ fuznt = fuzzy_entropy
 
 def cheatsheet() -> str:
     return "fuzzy_entropy(x, m=2) -> Fuzzy entropy."
+
+
+# compact alias per ledger/NAMING.md
+fuzzyentropy = fuzzy_entropy

@@ -1,6 +1,6 @@
 """Tests for hmddim.geron_ddim."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmddim import geron_ddim
 

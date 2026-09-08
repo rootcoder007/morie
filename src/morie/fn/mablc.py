@@ -5,7 +5,7 @@ Bleaching risk spatial
 Category: MarinSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def mablc(depth=None, temp=None, salinity=None, coords=None, n=50):

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,7 +30,7 @@ def bilinear_transform(b_s, a_s, fs) -> DescriptiveResult:
     -------
     DescriptiveResult
     """
-    from scipy.signal import bilinear
+    from ._signal_core import bilinear
 
     b_s = np.asarray(b_s, dtype=float)
     a_s = np.asarray(a_s, dtype=float)

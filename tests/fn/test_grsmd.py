@@ -1,6 +1,6 @@
 """Tests for grsmd.geron_symbolic_differentiation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grsmd import geron_symbolic_differentiation
 

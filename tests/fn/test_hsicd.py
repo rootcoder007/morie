@@ -1,6 +1,6 @@
 """Tests for hsicd.hsic_independence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hsicd import hsic_independence
 

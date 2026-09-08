@@ -1,6 +1,6 @@
 """Tests for regest.regression_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.regest import regression_estimator
 

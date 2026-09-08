@@ -1,44 +1,32 @@
-"""Sample from a GEV distribution."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Sample from a GEV distribution.
 
-import numpy as np
+Implements eq. (3.4) inverted (inverse-CDF sampling) of Coles (2001), *An Introduction to Statistical
+Modeling of Extreme Values*, Springer. The mathematics live in
+``morie.fn._evt_core``; this module is the named entry point with the
+shelf's result contract.
+"""
 
-from ._richresult import RichResult
+from . import _array_core as np
+from . import _evt_core as _ev
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["evt_gev_sample"]
 
 
-def evt_gev_sample(mu, sigma, xi, n):
-    """
-    Sample from a GEV distribution
-
-    Formula: x = μ + (σ/ξ)((-log U)^{-ξ} - 1), U~Unif
-
-    Parameters
-    ----------
-    mu : array-like
-        Input data.
-    sigma : array-like
-        Input data.
-    xi : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: x
-
-    References
-    ----------
-    Coles (2001)
-    """
-    mu = np.atleast_1d(np.asarray(mu, dtype=float))
-    n = len(mu)
-    result = float(np.mean(mu))
-    se = float(np.std(mu, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sample from a GEV distribution"})
+def evt_gev_sample(n, mu, sigma, xi, seed=42):
+    """Inverse-CDF GEV sampling: x = G^{-1}(U), U ~ Uniform(0,1)
+    (Coles 2001 eq. 3.4 applied to uniform draws)."""
+    rng = np.random.default_rng(seed)
+    x = _ev.gev_sample(int(n), float(mu), float(sigma), float(xi), rng)
+    res = RichResult(payload={"x": x, "n": int(n),
+                              "method": "GEV inverse-CDF sampler (Coles 2001 eq. 3.4)"})
+    return with_describe_pointer(res, "evgevs")
 
 
 def cheatsheet():
     return "evgevs: Sample from a GEV distribution"
+
+
+# compact alias per ledger/NAMING.md
+evtgevsample = evt_gev_sample

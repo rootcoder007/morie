@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrwid -- Inverse distance weights matrix"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrwid import w_inverse_dist
 

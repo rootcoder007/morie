@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgxvg -- Cross-variogram estimation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgxvg import cross_vario
 

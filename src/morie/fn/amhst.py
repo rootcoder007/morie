@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -25,3 +25,7 @@ alias = amplitude_hist
 
 def cheatsheet() -> str:
     return "amplitude_hist({}) -> Amplitude histogram of a signal."
+
+
+# compact alias per ledger/NAMING.md
+amplitudehist = amplitude_hist

@@ -1,6 +1,6 @@
 """Tests for morie.fn.bnhan — Han's maximum rank correlation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bnhan import bnhan
 

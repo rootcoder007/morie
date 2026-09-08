@@ -1,6 +1,6 @@
 """Moran's I on regression residuals"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ mora = moran_resid
 
 def cheatsheet() -> str:
     return "moran_resid({}) -> Moran's I on regression residuals"
+
+
+# compact alias per ledger/NAMING.md
+moranresid = moran_resid

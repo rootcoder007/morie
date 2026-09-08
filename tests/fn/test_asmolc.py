@@ -1,6 +1,6 @@
 """Tests for asmolc.olc_assembly."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.asmolc import olc_assembly
 

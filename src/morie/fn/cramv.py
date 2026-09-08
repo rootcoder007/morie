@@ -4,8 +4,8 @@
 import math
 from typing import Union
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 
 def cramers_v(contingency_table: Union[list, np.ndarray]) -> float:
@@ -43,3 +43,7 @@ cramv = cramers_v
 
 def cheatsheet() -> str:
     return "cramers_v({}) -> Cramer's V for categorical association."
+
+
+# compact alias per ledger/NAMING.md
+cramersv = cramers_v

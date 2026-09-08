@@ -1,24 +1,18 @@
-"""Tests for km029.kamath_ch2_sbo_loss."""
+"""Tests for km029.kamath_ch2_sbo_loss (re-fixtured from the doctest)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.km029 import kamath_ch2_sbo_loss
+import morie.fn.km029 as mod
 
 
-def test_km029_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    S = np.random.default_rng(42).normal(0, 1, 100)
-    p = 5
-    result = kamath_ch2_sbo_loss(x, S, p)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_km029_doctest():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
 
 
 def test_km029_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    S = np.random.default_rng(42).normal(0, 1, 100)
-    p = 5
-    result = kamath_ch2_sbo_loss(x, S, p)
-    assert isinstance(result, dict)
+    import pytest
+    from morie.fn.km029 import kamath_ch2_sbo_loss
+    with pytest.raises((ValueError, TypeError)):
+        kamath_ch2_sbo_loss(*([None] * 2))

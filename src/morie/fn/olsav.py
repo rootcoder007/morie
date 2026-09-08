@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -64,3 +64,7 @@ olsav = overlap_save
 
 def cheatsheet() -> str:
     return "overlap_save({}) -> Overlap-save fast convolution."
+
+
+# compact alias per ledger/NAMING.md
+overlapsave = overlap_save

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 
 def mi_summary(
@@ -66,3 +66,7 @@ def mi_summary(
 
 def cheatsheet() -> str:
     return "mi_summary({}) -> Summary table of invariance levels with pass/fail."
+
+
+# compact alias per ledger/NAMING.md
+misummary = mi_summary

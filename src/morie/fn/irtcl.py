@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def _icc_2pl(theta: float, a: float, b: float) -> float:
@@ -146,3 +146,7 @@ def irt_calibrate(
 
 def cheatsheet() -> str:
     return "_icc_2pl({}) -> IRT calibration pipeline (JMLE for 1PL/2PL)."
+
+
+# compact alias per ledger/NAMING.md
+irtcalibrate = irt_calibrate

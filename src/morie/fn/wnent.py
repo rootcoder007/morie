@@ -1,6 +1,6 @@
 """Wiener entropy."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -56,3 +56,7 @@ wnent = wiener_entropy
 
 def cheatsheet() -> str:
     return "wiener_entropy(x) -> Spectral flatness (Wiener entropy)."
+
+
+# compact alias per ledger/NAMING.md
+wienerentropy = wiener_entropy

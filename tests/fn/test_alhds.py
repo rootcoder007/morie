@@ -1,24 +1,16 @@
 """Tests for alhds.alammar_hdbscan_cluster."""
 
-import numpy as np
-
 from morie.fn.alhds import alammar_hdbscan_cluster
 
 
 def test_alhds_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    min_cluster_size = 100
-    min_samples = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_hdbscan_cluster(X, min_cluster_size, min_samples)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    X = [[0, 0], [0.1, 0], [0, 0.1], [5, 5], [5.1, 5], [5, 5.1], [20, 20]]
+    out = alammar_hdbscan_cluster(X, 3, 2)
+    assert out["n_clusters"] == 2
+    assert out["labels"][6] == -1
 
 
 def test_alhds_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    min_cluster_size = 100
-    min_samples = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_hdbscan_cluster(X, min_cluster_size, min_samples)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="at least 2"):
+        alammar_hdbscan_cluster([[0, 0], [1, 1], [2, 2]], 1)

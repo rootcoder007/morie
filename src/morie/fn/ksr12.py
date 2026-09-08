@@ -7,7 +7,7 @@ Y = beta X + eps, this is
 the Fisher-information lower bound on Var(sqrt(n) beta_hat).
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

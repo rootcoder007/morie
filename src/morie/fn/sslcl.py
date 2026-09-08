@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -97,3 +97,7 @@ sslcl = semi_supervised
 
 def cheatsheet() -> str:
     return "semi_supervised({}) -> Semi-supervised self-training classifier."
+
+
+# compact alias per ledger/NAMING.md
+semisupervised = semi_supervised

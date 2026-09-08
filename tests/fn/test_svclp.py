@@ -1,6 +1,6 @@
 """Tests for morie.fn.svclp -- Cutting plane in 3D"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svclp import cut_plane
 

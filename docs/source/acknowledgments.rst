@@ -44,6 +44,24 @@ The Anthropic and Google research-credit programs are compute-
 allocation programs; they do not constitute endorsement of MORIE
 by either company.
 
+Methods and their authors
+-------------------------
+
+morie's general-purpose modules implement published methods natively
+rather than delegating to a third-party package. Each implementation
+is written against the primary source, and the function's docstring
+names the chapter, section or equation, so a reader can check the code
+against the same page the author wrote.
+
+The full attribution table -- method, author, and the edition or issue
+consulted -- is maintained in ``ACKNOWLEDGMENTS.md`` at the repository
+root. It is kept in one place rather than duplicated here, so the two
+cannot drift apart.
+
+Where a secondary source and the primary disagree, morie follows the
+primary and records the divergence in the function's docstring, so the
+choice is auditable rather than inherited.
+
 Funding and infrastructure
 --------------------------
 

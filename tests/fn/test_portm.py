@@ -1,6 +1,6 @@
 """Tests for morie.fn.portm -- Portmanteau (Ljung-Box) test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.portm import portmanteau_test

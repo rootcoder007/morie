@@ -1,6 +1,6 @@
 """Tests for gb5717.gibbons_wsrt_symmetry."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb5717 import gibbons_wsrt_symmetry
 

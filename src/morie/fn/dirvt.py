@@ -15,7 +15,7 @@ def directional_vote(voter_ideal, candidates) -> DescriptiveResult:
 
     .. epigraph:: Number rules the universe. -- Pythagoras
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     v = np.asarray(voter_ideal, dtype=float).ravel()
     cands = np.atleast_2d(np.asarray(candidates, dtype=float))

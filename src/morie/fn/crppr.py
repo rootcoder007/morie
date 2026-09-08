@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
-from scipy.special import loggamma
+from . import _array_core as np
+from ._sci_core import loggamma
 
 
 def chinese_restaurant_process(
@@ -25,7 +25,8 @@ def chinese_restaurant_process(
 
     References
     ----------
-    Aldous, D. J. (1985). *Lecture Notes in Mathematics*, 1117, 1--198.
+    Aldous, D. J. (1985). Exchangeability and related topics.
+    *Lecture Notes in Mathematics*, 1117, 1--198.
     """
     rng = np.random.default_rng(seed)
     assignments = np.zeros(n, dtype=int)

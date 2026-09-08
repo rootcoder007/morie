@@ -1,6 +1,6 @@
 """Tests for ebalw.entropy_balancing."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ebalw import entropy_balancing
 

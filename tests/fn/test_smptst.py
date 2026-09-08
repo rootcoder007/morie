@@ -1,6 +1,6 @@
 """Tests for smptst.sample_test_msm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.smptst import sample_test_msm
 

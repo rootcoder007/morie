@@ -1,6 +1,6 @@
 """Tests for fzgn.fauzi_gn_edgeworth_correction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzgn import fauzi_gn_edgeworth_correction
 

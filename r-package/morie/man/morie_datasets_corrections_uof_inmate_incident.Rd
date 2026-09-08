@@ -32,3 +32,6 @@ upstream schema described in
 \description{
 Inmate-to-incidents bridging table
 }
+\examples{
+morie_datasets_corrections_uof_inmate_incident()
+}

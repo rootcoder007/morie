@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -51,3 +51,7 @@ imfplt = plot_imf_stack_fn
 
 def cheatsheet() -> str:
     return "plot_imf_stack_fn({}) -> IMF decomposition stack plot."
+
+
+# compact alias per ledger/NAMING.md
+plotimfstackfn = plot_imf_stack_fn

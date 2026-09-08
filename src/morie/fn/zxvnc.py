@@ -1,6 +1,6 @@
 """Vincenty geodesic distance"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ vinc = vincenty_dist
 
 def cheatsheet() -> str:
     return "vincenty_dist({}) -> Vincenty geodesic distance"
+
+
+# compact alias per ledger/NAMING.md
+vincentydist = vincenty_dist

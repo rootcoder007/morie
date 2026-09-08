@@ -1,4 +1,4 @@
-import numpy as np
+from morie.fn import _array_core as np
 """Tests for morie.fn.stckp -- Stick-breaking."""
 
 from morie.fn.stckp import stick_breaking

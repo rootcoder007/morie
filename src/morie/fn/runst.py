@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import TestResult
 
@@ -51,7 +51,7 @@ def runs_test(x) -> TestResult:
         return TestResult(test_name="Runs test", statistic=float(runs), p_value=1.0, n=n)
 
     z = (runs - mu) / np.sqrt(var)
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     pval = 2.0 * norm.sf(abs(z))
 

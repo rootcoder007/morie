@@ -1,6 +1,6 @@
 """Tests for morie.fn.pqnrm — PolarQuant unit-sphere projection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pqnrm import polar_normalize

@@ -1,6 +1,6 @@
 """Stirling numbers of the first and second kind."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -72,3 +72,7 @@ stirn = stirling_number
 
 def cheatsheet() -> str:
     return "stirling_number({}) -> Stirling numbers of the first and second kind."
+
+
+# compact alias per ledger/NAMING.md
+stirlingnumber = stirling_number

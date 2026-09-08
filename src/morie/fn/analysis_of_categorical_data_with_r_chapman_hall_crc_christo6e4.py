@@ -1,54 +1,22 @@
-"""Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).."""
+"""Deprecated alias for :func:`morie.fn.logistic_joint_probability`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .logistic_joint_probability import logistic_joint_probability as _impl
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_4"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_4(x):
-    """
-    Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).
-
-    Formula: [EQ] i=1yi(β0 +β1xi1 +··· +βpxip)]∏n
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e4')`` for the full guide.
-
-    References
-    ----------
-    Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ), ch.6 eq.6.4
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        },
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_4(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.logistic_joint_probability` instead."""
+    warnings.warn(
+        "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_4() is the book-coordinate name for logistic_joint_probability(); "
+        "it will be removed. Use morie.fn.logistic_joint_probability() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e4: Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M )."
+    return _impl(*args, **kwargs)

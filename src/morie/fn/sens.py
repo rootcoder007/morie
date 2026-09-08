@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import DiagnosticResult
 
@@ -53,3 +53,7 @@ sens = sensitivity_dx
 
 def cheatsheet() -> str:
     return "sensitivity_dx({}) -> Sensitivity / recall."
+
+
+# compact alias per ledger/NAMING.md
+sensitivitydx = sensitivity_dx

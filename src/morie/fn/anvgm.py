@@ -1,8 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Anisotropic variogram model (Schabenberger & Gotway Ch 8)."""
 
-import numpy as np
-from scipy.spatial.distance import pdist, squareform
+from . import _array_core as np
+from ._sci_core import pdist, squareform
 
 
 def anvgm(

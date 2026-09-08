@@ -1,6 +1,6 @@
 """Tests for kmfew.kamath_few_shot_exemplar_selection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmfew import kamath_few_shot_exemplar_selection
 

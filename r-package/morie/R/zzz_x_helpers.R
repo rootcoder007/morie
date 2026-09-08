@@ -9,6 +9,18 @@
 # This is invoked at the top of every morie ML-callable function so
 # users can pass a vector predictor without hitting glmnet's
 # "x should be a matrix with 2 or more columns" error.
+#' This is invoked at the top of every morie ML-callable function so
+#'
+#' users can pass a vector predictor without hitting glmnet\'s "x should
+#' be a matrix with 2 or more columns" error.
+#'
+#' @param x A matrix; indexed by row and column.
+#' @return The value of \code{x}, as built in the body.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .morie_ensure_design_matrix(x = x)
+#' res
 .morie_ensure_design_matrix <- function(x) {
   if (is.data.frame(x)) return(x)
   if (is.vector(x) && !is.list(x)) {

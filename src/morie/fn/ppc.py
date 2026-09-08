@@ -8,7 +8,7 @@ __all__ = ["posterior_predictive_check", "ppc"]
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def posterior_predictive_check(

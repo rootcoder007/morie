@@ -1,6 +1,6 @@
 """Tests for km106.kamath_ch6_self_diagnosis_prob."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km106 import kamath_ch6_self_diagnosis_prob
 

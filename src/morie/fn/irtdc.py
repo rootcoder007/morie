@@ -11,7 +11,7 @@ def irt_discrimination_summary(alpha) -> DescriptiveResult:
 
     .. epigraph:: It is not what happens to you, but how you react, that matters. -- Epictetus
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     a = np.asarray(alpha, dtype=float).ravel()
     return DescriptiveResult(

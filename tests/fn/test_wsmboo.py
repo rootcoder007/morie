@@ -1,6 +1,6 @@
 """Tests for wsmboo.wasserman_bootstrap."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmboo import wasserman_bootstrap
 

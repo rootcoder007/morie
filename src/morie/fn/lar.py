@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -40,3 +40,7 @@ lar = log_area_ratio_fn
 
 def cheatsheet() -> str:
     return "log_area_ratio_fn({}) -> Log Area Ratios from LPC coefficients."
+
+
+# compact alias per ledger/NAMING.md
+logarearatiofn = log_area_ratio_fn

@@ -1,6 +1,6 @@
 """GELU approximation via tanh."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def gelu_tanh_approx(y):
 
 def cheatsheet():
     return "gelutn: GELU approximation via tanh"
+
+
+# compact alias per ledger/NAMING.md
+gelutanhapprox = gelu_tanh_approx

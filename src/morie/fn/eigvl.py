@@ -19,7 +19,7 @@ def extract_eigenvalues(B):
     DescriptiveResult
         value = sorted eigenvalues (ndarray).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     B = np.asarray(B, dtype=float)
     vals = np.linalg.eigvalsh(B)

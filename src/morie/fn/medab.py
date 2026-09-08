@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -45,3 +45,7 @@ medab = median_abs_dev
 
 def cheatsheet() -> str:
     return "median_abs_dev(x) -> Median absolute deviation."
+
+
+# compact alias per ledger/NAMING.md
+medianabsdev = median_abs_dev

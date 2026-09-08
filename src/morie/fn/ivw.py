@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import ESRes
 
@@ -74,3 +74,7 @@ ivw = iv_wald
 
 def cheatsheet() -> str:
     return "iv_wald({}) -> Instrumental variable Wald estimate (MR-style)."
+
+
+# compact alias per ledger/NAMING.md
+ivwald = iv_wald

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -24,3 +24,7 @@ alias = mean_abs_value
 
 def cheatsheet() -> str:
     return "mean_abs_value({}) -> Mean absolute value of a signal."
+
+
+# compact alias per ledger/NAMING.md
+meanabsvalue = mean_abs_value

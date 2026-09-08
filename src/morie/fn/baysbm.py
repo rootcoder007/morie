@@ -1,6 +1,6 @@
 """BayesB sparse marker prior."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def bayes_b_marker(y, M, pi):
 
 def cheatsheet():
     return "baysbm: BayesB sparse marker prior"
+
+
+# compact alias per ledger/NAMING.md
+bayesbmarker = bayes_b_marker

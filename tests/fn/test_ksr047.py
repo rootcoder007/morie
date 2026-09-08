@@ -1,6 +1,6 @@
 """Tests for ksr047.kosorok_ch2_kaplan_meier_self_consistency."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr047 import kosorok_ch2_kaplan_meier_self_consistency
 

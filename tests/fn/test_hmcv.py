@@ -1,6 +1,6 @@
 """Tests for hmcv.geron_cross_validation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmcv import geron_cross_validation
 

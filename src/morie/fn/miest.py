@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._mapq_const import SUBSCALES
 
@@ -101,3 +101,7 @@ def mi_effect_size(
 
 def cheatsheet() -> str:
     return "mi_effect_size({}) -> Effect sizes for measurement invariance (dMACS, signed area)"
+
+
+# compact alias per ledger/NAMING.md
+mieffectsize = mi_effect_size

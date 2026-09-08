@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -34,3 +34,7 @@ sprto = spectral_ratio
 
 def cheatsheet() -> str:
     return "spectral_ratio({}) -> Spectral power ratio between two frequency bands."
+
+
+# compact alias per ledger/NAMING.md
+spectralratio = spectral_ratio

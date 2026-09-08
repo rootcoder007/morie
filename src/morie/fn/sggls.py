@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -68,3 +68,7 @@ sggls = gls_spatial
 
 def cheatsheet() -> str:
     return "gls_spatial({}) -> Generalized least squares for spatial data."
+
+
+# compact alias per ledger/NAMING.md
+glsspatial = gls_spatial

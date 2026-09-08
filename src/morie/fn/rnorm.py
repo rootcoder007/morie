@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Draw a random sample from a normal distribution."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def rnorm(n: int, mean: float = 0.0, sd: float = 1.0, seed: int | None = None) -> np.ndarray:

@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.linalg import cholesky, solve_triangular
+from . import _array_core as np
+from ._sci_core import cholesky, solve_triangular
 
 
 def gaussian_process_regression(

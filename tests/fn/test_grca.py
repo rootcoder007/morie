@@ -1,28 +1,11 @@
-"""Tests for grca.geron_cross_attention."""
+"""Tests for grca (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.grca import geron_cross_attention
-
-
-def test_grca_basic():
-    """Test basic functionality."""
-    X_dec = np.random.default_rng(42).normal(0, 1, 100)
-    X_enc = np.random.default_rng(42).normal(0, 1, 100)
-    WQ = np.random.default_rng(42).normal(0, 1, 100)
-    WK = np.random.default_rng(42).normal(0, 1, 100)
-    WV = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_cross_attention(X_dec, X_enc, WQ, WK, WV)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.grca as mod
 
 
-def test_grca_edge():
-    """Test edge cases."""
-    X_dec = np.random.default_rng(42).normal(0, 1, 100)
-    X_enc = np.random.default_rng(42).normal(0, 1, 100)
-    WQ = np.random.default_rng(42).normal(0, 1, 100)
-    WK = np.random.default_rng(42).normal(0, 1, 100)
-    WV = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_cross_attention(X_dec, X_enc, WQ, WK, WV)
-    assert isinstance(result, dict)
+def test_grca_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

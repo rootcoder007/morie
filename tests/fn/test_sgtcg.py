@@ -1,6 +1,6 @@
 """Tests for sgtcg.sgt_commute_distance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtcg import sgt_commute_distance
 

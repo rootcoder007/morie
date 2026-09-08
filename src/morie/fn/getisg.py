@@ -1,7 +1,7 @@
 """Getis-Ord G global statistic."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -66,3 +66,7 @@ def getis_ord_g(x, W, cdf=None):
 
 def cheatsheet():
     return "getisg: Getis-Ord G global statistic"
+
+
+# compact alias per ledger/NAMING.md
+getisordg = getis_ord_g

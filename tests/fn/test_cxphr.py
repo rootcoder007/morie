@@ -1,6 +1,6 @@
 """Tests for cxphr: Cox proportional hazards via partial likelihood."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cxphr import cxphr

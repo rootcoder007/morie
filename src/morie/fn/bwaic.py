@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def compute_waic(
@@ -20,8 +20,12 @@ def compute_waic(
 
     References
     ----------
-    Watanabe, S. (2010). *JMLR*, 11, 3571--3594.
-    Vehtari, A., et al. (2017). *Statistics and Computing*, 27(5), 1413--1432.
+    Watanabe, S. (2010). Asymptotic equivalence of Bayes cross
+    validation and widely applicable information criterion in singular
+    learning theory. *JMLR*, 11, 3571--3594.
+    Vehtari, A., et al. (2017). Practical Bayesian model evaluation
+    using leave-one-out cross-validation and WAIC. *Statistics and
+    Computing*, 27(5), 1413--1432.
     """
     ll = np.asarray(log_lik_matrix, dtype=float)
     if ll.ndim == 1:
@@ -38,7 +42,11 @@ def compute_waic(
     elpd_waic_i = lppd_i - p_waic_i
     waic = float(-2.0 * np.sum(elpd_waic_i))
 
-    se = float(np.sqrt(n_obs * np.var(elpd_waic_i, ddof=1)))
+    # se on the SAME -2 deviance scale as `waic` -- the pointwise WAIC
+    # is -2*elpd_i, so its variance carries the factor 4. Sibling
+    # waic.py computes this from the pointwise -2 values directly;
+    # the two modules now agree instead of differing by a factor of 2.
+    se = float(2.0 * np.sqrt(n_obs * np.var(elpd_waic_i, ddof=1)))
 
     return {
         "waic": waic,
@@ -56,3 +64,7 @@ bwaic = compute_waic
 
 def cheatsheet() -> str:
     return "compute_waic({}) -> WAIC (widely applicable information criterion)."
+
+
+# compact alias per ledger/NAMING.md
+computewaic = compute_waic

@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptgfn -- Nearest-neighbor G-function"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptgfn import g_function
 

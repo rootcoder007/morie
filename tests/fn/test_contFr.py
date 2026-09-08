@@ -1,6 +1,6 @@
 """Tests for contFr.continued_fraction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.contFr import continued_fraction
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.newtm -- Newton's method."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.newtm import newtm, newton_method

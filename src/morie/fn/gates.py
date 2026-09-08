@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -73,3 +73,7 @@ short = logic_gates
 
 def cheatsheet() -> str:
     return "logic_gates({}) -> Logic gate simulation."
+
+
+# compact alias per ledger/NAMING.md
+logicgates = logic_gates

@@ -6,7 +6,7 @@ Analysis*, 3rd ed. IEEE/Wiley, Chapter 5.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -44,7 +44,7 @@ def spcgm(
     DescriptiveResult
         ``extra`` has ``frequencies``, ``times``, ``Sxx``.
     """
-    from scipy.signal import spectrogram
+    from ._signal_core import spectrogram
 
     x = np.asarray(x, dtype=float).ravel()
     seg = min(nperseg, len(x))

@@ -1,6 +1,6 @@
 """Test forich."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.forich import forich
 

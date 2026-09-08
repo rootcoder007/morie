@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -94,3 +94,7 @@ svmrb = svm_rbf
 
 def cheatsheet() -> str:
     return "svm_rbf({}) -> RBF kernel SVM classifier."
+
+
+# compact alias per ledger/NAMING.md
+svmrbf = svm_rbf

@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxsls -- Spatial LASSO"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxsls import spatial_lasso
 

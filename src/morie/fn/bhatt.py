@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -32,3 +32,7 @@ bhatt = bhatt_fn
 
 def cheatsheet() -> str:
     return "bhatt_fn({}) -> Bhattacharyya divergence between two distributions."
+
+
+# compact alias per ledger/NAMING.md
+bhattfn = bhatt_fn

@@ -1,6 +1,6 @@
 """Tests for morie.fn.swntri."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.swntri import swntri
 

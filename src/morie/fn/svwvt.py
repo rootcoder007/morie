@@ -1,6 +1,6 @@
 """Weighted voting game value"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ weig = weighted_vote
 
 def cheatsheet() -> str:
     return "weighted_vote({}) -> Weighted voting game value"
+
+
+# compact alias per ledger/NAMING.md
+weightedvote = weighted_vote

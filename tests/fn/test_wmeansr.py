@@ -1,6 +1,6 @@
 """Tests for wmeansr.weighted_mean_survey."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wmeansr import weighted_mean_survey
 

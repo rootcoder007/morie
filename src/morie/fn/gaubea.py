@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -68,3 +68,7 @@ gaubea = gaussian_beam
 
 def cheatsheet() -> str:
     return "gaussian_beam({}) -> Gaussian beam optics."
+
+
+# compact alias per ledger/NAMING.md
+gaussianbeam = gaussian_beam

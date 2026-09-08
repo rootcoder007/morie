@@ -38,7 +38,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 if TYPE_CHECKING:  # pragma: no cover — only for the type checker
     from google.cloud import bigquery as _bq_types  # noqa: F401

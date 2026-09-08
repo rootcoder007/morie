@@ -1,6 +1,6 @@
 """Tests for trcwgt.truncated_combined_weights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.trcwgt import truncated_combined_weights
 

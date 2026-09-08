@@ -1,7 +1,7 @@
 """Spatial regimes (Chow test for spatial heterogeneity)."""
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import DescriptiveResult
 
@@ -67,3 +67,7 @@ spreg = spatial_regime
 
 def cheatsheet() -> str:
     return "spatial_regime({}) -> Spatial regimes (Chow test for spatial heterogeneity)."
+
+
+# compact alias per ledger/NAMING.md
+spatialregime = spatial_regime

@@ -17,7 +17,7 @@ def bb_weight_matrix(Z, n_dims: int = 2) -> DescriptiveResult:
 
     .. epigraph:: No man ever steps in the same river twice. -- Heraclitus
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     Zc = Z - Z.mean(axis=0)
@@ -36,3 +36,7 @@ bbwt = bb_weight_matrix
 
 def cheatsheet() -> str:
     return "bb_weight_matrix({}) -> Blackbox weight matrix estimation."
+
+
+# compact alias per ledger/NAMING.md
+bbweightmatrix = bb_weight_matrix

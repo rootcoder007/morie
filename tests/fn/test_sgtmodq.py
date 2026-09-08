@@ -1,6 +1,6 @@
 """Tests for sgtmodq.sgt_modularity_q."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtmodq import sgt_modularity_q
 

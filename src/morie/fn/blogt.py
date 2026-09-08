@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
-from scipy.optimize import minimize
+from . import _array_core as np
+from ._sci_core import minimize
 
 
 def bayesian_logistic(
@@ -64,7 +64,7 @@ def bayesian_logistic(
     H = X_arr.T @ W @ X_arr + prior_prec
     cov = np.linalg.inv(H)
 
-    from scipy import stats as st
+    from . import _stats_core as st
 
     alpha = 1 - prob
     se = np.sqrt(np.diag(cov))

@@ -5,7 +5,7 @@ Iteratively reweighted least squares (IRLS) for GLM fitting.
 Solves GLM via weighted least squares with iteratively updated weights.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["irlsf"]
 

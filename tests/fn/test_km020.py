@@ -1,22 +1,18 @@
-"""Tests for km020.kamath_ch2_ssl_loss."""
+"""Tests for km020.kamath_ch2_ssl_loss (re-fixtured from the doctest)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.km020 import kamath_ch2_ssl_loss
+import morie.fn.km020 as mod
 
 
-def test_km020_basic():
-    """Test basic functionality."""
-    L_PTi = np.random.default_rng(42).normal(0, 1, 100)
-    lambda_i = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_ssl_loss(L_PTi, lambda_i)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_km020_doctest():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
 
 
 def test_km020_edge():
-    """Test edge cases."""
-    L_PTi = np.random.default_rng(42).normal(0, 1, 100)
-    lambda_i = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_ssl_loss(L_PTi, lambda_i)
-    assert isinstance(result, dict)
+    import pytest
+    from morie.fn.km020 import kamath_ch2_ssl_loss
+    with pytest.raises(ValueError):
+        kamath_ch2_ssl_loss([])

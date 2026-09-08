@@ -12,7 +12,7 @@ In NIPS (pp. 5998-6008).
 
 __all__ = ["posem"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def posem(seq_len, d_model, base=10000):

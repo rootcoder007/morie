@@ -5,7 +5,7 @@ Gaussian plume model
 Category: EnvStat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def engau(data=None, coords=None, n=50):

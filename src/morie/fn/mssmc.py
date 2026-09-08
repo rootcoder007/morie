@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SMACOF iterative MDS"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ smac = smacof_mds
 
 def cheatsheet() -> str:
     return "smacof_mds({}) -> SMACOF iterative MDS"
+
+
+# compact alias per ledger/NAMING.md
+smacofmds = smacof_mds

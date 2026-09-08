@@ -5,7 +5,7 @@ Wind speed interpolation
 Category: EnvStat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def enwsp(data=None, coords=None, n=50):

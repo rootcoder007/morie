@@ -176,7 +176,7 @@ morie_dsp_wiener_filter <- function(x, noise_psd = NULL,
 #'
 #' Least-mean-squares adaptive transversal filter. Returns the filter
 #' output `y` and instantaneous error `e = d - y`. Coefficient update:
-#' `w <- w + 2 * mu * e[i] * x_seg`.
+#' `w <- w + 2 * mu * e\[i\] * x_seg`.
 #'
 #' @param x Input (reference) vector.
 #' @param d Desired vector, same length as `x`.
@@ -261,7 +261,7 @@ morie_dsp_nlms <- function(x, d, order = 16L, mu = 0.5, eps = 1e-8) {
 #' at the cost of O(order^2) per sample.
 #'
 #' @inheritParams morie_dsp_lms
-#' @param lam Forgetting factor in (0, 1]. Default 0.99.
+#' @param lam Forgetting factor in (0, 1\]. Default 0.99.
 #' @param delta Initial P diagonal. Default 100.
 #' @return List with `y`, `e`.
 #' @references Rangayyan & Krishnan (2015), Ch. 3, sec. 3.6;
@@ -614,6 +614,21 @@ morie_dsp_even_odd <- function(x) {
 # ---- internal helpers -------------------------------------------------
 
 # "same"-mode convolution matching numpy.convolve(x, k, "same").
+#' "same"-mode convolution matching numpy.convolve(x, k, "same")
+#'
+#' A step of the dsp_filters implementation. Called by \code{morie_dsp_hann_filter},
+#' \code{morie_dsp_matched}, \code{morie_dsp_moving_average} and 2 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x A vector; its length is taken.
+#' @param k A vector; its length is taken.
+#' @return The value of \code{[}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .same_convolve(x = x, k = 3L)
+#' res
 .same_convolve <- function(x, k) {
   n <- length(x)
   m <- length(k)

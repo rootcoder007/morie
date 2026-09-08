@@ -1,8 +1,8 @@
 """Tests for rgstfts.rangayyan_stft_spectrogram."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgstfts import rangayyan_stft_spectrogram
+from morie.fn.bsatf import rangayyan_stft_spectrogram
 
 
 def test_rgstfts_basic():

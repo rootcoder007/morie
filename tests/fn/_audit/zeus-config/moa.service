@@ -1,0 +1,21 @@
+[Unit]
+Description=MoA (Mixture-of-Agents) OpenAI-compatible aggregator
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/mnt/nvme/GRAD_WORK/moa
+Environment=MOA_PORT=8081
+Environment=MOA_HOST=127.0.0.1
+Environment=MOA_ENDPOINT=http://localhost:11434/v1/chat/completions
+# qwen3-coder:480b-cloud returns HTTP 410 Gone; deepseek-v3.1:671b-cloud
+# is not installed. Both were in the old defaults and hung the endpoint.
+Environment=MOA_PROPOSERS=minimax-m3:cloud,minimax-m2.5:cloud,gemma4:31b-cloud,gpt-oss:120b-cloud
+Environment=MOA_AGGREGATOR=minimax-m3:cloud
+ExecStart=/mnt/nvme/stan/venv/bin/python /mnt/nvme/GRAD_WORK/moa/moa_server.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

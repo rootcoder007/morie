@@ -1,6 +1,6 @@
 """Tests for sgtsck.sgt_spectral_clustering_k."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtsck import sgt_spectral_clustering_k
 

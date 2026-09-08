@@ -1,6 +1,6 @@
 """Tests for morie.fn.wrdln."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wrdln import wrdln
 

@@ -36,14 +36,22 @@
 #'   identified and dropped before fitting.
 #' @srrstats {RE2.4a} `.viable_terms()` detects predictor terms with a
 #'   single observed level (perfect collinearity among predictors).
-#' @srrstats {RE3.0} Iterative fitters (glm, Hawkes MLE, HMC backends)
-#'   surface non-convergence via their upstream warnings.
-#' @srrstats {RE3.1} Those warnings can be suppressed by the caller while
-#'   the returned object still records fit status.
-#' @srrstats {RE3.2} Convergence thresholds default to the well-tested
-#'   upstream defaults (documented per wrapper).
-#' @srrstats {RE3.3} Convergence thresholds can be set explicitly through
-#'   the `...` pass-through to the upstream fitter.
+#' @srrstats {RE3.0} The iterative fitters are morie's own -- the
+#'   Newton-Raphson `.morie_logit_fit()` / `.morie_binchoice_fit()`
+#'   behind the propensity models, the Hawkes MLE, the ordinal IRLS --
+#'   and each warns when it exhausts `max_iter` without meeting `tol`,
+#'   rather than returning the last iterate as though it had converged.
+#' @srrstats {RE3.1} The warnings are ordinary R conditions, so a caller
+#'   may `suppressWarnings()` them; the estimate is still returned, and
+#'   the closed-form estimators here have no convergence step to report.
+#' @srrstats {RE3.2} Convergence thresholds default to values documented
+#'   on each fitter (`.morie_logit_fit`: `tol = 1e-9`, `max_iter = 100`;
+#'   `mrm_threshold_specific_ordinal`: `tol = 1e-6`, `max_iter = 200`).
+#' @srrstats {RE3.3} Those thresholds are ordinary named arguments, so
+#'   they can be set explicitly per call -- e.g.
+#'   `mrm_threshold_specific_ordinal(..., tol =, max_iter =)`. There is
+#'   no `...` pass-through because there is no upstream fitter to pass
+#'   to: the estimators are native.
 #' @srrstats {RE4.0} Estimators return a structured result object
 #'   (class `morie_rich_result`) modelling the fit.
 #' @srrstats {RE4.2} Coefficients are returned (`details$all_coefficients`).
@@ -118,7 +126,9 @@ NULL
 # `morie_did_diagnostics`) are kept verbatim -- their output shapes
 # are part of the rmorie API.
 
-#' @importFrom stats lm glm coef vcov pnorm pt pf pchisq qnorm qt qchisq model.matrix model.frame fitted residuals binomial as.formula sigma complete.cases quantile predict ave sd var aggregate na.omit reshape lsfit setNames
+#' @importFrom stats lm glm coef vcov pnorm pt pf pchisq qnorm qt qchisq model.matrix
+#' model.frame fitted residuals binomial as.formula sigma complete.cases quantile predict
+#' ave sd var aggregate na.omit reshape lsfit setNames
 #' @importFrom utils combn head
 NULL
 
@@ -152,6 +162,8 @@ NULL
 #' @noRd
 .morie_did_have_didmultiplegt  <- function() requireNamespace("DIDmultiplegt",  quietly = TRUE)
 
+#' @param pkg See Usage.
+#' @param fn See Usage.
 #' @keywords internal
 .morie_did_need <- function(pkg, fn) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
@@ -163,12 +175,18 @@ NULL
   invisible(TRUE)
 }
 
+#' @param estimate See Usage.
+#' @param se See Usage.
+#' @param alpha See Usage.
 #' @keywords internal
 .morie_did_make_ci <- function(estimate, se, alpha = 0.05) {
   z <- stats::qnorm(1 - alpha / 2)
   c(estimate - z * se, estimate + z * se)
 }
 
+#' @param X See Usage.
+#' @param y See Usage.
+#' @param cluster_ids See Usage.
 #' @keywords internal
 .morie_did_ols_robust_se <- function(X, y, cluster_ids = NULL) {
   # OLS with heteroskedasticity- or cluster-robust (CR1) variance.
@@ -201,16 +219,20 @@ NULL
   list(beta = beta, se = se, vcov = V, residuals = resid)
 }
 
+#' @param X See Usage.
 #' @keywords internal
 .morie_did_add_intercept <- function(X) {
   cbind(`(Intercept)` = 1, X)
 }
 
+#' @param t_val See Usage.
 #' @keywords internal
 .morie_did_pvalue <- function(t_val) {
   2 * stats::pnorm(-abs(t_val))
 }
 
+#' @param data See Usage.
+#' @param cols See Usage.
 #' @keywords internal
 .morie_did_drop_na <- function(data, cols) {
   # Every did estimator routes through here, so validate once at the
@@ -221,6 +243,13 @@ NULL
   data[stats::complete.cases(data[, cols, drop = FALSE]), , drop = FALSE]
 }
 
+#' @param estimate See Usage.
+#' @param std_error See Usage.
+#' @param n_treated See Usage.
+#' @param n_control See Usage.
+#' @param method See Usage.
+#' @param alpha See Usage.
+#' @param details See Usage.
 #' @keywords internal
 .morie_did_result <- function(estimate, std_error, n_treated, n_control,
                               method, alpha = 0.05, details = list()) {
@@ -243,6 +272,10 @@ NULL
   )
 }
 
+#' @param df See Usage.
+#' @param varname See Usage.
+#' @param unit See Usage.
+#' @param time See Usage.
 #' @keywords internal
 .morie_did_within_transform <- function(df, varname, unit, time) {
   # Two-way demeaning: x - unit_mean - time_mean + grand_mean.
@@ -253,6 +286,9 @@ NULL
   v - um - tm + gm
 }
 
+#' @param y See Usage.
+#' @param X See Usage.
+#' @param treat See Usage.
 #' @keywords internal
 .morie_did_outcome_regression_att <- function(y, X, treat) {
   X <- as.matrix(X)
@@ -265,6 +301,9 @@ NULL
   mean(y[treat == 1] - y0_hat)
 }
 
+#' @param y See Usage.
+#' @param treat See Usage.
+#' @param ps See Usage.
 #' @keywords internal
 .morie_did_ipw_att <- function(y, treat, ps) {
   ps <- pmin(pmax(ps, 0.01), 0.99)
@@ -285,9 +324,11 @@ NULL
 #'
 #' Estimates the canonical two-group / two-period DiD treatment effect
 #' \deqn{\hat\tau = (\bar Y_{1,\text{post}} - \bar Y_{1,\text{pre}})
-#'                 - (\bar Y_{0,\text{post}} - \bar Y_{0,\text{pre}}).}{hattau = (bar Y_1,post - bar Y_1,pre) - (bar Y_0,post - bar Y_0,pre).}
+#'                 - (\bar Y_{0,\text{post}} - \bar Y_{0,\text{pre}}).}{hattau = (bar
+#' Y_1,post - bar Y_1,pre) - (bar Y_0,post - bar Y_0,pre).}
 #' With covariates, fits the regression
-#' \eqn{Y = \alpha + \beta D + \gamma P + \tau (D \times P) + X\delta + \varepsilon}{Y = alpha + beta D + gamma P + tau (D x P) + Xdelta + epsilon}
+#' \eqn{Y = \alpha + \beta D + \gamma P + \tau (D \times P) + X\delta + \varepsilon}{Y =
+#' alpha + beta D + gamma P + tau (D x P) + Xdelta + epsilon}
 #' and reports \eqn{\hat\tau}{hattau}.
 #'
 #' For multi-period staggered designs prefer
@@ -803,7 +844,9 @@ morie_did_group_time_att <- function(data, outcome, unit, time, treatment_time,
     std_error = r$se,
     ci_lower  = r$att - z * r$se,
     ci_upper  = r$att + z * r$se,
-    p_value   = 2 * stats::pnorm(-abs(r$att / r$se))
+    p_value   = 2 * stats::pnorm(-abs(r$att / r$se)),
+    n_treated = r$n_treated,
+    post      = r$t >= r$group
   )
   out <- out[out$cohort > 0, , drop = FALSE]
   attr(out, "fit") <- fit
@@ -844,29 +887,50 @@ morie_did_aggregate_gt_att <- function(gt_results,
                                        se_col = "std_error") {
   df <- gt_results
   df[["morie_rel_time"]] <- df[[time_col]] - df[[cohort_col]]
+  # Cells with t < g are PRE-treatment. They are the parallel-trends
+  # check, not effects, and averaging them into a summary drags it
+  # toward zero -- so every aggregation except the event study, whose
+  # whole point is to show the pre-periods separately, uses post cells
+  # only (Callaway & Sant'Anna 2021, section 3).
+  post <- df[["morie_rel_time"]] >= 0
+  # Weight by cohort size where the estimator recorded it, so the
+  # summary is the sample-weighted ATT rather than an unweighted mean
+  # over cells, which would let a cohort of one count as much as a
+  # cohort of a thousand.
+  wts <- if ("n_treated" %in% names(df)) as.numeric(df[["n_treated"]]) else
+    rep(1, nrow(df))
+  agg_one <- function(idx, label) {
+    if (!length(idx)) {
+      return(data.frame(group = label, estimate = NA_real_,
+                        std_error = NA_real_, ci_lower = NA_real_,
+                        ci_upper = NA_real_))
+    }
+    w <- wts[idx] / sum(wts[idx])
+    est <- sum(w * df[[att_col]][idx])
+    # SE of a weighted average of k estimates, treating them as
+    # independent: sqrt(sum(w_i^2 se_i^2)).
+    se <- sqrt(sum(w^2 * df[[se_col]][idx]^2))
+    ci <- .morie_did_make_ci(est, se)
+    data.frame(group = label, estimate = est, std_error = se,
+               ci_lower = ci[1], ci_upper = ci[2])
+  }
   if (identical(aggregation, "overall")) {
-    est <- mean(df[[att_col]], na.rm = TRUE)
-    se  <- sqrt(mean(df[[se_col]]^2, na.rm = TRUE) / nrow(df))
-    ci  <- .morie_did_make_ci(est, se)
-    return(data.frame(group = "overall", estimate = est,
-                      std_error = se, ci_lower = ci[1], ci_upper = ci[2]))
+    return(agg_one(which(post), "overall"))
   }
   group_col <- switch(aggregation,
                       cohort        = cohort_col,
                       calendar_time = time_col,
                       event_time    = "morie_rel_time",
                       stop("Unknown aggregation: ", aggregation))
-  rows <- lapply(split(df, df[[group_col]]), function(g) {
-    est <- mean(g[[att_col]], na.rm = TRUE)
-    # SE of a simple average of k independent estimates:
-    #   sqrt(sum(se_i^2)) / k  ==  sqrt(mean(se_i^2) / k)
-    k <- nrow(g)
-    se <- sqrt(mean(g[[se_col]]^2, na.rm = TRUE) / k)
-    ci  <- .morie_did_make_ci(est, se)
-    data.frame(group = g[[group_col]][1], estimate = est,
-               std_error = se, ci_lower = ci[1], ci_upper = ci[2])
+  # the event study reports every relative period, pre ones included
+  use <- if (identical(aggregation, "event_time")) rep(TRUE, nrow(df)) else post
+  keys <- sort(unique(df[[group_col]][use]))
+  rows <- lapply(keys, function(k) {
+    agg_one(which(use & df[[group_col]] == k), k)
   })
-  do.call(rbind, rows)
+  out <- do.call(rbind, rows)
+  rownames(out) <- NULL
+  out
 }
 
 
@@ -958,11 +1022,24 @@ morie_did_doubly_robust <- function(data, outcome, treatment, post,
                                     n_bootstrap = 200L, seed = 42L,
                                     alpha = 0.05,
                                     se_convention = "reference") {
+  ps_model <- match.arg(as.character(ps_model), c("logistic"))
+  or_model <- match.arg(as.character(or_model), c("linear"))
   rng <- if (exists(".Random.seed", envir = .GlobalEnv))
     get(".Random.seed", envir = .GlobalEnv) else NULL
   on.exit({
     if (!is.null(rng)) assign(".Random.seed", rng, envir = .GlobalEnv)
   })
+  cl <- NULL
+  if (!is.null(cluster)) {
+    if (!cluster %in% names(data)) {
+      stop("did_doubly_robust: `cluster` names a column that is not in ",
+           "`data`: ", cluster, ".", call. = FALSE)
+    }
+    keep <- stats::complete.cases(
+      data[, unique(c(outcome, treatment, post, covariates, cluster)),
+           drop = FALSE])
+    cl <- data[[cluster]][keep]
+  }
   df <- .morie_did_drop_na(data, c(outcome, treatment, post, covariates))
   y  <- as.numeric(df[[outcome]])
   d  <- as.numeric(df[[treatment]])
@@ -975,7 +1052,10 @@ morie_did_doubly_robust <- function(data, outcome, treatment, post,
   se_est <- .morie_did_if_se(fit$IF, se_convention)
   if (n_bootstrap > 0L) {
     mb <- .morie_did_mboot(matrix(fit$IF, ncol = 1L),
-                           biters = n_bootstrap, seed = seed)
+                           biters = n_bootstrap, seed = seed,
+                           # aggregate the influence function within
+                           # cluster before drawing multipliers
+                           cluster = cl)
     if (is.finite(mb$se) && mb$se > 0) se_est <- mb$se
   }
   .morie_did_result(

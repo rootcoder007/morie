@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -59,3 +59,7 @@ gborl = gabor_logon
 
 def cheatsheet() -> str:
     return "gabor_logon({}) -> Gabor logon (Gaussian-windowed sinusoid, TF atom)."
+
+
+# compact alias per ledger/NAMING.md
+gaborlogon = gabor_logon

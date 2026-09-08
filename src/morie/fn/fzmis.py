@@ -13,7 +13,7 @@ For Gaussian K, mu_2(K)=1, R(K)=1/(2 sqrt(pi)).  We estimate R(f'') by
 the Silverman normal-reference plug-in R(f'') = 3 / (8 sqrt(pi) sigma^5).
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

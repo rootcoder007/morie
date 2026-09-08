@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 
 def bayes_factor_savage_dickey(
@@ -31,7 +31,9 @@ def bayes_factor_savage_dickey(
 
     References
     ----------
-    Wagenmakers, E.-J., et al. (2010). *Cognitive Psychology*, 60(3), 158--189.
+    Wagenmakers, E.-J., Lodewyckx, T., Kuriyal, H., & Grasman, R. (2010).
+        Bayesian hypothesis testing for psychologists: a tutorial on the
+        Savage-Dickey method. *Cognitive Psychology*, 60(3), 158-189.
     """
     samples = np.asarray(posterior_samples, dtype=float).ravel()
 

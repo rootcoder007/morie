@@ -1,6 +1,6 @@
 """Tests for eslbpr.esl_backprop."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslbpr import esl_backprop
 

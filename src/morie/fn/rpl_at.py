@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._otis_const import DEFAULT_COLS
 
@@ -43,3 +43,7 @@ rpl_at = rplace_age_trend
 
 def cheatsheet() -> str:
     return "rplace_age_trend({}) -> Age group placement trend over years."
+
+
+# compact alias per ledger/NAMING.md
+rplaceagetrend = rplace_age_trend

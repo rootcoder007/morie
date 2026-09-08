@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Party alignment / Rice cohesion (Armstrong Ch 8)."""
+"""Party alignment / Rice index of cohesion (Rice 1928)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -9,7 +9,15 @@ __all__ = ["party_alignment", "algnm"]
 
 
 def party_alignment(x, party=None):
-    """Rice index of party cohesion (Rice 1928).
+    """Rice index of party cohesion.
+
+    Rice, S. A. (1928). *Quantitative Methods in Politics*. New York: Knopf.
+
+    NOT Armstrong. The module's former "Armstrong Ch 8" citation is doubly
+    wrong: that book has six chapters, and it never defines the Rice index.
+    Its only occurrences of "cohesion" (printed p.172) and "Rice" (p.175) are
+    a narrative aside about the French National Assembly and the word
+    "price" respectively -- checked page by page in the PDF.
 
         Rice_p = |%yea_p - %nay_p|
 
@@ -93,3 +101,7 @@ def cheatsheet():
 # CANONICAL TEST
 # >>> r = party_alignment([1,1,1,1,0])
 # >>> assert abs(r["estimate"] - 0.6) < 1e-9
+
+
+# compact alias per ledger/NAMING.md
+partyalignment = party_alignment

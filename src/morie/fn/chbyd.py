@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Chebyshev distance."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -32,3 +32,7 @@ chbyd = chebyshev_dist
 
 def cheatsheet() -> str:
     return "chebyshev_dist({}) -> Chebyshev distance."
+
+
+# compact alias per ledger/NAMING.md
+chebyshevdist = chebyshev_dist

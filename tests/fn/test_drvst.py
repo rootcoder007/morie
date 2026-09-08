@@ -1,6 +1,6 @@
 """Tests for drvst.dr_did_variance_stab."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drvst import dr_did_variance_stab
 

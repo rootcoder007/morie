@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Alpha-NOMINATE convergence"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ alph = alpha_nom_conv
 
 def cheatsheet() -> str:
     return "alpha_nom_conv({}) -> Alpha-NOMINATE convergence"
+
+
+# compact alias per ledger/NAMING.md
+alphanomconv = alpha_nom_conv

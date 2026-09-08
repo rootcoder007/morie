@@ -5,7 +5,7 @@ DBSCAN extended spatial
 Category: ClstSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def cldbx(data=None, n=50, k=3, coords=None):

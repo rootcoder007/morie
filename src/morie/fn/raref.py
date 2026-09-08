@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rarefaction curve computation."""
 
-import numpy as np
-from scipy.special import comb
+from . import _array_core as np
+from ._sci_core import comb
 
 from ._containers import DescriptiveResult
 

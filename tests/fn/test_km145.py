@@ -1,6 +1,6 @@
 """Tests for km145.kamath_ch9_mmllm_autoregressive."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km145 import kamath_ch9_mmllm_autoregressive
 

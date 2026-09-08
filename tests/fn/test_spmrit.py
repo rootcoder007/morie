@@ -1,6 +1,6 @@
 """Tests for spmrit.schabenberger_moran_i_residuals."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spmrit import schabenberger_moran_i_residuals
 

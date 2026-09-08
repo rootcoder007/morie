@@ -1,6 +1,6 @@
 """Radiation model (mobility)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ radi = radiation_model
 
 def cheatsheet() -> str:
     return "radiation_model({}) -> Radiation model (mobility)"
+
+
+# compact alias per ledger/NAMING.md
+radiationmodel = radiation_model

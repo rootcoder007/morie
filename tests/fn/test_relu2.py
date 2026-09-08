@@ -1,6 +1,6 @@
 """Test relu_squared."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.relu2 import relu2, relu_squared

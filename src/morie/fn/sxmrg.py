@@ -2,8 +2,8 @@
 
 __all__ = ["sxmrg"]
 
-import numpy as np
-from scipy.stats import norm as _norm
+from . import _array_core as np
+from ._stats_core import norm as _norm
 
 from ._containers import GenomicsResult
 

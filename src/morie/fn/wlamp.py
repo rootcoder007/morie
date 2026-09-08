@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -20,3 +20,7 @@ alias = willison_amp
 
 def cheatsheet() -> str:
     return "willison_amp({}) -> Willison amplitude of a signal."
+
+
+# compact alias per ledger/NAMING.md
+willisonamp = willison_amp

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.crypto._poly_ring import (
     build_zetas,

@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import TestResult
 
@@ -58,3 +58,7 @@ mcnmr = mcnemar_test
 
 def cheatsheet() -> str:
     return "mcnemar_test({}) -> McNemar's test for paired proportions."
+
+
+# compact alias per ledger/NAMING.md
+mcnemartest = mcnemar_test

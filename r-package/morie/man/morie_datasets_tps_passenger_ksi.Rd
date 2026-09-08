@@ -38,15 +38,20 @@ affects the hub_id -> FeatureServer URL lookup.}
 }
 \value{
 A data.frame / GeoJSON list / file path; see
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} for per-format semantics.
+\code{morie_datasets_tps_arcgis_hub_by_id()} for per-format semantics.
 }
 \description{
 Toronto PS ArcGIS Hub dataset wrapper. Thin dispatch to
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} with the canonical
+\code{morie_datasets_tps_arcgis_hub_by_id()} with the canonical
 hub item_id \code{e4e28a899191479d8e53754414894870}.
 }
 \details{
 Passenger-related KSI collisions (2006 - 2023).
 
 Tags: Killed or Seriously Injured; KSI; Passenger; Traffic; Collision; Traffic Collision
+}
+\examples{
+\dontrun{
+morie_datasets_tps_passenger_ksi()
+}
 }

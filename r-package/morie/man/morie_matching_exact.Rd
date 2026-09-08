@@ -22,6 +22,7 @@ variable in \code{exact_vars}.  Delegates to \pkg{MatchIt} when
 available.
 }
 \examples{
+\donttest{
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -30,4 +31,5 @@ df <- data.frame(
   year = sample(2020:2022, 150, TRUE),
   treat3 = sample(0:2, 150, TRUE))
 morie_matching_exact(df, "d", c("region", "year"))
+}
 }

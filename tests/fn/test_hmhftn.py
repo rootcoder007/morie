@@ -1,6 +1,6 @@
 """Tests for hmhftn.geron_hf_trainer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmhftn import geron_hf_trainer
 

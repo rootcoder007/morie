@@ -1,0 +1,2337 @@
+# morie.fn -- shared core (rootcoder007/morie)
+"""Robust estimation and hypothesis testing.
+
+Source: Wilcox, Rand R. (2017) *Modern Statistics for the Social and
+Behavioral Sciences: A Practical Introduction*, 2nd ed., CRC Press.
+Equation numbers below are that book's; each was read from the PDF, and
+the worked examples the book prints alongside them are the known-answer
+tests in ``tests/fn/test_robust_wilcox.py``.
+
+Everything here is plain Python -- no external numeric libraries.
+"""
+
+import math
+
+__all__ = [
+    "ideal_fourths", "idealf_iqr", "boxplot_rule",
+    "trimmed_mean", "winsorize", "winsorized_mean", "winsorized_variance",
+    "mad", "madn", "mad_median_rule", "mad_rescaled",
+    "BOOK_MADN_CONSTANT", "R_MAD_CONSTANT",
+    "yuen_test", "welch_test", "trim_counts",
+    "harrell_davis", "theil_sen", "pbos",
+    "percentage_bend_correlation", "winsorized_correlation",
+    "mom_estimator", "one_step_m_estimator",
+    "cliff_delta", "brunner_munzel", "wilcoxon_mann_whitney",
+    "percentile_bootstrap_2group", "one_sample_bootstrap",
+    "trimmed_mean_se", "trimmed_mean_ci", "yuen_paired",
+    "trimmed_mean_anova", "boxplot_outliers",
+    "akp_effect_size", "trimmed_mean_bootstrap",
+    "median_se", "median_test_2group",
+    "winsorized_regression", "correlation_bootstrap_ci",
+    "brunner_dette_munk",
+    "weights_totals", "morans_i", "morans_i_test",
+    "spatial_2sls", "gm_error_sar",
+    "spatial_lag_model", "spatial_error_model",
+    "ripley_k", "cokriging", "local_dp_randomised_response",
+    "adf_test", "rlm",
+]
+
+
+# ---------------------------------------------------------------- helpers
+def _flat(x):
+    """Coerce to a flat list of floats, accepting any nested sequence."""
+    if x is None:
+        raise ValueError("expected a sequence of numbers, got None")
+    out = []
+    stack = [x]
+    if isinstance(x, (int, float)):
+        return [float(x)]
+    for item in x:
+        if isinstance(item, (list, tuple)):
+            out.extend(_flat(item))
+        else:
+            out.append(float(item))
+    del stack
+    return out
+
+
+def _median(sorted_vals):
+    n = len(sorted_vals)
+    if n == 0:
+        raise ValueError("median of an empty sample is undefined")
+    mid = n // 2
+    if n % 2:
+        return float(sorted_vals[mid])
+    return 0.5 * (sorted_vals[mid - 1] + sorted_vals[mid])
+
+
+def median(x):
+    """Sample median."""
+    return _median(sorted(_flat(x)))
+
+
+def variance(x):
+    """Sample variance s^2, the usual n-1 divisor."""
+    v = _flat(x)
+    n = len(v)
+    if n < 2:
+        raise ValueError("variance needs at least 2 observations")
+    m = sum(v) / n
+    return sum((t - m) ** 2 for t in v) / (n - 1)
+
+
+def trim_counts(n, tr):
+    """Number of observations trimmed from each tail.
+
+    Wilcox uses g = floor(tr * n): the *integer* number of values
+    removed from each end, so a 20% trimmed mean of 9 points removes
+    one value per tail, not 1.8.
+    """
+    if not 0 <= tr < 0.5:
+        raise ValueError("tr must satisfy 0 <= tr < 0.5, got %r" % (tr,))
+    return int(math.floor(tr * n))
+
+
+# ------------------------------------------------- ch.2 quartiles, spread
+def ideal_fourths(x):
+    """Lower and upper ideal fourths, eq. (2.6)-(2.7) p.27.
+
+    With the order statistics X_(1) <= ... <= X_(n),
+
+        j  = floor(n/4 + 5/12),      h = n/4 + 5/12 - j
+        q1 = (1 - h) X_(j)   + h X_(j+1)
+        q2 = (1 - h) X_(k)   + h X_(k-1),      k = n - j + 1
+
+    These estimate the lower and upper quartiles and are what the book
+    uses for outlier detection, in preference to the many alternative
+    quartile definitions it lists on the same page.
+    """
+    v = sorted(_flat(x))
+    n = len(v)
+    if n < 4:
+        raise ValueError("ideal fourths need at least 4 observations")
+    j = int(math.floor(n / 4.0 + 5.0 / 12.0))
+    h = n / 4.0 + 5.0 / 12.0 - j
+    k = n - j + 1
+    # the book indexes from 1; Python from 0
+    q1 = (1.0 - h) * v[j - 1] + h * v[j]
+    q2 = (1.0 - h) * v[k - 1] + h * v[k - 2]
+    return {"q1": q1, "q2": q2, "j": j, "h": h, "k": k}
+
+
+def idealf_iqr(x):
+    """Interquartile range from the ideal fourths, eq. (2.8) p.27."""
+    f = ideal_fourths(x)
+    return f["q2"] - f["q1"]
+
+
+def boxplot_rule(x, k=1.5):
+    """Boxplot outlier rule, sec. 2.5.4: flag X below q1 - k*IQR or
+    above q2 + k*IQR, with the fourths and IQR of eq. (2.6)-(2.8)."""
+    v = _flat(x)
+    f = ideal_fourths(v)
+    iqr = f["q2"] - f["q1"]
+    lo = f["q1"] - k * iqr
+    hi = f["q2"] + k * iqr
+    flags = [t < lo or t > hi for t in v]
+    return {"lower": lo, "upper": hi, "iqr": iqr,
+            "is_outlier": flags,
+            "outliers": [t for t, b in zip(v, flags) if b],
+            "n_outliers": sum(1 for b in flags if b),
+            "q1": f["q1"], "q2": f["q2"]}
+
+
+# --------------------------------------------- ch.2 trimming, Winsorizing
+def trimmed_mean(x, tr=0.2):
+    """The tr-trimmed mean, sec. 2.3.
+
+    Removes g = floor(tr*n) values from each tail and averages the rest.
+    tr = 0 gives the mean; tr -> 0.5 approaches the median.
+    """
+    v = sorted(_flat(x))
+    n = len(v)
+    g = trim_counts(n, tr)
+    kept = v[g:n - g] if g else v
+    if not kept:
+        raise ValueError("trimming removed every observation")
+    return sum(kept) / len(kept)
+
+
+def winsorize(x, tr=0.2):
+    """Winsorize a sample, sec. 2.2.7: the g smallest values are pulled
+    up to X_(g+1) and the g largest pulled down to X_(n-g), rather than
+    discarded as in trimming."""
+    v = sorted(_flat(x))
+    n = len(v)
+    g = trim_counts(n, tr)
+    if g == 0:
+        return list(v)
+    lo = v[g]
+    hi = v[n - g - 1]
+    return [min(max(t, lo), hi) for t in v]
+
+
+def winsorized_mean(x, tr=0.2):
+    """Winsorized mean, sec. 2.2.7: the mean of the Winsorized values."""
+    w = winsorize(x, tr)
+    return sum(w) / len(w)
+
+
+def winsorized_variance(x, tr=0.2):
+    """Winsorized variance s_w^2, sec. 2.4.5 p.28.
+
+    "just the sample variance of the Winsorized values" -- so the n-1
+    divisor of the ordinary sample variance is kept.  Its finite-sample
+    breakdown point equals the amount Winsorized.
+    """
+    return variance(winsorize(x, tr))
+
+
+# ---------------------------------------------------- ch.2 MAD and MADN
+def mad(x):
+    """Median absolute deviation, sec. 2.4.7 p.28: the median of
+    |X_1 - M|, ..., |X_n - M| where M is the sample median."""
+    v = _flat(x)
+    m = median(v)
+    return _median(sorted(abs(t - m) for t in v))
+
+
+#: The book's MADN divisor (Wilcox sec. 2.4.7): MADN = MAD / 0.6745.
+BOOK_MADN_DIVISOR = 0.6745
+#: Equivalent multiplier, 1 / 0.6745.
+BOOK_MADN_CONSTANT = 1.0 / 0.6745
+#: R's ``mad()`` default constant, which is what WRS actually uses.
+R_MAD_CONSTANT = 1.4826
+
+
+def madn(x):
+    """MADN = MAD / 0.6745, sec. 2.4.7.
+
+    The divisor rescales MAD so that it estimates sigma under normality,
+    which is what makes the cut-off in eq. (2.14) interpretable.
+
+    This is the book's constant exactly.  R's ``mad()`` uses 1.4826
+    instead of 1/0.6745 = 1.4825797...; see :func:`mad_rescaled` and
+    :data:`R_MAD_CONSTANT` for why that matters and which estimators
+    use which.
+    """
+    return mad(x) / BOOK_MADN_DIVISOR
+
+
+def mad_median_rule(x, crit=2.24):
+    """MAD-median (Hampel identifier) outlier rule, eq. (2.14) p.33.
+
+    Declares X an outlier when |X - M| / MADN > 2.24.  Both M and MADN
+    have breakdown point 0.5, so unlike the mean-and-variance rule this
+    does not suffer from masking.  The book notes that 2.24 comes from
+    Rousseeuw, P. J. & van Zomeren, B. C. (1990) "Unmasking
+    multivariate outliers and leverage points", *Journal of the
+    American Statistical Association* 85(411), 633-639,
+    doi:10.2307/2289999, and that Hampel's original used
+    3.5.
+    """
+    v = _flat(x)
+    m = median(v)
+    s = madn(v)
+    if s == 0:
+        ratios = [0.0 if t == m else float("inf") for t in v]
+    else:
+        ratios = [abs(t - m) / s for t in v]
+    flags = [r > crit for r in ratios]
+    return {"median": m, "madn": s, "ratio": ratios,
+            "is_outlier": flags,
+            "outliers": [t for t, b in zip(v, flags) if b],
+            "n_outliers": sum(1 for b in flags if b),
+            "crit": float(crit)}
+
+
+# ------------------------------------------------ ch.7 two-group methods
+def _student_t_cdf(t, df):
+    """CDF of Student's t, via the regularized incomplete beta."""
+    x = df / (df + t * t)
+    p = 0.5 * _betainc(0.5 * df, 0.5, x)
+    return p if t <= 0 else 1.0 - p
+
+
+def _betainc(a, b, x):
+    """Regularized incomplete beta I_x(a, b) by continued fraction."""
+    if x <= 0:
+        return 0.0
+    if x >= 1:
+        return 1.0
+    lbeta = (math.lgamma(a) + math.lgamma(b) - math.lgamma(a + b))
+    front = math.exp(a * math.log(x) + b * math.log1p(-x) - lbeta)
+    if x < (a + 1.0) / (a + b + 2.0):
+        return front * _betacf(a, b, x) / a
+    return 1.0 - math.exp(
+        b * math.log1p(-x) + a * math.log(x) - lbeta) * _betacf(b, a, 1 - x) / b
+
+
+def _betacf(a, b, x, itmax=300, eps=1e-14):
+    qab, qap, qam = a + b, a + 1.0, a - 1.0
+    c = 1.0
+    d = 1.0 - qab * x / qap
+    if abs(d) < 1e-300:
+        d = 1e-300
+    d = 1.0 / d
+    h = d
+    for m in range(1, itmax + 1):
+        m2 = 2 * m
+        aa = m * (b - m) * x / ((qam + m2) * (a + m2))
+        d = 1.0 + aa * d
+        if abs(d) < 1e-300:
+            d = 1e-300
+        c = 1.0 + aa / c
+        if abs(c) < 1e-300:
+            c = 1e-300
+        d = 1.0 / d
+        h *= d * c
+        aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2))
+        d = 1.0 + aa * d
+        if abs(d) < 1e-300:
+            d = 1e-300
+        c = 1.0 + aa / c
+        if abs(c) < 1e-300:
+            c = 1e-300
+        d = 1.0 / d
+        delta = d * c
+        h *= delta
+        if abs(delta - 1.0) < eps:
+            break
+    return h
+
+
+def welch_test(x, y):
+    """Welch's heteroscedastic test for means, sec. 7.3.
+
+    Does not assume equal variances; the degrees of freedom are the
+    Welch-Satterthwaite value.
+    """
+    a, b = _flat(x), _flat(y)
+    n1, n2 = len(a), len(b)
+    if n1 < 2 or n2 < 2:
+        raise ValueError("each group needs at least 2 observations")
+    m1, m2 = sum(a) / n1, sum(b) / n2
+    q1 = variance(a) / n1
+    q2 = variance(b) / n2
+    se = math.sqrt(q1 + q2)
+    tstat = (m1 - m2) / se
+    df = (q1 + q2) ** 2 / (q1 * q1 / (n1 - 1) + q2 * q2 / (n2 - 1))
+    p = 2.0 * (1.0 - _student_t_cdf(abs(tstat), df))
+    return {"statistic": tstat, "df": df, "p_value": p, "se": se,
+            "estimate": m1 - m2, "mean_x": m1, "mean_y": m2,
+            "method": "Welch's heteroscedastic test for means"}
+
+
+def yuen_test(x, y, tr=0.2):
+    """Yuen's (1974) test for two independent trimmed means, sec. 7.4.1.
+
+    Yuen, K. K. (1974) "The two-sample trimmed t for unequal population
+    variances", *Biometrika* 61(1), 165-170, doi:10.2307/2334299.
+
+    With h the number of values left after trimming and s_w^2 the
+    Winsorized variance,
+
+        d_j = (n_j - 1) s_wj^2 / (h_j (h_j - 1))
+        Ty  = (Xt_1 - Xt_2) / sqrt(d_1 + d_2)
+        nu  = (d_1 + d_2)^2 / (d_1^2/(h_1-1) + d_2^2/(h_2-1))
+
+    The book states the defining property that anchors our test: with
+    no trimming this reduces exactly to Welch's method for means.
+    """
+    a, b = _flat(x), _flat(y)
+    n1, n2 = len(a), len(b)
+    g1, g2 = trim_counts(n1, tr), trim_counts(n2, tr)
+    h1, h2 = n1 - 2 * g1, n2 - 2 * g2
+    if h1 < 2 or h2 < 2:
+        raise ValueError("too much trimming: fewer than 2 values remain")
+    d1 = (n1 - 1) * winsorized_variance(a, tr) / (h1 * (h1 - 1.0))
+    d2 = (n2 - 1) * winsorized_variance(b, tr) / (h2 * (h2 - 1.0))
+    t1, t2 = trimmed_mean(a, tr), trimmed_mean(b, tr)
+    se = math.sqrt(d1 + d2)
+    tstat = (t1 - t2) / se
+    df = (d1 + d2) ** 2 / (d1 * d1 / (h1 - 1.0) + d2 * d2 / (h2 - 1.0))
+    p = 2.0 * (1.0 - _student_t_cdf(abs(tstat), df))
+    return {"statistic": tstat, "df": df, "p_value": p, "se": se,
+            "estimate": t1 - t2, "trimmed_mean_x": t1,
+            "trimmed_mean_y": t2, "h_x": h1, "h_y": h2, "tr": float(tr),
+            "method": "Yuen's test for two independent trimmed means"}
+
+
+# ============================================================
+# Estimators verified against Wilcox's own R implementation,
+# WRS Rallfun-v45.R (github.com/nicebread/WRS), the reference
+# code for the book.  A copy of the exact functions we ported
+# is kept at ledger/shelves/WRS_REFERENCE_FUNCTIONS.R.
+# ============================================================
+
+def _pbeta(q, a, b):
+    """Beta CDF, i.e. R's pbeta(q, a, b)."""
+    return _betainc(a, b, q)
+
+
+def mad_rescaled(x, constant=R_MAD_CONSTANT):
+    """MAD rescaled the way R's ``mad()`` does it.
+
+    Wilcox's WRS code calls R's ``mad()``, whose default constant is
+    1.4826, and his own comment there reads "mad in splus is madn in
+    the book".  So R's ``mad()`` is the book's MADN.  The two differ in
+    the last few digits only -- 1/0.6745 = 1.4825797 -- but the
+    estimators below are ported from the R code, so they use the R
+    constant and :func:`madn` keeps the book's.
+    """
+    v = _flat(x)
+    m = median(v)
+    return _median(sorted(abs(t - m) for t in v)) * float(constant)
+
+
+def harrell_davis(x, q=0.5):
+    """Harrell-Davis quantile estimator.
+
+    A weighted average of all the order statistics, the weights being
+    increments of a Beta((n+1)q, (n+1)(1-q)) distribution function:
+
+        w_i = I_{i/n}(m1, m2) - I_{(i-1)/n}(m1, m2)
+        theta_q = sum_i w_i X_(i)
+
+    Because every observation contributes, it is usually more efficient
+    than a single order statistic, which matters most in the tails.
+    Ported from WRS ``hd``.
+    """
+    v = sorted(_flat(x))
+    n = len(v)
+    if n == 0:
+        raise ValueError("need at least one observation")
+    q = float(q)
+    if not 0.0 < q < 1.0:
+        raise ValueError("q must lie strictly between 0 and 1")
+    m1 = (n + 1) * q
+    m2 = (n + 1) * (1.0 - q)
+    total = 0.0
+    prev = _pbeta(0.0, m1, m2)
+    for i in range(1, n + 1):
+        cur = _pbeta(i / n, m1, m2)
+        total += (cur - prev) * v[i - 1]
+        prev = cur
+    return total
+
+
+def theil_sen(x, y, intercept_at_medians=False):
+    """Theil-Sen regression.
+
+    The slope is the median of the pairwise slopes
+
+        (Y_j - Y_i) / (X_j - X_i)   over all pairs with X_j > X_i,
+
+    which has a 29% breakdown point against the least-squares 0%.
+    ``intercept_at_medians`` selects between the two intercepts WRS
+    offers: False (the default, matching WRS since Rallfun-v29 and the
+    other R implementations) uses median(Y - slope X); True uses
+    median(Y) - slope median(X).  Ported from WRS ``tsp1reg``.
+    """
+    xs = _flat(x)
+    ys = _flat(y)
+    if len(xs) != len(ys):
+        raise ValueError("x and y must have the same length")
+    n = len(xs)
+    if n < 2:
+        raise ValueError("need at least 2 observations")
+    slopes = []
+    for i in range(n):
+        for j in range(n):
+            dx = xs[j] - xs[i]
+            if dx > 0:
+                slopes.append((ys[j] - ys[i]) / dx)
+    if not slopes:
+        raise ValueError("no two observations have distinct x values")
+    slope = _median(sorted(slopes))
+    if intercept_at_medians:
+        inter = median(ys) - slope * median(xs)
+    else:
+        inter = _median(sorted(ys[i] - slope * xs[i] for i in range(n)))
+    resid = [ys[i] - slope * xs[i] - inter for i in range(n)]
+    return {"slope": slope, "intercept": inter, "coef": [inter, slope],
+            "residuals": resid, "n_pairs": len(slopes),
+            "method": "Theil-Sen regression"}
+
+
+def pbos(x, beta=0.2):
+    """One-step percentage bend measure of location.
+
+    With omega the floor((1-beta) n)-th smallest |X - M|, values whose
+    standardised deviation exceeds 1 in absolute value are pulled to
+    the boundary and the estimate corrects for how many were pulled
+    from each side.  Ported from WRS ``pbos``.
+    """
+    v = _flat(x)
+    n = len(v)
+    m = median(v)
+    dev = sorted(abs(t - m) for t in v)
+    idx = int(math.floor((1.0 - beta) * n))
+    omega = dev[idx - 1] if idx >= 1 else dev[0]
+    if omega == 0:
+        return m
+    psi = [(t - m) / omega for t in v]
+    i1 = sum(1 for p in psi if p < -1)
+    i2 = sum(1 for p in psi if p > 1)
+    kept = sum(v[k] for k in range(n) if -1 <= psi[k] <= 1)
+    denom = n - i1 - i2
+    if denom == 0:
+        return m
+    return (kept + omega * (i2 - i1)) / denom
+
+
+def percentage_bend_correlation(x, y, beta=0.2):
+    """Percentage bend correlation.
+
+    Each variable is centred at its percentage bend location, scaled by
+    its omega, and clipped to [-1, 1]; the correlation of the clipped
+    values is the estimate.  Ported from WRS ``pbcor``.
+    """
+    xs, ys = _flat(x), _flat(y)
+    if len(xs) != len(ys):
+        raise ValueError("x and y must have the same length")
+    n = len(xs)
+
+    def _scaled(v):
+        m = median(v)
+        dev = sorted(abs(t - m) for t in v)
+        idx = int(math.floor((1.0 - beta) * len(v)))
+        omega = dev[idx - 1] if idx >= 1 else dev[0]
+        if omega == 0:
+            raise ValueError("omega is zero; the data are too tied")
+        loc = pbos(v, beta)
+        out = []
+        for t in v:
+            s = (t - loc) / omega
+            out.append(-1.0 if s <= -1 else (1.0 if s >= 1 else s))
+        return out
+
+    a = _scaled(xs)
+    b = _scaled(ys)
+    den = math.sqrt(sum(t * t for t in a) * sum(t * t for t in b))
+    if den == 0:
+        raise ValueError("degenerate data: zero scale")
+    r = sum(a[i] * b[i] for i in range(n)) / den
+    if abs(r) >= 1.0:
+        stat, p = float("inf") * (1 if r > 0 else -1), 0.0
+    else:
+        stat = r * math.sqrt((n - 2) / (1 - r * r))
+        p = 2.0 * (1.0 - _student_t_cdf(abs(stat), n - 2))
+    return {"cor": r, "statistic": stat, "p_value": p, "n": n,
+            "method": "percentage bend correlation"}
+
+
+def winsorized_correlation(x, y, tr=0.2):
+    """Winsorized correlation.
+
+    The Pearson correlation of the Winsorized values.  The test
+    statistic uses n - 2g - 2 degrees of freedom, g being the number
+    Winsorized in each tail, because Winsorizing removes that much
+    independent information.  Ported from WRS ``wincor``.
+    """
+    xs, ys = _flat(x), _flat(y)
+    if len(xs) != len(ys):
+        raise ValueError("x and y must have the same length")
+    n = len(xs)
+    g = trim_counts(n, tr)
+    a = _winsorize_paired(xs, tr)
+    b = _winsorize_paired(ys, tr)
+    ma = sum(a) / n
+    mb = sum(b) / n
+    sa = math.sqrt(sum((t - ma) ** 2 for t in a))
+    sb = math.sqrt(sum((t - mb) ** 2 for t in b))
+    if sa == 0 or sb == 0:
+        raise ValueError("degenerate data: zero Winsorized variance")
+    r = sum((a[i] - ma) * (b[i] - mb) for i in range(n)) / (sa * sb)
+    cov = sum((a[i] - ma) * (b[i] - mb) for i in range(n)) / (n - 1)
+    df = n - 2 * g - 2
+    if abs(r) >= 1.0 or df <= 0:
+        stat, p = float("nan"), float("nan")
+    else:
+        stat = r * math.sqrt((n - 2) / (1 - r * r))
+        p = 2.0 * (1.0 - _student_t_cdf(abs(stat), df))
+    return {"cor": r, "cov": cov, "statistic": stat, "p_value": p,
+            "n": n, "df": df, "method": "Winsorized correlation"}
+
+
+def _winsorize_paired(v, tr):
+    """Winsorize keeping the ORIGINAL order, which the correlations
+    need -- :func:`winsorize` returns the sorted sample."""
+    y = sorted(v)
+    n = len(v)
+    ibot = int(math.floor(tr * n))          # 0-based index of y[g+1] in R
+    itop = n - ibot - 1
+    lo, hi = y[ibot], y[itop]
+    return [min(max(t, lo), hi) for t in v]
+
+
+def mom_estimator(x, bend=2.24, constant=R_MAD_CONSTANT):
+    """Modified one-step M-estimator (MOM) of location.
+
+    Drops every value more than ``bend`` MADNs from the median and
+    averages what is left; the 2.24 cut-off is the same one the
+    MAD-median outlier rule uses.  Ported from WRS ``mom``.
+
+    ``constant`` scales the MAD.  It defaults to R's 1.4826, which is
+    what WRS uses, so this reproduces ``mom()`` exactly.  Pass
+    :data:`BOOK_MADN_CONSTANT` to follow the book's MAD/0.6745 instead;
+    the two differ in the fifth significant figure and can flip which
+    observations fall on the boundary.
+    """
+    v = _flat(x)
+    m = median(v)
+    s = mad_rescaled(v, constant)
+    if s == 0:
+        return m
+    kept = [t for t in v if m - bend * s <= t <= m + bend * s]
+    if not kept:
+        return m
+    return sum(kept) / len(kept)
+
+
+def _huber_psi(u, bend=1.28):
+    return u if abs(u) <= bend else bend * (1.0 if u > 0 else -1.0)
+
+
+def one_step_m_estimator(x, bend=1.28, constant=R_MAD_CONSTANT):
+    """One-step M-estimator of location with Huber's Psi.
+
+        theta = M + MADN * sum(psi(y_i)) / #{|y_i| <= bend},
+        y_i = (X_i - M) / MADN
+
+    Ported from WRS ``onestep``; the default bend 1.28 is Wilcox's.
+
+    ``constant`` scales the MAD, defaulting to R's 1.4826 as WRS does.
+    Pass :data:`BOOK_MADN_CONSTANT` for the book's MAD/0.6745.
+    """
+    v = _flat(x)
+    m = median(v)
+    s = mad_rescaled(v, constant)
+    if s == 0:
+        return m
+    y = [(t - m) / s for t in v]
+    a = sum(_huber_psi(t, bend) for t in y)
+    b = sum(1 for t in y if abs(t) <= bend)
+    if b == 0:
+        return m
+    return m + s * a / b
+
+
+def cliff_delta(x, y, alpha=0.05):
+    """Cliff's delta and a confidence interval for P(X<Y).
+
+    delta = P(X>Y) - P(X<Y), estimated by the mean of sign(X_i - Y_j)
+    over all pairs.  The interval is Cliff (1996, p.140, eq. 5.12),
+    which is asymmetric in delta and handles ties.  Ported from WRS
+    ``cid``.
+    """
+    xs, ys = _flat(x), _flat(y)
+    n1, n2 = len(xs), len(ys)
+    if n1 < 2 or n2 < 2:
+        raise ValueError("each group needs at least 2 observations")
+    signs = [[(1 if a > b else (-1 if a < b else 0)) for b in ys]
+             for a in xs]
+    flat = [s for row in signs for s in row]
+    d = sum(flat) / (n1 * n2)
+    phat = (1.0 - d) / 2.0
+    p_less = sum(1 for s in flat if s < 0) / (n1 * n2)
+    p_eq = sum(1 for s in flat if s == 0) / (n1 * n2)
+    p_gt = sum(1 for s in flat if s > 0) / (n1 * n2)
+    out = {"delta": d, "p_hat": phat, "n1": n1, "n2": n2,
+           "P_x_less_y": p_less, "P_equal": p_eq, "P_x_greater_y": p_gt,
+           "method": "Cliff's delta"}
+    if phat in (0.0, 1.0):
+        out["ci"] = (float("nan"), float("nan"))
+        return out
+    sigdih = sum((s - d) ** 2 for s in flat) / (n1 * n2 - 1)
+    di = [sum(1 for b in ys if a > b) / n2 - sum(1 for b in ys if a < b) / n2
+          for a in xs]
+    dh = [sum(1 for a in xs if b > a) / n1 - sum(1 for a in xs if b < a) / n1
+          for b in ys]
+    sdi = variance(di)
+    sdh = variance(dh)
+    sh = ((n2 - 1) * sdi + (n1 - 1) * sdh + sigdih) / (n1 * n2)
+    zv = -_norm_quantile(1.0 - alpha / 2.0)
+    root = math.sqrt(sh) * math.sqrt((1 - d * d) ** 2 + zv * zv * sh)
+    den = 1 - d * d + zv * zv * sh
+    cu = (d - d ** 3 - zv * root) / den
+    cl = (d - d ** 3 + zv * root) / den
+    out["ci"] = (cl, cu)
+    return out
+
+
+def _norm_quantile(p):
+    """Standard normal quantile, Acklam's rational approximation
+    refined by one Halley step against the erf-based CDF."""
+    if not 0.0 < p < 1.0:
+        raise ValueError("p must lie strictly between 0 and 1")
+    a = [-3.969683028665376e+01, 2.209460984245205e+02,
+         -2.759285104469687e+02, 1.383577518672690e+02,
+         -3.066479806614716e+01, 2.506628277459239e+00]
+    b = [-5.447609879822406e+01, 1.615858368580409e+02,
+         -1.556989798598866e+02, 6.680131188771972e+01,
+         -1.328068155288572e+01]
+    c = [-7.784894002430293e-03, -3.223964580411365e-01,
+         -2.400758277161838e+00, -2.549732539343734e+00,
+         4.374664141464968e+00, 2.938163982698783e+00]
+    d = [7.784695709041462e-03, 3.224671290700398e-01,
+         2.445134137142996e+00, 3.754408661907416e+00]
+    pl = 0.02425
+    if p < pl:
+        q = math.sqrt(-2 * math.log(p))
+        z = (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q
+             + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
+    elif p <= 1 - pl:
+        q = p - 0.5
+        r = q * q
+        z = (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r
+             + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3])
+                             * r + b[4]) * r + 1)
+    else:
+        q = math.sqrt(-2 * math.log(1 - p))
+        z = -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q
+              + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
+    e = 0.5 * math.erfc(-z / math.sqrt(2)) - p
+    u = e * math.sqrt(2 * math.pi) * math.exp(z * z / 2)
+    return z - u / (1 + z * u / 2)
+
+
+def brunner_munzel(x, y, alpha=0.05):
+    """Brunner-Munzel (2000) heteroscedastic rank test.
+
+    Brunner, E. & Munzel, U. (2000) "The nonparametric Behrens-Fisher
+    problem: asymptotic theory and a small-sample approximation",
+    *Biometrical Journal* 42(1), 17-25,
+    doi:10.1002/(SICI)1521-4036(200001)42:1<17::AID-BIMJ17>3.0.CO;2-U.
+
+    The heteroscedastic analogue of Wilcoxon-Mann-Whitney: it tests
+    P(X<Y) + 0.5 P(X=Y) = 1/2 without assuming the two distributions
+    have the same shape, which is what WMW needs and rarely has.
+    Ported from WRS ``bmp``.
+    """
+    xs, ys = _flat(x), _flat(y)
+    n1, n2 = len(xs), len(ys)
+    if n1 < 2 or n2 < 2:
+        raise ValueError("each group needs at least 2 observations")
+    N = n1 + n2
+    R = _rank(xs + ys)
+    R1 = sum(R[:n1]) / n1
+    R2 = sum(R[n1:]) / n2
+    Rg1 = _rank(xs)
+    Rg2 = _rank(ys)
+    s1 = sum((R[i] - Rg1[i] - R1 + (n1 + 1) / 2.0) ** 2
+             for i in range(n1)) / (n1 - 1)
+    s2 = sum((R[n1 + j] - Rg2[j] - R2 + (n2 + 1) / 2.0) ** 2
+             for j in range(n2)) / (n2 - 1)
+    se = math.sqrt(N) * math.sqrt(N * (s1 / (n2 * n2) / n1
+                                       + s2 / (n1 * n1) / n2))
+    phat = (R2 - (n2 + 1) / 2.0) / n1
+    if se == 0:
+        # Complete separation: every value of one group beats every
+        # value of the other, so both within-group rank variances
+        # vanish and the statistic is undefined.  WRS `bmp` detects the
+        # same case (phat == 0 or 1) and falls back to a binomial
+        # interval rather than a t interval.  We report the separation
+        # instead of inventing a finite statistic.
+        return {"statistic": float("inf") if phat > 0.5
+                else float("-inf"),
+                "df": float("nan"), "p_value": float("nan"),
+                "p_hat": phat, "delta": 1.0 - 2.0 * phat, "se": 0.0,
+                "n1": n1, "n2": n2, "separated": True,
+                "method": "Brunner-Munzel test (complete separation)"}
+    stat = (R2 - R1) / se
+    den = (s1 / n2) ** 2 / (n1 - 1) + (s2 / n1) ** 2 / (n2 - 1)
+    df = (s1 / n2 + s2 / n1) ** 2 / den if den > 0 else float("nan")
+    p = 2.0 * (1.0 - _student_t_cdf(abs(stat), df))
+    return {"statistic": stat, "df": df, "p_value": p, "p_hat": phat,
+            "delta": 1.0 - 2.0 * phat, "se": se, "n1": n1, "n2": n2,
+            "separated": False, "method": "Brunner-Munzel test"}
+
+
+def _rank(v):
+    """Ranks with ties averaged, i.e. R's ``rank()`` default."""
+    n = len(v)
+    order = sorted(range(n), key=lambda i: v[i])
+    out = [0.0] * n
+    i = 0
+    while i < n:
+        j = i
+        while j + 1 < n and v[order[j + 1]] == v[order[i]]:
+            j += 1
+        avg = (i + j) / 2.0 + 1.0
+        for k in range(i, j + 1):
+            out[order[k]] = avg
+        i = j + 1
+    return out
+
+
+def wilcoxon_mann_whitney(x, y):
+    """Wilcoxon-Mann-Whitney rank-sum test, normal approximation with
+    a tie correction.
+
+    Wilcox's point about this test is worth repeating: it tests
+    P(X<Y) = 1/2 only under the assumption of identical distributions;
+    when the groups are heteroscedastic use :func:`brunner_munzel`
+    instead.
+    """
+    xs, ys = _flat(x), _flat(y)
+    n1, n2 = len(xs), len(ys)
+    if n1 < 1 or n2 < 1:
+        raise ValueError("both groups must be non-empty")
+    R = _rank(xs + ys)
+    W = sum(R[:n1])
+    mu = n1 * (n1 + n2 + 1) / 2.0
+    counts = {}
+    for t in xs + ys:
+        counts[t] = counts.get(t, 0) + 1
+    tie = sum(c ** 3 - c for c in counts.values())
+    N = n1 + n2
+    var = n1 * n2 / 12.0 * ((N + 1) - tie / float(N * (N - 1)))
+    if var <= 0:
+        raise ValueError("zero variance: all values are tied")
+    z = (W - mu) / math.sqrt(var)
+    p = 2.0 * (1.0 - 0.5 * math.erfc(-abs(z) / math.sqrt(2)))
+    U = W - n1 * (n1 + 1) / 2.0
+    return {"statistic": W, "U": U, "z": z, "p_value": p,
+            "n1": n1, "n2": n2,
+            "method": "Wilcoxon-Mann-Whitney rank-sum test"}
+
+
+def percentile_bootstrap_2group(x, y, est=None, nboot=2000, alpha=0.05,
+                                seed=2, **kwargs):
+    """Percentile bootstrap for the difference between two estimators.
+
+    Resamples each group with replacement, forms the distribution of
+    the difference in the chosen estimator, and reads the interval off
+    its percentiles; the p-value is twice the smaller tail proportion.
+    ``est`` defaults to the one-step M-estimator, as in WRS ``pb2gen``.
+    """
+    from . import _rrng_core as _rr
+
+    xs, ys = _flat(x), _flat(y)
+    if est is None:
+        est = one_step_m_estimator
+    n1, n2 = len(xs), len(ys)
+    # WRS pb2gen draws ALL of group 1's resamples first, then group 2's,
+    # each as an nboot-by-n matrix filled column-major by R's sample().
+    # Reproducing that order is what makes our stream match R's.
+    rng = _rr.RRandom(seed)
+    datax = rng.sample_int(n1, n1 * int(nboot), replace=True)
+    datay = rng.sample_int(n2, n2 * int(nboot), replace=True)
+    diffs = []
+    for b in range(int(nboot)):
+        bx = [xs[datax[b + n1_i * int(nboot)] - 1] for n1_i in range(n1)]
+        by = [ys[datay[b + n2_i * int(nboot)] - 1] for n2_i in range(n2)]
+        diffs.append(est(bx, **kwargs) - est(by, **kwargs))
+    diffs.sort()
+    low = int(round((alpha / 2.0) * nboot))
+    up = int(nboot - low) - 1
+    low = min(max(low, 0), nboot - 1)
+    up = min(max(up, 0), nboot - 1)
+    temp = (sum(1 for v in diffs if v < 0) / nboot
+            + sum(1 for v in diffs if v == 0) / (2.0 * nboot))
+    p = 2.0 * min(temp, 1.0 - temp)
+    e1, e2 = est(xs, **kwargs), est(ys, **kwargs)
+    return {"est_1": e1, "est_2": e2, "est_diff": e1 - e2,
+            "ci": (diffs[low], diffs[up]), "p_value": p,
+            "n1": n1, "n2": n2, "nboot": int(nboot),
+            "method": "percentile bootstrap for a difference"}
+
+
+def _student_t_quantile(p, df, tol=1e-12, max_iter=200):
+    """Inverse of :func:`_student_t_cdf`, i.e. R's ``qt``.
+
+    Bisection on the CDF: the CDF is smooth and strictly increasing, so
+    this converges reliably without needing a series expansion.
+    """
+    if not 0.0 < p < 1.0:
+        raise ValueError("p must lie strictly between 0 and 1")
+    if p == 0.5:
+        return 0.0
+    lo, hi = -1.0, 1.0
+    while _student_t_cdf(lo, df) > p:
+        lo *= 2.0
+        if lo < -1e12:
+            break
+    while _student_t_cdf(hi, df) < p:
+        hi *= 2.0
+        if hi > 1e12:
+            break
+    for _ in range(max_iter):
+        mid = 0.5 * (lo + hi)
+        if _student_t_cdf(mid, df) < p:
+            lo = mid
+        else:
+            hi = mid
+        if hi - lo < tol:
+            break
+    return 0.5 * (lo + hi)
+
+
+def trimmed_mean_se(x, tr=0.2):
+    """Standard error of the trimmed mean (Tukey-McLaughlin).
+
+        SE = sqrt(s_w^2) / ((1 - 2 tr) sqrt(n))
+
+    The Winsorized variance appears because the trimmed mean's sampling
+    variance depends on the Winsorized, not the ordinary, spread.
+    Ported from WRS ``trimse``.
+    """
+    v = _flat(x)
+    return math.sqrt(winsorized_variance(v, tr)) / (
+        (1.0 - 2.0 * tr) * math.sqrt(len(v)))
+
+
+def trimmed_mean_ci(x, tr=0.2, alpha=0.05, null_value=0.0):
+    """Confidence interval and test for a single trimmed mean.
+
+    Uses the Tukey-McLaughlin standard error with
+    df = n - 2 floor(tr n) - 1.  Ported from WRS ``trimci``.
+    """
+    v = _flat(x)
+    n = len(v)
+    se = trimmed_mean_se(v, tr)
+    df = n - 2 * trim_counts(n, tr) - 1
+    if df <= 0:
+        raise ValueError("too much trimming: no degrees of freedom left")
+    est = trimmed_mean(v, tr)
+    crit = _student_t_quantile(1.0 - alpha / 2.0, df)
+    stat = (est - float(null_value)) / se
+    p = 2.0 * (1.0 - _student_t_cdf(abs(stat), df))
+    return {"estimate": est, "ci": (est - crit * se, est + crit * se),
+            "statistic": stat, "se": se, "df": df, "p_value": p, "n": n,
+            "method": "trimmed-mean confidence interval"}
+
+
+def yuen_paired(x, y, tr=0.2, alpha=0.05):
+    """Yuen's test for two DEPENDENT trimmed means.
+
+    Unlike the independent-groups version the standard error must
+    subtract the Winsorized covariance, since the pairs are related:
+
+        se = sqrt((q1 + q2 - 2 q3) / (h (h - 1)))
+
+    with q1, q2 the (n-1)-scaled Winsorized variances, q3 the
+    (n-1)-scaled Winsorized covariance and h the number of untrimmed
+    observations.  Ported from WRS ``yuend``.
+    """
+    xs, ys = _flat(x), _flat(y)
+    if len(xs) != len(ys):
+        raise ValueError("dependent groups must have equal length")
+    n = len(xs)
+    h1 = n - 2 * trim_counts(n, tr)
+    if h1 < 2:
+        raise ValueError("too much trimming: fewer than 2 values remain")
+    q1 = (n - 1) * winsorized_variance(xs, tr)
+    q2 = (n - 1) * winsorized_variance(ys, tr)
+    q3 = (n - 1) * winsorized_correlation(xs, ys, tr)["cov"]
+    df = h1 - 1
+    var = (q1 + q2 - 2.0 * q3) / (h1 * (h1 - 1.0))
+    if var <= 0:
+        # q1 + q2 - 2 q3 vanishes when the two Winsorized samples move
+        # in lockstep, e.g. y = x + c.  The paired differences then have
+        # no Winsorized variability at all, so the statistic is
+        # undefined rather than infinite -- report that instead of
+        # dividing by zero.
+        dif0 = trimmed_mean(xs, tr) - trimmed_mean(ys, tr)
+        return {"estimate": dif0, "ci": (dif0, dif0),
+                "statistic": float("nan"), "se": 0.0, "df": df,
+                "p_value": float("nan"), "n": n,
+                "est_1": trimmed_mean(xs, tr),
+                "est_2": trimmed_mean(ys, tr), "degenerate": True,
+                "method": "Yuen's test for dependent trimmed means "
+                          "(zero Winsorized variance of the differences)"}
+    se = math.sqrt(var)
+    dif = trimmed_mean(xs, tr) - trimmed_mean(ys, tr)
+    crit = _student_t_quantile(1.0 - alpha / 2.0, df)
+    stat = dif / se
+    p = 2.0 * (1.0 - _student_t_cdf(abs(stat), df))
+    return {"estimate": dif, "ci": (dif - crit * se, dif + crit * se),
+            "statistic": stat, "se": se, "df": df, "p_value": p, "n": n,
+            "est_1": trimmed_mean(xs, tr), "est_2": trimmed_mean(ys, tr),
+            "degenerate": False,
+            "method": "Yuen's test for dependent trimmed means"}
+
+
+def one_sample_bootstrap(x, est=None, alpha=0.05, nboot=2000,
+                         null_value=0.0, seed=2, **kwargs):
+    """Percentile bootstrap interval for a single measure of location.
+
+    ``est`` defaults to the one-step M-estimator, as in WRS
+    ``onesampb``.  The p-value is twice the smaller of the proportions
+    of bootstrap estimates above and below the null value.
+    """
+    from . import _rrng_core as _rr
+
+    v = _flat(x)
+    if est is None:
+        est = one_step_m_estimator
+    n = len(v)
+    rng = _rr.RRandom(seed)
+    # matrix(sample(x, n * nboot, replace = TRUE), nrow = nboot):
+    # R fills column-major, so row b uses entries b, b+nboot, ...
+    draw = rng.sample_int(n, n * int(nboot), replace=True)
+    nb = int(nboot)
+    boot = sorted(est([v[draw[b + j * nb] - 1] for j in range(n)], **kwargs)
+                  for b in range(nb))
+    low = int(round((alpha / 2.0) * nboot))
+    up = int(nboot - low) - 1
+    low = min(max(low, 0), nboot - 1)
+    up = min(max(up, 0), nboot - 1)
+    nv = float(null_value)
+    above = sum(1 for b in boot if b > nv) / nboot
+    equal = sum(1 for b in boot if b == nv) / nboot
+    pv = above + 0.5 * equal
+    p = 2.0 * min(pv, 1.0 - pv)
+    return {"estimate": est(v, **kwargs), "ci": (boot[low], boot[up]),
+            "p_value": p, "n": n, "nboot": int(nboot),
+            "method": "one-sample percentile bootstrap"}
+
+
+def _f_cdf(x, df1, df2):
+    """CDF of the F distribution, i.e. R's ``pf``.
+
+        F(x; d1, d2) = I_{d1 x / (d1 x + d2)}(d1/2, d2/2)
+    """
+    if x <= 0:
+        return 0.0
+    y = df1 * x / (df1 * x + df2)
+    return _betainc(df1 / 2.0, df2 / 2.0, y)
+
+
+def trimmed_mean_anova(groups, tr=0.2):
+    """Heteroscedastic one-way ANOVA on trimmed means.
+
+    Wilcox's generalisation of Welch's test.  With h_j the untrimmed
+    count and s_wj^2 the Winsorized variance of group j,
+
+        w_j  = h_j (h_j - 1) / ((n_j - 1) s_wj^2)
+        A    = sum w_j (Xt_j - Xt~)^2 / (J - 1),  Xt~ = sum w_j Xt_j / U
+        B    = 2 (J - 2) sum((1 - w_j/U)^2 / (h_j - 1)) / (J^2 - 1)
+        TEST = A / (B + 1)
+
+    with df1 = J - 1 and
+    df2 = 1 / (3 sum((1 - w_j/U)^2 / (h_j - 1)) / (J^2 - 1)).
+    Ported from WRS ``t1way``.  Note WRS warns that tr = 0.5 (medians)
+    should not be handled here -- use a median-specific method.
+    """
+    gs = [_flat(g) for g in groups]
+    J = len(gs)
+    if J < 2:
+        raise ValueError("need at least 2 groups")
+    if tr >= 0.5:
+        raise ValueError("tr = 0.5 compares medians; use a median method")
+    h, w, xbar, nv = [], [], [], []
+    for g in gs:
+        n = len(g)
+        hj = n - 2 * trim_counts(n, tr)
+        if hj < 2:
+            raise ValueError("a group has fewer than 2 untrimmed values")
+        wv = winsorized_variance(g, tr)
+        if wv == 0:
+            raise ValueError("the Winsorized variance is zero for a group")
+        h.append(hj)
+        w.append(hj * (hj - 1.0) / ((n - 1) * wv))
+        xbar.append(trimmed_mean(g, tr))
+        nv.append(n)
+    u = sum(w)
+    xtil = sum(w[j] * xbar[j] for j in range(J)) / u
+    A = sum(w[j] * (xbar[j] - xtil) ** 2 for j in range(J)) / (J - 1.0)
+    tail = sum((1.0 - w[j] / u) ** 2 / (h[j] - 1.0) for j in range(J))
+    B = 2.0 * (J - 2.0) * tail / (J * J - 1.0)
+    test = A / (B + 1.0)
+    nu1 = J - 1.0
+    nu2 = 1.0 / (3.0 * tail / (J * J - 1.0))
+    return {"statistic": test, "df1": nu1, "df2": nu2,
+            "p_value": 1.0 - _f_cdf(test, nu1, nu2),
+            "n": nv, "trimmed_means": xbar,
+            "method": "heteroscedastic one-way ANOVA on trimmed means"}
+
+
+def boxplot_outliers(x, carling=False, gval=None):
+    """Boxplot outlier rule on the ideal fourths.
+
+    Unlike R's ``boxplot``, the quartiles come from the ideal fourths of
+    eq. (2.6)-(2.7).  ``carling=True`` applies the rule of Carling, K.
+    (2000) "Resistant outlier rules and the non-Gaussian case",
+    *Computational Statistics & Data Analysis* 33(3), 249-258,
+    doi:10.1016/S0167-9473(99)00057-2,
+    modification, which centres the interval on the MEDIAN and scales
+    the fence with the sample size,
+
+        gval = (17.63 n - 23.64) / (7.74 n - 3.71)
+        [M - gval * IQR,  M + gval * IQR]
+
+    rather than the fixed 1.5 fence hung off the quartiles.  Ported from
+    WRS ``outbox``.
+    """
+    v = _flat(x)
+    n = len(v)
+    f = ideal_fourths(v)
+    iqr = f["q2"] - f["q1"]
+    if carling:
+        g = ((17.63 * n - 23.64) / (7.74 * n - 3.71)
+             if gval is None else float(gval))
+        m = median(v)
+        cl, cu = m - g * iqr, m + g * iqr
+    else:
+        g = 1.5 if gval is None else float(gval)
+        cl, cu = f["q1"] - g * iqr, f["q2"] + g * iqr
+    flags = [t < cl or t > cu for t in v]
+    return {"lower": cl, "upper": cu, "gval": g, "iqr": iqr,
+            "is_outlier": flags,
+            "outliers": [t for t, b in zip(v, flags) if b],
+            "keep": [t for t, b in zip(v, flags) if not b],
+            "n": n, "n_outliers": sum(1 for b in flags if b),
+            "method": "Carling's boxplot rule" if carling
+                      else "boxplot rule on the ideal fourths"}
+
+
+def _gauss_kronrod(f, a, b):
+    """One 15-point Gauss-Kronrod panel on [a, b].
+
+    Returns the Kronrod estimate and an error estimate taken from its
+    difference with the embedded 7-point Gauss rule -- the same pairing
+    R's integrate() uses (QUADPACK's QK15).
+    """
+    xk = (0.991455371120813, 0.949107912342759, 0.864864423359769,
+          0.741531185599394, 0.586087235467691, 0.405845151377397,
+          0.207784955007898, 0.000000000000000)
+    wk = (0.022935322010529, 0.063092092629979, 0.104790010322250,
+          0.140653259715525, 0.169004726639267, 0.190350578064785,
+          0.204432940075298, 0.209482141084728)
+    wg = (0.129484966168870, 0.279705391489277, 0.381830050505119,
+          0.417959183673469)
+    c = 0.5 * (a + b)
+    h = 0.5 * (b - a)
+    resk = 0.0
+    resg = 0.0
+    for i in range(8):
+        if xk[i] == 0.0:
+            fv = f(c)
+            resk += wk[i] * fv
+            resg += wg[3] * fv
+        else:
+            fv = f(c - h * xk[i]) + f(c + h * xk[i])
+            resk += wk[i] * fv
+            if i % 2 == 1:                 # nodes shared with the Gauss rule
+                resg += wg[i // 2] * fv
+    resk *= h
+    resg *= h
+    return resk, abs(resk - resg)
+
+
+def _adaptive_quad(f, a, b, tol=1e-12, max_depth=50):
+    """Adaptive Gauss-Kronrod integration.
+
+    Bisects the interval wherever the local error estimate is too large,
+    which is what R's integrate() (and the ``area`` helper WRS uses)
+    does.  Replaces the fixed Simpson rule this module used to carry,
+    whose truncation error showed up as a 1e-9 disagreement with R in
+    the AKP effect size.
+    """
+    total, err = _gauss_kronrod(f, a, b)
+    stack = [(a, b, total, err, 0)]
+    result = 0.0
+    while stack:
+        lo, hi, val, e, depth = stack.pop()
+        if e <= tol * max(1.0, abs(val)) or depth >= max_depth:
+            result += val
+            continue
+        mid = 0.5 * (lo + hi)
+        lval, lerr = _gauss_kronrod(f, lo, mid)
+        rval, rerr = _gauss_kronrod(f, mid, hi)
+        stack.append((lo, mid, lval, lerr, depth + 1))
+        stack.append((mid, hi, rval, rerr, depth + 1))
+    return result
+
+
+def _normal_winsorized_variance(tr):
+    """Winsorized variance of the standard normal at trimming ``tr``.
+
+        integral_{z_tr}^{z_{1-tr}} u^2 phi(u) du + 2 z_tr^2 tr
+
+    This is the ``cterm`` of WRS ``akp.effect``, which rescales the
+    robust effect size so it equals Cohen's d under normality.  Computed
+    with :func:`_adaptive_quad`, matching R's integrate() to machine
+    precision.
+    """
+    if tr <= 0:
+        return 1.0
+    lo = _norm_quantile(tr)
+    hi = _norm_quantile(1.0 - tr)
+
+    def f(u):
+        return u * u * math.exp(-0.5 * u * u) / math.sqrt(2.0 * math.pi)
+
+    return _adaptive_quad(f, lo, hi) + 2.0 * lo * lo * tr
+
+
+def akp_effect_size(x, y, tr=0.2, equal_variance=True):
+    """Robust effect size of Algina, Keselman and Penfield (2005).
+
+    Algina, J., Keselman, H. J. & Penfield, R. D. (2005) "An
+    alternative to Cohen's standardized mean difference effect size: a
+    robust parameter and confidence interval in the two independent
+    groups case", *Psychological Methods* 10(3), 317-328,
+    doi:10.1037/1082-989X.10.3.317.
+
+    A trimmed-mean analogue of Cohen's d: the difference in trimmed
+    means over a Winsorized pooled standard deviation, multiplied by a
+    constant that makes it coincide with Cohen's d when the data are
+    normal.  Ported from WRS ``akp.effect``.
+
+    With ``equal_variance=False`` the difference is divided by each
+    group's own Winsorized standard deviation in turn, and both values
+    are returned.
+    """
+    xs, ys = _flat(x), _flat(y)
+    n1, n2 = len(xs), len(ys)
+    if n1 < 2 or n2 < 2:
+        raise ValueError("each group needs at least 2 observations")
+    s1 = winsorized_variance(xs, tr)
+    s2 = winsorized_variance(ys, tr)
+    cterm = math.sqrt(_normal_winsorized_variance(tr))
+    dif = trimmed_mean(xs, tr) - trimmed_mean(ys, tr)
+    if equal_variance:
+        sp = math.sqrt(((n1 - 1) * s1 + (n2 - 1) * s2) / (n1 + n2 - 2.0))
+        if sp == 0:
+            raise ValueError("pooled Winsorized variance is zero")
+        return {"effect_size": cterm * dif / sp, "cterm": cterm,
+                "pooled_sd": sp, "n1": n1, "n2": n2, "tr": float(tr),
+                "method": "AKP robust effect size (equal variances)"}
+    if s1 == 0 or s2 == 0:
+        raise ValueError("a Winsorized variance is zero")
+    return {"effect_size": (cterm * dif / math.sqrt(s1),
+                            cterm * dif / math.sqrt(s2)),
+            "cterm": cterm, "n1": n1, "n2": n2, "tr": float(tr),
+            "method": "AKP robust effect size (unequal variances)"}
+
+
+def trimmed_mean_bootstrap(x, tr=0.2, alpha=0.05, nboot=2000,
+                           null_value=0.0, seed=2):
+    """Percentile bootstrap interval for a single trimmed mean.
+
+    The trimmed-mean specialisation of :func:`one_sample_bootstrap`;
+    WRS calls it ``trimpb``.  Preferred over the Tukey-McLaughlin
+    interval when the sample is small and badly skewed.
+    """
+    return one_sample_bootstrap(
+        x, est=lambda v: trimmed_mean(v, tr), alpha=alpha, nboot=nboot,
+        null_value=null_value, seed=seed)
+
+
+def median_se(x, warn_ties=True):
+    """Standard error of the median (McKean and Shrader, 1984).
+
+    Built from an order-statistic interval rather than a variance:
+
+        av  = round((n+1)/2 - z_.995 sqrt(n/4)),   av = 1 if that is 0
+        top = n - av + 1
+        SE  = (X_(top) - X_(av)) / (2 z_.995)
+
+    Ported from WRS ``msmedse``.  Wilcox warns that ties can make this
+    badly inaccurate even for large n, so ``warn_ties`` reports whether
+    any were present rather than silently returning a number.
+    """
+    v = sorted(_flat(x))
+    n = len(v)
+    if n < 2:
+        raise ValueError("need at least 2 observations")
+    z = _norm_quantile(0.995)
+    av = int(round((n + 1) / 2.0 - z * math.sqrt(n / 4.0)))
+    if av == 0:
+        av = 1
+    if av < 1:
+        raise ValueError("sample too small for the McKean-Shrader interval")
+    top = n - av + 1
+    se = (v[top - 1] - v[av - 1]) / (2.0 * z)
+    ties = len(v) != len(set(v))
+    if warn_ties and ties:
+        return {"se": se, "ties": True, "av": av, "top": top, "n": n,
+                "warning": "tied values detected; this standard error "
+                           "can be highly inaccurate even for large n",
+                "method": "McKean-Shrader standard error of the median"}
+    return {"se": se, "ties": ties, "av": av, "top": top, "n": n,
+            "method": "McKean-Shrader standard error of the median"}
+
+
+def median_test_2group(x, y, alpha=0.05):
+    """Compare two independent medians using McKean-Shrader errors.
+
+    The pairwise comparison WRS ``msmed`` performs: the difference in
+    medians over the root of the summed squared standard errors,
+    referred to the standard normal.  Wilcox's caution applies -- with
+    tied values prefer a percentile bootstrap on the medians.
+    """
+    xs, ys = _flat(x), _flat(y)
+    s1 = median_se(xs, warn_ties=False)["se"]
+    s2 = median_se(ys, warn_ties=False)["se"]
+    se = math.sqrt(s1 * s1 + s2 * s2)
+    if se == 0:
+        raise ValueError("both standard errors are zero")
+    m1, m2 = median(xs), median(ys)
+    stat = (m1 - m2) / se
+    crit = _norm_quantile(1.0 - alpha / 2.0)
+    p = 2.0 * (1.0 - 0.5 * math.erfc(-abs(stat) / math.sqrt(2.0)))
+    dif = m1 - m2
+    return {"estimate": dif, "statistic": stat, "se": se, "p_value": p,
+            "ci": (dif - crit * se, dif + crit * se),
+            "median_x": m1, "median_y": m2,
+            "ties": (len(xs) != len(set(xs))) or (len(ys) != len(set(ys))),
+            "method": "median comparison, McKean-Shrader errors"}
+
+
+def winsorized_regression(X, y, tr=0.2, n_iter=20, tol=1e-4):
+    """Winsorized regression.
+
+    Solves the normal equations built from Winsorized covariances rather
+    than ordinary ones, then refines the fit by repeatedly regressing
+    the residuals the same way.  Ported from WRS ``winreg``.
+
+    Note on the loop, which we reproduce exactly: WRS tests the size of
+    the new increment and breaks BEFORE adding it, so the final
+    sub-tolerance correction is deliberately discarded.  Matching that
+    is what keeps our coefficients identical to R's.
+    """
+    Xm = _mat_local(X)
+    ys = _flat(y)
+    n = len(ys)
+    if len(Xm) != n:
+        raise ValueError("X and y must have the same number of rows")
+    p = len(Xm[0])
+    cols = [[Xm[i][j] for i in range(n)] for j in range(p)]
+    mvals = [winsorized_mean(c, tr) for c in cols]
+
+    M = [[winsorized_correlation(cols[i], cols[j], tr)["cov"]
+          for j in range(p)] for i in range(p)]
+    ma = [winsorized_correlation(cols[i], ys, tr)["cov"] for i in range(p)]
+    slope = _solve_local(M, ma)
+    b0 = winsorized_mean(ys, tr) - sum(slope[j] * mvals[j]
+                                       for j in range(p))
+    res = [ys[i] - sum(Xm[i][j] * slope[j] for j in range(p)) - b0
+           for i in range(n)]
+    converged = False
+    for _ in range(int(n_iter)):
+        ma = [winsorized_correlation(cols[i], res, tr)["cov"]
+              for i in range(p)]
+        slope_add = _solve_local(M, ma)
+        b0_add = winsorized_mean(res, tr) - sum(
+            slope_add[j] * mvals[j] for j in range(p))
+        if max(max(abs(v) for v in slope_add), abs(b0_add)) < tol:
+            converged = True
+            break
+        slope = [slope[j] + slope_add[j] for j in range(p)]
+        b0 += b0_add
+        res = [ys[i] - sum(Xm[i][j] * slope[j] for j in range(p)) - b0
+               for i in range(n)]
+    return {"coef": [b0] + list(slope), "intercept": b0,
+            "slope": list(slope), "residuals": res,
+            "converged": converged, "n": n,
+            "method": "Winsorized regression"}
+
+
+def _mat_local(X):
+    """Coerce to a list of rows; a flat sequence becomes one column."""
+    rows = list(X)
+    if rows and not isinstance(rows[0], (list, tuple)):
+        return [[float(v)] for v in rows]
+    return [[float(v) for v in r] for r in rows]
+
+
+def _solve_local(A, b):
+    """Solve A z = b by Gauss-Jordan with partial pivoting."""
+    n = len(A)
+    M = [[float(A[i][j]) for j in range(n)] + [float(b[i])]
+         for i in range(n)]
+    for c in range(n):
+        piv = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[piv][c]) < 1e-300:
+            raise ValueError("singular Winsorized covariance matrix")
+        M[c], M[piv] = M[piv], M[c]
+        d = M[c][c]
+        M[c] = [v / d for v in M[c]]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c]
+            if f:
+                M[r] = [M[r][k] - f * M[c][k] for k in range(n + 1)]
+    return [M[i][n] for i in range(n)]
+
+
+def correlation_bootstrap_ci(x, y, corfun=None, nboot=599, alpha=0.05,
+                             seed=2, **kwargs):
+    """Bootstrap confidence interval for a correlation.
+
+    Resamples PAIRS -- the same row index is taken from x and y -- so
+    the dependence between them is preserved; resampling the two
+    vectors independently would estimate the null distribution instead.
+    ``corfun`` defaults to the percentage bend correlation, as in WRS
+    ``corb``, and may be any function returning a dict with a "cor" key
+    (both :func:`percentage_bend_correlation` and
+    :func:`winsorized_correlation` do).
+
+    The interval endpoints use WRS's index convention,
+    floor(alpha/2 * nboot + 0.5) and floor((1 - alpha/2) * nboot + 0.5),
+    and the p-value is twice the smaller tail proportion about zero.
+
+    The resampling uses :mod:`morie.fn._rrng_core`, which reproduces R's
+    Mersenne-Twister stream and the ``R_unif_index`` rejection sampler,
+    so this matches R's ``corb`` exactly rather than only in
+    distribution.
+    """
+    from . import _rrng_core as _rr
+
+    xs, ys = _flat(x), _flat(y)
+    if len(xs) != len(ys):
+        raise ValueError("x and y must have the same length")
+    n = len(xs)
+    if corfun is None:
+        corfun = percentage_bend_correlation
+    est = corfun(xs, ys, **kwargs)["cor"]
+    # WRS corb: matrix(sample(n, n * nboot, replace = TRUE), nrow = nboot),
+    # filled column-major, so row b is entries b, b + nboot, ...
+    rng = _rr.RRandom(seed)
+    nb = int(nboot)
+    draw = rng.sample_int(n, n * nb, replace=True)
+    boot = []
+    for b in range(nb):
+        idx = [draw[b + j * nb] - 1 for j in range(n)]
+        try:
+            boot.append(corfun([xs[i] for i in idx],
+                               [ys[i] for i in idx], **kwargs)["cor"])
+        except ValueError:
+            continue          # a degenerate resample contributes nothing
+    if not boot:
+        raise ValueError("every bootstrap resample was degenerate")
+    boot.sort()
+    nb = len(boot)
+    ilow = int(math.floor((alpha / 2.0) * nb + 0.5))
+    ihi = int(math.floor((1.0 - alpha / 2.0) * nb + 0.5))
+    ilow = min(max(ilow - 1, 0), nb - 1)
+    ihi = min(max(ihi - 1, 0), nb - 1)
+    phat = sum(1 for b in boot if b < 0) / nb
+    return {"estimate": est, "ci": (boot[ilow], boot[ihi]),
+            "p_value": 2.0 * min(phat, 1.0 - phat), "n": n,
+            "nboot": nb,
+            "method": "bootstrap confidence interval for a correlation"}
+
+
+def _matmul(A, B):
+    n, k, m = len(A), len(B), len(B[0])
+    return [[sum(A[i][t] * B[t][j] for t in range(k)) for j in range(m)]
+            for i in range(n)]
+
+
+def _trace(A):
+    return sum(A[i][i] for i in range(len(A)))
+
+
+def brunner_dette_munk(groups):
+    """Brunner-Dette-Munk rank-based one-way ANOVA.
+
+    Brunner, E., Dette, H. & Munk, A. (1997) "Box-type approximations
+    in nonparametric factorial designs", *Journal of the American
+    Statistical Association* 92(440), 1494-1502,
+    doi:10.1080/01621459.1997.10473671.  A fully
+    nonparametric heteroscedastic one-way design: it tests equality of
+    the relative treatment effects
+
+        q_j = (Rbar_j - 0.5) / N
+
+    where Rbar_j is the mean of the MIDRANKS of group j taken over the
+    pooled sample.  Because it works on ranks it needs no assumption
+    about the shape of the distributions, and unlike the classical
+    Kruskal-Wallis test it does not assume they share a common shape
+    either -- each group gets its own variance term.
+
+    The statistic is the Box-type approximation
+
+        F = N q' C q / (c11 * tr(VN))
+
+    with C = I - J/J the centring contrast matrix, VN the diagonal
+    matrix of scaled within-group rank variances, and degrees of freedom
+
+        nu1 = c11^2 tr(VN)^2 / tr(C VN C VN)
+        nu2 = tr(VN)^2 / tr(VN VN Lambda),  Lambda = diag(1/(n_j - 1)).
+
+    Ported from WRS ``bdm`` and its helper ``bdms1``.
+    """
+    gs = [_flat(g) for g in groups]
+    J = len(gs)
+    if J < 2:
+        raise ValueError("need at least 2 groups")
+    if any(len(g) < 2 for g in gs):
+        raise ValueError("every group needs at least 2 observations")
+
+    pool = [v for g in gs for v in g]
+    N = len(pool)
+    rval = _rank(pool)
+
+    rvec, nvec, rbar = [], [], []
+    pos = 0
+    for g in gs:
+        k = len(g)
+        r = rval[pos:pos + k]
+        pos += k
+        rvec.append(r)
+        nvec.append(k)
+        rbar.append(sum(r) / k)
+
+    # relative treatment effects
+    phat = [(rbar[j] - 0.5) / N for j in range(J)]
+
+    # within-group rank variances, scaled by N^2 and by the group size
+    svec = [sum((r - rbar[j]) ** 2 for r in rvec[j]) / (nvec[j] - 1.0)
+            / (N * N) for j in range(J)]
+    VN = [[0.0] * J for _ in range(J)]
+    for j in range(J):
+        VN[j][j] = N * svec[j] / nvec[j]
+
+    # C = I - J/J, the centring contrast matrix bdm passes to bdms1
+    C = [[(1.0 if i == j else 0.0) - 1.0 / J for j in range(J)]
+         for i in range(J)]
+
+    trVN = _trace(VN)
+    c11 = C[0][0]
+    top = c11 * trVN
+    if top == 0:
+        raise ValueError("zero rank variance: the groups are degenerate")
+    quad = sum(phat[i] * C[i][j] * phat[j]
+               for i in range(J) for j in range(J))
+    F = N * quad / top
+
+    CVN = _matmul(C, VN)
+    nu1 = c11 * c11 * trVN * trVN / _trace(_matmul(CVN, CVN))
+    lam = [[0.0] * J for _ in range(J)]
+    for j in range(J):
+        lam[j][j] = 1.0 / (nvec[j] - 1.0)
+    nu2 = trVN * trVN / _trace(_matmul(_matmul(VN, VN), lam))
+
+    return {"statistic": F, "df1": nu1, "df2": nu2,
+            "p_value": 1.0 - _f_cdf(F, nu1, nu2),
+            "q_hat": phat, "n": nvec,
+            "method": "Brunner-Dette-Munk rank-based ANOVA"}
+
+# ---------------------------------------------------------------
+# Spatial autocorrelation inference and spatial-econometric
+# estimators.  Verified numerically against the R reference
+# implementations: spdep::Szero, spdep::moran.test, spdep::stsls and
+# spdep::GMerrorsar (Bivand, Pebesma & Gomez-Rubio, *Applied Spatial
+# Data Analysis with R*, the Use R! volume these examples come from).
+# ---------------------------------------------------------------
+
+def weights_totals(W):
+    """The S0, S1 and S2 constants of a spatial weights matrix.
+
+        S0 = sum_ij w_ij                       (spdep's Szero)
+        S1 = 0.5 sum_ij (w_ij + w_ji)^2
+        S2 = sum_i (sum_j w_ij + sum_j w_ji)^2
+
+    Every asymptotic test of spatial autocorrelation is a function of
+    these three, which is why spdep exposes Szero separately.
+    """
+    Wm = _mat_local(W)
+    n = len(Wm)
+    if any(len(r) != n for r in Wm):
+        raise ValueError("W must be square")
+    s0 = sum(Wm[i][j] for i in range(n) for j in range(n))
+    s1 = 0.5 * sum((Wm[i][j] + Wm[j][i]) ** 2
+                   for i in range(n) for j in range(n))
+    s2 = 0.0
+    for i in range(n):
+        ri = sum(Wm[i][j] for j in range(n))
+        ci = sum(Wm[j][i] for j in range(n))
+        s2 += (ri + ci) ** 2
+    return {"S0": s0, "S1": s1, "S2": s2, "n": n}
+
+
+def morans_i(x, W):
+    """Moran's I.
+
+        I = (n / S0) * (sum_ij w_ij z_i z_j) / (sum_i z_i^2),
+        z = x - mean(x)
+    """
+    v = _flat(x)
+    Wm = _mat_local(W)
+    n = len(v)
+    if len(Wm) != n or len(Wm[0]) != n:
+        raise ValueError("W must be %d x %d to match x" % (n, n))
+    m = sum(v) / n
+    z = [t - m for t in v]
+    s0 = sum(Wm[i][j] for i in range(n) for j in range(n))
+    num = sum(Wm[i][j] * z[i] * z[j]
+              for i in range(n) for j in range(n))
+    den = sum(t * t for t in z)
+    return (n / s0) * (num / den)
+
+
+def morans_i_test(x, W, randomisation=True, alternative="greater"):
+    """Asymptotic test for Moran's I (Cliff and Ord).
+
+    Mirrors ``spdep::moran.test``.  Under the null of no spatial
+    autocorrelation E[I] = -1/(n-1), and the variance takes one of two
+    forms:
+
+    randomisation (the spdep default), with b2 the sample kurtosis
+    n * sum(z^4) / (sum(z^2))^2,
+
+        Var = ( n((n^2-3n+3)S1 - n S2 + 3 S0^2)
+                - b2((n^2-n)S1 - 2n S2 + 6 S0^2) )
+              / ((n-1)(n-2)(n-3) S0^2)  -  1/(n-1)^2
+
+    normality,
+
+        Var = (n^2 S1 - n S2 + 3 S0^2) / (S0^2 (n^2-1)) - 1/(n-1)^2
+
+    The randomisation form conditions on the observed values and only
+    treats their arrangement as random, which is the honest null when
+    the data are plainly non-normal.
+    """
+    v = _flat(x)
+    n = len(v)
+    if len(_mat_local(W)) != n:
+        raise ValueError("W must be %d x %d to match x" % (n, n))
+    t = weights_totals(W)
+    s0, s1, s2 = t["S0"], t["S1"], t["S2"]
+    I = morans_i(v, W)
+    ei = -1.0 / (n - 1.0)
+    if randomisation:
+        m = sum(v) / n
+        z = [q - m for q in v]
+        s2z = sum(q * q for q in z)
+        b2 = n * sum(q ** 4 for q in z) / (s2z * s2z)
+        num = (n * ((n * n - 3 * n + 3) * s1 - n * s2 + 3 * s0 * s0)
+               - b2 * ((n * n - n) * s1 - 2 * n * s2 + 6 * s0 * s0))
+        var = num / ((n - 1.0) * (n - 2.0) * (n - 3.0) * s0 * s0) \
+            - 1.0 / ((n - 1.0) ** 2)
+    else:
+        var = (n * n * s1 - n * s2 + 3 * s0 * s0) \
+            / (s0 * s0 * (n * n - 1.0)) - 1.0 / ((n - 1.0) ** 2)
+    sd = math.sqrt(var)
+    zval = (I - ei) / sd
+    if alternative == "greater":
+        p = 1.0 - 0.5 * math.erfc(-zval / math.sqrt(2.0))
+    elif alternative == "less":
+        p = 0.5 * math.erfc(-zval / math.sqrt(2.0))
+    else:
+        p = 2.0 * (1.0 - 0.5 * math.erfc(-abs(zval) / math.sqrt(2.0)))
+    return {"statistic": zval, "estimate": I, "expectation": ei,
+            "variance": var, "p_value": p, "S0": s0, "S1": s1, "S2": s2,
+            "randomisation": bool(randomisation), "n": n,
+            "method": "Moran's I test for spatial autocorrelation"}
+
+
+def _lag(W, v):
+    Wm = _mat_local(W)
+    return [sum(Wm[i][j] * v[j] for j in range(len(v)))
+            for i in range(len(Wm))]
+
+
+def spatial_2sls(y, X, W, add_intercept=True, robust=False):
+    """Spatial two-stage least squares for the spatial lag model.
+
+        y = rho W y + X beta + e
+
+    W y is endogenous, so it is instrumented with the spatially lagged
+    exogenous variables [X, WX, W^2 X] -- Kelejian, H. H. & Prucha,
+    I. R. (1998) "A generalized spatial two-stage least squares
+    procedure for estimating a spatial autoregressive model with
+    autoregressive disturbances", *The Journal of Real Estate Finance
+    and Economics* 17(1), 99-121, doi:10.1023/A:1007707430416
+    instrument set that ``spdep::stsls`` uses.  Ordinary least squares
+    on this model is inconsistent; 2SLS is the cheap consistent fix.
+    """
+    ys = _flat(y)
+    Xm = _mat_local(X)
+    n = len(ys)
+    Wm = _mat_local(W)
+    if len(Xm) != n:
+        raise ValueError("X has %d rows but y has %d"
+                         % (len(Xm), n))
+    if len(Wm) != n or len(Wm[0]) != n:
+        raise ValueError("W must be %d x %d to match y" % (n, n))
+    if add_intercept:
+        Xm = [[1.0] + list(r) for r in Xm]
+    p = len(Xm[0])
+    cols = [[Xm[i][j] for i in range(n)] for j in range(p)]
+    Wy = _lag(W, ys)
+
+    # instruments: X, WX, W^2 X (dropping the lagged intercept, which
+    # is collinear with the intercept itself)
+    inst = [c[:] for c in cols]
+    for j in range(p):
+        if add_intercept and j == 0:
+            continue
+        wx = _lag(W, cols[j])
+        inst.append(wx)
+        inst.append(_lag(W, wx))
+    Z = [[inst[k][i] for k in range(len(inst))] for i in range(n)]
+
+    # first stage: project Wy on the instruments
+    ZtZ = [[sum(Z[i][a] * Z[i][b] for i in range(n))
+            for b in range(len(Z[0]))] for a in range(len(Z[0]))]
+    ZtWy = [sum(Z[i][a] * Wy[i] for i in range(n))
+            for a in range(len(Z[0]))]
+    g = _solve_local(ZtZ, ZtWy)
+    Wy_hat = [sum(Z[i][a] * g[a] for a in range(len(Z[0])))
+              for i in range(n)]
+
+    # second stage: regress y on [Wy_hat, X]
+    D = [[Wy_hat[i]] + list(Xm[i]) for i in range(n)]
+    k = len(D[0])
+    DtD = [[sum(D[i][a] * D[i][b] for i in range(n)) for b in range(k)]
+           for a in range(k)]
+    Dty = [sum(D[i][a] * ys[i] for i in range(n)) for a in range(k)]
+    coef = _solve_local(DtD, Dty)
+    rho = coef[0]
+    beta = coef[1:]
+
+    # residuals use the ACTUAL Wy, not the fitted one
+    resid = [ys[i] - rho * Wy[i]
+             - sum(Xm[i][j] * beta[j] for j in range(p))
+             for i in range(n)]
+    s2 = sum(r * r for r in resid) / n
+    return {"rho": rho, "beta": beta, "coefficients": coef,
+            "residuals": resid, "sigma2": s2, "n": n,
+            "method": "spatial two-stage least squares (Kelejian-Prucha)"}
+
+
+def gm_error_sar(y, X, W, add_intercept=True):
+    """Generalised-moments estimator for the spatial error model.
+
+        y = X beta + u,   u = lambda W u + e
+
+    Kelejian, H. H. & Prucha, I. R. (1999) "A generalized moments
+    estimator for the autoregressive parameter in a spatial model",
+    *International Economic Review* 40(2), 509-533,
+    doi:10.1111/1468-2354.00027.  Three moment conditions in
+    (lambda, lambda^2, sigma^2) are stacked into
+
+        G (lambda, lambda^2, sigma^2)' = g
+
+    and solved by nonlinear least squares.  Unlike maximum likelihood
+    this never needs the determinant of (I - lambda W), which is what
+    makes it usable on large lattices.
+
+    The moment matrix is transcribed from ``spatialreg:::.kpwuwu`` and
+    the criterion from ``spatialreg:::.kpgm``; beta is then re-estimated
+    from the spatially filtered regression, matching
+    ``spatialreg::GMerrorsar``.
+    """
+    ys = _flat(y)
+    Xm = _mat_local(X)
+    n = len(ys)
+    Wm = _mat_local(W)
+    if len(Xm) != n:
+        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+    if len(Wm) != n or len(Wm[0]) != n:
+        raise ValueError("W must be %d x %d to match y" % (n, n))
+    if add_intercept:
+        Xm = [[1.0] + list(r) for r in Xm]
+    p_ = len(Xm[0])
+
+    def ols(design, target):
+        k = len(design[0])
+        A = [[sum(design[i][a] * design[i][b] for i in range(n))
+              for b in range(k)] for a in range(k)]
+        b = [sum(design[i][a] * target[i] for i in range(n))
+             for a in range(k)]
+        return _solve_local(A, b)
+
+    beta = ols(Xm, ys)
+    u = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p_))
+         for i in range(n)]
+
+    wu = _lag(W, u)
+    wwu = _lag(W, wu)
+    trwpw = sum(Wm[i][j] * Wm[i][j] for i in range(n) for j in range(n))
+
+    def dot(a, b):
+        return sum(a[i] * b[i] for i in range(n))
+
+    uu = dot(u, u)
+    uwu = dot(u, wu)
+    uwpuw = dot(wu, wu)
+    uwwu = dot(u, wwu)
+    wwupwu = dot(wwu, wu)
+    wwupwwu = dot(wwu, wwu)
+
+    G = [[2 * uwu / n, -uwpuw / n, 1.0],
+         [2 * wwupwu / n, -wwupwwu / n, trwpw / n],
+         [(uwwu + uwpuw) / n, -wwupwu / n, 0.0]]
+    g = [uu / n, uwpuw / n, uwu / n]
+
+    def crit(lam, sig):
+        th = (lam, lam * lam, sig)
+        return sum((sum(G[r][c] * th[c] for c in range(3)) - g[r]) ** 2
+                   for r in range(3))
+
+    # start where GMerrorsar starts: the correlation of u with Wu, and
+    # the residual variance
+    du = math.sqrt(dot(u, u) * dot(wu, wu))
+    lam = (uwu / du) if du > 0 else 0.0
+    mu = sum(u) / n
+    sig = sum((t - mu) ** 2 for t in u) / (n - 1)
+
+    # coordinate descent: sigma is linear given lambda, lambda is
+    # one-dimensional given sigma -- both solved to convergence
+    for _ in range(400):
+        a = sum(G[r][2] * G[r][2] for r in range(3))
+        b = sum(G[r][2] * (g[r] - G[r][0] * lam - G[r][1] * lam * lam)
+                for r in range(3))
+        sig_new = b / a if a > 0 else sig
+        lo, hi = -0.999, 0.999
+        for _ in range(200):
+            m1 = lo + (hi - lo) / 3.0
+            m2 = hi - (hi - lo) / 3.0
+            if crit(m1, sig_new) < crit(m2, sig_new):
+                hi = m2
+            else:
+                lo = m1
+        lam_new = 0.5 * (lo + hi)
+        if abs(lam_new - lam) < 1e-14 and abs(sig_new - sig) < 1e-14:
+            lam, sig = lam_new, sig_new
+            break
+        lam, sig = lam_new, sig_new
+
+    # spatially filtered GLS for beta
+    lagX = [_lag(W, [Xm[q][j] for q in range(n)]) for j in range(p_)]
+    Xf = [[Xm[i][j] - lam * lagX[j][i] for j in range(p_)]
+          for i in range(n)]
+    wy = _lag(W, ys)
+    yf = [ys[i] - lam * wy[i] for i in range(n)]
+    beta = ols(Xf, yf)
+    resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p_))
+             for i in range(n)]
+    ub = [resid[i] - lam * _lag(W, resid)[i] for i in range(n)]
+    return {"lambda": lam, "beta": beta, "residuals": resid,
+            "sigma2": sig, "n": n, "criterion": crit(lam, sig),
+            "s2_residual": sum(t * t for t in ub) / n,
+            "method": "GM estimator for the spatial error model "
+                      "(Kelejian-Prucha 1999)"}
+
+
+def _logdet_I_minus(rho, Wm):
+    """log|I - rho W| by LU with partial pivoting.
+
+    The maximum-likelihood spatial models need this determinant at
+    every trial value of the spatial parameter; computing it directly
+    avoids needing the eigenvalues of W.
+    """
+    n = len(Wm)
+    A = [[(1.0 if i == j else 0.0) - rho * Wm[i][j] for j in range(n)]
+         for i in range(n)]
+    logdet = 0.0
+    sign = 1.0
+    for c in range(n):
+        piv = max(range(c, n), key=lambda r: abs(A[r][c]))
+        if abs(A[piv][c]) < 1e-300:
+            return float("-inf")
+        if piv != c:
+            A[c], A[piv] = A[piv], A[c]
+            sign = -sign
+        d = A[c][c]
+        logdet += math.log(abs(d))
+        if d < 0:
+            sign = -sign
+        for r in range(c + 1, n):
+            f = A[r][c] / d
+            if f:
+                for k in range(c, n):
+                    A[r][k] -= f * A[c][k]
+    return logdet if sign > 0 else float("-inf")
+
+
+def _ols_resid(X, y):
+    n = len(y)
+    k = len(X[0])
+    A = [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(k)]
+         for a in range(k)]
+    b = [sum(X[i][a] * y[i] for i in range(n)) for a in range(k)]
+    beta = _solve_local(A, b)
+    return beta, [y[i] - sum(X[i][j] * beta[j] for j in range(k))
+                  for i in range(n)]
+
+
+def spatial_lag_model(y, X, W, add_intercept=True, interval=(-0.999, 0.999)):
+    """Spatial lag (SAR/SLM) model by maximum likelihood.
+
+        y = rho W y + X beta + eps
+
+    Uses the concentrated log-likelihood of Ord, J. K. (1975)
+    "Estimation methods for models of spatial interaction", *Journal of
+    the American Statistical Association* 70(349), 120-126,
+    doi:10.1080/01621459.1975.10480272.  Regressing y and Wy
+    separately on X gives residuals e0 and ed, and then
+
+        SSE(rho) = (e0 - rho ed)' (e0 - rho ed)
+        LL(rho)  = log|I - rho W| - (n/2) log(SSE(rho)/n)
+
+    so only rho has to be searched; beta and sigma^2 follow in closed
+    form.  This is what ``spatialreg::lagsarlm`` maximises.
+    """
+    ys = _flat(y)
+    Xm = _mat_local(X)
+    Wm = _mat_local(W)
+    n = len(ys)
+    if len(Xm) != n:
+        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+    if len(Wm) != n or len(Wm[0]) != n:
+        raise ValueError("W must be %d x %d to match y" % (n, n))
+    if add_intercept:
+        Xm = [[1.0] + list(r) for r in Xm]
+    k = len(Xm[0])
+    Wy = _lag(W, ys)
+    _, e0 = _ols_resid(Xm, ys)
+    _, ed = _ols_resid(Xm, Wy)
+
+    def negll(rho):
+        sse = sum((e0[i] - rho * ed[i]) ** 2 for i in range(n))
+        ld = _logdet_I_minus(rho, Wm)
+        if ld == float("-inf") or sse <= 0:
+            return float("inf")
+        return -(ld - (n / 2.0) * math.log(sse / n))
+
+    lo, hi = interval
+    for _ in range(300):
+        m1 = lo + (hi - lo) / 3.0
+        m2 = hi - (hi - lo) / 3.0
+        if negll(m1) < negll(m2):
+            hi = m2
+        else:
+            lo = m1
+    rho = 0.5 * (lo + hi)
+
+    yf = [ys[i] - rho * Wy[i] for i in range(n)]
+    beta, resid = _ols_resid(Xm, yf)
+    s2 = sum(r * r for r in resid) / n
+    ll = (_logdet_I_minus(rho, Wm)
+          - (n / 2.0) * math.log(2 * math.pi * s2) - n / 2.0)
+    return {"rho": rho, "beta": beta, "residuals": resid, "sigma2": s2,
+            "loglik": ll, "n": n,
+            "method": "spatial lag model, maximum likelihood"}
+
+
+def spatial_error_model(y, X, W, add_intercept=True,
+                        interval=(-0.999, 0.999)):
+    """Spatial error (SEM) model by maximum likelihood.
+
+        y = X beta + u,   u = lambda W u + eps
+
+    The concentrated likelihood filters both sides,
+    y* = y - lambda W y and X* = X - lambda W X, and then
+
+        LL(lambda) = log|I - lambda W| - (n/2) log(SSE*(lambda)/n)
+
+    with SSE* the residual sum of squares of y* on X*.  Matches
+    ``spatialreg::errorsarlm``.
+    """
+    ys = _flat(y)
+    Xm = _mat_local(X)
+    Wm = _mat_local(W)
+    n = len(ys)
+    if len(Xm) != n:
+        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+    if len(Wm) != n or len(Wm[0]) != n:
+        raise ValueError("W must be %d x %d to match y" % (n, n))
+    if add_intercept:
+        Xm = [[1.0] + list(r) for r in Xm]
+    k = len(Xm[0])
+    Wy = _lag(W, ys)
+    WX = [_lag(W, [Xm[i][j] for i in range(n)]) for j in range(k)]
+
+    def sse_of(lam):
+        yf = [ys[i] - lam * Wy[i] for i in range(n)]
+        Xf = [[Xm[i][j] - lam * WX[j][i] for j in range(k)]
+              for i in range(n)]
+        _, r = _ols_resid(Xf, yf)
+        return sum(t * t for t in r)
+
+    def negll(lam):
+        sse = sse_of(lam)
+        ld = _logdet_I_minus(lam, Wm)
+        if ld == float("-inf") or sse <= 0:
+            return float("inf")
+        return -(ld - (n / 2.0) * math.log(sse / n))
+
+    lo, hi = interval
+    for _ in range(300):
+        m1 = lo + (hi - lo) / 3.0
+        m2 = hi - (hi - lo) / 3.0
+        if negll(m1) < negll(m2):
+            hi = m2
+        else:
+            lo = m1
+    lam = 0.5 * (lo + hi)
+
+    yf = [ys[i] - lam * Wy[i] for i in range(n)]
+    Xf = [[Xm[i][j] - lam * WX[j][i] for j in range(k)] for i in range(n)]
+    beta, rf = _ols_resid(Xf, yf)
+    s2 = sum(t * t for t in rf) / n
+    resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(k))
+             for i in range(n)]
+    ll = (_logdet_I_minus(lam, Wm)
+          - (n / 2.0) * math.log(2 * math.pi * s2) - n / 2.0)
+    return {"lambda": lam, "beta": beta, "residuals": resid,
+            "sigma2": s2, "loglik": ll, "n": n,
+            "method": "spatial error model, maximum likelihood"}
+
+
+def ripley_k(coords, r_grid, area=None, edge_correction=True):
+    """Ripley's K function for a planar point pattern.
+
+        K(r) = |A| n^-2 sum_i sum_{j != i} w_ij 1(d_ij <= r)
+
+    with |A| the study area and w_ij the Ripley isotropic edge
+    correction -- the reciprocal of the fraction of the circle centred
+    on i through j that lies inside the window.  Without it K is biased
+    downwards near the boundary, because neighbours outside the window
+    are never counted.
+
+    Under complete spatial randomness K(r) = pi r^2, which is the usual
+    benchmark; ``l_function`` linearises that to L(r) = r.
+    """
+    pts = _mat_local(coords)
+    n = len(pts)
+    if n < 2:
+        raise ValueError("need at least 2 points")
+    if any(len(p) != 2 for p in pts):
+        raise ValueError("coords must be an n x 2 array of x, y")
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    x0, x1 = min(xs), max(xs)
+    y0, y1 = min(ys), max(ys)
+    if area is None:
+        area = (x1 - x0) * (y1 - y0)
+    if area <= 0:
+        raise ValueError("degenerate window: zero area")
+    lam = n / area
+
+    def weight(i, j, d):
+        """Ripley isotropic correction for the circle of radius d."""
+        if not edge_correction or d <= 0:
+            return 1.0
+        # fraction of the circle centred on i, radius d, inside the box
+        out = 0.0
+        for dist in (xs[i] - x0, x1 - xs[i], ys[i] - y0, y1 - ys[i]):
+            if dist < d:
+                out += math.acos(max(-1.0, min(1.0, dist / d)))
+        frac = 1.0 - out / math.pi
+        return 1.0 / frac if frac > 1e-9 else 1.0
+
+    grid = _flat(r_grid)
+    kvals = []
+    for r in grid:
+        tot = 0.0
+        for i in range(n):
+            for j in range(n):
+                if i == j:
+                    continue
+                d = math.hypot(xs[i] - xs[j], ys[i] - ys[j])
+                if d <= r:
+                    tot += weight(i, j, d)
+        kvals.append(tot / (n * lam))
+    return {"r": list(grid), "K": kvals,
+            "L": [math.sqrt(k / math.pi) if k > 0 else 0.0
+                  for k in kvals],
+            "csr_K": [math.pi * r * r for r in grid],
+            "n": n, "area": area, "intensity": lam,
+            "method": "Ripley's K function"}
+
+
+def cokriging(coords, z1, z2, s0, cross_vario=None, model=None):
+    """Ordinary co-kriging of a primary variable with a covariate.
+
+        Z1*(s0) = sum_i lambda_i Z1(s_i) + sum_j mu_j Z2(s_j)
+
+    Solves the co-kriging system built from the direct variograms of
+    each variable and their cross-variogram, under the two unbiasedness
+    constraints sum lambda = 1 and sum mu = 0.  The covariate helps
+    exactly when the cross-variogram is strong -- with a zero
+    cross-variogram the mu weights vanish and this reduces to ordinary
+    kriging on Z1.
+
+    ``model`` is a callable gamma(h) for the direct variogram of both
+    variables; ``cross_vario`` is the cross gamma_12(h).  Defaults are
+    an exponential with unit sill and range equal to the mean pairwise
+    distance, which keeps the system well posed.
+    """
+    pts = _mat_local(coords)
+    n = len(pts)
+    a = _flat(z1)
+    b = _flat(z2)
+    if len(a) != n or len(b) != n:
+        raise ValueError("z1 and z2 must have one value per coordinate")
+    tgt = _flat(s0)
+
+    def dist(p, q):
+        return math.sqrt(sum((p[i] - q[i]) ** 2 for i in range(len(p))))
+
+    dsum, cnt = 0.0, 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            dsum += dist(pts[i], pts[j])
+            cnt += 1
+    rng = (dsum / cnt) if cnt else 1.0
+
+    if model is None:
+        def model(h):
+            return 1.0 - math.exp(-h / rng) if rng > 0 else 0.0
+    if cross_vario is None:
+        def cross_vario(h):
+            return 0.5 * (1.0 - math.exp(-h / rng)) if rng > 0 else 0.0
+
+    # unknowns: lambda(n), mu(n), and two Lagrange multipliers
+    m = 2 * n + 2
+    A = [[0.0] * m for _ in range(m)]
+    rhs = [0.0] * m
+    for i in range(n):
+        for j in range(n):
+            A[i][j] = model(dist(pts[i], pts[j]))
+            A[i][n + j] = cross_vario(dist(pts[i], pts[j]))
+            A[n + i][j] = cross_vario(dist(pts[i], pts[j]))
+            A[n + i][n + j] = model(dist(pts[i], pts[j]))
+        A[i][2 * n] = 1.0
+        A[2 * n][i] = 1.0
+        A[n + i][2 * n + 1] = 1.0
+        A[2 * n + 1][n + i] = 1.0
+        rhs[i] = model(dist(pts[i], tgt))
+        rhs[n + i] = cross_vario(dist(pts[i], tgt))
+    rhs[2 * n] = 1.0        # sum lambda = 1
+    rhs[2 * n + 1] = 0.0    # sum mu     = 0
+
+    sol = _solve_local(A, rhs)
+    lam = sol[:n]
+    mu = sol[n:2 * n]
+    pred = (sum(lam[i] * a[i] for i in range(n))
+            + sum(mu[i] * b[i] for i in range(n)))
+    var = (sum(lam[i] * rhs[i] for i in range(n))
+           + sum(mu[i] * rhs[n + i] for i in range(n))
+           + sol[2 * n])
+    return {"prediction": pred, "variance": var, "lambda": lam,
+            "mu": mu, "n": n, "range": rng,
+            "method": "ordinary co-kriging"}
+
+
+def local_dp_randomised_response(truth, k, epsilon, seed=2):
+    """k-ary randomised response, the local differential privacy
+    mechanism.
+
+        P(report = v | true = u) = e^eps / (k - 1 + e^eps)   if v = u
+                                   1     / (k - 1 + e^eps)   otherwise
+
+    Each respondent perturbs their own value before it ever leaves
+    their device, so the collector never sees the truth; the mechanism
+    is eps-locally-differentially-private because the ratio of any two
+    conditional probabilities is at most e^eps.
+
+    Reporting the raw counts would be biased towards uniform, so the
+    debiased estimate inverts the transition matrix:
+
+        pi_hat = (p_observed - 1/(k-1+e^eps)) * (k-1+e^eps)/(e^eps - 1)
+    """
+    from . import _rrng_core as _rr
+
+    vals = [int(v) for v in _flat(truth)]
+    k = int(k)
+    if k < 2:
+        raise ValueError("k must be at least 2")
+    if epsilon <= 0:
+        raise ValueError("epsilon must be positive")
+    if any(v < 0 or v >= k for v in vals):
+        raise ValueError("values must lie in 0..k-1")
+    e = math.exp(epsilon)
+    p_keep = e / (k - 1.0 + e)
+    p_flip = 1.0 / (k - 1.0 + e)
+
+    rng = _rr.RRandom(seed)
+    reports = []
+    for v in vals:
+        if rng.unif_rand() < p_keep:
+            reports.append(v)
+        else:
+            others = [u for u in range(k) if u != v]
+            reports.append(others[int(rng.unif_index(k - 1))])
+
+    n = len(vals)
+    counts = [0] * k
+    for r in reports:
+        counts[r] += 1
+    obs = [c / n for c in counts]
+    scale = (k - 1.0 + e) / (e - 1.0)
+    debiased = [(o - p_flip) * scale for o in obs]
+    return {"reports": reports, "observed": obs,
+            "estimate": debiased, "p_keep": p_keep, "p_flip": p_flip,
+            "epsilon": float(epsilon), "k": k, "n": n,
+            "method": "k-ary randomised response (local DP)"}
+
+
+# ===============================================================
+# Unit-root testing and robust regression.
+#   adf_test  verified against R urca::ur.df
+#   rlm       verified against R MASS::rlm
+# ===============================================================
+
+def adf_test(y, lags=1, kind="drift"):
+    """Augmented Dickey-Fuller test for a unit root.
+
+    Fits, by ordinary least squares,
+
+        kind="none"   dy_t = phi y_{t-1} + sum_i g_i dy_{t-i} + e
+        kind="drift"  dy_t = mu + phi y_{t-1} + sum g_i dy_{t-i} + e
+        kind="trend"  dy_t = mu + beta t + phi y_{t-1} + ... + e
+
+    and reports the t statistic on phi.  The null is a unit root
+    (phi = 0), so LARGE NEGATIVE values reject it -- and the statistic
+    is not t-distributed under the null, so it must be compared with
+    Dickey-Fuller critical values, not normal ones.  The 1/5/10 per
+    cent values returned here are the ones urca prints, interpolated
+    from Dickey, D. A. & Fuller, W. A. (1981) "Likelihood ratio
+    statistics for autoregressive time series with a unit root",
+    *Econometrica* 49(4), 1057-1072, doi:10.2307/1912517, for the
+    relevant n.
+
+    Matches ``urca::ur.df(y, type = kind, lags = lags)``.
+    """
+    v = _flat(y)
+    n = len(v)
+    lags = int(lags)
+    if kind not in ("none", "drift", "trend"):
+        raise ValueError('kind must be "none", "drift" or "trend"')
+    if n < lags + 3:
+        raise ValueError("series too short for %d lags" % lags)
+
+    dy = [v[i] - v[i - 1] for i in range(1, n)]
+    # rows are t = lags+1 .. n-1 of the differenced series
+    rows, target = [], []
+    for t in range(lags, len(dy)):
+        r = [v[t]]                        # y_{t-1} in levels
+        if kind in ("drift", "trend"):
+            r.append(1.0)
+        if kind == "trend":
+            r.append(float(t + 1))
+        for i in range(1, lags + 1):
+            r.append(dy[t - i])
+        rows.append(r)
+        target.append(dy[t])
+
+    from . import _regression_core as _rg
+    fit = _rg.ols(target, rows, add_intercept=False)
+    stat = fit["t"][0]
+
+    # Dickey-Fuller critical values as tabulated by urca
+    TAB = {
+        "none":  {25: (-2.66, -1.95, -1.60), 50: (-2.62, -1.95, -1.61),
+                  100: (-2.60, -1.95, -1.61), 250: (-2.58, -1.95, -1.62),
+                  500: (-2.58, -1.95, -1.62), 1000: (-2.58, -1.95, -1.62)},
+        "drift": {25: (-3.75, -3.00, -2.63), 50: (-3.58, -2.93, -2.60),
+                  100: (-3.51, -2.89, -2.58), 250: (-3.46, -2.88, -2.57),
+                  500: (-3.44, -2.87, -2.57), 1000: (-3.43, -2.86, -2.57)},
+        "trend": {25: (-4.38, -3.60, -3.24), 50: (-4.15, -3.50, -3.18),
+                  100: (-4.04, -3.45, -3.15), 250: (-3.99, -3.43, -3.13),
+                  500: (-3.98, -3.42, -3.13), 1000: (-3.96, -3.41, -3.12)},
+    }[kind]
+    sizes = sorted(TAB)
+    m = len(target)
+    lo = max([s for s in sizes if s <= m], default=sizes[0])
+    hi = min([s for s in sizes if s >= m], default=sizes[-1])
+    if lo == hi:
+        crit = TAB[lo]
+    else:
+        w = (m - lo) / float(hi - lo)
+        crit = tuple(TAB[lo][j] + w * (TAB[hi][j] - TAB[lo][j])
+                     for j in range(3))
+    return {"statistic": stat, "kind": kind, "lags": lags,
+            "n_used": m, "coef": fit["coef"], "se": fit["se"],
+            "critical_values": {"1pct": crit[0], "5pct": crit[1],
+                                "10pct": crit[2]},
+            "reject_5pct": stat < crit[1],
+            "method": "augmented Dickey-Fuller test"}
+
+
+def _huber_psi_weight(u, k=1.345):
+    """Huber weight: 1 inside the bend, k/|u| outside."""
+    a = abs(u)
+    return 1.0 if a <= k else k / a
+
+
+def rlm(y, X, add_intercept=True, k=1.345, max_iter=20, tol=1e-6,
+        scale_est="MAD"):
+    """Robust linear regression by Huber M-estimation.
+
+    Iteratively reweighted least squares with Huber's psi: residuals
+    inside +/- k robust standard deviations keep full weight, and those
+    outside are downweighted by k/|u| rather than discarded.  A single
+    gross outlier can move an ordinary least-squares line arbitrarily
+    far; this bounds its influence while staying fully efficient at the
+    normal.
+
+    ``scale_est="MAD"`` re-estimates the scale each iteration as
+    ``mad(resid, 0)/0.6745`` -- the MAD about ZERO, which is what
+    ``MASS::rlm`` does.  Centring the MAD on the residual median
+    instead shifts the scale and every weight derived from it.
+    Matches ``MASS::rlm(x, y, k2 = k, scale.est = "MAD")``.
+    """
+    from . import _regression_core as _rg
+
+    ys = _flat(y)
+    Xm = _rg._mat(X)
+    n = len(ys)
+    if len(Xm) != n:
+        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+    if add_intercept:
+        Xm = [[1.0] + list(r) for r in Xm]
+    p = len(Xm[0])
+
+    def wls(w):
+        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n))
+              for b in range(p)] for a in range(p)]
+        rhs = [sum(w[i] * Xm[i][a] * ys[i] for i in range(n))
+               for a in range(p)]
+        return _rg._solve(A, rhs)
+
+    beta = wls([1.0] * n)                     # least squares start
+    scale = None
+    for _ in range(int(max_iter)):
+        resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p))
+                 for i in range(n)]
+        # MASS::rlm uses mad(resid, 0): the MAD about ZERO, not about
+        # the residual median.  Centring it instead shifts the scale
+        # and every weight with it.
+        scale = _median(sorted(abs(r) for r in resid)) / 0.6745
+        if scale <= 0:
+            break
+        w = [_huber_psi_weight(resid[i] / scale, k) for i in range(n)]
+        new = wls(w)
+        if max(abs(new[j] - beta[j]) for j in range(p)) < tol * max(
+                1.0, max(abs(b) for b in beta)):
+            beta = new
+            break
+        beta = new
+
+    resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p))
+             for i in range(n)]
+
+    # MASS returns the scale computed at the START of the final
+    # iteration -- it does NOT recompute from the final residuals, so
+    # MASS's own $s does not equal median(abs(resid))/0.6745 (measured
+    # relative gap ~7e-5 on a 60-point fixture with three outliers).
+    # This function's contract is MASS parity, so `scale` follows MASS.
+    # The value consistent with the residuals actually returned is given
+    # separately rather than silently substituted.
+    if scale is None or scale <= 0:
+        scale = 0.0
+    mad0 = _median(sorted(abs(r) for r in resid))
+    scale_final = mad0 / 0.6745 if mad0 > 0 else 0.0
+    w = ([_huber_psi_weight(resid[i] / scale, k) for i in range(n)]
+         if scale > 0 else [1.0] * n)
+    return {"coef": beta, "residuals": resid, "weights": w,
+            "scale": scale, "scale_final": scale_final,
+            "scale_follows_mass_not_the_final_residuals": True,
+            "k": float(k), "n": n,
+            "n_downweighted": sum(1 for t in w if t < 1.0 - 1e-12),
+            "method": "robust regression, Huber M-estimation "
+                      "(MASS::rlm scale convention)"}

@@ -1,6 +1,6 @@
 """Tests for morie.fn.fried -- Friedman test for repeated measures."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._containers import TestResult

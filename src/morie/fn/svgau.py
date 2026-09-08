@@ -1,6 +1,6 @@
 """Gaussian spatial utility function"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ gaus = gauss_utility
 
 def cheatsheet() -> str:
     return "gauss_utility({}) -> Gaussian spatial utility function"
+
+
+# compact alias per ledger/NAMING.md
+gaussutility = gauss_utility

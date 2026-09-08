@@ -1,6 +1,6 @@
 """Tests for medsv: median survival time with CI."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.medsv import medsv

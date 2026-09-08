@@ -1,56 +1,22 @@
-"""ContingencyTables expression involving 'contingency' (auto-extracted; see reference for full context).."""
+"""Deprecated alias for :func:`morie.fn.chi2_2x2`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .chi2_2x2 import chi2_2x2 as _impl
 
 __all__ = ["ca_chapter_9_equation_4"]
 
 
-def ca_chapter_9_equation_4(x):
-    """
-    ContingencyTables expression involving 'contingency' (auto-extracted; see reference for full context).
-
-    Formula: χ2 = ad − bc() 2 a + b + c + d()
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca9e4')`` for the full guide.
-
-    References
-    ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.9 eq.9.4
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="ContingencyTables expression involving 'contingency' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "ContingencyTables expression involving 'contingency' (auto-extracted; see reference for full context).",
-        },
+def ca_chapter_9_equation_4(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.chi2_2x2` instead."""
+    warnings.warn(
+        "ca_chapter_9_equation_4() is the book-coordinate name for chi2_2x2(); "
+        "it will be removed. Use morie.fn.chi2_2x2() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return (
-        "ca9e4: ContingencyTables expression involving 'contingency' (auto-extracted; see reference for full context)."
-    )
+    return _impl(*args, **kwargs)

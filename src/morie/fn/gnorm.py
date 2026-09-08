@@ -5,14 +5,13 @@ Normalizes activations within groups.
 
 References
 ----------
-Yuxin Wu & Kaiming He (2018).
-Group normalization.
-In ECCV (pp. 3-19).
+Wu, Y. & He, K. (2018). Group normalization. *Proceedings of the
+European Conference on Computer Vision (ECCV)*, 3-19.
 """
 
 __all__ = ["gnorm"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def gnorm(

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """First-order point pattern stats"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ firs = first_order_pp
 
 def cheatsheet() -> str:
     return "first_order_pp({}) -> First-order point pattern stats"
+
+
+# compact alias per ledger/NAMING.md
+firstorderpp = first_order_pp

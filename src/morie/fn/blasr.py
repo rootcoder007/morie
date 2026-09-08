@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def bayesian_lasso(
@@ -31,7 +31,8 @@ def bayesian_lasso(
 
     References
     ----------
-    Park, T. & Casella, G. (2008). *JASA*, 103(482), 681--686.
+    Park, T., & Casella, G. (2008). The Bayesian lasso. *Journal of the
+        American Statistical Association*, 103(482), 681-686.
     """
     rng = np.random.default_rng(seed)
     X_arr = np.asarray(X, dtype=float)
@@ -92,3 +93,7 @@ blasr = bayesian_lasso
 
 def cheatsheet() -> str:
     return "bayesian_lasso({}) -> Bayesian LASSO regression."
+
+
+# compact alias per ledger/NAMING.md
+bayesianlasso = bayesian_lasso

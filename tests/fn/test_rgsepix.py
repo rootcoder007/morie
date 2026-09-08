@@ -1,8 +1,8 @@
 """Tests for rgsepix.rangayyan_separability_index."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgsepix import rangayyan_separability_index
+from morie.fn.bsaclass import rangayyan_separability_index
 
 
 def test_rgsepix_basic():

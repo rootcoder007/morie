@@ -25,7 +25,7 @@ from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 CODE_EXTENSIONS = {
     ".py",

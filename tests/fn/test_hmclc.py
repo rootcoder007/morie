@@ -1,6 +1,6 @@
 """Tests for hmclc.geron_classification_localization."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmclc import geron_classification_localization
 

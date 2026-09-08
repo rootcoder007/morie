@@ -1,6 +1,6 @@
 """Tests for fzt12.fauzi_thm1_2_var_mgkde."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzt12 import fauzi_thm1_2_var_mgkde
 

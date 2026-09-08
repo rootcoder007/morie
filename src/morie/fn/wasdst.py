@@ -4,8 +4,8 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
-from scipy.stats import wasserstein_distance
+from . import _array_core as np
+from ._stats_core import wasserstein_distance
 
 
 def wasdst(u: Union[Sequence, np.ndarray], v: Union[Sequence, np.ndarray]):

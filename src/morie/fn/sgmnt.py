@@ -23,7 +23,7 @@ def mantel_test(D_spatial, D_attribute, n_perm=999):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Ds = np.asarray(D_spatial, dtype=np.float64)
     Da = np.asarray(D_attribute, dtype=np.float64)

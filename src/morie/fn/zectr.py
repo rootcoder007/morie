@@ -1,6 +1,6 @@
 """Spatial contact tracing"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ cont = contact_trace_sp
 
 def cheatsheet() -> str:
     return "contact_trace_sp({}) -> Spatial contact tracing"
+
+
+# compact alias per ledger/NAMING.md
+contacttracesp = contact_trace_sp

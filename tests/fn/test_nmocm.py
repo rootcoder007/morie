@@ -1,6 +1,6 @@
 """Tests for morie.fn.nmocm -- OC Coombs mesh"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nmocm import oc_coombs_mesh
 

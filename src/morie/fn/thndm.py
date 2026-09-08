@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -74,3 +74,7 @@ thndm = mach_shock
 
 def cheatsheet() -> str:
     return "mach_shock({}) -> Shock wave Mach number."
+
+
+# compact alias per ledger/NAMING.md
+machshock = mach_shock

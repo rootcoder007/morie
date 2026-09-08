@@ -5,7 +5,7 @@ Bivariate normal density
 Category: DistTheor
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def dtbvn(x=None, n=100, params=None):

@@ -1,8 +1,8 @@
 """Tests for rgchoi.rangayyan_choi_williams."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgchoi import rangayyan_choi_williams
+from morie.fn.bsatf import rangayyan_choi_williams
 
 
 def test_rgchoi_basic():

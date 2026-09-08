@@ -1,22 +1,11 @@
-"""Tests for graut.geron_autograd_chain_rule."""
+"""Tests for graut (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.graut import geron_autograd_chain_rule
-
-
-def test_graut_basic():
-    """Test basic functionality."""
-    graph = np.array([[0, 1, 0], [0, 0, 1], [0, 0, 0]], dtype=float)
-    grad_output = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_autograd_chain_rule(graph, grad_output)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.graut as mod
 
 
-def test_graut_edge():
-    """Test edge cases."""
-    graph = np.array([[0, 1, 0], [0, 0, 1], [0, 0, 0]], dtype=float)
-    grad_output = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_autograd_chain_rule(graph, grad_output)
-    assert isinstance(result, dict)
+def test_graut_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

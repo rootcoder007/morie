@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgcvr -- Covariance matrix from variogram"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgcvr import covario_matrix
 

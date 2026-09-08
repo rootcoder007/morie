@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Simple random sample (without replacement)."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def sampsrs(population, n: int, seed: int = 42):

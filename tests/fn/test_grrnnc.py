@@ -1,6 +1,6 @@
 """Tests for grrnnc.geron_simple_rnn_cell."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grrnnc import geron_simple_rnn_cell
 

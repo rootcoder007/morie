@@ -16,7 +16,7 @@ def simulate_roll_call(n_leg: int = 50, n_votes: int = 100, n_dims: int = 1, see
 
     .. epigraph:: Number rules the universe. -- Pythagoras
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     rng = np.random.default_rng(seed)
     ideals = rng.standard_normal((n_leg, n_dims))

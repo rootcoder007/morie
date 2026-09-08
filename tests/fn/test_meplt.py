@@ -1,6 +1,6 @@
 """Tests for meplt.mean_excess."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.meplt import mean_excess
 

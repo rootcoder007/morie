@@ -1,6 +1,6 @@
 """Zivot-Andrews structural break unit root test."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -69,3 +69,7 @@ zands = za_test
 
 def cheatsheet() -> str:
     return "za_test({}) -> Zivot-Andrews structural break unit root test."
+
+
+# compact alias per ledger/NAMING.md
+zatest = za_test

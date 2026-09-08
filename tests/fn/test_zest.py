@@ -1,6 +1,6 @@
 """Tests for morie.fn.zest — Z-estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.zest import zest

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -34,3 +34,7 @@ wnbrt = bartlett_window
 
 def cheatsheet() -> str:
     return "bartlett_window({}) -> Bartlett (triangular) window."
+
+
+# compact alias per ledger/NAMING.md
+bartlettwindow = bartlett_window

@@ -1,6 +1,6 @@
 """Tests for gh_c3_10.ghosal_norm_crm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c3_10 import ghosal_norm_crm
 

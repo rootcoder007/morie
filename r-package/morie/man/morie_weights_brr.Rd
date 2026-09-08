@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_brr}
 \alias{morie_weights_brr}
-\title{Balanced Repeated Replication (BRR) weights.}
+\title{Balanced Repeated Replication (BRR) weights}
 \usage{
 morie_weights_brr(weights, strata, n_replicates = NULL, seed = 42)
 }
@@ -24,4 +24,10 @@ rows and \code{n_replicates} columns.
 Each stratum is split into two halves; signs from a random Hadamard-like
 matrix double one half and zero the other. For exact Hadamard ordering use
 \code{survey::as.svrepdesign(..., type = "BRR")}.
+}
+\examples{
+if (requireNamespace("survey", quietly = TRUE)) {
+  V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+  morie_weights_brr(V, V)
+}
 }

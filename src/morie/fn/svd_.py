@@ -1,6 +1,6 @@
 """Truncated SVD."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -44,3 +44,7 @@ svd_ = truncated_svd
 
 def cheatsheet() -> str:
     return "truncated_svd({}) -> Truncated SVD."
+
+
+# compact alias per ledger/NAMING.md
+truncatedsvd = truncated_svd

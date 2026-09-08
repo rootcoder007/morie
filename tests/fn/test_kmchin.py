@@ -1,6 +1,6 @@
 """Tests for kmchin.kamath_chinchilla_compute_optimal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmchin import kamath_chinchilla_compute_optimal
 

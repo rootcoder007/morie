@@ -1,6 +1,6 @@
 """Tests for morie.fn.fdiff."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fdiff import fdiff
 

@@ -1,54 +1,22 @@
-"""CountModels equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Deprecated alias for :func:`morie.fn.beta_posterior_pdf`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .beta_posterior_pdf import beta_posterior_pdf as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_24"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_24(x):
-    """
-    CountModels equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
-
-    Formula: [EQ] , 𝑛 − 𝑧 + 𝑑)𝑝𝑧+𝑐−1(1 − 𝑝)𝑛−𝑧+𝑑−1 . (12.24)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r12e24')`` for the full guide.
-
-    References
-    ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.12 eq.12.24
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="CountModels equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CountModels equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_24(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.beta_posterior_pdf` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_24() is the book-coordinate name for beta_posterior_pdf(); "
+        "it will be removed. Use morie.fn.beta_posterior_pdf() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r12e24: CountModels equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return _impl(*args, **kwargs)

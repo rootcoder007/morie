@@ -2,7 +2,7 @@
 % Please edit documentation in R/otis_all_analyze.R
 \name{morie_otis_analyze_a01}
 \alias{morie_otis_analyze_a01}
-\title{OTIS a01 high-level causal analysis (MatchIt + IRM-DML).}
+\title{OTIS a01 high-level causal analysis (MatchIt + IRM-DML)}
 \usage{
 morie_otis_analyze_a01(data = NULL, out_dir = NULL)
 }
@@ -26,7 +26,9 @@ encoding -> MatchIt 1:1 NN PSM -> IRM-DML with RF nuisances ->
 multi-way clustered SE.
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_a01 <- morie_synth_otis("a01", n = 120L, seed = 1L)
 morie_otis_analyze_a01(otis_a01)
+}
 }

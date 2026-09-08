@@ -1,8 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """ARIMA(p,d,q) fitting via conditional MLE."""
 
-import numpy as np
-from scipy import optimize
+from . import _array_core as np
+from ._sci_core import optimize
 
 from ._containers import DescriptiveResult
 
@@ -81,3 +81,7 @@ arima = arima_fit
 
 def cheatsheet() -> str:
     return "arima_fit({}) -> ARIMA(p,d,q) fitting via conditional MLE."
+
+
+# compact alias per ledger/NAMING.md
+arimafit = arima_fit

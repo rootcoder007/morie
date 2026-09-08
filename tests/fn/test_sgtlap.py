@@ -1,6 +1,6 @@
 """Tests for sgtlap.sgt_laplacian."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtlap import sgt_laplacian
 

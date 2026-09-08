@@ -1,6 +1,6 @@
 """2D valence spatial model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ vale = valence_2d
 
 def cheatsheet() -> str:
     return "valence_2d({}) -> 2D valence spatial model"
+
+
+# compact alias per ledger/NAMING.md
+valence2d = valence_2d

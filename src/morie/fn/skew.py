@@ -4,8 +4,8 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
-from scipy.stats import skew as _scipy_skew
+from . import _array_core as np
+from ._stats_core import skew as _scipy_skew
 
 
 def skew(x: Union[Sequence[float], np.ndarray], bias: bool = False):

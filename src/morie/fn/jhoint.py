@@ -1,6 +1,6 @@
 """Johansen trace cointegration test."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -24,3 +24,7 @@ def johansen_trace(X, lags=1, cdf=None):
 
 def cheatsheet():
     return "jhoint: Johansen trace cointegration test"
+
+
+# compact alias per ledger/NAMING.md
+johansentrace = johansen_trace

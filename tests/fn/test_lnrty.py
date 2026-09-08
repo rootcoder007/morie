@@ -1,6 +1,6 @@
 """Test linearity_test (lnrty)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.lnrty import linearity_test, lnrty

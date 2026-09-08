@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Union
 
-import numpy as np
-from scipy.stats import f as f_dist
+from . import _array_core as np
+from ._stats_core import f as f_dist
 
 
 def df_dist(x: Union[float, np.ndarray], dfn: float, dfd: float) -> Union[float, np.ndarray]:
@@ -37,3 +37,7 @@ df_ = df_dist
 
 def cheatsheet() -> str:
     return "df_dist({}) -> F-distribution probability density function."
+
+
+# compact alias per ledger/NAMING.md
+dfdist = df_dist

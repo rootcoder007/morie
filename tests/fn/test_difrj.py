@@ -1,6 +1,6 @@
 """Tests for difrj -- Raju's area DIF."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DIFResult
 from morie.fn.difrj import dif_raju_area

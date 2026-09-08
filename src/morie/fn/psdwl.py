@@ -7,7 +7,7 @@ Analysis*, 3rd ed. IEEE/Wiley, Chapter 5.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -46,7 +46,7 @@ def psdwl(
     -------
     DescriptiveResult
     """
-    from scipy.signal import welch
+    from ._signal_core import welch
 
     x = np.asarray(x, dtype=float).ravel()
     seg = min(nperseg, len(x))

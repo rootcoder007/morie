@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats as sp
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as sp
 
 from morie.fn._containers import DIFResult
 
@@ -86,3 +86,7 @@ raju_dif = dif_raju_area
 
 def cheatsheet() -> str:
     return "dif_raju_area({}) -> Raju's signed/unsigned area DIF measure."
+
+
+# compact alias per ledger/NAMING.md
+difrajuarea = dif_raju_area

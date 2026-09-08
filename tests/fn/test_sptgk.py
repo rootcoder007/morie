@@ -1,6 +1,6 @@
 """Tests for sptgk.schabenberger_trans_gaussian_kriging."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sptgk import schabenberger_trans_gaussian_kriging
 

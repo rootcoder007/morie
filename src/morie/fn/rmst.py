@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -31,10 +31,24 @@ def rmst_estimate(time, event, *, tau: float | None = None) -> DescriptiveResult
     s = km_result.survival
     if tau is None:
         tau = float(t[-1])
-    mask = t <= tau
-    t_trunc = np.append(t[mask], tau)
-    s_trunc = np.append(s[mask], s[mask][-1] if mask.any() else 1.0)
-    area = float(np.trapezoid(s_trunc, t_trunc))
+    # The Kaplan-Meier curve is a STEP function: it is constant on
+    # [t_i, t_{i+1}) and drops at t_{i+1}.  Integrating it with the
+    # trapezoid rule linearly interpolates across each step and therefore
+    # understates the area by half of every drop times its width -- on
+    # time = [1, 2, 3], event = all, tau = 3 it returned 1.5 where the
+    # closed form is exactly 2.  Summed rectangles are the definition.
+    area = 0.0
+    prev_t = 0.0
+    prev_s = 1.0
+    for i in range(len(t)):
+        ti = float(t[i])
+        if ti >= tau:
+            break
+        area += prev_s * (ti - prev_t)
+        prev_t = ti
+        prev_s = float(s[i])
+    area += prev_s * (float(tau) - prev_t)
+    area = float(area)
     return DescriptiveResult(
         name="RMST",
         value=area,
@@ -47,3 +61,7 @@ rmst = rmst_estimate
 
 def cheatsheet() -> str:
     return "rmst_estimate({}) -> Restricted mean survival time."
+
+
+# compact alias per ledger/NAMING.md
+rmstestimate = rmst_estimate

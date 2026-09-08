@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -95,3 +95,7 @@ heatd = heat_density
 
 def cheatsheet() -> str:
     return "heat_density({}) -> 2D kernel density for heatmaps."
+
+
+# compact alias per ledger/NAMING.md
+heatdensity = heat_density

@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def holo_dag(
@@ -29,8 +29,8 @@ def holo_dag(
     Pearl, J. (2009). *Causality* (2nd ed.). Cambridge University Press.
     """
     try:
-        import matplotlib.patches as mpatches
-        import matplotlib.pyplot as plt
+        from morie.fn._plot_core import patches as mpatches
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_dag requires matplotlib. Install via: pip install matplotlib")
         return None
@@ -83,3 +83,7 @@ def holo_dag(
 
 def cheatsheet() -> str:
     return "holo_dag({}) -> DAG (Directed Acyclic Graph) diagram."
+
+
+# compact alias per ledger/NAMING.md
+holodag = holo_dag

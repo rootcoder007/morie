@@ -1,6 +1,6 @@
 """Gaussian utility function for spatial voting."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

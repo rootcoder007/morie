@@ -5,8 +5,8 @@ Expectation-Maximization (EM) algorithm for mixture models.
 General-purpose iterative algorithm for maximum likelihood with latent variables.
 """
 
-import numpy as np
-from scipy.stats import multivariate_normal
+from . import _array_core as np
+from ._stats_core import multivariate_normal
 
 __all__ = ["emfit"]
 

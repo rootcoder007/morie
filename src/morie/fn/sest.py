@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -88,3 +88,7 @@ sest = s_estimator
 
 def cheatsheet() -> str:
     return "sest() -> S-estimator for robust regression"
+
+
+# compact alias per ledger/NAMING.md
+sestimator = s_estimator

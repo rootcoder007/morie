@@ -1,6 +1,6 @@
 """Tests for morie.fn.svipn -- Normal ideal point model"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svipn import ideal_point_normal
 

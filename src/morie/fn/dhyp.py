@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Union
 
-import numpy as np
-from scipy.stats import hypergeom
+from . import _array_core as np
+from ._stats_core import hypergeom
 
 
 def dhyp(x: Union[int, np.ndarray], m: int, n: int, k: int) -> Union[float, np.ndarray]:

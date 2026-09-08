@@ -5,7 +5,7 @@ import math
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def kldivg(p: Union[Sequence[float], np.ndarray], q: Union[Sequence[float], np.ndarray], base: float = 2.0):

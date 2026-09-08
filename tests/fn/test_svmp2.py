@@ -1,6 +1,6 @@
 """Tests for morie.fn.svmp2 -- Multi-party 2D equilibrium"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svmp2 import multiparty_2d
 

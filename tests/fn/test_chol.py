@@ -1,6 +1,6 @@
 """Tests for morie.fn.chol — Cholesky decomposition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.chol import cholesky_decompose

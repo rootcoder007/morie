@@ -18,7 +18,7 @@
 #   * `morie_ingest_ckan_fetch_package_csvs()` - all CSV/TSV resources
 #   * `morie_ingest_ckan_search_packages()`    - search -> flat df
 #
-# HTTP: routes via .morie_dataset_http_text + .morie_dataset_http_bytes (3YY -> libcurl C++ backend with httr2 fallback). JSON: jsonlite::fromJSON (which delegates to
+# HTTP: routes via .morie_dataset_http_text + .morie_dataset_http_bytes (3YY -> libcurl C++ backend with httr2 fallback). JSON: .s03json_fromJSON (which delegates to
 # jsonlite).  CSV/TSV: prefer `readr` when installed; fall back to
 # `utils::read.csv` / `read.delim`.  XLSX needs `readxl` (Suggests).
 # Parquet needs `arrow` (Suggests).  Each optional dep errors cleanly
@@ -29,13 +29,28 @@
 
 # NOTE: canonical .morie_ckan_portal lives in data_access.R; that one
 # resolves short names ("open.canada.ca" -> "https://open.canada.ca/data/en")
-# and errors on unknown short names. Don't redefine it here — the
+# and errors on unknown short names. Don't redefine it here -- the
 # alphabetical load order would clobber the resolver and tests would fail.
 
 # Internal: perform a CKAN Action-API call and unwrap `result`.
 # 3YY: collapsed .morie_ckan_build_req + _call into a single
 # function that routes through .morie_dataset_http_text (libcurl
 # with httr2 fallback) + .morie_from_json(simplifyVector=FALSE).
+#' Internal: perform a CKAN Action-API call and unwrap `result`
+#'
+#' 3YY: collapsed .morie_ckan_build_req + _call into a single function
+#' that routes through .morie_dataset_http_text (libcurl with httr2
+#' fallback) + .morie_from_json(simplifyVector=FALSE).
+#'
+#' @param portal Passed to \code{.morie_ckan_portal}.
+#' @param action Passed to \code{sprintf}.
+#' @param params Passed to \code{.morie_dataset_http_text}.
+#' @param api_key Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param user_agent Accepted by the signature and not used anywhere in the body.
+#' Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.
+#' @param timeout Coerced to integer by the body, with \code{as.integer}.
+#' @return The value of \code{$}.
+#' @export
 .morie_ckan_call <- function(portal,
                              action,
                              params = NULL,
@@ -81,6 +96,16 @@
 }
 
 # Internal: sniff a resource format from URL extension when unset.
+#' Internal: sniff a resource format from URL extension when unset
+#'
+#' A step of the ingest_ckan implementation. Called by \code{morie_ingest_ckan_read_resource}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param url Character; passed to \code{sub}.
+#' @param as_format Optional; may be \code{NULL}. Character; passed to \code{tolower}.
+#' @return The value of \code{tolower}.
+#' @export
 .morie_ckan_sniff_format <- function(url, as_format = NULL) {
   if (!is.null(as_format) && nzchar(as_format)) {
     return(tolower(as_format))
@@ -93,6 +118,17 @@
 }
 
 # Internal: read a downloaded resource path into a data.frame by format.
+#' Internal: read a downloaded resource path into a data.frame by format
+#'
+#' A step of the ingest_ckan implementation. Called by \code{morie_ingest_ckan_read_resource}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param path Passed to \code{.morie_from_json}.
+#' @param fmt One of \code{"csv"}, \code{"json"}, \code{"parquet"}, \code{"tab"},
+#' \code{"tsv"}, \code{"xls"}, \code{"xlsx"}.
+#' @return The value of \code{utils::read.csv}.
+#' @export
 .morie_ckan_read_path <- function(path, fmt) {
   fmt <- tolower(fmt)
   if (fmt %in% c("csv")) {
@@ -199,7 +235,7 @@ morie_ingest_ckan_package_search <- function(portal,
 #' @param timeout HTTP timeout in seconds.
 #' @return The package metadata list.
 #' @examples
-#' \donttest{try(morie_ingest_ckan_package_show("https://open.canada.ca/data", "some-package-id"))}
+#' \dontrun{try(morie_ingest_ckan_package_show("https://open.canada.ca/data", "some-package-id"))}
 #' @export
 morie_ingest_ckan_package_show <- function(portal,
                                            package_id,
@@ -231,7 +267,7 @@ morie_ingest_ckan_package_show <- function(portal,
 #' @param timeout HTTP timeout in seconds.
 #' @return The resource metadata list.
 #' @examples
-#' \donttest{try(morie_ingest_ckan_resource_show("https://open.canada.ca/data", "some-resource-id"))}
+#' \dontrun{try(morie_ingest_ckan_resource_show("https://open.canada.ca/data", "some-resource-id"))}
 #' @export
 morie_ingest_ckan_resource_show <- function(portal,
                                             resource_id,
@@ -434,7 +470,7 @@ morie_ingest_ckan_fetch_package_csvs <- function(
 #' @param timeout HTTP timeout in seconds.
 #' @return A base R \code{data.frame}.
 #' @examples
-#' \donttest{try(morie_ingest_ckan_search_packages("https://open.canada.ca/data", query = "crime", rows = 1L))}
+#' \dontrun{try(morie_ingest_ckan_search_packages("https://open.canada.ca/data", query = "crime", rows = 1L))}
 #' @export
 morie_ingest_ckan_search_packages <- function(portal,
                                               query,

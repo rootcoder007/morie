@@ -1,6 +1,6 @@
 """Tests for aithil.compositional_hill."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aithil import compositional_hill
 

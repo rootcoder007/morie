@@ -1,6 +1,6 @@
 """Flow-duration curve."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def flow_duration(Q):
 
 def cheatsheet():
     return "floRate: Flow-duration curve"
+
+
+# compact alias per ledger/NAMING.md
+flowduration = flow_duration

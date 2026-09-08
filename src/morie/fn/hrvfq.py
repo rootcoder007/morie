@@ -7,7 +7,7 @@ Analysis*, 3rd ed. IEEE/Wiley, Chapter 11.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -44,7 +44,7 @@ def hrvfq(
     -------
     DescriptiveResult
     """
-    from scipy.signal import welch
+    from ._signal_core import welch
 
     rr = np.asarray(rr_intervals, dtype=float).ravel()
     if len(rr) < 4:

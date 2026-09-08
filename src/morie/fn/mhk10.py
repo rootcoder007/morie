@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kessler K10 psychological distress score."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -56,3 +56,7 @@ mhk10 = k10_score
 
 def cheatsheet() -> str:
     return "k10_score({}) -> Kessler K10 psychological distress score."
+
+
+# compact alias per ledger/NAMING.md
+k10score = k10_score

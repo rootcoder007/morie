@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxfcm -- Fuzzy C-means spatial"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxfcm import fuzzy_cmeans_sp
 

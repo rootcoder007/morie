@@ -4,7 +4,7 @@ Parking availability spatial
 Category: UrbanSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def ubpkn(population=None, area=None, coords=None, n=50):

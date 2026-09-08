@@ -1,6 +1,6 @@
 """Boltzmann (softmax) spatial voting"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ bolt = boltzmann_vote
 
 def cheatsheet() -> str:
     return "boltzmann_vote({}) -> Boltzmann (softmax) spatial voting"
+
+
+# compact alias per ledger/NAMING.md
+boltzmannvote = boltzmann_vote

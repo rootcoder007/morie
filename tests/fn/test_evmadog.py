@@ -1,6 +1,6 @@
 """Tests for evmadog.evt_madogram."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evmadog import evt_madogram
 

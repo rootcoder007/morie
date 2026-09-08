@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ordinary least squares closed-form solution (sklearn-backed)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -31,7 +31,7 @@ def linear_regression_ols(x, y):
     ----------
     Hastie, Tibshirani & Friedman, ESL (2009), Ch 3.
     """
-    from sklearn.linear_model import LinearRegression
+    from ._ml_core import LinearRegression
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float).ravel()

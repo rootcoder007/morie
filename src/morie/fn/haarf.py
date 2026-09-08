@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -48,3 +48,7 @@ haarf = haar_transform
 
 def cheatsheet() -> str:
     return "haar_transform({}) -> Haar wavelet transform."
+
+
+# compact alias per ledger/NAMING.md
+haartransform = haar_transform

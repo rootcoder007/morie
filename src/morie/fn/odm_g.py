@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 
 def otis_demo_gender(
@@ -52,3 +52,7 @@ def otis_demo_gender(
 
 def cheatsheet() -> str:
     return "otis_demo_gender({}) -> Demographic profile per gender for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisdemogender = otis_demo_gender

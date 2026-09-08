@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -70,3 +70,7 @@ irv = instant_runoff
 
 def cheatsheet() -> str:
     return "instant_runoff({}) -> Instant runoff (ranked choice) voting."
+
+
+# compact alias per ledger/NAMING.md
+instantrunoff = instant_runoff

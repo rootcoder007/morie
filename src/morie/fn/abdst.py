@@ -5,7 +5,7 @@ Dust spatial mapping
 Category: AirBio
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def abdst(data=None, coords=None, n=50):

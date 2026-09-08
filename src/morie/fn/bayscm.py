@@ -1,6 +1,6 @@
 """BayesC pi."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def bayes_c_pi(y, M, pi):
 
 def cheatsheet():
     return "bayscm: BayesC pi"
+
+
+# compact alias per ledger/NAMING.md
+bayescpi = bayes_c_pi

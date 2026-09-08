@@ -1,6 +1,6 @@
 """Space-time K function."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -68,3 +68,7 @@ stk = space_time_k
 
 def cheatsheet() -> str:
     return "space_time_k({}) -> Space-time K function."
+
+
+# compact alias per ledger/NAMING.md
+spacetimek = space_time_k

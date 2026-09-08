@@ -1,6 +1,6 @@
 """Tests for hmvts.geron_voting_soft."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmvts import geron_voting_soft
 

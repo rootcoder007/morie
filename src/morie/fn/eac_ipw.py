@@ -10,10 +10,33 @@ selection-corrected sample.
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-import statsmodels.api as sm
-import statsmodels.formula.api as smf
+from . import _array_core as np
+from . import _frame_core as pd
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from . import _glm_core as sm
+except ImportError:
+    sm = _MissingDep('sm')
+try:
+    from ._glm_core import formula as smf
+except ImportError:
+    smf = _MissingDep('smf')
 
 from morie.fn._helpers import _safe_exp
 from morie.fn.ess import effective_sample_size

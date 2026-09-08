@@ -1,6 +1,6 @@
 """Grid resampling"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ grid = grid_resample
 
 def cheatsheet() -> str:
     return "grid_resample({}) -> Grid resampling"
+
+
+# compact alias per ledger/NAMING.md
+gridresample = grid_resample

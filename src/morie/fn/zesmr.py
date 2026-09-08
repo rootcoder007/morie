@@ -1,6 +1,6 @@
 """Standardized Morbidity Ratio"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ smr_ = smr_compute
 
 def cheatsheet() -> str:
     return "smr_compute({}) -> Standardized Morbidity Ratio"
+
+
+# compact alias per ledger/NAMING.md
+smrcompute = smr_compute

@@ -1,6 +1,6 @@
 """Tests for morie.fn.prcpt — perceptron."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.prcpt import perceptron
 

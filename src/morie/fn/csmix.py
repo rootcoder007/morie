@@ -5,8 +5,9 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
-from scipy import optimize, stats
+from . import _array_core as np
+from ._sci_core import optimize
+from . import _stats_core as stats
 
 __all__ = ["csmix"]
 
@@ -56,7 +57,7 @@ def csmix(
     d = p + 1
 
     def neg_loglik(beta):
-        from scipy.special import expit
+        from ._sci_core import expit
 
         eta = X_aug @ beta
         prob = expit(eta)

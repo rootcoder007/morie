@@ -1,6 +1,6 @@
 """Tests for morie.fn.amwt — A-M weight estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.amwt import amwt
 

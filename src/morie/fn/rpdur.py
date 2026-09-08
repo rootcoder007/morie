@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._otis_const import DEFAULT_COLS
 
@@ -63,3 +63,7 @@ rpdur = rplace_duration
 
 def cheatsheet() -> str:
     return "rplace_duration({}) -> Placement duration statistics."
+
+
+# compact alias per ledger/NAMING.md
+rplaceduration = rplace_duration

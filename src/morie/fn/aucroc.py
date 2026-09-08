@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -70,3 +70,7 @@ aucroc = auc_roc
 
 def cheatsheet() -> str:
     return "auc_roc({}) -> AUC-ROC via trapezoidal integration."
+
+
+# compact alias per ledger/NAMING.md
+aucroc = auc_roc

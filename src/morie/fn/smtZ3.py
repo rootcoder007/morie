@@ -1,6 +1,6 @@
 """SMT solver framework."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def smt_solver(formula):
 
 def cheatsheet():
     return "smtZ3: SMT solver framework"
+
+
+# compact alias per ledger/NAMING.md
+smtsolver = smt_solver

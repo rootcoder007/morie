@@ -1,6 +1,6 @@
 """Tests for gh_c5_2.ghosal_dpm_marg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c5_2 import ghosal_dpm_marg
 

@@ -1,6 +1,6 @@
 """Tests for fzhdc.fauzi_h_decomposition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzhdc import fauzi_h_decomposition
 

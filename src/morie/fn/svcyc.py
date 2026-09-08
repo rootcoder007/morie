@@ -1,6 +1,6 @@
 """Condorcet cycle detection"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ cond = condorcet_cycle
 
 def cheatsheet() -> str:
     return "condorcet_cycle({}) -> Condorcet cycle detection"
+
+
+# compact alias per ledger/NAMING.md
+condorcetcycle = condorcet_cycle

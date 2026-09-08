@@ -4,7 +4,7 @@
 import math
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def cohens_d(
@@ -61,3 +61,7 @@ d = cohens_d
 
 def cheatsheet() -> str:
     return "cohens_d({}) -> Cohen's d effect size for two independent groups."
+
+
+# compact alias per ledger/NAMING.md
+cohensd = cohens_d

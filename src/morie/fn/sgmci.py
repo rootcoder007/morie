@@ -27,7 +27,7 @@ def monte_carlo_spatial_test(Z, coords, stat_fn=None, n_sim=999):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=np.float64).ravel()
     coords = np.asarray(coords, dtype=np.float64)

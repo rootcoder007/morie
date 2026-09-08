@@ -1,17 +1,15 @@
 """Tests for morie.fn.plr — Partially Linear Regression ATE via DoubleML."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 try:
-    import doubleml  # noqa: F401
 
     HAS_DML = True
 except ImportError:
     HAS_DML = False
 
-pytestmark = pytest.mark.skipif(not HAS_DML, reason="doubleml not installed")
 
 from morie.fn.plr import estimate_plr
 

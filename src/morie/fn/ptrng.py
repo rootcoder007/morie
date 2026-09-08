@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Point pattern intensity"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ pp_i = pp_intensity
 
 def cheatsheet() -> str:
     return "pp_intensity({}) -> Point pattern intensity"
+
+
+# compact alias per ledger/NAMING.md
+ppintensity = pp_intensity

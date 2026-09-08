@@ -1,6 +1,6 @@
 """Tests for grgruc.geron_gru_cell."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grgruc import geron_gru_cell
 

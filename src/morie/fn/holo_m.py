@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def holo_mosaic(
@@ -35,8 +35,8 @@ def holo_mosaic(
         89(425), 190--200.
     """
     try:
-        import matplotlib.patches as mpatches
-        import matplotlib.pyplot as plt
+        from morie.fn._plot_core import patches as mpatches
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_mosaic requires matplotlib. Install via: pip install matplotlib")
         return None
@@ -91,3 +91,7 @@ def holo_mosaic(
 
 def cheatsheet() -> str:
     return "holo_mosaic({}) -> Mosaic plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holomosaic = holo_mosaic

@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._containers import TsneRes
 
@@ -111,3 +111,7 @@ tsnred = tsne_reduce
 
 def cheatsheet() -> str:
     return "tsne_reduce({}) -> Dimensionality reduction via Barnes-Hut t-SNE."
+
+
+# compact alias per ledger/NAMING.md
+tsnereduce = tsne_reduce

@@ -1,6 +1,6 @@
 """Tests for ghs033.ghosal_ch3_polya_tree_mixture_second_kind."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs033 import ghosal_ch3_polya_tree_mixture_second_kind
 

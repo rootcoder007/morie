@@ -60,7 +60,7 @@ def fetch_cihi_xlsx(url: str, *, sheet: Any = None, timeout: float = 120.0, **re
         import httpx
     except ImportError as exc:  # pragma: no cover - httpx is a core dep
         raise ImportError("fetch_cihi_xlsx needs httpx") from exc
-    import pandas as pd
+    from morie.fn import _frame_core as pd
 
     with httpx.Client(timeout=timeout, follow_redirects=True) as client:
         resp = client.get(url)

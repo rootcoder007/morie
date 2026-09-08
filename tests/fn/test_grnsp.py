@@ -1,6 +1,6 @@
 """Tests for grnsp.geron_bert_nsp_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grnsp import geron_bert_nsp_loss
 

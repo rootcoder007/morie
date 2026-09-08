@@ -1,6 +1,6 @@
 """Tests for morie.fn.zeklr -- Retrospective space-time scan"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zeklr import scan_retrospective
 

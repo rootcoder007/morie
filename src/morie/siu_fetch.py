@@ -237,7 +237,7 @@ def fetch_siu_dataframe(**kwargs):
     path); used as a :data:`morie.data.DATASET_CATALOG` ``fetcher``,
     whose dispatch expects a DataFrame.
     """
-    import pandas as pd
+    from morie.fn import _frame_core as pd
 
     return pd.read_csv(fetch_siu_cases(**kwargs), low_memory=False)
 
@@ -254,7 +254,7 @@ def _materialize_corpus(out_path, years, progress):
     scrape; never raises.
     """
     try:
-        import pandas as pd
+        from morie.fn import _frame_core as pd
 
         df = pd.read_csv(_CORPUS_URL, compression="gzip", dtype=str)
         if df.empty or "case_number" not in df.columns:

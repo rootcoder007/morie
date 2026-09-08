@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """LDA feature extraction."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -68,3 +68,7 @@ ldafd = lda_features
 
 def cheatsheet() -> str:
     return "lda_features({}) -> LDA feature extraction."
+
+
+# compact alias per ledger/NAMING.md
+ldafeatures = lda_features

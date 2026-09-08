@@ -1,6 +1,6 @@
 """Test vmhol."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vmhol import vmhol
 

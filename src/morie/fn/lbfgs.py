@@ -5,7 +5,7 @@ L-BFGS (Limited-memory BFGS) quasi-Newton optimization.
 Memory-efficient variant of BFGS for large-scale optimization.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["lbfgs"]
 

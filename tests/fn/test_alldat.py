@@ -1,26 +1,15 @@
 """Tests for alldat.alammar_lda_topic_distribution."""
 
-import numpy as np
-
 from morie.fn.alldat import alammar_lda_topic_distribution
 
 
 def test_alldat_basic():
-    """Test basic functionality."""
-    alpha = 0.05
-    beta = 0.8
-    n_topics = np.random.default_rng(42).normal(0, 1, 100)
-    documents = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_lda_topic_distribution(alpha, beta, n_topics, documents)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    docs = [["cat", "dog"], ["stock", "bond"]]
+    out = alammar_lda_topic_distribution(docs, 2, n_iter=20)
+    assert abs(sum(out["theta"][0]) - 1.0) < 1e-9
 
 
 def test_alldat_edge():
-    """Test edge cases."""
-    alpha = 0.05
-    beta = 0.8
-    n_topics = np.random.default_rng(42).normal(0, 1, 100)
-    documents = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_lda_topic_distribution(alpha, beta, n_topics, documents)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="at least 2"):
+        alammar_lda_topic_distribution([["a"]], 1)

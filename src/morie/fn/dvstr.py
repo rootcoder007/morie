@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -97,3 +97,7 @@ dvstr = ensemble_stack
 
 def cheatsheet() -> str:
     return "ensemble_stack({}) -> Ensemble stacking."
+
+
+# compact alias per ledger/NAMING.md
+ensemblestack = ensemble_stack

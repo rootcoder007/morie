@@ -4,7 +4,7 @@ Simulated annealing for global optimization.
 Probabilistically accepts uphill moves to escape local minima.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["simag"]
 

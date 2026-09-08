@@ -1,6 +1,6 @@
 """Vector Error Correction Model (VECM) for cointegrated series."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def vecm(

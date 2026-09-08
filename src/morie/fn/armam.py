@@ -1,8 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """ARMA(p,q) model fitting via conditional MLE."""
 
-import numpy as np
-from scipy import optimize
+from . import _array_core as np
+from ._sci_core import optimize
 
 from ._containers import DescriptiveResult
 
@@ -89,3 +89,7 @@ armam = arma_fit
 
 def cheatsheet() -> str:
     return "arma_fit({}) -> ARMA(p,q) model via conditional MLE."
+
+
+# compact alias per ledger/NAMING.md
+armafit = arma_fit

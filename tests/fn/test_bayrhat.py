@@ -1,6 +1,6 @@
 """Tests for bayrhat.r_hat."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bayrhat import r_hat
 

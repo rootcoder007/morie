@@ -1,6 +1,6 @@
 """Squeeze-and-Excitation block."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -38,3 +38,7 @@ def squeeze_excite(x, reduction):
 
 def cheatsheet():
     return "sqzext: Squeeze-and-Excitation block"
+
+
+# compact alias per ledger/NAMING.md
+squeezeexcite = squeeze_excite

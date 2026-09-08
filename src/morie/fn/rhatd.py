@@ -7,7 +7,7 @@ __all__ = ["rhat_diagnostic", "rhatd"]
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def rhat_diagnostic(
@@ -83,3 +83,7 @@ rhatd = rhat_diagnostic
 
 def cheatsheet() -> str:
     return "rhat_diagnostic(chains) -> R-hat (Gelman-Rubin) convergence diagnostic."
+
+
+# compact alias per ledger/NAMING.md
+rhatdiagnostic = rhat_diagnostic

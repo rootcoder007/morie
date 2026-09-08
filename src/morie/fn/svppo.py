@@ -1,6 +1,6 @@
 """Party position estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ part = party_position
 
 def cheatsheet() -> str:
     return "party_position({}) -> Party position estimation"
+
+
+# compact alias per ledger/NAMING.md
+partyposition = party_position

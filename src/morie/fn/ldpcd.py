@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import CryptoResult
 
@@ -32,3 +32,7 @@ ldpcd = ldpc_decode
 
 def cheatsheet() -> str:
     return "ldpc_decode({}) -> LDPC bit-flipping decoder."
+
+
+# compact alias per ledger/NAMING.md
+ldpcdecode = ldpc_decode

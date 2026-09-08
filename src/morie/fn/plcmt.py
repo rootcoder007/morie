@@ -9,8 +9,8 @@ Mann-Whitney statistic U_y = sum(P_j).
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -83,3 +83,7 @@ def cheatsheet():
 # CANONICAL TEST
 # >>> rank_placements([1, 3, 5], [2, 4, 6])
 # placements = [1, 2, 3]; U_y = 6; E[U] = 4.5; Var[U] = 5.25
+
+
+# compact alias per ledger/NAMING.md
+rankplacements = rank_placements

@@ -1,6 +1,6 @@
 """SVM primal with hinge loss (linear kernel)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -12,6 +12,14 @@ def svm_hinge_primal(x, y, *, C=1.0, seed=0):
 
     Solves min (1/2)||w||^2 + C sum_i max(0, 1 - y_i (w'x_i + b)).
     Labels are coerced to {-1, +1} internally.
+
+    References
+    ----------
+    Cortes, C. & Vapnik, V. (1995). Support-vector networks.
+    *Machine Learning*, 20(3), 273-297.
+    Hastie, T., Tibshirani, R. & Friedman, J. (2009). *The Elements of
+    Statistical Learning*, 2nd edn. Springer. Sec. 12.2, pp. 417-421
+    (hinge-loss primal, eq. 12.25).
 
     Parameters
     ----------
@@ -27,7 +35,7 @@ def svm_hinge_primal(x, y, *, C=1.0, seed=0):
     RichResult with payload: estimate (intercept then w), accuracy
     (training accuracy), C, n, method.
     """
-    from sklearn.svm import LinearSVC
+    from ._ml_core import LinearSVC
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()
@@ -71,3 +79,7 @@ if __name__ == "__main__":
     r = svm_hinge_primal(X, y, C=1.0)
     print("intercept:", r.intercept, "weights:", r.weights)
     print("train accuracy:", r.train_accuracy)
+
+
+# compact alias per ledger/NAMING.md
+svmhingeprimal = svm_hinge_primal

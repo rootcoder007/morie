@@ -5,7 +5,7 @@ CO2 flux marine
 Category: MarinSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def maco2(depth=None, temp=None, salinity=None, coords=None, n=50):

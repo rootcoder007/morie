@@ -1,6 +1,6 @@
 """Rubinstein spatial bargaining"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ rubi = rubinstein_sp
 
 def cheatsheet() -> str:
     return "rubinstein_sp({}) -> Rubinstein spatial bargaining"
+
+
+# compact alias per ledger/NAMING.md
+rubinsteinsp = rubinstein_sp

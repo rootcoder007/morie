@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -47,3 +47,7 @@ sskew = skewness_coeff
 
 def cheatsheet() -> str:
     return "skewness_coeff({}) -> Skewness coefficient."
+
+
+# compact alias per ledger/NAMING.md
+skewnesscoeff = skewness_coeff

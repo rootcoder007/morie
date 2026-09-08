@@ -1,3 +1,15 @@
+#' .binary_power_required_n
+#'
+#' A step of the study_reporting implementation. Called by \code{.run_power_design_module_extended}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param p1 Numeric; passed to \code{sqrt}.
+#' @param p2 Numeric; passed to \code{sqrt}.
+#' @param alpha Numeric; combined arithmetically in the body. Defaults to \code{0.05}.
+#' @param power Defaults to \code{0.8}.
+#' @return A numeric value.
+#' @export
 .binary_power_required_n <- function(p1, p2, alpha = 0.05, power = 0.80) {
   h <- abs(2 * asin(sqrt(p1)) - 2 * asin(sqrt(p2)))
   if (is.na(h) || h <= 0) {
@@ -8,6 +20,19 @@
   2 * ((z_alpha + z_beta) / h)^2
 }
 
+#' .continuous_power_required_n
+#'
+#' A step of the study_reporting implementation. Called by \code{.run_power_design_module_extended}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param mean1 Numeric; combined arithmetically in the body.
+#' @param mean2 Numeric; combined arithmetically in the body.
+#' @param sd_pooled Passed to \code{.safe_divide}.
+#' @param alpha Numeric; combined arithmetically in the body. Defaults to \code{0.05}.
+#' @param power Defaults to \code{0.8}.
+#' @return A numeric value.
+#' @export
 .continuous_power_required_n <- function(mean1, mean2, sd_pooled, alpha = 0.05, power = 0.80) {
   d <- abs(.safe_divide(mean1 - mean2, sd_pooled))
   if (is.na(d) || d <= 0) {
@@ -18,6 +43,18 @@
   2 * ((z_alpha + z_beta) / d)^2
 }
 
+#' .block_schedule
+#'
+#' A step of the study_reporting implementation. Called by \code{.run_power_design_module_extended}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param endpoint Passed to \code{data.frame}.
+#' @param required_n Numeric; combined arithmetically in the body.
+#' @param strata_levels A vector; its length is taken.
+#' @param target_power Passed to \code{data.frame}. Defaults to \code{0.8}.
+#' @return The value of \code{do.call}.
+#' @export
 .block_schedule <- function(endpoint, required_n, strata_levels, target_power = 0.8) {
   out <- list()
   if (length(strata_levels) == 0L || is.na(required_n)) {
@@ -63,6 +100,17 @@
   do.call(rbind, out)
 }
 
+#' .run_power_design_module_extended
+#'
+#' A step of the study_reporting implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param data A list; the body reads \code{$alcohol_past12m}, \code{$ebac_legal},
+#' \code{$ebac_tot}, \code{$gender_label}, \code{$heavy_drinking_30d}, \code{$weight}
+#' from it.
+#' @return A vector, from \code{c}.
+#' @export
 .run_power_design_module_extended <- function(data) {
   data <- .cpads_labeled_data(data)
   binary_endpoints <- list(
@@ -392,6 +440,18 @@
   )
 }
 
+#' .read_existing_output
+#'
+#' A step of the study_reporting implementation. Called by
+#' \code{.run_figures_module_internal}, \code{.run_meta_synthesis_module_internal}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param output_dir Passed to \code{file.path}.
+#' @param file_name Passed to \code{file.path}.
+#' @param fallback Defaults to \code{NULL}.
+#' @return The value of \code{fallback}, as built in the body.
+#' @export
 .read_existing_output <- function(output_dir, file_name, fallback = NULL) {
   path <- file.path(output_dir, file_name)
   if (file.exists(path)) {
@@ -400,6 +460,16 @@
   fallback
 }
 
+#' The legacy migration tree exists only in a source checkout; an
+#'
+#' installed package has no project root. Degrade to NA so callers
+#' (.copy_legacy_artifacts) simply copy nothing rather than erroring.
+#'
+#' @return The value of \code{file.path}.
+#' @export
+#' @examples
+#' res <- .legacy_reference_root()
+#' res
 .legacy_reference_root <- function() {
   # The legacy migration tree exists only in a source checkout; an
   # installed package has no project root. Degrade to NA so callers
@@ -411,6 +481,17 @@
   file.path(root, "migration_files", "one")
 }
 
+#' .copy_legacy_artifacts
+#'
+#' A step of the study_reporting implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param relative_paths See Usage.
+#' @param output_dir Passed to \code{file.path}.
+#' @param root Passed to \code{file.path}.
+#' @return The value of \code{copied}, as built in the body.
+#' @export
 .copy_legacy_artifacts <- function(relative_paths, output_dir, root = file.path(.legacy_reference_root(), "six", "outputs")) {
   copied <- character()
   for (rel in relative_paths) {
@@ -424,6 +505,26 @@
   copied
 }
 
+#' .run_ebac_integrations_module_internal
+#'
+#' A step of the study_reporting implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param data A list; the body reads \code{$alcohol_past12m}, \code{$cannabis_any_use},
+#' \code{$ebac_tot}, \code{$weight} from it.
+#' @param output_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @return A list with \code{ebac_final_domain_samples},
+#' \code{ebac_final_formula_input_audit}, \code{ebac_final_formula_validation},
+#' \code{ebac_final_interaction_tests}, \code{ebac_final_weighted_descriptives},
+#' \code{ebac_final_weighted_linear}, \code{ebac_final_weighted_or},
+#' \code{ebac_final_smote_compare}, \code{ebac_final_smote_or},
+#' \code{ebac_final_smote_status}, \code{ebac_final_causal_effects},
+#' \code{ebac_final_cate}, \code{ebac_final_consistency_checks},
+#' \code{ebac_final_crosswalk_previous}, \code{ebac_final_dml_results},
+#' \code{ebac_final_dml_status}, \code{ebac_final_key_summary},
+#' \code{ebac_final_user_guide_variable_map}, \code{ebac_final_variable_audit}.
+#' @export
 .run_ebac_integrations_module_internal <- function(data, output_dir = NULL) {
   if (is.null(output_dir)) {
     output_dir <- tempfile("morie-ebac-integrations-")
@@ -526,6 +627,20 @@
 # Render one figure to figures/<name>.pdf (and optionally .png). Returns the
 # relative paths written, or character(0) if the draw function errored (the
 # half-written file is removed and a warning names the figure).
+#' Render one figure to figures/<name>.pdf (and optionally .png).
+#' Returns the
+#'
+#' relative paths written, or character(0) if the draw function errored
+#' (the half-written file is removed and a warning names the figure).
+#'
+#' @param fig_dir Passed to \code{file.path}.
+#' @param name Passed to \code{warning}.
+#' @param draw Accepted by the signature and not used anywhere in the body.
+#' @param png_too A flag; the body branches on it. Defaults to \code{FALSE}.
+#' @param width Numeric; combined arithmetically in the body. Defaults to \code{8}.
+#' @param height Numeric; combined arithmetically in the body. Defaults to \code{6}.
+#' @return The value of \code{wrote}, as built in the body.
+#' @export
 .fig_write <- function(fig_dir, name, draw, png_too = FALSE,
                        width = 8, height = 6) {
   wrote <- character()
@@ -562,6 +677,17 @@
 }
 
 # Standardized mean differences of dummy-coded covariates between arms.
+#' Standardized mean differences of dummy-coded covariates between arms
+#'
+#' A step of the study_reporting implementation. Called by \code{.run_figures_module_internal}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param data A vector; indexed elementwise.
+#' @param treat_col See Usage.
+#' @param covariate_cols See Usage.
+#' @return The value of \code{[}.
+#' @export
 .smd_by_treatment <- function(data, treat_col, covariate_cols) {
   treat <- data[[treat_col]]
   keep <- !is.na(treat)
@@ -580,7 +706,8 @@
   }
   t1 <- treat[keep] == 1
   smd <- vapply(out, function(x) {
-    m1 <- mean(x[t1], na.rm = TRUE); m0 <- mean(x[!t1], na.rm = TRUE)
+    m1 <- mean(x[t1], na.rm = TRUE)
+    m0 <- mean(x[!t1], na.rm = TRUE)
     s <- sqrt((stats::var(x[t1], na.rm = TRUE) +
                  stats::var(x[!t1], na.rm = TRUE)) / 2)
     if (!is.finite(s) || s == 0) return(NA_real_)
@@ -589,6 +716,16 @@
   smd[is.finite(smd)]
 }
 
+#' .run_figures_module_internal
+#'
+#' A step of the study_reporting implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param data A list; the body reads \code{$heavy_drinking_30d} from it.
+#' @param output_dir Optional; may be \code{NULL}. Passed to \code{.read_existing_output}.
+#' @return Invisibly,the value of \code{list}.
+#' @export
 .run_figures_module_internal <- function(data, output_dir = NULL) {
   if (is.null(output_dir)) {
     output_dir <- tempfile("morie-figures-")
@@ -666,7 +803,8 @@
 
   ## 4-5. Outcome prevalence by demographic / mental-health strata.
   draw_by <- function(cols, main) {
-    force(cols); force(main)
+    force(cols)
+    force(main)
     function() {
       graphics::par(mar = c(9, 4, 3, 2))
       rates <- unlist(lapply(cols, function(cn) {
@@ -730,16 +868,19 @@
               age = "Age", gender = "Gender", region = "Region",
               mental = "Mental health", physical = "Physical health")
     edge <- function(from, to) {
-      p1 <- nodes[[from]]; p2 <- nodes[[to]]
+      p1 <- nodes[[from]]
+      p2 <- nodes[[to]]
       shrink <- 0.82
-      mx <- (p1[1] + p2[1]) / 2; my <- (p1[2] + p2[2]) / 2
+      mx <- (p1[1] + p2[1]) / 2
+      my <- (p1[2] + p2[2]) / 2
       graphics::arrows(mx + (p1[1] - mx) * shrink, my + (p1[2] - my) * shrink,
                        mx + (p2[1] - mx) * shrink, my + (p2[2] - my) * shrink,
                        length = 0.12, col = "grey25")
     }
     edge("cannabis", "heavy")
     for (conf in c("age", "gender", "region", "mental", "physical")) {
-      edge(conf, "cannabis"); edge(conf, "heavy")
+      edge(conf, "cannabis")
+      edge(conf, "heavy")
     }
     for (nm in names(nodes)) {
       graphics::points(nodes[[nm]][1], nodes[[nm]][2], pch = 21,
@@ -774,6 +915,16 @@
   invisible(list())
 }
 
+#' .run_tables_module_internal
+#'
+#' A step of the study_reporting implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param data A list; the body reads \code{$cannabis_any_use} from it.
+#' @param output_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @return Invisibly,the value of \code{list}.
+#' @export
 .run_tables_module_internal <- function(data, output_dir = NULL) {
   if (is.null(output_dir)) {
     output_dir <- tempfile("morie-tables-")
@@ -841,6 +992,22 @@
   invisible(list())
 }
 
+#' .run_final_report_module_internal
+#'
+#' A step of the study_reporting implementation. Called by \code{morie_run_morie_module}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param data Passed to \code{names}.
+#' @param output_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @return A list with \code{ebac_final_output_coverage},
+#' \code{ebac_final_output_shapes}, \code{ebac_final_script_run_status},
+#' \code{ebac_final_audit_checks}, \code{ebac_final_user_guide_excerpt}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .run_final_report_module_internal(data = x)
+#' res
 .run_final_report_module_internal <- function(data, output_dir = NULL) {
   if (is.null(output_dir)) {
     output_dir <- tempfile("morie-final-report-")
@@ -848,8 +1015,11 @@
   }
   output_files <- sort(list.files(output_dir, recursive = TRUE, pattern = "\\.(csv|txt|pdf|png|html|md)$", full.names = FALSE))
   coverage <- data.frame(
-    script = c("data-wrangling", "descriptive-statistics", "distribution-tests", "frequentist-inference", "bayesian-inference", "power-design", "logistic-models", "model-comparison", "regression-models", "propensity-scores", "causal-estimators", "treatment-effects", "dag-specification", "meta-synthesis", "ebac-core", "ebac-selection-adjustment-ipw", "ebac-integrations", "ebac-gender-smote-sensitivity", "figures", "tables", "final-report"),
-    output = c("data_wrangling_log.csv", "binomial_summaries.csv", "distribution_tests.csv", "frequentist_hypothesis_tests.csv", "bayesian_posterior_summaries.csv", "power_summary.csv", "logistic_odds_ratios.csv", "model_comparison_summary.csv", "regression_coefficients.csv", "ipw_results.csv", "causal_estimator_comparison.csv", "treatment_effects_summary.csv", "official_doc_alignment_checklist.csv", "10_methods_results_paper.md", "ebac_logistic_or_primary.csv", "ebac_final_ipw_or.csv", "ebac_final_weighted_or.csv", "ebac_gender_interaction_svy_or.csv", "figures/balance_plot.pdf", "table1.html", "ebac_final_output_shapes.csv"),
+    script = c("data-wrangling", "descriptive-statistics", "distribution-tests", "frequentist-inference", "bayesian-inference", "power-design", "logistic-models", "model-comparison", "regression-models", "propensity-scores", "causal-estimators",
+      "treatment-effects", "dag-specification", "meta-synthesis", "ebac-core", "ebac-selection-adjustment-ipw", "ebac-integrations", "ebac-gender-smote-sensitivity", "figures", "tables", "final-report"),
+    output = c("data_wrangling_log.csv", "binomial_summaries.csv", "distribution_tests.csv", "frequentist_hypothesis_tests.csv", "bayesian_posterior_summaries.csv", "power_summary.csv", "logistic_odds_ratios.csv", "model_comparison_summary.csv",
+      "regression_coefficients.csv", "ipw_results.csv", "causal_estimator_comparison.csv", "treatment_effects_summary.csv", "official_doc_alignment_checklist.csv", "10_methods_results_paper.md", "ebac_logistic_or_primary.csv",
+      "ebac_final_ipw_or.csv", "ebac_final_weighted_or.csv", "ebac_gender_interaction_svy_or.csv", "figures/balance_plot.pdf", "table1.html", "ebac_final_output_shapes.csv"),
     stringsAsFactors = FALSE
   )
   coverage$exists <- ifelse(is.na(coverage$output), TRUE, coverage$output %in% output_files)

@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgcir -- Circular variogram model"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgcir import vario_circular
 

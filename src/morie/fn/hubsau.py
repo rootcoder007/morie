@@ -1,10 +1,9 @@
 """HITS hub + authority scores."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
-__all__ = ["The only true wisdom is in knowing you know nothing. -- Socrates"]
 
 
 def hits_hub_authority(G):

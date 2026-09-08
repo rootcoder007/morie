@@ -12,7 +12,7 @@ Journal of the Royal Statistical Society, Series B, 30(2), 248-275.
 
 __all__ = ["cxsnl"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def cxsnl(

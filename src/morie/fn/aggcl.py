@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.cluster.hierarchy import fcluster, linkage
+from . import _array_core as np
+from ._sci_core import fcluster, linkage
 
 from ._containers import DescriptiveResult
 

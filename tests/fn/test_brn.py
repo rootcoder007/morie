@@ -1,6 +1,6 @@
 """Tests for morie.fn.brn — Brunner-Munzel test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.brn import brunner_munzel
 

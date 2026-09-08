@@ -23,7 +23,7 @@ def l_function(K_values, r_values):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     K = np.asarray(K_values, dtype=np.float64)
     r = np.asarray(r_values, dtype=np.float64)

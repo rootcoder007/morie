@@ -1,6 +1,6 @@
 """Empirical semivariogram"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -49,3 +49,7 @@ empi = empirical_vario
 
 def cheatsheet() -> str:
     return "empirical_vario({}) -> Empirical semivariogram"
+
+
+# compact alias per ledger/NAMING.md
+empiricalvario = empirical_vario

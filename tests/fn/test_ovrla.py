@@ -1,6 +1,6 @@
 """Tests for overlap_weight."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ovrla import overlap_weight

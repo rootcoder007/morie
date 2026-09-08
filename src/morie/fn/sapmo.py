@@ -5,7 +5,7 @@ Permutation Moran's I
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def sapmo(values=None, w=None, n=50):

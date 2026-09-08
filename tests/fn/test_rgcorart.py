@@ -1,8 +1,8 @@
 """Tests for rgcorart.rangayyan_coronary_sound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgcorart import rangayyan_coronary_sound
+from morie.fn.bsaphys import rangayyan_coronary_sound
 
 
 def test_rgcorart_basic():

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -69,3 +69,7 @@ sntsr = sentence_served
 
 def cheatsheet() -> str:
     return "sentence_served({}) -> Proportion of sentence served."
+
+
+# compact alias per ledger/NAMING.md
+sentenceserved = sentence_served

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -79,3 +79,7 @@ youdn = youden_index
 
 def cheatsheet() -> str:
     return "youden_index({}) -> Youden's J index for optimal classification threshold."
+
+
+# compact alias per ledger/NAMING.md
+youdenindex = youden_index

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ordinal IRT model estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from .._spatial_voting import ordinal_irt as _ordinal_irt
 from ._containers import DescriptiveResult

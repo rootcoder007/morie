@@ -1,24 +1,15 @@
 """Tests for alocp.alammar_openclip_contrastive."""
 
-import numpy as np
-
 from morie.fn.alocp import alammar_openclip_contrastive
 
 
 def test_alocp_basic():
-    """Test basic functionality."""
-    I_emb = np.random.default_rng(42).normal(0, 1, 100)
-    T_emb = np.random.default_rng(42).normal(0, 1, 100)
-    tau = 0.1
-    result = alammar_openclip_contrastive(I_emb, T_emb, tau)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    I = [[1.0, 0.0], [0.0, 1.0]]
+    out = alammar_openclip_contrastive(I, I, tau=0.5)
+    assert out["image_to_text_loss"] == out["text_to_image_loss"]
 
 
 def test_alocp_edge():
-    """Test edge cases."""
-    I_emb = np.random.default_rng(42).normal(0, 1, 100)
-    T_emb = np.random.default_rng(42).normal(0, 1, 100)
-    tau = 0.1
-    result = alammar_openclip_contrastive(I_emb, T_emb, tau)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="at least 2"):
+        alammar_openclip_contrastive([[1.0]], [[1.0]])

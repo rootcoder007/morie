@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -64,3 +64,7 @@ wndwm = window_function
 
 def cheatsheet() -> str:
     return "window_function({}) -> Window functions."
+
+
+# compact alias per ledger/NAMING.md
+windowfunction = window_function

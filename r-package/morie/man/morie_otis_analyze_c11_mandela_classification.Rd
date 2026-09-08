@@ -2,7 +2,7 @@
 % Please edit documentation in R/otis_all_analyze.R
 \name{morie_otis_analyze_c11_mandela_classification}
 \alias{morie_otis_analyze_c11_mandela_classification}
-\title{Mandela-RF on c11 -- per-individual Mandela classification by year.}
+\title{Mandela-RF on c11 -- per-individual Mandela classification by year}
 \usage{
 morie_otis_analyze_c11_mandela_classification(data, out_dir = NULL)
 }
@@ -20,7 +20,9 @@ of INDIVIDUALS by binned aggregate duration). Reports both
 restrictive-confinement and segregation-only views.
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_c11 <- morie_synth_otis("c11", n = 120L, seed = 1L)
 morie_otis_analyze_c11_mandela_classification(otis_c11)
+}
 }

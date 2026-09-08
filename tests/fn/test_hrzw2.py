@@ -1,6 +1,6 @@
 """Tests for hrzw2.horowitz_bandwidth_bootstrap."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzw2 import horowitz_bandwidth_bootstrap
 

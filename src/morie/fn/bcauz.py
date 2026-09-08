@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def bayesian_ate(
@@ -34,7 +34,8 @@ def bayesian_ate(
 
     References
     ----------
-    Rubin, D. B. (1978). *Annals of Statistics*, 6(1), 34--58.
+    Rubin, D. B. (1978). Bayesian inference for causal effects: the role
+        of randomization. *The Annals of Statistics*, 6(1), 34-58.
     """
     rng = np.random.default_rng(seed)
     y_arr = np.asarray(y, dtype=float).ravel()
@@ -83,3 +84,7 @@ bcauz = bayesian_ate
 
 def cheatsheet() -> str:
     return "bayesian_ate({}) -> Bayesian causal effect (posterior ATE)."
+
+
+# compact alias per ledger/NAMING.md
+bayesianate = bayesian_ate

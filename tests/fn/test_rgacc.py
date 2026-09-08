@@ -1,8 +1,8 @@
 """Tests for rgacc.rangayyan_accuracy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgacc import rangayyan_accuracy
+from morie.fn.bsaclass import rangayyan_accuracy
 
 
 def test_rgacc_basic():

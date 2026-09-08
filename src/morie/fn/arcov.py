@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -33,3 +33,7 @@ arcov = ar_covariance_fn
 
 def cheatsheet() -> str:
     return "ar_covariance_fn({}) -> AR model estimation via covariance method."
+
+
+# compact alias per ledger/NAMING.md
+arcovariancefn = ar_covariance_fn

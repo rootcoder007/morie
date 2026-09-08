@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import PcaRes
 
@@ -65,3 +65,7 @@ pcsvd = pca_svd
 
 def cheatsheet() -> str:
     return "pca_svd({}) -> PCA via singular value decomposition."
+
+
+# compact alias per ledger/NAMING.md
+pcasvd = pca_svd

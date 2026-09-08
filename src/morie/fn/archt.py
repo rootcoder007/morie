@@ -1,8 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """ARCH(p) conditional heteroscedasticity model."""
 
-import numpy as np
-from scipy import optimize
+from . import _array_core as np
+from ._sci_core import optimize
 
 from ._containers import DescriptiveResult
 
@@ -73,3 +73,7 @@ archt = arch_fit
 
 def cheatsheet() -> str:
     return "arch_fit({}) -> ARCH(p) conditional heteroscedasticity model."
+
+
+# compact alias per ledger/NAMING.md
+archfit = arch_fit

@@ -21,8 +21,8 @@ def variogram_cloud(Z, coords):
     -------
     DescriptiveResult
     """
-    import numpy as np
-    from scipy.spatial.distance import pdist, squareform
+    from morie.fn import _array_core as np
+    from ._sci_core import pdist, squareform
 
     Z = np.asarray(Z, dtype=np.float64).ravel()
     coords = np.asarray(coords, dtype=np.float64)
@@ -51,3 +51,7 @@ sgcld = variogram_cloud
 
 def cheatsheet() -> str:
     return "variogram_cloud({}) -> Variogram cloud (all pairwise differences)."
+
+
+# compact alias per ledger/NAMING.md
+variogramcloud = variogram_cloud

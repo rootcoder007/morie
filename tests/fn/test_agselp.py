@@ -1,6 +1,6 @@
 """Tests for agselp.alphazero_self_play_eval."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agselp import alphazero_self_play_eval
 

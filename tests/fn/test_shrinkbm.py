@@ -1,6 +1,6 @@
 """Tests for shrinkbm.shrinkage_bayes."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.shrinkbm import shrinkage_bayes
 

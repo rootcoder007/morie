@@ -1,6 +1,6 @@
 """Tests for epsg.epsilon_greedy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.epsg import epsilon_greedy
 

@@ -1,8 +1,8 @@
 """Tests for rghier.rangayyan_hierarchical_clust."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rghier import rangayyan_hierarchical_clust
+from morie.fn.bsaclass import rangayyan_hierarchical_clust
 
 
 def test_rghier_basic():

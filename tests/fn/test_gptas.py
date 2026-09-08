@@ -1,6 +1,6 @@
 """Tests for gptas.gpt_assistant_decode."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gptas import gpt_assistant_decode
 

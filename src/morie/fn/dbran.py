@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -47,3 +47,7 @@ def cheatsheet() -> str:
 
 
 dbran = d_brane_tension
+
+
+# compact alias per ledger/NAMING.md
+dbranetension = d_brane_tension

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Earth mover's (Wasserstein-1) distance."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -39,3 +39,7 @@ emdd = earth_mover_dist
 
 def cheatsheet() -> str:
     return "earth_mover_dist({}) -> Earth mover's (Wasserstein-1) distance."
+
+
+# compact alias per ledger/NAMING.md
+earthmoverdist = earth_mover_dist

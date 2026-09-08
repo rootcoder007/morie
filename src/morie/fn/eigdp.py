@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Eigendecomposition."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -48,3 +48,7 @@ eigdp = eigen_decompose
 
 def cheatsheet() -> str:
     return "eigen_decompose({}) -> Eigendecomposition."
+
+
+# compact alias per ledger/NAMING.md
+eigendecompose = eigen_decompose

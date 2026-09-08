@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import TestResult
 
@@ -45,3 +45,7 @@ flgnr = fligner_killeen
 
 def cheatsheet() -> str:
     return "fligner_killeen({}) -> Fligner-Killeen test for homogeneity of variance."
+
+
+# compact alias per ledger/NAMING.md
+flignerkilleen = fligner_killeen

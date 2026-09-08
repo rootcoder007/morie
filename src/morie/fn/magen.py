@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -49,3 +49,7 @@ magen = ma_generate_fn
 
 def cheatsheet() -> str:
     return "ma_generate_fn({}) -> Generate synthetic MA process."
+
+
+# compact alias per ledger/NAMING.md
+mageneratefn = ma_generate_fn

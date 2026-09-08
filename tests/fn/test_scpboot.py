@@ -1,6 +1,6 @@
 """Tests for morie.fn.scpboot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.scpboot import scpboot
 

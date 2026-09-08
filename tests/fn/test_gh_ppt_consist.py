@@ -1,6 +1,6 @@
 """Tests for gh_ppt_consist.ghosal_polya_tree_consist_rate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_ppt_consist import ghosal_polya_tree_consist_rate
 

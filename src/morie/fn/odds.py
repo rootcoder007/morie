@@ -5,7 +5,7 @@ import math
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def odds(table_2x2: Union[Sequence, np.ndarray], continuity: float = 0.0):

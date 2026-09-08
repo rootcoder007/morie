@@ -1,6 +1,6 @@
 """Tests for morie.fn.svd_ — truncated SVD."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.svd_ import truncated_svd

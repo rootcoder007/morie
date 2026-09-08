@@ -1,6 +1,6 @@
 """Tests for sgtcheeg.sgt_cheeger_constant."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtcheeg import sgt_cheeger_constant
 

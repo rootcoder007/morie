@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Compressed sensing denoising via L1 regularization."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -85,3 +85,7 @@ csdnt = denoise_cs
 
 def cheatsheet() -> str:
     return "denoise_cs({}) -> Compressed sensing denoising via L1 regularization."
+
+
+# compact alias per ledger/NAMING.md
+denoisecs = denoise_cs

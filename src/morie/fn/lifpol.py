@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -80,3 +80,7 @@ lifpol = lift_drag_polar
 
 def cheatsheet() -> str:
     return "lift_drag_polar({}) -> Lift-drag polar."
+
+
+# compact alias per ledger/NAMING.md
+liftdragpolar = lift_drag_polar

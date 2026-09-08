@@ -1,6 +1,6 @@
 """Tests for gh_c1_2.ghosal_absolute_continuity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c1_2 import ghosal_absolute_continuity
 

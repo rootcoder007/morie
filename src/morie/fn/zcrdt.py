@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -59,3 +59,7 @@ zcrdt = zcr_detect
 
 def cheatsheet() -> str:
     return "zcr_detect({}) -> Zero-crossing rate based onset detection."
+
+
+# compact alias per ledger/NAMING.md
+zcrdetect = zcr_detect

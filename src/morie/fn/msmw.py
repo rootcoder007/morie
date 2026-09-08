@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 
@@ -57,11 +57,12 @@ def marginal_structural(
     A = df[treatment_col].values.astype(float)
     X = df[covariate_cols].values.astype(float)
 
-    from scipy.special import expit
+    from ._sci_core import expit
 
     Xd = np.column_stack([np.ones(len(X)), X])
     try:
-        from numpy.linalg import lstsq
+        from morie.fn._array_core import linalg as _acl
+        lstsq = _acl.lstsq
 
         beta, _, _, _ = lstsq(Xd, A, rcond=None)
         ps = expit(Xd @ beta)

@@ -1,6 +1,6 @@
 """Tests for hmzsl.geron_zero_shot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmzsl import geron_zero_shot
 

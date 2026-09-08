@@ -1,6 +1,6 @@
 """Tests for sam2vd.sam2_video_propagation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sam2vd import sam2_video_propagation
 

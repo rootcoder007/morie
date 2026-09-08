@@ -42,3 +42,7 @@ def cheatsheet() -> str:
 
 
 sdual = s_duality
+
+
+# compact alias per ledger/NAMING.md
+sduality = s_duality

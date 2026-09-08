@@ -1,42 +1,21 @@
-"""E-value for unmeasured confounding."""
-
-import numpy as np
-
-from ._richresult import RichResult
+# morie.fn -- function file (rootcoder007/morie)
+"""E-value with confidence interval -- front-end to evalu."""
 
 __all__ = ["e_value_unmeasured_confounding"]
 
 
 def e_value_unmeasured_confounding(estimate, ci_lower, ci_upper):
+    r"""E-value for a point estimate and its confidence interval.
+
+    Delegates to :func:`morie.fn.evalu.evalue`; this entry point exists
+    under the historical name whose placeholder body averaged its three
+    arguments. See that module for the formula and reference
+    (VanderWeele & Ding 2017, *Ann Intern Med* 167(4), 268-274).
     """
-    E-value for unmeasured confounding
+    from .evalu import evalue
 
-    Formula: E = RR + sqrt(RR(RR-1)) for RR > 1
-
-    Parameters
-    ----------
-    estimate : array-like
-        Input data.
-    ci_lower : array-like
-        Input data.
-    ci_upper : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    VanderWeele & Ding (2017)
-    """
-    estimate = np.atleast_1d(np.asarray(estimate, dtype=float))
-    n = len(estimate)
-    result = float(np.mean(estimate))
-    se = float(np.std(estimate, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "E-value for unmeasured confounding"})
+    return evalue(estimate, ci_lower=ci_lower, ci_upper=ci_upper)
 
 
 def cheatsheet():
-    return "evaltw: E-value for unmeasured confounding"
+    return "evaltw: E-value with CI (front-end to evalu)"

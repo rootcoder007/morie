@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -125,3 +125,7 @@ def st_kde(
 
 def cheatsheet() -> str:
     return "st_kde({}) -> Spatiotemporal kernel density estimation."
+
+
+# compact alias per ledger/NAMING.md
+stkde = st_kde

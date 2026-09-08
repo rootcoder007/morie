@@ -1,55 +1,22 @@
-r"""Numbered display equation (6.7) from MVSML chapter 6.."""
+"""Deprecated alias for :func:`morie.fn.rkhs_covariances`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .rkhs_covariances import rkhs_covariances as _impl
 
 __all__ = ["mvsml_bayesian_regression_eq_6_7"]
 
 
-def mvsml_bayesian_regression_eq_6_7(where, XE, XEM, are, the, design):
-    r"""
-    Numbered display equation (6.7) from MVSML chapter 6.
-
-    Formula: (6.6) where XE and XEM are the design matrices of the environments and environment– marker interactions, respectively, while \betaE and \betaEM are the vectors of the environ- ment effects and the interaction effects, respectively, with a prior distribution that can be speciﬁed as was done for \beta. Indeed, with the BGLR function all these things are possible, and all the options described before can also be adopted for the rest of effects added in the model: FIXED, BRR, BayesA, BayesB, BayesC, and BL. Under the RKHS model with genotypic and environment–genotypic interaction effects, in the predictor, the modiﬁed model (6.6) is expressed as Y = 1n\mu + XE\betaE + ZLg + ZELgE + e,
-
-    Parameters
-    ----------
-    where : array-like
-        Input data.
-    XE : array-like
-        Input data.
-    XEM : array-like
-        Input data.
-    are : array-like
-        Input data.
-    the : array-like
-        Input data.
-    design : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.7) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    where = np.atleast_1d(np.asarray(where, dtype=float))
-    n = len(where)
-    result = float(np.mean(where))
-    se = float(np.std(where, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.7) from MVSML chapter 6.",
-        }
+def mvsml_bayesian_regression_eq_6_7(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.rkhs_covariances` instead."""
+    warnings.warn(
+        "mvsml_bayesian_regression_eq_6_7() is the book-coordinate name for rkhs_covariances(); "
+        "it will be removed. Use morie.fn.rkhs_covariances() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "msm063: Numbered display equation (6.7) from MVSML chapter 6."
+    return _impl(*args, **kwargs)

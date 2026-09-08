@@ -1,6 +1,6 @@
 """Tests for morie.fn.ufr2 -- unfolding R-squared."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ufr2 import ufr2, unfolding_r_squared
 

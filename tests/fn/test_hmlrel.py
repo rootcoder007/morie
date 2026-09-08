@@ -1,6 +1,6 @@
 """Tests for hmlrel.geron_leaky_relu."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmlrel import geron_leaky_relu
 

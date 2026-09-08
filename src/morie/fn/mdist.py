@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -64,3 +64,7 @@ mdist = model_distance
 
 def cheatsheet() -> str:
     return "model_distance({}) -> AR model distance."
+
+
+# compact alias per ledger/NAMING.md
+modeldistance = model_distance

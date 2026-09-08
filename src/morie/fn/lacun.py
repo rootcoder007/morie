@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -34,3 +34,7 @@ lacun = lacunarity_fn
 
 def cheatsheet() -> str:
     return "lacunarity_fn({}) -> Lacunarity analysis for fractal texture characterization."
+
+
+# compact alias per ledger/NAMING.md
+lacunarityfn = lacunarity_fn

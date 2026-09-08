@@ -1,6 +1,6 @@
 """Tests for morie.fn.zeklf -- Kulldorff spatial scan statistic"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zeklf import kulldorff_scan
 

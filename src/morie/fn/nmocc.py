@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """OC classification rate"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ oc_c = oc_classify
 
 def cheatsheet() -> str:
     return "oc_classify({}) -> OC classification rate"
+
+
+# compact alias per ledger/NAMING.md
+occlassify = oc_classify

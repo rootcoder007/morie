@@ -1,6 +1,6 @@
 """Tests for morie.fn.trmle — Transformation model MLE."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.trmle import trmle
 

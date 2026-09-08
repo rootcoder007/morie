@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Proportional Reduction in Error"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ pre_ = pre_stat
 
 def cheatsheet() -> str:
     return "pre_stat({}) -> Proportional Reduction in Error"
+
+
+# compact alias per ledger/NAMING.md
+prestat = pre_stat

@@ -2,7 +2,7 @@
 
 Reason this exists: ``tps_hawkes_advanced._neg_loglik_general`` did a pure-
 Python O(n²) inner loop over events; at n=21,160 the optimizer spent
-hours per fit.  This module replaces that hot loop with @njit'd code
+hours per fit.  This module replaces that hot loop with kernel code
 plus the well-known O(n) recursive update for the exponential kernel,
 so a 21k-event 2019-contiguous Markovian fit lands in seconds and the
 Weibull×sinusoidal non-Markovian fit lands in minutes.
@@ -20,26 +20,26 @@ parameter combinations no JIT path covers.
 from __future__ import annotations
 
 import math
+import math as _math
 
-import numpy as np
+from morie.fn import _array_core as np
 
-try:
-    from numba import njit, prange
+HAS_NUMBA = False  # numba path removed with the dependency purge
+# The compiled C++ kernels in morie._core carry the hot loops; the
+# numba path is gone with the external-dependency purge. njit stays as
+# an identity decorator so the kernel functions read unchanged.
+prange = range
 
-    HAS_NUMBA = True
-except ImportError:  # pragma: no cover -- env without numba
-    HAS_NUMBA = False
-    prange = range  # type: ignore[assignment]
 
-    def njit(*args, **kwargs):  # type: ignore[no-redef]
-        # passthrough decorator so module still imports
-        if args and callable(args[0]):
-            return args[0]
+def njit(*args, **kwargs):
+    if len(args) == 1 and callable(args[0]) and not kwargs:
+        return args[0]
 
-        def _wrap(f):
-            return f
+    def _passthrough(fn):
+        return fn
 
-        return _wrap
+    return _passthrough
+
 
 
 # Phase 2 (v0.9.1): the compiled C++ core (morie._core) provides the
@@ -451,12 +451,28 @@ def _sin_grid(T: float, a0: float, a1: float, a2: float, a3: float) -> tuple[np.
     return grid, vals
 
 
+def _f64(x):
+    """A contiguous float64 buffer the compiled kernel can read on ANY
+    supported Python.
+
+    np.ascontiguousarray here returns morie's native array, which
+    exposes its buffer through __buffer__ -- that is PEP 688, so it only
+    exists on Python 3.12+. On 3.10 nanobind cannot see it and every
+    kernel call raised "incompatible function arguments", which is why
+    the Hawkes path worked on 3.13/3.14 and was broken on 3.10.
+    array.array carries the buffer protocol on every version.
+    """
+    import array as _pyarray
+
+    return _pyarray.array("d", [float(v) for v in x])
+
+
 def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, baseline: str) -> float:
     """JIT-routed negative log-likelihood.  Caller must check has_jit_path()."""
     # v0.9.1: constant-baseline kernels run on the compiled C++ core
     # when available -- no numba needed for these paths.
     if HAS_CORE and baseline == "constant":
-        t_c = np.ascontiguousarray(t, dtype=np.float64)
+        t_c = _f64(t)
         if kernel == "exponential":
             a0, eta, beta = float(theta[0]), float(theta[1]), float(theta[2])
             if eta <= 1e-6 or eta >= 0.999 or beta <= 1e-6:
@@ -479,9 +495,11 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, base
             # optimizer's tolerance), so the MLE is unchanged; the
             # exact O(n^2) kernel stays the reference path below the
             # crossover, where it is already cheap.
-            if t_c.shape[0] >= _SOE_MIN_N:
+            if len(t_c) >= _SOE_MIN_N:
                 w, beta_soe, _ = soe_fit_lomax(alpha, c, float(T), tol=1e-8)
-                return _core_ext.hawkes_ll_soe(t_c, float(T), float(np.exp(a0)), eta, w, beta_soe)
+                return _core_ext.hawkes_ll_soe(t_c, float(T), float(np.exp(a0)),
+                                               eta, _f64(w),
+                                               _f64(beta_soe))
             return _core_ext.hawkes_ll_lomax_const(t_c, float(T), a0, eta, alpha, c)
         if kernel == "gamma":
             a0, eta = float(theta[0]), float(theta[1])
@@ -493,19 +511,24 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, base
             # (exact peak window + matrix-pencil SoE tail). The hybrid
             # perturbs the likelihood by ~1e-6, below the optimizer's
             # tolerance. Truncation stays the exact path everywhere else.
-            if alpha > 1.0 and t_c.shape[0] >= _SOE_MIN_N and _gamma_trunc_cutoff(alpha, beta) >= t_c[-1] - t_c[0]:
+            if alpha > 1.0 and len(t_c) >= _SOE_MIN_N and _gamma_trunc_cutoff(alpha, beta) >= t_c[-1] - t_c[0]:
                 u_split = 2.0 * (alpha - 1.0) / beta
                 w, beta_soe, _ = soe_fit_gamma_tail(alpha, beta, u_split)
-                return _core_ext.hawkes_ll_gamma_hybrid(t_c, float(T), a0, eta, alpha, beta, u_split, w, beta_soe)
+                import array as _pyarray
+                w_re = _pyarray.array("d", [c.real for c in w])
+                w_im = _pyarray.array("d", [c.imag for c in w])
+                b_re = _pyarray.array("d", [c.real for c in beta_soe])
+                b_im = _pyarray.array("d", [c.imag for c in beta_soe])
+                return _core_ext.hawkes_ll_gamma_hybrid_ri(t_c, float(T), a0, eta, alpha, beta, u_split, w_re, w_im, b_re, b_im)
             # the sliding-window form is bit-identical and sub-quadratic
             return _core_ext.hawkes_ll_gamma_const_trunc(t_c, float(T), a0, eta, alpha, beta)
     if HAS_CORE and baseline == "sinusoidal" and kernel in ("exponential", "weibull", "lomax"):
         a0, a1, a2, a3 = (float(theta[0]), float(theta[1]), float(theta[2]), float(theta[3]))
         eta = float(theta[4])
         grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
-        t_c = np.ascontiguousarray(t, dtype=np.float64)
-        g_c = np.ascontiguousarray(grid, dtype=np.float64)
-        gv_c = np.ascontiguousarray(grid_vals, dtype=np.float64)
+        t_c = _f64(t)
+        g_c = _f64(grid)
+        gv_c = _f64(grid_vals)
         if kernel == "exponential":
             beta = float(theta[5])
             if eta <= 1e-6 or eta >= 0.999 or beta <= 1e-6:
@@ -579,24 +602,28 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, base
 # overhead. numba is an optional dependency: the morie[callbacks] extra.
 
 
-def _as_cfunc(fn):
-    """Return a numba @cfunc for *fn* (returned unchanged if already one).
+def _hawkes_ll_custom_py(t, T, nu, eta, g, G):
+    """Pure-Python Hawkes negative log-likelihood for an arbitrary
+    triggering kernel (Daley & Vere-Jones 2003, prop. 7.2.III):
 
-    The returned object owns the compiled native code -- the caller
-    must keep a reference to it while the native pointer is in use.
-    Compiling a plain Python callable needs the morie[callbacks] extra.
+        -ll = -sum_i log(nu + eta * sum_{j<i} g(t_i - t_j))
+              + nu*T + eta * sum_j G(T - t_j)
+
+    O(n^2) like the C++ custom-kernel engine, evaluated with the
+    caller's plain Python callables -- no compiler required.
     """
-    if hasattr(fn, "address"):  # already a numba CFunc
-        return fn
-    try:
-        from numba import cfunc, types
-    except ImportError as exc:  # pragma: no cover -- callbacks extra absent
-        raise ImportError(
-            "hawkes_loglik_custom needs numba to compile a plain Python "
-            "kernel -- install morie[callbacks], or pass a pre-built "
-            "numba @cfunc."
-        ) from exc
-    return cfunc(types.float64(types.float64))(fn)
+    ts = [float(v) for v in t]
+    n = len(ts)
+    loglam = 0.0
+    for i in range(n):
+        lam = nu
+        for j in range(i):
+            lam += eta * g(ts[i] - ts[j])
+        if lam <= 0.0:
+            return 1e30
+        loglam += math.log(lam)
+    comp = nu * T + eta * sum(G(T - tj) for tj in ts)
+    return -(loglam - comp)
 
 
 def hawkes_loglik_custom(t, T, nu, eta, kernel, kernel_integral):
@@ -616,13 +643,12 @@ def hawkes_loglik_custom(t, T, nu, eta, kernel, kernel_integral):
         Constant baseline intensity (must be > 0).
     eta : float
         Branching ratio.
-    kernel : callable or numba CFunc
-        The triggering kernel ``g(dt)``. A numba ``@cfunc`` -- decorated
-        ``@cfunc(numba.types.float64(numba.types.float64))`` -- is
-        called natively inside morie's C++ O(n^2) loop, GIL-free. A
-        plain Python callable is compiled to a ``@cfunc`` on the fly
-        (needs the ``morie[callbacks]`` extra).
-    kernel_integral : callable or numba CFunc
+    kernel : callable
+        The triggering kernel ``g(dt)``. A plain Python callable runs
+        in the pure-Python O(n^2) engine; a pre-built native callback
+        (an object exposing ``.address``, the C-function-pointer
+        convention) runs GIL-free inside the C++ engine.
+    kernel_integral : callable
         ``G(u)`` = the integral of ``g`` over ``[0, u]`` -- the
         compensator term.
 
@@ -634,29 +660,26 @@ def hawkes_loglik_custom(t, T, nu, eta, kernel, kernel_integral):
     Examples
     --------
     >>> import math
-    >>> from numba import cfunc, types
-    >>> @cfunc(types.float64(types.float64))
-    ... def g(u):
+    >>> def g(u):
     ...     return 1.5 * math.exp(-1.5 * u)
-    >>> @cfunc(types.float64(types.float64))
-    ... def G(u):
+    >>> def G(u):
     ...     return 1.0 - math.exp(-1.5 * u)
     >>> hawkes_loglik_custom(t, T, nu=0.4, eta=0.3,
     ...                      kernel=g, kernel_integral=G)  # doctest: +SKIP
     """
-    if not HAS_CORE:
-        raise RuntimeError(
-            "hawkes_loglik_custom requires the compiled morie C++ core "
-            "(morie._core), which is not available in this install."
-        )
-    # Hold the CFunc objects in locals -- they own the compiled native
-    # code, and the synchronous C++ call below dereferences their
-    # addresses.
-    g_cf = _as_cfunc(kernel)
-    G_cf = _as_cfunc(kernel_integral)
-    return _core_ext.hawkes_ll_custom(
-        np.ascontiguousarray(t, dtype=np.float64), float(T), float(nu), float(eta), int(g_cf.address), int(G_cf.address)
-    )
+    if HAS_CORE and hasattr(kernel, "address") \
+            and hasattr(kernel_integral, "address"):
+        # A pre-built native callback (anything exposing .address, the
+        # C-function-pointer convention) still runs GIL-free in the
+        # C++ O(n^2) engine.
+        return _core_ext.hawkes_ll_custom(
+            _f64(t), float(T),
+            float(nu), float(eta), int(kernel.address),
+            int(kernel_integral.address))
+    # Plain Python callables evaluate in the pure-Python engine -- the
+    # same likelihood, no compiler dependency.
+    return _hawkes_ll_custom_py(t, float(T), float(nu), float(eta),
+                                kernel, kernel_integral)
 
 
 # --- sum-of-exponentials (SoE) fit, task #73 -------------------------------
@@ -797,15 +820,80 @@ def _soe_fit_matrix_pencil(y, dt, *, order=None, rank_tol=1.0e-9):
         order = int(np.count_nonzero(sv > rank_tol * sv[0]))
     order = max(1, min(order, pencil))
 
-    v = vh[:order].conj().T  # (pencil+1) x order
-    z = np.linalg.eigvals(np.linalg.pinv(v[:-1]) @ v[1:])
+    # y is real, so vh is real and conj() is the identity; everything
+    # up to the eigenproblem stays in real arithmetic.
+    v = vh[:order].T  # (pencil+1) x order
+    A = np.linalg.pinv(v[:-1]) @ v[1:]
+    m = order
+    Ad = A.tolist()
+    if not isinstance(Ad, list):
+        Ad = [[float(Ad)]]
+    elif Ad and not isinstance(Ad[0], list):
+        Ad = [[float(x) for x in Ad]] if m == 1 else [[x] for x in Ad]
 
-    k = np.arange(n)
-    vander = z[None, :] ** k[:, None]  # n x order
-    residue, *_ = np.linalg.lstsq(vander, y, rcond=None)
+    # Eigenvalues of the real pencil matrix via the compiled
+    # Hessenberg + shifted-QR kernel (LAPACK-grade accuracy; the
+    # char-poly route loses the small modes above order ~6).
+    import array as _pa
+    from morie import _core as _ck
+    flat = _pa.array("d", [float(x2) for row in Ad for x2 in row])
+    wr_b, wi_b = _ck.eig_general(flat, m)
+    _wr = _pa.array("d"); _wr.frombytes(wr_b)
+    _wi = _pa.array("d"); _wi.frombytes(wi_b)
+    z = [complex(a2, b2) for a2, b2 in zip(_wr, _wi)]
 
-    with np.errstate(divide="ignore", invalid="ignore"):
-        beta = -np.log(z) / dt
+    # Keep only physical poles: y is a decaying signal, so |z| must be
+    # < 1 (z = exp(-beta*dt), Re(beta) > 0). Growing or zero poles are
+    # noise artefacts of the rank truncation (Hua & Sarkar 1990 keep
+    # only the physically admissible pencil eigenvalues).
+    z = [zz for zz in z if 0.0 < abs(zz) < 1.0] or z
+    m = len(z)
+
+    # Complex least squares residue fit on the Vandermonde system,
+    # via the normal equations A^H A x = A^H y (order is small, the
+    # columns are distinct geometric modes).
+    yl = [float(vv) for vv in y.tolist()]
+    cols = []
+    for zz in z:
+        col, acc = [], complex(1.0)
+        for _i in range(n):
+            col.append(acc)
+            acc *= zz
+        cols.append(col)
+    # Least squares via modified Gram-Schmidt QR with
+    # reorthogonalization (Bjorck 1967): the Vandermonde columns are
+    # strongly correlated, and the normal equations would square the
+    # condition number and destroy the small-residual solution that
+    # the tail of a decaying signal needs.
+    Q = [list(c3) for c3 in cols]          # column-major, m columns
+    R = [[complex(0.0)] * m for _ in range(m)]
+    for j3 in range(m):
+        for _pass in range(2):             # one reorthogonalization
+            for i3 in range(j3):
+                d3 = sum(Q[i3][r3].conjugate() * Q[j3][r3]
+                         for r3 in range(n))
+                R[i3][j3] += d3
+                for r3 in range(n):
+                    Q[j3][r3] -= d3 * Q[i3][r3]
+        nrm = _math.sqrt(sum(abs(Q[j3][r3]) ** 2 for r3 in range(n)))
+        if nrm < 1e-300:
+            raise ValueError("matrix pencil: singular Vandermonde system")
+        R[j3][j3] = complex(nrm)
+        inv = 1.0 / nrm
+        for r3 in range(n):
+            Q[j3][r3] *= inv
+    qb = [sum(Q[j3][r3].conjugate() * yl[r3] for r3 in range(n))
+          for j3 in range(m)]
+    residue = [complex(0.0)] * m
+    for r3 in range(m - 1, -1, -1):
+        acc = qb[r3]
+        for c4 in range(r3 + 1, m):
+            acc -= R[r3][c4] * residue[c4]
+        residue[r3] = acc / R[r3][r3]
+
+    import cmath
+    beta = [(-cmath.log(zz) / dt) if zz != 0 else complex(float("inf"))
+            for zz in z]
     return beta, residue
 
 
@@ -849,14 +937,41 @@ def soe_fit_gamma_tail(alpha, beta, u_split, *, span=20.0, n_samples=240):
     # rank_tol 1e-13 (vs the fitter's conservative 1e-9 default) keeps
     # more singular values -> ~12 modes -> tail relative error ~1e-6;
     # the gamma tail's slowly-varying u**(alpha-1) factor needs them.
-    scale = g[0]
-    pole_beta, pole_res = _soe_fit_matrix_pencil(g / scale, dt, rank_tol=1.0e-13)
-    w = pole_res * scale
+    import cmath
 
-    if np.any(pole_beta.real <= 0.0):
+    scale = float(g[0])
+    gl = [float(vv) for vv in g.tolist()]
+    ul = [float(vv) for vv in u.tolist()]
+
+    def _fit(order):
+        pole_beta, pole_res = _soe_fit_matrix_pencil(
+            g / scale, float(dt), order=order, rank_tol=1.0e-13)
+        w2 = [pr * scale for pr in pole_res]
+        if any(pb.real <= 0.0 for pb in pole_beta):
+            return None, None, float("inf")
+        e2 = 0.0
+        for i2 in range(len(ul)):
+            s2 = ul[i2] - u_split
+            val = sum(w2[m2] * cmath.exp(-pole_beta[m2] * s2)
+                      for m2 in range(len(w2))).real
+            rel = abs(val - gl[i2]) / gl[i2]
+            if rel > e2:
+                e2 = rel
+        return w2, pole_beta, e2
+
+    # The rank cut can land a mode short right at the singular-value
+    # threshold; the fit measures its own tail error, so escalate the
+    # order until the error stops improving (or is already tiny).
+    w, pole_beta, err = _fit(None)
+    if err > 1.0e-6:
+        base = len(w) if w is not None else 1
+        for extra in range(1, 7):
+            w2, pb2, e2 = _fit(base + extra)
+            if e2 < err:
+                w, pole_beta, err = w2, pb2, e2
+            if err <= 1.0e-6:
+                break
+
+    if w is None:
         raise ValueError("matrix-pencil fit produced a non-decaying mode")
-
-    s = u - u_split
-    g_soe = (w[None, :] * np.exp(-pole_beta[None, :] * s[:, None])).sum(axis=1).real
-    err = float(np.max(np.abs(g_soe - g) / g))
-    return (np.ascontiguousarray(w, dtype=np.complex128), np.ascontiguousarray(pole_beta, dtype=np.complex128), err)
+    return (list(w), list(pole_beta), float(err))

@@ -13,7 +13,9 @@ morie_matching_full(data, treatment, covariates, ps = NULL, n_subclasses = 10L)
 
 \item{covariates}{Character vector of covariates.}
 
-\item{ps}{Optional pre-computed propensity scores.}
+\item{ps}{Optional propensity scores. When supplied they REPLACE
+the fitted model and become the matching distance directly,
+aligned to the rows that survive the NA drop.}
 
 \item{n_subclasses}{Number of propensity-score strata for the fallback.}
 }
@@ -28,14 +30,18 @@ control unit.  Delegates to \pkg{MatchIt}'s \code{method = "full"}
 via quantile-based stratification of the propensity score.
 }
 \examples{
-set.seed(1)
-df <- data.frame(
-  y = rnorm(150), d = rbinom(150, 1, 0.4),
-  x1 = rnorm(150), x2 = rnorm(150),
-  region = sample(c("North", "South"), 150, TRUE),
-  year = sample(2020:2022, 150, TRUE),
-  treat3 = sample(0:2, 150, TRUE))
-morie_matching_full(df, "d", c("x1", "x2"))
+\dontshow{if (requireNamespace("MatchIt", quietly = TRUE) && requireNamespace("optmatch", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+if (requireNamespace("MatchIt", quietly = TRUE)) {
+  set.seed(1)
+  df <- data.frame(
+    y = rnorm(150), d = rbinom(150, 1, 0.4),
+    x1 = rnorm(150), x2 = rnorm(150),
+    region = sample(c("North", "South"), 150, TRUE),
+    year = sample(2020:2022, 150, TRUE),
+    treat3 = sample(0:2, 150, TRUE))
+  morie_matching_full(df, "d", c("x1", "x2"))
+}
+\dontshow{\}) # examplesIf}
 }
 \references{
 Hansen, B. B. (2004). Full matching in an observational

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ przpd = parzen_pdf
 
 def cheatsheet() -> str:
     return "parzen_pdf({}) -> Parzen window probability density estimation."
+
+
+# compact alias per ledger/NAMING.md
+parzenpdf = parzen_pdf

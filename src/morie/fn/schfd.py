@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import TestResult
 
@@ -64,3 +64,7 @@ schfd = schoenfeld_test
 
 def cheatsheet() -> str:
     return "schoenfeld_test({}) -> Schoenfeld residuals test for PH assumption."
+
+
+# compact alias per ledger/NAMING.md
+schoenfeldtest = schoenfeld_test

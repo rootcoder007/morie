@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
+from ._sci_core import minimize_scalar
+
+from ._schab_rho import safe_search_interval
 
 from ._containers import SpatialResult
 
@@ -35,7 +38,13 @@ def spatial_durbin_model(
 
     References
     ----------
-    Schabenberger & Gotway (2005), Ch. 6.
+    LeSage, J. and Pace, R. K. (2009) Introduction to Spatial
+    Econometrics. Chapman and Hall/CRC. doi:10.1201/9781420064254
+    Bivand, R. S., Pebesma, E., and Gomez-Rubio, V. (2013) Applied
+    Spatial Data Analysis with R, 2nd ed., Springer. Sec. 9.4.2
+    "Spatial Econometrics Approaches", pp. 307-311.
+    NOT in Schabenberger & Gotway (2005): "Durbin" appears there only
+    in the reference list.
 
     .. epigraph::
 
@@ -49,29 +58,31 @@ def spatial_durbin_model(
     WX = W @ X
     X_aug = np.column_stack([X, WX])
 
-    rho_grid = np.linspace(-0.9, 0.9, 50)
-    best_ll = -np.inf
-    best_rho = 0.0
-    best_coef = None
-    best_resid = None
+    lo, hi = safe_search_interval(W, "identity")
 
-    for rho in rho_grid:
+    def neg_ll(rho):
         A = I - rho * W
+        sign, logdet = np.linalg.slogdet(A)
+        if sign <= 0:
+            return np.inf
         Zy = A @ Z
         coef = np.linalg.lstsq(X_aug, Zy, rcond=None)[0]
         resid = Zy - X_aug @ coef
         sigma2 = np.sum(resid**2) / n
         if sigma2 <= 0:
-            continue
-        sign, logdet = np.linalg.slogdet(A)
-        if sign <= 0:
-            continue
-        ll = -0.5 * n * np.log(2 * np.pi * sigma2) + logdet - 0.5 * n
-        if ll > best_ll:
-            best_ll = ll
-            best_rho = rho
-            best_coef = coef
-            best_resid = resid
+            return np.inf
+        return -(-0.5 * n * np.log(2 * np.pi * sigma2) + logdet - 0.5 * n)
+
+    opt = minimize_scalar(neg_ll, bounds=(lo, hi), method="bounded",
+                          options={"xatol": 1e-10 * max(hi - lo, 1.0)})
+    best_rho = float(opt.x) if np.isfinite(neg_ll(opt.x)) else 0.0
+    A = I - best_rho * W
+    Zy = A @ Z
+    best_coef = np.linalg.lstsq(X_aug, Zy, rcond=None)[0]
+    best_resid = Zy - X_aug @ best_coef
+    _s, _ld = np.linalg.slogdet(A)
+    best_ll = (-0.5 * n * np.log(2 * np.pi * np.sum(best_resid**2) / n)
+               + _ld - 0.5 * n)
 
     p = X.shape[1]
     if best_coef is None:

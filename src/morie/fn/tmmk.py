@@ -1,6 +1,6 @@
 """Mann-Kendall trend test with slope."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

@@ -1,6 +1,6 @@
 """Tests for km095.kamath_ch6_gender_direction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km095 import kamath_ch6_gender_direction
 

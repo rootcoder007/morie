@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def bayesian_alpha(
@@ -102,3 +102,7 @@ def bayesian_alpha(
 
 def cheatsheet() -> str:
     return "bayesian_alpha({}) -> Bayesian Cronbach's alpha with posterior distribution."
+
+
+# compact alias per ledger/NAMING.md
+bayesianalpha = bayesian_alpha

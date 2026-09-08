@@ -10,10 +10,16 @@ number_needed_to_treat(a, b, c, d, confidence = 0.95)
 \item{a, b, c, d}{Cell counts.}
 
 \item{confidence}{Confidence level. Default 0.95.}
+
+
+
 }
 \value{
 A \code{morie_effect_size}.
 }
 \description{
 Number needed to treat (NNT) = 1 / |RD|
+}
+\examples{
+number_needed_to_treat(10, 5, 5, 10)
 }

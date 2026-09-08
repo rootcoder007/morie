@@ -1,6 +1,6 @@
 """Tests for morie.fn.cjrit — Bayesian IRT for roll call."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cjrit import cjrit
 

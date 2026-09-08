@@ -10,8 +10,28 @@
 #   McDonald (1999). Test Theory: A Unified Treatment.
 #   Revelle (2024). psych R package.
 
+#' .has_psych
+#'
+#' A step of the psymet implementation. Called by \code{.psych_or_stop}.
+#' See the file header for the source the module follows.
+#' it follows.
+#'
+#' @return The value of \code{requireNamespace}.
+#' @export
+#' @examples
+#' res <- .has_psych()
+#' res
 .has_psych <- function() requireNamespace("psych", quietly = TRUE)
 
+#' .psych_or_stop
+#'
+#' A step of the psymet implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' it follows.
+#'
+#' @param fn Passed to \code{sprintf}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .psych_or_stop <- function(fn) {
   if (!.has_psych()) {
     stop(sprintf(
@@ -21,6 +41,20 @@
   }
 }
 
+#' .as_item_matrix
+#'
+#' A step of the psymet implementation. Called by \code{morie_psymet_alpha},
+#' \code{morie_psymet_alphadel}, \code{morie_psymet_bartlett} and 6 others in the module.
+#' See the file header for the source the module follows.
+#' it follows.
+#'
+#' @param data A matrix; passed to \code{as.matrix}.
+#' @return The value of \code{X}, as built in the body.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .as_item_matrix(data = x)
+#' res
 .as_item_matrix <- function(data) {
   X <- as.matrix(data)
   storage.mode(X) <- "double"
@@ -171,7 +205,7 @@ morie_psymet_alphadel <- function(data) {
 #' Composite reliability from standardized factor loadings.
 #' CR = (sum lambda)^2 / ((sum lambda)^2 + sum(1 - lambda^2))
 #' @param loads Numeric vector of standardised factor loadings (lambda).
-#' @return Single numeric scalar in `[0, 1]`: the composite reliability (CR).
+#' @return Single numeric scalar in `\[0, 1\]`: the composite reliability (CR).
 #' @examples
 #' lam <- c(0.7, 0.8, 0.6)
 #' morie_psymet_cr(lam)
@@ -183,7 +217,7 @@ morie_psymet_cr <- function(loads) {
   sl^2 / (sl^2 + se)
 }
 
-#' Average variance extracted (AVE) from factor loadings. Mean(lambda^2).
+#' Average variance extracted (AVE) from factor loadings. Mean(lambda^2)
 #' @param loads Numeric vector of standardised factor loadings (lambda).
 #' @return Single numeric scalar: the average variance extracted (mean of
 #'   squared loadings).
@@ -195,7 +229,7 @@ morie_psymet_ave <- function(loads) {
   mean(as.numeric(loads)^2)
 }
 
-#' Kaiser-Meyer-Olkin sampling adequacy.
+#' Kaiser-Meyer-Olkin sampling adequacy
 #'
 #' Native Kaiser-Meyer-Olkin sampling adequacy from the
 #' partial-correlation anti-image matrix.
@@ -232,7 +266,7 @@ morie_psymet_kmo <- function(data) {
   list(msa = as.numeric(overall), items = items)
 }
 
-#' Bartlett's test of sphericity.
+#' Bartlett's test of sphericity
 #' @return list with `chisq`, `df`, `pval`.
 #' @param data Numeric matrix or data.frame of items.
 #' @examples
@@ -250,12 +284,12 @@ morie_psymet_bartlett <- function(data) {
   R <- cor(X)
   det_R <- max(det(R), 1e-15)
   chisq <- -(n - 1 - (2 * k + 5) / 6) * log(det_R)
-  df <- k * (k - 1) %/% 2
+  df <- (k * (k - 1)) %/% 2
   list(chisq = as.numeric(chisq), df = df,
        pval = as.numeric(pchisq(chisq, df, lower.tail = FALSE)))
 }
 
-#' Horn's parallel analysis -- suggested number of factors.
+#' Horn's parallel analysis -- suggested number of factors
 #'
 #' Native Horn's parallel analysis: observed eigenvalues vs the 95th
 #' percentile of random-data eigenvalues.
@@ -289,7 +323,7 @@ morie_psymet_parallel <- function(data, nsim = 100, seed = 42) {
   max(sum(obs > thresh), 1L)
 }
 
-#' Spearman-Brown split-half reliability.
+#' Spearman-Brown split-half reliability
 #' @param method "first_last" or "odd_even".
 #' @param data Numeric matrix or data.frame of items.
 #' @return Single numeric scalar: the Spearman-Brown corrected split-half
@@ -320,12 +354,13 @@ morie_psymet_splithalf <- function(data, method = c("first_last", "odd_even")) {
   2 * r / (1 + r)
 }
 
-#' Item discrimination (D-statistic).
+#' Item discrimination (D-statistic)
 #'
 #' Upper/lower groups by total score (default 27% per Kelley).
 #' @return data.frame with `item`, `d`.
 #' @param data Numeric matrix or data.frame of items.
-#' @param pct Numeric in (0, 0.5); proportion for the upper/lower group split (default 0.27, the Kelley-Cureton rule).
+#' @param pct Numeric in (0, 0.5); proportion for the upper/lower group split (default
+#' 0.27, the Kelley-Cureton rule).
 #' @examples
 #' set.seed(1)
 #' f <- rnorm(50)

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """2D Delaunay triangulation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ dela = delaunay_2d
 
 def cheatsheet() -> str:
     return "delaunay_2d({}) -> 2D Delaunay triangulation"
+
+
+# compact alias per ledger/NAMING.md
+delaunay2d = delaunay_2d

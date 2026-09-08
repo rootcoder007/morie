@@ -1,7 +1,7 @@
 """Two-locus epistatic interaction test."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -68,3 +68,7 @@ def gxg_interaction(y, SNP1, SNP2, cdf=None):
 
 def cheatsheet():
     return "gxgnt2: Two-locus epistatic interaction test"
+
+
+# compact alias per ledger/NAMING.md
+gxginteraction = gxg_interaction

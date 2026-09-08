@@ -1,6 +1,6 @@
 """Tests for odesl.ode_symbolic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.odesl import ode_symbolic
 

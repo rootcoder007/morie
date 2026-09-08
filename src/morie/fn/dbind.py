@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -69,3 +69,7 @@ dbind = davies_bouldin
 
 def cheatsheet() -> str:
     return "davies_bouldin({}) -> Davies-Bouldin cluster evaluation index."
+
+
+# compact alias per ledger/NAMING.md
+daviesbouldin = davies_bouldin

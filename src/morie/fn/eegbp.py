@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -52,3 +52,7 @@ eegbp = eeg_band_power_fn
 
 def cheatsheet() -> str:
     return "eeg_band_power_fn({}) -> EEG band power computation."
+
+
+# compact alias per ledger/NAMING.md
+eegbandpowerfn = eeg_band_power_fn

@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Chow structural break test."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import DescriptiveResult
 
@@ -65,3 +65,7 @@ chows = chow_test
 
 def cheatsheet() -> str:
     return "chow_test({}) -> Chow structural break F-test."
+
+
+# compact alias per ledger/NAMING.md
+chowtest = chow_test

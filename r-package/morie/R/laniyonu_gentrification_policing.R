@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-#' Replication of Laniyonu (2018) — Coffee Shops and Street Stops
+#' Replication of Laniyonu (2018) -- Coffee Shops and Street Stops
 #'
 #' R port of \code{morie.laniyonu.gentrification_policing}.  Estimates
 #' the direct, indirect (spatial spillover), and total effect of
@@ -35,6 +35,21 @@
 #' @return A \code{list} of class \code{morie_laniyonu_gp_result}, one
 #'   per year analysed.
 #' @name morie_laniyonu_gentrification_policing
+#' @examples
+#' set.seed(1)
+#' df <- expand.grid(tract_id = sprintf("T\%02d", 1:40), year = 2010:2012,
+#'                   stringsAsFactors = FALSE)
+#' df$median_inc_2000 <- runif(nrow(df), 3e4, 7e4)
+#' df$median_inc_2014 <- df$median_inc_2000 * 1.2
+#' df$median_rent_2000 <- runif(nrow(df), 700, 1500)
+#' df$median_rent_2014 <- df$median_rent_2000 * 1.2
+#' df$pct_ba_2000 <- runif(nrow(df), 0.05, 0.45)
+#' df$pct_ba_2014 <- pmin(df$pct_ba_2000 * 1.3, 0.95)
+#' df$population <- sample(800:5000, nrow(df), TRUE)
+#' df$stops <- rpois(nrow(df), 30); df$felony_count <- rpois(nrow(df), 10)
+#' df$calls_311_omp <- rpois(nrow(df), 40); df$pct_black <- runif(nrow(df), 0.05, 0.7)
+#' res <- suppressWarnings(morie_laniyonu_gentrification_policing(df = df, log_outcome = TRUE))
+#' res[[1]]$rho
 NULL
 
 
@@ -42,6 +57,22 @@ NULL
 # Helpers
 # ---------------------------------------------------------------------------
 
+#' .lan_gp_result
+#'
+#' Part of the laniyonu_gentrification_policing implementation; see the
+#' file header for the source it follows.
+#'
+#' @param year Coerced to character by the body, with \code{as.character}.
+#' @param n_tracts Carried through into a list the body builds.
+#' @param rho Carried through into a list the body builds.
+#' @param moran_i_ols Carried through into a list the body builds.
+#' @param decompositions A vector; indexed elementwise.
+#' @param gent_distribution Carried through into a list the body builds.
+#' @param sensitivity_thresholds Carried through into a list the body builds. Defaults to
+#' \code{list()}.
+#' @param note Carried through into a list the body builds. Defaults to \code{""}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .lan_gp_result <- function(year, n_tracts, rho, moran_i_ols,
                             decompositions, gent_distribution,
                             sensitivity_thresholds = list(),
@@ -84,6 +115,15 @@ NULL
 `%||%` <- function(a, b) if (is.null(a)) b else a
 
 
+#' .lan_gp_placeholder_W
+#'
+#' Part of the laniyonu_gentrification_policing implementation; see the
+#' file header for the source it follows.
+#'
+#' @param crime_arr A vector; its length is taken and its elements indexed.
+#' @param k A count; the body uses it as \code{seq_len(...)}. Defaults to \code{4L}.
+#' @return A numeric value.
+#' @export
 .lan_gp_placeholder_W <- function(crime_arr, k = 4L) {
   n <- length(crime_arr)
   if (n < 2L) return(matrix(0, n, n))
@@ -101,6 +141,19 @@ NULL
 }
 
 
+#' .lan_gp_morans_i
+#'
+#' Part of the laniyonu_gentrification_policing implementation; see the
+#' file header for the source it follows.
+#'
+#' @param resid A vector; its length is taken.
+#' @param W A matrix; passed to \code{dim}.
+#' @return A numeric value.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .lan_gp_morans_i(resid = x, W = x)
+#' res
 .lan_gp_morans_i <- function(resid, W) {
   n <- length(resid)
   if (n < 2L || !all(dim(W) == n)) return(NA_real_)
@@ -112,9 +165,24 @@ NULL
 
 
 # ---------------------------------------------------------------------------
-# Gentrification panel — baseline-conditional 3-level factor
+# Gentrification panel -- baseline-conditional 3-level factor
 # ---------------------------------------------------------------------------
 
+#' .lan_gent_panel
+#'
+#' Part of the laniyonu_gentrification_policing implementation; see the
+#' file header for the source it follows.
+#'
+#' @param baseline_frame A matrix; passed to \code{nrow}.
+#' @param baseline_income_col See Usage.
+#' @param baseline_rent_col See Usage.
+#' @param growth_college_col See Usage.
+#' @param growth_rent_col See Usage.
+#' @param income_quantile Defaults to \code{0.4}.
+#' @param rent_quantile Defaults to \code{0.4}.
+#' @param growth_quantile Defaults to \code{0.66}.
+#' @return A list with \code{flag}, \code{thresholds}.
+#' @export
 .lan_gent_panel <- function(baseline_frame, baseline_income_col,
                              baseline_rent_col, growth_college_col,
                              growth_rent_col,
@@ -163,6 +231,18 @@ NULL
 #   indirect = mean(rowSums(M) - diag(M))
 #   total    = mean(rowSums(M))
 
+#' .lan_sdm_decompose
+#'
+#' Part of the laniyonu_gentrification_policing implementation; see the
+#' file header for the source it follows.
+#'
+#' @param rho Numeric; combined arithmetically in the body.
+#' @param beta_direct A vector; indexed elementwise.
+#' @param beta_spatial A vector; indexed elementwise.
+#' @param W A matrix; passed to \code{nrow}.
+#' @param coefficient_names A vector; its length is taken and its elements indexed.
+#' @return The value of \code{lapply}.
+#' @export
 .lan_sdm_decompose <- function(rho, beta_direct, beta_spatial, W,
                                 coefficient_names) {
   if (exists("morie_spatial_spillover_decomposition",
@@ -377,6 +457,10 @@ morie_laniyonu_gentrification_policing <- function(
 }
 
 
+#' Print method for \code{morie_laniyonu_gp_result} objects
+#'
+#' @param x A \code{morie_laniyonu_gp_result} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_laniyonu_gp_result <- function(x, ...) {

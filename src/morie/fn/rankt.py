@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rank transformation for nonparametric analysis."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -22,7 +22,7 @@ def rank_transform(x, method="average"):
     Conover WJ & Iman RL (1981). Rank Transformations as a Bridge
     Between Parametric and Nonparametric Statistics. Am Stat 35(3):124-129.
     """
-    from scipy.stats import rankdata
+    from ._stats_core import rankdata
 
     arr = np.asarray(x, dtype=np.float64).ravel()
     ranks = rankdata(arr, method=method)
@@ -47,3 +47,7 @@ def rank_transform(x, method="average"):
 
 def cheatsheet() -> str:
     return "rank_transform({}) -> Rank transformation for nonparametric analysis."
+
+
+# compact alias per ledger/NAMING.md
+ranktransform = rank_transform

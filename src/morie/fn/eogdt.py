@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -59,3 +59,7 @@ eogdt = eog_detect
 
 def cheatsheet() -> str:
     return "eog_detect({}) -> EOG eye movement artifact detection."
+
+
+# compact alias per ledger/NAMING.md
+eogdetect = eog_detect

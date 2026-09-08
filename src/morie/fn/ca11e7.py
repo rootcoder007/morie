@@ -1,54 +1,22 @@
-"""Dispersion expression involving 'ffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).."""
+"""Deprecated alias for :func:`morie.fn.se_g`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .se_g import se_g as _impl
 
 __all__ = ["ca_chapter_11_equation_7"]
 
 
-def ca_chapter_11_equation_7(x):
-    """
-    Dispersion expression involving 'ffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).
-
-    Formula: 2 n1 + n2()
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca11e7')`` for the full guide.
-
-    References
-    ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.11 eq.11.7
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Dispersion expression involving 'ffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion expression involving 'ffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).",
-        },
+def ca_chapter_11_equation_7(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.se_g` instead."""
+    warnings.warn(
+        "ca_chapter_11_equation_7() is the book-coordinate name for se_g(); "
+        "it will be removed. Use morie.fn.se_g() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "ca11e7: Dispersion expression involving 'ffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context)."
+    return _impl(*args, **kwargs)

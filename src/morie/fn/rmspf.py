@@ -5,7 +5,7 @@ RMSprop optimizer for stochastic optimization.
 Adaptive learning rate method with exponential moving average of squared gradients.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["rmspf"]
 

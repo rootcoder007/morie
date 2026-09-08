@@ -21,10 +21,12 @@
 #' \code{\link[stats]{glm}} with \code{family = binomial("logit")}.
 #'
 #' Standard threshold (proportional-odds, K levels, p covariates):
-#' \deqn{P(Y \le k \mid X) = \mathrm{logit}^{-1}(\alpha_k - X \beta)}{P(Y <= k mid X) = logit^-1(alpha_k - X beta)}
+#' \deqn{P(Y \le k \mid X) = \mathrm{logit}^{-1}(\alpha_k - X \beta)}{P(Y <= k mid X) =
+#' logit^-1(alpha_k - X beta)}
 #'
 #' Threshold-specific extension (one coefficient vector per cutpoint):
-#' \deqn{P(Y \le k \mid X) = \mathrm{logit}^{-1}(\alpha_k - X \beta_k)}{P(Y <= k mid X) = logit^-1(alpha_k - X beta_k)}
+#' \deqn{P(Y \le k \mid X) = \mathrm{logit}^{-1}(\alpha_k - X \beta_k)}{P(Y <= k mid X) =
+#' logit^-1(alpha_k - X beta_k)}
 #'
 #' @references
 #' O'Connell, M. & Laniyonu, A. (2025). Threshold-specific
@@ -39,6 +41,15 @@ NULL
 # mrm_primitives_gentrification.R and are reused (not redefined) here.
 
 
+#' Log-likelihood of a single binary logit with linear predictor `eta`
+#'
+#' (intercept already folded in).  Uses log1p(exp(-|eta|)) for
+#' stability.
+#'
+#' @param eta Numeric; passed to \code{exp}.
+#' @param y Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
 .tso_logit_ll <- function(eta, y) {
   # log-likelihood of a single binary logit with linear predictor `eta`
   # (intercept already folded in).  Uses log1p(exp(-|eta|)) for stability.
@@ -46,6 +57,18 @@ NULL
 }
 
 
+#' Fallback proportional-odds fit (no MASS): stack the K-1 cutpoint
+#'
+#' binary problems and constrain beta to be shared while letting
+#' cutpoint intercepts differ.  Mirrors _logit_fit_no_intercept().
+#'
+#' @param X A matrix; passed to \code{nrow}.
+#' @param y Passed to \code{<=}.
+#' @param K Numeric; combined arithmetically in the body.
+#' @param max_iter Carried through into a list the body builds.
+#' @param tol Carried through into a list the body builds.
+#' @return A list with \code{intercepts}, \code{beta}.
+#' @export
 .tso_fit_po_stacked <- function(X, y, K, max_iter, tol) {
   # Fallback proportional-odds fit (no MASS): stack the K-1 cutpoint
   # binary problems and constrain beta to be shared while letting
@@ -132,7 +155,26 @@ mrm_threshold_specific_ordinal <- function(
   y_raw <- data[[outcome_col]]
   if (is.null(ordinal_levels)) {
     ordinal_levels <- if (is.factor(y_raw)) {
-      levels(y_raw)
+      # Taking the ordinal scale from a factor means trusting its level
+      # ORDER. `factor(x, levels = c("low", "med", "high"))` states that
+      # order deliberately and is fine unordered. The dangerous case is
+      # the DEFAULT: `factor(c("low", "med", "high"))` sorts levels
+      # alphabetically to c("high", "low", "med"), and every threshold
+      # would silently be computed against the wrong scale. Those two
+      # are indistinguishable after the fact, so warn only when the
+      # levels are in sorted order -- exactly when the default could
+      # have produced them (G2.5).
+      .morie_check_factor(y_raw, ordered = NA, arg = outcome_col)
+      lv <- levels(y_raw)
+      if (!is.ordered(y_raw) && identical(lv, sort(lv))) {
+        warning(sprintf(paste0("`%s` is an unordered factor whose levels are ",
+                               "in alphabetical order (%s). If that is not ",
+                               "the ordinal scale, pass `ordinal_levels` ",
+                               "explicitly or use an ordered factor."),
+                        outcome_col, paste(lv, collapse = " < ")),
+                call. = FALSE)
+      }
+      lv
     } else {
       sort(unique(stats::na.omit(y_raw)))
     }
@@ -148,7 +190,15 @@ mrm_threshold_specific_ordinal <- function(
          paste(ordinal_levels, collapse = ", "))
   }
 
-  X <- as.matrix(data[, covariate_cols, drop = FALSE])
+  # Covariates may carry a non-standard class with numeric storage (a
+  # `units` column, a haven labelled vector). as.matrix() on those can
+  # yield a character matrix and silently turn the fit into nonsense, so
+  # coerce each column to plain numeric first (G2.11).
+  X <- vapply(covariate_cols,
+              function(cc) .morie_coerce_units(data[[cc]], arg = cc),
+              numeric(nrow(data)))
+  X <- matrix(X, nrow = nrow(data),
+              dimnames = list(NULL, covariate_cols))
   storage.mode(X) <- "double"
   n <- nrow(X)
   p <- ncol(X)
@@ -259,6 +309,19 @@ mrm_threshold_specific_ordinal <- function(
 #' @param covariate Character, name of one covariate.
 #' @return A named numeric vector keyed by threshold label.
 #' @export
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(
+#'   y = sample(c("low", "med", "high"), 200, replace = TRUE),
+#'   race = rbinom(200, 1, 0.4),
+#'   age  = rnorm(200)
+#' )
+#' fit <- mrm_threshold_specific_ordinal(df,
+#'   outcome_col = "y",
+#'   covariate_cols = c("race", "age"),
+#'   ordinal_levels = c("low", "med", "high")
+#' )
+#' str(mrm_threshold_coefficient(fit, "race"), max.level = 1)
 mrm_threshold_coefficient <- function(x, covariate) {
   stopifnot(inherits(x, "mrm_threshold_specific_ordinal"),
             is.character(covariate), length(covariate) == 1L,

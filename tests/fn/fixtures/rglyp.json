@@ -1,0 +1,30 @@
+{
+  "source": {
+    "paper": "Rosenstein, M. T., Collins, J. J. & De Luca, C. J. (1993). A practical method for calculating largest Lyapunov exponents from small data sets. Physica D 65(1-2):117-134",
+    "doi": "10.1016/0167-2789(93)90009-P",
+    "table": "Table 1, p.122 -- 'Chaotic dynamical systems with theoretical values for the largest Lyapunov exponent'",
+    "note": "Values hand-transcribed from the typeset PDF. The paper states its accuracy as 'less than +/-10%, and most errors were less than +/-5%' for m >= n."
+  },
+  "systems": [
+    {"name": "logistic", "equation": "x_{i+1} = mu x_i (1 - x_i)", "parameters": {"mu": 4.0},
+     "dt": 1, "expected_lambda1": 0.693, "ref": "[15]"},
+    {"name": "henon", "equation": "x_{i+1} = 1 - a x_i^2 + y_i ; y_{i+1} = b x_i",
+     "parameters": {"a": 1.4, "b": 0.3}, "dt": 1, "expected_lambda1": 0.418, "ref": "[39]"},
+    {"name": "lorenz", "equation": "xdot = sigma(y-x); ydot = x(R-z)-y; zdot = xy - bz",
+     "parameters": {"sigma": 16.0, "R": 45.92, "b": 4.0}, "dt": 0.01,
+     "expected_lambda1": 1.50, "ref": "[39]", "implemented": false},
+    {"name": "rossler", "equation": "xdot = -y-z; ydot = x + ay; zdot = b + z(x-c)",
+     "parameters": {"a": 0.15, "b": 0.20, "c": 10.0}, "dt": 0.10,
+     "expected_lambda1": 0.090, "ref": "[39]", "implemented": false}
+  ],
+  "measured_2026_07_26": {
+    "logistic_m2": 0.6906, "logistic_error_pct": -0.4,
+    "henon_m2": 0.4129, "henon_error_pct": -1.2,
+    "note": "Accuracy degrades as m rises past the topological dimension, as the paper describes: logistic reaches -7.7% at m=5."
+  },
+  "equations": {
+    "11": "d_j(i) ~= C_j exp(lambda_1 (i dt))",
+    "12": "ln d_j(i) ~= ln C_j + lambda_1 (i dt)",
+    "13": "y(i) = (1/dt) <ln d_j(i)>, averaged over all j; lambda_1 = least-squares slope"
+  }
+}

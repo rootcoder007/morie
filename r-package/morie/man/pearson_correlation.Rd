@@ -10,6 +10,7 @@ pearson_correlation(x, y, confidence = 0.95)
 \item{x, y}{Numeric vectors.}
 
 \item{confidence}{Confidence level.}
+
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})
@@ -18,4 +19,8 @@ p-value, df, Fisher-z confidence interval, and r-squared effect size.
 }
 \description{
 Pearson product-moment correlation
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+pearson_correlation(V, V)
 }

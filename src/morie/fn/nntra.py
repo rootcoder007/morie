@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -110,3 +110,7 @@ nntra = nn_train
 
 def cheatsheet() -> str:
     return "nntra() -> Train a single-hidden-layer neural network (binary classification)"
+
+
+# compact alias per ledger/NAMING.md
+nntrain = nn_train

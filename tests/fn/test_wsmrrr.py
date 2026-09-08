@@ -1,6 +1,6 @@
 """Tests for wsmrrr.wasserman_relative_risk."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmrrr import wasserman_relative_risk
 

@@ -3,8 +3,8 @@
 
 from typing import Union
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -46,3 +46,7 @@ pbr = point_biserial_r
 
 def cheatsheet() -> str:
     return "point_biserial_r({}) -> Point-biserial correlation between a binary and a continuous"
+
+
+# compact alias per ledger/NAMING.md
+pointbiserialr = point_biserial_r

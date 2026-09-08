@@ -1,6 +1,6 @@
 """Tests for tqipb.turboquant_inner_product_distortion_bound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tqipb import turboquant_inner_product_distortion_bound
 

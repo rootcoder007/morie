@@ -20,6 +20,7 @@ morie_matching_rosenbaum_bounds(
 \item{match_pairs}{Data frame of matched indices.}
 
 \item{gamma_range}{Optional numeric vector of \eqn{\Gamma}{Gamma} values.}
+
 }
 \value{
 A data frame with columns \code{gamma}, \code{p_lower},
@@ -34,6 +35,7 @@ should prefer it for exact bounds; this function provides a base-R
 implementation parallel to the Python version.
 }
 \examples{
+\donttest{
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -43,6 +45,7 @@ df <- data.frame(
   treat3 = sample(0:2, 150, TRUE))
 res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 morie_matching_rosenbaum_bounds(df, "y", "d", res$match_pairs)
+}
 }
 \references{
 Rosenbaum, P. R. (2002). \emph{Observational Studies}

@@ -1,6 +1,6 @@
 """Tests for gb431.gibbons_ks_dist_free."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb431 import gibbons_ks_dist_free
 

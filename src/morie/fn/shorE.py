@@ -1,6 +1,6 @@
 """Shor's quantum factoring (period-finding)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -38,3 +38,7 @@ def shor_factoring(N):
 
 def cheatsheet():
     return "shorE: Shor's quantum factoring (period-finding)"
+
+
+# compact alias per ledger/NAMING.md
+shorfactoring = shor_factoring

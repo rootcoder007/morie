@@ -14,7 +14,7 @@ def bb_variance_explained(eigenvalues) -> DescriptiveResult:
 
     .. epigraph:: Measure what is measurable, and make measurable what is not. -- Galileo Galilei
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     ev = np.asarray(eigenvalues, dtype=float).ravel()
     total = ev.sum()

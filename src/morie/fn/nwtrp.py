@@ -5,7 +5,7 @@ Newton-Raphson root finding.
 Solves f(x) = 0 using Newton's method with derivative information.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["nwtrp"]
 

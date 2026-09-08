@@ -1,7 +1,7 @@
 """Tests for morie.fn.kmean — K-means clustering."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import KmeansRes
 from morie.fn.kmean import kmean

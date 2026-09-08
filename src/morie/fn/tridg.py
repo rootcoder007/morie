@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -53,3 +53,7 @@ def thomas_solve(
 
 
 tridg = thomas_solve
+
+
+# compact alias per ledger/NAMING.md
+thomassolve = thomas_solve

@@ -3,10 +3,11 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from numpy.linalg import lstsq
-from scipy import stats
+from . import _array_core as np
+from . import _frame_core as pd
+from morie.fn._array_core import linalg as _acl
+lstsq = _acl.lstsq
+from . import _stats_core as stats
 
 
 def otis_iv_distance(
@@ -100,3 +101,7 @@ def otis_iv_distance(
 
 def cheatsheet() -> str:
     return "otis_iv_distance({}) -> IV estimation (2SLS) for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisivdistance = otis_iv_distance

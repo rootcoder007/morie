@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Competing risks -- cumulative incidence via Aalen-Johansen."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -57,3 +57,7 @@ def competing_risks(time, event, cause_of_interest=1):
 
 def cheatsheet() -> str:
     return "competing_risks({}) -> Competing risks -- cumulative incidence via Aalen-Johansen."
+
+
+# compact alias per ledger/NAMING.md
+competingrisks = competing_risks

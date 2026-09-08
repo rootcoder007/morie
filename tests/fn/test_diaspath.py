@@ -1,6 +1,6 @@
 """Tests for diaspath.diameter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.diaspath import diameter
 

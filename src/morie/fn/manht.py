@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Manhattan plot data preparation for GWAS results."""
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 
@@ -56,3 +56,7 @@ manht = manhattan_data
 
 def cheatsheet() -> str:
     return "manhattan_data({}) -> Manhattan plot data preparation for GWAS results."
+
+
+# compact alias per ledger/NAMING.md
+manhattandata = manhattan_data

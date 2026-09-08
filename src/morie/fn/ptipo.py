@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Inhomogeneous Poisson process"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ inho = inhom_poisson
 
 def cheatsheet() -> str:
     return "inhom_poisson({}) -> Inhomogeneous Poisson process"
+
+
+# compact alias per ledger/NAMING.md
+inhompoisson = inhom_poisson

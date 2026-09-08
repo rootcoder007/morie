@@ -13,7 +13,7 @@ of ``E_U[f(U)]`` with its sample SE.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -71,3 +71,7 @@ def latin_hypercube(x=None, N: int = 100, d: int = 1, f=None, seed: int = 42):
 
 def cheatsheet():
     return "latnh(N=100, d=1, f=None): Latin hypercube sample + MC estimate."
+
+
+# compact alias per ledger/NAMING.md
+latinhypercube = latin_hypercube

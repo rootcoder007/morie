@@ -8,7 +8,7 @@
 # sibling formats handled by `tps_io.R`. This module is the lightweight
 # CSV path -- the loader most callers want.
 
-#' Default project data directory for TPS open data.
+#' Default project data directory for TPS open data
 #'
 #' Resolves to `<repo>/data/datasets/TPS/` when `morie` is loaded out
 #' of a source checkout. Users can override per-call via the `path`
@@ -17,6 +17,8 @@
 #' @return A length-1 character string -- the resolved (possibly
 #'   non-existent) filesystem path to the TPS data directory.
 #' @export
+#' @examples
+#' morie_tps_data_dir()
 morie_tps_data_dir <- function() {
   # Mirror Python's `Path(__file__).resolve().parents[5] / data/datasets/TPS`
   # but tolerant of the installed-package layout: prefer an env override.
@@ -35,7 +37,7 @@ morie_tps_data_dir <- function() {
 }
 
 
-#' Registry of TPS open-data categories.
+#' Registry of TPS open-data categories
 #'
 #' A named list of one-row metadata records keyed by canonical
 #' category name. Each entry holds `description`, `primary_date`
@@ -138,6 +140,17 @@ MORIE_TPS_REGISTRY <- list(
   .morie_tps_apply_nrows(df, nrows)
 }
 
+#' .morie_tps_canonical
+#'
+#' A step of the tps_datasets implementation. Called by
+#' \code{.morie_tps_io_category_dir}, \code{morie_tps_list_formats},
+#' \code{morie_tps_load} and 1 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param name A vector; its length is taken.
+#' @return The value of \code{[[}.
+#' @export
 .morie_tps_canonical <- function(name) {
   stopifnot(is.character(name), length(name) == 1L)
   keys <- names(MORIE_TPS_REGISTRY)
@@ -153,7 +166,7 @@ MORIE_TPS_REGISTRY <- list(
 }
 
 
-#' Load one TPS dataset by category name (CSV thin path).
+#' Load one TPS dataset by category name (CSV thin path)
 #'
 #' `name` is case-insensitive. Pass `nrows = N` for a quick sample
 #' while developing against the largest tables.
@@ -232,7 +245,7 @@ morie_tps_load_dataset <- function(name,
 }
 
 
-#' List all TPS datasets as a `data.frame`.
+#' List all TPS datasets as a `data.frame`
 #'
 #' Returns one row per registered category with columns `name`,
 #' `description`, and `primary_date`.

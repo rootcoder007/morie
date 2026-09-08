@@ -12,8 +12,8 @@ arXiv preprint arXiv:1606.08415.
 
 __all__ = ["gelua"]
 
-import numpy as np
-from scipy import special
+from . import _array_core as np
+from ._sci_core import special
 
 
 def gelua(x, approximate=False, derivative=False, cdf=None):

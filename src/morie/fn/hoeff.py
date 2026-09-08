@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 
 def hoeffding_bound(
@@ -73,3 +73,7 @@ hoeff = hoeffding_bound
 
 def cheatsheet() -> str:
     return "hoeffding_bound(n, t) -> Hoeffding concentration inequality bound."
+
+
+# compact alias per ledger/NAMING.md
+hoeffdingbound = hoeffding_bound

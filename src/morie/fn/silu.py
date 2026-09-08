@@ -1,6 +1,6 @@
 """SiLU / Swish activation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def silu_swish(y):
 
 def cheatsheet():
     return "silu: SiLU / Swish activation"
+
+
+# compact alias per ledger/NAMING.md
+siluswish = silu_swish

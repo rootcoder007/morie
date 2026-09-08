@@ -4,8 +4,8 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
-from scipy.stats import mannwhitneyu
+from . import _array_core as np
+from ._stats_core import mannwhitneyu
 
 
 def manwhi(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray], alternative: str = "two-sided"):

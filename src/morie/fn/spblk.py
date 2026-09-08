@@ -1,7 +1,7 @@
 """Block kriging for areal prediction (point-to-block)."""
 
-import numpy as np
-from scipy.spatial.distance import cdist
+from . import _array_core as np
+from ._sci_core import cdist
 
 from ._richresult import RichResult
 
@@ -25,6 +25,15 @@ def spatial_block_kriging(
     System:     [ C   1 ] [lambda]   [ C_bar(s_i, B) ]
                 [ 1'  0 ] [  mu  ] = [       1       ]
     Variance:   sigma^2(B) = C_bar(B,B) - lambda' C_bar(., B) - mu.
+
+    References
+    ----------
+    Schabenberger, O. & Gotway, C. A. (2005). *Statistical Methods for
+    Spatial Data Analysis*. Chapman & Hall/CRC. Sec. 5.7.1 "Block
+    Kriging", which extends the ordinary kriging system of Sec. 5.2 to
+    point-to-block prediction.
+    Cressie, N. (1993). *Statistics for Spatial Data*, rev. edn.
+    Wiley, Sec. 5.2 (block kriging).
 
     Parameters
     ----------

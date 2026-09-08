@@ -5,7 +5,7 @@ Stream ordering Strahler
 Category: HydroSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def hyord(flow=None, precip=None, coords=None, n=50):

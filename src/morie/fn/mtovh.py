@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -44,3 +44,7 @@ mtovh = mto_vehicle_type
 
 def cheatsheet() -> str:
     return "mto_vehicle_type({}) -> Crash rates by vehicle type."
+
+
+# compact alias per ledger/NAMING.md
+mtovehicletype = mto_vehicle_type

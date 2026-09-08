@@ -1,24 +1,14 @@
 """Tests for alctf.alammar_c_tfidf."""
 
-import numpy as np
-
 from morie.fn.alctf import alammar_c_tfidf
 
 
 def test_alctf_basic():
-    """Test basic functionality."""
-    term_counts_by_class = np.random.default_rng(42).normal(0, 1, 100)
-    corpus_freq = np.random.default_rng(42).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = alammar_c_tfidf(term_counts_by_class, corpus_freq, A)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_c_tfidf([[4.0, 0.0], [0.0, 4.0]])
+    assert out["top_term_per_class"] == [0, 1]
 
 
 def test_alctf_edge():
-    """Test edge cases."""
-    term_counts_by_class = np.random.default_rng(42).normal(0, 1, 100)
-    corpus_freq = np.random.default_rng(42).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = alammar_c_tfidf(term_counts_by_class, corpus_freq, A)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="zero corpus frequency"):
+        alammar_c_tfidf([[1.0, 0.0]], corpus_freq=[1.0, 0.0])

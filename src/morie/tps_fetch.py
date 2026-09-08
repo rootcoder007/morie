@@ -132,6 +132,6 @@ def fetch_tps_dataframe(category: str, **kwargs):
     path); used as a :data:`morie.data.DATASET_CATALOG` ``fetcher``,
     whose dispatch expects a DataFrame.
     """
-    import pandas as pd
+    from morie.fn import _frame_core as pd
 
     return pd.read_csv(fetch_tps_category(category, **kwargs), low_memory=False)

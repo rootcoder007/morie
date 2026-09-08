@@ -1,8 +1,8 @@
 """Tests for rgcwvd.rangayyan_cohen_class."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgcwvd import rangayyan_cohen_class
+from morie.fn.bsatf import rangayyan_cohen_class
 
 
 def test_rgcwvd_basic():

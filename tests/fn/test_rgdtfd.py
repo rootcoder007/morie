@@ -1,8 +1,8 @@
 """Tests for rgdtfd.rangayyan_decomp_tfd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgdtfd import rangayyan_decomp_tfd
+from morie.fn.bsatf import rangayyan_decomp_tfd
 
 
 def test_rgdtfd_basic():

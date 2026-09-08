@@ -1,6 +1,6 @@
 """Tests for twoT.two_tower."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.twoT import two_tower
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.polfea -- polynomial feature expansion."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.polfea import polfea, polynomial_features

@@ -1,6 +1,6 @@
 """Tests for morie.fn.kglgn -- Lognormal kriging"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kglgn import lognormal_kriging
 

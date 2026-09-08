@@ -12,7 +12,7 @@ Reference: Harrell, F.E., Califf, R.M., Pryor, D.B., Lee, K.L. & Rosati, R.A.
 
 __all__ = ["cstat"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def cstat(

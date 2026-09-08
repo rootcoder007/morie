@@ -256,7 +256,7 @@ def _test_verify():
 
 def _test_statistics():
     """Test a real statistical function."""
-    import numpy as np
+    from morie.fn import _array_core as np
 
     from morie.statistics import one_sample_ttest
 
@@ -271,7 +271,7 @@ def _test_statistics():
 
 def _test_effect_sizes():
     """Test effect size computation."""
-    import numpy as np
+    from morie.fn import _array_core as np
 
     from morie.effect_sizes import cohens_d
 
@@ -285,7 +285,7 @@ def _test_effect_sizes():
 
 def _test_multiple_testing():
     """Test p-value adjustment."""
-    import numpy as np
+    from morie.fn import _array_core as np
 
     from morie.multiple_testing import benjamini_hochberg
 
@@ -365,7 +365,7 @@ def _test_sensitivity():
 
 def _test_bootstrap():
     """Test bootstrap inference."""
-    import numpy as np
+    from morie.fn import _array_core as np
 
     from morie.bootstrap_methods import bootstrap
 

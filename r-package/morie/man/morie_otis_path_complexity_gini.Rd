@@ -16,3 +16,7 @@ morie_otis_path_complexity_gini(df)
 Per-(id, year, region) placement counts, with the Gini coefficient
 reported overall and split by fiscal year and region.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_otis_path_complexity_gini(V)
+}

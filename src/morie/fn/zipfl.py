@@ -1,6 +1,6 @@
 """Zipf's law fit for word frequency distributions."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -52,3 +52,7 @@ def zipf_law_fit(frequencies):
 
 def cheatsheet() -> str:
     return "zipf_law_fit({}) -> Zipf's law fit for word frequency distributions."
+
+
+# compact alias per ledger/NAMING.md
+zipflawfit = zipf_law_fit

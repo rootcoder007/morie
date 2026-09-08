@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def irt_distractor(
@@ -80,3 +80,7 @@ def irt_distractor(
 
 def cheatsheet() -> str:
     return "irt_distractor({}) -> IRT distractor analysis."
+
+
+# compact alias per ledger/NAMING.md
+irtdistractor = irt_distractor

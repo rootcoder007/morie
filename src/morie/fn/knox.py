@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Knox test for space-time clustering."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import TestResult
 
@@ -68,3 +68,7 @@ knox = knox_test
 
 def cheatsheet() -> str:
     return "knox_test({}) -> Knox test for space-time clustering."
+
+
+# compact alias per ledger/NAMING.md
+knoxtest = knox_test

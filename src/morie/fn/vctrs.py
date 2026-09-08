@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -95,3 +95,7 @@ vctrs = weight_init
 
 def cheatsheet() -> str:
     return "vctrs() -> Generate neural network weight initialization matrices"
+
+
+# compact alias per ledger/NAMING.md
+weightinit = weight_init

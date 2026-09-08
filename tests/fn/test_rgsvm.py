@@ -1,8 +1,8 @@
 """Tests for rgsvm.rangayyan_svm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgsvm import rangayyan_svm
+from morie.fn.bsaclass import rangayyan_svm
 
 
 def test_rgsvm_basic():

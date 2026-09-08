@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kriging probability map"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -35,3 +35,7 @@ krig = kriging_prob_map
 
 def cheatsheet() -> str:
     return "kriging_prob_map({}) -> Kriging probability map"
+
+
+# compact alias per ledger/NAMING.md
+krigingprobmap = kriging_prob_map

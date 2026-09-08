@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -37,3 +37,7 @@ spgrm = spectrogram_fn
 
 def cheatsheet() -> str:
     return "spectrogram_fn({}) -> Spectrogram (squared magnitude STFT)."
+
+
+# compact alias per ledger/NAMING.md
+spectrogramfn = spectrogram_fn

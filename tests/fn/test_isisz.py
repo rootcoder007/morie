@@ -1,6 +1,6 @@
 """Tests for morie.fn.isisz — inter-spike interval analysis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.isisz import isi_analyze, isisz

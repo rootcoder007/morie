@@ -54,6 +54,21 @@
 
 # ---- internal helpers ------------------------------------------------------
 
+#' .sv_as_matrix
+#'
+#' A step of the spatial_voting implementation. Called by
+#' \code{morie_spatial_voting_aldrich_mckelvey}, \code{morie_spatial_voting_blackbox},
+#' \code{morie_spatial_voting_optimal_classification}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x Optional; may be \code{NULL}. A matrix; passed to \code{as.matrix}.
+#' @return The value of \code{m}, as built in the body.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .sv_as_matrix(x = x)
+#' res
 .sv_as_matrix <- function(x) {
   if (is.null(x)) return(NULL)
   m <- as.matrix(x)
@@ -61,15 +76,60 @@
   m
 }
 
+#' .sv_nanmean_col
+#'
+#' A step of the spatial_voting implementation. Called by
+#' \code{morie_spatial_voting_aldrich_mckelvey},
+#' \code{morie_spatial_voting_anchoring_vignettes}, \code{morie_spatial_voting_blackbox}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param M Passed to \code{apply}.
+#' @return The value of \code{apply}.
+#' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+#' 2.6, 3.4, 3.9))
+#' res <- .sv_nanmean_col(M = X)
+#' res
 .sv_nanmean_col <- function(M) {
   apply(M, 2, function(v) mean(v, na.rm = TRUE))
 }
 
+#' .sv_pairwise_dist
+#'
+#' A step of the spatial_voting implementation. Called by
+#' \code{morie_spatial_voting_classical_mds}, \code{morie_spatial_voting_indscal},
+#' \code{morie_spatial_voting_nonmetric_mds} and 2 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param X A matrix; passed to \code{as.matrix}.
+#' @return A matrix, from \code{as.matrix}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .sv_pairwise_dist(X = x)
+#' res
 .sv_pairwise_dist <- function(X) {
   X <- as.matrix(X)
   as.matrix(stats::dist(X))
 }
 
+#' .sv_double_centering
+#'
+#' A step of the spatial_voting implementation. Called by
+#' \code{morie_spatial_voting_classical_mds},
+#' \code{morie_spatial_voting_double_centering}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param D A matrix; passed to \code{nrow}.
+#' @return A numeric value.
+#' @export
+#' @examples
+#' res <- .sv_double_centering(D = 3L)
+#' res
 .sv_double_centering <- function(D) {
   D <- as.matrix(D)
   n <- nrow(D)
@@ -78,6 +138,22 @@
   -0.5 * H %*% A %*% H
 }
 
+#' .sv_safe_pinv
+#'
+#' A step of the spatial_voting implementation. Called by
+#' \code{morie_spatial_voting_smacof}, \code{morie_spatial_voting_smacof_unfolding}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param M Passed to \code{svd}.
+#' @param tol Passed to \code{>}. Defaults to \code{1e-12}.
+#' @return The value of \code{%*%}.
+#' @export
+#' @examples
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+#' 2.6, 3.4, 3.9))
+#' res <- .sv_safe_pinv(M = X)
+#' res
 .sv_safe_pinv <- function(M, tol = 1e-12) {
   s <- svd(M)
   d <- s$d
@@ -85,6 +161,20 @@
   s$v %*% (diag(inv_d, nrow = length(inv_d)) %*% t(s$u))
 }
 
+#' .sv_isotonic_pava
+#'
+#' A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_nonmetric_mds}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param y A vector; its length is taken.
+#' @param w Optional; may be \code{NULL}. Coerced to list by the body, with \code{as.list}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .sv_isotonic_pava(y = y)
+#' res
 .sv_isotonic_pava <- function(y, w = NULL) {
   n <- length(y)
   if (is.null(w)) w <- rep(1, n)
@@ -855,7 +945,9 @@ morie_spatial_voting_nominate_utility <- function(x, z_yea, z_nay,
 #' @param beta Signal-to-noise ratio.
 #' @param w Dimension weights.
 #' @return Numeric scalar in (0,1).
-#' @references Poole & Rosenthal (1985).
+#' @references Poole KT & Rosenthal H (1985). A spatial model for
+#'   legislative roll call analysis. \emph{American Journal of
+#'   Political Science}, 29(2), 357-384.
 #' @examples morie_spatial_voting_nominate_vote_prob(c(0.1), c(0.3), c(-0.3))
 #' @export
 morie_spatial_voting_nominate_vote_prob <- function(x_i, z_yea_j, z_nay_j,
@@ -878,7 +970,9 @@ morie_spatial_voting_nominate_vote_prob <- function(x_i, z_yea_j, z_nay_j,
 #' @param beta Signal-to-noise.
 #' @param w Dimension weights.
 #' @return List with `loglik`, `GMP`, `n_correct`, `n_total`.
-#' @references Poole & Rosenthal (1997).
+#' @references Poole KT & Rosenthal H (1997). \emph{Congress: A
+#'   Political-Economic History of Roll Call Voting}. Oxford University
+#'   Press.
 #' @examples
 #' v <- matrix(stats::rbinom(20, 1, 0.5), 4, 5)
 #' x <- matrix(rnorm(4), 4, 1); zy <- matrix(rnorm(5), 5, 1)
@@ -923,7 +1017,8 @@ morie_spatial_voting_nominate_loglik <- function(votes, x, z_yea, z_nay,
 #' @param X Configuration to rotate.
 #' @param X_target Target configuration.
 #' @return List with `rotated`, `rotation_matrix`, `scale`, `mse`.
-#' @references Gower & Dijksterhuis (2004).
+#' @references Gower JC & Dijksterhuis GB (2004). \emph{Procrustes
+#'   Problems}. Oxford University Press.
 #' @examples
 #' A <- matrix(rnorm(20), 10, 2); B <- A + 0.05 * matrix(rnorm(20), 10, 2)
 #' morie_spatial_voting_procrustes(A, B)
@@ -952,6 +1047,15 @@ morie_spatial_voting_procrustes <- function(X, X_target) {
 # 8. Bayesian methods -- STUBBED (porting MCMC samplers exceeds session)
 # ===========================================================================
 
+#' .NOT_PORTED
+#'
+#' A step of the spatial_voting implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param name Passed to \code{sprintf}.
+#' @return Nothing; this branch always raises.
+#' @export
 .NOT_PORTED <- function(name) {
   stop(sprintf("NotYetPorted: %s -- the Bayesian MCMC backend is not yet ported to R. ",
                name),
@@ -998,12 +1102,16 @@ morie_spatial_voting_bayesian_am <- function(Z, n_samples = 1000L,
 }
 
 #' Bayesian MDS (stub) -- log-normal distances via Metropolis
-#' @param D Distance matrix. @param n_dims Dimensions. @param n_samples MCMC samples.
-#' @param burn_in Burn-in length. @param sigma_init Initial sigma.
+#' @param D Distance matrix.
+#' @param n_dims Dimensions.
+#' @param n_samples MCMC samples.
+#' @param burn_in Burn-in length.
+#' @param sigma_init Initial sigma.
 #' @return List: `positions`/`coords` (posterior-mean or modal
 #'   configuration), fit diagnostics, and an `engine` tag.
 #' @references Oh & Raftery (2001) JASA 96(455).
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' X <- matrix(rnorm(30), 10, 3)
 #' D <- as.matrix(dist(X))
@@ -1011,6 +1119,7 @@ morie_spatial_voting_bayesian_am <- function(Z, n_samples = 1000L,
 #'                                          n_samples = 200L,
 #'                                          burn_in = 50L)
 #' dim(fit$positions)
+#' }
 #' @param n_dims Integer; latent dimensionality.
 #' @param n_samples Integer; posterior-sample count.
 #' @param sigma_init Numeric; initial value for the latent-coordinate scale (default 1).
@@ -1039,18 +1148,21 @@ morie_spatial_voting_bayesian_mds <- function(D, n_dims = 2L,
 
 #' Bayesian unfolding (stub) -- Bakker & Poole sampler
 #' @param D Respondent-stimulus dissimilarity matrix.
-#' @param n_dims Latent dimensions. @param n_samples MCMC samples.
+#' @param n_dims Latent dimensions.
+#' @param n_samples MCMC samples.
 #' @param burn_in Burn-in length.
 #' @return List with respondent/stimulus configurations and an
 #'   `engine` tag (smacof deterministic mode, or the native
 #'   Metropolis sampler when smacof is absent).
 #' @references Bakker, R. and Poole, K. T. (2013).
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' pref <- matrix(runif(12, 1, 9), 3, 4)
 #' fit <- morie_spatial_voting_bayesian_unfolding(pref,
 #'   n_samples = 200L)
 #' names(fit)
+#' }
 #' @param n_samples Integer; posterior-sample count.
 #' @export
 morie_spatial_voting_bayesian_unfolding <- function(D, n_dims = 2L,
@@ -1076,10 +1188,13 @@ morie_spatial_voting_bayesian_unfolding <- function(D, n_dims = 2L,
 #' Clinton-Jackman-Rivers Bayesian IRT (stub)
 #' @param votes Binary roll-call matrix.
 #' @param n_dims Ideal-point dimensions.
-#' @param n_samples MCMC samples. @param burn_in Burn-in length.
+#' @param n_samples MCMC samples.
+#' @param burn_in Burn-in length.
 #' @return List: `ideal_points`, `ideal_sd`, `discrimination`,
 #'   `difficulty`, `engine`.
-#' @references Clinton, Jackman & Rivers (2004).
+#' @references Clinton J, Jackman S & Rivers D (2004). The statistical
+#'   analysis of roll call data. \emph{American Political Science
+#'   Review}, 98(2), 355-370.
 #' @examples
 #' set.seed(1)
 #' votes <- matrix(rbinom(200, 1, 0.5), 20, 10)
@@ -1113,11 +1228,15 @@ morie_spatial_voting_cjr_irt <- function(votes, n_dims = 1L,
 
 #' Bayesian IRT likelihood (deterministic part of CJR machinery)
 #'
-#' @param votes Binary matrix. @param x Ideal points.
-#' @param alpha Difficulty. @param beta Discrimination.
+#' @param votes Binary matrix.
+#' @param x Ideal points.
+#' @param alpha Difficulty.
+#' @param beta Discrimination.
 #' @return List with `loglik`, `vote_probs`, `n_correct`, `n_total`,
 #'   `accuracy`.
-#' @references Clinton, Jackman & Rivers (2004).
+#' @references Clinton J, Jackman S & Rivers D (2004). The statistical
+#'   analysis of roll call data. \emph{American Political Science
+#'   Review}, 98(2), 355-370.
 #' @examples
 #' v <- matrix(stats::rbinom(20, 1, 0.5), 4, 5)
 #' morie_spatial_voting_bayesian_irt_likelihood(
@@ -1161,7 +1280,8 @@ morie_spatial_voting_bayesian_irt_likelihood <- function(votes, x, alpha, beta) 
 #' @param standardize Whether to per-sample standardise.
 #' @return List with `posterior_mean`, `posterior_sd`, `ci_lower`,
 #'   `ci_upper`, `n_samples`, `standardized`.
-#' @references Jackman (2009).
+#' @references Jackman S (2009). \emph{Bayesian Analysis for the Social
+#'   Sciences}. Wiley.
 #' @examples
 #' ch <- array(rnorm(100 * 5 * 2), c(100, 5, 2))
 #' morie_spatial_voting_bayesian_irt_posterior(ch)
@@ -1460,7 +1580,8 @@ morie_spatial_voting_normal_vectors <- function(ideal_points,
 #' @param xlim Length-2 numeric vector of x-axis limits.
 #' @return List with `endpoints` (list of pairs), `angles`, `midpoints`,
 #'   `n_lines`.
-#' @references Poole (2005).
+#' @references Poole KT (2005). \emph{Spatial Models of Parliamentary
+#'   Voting}. Cambridge University Press.
 #' @examples
 #' morie_spatial_voting_cutting_lines(matrix(rnorm(6), 3, 2), c(0.1, -0.2, 0))
 #' @export
@@ -1688,8 +1809,10 @@ morie_spatial_voting_nominate_bootstrap <- function(votes,
 #' utility, sampled via slice sampling (Neal 2003).  Porting the slice
 #' sampler is beyond this session's budget.
 #'
-#' @param votes Vote matrix. @param n_dims Latent dimensions.
-#' @param n_samples MCMC samples. @param burn_in Burn-in length.
+#' @param votes Vote matrix.
+#' @param n_dims Latent dimensions.
+#' @param n_samples MCMC samples.
+#' @param burn_in Burn-in length.
 #' @param seed RNG seed.
 #' @return List with ideal points, discrimination, difficulty and an
 #'   `engine` tag (EM-IRT closed-form approximation).
@@ -1733,7 +1856,8 @@ morie_spatial_voting_alpha_nominate <- function(votes, n_dims = 2L,
 #'
 #' @param Y Ordinal response matrix.
 #' @param n_dims Latent dimensions.
-#' @param n_samples MCMC samples. @param burn_in Burn-in length.
+#' @param n_samples MCMC samples.
+#' @param burn_in Burn-in length.
 #' @param seed RNG seed.
 #' @return List: `ideal_points`, `ideal_sd`, `discrimination`,
 #'   `difficulty`, `cutpoints`, `engine`.
@@ -1786,8 +1910,10 @@ morie_spatial_voting_ordinal_irt <- function(Y, n_dims = 1L,
 #' Time-series IRT where ideal points evolve via a random walk:
 #' \eqn{\phi_{i,t} \sim N(\phi_{i,t-1}, \tau^2)}{phi_i,t ~ N(phi_i,t-1, tau^2)}.
 #'
-#' @param votes Vote matrix. @param time_periods Per-vote period indices.
-#' @param n_samples MCMC samples. @param burn_in Burn-in length.
+#' @param votes Vote matrix.
+#' @param time_periods Per-vote period indices.
+#' @param n_samples MCMC samples.
+#' @param burn_in Burn-in length.
 #' @param seed RNG seed.
 #' @return List of per-period ideal-point matrices with an `engine`
 #'   tag flagging the per-period EM approximation.
@@ -1795,7 +1921,8 @@ morie_spatial_voting_ordinal_irt <- function(Y, n_dims = 1L,
 #'   Estimation via Markov Chain Monte Carlo for the U.S. Supreme Court,
 #'   1953-1999." *Political Analysis*, 10(2).
 #' @examples \dontrun{morie_spatial_voting_dynamic_irt(matrix(0, 4, 4), 1:4)}
-#' @param time_periods Integer vector of period indices (one per roll call) for the dynamic-IRT random-walk prior on ideal points.
+#' @param time_periods Integer vector of period indices (one per roll call) for the
+#' dynamic-IRT random-walk prior on ideal points.
 #' @param burn_in Integer; MCMC burn-in iterations.
 #' @export
 morie_spatial_voting_dynamic_irt <- function(votes, time_periods,

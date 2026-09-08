@@ -1,6 +1,6 @@
 """Tests for dmlqs.deepml_qsar."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dmlqs import deepml_qsar
 

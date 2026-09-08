@@ -4,8 +4,8 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
-from scipy.stats import chi2_contingency
+from . import _array_core as np
+from ._stats_core import chi2_contingency
 
 
 def tschpr(table: Union[Sequence, np.ndarray]):

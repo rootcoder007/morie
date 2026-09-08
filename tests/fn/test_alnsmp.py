@@ -1,26 +1,14 @@
 """Tests for alnsmp.alammar_negative_sampling_skipgram."""
 
-import numpy as np
-
 from morie.fn.alnsmp import alammar_negative_sampling_skipgram
 
 
 def test_alnsmp_basic():
-    """Test basic functionality."""
-    center = np.random.default_rng(42).normal(0, 1, 100)
-    word = np.random.default_rng(42).normal(0, 1, 100)
-    negatives = np.random.default_rng(42).normal(0, 1, 100)
-    V = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_negative_sampling_skipgram(center, word, negatives, V)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_negative_sampling_skipgram([100.0], [1.0], [[-1.0]])
+    assert abs(out["estimate"]) < 1e-8
 
 
 def test_alnsmp_edge():
-    """Test edge cases."""
-    center = np.random.default_rng(42).normal(0, 1, 100)
-    word = np.random.default_rng(42).normal(0, 1, 100)
-    negatives = np.random.default_rng(42).normal(0, 1, 100)
-    V = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_negative_sampling_skipgram(center, word, negatives, V)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="dimension"):
+        alammar_negative_sampling_skipgram([1.0], [1.0, 2.0], [[1.0]])

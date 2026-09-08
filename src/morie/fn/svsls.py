@@ -1,6 +1,6 @@
 """Issue salience weighted model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ sali = salience_model
 
 def cheatsheet() -> str:
     return "salience_model({}) -> Issue salience weighted model"
+
+
+# compact alias per ledger/NAMING.md
+saliencemodel = salience_model

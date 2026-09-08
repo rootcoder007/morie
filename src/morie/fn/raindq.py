@@ -1,6 +1,6 @@
 """Rainbow: 6 DQN improvements combined."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def rainbow_dqn(env):
 
 def cheatsheet():
     return "raindq: Rainbow: 6 DQN improvements combined"
+
+
+# compact alias per ledger/NAMING.md
+rainbowdqn = rainbow_dqn

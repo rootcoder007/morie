@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -24,7 +24,7 @@ def somers_d(
     -------
     ESRes
     """
-    from scipy.stats import somersd
+    from ._stats_core import somersd
 
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)
@@ -50,3 +50,7 @@ somrd = somers_d
 
 def cheatsheet() -> str:
     return "somers_d(x, y) -> Somers' D ordinal association."
+
+
+# compact alias per ledger/NAMING.md
+somersd = somers_d

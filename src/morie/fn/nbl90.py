@@ -5,7 +5,7 @@ L90 percentile level
 Category: NoisBrd
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def nbl90(data=None, coords=None, n=50):

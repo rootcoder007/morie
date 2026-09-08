@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -57,3 +57,7 @@ ecgplt = plot_ecg_leads_fn
 
 def cheatsheet() -> str:
     return "plot_ecg_leads_fn({}) -> ECG multi-lead plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+plotecgleadsfn = plot_ecg_leads_fn

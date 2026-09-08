@@ -1,6 +1,6 @@
 """Tests for causdidsap.causal_did_sun_abraham."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causdidsap import causal_did_sun_abraham
 

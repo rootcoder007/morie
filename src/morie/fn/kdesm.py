@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kernel density estimation (Gaussian kernel)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -50,3 +50,7 @@ kdesm = kde_smooth
 
 def cheatsheet() -> str:
     return "kde_smooth({}) -> Kernel density estimation (Gaussian kernel)."
+
+
+# compact alias per ledger/NAMING.md
+kdesmooth = kde_smooth

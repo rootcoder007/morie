@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Co-kriging weights"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ cok_ = cok_weights
 
 def cheatsheet() -> str:
     return "cok_weights({}) -> Co-kriging weights"
+
+
+# compact alias per ledger/NAMING.md
+cokweights = cok_weights

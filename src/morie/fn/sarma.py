@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Seasonal ARMA model."""
 
-import numpy as np
-from scipy import optimize
+from . import _array_core as np
+from ._sci_core import optimize
 
 from ._containers import DescriptiveResult
 
@@ -82,3 +82,7 @@ sarma = seasonal_arma
 
 def cheatsheet() -> str:
     return "seasonal_arma({}) -> Seasonal ARMA model."
+
+
+# compact alias per ledger/NAMING.md
+seasonalarma = seasonal_arma

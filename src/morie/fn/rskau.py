@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -76,3 +76,7 @@ rskau = risk_auc
 
 def cheatsheet() -> str:
     return "risk_auc({}) -> AUC for risk score discrimination."
+
+
+# compact alias per ledger/NAMING.md
+riskauc = risk_auc

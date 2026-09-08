@@ -12,7 +12,7 @@ order statistics arising in its consideration. Cancer Chemotherapy Reports,
 
 __all__ = ["logrt"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def logrt(
@@ -71,7 +71,7 @@ def logrt(
     Fleming, T.R. & Harrington, D.P. (1991). Counting Processes and Survival
     Analysis. Wiley.
     """
-    from scipy import stats as _stats
+    from . import _stats_core as _stats
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)

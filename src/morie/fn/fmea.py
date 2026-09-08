@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -85,3 +85,7 @@ fmea = fmea_rpn
 
 def cheatsheet() -> str:
     return "fmea_rpn({}) -> FMEA Risk Priority Number scoring."
+
+
+# compact alias per ledger/NAMING.md
+fmearpn = fmea_rpn

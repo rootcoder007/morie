@@ -1,6 +1,6 @@
 """Spatial frailty survival model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -28,3 +28,7 @@ spat = spatial_frailty
 
 def cheatsheet() -> str:
     return "spatial_frailty({}) -> Spatial frailty survival model"
+
+
+# compact alias per ledger/NAMING.md
+spatialfrailty = spatial_frailty

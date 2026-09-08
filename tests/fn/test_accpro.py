@@ -1,7 +1,7 @@
 """Tests for morie.fn.accpro -- Acceleration profile."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.accpro import acceleration_profile, accpro

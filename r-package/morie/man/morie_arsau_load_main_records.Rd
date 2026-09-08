@@ -2,7 +2,7 @@
 % Please edit documentation in R/arsau.R
 \name{morie_arsau_load_main_records}
 \alias{morie_arsau_load_main_records}
-\title{Load ARSAU main_records CSV for the given year.}
+\title{Load ARSAU main_records CSV for the given year}
 \usage{
 morie_arsau_load_main_records(year, language = "en", data_dir = NULL)
 }
@@ -23,7 +23,7 @@ A \code{morie_arsau_result} object (subclass of
 and \code{csv_path}.
 }
 \description{
-Load ARSAU main_records CSV for the given year.
+Load ARSAU main_records CSV for the given year
 }
 \examples{
 \donttest{

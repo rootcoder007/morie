@@ -1,6 +1,6 @@
 """Tests for morie.fn.sdscr -- discriminant validity."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.sdscr import subscale_discriminant
 

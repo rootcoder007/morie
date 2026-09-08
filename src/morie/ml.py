@@ -7,10 +7,33 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
-import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from morie.fn._ml_core import RandomForestClassifier
+except ImportError:
+    RandomForestClassifier = _MissingDep('RandomForestClassifier')
+try:
+    from morie.fn._ml_core import classification_report
+except ImportError:
+    classification_report = _MissingDep('classification_report')
 
 
 def eval_robustness(
@@ -59,27 +82,10 @@ def apply_smote(
     if k_neighbors is None:
         k_neighbors = min(5, minority_count - 1) if minority_count > 1 else 1
 
-    method = "smote"
-    try:
-        from imblearn.over_sampling import SMOTE as _SMOTE  # type: ignore[import-untyped]
-
-        if minority_count <= k_neighbors:
-            raise ValueError("Too few minority samples for SMOTE")
-        sm = _SMOTE(random_state=random_state, k_neighbors=k_neighbors)
-        X_res, y_res = sm.fit_resample(X, y)
-    except (ImportError, ValueError):
-        # Fallback: random oversampling (duplicate minority rows)
-        method = "random_oversample"
-        minority_label = y.value_counts().idxmin()
-        minority_mask = y == minority_label
-        n_needed = majority_count - minority_count
-        if n_needed > 0 and minority_count > 0:
-            rng = np.random.RandomState(random_state)
-            sample_idx = rng.choice(X[minority_mask].index, size=n_needed, replace=True)
-            X_res = pd.concat([X, X.loc[sample_idx]], ignore_index=True)
-            y_res = pd.concat([y, y.loc[sample_idx]], ignore_index=True)
-        else:
-            X_res, y_res = X.copy(), y.copy()
+    from morie.fn.smote import apply_smote as _native_smote
+    X_res, y_res, _st = _native_smote(
+        X, y, random_state=random_state, k_neighbors=k_neighbors)
+    method = _st["method"]
 
     counts_after = y_res.value_counts().to_dict()
     status = {

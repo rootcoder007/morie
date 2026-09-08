@@ -27,8 +27,8 @@ def spatial_acf(Z, coords, lags=None, n_lags=10):
     -------
     DescriptiveResult
     """
-    import numpy as np
-    from scipy.spatial.distance import pdist, squareform
+    from morie.fn import _array_core as np
+    from ._sci_core import pdist, squareform
 
     Z = np.asarray(Z, dtype=np.float64).ravel()
     coords = np.asarray(coords, dtype=np.float64)
@@ -73,3 +73,7 @@ sgacf = spatial_acf
 
 def cheatsheet() -> str:
     return "spatial_acf({}) -> Spatial autocorrelation function per lag."
+
+
+# compact alias per ledger/NAMING.md
+spatialacf = spatial_acf

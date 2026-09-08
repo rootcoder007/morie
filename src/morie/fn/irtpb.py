@@ -11,7 +11,7 @@ def irt_probability(theta, alpha, beta) -> DescriptiveResult:
 
     .. epigraph:: What is now proved was once only imagined. -- William Blake
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     theta = np.asarray(theta, dtype=float)
     alpha = float(alpha)
@@ -36,3 +36,7 @@ irtpb = irt_probability
 
 def cheatsheet() -> str:
     return "irt_probability({}) -> IRT probability of correct response."
+
+
+# compact alias per ledger/NAMING.md
+irtprobability = irt_probability

@@ -1,6 +1,6 @@
 """Tests for ecsTCR.ecs_tcr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ecsTCR import ecs_tcr
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Procrustes correlation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ proc = procrustes_corr
 
 def cheatsheet() -> str:
     return "procrustes_corr({}) -> Procrustes correlation"
+
+
+# compact alias per ledger/NAMING.md
+procrustescorr = procrustes_corr

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -37,7 +37,7 @@ def morphological_ca(x, n_iter: int = 100, **kwargs) -> DescriptiveResult:
     """
     x = np.asarray(x, dtype=float).ravel()
     N = len(x)
-    from scipy.fft import dct, idct
+    from ._sci_core import dct, idct
 
     smooth = np.zeros(N)
     threshold = np.max(np.abs(dct(x, norm="ortho")))

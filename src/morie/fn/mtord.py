@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -44,3 +44,7 @@ mtord = mto_road_segment
 
 def cheatsheet() -> str:
     return "mto_road_segment({}) -> Per-road-segment crash rate."
+
+
+# compact alias per ledger/NAMING.md
+mtoroadsegment = mto_road_segment

@@ -1,6 +1,6 @@
 """Tests for cnnbs.py - 1D CNN for biosignals."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cnnbs import cnnbs, cnnbs_fn
 

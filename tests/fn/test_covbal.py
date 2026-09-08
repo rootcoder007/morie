@@ -1,6 +1,6 @@
 """Tests for covbal.covariate_balance_check."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.covbal import covariate_balance_check
 

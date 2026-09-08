@@ -1,8 +1,8 @@
 """Tests for rghmm.rangayyan_fitzhugh_nagumo."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rghmm import rangayyan_fitzhugh_nagumo
+from morie.fn.bsaphys import rangayyan_fitzhugh_nagumo
 
 
 def test_rghmm_basic():

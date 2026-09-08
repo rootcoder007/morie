@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_poststratify}
 \alias{morie_weights_poststratify}
-\title{Post-stratification weight adjustment.}
+\title{Post-stratification weight adjustment}
 \usage{
 morie_weights_poststratify(weights, strata, population_totals)
 }
@@ -22,4 +22,8 @@ matches \code{population_totals}.
 }
 \description{
 \eqn{w_i^{ps} = w_i \cdot N_h / \hat{N}_h}{w_i^ps = w_i * N_h / N_hat_h}.
+}
+\examples{
+morie_weights_poststratify(weights = c(1, 2, 3, 4, 5, 6, 7, 8),
+  strata = c(1, 2, 3, 4, 5, 6, 7, 8), population_totals = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

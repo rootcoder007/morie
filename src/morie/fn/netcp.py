@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def network_compare(
@@ -101,3 +101,7 @@ def network_compare(
 
 def cheatsheet() -> str:
     return "network_compare({}) -> Network comparison test (global strength and structure)."
+
+
+# compact alias per ledger/NAMING.md
+networkcompare = network_compare

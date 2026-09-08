@@ -79,7 +79,7 @@
 #'   `feature_server_url`, `owner`, `tags`, `snippet`.
 #' @references TPS Public Safety Data Portal,
 #'   \url{https://data.tps.ca/search?collection=dataset}.
-#' @examples
+#' @examplesIf nzchar(system.file("extdata", "tps_arcgis_hub_catalog.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
 #' cat <- morie_datasets_tps_arcgis_hub_layers()
 #' nrow(cat)        # 71
 #' head(cat$title)
@@ -227,7 +227,7 @@ morie_datasets_tps_arcgis_hub_layers <- function(offline = TRUE) {
 #' cat <- morie_datasets_tps_arcgis_hub_layers(offline = TRUE)
 #' pic_id <- cat$hub_id[cat$title ==
 #'   "Persons in Crisis Calls for Service Attended Open Data"]
-#' \donttest{
+#' \dontrun{
 #' df <- try(morie_datasets_tps_arcgis_hub_by_id(
 #'   pic_id, format = "json", where = "OCC_YEAR=2024",
 #'   max_features = 25L, offline = TRUE))
@@ -310,7 +310,7 @@ morie_datasets_tps_arcgis_hub_by_id <- function(hub_id,
 #' @return Path to the downloaded file.
 #' @examples
 #' cat <- morie_datasets_tps_arcgis_hub_layers(offline = TRUE)
-#' \donttest{
+#' \dontrun{
 #' path <- try(morie_datasets_tps_arcgis_hub_download(
 #'   cat$hub_id[1], format = "csv"))
 #' if (!inherits(path, "try-error")) path
@@ -355,7 +355,7 @@ morie_datasets_tps_arcgis_hub_download <- function(hub_id,
 # ---------------------------------------------------------------------------
 
 #' Resolve any ArcGIS Online item id to its FeatureServer URL +
-#' canonical metadata.
+#' canonical metadata
 #'
 #' Lightweight discovery helper -- one network call to the ArcGIS
 #' Online items API (`/sharing/rest/content/items/<item_id>?f=json`),
@@ -393,7 +393,7 @@ morie_datasets_arcgis_item_metadata <- function(item_id) {
     stringsAsFactors = FALSE)
 }
 
-#' Generic by-id loader for any ArcGIS Online Feature Service item.
+#' Generic by-id loader for any ArcGIS Online Feature Service item
 #'
 #' Portal-agnostic sibling to
 #' [morie_datasets_tps_arcgis_hub_by_id()]. Works for ANY ArcGIS
@@ -419,7 +419,7 @@ morie_datasets_arcgis_item_metadata <- function(item_id) {
 #' @return A `data.frame` (json / csv), parsed GeoJSON list, or
 #'   file path (binary).
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' df <- try(morie_datasets_arcgis_item_by_id(
 #'   "af06159170914808983959df6163fc86", format = "json"))
 #' if (!inherits(df, "try-error")) head(df)
@@ -528,7 +528,7 @@ morie_datasets_arcgis_item_by_id <- function(item_id,
 #'   list, or file path (binary).
 #' @references Esri Canada Education -- ArcGIS Online item
 #'   `af06159170914808983959df6163fc86`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_toronto_zoning_per_neighbourhood(offline = TRUE)
 #' head(df[, c("Neighbourhood", "Total_Population", "Seniors65andover")])
 #' @export

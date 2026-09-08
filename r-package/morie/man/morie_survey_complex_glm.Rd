@@ -3,7 +3,7 @@
 \name{morie_survey_complex_glm}
 \alias{morie_survey_complex_glm}
 \title{Complex-survey GLM constructor (single-shot wrapper that builds a design
-and fits a \code{svyglm} in one call). Cluster-robust SEs via the design.}
+and fits a \code{svyglm} in one call). Cluster-robust SEs via the design}
 \usage{
 morie_survey_complex_glm(
   df,
@@ -40,5 +40,20 @@ design-based standard errors.
 }
 \description{
 Complex-survey GLM constructor (single-shot wrapper that builds a design
-and fits a \code{svyglm} in one call). Cluster-robust SEs via the design.
+and fits a \code{svyglm} in one call). Cluster-robust SEs via the design
+}
+\examples{
+\dontshow{if (requireNamespace("survey", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+.make_survey_df <- function(n = 100L, seed = 1L) {
+    set.seed(seed)
+    data.frame(id = seq_len(n), y = rnorm(n, 10, 2), x = rnorm(n, 
+        5, 1), w = runif(n, 0.5, 1.5), s = sample(c("A", "B"), 
+        n, replace = TRUE), cl = sample(seq_len(10), n, replace = TRUE), 
+        fpc = rep(1000L, n))
+}
+df <- .make_survey_df()
+y <- c(1, 2, 3, 4, 5)
+x <- runif(100, 1, 10)
+morie_survey_complex_glm(df, y ~ x, weight_col = "w", family = "gaussian")
+\dontshow{\}) # examplesIf}
 }

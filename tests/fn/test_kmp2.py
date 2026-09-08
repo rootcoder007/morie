@@ -1,6 +1,6 @@
 """Tests for kmp2.kamath_p_tuning_v2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmp2 import kamath_p_tuning_v2
 

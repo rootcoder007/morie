@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import DescriptiveResult
 
@@ -74,3 +74,7 @@ funlp = funnel_plot
 
 def cheatsheet() -> str:
     return "funnel_plot({}) -> Funnel plot data for publication bias."
+
+
+# compact alias per ledger/NAMING.md
+funnelplot = funnel_plot

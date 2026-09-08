@@ -47,7 +47,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 
 def _otis_cache_dir() -> Path:

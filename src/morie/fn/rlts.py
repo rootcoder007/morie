@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -80,3 +80,7 @@ rlts = lts_regression
 
 def cheatsheet() -> str:
     return "lts_regression({}) -> Least trimmed squares regression."
+
+
+# compact alias per ledger/NAMING.md
+ltsregression = lts_regression

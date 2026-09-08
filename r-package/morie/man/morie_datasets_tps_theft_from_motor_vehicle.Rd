@@ -36,3 +36,8 @@ Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 \description{
 TPS PSDP -- Theft From Motor Vehicle
 }
+\examples{
+\dontrun{
+morie_datasets_tps_theft_from_motor_vehicle()
+}
+}

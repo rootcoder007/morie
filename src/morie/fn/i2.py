@@ -3,7 +3,7 @@
 
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 from .remeta import random_effects_meta
 
@@ -35,3 +35,7 @@ isq = i_squared
 
 def cheatsheet() -> str:
     return "i_squared({}) -> Higgins' I-squared heterogeneity statistic."
+
+
+# compact alias per ledger/NAMING.md
+isquared = i_squared

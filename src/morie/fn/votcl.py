@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -62,3 +62,7 @@ votcl = voting_classify
 
 def cheatsheet() -> str:
     return "voting_classify({}) -> Majority / weighted voting classifier."
+
+
+# compact alias per ledger/NAMING.md
+votingclassify = voting_classify

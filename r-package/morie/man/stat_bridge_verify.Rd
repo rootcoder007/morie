@@ -4,7 +4,14 @@
 \alias{stat_bridge_verify}
 \title{Self-test enumeration helper}
 \usage{
-stat_bridge_verify()
+stat_bridge_verify(execute = FALSE)
+}
+\arguments{
+\item{execute}{When TRUE, actually CALL every registered
+  handler with no arguments -- a smoke test that reaches the
+  network for the data-fetching commands. The default checks
+  that each command carries a callable handler and runs none
+  of them.}
 }
 \value{
 A data.frame with columns \code{name}, \code{ok}, \code{message}.
@@ -13,4 +20,14 @@ A data.frame with columns \code{name}, \code{ok}, \code{message}.
 Calls every registered handler with no arguments inside
 \code{tryCatch}, reporting which entries can be invoked safely.
 Intended to be called from CI smoke tests.
+}
+\examples{
+\dontshow{if (nzchar(Sys.getenv("MORIE_RUN_FULL_SMOKE"))) withAutoprint(\{ # examplesIf}
+\donttest{
+# Invokes EVERY registered command handler -- some fetch live data over the
+# network -- so this is a smoke test, not a quick example. Opt in with
+# MORIE_RUN_FULL_SMOKE=1.
+str(stat_bridge_verify(), max.level = 1)
+}
+\dontshow{\}) # examplesIf}
 }

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -65,3 +65,7 @@ lexlr = lexico_rank
 
 def cheatsheet() -> str:
     return "lexico_rank({}) -> Lexicographic rank aggregation."
+
+
+# compact alias per ledger/NAMING.md
+lexicorank = lexico_rank

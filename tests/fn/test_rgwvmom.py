@@ -1,8 +1,8 @@
 """Tests for rgwvmom.rangayyan_wavelet_moments."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgwvmom import rangayyan_wavelet_moments
+from morie.fn.bsatf import rangayyan_wavelet_moments
 
 
 def test_rgwvmom_basic():

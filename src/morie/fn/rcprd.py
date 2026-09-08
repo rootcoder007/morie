@@ -23,7 +23,7 @@ def predicted_choice(ideal_points, yea_pos, nay_pos):
     DescriptiveResult
         value = binary predictions (1=yea, 0=nay), length n.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(ideal_points, dtype=float)
     yea = np.asarray(yea_pos, dtype=float)

@@ -1,6 +1,6 @@
 """Tests for hmf1.geron_f1_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmf1 import geron_f1_score
 

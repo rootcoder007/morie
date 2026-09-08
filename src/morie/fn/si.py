@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import ESRes
 
@@ -79,3 +79,7 @@ si = serial_interval
 
 def cheatsheet() -> str:
     return "serial_interval({}) -> Serial interval estimation from case pairs."
+
+
+# compact alias per ledger/NAMING.md
+serialinterval = serial_interval

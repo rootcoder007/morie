@@ -1,6 +1,6 @@
 """Tests for morie.fn.ipcw -- Inverse probability of censoring weights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ipcw import ipcw

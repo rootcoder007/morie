@@ -1,6 +1,6 @@
 """Tests for gh_ap_c1.ghosal_covering_num."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_ap_c1 import ghosal_covering_num
 

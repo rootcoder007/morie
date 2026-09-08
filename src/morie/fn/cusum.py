@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """CUSUM change-point detection for time series."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def cusum(

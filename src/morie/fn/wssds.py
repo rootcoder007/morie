@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -51,3 +51,7 @@ wssds = wss_distance
 
 def cheatsheet() -> str:
     return "wss_distance({}) -> Weighted spectral slope distance."
+
+
+# compact alias per ledger/NAMING.md
+wssdistance = wss_distance

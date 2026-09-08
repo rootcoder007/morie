@@ -1,6 +1,6 @@
 """Tests for hrzbwopt.horowitz_optimal_bandwidth_kde."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzbwopt import horowitz_optimal_bandwidth_kde
 

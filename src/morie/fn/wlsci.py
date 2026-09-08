@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from scipy import stats as _st
+from . import _stats_core as _st
 
 from ._containers import DescriptiveResult
 
@@ -58,3 +58,7 @@ wlsci = wilson_ci
 
 def cheatsheet() -> str:
     return "wilson_ci({}) -> Wilson score interval for binomial proportion."
+
+
+# compact alias per ledger/NAMING.md
+wilsonci = wilson_ci

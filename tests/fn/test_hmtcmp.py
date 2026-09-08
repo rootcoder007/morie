@@ -1,6 +1,6 @@
 """Tests for hmtcmp.geron_torch_compile."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmtcmp import geron_torch_compile
 

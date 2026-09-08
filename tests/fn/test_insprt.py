@@ -1,6 +1,6 @@
 """Tests for morie.fn.insprt — inspection score by facility."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.insprt import inspection_score
 

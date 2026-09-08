@@ -1,24 +1,14 @@
 """Tests for alchrj.alammar_chosen_rejected_template."""
 
-import numpy as np
-
 from morie.fn.alchrj import alammar_chosen_rejected_template
 
 
 def test_alchrj_basic():
-    """Test basic functionality."""
-    prompts = np.random.default_rng(42).normal(0, 1, 100)
-    chosen = np.random.default_rng(42).normal(0, 1, 100)
-    rejected = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_chosen_rejected_template(prompts, chosen, rejected)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_chosen_rejected_template(["p"], ["good"], ["bad"])
+    assert out["records"][0]["chosen"] == "good"
 
 
 def test_alchrj_edge():
-    """Test edge cases."""
-    prompts = np.random.default_rng(42).normal(0, 1, 100)
-    chosen = np.random.default_rng(42).normal(0, 1, 100)
-    rejected = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_chosen_rejected_template(prompts, chosen, rejected)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="no preference"):
+        alammar_chosen_rejected_template(["p"], ["x"], ["x"])

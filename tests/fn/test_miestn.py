@@ -1,6 +1,6 @@
 """Tests for miestn.mi_neural_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.miestn import mi_neural_estimator
 

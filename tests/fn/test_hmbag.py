@@ -1,28 +1,11 @@
-"""Tests for hmbag.geron_bagging."""
+"""Tests for hmbag (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.hmbag import geron_bagging
-
-
-def test_hmbag_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    base_estimator = np.random.default_rng(42).normal(0, 1, 100)
-    n_estimators = np.random.default_rng(42).normal(0, 1, 100)
-    seed = 42
-    result = geron_bagging(X, y, base_estimator, n_estimators, seed)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.hmbag as mod
 
 
-def test_hmbag_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    base_estimator = np.random.default_rng(42).normal(0, 1, 100)
-    n_estimators = np.random.default_rng(42).normal(0, 1, 100)
-    seed = 42
-    result = geron_bagging(X, y, base_estimator, n_estimators, seed)
-    assert isinstance(result, dict)
+def test_hmbag_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

@@ -1,6 +1,6 @@
 """Symbolic matrix algebra."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def matrix_symbolic(M):
 
 def cheatsheet():
     return "matSym: Symbolic matrix algebra"
+
+
+# compact alias per ledger/NAMING.md
+matrixsymbolic = matrix_symbolic

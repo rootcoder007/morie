@@ -19,7 +19,7 @@ def distance_from_agreement(agreement):
     DescriptiveResult
         value = distance matrix.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     A = np.asarray(agreement, dtype=float)
     D = 1.0 - A

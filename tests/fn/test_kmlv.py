@@ -1,6 +1,6 @@
 """Tests for kmlv.kamath_llava_visual_instruction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmlv import kamath_llava_visual_instruction
 

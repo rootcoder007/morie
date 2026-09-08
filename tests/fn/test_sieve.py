@@ -1,6 +1,6 @@
 """Tests for morie.fn.sieve -- Sieve estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sieve import sieve

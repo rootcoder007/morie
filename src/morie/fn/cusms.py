@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """CUSUM test for structural change."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -70,3 +70,7 @@ cusms = cusum_test
 
 def cheatsheet() -> str:
     return "cusum_test({}) -> CUSUM test for structural change."
+
+
+# compact alias per ledger/NAMING.md
+cusumtest = cusum_test

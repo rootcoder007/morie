@@ -1,6 +1,6 @@
 """Tests for gb_rnkci.gibbons_rank_ci."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_rnkci import gibbons_rank_ci
 

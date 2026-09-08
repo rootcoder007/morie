@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def rdd_bandwidth(
@@ -89,3 +89,7 @@ bwt = rdd_bandwidth
 
 def cheatsheet() -> str:
     return "rdd_bandwidth({}) -> Bandwidth selection for regression discontinuity designs."
+
+
+# compact alias per ledger/NAMING.md
+rddbandwidth = rdd_bandwidth

@@ -1,6 +1,6 @@
 """Tests for km103.kamath_ch6_lstm_softmax_word."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km103 import kamath_ch6_lstm_softmax_word
 

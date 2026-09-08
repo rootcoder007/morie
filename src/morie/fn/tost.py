@@ -1,7 +1,7 @@
 """TOST equivalence test -- two one-sided t-tests."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import DescriptiveResult
 
@@ -61,3 +61,7 @@ def tost_test(x, y, margin=0.5, cdf=None):
 
 def cheatsheet() -> str:
     return "tost_test({}) -> TOST equivalence test -- two one-sided t-tests."
+
+
+# compact alias per ledger/NAMING.md
+tosttest = tost_test

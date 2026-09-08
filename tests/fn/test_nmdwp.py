@@ -1,6 +1,6 @@
 """Tests for morie.fn.nmdwp -- DW-NOMINATE polarization"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nmdwp import dwnominate_polar
 

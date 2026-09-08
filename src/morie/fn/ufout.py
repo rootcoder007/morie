@@ -20,7 +20,7 @@ def unfolding_outliers(residuals, threshold=2.0):
     DescriptiveResult
         value = outlier indices (list of tuples or ints).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     R = np.asarray(residuals, dtype=float)
     mu = np.mean(R)

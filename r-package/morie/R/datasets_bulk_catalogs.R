@@ -19,7 +19,7 @@
 #' NYC OpenData bulk catalog (2851 entities)
 #' @param offline If `TRUE` (default), reads bundled CSV.
 #' @return Tabular catalog snapshot.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' d <- morie_datasets_nyc_opendata_bulk_layers(offline = TRUE)
 #' nrow(d)
 #' head(d[, c("soda_id", "type")])
@@ -132,6 +132,10 @@ morie_datasets_vancouver_opendata_bulk_layers <- function(offline = TRUE) {
 #' @param limit Page size.
 #' @return A `data.frame` of records.
 #' @export
+#' @examples
+#' \dontrun{
+#' df <- morie_datasets_nyc_socrata_by_id("erm2-nwe9", limit = 100L)
+#' }
 morie_datasets_nyc_socrata_by_id <- function(soda_id,
                                                limit = 1000L) {
   url <- sprintf("https://data.cityofnewyork.us/resource/%s.json?$limit=%d",
@@ -159,6 +163,15 @@ morie_datasets_chicago_socrata_by_id <- function(soda_id,
   df
 }
 
+#' .morie_bulk_fixture
+#'
+#' Part of the datasets_bulk_catalogs implementation; see the file
+#' header for the source it follows.
+#'
+#' @param fname Passed to \code{sprintf}.
+#' @param offline A flag; the body branches on it.
+#' @return The value of \code{utils::read.csv}.
+#' @export
 .morie_bulk_fixture <- function(fname, offline) {
   if (!isTRUE(offline)) {
     stop(sprintf(paste0(

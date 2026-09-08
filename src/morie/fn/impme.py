@@ -19,7 +19,7 @@ def impute_missing_mean(D):
     DescriptiveResult
         value = imputed distance matrix.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     D = np.asarray(D, dtype=float).copy()
     mask = np.isnan(D)

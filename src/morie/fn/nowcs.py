@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def nowcast(reported: np.ndarray, delay_pmf: np.ndarray, cdf=None, *, max_delay: int | None = None) -> dict[str, Any]:

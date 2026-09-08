@@ -1,6 +1,6 @@
 """Nugget effect estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -49,3 +49,7 @@ nugg = nugget_est
 
 def cheatsheet() -> str:
     return "nugget_est({}) -> Nugget effect estimation"
+
+
+# compact alias per ledger/NAMING.md
+nuggetest = nugget_est

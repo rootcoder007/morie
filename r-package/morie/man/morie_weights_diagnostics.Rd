@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_diagnostics}
 \alias{morie_weights_diagnostics}
-\title{Comprehensive weight diagnostics.}
+\title{Comprehensive weight diagnostics}
 \usage{
 morie_weights_diagnostics(weights)
 }
@@ -20,4 +20,8 @@ A named list with elements \code{n}, \code{sum_weights},
 \description{
 Returns a named list with summary statistics, Kish ESS, design effect,
 weight-range ratio, and percentile vector.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_diagnostics(V)
 }

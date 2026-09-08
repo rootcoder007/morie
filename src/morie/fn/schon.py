@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Schoenfeld residuals for proportional hazards assumption testing."""
 
-import numpy as np
-from scipy.stats import pearsonr
+from . import _array_core as np
+from ._stats_core import pearsonr
 
 
 def schon(

@@ -1,6 +1,6 @@
 """Tests for wsmwhz.wasserman_white_huber."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmwhz import wasserman_white_huber
 

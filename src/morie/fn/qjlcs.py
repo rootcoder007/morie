@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -55,3 +55,7 @@ def cheatsheet() -> str:
 
 
 qjlcs = qjl_cosine_sim
+
+
+# compact alias per ledger/NAMING.md
+qjlcosinesim = qjl_cosine_sim

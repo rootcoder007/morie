@@ -3,7 +3,7 @@
 
 import math
 
-import numpy as np
+from . import _array_core as np
 
 
 def r_to_d(r: float) -> float:
@@ -27,3 +27,7 @@ r2d = r_to_d
 
 def cheatsheet() -> str:
     return "r_to_d({}) -> Convert Pearson r to Cohen's d."
+
+
+# compact alias per ledger/NAMING.md
+rtod = r_to_d

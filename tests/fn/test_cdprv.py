@@ -1,6 +1,6 @@
 """Tests for morie.fn.cdprv -- chronic disease prevalence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cdprv import chronic_disease_prevalence

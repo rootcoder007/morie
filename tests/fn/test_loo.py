@@ -1,6 +1,6 @@
 """Tests for morie.fn.loo -- LOO-CV via PSIS."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.loo import compute_loo

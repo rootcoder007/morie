@@ -1,6 +1,6 @@
 """Kulldorff spatial scan statistic"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ kull = kulldorff_scan
 
 def cheatsheet() -> str:
     return "kulldorff_scan({}) -> Kulldorff spatial scan statistic"
+
+
+# compact alias per ledger/NAMING.md
+kulldorffscan = kulldorff_scan

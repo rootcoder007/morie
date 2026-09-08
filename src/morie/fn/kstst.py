@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import TestResult
 
@@ -68,3 +68,7 @@ kstst = ks_test
 
 def cheatsheet() -> str:
     return "ks_test(x, y=None) -> Kolmogorov-Smirnov test."
+
+
+# compact alias per ledger/NAMING.md
+kstest = ks_test

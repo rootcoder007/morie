@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as stats
 
 from ._containers import DescriptiveResult
 
@@ -48,3 +48,7 @@ finn = find_patterns
 
 def cheatsheet() -> str:
     return "find_patterns({}) -> Correlation pattern finder."
+
+
+# compact alias per ledger/NAMING.md
+findpatterns = find_patterns

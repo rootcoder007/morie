@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -76,3 +76,7 @@ short = karnaugh_map
 
 def cheatsheet() -> str:
     return "karnm() -> Generate Karnaugh map layout and identify minterms"
+
+
+# compact alias per ledger/NAMING.md
+karnaughmap = karnaugh_map

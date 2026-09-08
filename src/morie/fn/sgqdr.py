@@ -23,8 +23,8 @@ def quadrat_count_test(points, window, nx=5, ny=5, cdf=None):
     -------
     DescriptiveResult
     """
-    import numpy as np
-    from scipy import stats
+    from morie.fn import _array_core as np
+    from . import _stats_core as stats
 
     pts = np.asarray(points, dtype=np.float64)
     n = pts.shape[0]

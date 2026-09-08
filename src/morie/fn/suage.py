@@ -1,6 +1,6 @@
 """Age-specific substance use rates."""
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 
@@ -49,3 +49,7 @@ suage = substance_by_age
 
 def cheatsheet() -> str:
     return "substance_by_age({}) -> Age-specific substance use rates."
+
+
+# compact alias per ledger/NAMING.md
+substancebyage = substance_by_age

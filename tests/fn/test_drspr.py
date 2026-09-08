@@ -1,6 +1,6 @@
 """Tests for drspr.dr_spillover."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drspr import dr_spillover
 

@@ -1,6 +1,6 @@
 """Tests for hrzrob.horowitz_rate_beta_estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzrob import horowitz_rate_beta_estimation
 

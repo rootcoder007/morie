@@ -1,7 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Add-1 (Laplace) smoothing for n-gram probabilities."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov Ch 2: add-1 (Laplace) smoothing."""
 
 from ._richresult import RichResult
 
@@ -9,37 +8,28 @@ __all__ = ["burkov_laplace_add_one"]
 
 
 def burkov_laplace_add_one(counts_ngram, counts_prefix, V):
+    """P = (count + 1) / (prefix + V).
+
+    References: Burkov LM (2025), Ch 2, Laplace smoothing.
+
+    Examples
+    --------
+    >>> burkov_laplace_add_one(0, 0, 4)["estimate"]
+    0.25
     """
-    Add-1 (Laplace) smoothing for n-gram probabilities
-
-    Formula: P(w_n | w_{1..n-1}) = (count(w_{1..n}) + 1) / (count(w_{1..n-1}) + V)
-
-    Parameters
-    ----------
-    counts_ngram : array-like
-        Input data.
-    counts_prefix : array-like
-        Input data.
-    V : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: prob
-
-    References
-    ----------
-    Burkov Ch 2, Laplace (Add-1) Smoothing section
-    """
-    counts_ngram = np.atleast_1d(np.asarray(counts_ngram, dtype=float))
-    n = len(counts_ngram)
-    result = float(np.mean(counts_ngram))
-    se = float(np.std(counts_ngram, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Add-1 (Laplace) smoothing for n-gram probabilities"}
-    )
+    c = float(counts_ngram); p = float(counts_prefix); v = int(V)
+    if c < 0 or p < 0:
+        raise ValueError("counts must be non-negative.")
+    if v < 1:
+        raise ValueError(f"vocabulary size must be positive; got {V}.")
+    if c > p:
+        raise ValueError("count(ngram) cannot exceed count(prefix).")
+    est = (c + 1.0) / (p + v)
+    return RichResult(payload={
+        "estimate": est, "count_ngram": c, "count_prefix": p,
+        "vocab_size": v, "n": int(p),
+        "method": "Laplace add-1 smoothing (Burkov Ch 2)"})
 
 
 def cheatsheet():
-    return "bklap: Add-1 (Laplace) smoothing for n-gram probabilities"
+    return "bklap: Laplace add-1 smoothing (count+1)/(prefix+V) (Burkov Ch 2)"

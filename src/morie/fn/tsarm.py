@@ -4,7 +4,7 @@ ARM spatial model
 Category: TempSpat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def tsarm(data=None, coords=None, times=None, n=50, t=10):

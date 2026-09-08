@@ -12,7 +12,7 @@ of London, 115, 513-583. MLE parameterisation follows Collett (2003).
 
 __all__ = ["gmprl"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def gmprl(
@@ -68,7 +68,7 @@ def gmprl(
     Collett, D. (2003). Modelling Survival Data in Medical Research (2nd ed.).
     Chapman & Hall/CRC.
     """
-    from scipy import optimize as _opt
+    from ._sci_core import optimize as _opt
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)
@@ -133,7 +133,7 @@ def gmprl(
 
     # SE via numerical Hessian
     try:
-        from scipy.optimize import approx_fprime
+        from ._sci_core import approx_fprime
 
         eps = 1e-5
         hess = np.zeros((p_full, p_full))

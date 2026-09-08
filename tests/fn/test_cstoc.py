@@ -1,6 +1,6 @@
 """Tests for morie.fn.cstoc — custody occupancy."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.cstoc import custody_occupancy
 

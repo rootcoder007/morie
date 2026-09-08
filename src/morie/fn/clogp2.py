@@ -1,6 +1,6 @@
 """Crippen calculated LogP."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def clogp_estimate(smiles):
 
 def cheatsheet():
     return "clogp2: Crippen calculated LogP"
+
+
+# compact alias per ledger/NAMING.md
+clogpestimate = clogp_estimate

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PCA on genotype matrix for population stratification."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -57,3 +57,7 @@ pca_g = pca_genotype
 
 def cheatsheet() -> str:
     return "pca_genotype({}) -> PCA on genotype matrix for population stratification."
+
+
+# compact alias per ledger/NAMING.md
+pcagenotype = pca_genotype

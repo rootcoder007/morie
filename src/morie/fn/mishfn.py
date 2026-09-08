@@ -1,6 +1,6 @@
 """Mish activation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def mish_activation(y):
 
 def cheatsheet():
     return "mishfn: Mish activation"
+
+
+# compact alias per ledger/NAMING.md
+mishactivation = mish_activation

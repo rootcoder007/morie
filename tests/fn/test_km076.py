@@ -1,6 +1,6 @@
 """Tests for km076.kamath_ch5_dpo_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km076 import kamath_ch5_dpo_loss
 

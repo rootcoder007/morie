@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 
 def r_naught_ngm(
@@ -75,3 +75,7 @@ rnaht = r_naught_ngm
 
 def cheatsheet() -> str:
     return "r_naught_ngm({}) -> R0 from next-generation matrix (spectral radius)."
+
+
+# compact alias per ledger/NAMING.md
+rnaughtngm = r_naught_ngm

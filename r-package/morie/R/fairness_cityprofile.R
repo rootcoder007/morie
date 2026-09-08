@@ -11,7 +11,6 @@
 #' never needs to know which city the data came from.
 #'
 #' Functions
-#' ---------
 #'
 #' \itemize{
 #'   \item \code{\link{morie_fairness_city_profile}}: constructor for a
@@ -30,7 +29,7 @@
 NULL
 
 
-#' The five canonical per-area fields the audit consumes.
+#' The five canonical per-area fields the audit consumes
 #' @export
 MORIE_FAIRNESS_CANONICAL_FIELDS <- c(
   "area", "risk", "outcome", "population", "group"
@@ -44,6 +43,19 @@ MORIE_FAIRNESS_CANONICAL_FIELDS <- c(
 .morie_fairness_registry <- new.env(parent = emptyenv())
 
 
+#' .morie_fairness_init_registry
+#'
+#' A step of the fairness_cityprofile implementation. Called by
+#' \code{morie_fairness_get_city}, \code{morie_fairness_list_cities},
+#' \code{morie_fairness_register_city}.
+#' See the file header for the source the module follows.
+#' for the source it follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
+#' @examples
+#' res <- .morie_fairness_init_registry()
+#' res
 .morie_fairness_init_registry <- function() {
   if (!exists("generic", envir = .morie_fairness_registry, inherits = FALSE)) {
     assign("generic",
@@ -256,6 +268,10 @@ morie_fairness_apply_profile <- function(df, profile) {
 # print
 # ---------------------------------------------------------------------------
 
+#' Print method for \code{morie_city_profile} objects
+#'
+#' @param x A \code{morie_city_profile} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_city_profile <- function(x, ...) {

@@ -4,7 +4,7 @@ Bayesian spatial tobit
 Category: SpatReg2
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def srbtb(X=None, y=None, w=None, n=50, k=3):

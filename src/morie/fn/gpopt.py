@@ -8,10 +8,10 @@ __all__ = ["gp_optimize", "gpopt"]
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
-from scipy import stats
-from scipy.optimize import minimize as sp_minimize
-from scipy.spatial.distance import cdist
+from . import _array_core as np
+from . import _stats_core as stats
+from ._sci_core import minimize as sp_minimize
+from ._sci_core import cdist
 
 
 def _rbf_kernel(X1, X2, length_scale=1.0, variance=1.0, cdf=None):
@@ -156,3 +156,7 @@ gpopt = gp_optimize
 
 def cheatsheet() -> str:
     return "gp_optimize(objective, bounds) -> Gaussian process Bayesian optimization."
+
+
+# compact alias per ledger/NAMING.md
+gpoptimize = gp_optimize

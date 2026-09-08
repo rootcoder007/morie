@@ -2,7 +2,7 @@
 % Please edit documentation in R/otis_all_analyze.R
 \name{morie_otis_analyze_ruhela_master}
 \alias{morie_otis_analyze_ruhela_master}
-\title{Paper-ready master report -- every Ruhela formulation in one result.}
+\title{Paper-ready master report -- every Ruhela formulation in one result}
 \usage{
 morie_otis_analyze_ruhela_master(
   datasets,
@@ -31,8 +31,10 @@ Sections:
 }
 }
 \examples{
+\donttest{
 datasets_list <- list(b01 = morie_synth_otis("b01", n = 120L,
                                              seed = 1L))
 res <- morie_otis_analyze_ruhela_master(datasets_list)
 length(res$sections)
+}
 }

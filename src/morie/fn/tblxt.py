@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from html.parser import HTMLParser
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 
@@ -92,3 +92,7 @@ tblxt = extract_tables_result
 
 def cheatsheet() -> str:
     return "tblxt() -> Parse all ``<table>`` elements from HTML into DataFrames"
+
+
+# compact alias per ledger/NAMING.md
+extracttables = extract_tables

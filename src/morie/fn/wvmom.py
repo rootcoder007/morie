@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.stats import kurtosis, skew
+from . import _array_core as np
+from ._stats_core import kurtosis, skew
 
 from ._containers import DescriptiveResult
 
@@ -90,3 +90,7 @@ wvmom = wavelet_moments
 
 def cheatsheet() -> str:
     return "_db_filter({}) -> Statistical moments of wavelet coefficients."
+
+
+# compact alias per ledger/NAMING.md
+waveletmoments = wavelet_moments

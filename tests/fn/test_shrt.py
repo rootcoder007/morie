@@ -1,6 +1,6 @@
 """Tests for shrt.shortest_path_dijkstra."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.shrt import shortest_path_dijkstra
 

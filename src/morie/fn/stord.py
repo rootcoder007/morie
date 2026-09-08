@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -72,3 +72,7 @@ stord = stuart_ord
 
 def cheatsheet() -> str:
     return "stuart_ord({}) -> Stuart's tau-c for ordinal association."
+
+
+# compact alias per ledger/NAMING.md
+stuartord = stuart_ord

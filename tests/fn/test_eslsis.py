@@ -1,6 +1,6 @@
 """Tests for eslsis.esl_sis_screening."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslsis import esl_sis_screening
 

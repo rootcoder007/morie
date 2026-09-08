@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -120,7 +120,7 @@ def spatial_error_ml(
 
     ll_0, _, _ = _concentrated_ll(0.0)
     lr_stat = 2.0 * (ll_hat - ll_0)
-    from scipy.stats import chi2 as _chi2
+    from ._stats_core import chi2 as _chi2
 
     p_value = float(1.0 - _chi2.cdf(max(lr_stat, 0), df=1))
 
@@ -145,3 +145,7 @@ def spatial_error_ml(
 
 def cheatsheet() -> str:
     return "spatial_error_ml({}) -> Spatial error model via maximum likelihood."
+
+
+# compact alias per ledger/NAMING.md
+spatialerrorml = spatial_error_ml

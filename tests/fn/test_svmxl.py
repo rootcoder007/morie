@@ -1,6 +1,6 @@
 """Tests for morie.fn.svmxl -- Mixed logit spatial vote"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svmxl import mixed_logit_vote
 

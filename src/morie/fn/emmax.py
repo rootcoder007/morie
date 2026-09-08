@@ -11,7 +11,7 @@ def em_maximization_step(Q, theta) -> DescriptiveResult:
 
     .. epigraph:: There is no royal road to geometry. -- Euclid
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     theta = np.asarray(theta, dtype=float)
     step_size = 0.01

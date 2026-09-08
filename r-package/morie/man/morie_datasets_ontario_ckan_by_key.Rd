@@ -12,7 +12,7 @@ morie_datasets_ontario_ckan_by_key(
 }
 \arguments{
 \item{dataset_key}{One of the keys in
-\code{\link[=morie_datasets_ontario_ckan_layers]{morie_datasets_ontario_ckan_layers()}} (e.g.
+\code{morie_datasets_ontario_ckan_layers()} (e.g.
 \code{"arsau_uof_main_records_2024"}).}
 
 \item{offline}{If \code{TRUE} (default), read the bundled synthetic
@@ -28,7 +28,9 @@ A \code{data.frame}.
 Generic Ontario CKAN dataset loader (by registry key)
 }
 \examples{
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_ontario_ckan_by_key("arsau_uof_main_records_2024",
                                          offline = TRUE)
 head(df)
+\dontshow{\}) # examplesIf}
 }

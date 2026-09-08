@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -31,3 +31,7 @@ pairm = pairwise_matrix
 
 def cheatsheet() -> str:
     return "pairwise_matrix({}) -> Build pairwise comparison matrix from rankings."
+
+
+# compact alias per ledger/NAMING.md
+pairwisematrix = pairwise_matrix

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -24,3 +24,7 @@ alias = teager_energy_fn
 
 def cheatsheet() -> str:
     return "teager_energy_fn({}) -> Teager energy operator envelope."
+
+
+# compact alias per ledger/NAMING.md
+teagerenergyfn = teager_energy_fn

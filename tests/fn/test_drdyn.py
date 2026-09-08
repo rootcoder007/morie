@@ -1,6 +1,6 @@
 """Tests for drdyn.dr_dynamic_did."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drdyn import dr_dynamic_did
 

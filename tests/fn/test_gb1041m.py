@@ -1,6 +1,6 @@
 """Tests for gb1041m.gibbons_kw_mult_comp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1041m import gibbons_kw_mult_comp
 

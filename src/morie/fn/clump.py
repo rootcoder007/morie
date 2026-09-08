@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """LD-based clumping of significant SNPs."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -60,3 +60,7 @@ clump = ld_clumping
 
 def cheatsheet() -> str:
     return "ld_clumping({}) -> LD-based clumping of significant SNPs."
+
+
+# compact alias per ledger/NAMING.md
+ldclumping = ld_clumping

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -67,3 +67,7 @@ aucfn = auc_compute
 
 def cheatsheet() -> str:
     return "auc_compute({}) -> Area under ROC curve."
+
+
+# compact alias per ledger/NAMING.md
+auccompute = auc_compute

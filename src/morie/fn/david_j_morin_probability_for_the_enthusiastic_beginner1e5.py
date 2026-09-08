@@ -1,54 +1,22 @@
-"""Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Deprecated alias for :func:`morie.fn.partial_permutations`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .partial_permutations import partial_permutations as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_5"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_5(x):
-    """
-    Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: N PN = N! (remember that 0! = 1) of course, because if n = N then we’re forming an ordered list of all N objects. That is, we’re forming a permutation of all N
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner1e5')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.1 eq.1.5
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_5(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.partial_permutations` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_5() is the book-coordinate name for partial_permutations(); "
+        "it will be removed. Use morie.fn.partial_permutations() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner1e5: Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return _impl(*args, **kwargs)

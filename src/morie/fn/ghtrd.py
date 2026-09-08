@@ -5,7 +5,7 @@ Trend detection health
 Category: GeoHlth
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def ghtrd(cases=None, controls=None, exposure=None, coords=None, n=50):

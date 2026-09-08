@@ -5,7 +5,7 @@ SKATER regionalization
 Category: OptimSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def opskr(func=None, x0=None, bounds=None, n_dims=2, max_iter=100):

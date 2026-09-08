@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -37,3 +37,7 @@ stfta = stft_analysis
 
 def cheatsheet() -> str:
     return "stft_analysis({}) -> Short-Time Fourier Transform analysis."
+
+
+# compact alias per ledger/NAMING.md
+stftanalysis = stft_analysis

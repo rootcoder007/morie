@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,7 +30,7 @@ def lm_test_spatial(residuals: np.ndarray, W: np.ndarray, cdf=None) -> SpatialRe
     .. epigraph::
 
     """
-    from scipy.stats import chi2
+    from ._stats_core import chi2
 
     e = np.asarray(residuals, dtype=np.float64).ravel()
     W = np.asarray(W, dtype=np.float64)
@@ -64,3 +64,7 @@ sglml = lm_test_spatial
 
 def cheatsheet() -> str:
     return "lm_test_spatial({}) -> Lagrange multiplier tests for spatial dependence."
+
+
+# compact alias per ledger/NAMING.md
+lmtestspatial = lm_test_spatial

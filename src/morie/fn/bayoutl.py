@@ -1,6 +1,6 @@
 """Bayesian outlier detection."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -38,3 +38,7 @@ def bayes_outlier(y, outlier_prior):
 
 def cheatsheet():
     return "bayoutl: Bayesian outlier detection"
+
+
+# compact alias per ledger/NAMING.md
+bayesoutlier = bayes_outlier

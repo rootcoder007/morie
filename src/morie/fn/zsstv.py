@@ -1,6 +1,6 @@
 """Space-time kriging variance"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -37,3 +37,7 @@ st_k = st_kriging_var
 
 def cheatsheet() -> str:
     return "st_kriging_var({}) -> Space-time kriging variance"
+
+
+# compact alias per ledger/NAMING.md
+stkrigingvar = st_kriging_var

@@ -27,6 +27,24 @@
 
 # ---- Result containers ----------------------------------------------------
 
+#' .new_residual_diag
+#'
+#' A step of the diagnostics implementation. Called by \code{compute_residuals}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param raw Carried through into a list the body builds.
+#' @param std Carried through into a list the body builds.
+#' @param student Carried through into a list the body builds.
+#' @param deviance Carried through into a list the body builds.
+#' @param pearson Carried through into a list the body builds.
+#' @param fitted Carried through into a list the body builds.
+#' @param normality Carried through into a list the body builds.
+#' @param hetero Carried through into a list the body builds.
+#' @param autoc Carried through into a list the body builds.
+#' @param outlier_indices A vector; its length is taken.
+#' @return The value of \code{structure}.
+#' @export
 .new_residual_diag <- function(raw, std, student, deviance, pearson,
                                fitted, normality, hetero, autoc,
                                outlier_indices) {
@@ -46,6 +64,22 @@
   )
 }
 
+#' .new_influence_diag
+#'
+#' A step of the diagnostics implementation. Called by \code{compute_influence}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param h Carried through into a list the body builds.
+#' @param cooks Carried through into a list the body builds.
+#' @param dffits Carried through into a list the body builds.
+#' @param dfbetas Carried through into a list the body builds.
+#' @param covratio Carried through into a list the body builds.
+#' @param influential A vector; its length is taken.
+#' @param high_lev Carried through into a list the body builds.
+#' @param high_cook Carried through into a list the body builds.
+#' @return The value of \code{structure}.
+#' @export
 .new_influence_diag <- function(h, cooks, dffits, dfbetas, covratio,
                                 influential, high_lev, high_cook) {
   structure(
@@ -59,6 +93,21 @@
   )
 }
 
+#' .new_collin_diag
+#'
+#' A step of the diagnostics implementation. Called by \code{collinearity_diagnostics}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param vif Carried through into a list the body builds.
+#' @param cond_num Carried through into a list the body builds.
+#' @param cond_idx Carried through into a list the body builds.
+#' @param var_decomp Carried through into a list the body builds.
+#' @param eigvals Carried through into a list the body builds.
+#' @param n_collin Carried through into a list the body builds.
+#' @param pairs Carried through into a list the body builds.
+#' @return The value of \code{structure}.
+#' @export
 .new_collin_diag <- function(vif, cond_num, cond_idx, var_decomp,
                              eigvals, n_collin, pairs) {
   structure(
@@ -71,6 +120,20 @@
   )
 }
 
+#' .new_spec_test
+#'
+#' A step of the diagnostics implementation. Called by \code{hosmer_lemeshow_test},
+#' \code{likelihood_ratio_test}, \code{link_test} and 4 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param name Carried through into a list the body builds.
+#' @param statistic Carried through into a list the body builds.
+#' @param p_value Carried through into a list the body builds.
+#' @param df Carried through into a list the body builds.
+#' @param conclusion Carried through into a list the body builds.
+#' @return The value of \code{structure}.
+#' @export
 .new_spec_test <- function(name, statistic, p_value, df, conclusion) {
   structure(
     list(name = name, statistic = statistic, p_value = p_value,
@@ -79,6 +142,27 @@
   )
 }
 
+#' .new_gof
+#'
+#' A step of the diagnostics implementation. Called by \code{compute_goodness_of_fit}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param r_squared Carried through into a list the body builds.
+#' @param adj_r_squared Carried through into a list the body builds.
+#' @param pseudo_r_squared Carried through into a list the body builds.
+#' @param aic Carried through into a list the body builds.
+#' @param bic Carried through into a list the body builds.
+#' @param log_likelihood Carried through into a list the body builds.
+#' @param deviance Carried through into a list the body builds.
+#' @param pearson_chi2 Carried through into a list the body builds.
+#' @param df_model Carried through into a list the body builds.
+#' @param df_residual Carried through into a list the body builds.
+#' @param f_statistic Carried through into a list the body builds.
+#' @param f_pvalue Carried through into a list the body builds.
+#' @param n_obs Carried through into a list the body builds.
+#' @return The value of \code{structure}.
+#' @export
 .new_gof <- function(r_squared, adj_r_squared, pseudo_r_squared,
                     aic, bic, log_likelihood, deviance, pearson_chi2,
                     df_model, df_residual, f_statistic, f_pvalue, n_obs) {
@@ -94,6 +178,20 @@
   )
 }
 
+#' .new_diag_report
+#'
+#' A step of the diagnostics implementation. Called by \code{full_diagnostics}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param residuals Carried through into a list the body builds.
+#' @param influence Carried through into a list the body builds.
+#' @param collinearity Carried through into a list the body builds.
+#' @param gof Carried through into a list the body builds.
+#' @param spec_tests Carried through into a list the body builds.
+#' @param assessment Carried through into a list the body builds.
+#' @return The value of \code{structure}.
+#' @export
 .new_diag_report <- function(residuals, influence, collinearity,
                              gof, spec_tests, assessment) {
   structure(
@@ -106,6 +204,20 @@
 }
 
 # Solve / pseudo-inverse helper.
+#' Solve / pseudo-inverse helper
+#'
+#' A step of the diagnostics implementation. Called by \code{compute_influence},
+#' \code{compute_residuals}, \code{compute_vif} and 2 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param A A matrix; passed to \code{solve}.
+#' @return One of two values, depending on the branch taken.
+#' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' res <- .safe_solve(A = A)
+#' res
 .safe_solve <- function(A) {
   res <- try(solve(A), silent = TRUE)
   if (inherits(res, "try-error")) .morie_ginv(A) else res
@@ -309,6 +421,15 @@ compute_vif <- function(X, column_names = NULL) {
   X <- as.matrix(X)
   n <- nrow(X)
   p <- ncol(X)
+  # A VIF states how far one column is explained by the others, so a
+  # single column has none. Without this guard the loop below regresses
+  # on an intercept alone and silently returns 1 for a quantity that is
+  # undefined. Matches the guards in morie.fn.vif (Python).
+  if (p < 2L)
+    stop("VIF needs at least 2 predictors, got ", p, ".", call. = FALSE)
+  if (n <= p)
+    stop("VIF needs more observations than predictors, got n=", n,
+         ", p=", p, ".", call. = FALSE)
   if (is.null(column_names))
     column_names <- if (!is.null(colnames(X))) colnames(X)
                     else paste0("X", seq_len(p) - 1L)
@@ -410,20 +531,37 @@ collinearity_diagnostics <- function(X, column_names = NULL) {
 #'   to the auxiliary regression (default \code{c(2, 3)}).
 #' @return A \code{morie_specification_test}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' ramsey_reset_test(V, V)
 ramsey_reset_test <- function(y, X, powers = c(2, 3)) {
   y <- as.numeric(y)
   X <- as.matrix(X)
   n <- nrow(X)
   p <- ncol(X)
 
-  beta_r <- drop(.safe_solve(crossprod(X)) %*% crossprod(X, y))
+  beta_r <- drop(qr.coef(qr(X), y))
+  beta_r[is.na(beta_r)] <- 0
   y_hat <- drop(X %*% beta_r)
   ssr_r <- sum((y - y_hat) ^ 2)
 
+  # Scale the fitted values to unit maximum before raising them to
+  # powers. This does not change the column span of the augmented
+  # design -- and so cannot change the F statistic in exact arithmetic
+  # -- but it decides whether the computed one is right. Cubing an
+  # unscaled y_hat makes the condition number of the augmented design
+  # grow with the SIXTH power of the response scale: on a quadratic
+  # design whose true F is 315.08, multiplying y by 100 returned
+  # 229.06 and by 1000 returned 125.59, and on another design the
+  # statistic came out NEGATIVE. Solving by QR rather than through the
+  # normal equations avoids squaring the condition number again.
+  scale <- max(abs(y_hat))
+  if (!is.finite(scale) || scale <= 0) scale <- 1
   X_u <- X
-  for (pw in powers) X_u <- cbind(X_u, y_hat ^ pw)
+  for (pw in powers) X_u <- cbind(X_u, (y_hat / scale) ^ pw)
   p_u <- ncol(X_u)
-  beta_u <- drop(.safe_solve(crossprod(X_u)) %*% crossprod(X_u, y))
+  beta_u <- drop(qr.coef(qr(X_u), y))
+  beta_u[is.na(beta_u)] <- 0
   y_hat_u <- drop(X_u %*% beta_u)
   ssr_u <- sum((y - y_hat_u) ^ 2)
 
@@ -637,6 +775,9 @@ compute_goodness_of_fit <- function(y, y_hat, X,
 #' @return A list of \code{morie_specification_test} objects, one per
 #'   covariate.
 #' @export
+#' @examples
+#' ph_assumption_test(survival_times = c(1, 2, 3, 4, 5, 6, 7, 8), event_indicator =
+#' matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
 ph_assumption_test <- function(survival_times, event_indicator,
                                covariates, covariate_names = NULL) {
   times <- as.numeric(survival_times)
@@ -711,6 +852,8 @@ likelihood_ratio_test <- function(ll_restricted, ll_full, df_diff) {
 #' @param r Optional restriction vector (default zeros).
 #' @return A \code{morie_specification_test}.
 #' @export
+#' @examples
+#' wald_test(estimates = 5L, vcov = 5L)
 wald_test <- function(estimates, vcov, R = NULL, r = NULL) {
   beta <- as.numeric(estimates)
   V <- as.matrix(vcov)
@@ -741,6 +884,8 @@ wald_test <- function(estimates, vcov, R = NULL, r = NULL) {
 #' @param information_matrix Information matrix under H0.
 #' @return A \code{morie_specification_test}.
 #' @export
+#' @examples
+#' score_test(score_vector = 5L, information_matrix = 5L)
 score_test <- function(score_vector, information_matrix) {
   U <- as.numeric(score_vector)
   I_mat <- as.matrix(information_matrix)

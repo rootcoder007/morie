@@ -1,6 +1,6 @@
 """Tests for btsieve.boot_sieve_general."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btsieve import boot_sieve_general
 

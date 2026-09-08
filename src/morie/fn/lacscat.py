@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Moran scatterplot quadrant classification."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

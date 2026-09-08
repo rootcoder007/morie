@@ -20,7 +20,7 @@ def stress2_measure(D_obs, D_model):
     DescriptiveResult
         value = stress-2 (float).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     D_obs = np.asarray(D_obs, dtype=float)
     D_model = np.asarray(D_model, dtype=float)
@@ -40,3 +40,7 @@ strs2 = stress2_measure
 
 def cheatsheet() -> str:
     return "stress2_measure({}) -> Stress-2 measure."
+
+
+# compact alias per ledger/NAMING.md
+stress2measure = stress2_measure

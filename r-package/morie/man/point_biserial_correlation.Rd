@@ -21,3 +21,12 @@ df, Fisher-z CI, and r-squared effect size.
 \description{
 Point-biserial correlation
 }
+\examples{
+set.seed(1)
+v1 <- rbinom(30, 1, 0.4)
+v2 <- rbinom(30, 1, 0.5)
+v3 <- rbinom(30, 1, 0.6)
+res <- cochrans_q(v1, v2, v3)
+res$p_value
+point_biserial_correlation(binary = v1, continuous = v1)
+}

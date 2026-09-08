@@ -1,6 +1,6 @@
 """Tests for ksr049.kosorok_ch2_z_master_linearization."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr049 import kosorok_ch2_z_master_linearization
 

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.integrate import odeint
+from . import _array_core as np
+from ._sci_core import odeint
 
 from ._containers import SIRResult
 
@@ -82,3 +82,7 @@ sirs = sirs_model
 
 def cheatsheet() -> str:
     return "sirs_model({}) -> SIRS compartmental model (waning immunity)."
+
+
+# compact alias per ledger/NAMING.md
+sirsmodel = sirs_model

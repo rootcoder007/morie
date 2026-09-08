@@ -1,6 +1,6 @@
 """Tests for morie.fn.pcchy -- Cauchy CDF."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pcchy import pcchy

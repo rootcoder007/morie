@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -47,3 +47,7 @@ catsc = cat_score_fn
 
 def cheatsheet() -> str:
     return "cat_score_fn({}) -> Criterion Autoregressive Transfer function for model order s"
+
+
+# compact alias per ledger/NAMING.md
+catscorefn = cat_score_fn

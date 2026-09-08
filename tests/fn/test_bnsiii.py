@@ -1,6 +1,6 @@
 """Tests for bnsiii.bound_iii."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bnsiii import bound_iii
 

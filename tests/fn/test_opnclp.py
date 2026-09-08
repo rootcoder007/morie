@@ -1,6 +1,6 @@
 """Tests for opnclp.open_clip."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.opnclp import open_clip
 

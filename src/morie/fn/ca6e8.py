@@ -1,54 +1,22 @@
-"""Dispersion expression involving 'distribution' (auto-extracted; see reference for full context).."""
+"""Deprecated alias for :func:`morie.fn.negative_binomial_variance`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .negative_binomial_variance import negative_binomial_variance as _impl
 
 __all__ = ["ca_chapter_6_equation_8"]
 
 
-def ca_chapter_6_equation_8(x):
-    """
-    Dispersion expression involving 'distribution' (auto-extracted; see reference for full context).
-
-    Formula: Var Y() = μ + μ2α
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca6e8')`` for the full guide.
-
-    References
-    ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.6 eq.6.8
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Dispersion expression involving 'distribution' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion expression involving 'distribution' (auto-extracted; see reference for full context).",
-        },
+def ca_chapter_6_equation_8(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.negative_binomial_variance` instead."""
+    warnings.warn(
+        "ca_chapter_6_equation_8() is the book-coordinate name for negative_binomial_variance(); "
+        "it will be removed. Use morie.fn.negative_binomial_variance() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "ca6e8: Dispersion expression involving 'distribution' (auto-extracted; see reference for full context)."
+    return _impl(*args, **kwargs)

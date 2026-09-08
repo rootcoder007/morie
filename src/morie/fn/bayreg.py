@@ -1,6 +1,6 @@
 """Bayesian linear regression."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def bayes_linear(y, X, prior_var):
 
 def cheatsheet():
     return "bayreg: Bayesian linear regression"
+
+
+# compact alias per ledger/NAMING.md
+bayeslinear = bayes_linear

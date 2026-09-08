@@ -1,54 +1,22 @@
-"""Probability equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Deprecated alias for :func:`morie.fn.difference_estimator`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .difference_estimator import difference_estimator as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_2"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_2(x):
-    """
-    Probability equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
-
-    Formula: probabilities, equals the population size: ∑𝑘∈𝒮 1/𝜋𝑘 = 𝑁 . Only for some unequal probability sampling designs this may not be the case
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r10e2')`` for the full guide.
-
-    References
-    ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.10 eq.10.2
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Probability equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_2(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.difference_estimator` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_2() is the book-coordinate name for difference_estimator(); "
+        "it will be removed. Use morie.fn.difference_estimator() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r10e2: Probability equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return _impl(*args, **kwargs)

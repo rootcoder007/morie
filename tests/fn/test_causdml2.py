@@ -1,6 +1,6 @@
 """Tests for causdml2.causal_dml_partial_lin."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causdml2 import causal_dml_partial_lin
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PCA via SVD (pure numpy)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -48,3 +48,7 @@ pca_ = pca_simple
 
 def cheatsheet() -> str:
     return "pca_simple({}) -> PCA via SVD (pure numpy)."
+
+
+# compact alias per ledger/NAMING.md
+pcasimple = pca_simple

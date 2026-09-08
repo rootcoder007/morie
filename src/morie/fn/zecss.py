@@ -1,6 +1,6 @@
 """Spatial CUSUM aberration detection"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ cusu = cusum_spatial
 
 def cheatsheet() -> str:
     return "cusum_spatial({}) -> Spatial CUSUM aberration detection"
+
+
+# compact alias per ledger/NAMING.md
+cusumspatial = cusum_spatial

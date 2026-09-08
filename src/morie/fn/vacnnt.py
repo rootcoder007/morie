@@ -43,3 +43,7 @@ vacnnt = vaccine_nnt
 
 def cheatsheet() -> str:
     return "vaccine_nnt({}) -> Number needed to vaccinate (NNV)."
+
+
+# compact alias per ledger/NAMING.md
+vaccinennt = vaccine_nnt

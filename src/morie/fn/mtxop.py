@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -73,3 +73,7 @@ mtxop = matrix_function
 
 def cheatsheet() -> str:
     return "mtxop() -> Compute a matrix function f(A) via eigendecomposition"
+
+
+# compact alias per ledger/NAMING.md
+matrixfunction = matrix_function

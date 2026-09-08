@@ -1,53 +1,22 @@
-"""Posterior covariance between the j-th and j'-th weights of a countable Dirichlet process given n observations.."""
+"""Deprecated alias for :func:`morie.fn.cdp_posterior_cov`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .cdp_posterior_cov import cdp_posterior_cov as _impl
 
 __all__ = ["ghosal_ch3_dirichlet_posterior_cov"]
 
 
-def ghosal_ch3_dirichlet_posterior_cov(alpha_j, alpha_jprime, N_j, N_jprime, n):
-    """
-    Posterior covariance between the j-th and j'-th weights of a countable Dirichlet process given n observations.
-
-    Formula: cov(p_j, p_{j'} | X_1, ..., X_n) = - (alpha_j + N_j) * (alpha_{j'} + N_{j'}) / ( ( sum_{l=1}^{infty} alpha_l + n )^2 * ( sum_{l=1}^{infty} alpha_l + n + 1 ) )
-
-    Parameters
-    ----------
-    alpha_j : array-like
-        Input data.
-    alpha_jprime : array-like
-        Input data.
-    N_j : array-like
-        Input data.
-    N_jprime : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.9, p. 33
-    """
-    alpha_j = np.atleast_1d(np.asarray(alpha_j, dtype=float))
-    n = len(alpha_j)
-    result = float(np.mean(alpha_j))
-    se = float(np.std(alpha_j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Posterior covariance between the j-th and j'-th weights of a countable Dirichlet process given n observations.",
-        }
+def ghosal_ch3_dirichlet_posterior_cov(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.cdp_posterior_cov` instead."""
+    warnings.warn(
+        "ghosal_ch3_dirichlet_posterior_cov() is the book-coordinate name for cdp_posterior_cov(); "
+        "it will be removed. Use morie.fn.cdp_posterior_cov() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "ghs016: Posterior covariance between the j-th and j'-th weights of a countable Dirichlet process given n observations."
+    return _impl(*args, **kwargs)

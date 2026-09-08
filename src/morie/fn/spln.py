@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.interpolate import CubicSpline
+from . import _array_core as np
+from ._sci_core import CubicSpline
 
 from ._containers import DescriptiveResult
 

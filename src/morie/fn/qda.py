@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -34,3 +34,7 @@ qda = qda_fn
 
 def cheatsheet() -> str:
     return "qda_fn({}) -> Quadratic Discriminant Analysis classifier."
+
+
+# compact alias per ledger/NAMING.md
+qdafn = qda_fn

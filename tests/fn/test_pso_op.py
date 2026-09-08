@@ -1,6 +1,6 @@
 """Tests for pso_op.particle_swarm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pso_op import particle_swarm
 

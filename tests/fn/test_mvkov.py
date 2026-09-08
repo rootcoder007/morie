@@ -1,6 +1,6 @@
 """Tests for morie.fn.mvkov — Moving window variogram."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mvkov import mvkov

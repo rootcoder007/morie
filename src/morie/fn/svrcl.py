@@ -1,6 +1,6 @@
 """Roll call logit model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ roll = roll_call_logit
 
 def cheatsheet() -> str:
     return "roll_call_logit({}) -> Roll call logit model"
+
+
+# compact alias per ledger/NAMING.md
+rollcalllogit = roll_call_logit

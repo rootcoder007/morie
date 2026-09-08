@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -49,3 +49,7 @@ mnfrq = mean_frequency
 
 def cheatsheet() -> str:
     return "mean_frequency({}) -> Mean frequency from spectral moments."
+
+
+# compact alias per ledger/NAMING.md
+meanfrequency = mean_frequency

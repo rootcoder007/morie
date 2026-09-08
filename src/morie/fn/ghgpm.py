@@ -1,9 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gaussian-process regression -- Matern kernel."""
 
-import numpy as np
-from scipy.special import gamma as gammafn
-from scipy.special import kv
+from . import _array_core as np
+from ._sci_core import gamma as gammafn
+from ._sci_core import kv
 
 from ._richresult import RichResult
 
@@ -106,3 +106,7 @@ def cheatsheet():
 # >>> r = ghosal_gp_matern(x, y, nu=1.5)
 # >>> r["se"] >= 0
 # True
+
+
+# compact alias per ledger/NAMING.md
+ghosalgpmatern = ghosal_gp_matern

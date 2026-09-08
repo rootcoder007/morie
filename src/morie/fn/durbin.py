@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -47,3 +47,7 @@ durbin = durbin_watson
 
 def cheatsheet() -> str:
     return "durbin_watson({}) -> Durbin-Watson autocorrelation test."
+
+
+# compact alias per ledger/NAMING.md
+durbinwatson = durbin_watson

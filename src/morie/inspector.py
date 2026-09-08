@@ -21,8 +21,8 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from .modules import MODULE_SPECS
 

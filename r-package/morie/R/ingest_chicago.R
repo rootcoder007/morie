@@ -51,6 +51,23 @@ morie_ingest_chicago_resources <- function() {
 }
 
 # Internal: a single Socrata SoQL GET against `resource_url`.
+#' Internal: a single Socrata SoQL GET against `resource_url`
+#'
+#' A step of the ingest_chicago implementation. Called by \code{morie_ingest_chicago_socrata}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param resource_url Passed to \code{.morie_dataset_http_text}.
+#' @param where Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param select Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param order Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param limit Coerced to integer by the body, with \code{as.integer}.
+#' @param offset Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.
+#' @param app_token Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param user_agent Accepted by the signature and not used anywhere in the body.
+#' @param timeout Coerced to integer by the body, with \code{as.integer}.
+#' @return The value of \code{payload}, as built in the body.
+#' @export
 .morie_chicago_socrata_get <- function(resource_url,
                                        where = NULL,
                                        select = NULL,
@@ -119,6 +136,13 @@ morie_ingest_chicago_resources <- function() {
 
 # Internal: bind a list-of-row-lists to a data.frame, tolerating
 # heterogeneous JSON shapes (missing columns become NA).
+#' Internal: bind a list-of-row-lists to a data.frame, tolerating
+#'
+#' heterogeneous JSON shapes (missing columns become NA).
+#'
+#' @param rows A vector; its length is taken.
+#' @return The value of \code{do.call}.
+#' @export
 .morie_chicago_rows_to_df <- function(rows) {
   if (length(rows) == 0L) {
     return(data.frame())
@@ -158,7 +182,7 @@ morie_ingest_chicago_resources <- function() {
 #' @param user_agent,timeout Standard request knobs.
 #' @return A base R \code{data.frame}.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Chicago crimes (schema verified 2026-07: `year` is a real column)
 #' df <- try(morie_ingest_chicago_socrata(
 #'   "https://data.cityofchicago.org/resource/ijzp-q8t2.json",
@@ -302,7 +326,7 @@ morie_ingest_chicago_crime <- function(year = NULL,
 #' @seealso \code{\link{morie_ingest_chicago_crime}},
 #'   \code{\link{morie_ingest_bigquery_table}}
 #' @examples
-#' \donttest{try(morie_ingest_chicago_crime_bigquery())}
+#' \dontrun{
 #' @export
 morie_ingest_chicago_crime_bigquery <- function(where = NULL,
                                                 year = NULL,

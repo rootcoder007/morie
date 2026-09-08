@@ -12,7 +12,7 @@ JMLR, 15(56), 1929-1958.
 
 __all__ = ["drupt"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def drupt(

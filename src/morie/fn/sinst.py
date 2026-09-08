@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 from ._helpers import _extract_col
@@ -61,3 +61,7 @@ sinst = vol_of_vol
 
 def cheatsheet() -> str:
     return "vol_of_vol({}) -> Volatility of volatility (VIX-like)."
+
+
+# compact alias per ledger/NAMING.md
+volofvol = vol_of_vol

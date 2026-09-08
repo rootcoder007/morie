@@ -10,8 +10,8 @@ entropy integral.  This callable returns that integral as a
 quantitative Donsker-class diagnostic.
 """
 
-import numpy as np
-from scipy import integrate
+from . import _array_core as np
+from ._sci_core import integrate
 
 from ._richresult import RichResult
 

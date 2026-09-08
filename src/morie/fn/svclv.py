@@ -1,6 +1,6 @@
 """Coalition value in spatial game"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ coal = coalition_value
 
 def cheatsheet() -> str:
     return "coalition_value({}) -> Coalition value in spatial game"
+
+
+# compact alias per ledger/NAMING.md
+coalitionvalue = coalition_value

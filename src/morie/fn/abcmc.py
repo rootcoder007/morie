@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def abc_mcmc(
@@ -35,7 +35,9 @@ def abc_mcmc(
 
     References
     ----------
-    Marjoram, P., et al. (2003). *PNAS*, 100(26), 15324--15328.
+    Marjoram, P., Molitor, J., Plagnol, V., & Tavare, S. (2003). Markov
+        chain Monte Carlo without likelihoods. *Proceedings of the
+        National Academy of Sciences*, 100(26), 15324-15328.
     """
     rng = np.random.default_rng(seed)
     obs = np.asarray(observed_summary, dtype=float)
@@ -76,3 +78,7 @@ abcmc = abc_mcmc
 
 def cheatsheet() -> str:
     return "abc_mcmc({}) -> ABC-MCMC (Marjoram et al. 2003)."
+
+
+# compact alias per ledger/NAMING.md
+abcmcmc = abc_mcmc

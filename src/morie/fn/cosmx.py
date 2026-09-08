@@ -3,8 +3,8 @@
 
 __all__ = ["cosmx"]
 
-import numpy as np
-from scipy.integrate import quad
+from . import _array_core as np
+from ._sci_core import quad
 
 
 def cosmx(

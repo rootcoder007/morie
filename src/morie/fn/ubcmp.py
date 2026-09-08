@@ -4,7 +4,7 @@ Urban compactness
 Category: UrbanSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def ubcmp(population=None, area=None, coords=None, n=50):

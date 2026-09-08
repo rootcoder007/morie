@@ -31,7 +31,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 PROJECT = Path(__file__).resolve().parents[5]
 TPS_DATA_DIR = PROJECT / "data/datasets/TPS"

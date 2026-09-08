@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -21,7 +21,13 @@ def oc_scaling(vote_matrix, n_dims: int = 1) -> DescriptiveResult:
 
     References
     ----------
-    Armstrong (2014), Ch 7. Poole (2000).
+    Poole, K. T. (2000). Nonparametric unfolding of binary choice
+    data. *Political Analysis*, 8(3), 211-237. (Optimal
+    Classification; PDF in the library, pp. 211-212 verified)
+
+    Armstrong, D. A. et al. (2014). *Analyzing Spatial Models of
+    Choice and Judgment*. CRC Press. Sec. 5.4, p. 156. The former
+    "Ch 7" citation was fabricated: the book has six chapters.
 
     .. epigraph:: Mathematics is the queen of the sciences. -- Carl Friedrich Gauss
     """
@@ -74,3 +80,7 @@ ocslt = oc_scaling
 
 def cheatsheet() -> str:
     return "oc_scaling({}) -> Optimal classification (OC) scaling."
+
+
+# compact alias per ledger/NAMING.md
+ocscaling = oc_scaling

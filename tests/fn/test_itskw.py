@@ -1,6 +1,6 @@
 """Tests for morie.fn.itskw — item skewness and kurtosis."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.itskw import item_skew_kurt
 

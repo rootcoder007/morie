@@ -1,6 +1,6 @@
 """Test zero_crossing_rate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.zcr import alias, zero_crossing_rate

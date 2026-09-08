@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -39,3 +39,7 @@ spowr = signal_power
 
 def cheatsheet() -> str:
     return "signal_power({}) -> Signal power."
+
+
+# compact alias per ledger/NAMING.md
+signalpower = signal_power

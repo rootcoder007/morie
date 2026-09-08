@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gamma function."""
 
-from scipy.special import gamma as _g
+from ._sci_core import gamma as _g
 
 
 def gammfn(x):

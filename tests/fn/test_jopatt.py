@@ -1,6 +1,6 @@
 """Tests for jopatt.joseph_patchtst."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jopatt import joseph_patchtst
 

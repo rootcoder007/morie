@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -47,7 +47,7 @@ def unobserved_components(x, period=12, trend="local linear"):
         raise ValueError(f"Need at least max(2*period, 6) obs, got {n}.")
 
     try:
-        from statsmodels.tsa.statespace.structural import UnobservedComponents
+        from ._ts_core import UnobservedComponents
 
         kwargs = dict(level=trend, freq_seasonal=None)
         if period and period > 1:

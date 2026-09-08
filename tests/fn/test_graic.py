@@ -1,22 +1,11 @@
-"""Tests for graic.geron_aic_gmm."""
+"""Tests for graic (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.graic import geron_aic_gmm
-
-
-def test_graic_basic():
-    """Test basic functionality."""
-    log_likelihood = np.random.default_rng(42).normal(0, 1, 100)
-    n_params = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_aic_gmm(log_likelihood, n_params)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.graic as mod
 
 
-def test_graic_edge():
-    """Test edge cases."""
-    log_likelihood = np.random.default_rng(42).normal(0, 1, 100)
-    n_params = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_aic_gmm(log_likelihood, n_params)
-    assert isinstance(result, dict)
+def test_graic_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

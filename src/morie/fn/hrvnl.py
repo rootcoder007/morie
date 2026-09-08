@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -42,3 +42,7 @@ hrvnl = hrv_nonlinear
 
 def cheatsheet() -> str:
     return "hrv_nonlinear({}) -> HRV nonlinear metrics."
+
+
+# compact alias per ledger/NAMING.md
+hrvnonlinear = hrv_nonlinear

@@ -1,26 +1,15 @@
 """Tests for alchk.alammar_recursive_chunking."""
 
-import numpy as np
-
 from morie.fn.alchk import alammar_recursive_chunking
 
 
 def test_alchk_basic():
-    """Test basic functionality."""
-    text = np.random.default_rng(42).normal(0, 1, 100)
-    separators = np.random.default_rng(42).normal(0, 1, 100)
-    target_size = 100
-    overlap = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_recursive_chunking(text, separators, target_size, overlap)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_recursive_chunking("aa bb. cc dd. ee",
+        separators=[". ", " "], target_size=6)
+    assert out["chunks"] == ["aa bb", "cc dd", "ee"]
 
 
 def test_alchk_edge():
-    """Test edge cases."""
-    text = np.random.default_rng(42).normal(0, 1, 100)
-    separators = np.random.default_rng(42).normal(0, 1, 100)
-    target_size = 100
-    overlap = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_recursive_chunking(text, separators, target_size, overlap)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="overlap"):
+        alammar_recursive_chunking("x", target_size=3, overlap=3)

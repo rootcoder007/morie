@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ baysc = baysc_fn
 
 def cheatsheet() -> str:
     return "baysc_fn({}) -> Bayesian classifier (Gaussian generative model)."
+
+
+# compact alias per ledger/NAMING.md
+bayscfn = baysc_fn

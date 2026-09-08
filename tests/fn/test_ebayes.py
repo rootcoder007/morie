@@ -1,6 +1,6 @@
 """Tests for ebayes.empirical_bayes_shrinkage."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ebayes import empirical_bayes_shrinkage
 

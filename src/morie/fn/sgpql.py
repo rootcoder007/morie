@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -96,3 +96,7 @@ sgpql = pql_spatial_glmm
 
 def cheatsheet() -> str:
     return "pql_spatial_glmm({}) -> Penalized quasi-likelihood spatial GLMM."
+
+
+# compact alias per ledger/NAMING.md
+pqlspatialglmm = pql_spatial_glmm

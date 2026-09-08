@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -34,3 +34,7 @@ logcl = logcl_fn
 
 def cheatsheet() -> str:
     return "logcl_fn({}) -> Logistic regression classifier (gradient descent)."
+
+
+# compact alias per ledger/NAMING.md
+logclfn = logcl_fn

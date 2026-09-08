@@ -1,6 +1,6 @@
 """Tests for msmpoi.msm_poisson."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msmpoi import msm_poisson
 

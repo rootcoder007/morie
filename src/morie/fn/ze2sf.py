@@ -1,6 +1,6 @@
 """Two-step floating catchment area"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ two_ = two_step_fca
 
 def cheatsheet() -> str:
     return "two_step_fca({}) -> Two-step floating catchment area"
+
+
+# compact alias per ledger/NAMING.md
+twostepfca = two_step_fca

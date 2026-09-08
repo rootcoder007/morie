@@ -13,7 +13,7 @@ Methodological Issues. Birkhauser Boston.
 
 __all__ = ["ipcwt"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def ipcwt(

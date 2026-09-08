@@ -11,7 +11,7 @@ def nominate_parameters(votes, X, nv, mid) -> DescriptiveResult:
 
     .. epigraph:: A journey of a thousand miles begins with a single step. -- Lao Tzu
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     nv = np.asarray(nv, dtype=float)
     mid = np.asarray(mid, dtype=float)

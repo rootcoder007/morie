@@ -2,9 +2,9 @@
 
 import math
 
-import numpy as np
-import pandas as pd
-import scipy.stats as scipy_stats
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as scipy_stats
 
 
 def subpopulation_estimate(

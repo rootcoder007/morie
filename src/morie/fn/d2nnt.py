@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Convert Cohen's d to NNT (Kraemer and Kupfer, 2006)."""
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 
 def d_to_nnt(d: float, base_rate: float = 0.5, cdf=None) -> float:
@@ -32,3 +32,7 @@ d2nnt = d_to_nnt
 
 def cheatsheet() -> str:
     return "d_to_nnt({}) -> Convert Cohen's d to NNT (Kraemer and Kupfer, 2006)."
+
+
+# compact alias per ledger/NAMING.md
+dtonnt = d_to_nnt

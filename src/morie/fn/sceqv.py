@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def score_equate(
@@ -70,3 +70,7 @@ def score_equate(
 
 def cheatsheet() -> str:
     return "score_equate({}) -> Score equating between forms."
+
+
+# compact alias per ledger/NAMING.md
+scoreequate = score_equate

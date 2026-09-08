@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -104,3 +104,7 @@ gclus = geo_cluster
 
 def cheatsheet() -> str:
     return "geo_cluster({}) -> Geographic k-means clustering."
+
+
+# compact alias per ledger/NAMING.md
+geocluster = geo_cluster

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import CrimeResult
 
@@ -55,3 +55,7 @@ crtjr = court_jordan
 
 def cheatsheet() -> str:
     return "court_jordan({}) -> R v Jordan compliance (18/30 month ceiling)."
+
+
+# compact alias per ledger/NAMING.md
+courtjordan = court_jordan

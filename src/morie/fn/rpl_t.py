@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._otis_const import DEFAULT_COLS
 
@@ -40,3 +40,7 @@ rpl_t = rplace_trend
 
 def cheatsheet() -> str:
     return "rplace_trend({}) -> Placement trend over time (year-level counts)."
+
+
+# compact alias per ledger/NAMING.md
+rplacetrend = rplace_trend

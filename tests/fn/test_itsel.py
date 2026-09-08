@@ -1,7 +1,7 @@
 """Tests for morie.fn.itsel — item selection / flagging."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn.itsel import item_select
 

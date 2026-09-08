@@ -16,7 +16,7 @@ def polarity_check(stimulus_positions) -> DescriptiveResult:
 
     .. epigraph:: The heart has its reasons of which reason knows nothing. -- Blaise Pascal
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pos = np.asarray(stimulus_positions, dtype=float).ravel()
     flipped = False
@@ -35,3 +35,7 @@ polck = polarity_check
 
 def cheatsheet() -> str:
     return "polarity_check({}) -> Polarity check and correction for stimulus positions."
+
+
+# compact alias per ledger/NAMING.md
+polaritycheck = polarity_check

@@ -1,8 +1,8 @@
 """Tests for rglindf.rangayyan_linear_discrim."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rglindf import rangayyan_linear_discrim
+from morie.fn.bsaclass import rangayyan_linear_discrim
 
 
 def test_rglindf_basic():

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -53,3 +53,7 @@ apen = approx_entropy
 
 def cheatsheet() -> str:
     return "approx_entropy({}) -> Approximate entropy."
+
+
+# compact alias per ledger/NAMING.md
+approxentropy = approx_entropy

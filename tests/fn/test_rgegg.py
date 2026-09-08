@@ -1,8 +1,8 @@
 """Tests for rgegg.rangayyan_egg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgegg import rangayyan_egg
+from morie.fn.bsaphys import rangayyan_egg
 
 
 def test_rgegg_basic():

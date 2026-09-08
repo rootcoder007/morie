@@ -1,6 +1,6 @@
 """Tests for km3h.kamath_3h_alignment."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km3h import kamath_3h_alignment
 

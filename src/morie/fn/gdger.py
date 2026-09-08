@@ -5,7 +5,7 @@ Gerrymandering detection
 Category: GeoDem
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gdger(population=None, births=None, deaths=None, coords=None, n=50):

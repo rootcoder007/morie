@@ -5,7 +5,7 @@ Coral bleaching trend
 Category: GeoClim
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gccor(data=None, coords=None, n=50):

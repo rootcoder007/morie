@@ -1,6 +1,6 @@
 """Tests for otmarsh.ot_marginal_shift."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otmarsh import ot_marginal_shift
 

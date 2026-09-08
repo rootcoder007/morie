@@ -1,28 +1,16 @@
 """Tests for alkvc2.alammar_kv_cache_lookup."""
 
-import numpy as np
-
 from morie.fn.alkvc2 import alammar_kv_cache_lookup
 
 
 def test_alkvc2_basic():
-    """Test basic functionality."""
-    K_cache = np.random.default_rng(42).normal(0, 1, 100)
-    V_cache = np.random.default_rng(42).normal(0, 1, 100)
-    k_new = np.random.default_rng(42).normal(0, 1, 100)
-    v_new = np.random.default_rng(42).normal(0, 1, 100)
-    q_new = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_kv_cache_lookup(K_cache, V_cache, k_new, v_new, q_new)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_kv_cache_lookup(None, None, [[1.0, 0.0]],
+                                  [[2.0]], [[1.0, 0.0]])
+    assert out["cache_length"] == 1
+    assert out["output"] == [2.0]
 
 
 def test_alkvc2_edge():
-    """Test edge cases."""
-    K_cache = np.random.default_rng(42).normal(0, 1, 100)
-    V_cache = np.random.default_rng(42).normal(0, 1, 100)
-    k_new = np.random.default_rng(42).normal(0, 1, 100)
-    v_new = np.random.default_rng(42).normal(0, 1, 100)
-    q_new = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_kv_cache_lookup(K_cache, V_cache, k_new, v_new, q_new)
-    assert isinstance(result, dict)
+    out = alammar_kv_cache_lookup([[1.0, 0.0]], [[1.0]], [[0.0, 1.0]],
+                                  [[3.0]], [[0.0, 1.0]])
+    assert out["cache_length"] == 2

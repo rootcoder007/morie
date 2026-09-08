@@ -1,6 +1,6 @@
 """Tests for morie.fn.crssp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.crssp import crssp
 

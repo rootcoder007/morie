@@ -1,6 +1,6 @@
 """Tests for shYa.shunting_yard."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.shYa import shunting_yard
 

@@ -1,6 +1,6 @@
 """Spatial panel fixed effects"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -28,3 +28,7 @@ spat = spatial_panel_fe
 
 def cheatsheet() -> str:
     return "spatial_panel_fe({}) -> Spatial panel fixed effects"
+
+
+# compact alias per ledger/NAMING.md
+spatialpanelfe = spatial_panel_fe

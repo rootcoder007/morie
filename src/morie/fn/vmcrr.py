@@ -4,7 +4,7 @@ Correlogram from variogram
 Category: Variogram
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def vmcrr(x=None, y=None, values=None, n_lags=15, max_lag=None):

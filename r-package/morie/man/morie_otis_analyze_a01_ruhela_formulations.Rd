@@ -4,7 +4,7 @@
 \alias{morie_otis_analyze_a01_ruhela_formulations}
 \alias{morie_otis_analyze_a01_dlrm}
 \alias{morie_otis_analyze_a01_mrm}
-\title{OTIS a01 Ruhela formulations (full DLRM).}
+\title{OTIS a01 Ruhela formulations (full DLRM)}
 \usage{
 morie_otis_analyze_a01_ruhela_formulations(data = NULL, out_dir = NULL)
 
@@ -27,7 +27,9 @@ SuperLearner) on the canonical alert-complexity -> regional-
 volatility formulation.
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_a01 <- morie_synth_otis("a01", n = 120L, seed = 1L)
 morie_otis_analyze_a01_ruhela_formulations(otis_a01)
+}
 }

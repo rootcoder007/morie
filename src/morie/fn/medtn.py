@@ -6,7 +6,7 @@ from __future__ import annotations
 import math
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def causal_mediation(
@@ -40,7 +40,7 @@ def causal_mediation(
     effects in structural equation models. *Sociological Methodology*,
     13, 290--312.
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     Xv = np.asarray(X, dtype=float).ravel()
     Mv = np.asarray(M, dtype=float).ravel()

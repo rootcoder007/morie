@@ -1,6 +1,6 @@
 """Tests for otmqd.ot_quantization_distortion."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otmqd import ot_quantization_distortion
 

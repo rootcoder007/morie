@@ -1,7 +1,7 @@
 """Spatial lag model (SLM) estimation."""
 
-import numpy as np
-from scipy import optimize
+from . import _array_core as np
+from ._sci_core import optimize
 
 from ._containers import DescriptiveResult
 
@@ -73,3 +73,7 @@ splag = spatial_lag
 
 def cheatsheet() -> str:
     return "spatial_lag({}) -> Spatial lag model (SLM) estimation."
+
+
+# compact alias per ledger/NAMING.md
+spatiallag = spatial_lag

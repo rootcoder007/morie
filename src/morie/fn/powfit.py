@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -65,3 +65,7 @@ powfit = power_law_fit
 
 def cheatsheet() -> str:
     return "power_law_fit({}) -> Power law scaling."
+
+
+# compact alias per ledger/NAMING.md
+powerlawfit = power_law_fit

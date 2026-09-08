@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def holo_forest(
@@ -34,7 +34,7 @@ def holo_forest(
         and the trees. *BMJ*, 322(7300), 1479--1480.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_forest requires matplotlib. Install via: pip install matplotlib")
         return None
@@ -65,3 +65,7 @@ def holo_forest(
 
 def cheatsheet() -> str:
     return "holo_forest({}) -> Forest plot for meta-analysis."
+
+
+# compact alias per ledger/NAMING.md
+holoforest = holo_forest

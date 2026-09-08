@@ -1,6 +1,6 @@
 """Tests for diffsm.diffusion_score_matching."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.diffsm import diffusion_score_matching
 

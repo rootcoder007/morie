@@ -86,3 +86,7 @@ co2eqv = co2_equivalent
 
 def cheatsheet() -> str:
     return "co2eqv({gas: kg} | kg, gas=...) -> CO₂-eq kg (IPCC AR6 GWP100)."
+
+
+# compact alias per ledger/NAMING.md
+co2equivalent = co2_equivalent

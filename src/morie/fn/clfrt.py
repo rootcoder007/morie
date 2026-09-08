@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,7 +30,11 @@ def classification_rate(
 
     References
     ----------
-    Armstrong (2014), Ch 10.
+    Armstrong, D. A. et al. (2014). *Analyzing Spatial Models of
+    Choice and Judgment*. CRC Press. Sec. 5.3.5 footnote, p. 143:
+    "the number of choices correctly classified divided by the total
+    number of choices made." The former "Ch 10" citation was
+    fabricated: the book has six chapters.
 
     .. epigraph:: Give me a place to stand and I will move the earth. -- Archimedes
     """

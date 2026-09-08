@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
-from scipy.optimize import minimize
+from . import _array_core as np
+from ._sci_core import minimize
 
 
 def bayesian_propensity(
@@ -28,11 +28,14 @@ def bayesian_propensity(
     :param prior_var: Prior variance for logistic coefficients.
     :param n_samples: Number of posterior samples.
     :param seed: Random seed.
-    :return: Dictionary with propensity_mean, propensity_samples, beta_mean.
+    :return: Dictionary with propensity_mean, propensity_sd, beta_mean,
+        beta_cov.
 
     References
     ----------
-    McCandless, L. C., et al. (2009). *Statistics in Medicine*, 28(1), 94--112.
+    McCandless, L. C., et al. (2009). Bayesian propensity score
+    analysis for observational data. *Statistics in Medicine*, 28(1),
+    94--112.
     """
     rng = np.random.default_rng(seed)
     X_arr = np.asarray(X, dtype=float)

@@ -1,6 +1,6 @@
 """Tests for iccC.icc_consistency."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.iccC import icc_consistency
 

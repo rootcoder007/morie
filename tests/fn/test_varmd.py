@@ -1,6 +1,6 @@
 """Tests for morie.fn.varmd — VAR(p) model fitting."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.varmd import var_model, varmd

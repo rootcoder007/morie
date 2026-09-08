@@ -1,6 +1,6 @@
 """Tests for grtnh.geron_tanh_activation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grtnh import geron_tanh_activation
 

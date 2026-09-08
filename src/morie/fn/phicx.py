@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Phi complexity (integrated information)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -78,3 +78,7 @@ phicx = phi_complexity
 
 def cheatsheet() -> str:
     return "phi_complexity(cov_matrix) -> Integrated information phi."
+
+
+# compact alias per ledger/NAMING.md
+phicomplexity = phi_complexity

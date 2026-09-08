@@ -1,6 +1,6 @@
 """Tests for gh_dp_cond_dist.ghosal_dp_conditional_distribution."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_dp_cond_dist import ghosal_dp_conditional_distribution
 

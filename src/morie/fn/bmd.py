@@ -1,8 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Benchmark dose estimation for dose-response analysis."""
 
-import numpy as np
-from scipy import optimize
+from . import _array_core as np
+from ._sci_core import optimize
 
 from ._containers import DescriptiveResult
 

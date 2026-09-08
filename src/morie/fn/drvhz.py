@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -52,3 +52,7 @@ drvhz = derivative_hz
 
 def cheatsheet() -> str:
     return "derivative_hz({}) -> Signal derivative in Hz domain."
+
+
+# compact alias per ledger/NAMING.md
+derivativehz = derivative_hz

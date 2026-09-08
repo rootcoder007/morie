@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -88,3 +88,7 @@ ewma = ewma_detect
 
 def cheatsheet() -> str:
     return "ewma_detect({}) -> EWMA control chart for outbreak detection."
+
+
+# compact alias per ledger/NAMING.md
+ewmadetect = ewma_detect

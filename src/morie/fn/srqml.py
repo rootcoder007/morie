@@ -4,7 +4,7 @@ Spatial quasi-ML estimator
 Category: SpatReg2
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def srqml(X=None, y=None, w=None, n=50, k=3):

@@ -19,7 +19,7 @@ def elbow_mds_dim(stress_values):
     DescriptiveResult
         value = optimal dimension count (int).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     sv = np.asarray(stress_values, dtype=float)
     n = len(sv)
@@ -49,3 +49,7 @@ elbdm = elbow_mds_dim
 
 def cheatsheet() -> str:
     return "elbow_mds_dim({}) -> Elbow method for MDS dimensionality."
+
+
+# compact alias per ledger/NAMING.md
+elbowmdsdim = elbow_mds_dim

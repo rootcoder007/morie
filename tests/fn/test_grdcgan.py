@@ -1,22 +1,11 @@
-"""Tests for grdcgan.geron_dcgan_generator."""
+"""Tests for grdcgan (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.grdcgan import geron_dcgan_generator
-
-
-def test_grdcgan_basic():
-    """Test basic functionality."""
-    z = np.random.default_rng(44).normal(0, 1, 100)
-    weights = np.random.default_rng(45).exponential(1, 100)
-    result = geron_dcgan_generator(z, weights)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.grdcgan as mod
 
 
-def test_grdcgan_edge():
-    """Test edge cases."""
-    z = np.random.default_rng(44).normal(0, 1, 100)
-    weights = np.random.default_rng(45).exponential(1, 100)
-    result = geron_dcgan_generator(z, weights)
-    assert isinstance(result, dict)
+def test_grdcgan_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

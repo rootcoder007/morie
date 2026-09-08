@@ -1,6 +1,6 @@
 """Tests for madsc.mad_scale."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.madsc import mad_scale
 

@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.optimize import curve_fit
+from . import _array_core as np
+from ._sci_core import curve_fit
 
 from ._containers import DescriptiveResult
 
@@ -77,3 +77,7 @@ loggro = logistic_growth
 
 def cheatsheet() -> str:
     return "logistic_growth({}) -> Logistic growth model."
+
+
+# compact alias per ledger/NAMING.md
+logisticgrowth = logistic_growth

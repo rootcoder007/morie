@@ -32,3 +32,6 @@ mirror the upstream schema described in
 \description{
 Inmate-participant ethnic origin
 }
+\examples{
+morie_datasets_corrections_uof_ethnic_origin()
+}

@@ -38,3 +38,7 @@ A \code{morie_bootstrap_result}.
 Generates bootstrap samples from a fitted parametric distribution
 rather than from the empirical sample.
 }
+\examples{
+x_vec <- rnorm(40)
+parametric_bootstrap(x_vec, mean, distribution = "normal", n_boot = 30L)
+}

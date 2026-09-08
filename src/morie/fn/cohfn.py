@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,7 +30,7 @@ def coherence_function_fn(
     :param nperseg: Segment length for Welch averaging (default 256).
     :return: DescriptiveResult with frequency vector and coherence.
     """
-    from scipy.signal import coherence
+    from ._signal_core import coherence
 
     x = np.asarray(x, dtype=float).ravel()
     y = np.asarray(y, dtype=float).ravel()

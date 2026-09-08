@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -50,3 +50,7 @@ rskdc = risk_decile
 
 def cheatsheet() -> str:
     return "risk_decile({}) -> Outcome rate by risk score decile."
+
+
+# compact alias per ledger/NAMING.md
+riskdecile = risk_decile

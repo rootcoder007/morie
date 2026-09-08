@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -44,3 +44,7 @@ kfd = katz_fd
 
 def cheatsheet() -> str:
     return "katz_fd({}) -> Katz fractal dimension."
+
+
+# compact alias per ledger/NAMING.md
+katzfd = katz_fd

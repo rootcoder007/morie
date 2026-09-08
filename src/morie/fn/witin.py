@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -56,3 +56,7 @@ def cheatsheet() -> str:
 
 
 witin = witten_index
+
+
+# compact alias per ledger/NAMING.md
+wittenindex = witten_index

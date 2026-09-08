@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -48,3 +48,7 @@ sntag = sentence_by_age
 
 def cheatsheet() -> str:
     return "sentence_by_age({}) -> Sentence length by age group."
+
+
+# compact alias per ledger/NAMING.md
+sentencebyage = sentence_by_age

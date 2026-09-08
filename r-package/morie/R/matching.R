@@ -23,7 +23,8 @@
 # under `morie_matching_att_matched`, `morie_matching_atc_matched`,
 # `morie_matching_ate_matched` so they cannot be confused with IPW.
 
-#' @importFrom stats glm binomial predict quantile sd var cov cor lm coef complete.cases as.formula model.matrix qnorm pnorm pchisq ks.test weighted.mean median setNames
+#' @importFrom stats glm binomial predict quantile sd var cov cor lm coef complete.cases
+#' as.formula model.matrix qnorm pnorm pchisq ks.test weighted.mean median setNames
 #' @importFrom utils head tail
 NULL
 
@@ -32,20 +33,65 @@ NULL
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+#' .morie_matching_have
+#'
+#' A step of the matching implementation. Called by
+#' \code{morie_matching_estimate_propensity}, \code{morie_matching_full}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param pkg Passed to \code{requireNamespace}.
+#' @return The value of \code{requireNamespace}.
+#' @export
 .morie_matching_have <- function(pkg) {
   requireNamespace(pkg, quietly = TRUE)
 }
 
+#' .morie_matching_require
+#'
+#' A step of the matching implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param pkg Passed to \code{morie_ensure_extras}.
+#' @param fn Accepted by the signature and not used anywhere in the body.
+#' @return Invisibly,a logical value.
+#' @export
 .morie_matching_require <- function(pkg, fn) {
   morie_ensure_extras(pkg)
   invisible(TRUE)
 }
 
+#' @param data See Usage.
+#' @param cols See Usage.
 #' @keywords internal
 .morie_matching_drop_na <- function(data, cols) {
   data[stats::complete.cases(data[, cols, drop = FALSE]), , drop = FALSE]
 }
 
+#' @param df See Usage.
+#' @param ps See Usage.
+#' @keywords internal
+.morie_matching_distance <- function(df, ps) {
+  # MatchIt reads a numeric `distance` as the propensity score itself,
+  # so a supplied score needs no refit. Alignment mirrors the Python
+  # arm's ps.reindex(df.index): by name when the vector is named, by
+  # position when it is already one-per-retained-row. Anything else is
+  # refused -- recycling a mis-sized score silently matches on the
+  # wrong units.
+  if (is.null(ps)) return("glm")
+  ps <- as.numeric(ps)
+  if (!is.null(names(ps)) && all(rownames(df) %in% names(ps)))
+    return(unname(ps[rownames(df)]))
+  if (length(ps) == nrow(df)) return(ps)
+  stop("`ps` has length ", length(ps), " but ", nrow(df),
+       " rows remain after dropping incomplete cases; supply one score ",
+       "per retained row, or a named vector covering them.",
+       call. = FALSE)
+}
+
+#' @param p See Usage.
+#' @param eps See Usage.
 #' @keywords internal
 .morie_matching_logit <- function(p, eps = 1e-6) {
   p <- pmin(pmax(p, eps), 1 - eps)
@@ -62,6 +108,12 @@ NULL
   )
 }
 
+#' @param matched_data See Usage.
+#' @param n_treated See Usage.
+#' @param n_matched_control See Usage.
+#' @param match_pairs See Usage.
+#' @param method See Usage.
+#' @param details See Usage.
 #' @keywords internal
 .morie_matching_result <- function(matched_data, n_treated, n_matched_control,
                                    match_pairs, method,
@@ -103,6 +155,7 @@ NULL
 #'   the propensity score in observational studies for causal effects.
 #'   \emph{Biometrika}, 70(1), 41--55.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -113,6 +166,7 @@ NULL
 #' df <- data.frame(d = rbinom(200, 1, 0.4),
 #'                  x1 = rnorm(200), x2 = rnorm(200))
 #' ps <- morie_matching_estimate_propensity(df, "d", c("x1", "x2"))
+#' }
 #' @export
 morie_matching_estimate_propensity <- function(data, treatment, covariates,
                                                model = "logistic",
@@ -151,7 +205,7 @@ morie_matching_estimate_propensity <- function(data, treatment, covariates,
 
 #' Trim propensity scores to a fixed range
 #'
-#' Clips propensity scores to \code{[lower, upper]}.  Mirrors Python
+#' Clips propensity scores to \code{\[lower, upper\]}.  Mirrors Python
 #' \code{morie.matching.trim_propensity_scores}.
 #'
 #' @param ps Numeric vector of propensity scores.
@@ -178,6 +232,7 @@ morie_matching_trim_propensity <- function(ps, lower = 0.01, upper = 0.99) {
 #'   \code{"trim"} (drop the extreme 5 percent of each tail).
 #' @return A subset of \code{data} on common support.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -188,6 +243,7 @@ morie_matching_trim_propensity <- function(ps, lower = 0.01, upper = 0.99) {
 #' df$propensity_score <- morie_matching_estimate_propensity(df, "d",
 #'                                                           c("x1", "x2"))
 #' morie_matching_common_support(df, "d")
+#' }
 #' @export
 morie_matching_common_support <- function(data, treatment,
                                           ps_col = "propensity_score",
@@ -214,6 +270,11 @@ morie_matching_common_support <- function(data, treatment,
 # MatchIt-backed unified entry point
 # ---------------------------------------------------------------------------
 
+#' @param mi See Usage.
+#' @param df See Usage.
+#' @param treatment See Usage.
+#' @param method_label See Usage.
+#' @param details See Usage.
 #' @keywords internal
 .morie_matching_matchit_to_result <- function(mi, df, treatment, method_label,
                                               details = list()) {
@@ -273,12 +334,15 @@ morie_matching_common_support <- function(data, treatment,
 #' @param caliper Maximum logit-propensity distance for a valid match,
 #'   expressed in SD units of the logit (or \code{NULL} for no caliper).
 #' @param replace If \code{TRUE}, controls may be re-used.
-#' @param ps Optional pre-computed propensity scores.
+#' @param ps Optional propensity scores. When supplied they REPLACE
+#'   the fitted model and become the matching distance directly,
+#'   aligned to the rows that survive the NA drop.
 #' @param alpha Significance level (carried through to \code{details}).
 #' @return A list with class \code{morie_match_result} carrying
 #'   \code{matched_data}, \code{n_treated}, \code{n_matched_control},
 #'   \code{match_pairs}, \code{method}, and \code{details}.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -291,6 +355,7 @@ morie_matching_common_support <- function(data, treatment,
 #'                  x1 = rnorm(200), x2 = rnorm(200))
 #' res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"),
 #'                                        caliper = 0.2)
+#' }
 #' @export
 morie_matching_nearest_neighbor <- function(data, treatment, covariates,
                                             n_neighbors = 1L,
@@ -301,7 +366,7 @@ morie_matching_nearest_neighbor <- function(data, treatment, covariates,
   .morie_match_nearest_native(data, treatment, covariates,
                               n_neighbors = n_neighbors,
                               caliper = caliper, replace = replace,
-                              alpha = alpha)
+                              alpha = alpha, ps = ps)
 }
 
 
@@ -320,6 +385,7 @@ morie_matching_nearest_neighbor <- function(data, treatment, covariates,
 #' @param exact_vars Character vector of discrete variables for exact matching.
 #' @return A list of class \code{morie_match_result}.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -328,6 +394,7 @@ morie_matching_nearest_neighbor <- function(data, treatment, covariates,
 #'   year = sample(2020:2022, 150, TRUE),
 #'   treat3 = sample(0:2, 150, TRUE))
 #' morie_matching_exact(df, "d", c("region", "year"))
+#' }
 #' @export
 morie_matching_exact <- function(data, treatment, exact_vars) {
   .morie_match_exact_native(data, treatment, exact_vars)
@@ -356,6 +423,7 @@ morie_matching_exact <- function(data, treatment, exact_vars) {
 #'   without balance checking: Coarsened exact matching.
 #'   \emph{Political Analysis}, 20(1), 1--24.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -364,6 +432,7 @@ morie_matching_exact <- function(data, treatment, exact_vars) {
 #'   year = sample(2020:2022, 150, TRUE),
 #'   treat3 = sample(0:2, 150, TRUE))
 #' morie_matching_cem(df, "d", c("x1", "x2"), n_bins = 5)
+#' }
 #' @export
 morie_matching_cem <- function(data, treatment, covariates, n_bins = 5L) {
   .morie_match_cem_native(data, treatment, covariates, n_bins = n_bins)
@@ -393,6 +462,7 @@ morie_matching_cem <- function(data, treatment, covariates, n_bins = 5L) {
 #'   prior to distance matching.
 #' @return A list of class \code{morie_match_result}.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -401,6 +471,7 @@ morie_matching_cem <- function(data, treatment, covariates, n_bins = 5L) {
 #'   year = sample(2020:2022, 150, TRUE),
 #'   treat3 = sample(0:2, 150, TRUE))
 #' morie_matching_mahalanobis(df, "d", c("x1", "x2"), n_neighbors = 1)
+#' }
 #' @export
 morie_matching_mahalanobis <- function(data, treatment, covariates,
                                        n_neighbors = 1L,
@@ -428,9 +499,12 @@ morie_matching_mahalanobis <- function(data, treatment, covariates,
 #' @param treatment Binary treatment column name.
 #' @param covariates Character vector of covariates.
 #' @param distance One of \code{"propensity"} or \code{"mahalanobis"}.
-#' @param ps Optional pre-computed propensity scores.
+#' @param ps Optional propensity scores. When supplied they REPLACE
+#'   the fitted model and become the matching distance directly,
+#'   aligned to the rows that survive the NA drop.
 #' @return A list of class \code{morie_match_result}.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -439,6 +513,7 @@ morie_matching_mahalanobis <- function(data, treatment, covariates,
 #'   year = sample(2020:2022, 150, TRUE),
 #'   treat3 = sample(0:2, 150, TRUE))
 #' morie_matching_optimal_pair(df, "d", c("x1", "x2"))
+#' }
 #' @export
 morie_matching_optimal_pair <- function(data, treatment, covariates,
                                         distance = "propensity",
@@ -462,13 +537,15 @@ morie_matching_optimal_pair <- function(data, treatment, covariates,
 #' @param data Data frame.
 #' @param treatment Binary treatment column name.
 #' @param covariates Character vector of covariates.
-#' @param ps Optional pre-computed propensity scores.
+#' @param ps Optional propensity scores. When supplied they REPLACE
+#'   the fitted model and become the matching distance directly,
+#'   aligned to the rows that survive the NA drop.
 #' @param n_subclasses Number of propensity-score strata for the fallback.
 #' @return A list of class \code{morie_match_result}; \code{matched_data}
 #'   contains a \code{._full_weight} column.
 #' @references Hansen, B. B. (2004). Full matching in an observational
 #'   study of coaching for the SAT. \emph{JASA}, 99(467), 609--618.
-#' @examples
+#' @examplesIf requireNamespace("MatchIt", quietly = TRUE) && requireNamespace("optmatch", quietly = TRUE)
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -486,7 +563,7 @@ morie_matching_full <- function(data, treatment, covariates,
     f <- stats::as.formula(paste(treatment, "~",
                                  paste(covariates, collapse = " + ")))
     mi <- tryCatch(
-      MatchIt::matchit(f, data = df, method = "full", distance = "glm"),
+      MatchIt::matchit(f, data = df, method = "full", distance = .morie_matching_distance(df, ps)),
       error = function(e) NULL
     )
     if (!is.null(mi)) {
@@ -568,12 +645,14 @@ morie_matching_full <- function(data, treatment, covariates,
 #' @param data Data frame.
 #' @param treatment Binary treatment column name.
 #' @param covariates Character vector of covariates.
-#' @param ps Optional pre-computed propensity scores.
+#' @param ps Optional propensity scores. When supplied they REPLACE
+#'   the fitted model and become the matching distance directly,
+#'   aligned to the rows that survive the NA drop.
 #' @param n_strata Number of quantile-based strata (default 5).
 #' @return A list with components \code{data_with_strata} (the original
 #'   data with a \code{._stratum} column appended) and
 #'   \code{stratum_effects} (per-stratum sample sizes and PS ranges).
-#' @examples
+#' @examplesIf requireNamespace("MatchIt", quietly = TRUE)
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -643,6 +722,7 @@ morie_matching_subclassify <- function(data, treatment, covariates,
 #' @references Hainmueller, J. (2012). Entropy balancing for causal effects.
 #'   \emph{Political Analysis}, 20(1), 25--46.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -651,6 +731,7 @@ morie_matching_subclassify <- function(data, treatment, covariates,
 #'   year = sample(2020:2022, 150, TRUE),
 #'   treat3 = sample(0:2, 150, TRUE))
 #' w <- morie_matching_entropy_balance(df, "d", c("x1", "x2"))
+#' }
 #' @export
 morie_matching_entropy_balance <- function(data, treatment, covariates,
                                            max_moment = 1L,
@@ -667,7 +748,8 @@ morie_matching_entropy_balance <- function(data, treatment, covariates,
   # follows ebal::ebalance (control weights sum to n_control);
   # cross-validated against ebal + WeightIt in tests. Shared
   # implementation with rmorie (smallstats_native.R).
-  fit <- .morie_entropy_balance(t_mask, X, max_iter = max_iter)
+  fit <- .morie_entropy_balance(t_mask, X, max_iter = max_iter,
+                                tol = tol)
   if (!fit$converged) {
     warning("entropy balancing did not fully converge; ",
             "max moment imbalance = ",
@@ -703,6 +785,7 @@ morie_matching_entropy_balance <- function(data, treatment, covariates,
 #'   estimating causal effects.  \emph{Review of Economics and
 #'   Statistics}, 95(3), 932--945.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -712,6 +795,7 @@ morie_matching_entropy_balance <- function(data, treatment, covariates,
 #'   treat3 = sample(0:2, 150, TRUE))
 #' morie_matching_genetic(df, "d", c("x1", "x2"),
 #'                        pop_size = 50, n_generations = 20)
+#' }
 #' @export
 morie_matching_genetic <- function(data, treatment, covariates,
                                    n_neighbors = 1L,
@@ -740,9 +824,11 @@ morie_matching_genetic <- function(data, treatment, covariates,
 #' @param covariates Character vector of covariates.
 #' @param min_ratio,max_ratio Match-count bounds per treated unit.
 #' @param caliper Caliper on the propensity score (in SD units).
-#' @param ps Optional pre-computed propensity scores.
+#' @param ps Optional propensity scores. When supplied they REPLACE
+#'   the fitted model and become the matching distance directly,
+#'   aligned to the rows that survive the NA drop.
 #' @return A list of class \code{morie_match_result}.
-#' @examples
+#' @examplesIf requireNamespace("MatchIt", quietly = TRUE)
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -816,12 +902,15 @@ morie_matching_variable_ratio <- function(data, treatment, covariates,
 #' @param treatment Binary treatment column name.
 #' @param covariates Character vector of covariates.
 #' @param balance_threshold Maximum absolute SMD tolerated (default 0.1).
-#' @param ps Optional pre-computed propensity scores.
+#' @param ps Optional propensity scores. When supplied they REPLACE
+#'   the fitted model and become the matching distance directly,
+#'   aligned to the rows that survive the NA drop.
 #' @return A list of class \code{morie_match_result}.
 #' @references Zubizarreta, J. R. (2012). Using mixed integer programming for
 #'   matching in an observational study of kidney failure after surgery.
 #'   \emph{JASA}, 107(500), 1360--1371.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -831,6 +920,7 @@ morie_matching_variable_ratio <- function(data, treatment, covariates,
 #'   treat3 = sample(0:2, 150, TRUE))
 #' morie_matching_cardinality(df, "d", c("x1", "x2"),
 #'                            balance_threshold = 0.1)
+#' }
 #' @export
 morie_matching_cardinality <- function(data, treatment, covariates,
                                        balance_threshold = 0.1,
@@ -901,6 +991,7 @@ morie_matching_cardinality <- function(data, treatment, covariates,
 #' @return A list with \code{balance_table} (a data frame), and scalar
 #'   summaries \code{overall_balance}, \code{max_smd}, \code{balanced}.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -909,6 +1000,7 @@ morie_matching_cardinality <- function(data, treatment, covariates,
 #'   year = sample(2020:2022, 150, TRUE),
 #'   treat3 = sample(0:2, 150, TRUE))
 #' morie_matching_balance(df, "d", c("x1", "x2"))
+#' }
 #' @export
 morie_matching_balance <- function(data, treatment, covariates,
                                    weights = NULL, threshold = 0.1) {
@@ -983,6 +1075,7 @@ morie_matching_balance <- function(data, treatment, covariates,
 #' @return A data frame with columns \code{covariate}, \code{smd_before},
 #'   \code{smd_after}, \code{abs_smd_before}, \code{abs_smd_after}.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -993,6 +1086,7 @@ morie_matching_balance <- function(data, treatment, covariates,
 #' res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 #' morie_matching_love_plot_data(df, res$matched_data,
 #'                               "d", c("x1", "x2"))
+#' }
 #' @export
 morie_matching_love_plot_data <- function(unmatched_data, matched_data,
                                           treatment, covariates,
@@ -1021,6 +1115,7 @@ morie_matching_love_plot_data <- function(unmatched_data, matched_data,
 #' @inheritParams morie_matching_balance
 #' @return A data frame.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -1029,6 +1124,7 @@ morie_matching_love_plot_data <- function(unmatched_data, matched_data,
 #'   year = sample(2020:2022, 150, TRUE),
 #'   treat3 = sample(0:2, 150, TRUE))
 #' morie_matching_balance_table(df, "d", c("x1", "x2"))
+#' }
 #' @export
 morie_matching_balance_table <- function(data, treatment, covariates,
                                          weights = NULL) {
@@ -1040,6 +1136,7 @@ morie_matching_balance_table <- function(data, treatment, covariates,
 # Treatment effect estimation from matched samples
 # ---------------------------------------------------------------------------
 
+#' @param estimand See Usage.
 #' @keywords internal
 .morie_matching_te_empty <- function(estimand) {
   out <- list(
@@ -1056,6 +1153,12 @@ morie_matching_balance_table <- function(data, treatment, covariates,
   out
 }
 
+#' @param estimand See Usage.
+#' @param estimate See Usage.
+#' @param se See Usage.
+#' @param n_obs See Usage.
+#' @param alpha See Usage.
+#' @param details See Usage.
 #' @keywords internal
 .morie_matching_te_result <- function(estimand, estimate, se, n_obs,
                                       alpha = 0.05, details = list()) {
@@ -1092,6 +1195,7 @@ morie_matching_balance_table <- function(data, treatment, covariates,
 #' @param alpha Significance level for confidence intervals.
 #' @return A list of class \code{morie_te_result}.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -1102,6 +1206,7 @@ morie_matching_balance_table <- function(data, treatment, covariates,
 #' res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 #' res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 #' morie_matching_att_matched(df, "y", "d", res$match_pairs)
+#' }
 #' @export
 morie_matching_att_matched <- function(data, outcome, treatment,
                                        match_pairs, weights = NULL,
@@ -1137,6 +1242,7 @@ morie_matching_att_matched <- function(data, outcome, treatment,
 #' @param alpha Significance level for confidence intervals.
 #' @return A list of class \code{morie_te_result}.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -1146,6 +1252,7 @@ morie_matching_att_matched <- function(data, outcome, treatment,
 #'   treat3 = sample(0:2, 150, TRUE))
 #' morie_matching_ate_matched(df, "y", "d", c("x1", "x2"),
 #'                            weights = "._cem_weight")
+#' }
 #' @export
 morie_matching_ate_matched <- function(data, outcome, treatment, covariates,
                                        weights = NULL, alpha = 0.05) {
@@ -1182,6 +1289,7 @@ morie_matching_ate_matched <- function(data, outcome, treatment, covariates,
 #' @inheritParams morie_matching_att_matched
 #' @return A list of class \code{morie_te_result}.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -1191,6 +1299,7 @@ morie_matching_ate_matched <- function(data, outcome, treatment, covariates,
 #'   treat3 = sample(0:2, 150, TRUE))
 #' res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 #' morie_matching_atc_matched(df, "y", "d", res$match_pairs)
+#' }
 #' @export
 morie_matching_atc_matched <- function(data, outcome, treatment,
                                        match_pairs, alpha = 0.05) {
@@ -1229,6 +1338,7 @@ morie_matching_atc_matched <- function(data, outcome, treatment,
 #'   of matching estimators for average treatment effects.
 #'   \emph{Econometrica}, 74(1), 235--267.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -1238,6 +1348,7 @@ morie_matching_atc_matched <- function(data, outcome, treatment,
 #'   treat3 = sample(0:2, 150, TRUE))
 #' res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 #' morie_matching_abadie_imbens_se(df, "y", "d", res$match_pairs)
+#' }
 #' @export
 morie_matching_abadie_imbens_se <- function(data, outcome, treatment,
                                             match_pairs, n_matches = 1L) {
@@ -1309,6 +1420,7 @@ morie_matching_abadie_imbens_se <- function(data, outcome, treatment,
 #' @references Rosenbaum, P. R. (2002). \emph{Observational Studies}
 #'   (2nd ed.).  Springer.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -1318,6 +1430,7 @@ morie_matching_abadie_imbens_se <- function(data, outcome, treatment,
 #'   treat3 = sample(0:2, 150, TRUE))
 #' res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 #' morie_matching_rosenbaum_bounds(df, "y", "d", res$match_pairs)
+#' }
 #' @export
 morie_matching_rosenbaum_bounds <- function(data, outcome, treatment,
                                             match_pairs,
@@ -1397,13 +1510,16 @@ morie_matching_rosenbaum_bounds <- function(data, outcome, treatment,
 #' @param data Data frame.
 #' @param outcome,treatment Column names.
 #' @param covariates Character vector of covariates.
-#' @param ps Optional pre-computed propensity scores.
+#' @param ps Optional propensity scores. When supplied they REPLACE
+#'   the fitted model and become the matching distance directly,
+#'   aligned to the rows that survive the NA drop.
 #' @param n_bootstrap Number of bootstrap replications.
 #' @param seed Random seed.
 #' @param alpha Significance level.
 #' @return A list of class \code{morie_te_result} with estimand
 #'   \code{"ATT_DR"}.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -1413,6 +1529,7 @@ morie_matching_rosenbaum_bounds <- function(data, outcome, treatment,
 #'   treat3 = sample(0:2, 150, TRUE))
 #' morie_matching_doubly_robust(df, "y", "d", c("x1", "x2"),
 #'                              n_bootstrap = 200)
+#' }
 #' @export
 morie_matching_doubly_robust <- function(data, outcome, treatment, covariates,
                                          ps = NULL, n_bootstrap = 200L,
@@ -1500,6 +1617,7 @@ morie_matching_doubly_robust <- function(data, outcome, treatment, covariates,
 #' @return A named list whose keys are treatment levels and whose values
 #'   are \code{morie_match_result} objects.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -1508,6 +1626,7 @@ morie_matching_doubly_robust <- function(data, outcome, treatment, covariates,
 #'   year = sample(2020:2022, 150, TRUE),
 #'   treat3 = sample(0:2, 150, TRUE))
 #' morie_matching_multi_treatment(df, "treat3", c("x1", "x2"))
+#' }
 #' @export
 morie_matching_multi_treatment <- function(data, treatment, covariates,
                                            reference_group = NULL,
@@ -1561,6 +1680,7 @@ morie_matching_multi_treatment <- function(data, treatment, covariates,
 #' @param method One of \code{"nearest_neighbor"} or \code{"mahalanobis"}.
 #' @return A list of class \code{morie_match_result}.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' panel <- expand.grid(id = 1:40, t = 1:5)
 #' panel$t0 <- ifelse(panel$id <= 20, 4, Inf)
@@ -1569,6 +1689,7 @@ morie_matching_multi_treatment <- function(data, treatment, covariates,
 #' m <- morie_matching_longitudinal(panel, "d", "x1", unit = "id",
 #'                                  time = "t", treatment_time = "t0")
 #' str(m, max.level = 1)
+#' }
 #' @export
 morie_matching_longitudinal <- function(data, treatment, covariates, unit,
                                         time, treatment_time,
@@ -1628,6 +1749,7 @@ morie_matching_longitudinal <- function(data, treatment, covariates, unit,
 #'   \code{pct_balanced_before}, \code{pct_balanced_after},
 #'   \code{n_obs_before}, \code{n_obs_after}.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -1637,6 +1759,7 @@ morie_matching_longitudinal <- function(data, treatment, covariates, unit,
 #'   treat3 = sample(0:2, 150, TRUE))
 #' res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 #' morie_matching_quality(df, res$matched_data, "d", c("x1", "x2"))
+#' }
 #' @export
 morie_matching_quality <- function(unmatched_data, matched_data,
                                    treatment, covariates,
@@ -1684,11 +1807,14 @@ morie_matching_quality <- function(unmatched_data, matched_data,
 #' @param data Data frame.
 #' @param treatment Binary treatment column.
 #' @param covariates Character vector of covariates.
-#' @param ps Optional pre-computed propensity scores.
+#' @param ps Optional propensity scores. When supplied they REPLACE
+#'   the fitted model and become the matching distance directly,
+#'   aligned to the rows that survive the NA drop.
 #' @return A list with \code{ps_summary} (per-group quantiles),
 #'   \code{overlap_region}, \code{n_off_support}, \code{pct_off_support},
 #'   and \code{effective_sample_size}.
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' df <- data.frame(
 #'   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -1697,6 +1823,7 @@ morie_matching_quality <- function(unmatched_data, matched_data,
 #'   year = sample(2020:2022, 150, TRUE),
 #'   treat3 = sample(0:2, 150, TRUE))
 #' morie_matching_overlap(df, "d", c("x1", "x2"))
+#' }
 #' @export
 morie_matching_overlap <- function(data, treatment, covariates,
                                    ps = NULL) {

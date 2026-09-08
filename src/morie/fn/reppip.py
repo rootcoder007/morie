@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 
@@ -96,3 +96,7 @@ reppip = repair_pipeline
 
 def cheatsheet() -> str:
     return "repair_pipeline({}) -> Data cleaning / denoising pipeline."
+
+
+# compact alias per ledger/NAMING.md
+repairpipeline = repair_pipeline

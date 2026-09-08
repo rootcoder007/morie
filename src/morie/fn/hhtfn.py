@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.interpolate import CubicSpline
-from scipy.signal import hilbert
+from . import _array_core as np
+from ._sci_core import CubicSpline
+from ._signal_core import hilbert
 
 from ._containers import DescriptiveResult
 
@@ -93,3 +93,7 @@ hhtfn = hilbert_huang
 
 def cheatsheet() -> str:
     return "_sift({}) -> Hilbert-Huang Transform (EMD + Hilbert spectrum)."
+
+
+# compact alias per ledger/NAMING.md
+hilberthuang = hilbert_huang

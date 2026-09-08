@@ -1,6 +1,6 @@
 """Tests for km132.kamath_ch9_llm_signal_tokens."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km132 import kamath_ch9_llm_signal_tokens
 

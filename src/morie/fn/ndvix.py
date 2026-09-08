@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -139,3 +139,7 @@ ndvix = ndvi_exposure_rr
 
 def cheatsheet() -> str:
     return "ndvix(ndvi, outcome='all_cause') -> green-space exposure RR."
+
+
+# compact alias per ledger/NAMING.md
+ndviexposurerr = ndvi_exposure_rr

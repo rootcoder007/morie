@@ -1,6 +1,6 @@
 """Tests for morie.fn.splag — spatial lag model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.splag import spatial_lag
 

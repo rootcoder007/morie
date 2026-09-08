@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -33,3 +33,7 @@ def dehn_twist(curve_type: str = "a", n: int = 1) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "dehn_twist(curve_type, n) -> Dehn twist matrix on torus"
+
+
+# compact alias per ledger/NAMING.md
+dehntwist = dehn_twist

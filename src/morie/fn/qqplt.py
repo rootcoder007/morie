@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Quantile-quantile plot data for distribution comparison."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -22,7 +22,7 @@ def qq_data(x, distribution="norm"):
     Wilk MB & Gnanadesikan R (1968). Probability Plotting Methods
     for the Analysis of Data. Biometrika 55(1):1-17.
     """
-    from scipy import stats as sp_stats
+    from . import _stats_core as sp_stats
 
     arr = np.sort(np.asarray(x, dtype=np.float64).ravel())
     n = len(arr)
@@ -66,3 +66,7 @@ def qq_data(x, distribution="norm"):
 
 def cheatsheet() -> str:
     return "qq_data({}) -> Quantile-quantile plot data for distribution comparison."
+
+
+# compact alias per ledger/NAMING.md
+qqdata = qq_data

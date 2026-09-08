@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -128,3 +128,7 @@ crosd = croston_method
 
 def cheatsheet() -> str:
     return "croston_method(y, alpha=0.1, sba=False) -> Croston's intermittent demand forecast."
+
+
+# compact alias per ledger/NAMING.md
+crostonmethod = croston_method

@@ -1,6 +1,6 @@
 """Tests for morie.fn.trcpl -- trace plot data."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.trcpl import trace_plot_data, trcpl
 

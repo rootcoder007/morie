@@ -1,6 +1,6 @@
 """Tests for gb35rvn.gibbons_rvn_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb35rvn import gibbons_rvn_test
 

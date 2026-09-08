@@ -8,7 +8,7 @@ __all__ = ["compute_elbo", "elbo"]
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def compute_elbo(
@@ -98,3 +98,7 @@ elbo = compute_elbo
 
 def cheatsheet() -> str:
     return "compute_elbo(log_target, mean, std) -> Evidence Lower Bound (ELBO)."
+
+
+# compact alias per ledger/NAMING.md
+computeelbo = compute_elbo

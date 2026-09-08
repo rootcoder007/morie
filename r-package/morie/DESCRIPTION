@@ -1,7 +1,7 @@
 Package: morie
 Type: Package
 Title: Multi-Domain Open Research and Inferential Estimation
-Version: 1.1.6
+Version: 1.2.0
 Authors@R: c(
   person(
     given = "Vansh Singh",
@@ -32,19 +32,19 @@ Description: Multi-domain scientific computing toolkit for observational
 License: AGPL-3
 LazyData: true
 Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
+Roxygen: list(markdown = TRUE, roclets = c("namespace", "rd", "srr::srr_stats_roclet"))
 Depends:
   R (>= 4.3.0)
 Note: Tested on R 4.3.0, 4.4.x, 4.5.2, 4.5.3 (CRAN). Use CRAN R on Apple
   Silicon (Homebrew R may segfault with RSQLite).
 Imports:
+  methods,
   stats,
   utils,
   graphics,
   Rcpp,
-  rmoriebricklayer (>= 0.3.5),
-  rmoriedata (>= 0.2.5)
+  rmoriebricklayer (>= 0.3.8),
+  rmoriedata (>= 0.3.0)
 LinkingTo: Rcpp, RcppArmadillo, rmoriebricklayer
 SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
 Suggests:
@@ -73,9 +73,7 @@ Suggests:
   DoubleML,
   DRDID,
   duckdb,
-  e1071,
   ebal,
-  eegkit,
   elasticnet,
   EValue,
   fixest,
@@ -91,9 +89,7 @@ Suggests:
   httr2,
   iml,
   ivreg,
-  jsonlite,
   knitr,
-  lmtest,
   MASS,
   Matching,
   MatchIt,
@@ -103,9 +99,7 @@ Suggests:
   mlr3,
   mlr3learners,
   MSwM,
-  nortest,
   openssl,
-  oro.nifti,
   patchwork,
   pdftools,
   pkgload,
@@ -124,12 +118,10 @@ Suggests:
   readxl,
   reticulate,
   rmarkdown,
-  rmgarch,
   rpart,
   RPostgres,
   RSQLite,
   Rtsne,
-  rugarch,
   rvest,
   sandwich,
   seewave,
@@ -139,10 +131,10 @@ Suggests:
   smacof,
   smotefamily,
   sodium,
+  srr,
   stdReg,
   survey,
   survival,
-  synthdid,
   testthat (>= 3.0.0),
   torch,
   urca,
@@ -152,7 +144,10 @@ Suggests:
   withr,
   writexl,
   xgboost,
-  xml2
+  xml2,
+  jsonlite,
+  changepoint,
+  portes
 VignetteBuilder: knitr
 URL: https://github.com/rootcoder007/morie
 BugReports: https://github.com/rootcoder007/morie/issues
@@ -167,5 +162,7 @@ biocViews:
   MultipleComparison,
   Visualization
 Remotes:
+    rootcoder007/rmorie-bricklayer,
   rootcoder007/rmoriedata,
   synth-inference/synthdid
+Config/roxygen2/version: 8.0.0

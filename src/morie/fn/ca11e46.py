@@ -1,54 +1,44 @@
-"""CentralTendency expression involving 'qbetween' (auto-extracted; see reference for full context).."""
+"""Q_between = Q - Q_within.
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import math as _math  # noqa: F401
+
+from . import _ca_crim
 from ._richresult import RichResult
 
 __all__ = ["ca_chapter_11_equation_46"]
 
 
-def ca_chapter_11_equation_46(x):
-    """
-    CentralTendency expression involving 'qbetween' (auto-extracted; see reference for full context).
+def ca_chapter_11_equation_46(ys_by_group, ws_by_group):
+    """Q_between = Q - Q_within
 
-    Formula: Qbetween = Q − Qwithin
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: Q_between = Q_total - Q_within
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca11e46')`` for the full guide.
+        dict subclass; headline key 'q_between' plus the full payload.
 
     References
     ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.11 eq.11.46
+    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
+    ch.11 eq.11.46
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    payload = dict(_ca_crim.q_within_between(ys_by_group, ws_by_group))
+    value = payload['q_between']
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Weisburd et al. (2022) eq. (11.46)"
     return RichResult(
-        title="CentralTendency expression involving 'qbetween' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency expression involving 'qbetween' (auto-extracted; see reference for full context).",
-        },
+        title='Q_between = Q - Q_within',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "ca11e46: CentralTendency expression involving 'qbetween' (auto-extracted; see reference for full context)."
+    return 'ca11e46: Q_between = Q_total - Q_within [Weisburd et al. 2022, eq. 11.46]'

@@ -6,8 +6,8 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
-from scipy.optimize import minimize
+from . import _array_core as np
+from ._sci_core import minimize
 
 
 def laplace_approximation(
@@ -26,7 +26,8 @@ def laplace_approximation(
 
     References
     ----------
-    Tierney, L. & Kadane, J. (1986). *JASA*, 81(393), 82--86.
+    Tierney, L. & Kadane, J. (1986). Accurate approximations for
+    posterior moments and marginal densities. *JASA*, 81(393), 82--86.
     """
     x0 = np.asarray(init, dtype=float)
     d = len(x0)

@@ -1,17 +1,56 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 #' Internal helpers shared across the Ghosal Bayesian-nonparametrics suite.
-#' Not exported; consumed by ghosal_* callables only.
+#' Not exported; consumed by ghosal_* callables only
 #' @keywords internal
 #' @name ghosal_bnp_helpers
 NULL
 
+#' .gh_have
+#'
+#' A step of the helpers_ghosal_bnp implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' for the source it follows.
+#'
+#' @param pkg Passed to \code{requireNamespace}.
+#' @return The value of \code{requireNamespace}.
+#' @export
 .gh_have <- function(pkg) requireNamespace(pkg, quietly = TRUE)
 
+#' .gh_pairwise_sq
+#'
+#' A step of the helpers_ghosal_bnp implementation. Called by
+#' \code{morie_ghosal_gp_matern}, \code{morie_ghosal_gp_squared_exponential},
+#' \code{morie_ghosal_np_classification}.
+#' See the file header for the source the module follows.
+#' for the source it follows.
+#'
+#' @param a A matrix; passed to \code{\%*\%}.
+#' @param b A matrix; passed to \code{t}. Defaults to \code{a}.
+#' @return A numeric value.
+#' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' res <- .gh_pairwise_sq(a = A)
+#' res
 .gh_pairwise_sq <- function(a, b = a) {
   outer(rowSums(a^2), rowSums(b^2), "+") - 2 * a %*% t(b)
 }
 
+#' .gh_bernstein
+#'
+#' A step of the helpers_ghosal_bnp implementation. Called by \code{morie_ghosal_sieve_prior}.
+#' See the file header for the source the module follows.
+#' for the source it follows.
+#'
+#' @param u A vector; its length is taken.
+#' @param K A count; the body uses it as \code{seq_len(...)}.
+#' @return The value of \code{B}, as built in the body.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .gh_bernstein(u = x, K = 3L)
+#' res
 .gh_bernstein <- function(u, K) {
   u <- pmin(pmax(u, 1e-12), 1 - 1e-12)
   B <- matrix(0, nrow = length(u), ncol = K)
@@ -21,6 +60,19 @@ NULL
   B
 }
 
+#' .gh_surv_post
+#'
+#' A step of the helpers_ghosal_bnp implementation. Called by
+#' \code{morie_ghosal_neutral_right}, \code{morie_ghosal_survival_beta_process}.
+#' See the file header for the source the module follows.
+#' for the source it follows.
+#'
+#' @param t A vector; its length is taken.
+#' @param ev Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param c Numeric; combined arithmetically in the body.
+#' @param lam0 Optional; may be \code{NULL}. Numeric; combined arithmetically in the body.
+#' @return A list with \code{times}, \code{S}, \code{H}, \code{dH}, \code{lam0}.
+#' @export
 .gh_surv_post <- function(t, ev, c, lam0) {
   t <- as.numeric(t)
   n <- length(t)
@@ -38,6 +90,19 @@ NULL
   list(times = uniq, S = S, H = cumsum(dHp), dH = dHp, lam0 = lam0)
 }
 
+#' .gh_haar_dwt
+#'
+#' A step of the helpers_ghosal_bnp implementation. Called by \code{morie_ghosal_wavelet_prior}.
+#' See the file header for the source the module follows.
+#' for the source it follows.
+#'
+#' @param y A vector; its length is taken.
+#' @return A list with \code{coeffs}, \code{L}.
+#' @export
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .gh_haar_dwt(y = y)
+#' res
 .gh_haar_dwt <- function(y) {
   L <- 1L
   while (L < length(y)) L <- 2L * L

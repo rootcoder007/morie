@@ -1,52 +1,40 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Add-k smoothing: generalized Laplace with arbitrary pseudo-count k."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov Ch 2: add-k smoothing, the generalised Laplace."""
 
 from ._richresult import RichResult
 
 __all__ = ["burkov_add_k_smoothing"]
 
 
-def burkov_add_k_smoothing(counts_ngram, counts_prefix, V, k):
+def burkov_add_k_smoothing(counts_ngram, counts_prefix, V, k=0.5):
+    """P = (count + k) / (prefix + kV); k = 1 recovers Laplace.
+
+    References: Burkov LM (2025), Ch 2, add-k smoothing.
+
+    Examples
+    --------
+    >>> burkov_add_k_smoothing(0, 0, 4, k=0.5)["estimate"]
+    0.25
     """
-    Add-k smoothing: generalized Laplace with arbitrary pseudo-count k
-
-    Formula: P(w_n | w_{1..n-1}) = (count(w_{1..n}) + k) / (count(w_{1..n-1}) + k*V)
-
-    Parameters
-    ----------
-    counts_ngram : array-like
-        Input data.
-    counts_prefix : array-like
-        Input data.
-    V : array-like
-        Input data.
-    k : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: prob
-
-    References
-    ----------
-    Burkov Ch 2, Add-k Smoothing section
-    """
-    counts_ngram = np.atleast_1d(np.asarray(counts_ngram, dtype=float))
-    n = len(counts_ngram)
-    result = float(np.mean(counts_ngram))
-    se = float(np.std(counts_ngram, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Add-k smoothing: generalized Laplace with arbitrary pseudo-count k",
-        }
-    )
+    c = float(counts_ngram); p = float(counts_prefix)
+    v = int(V); k = float(k)
+    if c < 0 or p < 0:
+        raise ValueError("counts must be non-negative.")
+    if v < 1:
+        raise ValueError(f"vocabulary size must be positive; got {V}.")
+    if k <= 0:
+        raise ValueError(
+            f"k must be positive; got {k}. k = 0 is the unsmoothed MLE "
+            "and has its own function.")
+    if c > p:
+        raise ValueError("count(ngram) cannot exceed count(prefix).")
+    est = (c + k) / (p + k * v)
+    return RichResult(payload={
+        "estimate": est, "count_ngram": c, "count_prefix": p,
+        "vocab_size": v, "k": k, "n": int(p),
+        "method": "Add-k smoothing (Burkov Ch 2)"})
 
 
 def cheatsheet():
-    return "bkaddk: Add-k smoothing: generalized Laplace with arbitrary pseudo-count k"
+    return "bkaddk: add-k smoothing (count+k)/(prefix+kV) (Burkov Ch 2)"

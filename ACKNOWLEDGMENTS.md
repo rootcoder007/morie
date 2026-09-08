@@ -26,6 +26,93 @@ MORIE (Multi-domain Open Research and Inferential Estimation) is developed by Va
 
 MORIE builds on the work of many open-source projects, including but not limited to: NumPy, SciPy, pandas, scikit-learn, Textual, httpx, Sphinx, and the broader Python/R scientific computing ecosystem.
 
+## Methods and their authors
+
+morie's general-purpose modules implement published methods. The
+implementations are written against the primary sources, and each function's
+docstring cites the specific chapter, section or equation, so a reader can
+check the code against the same page the author wrote.
+
+| Method | Source |
+|---|---|
+| Biomedical signal analysis (filtering, spectral, waveform complexity) | Rangaraj M. Rangayyan & Sridhar Krishnan, *Biomedical Signal Analysis*, 3rd ed. (IEEE Press / Wiley, 2024) |
+| Higuchi fractal dimension | T. Higuchi, *Physica D* 31:277–283 (1988) |
+| Correlation dimension D₂ | P. Grassberger & I. Procaccia, *Physica D* 9:189–208 (1983) |
+| Detrended fluctuation analysis | C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons, H. E. Stanley & A. L. Goldberger, *Phys. Rev. E* 49:1685–1689 (1994) |
+| Approximate entropy | S. M. Pincus, *PNAS* 88:2297–2301 (1991) |
+| Sample entropy | J. S. Richman & J. R. Moorman, *Am. J. Physiol.* 278:H2039–H2049 (2000) |
+| Graded response model (polytomous IRT) | F. Samejima, *Psychometrika Monograph Supplement* No. 17 (1969) |
+| Genomic relationship matrices | P. M. VanRaden, *J. Dairy Sci.* 91:4414–4423 (2008) |
+| LMS adaptive noise cancelling | Bernard Widrow & Samuel D. Stearns, *Adaptive Signal Processing* (Prentice-Hall, 1985) |
+| Autoregressive modelling (Burg's recursion) | John Parker Burg, *Maximum Entropy Spectral Analysis* (PhD thesis, Stanford University, 1975); S. Lawrence Marple, *Digital Spectral Analysis* (Prentice-Hall, 1987) |
+| Averaged-periodogram power spectral density | Peter D. Welch, *IEEE Trans. Audio Electroacoust.* 15:70–73 (1967) |
+| Heart-rate variability (SDNN, RMSSD, pNN50) | Task Force of the European Society of Cardiology and the North American Society of Pacing and Electrophysiology, *Circulation* 93:1043–1065 (1996) |
+| Wavelet shrinkage denoising (universal threshold) | David L. Donoho & Iain M. Johnstone, *Biometrika* 81:425–455 (1994) |
+| Discrete wavelet transform for time series | Donald B. Percival & Andrew T. Walden, *Wavelet Methods for Time Series Analysis* (Cambridge University Press, 2000) |
+| Largest Lyapunov exponent | Michael T. Rosenstein, James J. Collins & Carlo J. De Luca, *Physica D* 65:117–134 (1993) |
+| Global spatial autocorrelation (Moran's I) | P. A. P. Moran, *Biometrika* 37:17–23 (1950); Oliver Schabenberger & Carol A. Gotway, *Statistical Methods for Spatial Data Analysis* (Chapman and Hall/CRC, 2005) |
+| Correlation variance-stabilising transform | Ronald A. Fisher, *Metron* 1:3–32 (1921) |
+| Total correlation (multi-information) | Satosi Watanabe, *IBM Journal of Research and Development* 4:66–82 (1960) |
+| Dual total correlation | Te Sun Han, *Information and Control* 36:133–156 (1978) |
+| Corrected item-total correlation | Jum C. Nunnally & Ira H. Bernstein, *Psychometric Theory*, 3rd ed. (McGraw-Hill, 1994) |
+| Variance inflation for dependent effect sizes | Larry V. Hedges, Elizabeth Tipton & Matthew C. Johnson, *Research Synthesis Methods* 1:39–65 (2010) |
+| Transmission disequilibrium test | Richard S. Spielman, Ralph E. McGinnis & Warren J. Ewens, *American Journal of Human Genetics* 52:506–516 (1993) |
+| MCMC effective sample size (initial positive sequence) | Charles J. Geyer, *Statistical Science* 7:473–483 (1992) |
+| Functional data correlation | James O. Ramsay & Bernard W. Silverman, *Functional Data Analysis*, 2nd ed. (Springer, 2005) |
+| Double machine learning | V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, W. Newey & J. Robins, *Econometrics Journal* 21:C1–C68 (2018) |
+| Anderson–Darling and Lilliefors goodness-of-fit (critical-value tables) | Jean Dickinson Gibbons & Subhabrata Chakraborti, *Nonparametric Statistical Inference*, 5th ed. (Chapman & Hall/CRC, 2011) |
+| Constant conditional correlation MGARCH | Tim Bollerslev, *Review of Economics and Statistics* 72:498–505 (1990) |
+| Dynamic conditional correlation MGARCH | Robert F. Engle, *Journal of Business & Economic Statistics* 20:339–350 (2002) |
+| Random forests | Leo Breiman, *Machine Learning* 45:5–32 (2001); Trevor Hastie, Robert Tibshirani & Jerome Friedman, *The Elements of Statistical Learning*, 2nd ed. (Springer, 2009), Algorithm 15.1 |
+| Gradient boosting | Jerome H. Friedman, *Annals of Statistics* 29:1189–1232 (2001); Hastie, Tibshirani & Friedman (2009), Algorithm 10.3 and eq. (10.41) |
+| Regularised tree-boosting objective | Tianqi Chen & Carlos Guestrin, *KDD '16*, 785–794 (2016) |
+| Support vector machines (SMO decomposition) | Chih-Chung Chang & Chih-Jen Lin, *ACM TIST* 2(3):27 (2011); Rong-En Fan, Pai-Hsuen Chen & Chih-Jen Lin, *JMLR* 6:1889–1918 (2005) |
+| Causal mediation sensitivity to an unobserved confounder | Kosuke Imai, Luke Keele & Teppei Yamamoto, *Statistical Science* 25:51–71 (2010); Guido W. Imbens, *American Economic Review* 93:126–132 (2003) |
+| Compositional data, closure and subcompositional coherence | John Aitchison, *The Statistical Analysis of Compositional Data* (Chapman & Hall, 1986); Karl Pearson, *Proceedings of the Royal Society of London* 60:489–498 (1897) |
+| Matthews correlation coefficient | Brian W. Matthews, *Biochimica et Biophysica Acta* 405:442–451 (1975) |
+| Variance inflation factor and collinearity diagnostics | David A. Belsley, Edwin Kuh & Roy E. Welsch, *Regression Diagnostics* (Wiley, 1980) |
+| Complete spatial randomness, nearest-neighbour distances | Peter J. Diggle, *Statistical Analysis of Spatial Point Patterns*, 2nd ed. (Edward Arnold, 2003); Schabenberger & Gotway (2005), §§3.3–3.4 |
+| Multivariate portmanteau test for white noise | J. R. M. Hosking, *Journal of the American Statistical Association* 75:602–608 (1980); restated as eq. (9) in Esam Mahdi, arXiv:2005.00931 (2020) |
+| Correspondence analysis, table inertia and chi-square | Oleg Nenadic & Michael Greenacre, *Journal of Statistical Software* 20(3):1–13 (2007); Michael J. Greenacre, *Theory and Applications of Correspondence Analysis* (Academic Press, 1984) |
+| Kernel two-sample test (maximum mean discrepancy) | Arthur Gretton, Karsten M. Borgwardt, Malte J. Rasch, Bernhard Schölkopf & Alexander Smola, *Journal of Machine Learning Research* 13:723–773 (2012) |
+| Wasserstein two-sample testing | Aaditya Ramdas, Nicolás García Trillos & Marco Cuturi, *Entropy* 19(2):47 (2017); Cédric Villani, *Optimal Transport: Old and New* (Springer, 2009), Theorem 2.18 |
+| Covariate balance (standardised mean differences) | Peter C. Austin, *Statistics in Medicine* 28:3083–3107 (2009) |
+| Space-time interaction (k-nearest-neighbour test) | Geoffrey M. Jacquez, *Statistics in Medicine* 15:1935–1949 (1996) |
+| Second-order point-pattern analysis (Ripley's K) | Brian D. Ripley, *Journal of the Royal Statistical Society, Series B* 39:172–212 (1977) |
+| Differential item functioning (SIBTEST) | Robin Shealy & William Stout, *Psychometrika* 58:159–194 (1993) |
+| Panel cointegration | Peter Pedroni, *Oxford Bulletin of Economics and Statistics* 61(S1):653–670 (1999) |
+| Potential outcomes and the average treatment effect | Donald B. Rubin, *Journal of Educational Psychology* 66:688–701 (1974); Paul W. Holland, *JASA* 81:945–960 (1986) |
+| Back-door adjustment | Judea Pearl, *Causality*, 2nd ed. (Cambridge University Press, 2009), Theorem 3.3.2 |
+| Back-door criterion and d-separation | Judea Pearl, *Causality*, 2nd ed. (Cambridge University Press, 2009), Definition 3.3.1 |
+| Doubly robust difference-in-differences | Pedro H. C. Sant'Anna & Jun Zhao, *Journal of Econometrics* 219:101–122 (2020) |
+| Causal mediation for a binary outcome (inverse odds-ratio weighting) | Eric J. Tchetgen Tchetgen, *Statistics in Medicine* 32:4567–4580 (2013) |
+| Causal direction from additive noise models | Patrik O. Hoyer, Dominik Janzing, Joris M. Mooij, Jonas Peters & Bernhard Schölkopf, *NIPS 21*:689–696 (2009) |
+| Stepwise mediation and the product-of-coefficients indirect effect | Reuben M. Baron & David A. Kenny, *Journal of Personality and Social Psychology* 51:1173–1182 (1986); Michael E. Sobel, *Sociological Methodology* 13:290–312 (1982) |
+
+### Transcribed numerical tables
+
+Three of the implementations depend on numerical tables published by
+their authors, rather than on formulas alone. These are reproduced in the
+source with the citation attached, because a transcribed table is data
+taken from someone's work and its provenance has to travel with it.
+
+| Table | Source | Used by |
+|---|---|---|
+| Lilliefors and Anderson–Darling critical values (Tables O and T) | Gibbons & Chakraborti, *Nonparametric Statistical Inference*, 5th ed. (Chapman & Hall/CRC, 2011) | `statistics.py` goodness-of-fit |
+| Table 2, "Adjustment Terms for Panel Cointegration Tests" — 3 deterministic cases × m = 2–7 regressors × 5 statistics | Pedroni, *Oxford Bulletin of Economics and Statistics* 61(S1):653–670 (1999); transcribed from the author's working paper at `web.williams.edu/Economics/wp/pedronicriticalvalues.pdf` | `pdcoin.py` panel cointegration |
+
+Two limits are recorded in the code rather than smoothed over. Pedroni's
+Table 2 has no m = 1 row, so a bivariate cointegrating regression cannot
+be standardised from it and that case is refused instead of
+extrapolated. The Anderson–Darling table floors at p = 0.01, so smaller
+p-values are reported as bounded rather than invented.
+
+Where a secondary source and the primary disagree, morie follows the primary
+and records the divergence in the function's docstring, so the choice is
+auditable rather than inherited. The genomic relationship matrices are the
+worked case: a widely used secondary text renumbers VanRaden's three methods,
+and morie's method aliases follow VanRaden's own numbering.
+
 ## Funding
 
 This work is conducted with zero external funding, using exclusively free-tier and open-source tools.

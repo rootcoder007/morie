@@ -21,6 +21,10 @@ Locates samples where the first derivative crosses zero from
 positive to non-positive AND the prior slope magnitude exceeds
 \verb{threshold_factor * max(|dx|)}.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_dsp_derivative_detect(V)
+}
 \references{
 Rangayyan & Krishnan (2015), Ch. 4, sec. 4.3.
 }

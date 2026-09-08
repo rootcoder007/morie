@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -40,3 +40,7 @@ def torus_modular(tau: complex = 1j) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "torus_modular(tau) -> modular parameter of complex torus"
+
+
+# compact alias per ledger/NAMING.md
+torusmodular = torus_modular

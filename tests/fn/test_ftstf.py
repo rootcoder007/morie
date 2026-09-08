@@ -1,6 +1,6 @@
 """Tests for f_test_features."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ftstf import f_test_features, ftstf

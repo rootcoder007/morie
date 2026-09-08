@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -37,3 +37,7 @@ armae = arma_estimate_fn
 
 def cheatsheet() -> str:
     return "arma_estimate_fn({}) -> ARMA coefficient estimation via modified Yule-Walker."
+
+
+# compact alias per ledger/NAMING.md
+armaestimatefn = arma_estimate_fn

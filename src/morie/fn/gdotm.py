@@ -5,7 +5,7 @@ Out-migration spatial
 Category: GeoDem
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gdotm(population=None, births=None, deaths=None, coords=None, n=50):

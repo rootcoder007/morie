@@ -1,6 +1,6 @@
 """Tests for gb_ttd.gibbons_total_runs_dist_table."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_ttd import gibbons_total_runs_dist_table
 

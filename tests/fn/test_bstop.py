@@ -1,6 +1,6 @@
 """Tests for bstop (BST operations)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bstop import bst_operations
 

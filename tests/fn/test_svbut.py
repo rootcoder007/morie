@@ -1,6 +1,6 @@
 """Tests for morie.fn.svbut."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svbut import svbut
 

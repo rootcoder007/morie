@@ -1,6 +1,6 @@
 """eBAC distribution analysis."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -47,3 +47,7 @@ suebac = ebac_dist
 
 def cheatsheet() -> str:
     return "ebac_dist({}) -> eBAC distribution analysis."
+
+
+# compact alias per ledger/NAMING.md
+ebacdist = ebac_dist

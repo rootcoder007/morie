@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -84,3 +84,7 @@ depmod = depletion_model
 
 def cheatsheet() -> str:
     return "depletion_model({}) -> Resource depletion model."
+
+
+# compact alias per ledger/NAMING.md
+depletionmodel = depletion_model

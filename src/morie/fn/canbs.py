@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -51,3 +51,7 @@ canbs = canberra_dist
 
 def cheatsheet() -> str:
     return "canberra_dist({}) -> Canberra distance."
+
+
+# compact alias per ledger/NAMING.md
+canberradist = canberra_dist

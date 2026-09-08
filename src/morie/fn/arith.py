@@ -3,7 +3,7 @@
 
 __all__ = ["arith"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def arith(message: list, pmf: np.ndarray, symbols: list = None, cdf=None, *, precision: int = 52) -> dict:

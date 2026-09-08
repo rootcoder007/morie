@@ -15,25 +15,24 @@
 #' available the routines fall back to a stop-stub explaining the gap.
 #'
 #' Functions
-#' ---------
 #'
 #' \itemize{
-#'   \item \code{\link{morie_tps_sdb_reaction_diffusion}} — Short,
+#'   \item \code{\link{morie_tps_sdb_reaction_diffusion}} -- Short,
 #'     D'Orsogna and Brantingham (2008) hot-spot PDE, data-seeded.
-#'   \item \code{\link{morie_tps_levy_flight_alpha}} — Hill-MLE
+#'   \item \code{\link{morie_tps_levy_flight_alpha}} -- Hill-MLE
 #'     Levy-flight tail exponent following Brockmann, Hufnagel and
 #'     Geisel (2006).
-#'   \item \code{\link{morie_tps_urban_scaling_beta}} — Bettencourt
+#'   \item \code{\link{morie_tps_urban_scaling_beta}} -- Bettencourt
 #'     \emph{et al.} (2007) urban-scaling beta across the 158 Toronto
 #'     wards.
-#'   \item \code{\link{morie_tps_lotka_volterra_police_crime}} — Lotka-
+#'   \item \code{\link{morie_tps_lotka_volterra_police_crime}} -- Lotka-
 #'     Volterra predator-prey on yearly counts.
-#'   \item \code{\link{morie_tps_sdb_turing_demo}} — canonical Turing-
+#'   \item \code{\link{morie_tps_sdb_turing_demo}} -- canonical Turing-
 #'     instability demo on a periodic lattice.
-#'   \item \code{\link{morie_tps_inspection_game_phase}} — three-
+#'   \item \code{\link{morie_tps_inspection_game_phase}} -- three-
 #'     strategy replicator phase diagram (Helbing, Szolnoki & Perc
 #'     2010).
-#'   \item \code{\link{morie_tps_criminal_network_graph}} — premise x
+#'   \item \code{\link{morie_tps_criminal_network_graph}} -- premise x
 #'     neighbourhood co-occurrence network (Diviak \emph{et al.}
 #'     2019-style projection from public TPS data).
 #' }
@@ -71,6 +70,21 @@ NULL
 # Internal helpers (NOT exported)
 # ---------------------------------------------------------------------------
 
+#' .tps_sp_result
+#'
+#' A step of the tps_statphysics implementation. Called by
+#' \code{morie_tps_criminal_network_graph}, \code{morie_tps_inspection_game_phase},
+#' \code{morie_tps_levy_flight_alpha} and 4 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param payload Carried through into a list the body builds. Defaults to \code{list()}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .tps_sp_result <- function(title, summary_lines = list(),
                             warnings = character(0),
                             interpretation = "",
@@ -87,6 +101,18 @@ NULL
   out
 }
 
+#' .tps_sp_round
+#'
+#' A step of the tps_statphysics implementation. Called by
+#' \code{morie_tps_inspection_game_phase}, \code{morie_tps_levy_flight_alpha},
+#' \code{morie_tps_lotka_volterra_police_crime} and 3 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x Passed to \code{is.finite}.
+#' @param k Passed to \code{round}. Defaults to \code{3L}.
+#' @return A numeric value.
+#' @export
 .tps_sp_round <- function(x, k = 3L) {
   if (!is.finite(x)) return(NA_real_)
   round(x, k)
@@ -96,6 +122,19 @@ NULL
 # port delegates to morie.tps_render.project_xy; in R we approximate
 # with a midpoint cos-lat factor so this module does not hard-depend on
 # the renderer port.
+#' Cosine-corrected planar projection on the Toronto bbox. The Python
+#'
+#' port delegates to morie.tps_render.project_xy; in R we approximate
+#' with a midpoint cos-lat factor so this module does not hard-depend on
+#' the renderer port.
+#'
+#' @param lat Numeric; combined arithmetically in the body.
+#' @param lon Numeric; combined arithmetically in the body.
+#' @param lat_ref Numeric; combined arithmetically in the body. Defaults to \code{(43.55 + 43.9)/2}.
+#' @param lon_ref Numeric; combined arithmetically in the body. Defaults to \code{(-79.65
+#' + -79.1)/2}.
+#' @return A list with \code{x}, \code{y}.
+#' @export
 .tps_sp_project_xy <- function(lat, lon,
                                  lat_ref = (43.55 + 43.90) / 2,
                                  lon_ref = (-79.65 + -79.10) / 2) {
@@ -107,6 +146,19 @@ NULL
   )
 }
 
+#' .tps_sp_toronto_grid
+#'
+#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param nx Passed to \code{seq}. Defaults to \code{90L}.
+#' @param ny Passed to \code{seq}. Defaults to \code{60L}.
+#' @return A list with \code{gx}, \code{gy}.
+#' @export
+#' @examples
+#' res <- .tps_sp_toronto_grid()
+#' res
 .tps_sp_toronto_grid <- function(nx = 90L, ny = 60L) {
   prj <- .tps_sp_project_xy(c(43.55, 43.90), c(-79.65, -79.10))
   gx <- seq(min(prj$x) - 1, max(prj$x) + 1, length.out = nx)
@@ -115,6 +167,18 @@ NULL
 }
 
 # Periodic-shift roll equivalent to NumPy np.roll along one axis.
+#' Periodic-shift roll equivalent to NumPy np.roll along one axis
+#'
+#' A step of the tps_statphysics implementation. Called by \code{.tps_sp_grad},
+#' \code{.tps_sp_lap}, \code{.tps_sp_local_max3x3} and 1 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param M A matrix; indexed by row and column.
+#' @param shift Numeric; combined arithmetically in the body.
+#' @param axis Passed to \code{==}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .tps_sp_roll <- function(M, shift, axis) {
   d <- dim(M)
   if (axis == 1L) {
@@ -127,6 +191,17 @@ NULL
 }
 
 # Periodic 5-point Laplacian.
+#' Periodic 5-point Laplacian
+#'
+#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param F_ Numeric; combined arithmetically in the body.
+#' @param dx Numeric; passed to \code{max}.
+#' @param dy Numeric; passed to \code{max}.
+#' @return A numeric value.
+#' @export
 .tps_sp_lap <- function(F_, dx, dy) {
   (.tps_sp_roll(F_,  1L, 1L) + .tps_sp_roll(F_, -1L, 1L) +
    .tps_sp_roll(F_,  1L, 2L) + .tps_sp_roll(F_, -1L, 2L) -
@@ -134,6 +209,17 @@ NULL
 }
 
 # Central-difference gradient with periodic wrap (gx, gy).
+#' Central-difference gradient with periodic wrap (gx, gy)
+#'
+#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param F_ Passed to \code{.tps_sp_roll}.
+#' @param dx Numeric; combined arithmetically in the body.
+#' @param dy Numeric; combined arithmetically in the body.
+#' @return A list with \code{gx}, \code{gy}.
+#' @export
 .tps_sp_grad <- function(F_, dx, dy) {
   list(
     gx = (.tps_sp_roll(F_, -1L, 2L) - .tps_sp_roll(F_, 1L, 2L)) / (2 * dx),
@@ -142,6 +228,16 @@ NULL
 }
 
 # Pointwise 3x3 local-maximum filter.
+#' Pointwise 3x3 local-maximum filter
+#'
+#' A step of the tps_statphysics implementation. Called by
+#' \code{morie_tps_sdb_reaction_diffusion}, \code{morie_tps_sdb_turing_demo}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param F_ Passed to \code{.tps_sp_roll}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .tps_sp_local_max3x3 <- function(F_) {
   out <- F_
   for (di in c(-1L, 0L, 1L)) {
@@ -154,6 +250,18 @@ NULL
 }
 
 # 2-D histogram on prescribed bin edges (rows = y, cols = x).
+#' 2-D histogram on prescribed bin edges (rows = y, cols = x)
+#'
+#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x Passed to \code{findInterval}.
+#' @param y Passed to \code{findInterval}.
+#' @param gx A vector; its length is taken.
+#' @param gy A vector; its length is taken.
+#' @return The value of \code{H}, as built in the body.
+#' @export
 .tps_sp_hist2d <- function(x, y, gx, gy) {
   ix <- findInterval(x, gx, rightmost.closed = TRUE)
   iy <- findInterval(y, gy, rightmost.closed = TRUE)
@@ -175,6 +283,19 @@ NULL
 # Write one PNG under the caller-supplied fig_dir and return its path
 # for the result's Figure line; with fig_dir = NULL nothing is written
 # and the returned note says exactly that (no silent claims).
+#' Write one PNG under the caller-supplied fig_dir and return its path
+#'
+#' for the result\'s Figure line; with fig_dir = NULL nothing is written
+#' and the returned note says exactly that (no silent claims).
+#'
+#' @param fig_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param name Passed to \code{file.path}.
+#' @param draw Accepted by the signature and not used anywhere in the body.
+#' @param save_fig A flag; the body branches on it. Defaults to \code{TRUE}.
+#' @param width Defaults to \code{1140}.
+#' @param height Defaults to \code{620}.
+#' @return The value of \code{path}, as built in the body.
+#' @export
 .tps_sp_fig <- function(fig_dir, name, draw, save_fig = TRUE,
                         width = 1140, height = 620) {
   if (!isTRUE(save_fig)) return("(skipped)")
@@ -306,9 +427,11 @@ morie_tps_load_tps <- function(name, format = "geojson",
 #' Short-D'Orsogna-Brantingham 2008 hot-spot PDE
 #'
 #' Solves the coupled reaction-diffusion system
-#' \deqn{\partial_t A = \eta \nabla^2 A - \omega A + \theta \rho,}{partial_t A = eta grad^2 A - omega A + theta rho,}
+#' \deqn{\partial_t A = \eta \nabla^2 A - \omega A + \theta \rho,}{partial_t A = eta
+#' grad^2 A - omega A + theta rho,}
 #' \deqn{\partial_t \rho = \nabla \cdot (D \nabla \rho - 2 \rho \nabla
-#'   \log A) - \rho A + \gamma,}{partial_t rho = grad * (D grad rho - 2 rho grad log A) - rho A + gamma,}
+#'   \log A) - \rho A + \gamma,}{partial_t rho = grad * (D grad rho - 2 rho grad log A) -
+#' rho A + gamma,}
 #' on a cosine-corrected Toronto grid seeded by the observed incident
 #' histogram. Localised attractiveness spikes emerge whenever
 #' \eqn{(\eta, \omega, \theta, D, \gamma)}{(eta, omega, theta, D, gamma)} place the system in the
@@ -486,7 +609,8 @@ morie_tps_sdb_reaction_diffusion <- function(category = "Assault",
 #' chronologically consecutive incidents, following Brockmann,
 #' Hufnagel & Geisel (2006). For a power-law tail \eqn{p(\ell) \propto
 #' \ell^{-\alpha}}{p(l) prop l^-alpha} on \eqn{\ell \ge \ell_{\min}}{l >= ell_min} the Hill MLE is
-#' \deqn{\hat\alpha = 1 + n / \sum_i \log(\ell_i / \ell_{\min}).}{hatalpha = 1 + n / sum_i log(ell_i / ell_min).}
+#' \deqn{\hat\alpha = 1 + n / \sum_i \log(\ell_i / \ell_{\min}).}{hatalpha = 1 + n /
+#' sum_i log(ell_i / ell_min).}
 #' Standard error is obtained by 200 nonparametric bootstrap resamples.
 #'
 #' @param category TPS category name.
@@ -497,7 +621,7 @@ morie_tps_sdb_reaction_diffusion <- function(category = "Assault",
 #'   default) skips writing and says so in the result.
 #'
 #' @return A \code{morie_rich_result} with \eqn{\hat\alpha}{hatalpha},
-#'   bootstrap SE, sample-size diagnostics, and a Lévy-regime
+#'   bootstrap SE, sample-size diagnostics, and a Levy-regime
 #'   interpretation.
 #'
 #' @references Brockmann D, Hufnagel L, Geisel T (2006). The scaling
@@ -616,7 +740,8 @@ morie_tps_levy_flight_alpha <- function(category = "Assault",
 #' Bettencourt urban-scaling exponent across the 158 Toronto wards
 #'
 #' Performs the standard log-log OLS scaling fit
-#' \deqn{\log y_i = \log Y_0 + \beta \log p_i + \varepsilon_i,}{log y_i = log Y_0 + beta log p_i + varepsilon_i,}
+#' \deqn{\log y_i = \log Y_0 + \beta \log p_i + \varepsilon_i,}{log y_i = log Y_0 + beta
+#' log p_i + varepsilon_i,}
 #' where \eqn{y_i} is the crime count and \eqn{p_i} is the population
 #' of ward \code{i}. \eqn{\beta > 1}{beta > 1} indicates super-linear (crime
 #' grows faster than population), \eqn{\beta = 1}{beta = 1} linear, and
@@ -751,9 +876,11 @@ morie_tps_urban_scaling_beta <- function(category = "Assault",
 #' rolling mean as a placeholder predator \eqn{y(t)} (TPS does not yet
 #' expose a public mass-stop / use-of-force time series). Under the
 #' classical Lotka-Volterra system,
-#' \deqn{\dot x = \alpha x - \beta x y, \quad \dot y = \delta x y - \gamma y,}{dot x = alpha x - beta x y, dot y = delta x y - gamma y,}
+#' \deqn{\dot x = \alpha x - \beta x y, \quad \dot y = \delta x y - \gamma y,}{dot x =
+#' alpha x - beta x y, dot y = delta x y - gamma y,}
 #' the small-amplitude oscillation around the equilibrium has period
-#' \eqn{T = 2 \pi / \sqrt{\alpha \gamma}}{T = 2 pi / sqrt(alpha gamma)}. Growth rate \eqn{\alpha}{alpha} is
+#' \eqn{T = 2 \pi / \sqrt{\alpha \gamma}}{T = 2 pi / sqrt(alpha gamma)}. Growth rate
+#' \eqn{\alpha}{alpha} is
 #' estimated from log-differences of \code{x}; \eqn{\gamma}{gamma} symmetrically
 #' from \code{y}; the interaction rates \eqn{\beta, \delta}{beta, delta} follow by
 #' the equilibrium relations.
@@ -1174,7 +1301,7 @@ morie_tps_criminal_network_graph <- function(category = "Assault",
         }
       }
       graphics::points(px, py, pch = 21, bg = "#26a269",
-                       cex = 0.8 + 2.2 * sqrt(sizes / max(sizes)))
+                       cex = 0.8 + 2.2 * sqrt(as.numeric(top[nodes]) / max(as.numeric(top[nodes]))))
       graphics::text(px * 1.18, py * 1.18, nodes, cex = 0.62)
     })
   .tps_sp_result(

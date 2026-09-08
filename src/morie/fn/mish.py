@@ -12,7 +12,7 @@ arXiv preprint arXiv:1908.03682.
 
 __all__ = ["mish"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def mish(x, derivative=False):

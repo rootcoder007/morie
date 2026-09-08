@@ -1,6 +1,6 @@
 """Tests for morie.fn.zsste -- Cressie-Huang space-time covariance"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zsste import st_cressie_huang
 

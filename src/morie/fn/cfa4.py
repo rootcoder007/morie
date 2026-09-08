@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._cfa_engine import (
     cov_from_data,
@@ -65,3 +65,7 @@ def cfa_4factor(
 
 def cheatsheet() -> str:
     return "cfa_4factor({}) -> 4-factor CFA using MAPQ structure (EE/EA/UA/ER)."
+
+
+# compact alias per ledger/NAMING.md
+cfa4factor = cfa_4factor

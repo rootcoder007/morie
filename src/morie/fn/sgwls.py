@@ -27,8 +27,8 @@ def wls_variogram_fit(emp_gamma, lags, model="spherical", counts=None):
     -------
     DescriptiveResult
     """
-    import numpy as np
-    from scipy.optimize import minimize
+    from morie.fn import _array_core as np
+    from ._sci_core import minimize
 
     emp = np.asarray(emp_gamma, dtype=np.float64)
     h = np.asarray(lags, dtype=np.float64)

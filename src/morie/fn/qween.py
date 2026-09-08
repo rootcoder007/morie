@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Queen contiguity spatial weights matrix from adjacency list."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -50,3 +50,7 @@ qween_fn = queen_weights
 
 def cheatsheet() -> str:
     return "queen_weights({}) -> Queen contiguity spatial weights matrix from adjacency list."
+
+
+# compact alias per ledger/NAMING.md
+queenweights = queen_weights

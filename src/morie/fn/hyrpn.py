@@ -5,7 +5,7 @@ Riparian zone delineation
 Category: HydroSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def hyrpn(flow=None, precip=None, coords=None, n=50):

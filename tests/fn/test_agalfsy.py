@@ -1,6 +1,6 @@
 """Tests for agalfsy.alphazero_alphafold_synergy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agalfsy import alphazero_alphafold_synergy
 

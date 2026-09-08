@@ -1,6 +1,6 @@
 """Tests for ksr19.kosorok_cox_partial_likelihood."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr19 import kosorok_cox_partial_likelihood
 

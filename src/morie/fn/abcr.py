@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def abc_rejection(
@@ -33,7 +33,9 @@ def abc_rejection(
 
     References
     ----------
-    Beaumont, M. A., et al. (2002). *Genetics*, 162(4), 2025--2035.
+    Beaumont, M. A., Zhang, W., & Balding, D. J. (2002). Approximate
+        Bayesian computation in population genetics. *Genetics*,
+        162(4), 2025-2035.
     """
     rng = np.random.default_rng(seed)
     obs = np.asarray(observed_summary, dtype=float)
@@ -67,3 +69,7 @@ abcr = abc_rejection
 
 def cheatsheet() -> str:
     return "abc_rejection({}) -> Approximate Bayesian computation (rejection)."
+
+
+# compact alias per ledger/NAMING.md
+abcrejection = abc_rejection

@@ -1,6 +1,6 @@
 """Tests for hmsftm.geron_softmax_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmsftm import geron_softmax_function
 

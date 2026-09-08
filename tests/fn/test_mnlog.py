@@ -1,6 +1,6 @@
 """Tests for mnlog.multinomial_logistic_penalized."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mnlog import multinomial_logistic_penalized
 

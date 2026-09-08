@@ -1,6 +1,6 @@
 """Tests for midor.model_identify_estimate_refute."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.midor import model_identify_estimate_refute
 

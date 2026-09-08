@@ -11,7 +11,7 @@ morie_psymet_cr(loads)
 \item{loads}{Numeric vector of standardised factor loadings (lambda).}
 }
 \value{
-Single numeric scalar in \verb{[0, 1]}: the composite reliability (CR).
+Single numeric scalar in \verb{\[0, 1\]}: the composite reliability (CR).
 }
 \description{
 Composite reliability from standardized factor loadings.

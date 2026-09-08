@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -61,3 +61,7 @@ cmxpl = confusion_plot
 
 def cheatsheet() -> str:
     return "confusion_plot({}) -> Confusion matrix with per-class metrics."
+
+
+# compact alias per ledger/NAMING.md
+confusionplot = confusion_plot

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Morisita index of dispersion"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ pp_m = pp_morisita
 
 def cheatsheet() -> str:
     return "pp_morisita({}) -> Morisita index of dispersion"
+
+
+# compact alias per ledger/NAMING.md
+ppmorisita = pp_morisita

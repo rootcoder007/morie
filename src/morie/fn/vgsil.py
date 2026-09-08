@@ -1,6 +1,6 @@
 """Sill estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -51,3 +51,7 @@ sill = sill_est
 
 def cheatsheet() -> str:
     return "sill_est({}) -> Sill estimation"
+
+
+# compact alias per ledger/NAMING.md
+sillest = sill_est

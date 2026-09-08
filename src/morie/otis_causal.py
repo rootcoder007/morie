@@ -138,9 +138,9 @@ import math
 import warnings
 from dataclasses import dataclass, field
 
-import numpy as np
-import pandas as pd
-from scipy import stats as sps
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as sps
 
 from .fn._richresult import RichResult
 
@@ -608,7 +608,7 @@ def otis_plr(
     HAS_RF = False
     if ml_outcome == "rf" or ml_treatment == "rf":
         try:
-            from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+            from morie.fn._ml_core import RandomForestClassifier, RandomForestRegressor
 
             HAS_RF = True
         except ImportError:
@@ -692,7 +692,7 @@ def _calibrate_propensity(p_raw: np.ndarray, d: np.ndarray, *, method: str = "pl
             return p_raw
     if method == "isotonic":
         try:
-            from sklearn.isotonic import IsotonicRegression
+            from morie.fn._ml_core import IsotonicRegression
         except ImportError:
             return p_raw
         try:
@@ -743,8 +743,8 @@ def otis_aipw_superlearner(
       Super Learner. Stat. Appl. Genet. Mol. Biol. 6(1): Article 25.
     """
     try:
-        from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-        from sklearn.linear_model import LogisticRegression, Ridge
+        from morie.fn._ml_core import RandomForestClassifier, RandomForestRegressor
+        from morie.fn._ml_core import LogisticRegression, Ridge
     except ImportError:
         # Fall back to plain AIPW with a note
         result = otis_aipw(
@@ -760,12 +760,14 @@ def otis_aipw_superlearner(
         result.notes = ["sklearn unavailable -- fell back to plain AIPW", *result.notes]
         return result
 
-    try:
-        import xgboost as xgb
-
-        HAS_XGB = True
-    except ImportError:
-        HAS_XGB = False
+    # The Super Learner library uses the native gradient-boosting arm
+    # (_ml_core, the same second-order split rule as xgboost) instead
+    # of the external xgboost package.
+    from morie.fn._ml_core import (
+        GradientBoostingClassifier as _GBC,
+        GradientBoostingRegressor as _GBR,
+    )
+    HAS_XGB = True
 
     data = df[[treatment, outcome] + covariates].dropna().copy()
     d = _binarise(data[treatment])
@@ -787,10 +789,9 @@ def otis_aipw_superlearner(
         if HAS_XGB:
             out.append(
                 (
-                    "xgb",
-                    xgb.XGBRegressor(
-                        n_estimators=300, max_depth=4, learning_rate=0.05, random_state=seed, n_jobs=-1, verbosity=0
-                    ),
+                    "gb",
+                    _GBR(n_estimators=300, max_depth=4,
+                         learning_rate=0.05, random_state=seed),
                 )
             )
         return out
@@ -803,17 +804,9 @@ def otis_aipw_superlearner(
         if HAS_XGB:
             out.append(
                 (
-                    "xgb",
-                    xgb.XGBClassifier(
-                        n_estimators=300,
-                        max_depth=4,
-                        learning_rate=0.05,
-                        random_state=seed,
-                        n_jobs=-1,
-                        verbosity=0,
-                        use_label_encoder=False,
-                        eval_metric="logloss",
-                    ),
+                    "gb",
+                    _GBC(n_estimators=300, max_depth=4,
+                         learning_rate=0.05, random_state=seed),
                 )
             )
         return out
@@ -877,7 +870,7 @@ def otis_aipw_superlearner(
         ym = target[mask]
         # Solve constrained NNLS via simple grid + projection (fallback)
         try:
-            from scipy.optimize import nnls
+            from morie.fn._sci_core import nnls
 
             w, _ = nnls(Pm, ym)
             if w.sum() > 0:
@@ -1333,7 +1326,7 @@ def otis_irm_dml(
 
     if ml_outcome == "rf" or ml_propensity == "rf":
         try:
-            from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+            from morie.fn._ml_core import RandomForestClassifier, RandomForestRegressor
 
             HAS_RF = True
         except ImportError:

@@ -21,7 +21,7 @@
 # morie::explain - human-readable descriptions of module-output CSVs
 # ---------------------------------------------------------------------------
 # R port of src/morie/explain.py.  Backs `morie::explain_file()` and
-# `morie::cheatsheet()` (R analogues of the `morie explain` and
+# `morie::.explain_cheatsheet()` (R analogues of the `morie explain` and
 # `morie cheatsheet` CLI subcommands).  Explanations target a user
 # who just ran a morie module and is staring at 10-15 CSVs not
 # knowing where to start.
@@ -29,6 +29,32 @@
 # Adding a new module's output files means appending an entry to
 # `.morie_explanations()`.
 
+#' .morie_explanations
+#'
+#' A step of the explain implementation. Called by \code{explain_file}, \code{explain_known_files}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @return A list with \code{power_summary.csv}, \code{power_two_proportion_gender.csv},
+#' \code{power_one_proportion_grid.csv}, \code{power_ebac_endpoint_anchors.csv},
+#' \code{power_gpower_reference_two_group.csv}, \code{power_interaction_assumptions.csv},
+#' \code{power_interaction_feasibility_flags.csv},
+#' \code{power_interaction_group_allocations.csv},
+#' \code{power_interaction_imbalance_penalty.csv},
+#' \code{power_interaction_pairwise_details.csv},
+#' \code{power_interaction_sample_size_targets.csv},
+#' \code{randomization_block_blueprints.csv},
+#' \code{randomization_schedule_example_heavy_drinking_30d.csv},
+#' \code{randomization_schedule_example_ebac_legal.csv},
+#' \code{randomization_schedule_example_ebac_tot.csv}, \code{data_na_summary.csv},
+#' \code{data_wrangling_log.csv}, \code{binomial_summaries.csv},
+#' \code{binomial_summaries_survey_weighted.csv}, \code{probability_estimates.csv},
+#' \code{frequentist_heavy_drinking_prevalence_ci.csv},
+#' \code{frequentist_effect_sizes.csv}, \code{frequentist_hypothesis_tests.csv}.
+#' @export
+#' @examples
+#' res <- .morie_explanations()
+#' res
 .morie_explanations <- function() {
   list(
     # --- power-design outputs ----------------------------------------
@@ -279,10 +305,10 @@ If you think this file should be explained, file an issue at ",
 #'   Called for its side effect of printing to the console.
 #'
 #' @examples
-#' cheatsheet()
+#' .explain_cheatsheet()
 #'
 #' @export
-cheatsheet <- function() {
+.explain_cheatsheet <- function() {
   body <- paste(
     "morie cheat sheet",
     "=================",

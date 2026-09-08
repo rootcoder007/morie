@@ -1,6 +1,6 @@
 """SAR direct/indirect/total impacts"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ sar_ = sar_impacts
 
 def cheatsheet() -> str:
     return "sar_impacts({}) -> SAR direct/indirect/total impacts"
+
+
+# compact alias per ledger/NAMING.md
+sarimpacts = sar_impacts

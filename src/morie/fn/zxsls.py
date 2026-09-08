@@ -1,6 +1,6 @@
 """Spatial LASSO"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -27,3 +27,7 @@ spat = spatial_lasso
 
 def cheatsheet() -> str:
     return "spatial_lasso({}) -> Spatial LASSO"
+
+
+# compact alias per ledger/NAMING.md
+spatiallasso = spatial_lasso

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -57,3 +57,7 @@ cusdt = cusum_detect
 
 def cheatsheet() -> str:
     return "cusum_detect({}) -> CUSUM change-point detection."
+
+
+# compact alias per ledger/NAMING.md
+cusumdetect = cusum_detect

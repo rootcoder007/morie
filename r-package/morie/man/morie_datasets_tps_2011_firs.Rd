@@ -38,15 +38,20 @@ affects the hub_id -> FeatureServer URL lookup.}
 }
 \value{
 A data.frame / GeoJSON list / file path; see
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} for per-format semantics.
+\code{morie_datasets_tps_arcgis_hub_by_id()} for per-format semantics.
 }
 \description{
 Toronto PS ArcGIS Hub dataset wrapper. Thin dispatch to
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} with the canonical
+\code{morie_datasets_tps_arcgis_hub_by_id()} with the canonical
 hub item_id \verb{78361ed81cca40aebd1032a26ef52e5b}.
 }
 \details{
 2011 Field Information Requests (FIRS)
 
 Tags: FIRS; Field Information Requests
+}
+\examples{
+\dontrun{
+morie_datasets_tps_2011_firs()
+}
 }

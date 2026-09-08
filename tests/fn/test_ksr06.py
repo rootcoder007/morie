@@ -1,6 +1,6 @@
 """Tests for ksr06.kosorok_maximal_inequality."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr06 import kosorok_maximal_inequality
 

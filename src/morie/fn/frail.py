@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Frailty model -- gamma-distributed shared frailty for survival."""
 
-import numpy as np
-from scipy import optimize
+from . import _array_core as np
+from ._sci_core import optimize
 
 from ._containers import DescriptiveResult
 
@@ -36,7 +36,7 @@ def frailty_model(time, event, group, theta_init=1.0):
             mask = group == g
             d_g = event[mask].sum()
             sum_h0 = np.sum(time[mask])
-            from scipy.special import gammaln
+            from ._sci_core import gammaln
 
             ll += gammaln(1 / theta + d_g) - gammaln(1 / theta)
             ll += d_g * np.log(theta) if theta > 0 else 0
@@ -68,3 +68,7 @@ def frailty_model(time, event, group, theta_init=1.0):
 
 def cheatsheet() -> str:
     return "frailty_model({}) -> Frailty model -- gamma-distributed shared frailty for surviva"
+
+
+# compact alias per ledger/NAMING.md
+frailtymodel = frailty_model

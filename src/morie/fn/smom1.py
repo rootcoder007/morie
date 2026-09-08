@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -41,3 +41,7 @@ smom1 = raw_moment
 
 def cheatsheet() -> str:
     return "raw_moment({}) -> Raw moment."
+
+
+# compact alias per ledger/NAMING.md
+rawmoment = raw_moment

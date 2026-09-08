@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Optimal Classification 2D"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ oc_ = oc_2d
 
 def cheatsheet() -> str:
     return "oc_2d({}) -> Optimal Classification 2D"
+
+
+# compact alias per ledger/NAMING.md
+oc2d = oc_2d

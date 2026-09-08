@@ -1,6 +1,6 @@
 """Tests for morie.fn.vknwn — Known-groups validity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vknwn import validity_known_groups
 

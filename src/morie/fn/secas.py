@@ -5,7 +5,7 @@ Case-control spatial study
 Category: SpatEpi2
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def secas(cases=None, population=None, coords=None, n=50):

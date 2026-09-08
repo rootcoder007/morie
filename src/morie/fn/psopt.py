@@ -5,7 +5,7 @@ Particle swarm optimization for global optimization.
 Population of particles move through search space with velocity updates.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["psopt"]
 

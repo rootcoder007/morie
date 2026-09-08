@@ -15,10 +15,13 @@ Invisibly returns the printed text; primarily called for
 side effects (printing to stdout).
 }
 \description{
-Mirrors \code{python -m morie.stat_bridge <mode> [...]} so the same
+Mirrors \code{python -m morie.stat_bridge <mode> \[...\]} so the same
 invocation pattern is available via \code{Rscript -e}.
 }
 \details{
 Recognised modes: \code{"registry-json"}, \code{"help"},
 \code{"exec"}, \code{"fn-info"}, \code{"fn-search"}, \code{"verify"}.
+}
+\examples{
+stat_bridge_main()
 }

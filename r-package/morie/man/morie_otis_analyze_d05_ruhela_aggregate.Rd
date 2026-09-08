@@ -3,7 +3,7 @@
 \name{morie_otis_analyze_d05_ruhela_aggregate}
 \alias{morie_otis_analyze_d05_ruhela_aggregate}
 \alias{morie_otis_analyze_d05_mrm_aggregate}
-\title{d05 aggregate Ruhela: Age 50+ -> custodial deaths.}
+\title{d05 aggregate Ruhela: Age 50+ -> custodial deaths}
 \usage{
 morie_otis_analyze_d05_ruhela_aggregate(data, out_dir = NULL)
 
@@ -18,10 +18,12 @@ morie_otis_analyze_d05_mrm_aggregate(data, out_dir = NULL)
 \code{morie_otis_analysis_result}.
 }
 \description{
-d05 aggregate Ruhela: Age 50+ -> custodial deaths.
+d05 aggregate Ruhela: Age 50+ -> custodial deaths
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_d05 <- morie_synth_otis("d05", n = 120L, seed = 1L)
 morie_otis_analyze_d05_ruhela_aggregate(otis_d05)
+}
 }

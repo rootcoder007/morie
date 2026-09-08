@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -40,3 +40,7 @@ twave = t_wave_detect
 
 def cheatsheet() -> str:
     return "t_wave_detect({}) -> T-wave detection in ECG signals."
+
+
+# compact alias per ledger/NAMING.md
+twavedetect = t_wave_detect

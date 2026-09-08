@@ -1,6 +1,6 @@
 """Tests for vbinfp.variational_bound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vbinfp import variational_bound
 

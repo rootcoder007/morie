@@ -1,6 +1,6 @@
 """Scree test for spatial dimensions"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ scre = scree_spatial
 
 def cheatsheet() -> str:
     return "scree_spatial({}) -> Scree test for spatial dimensions"
+
+
+# compact alias per ledger/NAMING.md
+screespatial = scree_spatial

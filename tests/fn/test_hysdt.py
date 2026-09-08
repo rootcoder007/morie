@@ -1,6 +1,6 @@
 """Tests for morie.fn.hysdt — hysteresis detector."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hysdt import hysdt, hysteresis_detect
 

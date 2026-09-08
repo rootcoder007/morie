@@ -1,6 +1,6 @@
 """Tests for btcimed.boot_ci_median."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btcimed import boot_ci_median
 

@@ -1,6 +1,6 @@
 """Wittman divergence model (policy-motivated)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ witt = wittman_model
 
 def cheatsheet() -> str:
     return "wittman_model({}) -> Wittman divergence model (policy-motivated)"
+
+
+# compact alias per ledger/NAMING.md
+wittmanmodel = wittman_model

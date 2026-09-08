@@ -1,6 +1,6 @@
 """2D amendment agenda"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ agen = agenda_2d
 
 def cheatsheet() -> str:
     return "agenda_2d({}) -> 2D amendment agenda"
+
+
+# compact alias per ledger/NAMING.md
+agenda2d = agenda_2d

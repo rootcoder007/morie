@@ -1,6 +1,6 @@
 """Tests for eslaic.esl_aic_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslaic import esl_aic_score
 

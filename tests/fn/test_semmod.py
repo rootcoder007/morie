@@ -1,6 +1,6 @@
 """Tests for semmod.spatial_error_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.semmod import spatial_error_model
 

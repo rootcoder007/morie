@@ -22,3 +22,7 @@ year column (\code{OCC_YEAR} preferred, \code{REPORT_YEAR}
 fallback), restricts to plausible years (1990-2030), and joins all
 series column-wise into a single panel of incident counts.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_yoy_panel(D)
+}

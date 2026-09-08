@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -85,3 +85,7 @@ bgibbs = gibbs_normal
 
 def cheatsheet() -> str:
     return "gibbs_normal({}) -> Gibbs sampler for normal mean and variance."
+
+
+# compact alias per ledger/NAMING.md
+gibbsnormal = gibbs_normal

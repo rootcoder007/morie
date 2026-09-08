@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -49,3 +49,7 @@ sgpad = pad_signal
 
 def cheatsheet() -> str:
     return "pad_signal({}) -> Signal padding."
+
+
+# compact alias per ledger/NAMING.md
+padsignal = pad_signal

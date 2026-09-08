@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import DescriptiveResult
 
@@ -79,3 +79,7 @@ bplag = breusch_pagan_lm
 
 def cheatsheet() -> str:
     return "breusch_pagan_lm({}) -> BP LM test for random effects."
+
+
+# compact alias per ledger/NAMING.md
+breuschpaganlm = breusch_pagan_lm

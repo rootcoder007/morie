@@ -1,6 +1,6 @@
 """Tests for ffmFM.field_aware_fm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ffmFM import field_aware_fm
 

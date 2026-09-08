@@ -1,6 +1,6 @@
 """Tests for grpels.geron_peephole_lstm_cell."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grpels import geron_peephole_lstm_cell
 

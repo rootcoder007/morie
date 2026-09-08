@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -65,3 +65,7 @@ myodt = myogram_onset
 
 def cheatsheet() -> str:
     return "myogram_onset({}) -> EMG onset detection via double threshold."
+
+
+# compact alias per ledger/NAMING.md
+myogramonset = myogram_onset

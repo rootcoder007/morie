@@ -55,6 +55,15 @@
 
 # Internal: GET the Ontario CKAN datastore_dump JSON endpoint for a
 # given resource_id; return a parsed data.frame. Mock this in tests.
+#' Internal: GET the Ontario CKAN datastore_dump JSON endpoint for a
+#'
+#' given resource_id; return a parsed data.frame. Mock this in tests.
+#'
+#' @param resource_id Passed to \code{sprintf}.
+#' @param limit Accepted by the signature and not used anywhere in the body. Defaults to
+#' \code{200000L}.
+#' @return Nothing; this branch always raises.
+#' @export
 .morie_ontario_ckan_dump_csv <- function(resource_id, limit = 200000L) {
   if (!requireNamespace("httr2", quietly = TRUE) ||
       !requireNamespace("jsonlite", quietly = TRUE)) {
@@ -82,6 +91,16 @@
 
 # Internal: GET a TPS PSDP ArcGIS FeatureServer layer; return a
 # data.frame of attributes. Mock this in tests.
+#' Internal: GET a TPS PSDP ArcGIS FeatureServer layer; return a
+#'
+#' data.frame of attributes. Mock this in tests.
+#'
+#' @param layer_url Passed to \code{.morie_dataset_tps_fetch}.
+#' @param where Passed to \code{.morie_dataset_tps_fetch}. Defaults to \code{"1=1"}.
+#' @param max_features Passed to \code{.morie_dataset_tps_fetch}.
+#' @param return_geometry Passed to \code{.morie_dataset_tps_fetch}. Defaults to \code{FALSE}.
+#' @return Nothing; this branch always raises.
+#' @export
 .morie_tps_psdp_feature_query <- function(layer_url, where = "1=1",
                                             max_features = NULL,
                                             return_geometry = FALSE) {
@@ -126,7 +145,7 @@
 #' @references Ontario Open Data Catalogue, "Police Use of Force"
 #'   (\url{https://data.ontario.ca/dataset/police-use-of-force-race-based-data});
 #'   Open Government Licence -- Ontario.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_arsau_uof_main_records(offline = TRUE)
 #' head(df[, c("IncidentYear", "PoliceService", "IncidentType")])
 #' @export
@@ -237,7 +256,7 @@ morie_datasets_otis_d01_deaths_in_custody <- function(offline = TRUE,
 #' @references TPS Public Safety Data Portal, "Mental Health Act
 #'   Apprehensions Open Data"
 #'   (\url{https://data.tps.ca/datasets/333c4e1c96314741a83425045b6a7642_0/explore}).
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_tps_mha_apprehensions(offline = TRUE)
 #' table(df$APPREHENSION_TYPE)
 #' @export
@@ -316,6 +335,22 @@ morie_datasets_tps_mha_apprehensions <- function(year = NULL,
     "2020-2022" = "2150ac23-4e55-474a-b61f-81baf6850851"))
 
 # Internal: shared offline+live dispatch for ARSAU UoF wrappers.
+#' Internal: shared offline+live dispatch for ARSAU UoF wrappers
+#'
+#' A step of the datasets_ontario_tps implementation. Called by
+#' \code{morie_datasets_arsau_aggregate_summary},
+#' \code{morie_datasets_arsau_detailed_dataset},
+#' \code{morie_datasets_arsau_uof_individual_records} and 2 others in the module.
+#' See the file header for the source the module follows.
+#' for the source it follows.
+#'
+#' @param kind Passed to \code{sprintf}.
+#' @param year Coerced to character by the body, with \code{as.character}.
+#' @param offline A flag; the body branches on it.
+#' @param resource_id Optional; may be \code{NULL}. Passed to \code{.morie_ontario_ckan_dump_csv}.
+#' @param fixture_name Passed to \code{system.file}.
+#' @return The value of \code{.morie_ontario_ckan_dump_csv}.
+#' @export
 .morie_arsau_uof_dispatch <- function(kind, year, offline,
                                         resource_id, fixture_name) {
   if (isTRUE(offline)) {
@@ -348,7 +383,7 @@ morie_datasets_tps_mha_apprehensions <- function(year = NULL,
 #' @param year Reporting year (`"2023"` or `"2024"`).
 #' @inheritParams morie_datasets_arsau_uof_main_records
 #' @return A `data.frame`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_arsau_uof_individual_records(offline = TRUE)
 #' df[, c("Indiv_Index", "Race", "AgeCategory", "Gender")]
 #' @export
@@ -404,7 +439,7 @@ morie_datasets_arsau_uof_weapon_records <- function(year = "2024",
 #'   fixture. If `FALSE`, hit Ontario CKAN.
 #' @param resource_id Optional override.
 #' @return A `data.frame`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_arsau_aggregate_summary(offline = TRUE)
 #' head(df)
 #' @export
@@ -418,7 +453,7 @@ morie_datasets_arsau_aggregate_summary <- function(offline = TRUE,
 #' Ontario Use-of-Force detailed dataset (5-year 2020-2022, pre-RBDS)
 #' @inheritParams morie_datasets_arsau_aggregate_summary
 #' @return A `data.frame`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_arsau_detailed_dataset(offline = TRUE)
 #' dim(df)
 #' @export
@@ -679,6 +714,20 @@ morie_datasets_ontario_ckan_layers <- function() {
 # auto-resolved from .MORIE_ONTARIO_CKAN_REGISTRY[[registry_key]] when
 # the caller doesn't pass an explicit override; if the registry entry
 # is also missing or NA the function errors with a clear message.
+#' Internal shared dispatch for the OTIS wrappers. Resource ids are
+#'
+#' auto-resolved from .MORIE_ONTARIO_CKAN_REGISTRY[\[registry_key\]] when
+#' the caller doesn\'t pass an explicit override; if the registry entry
+#' is also missing or NA the function errors with a clear message.
+#'
+#' @param dataset_label Passed to \code{sprintf}.
+#' @param fixture Character; passed to \code{sub}.
+#' @param offline A flag; the body branches on it.
+#' @param resource_id See Usage.
+#' @param registry_key Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param source Optional; may be \code{NULL}. Passed to \code{.morie_load_chain}.
+#' @return The value of \code{.morie_load_chain}.
+#' @export
 .morie_otis_lookup_pending_dispatch <- function(dataset_label, fixture,
                                                   offline, resource_id,
                                                   registry_key = NULL,
@@ -1242,7 +1291,7 @@ morie_datasets_otis_c12_aggregate_durations_by_region <- function(
 #'   endpoint.
 #' @param resource_id Optional CKAN resource_id override.
 #' @return A `data.frame`.
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_ontario_ckan_by_key("arsau_uof_main_records_2024",
 #'                                          offline = TRUE)
 #' head(df)

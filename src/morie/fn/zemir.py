@@ -1,6 +1,6 @@
 """Migration flow model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ migr = migration_flow
 
 def cheatsheet() -> str:
     return "migration_flow({}) -> Migration flow model"
+
+
+# compact alias per ledger/NAMING.md
+migrationflow = migration_flow

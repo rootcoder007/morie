@@ -1,6 +1,6 @@
 """Tests for km101.kamath_ch6_toxic_fraction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km101 import kamath_ch6_toxic_fraction
 

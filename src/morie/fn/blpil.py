@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 
@@ -84,3 +84,7 @@ blpil = naive_baseline
 
 def cheatsheet() -> str:
     return "blpil() -> Naive baseline predictor for benchmarking ML models"
+
+
+# compact alias per ledger/NAMING.md
+naivebaseline = naive_baseline

@@ -1,6 +1,6 @@
 """CTT item difficulty."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def ctt_difficulty(X):
 
 def cheatsheet():
     return "cttdif: CTT item difficulty"
+
+
+# compact alias per ledger/NAMING.md
+cttdifficulty = ctt_difficulty

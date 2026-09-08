@@ -2,7 +2,7 @@
 % Please edit documentation in R/otis_causal.R
 \name{morie_otis_make_pair_b}
 \alias{morie_otis_make_pair_b}
-\title{Pair (b): HighAlertComplexity -> AnyReadmission.}
+\title{Pair (b): HighAlertComplexity -> AnyReadmission}
 \usage{
 morie_otis_make_pair_b(df)
 }
@@ -19,7 +19,9 @@ Outcome Y_b = 1 iff Number_Of_Placements >= 2 (proxy for any future
 readmission).
 }
 \examples{
-\dontrun{
+\donttest{
+if (requireNamespace("readr", quietly = TRUE)) {
   morie_otis_make_pair_b(morie_otis_load())
+}
 }
 }

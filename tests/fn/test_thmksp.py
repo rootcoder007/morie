@@ -1,6 +1,6 @@
 """Tests for thmksp.thomas_cluster."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.thmksp import thomas_cluster
 

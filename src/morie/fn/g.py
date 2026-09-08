@@ -4,7 +4,7 @@
 import math
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn.d import cohens_d
 
@@ -51,3 +51,7 @@ g = hedges_g
 
 def cheatsheet() -> str:
     return "hedges_g({}) -> Hedges' g effect size (bias-corrected Cohen's d)."
+
+
+# compact alias per ledger/NAMING.md
+hedgesg = hedges_g

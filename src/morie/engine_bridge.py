@@ -16,8 +16,8 @@ import ctypes
 import sys
 from pathlib import Path
 
-import numpy as np
-from numpy.typing import NDArray
+from morie.fn import _array_core as np
+from morie.fn._array_core import NDArray
 
 # ---------------------------------------------------------------------------
 # Library loading -- same pattern as quant_bridge.py

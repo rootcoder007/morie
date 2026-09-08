@@ -20,8 +20,8 @@ from __future__ import annotations
 from itertools import combinations
 from typing import Any
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 __all__ = ["pcalg"]
 

@@ -1,7 +1,7 @@
 """Toeplitz matrix construction."""
 
-import numpy as np
-from scipy.linalg import toeplitz as _toeplitz
+from . import _array_core as np
+from ._sci_core import toeplitz as _toeplitz
 
 from ._containers import DescriptiveResult
 
@@ -46,3 +46,7 @@ toepz = toeplitz_matrix
 
 def cheatsheet() -> str:
     return "toeplitz_matrix({}) -> Toeplitz matrix construction."
+
+
+# compact alias per ledger/NAMING.md
+toeplitzmatrix = toeplitz_matrix

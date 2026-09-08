@@ -1,0 +1,22 @@
+"""Tests for expected_tau2.expected_tau2."""
+
+from morie.fn import _array_core as np
+
+from morie.fn.expected_tau2 import (
+    expected_tau2,
+)
+
+
+def test_the_r_series_dick_j_brus_spatial_sampling_with_r24e5_basic():
+    """Test basic functionality."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = expected_tau2(x)
+    assert isinstance(result, dict)
+    assert "estimate" in result or "statistic" in result
+
+
+def test_the_r_series_dick_j_brus_spatial_sampling_with_r24e5_edge():
+    """Test edge cases."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = expected_tau2(x)
+    assert isinstance(result, dict)

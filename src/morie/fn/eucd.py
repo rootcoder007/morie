@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Euclidean distance."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -33,3 +33,7 @@ eucd = euclidean_dist
 
 def cheatsheet() -> str:
     return "euclidean_dist({}) -> Euclidean distance."
+
+
+# compact alias per ledger/NAMING.md
+euclideandist = euclidean_dist

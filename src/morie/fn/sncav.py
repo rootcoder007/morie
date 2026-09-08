@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -36,3 +36,7 @@ sncav = sync_avg
 
 def cheatsheet() -> str:
     return "sync_avg({}) -> Synchronized (trigger-based) average filter."
+
+
+# compact alias per ledger/NAMING.md
+syncavg = sync_avg

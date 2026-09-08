@@ -1,6 +1,6 @@
 """Spatial Theil decomposition"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ thei = theil_spatial
 
 def cheatsheet() -> str:
     return "theil_spatial({}) -> Spatial Theil decomposition"
+
+
+# compact alias per ledger/NAMING.md
+theilspatial = theil_spatial

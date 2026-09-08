@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -66,3 +66,7 @@ short = kepler_orbit
 
 def cheatsheet() -> str:
     return "kepler_orbit({}) -> Keplerian orbit generator."
+
+
+# compact alias per ledger/NAMING.md
+keplerorbit = kepler_orbit

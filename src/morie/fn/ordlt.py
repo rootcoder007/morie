@@ -8,8 +8,10 @@ collision in the Gibbons spec; both are exported via ``__all__``.
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import optimize, special, stats
+from . import _array_core as np
+from ._sci_core import optimize
+from ._sci_core import special
+from . import _stats_core as stats
 
 from ._containers import RegressionResult
 from ._richresult import RichResult
@@ -191,3 +193,7 @@ def cheatsheet() -> str:
         "ordered_logit({}) -> Ordered logit (proportional odds) model. "
         "ordered_alternatives_test([groups]) -> Jonckheere-Terpstra test."
     )
+
+
+# compact alias per ledger/NAMING.md
+orderedlogit = ordered_logit

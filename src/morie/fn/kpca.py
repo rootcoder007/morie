@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import PcaRes
 
@@ -81,3 +81,7 @@ kpca = kernel_pca
 
 def cheatsheet() -> str:
     return "kernel_pca({}) -> Kernel PCA (RBF/poly/linear)."
+
+
+# compact alias per ledger/NAMING.md
+kernelpca = kernel_pca

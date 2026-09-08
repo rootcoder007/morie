@@ -1,24 +1,15 @@
 """Tests for alclsh.alammar_classification_head."""
 
-import numpy as np
-
 from morie.fn.alclsh import alammar_classification_head
 
 
 def test_alclsh_basic():
-    """Test basic functionality."""
-    h_cls = np.random.default_rng(42).normal(0, 1, 100)
-    W_cls = np.random.default_rng(42).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_classification_head(h_cls, W_cls, b)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_classification_head([1.0, 0.0],
+        [[2.0, 0.0], [0.0, 1.0]], [0.0, 0.0])
+    assert out["predicted_class"] == 0
 
 
 def test_alclsh_edge():
-    """Test edge cases."""
-    h_cls = np.random.default_rng(42).normal(0, 1, 100)
-    W_cls = np.random.default_rng(42).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_classification_head(h_cls, W_cls, b)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="columns"):
+        alammar_classification_head([1.0], [[1.0, 2.0]], [0.0])

@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import optimize
+from . import _array_core as np
+from . import _frame_core as pd
+from ._sci_core import optimize
 
 from ._containers import RegressionResult
 from ._helpers import _validate_df

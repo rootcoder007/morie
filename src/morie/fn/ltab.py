@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def life_table(
@@ -108,3 +108,7 @@ ltab = life_table
 
 def cheatsheet() -> str:
     return "life_table({}) -> Abridged life table construction."
+
+
+# compact alias per ledger/NAMING.md
+lifetable = life_table

@@ -1,6 +1,6 @@
 """Tests for tqprod.turboquant_qjl_product_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tqprod import turboquant_qjl_product_estimator
 

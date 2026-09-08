@@ -3,8 +3,8 @@
 
 from typing import Union
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 
 def dbeta(x: Union[float, np.ndarray], alpha: float, beta: float, log: bool = False) -> Union[float, np.ndarray]:

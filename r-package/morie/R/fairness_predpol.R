@@ -18,6 +18,22 @@
 NULL
 
 
+#' .predpol_result
+#'
+#' A step of the fairness_predpol implementation. Called by
+#' \code{morie_fairness_predpol_calibration_audit},
+#' \code{morie_fairness_predpol_score_disparity}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param call Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .predpol_result <- function(title, call, summary_lines = list(),
                              warnings = character(0),
                              interpretation = "", ...) {
@@ -29,11 +45,40 @@ NULL
   out
 }
 
+#' .predpol_ordered_unique
+#'
+#' A step of the fairness_predpol implementation. Called by
+#' \code{morie_fairness_predpol_calibration_audit},
+#' \code{morie_fairness_predpol_score_disparity}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x A vector; indexed elementwise.
+#' @return The value of \code{[}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .predpol_ordered_unique(x = x)
+#' res
 .predpol_ordered_unique <- function(x) {
   x <- as.character(x)
   x[!duplicated(x)]
 }
 
+#' .predpol_mode
+#'
+#' A step of the fairness_predpol implementation. Called by
+#' \code{morie_fairness_predpol_aggregate_areas}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x Passed to \code{table}.
+#' @return The value of \code{[}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .predpol_mode(x = x)
+#' res
 .predpol_mode <- function(x) {
   tab <- table(x)
   names(tab)[which.max(tab)]
@@ -359,7 +404,13 @@ morie_fairness_predpol_score_disparity <- function(score, group,
     anova_line <- ""
   }
   interp <- sprintf(
-    "Group mean risk scores span %.2f points (reference '%s'). %sNote: a score gap is not itself evidence of bias \u2014 it can reflect genuine base-rate differences. Pair this with morie_fairness_predpol_calibration_audit, which compares the score against realised outcomes.",
+    paste0(
+      "Group mean risk scores span %.2f points (reference '%s'). %s",
+      "Note: a score gap is not itself evidence of bias \u2014 it c",
+      "an reflect genuine base-rate differences. Pair this with mor",
+      "ie_fairness_predpol_calibration_audit, which compares the sc",
+      "ore against realised outcomes."
+    ),
     spread, ref, anova_line
   )
 

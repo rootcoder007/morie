@@ -4,8 +4,8 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
-from scipy.stats import anderson
+from . import _array_core as np
+from ._stats_core import anderson
 
 
 def anddrl(x: Union[Sequence, np.ndarray]):

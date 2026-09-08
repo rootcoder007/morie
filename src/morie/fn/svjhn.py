@@ -1,6 +1,6 @@
 """Johnston power index"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ john = johnston_power
 
 def cheatsheet() -> str:
     return "johnston_power({}) -> Johnston power index"
+
+
+# compact alias per ledger/NAMING.md
+johnstonpower = johnston_power

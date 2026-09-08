@@ -1,6 +1,6 @@
 """Linear-chain CRF for sequence labeling."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def crf_sequence(X, y):
 
 def cheatsheet():
     return "crfNlp: Linear-chain CRF for sequence labeling"
+
+
+# compact alias per ledger/NAMING.md
+crfsequence = crf_sequence

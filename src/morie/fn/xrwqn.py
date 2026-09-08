@@ -1,6 +1,6 @@
 """Queen contiguity weights"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ w_qu = w_queen
 
 def cheatsheet() -> str:
     return "w_queen({}) -> Queen contiguity weights"
+
+
+# compact alias per ledger/NAMING.md
+wqueen = w_queen

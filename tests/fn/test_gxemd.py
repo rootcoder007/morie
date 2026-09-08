@@ -1,6 +1,6 @@
 """Tests for gxemd.gxe_interaction_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gxemd import gxe_interaction_model
 

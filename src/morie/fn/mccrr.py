@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Matthews Correlation Coefficient."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -52,3 +52,7 @@ mccrr = mcc_score
 
 def cheatsheet() -> str:
     return "mcc_score({}) -> Matthews Correlation Coefficient."
+
+
+# compact alias per ledger/NAMING.md
+mccscore = mcc_score

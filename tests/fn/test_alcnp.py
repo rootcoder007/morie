@@ -1,24 +1,15 @@
 """Tests for alcnp.alammar_chain_prompting."""
 
-import numpy as np
-
 from morie.fn.alcnp import alammar_chain_prompting
 
 
 def test_alcnp_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    prompts = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_chain_prompting(x, prompts, model)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_chain_prompting("3",
+        [lambda y, x: x, lambda y, x: y + "!"], lambda p: p)
+    assert out["final_output"] == "3!"
 
 
 def test_alcnp_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    prompts = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_chain_prompting(x, prompts, model)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="no prompts"):
+        alammar_chain_prompting("x", [], lambda p: p)

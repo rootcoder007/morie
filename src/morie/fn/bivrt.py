@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def bayesian_iv(
@@ -32,7 +32,9 @@ def bayesian_iv(
 
     References
     ----------
-    Kleibergen, F. & Zivot, E. (2003). *J. Econometrics*, 114, 29--72.
+    Kleibergen, F., & Zivot, E. (2003). Bayesian and classical approaches
+        to instrumental variable regression. *Journal of Econometrics*,
+        114(1), 29-72.
     """
     rng = np.random.default_rng(seed)
     y_arr = np.asarray(y, dtype=float).ravel()
@@ -86,3 +88,7 @@ bivrt = bayesian_iv
 
 def cheatsheet() -> str:
     return "bayesian_iv({}) -> Bayesian IV regression."
+
+
+# compact alias per ledger/NAMING.md
+bayesianiv = bayesian_iv

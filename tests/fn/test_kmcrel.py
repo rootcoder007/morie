@@ -1,6 +1,6 @@
 """Tests for kmcrel.kamath_ragas_context_relevance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmcrel import kamath_ragas_context_relevance
 

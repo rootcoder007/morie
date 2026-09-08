@@ -1,6 +1,6 @@
 """Tests for caltbR.calibrated_rec."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.caltbR import calibrated_rec
 

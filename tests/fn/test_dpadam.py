@@ -1,6 +1,6 @@
 """Tests for dpadam.dp_adam."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dpadam import dp_adam
 

@@ -1,6 +1,6 @@
 """Tests for gh_c10_2.ghosal_univ_weights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c10_2 import ghosal_univ_weights
 

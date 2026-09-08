@@ -1,6 +1,6 @@
 """Tests for jotide.joseph_tide_encoder."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jotide import joseph_tide_encoder
 

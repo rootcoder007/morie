@@ -1,6 +1,6 @@
 """Tests for gh_ap_e2.ghosal_spline_space."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_ap_e2 import ghosal_spline_space
 

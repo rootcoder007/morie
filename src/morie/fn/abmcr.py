@@ -5,7 +5,7 @@ Microplastic spatial air
 Category: AirBio
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def abmcr(data=None, coords=None, n=50):

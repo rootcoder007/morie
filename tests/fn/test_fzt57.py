@@ -1,6 +1,6 @@
 """Tests for fzt57.fauzi_thm5_7_bdfree_cvm_equiv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzt57 import fauzi_thm5_7_bdfree_cvm_equiv
 

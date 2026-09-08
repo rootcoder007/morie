@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -83,3 +83,7 @@ cvar = conditional_var
 
 def cheatsheet() -> str:
     return "conditional_var({}) -> Conditional VaR (Expected Shortfall)."
+
+
+# compact alias per ledger/NAMING.md
+conditionalvar = conditional_var

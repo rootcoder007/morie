@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 
 def eb_mixture(
@@ -28,7 +28,8 @@ def eb_mixture(
 
     References
     ----------
-    Efron, B. (2004). *JASA*, 99(465), 96--104.
+    Efron, B. (2004). Large-scale simultaneous hypothesis testing.
+    *JASA*, 99(465), 96--104.
     Efron, B. (2010). *Large-Scale Inference*, Cambridge University Press.
     """
     z = np.asarray(z_scores, dtype=float).ravel()
@@ -75,3 +76,7 @@ ebmix = eb_mixture
 
 def cheatsheet() -> str:
     return "eb_mixture({}) -> Empirical Bayes mixture (two-groups model)."
+
+
+# compact alias per ledger/NAMING.md
+ebmixture = eb_mixture

@@ -1,6 +1,6 @@
 """Tests for evextidx.evt_extremal_index_runs."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evextidx import evt_extremal_index_runs
 

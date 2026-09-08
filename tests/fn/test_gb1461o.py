@@ -1,6 +1,6 @@
 """Tests for gb1461o.gibbons_ordered_categories."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1461o import gibbons_ordered_categories
 

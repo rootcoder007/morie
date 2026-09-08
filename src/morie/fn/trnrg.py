@@ -4,8 +4,8 @@ Trust region method for unconstrained optimization.
 Uses a trust radius to guarantee convergence to local minima.
 """
 
-import numpy as np
-from scipy.linalg import solve
+from . import _array_core as np
+from ._sci_core import solve
 
 __all__ = ["trnrg"]
 

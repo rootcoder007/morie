@@ -4,7 +4,14 @@
 \alias{morie_rlm}
 \title{Native robust (Huber M-estimator) regression (reproduces MASS::rlm)}
 \usage{
-morie_rlm(formula, data, k = 1.345, maxit = 20L, acc = 1e-04)
+morie_rlm(
+  formula,
+  data,
+  k = 1.345,
+  maxit = 20L,
+  acc = 1e-04,
+  add_intercept = TRUE
+)
 }
 \arguments{
 \item{formula, data}{Model formula and data.}
@@ -14,6 +21,9 @@ morie_rlm(formula, data, k = 1.345, maxit = 20L, acc = 1e-04)
 \item{maxit}{Max IRLS iterations.}
 
 \item{acc}{Convergence tolerance on the residual change.}
+
+\item{add_intercept}{See Usage.}
+
 }
 \value{
 A \code{morie_rlm} object.

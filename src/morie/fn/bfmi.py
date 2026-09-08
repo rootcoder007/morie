@@ -7,7 +7,7 @@ __all__ = ["bayesian_fmi", "bfmi"]
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def bayesian_fmi(
@@ -69,3 +69,7 @@ bfmi = bayesian_fmi
 
 def cheatsheet() -> str:
     return "bayesian_fmi(energy) -> Bayesian Fraction of Missing Information."
+
+
+# compact alias per ledger/NAMING.md
+bayesianfmi = bayesian_fmi

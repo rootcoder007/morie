@@ -1,6 +1,6 @@
 """Tests for morie.fn.manht — Manhattan plot data."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.manht import manhattan_data

@@ -10,7 +10,7 @@ def simulate_utility_shocks(n=100, sigma=1.0) -> DescriptiveResult:
 
     .. epigraph:: If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     rng = np.random.default_rng(42)
     shocks = rng.normal(0, sigma, size=n)

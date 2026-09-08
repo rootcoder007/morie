@@ -4,6 +4,20 @@
 # Extracted from the smixd() optimiser closure so the non-positive-
 # -definite-covariance, singular-information and non-positive-variance
 # guards are all directly unit-testable. `theta` = c(log phi, log nu).
+#' Internal: spatial-mixed-model REML negative log-likelihood
+#'
+#' Extracted from the smixd() optimiser closure so the non-positive-
+#' -definite-covariance, singular-information and non-positive-variance
+#' guards are all directly unit-testable. `theta` = c(log phi, log nu).
+#'
+#' @param theta A vector; indexed elementwise.
+#' @param D Numeric; combined arithmetically in the body.
+#' @param n A matrix; passed to \code{diag}.
+#' @param X Passed to \code{backsolve}.
+#' @param y Passed to \code{backsolve}.
+#' @param p Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
 .smixd_negreml <- function(theta, D, n, X, y, p) {
   phi <- exp(theta[1])
   nu <- exp(theta[2])
@@ -22,7 +36,12 @@
   beta <- as.numeric(solve(XtSiX, crossprod(Xw, yw)))
   resid <- yw - Xw %*% beta
   sigma2 <- as.numeric(sum(resid^2)) / max(n - p, 1)
-  if (sigma2 <= 0) {
+  # Degenerate (near-perfect) fit: residual variance is numerically zero.
+  # The exact-zero boundary is not portable across BLAS/LAPACK
+  # (x86_64 yields exactly 0; aarch64 leaves a tiny positive value), so use
+  # a scale-aware tolerance to trigger the penalty consistently.
+  tol <- .Machine$double.eps^0.5 * max(1, mean(yw^2))
+  if (!is.finite(sigma2) || sigma2 <= tol) {
     return(1e12)
   }
   logdet_S <- 2 * sum(log(diag(L)))
@@ -30,7 +49,7 @@
   0.5 * (logdet_S + logdet_K + (n - p) * log(2 * pi * sigma2) + (n - p))
 }
 
-#' Spatial linear mixed model via REML.
+#' Spatial linear mixed model via REML
 #'
 #' Y = X beta + delta + eps,
 #'   delta ~ N(0, sigma2 R_phi),  R_phi exponential,

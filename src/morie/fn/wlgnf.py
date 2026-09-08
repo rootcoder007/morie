@@ -4,7 +4,7 @@ Gene flow landscape
 Category: WildlSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wlgnf(abundance=None, coords=None, n=50):

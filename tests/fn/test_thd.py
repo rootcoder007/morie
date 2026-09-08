@@ -1,6 +1,6 @@
 """Test thd_compute (thd)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.thd import thd, thd_compute

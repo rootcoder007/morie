@@ -13,7 +13,6 @@
 #' packages.
 #'
 #' Functions
-#' ---------
 #' \itemize{
 #'   \item \code{\link{stat_command}}: constructor for a single command.
 #'   \item \code{\link{register_stat_command}}: add an entry to the
@@ -59,6 +58,8 @@ NULL
 #' @param is_r_bridge Logical; flags Python <-> R bridge calls.
 #' @return A list with class \code{morie_stat_command}.
 #' @export
+#' @examples
+#' stat_command("test_bridge_throw", "T", "u", "d", handler_repl = function(...) stop("boom"))
 stat_command <- function(name, category, usage, description,
                           handler_repl,
                           handler_stat = NULL,
@@ -117,6 +118,10 @@ stat_command <- function(name, category, usage, description,
 #' @param cmd A \code{morie_stat_command} constructed by \code{stat_command}.
 #' @return The command name, invisibly.
 #' @export
+#' @examples
+#' cmd <- stat_command("test_bridge_throw", "T", "u", "d", handler_repl = function(...)
+#' stop("boom"))
+#' register_stat_command(cmd)
 register_stat_command <- function(cmd) {
   if (!inherits(cmd, "morie_stat_command")) {
     stop("cmd must be a morie_stat_command")
@@ -143,6 +148,9 @@ register_stat_command <- function(cmd) {
 #' @param name Character scalar.
 #' @return A \code{morie_stat_command} or \code{NULL}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' resolve_stat_command(V)
 resolve_stat_command <- function(name) {
   if (!is.character(name) || length(name) != 1L) {
     return(NULL)
@@ -201,6 +209,12 @@ commands_by_category <- function() {
 #' @return Whatever the handler returns. Stops with an informative
 #'   error if the command is not registered.
 #' @export
+#' @examples
+#' cmd <- stat_command("demo_echo", "misc", "demo_echo",
+#'                     "Echo demo command",
+#'                     handler_repl = function(...) "ok")
+#' register_stat_command(cmd)
+#' run_stat_command("demo_echo")
 run_stat_command <- function(name, ...) {
   cmd <- resolve_stat_command(name)
   if (is.null(cmd)) {
@@ -214,6 +228,8 @@ run_stat_command <- function(name, ...) {
 #' @return A length-1 integer giving the number of commands currently in
 #'   the registry (aliases are not counted).
 #' @export
+#' @examples
+#' n_stat_commands()
 n_stat_commands <- function() {
   length(.morie_stat_commands$registry)
 }
@@ -247,6 +263,18 @@ clear_stat_commands <- function() {
 # 620-command tree lives in Python; the R surface starts with the
 # multiple-testing and semiparametric callables ported alongside this
 # file.
+#' Register a curated, small first wave so the registry has reachable
+#'
+#' entries even before downstream packages append their own. The full
+#' 620-command tree lives in Python; the R surface starts with the
+#' multiple-testing and semiparametric callables ported alongside this
+#' file.
+#'
+#' @return Invisibly,the value of \code{length}.
+#' @export
+#' @examples
+#' res <- .morie_seed_stat_commands()
+#' res
 .morie_seed_stat_commands <- function() {
   seeds <- list(
     list(
@@ -401,6 +429,12 @@ local({
 #' @param ... Unused.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' cmd <- stat_command("demo_echo", "misc", "demo_echo",
+#'                     "Echo demo command",
+#'                     handler_repl = function(...) "ok")
+#' register_stat_command(cmd)
+#' print(cmd)
 print.morie_stat_command <- function(x, ...) {
   cat(sprintf("morie stat command: %s\
 ", x$name))
@@ -451,6 +485,14 @@ print.morie_stat_command <- function(x, ...) {
 # Infer a category for a function `fn_name` by searching the installed
 # R/ directory for files whose names begin with a known prefix.  Falls
 # back to scanning the function's source attributes when available.
+#' Infer a category for a function `fn_name` by searching the installed
+#'
+#' R/ directory for files whose names begin with a known prefix.  Falls
+#' back to scanning the function\'s source attributes when available.
+#'
+#' @param fn_name Character; passed to \code{startsWith}.
+#' @return A character value.
+#' @export
 .morie_infer_category <- function(fn_name) {
   # Cheap path: prefix match against the static map.
   for (px in names(.MORIE_CATEGORY_PREFIX_MAP)) {
@@ -487,6 +529,9 @@ print.morie_stat_command <- function(x, ...) {
 #' @return Integer count of newly registered commands, invisibly.
 #' @keywords internal
 #' @export
+#' @examples
+#' set.seed(1)
+#' r <- .morie_auto_register_stat_commands(); TRUE
 .morie_auto_register_stat_commands <- function() {
   exports <- tryCatch(getNamespaceExports("morie"),
                       error = function(e) character(0))

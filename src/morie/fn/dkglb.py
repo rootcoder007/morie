@@ -5,7 +5,7 @@ Global kriging
 Category: DimKrig
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def dkglb(x=None, y=None, z=None, values=None, n=30):

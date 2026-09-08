@@ -1,6 +1,6 @@
 """Heart of spatial game"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ coal = coalition_heart
 
 def cheatsheet() -> str:
     return "coalition_heart({}) -> Heart of spatial game"
+
+
+# compact alias per ledger/NAMING.md
+coalitionheart = coalition_heart

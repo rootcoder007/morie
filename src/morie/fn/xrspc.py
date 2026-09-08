@@ -1,6 +1,6 @@
 """Spatial Poisson count model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -28,3 +28,7 @@ spat = spatial_poisson
 
 def cheatsheet() -> str:
     return "spatial_poisson({}) -> Spatial Poisson count model"
+
+
+# compact alias per ledger/NAMING.md
+spatialpoisson = spatial_poisson

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -79,3 +79,7 @@ nmfsp = nmf_sparse
 
 def cheatsheet() -> str:
     return "nmf_sparse({}) -> Sparse Non-negative Matrix Factorization."
+
+
+# compact alias per ledger/NAMING.md
+nmfsparse = nmf_sparse

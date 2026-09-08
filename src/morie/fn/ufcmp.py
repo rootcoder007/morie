@@ -20,7 +20,7 @@ def compare_unfolding_methods(result1, result2):
     DescriptiveResult
         value = dict with comparison metrics.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     s1 = float(result1["stress"])
     s2 = float(result2["stress"])

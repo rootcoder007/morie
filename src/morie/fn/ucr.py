@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 
@@ -82,3 +82,7 @@ ucr = ucr_classify
 
 def cheatsheet() -> str:
     return "ucr_classify({}) -> UCR offense classification."
+
+
+# compact alias per ledger/NAMING.md
+ucrclassify = ucr_classify

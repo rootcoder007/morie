@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -44,3 +44,7 @@ rcfcv = reflection_to_ar
 
 def cheatsheet() -> str:
     return "reflection_to_ar({}) -> Reflection coefficients to AR coefficients."
+
+
+# compact alias per ledger/NAMING.md
+reflectiontoar = reflection_to_ar

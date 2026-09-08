@@ -1,6 +1,6 @@
 """Tests for km085.kamath_ch6_cbs_variance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km085 import kamath_ch6_cbs_variance
 

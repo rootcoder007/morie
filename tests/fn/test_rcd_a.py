@@ -1,6 +1,6 @@
 """Tests for morie.fn.rcd_a — recidivism by age group."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.rcd_a import recidivism_by_age
 

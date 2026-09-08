@@ -7,8 +7,8 @@ for ATE/ATT/ATC and subgroup-level CATE with sandwich-style standard errors.
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.cpads import validate_cpads_frame
 from morie.fn.ipw import calculate_ipw_weights

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Person-time incidence rate with CI."""
 
-import scipy.stats as stats
+from . import _stats_core as stats
 
 from ._containers import ESRes
 
@@ -53,3 +53,7 @@ cdinc = incidence_rate
 
 def cheatsheet() -> str:
     return "incidence_rate({}) -> Person-time incidence rate with CI."
+
+
+# compact alias per ledger/NAMING.md
+incidencerate = incidence_rate

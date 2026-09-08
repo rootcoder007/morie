@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Alpha-NOMINATE (Bayesian MCMC)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ alph = alpha_nominate
 
 def cheatsheet() -> str:
     return "alpha_nominate({}) -> Alpha-NOMINATE (Bayesian MCMC)"
+
+
+# compact alias per ledger/NAMING.md
+alphanominate = alpha_nominate

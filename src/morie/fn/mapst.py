@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MAP estimate with Gaussian prior."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -64,3 +64,7 @@ mapst = map_estimate
 
 def cheatsheet() -> str:
     return "map_estimate({}) -> MAP estimate with Gaussian prior."
+
+
+# compact alias per ledger/NAMING.md
+mapestimate = map_estimate

@@ -1,6 +1,6 @@
 """Variogram log-likelihood"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -42,3 +42,7 @@ vari = vario_loglik
 
 def cheatsheet() -> str:
     return "vario_loglik({}) -> Variogram log-likelihood"
+
+
+# compact alias per ledger/NAMING.md
+variologlik = vario_loglik

@@ -47,8 +47,8 @@ import math
 from dataclasses import dataclass
 from typing import Any
 
-import numpy as np
-from numpy.typing import NDArray
+from morie.fn import _array_core as np
+from morie.fn._array_core import NDArray
 
 # ---------------------------------------------------------------------------
 # Paper references -- see also references.bib
@@ -144,7 +144,7 @@ def _beta_pdf(x: F64, d: int) -> F64:
 
     For large d, this concentrates around 0 with variance ~1/d.
     """
-    from scipy.special import gammaln
+    from morie.fn._sci_core import gammaln
 
     log_coeff = gammaln(d / 2) - 0.5 * np.log(np.pi) - gammaln((d - 1) / 2)
     exponent = (d - 3) / 2
@@ -188,27 +188,44 @@ def lloyd_max_codebook(d: int, bits: int, n_iter: int = 200) -> F64:
     pdf = _beta_pdf(grid, d)
     pdf = pdf / (np.sum(pdf) * dx + 1e-30)  # normalize to integrate to 1
 
+    # Prefix sums over the (sorted) grid, built once. The centroid update
+    # is a weighted mean over a CONTIGUOUS run of grid points, so each
+    # partition is two subtractions instead of a full 50,000-element mask
+    # scan: the masked form cost n_iter * K * len(grid) elementwise
+    # operations -- 160 million for the default (200, 16, 50000) -- which
+    # is minutes once there is no numpy underneath.
+    import bisect
+
+    gvals = [float(v) for v in grid]
+    pvals = [float(v) for v in pdf]
+    s0 = [0.0] * (len(gvals) + 1)
+    s1 = [0.0] * (len(gvals) + 1)
+    for i, (gv, pv) in enumerate(zip(gvals, pvals)):
+        s0[i + 1] = s0[i] + pv
+        s1[i + 1] = s1[i] + pv * gv
+
+    cvals = [float(v) for v in centroids]
     for _ in range(n_iter):
-        # Compute decision boundaries (midpoints)
-        boundaries = 0.5 * (centroids[:-1] + centroids[1:])
-        boundaries = np.concatenate([[lo], boundaries, [hi]])
-
-        # Update centroids: weighted mean within each partition
-        new_centroids = np.empty(K)
+        bounds = [lo] + [0.5 * (cvals[k] + cvals[k + 1])
+                         for k in range(K - 1)] + [hi]
+        new_cvals = [0.0] * K
         for k in range(K):
-            mask = (grid >= boundaries[k]) & (grid < boundaries[k + 1])
-            weighted = pdf[mask] * grid[mask]
-            total_weight = np.sum(pdf[mask]) * dx
-            if total_weight > 1e-30:
-                new_centroids[k] = np.sum(weighted) * dx / total_weight
+            # grid >= bounds[k] and grid < bounds[k + 1]
+            a = bisect.bisect_left(gvals, bounds[k])
+            b = bisect.bisect_left(gvals, bounds[k + 1])
+            w = s0[b] - s0[a]
+            # dx cancels between numerator and denominator
+            if w * dx > 1e-30:
+                new_cvals[k] = (s1[b] - s1[a]) / w
             else:
-                new_centroids[k] = centroids[k]
+                new_cvals[k] = cvals[k]
 
-        if np.allclose(centroids, new_centroids, atol=1e-12):
+        if all(abs(x - y) <= 1e-12 for x, y in zip(cvals, new_cvals)):
+            cvals = new_cvals
             break
-        centroids = new_centroids
+        cvals = new_cvals
 
-    return np.sort(centroids)
+    return np.sort(np.array(cvals))
 
 
 # Precomputed codebooks cache (dimension, bits) -> centroids
@@ -484,7 +501,7 @@ def qjl_decode(signs: I8, norm: float, S: F64) -> F64:
     """
     d = len(signs)
     scale = math.sqrt(math.pi / 2) / d
-    r_hat = scale * (S.T @ signs.astype(np.float64))
+    r_hat = scale * (S.T @ np.asarray(signs))
     # Scale to match the original residual norm
     r_hat_norm = np.linalg.norm(r_hat)
     if r_hat_norm > 1e-15:
@@ -815,26 +832,29 @@ def pack_indices(indices: U8, bits: int) -> bytes:
     bytes
         Packed byte string.
     """
+    vals = [int(v) for v in (indices.tolist()
+                             if hasattr(indices, "tolist") else indices)]
     if bits == 8:
-        return indices.tobytes()
+        return bytes(vals)
 
-    n = len(indices)
+    n = len(vals)
     total_bits = n * bits
     n_bytes = (total_bits + 7) // 8
-    packed = np.zeros(n_bytes, dtype=np.uint8)
+    packed = bytearray(n_bytes)
 
     bit_pos = 0
-    for idx in indices:
+    for idx in vals:
         byte_idx = bit_pos // 8
         bit_offset = bit_pos % 8
         # Spread across at most 2 bytes
-        packed[byte_idx] |= np.uint8((idx & ((1 << bits) - 1)) << bit_offset)
+        packed[byte_idx] |= ((idx & ((1 << bits) - 1))
+                             << bit_offset) & 0xFF
         overflow = bit_offset + bits - 8
         if overflow > 0 and byte_idx + 1 < n_bytes:
-            packed[byte_idx + 1] |= np.uint8(idx >> (bits - overflow))
+            packed[byte_idx + 1] |= (idx >> (bits - overflow)) & 0xFF
         bit_pos += bits
 
-    return packed.tobytes()
+    return bytes(packed)
 
 
 def unpack_indices(data: bytes, bits: int, count: int) -> U8:
@@ -854,23 +874,23 @@ def unpack_indices(data: bytes, bits: int, count: int) -> U8:
     ndarray of uint8
     """
     if bits == 8:
-        return np.frombuffer(data, dtype=np.uint8)[:count].copy()
+        return np.asarray([float(b) for b in data[:count]])
 
-    packed = np.frombuffer(data, dtype=np.uint8)
+    packed = bytes(data)
     mask = (1 << bits) - 1
-    indices = np.empty(count, dtype=np.uint8)
+    out = []
 
     bit_pos = 0
-    for i in range(count):
+    for _ in range(count):
         byte_idx = bit_pos // 8
         bit_offset = bit_pos % 8
-        val = int(packed[byte_idx]) >> bit_offset
+        val = packed[byte_idx] >> bit_offset
         if bit_offset + bits > 8 and byte_idx + 1 < len(packed):
-            val |= int(packed[byte_idx + 1]) << (8 - bit_offset)
-        indices[i] = val & mask
+            val |= packed[byte_idx + 1] << (8 - bit_offset)
+        out.append(float(val & mask))
         bit_pos += bits
 
-    return indices
+    return np.asarray(out)
 
 
 # ---------------------------------------------------------------------------
@@ -964,5 +984,5 @@ def turboquant_mse_outlier_decode(block: TQOutlierBlock) -> F64:
     """Decode an outlier-aware TQ block -- bulk decode then overwrite outliers."""
     out = turboquant_mse_decode(block.bulk)
     if len(block.outlier_indices) > 0:
-        out[block.outlier_indices] = block.outlier_values.astype(np.float64)
+        out[block.outlier_indices] = np.asarray(block.outlier_values)
     return out

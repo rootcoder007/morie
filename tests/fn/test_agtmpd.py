@@ -1,6 +1,6 @@
 """Tests for agtmpd.alphazero_temp_decay."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agtmpd import alphazero_temp_decay
 

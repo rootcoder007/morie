@@ -1,0 +1,412 @@
+[
+ {
+  "mod": "cvxadm",
+  "fn": "boyd_admm",
+  "args": [
+   "f",
+   "g",
+   "A",
+   "B",
+   "c",
+   "rho"
+  ],
+  "formula": "x: argmin Lp; z: argmin Lp; u <- u + Ax+Bz-c"
+ },
+ {
+  "mod": "cvxbgm",
+  "fn": "boyd_basis_pursuit",
+  "args": [
+   "A",
+   "b",
+   "eps"
+  ],
+  "formula": "min |x|_1 s.t. |Ax - b|_2 <= eps"
+ },
+ {
+  "mod": "cvxcen",
+  "fn": "boyd_central_path",
+  "args": [
+   "f0",
+   "f",
+   "t"
+  ],
+  "formula": "x*(t) = argmin t f0(x) + phi(x)"
+ },
+ {
+  "mod": "cvxcvv",
+  "fn": "boyd_cvxlin_complement",
+  "args": [
+   "A",
+   "B",
+   "C"
+  ],
+  "formula": "[A B; B' C] >= 0 iff A >=0 and C - B' A^{+} B >= 0"
+ },
+ {
+  "mod": "cvxdgp",
+  "fn": "boyd_dual_problem",
+  "args": [
+   "g"
+  ],
+  "formula": "max g(lambda,nu) s.t. lambda >= 0"
+ },
+ {
+  "mod": "cvxell",
+  "fn": "boyd_minvol_ellipsoid",
+  "args": [
+   "X"
+  ],
+  "formula": "min log det B^{-1} s.t. |Bx_i + d| <= 1"
+ },
+ {
+  "mod": "cvxgd1",
+  "fn": "boyd_grad_proj",
+  "args": [
+   "f",
+   "grad_f",
+   "x0",
+   "C",
+   "t"
+  ],
+  "formula": "x^{k+1} = P_C(x^k - t grad f(x^k))"
+ },
+ {
+  "mod": "cvxgrd",
+  "fn": "boyd_gradient_descent",
+  "args": [
+   "f",
+   "grad_f",
+   "x0",
+   "t"
+  ],
+  "formula": "x^{k+1} = x^k - t_k grad f(x^k)"
+ },
+ {
+  "mod": "cvxgsa",
+  "fn": "boyd_generalized_p",
+  "args": [
+   "x",
+   "y",
+   "K"
+  ],
+  "formula": "x <=_K y iff y - x in K"
+ },
+ {
+  "mod": "cvxhul",
+  "fn": "boyd_convex_hull",
+  "args": [
+   "S"
+  ],
+  "formula": "conv S = {sum theta_i x_i : theta >= 0, sum=1}"
+ },
+ {
+  "mod": "cvxind",
+  "fn": "boyd_indicator",
+  "args": [
+   "C",
+   "x"
+  ],
+  "formula": "I_C(x) = 0 if x in C else +inf"
+ },
+ {
+  "mod": "cvxipm",
+  "fn": "boyd_interior_point",
+  "args": [
+   "f0",
+   "f",
+   "x0",
+   "t"
+  ],
+  "formula": "min t f0(x) + phi(x); t -> infinity"
+ },
+ {
+  "mod": "cvxkkt",
+  "fn": "boyd_kkt",
+  "args": [
+   "x",
+   "lambda_",
+   "nu"
+  ],
+  "formula": "stationarity, primal/dual feasibility, complementary slackness"
+ },
+ {
+  "mod": "cvxlgr",
+  "fn": "boyd_logistic_loss",
+  "args": [
+   "u"
+  ],
+  "formula": "phi(u) = log(1 + exp(-u))"
+ },
+ {
+  "mod": "cvxlif",
+  "fn": "boyd_linf_fitting",
+  "args": [
+   "A",
+   "b"
+  ],
+  "formula": "min |Ax - b|_inf"
+ },
+ {
+  "mod": "cvxlin",
+  "fn": "boyd_linear_program",
+  "args": [
+   "c",
+   "A",
+   "b"
+  ],
+  "formula": "min c'x s.t. Ax = b, x >= 0"
+ },
+ {
+  "mod": "cvxlnf",
+  "fn": "boyd_l1_fitting",
+  "args": [
+   "A",
+   "b"
+  ],
+  "formula": "min |Ax - b|_1"
+ },
+ {
+  "mod": "cvxlpl",
+  "fn": "boyd_linear_program_dual",
+  "args": [
+   "A",
+   "b",
+   "c"
+  ],
+  "formula": "max b'y s.t. A'y <= c"
+ },
+ {
+  "mod": "cvxlse",
+  "fn": "boyd_lse",
+  "args": [
+   "x"
+  ],
+  "formula": "grad lse = exp(x) / sum exp(x)"
+ },
+ {
+  "mod": "cvxlsq",
+  "fn": "boyd_least_squares",
+  "args": [
+   "A",
+   "b"
+  ],
+  "formula": "min |Ax - b|_2^2"
+ },
+ {
+  "mod": "cvxmin",
+  "fn": "boyd_minimum_norm",
+  "args": [
+   "A",
+   "b",
+   "norm"
+  ],
+  "formula": "min |x| s.t. Ax = b"
+ },
+ {
+  "mod": "cvxmnr",
+  "fn": "boyd_minimax",
+  "args": [
+   "f"
+  ],
+  "formula": "min max_i f_i(x)"
+ },
+ {
+  "mod": "cvxnch",
+  "fn": "boyd_nuclear_norm",
+  "args": [
+   "X"
+  ],
+  "formula": "|X|_* = sum sigma_i(X)"
+ },
+ {
+  "mod": "cvxprc",
+  "fn": "boyd_projection",
+  "args": [
+   "v",
+   "C"
+  ],
+  "formula": "P_C(v) = argmin_{x in C} |x - v|^2"
+ },
+ {
+  "mod": "cvxprg",
+  "fn": "boyd_proximal_grad",
+  "args": [
+   "f",
+   "grad_f",
+   "h",
+   "x0",
+   "t"
+  ],
+  "formula": "x^{k+1} = prox_{tk h}(x^k - t_k grad f(x^k))"
+ },
+ {
+  "mod": "cvxprl",
+  "fn": "boyd_perspective",
+  "args": [
+   "f",
+   "x",
+   "t"
+  ],
+  "formula": "g(x,t) = t f(x/t), t > 0"
+ },
+ {
+  "mod": "cvxqcr",
+  "fn": "boyd_quadratic_constraint",
+  "args": [
+   "P0",
+   "q0",
+   "P",
+   "q",
+   "r"
+  ],
+  "formula": "min (1/2) x'P0 x + q0'x s.t. (1/2) x'P_i x + q_i'x + r_i <= 0"
+ },
+ {
+  "mod": "cvxqp",
+  "fn": "boyd_quadratic_program",
+  "args": [
+   "P",
+   "q",
+   "G",
+   "h",
+   "A",
+   "b"
+  ],
+  "formula": "min (1/2) x'Px + q'x s.t. Gx <= h, Ax = b"
+ },
+ {
+  "mod": "cvxqpdl",
+  "fn": "boyd_qp_dual",
+  "args": [
+   "P",
+   "q",
+   "G",
+   "h"
+  ],
+  "formula": "max -(1/2) lambda'(GP^{-1}G')lambda - h'lambda - (1/2) q'P^{-1}q"
+ },
+ {
+  "mod": "cvxqsv",
+  "fn": "boyd_qcqp_relaxation",
+  "args": [
+   "P0",
+   "q0",
+   "P",
+   "q",
+   "r"
+  ],
+  "formula": "Lift x to X = xx', drop rank-1 constraint"
+ },
+ {
+  "mod": "cvxrgl",
+  "fn": "boyd_regularized_ls",
+  "args": [
+   "A",
+   "b",
+   "delta"
+  ],
+  "formula": "min |Ax-b|_2^2 + delta |x|_2^2"
+ },
+ {
+  "mod": "cvxsbm",
+  "fn": "boyd_subgrad_method",
+  "args": [
+   "f",
+   "subgrad",
+   "x0",
+   "t"
+  ],
+  "formula": "x^{k+1} = x^k - t_k g^k, g^k in df(x^k)"
+ },
+ {
+  "mod": "cvxsbp",
+  "fn": "boyd_subgradient",
+  "args": [
+   "f",
+   "x"
+  ],
+  "formula": "g in df(x) iff f(y) >= f(x) + g'(y-x) for all y"
+ },
+ {
+  "mod": "cvxsdp",
+  "fn": "boyd_sdp",
+  "args": [
+   "c",
+   "F"
+  ],
+  "formula": "min c'x s.t. F0 + sum x_i F_i >= 0"
+ },
+ {
+  "mod": "cvxsep",
+  "fn": "boyd_separating_hyperplane",
+  "args": [
+   "C",
+   "D"
+  ],
+  "formula": "exists a !=0, b: a'x <= b for x in C, a'x >= b for x in D"
+ },
+ {
+  "mod": "cvxslt",
+  "fn": "boyd_slater",
+  "args": [
+   "f"
+  ],
+  "formula": "exists x interior with f_i(x) < 0"
+ },
+ {
+  "mod": "cvxsmh",
+  "fn": "boyd_smooth_huber_grad",
+  "args": [
+   "u",
+   "M"
+  ],
+  "formula": "phi'(u) = u/M if |u|<=M else sign(u)"
+ },
+ {
+  "mod": "cvxsmt",
+  "fn": "boyd_smooth_min",
+  "args": [
+   "x"
+  ],
+  "formula": "lse(x) = log sum exp x_i"
+ },
+ {
+  "mod": "cvxsoc",
+  "fn": "boyd_socp",
+  "args": [
+   "f",
+   "A",
+   "b",
+   "c",
+   "d"
+  ],
+  "formula": "min f'x s.t. |A_i x + b_i|_2 <= c_i'x + d_i"
+ },
+ {
+  "mod": "cvxstd",
+  "fn": "boyd_steepest_desc",
+  "args": [
+   "grad",
+   "norm"
+  ],
+  "formula": "delta_x = argmin grad f(x)' v, |v| <= 1"
+ },
+ {
+  "mod": "cvxstgc",
+  "fn": "boyd_strong_convex",
+  "args": [
+   "f",
+   "m"
+  ],
+  "formula": "f(y) >= f(x) + grad f(x)'(y-x) + (m/2)|y-x|^2"
+ },
+ {
+  "mod": "cvxsup",
+  "fn": "boyd_support_hyperplane",
+  "args": [
+   "C",
+   "x0"
+  ],
+  "formula": "for boundary x_0 of C exists a: a'x <= a'x_0 for all x in C"
+ }
+]

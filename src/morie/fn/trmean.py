@@ -4,8 +4,8 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
-from scipy.stats import trim_mean
+from . import _array_core as np
+from ._stats_core import trim_mean
 
 
 def trmean(x: Union[Sequence[float], np.ndarray], trim: float = 0.1):

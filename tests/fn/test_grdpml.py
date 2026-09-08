@@ -1,6 +1,6 @@
 """Tests for grdpml.geron_ddpm_simple_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grdpml import geron_ddpm_simple_loss
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.cfa — Confirmatory Factor Analysis."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import CfaRes
 from morie.fn.cfa import cfa

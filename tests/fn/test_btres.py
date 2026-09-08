@@ -1,6 +1,6 @@
 """Tests for btres.boot_residual_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btres import boot_residual_regression
 

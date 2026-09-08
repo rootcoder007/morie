@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -40,3 +40,7 @@ sener = signal_energy
 
 def cheatsheet() -> str:
     return "signal_energy({}) -> Signal energy."
+
+
+# compact alias per ledger/NAMING.md
+signalenergy = signal_energy

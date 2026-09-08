@@ -5,7 +5,7 @@ PM10 spatial interpolation
 Category: EnvStat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def enpm1(data=None, coords=None, n=50):

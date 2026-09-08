@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -55,3 +55,7 @@ rskpr = risk_profile
 
 def cheatsheet() -> str:
     return "risk_profile({}) -> Mean risk score profile by demographic subgroups."
+
+
+# compact alias per ledger/NAMING.md
+riskprofile = risk_profile

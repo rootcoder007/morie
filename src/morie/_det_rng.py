@@ -36,7 +36,7 @@ from __future__ import annotations
 
 import hashlib
 
-import numpy as np
+from morie.fn import _array_core as np
 
 __all__ = ["from_seed", "r_seed", "sha_digest_hex"]
 

@@ -16,7 +16,7 @@ def quadratic_utility(ideal, position, beta: float = 1.0) -> DescriptiveResult:
 
     .. epigraph:: There is no royal road to geometry. -- Euclid
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     ideal = np.asarray(ideal, dtype=float)
     position = np.asarray(position, dtype=float)

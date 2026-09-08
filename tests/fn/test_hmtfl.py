@@ -1,6 +1,6 @@
 """Tests for hmtfl.geron_transfer_learning."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmtfl import geron_transfer_learning
 

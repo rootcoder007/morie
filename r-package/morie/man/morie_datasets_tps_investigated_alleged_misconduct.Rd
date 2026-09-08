@@ -38,11 +38,11 @@ affects the hub_id -> FeatureServer URL lookup.}
 }
 \value{
 A data.frame / GeoJSON list / file path; see
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} for per-format semantics.
+\code{morie_datasets_tps_arcgis_hub_by_id()} for per-format semantics.
 }
 \description{
 Toronto PS ArcGIS Hub dataset wrapper. Thin dispatch to
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} with the canonical
+\code{morie_datasets_tps_arcgis_hub_by_id()} with the canonical
 hub item_id \code{aaea16d94ae64da8a790d9649788de4c}.
 }
 \details{
@@ -50,4 +50,9 @@ This dataset provides a breakdown of the total investigated
 complaints by type of complaint submitted.
 
 Tags: ASR; TPS; Toronto Police; Annual Statistical Report; Misconduct
+}
+\examples{
+\dontrun{
+morie_datasets_tps_investigated_alleged_misconduct()
+}
 }

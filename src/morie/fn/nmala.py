@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Alpha-NOMINATE acceptance rate"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ alph = alpha_nom_accept
 
 def cheatsheet() -> str:
     return "alpha_nom_accept({}) -> Alpha-NOMINATE acceptance rate"
+
+
+# compact alias per ledger/NAMING.md
+alphanomaccept = alpha_nom_accept

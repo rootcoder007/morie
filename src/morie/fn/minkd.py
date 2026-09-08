@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Minkowski distance."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -36,3 +36,7 @@ minkd = minkowski_dist
 
 def cheatsheet() -> str:
     return "minkowski_dist({}) -> Minkowski distance."
+
+
+# compact alias per ledger/NAMING.md
+minkowskidist = minkowski_dist

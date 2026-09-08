@@ -1,6 +1,6 @@
 """Grid search with cross-validation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -31,8 +31,8 @@ def grid_search_cv(x, y, *, estimator=None, param_grid=None, cv=5, scoring=None,
     RichResult with payload: estimate (best CV score), best_params,
     best_score, cv_results (list of dicts), n, method.
     """
-    from sklearn.linear_model import LogisticRegression, Ridge
-    from sklearn.model_selection import GridSearchCV
+    from ._ml_core import LogisticRegression, Ridge
+    from ._ml_core import GridSearchCV
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()
@@ -85,3 +85,7 @@ if __name__ == "__main__":
     print("best params:", r.best_params)
     print("best CV score:", r.best_score)
     print("CV scores per setting:", r.cv_results_mean_score)
+
+
+# compact alias per ledger/NAMING.md
+gridsearchcv = grid_search_cv

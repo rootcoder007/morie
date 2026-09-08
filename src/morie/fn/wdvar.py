@@ -1,7 +1,7 @@
 """Windowed variogram cloud (Schabenberger & Gotway Ch 8)."""
 
-import numpy as np
-from scipy.spatial.distance import pdist
+from . import _array_core as np
+from ._sci_core import pdist
 
 
 def wdvar(

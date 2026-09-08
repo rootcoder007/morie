@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -101,3 +101,7 @@ wndchl = wind_chill
 
 def cheatsheet() -> str:
     return "wndchl(T_air_C, wind_kmh) -> Wind chill index (°C, EC 2001)."
+
+
+# compact alias per ledger/NAMING.md
+windchill = wind_chill

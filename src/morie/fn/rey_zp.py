@@ -1,9 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Zero-inflated Poisson regression via EM algorithm."""
 
-import numpy as np
-from scipy.optimize import minimize
-from scipy.stats import norm
+from . import _array_core as np
+from ._sci_core import minimize
+from ._stats_core import norm
 
 
 def rey_zp(df, y: str = "y", x: list | str = "x", max_iter: int = 200, tol: float = 1e-6, cdf=None) -> dict:
@@ -157,3 +157,7 @@ def rey_zp(df, y: str = "y", x: list | str = "x", max_iter: int = 200, tol: floa
 
 def cheatsheet() -> str:
     return "rey_zp({}) -> Zero-inflated Poisson regression via EM algorithm."
+
+
+# compact alias per ledger/NAMING.md
+reyzp = rey_zp

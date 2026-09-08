@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgfev -- Variogram fit evaluation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgfev import vario_fit_eval
 

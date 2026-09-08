@@ -74,3 +74,7 @@ fdiff = finite_diff
 
 def cheatsheet() -> str:
     return "finite_diff({}) -> Numerical differentiation via finite differences."
+
+
+# compact alias per ledger/NAMING.md
+finitediff = finite_diff

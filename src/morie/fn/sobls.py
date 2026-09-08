@@ -7,7 +7,7 @@ estimate ``\\hat\\theta = (1/N) sum f(x_i)`` for integrand ``f``.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -35,7 +35,7 @@ def sobol_sequence(x=None, N: int = 128, d: int = 1, f=None, scramble: bool = Tr
     RichResult: sample, [estimate, se], N, d, method.
     """
     try:
-        from scipy.stats import qmc
+        from ._stats_core import qmc
     except Exception as e:  # pragma: no cover
         return RichResult(payload={"error": f"scipy.stats.qmc unavailable: {e}", "method": "Sobol (Sobol 1967)"})
     if x is not None:
@@ -67,3 +67,7 @@ def sobol_sequence(x=None, N: int = 128, d: int = 1, f=None, scramble: bool = Tr
 
 def cheatsheet():
     return "sobls(N=128, d=1, f=None): Sobol QMC points + integral estimate."
+
+
+# compact alias per ledger/NAMING.md
+sobolsequence = sobol_sequence

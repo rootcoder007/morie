@@ -17,8 +17,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import numpy as np
-from numpy.typing import NDArray
+from morie.fn import _array_core as np
+from morie.fn._array_core import NDArray
 
 # GGUF magic number: "GGUF" in little-endian
 GGUF_MAGIC = 0x46554747  # 'G','G','U','F'

@@ -1,6 +1,6 @@
 """Tests for medkt (median test - k samples)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.medkt import medkt

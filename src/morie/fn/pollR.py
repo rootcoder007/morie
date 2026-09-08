@@ -1,6 +1,6 @@
 """Pollard's rho factoring."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def pollards_rho(n):
 
 def cheatsheet():
     return "pollR: Pollard's rho factoring"
+
+
+# compact alias per ledger/NAMING.md
+pollardsrho = pollards_rho

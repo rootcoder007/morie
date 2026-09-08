@@ -5,7 +5,7 @@ import math
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def logodds(p: Union[float, Sequence[float], np.ndarray]):

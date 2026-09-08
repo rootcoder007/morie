@@ -1,6 +1,6 @@
 """Fuzzy C-means spatial"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ fuzz = fuzzy_cmeans_sp
 
 def cheatsheet() -> str:
     return "fuzzy_cmeans_sp({}) -> Fuzzy C-means spatial"
+
+
+# compact alias per ledger/NAMING.md
+fuzzycmeanssp = fuzzy_cmeans_sp

@@ -1,6 +1,6 @@
 """Spatial random forest"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -27,3 +27,7 @@ spat = spatial_rf
 
 def cheatsheet() -> str:
     return "spatial_rf({}) -> Spatial random forest"
+
+
+# compact alias per ledger/NAMING.md
+spatialrf = spatial_rf

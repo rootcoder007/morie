@@ -1,0 +1,7244 @@
+{
+ "Mnih et al (2016) A3C/A2C": [
+  "a2cv.py"
+ ],
+ "Wilkinson (2014); Meeds-Welling (2014)": [
+  "abcgp.py"
+ ],
+ "Papamakarios et al (2019) SNL": [
+  "abcnnt.py"
+ ],
+ "Pritchard et al (1999)": [
+  "abcrej.py"
+ ],
+ "Toni et al (2009)": [
+  "abcsmc.py"
+ ],
+ "Beck-Teboulle (2009) FISTA": [
+  "acclso.py",
+  "agdcon.py"
+ ],
+ "Schildcrout-Heagerty (2007)": [
+  "acigls.py"
+ ],
+ "Sutton-Barto (1998)": [
+  "acrt.py",
+  "epsg.py",
+  "gamtd.py"
+ ],
+ "Cover-Thomas (2006)": [
+  "acvent.py",
+  "cmutif.py",
+  "cndent.py",
+  "jntent.py",
+  "kchnls.py",
+  "pcmpr1.py"
+ ],
+ "Akcay et al (2018) GANomaly": [
+  "adGAN.py"
+ ],
+ "Nikolopoulos et al (2011)": [
+  "adida.py"
+ ],
+ "Kish (1965)": [
+  "adjsrs.py",
+  "deftef.py",
+  "desigeff.py"
+ ],
+ "Boyd": [
+  "admmop.py",
+  "sdpwts.py",
+  "socpts.py"
+ ],
+ "Alexander-Novembre-Lange (2009) ADMIXT": [
+  "adseqs.py"
+ ],
+ "Dwork-Rothblum-Vadhan (2010)": [
+  "advcmp.py"
+ ],
+ "Kucukelbir et al (2017)": [
+  "advinf.py"
+ ],
+ "Bifet-Gavald\u00e0 (2007)": [
+  "adwin.py"
+ ],
+ "hypothetical synthesis (#158 + #164)": [
+  "agalfsy.py"
+ ],
+ "Silver et al (2017)": [
+  "agbckp.py",
+  "agclop.py",
+  "agdirn.py",
+  "agdpck.py",
+  "agdrcn.py",
+  "agexpd.py",
+  "agnnbk.py",
+  "agnod1.py",
+  "agphdt.py",
+  "agplog.py",
+  "agselp.py",
+  "agtmpd.py",
+  "agvhdt.py",
+  "agvslr.py",
+  "agwgcl.py",
+  "alfqfn.py"
+ ],
+ "Silver et al (2018)": [
+  "agbnch.py",
+  "agscan.py",
+  "agscho.py",
+  "agstkb.py"
+ ],
+ "Ioffe-Szegedy (2015)": [
+  "agbtnm.py"
+ ],
+ "Hinton-Vinyals-Dean (2015)": [
+  "agdsts.py"
+ ],
+ "Schrittwieser et al (2020)": [
+  "agmuef.py",
+  "agmunw.py",
+  "agmupv.py",
+  "agmurc.py",
+  "agmurt.py",
+  "agmuzu.py",
+  "muzero.py"
+ ],
+ "Silver et al (2018) Science": [
+  "agnnvh.py",
+  "alphas.py"
+ ],
+ "Schaul et al (2016) PER": [
+  "agprtg.py"
+ ],
+ "Silver et al (2017) Nature; Rosin (201": [
+  "agpuct.py"
+ ],
+ "Andersen & Gill (1982)": [
+  "agrec.py"
+ ],
+ "Boyle-Parkin (1991)": [
+  "agstds.py"
+ ],
+ "Chaslot et al (2008)": [
+  "agvirt.py"
+ ],
+ "Akaike (1973)": [
+  "aikarp.py"
+ ],
+ "IPCC GHG Inventory Guidelines": [
+  "airbed.py"
+ ],
+ "Fu-Luo-Levine (2018)": [
+  "airl.py"
+ ],
+ "Aitchison": [
+  "aitalr.py",
+  "aitalri.py",
+  "aitamg.py",
+  "aitbi.py",
+  "aitcen.py",
+  "aitclos.py",
+  "aitclr.py",
+  "aitclri.py",
+  "aitclu.py",
+  "aitdst.py",
+  "aitgmu.py",
+  "aitip.py",
+  "aitlnf.py",
+  "aitlnp.py",
+  "aitlns.py",
+  "aitlrm.py",
+  "aitnrm.py",
+  "aitpca.py",
+  "aitpow.py",
+  "aitprt.py",
+  "aitsbc.py",
+  "aittvr.py",
+  "aitvar.py",
+  "tmlcom.py"
+ ],
+ "Bray & Curtis (1957)": [
+  "aitbcp.py"
+ ],
+ "Pawlowsky-Glahn (2015)": [
+  "aitcap.py",
+  "aitqld.py",
+  "aitvarc.py"
+ ],
+ "Filzmoser & Hron (2008)": [
+  "aitcmd.py"
+ ],
+ "Pawlowsky-Glahn et al. (2015)": [
+  "aitcrg.py"
+ ],
+ "Wilks (1962)": [
+  "aitdir.py",
+  "aitdrl.py",
+  "aitdrs.py"
+ ],
+ "Minka (2000)": [
+  "aitdrf.py"
+ ],
+ "Hijazi & Jernigan (2009)": [
+  "aitdrr.py"
+ ],
+ "Hill (1973)": [
+  "aithil.py"
+ ],
+ "Egozcue et al. (2003)": [
+  "aitilr.py",
+  "aitilri.py"
+ ],
+ "Lin (1991)": [
+  "aitjsd.py",
+  "jsdivg.py"
+ ],
+ "Filzmoser et al. (2018)": [
+  "aitmad.py"
+ ],
+ "Pielou (1966)": [
+  "aitpie.py"
+ ],
+ "Anderson (2001)": [
+  "aitprm.py"
+ ],
+ "Egozcue (2005)": [
+  "aitsbp.py"
+ ],
+ "Shannon (1948)": [
+  "aitsdv.py",
+  "crsent.py",
+  "mutinf.py",
+  "redund.py",
+  "shanen.py",
+  "surprl.py"
+ ],
+ "Simpson (1949)": [
+  "aitsim.py"
+ ],
+ "Palarea-Albaladejo & Mart\u00edn-Fern\u00e1ndez ": [
+  "aitzlk.py",
+  "aitzlr.py"
+ ],
+ "Mart\u00edn-Fern\u00e1ndez et al. (2003)": [
+  "aitzmu.py"
+ ],
+ "Abramson et al (2024)": [
+  "alf3df.py",
+  "alfbnp.py"
+ ],
+ "Jumper et al (2021)": [
+  "alfbk2.py",
+  "alfcnf.py",
+  "alfcrp.py",
+  "alfemb.py",
+  "alfevf.py",
+  "alffap.py",
+  "alfldz.py",
+  "alfpaf.py",
+  "alfpea.py",
+  "alfrcl.py",
+  "alfreq.py",
+  "alfsdc.py",
+  "alfsmd.py",
+  "alfsts.py",
+  "alftpl.py",
+  "alftrm.py",
+  "alfvio.py"
+ ],
+ "Senior et al (2020); Jumper (2021)": [
+  "alfdst.py"
+ ],
+ "Lin et al (2023)": [
+  "alfesf.py"
+ ],
+ "Silver et al (2016) Nature AlphaGo": [
+  "alfgom.py"
+ ],
+ "Jumper et al (2021) Nature \u00a71.8": [
+  "alfipa.py"
+ ],
+ "Evans et al (2022)": [
+  "alfmpv.py"
+ ],
+ "Ahdritz et al (2022)": [
+  "alfomg.py"
+ ],
+ "Mankowitz et al (2023) Nature DeepMind": [
+  "alfqud.py"
+ ],
+ "Watson et al (2023)": [
+  "alfrf2.py"
+ ],
+ "Fiedler (1973)": [
+  "alggap.py",
+  "sgtfid.py",
+  "sgtfvc.py"
+ ],
+ "Ali, Mikhail, Haq (1978)": [
+  "ali.py"
+ ],
+ "Press-Smith-Lewis (2022) ALiBi": [
+  "alibi.py"
+ ],
+ "Needleman-Wunsch (1970)": [
+  "alnnw.py"
+ ],
+ "Smith-Waterman (1981)": [
+  "alnsw.py"
+ ],
+ "Silver et al (2018) AlphaZero": [
+  "alpz.py"
+ ],
+ "Bell-Koren (2007); Hu-Koren-Volinsky (": [
+  "alsR.py"
+ ],
+ "Hansen et al (2009); Honma et al (2019": [
+  "ames3.py"
+ ],
+ "Analysis of Categorical Data with R (C": [
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e1.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e10.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e3.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e4.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e5.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e6.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e7.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e8.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e1.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e11.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e15.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e16.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e2.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e22.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e3.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e4.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e5.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e6.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e7.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e8.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e9.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e1.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e10.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e11.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e12.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e13.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e16.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e2.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e3.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e4.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e50.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e8.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e1.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e12.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e15.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e2.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e3.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e4.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e5.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e6.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e7.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e2.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e3.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e4.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e1.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e10.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e11.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e14.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e15.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e16.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e17.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e18.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e20.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e22.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e23.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e24.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e25.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e26.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e3.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e32.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e34.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e36.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e37.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e4.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e5.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e6.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e7.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e8.py",
+  "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e9.py"
+ ],
+ "Cahoon, Hinich & Ordeshook (1978) Anal": [
+  "analyzing_spatial_models_of_choice_and_judgment2e10.py",
+  "analyzing_spatial_models_of_choice_and_judgment2e3.py",
+  "analyzing_spatial_models_of_choice_and_judgment3e18.py",
+  "analyzing_spatial_models_of_choice_and_judgment3e21.py",
+  "analyzing_spatial_models_of_choice_and_judgment3e31.py",
+  "analyzing_spatial_models_of_choice_and_judgment3e34.py",
+  "analyzing_spatial_models_of_choice_and_judgment3e37.py",
+  "analyzing_spatial_models_of_choice_and_judgment4e19.py",
+  "analyzing_spatial_models_of_choice_and_judgment5e10.py",
+  "analyzing_spatial_models_of_choice_and_judgment5e9.py",
+  "analyzing_spatial_models_of_choice_and_judgment6e1.py",
+  "analyzing_spatial_models_of_choice_and_judgment6e12.py",
+  "analyzing_spatial_models_of_choice_and_judgment6e18.py",
+  "analyzing_spatial_models_of_choice_and_judgment6e23.py",
+  "analyzing_spatial_models_of_choice_and_judgment6e4.py",
+  "analyzing_spatial_models_of_choice_and_judgment6e40.py",
+  "analyzing_spatial_models_of_choice_and_judgment6e47.py"
+ ],
+ "Andrews & Monahan (1992)": [
+  "andmnh.py"
+ ],
+ "Andrews (1974)": [
+  "andrew.py"
+ ],
+ "Andrew B Lawson - Using R for Bayesian": [
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp11e1.py",
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp14e1.py",
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp15e2.py",
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp16e1.py",
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp17e1.py",
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp18e3.py",
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp18e4.py",
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp3e1.py",
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp3e2.py",
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp5e2.py",
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp6e18.py",
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp6e3.py",
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp6e6.py",
+  "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp6e8.py"
+ ],
+ "Andrews et al (1972)": [
+  "andrews.py"
+ ],
+ "Ding, Granger, Engle (1993)": [
+  "aparcm.py"
+ ],
+ "Klicpera et al (2019)": [
+  "appnp.py"
+ ],
+ "Hasselmann (1976)": [
+  "ar1cl.py"
+ ],
+ "Montesinos Lopez Ch 8": [
+  "arckn.py",
+  "kblup.py",
+  "lapkn.py",
+  "merck.py",
+  "nystm.py",
+  "polkn.py",
+  "rbfkn.py",
+  "rfkrn.py",
+  "rkhsb.py",
+  "rkhsmt.py",
+  "rkhsn.py"
+ ],
+ "Hodges-Lehmann (1956)": [
+  "areN.py"
+ ],
+ "Box-Jenkins (1970)": [
+  "arimaF.py"
+ ],
+ "Box-Jenkins-Reinsel (1994)": [
+  "arimab.py"
+ ],
+ "Box-Jenkins (1976)": [
+  "arimax.py",
+  "sarima.py"
+ ],
+ "Pevzner-Tang-Waterman (2001) DBG": [
+  "asmnvr.py"
+ ],
+ "Myers (2005)": [
+  "asmolc.py"
+ ],
+ "Newman (2002)": [
+  "asorxx.py"
+ ],
+ "Newman (2002, 2003)": [
+  "assort.py"
+ ],
+ "Erd\u00e9lyi (1956)": [
+  "asymp.py"
+ ],
+ "Press, Smith, Lewis (2022)": [
+  "atalib.py"
+ ],
+ "Dao, Fu, Ermon, Re (2022); Dao (2023) ": [
+  "atfla.py"
+ ],
+ "Carhart-Smith-Venkataraghavan (1985)": [
+  "atmpair.py"
+ ],
+ "Dettmers et al. (2022) LLM.int8()": [
+  "atq8.py"
+ ],
+ "Su et al. (2021) RoFormer": [
+  "atrope.py"
+ ],
+ "Fredrikson-Jha-Ristenpart (2015)": [
+  "attrInf.py"
+ ],
+ "Child et al. (2019); Beltagy et al. (2": [
+  "attsp.py"
+ ],
+ "Hestenes (1969); Powell (1969)": [
+  "auglag.py"
+ ],
+ "Montesinos Lopez Ch 7": [
+  "augmn.py",
+  "mnlog.py",
+  "nbdsp.py",
+  "ordtm.py",
+  "poipr.py",
+  "zipmd.py"
+ ],
+ "Song et al (2019)": [
+  "autoI.py"
+ ],
+ "Gedeck et al (2006) Merck": [
+  "avalon.py"
+ ],
+ "Liu-Wang-Fu-Zeng (2018)": [
+  "awltrn.py"
+ ],
+ "Li et al (2010) LinUCB": [
+  "banditRS.py"
+ ],
+ "Barab\u00e1si-Albert (1999)": [
+  "barabsi.py"
+ ],
+ "Frisch (1955)": [
+  "barerp.py"
+ ],
+ "Lewis et al (2020)": [
+  "barte.py"
+ ],
+ "Newey & West (1987)": [
+  "bartkw.py"
+ ],
+ "Allen et al (1998) FAO-56": [
+  "basEvap.py"
+ ],
+ "Ramsay-Silverman (2005)": [
+  "basisR.py",
+  "fhar.py",
+  "fnDist.py",
+  "fnlm.py",
+  "fnscale.py",
+  "intf.py"
+ ],
+ "De Livera-Hyndman-Snyder (2011)": [
+  "bats.py"
+ ],
+ "Wang, Fienberg, Smola (2015)": [
+  "bayesm.py"
+ ],
+ "Kass-Raftery (1995)": [
+  "bayfac.py"
+ ],
+ "Diebolt-Robert (1994)": [
+  "bayfin.py"
+ ],
+ "Damlen-Wakefield-Walker (1999)": [
+  "baygsl.py"
+ ],
+ "Gelman BDA3 Ch 5": [
+  "bayhier.py"
+ ],
+ "Hoffman-Gelman (2014)": [
+  "bayhmc.py",
+  "nutsmc.py"
+ ],
+ "Rubin (1988)": [
+  "bayisr.py"
+ ],
+ "Gelman et al (2008) weakly-informative": [
+  "baylog.py"
+ ],
+ "Vehtari-Gelman-Gabry (2017)": [
+  "bayloo.py"
+ ],
+ "Rezende-Mohamed (2015); Kucukelbir (20": [
+  "baynav.py"
+ ],
+ "Pearl (1988); Koller-Friedman (2009)": [
+  "baynet.py"
+ ],
+ "Quintana-Iglesias (2003)": [
+  "bayocl.py"
+ ],
+ "Mockus (1975); Snoek et al (2012)": [
+  "bayopt.py",
+  "bayoptr.py"
+ ],
+ "West (1984)": [
+  "bayoutl.py"
+ ],
+ "Gelman-Meng-Stern (1996)": [
+  "bayppc.py"
+ ],
+ "Lindley-Smith (1972)": [
+  "bayreg.py",
+  "baysrnd.py"
+ ],
+ "West (1984); Geweke (1993)": [
+  "bayreg2.py"
+ ],
+ "Gelman-Rubin (1992); Vehtari et al (20": [
+  "bayrhat.py"
+ ],
+ "Green (1995)": [
+  "bayrjmcmc.py"
+ ],
+ "Meuwissen-Hayes-Goddard (2001)": [
+  "baysab.py",
+  "baysbm.py"
+ ],
+ "Habier et al (2011)": [
+  "bayscm.py"
+ ],
+ "Park-Casella (2008)": [
+  "bayslo.py",
+  "baysrr.py"
+ ],
+ "applied": [
+  "baysmplr.py",
+  "lcfsdq.py"
+ ],
+ "Carvalho-Polson-Scott (2010)": [
+  "baysprr.py"
+ ],
+ "Montesinos Lopez Ch 6": [
+  "baysr.py",
+  "bmtme.py",
+  "brrpf.py"
+ ],
+ "Montesinos Lopez Ch 6 Eq 6.1-6.2": [
+  "bayth.py"
+ ],
+ "West-Harrison (1997)": [
+  "baytsm.py"
+ ],
+ "Martins et al (2012); Vilar et al (201": [
+  "bbbpr.py"
+ ],
+ "Tseng (2001)": [
+  "bcdblk.py"
+ ],
+ "Montesinos Lopez Ch 10": [
+  "bcelO.py",
+  "bprop.py",
+  "ccelO.py",
+  "msebl.py",
+  "percn.py",
+  "relua.py"
+ ],
+ "Fujimoto et al (2019)": [
+  "bcq.py"
+ ],
+ "Wood et al (2002)": [
+  "bcsd.py"
+ ],
+ "Andrews-Soares (2010)": [
+  "bdgmm2.py",
+  "bndcvr.py"
+ ],
+ "Chernozhukov-Hong-Tamer (2007)": [
+  "bdintp.py",
+  "bnsiii.py"
+ ],
+ "Manski-Pepper (2000)": [
+  "bdmnsl.py",
+  "bdmnto.py",
+  "bdmnts.py",
+  "bndsdo.py",
+  "mtrbnd.py",
+  "mtsbnd.py",
+  "mtsmtv.py"
+ ],
+ "Andrews-Kasy (2019)": [
+  "bdspcf.py",
+  "bnsadt.py"
+ ],
+ "Manski (2007)": [
+  "bdtrns.py"
+ ],
+ "Tjong Kim Sang-De Meulder (2003) CoNLL": [
+  "benRea.py"
+ ],
+ "Rohde et al (2013)": [
+  "berkly.py"
+ ],
+ "Sun et al (2019)": [
+  "bert4r.py",
+  "rotE.py"
+ ],
+ "Zhang et al (2020) BERTScore": [
+  "bertS.py"
+ ],
+ "Devlin et al (2019)": [
+  "berte.py"
+ ],
+ "Besag-York-Molli\u00e9 (1991)": [
+  "besagl.py"
+ ],
+ "Gelman BDA3": [
+  "betbnm.py",
+  "diripr.py",
+  "nignst.py"
+ ],
+ "Freeman (1977); Brandes (2001)": [
+  "betcen.py"
+ ],
+ "Higgins et al (2017)": [
+  "betvae.py"
+ ],
+ "B\u00e9zout (1779)": [
+  "bezout.py"
+ ],
+ "Kass & Raftery (1995)": [
+  "bfac.py"
+ ],
+ "Broyden-Fletcher-Goldfarb-Shanno (1970": [
+  "bfgsop.py"
+ ],
+ "applied benchmark": [
+  "bhltmsm.py"
+ ],
+ "Schwarz (1978)": [
+  "bicarp.py",
+  "bicg.py"
+ ],
+ "Molak Ch 13": [
+  "bicsm.py",
+  "sepst.py"
+ ],
+ "Wallach (2006)": [
+  "bigtm.py"
+ ],
+ "Scott-Knott (1974)": [
+  "binseg.py"
+ ],
+ "Ramachandran-Amir (2007)": [
+  "birl.py"
+ ],
+ "bivand2013, ch.10 eq.10.3": [
+  "bivand201310e3.py"
+ ],
+ "bivand2013, ch.8 eq.8.4": [
+  "bivand20138e4.py"
+ ],
+ "bivand2013, ch.8 eq.8.5": [
+  "bivand20138e5.py"
+ ],
+ "Altschul et al (1990)": [
+  "blastp.py"
+ ],
+ "Papineni et al (2002)": [
+  "bleuS.py"
+ ],
+ "Huang et al (2019)": [
+  "blinkg.py"
+ ],
+ "Li et al (2023) Salesforce": [
+  "blip2v.py"
+ ],
+ "Li et al (2023) BLIP-2": [
+  "blipqf.py"
+ ],
+ "Coles": [
+  "blockMx.py",
+  "chiDep.py",
+  "evbgpd.py",
+  "evbgrev.py",
+  "evblockm.py",
+  "evchibd.py",
+  "evchitd.py",
+  "evgevc.py",
+  "evgevl.py",
+  "evgevm.py",
+  "evgevp.py",
+  "evgevq.py",
+  "evgevs.py",
+  "evgpdc.py",
+  "evgpdl.py",
+  "evgpdm.py",
+  "evgpdp.py",
+  "evgpdq.py",
+  "evgpds.py",
+  "evppgev.py",
+  "evprmstab.py",
+  "evqqgev.py",
+  "evrl.py",
+  "evrlci.py",
+  "evrlpot.py",
+  "evstabint.py",
+  "gevD.py",
+  "retLvl.py",
+  "smt.py"
+ ],
+ "Altschul (1990)": [
+  "blstn.py"
+ ],
+ "Henderson (1975); Robinson (1991)": [
+  "blupr.py",
+  "blups.py"
+ ],
+ "Robertson et al (1995)": [
+  "bm25.py"
+ ],
+ "Manski-Pepper (2000) education": [
+  "bndapp.py"
+ ],
+ "Moon-Schorfheide (2012)": [
+  "bndbye.py"
+ ],
+ "Imbens-Manski (2004)": [
+  "bndfre.py",
+  "bnscnf.py",
+  "bnscrf.py"
+ ],
+ "Romano-Shaikh (2008)": [
+  "bndinf.py",
+  "bndsbs.py"
+ ],
+ "Robins (2002)": [
+  "bndlgt.py"
+ ],
+ "Chernozhukov-Lee-Rosen (2013)": [
+  "bndlmm.py",
+  "chrbnd.py"
+ ],
+ "Balke-Pearl (1997)": [
+  "bndlpm.py",
+  "sfbnds.py"
+ ],
+ "Chernozhukov-Hansen (2005)": [
+  "bndmoq.py"
+ ],
+ "Horowitz-Manski (2000); Manski (2003)": [
+  "bndmsg.py"
+ ],
+ "Manski (1995, 1997)": [
+  "bndngt.py",
+  "bndpos.py"
+ ],
+ "de Chaisemartin (2017)": [
+  "bndnmt.py"
+ ],
+ "Manski (2003)": [
+  "bndnpr.py",
+  "bndvld.py",
+  "bnscbo.py"
+ ],
+ "Manski (1990)": [
+  "bndnvg.py",
+  "manskif.py"
+ ],
+ "M\u00fcller-Norets (2016)": [
+  "bndpcb.py"
+ ],
+ "Andrews-Shi (2013)": [
+  "bndsmw.py",
+  "bnskmt.py"
+ ],
+ "Chernozhukov et al (2013)": [
+  "bndtfm.py"
+ ],
+ "Tchetgen Tchetgen et al (2020) proxy": [
+  "bnnipw.py"
+ ],
+ "Kottas-Krnjajic (2009)": [
+  "bnppct.py"
+ ],
+ "Hjort-Walker (2009)": [
+  "bnppvl.py"
+ ],
+ "Imbens-Rubin (1997)": [
+  "bnscom.py"
+ ],
+ "Honor\u00e9-Tamer (2006)": [
+  "bnshrt.py"
+ ],
+ "Mogstad-Santos-Torgovitsky (2018)": [
+  "bnsipv.py"
+ ],
+ "Card et al (2015)": [
+  "bnskt2.py"
+ ],
+ "Tchetgen Tchetgen (2014)": [
+  "bnsnig.py"
+ ],
+ "Heckman (1979); Manski (2003)": [
+  "bnssel.py"
+ ],
+ "Manski (1995)": [
+  "bnstvr.py"
+ ],
+ "Adams-MacKay (2007)": [
+  "bocpd.py",
+  "chgbcp.py",
+  "odgrev.py"
+ ],
+ "Rao-Wu (1988)": [
+  "bootss.py"
+ ],
+ "Hyndman-Athanasopoulos (2018) \u00a711": [
+  "botUp.py",
+  "middle.py",
+  "topDn.py"
+ ],
+ "Molak Ch 4": [
+  "bowbn.py"
+ ],
+ "Hutter Prize benchmark": [
+  "bpc.py"
+ ],
+ "Sennrich et al (2016) BPE": [
+  "bpetk.py"
+ ],
+ "Rendle et al (2009)": [
+  "bprMF.py"
+ ],
+ "Montesinos Lopez Ch 4": [
+  "brcls.py",
+  "bvtrA.py",
+  "cv1gn.py",
+  "kapco.py",
+  "kfcve.py",
+  "maedf.py",
+  "msdef.py",
+  "relbt.py",
+  "rmsef.py"
+ ],
+ "Donoho-Huber (1983)": [
+  "breakd.py"
+ ],
+ "Meng-Wong (1996)": [
+  "bridgs.py"
+ ],
+ "Bernstein (1924)": [
+  "brnstn.py"
+ ],
+ "Preacher & Hayes (2004); Shrout & Bolg": [
+  "bsmed.py"
+ ],
+ "B\u00fchlmann (1997)": [
+  "btarsv.py",
+  "btsieve.py"
+ ],
+ "Davison & Hinkley (1997)": [
+  "btbasic.py",
+  "btciqua.py",
+  "btht.py",
+  "btnorm.py",
+  "btparm.py"
+ ],
+ "Rubin (1981)": [
+  "btbayes.py",
+  "btdir.py"
+ ],
+ "Efron (1987)": [
+  "btbca.py"
+ ],
+ "Breiman (1996)": [
+  "btbg.py"
+ ],
+ "Politis & Romano (2009)": [
+  "btblen.py"
+ ],
+ "Loh (1991)": [
+  "btcalib.py"
+ ],
+ "Politis & Romano (1992)": [
+  "btcbb.py"
+ ],
+ "Efron (1979)": [
+  "btcimed.py",
+  "btmult.py",
+  "btvarm.py"
+ ],
+ "Beran (1987)": [
+  "btdbl.py"
+ ],
+ "Beran (1988)": [
+  "btiseq.py"
+ ],
+ "Efron (1992)": [
+  "btjkab.py"
+ ],
+ "Shao & Wu (1989)": [
+  "btjknd.py"
+ ],
+ "K\u00fcnsch (1989)": [
+  "btmbb.py"
+ ],
+ "Bickel-G\u00f6tze-van Zwet (1997)": [
+  "btmoutn.py"
+ ],
+ "Koenker (2005)": [
+  "btnpqr.py",
+  "qrF.py"
+ ],
+ "Freedman (1981)": [
+  "btpair.py",
+  "btres.py"
+ ],
+ "Efron & Tibshirani (1993)": [
+  "btpct.py"
+ ],
+ "PCG64 (O'Neill 2014)": [
+  "btrnd.py"
+ ],
+ "Politis & Romano (1994)": [
+  "btsbb.py"
+ ],
+ "Silverman & Young (1987)": [
+  "btsmth.py"
+ ],
+ "Hall (1988)": [
+  "btstud.py"
+ ],
+ "Bickel & Sakov (2008)": [
+  "btsubrho.py"
+ ],
+ "Politis-Romano-Wolf (1999)": [
+  "btsubs.py"
+ ],
+ "Hampel (1974)": [
+  "btvinf.py",
+  "hampel.py",
+  "hampw.py",
+  "infcrv.py",
+  "madMov.py",
+  "madsc.py",
+  "rejct.py"
+ ],
+ "Mammen (1993)": [
+  "btwild.py"
+ ],
+ "Cameron-Gelbach-Miller (2008)": [
+  "btwldcl.py"
+ ],
+ "Baxter-King (1999)": [
+  "bxprfl.py"
+ ],
+ "Advanced Statistics in Criminology": [
+  "ca11e1.py",
+  "ca11e10.py",
+  "ca11e11.py",
+  "ca11e13.py",
+  "ca11e15.py",
+  "ca11e16.py",
+  "ca11e18.py",
+  "ca11e19.py",
+  "ca11e2.py",
+  "ca11e20.py",
+  "ca11e22.py",
+  "ca11e23.py",
+  "ca11e24.py",
+  "ca11e25.py",
+  "ca11e26.py",
+  "ca11e27.py",
+  "ca11e28.py",
+  "ca11e29.py",
+  "ca11e3.py",
+  "ca11e33.py",
+  "ca11e34.py",
+  "ca11e35.py",
+  "ca11e36.py",
+  "ca11e37.py",
+  "ca11e38.py",
+  "ca11e4.py",
+  "ca11e40.py",
+  "ca11e41.py",
+  "ca11e42.py",
+  "ca11e43.py",
+  "ca11e45.py",
+  "ca11e46.py",
+  "ca11e5.py",
+  "ca11e6.py",
+  "ca11e7.py",
+  "ca11e8.py",
+  "ca12e1.py",
+  "ca12e2.py",
+  "ca12e3.py",
+  "ca12e4.py",
+  "ca1e1.py",
+  "ca1e2.py",
+  "ca1e3.py",
+  "ca1e4.py",
+  "ca2e1.py",
+  "ca2e10.py",
+  "ca2e11.py",
+  "ca2e12.py",
+  "ca2e13.py",
+  "ca2e14.py",
+  "ca2e15.py",
+  "ca2e16.py",
+  "ca2e17.py",
+  "ca2e2.py",
+  "ca2e20.py",
+  "ca2e21.py",
+  "ca2e22.py",
+  "ca2e3.py",
+  "ca2e6.py",
+  "ca2e7.py",
+  "ca2e8.py",
+  "ca2e9.py",
+  "ca3e1.py",
+  "ca3e2.py",
+  "ca4e1.py",
+  "ca4e10.py",
+  "ca4e11.py",
+  "ca4e14.py",
+  "ca4e15.py",
+  "ca4e17.py",
+  "ca4e18.py",
+  "ca4e2.py",
+  "ca4e3.py",
+  "ca4e4.py",
+  "ca4e5.py",
+  "ca4e6.py",
+  "ca4e7.py",
+  "ca4e8.py",
+  "ca4e9.py",
+  "ca5e1.py",
+  "ca5e2.py",
+  "ca5e3.py",
+  "ca5e6.py",
+  "ca5e7.py",
+  "ca5e8.py",
+  "ca5e9.py",
+  "ca6e1.py",
+  "ca6e2.py",
+  "ca6e3.py",
+  "ca6e4.py",
+  "ca6e7.py",
+  "ca6e8.py",
+  "ca7e1.py",
+  "ca7e10.py",
+  "ca7e11.py",
+  "ca7e13.py",
+  "ca7e14.py",
+  "ca7e15.py",
+  "ca7e2.py",
+  "ca7e3.py",
+  "ca7e4.py",
+  "ca7e5.py",
+  "ca7e6.py",
+  "ca7e7.py",
+  "ca7e8.py",
+  "ca8e1.py",
+  "ca8e2.py",
+  "ca8e3.py",
+  "ca8e4.py",
+  "ca8e5.py",
+  "ca8e7.py",
+  "ca9e1.py",
+  "ca9e10.py",
+  "ca9e12.py",
+  "ca9e2.py",
+  "ca9e3.py",
+  "ca9e4.py",
+  "ca9e5.py",
+  "ca9e6.py",
+  "ca9e7.py"
+ ],
+ "Knutti et al (2017)": [
+  "caCMIP.py"
+ ],
+ "Steck (2018)": [
+  "caltbR.py"
+ ],
+ "van der Linden-Glas (2010)": [
+  "catnxt.py"
+ ],
+ "Wainer-Mislevy (2000)": [
+  "catstop.py"
+ ],
+ "Holland & Welsch (1977)": [
+  "cauchw.py",
+  "irlsfn.py"
+ ],
+ "Pearl (2009)": [
+  "causbckd.py"
+ ],
+ "Callaway & Sant'Anna (2021)": [
+  "causdidcs.py"
+ ],
+ "de Chaisemartin & D'Haultfoeuille (202": [
+  "causdiddc.py",
+  "doctide.py"
+ ],
+ "Borusyak-Jaravel-Spiess (2024)": [
+  "causdidev.py"
+ ],
+ "Wooldridge (2021)": [
+  "causdidwd.py"
+ ],
+ "Chernozhukov et al. (2018)": [
+  "causdr2.py"
+ ],
+ "Stuart-Cole-Bradshaw-Leaf (2011)": [
+  "causgsw.py"
+ ],
+ "Crump-Hotz-Imbens-Mitnik (2009)": [
+  "causipw.py",
+  "tmlefp.py"
+ ],
+ "VanderWeele (2015)": [
+  "causmnde.py",
+  "propMd.py",
+  "tmlnte.py"
+ ],
+ "Imbens-Kalyanaraman (2012)": [
+  "causrdd.py",
+  "causrddh.py"
+ ],
+ "Calonico-Cattaneo-Titiunik (2014)": [
+  "causrddc.py"
+ ],
+ "Hahn-Todd-Van der Klaauw (2001)": [
+  "causrddf.py"
+ ],
+ "Arkhangelsky-Athey-Hirshberg-Imbens-Wa": [
+  "causscd.py"
+ ],
+ "van der Laan & Rubin (2006)": [
+  "caustmle.py"
+ ],
+ "Pearl & Bareinboim (2014)": [
+  "caustrnsp.py"
+ ],
+ "Beginner's Guide to Statistics for Cri": [
+  "cb14e2.py",
+  "cb15e3.py",
+  "cb15e4.py",
+  "cb7e2.py"
+ ],
+ "Woo et al (2018) CBAM": [
+  "cbamod.py"
+ ],
+ "Cornfield (1951)": [
+  "ccdsgn.py",
+  "oddsrt.py"
+ ],
+ "Goldstein (1994); Browne, Goldstein, R": [
+  "ccmem.py"
+ ],
+ "Nakagawa & Schielzeth (2013)": [
+  "ccngg.py",
+  "niccgg.py"
+ ],
+ "Wu et al (2016) CDAE": [
+  "cdaeRC.py"
+ ],
+ "Marques-Silva-Sakallah (1999)": [
+  "cdcl.py"
+ ],
+ "Robins-Greenland (1992)": [
+  "cde.py"
+ ],
+ "Hu-Bentler (1999)": [
+  "cfafit.py"
+ ],
+ "J\u00f6reskog (1969)": [
+  "cfafm2.py",
+  "cfaftr.py"
+ ],
+ "Fletcher-Reeves (1964)": [
+  "cgnonl.py"
+ ],
+ "vdL-Rose (2011); Funk et al (2011)": [
+  "chasym.py"
+ ],
+ "Eldridge et al (1997) Astex": [
+  "chemsc.py"
+ ],
+ "Page (1954)": [
+  "chgcus.py"
+ ],
+ "Killick et al (2012) PELT": [
+  "chgseg.py"
+ ],
+ "Hampel et al (1986)": [
+  "chgsen.py",
+  "localS.py"
+ ],
+ "Zhang et al (2008) MACS2": [
+  "chipsq.py"
+ ],
+ "Blahut (1972); Arimoto (1972)": [
+  "chnntp.py"
+ ],
+ "Popovi\u0107 (2015)": [
+  "chrF.py"
+ ],
+ "Christopher Gandrud (Author) - Reprodu": [
+  "christopher_gandrud_author_reproducible_research_with_r_and_4u1.py",
+  "christopher_gandrud_author_reproducible_research_with_r_and_4u10.py",
+  "christopher_gandrud_author_reproducible_research_with_r_and_4u17.py",
+  "christopher_gandrud_author_reproducible_research_with_r_and_4u18.py",
+  "christopher_gandrud_author_reproducible_research_with_r_and_4u2.py",
+  "christopher_gandrud_author_reproducible_research_with_r_and_4u21.py",
+  "christopher_gandrud_author_reproducible_research_with_r_and_4u26.py",
+  "christopher_gandrud_author_reproducible_research_with_r_and_4u34.py",
+  "christopher_gandrud_author_reproducible_research_with_r_and_4u35.py",
+  "christopher_gandrud_author_reproducible_research_with_r_and_4u36.py"
+ ],
+ "Chernoff (1952)": [
+  "chrnff.py"
+ ],
+ "Ansari et al (2024) Chronos": [
+  "chronos.py"
+ ],
+ "Senn (2002)": [
+  "chtchg.py"
+ ],
+ "Cinelli-Hazlett (2020)": [
+  "chzlt.py",
+  "omitV.py"
+ ],
+ "Held-Soden (2006)": [
+  "clausC.py"
+ ],
+ "Cheng-Hassani-Wang-Carin (2020) CLUB": [
+  "clbuvc.py"
+ ],
+ "Blei-Frazier (2011)": [
+  "clcrp.py"
+ ],
+ "Radford et al (2021)": [
+  "clipbn.py",
+  "clipsi.py",
+  "clipxi.py",
+  "clipxt.py"
+ ],
+ "Radford et al (2021) OpenAI": [
+  "cliptx.py"
+ ],
+ "Bavelas (1950); Freeman (1979)": [
+  "clocen.py"
+ ],
+ "Wildman-Crippen (1999)": [
+  "clogp2.py"
+ ],
+ "Forrest et al (COIN-OR)": [
+  "clpopt.py"
+ ],
+ "Athey-Wager (2019)": [
+  "clrgrf.py",
+  "crfsel.py",
+  "trnsfr.py"
+ ],
+ "Wood et al (2017); Pirmohamed (2019)": [
+  "clrnt.py"
+ ],
+ "Sievers et al (2011)": [
+  "clstal.py"
+ ],
+ "Watts-Strogatz (1998)": [
+  "clstcoef.py",
+  "watstro.py"
+ ],
+ "Clark-Evans (1954)": [
+  "clstpp.py"
+ ],
+ "Cochran": [
+  "clstrs.py",
+  "cluster.py",
+  "fpcadj.py",
+  "lottosi.py",
+  "multipsr.py",
+  "propalc.py",
+  "smltot.py",
+  "smltrt.py",
+  "smplsz.py",
+  "stratm.py",
+  "strtfd.py",
+  "swsmp.py",
+  "systmp.py"
+ ],
+ "Watts & Strogatz (1998)": [
+  "clusca.py"
+ ],
+ "Croucher et al (2015)": [
+  "cluseq.py"
+ ],
+ "Butina (1999)": [
+  "clusmd.py"
+ ],
+ "Hansen-Ostermeier (2001)": [
+  "cmaopt.py"
+ ],
+ "Zhang et al (2010) cMLM": [
+  "cmlmer.py"
+ ],
+ "Cover & Thomas (2006) \u00a72.5": [
+  "cmuit.py"
+ ],
+ "Linfoot (1957); Calsaverini & Vicente ": [
+  "cmuti.py"
+ ],
+ "Zhang et al (2023) ControlNet": [
+  "cncpat.py"
+ ],
+ "Cinelli & Hazlett (2020)": [
+  "cnffvw.py"
+ ],
+ "Rosenbaum (2002)": [
+  "cnsRos.py"
+ ],
+ "Wingersky & Lord (1984)": [
+  "cnsint.py"
+ ],
+ "Sugihara et al (2012)": [
+  "cnvlfc.py"
+ ],
+ "IPCC AR6 (2021)": [
+  "co2RF.py"
+ ],
+ "Keeling (1960)": [
+  "co2Trnd.py"
+ ],
+ "Wackernagel (2003) \u00a722": [
+  "cokrig.py"
+ ],
+ "Schein et al (2002)": [
+  "colE.py"
+ ],
+ "standard IR": [
+  "colMet.py",
+  "hitsR.py",
+  "mapMet.py",
+  "precK.py"
+ ],
+ "Khattab-Zaharia (2020) ColBERT": [
+  "colbrt.py"
+ ],
+ "Molak Ch 5": [
+  "colst.py",
+  "faithA.py",
+  "mecpd.py"
+ ],
+ "Grover-Leskovec (2016)": [
+  "comemb.py",
+  "node2v.py"
+ ],
+ "Rei et al (2020)": [
+  "comet.py"
+ ],
+ "Girvan-Newman (2002)": [
+  "comgir.py"
+ ],
+ "Rosvall-Bergstrom (2008)": [
+  "cominf.py"
+ ],
+ "Blondel et al (2008)": [
+  "comlou.py",
+  "luvR.py"
+ ],
+ "Raghavan-Albert-Kumara (2007)": [
+  "comlpa.py"
+ ],
+ "Trouillon et al (2016)": [
+  "comple.py"
+ ],
+ "von Luxburg (2007)": [
+  "comspr.py",
+  "sgtegap.py"
+ ],
+ "Newman (2006)": [
+  "comten.py",
+  "modlar.py",
+  "sgtmodul.py"
+ ],
+ "Preacher, Rucker, Hayes (2007)": [
+  "condie.py"
+ ],
+ "Bender-Canfield (1978); Molloy-Reed (1": [
+  "confgg.py"
+ ],
+ "classical": [
+  "contFr.py",
+  "conti.py",
+  "defint.py",
+  "diffs.py",
+  "frmlD.py",
+  "laplI.py",
+  "laplT.py",
+  "pdesl.py",
+  "resaln.py"
+ ],
+ "Pazzani-Billsus (2007)": [
+  "contRC.py"
+ ],
+ "Huber (1964)": [
+  "contam.py",
+  "huberw.py",
+  "hubrho.py",
+  "opthr.py"
+ ],
+ "Gao-Yao-Chen (2021) SimCSE": [
+  "contse.py"
+ ],
+ "Csisz\u00e1r (1967)": [
+  "convdv.py"
+ ],
+ "Fornell-Larcker (1981)": [
+  "convgs.py",
+  "divgvs.py"
+ ],
+ "Liu et al (2022) ConvNeXt": [
+  "convnx.py"
+ ],
+ "Cook (1977)": [
+  "cookd.py"
+ ],
+ "Olshen et al (2004) CBS": [
+  "copynm.py"
+ ],
+ "Herlocker et al (2004)": [
+  "covLst.py"
+ ],
+ "Sarndal, Swensson, Wretman (1992) \u00a715": [
+  "covpop.py"
+ ],
+ "Belsley, Kuh, Welsch (1980)": [
+  "covrat.py",
+  "dfbetb.py",
+  "dffit.py"
+ ],
+ "Zeng (1994)": [
+  "cqtmpl.py"
+ ],
+ "Lafferty-McCallum-Pereira (2001)": [
+  "crfNlp.py"
+ ],
+ "Christiano-Fitzgerald (2003)": [
+  "crfflt.py"
+ ],
+ "Wackernagel (2003)": [
+  "crkbsg.py"
+ ],
+ "Cram\u00e9r (1946); Rao (1945)": [
+  "crmrlb.py"
+ ],
+ "MacEachern (1994)": [
+  "crpcol.py"
+ ],
+ "Neal (2000) Algorithm 8": [
+  "crpgib.py"
+ ],
+ "Matheson-Winkler (1976)": [
+  "crpsF.py"
+ ],
+ "Kalbfleisch-Prentice (2002)": [
+  "crrcim.py"
+ ],
+ "Zhang-Yan (2023) Crossformer": [
+  "crsfmr.py"
+ ],
+ "Cui et al (2023)": [
+  "crsfst.py",
+  "qsfrgr.py"
+ ],
+ "Sun Tzu (3rd c.)": [
+  "crtT.py"
+ ],
+ "Robins & Greenland (1992)": [
+  "ctde.py",
+  "pnie.py",
+  "tnie.py"
+ ],
+ "Cui-Tchetgen Tchetgen (2024)": [
+  "cthrgr.py"
+ ],
+ "McDonald (1999)": [
+  "ctomeg.py"
+ ],
+ "Cronbach (1951)": [
+  "ctta1c.py",
+  "cttamx.py"
+ ],
+ "Nunnally-Bernstein (1994)": [
+  "cttdif.py"
+ ],
+ "Kelley (1939)": [
+  "cttdis.py"
+ ],
+ "Aalen & Johansen (1978)": [
+  "cumcif.py"
+ ],
+ "Gomory (1958)": [
+  "cuttip.py"
+ ],
+ "Enders & Tofighi (2007)": [
+  "cwcm.py",
+  "gmcent.py"
+ ],
+ "Torrence-Compo (1998)": [
+  "cwwsym.py"
+ ],
+ "Bell et al (2000) ACE": [
+  "cyclE.py"
+ ],
+ "Veith et al (2009)": [
+  "cypin.py"
+ ],
+ "David J. Morin - Probability  For the ": [
+  "david_j_morin_probability_for_the_enthusiastic_beginner10e6.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner19e2.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner1e1.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner1e21.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner1e29.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner1e3.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner1e35.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner1e37.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner1e5.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner1e57.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner1e71.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e14.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e2.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e21.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e24.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e29.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e3.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e41.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e43.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e48.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e49.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e51.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e55.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e58.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e59.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e61.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e62.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e65.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e66.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e70.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e74.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e86.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e9.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e92.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e95.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner2e96.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e11.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e12.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e13.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e15.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e19.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e20.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e21.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e22.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e24.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e25.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e26.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e28.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e30.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e31.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e33.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e34.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e35.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e37.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e39.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e40.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e41.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e42.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e43.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e45.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e46.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e47.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e48.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e51.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e52.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e53.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e54.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e55.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e56.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e57.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e58.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e59.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e60.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e66.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e70.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e73.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e9.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e92.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner3e93.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e10.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e18.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e19.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e2.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e23.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e25.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e26.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e30.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e32.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e34.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e35.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e37.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e4.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e40.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e53.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e55.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e6.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e60.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e61.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e66.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e67.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e71.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e73.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e75.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e8.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e83.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e85.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e89.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e9.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e92.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e94.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e95.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e96.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e98.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner4e99.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner5e13.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner5e14.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner5e15.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner5e16.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner5e17.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner5e23.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner5e25.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner5e28.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner5e3.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner5e31.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner5e4.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner5e5.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e12.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e13.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e14.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e17.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e22.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e23.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e27.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e3.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e36.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e37.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e38.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e39.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e4.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e40.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e42.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e43.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e46.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e47.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e5.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e50.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e53.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e55.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e6.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e63.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e64.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e65.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e66.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e70.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e74.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e76.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e8.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e81.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e82.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e83.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e9.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner6e92.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner7e10.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner7e11.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner7e14.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner7e21.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner7e23.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner7e24.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner7e31.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner7e33.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner7e35.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner7e5.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner7e7.py",
+  "david_j_morin_probability_for_the_enthusiastic_beginner7e9.py"
+ ],
+ "Song-Meng-Ermon (2021) DDIM": [
+  "ddimst.py"
+ ],
+ "MacEachern (1999, 2000)": [
+  "ddpest.py"
+ ],
+ "Lillicrap et al (2016)": [
+  "ddpgc.py"
+ ],
+ "Ho-Jain-Abbeel (2020)": [
+  "ddpmst.py"
+ ],
+ "Hasselt-Guez-Silver (2016)": [
+  "ddqn.py"
+ ],
+ "Guo et al (2017) DeepFM": [
+  "deepF.py"
+ ],
+ "Ruff et al (2018)": [
+  "deepSVDD.py"
+ ],
+ "Salinas et al (2020) DeepAR": [
+  "deepar.py"
+ ],
+ "Perozzi-Al-Rfou-Skiena (2014)": [
+  "deepw.py"
+ ],
+ "Perozzi et al (2014)": [
+  "deepwk.py"
+ ],
+ "Zhu et al (2021) Deformable DETR": [
+  "defdtr.py"
+ ],
+ "Freeman (1979)": [
+  "degcen.py",
+  "netdeg.py"
+ ],
+ "Touvron et al (2021)": [
+  "deitsr.py"
+ ],
+ "Storn-Price (1997)": [
+  "deopti.py"
+ ],
+ "Tukey (1975)": [
+  "depthH.py"
+ ],
+ "Liu (1990)": [
+  "depthM.py",
+  "depthS.py"
+ ],
+ "Stahel (1981); Donoho (1982)": [
+  "depthP.py",
+  "stahdo.py"
+ ],
+ "Love-Huber-Anders (2014)": [
+  "deseq2.py"
+ ],
+ "Design of observational studies, ch.9 ": [
+  "design_of_observational_studies9e1.py"
+ ],
+ "Peng et al (1994)": [
+  "detfdt.py"
+ ],
+ "Carion et al (2020) DETR": [
+  "detrbb.py"
+ ],
+ "standard": [
+  "detrnd.py",
+  "rbfk.py"
+ ],
+ "Belsley-Kuh-Welsch (1980)": [
+  "dfbeta.py",
+  "dffits.py"
+ ],
+ "Velickovic et al (2019)": [
+  "dgi.py"
+ ],
+ "Newman (2010)": [
+  "diaspath.py"
+ ],
+ "Spiegelhalter et al. (2002)": [
+  "dicg.py",
+  "pdic.py"
+ ],
+ "Athey et al (2024)": [
+  "didfst.py"
+ ],
+ "Ying et al (2018)": [
+  "diffP.py"
+ ],
+ "Wang et al (2023) DiffRec": [
+  "diffRC.py"
+ ],
+ "Holland-Wainer (1993)": [
+  "difpst.py"
+ ],
+ "Klicpera et al (2020) DimeNet": [
+  "dimNet.py"
+ ],
+ "Caron et al (2021)": [
+  "dinmlt.py",
+  "dinopr.py",
+  "dinoss.py"
+ ],
+ "Oquab et al (2024) Meta AI": [
+  "dinov2.py"
+ ],
+ "classical number theory": [
+  "diopT.py",
+  "diophs.py"
+ ],
+ "Yang et al (2015)": [
+  "distM.py",
+  "sxrhrt.py"
+ ],
+ "Bellemare-Dabney-Munos (2017)": [
+  "distq.py"
+ ],
+ "Peebles-Xie (2023) DiT": [
+  "dits16.py"
+ ],
+ "Smyth-McClave (2001)": [
+  "divLst.py"
+ ],
+ "Betancourt (2017)": [
+  "divcd.py"
+ ],
+ "Yang et al (2019) D-MPNN; Gilmer et al": [
+  "dmlqs.py"
+ ],
+ "Montesinos Lopez Ch 12": [
+  "dnnmt.py",
+  "jntlO.py",
+  "poilO.py"
+ ],
+ "Oquab et al (2024)": [
+  "dnvtwo.py"
+ ],
+ "Molak Ch 6": [
+  "docl3.py"
+ ],
+ "Molak Ch 2": [
+  "doop.py"
+ ],
+ "Aldous (1985); Pitman (2006)": [
+  "dpcrp.py"
+ ],
+ "Pitman (2006)": [
+  "dpedt.py"
+ ],
+ "Pitman (2002)": [
+  "dpgem.py"
+ ],
+ "Sethuraman (1994); Blei-Jordan (2006)": [
+  "dpgmm.py"
+ ],
+ "M\u00fcller-Quintana (2010)": [
+  "dpgrf.py"
+ ],
+ "Sweeney (2002)": [
+  "dpkb.py",
+  "kanon.py"
+ ],
+ "Machanavajjhala et al (2007)": [
+  "dpld.py",
+  "ldiff.py"
+ ],
+ "Antoniak (1974); Escobar-West (1995); ": [
+  "dpmem.py"
+ ],
+ "Rafailov et al (2023) DPO": [
+  "dpoF.py"
+ ],
+ "Pitman-Yor (1997)": [
+  "dpparit.py"
+ ],
+ "Kemp-Tenenbaum-Griffiths-Yamada-Ueda (": [
+  "dpsbm.py"
+ ],
+ "Sethuraman (1994)": [
+  "dpsbw.py"
+ ],
+ "Karwa-Vadhan (2018)": [
+  "dpvar.py"
+ ],
+ "Mnih et al (2015) Atari": [
+  "dqnv.py"
+ ],
+ "Hadad et al (2021); Athey et al (2024)": [
+  "drbnk.py"
+ ],
+ "Sant'Anna-Zhao (2020)": [
+  "drbst.py",
+  "drspl.py",
+  "drwgs.py"
+ ],
+ "Roth-Sant'Anna (2023)": [
+  "drbsze.py"
+ ],
+ "Callaway-Sant'Anna (2021) \u00a73.4": [
+  "drcef.py"
+ ],
+ "Bertrand-Duflo-Mullainathan (2004)": [
+  "drclt.py"
+ ],
+ "Callaway-Goodman-Bacon-Sant'Anna (2024": [
+  "drctf.py"
+ ],
+ "Sun-Abraham (2021); de Chaisemartin-D'": [
+  "drdyn.py"
+ ],
+ "Hafner et al (2020) Dreamer": [
+  "dreamr.py"
+ ],
+ "Athey-Imbens (2018)": [
+  "drhtg.py"
+ ],
+ "Dube-Girardi-Jord\u00e0-Taylor (2024)": [
+  "drlp1.py"
+ ],
+ "Nie & Wager (2021)": [
+  "drlrnr.py"
+ ],
+ "Lipsitch et al (2010)": [
+  "drnpc.py"
+ ],
+ "Palmer (1965)": [
+  "droPDSI.py"
+ ],
+ "McKee-Doesken-Kleist (1993)": [
+  "droSPI.py"
+ ],
+ "Montesinos Lopez Ch 11": [
+  "dropr.py",
+  "htprd.py",
+  "l2reg.py"
+ ],
+ "Athey et al (2020)": [
+  "drrct.py",
+  "tmlrct.py"
+ ],
+ "Anselin": [
+  "drspa.py",
+  "gearyl.py",
+  "lismor.py",
+  "morbiv.py",
+  "morloc.py",
+  "sarerr.py",
+  "sarlag.py",
+  "sarmod.py",
+  "semmod.py",
+  "spcllm.py",
+  "wmtrwn.py",
+  "wmtwgt.py"
+ ],
+ "Aronow-Samii (2017)": [
+  "drspr.py"
+ ],
+ "Roth-Sant'Anna (2023); Borusyak-Jarave": [
+  "drsta.py"
+ ],
+ "Sant'Anna-Zhao (2020); Bertrand-Duflo-": [
+  "drswbo.py"
+ ],
+ "Roth (2024) Empirical Bayes": [
+  "drvst.py"
+ ],
+ "Molak Ch 5,6": [
+  "dsep.py"
+ ],
+ "Huang et al (2013)": [
+  "dssm.py"
+ ],
+ "Preacher-Hayes (2008)": [
+  "dssoot.py"
+ ],
+ "Kabsch-Sander (1983)": [
+  "dssprt.py"
+ ],
+ "Wang et al (2016)": [
+  "dueldqn.py"
+ ],
+ "Petersen et al (2014); Robins-Orellana": [
+  "dyntmt.py"
+ ],
+ "James": [
+  "e_div.py",
+  "funmix.py",
+  "sbpst.py",
+  "slowdp.py"
+ ],
+ "Robins-Rotnitzky-Zhao (1994); Chernozh": [
+  "eaiprl.py"
+ ],
+ "Betancourt (2016) energy diagnostic": [
+  "ebfmi.py"
+ ],
+ "Hage & Harary (1995)": [
+  "ecccen.py"
+ ],
+ "Rogers & Hahn (2010) ECFP": [
+  "ecfp4.py"
+ ],
+ "Rogers & Hahn (2010)": [
+  "ecfp6.py",
+  "fcfp4.py"
+ ],
+ "Charney (1979); IPCC AR6": [
+  "ecsTCR.py"
+ ],
+ "Robinson-McCarthy-Smyth (2010)": [
+  "edgrn.py"
+ ],
+ "Knol-VanderWeele (2012)": [
+  "effmod.py"
+ ],
+ "Tan-Le (2019)": [
+  "effnnt.py"
+ ],
+ "Egan-Merz-Baldwin (2000)": [
+  "egan2.py"
+ ],
+ "Satorras-Hoogeboom-Welling (2021)": [
+  "egcn.py"
+ ],
+ "Satorras et al (2021)": [
+  "egnnL.py"
+ ],
+ "Sabeti et al (2002)": [
+  "ehhdec.py"
+ ],
+ "Bonacich (1972)": [
+  "eigcen.py",
+  "neteig.py",
+  "sgteig.py"
+ ],
+ "Schmidt (1966); Jazwinski (1970)": [
+  "ekfF.py"
+ ],
+ "Peters et al (2018)": [
+  "elmo.py"
+ ],
+ "Vehtari, Gelman, Gabry (2017)": [
+  "elpdc.py",
+  "pwaic.py"
+ ],
+ "Dempster, Laird, Rubin (1977); Laird &": [
+  "emaxr.py"
+ ],
+ "Huang et al (1998)": [
+  "emdtsm.py"
+ ],
+ "Shumway-Stoffer (1982)": [
+  "emkfst.py"
+ ],
+ "Robbins (1956)": [
+  "empbnp.py"
+ ],
+ "Baddeley-Turner (2005)": [
+  "empfun.py"
+ ],
+ "Montesinos Lopez Ch 3": [
+  "enobj.py",
+  "lassj.py",
+  "lgobj.py",
+  "mllog.py",
+  "olsnm.py",
+  "ridgj.py",
+  "ridgs.py"
+ ],
+ "Greenland (1988)": [
+  "epbias.py"
+ ],
+ "Cleveland (1979)": [
+  "epicur.py"
+ ],
+ "Abbott-Hellewell-Sherratt-EpiNow2 (202": [
+  "epimet.py"
+ ],
+ "Dempster-Laird-Rubin (1977)": [
+  "epsig1.py"
+ ],
+ "Loyd & Hoover (1980)": [
+  "eqmm.py"
+ ],
+ "Marco (1977)": [
+  "eqms.py",
+  "linkmm.py"
+ ],
+ "Erd\u0151s-R\u00e9nyi (1959)": [
+  "erdosg.py"
+ ],
+ "Frank-Strauss (1986); Hunter-Handcock ": [
+  "ergmod.py"
+ ],
+ "Elliott, Rothenberg, Stock (1996)": [
+  "erstst.py"
+ ],
+ "van der Linden-Pashley (2010)": [
+  "esatic.py"
+ ],
+ "Asparouhov-Muth\u00e9n (2009)": [
+  "esmoeg.py"
+ ],
+ "Jaeger (2001) ESN": [
+  "esnnts.py"
+ ],
+ "Klein-Randic (1993)": [
+  "esumtv.py"
+ ],
+ "Hyndman-Koehler-Snyder-Grose (2002)": [
+  "etsmod.py"
+ ],
+ "Knuth TAOCP V.II": [
+  "euclP.py"
+ ],
+ "Einmahl-de Haan-Sinha (1997)": [
+  "evangia.py"
+ ],
+ "Stephenson (2003)": [
+  "evbevsim.py"
+ ],
+ "Smith (1989)": [
+  "evdec.py"
+ ],
+ "McNeil-Frey (2000)": [
+  "evespot.py",
+  "evvarpot.py"
+ ],
+ "Heffernan & Tawn (2004)": [
+  "evhpvr.py"
+ ],
+ "H\u00fcsler & Reiss (1989)": [
+  "evhrid.py"
+ ],
+ "Davison & Smith (1990)": [
+  "evmrlp.py",
+  "evpot.py"
+ ],
+ "Tawn (1988)": [
+  "evmsexp.py"
+ ],
+ "Pickands (1981)": [
+  "evpdfn.py"
+ ],
+ "Arnold-Balakrishnan-Nagaraja (1998)": [
+  "evrec.py"
+ ],
+ "Borusyak-Jaravel (2017); Sun-Abraham (": [
+  "evstud.py"
+ ],
+ "Elamir & Seheult (2003)": [
+  "evtlmom.py"
+ ],
+ "Northrop & Coleman (2014)": [
+  "evtsthr.py"
+ ],
+ "Auer et al (2002)": [
+  "exp3.py"
+ ],
+ "Pathak et al (2017) ICM": [
+  "explor.py"
+ ],
+ "McSherry-Talwar (2007)": [
+  "expmc.py"
+ ],
+ "Cressie (1993) \u00a72.3": [
+  "expvar.py",
+  "gauvar.py",
+  "spvarm.py"
+ ],
+ "Montesinos Lopez Ch 5": [
+  "facov.py",
+  "gblpq.py",
+  "h2est.py",
+  "mtlmm.py",
+  "pcgxe.py",
+  "remlf.py",
+  "rrblp.py"
+ ],
+ "Yang-Stoyanovich (2017)": [
+  "fairRC.py"
+ ],
+ "Sobol (1993)": [
+  "fanmd.py"
+ ],
+ "Fano (1961)": [
+  "fanocb.py"
+ ],
+ "Ramsay-Silverman (2005) Ch.13": [
+  "fanva.py"
+ ],
+ "Liu et al (2016) FarmCPU": [
+  "farmlmm.py"
+ ],
+ "Noufaily et al (2013)": [
+  "farsig.py"
+ ],
+ "Rousseeuw-Van Driessen (1999)": [
+  "fastm.py"
+ ],
+ "Bojanowski et al (2017)": [
+  "fastxt.py"
+ ],
+ "Abraham et al (2003)": [
+  "fclust.py"
+ ],
+ "Sakoe-Chiba (1978)": [
+  "fdwarp.py"
+ ],
+ "Fraser (2007)": [
+  "ferror.py"
+ ],
+ "Udrescu-Tegmark (2020)": [
+  "feynAI.py"
+ ],
+ "Juan et al (2016) FFM": [
+  "ffmFM.py"
+ ],
+ "McLean et al (2014) FGAM": [
+  "fgam.py"
+ ],
+ "Kermack-McKendrick (1927); Ma-Earn (20": [
+  "finalsz.py"
+ ],
+ "Fisher (1922)": [
+  "finfis.py"
+ ],
+ "Sherman et al (2006) IFD": [
+  "flexrd.py"
+ ],
+ "Alayrac et al (2022) Flamingo": [
+  "flmgcr.py"
+ ],
+ "Vogel-Fennessey (1995)": [
+  "floRate.py"
+ ],
+ "Dinh et al (2017) RealNVP": [
+  "flow_an.py"
+ ],
+ "Stoer-Wagner (1997)": [
+  "flowmin.py"
+ ],
+ "Ford-Fulkerson (1956)": [
+  "flowmm.py"
+ ],
+ "Dao et al (2022) FlashAttention": [
+  "flsh2.py"
+ ],
+ "Fleiss (1971)": [
+  "flskpa.py"
+ ],
+ "vdL-Polley-Hubbard (2007); Pirracchio ": [
+  "flxipt.py"
+ ],
+ "Rendle (2010)": [
+  "fmFM.py"
+ ],
+ "Buckleton-Triggs-Walsh (2005)": [
+  "forsnp.py"
+ ],
+ "Atkinson-Riani (2000)": [
+  "forwsr.py"
+ ],
+ "Fourier (1822)": [
+  "fourT.py"
+ ],
+ "Montesinos Lopez Ch 14": [
+  "fours.py",
+  "fpca.py",
+  "htpfn.py",
+  "rpnlt.py"
+ ],
+ "Fr\u00e9chet (1951); Hoeffding (1940)": [
+  "frdbnd.py"
+ ],
+ "Ramsay-Li (1998)": [
+  "freg.py"
+ ],
+ "Wager-Athey (2018)": [
+  "frfgrf.py",
+  "ipwgrf.py"
+ ],
+ "Murray-Rees (2009); Shuker et al (1996": [
+  "frgrow.py"
+ ],
+ "Shannon-Weaver (1949); Magurran (2004)": [
+  "frtaxd.py"
+ ],
+ "Free-Wilson (1964)": [
+  "frwil.py"
+ ],
+ "Frank-Wolfe (1956)": [
+  "frwol2.py"
+ ],
+ "Wahba (1983)": [
+  "funBand.py"
+ ],
+ "Cuevas-Febrero-Fraiman (2006)": [
+  "funBoot.py"
+ ],
+ "He-M\u00fcller-Wang (2003)": [
+  "funCA.py"
+ ],
+ "Cantalapiedra et al (2021)": [
+  "funcal.py"
+ ],
+ "Funk (2006) Netflix Prize blog": [
+  "funkM.py"
+ ],
+ "Holloway (1974)": [
+  "fwlfwd.py"
+ ],
+ "Van Wagner (1987)": [
+  "fwxF.py"
+ ],
+ "VanderWeele (2009)": [
+  "fxidf.py"
+ ],
+ "Fauzi Ch 3, Eq 3.2": [
+  "fzavar.py"
+ ],
+ "Fauzi Ch 2, Assumptions B1-B5": [
+  "fzb1b5.py"
+ ],
+ "Fauzi Ch 2, Eq 2.7": [
+  "fzb2x.py"
+ ],
+ "Fauzi Ch 4, Eq 4.28": [
+  "fzb4t.py",
+  "fzb5t.py"
+ ],
+ "Fauzi Ch 2, Eq 2.8": [
+  "fzb4x.py"
+ ],
+ "Fauzi Ch 3, Remark 3.1": [
+  "fzber.py"
+ ],
+ "Fauzi Ch 5, Eq 5.9": [
+  "fzbfkde2.py"
+ ],
+ "Fauzi Ch 3, Eq 3.8": [
+  "fzbwc.py"
+ ],
+ "Fauzi Ch 5, Eq 5.8": [
+  "fzc1x.py"
+ ],
+ "Fauzi Ch 5": [
+  "fzc2x.py",
+  "fzgth.py"
+ ],
+ "Fauzi Ch 2": [
+  "fzchsp.py",
+  "fzkmis.py"
+ ],
+ "Fauzi Ch 4, Eq 4.16": [
+  "fzcov1.py"
+ ],
+ "Fauzi Ch 4, Eq 4.22": [
+  "fzcov2.py"
+ ],
+ "Fauzi Ch 2, Eq 2.1": [
+  "fzecdf.py"
+ ],
+ "Fauzi Ch 3, Theorem 3.1": [
+  "fzgn.py"
+ ],
+ "Fauzi Ch 1, Eq 1.3": [
+  "fzmgkd.py"
+ ],
+ "Fauzi Ch 2, Eq 2.9": [
+  "fzr1.py"
+ ],
+ "Fauzi Ch 2, Eq 2.10": [
+  "fzr2.py"
+ ],
+ "Fauzi Ch 3": [
+  "fzsmpq.py"
+ ],
+ "Fauzi Ch 1, Theorem 1.1": [
+  "fzt11.py"
+ ],
+ "Fauzi Ch 1, Theorem 1.2": [
+  "fzt12.py"
+ ],
+ "Fauzi Ch 1, Theorem 1.3": [
+  "fzt13.py"
+ ],
+ "Fauzi Ch 1, Theorem 1.4": [
+  "fzt14.py"
+ ],
+ "Fauzi Ch 1, Theorem 1.5": [
+  "fzt15.py"
+ ],
+ "Fauzi Ch 2, Theorem 2.1": [
+  "fzt21.py"
+ ],
+ "Fauzi Ch 2, Theorem 2.2, Eq 2.6": [
+  "fzt22.py"
+ ],
+ "Fauzi Ch 2, Theorem 2.3": [
+  "fzt23.py"
+ ],
+ "Fauzi Ch 2, Theorem 2.4": [
+  "fzt24.py"
+ ],
+ "Fauzi Ch 4, Theorem 4.1, Eq 4.10-4.13": [
+  "fzt41.py"
+ ],
+ "Fauzi Ch 4, Theorem 4.2, Eq 4.19-4.20": [
+  "fzt42.py"
+ ],
+ "Fauzi Ch 5, Theorem 5.1": [
+  "fzt51.py"
+ ],
+ "Fauzi Ch 5, Theorem 5.2, Eq 5.6-5.7": [
+  "fzt52.py"
+ ],
+ "Fauzi Ch 5, Theorem 5.3": [
+  "fzt53.py"
+ ],
+ "Fauzi Ch 5, Theorem 5.5, Eq 5.10-5.11": [
+  "fzt55.py"
+ ],
+ "Fauzi Ch 5, Theorem 5.6": [
+  "fzt56.py"
+ ],
+ "Fauzi Ch 5, Theorem 5.7": [
+  "fzt57.py"
+ ],
+ "Fauzi Ch 5, Theorem 5.8": [
+  "fzt58.py"
+ ],
+ "Fauzi Ch 5, Theorem 5.9": [
+  "fzt59.py"
+ ],
+ "Holland (1975)": [
+  "ga_opt.py"
+ ],
+ "Ho-Ermon (2016)": [
+  "gail.py"
+ ],
+ "Galois (1832)": [
+  "galois.py"
+ ],
+ "Schlegl et al (2017) AnoGAN": [
+  "gan_an.py"
+ ],
+ "Velickovic et al (2018)": [
+  "gat.py"
+ ],
+ "Brody-Alon-Yahav (2022)": [
+  "gatV2.py"
+ ],
+ "Veli\u010dkovi\u0107 et al (2018) GAT": [
+  "gatemd.py"
+ ],
+ "Dwork-Roth (2014) book \u00a73.5": [
+  "gaussm.py"
+ ],
+ "VanRaden (2008)": [
+  "gblupr.py",
+  "hertbg.py",
+  "snpblr.py"
+ ],
+ "Goodman-Bacon (2021) \u00a74": [
+  "gbtcom.py"
+ ],
+ "Chen et al (2020) GCNII": [
+  "gcnII.py"
+ ],
+ "Kipf-Welling (2017)": [
+  "gcnL.py",
+  "gcnemd.py"
+ ],
+ "Defferrard et al (2016)": [
+  "gcnchb.py"
+ ],
+ "Dong-Roth-Su (2019)": [
+  "gdpf.py"
+ ],
+ "Shazeer (2020)": [
+  "geglu.py",
+  "reglu.py",
+  "swiglu.py"
+ ],
+ "Hendrycks & Gimpel (2016)": [
+  "gelutn.py"
+ ],
+ "de Leeuw et al (2015) MAGMA": [
+  "genemt.py"
+ ],
+ "G\u00f3mez-Bombarelli et al (2018); Sanchez": [
+  "genmol.py"
+ ],
+ "Robins-Hern\u00e1n-Brumback (2000); Imai-vD": [
+  "gentmt.py"
+ ],
+ "Brennan (2001)": [
+  "genvdm.py"
+ ],
+ "Cronbach et al (1972)": [
+  "genvxt.py"
+ ],
+ "Ghosal App A": [
+  "gh_ap_a1.py",
+  "gh_ap_a2.py",
+  "gh_ap_a3.py",
+  "gh_ap_a4.py"
+ ],
+ "Ghosal App B": [
+  "gh_ap_b1.py",
+  "gh_ap_b2.py",
+  "gh_ap_b3.py"
+ ],
+ "Ghosal App C": [
+  "gh_ap_c1.py",
+  "gh_ap_c2.py",
+  "gh_ap_c3.py"
+ ],
+ "Ghosal App E": [
+  "gh_ap_e1.py",
+  "gh_ap_e2.py",
+  "gh_ap_e3.py"
+ ],
+ "Ghosal App F": [
+  "gh_ap_f1.py",
+  "gh_ap_f2.py"
+ ],
+ "Ghosal App G": [
+  "gh_ap_g1.py",
+  "gh_ap_g2.py",
+  "gh_ap_g3.py"
+ ],
+ "Ghosal App H": [
+  "gh_ap_h1.py"
+ ],
+ "Ghosal App I": [
+  "gh_ap_i1.py",
+  "gh_ap_i2.py",
+  "gh_ap_i3.py"
+ ],
+ "Ghosal App J": [
+  "gh_ap_j1.py",
+  "gh_ap_j2.py",
+  "gh_crm_def.py"
+ ],
+ "Ghosal App K": [
+  "gh_ap_k2.py"
+ ],
+ "Ghosal App M": [
+  "gh_ap_m1.py",
+  "gh_ap_m2.py",
+  "gh_ap_m3.py"
+ ],
+ "Ghosal Ch 10 \u00a710.3.2": [
+  "gh_besov_prior.py",
+  "gh_c10_5.py"
+ ],
+ "Ghosal Ch 10 \u00a710.1": [
+  "gh_c10_1.py"
+ ],
+ "Ghosal Ch 10 \u00a710.4.4": [
+  "gh_c10_10.py"
+ ],
+ "Ghosal Ch 10 \u00a710.4.5": [
+  "gh_c10_11.py"
+ ],
+ "Ghosal Ch 10 \u00a710.5": [
+  "gh_c10_12.py"
+ ],
+ "Ghosal Ch 10 \u00a710.5.3": [
+  "gh_c10_14.py"
+ ],
+ "Ghosal Ch 10 \u00a710.2.1": [
+  "gh_c10_2.py"
+ ],
+ "Ghosal Ch 10 \u00a710.2.2": [
+  "gh_c10_3.py"
+ ],
+ "Ghosal Ch 10 \u00a710.2.3": [
+  "gh_c10_4.py"
+ ],
+ "Ghosal Ch 10 \u00a710.4": [
+  "gh_c10_6.py"
+ ],
+ "Ghosal Ch 10 \u00a710.4.2": [
+  "gh_c10_8.py"
+ ],
+ "Ghosal Ch 10 \u00a710.4.3": [
+  "gh_c10_9.py"
+ ],
+ "Ghosal Ch 11 \u00a711.2": [
+  "gh_c11_1.py"
+ ],
+ "Ghosal Ch 11 \u00a711.4.5": [
+  "gh_c11_10.py"
+ ],
+ "Ghosal Ch 11 \u00a711.5": [
+  "gh_c11_11.py"
+ ],
+ "Ghosal Ch 11 \u00a711.5.1": [
+  "gh_c11_12.py"
+ ],
+ "Ghosal Ch 11 \u00a711.6": [
+  "gh_c11_13.py"
+ ],
+ "Ghosal Ch 11 \u00a711.7.5": [
+  "gh_c11_14.py"
+ ],
+ "Ghosal Ch 11 \u00a711.7.4": [
+  "gh_c11_15.py"
+ ],
+ "Ghosal Ch 11 \u00a711.3": [
+  "gh_c11_2.py",
+  "gh_c11_3.py",
+  "gh_conc_func.py",
+  "gh_small_ball.py"
+ ],
+ "Ghosal Ch 11 \u00a711.3.2": [
+  "gh_c11_5.py"
+ ],
+ "Ghosal Ch 11 \u00a711.4.1": [
+  "gh_c11_6.py",
+  "gh_gp_brow_prim.py"
+ ],
+ "Ghosal Ch 11 \u00a711.4.2": [
+  "gh_c11_7.py"
+ ],
+ "Ghosal Ch 11 \u00a711.4.3": [
+  "gh_c11_8.py"
+ ],
+ "Ghosal Ch 11 \u00a711.4.4": [
+  "gh_c11_9.py",
+  "gh_gp_orn_uhl.py"
+ ],
+ "Ghosal Ch 12 \u00a712.1": [
+  "gh_c12_1.py"
+ ],
+ "Ghosal Ch 12 \u00a712.4.2": [
+  "gh_c12_10.py"
+ ],
+ "Ghosal Ch 12 \u00a712.5": [
+  "gh_c12_11.py",
+  "gh_inf_dim_cr.py"
+ ],
+ "Ghosal Ch 12 \u00a712.2": [
+  "gh_c12_2.py"
+ ],
+ "Ghosal Ch 12 \u00a712.2.1": [
+  "gh_c12_3.py"
+ ],
+ "Ghosal Ch 12 \u00a712.3": [
+  "gh_c12_4.py",
+  "gh_c12_6.py",
+  "gh_mises_eff.py"
+ ],
+ "Ghosal Ch 12 \u00a712.3.1": [
+  "gh_c12_5.py"
+ ],
+ "Ghosal Ch 12 \u00a712.3.2": [
+  "gh_c12_7.py"
+ ],
+ "Ghosal Ch 12 \u00a712.3.3": [
+  "gh_c12_8.py"
+ ],
+ "Ghosal Ch 12 \u00a712.4.1": [
+  "gh_c12_9.py"
+ ],
+ "Ghosal Ch 13 \u00a713.2": [
+  "gh_c13_1.py"
+ ],
+ "Ghosal Ch 13 \u00a713.4.1": [
+  "gh_c13_10.py"
+ ],
+ "Ghosal Ch 13 \u00a713.4.2": [
+  "gh_c13_11.py"
+ ],
+ "Ghosal Ch 13 \u00a713.5": [
+  "gh_c13_12.py"
+ ],
+ "Ghosal Ch 13 \u00a713.6": [
+  "gh_c13_13.py"
+ ],
+ "Ghosal Ch 13 \u00a713.6.1": [
+  "gh_c13_14.py"
+ ],
+ "Ghosal Ch 13 \u00a713.7.1": [
+  "gh_c13_16.py"
+ ],
+ "Ghosal Ch 13 \u00a713.3": [
+  "gh_c13_3.py"
+ ],
+ "Ghosal Ch 13 \u00a713.3.1": [
+  "gh_c13_4.py"
+ ],
+ "Ghosal Ch 13 \u00a713.3.2": [
+  "gh_c13_5.py"
+ ],
+ "Ghosal Ch 13 \u00a713.3.3": [
+  "gh_c13_6.py"
+ ],
+ "Ghosal Ch 13 \u00a713.3.4": [
+  "gh_c13_7.py"
+ ],
+ "Ghosal Ch 13 \u00a713.4": [
+  "gh_c13_8.py",
+  "gh_c13_9.py"
+ ],
+ "Ghosal Ch 14 \u00a714.1": [
+  "gh_c14_1.py",
+  "gh_c14_2.py"
+ ],
+ "Ghosal Ch 14 \u00a714.4": [
+  "gh_c14_10.py",
+  "gh_c14_11.py",
+  "gh_c14_9.py",
+  "gh_py_univ_seq.py"
+ ],
+ "Ghosal Ch 14 \u00a714.5": [
+  "gh_c14_12.py",
+  "gh_c14_13.py"
+ ],
+ "Ghosal Ch 14 \u00a714.6": [
+  "gh_c14_14.py"
+ ],
+ "Ghosal Ch 14 \u00a714.7": [
+  "gh_c14_15.py",
+  "gh_c14_16.py"
+ ],
+ "Ghosal Ch 14 \u00a714.8": [
+  "gh_c14_17.py"
+ ],
+ "Ghosal Ch 14 \u00a714.9.1": [
+  "gh_c14_18.py"
+ ],
+ "Ghosal Ch 14 \u00a714.9.2": [
+  "gh_c14_19.py",
+  "gh_loc_dp_crt.py"
+ ],
+ "Ghosal Ch 14 \u00a714.9.3": [
+  "gh_c14_20.py"
+ ],
+ "Ghosal Ch 14 \u00a714.9.4": [
+  "gh_c14_21.py"
+ ],
+ "Ghosal Ch 14 \u00a714.9.5": [
+  "gh_c14_22.py"
+ ],
+ "Ghosal Ch 14 \u00a714.10": [
+  "gh_c14_23.py",
+  "gh_c14_24.py",
+  "gh_c14_25.py"
+ ],
+ "Ghosal Ch 14 \u00a714.1.1": [
+  "gh_c14_3.py"
+ ],
+ "Ghosal Ch 14 \u00a714.1.2": [
+  "gh_c14_4.py"
+ ],
+ "Ghosal Ch 14 \u00a714.2": [
+  "gh_c14_5.py"
+ ],
+ "Ghosal Ch 14 \u00a714.2.1": [
+  "gh_c14_6.py"
+ ],
+ "Ghosal Ch 14 \u00a714.2.2": [
+  "gh_c14_7.py"
+ ],
+ "Ghosal Ch 14 \u00a714.3": [
+  "gh_c14_8.py"
+ ],
+ "Ghosal Ch 1 \u00a71.3": [
+  "gh_c1_1.py",
+  "gh_c1_3.py"
+ ],
+ "Ghosal Ch 1 \u00a71.3.1": [
+  "gh_c1_2.py"
+ ],
+ "Ghosal Ch 2 \u00a72.1": [
+  "gh_c2_1.py"
+ ],
+ "Ghosal Ch 2 \u00a72.6": [
+  "gh_c2_10.py"
+ ],
+ "Ghosal Ch 2 \u00a72.2.1": [
+  "gh_c2_2.py"
+ ],
+ "Ghosal Ch 2 \u00a72.2.2": [
+  "gh_c2_3.py"
+ ],
+ "Ghosal Ch 2 \u00a72.3.1": [
+  "gh_c2_4.py"
+ ],
+ "Ghosal Ch 2 \u00a72.3.2": [
+  "gh_c2_5.py"
+ ],
+ "Ghosal Ch 2 \u00a72.3.3": [
+  "gh_c2_6.py"
+ ],
+ "Ghosal Ch 2 \u00a72.3.4": [
+  "gh_c2_7.py"
+ ],
+ "Ghosal Ch 2 \u00a72.4": [
+  "gh_c2_8.py"
+ ],
+ "Ghosal Ch 2 \u00a72.5": [
+  "gh_c2_9.py"
+ ],
+ "Ghosal Ch 3 \u00a73.1": [
+  "gh_c3_1.py"
+ ],
+ "Ghosal Ch 3 \u00a73.4.6": [
+  "gh_c3_10.py"
+ ],
+ "Ghosal Ch 3 \u00a73.6": [
+  "gh_c3_11.py"
+ ],
+ "Ghosal Ch 3 \u00a73.7": [
+  "gh_c3_12.py"
+ ],
+ "Ghosal Ch 3 \u00a73.7.1": [
+  "gh_c3_13.py"
+ ],
+ "Ghosal Ch 3 \u00a73.7.3": [
+  "gh_c3_15.py"
+ ],
+ "Ghosal Ch 3 \u00a73.7.4": [
+  "gh_c3_16.py"
+ ],
+ "Ghosal Ch 3 \u00a73.2": [
+  "gh_c3_2.py"
+ ],
+ "Ghosal Ch 3 \u00a73.3.1": [
+  "gh_c3_3.py"
+ ],
+ "Ghosal Ch 3 \u00a73.3.2": [
+  "gh_c3_4.py"
+ ],
+ "Ghosal Ch 3 \u00a73.3.3": [
+  "gh_c3_5.py"
+ ],
+ "Ghosal Ch 3 \u00a73.4.1": [
+  "gh_c3_6.py"
+ ],
+ "Ghosal Ch 3 \u00a73.4.3": [
+  "gh_c3_7.py"
+ ],
+ "Ghosal Ch 3 \u00a73.4.5": [
+  "gh_c3_9.py"
+ ],
+ "Ghosal Ch 4 \u00a74.1": [
+  "gh_c4_1.py"
+ ],
+ "Ghosal Ch 4 \u00a74.2.4": [
+  "gh_c4_10.py"
+ ],
+ "Ghosal Ch 4 \u00a74.2.5": [
+  "gh_c4_11.py"
+ ],
+ "Ghosal Ch 4 \u00a74.3.1": [
+  "gh_c4_12.py"
+ ],
+ "Ghosal Ch 4 \u00a74.3.2": [
+  "gh_c4_13.py"
+ ],
+ "Ghosal Ch 4 \u00a74.3.3": [
+  "gh_c4_14.py"
+ ],
+ "Ghosal Ch 4 \u00a74.3.4": [
+  "gh_c4_15.py"
+ ],
+ "Ghosal Ch 4 \u00a74.3.5": [
+  "gh_c4_16.py"
+ ],
+ "Ghosal Ch 4 \u00a74.3.6": [
+  "gh_c4_17.py"
+ ],
+ "Ghosal Ch 4 \u00a74.3.7": [
+  "gh_c4_18.py"
+ ],
+ "Ghosal Ch 4 \u00a74.4": [
+  "gh_c4_19.py"
+ ],
+ "Ghosal Ch 4 \u00a74.1.1": [
+  "gh_c4_2.py",
+  "gh_c4_3.py",
+  "gh_c4_4.py"
+ ],
+ "Ghosal Ch 4 \u00a74.5": [
+  "gh_c4_20.py",
+  "gh_hier_np.py"
+ ],
+ "Ghosal Ch 4 \u00a74.6.1": [
+  "gh_c4_21.py"
+ ],
+ "Ghosal Ch 4 \u00a74.6.2": [
+  "gh_c4_22.py"
+ ],
+ "Ghosal Ch 4 \u00a74.6.3": [
+  "gh_c4_23.py"
+ ],
+ "Ghosal Ch 4 \u00a74.7": [
+  "gh_c4_24.py"
+ ],
+ "Ghosal Ch 4 \u00a74.1.2": [
+  "gh_c4_5.py",
+  "gh_dp_cond_dist.py"
+ ],
+ "Ghosal Ch 4 \u00a74.1.3": [
+  "gh_c4_6.py"
+ ],
+ "Ghosal Ch 4 \u00a74.1.4": [
+  "gh_c4_7.py"
+ ],
+ "Ghosal Ch 4 \u00a74.1.5": [
+  "gh_c4_8.py"
+ ],
+ "Ghosal Ch 4 \u00a74.2.3": [
+  "gh_c4_9.py"
+ ],
+ "Ghosal Ch 5 \u00a75.1": [
+  "gh_c5_1.py",
+  "gh_c5_2.py"
+ ],
+ "Ghosal Ch 5 \u00a75.5": [
+  "gh_c5_10.py"
+ ],
+ "Ghosal Ch 5 \u00a75.2": [
+  "gh_c5_3.py",
+  "gh_c5_4.py",
+  "gh_c5_5.py"
+ ],
+ "Ghosal Ch 5 \u00a75.3": [
+  "gh_c5_6.py",
+  "gh_var_dp_post.py"
+ ],
+ "Ghosal Ch 6 \u00a76.1": [
+  "gh_c6_1.py",
+  "gh_c6_2.py"
+ ],
+ "Ghosal Ch 6 \u00a76.7.1": [
+  "gh_c6_10.py"
+ ],
+ "Ghosal Ch 6 \u00a76.7.2": [
+  "gh_c6_11.py"
+ ],
+ "Ghosal Ch 6 \u00a76.8.2": [
+  "gh_c6_13.py"
+ ],
+ "Ghosal Ch 6 \u00a76.8.3": [
+  "gh_c6_14.py"
+ ],
+ "Ghosal Ch 6 \u00a76.8.5": [
+  "gh_c6_16.py"
+ ],
+ "Ghosal Ch 6 \u00a76.2": [
+  "gh_c6_3.py"
+ ],
+ "Ghosal Ch 6 \u00a76.3": [
+  "gh_c6_4.py"
+ ],
+ "Ghosal Ch 6 \u00a76.4": [
+  "gh_c6_6.py",
+  "gh_c6_7.py",
+  "gh_iid_consist.py"
+ ],
+ "Ghosal Ch 6 \u00a76.5": [
+  "gh_c6_8.py"
+ ],
+ "Ghosal Ch 6 \u00a76.6": [
+  "gh_c6_9.py"
+ ],
+ "Ghosal Ch 7 \u00a77.1.1": [
+  "gh_c7_1.py"
+ ],
+ "Ghosal Ch 7 \u00a77.4.3": [
+  "gh_c7_10.py"
+ ],
+ "Ghosal Ch 7 \u00a77.1.2": [
+  "gh_c7_2.py"
+ ],
+ "Ghosal Ch 7 \u00a77.1.3": [
+  "gh_c7_3.py"
+ ],
+ "Ghosal Ch 7 \u00a77.2.2": [
+  "gh_c7_5.py"
+ ],
+ "Ghosal Ch 7 \u00a77.4.1": [
+  "gh_c7_8.py"
+ ],
+ "Ghosal Ch 7 \u00a77.4.2": [
+  "gh_c7_9.py"
+ ],
+ "Ghosal Ch 8 \u00a78.1": [
+  "gh_c8_1.py"
+ ],
+ "Ghosal Ch 8 \u00a78.3.4": [
+  "gh_c8_10.py",
+  "gh_wn_rate_opt.py"
+ ],
+ "Ghosal Ch 8 \u00a78.3.5": [
+  "gh_c8_11.py"
+ ],
+ "Ghosal Ch 8 \u00a78.4": [
+  "gh_c8_12.py"
+ ],
+ "Ghosal Ch 8 \u00a78.5": [
+  "gh_c8_13.py"
+ ],
+ "Ghosal Ch 8 \u00a78.5.1": [
+  "gh_c8_14.py"
+ ],
+ "Ghosal Ch 8 \u00a78.6": [
+  "gh_c8_15.py"
+ ],
+ "Ghosal Ch 8 \u00a78.2": [
+  "gh_c8_2.py",
+  "gh_c8_4.py",
+  "gh_c8_5.py",
+  "gh_contr_rate2.py"
+ ],
+ "Ghosal Ch 8 \u00a78.2.2": [
+  "gh_c8_7.py"
+ ],
+ "Ghosal Ch 8 \u00a78.3.2": [
+  "gh_c8_8.py"
+ ],
+ "Ghosal Ch 8 \u00a78.3.3": [
+  "gh_c8_9.py"
+ ],
+ "Ghosal Ch 9 \u00a79.1": [
+  "gh_c9_1.py"
+ ],
+ "Ghosal Ch 9 \u00a79.5.5": [
+  "gh_c9_10.py"
+ ],
+ "Ghosal Ch 9 \u00a79.5.7": [
+  "gh_c9_11.py"
+ ],
+ "Ghosal Ch 9 \u00a79.2": [
+  "gh_c9_2.py"
+ ],
+ "Ghosal Ch 9 \u00a79.3": [
+  "gh_c9_3.py"
+ ],
+ "Ghosal Ch 9 \u00a79.4": [
+  "gh_c9_4.py"
+ ],
+ "Ghosal Ch 9 \u00a79.4.1": [
+  "gh_c9_5.py"
+ ],
+ "Ghosal Ch 9 \u00a79.4.5": [
+  "gh_c9_6.py"
+ ],
+ "Ghosal Ch 9 \u00a79.5.2": [
+  "gh_c9_7.py"
+ ],
+ "Ghosal Ch 9 \u00a79.5.3": [
+  "gh_c9_8.py"
+ ],
+ "Ghosal Ch 9 \u00a79.5.4": [
+  "gh_c9_9.py",
+  "gh_sobol_prior.py",
+  "gh_wn_gauss_pr.py"
+ ],
+ "Ghosal Ch 7 \u00a77.2": [
+  "gh_dp_kl_nbhd.py"
+ ],
+ "Ghosal Ch 7 \u00a77.3.2": [
+  "gh_dp_reg_post.py"
+ ],
+ "Ghosal Ch 7 \u00a77.2.3": [
+  "gh_ppt_consist.py"
+ ],
+ "Ghosal Ch 11 \u00a711.3.3": [
+  "gh_sup_norm_gp.py"
+ ],
+ "Ghose-Viswanadhan-Wendoloski (1999)": [
+  "ghoste.py"
+ ],
+ "Ghosal & van der Vaart (2017), Ch 1, E": [
+  "ghs001.py"
+ ],
+ "Ghosal & van der Vaart (2017), Ch 2, E": [
+  "ghs002.py",
+  "ghs003.py",
+  "ghs004.py",
+  "ghs005.py",
+  "ghs006.py",
+  "ghs007.py"
+ ],
+ "Ghosal & van der Vaart (2017), Ch 3, E": [
+  "ghs008.py",
+  "ghs009.py",
+  "ghs010.py",
+  "ghs011.py",
+  "ghs012.py",
+  "ghs013.py",
+  "ghs014.py",
+  "ghs015.py",
+  "ghs016.py",
+  "ghs017.py",
+  "ghs018.py",
+  "ghs019.py",
+  "ghs020.py",
+  "ghs021.py",
+  "ghs023.py",
+  "ghs024.py",
+  "ghs025.py",
+  "ghs026.py",
+  "ghs027.py",
+  "ghs028.py",
+  "ghs029.py",
+  "ghs030.py",
+  "ghs031.py",
+  "ghs032.py",
+  "ghs033.py"
+ ],
+ "Geman-Geman (1984)": [
+  "gibbsm.py"
+ ],
+ "Xu et al (2019) GIN": [
+  "gin.py",
+  "ginemd.py"
+ ],
+ "Montesinos Lopez Ch 15": [
+  "ginii.py",
+  "rfmdi.py",
+  "rfmlt.py",
+  "rfpmi.py",
+  "varrd.py"
+ ],
+ "Hansen et al (1999)": [
+  "giss.py"
+ ],
+ "Friesner et al (2004) Schr\u00f6dinger Glid": [
+  "glides.py"
+ ],
+ "Lai (1995)": [
+  "glm.py"
+ ],
+ "Gelman BDA3 Ch 16": [
+  "glmbay.py"
+ ],
+ "Pennington-Socher-Manning (2014)": [
+  "glove.py"
+ ],
+ "Makhorin (GLPK)": [
+  "glpopt.py"
+ ],
+ "Ying et al (2019) GNNExplainer": [
+  "gnnEx.py"
+ ],
+ "Subramanian et al (2005)": [
+  "gnsetenr.py"
+ ],
+ "Schaul et al (2015) UVFA": [
+  "goalc.py"
+ ],
+ "Boyle et al (2004)": [
+  "goenr.py"
+ ],
+ "Jones et al (1997) CCDC": [
+  "goldsc.py"
+ ],
+ "Hensman-Matthews-Ghahramani (2015)": [
+  "gpcgs.py",
+  "vargpc.py"
+ ],
+ "Williams-Barber (1998); Rasmussen-Will": [
+  "gpcla.py"
+ ],
+ "Muraki (1992)": [
+  "gpcm.py",
+  "irtgpc.py"
+ ],
+ "Pickands (1975)": [
+  "gpdD.py"
+ ],
+ "Wilson-Hu-Salakhutdinov-Xing (2016)": [
+  "gpdkl.py"
+ ],
+ "Gulenko et al (2019)": [
+  "gpdsh.py"
+ ],
+ "Goldberg-Williams-Bishop (1998)": [
+  "gphtr.py"
+ ],
+ "Duvenaud et al (2013); Rasmussen-Willi": [
+  "gpkern.py"
+ ],
+ "Saunders-Gammerman-Vovk (1998); Rasmus": [
+  "gpkrr.py"
+ ],
+ "Bonilla-Chai-Williams (2008)": [
+  "gpmlt.py"
+ ],
+ "Tresp (2001)": [
+  "gpmoe.py"
+ ],
+ "Rasmussen-Williams (2006)": [
+  "gpreg.py",
+  "gpregF.py",
+  "gprsk.py",
+  "gpvarF.py",
+  "sfcret.py"
+ ],
+ "Murray-Adams (2010)": [
+  "gpregb.py",
+  "hyper2.py"
+ ],
+ "Snelson-Ghahramani (2006); Titsias (20": [
+  "gpsfn.py"
+ ],
+ "Wilson-Adams (2013)": [
+  "gpsps.py"
+ ],
+ "Hensman-Fusi-Lawrence (2013)": [
+  "gpsvi.py"
+ ],
+ "Radford et al (2018) GPT": [
+  "gpt2.py"
+ ],
+ "Lowerre (1976) HARPY; Sutskever et al ": [
+  "gptas.py"
+ ],
+ "Wang-Frazier (2017)": [
+  "gpvbo.py"
+ ],
+ "Snelson-Rasmussen-Ghahramani (2004)": [
+  "gpwhr.py"
+ ],
+ "Zhu et al (2020) GRACE": [
+  "grace.py"
+ ],
+ "Cauchy (1847)": [
+  "gradds.py"
+ ],
+ "Shervashidze et al (2009)": [
+  "grafl.py"
+ ],
+ "Karypis-Kumar (1998) METIS": [
+  "grclus.py"
+ ],
+ "Samejima (1969)": [
+  "grmsam.py",
+  "irtgrm.py"
+ ],
+ "Buchberger (1965)": [
+  "groebn.py"
+ ],
+ "Hampel et al (1986) book": [
+  "gross.py"
+ ],
+ "Wu & He (2018)": [
+  "groupnm.py"
+ ],
+ "Grover (1996)": [
+  "groverS.py"
+ ],
+ "Ying et al (2021)": [
+  "grphmr.py"
+ ],
+ "Hidasi et al (2016)": [
+  "gru4r.py"
+ ],
+ "Hamilton et al (2017)": [
+  "gsageemd.py"
+ ],
+ "Kerbl et al (2023) 3DGS": [
+  "gsplat.py"
+ ],
+ "Robins-Hern\u00e1n-Brumback (2000)": [
+  "gstabwt.py",
+  "msmlog.py"
+ ],
+ "Dwivedi-Bresson (2020)": [
+  "gtrf.py"
+ ],
+ "Cole & Hern\u00e1n (2008)": [
+  "gtruncwt.py"
+ ],
+ "guide on data analysis, ch.1 eq.1.10": [
+  "guide_on_data_analysis1e10.py"
+ ],
+ "guide on data analysis, ch.24 eq.24.1": [
+  "guide_on_data_analysis24e1.py"
+ ],
+ "guide on data analysis, ch.30 eq.30.2": [
+  "guide_on_data_analysis30e2.py"
+ ],
+ "IPCC AR6 Ch.7": [
+  "gwPot.py"
+ ],
+ "Kang et al (2010)": [
+  "gwasem.py"
+ ],
+ "Yu et al (2006)": [
+  "gwasl1.py"
+ ],
+ "NO REFERENCE": [
+  "gwrbw.py",
+  "igravvf.py",
+  "lacjmc.py",
+  "lacvgm.py",
+  "maccr.py",
+  "mf1.py",
+  "mgwrbk.py",
+  "mgwrbw.py",
+  "mgwrfit.py",
+  "mgwrtst.py",
+  "mrecl.py",
+  "rgemgf.py",
+  "rgemgfd.py",
+  "rgisint.py",
+  "rgkneejt.py",
+  "rgvmg.py",
+  "scdisp.py",
+  "sdmolsi.py",
+  "sppbe.py",
+  "swadapt.py",
+  "swdist.py",
+  "swgab.py",
+  "swinv.py",
+  "swknn.py",
+  "swtri.py"
+ ],
+ "Fotheringham-Brunsdon-Charlton (2002)": [
+  "gwrcal.py"
+ ],
+ "Brunsdon-Fotheringham-Charlton (1996)": [
+  "gwrmod.py"
+ ],
+ "de Bakker et al (2008)": [
+  "gwsblc.py"
+ ],
+ "Morice et al (2021)": [
+  "hadcrut.py"
+ ],
+ "Smith et al (2012)": [
+  "halft.py"
+ ],
+ "Gabriel et al (2002)": [
+  "hapblk.py"
+ ],
+ "Hoaglin-Welsch (1978)": [
+  "hatlev.py"
+ ],
+ "Lipinski (1997)": [
+  "hbacc.py",
+  "hbdon.py"
+ ],
+ "Bergstr\u00f6m (1995)": [
+  "hbvMod.py"
+ ],
+ "Mat\u00e9rn (1960)": [
+  "hcoreg.py",
+  "matern.py",
+  "matnK.py"
+ ],
+ "Campello-Moulavi-Sander (2013)": [
+  "hdbsc.py"
+ ],
+ "Teh-Jordan-Beal-Blei (2006)": [
+  "hdpgmm.py",
+  "hdpmix.py",
+  "hdptpc.py"
+ ],
+ "Box & Tiao (1973); Hyndman (1996)": [
+  "hdpic.py"
+ ],
+ "Hellinger (1909)": [
+  "hellie.py",
+  "hellngd.py"
+ ],
+ "Chen et al (2016) DILI": [
+  "hepatx.py"
+ ],
+ "Cai et al (2019); Ogura et al (2019)": [
+  "hergp.py"
+ ],
+ "Hermite (1864)": [
+  "hermitS.py"
+ ],
+ "Henseler-Ringle-Sarstedt (2015)": [
+  "hetero.py"
+ ],
+ "Wang et al (2019)": [
+  "hetgnn.py"
+ ],
+ "Montesinos Lopez Ch 2": [
+  "hetlc.py",
+  "mafcl.py",
+  "mmaxn.py",
+  "pcadr.py",
+  "unitl.py",
+  "vanr1.py",
+  "vanr2.py",
+  "yangr.py",
+  "zscnm.py"
+ ],
+ "Diekmann-Heesterbeek (2000)": [
+  "hetmix.py"
+ ],
+ "Carr-Olsen-Lee-White (1992)": [
+  "hexgrd.py"
+ ],
+ "Hoeffding (1963)": [
+  "hffdsg.py"
+ ],
+ "Gog-Grenfell (2002)": [
+  "hiatus.py"
+ ],
+ "Technow et al (2014)": [
+  "hibrid.py"
+ ],
+ "Sutton-Precup-Singh (1999)": [
+  "hier.py"
+ ],
+ "Wickramasuriya-Athanasopoulos-Hyndman ": [
+  "hierF.py"
+ ],
+ "Andrychowicz et al (2017)": [
+  "hindsr.py"
+ ],
+ "Kleinberg (1999)": [
+  "hits.py",
+  "hubsa.py",
+  "hubsau.py",
+  "sgthits.py"
+ ],
+ "Lov\u00e1sz (1996)": [
+  "hittime.py",
+  "randwk.py"
+ ],
+ "Acharya-Sun-Zhang (2019)": [
+  "hkonly.py"
+ ],
+ "Raudenbush & Bryk (2002) \u00a73": [
+  "hlmgr.py"
+ ],
+ "Gelman et al (2013) BDA3 Ch 5": [
+  "hmcrg.py"
+ ],
+ "Neal (2011)": [
+  "hmcsam.py"
+ ],
+ "Charniak (1993); Brants (2000) TnT": [
+  "hmmTag.py"
+ ],
+ "Durbin et al (1998); Eddy (1998)": [
+  "hmmprf.py"
+ ],
+ "van der Laan-Petersen (2007)": [
+  "hmstrn.py"
+ ],
+ "Wager-Athey (2018); Athey-Imbens (2016": [
+  "hntfst.py"
+ ],
+ "Hodrick-Prescott (1997)": [
+  "hodprc.py"
+ ],
+ "Keogh-Lin-Fu (2005)": [
+  "hot.py"
+ ],
+ "Getis-Ord (1992)": [
+  "hotcld.py"
+ ],
+ "Horowitz Ch 3, Sec 3.1": [
+  "hrzadm.py"
+ ],
+ "Horowitz Ch 3, Sec 3.2": [
+  "hrzaml.py"
+ ],
+ "Horowitz Ch 3, Sec 3.4": [
+  "hrzaqm.py"
+ ],
+ "Horowitz Ch 3, Sec 3.3": [
+  "hrzaul.py"
+ ],
+ "Horowitz Ch 6, Sec 6.1.2": [
+  "hrzboxc.py"
+ ],
+ "Horowitz Ch 4, Eq 4.1-4.2": [
+  "hrzbr4a.py"
+ ],
+ "Horowitz Ch 5, Sec 5.2.4": [
+  "hrzbr5.py"
+ ],
+ "Horowitz Ch 2, Sec 2.7": [
+  "hrzbwcv.py"
+ ],
+ "Horowitz Appendix A.2": [
+  "hrzconf.py"
+ ],
+ "Horowitz Ch 1": [
+  "hrzcs.py"
+ ],
+ "Horowitz Ch 5, Sec 5.5.2": [
+  "hrzctrl.py"
+ ],
+ "Horowitz Ch 2": [
+  "hrzdimr.py",
+  "hrzrateG.py",
+  "hrzrob.py"
+ ],
+ "Horowitz Ch 5": [
+  "hrzecfw.py"
+ ],
+ "Horowitz Ch 2, Sec 2.2": [
+  "hrzmim.py"
+ ],
+ "Horowitz Ch 5, Eq 5.4-5.5": [
+  "hrznpiv.py"
+ ],
+ "Horowitz Ch 6, Sec 6.2.1": [
+  "hrzph.py"
+ ],
+ "Horowitz Ch 6, Sec 6.2.3": [
+  "hrzphd.py"
+ ],
+ "Horowitz Ch 6, Sec 6.2.2": [
+  "hrzphv.py"
+ ],
+ "Horowitz Ch 6, Sec 6.3.4": [
+  "hrzphvnp.py"
+ ],
+ "Horowitz Ch 3, Sec 3.6.1": [
+  "hrzplri.py"
+ ],
+ "Horowitz Ch 3, Sec 3.6.3": [
+  "hrzplrq.py"
+ ],
+ "Horowitz Ch 5, Sec 5.4.2": [
+  "hrzseriu.py"
+ ],
+ "Horowitz Ch 2, Sec 2.3.1": [
+  "hrzsic.py"
+ ],
+ "Horowitz Ch 2, Sec 2.3.2": [
+  "hrzsicd.py"
+ ],
+ "Horowitz Ch 2, Eq 2.1": [
+  "hrzsim.py"
+ ],
+ "Horowitz Ch 2, Sec 2.9": [
+  "hrzsiqm.py"
+ ],
+ "Horowitz Ch 2, Sec 2.5.3": [
+  "hrzsmle.py"
+ ],
+ "Horowitz Ch 4, Sec 4.3.3": [
+  "hrzsmsci.py"
+ ],
+ "Horowitz Ch 4, Theorem 4.1": [
+  "hrzt41.py"
+ ],
+ "Horowitz Ch 6, Sec 6.3": [
+  "hrztf.py"
+ ],
+ "Horowitz Ch 5, Sec 5.4.1": [
+  "hrztiku.py"
+ ],
+ "Horowitz Ch 6": [
+  "hrztmod.py"
+ ],
+ "Horowitz Ch 6, Sec 6.1": [
+  "hrztpar.py"
+ ],
+ "Horowitz Ch 6, Sec 6.1.3": [
+  "hrzweib.py"
+ ],
+ "Horvitz-Thompson (1952)": [
+  "htvar1.py"
+ ],
+ "Hurst (1951)": [
+  "hurste.py"
+ ],
+ "Burke (2002)": [
+  "hybRC.py"
+ ],
+ "Newton & Raftery (1994); cf. Neal's pa": [
+  "hyplc.py"
+ ],
+ "Horowitz-Manski (2000)": [
+  "hzbnds.py"
+ ],
+ "Browning-Browning (2010)": [
+  "ibdmtx.py"
+ ],
+ "Griffiths-Ghahramani (2011)": [
+  "ibpfa.py"
+ ],
+ "Purcell et al (2007) PLINK": [
+  "ibsmtx.py",
+  "ldprun.py"
+ ],
+ "Besag (1974)": [
+  "icarbm.py"
+ ],
+ "Shrout & Fleiss (1979)": [
+  "icc1.py",
+  "icc2.py",
+  "icc3.py"
+ ],
+ "Shrout-Fleiss (1979)": [
+  "icc12c.py",
+  "icc31c.py"
+ ],
+ "McGraw & Wong (1996)": [
+  "iccA.py",
+  "iccC.py"
+ ],
+ "Sarwar et al (2001)": [
+  "icfR.py"
+ ],
+ "Birnbaum (1968)": [
+  "icrf.py",
+  "iinfo.py",
+  "irt2pl.py",
+  "thetml.py"
+ ],
+ "Shepard (1968)": [
+  "idwsmt.py"
+ ],
+ "Voight et al (2006)": [
+  "ihstst.py"
+ ],
+ "Imai, Keele, Yamamoto (2010)": [
+  "imai.py"
+ ],
+ "Hu-Koren-Volinsky (2008)": [
+  "impFB.py"
+ ],
+ "Howie-Donnelly-Marchini (2009); Browni": [
+  "impfun.py"
+ ],
+ "Rothman (2012)": [
+  "incidens.py",
+  "incrtio.py"
+ ],
+ "Tishby-Pereira-Bialek (1999)": [
+  "infbtl.py"
+ ],
+ "Watanabe (2013); Vehtari-Gelman-Gabry ": [
+  "infcrt.py"
+ ],
+ "Amari (1985)": [
+  "infgnt.py"
+ ],
+ "Linsker (1988)": [
+  "infmax.py"
+ ],
+ "Zhou et al (2021) Informer": [
+  "infmer.py",
+  "informer.py"
+ ],
+ "Information theory MacKay, ch.11 eq.11": [
+  "information_theory_mackay11e28.py"
+ ],
+ "Information theory MacKay, ch.19 eq.19": [
+  "information_theory_mackay19e13.py",
+  "information_theory_mackay19e14.py",
+  "information_theory_mackay19e7.py"
+ ],
+ "Information theory MacKay, ch.1 eq.1.1": [
+  "information_theory_mackay1e18.py"
+ ],
+ "Information theory MacKay, ch.1 eq.1.4": [
+  "information_theory_mackay1e40.py",
+  "information_theory_mackay1e41.py",
+  "information_theory_mackay1e43.py",
+  "information_theory_mackay1e44.py"
+ ],
+ "Information theory MacKay, ch.24 eq.24": [
+  "information_theory_mackay24e13.py",
+  "information_theory_mackay24e6.py",
+  "information_theory_mackay24e9.py"
+ ],
+ "Information theory MacKay, ch.28 eq.28": [
+  "information_theory_mackay28e13.py",
+  "information_theory_mackay28e15.py",
+  "information_theory_mackay28e17.py",
+  "information_theory_mackay28e22.py",
+  "information_theory_mackay28e5.py"
+ ],
+ "Information theory MacKay, ch.29 eq.29": [
+  "information_theory_mackay29e19.py"
+ ],
+ "Information theory MacKay, ch.2 eq.2.2": [
+  "information_theory_mackay2e25.py"
+ ],
+ "Information theory MacKay, ch.2 eq.2.3": [
+  "information_theory_mackay2e31.py"
+ ],
+ "Information theory MacKay, ch.3 eq.3.1": [
+  "information_theory_mackay3e16.py",
+  "information_theory_mackay3e19.py"
+ ],
+ "Information theory MacKay, ch.3 eq.3.2": [
+  "information_theory_mackay3e21.py",
+  "information_theory_mackay3e22.py"
+ ],
+ "Information theory MacKay, ch.3 eq.3.3": [
+  "information_theory_mackay3e31.py"
+ ],
+ "Information theory MacKay, ch.3 eq.3.8": [
+  "information_theory_mackay3e8.py"
+ ],
+ "Information theory MacKay, ch.3 eq.3.9": [
+  "information_theory_mackay3e9.py"
+ ],
+ "Information theory MacKay, ch.4 eq.4.2": [
+  "information_theory_mackay4e29.py"
+ ],
+ "Rue-Martino-Chopin (2009)": [
+  "inlasm.py"
+ ],
+ "Bronstein (1997)": [
+  "intS.py"
+ ],
+ "Hern\u00e1n-Robins Ch 13": [
+  "intanl.py"
+ ],
+ "McGill (1954)": [
+  "intinf.py"
+ ],
+ "Karmarkar (1984)": [
+  "intlpa.py"
+ ],
+ "VanderWeele (2014)": [
+  "intmd4.py",
+  "medint.py",
+  "vandIE.py",
+  "vivkt.py"
+ ],
+ "VanderWeele-Vansteelandt-Robins (2014)": [
+  "intvse.py"
+ ],
+ "Lumley-Scott (2017)": [
+  "ipferd.py"
+ ],
+ "W\u00e4chter-Biegler (2006) IPOPT": [
+  "ipfsfa.py"
+ ],
+ "Robins-Rotnitzky-Scharfstein (2000)": [
+  "ipwSn.py"
+ ],
+ "DuGoff, Schuler, Stuart (2014)": [
+  "ipwsrv.py"
+ ],
+ "Tukey (1977)": [
+  "iqrA.py",
+  "pheno2.py",
+  "spdetr.py"
+ ],
+ "Rasch (1960); Birnbaum (1968)": [
+  "irt1pl.py"
+ ],
+ "Birnbaum (1968); Lord (1980)": [
+  "irt3pl.py"
+ ],
+ "Barton & Lord (1981)": [
+  "irt4pl.py"
+ ],
+ "Holland-Thayer (1988)": [
+  "irtmh1.py"
+ ],
+ "Bock (1972)": [
+  "irtnrm.py",
+  "nrm.py"
+ ],
+ "Masters (1982)": [
+  "irtprc.py",
+  "pcm.py"
+ ],
+ "Andrich (1978)": [
+  "irtras.py",
+  "rsmand.py"
+ ],
+ "Teh-G\u00f6r\u00fcr (2009)": [
+  "isbplr.py"
+ ],
+ "Lord (1980)": [
+  "itinft.py"
+ ],
+ "Kalton-Flores-Cervantes (2003)": [
+  "itnnrs.py"
+ ],
+ "Athey-Imbens (2017)": [
+  "itr2dd.py",
+  "itrgrf.py"
+ ],
+ "Hern\u00e1n-Robins (2020)": [
+  "itrct1.py"
+ ],
+ "Murphy (2003); Petersen et al (2014)": [
+  "itrlrn.py",
+  "tmlqlc.py"
+ ],
+ "Wolter (2007) \u00a74": [
+  "jackvar.py"
+ ],
+ "Winkler (1990)": [
+  "jarow.py"
+ ],
+ "Wolter (2007)": [
+  "jkrand.py",
+  "replwt.py"
+ ],
+ "Liu, Wolfe, Huang (2004)": [
+  "jntfr.py"
+ ],
+ "Henderson et al (2000); Rizopoulos (20": [
+  "jntlmm.py"
+ ],
+ "Joseph Ch 17, Adaptive Conformal Infer": [
+  "joaci.py"
+ ],
+ "Joseph Ch 16, Autoformer section": [
+  "joautf.py"
+ ],
+ "Joseph Ch 7, Box-Cox section": [
+  "joboxc.py"
+ ],
+ "Joseph Ch 17, Conformalized Quantile R": [
+  "jocqr.py"
+ ],
+ "Joseph Ch 7, Differencing section": [
+  "jodif.py"
+ ],
+ "Joseph Ch 18, Direct Multi-output Stra": [
+  "jodirc.py"
+ ],
+ "Joseph Ch 18, DirRec Hybrid Strategy s": [
+  "jodrrc.py"
+ ],
+ "Joseph Ch 20, Expanding Window CV sect": [
+  "joexw.py"
+ ],
+ "Joseph Ch 6, Fourier Features section": [
+  "jofrr.py"
+ ],
+ "Joseph Ch 16, iTransformer section": [
+  "joitran.py"
+ ],
+ "Joseph Ch 6, Lag Features section": [
+  "jolagf.py"
+ ],
+ "Joseph Ch 7, Log Transform section": [
+  "jolog.py"
+ ],
+ "Joseph Ch 19, MAPE section": [
+  "jomape.py"
+ ],
+ "Joseph Ch 2, Missing Value Imputation ": [
+  "jomimi.py"
+ ],
+ "Joseph Ch 16, N-HiTS section": [
+  "jonhts.py"
+ ],
+ "Joseph Ch 16, PatchTST section": [
+  "jopatt.py"
+ ],
+ "Joseph Ch 17, Quantile / Pinball Loss ": [
+  "jopql.py"
+ ],
+ "Joseph Ch 17, Quantile Regression sect": [
+  "joqr.py"
+ ],
+ "Jordan (1870)": [
+  "jordCD.py"
+ ],
+ "Joseph Ch 18, Recursive (MIMO) Strateg": [
+  "jorec.py"
+ ],
+ "Joseph Ch 19, RelMAE section": [
+  "jorelm.py"
+ ],
+ "Joseph Ch 19, RMSE section": [
+  "jormse.py"
+ ],
+ "Joseph Ch 19, RMSSE section": [
+  "jormse2.py"
+ ],
+ "Joseph Ch 6, Rolling Window Aggregates": [
+  "jorolf.py"
+ ],
+ "Joseph Ch 19, sMAPE section": [
+  "josmap.py"
+ ],
+ "Joseph Ch 4, Seasonal Naive section": [
+  "josnv.py"
+ ],
+ "Joseph Ch 3, STL decomposition section": [
+  "jostlpc.py"
+ ],
+ "Joseph Ch 20, Sliding Window CV sectio": [
+  "joswc.py"
+ ],
+ "Joseph Ch 6, Calendar Features section": [
+  "jotfe.py"
+ ],
+ "Joseph Ch 16, Temporal Fusion Transfor": [
+  "jotft.py"
+ ],
+ "Joseph Ch 16, TiDE section": [
+  "jotide.py"
+ ],
+ "Joseph Ch 16, TSMixer section": [
+  "jotsmx.py"
+ ],
+ "Joseph Ch 5, Time Series as Regression": [
+  "jotsrg.py"
+ ],
+ "Joseph Ch 20, Walk-Forward Validation ": [
+  "jowfv.py"
+ ],
+ "Joseph Ch 17, Interval Score (Winkler)": [
+  "jowink.py"
+ ],
+ "Jarque-Bera (1980)": [
+  "jrqbq.py"
+ ],
+ "Jensen-Zhang (1986)": [
+  "jzdiff.py"
+ ],
+ "Kabsch (1976)": [
+  "kabsch.py",
+  "rmsdtr.py"
+ ],
+ "Rauch-Tung-Striebel (1965)": [
+  "kalmS.py",
+  "klmsmh.py"
+ ],
+ "Kalman (1960)": [
+  "kalmf.py"
+ ],
+ "Cohen (1960)": [
+  "kappac.py"
+ ],
+ "Cohen (1968)": [
+  "kappaw.py",
+  "spcgme.py"
+ ],
+ "Koza (1992)": [
+  "karpV.py"
+ ],
+ "Katz (1953)": [
+  "katz.py",
+  "katzc.py",
+  "katzcn.py",
+  "sgtkem.py"
+ ],
+ "Dwork & Roth (2014) \u00a73.5": [
+  "kcompo.py"
+ ],
+ "Harchaoui et al (2009)": [
+  "kcusum.py"
+ ],
+ "Kanehisa et al (2017)": [
+  "keggp.py"
+ ],
+ "Schlichtkrull et al (2018)": [
+  "kgnn.py"
+ ],
+ "Vehtari et al. (2017)": [
+  "khatd.py"
+ ],
+ "Brooks-Gelman (1998)": [
+  "klmcmc.py"
+ ],
+ "Kalman (1960); Durbin-Koopman (2012)": [
+  "klmflt.py"
+ ],
+ "Chen-Goodman (1996)": [
+  "klmsm1.py"
+ ],
+ "Manichaikul et al (2010) KING": [
+  "kngshp.py"
+ ],
+ "Frank et al (2013)": [
+  "konfound.py"
+ ],
+ "Greenwood (1926)": [
+  "kpmnci.py"
+ ],
+ "Hall-Wellner (1980)": [
+  "kpmsmp.py"
+ ],
+ "Kuder-Richardson (1937)": [
+  "kr20cr.py"
+ ],
+ "Leskovec et al (2010)": [
+  "krfgrp.py"
+ ],
+ "Matheron (1963)": [
+  "krigCl.py",
+  "vgrm.py"
+ ],
+ "Cressie (1993)": [
+  "krigFDA.py",
+  "krigsv.py",
+  "krigun.py"
+ ],
+ "Matheron (1962); Cressie (1993)": [
+  "krigsm.py"
+ ],
+ "Krippendorff (2004)": [
+  "krpalp.py"
+ ],
+ "Goovaerts (2005)": [
+  "krpkrg.py"
+ ],
+ "Vovk (2013)": [
+  "krrFDA.py"
+ ],
+ "Weiszfeld (1937)": [
+  "l1med.py",
+  "weisz.py"
+ ],
+ "Belkin-Niyogi (2003)": [
+  "lapEig.py"
+ ],
+ "Dwork et al (2006)": [
+  "laplc.py"
+ ],
+ "Chung (1997)": [
+  "laplmo.py",
+  "sgtcheb.py",
+  "sgtdeg.py",
+  "sgtlap.py",
+  "sgtnlap.py",
+  "sgtrwl.py",
+  "sgtspc.py",
+  "sgtwlap.py"
+ ],
+ "Tibshirani (1996)": [
+  "lassrg.py"
+ ],
+ "Laurent (1843)": [
+  "laurnt.py"
+ ],
+ "Ba, Kiros, Hinton (2016)": [
+  "layrnm.py"
+ ],
+ "Liu-Nocedal (1989)": [
+  "lbfgsm.py"
+ ],
+ "Lanza et al (2013)": [
+  "lcwphr.py"
+ ],
+ "Blei-Ng-Jordan (2003)": [
+  "lda.py"
+ ],
+ "Hill-Robertson (1968)": [
+  "ldcmpr.py"
+ ],
+ "Erlingsson, Pihur, Korolova (2014) RAP": [
+  "ldppm.py"
+ ],
+ "Legendre (1782)": [
+  "legpb.py"
+ ],
+ "Traag, Waltman, van Eck (2019)": [
+  "leid.py"
+ ],
+ "Traag-Waltman-van Eck (2019)": [
+  "lemR.py",
+  "scleid.py",
+  "sgtleid.py"
+ ],
+ "Levenshtein (1966)": [
+  "levdis.py"
+ ],
+ "Robins (1986)": [
+  "lggvls.py"
+ ],
+ "He et al (2020) LightGCN": [
+  "lightG.py"
+ ],
+ "O'Neill-Roberts (1999)": [
+  "likemc.py"
+ ],
+ "Gruntz (1996)": [
+  "limT.py"
+ ],
+ "Law et al (2014)": [
+  "limmav.py"
+ ],
+ "Agrawal-Goyal (2013)": [
+  "linTS.py"
+ ],
+ "Wang et al. (2020) Linformer": [
+  "linatt.py"
+ ],
+ "Tang et al (2015) LINE": [
+  "line.py"
+ ],
+ "Binder (1983)": [
+  "linear.py"
+ ],
+ "Haebara (1980)": [
+  "linkhae.py"
+ ],
+ "Liben-Nowell-Kleinberg (2007)": [
+  "linkpr.py"
+ ],
+ "Stocking-Lord (1983)": [
+  "linkqp.py"
+ ],
+ "Dantzig (1947); Karmarkar (1984)": [
+  "linprm.py"
+ ],
+ "Li et al (2010)": [
+  "linucb.py"
+ ],
+ "Robins (2004)": [
+  "linwlr.py"
+ ],
+ "Lipinski et al (1997, 2001)": [
+  "lip5.py"
+ ],
+ "Getis-Ord (1992); Ord-Getis (1995)": [
+  "lisgst.py"
+ ],
+ "Touvron et al (2023) LLaMA": [
+  "llama.py"
+ ],
+ "Liu et al (2023) LLaVA": [
+  "llavx.py"
+ ],
+ "Kalbfleisch & Prentice (2002) \u00a72.2.5": [
+  "llgaft.py"
+ ],
+ "Montesinos Lopez Ch 2 Eq 2.1": [
+  "lmmf1.py"
+ ],
+ "Rousseeuw (1984)": [
+  "lmsreg.py",
+  "ltsreg.py",
+  "mcdv.py"
+ ],
+ "McGilchrist (1993)": [
+  "lnfrm.py"
+ ],
+ "Huber (1981) book": [
+  "locS.py"
+ ],
+ "Kasiviswanathan et al (2011)": [
+  "locdp.py"
+ ],
+ "Fan-Gijbels (1996)": [
+  "locp.py"
+ ],
+ "Cleveland (1979); Cleveland-Devlin (19": [
+  "loess.py"
+ ],
+ "ONT medaka": [
+  "longrd.py"
+ ],
+ "Vehtari et al. (2024)": [
+  "loopr.py"
+ ],
+ "Blondel, Guillaume, Lambiotte, Lefebvr": [
+  "louv.py"
+ ],
+ "von Neumann (1947)": [
+  "lpdual.py"
+ ],
+ "Gelman et al. BDA3 \u00a77.2": [
+  "lpdwc.py"
+ ],
+ "Bloomfield-Steiger (1983)": [
+  "lqsr.py"
+ ],
+ "Deerwester et al (1990)": [
+  "lsa.py"
+ ],
+ "Croux-Dehon (2001)": [
+  "lsdca.py"
+ ],
+ "Hoaglin & Welsch (1978)": [
+  "lvrgh.py"
+ ],
+ "Rosenstein-Collins-De Luca (1993)": [
+  "lyapun.py"
+ ],
+ "Lempel & Ziv (1976)": [
+  "lzcomp.py"
+ ],
+ "Baujat et al. (2002)": [
+  "mabaujat.py"
+ ],
+ "Higgins-Thompson-Spiegelhalter (2009)": [
+  "mabay.py",
+  "matau2pi.py"
+ ],
+ "Borenstein et al. (2009)": [
+  "mac3.py",
+  "malor.py",
+  "malrr.py",
+  "mard.py",
+  "marpct.py"
+ ],
+ "Durant et al (2002) JCIM": [
+  "maccs.py"
+ ],
+ "Cohen (1988)": [
+  "macohd.py"
+ ],
+ "Lau-Schmid-Chalmers (1995)": [
+  "macum.py"
+ ],
+ "Iglewicz-Hoaglin (1993)": [
+  "madAd.py"
+ ],
+ "Katoh-Standley (2013)": [
+  "mafft.py"
+ ],
+ "Borenstein et al. (2009) \u00a711": [
+  "mafix.py"
+ ],
+ "Light & Pillemer (1984)": [
+  "mafnpr.py"
+ ],
+ "Freeman & Tukey (1950)": [
+  "mafrt.py"
+ ],
+ "Miller (1978)": [
+  "mafrti.py"
+ ],
+ "Rosenthal (1979)": [
+  "mafsn.py"
+ ],
+ "Galbraith (1988)": [
+  "magal.py"
+ ],
+ "Hamza-van Houwelingen-Stijnen (2008)": [
+  "magpa.py"
+ ],
+ "Glass-McGaw-Smith (1981)": [
+  "magsd.py"
+ ],
+ "Hedges (1981)": [
+  "mahg.py"
+ ],
+ "Hartung & Knapp (2001)": [
+  "mahks.py"
+ ],
+ "Inthout-Ioannidis-Borm (2014)": [
+  "mahsj.py"
+ ],
+ "Higgins & Thompson (2002)": [
+  "mai2.py",
+  "math2.py"
+ ],
+ "Viechtbauer & Cheung (2010)": [
+  "mainf.py"
+ ],
+ "L'Abb\u00e9 et al. (1987)": [
+  "malab.py"
+ ],
+ "Gu & Dao (2023)": [
+  "mambss.py"
+ ],
+ "Mantel & Haenszel (1959)": [
+  "mamh.py"
+ ],
+ "Sweeting-Sutton-Lambert (2004)": [
+  "manct.py"
+ ],
+ "Chen-M\u00fcller (2012)": [
+  "manfd.py"
+ ],
+ "Dias et al. (2010)": [
+  "manh2h.py"
+ ],
+ "Salanti et al. (2008)": [
+  "manlmm.py"
+ ],
+ "Bucher et al. (1997)": [
+  "manmar.py"
+ ],
+ "Manski (1990); Manski (2003) Partial I": [
+  "manski.py"
+ ],
+ "Orwin (1983)": [
+  "maorw.py"
+ ],
+ "Peto et al. (1977)": [
+  "mapeto.py"
+ ],
+ "Morris (2008)": [
+  "marba.py"
+ ],
+ "van Houwelingen-Arends-Stijnen (2002)": [
+  "mareg.py"
+ ],
+ "DerSimonian & Laird (1986)": [
+  "marndm.py"
+ ],
+ "He et al (2017) Mask R-CNN": [
+  "masrcn.py"
+ ],
+ "classical linear algebra": [
+  "matSym.py"
+ ],
+ "Breslow-Day (1980)": [
+  "matccd.py"
+ ],
+ "Eddy & Hedges (1991)": [
+  "matr.py"
+ ],
+ "Nyaga et al. (2014)": [
+  "matrans.py",
+  "matransi.py"
+ ],
+ "Duval & Tweedie (2000)": [
+  "matrim.py"
+ ],
+ "Cheung (2014)": [
+  "matrl.py"
+ ],
+ "Yeh et al (2016)": [
+  "matrxP.py"
+ ],
+ "Stein (1999) \u00a72.7": [
+  "matvar.py"
+ ],
+ "Montesinos Lopez Ch 13": [
+  "maxpl.py"
+ ],
+ "Rousseeuw (1984); Rousseeuw & Van Drie": [
+  "mcdcv.py"
+ ],
+ "Geyer (1992); Flegal et al. (2008)": [
+  "mcsec.py"
+ ],
+ "Kocsis-Szepesv\u00e1ri (2006); Silver et al": [
+  "mctsel.py"
+ ],
+ "Coulom (2006); Browne et al (2012) sur": [
+  "mctsr.py"
+ ],
+ "Howard (1960)": [
+  "mdppol.py"
+ ],
+ "Puterman (1994); Bellman (1957)": [
+  "mdpval.py"
+ ],
+ "MacKinnon-Lockwood-Williams (2004)": [
+  "medCI.py"
+ ],
+ "VanderWeele-Vansteelandt (2010)": [
+  "medmsm.py"
+ ],
+ "Cand\u00e8s-Recht (2009)": [
+  "meglt.py"
+ ],
+ "Mehrotra (1992)": [
+  "mehtad.py"
+ ],
+ "Shokri et al (2017)": [
+  "memb.py"
+ ],
+ "Davison-Smith (1990)": [
+  "meplt.py"
+ ],
+ "Curth-Schaar (2021)": [
+  "meta1l.py"
+ ],
+ "Kang et al (2015) MetaBAT2": [
+  "metabd.py"
+ ],
+ "Banerjee-Lavie (2005)": [
+  "meteor.py"
+ ],
+ "Nurk et al (2017)": [
+  "metsem.py"
+ ],
+ "Reckase (2009) \u00a73": [
+  "mfird.py"
+ ],
+ "Sutton (1991) Dyna": [
+  "mfomf.py"
+ ],
+ "Robins-Hern\u00e1n (2009)": [
+  "mfovsm.py"
+ ],
+ "Metropolis et al (1953); Hastings (197": [
+  "mhmcmc.py"
+ ],
+ "Rothman-Greenland (1998)": [
+  "mhrate.py",
+  "riskdf.py",
+  "riskrt.py"
+ ],
+ "Mantel-Haenszel (1959)": [
+  "mhst1.py"
+ ],
+ "Little (1988)": [
+  "micord.py"
+ ],
+ "Ren et al (2019)": [
+  "micrR.py"
+ ],
+ "Barnard-Rubin (1999)": [
+  "midegf.py"
+ ],
+ "Schafer (1997)": [
+  "miefa1.py"
+ ],
+ "Rubin (1987)": [
+  "miefcl.py"
+ ],
+ "Hjelm et al (2019) Deep InfoMax": [
+  "mienco.py"
+ ],
+ "Kraskov-St\u00f6gbauer-Grassberger (2004)": [
+  "miest1.py"
+ ],
+ "van Buuren (2018)": [
+  "miord2.py",
+  "sschin.py"
+ ],
+ "Land-Doig (1960)": [
+  "miprgr.py"
+ ],
+ "Reckase (2009) MIRT \u00a74": [
+  "mirt2.py"
+ ],
+ "Reckase (2009)": [
+  "mirt3.py"
+ ],
+ "Misra (2019)": [
+  "mishfn.py"
+ ],
+ "Daniels-Hogan (2008)": [
+  "missinM.py"
+ ],
+ "Jiang et al (2023) Mistral": [
+  "mistr.py"
+ ],
+ "Hartley & Rao (1967)": [
+  "mlfit.py"
+ ],
+ "Raudenbush & Bryk (2002) \u00a74": [
+  "mlpv.py"
+ ],
+ "Raudenbush & Bryk (2002) \u00a75": [
+  "mlwz.py"
+ ],
+ "Montesinos Lopez Ch 2 Eq 2.2": [
+  "mmeeq.py"
+ ],
+ "Newman-Girvan (2004)": [
+  "modulq.py",
+  "sgtmodq.py"
+ ],
+ "Shazeer et al. (2017) Outrageously Lar": [
+  "moelyr.py"
+ ],
+ "Fedus, Zoph, Shazeer (2022)": [
+  "moeswt.py"
+ ],
+ "Lepikhin et al. (2021) GShard; Fedus e": [
+  "moetop.py"
+ ],
+ "Abadi et al (2016)": [
+  "momacc.py"
+ ],
+ "Goswami et al (2024) MOMENT": [
+  "momento.py"
+ ],
+ "Assuncao & Reis (1999)": [
+  "morebs.py"
+ ],
+ "Morris (1991)": [
+  "morrisM.py"
+ ],
+ "Grant et al (2011)": [
+  "motfom.py"
+ ],
+ "Bailey-Elkan (1994)": [
+  "motfsr.py"
+ ],
+ "Milo et al (2002)": [
+  "motiff.py"
+ ],
+ "Gilmer et al (2017) MPNN": [
+  "mpfn.py"
+ ],
+ "Broman et al (2003)": [
+  "mqtmpl.py"
+ ],
+ "Azuma (1967); Hoeffding (1963)": [
+  "mrgdrv.py"
+ ],
+ "Voorhees (1999)": [
+  "mrr.py"
+ ],
+ "Athey, Bayati, Doudchenko, Imbens, Kho": [
+  "mscmcl.py"
+ ],
+ "Manski (1990, 2003)": [
+  "mskbnd2.py"
+ ],
+ "MVSML": [
+  "msm028.py"
+ ],
+ "Robins-Tsiatis (1991); Hern\u00e1n-Cole-Mar": [
+  "msmaft.py"
+ ],
+ "Robins (1999); Hern\u00e1n et al (2000)": [
+  "msmcox.py"
+ ],
+ "Hansen (1982); Robins (1999)": [
+  "msmgmm.py"
+ ],
+ "Robins (1999, 2000)": [
+  "msmlin.py"
+ ],
+ "Hilbe (2011); Robins-Hern\u00e1n-Brumback (": [
+  "msmnbi.py"
+ ],
+ "Hern\u00e1n-Robins (2020) Causal Inference ": [
+  "msmpoi.py"
+ ],
+ "Hern\u00e1n-Brumback-Robins (2000); Cole-He": [
+  "msmtve.py"
+ ],
+ "Wang et al (2016) RL\u00b2": [
+  "mtdrl.py"
+ ],
+ "Sun et al (2011)": [
+  "mtpath.py"
+ ],
+ "Burgess (2017)": [
+  "mtr2sx.py"
+ ],
+ "von Neumann (1928)": [
+  "mtxrl.py"
+ ],
+ "Daniel-De Stavola-Cousens-Vansteelandt": [
+  "multM.py"
+ ],
+ "Edgar (2004)": [
+  "musclr.py"
+ ],
+ "Shannon (1948); Cover & Thomas (2006)": [
+  "mutifo.py"
+ ],
+ "Rousseeuw (1985)": [
+  "mvecv.py",
+  "mvedet.py"
+ ],
+ "Hardt-Ligett-McSherry (2012)": [
+  "mwem.py"
+ ],
+ "IUPAC atomic weights (2021)": [
+  "mwght.py"
+ ],
+ "Montesinos Lopez Ch 5,6": [
+  "mxenv.py"
+ ],
+ "de Haan (1984)": [
+  "mxetA.py"
+ ],
+ "Jaynes (1957)": [
+  "mxtent.py"
+ ],
+ "Nadaraya (1964); Watson (1964)": [
+  "naday.py"
+ ],
+ "Hyndman-Athanasopoulos (2018) \u00a73.1": [
+  "naivef.py",
+  "snaivf.py"
+ ],
+ "Hurrell (1995)": [
+  "naoIdx.py"
+ ],
+ "Li et al (2017)": [
+  "narm.py"
+ ],
+ "Hu-Wellman (2003)": [
+  "nashq.py"
+ ],
+ "Oreshkin et al (2020) N-BEATS": [
+  "nbeats.py",
+  "ngnest.py"
+ ],
+ "He et al (2017) NCF": [
+  "ncfRS.py"
+ ],
+ "J\u00e4rvelin-Kek\u00e4l\u00e4inen (2002)": [
+  "ndcg.py"
+ ],
+ "Pearl (2001); VanderWeele (2015)": [
+  "nde.py"
+ ],
+ "Lipsitch, Tchetgen Tchetgen, Cohen (20": [
+  "negctc.py"
+ ],
+ "Albert-Jeong-Barab\u00e1si (2000)": [
+  "netatp.py"
+ ],
+ "Freeman (1977)": [
+  "netbtw.py"
+ ],
+ "Bavelas (1950); Sabidussi (1966)": [
+  "netcls.py"
+ ],
+ "Shervashidze et al (2011)": [
+  "netcmp.py",
+  "weisL.py"
+ ],
+ "Epskamp et al (2018)": [
+  "netcms.py"
+ ],
+ "Halloran-Hudgens (2016)": [
+  "netparf.py"
+ ],
+ "Hochreiter-Schmidhuber (1997)": [
+  "netsts.py"
+ ],
+ "Newton; Raphson (1690)": [
+  "newraf.py"
+ ],
+ "Neyman (1934)": [
+  "neymal.py",
+  "neyman.py",
+  "propal.py"
+ ],
+ "Wang et al (2019) NGCF": [
+  "ngcf.py"
+ ],
+ "Diekmann-Heesterbeek-Roberts (2010)": [
+  "ngomtx.py"
+ ],
+ "Lijoi-Pr\u00fcnster (2010)": [
+  "ngppr.py"
+ ],
+ "Challu et al (2023) N-HiTS": [
+  "nhits.py"
+ ],
+ "Pearl (2001)": [
+  "nie.py"
+ ],
+ "Diggle (2003)": [
+  "nndist.py"
+ ],
+ "Vargas-Castells (2011)": [
+  "novlt.py"
+ ],
+ "Quintana (2006)": [
+  "npbcl.py"
+ ],
+ "Kalbfleisch (1978)": [
+  "npbcox.py"
+ ],
+ "Kottas-Gelfand (2001)": [
+  "npbqr.py"
+ ],
+ "Hjort (1990)": [
+  "npbsr.py"
+ ],
+ "Triebe et al (2021)": [
+  "nprphet.py"
+ ],
+ "Mildenhall et al (2020) NeRF": [
+  "nrfrad.py"
+ ],
+ "Regazzini-Lijoi-Pr\u00fcnster (2003)": [
+  "nrgmwd.py"
+ ],
+ "Lijoi-Mena-Pr\u00fcnster (2005)": [
+  "nrmprc.py"
+ ],
+ "Dwork et al (2012) Fairness Through Aw": [
+  "objfair.py"
+ ],
+ "Crump et al (2009)": [
+  "ocmtmd.py"
+ ],
+ "Huang et al (2022) LayoutLMv3": [
+  "ocrwit.py"
+ ],
+ "Bronstein (1997) Symbolic Integration": [
+  "odesl.py"
+ ],
+ "Kumar et al (2020) CQL": [
+  "offlrl.py"
+ ],
+ "Maronna & Zamar (2002)": [
+  "ogkcv.py"
+ ],
+ "Budyko (1969)": [
+  "olrFn.py"
+ ],
+ "Zinbarg-Revelle-Yovel-Li (2005)": [
+  "omegah.py"
+ ],
+ "NOAA CPC": [
+  "oniIdx.py"
+ ],
+ "Cherti et al (2023) OpenCLIP": [
+  "opnclp.py"
+ ],
+ "Laber et al (2014)": [
+  "opttre.py"
+ ],
+ "Veber et al (2002); Hou-Xu (2003)": [
+  "oralb.py"
+ ],
+ "Oprescu-Syrgkanis-Wu (2019)": [
+  "orfgrf.py"
+ ],
+ "Cuturi & Doucet (2014)": [
+  "otbar.py",
+  "otbarfree.py"
+ ],
+ "Benamou-Carlier-Cuturi-Nenna-Peyr\u00e9 (20": [
+  "otbreg.py",
+  "otmot.py"
+ ],
+ "Peyr\u00e9 & Cuturi (2019)": [
+  "otc2c.py",
+  "otc2p.py",
+  "otentf.py",
+  "otplan.py",
+  "otpush.py"
+ ],
+ "Villani (2003)": [
+  "otcw.py",
+  "ototk.py"
+ ],
+ "Genevay-Peyr\u00e9-Cuturi (2018)": [
+  "otdiv.py",
+  "otker.py"
+ ],
+ "Courty-Flamary-Tuia-Rakotomamonjy (201": [
+  "otdom.py"
+ ],
+ "Sinkhorn & Knopp (1967)": [
+  "otdwd.py"
+ ],
+ "Rubner-Tomasi-Guibas (2000)": [
+  "otemd.py"
+ ],
+ "Cuturi (2013)": [
+  "otentr.py",
+  "otmnge.py",
+  "otsinkhorn.py",
+  "otsinkit.py",
+  "otsktol.py",
+  "otsoft.py",
+  "sinkhd.py"
+ ],
+ "Vayer-Chapel-Flamary-Tavenard-Courty (": [
+  "otfgw.py"
+ ],
+ "M\u00e9moli (2011)": [
+  "otgw.py"
+ ],
+ "Peyr\u00e9-Cuturi-Solomon (2016)": [
+  "otgws.py"
+ ],
+ "Scetbon-Cuturi-Peyr\u00e9 (2021)": [
+  "otlowrk.py"
+ ],
+ "Brenier (1991)": [
+  "otmaprc.py"
+ ],
+ "Caffarelli-McCann (2010)": [
+  "otmarsh.py"
+ ],
+ "del Barrio-Cuesta-Albertos-Matr\u00e1n (201": [
+  "otmcluster.py"
+ ],
+ "De Maesschalck (2000)": [
+  "otmd.py"
+ ],
+ "Fatras-Zine-Flamary-Gribonval-Courty (": [
+  "otmm.py"
+ ],
+ "Pollard (1982)": [
+  "otmqd.py"
+ ],
+ "Deshpande-Hu-Sun-Pyrros (2019)": [
+  "otmsw.py"
+ ],
+ "Bregman (1967)": [
+  "otmtxe.py"
+ ],
+ "Delon-Desolneux (2020)": [
+  "otmxh.py"
+ ],
+ "Schmitzer (2019)": [
+  "otopw.py",
+  "otsklog.py"
+ ],
+ "Peyr\u00e9 & Cuturi (2019) \u00a74": [
+  "otpot.py"
+ ],
+ "Caffarelli & McCann (2010)": [
+  "otpr.py"
+ ],
+ "Genevay-Cuturi-Peyr\u00e9-Bach (2016)": [
+  "otreg.py"
+ ],
+ "Rabin-Peyr\u00e9-Delon-Bernot (2011)": [
+  "otsd.py"
+ ],
+ "Peyr\u00e9 (2018)": [
+  "otsobm.py"
+ ],
+ "Bonneel-Rabin-Peyr\u00e9-Pfister (2015)": [
+  "otsw.py"
+ ],
+ "Chizat-Peyr\u00e9-Schmitzer-Vialard (2018)": [
+  "otunbal.py"
+ ],
+ "Vallender (1973)": [
+  "otws.py"
+ ],
+ "Bobkov & Ledoux (2019)": [
+  "otws2.py"
+ ],
+ "Olkin & Pukelsheim (1982)": [
+  "otwsg.py"
+ ],
+ "Oster (2019)": [
+  "ovbnk.py"
+ ],
+ "Zhao et al (2012, 2015)": [
+  "owltrn.py"
+ ],
+ "Keogh et al (2001)": [
+  "paa.py"
+ ],
+ "Yao-M\u00fcller-Wang (2005)": [
+  "pace.py"
+ ],
+ "Page-Brin (1999)": [
+  "pagrk.py"
+ ],
+ "Sch\u00fctt et al (2021)": [
+  "painn.py"
+ ],
+ "Baell-Holloway (2010)": [
+  "pains3.py"
+ ],
+ "Faisal & Anastasopoulos (2022)": [
+  "paligi.py"
+ ],
+ "Levin (1953)": [
+  "pareff.py"
+ ],
+ "Nie et al (2023) PatchTST": [
+  "patchT.py"
+ ],
+ "Papernot et al (2017)": [
+  "pate.py"
+ ],
+ "Patterson-Price-Reich (2006)": [
+  "pcasnps.py"
+ ],
+ "Mantua-Hare (2002)": [
+  "pdoIdx.py"
+ ],
+ "Killick-Fearnhead-Eckley (2012)": [
+  "pelt.py"
+ ],
+ "Courant (1943)": [
+  "penmth.py"
+ ],
+ "MacKay (1998)": [
+  "perK.py"
+ ],
+ "Choromanski et al. (2021) Performer": [
+  "perfat.py"
+ ],
+ "Schaul et al (2016)": [
+  "pero.py"
+ ],
+ "Pesaran & Shin (1998)": [
+  "pesdol.py"
+ ],
+ "King-Nguyen-Ionides (2016) pomp": [
+  "pftrep.py"
+ ],
+ "Goldstein (1964)": [
+  "pgdsdg.py"
+ ],
+ "Page, Brin, Motwani, Winograd (1999)": [
+  "pgrank.py"
+ ],
+ "Gund (1977); Mason et al (2001)": [
+  "phacf3.py"
+ ],
+ "Eddy (2011) HMMER3": [
+  "phmmsr.py"
+ ],
+ "Ronquist-Huelsenbeck (2003)": [
+  "phylby.py"
+ ],
+ "Felsenstein (1981)": [
+  "phylml.py"
+ ],
+ "Rambaut et al (2016) BEAST": [
+  "phylog.py"
+ ],
+ "Saitou-Nei (1987); Felsenstein (2004)": [
+  "phylotr.py"
+ ],
+ "Saitou-Nei (1987)": [
+  "phyltr.py"
+ ],
+ "Evans & Moshonov (2006)": [
+  "pibmd.py"
+ ],
+ "Westreich (2014)": [
+  "piepar.py"
+ ],
+ "Pinsker (1964)": [
+  "pinsk1.py"
+ ],
+ "Abadie, Diamond, Hainmueller (2015)": [
+  "plcbsc.py"
+ ],
+ "Planck (1900)": [
+  "plncF.py"
+ ],
+ "Athey-Tibshirani-Wager (2019)": [
+  "plrgrf.py"
+ ],
+ "Hofmann (1999)": [
+  "plsa.py"
+ ],
+ "Wold et al (2001)": [
+  "plsqs.py"
+ ],
+ "VanderWeele (2013)": [
+  "pmedex.py"
+ ],
+ "Muegge-Martin (1999)": [
+  "pmfsc.py"
+ ],
+ "Church & Hanks (1990)": [
+  "pmiwd.py"
+ ],
+ "Pitman (2006); Lijoi-Pr\u00fcnster (2010)": [
+  "pmpfit.py"
+ ],
+ "Corso et al (2020) PNA": [
+  "pnaG.py"
+ ],
+ "Gelman et al (2013) BDA3": [
+  "poispr.py"
+ ],
+ "Banerjee-Carlin-Gelfand (2014)": [
+  "poissp.py"
+ ],
+ "Hern\u00e1n et al (2002)": [
+  "polkrn.py"
+ ],
+ "Pollard (1975)": [
+  "pollR.py"
+ ],
+ "PolarQuant (Tang 2024)": [
+  "polqnt.py"
+ ],
+ "Hanson-Johnson (2002)": [
+  "poltrx.py"
+ ],
+ "Chebyshev (1853)": [
+  "polyCh.py"
+ ],
+ "Polyak (1990); Lillicrap et al (2016)": [
+  "polyak.py"
+ ],
+ "Gelman et al. BDA3 \u00a76": [
+  "posrr.py"
+ ],
+ "M\u00fcller-Quintana-Rosner (2011)": [
+  "posspr.py"
+ ],
+ "Holt & Smith (1979)": [
+  "postrt.py"
+ ],
+ "Holt-Smith (1979)": [
+  "poststs.py"
+ ],
+ "Molak Ch 8": [
+  "posvt.py",
+  "sutva.py"
+ ],
+ "Pickands (1975); Davison-Smith (1990)": [
+  "potM.py"
+ ],
+ "Lumley (2010)": [
+  "powsrv.py"
+ ],
+ "Lambrinidis-Vallianatou-Tsantili-Kakou": [
+  "ppbnd.py"
+ ],
+ "Schulman et al (2017)": [
+  "ppoc.py"
+ ],
+ "Gelman, Meng, Stern (1996)": [
+  "pposc.py"
+ ],
+ "Gelman et al. BDA3 \u00a76.3": [
+  "pposm.py"
+ ],
+ "Hansen & Hurwitz (1943)": [
+  "ppsamp.py"
+ ],
+ "Sampford (1967)": [
+  "ppswos.py"
+ ],
+ "Hansen-Hurwitz (1943)": [
+  "ppswrs.py"
+ ],
+ "Yang et al (2016) hierarchical attn": [
+  "pratt.py"
+ ],
+ "Combettes-Wajs (2005)": [
+  "prdldm.py"
+ ],
+ "\u0141ukasiewicz (1924)": [
+  "prdtA.py"
+ ],
+ "Preacher & Hayes (2008) PROCESS": [
+  "prehay.py"
+ ],
+ "Bengio et al (2009) curriculum": [
+  "prgrl.py"
+ ],
+ "Brown et al (1992)": [
+  "prgxnt.py"
+ ],
+ "Chambolle-Pock (2011)": [
+  "primal.py"
+ ],
+ "Taylor-Letham (2018)": [
+  "prnFil.py",
+  "prophe.py"
+ ],
+ "Page-Brin (1998)": [
+  "prnkpg.py",
+  "sgtpgr.py"
+ ],
+ "Ganju et al (2018)": [
+  "propinf.py"
+ ],
+ "MacKinnon (2008) \u00a74": [
+  "propme.py"
+ ],
+ "M\u00e9sz\u00e1ros et al (2018) IUPred2A": [
+  "protdis.py"
+ ],
+ "Taylor-Letham (2018) Facebook Prophet": [
+  "prphet.py"
+ ],
+ "Barros-Hirakata (2003)": [
+  "prratio.py"
+ ],
+ "Knuth (1971)": [
+  "prsLL.py"
+ ],
+ "Knuth (1965)": [
+  "prsLR.py"
+ ],
+ "Ford (2004)": [
+  "prsPEG.py"
+ ],
+ "Ge et al (2019)": [
+  "prsccs.py"
+ ],
+ "Choi-O'Reilly (2019)": [
+  "prsclm.py"
+ ],
+ "Messick (1989)": [
+  "prsval.py"
+ ],
+ "Yue-Pilon-Cavadias (2002)": [
+  "prtMK.py"
+ ],
+ "Gordon-Salmond-Smith (1993)": [
+  "prtcl.py"
+ ],
+ "Goodman-Bacon (2021)": [
+  "prtdid.py"
+ ],
+ "Beck-Teboulle (2009)": [
+  "prxgms.py"
+ ],
+ "Ertl-Rohde-Selzer (2000)": [
+  "psar2.py"
+ ],
+ "Pearl (2001); Avin-Shpitser-Pearl (200": [
+  "pseudo.py"
+ ],
+ "Vehtari, Simpson, Gelman, Yao, Gabry (": [
+  "psis.py"
+ ],
+ "Kennedy-Eberhart (1995)": [
+  "pso_op.py"
+ ],
+ "Earl-Deem (2005)": [
+  "ptmcmc.py"
+ ],
+ "Prentice, Williams, Peterson (1981)": [
+  "pwpgt.py"
+ ],
+ "Cranmer (2023) PySR": [
+  "pysrSR.py"
+ ],
+ "Hsu et al (2022)": [
+  "qbcfgs.py"
+ ],
+ "Reed et al (1961)": [
+  "qboIdx.py"
+ ],
+ "Achlioptas (2003); Charikar-Sahai (200": [
+  "qjlcrn.py"
+ ],
+ "Watkins-Dayan (1992)": [
+  "qlearn.py"
+ ],
+ "Quandt (1960); Andrews (1993)": [
+  "qlrtst.py"
+ ],
+ "Wood et al (2002); Maraun (2013)": [
+  "qmDS.py"
+ ],
+ "Rousseeuw & Croux (1993)": [
+  "qnscl.py",
+  "snscl.py"
+ ],
+ "Frank-Wolfe (1956); Wolfe (1959)": [
+  "qpdual.py"
+ ],
+ "Ashcroft et al (2021)": [
+  "qrntcq.py"
+ ],
+ "Hansch-Fujita (1964); Hansch-Leo (1995": [
+  "qsarh.py"
+ ],
+ "Koenker & Bassett (1978)": [
+  "quanrg.py"
+ ],
+ "Diekmann-Heesterbeek-Metz (1990)": [
+  "r0bayse.py"
+ ],
+ "Pettitt (1979)": [
+  "rWcoxa.py"
+ ],
+ "Lewis et al (2020) RAG": [
+  "ragRet.py"
+ ],
+ "Hessel et al (2018)": [
+  "raindq.py"
+ ],
+ "S\u00e4rndal-Lundstr\u00f6m (2005)": [
+  "rakedw.py"
+ ],
+ "Deming & Stephan (1940)": [
+  "raklng.py"
+ ],
+ "Ramsay (1977)": [
+  "ramsw.py"
+ ],
+ "Didelez et al (2006)": [
+  "randIE.py"
+ ],
+ "G\u00e4rtner et al (2003)": [
+  "randW.py"
+ ],
+ "Warner (1965)": [
+  "randres.py",
+  "rrand.py"
+ ],
+ "Searle, Casella, McCulloch (1992)": [
+  "ranova.py"
+ ],
+ "Rao-Scott (1981)": [
+  "raoscot.py"
+ ],
+ "Bruzzi et al (1985)": [
+  "rapaf.py"
+ ],
+ "Erlingsson-Pihur-Korolova (2014)": [
+  "rappor.py"
+ ],
+ "Shannon (1959)": [
+  "rdfunc.py"
+ ],
+ "Hahn, Todd, van der Klaauw (2001); Imb": [
+  "rdfzzy.py"
+ ],
+ "RDKit Open-Source Cheminformatics": [
+  "rdkfp.py"
+ ],
+ "Card, Lee, Pei, Weber (2015)": [
+  "rdkkin.py"
+ ],
+ "Hahn, Todd, van der Klaauw (2001)": [
+  "rdksrn.py"
+ ],
+ "Imbens-Kalyanaraman (2012); Calonico-C": [
+  "rdmcbw.py"
+ ],
+ "Mironov (2017)": [
+  "rdpc.py",
+  "rpgad.py"
+ ],
+ "Mironov, Talwar, Zhang (2019)": [
+  "rdpcomp.py"
+ ],
+ "Calonico, Cattaneo, Titiunik (2014)": [
+  "rdrobu.py"
+ ],
+ "Hartmann (1994)": [
+  "recapTOA.py"
+ ],
+ "Cori et al (2013)": [
+  "reffec.py"
+ ],
+ "Mbatchou et al (2021)": [
+  "regmlm.py"
+ ],
+ "Williams (1992)": [
+  "reinfc.py"
+ ],
+ "Henderson (1984)": [
+  "reldge.py"
+ ],
+ "Patterson & Thompson (1971)": [
+  "remlfn.py"
+ ],
+ "R\u00e9nyi (1961)": [
+  "renent.py",
+  "reniyd.py"
+ ],
+ "Walters et al (1998)": [
+  "reosft.py"
+ ],
+ "Dwork-Roth (2014)": [
+  "reportm.py"
+ ],
+ "Charifson et al (1999)": [
+  "rescor.py"
+ ],
+ "Xie et al (2017) ResNeXt": [
+  "resnxt.py"
+ ],
+ "Robinson (1965)": [
+  "resolP.py",
+  "unifAlg.py"
+ ],
+ "Lohr (2010) \u00a78.6": [
+  "respwt.py"
+ ],
+ "Sun et al. (2023) RetNet": [
+  "retnet.py"
+ ],
+ "Pison-Rousseeuw-Filzmoser-Croux (2003)": [
+  "rfcomp.py"
+ ],
+ "Bianco et al (2016) CovDock": [
+  "rfppos.py"
+ ],
+ "Rangayyan": [
+  "rgacc.py",
+  "rgacfd.py",
+  "rgaic.py",
+  "rgam.py",
+  "rgampd.py",
+  "rganc.py",
+  "rgann.py",
+  "rgap.py",
+  "rgar2cep.py",
+  "rgbartl.py",
+  "rgbayes.py",
+  "rgbayng.py",
+  "rgbbb.py",
+  "rgbbnorm.py",
+  "rgbci.py",
+  "rgbhatt.py",
+  "rgbhp.py",
+  "rgbiorth.py",
+  "rgblp.py",
+  "rgblwand.py",
+  "rgbp.py",
+  "rgcad.py",
+  "rgcardep.py",
+  "rgccep.py",
+  "rgcdft.py",
+  "rgcepst.py",
+  "rgcfsle.py",
+  "rgchoi.py",
+  "rgcnn.py",
+  "rgcomb.py",
+  "rgconv.py",
+  "rgcorad.py",
+  "rgcorart.py",
+  "rgcpr.py",
+  "rgcpulse.py",
+  "rgcry.py",
+  "rgcwt.py",
+  "rgcwvd.py",
+  "rgcxy.py",
+  "rgdaub.py",
+  "rgderqrs.py",
+  "rgdft.py",
+  "rgdnot.py",
+  "rgdtfd.py",
+  "rgdwt.py",
+  "rgecgf.py",
+  "rgecgfe.py",
+  "rgecgnl.py",
+  "rgecgwvf.py",
+  "rgeegb.py",
+  "rgeemd.py",
+  "rgegg.py",
+  "rgelbow.py",
+  "rgemd.py",
+  "rgemdimf.py",
+  "rgemdtwa.py",
+  "rgemdvf.py",
+  "rgemgpk.py",
+  "rgengn.py",
+  "rgentrp.py",
+  "rgentrwv.py",
+  "rgepidet.py",
+  "rgepiksv.py",
+  "rgeqn10a.py",
+  "rgeqn10b.py",
+  "rgeqn2.py",
+  "rgeqn3a.py",
+  "rgeqn4.py",
+  "rgeqn5a.py",
+  "rgeqn5b.py",
+  "rgeqn6a.py",
+  "rgeqn6b.py",
+  "rgeqn7a.py",
+  "rgeqn7b.py",
+  "rgeqn8a.py",
+  "rgeqn8b.py",
+  "rgeqn9a.py",
+  "rgeqn9b.py",
+  "rgerp.py",
+  "rgerpflt.py",
+  "rgerrbd.py",
+  "rgexecg.py",
+  "rgfd1.py",
+  "rgfd2.py",
+  "rgfdpsd.py",
+  "rgfeatex.py",
+  "rgfecg.py",
+  "rgff.py",
+  "rgfish.py",
+  "rgfld.py",
+  "rgfm.py",
+  "rgfpe.py",
+  "rgfracv.py",
+  "rgfresp.py",
+  "rgfrqdom.py",
+  "rgft.py",
+  "rgghk.py",
+  "rggrpd.py",
+  "rghaar.py",
+  "rghgate.py",
+  "rghhmm.py",
+  "rghhtsp.py",
+  "rghier.py",
+  "rghmm.py",
+  "rghomdc.py",
+  "rghomo.py",
+  "rghompr.py",
+  "rghrvar.py",
+  "rghrvf.py",
+  "rghrvmod.py",
+  "rghrvt.py",
+  "rghrvtv.py",
+  "rghsnd.py",
+  "rgica.py",
+  "rgicaart.py",
+  "rginf.py",
+  "rgistft.py",
+  "rgkalmn.py",
+  "rgkatzfd.py",
+  "rgkfcv.py",
+  "rgkmns.py",
+  "rgkneecl.py",
+  "rgknn.py",
+  "rgksv.py",
+  "rgldsp.py",
+  "rglevd.py",
+  "rglift.py",
+  "rglindf.py",
+  "rglindsep.py",
+  "rglms.py",
+  "rgloo.py",
+  "rglpca.py",
+  "rglpcs.py",
+  "rglr.py",
+  "rglstm.py",
+  "rgmahd.py",
+  "rgmatefp.py",
+  "rgmdl.py",
+  "rgmemb.py",
+  "rgmfcc.py",
+  "rgmflt.py",
+  "rgmfsnr.py",
+  "rgminph.py",
+  "rgmp.py",
+  "rgmra.py",
+  "rgmscart.py",
+  "rgmtnart.py",
+  "rgmuap.py",
+  "rgmufr.py",
+  "rgmurm.py",
+  "rgneural.py",
+  "rgnl.py",
+  "rgnmf.py",
+  "rgnmfch.py",
+  "rgnrnst.py",
+  "rgntch.py",
+  "rgoae.py",
+  "rgomp.py",
+  "rgpantp.py",
+  "rgpark.py",
+  "rgparmod.py",
+  "rgpca.py",
+  "rgpcaica.py",
+  "rgpcg.py",
+  "rgpcgadp.py",
+  "rgpcgar.py",
+  "rgpcgeeg.py",
+  "rgpcgenl.py",
+  "rgpcgmrm.py",
+  "rgphas.py",
+  "rgpolysg.py",
+  "rgpowerl.py",
+  "rgppg.py",
+  "rgppgwt.py",
+  "rgppv.py",
+  "rgpros.py",
+  "rgpsd2hz.py",
+  "rgpsync.py",
+  "rgpwave.py",
+  "rgpzmod.py",
+  "rgpzp.py",
+  "rgqda.py",
+  "rgrbf.py",
+  "rgrespf.py",
+  "rgrespsnd.py",
+  "rgricca.py",
+  "rgrls.py",
+  "rgrls_mon.py",
+  "rgrlsl.py",
+  "rgrms.py",
+  "rgroc.py",
+  "rgrpsig.py",
+  "rgsapdet.py",
+  "rgsapn.py",
+  "rgsapnmf.py",
+  "rgsavg.py",
+  "rgsclgr.py",
+  "rgseiz.py",
+  "rgseizwv.py",
+  "rgsemm.py",
+  "rgsen.py",
+  "rgsepix.py",
+  "rgsf.py",
+  "rgsig2n.py",
+  "rgsinc.py",
+  "rgsmom.py",
+  "rgsnr.py",
+  "rgspe.py",
+  "rgspeech.py",
+  "rgspr.py",
+  "rgsprep.py",
+  "rgspres.py",
+  "rgstftp.py",
+  "rgstfts.py",
+  "rgstvar.py",
+  "rgsvm.py",
+  "rgsvmk.py",
+  "rgswt.py",
+  "rgswtden.py",
+  "rgtmpl.py",
+  "rgturns.py",
+  "rgtwa.py",
+  "rgtwave.py",
+  "rgvag.py",
+  "rgvagadp.py",
+  "rgvagkn.py",
+  "rgvf.py",
+  "rgvmd.py",
+  "rgvocal.py",
+  "rgwavstr.py",
+  "rgwblkm.py",
+  "rgwhamp.py",
+  "rgwhann.py",
+  "rgwhop.py",
+  "rgwndw.py",
+  "rgwnr.py",
+  "rgwvd.py",
+  "rgwvener.py",
+  "rgwvmom.py",
+  "rgwvpkt.py",
+  "rgwvth.py",
+  "rgwvvar.py",
+  "rng001.py",
+  "rng002.py",
+  "rng003.py",
+  "rng004.py",
+  "rng005.py",
+  "rng006.py",
+  "rng011.py",
+  "rng012.py",
+  "rng013.py",
+  "rng015.py",
+  "rng021.py",
+  "rng024.py",
+  "rng025.py",
+  "rng026.py",
+  "rng027.py",
+  "rng028.py",
+  "rng029.py",
+  "rng030.py",
+  "rng031.py",
+  "rng034.py",
+  "rng035.py",
+  "rng040.py",
+  "rng041.py",
+  "rng042.py",
+  "rng043.py",
+  "rng044.py",
+  "rng045.py",
+  "rng046.py",
+  "rng047.py",
+  "rng048.py",
+  "rng050.py",
+  "rng051.py",
+  "rng052.py",
+  "rng054.py",
+  "rng055.py",
+  "rng056.py",
+  "rng057.py",
+  "rng058.py",
+  "rng059.py",
+  "rng060.py",
+  "rng061.py",
+  "rng062.py",
+  "rng063.py",
+  "rng064.py",
+  "rng065.py",
+  "rng066.py",
+  "rng067.py",
+  "rng068.py",
+  "rng069.py",
+  "rng070.py",
+  "rng071.py",
+  "rng072.py",
+  "rng073.py",
+  "rng074.py",
+  "rng075.py",
+  "rng076.py",
+  "rng077.py",
+  "rng078.py",
+  "rng079.py",
+  "rng080.py",
+  "rng081.py",
+  "rng082.py",
+  "rng083.py",
+  "rng084.py",
+  "rng085.py",
+  "rng088.py",
+  "rng089.py",
+  "rng090.py",
+  "rng091.py",
+  "rng092.py",
+  "rng093.py",
+  "rng094.py",
+  "rng095.py",
+  "rng096.py",
+  "rng098.py",
+  "rng099.py",
+  "rng100.py",
+  "rng101.py",
+  "rng102.py",
+  "rng104.py",
+  "rng105.py",
+  "rng106.py",
+  "rng107.py",
+  "rng108.py",
+  "rng109.py",
+  "rng110.py",
+  "rng111.py",
+  "rng112.py",
+  "rng113.py",
+  "rng114.py",
+  "rng115.py",
+  "rng116.py",
+  "rng117.py",
+  "rng118.py",
+  "rng119.py",
+  "rng120.py",
+  "rng121.py",
+  "rng122.py",
+  "rng123.py",
+  "rng124.py",
+  "rng125.py",
+  "rng126.py",
+  "rng127.py",
+  "rng128.py",
+  "rng129.py",
+  "rng130.py",
+  "rng131.py",
+  "rng132.py",
+  "rng133.py",
+  "rng134.py",
+  "rng135.py",
+  "rng136.py",
+  "rng138.py",
+  "rng139.py",
+  "rng144.py",
+  "rng145.py",
+  "rng146.py",
+  "rng147.py",
+  "rng148.py",
+  "rng149.py",
+  "rng150.py",
+  "rng152.py",
+  "rng153.py",
+  "rng154.py",
+  "rng155.py",
+  "rng157.py",
+  "rng158.py",
+  "rng160.py",
+  "rng161.py",
+  "rng162.py",
+  "rng163.py",
+  "rng164.py",
+  "rng169.py",
+  "rng174.py",
+  "rng175.py",
+  "rng176.py",
+  "rng177.py",
+  "rng178.py",
+  "rng179.py",
+  "rng180.py",
+  "rng181.py",
+  "rng182.py",
+  "rng183.py",
+  "rng184.py",
+  "rng185.py",
+  "rng186.py",
+  "rng187.py",
+  "rng188.py",
+  "rng189.py",
+  "rng191.py",
+  "rng192.py",
+  "rng193.py",
+  "rng195.py",
+  "rng197.py",
+  "rng198.py",
+  "rng200.py",
+  "rng203.py",
+  "rng204.py",
+  "rng205.py",
+  "rng206.py",
+  "rng207.py",
+  "rng208.py",
+  "rng209.py",
+  "rng210.py",
+  "rng212.py",
+  "rng213.py",
+  "rng214.py",
+  "rng215.py",
+  "rng216.py",
+  "rng217.py",
+  "rng218.py",
+  "rng219.py",
+  "rng220.py",
+  "rng221.py",
+  "rng222.py",
+  "rng224.py",
+  "rng226.py",
+  "rng227.py",
+  "rng228.py",
+  "rng229.py",
+  "rng230.py",
+  "rng231.py",
+  "rng232.py",
+  "rng233.py",
+  "rng234.py",
+  "rng235.py",
+  "rng236.py",
+  "rng237.py",
+  "rng238.py",
+  "rng239.py",
+  "rng240.py",
+  "rng241.py",
+  "rng242.py",
+  "rng243.py",
+  "rng244.py",
+  "rng245.py",
+  "rng246.py",
+  "rng247.py",
+  "rng248.py",
+  "rng249.py",
+  "rng250.py",
+  "rng251.py",
+  "rng252.py",
+  "rng253.py",
+  "rng254.py",
+  "rng255.py",
+  "rng256.py",
+  "rng257.py"
+ ],
+ "Cardot-Ferraty-Sarda (1999)": [
+  "rgs.py"
+ ],
+ "Gelman & Rubin (1992); Vehtari, Gelman": [
+  "rhatc.py"
+ ],
+ "Hoerl & Kennard (1970)": [
+  "ridgrg.py"
+ ],
+ "Diggle (2013) \u00a72.4": [
+  "ripF.py",
+  "ripG.py"
+ ],
+ "van Lieshout & Baddeley (1996)": [
+  "ripJ.py"
+ ],
+ "Besag (1977)": [
+  "ripL.py",
+  "rklfunc.py"
+ ],
+ "Ripley (1976)": [
+  "ripk.py",
+  "rkfunc.py"
+ ],
+ "Risch (1969)": [
+  "riskr.py"
+ ],
+ "Cuesta-Albertos-Gordaliza-Matr\u00e1n (1997": [
+  "rkmeans.py"
+ ],
+ "Molak Ch 10": [
+  "rlear.py"
+ ],
+ "Zhao et al (2018)": [
+  "rlhfRS.py"
+ ],
+ "Icarte et al (2018)": [
+  "rmrl.py"
+ ],
+ "Zhang & Sennrich (2019)": [
+  "rmsnrm.py"
+ ],
+ "Eddy-Durbin (1994); Nawrocki-Eddy (201": [
+  "rnacov.py"
+ ],
+ "Zuker (1989); Lorenz et al (2011) Vien": [
+  "rnafld.py"
+ ],
+ "Burda et al (2019) RND": [
+  "rndnet.py"
+ ],
+ "White (1980); MacKinnon-White (1985)": [
+  "robcov.py"
+ ],
+ "Hubert-Rousseeuw-Vanden Branden (2005)": [
+  "robpca.py"
+ ],
+ "bloc97 (2023); Reddit r/LocalLLaMA NTK": [
+  "ropedy.py"
+ ],
+ "Rosenbaum (2002) book": [
+  "rosenb.py"
+ ],
+ "Veber (2002)": [
+  "rotbnd.py"
+ ],
+ "Lin (2004)": [
+  "rouge.py"
+ ],
+ "Lander-Botstein (1989)": [
+  "rqtmpl.py"
+ ],
+ "Whittaker-Thompson-Denham (2000)": [
+  "rrblpr.py"
+ ],
+ "Cori-Ferguson-Fraser-Cauchemez (2013)": [
+  "rtsmpl.py"
+ ],
+ "Wallinga-Teunis (2004)": [
+  "rtwall.py"
+ ],
+ "Kirkpatrick-Gelatt-Vecchi (1983)": [
+  "sa_opt.py"
+ ],
+ "Haarnoja et al (2018)": [
+  "sacc.py"
+ ],
+ "LeSage-Pace (2009)": [
+  "sacmod.py",
+  "sdmmod.py"
+ ],
+ "Post (2018) sacrebleu": [
+  "sacrb.py"
+ ],
+ "Altman (1999); Achiam et al (2017) CPO": [
+  "safrl.py"
+ ],
+ "Hamilton-Ying-Leskovec (2017)": [
+  "sage.py"
+ ],
+ "Zhou et al (2018)": [
+  "saigeg.py"
+ ],
+ "Ravi et al (2024) SAM-2": [
+  "sam2vd.py"
+ ],
+ "Kirillov et al (2023)": [
+  "samdec.py",
+  "sammkr.py",
+  "sampre.py"
+ ],
+ "Kirillov et al (2023) Meta AI": [
+  "samseg.py"
+ ],
+ "Hyndman-Khandakar (2008)": [
+  "sarimax.py"
+ ],
+ "Kelejian & Prucha (1998)": [
+  "sarmix.py"
+ ],
+ "Rummery-Niranjan (1994)": [
+  "sarsa.py"
+ ],
+ "Kang-McAuley (2018)": [
+  "sasRec.py"
+ ],
+ "Ertl-Schuffenhauer (2009)": [
+  "sasc1.py"
+ ],
+ "Jaccard (1901); Tanimoto (1958)": [
+  "sasimi.py"
+ ],
+ "Davis-Putnam-Logemann-Loveland (1962)": [
+  "satDP.py"
+ ],
+ "Lin et al (2007) SAX": [
+  "saxR.py"
+ ],
+ "Reimers-Gurevych (2019)": [
+  "sbert.py"
+ ],
+ "Karrer-Newman (2011)": [
+  "sbmdg2.py"
+ ],
+ "Holland-Laskey-Leinhardt (1983)": [
+  "sbmest.py"
+ ],
+ "Spearman (1910); Brown (1910)": [
+  "sbreli.py"
+ ],
+ "Tsiatis et al (2008)": [
+  "scbsft.py",
+  "tmlbas.py"
+ ],
+ "Farrington (1995)": [
+  "sccsno.py"
+ ],
+ "Reiss-Ogden (2007)": [
+  "scfd.py"
+ ],
+ "Schneider-Schneider-Sieber (1999)": [
+  "scfhop.py"
+ ],
+ "Sch\u00fctt et al (2017)": [
+  "schN.py"
+ ],
+ "Korsunsky et al (2019)": [
+  "scintg.py"
+ ],
+ "Street et al (2018) Slingshot": [
+  "sctraj.py"
+ ],
+ "Van der Maaten-Hinton (2008)": [
+  "sctsne.py"
+ ],
+ "McInnes et al (2018)": [
+  "scumap.py"
+ ],
+ "Bergen et al (2020)": [
+  "scvelo.py"
+ ],
+ "Allshouse et al (2010)": [
+  "sdcdis.py"
+ ],
+ "Chernozhukov-Demirer-Duflo-Fern\u00e1ndez-V": [
+  "sdcfst.py"
+ ],
+ "Wang et al (2016) SDNE": [
+  "sdne.py"
+ ],
+ "LeSage & Pace (2009)": [
+  "sdurbm.py"
+ ],
+ "Podell et al (2023) SDXL": [
+  "sdxlcd.py"
+ ],
+ "Fuchs et al (2020)": [
+  "se3T.py"
+ ],
+ "RFC 8439": [
+  "secaead.py"
+ ],
+ "Biryukov et al (2016) RFC 9106": [
+  "secarg.py"
+ ],
+ "Haber-Stornetta (1991); SoK Notarial H": [
+  "sechsh.py"
+ ],
+ "Krawczyk-Eronen RFC 5869": [
+  "seckdf.py"
+ ],
+ "GCP KMS envelope encryption pattern": [
+  "secrtt.py"
+ ],
+ "Anderson-May (1991)": [
+  "seiarp.py",
+  "vacthr.py"
+ ],
+ "Hethcote (2000)": [
+  "seirep.py"
+ ],
+ "Montesinos Lopez Ch 1,5": [
+  "selct.py"
+ ],
+ "Krenn et al (2020) SELFIES": [
+  "selfgr.py"
+ ],
+ "Kirillov et al (2023) SAM": [
+  "semaeg.py"
+ ],
+ "Satorra-Bentler (1994)": [
+  "semsbn.py"
+ ],
+ "Bentler-Yuan (1999)": [
+  "semsro.py"
+ ],
+ "Kudo-Richardson (2018)": [
+  "sentpc.py"
+ ],
+ "Adamopoulos-Tuzhilin (2014)": [
+  "servR.py"
+ ],
+ "Lee et al (2019)": [
+  "setT.py"
+ ],
+ "Wu et al (2019) SGC": [
+  "sgcL.py"
+ ],
+ "Diggle-Tawn-Moyeed (1998)": [
+  "sgflrt.py"
+ ],
+ "Snelson-Ghahramani (2006)": [
+  "sgpr.py"
+ ],
+ "Brandes (2001)": [
+  "sgtbtw.py"
+ ],
+ "Klein & Randi\u0107 (1993)": [
+  "sgtcg.py",
+  "sgtkir.py",
+  "sgtlpi.py",
+  "sgtreg.py"
+ ],
+ "Cheeger (1969); Chung (1997)": [
+  "sgtcheeg.py"
+ ],
+ "Estrada-Hatano (2008)": [
+  "sgtcom2.py"
+ ],
+ "Blondel-Guillaume-Lambiotte-Lefebvre (": [
+  "sgtcoml.py"
+ ],
+ "Kondor & Lafferty (2002)": [
+  "sgtdiff.py"
+ ],
+ "Estrada (2000)": [
+  "sgtest.py"
+ ],
+ "Kipf & Welling (2017)": [
+  "sgtgrn.py"
+ ],
+ "Sch\u00f6lkopf-Smola-M\u00fcller (1998)": [
+  "sgtkpc.py"
+ ],
+ "Belkin & Niyogi (2003)": [
+  "sgtlap2.py"
+ ],
+ "Levin-Peres-Wilmer (2017)": [
+  "sgtmix.py"
+ ],
+ "Shi-Malik (2000)": [
+  "sgtncuts.py",
+  "sgtsbm.py"
+ ],
+ "Tenenbaum-de Silva-Langford (2000)": [
+  "sgtnsne.py"
+ ],
+ "Perron (1907); Frobenius (1908)": [
+  "sgtpns.py"
+ ],
+ "Randi\u0107 (1975)": [
+  "sgtrnh.py"
+ ],
+ "G\u00e4rtner-Flach-Wrobel (2003)": [
+  "sgtrwk.py"
+ ],
+ "Decelle-Krzakala-Moore-Zdeborov\u00e1 (2011": [
+  "sgtsbnd.py"
+ ],
+ "Horn-Johnson (2013)": [
+  "sgtsbpd.py"
+ ],
+ "Ng-Jordan-Weiss (2002)": [
+  "sgtsck.py"
+ ],
+ "Cvetkovi\u0107-Doob-Sachs (1995)": [
+  "sgtsig.py",
+  "sgtspr.py"
+ ],
+ "Kirchhoff (1847)": [
+  "sgtspn.py"
+ ],
+ "Barrat-Barth\u00e9l\u00e9my-Vespignani (2004)": [
+  "sgtvst.py"
+ ],
+ "Weisfeiler-Lehman (1968)": [
+  "sgtwlk.py"
+ ],
+ "Dijkstra (1961)": [
+  "shYa.py"
+ ],
+ "Shailaja R. Deshmukh, Akanksha S. Kash": [
+  "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a10e3.py",
+  "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a4e9.py",
+  "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a5e1.py",
+  "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a5e3.py",
+  "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a6e1.py"
+ ],
+ "Setoguchi et al (2008); Westreich et a": [
+  "shdsmw.py"
+ ],
+ "He et al (2020)": [
+  "shedmd.py"
+ ],
+ "Shewhart (1931)": [
+  "shewh.py"
+ ],
+ "Cheu et al (2019); Erlingsson et al (2": [
+  "shfflm.py"
+ ],
+ "Vaupel et al. (1979)": [
+  "shfrm.py"
+ ],
+ "Shor (1994)": [
+  "shorE.py"
+ ],
+ "Schoenfeld (1982)": [
+  "shres.py"
+ ],
+ "Carvalho-Polson-Scott (2010) horseshoe": [
+  "shrinkbm.py"
+ ],
+ "Pastor-Satorras-Vespignani (2001)": [
+  "siaepi.py",
+  "siepid.py",
+  "sietrt.py"
+ ],
+ "Siegel (1982)": [
+  "sieg.py"
+ ],
+ "Zhai et al (2023) SigLIP": [
+  "siglip.py"
+ ],
+ "Almagro Armenteros et al (2019) Signal": [
+  "sigpep.py"
+ ],
+ "Elfwing, Uchibe, Doya (2018); Ramachan": [
+  "silu.py"
+ ],
+ "Misztal et al (2009); Aguilar et al (2": [
+  "singgw.py"
+ ],
+ "Vautard-Yiou-Ghil (1992)": [
+  "singsd.py"
+ ],
+ "Kermack-McKendrick (1927)": [
+  "sirepi.py"
+ ],
+ "Gillespie (1977)": [
+  "sirstn.py"
+ ],
+ "Mossong et al (2008) POLYMOD": [
+  "sirtdy.py"
+ ],
+ "Walker (2007); Kalli-Griffin-Walker (2": [
+  "slbpdg.py"
+ ],
+ "Neal (2003)": [
+  "slcmc.py"
+ ],
+ "K\u00fcnzel et al (2019)": [
+  "slearn.py",
+  "tlearn.py",
+  "ulrnir.py"
+ ],
+ "Lemire-Maclachlan (2005)": [
+  "slope1.py"
+ ],
+ "Athey-Wager (2024)": [
+  "slvgrf.py"
+ ],
+ "Halleck Vega-Elhorst (2015)": [
+  "slxmdl.py"
+ ],
+ "Humphries & Gurney (2008)": [
+  "smallw.py"
+ ],
+ "Whitaker-Farrington (2002)": [
+  "smatch.py"
+ ],
+ "Del Moral-Doucet-Jasra (2006)": [
+  "smcopt.py",
+  "smcsam.py"
+ ],
+ "Eilers-Marx (1996)": [
+  "smfd.py"
+ ],
+ "Weininger (1988); OpenSMILES.org": [
+  "smigr.py"
+ ],
+ "Platt (1998)": [
+  "smoopt.py"
+ ],
+ "Marees et al (2018)": [
+  "smplqc.py",
+  "snpqc1.py"
+ ],
+ "Dantzig (1947)": [
+  "smplxs.py"
+ ],
+ "Breslow-Day (1987)": [
+  "smrest.py"
+ ],
+ "Wahba (1990)": [
+  "smspln.py"
+ ],
+ "de Moura-Bj\u00f8rner (2008) Z3": [
+  "smtZ3.py"
+ ],
+ "Humphries-Gurney (2008)": [
+  "smwgrp.py"
+ ],
+ "Robins (1992); Witteman et al (1998)": [
+  "snmcox.py"
+ ],
+ "Robins (1994); Vansteelandt-Joffe (201": [
+  "snmlin.py"
+ ],
+ "Rambachan-Roth (2023)": [
+  "snmtst.py"
+ ],
+ "Cingolani et al (2012) SnpEff": [
+  "snpeff.py"
+ ],
+ "Caron-Doucet-Gottardo (2017)": [
+  "snpest.py"
+ ],
+ "Snijders & Bosker (1994, 2012 \u00a77)": [
+  "snr2.py",
+  "snr2u.py"
+ ],
+ "Sobol (1993); Saltelli (2002)": [
+  "sobolI.py"
+ ],
+ "Zhang et al (2018) DGCNN": [
+  "sortP.py"
+ ],
+ "D'Orsogna & Perc (2015) Statistical ph": [
+  "sp_eq1.py",
+  "sp_eq4.py",
+  "sp_eq5.py",
+  "sp_eq6.py",
+  "sp_s2u1.py",
+  "sp_s2u2.py",
+  "sp_s2u3.py",
+  "sp_s2u4.py",
+  "sp_s2u5.py",
+  "sp_s2u6.py",
+  "sp_s3u10.py",
+  "sp_s3u11.py",
+  "sp_s3u12.py",
+  "sp_s3u13.py",
+  "sp_s3u14.py",
+  "sp_s3u15.py",
+  "sp_s3u7.py",
+  "sp_s3u8.py",
+  "sp_s3u9.py",
+  "sp_s6u16.py",
+  "sp_s6u17.py"
+ ],
+ "Schabenberger": [
+  "spanis.py",
+  "spbayr.py",
+  "spbesf.py",
+  "spbino.py",
+  "spblkk.py",
+  "spblup.py",
+  "spbym.py",
+  "spcar.py",
+  "spchol.py",
+  "spcnds.py",
+  "spcokr.py",
+  "spcont.py",
+  "spconv.py",
+  "spcovf.py",
+  "spcsr.py",
+  "spdjkr.py",
+  "spexp.py",
+  "spffun.py",
+  "spgaus.py",
+  "spgfun.py",
+  "spglmk.py",
+  "spglmm.py",
+  "spgls.py",
+  "spgwr.py",
+  "spgwrb.py",
+  "spgwrk.py",
+  "spicar.py",
+  "spiso.py",
+  "spkcrs.py",
+  "spkfnn.py",
+  "spkfun.py",
+  "spkwt.py",
+  "splfun.py",
+  "splgk.py",
+  "spmatr.py",
+  "spmenv.py",
+  "spmidw.py",
+  "spmsd.py",
+  "spmsim.py",
+  "spmwst.py",
+  "spnest.py",
+  "spnscl.py",
+  "spnsr.py",
+  "spnst.py",
+  "spnug.py",
+  "spols.py",
+  "spperiod.py",
+  "sppois.py",
+  "sppow.py",
+  "sppql.py",
+  "spreml.py",
+  "sprfss.py",
+  "spsar.py",
+  "spsdm.py",
+  "spsemv.py",
+  "spskrg.py",
+  "spspec.py",
+  "spspec2.py",
+  "spsph.py",
+  "spssoc.py",
+  "spstcn.py",
+  "spstcv.py",
+  "spstp.py",
+  "spstvg.py",
+  "sptgk.py",
+  "spthom.py",
+  "sptrs.py",
+  "spwkth.py",
+  "spwls.py"
+ ],
+ "Dwork-Roth (2014); Hardt-Rothblum (201": [
+  "sparsv.py"
+ ],
+ "Cvetkovi\u0107 et al (2010)": [
+  "spcrad.py"
+ ],
+ "Hou-Zhang (2007)": [
+  "specA.py"
+ ],
+ "Ng-Jordan-Weiss (2001)": [
+  "specClust.py"
+ ],
+ "Leviathan-Kalman-Matias (2023)": [
+  "specS.py"
+ ],
+ "Bendat-Piersol (2010)": [
+  "speccoh.py"
+ ],
+ "Brillinger (2001)": [
+  "speccs.py",
+  "specdn.py"
+ ],
+ "Daniell (1946)": [
+  "specsm.py"
+ ],
+ "Dray-Sa\u00efd-D\u00e9bias (2008)": [
+  "speptn.py"
+ ],
+ "Wood (2006)": [
+  "spgams.py"
+ ],
+ "Strong et al (1998)": [
+  "spkint.py"
+ ],
+ "Stein (1956); Morris (1983)": [
+  "spred.py"
+ ],
+ "D\u00edaz-vdL (2012, 2018)": [
+  "spsmsh.py"
+ ],
+ "Hu-Shen-Sun (2018) SENet": [
+  "sqzext.py"
+ ],
+ "Wolbers et al (2014)": [
+  "sscompv.py"
+ ],
+ "Sy-Taylor (2000); Maller-Zhou (1996)": [
+  "sscure.py"
+ ],
+ "Wu et al (2020)": [
+  "sse4r.py"
+ ],
+ "Turnbull (1976)": [
+  "ssintc.py"
+ ],
+ "Gu, Goel, Re (2022) S4": [
+  "ssmkrn.py"
+ ],
+ "Blelloch (1990); Smith et al. (2023) S": [
+  "ssmpar.py"
+ ],
+ "Klein-Moeschberger (2003)": [
+  "sstrlf.py",
+  "survlnk.py"
+ ],
+ "Robins (1993); Hern\u00e1n-Brumback-Robins ": [
+  "stbciw.py"
+ ],
+ "Stefan (1879)": [
+  "stefan.py"
+ ],
+ "Cleveland et al (1990)": [
+  "stlAn.py"
+ ],
+ "Jaderberg et al (2015)": [
+  "stngrd.py"
+ ],
+ "Koutra et al (2013)": [
+  "strdis.py"
+ ],
+ "Liu et al (2018)": [
+  "strec.py"
+ ],
+ "Strauss (1975)": [
+  "strmkr.py"
+ ],
+ "Cole-Hern\u00e1n (2008)": [
+  "strtwt.py",
+  "trcwgt.py"
+ ],
+ "Durbin-Koopman (2012)": [
+  "stsmod.py"
+ ],
+ "Cook & Weisberg (1982)": [
+  "studrs.py"
+ ],
+ "Xu et al (2019)": [
+  "sumP.py"
+ ],
+ "Sun & Abraham (2021)": [
+  "sunabr.py"
+ ],
+ "Hutwagner et al (2003) EARS": [
+  "surepi.py"
+ ],
+ "Graf et al (1999); Gerds-Schumacher (2": [
+  "survbri.py"
+ ],
+ "Sparapani et al (2016)": [
+  "survbtr.py"
+ ],
+ "Uno et al (2011)": [
+  "survci2.py"
+ ],
+ "Harrell-Califf-Pryor (1982)": [
+  "survcind.py"
+ ],
+ "Cox (1972, 1975)": [
+  "survcox.py"
+ ],
+ "Singer-Willett (2003)": [
+  "survdsc.py"
+ ],
+ "Korn-Graubard (1999)": [
+  "survip.py"
+ ],
+ "Kattan-Gerds (2018)": [
+  "survipa.py"
+ ],
+ "Katzman et al (2018)": [
+  "survnnr.py"
+ ],
+ "Royston-Parmar (2013)": [
+  "survrls.py"
+ ],
+ "Heagerty-Lumley-Pepe (2000)": [
+  "survroc.py"
+ ],
+ "Ishwaran et al (2008)": [
+  "survrsf.py"
+ ],
+ "Antolini-Boracchi-Biganzoli (2005)": [
+  "survtdc.py"
+ ],
+ "Nagpal et al (2021) DeepSurvivalMachin": [
+  "survvae.py"
+ ],
+ "Chen-Guestrin (2016); Barnwal-Cho-Hock": [
+  "surxgb.py"
+ ],
+ "Rausch et al (2012) Delly": [
+  "sv_dl.py"
+ ],
+ "Tax-Duin (2004)": [
+  "svdd.py"
+ ],
+ "Koren (2008)": [
+  "svdpp.py"
+ ],
+ "Montesinos Lopez Ch 9": [
+  "svmdu.py",
+  "svmep.py",
+  "svmhp.py",
+  "svmsl.py"
+ ],
+ "Cortes-Vapnik (1995)": [
+  "svmopt.py"
+ ],
+ "Binder (1992)": [
+  "svycox.py"
+ ],
+ "Francisco-Fuller (1991)": [
+  "svymed.py",
+  "svyqtl.py"
+ ],
+ "Koenker (2005); Lumley (2010)": [
+  "svyrcq.py"
+ ],
+ "Rao-Scott (1984)": [
+  "svytbl.py"
+ ],
+ "Liu et al (2021)": [
+  "swinmw.py",
+  "vitscn.py"
+ ],
+ "Liu et al (2021) Swin": [
+  "swintr.py"
+ ],
+ "SymPy": [
+  "sympEx.py"
+ ],
+ "Cohen (1996) book": [
+  "sympFa.py"
+ ],
+ "SymPy team (2017)": [
+  "sympRe.py"
+ ],
+ "Madow-Madow (1944)": [
+  "sysmpl.py"
+ ],
+ "Raffel et al (2020)": [
+  "t5enc.py"
+ ],
+ "Hotho et al (2006)": [
+  "tagRC.py"
+ ],
+ "Gillespie (2001)": [
+  "taulep.py"
+ ],
+ "Wood-Lu-Langmead (2019)": [
+  "taxass.py"
+ ],
+ "Li-Li-Venkatasubramanian (2007)": [
+  "tcls.py"
+ ],
+ "Bun et al (2018)": [
+  "tcmech.py"
+ ],
+ "Fujimoto-Hoof-Meger (2018)": [
+  "td3c.py"
+ ],
+ "Hern\u00e1n-Robins (2020) Ch 21": [
+  "tdcvar.py"
+ ],
+ "Gama et al (2004) DDM": [
+  "telmt.py"
+ ],
+ "Sp\u00e4rck Jones (1972); Salton-Buckley (1": [
+  "tfidfV.py"
+ ],
+ "Lim et al (2021) TFT": [
+  "tft.py",
+  "tftran.py"
+ ],
+ "[The R Series] Dick J. Brus - Spatial ": [
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e1.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e10.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e13.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e14.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e15.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e17.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e18.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e2.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e21.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e23.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e24.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e25.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e27.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e3.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e32.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e36.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e38.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e4.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e40.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e42.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e6.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e8.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r10e9.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r11e5.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r11e7.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r11e8.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r12e10.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r12e11.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r12e14.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r12e17.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r12e18.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r12e19.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r12e24.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r12e25.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r12e27.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r12e3.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r12e7.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r13e1.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r13e10.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r13e12.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r13e15.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r13e16.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r13e17.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r13e5.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r13e7.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r14e15.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r15e10.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r15e4.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r16e1.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r20e2.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r20e3.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r21e1.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r21e11.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r21e13.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r21e2.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r21e23.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r21e4.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r21e8.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r24e1.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r24e2.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r24e3.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r24e4.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r24e5.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r24e6.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r25e8.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r26e2.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r26e3.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r26e4.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r26e5.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r2e2.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r2e3.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r2e4.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r3e14.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r3e15.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r3e18.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r3e21.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r3e6.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r4e1.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r4e18.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r4e2.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r4e4.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r6e10.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r6e4.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r6e9.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r7e10.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r7e11.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r7e12.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r7e13.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r7e2.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r7e3.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r7e7.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r7e8.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r7e9.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r8e2.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r9e10.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r9e2.py",
+  "the_r_series_dick_j_brus_spatial_sampling_with_r9e3.py"
+ ],
+ "Assimakopoulos-Nikolopoulos (2000)": [
+  "thetaF.py"
+ ],
+ "Duchon (1977); Wahba (1990)": [
+  "thinpls.py"
+ ],
+ "Thomas (1949)": [
+  "thmksp.py"
+ ],
+ "Thiessen (1911)": [
+  "thnsst.py"
+ ],
+ "Thompson (1933); Russo et al (2018) tu": [
+  "thomp.py"
+ ],
+ "Luedtke-vdL (2016)": [
+  "thrtmt.py",
+  "tmlitr.py"
+ ],
+ "OpenAI tiktoken (2022)": [
+  "tikto.py"
+ ],
+ "Koren (2009) timeSVD": [
+  "timeRS.py"
+ ],
+ "Das et al (2024) TimesFM": [
+  "timesf.py",
+  "timesfm.py"
+ ],
+ "Wu et al (2023) TimesNet": [
+  "timesnet.py"
+ ],
+ "Yan, Lee, Ling, Lin (2021)": [
+  "tipsne.py"
+ ],
+ "Joe (1997); Nelsen (2006) \u00a75.4": [
+  "tldepl.py",
+  "tldepu.py"
+ ],
+ "Zheng-van der Laan (2012)": [
+  "tmlMd.py"
+ ],
+ "vdL-Rose (2011)": [
+  "tmlboo.py",
+  "tmlmrd.py",
+  "tmlmro.py"
+ ],
+ "vdL & Rose (2011) Ch 5": [
+  "tmlcat.py"
+ ],
+ "vdL-Petersen (2008)": [
+  "tmlcde.py"
+ ],
+ "vdL & Gruber (2010); Ju et al (2019)": [
+  "tmlcds.py"
+ ],
+ "van der Laan-Robins (2003); Stitelman-": [
+  "tmlcen.py"
+ ],
+ "Balzer et al (2019)": [
+  "tmlcic.py"
+ ],
+ "Allard-Boulet (2024)": [
+  "tmlcll.py"
+ ],
+ "Rytgaard-Gerds-vdL (2023)": [
+  "tmlcmp.py"
+ ],
+ "Lendle-Schwab-Petersen-vdL (2013)": [
+  "tmlcou.py"
+ ],
+ "Kennedy-Ma-McHugh-Small (2017)": [
+  "tmlcps.py"
+ ],
+ "Zheng & vdL (2011)": [
+  "tmlcvc.py"
+ ],
+ "Belloni-Chernozhukov (2013); vdL-Grube": [
+  "tmldgp.py"
+ ],
+ "VanderWeele-Robinson (2014); Naimi-Sch": [
+  "tmldis.py"
+ ],
+ "Hubbard-Kennedy-vdL (2016)": [
+  "tmldta.py"
+ ],
+ "Niu-Cohen-Shen (2024)": [
+  "tmldyk.py"
+ ],
+ "Petersen et al (2014); Luedtke & vdL (": [
+  "tmldyn.py"
+ ],
+ "Schnitzer-Lok (2017)": [
+  "tmlext.py"
+ ],
+ "Vo-vdL-Petersen (2023)": [
+  "tmlfed.py"
+ ],
+ "Westling et al (2024)": [
+  "tmlhrz.py"
+ ],
+ "vdL & Rose (2011) Ch 6": [
+  "tmlinf.py"
+ ],
+ "Lendle et al (2017); Rosenbaum (2002)": [
+  "tmlmct.py"
+ ],
+ "Rotnitzky et al (2017)": [
+  "tmlmda.py"
+ ],
+ "Lendle et al (2017)": [
+  "tmlmlt.py"
+ ],
+ "Chernozhukov et al (2018) DML; vdL-Ros": [
+  "tmlmnl.py"
+ ],
+ "Rytgaard-Eriksson-Gerds-vdL (2024)": [
+  "tmlmpc.py"
+ ],
+ "De Schryver-Vansteelandt (2019)": [
+  "tmlmpi.py"
+ ],
+ "Robins (2004); Murphy (2003)": [
+  "tmlmrk.py"
+ ],
+ "Spiegelman-Hertzmark (2005); vdL-Rose ": [
+  "tmlmrr.py"
+ ],
+ "Zheng & vdL (2012)": [
+  "tmlnde.py",
+  "tmlnie.py"
+ ],
+ "Vansteelandt-Daniel (2017)": [
+  "tmlnde2.py"
+ ],
+ "Hines-Diaz-Naimi-vdL (2022)": [
+  "tmlnsm.py"
+ ],
+ "Tan (2010)": [
+  "tmlovo.py"
+ ],
+ "Westreich-Cole (2010)": [
+  "tmlper.py"
+ ],
+ "Belloni-Chernozhukov-Hansen (2014); vd": [
+  "tmlphd.py"
+ ],
+ "Schnitzer-Sango-Lefebvre-Filion (2018)": [
+  "tmlpoo.py"
+ ],
+ "Pearl (2001); Avin et al (2005); Miles": [
+  "tmlpse.py"
+ ],
+ "vdL-Hubbard (2018)": [
+  "tmlqsa.py"
+ ],
+ "Tan (2010); Frangakis-Petersen-vdL (20": [
+  "tmlrbt.py"
+ ],
+ "Westling-vdL (2024)": [
+  "tmlrec.py"
+ ],
+ "Robins et al (2017) Annals": [
+  "tmlres.py"
+ ],
+ "Tran-Petersen-vdL (2018)": [
+  "tmlric.py"
+ ],
+ "Athey-Imbens (2016); Chernozhukov-Demi": [
+  "tmlsbg.py"
+ ],
+ "Hubbard et al (2016) Subset": [
+  "tmlsbs.py"
+ ],
+ "vdL-Polley-Hubbard (2007); Polley-Rose": [
+  "tmlsl.py"
+ ],
+ "Sofrygin & vdL (2017); Aronow-Samii (2": [
+  "tmlspl.py"
+ ],
+ "vdL-Gruber (2010)": [
+  "tmlsta.py"
+ ],
+ "Rudolph & vdL (2017); Bareinboim-Pearl": [
+  "tmltrn.py"
+ ],
+ "Schnitzer-vdL-Lipsitch (2014)": [
+  "tmltsm.py"
+ ],
+ "vdL-Hubbard-Pajouh (2018)": [
+  "tmlvts.py"
+ ],
+ "Zhang-Skolnick (2004)": [
+  "tmscore.py"
+ ],
+ "Lajiness (1990)": [
+  "tncomp.py"
+ ],
+ "Fan-Lewis-Dauphin (2018)": [
+  "topkS.py"
+ ],
+ "Holtzman et al (2020)": [
+  "toppS.py"
+ ],
+ "Nilakantan et al (1987)": [
+  "toptor.py"
+ ],
+ "Zandieh et al. 2024 Algorithm 1 (key q": [
+  "tqalg1.py"
+ ],
+ "TurboQuant MORIE integration -- quanti": [
+  "tqang.py"
+ ],
+ "Zandieh et al. 2024 Lemma 3.5 (distort": [
+  "tqdist.py"
+ ],
+ "Zandieh et al. 2024 Eq 3 (QJL definiti": [
+  "tqhs.py"
+ ],
+ "TurboQuant MORIE integration -- inner_": [
+  "tqipb.py"
+ ],
+ "vdL et al ICLR 2026 arxiv:2504.19874": [
+  "tqkmse.py"
+ ],
+ "TurboQuant MORIE integration -- lloyd_": [
+  "tqlld.py"
+ ],
+ "Zandieh et al. 2024 Fact 3.4 (normal m": [
+  "tqmom.py"
+ ],
+ "TurboQuant MORIE integration -- mse_di": [
+  "tqmsb.py"
+ ],
+ "Zandieh et al. 2024 Section 4.1 (Ortho": [
+  "tqorth.py"
+ ],
+ "Zandieh et al. 2024 Section 4.1 (outli": [
+  "tqoutl.py"
+ ],
+ "TurboQuant MORIE integration -- pack_i": [
+  "tqpack.py"
+ ],
+ "TurboQuant MORIE integration -- morie/": [
+  "tqpol.py",
+  "tqwht.py"
+ ],
+ "Zandieh et al. 2024 Section 4.1 (rotat": [
+  "tqrot.py"
+ ],
+ "Zandieh et al. 2024 Theorem 3.6 (atten": [
+  "tqscr.py"
+ ],
+ "Zandieh et al. 2024 Section 3.2 (value": [
+  "tqval.py"
+ ],
+ "Bordes et al (2013)": [
+  "transE.py"
+ ],
+ "Schreiber (2000)": [
+  "transfen.py"
+ ],
+ "Laber-Zhao (2015); Tao-Wang (2017)": [
+  "trclrn.py"
+ ],
+ "Hoffman & Gelman (2014)": [
+  "trdpd.py"
+ ],
+ "Potter (1990)": [
+  "trimit.py",
+  "trmwgt.py"
+ ],
+ "Jumper et al (2021) AlphaFold2": [
+  "tritta.py"
+ ],
+ "Baader-Nipkow (1998)": [
+  "trmRew.py"
+ ],
+ "Newman (2003)": [
+  "trnscl.py"
+ ],
+ "Krogh et al (2001)": [
+  "trnsmh.py"
+ ],
+ "Schulman et al (2015)": [
+  "trpoc.py"
+ ],
+ "Steihaug (1983)": [
+  "trsopt.py"
+ ],
+ "Conn-Gould-Toint (2000)": [
+  "trupek.py"
+ ],
+ "Tsallis (1988)": [
+  "tsallen.py",
+  "tsalls.py"
+ ],
+ "Teunter-Syntetos-Babai (2011)": [
+  "tsbF.py"
+ ],
+ "Hellewell et al (2020)": [
+  "ttrace.py"
+ ],
+ "Hochenbaum-Vallis-Kejariwal (2017)": [
+  "ttsAn.py"
+ ],
+ "Meister et al (2023)": [
+  "ttypc.py"
+ ],
+ "Beaton & Tukey (1974)": [
+  "tukeyw.py"
+ ],
+ "Tukey (1960)": [
+  "tukrho.py"
+ ],
+ "Tukey (1960); Beaton-Tukey (1974)": [
+  "tukrr.py"
+ ],
+ "Devroye & Gyorfi (1985)": [
+  "tvdist.py"
+ ],
+ "Tversky (1977)": [
+  "tvsbn.py"
+ ],
+ "Yi et al (2019)": [
+  "twoT.py"
+ ],
+ "Lewontin (1964)": [
+  "twoldp.py"
+ ],
+ "Cheng, Wei, Ying (1995)": [
+  "twostg.py"
+ ],
+ "Auer-Cesa-Bianchi-Fischer (2002)": [
+  "ucbb.py"
+ ],
+ "Resnick et al (1994) GroupLens": [
+  "ucfR.py"
+ ],
+ "Julier-Uhlmann (1997)": [
+  "ukfF.py"
+ ],
+ "Ronneberger et al (2015) U-Net": [
+  "unetbk.py"
+ ],
+ "Harvey (1989)": [
+  "unobts.py"
+ ],
+ "Use R": [
+  "use_r11e3.py",
+  "use_r8e4.py",
+  "use_r8e5.py"
+ ],
+ "Liang et al (2018) Mult-VAE": [
+  "vaeCF.py"
+ ],
+ "An-Cho (2015)": [
+  "vae_an.py"
+ ],
+ "Kingma-Welling (2014)": [
+  "vaeber.py"
+ ],
+ "Sims (1980)": [
+  "varF.py"
+ ],
+ "Titsias (2009)": [
+  "varKf.py"
+ ],
+ "Jorion (2007)": [
+  "varatr.py"
+ ],
+ "Poplin et al (2018) GATK4": [
+  "varcal.py"
+ ],
+ "L\u00fctkepohl (2005)": [
+  "vardec.py",
+  "varest.py",
+  "varimp.py"
+ ],
+ "GATK best practices": [
+  "varqc1.py"
+ ],
+ "Barber-Agakov (2003)": [
+  "vbinfp.py"
+ ],
+ "Jordan et al (1999)": [
+  "vbnopt.py",
+  "vinfer.py"
+ ],
+ "Blei-Jordan (2006)": [
+  "vbnpc.py"
+ ],
+ "Henderson (1953)": [
+  "vcomp.py"
+ ],
+ "Lombardo et al (2002, 2018)": [
+  "vdcal.py"
+ ],
+ "Veber et al (2002)": [
+  "vebr3.py"
+ ],
+ "McLaren et al (2016) VEP": [
+  "vepan.py"
+ ],
+ "Ho et al (2022) Video Diffusion Models": [
+  "vidgen.py"
+ ],
+ "Lu et al (2019) ViLBERT": [
+  "vilbrt.py"
+ ],
+ "Lorenz (1956)": [
+  "vime.py"
+ ],
+ "Trott-Olson (2010)": [
+  "vinasc.py"
+ ],
+ "Yu et al (2022)": [
+  "vit2lf.py"
+ ],
+ "Dosovitskiy et al (2020)": [
+  "vitatt.py",
+  "vitbgi.py",
+  "vitcls.py",
+  "vitfsv.py",
+  "vitmlp.py",
+  "vitptm.py"
+ ],
+ "Viterbi (1967)": [
+  "viterb.py"
+ ],
+ "Dosovitskiy et al (2020) ICLR": [
+  "vitfwd.py"
+ ],
+ "Ba-Kiros-Hinton (2016)": [
+  "vitlrn.py"
+ ],
+ "Hagan-Kumar-Lesniewski-Woodward (2002)": [
+  "volsabr.py"
+ ],
+ "Harvey-Ruiz-Shephard (1994)": [
+  "volsv.py"
+ ],
+ "Goldstein, Browne, Rasbash (2002)": [
+  "vpc.py"
+ ],
+ "Esser et al (2021)": [
+  "vqgdec.py"
+ ],
+ "Esser et al (2021) VQ-GAN": [
+  "vqgenc.py"
+ ],
+ "de Heus (2012)": [
+  "vrmed.py"
+ ],
+ "Watanabe (2010); Gelman et al. BDA3 \u00a77": [
+  "waicd.py"
+ ],
+ "Weston-Bengio-Usunier (2011)": [
+  "warpL.py"
+ ],
+ "Kantorovich-Rubinstein (1958)": [
+  "wassdt.py"
+ ],
+ "Daubechies (1988)": [
+  "wave.py"
+ ],
+ "Welsch (1977)": [
+  "welshw.py"
+ ],
+ "Tchetgen Tchetgen-Shpitser (2012)": [
+  "wenge.py"
+ ],
+ "Lohr (2010) \u00a77": [
+  "wfrep.py"
+ ],
+ "Hadamard (1893); Pratt (1969)": [
+  "whtinv.py"
+ ],
+ "Cheng et al (2016) Google": [
+  "wideD.py"
+ ],
+ "Winsor (1941); Hastings et al (1947)": [
+  "winz.py"
+ ],
+ "Wei, Lin, Weissfeld (1989)": [
+  "wlwmm.py"
+ ],
+ "Horvitz & Thompson (1952)": [
+  "wmeansr.py"
+ ],
+ "Schuster-Nakajima (2012); Devlin et al": [
+  "wpiece.py"
+ ],
+ "Harrell-Davis (1982) on weighted quant": [
+  "wquan.py"
+ ],
+ "Mikolov et al (2013)": [
+  "wrd2v.py"
+ ],
+ "Villani (2009)": [
+  "wsdt2d.py"
+ ],
+ "Lohr (2010) \u00a73.5": [
+  "wvar.py"
+ ],
+ "Daubechies (1992)": [
+  "wvltdb.py"
+ ],
+ "Lian et al (2018)": [
+  "xdeep.py"
+ ],
+ "K\u00fcnzel, Sekhon, Bickel, Yu (2019)": [
+  "xlrnir.py"
+ ],
+ "Sabeti et al (2007)": [
+  "xpehh1.py"
+ ],
+ "Peng et al. (2023) YaRN": [
+  "yarn.py"
+ ],
+ "WHO GBD": [
+  "yldyear.py"
+ ],
+ "WHO Global Burden of Disease": [
+  "yllyear.py"
+ ],
+ "Ge et al (2021) YOLOX": [
+  "yolovx.py"
+ ],
+ "Zivot & Andrews (1992)": [
+  "zaurts.py"
+ ],
+ "Bun-Steinke (2016)": [
+  "zcdp.py"
+ ],
+ "Jury (1964)": [
+  "zfm.py"
+ ],
+ "Bun & Steinke (2016) zCDP": [
+  "zfmech.py"
+ ],
+ "basic": [
+  "zscoreA.py"
+ ]
+}

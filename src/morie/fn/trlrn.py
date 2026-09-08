@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -82,3 +82,7 @@ trlrn = transfer_learn
 
 def cheatsheet() -> str:
     return "transfer_learn({}) -> Transfer learning via subspace alignment."
+
+
+# compact alias per ledger/NAMING.md
+transferlearn = transfer_learn

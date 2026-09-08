@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -41,3 +41,7 @@ phssp = phase_spectrum
 
 def cheatsheet() -> str:
     return "phase_spectrum({}) -> Phase spectrum."
+
+
+# compact alias per ledger/NAMING.md
+phasespectrum = phase_spectrum

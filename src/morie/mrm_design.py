@@ -29,9 +29,9 @@ from __future__ import annotations
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 
-import numpy as np
-import pandas as pd
-from scipy import stats
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as stats
 
 __all__ = [
     "TwoTreatmentResult",
@@ -148,7 +148,7 @@ def mrm_anova_oneway(
 
     # Tukey HSD via statsmodels (optional; if unavailable use Bonferroni-corrected pairwise t)
     try:
-        from statsmodels.stats.multicomp import pairwise_tukeyhsd
+        from morie.fn._glm_core import pairwise_tukeyhsd
 
         tk = pairwise_tukeyhsd(df[response_col].values, df[group_col].values, alpha=alpha)
         tk_df = pd.DataFrame(data=tk._results_table.data[1:], columns=tk._results_table.data[0])
@@ -323,7 +323,7 @@ def mrm_causal_design(
 
     if estimator == "ipw" and len(covariates) > 0:
         # logistic propensity then Hájek IPW
-        from sklearn.linear_model import LogisticRegression
+        from morie.fn._ml_core import LogisticRegression
 
         X = df[list(covariates)].to_numpy(dtype=float)
         e = LogisticRegression(max_iter=1000).fit(X, D).predict_proba(X)[:, 1]

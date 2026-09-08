@@ -1,6 +1,6 @@
 """Tests for grsgd.geron_stochastic_gradient_descent."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grsgd import geron_stochastic_gradient_descent
 

@@ -1,6 +1,6 @@
 """Tests for mahks.ma_hartung_knapp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mahks import ma_hartung_knapp
 

@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import TestResult
 
@@ -72,3 +72,7 @@ manova = manova_one
 
 def cheatsheet() -> str:
     return "manova_one({}) -> One-way MANOVA (Wilks' lambda)."
+
+
+# compact alias per ledger/NAMING.md
+manovaone = manova_one

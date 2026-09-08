@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -46,3 +46,7 @@ coshd = cosh_distance
 
 def cheatsheet() -> str:
     return "cosh_distance({}) -> Cosh spectral distance."
+
+
+# compact alias per ledger/NAMING.md
+coshdistance = cosh_distance

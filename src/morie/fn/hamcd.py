@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import CryptoResult
 
@@ -41,3 +41,7 @@ hamcd = hamming_code
 
 def cheatsheet() -> str:
     return "hamming_code({}) -> Hamming code encode/decode."
+
+
+# compact alias per ledger/NAMING.md
+hammingcode = hamming_code

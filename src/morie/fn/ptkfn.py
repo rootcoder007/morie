@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ripley's K-function"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ k_fu = k_function
 
 def cheatsheet() -> str:
     return "k_function({}) -> Ripley's K-function"
+
+
+# compact alias per ledger/NAMING.md
+kfunction = k_function

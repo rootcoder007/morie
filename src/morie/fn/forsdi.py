@@ -5,7 +5,7 @@ Reineke SDI spatial
 Category: ForstSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def forsdi(dbh=None, height=None, coords=None, n=50):

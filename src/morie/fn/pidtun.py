@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -93,3 +93,7 @@ pidtun = pid_tune
 
 def cheatsheet() -> str:
     return "pid_tune({}) -> PID controller tuning."
+
+
+# compact alias per ledger/NAMING.md
+pidtune = pid_tune

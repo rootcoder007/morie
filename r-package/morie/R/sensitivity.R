@@ -16,8 +16,8 @@
 #' variable bias (Cinelli-Hazlett), Manski bounds, probabilistic
 #' (Monte-Carlo) bias analysis, and specification curve analysis.
 #'
-#' Wraps CRAN \pkg{EValue} when available; falls back to base R
-#' otherwise.
+#' Implemented natively in base R from the published closed forms; no
+#' CRAN sensitivity package is loaded or called at runtime.
 #'
 #' @references
 #' Rosenbaum (2002); VanderWeele & Ding (2017); Cinelli & Hazlett
@@ -28,6 +28,21 @@ NULL
 
 # -- Result containers ------------------------------------------------
 
+#' .evalue_result
+#'
+#' A step of the sensitivity implementation. Called by \code{e_value_rr}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param point_estimate Carried through into a list the body builds.
+#' @param e_value_point Carried through into a list the body builds.
+#' @param e_value_ci Carried through into a list the body builds.
+#' @param rr Carried through into a list the body builds.
+#' @param ci_lower Carried through into a list the body builds.
+#' @param ci_upper Carried through into a list the body builds.
+#' @param interpretation Carried through into a list the body builds.
+#' @return The value of \code{structure}.
+#' @export
 .evalue_result <- function(point_estimate, e_value_point, e_value_ci,
                             rr, ci_lower, ci_upper, interpretation) {
   structure(
@@ -42,6 +57,20 @@ NULL
   )
 }
 
+#' .rosenbaum_result
+#'
+#' A step of the sensitivity implementation. Called by \code{rosenbaum_bounds}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param gamma_values Carried through into a list the body builds.
+#' @param p_upper Carried through into a list the body builds.
+#' @param p_lower Carried through into a list the body builds.
+#' @param critical_gamma Carried through into a list the body builds.
+#' @param method Carried through into a list the body builds.
+#' @param interpretation Carried through into a list the body builds.
+#' @return The value of \code{structure}.
+#' @export
 .rosenbaum_result <- function(gamma_values, p_upper, p_lower,
                                 critical_gamma, method, interpretation) {
   structure(
@@ -55,6 +84,20 @@ NULL
   )
 }
 
+#' .tipping_point_result
+#'
+#' A step of the sensitivity implementation. Called by \code{tipping_point_analysis}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param delta_values Carried through into a list the body builds.
+#' @param adjusted_estimates Carried through into a list the body builds.
+#' @param adjusted_p_values Carried through into a list the body builds.
+#' @param tipping_point Carried through into a list the body builds.
+#' @param original_estimate Carried through into a list the body builds.
+#' @param interpretation Carried through into a list the body builds.
+#' @return The value of \code{structure}.
+#' @export
 .tipping_point_result <- function(delta_values, adjusted_estimates,
                                      adjusted_p_values, tipping_point,
                                      original_estimate, interpretation) {
@@ -69,6 +112,21 @@ NULL
   )
 }
 
+#' .ovb_result
+#'
+#' A step of the sensitivity implementation. Called by \code{omitted_variable_bias}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param estimate Carried through into a list the body builds.
+#' @param se Carried through into a list the body builds.
+#' @param rv_q Carried through into a list the body builds.
+#' @param rv_qa Carried through into a list the body builds.
+#' @param partial_r2_treatment Carried through into a list the body builds.
+#' @param benchmark_bounds Carried through into a list the body builds.
+#' @param interpretation Carried through into a list the body builds.
+#' @return The value of \code{structure}.
+#' @export
 .ovb_result <- function(estimate, se, rv_q, rv_qa, partial_r2_treatment,
                           benchmark_bounds, interpretation) {
   structure(
@@ -83,6 +141,23 @@ NULL
   )
 }
 
+#' .spec_curve_result
+#'
+#' A step of the sensitivity implementation. Called by \code{specification_curve}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param estimates Carried through into a list the body builds.
+#' @param ses Carried through into a list the body builds.
+#' @param p_values Carried through into a list the body builds.
+#' @param specifications Carried through into a list the body builds.
+#' @param median_estimate Carried through into a list the body builds.
+#' @param iqr_lower Carried through into a list the body builds.
+#' @param iqr_upper Carried through into a list the body builds.
+#' @param pct_significant Carried through into a list the body builds.
+#' @param pct_same_sign Carried through into a list the body builds.
+#' @return The value of \code{structure}.
+#' @export
 .spec_curve_result <- function(estimates, ses, p_values, specifications,
                                  median_estimate, iqr_lower, iqr_upper,
                                  pct_significant, pct_same_sign) {
@@ -105,6 +180,15 @@ NULL
 # E-value (VanderWeele & Ding 2017)
 # =====================================================================
 
+#' .rr_to_evalue
+#'
+#' A step of the sensitivity implementation. Called by \code{e_value_rr}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param rr Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
 .rr_to_evalue <- function(rr) {
   if (rr < 1) rr <- 1 / rr
   rr + sqrt(rr * (rr - 1))
@@ -113,8 +197,7 @@ NULL
 
 #' E-value for a risk ratio
 #'
-#' Wraps \pkg{EValue} when available; otherwise applies the
-#' VanderWeele-Ding closed-form formula directly.
+#' Applies the VanderWeele-Ding closed-form formula directly in base R.
 #'
 #' @param rr        Observed risk ratio.
 #' @param ci_lower  Lower 95% CI of the RR (optional).
@@ -251,8 +334,8 @@ e_value_d <- function(d, se = NULL, n = NULL) {
 
 #' Rosenbaum sensitivity analysis for matched-pair designs
 #'
-#' Wraps \pkg{rbounds} when available (and `method == "wilcoxon"`);
-#' falls back to a base-R normal-approximation implementation.
+#' Native base-R implementation using the normal approximation to the
+#' Wilcoxon signed-rank statistic under the Rosenbaum Gamma model.
 #'
 #' @param treated_outcomes Vector of outcomes for treated units.
 #' @param control_outcomes Vector of outcomes for matched controls.
@@ -261,6 +344,9 @@ e_value_d <- function(d, se = NULL, n = NULL) {
 #' @param method One of `"wilcoxon"`, `"sign"`, `"mcnemar"`.
 #' @return A `morie_rosenbaum_bounds` named-list.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' rosenbaum_bounds(V, V)
 rosenbaum_bounds <- function(treated_outcomes, control_outcomes,
                                 gamma_range = NULL,
                                 method = "wilcoxon") {
@@ -347,6 +433,9 @@ rosenbaum_bounds <- function(treated_outcomes, control_outcomes,
 #' @param outcome_type `"continuous"` or `"binary"` (advisory only).
 #' @return A `morie_tipping_point` named-list.
 #' @export
+#' @examples
+#' tipping_point_analysis(estimate = 5L, se = c(1, 2, 3, 4, 5, 6, 7, 8), n_treated = c(1,
+#' 2, 3, 4, 5, 6, 7, 8), n_control = c(1, 2, 3, 4, 5, 6, 7, 8))
 tipping_point_analysis <- function(estimate, se, n_treated, n_control,
                                       delta_range = NULL,
                                       outcome_type = "continuous") {
@@ -384,13 +473,13 @@ tipping_point_analysis <- function(estimate, se, n_treated, n_control,
 
 
 # =====================================================================
-# Omitted-variable bias (Cinelli & Hazlett 2020 — sensemakr)
+# Omitted-variable bias (Cinelli & Hazlett 2020 -- sensemakr)
 # =====================================================================
 
 #' Omitted-variable bias analysis (sensemakr framework)
 #'
-#' Wraps \pkg{sensemakr} when available; otherwise applies the
-#' closed-form Cinelli-Hazlett robustness-value formulas in base R.
+#' Applies the closed-form Cinelli-Hazlett robustness-value formulas
+#' natively in base R.
 #'
 #' @param estimate              Treatment coefficient.
 #' @param se                    SE of the estimate.
@@ -404,6 +493,9 @@ tipping_point_analysis <- function(estimate, se, n_treated, n_control,
 #'   partial R^2.
 #' @return A `morie_ovb` named-list.
 #' @export
+#' @examples
+#' omitted_variable_bias(estimate = 1, se = 0.1, dof = 100, r2_yd_x = 0.3,
+#'     partial_r2_treatment = 0.1)
 omitted_variable_bias <- function(estimate, se, dof, r2_yd_x,
                                      partial_r2_treatment,
                                      q = 1.0, alpha = 0.05,
@@ -456,13 +548,17 @@ omitted_variable_bias <- function(estimate, se, dof, r2_yd_x,
 #' @param sample_filters Optional. Accepted shapes (for Python<->R parity):
 #'   (a) `list(list(name = "...", fn = function(df) ...), ...)` (R native),
 #'   (b) `list(c("name", fn), ...)` or `list(list("name", fn), ...)` (Python
-#'       `list[tuple[str, callable]]` shape — positional pair). Default: full
+#'       `list\[tuple\[str, callable\]\]` shape -- positional pair). Default: full
 #'       sample only.
 #' @param model_types    Character vector of model families:
 #'   `"ols"`, `"logistic"`, `"robust"`. Default `c("ols")`.
 #' @param alpha          Significance level. Default 0.05.
 #' @return A `morie_spec_curve` named-list.
 #' @export
+#' @examples
+#' specification_curve(data = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), outcome =
+#' c(1, 2, 3, 4, 5, 6, 7, 8), treatment = c(0, 1, 0, 1, 1, 0, 1, 0), covariate_sets =
+#' c(1, 2, 3, 4, 5, 6, 7, 8))
 specification_curve <- function(data, outcome, treatment,
                                   covariate_sets,
                                   sample_filters = NULL,
@@ -651,6 +747,9 @@ bias_adjusted_estimate <- function(estimate, se, rr_ud, rr_eu,
 #' @param seed          RNG seed. Default 42.
 #' @return Named list with bias-adjusted distribution summaries.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' probabilistic_bias_analysis(V, V)
 probabilistic_bias_analysis <- function(estimate, se,
                                            n_simulations = 10000L,
                                            bias_parms = NULL,
@@ -702,6 +801,8 @@ probabilistic_bias_analysis <- function(estimate, se,
 #' @param prevalence   Outcome prevalence (for OR-to-RR).
 #' @return A data.frame with `metric, value`.
 #' @export
+#' @examples
+#' sensitivity_summary(estimate = 5L, se = c(1, 2, 3, 4, 5, 6, 7, 8))
 sensitivity_summary <- function(estimate, se, rr = NULL,
                                   odds_ratio = NULL,
                                   hazard_ratio = NULL,

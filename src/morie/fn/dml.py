@@ -8,9 +8,30 @@ with Random Forest nuisance estimators and cross-fitting.
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from . import _array_core as np
+from . import _frame_core as pd
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from ._ml_core import RandomForestClassifier, RandomForestRegressor
+except ImportError:
+    RandomForestClassifier = _MissingDep('RandomForestClassifier')
+    RandomForestRegressor = _MissingDep('RandomForestRegressor')
 
 _DOUBLEML_RANDOM_STATE: int = 42
 """Module-level seed for all DoubleML estimations.  Change at call-site if needed."""
@@ -66,9 +87,9 @@ def estimate_double_ml(
     :type n_folds: int, optional
     :param n_rep: Number of repeated cross-fitting repetitions.  Default 1.
     :type n_rep: int, optional
-    :return: A fitted :class:`doubleml.DoubleMLPLR` object containing the
-        causal estimate and inference results.
-    :rtype: doubleml.DoubleMLPLR
+    :return: dict with ``ate``, ``se``, ``ci_lower``, ``ci_upper``,
+        ``pval``, ``n_obs`` from the native cross-fitted PLR.
+    :rtype: dict
 
     References
     ----------
@@ -77,33 +98,11 @@ def estimate_double_ml(
     treatment and structural parameters. *The Econometrics Journal*, 21(1),
     C1--C68. https://doi.org/10.1111/ectj.12097
     """
-    try:
-        import doubleml as dml
-    except ImportError as exc:  # pragma: no cover - depends on optional dependency
-        raise ImportError(
-            "DoubleML is required for estimate_double_ml(). "
-            "Install the project dependencies in the repo venv before using this function."
-        ) from exc
-
-    # Seed numpy's global RNG before constructing the learners so that the
-    # internal random state of the DoubleML cross-fitting splits is fully
-    # deterministic for a given random_state value.
-    np.random.seed(random_state)
-
-    dml_data = dml.DoubleMLData(data, y_col=outcome, d_cols=treatment, x_cols=covariates)
-
-    # ml_l: outcome regression E[Y|X] -- always a regressor.
-    # ml_m: treatment model P(T=1|X) -- classifier for binary treatment so that
-    #       DoubleML receives probability predictions, not continuous predictions.
-    #       Using a Regressor here would silently fit E[T|X] as a number in [0,1]
-    #       rather than a probability, producing incorrect Neyman-orthogonal scores.
-    ml_l = RandomForestRegressor(n_estimators=100, max_depth=5, random_state=random_state)
-    ml_m = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=random_state)
-
-    dml_plr = dml.DoubleMLPLR(dml_data, ml_l, ml_m, n_folds=n_folds, n_rep=n_rep)
-    dml_plr.fit()
-
-    return dml_plr
+    del n_rep  # single-rep native estimator; kept for signature compat
+    from .plr import estimate_plr as _native_plr
+    return _native_plr(data, treatment=treatment, outcome=outcome,
+                       covariates=covariates, n_folds=n_folds,
+                       random_state=random_state)
 
 
 dml = estimate_double_ml

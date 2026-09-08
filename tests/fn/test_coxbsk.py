@@ -1,6 +1,6 @@
 """Tests for coxbsk.cox_breslow_step."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.coxbsk import cox_breslow_step
 

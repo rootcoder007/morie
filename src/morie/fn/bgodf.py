@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import TestResult
 
@@ -107,3 +107,7 @@ bgodf = bg_test
 
 def cheatsheet() -> str:
     return "bg_test(y, lags=1, x=None) -> Breusch-Godfrey serial correlation LM test."
+
+
+# compact alias per ledger/NAMING.md
+bgtest = bg_test

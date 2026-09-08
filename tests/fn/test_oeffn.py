@@ -1,6 +1,6 @@
 """Tests for morie.fn.oeffn — Summary of all effect sizes."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.oeffn import otis_effect_summary
 

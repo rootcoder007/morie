@@ -8,10 +8,15 @@ r_squared(x, y)
 }
 \arguments{
 \item{x, y}{Numeric vectors (NA dropped).}
+
 }
 \value{
 A \code{morie_effect_size}.
 }
 \description{
 Coefficient of determination R^2
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+r_squared(V, V)
 }

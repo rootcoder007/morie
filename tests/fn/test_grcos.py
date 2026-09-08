@@ -1,26 +1,11 @@
-"""Tests for grcos.geron_conv_output_size."""
+"""Tests for grcos (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.grcos import geron_conv_output_size
-
-
-def test_grcos_basic():
-    """Test basic functionality."""
-    in_size = 100
-    kernel = lambda u: np.exp(-0.5 * u * u) / np.sqrt(2 * np.pi)
-    padding = np.random.default_rng(42).normal(0, 1, 100)
-    stride = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_conv_output_size(in_size, kernel, padding, stride)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.grcos as mod
 
 
-def test_grcos_edge():
-    """Test edge cases."""
-    in_size = 100
-    kernel = lambda u: np.exp(-0.5 * u * u) / np.sqrt(2 * np.pi)
-    padding = np.random.default_rng(42).normal(0, 1, 100)
-    stride = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_conv_output_size(in_size, kernel, padding, stride)
-    assert isinstance(result, dict)
+def test_grcos_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

@@ -1,6 +1,6 @@
 """Tests for polychoric_corr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.polyc import polychoric_corr
 

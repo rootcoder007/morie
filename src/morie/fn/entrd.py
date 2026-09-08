@@ -5,7 +5,7 @@ Temporal trend air quality
 Category: EnvStat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def entrd(data=None, coords=None, n=50):

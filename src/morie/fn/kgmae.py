@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kriging MAE"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -35,3 +35,7 @@ krig = kriging_mae
 
 def cheatsheet() -> str:
     return "kriging_mae({}) -> Kriging MAE"
+
+
+# compact alias per ledger/NAMING.md
+krigingmae = kriging_mae

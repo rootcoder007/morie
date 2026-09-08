@@ -23,7 +23,7 @@ def cox_process(intensity_field, window, seed=None):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     lam = np.asarray(intensity_field, dtype=np.float64)
     ny, nx = lam.shape

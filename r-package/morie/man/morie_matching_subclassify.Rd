@@ -19,7 +19,9 @@ morie_matching_subclassify(
 
 \item{covariates}{Character vector of covariates.}
 
-\item{ps}{Optional pre-computed propensity scores.}
+\item{ps}{Optional propensity scores. When supplied they REPLACE
+the fitted model and become the matching distance directly,
+aligned to the rows that survive the NA drop.}
 
 \item{n_strata}{Number of quantile-based strata (default 5).}
 }
@@ -34,6 +36,7 @@ stratum sample sizes and PS ranges.  Mirrors Python
 \code{morie.matching.subclassify}.
 }
 \examples{
+\dontshow{if (requireNamespace("MatchIt", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -42,4 +45,5 @@ df <- data.frame(
   year = sample(2020:2022, 150, TRUE),
   treat3 = sample(0:2, 150, TRUE))
 morie_matching_subclassify(df, "d", c("x1", "x2"), n_strata = 5)
+\dontshow{\}) # examplesIf}
 }

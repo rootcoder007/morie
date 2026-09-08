@@ -3,7 +3,7 @@
 \name{morie_otis_analyze_b09_ruhela_aggregate}
 \alias{morie_otis_analyze_b09_ruhela_aggregate}
 \alias{morie_otis_analyze_b09_mrm_aggregate}
-\title{b09 aggregate Ruhela: Female -> individuals in segregation.}
+\title{b09 aggregate Ruhela: Female -> individuals in segregation}
 \usage{
 morie_otis_analyze_b09_ruhela_aggregate(data, out_dir = NULL)
 
@@ -18,10 +18,12 @@ morie_otis_analyze_b09_mrm_aggregate(data, out_dir = NULL)
 \code{morie_otis_analysis_result}.
 }
 \description{
-b09 aggregate Ruhela: Female -> individuals in segregation.
+b09 aggregate Ruhela: Female -> individuals in segregation
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_b09 <- morie_synth_otis("b09", n = 120L, seed = 1L)
 morie_otis_analyze_b09_ruhela_aggregate(otis_b09)
+}
 }

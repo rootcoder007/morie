@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -83,3 +83,7 @@ arcit = gauss_seidel
 
 def cheatsheet() -> str:
     return "gauss_seidel({}) -> System of equations solver (Gauss-Seidel)."
+
+
+# compact alias per ledger/NAMING.md
+gaussseidel = gauss_seidel

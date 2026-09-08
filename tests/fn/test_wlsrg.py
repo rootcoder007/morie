@@ -1,6 +1,6 @@
 """Tests for morie.fn.wlsrg — WLS regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.wlsrg import wls_regression

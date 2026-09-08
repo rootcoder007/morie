@@ -1,6 +1,6 @@
 """Tests for mirt3.mirt_3d_compensatory."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mirt3 import mirt_3d_compensatory
 

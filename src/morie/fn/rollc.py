@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -19,7 +19,14 @@ def roll_call_analysis(vote_matrix) -> DescriptiveResult:
 
     References
     ----------
-    Armstrong (2014), Ch 7.
+    Armstrong, D. A. et al. (2014). *Analyzing Spatial Models of
+    Choice and Judgment*. CRC Press. Ch. 5 (roll-call data and
+    unfolding analysis of binary choice), p. 129. The former "Ch 7"
+    citation was fabricated: the book has six chapters.
+
+    Poole, K. T. & Rosenthal, H. (1997). *Congress: A
+    Political-Economic History of Roll Call Voting*. Oxford
+    University Press. (the descriptive roll-call statistics)
 
     .. epigraph:: Number rules the universe. -- Pythagoras
     """

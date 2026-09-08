@@ -3,8 +3,8 @@
 
 from typing import Union
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import TestResult
 
@@ -81,3 +81,7 @@ cocht = cochrans_q_test
 
 def cheatsheet() -> str:
     return "cochrans_q_test({}) -> Cochran's Q test for k related binary samples."
+
+
+# compact alias per ledger/NAMING.md
+cochransqtest = cochrans_q_test

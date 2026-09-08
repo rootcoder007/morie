@@ -11,7 +11,7 @@ def bayesian_am_posterior_summary(chain) -> DescriptiveResult:
 
     .. epigraph:: The only true wisdom is in knowing you know nothing. -- Socrates
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     chain = np.asarray(chain, dtype=float)
     if chain.ndim == 1:

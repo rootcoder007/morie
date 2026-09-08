@@ -1,7 +1,7 @@
 """GeneralStatistics equation extracted from Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment.."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import hypothesis_test_result
 

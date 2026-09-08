@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Engle-Granger cointegration test."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import DescriptiveResult
 
@@ -83,3 +83,7 @@ coitg = eg_coint
 
 def cheatsheet() -> str:
     return "eg_coint({}) -> Engle-Granger cointegration test."
+
+
+# compact alias per ledger/NAMING.md
+egcoint = eg_coint

@@ -1,6 +1,6 @@
 """Tests for psar2.polar_surface_area."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.psar2 import polar_surface_area
 

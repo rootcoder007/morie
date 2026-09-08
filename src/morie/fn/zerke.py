@@ -1,6 +1,6 @@
 """Risk exceedance probability"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ risk = risk_exceedance
 
 def cheatsheet() -> str:
     return "risk_exceedance({}) -> Risk exceedance probability"
+
+
+# compact alias per ledger/NAMING.md
+riskexceedance = risk_exceedance

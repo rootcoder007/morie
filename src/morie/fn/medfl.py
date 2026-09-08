@@ -7,7 +7,7 @@ Analysis*, 3rd ed. IEEE/Wiley, Chapter 3.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -35,7 +35,7 @@ def medfl(
     -------
     SignalResult
     """
-    from scipy.ndimage import median_filter
+    from ._sci_core import median_filter
 
     x = np.asarray(x, dtype=float).ravel()
     if kernel_size % 2 == 0:

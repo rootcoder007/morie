@@ -23,6 +23,17 @@
 #'   83(401), 9--27. \doi{10.1080/01621459.1988.10478560}
 NULL
 
+#' .hst_check_params
+#'
+#' A step of the hawkes_spatial implementation. Called by
+#' \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik},
+#' \code{morie_hawkes_st_simulate}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param p A list; the body reads \code{$alpha}, \code{$beta}, \code{$mu}, \code{$sigma} from it.
+#' @return Invisibly,the value of \code{p}, as built in the body.
+#' @export
 .hst_check_params <- function(p) {
   need <- c("mu", "alpha", "beta", "sigma")
   if (!all(need %in% names(p))) {
@@ -35,6 +46,17 @@ NULL
 }
 
 # Gaussian spatial density evaluated at squared distances.
+#' Gaussian spatial density evaluated at squared distances
+#'
+#' A step of the hawkes_spatial implementation. Called by
+#' \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param d2 Numeric; combined arithmetically in the body.
+#' @param sigma Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
 .hst_spatial <- function(d2, sigma) {
   exp(-d2 / (2 * sigma^2)) / (2 * pi * sigma^2)
 }
@@ -252,6 +274,10 @@ morie_hawkes_st_fit <- function(events, end_time = NULL, area = 1,
   out
 }
 
+#' Print method for \code{morie_hawkes_st_fit} objects
+#'
+#' @param x A \code{morie_hawkes_st_fit} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_hawkes_st_fit <- function(x, ...) {
   p <- x$params

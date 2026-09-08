@@ -1,8 +1,8 @@
 """Tests for rgvag.rangayyan_vag_analysis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgvag import rangayyan_vag_analysis
+from morie.fn.bsaphys import rangayyan_vag_analysis
 
 
 def test_rgvag_basic():

@@ -1,6 +1,6 @@
 """Esteban-Ray polarization index"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ pola = polarization_er
 
 def cheatsheet() -> str:
     return "polarization_er({}) -> Esteban-Ray polarization index"
+
+
+# compact alias per ledger/NAMING.md
+polarizationer = polarization_er

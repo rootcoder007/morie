@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -61,3 +61,7 @@ def cheatsheet():
 # >>> r = top_p_nucleus([0.0, 0.0, 5.0], p=0.5)
 # >>> int(r["n_kept"])
 # 1
+
+
+# compact alias per ledger/NAMING.md
+toppnucleus = top_p_nucleus

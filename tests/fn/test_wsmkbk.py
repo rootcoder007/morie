@@ -1,6 +1,6 @@
 """Tests for wsmkbk.wasserman_kullback_leibler."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmkbk import wasserman_kullback_leibler
 

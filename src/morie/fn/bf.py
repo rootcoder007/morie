@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from scipy import stats
+from . import _stats_core as stats
 
 from ._containers import TestResult
 
@@ -35,3 +35,7 @@ bf = brown_forsythe
 
 def cheatsheet() -> str:
     return "brown_forsythe({}) -> Brown-Forsythe test for equality of variances."
+
+
+# compact alias per ledger/NAMING.md
+brownforsythe = brown_forsythe

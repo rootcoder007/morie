@@ -1,6 +1,6 @@
 """Tests for jotsmx.joseph_tsmixer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jotsmx import joseph_tsmixer
 

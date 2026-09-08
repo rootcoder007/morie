@@ -1,26 +1,17 @@
 """Tests for albtm.alammar_bertopic_pipeline."""
 
-import numpy as np
-
 from morie.fn.albtm import alammar_bertopic_pipeline
 
 
 def test_albtm_basic():
-    """Test basic functionality."""
-    documents = np.random.default_rng(42).normal(0, 1, 100)
-    embedder = np.random.default_rng(42).normal(0, 1, 100)
-    reducer = np.random.default_rng(42).normal(0, 1, 100)
-    cluster_model = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_bertopic_pipeline(documents, embedder, reducer, cluster_model)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    docs = [["cat", "dog", "cat"], ["dog", "cat"],
+            ["stock", "bond", "stock"], ["bond", "stock", "bond"]]
+    out = alammar_bertopic_pipeline(docs, [[0, 0], [0.1, 0.1],
+                                           [5, 5], [5.1, 5.1]], 2)
+    assert out["n_topics"] == 2
 
 
 def test_albtm_edge():
-    """Test edge cases."""
-    documents = np.random.default_rng(42).normal(0, 1, 100)
-    embedder = np.random.default_rng(42).normal(0, 1, 100)
-    reducer = np.random.default_rng(42).normal(0, 1, 100)
-    cluster_model = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_bertopic_pipeline(documents, embedder, reducer, cluster_model)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="one embedding"):
+        alammar_bertopic_pipeline([["a"], ["b"], ["c"], ["d"]], [[0, 0]], 2)

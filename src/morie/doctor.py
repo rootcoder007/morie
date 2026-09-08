@@ -167,7 +167,7 @@ _REQUIRED_IMPORTS = [
     "rich",
 ]
 
-_OPTIONAL_IMPORTS = ["doubleml", "openai", "textual"]
+_OPTIONAL_IMPORTS: list[str] = []  # everything is native now
 
 
 def run_checks() -> dict[str, Any]:

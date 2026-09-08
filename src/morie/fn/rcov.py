@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -31,3 +31,7 @@ rcov = rcov_fn
 
 def cheatsheet() -> str:
     return "rcov_fn({}) -> Riemannian covariance estimation."
+
+
+# compact alias per ledger/NAMING.md
+rcovfn = rcov_fn

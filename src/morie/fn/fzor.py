@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fuzzy OR (t-conorm) operation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -64,3 +64,7 @@ fzor = fuzzy_or
 
 def cheatsheet() -> str:
     return "fuzzy_or({}) -> Fuzzy OR (t-conorm) operation."
+
+
+# compact alias per ledger/NAMING.md
+fuzzyor = fuzzy_or

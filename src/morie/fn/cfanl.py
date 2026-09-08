@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import CfaRes
 
@@ -106,3 +106,7 @@ cfanl = cfa_uls
 
 def cheatsheet() -> str:
     return "cfa_uls({}) -> Confirmatory factor analysis (ULS estimation)."
+
+
+# compact alias per ledger/NAMING.md
+cfauls = cfa_uls

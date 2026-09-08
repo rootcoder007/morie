@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kronecker product of two matrices."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 

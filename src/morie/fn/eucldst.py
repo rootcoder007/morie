@@ -4,7 +4,7 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def eucldst(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]) -> float:

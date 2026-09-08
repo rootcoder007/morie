@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.interpolate import CubicSpline
+from . import _array_core as np
+from ._sci_core import CubicSpline
 
 from ._containers import DescriptiveResult
 
@@ -69,3 +69,7 @@ imfex = imf_extract
 
 def cheatsheet() -> str:
     return "_sift({}) -> Extract intrinsic mode functions via sifting."
+
+
+# compact alias per ledger/NAMING.md
+imfextract = imf_extract

@@ -23,7 +23,7 @@ def edge_correction(points, window, method="ripley"):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pts = np.asarray(points, dtype=np.float64)
     n = pts.shape[0]
@@ -35,7 +35,7 @@ def edge_correction(points, window, method="ripley"):
     )
 
     if method == "ripley":
-        from scipy.spatial.distance import pdist, squareform
+        from ._sci_core import pdist, squareform
 
         D = squareform(pdist(pts))
         weights = np.ones((n, n))
@@ -72,3 +72,7 @@ sgedg = edge_correction
 
 def cheatsheet() -> str:
     return "edge_correction({}) -> Edge correction weights for point patterns."
+
+
+# compact alias per ledger/NAMING.md
+edgecorrection = edge_correction

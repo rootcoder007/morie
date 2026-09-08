@@ -1,6 +1,6 @@
 """Tests for evhill.evt_hill_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evhill import evt_hill_estimator
 

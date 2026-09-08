@@ -1,6 +1,6 @@
 """Tests for morie.fn.zeear -- Ecological regression (Poisson)"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zeear import ecological_reg
 

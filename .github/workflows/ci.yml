@@ -68,10 +68,9 @@ jobs:
           # carries labextension bundles; both are wheel-absent, and both
           # trip static scanners with false positives. Wheels exist for all
           # CI targets (numpy: manylinux; plotly: py3-none-any).
-          # doubleml extra installed here (main matrix) so the DML wrapper
-          # path is tested; the container + lock jobs stay bare and exercise
-          # the importorskip path instead.
-          pip install --prefer-binary --only-binary=numpy,plotly -e ".[test,interactive,doubleml]"
+          # No doubleml extra: DML is native here, and the optional wrapper
+          # path is covered by pytest.importorskip.
+          pip install --prefer-binary --only-binary=numpy,plotly -e ".[test,interactive]"
 
       - name: Test
         run: pytest -q --tb=short
@@ -182,8 +181,8 @@ jobs:
           python -m pip install --upgrade pip
           # --only-binary=numpy,plotly keeps their vendored-sdist trees off
           # disk (see the Install step); the lock pins wheel hashes for both.
-          python -m pip install --require-hashes --no-deps --only-binary=numpy,plotly -r requirements-lock.txt
-          python -c "import numpy, scipy, pandas, sklearn, statsmodels, httpx, bs4; print('hash-verified deps import OK')"
+          python -m pip install --require-hashes --no-deps -r requirements-lock.txt
+          python -c "import openpyxl, httpx, rich, bs4; print('hash-verified deps import OK')"
 
   # test-papers-latex removed 2026-05-26: the five JSS-format papers
   # (papers/hawkes-paper, papers/morie-empirical-paper,
@@ -204,7 +203,7 @@ jobs:
         with:
           lfs: false
 
-      - uses: r-lib/actions/setup-r@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+      - uses: r-lib/actions/setup-r@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           r-version: "4.6.1"
           use-public-rspm: true
@@ -224,7 +223,7 @@ jobs:
         run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
         shell: Rscript {0}
 
-      - uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+      - uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           working-directory: r-package/morie
           extra-packages: any::testthat any::survey any::DBI any::RSQLite any::jsonlite
@@ -241,4 +240,10 @@ jobs:
         run: R CMD INSTALL r-package/morie
 
       - name: Test
-        run: Rscript -e "library(morie); testthat::test_dir('r-package/morie/tests/testthat')"
+        # test_dir() with a plain environment sees only EXPORTED
+        # objects, so every test touching an internal helper
+        # (morie_ann_*, .PEDRONI_T2, ...) failed with "could not
+        # find function". R CMD check runs a package's tests inside
+        # its namespace; parent the test env on the namespace so
+        # this job matches.
+        run: Rscript -e "library(morie); testthat::test_dir('r-package/morie/tests/testthat', env = new.env(parent = asNamespace('morie')), stop_on_failure = TRUE)"

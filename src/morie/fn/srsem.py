@@ -4,7 +4,7 @@ Spatial Durbin error model (SDEM)
 Category: SpatReg2
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def srsem(X=None, y=None, w=None, n=50, k=3):

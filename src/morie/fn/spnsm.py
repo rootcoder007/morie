@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.interpolate import UnivariateSpline
+from . import _array_core as np
+from ._sci_core import UnivariateSpline
 
 from ._containers import DescriptiveResult
 
@@ -69,3 +69,7 @@ spnsm = spline_smooth
 
 def cheatsheet() -> str:
     return "spline_smooth({}) -> Smoothing spline."
+
+
+# compact alias per ledger/NAMING.md
+splinesmooth = spline_smooth

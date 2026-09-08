@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import ESRes
 
@@ -49,3 +49,7 @@ rsknb = risk_nagelkerke
 
 def cheatsheet() -> str:
     return "risk_nagelkerke({}) -> Nagelkerke R-squared for risk model."
+
+
+# compact alias per ledger/NAMING.md
+risknagelkerke = risk_nagelkerke

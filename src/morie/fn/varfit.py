@@ -1,6 +1,6 @@
 """Vector autoregression via OLS."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -52,3 +52,7 @@ def var_fit(Y, p=1):
 
 def cheatsheet() -> str:
     return "var_fit({}) -> Vector autoregression via OLS."
+
+
+# compact alias per ledger/NAMING.md
+varfit = var_fit

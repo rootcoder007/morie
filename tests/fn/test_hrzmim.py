@@ -1,6 +1,6 @@
 """Tests for hrzmim.horowitz_multiple_index_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzmim import horowitz_multiple_index_model
 

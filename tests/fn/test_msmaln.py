@@ -1,6 +1,6 @@
 """Tests for msmaln.aalen_johansen."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msmaln import aalen_johansen
 

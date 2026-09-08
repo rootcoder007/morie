@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def score_norms(
@@ -48,3 +48,7 @@ def score_norms(
 
 def cheatsheet() -> str:
     return "score_norms({}) -> Score norms -- normative table from score distribution."
+
+
+# compact alias per ledger/NAMING.md
+scorenorms = score_norms

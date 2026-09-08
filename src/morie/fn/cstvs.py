@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 
@@ -46,3 +46,7 @@ cstvs = custody_visits
 
 def cheatsheet() -> str:
     return "custody_visits({}) -> Visitation frequency analysis in custody."
+
+
+# compact alias per ledger/NAMING.md
+custodyvisits = custody_visits

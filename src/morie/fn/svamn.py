@@ -1,6 +1,6 @@
 """Sequential amendment procedure"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ amen = amendment_seq
 
 def cheatsheet() -> str:
     return "amendment_seq({}) -> Sequential amendment procedure"
+
+
+# compact alias per ledger/NAMING.md
+amendmentseq = amendment_seq

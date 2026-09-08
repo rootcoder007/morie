@@ -1,6 +1,6 @@
 """Tests for rpnlt.roughness_penalty."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rpnlt import roughness_penalty
 

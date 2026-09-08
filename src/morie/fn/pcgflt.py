@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -42,3 +42,7 @@ pcgflt = pcg_filter
 
 def cheatsheet() -> str:
     return "pcg_filter({}) -> PCG bandpass preprocessing filter."
+
+
+# compact alias per ledger/NAMING.md
+pcgfilter = pcg_filter

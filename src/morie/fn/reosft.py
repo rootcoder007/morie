@@ -1,6 +1,6 @@
 """REOS rapid-elimination of swill."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def reos_filter(smiles):
 
 def cheatsheet():
     return "reosft: REOS rapid-elimination of swill"
+
+
+# compact alias per ledger/NAMING.md
+reosfilter = reos_filter

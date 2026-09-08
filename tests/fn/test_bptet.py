@@ -1,6 +1,6 @@
 """Tests for bowman_shenton_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bptet import bowman_shenton_test

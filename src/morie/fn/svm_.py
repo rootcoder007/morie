@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -51,7 +51,7 @@ def svm_classify(
         raise ValueError("X and y must have the same number of rows.")
 
     try:
-        from sklearn.svm import SVC
+        from ._ml_core import SVC
 
         model = SVC(kernel=kernel, C=C, random_state=random_state)
         model.fit(X, y)
@@ -105,3 +105,7 @@ svm_ = svm_classify
 
 def cheatsheet() -> str:
     return "svm_classify({}) -> Support Vector Machine classifier wrapper."
+
+
+# compact alias per ledger/NAMING.md
+svmclassify = svm_classify

@@ -105,7 +105,7 @@ Phase 3DDD1. Five small fixtures harvested live from
 opendata.vancouver.ca for offline reproducibility -- chosen to
 surface neighbourhood-level civic context useful in carceral /
 policing analysis even though VPD itself publishes crime data
-separately (see \code{\link[=morie_datasets_vpd_crime]{morie_datasets_vpd_crime()}}).
+separately (see \code{morie_datasets_vpd_crime()}).
 
 Phase 3EEE3. Bundled 27-row snapshot of City-run community
 centres. Useful as an "anchor institutions" overlay for analyses
@@ -135,4 +135,9 @@ neighbourhood, primary material. Useful as a CPTED-style
 
 All loaders accept the same \code{offline = TRUE} (default) /
 \code{max_features} interface as the other morie dataset wrappers.
+}
+\examples{
+\dontrun{
+morie_datasets_vancouver_graffiti()
+}
 }

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -34,3 +34,7 @@ hannf = hann_filter
 
 def cheatsheet() -> str:
     return "hann_filter({}) -> Hann window filter."
+
+
+# compact alias per ledger/NAMING.md
+hannfilter = hann_filter

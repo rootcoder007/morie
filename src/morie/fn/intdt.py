@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -57,3 +57,7 @@ intdt = interval_detect
 
 def cheatsheet() -> str:
     return "interval_detect({}) -> Detect inter-event intervals and statistics."
+
+
+# compact alias per ledger/NAMING.md
+intervaldetect = interval_detect

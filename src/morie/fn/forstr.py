@@ -5,7 +5,7 @@ Random stratified forest
 Category: ForstSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def forstr(dbh=None, height=None, coords=None, n=50):

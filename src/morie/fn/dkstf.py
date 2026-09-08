@@ -5,7 +5,7 @@ ST covariance fitting
 Category: DimKrig
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def dkstf(x=None, y=None, z=None, values=None, n=30):

@@ -1,6 +1,6 @@
 """Tests for km052.kamath_ch3_t5_template_obj."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km052 import kamath_ch3_t5_template_obj
 

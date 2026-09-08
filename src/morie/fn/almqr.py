@@ -1,52 +1,43 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Multi-query retrieval: LLM generates K paraphrases, union of top-k each."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Multi-query retrieval (Alammar Ch 8; RAG)."""
 
 from ._richresult import RichResult
 
 __all__ = ["alammar_multi_query_retrieval"]
 
 
-def alammar_multi_query_retrieval(query, K, retriever, model):
+def alammar_multi_query_retrieval(query, K, retriever, rephraser):
+    """Q_set = {query} + K rephrasings; results = the UNION of top-k
+    hits over the query set, first-seen order, deduplicated.
+
+    ``rephraser`` is (query, i) -> alternative query; ``retriever`` is
+    query -> ranked id list. How many documents each extra query ADDED
+    is reported, since that marginal gain is the whole case for the
+    technique.
+
+    References: Alammar and Grootendorst, Ch 8.
     """
-    Multi-query retrieval: LLM generates K paraphrases, union of top-k each
-
-    Formula: Q_set = LLM(rephrase(q), K); results = union_{q' in Q_set} top_k(q')
-
-    Parameters
-    ----------
-    query : array-like
-        Input data.
-    K : array-like
-        Input data.
-    retriever : array-like
-        Input data.
-    model : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: merged_results
-
-    References
-    ----------
-    Alammar Ch 8, Multi-query Retrieval section
-    """
-    query = np.atleast_1d(np.asarray(query, dtype=float))
-    n = len(query)
-    result = float(np.mean(query))
-    se = float(np.std(query, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Multi-query retrieval: LLM generates K paraphrases, union of top-k each",
-        }
-    )
+    if not callable(retriever) or not callable(rephraser):
+        raise ValueError("retriever and rephraser must be callable.")
+    k = int(K)
+    if k < 0:
+        raise ValueError("K must be non-negative.")
+    queries = [str(query)] + [str(rephraser(str(query), i))
+                              for i in range(k)]
+    seen = []
+    added = []
+    for q in queries:
+        hits = list(retriever(q))
+        new = [h for h in hits if h not in seen]
+        seen.extend(new)
+        added.append(len(new))
+    return RichResult(payload={
+        "documents": seen, "queries": queries,
+        "added_per_query": added,
+        "estimate": float(len(seen)), "n": len(queries),
+        "method": "Multi-query retrieval union (Alammar Ch 8)"})
 
 
 def cheatsheet():
-    return "almqr: Multi-query retrieval: LLM generates K paraphrases, union of top-k each"
+    return "almqr: union of hits over rephrasings, marginal gain per query"

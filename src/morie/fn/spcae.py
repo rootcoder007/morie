@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import PcaRes
 
@@ -87,3 +87,7 @@ spcae = sparse_pca
 
 def cheatsheet() -> str:
     return "sparse_pca({}) -> Sparse PCA via iterative thresholding."
+
+
+# compact alias per ledger/NAMING.md
+sparsepca = sparse_pca

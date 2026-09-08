@@ -3,10 +3,11 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from numpy.linalg import lstsq
-from scipy import stats
+from . import _array_core as np
+from . import _frame_core as pd
+from morie.fn._array_core import linalg as _acl
+lstsq = _acl.lstsq
+from . import _stats_core as stats
 
 
 def otis_dml_region(
@@ -109,3 +110,7 @@ def otis_dml_region(
 
 def cheatsheet() -> str:
     return "otis_dml_region({}) -> DML ATE by region for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisdmlregion = otis_dml_region

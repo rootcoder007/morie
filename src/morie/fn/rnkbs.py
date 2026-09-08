@@ -11,8 +11,8 @@ Standardised statistic Z under H0 (no trend):
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -74,3 +74,7 @@ def cheatsheet():
 # CANONICAL TEST
 # >>> rank_based_test([1, 2, 3, 4, 5])
 # Perfect upward trend: tau = 1, inversions = 0, p_value very small
+
+
+# compact alias per ledger/NAMING.md
+rankbasedtest = rank_based_test

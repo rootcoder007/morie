@@ -34,7 +34,7 @@ def incidence_rate(
     Rothman, K. J., Greenland, S., & Lash, T. L. (2008). *Modern
     Epidemiology* (3rd ed.). Lippincott Williams & Wilkins, Ch. 3.
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     if events < 0:
         raise ValueError("events must be non-negative.")

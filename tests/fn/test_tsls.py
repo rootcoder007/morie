@@ -1,7 +1,7 @@
 """Tests for morie.fn.tsls -- Two-stage least squares."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import RegressionResult
 from morie.fn.tsls import tsls, two_stage_ls

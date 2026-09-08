@@ -1,8 +1,8 @@
 """Tests for morie.fn.df_ — F-distribution PDF."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy.stats import f as f_dist
+from morie.fn._stats_core import f as f_dist
 
 from morie.fn.df_ import df_, df_dist
 

@@ -1,6 +1,6 @@
 """Test turning_points_test (trnpt)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.trnpt import trnpt, turning_points_test

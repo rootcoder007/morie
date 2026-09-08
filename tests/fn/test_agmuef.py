@@ -1,6 +1,6 @@
 """Tests for agmuef.muzero_efficient_exploration."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agmuef import muzero_efficient_exploration
 

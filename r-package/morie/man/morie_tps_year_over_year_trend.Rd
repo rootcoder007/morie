@@ -24,3 +24,7 @@ Aggregates incident counts by year, restricts to the 1990-2030
 window, fits an OLS line, and reports slope, intercept, and
 R-squared.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_year_over_year_trend(D)
+}

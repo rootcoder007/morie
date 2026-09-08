@@ -1,6 +1,6 @@
 """Test sobi_bss (sobi)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.sobi import sobi, sobi_bss

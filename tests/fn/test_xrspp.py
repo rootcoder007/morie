@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrspp -- Spatial probit model"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrspp import spatial_probit
 

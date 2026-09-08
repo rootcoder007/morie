@@ -2,8 +2,8 @@
 
 from typing import Union
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -42,3 +42,7 @@ tau = kendall_tau
 
 def cheatsheet() -> str:
     return "kendall_tau({}) -> Kendall's tau-b rank correlation coefficient."
+
+
+# compact alias per ledger/NAMING.md
+kendalltau = kendall_tau

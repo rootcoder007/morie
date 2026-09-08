@@ -1,6 +1,6 @@
 """Girvan-Newman edge-betweenness."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def girvan_newman(G):
 
 def cheatsheet():
     return "comgir: Girvan-Newman edge-betweenness"
+
+
+# compact alias per ledger/NAMING.md
+girvannewman = girvan_newman

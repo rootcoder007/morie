@@ -1,0 +1,23 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{vector_norm}
+\alias{vector_norm}
+\title{||v|| -- an invariant built from an equivariant}
+\usage{
+vector_norm(v) 
+}
+\arguments{
+\item{v}{A matrix; passed to \code{as.matrix}.}
+}
+\description{
+Part of the painn_native implementation; see the file header for the source it follows.
+}
+\value{
+One of two values, depending on the branch taken.
+}
+\keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+vector_norm(V)
+}

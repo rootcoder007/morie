@@ -1,6 +1,6 @@
 """Tests for ssarc.py - SSA reconstruction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ssarc import ssa_reconstruct_fn, ssarc
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/audit_variables.R
 \name{morie_specs_from_df}
 \alias{morie_specs_from_df}
-\title{Build a list of column specs from a parsed CSV header.}
+\title{Build a list of column specs from a parsed CSV header}
 \usage{
 morie_specs_from_df(df)
 }
@@ -17,4 +17,8 @@ Convenience helper: given a data.frame just-loaded by
 \code{morie_arsau_load_*()}, returns the
 \code{list(name, dtype, valid_values)} structure expected by the
 audit functions.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_specs_from_df(V)
 }

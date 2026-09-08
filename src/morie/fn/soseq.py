@@ -4,7 +4,7 @@ Carbon sequestration soil
 Category: SoilSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def soseq(data=None, depth=None, coords=None, n=50):

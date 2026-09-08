@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import DescriptiveResult
 
@@ -72,3 +72,7 @@ dnntt = dunnett_test
 
 def cheatsheet() -> str:
     return "dunnett_test({}) -> Dunnett's test -- multiple treatment groups vs control."
+
+
+# compact alias per ledger/NAMING.md
+dunnetttest = dunnett_test

@@ -1,54 +1,22 @@
-"""PowerAndDesign equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Deprecated alias for :func:`morie.fn.beta_posterior_interval_prob`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .beta_posterior_interval_prob import beta_posterior_interval_prob as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_18"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_18(x):
-    """
-    PowerAndDesign equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
-
-    Formula: [EQ] 𝑓(𝜃|z, 𝑛)d𝜃 = 1 − 𝛼 , (12.18)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r12e18')`` for the full guide.
-
-    References
-    ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.12 eq.12.18
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="PowerAndDesign equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "PowerAndDesign equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_18(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.beta_posterior_interval_prob` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_18() is the book-coordinate name for beta_posterior_interval_prob(); "
+        "it will be removed. Use morie.fn.beta_posterior_interval_prob() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r12e18: PowerAndDesign equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return _impl(*args, **kwargs)

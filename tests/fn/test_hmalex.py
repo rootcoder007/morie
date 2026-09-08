@@ -1,18 +1,11 @@
-"""Tests for hmalex.geron_alexnet."""
+"""Tests for hmalex (re-fixtured: doctests are the worked examples)."""
 
-from morie.fn.hmalex import geron_alexnet
+import doctest
 
-
-def test_hmalex_basic():
-    """Test basic functionality."""
-    n_classes = 3
-    result = geron_alexnet(n_classes)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.hmalex as mod
 
 
-def test_hmalex_edge():
-    """Test edge cases."""
-    n_classes = 3
-    result = geron_alexnet(n_classes)
-    assert isinstance(result, dict)
+def test_hmalex_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

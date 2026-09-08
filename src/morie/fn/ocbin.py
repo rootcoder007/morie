@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -54,3 +54,7 @@ ocbin = oc_binary_choice
 
 def cheatsheet() -> str:
     return "oc_binary_choice({}) -> OC for binary choice data with rating-to-pairwise conversion"
+
+
+# compact alias per ledger/NAMING.md
+ocbinarychoice = oc_binary_choice

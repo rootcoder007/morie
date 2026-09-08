@@ -1,7 +1,7 @@
 """Egger's regression test for funnel asymmetry."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -71,3 +71,7 @@ def ma_egger_test(yi, se_i, cdf=None):
 
 def cheatsheet():
     return "maeggr: Egger's regression test for funnel asymmetry"
+
+
+# compact alias per ledger/NAMING.md
+maeggertest = ma_egger_test

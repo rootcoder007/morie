@@ -43,3 +43,7 @@ rsltn = freq_resolution
 
 def cheatsheet() -> str:
     return "freq_resolution({}) -> Frequency resolution."
+
+
+# compact alias per ledger/NAMING.md
+freqresolution = freq_resolution

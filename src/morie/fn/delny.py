@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.spatial import Delaunay
+from . import _array_core as np
+from ._sci_core import Delaunay
 
 from ._containers import DescriptiveResult
 
@@ -45,3 +45,7 @@ delny = delaunay_simple
 
 def cheatsheet() -> str:
     return "delny() -> Compute a Delaunay triangulation of 2-D points"
+
+
+# compact alias per ledger/NAMING.md
+delaunaysimple = delaunay_simple

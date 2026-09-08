@@ -33,6 +33,7 @@ morie_permutation_test_general(
 \item{alternative}{"two-sided", "less", or "greater".}
 
 \item{seed}{integer.}
+
 }
 \value{
 Named list: statistic, p_value, n_x, n_y, B, alternative, method.
@@ -41,5 +42,9 @@ Named list: statistic, p_value, n_x, n_y, B, alternative, method.
 Tests H0: F_x = F_y by Monte-Carlo permutation of pooled samples.
 p-value uses (1 + count of permutation statistics at least T_obs)
 divided by (B+1), per Phipson and Smyth 2010.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+permt(V, V)
 }
 \keyword{internal}

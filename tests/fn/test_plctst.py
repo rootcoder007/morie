@@ -1,6 +1,6 @@
 """Tests for plctst.placebo_test_did."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.plctst import placebo_test_did
 

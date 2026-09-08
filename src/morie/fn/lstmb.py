@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -34,3 +34,7 @@ lstmb = lstmb_fn
 
 def cheatsheet() -> str:
     return "lstmb_fn({}) -> LSTM network for biosignal classification."
+
+
+# compact alias per ledger/NAMING.md
+lstmbfn = lstmb_fn

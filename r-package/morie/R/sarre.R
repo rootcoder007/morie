@@ -4,6 +4,20 @@
 # Extracted from the sarre() optimiser closure so the singular-GLS,
 # non-positive-variance and non-positive-determinant guards are all
 # directly unit-testable.
+#' Internal: SAR-error concentrated negative log-likelihood in lambda
+#'
+#' Extracted from the sarre() optimiser closure so the singular-GLS,
+#' non-positive-variance and non-positive-determinant guards are all
+#' directly unit-testable.
+#'
+#' @param lam Numeric; combined arithmetically in the body.
+#' @param I Numeric; combined arithmetically in the body.
+#' @param W Numeric; combined arithmetically in the body.
+#' @param X A matrix; passed to \code{\%*\%}.
+#' @param y A matrix; passed to \code{\%*\%}.
+#' @param n Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
 .sarre_negll <- function(lam, I, W, X, y, n) {
   A <- I - lam * W
   AX <- A %*% X
@@ -29,7 +43,7 @@
   0.5 * n * log(2 * pi * sigma2) - logdetA + 0.5 * n
 }
 
-#' Spatial autoregressive error model (SAR error, ML).
+#' Spatial autoregressive error model (SAR error, ML)
 #'
 #' Y = X beta + u,  u = lambda W u + eps,  eps ~ N(0, sigma2 I).
 #' Concentrated log-likelihood in lambda; beta via GLS on the
@@ -39,7 +53,7 @@
 #' @param y Response, length n.
 #' @param w Row-standardised n-by-n weights matrix.
 #' @return Named list: estimate, se, lambda, sigma2, n, method.
-#' @references Anselin (1988); Schabenberger & Gotway (2005), Ch 7.
+#' @references Anselin (1988); Schabenberger & Gotway (2005), Ch 6, Sec 6.2.2.1.
 #' @examples
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
@@ -55,7 +69,9 @@ sarre <- function(x, y, w) {
   }
   I <- diag(n)
   neg_ll <- function(lam) .sarre_negll(lam, I, W, X, y, n)
-  res <- stats::optimize(neg_ll, interval = c(-0.99, 0.99))
+  iv <- .sp_rho_interval(W, "identity")
+  res <- stats::optimize(neg_ll, interval = iv,
+                         tol = 1e-10 * max(diff(iv), 1))
   lam <- res$minimum
   A <- I - lam * W
   AX <- A %*% X

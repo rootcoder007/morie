@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -33,3 +33,7 @@ tfdft = tfdft_fn
 
 def cheatsheet() -> str:
     return "tfdft_fn({}) -> Time-Frequency Distribution feature extraction."
+
+
+# compact alias per ledger/NAMING.md
+tfdftfn = tfdft_fn

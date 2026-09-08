@@ -1,6 +1,6 @@
 """Tests for km150.kamath_ch9_flamingo_dataset_mix."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km150 import kamath_ch9_flamingo_dataset_mix
 

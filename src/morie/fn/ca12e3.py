@@ -1,54 +1,22 @@
-"""Regression expression involving 'regression' (auto-extracted; see reference for full context).."""
+"""Deprecated alias for :func:`morie.fn.ols_matrix`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .ols_matrix import ols_matrix as _impl
 
 __all__ = ["ca_chapter_12_equation_3"]
 
 
-def ca_chapter_12_equation_3(x):
-    """
-    Regression expression involving 'regression' (auto-extracted; see reference for full context).
-
-    Formula: y = xβ + e
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca12e3')`` for the full guide.
-
-    References
-    ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.12 eq.12.3
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Regression expression involving 'regression' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression expression involving 'regression' (auto-extracted; see reference for full context).",
-        },
+def ca_chapter_12_equation_3(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.ols_matrix` instead."""
+    warnings.warn(
+        "ca_chapter_12_equation_3() is the book-coordinate name for ols_matrix(); "
+        "it will be removed. Use morie.fn.ols_matrix() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "ca12e3: Regression expression involving 'regression' (auto-extracted; see reference for full context)."
+    return _impl(*args, **kwargs)

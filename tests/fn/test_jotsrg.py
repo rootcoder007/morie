@@ -1,6 +1,6 @@
 """Tests for jotsrg.joseph_ts_as_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jotsrg import joseph_ts_as_regression
 

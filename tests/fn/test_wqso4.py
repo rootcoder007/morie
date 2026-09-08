@@ -1,6 +1,6 @@
 """Test wqso4."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wqso4 import wqso4
 

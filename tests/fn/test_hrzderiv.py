@@ -1,6 +1,6 @@
 """Tests for hrzderiv.horowitz_density_derivative."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzderiv import horowitz_density_derivative
 

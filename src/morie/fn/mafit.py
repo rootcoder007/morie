@@ -8,8 +8,8 @@ conditional maximum likelihood (CML).
 Category: TimeSeries
 """
 
-import numpy as np
-from scipy.optimize import minimize
+from . import _array_core as np
+from ._sci_core import minimize
 
 
 def mafit(y, q=1, method="cml"):

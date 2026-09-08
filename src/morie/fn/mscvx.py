@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """2D convex hull"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ conv = convex_hull_2d
 
 def cheatsheet() -> str:
     return "convex_hull_2d({}) -> 2D convex hull"
+
+
+# compact alias per ledger/NAMING.md
+convexhull2d = convex_hull_2d

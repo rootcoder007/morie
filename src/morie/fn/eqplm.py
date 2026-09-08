@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import ESRes
 
@@ -41,3 +41,7 @@ eqplm = palma_ratio
 
 def cheatsheet() -> str:
     return "palma_ratio({}) -> Palma ratio (top 10% / bottom 40%)."
+
+
+# compact alias per ledger/NAMING.md
+palmaratio = palma_ratio

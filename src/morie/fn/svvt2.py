@@ -1,6 +1,6 @@
 """2D vote trading equilibrium"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ vote = vote_trade_2d
 
 def cheatsheet() -> str:
     return "vote_trade_2d({}) -> 2D vote trading equilibrium"
+
+
+# compact alias per ledger/NAMING.md
+votetrade2d = vote_trade_2d

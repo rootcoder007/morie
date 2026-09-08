@@ -5,7 +5,7 @@ Gini spatial economic
 Category: GeoEcon
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gegni(gdp=None, trade=None, coords=None, n=50):

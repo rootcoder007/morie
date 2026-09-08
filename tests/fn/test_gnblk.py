@@ -1,6 +1,6 @@
 """Tests for morie.fn.gnblk -- Genomic block bootstrap."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gnblk import gnblk

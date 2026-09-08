@@ -2,7 +2,7 @@
 % Please edit documentation in R/datasets.R
 \name{morie_datasets_nibrs}
 \alias{morie_datasets_nibrs}
-\title{FBI NIBRS offence-event records via the Crime Data Explorer API.}
+\title{FBI NIBRS offence-event records via the Crime Data Explorer API}
 \usage{
 morie_datasets_nibrs(
   year = NULL,
@@ -33,6 +33,8 @@ A \code{data.frame}.
 Requires an API key (\verb{api_key=} or \code{FBI_CDE_API_KEY} env var).
 }
 \examples{
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_nibrs(year = 2023L, offline = TRUE)
 head(df)
+\dontshow{\}) # examplesIf}
 }

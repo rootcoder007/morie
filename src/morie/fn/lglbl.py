@@ -11,7 +11,7 @@ def label_legislators(X, names) -> DescriptiveResult:
 
     .. epigraph:: It does not matter how slowly you go as long as you do not stop. -- Confucius
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     if X.ndim == 1:

@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def holo_funnel(
@@ -33,7 +33,7 @@ def holo_funnel(
         54(10), 1046--1055.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_funnel requires matplotlib. Install via: pip install matplotlib")
         return None
@@ -76,3 +76,7 @@ def holo_funnel(
 
 def cheatsheet() -> str:
     return "holo_funnel({}) -> Funnel plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holofunnel = holo_funnel

@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -67,3 +67,7 @@ guessing = irt_guessing
 
 def cheatsheet() -> str:
     return "irt_guessing({}) -> Pseudo-guessing parameter analysis for 3PL IRT."
+
+
+# compact alias per ledger/NAMING.md
+irtguessing = irt_guessing

@@ -6,7 +6,7 @@ from __future__ import annotations
 import math
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def conjugate_posterior(
@@ -50,7 +50,7 @@ def conjugate_posterior(
     if len(arr) == 0:
         raise ValueError("data must not be empty.")
 
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     if model == "normal":
         p = prior_params or {"mu": 0.0, "var": 1.0}

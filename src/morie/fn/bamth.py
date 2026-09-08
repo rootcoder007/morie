@@ -11,7 +11,7 @@ def bayesian_thinning(chain, thin=5) -> DescriptiveResult:
 
     .. epigraph:: I think, therefore I am. -- Rene Descartes
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     chain = np.asarray(chain, dtype=float)
     thinned = chain[::thin]

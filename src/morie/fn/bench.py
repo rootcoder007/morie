@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.optimize import brentq
-from scipy.stats import norm
+from . import _array_core as np
+from ._sci_core import brentq
+from ._stats_core import norm
 
 from ._containers import ESRes
 
@@ -47,7 +47,7 @@ def benchmark_dose(
     if len(d) < 3:
         raise ValueError("Need at least 3 dose-response pairs.")
 
-    from scipy.optimize import curve_fit
+    from ._sci_core import curve_fit
 
     def probit_model(x, a, b):
         return norm.cdf(a + b * x)
@@ -88,3 +88,7 @@ bench = benchmark_dose
 
 def cheatsheet() -> str:
     return "benchmark_dose({}) -> Benchmark dose (BMD/BMDL) calculation."
+
+
+# compact alias per ledger/NAMING.md
+benchmarkdose = benchmark_dose

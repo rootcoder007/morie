@@ -1,6 +1,6 @@
 """Tests for krrFDA.kernel_ridge_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.krrFDA import kernel_ridge_regression
 

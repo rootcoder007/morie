@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Minor allele frequency (MAF) calculation for SNP markers."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -44,3 +44,7 @@ def maf_calculation(marker_matrix):
 
 def cheatsheet():
     return "mafcl: Minor allele frequency (MAF) calculation for SNP markers"
+
+
+# compact alias per ledger/NAMING.md
+mafcalculation = maf_calculation

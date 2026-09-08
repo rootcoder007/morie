@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -78,3 +78,7 @@ prmsc = vae_sample
 
 def cheatsheet() -> str:
     return "prmsc() -> Sample from a VAE latent space using the reparameterization trick"
+
+
+# compact alias per ledger/NAMING.md
+vaesample = vae_sample

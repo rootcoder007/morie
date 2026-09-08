@@ -32,6 +32,18 @@ NULL
 # Internal: pairwise lat/long distance in kilometres (haversine)
 # ---------------------------------------------------------------------------
 
+#' .haversine_km
+#'
+#' A step of the mrm_tps implementation. Called by \code{mrm_tps_levy_scaling}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param lat1 Numeric; combined arithmetically in the body.
+#' @param lon1 Numeric; combined arithmetically in the body.
+#' @param lat2 Numeric; combined arithmetically in the body.
+#' @param lon2 Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
 .haversine_km <- function(lat1, lon1, lat2, lon2) {
   R <- 6371
   rad <- pi / 180

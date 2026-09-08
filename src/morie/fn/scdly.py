@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import ESRes
 
@@ -81,3 +81,7 @@ scdly = case_delay
 
 def cheatsheet() -> str:
     return "case_delay({}) -> Surveillance case reporting delay distribution."
+
+
+# compact alias per ledger/NAMING.md
+casedelay = case_delay

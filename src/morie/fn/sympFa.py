@@ -1,6 +1,6 @@
 """Polynomial factorization."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def sympy_factor(expr):
 
 def cheatsheet():
     return "sympFa: Polynomial factorization"
+
+
+# compact alias per ledger/NAMING.md
+sympyfactor = sympy_factor

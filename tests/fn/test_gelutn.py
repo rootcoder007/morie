@@ -1,6 +1,6 @@
 """Tests for gelutn.gelu_tanh_approx."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gelutn import gelu_tanh_approx
 

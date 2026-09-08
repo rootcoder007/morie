@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -44,3 +44,7 @@ idft = idft_compute
 
 def cheatsheet() -> str:
     return "idft_compute({}) -> Inverse Discrete Fourier Transform."
+
+
+# compact alias per ledger/NAMING.md
+idftcompute = idft_compute

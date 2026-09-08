@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Roll call yea/nay summary"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ roll = roll_call_yea_nay
 
 def cheatsheet() -> str:
     return "roll_call_yea_nay({}) -> Roll call yea/nay summary"
+
+
+# compact alias per ledger/NAMING.md
+rollcallyeanay = roll_call_yea_nay

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import ESRes
 
@@ -51,3 +51,7 @@ bic = cfa_bic
 
 def cheatsheet() -> str:
     return "cfa_bic({}) -> BIC for model comparison."
+
+
+# compact alias per ledger/NAMING.md
+cfabic = cfa_bic

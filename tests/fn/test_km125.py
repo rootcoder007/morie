@@ -1,6 +1,6 @@
 """Tests for km125.kamath_ch8_ngram_weight."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km125 import kamath_ch8_ngram_weight
 

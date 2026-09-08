@@ -1,6 +1,6 @@
 """Tests for hmswin.geron_swin."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmswin import geron_swin
 

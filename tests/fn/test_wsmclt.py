@@ -1,6 +1,6 @@
 """Tests for wsmclt.wasserman_clt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmclt import wasserman_clt
 

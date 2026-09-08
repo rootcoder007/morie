@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrmri -- Moran's I on regression residuals"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrmri import moran_resid
 

@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def bayesian_dic(
@@ -25,7 +25,10 @@ def bayesian_dic(
 
     References
     ----------
-    Spiegelhalter, D. J., et al. (2002). *JRSS-B*, 64(4), 583--639.
+    Spiegelhalter, D. J., Best, N. G., Carlin, B. P., & van der Linde, A.
+        (2002). Bayesian measures of model complexity and fit.
+        *Journal of the Royal Statistical Society Series B*, 64(4),
+        583-639.
     """
     samples = np.asarray(posterior_samples, dtype=float)
     if samples.ndim == 1:
@@ -54,3 +57,7 @@ bdic = bayesian_dic
 
 def cheatsheet() -> str:
     return "bayesian_dic({}) -> Bayesian DIC (deviance information criterion)."
+
+
+# compact alias per ledger/NAMING.md
+bayesiandic = bayesian_dic

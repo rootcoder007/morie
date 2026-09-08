@@ -1,6 +1,6 @@
 """GP kernel selection"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ gp_k = gp_kernel
 
 def cheatsheet() -> str:
     return "gp_kernel({}) -> GP kernel selection"
+
+
+# compact alias per ledger/NAMING.md
+gpkernel = gp_kernel

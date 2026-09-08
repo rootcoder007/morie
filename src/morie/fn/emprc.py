@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-import numpy as np
+from . import _array_core as np
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,7 +63,7 @@ def emprc(x: np.ndarray, cdf=None, *, cdf_fn: object | None = None, n_grid: int 
     van der Vaart, A.W. (1998). *Asymptotic Statistics*, Ch. 19.
     Cambridge University Press.
     """
-    from scipy.stats import norm as _norm
+    from ._stats_core import norm as _norm
 
     x = np.asarray(x, dtype=float).ravel()
     if x.size == 0:

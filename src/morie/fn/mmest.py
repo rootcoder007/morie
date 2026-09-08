@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -101,3 +101,7 @@ mmest = mm_estimator
 
 def cheatsheet() -> str:
     return "_tukey_bisquare({}) -> MM-estimator for robust regression."
+
+
+# compact alias per ledger/NAMING.md
+mmestimator = mm_estimator

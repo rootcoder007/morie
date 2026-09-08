@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bisection method for root finding."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -81,3 +81,7 @@ biscn = bisection_root
 
 def cheatsheet() -> str:
     return "bisection_root({}) -> Bisection method for root finding."
+
+
+# compact alias per ledger/NAMING.md
+bisectionroot = bisection_root

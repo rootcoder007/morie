@@ -35,7 +35,7 @@
   ),
   homicide = paste0(
     "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/",
-    "Homicides_Open_Data/FeatureServer/0"
+    "Homicides_Open_Data_ASR_RC_TBL_002/FeatureServer/0"
   ),
   robbery = paste0(
     "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/",
@@ -83,6 +83,25 @@ morie_ingest_tps_layers <- function() {
 }
 
 # Internal: a single ArcGIS FeatureServer /query call.
+#' Internal: a single ArcGIS FeatureServer /query call
+#'
+#' A step of the ingest_tps implementation. Called by \code{morie_ingest_tps_feature_layer}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param layer_url Passed to \code{paste0}.
+#' @param where Carried through into a list the body builds. Defaults to \code{"1=1"}.
+#' @param out_fields Carried through into a list the body builds. Defaults to \code{"*"}.
+#' @param return_geometry A flag; the body branches on it. Defaults to \code{FALSE}.
+#' @param result_offset Coerced to integer by the body, with \code{as.integer}. Defaults
+#' to \code{0L}.
+#' @param result_record_count Coerced to integer by the body, with \code{as.integer}.
+#' Defaults to \code{2000L}.
+#' @param user_agent Accepted by the signature and not used anywhere in the body.
+#' Defaults to \code{.MORIE_TPS_DEFAULT_UA}.
+#' @param timeout Coerced to integer by the body, with \code{as.integer}.
+#' @return The value of \code{payload}, as built in the body.
+#' @export
 .morie_tps_arcgis_query <- function(layer_url,
                                     where = "1=1",
                                     out_fields = "*",
@@ -134,6 +153,14 @@ morie_ingest_tps_layers <- function() {
 
 # Internal: bind one ArcGIS feature payload's attribute rows into a
 # data.frame, optionally splicing in geom_x / geom_y.
+#' Internal: bind one ArcGIS feature payload\'s attribute rows into a
+#'
+#' data.frame, optionally splicing in geom_x / geom_y.
+#'
+#' @param features A vector; its length is taken.
+#' @param return_geometry A flag; the body branches on it.
+#' @return The value of \code{lapply}.
+#' @export
 .morie_tps_features_to_rows <- function(features, return_geometry) {
   if (length(features) == 0L) {
     return(list())
@@ -260,7 +287,7 @@ morie_ingest_tps_feature_layer <- function(
 #' @param ... Forwarded to \code{\link{morie_ingest_tps_feature_layer}}.
 #' @return A base R \code{data.frame}.
 #' @examples
-#' \donttest{try(morie_ingest_tps_fetch("major-crime", max_features = 1L))}
+#' \dontrun{try(morie_ingest_tps_fetch("major-crime", max_features = 1L))}
 #' @export
 morie_ingest_tps_fetch <- function(layer,
                                    year = NULL,

@@ -4,7 +4,7 @@ Green space accessibility
 Category: UrbanSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def ubgrn(population=None, area=None, coords=None, n=50):

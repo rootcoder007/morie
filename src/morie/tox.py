@@ -37,8 +37,8 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from .taphonomy import taphonomy_preservation_lr
 

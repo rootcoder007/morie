@@ -1,6 +1,6 @@
 """Tests for km091.kamath_ch6_demographic_representation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km091 import kamath_ch6_demographic_representation
 

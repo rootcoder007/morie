@@ -1,6 +1,6 @@
 """Tests for morie.fn.carres."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.carres import carres
 

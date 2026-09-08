@@ -1,6 +1,6 @@
 """Tests for krpalp.krippendorff_alpha."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.krpalp import krippendorff_alpha
 

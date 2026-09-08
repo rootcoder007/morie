@@ -1,6 +1,6 @@
 """Statistics is the grammar of science. — Karl Pearson"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import TestResult
 from morie.fn.rdpil import rdpil, red_pill_test

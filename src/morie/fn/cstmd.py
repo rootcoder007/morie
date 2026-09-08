@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import CrimeResult
 
@@ -50,3 +50,7 @@ cstmd = custody_medical
 
 def cheatsheet() -> str:
     return "custody_medical({}) -> Medical service utilization rate in custody."
+
+
+# compact alias per ledger/NAMING.md
+custodymedical = custody_medical

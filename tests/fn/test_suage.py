@@ -1,6 +1,6 @@
 """Tests for morie.fn.suage -- age-specific substance use."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.suage import substance_by_age

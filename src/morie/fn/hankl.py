@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -40,3 +40,7 @@ hankl = hankel_matrix_fn
 
 def cheatsheet() -> str:
     return "hankel_matrix_fn({}) -> Construct Hankel matrix from signal."
+
+
+# compact alias per ledger/NAMING.md
+hankelmatrixfn = hankel_matrix_fn

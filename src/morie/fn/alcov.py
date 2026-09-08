@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -34,7 +34,11 @@ def alcove_model(
 
     References
     ----------
-    Armstrong (2014), Ch 9. Kruschke (1992).
+    Kruschke, J. K. (1992). ALCOVE: an exemplar-based connectionist
+    model of category learning. *Psychological Review*, 99(1), 22-44.
+
+    The former "Armstrong Ch 9" citation was fabricated: the book has
+    six chapters and does not cover category-learning models.
 
     .. epigraph:: It is not what happens to you, but how you react, that matters. -- Epictetus
     """
@@ -102,3 +106,7 @@ alcov = alcove_model
 
 def cheatsheet() -> str:
     return "alcove_model({}) -> ALCOVE attention-learning model."
+
+
+# compact alias per ledger/NAMING.md
+alcovemodel = alcove_model

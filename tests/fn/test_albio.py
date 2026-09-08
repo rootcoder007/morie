@@ -1,24 +1,14 @@
 """Tests for albio.alammar_bio_tagging."""
 
-import numpy as np
-
 from morie.fn.albio import alammar_bio_tagging
 
 
 def test_albio_basic():
-    """Test basic functionality."""
-    tokens = np.random.default_rng(42).normal(0, 1, 100)
-    entity_spans = np.random.default_rng(42).normal(0, 1, 100)
-    scheme = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_bio_tagging(tokens, entity_spans, scheme)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_bio_tagging(["a", "b", "c"], [(0, 2, "PER")])
+    assert out["tags"] == ["B-PER", "I-PER", "O"]
 
 
 def test_albio_edge():
-    """Test edge cases."""
-    tokens = np.random.default_rng(42).normal(0, 1, 100)
-    entity_spans = np.random.default_rng(42).normal(0, 1, 100)
-    scheme = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_bio_tagging(tokens, entity_spans, scheme)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="overlap"):
+        alammar_bio_tagging(["a", "b"], [(0, 2, "X"), (1, 2, "Y")])

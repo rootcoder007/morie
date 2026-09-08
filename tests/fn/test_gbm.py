@@ -1,6 +1,6 @@
 """Tests for morie.fn.gbm -- Gradient boosting machine."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gbm import gradient_boosting

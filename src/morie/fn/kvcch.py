@@ -12,7 +12,7 @@ arXiv preprint arXiv:2211.05102.
 
 __all__ = ["kvcch"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def kvcch(

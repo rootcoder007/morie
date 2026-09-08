@@ -5,7 +5,7 @@ Hillshade illumination model
 Category: GeoAnalysis
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gahill(x=None, y=None, values=None, resolution=50):

@@ -1,6 +1,6 @@
 """Tests for sgtsig.sgt_signless_laplacian."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtsig import sgt_signless_laplacian
 

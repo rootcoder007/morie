@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SEIR compartmental model (Susceptible-Exposed-Infected-Recovered)."""
 
-import numpy as np
-from scipy.integrate import odeint
+from . import _array_core as np
+from ._sci_core import odeint
 
 from ._containers import SIRResult
 
@@ -94,3 +94,7 @@ seir = seir_model
 
 def cheatsheet() -> str:
     return "seir_model({}) -> SEIR compartmental model (Susceptible-Exposed-Infected-Recov"
+
+
+# compact alias per ledger/NAMING.md
+seirmodel = seir_model

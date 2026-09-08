@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def rf_impute(
@@ -106,3 +106,7 @@ rf_i = rf_impute
 
 def cheatsheet() -> str:
     return "rf_impute({}) -> Iterative OLS regression imputation (simplified random-fores"
+
+
+# compact alias per ledger/NAMING.md
+rfimpute = rf_impute

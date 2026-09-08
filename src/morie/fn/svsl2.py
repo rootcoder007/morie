@@ -1,6 +1,6 @@
 """Two-issue salience model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ sali = salience_2issue
 
 def cheatsheet() -> str:
     return "salience_2issue({}) -> Two-issue salience model"
+
+
+# compact alias per ledger/NAMING.md
+salience2issue = salience_2issue

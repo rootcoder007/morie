@@ -1,6 +1,6 @@
 """Tests for wsmcfn.wasserman_char_fn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmcfn import wasserman_char_fn
 

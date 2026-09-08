@@ -1,6 +1,6 @@
 """Tests for npbcl.np_bayes_clustering."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.npbcl import np_bayes_clustering
 

@@ -1,6 +1,6 @@
 """hERG cardiac potassium-channel inhibition risk."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -38,3 +38,7 @@ def herg_inhibition(smiles):
 
 def cheatsheet():
     return "hergp: hERG cardiac potassium-channel inhibition risk"
+
+
+# compact alias per ledger/NAMING.md
+herginhibition = herg_inhibition

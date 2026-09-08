@@ -5,7 +5,7 @@ Gumbel distribution
 Category: DistTheor
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def dtgmb(x=None, n=100, params=None):

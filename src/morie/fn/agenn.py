@@ -5,7 +5,7 @@ Euclidean NN distance patch
 Category: AreaGeo
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def agenn(areas=None, perimeters=None, values=None, n=30):

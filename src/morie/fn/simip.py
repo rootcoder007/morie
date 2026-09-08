@@ -16,7 +16,7 @@ def simulate_ideal_points(n: int = 100, n_dims: int = 2, dist: str = "normal", s
 
     .. epigraph:: The whole is greater than the sum of its parts. -- Aristotle
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     rng = np.random.default_rng(seed)
     if dist == "uniform":

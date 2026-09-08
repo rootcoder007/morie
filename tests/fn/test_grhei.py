@@ -1,6 +1,6 @@
 """Tests for grhei.geron_he_init."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grhei import geron_he_init
 

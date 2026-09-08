@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -48,3 +48,7 @@ spm0 = spectral_moment
 
 def cheatsheet() -> str:
     return "spectral_moment({}) -> Spectral moment."
+
+
+# compact alias per ledger/NAMING.md
+spectralmoment = spectral_moment

@@ -1,6 +1,6 @@
 """Symbolic ODE solver."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def ode_symbolic(ode):
 
 def cheatsheet():
     return "odesl: Symbolic ODE solver"
+
+
+# compact alias per ledger/NAMING.md
+odesymbolic = ode_symbolic

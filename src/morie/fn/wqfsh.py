@@ -4,7 +4,7 @@ Fishery water quality
 Category: WtrQual
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wqfsh(data=None, coords=None, n=50):

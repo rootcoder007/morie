@@ -1,6 +1,6 @@
 """Tests for morie.fn.zsrch -- Random chi-squared field"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zsrch import random_chisq_field
 

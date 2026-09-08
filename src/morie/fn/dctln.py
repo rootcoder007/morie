@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -33,3 +33,7 @@ dctln = dctln_fn
 
 def cheatsheet() -> str:
     return "dctln_fn({}) -> Dictionary Learning via K-SVD."
+
+
+# compact alias per ledger/NAMING.md
+dctlnfn = dctln_fn

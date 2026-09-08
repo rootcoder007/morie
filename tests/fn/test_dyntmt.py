@@ -1,6 +1,6 @@
 """Tests for dyntmt.dynamic_marginal_msm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dyntmt import dynamic_marginal_msm
 

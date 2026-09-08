@@ -29,8 +29,8 @@ import math
 from collections.abc import Iterable
 from pathlib import Path
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 # ----------------------------------------------------------------------
 # Toronto rotation constants
@@ -194,8 +194,8 @@ def render_choropleth(
       never neighbourhood names per the author 2026-05-07
     - title and colour-bar legend with proper spaces (no underscores)
     """
-    import matplotlib.pyplot as plt
-    from matplotlib.collections import PolyCollection
+    from morie.fn import _plot_core as plt
+    from morie.fn._plot_core import PolyCollection
 
     from .tps_io import load_tps
 
@@ -222,7 +222,7 @@ def render_choropleth(
     cb.set_label(pretty_label(rate_col))
 
     if show_ids:
-        import matplotlib.patheffects as pe
+        from morie.fn._plot_core import patheffects as pe
 
         for poly, attrs in pieces:
             hood_id = attrs.get("HOOD_ID") or attrs.get("AREA_ID")
@@ -283,10 +283,10 @@ def render_quad(
       c) Spatial clusters / outliers (LISA HH/LL/HL/LH) -- diverging
       d) Significant Gi* hot/cold spots -- diverging
     """
-    import matplotlib.pyplot as plt
-    from matplotlib.collections import PolyCollection
-    from matplotlib.colors import Normalize
-    from scipy.stats import gaussian_kde
+    from morie.fn import _plot_core as plt
+    from morie.fn._plot_core import PolyCollection
+    from morie.fn._plot_core import Normalize
+    from morie.fn._stats_core import gaussian_kde
 
     from .tps_datasets import load_tps_dataset
     from .tps_io import load_tps
@@ -384,7 +384,7 @@ def render_quad(
     axC.add_collection(pcC)
     axC.autoscale_view()
     # custom legend for HH/HL/LH/LL
-    from matplotlib.patches import Patch
+    from morie.fn._plot_core import Rectangle as Patch
 
     axC.legend(
         handles=[Patch(facecolor=v, edgecolor="black", label=k) for k, v in quad_color.items()],
@@ -471,7 +471,7 @@ def render_dbscan(
     No floating hood labels; clusters are shown by colour with a
     compact legend. Aspect/rotation matches the rest of the suite.
     """
-    import matplotlib.pyplot as plt
+    from morie.fn import _plot_core as plt
 
     from .tps_datasets import load_tps_dataset
 
@@ -483,7 +483,7 @@ def render_dbscan(
     if df.empty:
         raise ValueError(f"{category}: no in-bbox LAT/LONG rows")
 
-    from sklearn.cluster import DBSCAN
+    from morie.fn._ml_core import DBSCAN
 
     xk, yk = project_xy(df["LAT_WGS84"].to_numpy(), df["LONG_WGS84"].to_numpy())
     labels = DBSCAN(eps=eps_km, min_samples=min_samples).fit_predict(np.column_stack([xk, yk]))
@@ -525,7 +525,7 @@ def _draw_compass(ax, *, x_frac: float = 0.93, y_frac: float = 0.83, size_frac: 
     which on a 17.5° CW-rotated canvas is up-and-to-the-right (rotated
     17.5° CW from straight-up).
     """
-    import matplotlib.patches as mpatches
+    from morie.fn._plot_core import patches as mpatches
 
     cx, cy = x_frac, y_frac
     # On a CW-rotated map, north on the page is rotated 17.5° CCW from
@@ -605,9 +605,9 @@ def render_district_proportional(
     Includes a "Map Divisions" legend with district swatches and a
     "Number of <metric>" graduated-symbol legend with 5 size tiers.
     """
-    import matplotlib.pyplot as plt
-    from matplotlib.collections import PolyCollection
-    from matplotlib.patches import Circle, Rectangle
+    from morie.fn import _plot_core as plt
+    from morie.fn._plot_core import PolyCollection
+    from morie.fn._plot_core import Circle, Rectangle
 
     from .tps_io import load_tps
 
@@ -737,10 +737,10 @@ def render_satscan_panel(
     outside; null distribution by Monte-Carlo (`n_mc` permutations of
     incident timestamps within the bbox).
     """
-    import matplotlib.patheffects as pe
-    import matplotlib.pyplot as plt
-    from matplotlib.collections import PolyCollection
-    from matplotlib.patches import Circle
+    from morie.fn._plot_core import patheffects as pe
+    from morie.fn import _plot_core as plt
+    from morie.fn._plot_core import PolyCollection
+    from morie.fn._plot_core import Circle
 
     from .tps_datasets import load_tps_dataset
     from .tps_io import load_tps
@@ -890,7 +890,7 @@ def render_satscan_panel(
             path_effects=[pe.withStroke(linewidth=1.6, foreground="white")],
         )
 
-    from matplotlib.patches import ConnectionPatch, FancyBboxPatch
+    from morie.fn._plot_core import (Rectangle as FancyBboxPatch, Rectangle as ConnectionPatch)
 
     sig_loc_count = 0
     info.text(
@@ -1059,8 +1059,8 @@ def render_yearly_grid(
     ncols: int = 4,
 ) -> Path:
     """Small-multiples panel of per-year choropleths, no hood labels."""
-    import matplotlib.pyplot as plt
-    from matplotlib.collections import PolyCollection
+    from morie.fn import _plot_core as plt
+    from morie.fn._plot_core import PolyCollection
 
     from .tps_io import load_tps
 
@@ -1104,7 +1104,7 @@ def render_yearly_grid(
                     vals.append(float(row[f"{prefix}_{year}"]))
                 except (TypeError, ValueError, KeyError):
                     vals.append(np.nan)
-        from matplotlib.colors import Normalize
+        from morie.fn._plot_core import Normalize
 
         pc = PolyCollection(
             polys,

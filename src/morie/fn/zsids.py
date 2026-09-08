@@ -1,6 +1,6 @@
 """Modified Shepard interpolation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ idw_ = idw_shepard
 
 def cheatsheet() -> str:
     return "idw_shepard({}) -> Modified Shepard interpolation"
+
+
+# compact alias per ledger/NAMING.md
+idwshepard = idw_shepard

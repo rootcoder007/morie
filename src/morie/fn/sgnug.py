@@ -24,7 +24,7 @@ def nugget_effect_estimate(gamma_values, lag_distances):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     gamma = np.asarray(gamma_values, dtype=np.float64)
     lags = np.asarray(lag_distances, dtype=np.float64)

@@ -1,8 +1,8 @@
 """Tests for rgpcgenl.rangayyan_pcg_envelope_avg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgpcgenl import rangayyan_pcg_envelope_avg
+from morie.fn.bsatf import rangayyan_pcg_envelope_avg
 
 
 def test_rgpcgenl_basic():

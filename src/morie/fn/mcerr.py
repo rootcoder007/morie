@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -58,3 +58,7 @@ mcerr = mcmc_se
 
 def cheatsheet() -> str:
     return "mcmc_se({}) -> MCMC standard error."
+
+
+# compact alias per ledger/NAMING.md
+mcmcse = mcmc_se

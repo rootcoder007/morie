@@ -5,7 +5,7 @@ Oil spill trajectory
 Category: MarinSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def maosp(depth=None, temp=None, salinity=None, coords=None, n=50):

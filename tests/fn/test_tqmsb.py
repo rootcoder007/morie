@@ -1,6 +1,6 @@
 """Tests for tqmsb.turboquant_mse_distortion_bound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tqmsb import turboquant_mse_distortion_bound
 

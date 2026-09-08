@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MDS iteration convergence"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ mds_ = mds_iter
 
 def cheatsheet() -> str:
     return "mds_iter({}) -> MDS iteration convergence"
+
+
+# compact alias per ledger/NAMING.md
+mdsiter = mds_iter

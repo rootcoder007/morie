@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Likelihood ratio test with R-style verbose result."""
 
-from scipy.stats import chi2
+from ._stats_core import chi2
 
 
 def lrtst(loglik_full: float, loglik_reduced: float, df_diff: int):

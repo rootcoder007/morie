@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -70,3 +70,7 @@ prc = pr_curve
 
 def cheatsheet() -> str:
     return "pr_curve({}) -> Precision-recall curve."
+
+
+# compact alias per ledger/NAMING.md
+prcurve = pr_curve

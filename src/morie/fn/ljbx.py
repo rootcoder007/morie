@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -23,7 +23,7 @@ def ljung_box_test_fn(residuals: np.ndarray, nlags: int = 20, cdf=None) -> Descr
     :param nlags: Number of lags h (default 20).
     :return: DescriptiveResult with Q statistic and p-value.
     """
-    from scipy.stats import chi2
+    from ._stats_core import chi2
 
     residuals = np.asarray(residuals, dtype=float).ravel()
     n = len(residuals)
@@ -47,3 +47,7 @@ ljbx = ljung_box_test_fn
 
 def cheatsheet() -> str:
     return "ljung_box_test_fn({}) -> Ljung-Box test for white noise."
+
+
+# compact alias per ledger/NAMING.md
+ljungboxtestfn = ljung_box_test_fn

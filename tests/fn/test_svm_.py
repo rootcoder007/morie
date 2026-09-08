@@ -1,6 +1,6 @@
 """Tests for morie.fn.svm_ -- SVM classifier wrapper."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.svm_ import svm_classify

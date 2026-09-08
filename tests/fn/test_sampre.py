@@ -1,6 +1,6 @@
 """Tests for sampre.sam_prompt_encoder."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sampre import sam_prompt_encoder
 

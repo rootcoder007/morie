@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -192,3 +192,7 @@ breakpoint_detection = bai_perron
 
 def cheatsheet() -> str:
     return "bai_perron(y, max_breaks=3) -> Bai-Perron structural break detection."
+
+
+# compact alias per ledger/NAMING.md
+baiperron = bai_perron

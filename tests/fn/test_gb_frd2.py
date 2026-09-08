@@ -1,6 +1,6 @@
 """Tests for gb_frd2.gibbons_friedman_ties."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_frd2 import gibbons_friedman_ties
 

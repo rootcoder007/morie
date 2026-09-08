@@ -3,8 +3,8 @@
 
 from typing import Union
 
-import numpy as np
-import scipy.stats as stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import TestResult
 
@@ -45,7 +45,7 @@ def page_trend_test(
         raise ValueError("Page's L requires at least 2 treatments (columns).")
 
     # Rank within each row (block)
-    from scipy.stats import rankdata
+    from ._stats_core import rankdata
 
     ranks = np.apply_along_axis(rankdata, axis=1, arr=mat)
 
@@ -80,3 +80,7 @@ page = page_trend_test
 
 def cheatsheet() -> str:
     return "page_trend_test({}) -> Page's L trend test for ordered alternatives."
+
+
+# compact alias per ledger/NAMING.md
+pagetrendtest = page_trend_test

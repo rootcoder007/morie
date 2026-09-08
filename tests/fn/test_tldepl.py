@@ -1,6 +1,6 @@
 """Tests for tldepl.lower_tail_dependence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tldepl import lower_tail_dependence
 

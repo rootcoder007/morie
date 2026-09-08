@@ -5,7 +5,7 @@ Fractional Brownian spatial
 Category: SpatialPat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def fbmsi(points=None, n=100, window=(0, 100, 0, 100)):

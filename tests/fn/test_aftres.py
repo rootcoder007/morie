@@ -1,6 +1,6 @@
 """Tests for aftres.aft_residuals."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aftres import aft_residuals
 

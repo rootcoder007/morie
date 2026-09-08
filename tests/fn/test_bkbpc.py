@@ -1,24 +1,15 @@
 """Tests for bkbpc.burkov_bits_per_character."""
 
-import numpy as np
-
 from morie.fn.bkbpc import burkov_bits_per_character
 
 
 def test_bkbpc_basic():
-    """Test basic functionality."""
-    ce_loss = np.random.default_rng(42).normal(0, 1, 100)
-    n_tokens = np.random.default_rng(42).normal(0, 1, 100)
-    n_characters = np.random.default_rng(42).normal(0, 1, 100)
-    result = burkov_bits_per_character(ce_loss, n_tokens, n_characters)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    import math
+    out = burkov_bits_per_character(math.log(2), 50, 50)
+    assert abs(out["estimate"] - 1.0) < 1e-12
 
 
 def test_bkbpc_edge():
-    """Test edge cases."""
-    ce_loss = np.random.default_rng(42).normal(0, 1, 100)
-    n_tokens = np.random.default_rng(42).normal(0, 1, 100)
-    n_characters = np.random.default_rng(42).normal(0, 1, 100)
-    result = burkov_bits_per_character(ce_loss, n_tokens, n_characters)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="positive"):
+        burkov_bits_per_character(1.0, 0, 10)

@@ -1,6 +1,6 @@
 """Tests for morie.fn.stdyn — Dynamic spatio-temporal state-space model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.stdyn import stdyn

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -50,3 +50,7 @@ def torus_bundle(monodromy: list | np.ndarray = None) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "torus_bundle(monodromy) -> torus bundle geometry classification"
+
+
+# compact alias per ledger/NAMING.md
+torusbundle = torus_bundle

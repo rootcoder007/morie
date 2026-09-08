@@ -82,3 +82,7 @@ short = trie_operations
 
 def cheatsheet() -> str:
     return "trie_operations({}) -> Prefix trie operations."
+
+
+# compact alias per ledger/NAMING.md
+trieoperations = trie_operations

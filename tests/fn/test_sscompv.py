@@ -1,6 +1,6 @@
 """Tests for sscompv.survival_competing_validation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sscompv import survival_competing_validation
 

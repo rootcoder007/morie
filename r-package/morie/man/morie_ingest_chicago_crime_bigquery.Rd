@@ -28,6 +28,9 @@ and \code{year} is set, applies \code{year = <year>}.}
 
 \item{billing_project, page_size, max_rows, quiet}{Forwarded to
 \code{\link{morie_ingest_bigquery_table}}.}
+
+
+
 }
 \value{
 A base R \code{data.frame}.
@@ -48,7 +51,7 @@ datasets are billed to the caller's project, not the dataset
 owner's.
 }
 \examples{
-\donttest{try(morie_ingest_chicago_crime_bigquery())}
+\dontrun{try(morie_ingest_chicago_crime_bigquery())}
 }
 \seealso{
 \code{\link{morie_ingest_chicago_crime}},

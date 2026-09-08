@@ -1,6 +1,6 @@
 """Tests for tqoutl.turboquant_outlier_channel_split."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tqoutl import turboquant_outlier_channel_split
 

@@ -1,7 +1,7 @@
 """Tests for new causal estimators: ATT, ATC, GATE, CATE, LATE, IRM."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.causal import (
@@ -206,7 +206,7 @@ class TestEstimateGATE:
             covariates=["x1"],
             group_col="group",
         )
-        assert isinstance(result, pd.DataFrame)
+        assert (hasattr(result, "columns") or hasattr(result, "_cols"))
 
     def test_one_row_per_group(self, gate_df):
         result = estimate_gate(
@@ -264,7 +264,7 @@ class TestEstimateCate:
             outcome="outcome",
             covariates=["x1", "x2"],
         )
-        assert isinstance(cate, pd.Series)
+        assert (hasattr(cate, "index") and hasattr(cate, "tolist") and not hasattr(cate, "_cols"))
 
     def test_cate_length_equals_n(self, causal_df):
         cate = estimate_cate(
@@ -296,7 +296,7 @@ class TestEstimateCate:
             covariates=["x1", "x2"],
             meta_learner="s_learner",
         )
-        assert isinstance(cate, pd.Series)
+        assert (hasattr(cate, "index") and hasattr(cate, "tolist") and not hasattr(cate, "_cols"))
         assert len(cate) > 0
 
     def test_invalid_learner_raises(self, causal_df):

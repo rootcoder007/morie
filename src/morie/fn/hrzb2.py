@@ -9,9 +9,9 @@ convergence rate and normal-theory SEs.
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.optimize import minimize
-from scipy.stats import norm
+from . import _array_core as np
+from ._sci_core import minimize
+from ._stats_core import norm
 
 from ._richresult import RichResult
 

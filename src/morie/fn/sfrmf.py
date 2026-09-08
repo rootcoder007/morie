@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -41,3 +41,7 @@ sfrmf = form_factor
 
 def cheatsheet() -> str:
     return "form_factor({}) -> Form factor."
+
+
+# compact alias per ledger/NAMING.md
+formfactor = form_factor

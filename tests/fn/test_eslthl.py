@@ -1,6 +1,6 @@
 """Tests for eslthl.esl_thin_plate_spline."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslthl import esl_thin_plate_spline
 

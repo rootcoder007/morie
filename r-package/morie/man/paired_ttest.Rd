@@ -10,6 +10,7 @@ paired_ttest(x, y, confidence = 0.95)
 \item{x, y}{Equal-length numeric vectors.}
 
 \item{confidence}{Confidence level.}
+
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})
@@ -18,4 +19,8 @@ Cohen's d on the differences, and n (number of pairs).
 }
 \description{
 Paired-sample t-test
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+paired_ttest(V, V)
 }

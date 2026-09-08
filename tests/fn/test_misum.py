@@ -1,6 +1,6 @@
 """Tests for morie.fn.misum -- MI summary table."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.misum import mi_summary
 

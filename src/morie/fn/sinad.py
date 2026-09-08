@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -56,3 +56,7 @@ sinad = sinad_compute
 
 def cheatsheet() -> str:
     return "sinad_compute({}) -> SINAD (signal to noise and distortion)."
+
+
+# compact alias per ledger/NAMING.md
+sinadcompute = sinad_compute

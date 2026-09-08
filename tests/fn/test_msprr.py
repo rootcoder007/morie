@@ -1,6 +1,6 @@
 """Tests for morie.fn.msprr -- Procrustes residuals"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msprr import procrustes_resid
 

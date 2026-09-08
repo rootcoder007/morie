@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dirichlet process posterior update."""
 
-import numpy as np
-from scipy.stats import norm
+from . import _array_core as np
+from ._stats_core import norm
 
 from ._richresult import RichResult
 

@@ -1,6 +1,6 @@
 """Tests for gh_ap_d2.ghosal_lecam_lemma."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_ap_d2 import ghosal_lecam_lemma
 

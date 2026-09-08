@@ -1,6 +1,6 @@
 """Tests for paget (Page's test for ordered alternatives)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.paget import paget

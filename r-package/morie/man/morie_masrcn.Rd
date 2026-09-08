@@ -1,0 +1,27 @@
+% Generated from the package source by gen_rd_tree.R -- roxygen2
+% hangs on this package. Usage comes from args(), so it tracks
+% the formals.
+\name{morie_masrcn}
+\alias{morie_masrcn}
+\title{morie_masrcn}
+\usage{
+morie_masrcn(features, box, out_size = 2L, stride = 1, samples = 2L) 
+}
+\arguments{
+\item{features}{Passed to \code{roi_align}.}
+\item{box}{Passed to \code{roi_align}.}
+\item{out_size}{Passed to \code{roi_align}. Defaults to \code{2L}.}
+\item{stride}{Passed to \code{roi_align}. Defaults to \code{1}.}
+\item{samples}{Passed to \code{roi_align}. Defaults to \code{2L}.}
+}
+\description{
+Part of the masrcn_native implementation; see the file header for the source it follows.
+}
+\value{
+A list with \code{roi}, \code{alignment}.
+}
+\keyword{internal}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_masrcn(V, V)
+}

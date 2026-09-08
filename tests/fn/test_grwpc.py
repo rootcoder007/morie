@@ -1,6 +1,6 @@
 """Tests for grwpc.geron_wordpiece_tokenizer_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grwpc import geron_wordpiece_tokenizer_score
 

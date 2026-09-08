@@ -1,6 +1,6 @@
 """Wavelet temporal detrending."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

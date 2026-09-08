@@ -1,6 +1,6 @@
 """Test gdlng."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gdlng import gdlng
 

@@ -1,6 +1,6 @@
 """Tests for cvxcen.boyd_central_path."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxcen import boyd_central_path
 

@@ -1,6 +1,6 @@
 """Tests for hmdrnn.geron_deep_rnn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmdrnn import geron_deep_rnn
 

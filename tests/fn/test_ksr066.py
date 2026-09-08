@@ -1,6 +1,6 @@
 """Tests for ksr066.kosorok_ch3_z_estimator_no_bias."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr066 import kosorok_ch3_z_estimator_no_bias
 

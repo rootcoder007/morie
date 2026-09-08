@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._otis_const import DEFAULT_COLS
 
@@ -65,3 +65,7 @@ rpfst = rplace_first
 
 def cheatsheet() -> str:
     return "rplace_first({}) -> Time to first placement for each individual."
+
+
+# compact alias per ledger/NAMING.md
+rplacefirst = rplace_first

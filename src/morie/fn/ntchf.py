@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -33,7 +33,7 @@ def notch_filter(x, freq, Q: float = 30.0, fs: float = 1.0) -> SignalResult:
     -------
     SignalResult
     """
-    from scipy.signal import filtfilt, iirnotch
+    from ._signal_core import filtfilt, iirnotch
 
     x = np.asarray(x, dtype=float)
     w0 = float(freq) / (fs / 2.0)
@@ -53,3 +53,7 @@ ntchf = notch_filter
 
 def cheatsheet() -> str:
     return "notch_filter({}) -> Notch (band-reject) filter."
+
+
+# compact alias per ledger/NAMING.md
+notchfilter = notch_filter

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -44,3 +44,7 @@ def hopf_fibration(n_points: int = 500) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "hopf_fibration(n_points) -> Hopf map S^3 -> S^2"
+
+
+# compact alias per ledger/NAMING.md
+hopffibration = hopf_fibration

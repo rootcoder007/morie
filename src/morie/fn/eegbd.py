@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -51,3 +51,7 @@ eegbd = plot_eeg_bands_fn
 
 def cheatsheet() -> str:
     return "plot_eeg_bands_fn({}) -> EEG frequency band decomposition plot."
+
+
+# compact alias per ledger/NAMING.md
+ploteegbandsfn = plot_eeg_bands_fn

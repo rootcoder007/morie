@@ -1,6 +1,6 @@
 """Tests for hcoreg.hardcore_process."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hcoreg import hardcore_process
 

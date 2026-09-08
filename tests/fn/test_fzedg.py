@@ -1,6 +1,6 @@
 """Tests for fzedg.fauzi_edgeworth_quantile."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzedg import fauzi_edgeworth_quantile
 

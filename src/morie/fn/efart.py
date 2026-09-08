@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 
 def efa_rotate(
@@ -87,3 +87,7 @@ def _promax(V: np.ndarray, power: int = 4) -> np.ndarray:
 
 def cheatsheet() -> str:
     return "efa_rotate({}) -> Rotate factor loadings (varimax, promax, oblimin)."
+
+
+# compact alias per ledger/NAMING.md
+efarotate = efa_rotate

@@ -5,7 +5,7 @@ Attenuation distance
 Category: NoisBrd
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def nbatn(data=None, coords=None, n=50):

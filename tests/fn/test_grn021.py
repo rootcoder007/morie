@@ -1,6 +1,6 @@
 """Tests for grn021.geron_ch4_softmax_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grn021 import geron_ch4_softmax_function
 

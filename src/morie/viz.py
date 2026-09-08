@@ -12,11 +12,11 @@ import logging
 from collections.abc import Sequence
 from typing import Any
 
-import matplotlib.patches as mpatches
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-from scipy import stats as sp_stats
+from morie.fn._plot_core import patches as mpatches
+from morie.fn import _plot_core as plt
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as sp_stats
 
 logger = logging.getLogger(__name__)
 
@@ -583,8 +583,8 @@ def roc_curve_plot(
     -------
     matplotlib.figure.Figure
     """
-    from sklearn.metrics import roc_auc_score
-    from sklearn.metrics import roc_curve as sk_roc_curve
+    from morie.fn._ml_core import roc_auc_score
+    from morie.fn._ml_core import roc_curve as sk_roc_curve
 
     y_true = np.asarray(y_true, dtype=int)
     y_score = np.asarray(y_score, dtype=float)
@@ -673,8 +673,8 @@ def precision_recall_plot(
     -------
     matplotlib.figure.Figure
     """
-    from sklearn.metrics import average_precision_score
-    from sklearn.metrics import precision_recall_curve as sk_pr_curve
+    from morie.fn._ml_core import average_precision_score
+    from morie.fn._ml_core import precision_recall_curve as sk_pr_curve
 
     y_true = np.asarray(y_true, dtype=int)
     y_score = np.asarray(y_score, dtype=float)
@@ -746,7 +746,7 @@ def calibration_plot(
     predictive analytics. *BMC Medicine*, 17(1), 230.
     https://doi.org/10.1186/s12916-019-1466-7
     """
-    from sklearn.calibration import calibration_curve
+    from morie.fn._ml_core import calibration_curve
 
     y_true = np.asarray(y_true, dtype=int)
     y_pred = np.asarray(y_pred, dtype=float)
@@ -1120,7 +1120,7 @@ def residual_diagnostic_plots(
         ax.axhline(0, color="grey", linestyle="--", linewidth=0.8)
         # LOWESS smoother
         try:
-            import statsmodels.api as sm_api
+            from morie.fn import _glm_core as sm_api
 
             lowess = sm_api.nonparametric.lowess(residuals, fitted, frac=0.6)
             ax.plot(lowess[:, 0], lowess[:, 1], color="#d7191c", linewidth=1.2)
@@ -1291,7 +1291,7 @@ def added_variable_plot(
     -------
     matplotlib.figure.Figure
     """
-    from sklearn.linear_model import LinearRegression
+    from morie.fn._ml_core import LinearRegression
 
     other = [c for c in covariates if c != focus_var]
     complete = data[[outcome, focus_var] + other].dropna()
@@ -1362,7 +1362,7 @@ def component_residual_plot(
     -------
     matplotlib.figure.Figure
     """
-    import statsmodels.api as sm_api
+    from morie.fn import _glm_core as sm_api
 
     complete = data[[outcome] + covariates].dropna()
     X = sm_api.add_constant(complete[covariates])
@@ -1726,7 +1726,7 @@ def distribution_comparison_plot(
 
 def _kde_line(values: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Compute KDE for a ridge plot."""
-    from scipy.stats import gaussian_kde
+    from morie.fn._stats_core import gaussian_kde
 
     vals = values[np.isfinite(values)]
     if len(vals) < 2:
@@ -1985,7 +1985,7 @@ def cate_heterogeneity_plot(
             ax.scatter(cov, cate, s=12, alpha=0.4, color="#2c7bb6", edgecolors="none")
             # LOWESS
             try:
-                import statsmodels.api as sm_api
+                from morie.fn import _glm_core as sm_api
 
                 lowess = sm_api.nonparametric.lowess(cate, cov, frac=0.5)
                 ax.plot(lowess[:, 0], lowess[:, 1], color="#d7191c", linewidth=1.5)

@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import ESRes
 
@@ -52,3 +52,7 @@ kendt = kendall_tau_b
 
 def cheatsheet() -> str:
     return "kendall_tau_b({}) -> Kendall's tau-b with CI."
+
+
+# compact alias per ledger/NAMING.md
+kendalltaub = kendall_tau_b

@@ -38,7 +38,7 @@ def secondary_attack_rate(
     Halloran, M. E. (2001). Secondary attack rate. In *Encyclopedia of
     Biostatistics*. Wiley.
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     susceptible = total_contacts - index_cases
     if susceptible <= 0:

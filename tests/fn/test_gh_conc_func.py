@@ -1,6 +1,6 @@
 """Tests for gh_conc_func.ghosal_concentration_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_conc_func import ghosal_concentration_function
 

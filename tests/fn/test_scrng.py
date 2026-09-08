@@ -1,6 +1,6 @@
 """Tests for morie.fn.scrng — score range check."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.scrng import score_range_check
 

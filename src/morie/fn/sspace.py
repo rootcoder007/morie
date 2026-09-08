@@ -1,6 +1,6 @@
 """State-space model via Kalman filter."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -67,3 +67,7 @@ def state_space(y, F=None, H=None, Q=None, R_noise=None):
 
 def cheatsheet() -> str:
     return "state_space({}) -> State-space model via Kalman filter."
+
+
+# compact alias per ledger/NAMING.md
+statespace = state_space

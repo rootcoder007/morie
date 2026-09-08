@@ -1,6 +1,6 @@
 """Tests for kmrhf.kamath_rlhf_pipeline."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmrhf import kamath_rlhf_pipeline
 

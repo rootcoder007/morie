@@ -1,6 +1,6 @@
 """Test sr2sl."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sr2sl import sr2sl
 

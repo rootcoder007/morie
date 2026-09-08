@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -38,3 +38,7 @@ odm_c = otis_demo_cross
 
 def cheatsheet() -> str:
     return "otis_demo_cross({}) -> Full demographic cross-tabulation."
+
+
+# compact alias per ledger/NAMING.md
+otisdemocross = otis_demo_cross

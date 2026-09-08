@@ -1,6 +1,6 @@
 """Tests for morie.fn.zefhu -- Unit-level Fay-Herriot"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zefhu import fay_herriot_unit
 

@@ -1,8 +1,8 @@
 """Tests for rgmemb.rangayyan_membrane_potential."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgmemb import rangayyan_membrane_potential
+from morie.fn.bsaphys import rangayyan_membrane_potential
 
 
 def test_rgmemb_basic():

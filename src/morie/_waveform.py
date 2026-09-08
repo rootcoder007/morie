@@ -8,7 +8,7 @@ and morphological waveform descriptors.
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 
 
 def rms(x: np.ndarray) -> float:
@@ -267,7 +267,7 @@ def parzen_pdf(x: np.ndarray, bandwidth: float | None = None, n_points: int = 10
 def complex_demodulation(x: np.ndarray, fc: float, fs: float = 1.0) -> tuple[np.ndarray, np.ndarray]:
     t = np.arange(len(x)) / fs
     analytic = x * np.exp(-1j * 2 * np.pi * fc * t)
-    from scipy.signal import butter, filtfilt
+    from morie.fn._signal_core import butter, filtfilt
 
     nyq = fs / 2
     cutoff = min(fc * 0.5, nyq * 0.9) / nyq

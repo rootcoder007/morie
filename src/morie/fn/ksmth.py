@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -74,3 +74,7 @@ ksmth = kernel_smooth
 
 def cheatsheet() -> str:
     return "kernel_smooth({}) -> Nadaraya-Watson kernel regression."
+
+
+# compact alias per ledger/NAMING.md
+kernelsmooth = kernel_smooth

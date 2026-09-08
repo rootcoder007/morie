@@ -1,6 +1,6 @@
 """Tests for morie.fn.dnpos — density positive weights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dnpos import dnpos
 

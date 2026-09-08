@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -92,3 +92,7 @@ fwsel = forward_select
 
 def cheatsheet() -> str:
     return "forward_select({}) -> Sequential forward feature selection."
+
+
+# compact alias per ledger/NAMING.md
+forwardselect = forward_select

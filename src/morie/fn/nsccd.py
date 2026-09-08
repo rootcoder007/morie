@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """New-user/active-comparator cohort design for pharmacoepi."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -70,3 +70,7 @@ def new_user_cohort(rx_start, drug_group, outcome_time, outcome_event, washout=1
 
 def cheatsheet() -> str:
     return "new_user_cohort({}) -> New-user/active-comparator cohort design for pharmacoepi."
+
+
+# compact alias per ledger/NAMING.md
+newusercohort = new_user_cohort

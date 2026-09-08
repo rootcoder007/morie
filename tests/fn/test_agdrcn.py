@@ -1,6 +1,6 @@
 """Tests for agdrcn.alphazero_dirichlet_concentration."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agdrcn import alphazero_dirichlet_concentration
 

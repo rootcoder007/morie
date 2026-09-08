@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -88,3 +88,7 @@ cspfn = csp_filter
 
 def cheatsheet() -> str:
     return "csp_filter({}) -> Common Spatial Patterns for EEG classification."
+
+
+# compact alias per ledger/NAMING.md
+cspfilter = csp_filter

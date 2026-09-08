@@ -14,7 +14,7 @@ def normalize_coefficients(beta) -> DescriptiveResult:
 
     .. epigraph:: Measure what is measurable, and make measurable what is not. -- Galileo Galilei
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     b = np.asarray(beta, dtype=float).ravel()
     norm = float(np.linalg.norm(b))

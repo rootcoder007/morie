@@ -5,7 +5,7 @@ import math
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def relrsk(table_2x2: Union[Sequence, np.ndarray]):

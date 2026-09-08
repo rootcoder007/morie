@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Party overlap index"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ part = party_overlap
 
 def cheatsheet() -> str:
     return "party_overlap({}) -> Party overlap index"
+
+
+# compact alias per ledger/NAMING.md
+partyoverlap = party_overlap

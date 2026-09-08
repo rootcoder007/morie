@@ -5,7 +5,7 @@ Construction sector spatial
 Category: GeoEcon
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gecns(gdp=None, trade=None, coords=None, n=50):

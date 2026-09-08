@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import special
+from . import _array_core as np
+from ._sci_core import special
 
 from ._containers import RegressionResult
 
@@ -134,3 +134,7 @@ hurds = hurdle_model
 
 def cheatsheet() -> str:
     return "hurdle_model({}) -> Two-part hurdle model."
+
+
+# compact alias per ledger/NAMING.md
+hurdlemodel = hurdle_model

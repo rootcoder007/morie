@@ -1,22 +1,11 @@
-"""Tests for hmaen.geron_autoencoder."""
+"""Tests for hmaen (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.hmaen import geron_autoencoder
-
-
-def test_hmaen_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    bottleneck = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_autoencoder(X, bottleneck)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.hmaen as mod
 
 
-def test_hmaen_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    bottleneck = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_autoencoder(X, bottleneck)
-    assert isinstance(result, dict)
+def test_hmaen_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

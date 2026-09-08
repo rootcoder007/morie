@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn.dtree import decision_tree as dtree_classify
 
@@ -167,3 +167,7 @@ rforc = random_forest
 
 def cheatsheet() -> str:
     return "random_forest({}) -> Random forest classifier (pure NumPy, bootstrap + feature su"
+
+
+# compact alias per ledger/NAMING.md
+randomforest = random_forest

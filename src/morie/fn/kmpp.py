@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """K-means++ initialisation + Lloyd's algorithm."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -54,3 +54,7 @@ kmpp = kmeans_pp
 
 def cheatsheet() -> str:
     return "kmeans_pp({}) -> K-means++ initialisation + Lloyd's algorithm."
+
+
+# compact alias per ledger/NAMING.md
+kmeanspp = kmeans_pp

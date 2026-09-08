@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import TestResult
 
@@ -44,3 +44,7 @@ ansrb = ansari_bradley
 
 def cheatsheet() -> str:
     return "ansari_bradley({}) -> Ansari-Bradley test for scale."
+
+
+# compact alias per ledger/NAMING.md
+ansaribradley = ansari_bradley

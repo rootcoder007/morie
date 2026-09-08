@@ -1,7 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Chain prompting: output of prompt 1 fed as input to prompt 2."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Prompt chaining (Alammar Ch 7)."""
 
 from ._richresult import RichResult
 
@@ -9,42 +8,31 @@ __all__ = ["alammar_chain_prompting"]
 
 
 def alammar_chain_prompting(x, prompts, model):
+    """y_k = model(P_k(y_{k-1}, x)): each prompt is a callable
+    (previous_output, original_input) -> prompt string, composed in
+    order. Every intermediate is returned -- the value of a chain over
+    one big prompt is exactly that the intermediates are inspectable.
+
+    References: Alammar and Grootendorst, Ch 7.
     """
-    Chain prompting: output of prompt 1 fed as input to prompt 2
-
-    Formula: y_1 = LLM(P_1(x));  y_2 = LLM(P_2(y_1, x));  ... (compose K prompts)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    prompts : array-like
-        Input data.
-    model : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: final_output
-
-    References
-    ----------
-    Alammar Ch 6, Chain Prompting section
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Chain prompting: output of prompt 1 fed as input to prompt 2",
-        }
-    )
+    if not callable(model):
+        raise ValueError("model must be a callable prompt -> text.")
+    ps = list(prompts)
+    if not ps:
+        raise ValueError("no prompts supplied.")
+    y = None
+    steps = []
+    for i, P in enumerate(ps):
+        if not callable(P):
+            raise ValueError(f"prompt {i} is not callable.")
+        prompt = P(y, x)
+        y = str(model(prompt))
+        steps.append({"prompt": str(prompt), "output": y})
+    return RichResult(payload={
+        "final_output": y, "steps": steps,
+        "estimate": float(len(steps)), "n": len(steps),
+        "method": "Prompt chaining (Alammar Ch 7)"})
 
 
 def cheatsheet():
-    return "alcnp: Chain prompting: output of prompt 1 fed as input to prompt 2"
+    return "alcnp: compose prompts, keep every intermediate inspectable"

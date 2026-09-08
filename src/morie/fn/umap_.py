@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.spatial.distance import pdist, squareform
+from . import _array_core as np
+from ._sci_core import pdist, squareform
 
 from morie.fn._containers import UmapRes
 
@@ -151,3 +151,7 @@ def umap_(
 
 def cheatsheet() -> str:
     return "_fuzzy_simplicial_set({}) -> UMAP (Uniform Manifold Approximation and Projection) -- simpl"
+
+
+# compact alias per ledger/NAMING.md
+umap = umap_

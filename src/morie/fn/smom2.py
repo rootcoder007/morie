@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -41,3 +41,7 @@ smom2 = central_moment
 
 def cheatsheet() -> str:
     return "central_moment({}) -> Central moment."
+
+
+# compact alias per ledger/NAMING.md
+centralmoment = central_moment

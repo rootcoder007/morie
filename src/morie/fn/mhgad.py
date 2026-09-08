@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GAD-7 anxiety screening score."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -56,3 +56,7 @@ mhgad = gad7_score
 
 def cheatsheet() -> str:
     return "gad7_score({}) -> GAD-7 anxiety screening score."
+
+
+# compact alias per ledger/NAMING.md
+gad7score = gad7_score

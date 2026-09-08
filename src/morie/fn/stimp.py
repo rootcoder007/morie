@@ -14,7 +14,7 @@ def plot_stimuli_positions(stim_pos, labels=None) -> DescriptiveResult:
 
     .. epigraph:: Logic is the foundation of all certain knowledge. -- Leonhard Euler
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pos = np.asarray(stim_pos, dtype=float)
     if pos.ndim == 1:

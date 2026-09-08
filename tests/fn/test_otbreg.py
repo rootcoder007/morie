@@ -1,6 +1,6 @@
 """Tests for otbreg.ot_bregman_proj."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otbreg import ot_bregman_proj
 

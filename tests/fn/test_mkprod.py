@@ -1,6 +1,6 @@
 """Tests for mkprod.mackinnon_distribution_products."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mkprod import mackinnon_distribution_products
 

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SignalResult
 
@@ -35,3 +35,7 @@ istfa = istft_synth
 
 def cheatsheet() -> str:
     return "istft_synth({}) -> Inverse Short-Time Fourier Transform signal synthesis."
+
+
+# compact alias per ledger/NAMING.md
+istftsynth = istft_synth

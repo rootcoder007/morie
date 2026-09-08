@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -98,3 +98,7 @@ esem = cfa_esem
 
 def cheatsheet() -> str:
     return "cfa_esem({}) -> Exploratory SEM (ESEM) via rotated CFA loadings."
+
+
+# compact alias per ledger/NAMING.md
+cfaesem = cfa_esem

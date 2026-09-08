@@ -1,6 +1,6 @@
 """Variogram model AIC"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -42,3 +42,7 @@ vari = vario_aic
 
 def cheatsheet() -> str:
     return "vario_aic({}) -> Variogram model AIC"
+
+
+# compact alias per ledger/NAMING.md
+varioaic = vario_aic

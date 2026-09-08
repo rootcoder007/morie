@@ -1,6 +1,6 @@
 """Tests for gb5714.gibbons_wsrt_sampsize."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb5714 import gibbons_wsrt_sampsize
 

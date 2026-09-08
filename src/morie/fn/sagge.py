@@ -5,7 +5,7 @@ Global Geary's C statistic
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def sagge(values=None, w=None, n=50):

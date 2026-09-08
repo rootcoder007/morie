@@ -1,6 +1,6 @@
 """MUSCLE multiple sequence alignment."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def muscle_msa(sequences):
 
 def cheatsheet():
     return "musclr: MUSCLE multiple sequence alignment"
+
+
+# compact alias per ledger/NAMING.md
+musclemsa = muscle_msa

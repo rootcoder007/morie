@@ -1,6 +1,6 @@
 """Tests for docl3.do_calculus_rules."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.docl3 import do_calculus_rules
 

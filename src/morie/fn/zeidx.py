@@ -1,6 +1,6 @@
 """IDW exposure interpolation"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ idw_ = idw_exposure
 
 def cheatsheet() -> str:
     return "idw_exposure({}) -> IDW exposure interpolation"
+
+
+# compact alias per ledger/NAMING.md
+idwexposure = idw_exposure

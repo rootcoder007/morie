@@ -3,7 +3,7 @@
 
 from math import comb
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -54,3 +54,7 @@ catln = catalan_number
 
 def cheatsheet() -> str:
     return "catalan_number({}) -> Catalan number computation."
+
+
+# compact alias per ledger/NAMING.md
+catalannumber = catalan_number

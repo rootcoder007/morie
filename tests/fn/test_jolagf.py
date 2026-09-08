@@ -1,6 +1,6 @@
 """Tests for jolagf.joseph_lag_feature."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jolagf import joseph_lag_feature
 

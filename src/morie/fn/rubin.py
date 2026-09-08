@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import math
 
-import numpy as np
+from . import _array_core as np
 
 
 def rubins_rules(
@@ -104,7 +104,7 @@ def rubins_rules(
 def _t_quantile(p: float, df: float) -> float:
     """Approximate t-distribution quantile.  Falls back to scipy if available."""
     try:
-        from scipy.stats import t
+        from ._stats_core import t
 
         return float(t.ppf(p, df))
     except ImportError:
@@ -141,3 +141,7 @@ rubin = rubins_rules
 
 def cheatsheet() -> str:
     return "rubins_rules({}) -> Rubin's rules for pooling multiply imputed estimates."
+
+
+# compact alias per ledger/NAMING.md
+rubinsrules = rubins_rules

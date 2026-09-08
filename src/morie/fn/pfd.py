@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -38,3 +38,7 @@ pfd = petrosian_fd
 
 def cheatsheet() -> str:
     return "petrosian_fd({}) -> Petrosian fractal dimension."
+
+
+# compact alias per ledger/NAMING.md
+petrosianfd = petrosian_fd

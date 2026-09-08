@@ -1,6 +1,6 @@
 """Tests for morie.fn.msstb -- Kruskal stress S2"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msstb import stress_s2
 

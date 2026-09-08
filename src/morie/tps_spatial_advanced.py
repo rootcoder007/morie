@@ -17,9 +17,9 @@ from __future__ import annotations
 
 import math
 
-import numpy as np
-import pandas as pd
-from scipy import stats as sps
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as sps
 
 from .fn._richresult import RichResult
 
@@ -221,7 +221,7 @@ def dbscan_clusters(
 ) -> RichResult:
     """DBSCAN on point coordinates. Returns cluster summary."""
     try:
-        from sklearn.cluster import DBSCAN
+        from morie.fn._ml_core import DBSCAN
     except ImportError:
         return RichResult(title=f"DBSCAN -- {ds_name}", warnings=["scikit-learn not installed"])
     coords = _coords(df)

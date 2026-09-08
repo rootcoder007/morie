@@ -91,3 +91,7 @@ def brent_root(
 
 
 brtrf = brent_root
+
+
+# compact alias per ledger/NAMING.md
+brentroot = brent_root

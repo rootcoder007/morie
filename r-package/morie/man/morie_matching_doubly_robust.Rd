@@ -22,13 +22,16 @@ morie_matching_doubly_robust(
 
 \item{covariates}{Character vector of covariates.}
 
-\item{ps}{Optional pre-computed propensity scores.}
+\item{ps}{Optional propensity scores. When supplied they REPLACE
+the fitted model and become the matching distance directly,
+aligned to the rows that survive the NA drop.}
 
 \item{n_bootstrap}{Number of bootstrap replications.}
 
 \item{seed}{Random seed.}
 
 \item{alpha}{Significance level.}
+
 }
 \value{
 A list of class \code{morie_te_result} with estimand
@@ -40,6 +43,7 @@ regression adjustment within the matched sample.  Standard errors come
 from a non-parametric bootstrap.
 }
 \examples{
+\donttest{
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -49,4 +53,5 @@ df <- data.frame(
   treat3 = sample(0:2, 150, TRUE))
 morie_matching_doubly_robust(df, "y", "d", c("x1", "x2"),
                              n_bootstrap = 200)
+}
 }

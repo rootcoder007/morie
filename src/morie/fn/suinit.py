@@ -1,6 +1,6 @@
 """Age of substance use initiation analysis."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -45,3 +45,7 @@ suinit = initiation_age
 
 def cheatsheet() -> str:
     return "initiation_age({}) -> Age of substance use initiation analysis."
+
+
+# compact alias per ledger/NAMING.md
+initiationage = initiation_age

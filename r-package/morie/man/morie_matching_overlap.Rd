@@ -13,7 +13,9 @@ morie_matching_overlap(data, treatment, covariates, ps = NULL)
 
 \item{covariates}{Character vector of covariates.}
 
-\item{ps}{Optional pre-computed propensity scores.}
+\item{ps}{Optional propensity scores. When supplied they REPLACE
+the fitted model and become the matching distance directly,
+aligned to the rows that survive the NA drop.}
 }
 \value{
 A list with \code{ps_summary} (per-group quantiles),
@@ -26,6 +28,7 @@ the number / percentage of units off support, and the IPW effective
 sample size.
 }
 \examples{
+\donttest{
 set.seed(1)
 df <- data.frame(
   y = rnorm(150), d = rbinom(150, 1, 0.4),
@@ -34,4 +37,5 @@ df <- data.frame(
   year = sample(2020:2022, 150, TRUE),
   treat3 = sample(0:2, 150, TRUE))
 morie_matching_overlap(df, "d", c("x1", "x2"))
+}
 }

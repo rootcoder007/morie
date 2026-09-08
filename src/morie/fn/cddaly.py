@@ -41,3 +41,7 @@ cddaly = daly_calc
 
 def cheatsheet() -> str:
     return "daly_calc({}) -> DALY = YLL + YLD calculation."
+
+
+# compact alias per ledger/NAMING.md
+dalycalc = daly_calc

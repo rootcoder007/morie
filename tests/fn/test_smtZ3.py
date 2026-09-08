@@ -1,6 +1,6 @@
 """Tests for smtZ3.smt_solver."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.smtZ3 import smt_solver
 

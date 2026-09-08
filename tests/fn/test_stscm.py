@@ -1,6 +1,6 @@
 """Tests for morie.fn.stscm -- Byzantine fault detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.stscm import byzantine_detect, stscm

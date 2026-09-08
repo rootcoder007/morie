@@ -8,8 +8,8 @@ N_[](e) <= 2/e^2 and theta_n = 0.5 (the maximal L_2-radius of a
 0/1-valued class), returning the numerical Kosorok/Dudley RHS.
 """
 
-import numpy as np
-from scipy import integrate
+from . import _array_core as np
+from ._sci_core import integrate
 
 from ._richresult import RichResult
 

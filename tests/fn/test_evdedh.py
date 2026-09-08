@@ -1,6 +1,6 @@
 """Tests for evdedh.evt_dekkers_einmahl_dehaan."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evdedh import evt_dekkers_einmahl_dehaan
 

@@ -1,6 +1,6 @@
 """Tests for bndpos.bound_pos_treatment."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndpos import bound_pos_treatment
 

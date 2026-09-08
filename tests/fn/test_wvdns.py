@@ -1,6 +1,6 @@
 """Tests for wvdns.py - Wavelet denoising."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wvdns import wavelet_denoise, wvdns
 

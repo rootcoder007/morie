@@ -1,6 +1,6 @@
 """Tests for morie.fn.svbnk -- Banks set computation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svbnk import banks_set
 

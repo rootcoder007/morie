@@ -1,6 +1,6 @@
 """Tests for WLS variogram fitting."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgwls import sgwls
 

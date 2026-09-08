@@ -1,6 +1,6 @@
 """Legendre polynomial basis."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -38,3 +38,7 @@ def legendre_basis(x, K):
 
 def cheatsheet():
     return "legpb: Legendre polynomial basis"
+
+
+# compact alias per ledger/NAMING.md
+legendrebasis = legendre_basis

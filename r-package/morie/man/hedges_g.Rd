@@ -2,7 +2,7 @@
 % Please edit documentation in R/effect_sizes.R
 \name{hedges_g}
 \alias{hedges_g}
-\title{Hedges' g — bias-corrected Cohen's d}
+\title{Hedges' g -- bias-corrected Cohen's d}
 \usage{
 hedges_g(x, y, confidence = 0.95)
 }
@@ -10,6 +10,7 @@ hedges_g(x, y, confidence = 0.95)
 \item{x, y}{Numeric vectors (NA dropped).}
 
 \item{confidence}{Confidence level for CI. Default 0.95.}
+
 }
 \value{
 A \code{morie_effect_size}.

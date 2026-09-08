@@ -8,7 +8,7 @@ We treat the columns of `x` as the ambient dimension d and return
 that bound, together with a Sauer-bound certificate.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

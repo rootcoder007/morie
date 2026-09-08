@@ -1,6 +1,6 @@
 """Tests for icasg -- ICA source separation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._containers import DescriptiveResult

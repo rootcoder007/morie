@@ -1,6 +1,6 @@
 """Tests for jocros.joseph_croston_intermittent."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jocros import joseph_croston_intermittent
 

@@ -1,6 +1,6 @@
 """Tests for hmuf.geron_underfitting."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmuf import geron_underfitting
 

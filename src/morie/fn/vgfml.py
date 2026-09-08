@@ -1,6 +1,6 @@
 """Variogram ML fitting"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -42,3 +42,7 @@ vari = vario_fit_ml
 
 def cheatsheet() -> str:
     return "vario_fit_ml({}) -> Variogram ML fitting"
+
+
+# compact alias per ledger/NAMING.md
+variofitml = vario_fit_ml

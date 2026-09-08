@@ -5,7 +5,7 @@ Nesterov accelerated gradient (NAG) for faster convergence.
 Momentum method with lookahead for improved convergence rates.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["nadmf"]
 

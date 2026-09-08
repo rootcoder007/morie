@@ -1,6 +1,6 @@
 """DBSCAN density-based clustering (Ester et al. 1996)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -28,7 +28,7 @@ def dbscan_clustering(x, *, eps=0.5, min_samples=5, metric="euclidean"):
     RichResult with payload: estimate (number of clusters), labels,
     n_clusters, n_noise, core_sample_indices, n, method.
     """
-    from sklearn.cluster import DBSCAN
+    from ._ml_core import DBSCAN
 
     X = np.asarray(x, dtype=float)
     if X.ndim == 1:

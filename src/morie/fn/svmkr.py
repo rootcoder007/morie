@@ -1,6 +1,6 @@
 """SVM with kernel trick (RBF / poly / sigmoid)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -8,7 +8,13 @@ __all__ = ["svm_kernel_trick"]
 
 
 def svm_kernel_trick(x, y, *, kernel="rbf", C=1.0, gamma="scale", degree=3, seed=0):
-    """Kernel SVM via sklearn.svm.SVC.
+    """Kernel SVM
+
+    References
+    ----------
+    Hastie, T., Tibshirani, R. & Friedman, J. (2009). *The Elements of
+    Statistical Learning*, 2nd edn. Springer. Sec. 12.3, pp. 423-426
+    (SVMs and kernels). via sklearn.svm.SVC.
 
     K(x_i, x_j) -- RBF: exp(-gamma ||x_i - x_j||^2);
     poly: (gamma <x_i, x_j> + coef0)^degree; sigmoid: tanh(gamma <x_i,x_j>+coef0).
@@ -31,7 +37,7 @@ def svm_kernel_trick(x, y, *, kernel="rbf", C=1.0, gamma="scale", degree=3, seed
     RichResult with payload: estimate (train accuracy), n_support (per class),
     kernel, C, gamma, n, method.
     """
-    from sklearn.svm import SVC
+    from ._ml_core import SVC
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()
@@ -70,3 +76,7 @@ if __name__ == "__main__":
     print("kernel:", r.kernel, "  C:", r.C, "  gamma:", r.gamma)
     print("train accuracy:", r.train_accuracy)
     print("n_support per class:", r.n_support)
+
+
+# compact alias per ledger/NAMING.md
+svmkerneltrick = svm_kernel_trick

@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import DescriptiveResult
 
@@ -110,3 +110,7 @@ hausr = hausman_test
 
 def cheatsheet() -> str:
     return "hausman_test({}) -> Hausman FE vs RE specification test."
+
+
+# compact alias per ledger/NAMING.md
+hausmantest = hausman_test

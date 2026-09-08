@@ -1,6 +1,6 @@
 """Test nmf_sparse (nmfsp)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.nmfsp import nmf_sparse, nmfsp

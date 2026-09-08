@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -26,7 +26,7 @@ def group_delay(b, a, worN: int = 512) -> DescriptiveResult:
     -------
     DescriptiveResult
     """
-    from scipy.signal import group_delay as _gd
+    from ._signal_core import group_delay as _gd
 
     b = np.asarray(b, dtype=float)
     a = np.asarray(a, dtype=float)
@@ -43,3 +43,7 @@ grpdl = group_delay
 
 def cheatsheet() -> str:
     return "group_delay({}) -> Group delay of a digital filter."
+
+
+# compact alias per ledger/NAMING.md
+groupdelay = group_delay

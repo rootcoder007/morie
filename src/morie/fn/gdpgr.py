@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -55,3 +55,7 @@ short = gdp_growth
 
 def cheatsheet() -> str:
     return "gdp_growth({}) -> GDP growth rate and trend."
+
+
+# compact alias per ledger/NAMING.md
+gdpgrowth = gdp_growth

@@ -266,7 +266,7 @@ class TestDoobTrends:
         assert r["change_point_index"] is None
 
     def test_decoupling_test_uncorrelated_yields_small_r(self):
-        import numpy as np
+        from morie.fn import _array_core as np
 
         from morie.doob_trends import decoupling_test
 

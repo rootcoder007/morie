@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as stats
 
 
 def otis_cate_risk(
@@ -70,3 +70,7 @@ def otis_cate_risk(
 
 def cheatsheet() -> str:
     return "otis_cate_risk({}) -> CATE by risk score tercile for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otiscaterisk = otis_cate_risk

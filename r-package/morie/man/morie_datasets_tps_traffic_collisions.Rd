@@ -38,15 +38,20 @@ affects the hub_id -> FeatureServer URL lookup.}
 }
 \value{
 A data.frame / GeoJSON list / file path; see
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} for per-format semantics.
+\code{morie_datasets_tps_arcgis_hub_by_id()} for per-format semantics.
 }
 \description{
 Toronto PS ArcGIS Hub dataset wrapper. Thin dispatch to
-\code{\link[=morie_datasets_tps_arcgis_hub_by_id]{morie_datasets_tps_arcgis_hub_by_id()}} with the canonical
+\code{morie_datasets_tps_arcgis_hub_by_id()} with the canonical
 hub item_id \code{bc4c72a793014a55a674984ef175a6f3}.
 }
 \details{
 Collision occurrences by occurrence date.
 
 Tags: Traffic; Collision; Traffic Collisions; Motor Vehicle Collisions; Toronto; TPS; Toronto Police
+}
+\examples{
+\dontrun{
+morie_datasets_tps_traffic_collisions()
+}
 }

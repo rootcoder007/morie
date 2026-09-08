@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -37,3 +37,7 @@ wvphs = wavelet_phase
 
 def cheatsheet() -> str:
     return "wavelet_phase({}) -> Phase from complex wavelet coefficients."
+
+
+# compact alias per ledger/NAMING.md
+waveletphase = wavelet_phase

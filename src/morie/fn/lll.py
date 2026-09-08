@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -38,3 +38,7 @@ lll = lll_reduce
 
 def cheatsheet() -> str:
     return "lll_reduce({}) -> LLL lattice basis reduction."
+
+
+# compact alias per ledger/NAMING.md
+lllreduce = lll_reduce

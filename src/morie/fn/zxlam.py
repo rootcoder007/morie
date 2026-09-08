@@ -1,6 +1,6 @@
 """Lambert conformal conic projection"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ lamb = lambert_proj
 
 def cheatsheet() -> str:
     return "lambert_proj({}) -> Lambert conformal conic projection"
+
+
+# compact alias per ledger/NAMING.md
+lambertproj = lambert_proj

@@ -7,7 +7,7 @@ __all__ = ["hpd_interval", "bhpd"]
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def hpd_interval(
@@ -87,3 +87,7 @@ bhpd = hpd_interval
 
 def cheatsheet() -> str:
     return "hpd_interval(samples) -> Highest Posterior Density interval."
+
+
+# compact alias per ledger/NAMING.md
+hpdinterval = hpd_interval

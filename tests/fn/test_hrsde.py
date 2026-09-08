@@ -1,6 +1,6 @@
 """Tests for morie.fn.hrsde."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrsde import home_range_kde
 

@@ -1,6 +1,6 @@
 """Tests for grovr.geron_one_vs_rest."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grovr import geron_one_vs_rest
 

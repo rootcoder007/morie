@@ -11,9 +11,9 @@ Other links (binomial/poisson/...) need PQL or full Laplace -- those
 are deferred to v0.3.0 (see ``NotImplementedError`` branch).
 """
 
-import numpy as np
-from scipy import optimize
-from scipy.spatial.distance import cdist
+from . import _array_core as np
+from ._sci_core import optimize
+from ._sci_core import cdist
 
 from ._richresult import RichResult
 
@@ -121,3 +121,7 @@ def cheatsheet():
 # X = column of ones + linear coord, y = 1 + 2*coord + small noise,
 # coords = [[0],[1],[2],[3],[4]]
 # Expect beta ~ [1.0, 2.0] (intercept and slope), small SE.
+
+
+# compact alias per ledger/NAMING.md
+spatialglm = spatial_glm

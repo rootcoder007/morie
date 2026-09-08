@@ -1,6 +1,6 @@
 """Tests for gh_c9_5.ghosal_norm_mix_apx."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c9_5 import ghosal_norm_mix_apx
 

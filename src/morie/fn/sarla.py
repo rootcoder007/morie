@@ -1,7 +1,9 @@
 """Spatial autoregressive lag model (SAR lag, ML)."""
 
-import numpy as np
-from scipy import optimize
+from . import _array_core as np
+from ._sci_core import optimize
+
+from ._schab_rho import safe_search_interval
 
 from ._richresult import RichResult
 
@@ -13,8 +15,9 @@ def spatial_ar_lag(x, y, w):
     SAR lag model:
         Y = rho W Y + X beta + eps,   eps ~ N(0, sigma2 I).
 
-    Concentrated log-likelihood in rho (Anselin 1988; Schabenberger
-    & Gotway 2005, Ch 7):
+    Concentrated log-likelihood in rho (Ord 1975; Anselin 1988;
+    Schabenberger & Gotway 2005, Sec. 6.2.2.1, pp. 335-341 -- the SAR
+    family and the eigenvalue bounds on rho):
 
         ll(rho) = -n/2 log(2 pi sigma2_hat) + log|I - rho W| - n/2
         e0 = M y,  e1 = M W y,   M = I - X (X'X)^{-1} X'
@@ -53,7 +56,11 @@ def spatial_ar_lag(x, y, w):
             return 1e12
         return 0.5 * n * np.log(2 * np.pi * sigma2) - logdetA + 0.5 * n
 
-    res = optimize.minimize_scalar(neg_ll, bounds=(-0.99, 0.99), method="bounded", options={"xatol": 1e-5})
+    lo, hi = safe_search_interval(W, "identity")
+    res = optimize.minimize_scalar(
+        neg_ll, bounds=(lo, hi), method="bounded",
+        options={"xatol": 1e-10 * max(hi - lo, 1.0)},
+    )
     rho = float(res.x)
     Wy = W @ y
     # OLS of (y - rho Wy) on X
@@ -83,3 +90,7 @@ def cheatsheet():
 # CANONICAL TEST
 # Same X, y, W as sarre canonical. Expect rho ~ small (data has no lag
 # structure) and beta ~ [intercept, slope].
+
+
+# compact alias per ledger/NAMING.md
+spatialarlag = spatial_ar_lag

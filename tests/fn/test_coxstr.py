@@ -1,6 +1,6 @@
 """Tests for coxstr.cox_stratified."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.coxstr import cox_stratified
 

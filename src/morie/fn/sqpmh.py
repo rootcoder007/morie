@@ -4,8 +4,8 @@ Sequential quadratic programming (SQP) for constrained optimization.
 Solves equality and inequality constrained problems via iterative quadratic programs.
 """
 
-import numpy as np
-from scipy.optimize import minimize
+from . import _array_core as np
+from ._sci_core import minimize
 
 __all__ = ["sqpmh"]
 

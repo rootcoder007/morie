@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -74,3 +74,7 @@ cpbbs = bbs_changepoint
 
 def cheatsheet() -> str:
     return "bbs_changepoint({}) -> Binary segmentation for change-point detection."
+
+
+# compact alias per ledger/NAMING.md
+bbschangepoint = bbs_changepoint

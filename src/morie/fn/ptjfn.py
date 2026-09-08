@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """J-function (ratio F/G)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ j_fu = j_function
 
 def cheatsheet() -> str:
     return "j_function({}) -> J-function (ratio F/G)"
+
+
+# compact alias per ledger/NAMING.md
+jfunction = j_function

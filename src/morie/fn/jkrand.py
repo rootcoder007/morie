@@ -1,6 +1,6 @@
 """Jackknife replicate weights variance."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def jackknife_repl(theta_replicates):
 
 def cheatsheet():
     return "jkrand: Jackknife replicate weights variance"
+
+
+# compact alias per ledger/NAMING.md
+jackkniferepl = jackknife_repl

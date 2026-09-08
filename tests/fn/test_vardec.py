@@ -1,6 +1,6 @@
 """Tests for vardec.var_variance_decomp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vardec import var_variance_decomp
 

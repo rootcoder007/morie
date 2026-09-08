@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 
@@ -53,3 +53,7 @@ siutm = siu_timeline
 
 def cheatsheet() -> str:
     return "siu_timeline({}) -> SIU case processing time."
+
+
+# compact alias per ledger/NAMING.md
+siutimeline = siu_timeline

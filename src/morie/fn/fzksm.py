@@ -7,8 +7,8 @@ Under H0:X~F_0, sqrt(n) D_n has the same Kolmogorov limit as the
 classical KS, so we use SciPy's Kolmogorov tail.
 """
 
-import numpy as np
-from scipy import stats as _sps
+from . import _array_core as np
+from . import _stats_core as _sps
 
 from ._richresult import RichResult
 
@@ -16,13 +16,16 @@ __all__ = ["fauzi_ks_smoothed"]
 
 
 def _silverman_h(x):
-    n = len(x)
-    s = np.std(x, ddof=1)
-    iqr = np.subtract(*np.percentile(x, [75, 25])) / 1.34
-    sigma = min(s, iqr) if iqr > 0 else s
-    if sigma <= 0:
-        sigma = 1.0
-    return 1.06 * sigma * n ** (-1.0 / 5.0)
+    """DISTRIBUTION-function bandwidth, 4^(1/3) sigma n^(-1/3).
+
+    Not the n^(-1/5) density rule: this module smooths with the
+    INTEGRATED kernel, so the bandwidth enters the variance at
+    O(h/n) rather than O(1/(nh)) and the optimiser is a cube root.
+    See morie.fn._fauzi.kdfe_bandwidth for the derivation from the
+    book's (2.3), (2.4) and Sec. 5.3.2.
+    """
+    from ._fauzi import kdfe_bandwidth
+    return kdfe_bandwidth(x)
 
 
 def fauzi_ks_smoothed(x, cdf="norm", args=None, h=None, n_grid=512):

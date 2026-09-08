@@ -12,7 +12,6 @@
 #' All functions return a multi-section \code{morie_rich_result} list.
 #'
 #' Functions
-#' ---------
 #'
 #' \itemize{
 #'   \item \code{\link{morie_tps_hawkes_temporal_fit}}: fit mu, kappa,
@@ -37,6 +36,22 @@ NULL
 # Internal helpers (NOT exported)
 # ---------------------------------------------------------------------------
 
+#' .tps_stoch_result
+#'
+#' A step of the tps_stochastic implementation. Called by
+#' \code{morie_tps_fokker_planck_grid}, \code{morie_tps_hawkes_temporal_fit},
+#' \code{morie_tps_langevin_simulate} and 1 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param call Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .tps_stoch_result <- function(title, call, summary_lines = list(),
                                warnings = character(0),
                                interpretation = "",
@@ -54,6 +69,18 @@ NULL
   out
 }
 
+#' .tps_stoch_round
+#'
+#' A step of the tps_stochastic implementation. Called by
+#' \code{morie_tps_fokker_planck_grid}, \code{morie_tps_hawkes_temporal_fit},
+#' \code{morie_tps_langevin_simulate} and 1 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param x Passed to \code{is.finite}.
+#' @param k Passed to \code{round}.
+#' @return A numeric value.
+#' @export
 .tps_stoch_round <- function(x, k) {
   if (!is.finite(x)) return(NA_real_)
   round(x, k)
@@ -63,6 +90,17 @@ NULL
 # Prefer integer-triple OCC_YEAR/OCC_MONTH/OCC_DAY (local-time
 # decomposition unaffected by ArcGIS UTC conversion); fall back to
 # OCC_DATE / REPORT_DATE.
+#' Return a numeric vector of incident times (POSIXct)
+#'
+#' Prefer integer-triple OCC_YEAR/OCC_MONTH/OCC_DAY (local-time
+#' decomposition unaffected by ArcGIS UTC conversion); fall back to
+#' OCC_DATE / REPORT_DATE.
+#'
+#' @param df A list; the body reads \code{$OCC_DAY}, \code{$OCC_MONTH}, \code{$OCC_YEAR} from it.
+#' @param min_year Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}. Defaults to \code{2014L}.
+#' @return A vector, from \code{sort}.
+#' @export
 .tps_stoch_date_series <- function(df, min_year = 2014L) {
   ts <- NULL
   if (all(c("OCC_YEAR", "OCC_MONTH", "OCC_DAY") %in% names(df))) {
@@ -118,6 +156,17 @@ NULL
 # Negative log-likelihood of exponential-kernel Hawkes:
 #   lambda(t) = mu + kappa*omega * sum_{t_i<t} exp(-omega*(t - t_i))
 # Closed-form integral: mu*T + kappa * sum_i (1 - exp(-omega*(T - t_i)))
+#' Negative log-likelihood of exponential-kernel Hawkes:
+#'
+#' lambda(t) = mu + kappa*omega * sum_\{t_i<t\} exp(-omega*(t - t_i))
+#' Closed-form integral: mu*T + kappa * sum_i (1 - exp(-omega*(T -
+#' t_i)))
+#'
+#' @param params A vector; indexed elementwise.
+#' @param t A vector; its length is taken and its elements indexed.
+#' @param T_window Numeric; combined arithmetically in the body.
+#' @return A numeric value.
+#' @export
 .tps_stoch_neg_loglik_hawkes <- function(params, t, T_window) {
   mu <- params[1L]
   kappa <- params[2L]
@@ -143,6 +192,16 @@ NULL
 
 
 # Build daily counts from a POSIXct vector. Returns list(dates, counts).
+#' Build daily counts from a POSIXct vector. Returns list(dates, counts)
+#'
+#' A step of the tps_stochastic implementation. Called by
+#' \code{morie_tps_fokker_planck_grid}, \code{morie_tps_langevin_simulate}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param ts A vector; its length is taken.
+#' @return A list with \code{dates}, \code{counts}.
+#' @export
 .tps_stoch_daily <- function(ts) {
   if (length(ts) == 0L) {
     return(list(dates = as.POSIXct(character(0), tz = "UTC"),
@@ -157,6 +216,15 @@ NULL
 }
 
 # Build monthly counts from a POSIXct vector.
+#' Build monthly counts from a POSIXct vector
+#'
+#' A step of the tps_stochastic implementation. Called by \code{morie_tps_sarima_forecast}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param ts A vector; its length is taken.
+#' @return A list with \code{dates}, \code{counts}.
+#' @export
 .tps_stoch_monthly <- function(ts) {
   if (length(ts) == 0L) {
     return(list(dates = as.POSIXct(character(0), tz = "UTC"),
@@ -191,6 +259,9 @@ NULL
 #'   \code{kappa}, \code{omega}, \code{branching}, \code{nll},
 #'   \code{aic}, \code{bic}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_hawkes_temporal_fit(D)
 morie_tps_hawkes_temporal_fit <- function(df, ds_name = "?",
                                            max_n = 5000L) {
   stopifnot(is.data.frame(df))
@@ -318,6 +389,9 @@ morie_tps_hawkes_temporal_fit <- function(df, ds_name = "?",
 #'   \code{bic}, \code{mape_pct}, \code{rmse}, \code{forecast},
 #'   \code{actual}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_sarima_forecast(D)
 morie_tps_sarima_forecast <- function(df, ds_name = "?", h = 12L,
                                        order = c(1L, 1L, 1L),
                                        seasonal = c(0L, 1L, 1L, 12L)) {
@@ -451,6 +525,9 @@ morie_tps_sarima_forecast <- function(df, ds_name = "?", h = 12L,
 #'   \code{mu}, \code{sigma}, \code{paths} (matrix of n_paths x
 #'   n_steps), and final-day quantiles.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_langevin_simulate(D)
 morie_tps_langevin_simulate <- function(df, ds_name = "?",
                                          n_paths = 100L,
                                          T_days = 365L,
@@ -559,6 +636,9 @@ morie_tps_langevin_simulate <- function(df, ds_name = "?",
 #'   \code{mu}, \code{sigma}, \code{grid}, \code{density},
 #'   \code{stationary_peak}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_tps_fokker_planck_grid(D)
 morie_tps_fokker_planck_grid <- function(df, ds_name = "?",
                                           n_grid = 64L,
                                           n_steps = 200L) {
@@ -664,13 +744,24 @@ morie_tps_fokker_planck_grid <- function(df, ds_name = "?",
 # Print method
 # ---------------------------------------------------------------------------
 
+#' Print method for \code{morie_tps_stochastic_result} objects
+#'
+#' @param x A \code{morie_tps_stochastic_result} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return \code{x}, invisibly.
 #' @export
+#' @examples
+#' \donttest{
+#' set.seed(1); n <- 200
+#' df <- data.frame(OCC_DATE = as.Date("2018-01-01") + sample(0:2000, n, TRUE))
+#' res <- morie_tps_hawkes_temporal_fit(df)
+#' print(res)
+#' }
 print.morie_tps_stochastic_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\
 ", sep = "")
-  if (!is.null(x$call) && nzchar(x$call)) {
+  if (!is.null(x$call) && length(x$call) == 1L && nzchar(x$call)) {
     cat("Call:", x$call, "\
 \
 ", sep = " ")

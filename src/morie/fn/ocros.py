@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import pandas as pd
-from scipy import stats as sp_stats
+from . import _frame_core as pd
+from . import _stats_core as sp_stats
 
 
 def otis_crosstab(
@@ -43,3 +43,7 @@ def otis_crosstab(
 
 def cheatsheet() -> str:
     return "otis_crosstab({}) -> OTIS cross-tabulation with chi-square test."
+
+
+# compact alias per ledger/NAMING.md
+otiscrosstab = otis_crosstab

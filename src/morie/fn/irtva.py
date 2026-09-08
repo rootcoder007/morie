@@ -11,7 +11,7 @@ def irt_variance_legislator(chain_theta) -> DescriptiveResult:
 
     .. epigraph:: A journey of a thousand miles begins with a single step. -- Lao Tzu
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     chain = np.asarray(chain_theta, dtype=float)
     if chain.ndim == 1:

@@ -4,7 +4,7 @@
 \alias{morie_otis_analyze_b01_ruhela_formulations}
 \alias{morie_otis_analyze_b01_dlrm}
 \alias{morie_otis_analyze_b01_mrm}
-\title{OTIS b01 Ruhela formulations (full DLRM).}
+\title{OTIS b01 Ruhela formulations (full DLRM)}
 \usage{
 morie_otis_analyze_b01_ruhela_formulations(data = NULL, out_dir = NULL)
 
@@ -21,10 +21,12 @@ morie_otis_analyze_b01_mrm(data = NULL, out_dir = NULL)
 \code{morie_otis_analysis_result}.
 }
 \description{
-OTIS b01 Ruhela formulations (full DLRM).
+OTIS b01 Ruhela formulations (full DLRM)
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
 morie_otis_analyze_b01_ruhela_formulations(otis_b01)
+}
 }

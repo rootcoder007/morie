@@ -1,8 +1,28 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """IPW-weighted OLS ATE estimator."""
 
-import pandas as pd
-import statsmodels.formula.api as smf
+from . import _frame_core as pd
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from ._glm_core import formula as smf
+except ImportError:
+    smf = _MissingDep('smf')
 
 
 def estimate_ate(data: pd.DataFrame, outcome: str, treatment: str, weights_col: str) -> tuple[float, float]:
@@ -33,3 +53,7 @@ ate_fn = estimate_ate
 
 def cheatsheet() -> str:
     return "estimate_ate({}) -> IPW-weighted OLS ATE estimator."
+
+
+# compact alias per ledger/NAMING.md
+estimateate = estimate_ate

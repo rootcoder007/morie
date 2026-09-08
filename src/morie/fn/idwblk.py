@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Block IDW for irregular grids."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

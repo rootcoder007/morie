@@ -2,7 +2,7 @@
 % Please edit documentation in R/arsau_datasets.R
 \name{morie_arsau_download}
 \alias{morie_arsau_download}
-\title{Bulk-download every ARSAU CSV + sidecar from the upstream Catalogue.}
+\title{Bulk-download every ARSAU CSV + sidecar from the upstream Catalogue}
 \usage{
 morie_arsau_download(target_dir, ...)
 }
@@ -16,7 +16,7 @@ Stops with \code{NotYetPorted}.
 }
 \description{
 This is the R-side equivalent of running the maintainer's
-\code{scripts/refresh_arsau.py} mirror — a non-trivial pipeline that
+\code{scripts/refresh_arsau.py} mirror -- a non-trivial pipeline that
 walks the CKAN package, follows per-resource redirects, handles
 rate-limits, verifies SHA digests against the published values, and
 lands the files under \code{MORIE_ARSAU_DIR}.  Porting it requires
@@ -24,4 +24,9 @@ an end-to-end retry + checksum manager that does not yet have a
 tested R analogue; per the morie maintenance policy, network bulk
 fetches must be reproducible across CRAN test environments before
 the wrapper is exposed.  Stubbed for now.
+}
+\examples{
+\dontrun{
+path <- morie_arsau_download(tempdir())
+}
 }

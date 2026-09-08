@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -57,3 +57,7 @@ predg = prediction_gain
 
 def cheatsheet() -> str:
     return "prediction_gain({}) -> Linear prediction gain."
+
+
+# compact alias per ledger/NAMING.md
+predictiongain = prediction_gain

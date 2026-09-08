@@ -1,6 +1,6 @@
 """Tests for sympFa.sympy_factor."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sympFa import sympy_factor
 

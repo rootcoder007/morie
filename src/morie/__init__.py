@@ -236,7 +236,7 @@ def load_sample(name: str):
     """
     from pathlib import Path
 
-    import pandas as pd
+    from morie.fn import _frame_core as pd
 
     here = Path(__file__).parent / "data" / "samples"
     files = {

@@ -1,6 +1,6 @@
 """Clark-Evans aggregation index."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def clark_evans(coords):
 
 def cheatsheet():
     return "clstpp: Clark-Evans aggregation index"
+
+
+# compact alias per ledger/NAMING.md
+clarkevans = clark_evans

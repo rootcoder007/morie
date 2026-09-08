@@ -5,7 +5,7 @@ Floodplain delineation
 Category: HydroSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def hyfpl(flow=None, precip=None, coords=None, n=50):

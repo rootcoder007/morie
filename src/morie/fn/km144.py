@@ -1,42 +1,50 @@
-"""Mm instr predict.."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 9.16: multimodal instruction-tuned prediction."""
 
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch9_mm_instr_predict"]
 
 
-def kamath_ch9_mm_instr_predict(I, M, theta):
+def kamath_ch9_mm_instr_predict(I, M, theta, f=None):
+    r"""A = f(I, M; theta).
+
+    An instruction sample is the triplet (I, M, R): instruction,
+    multimodal input, ground-truth response. Eq 9.16 is the forward
+    pass, so the model is the caller's: pass a callable ``theta(I, M)``
+    or supply ``f`` and let ``theta`` be its parameters, in which case
+    ``f(I, M, theta)`` is called. The contract enforced is that a
+    prediction actually comes back (not ``None``).
+
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 9, Eq 9.16, printed
+    p. 391.
+
+    Examples
+    --------
+    >>> out = kamath_ch9_mm_instr_predict(
+    ...     "What animal?", "<image>", lambda i, m: "a cat")
+    >>> out["answer"]
+    'a cat'
     """
-    Mm instr predict.
-
-    Formula: A = f(I, M; \theta)
-
-    Parameters
-    ----------
-    I : array-like
-        Input data.
-    M : array-like
-        Input data.
-    theta : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 9, Eq 9.16, p. 391
-    """
-    I = np.atleast_1d(np.asarray(I, dtype=float))
-    n = len(I)
-    result = float(np.mean(I))
-    se = float(np.std(I, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mm instr predict."})
+    if f is not None:
+        if not callable(f):
+            raise ValueError("f must be callable f(I, M, theta).")
+        A = f(I, M, theta)
+    elif callable(theta):
+        A = theta(I, M)
+    else:
+        raise ValueError("give either a callable theta(I, M) or f= "
+                         "with theta as its parameters.")
+    if A is None:
+        raise ValueError("the model returned no answer.")
+    return RichResult(payload={
+        "estimate": A, "answer": A, "instruction": I,
+        "multimodal_input": M, "n": 1,
+        "method": "multimodal instruction-tuned prediction "
+                  "(Kamath Eq 9.16)"})
 
 
 def cheatsheet():
-    return "km144: Mm instr predict."
+    return "km144: A = f(I, M; theta) with the model contract enforced"

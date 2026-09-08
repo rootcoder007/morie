@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxclr -- Centered log-ratio spatial"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxclr import clr_spatial
 

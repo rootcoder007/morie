@@ -1,44 +1,25 @@
-"""Causal survival forest from grf."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Causal survival forest (grf-style front-end)."""
 
 from ._richresult import RichResult
+from .csfgrf import causal_survival_forest
 
 __all__ = ["causal_survival_forest_grf"]
 
 
-def causal_survival_forest_grf(time, event, D, X):
+def causal_survival_forest_grf(time, event, D, X, horizon=None, n_trees=200, min_leaf=15, seed=0):
+    """Front-end to :func:`morie.fn.csfgrf.causal_survival_forest`.
+
+    Same IPCW-RMST honest forest (Cui et al. 2023, *JRSS-B* 85(2),
+    179-211); kept as a separate entry point matching the grf naming.
     """
-    Causal survival forest from grf
-
-    Formula: honest forest splits maximizing tau heterogeneity
-
-    Parameters
-    ----------
-    time : array-like
-        Input data.
-    event : array-like
-        Input data.
-    D : array-like
-        Input data.
-    X : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Cui et al (2023)
-    """
-    time = np.atleast_1d(np.asarray(time, dtype=float))
-    n = len(time)
-    result = float(np.mean(time))
-    se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Causal survival forest from grf"})
+    out = causal_survival_forest(
+        time, event, D, X, horizon=horizon, n_trees=n_trees, min_leaf=min_leaf, seed=seed
+    )
+    payload = dict(out)
+    payload["method"] = "Causal survival forest (grf-style front-end)"
+    return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return "survcfg: Causal survival forest from grf"
+    return "survcfg: front-end to csfgrf"

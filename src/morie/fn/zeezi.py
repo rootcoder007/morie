@@ -1,6 +1,6 @@
 """Ecological zero-inflated"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ ecol = ecological_zip
 
 def cheatsheet() -> str:
     return "ecological_zip({}) -> Ecological zero-inflated"
+
+
+# compact alias per ledger/NAMING.md
+ecologicalzip = ecological_zip

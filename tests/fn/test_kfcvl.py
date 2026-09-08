@@ -1,6 +1,6 @@
 """Tests for kfcvl.py - K-fold cross-validation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kfcvl import kfcvl, kfcvl_fn
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hellinger distance."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -44,3 +44,7 @@ helld = hellinger_dist
 
 def cheatsheet() -> str:
     return "hellinger_dist({}) -> Hellinger distance."
+
+
+# compact alias per ledger/NAMING.md
+hellingerdist = hellinger_dist

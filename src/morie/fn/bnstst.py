@@ -1,63 +1,73 @@
-"""Test of bound = 0."""
-
-import numpy as np
-from scipy import stats
+# morie.fn -- function file (rootcoder007/morie)
+"""Inference on an interval-identified parameter."""
 
 from ._richresult import RichResult
+from .bndfre import bound_frequentist
 
 __all__ = ["bound_test_inference"]
 
 
-def bound_test_inference(lower, upper, se, cdf=None):
-    """
-    Test of bound = 0
+def bound_test_inference(lower, upper, se=0.0, cdf=0.05):
+    """Test a null value against the Imbens-Manski confidence interval.
 
-    Formula: H0: lower_bound ≤ 0 ≤ upper_bound
+    The decision is whether the interval that covers the true parameter
+    with probability ``1 - alpha`` contains ``theta_0``.  The critical
+    value is the one already implemented in
+    :func:`~morie.fn.bndvar.bound_variance_term` and reached through
+    :func:`~morie.fn.bndfre.bound_frequentist`; nothing about the
+    construction is re-derived here.
 
     Parameters
     ----------
-    lower : array-like
-        Input data.
-    upper : array-like
-        Input data.
-    se : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    lower, upper : array-like
+        Replicated estimates of the lower and upper bound, same length.
+    se : float, optional
+        The null value ``theta_0``, default 0.0.
+    cdf : float, optional
+        The level ``alpha``, default 0.05.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``lower``, ``upper``, ``width``, ``covers``, ``reject``, ``c``,
+        ``theta_0``, ``n``.
+
+    Notes
+    -----
+    The two parameter names ``se`` and ``cdf`` are inherited generator
+    boilerplate and are kept only so existing positional calls do not
+    break; they carry the meanings documented above.
+
+    Stoye's (2009) refinement, which pre-tests the width of the estimated
+    bounds and switches between a one- and a two-sided critical value, is
+    NOT implemented: its pre-test threshold could not be verified against
+    an accessible copy of the paper.  What is implemented is the
+    Imbens-Manski (2004) equation (6) interval, whose critical value
+    already interpolates between the two normal quantiles and attains
+    both limits.
 
     References
     ----------
-    Stoye (2009)
+    Imbens, G. W. & Manski, C. F. (2004).  Confidence intervals for
+    partially identified parameters.  Econometrica 72(6), 1845-1857,
+    equation (6).  doi:10.1111/j.1468-0262.2004.00555.x.
+
+    Stoye, J. (2009).  More on confidence intervals for partially
+    identified parameters.  Econometrica 77(4), 1299-1315.
+    doi:10.3982/ECTA7347 -- the refinement not implemented here.
     """
-    lower = np.asarray(lower, dtype=float)
-    n = len(lower)
-    if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Test of bound = 0"})
-    x_sorted = np.sort(lower)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(lower), scale=np.std(lower, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Test of bound = 0"}
-    )
+    a = float(cdf)
+    r = bound_frequentist(lower, upper, a)
+    t0 = float(se)
+    lo = float(r["lower"])
+    hi = float(r["upper"])
+    covers = 1.0 if (lo <= t0 and t0 <= hi) else 0.0
+    return RichResult(payload={
+        "lower": lo, "upper": hi, "width": hi - lo,
+        "covers": covers, "reject": 1.0 - covers, "c": float(r["c"]),
+        "theta_0": t0, "n": int(r["n"]),
+        "method": "Inference on an interval-identified parameter"})
 
 
 def cheatsheet():
-    return "bnstst: Test of bound = 0"
+    return "bnstst: Imbens-Manski interval test of a null value"

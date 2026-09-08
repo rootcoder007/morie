@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Diebold-Mariano forecast comparison test."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import DescriptiveResult
 
@@ -71,3 +71,7 @@ dmtst = dm_test
 
 def cheatsheet() -> str:
     return "dm_test({}) -> Diebold-Mariano forecast comparison test."
+
+
+# compact alias per ledger/NAMING.md
+dmtest = dm_test

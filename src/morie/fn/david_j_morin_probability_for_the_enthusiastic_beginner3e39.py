@@ -1,54 +1,22 @@
-"""Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Deprecated alias for :func:`morie.fn.sdfromvar`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .sdfromvar import sdfromvar as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_39"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_39(x):
-    """
-    Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: [EQ] σX ≡ √V ar(X ) (3.39)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner3e39')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.3 eq.3.39
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_39(var_x):
+    """Deprecated; use :func:`morie.fn.sdfromvar` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_39() is the book-coordinate name for sdfromvar(); "
+        "it will be removed. Use morie.fn.sdfromvar() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e39: Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return _impl(var_x)

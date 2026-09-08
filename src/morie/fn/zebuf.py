@@ -1,6 +1,6 @@
 """Buffer-based exposure assessment"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ buff = buffer_exposure
 
 def cheatsheet() -> str:
     return "buffer_exposure({}) -> Buffer-based exposure assessment"
+
+
+# compact alias per ledger/NAMING.md
+bufferexposure = buffer_exposure

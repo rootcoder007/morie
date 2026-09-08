@@ -1,6 +1,6 @@
 """Decision tree split via Gini / entropy."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -13,6 +13,14 @@ def decision_tree_split(x, y, *, criterion="gini", max_depth=None, seed=0):
     Wraps sklearn.tree.DecisionTreeClassifier.  Reports the root impurity
     G(t) = 1 - sum p_k^2 (or H(t) = -sum p_k log p_k for "entropy"),
     the feature used at the root, and feature importances.
+
+    References
+    ----------
+    Breiman, L., Friedman, J., Olshen, R. & Stone, C. (1984).
+    *Classification and Regression Trees*. Wadsworth.
+    Hastie, T., Tibshirani, R. & Friedman, J. (2009). *The Elements of
+    Statistical Learning*, 2nd edn. Springer. Sec. 9.2.3, eq. (9.17),
+    p. 309: Gini = sum_k p_k (1 - p_k), i.e. 2p(1-p) for two classes.
 
     Parameters
     ----------
@@ -28,7 +36,7 @@ def decision_tree_split(x, y, *, criterion="gini", max_depth=None, seed=0):
     RichResult with payload: estimate (train accuracy), root_feature,
     root_threshold, root_impurity, n_leaves, feature_importances, n, method.
     """
-    from sklearn.tree import DecisionTreeClassifier
+    from ._ml_core import DecisionTreeClassifier
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()

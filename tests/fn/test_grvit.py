@@ -1,6 +1,6 @@
 """Tests for grvit.geron_vit_patch_embedding."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grvit import geron_vit_patch_embedding
 

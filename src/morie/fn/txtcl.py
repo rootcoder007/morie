@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -86,3 +86,7 @@ def text_classify(
 
 def cheatsheet() -> str:
     return "text_classify({}) -> Naive Bayes text classifier."
+
+
+# compact alias per ledger/NAMING.md
+textclassify = text_classify

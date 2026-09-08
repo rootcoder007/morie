@@ -1,6 +1,6 @@
 """Tests for agvirt.alphazero_virtual_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agvirt import alphazero_virtual_loss
 

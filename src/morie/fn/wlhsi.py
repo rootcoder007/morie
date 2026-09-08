@@ -4,7 +4,7 @@ Habitat suitability index
 Category: WildlSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wlhsi(abundance=None, coords=None, n=50):

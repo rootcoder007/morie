@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """RMSFE (Root Mean Square Forecast Error)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -51,3 +51,7 @@ rmsfe = rmsfe_calc
 
 def cheatsheet() -> str:
     return "rmsfe_calc({}) -> Root Mean Square Forecast Error."
+
+
+# compact alias per ledger/NAMING.md
+rmsfecalc = rmsfe_calc

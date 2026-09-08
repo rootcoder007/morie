@@ -1,6 +1,6 @@
 """Tests for dlbcox.dfbeta_cox."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dlbcox import dfbeta_cox
 

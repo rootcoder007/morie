@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._containers import TestResult
 
@@ -58,3 +58,7 @@ lrank = log_rank
 
 def cheatsheet() -> str:
     return "log_rank({}) -> Log-rank test for comparing survival curves."
+
+
+# compact alias per ledger/NAMING.md
+logrank = log_rank

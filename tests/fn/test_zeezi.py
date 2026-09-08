@@ -1,6 +1,6 @@
 """Tests for morie.fn.zeezi -- Ecological zero-inflated"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zeezi import ecological_zip
 

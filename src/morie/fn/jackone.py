@@ -4,7 +4,7 @@
 from collections.abc import Callable, Sequence
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def jackone(x: Union[Sequence, np.ndarray], stat: Callable) -> np.ndarray:

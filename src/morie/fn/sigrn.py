@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import TestResult
 
@@ -57,3 +57,7 @@ sigrn = sign_rank_test
 
 def cheatsheet() -> str:
     return "sign_rank_test(x, y) -> Wilcoxon signed-rank test."
+
+
+# compact alias per ledger/NAMING.md
+signranktest = sign_rank_test

@@ -1,7 +1,7 @@
 """Tests for morie.fn.scor -- inter-subscale correlations."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn.scor import subscale_correlations
 

@@ -3,7 +3,7 @@
 
 import math
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -34,3 +34,7 @@ cf = cohens_f
 
 def cheatsheet() -> str:
     return "cohens_f({}) -> Cohen's f effect size from eta-squared."
+
+
+# compact alias per ledger/NAMING.md
+cohensf = cohens_f

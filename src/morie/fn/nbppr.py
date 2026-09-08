@@ -5,7 +5,7 @@ Propagation model
 Category: NoisBrd
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def nbppr(data=None, coords=None, n=50):

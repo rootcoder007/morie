@@ -1,6 +1,6 @@
 """Spatial SIR diffusion"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -28,3 +28,7 @@ spat = spatial_sir
 
 def cheatsheet() -> str:
     return "spatial_sir({}) -> Spatial SIR diffusion"
+
+
+# compact alias per ledger/NAMING.md
+spatialsir = spatial_sir

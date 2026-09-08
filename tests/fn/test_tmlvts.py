@@ -1,6 +1,6 @@
 """Tests for tmlvts.tmle_var_targeting."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlvts import tmle_var_targeting
 

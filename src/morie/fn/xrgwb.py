@@ -1,6 +1,6 @@
 """GWR bandwidth selection"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ gwr_ = gwr_bandwidth
 
 def cheatsheet() -> str:
     return "gwr_bandwidth({}) -> GWR bandwidth selection"
+
+
+# compact alias per ledger/NAMING.md
+gwrbandwidth = gwr_bandwidth

@@ -1,11 +1,10 @@
 """GeneralStatistics equation extracted from Christopher Gandrud (Author) - Reproducible Research with R and RStudio."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import hypothesis_test_result
 
-__all__ = ["Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius"]
 
 
 def christopher_gandrud_author_reproducible_research_with_r_and__chapter_5_equation_84(x, cdf=None):

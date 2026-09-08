@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._otis_const import DEFAULT_COLS
 
@@ -70,3 +70,7 @@ rpgap = rplace_gap
 
 def cheatsheet() -> str:
     return "rplace_gap({}) -> Mean gap between repeat placements."
+
+
+# compact alias per ledger/NAMING.md
+rplacegap = rplace_gap

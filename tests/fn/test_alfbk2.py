@@ -1,6 +1,6 @@
 """Tests for alfbk2.alphafold_backbone."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alfbk2 import alphafold_backbone
 

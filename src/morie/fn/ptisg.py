@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Isotropic edge correction"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ isot = isotropic_guard
 
 def cheatsheet() -> str:
     return "isotropic_guard({}) -> Isotropic edge correction"
+
+
+# compact alias per ledger/NAMING.md
+isotropicguard = isotropic_guard

@@ -1,6 +1,6 @@
 """Ghose drug-like filter."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def ghose_filter(smiles):
 
 def cheatsheet():
     return "ghoste: Ghose drug-like filter"
+
+
+# compact alias per ledger/NAMING.md
+ghosefilter = ghose_filter

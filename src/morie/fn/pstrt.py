@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -62,3 +62,7 @@ pstrt = ps_stratify
 
 def cheatsheet() -> str:
     return "ps_stratify({}) -> Propensity score stratification."
+
+
+# compact alias per ledger/NAMING.md
+psstratify = ps_stratify

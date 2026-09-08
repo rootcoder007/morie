@@ -1,7 +1,7 @@
 """Wright F-statistics (FST/FIS/FIT)."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -66,3 +66,7 @@ def f_statistics(allele_freqs, populations, cdf=None):
 
 def cheatsheet():
     return "strfst: Wright F-statistics (FST/FIS/FIT)"
+
+
+# compact alias per ledger/NAMING.md
+fstatistics = f_statistics

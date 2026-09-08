@@ -1,6 +1,6 @@
 """Tests for hetgnn.heterogeneous_gnn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hetgnn import heterogeneous_gnn
 

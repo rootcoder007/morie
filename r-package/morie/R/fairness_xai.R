@@ -20,6 +20,22 @@
 NULL
 
 
+#' .xai_result
+#'
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
+#' \code{morie_fairness_xai_ceteris_paribus},
+#' \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param call Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .xai_result <- function(title, call, summary_lines = list(),
                         warnings = character(0),
                         interpretation = "", ...) {
@@ -31,6 +47,21 @@ NULL
   out
 }
 
+#' .xai_as_2d
+#'
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
+#' \code{morie_fairness_xai_ceteris_paribus},
+#' \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param X A matrix; passed to \code{as.matrix}.
+#' @return The value of \code{m}, as built in the body.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .xai_as_2d(X = x)
+#' res
 .xai_as_2d <- function(X) {
   m <- as.matrix(X)
   if (!is.numeric(m)) storage.mode(m) <- "double"
@@ -39,6 +70,19 @@ NULL
   m
 }
 
+#' .xai_names
+#'
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
+#' \code{morie_fairness_xai_ceteris_paribus},
+#' \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param feature_names Optional; may be \code{NULL}. Coerced to character by the body,
+#' with \code{as.character}.
+#' @param d A count; the body uses it as \code{seq_len(...)}.
+#' @return The value of \code{nm}, as built in the body.
+#' @export
 .xai_names <- function(feature_names, d) {
   if (is.null(feature_names)) return(sprintf("x%d", seq_len(d) - 1L))
   nm <- as.character(feature_names)
@@ -49,6 +93,18 @@ NULL
   nm
 }
 
+#' .xai_resolve
+#'
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
+#' \code{morie_fairness_xai_ceteris_paribus},
+#' \code{morie_fairness_xai_partial_dependence}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param feature Character; the body checks with \code{is.character}.
+#' @param names A vector; its length is taken.
+#' @return The value of \code{idx}, as built in the body.
+#' @export
 .xai_resolve <- function(feature, names) {
   if (is.character(feature)) {
     if (!(feature %in% names)) {
@@ -63,6 +119,18 @@ NULL
   idx
 }
 
+#' .xai_predict
+#'
+#' A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
+#' \code{morie_fairness_xai_ceteris_paribus},
+#' \code{morie_fairness_xai_partial_dependence} and 2 others in the module.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param predict_fn The body requires: predict_fn must return one prediction per row of X.
+#' @param X A matrix; passed to \code{nrow}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .xai_predict <- function(predict_fn, X) {
   out <- as.numeric(predict_fn(X))
   if (length(out) != nrow(X)) {
@@ -71,6 +139,18 @@ NULL
   out
 }
 
+#' .xai_have_iml
+#'
+#' A step of the fairness_xai implementation. Called by
+#' \code{morie_fairness_xai_permutation_importance}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @return The value of \code{requireNamespace}.
+#' @export
+#' @examples
+#' res <- .xai_have_iml()
+#' res
 .xai_have_iml <- function() {
   requireNamespace("iml", quietly = TRUE)
 }

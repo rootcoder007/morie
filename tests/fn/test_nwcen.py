@@ -1,6 +1,6 @@
 """Tests for nwcen -- network centrality."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.nwcen import network_centrality

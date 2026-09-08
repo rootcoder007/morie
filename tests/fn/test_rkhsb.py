@@ -1,6 +1,6 @@
 """Tests for rkhsb.rkhs_bayesian_kernel."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rkhsb import rkhs_bayesian_kernel
 

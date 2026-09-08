@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -24,3 +24,7 @@ alias = myopulse_rate_fn
 
 def cheatsheet() -> str:
     return "myopulse_rate_fn({}) -> Myopulse percentage rate of a signal."
+
+
+# compact alias per ledger/NAMING.md
+myopulseratefn = myopulse_rate_fn

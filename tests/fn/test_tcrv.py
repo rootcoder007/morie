@@ -1,6 +1,6 @@
 """Tests for morie.fn.tcrv — torus curvature."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.tcrv import torus_curvature

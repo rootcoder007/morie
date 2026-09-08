@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GARCH(1,1) volatility model."""
 
-import numpy as np
-from scipy import optimize
+from . import _array_core as np
+from ._sci_core import optimize
 
 from ._containers import DescriptiveResult
 
@@ -73,3 +73,7 @@ garch = garch_fit
 
 def cheatsheet() -> str:
     return "garch_fit({}) -> GARCH(1,1) volatility model."
+
+
+# compact alias per ledger/NAMING.md
+garchfit = garch_fit

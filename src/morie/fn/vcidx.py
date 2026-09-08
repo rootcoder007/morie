@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from itertools import combinations
 
-import numpy as np
+from . import _array_core as np
 
 
 @dataclass(frozen=True, slots=True)

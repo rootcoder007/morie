@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -80,3 +80,7 @@ short = full_adder
 
 def cheatsheet() -> str:
     return "full_adder({}) -> Full adder binary circuit."
+
+
+# compact alias per ledger/NAMING.md
+fulladder = full_adder

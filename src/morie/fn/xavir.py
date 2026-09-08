@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -73,3 +73,7 @@ short = xavier_init
 
 def cheatsheet() -> str:
     return "xavir() -> Generate Xavier/Glorot weight initialization matrix"
+
+
+# compact alias per ledger/NAMING.md
+xavierinit = xavier_init

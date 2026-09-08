@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -63,7 +63,7 @@ def kdist(
     Azzalini, A. (1981). A note on the estimation of a distribution function
         and quantiles by a kernel method. *Biometrika*, 68(1), 326-328.
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]

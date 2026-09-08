@@ -1,0 +1,411 @@
+{
+  "source": {
+    "book": "Montesinos-Lopez, Montesinos-Lopez & Crossa, Multivariate Statistical Machine Learning Methods for Genomic Prediction",
+    "section": "2.4 Methods to Compute the Genomic Relationship Matrix",
+    "pages": "49-52",
+    "after": "VanRaden, P.M. (2008). Efficient methods to compute genomic predictions. J Dairy Sci 91(11):4414-4423",
+    "note": "All values below are HAND-TRANSCRIBED from the printed pages, never produced by running morie.",
+    "verified_against": "TYPESET PDF pp.48-52 of 'Multivariate Statistical Machine Learnin [Pages 35-70] [2026-04-16].pdf'. The txt extraction of this section is UNUSABLE for the formulae -- it renders them as 'G \u00bc 1 p XX T' and 'zij \u00bc xij  2p j = 2p j 1  p j', losing fractions, signs and radicals. PDF is truth; txt is a search index only."
+  },
+  "input": {
+    "X_markers_8x7": [
+      [
+        1,
+        0,
+        0,
+        1,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        1,
+        2,
+        1,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      [
+        2,
+        0,
+        0,
+        2,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2
+      ],
+      [
+        2,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ]
+    ],
+    "coding": "0/1/2 = homozygous major / heterozygous / homozygous minor"
+  },
+  "transcription_check": {
+    "printed_phat": [
+      0.5,
+      0.1875,
+      0.4375,
+      0.4375,
+      0.4375,
+      0.375,
+      0.4375
+    ],
+    "note": "colMeans(X)/2 reproduces the book's printed phat exactly; this validates the matrix transcription independently of any G."
+  },
+  "method1": {
+    "printed_formula": "G = (1/p) X X^T,  p = number of markers",
+    "printed_G_row1": [
+      0.875,
+      0.25,
+      0.5,
+      0.875,
+      0.625,
+      0.375,
+      0.375,
+      0.5
+    ],
+    "DISCREPANCY": "Formula AND printed R code both divide by MARKERS (m=7); the printed table is reproduced only by dividing by LINES (J=8). Two of three internal sources agree with the formula, so the table is the outlier. RULING 2026-07-26: follow the formula (markers).",
+    "printed_R_code": "G_M1=tcrossprod(X)/dim(X)[2]   # dim(X)[2] = ncol = 7 markers",
+    "printed_G": [
+      [
+        0.875,
+        0.25,
+        0.5,
+        0.875,
+        0.625,
+        0.375,
+        0.375,
+        0.5
+      ],
+      [
+        0.25,
+        1.0,
+        0.625,
+        0.625,
+        0.75,
+        0.75,
+        0.5,
+        0.375
+      ],
+      [
+        0.5,
+        0.625,
+        1.0,
+        0.75,
+        1.125,
+        0.25,
+        0.5,
+        0.375
+      ],
+      [
+        0.875,
+        0.625,
+        0.75,
+        1.375,
+        0.875,
+        0.75,
+        0.5,
+        0.5
+      ],
+      [
+        0.625,
+        0.75,
+        1.125,
+        0.875,
+        1.5,
+        0.375,
+        0.5,
+        0.5
+      ],
+      [
+        0.375,
+        0.75,
+        0.25,
+        0.75,
+        0.375,
+        0.875,
+        0.375,
+        0.375
+      ],
+      [
+        0.375,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.375,
+        0.5,
+        0.375
+      ],
+      [
+        0.5,
+        0.375,
+        0.375,
+        0.5,
+        0.5,
+        0.375,
+        0.375,
+        0.5
+      ]
+    ],
+    "ruling": "markers divisor; printed table recorded as the alternative reading"
+  },
+  "method2": {
+    "printed_formula": "G = (X - mu_E)(X - mu_E)^T / (2 * sum_j p_j(1-p_j))",
+    "printed_G_row1": [
+      0.93,
+      -0.766,
+      -0.227,
+      0.352,
+      -0.265,
+      -0.227,
+      -0.072,
+      0.275
+    ],
+    "status": "formula reproduces the printed table exactly; no discrepancy",
+    "tolerance": 0.0005,
+    "printed_G": [
+      [
+        0.93,
+        -0.766,
+        -0.227,
+        0.352,
+        -0.265,
+        -0.227,
+        -0.072,
+        0.275
+      ],
+      [
+        -0.766,
+        0.93,
+        -0.072,
+        -0.419,
+        -0.111,
+        0.545,
+        0.082,
+        -0.188
+      ],
+      [
+        -0.227,
+        -0.072,
+        0.776,
+        -0.188,
+        0.737,
+        -0.766,
+        0.005,
+        -0.265
+      ],
+      [
+        0.352,
+        -0.419,
+        -0.188,
+        1.007,
+        -0.227,
+        0.12,
+        -0.342,
+        -0.304
+      ],
+      [
+        -0.265,
+        -0.111,
+        0.737,
+        -0.227,
+        1.316,
+        -0.805,
+        -0.342,
+        -0.304
+      ],
+      [
+        -0.227,
+        0.545,
+        -0.766,
+        0.12,
+        -0.805,
+        1.084,
+        0.005,
+        0.043
+      ],
+      [
+        -0.072,
+        0.082,
+        0.005,
+        -0.342,
+        -0.342,
+        0.005,
+        0.467,
+        0.198
+      ],
+      [
+        0.275,
+        -0.188,
+        -0.265,
+        -0.304,
+        -0.304,
+        0.043,
+        0.198,
+        0.545
+      ]
+    ]
+  },
+  "method3": {
+    "printed_formula": "z_ij = (x_ij - 2p_j)/sqrt(2 p_j (1-p_j)); G = ZZ^T/p",
+    "printed_R_code": "X3=scale(X,center=TRUE,scale=TRUE); G_M3=tcrossprod(X3)/ncol(X3)",
+    "printed_G_row1": [
+      0.962,
+      -0.88,
+      -0.093,
+      0.435,
+      -0.221,
+      -0.397,
+      -0.028,
+      0.223
+    ],
+    "DISCREPANCY": "Printed formula uses sqrt(2p(1-p)); printed R code uses scale(X,center=TRUE,scale=TRUE) (sample SD, ddof=1). All 64 entries of the printed table match the R CODE exactly (max|delta| 0.0000) and differ from the FORMULA by up to 0.162. RULING 2026-07-26: follow the formula -- allele-frequency scaling is the defining feature of VanRaden Method 3; sample-SD scaling is a different quantity (standardised genotype scores).",
+    "printed_G_sampleSD_reading": [
+      [
+        0.962,
+        -0.88,
+        -0.093,
+        0.435,
+        -0.221,
+        -0.397,
+        -0.028,
+        0.223
+      ],
+      [
+        -0.88,
+        1.084,
+        -0.133,
+        -0.507,
+        -0.014,
+        0.667,
+        0.012,
+        -0.228
+      ],
+      [
+        -0.093,
+        -0.133,
+        0.619,
+        -0.112,
+        0.49,
+        -0.658,
+        0.023,
+        -0.136
+      ],
+      [
+        0.435,
+        -0.507,
+        -0.112,
+        1.058,
+        -0.241,
+        0.022,
+        -0.35,
+        -0.305
+      ],
+      [
+        -0.221,
+        -0.014,
+        0.49,
+        -0.241,
+        1.181,
+        -0.539,
+        -0.391,
+        -0.265
+      ],
+      [
+        -0.397,
+        0.667,
+        -0.658,
+        0.022,
+        -0.539,
+        1.053,
+        -0.057,
+        -0.092
+      ],
+      [
+        -0.028,
+        0.012,
+        0.023,
+        -0.35,
+        -0.391,
+        -0.057,
+        0.516,
+        0.276
+      ],
+      [
+        0.223,
+        -0.228,
+        -0.136,
+        -0.305,
+        -0.265,
+        -0.092,
+        0.276,
+        0.527
+      ]
+    ],
+    "ruling": "sqrt(2p(1-p)) scaling; sample-SD table recorded as the alternative reading"
+  },
+  "identity_properties": [
+    "G is symmetric",
+    "G is positive semi-definite (all eigenvalues >= 0 up to numerical tolerance)"
+  ],
+  "morie_method_mapping": {
+    "1": "G_VR2 (source Method 2)",
+    "2": "G_VR3 (source Method 3)",
+    "3": "G_VR1 (source Method 1) - added 2026-07-26",
+    "note": "integers deliberately NOT renumbered; existing callers would silently change meaning"
+  },
+  "PRIMARY_SOURCE_ACQUIRED_2026-07-26": {
+    "file": "data/datasets/userguides/other/pdf/VanRaden_2008_PIIS0022030208709901.pdf",
+    "page": "4416, 'Genomic Relationships and Inbreeding'",
+    "vanraden_method_1": "G = ZZ'/(2*sum p_i(1-p_i)); Z = M - P, column i of P is 2(p_i - 0.5) with M coded -1/0/1",
+    "vanraden_method_2": "G = ZDZ', D diagonal, D_ii = 1/(m*[2 p_i(1-p_i)])",
+    "vanraden_method_3": "G = (MM' - g0*11')/g1, from regressing MM' = g0*11' + g1*A + E; requires NO allele frequencies. NOT IMPLEMENTED in morie.",
+    "NUMBERING_CORRECTION": "The Montesinos secondary source renumbers VanRaden's methods. Montesinos Method 2 IS VanRaden Method 1; Montesinos Method 3 IS VanRaden Method 2; Montesinos Method 1 (uncentred XX'/p) is NOT one of VanRaden's three methods at all. morie's G_VR* aliases were briefly assigned from the secondary numbering and are now corrected to the primary. morie method=3 is renamed G_XX because no VanRaden method matches it.",
+    "RULINGS_UNCHANGED": "Both 2026-07-26 rulings stand. The marker divisor and the sqrt(2p(1-p)) scaling are confirmed by the primary source; only the METHOD NAMES were wrong, not the mathematics."
+  }
+}

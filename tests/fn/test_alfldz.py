@@ -1,6 +1,6 @@
 """Tests for alfldz.alphafold_loss_decomposition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alfldz import alphafold_loss_decomposition
 

@@ -1,6 +1,6 @@
 """Tests for fzmiq.fauzi_moment_ineq_ustat."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzmiq import fauzi_moment_ineq_ustat
 

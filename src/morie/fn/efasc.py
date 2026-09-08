@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def efa_scores(
@@ -80,3 +80,7 @@ def efa_scores(
 
 def cheatsheet() -> str:
     return "efa_scores({}) -> Compute factor scores from data and loadings."
+
+
+# compact alias per ledger/NAMING.md
+efascores = efa_scores

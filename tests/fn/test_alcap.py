@@ -1,26 +1,15 @@
 """Tests for alcap.alammar_image_captioning_pipeline."""
 
-import numpy as np
-
 from morie.fn.alcap import alammar_image_captioning_pipeline
 
 
 def test_alcap_basic():
-    """Test basic functionality."""
-    img = np.random.default_rng(42).normal(0, 1, 100)
-    visual_encoder = np.random.default_rng(42).normal(0, 1, 100)
-    projector = np.random.default_rng(42).normal(0, 1, 100)
-    llm = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_image_captioning_pipeline(img, visual_encoder, projector, llm)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_image_captioning_pipeline("img", lambda im: [1.0, 2.0],
+        [[1.0, 0.0]], lambda z, p: "cap")
+    assert out["projected"] == [1.0]
 
 
 def test_alcap_edge():
-    """Test edge cases."""
-    img = np.random.default_rng(42).normal(0, 1, 100)
-    visual_encoder = np.random.default_rng(42).normal(0, 1, 100)
-    projector = np.random.default_rng(42).normal(0, 1, 100)
-    llm = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_image_captioning_pipeline(img, visual_encoder, projector, llm)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="callable"):
+        alammar_image_captioning_pipeline("img", None, [[1.0]], None)

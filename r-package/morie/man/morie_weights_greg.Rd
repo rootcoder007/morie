@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_greg}
 \alias{morie_weights_greg}
-\title{Generalised regression (GREG) calibration.}
+\title{Generalised regression (GREG) calibration}
 \usage{
 morie_weights_greg(weights, X, population_totals, max_iter = 50, tol = 1e-08)
 }
@@ -29,4 +29,8 @@ numeric vector, same length as input), \code{converged},
 Closed-form linear calibration to match population totals on auxiliary X.
 When \code{survey} is installed, defers to \code{survey::calibrate()} for a fully
 design-aware result; otherwise computes the linear adjustment in base R.
+}
+\examples{
+morie_weights_greg(weights = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8),
+  population_totals = 5L)
 }

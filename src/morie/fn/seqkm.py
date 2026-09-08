@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -64,3 +64,7 @@ short = kmer_frequency
 
 def cheatsheet() -> str:
     return "kmer_frequency({}) -> K-mer frequency counting."
+
+
+# compact alias per ledger/NAMING.md
+kmerfrequency = kmer_frequency

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._richresult import RichResult
 
@@ -109,3 +109,7 @@ def validity_mtmm(
 
 def cheatsheet() -> str:
     return "validity_mtmm({}) -> Multitrait-Multimethod (MTMM) matrix analysis."
+
+
+# compact alias per ledger/NAMING.md
+validitymtmm = validity_mtmm

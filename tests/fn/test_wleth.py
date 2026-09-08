@@ -1,6 +1,6 @@
 """Tests for wleth.weighted_likelihood_theta."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wleth import weighted_likelihood_theta
 

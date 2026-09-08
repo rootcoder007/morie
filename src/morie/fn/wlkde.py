@@ -4,7 +4,7 @@ KDE home range
 Category: WildlSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wlkde(abundance=None, coords=None, n=50):

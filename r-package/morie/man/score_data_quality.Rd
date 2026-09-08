@@ -29,3 +29,7 @@ An object of class \code{"class_name"}.
 \description{
 Multi-dimensional data quality scores
 }
+\examples{
+M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+score_data_quality(M)
+}

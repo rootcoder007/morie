@@ -5,7 +5,7 @@ __all__ = ["huffc"]
 
 import heapq
 
-import numpy as np
+from . import _array_core as np
 
 
 def huffc(pmf: np.ndarray, symbols: list = None) -> dict:

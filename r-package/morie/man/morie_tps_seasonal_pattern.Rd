@@ -20,3 +20,7 @@ Counts incidents by month-of-year, day-of-week, and hour-of-day,
 then runs a chi-square goodness-of-fit test against a uniform
 distribution on each cycle.
 }
+\examples{
+D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+morie_tps_seasonal_pattern(D)
+}

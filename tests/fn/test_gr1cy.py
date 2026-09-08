@@ -1,26 +1,11 @@
-"""Tests for gr1cy.geron_1cycle_schedule."""
+"""Tests for gr1cy (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.gr1cy import geron_1cycle_schedule
-
-
-def test_gr1cy_basic():
-    """Test basic functionality."""
-    eta_min = 0
-    eta_max = 100
-    t = np.linspace(0, 10, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    result = geron_1cycle_schedule(eta_min, eta_max, t, T)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.gr1cy as mod
 
 
-def test_gr1cy_edge():
-    """Test edge cases."""
-    eta_min = 0
-    eta_max = 100
-    t = np.linspace(0, 10, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    result = geron_1cycle_schedule(eta_min, eta_max, t, T)
-    assert isinstance(result, dict)
+def test_gr1cy_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.interpolate import BSpline
+from . import _array_core as np
+from ._sci_core import BSpline
 
 from ._containers import DescriptiveResult
 
@@ -81,3 +81,7 @@ gam = fit_gam
 
 def cheatsheet() -> str:
     return "_bspline_basis({}) -> Generalized additive model (B-spline basis + OLS)."
+
+
+# compact alias per ledger/NAMING.md
+fitgam = fit_gam

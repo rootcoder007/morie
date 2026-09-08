@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def stick_breaking(
@@ -25,7 +25,8 @@ def stick_breaking(
 
     References
     ----------
-    Sethuraman, J. (1994). *Statistica Sinica*, 4(2), 639--650.
+    Sethuraman, J. (1994). A constructive definition of Dirichlet
+    priors. *Statistica Sinica*, 4(2), 639--650.
     """
     rng = np.random.default_rng(seed)
     V = rng.beta(1, alpha, size=K)
@@ -52,3 +53,7 @@ stckp = stick_breaking
 
 def cheatsheet() -> str:
     return "stick_breaking({}) -> Stick-breaking construction for Dirichlet process."
+
+
+# compact alias per ledger/NAMING.md
+stickbreaking = stick_breaking

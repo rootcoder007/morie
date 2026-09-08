@@ -1,6 +1,6 @@
 """Tests for wsmund.wasserman_undirected_graph."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmund import wasserman_undirected_graph
 

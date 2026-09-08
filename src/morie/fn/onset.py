@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ alias = onset_detect_fn
 
 def cheatsheet() -> str:
     return "onset_detect_fn({}) -> Onset detection via energy envelope."
+
+
+# compact alias per ledger/NAMING.md
+onsetdetectfn = onset_detect_fn

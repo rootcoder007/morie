@@ -1,6 +1,6 @@
 """Tests for eslsft.esl_softmax."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslsft import esl_softmax
 

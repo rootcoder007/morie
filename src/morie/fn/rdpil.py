@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 from ._containers import TestResult
 
@@ -52,3 +52,7 @@ rdpil = red_pill_test
 
 def cheatsheet() -> str:
     return "rdpil() -> Red pill test"
+
+
+# compact alias per ledger/NAMING.md
+redpilltest = red_pill_test

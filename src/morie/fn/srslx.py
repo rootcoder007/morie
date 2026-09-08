@@ -4,7 +4,7 @@ Spatial lag of X model (SLX)
 Category: SpatReg2
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def srslx(X=None, y=None, w=None, n=50, k=3):

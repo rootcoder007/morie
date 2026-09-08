@@ -1,6 +1,6 @@
 """Ranked probability score spatial"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ rank = rank_prob_score
 
 def cheatsheet() -> str:
     return "rank_prob_score({}) -> Ranked probability score spatial"
+
+
+# compact alias per ledger/NAMING.md
+rankprobscore = rank_prob_score

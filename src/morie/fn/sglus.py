@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
 
 def lu_decomposition_sim(cov_matrix: np.ndarray) -> SpatialResult:
     r"""You have power over your mind -- not outside events. -- Marcus Aurelius"""
-    from scipy.linalg import lu
+    from ._sci_core import lu
 
     C = np.asarray(cov_matrix, dtype=np.float64)
     P, L, U = lu(C)

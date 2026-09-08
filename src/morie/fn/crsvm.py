@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cramer-von Mises test for goodness of fit."""
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 __all__ = ["crsvm"]
 

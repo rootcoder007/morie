@@ -1,6 +1,6 @@
 """Focal grid statistics"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ grid = grid_focal
 
 def cheatsheet() -> str:
     return "grid_focal({}) -> Focal grid statistics"
+
+
+# compact alias per ledger/NAMING.md
+gridfocal = grid_focal

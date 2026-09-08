@@ -63,7 +63,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from .fn._richresult import RichResult
 
@@ -458,7 +458,7 @@ def decoupling_test(
         p = 0.0
     else:
         z = 0.5 * np.log((1 + r_pearson) / (1 - r_pearson))
-        from scipy import stats as sps
+        from morie.fn import _stats_core as sps
 
         p = float(2 * (1 - sps.norm.cdf(abs(z) * np.sqrt(n - 3))))
     # Pettitt on each

@@ -1,6 +1,6 @@
 """Tests for blipqf.blip_qformer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.blipqf import blip_qformer
 

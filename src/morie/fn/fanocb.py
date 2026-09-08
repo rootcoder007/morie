@@ -1,6 +1,6 @@
 """Fano's inequality on error probability."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def fano_inequality(pe, X_card):
 
 def cheatsheet():
     return "fanocb: Fano's inequality on error probability"
+
+
+# compact alias per ledger/NAMING.md
+fanoinequality = fano_inequality

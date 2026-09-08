@@ -10,6 +10,21 @@
 NULL
 
 
+#' .sim_result
+#'
+#' A step of the fairness_simulation implementation. Called by
+#' \code{morie_fairness_noisy_or_detection}.
+#' See the file header for the source the module follows.
+#' for the source it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param call Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .sim_result <- function(title, call, summary_lines = list(),
                          warnings = character(0),
                          interpretation = "", ...) {
@@ -30,7 +45,7 @@ NULL
 #' @param crime_xy Numeric (n, 2) matrix of crime coordinates.
 #' @param officer_xy Numeric (m, 2) matrix of officer coordinates.
 #' @param radius Detection radius (positive).
-#' @param p_detect Per-officer detection probability in (0, 1].
+#' @param p_detect Per-officer detection probability in (0, 1\].
 #' @param seed Optional integer; when supplied, a Bernoulli outcome is
 #'   sampled per crime and returned in \code{$detected}.
 #' @return \code{morie_fairness_result} with \code{$probabilities},
@@ -110,7 +125,8 @@ morie_fairness_noisy_or_detection <- function(crime_xy, officer_xy,
 #' The \code{bias} input is the ground truth the audits should recover.
 #'
 #' @param n Number of records.
-#' @param groups Character vector of group labels (the first entry is treated as the reference group).
+#' @param groups Character vector of group labels (the first entry is treated as the
+#' reference group).
 #' @param group_props Optional sampling proportions.
 #' @param n_areas Number of areas (>= number of groups).
 #' @param base_rate Reference-group favourable-outcome rate in 0--1.

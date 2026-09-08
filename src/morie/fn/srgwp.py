@@ -4,7 +4,7 @@ GWR prediction map
 Category: SpatReg2
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def srgwp(X=None, y=None, w=None, n=50, k=3):

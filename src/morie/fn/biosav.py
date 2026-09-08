@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -71,3 +71,7 @@ biosav = biot_savart
 
 def cheatsheet() -> str:
     return "biot_savart({}) -> Biot-Savart magnetic field computation."
+
+
+# compact alias per ledger/NAMING.md
+biotsavart = biot_savart

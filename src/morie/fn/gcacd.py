@@ -5,7 +5,7 @@ Ocean acidification trend
 Category: GeoClim
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gcacd(data=None, coords=None, n=50):

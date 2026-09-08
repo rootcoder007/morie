@@ -2,7 +2,7 @@
 % Please edit documentation in R/otis_causal.R
 \name{morie_otis_make_pair_c}
 \alias{morie_otis_make_pair_c}
-\title{Pair (c): RegionalVolatility -> SegregationDays.}
+\title{Pair (c): RegionalVolatility -> SegregationDays}
 \usage{
 morie_otis_make_pair_c(df)
 }
@@ -18,7 +18,9 @@ Outcome Y_c = NumberConsecutiveDays_Segregation winsorised at the
 99th percentile.
 }
 \examples{
+\donttest{
 pair <- morie_otis_make_pair_c(morie_synth_otis("b01", n = 120L,
                                                  seed = 1L))
 head(pair)
+}
 }

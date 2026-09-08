@@ -1,6 +1,6 @@
 """Spatial utility maximizer"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ util = utility_max
 
 def cheatsheet() -> str:
     return "utility_max({}) -> Spatial utility maximizer"
+
+
+# compact alias per ledger/NAMING.md
+utilitymax = utility_max

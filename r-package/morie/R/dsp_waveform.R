@@ -170,7 +170,7 @@ morie_dsp_willison_amplitude <- function(x, threshold = NULL) {
 #'
 #' @param x Numeric vector.
 #' @param threshold Optional threshold.
-#' @return Scalar in `[0, 1]`.
+#' @return Scalar in `\[0, 1\]`.
 #' @references Rangayyan & Krishnan (2015), Ch. 5, sec. 5.4.
 #' @examples
 #' set.seed(2L)
@@ -388,7 +388,7 @@ morie_dsp_entropy_histogram <- function(x, n_bins = 50L) {
 #' Higuchi fractal dimension
 #'
 #' Slope of `log(L(k))` vs. `log(1/k)` over `k = 1..kmax` curve-length
-#' scales. Returns a value in approximately ``[1, 2]`` for real signals.
+#' scales. Returns a value in approximately ``\[1, 2\]`` for real signals.
 #'
 #' @param x Numeric vector.
 #' @param kmax Maximum scale. Default 10.
@@ -414,7 +414,12 @@ morie_dsp_higuchi_fd <- function(x, kmax = 10L) {
       idx <- seq.int(0L, n_pts) * k + m
       idx <- idx[idx <= n]
       seg <- x[idx]
-      lm_sum <- lm_sum + sum(abs(diff(seg))) * (n - 1) / (n_pts * k)
+      # Eq (5.40) of Rangayyan & Krishnan (2024) p.304, which is Higuchi
+      # (1988) eq (1): L(m,k) = (1/k) (N-1)/(k floor((N-m)/k)) sum|dx|.
+      # The leading 1/k was missing, so L(k) came out k times too large
+      # and the log-log slope was short by exactly one: a straight line,
+      # whose fractal dimension is 1, returned 0.
+      lm_sum <- lm_sum + sum(abs(diff(seg))) * (n - 1) / (n_pts * k) / k
     }
     lk[k] <- lm_sum / k
   }
@@ -518,6 +523,9 @@ morie_dsp_ruler_fd <- function(x, n_rulers = 10L) {
 #' @references Rangayyan & Krishnan (2015), Ch. 5, sec. 5.6;
 #'   Parzen (1962); Silverman (1986).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_parzen_pdf(V)
 morie_dsp_parzen_pdf <- function(x, bandwidth = NULL, n_points = 100L) {
   if (is.null(bandwidth)) {
     bandwidth <- 1.06 * stats::sd(x) * length(x)^(-0.2)
@@ -544,6 +552,9 @@ morie_dsp_parzen_pdf <- function(x, bandwidth = NULL, n_points = 100L) {
 #' @return List with `envelope` and `phase`, both length(x).
 #' @references Rangayyan & Krishnan (2015), Ch. 5, sec. 5.8.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_complex_demodulation(V, V)
 morie_dsp_complex_demodulation <- function(x, fc, fs = 1) {
   t <- (seq_along(x) - 1L) / fs
   analytic <- x * exp(-1i * 2 * pi * fc * t)
@@ -567,6 +578,9 @@ morie_dsp_complex_demodulation <- function(x, fc, fs = 1) {
 #' @references Rangayyan & Krishnan (2015), Ch. 5;
 #'   Oppenheim & Schafer (2010).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_dsp_min_phase(V)
 morie_dsp_min_phase <- function(x) {
   X <- stats::fft(x)
   log_mag <- log(Mod(X) + 1e-10)
@@ -613,7 +627,7 @@ morie_dsp_qrs_features <- function(beat) {
 #'
 #' @param x Numeric vector.
 #' @param y Numeric vector.
-#' @return Scalar in `[-1, 1]`.
+#' @return Scalar in `\[-1, 1\]`.
 #' @references Rangayyan & Krishnan (2015), Ch. 5.
 #' @examples
 #' set.seed(1)
@@ -631,6 +645,19 @@ morie_dsp_baseline_correlation <- function(x, y) {
 # ---- internal helpers -------------------------------------------------
 
 # numpy.unwrap port: shift phase jumps > pi by 2*pi.
+#' Numpy.unwrap port: shift phase jumps > pi by 2*pi
+#'
+#' A step of the dsp_waveform implementation. Called by \code{morie_dsp_complex_demodulation}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param p A vector; indexed elementwise.
+#' @param tol Numeric; combined arithmetically in the body. Defaults to \code{pi}.
+#' @return A vector, from \code{c}.
+#' @export
+#' @examples
+#' res <- .unwrap(p = 0.5)
+#' res
 .unwrap <- function(p, tol = pi) {
   d <- diff(p)
   adj <- ifelse(d >  tol, d - 2 * pi,

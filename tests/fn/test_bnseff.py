@@ -1,6 +1,6 @@
 """Tests for bnseff.bound_efficient."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bnseff import bound_efficient
 

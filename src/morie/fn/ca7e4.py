@@ -1,54 +1,22 @@
-"""Regression expression involving 'cluster' (auto-extracted; see reference for full context).."""
+"""Deprecated alias for :func:`morie.fn.cluster_means_model`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .cluster_means_model import cluster_means_model as _impl
 
 __all__ = ["ca_chapter_7_equation_4"]
 
 
-def ca_chapter_7_equation_4(x):
-    """
-    Regression expression involving 'cluster' (auto-extracted; see reference for full context).
-
-    Formula: yij = β0 + u j + Eij
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca7e4')`` for the full guide.
-
-    References
-    ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.7 eq.7.4
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Regression expression involving 'cluster' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression expression involving 'cluster' (auto-extracted; see reference for full context).",
-        },
+def ca_chapter_7_equation_4(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.cluster_means_model` instead."""
+    warnings.warn(
+        "ca_chapter_7_equation_4() is the book-coordinate name for cluster_means_model(); "
+        "it will be removed. Use morie.fn.cluster_means_model() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "ca7e4: Regression expression involving 'cluster' (auto-extracted; see reference for full context)."
+    return _impl(*args, **kwargs)

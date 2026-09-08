@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MGWR model fit (Fotheringham et al. 2017)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

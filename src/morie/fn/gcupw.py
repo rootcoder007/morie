@@ -5,7 +5,7 @@ Upwelling change spatial
 Category: GeoClim
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gcupw(data=None, coords=None, n=50):

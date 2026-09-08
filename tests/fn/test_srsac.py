@@ -1,6 +1,6 @@
 """Test srsac."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.srsac import srsac
 

@@ -1,54 +1,22 @@
-"""Bayesian equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).."""
+"""Deprecated alias for :func:`morie.fn.beta_pdf`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .beta_pdf import beta_pdf as _impl
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_5"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_5(x):
-    """
-    Bayesian equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).
-
-    Formula: 1.5). This distribution allows for0 < π <1, is quite flexible in its sh
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e5')`` for the full guide.
-
-    References
-    ----------
-    Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ), ch.1 eq.1.5
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Bayesian equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bayesian equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        },
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_5(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.beta_pdf` instead."""
+    warnings.warn(
+        "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_5() is the book-coordinate name for beta_pdf(); "
+        "it will be removed. Use morie.fn.beta_pdf() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e5: Bayesian equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M )."
+    return _impl(*args, **kwargs)

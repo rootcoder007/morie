@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxgws -- Geographically weighted summary stats"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxgws import gw_summary
 

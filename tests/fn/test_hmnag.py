@@ -1,6 +1,6 @@
 """Tests for hmnag.geron_nesterov."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmnag import geron_nesterov
 

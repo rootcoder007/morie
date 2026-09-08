@@ -1,6 +1,6 @@
 """Albers equal-area projection"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ albe = albers_proj
 
 def cheatsheet() -> str:
     return "albers_proj({}) -> Albers equal-area projection"
+
+
+# compact alias per ledger/NAMING.md
+albersproj = albers_proj

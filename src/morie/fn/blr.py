@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def bayesian_linear_regression(
@@ -82,7 +82,7 @@ def bayesian_linear_regression(
         post_cov = Lambda_n_inv  # fallback
 
     # Credible intervals (using t-distribution with 2*a_n degrees of freedom)
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     df = 2.0 * a_n
     post_sd = np.sqrt(np.diag(post_cov))

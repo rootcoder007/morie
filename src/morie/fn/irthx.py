@@ -11,7 +11,7 @@ def irt_heteroskedastic(theta, alpha, beta, sigma_i) -> DescriptiveResult:
 
     .. epigraph:: I think, therefore I am. -- Rene Descartes
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     theta = np.asarray(theta, dtype=float)
     sigma_i = np.asarray(sigma_i, dtype=float)

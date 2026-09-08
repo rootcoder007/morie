@@ -1,8 +1,8 @@
 """Tests for rgvmd.rangayyan_vmd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgvmd import rangayyan_vmd
+from morie.fn.bsatf import rangayyan_vmd
 
 
 def test_rgvmd_basic():

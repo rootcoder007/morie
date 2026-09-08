@@ -1,22 +1,18 @@
-"""Tests for km033.kamath_ch2_dae_loss."""
+"""Tests for km033.kamath_ch2_dae_loss (re-fixtured from the doctest)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.km033 import kamath_ch2_dae_loss
+import morie.fn.km033 as mod
 
 
-def test_km033_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    xhat = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_dae_loss(x, xhat)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_km033_doctest():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
 
 
 def test_km033_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    xhat = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_dae_loss(x, xhat)
-    assert isinstance(result, dict)
+    import pytest
+    from morie.fn.km033 import kamath_ch2_dae_loss
+    with pytest.raises(ValueError):
+        kamath_ch2_dae_loss([1.5], "x")

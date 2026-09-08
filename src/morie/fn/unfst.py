@@ -22,7 +22,7 @@ def unfolding_stress_diagnostic(X_resp, X_stim, observed):
     DescriptiveResult
         value = stress (float), extra has predicted distances.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Xr = np.asarray(X_resp, dtype=float)
     Xs = np.asarray(X_stim, dtype=float)

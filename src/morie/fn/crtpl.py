@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from collections import Counter
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import CrimeResult
 
@@ -45,3 +45,7 @@ crtpl = court_plea_rate
 
 def cheatsheet() -> str:
     return "court_plea_rate({}) -> Guilty plea rate."
+
+
+# compact alias per ledger/NAMING.md
+courtplearate = court_plea_rate

@@ -1,6 +1,6 @@
 """Tests for km107.kamath_ch6_pii_likelihood."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km107 import kamath_ch6_pii_likelihood
 

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 
@@ -104,3 +104,7 @@ detlea = detect_leakage
 
 def cheatsheet() -> str:
     return "detlea() -> Detect potential data leakage by identifying features with"
+
+
+# compact alias per ledger/NAMING.md
+detectleakage = detect_leakage

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 from .tqmse import turboquant_mse
@@ -24,3 +24,7 @@ def cheatsheet() -> str:
 
 
 tq3 = turboquant_3bit
+
+
+# compact alias per ledger/NAMING.md
+turboquant3bit = turboquant_3bit

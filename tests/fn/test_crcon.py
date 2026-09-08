@@ -1,6 +1,6 @@
 """Test circular_convolution (crcon)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.crcon import circular_convolution, crcon

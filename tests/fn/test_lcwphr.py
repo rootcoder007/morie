@@ -1,6 +1,6 @@
 """Tests for lcwphr.latent_class_weighted."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lcwphr import latent_class_weighted
 

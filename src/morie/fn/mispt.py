@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -56,3 +56,7 @@ mispt = missing_pattern
 
 def cheatsheet() -> str:
     return "missing_pattern({}) -> Missing data pattern analysis."
+
+
+# compact alias per ledger/NAMING.md
+missingpattern = missing_pattern

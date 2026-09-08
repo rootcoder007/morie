@@ -1,8 +1,8 @@
 """Tests for rgtwave.rangayyan_t_wave_detect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgtwave import rangayyan_t_wave_detect
+from morie.fn.bsaqrs import rangayyan_t_wave_detect
 
 
 def test_rgtwave_basic():

@@ -1,6 +1,6 @@
 """Ecological NB regression"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ ecol = ecological_nb
 
 def cheatsheet() -> str:
     return "ecological_nb({}) -> Ecological NB regression"
+
+
+# compact alias per ledger/NAMING.md
+ecologicalnb = ecological_nb

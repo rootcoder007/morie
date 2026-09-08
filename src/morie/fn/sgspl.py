@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -39,3 +39,7 @@ sgspl = split_signal
 
 def cheatsheet() -> str:
     return "split_signal({}) -> Split signal into non-overlapping segments."
+
+
+# compact alias per ledger/NAMING.md
+splitsignal = split_signal

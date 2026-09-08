@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -77,3 +77,7 @@ def newton_method(
 
 
 newtm = newton_method
+
+
+# compact alias per ledger/NAMING.md
+newtonmethod = newton_method

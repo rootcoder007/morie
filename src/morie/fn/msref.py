@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Reflection of configuration"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ refl = reflect_config
 
 def cheatsheet() -> str:
     return "reflect_config({}) -> Reflection of configuration"
+
+
+# compact alias per ledger/NAMING.md
+reflectconfig = reflect_config

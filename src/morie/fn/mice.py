@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def mice_impute(
@@ -138,3 +138,7 @@ mice = mice_impute
 
 def cheatsheet() -> str:
     return "mice_impute({}) -> Multiple Imputation by Chained Equations (MICE)."
+
+
+# compact alias per ledger/NAMING.md
+miceimpute = mice_impute

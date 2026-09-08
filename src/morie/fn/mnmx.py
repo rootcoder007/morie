@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Minimax strategy for zero-sum games."""
 
-import numpy as np
-from scipy.optimize import linprog
+from . import _array_core as np
+from ._sci_core import linprog
 
 from ._containers import DescriptiveResult
 

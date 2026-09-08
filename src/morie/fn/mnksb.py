@@ -21,7 +21,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["mnksb"]
 
@@ -147,7 +147,7 @@ def _bounds(mu1, mu0, p1, p0, y0, y1, mtr):
 
 
 def _norm_ppf(q):
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     return float(norm.ppf(q))
 

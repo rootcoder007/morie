@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Years of life lost (YLL)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -43,3 +43,7 @@ cdyll = years_life_lost
 
 def cheatsheet() -> str:
     return "years_life_lost({}) -> Years of life lost (YLL)."
+
+
+# compact alias per ledger/NAMING.md
+yearslifelost = years_life_lost

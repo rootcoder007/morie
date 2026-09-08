@@ -1,6 +1,6 @@
 """Tests for morie.fn.fst -- Fst fixation index."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.fst import fixation_index

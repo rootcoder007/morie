@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -94,3 +94,7 @@ qsim = queue_simulate
 
 def cheatsheet() -> str:
     return "queue_simulate({}) -> Discrete-event M/M/1 queue simulation."
+
+
+# compact alias per ledger/NAMING.md
+queuesimulate = queue_simulate

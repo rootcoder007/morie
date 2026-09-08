@@ -17,7 +17,7 @@ def am_residuals(Z, zhat, alpha, beta) -> DescriptiveResult:
 
     .. epigraph:: What is now proved was once only imagined. -- William Blake
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     zhat = np.asarray(zhat, dtype=float).ravel()
@@ -38,3 +38,7 @@ amres = am_residuals
 
 def cheatsheet() -> str:
     return "am_residuals({}) -> A-M residual matrix computation."
+
+
+# compact alias per ledger/NAMING.md
+amresiduals = am_residuals

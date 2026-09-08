@@ -2,7 +2,7 @@
 % Please edit documentation in R/otis_all_analyze.R
 \name{morie_otis_analyze_a01_with_csi_context}
 \alias{morie_otis_analyze_a01_with_csi_context}
-\title{OTIS a01 causal pipeline + Toronto Crime Severity Index context.}
+\title{OTIS a01 causal pipeline + Toronto Crime Severity Index context}
 \usage{
 morie_otis_analyze_a01_with_csi_context(
   data = NULL,
@@ -31,7 +31,9 @@ requires the morie causal pipeline and TPS-CSI helpers to be loaded;
 otherwise returns a "not yet ported" stub.
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_a01 <- morie_synth_otis("a01", n = 120L, seed = 1L)
 morie_otis_analyze_a01_with_csi_context(otis_a01)
+}
 }

@@ -1,6 +1,6 @@
 """Microsoft SR-CNN."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def microsoft_sr(x):
 
 def cheatsheet():
     return "micrR: Microsoft SR-CNN"
+
+
+# compact alias per ledger/NAMING.md
+microsoftsr = microsoft_sr

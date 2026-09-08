@@ -6,7 +6,7 @@ from __future__ import annotations
 import math
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def compute_loo(
@@ -99,3 +99,7 @@ loo = compute_loo
 
 def cheatsheet() -> str:
     return "compute_loo({}) -> LOO-CV via Pareto Smoothed Importance Sampling (PSIS-LOO)."
+
+
+# compact alias per ledger/NAMING.md
+computeloo = compute_loo

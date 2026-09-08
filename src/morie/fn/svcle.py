@@ -1,6 +1,6 @@
 """Coalition equilibrium (Schofield)"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ coal = coalition_equil
 
 def cheatsheet() -> str:
     return "coalition_equil({}) -> Coalition equilibrium (Schofield)"
+
+
+# compact alias per ledger/NAMING.md
+coalitionequil = coalition_equil

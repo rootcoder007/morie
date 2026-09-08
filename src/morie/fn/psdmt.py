@@ -7,7 +7,7 @@ Analysis*, 3rd ed. IEEE/Wiley, Chapter 5.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -43,7 +43,7 @@ def psdmt(
     -------
     DescriptiveResult
     """
-    from scipy.signal.windows import dpss
+    from ._signal_core import dpss
 
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)

@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -46,7 +46,7 @@ def risk_overlap(
     g0 = tmp.loc[tmp[group_col] == groups[0], score_col].values
     g1 = tmp.loc[tmp[group_col] == groups[1], score_col].values
 
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     ks_stat, ks_p = _st.ks_2samp(g0, g1)
 
@@ -73,3 +73,7 @@ rskov = risk_overlap
 
 def cheatsheet() -> str:
     return "risk_overlap({}) -> Risk score distribution overlap between groups."
+
+
+# compact alias per ledger/NAMING.md
+riskoverlap = risk_overlap

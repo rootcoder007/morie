@@ -1,22 +1,14 @@
 """Tests for altkemb.alammar_token_embedding_lookup."""
 
-import numpy as np
-
 from morie.fn.altkemb import alammar_token_embedding_lookup
 
 
 def test_altkemb_basic():
-    """Test basic functionality."""
-    ids = np.random.default_rng(42).normal(0, 1, 100)
-    E_tok = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_token_embedding_lookup(ids, E_tok)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_token_embedding_lookup([1, 0], [[1.0, 2.0], [3.0, 4.0]])
+    assert out["embeddings"] == [[3.0, 4.0], [1.0, 2.0]]
 
 
 def test_altkemb_edge():
-    """Test edge cases."""
-    ids = np.random.default_rng(42).normal(0, 1, 100)
-    E_tok = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_token_embedding_lookup(ids, E_tok)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="vocabulary"):
+        alammar_token_embedding_lookup([9], [[1.0]])

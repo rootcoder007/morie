@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxgmm -- Spatial Gaussian mixture"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxgmm import gmm_spatial
 

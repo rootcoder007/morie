@@ -2,7 +2,7 @@
 % Please edit documentation in R/otis_all_analyze.R
 \name{morie_otis_analyze_d_chi2}
 \alias{morie_otis_analyze_d_chi2}
-\title{MRM chi-square family on d-series.}
+\title{MRM chi-square family on d-series}
 \usage{
 morie_otis_analyze_d_chi2(datasets, out_dir = NULL)
 }
@@ -20,10 +20,12 @@ Yearly trend (d01 Poisson CIs) + Alert x Cause / Housing
 contingency chi^2 + Cramer's V on d06 / d07.
 }
 \examples{
+\donttest{
 # Synthetic OTIS-shaped panel (bundled generator)
 otis_d01 <- morie_synth_otis("d01", n = 120L, seed = 1L)
 otis_d06 <- morie_synth_otis("d06", n = 120L, seed = 1L)
 otis_d07 <- morie_synth_otis("d07", n = 120L, seed = 1L)
 morie_otis_analyze_d_chi2(list(d01 = otis_d01,
                                  d06 = otis_d06, d07 = otis_d07))
+}
 }

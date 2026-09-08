@@ -7,7 +7,7 @@ confidence intervals on the population median.
 Reference: Gibbons & Chakraborti (2011), Nonparametric Statistical Inference, 5th Ed. § 2.4
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["wlshv"]
 

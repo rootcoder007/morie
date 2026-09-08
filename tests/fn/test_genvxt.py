@@ -1,6 +1,6 @@
 """Tests for genvxt.generalizability_theory."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.genvxt import generalizability_theory
 

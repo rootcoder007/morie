@@ -19,7 +19,7 @@ def missing_data_weights(D):
     DescriptiveResult
         value = weight matrix (0/1), extra has n_missing.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     D = np.asarray(D, dtype=float)
     W = (~np.isnan(D)).astype(float)

@@ -1,6 +1,6 @@
 """Predictive mean matching imputation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -42,3 +42,7 @@ def mi_pmm(y, X, R, K):
 
 def cheatsheet():
     return "micord: Predictive mean matching imputation"
+
+
+# compact alias per ledger/NAMING.md
+mipmm = mi_pmm

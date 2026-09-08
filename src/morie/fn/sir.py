@@ -32,7 +32,7 @@ def standardized_incidence_ratio(
     Breslow, N. E., & Day, N. E. (1987). *Statistical Methods in Cancer
     Research, Vol. II*. IARC, Ch. 2.
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     if observed < 0:
         raise ValueError("observed must be non-negative.")

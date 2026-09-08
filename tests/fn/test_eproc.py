@@ -1,6 +1,6 @@
 """Tests for morie.fn.eproc — empirical process."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.eproc import eproc
@@ -22,7 +22,7 @@ def test_process_at_zero_mean():
 
 
 def test_custom_cdf():
-    from scipy.stats import uniform
+    from morie.fn._stats_core import uniform
 
     rng = np.random.default_rng(7)
     x = rng.uniform(0, 1, 500)

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -117,3 +117,7 @@ spwgt = spatial_weights
 
 def cheatsheet() -> str:
     return "spatial_weights({}) -> Spatial weight matrix construction."
+
+
+# compact alias per ledger/NAMING.md
+spatialweights = spatial_weights

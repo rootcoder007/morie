@@ -1,16 +1,27 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 #' Internal helpers shared across the time-series-advanced suite.
-#' Not exported; consumed by garch/midas/etc callables only.
+#' Not exported; consumed by garch/midas/etc callables only
 #' @keywords internal
 #' @name time_series_advanced_helpers
-#' @importFrom stats var sd lm coef residuals fitted lsfit fft acf arima ar nlminb pnorm dnorm cor decompose ts filter quantile
+#' @importFrom stats var sd lm coef residuals fitted lsfit fft acf arima ar nlminb pnorm
+#' dnorm cor decompose ts filter quantile
 NULL
 
 # Null-coalescing helper used internally by Johansen fallback critical
 # values; not exported.
 `%||%` <- function(a, b) if (is.null(a)) b else a
 
+#' .morie_beta_weights
+#'
+#' Part of the helpers_time_series_advanced implementation; see the file
+#' header for the source it follows.
+#'
+#' @param t1 Numeric; combined arithmetically in the body.
+#' @param t2 Numeric; combined arithmetically in the body.
+#' @param K A count; the body uses it as \code{seq_len(...)}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_beta_weights <- function(t1, t2, K) {
   k <- seq_len(K) / (K + 1)
   w <- (k^(t1 - 1)) * ((1 - k)^(t2 - 1))

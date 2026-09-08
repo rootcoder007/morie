@@ -23,21 +23,91 @@ GEMINI_BASE_URL <- "https://generativelanguage.googleapis.com/v1beta/openai"
 
 `%||%` <- function(a, b) if (is.null(a)) b else a
 
+#' .morie_llm_env
+#'
+#' A step of the llm implementation. Called by \code{.morie_llm_api_base},
+#' \code{.morie_llm_api_key}, \code{.morie_llm_gemini_key} and 3 others in the module.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @param name Passed to \code{Sys.getenv}.
+#' @param default Defaults to \code{""}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_llm_env <- function(name, default = "") {
   v <- trimws(Sys.getenv(name, unset = ""))
   if (nzchar(v)) v else default
 }
+#' .morie_llm_ollama_base
+#'
+#' A step of the llm implementation. Called by \code{morie_llm_ask},
+#' \code{morie_llm_ask_multi}, \code{morie_llm_probe_ollama}.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @return The value of \code{sub}.
+#' @export
+#' @examples
+#' res <- .morie_llm_ollama_base()
+#' res
 .morie_llm_ollama_base <- function() {
   sub("/+$", "", .morie_llm_env("OLLAMA_BASE_URL", DEFAULT_OLLAMA_BASE_URL))
 }
+#' .morie_llm_gemini_key
+#'
+#' A step of the llm implementation. Called by \code{morie_llm_ask},
+#' \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_llm_gemini_key  <- function() { v <- .morie_llm_env("GEMINI_API_KEY")
 if (nzchar(v)) v else NULL }
+#' .morie_llm_openai_key
+#'
+#' A step of the llm implementation. Called by \code{morie_llm_ask},
+#' \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_llm_openai_key  <- function() { v <- .morie_llm_env("OPENAI_API_KEY")
 if (nzchar(v)) v else NULL }
+#' .morie_llm_api_base
+#'
+#' A step of the llm implementation. Called by \code{morie_llm_ask},
+#' \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_llm_api_base    <- function() { v <- .morie_llm_env("LLM_API_BASE_URL")
 if (nzchar(v)) sub("/+$", "", v) else NULL }
+#' .morie_llm_api_key
+#'
+#' A step of the llm implementation. Called by \code{morie_llm_ask},
+#' \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_llm_api_key     <- function() { v <- .morie_llm_env("LLM_API_KEY")
 if (nzchar(v)) v else NULL }
+#' .morie_llm_gemini_model
+#'
+#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @return The value of \code{.morie_llm_env}.
+#' @export
+#' @examples
+#' res <- .morie_llm_gemini_model()
+#' res
 .morie_llm_gemini_model <- function() .morie_llm_env("GEMINI_MODEL", DEFAULT_GEMINI_MODEL)
 
 #' Probe a local Ollama instance
@@ -62,22 +132,19 @@ morie_llm_probe_ollama <- function(timeout = 2) {
   out
 }
 
-#' Detect the active LLM provider
-#' @return Character scalar provider key: ollama / gemini / api / openai / local.
-#' @examples
-#' options(morie.llm.ollama_cached = FALSE, morie.llm.freeapi_cached = FALSE)
-#' morie_llm_detect_provider()
-#' options(morie.llm.ollama_cached = NULL, morie.llm.freeapi_cached = NULL)
-#' @export
-morie_llm_detect_provider <- function() {
-  if (morie_llm_probe_ollama())                                 return("ollama")
-  if (!is.null(.morie_llm_gemini_key()))                        return("gemini")
-  if (!is.null(.morie_llm_api_base()) && !is.null(.morie_llm_api_key()))
-                                                                return("api")
-  if (!is.null(.morie_llm_openai_key()))                        return("openai")
-  "local"
-}
 
+#' .morie_llm_system_prompt
+#'
+#' A step of the llm implementation. Called by \code{.morie_llm_messages}.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @param context_block Passed to \code{paste0}. Defaults to \code{""}.
+#' @return A character value.
+#' @export
+#' @examples
+#' res <- .morie_llm_system_prompt()
+#' res
 .morie_llm_system_prompt <- function(context_block = "") {
   paste0(
     "You are the MORIE agent for methods for observational inference and ",
@@ -92,6 +159,17 @@ morie_llm_detect_provider <- function() {
   )
 }
 
+#' .morie_llm_messages
+#'
+#' A step of the llm implementation. Called by \code{morie_llm_ask}.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @param prompt Carried through into a list the body builds.
+#' @param context Optional; may be \code{NULL}. A vector; indexed elementwise.
+#' @param system_prompt Optional; may be \code{NULL}. Carried through into a list the body builds.
+#' @return The value of \code{list}.
+#' @export
 .morie_llm_messages <- function(prompt, context = NULL, system_prompt = NULL) {
   if (is.null(system_prompt)) {
     ctx_block <- if (is.null(context)) "" else paste(
@@ -116,7 +194,7 @@ morie_llm_detect_provider <- function() {
 #' @param timeout Seconds. Default 120.
 #' @return Parsed JSON list (the response body).
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' msgs <- list(list(role = "user", content = "Say hello"))
 #' res <- try(morie_llm_request_completion("http://localhost:11434", "llama3.2", msgs))
 #' }
@@ -146,6 +224,22 @@ morie_llm_request_completion <- function(base_url, model, messages,
   .morie_from_json(httr2::resp_body_string(resp), simplifyVector = FALSE)
 }
 
+#' .morie_llm_extract_text
+#'
+#' A step of the llm implementation. Called by \code{.morie_llm_freeapi_completion},
+#' \code{morie_llm_ask}, \code{morie_llm_ask_multi}.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @param data A list; the body reads \code{$choices} from it.
+#' @return One of two values, depending on the branch taken.
+#' @export
+#' @examples
+#' df <- data.frame(x = c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), y = c(2.9, 5.1, 6.8,
+#' 9.4, 11.2, 13.1, 15.0, 17.6), g = c('a', 'b', 'a', 'b', 'a', 'b', 'a', 'b'),
+#' stringsAsFactors = FALSE)
+#' res <- .morie_llm_extract_text(data = df)
+#' res
 .morie_llm_extract_text <- function(data) {
   choices <- data$choices
   if (length(choices) == 0L) return("")
@@ -153,6 +247,15 @@ morie_llm_request_completion <- function(base_url, model, messages,
   if (is.null(msg)) "" else (msg$content %||% "")
 }
 
+#' .morie_llm_local_fallback
+#'
+#' A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @param prompt Accepted by the signature and not used anywhere in the body.
+#' @return A character value.
+#' @export
 .morie_llm_local_fallback <- function(prompt) {
   paste0(
     "MORIE is running in local-only mode (no LLM provider detected).\
@@ -257,6 +360,17 @@ morie_llm_agent_available <- function() {
 DEFAULT_FREEAPI_MODEL <- "mistral-nemo:custom"
 FREEAPI_BASE_URL      <- "https://ollamafreeapi.duckdns.org"  # community-hosted
 
+#' .morie_llm_freeapi_model
+#'
+#' A step of the llm implementation. Called by \code{.morie_llm_freeapi_completion}.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @return One of two values, depending on the branch taken.
+#' @export
+#' @examples
+#' res <- .morie_llm_freeapi_model()
+#' res
 .morie_llm_freeapi_model <- function() {
   v <- trimws(Sys.getenv("moriefam", unset = ""))
   if (nzchar(v)) v else DEFAULT_FREEAPI_MODEL
@@ -370,6 +484,15 @@ morie_llm_list_freeapi_models <- function() {
 # We deliberately overwrite the earlier morie_llm_detect_provider() so the
 # ordering matches Python: ollama -> freeapi -> gemini -> api -> openai -> local.
 
+#' morie_llm_detect_provider
+#'
+#' A step of the llm implementation. Called by \code{morie_llm_agent_available},
+#' \code{morie_llm_ask}, \code{morie_llm_ask_multi}.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @return A character value.
+#' @export
 morie_llm_detect_provider <- function() {
   if (morie_llm_probe_ollama())                  return("ollama")
   if (morie_llm_probe_freeapi())                 return("freeapi")
@@ -380,6 +503,15 @@ morie_llm_detect_provider <- function() {
   "local"
 }
 
+#' .morie_llm_messages_to_prompt
+#'
+#' A step of the llm implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @param messages Iterated over elementwise, with \code{vapply}.
+#' @return A character value.
+#' @export
 .morie_llm_messages_to_prompt <- function(messages) {
   parts <- vapply(messages, function(m) {
     role <- m$role %||% "user"
@@ -393,6 +525,19 @@ morie_llm_detect_provider <- function() {
 ")
 }
 
+#' .morie_llm_strip_think
+#'
+#' A step of the llm implementation. Called by \code{.morie_llm_freeapi_completion}.
+#' See the file header for the source the module follows.
+#' follows.
+#'
+#' @param text Character; passed to \code{gsub}.
+#' @return The value of \code{trimws}.
+#' @export
+#' @examples
+#' txt <- c('alpha', 'beta', 'gamma', 'delta')
+#' res <- .morie_llm_strip_think(text = txt)
+#' res
 .morie_llm_strip_think <- function(text) {
   trimws(gsub("(?s)<think>.*?</think>\\s*", "", text, perl = TRUE))
 }
@@ -400,6 +545,18 @@ morie_llm_detect_provider <- function() {
 # Non-streaming FreeAPI completion via the same OpenAI-compatible endpoint
 # that ollama exposes.  R has no native ``ollamafreeapi`` SDK, so we POST
 # /v1/chat/completions to FREEAPI_BASE_URL.  Returns "" on failure.
+#' Non-streaming FreeAPI completion via the same OpenAI-compatible
+#' endpoint
+#'
+#' that ollama exposes.  R has no native ``ollamafreeapi`` SDK, so we
+#' POST /v1/chat/completions to FREEAPI_BASE_URL.  Returns "" on
+#' failure.
+#'
+#' @param messages Carried through into a list the body builds.
+#' @param model Passed to \code{\%||\%}.
+#' @param timeout Defaults to \code{180}.
+#' @return The value of \code{.morie_llm_strip_think}.
+#' @export
 .morie_llm_freeapi_completion <- function(messages, model = NULL, timeout = 180) {
   if (!requireNamespace("httr2", quietly = TRUE) ||
       !requireNamespace("jsonlite", quietly = TRUE)) return("")
@@ -498,4 +655,79 @@ morie_llm_ask_multi <- function(messages, providers = NULL,
     if (!is.null(out) && nzchar(out)) return(out)
   }
   .morie_llm_local_fallback(fallback_prompt())
+}
+
+# ---- ported from the rmorie arm on 2026-09-01 (SIU panel needs them) ----
+
+# Process-lifetime probe cache. Uses a package-internal environment rather
+# than options() so we never modify the user's global options (CRAN policy);
+# matches the .morie_*_env pattern used elsewhere in the package.
+.morie_llm_cache <- new.env(parent = emptyenv())
+
+
+# TRUE when live-network probes must be suppressed: under R CMD check /
+# examples / covr the result must be deterministic and must never hang on a
+# dead-but-open host. A caller (or a test) can force a real probe with
+# options(morie.llm.allow_net_probe = TRUE).
+#' @noRd
+.morie_llm_no_net <- function() {
+  nzchar(Sys.getenv("_R_CHECK_PACKAGE_NAME_")) &&
+    !isTRUE(getOption("morie.llm.allow_net_probe"))
+}
+
+#' List the models an Ollama server is serving
+#'
+#' Connects to an Ollama server over its REST API (\code{GET /api/tags}) and
+#' returns the models it has available. Use it to confirm rmorie can reach
+#' your Ollama instance and to see the exact model names you can pass as the
+#' \code{model} argument or via the \code{OLLAMA_MODEL} environment variable
+#' -- rmorie bundles no model and assumes none, so you bring your own.
+#'
+#' Point \code{OLLAMA_HOST} (or \code{OLLAMA_BASE_URL}) at ANY reachable
+#' Ollama-compatible server: a local daemon (\code{http://localhost:11434},
+#' the default), a machine on your network, or a remote / Cloudflare-tunnelled
+#' gateway. A local daemon needs no key; set \code{OLLAMA_API_KEY} for gateways
+#' that require a bearer token.
+#'
+#' @param base Ollama base URL. Defaults to \code{OLLAMA_HOST} /
+#'   \code{OLLAMA_BASE_URL}, else \code{http://localhost:11434}.
+#' @param timeout Request timeout in seconds. Default 5.
+#' @return A \code{data.frame}, one row per model, with columns \code{name},
+#'   \code{size_gb}, \code{family}, \code{parameter_size} and
+#'   \code{quantization}. Zero rows when the server is unreachable or serves
+#'   no models (never errors), so it doubles as a connectivity test.
+#' @examples
+#' \dontrun{
+#' # Point at your own Ollama server, then see what it serves:
+#' Sys.setenv(OLLAMA_HOST = "http://localhost:11434")
+#' models <- morie_llm_ollama_models()
+#' models$name
+#' }
+#' @export
+morie_llm_ollama_models <- function(base = .morie_llm_ollama_base(),
+                                    timeout = 5) {
+  empty <- data.frame(name = character(), size_gb = numeric(),
+                      family = character(), parameter_size = character(),
+                      quantization = character(), stringsAsFactors = FALSE)
+  if (!requireNamespace("httr2", quietly = TRUE)) return(empty)
+  models <- tryCatch({
+    req <- httr2::req_timeout(httr2::request(paste0(base, "/api/tags")), timeout)
+    key <- .morie_llm_env("OLLAMA_API_KEY")
+    if (nzchar(key)) req <- httr2::req_headers(req,
+                                               Authorization = paste("Bearer", key))
+    body <- .morie_from_json(httr2::resp_body_string(httr2::req_perform(req)),
+                             simplifyVector = FALSE)
+    body$models %||% list()
+  }, error = function(e) list())
+  if (!length(models)) return(empty)
+  det <- function(m, k) as.character((m$details %||% list())[[k]] %||% NA)
+  data.frame(
+    name           = vapply(models, function(m)
+      as.character(m$name %||% m$model %||% NA), ""),
+    size_gb        = vapply(models, function(m)
+      round(as.numeric(m$size %||% NA_real_) / 1e9, 2), numeric(1)),
+    family         = vapply(models, det, "", k = "family"),
+    parameter_size = vapply(models, det, "", k = "parameter_size"),
+    quantization   = vapply(models, det, "", k = "quantization_level"),
+    stringsAsFactors = FALSE)
 }

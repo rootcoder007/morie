@@ -38,3 +38,7 @@ crtbl = court_bail_rate
 
 def cheatsheet() -> str:
     return "court_bail_rate({}) -> Bail grant rate analysis."
+
+
+# compact alias per ledger/NAMING.md
+courtbailrate = court_bail_rate

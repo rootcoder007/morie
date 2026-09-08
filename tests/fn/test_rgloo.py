@@ -1,8 +1,8 @@
 """Tests for rgloo.rangayyan_loo_cv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgloo import rangayyan_loo_cv
+from morie.fn.bsaclass import rangayyan_loo_cv
 
 
 def test_rgloo_basic():

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Diggle-Cressie-Loosmore test"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ digg = diggle_test
 
 def cheatsheet() -> str:
     return "diggle_test({}) -> Diggle-Cressie-Loosmore test"
+
+
+# compact alias per ledger/NAMING.md
+diggletest = diggle_test

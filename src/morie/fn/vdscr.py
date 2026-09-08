@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 
 def validity_discriminant(
@@ -30,8 +30,9 @@ def validity_discriminant(
 
     References
     ----------
-    Fornell, C., & Larcker, D. F. (1981). *Journal of Marketing Research*,
-    18(1), 39--50.
+    Fornell, C., & Larcker, D. F. (1981). Evaluating structural
+    equation models with unobservable variables and measurement error.
+    *Journal of Marketing Research*, 18(1), 39--50.
     """
     if isinstance(data, np.ndarray):
         data = pd.DataFrame(data, columns=[f"i{i}" for i in range(data.shape[1])])

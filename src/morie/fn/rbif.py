@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import ESRes
 
@@ -62,3 +62,7 @@ bif_omega = bifactor_omega
 
 def cheatsheet() -> str:
     return "bifactor_omega({}) -> Omega from bifactor model."
+
+
+# compact alias per ledger/NAMING.md
+bifactoromega = bifactor_omega

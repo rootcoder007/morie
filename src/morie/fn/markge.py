@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -64,3 +64,7 @@ markge = markov_generate
 
 def cheatsheet() -> str:
     return "markov_generate({}) -> Stochastic sequence generation (Markov chain)."
+
+
+# compact alias per ledger/NAMING.md
+markovgenerate = markov_generate

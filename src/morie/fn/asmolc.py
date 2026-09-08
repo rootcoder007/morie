@@ -1,6 +1,6 @@
 """OLC long-read assembly."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def olc_assembly(long_reads):
 
 def cheatsheet():
     return "asmolc: OLC long-read assembly"
+
+
+# compact alias per ledger/NAMING.md
+olcassembly = olc_assembly

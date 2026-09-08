@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from scipy import stats as _st
+from . import _stats_core as _st
 
 from ._containers import DescriptiveResult
 
@@ -56,3 +56,7 @@ cpci = clopper_pearson
 
 def cheatsheet() -> str:
     return "clopper_pearson({}) -> Clopper-Pearson exact binomial CI."
+
+
+# compact alias per ledger/NAMING.md
+clopperpearson = clopper_pearson

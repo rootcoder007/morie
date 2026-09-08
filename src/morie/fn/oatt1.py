@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as stats
 
 
 def otis_att_region(
@@ -59,7 +59,8 @@ def otis_att_region(
             X = np.column_stack([np.ones(len(y)), data[cov_cols].values.astype(np.float64)])
 
         # Propensity score via OLS (linear probability model, clipped)
-        from numpy.linalg import lstsq
+        from morie.fn._array_core import linalg as _acl
+        lstsq = _acl.lstsq
 
         beta, _, _, _ = lstsq(X, d, rcond=None)
         ps = np.clip(X @ beta, 0.01, 0.99)
@@ -99,3 +100,7 @@ def otis_att_region(
 
 def cheatsheet() -> str:
     return "otis_att_region({}) -> ATT by region via IPW for OTIS data."
+
+
+# compact alias per ledger/NAMING.md
+otisattregion = otis_att_region

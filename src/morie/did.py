@@ -33,12 +33,37 @@ from dataclasses import dataclass, field
 from itertools import combinations
 from typing import Any
 
-import numpy as np
-import pandas as pd
-import scipy.stats as stats
-from scipy.optimize import minimize
-from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
-from sklearn.linear_model import LinearRegression, LogisticRegression
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as stats
+from morie.fn._sci_core import minimize
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from morie.fn._ml_core import GradientBoostingClassifier, GradientBoostingRegressor
+except ImportError:
+    GradientBoostingClassifier = _MissingDep('GradientBoostingClassifier')
+    GradientBoostingRegressor = _MissingDep('GradientBoostingRegressor')
+try:
+    from morie.fn._ml_core import LinearRegression, LogisticRegression
+except ImportError:
+    LinearRegression = _MissingDep('LinearRegression')
+    LogisticRegression = _MissingDep('LogisticRegression')
 
 logger = logging.getLogger(__name__)
 
@@ -893,7 +918,7 @@ def group_time_att(
     with multiple time periods. *Journal of Econometrics*, 225(2), 200--230.
     """
     rng = np.random.default_rng(seed)
-    df = data.copy()
+    df = pd._coerce_frame(data).copy()
     df["_g"] = df[treatment_time].astype(float)
 
     cohorts = sorted(df.loc[np.isfinite(df["_g"]), "_g"].unique())
@@ -1650,7 +1675,7 @@ def synthetic_did(
         pred = Y_ctrl_pre_mean_across_units @ lam
         return (pred - Y_ctrl_post_mean) ** 2
 
-    from scipy.optimize import LinearConstraint
+    from morie.fn._sci_core import LinearConstraint
 
     lam0 = np.ones(T_pre) / T_pre
     constraints = LinearConstraint(np.ones(T_pre), lb=1.0, ub=1.0)

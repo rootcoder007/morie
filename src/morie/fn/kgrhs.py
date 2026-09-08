@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kriging right-hand side vector"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -35,3 +35,7 @@ krig = kriging_rhs
 
 def cheatsheet() -> str:
     return "kriging_rhs({}) -> Kriging right-hand side vector"
+
+
+# compact alias per ledger/NAMING.md
+krigingrhs = kriging_rhs

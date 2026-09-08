@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Shepard diagram values"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ shep = shepard_diag
 
 def cheatsheet() -> str:
     return "shepard_diag({}) -> Shepard diagram values"
+
+
+# compact alias per ledger/NAMING.md
+sheparddiag = shepard_diag

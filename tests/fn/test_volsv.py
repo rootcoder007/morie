@@ -1,6 +1,6 @@
 """Tests for volsv.vol_sv_quasi_lik."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.volsv import vol_sv_quasi_lik
 

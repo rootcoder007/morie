@@ -3,7 +3,7 @@
 import math
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 
@@ -47,3 +47,7 @@ cw = cohens_w
 
 def cheatsheet() -> str:
     return "cohens_w({}) -> Cohen's w effect size for chi-squared."
+
+
+# compact alias per ledger/NAMING.md
+cohensw = cohens_w

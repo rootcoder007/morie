@@ -1,24 +1,11 @@
-"""Tests for grbic.geron_bic_gmm."""
+"""Tests for grbic (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.grbic import geron_bic_gmm
-
-
-def test_grbic_basic():
-    """Test basic functionality."""
-    log_likelihood = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    n_params = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_bic_gmm(log_likelihood, n, n_params)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.grbic as mod
 
 
-def test_grbic_edge():
-    """Test edge cases."""
-    log_likelihood = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    n_params = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_bic_gmm(log_likelihood, n, n_params)
-    assert isinstance(result, dict)
+def test_grbic_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

@@ -1,6 +1,6 @@
 """Join count permutation test"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ join = join_count_perm
 
 def cheatsheet() -> str:
     return "join_count_perm({}) -> Join count permutation test"
+
+
+# compact alias per ledger/NAMING.md
+joincountperm = join_count_perm

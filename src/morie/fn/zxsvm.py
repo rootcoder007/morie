@@ -1,6 +1,6 @@
 """Spatial SVM"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -27,3 +27,7 @@ spat = spatial_svm
 
 def cheatsheet() -> str:
     return "spatial_svm({}) -> Spatial SVM"
+
+
+# compact alias per ledger/NAMING.md
+spatialsvm = spatial_svm

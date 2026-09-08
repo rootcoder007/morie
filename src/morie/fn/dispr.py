@@ -21,7 +21,7 @@ def disparity_fit(D_obs, D_model):
     DescriptiveResult
         value = disparity vector, extra has indices.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     D_obs = np.asarray(D_obs, dtype=float)
     D_model = np.asarray(D_model, dtype=float)
@@ -49,3 +49,7 @@ dispr = disparity_fit
 
 def cheatsheet() -> str:
     return "disparity_fit({}) -> Disparity fit via isotonic regression."
+
+
+# compact alias per ledger/NAMING.md
+disparityfit = disparity_fit

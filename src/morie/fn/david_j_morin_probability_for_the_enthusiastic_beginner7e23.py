@@ -1,54 +1,22 @@
-"""PowerAndDesign equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Deprecated alias for :func:`morie.fn.powexpapx`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .powexpapx import powexpapx as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_23"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_23(x):
-    """
-    PowerAndDesign equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: we can ignore the e−na 2/2 term, because it is approximately equal to e−0 =
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner7e23')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.7 eq.7.23
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="PowerAndDesign equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "PowerAndDesign equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_23(a, n):
+    """Deprecated; use :func:`morie.fn.powexpapx` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_23() is the book-coordinate name for powexpapx(); "
+        "it will be removed. Use morie.fn.powexpapx() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner7e23: PowerAndDesign equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return _impl(a, n)

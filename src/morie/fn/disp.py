@@ -44,3 +44,7 @@ disp = disparity_index
 
 def cheatsheet() -> str:
     return "disparity_index({}) -> Disparity index."
+
+
+# compact alias per ledger/NAMING.md
+disparityindex = disparity_index

@@ -1,6 +1,6 @@
 """Tests for morie.fn.idpem."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.idpem import idpem
 

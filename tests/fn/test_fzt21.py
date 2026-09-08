@@ -1,6 +1,6 @@
 """Tests for fzt21.fauzi_thm2_1_expected_kdfe."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzt21 import fauzi_thm2_1_expected_kdfe
 

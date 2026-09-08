@@ -36,7 +36,7 @@ def permutation_count(n: int, k: int, **kwargs) -> DescriptiveResult:
 
     result = _perm(n, k)
 
-    from scipy.special import gammaln
+    from ._sci_core import gammaln
 
     log_perm = gammaln(n + 1) - gammaln(n - k + 1)
 

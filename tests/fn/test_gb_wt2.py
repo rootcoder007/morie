@@ -1,6 +1,6 @@
 """Tests for gb_wt2.gibbons_ww_two_samp_runs."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_wt2 import gibbons_ww_two_samp_runs
 

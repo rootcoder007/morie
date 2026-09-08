@@ -1,6 +1,6 @@
 """Normal vector to cutting line"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ norm = normal_vector
 
 def cheatsheet() -> str:
     return "normal_vector({}) -> Normal vector to cutting line"
+
+
+# compact alias per ledger/NAMING.md
+normalvector = normal_vector

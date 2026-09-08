@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -43,3 +43,7 @@ sgfrm = frame_signal
 
 def cheatsheet() -> str:
     return "frame_signal({}) -> Frame signal into overlapping windows."
+
+
+# compact alias per ledger/NAMING.md
+framesignal = frame_signal

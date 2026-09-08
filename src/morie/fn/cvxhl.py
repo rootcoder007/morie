@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -43,7 +43,11 @@ def convex_hull(points: np.ndarray) -> DescriptiveResult:
         for j in range(n):
             if j == current:
                 continue
-            cross = float(np.cross(pts[candidate] - pts[current], pts[j] - pts[current]))
+            # 2-D cross product written out: np.cross stopped accepting
+            # 2-vectors in NumPy 2.0, and this is the z-component it returned.
+            u = pts[candidate] - pts[current]
+            v = pts[j] - pts[current]
+            cross = float(u[0] * v[1] - u[1] * v[0])
             if candidate == current or cross < 0:
                 candidate = j
             elif cross == 0:
@@ -67,3 +71,7 @@ cvxhl = convex_hull
 
 def cheatsheet() -> str:
     return "convex_hull({}) -> 2-D convex hull via gift wrapping."
+
+
+# compact alias per ledger/NAMING.md
+convexhull = convex_hull

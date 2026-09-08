@@ -21,8 +21,8 @@ Design principles:
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 # ---------------------------------------------------------------------------
@@ -503,7 +503,7 @@ class TestForceCanonical:
 
     def test_force_welch_ci_coverage_sanity(self) -> None:
         """CI width should equal 2 * t_crit * SE (Welch-Satterthwaite df)."""
-        from scipy import stats
+        from morie.fn import _stats_core as stats
 
         from morie.fn.force import ate_diff
 
@@ -983,7 +983,7 @@ class TestPlivCanonical:
         covs = [f"X{i + 1}" for i in range(5)]
 
         # Naive OLS of Y on D and X (no IV)
-        import statsmodels.api as sm
+        from morie.fn import _glm_core as sm
 
         X_ols = sm.add_constant(df[["D"] + covs].astype(float))
         ols = sm.OLS(df["Y"].astype(float), X_ols).fit()
@@ -1247,7 +1247,7 @@ class TestCateCanonical:
             covariates=["X1", "X2", "X3"],
             meta_learner="t_learner",
         )
-        assert isinstance(result, pd.Series)
+        assert (hasattr(result, "index") and hasattr(result, "tolist") and not hasattr(result, "_cols"))
         assert len(result) == len(df)
         assert np.all(np.isfinite(result.values))
 
@@ -1300,7 +1300,7 @@ class TestCateCanonical:
             covariates=["X1", "X2", "X3"],
             meta_learner="s_learner",
         )
-        assert isinstance(result, pd.Series)
+        assert (hasattr(result, "index") and hasattr(result, "tolist") and not hasattr(result, "_cols"))
         assert len(result) == len(df)
         assert np.all(np.isfinite(result.values))
 
@@ -1388,7 +1388,7 @@ class TestGateCanonical:
             covariates=["X1", "X2", "X3"],
             group_col="G",
         )
-        assert isinstance(result, pd.DataFrame)
+        assert (hasattr(result, "columns") or hasattr(result, "_cols"))
         assert {"group", "ate", "se", "ci_lower", "ci_upper", "n"}.issubset(result.columns), (
             f"GATE missing expected columns. Got: {list(result.columns)}"
         )
@@ -1729,7 +1729,7 @@ class TestSensitivityCanonical:
     def test_yoda_s_gamma1_gives_original_pvalue(self) -> None:
         """At Γ=1 (no bias), the Rosenbaum upper p-value equals the
         standard 2-sided z-test p-value."""
-        from scipy import stats
+        from morie.fn import _stats_core as stats
 
         from morie.fn.yoda_s import sensitivity_analysis
 

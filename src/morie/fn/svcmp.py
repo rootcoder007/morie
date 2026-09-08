@@ -1,6 +1,6 @@
 """Committee median voter model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ comm = committee_med
 
 def cheatsheet() -> str:
     return "committee_med({}) -> Committee median voter model"
+
+
+# compact alias per ledger/NAMING.md
+committeemed = committee_med

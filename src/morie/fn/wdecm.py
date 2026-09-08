@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -38,3 +38,7 @@ def cheatsheet() -> str:
 
 
 wdecm = weight_decay
+
+
+# compact alias per ledger/NAMING.md
+weightdecay = weight_decay

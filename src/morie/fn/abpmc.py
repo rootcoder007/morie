@@ -5,7 +5,7 @@ PM coarse spatial indoor
 Category: AirBio
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def abpmc(data=None, coords=None, n=50):

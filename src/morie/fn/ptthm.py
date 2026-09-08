@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Thomas cluster process"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -30,3 +30,7 @@ thom = thomas_process
 
 def cheatsheet() -> str:
     return "thomas_process({}) -> Thomas cluster process"
+
+
+# compact alias per ledger/NAMING.md
+thomasprocess = thomas_process

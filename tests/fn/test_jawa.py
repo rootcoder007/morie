@@ -1,6 +1,6 @@
 """Tests for morie.fn.jawa -- Jackknife estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.jawa import jackknife, jawa

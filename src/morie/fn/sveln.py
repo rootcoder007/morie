@@ -1,6 +1,6 @@
 """Elbow method for dimensions"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ elbo = elbow_spatial
 
 def cheatsheet() -> str:
     return "elbow_spatial({}) -> Elbow method for dimensions"
+
+
+# compact alias per ledger/NAMING.md
+elbowspatial = elbow_spatial

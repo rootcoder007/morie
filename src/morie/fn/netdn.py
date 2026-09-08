@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 
 def network_density(
@@ -42,3 +42,7 @@ def network_density(
 
 def cheatsheet() -> str:
     return "network_density({}) -> Network density (proportion of non-zero edges)."
+
+
+# compact alias per ledger/NAMING.md
+networkdensity = network_density

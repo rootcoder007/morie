@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -75,3 +75,7 @@ imfcr = imf_criteria
 
 def cheatsheet() -> str:
     return "imf_criteria({}) -> IMF stopping criteria check."
+
+
+# compact alias per ledger/NAMING.md
+imfcriteria = imf_criteria

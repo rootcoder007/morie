@@ -1,6 +1,6 @@
 """Tests for morie.fn.ocnrm -- OC normal vector."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ocnrm import oc_normal_vector, ocnrm
 

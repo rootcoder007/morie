@@ -1,8 +1,8 @@
 """Tests for rgelast.rangayyan_heart_elasticity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgelast import rangayyan_heart_elasticity
+from morie.fn.bsaphys import rangayyan_heart_elasticity
 
 
 def test_rgelast_basic():

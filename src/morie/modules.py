@@ -9,10 +9,18 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-import numpy as np
-import pandas as pd
-from statsmodels.stats.power import NormalIndPower
-from statsmodels.stats.proportion import proportion_effectsize
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+import math as _math
+
+from morie.fn._glm_core import NormalIndPower
+
+
+def proportion_effectsize(prop1, prop2):
+    """Cohen's h = 2 asin(sqrt(p1)) - 2 asin(sqrt(p2)) (statsmodels-free)."""
+    return (2.0 * _math.asin(_math.sqrt(prop1))
+            - 2.0 * _math.asin(_math.sqrt(prop2)))
+
 
 from .causal import run_ebac_selection_ipw_analysis, run_propensity_ipw_analysis
 from .cpads import canonicalize_cpads_frame
@@ -727,7 +735,7 @@ def _run_ebac_gender_smote_sensitivity(
     weight_col: str = "weight",
 ) -> dict[str, pd.DataFrame]:
     """eBAC gender interaction and SMOTE sensitivity analysis."""
-    import statsmodels.api as sm
+    from morie.fn import _glm_core as sm
 
     from .ml import apply_smote
     from .survey import SurveyDesign

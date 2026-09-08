@@ -23,7 +23,7 @@ def convolution_representation(kernel, white_noise, coords):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     wn = np.asarray(white_noise, dtype=np.float64).ravel()
     coords = np.asarray(coords, dtype=np.float64)

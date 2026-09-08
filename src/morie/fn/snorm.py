@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from morie.fn._mapq_const import SUBSCALES
 
@@ -57,3 +57,7 @@ def subscale_norms(
 
 def cheatsheet() -> str:
     return "subscale_norms({}) -> Normative table (mean, sd, percentiles) per subscale."
+
+
+# compact alias per ledger/NAMING.md
+subscalenorms = subscale_norms

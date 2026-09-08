@@ -10,7 +10,7 @@ def trace_plot_data(chain) -> DescriptiveResult:
 
     .. epigraph:: The Analytical Engine weaves algebraic patterns. -- Ada Lovelace
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     chain = np.asarray(chain, dtype=float)
     if chain.ndim == 1:
@@ -34,3 +34,7 @@ trcpl = trace_plot_data
 
 def cheatsheet() -> str:
     return "trace_plot_data({}) -> Trace plot data for MCMC."
+
+
+# compact alias per ledger/NAMING.md
+traceplotdata = trace_plot_data

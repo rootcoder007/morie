@@ -24,7 +24,7 @@ def simulate_thermometer(n_resp=50, n_stim=7, noise=5.0, seed=42):
     DescriptiveResult
         value = thermometer ratings (n_resp x n_stim), clipped to [0, 100].
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     rng = np.random.default_rng(seed)
     ideal = rng.uniform(20, 80, (n_resp, 1))

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ copld = copeland_method
 
 def cheatsheet() -> str:
     return "copeland_method({}) -> Copeland pairwise comparison voting."
+
+
+# compact alias per ledger/NAMING.md
+copelandmethod = copeland_method

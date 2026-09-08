@@ -1,6 +1,6 @@
 """Multi-party Nash equilibrium"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ mult = multiparty_nash
 
 def cheatsheet() -> str:
     return "multiparty_nash({}) -> Multi-party Nash equilibrium"
+
+
+# compact alias per ledger/NAMING.md
+multipartynash = multiparty_nash

@@ -1,6 +1,6 @@
 """Circular scan statistic"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ scan = scan_circular
 
 def cheatsheet() -> str:
     return "scan_circular({}) -> Circular scan statistic"
+
+
+# compact alias per ledger/NAMING.md
+scancircular = scan_circular

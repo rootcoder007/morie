@@ -1,6 +1,6 @@
 """Tests for dinoss.dino_centering."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dinoss import dino_centering
 

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -31,3 +31,7 @@ emdfn = emd_fn
 
 def cheatsheet() -> str:
     return "emd_fn({}) -> Empirical Mode Decomposition into Intrinsic Mode Functions."
+
+
+# compact alias per ledger/NAMING.md
+emdfn = emd_fn

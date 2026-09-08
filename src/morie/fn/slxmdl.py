@@ -1,6 +1,6 @@
 """Spatial Lag of X (SLX) model."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -40,3 +40,7 @@ def slx_model(y, X, W):
 
 def cheatsheet():
     return "slxmdl: Spatial Lag of X (SLX) model"
+
+
+# compact alias per ledger/NAMING.md
+slxmodel = slx_model

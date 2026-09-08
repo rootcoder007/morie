@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -76,3 +76,7 @@ ewmav = ewma_volatility
 
 def cheatsheet() -> str:
     return "ewma_volatility({}) -> EWMA volatility (RiskMetrics)."
+
+
+# compact alias per ledger/NAMING.md
+ewmavolatility = ewma_volatility

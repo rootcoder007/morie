@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Regularised lower incomplete gamma."""
 
-from scipy.special import gammainc
+from ._sci_core import gammainc
 
 
 def igamma(a: float, x: float) -> float:

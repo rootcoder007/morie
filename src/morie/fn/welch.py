@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.signal import welch as _welch
+from . import _array_core as np
+from ._signal_core import welch as _welch
 
 from ._containers import SignalResult
 
@@ -37,3 +37,7 @@ welch = welch_psd
 
 def cheatsheet() -> str:
     return "welch_psd({}) -> Welch power spectral density estimation."
+
+
+# compact alias per ledger/NAMING.md
+welchpsd = welch_psd

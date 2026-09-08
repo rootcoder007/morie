@@ -1,6 +1,6 @@
 """Tests for morie.fn.risdt — rise time detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.risdt import risdt, rise_time_detect
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.psvot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.psvot import psvot
 

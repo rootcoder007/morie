@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -31,3 +31,7 @@ icafn = ica_fn
 
 def cheatsheet() -> str:
     return "ica_fn({}) -> Independent Component Analysis decomposition."
+
+
+# compact alias per ledger/NAMING.md
+icafn = ica_fn

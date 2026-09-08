@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptkde -- Spatial kernel density estimation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptkde import spatial_kde
 

@@ -1,6 +1,6 @@
 """Tests for grlrco.geron_lr_cosine_annealing."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grlrco import geron_lr_cosine_annealing
 

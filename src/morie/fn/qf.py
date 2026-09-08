@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Union
 
-import numpy as np
-from scipy.stats import f as f_dist
+from . import _array_core as np
+from ._stats_core import f as f_dist
 
 
 def qf(p: Union[float, np.ndarray], dfn: float, dfd: float) -> Union[float, np.ndarray]:

@@ -1,6 +1,6 @@
 """Tests for gh_c14_2.ghosal_ewens_esf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c14_2 import ghosal_ewens_esf
 

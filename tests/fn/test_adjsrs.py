@@ -1,6 +1,6 @@
 """Tests for adjsrs.effective_srs."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.adjsrs import effective_srs
 

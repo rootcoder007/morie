@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -26,7 +26,7 @@ def snr_threshold(snr_db, target_ber=1e-3, **kwargs) -> DescriptiveResult:
     -------
     DescriptiveResult
     """
-    from scipy.special import erfc, erfcinv
+    from ._sci_core import erfc, erfcinv
 
     snr_linear = 10 ** (snr_db / 10.0)
     ber = 0.5 * erfc(np.sqrt(snr_linear))
@@ -51,3 +51,7 @@ snrth = snr_threshold
 
 def cheatsheet() -> str:
     return "snr_threshold({}) -> SNR threshold for target BER."
+
+
+# compact alias per ledger/NAMING.md
+snrthreshold = snr_threshold

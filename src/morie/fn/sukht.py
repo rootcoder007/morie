@@ -10,8 +10,8 @@ Returns the standardised statistic and its normal-approx p-value.
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -74,3 +74,7 @@ def cheatsheet():
 # CANONICAL TEST
 # >>> sukhatme_test([0,0,0,0,0], [-10,-5,5,10,0])
 # X has zero spread, Y has large spread -> z strongly negative, small p
+
+
+# compact alias per ledger/NAMING.md
+sukhatmetest = sukhatme_test

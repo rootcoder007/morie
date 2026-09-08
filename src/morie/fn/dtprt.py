@@ -5,7 +5,7 @@ Power distribution
 Category: DistTheor
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def dtprt(x=None, n=100, params=None):

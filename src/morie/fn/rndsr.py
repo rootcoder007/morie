@@ -1,6 +1,6 @@
 """Random search for hyperparameter optimisation (Bergstra & Bengio 2012)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -49,9 +49,9 @@ def random_search_cv(
     RichResult with payload: estimate (best CV score), best_params,
     best_score, sampled_params, sampled_scores, n, method.
     """
-    from scipy.stats import loguniform
-    from sklearn.linear_model import LogisticRegression, Ridge
-    from sklearn.model_selection import RandomizedSearchCV
+    from ._stats_core import loguniform
+    from ._ml_core import LogisticRegression, Ridge
+    from ._ml_core import RandomizedSearchCV
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()
@@ -114,3 +114,7 @@ if __name__ == "__main__":
     print("best params:", r.best_params)
     print("best CV score:", r.best_score)
     print("number of samples:", r.n_iter)
+
+
+# compact alias per ledger/NAMING.md
+randomsearchcv = random_search_cv

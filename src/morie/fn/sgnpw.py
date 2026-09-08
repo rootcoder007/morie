@@ -16,8 +16,8 @@ power at user-supplied ``p_alt`` (default 0.7).
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -112,3 +112,7 @@ def cheatsheet():
 # CANONICAL TEST
 # >>> sign_test_power([1]*20, mu0=0, p_alt=0.7, alpha=0.05)
 # n=20, p_alt=0.7: power ≈ 0.42 (exact via Binomial PMF)
+
+
+# compact alias per ledger/NAMING.md
+signtestpower = sign_test_power

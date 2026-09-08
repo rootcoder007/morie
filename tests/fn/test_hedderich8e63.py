@@ -1,6 +1,6 @@
 """Tests for hedderich8e63.hedderich_chapter_8_equation_63."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hedderich8e63 import hedderich_chapter_8_equation_63
 

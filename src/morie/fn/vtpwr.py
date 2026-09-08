@@ -1,10 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Banzhaf and Shapley-Shubik voting-power indices (Armstrong Ch 10)."""
+"""Banzhaf and Shapley-Shubik voting-power indices (Banzhaf 1965; Shapley & Shubik 1954)."""
 
 from itertools import combinations
 from math import factorial
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -23,12 +23,48 @@ def voting_power_index(x, quota=None):
     x : array-like (n,)
         Voter weights w_i.
     quota : float, optional
-        Winning threshold q (default = ceil(sum(w)/2 + 1) to be strictly
-        more than half -- the simple-majority rule).
+        Winning threshold q. Default is ``sum(w)/2`` nudged up by 1e-9, so a
+        coalition wins on strictly more than half the total weight -- the
+        simple-majority rule. The epsilon is what makes "strictly more"
+        strict: an exact half-and-half split must lose, and floating-point
+        equality alone would let it win.
+
+        This docstring previously said ``ceil(sum(w)/2 + 1)``. That is a
+        different and much harsher rule -- for weights (2, 1, 1) it gives
+        q = 3, requiring three quarters of the total, not a majority -- and
+        it was never what the code did.
 
     Returns
     -------
     RichResult with keys: banzhaf, shapley_shubik, quota, weights
+
+    References
+    ----------
+    Shapley, L. S., & Shubik, M. (1954). A method for evaluating the
+        distribution of power in a committee system. *American Political
+        Science Review*, 48(3), 787-792. Read from the PDF: power is "the
+        chance he has of being critical to the success of a winning
+        coalition" (p.787); the index counts how often a member is *pivotal*
+        when "the voting order of the members" is "chosen randomly" (p.788);
+        and "where all voters have the same number of votes, they will each
+        be credited with 1/nth of the power, there being n participants"
+        (p.788) -- the symmetry property the tests pin directly.
+    Banzhaf, J. F. (1965). Weighted voting doesn't work: A mathematical
+        analysis. *Rutgers Law Review*, 19(2), 317-343.
+
+    Notes
+    -----
+    This module previously cited "Armstrong Ch 10". That citation is wrong:
+    *Analyzing Spatial Models of Choice and Judgment* has six chapters, and
+    the strings "Banzhaf" and "Shapley" do not appear in any of its 320
+    pages. Both primary sources are now in the library and both were read
+    from the PDF rather than taken on trust.
+
+    Shapley & Shubik note (p.788) that a chairman with only a tie-breaking
+    vote "in an *even* committee ... is never pivotal", and put the US Senate
+    presiding officer's index at exactly 1/97 under the strict scheme. That
+    asymmetry is a property of the committee, not of this function, which
+    scores whatever weighted game it is handed.
     """
     w = np.asarray(x, dtype=float).ravel()
     n = int(w.size)

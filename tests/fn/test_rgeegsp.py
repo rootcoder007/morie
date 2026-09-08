@@ -1,8 +1,8 @@
 """Tests for rgeegsp.rangayyan_eeg_spectral."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgeegsp import rangayyan_eeg_spectral
+from morie.fn.bsacorr import rangayyan_eeg_spectral
 
 
 def test_rgeegsp_basic():

@@ -1,6 +1,6 @@
 """Tests for morie.fn.adf — Augmented Dickey-Fuller test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.adf import adf, adf_test

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -44,3 +44,7 @@ def cheatsheet() -> str:
 
 
 jllem = jl_lemma_bound
+
+
+# compact alias per ledger/NAMING.md
+jllemmabound = jl_lemma_bound

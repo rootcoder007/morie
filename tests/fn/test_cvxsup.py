@@ -1,6 +1,6 @@
 """Tests for cvxsup.boyd_support_hyperplane."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxsup import boyd_support_hyperplane
 

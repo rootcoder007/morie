@@ -1,6 +1,6 @@
 """Functional kriging"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -37,3 +37,7 @@ func = func_kriging
 
 def cheatsheet() -> str:
     return "func_kriging({}) -> Functional kriging"
+
+
+# compact alias per ledger/NAMING.md
+funckriging = func_kriging

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kruskal stress S1"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -35,3 +35,7 @@ stre = stress_s1
 
 def cheatsheet() -> str:
     return "stress_s1({}) -> Kruskal stress S1"
+
+
+# compact alias per ledger/NAMING.md
+stresss1 = stress_s1

@@ -1,6 +1,6 @@
 """Tests for gestee.gauss_subgaussian_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gestee import gauss_subgaussian_estimator
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/datasets.R
 \name{morie_datasets_namus_missing_persons}
 \alias{morie_datasets_namus_missing_persons}
-\title{NamUs missing-persons case metadata.}
+\title{NamUs missing-persons case metadata}
 \usage{
 morie_datasets_namus_missing_persons(
   state = NULL,
@@ -21,9 +21,11 @@ morie_datasets_namus_missing_persons(
 A \code{data.frame}.
 }
 \description{
-NamUs missing-persons case metadata.
+NamUs missing-persons case metadata
 }
 \examples{
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_namus_missing_persons(state = "CA", offline = TRUE)
 head(df)
+\dontshow{\}) # examplesIf}
 }

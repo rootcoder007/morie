@@ -1,6 +1,6 @@
 """Tests for morie.fn.ocsvm -- OC SVM classify."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ocsvm import oc_svm_classify, ocsvm
 

@@ -1,6 +1,6 @@
 """Binned semivariogram"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -42,3 +42,7 @@ vari = vario_binned
 
 def cheatsheet() -> str:
     return "vario_binned({}) -> Binned semivariogram"
+
+
+# compact alias per ledger/NAMING.md
+variobinned = vario_binned

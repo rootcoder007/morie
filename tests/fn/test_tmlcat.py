@@ -1,6 +1,6 @@
 """Tests for tmlcat.tmle_categorical_outcome."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlcat import tmle_categorical_outcome
 

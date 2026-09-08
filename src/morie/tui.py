@@ -825,7 +825,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(result.summary_stats.to_string())
                 # Store loaded DataFrame for data-aware chat.
                 try:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     df = pd.read_csv(result.file_path)
                     self.app.loaded_df = df
@@ -1046,13 +1046,7 @@ if _TEXTUAL_AVAILABLE:
                 log.write("[bold cyan]Version Info[/bold cyan]")
                 log.write(f"  morie: {morie.__version__}")
                 log.write(f"  Python: {sys.version.split()[0]}")
-                import numpy
-                import pandas
-                import scipy
-
-                log.write(f"  pandas: {pandas.__version__}")
-                log.write(f"  numpy: {numpy.__version__}")
-                log.write(f"  scipy: {scipy.__version__}")
+                log.write("  arrays/frames/stats: morie native cores")
                 from .llm import detect_provider_and_model
 
                 _, model_label = detect_provider_and_model()
@@ -1511,7 +1505,7 @@ if _TEXTUAL_AVAILABLE:
             self._py_console = code_module.InteractiveConsole(self._py_console_ns)
             self._inject_repl_helpers()
             try:
-                self._py_console.runsource("import morie; import pandas as pd; import numpy as np")
+                self._py_console.runsource("import morie; import morie.fn._frame_core as pd; import morie.fn._array_core as np")
                 self._py_console.runsource("from morie import *")
                 log.write("[green]Python: morie, pandas (pd), numpy (np) loaded[/green]")
             except Exception as e:
@@ -1684,7 +1678,7 @@ if _TEXTUAL_AVAILABLE:
 
             def _load(path_or_name=None):
                 """Load a dataset. Use load('cpads') or load('path/to/file.csv')."""
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 from morie.data import list_datasets, load_dataset
 
@@ -2213,7 +2207,7 @@ if _TEXTUAL_AVAILABLE:
                     print("Usage: chi2('col1', 'col2')")
                     print(f"  Columns: {', '.join(data.columns[:15])}")
                     return
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 from morie.statistics import chi2_independence
 
@@ -2300,7 +2294,7 @@ if _TEXTUAL_AVAILABLE:
                     if _nc:
                         print(f"  Numeric columns: {', '.join(_nc)}")
                     return
-                import numpy as _np
+                from morie.fn import _array_core as _np
 
                 from morie.bootstrap_methods import bootstrap as _bs
 
@@ -2313,7 +2307,7 @@ if _TEXTUAL_AVAILABLE:
 
             def _bh(*p_values):
                 """Benjamini-Hochberg correction. Usage: bh(0.01, 0.04, 0.03, 0.20)."""
-                import numpy as _np
+                from morie.fn import _array_core as _np
 
                 from morie.multiple_testing import benjamini_hochberg
 
@@ -2349,7 +2343,7 @@ if _TEXTUAL_AVAILABLE:
                 if col is None or group_col is None:
                     print("Usage: effect_size('value_col', 'group_col')")
                     return
-                import numpy as _np
+                from morie.fn import _array_core as _np
 
                 groups = data[group_col].dropna().unique()
                 x = data.loc[data[group_col] == groups[0], col].dropna().values.astype(float)
@@ -2435,7 +2429,7 @@ if _TEXTUAL_AVAILABLE:
                     print("Usage: crosstab('col1', 'col2')")
                     print(f"  Columns: {', '.join(data.columns[:15])}")
                     return
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 ct = _pd.crosstab(data[col1], data[col2], margins=True)
                 print(f"  Crosstab: {col1} x {col2}")
@@ -2465,7 +2459,7 @@ if _TEXTUAL_AVAILABLE:
 
             def _summary(col=None, data=None):
                 """R-like summary. Usage: summary(), summary('col'), or summary(df)."""
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 # If col is a DataFrame, user called summary(df) -- treat as data arg
                 if isinstance(col, _pd.DataFrame):
@@ -2530,7 +2524,7 @@ if _TEXTUAL_AVAILABLE:
                     print("Usage: pivot('row_col', 'col_col', 'value_col')")
                     print(f"  Columns: {', '.join(data.columns[:15])}")
                     return
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 pt = _pd.pivot_table(data, values=values, index=index, columns=columns, aggfunc=aggfunc)
                 ns["pivot_result"] = pt
@@ -2616,13 +2610,11 @@ if _TEXTUAL_AVAILABLE:
                 print(f"  MORIE {_e.__version__}")
                 print(f"  Package: {Path(_e.__file__).parent}")
                 print(f"  Python: {sys.version.split()[0]}")
-                import numpy
-                import pandas
-                import scipy
+                from morie.fn import _frame_core as pandas
 
                 print(f"  pandas: {pandas.__version__}")
-                print(f"  numpy: {numpy.__version__}")
-                print(f"  scipy: {scipy.__version__}")
+                print("  arrays: morie native core")
+                print("  arrays/frames/stats: morie native cores")
 
             # --- Survival analysis helpers ---
 
@@ -2825,7 +2817,7 @@ if _TEXTUAL_AVAILABLE:
                 if col1 is None or col2 is None:
                     print("Usage: odds_ratio('outcome_col', 'exposure_col')")
                     return
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 from morie.effect_sizes import odds_ratio
 
@@ -2848,7 +2840,7 @@ if _TEXTUAL_AVAILABLE:
                 if col1 is None or col2 is None:
                     print("Usage: nnt('outcome_col', 'treatment_col')")
                     return
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 from morie.effect_sizes import number_needed_to_treat
 
@@ -2924,7 +2916,7 @@ if _TEXTUAL_AVAILABLE:
 
             def _bonferroni(*pvals):
                 """Bonferroni correction. Usage: bonferroni(0.01, 0.04, 0.06)."""
-                import numpy as _np
+                from morie.fn import _array_core as _np
 
                 from morie.multiple_testing import bonferroni
 
@@ -2944,7 +2936,7 @@ if _TEXTUAL_AVAILABLE:
                 if col is None:
                     print("Usage: jackknife('column_name')")
                     return
-                import numpy as _np
+                from morie.fn import _array_core as _np
 
                 from morie.bootstrap_methods import jackknife
 
@@ -3405,7 +3397,7 @@ if _TEXTUAL_AVAILABLE:
             self._py_console_ns = {"__name__": "__console__", "__builtins__": __builtins__}
             self._py_console = code_module.InteractiveConsole(self._py_console_ns)
             self._inject_repl_helpers()
-            self._py_console.runsource("import morie; import pandas as pd; import numpy as np")
+            self._py_console.runsource("import morie; import morie.fn._frame_core as pd; import morie.fn._array_core as np")
             self._py_console.runsource("from morie import *")
             if self._r_proc:
                 self._r_proc.terminate()
@@ -3624,14 +3616,14 @@ if _TEXTUAL_AVAILABLE:
                         continue
 
                     if val_str.startswith("DF:"):
-                        import pandas as pd
+                        from morie.fn import _frame_core as pd
 
                         csv_text = val_str[3:].replace("\x01", "\n")
                         self._py_console_ns[var_name] = pd.read_csv(io.StringIO(csv_text))
                     elif val_str.startswith("SV:"):
                         self._py_console_ns[var_name] = val_str[3:].split("\x01")
                     elif val_str.startswith("V:"):
-                        import numpy as np
+                        from morie.fn import _array_core as np
 
                         self._py_console_ns[var_name] = np.array([float(x) for x in val_str[2:].split(",")])
                     elif val_str.startswith("S:"):
@@ -3679,7 +3671,7 @@ if _TEXTUAL_AVAILABLE:
                     else:
                         # numpy array
                         try:
-                            import numpy as np
+                            from morie.fn import _array_core as np
 
                             if isinstance(val, np.ndarray) and val.ndim == 1:
                                 r_cmd = f"{var_name} <- c({','.join(str(v) for v in val)})"
@@ -3688,7 +3680,7 @@ if _TEXTUAL_AVAILABLE:
                         # pandas DataFrame
                         if r_cmd is None:
                             try:
-                                import pandas as pd
+                                from morie.fn import _frame_core as pd
 
                                 if isinstance(val, pd.DataFrame):
                                     csv_str = val.to_csv(index=False)
@@ -4000,7 +3992,7 @@ if _TEXTUAL_AVAILABLE:
                     csv_path = parts[1]
                     col = parts[2]
                     mu0 = float(parts[3]) if len(parts) > 3 else 0.0
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .statistics import one_sample_ttest
 
@@ -4019,7 +4011,7 @@ if _TEXTUAL_AVAILABLE:
                     csv_path = parts[1]
                     col = parts[2]
                     group_col = parts[3]
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .statistics import two_sample_ttest
 
@@ -4043,7 +4035,7 @@ if _TEXTUAL_AVAILABLE:
                             log.write(f"  [dim](Used first 2 of {len(groups)} groups: {g1}, {g2})[/dim]")
 
                 elif action == "describe" and len(parts) >= 2:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     df = pd.read_csv(parts[1])
                     log.write(f"\n[bold]Descriptive Statistics: {parts[1]}[/bold]")
@@ -4060,7 +4052,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(profile.summary_table())
 
                 elif action == "corr" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .statistics import pearson_correlation
 
@@ -4085,7 +4077,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  {result.interpretation}")
 
                 elif action == "bh":
-                    import numpy as np
+                    from morie.fn import _array_core as np
 
                     from .multiple_testing import benjamini_hochberg
 
@@ -4100,8 +4092,8 @@ if _TEXTUAL_AVAILABLE:
                         log.write(f"  [{i + 1}] p={orig:.4f} -> adjusted={adj:.4f} {status}")
 
                 elif action == "bootstrap" and len(parts) >= 3:
-                    import numpy as np
-                    import pandas as pd
+                    from morie.fn import _array_core as np
+                    from morie.fn import _frame_core as pd
 
                     from .bootstrap_methods import bootstrap
 
@@ -4117,7 +4109,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  Method: BCa ({result.n_boot} replicates)")
 
                 elif action == "missing" and len(parts) >= 2:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     df = pd.read_csv(parts[1])
                     total = len(df)
@@ -4133,7 +4125,7 @@ if _TEXTUAL_AVAILABLE:
                             log.write(f"  [green]{col}[/green]: 0 missing")
 
                 elif action == "head" and len(parts) >= 2:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     n = int(parts[2]) if len(parts) > 2 else 10
                     df = pd.read_csv(parts[1])
@@ -4141,7 +4133,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(df.head(n).to_string())
 
                 elif action == "columns" and len(parts) >= 2:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     df = pd.read_csv(parts[1])
                     log.write(f"\n[bold]Columns: {parts[1]}[/bold]")
@@ -4152,7 +4144,7 @@ if _TEXTUAL_AVAILABLE:
                         log.write(f"  {col}: {df[col].dtype}{miss}")
 
                 elif action == "paired" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .statistics import paired_ttest
 
@@ -4167,7 +4159,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  p = {result.p_value:.6f}")
 
                 elif action == "anova" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .statistics import one_way_anova
 
@@ -4182,7 +4174,7 @@ if _TEXTUAL_AVAILABLE:
                         log.write(f"  eta² = {result.effect_size:.4f}")
 
                 elif action == "chi2" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .statistics import chi2_independence
 
@@ -4195,7 +4187,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  df = {result.df:.0f}")
 
                 elif action == "ks" and len(parts) >= 3:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .statistics import ks_test_one_sample
 
@@ -4208,7 +4200,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  Normal: {'Yes' if result.p_value > 0.05 else 'No'} (α=0.05)")
 
                 elif action == "mannwhitney" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .statistics import mann_whitney_u
 
@@ -4226,7 +4218,7 @@ if _TEXTUAL_AVAILABLE:
                         log.write(f"  p = {result.p_value:.6f}")
 
                 elif action == "propensity" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .causal import compute_propensity_scores
 
@@ -4240,7 +4232,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  Range: [{scores.min():.4f}, {scores.max():.4f}]")
 
                 elif action == "ate" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .effects import estimate_ate
 
@@ -4251,7 +4243,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  Estimate: {result}")
 
                 elif action == "ipw" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .causal import calculate_ipw_weights
 
@@ -4264,8 +4256,8 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  ESS: {(weights.sum() ** 2) / (weights**2).sum():.1f}")
 
                 elif action == "cohens_d" and len(parts) >= 4:
-                    import numpy as np
-                    import pandas as pd
+                    from morie.fn import _array_core as np
+                    from morie.fn import _frame_core as pd
 
                     df = pd.read_csv(parts[1])
                     col, grp = parts[2], parts[3]
@@ -4308,7 +4300,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Survival Analysis ────────────────────────────
                 elif action in ("kaplan_meier", "km") and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .survival import kaplan_meier_curve
 
@@ -4322,7 +4314,7 @@ if _TEXTUAL_AVAILABLE:
                         log.write(f"  Time range: [{result.times[0]:.2f}, {result.times[-1]:.2f}]")
 
                 elif action == "cox" and len(parts) >= 5:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .survival import cox_ph
 
@@ -4337,7 +4329,7 @@ if _TEXTUAL_AVAILABLE:
                         log.write(f"  {name}: HR={hr:.4f}, p={p:.4f} {sig}")
 
                 elif action == "logrank" and len(parts) >= 5:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .survival import log_rank_test
 
@@ -4349,7 +4341,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Causal Inference (DiD, RDD, IV) ─────────────
                 elif action == "did" and len(parts) >= 5:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .did import did_2x2
 
@@ -4362,7 +4354,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  95% CI: [{result.ci_lower:.4f}, {result.ci_upper:.4f}]")
 
                 elif action == "rdd" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .rdd import sharp_rdd
 
@@ -4376,7 +4368,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  Bandwidth: {result.bandwidth:.4f}")
 
                 elif action == "tsls" and len(parts) >= 5:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .iv import tsls
 
@@ -4395,7 +4387,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Matching ────────────────────────────────────
                 elif action == "match" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .matching import propensity_score_matching
 
@@ -4410,7 +4402,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Missing Data ────────────────────────────────
                 elif action == "mcar" and len(parts) >= 2:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .missing import littles_mcar_test
 
@@ -4424,7 +4416,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  Conclusion: {mcar}")
 
                 elif action == "impute" and len(parts) >= 2:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .missing import mice
 
@@ -4439,8 +4431,8 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Diagnostics ─────────────────────────────────
                 elif action == "vif" and len(parts) >= 3:
-                    import numpy as np
-                    import pandas as pd
+                    from morie.fn import _array_core as np
+                    from morie.fn import _frame_core as pd
 
                     from .diagnostics import collinearity_diagnostics
 
@@ -4456,7 +4448,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Effect Sizes ────────────────────────────────
                 elif action == "odds_ratio" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .effect_sizes import odds_ratio
 
@@ -4472,7 +4464,7 @@ if _TEXTUAL_AVAILABLE:
                         log.write(f"[red]Need a 2x2 table, got {ct.shape}[/red]")
 
                 elif action == "nnt" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .effect_sizes import number_needed_to_treat
 
@@ -4489,8 +4481,8 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Sensitivity Analysis ────────────────────────
                 elif action == "rosenbaum" and len(parts) >= 4:
-                    import numpy as np
-                    import pandas as pd
+                    from morie.fn import _array_core as np
+                    from morie.fn import _frame_core as pd
 
                     from .sensitivity import rosenbaum_bounds
 
@@ -4506,7 +4498,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Publication Tables ──────────────────────────
                 elif action == "table1" and len(parts) >= 3:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .tables_pub import table1
 
@@ -4518,7 +4510,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Additional Effect Sizes ────────────────────
                 elif action == "hedges_g" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .effect_sizes import hedges_g
 
@@ -4541,7 +4533,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Multiple Testing ───────────────────────────
                 elif action == "bonferroni" and len(parts) >= 2:
-                    import numpy as np
+                    from morie.fn import _array_core as np
 
                     from .multiple_testing import bonferroni
 
@@ -4554,8 +4546,8 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Advanced Resampling ────────────────────────
                 elif action == "jackknife" and len(parts) >= 3:
-                    import numpy as np
-                    import pandas as pd
+                    from morie.fn import _array_core as np
+                    from morie.fn import _frame_core as pd
 
                     from .bootstrap_methods import jackknife
 
@@ -4569,7 +4561,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  Bias = {result.bias:.6f}")
 
                 elif action == "permtest" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .bootstrap_methods import permutation_test
 
@@ -4587,7 +4579,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Advanced DiD / RDD ─────────────────────────
                 elif action == "event_study" and len(parts) >= 5:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .did import event_study
 
@@ -4607,7 +4599,7 @@ if _TEXTUAL_AVAILABLE:
                         )
 
                 elif action == "fuzzy_rdd" and len(parts) >= 5:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .rdd import fuzzy_rdd
 
@@ -4635,8 +4627,8 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Model Diagnostics ──────────────────────────
                 elif action == "residuals" and len(parts) >= 4:
-                    import numpy as np
-                    import pandas as pd
+                    from morie.fn import _array_core as np
+                    from morie.fn import _frame_core as pd
 
                     from .diagnostics import compute_residuals
 
@@ -4644,7 +4636,7 @@ if _TEXTUAL_AVAILABLE:
                     y = df[parts[2]].values
                     X_cols = parts[3:]
                     X = df[X_cols].values
-                    from numpy.linalg import lstsq
+                    from morie.fn._array_core.linalg import lstsq
 
                     beta, _, _, _ = lstsq(np.column_stack([np.ones(len(X)), X]), y, rcond=None)
                     y_hat = np.column_stack([np.ones(len(X)), X]) @ beta
@@ -4655,14 +4647,14 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  Breusch-Pagan p = {result.heteroscedasticity_p:.4f}")
 
                 elif action == "cooks" and len(parts) >= 4:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     from .diagnostics import compute_influence
 
                     df = pd.read_csv(parts[1])
                     y = df[parts[2]].values
                     X_cols = parts[3:]
-                    import numpy as np
+                    from morie.fn import _array_core as np
 
                     X = np.column_stack([np.ones(len(df)), df[X_cols].values])
                     result = compute_influence(y, X)
@@ -4712,7 +4704,7 @@ if _TEXTUAL_AVAILABLE:
                     if self._last_result is None:
                         log.write("[yellow]No result to export. Run an analysis first.[/yellow]")
                     else:
-                        import pandas as pd
+                        from morie.fn import _frame_core as pd
 
                         if isinstance(self._last_result, pd.DataFrame):
                             if fmt == "csv":

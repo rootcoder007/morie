@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import TestResult
 
@@ -55,3 +55,7 @@ rnsum = runs_test
 
 def cheatsheet() -> str:
     return "runs_test({}) -> Wald-Wolfowitz runs test for randomness."
+
+
+# compact alias per ledger/NAMING.md
+runstest = runs_test

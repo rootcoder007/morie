@@ -1,6 +1,6 @@
 """Aitchison compositional spatial"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ aitc = aitchison_sp
 
 def cheatsheet() -> str:
     return "aitchison_sp({}) -> Aitchison compositional spatial"
+
+
+# compact alias per ledger/NAMING.md
+aitchisonsp = aitchison_sp

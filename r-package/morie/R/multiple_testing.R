@@ -25,6 +25,20 @@ NULL
 # Internal helpers (NOT exported)
 # ---------------------------------------------------------------------------
 
+#' .mt_result
+#'
+#' A step of the multiple_testing implementation. Called by \code{.mt_adjusted}.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param title Carried through into a list the body builds.
+#' @param call Carried through into a list the body builds.
+#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
+#' @param ... Passed through.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .mt_result <- function(title, call, summary_lines = list(),
                        warnings = character(0),
                        interpretation = "",
@@ -41,6 +55,21 @@ NULL
   out
 }
 
+#' .mt_adjusted
+#'
+#' A step of the multiple_testing implementation. Called by \code{benjamini_hochberg},
+#' \code{benjamini_yekutieli}, \code{bonferroni} and 10 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param method Passed to \code{.mt_result}.
+#' @param p A vector; its length is taken.
+#' @param alpha Passed to \code{.mt_result}.
+#' @param adjusted Numeric; passed to \code{max}.
+#' @param labels Passed to \code{.mt_result}.
+#' @param note Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @return The value of \code{.mt_result}.
+#' @export
 .mt_adjusted <- function(method, p, alpha, adjusted, labels = NULL,
                          note = NULL) {
   p <- as.numeric(p)
@@ -81,6 +110,19 @@ NULL
   )
 }
 
+#' .mt_check_p
+#'
+#' A step of the multiple_testing implementation. Called by \code{benjamini_hochberg},
+#' \code{benjamini_yekutieli}, \code{bonferroni} and 17 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param p A vector; its length is taken.
+#' @return The value of \code{pmin}.
+#' @export
+#' @examples
+#' res <- .mt_check_p(p = 0.5)
+#' res
 .mt_check_p <- function(p) {
   p <- as.numeric(p)
   if (length(p) == 0L) {
@@ -127,6 +169,13 @@ bonferroni <- function(p_values, alpha = 0.05, labels = NULL) {
 #' @inheritParams bonferroni
 #' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
 #' @export
+#' @examples
+#' make_p <- function(n_null = 80, n_sig = 20, seed = 1) {
+#'     set.seed(seed)
+#'     c(runif(n_null), pmin(runif(n_sig, 0, 0.005), 1))
+#' }
+#' p <- make_p(50, 10)
+#' sidak(p)
 sidak <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
   m <- length(p)
@@ -270,6 +319,13 @@ by_fdr <- benjamini_yekutieli
 #'   estimated \code{pi0} and \code{lambda_param} (see
 #'   \code{morie_multiple_testing}).
 #' @export
+#' @examples
+#' make_p <- function(n_null = 80, n_sig = 20, seed = 1) {
+#'     set.seed(seed)
+#'     c(runif(n_null), pmin(runif(n_sig, 0, 0.005), 1))
+#' }
+#' p <- make_p(50, 10)
+#' storey_q(p, lambda_param = 0.5)
 storey_q <- function(p_values, alpha = 0.05, lambda_param = 0.5,
                      labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -301,6 +357,20 @@ storey_q <- function(p_values, alpha = 0.05, lambda_param = 0.5,
 # Combining p-values
 # ---------------------------------------------------------------------------
 
+#' .mt_combine_result
+#'
+#' A step of the multiple_testing implementation. Called by \code{cauchy_combination},
+#' \code{fisher_combined}, \code{simes_combined} and 2 others in the module.
+#' See the file header for the source the module follows.
+#' the source it follows.
+#'
+#' @param method Carried through into a list the body builds.
+#' @param stat Carried through into a list the body builds.
+#' @param p_comb Carried through into a list the body builds.
+#' @param interp Carried through into a list the body builds.
+#' @param extra Passed to \code{c}. Defaults to \code{list()}.
+#' @return The value of \code{out}, as built in the body.
+#' @export
 .mt_combine_result <- function(method, stat, p_comb, interp,
                                 extra = list()) {
   out <- list(
@@ -352,6 +422,8 @@ fisher_combined <- function(p_values) {
 #' @return A \code{morie_rich_result} list with elements \code{method},
 #'   \code{statistic} (combined Z), and \code{p_value} (combined p).
 #' @export
+#' @examples
+#' stouffer_combined(c(0.01, 0.5, 0.6), weights = c(2, 1, 1))
 stouffer_combined <- function(p_values, weights = NULL) {
   p <- .mt_check_p(p_values)
   p <- pmin(pmax(p, 1e-300), 1 - 1e-15)
@@ -376,6 +448,12 @@ stouffer_combined <- function(p_values, weights = NULL) {
 #' @return A \code{morie_rich_result} list with elements \code{method},
 #'   \code{statistic} (minimum p), and \code{p_value} (combined p).
 #' @export
+#' @examples
+#' set.seed(1)
+#' p <- c(runif(50), runif(10, 0, 0.005))
+#' res <- bonferroni(p, alpha = 0.05)
+#' res$n_rejected
+#' tippett_combined(p_values = p)
 tippett_combined <- function(p_values) {
   p <- .mt_check_p(p_values)
   m <- length(p)
@@ -394,6 +472,12 @@ tippett_combined <- function(p_values) {
 #' @return A \code{morie_rich_result} list with elements \code{method},
 #'   \code{statistic} (Simes statistic), and \code{p_value} (combined p).
 #' @export
+#' @examples
+#' set.seed(1)
+#' p <- c(runif(50), runif(10, 0, 0.005))
+#' res <- bonferroni(p, alpha = 0.05)
+#' res$n_rejected
+#' simes_combined(p_values = p)
 simes_combined <- function(p_values) {
   p <- .mt_check_p(p_values)
   m <- length(p)
@@ -554,7 +638,12 @@ fallback_procedure <- function(p_values, weights, alpha = 0.05,
 #'
 #' @param p_values_by_family List of numeric vectors, one per family.
 #' @param alpha Overall FWER level.
-#' @param propagate_alpha Logical; currently keeps alpha constant
+#' @param propagate_alpha Not implemented. Alpha recycling between
+#'   families would need a named procedure; what runs instead is that
+#'   every family is tested at the full alpha and the gate closes on
+#'   the first family with no rejection. Passing this argument
+#'   explicitly warns, and \code{alpha_propagated} in the result is
+#'   \code{FALSE}. Ignored; kept so the signature is stable
 #'   across families (mirrors the Python reference).
 #' @return A \code{morie_rich_result} list with one stage entry per
 #'   family and an \code{overall_rejected} logical vector.
@@ -563,9 +652,21 @@ fallback_procedure <- function(p_values, weights, alpha = 0.05,
 #' str(res)
 #' @export
 hierarchical_bonferroni <- function(p_values_by_family, alpha = 0.05,
-                                     propagate_alpha = TRUE) {
+                                    propagate_alpha = TRUE) {
   if (!is.list(p_values_by_family)) {
     stop("p_values_by_family must be a list of numeric vectors")
+  }
+  # Alpha recycling is not implemented: every family is tested at the
+  # full alpha and the gate closes on the first family with no
+  # rejection. Someone naming the argument is asking for the recycling
+  # by name, so they are told; the default is left quiet because it is
+  # the procedure that has always run here.
+  if (!missing(propagate_alpha) && isTRUE(propagate_alpha)) {
+    warning("hierarchical_bonferroni(): alpha propagation between ",
+            "families is not implemented; each family is tested at the ",
+            "full alpha and the gate closes on the first family with no ",
+            "rejection. The result records alpha_propagated = FALSE.",
+            call. = FALSE)
   }
   n_families <- length(p_values_by_family)
   stages <- vector("list", 0L)
@@ -621,7 +722,8 @@ hierarchical_bonferroni <- function(p_values_by_family, alpha = 0.05,
     stages = stages,
     overall_rejected = all_rejected,
     method = "hierarchical_bonferroni",
-    alpha = alpha
+    alpha = alpha,
+    alpha_propagated = FALSE
   )
   class(out) <- c("morie_multiple_testing_result", "morie_rich_result", "list")
   out
@@ -637,7 +739,7 @@ hierarchical_bonferroni <- function(p_values_by_family, alpha = 0.05,
 #' @inheritParams bonferroni
 #' @param method One of \code{"storey"}, \code{"bootstrap"}, or
 #'   \code{"two_step"}.
-#' @return A scalar pi0 estimate in `[0, 1]`.
+#' @return A scalar pi0 estimate in `\[0, 1\]`.
 #' @examples
 #' set.seed(1)
 #' p <- c(runif(80), runif(20, 0, 0.005))
@@ -731,6 +833,8 @@ adjust_p_values <- function(p_values, method = "bh", alpha = 0.05,
 #'   \code{"li_ji"} (Li and Ji 2005), or \code{"nyholt"} (Nyholt 2004).
 #' @return Effective number of tests (>= 1).
 #' @export
+#' @examples
+#' n_effective_tests(correlation_matrix = 5L)
 n_effective_tests <- function(correlation_matrix,
                                method = c("galwey", "li_ji", "nyholt")) {
   method <- match.arg(method)
@@ -766,13 +870,20 @@ n_effective_tests <- function(correlation_matrix,
 # Print method (delegates to existing morie_rich_result printer)
 # ---------------------------------------------------------------------------
 
+#' Print method for \code{morie_multiple_testing_result} objects
+#'
+#' @param x A \code{morie_multiple_testing_result} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
+#' @examples
+#' p <- c(0.001, 0.008, 0.02, 0.04, 0.2, 0.5)
+#' print(sidak(p))
 print.morie_multiple_testing_result <- function(x, ...) {
   cat(x$title, "\
 ", strrep("=", nchar(x$title)), "\
 ", sep = "")
-  if (!is.null(x$call) && nzchar(x$call)) {
+  if (!is.null(x$call) && length(x$call) == 1L && nzchar(x$call)) {
     cat("Call:", x$call, "\
 \
 ", sep = " ")
@@ -814,12 +925,13 @@ print.morie_multiple_testing_result <- function(x, ...) {
 #'
 #' Estimates the local FDR for each test as
 #' \eqn{lfdr_i = \\pi_0 \\, f_0(z_i) / f(z_i)}{lfdr_i = pi_0 \ f_0(z_i) / f(z_i)}, where
-#' \eqn{z_i = \Phi^{-1}(1 - p_i/2)}{z_i = Phi^-1(1 - p_i/2)} are two-sided z-scores, \code{f_0} is the
+#' \eqn{z_i = \Phi^{-1}(1 - p_i/2)}{z_i = Phi^-1(1 - p_i/2)} are two-sided z-scores,
+#' \code{f_0} is the
 #' standard-normal null density, \eqn{f} is a kernel density estimate of the
 #' observed z-scores, and \eqn{\\pi_0}{pi_0} is the proportion of null hypotheses
 #' estimated by the Storey-style cutoff at \eqn{p > 0.5}.
 #'
-#' @param p_values Numeric vector of raw p-values in \eqn{`[0, 1]`}.
+#' @param p_values Numeric vector of raw p-values in \eqn{`\[0, 1\]`}.
 #' @param pi0_method Pi-zero estimator. Accepted: \code{"bootstrap"}
 #'   (alias for the Storey-style cutoff at 0.5; retained for API parity
 #'   with the Python sibling).

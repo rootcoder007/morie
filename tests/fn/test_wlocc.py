@@ -1,6 +1,6 @@
 """Test wlocc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wlocc import wlocc
 

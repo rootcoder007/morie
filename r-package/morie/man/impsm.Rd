@@ -13,6 +13,8 @@ morie_importance_sampling(x, h = NULL, p = NULL, q = NULL)
 \item{x}{numeric draws from q.}
 
 \item{h, p, q}{functions; default h(x)=x, p=q=dnorm (sanity-check identity).}
+
+
 }
 \value{
 list: estimate, estimate_sn, se, ess, n, method.
@@ -20,5 +22,9 @@ list: estimate, estimate_sn, se, ess, n, method.
 \description{
 Given samples x ~ q, estimate E_p of h(X) with weights w = p(x)/q(x).
 Returns both unnormalised and self-normalised estimators plus ESS.
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+impsm(V)
 }
 \keyword{internal}

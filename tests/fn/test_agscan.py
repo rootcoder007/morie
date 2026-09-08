@@ -1,6 +1,6 @@
 """Tests for agscan.alphazero_self_consistency."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agscan import alphazero_self_consistency
 

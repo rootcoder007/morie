@@ -1,6 +1,6 @@
 """Tests for jntlmm.joint_longitudinal_survival."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jntlmm import joint_longitudinal_survival
 

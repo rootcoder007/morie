@@ -1,6 +1,6 @@
 """Tests for morie.fn.seprt — Separation detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.seprt import detect_separation
 

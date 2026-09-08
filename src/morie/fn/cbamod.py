@@ -1,6 +1,6 @@
 """CBAM channel + spatial attention."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def cbam_attention(x):
 
 def cheatsheet():
     return "cbamod: CBAM channel + spatial attention"
+
+
+# compact alias per ledger/NAMING.md
+cbamattention = cbam_attention

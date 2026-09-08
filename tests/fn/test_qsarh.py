@@ -1,6 +1,6 @@
 """Tests for qsarh.hansch_qsar."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.qsarh import hansch_qsar
 

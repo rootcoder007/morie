@@ -7,8 +7,8 @@ __all__ = ["tpe_minimize", "treep"]
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 
 def tpe_minimize(
@@ -122,3 +122,7 @@ treep = tpe_minimize
 
 def cheatsheet() -> str:
     return "tpe_minimize(objective, bounds) -> Tree-structured Parzen Estimator."
+
+
+# compact alias per ledger/NAMING.md
+tpeminimize = tpe_minimize

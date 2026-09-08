@@ -1,6 +1,6 @@
 """Tests for causdid3w.causal_did_three_way."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causdid3w import causal_did_three_way
 

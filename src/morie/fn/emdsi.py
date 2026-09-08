@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -74,3 +74,7 @@ emdsi = emd_sifting
 
 def cheatsheet() -> str:
     return "emd_sifting({}) -> Single EMD sifting pass to extract one IMF."
+
+
+# compact alias per ledger/NAMING.md
+emdsifting = emd_sifting

@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrsac -- SAC/SARAR model ML"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrsac import sac_ml
 

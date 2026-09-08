@@ -3,8 +3,8 @@
 
 from typing import Union
 
-import numpy as np
-import pandas as pd
+from . import _array_core as np
+from . import _frame_core as pd
 
 from ._containers import ESRes
 from ._helpers import _arr, _bootstrap_ci
@@ -61,3 +61,7 @@ cliff = cliffs_delta
 
 def cheatsheet() -> str:
     return "cliffs_delta({}) -> Cliff's delta (non-parametric effect size)."
+
+
+# compact alias per ledger/NAMING.md
+cliffsdelta = cliffs_delta

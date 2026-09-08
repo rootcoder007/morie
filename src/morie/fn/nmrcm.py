@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Roll call matrix construction"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ roll = roll_call_matrix
 
 def cheatsheet() -> str:
     return "roll_call_matrix({}) -> Roll call matrix construction"
+
+
+# compact alias per ledger/NAMING.md
+rollcallmatrix = roll_call_matrix

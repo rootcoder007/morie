@@ -1,49 +1,22 @@
-"""Discrete hazard rate V_j of the stick-breaking construction interpreted as the conditional probability that X equals j given X >= j.."""
+"""Deprecated alias for :func:`morie.fn.discrete_hazard`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .discrete_hazard import discrete_hazard as _impl
 
 __all__ = ["ghosal_ch3_discrete_hazard_rate"]
 
 
-def ghosal_ch3_discrete_hazard_rate(p_j, j, X):
-    """
-    Discrete hazard rate V_j of the stick-breaking construction interpreted as the conditional probability that X equals j given X >= j.
-
-    Formula: V_j = p_j / (1 - sum_{l=1}^{j-1} p_l) = P(X = j | X >= j)
-
-    Parameters
-    ----------
-    p_j : array-like
-        Input data.
-    j : array-like
-        Input data.
-    X : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.3, p. 31
-    """
-    p_j = np.atleast_1d(np.asarray(p_j, dtype=float))
-    n = len(p_j)
-    result = float(np.mean(p_j))
-    se = float(np.std(p_j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Discrete hazard rate V_j of the stick-breaking construction interpreted as the conditional probability that X equals j given X >= j.",
-        }
+def ghosal_ch3_discrete_hazard_rate(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.discrete_hazard` instead."""
+    warnings.warn(
+        "ghosal_ch3_discrete_hazard_rate() is the book-coordinate name for discrete_hazard(); "
+        "it will be removed. Use morie.fn.discrete_hazard() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "ghs010: Discrete hazard rate V_j of the stick-breaking construction interpreted as the conditional probability that X equals j given X >= j."
+    return _impl(*args, **kwargs)

@@ -1,6 +1,6 @@
 """Tests for bowbn.bow_ban_theorem."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bowbn import bow_ban_theorem
 

@@ -1,24 +1,15 @@
 """Tests for alllmj.alammar_llm_as_judge."""
 
-import numpy as np
-
 from morie.fn.alllmj import alammar_llm_as_judge
 
 
 def test_alllmj_basic():
-    """Test basic functionality."""
-    responses = np.random.default_rng(42).normal(0, 1, 100)
-    rubric = np.random.default_rng(42).normal(0, 1, 100)
-    judge_model = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_llm_as_judge(responses, rubric, judge_model)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_llm_as_judge(["a", "b"], "r",
+                               lambda r, resp, s: 1.0 if resp == "b" else 0.0)
+    assert out["best_response"] == 1
 
 
 def test_alllmj_edge():
-    """Test edge cases."""
-    responses = np.random.default_rng(42).normal(0, 1, 100)
-    rubric = np.random.default_rng(42).normal(0, 1, 100)
-    judge_model = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_llm_as_judge(responses, rubric, judge_model)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="callable"):
+        alammar_llm_as_judge(["a"], "r", "not a function")

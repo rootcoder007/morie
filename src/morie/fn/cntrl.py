@@ -41,3 +41,7 @@ def cheatsheet() -> str:
 
 
 cntrl = central_charge
+
+
+# compact alias per ledger/NAMING.md
+centralcharge = central_charge

@@ -1,6 +1,6 @@
 """Tests for pmpfit.pmp_fit."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pmpfit import pmp_fit
 

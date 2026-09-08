@@ -3,9 +3,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as stats
 
 from ._helpers import _validate_df
 
@@ -131,3 +131,7 @@ csdid = cs_did
 
 def cheatsheet() -> str:
     return "cs_did({}) -> Callaway-Sant'Anna DiD estimator."
+
+
+# compact alias per ledger/NAMING.md
+csdid = cs_did

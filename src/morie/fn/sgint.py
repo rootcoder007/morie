@@ -27,7 +27,7 @@ def intensity_estimate(points, window, method="kernel", bandwidth=None, grid_n=5
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pts = np.asarray(points, dtype=np.float64)
     n = pts.shape[0]

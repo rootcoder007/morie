@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def holo_roc(
@@ -33,7 +33,7 @@ def holo_roc(
         Recognition Letters*, 27(8), 861--874.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_roc requires matplotlib. Install via: pip install matplotlib")
         return None
@@ -84,3 +84,7 @@ def holo_roc(
 
 def cheatsheet() -> str:
     return "holo_roc({}) -> ROC curve visualization."
+
+
+# compact alias per ledger/NAMING.md
+holoroc = holo_roc

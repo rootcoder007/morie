@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -23,3 +23,7 @@ alias = shape_factor_fn
 
 def cheatsheet() -> str:
     return "shape_factor_fn({}) -> Shape factor of a waveform."
+
+
+# compact alias per ledger/NAMING.md
+shapefactorfn = shape_factor_fn

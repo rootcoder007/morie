@@ -1,6 +1,6 @@
 """Tests for morie.fn.youdn — Youden's J index."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.youdn import youden_index

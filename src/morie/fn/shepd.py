@@ -20,7 +20,7 @@ def shepard_diagram(D_obs, D_model):
     DescriptiveResult
         value = correlation, extra has observed and fitted arrays.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     D_obs = np.asarray(D_obs, dtype=float)
     D_model = np.asarray(D_model, dtype=float)
@@ -41,3 +41,7 @@ shepd = shepard_diagram
 
 def cheatsheet() -> str:
     return "shepard_diagram({}) -> Shepard diagram data."
+
+
+# compact alias per ledger/NAMING.md
+sheparddiagram = shepard_diagram

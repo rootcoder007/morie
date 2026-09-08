@@ -1,8 +1,8 @@
 """Tests for rgpcgmrm.rangayyan_pcg_murmur_detect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
-from morie.fn.rgpcgmrm import rangayyan_pcg_murmur_detect
+from morie.fn.bsaphys import rangayyan_pcg_murmur_detect
 
 
 def test_rgpcgmrm_basic():

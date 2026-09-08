@@ -53,6 +53,14 @@
 NULL
 
 # Map a "version" string to the bundled fixture filename.
+#' Map a "version" string to the bundled fixture filename
+#'
+#' Part of the toronto_neighbourhoods implementation; see the file
+#' header for the source it follows.
+#'
+#' @param version The body requires: unknown version:.
+#' @return The value of \code{switch}.
+#' @export
 .morie_to_fixture_name <- function(version) {
   switch(version,
     "158" = "to_neighbourhoods_158.csv",
@@ -62,6 +70,14 @@ NULL
 }
 
 # Read a bundled neighbourhood fixture from inst/extdata.
+#' Read a bundled neighbourhood fixture from inst/extdata
+#'
+#' Part of the toronto_neighbourhoods implementation; see the file
+#' header for the source it follows.
+#'
+#' @param version Passed to \code{.morie_to_fixture_name}.
+#' @return The value of \code{utils::read.csv}.
+#' @export
 .morie_to_neighbourhoods_fixture <- function(version) {
   fname <- .morie_to_fixture_name(version)
   path <- system.file("extdata", fname, package = "morie")
@@ -79,6 +95,14 @@ NULL
 
 # Internal: live CKAN datastore_search fetcher. Mockable via
 # testthat::local_mocked_bindings(.morie_to_ckan_dump_csv = ...).
+#' Internal: live CKAN datastore_search fetcher. Mockable via
+#'
+#' testthat::local_mocked_bindings(.morie_to_ckan_dump_csv = ...).
+#'
+#' @param resource_id Passed to \code{sprintf}.
+#' @param limit Coerced to integer by the body, with \code{as.integer}. Defaults to \code{100000L}.
+#' @return One of two values, depending on the branch taken.
+#' @export
 .morie_to_ckan_dump_csv <- function(resource_id, limit = 100000L) {
   if (!requireNamespace("httr2", quietly = TRUE) ||
       !requireNamespace("jsonlite", quietly = TRUE)) {
@@ -132,6 +156,11 @@ NULL
 #' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_to_neighbourhoods("158", offline = TRUE)
 #' head(df[, c("AREA_SHORT_CODE", "AREA_NAME")])
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' df <- morie_to_neighbourhoods("158", offline = TRUE)
+#' head(df[, c("AREA_SHORT_CODE", "AREA_NAME")])
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_to_neighbourhoods <- function(version = c("158", "140", "nia"),
                                      offline = TRUE,
@@ -204,6 +233,10 @@ morie_tps_resolve_hood_col <- function(df, prefer = c("158", "140"),
 #' @param expected Either `"158"` or `"140"`.
 #' @return Invisibly `TRUE` on success.
 #' @export
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' df <- data.frame(OCC_YEAR = 2024L, HOOD_158 = "82", HOOD_140 = "82")
+#' morie_tps_resolve_hood_col(df, prefer = "158")
+#' morie_tps_assert_hood_version(df = df)
 morie_tps_assert_hood_version <- function(df,
                                             expected = c("158", "140")) {
   expected <- match.arg(expected)
@@ -240,6 +273,9 @@ morie_tps_assert_hood_version <- function(df,
 #' @return Character vector of `"158"` / `"140"` recommendations,
 #'   parallel to `year`.
 #' @export
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_tps_year_to_hood_version(V)
 morie_tps_year_to_hood_version <- function(year) {
   y <- suppressWarnings(as.integer(year))
   ifelse(is.na(y), NA_character_, ifelse(y >= 2022L, "158", "140"))
@@ -285,6 +321,8 @@ morie_tps_year_to_hood_version <- function(year) {
 #' @return A `data.frame` with the columns above. `hood_140` and
 #'   `hood_158` are character (zero-padded to 3 chars).
 #' @export
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' morie_to_hood_crosswalk()
 morie_to_hood_crosswalk <- function() {
   path <- system.file("extdata", "to_hood_158_140_crosswalk.csv",
                       package = "morie")
@@ -304,6 +342,14 @@ morie_to_hood_crosswalk <- function() {
 # Backwards-compatibility: the original equivalency joiners (added in
 # the same phase) read `area_overlap_pct`; remap to the new
 # `pct_140_in_158` so they keep working.
+#' Backwards-compatibility: the original equivalency joiners (added in
+#'
+#' the same phase) read `area_overlap_pct`; remap to the new
+#' `pct_140_in_158` so they keep working.
+#'
+#' @param cw A list; the body reads \code{$area_overlap_pct}, \code{$pct_140_in_158} from it.
+#' @return The value of \code{cw}, as built in the body.
+#' @export
 .morie_to_legacy_overlap_col <- function(cw) {
   if (!"area_overlap_pct" %in% names(cw)) {
     cw$area_overlap_pct <- cw$pct_140_in_158
@@ -313,6 +359,17 @@ morie_to_hood_crosswalk <- function() {
 
 # Normalise a hood-code value to the 3-char zero-padded canonical form
 # the crosswalk uses ("82" -> "082"; "0082" -> "082"; "Niagara" -> NA).
+#' Normalise a hood-code value to the 3-char zero-padded canonical form
+#'
+#' the crosswalk uses ("82" -> "082"; "0082" -> "082"; "Niagara" -> NA).
+#'
+#' @param x Coerced to character by the body, with \code{as.character}.
+#' @return The value of \code{ifelse}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .morie_to_normalise_hood_code(x = x)
+#' res
 .morie_to_normalise_hood_code <- function(x) {
   s <- trimws(as.character(x))
   i <- suppressWarnings(as.integer(s))
@@ -345,6 +402,11 @@ morie_to_hood_crosswalk <- function() {
 #' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- data.frame(EVENT_ID = 1:3, HOOD_140 = c("082", "001", "075"))
 #' morie_tps_add_hood_158_from_140(df)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' df <- data.frame(EVENT_ID = 1:3, HOOD_140 = c("082", "001", "075"))
+#' morie_tps_add_hood_158_from_140(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_tps_add_hood_158_from_140 <- function(df, col_in = NULL,
                                               col_out = "HOOD_158_equiv",
@@ -378,6 +440,10 @@ morie_tps_add_hood_158_from_140 <- function(df, col_in = NULL,
 #' @param col_out Name of the new column. Default `"HOOD_140_equiv"`.
 #' @return `df` with the equivalent-code column appended.
 #' @export
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' df <- data.frame(OCC_YEAR = 2024L, HOOD_158 = "82", HOOD_140 = "82")
+#' morie_tps_resolve_hood_col(df, prefer = "158")
+#' morie_tps_add_hood_140_from_158(df = df)
 morie_tps_add_hood_140_from_158 <- function(df, col_in = NULL,
                                               col_out = "HOOD_140_equiv",
                                               crosswalk = NULL) {
@@ -431,6 +497,12 @@ morie_tps_add_hood_140_from_158 <- function(df, col_in = NULL,
 #' df <- data.frame(HOOD_140 = c("075", "001"),
 #'                  incidents = c(100, 42))
 #' morie_tps_disaggregate_140_to_158(df)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' df <- data.frame(HOOD_140 = c("075", "001"),
+#'                  incidents = c(100, 42))
+#' morie_tps_disaggregate_140_to_158(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_tps_disaggregate_140_to_158 <- function(df,
                                                 hood_140_col = "HOOD_140",
@@ -493,6 +565,12 @@ morie_tps_disaggregate_140_to_158 <- function(df,
 #' df <- data.frame(HOOD_158 = c("167", "168", "001"),
 #'                  incidents = c(40, 60, 42))
 #' morie_tps_aggregate_158_to_140(df)
+#' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' df <- data.frame(HOOD_158 = c("167", "168", "001"),
+#'                  incidents = c(40, 60, 42))
+#' morie_tps_aggregate_158_to_140(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_tps_aggregate_158_to_140 <- function(df,
                                              hood_158_col = "HOOD_158",

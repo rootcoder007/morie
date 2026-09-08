@@ -1,6 +1,6 @@
 """Tests for morie.fn.cliffs — alias for Cliff's delta."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cliffs import cliffs
 

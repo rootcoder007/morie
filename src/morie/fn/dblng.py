@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
-from scipy import stats as _st
+from . import _array_core as np
+from . import _stats_core as _st
 
 
 def doubling_time(
@@ -91,3 +91,7 @@ dblng = doubling_time
 
 def cheatsheet() -> str:
     return "doubling_time({}) -> Epidemic doubling time from growth rate."
+
+
+# compact alias per ledger/NAMING.md
+doublingtime = doubling_time

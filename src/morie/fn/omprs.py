@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -31,3 +31,7 @@ omprs = omp_fn
 
 def cheatsheet() -> str:
     return "omp_fn({}) -> Orthogonal Matching Pursuit sparse signal decomposition."
+
+
+# compact alias per ledger/NAMING.md
+ompfn = omp_fn

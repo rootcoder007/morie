@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 
@@ -63,3 +63,7 @@ se_theta = irt_se_theta
 
 def cheatsheet() -> str:
     return "irt_se_theta({}) -> Standard error of theta at each ability level."
+
+
+# compact alias per ledger/NAMING.md
+irtsetheta = irt_se_theta

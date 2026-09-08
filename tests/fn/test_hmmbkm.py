@@ -1,6 +1,6 @@
 """Tests for hmmbkm.geron_minibatch_kmeans."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmmbkm import geron_minibatch_kmeans
 

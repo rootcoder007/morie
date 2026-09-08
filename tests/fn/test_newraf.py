@@ -1,6 +1,6 @@
 """Tests for newraf.newton_raphson."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.newraf import newton_raphson
 

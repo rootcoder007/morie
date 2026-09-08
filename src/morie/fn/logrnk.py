@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Log-rank test (two-group survival) with R-style verbose result."""
 
-import numpy as np
-from scipy.stats import chi2
+from . import _array_core as np
+from ._stats_core import chi2
 
 
 def logrnk(times1, events1, times2, events2):

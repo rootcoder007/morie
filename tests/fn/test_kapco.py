@@ -1,6 +1,6 @@
 """Tests for kapco.kappa_coefficient."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kapco import kappa_coefficient
 

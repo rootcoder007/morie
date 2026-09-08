@@ -1,20 +1,18 @@
-"""Tests for km002.kamath_ch2_context_vector."""
+"""Tests for km002.kamath_ch2_context_vector (re-fixtured from the doctest)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.km002 import kamath_ch2_context_vector
+import morie.fn.km002 as mod
 
 
-def test_km002_basic():
-    """Test basic functionality."""
-    h_1_h_T = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_context_vector(h_1_h_T)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_km002_doctest():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
 
 
 def test_km002_edge():
-    """Test edge cases."""
-    h_1_h_T = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_context_vector(h_1_h_T)
-    assert isinstance(result, dict)
+    import pytest
+    from morie.fn.km002 import kamath_ch2_context_vector
+    with pytest.raises((ValueError, TypeError)):
+        kamath_ch2_context_vector(*([None] * 2))

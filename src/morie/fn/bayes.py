@@ -62,3 +62,7 @@ bayes = bayes_theorem
 
 def cheatsheet() -> str:
     return "bayes_theorem({}) -> Bayes theorem."
+
+
+# compact alias per ledger/NAMING.md
+bayestheorem = bayes_theorem

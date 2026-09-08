@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Individual differences SMACOF"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -30,3 +30,7 @@ smac = smacof_indiv
 
 def cheatsheet() -> str:
     return "smacof_indiv({}) -> Individual differences SMACOF"
+
+
+# compact alias per ledger/NAMING.md
+smacofindiv = smacof_indiv

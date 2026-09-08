@@ -1,6 +1,6 @@
 """Calvert uncertainty model"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -29,3 +29,7 @@ calv = calvert_model
 
 def cheatsheet() -> str:
     return "calvert_model({}) -> Calvert uncertainty model"
+
+
+# compact alias per ledger/NAMING.md
+calvertmodel = calvert_model

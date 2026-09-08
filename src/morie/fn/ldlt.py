@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -71,3 +71,7 @@ short = ldlt_factorize
 
 def cheatsheet() -> str:
     return "ldlt_factorize({}) -> LDL^T factorization for symmetric matrices."
+
+
+# compact alias per ledger/NAMING.md
+ldltfactorize = ldlt_factorize

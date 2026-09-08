@@ -1,6 +1,6 @@
 """Tests for evextint.evt_extremal_index_intervals."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evextint import evt_extremal_index_intervals
 

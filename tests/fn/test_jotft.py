@@ -1,6 +1,6 @@
 """Tests for jotft.joseph_temporal_fusion_transformer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jotft import joseph_temporal_fusion_transformer
 

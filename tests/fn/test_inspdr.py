@@ -1,6 +1,6 @@
 """Tests for morie.fn.inspdr — inspect directory."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.inspdr import inspdr, inspect_directory

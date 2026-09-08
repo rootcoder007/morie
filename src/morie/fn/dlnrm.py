@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Union
 
-import numpy as np
-from scipy.stats import lognorm
+from . import _array_core as np
+from ._stats_core import lognorm
 
 
 def dlnrm(x: Union[float, np.ndarray], meanlog: float = 0.0, sdlog: float = 1.0) -> Union[float, np.ndarray]:

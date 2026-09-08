@@ -50,11 +50,13 @@ MORIE_TPS_LAYER_URLS <- c(
 )
 
 
-#' List TPS categories known to the fetcher.
+#' List TPS categories known to the fetcher
 #'
 #' @return Character vector of category names, sorted.
 #'
 #' @export
+#' @examples
+#' morie_tps_list_categories()
 morie_tps_list_categories <- function() {
   sort(names(MORIE_TPS_LAYER_URLS))
 }
@@ -62,6 +64,18 @@ morie_tps_list_categories <- function() {
 
 # Internal: one ArcGIS REST /query GET. Returns the parsed GeoJSON
 # list (raises on HTTP / JSON failure).
+#' Internal: one ArcGIS REST /query GET. Returns the parsed GeoJSON
+#'
+#' list (raises on HTTP / JSON failure).
+#'
+#' @param base_url Passed to \code{paste0}.
+#' @param where See Usage.
+#' @param offset Coerced to integer by the body, with \code{as.integer}.
+#' @param max_records Coerced to integer by the body, with \code{as.integer}. Defaults to
+#' \code{2000L}.
+#' @param timeout Defaults to \code{120}.
+#' @return The value of \code{.morie_from_json}.
+#' @export
 .morie_tps_fetch_arcgis_query <- function(base_url, where, offset,
                                     max_records = 2000L,
                                     timeout = 120) {
@@ -98,7 +112,7 @@ morie_tps_list_categories <- function() {
 }
 
 
-#' Fetch one TPS category as a CSV, paging until exhausted.
+#' Fetch one TPS category as a CSV, paging until exhausted
 #'
 #' Walks the ArcGIS REST `/query` endpoint for the category's
 #' FeatureServer layer, accumulates all features in memory, and
@@ -116,6 +130,11 @@ morie_tps_list_categories <- function() {
 #' @return Path to the written CSV file.
 #'
 #' @export
+#' @examples
+#' \dontrun{
+#' cat <- morie_tps_list_categories()[1]
+#' df <- morie_tps_fetch_category(cat)
+#' }
 morie_tps_fetch_category <- function(category,
                                      cache_dir = NULL,
                                      where = "1=1",
@@ -191,7 +210,7 @@ morie_tps_fetch_category <- function(category,
 }
 
 
-#' Fetch a TPS category and return it as a `data.frame`.
+#' Fetch a TPS category and return it as a `data.frame`
 #'
 #' Thin wrapper over [morie_tps_fetch_category()]: writes the CSV
 #' then reads it back. Mirrors the Python `fetch_tps_dataframe`
@@ -203,6 +222,10 @@ morie_tps_fetch_category <- function(category,
 #' @return A `data.frame`.
 #'
 #' @export
+#' @examples
+#' \dontrun{
+#' df <- morie_tps_fetch_dataframe(morie_tps_list_categories()[1])
+#' }
 morie_tps_fetch_dataframe <- function(category, ...) {
   p <- morie_tps_fetch_category(category, ...)
   utils::read.csv(p, stringsAsFactors = FALSE, check.names = FALSE)

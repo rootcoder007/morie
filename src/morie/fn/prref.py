@@ -21,7 +21,7 @@ def procrustes_reflection(X, Y):
     DescriptiveResult
         value = aligned X, extra has rotation matrix and disparity.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     Y = np.asarray(Y, dtype=float)

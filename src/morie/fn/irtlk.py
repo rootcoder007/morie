@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 
@@ -79,3 +79,7 @@ linking = irt_linking
 
 def cheatsheet() -> str:
     return "irt_linking({}) -> IRT scale linking (mean/sigma method)."
+
+
+# compact alias per ledger/NAMING.md
+irtlinking = irt_linking

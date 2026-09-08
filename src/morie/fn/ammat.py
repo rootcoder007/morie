@@ -14,7 +14,7 @@ def am_matrix_setup(Z) -> DescriptiveResult:
 
     .. epigraph:: A journey of a thousand miles begins with a single step. -- Lao Tzu
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     col_means = Z.mean(axis=0)
@@ -39,3 +39,7 @@ ammat = am_matrix_setup
 
 def cheatsheet() -> str:
     return "am_matrix_setup({}) -> A-M matrix setup: center and prepare for eigensolve."
+
+
+# compact alias per ledger/NAMING.md
+ammatrixsetup = am_matrix_setup

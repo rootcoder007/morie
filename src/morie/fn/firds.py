@@ -30,7 +30,7 @@ def fir_design(numtaps: int, cutoff, fs, window: str = "hamming") -> Descriptive
     -------
     DescriptiveResult
     """
-    from scipy.signal import firwin
+    from ._signal_core import firwin
 
     coeffs = firwin(numtaps, cutoff, fs=fs, window=window)
     return DescriptiveResult(
@@ -45,3 +45,7 @@ firds = fir_design
 
 def cheatsheet() -> str:
     return "fir_design({}) -> FIR filter design via windowed sinc."
+
+
+# compact alias per ledger/NAMING.md
+firdesign = fir_design

@@ -55,3 +55,7 @@ savfg = save_figure
 
 def cheatsheet() -> str:
     return "save_figure({}) -> Save figure helper."
+
+
+# compact alias per ledger/NAMING.md
+savefigure = save_figure

@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-import numpy as np
-from scipy.special import gammaln
+from . import _array_core as np
+from ._sci_core import gammaln
 
 
 def bayesian_multinomial(
@@ -47,7 +47,7 @@ def bayesian_multinomial(
         post_mode = (post_alpha - 1.0) / denom
         post_mode = np.maximum(post_mode, 0.0)
 
-    from scipy import stats as st
+    from . import _stats_core as st
 
     ci_lower = []
     ci_upper = []

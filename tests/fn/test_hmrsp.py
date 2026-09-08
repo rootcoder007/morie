@@ -1,6 +1,6 @@
 """Tests for hmrsp.geron_random_subspaces."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmrsp import geron_random_subspaces
 

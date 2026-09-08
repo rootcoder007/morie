@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -51,7 +51,7 @@ def spectral_density(x, fs=1.0, nperseg=None):
     nperseg = int(min(nperseg, n))
 
     try:
-        from scipy import signal as sps
+        from ._signal_core import signal as sps
 
         f, S = sps.welch(r, fs=fs, nperseg=nperseg)
         return RichResult(

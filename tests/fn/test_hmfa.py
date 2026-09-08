@@ -1,6 +1,6 @@
 """Without music, life would be a mistake. — Friedrich Nietzsche"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmfa import geron_flash_attention
 

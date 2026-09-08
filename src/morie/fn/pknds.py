@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy import stats as sp_stats
+from . import _array_core as np
+from . import _stats_core as sp_stats
 
 from ._containers import ESRes
 
@@ -68,3 +68,7 @@ pknds = partial_kendall
 
 def cheatsheet() -> str:
     return "partial_kendall(x, y, z) -> Partial Kendall's tau."
+
+
+# compact alias per ledger/NAMING.md
+partialkendall = partial_kendall

@@ -37,7 +37,7 @@
 #' web UI is not the same as the script user.
 #'
 #' @return A character vector (one element per line).
-#' @examples
+#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' d <- morie_datasets_vpd_legal_disclaimer()
 #' head(d)
 #' @export
@@ -155,7 +155,7 @@ morie_datasets_vpd_legal_disclaimer <- function() {
 #' @return A `data.frame` with 10 columns.
 #' @references VPD GeoDASH Open Data,
 #'   \url{https://geodash.vpd.ca/opendata/}.
-#' @examples
+#' @examplesIf nzchar(system.file("extdata", "vpd_crime_sample.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_vpd_crime(offline = TRUE)
 #' nrow(df)              # 550
 #' table(df$TYPE)
@@ -212,6 +212,15 @@ morie_datasets_vpd_crime <- function(offline = TRUE,
 
 .MORIE_VPD_TERMS_WARNED <- new.env(parent = emptyenv())
 
+#' .morie_vpd_terms_warning
+#'
+#' A step of the datasets_vpd implementation. Called by \code{morie_datasets_vpd_crime}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param accept_terms A flag; the body branches on it.
+#' @return Invisibly,nothing; the function is called for its effect.
+#' @export
 .morie_vpd_terms_warning <- function(accept_terms) {
   if (isTRUE(accept_terms)) return(invisible())
   if (isTRUE(.MORIE_VPD_TERMS_WARNED$warned)) return(invisible())

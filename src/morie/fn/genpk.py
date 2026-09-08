@@ -29,3 +29,7 @@ genpk = gen_parity_check
 
 def cheatsheet() -> str:
     return "gen_parity_check({}) -> Generator and parity-check matrix construction."
+
+
+# compact alias per ledger/NAMING.md
+genparitycheck = gen_parity_check

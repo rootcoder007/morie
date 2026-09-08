@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgfct -- Factorial kriging"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgfct import factorial_kriging
 

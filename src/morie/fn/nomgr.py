@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -60,3 +60,7 @@ nomgr = fagan_nomogram
 
 def cheatsheet() -> str:
     return "fagan_nomogram({}) -> Fagan nomogram (post-test probability)."
+
+
+# compact alias per ledger/NAMING.md
+fagannomogram = fagan_nomogram

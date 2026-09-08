@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """CV2 genomic cross-validation: both train and test lines evaluated in at least one environment."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -78,3 +78,7 @@ def cv2_genomic(y, markers, env, n_folds, cdf=None):
 
 def cheatsheet():
     return "cv2gn: CV2 genomic cross-validation: both train and test lines evaluated in at least one environment"
+
+
+# compact alias per ledger/NAMING.md
+cv2genomic = cv2_genomic

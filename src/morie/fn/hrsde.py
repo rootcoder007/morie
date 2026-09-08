@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -119,3 +119,7 @@ def home_range_kde(
 
 def cheatsheet() -> str:
     return "home_range_kde({}) -> Home range estimation via kernel density (Worton 1989)."
+
+
+# compact alias per ledger/NAMING.md
+homerangekde = home_range_kde

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import TestResult
 
@@ -31,7 +31,7 @@ def sign_change_test(
     -------
     TestResult
     """
-    from scipy.stats import binomtest
+    from ._stats_core import binomtest
 
     a = np.asarray(x, dtype=float)
     a = a[np.isfinite(a)]
@@ -59,3 +59,7 @@ sgchg = sign_change_test
 
 def cheatsheet() -> str:
     return "sign_change_test(x, mu=0) -> Sign test for the median."
+
+
+# compact alias per ledger/NAMING.md
+signchangetest = sign_change_test

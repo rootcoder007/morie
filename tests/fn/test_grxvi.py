@@ -1,6 +1,6 @@
 """Tests for grxvi.geron_glorot_xavier_init."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grxvi import geron_glorot_xavier_init
 

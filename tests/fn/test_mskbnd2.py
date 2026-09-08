@@ -1,6 +1,6 @@
 """Tests for mskbnd2.manski_no_assumption_outcome."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mskbnd2 import manski_no_assumption_outcome
 

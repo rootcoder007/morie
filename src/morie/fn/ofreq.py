@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 
 def otis_freq_table(
@@ -35,3 +35,7 @@ def otis_freq_table(
 
 def cheatsheet() -> str:
     return "otis_freq_table({}) -> Frequency table with proportions for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisfreqtable = otis_freq_table

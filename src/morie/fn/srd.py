@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-from scipy import stats
+from . import _array_core as np
+from . import _frame_core as pd
+from . import _stats_core as stats
 
 from ._containers import RegressionResult
 from ._helpers import _validate_df
@@ -154,3 +154,7 @@ srd = sharp_rd
 
 def cheatsheet() -> str:
     return "sharp_rd({}) -> Sharp RDD with bandwidth selection."
+
+
+# compact alias per ledger/NAMING.md
+sharprd = sharp_rd

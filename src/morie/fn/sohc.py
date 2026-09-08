@@ -4,7 +4,7 @@ Hydraulic conductivity soil
 Category: SoilSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def sohc(data=None, depth=None, coords=None, n=50):

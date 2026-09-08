@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrlms -- LM test SARMA"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrlms import lm_sarma
 

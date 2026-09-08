@@ -1,53 +1,45 @@
-"""Cokriging: multivariate prediction using primary and secondary variables."""
+"""Cokriging: multivariate prediction (delegates to cokriging)."""
 
-import numpy as np
-
-from ._richresult import RichResult
+from .cokrg import cokriging
 
 __all__ = ["schabenberger_cokriging"]
 
 
-def schabenberger_cokriging(coords, z1, z2, target, cross_cov_model):
+def schabenberger_cokriging(coords, z1, z2, target, cross_cov_model=None):
     """
-    Cokriging: multivariate prediction using primary and secondary variables
+    Cokriging: multivariate prediction using primary and secondary variables.
 
-    Formula: Z1_hat(s0) = lambda1'*Z1 + lambda2'*Z2; minimize MSE with unbiasedness constraints
+    This is the same estimator as :func:`morie.fn.cokrg.cokriging` and
+    delegates to it rather than carrying a second implementation.
 
     Parameters
     ----------
     coords : array-like
-        Input data.
-    z1 : array-like
-        Input data.
-    z2 : array-like
-        Input data.
+        Observation coordinates, shape (n, 2).
+    z1, z2 : array-like
+        Primary and secondary variable, each shape (n,).
     target : array-like
-        Input data.
-    cross_cov_model : array-like
-        Input data.
+        Prediction location(s).
+    cross_cov_model : mapping, optional
+        Linear-model-of-coregionalization parameters. Recognised keys:
+        ``sill_p``, ``range_p``, ``sill_s``, ``range_s``, ``cross_sill``,
+        ``cross_range``, ``nugget``.
 
     Returns
     -------
-    result : dict
-        Keys: prediction, variance
+    The result of ``cokriging``.
 
     References
     ----------
-    Schabenberger Ch 5
+    Schabenberger, O. & Gotway, C. A. (2005). Statistical Methods for
+    Spatial Data Analysis. Chapman & Hall/CRC. Ch. 5.
     """
-    coords = np.asarray(coords, dtype=float)
-    n = int(coords) if coords.ndim == 0 else len(coords)
-    result = float(np.mean(coords))
-    se = float(np.std(coords, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Cokriging: multivariate prediction using primary and secondary variables",
-        }
-    )
+    keys = ("sill_p", "range_p", "sill_s", "range_s",
+            "cross_sill", "cross_range", "nugget")
+    cm = dict(cross_cov_model or {})
+    kw = {k: cm[k] for k in keys if k in cm}
+    return cokriging(z1, z2, coords, target, **kw)
 
 
 def cheatsheet():
-    return "spcokr: Cokriging: multivariate prediction using primary and secondary variables"
+    return "spcokr: cokriging; delegates to cokriging (cokrg)."

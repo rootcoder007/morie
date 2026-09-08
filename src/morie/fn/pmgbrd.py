@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 from .pmgemm import pm_gemm_rr
@@ -181,3 +181,7 @@ pmgbrd = pm_gemm_burden
 
 def cheatsheet() -> str:
     return "pmgbrd(C_ugm3, pop, rate, outcome='ncd_lri') -> PM2.5 attrib deaths via GEMM."
+
+
+# compact alias per ledger/NAMING.md
+pmgemmburden = pm_gemm_burden

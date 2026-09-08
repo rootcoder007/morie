@@ -5,7 +5,7 @@ Spatial weight Voronoi
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def sawvr(values=None, w=None, n=50):

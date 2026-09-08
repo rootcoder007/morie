@@ -1,6 +1,6 @@
 """Tests for morie.fn.bgtet -- Breusch-Godfrey test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bgtet import bg_test

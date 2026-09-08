@@ -3,10 +3,10 @@
 
 from __future__ import annotations
 
-import numpy as np
-from scipy.optimize import minimize
-from scipy.special import gammainc, gammaln
-from scipy.stats import norm as sp_norm
+from . import _array_core as np
+from ._sci_core import minimize
+from ._sci_core import gammainc, gammaln
+from ._stats_core import norm as sp_norm
 
 __all__ = ["gngsv"]
 

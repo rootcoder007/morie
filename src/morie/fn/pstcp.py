@@ -11,7 +11,7 @@ def posterior_compare_params(chain, param_indices) -> DescriptiveResult:
 
     .. epigraph:: It is not the strongest that survives, but the most adaptable. -- Charles Darwin
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     chain = np.asarray(chain, dtype=float)
     if chain.ndim == 1:

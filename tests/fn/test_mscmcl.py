@@ -1,6 +1,6 @@
 """Tests for mscmcl.matrix_completion_scm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mscmcl import matrix_completion_scm
 

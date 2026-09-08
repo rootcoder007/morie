@@ -1,7 +1,7 @@
 """Tests for morie.fn.odm_c — OTIS demo cross-tab."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.odm_c import otis_demo_cross

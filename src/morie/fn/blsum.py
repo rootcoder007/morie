@@ -95,3 +95,7 @@ short = blosum_score
 
 def cheatsheet() -> str:
     return "blosum_score({}) -> Simplified BLOSUM62 alignment score."
+
+
+# compact alias per ledger/NAMING.md
+blosumscore = blosum_score

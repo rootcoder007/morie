@@ -1,6 +1,6 @@
 """Gaussian process spatial"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 
@@ -29,3 +29,7 @@ gp_s = gp_spatial
 
 def cheatsheet() -> str:
     return "gp_spatial({}) -> Gaussian process spatial"
+
+
+# compact alias per ledger/NAMING.md
+gpspatial = gp_spatial

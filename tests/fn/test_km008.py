@@ -1,20 +1,18 @@
-"""Tests for km008.kamath_ch2_attention_softmax_weights."""
+"""Tests for km008.kamath_ch2_attention_softmax_weights (re-fixtured from the doctest)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.km008 import kamath_ch2_attention_softmax_weights
+import morie.fn.km008 as mod
 
 
-def test_km008_basic():
-    """Test basic functionality."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    result = kamath_ch2_attention_softmax_weights(a)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_km008_doctest():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
 
 
 def test_km008_edge():
-    """Test edge cases."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    result = kamath_ch2_attention_softmax_weights(a)
-    assert isinstance(result, dict)
+    import pytest
+    from morie.fn.km008 import kamath_ch2_attention_softmax_weights
+    with pytest.raises(ValueError):
+        kamath_ch2_attention_softmax_weights([])

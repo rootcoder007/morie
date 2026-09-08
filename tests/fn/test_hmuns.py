@@ -1,6 +1,6 @@
 """Tests for hmuns.geron_unsupervised_learning."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmuns import geron_unsupervised_learning
 

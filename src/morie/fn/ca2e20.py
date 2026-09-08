@@ -1,54 +1,22 @@
-"""Regression expression involving 'deviation' (auto-extracted; see reference for full context).."""
+"""Deprecated alias for :func:`morie.fn.beta_standardized`.
 
-import numpy as np
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
+"""
 
-from ._richresult import RichResult
+import warnings
+
+from .beta_standardized import beta_standardized as _impl
 
 __all__ = ["ca_chapter_2_equation_20"]
 
 
-def ca_chapter_2_equation_20(x):
-    """
-    Regression expression involving 'deviation' (auto-extracted; see reference for full context).
-
-    Formula: Beta = b sx
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca2e20')`` for the full guide.
-
-    References
-    ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.2 eq.2.20
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Regression expression involving 'deviation' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression expression involving 'deviation' (auto-extracted; see reference for full context).",
-        },
+def ca_chapter_2_equation_20(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.beta_standardized` instead."""
+    warnings.warn(
+        "ca_chapter_2_equation_20() is the book-coordinate name for beta_standardized(); "
+        "it will be removed. Use morie.fn.beta_standardized() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "ca2e20: Regression expression involving 'deviation' (auto-extracted; see reference for full context)."
+    return _impl(*args, **kwargs)

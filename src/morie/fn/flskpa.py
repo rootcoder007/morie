@@ -1,6 +1,6 @@
 """Fleiss kappa for multiple raters."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -36,3 +36,7 @@ def fleiss_kappa(X):
 
 def cheatsheet():
     return "flskpa: Fleiss kappa for multiple raters"
+
+
+# compact alias per ledger/NAMING.md
+fleisskappa = fleiss_kappa

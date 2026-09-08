@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Chi-squared critical value."""
 
-from scipy.stats import chi2
+from ._stats_core import chi2
 
 
 def chcrit(df: int, alpha: float = 0.05) -> float:

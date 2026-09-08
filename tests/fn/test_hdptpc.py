@@ -1,6 +1,6 @@
 """Tests for hdptpc.hdp_topic_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hdptpc import hdp_topic_model
 

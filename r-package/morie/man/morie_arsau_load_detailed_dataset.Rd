@@ -2,7 +2,7 @@
 % Please edit documentation in R/arsau.R
 \name{morie_arsau_load_detailed_dataset}
 \alias{morie_arsau_load_detailed_dataset}
-\title{Load ARSAU detailed-incident-level CSV (2020-2022 only).}
+\title{Load ARSAU detailed-incident-level CSV (2020-2022 only)}
 \usage{
 morie_arsau_load_detailed_dataset(
   year_range = "2020-2022",
@@ -25,7 +25,7 @@ rich-result metadata fields described in
 \code{\link{morie_arsau_load_main_records}}.
 }
 \description{
-Load ARSAU detailed-incident-level CSV (2020-2022 only).
+Load ARSAU detailed-incident-level CSV (2020-2022 only)
 }
 \examples{
 \donttest{

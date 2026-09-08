@@ -1,6 +1,6 @@
 """Tests for chsim3."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.chsim3 import chsim3

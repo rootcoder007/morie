@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 
 def rf_dist(n: int, dfn: float, dfd: float, *, seed: int = 42) -> np.ndarray:
@@ -34,3 +34,7 @@ rf = rf_dist
 
 def cheatsheet() -> str:
     return "rf_dist({}) -> F-distribution random variate generation."
+
+
+# compact alias per ledger/NAMING.md
+rfdist = rf_dist

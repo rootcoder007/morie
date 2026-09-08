@@ -1,6 +1,6 @@
 """Test anc_remove (ancrm)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import SignalResult
 from morie.fn.ancrm import anc_remove, ancrm

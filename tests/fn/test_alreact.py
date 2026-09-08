@@ -1,26 +1,17 @@
 """Tests for alreact.alammar_react_agent_loop."""
 
-import numpy as np
-
 from morie.fn.alreact import alammar_react_agent_loop
 
 
 def test_alreact_basic():
-    """Test basic functionality."""
-    query = np.random.default_rng(42).normal(0, 1, 100)
-    tools = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    max_steps = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_react_agent_loop(query, tools, model, max_steps)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    model = lambda ctx: ({"thought": "t", "action": "f",
+                          "action_input": 1} if "query" in ctx[-1]
+                         else {"thought": "t", "final": ctx[-1]["observation"]})
+    out = alammar_react_agent_loop("q", {"f": lambda x: "7"}, model)
+    assert out["answer"] == "7"
 
 
 def test_alreact_edge():
-    """Test edge cases."""
-    query = np.random.default_rng(42).normal(0, 1, 100)
-    tools = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    max_steps = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_react_agent_loop(query, tools, model, max_steps)
-    assert isinstance(result, dict)
+    out = alammar_react_agent_loop("q", {},
+        lambda c: {"thought": "t", "action": "nope"}, max_steps=1)
+    assert out["exhausted"] is True

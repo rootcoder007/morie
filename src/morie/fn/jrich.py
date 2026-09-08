@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -86,3 +86,7 @@ jrich = formant_extract
 
 def cheatsheet() -> str:
     return "formant_extract({}) -> Formant extraction from speech signal."
+
+
+# compact alias per ledger/NAMING.md
+formantextract = formant_extract

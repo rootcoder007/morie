@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def slice_sampler(
@@ -30,7 +30,8 @@ def slice_sampler(
 
     References
     ----------
-    Neal, R. M. (2003). *Annals of Statistics*, 31(3), 705--741.
+    Neal, R. M. (2003). Slice sampling. *Annals of Statistics*, 31(3),
+    705--741.
     """
     rng = np.random.default_rng(seed)
     x = float(init)

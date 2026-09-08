@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 
@@ -49,3 +49,7 @@ argen = ar_generate_fn
 
 def cheatsheet() -> str:
     return "ar_generate_fn({}) -> Generate synthetic AR process."
+
+
+# compact alias per ledger/NAMING.md
+argeneratefn = ar_generate_fn

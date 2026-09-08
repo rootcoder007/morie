@@ -1,7 +1,7 @@
 """Bootstrap score test under restricted model."""
 
-import numpy as np
-from scipy import stats
+from . import _array_core as np
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 
@@ -75,3 +75,7 @@ def boot_score_test(x, fit0, score_fn, B, cdf=None):
 
 def cheatsheet():
     return "btscr: Bootstrap score test under restricted model"
+
+
+# compact alias per ledger/NAMING.md
+bootscoretest = boot_score_test
