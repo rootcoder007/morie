@@ -42,7 +42,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: r-lib/actions/setup-r@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+      - uses: r-lib/actions/setup-r@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           r-version: '4.6.1'
           use-public-rspm: true
@@ -52,7 +52,7 @@ jobs:
         run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
         shell: Rscript {0}
 
-      - uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+      - uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           working-directory: r-package/morie
           cache-version: 2
@@ -63,8 +63,12 @@ jobs:
         run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
         shell: Rscript {0}
       - name: Run covr
+        # quiet = FALSE on purpose: this step runs ~2h (it instruments
+        # every function, then runs all 485 test files under that
+        # instrumentation) and with quiet = TRUE it emitted nothing for
+        # the whole run, so a slow job read exactly like a hung one.
         run: |
-          Rscript -e 'cov <- covr::package_coverage(type = "tests", quiet = TRUE); covr::to_cobertura(cov, filename = "coverage.xml"); cat(sprintf("Coverage: %.2f%%\n", covr::percent_coverage(cov)))'
+          Rscript -e 'cov <- covr::package_coverage(type = "tests", quiet = FALSE); covr::to_cobertura(cov, filename = "coverage.xml"); cat(sprintf("Coverage: %.2f%%\n", covr::percent_coverage(cov)))'
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v7
@@ -92,7 +96,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: r-lib/actions/setup-r@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+      - uses: r-lib/actions/setup-r@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           r-version: '4.6.1'
           use-public-rspm: true
@@ -102,7 +106,7 @@ jobs:
         run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
         shell: Rscript {0}
 
-      - uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+      - uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           working-directory: r-package/morie
           cache-version: 2
@@ -132,8 +136,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: r-lib/actions/setup-pandoc@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
-      - uses: r-lib/actions/setup-r@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+      - uses: r-lib/actions/setup-pandoc@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+      - uses: r-lib/actions/setup-r@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           r-version: '4.6.1'
           use-public-rspm: true
@@ -143,7 +147,7 @@ jobs:
         run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
         shell: Rscript {0}
 
-      - uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+      - uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           working-directory: r-package/morie
           cache-version: 2
@@ -176,14 +180,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: r-lib/actions/setup-pandoc@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
-      - uses: r-lib/actions/setup-r@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+      - uses: r-lib/actions/setup-pandoc@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+      - uses: r-lib/actions/setup-r@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           r-version: '4.6.1'
           use-public-rspm: true
 
       # pkgcheck builds the PDF manual; needs LaTeX.
-      - uses: r-lib/actions/setup-tinytex@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+      - uses: r-lib/actions/setup-tinytex@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
       - name: Install inconsolata + helpers for PDF manual build
         run: |
           tlmgr update --self
@@ -200,7 +204,7 @@ jobs:
         run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
         shell: Rscript {0}
 
-      - uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+      - uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           working-directory: r-package/morie
           cache-version: 2
