@@ -55,17 +55,53 @@ def _buf(a):
     array.array carries the buffer protocol on every supported version.
     _vec() is left alone because the pure-Python fallbacks below do array
     arithmetic on its result.
+
+    Anything that already exposes contiguous float64 memory -- an
+    array.array, a real numpy array, the native array on 3.12+ -- is
+    copied in one memcpy. Everything else hands its flat float list to
+    array.array in a single call. Neither route walks the data element
+    by element in Python; doing that cost far more than the kernel it
+    feeds, because it ran once per element per call.
     """
     import array as _pyarray
 
-    return _pyarray.array("d", [float(v) for v in _vec(a)])
+    if type(a) is _pyarray.array and a.typecode == "d":
+        return a
+
+    if type(a) is list:
+        try:
+            return _pyarray.array("d", a)
+        except TypeError:
+            pass
+
+    try:
+        mv = memoryview(a)
+    except (TypeError, BufferError):
+        mv = None
+    if mv is not None:
+        try:
+            if mv.ndim == 1 and mv.c_contiguous and mv.format == "d":
+                out = _pyarray.array("d")
+                out.frombytes(mv.cast("B"))
+                return out
+        finally:
+            mv.release()
+
+    flat = _vec(a)
+    data = getattr(flat, "data", None)
+    if type(data) is list:
+        try:
+            return _pyarray.array("d", data)
+        except TypeError:
+            pass
+    return _pyarray.array("d", [float(v) for v in flat])
 
 
 def normal_pdf(x, mean: float, sd: float) -> np.ndarray:
     """Normal PDF over an array -- the kernel inside dnorm."""
-    x = _vec(x)
     if _CORE_AVAILABLE:
         return _c.normal_pdf(_buf(x), float(mean), float(sd))
+    x = _vec(x)
     inv_sigma = 1.0 / sd
     z = (x - mean) * inv_sigma
     return inv_sigma * _INV_SQRT_2PI * np.exp(-0.5 * z * z)
@@ -73,9 +109,9 @@ def normal_pdf(x, mean: float, sd: float) -> np.ndarray:
 
 def normal_logpdf(x, mean: float, sd: float) -> np.ndarray:
     """Normal log-density -- preferred for likelihoods (avoids underflow)."""
-    x = _vec(x)
     if _CORE_AVAILABLE:
         return _c.normal_logpdf(_buf(x), float(mean), float(sd))
+    x = _vec(x)
     inv_sigma = 1.0 / sd
     z = (x - mean) * inv_sigma
     return -math.log(sd) - _LOG_SQRT_2PI - 0.5 * z * z
@@ -83,17 +119,17 @@ def normal_logpdf(x, mean: float, sd: float) -> np.ndarray:
 
 def mean_jit(arr) -> float:
     """Arithmetic mean of a 1-D array."""
-    arr = _vec(arr)
     if _CORE_AVAILABLE:
         return _c.mean_jit(_buf(arr))
+    arr = _vec(arr)
     return float(np.mean(arr)) if arr.size else float("nan")
 
 
 def var_jit(arr, ddof: int = 1) -> float:
     """Sample variance with optional ddof."""
-    arr = _vec(arr)
     if _CORE_AVAILABLE:
         return _c.var_jit(_buf(arr), int(ddof))
+    arr = _vec(arr)
     if arr.size - ddof <= 0:
         return float("nan")
     return float(np.var(arr, ddof=ddof))
@@ -101,17 +137,17 @@ def var_jit(arr, ddof: int = 1) -> float:
 
 def std_jit(arr, ddof: int = 1) -> float:
     """Sample standard deviation with optional ddof."""
-    arr = _vec(arr)
     if _CORE_AVAILABLE:
         return _c.std_jit(_buf(arr), int(ddof))
+    arr = _vec(arr)
     return math.sqrt(var_jit(arr, ddof))
 
 
 def cor_pearson_jit(x, y) -> float:
     """Pearson correlation coefficient."""
-    x, y = _vec(x), _vec(y)
     if _CORE_AVAILABLE:
         return _c.cor_pearson_jit(_buf(x), _buf(y))
+    x, y = _vec(x), _vec(y)
     if x.size != y.size or x.size < 2:
         return float("nan")
     with np.errstate(invalid="ignore", divide="ignore"):
@@ -121,9 +157,9 @@ def cor_pearson_jit(x, y) -> float:
 
 def euclid_dist_jit(a, b) -> float:
     """Euclidean (L2) distance between two equal-length vectors."""
-    a, b = _vec(a), _vec(b)
     if _CORE_AVAILABLE:
         return _c.euclid_dist_jit(_buf(a), _buf(b))
+    a, b = _vec(a), _vec(b)
     if a.size != b.size:
         return float("nan")
     return float(np.sqrt(np.sum((a - b) ** 2)))
@@ -131,10 +167,10 @@ def euclid_dist_jit(a, b) -> float:
 
 def trimmed_ipw_weights_jit(treat, propensity, trim_lo: float = 0.01, trim_hi: float = 0.99) -> np.ndarray:
     """IPW weights with propensity-score clipping at [trim_lo, trim_hi]."""
-    treat, propensity = _vec(treat), _vec(propensity)
     if _CORE_AVAILABLE:
         return _c.trimmed_ipw_weights_jit(_buf(treat), _buf(propensity),
                                           float(trim_lo), float(trim_hi))
+    treat, propensity = _vec(treat), _vec(propensity)
     e = np.clip(propensity, trim_lo, trim_hi)
     return np.where(treat == 1.0, 1.0 / e, 1.0 / (1.0 - e))
 
