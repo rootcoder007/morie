@@ -149,8 +149,13 @@ jobs:
         shell: Rscript {0}
       - name: Install morie
         run: R CMD INSTALL r-package/morie
+      # test_local() loads the package with pkgload, so tests can reach
+      # internal functions and helper files get a writable environment.
+      # test_dir() with library(morie) sees only exported objects, which
+      # failed every test that calls an internal (morie_ann_forward and
+      # the rest of gp_mvsml.R).
       - name: Run the R test suite (the gate the auto-tag previously lacked)
-        run: Rscript -e "library(morie); testthat::test_dir('r-package/morie/tests/testthat')"
+        run: Rscript -e "testthat::test_local('r-package/morie')"
 
   tag:
     name: Tag + fire publish chain
