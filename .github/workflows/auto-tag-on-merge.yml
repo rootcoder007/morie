@@ -157,9 +157,53 @@ jobs:
       - name: Run the R test suite (the gate the auto-tag previously lacked)
         run: Rscript -e "testthat::test_local('r-package/morie')"
 
+
+  # Gate: the CI matrices in build.yml must be GREEN for this exact commit
+  # before anything is tagged. verify/test above only cover the sdist, the
+  # Docker image and the R suite; without this a red r-cmd-check, python-test,
+  # wheels or version-drift could still ship a release.
+  ci:
+    name: Require the CI matrices to be green
+    needs: check
+    if: needs.check.outputs.should-release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    steps:
+      - name: Wait for build.yml on this commit, and require success
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          deadline=$(( $(date +%s) + 7200 ))   # 2 hours
+          while :; do
+            run=$(gh api "repos/$REPO/actions/workflows/build.yml/runs?head_sha=$SHA&per_page=1" \
+                    --jq '.workflow_runs[0] | "\(.status) \(.conclusion) \(.html_url)"' 2>/dev/null || echo "")
+            status=$(printf '%s' "$run" | cut -d' ' -f1)
+            concl=$(printf '%s' "$run" | cut -d' ' -f2)
+            url=$(printf '%s' "$run" | cut -d' ' -f3)
+            if [ "$status" = "completed" ]; then
+              echo "build.yml for $SHA finished: $concl"
+              echo "$url"
+              if [ "$concl" != "success" ]; then
+                echo "::error::CI is $concl for this commit -- refusing to tag."
+                exit 1
+              fi
+              exit 0
+            fi
+            if [ "$(date +%s)" -ge "$deadline" ]; then
+              echo "::error::Timed out waiting for build.yml on $SHA."
+              exit 1
+            fi
+            echo "build.yml: ${status:-not started}; waiting 60s"
+            sleep 60
+          done
+
   tag:
     name: Tag + fire publish chain
-    needs: [check, verify, test]
+    needs: [check, verify, test, ci]
     if: needs.check.outputs.should-release == 'true'
     runs-on: ubuntu-latest
     permissions:
