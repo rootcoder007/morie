@@ -10,7 +10,7 @@
 #   matplotlib  -- pytest.importorskip in the plot tests, plus one
 #                  dynamic __import__ in src/morie/tps_render.py
 #   the rest    -- comparison baselines for the numeric arms
-DoubleML>=0.7.1
+DoubleML>=0.11.4
 matplotlib>=3.7.0
 numpy>=1.26
 scipy>=1.10
