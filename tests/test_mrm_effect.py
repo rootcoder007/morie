@@ -69,14 +69,25 @@ def test_confidence_intervals_bracket_the_estimate():
         assert r["ci_upper"] - r["estimate"] == pytest.approx(half, abs=1e-12)
 
 
-def test_an_estimator_that_cannot_run_is_recorded_not_dropped():
-    # morie's AIPW is binary-outcome only in the native core. On a
-    # continuous outcome it must be REPORTED as failed: a consensus over
-    # an unknown subset is not a consensus.
+def test_nothing_requested_is_silently_dropped():
+    # A consensus over an unknown subset is not a consensus, so every
+    # requested method must land in exactly one of results or failed.
+    methods = ("matching", "ate", "aipw", "dml")
     eff = morie.mrm_estimate_causal_effect(_sim(), "t", "y", ["x"],
-                                           methods=("ate", "aipw"))
-    assert "aipw (morie native)" in eff.failed
-    assert any("ipw ate" in r["method"] for r in eff.results)
+                                           methods=methods)
+    assert len(eff.results) + len(eff.failed) == len(methods)
+    assert not (set(eff.failed) & {r["method"] for r in eff.results})
+
+
+def test_aipw_runs_on_a_continuous_outcome():
+    # The outcome model has to match the outcome: leaving the logistic
+    # default on a continuous outcome fails inside the native core with
+    # "binary only", which reads like a missing capability and is really
+    # the wrong link function.
+    eff = morie.mrm_estimate_causal_effect(_sim(), "t", "y", ["x"],
+                                           methods=("aipw",))
+    assert eff.failed == {}
+    assert abs(eff.results[0]["estimate"] - 0.8) < 0.2
 
 
 def test_aipw_runs_on_a_binary_outcome():
@@ -112,10 +123,13 @@ def test_inputs_are_checked_before_any_estimator_runs():
 
 
 def test_every_estimator_failing_is_an_error_not_an_empty_answer():
-    rows = _sim(n=12)
+    # Fewer rows than cross-fitting folds: DML cannot run, and with it
+    # the only requested method, so there is no answer to report. An
+    # empty results table would look like a finding of nothing.
+    rows = _sim(n=4)
     with pytest.raises(RuntimeError, match="every requested estimator"):
         morie.mrm_estimate_causal_effect(rows, "t", "y", ["x"],
-                                         methods=("aipw",))
+                                         methods=("dml",))
 
 
 def test_the_effect_renders_through_the_report():
