@@ -436,8 +436,16 @@ def mrm_estimate_causal_effect(data, treatment: str, outcome: str,
     if "aipw" in methods:
         def _aipw():
             from morie.causal import estimate_aipw
+            # The outcome model has to match the outcome. Leaving the
+            # logistic default on a continuous outcome fails inside the
+            # native core with "binary only", which reads like a missing
+            # capability and is really the wrong link function.
+            yvals = {r[outcome] for r in rows_in}
+            binary = yvals <= {0, 1, 0.0, 1.0, True, False}
             a = estimate_aipw(frame, treatment=treatment, outcome=outcome,
-                              covariates=covariates)
+                              covariates=covariates,
+                              outcome_model="logistic" if binary
+                              else "linear")
             return (a.get("ate", a.get("estimate")),
                     a.get("se", a.get("std_error")))
         attempt("aipw (morie native)", _aipw)
