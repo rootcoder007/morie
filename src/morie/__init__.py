@@ -156,6 +156,8 @@ _LAZY_EXPORTS = {
     "mrm_load_si_dataset": "mrm_flagship",
     "mrm_reconcile": "mrm_flagship",
     "mrm_report": "mrm_flagship",
+    "causal_dag": "mrm_graphs",
+    "mrm_dags": "mrm_graphs",
     "mrm_check_balancing": "mrm_diagnostics",
     "mrm_check_overlap": "mrm_diagnostics",
     "mrm_classify_mandela": "mrm_otis",
@@ -409,6 +411,8 @@ __all__ = [
     "mrm_load_si_dataset",
     "mrm_reconcile",
     "mrm_report",
+    "causal_dag",
+    "mrm_dags",
     # Tier 1 diagnostics
     "mrm_standardised_difference",
     "mrm_check_balancing",
