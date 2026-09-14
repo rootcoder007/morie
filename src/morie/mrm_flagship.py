@@ -23,10 +23,12 @@ from morie.fn._sha2 import sha256 as _sha256
 
 __all__ = [
     "MrmDataset",
+    "MrmEffect",
     "MrmReconciliation",
     "mrm_load_si_dataset",
     "mrm_reconcile",
     "mrm_report",
+    "mrm_estimate_causal_effect",
 ]
 
 
@@ -300,3 +302,185 @@ def mrm_report(effect=None, reconciliation=None, dataset=None,
             lines.append("  signif: *** p<0.001, ** p<0.01, * p<0.05")
 
     return "\n".join(lines)
+
+# ------------------------------------------------------------------ estimation
+
+@dataclass
+class MrmEffect:
+    results: list[dict]
+    consensus: dict
+    correction: str
+    spec: dict
+    failed: dict = field(default_factory=dict)
+
+    def __repr__(self) -> str:
+        return ("MRM effect: %d of %d estimators, consensus %.4f (se %.4f)"
+                % (len(self.results),
+                   len(self.results) + len(self.failed),
+                   self.consensus.get("estimate", float("nan")),
+                   self.consensus.get("std_error", float("nan"))))
+
+    def results_frame(self):
+        if not self.results:
+            return pd.DataFrame({})
+        return pd.DataFrame({k: [r[k] for r in self.results]
+                             for k in self.results[0]})
+
+
+def _norm_sf(z: float) -> float:
+    """Two-sided normal tail, by erf, so no extra dependency."""
+    import math
+    return math.erfc(abs(z) / math.sqrt(2.0))
+
+
+_Z975 = 1.959963984540054          # qnorm(0.975)
+
+
+def mrm_estimate_causal_effect(data, treatment: str, outcome: str,
+                               covariates, methods=("matching", "ate",
+                                                    "aipw", "dml"),
+                               correction: str = "holm",
+                               seed: int = 42):
+    """Estimate one effect several ways, then correct across the answers.
+
+    Composes morie's own estimators -- nearest-neighbour matching, IPW,
+    AIPW and partially-linear DML -- on a single specification, corrects
+    the p-values for having asked more than once, and pools by inverse
+    variance.
+
+    Running four estimators and quoting the friendliest is the failure
+    mode this guards against, which is why every answer is returned
+    together with the correction applied across them. An estimator that
+    cannot run is recorded in `failed` rather than dropped silently: a
+    consensus over an unknown subset is not a consensus.
+    """
+    if isinstance(methods, str):
+        methods = (methods,)
+    methods = tuple(methods)
+    known = ("matching", "ate", "aipw", "dml")
+    bad = [m for m in methods if m not in known]
+    if bad:
+        raise ValueError("unknown method(s): %s; expected a subset of %s"
+                         % (", ".join(bad), ", ".join(known)))
+    if isinstance(covariates, str):
+        covariates = [covariates]
+    covariates = list(covariates)
+
+    rows_in = _as_rows(data, "data")
+    if not rows_in:
+        raise ValueError("`data` must not be empty")
+    missing = [c for c in [treatment, outcome] + covariates
+               if c not in rows_in[0]]
+    if missing:
+        raise ValueError("`data` is missing column(s): %s"
+                         % ", ".join(missing))
+
+    tvals = {r[treatment] for r in rows_in}
+    if not tvals <= {0, 1, 0.0, 1.0, True, False}:
+        raise ValueError(
+            "`%s` must be a binary 0/1 treatment; a categorical treatment "
+            "must not be silently coerced, because factor level indices "
+            "are not data" % treatment)
+
+    frame = pd.DataFrame({c: [r.get(c) for r in rows_in]
+                          for c in rows_in[0]})
+
+    out, failed = [], {}
+
+    def attempt(label, fn):
+        try:
+            est, se = fn()
+        except Exception as exc:                  # noqa: BLE001
+            failed[label] = "%s: %s" % (type(exc).__name__, exc)
+            return
+        if est is None or se is None or se <= 0 or se != se or est != est:
+            failed[label] = "returned a non-finite estimate or std error"
+            return
+        p = _norm_sf(est / se)
+        out.append({"method": label, "estimate": float(est),
+                    "std_error": float(se),
+                    "ci_lower": float(est - _Z975 * se),
+                    "ci_upper": float(est + _Z975 * se),
+                    "p_value": float(p)})
+
+    if "matching" in methods:
+        def _matching():
+            from morie.matching import (match_nearest_neighbor,
+                                        estimate_att_matched)
+            m = match_nearest_neighbor(frame, treatment, covariates)
+            pairs = getattr(m, "match_pairs", None)
+            if pairs is None:
+                raise ValueError("matching returned no pairs")
+            a = estimate_att_matched(frame, outcome, treatment, pairs)
+            if isinstance(a, tuple):
+                return a[0], a[1]
+            for e, v in (("att", "se"), ("estimate", "std_error"),
+                         ("effect", "standard_error")):
+                if getattr(a, e, None) is not None:
+                    return getattr(a, e), getattr(a, v, None)
+            raise ValueError("matching result exposed no estimate")
+        attempt("matching (morie native)", _matching)
+
+    if "ate" in methods:
+        def _ate():
+            import morie
+            from morie.causal import (calculate_ipw_weights,
+                                      compute_propensity_scores)
+            f2 = frame.copy() if hasattr(frame, "copy") else frame
+            f2["_ps"] = list(compute_propensity_scores(frame, treatment,
+                                                       covariates))
+            f2["_ipw"] = list(calculate_ipw_weights(f2, treatment, "_ps"))
+            return morie.estimate_ate(f2, outcome, treatment, "_ipw")
+        attempt("ipw ate (morie native)", _ate)
+
+    if "aipw" in methods:
+        def _aipw():
+            from morie.causal import estimate_aipw
+            a = estimate_aipw(frame, treatment=treatment, outcome=outcome,
+                              covariates=covariates)
+            return (a.get("ate", a.get("estimate")),
+                    a.get("se", a.get("std_error")))
+        attempt("aipw (morie native)", _aipw)
+
+    if "dml" in methods:
+        def _dml():
+            from morie.fn.causdml2 import causal_dml_partial_lin
+            y = [float(r[outcome]) for r in rows_in]
+            d = [float(r[treatment]) for r in rows_in]
+            X = [[float(r[c]) for c in covariates] for r in rows_in]
+            a = causal_dml_partial_lin(y, d, X, seed=seed)
+            if isinstance(a, tuple):
+                return a[0], a[1]
+            pay = getattr(a, "payload", None) or {}
+            return (pay.get("theta", getattr(a, "theta", None)),
+                    pay.get("se", getattr(a, "se", None)))
+        attempt("dml plr (morie native)", _dml)
+
+    if not out:
+        first = next(iter(failed.values())) if failed else "no method ran"
+        raise RuntimeError("every requested estimator failed; first error: %s"
+                           % first)
+
+    p_values = [r["p_value"] for r in out]
+    if correction == "none":
+        adj = list(p_values)
+    else:
+        from morie import multiple_testing as mt
+        fn = getattr(mt, correction, None)
+        if fn is None:
+            raise ValueError("unknown correction: %s" % correction)
+        res = fn(p_values)
+        adj = list(getattr(res, "p_adjusted", getattr(res, "adjusted", res)))
+    for r, a in zip(out, adj):
+        r["p_adjusted"] = float(a)
+
+    w = [1.0 / r["std_error"] ** 2 for r in out]
+    sw = sum(w)
+    consensus = {
+        "estimate": sum(wi * r["estimate"] for wi, r in zip(w, out)) / sw,
+        "std_error": (1.0 / sw) ** 0.5,
+    }
+    return MrmEffect(results=out, consensus=consensus, correction=correction,
+                     spec={"treatment": treatment, "outcome": outcome,
+                           "covariates": covariates, "n": len(rows_in)},
+                     failed=failed)
