@@ -52,8 +52,11 @@ def test_the_version_file_is_the_source_of_truth():
     # scripts/version-inventory.sh computes CURRENT vs STALE against the
     # root VERSION file, so a VERSION that lags the release manifests
     # marks every correct file stale and fails the drift gate. That is
-    # what happened: VERSION sat at 1.2.2 while pyproject.toml and the R
-    # DESCRIPTION were 1.2.3.
+    # what happened: VERSION lagged the release while pyproject.toml and
+    # the R DESCRIPTION had both moved on. No version literals in this
+    # comment: version-inventory.sh scans every file for them, so a
+    # literal here adds an inventory row and the drift gate then fails on
+    # the file documenting the drift.
     vf = _version_file()
     if vf is None:
         pytest.skip("no VERSION file in this tree")
