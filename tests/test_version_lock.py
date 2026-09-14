@@ -43,6 +43,25 @@ def _r_description_version() -> str | None:
     return m.group(1) if m else None
 
 
+def _version_file() -> str | None:
+    p = ROOT / "VERSION"
+    return p.read_text(encoding="utf-8").strip() if p.exists() else None
+
+
+def test_the_version_file_is_the_source_of_truth():
+    # scripts/version-inventory.sh computes CURRENT vs STALE against the
+    # root VERSION file, so a VERSION that lags the release manifests
+    # marks every correct file stale and fails the drift gate. That is
+    # what happened: VERSION sat at 1.2.2 while pyproject.toml and the R
+    # DESCRIPTION were 1.2.3.
+    vf = _version_file()
+    if vf is None:
+        pytest.skip("no VERSION file in this tree")
+    assert vf == _pyproject_version(), (
+        "VERSION says %s, pyproject.toml says %s -- VERSION is what the "
+        "drift gate compares against" % (vf, _pyproject_version()))
+
+
 def test_version_is_a_release_number():
     v = _pyproject_version()
     assert re.fullmatch(r"\d+\.\d+\.\d+", v), v
