@@ -77,7 +77,7 @@ morie_dml_clustered <- function(data, treatment, outcome, covariates,
   n <- length(y)
   p <- ncol(X)
 
-  set.seed(seed)
+  .morie_local_seed(seed)
   folds <- sample(rep(seq_len(n_folds), length.out = n))
   e_hat <- numeric(n)
   mu1 <- numeric(n)

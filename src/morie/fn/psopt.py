@@ -59,15 +59,17 @@ def psopt(f, bounds, n_particles=30, generations=100, w=0.7, c1=1.5, c2=1.5, ful
     >>> np.allclose(x_min, [2, 3], atol=0.5)
     True
     """
-    if seed is not None:
-        np.random.seed(seed)
+    # A local stream: seeding the global generator would replace the
+    # caller's random state for the rest of their session. RandomState
+    # reproduces exactly what np.random.seed() + np.random.* produced.
+    rs = np.random.RandomState(seed)
 
     n_vars = len(bounds)
     bounds = np.array(bounds)
 
     # Initialize
-    x = np.random.uniform(bounds[:, 0], bounds[:, 1], (n_particles, n_vars))
-    v = np.random.uniform(-1, 1, (n_particles, n_vars))
+    x = rs.uniform(bounds[:, 0], bounds[:, 1], (n_particles, n_vars))
+    v = rs.uniform(-1, 1, (n_particles, n_vars))
     fx = np.array([f(xi) for xi in x])
 
     # Best personal and global
@@ -79,8 +81,8 @@ def psopt(f, bounds, n_particles=30, generations=100, w=0.7, c1=1.5, c2=1.5, ful
 
     for gen in range(generations):
         for i in range(n_particles):
-            r1 = np.random.rand(n_vars)
-            r2 = np.random.rand(n_vars)
+            r1 = rs.rand(n_vars)
+            r2 = rs.rand(n_vars)
             v[i] = w * v[i] + c1 * r1 * (pbest[i] - x[i]) + c2 * r2 * (gbest - x[i])
 
             x[i] = x[i] + v[i]

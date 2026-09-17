@@ -60,14 +60,16 @@ def bysop(f, bounds, n_init=10, n_iter=20, acq="ucb", kappa=2.576, full_output=F
     >>> np.allclose(x_min, [2, 3], atol=1.0)
     True
     """
-    if seed is not None:
-        np.random.seed(seed)
+    # A local stream: seeding the global generator would replace the
+    # caller's random state for the rest of their session. RandomState
+    # reproduces exactly what np.random.seed() + np.random.* produced.
+    rs = np.random.RandomState(seed)
 
     n_vars = len(bounds)
     bounds = np.array(bounds)
 
     # Initial design (Latin hypercube)
-    X_init = np.random.uniform(bounds[:, 0], bounds[:, 1], (n_init, n_vars))
+    X_init = rs.uniform(bounds[:, 0], bounds[:, 1], (n_init, n_vars))
     y_init = np.array([f(x) for x in X_init])
 
     X = X_init

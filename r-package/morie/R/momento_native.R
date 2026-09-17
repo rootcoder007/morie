@@ -185,7 +185,7 @@ momento_task_mask <- function(n_patches, task = "forecast", span = 1, start = NU
 momento_reconstruction_curve <- function(patches, reconstructor, rates, seed = 0) {
   P <- lapply(patches, as.numeric)
   n <- length(P)
-  set.seed(seed)
+  .morie_local_seed(seed)
   out <- list()
   for (r in rates) {
     m <- max(1L, min(n - 1L, as.integer(round(r * n))))

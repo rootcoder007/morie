@@ -22,7 +22,7 @@ morie_mini_batch_gradient <- function(x, y, lr = 0.01, n_epochs = 200,
   p <- ncol(x)
   X1 <- cbind(1, x)
   theta <- rep(0.0, p + 1)
-  set.seed(seed)
+  .morie_local_seed(seed)
   for (e in seq_len(n_epochs)) {
     idx <- sample.int(n)
     starts <- seq.int(1L, n, by = batch_size)

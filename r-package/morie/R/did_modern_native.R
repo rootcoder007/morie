@@ -192,7 +192,7 @@ morie_did_borusyak <- function(data, outcome, unit, time,
     mean(diffs, na.rm = TRUE)
   }
   att <- est_once(seq_along(fr$y))
-  set.seed(seed)
+  .morie_local_seed(seed)
   units <- levels(fr$unit)
   boots <- vapply(seq_len(n_bootstrap), function(b) {
     su <- sample(units, replace = TRUE)
@@ -252,7 +252,7 @@ morie_did_did2s <- function(data, outcome, unit, time, treatment_time,
     sum(y_tilde * d, na.rm = TRUE) / sum(d[!is.na(y_tilde)])
   }
   att <- est_once(seq_along(fr$y))
-  set.seed(seed)
+  .morie_local_seed(seed)
   units <- levels(fr$unit)
   boots <- vapply(seq_len(n_bootstrap), function(b) {
     su <- sample(units, replace = TRUE)

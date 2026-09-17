@@ -36,9 +36,9 @@ morie_random_forest_ensemble <- function(x, y, n_estimators = 100L,
     }
   }
   if (!is.null(deterministic_seed)) {
-    morie_det_rng("rfens", deterministic_seed)
+    .morie_local_det_rng("rfens", deterministic_seed)
   } else {
-    set.seed(seed)
+    .morie_local_seed(seed)
   }
   fit <- .morie_rf_fit(
     x, y, task = task, n_estimators = as.integer(n_estimators),

@@ -16,7 +16,7 @@
 #' @examples
 #' morie_monte_carlo_integration(function(x) x^2, 0, 1, N = 1000L)
 mcint_crude <- function(f, a = 0, b = 1, N = 1000L, seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   u <- stats::runif(N, a, b)
   fu <- vapply(u, f, numeric(1))
   est <- (b - a) * mean(fu)

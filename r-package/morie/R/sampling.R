@@ -24,7 +24,7 @@ NULL
 #' df <- data.frame(x = 1:100)
 #' srs_sample <- morie_simple_random_sample(df, 20)
 morie_simple_random_sample <- function(df, n, replace = FALSE, seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   N <- nrow(df)
   if (n > N && !replace) stop("n exceeds population size for SRS WOR.")
   idx <- sample.int(N, size = n, replace = replace)
@@ -55,7 +55,7 @@ morie_simple_random_sample <- function(df, n, replace = FALSE, seed = 42L) {
 #' morie_stratified_sample(df, "g", n_per_stratum = 10)
 morie_stratified_sample <- function(df, strata_col, n_per_stratum,
                                     proportional = FALSE, seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   strata <- split(seq_len(nrow(df)), df[[strata_col]])
   strata_sizes <- lengths(strata)
 
@@ -111,7 +111,7 @@ morie_stratified_sample <- function(df, strata_col, n_per_stratum,
 #' #   vignette(package = "morie")
 #' @export
 morie_cluster_sample <- function(df, cluster_col, n_clusters, seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   all_clusters <- unique(df[[cluster_col]])
   N_clusters <- length(all_clusters)
   if (n_clusters > N_clusters) stop("n_clusters exceeds total number of clusters.")
@@ -145,7 +145,7 @@ morie_pps_sample <- function(df, size_col, n, seed = 42L,
   # Python sampling.py:pps_sample uses replace=False (PPS-WoR via
   # Madow systematic-like). Default switched to FALSE 2026-05-22 to
   # match. Pass replace=TRUE for legacy Hansen-Hurwitz with-replacement.
-  set.seed(seed)
+  .morie_local_seed(seed)
   sizes <- as.numeric(df[[size_col]])
   if (any(sizes <= 0, na.rm = TRUE)) stop("size_col must be positive.")
   probs <- sizes / sum(sizes, na.rm = TRUE)
@@ -178,7 +178,7 @@ morie_pps_sample <- function(df, size_col, n, seed = 42L,
 #' df <- data.frame(x = rnorm(100))
 #' morie_bootstrap_sample(df, statistic = function(d) mean(d$x))
 morie_bootstrap_sample <- function(df, statistic, n_bootstrap = 1000L, seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   n <- nrow(df)
   boot_stats <- vapply(seq_len(n_bootstrap), function(i) {
     idx <- sample.int(n, n, replace = TRUE)

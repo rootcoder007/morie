@@ -25,7 +25,7 @@
 morie_random_forest_genomic <- function(x, y, markers, n_trees = 100,
                                   max_depth = 10, min_samples = 2,
                                   mtry = NULL, seed = 0) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   y <- as.numeric(y)
   n <- length(y)
   M <- as.matrix(markers)

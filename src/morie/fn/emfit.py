@@ -54,14 +54,16 @@ def emfit(X, n_components=2, max_iter=100, tol=1e-6, seed=None, full_output=Fals
     >>> isinstance(result[0]['means'], np.ndarray)
     True
     """
-    if seed is not None:
-        np.random.seed(seed)
+    # A local stream: seeding the global generator would replace the
+    # caller's random state for the rest of their session. RandomState
+    # reproduces exactly what np.random.seed() + np.random.* produced.
+    rs = np.random.RandomState(seed)
 
     n, d = X.shape
     X = X.astype(float)
 
     # Initialize
-    idx = np.random.choice(n, n_components, replace=False)
+    idx = rs.choice(n, n_components, replace=False)
     means = X[idx].copy()
     covars = np.array([np.eye(d) for _ in range(n_components)])
     weights = np.ones(n_components) / n_components

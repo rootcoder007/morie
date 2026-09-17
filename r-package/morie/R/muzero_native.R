@@ -150,7 +150,7 @@ muzero_gamma_rv <- function(alpha) {
 muzero_add_noise <- function(prior, alpha, frac, seed) {
   if (alpha <= 0) stop("muzero: dirichlet_alpha must be > 0")
   if (!(frac >= 0 && frac <= 1)) stop("muzero: exploration_fraction must lie in [0, 1]")
-  set.seed(seed)
+  .morie_local_seed(seed)
   g <- sapply(prior, function(p) muzero_gamma_rv(alpha))
   s <- sum(g)
   noise <- g / s

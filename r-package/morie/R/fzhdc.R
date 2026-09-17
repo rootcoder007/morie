@@ -31,7 +31,7 @@ fzhdc <- function(x, kernel = NULL, max_pairs = 2000L, seed = 0L) {
   if (total <= max_pairs) {
     pairs <- utils::combn(n, 2)
   } else {
-    set.seed(seed)
+    .morie_local_seed(seed)
     seen <- character()
     pairs_list <- list()
     while (length(pairs_list) < max_pairs) {

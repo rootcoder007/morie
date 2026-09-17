@@ -358,7 +358,7 @@ nashq_run <- function(states, actions, step, rewards, gamma = 0.9, alpha = 0.5,
   }
   term <- if (is.null(terminal)) list() else as.list(terminal)
   s0 <- if (is.function(start)) start else (function() if (is.null(start)) S[[1]] else start)
-  set.seed(seed)
+  .morie_local_seed(seed)
   rng <- function() runif(1)
   Q <- list()
   for (pl in 0:1) {

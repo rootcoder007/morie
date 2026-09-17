@@ -66,7 +66,7 @@ hrzb1 <- function(x, y) {
     }
     r
   }
-  set.seed(0)
+  .morie_local_seed(0)
   for (k in 1:8) {
     s <- stats::rnorm(p)
     s <- s / sqrt(sum(s^2))
@@ -80,7 +80,7 @@ hrzb1 <- function(x, y) {
     }
   }
   # Subsample SE (cube-root rescale)
-  set.seed(42)
+  .morie_local_seed(42)
   B <- 30
   m <- max(20L, n %/% 2L)
   boot <- matrix(0, B, p)

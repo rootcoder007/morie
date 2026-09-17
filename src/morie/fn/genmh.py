@@ -57,21 +57,23 @@ def genmh(f, bounds, pop_size=50, generations=100, pc=0.7, pm=0.1, full_output=F
     >>> np.allclose(x_min, [2, 3], atol=1.0)
     True
     """
-    if seed is not None:
-        np.random.seed(seed)
+    # A local stream: seeding the global generator would replace the
+    # caller's random state for the rest of their session. RandomState
+    # reproduces exactly what np.random.seed() + np.random.* produced.
+    rs = np.random.RandomState(seed)
 
     n_vars = len(bounds)
     bounds = np.array(bounds)
 
     # Initialize population
-    pop = np.random.uniform(bounds[:, 0], bounds[:, 1], (pop_size, n_vars))
+    pop = rs.uniform(bounds[:, 0], bounds[:, 1], (pop_size, n_vars))
     fitness = np.array([f(x) for x in pop])
 
     for gen in range(generations):
         # Selection: tournament
         selected = []
         for _ in range(pop_size):
-            idx = np.random.choice(pop_size, 2, replace=False)
+            idx = rs.choice(pop_size, 2, replace=False)
             if fitness[idx[0]] < fitness[idx[1]]:
                 selected.append(pop[idx[0]].copy())
             else:
@@ -81,8 +83,8 @@ def genmh(f, bounds, pop_size=50, generations=100, pc=0.7, pm=0.1, full_output=F
         # Crossover
         offspring = []
         for i in range(0, pop_size - 1, 2):
-            if np.random.rand() < pc:
-                alpha = np.random.rand()
+            if rs.rand() < pc:
+                alpha = rs.rand()
                 child1 = alpha * selected[i] + (1 - alpha) * selected[i + 1]
                 child2 = alpha * selected[i + 1] + (1 - alpha) * selected[i]
                 offspring.extend([child1, child2])
@@ -92,8 +94,8 @@ def genmh(f, bounds, pop_size=50, generations=100, pc=0.7, pm=0.1, full_output=F
 
         # Mutation
         for i in range(pop_size):
-            mask = np.random.rand(n_vars) < pm
-            offspring[i, mask] += np.random.normal(0, 0.1, np.sum(mask))
+            mask = rs.rand(n_vars) < pm
+            offspring[i, mask] += rs.normal(0, 0.1, np.sum(mask))
             offspring[i] = np.clip(offspring[i], bounds[:, 0], bounds[:, 1])
 
         # Elitism: keep best

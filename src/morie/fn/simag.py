@@ -57,8 +57,10 @@ def simag(f, x0, bounds, T_init=1.0, cooling_rate=0.95, max_iter=10000, full_out
     >>> np.allclose(x_min, [2, 3], atol=0.5)
     True
     """
-    if seed is not None:
-        np.random.seed(seed)
+    # A local stream: seeding the global generator would replace the
+    # caller's random state for the rest of their session. RandomState
+    # reproduces exactly what np.random.seed() + np.random.* produced.
+    rs = np.random.RandomState(seed)
 
     x = np.atleast_1d(x0).astype(float)
     f_x = f(x)
@@ -68,7 +70,7 @@ def simag(f, x0, bounds, T_init=1.0, cooling_rate=0.95, max_iter=10000, full_out
 
     for iteration in range(max_iter):
         # Random neighbor (Gaussian perturbation)
-        x_new = x + np.random.normal(0, 1, len(x))
+        x_new = x + rs.normal(0, 1, len(x))
 
         # Apply bounds
         for i, (lo, hi) in enumerate(bounds):
@@ -78,7 +80,7 @@ def simag(f, x0, bounds, T_init=1.0, cooling_rate=0.95, max_iter=10000, full_out
         delta_f = f_new - f_x
 
         # Metropolis criterion
-        if delta_f < 0 or np.random.rand() < np.exp(-delta_f / (T + 1e-14)):
+        if delta_f < 0 or rs.rand() < np.exp(-delta_f / (T + 1e-14)):
             x = x_new
             f_x = f_new
 

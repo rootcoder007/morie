@@ -14,7 +14,7 @@
                                       random_state = 42L) {
   n <- nrow(X)
   p <- ncol(X)
-  set.seed(random_state)
+  .morie_local_seed(random_state)
   folds <- sample(rep(seq_len(n_folds), length.out = n))
   pred <- numeric(n)
   grid <- 10^seq(-3, 3, length.out = 13)
@@ -55,7 +55,7 @@
 #' @noRd
 .morie_dml_xfit_logit <- function(X, d, n_folds = 5L, random_state = 42L) {
   n <- nrow(X)
-  set.seed(random_state)
+  .morie_local_seed(random_state)
   folds <- sample(rep(seq_len(n_folds), length.out = n))
   ps <- numeric(n)
   for (k in seq_len(n_folds)) {
@@ -120,7 +120,7 @@
     stop("morie_estimate_irm: treatment must have both arms present",
          call. = FALSE)
   n <- nrow(X)
-  set.seed(random_state)
+  .morie_local_seed(random_state)
   folds <- sample(rep(seq_len(n_folds), length.out = n))
   mu1 <- numeric(n)
   mu0 <- numeric(n)

@@ -402,7 +402,7 @@ morie_bl_distance <- function(X_n, X, n_functions = 200L, seed = 1L) {
   if (length(A) < 2L || length(B) < 2L) {
     stop("both samples need at least 2 observations.", call. = FALSE)
   }
-  set.seed(seed)
+  .morie_local_seed(seed)
   best <- 0
   for (i in seq_len(as.integer(n_functions))) {
     if (stats::runif(1) < 0.5) {

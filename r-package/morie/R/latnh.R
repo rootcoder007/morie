@@ -17,7 +17,7 @@
 #' str(out)
 #' @export
 latnh <- function(N = 100L, d = 1L, f = NULL, seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   cut <- (seq_len(N) - 1) / N
   sample <- matrix(0, nrow = N, ncol = d)
   for (j in seq_len(d)) {
