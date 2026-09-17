@@ -1,3 +1,36 @@
+# morie (next release) - in progress
+
+Synced from rmorie 1.2.4's fixes of 2026-09-16 and 2026-09-17.
+
+## Functions that seed the RNG now leave the caller's stream alone
+
+Two hundred and thirty-nine functions called `set.seed()` internally and
+twenty-five called `morie_det_rng()` on their `deterministic_seed` path,
+leaving the session's random stream replaced. Every site now seeds for the
+rest of that call only and restores the caller's stream (or its absence)
+on exit; seeded results are unchanged. `morie_det_rng()` itself still
+seeds the session, which is its documented purpose.
+
+## The compiled mean no longer overflows where base R does not
+
+`morie::core::mean()` in `src/morie_core.h` summed naively (`rep(1e308, 3)`
+gave `Inf`; `rep(1e120, 3)` was off by 1.4e104). It now uses base R's
+extended-precision sum plus corrective pass with a running mean as the
+fallback when the sum overflows on finite input; the header is identical
+to rmoriebricklayer 0.5.1's. `morie_mean_cpp()` and `morie_var_cpp()` gain
+`shared`: the bricklayer kernel when 0.5.1 or newer resolves, the vendored
+copy otherwise.
+
+## Non-finite propensity scores no longer abort optimal matching
+
+Both exact optimal matching kernels refuse NaN or Inf scores with an error
+naming the element instead of hitting a libstdc++ sort assertion.
+
+## Undefined effect sizes and bootstraps warn
+
+`morie_cohens_d()` warns on a zero or missing denominator;
+`morie_bootstrap_ci()` warns on fewer than two observations.
+
 # morie 1.2.2 - 2026-09-08
 
 ## The Rd manual builds again

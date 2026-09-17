@@ -18,9 +18,9 @@ morie_ghosal_dpmixture_density <- function(x, alpha = 1.0, sigma = NULL,
                                      grid = NULL, n_iter = 120, burn = 40,
                                      seed = 0, deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
-    morie::morie_det_rng("ghdpm", deterministic_seed)
+    .morie_local_det_rng("ghdpm", deterministic_seed)
   } else {
-    set.seed(seed)
+    .morie_local_seed(seed)
   }
   x <- as.numeric(x)
   n <- length(x)

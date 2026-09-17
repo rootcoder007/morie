@@ -22,9 +22,9 @@ bysid <- function(x, n_iter = 400L, burn = 100L, seed = 0L,
                   deterministic_seed = NULL) {
   logistic <- function(z) 1 / (1 + exp(-pmin(pmax(z, -30), 30)))
   if (!is.null(deterministic_seed)) {
-    morie::morie_det_rng("bysid", deterministic_seed)
+    .morie_local_det_rng("bysid", deterministic_seed)
   } else {
-    set.seed(seed)
+    .morie_local_seed(seed)
   }
   M <- if (is.matrix(x)) x else matrix(as.numeric(x), ncol = 1L)
   n <- nrow(M)

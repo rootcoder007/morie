@@ -35,7 +35,7 @@ logmeanexp <- function(values) {
 #' @export
 particle_filter_simple <- function(y, n_particles, init, step, loglik,
                                    seed = 0L) {
-  set.seed(as.integer(seed))
+  .morie_local_seed(as.integer(seed))
   parts <- init(n_particles)
   w <- rep(1.0 / n_particles, n_particles)
   ll <- 0

@@ -58,20 +58,22 @@ def difev(f, bounds, pop_size=50, generations=100, F=0.8, Cr=0.7, full_output=Fa
     >>> np.allclose(x_min, [2, 3], atol=0.5)
     True
     """
-    if seed is not None:
-        np.random.seed(seed)
+    # A local stream: seeding the global generator would replace the
+    # caller's random state for the rest of their session. RandomState
+    # reproduces exactly what np.random.seed() + np.random.* produced.
+    rs = np.random.RandomState(seed)
 
     n_vars = len(bounds)
     bounds = np.array(bounds)
 
     # Initialize
-    x = np.random.uniform(bounds[:, 0], bounds[:, 1], (pop_size, n_vars))
+    x = rs.uniform(bounds[:, 0], bounds[:, 1], (pop_size, n_vars))
     fx = np.array([f(xi) for xi in x])
 
     for gen in range(generations):
         for i in range(pop_size):
             # Select three distinct random indices
-            idxs = np.random.choice(pop_size, 3, replace=False)
+            idxs = rs.choice(pop_size, 3, replace=False)
             r1, r2, r3 = idxs
 
             # Mutation
@@ -79,10 +81,10 @@ def difev(f, bounds, pop_size=50, generations=100, F=0.8, Cr=0.7, full_output=Fa
             v = np.clip(v, bounds[:, 0], bounds[:, 1])
 
             # Crossover
-            j_rand = np.random.randint(n_vars)
+            j_rand = rs.randint(n_vars)
             u = x[i].copy()
             for j in range(n_vars):
-                if np.random.rand() < Cr or j == j_rand:
+                if rs.rand() < Cr or j == j_rand:
                     u[j] = v[j]
 
             fu = f(u)

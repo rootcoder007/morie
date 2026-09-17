@@ -60,8 +60,9 @@ def nadmf(f, grad_f, x0, learning_rate=0.01, momentum=0.9, tol=1e-6, max_iter=10
     >>> np.allclose(x_min, [1, 2], atol=1e-3)
     True
     """
-    if seed is not None:
-        np.random.seed(seed)
+    # `seed` is accepted for API symmetry with the stochastic siblings;
+    # this routine draws no random numbers, and seeding the global
+    # generator here only replaced the caller's random state.
 
     x = np.atleast_1d(x0).astype(float)
     v = np.zeros_like(x)

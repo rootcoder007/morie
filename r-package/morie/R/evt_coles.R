@@ -356,7 +356,7 @@ morie_evt_xi_ci_profile <- function(x, alpha = 0.05, model = "gev") {
 #' @export
 morie_evt_bayes_gev <- function(x, n_draws = 2000, seed = 42,
                                 prior_sd = c(100, 10, 1)) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   f <- morie_evt_gev_mle(x)
   logpost <- function(th) {
     morie_evt_gev_loglik(x, th[1], exp(th[2]), th[3]) -

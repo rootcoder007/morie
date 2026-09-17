@@ -43,9 +43,9 @@ morie_lstmc_lstm_cell <- function(x, h_prev = NULL, c_prev = NULL,
   if (is.null(h_prev)) h_prev <- rep(0, H)
   if (is.null(c_prev)) c_prev <- rep(0, H)
   if (!is.null(deterministic_seed)) {
-    morie_det_rng("lstmc", deterministic_seed)
+    .morie_local_det_rng("lstmc", deterministic_seed)
   } else {
-    set.seed(seed)
+    .morie_local_seed(seed)
   }
   if (is.null(W)) W <- matrix(stats::rnorm(4 * H * n_in, 0, 0.1), 4 * H, n_in)
   if (is.null(U)) U <- matrix(stats::rnorm(4 * H * H, 0, 0.1), 4 * H, H)

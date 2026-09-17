@@ -23,7 +23,7 @@ query_tokens <- function(n_queries, dim, seed = 0, scale = 0.02) {
   d <- as.integer(dim)
   if (n < 1 || d < 1)
     stop("blip2v: the query count and dimension must be positive")
-  set.seed(as.integer(seed))
+  .morie_local_seed(as.integer(seed))
   matrix((runif(n * d) - 0.5) * 2 * scale, nrow = n, ncol = d)
 }
 

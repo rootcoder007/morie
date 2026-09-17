@@ -18,9 +18,9 @@
 morie_ghosal_bernstein_von_mises <- function(x, theta0 = NULL, B = 500, seed = 0,
                                        deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
-    morie::morie_det_rng("ghbvm", deterministic_seed)
+    .morie_local_det_rng("ghbvm", deterministic_seed)
   } else {
-    set.seed(seed)
+    .morie_local_seed(seed)
   }
   x <- as.numeric(x)
   n <- length(x)

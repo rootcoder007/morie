@@ -21,9 +21,9 @@ morie_bayes_cpi_genomic <- function(x, y, n_iter = 300, burn = 100,
                               pi_init = 0.1, seed = 0,
                               deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
-    morie::morie_det_rng("bglup", deterministic_seed)
+    .morie_local_det_rng("bglup", deterministic_seed)
   } else {
-    set.seed(seed)
+    .morie_local_seed(seed)
   }
   X <- as.matrix(x)
   y <- as.numeric(y)

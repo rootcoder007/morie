@@ -76,8 +76,10 @@ def sgld(
     >>> samples.shape == (100, 2)
     True
     """
-    if seed is not None:
-        np.random.seed(seed)
+    # A local stream: seeding the global generator would replace the
+    # caller's random state for the rest of their session. RandomState
+    # reproduces exactly what np.random.seed() + np.random.* produced.
+    rs = np.random.RandomState(seed)
 
     n_samples = X.shape[0]
     params = np.zeros(param_shape)
@@ -85,7 +87,7 @@ def sgld(
 
     for it in range(n_iter):
         # Mini-batch
-        idx = np.random.choice(n_samples, batch_size, replace=True)
+        idx = rs.choice(n_samples, batch_size, replace=True)
         X_batch = X[idx]
         y_batch = y[idx]
 
@@ -110,7 +112,7 @@ def sgld(
         g = grad_log_post(params)
 
         # Langevin noise
-        noise = np.random.normal(0, np.sqrt(2 * learning_rate * friction), param_shape)
+        noise = rs.normal(0, np.sqrt(2 * learning_rate * friction), param_shape)
 
         # Update
         params = params + learning_rate * g + noise

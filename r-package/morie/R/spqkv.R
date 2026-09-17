@@ -22,7 +22,7 @@ sparse_attention <- function(x, window = 4L, stride = 8L,
   } else {
     length(x)
   }
-  set.seed(seed)
+  .morie_local_seed(seed)
   M <- matrix(FALSE, N, N)
   for (i in seq_len(N)) {
     lo <- max(1L, i - window)

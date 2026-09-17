@@ -27,9 +27,9 @@ morie_heinz_he_initialization <- function(fan_in, fan_out = NULL, seed = 42L,
   fan_in <- as.integer(fan_in)
   if (fan_in <= 0) stop(sprintf("fan_in must be > 0, got %d", fan_in))
   if (!is.null(deterministic_seed)) {
-    morie_det_rng("heinz", deterministic_seed)
+    .morie_local_det_rng("heinz", deterministic_seed)
   } else {
-    set.seed(seed)
+    .morie_local_seed(seed)
   }
   if (is.null(fan_out)) {
     n <- fan_in

@@ -205,7 +205,7 @@ morie_fairness_spatial_gan <- function(points, steps = 1500L,
   sigma <- apply(pts, 2L, stats::sd) + 1e-8
   std_pts <- sweep(sweep(pts, 2L, mu, "-"), 2L, sigma, "/")
 
-  set.seed(as.integer(seed))
+  .morie_local_seed(as.integer(seed))
   gp <- .fairness_he_init(c(latent_dim, hidden, hidden, 2L))
   dp <- .fairness_he_init(c(2L, hidden, hidden, 1L))
 
@@ -228,7 +228,7 @@ morie_fairness_spatial_gan <- function(points, steps = 1500L,
   }
 
   sample_fn <- function(n, seed = NULL) {
-    if (!is.null(seed)) set.seed(as.integer(seed))
+    if (!is.null(seed)) .morie_local_seed(as.integer(seed))
     z <- matrix(stats::rnorm(as.integer(n) * latent_dim),
                 nrow = as.integer(n), ncol = latent_dim)
     out <- .fairness_mlp_forward(gp, z)
@@ -373,7 +373,7 @@ morie_fairness_ctgan_debiaser <- function(df, outcome_col, feature_cols,
   # contract (every group's favourable rate matches privileged) when
   # a heavy deep generative backend is not justified; full GAN
   # training is delegated to the torch/JAX backend identified above.
-  set.seed(as.integer(seed))
+  .morie_local_seed(as.integer(seed))
   n_out <- as.integer(n)
   gi <- sample.int(ng, n_out, replace = TRUE, prob = group_props)
   oi <- as.integer(stats::runif(n_out) < target_rate)

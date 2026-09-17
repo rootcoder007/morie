@@ -1534,7 +1534,7 @@ morie_matching_rosenbaum_bounds <- function(data, outcome, treatment,
 morie_matching_doubly_robust <- function(data, outcome, treatment, covariates,
                                          ps = NULL, n_bootstrap = 200L,
                                          seed = 42L, alpha = 0.05) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   df <- .morie_matching_drop_na(data, c(outcome, treatment, covariates))
   mr <- morie_matching_nearest_neighbor(df, treatment, covariates,
                                         n_neighbors = 1L, ps = ps)

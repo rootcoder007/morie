@@ -366,7 +366,7 @@ mqtmpl_sample_genotypes <- function(genotypes, positions, grid, n_imp = 16,
                                     error_rate = 0, seed = 0) {
   m <- length(positions)
   n <- length(genotypes)
-  set.seed(seed)
+  .morie_local_seed(seed)
   post <- mqtmpl_hmm_genotype_probabilities(genotypes, positions, error_rate)
   out <- list()
   for (imp in seq_len(as.integer(n_imp))) {
@@ -574,7 +574,7 @@ mqtmpl_permutation_threshold <- function(y, markers, positions, n_perm = 100,
                                          step = 0.05, seed = 0, ...) {
   a <- as.numeric(alpha)
   if (!(a > 0 && a < 1)) stop("mqtmpl: alpha must lie in (0, 1)")
-  set.seed(seed)
+  .morie_local_seed(seed)
   maxima <- c()
   ys <- as.numeric(y)
   for (k in seq_len(as.integer(n_perm))) {

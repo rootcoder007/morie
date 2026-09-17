@@ -24,7 +24,7 @@ mtdrl_bandit_tasks <- function(n_arms = 2, n_tasks = 100, seed = 0,
   if (structure == "paired" && n_arms != 2L) {
     stop("mtdrl: the paired family is defined for 2 arms")
   }
-  set.seed(seed)
+  .morie_local_seed(seed)
   tasks <- list()
   for (i in seq_len(as.integer(n_tasks))) {
     if (structure == "paired") {
@@ -131,7 +131,7 @@ mtdrl_run <- function(tasks, agent, episode_length = 100, n_arms = NULL,
       stop(sprintf("mtdrl: agent must provide %s()", m))
     }
   }
-  set.seed(seed)
+  .morie_local_seed(seed)
   rng <- function() runif(1)
   total <- 0
   regret <- 0

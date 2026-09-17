@@ -754,7 +754,7 @@ probabilistic_bias_analysis <- function(estimate, se,
                                            n_simulations = 10000L,
                                            bias_parms = NULL,
                                            seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   if (is.null(bias_parms)) {
     bias_parms <- list(rr_ud      = c(1.5, 0.3),
                         rr_eu      = c(1.5, 0.3),

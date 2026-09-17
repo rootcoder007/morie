@@ -232,7 +232,7 @@
 bootstrap <- function(data, statistic, n_boot = 2000L, ci_level = 0.95,
                       ci_method = "bca", seed = 42L,
                       stratify = NULL, cluster = NULL) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   n <- .nrow_like(data)
   original <- as.numeric(statistic(data))
   boot_stats <- numeric(n_boot)
@@ -380,7 +380,7 @@ bootstrap <- function(data, statistic, n_boot = 2000L, ci_level = 0.95,
 parametric_bootstrap <- function(data, statistic, distribution = "normal",
                                  n_boot = 2000L, ci_level = 0.95,
                                  seed = 42L, ...) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   data <- as.numeric(data)
   n <- length(data)
   original <- as.numeric(statistic(data))
@@ -460,7 +460,7 @@ wild_bootstrap <- function(y, X, statistic_idx = 2L, n_boot = 999L,
                            ci_level = 0.95,
                            weight_distribution = "rademacher",
                            seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   y <- as.numeric(y)
   X <- as.matrix(X)
   n <- length(y)
@@ -530,7 +530,7 @@ wild_bootstrap <- function(y, X, statistic_idx = 2L, n_boot = 999L,
 block_bootstrap <- function(data, statistic, block_size,
                             n_boot = 2000L, ci_level = 0.95,
                             method = "circular", seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   n <- .nrow_like(data)
   original <- as.numeric(statistic(data))
   n_blocks <- as.integer(ceiling(n / block_size))
@@ -634,7 +634,7 @@ jackknife <- function(data, statistic, ci_level = 0.95) {
 delete_d_jackknife <- function(data, statistic, d = 2L,
                                ci_level = 0.95, max_subsets = 5000L,
                                seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   n <- .nrow_like(data)
   original <- as.numeric(statistic(data))
   total_subsets <- choose(n, d)
@@ -695,7 +695,7 @@ delete_d_jackknife <- function(data, statistic, d = 2L,
 permutation_test <- function(group1, group2, statistic = "mean_diff",
                              n_permutations = 9999L,
                              alternative = "two-sided", seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   g1 <- as.numeric(group1)
   g2 <- as.numeric(group2)
   combined <- c(g1, g2)
@@ -758,7 +758,7 @@ permutation_test <- function(group1, group2, statistic = "mean_diff",
 paired_permutation_test <- function(x, y, statistic = "mean_diff",
                                     n_permutations = 9999L,
                                     alternative = "two-sided", seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   diffs <- as.numeric(x) - as.numeric(y)
   n <- length(diffs)
 
@@ -808,7 +808,7 @@ paired_permutation_test <- function(x, y, statistic = "mean_diff",
 subsampling <- function(data, statistic, subsample_size = NULL,
                         n_subsamples = 1000L, ci_level = 0.95,
                         seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   n <- .nrow_like(data)
   original <- as.numeric(statistic(data))
 
@@ -868,7 +868,7 @@ subsampling <- function(data, statistic, subsample_size = NULL,
 #' @export
 bootstrap_632 <- function(X, y, model_fn, score_fn,
                           n_boot = 200L, seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   X <- as.matrix(X)
   y <- as.numeric(y)
   n <- length(y)
@@ -944,7 +944,7 @@ bootstrap_632 <- function(X, y, model_fn, score_fn,
 .boot_cross_validate <- function(X, y, model_fn, score_fn,
                                  n_folds = 10L, stratify = NULL,
                                  groups = NULL, seed = 42L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   X <- as.matrix(X)
   y <- as.numeric(y)
   n <- length(y)

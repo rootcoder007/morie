@@ -14,7 +14,7 @@
 #' @export
 morie_ghosal_np_classification <- function(x, y, length_scale = NULL,
                                      sigma_f = 1.0, n_iter = 300, seed = 0) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   x <- as.matrix(x)
   y <- as.numeric(y)
   n <- nrow(x)

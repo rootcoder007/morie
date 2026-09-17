@@ -40,9 +40,9 @@ morie_mhatf_multi_head_attention_full <- function(x, num_heads = 2L,
   }
   d_k <- d_model %/% num_heads
   if (!is.null(deterministic_seed)) {
-    morie_det_rng("mhatf", deterministic_seed)
+    .morie_local_det_rng("mhatf", deterministic_seed)
   } else {
-    set.seed(seed)
+    .morie_local_seed(seed)
   }
   rn <- function() {
     matrix(

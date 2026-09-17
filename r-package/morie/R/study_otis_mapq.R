@@ -149,7 +149,7 @@
 #' res <- .morie_mapq_synth_panel()
 #' res
 .morie_mapq_synth_panel <- function(n = 400L, seed = 2026L) {
-  set.seed(seed)
+  .morie_local_seed(seed)
   subscales <- .mapq_subscales()
   panel <- data.frame(
     gender_male = stats::rbinom(n, 1L, 0.5),

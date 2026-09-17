@@ -626,7 +626,7 @@ morie_weights_brr <- function(weights, strata, n_replicates = NULL,
     n_replicates <- 1
     while (n_replicates < H) n_replicates <- n_replicates * 2
   }
-  set.seed(seed)
+  .morie_local_seed(seed)
   signs <- matrix(sample(c(-1, 1), H * n_replicates, replace = TRUE),
                   nrow = H, ncol = n_replicates)
   rep <- matrix(w, nrow = n, ncol = n_replicates)
@@ -677,7 +677,7 @@ morie_weights_fay_brr <- function(weights, strata, fay_coefficient = 0.5,
     n_replicates <- 1
     while (n_replicates < H) n_replicates <- n_replicates * 2
   }
-  set.seed(seed)
+  .morie_local_seed(seed)
   signs <- matrix(sample(c(-1, 1), H * n_replicates, replace = TRUE),
                   nrow = H, ncol = n_replicates)
   rep <- matrix(w, nrow = n, ncol = n_replicates)
@@ -712,7 +712,7 @@ morie_weights_bootstrap <- function(weights, n_replicates = 200,
                                     strata = NULL, seed = 42) {
   w <- as.numeric(weights)
   n <- length(w)
-  set.seed(seed)
+  .morie_local_seed(seed)
   rep <- matrix(0, nrow = n, ncol = n_replicates)
   if (is.null(strata)) {
     for (r in seq_len(n_replicates)) {
@@ -750,7 +750,7 @@ morie_weights_bootstrap <- function(weights, n_replicates = 200,
 morie_weights_sdr <- function(weights, n_replicates = 100, seed = 42) {
   w <- as.numeric(weights)
   n <- length(w)
-  set.seed(seed)
+  .morie_local_seed(seed)
   rep <- matrix(w, nrow = n, ncol = n_replicates)
   for (r in seq_len(n_replicates)) {
     signs <- sample(c(-1, 1), n, replace = TRUE)

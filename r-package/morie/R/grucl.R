@@ -40,9 +40,9 @@ morie_grucl_gru_cell <- function(x, h_prev = NULL, W = NULL, U = NULL, b = NULL,
   H <- as.integer(hidden_size)
   if (is.null(h_prev)) h_prev <- rep(0, H)
   if (!is.null(deterministic_seed)) {
-    morie_det_rng("grucl", deterministic_seed)
+    .morie_local_det_rng("grucl", deterministic_seed)
   } else {
-    set.seed(seed)
+    .morie_local_seed(seed)
   }
   if (is.null(W)) W <- matrix(stats::rnorm(3 * H * n_in, 0, 0.1), 3 * H, n_in)
   if (is.null(U)) U <- matrix(stats::rnorm(3 * H * H, 0, 0.1), 3 * H, H)

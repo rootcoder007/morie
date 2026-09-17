@@ -339,7 +339,7 @@ score_data_quality <- function(data, date_cols = NULL, freshness_days = 365L,
 .val_cv_indices <- function(n, n_folds, method, y = NULL,
                              groups = NULL, n_repeats = 10L,
                              random_state = 42L) {
-  set.seed(random_state)
+  .morie_local_seed(random_state)
   switch(method,
     "kfold" = {
       ord <- sample.int(n)
@@ -530,7 +530,7 @@ nested_cross_validate <- function(fit_fn = NULL, predict_fn = NULL,
   n_configs <- length(configs)
 
   # Fold assignment (outer)
-  set.seed(random_state)
+  .morie_local_seed(random_state)
   outer_folds_vec <- sample(rep(seq_len(outer_k), length.out = n))
 
   outer_scores <- numeric(outer_k)
@@ -546,7 +546,7 @@ nested_cross_validate <- function(fit_fn = NULL, predict_fn = NULL,
     }
 
     # Inner folds
-    set.seed(random_state + k)
+    .morie_local_seed(random_state + k)
     inner_folds_vec <- sample(rep(seq_len(inner_k), length.out = n_tr))
 
     inner_scores <- numeric(n_configs)
@@ -609,7 +609,7 @@ bootstrap_validate <- function(fit_fn, predict_fn, X, y,
   X <- as.matrix(X)
   y <- as.vector(y)
   n <- length(y)
-  set.seed(random_state)
+  .morie_local_seed(random_state)
   apparent <- .val_score(scoring, y, predict_fn(fit_fn(X, y), X))
   oob <- numeric(0)
   for (.i in seq_len(n_bootstraps)) {
@@ -720,7 +720,7 @@ assess_discrimination <- function(y_true, y_pred, y_pred_ref = NULL,
   y_true <- as.integer(y_true)
   y_pred <- as.numeric(y_pred)
   auroc <- .val_auc(y_true, y_pred)
-  set.seed(random_state)
+  .morie_local_seed(random_state)
   boots <- numeric(0)
   for (.i in seq_len(n_bootstrap)) {
     idx <- sample.int(length(y_true), length(y_true), replace = TRUE)
@@ -822,7 +822,7 @@ detect_overfitting <- function(fit_fn, predict_fn, X, y,
   X <- as.matrix(X)
   y <- as.vector(y)
   n <- length(y)
-  set.seed(random_state)
+  .morie_local_seed(random_state)
   apparent <- .val_score(scoring, y, predict_fn(fit_fn(X, y), X))
   opt <- numeric(0)
   for (.i in seq_len(n_bootstrap)) {

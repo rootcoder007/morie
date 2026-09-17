@@ -30,6 +30,21 @@ morie_normal_pdf <- function(x, mean = 0, sd = 1) {
   }
 }
 
+# The mean and variance kernels live in rmoriebricklayer (the shared
+# core). morie vendors the same kernel and uses it whenever bricklayer
+# does not resolve at 0.5.1 or newer: older builds summed naively and
+# overflowed on rep(1e308, 3). Decided once per session.
+.morie_shared_core_state <- new.env(parent = emptyenv())
+.morie_shared_core <- function() {
+  ok <- .morie_shared_core_state[["ok"]]
+  if (is.null(ok)) {
+    ok <- tryCatch(utils::packageVersion("rmoriebricklayer") >= "0.5.1",
+                   error = function(e) FALSE)
+    assign("ok", isTRUE(ok), envir = .morie_shared_core_state)
+  }
+  .morie_shared_core_state[["ok"]]
+}
+
 #' Fast mean
 #'
 #' Single-pass C++ kernel.  Equivalent to \code{mean(x)}.
@@ -39,7 +54,7 @@ morie_normal_pdf <- function(x, mean = 0, sd = 1) {
 #' morie:::morie_mean(1:10)
 morie_mean <- function(x) {
   if (.cpp_available()) {
-    morie_mean_cpp(as.numeric(x))
+    morie_mean_cpp(as.numeric(x), .morie_shared_core())
   } else {
     mean(x)
   }
@@ -53,7 +68,7 @@ morie_mean <- function(x) {
 #' @keywords internal
 morie_var <- function(x, ddof = 1) {
   if (.cpp_available()) {
-    morie_var_cpp(as.numeric(x), as.integer(ddof))
+    morie_var_cpp(as.numeric(x), as.integer(ddof), .morie_shared_core())
   } else {
     n <- length(x)
     if (n - ddof <= 0) {
