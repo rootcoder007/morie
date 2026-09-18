@@ -50,7 +50,7 @@
 #' Value iteration for a finite Markov decision process
 #'
 #' Repeats the Bellman optimality sweep
-#' V(s) <- max_a sum_s2 P(s2|s,a) [ r(s,a) + gamma V(s2) ] until the
+#' V(s) <- max_a sum_s2 P(s2|s,a) \[ r(s,a) + gamma V(s2) \] until the
 #' largest change in a sweep falls below \code{tol}, then returns the
 #' deterministic greedy policy with ties broken to the lowest action
 #' index (Sutton & Barto 2018, Sec. 4.4 boxed algorithm, p. 83).

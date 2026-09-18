@@ -376,7 +376,7 @@
 #' no BIC formula is printed there. The formula used here is the
 #' standard Gaussian one, stated so nothing is attributed to the book
 #' that the book does not say:
-#' score(G) = sum_j [-n/2 (log(2 pi s2_j) + 1)] - (log n / 2) k.
+#' score(G) = sum_j \[-n/2 (log(2 pi s2_j) + 1)\] - (log n / 2) k.
 #' @param data numeric matrix, one row per observation
 #' @param dag edge matrix or list(node = children)
 #' @param names column names matching the DAG node labels

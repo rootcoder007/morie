@@ -653,7 +653,7 @@ morie_kamath_ch3_cloze_prompt_template <- function(
 
 #' Top-1 prompt selection accuracy (Kamath Eq 3.8)
 #'
-#' A(t) = mean over (x, y) of 1[y = argmax_y' P_LM(y'|x, t)]. A proportion,
+#' A(t) = mean over (x, y) of 1\[y = argmax_y' P_LM(y'|x, t)\]. A proportion,
 #' never a mean of the inputs.
 #'
 #' @param R List of `list(x, y)` pairs.
@@ -687,7 +687,7 @@ morie_kamath_ch3_top1_prompt_metric <- function(R, t, P_LM) {
 #'
 #' @param t Candidate prompt.
 #' @param thatt Pivot translation.
-#' @param p_forward,p_backward Leg probabilities in [0, 1].
+#' @param p_forward,p_backward Leg probabilities in \[0, 1\].
 #' @return List with `estimate`.
 #' @export
 #' @examples
@@ -1063,7 +1063,7 @@ morie_kamath_ch4_krona_efficient <- function(A, B, x) {
 #'
 #' @details One merge serves both Python modules exactly as km061 imports
 #' km062's `_tuned`: km062 -> `morie_kamath_ch4_krona_tuned_weights`
-#' (W + s [A_k (x) B_k]), km061 -> `morie_kamath_ch4_krona_output`
+#' (W + s \[A_k (x) B_k\]), km061 -> `morie_kamath_ch4_krona_output`
 #' (that merged weight applied to X). s = 0 returns W unchanged.
 #'
 #' @param W Base weight.
@@ -1300,7 +1300,7 @@ morie_kamath_ch5_reward_kl_penalty <- function(x, y, pi_RL, pi_SFT, beta,
 
 #' RLHF objective and PPO loss (Kamath Eq 5.4-5.5)
 #'
-#' E[r] - beta KL(pi_theta || pi_ref), maximised.
+#' E\[r\] - beta KL(pi_theta || pi_ref), maximised.
 #'
 #' @details One core serves both Python modules exactly as km068 calls
 #' km069 per prompt and negates the mean: km069 ->
@@ -2562,10 +2562,10 @@ morie_kamath_ch6_affect_lm <- function(U, V, f, g, c, e, beta, b) {
 
 #' GeDi combined loss (Kamath Eq 6.29)
 #'
-#' lam L_g + (1 - lam) L_d, a convex combination, so lam is confined to [0, 1].
+#' lam L_g + (1 - lam) L_d, a convex combination, so lam is confined to \[0, 1\].
 #'
 #' @param L_g,L_d Component losses.
-#' @param lam Mixing weight in [0, 1].
+#' @param lam Mixing weight in \[0, 1\].
 #' @return List with `estimate`, `contributions`.
 #' @export
 #' @examples
@@ -2651,7 +2651,7 @@ morie_kamath_ch6_pii_likelihood <- function(a_m, A, x, L_q, L_r) {
 
 #' Differential privacy check (Kamath Eq 6.32)
 #'
-#' Checks P[M(A) in S] <= e^eps P[M(B) in S] and reports the epsilon that
+#' Checks P\[M(A) in S\] <= e^eps P\[M(B) in S\] and reports the epsilon that
 #' would be required.
 #'
 #' @param M Function dataset -> named outcome distribution.
@@ -2812,7 +2812,7 @@ morie_kamath_ch8_perplexity <- function(X, N = NULL, p_theta = NULL) {
 
 #' BLEU clipped n-gram precision (Kamath Eq 8.2)
 #'
-#' @param n_grams Matrix or vector of [clipped_matches, total_generated].
+#' @param n_grams Matrix or vector of \[clipped_matches, total_generated\].
 #' @return List with `estimate`, `p_n`.
 #' @export
 #' @examples
@@ -2840,7 +2840,7 @@ morie_kamath_ch8_bleu_precision <- function(n_grams) {
 #' `morie_kamath_ch8_bleu_final` (BP times that mean). Any zero precision
 #' collapses the mean to 0 and the log mean to -Inf.
 #'
-#' @param p_n Precisions in [0, 1].
+#' @param p_n Precisions in \[0, 1\].
 #' @param N Optional order count.
 #' @return List with `estimate`, `log_mean`, `p_n`.
 #' @export
@@ -3437,7 +3437,7 @@ morie_kamath_ch9_clip_contrastive_total <- function(L_i2t, L_t2i) {
 #' `morie_kamath_ch9_itm_hard_negative` (the same sum with a hard-negative
 #' set).
 #'
-#' @param Pos,Neg Probabilities of the correct label in [0, 1].
+#' @param Pos,Neg Probabilities of the correct label in \[0, 1\].
 #' @return List with `estimate`, `positive_loss`, `negative_loss`.
 #' @export
 #' @examples
@@ -3662,7 +3662,7 @@ morie_kamath_ch9_itg_loss <- function(x, y) {
 
 #' Frame order modelling loss (Kamath Eq 9.15)
 #'
-#' -sum log P[frame, true timestamp]. `r_i` and `t_i` are 0-BASED indices
+#' -sum log P\[frame, true timestamp\]. `r_i` and `t_i` are 0-BASED indices
 #' into P.
 #'
 #' @param r_i Frame indices.
@@ -4602,7 +4602,7 @@ morie_kamath_crowspairs_bias <- function(stereo_pll, anti_pll) {
 #' is banker's rounding in both languages.
 #'
 #' @param scales_fp32 Block scales.
-#' @param bits Code width in [2, 16].
+#' @param bits Code width in \[2, 16\].
 #' @return List with `estimate` (max error), `scales_int8`, `shared_const`.
 #' @export
 #' @examples
@@ -5037,7 +5037,7 @@ morie_kamath_groundedness_reward <- function(y_tokens, ctx_tokens,
 #' lam * dense + (1 - lam) * sparse, ranked; `ranking` is 0-BASED.
 #'
 #' @param s_dense,s_sparse Arm scores.
-#' @param lam Mixing weight in [0, 1].
+#' @param lam Mixing weight in \[0, 1\].
 #' @param normalize Min-max the arms first.
 #' @return List with `scores`, `ranking`, `estimate`.
 #' @export
@@ -5120,7 +5120,7 @@ morie_kamath_hyde_hypothetical_doc <- function(query, model, embeddings,
 
 #' In-context learning conditional probability (Kamath Ch 3)
 #'
-#' P(y | [ex_1..ex_K, x]) from a caller-supplied LM.
+#' P(y | \[ex_1..ex_K, x\]) from a caller-supplied LM.
 #'
 #' @param demonstrations Exemplar strings.
 #' @param query Test input.
@@ -5218,7 +5218,7 @@ morie_kamath_image_text_contrastive <- function(I_emb, T_emb, tau) {
 
 #' Image-text matching head (Kamath Ch 9)
 #'
-#' p = sigmoid(w . [I; T] + b), or a caller-supplied fusion.
+#' p = sigmoid(w . \[I; T\] + b), or a caller-supplied fusion.
 #'
 #' @param image_emb,text_emb Embeddings.
 #' @param W Head weights.
@@ -5227,8 +5227,8 @@ morie_kamath_image_text_contrastive <- function(I_emb, T_emb, tau) {
 #' @return List with `estimate`, `logit`, `match`, `fused`.
 #' @export
 #' @examples
-#' morie_kamath_image_text_matching(image_emb = list(a = 1, b = 2), text_emb =
-#' matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), W = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L)
+#' morie_kamath_image_text_matching(image_emb = list(a = 1, b = 2),
+#'   text_emb = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), W = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L)
 morie_kamath_image_text_matching <- function(image_emb, text_emb, W, b,
                                              fuse = NULL) {
   I <- as.numeric(image_emb)
@@ -5358,7 +5358,7 @@ morie_kamath_lora_weight_update <- function(W0, A, B, alpha, r, x) {
 
 #' LLaVA visual instruction assembly (Kamath Ch 9)
 #'
-#' [W ViT(image); text] soft tokens; with `lm_head` and `targets` the causal
+#' \[W ViT(image); text\] soft tokens; with `lm_head` and `targets` the causal
 #' cross entropy is added. `targets` are 0-BASED with -100 ignored.
 #'
 #' @param image Image.
@@ -5870,7 +5870,7 @@ morie_kamath_nextgpt_any2any <- function(inputs_by_modality, encoders, llm,
 
 #' P-tuning v2 deep prefix concatenation (Kamath Ch 4)
 #'
-#' [P_K_l; K_l] and [P_V_l; V_l] at every layer.
+#' \[P_K_l; K_l\] and \[P_V_l; V_l\] at every layer.
 #'
 #' @param prefixes_by_layer List of list(P_K, P_V) per layer.
 #' @param inputs_by_layer List of list(K, V) per layer.
@@ -6085,7 +6085,7 @@ morie_kamath_ppo_rlhf_objective <- function(rewards, logp_theta, logp_ref,
 
 #' Prefix tuning key/value concatenation (Kamath Ch 4)
 #'
-#' [P_K; K] and [P_V; V]; with `Q` the attention is run through
+#' \[P_K; K\] and \[P_V; V\]; with `Q` the attention is run through
 #' `morie_alammar_sdp_attention`.
 #'
 #' @param prefix_K,prefix_V Virtual key/value tokens.
@@ -6094,9 +6094,9 @@ morie_kamath_ppo_rlhf_objective <- function(rewards, logp_theta, logp_ref,
 #' @return List with `K`, `V`, `prefix_len`, `n_trainable`.
 #' @export
 #' @examples
-#' morie_kamath_prefix_tuning(prefix_K = c(1, 2, 3, 4, 5, 6, 7, 8), prefix_V = c(1, 2, 3,
-#' 4, 5, 6, 7, 8), K_input = c(1, 2, 3, 4, 5, 6, 7, 8), V_input = c(1, 2, 3, 4, 5, 6, 7,
-#' 8))
+#' morie_kamath_prefix_tuning(prefix_K = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   prefix_V = c(1, 2, 3, 4, 5, 6, 7, 8), K_input = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   V_input = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_kamath_prefix_tuning <- function(prefix_K, prefix_V, K_input, V_input,
                                        Q = NULL) {
   PK <- as.matrix(prefix_K)
@@ -6130,7 +6130,7 @@ morie_kamath_prefix_tuning <- function(prefix_K, prefix_V, K_input, V_input,
 
 #' Prompt tuning soft-prompt prepend (Kamath Ch 4)
 #'
-#' X_aug = [P; X]; only the L_p x d prompt is trained.
+#' X_aug = \[P; X\]; only the L_p x d prompt is trained.
 #'
 #' @param P Soft prompt rows.
 #' @param X Input embedding rows.

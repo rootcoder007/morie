@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_filt2.R
 \name{HannW}
 \alias{HannW}
-\title{W(n) = 0.5\link{1 - cos(2 pi n/(N-1))}.  Reaches exactly zero at both
+\title{W(n) = 0.5[1 - cos(2 pi n/(N-1))].  Reaches exactly zero at both
 ends,}
 \usage{
 HannW(N)
@@ -21,3 +21,7 @@ so overlapped Hann windows add to a constant at 50 per cent overlap
 Not to be confused with the Hann FILTER of eq (3.100), a three-tap
 1:2:1 smoother; this is a taper applied to a data segment.
 }
+\examples{
+HannW(N = 5L)
+}
+\keyword{internal}

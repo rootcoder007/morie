@@ -21,7 +21,7 @@ morie_geron_batch_normalization(
 
 \item{eps}{Variance floor.}
 
-\item{momentum}{EMA factor in \link{0, 1}.}
+\item{momentum}{EMA factor in [0, 1].}
 
 \item{running_mean, running_var}{Optional previous statistics.}
 }

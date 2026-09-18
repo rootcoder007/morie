@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #' beta-VAE objective with an optional capacity target
 #'
-#' L = E_q[log p(x|z)] - beta D_KL(q||p) with
+#' L = E_q\[log p(x|z)\] - beta D_KL(q||p) with
 #' D_KL = 0.5 sum_j (mu_j^2 + sigma_j^2 - 1 - log sigma_j^2); the
 #' capacity variant uses gamma |D_KL - C| in place of beta D_KL.
 #'
@@ -21,8 +21,8 @@
 #'   in the local corpus and was not read.
 #' @export
 #' @examples
-#' Betavae(x = c(1, 2, 3, 4, 5, 6, 7, 8), xhat = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2,
-#' 3, 4, 5, 6, 7, 8), logvar = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' Betavae(x = c(1, 2, 3, 4, 5, 6, 7, 8), xhat = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   mu = c(1, 2, 3, 4, 5, 6, 7, 8), logvar = c(1, 2, 3, 4, 5, 6, 7, 8))
 Betavae <- function(x, xhat, mu, logvar, beta = 4, capacity = NULL,
                     gamma = NULL, noisevar = 1) {
   x <- .t1_vec(x)

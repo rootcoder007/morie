@@ -17,7 +17,7 @@ c51_update(
 \arguments{
 \item{reward}{Sampled reward r.}
 
-\item{gamma}{Discount in \link{0, 1}. Ignored when \code{done = TRUE}.}
+\item{gamma}{Discount in [0, 1]. Ignored when \code{done = TRUE}.}
 
 \item{next_probs_by_action}{List of per-action next-state
 distributions.}
@@ -42,3 +42,12 @@ Returns a RichResult-style named list with the projected target
 it was chosen by, and the Q values for the current and target
 distributions.
 }
+\examples{
+r <- c51_update(reward = 1, gamma = 0.9,
+                next_probs_by_action = list(rep(0.2, 5),
+                                            c(0.1, 0.1, 0.2, 0.3, 0.3)),
+                current_probs = rep(0.2, 5),
+                v_min = -10, v_max = 10)
+str(r, max.level = 1)
+}
+\keyword{internal}

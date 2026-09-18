@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_xfrm.R
 \name{EvenPart}
 \alias{EvenPart}
-\title{Eq (3.92): x_e(n) = 0.5 \link{x(n) + x(-n)}.  x(-n) must exist, so the}
+\title{Eq (3.92): x_e(n) = 0.5 [x(n) + x(-n)].  x(-n) must exist, so the}
 \usage{
 EvenPart(x, n = NULL)
 }
@@ -18,3 +18,8 @@ A vector, from \code{c}.
 index grid has to be symmetric; reflecting a causal sequence about 0
 instead computes x/2, which is something else entirely.
 }
+\examples{
+S <- c("a", "b", "c")
+EvenPart(S)
+}
+\keyword{internal}

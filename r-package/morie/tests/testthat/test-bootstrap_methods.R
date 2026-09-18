@@ -202,7 +202,7 @@ test_that("bootstrap_methods internal cross_validate / repeated_cv / leave_one_o
   # leave_one_out_cv but they are shadowed in the package namespace by
   # validation.R's cross_validate. Reach them directly via the source
   # so we still cover those branches.
-  ns <- asNamespace("morie")
+  ns <- asNamespace("rmorie")
   # The package namespace only carries the LAST-loaded definition; the
   # bootstrap_methods.R versions still exist as the file is sourced.
   # We can't easily get the shadowed copies, so we exercise the
@@ -226,4 +226,53 @@ test_that("bootstrap_methods internal cross_validate / repeated_cv / leave_one_o
   # signature), so they error. Just confirm the symbols exist.
   expect_true(exists("repeated_cv", envir = ns, inherits = FALSE))
   expect_true(exists("leave_one_out_cv", envir = ns, inherits = FALSE))
+})
+
+# ---------------------------------------------------------------------------
+# Phase 1.i new extender interfaces
+# ---------------------------------------------------------------------------
+
+test_that("morie_boot_run + morie_boot_basic_ci round-trip (native)", {
+  bo <- morie_boot_run(x_vec, mean, R = 100L)
+  expect_s3_class(bo, "morie_boot")
+  cis <- morie_boot_basic_ci(bo, type = c("perc", "basic", "norm"),
+                             conf = 0.95)
+  expect_named(cis, c("perc", "basic", "norm"))
+  for (nm in names(cis)) {
+    expect_length(cis[[nm]], 2L)
+    expect_true(cis[[nm]][1L] <= cis[[nm]][2L])
+  }
+})
+
+test_that("morie_boot_run respects strata argument", {
+  strata <- rep(c("a", "b"), each = 20)
+  bo <- morie_boot_run(x_vec, mean, R = 60L, strata = strata)
+  expect_s3_class(bo, "morie_boot")
+  expect_equal(nrow(bo$t), 60L)
+})
+
+test_that("morie_rsample_bootstraps returns an rset", {
+  skip_if_not_installed("rsample")
+  df <- data.frame(x = x_vec)
+  rs <- morie_rsample_bootstraps(df, times = 5L)
+  expect_s3_class(rs, "bootstraps")
+  expect_equal(nrow(rs), 5L)
+})
+
+test_that("morie_simpleboot_two computes two-sample bootstrap", {
+  bo <- morie_simpleboot_two(x_vec[1:20], x_vec[21:40],
+                             statistic = mean, R = 50L)
+  # Native two-sample bootstrap returns a morie_boot object whose t is
+  # an R x 1 replicate matrix.
+  expect_s3_class(bo, "morie_boot")
+  expect_equal(nrow(bo$t), 50L)
+})
+
+test_that("extender functions error informatively when pkg missing", {
+  # We can't really uninstall packages mid-test; just smoke-test that
+  # the wrappers exist and have the documented signatures.
+  expect_true(is.function(morie_boot_run))
+  expect_true(is.function(morie_boot_basic_ci))
+  expect_true(is.function(morie_rsample_bootstraps))
+  expect_true(is.function(morie_simpleboot_two))
 })

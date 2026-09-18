@@ -551,10 +551,9 @@ morie_omega_squared <- function(f_stat, df_between, df_within, n) {
 #' Cramer's V for categorical association
 #'
 #' @param contingency_table A numeric matrix of observed counts.
-#' @return Numeric Cramer's V in the interval [0, 1].
+#' @return Numeric Cramer's V in the interval \[0, 1\].
 #' @examples
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
+#' morie_cramers_v(matrix(c(10, 20, 30, 40), nrow = 2))
 #' @export
 morie_cramers_v <- function(contingency_table) {
   m <- as.matrix(contingency_table)

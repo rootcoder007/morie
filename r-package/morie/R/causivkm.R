@@ -96,7 +96,7 @@ Ivclr <- function(y, X, Z, beta0 = 0, X_exog = NULL, add_intercept = TRUE) {
 #' @param qT Conditioning value of Q_T.
 #' @param L Number of instruments.
 #' @param df2 Denominator degrees of freedom, used only when L = 1.
-#' @return Numeric p-value in [0, 1].
+#' @return Numeric p-value in \[0, 1\].
 #' @examples
 #' Morieclrp(2, 3, 2, 50)
 #' @export

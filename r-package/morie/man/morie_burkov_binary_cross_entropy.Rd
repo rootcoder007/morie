@@ -7,10 +7,17 @@
 morie_burkov_binary_cross_entropy(y_hat, y)
 }
 \arguments{
-\item{y_hat}{Predicted probabilities in \link{0, 1}.}
+\item{y_hat}{Predicted probabilities in [0, 1].}
 
 \item{y}{Targets, 0 or 1.}
+}
+\value{
+A list with \code{losses}, \code{estimate}, \code{mean_loss}, \code{n}, \code{method}.
 }
 \description{
 Binary cross-entropy for one example (Burkov Eq 1.9)
 }
+\examples{
+morie_burkov_binary_cross_entropy(0.5, 1)
+}
+\keyword{internal}

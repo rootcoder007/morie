@@ -164,7 +164,7 @@ PdfMean <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
     .morie_rg_checkpdf(mass))
 }
 
-#' Eq (3.2): E[eta^2].  Equal to the variance only when mu = 0, so both
+#' Eq (3.2): E\[eta^2\].  Equal to the variance only when mu = 0, so both
 #'
 #' are returned rather than one being assumed for the other.
 #'
@@ -174,6 +174,9 @@ PdfMean <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
 #' @param upper Passed to \code{.morie_rg_pdfint}. Defaults to \code{Inf}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' PdfMS(x = seq(-4, 4, by = 0.01), p = dnorm(seq(-4, 4, by = 0.01)))
+#' @keywords internal
 PdfMS <- function(pdf = NULL, x = NULL, lower = -Inf, upper = Inf) {
   # eq (3.2): E[eta^2].  Equal to the variance only when mu = 0, so both
   # are returned rather than one being assumed for the other.
@@ -602,7 +605,7 @@ DeltaArea <- function(t = NULL, values = NULL, width = NULL) {
 #' Eq (3.26): delta(t) = 0.5 lim_\{a->0\} a |t|^(a-1).  The exponent is
 #'
 #' negative for every a in (0,1), so the function diverges at t = 0 (NA,
-#' not a large finite number).  Its integral over [-L, L] is L^a, which
+#' not a large finite number).  Its integral over \[-L, L\] is L^a, which
 #' tends to 1 as a -> 0 -- the unit-area property in the limit.
 #'
 #' @param t Passed to \code{.morie_rg_aslist}.
@@ -610,6 +613,9 @@ DeltaArea <- function(t = NULL, values = NULL, width = NULL) {
 #' @return A list with \code{values}, \code{t}, \code{a}, \code{area_symmetric},
 #' \code{half_width}, \code{method}.
 #' @export
+#' @examples
+#' DeltaLim(t = seq(-1, 1, by = 0.05), a = 0.01)
+#' @keywords internal
 DeltaLim <- function(t, a) {
   # eq (3.26): delta(t) = 0.5 lim_{a->0} a |t|^(a-1).  The exponent is
   # negative for every a in (0,1), so the function diverges at t = 0 (NA,

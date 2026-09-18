@@ -14,7 +14,7 @@ List with \code{count}, \code{times} (indices of records), \code{values}, \code{
 \code{variance}, \code{z}, \code{n}.
 }
 \description{
-Formula: R_n = sum_i 1\{X_i > max(X_1..X_\{i-1\})\}; E\link{R_n} = sum_i 1/i; Var\link{R_n}
+Formula: R_n = sum_i 1\{X_i > max(X_1..X_\{i-1\})\}; E[R_n] = sum_i 1/i; Var[R_n]
 = sum_i (1/i - 1/i^2)
 }
 \examples{

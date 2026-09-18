@@ -13,5 +13,9 @@ morie_sctraj_cosine_cdf(u)
 A numeric value.
 }
 \description{
-on \link{-1/2, 1/2}, so F(u) = u + 1/2 + sin(2 pi u)/(2 pi).
+on [-1/2, 1/2], so F(u) = u + 1/2 + sin(2 pi u)/(2 pi).
 }
+\examples{
+morie_sctraj_cosine_cdf(u = 5L)
+}
+\keyword{internal}

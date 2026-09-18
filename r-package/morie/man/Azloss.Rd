@@ -7,7 +7,7 @@
 Azloss(z, v, pi, p, theta = NULL, c = 1e-04)
 }
 \arguments{
-\item{z}{game outcome in \link{-1, 1}.}
+\item{z}{game outcome in [-1, 1].}
 
 \item{v}{value-head output.}
 

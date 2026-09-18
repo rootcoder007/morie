@@ -36,13 +36,13 @@ Betavae(
 List with objective, recon, kl, klper, penalty, beta, J, d.
 }
 \description{
-L = E_q\link{log p(x|z)} - beta D_KL(q||p) with
+L = E_q[log p(x|z)] - beta D_KL(q||p) with
 D_KL = 0.5 sum_j (mu_j^2 + sigma_j^2 - 1 - log sigma_j^2); the
 capacity variant uses gamma |D_KL - C| in place of beta D_KL.
 }
 \examples{
-Betavae(x = c(1, 2, 3, 4, 5, 6, 7, 8), xhat = c(1, 2, 3, 4, 5, 6, 7, 8), mu = c(1, 2,
-3, 4, 5, 6, 7, 8), logvar = c(1, 2, 3, 4, 5, 6, 7, 8))
+Betavae(x = c(1, 2, 3, 4, 5, 6, 7, 8), xhat = c(1, 2, 3, 4, 5, 6, 7, 8),
+  mu = c(1, 2, 3, 4, 5, 6, 7, 8), logvar = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Higgins et al. (2017), ICLR; capacity form from Burgess et

@@ -24,6 +24,11 @@ squares; the book fits (14.14) in BGLR, where the prior on each block
 resolves that.  The default reference = TRUE drops the first
 environment block, the same reference coding the book applies to the
 environment design itself on p.607, where its code reads X_E =
-model.matrix(~0+Env, data = dat_F)\link{, -1}.  Pass reference = FALSE for
+model.matrix(~0+Env, data = dat_F)[, -1].  Pass reference = FALSE for
 the redundant parameterization as printed.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_fda_env_interaction(V, V)
+}
+\keyword{internal}

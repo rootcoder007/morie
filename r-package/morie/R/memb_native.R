@@ -279,16 +279,20 @@ synthesize_marginals <- function(X, n, seed = 0) {
 
 #' synthesize_noisy
 #'
-#' A step of the memb_native implementation. No other function in the package calls it.
+#' A step of the memb_native implementation. Called by \code{morie_memb}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param X A vector; indexed elementwise.
-#' @param fraction The body requires: memb: fraction must lie in [0, 1]. Defaults to \code{0.1}.
+#' @param fraction The body requires: memb: fraction must lie in \[0, 1\]. Defaults to \code{0.1}.
 #' @param feature_values Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param seed Passed to \code{.memb_rng}. Defaults to \code{0}.
+#' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' synthesize_noisy(V)
+#' @keywords internal
 synthesize_noisy <- function(X, fraction = 0.1, feature_values = NULL, seed = 0) {
   if (fraction < 0 || fraction > 1) stop("memb: fraction must lie in [0, 1]")
   e <- .memb_rng(seed)

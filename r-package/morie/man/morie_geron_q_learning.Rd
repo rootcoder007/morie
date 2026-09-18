@@ -17,7 +17,7 @@ morie_geron_q_learning(Q, s, a, r, s_next, alpha, gamma, done = FALSE)
 
 \item{alpha}{In (0, 1].}
 
-\item{gamma}{In \link{0, 1}.}
+\item{gamma}{In [0, 1].}
 
 \item{done}{Terminal.}
 }

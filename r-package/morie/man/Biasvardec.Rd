@@ -19,7 +19,7 @@ List with \code{bias2}, \code{variance}, \code{irreducible}, \code{total},
 \code{bias2_point}, \code{variance_point}, \code{R}, \code{n}.
 }
 \description{
-Formula: E(y - fhat)^2 = Var(e) + Bias\link{fhat}^2 + Var(fhat)
+Formula: E(y - fhat)^2 = Var(e) + Bias[fhat]^2 + Var(fhat)
 }
 \examples{
 set.seed(1)

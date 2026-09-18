@@ -150,13 +150,14 @@ morie_marginal_integration <- function(x, y, bandwidth = NULL, j = 1L,
 #' @param kappa series terms per component; \code{ceiling(n^(1/5))}
 #'   when NULL, at least 2.
 #' @param local_linear use the local-linear second stage.
-#' @param grid evaluation points on the rescaled [-1, 1] support.
+#' @param grid evaluation points on the rescaled \[-1, 1\] support.
 #' @return list: grid, m_hat, mu_hat, theta, kappa, bandwidth,
 #'   oracle_efficient, iterative, rate_exponent,
 #'   max_smoothing_dimension, curse_of_dimensionality, n, d, method.
 #' @references Horowitz, Sec. 3.1.3, eqs. (3.15)-(3.18);
 #'   Horowitz and Mammen (2004).
 #' @examples
+#' set.seed(1)
 #' x <- matrix(runif(800, -1, 1), ncol = 2)
 #' y <- 2 + sin(pi * x[, 1]) + x[, 2]^2 - 1 / 3 + rnorm(400) * 0.2
 #' morie_two_step_additive(x, y)$oracle_efficient

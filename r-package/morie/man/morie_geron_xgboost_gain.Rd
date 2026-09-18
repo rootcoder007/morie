@@ -18,7 +18,7 @@ List with \code{gain}, \code{left_score}, \code{right_score},
 \code{parent_score}, \code{left_weight}, \code{right_weight}, \code{should_split}.
 }
 \description{
-Gain = 0.5 \link{GL^2/(HL+l) + GR^2/(HR+l) - G^2/(H+l)} - gamma; a
+Gain = 0.5 [GL^2/(HL+l) + GR^2/(HR+l) - G^2/(H+l)] - gamma; a
 negative gain means prune.
 }
 \examples{

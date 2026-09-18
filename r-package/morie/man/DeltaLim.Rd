@@ -17,6 +17,10 @@ A list with \code{values}, \code{t}, \code{a}, \code{area_symmetric},
 }
 \description{
 negative for every a in (0,1), so the function diverges at t = 0 (NA,
-not a large finite number).  Its integral over \link{-L, L} is L^a, which
+not a large finite number).  Its integral over [-L, L] is L^a, which
 tends to 1 as a -> 0 -- the unit-area property in the limit.
 }
+\examples{
+DeltaLim(t = seq(-1, 1, by = 0.05), a = 0.01)
+}
+\keyword{internal}

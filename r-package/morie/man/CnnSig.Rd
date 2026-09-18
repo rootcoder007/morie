@@ -24,5 +24,10 @@ A list with \code{maps}, \code{pooled}, \code{features}, \code{scores},
 \description{
 equations; the convolution, rectifier and pooling used here are those
 of LeCun, Bengio and Hinton, Nature 521(7553):436-444, 2015, which is
-reference \link{35} of that section.
+reference [35] of that section.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+CnnSig(V, V)
+}
+\keyword{internal}

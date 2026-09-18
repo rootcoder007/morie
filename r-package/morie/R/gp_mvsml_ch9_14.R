@@ -497,7 +497,7 @@ Penfreg <- function(y, X, P, lam, mu = NULL, tol = 1e-10) {
 #' resolves that.  The default reference = TRUE drops the first
 #' environment block, the same reference coding the book applies to the
 #' environment design itself on p.607, where its code reads X_E =
-#' model.matrix(~0+Env, data = dat_F)[, -1].  Pass reference = FALSE for
+#' model.matrix(~0+Env, data = dat_F)\[, -1\].  Pass reference = FALSE for
 #' the redundant parameterization as printed.
 #'
 #' @param X A matrix; indexed by row and column.
@@ -506,6 +506,10 @@ Penfreg <- function(y, X, P, lam, mu = NULL, tol = 1e-10) {
 #' @return A list with \code{X_EF}, \code{levels}, \code{kept_levels}, \code{reference},
 #' \code{n_columns}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_fda_env_interaction(V, V)
+#' @keywords internal
 morie_fda_env_interaction <- function(X, env, reference = TRUE) {
   X <- as.matrix(X)
   levels_ <- sort(unique(env))

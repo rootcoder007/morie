@@ -1044,11 +1044,11 @@ morie_geron_cart_split_cost <- function(X, y, feature, threshold,
 #' Binary classification by thresholding a logistic score (Geron Ch 3, hmbin)
 #'
 #' p_hat = sigmoid(X theta) computed branch-free (exp only on <= 0), then
-#' y_pred = 1[p_hat >= threshold].
+#' y_pred = 1\[p_hat >= threshold\].
 #'
 #' @param X Design matrix (bring your own intercept column).
 #' @param theta Coefficients.
-#' @param threshold Cut in [0, 1].
+#' @param threshold Cut in \[0, 1\].
 #' @param y_true Optional 0/1 labels for the confusion summary.
 #' @return List with `y_pred`, `p_hat`, `logit` and, when `y_true` is
 #'   given, `tp`, `fp`, `fn`, `tn`, `accuracy`, `precision`, `recall`, `f1`.
@@ -1658,7 +1658,7 @@ morie_geron_biological_neuron <- function(x, w, b, activation = "step") {
 #' @param x Mini-batch (n, d) or vector.
 #' @param gamma,beta Scale and shift.
 #' @param eps Variance floor.
-#' @param momentum EMA factor in [0, 1].
+#' @param momentum EMA factor in \[0, 1\].
 #' @param running_mean,running_var Optional previous statistics.
 #' @return List with `y`, `x_hat`, `mu`, `var`, `running_mean`, `running_var`.
 #' @export
@@ -2378,7 +2378,7 @@ morie_geron_blip2 <- function(image, text, n_query = 4, d_query = 8,
 #' @param logits_cls,logits_dist Matrices (B, C).
 #' @param y 0-based labels.
 #' @param teacher_preds Matrix (B, C) or vector of labels.
-#' @param alpha Distillation weight in [0, 1].
+#' @param alpha Distillation weight in \[0, 1\].
 #' @return List with `loss`, `loss_cls`, `loss_dist`, `teacher_labels`,
 #'   `teacher_agreement`, `accuracy_cls`, `accuracy_dist`.
 #' @export
@@ -2687,7 +2687,7 @@ morie_geron_detr_hungarian_matching <- function(pred_boxes, pred_classes,
 #' @param V Value table.
 #' @param s,s_next 0-based state indices.
 #' @param r Rewards.
-#' @param gamma Discount in [0, 1].
+#' @param gamma Discount in \[0, 1\].
 #' @param done Optional terminal flags.
 #' @return List with `advantage`, `td_target`, `value_s`, `value_s_next`,
 #'   `critic_loss`.
@@ -2773,7 +2773,7 @@ morie_geron_double_dqn_target <- function(Q_online, Q_target, s_next, r, gamma,
 
 #' Value iteration on the Bellman optimality operator (Geron Ch 19, hmbel)
 #'
-#' V*(s) = max_a [R(s,a) + gamma sum_s' P(s'|s,a) V*(s')]. `policy` is
+#' V*(s) = max_a \[R(s,a) + gamma sum_s' P(s'|s,a) V*(s')\]. `policy` is
 #' 0-based.
 #'
 #' @param V Initial values (S).
@@ -2834,7 +2834,7 @@ morie_geron_value_iteration <- function(V, P, R, gamma, tol = 1e-10,
 
 #' Q-value iteration (Geron Ch 19, morie.fn grbo)
 #'
-#' Q*(s,a) = sum_s' T(s,a,s')[R(s,a,s') + gamma max_a' Q*(s',a')]. Rows
+#' Q*(s,a) = sum_s' T(s,a,s')\[R(s,a,s') + gamma max_a' Q*(s',a')\]. Rows
 #' of `transitions` may sum to 1 (available) or 0 (unavailable).
 #' `policy` is 0-based.
 #'
@@ -3796,7 +3796,7 @@ morie_geron_cross_validation_score <- function(X, y, K, fit = NULL,
 #' tests should assert.
 #'
 #' @param X Training data (n, d).
-#' @param bottleneck Code width in [1, d].
+#' @param bottleneck Code width in \[1, d\].
 #' @param center Subtract feature means (this is what makes it PCA).
 #' @return List with `encoder`, `decoder`, `codes`, `reconstruction`,
 #'   `recon_error`, `explained_variance_ratio`, `mean`, `encode`, `decode`.
@@ -4089,7 +4089,7 @@ morie_geron_anomaly_autoencoder <- function(model, X, threshold = NULL,
 #'
 #' Latent -> projection -> spatial seed -> transposed-conv stack, batch
 #' norm + ReLU on every layer but the last, tanh on the output (which is
-#' why DCGAN data is scaled to [-1, 1]). The batch norm here is the
+#' why DCGAN data is scaled to \[-1, 1\]). The batch norm here is the
 #' whole-tensor population form, as in Python.
 #'
 #' @param z Latent vector.
@@ -5228,7 +5228,7 @@ morie_geron_bpe_merge <- function(corpus, n_merges) {
 #'
 #' @param X 0-based token ids, vector or (batch, T) matrix.
 #' @param n_layers,n_heads,d_model,d_ff Encoder geometry.
-#' @param d_embed Factorised width E in [1, d_model].
+#' @param d_embed Factorised width E in \[1, d_model\].
 #' @param vocab_size Optional; defaults to max(X) + 1.
 #' @param seed LCG seed.
 #' @return List with `hidden` (array batch x T x d), `n_params`,
@@ -5293,7 +5293,7 @@ morie_geron_albert <- function(X, n_layers = 4, n_heads = 2, d_model = 8,
 #'
 #' @param X 0-based token ids.
 #' @param n_layers,n_heads,d_model,d_ff Geometry.
-#' @param vocab_size Optional; one extra row is appended for [MASK].
+#' @param vocab_size Optional; one extra row is appended for \[MASK\].
 #' @param mask_prob Masking fraction in (0, 1).
 #' @param seed LCG seed.
 #' @return List with `hidden`, `mlm_loss`, `mlm_losses`, `masked_positions`,

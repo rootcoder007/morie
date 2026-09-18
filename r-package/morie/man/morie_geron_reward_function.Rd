@@ -12,9 +12,18 @@ morie_geron_reward_function(s, a, s_next, R = NULL, gamma = 1)
 
 \item{R}{Callable \verb{R(s,a,s')} or a 2-D/3-D lookup table.}
 
-\item{gamma}{Discount in \link{0, 1}.}
+\item{gamma}{Discount in [0, 1].}
+}
+\value{
+A list with \code{rewards}, \code{total_reward}, \code{returns}, \code{discounted_return}, \code{gamma}, \code{estimate}, \code{n}, \code{method}.
 }
 \description{
 Reward function R(s, a, s'): per-transition rewards and the backward discounted return
 (Geron Ch 19, hmrwd)
 }
+\examples{
+tbl <- array(c(0, 0, 2, 0, 1, 0, 0, 2), dim = c(2, 2, 2))
+morie_geron_reward_function(c(0, 1, 1), c(0, 0, 1), c(1, 0, 1),
+    R = tbl, gamma = 0.5)
+}
+\keyword{internal}

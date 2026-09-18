@@ -10,7 +10,7 @@
 #' Because the weights are estimated, the robust (sandwich) standard
 #' error is reported rather than the model-based one.
 #'
-#' Formula: E[Y^a|V] = b0 + b1 a + b2 V a + b3 V.
+#' Formula: E\[Y^a|V\] = b0 + b1 a + b2 V a + b3 V.
 #'
 #' @param y Outcome vector.
 #' @param A Treatment vector.

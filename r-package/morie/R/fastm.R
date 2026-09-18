@@ -25,7 +25,7 @@
 #' sequence and return the same numbers, not merely numbers of equal quality.
 #'
 #' @param X n-by-p data matrix.
-#' @param h subset size; defaults to [(n + p + 1)/2].
+#' @param h subset size; defaults to \[(n + p + 1)/2\].
 #' @param n_starts how many lexicographic elemental subsets to start from.
 #' @param max_iter cap on the C-steps for each retained subset.
 #' @param n_keep how many best subsets to iterate to convergence; the paper
@@ -34,10 +34,12 @@
 #'   n_starts_used, h, n, p, method.
 #' @keywords internal
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' X <- cbind(rnorm(40), rnorm(40))
 #' X[1:4, ] <- X[1:4, ] + 8   # four outliers
 #' Fastm(X)$estimate
+#' }
 #' @export
 Fastm <- function(X, h = NULL, n_starts = 500L, max_iter = 100L, n_keep = 10L) {
   Xm <- .s03mat(X)

@@ -19,9 +19,9 @@ morie_kamath_image_text_matching(image_emb, text_emb, W, b, fuse = NULL)
 List with \code{estimate}, \code{logit}, \code{match}, \code{fused}.
 }
 \description{
-p = sigmoid(w . \link{I; T} + b), or a caller-supplied fusion.
+p = sigmoid(w . [I; T] + b), or a caller-supplied fusion.
 }
 \examples{
-morie_kamath_image_text_matching(image_emb = list(a = 1, b = 2), text_emb =
-matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), W = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L)
+morie_kamath_image_text_matching(image_emb = list(a = 1, b = 2),
+  text_emb = matrix(c(1, 2, 3, 4, 5, 6), nrow = 2), W = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L)
 }

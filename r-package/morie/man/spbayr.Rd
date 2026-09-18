@@ -23,7 +23,7 @@ spbayr(
 
 \item{spatial_prior}{One of "exchangeable", "icar", "lcar".}
 
-\item{rho}{Leroux smoothing parameter in \link{0, 1}.}
+\item{rho}{Leroux smoothing parameter in [0, 1].}
 
 \item{n_time}{Number of periods; required for temporal or interaction terms.}
 

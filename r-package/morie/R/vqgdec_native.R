@@ -122,9 +122,9 @@ morie_vqgdec_decode_indices <- function(indices, codebook) {
 
 # adaptive_weight: lambda = grad_GL[L_rec] / (grad_GL[L_GAN] + delta)
 # Balances the two losses at the decoder's last layer.
-#' Adaptive_weight: lambda = grad_GL[L_rec] / (grad_GL[L_GAN] + delta)
+#' Adaptive_weight: lambda = grad_GL\[L_rec\] / (grad_GL\[L_GAN\] + delta)
 #'
-#' Balances the two losses at the decoder\'s last layer.
+#' Balances the two losses at the decoder's last layer.
 #'
 #' @param grad_rec Coerced to numeric by the body, with \code{as.numeric}.
 #' @param grad_gan Coerced to numeric by the body, with \code{as.numeric}.
@@ -132,6 +132,10 @@ morie_vqgdec_decode_indices <- function(indices, codebook) {
 #' @param clip Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{10000}.
 #' @return A list with \code{lambda}, \code{raw}, \code{clipped}, \code{note}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_vqgdec_adaptive_weight(V, V)
+#' @keywords internal
 morie_vqgdec_adaptive_weight <- function(grad_rec, grad_gan,
                                           delta = 1e-6, clip = 1e4) {
     gr <- abs(as.numeric(grad_rec))

@@ -15,7 +15,7 @@ Enetobj(X, y, beta, lam, alpha, add_intercept = TRUE)
 
 \item{lam}{Regularization parameter lambda; must be non-negative.}
 
-\item{alpha}{Mixing parameter in \link{0, 1}: 0 is the ridge penalty, 1 is the lasso penalty.}
+\item{alpha}{Mixing parameter in [0, 1]: 0 is the ridge penalty, 1 is the lasso penalty.}
 
 \item{add_intercept}{Treat the first entry of beta as an unpenalized intercept and
 prepend a column of ones to X.}

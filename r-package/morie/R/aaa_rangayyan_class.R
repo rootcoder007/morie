@@ -600,7 +600,7 @@ NormDist <- function(m1, m2, s1, s2) {
 
 #' Eq (10.117), the closed form of the symmetric divergence of
 #'
-#' eq (10.115): D = (1/2) tr[(Ci - Cj)(Cj^-1 - Ci^-1)] + (1/2) tr[(Ci^-1
+#' eq (10.115): D = (1/2) tr\[(Ci - Cj)(Cj^-1 - Ci^-1)\] + (1/2) tr[(Ci^-1
 #' + Cj^-1)(mi - mj)(mi - mj)^T] The second term resembles eq (10.112)
 #' and vanishes for equal means; the FIRST does not, so unlike d_n the
 #' divergence still separates classes differing only in covariance.
@@ -616,6 +616,9 @@ NormDist <- function(m1, m2, s1, s2) {
 #' \code{separates_equal_means_via_the_covariance_term},
 #' \code{additive_over_independent_features}, \code{method}.
 #' @export
+#' @examples
+#' Divergence(c(0, 0), c(0, 0), diag(2), diag(3, 2))
+#' @keywords internal
 Divergence <- function(m1, m2, C1, C2) {
   # eq (10.117), the closed form of the symmetric divergence of
   # eq (10.115):
@@ -684,7 +687,7 @@ DivAv <- function(means, covs) {
        method = "Rangayyan (2024) Section 10.10.1 (average divergence)")
 }
 
-#' Eq (5.33): KLD(p1, p2) = sum_l p2(x_l) ln[p2(x_l) / p1(x_l)]
+#' Eq (5.33): KLD(p1, p2) = sum_l p2(x_l) ln\[p2(x_l) / p1(x_l)\]
 #'
 #' NOTE THE ARGUMENT ORDER -- the book weights by the SECOND PDF, so its
 #' KLD(p1, p2) is D_KL(p2 || p1) in standard notation, the REVERSE of
@@ -701,6 +704,10 @@ DivAv <- function(means, covs) {
 #' \code{symmetric_sum_is_the_divergence_of_eq_10_115}, \code{nonnegative},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Kld(V, V)
+#' @keywords internal
 Kld <- function(p1, p2) {
   # eq (5.33): KLD(p1, p2) = sum_l p2(x_l) ln[p2(x_l) / p1(x_l)].
   # NOTE THE ARGUMENT ORDER -- the book weights by the SECOND PDF, so its
@@ -738,7 +745,7 @@ Kld <- function(p1, p2) {
 
 #' BC(p1, p2) = sum_l sqrt(p1 p2): the OVERLAP between two PDFs,
 #'
-#' bounded in [0, 1].  This is what the Bhattacharyya DISTANCE is built
+#' bounded in \[0, 1\].  This is what the Bhattacharyya DISTANCE is built
 #' from, D_B = -ln BC, and what makes the error bound work: the overlap
 #' of the two class-conditional densities IS the region where the
 #' optimal classifier must make mistakes.  NOT FROM THIS BOOK.
@@ -750,6 +757,10 @@ Kld <- function(p1, p2) {
 #' \code{the_overlap_is_where_errors_must_happen}, \code{not_from_this_book},
 #' \code{reference}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' PdfOverlap(V, V)
+#' @keywords internal
 PdfOverlap <- function(p1, p2) {
   # BC(p1, p2) = sum_l sqrt(p1 p2): the OVERLAP between two PDFs,
   # bounded in [0, 1].  This is what the Bhattacharyya DISTANCE is built

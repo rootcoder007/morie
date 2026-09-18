@@ -2,7 +2,7 @@
 % Please edit documentation in R/distq_native.R
 \name{distribution_mean}
 \alias{distribution_mean}
-\title{E\link{Z} = sum_i z_i p_i}
+\title{E[Z] = sum_i z_i p_i}
 \usage{
 distribution_mean(probs, z)
 }
@@ -15,5 +15,10 @@ distribution_mean(probs, z)
 Scalar mean of the categorical distribution.
 }
 \description{
-E\link{Z} = sum_i z_i p_i
+E[Z] = sum_i z_i p_i
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+distribution_mean(V, V)
+}
+\keyword{internal}

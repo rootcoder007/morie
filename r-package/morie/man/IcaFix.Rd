@@ -27,6 +27,15 @@ A list with \code{sources}, \code{unmixing}, \code{mixing}, \code{whitening},
 components uncorrelated, which is independence only for Gaussians,
 and a linear mixture tends TOWARDS a Gaussian -- so driving the
 estimates away from Gaussianity is what unmixes them.  Fixed-point
-update from Hyvarinen and Oja, Neural Networks 13, 2000, ref \link{50} of
+update from Hyvarinen and Oja, Neural Networks 13, 2000, ref [50] of
 that section.
 }
+\examples{
+set.seed(4)
+S <- rbind(sin(2 * pi * (1:300) / 25), sign(sin(2 * pi * (1:300) / 60)))
+A <- matrix(c(1, 0.5, 0.4, 1), 2, 2)
+X <- A \%*\% S + 0.02 * matrix(rnorm(600), 2, 300)
+r <- IcaFix(X)
+str(r, max.level = 1)
+}
+\keyword{internal}

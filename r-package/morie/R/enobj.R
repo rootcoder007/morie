@@ -8,7 +8,7 @@
 #' @param y Response vector of length n.
 #' @param beta Coefficient vector.
 #' @param lam Regularization parameter lambda; must be non-negative.
-#' @param alpha Mixing parameter in [0, 1]: 0 is the ridge penalty, 1 is the lasso penalty.
+#' @param alpha Mixing parameter in \[0, 1\]: 0 is the ridge penalty, 1 is the lasso penalty.
 #' @param add_intercept Treat the first entry of beta as an unpenalized intercept and
 #' prepend a column of ones to X.
 #'

@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_ch3.R
 \name{PdfMS}
 \alias{PdfMS}
-\title{Eq (3.2): E\link{eta^2}.  Equal to the variance only when mu = 0, so both}
+\title{Eq (3.2): E[eta^2].  Equal to the variance only when mu = 0, so both}
 \usage{
 PdfMS(pdf = NULL, x = NULL, lower = -Inf, upper = Inf)
 }
@@ -21,3 +21,7 @@ A vector, from \code{c}.
 \description{
 are returned rather than one being assumed for the other.
 }
+\examples{
+PdfMS(x = seq(-4, 4, by = 0.01), p = dnorm(seq(-4, 4, by = 0.01)))
+}
+\keyword{internal}

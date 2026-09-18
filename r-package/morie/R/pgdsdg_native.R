@@ -80,6 +80,10 @@ STEP_RULES <- c("fixed", "backtracking", "fista")
 #' elements indexed.
 #' @return The value of \code{pmin}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' project_box(V)
+#' @keywords internal
 project_box <- function(x, lower = NULL, upper = NULL) {
   v <- as.numeric(x)
   n <- length(v)
@@ -117,6 +121,10 @@ project_box <- function(x, lower = NULL, upper = NULL) {
 #' @param x Coerced to numeric by the body, with \code{as.numeric}.
 #' @return The value of \code{pmax}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' project_nonneg(V)
+#' @keywords internal
 project_nonneg <- function(x) {
   pmax(0.0, as.numeric(x))
 }
@@ -133,6 +141,10 @@ project_nonneg <- function(x) {
 #' \code{as.numeric}.
 #' @return A numeric value.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' project_ball(V)
+#' @keywords internal
 project_ball <- function(x, radius = 1.0, centre = NULL) {
   r <- as.numeric(radius)
   if (r <= 0) {
@@ -209,6 +221,7 @@ project_ball <- function(x, radius = 1.0, centre = NULL) {
 #' \code{history}, \code{step}, \code{rule}, \code{n_backtracks},
 #' \code{fixed_point_residual}, \code{converged}, \code{monotone}, \code{method}.
 #' @export
+#' @keywords internal
 projected_gradient <- function(f, grad, x0, project, step = NULL,
                                 rule = "backtracking", max_iter = 2000,
                                 tol = 1e-10) {
@@ -291,26 +304,6 @@ projected_gradient <- function(f, grad, x0, project, step = NULL,
     method = paste0("projected gradient (Goldstein 1964; Levitin & Polyak 1966)",
                     if (rule == "fista") " with Beck-Teboulle momentum" else "")
   )
-}
-
-#' Projected gradient descent
-#'
-#' Minimise \code{f} over a convex set by gradient steps followed by projection.
-#' \code{morie_pgdsdg} is the module alias of \code{projected_gradient_descent}.
-#' @param f Objective function.
-#' @param grad Its gradient.
-#' @param x0 Starting point.
-#' @param project Projection onto the feasible set.
-#' @param ... Further arguments: step size, rule, iteration and tolerance controls; see the source.
-#' @return A list with the iterate, objective value and convergence trace.
-#' @aliases morie_pgdsdg
-#' @examples
-#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-#' res <- morie_pgdsdg(x = x)
-#' res
-#' @export
-morie_pgdsdg <- projected_gradient_descent <- function(f, grad, x0, project, ...) {
-  projected_gradient(f, grad, x0, project, ...)
 }
 
 #' Projected gradient descent

@@ -12,7 +12,7 @@
 #'
 #' @param A Square adjacency matrix.
 #' @param H0 Initial node representation, one row per node.
-#' @param alpha Initial-residual weight in [0, 1].
+#' @param alpha Initial-residual weight in \[0, 1\].
 #' @param beta Identity-mapping weight, retained for the interface.
 #' @param K Number of layers.
 #' @return List with \code{estimate}, \code{H}, \code{alpha},
@@ -22,6 +22,7 @@
 #'   (3). arXiv:2007.02133
 #' @export
 #' @examples
+#' set.seed(1)
 #' A <- matrix(c(0, 1, 0, 1, 0, 1, 0, 1, 0), 3, 3, byrow = TRUE)
 #' H0 <- matrix(rnorm(6), 3, 2)
 #' GcnII(A, H0)

@@ -169,7 +169,7 @@ morie_hurst_r <- function(x) {
 #' Higuchi fractal dimension
 #'
 #' Estimates the Higuchi (1988) fractal dimension of a 1-D time series via
-#' length scaling across `k` time-lags. Values typically fall in [1, 2];
+#' length scaling across `k` time-lags. Values typically fall in \[1, 2\];
 #' higher values indicate greater signal complexity.
 #'
 #' Reference: Higuchi, T. (1988) "Approach to an irregular time series on

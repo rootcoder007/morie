@@ -2,7 +2,7 @@
 % Please edit documentation in R/mtsmtv.R
 \name{Mtsmtv}
 \alias{Mtsmtv}
-\title{Intersection of the MTS and the MTR bound on E\link{Y(d)}}
+\title{Intersection of the MTS and the MTR bound on E[Y(d)]}
 \usage{
 Mtsmtv(y, D, y_min, y_max, d = NULL)
 }

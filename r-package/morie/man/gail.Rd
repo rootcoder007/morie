@@ -56,13 +56,18 @@ policy samples), \code{D_policy}, \code{D_expert}, \code{objective}
 }
 \description{
 Full-batch gradient ascent on eq. 17 (the gradient of
-E_pi\link{log D} + E_piE\link{log(1 - D)}) with optional ridge. D is a
+E_pi[log D] + E_piE[log(1 - D)]) with optional ridge. D is a
 logistic model on features of (s, a); by default the features are
 a one-hot indicator over the observed (s, a) pairs, which makes
 D fully non-parametric and is the setting in which eq. 16's
 optimum is exactly rho_pi / (rho_pi + rho_piE).
 }
+\examples{
+gail(expert_states = c(1, 2, 3, 4, 5, 6, 7, 8), expert_actions = c(1, 2, 3, 4, 5, 6, 7, 8),
+  policy_states = c(1, 2, 3, 4, 5, 6, 7, 8), policy_actions = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
 \references{
 Ho & Ermon (2016) arXiv:1606.03476, eqs. 16-18 and
 Algorithm 1.
 }
+\keyword{internal}

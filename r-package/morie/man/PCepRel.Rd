@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_cep.R
 \name{PCepRel}
 \alias{PCepRel}
-\title{Eq (4.83): y_hat_p(n) = \link{y_hat(n) + y_hat(-n)}^2 -- the squared even}
+\title{Eq (4.83): y_hat_p(n) = [y_hat(n) + y_hat(-n)]^2 -- the squared even}
 \usage{
 PCepRel(x)
 }
@@ -19,3 +19,8 @@ part of the complex cepstrum.  The odd part, where the phase lives,
 is annihilated by the folding, which is exactly why the power
 cepstrum loses the phase.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+PCepRel(V)
+}
+\keyword{internal}

@@ -29,10 +29,10 @@ block_means, block_vars, n_blocks_used, tol.
 The hierarchy of Sec 2.2. STRICT stationarity means the spatial
 distribution is invariant under translation, so the field repeats
 itself throughout the domain. SECOND-ORDER (weak) requires only the
-first two moments: E\link{Z(s)} = mu constant and Cov\link{Z(s), Z(s+h)} = C(h)
+first two moments: E[Z(s)] = mu constant and Cov[Z(s), Z(s+h)] = C(h)
 depending on the lag alone. INTRINSIC is weaker still -- only the
-INCREMENTS need be stationary, E\link{Z(s+h) - Z(s)} = 0 with
-Var\link{Z(s+h) - Z(s)} = 2 gamma(h) -- so a process can be intrinsically
+INCREMENTS need be stationary, E[Z(s+h) - Z(s)] = 0 with
+Var[Z(s+h) - Z(s)] = 2 gamma(h) -- so a process can be intrinsically
 stationary with no finite variance and no covariance function at all.
 }
 \details{
@@ -46,6 +46,7 @@ so a linear trend cancels itself and passes; the condition is about
 the lag VECTOR.
 }
 \examples{
+set.seed(1)
 co <- matrix(runif(400), 200, 2) * 10
 sprfss(co, rnorm(200))$second_order_plausible
 }

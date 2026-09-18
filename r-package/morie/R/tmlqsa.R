@@ -9,7 +9,7 @@
 #' Formula: D*(psi)(O) = (A/g1 - (1-A)/g0)(Y - Q(A,W))
 #'   + Q(1,W) - Q(0,W) - psi; targeting solves the empirical mean to 0
 #'
-#' @param Y,A Outcome in [0, 1] and binary treatment.
+#' @param Y,A Outcome in \[0, 1\] and binary treatment.
 #' @param QAW,Q1W,Q0W Initial outcome predictions.
 #' @param g1W Initial propensity.
 #' @param gbound Propensity truncation level.
@@ -22,9 +22,9 @@
 #'   Article 11.
 #' @export
 #' @examples
-#' Tmleqs(Y = c(1, 2, 3, 4, 5, 6, 7, 8), A = c(1, 2, 3, 4, 5, 6, 7, 8), QAW = c(1, 2, 3,
-#' 4, 5, 6, 7, 8), Q1W = c(1, 2, 3, 4, 5, 6, 7, 8), Q0W = c(1, 2, 3, 4, 5, 6, 7, 8), g1W
-#' = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' Tmleqs(Y = c(1, 2, 3, 4, 5, 6, 7, 8), A = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   QAW = c(1, 2, 3, 4, 5, 6, 7, 8), Q1W = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   Q0W = c(1, 2, 3, 4, 5, 6, 7, 8), g1W = c(1, 2, 3, 4, 5, 6, 7, 8))
 Tmleqs <- function(Y, A, QAW, Q1W, Q0W, g1W, gbound = 0.025) {
   Y <- .t1_vec(Y)
   A <- .t1_vec(A)

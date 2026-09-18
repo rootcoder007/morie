@@ -7,7 +7,7 @@
 spconv(kernel = NULL, h = NULL, sigma2_x = 1, half_width = 5, n = 40001)
 }
 \arguments{
-\item{kernel}{Function K(u); the boxcar on \link{-1/2, 1/2} by default.}
+\item{kernel}{Function K(u); the boxcar on [-1/2, 1/2] by default.}
 
 \item{h}{Lags at which to evaluate the covariance.}
 
@@ -21,7 +21,7 @@ Named list: h, covariance, correlation, variance.
 \description{
 Convolving a kernel K with a white-noise field gives a second-order
 stationary process whose covariance is the convolution of the kernel
-with itself, Cov\link{Z(s), Z(s+h)} = sigma_x^2 int K(u) K(u+h) du. The
+with itself, Cov[Z(s), Z(s+h)] = sigma_x^2 int K(u) K(u+h) du. The
 construction is useful because ANY kernel yields a valid covariance --
 positive definiteness is automatic rather than something to check.
 }

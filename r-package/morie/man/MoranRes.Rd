@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_sp_fill.R
 \name{MoranRes}
 \alias{MoranRes}
-\title{Eq (1.16).  Eg\link{Ires} = n tr\link{MW} / \{(n-k) w..\} is the book\'s own}
+\title{Eq (1.16).  Eg[Ires] = n tr[MW] / \{(n-k) w..\} is the book's own}
 \usage{
 MoranRes(residuals, w, x = NULL)
 }
@@ -23,3 +23,10 @@ formula, Sec. 1.3.2, and is reproduced term for term.  The variance
 is derived from the exact moments of a ratio of quadratic forms in
 the same Gaussian projection.
 }
+\examples{
+set.seed(2)
+W <- matrix(0, 6, 6)
+W[abs(row(W) - col(W)) == 1] <- 1
+MoranRes(rnorm(6), W)
+}
+\keyword{internal}

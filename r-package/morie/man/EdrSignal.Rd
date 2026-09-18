@@ -21,8 +21,22 @@ A list with \code{edr}, \code{amp}, \code{times}, \code{resprate}, \code{fsr},
 \code{nbeats}, \code{method}.
 }
 \description{
-Proc. IEEE EMBC 2009, pp. 5681-5684 (reference \link{52} of Chapter 2).
+Proc. IEEE EMBC 2009, pp. 5681-5684 (reference [52] of Chapter 2).
 Chest motion swings the cardiac electrical axis, so the R amplitude
 sampled once per beat is a respiratory signal without a respiration
 sensor.
 }
+\examples{
+set.seed(9)
+fs <- 200
+tv <- seq(0, 10, by = 1 / fs)
+ecg <- rep(0, length(tv))
+qrs <- round(seq(0.4, 9.8, by = 0.8) * fs)
+amp <- 1 + 0.2 * sin(2 * pi * 0.25 * (seq_along(qrs)) * 0.8)
+for (k in seq_along(qrs)) {
+  i <- qrs[k]
+  ecg[i:(i + 6)] <- amp[k] * c(0.1, 0.4, 1.2, -0.5, 0.1, 0.05, 0)
+}
+EdrSignal(ecg, qrs = qrs, fs = fs)
+}
+\keyword{internal}

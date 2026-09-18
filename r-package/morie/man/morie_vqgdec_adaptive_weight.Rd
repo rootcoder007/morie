@@ -2,7 +2,7 @@
 % Please edit documentation in R/vqgdec_native.R
 \name{morie_vqgdec_adaptive_weight}
 \alias{morie_vqgdec_adaptive_weight}
-\title{Adaptive_weight: lambda = grad_GL\link{L_rec} / (grad_GL\link{L_GAN} + delta)}
+\title{Adaptive_weight: lambda = grad_GL[L_rec] / (grad_GL[L_GAN] + delta)}
 \usage{
 morie_vqgdec_adaptive_weight(grad_rec, grad_gan, delta = 1e-06, clip = 10000)
 }
@@ -19,5 +19,10 @@ morie_vqgdec_adaptive_weight(grad_rec, grad_gan, delta = 1e-06, clip = 10000)
 A list with \code{lambda}, \code{raw}, \code{clipped}, \code{note}.
 }
 \description{
-Balances the two losses at the decoder\'s last layer.
+Balances the two losses at the decoder's last layer.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_vqgdec_adaptive_weight(V, V)
+}
+\keyword{internal}

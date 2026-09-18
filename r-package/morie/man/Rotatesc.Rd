@@ -16,7 +16,7 @@ Rotatesc(
 )
 }
 \arguments{
-\item{triples}{flat vector \link{h_re, h_im, theta, t_re, t_im} when the
+\item{triples}{flat vector [h_re, h_im, theta, t_re, t_im] when the
 components are not given separately.}
 
 \item{dim}{the embedding dimension k.}
