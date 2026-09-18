@@ -15,12 +15,14 @@
 A numeric value.
 }
 \description{
-A step of the rkmeans_native implementation. Called by \code{.rkmeans_concentrate}, \code{.rkmeans_huber_centre}, \code{.rkmeans_spatial_median}.
+A step of the rkmeans_native implementation. Called by \code{.rkmeans_concentrate},
+\code{.rkmeans_huber_centre}, \code{.rkmeans_spatial_median}.
 See the file header for the source the module follows.
 the source it follows.
 }
 \examples{
-X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
+X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+2.6, 3.4, 3.9))
 res <- .rkmeans_dist(x = X, m = X)
 res
 }

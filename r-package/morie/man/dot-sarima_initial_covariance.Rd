@@ -14,7 +14,7 @@
 \item{r}{A count; the body uses it as \code{matrix(...)}.}
 }
 \value{
-A matrix, from \code{matrix}.
+The value of \code{P}, as built in the body.
 }
 \description{
 A step of the sarima_native implementation. Called by \code{.filter_column}, \code{loglik}.

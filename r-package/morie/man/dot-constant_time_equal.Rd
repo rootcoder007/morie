@@ -15,7 +15,8 @@
 A logical value.
 }
 \description{
-A step of the sechsh_native implementation. Called by \code{verify_chain}, \code{verify_inclusion}.
+A step of the sechsh_native implementation. Called by \code{verify_chain},
+\code{verify_inclusion}.
 See the file header for the source the module follows.
 source it follows.
 }

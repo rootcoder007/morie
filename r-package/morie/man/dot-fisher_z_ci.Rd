@@ -17,7 +17,8 @@
 A vector, from \code{c}.
 }
 \description{
-A step of the statistics implementation. Called by \code{pearson_correlation}, \code{point_biserial_correlation}, \code{spearman_correlation}.
+A step of the statistics implementation. Called by \code{pearson_correlation},
+\code{point_biserial_correlation}, \code{spearman_correlation}.
 See the file header for the source the module follows.
 source it follows.
 }

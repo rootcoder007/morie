@@ -15,7 +15,9 @@
 The value of \code{.otis_wrap}.
 }
 \description{
-A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_a01}, \code{morie_otis_analyze_a01_ruhela_alt_age}, \code{morie_otis_analyze_a01_ruhela_alt_gender} and 42 others in the module.
+A step of the otis_all_analyze implementation. Called by
+\code{morie_otis_analyze_a01}, \code{morie_otis_analyze_a01_ruhela_alt_age},
+\code{morie_otis_analyze_a01_ruhela_alt_gender} and 42 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

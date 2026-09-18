@@ -58,6 +58,7 @@
 #'   \code{gap}, \code{iterations}, \code{converged}, \code{domain},
 #'   \code{step}, \code{history}, \code{method}.
 #' @export
+#' @keywords internal
 morie_qpdual <- function(Q, c, x0 = NULL, domain = "simplex",
                          lower = NULL, upper = NULL, step = "exact",
                          max_iter = 1000L, tol = 1e-12) {
@@ -71,11 +72,11 @@ morie_qpdual <- function(Q, c, x0 = NULL, domain = "simplex",
                  length(cv), n, n))
   dom <- tolower(as.character(domain))
   if (!(dom %in% .DOMAINS))
-    stop(sprintf("frank_wolfe_qp: domain must be one of %s, got %r",
+    stop(sprintf("frank_wolfe_qp: domain must be one of %s, got %s",
                  paste(.DOMAINS, collapse = ", "), domain))
   st <- tolower(as.character(step))
   if (!(st %in% .STEPS))
-    stop(sprintf("frank_wolfe_qp: step must be one of %s, got %r",
+    stop(sprintf("frank_wolfe_qp: step must be one of %s, got %s",
                  paste(.STEPS, collapse = ", "), step))
   lo <- hi <- NULL
   if (dom == "box") {

@@ -26,8 +26,6 @@ When the \code{survey} package is installed and \code{strata} is supplied, defer
 to \code{survey::as.svrepdesign(..., type = "JKn")} for variance compatibility.
 }
 \examples{
-if (requireNamespace("survey", quietly = TRUE)) {
-  V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-  morie_weights_jackknife(V)
-}
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_jackknife(V)
 }

@@ -31,9 +31,7 @@ installed (via \code{morie_estimate_propensity_scores}); the
 weighted-difference and influence-function SE run inline.
 }
 \examples{
-if (requireNamespace("AIPW", quietly = TRUE)) {
-  set.seed(1)
-  df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
-  morie_estimate_atc(df, "t", "y", "x")
-}
+set.seed(1)
+df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
+morie_estimate_atc(df, "t", "y", "x")
 }

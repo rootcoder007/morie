@@ -21,21 +21,6 @@
 
 .SARIMA_METHODS <- c("ml", "uls", "css", "moment")
 
-.SERIES_G_BY_MONTH <- list(
-  c(112, 115, 145, 171, 196, 204, 242, 284, 315, 340, 360, 417),
-  c(118, 126, 150, 180, 196, 188, 233, 277, 301, 318, 342, 391),
-  c(132, 141, 178, 193, 236, 235, 267, 317, 356, 362, 406, 419),
-  c(129, 135, 163, 181, 235, 227, 269, 313, 348, 348, 396, 461),
-  c(121, 125, 172, 183, 229, 234, 270, 318, 355, 363, 420, 472),
-  c(135, 149, 178, 218, 243, 264, 315, 374, 422, 435, 472, 535),
-  c(148, 170, 199, 230, 264, 302, 364, 413, 465, 491, 548, 622),
-  c(148, 170, 199, 242, 272, 293, 347, 405, 467, 505, 559, 606),
-  c(136, 158, 184, 209, 237, 259, 312, 355, 404, 404, 463, 508),
-  c(119, 133, 162, 191, 211, 229, 274, 306, 347, 359, 407, 461),
-  c(104, 114, 146, 172, 180, 203, 237, 271, 305, 310, 362, 390),
-  c(118, 140, 166, 194, 201, 229, 278, 306, 336, 337, 405, 432)
-)
-
 #' series_g
 #'
 #' A step of the sarima_native implementation. No other function in the package calls it.
@@ -45,12 +30,17 @@
 #' @param log A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' series_g()
+#' @keywords internal
 series_g <- function(log = FALSE) {
-  out <- c()
-  for (y in 0:11) for (m in 0:11) {
-    out <- c(out, as.numeric(.SERIES_G_BY_MONTH[[m + 1]][y + 1]))
+  out <- numeric(144)
+  idx <- 0
+  for (y in 1:12) for (m in 1:12) {
+    idx <- idx + 1
+    out[idx] <- as.numeric(.SARIMA_SERIES_G_BY_MONTH[[m]][y])
   }
-  if (log) return(log(out))
+  if (log) out <- log(out)
   out
 }
 
@@ -66,24 +56,24 @@ series_g <- function(log = FALSE) {
 #' @param s Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @return The value of \code{w}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' difference(V)
+#' @keywords internal
 difference <- function(y, d = 0, D = 0, s = 1) {
   d <- as.integer(d)
   D <- as.integer(D)
   s <- as.integer(s)
-  if (d < 0L || D < 0L)
-    stop("sarima: d and D must be non-negative")
-  if (D != 0L && s < 2L)
-    stop("sarima: seasonal differencing needs s >= 2, got ", s)
+  if (d < 0 || D < 0) stop("sarima: d and D must be non-negative")
+  if (D && s < 2) stop(sprintf("sarima: seasonal differencing needs s >= 2, got %d", s))
   w <- as.numeric(y)
   for (step in seq_len(d)) {
-    if (length(w) < 2L)
-      stop("sarima: series too short to difference")
-    w <- w[2:length(w)] - w[1:(length(w) - 1L)]
+    if (length(w) < 2) stop("sarima: series too short to difference")
+    w <- w[2:length(w)] - w[1:(length(w) - 1)]
   }
   for (step in seq_len(D)) {
-    if (length(w) <= s)
-      stop("sarima: series too short for seasonal differencing at s = ", s)
-    w <- w[(s + 1L):length(w)] - w[1:(length(w) - s)]
+    if (length(w) <= s) stop(sprintf("sarima: series too short for seasonal differencing at s = %d", s))
+    w <- w[(s + 1):length(w)] - w[1:(length(w) - s)]
   }
   w
 }
@@ -105,10 +95,8 @@ difference <- function(y, d = 0, D = 0, s = 1) {
 #' res <- .sarima_poly_mult(a = A, b = b)
 #' res
 .sarima_poly_mult <- function(a, b) {
-  out <- rep(0, length(a) + length(b) - 1L)
-  for (i in seq_along(a)) for (j in seq_along(b)) {
-    out[i + j - 1L] <- out[i + j - 1L] + a[i] * b[j]
-  }
+  out <- rep(0, length(a) + length(b) - 1)
+  for (i in seq_along(a)) for (j in seq_along(b)) out[i + j - 1] <- out[i + j - 1] + a[i] * b[j]
   out
 }
 
@@ -119,12 +107,12 @@ difference <- function(y, d = 0, D = 0, s = 1) {
 #' source it follows.
 #'
 #' @param c A vector; its length is taken and its elements indexed.
-#' @param s Coerced to integer by the body, with \code{as.integer}.
+#' @param s Numeric; combined arithmetically in the body.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .sarima_seasonal_lift <- function(c, s) {
-  out <- rep(0, (length(c) - 1L) * as.integer(s) + 1L)
-  for (i in seq_along(c)) out[(i - 1L) * as.integer(s) + 1L] <- c[i]
+  out <- rep(0, (length(c) - 1) * s + 1)
+  for (i in seq_along(c)) out[(i - 1) * s + 1] <- c[i]
   out
 }
 
@@ -135,27 +123,26 @@ difference <- function(y, d = 0, D = 0, s = 1) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param phi Passed to \code{unlist}. Defaults to \code{list()}.
-#' @param Phi A vector; its length is taken. Defaults to \code{list()}.
-#' @param theta Passed to \code{unlist}. Defaults to \code{list()}.
-#' @param Theta A vector; its length is taken. Defaults to \code{list()}.
+#' @param phi Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{numeric(0)}.
+#' @param Phi A vector; its length is taken. Defaults to \code{numeric(0)}.
+#' @param theta Coerced to numeric by the body, with \code{as.numeric}. Defaults to
+#' \code{numeric(0)}.
+#' @param Theta A vector; its length is taken. Defaults to \code{numeric(0)}.
 #' @param s Passed to \code{.sarima_seasonal_lift}. Defaults to \code{12}.
 #' @return A list with \code{ar}, \code{ma}.
 #' @export
-expand_polynomials <- function(phi = list(), Phi = list(),
-                               theta = list(), Theta = list(),
-                               s = 12) {
+#' @examples
+#' expand_polynomials()
+#' @keywords internal
+expand_polynomials <- function(phi = numeric(0), Phi = numeric(0),
+                                theta = numeric(0), Theta = numeric(0), s = 12) {
   s <- as.integer(s)
-  if ((length(Phi) > 0L || length(Theta) > 0L) && s < 2L)
-    stop("sarima: seasonal terms need s >= 2, got ", s)
-  ph <- as.numeric(unlist(phi))
-  Ph <- as.numeric(unlist(Phi))
-  th <- as.numeric(unlist(theta))
-  Th <- as.numeric(unlist(Theta))
-  ar_poly <- .sarima_poly_mult(c(1.0, -ph),
-                               .sarima_seasonal_lift(c(1.0, -Ph), s))
-  ma_poly <- .sarima_poly_mult(c(1.0, -th),
-                               .sarima_seasonal_lift(c(1.0, -Th), s))
+  if ((length(Phi) || length(Theta)) && s < 2)
+    stop(sprintf("sarima: seasonal terms need s >= 2, got %d", s))
+  ar_poly <- .sarima_poly_mult(c(1, -as.numeric(phi)),
+                               .sarima_seasonal_lift(c(1, -as.numeric(Phi)), s))
+  ma_poly <- .sarima_poly_mult(c(1, -as.numeric(theta)),
+                               .sarima_seasonal_lift(c(1, -as.numeric(Theta)), s))
   list(ar = -ar_poly[-1], ma = -ma_poly[-1])
 }
 
@@ -166,23 +153,24 @@ expand_polynomials <- function(phi = list(), Phi = list(),
 #' source it follows.
 #'
 #' @param x A vector; its length is taken and its elements indexed.
-#' @param lags Coerced to integer by the body, with \code{as.integer}.
+#' @param lags Passed to \code{unlist}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' sample_acf(V, M)
+#' @keywords internal
 sample_acf <- function(x, lags) {
   n <- length(x)
-  if (n < 2L)
-    stop("sarima: need at least two observations")
+  if (n < 2) stop("sarima: need at least two observations")
   m <- sum(x) / n
   d <- sum((x - m)^2)
-  if (d <= 0.0)
-    stop("sarima: the series is constant")
+  if (d <= 0) stop("sarima: the series is constant")
   out <- list()
-  for (k in as.integer(lags)) {
-    if (k < 1L || k >= n)
-      stop("sarima: lag ", k, " out of range")
-    out[[as.character(k)]] <- sum((x[(k + 1L):n] - m) *
-                                  (x[1:(n - k)] - m)) / d
+  for (k in as.integer(unlist(lags))) {
+    if (k < 1 || k >= n) stop(sprintf("sarima: lag %d out of range", k))
+    out[[as.character(k)]] <- sum((x[(k + 1):n] - m) * (x[1:(n - k)] - m)) / d
   }
   out
 }
@@ -198,20 +186,23 @@ sample_acf <- function(x, lags) {
 #' @param sigma2 Numeric; combined arithmetically in the body. Defaults to \code{1}.
 #' @return A list with \code{gamma}, \code{rho}, \code{rho_1}, \code{rho_12}, \code{nonzero_lags}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' airline_autocovariances(V, V)
+#' @keywords internal
 airline_autocovariances <- function(theta, Theta, sigma2 = 1.0) {
   th <- as.numeric(theta)
   TH <- as.numeric(Theta)
-  g <- list("0"  = (1 + th^2) * (1 + TH^2) * sigma2,
-            "1"  = -th * (1 + TH^2) * sigma2,
-            "11" = th * TH * sigma2,
-            "12" = -TH * (1 + th^2) * sigma2,
-            "13" = th * TH * sigma2)
-  rho <- list()
-  for (k in c(0, 1, 11, 12, 13))
-    rho[[as.character(k)]] <- g[[as.character(k)]] / g[["0"]]
-  list(gamma = g, rho = rho,
-       rho_1 = -th / (1 + th^2),
-       rho_12 = -TH / (1 + TH^2),
+  g0 <- (1 + th * th) * (1 + TH * TH) * sigma2
+  g1 <- -th * (1 + TH * TH) * sigma2
+  g11 <- th * TH * sigma2
+  g12 <- -TH * (1 + th * th) * sigma2
+  g13 <- th * TH * sigma2
+  gamma <- list("0" = g0, "1" = g1, "11" = g11, "12" = g12, "13" = g13)
+  rho <- list("0" = g0 / g0, "1" = g1 / g0, "11" = g11 / g0,
+              "12" = g12 / g0, "13" = g13 / g0)
+  list(gamma = gamma, rho = rho,
+       rho_1 = -th / (1 + th * th), rho_12 = -TH / (1 + TH * TH),
        nonzero_lags = c(1, 11, 12, 13))
 }
 
@@ -223,7 +214,7 @@ airline_autocovariances <- function(theta, Theta, sigma2 = 1.0) {
 #' source it follows.
 #'
 #' @param rho Coerced to numeric by the body, with \code{as.numeric}.
-#' @return A numeric value.
+#' @return One of two values, depending on the branch taken.
 #' @export
 #' @examples
 #' res <- .sarima_invert_rho(rho = 0.5)
@@ -231,11 +222,9 @@ airline_autocovariances <- function(theta, Theta, sigma2 = 1.0) {
 .sarima_invert_rho <- function(rho) {
   r <- as.numeric(rho)
   if (abs(r) > 0.5)
-    stop("sarima: |rho| = ", format(abs(r)),
-         " exceeds 0.5, so no invertible MA(1) reproduces it")
+    stop(sprintf("sarima: |rho| = %.4f exceeds 0.5, so no invertible MA(1) reproduces it", abs(r)))
   disc <- sqrt(1 - 4 * r * r)
-  if (r == 0) return(0)
-  (-1 + disc) / (2 * r)
+  if (r != 0) (-1 + disc) / (2 * r) else 0
 }
 
 #' moment_estimate
@@ -247,9 +236,10 @@ airline_autocovariances <- function(theta, Theta, sigma2 = 1.0) {
 #' @param rho Passed to \code{.sarima_invert_rho}.
 #' @return The value of \code{.sarima_invert_rho}.
 #' @export
-moment_estimate <- function(rho) {
-  .sarima_invert_rho(rho)
-}
+#' @examples
+#' moment_estimate(rho = 0.5)
+#' @keywords internal
+moment_estimate <- function(rho) .sarima_invert_rho(rho)
 
 #' preliminary_estimates
 #'
@@ -262,13 +252,18 @@ moment_estimate <- function(rho) {
 #' @return A list with \code{estimate}, \code{theta}, \code{Theta}, \code{r_1},
 #' \code{r_s}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' w <- rnorm(120)
+#' pe <- preliminary_estimates(w, s = 12)
+#' is.list(pe)
+#' @keywords internal
 preliminary_estimates <- function(w, s = 12) {
-  s <- as.integer(s)
-  r <- sample_acf(w, c(1, s))
+  r <- sample_acf(w, c(1, as.integer(s)))
   th <- .sarima_invert_rho(r[["1"]])
-  TH <- .sarima_invert_rho(r[[as.character(s)]])
+  TH <- .sarima_invert_rho(r[[as.character(as.integer(s))]])
   list(estimate = th, theta = th, Theta = TH,
-       r_1 = r[["1"]], r_s = r[[as.character(s)]],
+       r_1 = r[["1"]], r_s = r[[as.character(as.integer(s))]],
        method = "moments from rho_1 and rho_s; Box et al. (2016) Sec. 9.2.3")
 }
 
@@ -280,33 +275,31 @@ preliminary_estimates <- function(w, s = 12) {
 #' source it follows.
 #'
 #' @param w A vector; its length is taken and its elements indexed.
-#' @param ar A vector; its length is taken and its elements indexed. Defaults to \code{list()}.
-#' @param ma A vector; its length is taken and its elements indexed. Defaults to \code{list()}.
+#' @param ar A vector; its length is taken and its elements indexed. Defaults to \code{numeric(0)}.
+#' @param ma A vector; its length is taken and its elements indexed. Defaults to \code{numeric(0)}.
 #' @param full A flag; the body branches on it. Defaults to \code{FALSE}.
-#' @return One of two values, depending on the branch taken.
+#' @return The value of \code{ssq}, as built in the body.
 #' @export
-css <- function(w, ar = list(), ma = list(), full = FALSE) {
-  ar <- as.numeric(unlist(ar))
-  ma <- as.numeric(unlist(ma))
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' css(V)
+#' @keywords internal
+css <- function(w, ar = numeric(0), ma = numeric(0), full = FALSE) {
+  ar <- as.numeric(ar)
+  ma <- as.numeric(ma)
   n <- length(w)
-  if (n == 0L)
-    stop("sarima: no observations")
+  if (n == 0) stop("sarima: no observations")
   a <- rep(0, n)
   ssq <- 0
-  for (t in seq_len(n)) {
+  for (t in 1:n) {
     pred <- 0
-    for (i in seq_along(ar)) {
-      if (t - i >= 1L) pred <- pred + ar[i] * w[t - i]
-    }
-    for (j in seq_along(ma)) {
-      if (t - j >= 1L) pred <- pred - ma[j] * a[t - j]
-    }
+    for (i in seq_along(ar)) if (t - i >= 1) pred <- pred + ar[i] * w[t - i]
+    for (j in seq_along(ma)) if (t - j >= 1) pred <- pred - ma[j] * a[t - j]
     a[t] <- w[t] - pred
-    ssq <- ssq + a[t]^2
+    ssq <- ssq + a[t] * a[t]
   }
-  if (full)
-    list(ssq = ssq, residuals = a, sigma2 = ssq / n)
-  else ssq
+  if (full) return(list(ssq = ssq, residuals = a, sigma2 = ssq / n))
+  ssq
 }
 
 #' .sarima_state_space
@@ -322,14 +315,12 @@ css <- function(w, ar = list(), ma = list(), full = FALSE) {
 .sarima_state_space <- function(ar, ma) {
   p <- length(ar)
   q <- length(ma)
-  r <- max(p, q + 1L)
+  r <- max(p, q + 1)
   T <- matrix(0, r, r)
-  if (r > 1L) {
-    for (i in 1:(r - 1L)) T[i, i + 1L] <- 1
-  }
-  for (i in seq_along(ar)) T[i, 1L] <- ar[i]
-  R <- c(1, -ma, rep(0, r - q - 1L))
-  list(T = T, R = R[1:r], r = r)
+  if (r > 1) for (i in 1:(r - 1)) T[i, i + 1] <- 1
+  for (i in seq_along(ar)) T[i, 1] <- ar[i]
+  R <- c(1, -ma, rep(0, r - q - 1))
+  list(T = T, R = R, r = r)
 }
 
 #' .sarima_initial_covariance
@@ -341,23 +332,23 @@ css <- function(w, ar = list(), ma = list(), full = FALSE) {
 #' @param T A matrix; indexed by row and column.
 #' @param R A vector; indexed elementwise.
 #' @param r A count; the body uses it as \code{matrix(...)}.
-#' @return A matrix, from \code{matrix}.
+#' @return The value of \code{P}, as built in the body.
 #' @export
 .sarima_initial_covariance <- function(T, R, r) {
   n <- r * r
   A <- matrix(0, n, n)
-  b <- rep(0, n)
+  b <- numeric(n)
   for (i in 1:r) for (j in 1:r) {
-    row <- (i - 1L) * r + j
+    row <- (i - 1) * r + j
     A[row, row] <- A[row, row] + 1
     b[row] <- R[i] * R[j]
-    for (k in 1:r) for (m in 1:r) {
-      A[row, (k - 1L) * r + m] <- A[row, (k - 1L) * r + m] -
-        T[i, k] * T[j, m]
-    }
+    for (k in 1:r) for (m in 1:r)
+      A[row, (k - 1) * r + m] <- A[row, (k - 1) * r + m] - T[i, k] * T[j, m]
   }
   vec <- solve(A, b)
-  matrix(vec, r, r)
+  P <- matrix(0, r, r)
+  for (i in 1:r) for (j in 1:r) P[i, j] <- vec[(i - 1) * r + j]
+  P
 }
 
 #' loglik
@@ -368,32 +359,36 @@ css <- function(w, ar = list(), ma = list(), full = FALSE) {
 #' source it follows.
 #'
 #' @param w A vector; its length is taken and its elements indexed.
-#' @param ar Passed to \code{.sarima_state_space}. Defaults to \code{list()}.
-#' @param ma Passed to \code{.sarima_state_space}. Defaults to \code{list()}.
+#' @param ar Passed to \code{.sarima_state_space}. Defaults to \code{numeric(0)}.
+#' @param ma Passed to \code{.sarima_state_space}. Defaults to \code{numeric(0)}.
 #' @return A list with \code{loglik}, \code{sigma2}, \code{n}, \code{exact_ssq}, \code{sum_log_f}.
 #' @export
-loglik <- function(w, ar = list(), ma = list()) {
-  ar <- as.numeric(unlist(ar))
-  ma <- as.numeric(unlist(ma))
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' loglik(V)
+#' @keywords internal
+loglik <- function(w, ar = numeric(0), ma = numeric(0)) {
+  ar <- as.numeric(ar)
+  ma <- as.numeric(ma)
   n <- length(w)
-  if (n == 0L)
-    stop("sarima: no observations")
-  ss <- .sarima_state_space(ar, ma)
-  T <- ss$T
-  R <- ss$R
-  r <- ss$r
+  if (n == 0) stop("sarima: no observations")
+  ss_obj <- .sarima_state_space(ar, ma)
+  T <- ss_obj$T
+  R <- ss_obj$R
+  r <- ss_obj$r
   P <- .sarima_initial_covariance(T, R, r)
   a <- rep(0, r)
   ssq <- 0
   sumlogf <- 0
-  for (t in seq_len(n)) {
+  for (t in 1:n) {
     f <- P[1, 1]
     if (f <= 0)
       stop("sarima: non-positive prediction variance; the parameters are outside the stationary region")
     v <- w[t] - a[1]
     PZ <- P[, 1]
-    a <- a + (v / f) * PZ
-    P <- P - (1 / f) * (PZ %o% PZ)
+    Ka <- v / f * PZ
+    a <- a + Ka
+    P <- P - outer(PZ, PZ) / f
     ssq <- ssq + v * v / f
     sumlogf <- sumlogf + log(f)
     a <- as.numeric(T %*% a)
@@ -401,7 +396,7 @@ loglik <- function(w, ar = list(), ma = list()) {
     P <- TP %*% t(T) + R %o% R
   }
   sigma2 <- ssq / n
-  ll <- -0.5 * n * (log(2 * pi * sigma2) + 1) - 0.5 * sumlogf
+  ll <- (-0.5 * n * (log(2 * pi * sigma2) + 1) - 0.5 * sumlogf)
   list(loglik = ll, sigma2 = sigma2, n = n,
        exact_ssq = ssq, sum_log_f = sumlogf)
 }
@@ -417,17 +412,17 @@ loglik <- function(w, ar = list(), ma = list()) {
 #' @return A logical value.
 #' @export
 .sarima_roots_ok <- function(coefs, tol = 1.001) {
-  if (length(coefs) == 0L) return(TRUE)
+  if (length(coefs) == 0) return(TRUE)
   poly <- c(1, -as.numeric(coefs))
-  while (length(poly) > 1L && poly[length(poly)] == 0) poly <- poly[-length(poly)]
-  if (length(poly) == 1L) return(TRUE)
-  k <- length(poly) - 1L
+  while (length(poly) > 1 && poly[length(poly)] == 0) poly <- poly[-length(poly)]
+  if (length(poly) == 1) return(TRUE)
+  k <- length(poly) - 1
   C <- matrix(0, k, k)
   for (j in 1:k) C[1, j] <- -poly[j + 1] / poly[1]
-  if (k > 1L) for (i in 2:k) C[i, i - 1L] <- 1
+  if (k > 1) for (i in 2:k) C[i, i - 1] <- 1
   ev <- eigen(C, only.values = TRUE)$values
   for (lam in ev) {
-    m <- Mod(lam)
+    m <- abs(lam)
     if (m <= 0) next
     if (1 / m < tol) return(FALSE)
   }
@@ -520,7 +515,7 @@ loglik <- function(w, ar = list(), ma = list()) {
 
 #' .sarima_fit
 #'
-#' A step of the sarima_native implementation. Called by \code{morie_sarima}.
+#' A step of the sarima_native implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -529,15 +524,14 @@ loglik <- function(w, ar = list(), ma = list()) {
 #' @param seasonal_order A vector; indexed elementwise. Defaults to \code{c(0, 1, 1)}.
 #' @param s Passed to \code{.sarima_package}. Defaults to \code{12}.
 #' @param method One of \code{"css"}, \code{"moment"}, \code{"uls"}. Defaults to \code{"ml"}.
-#' @param start Optional; may be \code{NULL}. Coerced to numeric by the body, with
-#' \code{as.numeric}.
+#' @param start Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return The value of \code{.sarima_package}.
 #' @export
-.sarima_fit <- function(y, order = c(0, 1, 1), seasonal_order = c(0, 1, 1),
-                s = 12, method = "ml", start = NULL) {
+.sarima_fit <- function(y, order = c(0, 1, 1), seasonal_order = c(0, 1, 1), s = 12,
+                method = "ml", start = NULL) {
   if (!(method %in% .SARIMA_METHODS))
-    stop("sarima: method must be one of ml, uls, css, moment, got ",
-         format(method))
+    stop(sprintf("sarima: method must be one of %s, got %s",
+                 paste(.SARIMA_METHODS, collapse = ", "), method))
   p <- as.integer(order[1])
   d <- as.integer(order[2])
   q <- as.integer(order[3])
@@ -545,99 +539,87 @@ loglik <- function(w, ar = list(), ma = list()) {
   D <- as.integer(seasonal_order[2])
   Q <- as.integer(seasonal_order[3])
   s <- as.integer(s)
-  if (min(p, d, q, P, D, Q) < 0L)
-    stop("sarima: orders must be non-negative")
+  if (min(p, d, q, P, D, Q) < 0) stop("sarima: orders must be non-negative")
   w <- difference(y, d, D, s)
   npar <- p + q + P + Q
-  if (npar == 0L)
-    stop("sarima: the model has no free parameters")
+  if (npar == 0) stop("sarima: the model has no free parameters")
   if (length(w) <= npar)
-    stop("sarima: ", length(w), " differenced observations cannot support ",
-         npar, " parameters")
+    stop(sprintf("sarima: %d differenced observations cannot support %d parameters",
+                 length(w), npar))
 
   if (method == "moment") {
-    if (c(p, q, P, Q) != c(0L, 1L, 0L, 1L))
-      stop("sarima: the moment route is defined for the (0,d,1)x(0,D,1) airline model only, got orders (",
-           p, ",", q, ")x(", P, ",", Q, ")")
+    if ((p != 0) || (q != 1) || (P != 0) || (Q != 1))
+      stop(sprintf("sarima: the moment route is defined for the (0,d,1)x(0,D,1) airline model only, got orders (%d,%d)x(%d,%d)",
+                   p, q, P, Q))
     pre <- preliminary_estimates(w, s)
-    th <- pre$theta
-    TH <- pre$Theta
-    ar <- c()
-    ma <- c()
-    e <- expand_polynomials(list(), list(), list(th), list(TH), s)
-    ar <- e$ar
-    ma <- e$ma
-    ll <- loglik(w, list(ar), list(ma))
-    cs <- css(w, list(ar), list(ma), full = TRUE)
-    return(.sarima_package(y, w, list(), list(th), list(), list(TH), s,
-                           c(p, d, q), c(P, D, Q), ll, cs, method, NULL))
+    theta <- c(pre$theta)
+    Theta <- c(pre$Theta)
+    em <- expand_polynomials(numeric(0), numeric(0), theta, Theta, s)
+    ar <- em$ar
+    ma <- em$ma
+    ll <- loglik(w, ar, ma)
+    cs <- css(w, ar, ma, full = TRUE)
+    return(.sarima_package(y, w, numeric(0), theta, numeric(0), Theta, s, order, seasonal_order, ll, cs, method, NULL))
   }
 
-  unpack <- function(v) {
-    i <- 1L
-    phi <- v[i:(i + p - 1L)]
-    if (p == 0L) phi <- numeric(0)
-    i <- i + p
-    th <- v[i:(i + q - 1L)]
-    if (q == 0L) th <- numeric(0)
-    i <- i + q
-    Ph <- v[i:(i + P - 1L)]
-    if (P == 0L) Ph <- numeric(0)
-    i <- i + P
-    Th <- v[i:(i + Q - 1L)]
-    if (Q == 0L) Th <- numeric(0)
-    list(phi = phi, th = th, Ph = Ph, Th = Th)
+  .unpack <- function(v) {
+    i <- 0L
+    take <- function(k) {
+      out <- if (k > 0L) v[i + seq_len(k)] else numeric(0)
+      i <<- i + k
+      out
+    }
+    list(phi = take(p), th = take(q), Ph = take(P), Th = take(Q))
   }
 
-  objective <- function(v) {
-    u <- unpack(v)
-    if (!(.sarima_roots_ok(u$phi) && .sarima_roots_ok(u$Ph)))
-      return(1e10)
-    e <- expand_polynomials(list(u$phi), list(u$Ph),
-                            list(u$th), list(u$Th), s)
-    if (!.sarima_roots_ok(e$ma)) return(1e10)
+  .objective <- function(v) {
+    up <- .unpack(v)
+    if (!.sarima_roots_ok(up$phi) || !.sarima_roots_ok(up$Ph)) return(1e10)
+    em <- expand_polynomials(up$phi, up$Ph, up$th, up$Th, s)
+    ar <- em$ar
+    ma <- em$ma
+    if (!.sarima_roots_ok(ma)) return(1e10)
     tryCatch({
-      if (method == "css")
-        return(css(w, list(e$ar), list(e$ma)))
-      if (method == "uls")
-        return(loglik(w, list(e$ar), list(e$ma))$exact_ssq)
-      return(-loglik(w, list(e$ar), list(e$ma))$loglik)
-    }, error = function(...) 1e10)
+      if (method == "css") return(css(w, ar, ma))
+      if (method == "uls") return(loglik(w, ar, ma)$exact_ssq)
+      return(-loglik(w, ar, ma)$loglik)
+    }, error = function(e) 1e10)
   }
 
   if (!is.null(start)) {
-    x0 <- as.numeric(start)
+    x0 <- as.numeric(unlist(start))
     if (length(x0) != npar)
-      stop("sarima: ", length(x0), " starting values for ", npar,
-           " parameters")
+      stop(sprintf("sarima: %d starting values for %d parameters", length(x0), npar))
   } else if ((p == 0) && (q == 1) && (P == 0) && (Q == 1)) {
     pre <- preliminary_estimates(w, s)
     x0 <- c(pre$theta, pre$Theta)
   } else {
     x0 <- rep(0.1, npar)
   }
-  best <- objective(x0)
+
+  best <- .objective(x0)
   xhat <- x0
   res <- NULL
-  for (trial in 1:8) {
-    r <- .sarima_minimize_nm(objective, xhat)
-    cand <- as.numeric(r$x)
-    val <- objective(cand)
-    if (val < best - 1e-11) { best <- val
-    xhat <- cand }
-    else {
+  for (iter in 1:8) {
+    r2 <- .sarima_minimize_nm(.objective, xhat)
+    cand <- as.numeric(r2$x)
+    val <- .objective(cand)
+    if (val < best - 1e-11) {
+      best <- val
       xhat <- cand
+    } else {
+      xhat <- if (val < best) cand else xhat
       break
     }
+    res <- r2
   }
-  res <- list(x = xhat, fun = best, success = TRUE)
-  u <- unpack(xhat)
-  e <- expand_polynomials(list(u$phi), list(u$Ph),
-                          list(u$th), list(u$Th), s)
-  ll <- loglik(w, list(e$ar), list(e$ma))
-  cs <- css(w, list(e$ar), list(e$ma), full = TRUE)
-  .sarima_package(y, w, list(u$phi), list(u$th), list(u$Ph), list(u$Th),
-                  s, c(p, d, q), c(P, D, Q), ll, cs, method, res)
+  up <- .unpack(xhat)
+  em <- expand_polynomials(up$phi, up$Ph, up$th, up$Th, s)
+  ar <- em$ar
+  ma <- em$ma
+  ll <- loglik(w, ar, ma)
+  cs <- css(w, ar, ma, full = TRUE)
+  .sarima_package(y, w, up$phi, up$th, up$Ph, up$Th, s, order, seasonal_order, ll, cs, method, res)
 }
 
 #' .sarima_package
@@ -658,27 +640,23 @@ loglik <- function(w, ar = list(), ma = list()) {
 #' @param ll A list; the body reads \code{$loglik}, \code{$sigma2} from it.
 #' @param cs A list; the body reads \code{$residuals}, \code{$sigma2}, \code{$ssq} from it.
 #' @param method One of \code{"ml"}, \code{"uls"}.
-#' @param res Optional; may be \code{NULL}. Passed to \code{is.null}.
+#' @param res Optional; may be \code{NULL}. A list; the body reads \code{$success} from it.
 #' @return A list with \code{estimate}, \code{sigma2}, \code{phi}, \code{theta},
 #' \code{Phi}, \code{Theta}, \code{ar}, \code{ma}, \code{loglik}, \code{aic},
 #' \code{n_used}, \code{n_par}, \code{residuals}, \code{ssq}, \code{order},
 #' \code{seasonal_order}, \code{s}, \code{y}, \code{w}, \code{fit_method},
 #' \code{converged}, \code{method}.
 #' @export
-.sarima_package <- function(y, w, phi, theta, Phi, Theta, s, order,
-                            seasonal_order, ll, cs, method, res) {
+.sarima_package <- function(y, w, phi, theta, Phi, Theta, s, order, seasonal_order,
+                            ll, cs, method, res) {
   npar <- length(phi) + length(theta) + length(Phi) + length(Theta)
   sigma2 <- if (method %in% c("ml", "uls")) ll$sigma2 else cs$sigma2
-  aic <- -2 * ll$loglik + 2 * (npar + 1L)
-  ar <- unlist(phi)
-  ma <- unlist(theta)
-  Ph <- unlist(Phi)
-  Th <- unlist(Theta)
-  e <- expand_polynomials(ar, Ph, ma, Th, s)
+  aic <- -2 * ll$loglik + 2 * (npar + 1)
+  em <- expand_polynomials(phi, Phi, theta, Theta, s)
   list(estimate = sigma2, sigma2 = sigma2,
-       phi = as.numeric(ar), theta = as.numeric(ma),
-       Phi = as.numeric(Ph), Theta = as.numeric(Th),
-       ar = e$ar, ma = e$ma,
+       phi = as.numeric(phi), theta = as.numeric(theta),
+       Phi = as.numeric(Phi), Theta = as.numeric(Theta),
+       ar = em$ar, ma = em$ma,
        loglik = ll$loglik, aic = aic,
        n_used = length(w), n_par = npar,
        residuals = cs$residuals, ssq = cs$ssq,
@@ -686,9 +664,8 @@ loglik <- function(w, ar = list(), ma = list()) {
        seasonal_order = as.integer(seasonal_order),
        s = as.integer(s), y = as.numeric(y), w = w,
        fit_method = method,
-       converged = if (is.null(res)) TRUE else TRUE,
-       method = paste0("multiplicative seasonal ARIMA by ", method,
-                       "; Box et al. (2016) Ch. 9"))
+       converged = if (is.null(res)) TRUE else isTRUE(res$success),
+       method = sprintf("multiplicative seasonal ARIMA by %s; Box et al. (2016) Ch. 9", method))
 }
 
 #' .sarima_diff_poly
@@ -698,17 +675,13 @@ loglik <- function(w, ar = list(), ma = list()) {
 #' source it follows.
 #'
 #' @param k Coerced to integer by the body, with \code{as.integer}.
-#' @param s Coerced to integer by the body, with \code{as.integer}.
+#' @param s Numeric; combined arithmetically in the body.
 #' @return The value of \code{out}, as built in the body.
 #' @export
 .sarima_diff_poly <- function(k, s) {
   out <- c(1.0)
-  for (step in seq_len(as.integer(k))) {
-    base <- rep(0, as.integer(s))
-    base[1] <- 1
-    base[s] <- -1
-    out <- .sarima_poly_mult(out, base)
-  }
+  for (i in seq_len(as.integer(k)))
+    out <- .sarima_poly_mult(out, c(1, rep(0, s - 1), -1))
   out
 }
 
@@ -726,10 +699,8 @@ loglik <- function(w, ar = list(), ma = list()) {
 .sarima_psi_weights <- function(ar, ma, h) {
   psi <- c(1.0)
   for (j in 2:h) {
-    v <- if (j - 1L <= length(ma)) -ma[j - 1L] else 0
-    for (i in seq_along(ar)) {
-      if (j - i - 1L >= 1L) v <- v + ar[i] * psi[j - i - 1L]
-    }
+    v <- if (j - 1 <= length(ma)) -ma[j - 1] else 0
+    for (i in seq_along(ar)) if (j - i >= 1) v <- v + ar[i] * psi[j - i]
     psi <- c(psi, v)
   }
   psi
@@ -744,37 +715,64 @@ loglik <- function(w, ar = list(), ma = list()) {
 #' @param fitted A list; the body reads \code{$ar}, \code{$ma}, \code{$order},
 #' \code{$residuals}, \code{$s}, \code{$seasonal_order}, \code{$sigma2}, \code{$y} from
 #' it.
-#' @param h A count; the body uses it as \code{seq_len(...)}. Defaults to \code{12}.
+#' @param h A count; the body uses it as \code{numeric(...)}. Defaults to \code{12}.
 #' @return A list with \code{estimate}, \code{forecast}, \code{variance}, \code{se},
 #' \code{psi}, \code{method}.
 #' @export
+#' @examples
+#' y <- c(1, 0.5, 0.25, 0.125, 0.0625, 0.03125)
+#' r <- morie_geron_arima(y, p = 1, d = 0, q = 0, include_mean = FALSE)
+#' r$ar
+#' r$sigma2
+#' r$forecast(2)
+#' d1 <- morie_geron_arima(c(1, 3, 5, 7), p = 0, d = 1, q = 0)
+#' d1$intercept
+#' d1$forecast(2)
+#' d1$sigma2
+#' y2 <- c(1, 2, 1.5, 2.5, 2, 3, 2.5, 3.5, 3, 4, 3.5, 4.5)
+#' ar <- morie_geron_arima(y2, p = 1, d = 0, q = 1)
+#' ar$ar
+#' ar$ma
+#' ar$intercept
+#' ar$sigma2
+#' ar$aic
+#' ar$forecast(2)
+#' f <- morie_geron_arima_forecast(c(1, 2, 3, 4.5), phi = 0.5, theta = 0.25, d = 1)
+#' f$forecast
+#' f$forecast_differenced
+#' f$residuals
+#' f$differenced
+#' f$sigma2
+#' f$forecast_differenced
+#' f$forecast
+#' @keywords internal
 forecast <- function(fitted, h = 12) {
   h <- as.integer(h)
-  if (h < 1L)
-    stop("sarima: h must be at least 1")
-  y <- fitted$y
+  if (h < 1) stop("sarima: h must be at least 1")
+  y <- as.numeric(fitted$y)
   d <- fitted$order[2]
   D <- fitted$seasonal_order[2]
   s <- fitted$s
   ar <- fitted$ar
   ma <- fitted$ma
-  diff_op <- .sarima_poly_mult(.sarima_diff_poly(d, 1L),
-                               .sarima_diff_poly(D, s))
-  lhs <- .sarima_poly_mult(c(1, -ar), diff_op)
+  dpoly <- .sarima_diff_poly(d, 1)
+  Dpoly <- .sarima_diff_poly(D, s)
+  lhs <- .sarima_poly_mult(c(1, -ar), .sarima_poly_mult(dpoly, Dpoly))
   z_ar <- -lhs[-1]
-  a <- fitted$residuals
+  a <- as.numeric(fitted$residuals)
   zpad <- y
   apad <- c(rep(0, length(y) - length(a)), a)
   out <- numeric(h)
-  for (step in seq_len(h)) {
+  for (step in 1:h) {
     t <- length(zpad)
     val <- 0
     for (i in seq_along(z_ar)) {
-      val <- val + z_ar[i] * zpad[t - i]
+      idx <- t - i + 1L
+      if (idx >= 1) val <- val + z_ar[i] * zpad[idx]
     }
     for (j in seq_along(ma)) {
-      idx <- t - j
-      if (idx >= 1L && idx <= length(apad)) val <- val - ma[j] * apad[idx]
+      idx <- t - j + 1L
+      if (idx >= 1 && idx <= length(apad)) val <- val - ma[j] * apad[idx]
     }
     zpad <- c(zpad, val)
     apad <- c(apad, 0)
@@ -782,9 +780,9 @@ forecast <- function(fitted, h = 12) {
   }
   psi <- .sarima_psi_weights(z_ar, ma, h)
   var <- numeric(h)
-  for (i in seq_len(h)) var[i] <- fitted$sigma2 * sum(psi[1:i]^2)
+  for (i in 1:h) var[i] <- fitted$sigma2 * sum(psi[1:i]^2)
   list(estimate = out[1], forecast = out, variance = var,
-       se = sqrt(var), psi = psi,
+       se = sqrt(pmax(var, 0)), psi = psi,
        method = "difference-equation forecasts; Box et al. (2016) Sec. 9.2.2")
 }
 
@@ -800,17 +798,18 @@ forecast <- function(fitted, h = 12) {
 #' @return A list with \code{var_theta}, \code{var_Theta}, \code{se_theta},
 #' \code{se_Theta}, \code{cov}, \code{off_diagonal_term}.
 #' @export
+#' @examples
+#' large_sample_se(theta = 0.5, Theta = 0.5, n = 5L)
+#' @keywords internal
 large_sample_se <- function(theta, Theta, n) {
   th <- as.numeric(theta)
   TH <- as.numeric(Theta)
   n <- as.integer(n)
-  if (n < 1L)
-    stop("sarima: n must be positive")
-  v_th <- (1 - th^2) / n
-  v_TH <- (1 - TH^2) / n
+  if (n < 1) stop("sarima: n must be positive")
+  v_th <- (1 - th * th) / n
+  v_TH <- (1 - TH * TH) / n
   list(var_theta = v_th, var_Theta = v_TH,
-       se_theta = sqrt(max(v_th, 0)),
-       se_Theta = sqrt(max(v_TH, 0)),
+       se_theta = sqrt(max(v_th, 0)), se_Theta = sqrt(max(v_TH, 0)),
        cov = 0,
        off_diagonal_term = th^11 / (1 - th^12 * TH))
 }
@@ -821,24 +820,27 @@ large_sample_se <- function(theta, Theta, n) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param rho Coerced to numeric by the body, with \code{as.numeric}.
+#' @param rho A list; the body reads \code{$1} from it.
 #' @param n Numeric; combined arithmetically in the body.
 #' @return A list with \code{variance}, \code{se}, \code{white_noise_se}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' rho <- sample_acf(rnorm(150), c(1, 11, 12, 13))
+#' se <- bartlett_se(rho, 150)
+#' is.numeric(se) || is.list(se)
+#' @keywords internal
 bartlett_se <- function(rho, n) {
   n <- as.integer(n)
-  if (n < 1L)
-    stop("sarima: n must be positive")
-  r <- as.numeric(rho)
-  if (is.null(names(r))) r <- as.list(r)
-  get1 <- function(k) {
-    key <- as.character(k)
-    if (!is.null(r[[key]])) r[[key]] else 0
+  if (n < 1) stop("sarima: n must be positive")
+  r <- as.list(rho)
+  vals <- sapply(c("1", "11", "12", "13"), function(k) as.numeric(r[[k]] %||% 0))
+  if (is.null(rho[["1"]]) && !is.null(rho[[1]])) {
+    vals <- c(as.numeric(rho[[1]]), as.numeric(rho[[11]]), as.numeric(rho[[12]]), as.numeric(rho[[13]]))
   }
-  ssq <- get1(1)^2 + get1(11)^2 + get1(12)^2 + get1(13)^2
+  ssq <- sum(vals^2)
   var <- (1 + 2 * ssq) / n
-  list(variance = var, se = sqrt(var),
-       white_noise_se = sqrt(1 / n))
+  list(variance = var, se = sqrt(var), white_noise_se = sqrt(1 / n))
 }
 
 #' r_convention
@@ -862,26 +864,7 @@ r_convention <- function(fitted) {
        note = "R writes (1 + theta B); the book writes (1 - theta B)")
 }
 
-#' morie_sarima
-#'
-#' A step of the sarima_native implementation. No other function in the package calls it.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param y Passed to \code{.sarima_fit}.
-#' @param order Passed to \code{.sarima_fit}. Defaults to \code{c(0, 1, 1)}.
-#' @param seasonal_order Passed to \code{.sarima_fit}. Defaults to \code{c(0, 1, 1)}.
-#' @param s Passed to \code{.sarima_fit}. Defaults to \code{12}.
-#' @param method Passed to \code{.sarima_fit}. Defaults to \code{"ml"}.
-#' @param start Passed to \code{.sarima_fit}.
-#' @return The value of \code{.sarima_fit}.
-#' @export
-morie_sarima <- function(y, order = c(0, 1, 1),
-                        seasonal_order = c(0, 1, 1), s = 12,
-                        method = "ml", start = NULL) {
-  .sarima_fit(y, order = order, seasonal_order = seasonal_order, s = s,
-      method = method, start = start)
-}
+morie_sarima <- .sarima_fit
 
 seasonal_arima <- .sarima_fit
 
@@ -897,13 +880,26 @@ seasonal_arima <- .sarima_fit
 #' res <- .sarima_cheatsheet()
 #' res
 .sarima_cheatsheet <- function() {
-  paste("sarima: phi(B)Phi(B^s) nabla^d nabla_s^D z =",
-        "theta(B)Theta(B^s) a. The airline (0,1,1)x(0,1,1)_12 is",
-        "an MA(13) in w = nabla nabla_12 z with two parameters,",
-        "nonzero autocorrelations only at lags 1, 11, 12, 13, and",
-        "rho_1 = -theta/(1+theta^2) untouched by the seasonal",
-        "factor. Three routes kept: moment, css, and the exact",
-        "likelihood (default) -- on the logged airline data the",
-        "last reproduces R's 0.4018 / 0.5569, sigma^2 0.001348,",
-        "loglik 244.7, aic -483.4.")
+  paste("sarima: phi(B)Phi(B^s) nabla^d nabla_s^D z = theta(B)Theta(B^s) a. ",
+        "The airline (0,1,1)x(0,1,1)_12 is an MA(13) in w = nabla nabla_12 z ",
+        "with two parameters, nonzero autocorrelations only at lags 1, 11, 12, ",
+        "13, and rho_1 = -theta/(1+theta^2) untouched by the seasonal factor. ",
+        "Three routes kept: moment, css, and the exact likelihood (default) -- ",
+        "on the logged airline data the last reproduces R's 0.4018 / 0.5569, ",
+        "sigma^2 0.001348, loglik 244.7, aic -483.4.", sep = "")
 }
+
+.SARIMA_SERIES_G_BY_MONTH <- list(
+  c(112, 115, 145, 171, 196, 204, 242, 284, 315, 340, 360, 417),
+  c(118, 126, 150, 180, 196, 188, 233, 277, 301, 318, 342, 391),
+  c(132, 141, 178, 193, 236, 235, 267, 317, 356, 362, 406, 419),
+  c(129, 135, 163, 181, 235, 227, 269, 313, 348, 348, 396, 461),
+  c(121, 125, 172, 183, 229, 234, 270, 318, 355, 363, 420, 472),
+  c(135, 149, 178, 218, 243, 264, 315, 374, 422, 435, 472, 535),
+  c(148, 170, 199, 230, 264, 302, 364, 413, 465, 491, 548, 622),
+  c(148, 170, 199, 242, 272, 293, 347, 405, 467, 505, 559, 606),
+  c(136, 158, 184, 209, 237, 259, 312, 355, 404, 404, 463, 508),
+  c(119, 133, 162, 191, 211, 229, 274, 306, 347, 359, 407, 461),
+  c(104, 114, 146, 172, 180, 203, 237, 271, 305, 310, 362, 390),
+  c(118, 140, 166, 194, 201, 229, 278, 306, 336, 337, 405, 432)
+)

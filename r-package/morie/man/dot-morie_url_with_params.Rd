@@ -9,13 +9,15 @@
 \arguments{
 \item{url}{Character; passed to \code{grepl}.}
 
-\item{params}{Optional; may be \code{NULL}. A vector; its length is taken and its elements indexed.}
+\item{params}{Optional; may be \code{NULL}. A vector; its length is taken and its
+elements indexed.}
 }
 \value{
 A character value.
 }
 \description{
-A step of the data_access implementation. Called by \code{morie_ckan_search}, \code{morie_fetch}, \code{morie_fetch_arcgis}.
+A step of the data_access implementation. Called by \code{morie_ckan_search},
+\code{morie_fetch}, \code{morie_fetch_arcgis}.
 See the file header for the source the module follows.
 source it follows.
 }

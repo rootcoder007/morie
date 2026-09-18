@@ -9,7 +9,7 @@ Stefanbz(T, emissivity = 1)
 \arguments{
 \item{T}{absolute temperature(s) in kelvin.}
 
-\item{emissivity}{emissivity in [0, 1]; 1 is a black body.}
+\item{emissivity}{emissivity in \link{0, 1}; 1 is a black body.}
 }
 \value{
 list: estimate, exitance, sigma, emissivity, total, n, method.

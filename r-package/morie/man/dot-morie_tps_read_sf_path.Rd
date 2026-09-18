@@ -15,7 +15,9 @@
 The value of \code{.morie_tps_apply_nrows}.
 }
 \description{
-A step of the tps_io implementation. Called by \code{.morie_tps_read_filegeodatabase}, \code{.morie_tps_read_geopackage}, \code{.morie_tps_read_shapefile} and 1 others in the module.
+A step of the tps_io implementation. Called by \code{.morie_tps_read_filegeodatabase},
+\code{.morie_tps_read_geopackage}, \code{.morie_tps_read_shapefile} and 1 others in
+the module.
 See the file header for the source the module follows.
 it follows.
 }

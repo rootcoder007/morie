@@ -37,11 +37,14 @@ softplus <- function(z) {
 #' @param rule One of \code{"euler"}, \code{"zoh"}. Defaults to \code{"zoh"}.
 #' @return A list with \code{Abar}, \code{Bbar}.
 #' @export
+#' @examples
+#' discretize_zoh(delta = 0.5, A = c(1, 2, 3, 4, 5, 6, 7, 8), B = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 discretize_zoh <- function(delta, A, B, rule = "zoh") {
   if (!(rule %in% c("zoh", "euler")))
-    stop(sprintf("mambss: rule must be zoh or euler, got %r", rule))
+    stop(sprintf("mambss: rule must be zoh or euler, got %s", rule))
   d <- as.numeric(delta)
-  if (d < 0.0) stop(sprintf("mambss: delta must be non-negative, got %r", delta))
+  if (d < 0.0) stop(sprintf("mambss: delta must be non-negative, got %s", delta))
   Av <- as.numeric(A)
   Bv <- as.numeric(B)
   if (length(Av) != length(Bv))
@@ -211,12 +214,16 @@ selective_scan <- function(X, A, W_B, W_C, W_delta, delta_bias = NULL,
 #' @param b Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
 #' @return A list with \code{h}, \code{g}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' gated_rnn_equivalent(V, V)
+#' @keywords internal
 gated_rnn_equivalent <- function(x, w, b = 0.0) {
   h <- 0.0
   hs <- numeric(length(x))
   gs <- numeric(length(x))
   for (i in seq_along(x)) {
-    g <- .mambss_sigmoid(as.numeric(w) * as.numeric(x[i]) + as.numeric(b))
+    g <- .sigmoid(as.numeric(w) * as.numeric(x[i]) + as.numeric(b))
     h <- (1.0 - g) * h + g * as.numeric(x[i])
     hs[i] <- h
     gs[i] <- g
@@ -294,3 +301,18 @@ morie_mambss <- function(X, A, W_B, W_C, W_delta, delta_bias = NULL,
                  b_B = b_B, b_C = b_C, b_delta = b_delta, rule = rule,
                  D_skip = D_skip)
 }
+
+#' .sigmoid
+#'
+#' A step of the mambss_native implementation. Called by \code{gated_rnn_equivalent}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param z Coerced to numeric by the body, with \code{as.numeric}.
+#' @return A numeric value.
+#' @export
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .sigmoid(z = y)
+#' res
+.sigmoid <- function(z) 1.0 / (1.0 + exp(-as.numeric(z)))

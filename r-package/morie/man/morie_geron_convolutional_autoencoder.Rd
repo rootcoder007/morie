@@ -20,7 +20,6 @@ morie_geron_convolutional_autoencoder(
 \item{stride}{Shared stride.}
 
 \item{output_activation}{"identity", "tanh", "sigmoid".}
-
 }
 \value{
 List with \code{x_hat}, \code{code}, \code{code_shape}, \code{loss}, \code{mse_per_pixel},
@@ -33,6 +32,6 @@ gives (n-1)s + k per axis, so a decoder that does not land back on
 the input size is an error rather than a silent crop.
 }
 \examples{
-morie_geron_convolutional_autoencoder(x = 5L, encoder_weights = c(1, 2, 3, 4, 5, 6, 7, 8),
-  decoder_weights = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_geron_convolutional_autoencoder(x = 5L, encoder_weights = c(1, 2, 3, 4, 5, 6, 7,
+8), decoder_weights = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

@@ -26,8 +26,6 @@ columns.}
 
 \item{centroid_lat_col, centroid_lon_col}{Names of centroid columns
 when \code{polygons} is a plain data.frame.}
-
-
 }
 \value{
 A named list with \code{I_xy}, \code{n}, \code{x_col},
@@ -39,25 +37,25 @@ attributes: measures the cross-correlation between attribute X at
 location i and attribute Y at neighbouring locations j.
 }
 \details{
-\deqn{I_{xy} = \frac{n}{S_0}\,\frac{\sum_i \sum_j w_{ij}\, z^x_i\, z^y_j}{\sqrt{\sum_i (z^x_i)^2 \cdot \sum_i (z^y_i)^2}}}{I_xy = (n)/(S_0) frac{sum_i sum_j w_ij z^x_i z^y_j}{sqrt(sum_i (z^x_i)^2 * sum_i (z^y_i)^2)}}
+\deqn{I_{xy} = \frac{n}{S_0}\,\frac{\sum_i \sum_j w_{ij}\, z^x_i\, z^y_j}{\sqrt{\sum_i
+(z^x_i)^2 \cdot \sum_i (z^y_i)^2}}}{I_xy = (n)/(S_0) frac{sum_i sum_j w_ij z^x_i
+z^y_j}{sqrt(sum_i (z^x_i)^2 * sum_i (z^y_i)^2)}}
 
 Polygon centroids and k-NN weights are constructed exactly as in
 \code{\link{morie_tps_polygon_morans_i}}; distances use the
 haversine formula for parity with the Python source.
 }
 \examples{
-if (requireNamespace("sf", quietly = TRUE)) {
-  set.seed(2026)
-  polys <- data.frame(
-    HOOD_ID = letters[1:16],
-    lat = rep(43.6 + (0:3) * 0.02, 4),
-    lon = rep(-79.4 + (0:3) * 0.02, each = 4),
-    ASSAULT_RATE_2024 = rpois(16, 30),
-    HOMICIDE_RATE_2024 = rpois(16, 2)
-  )
-  morie_tps_bivariate_moran(polys,
-    x_col = "ASSAULT_RATE_2024",
-    y_col = "HOMICIDE_RATE_2024",
-    centroid_lat_col = "lat", centroid_lon_col = "lon")
-}
+set.seed(2026)
+polys <- data.frame(
+  HOOD_ID = letters[1:16],
+  lat = rep(43.6 + (0:3) * 0.02, 4),
+  lon = rep(-79.4 + (0:3) * 0.02, each = 4),
+  ASSAULT_RATE_2024 = rpois(16, 30),
+  HOMICIDE_RATE_2024 = rpois(16, 2)
+)
+morie_tps_bivariate_moran(polys,
+  x_col = "ASSAULT_RATE_2024",
+  y_col = "HOMICIDE_RATE_2024",
+  centroid_lat_col = "lat", centroid_lon_col = "lon")
 }

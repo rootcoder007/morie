@@ -13,7 +13,9 @@
 A numeric value.
 }
 \description{
-A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_classical_mds}, \code{morie_spatial_voting_double_centering}.
+A step of the spatial_voting implementation. Called by
+\code{morie_spatial_voting_classical_mds},
+\code{morie_spatial_voting_double_centering}.
 See the file header for the source the module follows.
 the source it follows.
 }

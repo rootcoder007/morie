@@ -14,58 +14,68 @@
 
 .smatch_EPS <- 1e-12
 
-#' Build the SCCS Poisson design matrix (Sec. 4)
+#' morie_smatch_poisson_design
 #'
-#' Counts, log-time offset, and factor columns for risk period, age
-#' band, and one per individual. The per-individual factors force the
-#' fitted totals to equal the observed ones, which is the conditioning
-#' the multinomial fit performs.
+#' A step of the smatch_native implementation. Called by \code{morie_smatch_sccs_poisson_fit}.
+#' See the file header for the source the module follows.
+#' source it follows.
 #'
-#' @param cases List of case dicts with \code{start, end, events,
-#'   exposure}.
-#' @param risk_periods List of \code{c(start, end)} in age units.
-#' @param age_breaks Numeric vector of age-band boundaries.
-#' @return List with \code{y, offset, X, n_risk, n_age, n_people, n_rows}.
+#' @param cases See Usage.
+#' @param risk_periods Iterated over elementwise, with \code{lapply}.
+#' @param age_breaks Coerced to numeric by the body, with \code{as.numeric}. Defaults to
+#' \code{numeric(0)}.
+#' @return A list with \code{y}, \code{offset}, \code{X}, \code{n_risk}, \code{n_age},
+#' \code{n_people}, \code{n_rows}.
 #' @export
-morie_smatch_poisson_design <- function(cases, risk_periods,
-                                         age_breaks = numeric(0)) {
+#' @examples
+#' cases <- list(
+#'   list(start = 0, end = 365, exposure = 100, events = c(110, 250)),
+#'   list(start = 0, end = 365, exposure = 200, events = c(215)),
+#'   list(start = 0, end = 365, exposure = 50, events = c(60, 70)))
+#' r <- morie_smatch_poisson_design(cases, risk_periods = list(c(0, 30)))
+#' str(r, max.level = 1)
+#' @keywords internal
+morie_smatch_poisson_design <- function(cases, risk_periods, age_breaks = numeric(0)) {
   rp <- lapply(risk_periods, function(r) c(as.numeric(r[1]), as.numeric(r[2])))
   ab <- as.numeric(age_breaks)
   n_risk <- length(rp)
   n_age <- length(ab) + 1L
-  # Build intervals for each case
   people <- list()
   for (c in cases) {
-    ev <- c$events %||% list()
+    ev <- as.numeric(c$events)
     if (length(ev) == 0L) next
-    cells <- .smatch_build_intervals(c$start, c$end, c$exposure %||% NULL,
-                                      ev, rp, ab)
-    people[[length(people) + 1L]] <- cells
+    cells <- .smatch_build_intervals(as.numeric(c$start),
+                                     as.numeric(c$end), c$exposure,
+                                     ev, rp, ab)
+    if (length(cells) > 0L) people[[length(people) + 1L]] <- cells
   }
-  if (length(people) == 0L) stop("smatch: no case contributed an event")
+  if (length(people) == 0L)
+    stop("smatch: no case contributed an event")
   P <- length(people)
   ncol <- n_risk + (n_age - 1L) + P
-  y <- numeric(0)
-  off <- numeric(0)
-  X <- matrix(0, 0, ncol)
+  y <- c()
+  off <- c()
+  X <- list()
   for (i in seq_along(people)) {
     cells <- people[[i]]
     for (cell in cells) {
-      j <- cell$age
-      r <- cell$risk
-      e <- cell$exposure
-      n <- cell$n
+      j <- cell[[1L]]
+      r_idx <- cell[[2L]]
+      e <- cell[[3L]]
+      n <- cell[[4L]]
       if (e <= .smatch_EPS) next
-      row <- numeric(ncol)
-      if (r > 0L) row[r] <- 1
-      if (j > 0L) row[n_risk + j] <- 1
-      row[n_risk + n_age - 1L + i] <- 1
-      X <- rbind(X, row)
-      y <- c(y, n)
+      row <- rep(0.0, ncol)
+      if (r_idx > 0L) row[r_idx] <- 1.0
+      if (j > 0L) row[n_risk + j] <- 1.0
+      row[n_risk + n_age - 1L + i] <- 1.0
+      X[[length(X) + 1L]] <- row
+      y <- c(y, as.numeric(n))
       off <- c(off, log(e))
     }
   }
-  list(y = y, offset = off, X = X, n_risk = n_risk, n_age = n_age,
+  if (length(y) == 0L) stop("smatch: no case contributed an event")
+  Xm <- do.call(rbind, X)
+  list(y = y, offset = off, X = Xm, n_risk = n_risk, n_age = n_age,
        n_people = P, n_rows = length(y))
 }
 
@@ -100,184 +110,192 @@ morie_smatch_poisson_design <- function(cases, risk_periods,
 #' @param age_breaks Passed to \code{morie_smatch_poisson_design}. Defaults to \code{numeric(0)}.
 #' @param iters Coerced to integer by the body, with \code{as.integer}. Defaults to \code{200}.
 #' @param tol Passed to \code{<}. Defaults to \code{1e-12}.
-#' @param ridge Numeric; combined arithmetically in the body. Defaults to \code{1e-09}.
+#' @param ridge A matrix; passed to \code{diag}. Defaults to \code{1e-09}.
 #' @return A list with \code{estimate}, \code{relative_incidence}, \code{log_ri},
 #' \code{age_effects}, \code{individual_effects}, \code{coef}, \code{converged},
 #' \code{iterations}, \code{n_rows}, \code{n_people}, \code{method}, \code{identical_to}.
 #' @export
-morie_smatch_sccs_poisson_fit <- function(cases, risk_periods,
-                                           age_breaks = numeric(0),
-                                           iters = 200, tol = 1e-12,
-                                           ridge = 1e-9) {
-  d <- morie_smatch_poisson_design(cases, risk_periods, age_breaks)
+#' @examples
+#' cases <- list(
+#'   list(start = 0, end = 365, exposure = 100, events = c(110, 250)),
+#'   list(start = 0, end = 365, exposure = 200, events = c(215)),
+#'   list(start = 0, end = 365, exposure = 50, events = c(60, 70)))
+#' r <- morie_smatch_sccs_poisson_fit(cases, risk_periods = list(c(0, 30)))
+#' str(r, max.level = 1)
+#' @keywords internal
+morie_smatch_sccs_poisson_fit <- function(cases, risk_periods, age_breaks = numeric(0),
+                             iters = 200, tol = 1e-12, ridge = 1e-9) {
+  d <- morie_smatch_poisson_design(cases, risk_periods, age_breaks = age_breaks)
   y <- d$y
   off <- d$offset
   X <- d$X
   p <- ncol(X)
-  beta <- rep(0, p)
+  beta <- rep(0.0, p)
   conv <- FALSE
   it <- 0L
-  for (kk in seq_len(as.integer(iters))) {
-    it <- kk
+  for (it in seq_len(as.integer(iters))) {
     eta <- off + as.numeric(X %*% beta)
     eta <- pmin(pmax(eta, -500), 500)
     mu <- exp(eta)
     W <- pmax(mu, 1e-12)
-    z <- eta - off + (y - mu) / W
-    XtWX <- crossprod(X, X * W)
+    z <- eta - off + (y - mu) / pmax(mu, 1e-12)
+    XtWX <- crossprod(X, X * W) + diag(ridge, p)
     XtWz <- as.numeric(crossprod(X, W * z))
-    diag(XtWX) <- diag(XtWX) + ridge
-    nb <- tryCatch(solve(XtWX, XtWz), error = function(e)
-      stop("smatch: the Poisson design is singular -- an interval has no exposure time or an individual has no variation"))
-    if (max(abs(nb - beta)) < tol) { beta <- nb
-    conv <- TRUE
-    break }
+    nb <- tryCatch(.smatch_cholsolve(XtWX, XtWz),
+                   error = function(e) {
+                     stop("smatch: the Poisson design is singular ",
+                          "-- an interval has no exposure time or ",
+                          "an individual has no variation")
+                   })
+    mx <- max(abs(nb - beta))
     beta <- nb
+    if (mx < tol) { conv <- TRUE
+    break }
   }
   nr <- d$n_risk
   list(estimate = exp(beta[seq_len(nr)]),
        relative_incidence = exp(beta[seq_len(nr)]),
        log_ri = beta[seq_len(nr)],
-       age_effects = beta[seq.int(nr + 1L, nr + d$n_age - 1L)],
-       individual_effects = beta[seq.int(nr + d$n_age,
-                                          nr + d$n_age - 1L + d$n_people)],
+       age_effects = beta[(nr + 1L):(nr + d$n_age - 1L)],
+       individual_effects =
+         beta[(nr + d$n_age):length(beta)],
        coef = beta, converged = conv, iterations = it,
        n_rows = d$n_rows, n_people = d$n_people,
-       method = "associated Poisson model with a per-individual factor and log-time offset; Whitaker et al. (2006) Sec. 4",
+       method = paste0("associated Poisson model with a per-individual ",
+                       "factor and log-time offset; Whitaker et al. ",
+                       "(2006) Sec. 4"),
        identical_to = "the conditional multinomial fit of sccsno")
 }
 
-#' Events required to detect a log relative incidence (Sec. 7.6)
+#' morie_smatch_sample_size
 #'
-#' Assumes age effects are negligible. \code{r} is the ratio of risk
-#' period to observation period; \code{p_exposed} is the proportion of
-#' the POPULATION exposed.
+#' A step of the smatch_native implementation. Called by \code{morie_smatch_power}.
+#' See the file header for the source the module follows.
+#' source it follows.
 #'
-#' @param log_ri Effect size on the log scale.
-#' @param r Risk-period fraction.
-#' @param p_exposed Population exposed fraction.
-#' @param alpha Two-sided alpha.
-#' @param power Target power.
-#' @return List with \code{n_events}, \code{n_events_ceiling},
-#'   \code{rho, A, B, C, z_alpha_2, z_power, ...}.
+#' @param log_ri Coerced to numeric by the body, with \code{as.numeric}.
+#' @param r Coerced to numeric by the body, with \code{as.numeric}.
+#' @param p_exposed Coerced to numeric by the body, with \code{as.numeric}.
+#' @param alpha Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.05}.
+#' @param power Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.8}.
+#' @return A list with \code{n_events}, \code{n_events_ceiling}, \code{rho}, \code{A},
+#' \code{B}, \code{C}, \code{z_alpha_2}, \code{z_power}, \code{log_ri}, \code{r},
+#' \code{p_exposed}, \code{assumes}, \code{method}.
 #' @export
-morie_smatch_sample_size <- function(log_ri, r, p_exposed,
-                                      alpha = 0.05, power = 0.8) {
+#' @examples
+#' morie_smatch_sample_size(log_ri = log(2), r = 0.1, p_exposed = 0.8)
+#' @keywords internal
+morie_smatch_sample_size <- function(log_ri, r, p_exposed, alpha = 0.05, power = 0.8) {
   b <- as.numeric(log_ri)
   rr <- as.numeric(r)
   p <- as.numeric(p_exposed)
-  if (b == 0) stop("smatch: the sample size is unbounded at a log relative incidence of 0")
-  if (rr <= 0 || rr >= 1)
-    stop("smatch: r must lie strictly in (0, 1), got ", rr,
-         " -- it is the risk period as a fraction of the observation period")
-  if (p <= 0 || p > 1)
-    stop("smatch: p_exposed must lie in (0, 1], got ", p)
-  if (alpha <= 0 || alpha >= 1) stop("smatch: alpha must lie in (0, 1)")
-  if (power <= 0 || power >= 1) stop("smatch: power must lie in (0, 1)")
+  if (b == 0.0)
+    stop("smatch: the sample size is unbounded at a log relative incidence of 0")
+  if (!(rr > 0.0 && rr < 1.0))
+    stop(sprintf(paste0("smatch: r must lie strictly in (0, 1), got ",
+                        "%s -- it is the risk period as a fraction ",
+                        "of the observation period"), r))
+  if (!(p > 0.0 && p <= 1.0))
+    stop(sprintf("smatch: p_exposed must lie in (0, 1], got %s", p_exposed))
+  if (!(as.numeric(alpha) > 0.0 && as.numeric(alpha) < 1.0))
+    stop("smatch: alpha must lie in (0, 1)")
+  if (!(as.numeric(power) > 0.0 && as.numeric(power) < 1.0))
+    stop("smatch: power must lie in (0, 1)")
   eb <- exp(b)
-  den <- rr * eb + 1 - rr
+  den <- rr * eb + 1.0 - rr
   rho <- rr * eb / den
-  A <- 2 * (rho * b - log(den))
+  A <- 2.0 * (rho * b - log(den))
   if (A <= .smatch_EPS)
-    stop(sprintf("smatch: the information A is non-positive (%.3e) -- the design carries no signal here", A))
-  B <- b * b * rho * (1 - rho) / A
-  C <- 1 + (1 - p) / (p * den)
-  za <- .smatch_qnorm(1 - alpha / 2)
-  zg <- .smatch_qnorm(power)
-  n <- (C / A) * (za + zg * sqrt(B))^2
+    stop(sprintf(paste0("smatch: the information A is non-positive ",
+                        "(%.3e) -- the design carries no signal here"),
+                 A))
+  B <- b * b * rho * (1.0 - rho) / A
+  C <- 1.0 + (1.0 - p) / (p * den)
+  za <- .smatch_qnorm(1.0 - as.numeric(alpha) / 2.0)
+  zg <- .smatch_qnorm(as.numeric(power))
+  n <- (C / A) * (za + zg * sqrt(B)) ^ 2
   list(n_events = n, n_events_ceiling = as.integer(ceiling(n)),
-       rho = rho, A = A, B = B, C = C, z_alpha_2 = za, z_power = zg,
+       rho = rho, A = A, B = B, C = C,
+       z_alpha_2 = za, z_power = zg,
        log_ri = b, r = rr, p_exposed = p,
        assumes = "age effects negligible; see Musonda, Farrington & Whitaker (2006) otherwise",
        method = "Whitaker et al. (2006) Sec. 7.6")
 }
 
-#' Power at a given number of events
-#' @param n_events See Usage.
-#' @param log_ri See Usage.
-#' @param r See Usage.
-#' @param p_exposed See Usage.
-#' @param alpha See Usage.
+#' morie_smatch_power
+#'
+#' A step of the smatch_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param n_events Coerced to numeric by the body, with \code{as.numeric}.
+#' @param log_ri Passed to \code{morie_smatch_sample_size}.
+#' @param r Passed to \code{morie_smatch_sample_size}.
+#' @param p_exposed Passed to \code{morie_smatch_sample_size}.
+#' @param alpha Passed to \code{morie_smatch_sample_size}. Defaults to \code{0.05}.
+#' @return A list with \code{power}, \code{z_power}, \code{n_events}, \code{A}, \code{B}, \code{C}.
 #' @export
-morie_smatch_power <- function(n_events, log_ri, r, p_exposed,
-                                alpha = 0.05) {
-  s <- morie_smatch_sample_size(log_ri, r, p_exposed, alpha = alpha,
-                                 power = 0.5)
+#' @examples
+#' morie_smatch_power(n_events = 120, log_ri = log(2), r = 0.1,
+#'                    p_exposed = 0.8)
+#' @keywords internal
+morie_smatch_power <- function(n_events, log_ri, r, p_exposed, alpha = 0.05) {
+  s <- morie_smatch_sample_size(log_ri, r, p_exposed, alpha = alpha, power = 0.5)
   A <- s$A
   B <- s$B
   C <- s$C
   za <- s$z_alpha_2
-  root <- sqrt(max(n_events * A / C, 0))
+  root <- sqrt(max(as.numeric(n_events) * A / C, 0.0))
   zg <- if (B > .smatch_EPS) (root - za) / sqrt(B) else Inf
-  list(power = pnorm(zg), z_power = zg, n_events = n_events,
-       A = A, B = B, C = C)
+  list(power = pnorm(zg), z_power = zg,
+       n_events = as.numeric(n_events), A = A, B = B, C = C)
 }
 
-#' Asymptotic efficiency against the cohort design (Sec. 7.5)
-#' @param r See Usage.
-#' @param log_ri See Usage.
+#' morie_smatch_relative_efficiency
+#'
+#' A step of the smatch_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param r Coerced to numeric by the body, with \code{as.numeric}.
+#' @param log_ri Coerced to numeric by the body, with \code{as.numeric}.
+#' @return A list with \code{rho}, \code{efficiency}, \code{r}, \code{log_ri},
+#' \code{interpretation}.
 #' @export
+#' @examples
+#' morie_smatch_relative_efficiency(r = 0.1, log_ri = log(2))
+#' @keywords internal
 morie_smatch_relative_efficiency <- function(r, log_ri) {
   rr <- as.numeric(r)
   b <- as.numeric(log_ri)
-  if (rr <= 0 || rr >= 1) stop("smatch: r must lie strictly in (0, 1)")
+  if (!(rr > 0.0 && rr < 1.0))
+    stop("smatch: r must lie strictly in (0, 1)")
   eb <- exp(b)
-  den <- rr * eb + 1 - rr
+  den <- rr * eb + 1.0 - rr
   rho <- rr * eb / den
-  list(rho = rho, efficiency = 1 - rho, r = rr, log_ri = b,
-       interpretation = "the fraction of cases falling in the risk period is rho; the marginal information lost grows with it, so a SHORT risk period keeps efficiency high (Sec. 7.5)")
+  list(rho = rho, efficiency = 1.0 - rho,
+       r = rr, log_ri = b,
+       interpretation = paste0("the fraction of cases falling in the ",
+                               "risk period is rho; the marginal ",
+                               "information lost grows with it, so a ",
+                               "SHORT risk period keeps efficiency ",
+                               "high (Sec. 7.5)"))
 }
 
 # Beasley-Springer-Moro inverse normal CDF
-#' Beasley-Springer-Moro inverse normal CDF
+#' .smatch_qnorm
 #'
 #' A step of the smatch_native implementation. Called by \code{morie_smatch_sample_size}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param p A vector; its length is taken and its elements indexed.
-#' @return The value of \code{out}, as built in the body.
+#' @param p Passed to \code{qnorm}.
+#' @return The value of \code{qnorm}.
 #' @export
 #' @examples
 #' res <- .smatch_qnorm(p = 0.5)
 #' res
-.smatch_qnorm <- function(p) {
-  p <- pmin(pmax(p, 1e-15), 1 - 1e-15)
-  a <- c(-3.969683028665376e+01, 2.209460984245205e+02,
-         -2.759285104469687e+02, 1.383577518672690e+02,
-         -3.066479806614716e+01, 2.506628277459239e+00)
-  b <- c(-5.447609879822406e+01, 1.615858368580409e+02,
-         -1.556989798598866e+02, 6.680131188771972e+01,
-         -1.328068155288572e+01)
-  c <- c(-7.784894002430293e-03, -3.223964580411365e-01,
-         -2.400758277161838e+00, -2.549732539343734e+00,
-         4.374664141464968e+00, 2.938163982698783e+00)
-  d <- c(7.784695709041462e-03, 3.224671290700398e-01,
-         2.445134137142996e+00, 3.754408661907416e+00)
-  plow <- p < 0.02425
-  phigh <- p > 1 - 0.02425
-  out <- numeric(length(p))
-  if (any(plow)) {
-    q <- sqrt(-2 * log(p[plow]))
-    out[plow] <- (((((c[1] * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) *
-                    q + c[6]) /
-      ((((d[1] * q + d[2]) * q + d[3]) * q + d[4]) * q + 1)
-  }
-  if (any(phigh)) {
-    q <- sqrt(-2 * log(1 - p[phigh]))
-    out[phigh] <- -(((((c[1] * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) *
-                      q + c[6]) /
-      ((((d[1] * q + d[2]) * q + d[3]) * q + d[4]) * q + 1)
-  }
-  if (any(!plow & !phigh)) {
-    q <- p[!plow & !phigh] - 0.5
-    r <- q * q
-    out[!plow & !phigh] <- (((((a[1] * r + a[2]) * r + a[3]) * r + a[4]) *
-                               r + a[5]) * r + a[6]) * q /
-      (((((b[1] * r + b[2]) * r + b[3]) * r + b[4]) * r + b[5]) * r + 1)
-  }
-  out
-}
+.smatch_qnorm <- function(p) qnorm(p)
 
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
@@ -288,3 +306,65 @@ morie_smatch_sccs_design <- morie_smatch_sccs_poisson_fit
 morie_smatch_sccsdesign <- morie_smatch_sccs_poisson_fit
 
 morie_smatch <- morie_smatch_poisson_design
+
+#' Symmetric positive-definite solve via base R's chol
+#'
+#' A step of the smatch_native implementation. Called by \code{morie_smatch_sccs_poisson_fit}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param M A matrix; passed to \code{chol}.
+#' @param b Passed to \code{forwardsolve}.
+#' @return A vector, from \code{as.numeric}.
+#' @export
+#' @examples
+#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
+#' b <- c(1.5, 2.5, 3.5)
+#' res <- .smatch_cholsolve(M = A, b = b)
+#' res
+.smatch_cholsolve <- function(M, b) {
+  # Symmetric positive-definite solve via base R's chol.
+  L <- chol(M)
+  y <- forwardsolve(t(L), b)
+  as.numeric(backsolve(L, y))
+}
+
+#' .smatch_pnorm
+#'
+#' A step of the smatch_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param z Passed to \code{pnorm}.
+#' @return The value of \code{pnorm}.
+#' @export
+#' @examples
+#' y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+#' res <- .smatch_pnorm(z = y)
+#' res
+.smatch_pnorm <- function(z) pnorm(z)
+
+#' .smatch_cheatsheet
+#'
+#' A step of the smatch_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
+#' @examples
+#' res <- .smatch_cheatsheet()
+#' res
+.smatch_cheatsheet <- function() {
+  paste0("smatch: the case series fitted as a POISSON model -- ",
+         "counts n_ijk, offset log(e_ijk), factors for age, ",
+         "exposure AND one per individual. The individual factors ",
+         "force the fitted totals to match the observed ones, ",
+         "which IS the conditioning, so this is the same fit as ",
+         "the multinomial, not an approximation. Sample size ",
+         "(Sec. 7.6): rho = re^b/(re^b+1-r), A = 2{rho b - ",
+         "log(re^b+1-r)}, B = b^2 rho(1-rho)/A -> 1 as b -> 0, ",
+         "C = 1 + (1-p)/(p(re^b+1-r)), n = (C/A)(z_a2 + z_g sqrt ",
+         "B)^2. p is the POPULATION exposed fraction, not the ",
+         "cases.")
+}

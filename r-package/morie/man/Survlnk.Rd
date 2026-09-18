@@ -16,7 +16,6 @@ Survlnk(time, event, X, link = "cloglog", max_iter = 100L, tol = 1e-10)
 \item{link}{"cloglog" or "logit".}
 
 \item{max_iter, tol}{Newton controls.}
-
 }
 \value{
 List with \code{estimate}, \code{se}, \code{alpha},
@@ -31,8 +30,8 @@ Cox's discrete proportional-odds model. Klein & Moeschberger (2003),
 Survival Analysis 2nd ed., Section 8.4.
 }
 \examples{
-Survlnk(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0),
-  X = c(1, 2, 3, 4, 5, 6, 7, 8))
+Survlnk(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0), X = c(1,
+2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Klein, J. P. and Moeschberger, M. L. (2003), Survival

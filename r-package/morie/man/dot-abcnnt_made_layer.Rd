@@ -18,10 +18,20 @@
 \item{reverse}{A flag; the body branches on it. Defaults to \code{FALSE}.}
 }
 \value{
-A list with \code{W1}, \code{b1}, \code{Wm}, \code{bm}, \code{Wa}, \code{ba}, \code{M1}, \code{M2}, \code{dim_x}, \code{dim_t}, \code{hidden}, \code{order}.
+A list with \code{W1}, \code{b1}, \code{Wm}, \code{bm}, \code{Wa}, \code{ba},
+\code{M1}, \code{M2}, \code{dim_x}, \code{dim_t}, \code{hidden}, \code{order}.
 }
 \description{
 masks are stored as 0/1 floats so element-wise multiply drops blocked
 connections, which is what the masked matrix product reduces to in
 any case.
+}
+\examples{
+# .ghc_rng is internal, so reach it the way the other examples in this
+# package do
+L <- .abcnnt_made_layer(dim_x = 3L, dim_t = 2L, hidden = 6L,
+                        e = morie:::.ghc_rng(1L), reverse = FALSE)
+dim(L$M1)   # hidden by dim_x + dim_t
+dim(L$M2)   # dim_x by hidden
+L$order
 }

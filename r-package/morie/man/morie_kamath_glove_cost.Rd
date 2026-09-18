@@ -19,9 +19,6 @@ morie_kamath_glove_weight(x, x_max, alpha)
 \item{x_max, alpha}{Weighting parameters.}
 
 \item{x}{Counts to weight.}
-
-
-
 }
 \value{
 List with \code{estimate}, \code{weights}, \code{residuals}, \code{n_nonzero}.
@@ -31,7 +28,7 @@ sum f(X_ij) (w_i . w~_j + b_i + b~_j - log X_ij)^2 over the NON-ZERO
 counts only.
 }
 \examples{
-morie_kamath_glove_cost(matrix(c(2, 1, 0, 3), 2), matrix(c(1, 
-    0), 2), matrix(c(1, 1), 2), c(0, 0), c(0, 0), x_max = 2, 
+morie_kamath_glove_cost(matrix(c(2, 1, 0, 3), 2), matrix(c(1,
+    0), 2), matrix(c(1, 1), 2), c(0, 0), c(0, 0), x_max = 2,
     alpha = 0.5)
 }

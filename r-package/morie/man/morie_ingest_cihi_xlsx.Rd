@@ -29,10 +29,3 @@ base R data.frame.
 \description{
 Download a CIHI indicator .xlsx data table
 }
-\examples{
-\dontshow{if (requireNamespace("httr2", quietly = TRUE) && requireNamespace("readxl", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-if (requireNamespace("readxl", quietly = TRUE)) {
-  try(morie_ingest_cihi_xlsx(url = "https://example.org/data.xlsx"))
-}
-\dontshow{\}) # examplesIf}
-}

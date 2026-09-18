@@ -13,7 +13,8 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the study_core implementation. Called by \code{.linear_coef_table}, \code{.or_table}, \code{.run_regression_models_module_internal}.
+A step of the study_core implementation. Called by \code{.linear_coef_table},
+\code{.or_table}, \code{.run_regression_models_module_internal}.
 See the file header for the source the module follows.
 source it follows.
 }

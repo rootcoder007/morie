@@ -7,7 +7,7 @@
 Elorating(games, ladder = NULL, anchor = 0, base = "e", c_elo = 1/400)
 }
 \arguments{
-\item{games}{a score in [0, 1], or a triple (wins, draws, losses).}
+\item{games}{a score in \link{0, 1}, or a triple (wins, draws, losses).}
 
 \item{ladder}{optional ratings of other players.}
 

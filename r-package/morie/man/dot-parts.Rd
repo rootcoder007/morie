@@ -13,7 +13,8 @@
 The value of \code{[[}.
 }
 \description{
-A step of the benRea_native implementation. Called by \code{extract_spans}, \code{is_valid_bio}, \code{start_allowed} and 1 others in the module.
+A step of the benRea_native implementation. Called by \code{extract_spans},
+\code{is_valid_bio}, \code{start_allowed} and 1 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

@@ -17,7 +17,8 @@
 Nothing; the function is called for its effect.
 }
 \description{
-A step of the otis_all_analyze implementation. Called by \code{.otis_summary_lines}, \code{.otis_year_trend}.
+A step of the otis_all_analyze implementation. Called by \code{.otis_summary_lines},
+\code{.otis_year_trend}.
 See the file header for the source the module follows.
 the source it follows.
 }

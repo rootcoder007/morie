@@ -12,7 +12,6 @@ partial_correlation(x, y, covariates, confidence = 0.95)
 \item{covariates}{Matrix or data frame of covariates.}
 
 \item{confidence}{Confidence level.}
-
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})
@@ -24,5 +23,5 @@ Partial Pearson correlation controlling for covariates
 }
 \examples{
 partial_correlation(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
-  covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
+covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

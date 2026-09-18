@@ -21,7 +21,8 @@
 A list with \code{se}, \code{ci_lo}, \code{ci_hi}.
 }
 \description{
-A step of the effect_sizes implementation. Called by \code{bootstrap_effect_size_ci}, \code{cles}, \code{cliffs_delta} and 2 others in the module.
+A step of the effect_sizes implementation. Called by \code{bootstrap_effect_size_ci},
+\code{cles}, \code{cliffs_delta} and 2 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

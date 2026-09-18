@@ -17,10 +17,9 @@ morie_geron_knowledge_distillation_loss(
 
 \item{y}{0-based hard labels, length m.}
 
-\item{alpha}{Soft/hard mix in [0, 1].}
+\item{alpha}{Soft/hard mix in \link{0, 1}.}
 
 \item{T}{Positive temperature.}
-
 }
 \value{
 List with \code{loss}, \code{ce_hard}, \code{kl_soft},

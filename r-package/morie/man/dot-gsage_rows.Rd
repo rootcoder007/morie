@@ -20,11 +20,11 @@ take an element-wise max), and \code{lstm_order} (returns the
 vectors in the order given -- the paper's point that an LSTM
 aggregator is not symmetric and must be fed a random permutation).
 }
-\references{
-Hamilton, W. L. et al. (2017).
-}
 \examples{
 x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
 res <- .gsage_rows(x = x)
 res
+}
+\references{
+Hamilton, W. L. et al. (2017).
 }

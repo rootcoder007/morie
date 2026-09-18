@@ -13,7 +13,8 @@
 A list with \code{u}, \code{s}, \code{vt}.
 }
 \description{
-A step of the andmnh_native implementation. Called by \code{prewhiten_var}, \code{singular_value_adjust}.
+A step of the andmnh_native implementation. Called by \code{prewhiten_var},
+\code{singular_value_adjust}.
 See the file header for the source the module follows.
 source it follows.
 }

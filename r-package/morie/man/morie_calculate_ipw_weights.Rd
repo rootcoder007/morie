@@ -36,7 +36,7 @@ dependencies.
 }
 \details{
 Standard IPW: \eqn{w_i = T_i / e_i + (1 - T_i)/(1 - e_i)}, with the
-propensity score \eqn{e_i} clipped at [0.01, 0.99] for stability.
+propensity score \eqn{e_i} clipped at \link{0.01, 0.99} for stability.
 Stabilised IPW replaces \eqn{T} and \eqn{1 - T} with the marginal
 treatment probability \eqn{P(T = 1)} and \eqn{P(T = 0)} respectively.
 }

@@ -10,7 +10,6 @@ morie_kamath_ch6_perplexity_leakage(S_uniq, PP_public, PP_lm)
 \item{S_uniq}{Sequences.}
 
 \item{PP_public, PP_lm}{Named vectors or functions.}
-
 }
 \value{
 List with \code{estimate}, \code{argmax}, \code{per_sequence}, \code{n_leaking}.
@@ -19,6 +18,6 @@ List with \code{estimate}, \code{argmax}, \code{per_sequence}, \code{n_leaking}.
 max log(PP_public / PP_lm) over the unique sequences.
 }
 \examples{
-morie_kamath_ch6_perplexity_leakage(c("s1", "s2"), c(s1 = 10, 
+morie_kamath_ch6_perplexity_leakage(c("s1", "s2"), c(s1 = 10,
     s2 = 5), c(s1 = 2, s2 = 4))
 }

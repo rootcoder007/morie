@@ -77,13 +77,14 @@ criterion or the standard errors, so all three are reported.
 Search is by golden section -- the method the source itself names
 (Fotheringham et al. 2002 p. 60, citing Greig 1980) -- over the interval
 running from a thousandth of the coordinate bounding-box diagonal up to the
-diagonal itself, which is the interval \code{spgwr::gwr.sel} uses. With \code{adaptive = TRUE} the bandwidth is
+diagonal itself, which is the interval \code{spgwr::gwr.sel} uses. With \code{adaptive = TRUE}
+the bandwidth is
 instead a neighbour count and the criterion is evaluated at every integer
 from 2 up to \code{n}.
 }
 \examples{
-spgwrb(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
-  coords = c(1, 2, 3, 4, 5, 6, 7, 8))
+spgwrb(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), coords = c(1, 2,
+3, 4, 5, 6, 7, 8))
 }
 \references{
 Schabenberger Ch 6, Sec 6.1.3.1, pp. 316-317 -- the model, the

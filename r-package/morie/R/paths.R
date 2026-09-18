@@ -69,7 +69,7 @@ morie_find_project_root <- function(start = getwd(), max_up = 10L) {
 #' )
 #' @export
 morie_paths <- function(project_root = NULL) {
-  root <- project_root %||% morie_find_project_root()
+  root <- project_root %||% .morie_project_root()
   root <- normalizePath(root, winslash = "/", mustWork = FALSE)
 
   list(
@@ -83,5 +83,29 @@ morie_paths <- function(project_root = NULL) {
     pytests_dir = file.path(root, "libexec", "config", "tests", "pytests"),
     tools_dir = file.path(root, "libexec", "config", "tools"),
     docs_dir = file.path(root, "docs")
+  )
+}
+
+#' Internal helper: Morie Project Root
+#' @noRd
+.morie_project_root <- function(start = getwd(), max_up = 10L) {
+  out <- tryCatch(here::here(), error = function(e) NULL)
+  if (!is.null(out) && nzchar(out) && dir.exists(out)) {
+    return(normalizePath(out, winslash = "/", mustWork = FALSE))
+  }
+  current <- normalizePath(start, winslash = "/", mustWork = FALSE)
+  for (i in seq_len(max_up)) {
+    if (file.exists(file.path(current, "DESCRIPTION")) ||
+        file.exists(file.path(current, "pyproject.toml")) ||
+        file.exists(file.path(current, ".here"))) {
+      return(current)
+    }
+    parent <- dirname(current)
+    if (identical(parent, current)) break
+    current <- parent
+  }
+  stop(
+    "Unable to detect project root. Provide `project_root` explicitly.",
+    call. = FALSE
   )
 }

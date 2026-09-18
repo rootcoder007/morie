@@ -17,7 +17,8 @@
 A matrix, from \code{as.matrix}.
 }
 \description{
-A step of the tps_spatial_advanced implementation. Called by \code{morie_tps_dbscan_clusters}, \code{morie_tps_ripley_k}.
+A step of the tps_spatial_advanced implementation. Called by
+\code{morie_tps_dbscan_clusters}, \code{morie_tps_ripley_k}.
 See the file header for the source the module follows.
 for the source it follows.
 }

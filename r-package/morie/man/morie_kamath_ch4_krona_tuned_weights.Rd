@@ -17,7 +17,6 @@ morie_kamath_ch4_krona_output(X, W, A_k, B_k, s)
 \item{s}{Scale.}
 
 \item{X}{Input rows.}
-
 }
 \value{
 List with \code{W_tuned}, \code{delta}, \code{shape}.
@@ -28,10 +27,10 @@ KronA layer output and merged weights (Kamath Eq 4.8-4.9)
 \details{
 One merge serves both Python modules exactly as km061 imports
 km062's \verb{_tuned}: km062 -> \code{morie_kamath_ch4_krona_tuned_weights}
-(W + s [A_k (x) B_k]), km061 -> \code{morie_kamath_ch4_krona_output}
+(W + s \link{A_k (x) B_k}), km061 -> \code{morie_kamath_ch4_krona_output}
 (that merged weight applied to X). s = 0 returns W unchanged.
 }
 \examples{
-morie_kamath_ch4_krona_tuned_weights(matrix(1, 2, 2), diag(2), 
+morie_kamath_ch4_krona_tuned_weights(matrix(1, 2, 2), diag(2),
     matrix(1, 1, 1), 2)
 }

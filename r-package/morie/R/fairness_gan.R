@@ -29,8 +29,10 @@ NULL
 #'
 #' @param title Carried through into a list the body builds.
 #' @param call Carried through into a list the body builds.
-#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
-#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
+#' @param summary_lines Carried through into a list the body builds.
+#'   Defaults to \code{list()}.
+#' @param warnings Carried through into a list the body builds.
+#'   Defaults to \code{character(0)}.
 #' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
 #' @param ... Passed through.
 #' @return The value of \code{out}, as built in the body.

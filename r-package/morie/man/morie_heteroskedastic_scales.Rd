@@ -12,7 +12,6 @@ morie_heteroskedastic_scales(votes, ideal_points, alpha, beta)
 \item{ideal_points}{Fixed ideal points, one per row of \code{votes}.}
 
 \item{alpha, beta}{Fixed item parameters (one per column).}
-
 }
 \value{
 List with \code{psi}, \code{loglik}, \code{n}, \code{q}.
@@ -26,8 +25,8 @@ vector is normalised to geometric mean 1 for identification.
 Mirrors \code{morie.fn.hsirt} (with fixed items).
 }
 \examples{
-morie_heteroskedastic_scales(votes = c("a", "b", "c"), ideal_points = c("a", "b", "c"),
-  alpha = 0.5, beta = 0.5)
+morie_heteroskedastic_scales(votes = c("a", "b", "c"), ideal_points = c("a", "b",
+"c"), alpha = 0.5, beta = 0.5)
 }
 \references{
 Lauderdale BE (2010). Unpredictable voters in ideal

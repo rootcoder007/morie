@@ -51,8 +51,8 @@ inverse probability; as the cumulative probability of the rule
 approaches zero it explodes, and the second-order remainder is bounded
 only when \eqn{g_{0} > \delta > 0}. That is why the module reports
 the largest clever covariate rather than hiding it.
-\subsection{References}{
 
+References
 van der Laan, M. J. & Rose, S. (2018) \emph{Targeted Learning in Data
 Science}, Springer, doi:10.1007/978-3-319-65304-4. Chap. 4 (the
 g-computation formula as iterated conditional expectations; the
@@ -74,10 +74,10 @@ data and causal inference models", \emph{Biometrics} 61(4), 962-973,
 doi:10.1111/j.1541-0420.2005.00377.x.
 .tlltmle_logit
 
-A step of the tlltmle_native implementation. Called by \code{tlltmle_fluctuate}, \code{tlltmle_tmle_point}.
+A step of the tlltmle_native implementation. Called by \code{tlltmle_fluctuate},
+\code{tlltmle_tmle_point}.
 See the file header for the source the module follows.
 the source it follows.
-}
 }
 \examples{
 res <- .tlltmle_logit(p = 0.5)

@@ -25,9 +25,6 @@ morie_geron_stochastic_gradient_descent(
 \item{seed}{LCG seed.}
 
 \item{t0, t1}{Optional schedule constants, supplied together.}
-
-
-
 }
 \value{
 List with \code{theta}, \code{path}, \code{cost_path}, \code{learning_rates},
@@ -41,6 +38,6 @@ sampled row indices are 0-based.
 \examples{
 X <- matrix(c(1, 2, 1, 3, 1, 5, 1, 7), 4, byrow = TRUE)
 y <- c(2, 3, 6, 9)
-morie_geron_stochastic_gradient_descent(X, y, c(0, 0), 0.01, 
+morie_geron_stochastic_gradient_descent(X, y, c(0, 0), 0.01,
     6, seed = 23)
 }

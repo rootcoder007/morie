@@ -19,7 +19,8 @@
 A list with \code{table}, \code{stats}.
 }
 \description{
-A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_c_chi2}, \code{morie_otis_analyze_d_chi2}.
+A step of the otis_all_analyze implementation. Called by
+\code{morie_otis_analyze_c_chi2}, \code{morie_otis_analyze_d_chi2}.
 See the file header for the source the module follows.
 the source it follows.
 }

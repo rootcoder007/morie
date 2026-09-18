@@ -15,7 +15,9 @@
 The value of \code{file.path}.
 }
 \description{
-A step of the tps_io implementation. Called by \code{.morie_tps_read_csv}, \code{.morie_tps_read_excel}, \code{.morie_tps_read_featurecollection} and 6 others in the module.
+A step of the tps_io implementation. Called by \code{.morie_tps_read_csv},
+\code{.morie_tps_read_excel}, \code{.morie_tps_read_featurecollection} and 6 others in
+the module.
 See the file header for the source the module follows.
 it follows.
 }

@@ -7,8 +7,8 @@
 #'
 #' The mean-field family factorises q(z) = prod_j q_j(z_j), and Section 3
 #' gives the coordinate update that maximises the lower bound with the
-#' other factors fixed: log q*_j(z_j) = E_\{q_\{-j\}\}[log p(x, z)] + const.
-#' The bound is ELBO(q) = E_q[log p(x,z)] - E_q[log q(z)] <= log p(x), and
+#' other factors fixed: log q\*&#95;j(z_j) = E&#95;\{q_\{-j\}\}\[log p(x, z)\] + const.
+#' The bound is ELBO(q) = E_q\[log p(x,z)\] - E_q\[log q(z)\] <= log p(x), and
 #' no coordinate update may decrease it -- asserted here as
 #' \code{elbo_monotone} rather than assumed.
 #'
@@ -17,8 +17,8 @@
 #' N(mu, 1/tau), mu | tau ~ N(mu0, 1/(lambda0 tau)), tau ~ Gamma(a0, b0),
 #' with q(mu, tau) = q(mu) q(tau). The updates are closed form:
 #' mu_N = (lambda0 mu0 + N xbar)/(lambda0 + N), lambda_N = (lambda0 + N)
-#' E[tau], a_N = a0 + (N+1)/2, b_N = b0 + E_mu[sum (x_n - mu)^2 +
-#' lambda0 (mu - mu0)^2]/2, E[tau] = a_N/b_N.
+#' E\[tau\], a_N = a0 + (N+1)/2, b_N = b0 + E_mu\[sum (x_n - mu)^2 +
+#' lambda0 (mu - mu0)^2\]/2, E\[tau\] = a_N/b_N.
 #'
 #' Only this joint is implemented; that is this implementation's scope
 #' choice, stated rather than attributed -- a general log_p callable

@@ -7,7 +7,9 @@
 .run_power_design_module_extended(data)
 }
 \arguments{
-\item{data}{A list; the body reads \code{$alcohol_past12m}, \code{$ebac_legal}, \code{$ebac_tot}, \code{$gender_label}, \code{$heavy_drinking_30d}, \code{$weight} from it.}
+\item{data}{A list; the body reads \code{$alcohol_past12m}, \code{$ebac_legal},
+\code{$ebac_tot}, \code{$gender_label}, \code{$heavy_drinking_30d}, \code{$weight}
+from it.}
 }
 \value{
 A vector, from \code{c}.

@@ -17,9 +17,10 @@
 \item{weights}{Optional; may be \code{NULL}. Passed to \code{.s03vec}.}
 }
 \value{
-A list with \code{tau}, \code{inf}, \code{se}, \code{pi}, \code{mu0}, \code{w1}, \code{w0}, \code{gamma}, \code{beta0}.
+A list with \code{tau}, \code{inf}, \code{se}, \code{pi}, \code{mu0},
+\code{w1}, \code{w0}, \code{gamma}, \code{beta0}.
 }
 \description{
-tau = E[(w1(D) - w0(D, X; pi)) (dY - mu_0(X))] w1 = D / E[D] w0 =
-[pi(X)(1-D)/(1-pi(X))] / E[pi(X)(1-D)/(1-pi(X))]
+tau = E\link{(w1(D) - w0(D, X; pi)) (dY - mu_0(X))} w1 = D / E\link{D} w0 =
+\link{pi(X)(1-D)/(1-pi(X))} / E\link{pi(X)(1-D)/(1-pi(X))}
 }

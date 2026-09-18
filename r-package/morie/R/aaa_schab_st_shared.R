@@ -105,8 +105,12 @@
 #' @return Nothing; this branch always raises.
 #' @export
 .schab_st_is_separable <- function(form) {
-  if (form %in% c("product", "sum")) return(TRUE)
-  if (identical(form, "product_sum")) return(FALSE)
+  if (form %in% c("product", "sum")) {
+    return(TRUE)
+  }
+  if (identical(form, "product_sum")) {
+    return(FALSE)
+  }
   stop(sprintf("unknown form '%s'", form), call. = FALSE)
 }
 
@@ -357,7 +361,7 @@
 #' Schabenberger & Gotway result. Nodes are the eigenvalues of the
 #' Jacobi matrix; weights are mu_0 times the squared first eigenvector
 #' components, with mu_0 the ZEROTH MOMENT of the weight function -- 2
-#' for Legendre on [-1, 1]. The Hermite rule elsewhere carries no such
+#' for Legendre on \[-1, 1\]. The Hermite rule elsewhere carries no such
 #' factor because there the Gaussian weight integrates to 1.
 #'
 #' @param n A count; the body uses it as \code{matrix(...)}.
@@ -375,15 +379,53 @@
   # the Gaussian weight integrates to 1.
   n <- as.integer(n)
   if (n < 1L) stop("`n` must be positive", call. = FALSE)
-  if (n == 1L) return(list(nodes = 0, weights = 2))
-  k <- seq_len(n - 1L)
-  off <- k / sqrt(4 * k * k - 1)
-  jac <- matrix(0, n, n)
-  jac[cbind(k, k + 1L)] <- off
-  jac[cbind(k + 1L, k)] <- off
-  e <- eigen(jac, symmetric = TRUE)
-  ord <- order(e$values)
-  list(nodes = e$values[ord], weights = 2 * (e$vectors[1, ord])^2)
+  if (n == 1L) {
+    return(list(nodes = 0, weights = 2))
+  }
+  # The rule for a given n never changes, and the eigen-decomposition of
+  # the n x n Jacobi matrix is the whole cost of every Bessel/Whittle
+  # call that uses it (12 s of CPU for the default n = 400 under a
+  # threaded BLAS). Build it once per session.
+  key <- as.character(n)
+  hit <- .schab_gl_cache[[key]]
+  if (!is.null(hit)) {
+    return(hit)
+  }
+  # Newton iteration on the three-term Legendre recurrence (Press et al.,
+  # Numerical Recipes, gauleg): O(n^2) scalar arithmetic, no BLAS, and the
+  # same nodes as the Golub-Welsch eigen route to ~1e-14. The eigen route
+  # cost 11 s of CPU at n = 400 under a threaded BLAS.
+  m <- (n + 1L) %/% 2L
+  i <- seq_len(m)
+  x <- cos(pi * (i - 0.25) / (n + 0.5))
+  for (iter in seq_len(100L)) {
+    p1 <- rep(1, m)
+    p2 <- rep(0, m)
+    for (j in seq_len(n)) {
+      p3 <- p2
+      p2 <- p1
+      p1 <- ((2 * j - 1) * x * p2 - (j - 1) * p3) / j
+    }
+    pp <- n * (x * p1 - p2) / (x * x - 1)
+    x_new <- x - p1 / pp
+    done <- all(abs(x_new - x) < 1e-15)
+    x <- x_new
+    if (done) break
+  }
+  p1 <- rep(1, m)
+  p2 <- rep(0, m)
+  for (j in seq_len(n)) {
+    p3 <- p2
+    p2 <- p1
+    p1 <- ((2 * j - 1) * x * p2 - (j - 1) * p3) / j
+  }
+  pp <- n * (x * p1 - p2) / (x * x - 1)
+  w <- 2 / ((1 - x * x) * pp * pp)
+  nodes <- c(-x, rev(x)[if (n %% 2L == 1L) -1L else TRUE])
+  weights <- c(w, rev(w)[if (n %% 2L == 1L) -1L else TRUE])
+  out <- list(nodes = nodes, weights = weights)
+  .schab_gl_cache[[key]] <- out
+  out
 }
 
 #' J_0(x) = (1/pi) integral_0^pi cos(x sin theta) dtheta. The integrand
@@ -474,11 +516,15 @@
 #' @return A numeric value.
 #' @export
 .schab_st_tail_bound_j0 <- function(t, h, p) {
-  if (t <= 0) return(Inf)
+  if (t <= 0) {
+    return(Inf)
+  }
   if (h > 0 && p > 1.25) {
     return(sqrt(2 / (pi * h)) * t^(2.5 - 2 * p) / (2 * p - 2.5))
   }
-  if (p > 1) return(t^(2 - 2 * p) / (2 * p - 2))
+  if (p > 1) {
+    return(t^(2 - 2 * p) / (2 * p - 2))
+  }
   Inf
 }
 
@@ -789,9 +835,12 @@
   hh <- outer(emp$space_lags, rep(1, length(emp$time_lags)))
   kk <- outer(rep(1, length(emp$space_lags)), emp$time_lags)
   model <- matrix(as.numeric(model_fn(as.numeric(hh), as.numeric(kk))),
-                  nrow = nrow(gamma_hat))
+    nrow = nrow(gamma_hat)
+  )
   ok <- counts > 0L & is.finite(gamma_hat) & is.finite(model) & model > 0
-  if (!any(ok)) return(Inf)
+  if (!any(ok)) {
+    return(Inf)
+  }
   resid <- gamma_hat[ok] - model[ok]
   sum(counts[ok] / (2 * model[ok]^2) * resid^2)
 }
@@ -982,8 +1031,10 @@
   # number, just not this one.
   x <- 0.5 * as.numeric(x)
   a <- 0.5 * as.numeric(df)
-  if (x <= 0) return(1)
-  if (x < a + 1) {                                   # series for P(a, x)
+  if (x <= 0) {
+    return(1)
+  }
+  if (x < a + 1) { # series for P(a, x)
     term <- 1 / a
     total <- term
     n <- 0L
@@ -995,7 +1046,7 @@
     }
     return(1 - total * exp(-x + a * log(x) - lgamma(a)))
   }
-  tiny <- 1e-300                                     # Lentz, continued fraction
+  tiny <- 1e-300 # Lentz, continued fraction
   b <- x + 1 - a
   cc <- 1 / tiny
   d <- 1 / b
@@ -1014,3 +1065,5 @@
   }
   exp(-x + a * log(x) - lgamma(a)) * hh
 }
+
+.schab_gl_cache <- new.env(parent = emptyenv())

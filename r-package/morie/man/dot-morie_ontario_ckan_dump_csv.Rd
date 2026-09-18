@@ -9,7 +9,8 @@
 \arguments{
 \item{resource_id}{Passed to \code{sprintf}.}
 
-\item{limit}{Accepted by the signature and not used anywhere in the body. Defaults to \code{200000L}.}
+\item{limit}{Accepted by the signature and not used anywhere in the body. Defaults to
+\code{200000L}.}
 }
 \value{
 Nothing; this branch always raises.

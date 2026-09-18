@@ -10,7 +10,9 @@
 The value of \code{requireNamespace}.
 }
 \description{
-A step of the tps_render implementation. Called by \code{.tps_draw_compass}, \code{.tps_draw_scalebar}, \code{morie_tps_render_choropleth} and 6 others in the module.
+A step of the tps_render implementation. Called by \code{.tps_draw_compass},
+\code{.tps_draw_scalebar}, \code{morie_tps_render_choropleth} and 6 others in the
+module.
 See the file header for the source the module follows.
 source it follows.
 }

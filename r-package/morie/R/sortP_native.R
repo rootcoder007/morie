@@ -91,11 +91,15 @@ sort_pooling <- function(features, k_keep, sort_channel = -1) {
 #' @param coverage Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.6}.
 #' @return A list with \code{k}, \code{coverage}, \code{fraction_untruncated}, \code{note}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' choose_k(V)
+#' @keywords internal
 choose_k <- function(graph_sizes, coverage = 0.6) {
   s <- sort(as.integer(graph_sizes))
   c <- as.numeric(coverage)
   if (c <= 0 || c > 1)
-    stop(sprintf("sortP: the coverage must lie in (0,1], got %r", coverage))
+    stop(sprintf("sortP: the coverage must lie in (0,1], got %s", coverage))
   if (length(s) == 0L) stop("sortP: no graph sizes given")
   idx <- min(length(s) - 1L, as.integer(ceiling(c * length(s))) - 1L)
   idx <- max(idx, 0L)

@@ -18,7 +18,9 @@ total loss}
 The value of \code{stats::reformulate}.
 }
 \description{
-A step of the study_core implementation. Called by \code{.run_causal_estimators_module_internal}, \code{.run_ebac_core_module_internal}, \code{.run_regression_models_module_internal} and 1 others in the module.
+A step of the study_core implementation. Called by
+\code{.run_causal_estimators_module_internal}, \code{.run_ebac_core_module_internal},
+\code{.run_regression_models_module_internal} and 1 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

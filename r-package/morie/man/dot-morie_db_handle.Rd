@@ -15,13 +15,12 @@
 A list with \code{con}, \code{close}.
 }
 \description{
-A step of the database implementation. Called by \code{morie_cache_list}, \code{morie_cache_load}, \code{morie_cache_store}.
+A step of the database implementation. Called by \code{morie_cache_list},
+\code{morie_cache_load}, \code{morie_cache_store}.
 See the file header for the source the module follows.
 source it follows.
 }
 \examples{
-if (requireNamespace("DBI", quietly = TRUE)) {
-  res <- .morie_db_handle()
-  res
-}
+res <- .morie_db_handle()
+res
 }

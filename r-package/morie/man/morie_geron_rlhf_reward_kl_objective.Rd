@@ -17,7 +17,6 @@ morie_geron_rlhf_reward_kl_objective(
 \item{policy_logprobs, ref_logprobs}{Non-positive log-probabilities.}
 
 \item{beta}{Non-negative KL weight.}
-
 }
 \value{
 List with \code{objective}, \code{mean_reward}, \code{kl}, \code{kl_terms},
@@ -27,8 +26,6 @@ List with \code{objective}, \code{mean_reward}, \code{kl}, \code{kl_terms},
 J = mean r - beta mean(log pi - log pi_ref).
 }
 \examples{
-if (morie_crypto_liboqs_available()) {
-  morie_geron_rlhf_reward_kl_objective(c(1, 0.5, -0.2), c(-0.5, 
-      -1, -0.3), c(-0.8, -0.9, -0.5), 0.2)
-}
+morie_geron_rlhf_reward_kl_objective(c(1, 0.5, -0.2), c(-0.5,
+    -1, -0.3), c(-0.8, -0.9, -0.5), 0.2)
 }

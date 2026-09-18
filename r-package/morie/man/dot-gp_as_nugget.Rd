@@ -7,7 +7,8 @@
 .gp_as_nugget(nugget, n)
 }
 \arguments{
-\item{nugget}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{nugget}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
+\code{as.numeric}.}
 
 \item{n}{A count; the body uses it as \code{rep(...)}.}
 }

@@ -19,8 +19,6 @@ morie_kamath_swish(z, beta = 1)
 \item{z}{Pre-activation.}
 
 \item{beta}{Swish sharpness.}
-
-
 }
 \value{
 List with \code{output}, \code{gate}, \code{linear}.
@@ -29,6 +27,6 @@ List with \code{output}, \code{gate}, \code{linear}.
 Swish(xW + b) gates (xV + c) elementwise.
 }
 \examples{
-morie_kamath_swiglu_activation(x = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8),
-  V = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_kamath_swiglu_activation(x = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6,
+7, 8), V = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

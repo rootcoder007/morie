@@ -9,8 +9,7 @@ morie_bridge_covariance(s, t, F = NULL)
 \arguments{
 \item{s, t}{numeric time points.}
 
-\item{F}{optional CDF; the uniform on [0, 1] when NULL.}
-
+\item{F}{optional CDF; the uniform on \link{0, 1} when NULL.}
 }
 \value{
 list: covariance, variance_s.

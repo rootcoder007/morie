@@ -12,8 +12,6 @@ morie_geron_ridge_cost(X, y, theta, alpha, intercept_index = 0)
 \item{alpha}{Non-negative penalty.}
 
 \item{intercept_index}{0-based index left unpenalised, or NULL.}
-
-
 }
 \value{
 List with \code{cost}, \code{mse}, \code{penalty}, \code{gradient}, \code{alpha},
@@ -26,5 +24,5 @@ to penalise every coefficient.
 }
 \examples{
 morie_geron_ridge_cost(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
-  theta = 0.5, alpha = 0.5)
+theta = 0.5, alpha = 0.5)
 }

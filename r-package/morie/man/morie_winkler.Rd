@@ -12,7 +12,6 @@ morie_winkler(y, lower, upper, alpha = 0.1)
 \item{lower, upper}{interval endpoints}
 
 \item{alpha}{nominal miscoverage}
-
 }
 \value{
 list(score, total, coverage, meanwidth, n)
@@ -26,6 +25,6 @@ primary source: W = (u - l) + (2/alpha)(l - y) if y < l, +
 102(477):359-378, eq. (43). Lower is better.
 }
 \examples{
-morie_winkler(y = c(1, 2, 3, 4, 5, 6, 7, 8), lower = c(1, 2, 3, 4, 5, 6, 7, 8),
-  upper = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_winkler(y = c(1, 2, 3, 4, 5, 6, 7, 8), lower = c(1, 2, 3, 4, 5, 6, 7, 8), upper
+= c(1, 2, 3, 4, 5, 6, 7, 8))
 }

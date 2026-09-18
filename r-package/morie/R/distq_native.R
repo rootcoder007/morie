@@ -38,7 +38,7 @@
   lo <- as.numeric(v_min)
   hi <- as.numeric(v_max)
   if (!(hi > lo))
-    stop(sprintf("distq: need v_max > v_min, got %r and %r",
+    stop(sprintf("distq: need v_max > v_min, got %s and %s",
                  v_min, v_max))
   dz <- (hi - lo) / (n - 1L)
   z <- lo + (seq_len(n) - 1L) * dz
@@ -128,7 +128,7 @@ distribution_mean <- function(probs, z) {
 #' added to \code{m[l]}.
 #'
 #' @param reward Sampled reward r.
-#' @param gamma Discount in [0, 1]. Ignored when \code{done = TRUE}.
+#' @param gamma Discount in \[0, 1\]. Ignored when \code{done = TRUE}.
 #' @param next_probs Numeric vector of length n_atoms: the next-state
 #'   distribution under the greedy action. Must be a probability vector.
 #' @param v_min Lower bound of the support.
@@ -139,6 +139,13 @@ distribution_mean <- function(probs, z) {
 #' @return Numeric vector of length n_atoms: the projected target
 #'   probabilities, which sum to 1.
 #' @export
+#' @examples
+#' m <- categorical_projection(reward = 1, gamma = 0.9,
+#'                             next_probs = rep(0.2, 5),
+#'                             v_min = -10, v_max = 10)
+#' stopifnot(abs(sum(m) - 1) < 1e-9)
+#' m
+#' @keywords internal
 categorical_projection <- function(reward, gamma, next_probs, v_min, v_max,
                                    n_atoms = NULL, done = FALSE) {
   p <- as.numeric(next_probs)
@@ -153,7 +160,7 @@ categorical_projection <- function(reward, gamma, next_probs, v_min, v_max,
     stop(sprintf("distq: next_probs sums to %.9f, not 1", tot))
   g <- if (isTRUE(done)) 0.0 else as.numeric(gamma)
   if (!(g >= 0 && g <= 1))
-    stop(sprintf("distq: gamma must be in [0, 1], got %r", gamma))
+    stop(sprintf("distq: gamma must be in [0, 1], got %s", gamma))
   a <- .distq_atoms_full(v_min, v_max, n)
   z <- a$z
   dz <- a$dz
@@ -276,17 +283,21 @@ c51_update <- function(reward, gamma, next_probs_by_action, current_probs,
 #' Bernoulli (N = 2) alternative
 #'
 #' The single-parameter form the C51 paper names in its discussion of
-#' the projected operator: \code{Phi T_hat Z = clip((E[T_hat Z] -
+#' the projected operator: \eqn{Phi T_hat Z = clip((E[T_hat Z] -
 #' v_min) / dz, 0, 1)}.
 #'
 #' @param reward Sampled reward r.
-#' @param gamma Discount in [0, 1]. Ignored when \code{done = TRUE}.
+#' @param gamma Discount in \[0, 1\]. Ignored when \code{done = TRUE}.
 #' @param next_probs Two-element probability vector.
 #' @param v_min Lower bound of the support.
 #' @param v_max Upper bound of the support.
 #' @param done Terminal flag.
-#' @return Scalar in [0, 1].
+#' @return Scalar in \[0, 1\].
 #' @export
+#' @examples
+#' bernoulli_algorithm(reward = 1, gamma = 0.9, next_probs = rep(0.2, 5),
+#'                     v_min = -10, v_max = 10)
+#' @keywords internal
 bernoulli_algorithm <- function(reward, gamma, next_probs, v_min, v_max,
                                 done = FALSE) {
   p <- as.numeric(next_probs)
@@ -296,7 +307,7 @@ bernoulli_algorithm <- function(reward, gamma, next_probs, v_min, v_max,
   dz <- a$dz
   g <- if (isTRUE(done)) 0.0 else as.numeric(gamma)
   if (!(g >= 0 && g <= 1))
-    stop(sprintf("distq: gamma must be in [0, 1], got %r", gamma))
+    stop(sprintf("distq: gamma must be in [0, 1], got %s", gamma))
   ex <- as.numeric(reward) + g * distribution_mean(p, z)
   min(max((ex - as.numeric(v_min)) / dz, 0.0), 1.0)
 }

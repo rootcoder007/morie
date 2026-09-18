@@ -7,10 +7,12 @@
 .run_descriptive_statistics_module_internal(data)
 }
 \arguments{
-\item{data}{A list; the body reads \code{$cannabis_any_use}, \code{$heavy_drinking_30d}, \code{$weight} from it.}
+\item{data}{A list; the body reads \code{$cannabis_any_use},
+\code{$heavy_drinking_30d}, \code{$weight} from it.}
 }
 \value{
-A list with \code{binomial_summaries}, \code{binomial_summaries_survey_weighted}, \code{probability_estimates}.
+A list with \code{binomial_summaries},
+\code{binomial_summaries_survey_weighted}, \code{probability_estimates}.
 }
 \description{
 A step of the study_core implementation. Called by \code{morie_run_morie_module}.

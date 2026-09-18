@@ -13,12 +13,11 @@ morie_volsabr(K, f, T, alpha, beta, rho, nu)
 
 \item{alpha}{Volatility parameter (> 0).}
 
-\item{beta}{CEV exponent in [0, 1].}
+\item{beta}{CEV exponent in \link{0, 1}.}
 
 \item{rho}{Correlation in (-1, 1).}
 
 \item{nu}{Vol-of-vol (>= 0).}
-
 }
 \value{
 A list with elements \code{estimate}, \code{z},

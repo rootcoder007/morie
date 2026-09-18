@@ -415,6 +415,10 @@
 #' @param order Passed to \code{.groebn_key}. Defaults to \code{"lex"}.
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' f <- .groebn_poly(list("2_0" = 1, "1_1" = 1, "0_2" = 1, "0_0" = 1))
+#' .groebn_monomials(f, "lex")
+#' .groebn_monomials(f, "grlex")
 .groebn_monomials <- function(f, order = "lex") {
   nms <- names(f)
   if (length(nms) == 0L) return(character(0L))
@@ -422,7 +426,10 @@
   keys <- lapply(nms, .groebn_parse_key)
   klist <- lapply(keys, kf)
   kmat <- do.call(rbind, klist)
-  ord <- do.call(order, c(as.data.frame(kmat), list(decreasing = TRUE)))
+  # base::order, named explicitly: the monomial order arrives in a
+  # parameter also called order, which shadows it, so do.call was
+  # looking for a function named "lex".
+  ord <- do.call(base::order, c(as.data.frame(kmat), list(decreasing = TRUE)))
   nms[ord]
 }
 
@@ -815,6 +822,12 @@
 #' @param order Passed to \code{.groebn_leading_monomial}. Defaults to \code{"lex"}.
 #' @return The value of \code{[}.
 #' @export
+#' @examples
+#' # <x^3 - 2xy, x^2 y - 2y^2 + x>; a name "i_j" is the monomial x^i y^j
+#' f1 <- .groebn_poly(list("3_0" = 1, "1_1" = -2))
+#' f2 <- .groebn_poly(list("2_1" = 1, "0_2" = -2, "1_0" = 1))
+#' G <- .groebn_buchberger(list(f1, f2), order = "grlex", reduced = FALSE)$basis
+#' length(.groebn_reduce_basis(G, "grlex"))
 .groebn_reduce_basis <- function(G, order = "lex") {
   H <- Filter(function(g) length(g) > 0L, G)
   keep <- list()
@@ -853,9 +866,16 @@
   lms <- vapply(out, function(p) .groebn_leading_monomial(p, order),
                 character(1L))
   kf <- .groebn_key(order)
-  keys <- lapply(lms, kf)
+  # the key function takes an exponent vector; lms holds the monomials as
+  # "i_j" strings, so they have to be parsed first. Feeding the strings in
+  # made as.integer() return NA for every one of them and left the final
+  # ordering of the reduced basis to whatever the NA sort produced.
+  keys <- lapply(lapply(lms, .groebn_parse_key), kf)
   kmat <- do.call(rbind, keys)
-  ord <- do.call(order, c(as.data.frame(kmat), list(decreasing = TRUE)))
+  # base::order, named explicitly: the monomial order arrives in a
+  # parameter also called order, which shadows it, so do.call was
+  # looking for a function named "lex".
+  ord <- do.call(base::order, c(as.data.frame(kmat), list(decreasing = TRUE)))
   out[ord]
 }
 

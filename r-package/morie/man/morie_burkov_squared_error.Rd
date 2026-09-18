@@ -8,7 +8,6 @@ morie_burkov_squared_error(y_hat, y)
 }
 \arguments{
 \item{y_hat, y}{Predictions and targets.}
-
 }
 \value{
 List with \code{errors}.
@@ -17,8 +16,6 @@ List with \code{errors}.
 Squared error (Burkov Eq 1.2)
 }
 \examples{
-if (morie_crypto_liboqs_available()) {
-  V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-  morie_burkov_squared_error(V, V)
-}
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_burkov_squared_error(V, V)
 }

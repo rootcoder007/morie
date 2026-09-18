@@ -15,7 +15,9 @@
 The value of \code{lapply}.
 }
 \description{
-A step of the tps_all_analyze implementation. Called by \code{morie_tps_offence_summary}, \code{morie_tps_spatial_summary}, \code{morie_tps_temporal_summary}.
+A step of the tps_all_analyze implementation. Called by
+\code{morie_tps_offence_summary}, \code{morie_tps_spatial_summary},
+\code{morie_tps_temporal_summary}.
 See the file header for the source the module follows.
 the source it follows.
 }

@@ -24,4 +24,8 @@ Phase 3CCC2. Bundled snapshot of NYC OpenData
 df <- morie_datasets_nyc_school_districts(offline = TRUE)
 nrow(df)  # 33
 \dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+df <- morie_datasets_nyc_school_districts(offline = TRUE)
+nrow(df)  # 33
+\dontshow{\}) # examplesIf}
 }

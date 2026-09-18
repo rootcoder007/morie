@@ -15,7 +15,7 @@ morie_geron_credit_assignment(
 \item{trajectory}{Numeric rewards, or a list of (state, action,
 reward) triples.}
 
-\item{gamma}{Discount in [0, 1].}
+\item{gamma}{Discount in \link{0, 1}.}
 
 \item{lam}{Trace decay; default gamma.}
 

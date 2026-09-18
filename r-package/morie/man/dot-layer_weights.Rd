@@ -13,7 +13,8 @@
 A vector, from \code{as.numeric}.
 }
 \description{
-A step of the elmo_native implementation. Called by \code{.elmo_mix}, \code{.elmo_representation}.
+A step of the elmo_native implementation. Called by \code{.elmo_mix},
+\code{.elmo_representation}.
 See the file header for the source the module follows.
 source it follows.
 }

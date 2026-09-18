@@ -116,10 +116,20 @@ morie_tlseqsl_cv_folds <- function(n, V = 10, seed = 0) {
 #' @param seed Passed to \code{morie_tlseqsl_cv_folds}. Defaults to \code{0}.
 #' @return A list with \code{risk}, \code{cv_predictions}, \code{V}, \code{loss}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' X <- matrix(rnorm(100), 50, 2)
+#' y <- X %*% c(1, -1) + rnorm(50)
+#' algo <- function(Xtr, ytr) {
+#'   b <- qr.solve(cbind(1, Xtr), ytr)
+#'   function(xrow) sum(c(1, xrow) * b)
+#' }
+#' morie_tlseqsl_cv_risk(X, y, algo, V = 5, seed = 1)$risk
+#' @keywords internal
 morie_tlseqsl_cv_risk <- function(X, y, algorithm, V = 10, loss = "squared", seed = 0) {
   if (!(loss %in% .tlseqsl_LOSSES)) {
     stop(sprintf(
-      "tlseqsl: loss must be one of %s, got %r",
+      "tlseqsl: loss must be one of %s, got %s",
       paste(.tlseqsl_LOSSES, collapse = ", "), loss
     ))
   }

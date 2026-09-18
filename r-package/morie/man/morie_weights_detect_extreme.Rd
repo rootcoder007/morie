@@ -21,8 +21,6 @@ A named list with elements \code{n_extreme},
 Detect extreme weights at +/- k * IQR or by absolute percentile
 }
 \examples{
-if (requireNamespace("survey", quietly = TRUE)) {
-  V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-  morie_weights_detect_extreme(V)
-}
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_weights_detect_extreme(V)
 }

@@ -17,7 +17,10 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the study_core implementation. Called by \code{.run_ebac_core_module_internal}, \code{.run_ebac_gender_smote_sensitivity_module_internal}, \code{.run_ebac_selection_adjustment_ipw_module_internal} and 2 others in the module.
+A step of the study_core implementation. Called by
+\code{.run_ebac_core_module_internal},
+\code{.run_ebac_gender_smote_sensitivity_module_internal},
+\code{.run_ebac_selection_adjustment_ipw_module_internal} and 2 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

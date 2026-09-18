@@ -7,7 +7,8 @@
 .propinf_deepsets_backward(model, sets, cache, dout, grads)
 }
 \arguments{
-\item{model}{A list; the body reads \code{$context}, \code{$phis}, \code{$psis}, \code{$repr_dim}, \code{$rho} from it.}
+\item{model}{A list; the body reads \code{$context}, \code{$phis}, \code{$psis},
+\code{$repr_dim}, \code{$rho} from it.}
 
 \item{sets}{A vector; its length is taken.}
 
@@ -15,13 +16,31 @@
 
 \item{dout}{Passed to \code{.propinf_mlp_backward}.}
 
-\item{grads}{A list; the body reads \code{$phis}, \code{$psis}, \code{$rho} from it.}
+\item{grads}{A zeroed gradient structure to accumulate into.}
 }
 \value{
-The value of \code{for}.
+The accumulated gradient structure, with the same shape as
+\code{grads}: \code{phis}, \code{psis} and \code{rho}.
 }
 \description{
 A step of the propinf_native implementation. Called by \code{.propinf_train_set_meta}.
 See the file header for the source the module follows.
 the source it follows.
+}
+\examples{
+# a small fully connected net: three hidden units over two inputs,
+# then a single logistic output
+net <- list(
+  list(W = matrix(c(2, 3,
+                    1, 0,
+                    4, 5), nrow = 3, byrow = TRUE), b = c(10, 20, 30)),
+  list(W = matrix(c(0.5, -0.5, 0.25), nrow = 1), b = 7)
+)
+sets <- .propinf_set_representation_internal(net)
+shapes <- lapply(sets, function(L) c(length(L), length(L[[1]]) - 1L))
+m <- .propinf_deepsets_init(shapes, 6L, 3L, 6L, .propinf_rng(4L))
+fwd <- .propinf_deepsets_forward(m, sets)
+g <- .propinf_deepsets_backward(m, sets, fwd[[2]], fwd[[1]] - 1,
+                                .propinf_zero_grads(m))
+g$rho[[1]]$b
 }

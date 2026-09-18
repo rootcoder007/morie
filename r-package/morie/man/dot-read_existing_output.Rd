@@ -17,7 +17,8 @@
 The value of \code{fallback}, as built in the body.
 }
 \description{
-A step of the study_reporting implementation. Called by \code{.run_figures_module_internal}, \code{.run_meta_synthesis_module_internal}.
+A step of the study_reporting implementation. Called by
+\code{.run_figures_module_internal}, \code{.run_meta_synthesis_module_internal}.
 See the file header for the source the module follows.
 the source it follows.
 }

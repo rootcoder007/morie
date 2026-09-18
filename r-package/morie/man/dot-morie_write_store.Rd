@@ -15,7 +15,8 @@
 Invisibly,nothing; the function is called for its effect.
 }
 \description{
-A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_store}.
+A step of the crypto_keystore implementation. Called by
+\code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_store}.
 See the file header for the source the module follows.
 the source it follows.
 }

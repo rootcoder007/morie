@@ -13,7 +13,8 @@
 A numeric value.
 }
 \description{
-A step of the mrm_otis implementation. Called by \code{mrm_otis_mortification_cooccurrence}, \code{mrm_otis_region_locality}.
+A step of the mrm_otis implementation. Called by
+\code{mrm_otis_mortification_cooccurrence}, \code{mrm_otis_region_locality}.
 See the file header for the source the module follows.
 source it follows.
 }

@@ -10,7 +10,6 @@ paired_ttest(x, y, confidence = 0.95)
 \item{x, y}{Equal-length numeric vectors.}
 
 \item{confidence}{Confidence level.}
-
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})

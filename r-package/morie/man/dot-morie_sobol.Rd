@@ -21,8 +21,6 @@ for the QMC helper. Unscrambled; matches randtoolbox\'s unscrambled
 output (same standard direction numbers), cross-validated in tests.
 }
 \examples{
-if (requireNamespace("geepack", quietly = TRUE)) {
-  res <- .morie_sobol(n = 3L, d = 3L)
-  res
-}
+res <- .morie_sobol(n = 3L, d = 3L)
+res
 }

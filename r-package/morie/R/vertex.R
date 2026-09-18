@@ -57,11 +57,25 @@ morie_vertex_resolve_config <- function() {
 #' Fetch and cache a Google Cloud access token via gcloud
 #' @param cfg Config list, or NULL to resolve.
 #' @return Character bearer token.
-#' @export
 #' @examples
 #' \dontrun{
-#' morie_vertex_access_token()
+#' \dontshow{if (morie:::.vertex_examples_ok()) withAutoprint(\{ # examplesIf}
+#' # Runs only when a Google Cloud project is configured; Vertex is an
+#' # OPTIONAL fallback -- the default LLM path is local Ollama (see
+#' # morie_siu_panel / morie_llm_* helpers).
+#' tok <- morie_vertex_access_token()
+#' \dontshow{\}) # examplesIf}
 #' }
+#' @examples
+#' \dontrun{
+#' \dontshow{if (morie:::.vertex_examples_ok()) withAutoprint(\{ # examplesIf}
+#' # Runs only when a Google Cloud project is configured; Vertex is an
+#' # OPTIONAL fallback -- the default LLM path is local Ollama (see
+#' # morie_siu_panel / morie_llm_* helpers).
+#' tok <- morie_vertex_access_token()
+#' \dontshow{\}) # examplesIf}
+#' }
+#' @export
 morie_vertex_access_token <- function(cfg = NULL) {
   if (is.null(cfg)) cfg <- morie_vertex_resolve_config()
   now <- as.numeric(Sys.time())
@@ -69,6 +83,7 @@ morie_vertex_access_token <- function(cfg = NULL) {
   if (!is.null(cached) && now < .morie_vertex_token_cache$expires_at) {
     return(cached)
   }
+  .morie_ensure_exec_allowed("gcloud token retrieval")
   out <- tryCatch(
     system2(cfg$gcloud_path, c("auth", "print-access-token"),
             stdout = TRUE, stderr = TRUE),
@@ -185,4 +200,9 @@ morie_vertex_health_check <- function() {
     out$error <<- sprintf("%s: %s", class(e)[1], conditionMessage(e))
   })
   out
+}
+
+.vertex_examples_ok <- function() {
+  nzchar(Sys.getenv("GOOGLE_CLOUD_PROJECT")) ||
+    nzchar(Sys.getenv("MORIE_EE_PROJECT"))
 }

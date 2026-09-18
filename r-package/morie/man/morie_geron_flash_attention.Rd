@@ -12,8 +12,6 @@ morie_geron_flash_attention(Q, K, V, block_size = 2, causal = FALSE)
 \item{block_size}{Tile side (>=1).}
 
 \item{causal}{Mask future keys.}
-
-
 }
 \value{
 List with \code{output}, \code{direct_output}, \code{max_abs_error}, \code{n_blocks}, \code{peak_score_memory}.
@@ -22,5 +20,6 @@ List with \code{output}, \code{direct_output}, \code{max_abs_error}, \code{n_blo
 FlashAttention: tiled online-softmax, exact (hmfa)
 }
 \examples{
-morie_geron_flash_attention(Q = 0.5, K = c(1, 2, 3, 4, 5, 6, 7, 8), V = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_geron_flash_attention(Q = 0.5, K = c(1, 2, 3, 4, 5, 6, 7, 8), V = c(1, 2, 3, 4,
+5, 6, 7, 8))
 }

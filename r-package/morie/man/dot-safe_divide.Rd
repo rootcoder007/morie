@@ -15,7 +15,9 @@
 A numeric value.
 }
 \description{
-A step of the study_core implementation. Called by \code{.binary_ci}, \code{.continuous_power_required_n}, \code{.run_ebac_gender_smote_sensitivity_module_internal} and 3 others in the module.
+A step of the study_core implementation. Called by \code{.binary_ci},
+\code{.continuous_power_required_n},
+\code{.run_ebac_gender_smote_sensitivity_module_internal} and 3 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

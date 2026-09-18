@@ -2,7 +2,7 @@
 % Please edit documentation in R/infmax_native.R
 \name{.infmax_jsd_estimator}
 \alias{.infmax_jsd_estimator}
-\title{I_JSD = E_P[-sp(-T)] - E_\{PxP~\}[sp(T)]}
+\title{I_JSD = E_P\link{-sp(-T)} - E_\{PxP~\}\link{sp(T)}}
 \usage{
 .infmax_jsd_estimator(joint_scores, marginal_scores)
 }
@@ -12,7 +12,8 @@
 \item{marginal_scores}{Passed to \code{unlist}.}
 }
 \value{
-A list with \code{estimate}, \code{positive}, \code{negative}, \code{bounded}, \code{note}.
+A list with \code{estimate}, \code{positive}, \code{negative}, \code{bounded},
+\code{note}.
 }
 \description{
 A step of the infmax_native implementation. No other function in the package calls it.

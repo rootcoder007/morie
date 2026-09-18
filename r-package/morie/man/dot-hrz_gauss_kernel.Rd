@@ -13,7 +13,8 @@
 A numeric value.
 }
 \description{
-A step of the helpers_horowitz implementation. Called by \code{morie_kde_h}, \code{morie_kernel_quantile}, \code{morie_lewbel_binary} and 2 others in the module.
+A step of the helpers_horowitz implementation. Called by \code{morie_kde_h},
+\code{morie_kernel_quantile}, \code{morie_lewbel_binary} and 2 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

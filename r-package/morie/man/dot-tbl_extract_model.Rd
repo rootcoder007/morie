@@ -10,7 +10,8 @@
 \item{m}{Passed to \code{summary}.}
 }
 \value{
-A list with \code{params}, \code{se}, \code{pvalues}, \code{ci}, \code{nobs}, \code{rsquared}, \code{aic}, \code{bic}, \code{llf}.
+A list with \code{params}, \code{se}, \code{pvalues}, \code{ci}, \code{nobs},
+\code{rsquared}, \code{aic}, \code{bic}, \code{llf}.
 }
 \description{
 A step of the tables_pub implementation. No other function in the package calls it.

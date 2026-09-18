@@ -51,10 +51,12 @@
 
 \item{n_alpha}{A count; the body uses it as \code{seq_len(...)}.}
 
-\item{max_sim}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
+\item{max_sim}{Optional; may be \code{NULL}. Coerced to integer by the body, with
+\code{as.integer}.}
 }
 \value{
-A list with \code{chain}, \code{acceptance_rate}, \code{n_simulations}, \code{unresolved_steps}.
+A list with \code{chain}, \code{acceptance_rate}, \code{n_simulations},
+\code{unresolved_steps}.
 }
 \description{
 A step of the abcgp_native implementation. Called by \code{gps_abc}, \code{synthetic_abc}.

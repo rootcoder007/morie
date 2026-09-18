@@ -6,8 +6,7 @@
 \usage{
 morie_siu_anomaly_check(
   case_number,
-  model = c("ollama", "openai_compatible", "claude", "openai", "gemini", "vertex",
-    "freeapi"),
+  model = c("ollama", "openai_compatible", "claude", "openai", "gemini", "vertex"),
   cache_dir = file.path(tempdir(), "morie", "siu"),
   max_html_chars = 80000L,
   mock_response_text = NULL
@@ -24,7 +23,7 @@ wins. The default \code{c("ollama", "gemini")} tries the local
 free model first and only escalates to paid Gemini if Ollama
 isn't installed or fails -- so morie costs $0 to use as long
 as you have a free Gemma / Qwen / Llama running locally
-(e.g. \code{ollama pull gemma3:4b}).}
+(e.g. \code{ollama pull <model>}).}
 
 \item{cache_dir}{Directory holding the harvester's SIU.csv and
 the optional \code{html/} subdirectory.}
@@ -54,9 +53,12 @@ One API call is made per case (all fields batched into a single
 prompt with structured-JSON output).
 }
 \examples{
-\dontrun{
-Sys.setenv(GOOGLE_API_KEY = "your-gemini-key")
-a <- morie_siu_anomaly_check("17-OVI-201", model = "gemini")
-subset(a, verdict == "disagree")
+\dontshow{if (morie_llm_probe_ollama() && requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\donttest{
+# Local Ollama is the default provider (free, no key); the report
+# HTML is fetched live, so try() keeps offline checks graceful.
+a <- try(morie_siu_anomaly_check("17-OVI-201", model = "ollama"))
+if (!inherits(a, "try-error")) subset(a, verdict == "disagree")
 }
+\dontshow{\}) # examplesIf}
 }

@@ -105,7 +105,7 @@ Phase 3DDD1. Five small fixtures harvested live from
 opendata.vancouver.ca for offline reproducibility -- chosen to
 surface neighbourhood-level civic context useful in carceral /
 policing analysis even though VPD itself publishes crime data
-separately (see \code{morie_datasets_vpd_crime()}).
+separately (see \code{\link[=morie_datasets_vpd_crime]{morie_datasets_vpd_crime()}}).
 
 Phase 3EEE3. Bundled 27-row snapshot of City-run community
 centres. Useful as an "anchor institutions" overlay for analyses
@@ -129,7 +129,8 @@ neighbourhood, primary material. Useful as a CPTED-style
 \code{morie_datasets_vancouver_graffiti()} \tab \code{graffiti} \tab 100 (of 7683) \cr
 \code{morie_datasets_vancouver_noise_control_areas()} \tab \code{noise-control-areas} \tab 3 \cr
 \code{morie_datasets_vancouver_homeless_shelters()} \tab \code{homeless-shelter-locations} \tab 17 \cr
-\code{morie_datasets_vancouver_property_use_inspection_districts()} \tab \code{property-use-inspection-districts} \tab 23 \cr
+\code{morie_datasets_vancouver_property_use_inspection_districts()} \tab
+\code{property-use-inspection-districts} \tab 23 \cr
 \code{morie_datasets_vancouver_fire_halls()} \tab \code{fire-halls} \tab 20 \cr
 }
 

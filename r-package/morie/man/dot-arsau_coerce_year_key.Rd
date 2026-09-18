@@ -15,7 +15,9 @@
 Nothing; this branch always raises.
 }
 \description{
-A step of the arsau implementation. Called by \code{morie_arsau_available_datasets}, \code{morie_arsau_describe}, \code{morie_arsau_load_aggregate_summary} and 5 others in the module.
+A step of the arsau implementation. Called by \code{morie_arsau_available_datasets},
+\code{morie_arsau_describe}, \code{morie_arsau_load_aggregate_summary} and 5 others in
+the module.
 See the file header for the source the module follows.
 it follows.
 }

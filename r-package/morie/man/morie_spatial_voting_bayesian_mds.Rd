@@ -32,15 +32,13 @@ Bayesian MDS (stub) -- log-normal distances via Metropolis
 }
 \examples{
 \donttest{
-if (requireNamespace("smacof", quietly = TRUE)) {
-  set.seed(1)
-  X <- matrix(rnorm(30), 10, 3)
-  D <- as.matrix(dist(X))
-  fit <- morie_spatial_voting_bayesian_mds(D, n_dims = 2L,
-                                           n_samples = 200L,
-                                           burn_in = 50L)
-  dim(fit$positions)
-}
+set.seed(1)
+X <- matrix(rnorm(30), 10, 3)
+D <- as.matrix(dist(X))
+fit <- morie_spatial_voting_bayesian_mds(D, n_dims = 2L,
+                                         n_samples = 200L,
+                                         burn_in = 50L)
+dim(fit$positions)
 }
 }
 \references{

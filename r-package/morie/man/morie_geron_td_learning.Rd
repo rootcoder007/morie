@@ -21,11 +21,9 @@ morie_geron_td_learning(
 
 \item{alpha}{In (0, 1].}
 
-\item{gamma}{In [0, 1].}
+\item{gamma}{In \link{0, 1}.}
 
 \item{terminal}{Optional logical vector; TRUE drops the bootstrap.}
-
-
 }
 \value{
 List with \code{V}, \code{td_error}, \code{target}, \code{updates}, \code{alpha},
@@ -37,7 +35,7 @@ own earlier update -- the parity test replays a trajectory
 step-for-step to pin that down. States are 0-based.
 }
 \examples{
-morie_geron_td_learning(c(0, 0, 0), c(0, 1, 0, 2), c(1, 0, 2, 
-    -1), c(1, 2, 1, 2), alpha = 0.5, gamma = 0.9, terminal = c(FALSE, 
+morie_geron_td_learning(c(0, 0, 0), c(0, 1, 0, 2), c(1, 0, 2,
+    -1), c(1, 2, 1, 2), alpha = 0.5, gamma = 0.9, terminal = c(FALSE,
     FALSE, FALSE, TRUE))
 }

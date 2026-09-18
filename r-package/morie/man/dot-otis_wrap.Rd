@@ -30,7 +30,8 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the otis_all_analyze implementation. Called by \code{.otis_aggregate_glm}, \code{.otis_c_simple}, \code{.otis_d_simple} and 35 others in the module.
+A step of the otis_all_analyze implementation. Called by \code{.otis_aggregate_glm},
+\code{.otis_c_simple}, \code{.otis_d_simple} and 35 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

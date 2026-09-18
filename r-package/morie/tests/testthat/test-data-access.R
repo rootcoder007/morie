@@ -5,6 +5,11 @@
 # and skipped on CRAN / offline machines.
 
 test_that(".morie_url_with_params builds and encodes query strings", {
+  # 4s of the suite here, and r-universe's macOS x86_64 builder is
+  # about 1.8 times slower. The check there is killed at sixty minutes
+  # and the suite alone was twenty-six of them. The heavy files run in
+  # our own CI, which sets NOT_CRAN, where the clock is ours.
+  skip_heavy()
   f <- morie:::.morie_url_with_params
   expect_equal(f("http://x/a"), "http://x/a")
   expect_equal(f("http://x/a", NULL), "http://x/a")
@@ -16,6 +21,7 @@ test_that(".morie_url_with_params builds and encodes query strings", {
 })
 
 test_that(".morie_ckan_portal resolves names and passes through URLs", {
+  skip_heavy()
   f <- morie:::.morie_ckan_portal
   expect_equal(f("open.canada.ca"), "https://open.canada.ca/data/en")
   expect_equal(f("data.ontario.ca"), "https://data.ontario.ca")
@@ -27,6 +33,7 @@ test_that(".morie_ckan_portal resolves names and passes through URLs", {
 })
 
 test_that(".morie_detect_format falls back to the URL extension", {
+  skip_heavy()
   f <- morie:::.morie_detect_format
   # file:// URLs carry no Content-Type header -> extension fallback.
   expect_equal(f("file:///tmp/x.csv"), "csv")
@@ -38,6 +45,7 @@ test_that(".morie_detect_format falls back to the URL extension", {
 })
 
 test_that("morie_fetch reads csv and json over file://", {
+  skip_heavy()
   skip_if_not_installed("jsonlite")
   csv <- tempfile(fileext = ".csv")
   utils::write.csv(data.frame(a = 1:3, b = letters[1:3]), csv,
@@ -58,6 +66,7 @@ test_that("morie_fetch reads csv and json over file://", {
 })
 
 test_that("morie_fetch extracts a member from a zip over file://", {
+  skip_heavy()
   skip_if(Sys.which("zip") == "", "zip utility not available")
   csv <- tempfile("dl-", fileext = ".csv")
   utils::write.csv(data.frame(a = 1:4), csv, row.names = FALSE)
@@ -76,6 +85,7 @@ test_that("morie_fetch extracts a member from a zip over file://", {
 })
 
 test_that("TPS catalog entries carry verified ArcGIS layer URLs", {
+  skip_heavy()
   cat <- morie_dataset_catalog()
   tps <- cat[cat$source == "tps", ]
   expect_equal(nrow(tps), 3L)
@@ -84,8 +94,11 @@ test_that("TPS catalog entries carry verified ArcGIS layer URLs", {
 })
 
 test_that("morie_ckan_search returns resource rows (network)", {
-  testthat::skip_if_offline("open.canada.ca")
-  hits <- skip_if_live_unavailable(morie_ckan_search("cannabis", rows = 3))
+  skip_heavy()
+  skip_if_no_network("open.canada.ca")
+  hits <- tryCatch(morie_ckan_search("cannabis", rows = 3),
+    error = function(e) NULL
+  )
   skip_if(is.null(hits), "CKAN package_search unreachable")
   expect_s3_class(hits, "data.frame")
   expect_true(all(c("dataset_title", "resource_id", "format") %in%
@@ -93,13 +106,16 @@ test_that("morie_ckan_search returns resource rows (network)", {
 })
 
 test_that("morie_fetch_arcgis paginates a FeatureServer layer (network)", {
-  testthat::skip_if_offline("services.arcgis.com")
+  skip_heavy()
+  skip_if_no_network("services.arcgis.com")
   layer <- paste0(
     "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/",
     "rest/services/Homicides_Open_Data_ASR_RC_TBL_002/",
     "FeatureServer/0"
   )
-  df <- skip_if_live_unavailable(morie_fetch_arcgis(layer, max_records = 30))
+  df <- tryCatch(morie_fetch_arcgis(layer, max_records = 30),
+    error = function(e) NULL
+  )
   skip_if(is.null(df), "ArcGIS layer unreachable")
   expect_s3_class(df, "data.frame")
   expect_true(nrow(df) > 0 && nrow(df) <= 30)

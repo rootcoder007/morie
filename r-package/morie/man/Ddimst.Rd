@@ -21,12 +21,11 @@ Ddimst(
 
 \item{eps_theta}{Predicted noise, same length as x_t.}
 
-\item{eta}{Stochasticity in [0, 1].}
+\item{eta}{Stochasticity in \link{0, 1}.}
 
 \item{T}{Total number of steps for the cosine schedule.}
 
 \item{alpha_bar_t, alpha_bar_prev}{Optional explicit cumulative alphas.}
-
 }
 \value{
 List with \code{estimate}, \code{x_prev}, \code{x0_pred},

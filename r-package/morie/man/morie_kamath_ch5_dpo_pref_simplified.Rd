@@ -15,7 +15,6 @@ morie_kamath_ch5_dpo_pref_substituted(pi_star, pi_ref, beta, Z = NULL)
 \item{beta}{Positive.}
 
 \item{Z}{Partition function carried through; default 1.}
-
 }
 \value{
 List with \code{estimate}, \code{margin}, implicit rewards.
@@ -30,6 +29,6 @@ explicitly and refuses to return unless the beta log Z terms cancel --
 the same assertion the Python module makes.
 }
 \examples{
-morie_kamath_ch5_dpo_pref_simplified(c(0.6, 0.4), c(0.5, 0.5), 
+morie_kamath_ch5_dpo_pref_simplified(c(0.6, 0.4), c(0.5, 0.5),
     0.2)
 }

@@ -13,7 +13,8 @@
 One of two values, depending on the branch taken.
 }
 \description{
-A step of the fairness_temporal implementation. Called by \code{morie_fairness_predpol_temporal_audit}.
+A step of the fairness_temporal implementation. Called by
+\code{morie_fairness_predpol_temporal_audit}.
 See the file header for the source the module follows.
 the source it follows.
 }

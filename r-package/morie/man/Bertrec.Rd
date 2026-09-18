@@ -23,8 +23,8 @@ Sun et al. (2019), BERT4Rec: sequential recommendation with
 bidirectional encoder representations from transformer, CIKM 28,
 1441-1450 (arXiv:1904.06690 -- FETCHED).  The objective is the cloze
 task: a proportion rho of the items in each sequence is replaced by
-[mask] and the loss is the mean over masked positions of -log P(v_m =
-v*_m | S'_u).  At test time exactly one [mask] is appended to the end
+\link{mask} and the loss is the mean over masked positions of -log P(v_m =
+v*_m | S'_u).  At test time exactly one \link{mask} is appended to the end
 of the sequence, the paper's device for turning a bidirectional model
 into a next-item recommender.
 }

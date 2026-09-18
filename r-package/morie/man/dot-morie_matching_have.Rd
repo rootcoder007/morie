@@ -13,7 +13,8 @@
 The value of \code{requireNamespace}.
 }
 \description{
-A step of the matching implementation. Called by \code{morie_matching_estimate_propensity}, \code{morie_matching_full}.
+A step of the matching implementation. Called by
+\code{morie_matching_estimate_propensity}, \code{morie_matching_full}.
 See the file header for the source the module follows.
 source it follows.
 }

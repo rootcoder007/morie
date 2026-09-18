@@ -2,8 +2,7 @@
 % Please edit documentation in R/tmldyn_native.R
 \name{.fit_q1}
 \alias{.fit_q1}
-\title{Fit Q1 (E[Q2(A(0), d_\{A(1)\}, Lbar(1)) | A(0), L(0)]) on the rows in
-idx}
+\title{.fit_q1}
 \usage{
 .fit_q1(pseudo, L0, A0, idx, ridge)
 }
@@ -16,13 +15,14 @@ idx}
 
 \item{idx}{Iterated over elementwise, with \code{lapply}.}
 
-\item{ridge}{Passed to \code{.tmldyn_lstsq}.}
+\item{ridge}{Numeric; combined arithmetically in the body.}
 }
 \value{
 A list with \code{q1}, \code{b}.
 }
 \description{
-A step of the tmldyn_native implementation. Called by \code{.rule_value_seq}, \code{.sequential_blips}, \code{morie_tmle_dynamic_regime}.
+A step of the tmldyn_native implementation. Called by \code{morie_tmldyn},
+\code{rule_value_seq}, \code{sequential_blips}.
 See the file header for the source the module follows.
 source it follows.
 }

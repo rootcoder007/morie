@@ -8,8 +8,6 @@ morie_partial_tau(x, y, z)
 }
 \arguments{
 \item{x, y, z}{Numeric vectors of equal length.}
-
-
 }
 \value{
 List with \code{partial_tau}, \code{tau_xy}, \code{tau_xz}, \code{tau_yz}, \code{n}.
@@ -21,8 +19,8 @@ not reach zero under exact conditional independence. Mirrors
 \code{morie.fn.gb1251}.
 }
 \examples{
-morie_partial_tau(x = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5),
-  y = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5), z = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_partial_tau(x = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5), y = c(2.5, 1.0, 3.5,
+4.0, 2.0, 5.5, 3.0, 6.5), z = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Gibbons JD, Chakraborti S (2011). \emph{Nonparametric

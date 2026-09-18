@@ -12,7 +12,6 @@ morie_kamath_ch6_log_prob_ratio_attr(a_i, a_j, K = NULL, lam = 1)
 \item{K}{Optional count.}
 
 \item{lam}{Finite weight.}
-
 }
 \value{
 List with \code{estimate}, \code{unweighted}, \code{per_pair}.
@@ -22,6 +21,6 @@ lam * MEAN log P(a_i)/P(a_j) over the K word pairs; the unweighted SUM is
 reported alongside.
 }
 \examples{
-morie_kamath_ch6_log_prob_ratio_attr(c(0.6, 0.4), c(0.4, 0.6), 
+morie_kamath_ch6_log_prob_ratio_attr(c(0.6, 0.4), c(0.4, 0.6),
     lam = 2)
 }

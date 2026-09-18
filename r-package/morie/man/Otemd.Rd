@@ -30,7 +30,8 @@ Peyre and Cuturi (2019). Solved by the transportation simplex:
 north-west-corner start, potentials from the basis tree, MODI pivoting.
 }
 \examples{
-Otemd(a = c(1, 2, 3, 4, 5, 6, 7, 8), b = c(1, 2, 3, 4, 5, 6, 7, 8), C = c(1, 2, 3, 4, 5, 6, 7, 8))
+Otemd(a = c(1, 2, 3, 4, 5, 6, 7, 8), b = c(1, 2, 3, 4, 5, 6, 7, 8), C = c(1, 2, 3, 4,
+5, 6, 7, 8))
 }
 \references{
 Rubner, Y., Tomasi, C. and Guibas, L. J. (2000).

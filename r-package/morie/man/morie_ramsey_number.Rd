@@ -8,7 +8,6 @@ morie_ramsey_number(k, l = NULL)
 }
 \arguments{
 \item{k, l}{Clique sizes; \code{l} defaults to \code{k} for the diagonal case.}
-
 }
 \value{
 A list with \code{value} (NULL when unknown), \code{lower}, \code{upper},
@@ -22,7 +21,7 @@ of the edges of \eqn{K_n} contains a red \eqn{K_k} or a blue
 \details{
 Almost nothing is known. For \eqn{k, l \ge 3} exactly nine values
 have ever been determined and the list has not grown since 1995.
-\eqn{R(5,5)} is unknown, lying in [43, 46]. The difficulty is not
+\eqn{R(5,5)} is unknown, lying in \link{43, 46}. The difficulty is not
 that the problem is open-ended but that it is finite and enormous:
 settling \eqn{R(5,5)} by exhaustive search means examining the
 \eqn{2^{903}} colourings of \eqn{K_{43}}.

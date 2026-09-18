@@ -13,7 +13,10 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the study_core implementation. Called by \code{.run_causal_estimators_module_internal}, \code{.run_descriptive_statistics_module_internal}, \code{.run_distribution_tests_module_internal} and 12 others in the module.
+A step of the study_core implementation. Called by
+\code{.run_causal_estimators_module_internal},
+\code{.run_descriptive_statistics_module_internal},
+\code{.run_distribution_tests_module_internal} and 12 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

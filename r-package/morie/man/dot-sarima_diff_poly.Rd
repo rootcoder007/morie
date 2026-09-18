@@ -9,7 +9,7 @@
 \arguments{
 \item{k}{Coerced to integer by the body, with \code{as.integer}.}
 
-\item{s}{Coerced to integer by the body, with \code{as.integer}.}
+\item{s}{Numeric; combined arithmetically in the body.}
 }
 \value{
 The value of \code{out}, as built in the body.

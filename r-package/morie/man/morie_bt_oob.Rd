@@ -18,7 +18,6 @@ morie_bt_oob(x, y, fit_fn, predict_fn, B = 100L, loss = NULL, seed = 0)
 \item{loss}{elementwise loss; squared error when \code{NULL}.}
 
 \item{seed}{resampling seed.}
-
 }
 \value{
 list: err_oob, err_apparent, per_observation, n_dropped,
@@ -33,13 +32,11 @@ complement, which the tests assert. Points in every bag are
 dropped and counted; a large count means B is too small.
 }
 \examples{
-if (morie_crypto_liboqs_available()) {
-  x <- matrix(stats::rnorm(60), 30)
-  y <- x[, 1] + stats::rnorm(30)
-  fit <- function(Xa, ya) qr.coef(qr(cbind(1, Xa)), ya)
-  prd <- function(b, Xn) as.numeric(cbind(1, Xn) \%*\% b)
-  morie_bt_oob(x, y, fit, prd, B = 20)$err_oob
-}
+x <- matrix(stats::rnorm(60), 30)
+y <- x[, 1] + stats::rnorm(30)
+fit <- function(Xa, ya) qr.coef(qr(cbind(1, Xa)), ya)
+prd <- function(b, Xn) as.numeric(cbind(1, Xn) \%*\% b)
+morie_bt_oob(x, y, fit, prd, B = 20)$err_oob
 }
 \references{
 Efron and Tibshirani (1997), \emph{JASA} 92:548-560;

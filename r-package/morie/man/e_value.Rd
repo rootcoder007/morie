@@ -21,7 +21,5 @@ Applies the continuous-scale z-stat -> RR approximation natively,
 matching the Python port.
 }
 \examples{
-if (requireNamespace("EValue", quietly = TRUE)) {
-  e_value(ate = 0.5, se = 0.1)
-}
+e_value(ate = 0.5, se = 0.1)
 }

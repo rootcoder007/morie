@@ -13,7 +13,8 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the study_core implementation. Called by \code{.run_causal_estimators_module_internal}, \code{morie_run_morie_module}.
+A step of the study_core implementation. Called by
+\code{.run_causal_estimators_module_internal}, \code{morie_run_morie_module}.
 See the file header for the source the module follows.
 source it follows.
 }

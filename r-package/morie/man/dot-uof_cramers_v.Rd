@@ -19,7 +19,8 @@
 A numeric value.
 }
 \description{
-A step of the mrm_uof implementation. Called by \code{mrm_uof_region_locality}, \code{mrm_uof_weapon_diversity}.
+A step of the mrm_uof implementation. Called by \code{mrm_uof_region_locality},
+\code{mrm_uof_weapon_diversity}.
 See the file header for the source the module follows.
 source it follows.
 }

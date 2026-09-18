@@ -22,12 +22,11 @@ numeric range, or a vector of discrete choices.}
 
 \item{n_iter}{Configurations to draw.}
 
-\item{K}{Folds in [2, m].}
+\item{K}{Folds in \link{2, m}.}
 
 \item{fit_score}{Required scoring function.}
 
 \item{seed}{LCG seed.}
-
 }
 \value{
 List with \code{best_params}, \code{best_score}, \code{results},
@@ -39,16 +38,14 @@ argsorted stably) and then one draw PER PARAMETER per configuration,
 in the order of \code{param_dist}. \code{std_score} is the ddof = 0 deviation.
 }
 \examples{
-if (requireNamespace("ranger", quietly = TRUE)) {
-  set.seed(3)
-  X <- matrix(rnorm(60), 30, 2)
-  y <- as.numeric(X[, 1] > 0)
-  fs <- function(Xtr, ytr, Xte, yte, params) {
-    b <- qr.solve(cbind(1, as.matrix(Xtr)), as.numeric(ytr))
-    pred <- as.numeric(cbind(1, as.matrix(Xte)) \%*\% b)
-    -mean((pred - yte)^2) * params$w
-  }
-  morie_geron_randomized_search_cv(X, y, param_dist = list(w = c(0.5, 2)),
-                                   n_iter = 3, K = 3, fit_score = fs)
+set.seed(3)
+X <- matrix(rnorm(60), 30, 2)
+y <- as.numeric(X[, 1] > 0)
+fs <- function(Xtr, ytr, Xte, yte, params) {
+  b <- qr.solve(cbind(1, as.matrix(Xtr)), as.numeric(ytr))
+  pred <- as.numeric(cbind(1, as.matrix(Xte)) \%*\% b)
+  -mean((pred - yte)^2) * params$w
 }
+morie_geron_randomized_search_cv(X, y, param_dist = list(w = c(0.5, 2)),
+                                 n_iter = 3, K = 3, fit_score = fs)
 }

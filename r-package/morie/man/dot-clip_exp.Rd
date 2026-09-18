@@ -13,7 +13,8 @@
 A numeric value.
 }
 \description{
-A step of the study_core implementation. Called by \code{.or_table}, \code{.run_regression_models_module_internal}.
+A step of the study_core implementation. Called by \code{.or_table},
+\code{.run_regression_models_module_internal}.
 See the file header for the source the module follows.
 source it follows.
 }

@@ -40,6 +40,10 @@
 #' @param coef0 Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
 #' @return The value of \code{K}, as built in the body.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' kernel_matrix(V)
+#' @keywords internal
 kernel_matrix <- function(X, kernel = "linear", gamma = 1.0, degree = 3,
                           coef0 = 0.0) {
   M <- as.matrix(X)
@@ -54,7 +58,7 @@ kernel_matrix <- function(X, kernel = "linear", gamma = 1.0, degree = 3,
       s <- sum((a - b) ^ 2)
       return(exp(-as.numeric(gamma) * s))
     }
-    stop(sprintf("svmopt: kernel must be linear, poly or rbf, got %r",
+    stop(sprintf("svmopt: kernel must be linear, poly or rbf, got %s",
                  kernel))
   }
   K <- matrix(0, n, n)

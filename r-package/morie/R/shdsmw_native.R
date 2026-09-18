@@ -73,8 +73,8 @@
 .shdsmw_wls <- function(X, y, w) {
   X <- as.matrix(X)
   storage.mode(X) <- "double"
-  y <- .shdsmw_vec(y)
-  w <- .shdsmw_vec(w)
+  y <- .vec(y)
+  w <- .vec(w)
   n <- length(y)
   if (nrow(X) != n) stop("X and y length mismatch")
   # diagonal weight matrix; weighted normal equations X' W X b = X' W y
@@ -105,7 +105,9 @@
 #' @param contrast See Usage.
 #' @param path See Usage.
 #' @param trim See Usage.
+#' @return The value of `out`, as built in the body.
 #' @export
+#' @keywords internal
 shrinkage_msm <- function(y, treatment_history, covariate_history,
                           lam = 0.0, contrast = "cumulative",
                           path = NULL, trim = NULL) {
@@ -119,7 +121,7 @@ shrinkage_msm <- function(y, treatment_history, covariate_history,
     stop("shrinkage_msm: ", length(A_hist), " treatment times but ",
          length(L_hist), " covariate blocks")
   }
-  yv <- .shdsmw_vec(y)
+  yv <- .vec(y)
   n <- length(yv)
 
   # ridge-penalised logistic regression on the treatment history
@@ -127,7 +129,7 @@ shrinkage_msm <- function(y, treatment_history, covariate_history,
   # penalty on the slopes (NOT the intercept). Returns fitted
   # probabilities of length n.
   ridge_ps <- function(A_block, L_block, penalty) {
-    A <- .shdsmw_vec(A_block)
+    A <- .vec(A_block)
     # Build the design: intercept + the most recent L (or empty).
     if (is.null(L_block) || length(L_block) == 0L) {
       X <- matrix(1, nrow = n, ncol = 1L)
@@ -142,55 +144,56 @@ shrinkage_msm <- function(y, treatment_history, covariate_history,
       p1 <- max(min(m, 1 - 1e-12), 1e-12)
       return(rep(p1, n))
     }
+    # The penalty applies to the slopes only; the intercept stays free, so
+    # a large penalty drives the slopes to zero and leaves the marginal
+    # proportion, which is what makes the path interpretable.
     pen <- rep(0, p)
     pen[-1L] <- penalty
-    eta <- as.numeric(X[, -1L, drop = FALSE] %*%
-                      rep(0, p - 1L))
-    mu <- rep(mean(A), n)
-    for (it in seq_len(50L)) {
-      pi_ <- 1 / (1 + exp(-(X %*% c(log(mu / (1 - mu)), rep(0, p - 1L)) +
-                            eta)))
+    b <- rep(0, p)
+    m <- max(min(mean(A), 1 - 1e-12), 1e-12)
+    b[1L] <- log(m / (1 - m))
+    for (it in seq_len(100L)) {
+      pi_ <- 1 / (1 + exp(-as.numeric(X %*% b)))
       pi_ <- pmin(pmax(pi_, 1e-12), 1 - 1e-12)
-      # one Newton step with ridge
       W <- pi_ * (1 - pi_)
       XW <- sweep(X, 1, W, "*")
       H <- crossprod(XW, X) + diag(pen, p)
-      g <- crossprod(XW, (A - pi_)) - pen *
-        c(0, rep(0, p - 1L))
+      g <- crossprod(X, A - pi_) - pen * b
       step <- tryCatch(solve(H, g), error = function(e) rep(0, p))
-      b <- step
-      mu <- 1 / (1 + exp(-(X %*% b)))
+      b <- b + as.numeric(step)
+      if (max(abs(step)) < 1e-10) break
     }
-    mu
+    mu <- 1 / (1 + exp(-as.numeric(X %*% b)))
+    pmin(pmax(mu, 1e-12), 1 - 1e-12)
   }
 
   fit_at <- function(lm) {
-    w <- numeric(n)
+    w <- rep(1, n)
     per <- list()
     for (t in seq_along(A_hist)) {
       L_block <- if (length(L_hist) >= t) L_hist[[t]] else NULL
       ps <- ridge_ps(A_hist[[t]], L_block, penalty = lm)
-      A <- .shdsmw_vec(A_hist[[t]])
+      A <- .vec(A_hist[[t]])
       sw <- ifelse(A == 1, 1 / ps, 1 / (1 - ps))
       if (!is.null(trim)) sw <- pmin(sw, trim)
-      w <- w + sw
+      w <- w * sw
       per[[t]] <- ps
     }
     cum <- numeric(n)
-    for (i in seq_len(n)) for (a in A_hist) cum[i] <- cum[i] + .shdsmw_vec(a)[i]
+    for (i in seq_len(n)) for (a in A_hist) cum[i] <- cum[i] + .vec(a)[i]
     e <- switch(contrast,
                 cumulative = cum,
-                final = .shdsmw_vec(A_hist[[length(A_hist)]]),
+                final = .vec(A_hist[[length(A_hist)]]),
                 everexposed = ifelse(cum > 0, 1, 0),
                 stop("shrinkage_msm: contrast must be 'cumulative', ",
                      "'final' or 'everexposed', got ",
                      deparse(contrast)))
-    X <- matrix(e, n, 1L)
+    X <- cbind(1, e)
     f <- .shdsmw_wls(X, yv, w)
     s1 <- sum(w)
     s2 <- sum(w * w)
-    list(lam = as.numeric(lm), estimate = f$coef[1L],
-         se = f$se[1L], weights = w,
+    list(lam = as.numeric(lm), estimate = f$coef[2L],
+         se = f$se[2L], intercept = f$coef[1L], weights = w,
          mean_weight = s1 / n, max_weight = max(w),
          effective_sample_size =
            if (s2 > 0) (s1 * s1 / s2) else 0,
@@ -208,10 +211,10 @@ shrinkage_msm <- function(y, treatment_history, covariate_history,
                                       effective_sample_size =
                                         r$effective_sample_size)
   }
-  unadj <- .shdsmw_wls(matrix(main$exposure, n, 1L), yv, rep(1, n))
+  unadj <- .shdsmw_wls(cbind(1, main$exposure), yv, rep(1, n))
   out <- main
   out$path <- rows
-  out$unadjusted <- unadj$coef[1L]
+  out$unadjusted <- unadj$coef[2L]
   out$n <- n
   out$n_times <- length(A_hist)
   out$contrast <- contrast
@@ -238,3 +241,18 @@ penalty_path <- function(y, treatment_history, covariate_history,
 
 # house entry point: the package exports one morie_<module>
 morie_shdsmw <- shrinkage_msm
+
+#' .vec
+#'
+#' A step of the shdsmw_native implementation. Called by \code{.shdsmw_wls}, \code{shrinkage_msm}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param x A matrix; passed to \code{as.matrix}.
+#' @return A vector, from \code{as.numeric}.
+#' @export
+#' @examples
+#' x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+#' res <- .vec(x = x)
+#' res
+.vec <- function(x) as.numeric(as.matrix(x))

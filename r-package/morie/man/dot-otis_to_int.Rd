@@ -13,7 +13,9 @@
 One of two values, depending on the branch taken.
 }
 \description{
-A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b07}, \code{morie_otis_analyze_c01}, \code{morie_otis_analyze_c03}.
+A step of the otis_all_analyze implementation. Called by
+\code{morie_otis_analyze_b07}, \code{morie_otis_analyze_c01},
+\code{morie_otis_analyze_c03}.
 See the file header for the source the module follows.
 the source it follows.
 }

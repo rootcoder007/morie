@@ -117,18 +117,22 @@
 #'   \code{n_variants} and \code{method}.
 #' @references Burgess, S. & Bowden, J. (2015). Integrating
 #'   summarized data from multiple genetic variants in Mendelian
-#'   randomization. arXiv:1512.04486 [stat.AP].
+#'   randomization. arXiv:1512.04486 \[stat.AP\].
 #' @export
+#' @examples
+#' morie_mtr2sx(beta_x = c(1, 2, 3, 4, 5, 6, 7, 8), se_x = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   beta_y = c(1, 2, 3, 4, 5, 6, 7, 8), se_y = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_mtr2sx <- function(beta_x, se_x, beta_y, se_y,
                         model = "multiplicative",
                         weights = "first_order", theta = 0.0) {
   MODELS <- c("multiplicative", "fixed", "additive")
   WEIGHTS <- c("first_order", "second_order")
   if (!(model %in% MODELS))
-    stop(sprintf("mtr2sx: model must be one of %s, got %r",
+    stop(sprintf("mtr2sx: model must be one of %s, got %s",
                  paste(MODELS, collapse = ", "), model))
   if (!(weights %in% WEIGHTS))
-    stop(sprintf("mtr2sx: weights must be one of %s, got %r",
+    stop(sprintf("mtr2sx: weights must be one of %s, got %s",
                  paste(WEIGHTS, collapse = ", "), weights))
   bx <- as.numeric(beta_x)
   by <- as.numeric(beta_y)

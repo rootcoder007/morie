@@ -15,7 +15,8 @@
 The value of \code{[}.
 }
 \description{
-A step of the arsau_analyze implementation. Called by \code{morie_arsau_analyze_individual_records}.
+A step of the arsau_analyze implementation. Called by
+\code{morie_arsau_analyze_individual_records}.
 See the file header for the source the module follows.
 source it follows.
 }

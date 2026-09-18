@@ -32,7 +32,6 @@ the plot.}
 \item{show_top}{Cap on how many clusters appear in the legend.}
 
 \item{fig_w, fig_h}{Figure size.}
-
 }
 \value{
 A \code{ggplot} (when ggplot2 is available) or
@@ -46,10 +45,8 @@ coloured by DBSCAN cluster label.
 }
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-if (requireNamespace("dbscan", quietly = TRUE) && requireNamespace("ggplot2", quietly = TRUE)) {
-  df <- data.frame(LAT_WGS84 = 43.65 + rnorm(60, 0, 0.01), LONG_WGS84 = -79.4 + 
-      rnorm(60, 0, 0.01))
-  morie_tps_render_points(df, category = "Synth")
-}
+df <- data.frame(LAT_WGS84 = 43.65 + rnorm(60, 0, 0.01), LONG_WGS84 = -79.4 +
+    rnorm(60, 0, 0.01))
+morie_tps_render_points(df, category = "Synth")
 \dontshow{\}) # examplesIf}
 }

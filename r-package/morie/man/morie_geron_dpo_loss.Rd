@@ -11,16 +11,13 @@ morie_geron_dpo_loss(logp_w, logp_l, logp_ref_w, logp_ref_l, beta = 0.1)
 vectors of equal length.}
 
 \item{beta}{Positive inverse temperature.}
-
-
-
 }
 \value{
 List with \code{loss}, \code{margin}, \code{implicit_reward_chosen},
 \code{implicit_reward_rejected}, \code{accuracy}, \code{per_pair_loss}.
 }
 \description{
-L = mean log(1 + exp(-beta * [(lp_w - ref_w) - (lp_l - ref_l)])).
+L = mean log(1 + exp(-beta * \link{(lp_w - ref_w) - (lp_l - ref_l)})).
 }
 \examples{
 morie_geron_dpo_loss(logp_w = -1.2, logp_l = -2.5,

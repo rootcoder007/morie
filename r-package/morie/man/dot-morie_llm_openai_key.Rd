@@ -10,7 +10,8 @@
 One of two values, depending on the branch taken.
 }
 \description{
-A step of the llm implementation. Called by \code{morie_llm_ask}, \code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
+A step of the llm implementation. Called by \code{morie_llm_ask},
+\code{morie_llm_ask_multi}, \code{morie_llm_detect_provider}.
 See the file header for the source the module follows.
 follows.
 }

@@ -11,11 +11,12 @@ morie_anova_one_way(...)
 }
 \value{
 Named list: \code{F}, \code{df_between}, \code{df_within}, \code{p_value},
-\code{morie_eta_squared}.
+\code{eta_squared}.
 }
 \description{
 One-way ANOVA
 }
 \examples{
+set.seed(1)
 morie_anova_one_way(rnorm(30, 0), rnorm(30, 0.5), rnorm(30, 1))
 }

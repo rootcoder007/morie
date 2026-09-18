@@ -13,7 +13,8 @@
 
 \item{gamma}{Numeric; combined arithmetically in the body. Defaults to \code{1}.}
 
-\item{position}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
+\item{position}{Optional; may be \code{NULL}. Coerced to integer by the body, with
+\code{as.integer}.}
 }
 \value{
 One of two values, depending on the branch taken.

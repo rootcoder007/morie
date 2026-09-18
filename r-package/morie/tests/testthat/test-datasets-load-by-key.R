@@ -3,6 +3,7 @@
 # Phase 3EEE4: unified morie_datasets_load_by_key() dispatcher.
 
 test_that("targeted-fixture dispatch hits VPD bundled sample (550 rows)", {
+  testthat::skip_if_not_installed("rmoriedata")
   df <- morie_datasets_load_by_key("vpd_crime")
   expect_s3_class(df, "data.frame")
   expect_equal(nrow(df), 550L)
@@ -21,6 +22,7 @@ test_that("targeted-fixture dispatch hits TPS PSDP layer (assault)", {
 })
 
 test_that("targeted-fixture dispatch hits MTL SIM interventions", {
+  testthat::skip_if_not_installed("rmoriedata")
   df <- morie_datasets_load_by_key(
     "interventions-service-securite-incendie-montreal")
   expect_s3_class(df, "data.frame")
@@ -28,28 +30,42 @@ test_that("targeted-fixture dispatch hits MTL SIM interventions", {
 })
 
 test_that("targeted-fixture dispatch hits TO ambulance stations", {
+  testthat::skip_if_not_installed("rmoriedata")
   df <- morie_datasets_load_by_key("ambulance-station-locations")
   expect_s3_class(df, "data.frame")
   expect_equal(nrow(df), 46L)
 })
 
 test_that("targeted-fixture dispatch hits TO ASR misc", {
+  testthat::skip_if_not_installed("rmoriedata")
   df <- morie_datasets_load_by_key(
     "police-annual-statistical-report-miscellaneous-data")
   expect_s3_class(df, "data.frame")
   expect_equal(nrow(df), 40L)
 })
 
-test_that("targeted-fixture dispatch hits Vancouver graffiti sample", {
-  df <- morie_datasets_load_by_key("graffiti")
+# Vancouver dispatch has no bundled fixture: morie_datasets_load_by_key()
+# routes it straight to the live portal, so these two need the same
+# network + upstream gating as the CKAN tests below. Fedora CI caught it
+# when opendata.vancouver.ca answered with an empty body.
+test_that("live dispatch hits Vancouver graffiti sample", {
+  skip_heavy()
+  testthat::skip_if_not_installed("rmoriedata")
+  skip_if_no_network("opendata.vancouver.ca")
+  df <- .skip_on_upstream_error(morie_datasets_load_by_key("graffiti"))
   expect_s3_class(df, "data.frame")
-  expect_equal(nrow(df), 100L)
+  .skip_if_empty(df)
+  expect_true(nrow(df) <= 100L)
 })
 
-test_that("targeted-fixture dispatch hits Vancouver fire halls", {
-  df <- morie_datasets_load_by_key("fire-halls")
+test_that("live dispatch hits Vancouver fire halls", {
+  skip_heavy()
+  testthat::skip_if_not_installed("rmoriedata")
+  skip_if_no_network("opendata.vancouver.ca")
+  df <- .skip_on_upstream_error(morie_datasets_load_by_key("fire-halls"))
   expect_s3_class(df, "data.frame")
-  expect_equal(nrow(df), 20L)
+  .skip_if_empty(df)
+  expect_true(nrow(df) >= 1L)
 })
 
 test_that("targeted-fixture dispatch hits NYC borough boundaries", {
@@ -65,12 +81,14 @@ test_that("targeted-fixture dispatch hits NYC police precincts", {
 })
 
 test_that("targeted-fixture dispatch hits NYC ZCTAs", {
+  testthat::skip_if_not_installed("rmoriedata")
   df <- morie_datasets_load_by_key("zcta")
   expect_s3_class(df, "data.frame")
   expect_equal(nrow(df), 221L)
 })
 
 test_that("max_features cap is propagated", {
+  testthat::skip_if_not_installed("rmoriedata")
   df <- morie_datasets_load_by_key("vpd_crime", max_features = 7L)
   expect_equal(nrow(df), 7L)
 })
@@ -82,29 +100,27 @@ test_that("unknown dataset_key raises clear error", {
 })
 
 test_that("3FFF1: MTL CKAN generic dispatch auto-resolves first CSV resource", {
-  skip_on_cran()
-  skip_if_offline("donnees.montreal.ca")
-  df <- skip_if_live_unavailable(
-    morie_datasets_load_by_key("communique-presse", max_features = 5L))
+  skip_heavy()
+  skip_if_no_network("donnees.montreal.ca")
+  df <- .skip_on_upstream_error(
+    morie_datasets_load_by_key("communique-presse", max_features = 5L)
+  )
   expect_s3_class(df, "data.frame")
-  # The resolved live CSV can legitimately be empty if the upstream MTL CKAN
-  # resource changed -- that is a data-availability condition (like the source
-  # being unavailable), not a dispatch bug. Skip the non-empty assertion when
-  # empty; still verify dispatch returns a data.frame and honours max_features.
-  skip_if(nrow(df) == 0L,
-          "MTL CKAN 'communique-presse' first CSV resource is currently empty")
+  .skip_if_empty(df)
   expect_true(nrow(df) >= 1L)
   expect_true(nrow(df) <= 5L)
 })
 
 test_that("3FFF1: TO CKAN generic dispatch auto-resolves first CSV resource", {
-  skip_on_cran()
-  skip_if_offline("ckan0.cf.opendata.inter.prod-toronto.ca")
-  df <- skip_if_live_unavailable(
+  skip_heavy()
+  skip_if_no_network("ckan0.cf.opendata.inter.prod-toronto.ca")
+  df <- .skip_on_upstream_error(
     morie_datasets_load_by_key(
       "police-annual-statistical-report-shooting-occurrences",
-      max_features = 5L))
+      max_features = 5L)
+  )
   expect_s3_class(df, "data.frame")
+  .skip_if_empty(df)
   expect_true(nrow(df) >= 1L)
 })
 
@@ -152,6 +168,7 @@ test_that("3FFF2: mode='soda3' + app_token routed to Socrata wrapper", {
 })
 
 test_that("3FFF2: mode is ignored on non-Socrata sources (VPD bundled)", {
+  testthat::skip_if_not_installed("rmoriedata")
   # mode= must NOT break the dispatch for non-Socrata wrappers.
   df <- morie_datasets_load_by_key("vpd_crime", mode = "soda3")
   expect_equal(nrow(df), 550L)
@@ -160,12 +177,14 @@ test_that("3FFF2: mode is ignored on non-Socrata sources (VPD bundled)", {
 # ========================================== Phase 3HHH5 collision handling
 
 test_that("3HHH5: ambiguous dataset_key errors with helpful source= hint", {
+  testthat::skip_if_not_installed("rmoriedata")
   expect_error(
     morie_datasets_load_by_key("public-art"),
     regexp = "ambiguous.*toronto_opendata.*vancouver_opendata|ambiguous.*vancouver_opendata.*toronto_opendata")
 })
 
 test_that("3HHH5: source= disambiguates collision (Vancouver)", {
+  testthat::skip_if_not_installed("rmoriedata")
   # Vancouver public-art is an Opendatasoft id -- network call live mode.
   # Mock the underlying fetcher so the test stays offline.
   testthat::with_mocked_bindings(
@@ -182,6 +201,7 @@ test_that("3HHH5: source= disambiguates collision (Vancouver)", {
 })
 
 test_that("3HHH5: source= disambiguates collision (Toronto)", {
+  testthat::skip_if_not_installed("rmoriedata")
   testthat::with_mocked_bindings(
     morie_datasets_toronto_open_ckan_resource = function(resource_id,
                                                             limit, ...) {
@@ -200,6 +220,7 @@ test_that("3HHH5: source= disambiguates collision (Toronto)", {
 })
 
 test_that("3HHH5: source= with unknown value errors with available list", {
+  testthat::skip_if_not_installed("rmoriedata")
   expect_error(
     morie_datasets_load_by_key("public-art",
                                   source = "atlantis_opendata"),

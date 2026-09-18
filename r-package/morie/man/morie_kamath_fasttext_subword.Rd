@@ -17,16 +17,15 @@ morie_kamath_word_ngrams(word, n_min, n_max, boundary = "<>")
 \item{n_min, n_max}{Gram length range.}
 
 \item{boundary}{Two-character boundary marker.}
-
 }
 \value{
 List with \code{vector}, \code{ngrams}, \code{n_known}, \code{missing}.
 }
 \description{
-v_w = sum of the character n-gram vectors of word. The boundary-marked
+v_w = sum of the character n-gram vectors of \if{html}{\out{<word>}}. The boundary-marked
 whole word is always a gram.
 }
 \examples{
-morie_kamath_fasttext_subword("ab", list(`<a` = 1, ab = 2, `b>` = 3, 
+morie_kamath_fasttext_subword("ab", list(`<a` = 1, ab = 2, `b>` = 3,
     `<ab>` = 4), 2, 2)
 }

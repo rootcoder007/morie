@@ -13,7 +13,8 @@
 A list with \code{iso}, \code{raw}.
 }
 \description{
-A step of the siu_parser implementation. Called by \code{morie_siu_parse_html}, \code{morie_siu_parse_news_html}.
+A step of the siu_parser implementation. Called by \code{morie_siu_parse_html},
+\code{morie_siu_parse_news_html}.
 See the file header for the source the module follows.
 source it follows.
 }

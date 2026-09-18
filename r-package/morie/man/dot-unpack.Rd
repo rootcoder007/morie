@@ -7,15 +7,18 @@
 .unpack(spec, theta)
 }
 \arguments{
-\item{spec}{A list; the body reads \code{$damped}, \code{$harmonics}, \code{$p}, \code{$periods}, \code{$q}, \code{$use_box_cox}, \code{$use_trend} from it.}
+\item{spec}{A list; the body reads \code{$damped}, \code{$harmonics}, \code{$p},
+\code{$periods}, \code{$q}, \code{$use_box_cox}, \code{$use_trend} from it.}
 
 \item{theta}{A vector; indexed elementwise.}
 }
 \value{
-A list with \code{alpha}, \code{beta}, \code{phi}, \code{gam}, \code{ar}, \code{ma}, \code{omega}.
+A list with \code{alpha}, \code{beta}, \code{phi}, \code{gam}, \code{ar},
+\code{ma}, \code{omega}.
 }
 \description{
-A step of the bats_native implementation. Called by \code{.forecast}, \code{bats_filter}, \code{morie_bats}.
+A step of the bats_native implementation. Called by \code{.forecast},
+\code{bats_filter}, \code{morie_bats}.
 See the file header for the source the module follows.
 source it follows.
 }

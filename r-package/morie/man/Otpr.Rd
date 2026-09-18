@@ -12,7 +12,6 @@ Otpr(a, b, C, m)
 \item{C}{Ground cost, n by k.}
 
 \item{m}{Mass to transport; must not exceed either total.}
-
 }
 \value{
 List with \code{T}, \code{cost}, \code{mass}, \code{a_left},

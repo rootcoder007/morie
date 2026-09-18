@@ -43,7 +43,7 @@ itself, so it is not scale-free.}
 }
 \value{
 List with \code{cate}, \code{cate_oob}, \code{ate}, \code{cate_sd}, \code{n_trees},
-\code{n}, and \code{forest} (usable with \code{morie_causal_forest_predict()}).
+\code{n}, and \code{forest} (usable with \code{\link[=morie_causal_forest_predict]{morie_causal_forest_predict()}}).
 }
 \description{
 Each tree splits on one half of a subsample by maximising the
@@ -58,15 +58,13 @@ Mirrors \code{morie.fn.crfath.causal_forest_wager_athey} and the shared
 \code{morie.fn._cforest.CausalForest} core.
 }
 \examples{
-if (requireNamespace("ranger", quietly = TRUE)) {
-  set.seed(1)
-  n <- 120
-  X <- matrix(rnorm(n * 2), n, 2)
-  d <- rbinom(n, 1, 0.5)
-  y <- 1 + X[, 1] + d * (0.5 + X[, 2]) + rnorm(n, 0, 0.3)
-  fit <- morie_causal_forest(y, d, X, n_trees = 30L, min_leaf = 10L)
-  mean(fit$cate)
-}
+set.seed(1)
+n <- 120
+X <- matrix(rnorm(n * 2), n, 2)
+d <- rbinom(n, 1, 0.5)
+y <- 1 + X[, 1] + d * (0.5 + X[, 2]) + rnorm(n, 0, 0.3)
+fit <- morie_causal_forest(y, d, X, n_trees = 30L, min_leaf = 10L)
+mean(fit$cate)
 }
 \references{
 Wager S, Athey S (2018). Estimation and inference of

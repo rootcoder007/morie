@@ -19,7 +19,8 @@
 A list with \code{times}, \code{S}, \code{H}, \code{dH}, \code{lam0}.
 }
 \description{
-A step of the helpers_ghosal_bnp implementation. Called by \code{morie_ghosal_neutral_right}, \code{morie_ghosal_survival_beta_process}.
+A step of the helpers_ghosal_bnp implementation. Called by
+\code{morie_ghosal_neutral_right}, \code{morie_ghosal_survival_beta_process}.
 See the file header for the source the module follows.
 for the source it follows.
 }

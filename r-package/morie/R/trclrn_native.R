@@ -137,11 +137,12 @@
 #' @param min_propensity Passed to \code{.trclrn_check}. Defaults to \code{0.01}.
 #' @return A numeric value.
 #' @export
+#' @keywords internal
 trclrn_rule_value <- function(Y, A, X, rule, propensity = NULL,
                               method = "ipw", outcome_model = NULL,
                               min_propensity = 0.01) {
   if (!(method %in% .trclrn_METHODS)) {
-    stop(sprintf("trclrn: method must be ipw or augmented, got %r",
+    stop(sprintf("trclrn: method must be ipw or augmented, got %s",
                  method))
   }
   chk <- .trclrn_check(Y, A, X, propensity, min_propensity)
@@ -228,12 +229,16 @@ trclrn_rule_value <- function(Y, A, X, rule, propensity = NULL,
 #' @param min_propensity Passed to \code{.trclrn_check}. Defaults to \code{0.01}.
 #' @return The value of \code{result}, as built in the body.
 #' @export
+#' @examples
+#' trclrn_fit_tree(Y = c(1, 2, 3, 4, 5, 6, 7, 8), A = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   X = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 trclrn_fit_tree <- function(Y, A, X, propensity = NULL, method = "ipw",
                             outcome_model = NULL, max_depth = 3,
                             min_leaf = 10, n_thresholds = 20,
                             min_propensity = 0.01) {
   if (!(method %in% .trclrn_METHODS)) {
-    stop(sprintf("trclrn: method must be ipw or augmented, got %r",
+    stop(sprintf("trclrn: method must be ipw or augmented, got %s",
                  method))
   }
   if (method == "augmented" && is.null(outcome_model)) {

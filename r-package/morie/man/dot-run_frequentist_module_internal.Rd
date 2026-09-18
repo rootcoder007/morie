@@ -7,10 +7,12 @@
 .run_frequentist_module_internal(data)
 }
 \arguments{
-\item{data}{A list; the body reads \code{$cannabis_any_use}, \code{$gender_label}, \code{$heavy_drinking_30d} from it.}
+\item{data}{A list; the body reads \code{$cannabis_any_use}, \code{$gender_label},
+\code{$heavy_drinking_30d} from it.}
 }
 \value{
-A list with \code{frequentist_heavy_drinking_prevalence_ci}, \code{frequentist_effect_sizes}, \code{frequentist_hypothesis_tests}.
+A list with \code{frequentist_heavy_drinking_prevalence_ci},
+\code{frequentist_effect_sizes}, \code{frequentist_hypothesis_tests}.
 }
 \description{
 A step of the study_core implementation. Called by \code{morie_run_morie_module}.

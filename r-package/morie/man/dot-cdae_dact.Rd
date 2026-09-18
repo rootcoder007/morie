@@ -12,7 +12,7 @@
 \item{y}{Numeric; combined arithmetically in the body.}
 }
 \value{
-One of two values, depending on the branch taken.
+A numeric value.
 }
 \description{
 A step of the cdaeRC_native implementation. Called by \code{fit_cdae}.

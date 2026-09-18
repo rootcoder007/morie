@@ -10,10 +10,13 @@
 \item{data}{A list; the body reads \code{$alcohol_past12m}, \code{$ebac_tot} from it.}
 }
 \value{
-A list with \code{ebac_gender_interaction_svy_or}, \code{ebac_gender_interaction_tests}, \code{ebac_gender_marginal_probs}, \code{ebac_smote_status}, \code{ebac_smote_or}, \code{ebac_smote_compare}.
+A list with \code{ebac_gender_interaction_svy_or},
+\code{ebac_gender_interaction_tests}, \code{ebac_gender_marginal_probs},
+\code{ebac_smote_status}, \code{ebac_smote_or}, \code{ebac_smote_compare}.
 }
 \description{
-A step of the study_core implementation. Called by \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
+A step of the study_core implementation. Called by
+\code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
 See the file header for the source the module follows.
 source it follows.
 }

@@ -18,7 +18,8 @@
 
 \item{lat_ref}{Numeric; combined arithmetically in the body. Defaults to \code{(43.55 + 43.9)/2}.}
 
-\item{lon_ref}{Numeric; combined arithmetically in the body. Defaults to \code{(-79.65 + -79.1)/2}.}
+\item{lon_ref}{Numeric; combined arithmetically in the body. Defaults to \code{(-79.65
++ -79.1)/2}.}
 }
 \value{
 A list with \code{x}, \code{y}.

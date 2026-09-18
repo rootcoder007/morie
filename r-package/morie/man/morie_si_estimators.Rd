@@ -25,12 +25,6 @@ morie_si_estimators(
 \item{estimate, variance, u_crit}{Interval pieces.}
 
 \item{zbar_hat, area, sample_area, s2_hat}{Infinite-population pieces.}
-
-
-
-
-
-
 }
 \value{
 List with p_hat, var_p, ci, total_inf, var_total_inf (pieces
@@ -40,5 +34,10 @@ whose inputs were supplied).
 Equations 3.6, 3.14, 3.15, 3.18, 3.21 of Brus (2022).
 }
 \examples{
-morie_si_estimators()
+# a proportion under simple random sampling, with its
+# finite-population correction
+morie_si_estimators(y = c(1, 0, 1, 1, 0, 1, 0, 1), n = 8,
+                    n_population = 200)
+# a normal-approximation interval
+morie_si_estimators(estimate = 10, variance = 4, u_crit = 1.96)$ci
 }

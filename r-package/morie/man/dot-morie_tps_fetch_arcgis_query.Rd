@@ -19,7 +19,8 @@
 
 \item{offset}{Coerced to integer by the body, with \code{as.integer}.}
 
-\item{max_records}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2000L}.}
+\item{max_records}{Coerced to integer by the body, with \code{as.integer}. Defaults to
+\code{2000L}.}
 
 \item{timeout}{Defaults to \code{120}.}
 }

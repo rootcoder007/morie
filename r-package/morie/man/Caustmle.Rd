@@ -7,7 +7,7 @@
 Caustmle(y, T, ps, Q1, Q0, n_iter = 100L)
 }
 \arguments{
-\item{y}{Outcomes in [0, 1].}
+\item{y}{Outcomes in \link{0, 1}.}
 
 \item{T}{Treatment indicator, 0/1.}
 
@@ -16,7 +16,6 @@ Caustmle(y, T, ps, Q1, Q0, n_iter = 100L)
 \item{Q1, Q0}{Initial outcome fits under treatment and control.}
 
 \item{n_iter}{Fixed Newton steps for the fluctuation.}
-
 }
 \value{
 Named list with \code{estimate}, \code{ATE_TMLE}, \code{IF}, \code{se},
@@ -28,7 +27,7 @@ Clever covariates (Gruber & van der Laan 2012, eqs 2-3)
 \eqn{H_1^*=I(A=1)/g(1|W)}, \eqn{H_0^*=I(A=0)/g(0|W)}, and the
 fluctuation \eqn{logit(Q^*) = logit(Q) + \epsilon_0 H_0^* + \epsilon_1 H_1^*}
 fitted by logistic regression of Y on the clever covariates with
-offset \eqn{logit(Q)}.  \code{y} must be bounded in [0, 1] so the
+offset \eqn{logit(Q)}.  \code{y} must be bounded in \link{0, 1} so the
 fluctuation stays inside the model space.  When the initial fit
 already solves the score, epsilon is 0 and the estimate equals
 \code{plugin}.

@@ -21,12 +21,15 @@
 The value of \code{beta}, as built in the body.
 }
 \description{
-A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate}, \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate} and 3 others in the module.
+A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate},
+\code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate} and 3 others in the
+module.
 See the file header for the source the module follows.
 source it follows.
 }
 \examples{
-X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
+X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+2.6, 3.4, 3.9))
 res <- .otis_logit_fit(X = X, d = 3L)
 res
 }

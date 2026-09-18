@@ -13,7 +13,8 @@
 The value of \code{.ghc_rng}.
 }
 \description{
-A step of the memb_native implementation. Called by \code{synthesize}, \code{synthesize_marginals}, \code{synthesize_noisy}.
+A step of the memb_native implementation. Called by \code{synthesize},
+\code{synthesize_marginals}, \code{synthesize_noisy}.
 See the file header for the source the module follows.
 source it follows.
 }

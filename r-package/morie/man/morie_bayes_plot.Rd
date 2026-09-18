@@ -13,7 +13,7 @@ morie_bayes_plot(x, type = c("trace", "density", "both"), param = 1L, ...)
 
 \item{param}{Which parameter (index or name); default the first.}
 
-\item{...}{Passed to [plot()].}
+\item{...}{Passed to \code{\link[=plot]{plot()}}.}
 }
 \value{
 \code{NULL}, invisibly.

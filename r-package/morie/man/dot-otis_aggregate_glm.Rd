@@ -42,7 +42,10 @@
 The value of \code{.otis_wrap}.
 }
 \description{
-A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b03_ruhela_aggregate}, \code{morie_otis_analyze_b04_ruhela_aggregate}, \code{morie_otis_analyze_b06_ruhela_aggregate} and 21 others in the module.
+A step of the otis_all_analyze implementation. Called by
+\code{morie_otis_analyze_b03_ruhela_aggregate},
+\code{morie_otis_analyze_b04_ruhela_aggregate},
+\code{morie_otis_analyze_b06_ruhela_aggregate} and 21 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

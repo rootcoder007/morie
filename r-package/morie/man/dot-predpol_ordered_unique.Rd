@@ -13,7 +13,9 @@
 The value of \code{[}.
 }
 \description{
-A step of the fairness_predpol implementation. Called by \code{morie_fairness_predpol_calibration_audit}, \code{morie_fairness_predpol_score_disparity}.
+A step of the fairness_predpol implementation. Called by
+\code{morie_fairness_predpol_calibration_audit},
+\code{morie_fairness_predpol_score_disparity}.
 See the file header for the source the module follows.
 the source it follows.
 }

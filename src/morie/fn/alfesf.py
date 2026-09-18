@@ -61,7 +61,6 @@ scaling, the calibration route.
 
 import math
 
-from . import _s03core as k
 from ._richresult import RichResult
 
 __all__ = ["esmfold_confidence"]
@@ -80,10 +79,10 @@ def _rows(x, what):
         if hasattr(r, "tolist"):
             r = r.tolist()
         if not isinstance(r, (list, tuple)):
-            raise ValueError("%s: expected a 2-D array" % what)
+            raise ValueError(f"{what}: expected a 2-D array")
         out.append([float(v) for v in r])
     if not out:
-        raise ValueError("%s: empty" % what)
+        raise ValueError(f"{what}: empty")
     return out
 
 
@@ -213,11 +212,10 @@ def esmfold_confidence(lddt_logits=None, pae_logits=None, features=None,
         obs = [float(v) for v in
                (lddt.tolist() if hasattr(lddt, "tolist") else lddt)]
         if len(obs) != len(X):
-            raise ValueError("alfesf: %d feature rows but %d lddt values"
-                             % (len(X), len(obs)))
+            raise ValueError(f"alfesf: {len(X)} feature rows but {len(obs)} lddt values")
         for v in obs:
             if not 0.0 <= v <= 100.0:
-                raise ValueError("alfesf: lddt must be on 0..100, got %g" % v)
+                raise ValueError(f"alfesf: lddt must be on 0..100, got {v:g}")
         y = [min(int(v / 100.0 * _LDDT_BINS), _LDDT_BINS - 1) for v in obs]
         fitted_W, fitted_b = _fit_multinomial(X, y, _LDDT_BINS,
                                               l2=l2, iters=iters, lr=lr)
@@ -232,11 +230,11 @@ def esmfold_confidence(lddt_logits=None, pae_logits=None, features=None,
         W = _rows(weights["W"], "alfesf weights W")
         b = [float(v) for v in weights["b"]]
         if len(W) != len(X[0]):
-            raise ValueError("alfesf: weights W has %d rows but the features "
-                             "have %d columns" % (len(W), len(X[0])))
+            raise ValueError(f"alfesf: weights W has {len(W)} rows but the "
+                             f"features have {len(X[0])} columns")
         if len(b) != len(W[0]):
-            raise ValueError("alfesf: bias length %d does not match the %d "
-                             "output bins" % (len(b), len(W[0])))
+            raise ValueError(f"alfesf: bias length {len(b)} does not match "
+                             f"the {len(W[0])} output bins")
         lddt_logits = [[sum(X[i][a] * W[a][c] for a in range(len(W))) + b[c]
                         for c in range(len(b))] for i in range(len(X))]
         route = "ran a supplied LDDT head over the features"
@@ -286,6 +284,7 @@ def esmfold_confidence(lddt_logits=None, pae_logits=None, features=None,
     # ---- pTM / ipTM
     ptm = iptm = None
     pae = None
+    n_pae_bins_used = None
     if pae_logits is not None:
         raw = pae_logits.tolist() if hasattr(pae_logits, "tolist") \
             else pae_logits
@@ -297,9 +296,10 @@ def esmfold_confidence(lddt_logits=None, pae_logits=None, features=None,
             flat = _rows(raw, "alfesf pae_logits")
             n = int(round(math.sqrt(len(flat))))
             if n * n != len(flat):
-                raise ValueError("alfesf: %d aligned-error rows is not a "
-                                 "square number of residue pairs" % len(flat))
+                raise ValueError(f"alfesf: {len(flat)} aligned-error rows is "
+                                 "not a square number of residue pairs")
         nb = len(flat[0])
+        n_pae_bins_used = nb
         cen = _pae_centres(nb, pae_bin_width)
         Pp = _softmax_rows(flat, temp_used)
         pae = [[sum(Pp[i * n + j][c] * cen[c] for c in range(nb))
@@ -315,8 +315,7 @@ def esmfold_confidence(lddt_logits=None, pae_logits=None, features=None,
             ch = list(chain_id.tolist() if hasattr(chain_id, "tolist")
                       else chain_id)
             if len(ch) != n:
-                raise ValueError("alfesf: %d chain labels for %d residues"
-                                 % (len(ch), n))
+                raise ValueError(f"alfesf: {len(ch)} chain labels for {n} residues")
             if len(set(ch)) > 1:
                 inter = []
                 for i in range(n):
@@ -341,7 +340,7 @@ def esmfold_confidence(lddt_logits=None, pae_logits=None, features=None,
                     if fitted_W is not None else None),
         "route": route,
         "n_lddt_bins": len(lddt_logits[0]) if lddt_logits is not None else None,
-        "n_pae_bins": len(pae[0]) if pae else None,
+        "n_pae_bins": n_pae_bins_used,
         "method": ("ESMFold/AlphaFold confidence: pLDDT as the expectation "
                    "of the binned LDDT distribution, pTM as the "
                    "Zhang-Skolnick TM expectation under the aligned-error "

@@ -42,6 +42,13 @@ the learned rule, which is exactly the objection that motivated
 residual weighted learning -- so the amount shifted is RETURNED in
 \code{shift} rather than applied silently.
 }
+\examples{
+y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+g <- c(0L, 1L, 0L, 1L, 1L, 0L, 1L, 0L)
+x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+res <- Owltrn(y = y, D = g, W = x)
+res
+}
 \references{
 Zhao, Y., Zeng, D., Rush, A. J. & Kosorok, M. R. (2012).
 Estimating individualized treatment rules using outcome weighted
@@ -50,11 +57,4 @@ learning. Journal of the American Statistical Association,
 Shalev-Shwartz, S., Singer, Y., Srebro, N. & Cotter, A. (2011).
 Pegasos: primal estimated sub-gradient solver for SVM.
 Mathematical Programming, 127(1), 3-30.
-}
-\examples{
-y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
-g <- c(0L, 1L, 0L, 1L, 1L, 0L, 1L, 0L)
-x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-res <- Owltrn(y = y, D = g, W = x)
-res
 }

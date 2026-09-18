@@ -10,7 +10,8 @@
 The value of \code{e}, as built in the body.
 }
 \description{
-A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
+A step of the tables_pub implementation. Called by \code{anova_table},
+\code{correlation_table}, \code{hazard_ratio_table} and 5 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

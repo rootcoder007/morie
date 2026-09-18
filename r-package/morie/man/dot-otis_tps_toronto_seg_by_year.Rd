@@ -7,7 +7,8 @@
 .otis_tps_toronto_seg_by_year(df_b01)
 }
 \arguments{
-\item{df_b01}{A list; the body reads \code{$EndFiscalYear}, \code{$Region_AtTimeOfPlacement} from it.}
+\item{df_b01}{A list; the body reads \code{$EndFiscalYear},
+\code{$Region_AtTimeOfPlacement} from it.}
 }
 \value{
 The value of \code{out}, as built in the body.

@@ -81,6 +81,20 @@
 #' Defaults to \code{20}.
 #' @return The value of \code{result}, as built in the body.
 #' @export
+#' @examples
+#' set.seed(1)
+#' n_users <- 20L; n_items <- 15L
+#' u <- sample.int(n_users, 300, TRUE) - 1L
+#' i <- sample.int(n_items, 300, TRUE) - 1L
+#' r <- 3 + 0.4 * (u %% 3) - 0.3 * (i %% 4) + rnorm(300, 0, 0.1)
+#' ratings <- data.frame(u = u, i = i, r = r)
+#' fit <- morie_funkM(ratings, n_users, n_items, factors = 3,
+#'                    epochs = 30, lr = 0.02, seed = 1)
+#' fit$rmse
+#' # the error falls as the epochs run
+#' round(head(fit$rmse_history, 3), 4)
+#' round(tail(fit$rmse_history, 3), 4)
+#' @keywords internal
 morie_funkM <- function(ratings, n_users, n_items, factors = 8,
                         epochs = 60, lr = 0.005, reg = 0.02, seed = 0,
                         incremental = FALSE, epochs_per_factor = 20) {
@@ -117,13 +131,22 @@ morie_funkM <- function(ratings, n_users, n_items, factors = 8,
   if (isTRUE(incremental)) {
     for (f in seq_len(d) - 1L) {
       for (ep in seq_len(as.integer(epochs_per_factor))) {
-        hist <- c(hist, .funkM_sgd_epoch(R, mu, bu, bi, P, Q, lr, reg,
-                                         factor = f))
+        st <- .funkM_sgd_epoch(R, mu, bu, bi, P, Q, lr, reg, factor = f)
+        bu <- st$bu
+        bi <- st$bi
+        P <- st$P
+        Q <- st$Q
+        hist <- c(hist, st$rmse)
       }
     }
   } else {
     for (ep in seq_len(as.integer(epochs))) {
-      hist <- c(hist, .funkM_sgd_epoch(R, mu, bu, bi, P, Q, lr, reg))
+      st <- .funkM_sgd_epoch(R, mu, bu, bi, P, Q, lr, reg)
+      bu <- st$bu
+      bi <- st$bi
+      P <- st$P
+      Q <- st$Q
+      hist <- c(hist, st$rmse)
     }
   }
 
@@ -248,8 +271,24 @@ morie_funkM <- function(ratings, n_users, n_items, factors = 8,
 #' @param reg Numeric; combined arithmetically in the body.
 #' @param factor Optional; may be \code{NULL}. Coerced to integer by the body, with
 #' \code{as.integer}.
-#' @return A numeric value.
+#' @return A list with \code{rmse} for the epoch just run and the updated
+#' \code{bu}, \code{bi}, \code{P} and \code{Q}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' n_users <- 20L; n_items <- 15L
+#' u <- sample.int(n_users, 300, TRUE) - 1L
+#' i <- sample.int(n_items, 300, TRUE) - 1L
+#' r <- 3 + 0.4 * (u %% 3) - 0.3 * (i %% 4) + rnorm(300, 0, 0.1)
+#' ratings <- data.frame(u = u, i = i, r = r)
+#' R <- .funkM_as_ratings(ratings)
+#' mu <- .funkM_global_mean(R)
+#' bu <- rep(0, n_users); bi <- rep(0, n_items)
+#' P <- matrix(0.05, n_users, 2L); Q <- matrix(0.05, n_items, 2L)
+#' st <- .funkM_sgd_epoch(R, mu, bu, bi, P, Q, lr = 0.02, reg = 0.02)
+#' st$rmse
+#' # the updated parameters come back with it
+#' names(st)
 .funkM_sgd_epoch <- function(R, mu, bu, bi, P, Q, lr, reg, factor = NULL) {
   se <- 0.0
   n  <- nrow(R)
@@ -277,7 +316,11 @@ morie_funkM <- function(ratings, n_users, n_items, factors = 8,
       Q[i1, a] <- qi + lr * (err * pu - reg * qi)
     }
   }
-  sqrt(se / as.numeric(n))
+  # R gives this function copies of bu, bi, P and Q, so the epoch's updates
+  # have to travel back in the return value. Returning the RMSE alone left
+  # the caller holding the initial random factors and reporting the same
+  # RMSE for every epoch.
+  list(rmse = sqrt(se / as.numeric(n)), bu = bu, bi = bi, P = P, Q = Q)
 }
 
 # Root mean squared error on a held-out set.

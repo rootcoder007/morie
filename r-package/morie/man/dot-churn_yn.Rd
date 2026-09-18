@@ -13,7 +13,8 @@
 The value of \code{as.integer}.
 }
 \description{
-A step of the otis_churn implementation. Called by \code{morie_otis_irr_glmm_vm}, \code{morie_otis_region_alert_state_richness}.
+A step of the otis_churn implementation. Called by \code{morie_otis_irr_glmm_vm},
+\code{morie_otis_region_alert_state_richness}.
 See the file header for the source the module follows.
 source it follows.
 }

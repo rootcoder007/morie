@@ -13,7 +13,9 @@
 A matrix, from \code{as.matrix}.
 }
 \description{
-A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_classical_mds}, \code{morie_spatial_voting_indscal}, \code{morie_spatial_voting_nonmetric_mds} and 2 others in the module.
+A step of the spatial_voting implementation. Called by
+\code{morie_spatial_voting_classical_mds}, \code{morie_spatial_voting_indscal},
+\code{morie_spatial_voting_nonmetric_mds} and 2 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

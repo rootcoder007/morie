@@ -9,9 +9,6 @@ morie_mcc_counts(tp, tn, fp, fn)
 \arguments{
 \item{tp, tn, fp, fn}{Non-negative integer counts of true positives,
 true negatives, false positives and false negatives.}
-
-
-
 }
 \value{
 Named list with \code{value}, \code{statistic} (the same
@@ -24,7 +21,7 @@ number), \code{accuracy}, \code{tp}, \code{tn}, \code{fp},
 \details{
 The coefficient stays informative under class imbalance, where
 accuracy does not: it uses all four cells of the confusion matrix
-rather than only the diagonal. It ranges over [-1, 1], with 0 meaning
+rather than only the diagonal. It ranges over \link{-1, 1}, with 0 meaning
 no better than chance and negative values meaning the predictions run
 opposite to the truth.
 

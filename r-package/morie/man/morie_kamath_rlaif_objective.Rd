@@ -10,7 +10,6 @@ morie_kamath_rlaif_objective(ai_preferences, max_iter = 1000, tol = 1e-12)
 \item{ai_preferences}{List of (winner, loser) pairs.}
 
 \item{max_iter, tol}{Iteration controls.}
-
 }
 \value{
 List with \code{items}, \code{strengths}, \code{scores}, \code{loss}, \code{accuracy}.
@@ -21,6 +20,6 @@ that is not strongly connected has no finite MLE and is refused. The
 pairwise loss comes from \code{morie_kamath_reward_model_training_loss}.
 }
 \examples{
-morie_kamath_rlaif_objective(list(c("a", "b"), c("b", "c"), c("c", 
+morie_kamath_rlaif_objective(list(c("a", "b"), c("b", "c"), c("c",
     "a"), c("a", "c")))
 }

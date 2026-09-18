@@ -104,22 +104,29 @@
 #' @param subsample Optional; may be \code{NULL}. Passed to \code{is.null}.
 #' @return A list with \code{tree}, \code{info}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' X <- matrix(rnorm(80), 40, 2)
+#' y <- as.numeric(X[, 1] > 0) + rnorm(40, 0, 0.1)
+#' tr <- honest_tree(X, y)
+#' str(tr, max.level = 1)
+#' @keywords internal
 honest_tree <- function(X, y, W = NULL, kind = "double-sample",
                         min_leaf = 5L, alpha = 0.05, pi = 0.5,
                         max_depth = 12L, seed = 0L,
                         subsample = NULL) {
   if (!(kind %in% ._KINDS)) {
-    stop(sprintf("hntfst: kind must be one of %s, got %r",
+    stop(sprintf("hntfst: kind must be one of %s, got %s",
                  paste(._KINDS, collapse = ", "), kind))
   }
   n <- length(y)
   d <- if (n > 0L) ncol(X) else 0L
   if (d == 0L) stop("hntfst: no features")
   if (!(0.0 < alpha && alpha < 0.5)) {
-    stop(sprintf("hntfst: alpha must be in (0, 0.5), got %r", alpha))
+    stop(sprintf("hntfst: alpha must be in (0, 0.5), got %s", alpha))
   }
   if (!(0.0 < pi && pi <= 1.0)) {
-    stop(sprintf("hntfst: pi must be in (0, 1], got %r", pi))
+    stop(sprintf("hntfst: pi must be in (0, 1], got %s", pi))
   }
   e <- .ghc_rng(seed)
   sub <- if (is.null(subsample)) seq_len(n) - 1L else subsample
@@ -279,6 +286,13 @@ infinitesimal_jackknife <- function(preds, in_bag, n, s,
 #' \code{split_share}, \code{mean_depth}, \code{kind}, \code{honest}, \code{correction},
 #' \code{level}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(2)
+#' X <- matrix(rnorm(120), 60, 2)
+#' y <- X[, 1] + rnorm(60, 0, 0.3)
+#' r <- honest_forest(X, y, n_trees = 20L)
+#' str(r, max.level = 1)
+#' @keywords internal
 honest_forest <- function(X, y, W = NULL, kind = "double-sample",
                           n_trees = 200L, subsample_frac = 0.5,
                           min_leaf = 5L, alpha = 0.05, pi = 0.5,
@@ -296,7 +310,7 @@ honest_forest <- function(X, y, W = NULL, kind = "double-sample",
     stop(sprintf("hntfst: need at least 16 observations, got %d", n))
   }
   if (!(0.0 < subsample_frac && subsample_frac < 1.0)) {
-    stop(sprintf("hntfst: subsample_frac must be in (0, 1), got %r",
+    stop(sprintf("hntfst: subsample_frac must be in (0, 1), got %s",
                  subsample_frac))
   }
   s <- max(4L * min_leaf, as.integer(subsample_frac * n))

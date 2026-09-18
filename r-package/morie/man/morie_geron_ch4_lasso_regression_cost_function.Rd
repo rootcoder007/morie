@@ -17,9 +17,7 @@ morie_geron_ch4_lasso_regression_cost_function(
 
 \item{alpha}{Non-negative weight; the penalty uses 2 * alpha.}
 
-\item{penalize_intercept}{Include theta[1] in the penalty.}
-
-
+\item{penalize_intercept}{Include theta\link{1} in the penalty.}
 }
 \value{
 List with \code{cost}, \code{mse}, \code{l1_penalty}, \code{l1_norm},
@@ -30,5 +28,5 @@ Lasso cost, 2*alpha convention (Geron Eq 4-11, morie.fn grn011)
 }
 \examples{
 morie_geron_ch4_lasso_regression_cost_function(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = 5L,
-  theta = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5)
+theta = c(1, 2, 3, 4, 5, 6, 7, 8), alpha = 0.5)
 }

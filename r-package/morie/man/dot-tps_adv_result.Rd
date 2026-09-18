@@ -30,7 +30,9 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the tps_spatial_advanced implementation. Called by \code{morie_tps_bivariate_moran}, \code{morie_tps_dbscan_clusters}, \code{morie_tps_getis_ord_g_star} and 3 others in the module.
+A step of the tps_spatial_advanced implementation. Called by
+\code{morie_tps_bivariate_moran}, \code{morie_tps_dbscan_clusters},
+\code{morie_tps_getis_ord_g_star} and 3 others in the module.
 See the file header for the source the module follows.
 for the source it follows.
 }

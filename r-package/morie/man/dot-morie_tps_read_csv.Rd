@@ -9,7 +9,8 @@
 \arguments{
 \item{name}{Passed to \code{.morie_tps_io_category_dir}.}
 
-\item{nrows}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
+\item{nrows}{Optional; may be \code{NULL}. Coerced to integer by the body, with
+\code{as.integer}.}
 }
 \value{
 The value of \code{do.call}.

@@ -9,7 +9,7 @@
 \arguments{
 \item{c}{A vector; its length is taken and its elements indexed.}
 
-\item{s}{Coerced to integer by the body, with \code{as.integer}.}
+\item{s}{Numeric; combined arithmetically in the body.}
 }
 \value{
 The value of \code{out}, as built in the body.

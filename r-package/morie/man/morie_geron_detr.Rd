@@ -24,14 +24,6 @@ morie_geron_detr(
 \item{n_queries, n_layers, d_model, n_heads, n_classes, backbone_stride}{int.}
 
 \item{pred_boxes, pred_classes, gt_boxes, gt_classes}{Optional matching inputs.}
-
-
-
-
-
-
-
-
 }
 \value{
 List with \code{feature_shape}, \code{n_tokens}, \code{total_params},
@@ -42,6 +34,6 @@ Block costs delegated to \code{morie_geron_block_params}; bipartite matching
 and set-prediction loss to \code{morie_geron_detr_hungarian_matching}.
 }
 \examples{
-morie_geron_detr(array(0, dim = c(3, 224, 224)), n_queries = 10, 
+morie_geron_detr(array(0, dim = c(3, 224, 224)), n_queries = 10,
     n_layers = 1, d_model = 8, n_heads = 2, n_classes = 3)
 }

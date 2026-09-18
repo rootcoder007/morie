@@ -10,7 +10,8 @@
 \item{tbl}{A matrix; passed to \code{dim}.}
 }
 \value{
-A list with \code{chi2}, \code{dof}, \code{pvalue}, \code{cramer_v}, \code{n}, \code{min_cell}, \code{min_expected}.
+A list with \code{chi2}, \code{dof}, \code{pvalue}, \code{cramer_v}, \code{n},
+\code{min_cell}, \code{min_expected}.
 }
 \description{
 A step of the otis_all_analyze implementation. Called by \code{.otis_contingency_chi2}.

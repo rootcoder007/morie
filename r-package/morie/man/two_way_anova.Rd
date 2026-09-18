@@ -12,7 +12,6 @@ two_way_anova(data, outcome, factor_a, factor_b)
 \item{outcome}{Name of dependent-variable column.}
 
 \item{factor_a, factor_b}{Names of factor columns.}
-
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})
@@ -23,7 +22,7 @@ eta-squared, and the full ANOVA table in \code{extra$anova_table}.
 Uses base R \code{aov}, then \code{drop1} for Type-II sums of squares.
 }
 \examples{
-d <- data.frame(y = rnorm(120), a = rep(letters[1:3], each = 40), 
+d <- data.frame(y = rnorm(120), a = rep(letters[1:3], each = 40),
     b = rep(letters[4:5], 60))
 two_way_anova(d, "y", "a", "b")
 }

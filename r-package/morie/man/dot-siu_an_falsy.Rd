@@ -13,7 +13,8 @@
 A numeric value.
 }
 \description{
-A step of the siu_analyze implementation. Called by \code{morie_siu_by_police_service}, \code{morie_siu_by_year}.
+A step of the siu_analyze implementation. Called by
+\code{morie_siu_by_police_service}, \code{morie_siu_by_year}.
 See the file header for the source the module follows.
 source it follows.
 }

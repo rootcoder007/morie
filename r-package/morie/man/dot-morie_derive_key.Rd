@@ -15,7 +15,9 @@
 Nothing; this branch always raises.
 }
 \description{
-A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load} and 1 others in the module.
+A step of the crypto_keystore implementation. Called by
+\code{morie_crypto_keystore_create}, \code{morie_crypto_keystore_list},
+\code{morie_crypto_keystore_load} and 1 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

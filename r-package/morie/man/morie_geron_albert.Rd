@@ -20,14 +20,11 @@ morie_geron_albert(
 
 \item{n_layers, n_heads, d_model, d_ff}{Encoder geometry.}
 
-\item{d_embed}{Factorised width E in [1, d_model].}
+\item{d_embed}{Factorised width E in \link{1, d_model}.}
 
 \item{vocab_size}{Optional; defaults to max(X) + 1.}
 
 \item{seed}{LCG seed.}
-
-
-
 }
 \value{
 List with \code{hidden} (array batch x T x d), \code{n_params},

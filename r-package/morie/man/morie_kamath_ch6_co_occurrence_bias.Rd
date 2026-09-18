@@ -10,7 +10,6 @@ morie_kamath_ch6_co_occurrence_bias(w, A_i, A_j)
 \item{w}{Word.}
 
 \item{A_i, A_j}{Named count vectors or token corpora.}
-
 }
 \value{
 List with \code{estimate}, \code{p_given_Ai}, \code{p_given_Aj}.
@@ -19,6 +18,6 @@ List with \code{estimate}, \code{p_given_Ai}, \code{p_given_Aj}.
 log P(w|A_i) / P(w|A_j) over generated text.
 }
 \examples{
-morie_kamath_ch6_co_occurrence_bias(w = 5L, A_i = c(1, 2, 3, 4, 5, 6, 7, 8),
-  A_j = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_kamath_ch6_co_occurrence_bias(w = 5L, A_i = c(1, 2, 3, 4, 5, 6, 7, 8), A_j =
+c(1, 2, 3, 4, 5, 6, 7, 8))
 }

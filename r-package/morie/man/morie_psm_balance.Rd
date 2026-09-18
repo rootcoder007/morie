@@ -10,8 +10,6 @@ morie_psm_balance(mean_t, mean_c, s_t, s_c)
 \item{mean_t, mean_c}{Group means.}
 
 \item{s_t, s_c}{Group SDs.}
-
-
 }
 \value{
 Numeric bias in percent.
@@ -21,6 +19,6 @@ Equation 10.1 of Weisburd et al. (2022): 100 (xbar_t - xbar_c) over
 the square root of the average of the two variances. Mirrors ca10e1.
 }
 \examples{
-morie_psm_balance(mean_t = c(1, 2, 3, 4, 5, 6, 7, 8), mean_c = c(1, 2, 3, 4, 5, 6, 7, 8),
-  s_t = c(1, 2, 3, 4, 5, 6, 7, 8), s_c = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_psm_balance(mean_t = c(1, 2, 3, 4, 5, 6, 7, 8), mean_c = c(1, 2, 3, 4, 5, 6, 7,
+8), s_t = c(1, 2, 3, 4, 5, 6, 7, 8), s_c = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

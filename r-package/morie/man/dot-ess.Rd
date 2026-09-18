@@ -13,7 +13,9 @@
 A numeric value.
 }
 \description{
-A step of the ipw implementation. Called by \code{morie_run_ebac_selection_ipw_analysis}, \code{morie_run_propensity_ipw_analysis}.
+A step of the ipw implementation. Called by
+\code{morie_run_ebac_selection_ipw_analysis},
+\code{morie_run_propensity_ipw_analysis}.
 See the file header for the source the module follows.
 follows.
 }

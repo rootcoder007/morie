@@ -21,7 +21,9 @@
 The value of \code{outfile}, as built in the body.
 }
 \description{
-A step of the tps_render implementation. Called by \code{morie_tps_render_choropleth}, \code{morie_tps_render_dbscan}, \code{morie_tps_render_district_proportional} and 4 others in the module.
+A step of the tps_render implementation. Called by \code{morie_tps_render_choropleth},
+\code{morie_tps_render_dbscan}, \code{morie_tps_render_district_proportional} and 4
+others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

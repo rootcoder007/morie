@@ -16,6 +16,11 @@ set.seed(1)
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_estimate_propensity returns scores in (0, 1)", {
+  # 2s of the suite here, and r-universe's macOS x86_64 builder is
+  # about 1.8 times slower. The check there is killed at sixty minutes
+  # and the suite alone was twenty-six of them. The heavy files run in
+  # our own CI, which sets NOT_CRAN, where the clock is ours.
+  skip_heavy()
   df <- make_match_df()
   ps <- morie_matching_estimate_propensity(df, "d", c("x1", "x2"))
   expect_length(ps, nrow(df))
@@ -29,6 +34,7 @@ test_that("morie_matching_estimate_propensity returns scores in (0, 1)", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_trim_propensity clips to [lower, upper]", {
+  skip_heavy()
   out <- morie_matching_trim_propensity(c(0.001, 0.5, 0.999),
                                         lower = 0.05, upper = 0.95)
   expect_equal(out, c(0.05, 0.5, 0.95))
@@ -40,6 +46,7 @@ test_that("morie_matching_trim_propensity clips to [lower, upper]", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_common_support drops off-support rows", {
+  skip_heavy()
   df <- make_match_df(n = 200)
   df$propensity_score <- morie_matching_estimate_propensity(
     df, "d", c("x1", "x2"))
@@ -55,6 +62,8 @@ test_that("morie_matching_common_support drops off-support rows", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_nearest_neighbor returns match_result with pairs", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   df <- make_match_df()
   res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
   expect_s3_class(res, "morie_match_result")
@@ -67,6 +76,8 @@ test_that("morie_matching_nearest_neighbor returns match_result with pairs", {
 })
 
 test_that("morie_matching_nearest_neighbor caliper restricts matches", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   df <- make_match_df()
   res_no_cal <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
   res_cal <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"),
@@ -80,6 +91,8 @@ test_that("morie_matching_nearest_neighbor caliper restricts matches", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_exact returns match_result", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   df <- make_match_df(n = 300)
   res <- morie_matching_exact(df, "d", c("region", "year"))
   expect_s3_class(res, "morie_match_result")
@@ -92,6 +105,8 @@ test_that("morie_matching_exact returns match_result", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_cem matches and returns weights", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   df <- make_match_df(n = 400)
   res <- morie_matching_cem(df, "d", c("x1", "x2"), n_bins = 4L)
   expect_s3_class(res, "morie_match_result")
@@ -104,6 +119,8 @@ test_that("morie_matching_cem matches and returns weights", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_mahalanobis returns match_result", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   df <- make_match_df()
   res <- morie_matching_mahalanobis(df, "d", c("x1", "x2"))
   expect_s3_class(res, "morie_match_result")
@@ -116,6 +133,7 @@ test_that("morie_matching_mahalanobis returns match_result", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_optimal_pair runs when prerequisites are met", {
+  skip_heavy()
   df <- make_match_df(n = 100)
   res <- tryCatch(
     morie_matching_optimal_pair(df, "d", c("x1", "x2")),
@@ -131,6 +149,7 @@ test_that("morie_matching_optimal_pair runs when prerequisites are met", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_full runs end-to-end", {
+  skip_heavy()
   df <- make_match_df(n = 100)
   res <- tryCatch(
     morie_matching_full(df, "d", c("x1", "x2")),
@@ -146,6 +165,8 @@ test_that("morie_matching_full runs end-to-end", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_subclassify returns subclass-tagged data", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   df <- make_match_df(n = 300)
   res <- morie_matching_subclassify(df, "d", c("x1", "x2"))
   expect_true(is.list(res))
@@ -160,6 +181,7 @@ test_that("morie_matching_subclassify returns subclass-tagged data", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_entropy_balance produces weights", {
+  skip_heavy()
   df <- make_match_df(n = 200)
   res <- tryCatch(
     morie_matching_entropy_balance(df, "d", c("x1", "x2")),
@@ -179,6 +201,7 @@ test_that("morie_matching_entropy_balance produces weights", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_balance returns balance summary", {
+  skip_heavy()
   df <- make_match_df()
   res <- morie_matching_balance(df, "d", c("x1", "x2"))
   expect_s3_class(res, "morie_balance_result")
@@ -190,6 +213,7 @@ test_that("morie_matching_balance returns balance summary", {
 })
 
 test_that("morie_matching_balance_table returns just the data frame", {
+  skip_heavy()
   df <- make_match_df()
   tb <- morie_matching_balance_table(df, "d", c("x1", "x2"))
   expect_s3_class(tb, "data.frame")
@@ -202,6 +226,8 @@ test_that("morie_matching_balance_table returns just the data frame", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_love_plot_data returns before/after SMDs", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   df <- make_match_df()
   res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
   lp <- morie_matching_love_plot_data(df, res$matched_data,
@@ -217,6 +243,8 @@ test_that("morie_matching_love_plot_data returns before/after SMDs", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_att_matched returns te_result", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   df <- make_match_df()
   rownames(df) <- as.character(seq_len(nrow(df)))
   res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
@@ -227,6 +255,7 @@ test_that("morie_matching_att_matched returns te_result", {
 })
 
 test_that("morie_matching_att_matched returns NA result on empty pairs", {
+  skip_heavy()
   empty <- data.frame(treated_idx = character(0),
                       control_idx = character(0),
                       distance = numeric(0),
@@ -239,6 +268,7 @@ test_that("morie_matching_att_matched returns NA result on empty pairs", {
 })
 
 test_that("morie_matching_ate_matched returns te_result with ATE", {
+  skip_heavy()
   df <- make_match_df()
   res <- morie_matching_ate_matched(df, "y", "d", c("x1", "x2"))
   expect_s3_class(res, "morie_te_result")
@@ -247,6 +277,8 @@ test_that("morie_matching_ate_matched returns te_result with ATE", {
 })
 
 test_that("morie_matching_atc_matched returns te_result with ATC", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   df <- make_match_df()
   rownames(df) <- as.character(seq_len(nrow(df)))
   res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
@@ -261,6 +293,8 @@ test_that("morie_matching_atc_matched returns te_result with ATC", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_abadie_imbens_se returns a non-negative scalar", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   df <- make_match_df()
   rownames(df) <- as.character(seq_len(nrow(df)))
   res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
@@ -276,6 +310,8 @@ test_that("morie_matching_abadie_imbens_se returns a non-negative scalar", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_rosenbaum_bounds returns one row per gamma", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   df <- make_match_df()
   rownames(df) <- as.character(seq_len(nrow(df)))
   res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
@@ -292,6 +328,8 @@ test_that("morie_matching_rosenbaum_bounds returns one row per gamma", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_doubly_robust returns te_result with finite ATT_DR on balanced data", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   # Balanced 50/50 treatment so MatchIt's "Fewer control units"
   # warning shouldn't fire on the happy path; covers the
   # mathematically-correct case.
@@ -304,6 +342,8 @@ test_that("morie_matching_doubly_robust returns te_result with finite ATT_DR on 
 })
 
 test_that("morie_matching_doubly_robust emits a single summary warning on skewed data", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   # Skewed ~80/20 treatment so MatchIt fires "Fewer control" in
   # most bootstrap resamples; verify morie collapses the per-
   # resample noise into one summary warning.
@@ -322,6 +362,8 @@ test_that("morie_matching_doubly_robust emits a single summary warning on skewed
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_multi_treatment returns one match_result per non-ref level", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   set.seed(1)
   n <- 300
   treat3 <- sample(c("A", "B", "C"), n, replace = TRUE)
@@ -342,6 +384,8 @@ test_that("morie_matching_multi_treatment returns one match_result per non-ref l
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_quality returns bias reduction summary", {
+  skip_heavy()
+  testthat::skip_if_not_installed("MatchIt")
   df <- make_match_df()
   res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
   q <- morie_matching_quality(df, res$matched_data, "d", c("x1", "x2"))
@@ -356,6 +400,7 @@ test_that("morie_matching_quality returns bias reduction summary", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_matching_overlap reports ESS and overlap region", {
+  skip_heavy()
   df <- make_match_df()
   res <- morie_matching_overlap(df, "d", c("x1", "x2"))
   expect_true(all(c("ps_summary", "overlap_region",

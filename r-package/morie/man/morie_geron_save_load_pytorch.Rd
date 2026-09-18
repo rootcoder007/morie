@@ -14,7 +14,8 @@ morie_geron_save_load_pytorch(model, path, verify = TRUE)
 \item{verify}{Reload and compare after writing.}
 }
 \value{
-list with path, keys, shapes, n_params, bytes, loaded, exact, max_diff, estimate, n, method.
+list with path, keys, shapes, n_params, bytes, loaded, exact, max_diff,
+estimate, n, method.
 }
 \description{
 Round-trips a named list of numeric arrays through an RDS file and

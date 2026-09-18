@@ -12,7 +12,6 @@ morie_geron_linear_regression_life(gdp, theta0, theta1, life_sat = NULL)
 \item{theta0, theta1}{Intercept/slope.}
 
 \item{life_sat}{Optional observed values.}
-
 }
 \value{
 List with prediction, residuals, rmse, r2, theta0, theta1, estimate, n, method.
@@ -21,6 +20,6 @@ List with prediction, residuals, rmse, r2, theta0, theta1, estimate, n, method.
 Life satisfaction = theta0 + theta1 * GDP per capita (Geron Ch 1, morie.fn hmlrl)
 }
 \examples{
-morie_geron_linear_regression_life(gdp = c(1, 2, 3, 4, 5, 6, 7, 8),
-  theta0 = c(1, 2, 3, 4, 5, 6, 7, 8), theta1 = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_geron_linear_regression_life(gdp = c(1, 2, 3, 4, 5, 6, 7, 8), theta0 = c(1, 2,
+3, 4, 5, 6, 7, 8), theta1 = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

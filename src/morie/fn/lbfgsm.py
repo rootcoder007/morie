@@ -41,14 +41,60 @@ def _dot(a, b):
     return sum(float(u) * float(v) for u, v in zip(a, b))
 
 
+_TOL_TYPES = ("absolute", "relative", "initial")
+
+
+def _precond(precond, S, Y, n):
+    """Diagonal preconditioner for the two-loop recursion.
+
+    ``None`` leaves H0 = gamma I; ``"auto"`` scales each coordinate by
+    |y_i| / |s_i| from the most recent pair, normalised to unit geometric
+    mean; a numeric vector is used as given (one positive entry per
+    parameter). Same rule as the R arm's ``.lbfgsm_precond``.
+    """
+    if precond is None:
+        return None
+    if isinstance(precond, str):
+        if precond != "auto":
+            raise ValueError("`precond` must be None, \"auto\", or a numeric vector")
+        if not S:
+            return None
+        s, y = S[-1], Y[-1]
+        eps = 2.220446049250313e-16
+        d = [abs(yi) / max(abs(si), eps) for si, yi in zip(s, y)]
+        d = [v if (math.isfinite(v) and v > 0) else 1.0 for v in d]
+        lg = sum(math.log(v) for v in d) / len(d)
+        if not math.isfinite(lg):
+            return None
+        d = [v / math.exp(lg) for v in d]
+        return [min(max(v, 1e-8), 1e8) for v in d]
+    d = [float(v) for v in np.atleast_1d(np.asarray(precond, dtype=float))]
+    if len(d) != n:
+        raise ValueError(f"`precond` must have one entry per parameter ({n}), got {len(d)}")
+    if any((not math.isfinite(v)) or v <= 0 for v in d):
+        raise ValueError("`precond` must be positive and finite")
+    return d
+
+
 def lbfgs_minimize(fun, x0, grad, m=10, max_iter=200, tol=1e-8,
+                   tol_type="absolute", precond=None,
                    c1=1e-4, c2=0.9, max_ls=60):
-    r"""Minimise ``fun`` from ``x0`` using L-BFGS with memory ``m``."""
+    r"""Minimise ``fun`` from ``x0`` using L-BFGS with memory ``m``.
+
+    ``tol_type`` chooses what ``tol`` bounds: the gradient norm
+    (``"absolute"``), the gradient norm divided by 1 + |f| (``"relative"``),
+    or the gradient norm divided by its value at ``x0`` (``"initial"``), so
+    the stopping rule is scale-aware. ``precond`` is None, ``"auto"`` or a
+    positive vector (see ``_precond``). The result carries ``status``, a
+    sentence saying why the iteration stopped.
+    """
+    if tol_type not in _TOL_TYPES:
+        raise ValueError(f"lbfgs_minimize: tol_type must be one of {_TOL_TYPES!r}, got {tol_type!r}")
     x = [float(v) for v in np.atleast_1d(np.asarray(x0, dtype=float))]
     n = len(x)
     m = int(m)
     if m < 1:
-        raise ValueError("lbfgs_minimize: m must be at least 1, got %r" % (m,))
+        raise ValueError(f"lbfgs_minimize: m must be at least 1, got {m!r}")
     if n == 0:
         raise ValueError("lbfgs_minimize: x0 must be non-empty")
 
@@ -58,12 +104,25 @@ def lbfgs_minimize(fun, x0, grad, m=10, max_iter=200, tol=1e-8,
     n_f = 1
     it = 0
     converged = False
+    status = "iteration limit reached"
+    gnorm0 = math.sqrt(_dot(g, g))
     history = [f]
 
     for it in range(1, int(max_iter) + 1):
         gnorm = math.sqrt(_dot(g, g))
-        if gnorm <= tol:
+        if it == 1:
+            gnorm0 = gnorm
+        if tol_type == "absolute":
+            crit = gnorm
+        elif tol_type == "relative":
+            crit = gnorm / (1.0 + abs(f))
+        else:
+            crit = gnorm / gnorm0 if gnorm0 > 0 else 0.0
+        if crit <= tol:
             converged = True
+            status = {"absolute": "gradient norm within tolerance",
+                      "relative": "gradient norm within tolerance, relative to f",
+                      "initial": "gradient norm within tolerance, relative to its start"}[tol_type]
             break
 
         # --- two-loop recursion, Liu & Nocedal Sec. 2
@@ -74,13 +133,11 @@ def lbfgs_minimize(fun, x0, grad, m=10, max_iter=200, tol=1e-8,
             alphas.append(a)
             for j in range(n):
                 q[j] -= a * Y[i][j]
-        if S:
-            # H0 = (s'y / y'y) I -- the scaling that makes L-BFGS work
-            # at all; with H0 = I the first step is wildly mis-scaled.
-            gamma = _dot(S[-1], Y[-1]) / _dot(Y[-1], Y[-1])
-        else:
-            gamma = 1.0
-        r = [gamma * v for v in q]
+        # H0 = (s'y / y'y) I -- the scaling that makes L-BFGS work at
+        # all; with H0 = I the first step is wildly mis-scaled.
+        gamma = _dot(S[-1], Y[-1]) / _dot(Y[-1], Y[-1]) if S else 1.0
+        dvec = _precond(precond, S, Y, n)
+        r = [gamma * v for v in q] if dvec is None else [gamma * (v / dv) for v, dv in zip(q, dvec)]
         alphas.reverse()
         for i in range(len(S)):
             b = RHO[i] * _dot(Y[i], r)
@@ -102,11 +159,14 @@ def lbfgs_minimize(fun, x0, grad, m=10, max_iter=200, tol=1e-8,
         t = 1.0
         ok = False
         xt, ft, gt = None, None, None
+        # Armijo with a rounding allowance: below the evaluation noise of f
+        # the plain test rejects every step at the optimum.
+        ftol = 4 * 2.220446049250313e-16 * max(1.0, abs(f))
         for _ in range(int(max_ls)):
             xt = [x[j] + t * d[j] for j in range(n)]
             ft = float(fun(xt))
             n_f += 1
-            if ft > f + c1 * t * slope:
+            if ft > f + c1 * t * slope + ftol:
                 hi = t
                 t = 0.5 * (lo + hi)
                 continue
@@ -118,7 +178,34 @@ def lbfgs_minimize(fun, x0, grad, m=10, max_iter=200, tol=1e-8,
             ok = True
             break
         if not ok:
-            break
+            if S:
+                # the curvature pairs may be stale: forget them and retry
+                # along the steepest descent direction
+                S, Y, RHO = [], [], []
+                d = [-v for v in g]
+                slope = -_dot(g, g)
+                lo, hi, t = 0.0, float("inf"), 1.0
+                for _ in range(int(max_ls)):
+                    xt = [x[j] + t * d[j] for j in range(n)]
+                    ft = float(fun(xt))
+                    n_f += 1
+                    if ft > f + c1 * t * slope:
+                        hi = t
+                        t = 0.5 * (lo + hi)
+                        continue
+                    gt = [float(v) for v in grad(xt)]
+                    if _dot(gt, d) < c2 * slope:
+                        lo = t
+                        t = 2.0 * lo if hi == float("inf") else 0.5 * (lo + hi)
+                        continue
+                    ok = True
+                    break
+            if not ok:
+                if math.sqrt(_dot(g, g)) <= math.sqrt(2.220446049250313e-16) * max(1.0, abs(f)):
+                    status = "stalled at the optimum; no Wolfe step remains"
+                else:
+                    status = "line search could not satisfy the Wolfe conditions"
+                break
         if gt is None:
             gt = [float(v) for v in grad(xt)]
         s = [xt[j] - x[j] for j in range(n)]
@@ -141,10 +228,15 @@ def lbfgs_minimize(fun, x0, grad, m=10, max_iter=200, tol=1e-8,
         "fun": float(f),
         "grad": g,
         "grad_norm": float(math.sqrt(_dot(g, g))),
+        "grad_norm_relative": float(math.sqrt(_dot(g, g)) / (1.0 + abs(f))),
+        "grad_norm_ratio": (float(math.sqrt(_dot(g, g)) / gnorm0) if gnorm0 > 0 else None),
+        "tol": float(tol),
+        "tol_type": tol_type,
         "iterations": int(it),
         "n_fun": int(n_f),
         "memory": int(m),
         "converged": bool(converged),
+        "status": status,
         "history": history,
         "method": "L-BFGS two-loop recursion with a Wolfe line search "
                   "(Liu & Nocedal 1989, Sec. 2)",

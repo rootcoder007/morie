@@ -18,9 +18,11 @@
 
 \item{call}{Carried through into a list the body builds.}
 
-\item{summary_lines}{Carried through into a list the body builds. Defaults to \code{list()}.}
+\item{summary_lines}{Carried through into a list the body builds.
+Defaults to \code{list()}.}
 
-\item{warnings}{Carried through into a list the body builds. Defaults to \code{character(0)}.}
+\item{warnings}{Carried through into a list the body builds.
+Defaults to \code{character(0)}.}
 
 \item{interpretation}{Carried through into a list the body builds. Defaults to \code{""}.}
 
@@ -30,7 +32,9 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the fairness_gan implementation. Called by \code{.fairness_no_backend_result}, \code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}.
+A step of the fairness_gan implementation. Called by
+\code{.fairness_no_backend_result}, \code{morie_fairness_ctgan_debiaser},
+\code{morie_fairness_spatial_gan}.
 See the file header for the source the module follows.
 source it follows.
 }

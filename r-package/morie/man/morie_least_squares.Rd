@@ -8,13 +8,12 @@ morie_least_squares(x, y)
 }
 \arguments{
 \item{x, y}{data vectors, length >= 2.}
-
 }
 \value{
 list: A, B, S, r, C, slope_product.
 }
 \description{
-A = (xy - xy)/(<x^2> - x^2), B = y - Ax (both book
+A = (\if{html}{\out{<xy>}} - \if{html}{\out{<x>}}\if{html}{\out{<y>}})/(<x^2> - \if{html}{\out{<x>}}^2), B = \if{html}{\out{<y>}} - A\if{html}{\out{<x>}} (both book
 forms cross-checked), residual sum of squares, sample r with the
 1/n covariance, and the slope product A*C = r^2. Mirrors
 morie.fn ch6 data modules (and the misnamed "19e2").

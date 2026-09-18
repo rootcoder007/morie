@@ -27,14 +27,6 @@ morie_geron_td3(
 \item{Q1, Q2}{Optional initial (n_states, n_actions) critics; default zeros.}
 
 \item{epochs, lr, gamma, steps, policy_delay, tau, noise, seed}{As in Python original.}
-
-
-
-
-
-
-
-
 }
 \value{
 list with policy, Q1, Q2, Q1_target, Q2_target, returns,
@@ -47,7 +39,7 @@ policy/target refresh (argmax + Polyak averaging at rate tau) happens
 only every policy_delay epochs.
 }
 \examples{
-bandit <- list(n_states = 1L, n_actions = 2L, reset = function() 0L, 
+bandit <- list(n_states = 1L, n_actions = 2L, reset = function() 0L,
     step = function(a) list(0L, as.numeric(a), FALSE))
 morie_geron_td3(bandit, epochs = 40)
 }

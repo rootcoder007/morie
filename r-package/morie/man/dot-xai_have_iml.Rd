@@ -10,7 +10,8 @@
 The value of \code{requireNamespace}.
 }
 \description{
-A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_permutation_importance}.
+A step of the fairness_xai implementation. Called by
+\code{morie_fairness_xai_permutation_importance}.
 See the file header for the source the module follows.
 source it follows.
 }

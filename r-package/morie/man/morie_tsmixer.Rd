@@ -16,9 +16,6 @@ morie_tsmixer(x, wtime, btime, wfeat, bfeat, wproj, bproj, horizon)
 \item{wproj, bproj}{the temporal projection of eq. (4)}
 
 \item{horizon}{forecast length}
-
-
-
 }
 \value{
 list(forecast, mixed, nchannels, L, horizon, mean, first,

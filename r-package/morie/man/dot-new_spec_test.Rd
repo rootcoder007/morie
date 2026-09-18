@@ -21,7 +21,8 @@
 The value of \code{structure}.
 }
 \description{
-A step of the diagnostics implementation. Called by \code{hosmer_lemeshow_test}, \code{likelihood_ratio_test}, \code{link_test} and 4 others in the module.
+A step of the diagnostics implementation. Called by \code{hosmer_lemeshow_test},
+\code{likelihood_ratio_test}, \code{link_test} and 4 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

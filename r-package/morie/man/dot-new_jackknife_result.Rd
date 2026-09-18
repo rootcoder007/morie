@@ -39,7 +39,8 @@
 The value of \code{structure}.
 }
 \description{
-A step of the bootstrap_methods implementation. Called by \code{delete_d_jackknife}, \code{jackknife}.
+A step of the bootstrap_methods implementation. Called by \code{delete_d_jackknife},
+\code{jackknife}.
 See the file header for the source the module follows.
 the source it follows.
 }

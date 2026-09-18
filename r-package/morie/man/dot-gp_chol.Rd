@@ -15,7 +15,8 @@
 The value of \code{L}, as built in the body.
 }
 \description{
-A step of the abcgp_native implementation. Called by \code{.gp_draw_mean}, \code{.gp_mvn_logpdf}, \code{.gp_profile_nll} and 1 others in the module.
+A step of the abcgp_native implementation. Called by \code{.gp_draw_mean},
+\code{.gp_mvn_logpdf}, \code{.gp_profile_nll} and 1 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

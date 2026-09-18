@@ -7,10 +7,9 @@
 Frdbnd(F_0, F_1, joint = NULL)
 }
 \arguments{
-\item{F_0, F_1}{Marginal CDF values in [0, 1], of equal length.}
+\item{F_0, F_1}{Marginal CDF values in \link{0, 1}, of equal length.}
 
 \item{joint}{Optional candidate joint CDF at the same points.}
-
 }
 \value{
 List with \code{estimate}, \code{lower}, \code{upper},

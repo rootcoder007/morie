@@ -10,7 +10,6 @@ morie_greedy_independent_set(ground, independent, weights)
 \item{ground, independent}{The system.}
 
 \item{weights}{Numeric vector aligned with \code{ground}.}
-
 }
 \value{
 A list with \code{set} and \code{weight}.
@@ -21,8 +20,8 @@ are taken, since a negative element can never improve a
 maximum-weight independent set.
 }
 \examples{
-morie_greedy_independent_set(ground = c(1, 2, 3, 4, 5, 6, 7, 8),
-  independent = c(1, 2, 3, 4, 5, 6, 7, 8), weights = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_greedy_independent_set(ground = c(1, 2, 3, 4, 5, 6, 7, 8), independent = c(1, 2,
+3, 4, 5, 6, 7, 8), weights = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Edmonds J (1971) \emph{Math Prog} 1:127-136.

@@ -73,10 +73,12 @@
   # nested when clustering on unit (the default); time FEs never are.
   n_unit <- length(unique(unit))
   n_time <- length(unique(time))
-  unit_nested <- all(vapply(split(as.character(cluster_ids),
-                                  as.character(unit)),
-                            function(z) length(unique(z)) == 1L,
-                            logical(1)))
+  # A cluster is nested in unit iff every unit maps to a single cluster.
+  # The default clusters on unit, where nesting is identically true --
+  # short-circuit it; otherwise test by (unit, cluster) pair counts,
+  # which is O(n) instead of a per-group character split.
+  unit_nested <- identical(cluster_ids, unit) ||
+    length(unique(paste(unit, cluster_ids, sep = "\r"))) == n_unit
   fe_K <- if (unit_nested) n_time else n_unit + n_time - 1L
   K <- length(keep) + fe_K
   adj <- (n - 1) / (n - K) * G / (G - 1)
@@ -86,9 +88,11 @@
   se <- rep(NA_real_, ncol(Xd))
   se[keep] <- sqrt(pmax(diag(V), 0))
   names(beta) <- names(se) <- colnames(Xd)
-  list(beta = beta, se = se, vcov = V, keep = keep, residuals = resid,
-       n = n, n_clusters = G, df_t = G - 1L,
-       n_units = n_unit, n_periods = n_time)
+  list(
+    beta = beta, se = se, vcov = V, keep = keep, residuals = resid,
+    n = n, n_clusters = G, df_t = G - 1L,
+    n_units = n_unit, n_periods = n_time
+  )
 }
 
 # ---------------------------------------------------------------------------
@@ -379,10 +383,11 @@
   ids <- sort(unique(df[[unit]]))
   n_ids <- length(ids)
   engine <- switch(est_method,
-                   dr = .morie_drdid_panel_native,
-                   reg = .morie_reg_did_panel_native,
-                   ipw = .morie_ipw_did_panel_native,
-                   stop("Unknown est_method: ", est_method))
+    dr = .morie_drdid_panel_native,
+    reg = .morie_reg_did_panel_native,
+    ipw = .morie_ipw_did_panel_native,
+    stop("Unknown est_method: ", est_method)
+  )
   # Pull columns out as atomic vectors once; the per-cell work below then
   # indexes these instead of subsetting the data.frame ([.data.frame plus
   # character coercion dominated the profile). uid_all is the 1-based
@@ -394,7 +399,9 @@
     m <- as.matrix(df[, covariates, drop = FALSE])
     storage.mode(m) <- "double"
     m
-  } else NULL
+  } else {
+    NULL
+  }
   rows <- list()
   IF_cols <- list()
   for (g in glist) {
@@ -453,16 +460,23 @@
         # cohort size, carried through so the aggregation can weight by
         # P(G = g) rather than treating every cell as equally important
         n_treated = sum(D), n_control = sum(1 - D),
-        se_analytic = if (identical(se_convention, "bessel"))
+        se_analytic = if (identical(se_convention, "bessel")) {
           stats::sd(IF_full) / sqrt(n_ids)
-        else sqrt(mean(IF_full^2) / n_ids))
+        } else {
+          sqrt(mean(IF_full^2) / n_ids)
+        }
+      )
       IF_cols[[length(IF_cols) + 1L]] <- IF_full
     }
   }
   if (!length(rows)) {
-    return(list(results = data.frame(group = numeric(), t = numeric(),
-                                     att = numeric(), se = numeric()),
-                IF = NULL))
+    return(list(
+      results = data.frame(
+        group = numeric(), t = numeric(),
+        att = numeric(), se = numeric()
+      ),
+      IF = NULL
+    ))
   }
   res <- do.call(rbind, rows)
   IF_mat <- do.call(cbind, IF_cols)
@@ -495,11 +509,13 @@
   # Collapse to group x time cells (mean outcome, mean treatment,
   # cell size), as did_multiplegt does internally.
   cell <- stats::aggregate(df[, c(outcome, treatment)],
-                           by = list(.g = df[[unit]], .t = df[[time]]),
-                           FUN = mean)
+    by = list(.g = df[[unit]], .t = df[[time]]),
+    FUN = mean
+  )
   cnt <- stats::aggregate(list(.n = rep(1L, nrow(df))),
-                          by = list(.g = df[[unit]], .t = df[[time]]),
-                          FUN = sum)
+    by = list(.g = df[[unit]], .t = df[[time]]),
+    FUN = sum
+  )
   cell <- merge(cell, cnt, by = c(".g", ".t"))
   tlist <- sort(unique(cell$.t))
   num <- 0
@@ -514,11 +530,11 @@
     d0 <- m[[paste0(treatment, "_0")]]
     d1 <- m[[paste0(treatment, "_1")]]
     dy <- m[[paste0(outcome, "_1")]] - m[[paste0(outcome, "_0")]]
-    w  <- m$.n_1
-    join   <- d0 == 0 & d1 == 1
-    stay0  <- d0 == 0 & d1 == 0
-    leave  <- d0 == 1 & d1 == 0
-    stay1  <- d0 == 1 & d1 == 1
+    w <- m$.n_1
+    join <- d0 == 0 & d1 == 1
+    stay0 <- d0 == 0 & d1 == 0
+    leave <- d0 == 1 & d1 == 0
+    stay1 <- d0 == 1 & d1 == 1
     if (any(join) && any(stay0)) {
       did_plus <- stats::weighted.mean(dy[join], w[join]) -
         stats::weighted.mean(dy[stay0], w[stay0])
@@ -534,7 +550,9 @@
       den <- den + n_minus
     }
   }
-  if (den == 0) return(NA_real_)
+  if (den == 0) {
+    return(NA_real_)
+  }
   num / den
 }
 
@@ -597,9 +615,13 @@
     dtil <- Dd[, 1L]
     ytil <- Dd[, 2L]
     vd <- sum(dtil^2)
-    if (vd < 1e-12) return(NULL)
-    list(est = sum(dtil * ytil) / vd,
-         wt_raw = vd / nrow(sub) * nrow(sub)^2)
+    if (vd < 1e-12) {
+      return(NULL)
+    }
+    list(
+      est = sum(dtil * ytil) / vd,
+      wt_raw = vd / nrow(sub) * nrow(sub)^2
+    )
   }
   rows <- list()
   for (i in seq_along(cohorts)) {
@@ -607,7 +629,7 @@
       if (i == j) next
       k <- cohorts[i]
       l <- cohorts[j]
-      if (!is.finite(k)) next   # "treated" side must be a real cohort
+      if (!is.finite(k)) next # "treated" side must be a real cohort
       if (is.finite(l) && k >= l) {
         # k = later-treated vs l = earlier-treated: usable window is
         # l's post-period only (earlier group's treatment is constant
@@ -625,7 +647,8 @@
           rows[[length(rows) + 1L]] <- data.frame(
             treated = k, untreated = l,
             type = "Earlier vs Later Treated",
-            estimate = tt$est, wt_raw = tt$wt_raw)
+            estimate = tt$est, wt_raw = tt$wt_raw
+          )
         }
         # (b) l treated vs k acting as (already-treated) control,
         # after k treats.
@@ -636,7 +659,8 @@
           rows[[length(rows) + 1L]] <- data.frame(
             treated = l, untreated = k,
             type = "Later vs Earlier Treated",
-            estimate = tt$est, wt_raw = tt$wt_raw)
+            estimate = tt$est, wt_raw = tt$wt_raw
+          )
         }
       } else {
         # Treated cohort vs never-treated
@@ -645,15 +669,18 @@
           rows[[length(rows) + 1L]] <- data.frame(
             treated = k, untreated = Inf,
             type = "Treated vs Untreated",
-            estimate = tt$est, wt_raw = tt$wt_raw)
+            estimate = tt$est, wt_raw = tt$wt_raw
+          )
         }
       }
     }
   }
   if (!length(rows)) {
-    return(data.frame(treated = numeric(), untreated = numeric(),
-                      type = character(), estimate = numeric(),
-                      weight = numeric()))
+    return(data.frame(
+      treated = numeric(), untreated = numeric(),
+      type = character(), estimate = numeric(),
+      weight = numeric()
+    ))
   }
   out <- do.call(rbind, rows)
   out$weight <- out$wt_raw / sum(out$wt_raw)

@@ -15,7 +15,5 @@ current build provides it.
 Inventory of the post-quantum families available in this build
 }
 \examples{
-if (morie_crypto_sodium_available()) {
-  morie_crypto_pqc_inventory()
-}
+morie_crypto_pqc_inventory()
 }

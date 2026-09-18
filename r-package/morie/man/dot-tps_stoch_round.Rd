@@ -15,7 +15,9 @@
 A numeric value.
 }
 \description{
-A step of the tps_stochastic implementation. Called by \code{morie_tps_fokker_planck_grid}, \code{morie_tps_hawkes_temporal_fit}, \code{morie_tps_langevin_simulate} and 1 others in the module.
+A step of the tps_stochastic implementation. Called by
+\code{morie_tps_fokker_planck_grid}, \code{morie_tps_hawkes_temporal_fit},
+\code{morie_tps_langevin_simulate} and 1 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

@@ -17,24 +17,21 @@ NULL
 #' @export
 .gh_have <- function(pkg) requireNamespace(pkg, quietly = TRUE)
 
-#' .gh_pairwise_sq
-#'
-#' A step of the helpers_ghosal_bnp implementation. Called by
-#' \code{morie_ghosal_gp_matern}, \code{morie_ghosal_gp_squared_exponential},
-#' \code{morie_ghosal_np_classification}.
-#' See the file header for the source the module follows.
-#' for the source it follows.
-#'
-#' @param a A matrix; passed to \code{\%*\%}.
-#' @param b A matrix; passed to \code{t}. Defaults to \code{a}.
-#' @return A numeric value.
-#' @export
-#' @examples
-#' A <- matrix(c(4, 1, 0.5, 1, 3, 0.8, 0.5, 0.8, 2), nrow = 3)
-#' res <- .gh_pairwise_sq(a = A)
-#' res
+#' Internal helper: Gh Pairwise Sq
+#' @noRd
 .gh_pairwise_sq <- function(a, b = a) {
-  outer(rowSums(a^2), rowSums(b^2), "+") - 2 * a %*% t(b)
+  sq <- outer(rowSums(a^2), rowSums(b^2), "+") - 2 * a %*% t(b)
+  if (identical(a, b)) {
+    ## The Gram-matrix form is symmetric on paper and not in floating
+    ## point: BLAS computes (A A')[i, j] and [j, i] as different dot
+    ## products, so they can disagree in the last bits, and the diagonal
+    ## comes out slightly non-zero and sometimes negative. Impose the
+    ## structure the formula is supposed to have, so that a downstream
+    ## Cholesky does not depend on which BLAS happens to be installed.
+    sq <- (sq + t(sq)) / 2
+    diag(sq) <- 0
+  }
+  sq
 }
 
 #' .gh_bernstein

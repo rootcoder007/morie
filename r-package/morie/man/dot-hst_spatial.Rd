@@ -15,7 +15,8 @@
 A numeric value.
 }
 \description{
-A step of the hawkes_spatial implementation. Called by \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik}.
+A step of the hawkes_spatial implementation. Called by
+\code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik}.
 See the file header for the source the module follows.
 the source it follows.
 }

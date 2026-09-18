@@ -23,7 +23,6 @@ morie_geron_ddim_sampling_step(
 \item{alpha_bar}{Non-increasing schedule in (0, 1].}
 
 \item{clip_x0}{Optional c(lo, hi) clamp on x0.}
-
 }
 \value{
 List with \code{x_prev}, \code{x0_pred}, \code{alpha_bar_t}, \code{alpha_bar_prev},
@@ -34,6 +33,6 @@ x0 = (x_t - sqrt(1 - ab_t) eps) / sqrt(ab_t), then re-noise to t_prev
 with eta = 0. Timestep indices are 0-based into \code{alpha_bar}.
 }
 \examples{
-morie_geron_ddim_sampling_step(c(1, -0.5), t = 3, t_prev = 1, 
+morie_geron_ddim_sampling_step(c(1, -0.5), t = 3, t_prev = 1,
     eps_pred = c(0.2, 0.1), alpha_bar = c(1, 0.9, 0.8, 0.5))
 }

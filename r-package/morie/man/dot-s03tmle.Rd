@@ -15,24 +15,24 @@
 
 \item{trim}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.}
 
-\item{link}{Accepted by the signature and not used anywhere in the body. Defaults to \code{"logit"}.}
+\item{link}{Accepted by the signature and not used anywhere in the body. Defaults to
+\code{"logit"}.}
 }
 \value{
-A list with \code{psi}, \code{se}, \code{eps}, \code{g}, \code{q1}, \code{q0}, \code{inf}, \code{ey1}, \code{ey0}, \code{scale}, \code{shift}.
+A list with \code{psi}, \code{se}, \code{eps}, \code{g}, \code{q1}, \code{q0},
+\code{inf}, \code{ey1}, \code{ey0}, \code{scale}, \code{shift}.
 }
 \description{
 Int. J. Biostatistics 2(1), art. 11).  The initial Qbar is fluctuated
 along the logistic submodel whose score is the clever covariate H =
 D/g - (1-D)/(1-g); eps solves the score equation by Newton, then psi
-= mean(Q*(1,X) - Q*(0,X)).  y is scaled to [0, 1] so the logistic
+= mean(Q*(1,X) - Q*(0,X)).  y is scaled to \link{0, 1} so the logistic
 fluctuation is valid for continuous outcomes (Gruber and van der Laan
 2010).
 }
 \examples{
-if (requireNamespace("jsonlite", quietly = TRUE)) {
-  y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
-  g <- c(0L, 1L, 0L, 1L, 1L, 0L, 1L, 0L)
-  res <- .s03tmle(y = y, D = g)
-  res
-}
+y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
+g <- c(0L, 1L, 0L, 1L, 1L, 0L, 1L, 0L)
+res <- .s03tmle(y = y, D = g)
+res
 }

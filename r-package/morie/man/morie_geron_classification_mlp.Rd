@@ -23,7 +23,6 @@ morie_geron_classification_mlp(
 \item{lr}{Learning rate.}
 
 \item{seed}{LCG seed.}
-
 }
 \value{
 List with \code{weights}, \code{biases}, \code{loss_history}, \code{final_loss},
@@ -39,9 +38,9 @@ matches Python draw-for-draw. The final loss is delegated to
 the Python module.
 }
 \examples{
-XC <- matrix(c(1, 5, 2, 4, 3, 6, 6, 1, 7, 2, 8, 0.5), nrow = 6, 
+XC <- matrix(c(1, 5, 2, 4, 3, 6, 6, 1, 7, 2, 8, 0.5), nrow = 6,
     byrow = TRUE)
 YC <- c(0, 0, 1, 1, 2, 2)
-morie_geron_classification_mlp(XC, YC, hidden_sizes = 3, epochs = 40, 
+morie_geron_classification_mlp(XC, YC, hidden_sizes = 3, epochs = 40,
     lr = 0.2, seed = 5)
 }

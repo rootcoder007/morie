@@ -12,7 +12,6 @@ Fdwarp(x, y, cost = "abs", window = NULL)
 \item{cost}{local distance, "abs" for |x_i - y_j| or "sq" for its square.}
 
 \item{window}{Sakoe-Chiba adjustment window; unrestricted when omitted.}
-
 }
 \value{
 list: estimate, distance, normalized, path_length, path, n, m,
@@ -24,7 +23,7 @@ for spoken word recognition", IEEE Transactions on Acoustics, Speech, and
 Signal Processing 26(1), 43-49.  The time-normalised distance between two
 patterns is the minimum, over monotone alignment paths, of the accumulated
 local distance, computed by the forward recursion
-g(i, j) = d(i, j) + min[g(i-1, j), g(i-1, j-1), g(i, j-1)] with
+g(i, j) = d(i, j) + min\link{g(i-1, j), g(i-1, j-1), g(i, j-1)} with
 g(1, 1) = d(1, 1).  That is the symmetric form with no slope constraint,
 equation (7) of the paper in its unweighted case.
 }

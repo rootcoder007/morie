@@ -482,12 +482,17 @@ morie_ipcw_interval <- function(W, A, times, deltas, a = 1.0, r = NULL,
 #' @param trim Numeric; passed to \code{max}. Defaults to \code{0.001}.
 #' @return The value of \code{.tmlcen_RichResult}.
 #' @export
+#' @examples
+#' morie_tmle_censoring(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   censor = c(0, 1, 0, 1, 1, 0, 1, 0), treatment = c(0, 1, 0, 1, 1, 0, 1, 0),
+#'   covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 morie_tmle_censoring <- function(time, event, censor, treatment, covariates,
                                  kind = "right", grid = NULL, a = 1.0,
                                  r = NULL, g = NULL, gc = NULL,
                                  trim = 1e-3) {
   if (!(kind %in% .tmlcen_KINDS)) {
-    stop(sprintf("tmle_censoring: kind must be 'right' or 'interval', got %r", kind))
+    stop(sprintf("tmle_censoring: kind must be 'right' or 'interval', got %s", kind))
   }
   if (kind == "interval") {
     psi <- morie_ipcw_interval(covariates, treatment, time, event, a = a, r = r,

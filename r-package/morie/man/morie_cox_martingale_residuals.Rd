@@ -22,13 +22,11 @@ Their use is functional form: plot them against a covariate not in
 the model, and curvature tells you the scale it belongs on.
 }
 \examples{
-if (requireNamespace("ranger", quietly = TRUE)) {
-  set.seed(1)
-  X <- matrix(rnorm(60), ncol = 1)
-  tt <- rexp(60, exp(X * 0.5))
-  f <- morie_efron_tie_correction(tt, rep(1, 60), X)
-  round(mean(morie_cox_martingale_residuals(f)$residuals), 8)
-}
+set.seed(1)
+X <- matrix(rnorm(60), ncol = 1)
+tt <- rexp(60, exp(X * 0.5))
+f <- morie_efron_tie_correction(tt, rep(1, 60), X)
+round(mean(morie_cox_martingale_residuals(f)$residuals), 8)
 }
 \references{
 Therneau, T. M., Grambsch, P. M. and Fleming, T. R.

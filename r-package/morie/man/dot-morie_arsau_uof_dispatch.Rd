@@ -21,7 +21,10 @@
 The value of \code{.morie_ontario_ckan_dump_csv}.
 }
 \description{
-A step of the datasets_ontario_tps implementation. Called by \code{morie_datasets_arsau_aggregate_summary}, \code{morie_datasets_arsau_detailed_dataset}, \code{morie_datasets_arsau_uof_individual_records} and 2 others in the module.
+A step of the datasets_ontario_tps implementation. Called by
+\code{morie_datasets_arsau_aggregate_summary},
+\code{morie_datasets_arsau_detailed_dataset},
+\code{morie_datasets_arsau_uof_individual_records} and 2 others in the module.
 See the file header for the source the module follows.
 for the source it follows.
 }

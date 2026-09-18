@@ -154,6 +154,10 @@ genre_distribution <- function(items, p_g_given_i, weights = NULL) {
 #' @return Numeric scalar, the KL value.
 #' @references Steck (2018), RecSys '18, eqs. (4)-(5).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' calibration_kl(V, V)
+#' @keywords internal
 calibration_kl <- function(p, q, alpha = 0.01) {
   pp <- .caltbR_norm(p)
   qq <- .caltbR_norm(q)
@@ -162,7 +166,7 @@ calibration_kl <- function(p, q, alpha = 0.01) {
                  length(pp), length(qq)))
   a <- as.numeric(alpha)
   if (!is.finite(a) || a <= 0.0 || a >= 1.0)
-    stop(sprintf("caltbR: alpha must lie in (0,1), got %r", alpha))
+    stop(sprintf("caltbR: alpha must lie in (0,1), got %s", alpha))
   tot <- 0.0
   for (g in seq_along(pp)) {
     if (pp[g] <= .CALTBR_EPS) next
@@ -207,12 +211,15 @@ calibration_hellinger <- function(p, q) {
 #' @return Numeric vector \eqn{\bar p(g)} of length G.
 #' @references Steck (2018), RecSys '18, eq. (7).
 #' @export
+#' @examples
+#' diversity_prior(p_u = c(1, 2, 3, 4, 5, 6, 7, 8), p0 = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5)
+#' @keywords internal
 diversity_prior <- function(p_u, p0, beta) {
   a <- as.numeric(p_u)
   b <- as.numeric(p0)
   t <- as.numeric(beta)
   if (!is.finite(t) || t < 0.0 || t > 1.0)
-    stop(sprintf("caltbR: beta must lie in [0,1], got %r", beta))
+    stop(sprintf("caltbR: beta must lie in [0,1], got %s", beta))
   if (length(a) != length(b))
     stop(sprintf("caltbR: prior has %d genres, target %d",
                  length(b), length(a)))
@@ -248,6 +255,7 @@ diversity_prior <- function(p_u, p0, beta) {
 #'   \code{N}, \code{guarantee}, \code{method}.
 #' @references Steck (2018), RecSys '18, eq. (6).
 #' @export
+#' @keywords internal
 calibrated_rerank <- function(scores, p_g_given_i, p_target, N = 10,
                               lam = 0.5, metric = "kl",
                               alpha = 0.01, rank_weights = NULL) {
@@ -264,7 +272,7 @@ calibrated_rerank <- function(scores, p_g_given_i, p_target, N = 10,
     stop("caltbR: N must be at least 1")
   lm <- as.numeric(lam)
   if (!is.finite(lm) || lm < 0.0 || lm > 1.0)
-    stop(sprintf("caltbR: lambda must lie in [0,1], got %r", lam))
+    stop(sprintf("caltbR: lambda must lie in [0,1], got %s", lam))
   pt <- .caltbR_norm(p_target)
 
   M <- .caltbR_to_pgi(p_g_given_i)

@@ -9,7 +9,6 @@ Sieg(x, y)
 \arguments{
 \item{x, y}{Predictor and response, same length, at least two points with two
 distinct x values.}
-
 }
 \value{
 List with \code{estimate} (the slope), \code{slope},

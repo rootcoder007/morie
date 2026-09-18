@@ -23,7 +23,6 @@ morie_geron_dataloader(
 \item{seed}{LCG seed.}
 
 \item{num_workers}{Non-negative int, only affects \code{worker_assignment}.}
-
 }
 \value{
 List with \code{batches} (0-based indices), \code{order}, \code{n_batches}, \code{dropped}.
@@ -32,5 +31,6 @@ List with \code{batches} (0-based indices), \code{order}, \code{n_batches}, \cod
 Mini-batch index plan with deterministic Fisher-Yates shuffling (hmdld)
 }
 \examples{
-morie_geron_dataloader(dataset = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)), batch_size = 5L)
+morie_geron_dataloader(dataset = data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9)),
+batch_size = 5L)
 }

@@ -11,7 +11,8 @@
 
 \item{Y}{Passed to \code{.attend}.}
 
-\item{p}{A list; the body reads \code{$b1}, \code{$b2}, \code{$W1}, \code{$W2}, \code{$Wk}, \code{$Wq}, \code{$Wv} from it.}
+\item{p}{A list; the body reads \code{$b1}, \code{$b2}, \code{$W1}, \code{$W2},
+\code{$Wk}, \code{$Wq}, \code{$Wv} from it.}
 }
 \value{
 A list with \code{O}, \code{W}.

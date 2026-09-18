@@ -13,7 +13,8 @@
 Nothing; this branch always raises.
 }
 \description{
-A step of the sasRec_native implementation. Called by \code{attention_span}, \code{predict_next}, \code{self_attention}.
+A step of the sasRec_native implementation. Called by \code{attention_span},
+\code{predict_next}, \code{self_attention}.
 See the file header for the source the module follows.
 source it follows.
 }
