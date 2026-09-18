@@ -10,6 +10,11 @@ Synced from rmorie 1.2.4's fixes of 2026-09-16 and 2026-09-17.
   observed permutation. The OHRC 2023 correction's four-way rotation is the
   documented case and the test fixture.
 
+* The greedy one-dimensional matcher refuses NA or NaN scores, a NaN
+  caliper and a ratio below one instead of handing them to the sort,
+  where a NaN comparator is undefined behaviour and corrupted the heap
+  under the degenerate-input sweep.
+
 ## Every rmorie change since 9 September is here
 
 The R arm had not followed rmorie since the 9 September merge. Its
