@@ -61,7 +61,7 @@ Offline mode reads a included 50-row attribute-only fixture
 \code{the_geom} MultiPolygon column.
 }
 \examples{
-\dontshow{if (requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_chicago_wards(offline = TRUE)
 head(df)
 \dontshow{\}) # examplesIf}

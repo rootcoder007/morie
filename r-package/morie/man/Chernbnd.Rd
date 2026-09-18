@@ -17,7 +17,7 @@ Chernbnd(mgf, a, s_grid = NULL)
 List with \code{bound}, \code{s}, \code{log_bound}, \code{at_boundary}.
 }
 \description{
-Formula: P(X >= a) <= min_\{s>0\} exp(-s a) E[exp(s X)]
+Formula: P(X >= a) <= min_\{s>0\} exp(-s a) E\link{exp(s X)}
 }
 \examples{
 Chernbnd(mgf = function(s) exp(0.5 * s^2), a = 2)

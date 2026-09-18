@@ -53,7 +53,7 @@ first loader; pass a \code{url} for live mode (visit the landing page
 to find the current direct-CSV URL).
 }
 \examples{
-\dontshow{if (requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_cpd_public_arrests(offline = TRUE)
 df$STAT_DESCR
 \dontshow{\}) # examplesIf}

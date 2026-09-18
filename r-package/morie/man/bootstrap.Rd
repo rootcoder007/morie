@@ -37,13 +37,23 @@ bootstrap(
 A \code{morie_bootstrap_result} list.
 }
 \description{
-Resamples observations with replacement and computes confidence
-intervals via the percentile, normal, basic, BCa, or studentized
-method.  Optionally supports stratified or cluster resampling.
+Resamples observations with replacement and computes a confidence
+interval via the percentile, normal, basic, BCa, or studentized
+method. Delegates the resampling loop and CI computation to
+\code{boot::boot} and \code{boot::boot.ci} when the \pkg{boot}
+package is installed. Falls back to an inline implementation
+otherwise so the wrapper keeps working on minimal installs.
+Stratified and cluster resamples are supported in both arms.
 }
 \examples{
-set.seed(1)
-x <- rnorm(40)
-res <- bootstrap(x, mean, n_boot = 50L, ci_method = "percentile")
-c(res$estimate, res$ci_lower, res$ci_upper)
+if (requireNamespace("boot", quietly = TRUE)) {
+  set.seed(1)
+  x <- rnorm(40)
+  res <- bootstrap(x, mean, n_boot = 50L, ci_method = "percentile")
+  c(res$estimate, res$ci_lower, res$ci_upper)
+}
+}
+\seealso{
+\code{boot::boot}, \code{boot::boot.ci},
+\code{\link[=morie_boot_run]{morie_boot_run()}}, \code{\link[=morie_boot_basic_ci]{morie_boot_basic_ci()}}.
 }

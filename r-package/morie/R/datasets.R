@@ -18,9 +18,9 @@
 #' @noRd
 .morie_dataset_pkg_csv <- function(name) {
   path <- .morie_extdata(paste0(name, ".csv"))
-  if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
+  if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
     path <- system.file("extdata", paste0(name, ".csv"),
-      package = "moriedata"
+      package = "rmoriedata"
     )
   }
   if (!nzchar(path)) {
@@ -688,8 +688,8 @@ morie_datasets_siu_director_reports <- function() {
 morie_datasets_siu_report_text <- function(url = NULL, offline = FALSE) {
   if (isTRUE(offline)) {
     path <- .morie_extdata("siu_24-OFD-001_synthetic.txt")
-    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "siu_24-OFD-001_synthetic.txt", package = "moriedata")
+    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "siu_24-OFD-001_synthetic.txt", package = "rmoriedata")
     }
     if (!nzchar(path)) {
       stop("morie_datasets_siu_report_text(offline=TRUE): bundled synthetic missing.")
@@ -1529,7 +1529,7 @@ morie_datasets_nist_rds <- function(dataset_id = NULL, query = NULL,
 #' @references City of Chicago Data Portal, "Boundaries -
 #'   Neighborhoods"; based on Neighborhoods_2012b.
 #' @examples
-#' \dontshow{if (nzchar(system.file("extdata", "chicago_neighborhoods.csv", package = "morie")) || requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (nzchar(system.file("extdata", "chicago_neighborhoods.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_neighborhoods(offline = TRUE)
 #' head(df[, c("pri_neigh", "sec_neigh")])
 #' \dontshow{\}) # examplesIf}
@@ -1546,8 +1546,8 @@ morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
   mode <- match.arg(mode)
   if (isTRUE(offline)) {
     path <- .morie_extdata("chicago_neighborhoods.csv")
-    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_neighborhoods.csv", package = "moriedata")
+    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_neighborhoods.csv", package = "rmoriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago neighborhoods fixture missing",
@@ -1745,7 +1745,7 @@ morie_datasets_chicago_crime_odata <- function(filter = NULL,
 #' @references City of Chicago Data Portal, "Crimes - 2001 to
 #'   Present - Map" (`ahwe-kpsy`), derived from `ijzp-q8t2`.
 #' @examples
-#' \dontshow{if (requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_crime_map(offline = TRUE)
 #' df$primary_type
 #' \dontshow{\}) # examplesIf}
@@ -1762,8 +1762,8 @@ morie_datasets_chicago_crime_map <- function(date_from = NULL,
                                              app_token = NULL) {
   if (isTRUE(offline)) {
     path <- .morie_extdata("chicago_crime_map_ahwe_kpsy_sample.csv")
-    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_crime_map_ahwe_kpsy_sample.csv", package = "moriedata")
+    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_crime_map_ahwe_kpsy_sample.csv", package = "rmoriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago Crime Map fixture missing", call. = FALSE)
@@ -1916,7 +1916,7 @@ morie_datasets_chicago_crime_soql <- function(where = NULL,
 #' @references City of Chicago Data Portal, "Boundaries - Police
 #'   Beats (current)" (`n9it-hstw`).
 #' @examples
-#' \dontshow{if (requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_police_beats(offline = TRUE)
 #' head(df)
 #' \dontshow{\}) # examplesIf}
@@ -1933,8 +1933,8 @@ morie_datasets_chicago_police_beats <- function(offline = TRUE,
   mode <- match.arg(mode)
   if (isTRUE(offline)) {
     path <- .morie_extdata("chicago_police_beats.csv")
-    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_police_beats.csv", package = "moriedata")
+    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_police_beats.csv", package = "rmoriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago Police Beats fixture missing",
@@ -2039,7 +2039,7 @@ morie_datasets_chicago_police_beats <- function(offline = TRUE,
 #' @references City of Chicago Data Portal, "Boundaries - Police
 #'   Districts (current)" (`24zt-jpfn`).
 #' @examples
-#' \dontshow{if (nzchar(system.file("extdata", "chicago_police_districts.csv", package = "morie")) || requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (nzchar(system.file("extdata", "chicago_police_districts.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_police_districts(offline = TRUE)
 #' head(df)
 #' \dontshow{\}) # examplesIf}
@@ -2056,8 +2056,8 @@ morie_datasets_chicago_police_districts <- function(offline = TRUE,
   mode <- match.arg(mode)
   if (isTRUE(offline)) {
     path <- .morie_extdata("chicago_police_districts.csv")
-    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_police_districts.csv", package = "moriedata")
+    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_police_districts.csv", package = "rmoriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago Police Districts fixture missing",
@@ -2302,7 +2302,7 @@ morie_datasets_chicago_crime_resolved <- function(
 #' @references City of Chicago Data Portal, "Boundaries - Wards
 #'   (2023-)" (`sp34-6z76`).
 #' @examples
-#' \dontshow{if (requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_wards(offline = TRUE)
 #' head(df)
 #' \dontshow{\}) # examplesIf}
@@ -2317,8 +2317,8 @@ morie_datasets_chicago_wards <- function(offline = TRUE,
                                          app_token = NULL) {
   if (isTRUE(offline)) {
     path <- .morie_extdata("chicago_wards.csv")
-    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_wards.csv", package = "moriedata")
+    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_wards.csv", package = "rmoriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago wards fixture missing", call. = FALSE)
@@ -2374,7 +2374,7 @@ morie_datasets_chicago_wards <- function(offline = TRUE,
 #' @references City of Chicago Data Portal, "Boundaries - Community
 #'   Areas (current)" (`cauq-8yn6`).
 #' @examples
-#' \dontshow{if (nzchar(system.file("extdata", "chicago_community_areas.csv", package = "morie")) || requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (nzchar(system.file("extdata", "chicago_community_areas.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_community_areas(offline = TRUE)
 #' head(df[, c("area_numbe", "community")])
 #' \dontshow{\}) # examplesIf}
@@ -2389,8 +2389,8 @@ morie_datasets_chicago_community_areas <- function(offline = TRUE,
                                                    app_token = NULL) {
   if (isTRUE(offline)) {
     path <- .morie_extdata("chicago_community_areas.csv")
-    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_community_areas.csv", package = "moriedata")
+    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_community_areas.csv", package = "rmoriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago community areas fixture missing",
@@ -2473,7 +2473,7 @@ morie_datasets_chicago_community_areas <- function(offline = TRUE,
 #'   Department - Illinois Uniform Crime Reporting (IUCR) Codes"
 #'   (`c7ck-438e`).
 #' @examples
-#' \dontshow{if (nzchar(system.file("extdata", "chicago_iucr_codes.csv", package = "morie")) || requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (nzchar(system.file("extdata", "chicago_iucr_codes.csv", package = "morie")) || requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_iucr_codes(offline = TRUE)
 #' subset(df, primary_description == "HOMICIDE")
 #' \dontshow{\}) # examplesIf}
@@ -2489,8 +2489,8 @@ morie_datasets_chicago_iucr_codes <- function(offline = TRUE,
   mode <- match.arg(mode)
   if (isTRUE(offline)) {
     path <- .morie_extdata("chicago_iucr_codes.csv")
-    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_iucr_codes.csv", package = "moriedata")
+    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_iucr_codes.csv", package = "rmoriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago IUCR codes fixture missing",
@@ -2581,7 +2581,7 @@ morie_datasets_chicago_iucr_codes <- function(offline = TRUE,
 #' @return A `data.frame` with the documented 24-col Socrata schema.
 #' @references City of Chicago Data Portal, "Arrests" (`dpt3-jri9`).
 #' @examples
-#' \dontshow{if (requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_arrests(offline = TRUE)
 #' df$arrest_date
 #' \dontshow{\}) # examplesIf}
@@ -2598,8 +2598,8 @@ morie_datasets_chicago_arrests <- function(year = NULL,
   mode <- match.arg(mode)
   if (isTRUE(offline)) {
     path <- .morie_extdata("chicago_arrests_dpt3_jri9_sample.csv")
-    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_arrests_dpt3_jri9_sample.csv", package = "moriedata")
+    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_arrests_dpt3_jri9_sample.csv", package = "rmoriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago Arrests fixture missing", call. = FALSE)
@@ -2704,7 +2704,7 @@ morie_datasets_chicago_arrests <- function(year = NULL,
 #'   landing page at chicagopolice.org/statistics-data/public-
 #'   arrest-data/.
 #' @examples
-#' \dontshow{if (requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_cpd_public_arrests(offline = TRUE)
 #' df$STAT_DESCR
 #' \dontshow{\}) # examplesIf}
@@ -2714,8 +2714,8 @@ morie_datasets_cpd_public_arrests <- function(url = NULL,
                                               max_features = NULL) {
   if (isTRUE(offline)) {
     path <- .morie_extdata("cpd_public_release_arrests_sample.csv")
-    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "cpd_public_release_arrests_sample.csv", package = "moriedata")
+    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "cpd_public_release_arrests_sample.csv", package = "rmoriedata")
     }
     if (!nzchar(path)) {
       stop("bundled CPD public-arrests fixture missing",

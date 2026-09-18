@@ -25,20 +25,35 @@ Named numeric list with apparent_error, bootstrap_error,
 error_632, error_632plus.
 }
 \description{
-.632 and .632+ bootstrap estimators for prediction error
+Computes apparent error, mean OOB bootstrap error, the .632
+estimator (Efron 1983), and the .632+ no-information-adjusted
+estimator (Efron and Tibshirani 1997). \eqn{ipred::errorest(...,
+estimator = "632plus")} implements the same family in
+\pkg{ipred}; it is cross-referenced for users who already work
+with \pkg{ipred}'s \verb{predict.\\<learner\\>} ecosystem. The inline
+implementation is retained because rmorie's API takes naked
+\code{model_fn} / \code{score_fn} callables and is consumed by
+downstream MRM code.
 }
 \examples{
-set.seed(1)
-X <- matrix(rnorm(50), 25, 2)
-y <- rnorm(25)
-model_fn <- function(Xt, yt) structure(
-  list(coef = drop(solve(crossprod(Xt), crossprod(Xt, yt)))),
-  class = "ols_lite")
-# registerS3method makes predict() dispatch work from any
-# environment the example is sourced into.
-registerS3method("predict", "ols_lite",
-  function(object, newdata, ...) drop(newdata \%*\% object$coef))
-score_fn <- function(yt, yp) mean((yt - yp)^2)
-res <- bootstrap_632(X, y, model_fn, score_fn, n_boot = 10L)
-res$error_632
+if (requireNamespace("caret", quietly = TRUE) && requireNamespace("ranger", quietly = TRUE) &&
+  requireNamespace("rsample", quietly = TRUE)) {
+  set.seed(1)
+  X <- matrix(rnorm(25 * 2), ncol = 2)
+  y <- rnorm(25)
+  model_fn <- function(Xt, yt) {
+    structure(
+      list(coef = drop(solve(crossprod(Xt), crossprod(Xt, yt)))),
+      class = "lm_lite"
+    )
+  }
+  predict.lm_lite <- function(object, newdata, ...) drop(newdata \%*\% object$coef)
+  registerS3method("predict", "lm_lite", predict.lm_lite)
+  score_fn <- function(yt, yp) mean((yt - yp)^2)
+  res <- bootstrap_632(X, y, model_fn, score_fn, n_boot = 10L)
+  res$error_632
+}
+}
+\seealso{
+\code{ipred::errorest}.
 }

@@ -30,11 +30,20 @@ delete_d_jackknife(
 A \code{morie_jackknife_result}.
 }
 \description{
-Delete-d (generalised) jackknife
+Generalised jackknife removing \code{d} observations per replicate;
+all subsets are enumerated when \eqn{C(n, d) \le} \code{max_subsets}
+and Monte-Carlo sampled otherwise. \pkg{resample} exposes the
+equivalent generalised jackknife API via \code{resample::jackknife}
+(cross-referenced).
 }
 \examples{
-set.seed(1)
-x <- rnorm(8)
-r <- delete_d_jackknife(x, mean, d = 2L)
-r$estimate
+if (requireNamespace("coin", quietly = TRUE)) {
+  set.seed(1)
+  x <- rnorm(8)
+  r <- delete_d_jackknife(x, mean, d = 2L)
+  r$estimate
+}
+}
+\seealso{
+\code{resample::jackknife}.
 }

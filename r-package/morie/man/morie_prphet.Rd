@@ -2,9 +2,9 @@
 % Please edit documentation in R/prphet_native.R
 \name{morie_prphet}
 \alias{morie_prphet}
-\alias{morie_prphet_fit}
 \alias{prophet}
 \alias{prophetfit}
+\alias{morie_prphet_fit}
 \title{Fit a Prophet model by penalised least squares}
 \usage{
 morie_prphet(

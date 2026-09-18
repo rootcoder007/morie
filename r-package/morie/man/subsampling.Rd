@@ -31,9 +31,18 @@ A \code{morie_bootstrap_result}.
 }
 \description{
 Draws without replacement at a smaller sample size; valid under
-weaker conditions than the bootstrap.
+weaker conditions than the bootstrap. No clean CRAN function
+exposes the same \verb{(data, statistic, subsample_size, n_subsamples)}
+API; \pkg{np}'s \code{npsubsample} is closest but is kernel-specific.
+Kept as an in-house implementation and flagged
+novel/no-clean-CRAN-equivalent.
 }
 \examples{
-x_vec <- rnorm(40)
-subsampling(x_vec, mean, n_subsamples = 30L)
+if (requireNamespace("ipred", quietly = TRUE)) {
+  set.seed(1)
+  str(subsampling(rnorm(60),
+    statistic = mean,
+    n_subsamples = 200L
+  ), max.level = 1)
+}
 }
