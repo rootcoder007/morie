@@ -71,6 +71,7 @@ urn_weights <- function(counts, alpha) {
 #' @references Muller, P. & Quintana, F. A. (2004). Statistical
 #'   Science, 19(1), 95-110.
 #' @export
+#' @aliases sample_urn
 morie_posspr <- function(n, alpha, seed = 0) {
   a <- as.numeric(alpha)
   N <- as.integer(n)

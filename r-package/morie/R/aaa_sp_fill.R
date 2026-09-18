@@ -1842,12 +1842,12 @@ SpikeInfo <- function(spike, stim, nbins = 2L) {
                       "Gotway"))
 }
 
-#' Psi = E[ \{g(A - delta | H) / g(A | H)\} Y ] -- the density ratio at
+#' Psi = E\[ \{g(A - delta | H) / g(A | H)\} Y \] -- the density ratio at
 #' the
 #'
 #' BACK-shifted exposure.  Forward-shifting is the sign error this
-#' estimand invites.  Gaussian working model A|H ~ N(H\'gamma, tau^2),
-#' so w = exp\{(delta/tau^2)(A - H\'gamma - delta/2)\}.  Diaz & van der
+#' estimand invites.  Gaussian working model A|H ~ N(H'gamma, tau^2),
+#' so w = exp\{(delta/tau^2)(A - H'gamma - delta/2)\}.  Diaz & van der
 #' Laan (2012, 2018).  NOT in Schabenberger & Gotway.
 #'
 #' @param y Passed to \code{.morie_spx_chkv}.
@@ -1860,6 +1860,13 @@ SpikeInfo <- function(spike, stim, nbins = 2L) {
 #' \code{weight_uses_back_shifted_density}, \code{gaussian_working_model}, \code{n},
 #' \code{method}.
 #' @export
+#' @examples
+#' set.seed(7)
+#' h <- matrix(rnorm(30), 30, 1)
+#' a <- 0.5 * h[, 1] + rnorm(30)
+#' y <- a + h[, 1] + rnorm(30, 0, 0.3)
+#' ShiftInt(y, a, h, delta = 0.5)
+#' @keywords internal
 ShiftInt <- function(y, a, h, delta = 1, trim = NULL) {
   # psi = E[ {g(A - delta | H) / g(A | H)} Y ] -- the density ratio at the
   # BACK-shifted exposure.  Forward-shifting is the sign error this

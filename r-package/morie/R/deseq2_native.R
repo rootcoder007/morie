@@ -474,6 +474,7 @@ dispersion_trend <- function(mu_bar, disp, max_iter = 10L, tol = 1e-6) {
 #' @param log2 Whether to report log2 fold changes.
 #' @return A list mirroring the Python \code{RichResult} payload.
 #' @export
+#' @aliases deseq2_de deseq2_differential differential_expression
 deseq2 <- function(counts, design, contrast = NULL, size = NULL,
                     beta_prior = TRUE, quantile_p = 0.05,
                     alpha_init = 0.1, min_disp = 1e-8, log2 = TRUE) {

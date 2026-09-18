@@ -335,6 +335,7 @@ mcmc_sample <- function(logpdf, x0, n, burn = 100L, step = 0.5,
 #' names(res)
 #' }
 #' @keywords internal
+#' @aliases sequential_neural_likelihood
 abcnnt <- function(simulator, x_o, log_prior, theta0, n_rounds = 3L,
                    n_per_round = 50L, n_layers = 5L, hidden = 20L,
                    epochs = 40L, lr = 0.01, mcmc_burn = 100L,

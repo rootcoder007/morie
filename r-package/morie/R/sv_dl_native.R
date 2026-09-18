@@ -976,6 +976,7 @@ morie_sv_dl_refine_breakpoint <- function(call, reference, reads, k = 7,
 #' \code{insert_median}, \code{insert_sd}, \code{spread}, \code{orientation},
 #' \code{n_sd}, \code{min_support}, \code{method}, \code{note}.
 #' @export
+#' @aliases morie_sv_dl
 morie_sv_dl_structural_variant <- function(pairs, reference = NULL,
                                            split_reads = NULL,
                                            orientation = NULL, median = NULL,

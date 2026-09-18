@@ -669,6 +669,7 @@ morie_secaead_poly1305_key_gen <- function(key, nonce) {
 #' \code{tag}, \code{tag_hex}, \code{onetime_key}, \code{aad_len}, \code{ct_len},
 #' \code{method}, \code{note}.
 #' @export
+#' @aliases morie_secaead
 morie_secaead_aead_encrypt <- function(key, nonce, plaintext, aad = NULL) {
   # Encrypt from counter 1, then authenticate AAD and ciphertext.
   otk <- morie_secaead_poly1305_key_gen(key, nonce)

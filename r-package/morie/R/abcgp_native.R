@@ -865,6 +865,7 @@ gps_abc <- function(sim, obs, log_prior, theta0, n_iter = 200L, n_sim = 10L,
 #' @param n_alpha See Usage.
 #' @param seed See Usage.
 #' @export
+#' @aliases abcgpemulator
 abc_gp_emulator <- function(sim, obs, X_grid = NULL, kernel = "sqexp",
                             method = "wilkinson", prior_ppf = NULL,
                             log_prior = NULL, theta0 = NULL, n_sim = 50L,

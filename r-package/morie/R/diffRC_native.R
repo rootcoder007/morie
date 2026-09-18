@@ -146,6 +146,7 @@ importance_weights <- function(step_losses, uniform = FALSE,
 #' @param t_start Starting timestep; defaults to the last step.
 #' @return A list mirroring the Python \code{RichResult} payload.
 #' @export
+#' @aliases diffusion_rec diffusionrec diffusionrecommender
 denoise <- function(x_t, model, schedule, t_start = NULL) {
   x <- as.numeric(x_t)
   ab <- schedule$alpha_bar

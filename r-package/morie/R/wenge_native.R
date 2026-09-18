@@ -323,6 +323,7 @@ morie_wenge_mediation_functional <- function(Y, E, M, X, strategy = "em",
 #' @param saturated A flag; the body branches on it. Defaults to \code{TRUE}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @aliases morie_wenge
 morie_wenge_weight_based_mediation <- function(X, M, C, Y, strategy = "em",
                                                saturated = TRUE) {
   # Natural direct and indirect effects by inverse-odds weighting. The

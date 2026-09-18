@@ -177,6 +177,7 @@ morie_tlonsl_update_weights <- function(cum_losses, eta = 1.0) {
 #' \code{best_single}, \code{best_member}, \code{weight_path}, \code{n_scored},
 #' \code{method}, \code{note}.
 #' @export
+#' @aliases morie_tlonsl
 morie_tlonsl_online_super_learner <- function(y, library, loss = "squared",
                                               burn_in = 5, lags = 1, eta = 1.0) {
   # Sequentially-validated ensemble over a library. Weights are

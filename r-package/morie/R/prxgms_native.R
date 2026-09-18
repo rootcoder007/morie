@@ -53,6 +53,7 @@ soft_threshold <- function(v, tau) {
 #'   \code{objective}, \code{iterations}, \code{L}, \code{accelerated},
 #'   \code{converged}, \code{method}.
 #' @export
+#' @aliases prox_gradient proximal_gradient_method prxgms
 morie_prxgms <- function(fun, grad, prox, x0, L = 1.0, max_iter = 500L,
                          tol = 1e-10, accelerate = TRUE, backtrack = FALSE,
                          eta = 2.0, g_fun = NULL) {

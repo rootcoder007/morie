@@ -48,6 +48,7 @@ morie_tqang_angular_difference <- function(a, b) {
 #' @param theta Numeric vector of angles.
 #' @param bits Bits per symbol (1..30).
 #' @export
+#' @aliases morie_tqang_tqang morie_tqang_turboquant_angle_quantization
 morie_tqang_quantize_angles <- function(theta, bits = 4L) {
   b <- as.integer(bits)
   if (!(b >= 1L && b <= 30L))

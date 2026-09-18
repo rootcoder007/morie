@@ -59,6 +59,7 @@
 #'   \code{step}, \code{history}, \code{method}.
 #' @export
 #' @keywords internal
+#' @aliases frank_wolfe_qp qpdual quadratic_program
 morie_qpdual <- function(Q, c, x0 = NULL, domain = "simplex",
                          lower = NULL, upper = NULL, step = "exact",
                          max_iter = 1000L, tol = 1e-12) {

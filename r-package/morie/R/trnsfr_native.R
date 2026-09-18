@@ -226,6 +226,7 @@ morie_trnsfr_balancing_weights <- function(X, S, ridge = 1e-8) {
 #' \code{n_source}, \code{n_target}, \code{method}, \code{diagnostics},
 #' \code{assumption}.
 #' @export
+#' @aliases morie_trnsfr
 morie_trnsfr_transport_ate <- function(Y, W, X, S, method = "dr", e = NULL,
                                        trim = 1e-3, ridge = 1e-6) {
   # The source-cohort effect, transported to the target cohort.

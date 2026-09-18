@@ -113,6 +113,7 @@ gamma_generation_time <- function(shape = 2.83, scale = 1.86, grid = NULL,
 #'   \code{pre_quarantine_mass} (and a \code{note} if no transmission
 #'   remains).
 #' @export
+#' @aliases quarantineefficacy
 quarantine_efficacy <- function(t_Q, t_R, generation_time = NULL,
                                 t_E = 0.0) {
   g <- if (is.null(generation_time)) gamma_generation_time()
@@ -158,6 +159,7 @@ quarantine_efficacy <- function(t_Q, t_R, generation_time = NULL,
 #'   \code{efficacy_released}, \code{false_negative}, \code{t_T},
 #'   \code{t_R}, \code{bound}, \code{note}.
 #' @export
+#' @aliases testandrelease
 efficacy_test_and_release <- function(t_Q, t_T, t_R, false_negative,
                                       generation_time = NULL,
                                       t_R_positive = NULL) {

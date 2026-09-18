@@ -628,6 +628,7 @@ morie_tmlcic_adaptive_prespecification <- function(y, A, W, groups, design,
 #' \code{unit}, \code{design}, \code{target}, \code{n_folds}, \code{adapt},
 #' \code{method}.
 #' @export
+#' @aliases morie_tmlcic
 morie_tmlcic_tmle_cluster_ic <- function(y, D, X, cluster = NULL,
                                          target = "SATE", design = NULL,
                                          library = NULL, g_library = NULL,

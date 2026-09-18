@@ -230,6 +230,7 @@ effect_curve <- function(xi, A, grid, fit = "kernel",
 #'   \code{pi_obs}, \code{fit}, \code{n}, \code{method}.
 #' @references Kennedy, E. H. et al. (2017).
 #' @export
+#' @aliases morie_tmlcontinuoustreatment
 morie_tmlcps <- function(y, A, X, a_grid = NULL, fit = "kernel",
                          bandwidth = NULL, n_folds = 5) {
   av <- as.numeric(A)

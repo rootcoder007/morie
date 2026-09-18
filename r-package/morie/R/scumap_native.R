@@ -385,6 +385,7 @@ morie_scumap_fit_ab <- function(min_dist = 0.1, spread = 1.0, n_grid = 300,
 #' \code{b}, \code{n_neighbors}, \code{min_dist}, \code{n_components}, \code{n_epochs},
 #' \code{init}, \code{laplacian}, \code{n}, \code{method}, \code{note}.
 #' @export
+#' @aliases morie_scumap
 morie_scumap_umap_singlecell <- function(X, n_neighbors = 15, min_dist = 0.1,
                                          n_components = 2, n_epochs = 200,
                                          learning_rate = 1.0, spread = 1.0,
