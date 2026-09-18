@@ -21,7 +21,7 @@ morie is a Python (and R) package — once Python is present it is `pip install 
 
 - **Windows** — install Python from [python.org](https://www.python.org/downloads/) (on the first screen tick **Add python.exe to PATH**), then `pip install morie`. Full walkthrough: [Windows](#recommended--windows) below. Windows has no `curl`/`bash`, so the one-liner does not apply there.
 - **macOS / Linux** — the one-liner below sets up everything. It needs `curl` and `bash`, which macOS has built in and most Linux ships.
-- **Already have Python ≥3.10** — just `pip install morie`.
+- **Already have Python ≥3.10** — just `pip install morie`. The estimators take a pandas DataFrame, a CSV path, or a dict of columns; pandas is optional (morie ships its own frame core).
 
 ### For terminal users — one-liner (Linux / macOS / WSL)
 

@@ -71,7 +71,7 @@ def mrm_siu_case_to_decision_km(
     min_n: int = 5,
 ) -> SIUCaseDecisionResult:
     """KM-style time-from-incident-to-Director's-decision summary."""
-    df = data.copy()
+    df = pd.coerce_frame(data).copy()
     inc = pd.to_datetime(df[incident_col], errors="coerce")
     dec = pd.to_datetime(df[decision_col], errors="coerce")
     svc = df[service_col].astype(str)
@@ -116,7 +116,7 @@ def mrm_siu_per_service_rate(
     stratify_col: str | None = None,
 ) -> pd.DataFrame:
     """Per-police-service case counts by year (and optional stratum)."""
-    df = data.copy()
+    df = pd.coerce_frame(data).copy()
     df["_year"] = pd.to_datetime(df[incident_col], errors="coerce").dt.year
     svc = df[service_col].astype(str)
     df = df[df["_year"].notna() & (svc.str.len() > 0) & (svc != "nan")]
@@ -139,7 +139,7 @@ def mrm_siu_outcome_classifier(
     service_col: str = "police_service",
 ) -> pd.DataFrame:
     """Tabulate SIU Director's-decision outcomes by service."""
-    df = data.copy()
+    df = pd.coerce_frame(data).copy()
     if outcome_col not in df.columns:
         for alt in [
             "director_decision",

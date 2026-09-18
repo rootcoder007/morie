@@ -93,7 +93,7 @@ def mrm_otis_placement_concentration(
         n_individuals, n_placements, mean_per_individual, gini,
         hill_alpha, top_pct_share.
     """
-    df = data.copy()
+    df = pd.coerce_frame(data).copy()
     if gender_col and gender_keep is not None:
         df = df[df[gender_col].isin(list(gender_keep))]
     df["_midpt"] = df[band_col].map(_band_to_midpoint)

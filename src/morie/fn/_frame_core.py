@@ -17,6 +17,7 @@ from __future__ import annotations
 import csv as _csv
 import datetime as _dt
 import math as _math
+import os
 
 from . import _array_core as _ac
 
@@ -280,7 +281,7 @@ class Series:
         if isinstance(other, Series):
             other = other._data
         # A native array (marr/oarr) is a sequence, not a scalar: without this
-        # it was broadcast whole against each element, so 
+        # it was broadcast whole against each element, so
         # produced a column OF ARRAYS instead of an elementwise sum.
         if not isinstance(other, (str, bytes)) and hasattr(other, "__len__")                 and hasattr(other, "__iter__") and not isinstance(other, dict):
             other = list(other)
@@ -1551,9 +1552,7 @@ class DataFrame:
             for v in values:
                 if v is None or _isnan(v):
                     continue
-                if isinstance(v, bool):
-                    seen.add("INTEGER")
-                elif isinstance(v, int):
+                if isinstance(v, bool) or isinstance(v, int):
                     seen.add("INTEGER")
                 elif isinstance(v, float):
                     seen.add("REAL")
@@ -2917,7 +2916,6 @@ class ExcelWriter:
 
 class ExcelFile:
     def __init__(self, path):
-        import xml.etree.ElementTree as ET
         import zipfile
         self._path = path
         zf = zipfile.ZipFile(path)
@@ -3017,7 +3015,7 @@ def _assert_series_equal(left, right, **kw):
                         DataFrame({"v": list(right)}), **kw)
 
 
-class _TestingNamespace(object):
+class _TestingNamespace:
     """Mirrors `pandas.testing`."""
 
     assert_frame_equal = staticmethod(_assert_frame_equal)
@@ -3025,3 +3023,38 @@ class _TestingNamespace(object):
 
 
 testing = _TestingNamespace()
+
+
+def coerce_frame(data, what: str = "data") -> DataFrame:
+    """Return a native DataFrame for whatever a caller hands an estimator.
+
+    Accepts a native DataFrame (returned as is), a pandas DataFrame or any
+    object exposing ``columns`` and column access, a path to a CSV file,
+    or a sequence of row mappings. The estimators index with native masks;
+    a pandas frame reaching them directly treats those masks as labels and
+    fails with a KeyError (found on the flagship's own bundled sample,
+    2026-09-18), so every public entry point coerces here first.
+    """
+    if isinstance(data, DataFrame):
+        return data
+    if isinstance(data, (str, os.PathLike)):
+        path = os.fspath(data)
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"{what}: no such file {path!r}")
+        return read_csv(path)
+    if hasattr(data, "columns") and hasattr(data, "__getitem__"):
+        cols = list(data.columns)
+        out = {}
+        for c in cols:
+            v = data[c]
+            out[c] = list(v.tolist()) if hasattr(v, "tolist") else list(v)
+        return DataFrame(out)
+    if isinstance(data, dict):
+        return DataFrame(data)
+    if isinstance(data, (list, tuple)):
+        rows = list(data)
+        if rows and all(isinstance(r, dict) for r in rows):
+            cols = list(rows[0].keys())
+            return DataFrame({c: [r.get(c) for r in rows] for c in cols})
+    raise TypeError(f"{what} must be a DataFrame (native or pandas), a CSV path, "
+                    f"a dict of columns or a list of row dicts, got {type(data).__name__}")
