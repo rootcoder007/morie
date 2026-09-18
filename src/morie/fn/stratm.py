@@ -52,7 +52,7 @@ def stratmean(y, h, Nh, level=0.95):
     terms vanishing because the strata are drawn independently.
     Chapter 5 read from the scanned original.  Cross-checked against
     the reference implementation in the CRAN package ``samplingbook``
-    1.2.4, whose ``stratamean`` forms ``sum(Meanh*wh)`` and
+    1.2.5, whose ``stratamean`` forms ``sum(Meanh*wh)`` and
     ``sum(Varh*wh^2)`` with ``Varh`` the finite-population-corrected
     within-stratum variance.
     """

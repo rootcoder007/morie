@@ -2607,7 +2607,7 @@ def muapmodel(t, n_fibers=25, conduction_vel=4.0, spread_mm=3.0,
               amp_uV=8.0, width_ms=1.0, phases=3):
     """Motor unit action potential as the superposition of fibre potentials.
 
-    Rangayyan (2024) Section 1.2.4 ("The electromyogram (EMG)") defines
+    Rangayyan (2024) Section 1.2.5 ("The electromyogram (EMG)") defines
     the single-motor-unit action potential (SMUAP, or MUAP) as "the
     summation of the action potentials of all of its constituent cells",
     and states that normal SMUAPs are biphasic or triphasic, 3 to 15 ms
@@ -2725,7 +2725,7 @@ def muapmodel(t, n_fibers=25, conduction_vel=4.0, spread_mm=3.0,
         "conduction_vel_m_s": conduction_vel,
         "in_normal_duration_band": 3.0 <= dur <= 15.0,
         "units": {"t": "ms", "muap": "uV", "conduction velocity": "m/s"},
-        "method": "MUAP as summed single-fibre potentials; morphology and normal ranges from Rangayyan (2024) Section 1.2.4 (no waveform equation given in the book)",
+        "method": "MUAP as summed single-fibre potentials; morphology and normal ranges from Rangayyan (2024) Section 1.2.5 (no waveform equation given in the book)",
     })
 
 

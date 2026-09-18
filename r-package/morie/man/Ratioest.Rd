@@ -38,6 +38,6 @@ Ratioest(V, V)
 Cochran (1977), Sampling Techniques, 3rd edition, Chapter
 6. Chapter 6 was NOT in the scanned excerpt available to this batch,
 so the standard published form is used; the finite-population factor
-matches the samplingbook 1.2.4 convention (N - n)/N used throughout
+matches the samplingbook 1.2.5 convention (N - n)/N used throughout
 the sibling Cochran modules.
 }

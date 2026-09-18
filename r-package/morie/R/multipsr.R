@@ -21,7 +21,7 @@
 #'   10 (subsampling / two-stage sampling). Chapter 10 was NOT in the
 #'   scanned excerpt available to this batch, so the estimator and
 #'   variance are taken from the reference implementation in the CRAN
-#'   package samplingbook 1.2.4, function submean with method = "ratio".
+#'   package samplingbook 1.2.5, function submean with method = "ratio".
 #' @export
 Twostage <- function(Y, Nl, M, N, level = 0.95) {
   m <- length(Y)

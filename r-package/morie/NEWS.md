@@ -1,4 +1,4 @@
-# morie (next release) - in progress
+# morie 1.2.5 - 2026-09-18
 
 Synced from rmorie 1.2.4's fixes of 2026-09-16 and 2026-09-17.
 

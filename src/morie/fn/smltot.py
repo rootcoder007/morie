@@ -41,7 +41,7 @@ def srstotal(y, N, level=0.95):
     Cochran (1977), Sampling Techniques, 3rd edition, Chapter 2:
     Yhat = N ybar with V(Yhat) = N^2 (N - n)/N S^2/n for simple random
     sampling without replacement.  Cross-checked against the reference
-    implementation in the CRAN package ``samplingbook`` 1.2.4, whose
+    implementation in the CRAN package ``samplingbook`` 1.2.5, whose
     ``Smean`` uses the same finite-population-corrected variance for
     the mean.
     """
