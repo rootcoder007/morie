@@ -50,7 +50,7 @@ three steps:
    minus" is a guess wearing a hat.
 
 MORIE has functions for each of those three steps.  The
-``fn/`` tree (10,000+ small files, each one a single formula) is the
+``morie.fn`` namespace (18,560 callables, each one a single formula) is the
 estimator vocabulary; the modules in ``morie.causal``,
 ``morie.effects``, ``morie.inference`` are the recipes that
 combine them.

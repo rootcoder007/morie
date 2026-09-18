@@ -17,10 +17,10 @@ From source
    python -m venv .venv && source .venv/bin/activate
    pip install -e ".[interactive]"
 
-The package is pure Python at runtime; the only platform-specific
-notes are: NumPy / SciPy / scikit-learn / matplotlib must build (or
-download wheels) for your architecture. ``morie doctor`` reports
-any missing optional dependencies.
+The package is pure Python at runtime with four small dependencies
+(``openpyxl``, ``httpx``, ``rich``, ``beautifulsoup4``); nothing has to
+compile for your architecture. ``morie doctor`` reports the state of the
+optional pieces (R, Ollama, Docker, the Terminal IDE).
 
 Docker
 ------
@@ -52,9 +52,8 @@ and verification.
 
 .. note::
 
-   The published image lives at ``ghcr.io/rootcoder007/morie`` post-migration
-   (not ``ghcr.io/rootcoder007/morie``). The package is currently private —
-   authenticate with a PAT that has ``read:packages`` scope before pulling.
+   The published image is ``ghcr.io/rootcoder007/morie``, rebuilt by CI on
+   every push to ``main``; ``docker pull`` needs no authentication.
 
 Ollama Sidecar
 --------------
@@ -109,25 +108,23 @@ For persistent deployments (e.g., Pi running as a headless analysis server):
 Install Methods
 ---------------
 
-Current and planned installation paths:
-
-- **pip (editable)** — active. ``pip install -e ".[test,docs]"``.
-- **pip (PyPI)** — active. ``pip install morie``.
-- **brew** — planned. ``brew install morie``.
-- **curl installer** — planned. ``curl -fsSL https://morie.dev/install | sh``.
-- **Docker** — active. ``docker pull ghcr.io/rootcoder007/morie:latest``.
-
-The curl installer will auto-detect the platform (macOS/Linux/WSL),
-install R, Python, and Quarto as needed, and configure the environment.
+- **pip (PyPI)**: ``pip install morie``.
+- **pip (editable)**: ``pip install -e ".[test,docs]"``.
+- **brew**: ``brew tap rootcoder007/morie && brew install morie``.
+- **curl installer**: ``curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash``
+  detects the platform (macOS/Linux/WSL), installs Python and R as needed,
+  then both packages.
+- **Docker**: ``docker pull ghcr.io/rootcoder007/morie:latest``.
+- **R**: ``install.packages("rmorie", repos = "https://rootcoder007.r-universe.dev")``.
 
 Cross-Platform Notes
 --------------------
 
-- **macOS (Apple Silicon)**: Primary development platform. Use CRAN R
-  (not brew R) to avoid segfaults with RSQLite. scipy requires
-  ``PKG_CONFIG_PATH="/opt/homebrew/opt/openblas/lib/pkgconfig"``.
-- **Linux (x86_64)**: Fully supported. Docker is the recommended
+- **macOS (Apple Silicon)**: primary development platform; CRAN R or
+  Homebrew R both work.
+- **Linux (x86_64)**: fully supported. Docker is the recommended
   deployment method for production.
-- **Linux (arm64)**: ARM64 Linux supported. Ollama ARM64 builds work natively.
-- **Windows**: WSL2 with Ubuntu is the supported path. Native Windows
-  is not tested.
+- **Linux (arm64)**: supported, including Raspberry Pi. Ollama ARM64
+  builds work natively.
+- **Windows**: native Windows is checked in CI for the R package and works
+  for the Python package; WSL2 with Ubuntu also works.

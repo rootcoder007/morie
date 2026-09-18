@@ -1,6 +1,6 @@
 """morie.fn -- lazy-loaded function modules (PEP 562).
 
-The package hosts ~36k auto-generated callable modules.  ``__init__`` reads the
+The package hosts ~13.5k callable modules exposing ~18.5k names.  ``__init__`` reads the
 symbol->submodule map from sibling ``_lazy_map.json`` and resolves callables on
 first access via :pep:`562` ``__getattr__``.
 

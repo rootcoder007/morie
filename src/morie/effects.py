@@ -4,8 +4,8 @@ Treatment effect estimations (ATE, ATT, ATU, LATE, G-computation).
 This module provides:
 
 1. :func:`estimate_ate` -- IPW-weighted OLS ATE (existing, preserved).
-2. :func:`estimate_plr` -- Partially Linear Regression via DoubleML.
-3. :func:`estimate_pliv` -- Partially Linear IV (LATE) via DoubleML or 2SLS.
+2. :func:`estimate_plr` -- Partially Linear Regression (native cross-fitted DML).
+3. :func:`estimate_pliv` -- Partially Linear IV (LATE), native DML or 2SLS.
 4. :func:`estimate_ate_gcomputation` -- G-computation (outcome regression) ATE.
 5. :func:`sensitivity_rosenbaum` -- Rosenbaum bounds for hidden confounding.
 6. :func:`e_value` -- E-value for unmeasured confounding (VanderWeele & Ding, 2017).
