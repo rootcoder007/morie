@@ -20,6 +20,8 @@ t5enc_span_corruption(
 \item{mean_span}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{3}.}
 
 \item{seed}{Passed to \code{.ghc_rng}. Defaults to \code{0}.}
+
+\item{sentinel}{Passed to \code{sprintf}. Defaults to \code{"<extra_id_\%d>"}.}
 }
 \value{
 A list with \code{input}, \code{target}, \code{n_spans},
@@ -31,3 +33,8 @@ A step of the t5enc_native implementation. Called by \code{morie_t5enc}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+t5enc_span_corruption(V)
+}
+\keyword{internal}

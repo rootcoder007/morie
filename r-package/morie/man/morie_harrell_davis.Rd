@@ -19,6 +19,12 @@ morie_one_step_m(x, bend = 1.28, constant = 1.4826)
 \item{x}{numeric vector}
 
 \item{q}{quantile to estimate}
+
+\item{beta}{Argument \code{beta}; see Usage.}
+
+\item{bend}{Argument \code{bend}; see Usage.}
+
+\item{constant}{Argument \code{constant}; see Usage.}
 }
 \value{
 a numeric scalar

@@ -13,6 +13,10 @@ morie_morans_i_test(x, W, randomisation = TRUE, alternative = "greater")
 \item{x}{numeric vector of observations}
 
 \item{W}{numeric spatial weights matrix}
+
+\item{randomisation}{Argument \code{randomisation}; see Usage.}
+
+\item{alternative}{Argument \code{alternative}; see Usage.}
 }
 \value{
 \code{morie_morans_i} a number; \code{morie_morans_i_test} a list with

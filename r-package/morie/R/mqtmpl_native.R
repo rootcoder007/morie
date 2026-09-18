@@ -96,6 +96,8 @@ mqtmpl_single_marker <- function(y, g) {
 #' @param r_left Passed to \code{mqtmpl_genotype_probabilities}.
 #' @param r_right Passed to \code{mqtmpl_genotype_probabilities}.
 #' @param cofactors See Usage.
+#' @param max_iter Maximum EM iterations (default 200).
+#' @param tol Convergence tolerance on the log-likelihood (default 1e-10).
 #' @return A list with \code{lod}, \code{rss}, \code{coef}.
 #' @export
 # EM interval / composite interval mapping at one QTL position -- the

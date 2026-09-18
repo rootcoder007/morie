@@ -27,6 +27,10 @@ mqtmpl_cim_em(
 \item{r_right}{Passed to \code{mqtmpl_genotype_probabilities}.}
 
 \item{cofactors}{See Usage.}
+
+\item{max_iter}{Maximum EM iterations (default 200).}
+
+\item{tol}{Convergence tolerance on the log-likelihood (default 1e-10).}
 }
 \value{
 A list with \code{lod}, \code{rss}, \code{coef}.

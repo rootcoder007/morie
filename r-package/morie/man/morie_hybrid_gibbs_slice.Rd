@@ -24,3 +24,11 @@ to mirror the Python arm's hybrid interface, so a future module that
 mixes conjugate draws and slice draws can slot in here without
 breaking callers.
 }
+\examples{
+lcs <- list(
+  function(x, others) -0.5 * (x - 0.5 * others[1])^2,
+  function(x, others) -0.5 * (x - 0.5 * others[1])^2)
+r <- morie_hybrid_gibbs_slice(lcs, x0 = c(0, 0), n = 300L, seed = 1)
+str(r, max.level = 1)
+}
+\keyword{internal}

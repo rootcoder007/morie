@@ -46,3 +46,4 @@ y <- 0.5 * d + 0.4 * u + rnorm(n, sd = 0.5)
 df <- data.frame(y, d, z)
 morie_iv_control_function(df, "y", "d", "z")
 }
+\keyword{internal}

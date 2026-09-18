@@ -105,6 +105,8 @@ morie_winsorized_variance <- function(x, tr = 0.2) {
 #' @return `morie_mad`, `morie_madn`, `morie_mad_rescaled` numbers;
 #'   `morie_mad_median_rule` a list with `median`, `madn`, `ratio`,
 #'   `is_outlier`, `outliers`, `n_outliers`
+#' @param constant Argument `constant`; see Usage.
+#' @param crit Argument `crit`; see Usage.
 #' @export
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
@@ -178,6 +180,8 @@ morie_boxplot_outliers <- function(x, carling = FALSE, gval = NULL) {
 #' covariance.
 #' @param x,y numeric vectors
 #' @return list with the estimate, `statistic`, `df`, `se` and `p_value`
+#' @param tr Argument `tr`; see Usage.
+#' @param alpha Argument `alpha`; see Usage.
 #' @export
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
@@ -250,6 +254,8 @@ morie_yuen_paired <- function(x, y, tr = 0.2, alpha = 0.05) {
 #' @param tr amount of trimming
 #' @return `morie_trimmed_mean_se` a number; `morie_trimmed_mean_ci` a
 #'   list with `estimate`, `ci`, `statistic`, `se`, `df`, `p_value`
+#' @param alpha Argument `alpha`; see Usage.
+#' @param null_value Argument `null_value`; see Usage.
 #' @export
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
@@ -285,6 +291,9 @@ morie_trimmed_mean_ci <- function(x, tr = 0.2, alpha = 0.05,
 #' @param x numeric vector
 #' @param q quantile to estimate
 #' @return a numeric scalar
+#' @param beta Argument `beta`; see Usage.
+#' @param bend Argument `bend`; see Usage.
+#' @param constant Argument `constant`; see Usage.
 #' @export
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
@@ -537,6 +546,9 @@ morie_brunner_dette_munk <- function(groups) {
 #' @param tr amount of trimming or Winsorizing
 #' @param equal_variance pool the Winsorized variances
 #' @return a list; see each method's description
+#' @param X Argument `X`; see Usage.
+#' @param n_iter Argument `n_iter`; see Usage.
+#' @param tol Argument `tol`; see Usage.
 #' @export
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
