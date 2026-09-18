@@ -296,6 +296,7 @@ morie_interval_map <- function(y, left, right, r_left, r_right,
 #'   \code{method}.
 #' @references Lander, E. S. & Botstein, D. (1989).
 #' @export
+#' @aliases morie_interval_mapping
 morie_scan_interval <- function(y, left, right, length, step = 0.01, ...) {
   length <- as.numeric(length)
   if (length <= 0)

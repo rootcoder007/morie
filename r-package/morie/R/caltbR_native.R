@@ -256,6 +256,7 @@ diversity_prior <- function(p_u, p0, beta) {
 #' @references Steck (2018), RecSys '18, eq. (6).
 #' @export
 #' @keywords internal
+#' @aliases calibrated_rec calibratedrec calibratedrecommendations
 calibrated_rerank <- function(scores, p_g_given_i, p_target, N = 10,
                               lam = 0.5, metric = "kl",
                               alpha = 0.01, rank_weights = NULL) {

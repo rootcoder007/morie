@@ -854,8 +854,8 @@ Chernoff <- function(p1, p2, alpha = NULL, n_grid = 201) {
 #'
 #' morie.fn.helld.hellinger_dist; this is the same arithmetic, kept here
 #' because the R tree has no separate helld module.  Unlike the
-#' Bhattacharyya distance -ln BC, this is a TRUE METRIC: bounded in [0,
-#' 1], symmetric, and it satisfies the triangle inequality, which -ln BC
+#' Bhattacharyya distance -ln BC, this is a TRUE METRIC: bounded in \[0,
+#' 1\], symmetric, and it satisfies the triangle inequality, which -ln BC
 #' does not.  That is the reason to reach for it -- anything needing a
 #' metric over distributions needs this and not D_B.  The 1/2
 #' normalization is the usual one; unnormalized gives H^2 = 2(1 - BC),
@@ -870,6 +870,10 @@ Chernoff <- function(p1, p2, alpha = NULL, n_grid = 201) {
 #' \code{bhattacharyya_distance_does_not}, \code{normalization}, \code{in_unit_interval},
 #' \code{reference}, \code{not_from_this_book}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' Hellinger(V, V)
+#' @keywords internal
 Hellinger <- function(p1, p2) {
   # H = sqrt(1 - BC), so H^2 = 1 - BC.  The Python arm delegates to
   # morie.fn.helld.hellinger_dist; this is the same arithmetic, kept here

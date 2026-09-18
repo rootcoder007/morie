@@ -86,6 +86,7 @@
 #'   change.
 #' @param n_grid Number of quadrature points for the Gaussian source.
 #' @export
+#' @aliases morie_tqlld_tqlld morie_tqlld_turboquant_lloyd_max_codebook
 morie_tqlld_lloyd_max_codebook <- function(levels = 4L,
                                            source = "gaussian",
                                            data = NULL,

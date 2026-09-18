@@ -363,6 +363,7 @@ morie_sccsno_loglik <- function(params, cells_by_person, n_risk, n_age) {
 #' \code{loglik}, \code{n_cases}, \code{converged}, \code{iterations},
 #' \code{n_risk_periods}, \code{n_age_bands}, \code{method}, \code{conditions_out}.
 #' @export
+#' @aliases morie_sccsno
 morie_sccsno_fit <- function(cases, risk_periods, age_breaks = c(),
                              iters = 100, tol = 1e-10, ridge = 1e-10) {
   # Maximise the conditional likelihood by Newton-Raphson. cases is a

@@ -649,6 +649,7 @@ morie_survrsf_predict_tree <- function(tree, x, random_variable = NULL,
 #' @return A list with \code{trees}, \code{inbag}, \code{n}, \code{rule}, \code{n_trees},
 #' \code{oob_fraction}, \code{times}, \code{events}.
 #' @export
+#' @aliases morie_survrsf
 morie_survrsf_forest <- function(X, times, events, n_trees = 50, mtry = NULL,
                                  min_deaths = 3, rule = "logrank", seed = 0) {
   # Grow the forest, keeping the out-of-bag membership.

@@ -248,6 +248,7 @@ morie_yolovx_center_sampling <- function(box, grid_w, grid_h, stride = 1.0,
 #' @return A list with \code{estimate}, \code{assignment}, \code{dynamic_k},
 #' \code{n_positives}, \code{contested}, \code{method}, \code{note}.
 #' @export
+#' @aliases morie_yolovx
 morie_yolovx_simota_assign <- function(costs, ious, top_q = 10, max_k = NULL) {
   # Dynamic top-k, an approximation to optimal transport. k_g is the
   # rounded sum of the q largest IoUs for that ground truth. Returns

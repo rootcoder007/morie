@@ -1074,6 +1074,7 @@ morie_vepan_pick <- function(records, per_gene = FALSE) {
 #' \code{n_annotations}, \code{consequence_counts}, \code{mode}, \code{method},
 #' \code{note}.
 #' @export
+#' @aliases morie_vepan
 morie_vepan_vep_annotation <- function(variants, transcripts, genome,
                                        upstream = 5000, downstream = 5000,
                                        mode = "all", no_intergenic = FALSE) {

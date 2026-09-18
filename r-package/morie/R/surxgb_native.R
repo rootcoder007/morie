@@ -464,6 +464,7 @@ morie_surxgb_split_gain <- function(GL, HL, GR, HR, lam = 1.0, gamma = 0.0) {
 #' \code{loss_history}, \code{prediction}, \code{n_rounds}, \code{max_depth},
 #' \code{method}.
 #' @export
+#' @aliases morie_surxgb
 morie_surxgb_boost <- function(X, y_lower, y_upper, n_rounds = 50, eta = 0.1,
                                max_depth = 3, lam = 1.0, gamma = 0.0,
                                min_child = 5, sigma = 1.0, dist = "normal",

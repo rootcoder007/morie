@@ -132,6 +132,7 @@ systematic_resample <- function(weights, u = NULL) {
 #'   \code{n_particles}, \code{n_obs}, \code{systematic},
 #'   \code{particles}, \code{method}.
 #' @export
+#' @aliases particlefilter
 morie_prtcl <- function(y, n_particles, init, step, loglik, seed = 0L,
                         resample_threshold = 1.0,
                         systematic = TRUE) {

@@ -344,6 +344,7 @@ morie_wrd2v_subsample_probability <- function(counts, t = 1e-5) {
 #' \code{most_similar}, \code{size}, \code{window}, \code{architecture}, \code{loss},
 #' \code{negative}, \code{noise}, \code{method}.
 #' @export
+#' @aliases morie_wrd2v
 morie_wrd2v_wrd2v <- function(corpus, size = 16, window = 5,
                               architecture = "skip-gram", lr = 0.05, epochs = 20,
                               min_count = 1, dynamic_window = TRUE,

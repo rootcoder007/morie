@@ -136,6 +136,7 @@ linear_fluctuation_unsafe <- function(Q, H, Y) {
 #'   \code{rate_scale}, \code{method}, \code{note}.
 #' @references Gruber, S. & van der Laan, M. J. (2010).
 #' @export
+#' @aliases morie_tmlcountoutcome
 morie_tmlcou <- function(y, D, X, offset = NULL, g = NULL,
                          Q1 = NULL, Q0 = NULL,
                          lower = NULL, upper = NULL, iters = 100) {

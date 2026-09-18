@@ -193,6 +193,7 @@ prophet_design <- function(t, cps, seasonalities = NULL, holidays = NULL,
 #'   \code{n_active_changepoints}, \code{sigma}, \code{seasonalities},
 #'   \code{method}.
 #' @export
+#' @aliases prophet prophetfit
 morie_prphet <- function(t, y, n_changepoints = 10L, changepoint_range = 0.8,
                          changepoints = NULL, seasonalities = NULL,
                          holidays = NULL, holiday_window = c(0, 0),

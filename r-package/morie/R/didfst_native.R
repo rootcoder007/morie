@@ -116,6 +116,7 @@ did_estimate <- function(delta, D, weights = NULL) {
 #' @param clusters Optional cluster IDs.
 #' @return A list mirroring the Python \code{RichResult} payload.
 #' @export
+#' @aliases didforest
 did_forest <- function(Y, D, X, event_time, x_eval = NULL,
                        n_trees = 200L, min_leaf = 5L, alpha = 0.05,
                        max_depth = 12L, seed = 0L,

@@ -2065,14 +2065,18 @@ QrsLPassTf <- function(freq, fs = 200) {
 }
 
 
-#' Eq (4.8): y(n) = 2 y(n-1) - y(n-2) + (1/32)[x(n) - 2 x(n-6) +
-#' x(n-12)]
+#' Eq (4.8): y(n) = 2 y(n-1) - y(n-2) + (1/32)\[x(n) - 2 x(n-6) +
+#' x(n-12)\]
 #'
 #' Adds and one shift by 32 -- which is why it was chosen for real time.
 #'
 #' @param x A vector; its length is taken and its elements indexed.
 #' @return A list with \code{y}, \code{delay}, \code{n}, \code{fsnote}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' QrsLPassDf(V)
+#' @keywords internal
 QrsLPassDf <- function(x) {
   # eq (4.8): y(n) = 2 y(n-1) - y(n-2) + (1/32)[x(n) - 2 x(n-6) + x(n-12)].
   # Adds and one shift by 32 -- which is why it was chosen for real time.

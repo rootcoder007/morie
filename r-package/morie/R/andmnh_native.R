@@ -383,6 +383,7 @@ kernel_hac <- function(v, bandwidth, kernel = "qs", n_params = 0L,
 #' @param cap See Usage.
 #' @param adjust See Usage.
 #' @export
+#' @aliases andmnh
 andrews_monahan_hac <- function(e, X = NULL, prewhiten = TRUE,
                                 var_order = 1L, kernel = "qs",
                                 bandwidth = NULL, weights = NULL,
