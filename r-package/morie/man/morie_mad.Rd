@@ -17,6 +17,10 @@ morie_mad_median_rule(x, crit = 2.24)
 }
 \arguments{
 \item{x}{numeric vector}
+
+\item{constant}{Argument \code{constant}; see Usage.}
+
+\item{crit}{Argument \code{crit}; see Usage.}
 }
 \value{
 \code{morie_mad}, \code{morie_madn}, \code{morie_mad_rescaled} numbers;

@@ -75,29 +75,30 @@
 #\' @return list(d, s_pooled, var_d, se_d, j, j_approx, hedges_g, var_g,
 #\'   se_g, df, n, method)
 #\' @export
-#' \' Cohen\'s d and Hedges\' g for two independent groups
+#' ' Cohen's d and Hedges' g for two independent groups
 #'
-#' \' \' d = (m1 - m2) / s_pooled with the usual pooled standard
-#' deviation. \' The bias correction is the exact Hedges (1981) factor
-#' \' J = Gamma(df/2) / (sqrt(df/2) Gamma((df-1)/2)), and the variance
-#' is \' 1/n1 + 1/n2 + estimate^2 / (2 (n1 + n2)) evaluated at the
-#' estimate. \' Both conventions were settled against
-#' metafor::escalc(measure="SMD"). \' \' @param m1,m2 group means \'
-#' @param s1,s2 group standard deviations (denominator n-1) \' @param
-#' n1,n2 group sizes, each at least 2 \' @return list(d, s_pooled,
-#' var_d, se_d, j, j_approx, hedges_g, var_g, \' se_g, df, n, method)
-#' \' @export
+#' ' ' d = (m1 - m2) / s_pooled with the usual pooled standard
+#' deviation. ' The bias correction is the exact Hedges (1981) factor
+#' ' J = Gamma(df/2) / (sqrt(df/2) Gamma((df-1)/2)), and the variance
+#' is ' 1/n1 + 1/n2 + estimate^2 / (2 (n1 + n2)) evaluated at the
+#' estimate. ' Both conventions were settled against
+#' metafor::escalc(measure="SMD"). ' ' @param m1,m2 group means '
+#' @param s1,s2 group standard deviations (denominator n-1) ' @param
+#' n1,n2 group sizes, each at least 2 ' @return list(d, s_pooled,
+#' var_d, se_d, j, j_approx, hedges_g, var_g, ' se_g, df, n, method)
+#' ' @export
 #'
 #' @param m1 Numeric; combined arithmetically in the body.
 #' @param m2 Numeric; combined arithmetically in the body.
-#' @param s1 Numeric; combined arithmetically in the body.
-#' @param s2 Numeric; combined arithmetically in the body.
 #' @param n1 Numeric; combined arithmetically in the body.
 #' @param n2 Numeric; combined arithmetically in the body.
 #' @return A list with \code{d}, \code{s_pooled}, \code{var_d}, \code{se_d}, \code{j},
 #' \code{j_approx}, \code{hedges_g}, \code{var_g}, \code{se_g}, \code{df}, \code{n},
 #' \code{method}.
 #' @export
+#' @examples
+#' CohensD(m1 = 10, m2 = 8, s1 = 2, s2 = 2.5, n1 = 30, n2 = 28)
+#' @keywords internal
 CohensD <- function(m1, m2, s1, s2, n1, n2) {
   n1 <- as.integer(n1)
   n2 <- as.integer(n2)
@@ -273,29 +274,31 @@ CramerRao <- function(fisher_info, var_estimate = NULL) {
 #\' @return list(loglik, score, information, coefficients, vcov, se, n,
 #\'   n_event, iterations, converged, method)
 #\' @export
-#' \' Cox partial likelihood, its score and information, optionally
+#' ' Cox partial likelihood, its score and information, optionally
 #' fitted
 #'
-#' \' \' Breslow handling of tied event times.  When beta is NULL the
-#' partial \' likelihood is maximised by Newton-Raphson from zero.
-#' Checked against \' survival::coxph(ties = "breslow"). \' \' @param
-#' time follow-up times \' @param event 1 for an observed event, 0 for
-#' right censoring \' @param X covariate matrix, no intercept column
-#' \' @param beta coefficients to evaluate at, or NULL to fit \'
+#' ' ' Breslow handling of tied event times.  When beta is NULL the
+#' partial ' likelihood is maximised by Newton-Raphson from zero.
+#' Checked against ' survival::coxph(ties = "breslow"). ' ' @param
+#' time follow-up times ' @param event 1 for an observed event, 0 for
+#' right censoring ' @param X covariate matrix, no intercept column
+#' ' @param beta coefficients to evaluate at, or NULL to fit '
 #' @param max_iter,tol Newton-Raphson controls, used only when beta is
-#' NULL \' @return list(loglik, score, information, coefficients, vcov,
-#' se, n, \' n_event, iterations, converged, method) \' @export
+#' NULL ' @return list(loglik, score, information, coefficients, vcov,
+#' se, n, ' n_event, iterations, converged, method) ' @export
 #'
 #' @param time A vector; its length is taken.
 #' @param event A vector; its length is taken.
 #' @param X A matrix; passed to \code{nrow}.
 #' @param beta Optional; may be \code{NULL}. A vector; its length is taken.
-#' @param max_iter Coerced to integer by the body, with \code{as.integer}. Defaults to \code{50L}.
-#' @param tol Passed to \code{<}. Defaults to \code{1e-10}.
 #' @return A list with \code{loglik}, \code{score}, \code{information},
 #' \code{coefficients}, \code{vcov}, \code{se}, \code{n}, \code{n_event},
 #' \code{iterations}, \code{converged}, \code{method}.
 #' @export
+#' @examples
+#' CoxPL(time = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5), event = c(0, 1, 0, 1, 1, 0, 1, 0),
+#'   X = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
 CoxPL <- function(time, event, X, beta = NULL, max_iter = 50L,
                   tol = 1e-10) {
   time <- as.numeric(time)

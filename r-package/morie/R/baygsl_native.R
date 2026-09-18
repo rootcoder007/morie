@@ -300,6 +300,13 @@ morie_gibbs_slice <- function(log_conditionals, x0, n = 2000L, w = NULL,
 #' @inheritParams morie_gibbs_slice
 #' @return Same payload as \code{morie_gibbs_slice}.
 #' @export
+#' @examples
+#' lcs <- list(
+#'   function(x, others) -0.5 * (x - 0.5 * others[1])^2,
+#'   function(x, others) -0.5 * (x - 0.5 * others[1])^2)
+#' r <- morie_hybrid_gibbs_slice(lcs, x0 = c(0, 0), n = 300L, seed = 1)
+#' str(r, max.level = 1)
+#' @keywords internal
 morie_hybrid_gibbs_slice <- function(log_conditionals, x0, n = 2000L, ...) {
   morie_gibbs_slice(log_conditionals, x0, n, ...)
 }

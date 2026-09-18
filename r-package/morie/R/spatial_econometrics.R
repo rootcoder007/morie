@@ -41,6 +41,8 @@ morie_weights_totals <- function(W) {
 #' @param W numeric spatial weights matrix
 #' @return `morie_morans_i` a number; `morie_morans_i_test` a list with
 #'   `estimate`, `expectation`, `variance`, `statistic` and `p_value`
+#' @param randomisation Argument `randomisation`; see Usage.
+#' @param alternative Argument `alternative`; see Usage.
 #' @export
 #' @examples
 #' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
