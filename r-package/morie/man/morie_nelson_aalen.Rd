@@ -23,8 +23,6 @@ samples, and the natural scale on which to judge proportional
 hazards.
 }
 \examples{
-if (requireNamespace("survival", quietly = TRUE)) {
-  V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-  morie_nelson_aalen(V, V)
-}
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_nelson_aalen(V, V)
 }

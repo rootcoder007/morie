@@ -20,7 +20,6 @@ morie_geron_dalle_autoregressive_token(
 \item{temperature}{Positive temperature for the next-token step only.}
 
 \item{top_k}{Optional truncation.}
-
 }
 \value{
 List with \code{log_likelihood}, \code{token_logprobs}, \code{perplexity},
@@ -33,6 +32,6 @@ distribution after temperature and optional top-k truncation.
 }
 \examples{
 skew <- function(ctx) c(0, 1, 2) + 0.1 * length(ctx)
-morie_geron_dalle_autoregressive_token(c(0, 1), c(2, 0), skew, 
+morie_geron_dalle_autoregressive_token(c(0, 1), c(2, 0), skew,
     temperature = 0.5)
 }

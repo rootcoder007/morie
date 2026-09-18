@@ -8,13 +8,12 @@ PmfVar(values, probs)
 }
 \arguments{
 \item{values, probs}{the pmf; probs must be >= 0 and sum to 1.}
-
 }
 \value{
 list(variance, mean, e_x2, sd, forms_agree).
 }
 \description{
-Var(X) = E[(X - mu)^2] (eq 3.19), cross-checked against the
+Var(X) = E\link{(X - mu)^2} (eq 3.19), cross-checked against the
 computational form E(X^2) - mu^2 (eq 3.34); their agreement is
 eq (3.35) and the square root is eq (3.40).
 }

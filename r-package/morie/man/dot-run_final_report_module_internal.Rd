@@ -12,7 +12,9 @@
 \item{output_dir}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \value{
-A list with \code{ebac_final_output_coverage}, \code{ebac_final_output_shapes}, \code{ebac_final_script_run_status}, \code{ebac_final_audit_checks}, \code{ebac_final_user_guide_excerpt}.
+A list with \code{ebac_final_output_coverage},
+\code{ebac_final_output_shapes}, \code{ebac_final_script_run_status},
+\code{ebac_final_audit_checks}, \code{ebac_final_user_guide_excerpt}.
 }
 \description{
 A step of the study_reporting implementation. Called by \code{morie_run_morie_module}.

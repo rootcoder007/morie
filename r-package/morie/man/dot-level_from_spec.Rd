@@ -9,7 +9,8 @@
 \arguments{
 \item{col_name}{Character; passed to \code{grepl}.}
 
-\item{dtype}{One of \code{"bool"}, \code{"date"}, \code{"datetime"}, \code{"float"}, \code{"int"}, \code{"string"}.}
+\item{dtype}{One of \code{"bool"}, \code{"date"}, \code{"datetime"}, \code{"float"},
+\code{"int"}, \code{"string"}.}
 
 \item{valid_values}{Optional; may be \code{NULL}. A vector; its length is taken.}
 

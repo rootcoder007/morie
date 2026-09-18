@@ -26,13 +26,11 @@ with the Bartlett kernel and a fixed lag. The meat accumulates the
 weighted lag-l autocovariances of the score contributions.
 }
 \examples{
-if (requireNamespace("sandwich", quietly = TRUE)) {
-  set.seed(1)
-  df <- data.frame(y = rnorm(60), x = rnorm(60),
-                   cl = rep(1:6, each = 10))
-  fit <- stats::lm(y ~ x, data = df)
-  morie_vcov_hac(fit, lag = 2L)
-}
+set.seed(1)
+df <- data.frame(y = rnorm(60), x = rnorm(60),
+                 cl = rep(1:6, each = 10))
+fit <- stats::lm(y ~ x, data = df)
+morie_vcov_hac(fit, lag = 2L)
 }
 \references{
 Newey, W. K., & West, K. D. (1987). A simple, positive

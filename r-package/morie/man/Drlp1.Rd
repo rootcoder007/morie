@@ -16,7 +16,6 @@ Drlp1(y, D, unit, time, horizon = 3L, X = NULL)
 \item{horizon}{Largest horizon reported; non-negative.}
 
 \item{X}{Optional baseline covariates, one row per unit-period.}
-
 }
 \value{
 List with \code{estimate}, \code{horizons}, \code{beta},
@@ -33,8 +32,8 @@ uninterpretable under heterogeneous effects.  Each horizon is
 estimated by the doubly robust moment of Sant'Anna and Zhao (2020).
 }
 \examples{
-Drlp1(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8),
-  unit = c(1, 2, 3, 4, 5, 6, 7, 8), time = c(1, 2, 3, 4, 5, 6, 7, 8))
+Drlp1(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), unit = c(1, 2, 3,
+4, 5, 6, 7, 8), time = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Dube, A., Girardi, D., Jorda, O. and Taylor, A. M. (2023).

@@ -2,7 +2,7 @@
 % Please edit documentation in R/snmcox_native.R
 \name{.snmcox_treat_model}
 \alias{.snmcox_treat_model}
-\title{Fitted E[A | L]: logistic when the treatment is binary, least squares
+\title{Fitted E\link{A | L}: logistic when the treatment is binary, least squares
 else}
 \usage{
 .snmcox_treat_model(A, L, ridge = 1e-08)
@@ -15,7 +15,8 @@ else}
 \item{ridge}{Numeric; combined arithmetically in the body. Defaults to \code{1e-08}.}
 }
 \value{
-A list, whose contents depend on the branch taken; across the branches its names are \code{e}, \code{b}, \code{kind}.
+A list, whose contents depend on the branch taken; across the branches its
+names are \code{e}, \code{b}, \code{kind}.
 }
 \description{
 A step of the snmcox_native implementation. Called by \code{morie_snmcox_gest_score}.

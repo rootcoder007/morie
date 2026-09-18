@@ -13,7 +13,8 @@
 The value of \code{unname}.
 }
 \description{
-A step of the helpers_horowitz implementation. Called by \code{hrzb2}, \code{Hrzctrl}, \code{hrzi1} and 24 others in the module.
+A step of the helpers_horowitz implementation. Called by \code{hrzb2}, \code{Hrzctrl},
+\code{hrzi1} and 24 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

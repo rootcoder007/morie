@@ -15,7 +15,9 @@
 A numeric value.
 }
 \description{
-A step of the tps_temporal implementation. Called by \code{morie_tps_arima_forecast}, \code{morie_tps_changepoint_detection}, \code{morie_tps_seasonal_pattern} and 1 others in the module.
+A step of the tps_temporal implementation. Called by \code{morie_tps_arima_forecast},
+\code{morie_tps_changepoint_detection}, \code{morie_tps_seasonal_pattern} and 1 others
+in the module.
 See the file header for the source the module follows.
 source it follows.
 }

@@ -12,7 +12,6 @@ morie_bowarc(dag, bidirected, x, y)
 \item{bidirected}{two-column matrix of bidirected edges}
 
 \item{x, y}{the ordered pair to test}
-
 }
 \value{
 list(isbow, direct, confounded, nbows, bowfree, acyclic,
@@ -32,5 +31,5 @@ Theorem 4 itself: acyclic AND bow-free.
 }
 \examples{
 morie_bowarc(dag = c(1, 2, 3, 4, 5, 6, 7, 8), bidirected = c(1, 2, 3, 4, 5, 6, 7, 8),
-  x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8))
+x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

@@ -18,7 +18,6 @@ Intmd4(X, M, Y, Cc = NULL, a = 1, astar = 0, m = 0)
 \item{a, astar}{Exposure contrast levels.}
 
 \item{m}{Level the mediator is controlled at for the CDE.}
-
 }
 \value{
 List with \code{estimate}, \code{cde}, \code{intref},

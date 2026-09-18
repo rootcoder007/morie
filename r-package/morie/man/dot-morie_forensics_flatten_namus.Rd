@@ -7,13 +7,20 @@
 .morie_forensics_flatten_namus(rec)
 }
 \arguments{
-\item{rec}{A list; the body reads \code{$caseNumber}, \code{$circumstances}, \code{$circumstancesOfDisappearance}, \code{$county}, \code{$namUsCaseNumber}, \code{$sighting}, \code{$state}, \code{$subjectDescription}, \code{$subjectIdentification} from it.}
+\item{rec}{A list; the body reads \code{$caseNumber}, \code{$circumstances},
+\code{$circumstancesOfDisappearance}, \code{$county}, \code{$namUsCaseNumber},
+\code{$sighting}, \code{$state}, \code{$subjectDescription},
+\code{$subjectIdentification} from it.}
 }
 \value{
-A list with \code{case_number}, \code{state}, \code{county}, \code{dlc_date}, \code{sex}, \code{race}, \code{age_min}, \code{age_max}, \code{height_cm_min}, \code{height_cm_max}, \code{weight_kg_min}, \code{weight_kg_max}, \code{first_name}, \code{last_name}, \code{city}, \code{circumstances}.
+A list with \code{case_number}, \code{state}, \code{county}, \code{dlc_date},
+\code{sex}, \code{race}, \code{age_min}, \code{age_max}, \code{height_cm_min},
+\code{height_cm_max}, \code{weight_kg_min}, \code{weight_kg_max}, \code{first_name},
+\code{last_name}, \code{city}, \code{circumstances}.
 }
 \description{
-A step of the ingest_forensics implementation. Called by \code{morie_ingest_forensics_namus_missing}.
+A step of the ingest_forensics implementation. Called by
+\code{morie_ingest_forensics_namus_missing}.
 See the file header for the source the module follows.
 the source it follows.
 }

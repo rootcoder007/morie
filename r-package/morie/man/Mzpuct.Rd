@@ -16,8 +16,6 @@ Mzpuct(Q, N, P, c1 = 1.25, c2 = 19652, qmin = NULL, qmax = NULL)
 \item{c1, c2}{Exploration constants; 1.25 and 19652 in the paper.}
 
 \item{qmin, qmax}{Tree-wide value bounds; NULL uses range(Q).}
-
-
 }
 \value{
 List with score, qbar, exploration, best, sumn, k.  best is a
@@ -26,7 +24,7 @@ zero-based action index, matching the Python arm.
 \description{
 score(a) = Qbar(s,a) + P(s,a) sqrt(sum_b N(s,b)) / (1 + N(s,a))
 * (c1 + log((sum_b N(s,b) + c2 + 1)/c2)),
-with Qbar the tree-wide min-max rescaling of Q onto [0, 1].
+with Qbar the tree-wide min-max rescaling of Q onto \link{0, 1}.
 }
 \examples{
 Mzpuct(Q = 0.5, N = 5L, P = 0.5)

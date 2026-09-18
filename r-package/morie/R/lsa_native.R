@@ -9,7 +9,6 @@
 # 1999, 289-296, arXiv:1301.6705.
 
 .lsa_EPS <- 1e-12
-.lsa_WEIGHTS <- c("raw", "log_entropy", "tfidf")
 
 #' .ghc_svd
 #'
@@ -40,10 +39,14 @@
 #' @param how One of \code{"raw"}, \code{"tfidf"}. Defaults to \code{"log_entropy"}.
 #' @return The value of \code{out}, as built in the body.
 #' @export
+#' @examples
+#' M <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
+#' term_weighting(M)
+#' @keywords internal
 term_weighting <- function(X, how = "log_entropy") {
-  if (!(how %in% .lsa_WEIGHTS))
-    stop(sprintf("lsa: weighting must be one of %s, got %r",
-                 paste(.lsa_WEIGHTS, collapse = ", "), how))
+  if (!(how %in% .WEIGHTS))
+    stop(sprintf("lsa: weighting must be one of %s, got %s",
+                 paste(.WEIGHTS, collapse = ", "), how))
   A <- apply(X, c(1, 2), as.numeric)
   t <- nrow(A)
   d <- ncol(A)
@@ -247,3 +250,5 @@ morie_lsa <- function(X, k_dim = NULL, how = "log_entropy", query = NULL,
   }
   lsa_decompose(X, k_dim = k_dim, how = how)
 }
+
+.WEIGHTS <- c("raw", "log_entropy", "tfidf")

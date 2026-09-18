@@ -15,7 +15,6 @@ morie_horowitz_manski_bounds(y, R, y_min, y_max)
 \item{R}{Response indicator, 1 observed and 0 missing.}
 
 \item{y_min, y_max}{A priori support limits.}
-
 }
 \value{
 list: estimate, mar_estimate, lower, upper, width, contrast_lower,
@@ -29,10 +28,10 @@ doi:10.1080/01621459.2000.10473902; Manski, C. F. (2003), Partial
 Identification of Probability Distributions, Springer.
 }
 \details{
-Missing at random makes E[Y | R = 0] = E[Y | R = 1], which point identifies
-E[Y] at the complete-case mean.  Dropping that assumption leaves only the
+Missing at random makes E\link{Y | R = 0} = E\link{Y | R = 1}, which point identifies
+E\link{Y} at the complete-case mean.  Dropping that assumption leaves only the
 support restriction y_min <= Y <= y_max, and the identified set becomes
-[m p + y_min (1 - p), m p + y_max (1 - p)] with m = E[Y | R = 1] and
+\link{m p + y_min (1 - p), m p + y_max (1 - p)} with m = E\link{Y | R = 1} and
 p = P(R = 1).  This function reports both, plus the two contrasts (how far
 the MAR answer sits from each end of the identified set), which is the
 quantity a sensitivity analysis actually wants: it is the amount of

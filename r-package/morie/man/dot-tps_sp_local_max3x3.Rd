@@ -13,7 +13,8 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}, \code{morie_tps_sdb_turing_demo}.
+A step of the tps_statphysics implementation. Called by
+\code{morie_tps_sdb_reaction_diffusion}, \code{morie_tps_sdb_turing_demo}.
 See the file header for the source the module follows.
 the source it follows.
 }

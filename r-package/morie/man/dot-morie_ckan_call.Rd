@@ -22,7 +22,8 @@
 
 \item{api_key}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 
-\item{user_agent}{Accepted by the signature and not used anywhere in the body. Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.}
+\item{user_agent}{Accepted by the signature and not used anywhere in the body.
+Defaults to \code{.MORIE_CKAN_DEFAULT_UA}.}
 
 \item{timeout}{Coerced to integer by the body, with \code{as.integer}.}
 }

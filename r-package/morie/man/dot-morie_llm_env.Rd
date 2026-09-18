@@ -15,7 +15,8 @@
 One of two values, depending on the branch taken.
 }
 \description{
-A step of the llm implementation. Called by \code{.morie_llm_api_base}, \code{.morie_llm_api_key}, \code{.morie_llm_gemini_key} and 3 others in the module.
+A step of the llm implementation. Called by \code{.morie_llm_api_base},
+\code{.morie_llm_api_key}, \code{.morie_llm_gemini_key} and 3 others in the module.
 See the file header for the source the module follows.
 follows.
 }

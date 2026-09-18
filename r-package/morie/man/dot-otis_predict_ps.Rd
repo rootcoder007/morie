@@ -17,7 +17,9 @@
 The value of \code{.otis_clip_ps}.
 }
 \description{
-A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate}, \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate} and 3 others in the module.
+A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate},
+\code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate} and 3 others in the
+module.
 See the file header for the source the module follows.
 source it follows.
 }

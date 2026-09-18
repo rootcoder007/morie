@@ -12,8 +12,6 @@ morie_autoform(q, k, v, kernel = 3L, c = 1)
 \item{kernel}{decomposition kernel size}
 
 \item{c}{the Topk constant}
-
-
 }
 \value{
 list(out, taus, weights, k, L, r1, outmean, outmax,
@@ -29,6 +27,6 @@ the Topk are broken by the smaller lag, so selection is
 deterministic.
 }
 \examples{
-morie_autoform(q = c(1, 2, 3, 4, 5, 6, 7, 8), k = c(1, 2, 3, 4, 5, 6, 7, 8),
-  v = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_autoform(q = c(1, 2, 3, 4, 5, 6, 7, 8), k = c(1, 2, 3, 4, 5, 6, 7, 8), v = c(1,
+2, 3, 4, 5, 6, 7, 8))
 }

@@ -46,4 +46,5 @@ session cache; see \code{\link{morie_cache_dir}} and
 
 \examples{
 morie_siu_index_url()
+morie_siu_index_url()
 }

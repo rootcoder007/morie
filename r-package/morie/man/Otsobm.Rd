@@ -11,14 +11,13 @@ Otsobm(mu, nu, Laplace_inv)
 
 \item{Laplace_inv}{Inverse (or pseudo-inverse) of the Laplacian,
 symmetric positive semi-definite.}
-
 }
 \value{
 List with \code{W1_sob}, \code{quad_form}, \code{mass_gap},
 \code{n}.
 }
 \description{
-Replace W_1 by a Hilbert norm on the difference of the measures
+
 }
 \references{
 Peyre, G. (2018). ESAIM: Control, Optimisation and Calculus

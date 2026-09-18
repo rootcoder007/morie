@@ -13,7 +13,9 @@
 Invisibly,the value of \code{p}, as built in the body.
 }
 \description{
-A step of the hawkes_spatial implementation. Called by \code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik}, \code{morie_hawkes_st_simulate}.
+A step of the hawkes_spatial implementation. Called by
+\code{morie_hawkes_st_intensity}, \code{morie_hawkes_st_loglik},
+\code{morie_hawkes_st_simulate}.
 See the file header for the source the module follows.
 the source it follows.
 }

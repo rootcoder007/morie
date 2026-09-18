@@ -14,8 +14,6 @@ morie_kamath_vera_adapter(W0, A_frozen, B_frozen, lam_b, lam_d, x)
 \item{lam_b, lam_d}{Trainable diagonals.}
 
 \item{x}{Input.}
-
-
 }
 \value{
 List with \code{h}, \code{delta}, \code{rank}, \code{n_trainable}.
@@ -25,6 +23,6 @@ h = W0 x + Lambda_b B Lambda_d A x; only the two diagonals train, A and B
 stay frozen and shared.
 }
 \examples{
-morie_kamath_vera_adapter(diag(2), matrix(c(1, 1), 1), matrix(c(1, 
+morie_kamath_vera_adapter(diag(2), matrix(c(1, 1), 1), matrix(c(1,
     2), 2), c(2, 3), c(5), c(1, 2))
 }

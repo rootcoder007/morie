@@ -15,7 +15,8 @@
 A list with \code{p}, \code{se}, \code{ci}.
 }
 \description{
-A step of the study_core implementation. Called by \code{.run_descriptive_statistics_module_internal}.
+A step of the study_core implementation. Called by
+\code{.run_descriptive_statistics_module_internal}.
 See the file header for the source the module follows.
 source it follows.
 }

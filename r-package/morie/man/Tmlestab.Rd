@@ -7,16 +7,13 @@
 Tmlestab(Y, A, QAW, Q1W, Q0W, g1W, gbounds = NULL)
 }
 \arguments{
-\item{Y, A}{Outcome in [0, 1] and binary treatment.}
+\item{Y, A}{Outcome in \link{0, 1} and binary treatment.}
 
 \item{QAW, Q1W, Q0W}{Initial outcome predictions.}
 
 \item{g1W}{Initial propensity.}
 
 \item{gbounds}{Truncation levels to try.}
-
-
-
 }
 \value{
 List with \code{gbounds}, \code{estimate}, \code{se},
@@ -33,9 +30,9 @@ Formula: g_trunc = min(max(g, delta), 1 - delta); re-target at each
 delta and report psi, se and max weight
 }
 \examples{
-Tmlestab(Y = c(1, 2, 3, 4, 5, 6, 7, 8), A = c(1, 2, 3, 4, 5, 6, 7, 8),
-  QAW = c(1, 2, 3, 4, 5, 6, 7, 8), Q1W = c(1, 2, 3, 4, 5, 6, 7, 8),
-  Q0W = c(1, 2, 3, 4, 5, 6, 7, 8), g1W = c(1, 2, 3, 4, 5, 6, 7, 8))
+Tmlestab(Y = c(1, 2, 3, 4, 5, 6, 7, 8), A = c(1, 2, 3, 4, 5, 6, 7, 8), QAW = c(1, 2,
+3, 4, 5, 6, 7, 8), Q1W = c(1, 2, 3, 4, 5, 6, 7, 8), Q0W = c(1, 2, 3, 4, 5, 6, 7, 8),
+g1W = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Verified against the CRAN package tmle 2.1.1 (Gruber & van

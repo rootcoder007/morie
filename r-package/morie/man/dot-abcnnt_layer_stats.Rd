@@ -7,7 +7,9 @@
 .abcnnt_layer_stats(layer, x, t)
 }
 \arguments{
-\item{layer}{A list; the body reads \code{$b1}, \code{$ba}, \code{$bm}, \code{$dim_t}, \code{$dim_x}, \code{$hidden}, \code{$M1}, \code{$M2}, \code{$W1}, \code{$Wa}, \code{$Wm} from it.}
+\item{layer}{A list; the body reads \code{$b1}, \code{$ba}, \code{$bm}, \code{$dim_t},
+\code{$dim_x}, \code{$hidden}, \code{$M1}, \code{$M2}, \code{$W1}, \code{$Wa},
+\code{$Wm} from it.}
 
 \item{x}{Passed to \code{c}.}
 
@@ -20,4 +22,12 @@ A list with \code{mu}, \code{al}, \code{h}.
 A step of the abcnnt_native implementation. Called by \code{flow_forward}.
 See the file header for the source the module follows.
 source it follows.
+}
+\examples{
+# a layer straight out of a flow, so only exported functions are needed
+L <- MAF(dim_x = 3L, dim_t = 2L, n_layers = 1L, hidden = 6L,
+         seed = 2L)$layers[[1]]
+st <- .abcnnt_layer_stats(L, x = c(0.5, -0.2, 0.9), t = c(0.1, -0.4))
+st$mu
+st$al       # the log-scale, clamped to [-5, 5]
 }

@@ -23,7 +23,7 @@ wins. The default \code{c("ollama", "gemini")} tries the local
 free model first and only escalates to paid Gemini if Ollama
 isn't installed or fails -- so morie costs $0 to use as long
 as you have a free Gemma / Qwen / Llama running locally
-(e.g. \code{ollama pull gemma3:4b}).}
+(e.g. \code{ollama pull <model>}).}
 
 \item{cache_dir}{Directory holding the harvester's SIU.csv and
 the optional \code{html/} subdirectory.}
@@ -60,14 +60,15 @@ hard-coded, never passed as function arguments -- so secrets do
 not leak into call traces, logs, or scripts. Set
 \code{GOOGLE_API_KEY} for Gemini, \code{ANTHROPIC_API_KEY} for
 Claude, or \code{OLLAMA_HOST} (e.g.
-\code{"http://localhost:11434"} or an OllamaFreeAPI base URL) plus
-optionally \code{OLLAMA_MODEL} (default \code{"llama3.2:3b"}) for
+\code{"http://localhost:11434"} or an OpenAI-compatible base URL) plus
+optionally \code{OLLAMA_MODEL} (else the first model the server serves) for
 Ollama-compatible open-weight endpoints.
 }
 \examples{
-\dontrun{
-Sys.setenv(GOOGLE_API_KEY = "your-gemini-key")
-r <- morie_siu_llm_extract("17-OVI-201", model = "gemini")
+\dontshow{if (morie_llm_probe_ollama()) withAutoprint(\{ # examplesIf}
+# Local Ollama is the default provider (free, no key); Gemini and
+# other cloud providers are optional fallbacks via model=.
+r <- morie_siu_llm_extract("17-OVI-201", model = "ollama")
 # Diff parser vs LLM against the HTML:
 morie_siu_compare(
   "17-OVI-201",
@@ -75,5 +76,5 @@ morie_siu_compare(
   field_map = setNames(as.list(names(r)), names(r)),
   external_case_col = "case_number"
 )
-}
+\dontshow{\}) # examplesIf}
 }

@@ -17,7 +17,6 @@ morie_kamath_ch4_parallel_adapter(H_o, H_i, W_down, W_up, f = NULL)
 \item{f}{Activation; default ReLU.}
 
 \item{H_i}{Layer input feeding the parallel branch.}
-
 }
 \value{
 List with \code{output}, \code{delta}, \code{bottleneck_rank}.
@@ -33,6 +32,6 @@ km054's \verb{_adapter_core}: km054 -> \code{morie_kamath_ch4_series_adapter}
 adapter exactly.
 }
 \examples{
-morie_kamath_ch4_series_adapter(matrix(c(1, 2), 1), matrix(c(1, 
+morie_kamath_ch4_series_adapter(matrix(c(1, 2), 1), matrix(c(1,
     0), 2), matrix(c(1, 1), 1))
 }

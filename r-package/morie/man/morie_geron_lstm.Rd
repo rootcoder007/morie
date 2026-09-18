@@ -12,7 +12,6 @@ morie_geron_lstm(x_t, h_prev, c_prev, weights)
 \item{h_prev, c_prev}{Previous short/long-term states.}
 
 \item{weights}{Named list with W_i,U_i,b_i,W_f,U_f,b_f,W_o,U_o,b_o,W_g,U_g,b_g.}
-
 }
 \value{
 List with h_t, c_t, i_t, f_t, o_t, g_t, estimate, n, method.
@@ -21,10 +20,10 @@ List with h_t, c_t, i_t, f_t, o_t, g_t, estimate, n, method.
 LSTM cell forward step (Geron Ch 13, morie.fn hmlstm)
 }
 \examples{
-Z <- list(W_i = matrix(0, 2, 2), U_i = matrix(0, 2, 2), b_i = c(0, 
-    0), W_f = matrix(0, 2, 2), U_f = matrix(0, 2, 2), b_f = c(0, 
-    0), W_o = matrix(0, 2, 2), U_o = matrix(0, 2, 2), b_o = c(0, 
-    0), W_g = matrix(0, 2, 2), U_g = matrix(0, 2, 2), b_g = c(0, 
+Z <- list(W_i = matrix(0, 2, 2), U_i = matrix(0, 2, 2), b_i = c(0,
+    0), W_f = matrix(0, 2, 2), U_f = matrix(0, 2, 2), b_f = c(0,
+    0), W_o = matrix(0, 2, 2), U_o = matrix(0, 2, 2), b_o = c(0,
+    0), W_g = matrix(0, 2, 2), U_g = matrix(0, 2, 2), b_g = c(0,
     0))
 morie_geron_lstm(c(0, 0), c(0, 0), c(2, -2), Z)
 }

@@ -23,8 +23,6 @@ morie_kamath_dequantize_nf4(codes, absmax, n_bins = 16)
 \item{codes}{0-based NF4 codes.}
 
 \item{absmax}{Scalar or per-row scale.}
-
-
 }
 \value{
 List with \code{h}, \code{W0_dequantized}, \code{n_frozen_4bit}.
@@ -34,7 +32,7 @@ The NF4 grid dequantises W0, then \code{morie_kamath_lora_weight_update} adds
 (alpha/r) B A x. Codes are 0-BASED indices into the grid.
 }
 \examples{
-morie_kamath_qlora_4bit(list(codes = matrix(c(0, 1, 3, 2), 2), 
-    absmax = 2), matrix(c(1, 0), 1), matrix(c(1, 0), 2), 2, 1, 
+morie_kamath_qlora_4bit(list(codes = matrix(c(0, 1, 3, 2), 2),
+    absmax = 2), matrix(c(1, 0), 1), matrix(c(1, 0), 2), 2, 1,
     c(1, 1))
 }

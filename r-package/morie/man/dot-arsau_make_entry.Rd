@@ -36,7 +36,9 @@
 \item{description_fr}{Carried through into a list the body builds.}
 }
 \value{
-A list with \code{year_or_range}, \code{kind}, \code{csv_filename}, \code{sidecar_filename}, \code{expected_rows}, \code{expected_cols}, \code{is_valid}, \code{description_en}, \code{description_fr}.
+A list with \code{year_or_range}, \code{kind}, \code{csv_filename},
+\code{sidecar_filename}, \code{expected_rows}, \code{expected_cols}, \code{is_valid},
+\code{description_en}, \code{description_fr}.
 }
 \description{
 A step of the arsau implementation. No other function in the package calls it.

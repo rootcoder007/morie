@@ -10,7 +10,8 @@
 The value of \code{tryCatch}.
 }
 \description{
-A step of the fast implementation. Called by \code{morie_cor_pearson}, \code{morie_fast_available}, \code{morie_hawkes_fit} and 3 others in the module.
+A step of the fast implementation. Called by \code{morie_cor_pearson},
+\code{morie_fast_available}, \code{morie_hawkes_fit} and 3 others in the module.
 See the file header for the source the module follows.
 it follows.
 }

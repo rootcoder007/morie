@@ -18,7 +18,6 @@ Otgws(Cx, Cy, a, b, epsilon, max_iter = 20, inner_iter = 200)
 \item{max_iter}{Outer linearisations.}
 
 \item{inner_iter}{Sinkhorn sweeps per linearisation.}
-
 }
 \value{
 List with \code{T}, \code{cost}, \code{GW}, \code{n},

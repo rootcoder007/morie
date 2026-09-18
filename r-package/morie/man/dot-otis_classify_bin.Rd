@@ -13,7 +13,9 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b05_mandela_classification}, \code{morie_otis_analyze_c11_mandela_classification}.
+A step of the otis_all_analyze implementation. Called by
+\code{morie_otis_analyze_b05_mandela_classification},
+\code{morie_otis_analyze_c11_mandela_classification}.
 See the file header for the source the module follows.
 the source it follows.
 }

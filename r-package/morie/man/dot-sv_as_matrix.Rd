@@ -13,7 +13,9 @@
 The value of \code{m}, as built in the body.
 }
 \description{
-A step of the spatial_voting implementation. Called by \code{morie_spatial_voting_aldrich_mckelvey}, \code{morie_spatial_voting_blackbox}, \code{morie_spatial_voting_optimal_classification}.
+A step of the spatial_voting implementation. Called by
+\code{morie_spatial_voting_aldrich_mckelvey}, \code{morie_spatial_voting_blackbox},
+\code{morie_spatial_voting_optimal_classification}.
 See the file header for the source the module follows.
 the source it follows.
 }

@@ -12,10 +12,12 @@
 \item{d}{Numeric; passed to \code{mean}.}
 }
 \value{
-A list with \code{brier}, \code{obs_prevalence}, \code{predicted_prevalence}, \code{log_loss}.
+A list with \code{brier}, \code{obs_prevalence}, \code{predicted_prevalence},
+\code{log_loss}.
 }
 \description{
-A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate}, \code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate}.
+A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate},
+\code{morie_otis_aipw_superlearner}, \code{morie_otis_ipw_ate}.
 See the file header for the source the module follows.
 source it follows.
 }

@@ -603,40 +603,67 @@
 #' @param toks A vector; indexed elementwise.
 #' @return The value of \code{list}.
 #' @export
+#' @examples
+#' # The expression grammar of Aho, Lam, Sethi & Ullman (2nd ed., 4.4.2):
+#' #   E -> T E';  E' -> + T E' | eps;  T -> F T';  T' -> * F T' | eps;
+#' #   F -> ( E ) | id
+#' rules <- list(
+#'   list("E",  c("T", "Ep")),
+#'   list("Ep", c("+", "T", "Ep")),
+#'   list("Ep", character(0)),
+#'   list("T",  c("F", "Tp")),
+#'   list("Tp", c("*", "F", "Tp")),
+#'   list("Tp", character(0)),
+#'   list("F",  c("(", "E", ")")),
+#'   list("F",  "id")
+#' )
+#' g <- .prsLL_grammar(rules, start = "E")
+#' t <- .prsLL_ll1_table(g)
+#' res <- .prsLL_parse_table(g, t$table, c("id", "+", "id", "$"))
+#' .prsLL_linearise(res[[1]])
+#' res[[2]]   # tokens consumed
 .prsLL_parse_table <- function(g, table, toks) {
   nts <- .prsLL_nonterminals(g)
-  root <- .prsLL_node(g$start, list())
-  stack <- list(list(g$start, root))
+  # Nodes are held flat and referred to by index. Assigning into a list
+  # element copies it in R, so writing children onto a node pulled off
+  # the stack would update a copy and leave the tree empty; indices make
+  # the parent-child link explicit instead.
+  nodes <- list(list(symbol = g$start, terminal = FALSE, children = integer(0)))
+  stack <- c(1L)
   pos <- 0L
   while (length(stack) > 0L) {
-    item <- stack[[length(stack)]]
-    stack[[length(stack)]] <- NULL
-    sym <- item[[1]]
-    node <- item[[2]]
-    if (sym %in% nts) {
-      i <- .prsLL_pick(table, sym, toks[pos + 1L])
-      rhs <- g$rules[[i]][[2]]
-      kids <- list()
-      for (s in rhs) {
-        if (s %in% nts) {
-          kids[[length(kids) + 1L]] <- .prsLL_node(s, list())
-        } else {
-          kids[[length(kids) + 1L]] <- .prsLL_leaf(s)
-        }
-      }
-      node$children <- kids
-      for (k in rev(seq_along(rhs))) {
-        stack[[length(stack) + 1L]] <- list(rhs[k], kids[[k]])
-      }
-    } else {
+    ni <- stack[length(stack)]
+    stack <- stack[-length(stack)]
+    sym <- nodes[[ni]]$symbol
+    if (nodes[[ni]]$terminal) {
       if (toks[pos + 1L] != sym) {
         stop(sprintf("prsLL: expected %s but found %s at token %d",
                      sym, toks[pos + 1L], pos))
       }
       pos <- pos + 1L
+      next
+    }
+    i <- .prsLL_pick(table, sym, toks[pos + 1L])
+    rhs <- g$rules[[i]][[2]]
+    kid_idx <- integer(0)
+    for (s in rhs) {
+      nodes[[length(nodes) + 1L]] <- list(
+        symbol = s, terminal = !(s %in% nts), children = integer(0))
+      kid_idx <- c(kid_idx, length(nodes))
+    }
+    nodes[[ni]]$children <- kid_idx
+    for (k in rev(seq_along(kid_idx))) {
+      stack <- c(stack, kid_idx[k])
     }
   }
-  list(root, pos)
+  assemble <- function(i) {
+    nd <- nodes[[i]]
+    if (nd$terminal) {
+      return(.prsLL_leaf(nd$symbol))
+    }
+    .prsLL_node(nd$symbol, lapply(nd$children, assemble))
+  }
+  list(assemble(1L), pos)
 }
 
 #' .prsLL_parse

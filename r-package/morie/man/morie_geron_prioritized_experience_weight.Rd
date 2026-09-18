@@ -18,12 +18,11 @@ morie_geron_prioritized_experience_weight(
 
 \item{N}{Replay buffer size; defaults to the number of priorities.}
 
-\item{alpha, beta}{Prioritisation and correction exponents in [0, 1].}
+\item{alpha, beta}{Prioritisation and correction exponents in \link{0, 1}.}
 
 \item{eps}{Non-negative floor added to |delta|.}
 
 \item{are_td_errors}{Treat \code{priorities} as TD errors.}
-
 }
 \value{
 List with \code{weights}, \code{probabilities}, \code{priorities},

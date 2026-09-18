@@ -83,12 +83,18 @@
 #' @param kernel One of \code{"triangular"}, \code{"uniform"}. Defaults to \code{"triangular"}.
 #' @return The value of \code{.side_fit}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' v <- runif(200, -1, 1)
+#' y <- 1 + 0.5 * v + 0.8 * pmax(v, 0) + rnorm(200, 0, 0.1)
+#' local_polynomial_slope(v, y, kink = 0, bandwidth = 0.5, side = "right")
+#' @keywords internal
 local_polynomial_slope <- function(v, y, kink, bandwidth, order = 2L,
                                    side = "right", kernel = "triangular") {
   if (!(side %in% c("left", "right")))
-    stop(sprintf("bnskt2: side must be left or right, got %r", side))
+    stop(sprintf("bnskt2: side must be left or right, got %s", side))
   if (!(kernel %in% c("triangular", "uniform")))
-    stop(sprintf("bnskt2: kernel must be triangular or uniform, got %r", kernel))
+    stop(sprintf("bnskt2: kernel must be triangular or uniform, got %s", kernel))
   if (as.integer(order) < 1L)
     stop("bnskt2: the polynomial order must be at least 1")
   if (as.numeric(bandwidth) <= 0.0)

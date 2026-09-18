@@ -296,10 +296,17 @@ standard_form <- function(c, A_ub = NULL, b_ub = NULL, A_eq = NULL,
 #' with \code{as.integer}.
 #' @return The value of \code{.clpopt_report}.
 #' @export
+#' @examples
+#' sf <- standard_form(c = c(-3, -5), A_ub = rbind(c(1, 0), c(0, 2),
+#'                                                 c(3, 2)),
+#'                     b_ub = c(4, 12, 18))
+#' r <- simplex(sf$c, sf$A, sf$b)
+#' str(r, max.level = 1)
+#' @keywords internal
 simplex <- function(c, A, b, rule = "bland", max_iter = 10000,
                     initial_basis = NULL) {
   if (!(rule %in% clpopt_pivots))
-    stop(sprintf("clpopt: rule must be one of %s, got %r",
+    stop(sprintf("clpopt: rule must be one of %s, got %s",
                  paste(clpopt_pivots, collapse = ", "), rule))
   cv <- as.numeric(c)
   n <- length(cv)

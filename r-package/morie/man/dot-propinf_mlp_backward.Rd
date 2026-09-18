@@ -30,10 +30,22 @@
 \item{hidden_act}{Compared against \code{"tanh"}. Defaults to \code{"relu"}.}
 }
 \value{
-The value of \code{delta}, as built in the body.
+A list with \code{delta}, the gradient with respect to this
+network's input, and \code{grads}, the accumulated parameter gradients.
 }
 \description{
-A step of the propinf_native implementation. Called by \code{.propinf_deepsets_backward}, \code{.propinf_train_vector_meta}.
+A step of the propinf_native implementation. Called by
+\code{.propinf_deepsets_backward}, \code{.propinf_train_vector_meta}.
 See the file header for the source the module follows.
 the source it follows.
+}
+\examples{
+net <- .propinf_mlp_init(c(3L, 4L, 1L), .propinf_rng(1L))
+x <- c(0.3, -0.7, 1.1)
+fp <- .propinf_mlp_forward(net, x, final = "sigmoid")
+p <- fp$acts[[length(fp$acts)]][[1L]]
+bw <- .propinf_mlp_backward(net, fp$acts, fp$pre, p - 1,
+                            .propinf_zero_like(net), final = "sigmoid")
+bw$delta                 # gradient with respect to x
+bw$grads[[1]]$b          # accumulated bias gradients of the first layer
 }

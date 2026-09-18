@@ -10,7 +10,8 @@
 One of two values, depending on the branch taken.
 }
 \description{
-A step of the crypto_keystore implementation. Called by \code{.morie_derive_key}, \code{.morie_read_store}, \code{.morie_write_store} and 4 others in the module.
+A step of the crypto_keystore implementation. Called by \code{.morie_derive_key},
+\code{.morie_read_store}, \code{.morie_write_store} and 4 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

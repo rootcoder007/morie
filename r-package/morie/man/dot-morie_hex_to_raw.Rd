@@ -13,7 +13,9 @@
 The value of \code{as.raw}.
 }
 \description{
-A step of the crypto_keystore implementation. Called by \code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load}, \code{morie_crypto_keystore_store}.
+A step of the crypto_keystore implementation. Called by
+\code{morie_crypto_keystore_list}, \code{morie_crypto_keystore_load},
+\code{morie_crypto_keystore_store}.
 See the file header for the source the module follows.
 the source it follows.
 }

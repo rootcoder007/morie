@@ -29,10 +29,8 @@ RNG consumption (\code{rnorm(p * n)} in the same order), so under a
 common seed the draws are identical.
 }
 \examples{
-if (requireNamespace("MASS", quietly = TRUE)) {
-  set.seed(1)
-  morie_mvrnorm(3, mu = c(0, 0), Sigma = diag(2))
-}
+set.seed(1)
+morie_mvrnorm(3, mu = c(0, 0), Sigma = diag(2))
 }
 \references{
 Venables, W. N., & Ripley, B. D. (2002). \emph{Modern

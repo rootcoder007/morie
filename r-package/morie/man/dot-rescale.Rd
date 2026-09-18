@@ -9,9 +9,11 @@
 \arguments{
 \item{y}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{lower}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{lower}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
+\code{as.numeric}.}
 
-\item{upper}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{upper}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
+\code{as.numeric}.}
 }
 \value{
 A list with \code{scaled}, \code{lower}, \code{upper}, \code{range}.

@@ -21,8 +21,6 @@ morie_geron_auxiliary_task_pretraining(
 \item{aux_epochs, epochs}{Gradient steps.}
 
 \item{lr}{Step size.}
-
-
 }
 \value{
 List with \code{theta}, \code{theta_pretrained}, \code{theta_scratch},
@@ -37,6 +35,6 @@ identical budget, so \code{transfer_gain} is measured, not asserted.
 \examples{
 Xa <- matrix(c(1, 0, 0, 1, 1, 1, 2, 1), 4, 2, byrow = TRUE)
 Xt <- matrix(c(1, 1, 2, 0), 2, 2, byrow = TRUE)
-morie_geron_auxiliary_task_pretraining(NULL, list(Xa, c(1, 2, 
+morie_geron_auxiliary_task_pretraining(NULL, list(Xa, c(1, 2,
     3, 4)), list(Xt, c(3, 2)), aux_epochs = 50, epochs = 5)
 }

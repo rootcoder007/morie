@@ -38,7 +38,8 @@ Formula: ||h||\emph{H^2 = sum}\{i kept\} f0_i^2 / lambda_i;
 small-ball exponent = -log P(sqrt(sum_i lambda_i Z_i^2) < eps).
 }
 \examples{
-Ghosalrkhsnorm(f0_coefs = c(1, 2, 3, 4, 5, 6, 7, 8), lambdas = c(1, 2, 3, 4, 5, 6, 7, 8), eps = 0.5)
+Ghosalrkhsnorm(f0_coefs = c(1, 2, 3, 4, 5, 6, 7, 8), lambdas = c(1, 2, 3, 4, 5, 6, 7,
+8), eps = 0.5)
 }
 \references{
 Ghosal & van der Vaart (2017), Fundamentals of

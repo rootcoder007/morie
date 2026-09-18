@@ -7,11 +7,10 @@
 Flowmm(G, source, sink)
 }
 \arguments{
-\item{G}{Square non-negative capacity matrix; G[i, j] is the capacity
+\item{G}{Square non-negative capacity matrix; G\link{i, j} is the capacity
 of the directed arc i -> j.}
 
 \item{source, sink}{Zero-based vertex indices; must differ.}
-
 }
 \value{
 List with \code{estimate}, \code{max_flow}, \code{min_cut},

@@ -15,7 +15,9 @@
 A numeric value.
 }
 \description{
-A step of the tps_statphysics implementation. Called by \code{morie_tps_inspection_game_phase}, \code{morie_tps_levy_flight_alpha}, \code{morie_tps_lotka_volterra_police_crime} and 3 others in the module.
+A step of the tps_statphysics implementation. Called by
+\code{morie_tps_inspection_game_phase}, \code{morie_tps_levy_flight_alpha},
+\code{morie_tps_lotka_volterra_police_crime} and 3 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

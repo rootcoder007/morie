@@ -37,7 +37,8 @@ exactly the residuals are zero and the correction is identically
 zero -- the cheapest check of the sign convention.
 }
 \examples{
-Tmlres(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8))
+Tmlres(y = c(1, 2, 3, 4, 5, 6, 7, 8), D = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4,
+5, 6, 7, 8))
 }
 \references{
 Robins, J., Li, L., Mukherjee, R., Tchetgen Tchetgen, E.

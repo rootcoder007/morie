@@ -11,12 +11,14 @@
 
 \item{layers}{Passed to \code{.bilm_forward}.}
 
-\item{raw_weights}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{raw_weights}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
+\code{as.numeric}.}
 
 \item{gamma}{Passed to \code{.elmo_mix}. Defaults to \code{1}.}
 }
 \value{
-A list with \code{estimate}, \code{elmo}, \code{layers}, \code{weights}, \code{gamma}, \code{n_layers}, \code{L}, \code{d}, \code{top_layer}, \code{method}.
+A list with \code{estimate}, \code{elmo}, \code{layers}, \code{weights},
+\code{gamma}, \code{n_layers}, \code{L}, \code{d}, \code{top_layer}, \code{method}.
 }
 \description{
 A step of the elmo_native implementation. Called by \code{morie_elmo}.

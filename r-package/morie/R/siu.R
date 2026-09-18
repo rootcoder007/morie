@@ -530,21 +530,10 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
 # any failure. Unlike .siu_load_manifest() (which restricts to
 # healthy 200s for harvester use), this returns ALL columns + rows
 # so morie_siu_index() can serve the full table.
-#' Internal: read the unfiltered shipped manifest. Returns NULL on
-#'
-#' any failure. Unlike .siu_load_manifest() (which restricts to healthy
-#' 200s for harvester use), this returns ALL columns + rows so
-#' morie_siu_index() can serve the full table.
-#'
-#' @return The value of \code{tryCatch}.
-#' @export
-#' @examples
-#' res <- .siu_load_manifest_raw()
-#' res
+#' Internal helper: Siu Load Manifest Raw
+#' @noRd
 .siu_load_manifest_raw <- function() {
-  p <- system.file("extdata", "siu_drid_manifest.csv.gz",
-    package = "morie"
-  )
+  p <- .morie_extdata("siu_drid_manifest.csv.gz")
   if ((!nzchar(p) || !file.exists(p)) &&
       requireNamespace("rmoriedata", quietly = TRUE)) {
     p <- system.file("extdata", "siu_drid_manifest.csv.gz",
@@ -575,19 +564,8 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
 # record their own corrections without touching the package source.
 # Maintainer-confirmed corrections get promoted into the shipped
 # table; user-side corrections stay local until then.
-#' The user-side cache at <cache_dir>/canonical_overrides.csv mirrors
-#'
-#' the shipped one and is merged in too -- so individual users can
-#' record their own corrections without touching the package source.
-#' Maintainer-confirmed corrections get promoted into the shipped table;
-#' user-side corrections stay local until then.
-#'
-#' @param user_cache_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @return The value of \code{out}, as built in the body.
-#' @export
-#' @examples
-#' res <- .siu_load_canonical_overrides()
-#' res
+#' Internal helper: Siu Load Canonical Overrides
+#' @noRd
 .siu_load_canonical_overrides <- function(user_cache_dir = NULL) {
   read_one <- function(p) {
     if (!nzchar(p) || !file.exists(p)) {
@@ -612,10 +590,7 @@ morie_siu_index <- function(lang = c("all", "en", "fr", "valid"),
     }
     df
   }
-  shipped_path <- system.file("extdata",
-    "siu_canonical_overrides.csv.gz",
-    package = "morie"
-  )
+  shipped_path <- .morie_extdata("siu_canonical_overrides.csv.gz")
   if ((shipped_path == "" || !file.exists(shipped_path)) &&
       requireNamespace("rmoriedata", quietly = TRUE)) {
     shipped_path <- system.file("extdata",
@@ -759,17 +734,10 @@ morie_siu_record_correction <- function(case_number, field,
 
 # Internal: read the shipped DRID manifest if present. Returns NULL on
 # any failure so the harvester degrades gracefully to a full sweep.
-#' Internal: read the shipped DRID manifest if present. Returns NULL on
-#'
-#' any failure so the harvester degrades gracefully to a full sweep.
-#'
-#' @return The value of \code{m}, as built in the body.
-#' @export
-#' @examples
-#' res <- .siu_load_manifest()
-#' res
+#' Internal helper: Siu Load Manifest
+#' @noRd
 .siu_load_manifest <- function() {
-  p <- system.file("extdata", "siu_drid_manifest.csv.gz", package = "morie")
+  p <- .morie_extdata("siu_drid_manifest.csv.gz")
   if ((!nzchar(p) || !file.exists(p)) &&
       requireNamespace("rmoriedata", quietly = TRUE)) {
     p <- system.file("extdata", "siu_drid_manifest.csv.gz",
@@ -972,13 +940,17 @@ morie_siu_refresh_manifest <- function(
 #'   \code{report_html}, \code{news_html}, \code{report_text}
 #'   (HTML-stripped plain text of the report) and \code{news_text}.
 #' @examples
+#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \donttest{
+#' # Materialize the corpus cache first (fast via rmoriedata):
+#' morie_fetch_siu(cache_dir = file.path(tempdir(), "morie", "siu"))
 #' a <- morie_siu_audit_case(
 #'   "17-OVI-201",
 #'   cache_dir = file.path(tempdir(), "morie", "siu")
 #' )
 #' cat(substr(a$report_text, 1, 1000), "\n")
 #' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_siu_audit_case <- function(case_number,
                                  cache_dir = file.path(tempdir(), "morie", "siu"),
@@ -986,6 +958,11 @@ morie_siu_audit_case <- function(case_number,
   cache_dir <- path.expand(cache_dir)
   html_dir <- file.path(cache_dir, "html")
   csv_path <- file.path(cache_dir, "SIU.csv")
+  if (!file.exists(csv_path) && isTRUE(fetch_if_missing)) {
+    # Corpus-first: materialize the cache (the rmoriedata panel-reviewed
+    # corpus when installed) instead of demanding a manual fetch.
+    morie_fetch_siu(cache_dir = cache_dir, progress = FALSE)
+  }
   if (!file.exists(csv_path)) {
     stop("No SIU.csv at '", csv_path, "'; run morie_fetch_siu() first.",
       call. = FALSE
@@ -1011,6 +988,15 @@ morie_siu_audit_case <- function(case_number,
   nrid <- suppressWarnings(as.integer(row$nrid[1L]))
 
   fetch_one <- function(url) {
+    # A live fetch must not happen under R CMD check: CRAN's machines
+    # must not reach external services, and a request they cannot serve
+    # sits on its timeout and then retries. One test in test-siu.R spent
+    # 209 of that file's 215 seconds waiting here and raised the same
+    # error either way. Treated as a fetch that failed, which is what
+    # already happens, only without the wait.
+    if (!.siu_live_fetch_allowed()) {
+      return("")
+    }
     tryCatch(.siu_http_get(url), error = function(e) "")
   }
 
@@ -1301,18 +1287,8 @@ morie_siu_compare <- function(case_number, external,
   if (!is.finite(t) || t < 1L) 600L else t
 }
 
-#' .siu_llm_providers
-#'
-#' A step of the siu implementation. Called by \code{.siu_llm_call_one}.
-#' See the file header for the source the module follows.
-#' follows.
-#'
-#' @return A list with \code{gemini}, \code{claude}, \code{vertex}, \code{ollama},
-#' \code{openai}, \code{openai_compatible}.
-#' @export
-#' @examples
-#' res <- .siu_llm_providers()
-#' res
+#' Internal helper: Siu Llm Providers
+#' @noRd
 .siu_llm_providers <- function() {
   list(
     gemini = list(
@@ -1430,24 +1406,24 @@ morie_siu_compare <- function(case_number, external,
       }
     ),
     ollama = list(
-      # OLLAMA_HOST is the documented env var, but if unset we silently
-      # try a local daemon at http://localhost:11434 -- that's the
-      # zero-config path for a user who's just installed `ollama` and
-      # pulled `gemma3:4b` (or any Gemma / Functiongemma variant). No
-      # API key, no paid subscription, no signup needed.
+      # OLLAMA_HOST is the documented env var -- point it at a local
+      # daemon (http://localhost:11434), a box on your network, or a
+      # remote / Cloudflare-tunnelled server. If unset we try localhost.
+      # No API key, no paid subscription, no signup needed; you bring
+      # your own model.
       #
-      # On CPU-only hardware (e.g. Raspberry Pi 5) the default
-      # gemma3:4b model is slow (~3 tok/sec); set OLLAMA_MODEL to
-      # gemma3:270m (~290 MB, ~50 tok/sec) for a 10x speedup with
-      # only modest quality loss. OLLAMA_KEEP_ALIVE keeps the loaded
-      # model resident across requests so we don't pay the 10s
+      # No model is bundled or assumed: OLLAMA_MODEL names the model, and
+      # if it's unset we use whatever the server actually serves (its first
+      # /api/tags entry). On slow CPU-only hardware prefer a smaller model
+      # (fewer B params) for higher tok/sec. OLLAMA_KEEP_ALIVE keeps the
+      # loaded model resident across requests so we don't pay the ~10s
       # cold-start tax per case.
       env_required = "OLLAMA_HOST_OR_DEFAULT",
       build = function(env, prompt) {
         host <- sub("/+$", "", env[["OLLAMA_HOST_OR_DEFAULT"]])
         headers <- list("content-type" = "application/json")
         # Optional bearer token, for hosted Ollama-compatible APIs
-        # (e.g. OllamaFreeAPI gateways) that require auth. Local
+        # (e.g. hosted inference gateways) that require auth. Local
         # Ollama at localhost:11434 doesn't need it.
         api_key <- Sys.getenv("OLLAMA_API_KEY", unset = "")
         if (nzchar(api_key)) {
@@ -1457,10 +1433,17 @@ morie_siu_compare <- function(case_number, external,
           url = paste0(host, "/api/generate"),
           headers = headers,
           body = list(
-            model = if (nzchar(Sys.getenv("OLLAMA_MODEL", ""))) {
-              Sys.getenv("OLLAMA_MODEL")
-            } else {
-              "gemma3:4b"
+            # No hardcoded model: use OLLAMA_MODEL, else the first model the
+            # server actually serves. Errors clearly when neither is available
+            # (retired tags like gemma3/llama3.2 make an assumed default fail).
+            model = {
+              m <- .morie_llm_ollama_default_model(host)
+              if (is.na(m)) {
+                stop("No usable Ollama model. Set OLLAMA_MODEL to a model your ",
+                     "server serves, or pull one (`ollama pull <model>`). Host: ",
+                     host, call. = FALSE)
+              }
+              m
             },
             prompt = prompt,
             format = "json",
@@ -1559,16 +1542,8 @@ morie_siu_compare <- function(case_number, external,
 # Default timeout is 600s (10 min) -- long enough to accommodate
 # slow CPU-only local Ollama generation on a Raspberry Pi. Override
 # via MORIE_LLM_TIMEOUT_S env var or the timeout_s arg.
-#' Default timeout is 600s (10 min) -- long enough to accommodate
-#'
-#' slow CPU-only local Ollama generation on a Raspberry Pi. Override via
-#' MORIE_LLM_TIMEOUT_S env var or the timeout_s arg.
-#'
-#' @param model The body requires: . Set it, or use model = "ollama" with a local.
-#' @param prompt Passed to \code{morie_llm_ask}.
-#' @param timeout_s Defaults to \code{.siu_llm_default_timeout()}.
-#' @return The value of \code{p$extract}.
-#' @export
+#' Internal helper: Siu Llm Call One
+#' @noRd
 .siu_llm_call_one <- function(model, prompt,
                               timeout_s = .siu_llm_default_timeout()) {
   if (!requireNamespace("httr2", quietly = TRUE)) {
@@ -1580,10 +1555,6 @@ morie_siu_compare <- function(case_number, external,
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     stop("LLM helpers require the 'jsonlite' package", call. = FALSE)
   }
-  if (identical(model, "freeapi")) {
-    # Keyless path through the morie_llm free-provider stack.
-    return(morie_llm_ask(prompt))
-  }
   providers <- .siu_llm_providers()
   if (!model %in% names(providers)) {
     stop("Unknown LLM model: '", model, "'. Available: ",
@@ -1593,7 +1564,7 @@ morie_siu_compare <- function(case_number, external,
   }
   p <- providers[[model]]
   # Ollama gets a localhost:11434 default if OLLAMA_HOST is unset --
-  # that's the zero-config "install ollama, pull gemma3:4b, done"
+  # that's the zero-config "install ollama, pull a model, done"
   # path. All other providers still hard-require their API key env.
   if (p$env_required == "OLLAMA_HOST_OR_DEFAULT") {
     env_val <- Sys.getenv("OLLAMA_HOST", unset = "")
@@ -1626,22 +1597,12 @@ morie_siu_compare <- function(case_number, external,
 # character vector for failover (e.g. c("gemini", "ollama")). The
 # `mock_response_text` arg exists ONLY so unit tests can exercise
 # the surrounding R glue without hitting the network.
-#' Internal: try `model` in order. The first one whose env var is set
-#'
-#' AND whose request returns without erroring wins. `model` may be a
-#' character vector for failover (e.g. c("gemini", "ollama")). The
-#' `mock_response_text` arg exists ONLY so unit tests can exercise the
-#' surrounding R glue without hitting the network.
-#'
-#' @param model A vector; its length is taken.
-#' @param prompt Passed to \code{.siu_llm_call_one}.
-#' @param timeout_s Passed to \code{.siu_llm_call_one}.
-#' @param mock_response_text Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @return Nothing; this branch always raises.
-#' @export
+#' Internal helper: Siu Llm Call
+#' @noRd
 .siu_llm_call <- function(model, prompt,
                           timeout_s = .siu_llm_default_timeout(),
-                          mock_response_text = NULL) {
+                          mock_response_text = NULL,
+                          expect_json = FALSE) {
   if (!is.null(mock_response_text)) {
     return(mock_response_text)
   }
@@ -1656,6 +1617,20 @@ morie_siu_compare <- function(case_number, external,
       .siu_llm_call_one(m, prompt, timeout_s = timeout_s),
       error = function(e) structure(conditionMessage(e), class = "err")
     )
+    if (!inherits(res, "err") && isTRUE(expect_json)) {
+      # A provider that answers with prose (e.g. a service notice)
+      # instead of the requested JSON is a failure -- keep going down
+      # the chain rather than handing garbage to the parser.
+      probe <- gsub("^```(?:json)?\\s*|\\s*```$", "", res, perl = TRUE)
+      ok <- tryCatch({
+        .morie_from_json(probe, simplifyVector = TRUE)
+        TRUE
+      }, error = function(e) FALSE)
+      if (!ok) {
+        res <- structure("provider returned non-JSON output",
+                         class = "err")
+      }
+    }
     if (!inherits(res, "err")) {
       return(res)
     }
@@ -1728,8 +1703,8 @@ morie_siu_compare <- function(case_number, external,
 #' not leak into call traces, logs, or scripts. Set
 #' \code{GOOGLE_API_KEY} for Gemini, \code{ANTHROPIC_API_KEY} for
 #' Claude, or \code{OLLAMA_HOST} (e.g.
-#' \code{"http://localhost:11434"} or an OllamaFreeAPI base URL) plus
-#' optionally \code{OLLAMA_MODEL} (default \code{"llama3.2:3b"}) for
+#' \code{"http://localhost:11434"} or an OpenAI-compatible base URL) plus
+#' optionally \code{OLLAMA_MODEL} (else the first model the server serves) for
 #' Ollama-compatible open-weight endpoints.
 #'
 #' @param case_number An SIU case number (e.g. \code{"17-OVI-201"}).
@@ -1741,7 +1716,7 @@ morie_siu_compare <- function(case_number, external,
 #'   free model first and only escalates to paid Gemini if Ollama
 #'   isn't installed or fails -- so morie costs $0 to use as long
 #'   as you have a free Gemma / Qwen / Llama running locally
-#'   (e.g. \code{ollama pull gemma3:4b}).
+#'   (e.g. \code{ollama pull <model>}).
 #' @param cache_dir Directory holding the harvester's SIU.csv and
 #'   the optional \code{html/} subdirectory.
 #' @param max_html_chars Soft cap on the HTML payload sent to the
@@ -1753,9 +1728,10 @@ morie_siu_compare <- function(case_number, external,
 #'   field the model could not extract is the empty string
 #'   (matching the C++ parser's convention).
 #' @examples
-#' \donttest{
-#' Sys.setenv(GOOGLE_API_KEY = "your-gemini-key")
-#' r <- morie_siu_llm_extract("17-OVI-201", model = "gemini")
+#' \dontshow{if (morie_llm_probe_ollama()) withAutoprint(\{ # examplesIf}
+#' # Local Ollama is the default provider (free, no key); Gemini and
+#' # other cloud providers are optional fallbacks via model=.
+#' r <- morie_siu_llm_extract("17-OVI-201", model = "ollama")
 #' # Diff parser vs LLM against the HTML:
 #' morie_siu_compare(
 #'   "17-OVI-201",
@@ -1763,9 +1739,10 @@ morie_siu_compare <- function(case_number, external,
 #'   field_map = setNames(as.list(names(r)), names(r)),
 #'   external_case_col = "case_number"
 #' )
-#' }
+#' \dontshow{\}) # examplesIf}
 #' @export
-morie_siu_llm_extract <- function(case_number, model = c("ollama", "gemini"),
+morie_siu_llm_extract <- function(case_number,
+                                  model = c("ollama", "gemini"),
                                   cache_dir = file.path(tempdir(), "morie", "siu"),
                                   max_html_chars = 80000L,
                                   mock_response_text = NULL) {
@@ -1781,14 +1758,7 @@ morie_siu_llm_extract <- function(case_number, model = c("ollama", "gemini"),
     # Self-serve path: no harvester cache present. Resolve the case's
     # drid through the bundled manifest and fetch the report page
     # directly -- anomaly_check then needs nothing but a case number.
-    man <- tryCatch(.siu_load_manifest(), error = function(e) NULL)
-    drid <- if (!is.null(man)) {
-      lang_col <- intersect(c("X_language", "_language"), names(man))
-      lang <- if (length(lang_col)) man[[lang_col[1L]]] else "en"
-      hit <- man[man$case_number == case_number &
-                   lang %in% c("en", "unknown"), , drop = FALSE]
-      if (nrow(hit)) hit$drid[1L] else NA_integer_
-    } else NA_integer_
+    drid <- .siu_resolve_drid(case_number)
     if (is.finite(drid)) {
       html <- tryCatch(.siu_fetch_http_get(paste0(
         "https://www.siu.on.ca/en/directors_report_details.php?drid=",
@@ -1811,7 +1781,13 @@ morie_siu_llm_extract <- function(case_number, model = c("ollama", "gemini"),
       call. = FALSE
     )
   }
-  if (nchar(html) > max_html_chars) html <- substr(html, 1L, max_html_chars)
+  # Strip markup before prompting: the models only need the report
+  # prose, and plain text is ~5x smaller than the raw page -- faster
+  # and less confusing for small community-hosted models.
+  report_text <- gsub("\\s+", " ", gsub("<[^>]+>", " ", html))
+  if (nchar(report_text) > max_html_chars) {
+    report_text <- substr(report_text, 1L, max_html_chars)
+  }
 
   fields <- .siu_field_list()
   prompt <- paste(
@@ -1823,11 +1799,12 @@ morie_siu_llm_extract <- function(case_number, model = c("ollama", "gemini"),
     "the matching *_raw field. For boolean fields, return \"true\" or",
     "\"false\". Do not invent any values.\n\n",
     "Keys:\n", paste(fields, collapse = ", "), "\n\n",
-    "Report HTML:\n", html
+    "Report text:\n", report_text
   )
 
   text <- .siu_llm_call(model, prompt,
-    mock_response_text = mock_response_text
+    mock_response_text = mock_response_text,
+    expect_json = TRUE
   )
   # Some models wrap JSON in ```json ... ```; strip if present.
   text <- gsub("^```(?:json)?\\s*|\\s*```$", "", text, perl = TRUE)
@@ -1875,18 +1852,20 @@ morie_siu_llm_extract <- function(case_number, model = c("ollama", "gemini"),
 #'   \code{"agree"} / \code{"disagree"} / \code{"unclear"}), and
 #'   \code{reason} (a short sentence pointing to the report passage).
 #' @examples
+#' \dontshow{if (morie_llm_probe_ollama() && requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' \donttest{
-#' Sys.setenv(GOOGLE_API_KEY = "your-gemini-key")
-#' a <- morie_siu_anomaly_check("17-OVI-201", model = "gemini")
-#' subset(a, verdict == "disagree")
+#' # Local Ollama is the default provider (free, no key); the report
+#' # HTML is fetched live, so try() keeps offline checks graceful.
+#' a <- try(morie_siu_anomaly_check("17-OVI-201", model = "ollama"))
+#' if (!inherits(a, "try-error")) subset(a, verdict == "disagree")
 #' }
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_siu_anomaly_check <- function(case_number,
                                     model = c("ollama",
                                               "openai_compatible",
                                               "claude", "openai",
-                                              "gemini", "vertex",
-                                              "freeapi"),
+                                              "gemini", "vertex"),
                                     cache_dir = file.path(tempdir(), "morie", "siu"),
                                     max_html_chars = 80000L,
                                     mock_response_text = NULL) {
@@ -1902,14 +1881,7 @@ morie_siu_anomaly_check <- function(case_number,
     # Self-serve path: no harvester cache present. Resolve the case's
     # drid through the bundled manifest and fetch the report page
     # directly -- anomaly_check then needs nothing but a case number.
-    man <- tryCatch(.siu_load_manifest(), error = function(e) NULL)
-    drid <- if (!is.null(man)) {
-      lang_col <- intersect(c("X_language", "_language"), names(man))
-      lang <- if (length(lang_col)) man[[lang_col[1L]]] else "en"
-      hit <- man[man$case_number == case_number &
-                   lang %in% c("en", "unknown"), , drop = FALSE]
-      if (nrow(hit)) hit$drid[1L] else NA_integer_
-    } else NA_integer_
+    drid <- .siu_resolve_drid(case_number)
     if (is.finite(drid)) {
       html <- tryCatch(.siu_fetch_http_get(paste0(
         "https://www.siu.on.ca/en/directors_report_details.php?drid=",
@@ -1976,16 +1948,19 @@ morie_siu_anomaly_check <- function(case_number,
   )
 
   text <- tryCatch(
-    .siu_llm_call(model, prompt, mock_response_text = mock_response_text),
+    .siu_llm_call(model, prompt, mock_response_text = mock_response_text,
+                  expect_json = TRUE),
     error = function(e) NULL
   )
-  if (is.null(text)) {
-    # Deterministic keyless fallback: no LLM reachable (no local
-    # ollama, free API down, no Gemini key). Verdict by verbatim
-    # containment of the parsed value in the report text -- weaker
-    # than an LLM audit but it always works, offline, for everyone.
+  # Deterministic keyless fallback: no LLM reachable (no local ollama,
+  # free API down, no Gemini key), or a provider answered with
+  # something that is not the requested JSON (e.g. the free API's
+  # local-only notice). Verdict by verbatim containment of the parsed
+  # value in the report text -- weaker than an LLM audit but it always
+  # works, offline, for everyone.
+  deterministic <- function() {
     plain <- tolower(gsub("\\s+", " ", gsub("<[^>]+>", " ", html)))
-    out <- do.call(rbind, lapply(populated, function(p) {
+    do.call(rbind, lapply(populated, function(p) {
       v <- tolower(gsub("\\s+", " ", p$value))
       hit <- nzchar(v) && grepl(v, plain, fixed = TRUE)
       data.frame(
@@ -1998,10 +1973,16 @@ morie_siu_anomaly_check <- function(case_number,
         },
         stringsAsFactors = FALSE)
     }))
-    return(out)
+  }
+  if (is.null(text)) {
+    return(deterministic())
   }
   text <- gsub("^```(?:json)?\\s*|\\s*```$", "", text, perl = TRUE)
-  rows <- .morie_from_json(text, simplifyVector = TRUE)
+  rows <- tryCatch(.morie_from_json(text, simplifyVector = TRUE),
+                   error = function(e) NULL)
+  if (is.null(rows)) {
+    return(deterministic())
+  }
   if (is.null(rows) || (is.data.frame(rows) && !nrow(rows))) {
     return(data.frame(
       field = character(0), parser_value = character(0),
@@ -2049,8 +2030,10 @@ morie_siu_anomaly_check <- function(case_number,
 #'   \code{issues_count}.
 #' @examples
 #' \donttest{
-#' csv <- morie_fetch_siu(cache_dir = tempdir(), cache_html = TRUE)
-#' sanity <- morie_siu_sanity_check(csv)
+#' # Corpus-first fetch is fast when rmoriedata is installed.
+#' csv <- morie_fetch_siu(cache_dir = file.path(tempdir(), "siu_sanity"))
+#' df <- utils::read.csv(csv, colClasses = "character")
+#' sanity <- morie_siu_sanity_check(utils::head(df, 50))
 #' head(sanity, 10) # worst 10 rows -- inspect against HTML
 #' table(sanity$issues_count)
 #' }
@@ -2162,12 +2145,14 @@ morie_siu_sanity_check <- function(df) {
   )
   out <- data.frame(
     case_number = df$case_number,
-    drid = df$drid,
+    drid = if (!is.null(df$drid)) df$drid else rep(NA_character_, nrow(df)),
     issues_count = issues_count,
     issues = collapsed,
     stringsAsFactors = FALSE
   )
-  out <- out[order(-out$issues_count, out$drid), , drop = FALSE]
+  if (nrow(out)) {
+    out <- out[order(-out$issues_count, out$drid), , drop = FALSE]
+  }
   rownames(out) <- NULL
   out
 }
@@ -2295,29 +2280,19 @@ morie_siu_translate_fr_to_en <- function(
   )
 }
 
-#' .siu_translate_impl
-#'
-#' A step of the siu implementation. Called by \code{morie_siu_translate},
-#' \code{morie_siu_translate_fr_to_en}.
-#' See the file header for the source the module follows.
-#' follows.
-#'
-#' @param target_lang Passed to \code{!=}.
-#' @param source_lang Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param case_numbers Optional; may be \code{NULL}. A vector; its length is taken and
-#' its elements indexed.
-#' @param model Passed to \code{.siu_llm_call}.
-#' @param fields Iterated over elementwise, with \code{lapply}.
-#' @param cache_dir Passed to \code{.siu_load_canonical_overrides}.
-#' @param progress A flag; the body branches on it.
-#' @return Invisibly,the value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Siu Translate Impl
+#' @noRd
 .siu_translate_impl <- function(
   target_lang, source_lang, case_numbers, model,
   fields, cache_dir, progress
 ) {
   cache_dir <- path.expand(cache_dir)
   csv_path <- file.path(cache_dir, "SIU.csv")
+  if (!file.exists(csv_path)) {
+    # Corpus-first: materialize the cache (the rmoriedata panel-reviewed
+    # corpus when installed) instead of demanding a manual fetch.
+    morie_fetch_siu(cache_dir = cache_dir, progress = FALSE)
+  }
   if (!file.exists(csv_path)) {
     stop("No SIU.csv at '", csv_path, "'; run morie_fetch_siu() first.",
       call. = FALSE
@@ -2599,4 +2574,107 @@ morie_siu_audit_columns <- function(case_numbers, model = c("ollama", "gemini"),
     vapply(per_field, function(x) x$field, character(1))
   )
   out
+}
+
+.morie_siu_state <- new.env(parent = emptyenv())
+
+#' Resolve an SIU case number to its report drid
+#'
+#' Manifest first (fast, offline); when the case is newer than the
+#' bundled manifest (or fell into an over-probed placeholder drid), a
+#' polite live search of the directors-reports index resolves it, so
+#' self-serve callers work for ANY published case with no cache and no
+#' keys. Newest reports render first, so the live search usually hits
+#' within the first page.
+#'
+#' @keywords internal
+#' @noRd
+.siu_resolve_drid <- function(case_number) {
+  man <- tryCatch(.siu_load_manifest(), error = function(e) NULL)
+  if (!is.null(man)) {
+    lang_col <- intersect(c("X_language", "_language"), names(man))
+    lang <- if (length(lang_col)) man[[lang_col[1L]]] else "en"
+    hit <- man[man$case_number == case_number &
+                 lang %in% c("en", "unknown"), , drop = FALSE]
+    if (nrow(hit)) return(hit$drid[1L])
+  }
+  # Live fallback: consult the session-cached case->drid table built
+  # from the online index (newest first). New reports sit in the first
+  # page or two, so we page lazily: check the cache, extend it only as
+  # far as needed, and remember everything fetched so an exhaustive
+  # miss is paid at most once per session.
+  lookup <- function() {
+    tab <- .morie_siu_state$live_index
+    if (!is.null(tab)) tab[[case_number]] else NULL
+  }
+  hit <- lookup()
+  if (!is.null(hit)) return(hit)
+  if (isTRUE(.morie_siu_state$live_index_complete)) return(NA_integer_)
+  # An exhaustive miss pages the WHOLE live index: about ninety requests
+  # at the rate limit, which is 209 of test-siu.R's 215 seconds spent
+  # resolving a case number that does not exist. CRAN's machines must
+  # not reach external services either, so under R CMD check report the
+  # miss rather than sweeping. Opt in with the switches the harvest
+  # paths already use.
+  if (!.siu_live_fetch_allowed()) return(NA_integer_)
+  if (is.null(.morie_siu_state$live_index)) {
+    .morie_siu_state$live_index <- new.env(parent = emptyenv())
+  }
+  tab <- .morie_siu_state$live_index
+  index_url <- morie_siu_index_url()
+  absorb <- function(chunk) {
+    links <- tryCatch(
+      .siu_fetch_extract_links(chunk, base_url = index_url),
+      error = function(e) NULL)
+    if (is.null(links) || !nrow(links)) return(0L)
+    for (i in seq_len(nrow(links))) {
+      dm <- regmatches(links[i, "url"],
+                       regexec("drid=([0-9]+)", links[i, "url"]))[[1L]]
+      if (length(dm) == 2L) {
+        tab[[links[i, "case_number"]]] <- as.integer(dm[2L])
+      }
+    }
+    nrow(links)
+  }
+  got <- .morie_siu_state$live_index_count %||% 0L
+  if (got == 0L) {
+    html <- tryCatch(.siu_fetch_http_get(index_url), error = function(e) "")
+    if (!nzchar(html)) return(NA_integer_)
+    tm <- regmatches(html, regexec(
+      'id="total_drs"[^>]*value="([0-9]+)"', html))[[1L]]
+    .morie_siu_state$live_index_total <-
+      if (length(tm) == 2L) as.integer(tm[2L]) else NA_integer_
+    got <- absorb(html)
+    .morie_siu_state$live_index_count <- got
+    hit <- lookup()
+    if (!is.null(hit)) return(hit)
+  }
+  total <- .morie_siu_state$live_index_total
+  more_base <- sub("/en/directors_reports\\.php$",
+                   "/ssi/get_more_drs.php", index_url)
+  while (!is.na(total) && got < total) {
+    chunk <- tryCatch(.siu_fetch_http_get(
+      paste0(more_base, "?lang=en&lastCount=", got)),
+      error = function(e) "")
+    if (!nzchar(chunk)) break
+    n <- absorb(chunk)
+    if (n == 0L) break
+    got <- got + n
+    .morie_siu_state$live_index_count <- got
+    hit <- lookup()
+    if (!is.null(hit)) return(hit)
+    Sys.sleep(.siu_fetch_rate_seconds)
+  }
+  if (!is.na(total) && got >= total) {
+    .morie_siu_state$live_index_complete <- TRUE
+  }
+  NA_integer_
+}
+
+#' Internal helper: Siu Live Fetch Allowed
+#' @noRd
+.siu_live_fetch_allowed <- function() {
+  !nzchar(Sys.getenv("_R_CHECK_PACKAGE_NAME_")) ||
+    isTRUE(getOption("morie.siu.allow_fetch")) ||
+    nzchar(Sys.getenv("RMORIE_NETWORK_TESTS"))
 }

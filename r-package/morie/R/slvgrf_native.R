@@ -18,9 +18,6 @@
 # weights, and the same half-sample bootstrap with the 1/sqrt(2)
 # rescale justified by Corollary 5.
 
-.slvgrf_EPS <- 1e-12
-.slvgrf_WEIGHTS <- c("qini", "autoc", "uniform")
-
 #' .slvgrf_vec
 #'
 #' A step of the slvgrf_native implementation. Called by \code{.check},
@@ -61,84 +58,112 @@
   list(g = g, s = s)
 }
 
-#' Doubly-robust AIPW score
-#' @param Y See Usage.
-#' @param W See Usage.
-#' @param mu1 See Usage.
-#' @param mu0 See Usage.
-#' @param e See Usage.
+#' aipw_scores
+#'
+#' A step of the slvgrf_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param Y Coerced to numeric by the body, with \code{as.numeric}.
+#' @param W Coerced to numeric by the body, with \code{as.numeric}.
+#' @param mu1 Coerced to numeric by the body, with \code{as.numeric}.
+#' @param mu0 Coerced to numeric by the body, with \code{as.numeric}.
+#' @param e A vector; its length is taken.
+#' @return A vector, from \code{as.numeric}.
 #' @export
+#' @keywords internal
 aipw_scores <- function(Y, W, mu1, mu0, e) {
-  y <- .slvgrf_vec(Y)
-  w <- .slvgrf_vec(W)
-  m1 <- .slvgrf_vec(mu1)
-  m0 <- .slvgrf_vec(mu0)
+  y <- as.numeric(Y)
+  w <- as.numeric(W)
+  m1 <- as.numeric(mu1)
+  m0 <- as.numeric(mu0)
   n <- length(y)
-  ev <- if (is.numeric(e) && length(e) == 1L) rep(as.numeric(e), n)
-        else .slvgrf_vec(e)
-  for (nm in c("W", "mu1", "mu0", "e")) {
-    v <- switch(nm, W = w, mu1 = m1, mu0 = m0, e = ev)
-    if (length(v) != n) {
-      stop("slvgrf: ", nm, " has ", length(v),
-           " entries for ", n, " units")
-    }
+  if (length(e) == 1L) {
+    ev <- rep(as.numeric(e), n)
+  } else {
+    ev <- as.numeric(e)
   }
-  for (v in w) {
-    if (!(v == 0 || v == 1)) {
-      stop("slvgrf: W must be 0/1, got ", deparse(v))
-    }
-  }
-  for (v in ev) {
-    if (!(v > 0 && v < 1)) {
-      stop("slvgrf: the propensity must lie strictly in (0, 1); got ",
-           deparse(v), " -- overlap fails")
-    }
-  }
-  sapply(seq_len(n), function(i) {
-    m1[i] - m0[i] + w[i] * (y[i] - m1[i]) / ev[i] -
-      (1 - w[i]) * (y[i] - m0[i]) / (1 - ev[i])
-  })
+  if (length(w) != n)
+    stop(sprintf("slvgrf: W has %d entries for %d units", length(w), n))
+  if (length(m1) != n)
+    stop(sprintf("slvgrf: mu1 has %d entries for %d units",
+                 length(m1), n))
+  if (length(m0) != n)
+    stop(sprintf("slvgrf: mu0 has %d entries for %d units",
+                 length(m0), n))
+  if (length(ev) != n)
+    stop(sprintf("slvgrf: e has %d entries for %d units", length(ev), n))
+  for (v in w)
+    if (!(v == 0.0 || v == 1.0))
+      stop(sprintf("slvgrf: W must be 0/1, got %s", v))
+  for (v in ev)
+    if (!(v > 0.0 && v < 1.0))
+      stop(sprintf(paste0("slvgrf: the propensity must lie strictly ",
+                          "in (0, 1); got %s -- overlap fails"), v))
+  out <- m1 - m0 + w * (y - m1) / ev - (1.0 - w) * (y - m0) / (1.0 - ev)
+  as.numeric(out)
 }
 
-#' TOC at u = j/n for j = 1..n (Definition 2)
-#' @param scores See Usage.
-#' @param priority See Usage.
+#' toc_curve
+#'
+#' A step of the slvgrf_native implementation. Called by \code{rate}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param scores Passed to \code{.slvgrf_check}.
+#' @param priority Passed to \code{.slvgrf_check}.
+#' @return A list with \code{u}, \code{toc}, \code{ate}, \code{order}, \code{n}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' toc_curve(V, V)
+#' @keywords internal
 toc_curve <- function(scores, priority) {
-  ch <- .check(scores, priority)
-  g <- ch$g
-  s <- ch$s
+  chk <- .slvgrf_check(scores, priority)
+  g <- chk$g
+  s <- chk$s
   n <- length(g)
-  ord <- order(-s, seq_len(n))
+  order <- order(-s, seq_len(n) - 1L)
   ate <- sum(g) / n
-  run <- 0
+  run <- 0.0
   toc <- numeric(n)
   us <- numeric(n)
-  for (j in seq_along(ord)) {
-    i <- ord[j]
+  for (j in seq_len(n)) {
+    i <- order[j]
     run <- run + g[i]
     toc[j] <- run / j - ate
-    us[j] <- j / n
+    us[j] <- j / as.numeric(n)
   }
-  list(u = us, toc = toc, ate = ate, order = ord - 1L, n = n)
+  list(u = us, toc = toc, ate = ate, order = as.integer(order),
+       n = as.integer(n))
 }
 
-#' RATE: int alpha(u) TOC(u) du
-#' @param scores See Usage.
-#' @param priority See Usage.
-#' @param weight See Usage.
+#' rate
+#'
+#' A step of the slvgrf_native implementation. Called by \code{autoc},
+#' \code{qini_coefficient}, \code{rate_test}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param scores Passed to \code{toc_curve}.
+#' @param priority Passed to \code{toc_curve}.
+#' @param weight Compared against \code{"qini"}. Defaults to \code{"autoc"}.
+#' @return A list with \code{estimate}, \code{weight}, \code{curve}, \code{n}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' rate(V, V)
+#' @keywords internal
 rate <- function(scores, priority, weight = "autoc") {
-  if (!(weight %in% .slvgrf_WEIGHTS)) {
-    stop("slvgrf: weight must be one of ",
-         paste(.slvgrf_WEIGHTS, collapse = ", "), ", got ", deparse(weight))
-  }
+  if (!(weight %in% .SLVGRF_WEIGHTS))
+    stop(sprintf("slvgrf: weight must be one of %s, got %s",
+                 paste(.SLVGRF_WEIGHTS, collapse = ", "), weight))
   c <- toc_curve(scores, priority)
   n <- c$n
-  val <- if (weight == "qini") {
-    sum(c$u * c$toc) / n
+  if (weight == "qini") {
+    val <- sum(c$u * c$toc) / n
   } else {
-    sum(c$toc) / n
+    val <- sum(c$toc) / n
   }
   list(estimate = val, weight = weight, curve = c, n = n)
 }
@@ -159,83 +184,164 @@ qini_coefficient <- function(scores, priority) {
   rate(scores, priority, weight = "qini")$estimate
 }
 
-#' Qini curve: cumulative gain from treating the top fraction
-#' @param scores See Usage.
-#' @param priority See Usage.
-#' @param cost See Usage.
+#' qini_curve
+#'
+#' A step of the slvgrf_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param scores Passed to \code{.slvgrf_check}.
+#' @param priority Passed to \code{.slvgrf_check}.
+#' @param cost Optional; may be \code{NULL}. A vector; its length is taken.
+#' @return A list with \code{spend}, \code{gain}, \code{ate}, \code{n}, \code{constrained}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' qini_curve(V, V)
+#' @keywords internal
 qini_curve <- function(scores, priority, cost = NULL) {
-  ch <- .check(scores, priority)
-  g <- ch$g
-  s <- ch$s
+  chk <- .slvgrf_check(scores, priority)
+  g <- chk$g
+  s <- chk$s
   n <- length(g)
-  ord <- order(-s, seq_len(n))
+  order <- order(-s, seq_len(n) - 1L)
   if (is.null(cost)) {
-    cv <- rep(1, n)
+    cv <- rep(1.0, n)
   } else {
-    cv <- if (is.numeric(cost) && length(cost) == 1L)
-      rep(as.numeric(cost), n) else .slvgrf_vec(cost)
-    if (length(cv) != n) {
-      stop("slvgrf: ", length(cv), " costs for ", n, " units")
-    }
-    if (any(cv <= 0)) {
+    if (length(cost) == 1L) cv <- rep(as.numeric(cost), n)
+    else cv <- as.numeric(cost)
+    if (length(cv) != n)
+      stop(sprintf("slvgrf: %d costs for %d units", length(cv), n))
+    if (any(cv <= 0.0))
       stop("slvgrf: costs must be positive")
-    }
   }
   total <- sum(cv)
-  run <- 0
-  spent <- 0
+  run <- 0.0
+  spent <- 0.0
   xs <- numeric(n)
   ys <- numeric(n)
-  for (j in seq_along(ord)) {
-    i <- ord[j]
+  for (k in seq_len(n)) {
+    i <- order[k]
     run <- run + g[i]
     spent <- spent + cv[i]
-    xs[j] <- spent / total
-    ys[j] <- run / n
+    xs[k] <- spent / total
+    ys[k] <- run / n
   }
   list(spend = xs, gain = ys, ate = sum(g) / n, n = n,
        constrained = !is.null(cost))
 }
 
-#' Half-sample bootstrap test of RATE = 0
-#' @param scores See Usage.
-#' @param priority See Usage.
-#' @param weight See Usage.
-#' @param reps See Usage.
-#' @param seed See Usage.
+#' rate_test
+#'
+#' A step of the slvgrf_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param scores Passed to \code{.slvgrf_check}.
+#' @param priority Passed to \code{.slvgrf_check}.
+#' @param weight Carried through into a list the body builds. Defaults to \code{"autoc"}.
+#' @param reps Coerced to integer by the body, with \code{as.integer}. Defaults to \code{500}.
+#' @param seed Passed to \code{.ghc_rng}. Defaults to \code{0}.
+#' @return A list with \code{estimate}, \code{se}, \code{z}, \code{p_value},
+#' \code{weight}, \code{reps}, \code{n}, \code{null}, \code{method}.
 #' @export
-rate_test <- function(scores, priority, weight = "autoc", reps = 500L,
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' rate_test(V, V)
+#' @keywords internal
+rate_test <- function(scores, priority, weight = "autoc", reps = 500,
                       seed = 0) {
-  ch <- .check(scores, priority)
-  g <- ch$g
-  s <- ch$s
+  chk <- .slvgrf_check(scores, priority)
+  g <- chk$g
+  s <- chk$s
   n <- length(g)
-  if (n < 8L) {
-    stop("slvgrf: the half-sample bootstrap needs at least 8 units, ",
-         "got ", n)
-  }
+  if (n < 8L)
+    stop(sprintf("slvgrf: the half-sample bootstrap needs at least 8 units, got %d", n))
   theta <- rate(g, s, weight = weight)$estimate
   e <- .ghc_rng(seed)
-  half <- n %/% 2L
-  draws <- numeric(reps)
-  for (r in seq_len(reps)) {
-    idx <- sample.int(n, half)
-    draws[r] <- rate(g[idx], s[idx], weight = weight)$estimate
+  half <- as.integer(n / 2L)
+  draws <- numeric(as.integer(reps))
+  for (k in seq_len(as.integer(reps))) {
+    u <- .ghc_unif(e, n)
+    ord <- order(u, seq_len(n) - 1L)
+    idx <- ord[seq_len(half)]
+    draws[k] <- rate(g[idx], s[idx], weight = weight)$estimate
   }
   m <- mean(draws)
-  v <- var(draws)
-  se <- sqrt(max(v, 0) / 2)
-  z <- if (se > .slvgrf_EPS) theta / se else 0
-  p <- 2 * (1 - pnorm(abs(z)))
+  v <- sum((draws - m) ^ 2) / (length(draws) - 1L)
+  se <- sqrt(max(v, 0.0) / 2.0)
+  z <- if (se > .SLVGRF_EPS) theta / se else 0.0
+  p <- 2.0 * (1.0 - pnorm(abs(z)))
   list(estimate = theta, se = se, z = z, p_value = p,
        weight = weight, reps = as.integer(reps), n = n,
-       null = paste("the priority score is independent of the ",
-                    "treatment effect (Remark 1), NOT that the ATE ",
-                    "is zero"),
-       method = paste("RATE with half-sample bootstrap, Yadlowsky ",
-                      "et al. (2025) Corollary 5"))
+       null = paste0("the priority score is independent of the ",
+                     "treatment effect (Remark 1), NOT that the ATE ",
+                     "is zero"),
+       method = paste0("RATE with half-sample bootstrap, Yadlowsky ",
+                       "et al. (2025) Corollary 5"))
 }
 
 # house entry point: the package exports one morie_<module>
-morie_slvgrf <- rate
+
+.SLVGRF_EPS <- 1e-12
+
+.SLVGRF_WEIGHTS <- c("qini", "autoc", "uniform")
+
+#' .slvgrf_check
+#'
+#' A step of the slvgrf_native implementation. Called by \code{qini_curve},
+#' \code{rate_test}, \code{toc_curve}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param scores Coerced to numeric by the body, with \code{as.numeric}.
+#' @param priority Coerced to numeric by the body, with \code{as.numeric}.
+#' @return A list with \code{g}, \code{s}.
+#' @export
+.slvgrf_check <- function(scores, priority) {
+  g <- as.numeric(scores)
+  s <- as.numeric(priority)
+  if (length(g) != length(s))
+    stop(sprintf("slvgrf: %d scores but %d priority values",
+                 length(g), length(s)))
+  if (length(g) < 2L)
+    stop(sprintf("slvgrf: need at least 2 units, got %d", length(g)))
+  list(g = g, s = s)
+}
+
+#' .slvgrf_cheatsheet
+#'
+#' A step of the slvgrf_native implementation. No other function in the package calls it.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @return A character value.
+#' @export
+#' @examples
+#' res <- .slvgrf_cheatsheet()
+#' res
+.slvgrf_cheatsheet <- function() {
+  paste0("slvgrf: score a PRIORITIZATION RULE, not a CATE fit. ",
+         "TOC(u) = mean effect in the top u minus the ATE, so ",
+         "TOC(1) = 0 exactly. RATE = int alpha(u) TOC(u) du; ",
+         "alpha(u)=u is Qini, alpha(u)=1 is AUTOC. If the score is ",
+         "independent of the effect, every RATE is exactly 0 -- so ",
+         "this tests HETEROGENEITY, not the ATE. Qini has more ",
+         "power when many units benefit, AUTOC when few do. ",
+         "Estimate off AIPW scores; test by half-sample bootstrap.")
+}
+
+slicedgrf <- rate
+
+sliced_grf <- rate
+
+morie_slvgrf <- list(aipw_scores = aipw_scores,
+                     toc_curve = toc_curve,
+                     rate = rate,
+                     qini_coefficient = qini_coefficient,
+                     autoc = autoc,
+                     qini_curve = qini_curve,
+                     rate_test = rate_test,
+                     cheatsheet = .slvgrf_cheatsheet,
+                     slicedgrf = slicedgrf,
+                     sliced_grf = sliced_grf)

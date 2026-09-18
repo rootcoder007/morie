@@ -9,7 +9,8 @@
 \arguments{
 \item{path}{Passed to \code{.morie_from_json}.}
 
-\item{fmt}{One of \code{"csv"}, \code{"json"}, \code{"parquet"}, \code{"tab"}, \code{"tsv"}, \code{"xls"}, \code{"xlsx"}.}
+\item{fmt}{One of \code{"csv"}, \code{"json"}, \code{"parquet"}, \code{"tab"},
+\code{"tsv"}, \code{"xls"}, \code{"xlsx"}.}
 }
 \value{
 The value of \code{utils::read.csv}.

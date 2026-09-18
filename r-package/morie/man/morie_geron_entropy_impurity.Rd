@@ -18,8 +18,6 @@ H = -sum_k p_k log2 p_k, in bits, with the nats conversion and the
 log2(K) ceiling alongside.
 }
 \examples{
-if (morie_crypto_liboqs_available()) {
-  V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-  morie_geron_entropy_impurity(V)
-}
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_entropy_impurity(V)
 }

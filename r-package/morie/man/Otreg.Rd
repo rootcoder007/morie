@@ -14,7 +14,6 @@ Otreg(a, b, C, epsilon, max_iter = 200)
 \item{epsilon}{Regularisation strength, positive.}
 
 \item{max_iter}{Sinkhorn sweeps; fixed count.}
-
 }
 \value{
 List with \code{f}, \code{g}, \code{dual_value},

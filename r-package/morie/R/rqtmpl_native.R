@@ -88,10 +88,13 @@ morie_haldane <- function(distance) {
 #' @return Map distance in Morgans.
 #' @references Haldane, J. B. S. (1919).
 #' @export
+#' @examples
+#' morie_inverse_haldane(morie_haldane(0.2))
+#' @keywords internal
 morie_inverse_haldane <- function(r) {
   r <- as.numeric(r)
   if (r < 0 || r >= 0.5)
-    stop(sprintf("rqtmpl: a recombination fraction must lie in [0, 0.5), got %r", r))
+    stop(sprintf("rqtmpl: a recombination fraction must lie in [0, 0.5), got %s", r))
   -0.5 * log(1 - 2 * r)
 }
 
@@ -109,13 +112,17 @@ morie_inverse_haldane <- function(r) {
 #'   in \code{[0, 0.5]}.
 #' @return Numeric vector of length 2, \code{c(G(0), G(1))}.
 #' @export
+#' @examples
+#' morie_genotype_probabilities(left = 1L, right = 0L, r_left = 0.1,
+#'                              r_right = 0.15)
+#' @keywords internal
 morie_genotype_probabilities <- function(left, right, r_left, r_right) {
   rl <- as.numeric(r_left)
   rr <- as.numeric(r_right)
   if (rl < 0 || rl > 0.5)
-    stop(sprintf("rqtmpl: recombination fractions lie in [0, 0.5], got %r", r_left))
+    stop(sprintf("rqtmpl: recombination fractions lie in [0, 0.5], got %s", r_left))
   if (rr < 0 || rr > 0.5)
-    stop(sprintf("rqtmpl: recombination fractions lie in [0, 0.5], got %r", r_right))
+    stop(sprintf("rqtmpl: recombination fractions lie in [0, 0.5], got %s", r_right))
   q0 <- (if (0 != as.integer(left)) rl else 1 - rl) *
         (if (as.integer(right) != 0) rr else 1 - rr)
   q1 <- (if (1 != as.integer(left)) rl else 1 - rl) *

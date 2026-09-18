@@ -24,7 +24,7 @@ numeric, sum <= 1), \code{total_power}, \code{freqs}, \code{psd}.
 }
 \description{
 Absolute and relative power in the clinical EEG bands using the
-Welch PSD ([rgpsd()]).
+Welch PSD (\code{\link[=rgpsd]{rgpsd()}}).
 }
 \details{
 Default bands: delta 0.5-4, theta 4-8, alpha 8-13, beta 13-30,

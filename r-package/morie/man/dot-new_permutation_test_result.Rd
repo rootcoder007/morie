@@ -33,7 +33,8 @@
 The value of \code{structure}.
 }
 \description{
-A step of the bootstrap_methods implementation. Called by \code{paired_permutation_test}, \code{permutation_test}.
+A step of the bootstrap_methods implementation. Called by
+\code{paired_permutation_test}, \code{permutation_test}.
 See the file header for the source the module follows.
 the source it follows.
 }

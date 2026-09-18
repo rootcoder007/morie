@@ -15,7 +15,9 @@
 The value of \code{idx}, as built in the body.
 }
 \description{
-A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale}, \code{morie_fairness_xai_ceteris_paribus}, \code{morie_fairness_xai_partial_dependence}.
+A step of the fairness_xai implementation. Called by \code{morie_fairness_xai_ale},
+\code{morie_fairness_xai_ceteris_paribus},
+\code{morie_fairness_xai_partial_dependence}.
 See the file header for the source the module follows.
 source it follows.
 }

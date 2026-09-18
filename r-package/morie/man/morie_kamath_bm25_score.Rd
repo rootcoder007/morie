@@ -16,7 +16,6 @@ morie_kamath_bm25_score(q_terms, doc_terms, idf, avgdl, k1 = 1.5, b = 0.75)
 \item{avgdl}{Average document length.}
 
 \item{k1, b}{BM25 parameters.}
-
 }
 \value{
 List with \code{estimate}, \code{per_term}, \code{term_frequencies}.
@@ -25,6 +24,6 @@ List with \code{estimate}, \code{per_term}, \code{term_frequencies}.
 IDF-weighted saturated term frequency with length normalisation.
 }
 \examples{
-morie_kamath_bm25_score(c("cat", "dog"), c("cat", "cat", "fish"), 
+morie_kamath_bm25_score(c("cat", "dog"), c("cat", "cat", "fish"),
     c(cat = 1.5, dog = 2), 3)
 }

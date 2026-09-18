@@ -123,6 +123,10 @@ glove_weight <- function(x, x_max = 100.0, alpha = 0.75) {
 #' @param min_count Coerced to integer by the body, with \code{as.integer}. Defaults to \code{1}.
 #' @return A list with \code{X}, \code{vocab}, \code{index}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' cooccurrence(V)
+#' @keywords internal
 cooccurrence <- function(corpus, window = 10, harmonic = TRUE, min_count = 1) {
   docs <- .glove_as_docs(corpus)
   all_tokens <- unlist(docs, use.names = FALSE)
@@ -135,7 +139,7 @@ cooccurrence <- function(corpus, window = 10, harmonic = TRUE, min_count = 1) {
   index_vec <- setNames(seq_along(vocab), vocab)
   w <- as.integer(window)
   if (w < 1L) {
-    stop(sprintf("cooccurrence: window must be at least 1, got %r", window))
+    stop(sprintf("cooccurrence: window must be at least 1, got %s", window))
   }
   # Collect (i, j, increment) triples.
   triple_list <- list()
@@ -232,16 +236,20 @@ glove_loss <- function(X, W, Wt, b, bt, x_max = 100.0, alpha = 0.75) {
 #' \code{n_pairs}, \code{dim}, \code{window}, \code{harmonic}, \code{x_max},
 #' \code{alpha}, \code{combine}, \code{method}.
 #' @export
+#' @examples
+#' D <- data.frame(x = c(1, 2, 3, 4), y = c(2, 4, 5, 9))
+#' morie_glove(D)
+#' @keywords internal
 morie_glove <- function(corpus, dim = 50, window = 10, epochs = 25, lr = 0.05,
                         x_max = 100.0, alpha = 0.75, harmonic = TRUE,
                         min_count = 1, seed = 0, combine = "sum") {
   if (!combine %in% c("sum", "w", "wtilde", "concat")) {
-    stop(sprintf("glove: combine must be 'sum', 'w', 'wtilde' or 'concat', got %r",
+    stop(sprintf("glove: combine must be 'sum', 'w', 'wtilde' or 'concat', got %s",
                  combine))
   }
   d <- as.integer(dim)
   if (d < 1L) {
-    stop(sprintf("glove: dim must be at least 1, got %r", dim))
+    stop(sprintf("glove: dim must be at least 1, got %s", dim))
   }
   cooc <- cooccurrence(corpus, window = window, harmonic = harmonic,
                        min_count = min_count)
@@ -250,7 +258,7 @@ morie_glove <- function(corpus, dim = 50, window = 10, epochs = 25, lr = 0.05,
   index_vec <- cooc$index
   V <- length(vocab)
   if (V < 2L) {
-    stop(sprintf(paste0("glove: the corpus has %d word(s) above min_count=%r; ",
+    stop(sprintf(paste0("glove: the corpus has %d word(s) above min_count=%s; ",
                         "GloVe factorises a co-occurrence matrix and needs ",
                         "at least two"), V, min_count))
   }

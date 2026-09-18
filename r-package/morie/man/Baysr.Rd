@@ -27,7 +27,6 @@ default (0, 1e-4, 1e-3, 1e-2).  The first entry must be exactly 0.}
 \item{max_iter, tol}{fixed-point controls.}
 
 \item{delta}{optional Dirichlet parameter; all ones when absent.}
-
 }
 \value{
 list: estimate, beta_samples, class_probs, pi, sigma_g2, sigma_e2,
@@ -37,7 +36,7 @@ sigma_classes, mu, n_nonzero, n, method.
 NOT IN THE BOOK.  Montesinos Lopez, Montesinos Lopez and Crossa (2022),
 Multivariate Statistical Machine Learning Methods for Genomic Prediction,
 Springer, was searched in full -- all seventeen page-range volumes and the
-index, [Pages 683-691].  Chapter 6, volume [Pages 171-208], is the Bayesian
+index, \link{Pages 683-691}.  Chapter 6, volume \link{Pages 171-208}, is the Bayesian
 chapter and carries BRR, BayesA, BayesB, BayesC and the Bayesian LASSO;
 BayesR is not among them and the string "BayesR" does not occur anywhere in
 the book.

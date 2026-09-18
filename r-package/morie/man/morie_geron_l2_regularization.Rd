@@ -11,7 +11,7 @@ morie_geron_l2_regularization(theta, alpha, skip_bias = FALSE, eta = NULL)
 
 \item{alpha}{Strength.}
 
-\item{skip_bias}{Exclude theta[1].}
+\item{skip_bias}{Exclude theta\link{1}.}
 
 \item{eta}{Optional learning rate.}
 }

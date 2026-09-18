@@ -34,8 +34,6 @@ observed maxima.}
 \item{model_fn}{Optional \eqn{\gamma(h, k; \theta)}. When supplied the
 weighted least squares criterion of Sec. 9.4 is evaluated against the
 empirical surface.}
-
-
 }
 \value{
 A list with \code{st_variogram}, \code{counts}, \code{space_lags}, \code{time_lags},
@@ -67,8 +65,8 @@ Cells containing no pairs are returned as \code{NA} with a count of zero, never
 filled. An unestimated semivariogram and a zero one are different claims.
 }
 \examples{
-spstvg(coords = c(1, 2, 3, 4, 5, 6, 7, 8), times = c(1, 2, 3, 4, 5, 6, 7, 8),
-  z = c(1, 2, 3, 4, 5, 6, 7, 8))
+spstvg(coords = c(1, 2, 3, 4, 5, 6, 7, 8), times = c(1, 2, 3, 4, 5, 6, 7, 8), z = c(1,
+2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Schabenberger Ch 9, Sec 9.4, eqs (9.18)-(9.19)

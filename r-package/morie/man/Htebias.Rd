@@ -16,7 +16,7 @@ argument of the pasted stub was called X; it is the CATE prediction
 vector the best linear predictor is calibrated against, not a
 covariate matrix.}
 
-\item{y_hat}{Optional out-of-fold predictions of E[Y|X]; defaults to
+\item{y_hat}{Optional out-of-fold predictions of E\link{Y|X}; defaults to
 \code{mean(y)}.}
 
 \item{w_hat}{Optional out-of-fold propensity scores; defaults to

@@ -10,7 +10,6 @@ semi_partial_correlation(x, y, covariates)
 \item{x, y}{Numeric vectors of interest.}
 
 \item{covariates}{Matrix or data frame of covariates.}
-
 }
 \value{
 A \code{morie_test_result} (subclass of \code{morie_rich_result})
@@ -22,5 +21,5 @@ Semi-partial (part) correlation
 }
 \examples{
 semi_partial_correlation(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
-  covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
+covariates = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

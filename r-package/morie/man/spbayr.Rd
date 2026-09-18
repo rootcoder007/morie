@@ -23,7 +23,7 @@ spbayr(
 
 \item{spatial_prior}{One of "exchangeable", "icar", "lcar".}
 
-\item{rho}{Leroux smoothing parameter in [0, 1].}
+\item{rho}{Leroux smoothing parameter in \link{0, 1}.}
 
 \item{n_time}{Number of periods; required for temporal or interaction terms.}
 
@@ -32,7 +32,6 @@ spbayr(
 \item{interaction}{One of "I", "II", "III", "IV", or NULL.}
 
 \item{sigma2}{Scale parameter.}
-
 }
 \value{
 A list with \code{smr}, \code{precision}, \code{spatial_prior}, and when a

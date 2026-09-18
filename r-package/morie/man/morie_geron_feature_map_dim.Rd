@@ -18,8 +18,6 @@ morie_geron_feature_map_dim(
 \item{bytes_per_value}{Bytes per stored activation.}
 
 \item{batch_size}{Positive batch size.}
-
-
 }
 \value{
 List with \code{dim}, \code{bytes}, \code{megabytes}, \code{batch_bytes},
@@ -29,6 +27,6 @@ List with \code{dim}, \code{bytes}, \code{megabytes}, \code{batch_bytes},
 Convolutional feature-map size (Geron Ch 14, morie.fn grfmp)
 }
 \examples{
-morie_geron_feature_map_dim(28, 28, 64, bytes_per_value = 4, 
+morie_geron_feature_map_dim(28, 28, 64, bytes_per_value = 4,
     batch_size = 32)
 }

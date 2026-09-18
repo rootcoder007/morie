@@ -12,7 +12,6 @@ morie_kamath_ppo_rlhf_objective(rewards, logp_theta, logp_ref, beta)
 \item{logp_theta, logp_ref}{Log-probabilities (<= 0).}
 
 \item{beta}{Non-negative weight.}
-
 }
 \value{
 List with \code{estimate}, \code{mean_reward}, \code{kl_estimate}, \code{per_sample}.
@@ -21,6 +20,6 @@ List with \code{estimate}, \code{mean_reward}, \code{kl_estimate}, \code{per_sam
 mean(r - beta (log pi_theta - log pi_ref)).
 }
 \examples{
-morie_kamath_ppo_rlhf_objective(c(1, 2), c(-1, -2), c(-1.5, -1.5), 
+morie_kamath_ppo_rlhf_objective(c(1, 2), c(-1, -2), c(-1.5, -1.5),
     0.5)
 }

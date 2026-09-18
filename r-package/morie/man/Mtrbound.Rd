@@ -14,14 +14,13 @@ Mtrbound(y, z, d, ymin, ymax)
 \item{d}{Treatment level whose mean counterfactual is bounded.}
 
 \item{ymin, ymax}{A priori support of the outcome.}
-
 }
 \value{
 List with lower, upper, width, nfixed, n, d.
 }
 \description{
 L_i = y_i if z_i <= d else ymin; U_i = y_i if z_i >= d else ymax; and
-E[Y(d)] lies in [mean(L), mean(U)].
+E\link{Y(d)} lies in \link{mean(L), mean(U)}.
 }
 \examples{
 set.seed(1)

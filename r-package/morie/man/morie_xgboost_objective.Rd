@@ -37,7 +37,7 @@ morie_xgboost_objective(
 \item{seed}{RNG seed.}
 
 \item{deterministic_seed}{Integer or NULL.  If supplied, the RNG state
-is derived from the SHA-keyed \code{morie_det_rng()} so Py<->R streams
+is derived from the SHA-keyed \code{\link[=morie_det_rng]{morie_det_rng()}} so Py<->R streams
 agree on the canonical fixture.  When \code{NULL} (default), behaviour
 is unchanged: \code{seed} drives \code{set.seed()} directly.}
 }
@@ -52,6 +52,9 @@ back to \code{gbm} (gradient boosting) so users still get a usable
 boosted-trees result; the backend is flagged in the output.
 }
 \examples{
+\dontshow{if (requireNamespace("xgboost", quietly = TRUE) || requireNamespace("gbm", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+morie_xgboost_objective(x = rnorm(50), y = rnorm(50))
+\dontshow{\}) # examplesIf}
 \dontshow{if (requireNamespace("xgboost", quietly = TRUE) || requireNamespace("gbm", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 morie_xgboost_objective(x = rnorm(50), y = rnorm(50))
 \dontshow{\}) # examplesIf}

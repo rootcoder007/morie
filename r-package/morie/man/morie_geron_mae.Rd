@@ -8,7 +8,6 @@ morie_geron_mae(y_true, y_pred)
 }
 \arguments{
 \item{y_true, y_pred}{Numeric vectors of equal length.}
-
 }
 \value{
 List with \code{mae}, \code{rmse}, \code{max_error},
@@ -19,8 +18,6 @@ Reported next to RMSE: the ratio is how much a handful of large
 residuals is driving the squared-error metric.
 }
 \examples{
-if (morie_crypto_liboqs_available()) {
-  V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-  morie_geron_mae(V, V)
-}
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_mae(V, V)
 }

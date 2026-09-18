@@ -24,8 +24,6 @@ morie_ld50(
 \item{alpha}{Two-sided level.}
 
 \item{log_dose}{Fit against log(dose).}
-
-
 }
 \value{
 A list with \code{estimate}, \code{ci_lower}, \code{ci_upper}, \code{slope},
@@ -54,7 +52,7 @@ deviance while still spending a degree of freedom.
 }
 \examples{
 morie_ld50(dose = c(1, 2, 3, 4, 5, 6, 7, 8), n_dead = c(1, 2, 3, 4, 5, 6, 7, 8),
-  n_total = c(1, 2, 3, 4, 5, 6, 7, 8))
+n_total = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Finney DJ (1971) \emph{Probit Analysis}, 3rd ed., Ch 3-4.

@@ -11,25 +11,23 @@ morie_geron_minibatch_gradient_descent(X, y, theta, eta, b, n_iter, seed = 0)
 
 \item{eta}{Positive learning rate.}
 
-\item{b}{Batch size in [1, m].}
+\item{b}{Batch size in \link{1, m}.}
 
 \item{n_iter}{Number of steps.}
 
 \item{seed}{Base LCG seed.}
-
-
 }
 \value{
 List with \code{theta}, \code{cost_history}, \code{theta_history},
 \code{initial_cost}, \code{final_cost}.
 }
 \description{
-Batches from \code{morie_geron_dataloader_minibatch()} with a per-epoch
+Batches from \code{\link[=morie_geron_dataloader_minibatch]{morie_geron_dataloader_minibatch()}} with a per-epoch
 seed of \code{seed + epoch}, gradient from the shared MSE core.
 }
 \examples{
 X <- matrix(c(1, 2, 1, 3, 1, 5, 1, 7), 4, byrow = TRUE)
 y <- c(2, 3, 6, 9)
-morie_geron_minibatch_gradient_descent(X, y, c(0, 0), 0.02, 2, 
+morie_geron_minibatch_gradient_descent(X, y, c(0, 0), 0.02, 2,
     5, seed = 3)
 }

@@ -13,14 +13,13 @@
 The value of \code{X}, as built in the body.
 }
 \description{
-A step of the psymet implementation. Called by \code{morie_psymet_alpha}, \code{morie_psymet_alphadel}, \code{morie_psymet_bartlett} and 6 others in the module.
+A step of the psymet implementation. Called by \code{morie_psymet_alpha},
+\code{morie_psymet_alphadel}, \code{morie_psymet_bartlett} and 6 others in the module.
 See the file header for the source the module follows.
 it follows.
 }
 \examples{
-if (requireNamespace("psych", quietly = TRUE)) {
-  x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
-  res <- .as_item_matrix(data = x)
-  res
-}
+x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
+res <- .as_item_matrix(data = x)
+res
 }

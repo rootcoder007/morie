@@ -42,17 +42,15 @@ which by (7.55) has probability 0.368 -- so (7.54) expects 0.184.
 Eq. (7.56), the leave-one-out bootstrap, averages only over the
 replicates \code{C^{-i}} that exclude observation \code{i}. That removes the
 overlap but introduces a training-set-size bias in the other
-direction, which \code{morie_esl_oob_632()} corrects.
+direction, which \code{\link[=morie_esl_oob_632]{morie_esl_oob_632()}} corrects.
 
 Observations present in every replicate have an empty \code{C^{-i}} and
 are dropped, as the book allows; \code{n_dropped} reports how many,
 since a large count means \code{B} is too small.
 }
 \examples{
-if (morie_crypto_liboqs_available()) {
-  X <- matrix(stats::rnorm(150), 50)
-  morie_esl_bootstrap_err(X, stats::rnorm(50), B = 20)$err_loo_boot
-}
+X <- matrix(stats::rnorm(150), 50)
+morie_esl_bootstrap_err(X, stats::rnorm(50), B = 20)$err_loo_boot
 }
 \references{
 Hastie, Tibshirani and Friedman (2009), Sec. 7.11,

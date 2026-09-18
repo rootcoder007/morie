@@ -15,7 +15,8 @@
 The value of \code{[}.
 }
 \description{
-A step of the dsp_filters implementation. Called by \code{morie_dsp_hann_filter}, \code{morie_dsp_matched}, \code{morie_dsp_moving_average} and 2 others in the module.
+A step of the dsp_filters implementation. Called by \code{morie_dsp_hann_filter},
+\code{morie_dsp_matched}, \code{morie_dsp_moving_average} and 2 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

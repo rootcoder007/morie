@@ -16,9 +16,7 @@ Logical scalar -- TRUE when reachable.
 Probe a local Ollama instance
 }
 \examples{
-if (requireNamespace("httr2", quietly = TRUE)) {
-  options(morie.llm.ollama_cached = FALSE)
-  morie_llm_probe_ollama()
-  options(morie.llm.ollama_cached = NULL)
-}
+options(morie.llm.ollama_cached = FALSE)
+morie_llm_probe_ollama()
+options(morie.llm.ollama_cached = NULL)
 }

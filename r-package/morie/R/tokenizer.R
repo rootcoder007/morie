@@ -227,8 +227,7 @@ morie_tokenizer_decode <- function(tok, ids) {
 #' morie:::print.morie_tokenizer(D)
 print.morie_tokenizer <- function(x, ...) {
   src <- if (!is.null(x$sp)) "sentencepiece" else "gguf/vocab"
-  cat(sprintf("morie_tokenizer(vocab_size=%d, source=%s)\
-",
+  cat(sprintf("morie_tokenizer(vocab_size=%d, source=%s)\n",
               morie_tokenizer_vocab_size(x), src))
   invisible(x)
 }

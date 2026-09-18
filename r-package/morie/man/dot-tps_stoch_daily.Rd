@@ -13,7 +13,8 @@
 A list with \code{dates}, \code{counts}.
 }
 \description{
-A step of the tps_stochastic implementation. Called by \code{morie_tps_fokker_planck_grid}, \code{morie_tps_langevin_simulate}.
+A step of the tps_stochastic implementation. Called by
+\code{morie_tps_fokker_planck_grid}, \code{morie_tps_langevin_simulate}.
 See the file header for the source the module follows.
 the source it follows.
 }

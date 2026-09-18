@@ -11,7 +11,7 @@ morie_geron_epsilon_greedy_alt(Q, s, epsilon, seed = 0)
 
 \item{s}{State index (0-based).}
 
-\item{epsilon}{Rate in [0, 1].}
+\item{epsilon}{Rate in \link{0, 1}.}
 
 \item{seed}{LCG seed.}
 }
@@ -22,6 +22,6 @@ List with \code{action}, \code{probabilities}, \code{greedy_action}, \code{greed
 Epsilon-greedy action distribution, deterministic LCG draw (hmeg)
 }
 \examples{
-morie_geron_epsilon_greedy_alt(matrix(c(1, 5, 2), 1, 3), s = 0, 
+morie_geron_epsilon_greedy_alt(matrix(c(1, 5, 2), 1, 3), s = 0,
     epsilon = 0.3)
 }

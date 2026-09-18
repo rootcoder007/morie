@@ -23,58 +23,75 @@ test_that("registered cubes include the canonical CCJS flagships", {
   expect_true(35100026L %in% c$product_id)  # Homicide victims
 })
 
-test_that("morie_datasets_statcan_cube_metadata parses WDS getCubeMetadata response", {
-  # Mocked, not live: StatCan WDS returned 200 OK with empty body on
-  # 2026-05-26 (post-3VV libcurl backend reports this honestly as
-  # "libcurl returned empty body"), and `skip_if_offline()` only
-  # probes DNS/ICMP, not actual API content. Verify our parser
-  # handles a canonical SUCCESS envelope instead of testing StatCan's
-  # uptime.
-  # WDS getCubeMetadata returns an outer ARRAY of result envelopes, not a
-  # bare dict — the parser unwraps via `r[[1]]$status`. The mock must mirror
-  # that shape (list of 1 inner list), not just the inner dict.
+# ---------------------------------------------------------------------------
+# Deterministic unit tests: mock the internal HTTP layer so the WDS-loader
+# logic is exercised offline (no live network). These ALWAYS run -- including
+# on CRAN and CI -- and give real coverage of status-checking + object
+# extraction. Live smoke tests against the real endpoint live at the bottom,
+# gated by skip_on_ci() so external flakiness never red-fails the build.
+# ---------------------------------------------------------------------------
+
+test_that("morie_datasets_statcan_cube_metadata parses a WDS getCubeMetadata response", {
   testthat::local_mocked_bindings(
-    .morie_dataset_http_post_json = function(url, body, timeout_s = 30L) {
-      list(
-        list(
-          status = "SUCCESS",
-          object = list(
-            productId = 35100002L,
-            cubeTitleEn = "Selected police-reported cybercrime violations",
-            cubeTitleFr = "Affaires de cybercriminalite declarees par la police",
-            frequencyCode = 12L
-          )
+    .morie_dataset_http_post_json = function(url, body, ...) {
+      list(list(
+        status = "SUCCESS",
+        object = list(
+          productId   = 35100002L,
+          cubeTitleEn = paste0("Incident-based cybercrime, by cyber-related ",
+                               "violation and selected police services"),
+          cubeTitleFr = "Cybercriminalite declaree par la police"
         )
-      )
+      ))
     },
     .package = "morie"
   )
   m <- morie_datasets_statcan_cube_metadata(35100002L)
   expect_equal(m$status, "SUCCESS")
   expect_true(!is.null(m$object$cubeTitleEn))
-  expect_true(grepl("cybercrime|Cybercrime",
-                     m$object$cubeTitleEn))
+  expect_match(m$object$cubeTitleEn, "cybercrime", ignore.case = TRUE)
 })
 
-test_that("morie_datasets_statcan_full_csv_url returns canonical zip URL", {
-  # Mocked, same reason as the cube_metadata test above. WDS
-  # getFullTableDownloadCSV returns a SUCCESS envelope whose $object
-  # is the canonical .zip URL string.
+test_that("morie_datasets_statcan_cube_metadata errors on a non-SUCCESS status", {
   testthat::local_mocked_bindings(
-    .morie_dataset_http_json = function(url) {
-      list(
-        status = "SUCCESS",
-        object = paste0(
-          "https://www150.statcan.gc.ca/n1/tbl/csv/",
-          "35100002-eng.zip"
-        )
-      )
+    .morie_dataset_http_post_json = function(url, body, ...) {
+      list(list(status = "FAILED", object = "no such product"))
+    },
+    .package = "morie"
+  )
+  expect_error(morie_datasets_statcan_cube_metadata(99999999L),
+               "status=FAILED")
+})
+
+test_that("morie_datasets_statcan_cube_metadata errors on an empty response", {
+  testthat::local_mocked_bindings(
+    .morie_dataset_http_post_json = function(url, body, ...) list(),
+    .package = "morie"
+  )
+  expect_error(morie_datasets_statcan_cube_metadata(35100002L),
+               "empty or malformed")
+})
+
+test_that("morie_datasets_statcan_full_csv_url builds the canonical en zip URL", {
+  testthat::local_mocked_bindings(
+    .morie_dataset_http_json = function(url, ...) {
+      list(status = "SUCCESS",
+           object = "https://www150.statcan.gc.ca/n1/tbl/csv/35100002-eng.zip")
     },
     .package = "morie"
   )
   u <- morie_datasets_statcan_full_csv_url(35100002L)
   expect_match(u, "^https://www150\\.statcan\\.gc\\.ca/")
   expect_match(u, "35100002-eng\\.zip$")
+})
+
+test_that("morie_datasets_statcan_full_csv_url errors on a non-SUCCESS status", {
+  testthat::local_mocked_bindings(
+    .morie_dataset_http_json = function(url, ...) list(status = "FAILED"),
+    .package = "morie"
+  )
+  expect_error(morie_datasets_statcan_full_csv_url(35100002L),
+               "getFullTableDownloadCSV status=FAILED")
 })
 
 test_that("morie_datasets_statcan_full_csv_url respects language=fr", {
@@ -92,4 +109,36 @@ test_that("morie_datasets_statcan_full_csv_url respects language=fr", {
   )
   u <- morie_datasets_statcan_full_csv_url(35100002L, language = "fr")
   expect_match(u, "fra\\.zip$")
+})
+
+# ---------------------------------------------------------------------------
+# Live smoke tests: hit the real StatCan WDS endpoint. skip_on_ci() keeps them
+# OUT of CI entirely (the endpoint throttles CI IPs and returns empty bodies);
+# they run only locally / on demand when a developer has network. Any HTTP
+# failure degrades to a skip so even a local run never produces a hard error.
+# ---------------------------------------------------------------------------
+
+test_that("live: cube_metadata reaches the real WDS for 35100002", {
+  skip_heavy()
+  skip_on_ci()
+  skip_if_no_network("www150.statcan.gc.ca")
+  m <- tryCatch(
+    morie_datasets_statcan_cube_metadata(35100002L),
+    error = function(e) skip(paste0("StatCan WDS unavailable: ",
+                                    conditionMessage(e)))
+  )
+  expect_equal(m$status, "SUCCESS")
+  expect_match(m$object$cubeTitleEn, "cybercrime", ignore.case = TRUE)
+})
+
+test_that("live: full_csv_url reaches the real WDS for 35100002", {
+  skip_heavy()
+  skip_on_ci()
+  skip_if_no_network("www150.statcan.gc.ca")
+  u <- tryCatch(
+    morie_datasets_statcan_full_csv_url(35100002L),
+    error = function(e) skip(paste0("StatCan WDS unavailable: ",
+                                    conditionMessage(e)))
+  )
+  expect_match(u, "35100002-eng\\.zip$")
 })

@@ -24,7 +24,6 @@ morie_bnd_polya_tree(
 
 \item{lo, hi}{support of the base measure; padded data range
 when \code{NULL}.}
-
 }
 \value{
 list: grid, density, mass, tree_depth, alpha, alpha_rule,

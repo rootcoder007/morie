@@ -15,9 +15,7 @@ this returns the legacy-pattern anchor frame which may be empty.
 }
 \examples{
 \donttest{
-if (requireNamespace("rvest", quietly = TRUE) && requireNamespace("xml2", quietly = TRUE)) {
-  reports <- try(morie_datasets_siu_director_reports())
-  if (!inherits(reports, "try-error")) head(reports)
-}
+reports <- try(morie_datasets_siu_director_reports())
+if (!inherits(reports, "try-error")) head(reports)
 }
 }

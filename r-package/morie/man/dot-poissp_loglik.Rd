@@ -15,13 +15,15 @@
 A numeric value.
 }
 \description{
-A step of the poissp_native implementation. Called by \code{.poissp_laplace}, \code{morie_poissp}.
+A step of the poissp_native implementation. Called by \code{.poissp_laplace},
+\code{morie_poissp}.
 See the file header for the source the module follows.
 source it follows.
 }
 \examples{
 y <- c(2.9, 5.1, 6.8, 9.4, 11.2, 13.1, 15.0, 17.6)
-X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
+X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+2.6, 3.4, 3.9))
 res <- .poissp_loglik(y = y, m = X)
 res
 }

@@ -15,7 +15,8 @@
 The value of \code{[}.
 }
 \description{
-A step of the statistics implementation. Called by \code{anderson_darling}, \code{auto_test}, \code{dagostino_pearson} and 18 others in the module.
+A step of the statistics implementation. Called by \code{anderson_darling},
+\code{auto_test}, \code{dagostino_pearson} and 18 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

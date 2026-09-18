@@ -2,7 +2,7 @@
 % Please edit documentation in R/mtsmtv.R
 \name{Mtsmtv}
 \alias{Mtsmtv}
-\title{Intersection of the MTS and the MTR bound on E[Y(d)]}
+\title{Intersection of the MTS and the MTR bound on E\link{Y(d)}}
 \usage{
 Mtsmtv(y, D, y_min, y_max, d = NULL)
 }
@@ -15,7 +15,6 @@ Mtsmtv(y, D, y_min, y_max, d = NULL)
 
 \item{d}{Level whose mean counterfactual is bounded; defaults to
 \code{max(D)}.}
-
 }
 \value{
 List with lower, upper, width, mts_lower, mts_upper, mtr_lower,

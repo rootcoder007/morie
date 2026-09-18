@@ -355,6 +355,16 @@
     rate <- if (rate_scaling == "sigma2") alpha * sigma * sigma else alpha
     mu <- mu + rate * (r - b) * e_mu
     sigma <- sigma + rate * (r - b) * e_sig
+    if (!is.finite(mu) || !is.finite(sigma)) {
+      # Williams' results assume a bounded reward. With an unbounded one
+      # the mean update is quadratic in mu and runs away; say so at the
+      # trial it happens rather than comparing NA in the floor below and
+      # returning NaN parameters as if they were a fit.
+      stop(sprintf(paste0(
+        "reinfc: the gaussian unit diverged at trial %d (mu = %g, ",
+        "sigma = %g). Reduce alpha, or bound the reward: the ",
+        "convergence argument needs a bounded r."), trial_idx, mu, sigma))
+    }
     if (sigma <= 1e-12) {
       sigma <- 1e-12
     }

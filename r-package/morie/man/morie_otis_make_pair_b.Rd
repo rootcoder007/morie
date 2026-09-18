@@ -20,8 +20,6 @@ readmission).
 }
 \examples{
 \donttest{
-if (requireNamespace("readr", quietly = TRUE)) {
   morie_otis_make_pair_b(morie_otis_load())
-}
 }
 }

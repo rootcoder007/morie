@@ -7,10 +7,12 @@
 .run_distribution_tests_module_internal(data)
 }
 \arguments{
-\item{data}{A list; the body reads \code{$alc06_valid}, \code{$ebac_tot}, \code{$heavy_drinking_30d} from it.}
+\item{data}{A list; the body reads \code{$alc06_valid}, \code{$ebac_tot},
+\code{$heavy_drinking_30d} from it.}
 }
 \value{
-A list with \code{distribution_tests}, \code{alcohol_correlation_matrix}, \code{clt_convergence}.
+A list with \code{distribution_tests}, \code{alcohol_correlation_matrix},
+\code{clt_convergence}.
 }
 \description{
 A step of the study_core implementation. Called by \code{morie_run_morie_module}.

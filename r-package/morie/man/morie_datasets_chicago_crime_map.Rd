@@ -31,7 +31,7 @@ the date window. e.g. \code{"primary_type='HOMICIDE'"}.}
 
 \item{max_features}{Optional total row cap.}
 
-\item{offline}{Logical; if \code{TRUE} (default), read the bundled
+\item{offline}{Logical; if \code{TRUE} (default), read the included
 39-col fixture.}
 
 \item{resource_id}{Optional view id override (default
@@ -77,11 +77,11 @@ row to other Chicago boundary layers (wards, community areas,
 etc.) via Socrata's automatic point-in-polygon computation
 }
 
-Offline mode reads a bundled 5-row 39-col fixture
+Offline mode reads a included 5-row 39-col fixture
 (\code{inst/extdata/chicago_crime_map_ahwe_kpsy_sample.csv}).
 }
 \examples{
-\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_chicago_crime_map(offline = TRUE)
 df$primary_type
 \dontshow{\}) # examplesIf}

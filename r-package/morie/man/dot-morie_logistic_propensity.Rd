@@ -15,7 +15,8 @@
 The value of \code{pmax}.
 }
 \description{
-A step of the mrm_diagnostics implementation. Called by \code{mrm_check_overlap}, \code{mrm_median_causal_effect}.
+A step of the mrm_diagnostics implementation. Called by \code{mrm_check_overlap},
+\code{mrm_median_causal_effect}.
 See the file header for the source the module follows.
 the source it follows.
 }

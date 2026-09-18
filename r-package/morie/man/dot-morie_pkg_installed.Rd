@@ -13,7 +13,8 @@
 A logical value.
 }
 \description{
-A step of the install_extras implementation. Called by \code{.morie_check_system_libs}, \code{morie_install_extras}.
+A step of the install_extras implementation. Called by
+\code{.morie_check_system_libs}, \code{morie_install_extras}.
 See the file header for the source the module follows.
 the source it follows.
 }

@@ -28,12 +28,10 @@ deliberately conservative -- a smoother-than-expected fit is the method
 working as designed.
 }
 \examples{
-if (requireNamespace("ranger", quietly = TRUE)) {
-  set.seed(1)
-  clean <- rep(c(0, 4, 1, -2), each = 64)
-  r <- morie_esl_wavelet_smooth(clean + rnorm(256, sd = 0.5))
-  mean((r$signal - clean)^2) < 0.25
-}
+set.seed(1)
+clean <- rep(c(0, 4, 1, -2), each = 64)
+r <- morie_esl_wavelet_smooth(clean + rnorm(256, sd = 0.5))
+mean((r$signal - clean)^2) < 0.25
 }
 \references{
 Donoho, D. L., & Johnstone, I. M. (1994). Ideal spatial

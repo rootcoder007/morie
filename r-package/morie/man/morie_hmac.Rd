@@ -20,8 +20,6 @@ morie_hmac(
 \item{algo}{md5, sha1, crc32, sha256, sha512 (digest's set), plus sha224 / sha384.}
 
 \item{serialize, raw, ...}{as in digest.}
-
-
 }
 \value{
 hex digest, or raw with \code{raw = TRUE}.
@@ -30,7 +28,5 @@ hex digest, or raw with \code{raw = TRUE}.
 HMAC (digest's hmac, natively)
 }
 \examples{
-if (requireNamespace("digest", quietly = TRUE)) {
-  morie_hmac("key", "The quick brown fox jumps over the lazy dog", algo = "sha256")
-}
+morie_hmac("key", "The quick brown fox jumps over the lazy dog", algo = "sha256")
 }

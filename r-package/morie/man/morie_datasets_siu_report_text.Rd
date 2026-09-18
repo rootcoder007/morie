@@ -9,7 +9,7 @@ morie_datasets_siu_report_text(url = NULL, offline = FALSE)
 \arguments{
 \item{url}{Character; direct PDF URL.  Required unless \code{offline = TRUE}.}
 
-\item{offline}{Logical; if \code{TRUE}, return the bundled synthetic
+\item{offline}{Logical; if \code{TRUE}, return the included synthetic
 \code{24-OFD-001} report text instead of hitting the SIU site.}
 }
 \value{
@@ -20,9 +20,7 @@ Download an SIU director's-report PDF and return its plain text
 }
 \examples{
 \dontshow{if (requireNamespace("pdftools", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-if (requireNamespace("pdftools", quietly = TRUE)) {
-  text <- morie_datasets_siu_report_text(offline = TRUE)
-  substr(text, 1, 80)
-}
+text <- morie_datasets_siu_report_text(offline = TRUE)
+substr(text, 1, 80)
 \dontshow{\}) # examplesIf}
 }

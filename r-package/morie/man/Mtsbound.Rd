@@ -14,15 +14,14 @@ Mtsbound(y, z, d, ymin, ymax)
 \item{d}{Level whose mean counterfactual is bounded.}
 
 \item{ymin, ymax}{A priori support of the outcome.}
-
 }
 \value{
 List with lower, upper, width, condmean, pbelow, pat, pabove,
 n, d.
 }
 \description{
-E[Y(d)] <= P(Z<=d) E[Y|Z=d] + P(Z>d) ymax and
-E[Y(d)] >= P(Z<d) ymin + P(Z>=d) E[Y|Z=d].
+E\link{Y(d)} <= P(Z<=d) E\link{Y|Z=d} + P(Z>d) ymax and
+E\link{Y(d)} >= P(Z<d) ymin + P(Z>=d) E\link{Y|Z=d}.
 }
 \examples{
 set.seed(1)

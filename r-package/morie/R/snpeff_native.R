@@ -8,28 +8,11 @@
 #   becomes. Impact grades are the paper's own four: HIGH, MODERATE,
 #   LOW and MODIFIER. Translation uses NCBI genetic code table 1.
 
-.snpeff_BASES <- "TCAG"
 .AA <- paste0("FFLLSSSSYY**CC*W",
               "LLLLPPPPHHQQRRRR",
               "IIIMTTTTNNKKSSRR",
               "VVVVAAAADDEEGGGG")
 
-.SNPEFF_CODONS <- local({
-  tbl <- list()
-  for (i in 1:4) {
-    for (j in 1:4) {
-      for (k in 1:4) {
-        b1 <- substr(.snpeff_BASES, i, i)
-        b2 <- substr(.snpeff_BASES, j, j)
-        b3 <- substr(.snpeff_BASES, k, k)
-        tbl[[paste0(b1, b2, b3)]] <-
-          substr(.AA, (i - 1L) * 16L + (j - 1L) * 4L + k,
-                 (i - 1L) * 16L + (j - 1L) * 4L + k)
-      }
-    }
-  }
-  tbl
-})
 
 .SNPEFF_HIGH <- c("stop_gained", "stop_lost", "start_lost",
                   "frameshift_variant")
@@ -58,14 +41,18 @@ codon_table <- function() .SNPEFF_CODONS
 #' @param to_stop A flag; the body branches on it. Defaults to \code{FALSE}.
 #' @return A character value.
 #' @export
+#' @examples
+#' S <- c("a", "b", "c")
+#' translate(S)
+#' @keywords internal
 translate <- function(seq, to_stop = FALSE) {
   s <- toupper(as.character(seq))
   s <- gsub("U", "T", s, fixed = TRUE)
   if (any(!strsplit(s, "")[[1L]] %in% c("A", "C", "G", "T", "N")))
-    stop(sprintf("snpeff: %r is not a nucleotide", seq))
+    stop(sprintf("snpeff: %s is not a nucleotide", seq))
   chars <- strsplit(s, "")[[1L]]
   if (any(!(chars %in% c("A", "C", "G", "T", "N"))))
-    stop(sprintf("snpeff: %r is not a nucleotide", seq))
+    stop(sprintf("snpeff: %s is not a nucleotide", seq))
   out <- character(0L)
   i <- 1L
   while (i + 2L <= length(chars)) {
@@ -145,6 +132,9 @@ translate <- function(seq, to_stop = FALSE) {
 #' with \code{as.integer}.
 #' @return The value of \code{.snpeff_pack}.
 #' @export
+#' @examples
+#' annotate_variant("ATGAAACCCGGGTTTTAA", 4, "A", "T")
+#' @keywords internal
 annotate_variant <- function(cds, pos, ref, alt, cds_start = 0,
                              upstream = 5000, downstream = 5000,
                              transcript_len = NULL) {
@@ -161,8 +151,8 @@ annotate_variant <- function(cds, pos, ref, alt, cds_start = 0,
     stop(sprintf("snpeff: position %d is outside the sequence", pos))
   ref_at <- substr(seq, pos + 1L, pos + nchar(ref))
   if (ref_at != ref)
-    stop(sprintf(paste0("snpeff: the reference allele %r does not match ",
-                        "the sequence at position %d (%r)"),
+    stop(sprintf(paste0("snpeff: the reference allele %s does not match ",
+                        "the sequence at position %d (%s)"),
                  ref, pos, ref_at))
   end <- if (is.null(transcript_len)) nchar(seq)
   else cds_start + as.integer(transcript_len)
@@ -324,3 +314,22 @@ morie_snpeff <- list(snpeff = snpeff,
                      cheatsheet = .snpeff_cheatsheet,
                      variant_effect = variant_effect,
                      varianteffect = varianteffect)
+
+.BASES <- "TCAG"
+
+.SNPEFF_CODONS <- local({
+  tbl <- list()
+  for (i in 1:4) {
+    for (j in 1:4) {
+      for (k in 1:4) {
+        b1 <- substr(.BASES, i, i)
+        b2 <- substr(.BASES, j, j)
+        b3 <- substr(.BASES, k, k)
+        tbl[[paste0(b1, b2, b3)]] <-
+          substr(.AA, (i - 1L) * 16L + (j - 1L) * 4L + k,
+                 (i - 1L) * 16L + (j - 1L) * 4L + k)
+      }
+    }
+  }
+  tbl
+})

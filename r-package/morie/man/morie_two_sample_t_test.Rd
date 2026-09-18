@@ -21,11 +21,12 @@ morie_two_sample_t_test(
 \item{alternative}{\code{"two.sided"}, \code{"greater"}, or \code{"less"}.}
 }
 \value{
-Named list: \code{t}, \code{df}, \code{p_value}, \code{ci_diff}, \code{morie_cohens_d}.
+Named list: \code{t}, \code{df}, \code{p_value}, \code{ci_diff}, \code{cohens_d}.
 }
 \description{
 Two-sample t-test with tidy output
 }
 \examples{
+set.seed(1)
 morie_two_sample_t_test(rnorm(50, 0.5), rnorm(50, 0))
 }

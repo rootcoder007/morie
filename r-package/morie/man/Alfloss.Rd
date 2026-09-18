@@ -26,11 +26,6 @@ Alfloss(
 \item{ncrop}{Optional residue count after cropping; the total is then
 multiplied by its square root, the reweighting described just below
 equation (7).}
-
-
-
-
-
 }
 \value{
 A list with the weighted \code{terms}, the total
@@ -47,7 +42,7 @@ parameters.
 }
 \examples{
 morie:::Alfloss(fape = c(1, 2, 3, 4, 5, 6, 7, 8), aux = c(1, 2, 3, 4, 5, 6, 7, 8),
-  dist = c(1, 2, 3, 4, 5, 6, 7, 8), msa = c(1, 2, 3, 4, 5, 6, 7, 8), conf = 0.5)
+dist = c(1, 2, 3, 4, 5, 6, 7, 8), msa = c(1, 2, 3, 4, 5, 6, 7, 8), conf = 0.5)
 }
 \references{
 Jumper et al (2021) Nature 596:583-589, Suppl. equation (7)

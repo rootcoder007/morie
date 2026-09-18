@@ -140,10 +140,16 @@ shrink_covariance <- function(residuals, lam = NULL) {
 #' @param ridge A matrix; passed to \code{diag}. Defaults to \code{1e-10}.
 #' @return A list with \code{P}, \code{lambda}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' S <- summing_matrix(list(c(0L, 1L)), 2L)
+#' res <- matrix(rnorm(30), 10, 3)
+#' str(mint_P(S, method = "shrink", residuals = res), max.level = 1)
+#' @keywords internal
 mint_P <- function(S, W = NULL, method = "shrink", residuals = NULL,
                    ridge = 1e-10) {
   if (!(method %in% c("ols", "wls", "shrink", "custom"))) {
-    stop(sprintf("hierF: method must be ols, wls, shrink or custom, got %r", method))
+    stop(sprintf("hierF: method must be ols, wls, shrink or custom, got %s", method))
   }
   m <- nrow(S)
   n <- ncol(S)

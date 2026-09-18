@@ -10,7 +10,9 @@
 \item{data}{Passed to \code{.cpads_labeled_data}.}
 }
 \value{
-A list with \code{model_comparison_summary}, \code{model_comparison_full_coefs}, \code{model_comparison_interaction}, \code{model_comparison_wald_tests}.
+A list with \code{model_comparison_summary},
+\code{model_comparison_full_coefs}, \code{model_comparison_interaction},
+\code{model_comparison_wald_tests}.
 }
 \description{
 A step of the study_core implementation. Called by \code{morie_run_morie_module}.

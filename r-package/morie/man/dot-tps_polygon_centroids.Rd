@@ -14,7 +14,8 @@ available}
 Nothing; the function is called for its effect.
 }
 \description{
-A step of the tps_spatial_advanced implementation. Called by \code{morie_tps_bivariate_moran}, \code{morie_tps_polygon_morans_i}.
+A step of the tps_spatial_advanced implementation. Called by
+\code{morie_tps_bivariate_moran}, \code{morie_tps_polygon_morans_i}.
 See the file header for the source the module follows.
 for the source it follows.
 }

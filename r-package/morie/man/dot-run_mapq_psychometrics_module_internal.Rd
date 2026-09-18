@@ -7,7 +7,8 @@
 .run_mapq_psychometrics_module_internal()
 }
 \value{
-A list with \code{mapq_reliability}, \code{mapq_factor_loadings}, \code{mapq_dml_results}.
+A list with \code{mapq_reliability}, \code{mapq_factor_loadings},
+\code{mapq_dml_results}.
 }
 \description{
 A step of the study_otis_mapq implementation. Called by \code{morie_run_morie_module}.
@@ -15,8 +16,6 @@ See the file header for the source the module follows.
 the source it follows.
 }
 \examples{
-if (requireNamespace("psych", quietly = TRUE)) {
-  res <- .run_mapq_psychometrics_module_internal()
-  res
-}
+res <- .run_mapq_psychometrics_module_internal()
+res
 }

@@ -19,13 +19,11 @@ Bnrunstat(
 
 \item{runmean, runvar}{Running population moments.}
 
-\item{momentum}{Weight given to the new batch, in [0, 1].}
+\item{momentum}{Weight given to the new batch, in \link{0, 1}.}
 
 \item{eps}{Numerical floor inside the square root.}
 
 \item{gamma, beta}{Learned scale and shift.}
-
-
 }
 \value{
 List with runmean, runvar, batchmean, batchvar, batchvarunb,

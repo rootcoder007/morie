@@ -24,8 +24,6 @@ reference, e.g. project \code{"bigquery-public-data"}, dataset
 \item{limit}{Optional \code{LIMIT}.}
 
 \item{select}{Projection list (default \code{"*"}).}
-
-
 }
 \value{
 A SQL string.
@@ -39,13 +37,11 @@ clauses (same contract as
 \code{\link{morie_ingest_bigquery_query}}).
 }
 \examples{
-if (requireNamespace("bigrquery", quietly = TRUE)) {
-  morie_ingest_bigquery_build_sql(
-    project = "bigquery-public-data",
-    dataset = "chicago_crime",
-    table   = "crime",
-    where   = "year = 2024",
-    limit   = 10000L
-  )
-}
+morie_ingest_bigquery_build_sql(
+  project = "bigquery-public-data",
+  dataset = "chicago_crime",
+  table   = "crime",
+  where   = "year = 2024",
+  limit   = 10000L
+)
 }

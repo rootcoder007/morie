@@ -15,7 +15,8 @@
 A list with \code{e_dmt}, \code{f_dmt}, \code{e_pcb}, \code{f_pcb}.
 }
 \description{
-A step of the entheo_analysis implementation. Called by \code{beautiful_loop_metric}, \code{san_score}.
+A step of the entheo_analysis implementation. Called by \code{beautiful_loop_metric},
+\code{san_score}.
 See the file header for the source the module follows.
 the source it follows.
 }

@@ -110,12 +110,13 @@ clrgrf_cluster_jackknife <- function(preds, bags, groups,
 #' \code{clusters_subsampled}, \code{cluster_sizes}, \code{cluster_labels}, \code{unit},
 #' \code{cluster_sampling}, \code{n_trees}, \code{level}, \code{method}.
 #' @export
+#' @keywords internal
 morie_clrgrf <- function(y, X, clusters, at = NULL, n_trees = 200L,
                           min_leaf = 5L, subsample_frac = 0.5, seed = 0L,
                           unit = "cluster", level = 0.95,
                           cluster_sampling = TRUE) {
   if (!(unit %in% c("cluster", "row")))
-    stop(sprintf("clrgrf: unit must be cluster or row, got %r", unit))
+    stop(sprintf("clrgrf: unit must be cluster or row, got %s", unit))
   yv <- as.numeric(y)
   n <- length(yv)
   Xm <- as.matrix(X)

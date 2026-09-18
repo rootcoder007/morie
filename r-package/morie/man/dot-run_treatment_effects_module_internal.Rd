@@ -13,7 +13,8 @@
 A list with \code{treatment_effects_summary}, \code{cate_subgroup_estimates}.
 }
 \description{
-A step of the study_core implementation. Called by \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
+A step of the study_core implementation. Called by
+\code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
 See the file header for the source the module follows.
 source it follows.
 }

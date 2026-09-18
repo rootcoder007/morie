@@ -7,7 +7,7 @@
 morie_geron_ch4_linear_regression_prediction(theta, x)
 }
 \arguments{
-\item{theta}{Length n+1 parameters, theta[1] the bias.}
+\item{theta}{Length n+1 parameters, theta\link{1} the bias.}
 
 \item{x}{Instance vector or (m, n) batch.}
 }
@@ -19,6 +19,6 @@ only), \code{bias}.
 y_hat = theta_0 + sum_j theta_j x_j.
 }
 \examples{
-morie_geron_ch4_linear_regression_prediction(c(1, 2, -0.5), matrix(c(1, 
+morie_geron_ch4_linear_regression_prediction(c(1, 2, -0.5), matrix(c(1,
     4, 2, 0), 2, byrow = TRUE))
 }

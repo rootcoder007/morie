@@ -24,11 +24,9 @@ decomposition \eqn{X_0 = \Psi W' + J_n c' + E_0}{X_0 = Psi W' + J_n c' + E_0}.  
 \code{basicspace::blackbox} when available.
 }
 \examples{
-if (requireNamespace("basicspace", quietly = TRUE)) {
-  set.seed(1)
-  X <- matrix(rnorm(30 * 6), 30, 6)
-  morie_spatial_voting_blackbox(X, n_dims = 2)
-}
+set.seed(1)
+X <- matrix(rnorm(30 * 6), 30, 6)
+morie_spatial_voting_blackbox(X, n_dims = 2)
 }
 \references{
 Poole, K. T. (1998); Armstrong et al. (2021).

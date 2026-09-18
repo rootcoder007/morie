@@ -17,7 +17,8 @@
 The value of \code{s}, as built in the body.
 }
 \description{
-A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{format_number} and 7 others in the module.
+A step of the tables_pub implementation. Called by \code{anova_table},
+\code{correlation_table}, \code{format_number} and 7 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

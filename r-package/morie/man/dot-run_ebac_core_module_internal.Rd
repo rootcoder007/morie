@@ -10,10 +10,17 @@
 \item{data}{A list; the body reads \code{$alcohol_past12m} from it.}
 }
 \value{
-A list with \code{ebac_data_quality_checks}, \code{ebac_distribution_unweighted}, \code{ebac_model_samples}, \code{ebac_weighted_summaries}, \code{ebac_missingness_weighted}, \code{ebac_missingness_or}, \code{ebac_missingness_or_eligible_drinkers}, \code{ebac_logistic_or_primary}, \code{ebac_linear_coefficients_primary}, \code{ebac_logistic_or_sensitivity_with_heavy}, \code{ebac_linear_coefficients_sensitivity_with_heavy}.
+A list with \code{ebac_data_quality_checks},
+\code{ebac_distribution_unweighted}, \code{ebac_model_samples},
+\code{ebac_weighted_summaries}, \code{ebac_missingness_weighted},
+\code{ebac_missingness_or}, \code{ebac_missingness_or_eligible_drinkers},
+\code{ebac_logistic_or_primary}, \code{ebac_linear_coefficients_primary},
+\code{ebac_logistic_or_sensitivity_with_heavy},
+\code{ebac_linear_coefficients_sensitivity_with_heavy}.
 }
 \description{
-A step of the study_core implementation. Called by \code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
+A step of the study_core implementation. Called by
+\code{.run_ebac_integrations_module_internal}, \code{morie_run_morie_module}.
 See the file header for the source the module follows.
 source it follows.
 }

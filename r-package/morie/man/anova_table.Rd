@@ -36,12 +36,10 @@ Uses \code{stats::anova} for sequential (Type-I) tests, or
 }
 \examples{
 \dontshow{if (requireNamespace("car", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-if (requireNamespace("car", quietly = TRUE)) {
-  set.seed(1)
-  df <- data.frame(x = rnorm(30))
-  df$y <- df$x + rnorm(30)
-  m <- lm(y ~ x, data = df)
-  anova_table(m, typ = 1L)
-}
+set.seed(1)
+df <- data.frame(x = rnorm(30))
+df$y <- df$x + rnorm(30)
+m <- lm(y ~ x, data = df)
+anova_table(m, typ = 1L)
 \dontshow{\}) # examplesIf}
 }

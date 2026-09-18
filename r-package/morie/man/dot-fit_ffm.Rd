@@ -39,7 +39,8 @@
 \item{seed}{Coerced to integer by the body, with \code{as.integer}. Defaults to \code{0L}.}
 }
 \value{
-A list with \code{estimate}, \code{W}, \code{loss_history}, \code{final_loss}, \code{k}, \code{n_parameters}, \code{n_parameters_fm}, \code{method}, \code{caveat}.
+A list with \code{estimate}, \code{W}, \code{loss_history}, \code{final_loss},
+\code{k}, \code{n_parameters}, \code{n_parameters_fm}, \code{method}, \code{caveat}.
 }
 \description{
 A step of the ffmFM_native implementation. Called by \code{morie_ffmFM}.

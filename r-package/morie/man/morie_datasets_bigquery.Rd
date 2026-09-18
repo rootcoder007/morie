@@ -36,11 +36,13 @@ A \code{data.frame}.
 Requires the \code{bigrquery} package and Application Default Credentials.
 }
 \examples{
-\dontrun{
-# Requires bigrquery, Google Cloud credentials, and a billing project.
+\dontshow{if (nzchar(Sys.getenv("GCP_PROJECT")) && requireNamespace("bigrquery", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+# Runs when the caller has bigrquery + a GCP_PROJECT billing project.
+# Keyless alternatives: the bundled samples in 'moriedata' and the
+# morie_datasets_*() open-data fetchers (Socrata / CKAN, no account).
 df <- morie_datasets_bigquery("bigquery-public-data", "chicago_crime",
-                              "crime", where = "year = 2024",
-                              limit = 100L,
-                              billing_project = "my-billing-project")
-}
+  "crime",
+  limit = 10L
+)
+\dontshow{\}) # examplesIf}
 }

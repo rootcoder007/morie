@@ -12,7 +12,6 @@ Bndcvr(lower, upper, theta_true, alpha = 0.05)
 \item{theta_true}{The data-generating parameter value.}
 
 \item{alpha}{Nominal miss probability, default 0.05.}
-
 }
 \value{
 List with \code{coverage}, \code{nominal}, \code{n_covered},
@@ -32,7 +31,7 @@ Formula: \code{coverage = mean(lower <= theta <= upper)} and
 }
 \examples{
 Bndcvr(lower = c(1, 2, 3, 4, 5, 6, 7, 8), upper = c(1, 2, 3, 4, 5, 6, 7, 8),
-  theta_true = c(1, 2, 3, 4, 5, 6, 7, 8))
+theta_true = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 The coverage requirements distinguished here are equations

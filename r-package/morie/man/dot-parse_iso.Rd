@@ -13,7 +13,8 @@
 The value of \code{suppressWarnings}.
 }
 \description{
-A step of the mrm_siu implementation. Called by \code{mrm_siu_case_to_decision_km}, \code{mrm_siu_per_service_rate}.
+A step of the mrm_siu implementation. Called by \code{mrm_siu_case_to_decision_km},
+\code{mrm_siu_per_service_rate}.
 See the file header for the source the module follows.
 source it follows.
 }

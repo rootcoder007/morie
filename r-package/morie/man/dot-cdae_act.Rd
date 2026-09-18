@@ -12,10 +12,10 @@
 \item{x}{Numeric; combined arithmetically in the body.}
 }
 \value{
-One of two values, depending on the branch taken.
+Nothing; this branch always raises.
 }
 \description{
-A step of the cdaeRC_native implementation. Called by \code{encode}, \code{fit_cdae}, \code{morie_cdaeRC_decode} and 1 others in the module.
+A step of the cdaeRC_native implementation. Called by \code{decode}, \code{encode}.
 See the file header for the source the module follows.
 source it follows.
 }

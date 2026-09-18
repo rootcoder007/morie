@@ -17,8 +17,6 @@ SQLite tables.
 }
 \examples{
 \dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RPostgres", quietly = TRUE)) {
-  morie_builtin_db()
-}
+morie_builtin_db()
 \dontshow{\}) # examplesIf}
 }

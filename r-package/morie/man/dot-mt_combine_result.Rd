@@ -21,7 +21,8 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the multiple_testing implementation. Called by \code{cauchy_combination}, \code{fisher_combined}, \code{simes_combined} and 2 others in the module.
+A step of the multiple_testing implementation. Called by \code{cauchy_combination},
+\code{fisher_combined}, \code{simes_combined} and 2 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

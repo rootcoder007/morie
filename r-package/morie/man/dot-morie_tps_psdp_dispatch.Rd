@@ -21,7 +21,9 @@
 The value of \code{morie_datasets_tps_arcgis_hub_by_id}.
 }
 \description{
-A step of the datasets_tps_psdp implementation. Called by \code{morie_datasets_tps_assault}, \code{morie_datasets_tps_autotheft}, \code{morie_datasets_tps_bicycletheft} and 9 others in the module.
+A step of the datasets_tps_psdp implementation. Called by
+\code{morie_datasets_tps_assault}, \code{morie_datasets_tps_autotheft},
+\code{morie_datasets_tps_bicycletheft} and 9 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

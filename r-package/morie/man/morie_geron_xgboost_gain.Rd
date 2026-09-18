@@ -12,16 +12,13 @@ morie_geron_xgboost_gain(GL, HL, GR, HR, lam = 1, gamma = 0)
 \item{lam}{Non-negative L2 leaf penalty.}
 
 \item{gamma}{Non-negative split cost.}
-
-
-
 }
 \value{
 List with \code{gain}, \code{left_score}, \code{right_score},
 \code{parent_score}, \code{left_weight}, \code{right_weight}, \code{should_split}.
 }
 \description{
-Gain = 0.5 [GL^2/(HL+l) + GR^2/(HR+l) - G^2/(H+l)] - gamma; a
+Gain = 0.5 \link{GL^2/(HL+l) + GR^2/(HR+l) - G^2/(H+l)} - gamma; a
 negative gain means prune.
 }
 \examples{

@@ -24,13 +24,13 @@
 
 \item{method}{One of \code{"css"}, \code{"moment"}, \code{"uls"}. Defaults to \code{"ml"}.}
 
-\item{start}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}.}
+\item{start}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 }
 \value{
 The value of \code{.sarima_package}.
 }
 \description{
-A step of the sarima_native implementation. Called by \code{morie_sarima}.
+A step of the sarima_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.
 }

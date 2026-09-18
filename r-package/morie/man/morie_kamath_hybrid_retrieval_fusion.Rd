@@ -9,10 +9,9 @@ morie_kamath_hybrid_retrieval_fusion(s_dense, s_sparse, lam, normalize = FALSE)
 \arguments{
 \item{s_dense, s_sparse}{Arm scores.}
 
-\item{lam}{Mixing weight in [0, 1].}
+\item{lam}{Mixing weight in \link{0, 1}.}
 
 \item{normalize}{Min-max the arms first.}
-
 }
 \value{
 List with \code{scores}, \code{ranking}, \code{estimate}.
@@ -21,6 +20,6 @@ List with \code{scores}, \code{ranking}, \code{estimate}.
 lam * dense + (1 - lam) * sparse, ranked; \code{ranking} is 0-BASED.
 }
 \examples{
-morie_kamath_hybrid_retrieval_fusion(c(0.1, 0.9), c(0.8, 0.2), 
+morie_kamath_hybrid_retrieval_fusion(c(0.1, 0.9), c(0.8, 0.2),
     0.25)
 }

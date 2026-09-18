@@ -33,10 +33,10 @@ morie_kamath_llava_visual_instruction(
 List with \code{visual_tokens}, \code{inputs}, optionally \code{loss}.
 }
 \description{
-[W ViT(image); text] soft tokens; with \code{lm_head} and \code{targets} the causal
+\link{W ViT(image); text} soft tokens; with \code{lm_head} and \code{targets} the causal
 cross entropy is added. \code{targets} are 0-BASED with -100 ignored.
 }
 \examples{
-morie_kamath_llava_visual_instruction("im", diag(2), function(i) matrix(c(1, 
+morie_kamath_llava_visual_instruction("im", diag(2), function(i) matrix(c(1,
     2), 1), matrix(c(3, 4), 1))
 }

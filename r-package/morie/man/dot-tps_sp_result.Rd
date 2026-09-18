@@ -27,7 +27,9 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the tps_statphysics implementation. Called by \code{morie_tps_criminal_network_graph}, \code{morie_tps_inspection_game_phase}, \code{morie_tps_levy_flight_alpha} and 4 others in the module.
+A step of the tps_statphysics implementation. Called by
+\code{morie_tps_criminal_network_graph}, \code{morie_tps_inspection_game_phase},
+\code{morie_tps_levy_flight_alpha} and 4 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

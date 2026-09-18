@@ -13,7 +13,8 @@
 Nothing; the function is called for its effect.
 }
 \description{
-A step of the database implementation. Called by \code{morie_dataset_info}, \code{morie_load_dataset}.
+A step of the database implementation. Called by \code{morie_dataset_info},
+\code{morie_load_dataset}.
 See the file header for the source the module follows.
 source it follows.
 }

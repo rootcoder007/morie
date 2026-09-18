@@ -2,7 +2,7 @@
 % Please edit documentation in R/infmax_native.R
 \name{.infmax_dv_estimator}
 \alias{.infmax_dv_estimator}
-\title{I_DV = E_P[T] - log E_\{PxP~\}[exp(T)]}
+\title{I_DV = E_P\link{T} - log E_\{PxP~\}\link{exp(T)}}
 \usage{
 .infmax_dv_estimator(joint_scores, marginal_scores)
 }
@@ -12,7 +12,8 @@
 \item{marginal_scores}{Passed to \code{unlist}.}
 }
 \value{
-A list with \code{estimate}, \code{log_sum_exp}, \code{negative_variance}, \code{bounded}, \code{note}.
+A list with \code{estimate}, \code{log_sum_exp}, \code{negative_variance},
+\code{bounded}, \code{note}.
 }
 \description{
 A step of the infmax_native implementation. No other function in the package calls it.

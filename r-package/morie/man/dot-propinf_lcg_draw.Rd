@@ -13,7 +13,12 @@
 A numeric value.
 }
 \description{
-A step of the propinf_native implementation. Called by \code{.propinf_normal_lcg}, \code{.propinf_train_set_meta}, \code{.propinf_train_vector_meta}.
+A step of the propinf_native implementation. Called by \code{.propinf_normal_lcg},
+\code{.propinf_train_set_meta}, \code{.propinf_train_vector_meta}.
 See the file header for the source the module follows.
 the source it follows.
+}
+\examples{
+e <- .propinf_rng(1L)
+replicate(3, .propinf_lcg_draw(e))
 }

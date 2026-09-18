@@ -29,11 +29,9 @@ minority rows) otherwise. Returns the resampled \verb{(X, y)} together
 with a status list of before/after counts and the method used.
 }
 \examples{
-if (requireNamespace("smotefamily", quietly = TRUE)) {
-  set.seed(2)
-  X <- data.frame(x1 = rnorm(50), x2 = rnorm(50))
-  y <- c(rep("a", 40), rep("b", 10))
-  out <- morie_ml_apply_smote(X, y, random_state = 1L, k_neighbors = 1L)
-  out$status$method
-}
+set.seed(2)
+X <- data.frame(x1 = rnorm(50), x2 = rnorm(50))
+y <- c(rep("a", 40), rep("b", 10))
+out <- morie_ml_apply_smote(X, y, random_state = 1L, k_neighbors = 1L)
+out$status$method
 }

@@ -25,9 +25,6 @@ morie_geron_dino(
 \item{tau_s, tau_t}{Temperatures (tau_t < tau_s).}
 
 \item{momentum, center_momentum}{EMA coefficients in [0, 1).}
-
-
-
 }
 \value{
 List with \code{loss}, \code{teacher_probs}, \code{student_probs}, \code{teacher_entropy}, \code{teacher_next}.
@@ -36,6 +33,6 @@ List with \code{loss}, \code{teacher_probs}, \code{student_probs}, \code{teacher
 DINO cross-view self-distillation with centering, sharpening, momentum teacher (hmdino)
 }
 \examples{
-morie_geron_dino(images = c(1, 2, 3, 4, 5, 6, 7, 8), student = c(1, 2, 3, 4, 5, 6, 7, 8),
-  teacher = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_geron_dino(images = c(1, 2, 3, 4, 5, 6, 7, 8), student = c(1, 2, 3, 4, 5, 6, 7,
+8), teacher = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

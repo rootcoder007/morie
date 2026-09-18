@@ -13,10 +13,9 @@ morie_geron_elastic_net(X, y, theta, alpha, r, fit_intercept = TRUE)
 
 \item{alpha}{Overall penalty (>=0).}
 
-\item{r}{L1 ratio in [0, 1].}
+\item{r}{L1 ratio in \link{0, 1}.}
 
 \item{fit_intercept}{Logical.}
-
 }
 \value{
 List with \code{cost}, \code{mse}, \code{l1_penalty}, \code{l2_penalty}, \code{gradient}.
@@ -25,6 +24,6 @@ List with \code{cost}, \code{mse}, \code{l1_penalty}, \code{l2_penalty}, \code{g
 Elastic net cost: MSE + r\emph{alpha}L1 + (1-r)/2\emph{alpha}L2 (hmenet)
 }
 \examples{
-morie_geron_elastic_net(matrix(c(1, 2), 2, 1), c(2, 4), c(0, 
+morie_geron_elastic_net(matrix(c(1, 2), 2, 1), c(2, 4), c(0,
     2), alpha = 1, r = 0.5)
 }

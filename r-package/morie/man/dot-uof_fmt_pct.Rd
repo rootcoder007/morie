@@ -13,7 +13,8 @@
 A character value.
 }
 \description{
-A step of the mrm_uof implementation. Called by \code{mrm_uof_data_quality_audit}, \code{mrm_uof_force_concentration}, \code{mrm_uof_region_locality}.
+A step of the mrm_uof implementation. Called by \code{mrm_uof_data_quality_audit},
+\code{mrm_uof_force_concentration}, \code{mrm_uof_region_locality}.
 See the file header for the source the module follows.
 source it follows.
 }

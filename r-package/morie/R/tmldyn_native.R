@@ -162,11 +162,10 @@
 }
 
 # Fit Q1 (E[Q2(A(0), d_{A(1)}, Lbar(1)) | A(0), L(0)]) on the rows in idx.
-#' Fit Q1 (E[Q2(A(0), d_\{A(1)\}, Lbar(1)) | A(0), L(0)]) on the rows in
-#' idx
+#' .fit_q1
 #'
-#' A step of the tmldyn_native implementation. Called by \code{.rule_value_seq},
-#' \code{.sequential_blips}, \code{morie_tmle_dynamic_regime}.
+#' A step of the tmldyn_native implementation. Called by \code{morie_tmldyn},
+#' \code{rule_value_seq}, \code{sequential_blips}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
@@ -174,7 +173,7 @@
 #' @param L0 A matrix; indexed by row and column.
 #' @param A0 A vector; indexed elementwise.
 #' @param idx Iterated over elementwise, with \code{lapply}.
-#' @param ridge Passed to \code{.tmldyn_lstsq}.
+#' @param ridge Numeric; combined arithmetically in the body.
 #' @return A list with \code{q1}, \code{b}.
 #' @export
 .fit_q1 <- function(pseudo, L0, A0, idx, ridge) {

@@ -29,7 +29,6 @@ Dinov2(
 \item{mask}{0/1 flag per patch, or NULL for every second patch.}
 
 \item{w_ibot, w_koleo}{Weights of the iBOT and KoLeo terms.}
-
 }
 \value{
 List with \code{estimate}, \code{loss}, \code{dino},
@@ -48,8 +47,8 @@ to its nearest neighbour, which spreads the batch out and stops
 features from piling up.
 }
 \examples{
-Dinov2(x = c(1, 2, 3, 4, 5, 6, 7, 8), student = c(1, 2, 3, 4, 5, 6, 7, 8),
-  teacher = c(1, 2, 3, 4, 5, 6, 7, 8))
+Dinov2(x = c(1, 2, 3, 4, 5, 6, 7, 8), student = c(1, 2, 3, 4, 5, 6, 7, 8), teacher =
+c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Oquab et al. (2024), DINOv2, TMLR 2024; Zhou et al.

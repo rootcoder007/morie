@@ -13,7 +13,8 @@
 A numeric value.
 }
 \description{
-A step of the semipar_bridge implementation. Called by \code{kernel_cond_moments}, \code{local_linear}, \code{loocv_bandwidth} and 1 others in the module.
+A step of the semipar_bridge implementation. Called by \code{kernel_cond_moments},
+\code{local_linear}, \code{loocv_bandwidth} and 1 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

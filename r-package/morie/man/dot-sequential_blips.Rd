@@ -24,7 +24,8 @@
 \item{ridge}{Passed to \code{.fit_q2}.}
 }
 \value{
-A list with \code{blip1}, \code{blip2}, \code{d0}, \code{d1}, \code{q2}, \code{q1}, \code{coef_q2}, \code{coef_q1}, \code{pseudo}.
+A list with \code{blip1}, \code{blip2}, \code{d0}, \code{d1}, \code{q2},
+\code{q1}, \code{coef_q2}, \code{coef_q1}, \code{pseudo}.
 }
 \description{
 A step of the tmldyn_native implementation. Called by \code{morie_tmle_dynamic_regime}.

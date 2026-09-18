@@ -13,7 +13,8 @@
 A vector, from \code{as.numeric}.
 }
 \description{
-A step of the slvgrf_native implementation. Called by \code{.check}, \code{aipw_scores}, \code{qini_curve}.
+A step of the slvgrf_native implementation. Called by \code{.check},
+\code{aipw_scores}, \code{qini_curve}.
 See the file header for the source the module follows.
 source it follows.
 }

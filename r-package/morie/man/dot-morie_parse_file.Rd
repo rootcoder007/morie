@@ -9,7 +9,8 @@
 \arguments{
 \item{path}{Passed to \code{.morie_from_json}.}
 
-\item{format}{One of \code{"csv"}, \code{"html"}, \code{"json"}, \code{"tsv"}, \code{"xlsx"}, \code{"xml"}.}
+\item{format}{One of \code{"csv"}, \code{"html"}, \code{"json"}, \code{"tsv"},
+\code{"xlsx"}, \code{"xml"}.}
 
 \item{simplify}{A flag; the body branches on it.}
 

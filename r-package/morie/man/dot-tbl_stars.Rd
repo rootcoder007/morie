@@ -13,7 +13,8 @@
 A character value.
 }
 \description{
-A step of the tables_pub implementation. Called by \code{anova_table}, \code{correlation_table}, \code{hazard_ratio_table} and 4 others in the module.
+A step of the tables_pub implementation. Called by \code{anova_table},
+\code{correlation_table}, \code{hazard_ratio_table} and 4 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

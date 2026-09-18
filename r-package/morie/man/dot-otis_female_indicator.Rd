@@ -13,7 +13,10 @@
 The value of \code{as.integer}.
 }
 \description{
-A step of the otis_all_analyze implementation. Called by \code{morie_otis_analyze_b04_ruhela_aggregate}, \code{morie_otis_analyze_b08_ruhela_aggregate}, \code{morie_otis_analyze_b09_ruhela_aggregate} and 6 others in the module.
+A step of the otis_all_analyze implementation. Called by
+\code{morie_otis_analyze_b04_ruhela_aggregate},
+\code{morie_otis_analyze_b08_ruhela_aggregate},
+\code{morie_otis_analyze_b09_ruhela_aggregate} and 6 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

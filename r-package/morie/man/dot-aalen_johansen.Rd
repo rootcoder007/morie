@@ -11,7 +11,8 @@
 
 \item{event_type}{Passed to \code{.s03vec}.}
 
-\item{cause}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{1}.}
+\item{cause}{Coerced to numeric by the body, with \code{as.numeric}.
+Defaults to \code{1}.}
 }
 \value{
 A list with \code{times}, \code{F}, \code{S}, \code{Y}, \code{dk}, \code{n}.

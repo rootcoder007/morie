@@ -12,8 +12,6 @@ morie_burkov_mse_cost(w, b, x, y, N = NULL)
 \item{x, y}{Data.}
 
 \item{N}{Optional size check.}
-
-
 }
 \value{
 List with \code{cost}, \code{residuals}.
@@ -22,6 +20,6 @@ List with \code{cost}, \code{residuals}.
 MSE cost of the linear model (Burkov Eq 1.3)
 }
 \examples{
-morie_burkov_mse_cost(w = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L, x = c(1, 2, 3, 4, 5, 6, 7, 8),
-  y = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_burkov_mse_cost(w = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L, x = c(1, 2, 3, 4, 5, 6,
+7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

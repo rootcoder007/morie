@@ -13,11 +13,13 @@
 The value of \code{e}, as built in the body.
 }
 \description{
-A step of the propinf_native implementation. Called by \code{.propinf_train_set_meta}, \code{.propinf_train_vector_meta}, \code{morie_propinf_train_fcnn}.
+A step of the propinf_native implementation. Called by \code{.propinf_train_set_meta},
+\code{.propinf_train_vector_meta}, \code{morie_propinf_train_fcnn}.
 See the file header for the source the module follows.
 the source it follows.
 }
 \examples{
-res <- .propinf_rng(seed = 1L)
-res
+e <- .propinf_rng(1L)
+# the stream the Python arm produces for this seed
+replicate(3, .propinf_rng_next(e))
 }

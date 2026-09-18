@@ -13,12 +13,15 @@
 A numeric value.
 }
 \description{
-A step of the alammar_llm_native implementation. Called by \code{.morie_gr_attend}, \code{.morie_gr_encoder_block}, \code{.morie_gr_softmax_cols} and 13 others in the module.
+A step of the alammar_llm_native implementation. Called by \code{.morie_gr_attend},
+\code{.morie_gr_encoder_block}, \code{.morie_gr_softmax_cols} and 13 others in the
+module.
 See the file header for the source the module follows.
 for the source it follows.
 }
 \examples{
-X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
+X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
+2.6, 3.4, 3.9))
 res <- .morie_al_softmax_rows(z = X)
 res
 }

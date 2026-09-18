@@ -10,7 +10,9 @@
 \item{data}{Passed to \code{.cpads_labeled_data}.}
 }
 \value{
-A list with \code{logistic_odds_ratios}, \code{logistic_interaction_odds_ratios}, \code{logistic_interaction_tests}, \code{logistic_smote_status}, \code{logistic_smote_odds_ratios}.
+A list with \code{logistic_odds_ratios},
+\code{logistic_interaction_odds_ratios}, \code{logistic_interaction_tests},
+\code{logistic_smote_status}, \code{logistic_smote_odds_ratios}.
 }
 \description{
 A step of the study_core implementation. Called by \code{morie_run_morie_module}.

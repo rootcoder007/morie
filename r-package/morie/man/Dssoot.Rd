@@ -36,7 +36,8 @@ resampling stream is a deterministic linear congruential generator,
 not a system RNG, so both language arms draw the same case indices.
 }
 \examples{
-Dssoot(Y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), M = c(1, 2, 3, 4, 5, 6, 7, 8))
+Dssoot(Y = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8), M = c(1, 2, 3, 4,
+5, 6, 7, 8))
 }
 \references{
 Preacher, K. J. and Hayes, A. F. (2008). Asymptotic and

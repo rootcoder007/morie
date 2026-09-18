@@ -43,6 +43,6 @@ Related upstream resources Vee surfaced 2026-05-25:
 }
 \examples{
 \donttest{
-tryCatch(morie_entheo_clone_dmt_imaging(), error = function(e) NULL)
+morie_entheo_clone_dmt_imaging()
 }
 }

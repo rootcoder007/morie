@@ -17,7 +17,8 @@
 The value of \code{W}, as built in the body.
 }
 \description{
-A step of the mrm_lisa implementation. Called by \code{mrm_tps_lisa}, \code{mrm_tps_polygon_moran_per_year}.
+A step of the mrm_lisa implementation. Called by \code{mrm_tps_lisa},
+\code{mrm_tps_polygon_moran_per_year}.
 See the file header for the source the module follows.
 source it follows.
 }

@@ -46,13 +46,11 @@ correction as \code{fixest::feols}'s default (reproduced to
 machine precision in \code{tests/cross/}).
 }
 \examples{
-if (requireNamespace("fixest", quietly = TRUE)) {
-  set.seed(2)
-  df <- expand.grid(unit = 1:60, time = 1:6)
-  df$treat_time <- ifelse(df$unit <= 30, 4, Inf)
-  df$d <- as.integer(df$time >= df$treat_time)
-  df$y <- 0.5 * df$time + 1.5 * df$d + rnorm(nrow(df), sd = 0.5)
-  res <- morie_did_panel_fe(df, "y", "d", "unit", "time")
-  res$estimate
-}
+set.seed(2)
+df <- expand.grid(unit = 1:60, time = 1:6)
+df$treat_time <- ifelse(df$unit <= 30, 4, Inf)
+df$d <- as.integer(df$time >= df$treat_time)
+df$y <- 0.5 * df$time + 1.5 * df$d + rnorm(nrow(df), sd = 0.5)
+res <- morie_did_panel_fe(df, "y", "d", "unit", "time")
+res$estimate
 }

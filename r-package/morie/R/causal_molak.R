@@ -779,9 +779,9 @@ morie_poschk <- function(treat, stratum, tol = 0) {
 #' The estimator is taken from the primary source. Robinson
 #' decomposition, eq. (1): "Y_i - m*(X_i) = \{W_i - e*(X_i)\} tau*(X_i) +
 #' eps_i"; R-learner objective, eq. (4): "tau_hat(.) = argmin_tau
-#' [L_hat_n\{tau(.)\} + Lambda_n\{tau(.)\}]" with "L_hat_n\{tau(.)\} = (1/n)
-#' sum_i [\{Y_i - m_hat^(-q(i))(X_i)\} - \{W_i - e_hat^(-q(i))(X_i)\}
-#' tau(X_i)]^2" -- Nie, X. and Wager, S. (2021), Quasi-Oracle
+#' \[L_hat_n\{tau(.)\} + Lambda_n\{tau(.)\}\]" with "L_hat_n\{tau(.)\} = (1/n)
+#' sum_i \[\{Y_i - m_hat^(-q(i))(X_i)\} - \{W_i - e_hat^(-q(i))(X_i)\}
+#' tau(X_i)\]^2" -- Nie, X. and Wager, S. (2021), Quasi-Oracle
 #' Estimation of Heterogeneous Treatment Effects, Biometrika
 #' 108(2):299-319 (arXiv:1712.04912). Computed with Lambda_n = 0 and
 #' the cross-fitted nuisances supplied BY THE CALLER, so the fold
@@ -794,8 +794,8 @@ morie_poschk <- function(treat, stratum, tol = 0) {
 #' @return list(tau, ate, loss, n, k)
 #' @export
 #' @examples
-#' morie_rlearn(y = c(1, 2, 3, 4, 5, 6, 7, 8), t = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0,
-#' 6.5), m = c(1, 2, 3, 4, 5, 6, 7, 8), e = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' morie_rlearn(y = c(1, 2, 3, 4, 5, 6, 7, 8), t = c(2.5, 1.0, 3.5, 4.0, 2.0, 5.5, 3.0, 6.5),
+#'   m = c(1, 2, 3, 4, 5, 6, 7, 8), e = c(1, 2, 3, 4, 5, 6, 7, 8))
 morie_rlearn <- function(y, t, m, e, x = NULL) {
   y <- as.numeric(y)
   t <- as.numeric(t)

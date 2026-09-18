@@ -23,7 +23,8 @@
 A list with \code{title}, \code{headers}, \code{rows}.
 }
 \description{
-A step of the otis_all_analyze implementation. Called by \code{.otis_c_simple}, \code{.otis_d_simple}, \code{morie_otis_analyze_b02} and 13 others in the module.
+A step of the otis_all_analyze implementation. Called by \code{.otis_c_simple},
+\code{.otis_d_simple}, \code{morie_otis_analyze_b02} and 13 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

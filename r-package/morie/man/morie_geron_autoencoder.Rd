@@ -9,7 +9,7 @@ morie_geron_autoencoder(X, bottleneck, center = TRUE)
 \arguments{
 \item{X}{Training data (n, d).}
 
-\item{bottleneck}{Code width in [1, d].}
+\item{bottleneck}{Code width in \link{1, d}.}
 
 \item{center}{Subtract feature means (this is what makes it PCA).}
 }
@@ -27,6 +27,6 @@ convention; \code{reconstruction}, \code{recon_error} and
 tests should assert.
 }
 \examples{
-morie_geron_autoencoder(matrix(c(0, 0, 1, 1.1, 2, 2.3, 3, 2.9), 
+morie_geron_autoencoder(matrix(c(0, 0, 1, 1.1, 2, 2.3, 3, 2.9),
     4, 2, byrow = TRUE), 1)
 }

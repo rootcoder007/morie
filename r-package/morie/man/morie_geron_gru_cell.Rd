@@ -12,8 +12,6 @@ morie_geron_gru_cell(x_t, h_prev, Wz, Wr, W)
 \item{h_prev}{Previous hidden state.}
 
 \item{Wz, Wr, W}{(H, H + n) weight matrices.}
-
-
 }
 \value{
 List with \code{h}, \code{z}, \code{r}, \code{h_tilde}, \code{update_fraction}.
@@ -22,7 +20,7 @@ List with \code{h}, \code{z}, \code{r}, \code{h_tilde}, \code{update_fraction}.
 PORTED AS THE PYTHON HAS IT: this module uses the tied-gate
 convention h = (1 - z) h_prev + z h_tilde (rather than the more common
 z h_prev + (1 - z) h_tilde), the gates act on the concatenation
-[h, x] and the candidate on [r * h, x], and there are no biases.
+\link{h, x} and the candidate on \link{r * h, x}, and there are no biases.
 }
 \examples{
 x_t <- c(0.5, -0.1)

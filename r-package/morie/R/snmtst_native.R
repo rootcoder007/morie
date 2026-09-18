@@ -84,13 +84,18 @@
 #' \code{pre_max_change}, \code{bound}, \code{M}, \code{family}, \code{width},
 #' \code{note}.
 #' @export
+#' @examples
+#' beta <- c(-0.05, 0.02, 0.5, 0.55, 0.6)
+#' r <- identified_set(beta, n_pre = 2, n_post = 3, M = 0.1)
+#' str(r, max.level = 1)
+#' @keywords internal
 identified_set <- function(beta, n_pre, n_post, M = 0.0, family = "SD",
                            l_vec = NULL, grid = NULL) {
   if (!(family %in% .SNMTST_FAMILIES))
-    stop(sprintf("snmtst: family must be SD or RM, got %r", family))
+    stop(sprintf("snmtst: family must be SD or RM, got %s", family))
   Mv <- as.numeric(M)
   if (Mv < 0.0)
-    stop(sprintf("snmtst: M must be non-negative, got %r", M))
+    stop(sprintf("snmtst: M must be non-negative, got %s", M))
   sp <- .snmtst_split(beta, n_pre, n_post)
   pre <- sp$pre
   post <- sp$post
@@ -246,11 +251,16 @@ sensitivity_curve <- function(beta, n_pre, n_post, Ms, family = "SD",
 #' @param tol Passed to \code{>}. Defaults to \code{1e-09}.
 #' @return A list with \code{breakdown}, \code{family}, \code{sign}, \code{status}.
 #' @export
+#' @examples
+#' beta <- c(-0.05, 0.02, 0.5, 0.55, 0.6)
+#' r <- breakdown_value(beta, n_pre = 2, n_post = 3)
+#' str(r, max.level = 1)
+#' @keywords internal
 breakdown_value <- function(beta, n_pre, n_post, family = "SD",
                             l_vec = NULL, sign = "positive",
                             M_max = 10.0, tol = 1e-9) {
   if (!(sign %in% c("positive", "negative")))
-    stop(sprintf("snmtst: sign must be positive or negative, got %r", sign))
+    stop(sprintf("snmtst: sign must be positive or negative, got %s", sign))
   holds <- function(M) {
     s <- identified_set(beta, n_pre, n_post, M = M, family = family,
                         l_vec = l_vec)
@@ -291,14 +301,19 @@ breakdown_value <- function(beta, n_pre, n_post, family = "SD",
 #' \code{identified_lower}, \code{identified_upper}, \code{M}, \code{family},
 #' \code{level}, \code{conservative}, \code{method}.
 #' @export
+#' @examples
+#' beta <- c(-0.05, 0.02, 0.5, 0.55, 0.6)
+#' r <- fixed_length_ci(beta, sigma = 0.1, n_pre = 2, n_post = 3, M = 0.1)
+#' str(r, max.level = 1)
+#' @keywords internal
 fixed_length_ci <- function(beta, sigma, n_pre, n_post, M = 0.0,
                             family = "SD", l_vec = NULL, level = 0.95) {
   s <- identified_set(beta, n_pre, n_post, M = M, family = family,
                       l_vec = l_vec)
   if (as.numeric(sigma) < 0.0)
-    stop(sprintf("snmtst: sigma must be non-negative, got %r", sigma))
+    stop(sprintf("snmtst: sigma must be non-negative, got %s", sigma))
   if (!(as.numeric(level) > 0.0 && as.numeric(level) < 1.0))
-    stop(sprintf("snmtst: level must be in (0, 1), got %r", level))
+    stop(sprintf("snmtst: level must be in (0, 1), got %s", level))
   z <- qnorm(0.5 + as.numeric(level) / 2.0)
   list(estimate = s$estimate,
        lower = s$lower - z * as.numeric(sigma),

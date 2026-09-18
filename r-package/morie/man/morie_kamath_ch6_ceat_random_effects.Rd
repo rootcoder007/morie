@@ -12,9 +12,6 @@ morie_kamath_ch6_ceat_random_effects(S_A1, S_A2, S_W1, S_W2, v, ddof = 0)
 \item{v}{Weights.}
 
 \item{ddof}{Passed to the effect size.}
-
-
-
 }
 \value{
 List with \code{estimate}, \code{weat}, \code{weights}.
@@ -27,6 +24,6 @@ W1 <- diag(2)
 W2 <- -diag(2)
 A1 <- diag(2)
 A2 <- matrix(c(1, 2, 1, 0), 2)
-morie_kamath_ch6_ceat_random_effects(list(A1, A1), list(A2, A2), 
+morie_kamath_ch6_ceat_random_effects(list(A1, A1), list(A2, A2),
     list(W1, W1), list(W2, W2), c(1, 3))
 }

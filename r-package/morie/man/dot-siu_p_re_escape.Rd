@@ -13,7 +13,9 @@
 The value of \code{gsub}.
 }
 \description{
-A step of the siu_parser implementation. Called by \code{.siu_p_detect_police_service}, \code{.siu_p_label_value}, \code{.siu_p_section_text}.
+A step of the siu_parser implementation. Called by
+\code{.siu_p_detect_police_service}, \code{.siu_p_label_value},
+\code{.siu_p_section_text}.
 See the file header for the source the module follows.
 source it follows.
 }

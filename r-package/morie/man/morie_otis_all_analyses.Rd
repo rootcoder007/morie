@@ -34,9 +34,7 @@ CRAN-safe: with \code{out_dir = NULL} (default) no files are written.
 }
 \examples{
 \donttest{
-if (requireNamespace("readr", quietly = TRUE)) {
   df <- morie_otis_load()
-    res <- morie_otis_all_analyses(df, year = 2024)
-}
+  res <- morie_otis_all_analyses(df, year = 2024)
 }
 }

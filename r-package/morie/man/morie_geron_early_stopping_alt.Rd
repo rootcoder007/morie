@@ -21,11 +21,6 @@ morie_geron_early_stopping_alt(
 \item{n_iter, eta, fit_intercept}{Training config.}
 
 \item{patience}{Optional online stopping patience.}
-
-
-
-
-
 }
 \value{
 List with \code{theta}, \code{best_iter}, \code{best_val_rmse}, \code{stopped_iter}, \code{is_u_shaped}.
@@ -34,7 +29,7 @@ List with \code{theta}, \code{best_iter}, \code{best_val_rmse}, \code{stopped_it
 Early stopping: batch GD keeping the best validation snapshot (hmearl)
 }
 \examples{
-morie_geron_early_stopping_alt(X_train = c(1, 2, 3, 4, 5, 6, 7, 8),
-  y_train = c(1, 2, 3, 4, 5, 6, 7, 8), X_val = c(1, 2, 3, 4, 5, 6, 7, 8),
-  y_val = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_geron_early_stopping_alt(X_train = c(1, 2, 3, 4, 5, 6, 7, 8), y_train = c(1, 2,
+3, 4, 5, 6, 7, 8), X_val = c(1, 2, 3, 4, 5, 6, 7, 8), y_val = c(1, 2, 3, 4, 5, 6, 7,
+8))
 }

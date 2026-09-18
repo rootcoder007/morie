@@ -18,8 +18,6 @@ Tmleor(Y, A, QAW, Q1W, Q0W, g1W, gbound = 0.025, level = 0.95)
 \item{gbound}{Propensity truncation level.}
 
 \item{level}{Confidence level.}
-
-
 }
 \value{
 List with \code{estimate}, \code{log_or}, \code{se_log},
@@ -32,7 +30,7 @@ non-collapsible. Inference is on the log scale because the sampling
 distribution of a ratio is badly skewed.
 }
 \details{
-Formula: psi = [mu1/(1-mu1)] / [mu0/(1-mu0)];
+Formula: psi = \link{mu1/(1-mu1)} / \link{mu0/(1-mu0)};
 IC_logOR = IC_1/(mu1(1-mu1)) - IC_0/(mu0(1-mu0));
 CI = exp(log psi -+ z se_log)
 }

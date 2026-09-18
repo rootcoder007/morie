@@ -27,14 +27,6 @@ morie_geron_deit(
 \item{teacher}{Logits or function(image).}
 
 \item{logits_cls, logits_dist, y, alpha}{Loss inputs.}
-
-
-
-
-
-
-
-
 }
 \value{
 List with \code{n_patches}, \code{n_tokens}, \code{total_params},
@@ -46,6 +38,6 @@ objective (when logits are supplied) to \code{morie_geron_deit_distillation_loss
 }
 \examples{
 img <- array(0, dim = c(3, 32, 32))
-morie_geron_deit(img, patch_size = 16, n_layers = 1, d_model = 8, 
+morie_geron_deit(img, patch_size = 16, n_layers = 1, d_model = 8,
     n_heads = 2, n_classes = 4)
 }

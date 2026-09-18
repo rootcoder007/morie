@@ -23,7 +23,8 @@ where it comes from. The residual \eqn{au^2} is the part the
 (2002) Section 4
 }
 \examples{
-Mareg(yi = c(1, 2, 3, 4, 5, 6, 7, 8), vi = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3, 4, 5, 6, 7, 8))
+Mareg(yi = c(1, 2, 3, 4, 5, 6, 7, 8), vi = c(1, 2, 3, 4, 5, 6, 7, 8), X = c(1, 2, 3,
+4, 5, 6, 7, 8))
 }
 \references{
 van Houwelingen, H. C., Arends, L. R. and Stijnen, T.

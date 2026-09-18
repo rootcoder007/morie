@@ -40,4 +40,9 @@ df <- morie_siu_reports()
 nrow(df)
 table(df$panel_reviewed)
 \dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+df <- morie_siu_reports()
+nrow(df)
+table(df$panel_reviewed)
+\dontshow{\}) # examplesIf}
 }

@@ -17,7 +17,8 @@
 One of two values, depending on the branch taken.
 }
 \description{
-A step of the tps_statphysics implementation. Called by \code{.tps_sp_grad}, \code{.tps_sp_lap}, \code{.tps_sp_local_max3x3} and 1 others in the module.
+A step of the tps_statphysics implementation. Called by \code{.tps_sp_grad},
+\code{.tps_sp_lap}, \code{.tps_sp_local_max3x3} and 1 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

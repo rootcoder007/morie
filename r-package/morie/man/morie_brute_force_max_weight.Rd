@@ -10,7 +10,6 @@ morie_brute_force_max_weight(ground, independent, weights)
 \item{ground, independent}{The system.}
 
 \item{weights}{Numeric vector aligned with \code{ground}.}
-
 }
 \value{
 A list with \code{set} and \code{weight}.
@@ -19,6 +18,6 @@ A list with \code{set} and \code{weight}.
 Maximum-weight independent set by exhaustive search
 }
 \examples{
-morie_brute_force_max_weight(ground = c(1, 2, 3, 4, 5, 6, 7, 8),
-  independent = c(1, 2, 3, 4, 5, 6, 7, 8), weights = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_brute_force_max_weight(ground = c(1, 2, 3, 4, 5, 6, 7, 8), independent = c(1, 2,
+3, 4, 5, 6, 7, 8), weights = c(1, 2, 3, 4, 5, 6, 7, 8))
 }

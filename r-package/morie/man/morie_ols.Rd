@@ -25,8 +25,6 @@ Perfectly collinear predictors raise rather than silently returning
 one arbitrary solution out of infinitely many.
 }
 \examples{
-if (requireNamespace("sandwich", quietly = TRUE)) {
-  V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-  morie_ols(V, V)
-}
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_ols(V, V)
 }

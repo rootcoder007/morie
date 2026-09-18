@@ -13,7 +13,8 @@
 Nothing; this branch always raises.
 }
 \description{
-A step of the semipar_bridge implementation. Called by \code{kde}, \code{kernel_eval}, \code{SemiparKernels}.
+A step of the semipar_bridge implementation. Called by \code{kde}, \code{kernel_eval},
+\code{SemiparKernels}.
 See the file header for the source the module follows.
 the source it follows.
 }

@@ -14,8 +14,6 @@ morie_kamath_ch4_vera_forward(W_0, Lambda_b, Lambda_d, A, B, x)
 \item{A, B}{Frozen shared factors.}
 
 \item{x}{Input.}
-
-
 }
 \value{
 List with \code{h}, \code{delta_h}, \code{r}, \code{n_trainable}.
@@ -24,6 +22,6 @@ List with \code{h}, \code{delta_h}, \code{r}, \code{n_trainable}.
 h = W_0 x + Lambda_b B Lambda_d A x; only the two diagonals train.
 }
 \examples{
-morie_kamath_ch4_vera_forward(diag(2), c(2, 3), c(5), matrix(c(1, 
+morie_kamath_ch4_vera_forward(diag(2), c(2, 3), c(5), matrix(c(1,
     1), 1), matrix(c(1, 2), 2), c(1, 2))
 }

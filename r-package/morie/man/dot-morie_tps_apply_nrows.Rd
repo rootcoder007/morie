@@ -9,13 +9,16 @@
 \arguments{
 \item{df}{A matrix; indexed by row and column.}
 
-\item{nrows}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
+\item{nrows}{Optional; may be \code{NULL}. Coerced to integer by the body, with
+\code{as.integer}.}
 }
 \value{
 The value of \code{[}.
 }
 \description{
-A step of the tps_io implementation. Called by \code{.morie_tps_read_featurecollection}, \code{.morie_tps_read_geojson}, \code{.morie_tps_read_kml} and 2 others in the module.
+A step of the tps_io implementation. Called by
+\code{.morie_tps_read_featurecollection}, \code{.morie_tps_read_geojson},
+\code{.morie_tps_read_kml} and 2 others in the module.
 See the file header for the source the module follows.
 it follows.
 }

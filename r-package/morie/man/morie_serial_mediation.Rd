@@ -12,7 +12,6 @@ morie_serial_mediation(x, m1, m2, y)
 \item{m1, m2}{Ordered mediators.}
 
 \item{y}{Outcome.}
-
 }
 \value{
 List with \code{direct}, \code{via_m1}, \code{via_m2}, \code{serial},
@@ -24,7 +23,7 @@ serial path. Mirrors \code{morie.fn.medstg}.
 }
 \examples{
 morie_serial_mediation(x = c(1, 2, 3, 4, 5, 6, 7, 8), m1 = c(1, 2, 3, 4, 5, 6, 7, 8),
-  m2 = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8))
+m2 = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8))
 }
 \references{
 Hayes AF (2022). \emph{Introduction to Mediation,

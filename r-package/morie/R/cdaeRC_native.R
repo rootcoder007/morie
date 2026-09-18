@@ -20,33 +20,25 @@
 # Feedback", *UAI 2009*, 452-461, arXiv:1205.2618, for the
 # pair-wise objective in Table 1.
 
-.CDAE_EPS <- 1e-12
-.CDAE_LOSSES <- c("square", "log", "hinge", "cross_entropy")
-.CDAE_ACTS <- c("sigmoid", "identity", "tanh")
-
 #' .cdae_act
 #'
-#' A step of the cdaeRC_native implementation. Called by \code{encode}, \code{fit_cdae},
-#' \code{morie_cdaeRC_decode} and 1 others in the module.
+#' A step of the cdaeRC_native implementation. Called by \code{decode}, \code{encode}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param name One of \code{"identity"}, \code{"sigmoid"}, \code{"tanh"}.
 #' @param x Numeric; combined arithmetically in the body.
-#' @return One of two values, depending on the branch taken.
+#' @return Nothing; this branch always raises.
 #' @export
 .cdae_act <- function(name, x) {
   if (name == "sigmoid") {
     # vectorised clamp: the scalar if() errors on vector activations
-    1.0 / (1.0 + exp(-pmax(x, -700)))
-  } else if (name == "identity") {
-    x
-  } else if (name == "tanh") {
-    tanh(x)
-  } else {
-    stop(sprintf("cdaeRC: activation must be one of %s, got '%s'",
-                 paste(.CDAE_ACTS, collapse = ", "), name))
+    return(1.0 / (1.0 + exp(-pmax(x, -700))))
   }
+  if (name == "identity") return(x)
+  if (name == "tanh") return(tanh(x))
+  stop(sprintf("cdaeRC: activation must be one of %s, got %s",
+               paste(.cdae_acts, collapse = ", "), name))
 }
 
 #' .cdae_dact
@@ -57,12 +49,12 @@
 #'
 #' @param name One of \code{"identity"}, \code{"sigmoid"}.
 #' @param y Numeric; combined arithmetically in the body.
-#' @return One of two values, depending on the branch taken.
+#' @return A numeric value.
 #' @export
 .cdae_dact <- function(name, y) {
-  if (name == "sigmoid") y * (1.0 - y)
-  else if (name == "identity") 1.0
-  else 1.0 - y * y
+  if (name == "sigmoid") return(y * (1.0 - y))
+  if (name == "identity") return(1.0)
+  return(1.0 - y * y)
 }
 
 #' corrupt
@@ -73,15 +65,19 @@
 #'
 #' @param y A vector; its length is taken.
 #' @param q Coerced to numeric by the body, with \code{as.numeric}.
-#' @param e Passed to \code{.ghc_unif}.
+#' @param rng Passed to \code{.ghc_unif}.
 #' @return The value of \code{ifelse}.
 #' @export
-corrupt <- function(y, q, e) {
+#' @examples
+#' rng <- morie:::.ghc_rng(1)
+#' corrupt(c(1, 0, 1, 1, 0), q = 0.4, rng)
+#' @keywords internal
+corrupt <- function(y, q, rng) {
   qq <- as.numeric(q)
-  if (is.na(qq) || qq < 0 || qq >= 1)
-    stop(sprintf("cdaeRC: q must lie in [0,1), got %r", q))
+  if (!(qq >= 0.0 && qq < 1.0))
+    stop(sprintf("cdaeRC: q must lie in [0,1), got %s", q))
   d <- 1.0 / (1.0 - qq)
-  u <- .ghc_unif(e, length(y))
+  u <- .ghc_unif(rng, length(y))
   ifelse(u < qq, 0.0, d * as.numeric(y))
 }
 
@@ -91,21 +87,26 @@ corrupt <- function(y, q, e) {
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
-#' @param y_tilde A vector; its length is taken and its elements indexed.
-#' @param W A matrix; indexed by row and column.
+#' @param y_tilde See Usage.
+#' @param W A vector; indexed elementwise.
 #' @param V_u A vector; indexed elementwise.
 #' @param b A vector; its length is taken and its elements indexed.
 #' @param activation Passed to \code{.cdae_act}. Defaults to \code{"sigmoid"}.
 #' @return The value of \code{z}, as built in the body.
 #' @export
+#' @examples
+#' encode(y_tilde = c(1, 2, 3, 4, 5, 6, 7, 8), W = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   V_u = c(1, 2, 3, 4, 5, 6, 7, 8), b = 5L)
+#' @keywords internal
 encode <- function(y_tilde, W, V_u, b, activation = "sigmoid") {
   K <- length(b)
   z <- numeric(K)
   for (f in seq_len(K)) {
     s <- b[f] + V_u[f]
-    for (i in seq_along(y_tilde))
-      if (y_tilde[i] != 0.0)
-        s <- s + W[i, f] * y_tilde[i]
+    yt <- y_tilde
+    if (any(yt != 0.0)) {
+      for (i in which(yt != 0.0)) s <- s + W[[i]][f] * yt[i]
+    }
     z[f] <- .cdae_act(activation, s)
   }
   z
@@ -150,27 +151,29 @@ morie_cdaeRC_decode <- function(z, Wp, bp, items = NULL, activation = "sigmoid")
 #' @param y Coerced to numeric by the body, with \code{as.numeric}.
 #' @param y_hat Coerced to numeric by the body, with \code{as.numeric}.
 #' @param kind One of \code{"hinge"}, \code{"log"}, \code{"square"}. Defaults to \code{"square"}.
-#' @return One of two values, depending on the branch taken.
+#' @return A numeric value.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' loss(V, V)
+#' @keywords internal
 loss <- function(y, y_hat, kind = "square") {
-  if (!(kind %in% .CDAE_LOSSES))
-    stop(sprintf("cdaeRC: loss must be one of %s, got '%s'",
-                 paste(.CDAE_LOSSES, collapse = ", "), kind))
+  if (!(kind %in% .cdae_losses))
+    stop(sprintf("cdaeRC: loss must be one of %s, got %s",
+                 paste(.cdae_losses, collapse = ", "), kind))
   yv <- as.numeric(y)
   yh <- as.numeric(y_hat)
   if (kind %in% c("log", "hinge") && yv == 0.0)
     stop(sprintf("cdaeRC: the %s loss needs y = -1 for negatives, not 0", kind))
-  if (kind == "square")
-    return(0.5 * (yv - yh) ^ 2)
+  if (kind == "square") return(0.5 * (yv - yh)^2)
   if (kind == "log") {
-    if (-yv * yh < 700) log(1.0 + exp(-yv * yh)) else -yv * yh
-  } else if (kind == "hinge") {
-    max(0.0, 1.0 - yv * yh)
-  } else {
-    p <- if (yh >= -700) 1.0 / (1.0 + exp(-yh)) else 0.0
-    p <- min(max(p, .CDAE_EPS), 1.0 - .CDAE_EPS)
-    -yv * log(p) - (1.0 - yv) * log(1.0 - p)
+    if (-yv * yh < 700) return(log(1.0 + exp(-yv * yh)))
+    return(-yv * yh)
   }
+  if (kind == "hinge") return(max(0.0, 1.0 - yv * yh))
+  if (yh >= -700) p <- 1.0 / (1.0 + exp(-yh)) else p <- 0.0
+  p <- min(max(p, .cdae_eps), 1.0 - .cdae_eps)
+  -yv * log(p) - (1.0 - yv) * log(1.0 - p)
 }
 
 #' fit_cdae
@@ -188,13 +191,19 @@ loss <- function(y, y_hat, kind = "square") {
 #' @param lam Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0.01}.
 #' @param iters Coerced to integer by the body, with \code{as.integer}. Defaults to \code{30L}.
 #' @param n_neg Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5L}.
-#' @param seed Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.
-#' @param activation Passed to \code{.cdae_act}. Defaults to \code{"sigmoid"}.
+#' @param seed Passed to \code{.ghc_rng}. Defaults to \code{0}.
+#' @param activation Passed to \code{.cdae_dact}. Defaults to \code{"sigmoid"}.
 #' @param init_scale Numeric; combined arithmetically in the body. Defaults to \code{0.1}.
 #' @return A list with \code{estimate}, \code{W}, \code{W_prime}, \code{V}, \code{b},
 #' \code{b_prime}, \code{loss_history}, \code{final_loss}, \code{k}, \code{q},
 #' \code{n_neg}, \code{activation}, \code{method}, \code{note}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' pos <- list(c(0L, 1L), c(1L, 2L), c(0L, 2L), c(2L, 3L))
+#' m <- fit_cdae(pos, n_users = 4, n_items = 4, k_dim = 3, iters = 5)
+#' str(m, max.level = 1)
+#' @keywords internal
 fit_cdae <- function(pos, n_users, n_items, k_dim = 8L, q = 0.2,
                      alpha = 0.05, lam = 0.01, iters = 30L,
                      n_neg = 5L, seed = 0, activation = "sigmoid",
@@ -204,88 +213,78 @@ fit_cdae <- function(pos, n_users, n_items, k_dim = 8L, q = 0.2,
   K <- as.integer(k_dim)
   if (U < 1L || I < 2L || K < 1L)
     stop("cdaeRC: need at least 1 user, 2 items and 1 hidden node")
-  e <- .ghc_rng(as.numeric(seed))
+  rng <- .ghc_rng(seed)
 
-  rand <- function() (.ghc_unif(e, 1L) - 0.5) * 2.0 * init_scale
+  rand <- function() (as.numeric(.ghc_unif(rng, 1L)) - 0.5) * 2.0 * init_scale
 
-  W  <- matrix(0.0, nrow = I, ncol = K)
-  Wp <- matrix(0.0, nrow = I, ncol = K)
-  V  <- matrix(0.0, nrow = U, ncol = K)
-  b  <- numeric(K)
-  bp <- numeric(I)
-  for (i in seq_len(I)) for (f in seq_len(K)) { W[i, f]  <- rand()
-  Wp[i, f] <- rand() }
-  for (u in seq_len(U)) for (f in seq_len(K)) V[u, f] <- rand()
-
-  a  <- as.numeric(alpha)
+  # inner replicate must SIMPLIFY: with simplify = FALSE each weight
+  # row was a list of scalar lists and every update was numeric * list
+  W  <- replicate(I, replicate(K, rand()), simplify = FALSE)
+  Wp <- replicate(I, replicate(K, rand()), simplify = FALSE)
+  V  <- replicate(U, replicate(K, rand()), simplify = FALSE)
+  b  <- rep(0.0, K)
+  bp <- rep(0.0, I)
+  a <- as.numeric(alpha)
   lm <- as.numeric(lam)
-  hist <- numeric(as.integer(iters))
-  qq <- as.numeric(q)
-  if (is.na(qq) || qq < 0 || qq >= 1)
-    stop(sprintf("cdaeRC: q must lie in [0,1), got %r", q))
-
+  hist <- numeric(0)
   for (it in seq_len(as.integer(iters))) {
     tot <- 0.0
-    for (u in seq_len(U)) {
-      seen <- if (is.null(pos[[as.character(u)]])) integer(0) else
-                sort(unique(as.integer(pos[[as.character(u)]])))
+    for (u in seq_len(U) - 1L) {
+      seen_raw <- if (!is.null(names(pos))) pos[[as.character(u)]] else pos[[u + 1L]]
+      seen <- sort(unique(as.integer(seen_raw %||% c())))
       if (length(seen) == 0L) next
-      seen_set <- as.character(seen)
-      y <- ifelse(as.character(seq_len(I) - 1L) %in% seen_set, 1.0, 0.0)
-      yt <- corrupt(y, qq, e)
-      z <- encode(yt, W, V[u, ], b, activation)
+      seen_set <- as.integer(seen) + 1L
+      y <- ifelse(seq_len(I) %in% seen_set, 1.0, 0.0)
+      yt <- corrupt(y, q, rng)
+      z <- encode(yt, W, V[[u + 1L]], b, activation)
       neg <- integer(0)
       guard <- 0L
       n_neg_i <- as.integer(n_neg)
       while (length(neg) < n_neg_i && guard < 100L * n_neg_i) {
-        j <- as.integer(floor(.ghc_unif(e, 1L) * I)) %% I
-        if (!(as.character(j) %in% seen_set))
-          neg <- c(neg, j)
+        # 1-based, to match seen_set: the 0-based draw put item 0 into
+        # tgt and Wp[[0]] cannot exist
+        j <- as.integer(.ghc_unif(rng, 1L) * I) %% I + 1L
+        if (!(j %in% seen_set)) neg <- c(neg, j)
         guard <- guard + 1L
       }
-      tgt <- c(seen, neg)
-      yi_tgt <- ifelse(as.character(tgt) %in% seen_set, 1.0, 0.0)
-      out_v <- numeric(length(tgt))
-      for (k in seq_along(tgt)) {
-        i <- tgt[k] + 1L
-        s <- bp[i]
-        for (f in seq_len(K)) s <- s + Wp[i, f] * z[f]
-        out_v[k] <- .cdae_act(activation, s)
-      }
-      dz <- numeric(K)
-      for (k in seq_along(tgt)) {
-        i <- tgt[k] + 1L
-        yi <- yi_tgt[k]
-        e_i <- (out_v[k] - yi) * .cdae_dact(activation, out_v[k])
-        tot <- tot + loss(yi, out_v[k], "square")
+      tgt <- c(seen_set, neg)
+      out <- decode(z, Wp, bp, tgt, activation)
+      dz <- rep(0.0, K)
+      for (kk in seq_along(tgt)) {
+        i <- tgt[kk]
+        yi <- if (i %in% seen_set) 1.0 else 0.0
+        e <- (out[kk] - yi) * .cdae_dact(activation, out[kk])
+        tot <- tot + loss(yi, out[kk], "square")
         for (f in seq_len(K)) {
-          dz[f] <- dz[f] + e_i * Wp[i, f]
-          Wp[i, f] <- Wp[i, f] - a * (e_i * z[f] + lm * Wp[i, f])
+          dz[f] <- dz[f] + e * Wp[[i]][f]
+          Wp[[i]][f] <- Wp[[i]][f] - a * (e * z[f] + lm * Wp[[i]][f])
         }
-        bp[i] <- bp[i] - a * e_i
+        bp[i] <- bp[i] - a * e
       }
       dpre <- dz * .cdae_dact(activation, z)
-      for (i in seq_len(I)) {
-        if (yt[i] != 0.0) {
-          for (f in seq_len(K))
-            W[i, f] <- W[i, f] - a * (dpre[f] * yt[i] + lm * W[i, f])
+      nz <- which(yt != 0.0)
+      for (i in nz) {
+        for (f in seq_len(K)) {
+          W[[i]][f] <- W[[i]][f] - a * (dpre[f] * yt[i] + lm * W[[i]][f])
         }
       }
       for (f in seq_len(K)) {
-        V[u, f] <- V[u, f] - a * (dpre[f] + lm * V[u, f])
-        b[f]    <- b[f]    - a * dpre[f]
+        V[[u + 1L]][f] <- V[[u + 1L]][f] - a * (dpre[f] + lm * V[[u + 1L]][f])
+        b[f] <- b[f] - a * dpre[f]
       }
     }
-    hist[it] <- tot
+    hist <- c(hist, tot)
   }
-  list(estimate = list(W = W, W_prime = Wp, V = V, b = b, b_prime = bp),
-       W = W, W_prime = Wp, V = V, b = b, b_prime = bp,
-       loss_history = hist,
-       final_loss = if (length(hist)) hist[length(hist)] else NaN,
-       k = K, q = as.numeric(qq), n_neg = as.integer(n_neg),
-       activation = activation,
-       method = "CDAE; Wu, DuBois, Zheng & Ester (2016) eqs. (9)-(13), Algorithm 1",
-       note = "V_u is the user-specific input node -- without it this is an ordinary denoising auto-encoder over item vectors")
+  list(
+    estimate = list(W, Wp, V, b, bp),
+    W = W, W_prime = Wp, V = V, b = b, b_prime = bp,
+    loss_history = hist,
+    final_loss = if (length(hist)) hist[length(hist)] else NaN,
+    k = K, q = as.numeric(q), n_neg = as.integer(n_neg),
+    activation = activation,
+    method = "CDAE; Wu, DuBois, Zheng & Ester (2016) eqs. (9)-(13), Algorithm 1",
+    note = "V_u is the user-specific input node -- without it this is an ordinary denoising auto-encoder over item vectors"
+  )
 }
 
 #' recommend
@@ -300,9 +299,15 @@ fit_cdae <- function(pos, n_users, n_items, k_dim = 8L, q = 0.2,
 #' @param u Coerced to integer by the body, with \code{as.integer}.
 #' @param n_items Coerced to integer by the body, with \code{as.integer}.
 #' @param top_k Coerced to integer by the body, with \code{as.integer}. Defaults to \code{5L}.
-#' @param activation Passed to \code{.cdae_act}. Defaults to \code{"sigmoid"}.
+#' @param activation Passed to \code{encode}. Defaults to \code{"sigmoid"}.
 #' @return A list with \code{ranking}, \code{n_scored}.
 #' @export
+#' @examples
+#' set.seed(1)
+#' pos <- list(c(0L, 1L), c(1L, 2L), c(0L, 2L), c(2L, 3L))
+#' m <- fit_cdae(pos, n_users = 4, n_items = 4, k_dim = 3, iters = 5)
+#' recommend(m, pos, u = 0L, n_items = 4, top_k = 2)
+#' @keywords internal
 recommend <- function(model, pos, u, n_items, top_k = 5L,
                       activation = "sigmoid") {
   W <- model$W
@@ -310,26 +315,19 @@ recommend <- function(model, pos, u, n_items, top_k = 5L,
   V <- model$V
   b <- model$b
   bp <- model$b_prime
-  u <- as.integer(u)
-  seen <- if (is.null(pos[[as.character(u)]])) integer(0) else
-            sort(unique(as.integer(pos[[as.character(u)]])))
-  seen_set <- as.character(seen)
+  u_int <- as.integer(u)
+  seen <- unique(as.integer((if (!is.null(names(pos))) pos[[as.character(u_int)]] else pos[[u_int + 1L]]) %||% c()))
+  seen_set <- seen + 1L
   I <- as.integer(n_items)
-  y <- ifelse(as.character(seq_len(I) - 1L) %in% seen_set, 1.0, 0.0)
-  z <- encode(y, W, V[u, ], b, activation)
-  s <- numeric(I)
-  for (i in seq_len(I)) {
-    ss <- bp[i]
-    K <- length(z)
-    for (f in seq_len(K)) ss <- ss + Wp[i, f] * z[f]
-    s[i] <- .cdae_act(activation, ss)
-  }
-  cand <- which(!(as.character(seq_len(I) - 1L) %in% seen_set))
-  sc <- s[cand + 0L]
-  ord <- order(-sc)
-  top <- head(ord, as.integer(top_k))
-  list(ranking = lapply(cand[top], function(i) list(item = i - 1L, score = s[i])),
-       n_scored = length(cand))
+  y <- ifelse(seq_len(I) %in% seen_set, 1.0, 0.0)
+  z <- encode(y, W, V[[u_int + 1L]], b, activation)
+  out <- decode(z, Wp, bp, NULL, activation)
+  s <- data.frame(i = seq_len(I) - 1L, score = out, stringsAsFactors = FALSE)
+  s <- s[!(s$i + 1L) %in% seen_set, , drop = FALSE]
+  s <- s[order(-s$score), , drop = FALSE]
+  top_k_i <- as.integer(top_k)
+  ranking <- lapply(seq_len(min(top_k_i, nrow(s))), function(k) c(s$i[k], s$score[k]))
+  list(ranking = ranking, n_scored = nrow(s))
 }
 
 #' morie_cdaeRC
@@ -360,9 +358,6 @@ morie_cdaeRC <- function(pos, n_users, n_items, k_dim = 8L, q = 0.2,
            n_neg, seed, activation, init_scale)
 }
 
-cdae <- fit_cdae
-collaborativedenoisingautoencoder <- fit_cdae
-
 #' .cdaeRC_cheatsheet
 #'
 #' A step of the cdaeRC_native implementation. No other function in the package calls it.
@@ -384,4 +379,35 @@ collaborativedenoisingautoencoder <- fit_cdae
         "would train the all-ones model, so negatives are SAMPLED.",
         "Four losses offered; log and hinge need the negative",
         "label to be -1, not 0.")
+}
+
+.cdae_acts <- c("sigmoid", "identity", "tanh")
+
+.cdae_losses <- c("square", "log", "hinge", "cross_entropy")
+
+.cdae_eps <- 1e-12
+
+#' decode
+#'
+#' A step of the cdaeRC_native implementation. Called by \code{fit_cdae}, \code{recommend}.
+#' See the file header for the source the module follows.
+#' source it follows.
+#'
+#' @param z Numeric; combined arithmetically in the body.
+#' @param Wp A vector; indexed elementwise.
+#' @param bp A vector; its length is taken and its elements indexed.
+#' @param items Optional; may be \code{NULL}. Coerced to integer by the body, with
+#' \code{as.integer}.
+#' @param activation Passed to \code{.cdae_act}. Defaults to \code{"sigmoid"}.
+#' @return A vector, from \code{sapply}.
+#' @export
+#' @examples
+#' decode(z = c(1, 2, 3, 4, 5, 6, 7, 8), Wp = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   bp = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' @keywords internal
+decode <- function(z, Wp, bp, items = NULL, activation = "sigmoid") {
+  if (is.null(items)) idx <- seq_along(bp) else idx <- as.integer(items)
+  sapply(idx, function(i) {
+    .cdae_act(activation, bp[i] + sum(Wp[[i]] * z))
+  })
 }

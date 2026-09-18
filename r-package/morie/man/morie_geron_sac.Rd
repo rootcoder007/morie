@@ -25,11 +25,6 @@ returning list(s2, r, done), and integers n_states, n_actions.}
 \item{critic}{Optional initial (n_states, n_actions) Q table; default zeros.}
 
 \item{epochs, lr, alpha, gamma, steps, seed}{As in the Python original.}
-
-
-
-
-
 }
 \value{
 list with policy, Q, V, entropy, returns, estimate, n, method.
@@ -40,7 +35,7 @@ soft critic update Q += lr*(target - Q), closed-form policy improvement
 pi(.|s) = softmax(Q(s,.)/alpha).
 }
 \examples{
-bandit <- list(n_states = 1L, n_actions = 2L, reset = function() 0L, 
+bandit <- list(n_states = 1L, n_actions = 2L, reset = function() 0L,
     step = function(a) list(0L, as.numeric(a), FALSE))
 morie_geron_sac(bandit, epochs = 30, lr = 0.5, alpha = 0.05)
 }

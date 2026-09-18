@@ -25,7 +25,6 @@ it, exactly as in the Cox model.}
 censored; all ones if omitted.}
 
 \item{max_iter, tol}{Newton controls.}
-
 }
 \value{
 list: estimate, beta_hat, se, h0_hat, event_times, Lambda0, n,
@@ -34,7 +33,7 @@ n_events, method.
 \description{
 Horowitz, J. L. (2009), Semiparametric and Nonparametric Methods in
 Econometrics, Springer, Section 6.2.1, pages 201-203 (volume
-[Pages 189-232], read as rendered page images).  Note the sign convention:
+\link{Pages 189-232}, read as rendered page images).  Note the sign convention:
 the book writes the model as log Lambda_0(Y) = X beta + U with U
 extreme-value (6.31), so the conditional hazard carries exp(-x beta), not
 exp(+x beta), and every formula below follows that.  The partial likelihood

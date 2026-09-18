@@ -17,11 +17,9 @@ dummies are built from \code{cohort} and \code{time}).}
 \item{cohort}{First treated period per observation; NA or Inf marks a
 never-treated unit.}
 
-\item{max_lead, max_lag}{Truncate the window to [-max_lead, max_lag].}
+\item{max_lead, max_lag}{Truncate the window to \link{-max_lead, max_lag}.}
 
 \item{ref}{Omitted event time.}
-
-
 }
 \value{
 List with \code{estimate}, \code{event_times}, \code{coef},

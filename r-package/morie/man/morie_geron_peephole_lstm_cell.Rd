@@ -24,21 +24,11 @@ morie_geron_peephole_lstm_cell(
 \arguments{
 \item{x_t, h_prev, c_prev}{State vectors.}
 
-\item{Wf, Wi, Wg, Wo}{(H, H + n) gate weights on [h_prev, x_t].}
+\item{Wf, Wi, Wg, Wo}{(H, H + n) gate weights on \link{h_prev, x_t}.}
 
 \item{Uf, Ui, Uo}{Length-H diagonal peepholes.}
 
 \item{bf, bi, bg, bo}{Length-H biases.}
-
-
-
-
-
-
-
-
-
-
 }
 \value{
 List with \code{h}, \code{c}, \code{f}, \code{i}, \code{g}, \code{o}.

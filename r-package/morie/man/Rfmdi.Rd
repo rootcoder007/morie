@@ -14,7 +14,6 @@ Rfmdi(forest, X, y, mtry = NULL, nodesize = 5L)
 \item{y}{length-n response, or an n-by-q matrix for the multivariate case.}
 
 \item{mtry, nodesize}{as in Rfmlt; the p. 643 regression defaults.}
-
 }
 \value{
 list: estimate, importance, relative, ranking, total, mtry, n,
@@ -24,7 +23,7 @@ method.
 NOT IN THE BOOK.  Montesinos Lopez, Montesinos Lopez and Crossa (2022),
 Multivariate Statistical Machine Learning Methods for Genomic Prediction,
 Springer, was searched in full -- all seventeen page-range volumes and the
-index, [Pages 683-691].  Chapter 15, volume [Pages 633-681], is the random
+index, \link{Pages 683-691}.  Chapter 15, volume \link{Pages 633-681}, is the random
 forest chapter, and the only variable importance it defines is the
 out-of-bag PERMUTATION measure of pp. 642-643, implemented separately as
 Rfpmi.  The words "mean decrease in impurity" do not occur; impurity appears

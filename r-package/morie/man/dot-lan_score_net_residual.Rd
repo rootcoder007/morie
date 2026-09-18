@@ -30,7 +30,8 @@
 \item{random_state}{Passed to \code{set.seed}.}
 }
 \value{
-A list with \code{coefficients}, \code{std_errors}, \code{bootstrap_se}, \code{score_coefficient}, \code{n_obs}.
+A list with \code{coefficients}, \code{std_errors}, \code{bootstrap_se},
+\code{score_coefficient}, \code{n_obs}.
 }
 \description{
 Part of the laniyonu_actuarial_risk_disparity implementation; see the

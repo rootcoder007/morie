@@ -3,6 +3,12 @@
 # Phase 3CCC4: Cross-portal dataset catalog.
 
 test_that("morie_dataset_portal_catalog() returns unified schema", {
+  # 5s of the suite here, and r-universe's macOS x86_64 builder is
+  # about 1.8 times slower. The check there is killed at sixty minutes
+  # and the suite alone was twenty-six of them. The heavy files run in
+  # our own CI, which sets NOT_CRAN, where the clock is ours.
+  skip_heavy()
+  testthat::skip_if_not_installed("rmoriedata")
   d <- morie_dataset_portal_catalog()
   expect_s3_class(d, "data.frame")
   expect_setequal(names(d),
@@ -18,6 +24,8 @@ test_that("morie_dataset_portal_catalog() returns unified schema", {
 })
 
 test_that("catalog covers all 14 expected portals", {
+  skip_heavy()
+  testthat::skip_if_not_installed("rmoriedata")
   d <- morie_dataset_portal_catalog()
   expect_setequal(unique(d$source),
                   c("chicago", "nyc_nypd", "nyc_opendata",
@@ -30,6 +38,8 @@ test_that("catalog covers all 14 expected portals", {
 })
 
 test_that("per-source row counts match expected (post-3GGG bulk)", {
+  skip_heavy()
+  testthat::skip_if_not_installed("rmoriedata")
   d <- morie_dataset_portal_catalog()
   src_n <- table(d$source)
   expect_equal(as.integer(src_n["nyc_nypd"]), 8L)
@@ -49,6 +59,7 @@ test_that("per-source row counts match expected (post-3GGG bulk)", {
 })
 
 test_that("api_modes column reflects portal protocol", {
+  skip_heavy()
   d <- morie_dataset_portal_catalog()
   # Socrata endpoints (NYC NYPD + Chicago + NYC OpenData boundaries)
   # all carry soda2 + soda3 + odata.
@@ -81,6 +92,7 @@ test_that("api_modes column reflects portal protocol", {
 })
 
 test_that("portal= filter returns subset", {
+  skip_heavy()
   d_all <- morie_dataset_portal_catalog()
   for (p in c("chicago", "nyc_nypd", "nyc_opendata",
               "tps_arcgis_hub", "tps_psdp", "ontario_ckan",
@@ -98,10 +110,12 @@ test_that("portal= filter returns subset", {
 })
 
 test_that("invalid portal raises error", {
+  skip_heavy()
   expect_error(morie_dataset_portal_catalog(portal = "atlantis"))
 })
 
 test_that("at least one NYPD dataset surfaces its dict_url", {
+  skip_heavy()
   d <- morie_dataset_portal_catalog(portal = "nyc_nypd")
   ytd <- d[d$dataset_key == "nypd_arrests_ytd", ]
   expect_equal(nrow(ytd), 1L)
@@ -110,6 +124,8 @@ test_that("at least one NYPD dataset surfaces its dict_url", {
 })
 
 test_that("morie_datasets_vancouver_opendata_layers reads 190-row catalog", {
+  skip_heavy()
+  testthat::skip_if_not_installed("rmoriedata")
   v <- morie_datasets_vancouver_opendata_layers(offline = TRUE)
   expect_s3_class(v, "data.frame")
   expect_equal(nrow(v), 190L)
@@ -120,6 +136,7 @@ test_that("morie_datasets_vancouver_opendata_layers reads 190-row catalog", {
 })
 
 test_that("morie_datasets_vancouver_opendata_by_id signature accepts both formats", {
+  skip_heavy()
   fa <- formals(morie_datasets_vancouver_opendata_by_id)
   expect_true("dataset_id" %in% names(fa))
   expect_equal(eval(fa$format), c("json", "csv"))

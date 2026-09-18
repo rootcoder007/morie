@@ -15,7 +15,8 @@
 A list with \code{e}, \code{f}.
 }
 \description{
-A step of the entheo_analysis implementation. Called by \code{.entheo_binding_per_frame}, \code{.entheo_san_per_frame}.
+A step of the entheo_analysis implementation. Called by
+\code{.entheo_binding_per_frame}, \code{.entheo_san_per_frame}.
 See the file header for the source the module follows.
 the source it follows.
 }

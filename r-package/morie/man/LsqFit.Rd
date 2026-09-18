@@ -8,13 +8,12 @@ LsqFit(x = NULL, y = NULL)
 }
 \arguments{
 \item{x, y}{equal-length data vectors, n >= 2.}
-
 }
 \value{
 list(A, B, S).
 }
 \description{
-A = (xy - xy)/(<x^2> - x^2) and B = y - Ax; the ratio
+A = (\if{html}{\out{<xy>}} - \if{html}{\out{<x>}}\if{html}{\out{<y>}})/(<x^2> - \if{html}{\out{<x>}}^2) and B = \if{html}{\out{<y>}} - A\if{html}{\out{<x>}}; the ratio
 form of B is computed independently and the two must agree.  The
 defaults are the book's five-point worked data set.
 }

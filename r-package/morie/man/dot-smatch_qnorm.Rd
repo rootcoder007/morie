@@ -2,15 +2,15 @@
 % Please edit documentation in R/smatch_native.R
 \name{.smatch_qnorm}
 \alias{.smatch_qnorm}
-\title{Beasley-Springer-Moro inverse normal CDF}
+\title{.smatch_qnorm}
 \usage{
 .smatch_qnorm(p)
 }
 \arguments{
-\item{p}{A vector; its length is taken and its elements indexed.}
+\item{p}{Passed to \code{qnorm}.}
 }
 \value{
-The value of \code{out}, as built in the body.
+The value of \code{qnorm}.
 }
 \description{
 A step of the smatch_native implementation. Called by \code{morie_smatch_sample_size}.

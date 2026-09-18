@@ -23,7 +23,8 @@
 The value of \code{.mt_result}.
 }
 \description{
-A step of the multiple_testing implementation. Called by \code{benjamini_hochberg}, \code{benjamini_yekutieli}, \code{bonferroni} and 10 others in the module.
+A step of the multiple_testing implementation. Called by \code{benjamini_hochberg},
+\code{benjamini_yekutieli}, \code{bonferroni} and 10 others in the module.
 See the file header for the source the module follows.
 the source it follows.
 }

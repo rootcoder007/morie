@@ -10,13 +10,12 @@
 A list with \code{kind}, \code{note}.
 }
 \description{
-A step of the fairness_gan implementation. Called by \code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}.
+A step of the fairness_gan implementation. Called by
+\code{morie_fairness_ctgan_debiaser}, \code{morie_fairness_spatial_gan}.
 See the file header for the source the module follows.
 source it follows.
 }
 \examples{
-if (requireNamespace("reticulate", quietly = TRUE)) {
-  res <- .fairness_backend()
-  res
-}
+res <- .fairness_backend()
+res
 }

@@ -13,11 +13,16 @@
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-#' Resolve a bundled synthetic CSV path from the morie R package
+#' Resolve a included synthetic CSV path from the morie R package
 #' @keywords internal
 #' @noRd
 .morie_dataset_pkg_csv <- function(name) {
-  path <- system.file("extdata", paste0(name, ".csv"), package = "morie")
+  path <- .morie_extdata(paste0(name, ".csv"))
+  if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
+    path <- system.file("extdata", paste0(name, ".csv"),
+      package = "moriedata"
+    )
+  }
   if (!nzchar(path)) {
     return(NA_character_)
   }
@@ -70,17 +75,25 @@
 #' @keywords internal
 #' @noRd
 .morie_dataset_build_url <- function(url, query = NULL) {
-  if (is.null(query) || length(query) == 0L) return(url)
+  if (is.null(query) || length(query) == 0L) {
+    return(url)
+  }
   pairs <- vapply(seq_along(query), function(i) {
     nm <- names(query)[[i]]
     val <- query[[i]]
-    if (is.null(val) || length(val) == 0L) return(NA_character_)
-    paste0(utils::URLencode(as.character(nm), reserved = TRUE),
-           "=",
-           utils::URLencode(as.character(val), reserved = TRUE))
+    if (is.null(val) || length(val) == 0L) {
+      return(NA_character_)
+    }
+    paste0(
+      utils::URLencode(as.character(nm), reserved = TRUE),
+      "=",
+      utils::URLencode(as.character(val), reserved = TRUE)
+    )
   }, character(1L))
   pairs <- pairs[!is.na(pairs)]
-  if (length(pairs) == 0L) return(url)
+  if (length(pairs) == 0L) {
+    return(url)
+  }
   sep <- if (grepl("\\?", url)) "&" else "?"
   paste0(url, sep, paste(pairs, collapse = "&"))
 }
@@ -304,31 +317,48 @@
 #' @keywords internal
 #' @noRd
 .morie_dataset_http_json <- function(url, query = NULL,
-                                       headers = character(),
-                                       timeout_s = 60L) {
+                                     headers = character(),
+                                     timeout_s = 60L) {
   full_url <- .morie_dataset_build_url(url, query)
   if (.morie_dataset_http_backend_cpp()) {
     body <- .morie_http_get(full_url,
-                             timeout_s = as.integer(timeout_s),
-                             headers = as.character(headers))
+      timeout_s = as.integer(timeout_s),
+      headers = as.character(headers)
+    )
     if (!nzchar(body)) {
-      stop(sprintf("morie HTTP fetch failed (libcurl returned empty body): %s",
-                   full_url), call. = FALSE)
+      stop(sprintf(
+        "morie HTTP fetch failed (libcurl returned empty body): %s",
+        full_url
+      ), call. = FALSE)
+    }
+    # Validate the body is JSON-shaped before handing to jsonlite.
+    # Upstream proxies (Envoy, nginx) return text/HTML error pages on
+    # 5xx that jsonlite cannot parse; surface a clear error instead.
+    first <- substr(trimws(body), 1L, 1L)
+    if (!first %in% c("{", "[")) {
+      stop(sprintf(
+        "morie HTTP fetch returned non-JSON body (likely an upstream proxy error): %s\nFirst 200 chars: %s",
+        full_url, substr(body, 1L, 200L)
+      ), call. = FALSE)
     }
     return(.morie_from_json(body, simplifyVector = TRUE))
   }
   if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie datasets HTTP fetch needs either the libcurl-backed ",
-         "C++ backend (built into morie.so via src/morie_http.cpp) ",
-         "or the 'httr2' R package.")
+    stop(
+      "morie datasets HTTP fetch needs either the libcurl-backed ",
+      "C++ backend (built into morie.so via src/morie_http.cpp) ",
+      "or the 'httr2' R package."
+    )
   }
   req <- httr2::request(full_url)
   if (length(headers) > 0L) {
     kv <- strsplit(headers, ":\\s*")
     kv <- Filter(function(x) length(x) == 2L, kv)
     if (length(kv) > 0L) {
-      named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
-                                vapply(kv, `[[`, character(1L), 1L))
+      named <- stats::setNames(
+        vapply(kv, `[[`, character(1L), 2L),
+        vapply(kv, `[[`, character(1L), 1L)
+      )
       req <- do.call(httr2::req_headers, c(list(req), as.list(named)))
     }
   }
@@ -646,19 +676,20 @@ morie_datasets_siu_director_reports <- function() {
 #' Download an SIU director's-report PDF and return its plain text
 #'
 #' @param url Character; direct PDF URL.  Required unless `offline = TRUE`.
-#' @param offline Logical; if `TRUE`, return the bundled synthetic
+#' @param offline Logical; if `TRUE`, return the included synthetic
 #'   `24-OFD-001` report text instead of hitting the SIU site.
 #' @return Character scalar (the plain text).
-#' @examplesIf requireNamespace("pdftools", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("pdftools", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' text <- morie_datasets_siu_report_text(offline = TRUE)
 #' substr(text, 1, 80)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_siu_report_text <- function(url = NULL, offline = FALSE) {
   if (isTRUE(offline)) {
-    path <- system.file("extdata", "siu_24-OFD-001_synthetic.txt",
-                        package = "morie")
-    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "siu_24-OFD-001_synthetic.txt", package = "rmoriedata")
+    path <- .morie_extdata("siu_24-OFD-001_synthetic.txt")
+    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "siu_24-OFD-001_synthetic.txt", package = "moriedata")
     }
     if (!nzchar(path)) {
       stop("morie_datasets_siu_report_text(offline=TRUE): bundled synthetic missing.")
@@ -776,7 +807,8 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
   page_size <- as.integer(page_size)
   if (is.na(page_size) || page_size <= 0L) {
     stop(".morie_dataset_socrata_fetch: paginate=TRUE requires page_size >= 1.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   max_pages <- as.integer(max_pages)
   if (is.na(max_pages) || max_pages <= 0L) max_pages <- 200L
@@ -800,7 +832,9 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
     offset <- offset + n
     if (n < this_limit) break
   }
-  if (length(chunks) == 0L) return(data.frame())
+  if (length(chunks) == 0L) {
+    return(data.frame())
+  }
   do.call(rbind, chunks)
 }
 
@@ -849,12 +883,12 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
 #' @keywords internal
 #' @noRd
 .morie_dataset_soda3_query <- function(view_id, soql = "SELECT *",
-                                        app_token = NULL,
-                                        paginate = FALSE,
-                                        page_size = 1000L,
-                                        max_pages = 200L,
-                                        max_features = NULL,
-                                        base_url = "https://data.cityofchicago.org") {
+                                       app_token = NULL,
+                                       paginate = FALSE,
+                                       page_size = 1000L,
+                                       max_pages = 200L,
+                                       max_features = NULL,
+                                       base_url = "https://data.cityofchicago.org") {
   # 3WW: routes through .morie_dataset_http_json (libcurl backend
   # from 3VV with httr2 fallback) instead of calling httr2 directly.
   # Single HTTP code path for SODA2 + SODA3 + raw text fetches.
@@ -868,7 +902,8 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
     records <- .morie_dataset_http_json(
       url,
       query = list(query = soql_string),
-      headers = headers)
+      headers = headers
+    )
     .morie_dataset_records_to_df(records)
   }
   if (!isTRUE(paginate)) {
@@ -878,7 +913,9 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
   # control the walk ourselves. Use case-insensitive trailing match;
   # we don't try to be clever about embedded LIMIT inside subqueries.
   base_soql <- sub("\\s+limit\\s+\\d+\\s*(offset\\s+\\d+\\s*)?$",
-                    "", soql, ignore.case = TRUE)
+    "", soql,
+    ignore.case = TRUE
+  )
   page_size <- as.integer(page_size)
   max_pages <- as.integer(max_pages)
   cap <- if (is.null(max_features)) NA_integer_ else as.integer(max_features)
@@ -888,8 +925,10 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
   for (pg in seq_len(max_pages)) {
     this_limit <- if (is.na(cap)) page_size else min(page_size, cap - total)
     if (this_limit <= 0L) break
-    paged_soql <- sprintf("%s LIMIT %d OFFSET %d",
-                           base_soql, this_limit, offset)
+    paged_soql <- sprintf(
+      "%s LIMIT %d OFFSET %d",
+      base_soql, this_limit, offset
+    )
     chunk <- send_one(paged_soql)
     n <- if (is.data.frame(chunk)) nrow(chunk) else 0L
     if (n == 0L) break
@@ -898,7 +937,9 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
     offset <- offset + n
     if (n < this_limit) break
   }
-  if (length(chunks) == 0L) return(data.frame())
+  if (length(chunks) == 0L) {
+    return(data.frame())
+  }
   do.call(rbind, chunks)
 }
 
@@ -957,20 +998,22 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
 #' @keywords internal
 #' @noRd
 .morie_dataset_odata_fetch <- function(view_id, filter = NULL,
-                                        select = NULL,
-                                        orderby = NULL,
-                                        top = NULL, skip = NULL,
-                                        app_token = NULL,
-                                        paginate = FALSE,
-                                        max_pages = 200L,
-                                        max_features = NULL,
-                                        base_url = "https://data.cityofchicago.org") {
+                                       select = NULL,
+                                       orderby = NULL,
+                                       top = NULL, skip = NULL,
+                                       app_token = NULL,
+                                       paginate = FALSE,
+                                       max_pages = 200L,
+                                       max_features = NULL,
+                                       base_url = "https://data.cityofchicago.org") {
   # 3WW: routes through .morie_dataset_http_json (libcurl backend
   # with httr2 fallback) instead of calling httr2 directly. Single
   # HTTP code path across all four Socrata API modes (SODA2 SODA3
   # OData + raw text) + the ArcGIS-Hub catalog discovery layer.
   strip_odata_meta <- function(df) {
-    if (!is.data.frame(df) || ncol(df) == 0L) return(df)
+    if (!is.data.frame(df) || ncol(df) == 0L) {
+      return(df)
+    }
     drop <- grepl("^@odata\\.", names(df))
     if (any(drop)) df[, !drop, drop = FALSE] else df
   }
@@ -1021,7 +1064,9 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
     if (is.null(next_link) || !nzchar(next_link)) break
     body <- send(next_link, query = NULL)
   }
-  if (length(chunks) == 0L) return(data.frame())
+  if (length(chunks) == 0L) {
+    return(data.frame())
+  }
   do.call(rbind, chunks)
 }
 
@@ -1221,13 +1266,15 @@ morie_datasets_nyc_stop_and_frisk <- function(year = NULL,
 #' @param billing_project GCP project to bill; `NULL` uses ADC-discovered.
 #' @return A `data.frame`.
 #' @examples
-#' \donttest{
-#' # Requires bigrquery, Google Cloud credentials, and a billing project.
+#' \dontshow{if (nzchar(Sys.getenv("GCP_PROJECT")) && requireNamespace("bigrquery", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+#' # Runs when the caller has bigrquery + a GCP_PROJECT billing project.
+#' # Keyless alternatives: the bundled samples in 'moriedata' and the
+#' # morie_datasets_*() open-data fetchers (Socrata / CKAN, no account).
 #' df <- morie_datasets_bigquery("bigquery-public-data", "chicago_crime",
-#'                               "crime", where = "year = 2024",
-#'                               limit = 100L,
-#'                               billing_project = "my-billing-project")
-#' }
+#'   "crime",
+#'   limit = 10L
+#' )
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_bigquery <- function(project, dataset, table,
                                     where = NULL, limit = NULL,
@@ -1239,11 +1286,15 @@ morie_datasets_bigquery <- function(project, dataset, table,
   if (!is.null(where)) sql <- paste(sql, "WHERE", where)
   if (!is.null(limit)) sql <- paste(sql, "LIMIT", as.integer(limit))
   # Billing resolves caller-side: explicit arg, then GCP_PROJECT. Public
-  # datasets (e.g. bigquery-public-data) cannot be billed to themselves.
+  # datasets (e.g. bigquery-public-data) cannot be billed to themselves,
+  # so falling back to `project` only makes sense for tables the caller
+  # owns.
   bill <- billing_project
   if (is.null(bill) || !nzchar(bill)) bill <- Sys.getenv("GCP_PROJECT", "")
   if (!nzchar(bill)) bill <- project
-  bigrquery::bq_table_download(bigrquery::bq_project_query(bill, sql))
+  as.data.frame(
+    bigrquery::bq_table_download(bigrquery::bq_project_query(bill, sql))
+  )
 }
 
 # ---------------------------------------------------------------------------
@@ -1449,16 +1500,16 @@ morie_datasets_nist_rds <- function(dataset_id = NULL, query = NULL,
 #' (updated 2025-02-20). The City notes these boundaries are
 #' approximate and the names are not official.
 #'
-#' Offline mode reads a bundled 98-row attribute-only fixture
+#' Offline mode reads a included 98-row attribute-only fixture
 #' (`pri_neigh`, `sec_neigh`, `shape_area`, `shape_len`) -- the
-#' `the_geom` MultiPolygon column is stripped to keep the bundled
+#' `the_geom` MultiPolygon column is stripped to keep the included
 #' size sane (full GeoJSON is ~800 KB). Live mode hits the SODA2
 #' endpoint via \code{.morie_dataset_socrata_fetch()} (mockable).
 #'
 #' To get the polygons, pass `geometry = TRUE` in live mode, which
 #' includes the SODA2 `the_geom` column.
 #'
-#' @param offline If `TRUE` (default), read the bundled attribute-only
+#' @param offline If `TRUE` (default), read the included attribute-only
 #'   fixture from `inst/extdata/chicago_neighborhoods.csv`.
 #' @param geometry If `TRUE` and `offline = FALSE`, include the
 #'   `the_geom` MultiPolygon column in the live-mode result.
@@ -1477,32 +1528,36 @@ morie_datasets_nist_rds <- function(dataset_id = NULL, query = NULL,
 #'   5 cols including `the_geom` (live mode with `geometry = TRUE`).
 #' @references City of Chicago Data Portal, "Boundaries -
 #'   Neighborhoods"; based on Neighborhoods_2012b.
-#' @examplesIf nzchar(system.file("extdata", "chicago_neighborhoods.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (nzchar(system.file("extdata", "chicago_neighborhoods.csv", package = "morie")) || requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_neighborhoods(offline = TRUE)
 #' head(df[, c("pri_neigh", "sec_neigh")])
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
-                                                  geometry = FALSE,
-                                                  max_features = NULL,
-                                                  resource_id = NULL,
-                                                  mode = c("soda2", "soda3"),
-                                                  paginate = FALSE,
-                                                  page_size = 1000L,
-                                                  max_pages = 200L,
-                                                  app_token = NULL) {
+                                                 geometry = FALSE,
+                                                 max_features = NULL,
+                                                 resource_id = NULL,
+                                                 mode = c("soda2", "soda3"),
+                                                 paginate = FALSE,
+                                                 page_size = 1000L,
+                                                 max_pages = 200L,
+                                                 app_token = NULL) {
   mode <- match.arg(mode)
   if (isTRUE(offline)) {
-    path <- system.file("extdata", "chicago_neighborhoods.csv",
-                        package = "morie")
-    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_neighborhoods.csv", package = "rmoriedata")
+    path <- .morie_extdata("chicago_neighborhoods.csv")
+    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_neighborhoods.csv", package = "moriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago neighborhoods fixture missing",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
-    df <- utils::read.csv(path, stringsAsFactors = FALSE,
-                           check.names = FALSE)
+    df <- utils::read.csv(path,
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    )
     if (!is.null(max_features)) {
       df <- utils::head(df, as.integer(max_features))
     }
@@ -1510,20 +1565,26 @@ morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
   }
   if (is.null(resource_id)) resource_id <- "y6yq-dbs2"
   if (mode == "soda2") {
-    url <- sprintf("https://data.cityofchicago.org/resource/%s.json",
-                   resource_id)
+    url <- sprintf(
+      "https://data.cityofchicago.org/resource/%s.json",
+      resource_id
+    )
     # When the caller doesn't want geometry, ask the server for the
     # attribute subset via $select; this saves the bandwidth + parsing
     # of the (large) MultiPolygon column.
     if (!isTRUE(geometry)) {
-      url <- paste0(url,
-                    "?$select=pri_neigh,sec_neigh,shape_area,shape_len")
+      url <- paste0(
+        url,
+        "?$select=pri_neigh,sec_neigh,shape_area,shape_len"
+      )
     }
     return(.morie_dataset_socrata_fetch(
-      url, max_features = max_features,
+      url,
+      max_features = max_features,
       paginate = paginate,
       page_size = page_size,
-      max_pages = max_pages))
+      max_pages = max_pages
+    ))
   }
   # mode == "soda3"
   select_clause <- if (isTRUE(geometry)) {
@@ -1538,7 +1599,8 @@ morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
     paginate = paginate,
     page_size = page_size,
     max_pages = max_pages,
-    max_features = max_features)
+    max_features = max_features
+  )
 }
 
 # ---------------------------------------------------------------------------
@@ -1657,7 +1719,7 @@ morie_datasets_chicago_crime_odata <- function(filter = NULL,
 #'     row to other Chicago boundary layers (wards, community areas,
 #'     etc.) via Socrata's automatic point-in-polygon computation
 #'
-#' Offline mode reads a bundled 5-row 39-col fixture
+#' Offline mode reads a included 5-row 39-col fixture
 #' (`inst/extdata/chicago_crime_map_ahwe_kpsy_sample.csv`).
 #'
 #' @param date_from Lower bound on `date` (inclusive). Accepts a
@@ -1669,7 +1731,7 @@ morie_datasets_chicago_crime_odata <- function(filter = NULL,
 #' @param where Optional additional SoQL `WHERE` fragment ANDed onto
 #'   the date window. e.g. `"primary_type='HOMICIDE'"`.
 #' @param max_features Optional total row cap.
-#' @param offline Logical; if `TRUE` (default), read the bundled
+#' @param offline Logical; if `TRUE` (default), read the included
 #'   39-col fixture.
 #' @param resource_id Optional view id override (default
 #'   `"ahwe-kpsy"`).
@@ -1682,32 +1744,34 @@ morie_datasets_chicago_crime_odata <- function(filter = NULL,
 #' @return A `data.frame` with the 39-col schema.
 #' @references City of Chicago Data Portal, "Crimes - 2001 to
 #'   Present - Map" (`ahwe-kpsy`), derived from `ijzp-q8t2`.
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_crime_map(offline = TRUE)
 #' df$primary_type
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_chicago_crime_map <- function(date_from = NULL,
-                                              date_to = NULL,
-                                              where = NULL,
-                                              max_features = NULL,
-                                              offline = TRUE,
-                                              resource_id = NULL,
-                                              paginate = FALSE,
-                                              page_size = 1000L,
-                                              max_pages = 200L,
-                                              app_token = NULL) {
+                                             date_to = NULL,
+                                             where = NULL,
+                                             max_features = NULL,
+                                             offline = TRUE,
+                                             resource_id = NULL,
+                                             paginate = FALSE,
+                                             page_size = 1000L,
+                                             max_pages = 200L,
+                                             app_token = NULL) {
   if (isTRUE(offline)) {
-    path <- system.file("extdata",
-                        "chicago_crime_map_ahwe_kpsy_sample.csv",
-                        package = "morie")
-    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_crime_map_ahwe_kpsy_sample.csv", package = "rmoriedata")
+    path <- .morie_extdata("chicago_crime_map_ahwe_kpsy_sample.csv")
+    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_crime_map_ahwe_kpsy_sample.csv", package = "moriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago Crime Map fixture missing", call. = FALSE)
     }
-    df <- utils::read.csv(path, stringsAsFactors = FALSE,
-                           check.names = FALSE)
+    df <- utils::read.csv(path,
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    )
     if (!is.null(max_features)) {
       df <- utils::head(df, as.integer(max_features))
     }
@@ -1715,7 +1779,9 @@ morie_datasets_chicago_crime_map <- function(date_from = NULL,
   }
   # Live: build a date-windowed SoQL.
   to_iso <- function(x) {
-    if (is.null(x)) return(NULL)
+    if (is.null(x)) {
+      return(NULL)
+    }
     if (inherits(x, "POSIXt") || inherits(x, "Date")) {
       return(format(x, "%Y-%m-%dT00:00:00.000"))
     }
@@ -1723,18 +1789,24 @@ morie_datasets_chicago_crime_map <- function(date_from = NULL,
   }
   d_to <- to_iso(if (is.null(date_to)) Sys.Date() else date_to)
   d_from <- to_iso(if (is.null(date_from)) Sys.Date() - 365L else date_from)
-  clauses <- c(sprintf("`date` >= '%s'", d_from),
-               sprintf("`date` < '%s'", d_to))
+  clauses <- c(
+    sprintf("`date` >= '%s'", d_from),
+    sprintf("`date` < '%s'", d_to)
+  )
   if (!is.null(where) && nzchar(where)) clauses <- c(clauses, where)
-  soql <- sprintf("SELECT * WHERE %s",
-                   paste(clauses, collapse = " AND "))
+  soql <- sprintf(
+    "SELECT * WHERE %s",
+    paste(clauses, collapse = " AND ")
+  )
   if (is.null(resource_id)) resource_id <- "ahwe-kpsy"
-  .morie_dataset_soda3_query(resource_id, soql = soql,
-                              app_token = app_token,
-                              paginate = paginate,
-                              page_size = page_size,
-                              max_pages = max_pages,
-                              max_features = max_features)
+  .morie_dataset_soda3_query(resource_id,
+    soql = soql,
+    app_token = app_token,
+    paginate = paginate,
+    page_size = page_size,
+    max_pages = max_pages,
+    max_features = max_features
+  )
 }
 
 #' City of Chicago Crimes feed -- arbitrary-SoQL escape hatch
@@ -1819,14 +1891,14 @@ morie_datasets_chicago_crime_soql <- function(where = NULL,
 #'   \item{district}{Parent district number (string).}
 #' }
 #'
-#' Offline mode reads a bundled attribute-only fixture
+#' Offline mode reads a included attribute-only fixture
 #' (`inst/extdata/chicago_police_beats.csv`) -- the `the_geom`
-#' MultiPolygon column is stripped to keep bundle size sane.
+#' MultiPolygon column is stripped to keep capsule size sane.
 #' Live mode hits the SODA2 JSON endpoint via
 #' \code{.morie_dataset_socrata_fetch()} (mockable); pass `geometry = TRUE`
 #' to include `the_geom`. Threads through the 3OO pagination args.
 #'
-#' @param offline If `TRUE` (default), read the bundled fixture.
+#' @param offline If `TRUE` (default), read the included fixture.
 #' @param geometry If `TRUE` and `offline = FALSE`, include
 #'   `the_geom` (MultiPolygon).
 #' @param max_features Optional row cap.
@@ -1843,36 +1915,42 @@ morie_datasets_chicago_crime_soql <- function(where = NULL,
 #'   including `the_geom` (live, `geometry = TRUE`).
 #' @references City of Chicago Data Portal, "Boundaries - Police
 #'   Beats (current)" (`n9it-hstw`).
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_police_beats(offline = TRUE)
 #' head(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_chicago_police_beats <- function(offline = TRUE,
-                                                  geometry = FALSE,
-                                                  max_features = NULL,
-                                                  resource_id = NULL,
-                                                  mode = c("soda2", "soda3"),
-                                                  paginate = FALSE,
-                                                  page_size = 1000L,
-                                                  max_pages = 200L,
-                                                  app_token = NULL) {
+                                                geometry = FALSE,
+                                                max_features = NULL,
+                                                resource_id = NULL,
+                                                mode = c("soda2", "soda3"),
+                                                paginate = FALSE,
+                                                page_size = 1000L,
+                                                max_pages = 200L,
+                                                app_token = NULL) {
   mode <- match.arg(mode)
   if (isTRUE(offline)) {
-    path <- system.file("extdata", "chicago_police_beats.csv",
-                        package = "morie")
-    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_police_beats.csv", package = "rmoriedata")
+    path <- .morie_extdata("chicago_police_beats.csv")
+    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_police_beats.csv", package = "moriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago Police Beats fixture missing",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
-    df <- utils::read.csv(path, stringsAsFactors = FALSE,
-                           check.names = FALSE,
-                           colClasses = c(beat_num = "character",
-                                          beat = "character",
-                                          sector = "character",
-                                          district = "character"))
+    df <- utils::read.csv(path,
+      stringsAsFactors = FALSE,
+      check.names = FALSE,
+      colClasses = c(
+        beat_num = "character",
+        beat = "character",
+        sector = "character",
+        district = "character"
+      )
+    )
     if (!is.null(max_features)) {
       df <- utils::head(df, as.integer(max_features))
     }
@@ -1880,16 +1958,22 @@ morie_datasets_chicago_police_beats <- function(offline = TRUE,
   }
   if (is.null(resource_id)) resource_id <- "n9it-hstw"
   if (mode == "soda2") {
-    url <- sprintf("https://data.cityofchicago.org/resource/%s.json",
-                   resource_id)
+    url <- sprintf(
+      "https://data.cityofchicago.org/resource/%s.json",
+      resource_id
+    )
     if (!isTRUE(geometry)) {
-      url <- paste0(url,
-                    "?$select=beat_num,beat,sector,district")
+      url <- paste0(
+        url,
+        "?$select=beat_num,beat,sector,district"
+      )
     }
     return(.morie_dataset_socrata_fetch(
-      url, max_features = max_features,
+      url,
+      max_features = max_features,
       paginate = paginate, page_size = page_size,
-      max_pages = max_pages))
+      max_pages = max_pages
+    ))
   }
   # mode == "soda3"
   select_clause <- if (isTRUE(geometry)) {
@@ -1904,7 +1988,8 @@ morie_datasets_chicago_police_beats <- function(offline = TRUE,
     paginate = paginate,
     page_size = page_size,
     max_pages = max_pages,
-    max_features = max_features)
+    max_features = max_features
+  )
 }
 
 #' Chicago Police Districts (current) boundaries (`24zt-jpfn`)
@@ -1920,7 +2005,7 @@ morie_datasets_chicago_police_beats <- function(offline = TRUE,
 #'   \item{dist_label}{Display label (e.g. `"1ST"`, `"22ND"`).}
 #' }
 #'
-#' Offline mode reads a bundled attribute-only fixture
+#' Offline mode reads a included attribute-only fixture
 #' (`inst/extdata/chicago_police_districts.csv`). Live mode hits
 #' SODA2 JSON; pass `geometry = TRUE` for `the_geom`.
 #'
@@ -1937,7 +2022,7 @@ morie_datasets_chicago_police_beats <- function(offline = TRUE,
 #' you'd typically hit the GeoJSON variant via `sf::st_read()`
 #' yourself rather than going through this loader).
 #'
-#' @param offline If `TRUE` (default), read the bundled fixture.
+#' @param offline If `TRUE` (default), read the included fixture.
 #' @param geometry If `TRUE` and `offline = FALSE`, include
 #'   `the_geom` (MultiPolygon).
 #' @param max_features Optional row cap.
@@ -1953,34 +2038,40 @@ morie_datasets_chicago_police_beats <- function(offline = TRUE,
 #'   including `the_geom` (live, `geometry = TRUE`).
 #' @references City of Chicago Data Portal, "Boundaries - Police
 #'   Districts (current)" (`24zt-jpfn`).
-#' @examplesIf nzchar(system.file("extdata", "chicago_police_districts.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (nzchar(system.file("extdata", "chicago_police_districts.csv", package = "morie")) || requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_police_districts(offline = TRUE)
 #' head(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_chicago_police_districts <- function(offline = TRUE,
-                                                      geometry = FALSE,
-                                                      max_features = NULL,
-                                                      resource_id = NULL,
-                                                      mode = c("soda2", "soda3"),
-                                                      paginate = FALSE,
-                                                      page_size = 1000L,
-                                                      max_pages = 200L,
-                                                      app_token = NULL) {
+                                                    geometry = FALSE,
+                                                    max_features = NULL,
+                                                    resource_id = NULL,
+                                                    mode = c("soda2", "soda3"),
+                                                    paginate = FALSE,
+                                                    page_size = 1000L,
+                                                    max_pages = 200L,
+                                                    app_token = NULL) {
   mode <- match.arg(mode)
   if (isTRUE(offline)) {
-    path <- system.file("extdata", "chicago_police_districts.csv",
-                        package = "morie")
-    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_police_districts.csv", package = "rmoriedata")
+    path <- .morie_extdata("chicago_police_districts.csv")
+    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_police_districts.csv", package = "moriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago Police Districts fixture missing",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
-    df <- utils::read.csv(path, stringsAsFactors = FALSE,
-                           check.names = FALSE,
-                           colClasses = c(dist_num = "character",
-                                          dist_label = "character"))
+    df <- utils::read.csv(path,
+      stringsAsFactors = FALSE,
+      check.names = FALSE,
+      colClasses = c(
+        dist_num = "character",
+        dist_label = "character"
+      )
+    )
     if (!is.null(max_features)) {
       df <- utils::head(df, as.integer(max_features))
     }
@@ -1988,15 +2079,19 @@ morie_datasets_chicago_police_districts <- function(offline = TRUE,
   }
   if (is.null(resource_id)) resource_id <- "24zt-jpfn"
   if (mode == "soda2") {
-    url <- sprintf("https://data.cityofchicago.org/resource/%s.json",
-                   resource_id)
+    url <- sprintf(
+      "https://data.cityofchicago.org/resource/%s.json",
+      resource_id
+    )
     if (!isTRUE(geometry)) {
       url <- paste0(url, "?$select=dist_num,dist_label")
     }
     return(.morie_dataset_socrata_fetch(
-      url, max_features = max_features,
+      url,
+      max_features = max_features,
       paginate = paginate, page_size = page_size,
-      max_pages = max_pages))
+      max_pages = max_pages
+    ))
   }
   # mode == "soda3"
   select_clause <- if (isTRUE(geometry)) "*" else "dist_num, dist_label"
@@ -2007,7 +2102,8 @@ morie_datasets_chicago_police_districts <- function(offline = TRUE,
     paginate = paginate,
     page_size = page_size,
     max_pages = max_pages,
-    max_features = max_features)
+    max_features = max_features
+  )
 }
 
 # ---------------------------------------------------------------------------
@@ -2184,12 +2280,12 @@ morie_datasets_chicago_crime_resolved <- function(
 #' (`/api/v3/views/sp34-6z76/query.json`) via
 #' \code{.morie_dataset_soda3_query()}.
 #'
-#' Offline mode reads a bundled 50-row attribute-only fixture
+#' Offline mode reads a included 50-row attribute-only fixture
 #' (`inst/extdata/chicago_wards.csv`: `ward` / `shape_leng` /
 #' `shape_area`). Live mode with `geometry = TRUE` also includes the
 #' `the_geom` MultiPolygon column.
 #'
-#' @param offline If `TRUE` (default), read the bundled fixture.
+#' @param offline If `TRUE` (default), read the included fixture.
 #' @param geometry If `TRUE` and `offline = FALSE`, include the
 #'   `the_geom` MultiPolygon.
 #' @param max_features Optional row cap.
@@ -2205,30 +2301,33 @@ morie_datasets_chicago_crime_resolved <- function(
 #'   including `the_geom` (live, `geometry = TRUE`).
 #' @references City of Chicago Data Portal, "Boundaries - Wards
 #'   (2023-)" (`sp34-6z76`).
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_wards(offline = TRUE)
 #' head(df)
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_chicago_wards <- function(offline = TRUE,
-                                          geometry = FALSE,
-                                          max_features = NULL,
-                                          resource_id = NULL,
-                                          paginate = FALSE,
-                                          page_size = 1000L,
-                                          max_pages = 200L,
-                                          app_token = NULL) {
+                                         geometry = FALSE,
+                                         max_features = NULL,
+                                         resource_id = NULL,
+                                         paginate = FALSE,
+                                         page_size = 1000L,
+                                         max_pages = 200L,
+                                         app_token = NULL) {
   if (isTRUE(offline)) {
-    path <- system.file("extdata", "chicago_wards.csv",
-                        package = "morie")
-    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_wards.csv", package = "rmoriedata")
+    path <- .morie_extdata("chicago_wards.csv")
+    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_wards.csv", package = "moriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago wards fixture missing", call. = FALSE)
     }
-    df <- utils::read.csv(path, stringsAsFactors = FALSE,
-                           check.names = FALSE,
-                           colClasses = c(ward = "character"))
+    df <- utils::read.csv(path,
+      stringsAsFactors = FALSE,
+      check.names = FALSE,
+      colClasses = c(ward = "character")
+    )
     if (!is.null(max_features)) {
       df <- utils::head(df, as.integer(max_features))
     }
@@ -2241,12 +2340,14 @@ morie_datasets_chicago_wards <- function(offline = TRUE,
     "ward, shape_leng, shape_area"
   }
   soql <- sprintf("SELECT %s ORDER BY ward", select_clause)
-  .morie_dataset_soda3_query(resource_id, soql = soql,
-                              app_token = app_token,
-                              paginate = paginate,
-                              page_size = page_size,
-                              max_pages = max_pages,
-                              max_features = max_features)
+  .morie_dataset_soda3_query(resource_id,
+    soql = soql,
+    app_token = app_token,
+    paginate = paginate,
+    page_size = page_size,
+    max_pages = max_pages,
+    max_features = max_features
+  )
 }
 
 #' Chicago Community Area boundaries (`cauq-8yn6`)
@@ -2261,7 +2362,7 @@ morie_datasets_chicago_wards <- function(offline = TRUE,
 #'
 #' **SODA3-only** (same filtered/derived-view caveat as Wards).
 #'
-#' Offline mode reads a bundled 77-row attribute-only fixture
+#' Offline mode reads a included 77-row attribute-only fixture
 #' (`inst/extdata/chicago_community_areas.csv`: 5 cols --
 #' `area_numbe`, `community`, `area_num_1`, `shape_area`,
 #' `shape_len`). The `community` column carries the official
@@ -2272,32 +2373,38 @@ morie_datasets_chicago_wards <- function(offline = TRUE,
 #'   including `the_geom` (live, `geometry = TRUE`).
 #' @references City of Chicago Data Portal, "Boundaries - Community
 #'   Areas (current)" (`cauq-8yn6`).
-#' @examplesIf nzchar(system.file("extdata", "chicago_community_areas.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (nzchar(system.file("extdata", "chicago_community_areas.csv", package = "morie")) || requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_community_areas(offline = TRUE)
 #' head(df[, c("area_numbe", "community")])
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_chicago_community_areas <- function(offline = TRUE,
-                                                     geometry = FALSE,
-                                                     max_features = NULL,
-                                                     resource_id = NULL,
-                                                     paginate = FALSE,
-                                                     page_size = 1000L,
-                                                     max_pages = 200L,
-                                                     app_token = NULL) {
+                                                   geometry = FALSE,
+                                                   max_features = NULL,
+                                                   resource_id = NULL,
+                                                   paginate = FALSE,
+                                                   page_size = 1000L,
+                                                   max_pages = 200L,
+                                                   app_token = NULL) {
   if (isTRUE(offline)) {
-    path <- system.file("extdata", "chicago_community_areas.csv",
-                        package = "morie")
-    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_community_areas.csv", package = "rmoriedata")
+    path <- .morie_extdata("chicago_community_areas.csv")
+    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_community_areas.csv", package = "moriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago community areas fixture missing",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
-    df <- utils::read.csv(path, stringsAsFactors = FALSE,
-                           check.names = FALSE,
-                           colClasses = c(area_numbe = "character",
-                                          area_num_1 = "character"))
+    df <- utils::read.csv(path,
+      stringsAsFactors = FALSE,
+      check.names = FALSE,
+      colClasses = c(
+        area_numbe = "character",
+        area_num_1 = "character"
+      )
+    )
     if (!is.null(max_features)) {
       df <- utils::head(df, as.integer(max_features))
     }
@@ -2307,16 +2414,20 @@ morie_datasets_chicago_community_areas <- function(offline = TRUE,
   select_clause <- if (isTRUE(geometry)) {
     "*"
   } else {
-    paste("area_numbe, community, area_num_1,",
-           "shape_area, shape_len")
+    paste(
+      "area_numbe, community, area_num_1,",
+      "shape_area, shape_len"
+    )
   }
   soql <- sprintf("SELECT %s ORDER BY area_numbe", select_clause)
-  .morie_dataset_soda3_query(resource_id, soql = soql,
-                              app_token = app_token,
-                              paginate = paginate,
-                              page_size = page_size,
-                              max_pages = max_pages,
-                              max_features = max_features)
+  .morie_dataset_soda3_query(resource_id,
+    soql = soql,
+    app_token = app_token,
+    paginate = paginate,
+    page_size = page_size,
+    max_pages = max_pages,
+    max_features = max_features
+  )
 }
 
 #' Chicago Police Department -- Illinois Uniform Crime Reporting
@@ -2343,10 +2454,10 @@ morie_datasets_chicago_community_areas <- function(offline = TRUE,
 #' Available via SODA2 (single-shot or paginated) -- this is a
 #' base dataset, not a filtered view.
 #'
-#' Offline mode reads a bundled 410-row complete fixture
+#' Offline mode reads a included 410-row complete fixture
 #' (`inst/extdata/chicago_iucr_codes.csv`).
 #'
-#' @param offline If `TRUE` (default), read the bundled full
+#' @param offline If `TRUE` (default), read the included full
 #'   410-row fixture.
 #' @param max_features Optional row cap.
 #' @param resource_id Optional view id override.
@@ -2361,33 +2472,39 @@ morie_datasets_chicago_community_areas <- function(offline = TRUE,
 #' @references City of Chicago Data Portal, "Chicago Police
 #'   Department - Illinois Uniform Crime Reporting (IUCR) Codes"
 #'   (`c7ck-438e`).
-#' @examplesIf nzchar(system.file("extdata", "chicago_iucr_codes.csv", package = "rmorie")) || requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (nzchar(system.file("extdata", "chicago_iucr_codes.csv", package = "morie")) || requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_iucr_codes(offline = TRUE)
 #' subset(df, primary_description == "HOMICIDE")
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_chicago_iucr_codes <- function(offline = TRUE,
-                                                max_features = NULL,
-                                                resource_id = NULL,
-                                                mode = c("soda2", "soda3"),
-                                                paginate = FALSE,
-                                                page_size = 1000L,
-                                                max_pages = 200L,
-                                                app_token = NULL) {
+                                              max_features = NULL,
+                                              resource_id = NULL,
+                                              mode = c("soda2", "soda3"),
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L,
+                                              app_token = NULL) {
   mode <- match.arg(mode)
   if (isTRUE(offline)) {
-    path <- system.file("extdata", "chicago_iucr_codes.csv",
-                        package = "morie")
-    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_iucr_codes.csv", package = "rmoriedata")
+    path <- .morie_extdata("chicago_iucr_codes.csv")
+    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_iucr_codes.csv", package = "moriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago IUCR codes fixture missing",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
-    df <- utils::read.csv(path, stringsAsFactors = FALSE,
-                           check.names = FALSE,
-                           colClasses = c(iucr = "character",
-                                          index_code = "character"))
+    df <- utils::read.csv(path,
+      stringsAsFactors = FALSE,
+      check.names = FALSE,
+      colClasses = c(
+        iucr = "character",
+        index_code = "character"
+      )
+    )
     if (!is.null(max_features)) {
       df <- utils::head(df, as.integer(max_features))
     }
@@ -2395,21 +2512,27 @@ morie_datasets_chicago_iucr_codes <- function(offline = TRUE,
   }
   if (is.null(resource_id)) resource_id <- "c7ck-438e"
   if (mode == "soda2") {
-    url <- sprintf("https://data.cityofchicago.org/resource/%s.json",
-                   resource_id)
+    url <- sprintf(
+      "https://data.cityofchicago.org/resource/%s.json",
+      resource_id
+    )
     return(.morie_dataset_socrata_fetch(
-      url, max_features = max_features,
+      url,
+      max_features = max_features,
       paginate = paginate, page_size = page_size,
-      max_pages = max_pages))
+      max_pages = max_pages
+    ))
   }
   # mode == "soda3"
   .morie_dataset_soda3_query(
-    resource_id, soql = "SELECT *",
+    resource_id,
+    soql = "SELECT *",
     app_token = app_token,
     paginate = paginate,
     page_size = page_size,
     max_pages = max_pages,
-    max_features = max_features)
+    max_features = max_features
+  )
 }
 
 # ---------------------------------------------------------------------------
@@ -2431,7 +2554,7 @@ morie_datasets_chicago_iucr_codes <- function(offline = TRUE,
 #' defaults to the UUID for stability; pass `resource_id = "arrests"`
 #' if you want to exercise the alias path.
 #'
-#' Offline mode reads a bundled 5-row synthetic fixture
+#' Offline mode reads a included 5-row synthetic fixture
 #' (`inst/extdata/chicago_arrests_dpt3_jri9_sample.csv`) carrying the
 #' real upstream snake_case schema. Live mode hits the SODA2 endpoint
 #' via \code{.morie_dataset_socrata_fetch()} and honours the 3OO opt-in
@@ -2442,7 +2565,7 @@ morie_datasets_chicago_iucr_codes <- function(offline = TRUE,
 #' @param max_features Integer or `NULL`; cap on returned rows. When
 #'   `paginate = TRUE` this is the total cap across walked pages.
 #' @param offline Logical; if `TRUE` (default, safer post-3EE), read
-#'   the bundled synthetic frame.
+#'   the included synthetic frame.
 #' @param resource_id Optional Socrata resource id override. Accepts
 #'   the UUID (`dpt3-jri9`, default) or the publisher's alias
 #'   (`arrests`).
@@ -2457,34 +2580,36 @@ morie_datasets_chicago_iucr_codes <- function(offline = TRUE,
 #'   limits; passed as the `X-App-Token` header.
 #' @return A `data.frame` with the documented 24-col Socrata schema.
 #' @references City of Chicago Data Portal, "Arrests" (`dpt3-jri9`).
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_chicago_arrests(offline = TRUE)
 #' df$arrest_date
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_chicago_arrests <- function(year = NULL,
-                                            max_features = NULL,
-                                            offline = TRUE,
-                                            resource_id = NULL,
-                                            mode = c("soda2", "soda3"),
-                                            paginate = FALSE,
-                                            page_size = 1000L,
-                                            max_pages = 200L,
-                                            app_token = NULL) {
+                                           max_features = NULL,
+                                           offline = TRUE,
+                                           resource_id = NULL,
+                                           mode = c("soda2", "soda3"),
+                                           paginate = FALSE,
+                                           page_size = 1000L,
+                                           max_pages = 200L,
+                                           app_token = NULL) {
   mode <- match.arg(mode)
   if (isTRUE(offline)) {
-    path <- system.file("extdata",
-                        "chicago_arrests_dpt3_jri9_sample.csv",
-                        package = "morie")
-    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "chicago_arrests_dpt3_jri9_sample.csv", package = "rmoriedata")
+    path <- .morie_extdata("chicago_arrests_dpt3_jri9_sample.csv")
+    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "chicago_arrests_dpt3_jri9_sample.csv", package = "moriedata")
     }
     if (!nzchar(path)) {
       stop("bundled Chicago Arrests fixture missing", call. = FALSE)
     }
-    df <- utils::read.csv(path, stringsAsFactors = FALSE,
-                           check.names = FALSE)
+    df <- utils::read.csv(path,
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    )
     if (!is.null(year) && "arrest_date" %in% colnames(df) &&
-        nrow(df) > 0L) {
+      nrow(df) > 0L) {
       yr <- substr(df$arrest_date, 1L, 4L)
       df <- df[yr == as.character(as.integer(year)), , drop = FALSE]
       rownames(df) <- NULL
@@ -2496,33 +2621,43 @@ morie_datasets_chicago_arrests <- function(year = NULL,
   }
   if (is.null(resource_id)) resource_id <- "dpt3-jri9"
   if (mode == "soda2") {
-    url <- sprintf("https://data.cityofchicago.org/resource/%s.json",
-                   resource_id)
+    url <- sprintf(
+      "https://data.cityofchicago.org/resource/%s.json",
+      resource_id
+    )
     where <- NULL
     if (!is.null(year)) {
-      where <- sprintf("date_extract_y(arrest_date) = %d",
-                       as.integer(year))
+      where <- sprintf(
+        "date_extract_y(arrest_date) = %d",
+        as.integer(year)
+      )
     }
     return(.morie_dataset_socrata_fetch(
-      url, where = where,
+      url,
+      where = where,
       max_features = max_features,
       paginate = paginate,
       page_size = page_size,
-      max_pages = max_pages))
+      max_pages = max_pages
+    ))
   }
   # mode == "soda3"
   soql <- if (is.null(year)) {
     "SELECT *"
   } else {
-    sprintf("SELECT * WHERE date_extract_y(arrest_date) = %d",
-            as.integer(year))
+    sprintf(
+      "SELECT * WHERE date_extract_y(arrest_date) = %d",
+      as.integer(year)
+    )
   }
-  .morie_dataset_soda3_query(resource_id, soql = soql,
-                              app_token = app_token,
-                              paginate = paginate,
-                              page_size = page_size,
-                              max_pages = max_pages,
-                              max_features = max_features)
+  .morie_dataset_soda3_query(resource_id,
+    soql = soql,
+    app_token = app_token,
+    paginate = paginate,
+    page_size = page_size,
+    max_pages = max_pages,
+    max_features = max_features
+  )
 }
 
 # ---------------------------------------------------------------------------
@@ -2560,7 +2695,7 @@ morie_datasets_chicago_arrests <- function(year = NULL,
 #' @param url Optional direct-CSV URL. If `NULL` and `offline = FALSE`,
 #'   the loader errors with a "lookup pending" message pointing at
 #'   the chicagopolice.org landing page.
-#' @param offline Logical; if `TRUE` (default), read the bundled
+#' @param offline Logical; if `TRUE` (default), read the included
 #'   synthetic 5-row fixture
 #'   (`inst/extdata/cpd_public_release_arrests_sample.csv`).
 #' @param max_features Integer or `NULL`; cap on returned rows.
@@ -2568,44 +2703,52 @@ morie_datasets_chicago_arrests <- function(year = NULL,
 #' @references Chicago Police Department, "Public Arrest Data";
 #'   landing page at chicagopolice.org/statistics-data/public-
 #'   arrest-data/.
-#' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
+#' @examples
+#' \dontshow{if (requireNamespace("moriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #' df <- morie_datasets_cpd_public_arrests(offline = TRUE)
 #' df$STAT_DESCR
+#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_cpd_public_arrests <- function(url = NULL,
-                                                offline = TRUE,
-                                                max_features = NULL) {
+                                              offline = TRUE,
+                                              max_features = NULL) {
   if (isTRUE(offline)) {
-    path <- system.file("extdata",
-                        "cpd_public_release_arrests_sample.csv",
-                        package = "morie")
-    if (!nzchar(path) && requireNamespace("rmoriedata", quietly = TRUE)) {
-      path <- system.file("extdata", "cpd_public_release_arrests_sample.csv", package = "rmoriedata")
+    path <- .morie_extdata("cpd_public_release_arrests_sample.csv")
+    if (!nzchar(path) && requireNamespace("moriedata", quietly = TRUE)) {
+      path <- system.file("extdata", "cpd_public_release_arrests_sample.csv", package = "moriedata")
     }
     if (!nzchar(path)) {
       stop("bundled CPD public-arrests fixture missing",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
-    df <- utils::read.csv(path, stringsAsFactors = FALSE,
-                           check.names = FALSE)
+    df <- utils::read.csv(path,
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    )
     if (!is.null(max_features)) {
       df <- utils::head(df, as.integer(max_features))
     }
     return(df)
   }
   if (is.null(url) || !nzchar(url)) {
-    stop(paste0(
-      "morie_datasets_cpd_public_arrests: live mode requires `url`; ",
-      "the chicagopolice.org Public Arrest Data file's direct-CSV ",
-      "URL (lookup pending) is not stable across quarterly ",
-      "republications. Visit ",
-      "https://data.cityofchicago.org/Public-Safety/Arrests/dpt3-jri9",
-      " to find the current direct-CSV URL and pass it via `url = ...`."),
-      call. = FALSE)
+    stop(
+      paste0(
+        "morie_datasets_cpd_public_arrests: live mode requires `url`; ",
+        "the chicagopolice.org Public Arrest Data file's direct-CSV ",
+        "URL (lookup pending) is not stable across quarterly ",
+        "republications. Visit ",
+        "https://data.cityofchicago.org/Public-Safety/Arrests/dpt3-jri9",
+        " to find the current direct-CSV URL and pass it via `url = ...`."
+      ),
+      call. = FALSE
+    )
   }
   raw <- .morie_dataset_http_text(url)
-  df <- utils::read.csv(text = raw, stringsAsFactors = FALSE,
-                         check.names = FALSE)
+  df <- utils::read.csv(
+    text = raw, stringsAsFactors = FALSE,
+    check.names = FALSE
+  )
   if (!is.null(max_features)) {
     df <- utils::head(df, as.integer(max_features))
   }

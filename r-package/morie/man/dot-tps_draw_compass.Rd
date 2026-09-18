@@ -19,7 +19,8 @@
 One of two values, depending on the branch taken.
 }
 \description{
-A step of the tps_render implementation. Called by \code{morie_tps_render_dbscan}, \code{morie_tps_render_district_proportional}.
+A step of the tps_render implementation. Called by \code{morie_tps_render_dbscan},
+\code{morie_tps_render_district_proportional}.
 See the file header for the source the module follows.
 source it follows.
 }

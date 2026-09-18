@@ -36,7 +36,8 @@
 The value of \code{structure}.
 }
 \description{
-A step of the bootstrap_methods implementation. Called by \code{.boot_cross_validate}, \code{repeated_cv}.
+A step of the bootstrap_methods implementation. Called by \code{.boot_cross_validate},
+\code{repeated_cv}.
 See the file header for the source the module follows.
 the source it follows.
 }

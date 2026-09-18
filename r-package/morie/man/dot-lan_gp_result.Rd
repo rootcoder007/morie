@@ -28,7 +28,8 @@
 
 \item{gent_distribution}{Carried through into a list the body builds.}
 
-\item{sensitivity_thresholds}{Carried through into a list the body builds. Defaults to \code{list()}.}
+\item{sensitivity_thresholds}{Carried through into a list the body builds. Defaults to
+\code{list()}.}
 
 \item{note}{Carried through into a list the body builds. Defaults to \code{""}.}
 }

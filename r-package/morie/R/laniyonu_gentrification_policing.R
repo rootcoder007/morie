@@ -37,7 +37,7 @@
 #' @name morie_laniyonu_gentrification_policing
 #' @examples
 #' set.seed(1)
-#' df <- expand.grid(tract_id = sprintf("T\%02d", 1:40), year = 2010:2012,
+#' df <- expand.grid(tract_id = sprintf("T%02d", 1:40), year = 2010:2012,
 #'                   stringsAsFactors = FALSE)
 #' df$median_inc_2000 <- runif(nrow(df), 3e4, 7e4)
 #' df$median_inc_2014 <- df$median_inc_2000 * 1.2
@@ -280,7 +280,7 @@ NULL
 #'
 #' @param df Tract-year panel.  One row per tract per year.
 #' @param year_col,tract_id_col,stops_col,population_col,crime_col,demand_col
-#'   Column names; defaults match the morie toy bundle schema.
+#'   Column names; defaults match the morie toy capsule schema.
 #' @param baseline_income_col,baseline_rent_col Baseline-period income
 #'   and rent (2000 in the paper).
 #' @param growth_college_col,growth_rent_col Growth columns.  If

@@ -12,7 +12,8 @@
 The value of \code{.Call}.
 }
 \description{
-A step of the RcppExports implementation. Called by \code{.morie_hkdf_sha256}, \code{chain_entry}, \code{expand} and 1 others in the module.
+A step of the RcppExports implementation. Called by \code{.morie_hkdf_sha256},
+\code{chain_entry}, \code{expand} and 1 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

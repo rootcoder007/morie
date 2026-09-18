@@ -2,6 +2,53 @@
 
 Synced from rmorie 1.2.4's fixes of 2026-09-16 and 2026-09-17.
 
+* `morie_safe_relabel()`, `morie_decode_labelled()`, `morie_transfer_verify()`
+  and `morie_relabel_forensics()`: relabel by name only, decode labelled
+  imports by code, verify an SPSS/Stata/SAS import against the source
+  program's code book and frequency table, and name the mechanical step
+  (alphabetical positional relabel, rotation, ...) that reproduces an
+  observed permutation. The OHRC 2023 correction's four-way rotation is the
+  documented case and the test fixture.
+
+## Every rmorie change since 9 September is here
+
+The R arm had not followed rmorie since the 9 September merge. Its
+sixty-seven commits since then are now reflected function by function:
+269 function bodies replaced and 67 added across 69 files (the Gauss-Legendre
+rule by Newton iteration, the propinf, abcgp, abcnnt, sarima, muzero, dqnv,
+groebn, frwil, plcbsc and lbfgsm repairs, the Lakner stock/flow module,
+scale-aware L-BFGS stopping with a preconditioner, sixty-five validation
+messages that carried Python's `%r`, and the rest), with the tests that
+rmorie added for them. Twenty-four helpers that only survived as dead
+duplicates of their renamed successors are gone.
+
+## Twenty-one modules that only rmorie had
+
+`morie_lm()`, `morie_ml_*()`, `morie_ts_*()`, `morie_spatial*()`,
+`morie_eda_*()`, `morie_distribution()`, `morie_cluster()`, the
+`morie_taphonomy_*()` and `morie_tox_*()` families, `mrm_otis_stock_flow()`,
+the nonparametric, RDD, spatial and statistics extenders, the Datasette
+ingest, the agent and bricklayer bridges, the execution guard and the CLI
+entry points now ship in this arm too, with their tests, and the optional
+packages they reach for are declared in Suggests.
+
+## Exports aligned with rmorie
+
+Nine dot-prefixed helpers that had leaked into the export list
+(`.hill_mle`, `.gh_pairwise_sq`, the `.siu_*` loaders and LLM bridges)
+are internal again, and the bare aliases `morie_offlrl` and
+`morie_sarima` are no longer exported: rmorie exports neither, and the
+documented entry points are `offlrl()` and the public wrappers of the
+SARIMA fitter. Two hundred and thirty-six exports arrive with the ported
+modules.
+
+## Three-way parity, verified
+
+`ledger/wave3/run3.sh` now covers the sixteen September modules (`Bndcvr`
+through `Rdmcbw`), `morie_lbfgsm()` and `mrm_otis_stock_flow()`: the
+Python arm, this arm and rmorie agree on every recorded quantity to twelve
+digits with falsifiable anchors.
+
 ## Functions that seed the RNG now leave the caller's stream alone
 
 Two hundred and thirty-nine functions called `set.seed()` internally and

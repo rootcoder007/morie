@@ -24,17 +24,23 @@
 
 \item{p_value}{Coerced to numeric by the body, with \code{as.numeric}.}
 
-\item{df}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.}
+\item{df}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
+\code{as.numeric}. Defaults to \code{NA_real_}.}
 
-\item{ci_lower}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.}
+\item{ci_lower}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
+\code{as.numeric}. Defaults to \code{NA_real_}.}
 
-\item{ci_upper}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.}
+\item{ci_upper}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
+\code{as.numeric}. Defaults to \code{NA_real_}.}
 
-\item{effect_size}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.}
+\item{effect_size}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
+\code{as.numeric}. Defaults to \code{NA_real_}.}
 
-\item{estimate}{Optional; may be \code{NULL}. Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{NA_real_}.}
+\item{estimate}{Optional; may be \code{NULL}. Coerced to numeric by the body, with
+\code{as.numeric}. Defaults to \code{NA_real_}.}
 
-\item{n}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}. Defaults to \code{NA_integer_}.}
+\item{n}{Optional; may be \code{NULL}. Coerced to integer by the body, with
+\code{as.integer}. Defaults to \code{NA_integer_}.}
 
 \item{extra}{Carried through into a list the body builds. Defaults to \code{list()}.}
 }
@@ -42,7 +48,8 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the statistics implementation. Called by \code{anderson_darling}, \code{bartlett_test}, \code{chi2_goodness_of_fit} and 33 others in the module.
+A step of the statistics implementation. Called by \code{anderson_darling},
+\code{bartlett_test}, \code{chi2_goodness_of_fit} and 33 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

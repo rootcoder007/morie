@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_helpers_rouss.R
 \name{.rsmcdh}
 \alias{.rsmcdh}
-\title{The most robust MCD subset size, [(n + p + 1) / 2]}
+\title{The most robust MCD subset size, \link{(n + p + 1) / 2}}
 \usage{
 .rsmcdh(n, p)
 }
@@ -15,7 +15,8 @@
 A numeric value.
 }
 \description{
-A step of the helpers_rouss implementation. Called by \code{Fastm}, \code{Mcdcv}, \code{Mcdv} and 1 others in the module.
+A step of the helpers_rouss implementation. Called by \code{Fastm}, \code{Mcdcv},
+\code{Mcdv} and 1 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

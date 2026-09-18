@@ -17,7 +17,8 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the audit_variables implementation. Called by \code{morie_audit_arsau_variables}, \code{morie_audit_otis_variables}.
+A step of the audit_variables implementation. Called by
+\code{morie_audit_arsau_variables}, \code{morie_audit_otis_variables}.
 See the file header for the source the module follows.
 the source it follows.
 }

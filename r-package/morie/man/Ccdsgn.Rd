@@ -14,7 +14,6 @@ Ccdsgn(cases, controls, exposed = NULL, unexposed = NULL, conf = 0.95)
 \item{exposed, unexposed}{Ignored; kept for the stub signature.}
 
 \item{conf}{Confidence level.}
-
 }
 \value{
 List with \code{estimate}, \code{a}, \code{b}, \code{c},

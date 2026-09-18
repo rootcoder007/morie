@@ -7,7 +7,8 @@
 .run_otis_analysis_module_internal()
 }
 \value{
-A list with \code{otis_descriptives}, \code{otis_alert_combos}, \code{otis_dml_results}, \code{otis_trends}.
+A list with \code{otis_descriptives}, \code{otis_alert_combos},
+\code{otis_dml_results}, \code{otis_trends}.
 }
 \description{
 A step of the study_otis_mapq implementation. Called by \code{morie_run_morie_module}.

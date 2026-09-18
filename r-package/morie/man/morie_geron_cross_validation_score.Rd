@@ -25,9 +25,6 @@ morie_geron_cross_validation_score(
 \item{shuffle}{Must be FALSE.}
 
 \item{random_state}{Ignored.}
-
-
-
 }
 \value{
 List with \code{cv_score}, \code{fold_scores}, \code{fold_sizes}, \code{se},
@@ -41,6 +38,6 @@ cannot be reproduced in R -- passing TRUE is an error rather than a
 silently different split.
 }
 \examples{
-morie_geron_cross_validation_score(X = c(1, 2, 3, 4, 5, 6, 7, 8),
-  y = c(1, 2, 3, 4, 5, 6, 7, 8), K = 3L)
+morie_geron_cross_validation_score(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5,
+6, 7, 8), K = 3L)
 }

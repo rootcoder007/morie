@@ -15,7 +15,9 @@
 A vector, from \code{c}.
 }
 \description{
-A step of the study_core implementation. Called by \code{.binary_ci}, \code{.run_propensity_scores_module_internal}, \code{.weighted_binary_estimate} and 7 others in the module.
+A step of the study_core implementation. Called by \code{.binary_ci},
+\code{.run_propensity_scores_module_internal}, \code{.weighted_binary_estimate} and 7
+others in the module.
 See the file header for the source the module follows.
 source it follows.
 }

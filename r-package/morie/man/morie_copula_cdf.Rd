@@ -10,12 +10,11 @@ morie_copula_cdf(family, u, v, theta = NULL, nu = NULL)
 \item{family}{one of "independence", "gaussian", "t", "clayton",
 "gumbel", "frank", "joe", "plackett".}
 
-\item{u, v}{numeric vectors in [0, 1].}
+\item{u, v}{numeric vectors in \link{0, 1}.}
 
 \item{theta}{copula parameter (rho for gaussian/t).}
 
 \item{nu}{degrees of freedom, t copula only.}
-
 }
 \value{
 numeric vector of CDF values.

@@ -27,13 +27,21 @@
 
 \item{context}{One of \code{"none"}, \code{"paired"}. Defaults to \code{"paired"}.}
 
-\item{edge_hidden}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}.}
+\item{edge_hidden}{Optional; may be \code{NULL}. Coerced to integer by the body, with
+\code{as.integer}.}
 }
 \value{
-A list with \code{phis}, \code{psis}, \code{rho}, \code{repr_dim}, \code{shapes}, \code{context}, \code{scalers}.
+A list with \code{phis}, \code{psis}, \code{rho}, \code{repr_dim},
+\code{shapes}, \code{context}, \code{scalers}.
 }
 \description{
 A step of the propinf_native implementation. Called by \code{.propinf_train_set_meta}.
 See the file header for the source the module follows.
 the source it follows.
+}
+\examples{
+shapes <- list(c(3L, 2L), c(1L, 3L))
+m <- .propinf_deepsets_init(shapes, 8L, 4L, 8L, .propinf_rng(1L))
+length(m$psis)            # one entry per layer
+is.null(m$psis[[1]])      # the first layer has no incoming edge network
 }

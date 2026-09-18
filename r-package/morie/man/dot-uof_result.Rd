@@ -30,7 +30,9 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the mrm_uof implementation. Called by \code{mrm_uof_data_quality_audit}, \code{mrm_uof_demographic_disparity}, \code{mrm_uof_force_concentration} and 3 others in the module.
+A step of the mrm_uof implementation. Called by \code{mrm_uof_data_quality_audit},
+\code{mrm_uof_demographic_disparity}, \code{mrm_uof_force_concentration} and 3 others
+in the module.
 See the file header for the source the module follows.
 source it follows.
 }

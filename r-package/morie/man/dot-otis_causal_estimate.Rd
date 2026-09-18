@@ -36,7 +36,9 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate}, \code{morie_otis_aipw_superlearner}, \code{morie_otis_causal_grid} and 4 others in the module.
+A step of the otis_causal implementation. Called by \code{morie_otis_aipw_ate},
+\code{morie_otis_aipw_superlearner}, \code{morie_otis_causal_grid} and 4 others in the
+module.
 See the file header for the source the module follows.
 source it follows.
 }

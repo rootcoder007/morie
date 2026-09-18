@@ -12,18 +12,16 @@ morie_kamath_prefix_tuning(prefix_K, prefix_V, K_input, V_input, Q = NULL)
 \item{K_input, V_input}{Real keys and values.}
 
 \item{Q}{Optional queries.}
-
-
 }
 \value{
 List with \code{K}, \code{V}, \code{prefix_len}, \code{n_trainable}.
 }
 \description{
-[P_K; K] and [P_V; V]; with \code{Q} the attention is run through
+\link{P_K; K} and \link{P_V; V}; with \code{Q} the attention is run through
 \code{morie_alammar_sdp_attention}.
 }
 \examples{
-morie_kamath_prefix_tuning(prefix_K = c(1, 2, 3, 4, 5, 6, 7, 8),
-  prefix_V = c(1, 2, 3, 4, 5, 6, 7, 8), K_input = c(1, 2, 3, 4, 5, 6, 7, 8),
-  V_input = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_kamath_prefix_tuning(prefix_K = c(1, 2, 3, 4, 5, 6, 7, 8), prefix_V = c(1, 2, 3,
+4, 5, 6, 7, 8), K_input = c(1, 2, 3, 4, 5, 6, 7, 8), V_input = c(1, 2, 3, 4, 5, 6, 7,
+8))
 }

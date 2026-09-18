@@ -23,10 +23,6 @@ morie_geron_dueling_dqn_alt(
 \item{buffer}{Transitions.}
 
 \item{epochs, lr, gamma, target_sync}{Config.}
-
-
-
-
 }
 \value{
 List with \code{Q}, \code{V}, \code{A}, \code{loss_history}, \code{advantage_mean}, \code{value_share}.
@@ -35,6 +31,6 @@ List with \code{Q}, \code{V}, \code{A}, \code{loss_history}, \code{advantage_mea
 Dueling DQN: exact gradients through Q = V + A - mean(A) (hmdldqn)
 }
 \examples{
-morie_geron_dueling_dqn_alt(NULL, 0, matrix(c(0, 0), 1, 2), list(list(0, 
+morie_geron_dueling_dqn_alt(NULL, 0, matrix(c(0, 0), 1, 2), list(list(0,
     0, 1, 0, TRUE)), epochs = 1, lr = 1)
 }

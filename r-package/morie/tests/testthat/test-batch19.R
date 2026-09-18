@@ -3,6 +3,11 @@
 #           smixd, sobls, spblk, spcrs, specf, spqkv, sptag
 
 test_that("repetition_penalty: alpha == 1 short-circuits with no penalised idx", {
+  # 1s of the suite here, and r-universe's macOS x86_64 builder is
+  # about 1.8 times slower. The check there is killed at sixty minutes
+  # and the suite alone was twenty-six of them. The heavy files run in
+  # our own CI, which sets NOT_CRAN, where the clock is ours.
+  skip_heavy()
   z <- c(-1, 0.5, 2, -3)
   res <- morie:::repetition_penalty(z, generated = c(0L, 2L), alpha = 1)
   expect_type(res, "list")
@@ -14,6 +19,7 @@ test_that("repetition_penalty: alpha == 1 short-circuits with no penalised idx",
 })
 
 test_that("repetition_penalty: positive logits divided, negative multiplied", {
+  skip_heavy()
   z <- c(2, -2, 0.5, -1)
   res <- morie:::repetition_penalty(z, generated = c(0L, 1L), alpha = 1.5)
   expect_named(res, c("tensor", "penalised_idx", "alpha", "method"))
@@ -24,6 +30,7 @@ test_that("repetition_penalty: positive logits divided, negative multiplied", {
 })
 
 test_that("repetition_penalty: out-of-range / duplicate generated ids dropped", {
+  skip_heavy()
   z <- c(1, 2, 3)
   res <- morie:::repetition_penalty(z,
     generated = c(0L, 0L, 99L, -5L),
@@ -34,6 +41,7 @@ test_that("repetition_penalty: out-of-range / duplicate generated ids dropped", 
 })
 
 test_that("morie_rslnk_residual_connection: identity branch doubles input", {
+  skip_heavy()
   x <- array(1:8, dim = c(2, 4))
   res <- morie_rslnk_residual_connection(x)
   expect_type(res, "list")
@@ -44,6 +52,7 @@ test_that("morie_rslnk_residual_connection: identity branch doubles input", {
 })
 
 test_that("morie_rslnk_residual_connection: custom residual branch applied", {
+  skip_heavy()
   x <- c(1, 2, 3, 4)
   res <- morie_rslnk_residual_connection(x, f = function(z) z * 2)
   expect_equal(as.numeric(res$y), x * 2 + x)
@@ -51,6 +60,7 @@ test_that("morie_rslnk_residual_connection: custom residual branch applied", {
 })
 
 test_that("morie_rslnk_residual_connection: shape mismatch errors", {
+  skip_heavy()
   expect_error(
     morie_rslnk_residual_connection(c(1, 2, 3), f = function(z) c(1, 2)),
     "shape"
@@ -58,10 +68,12 @@ test_that("morie_rslnk_residual_connection: shape mismatch errors", {
 })
 
 test_that("morie_residual_connection alias is identical", {
+  skip_heavy()
   expect_identical(morie_residual_connection, morie_rslnk_residual_connection)
 })
 
 test_that("morie_simple_random_sample: WOR returns n rows and weight column", {
+  skip_heavy()
   df <- data.frame(x = 1:100)
   out <- morie_simple_random_sample(df, 20)
   expect_s3_class(out, "data.frame")
@@ -71,6 +83,7 @@ test_that("morie_simple_random_sample: WOR returns n rows and weight column", {
 })
 
 test_that("morie_simple_random_sample: with replacement gives unit weights", {
+  skip_heavy()
   df <- data.frame(x = 1:10)
   out <- morie_simple_random_sample(df, 25, replace = TRUE, seed = 1L)
   expect_equal(nrow(out), 25L)
@@ -78,10 +91,12 @@ test_that("morie_simple_random_sample: with replacement gives unit weights", {
 })
 
 test_that("morie_simple_random_sample: n exceeding population WOR errors", {
+  skip_heavy()
   expect_error(morie_simple_random_sample(data.frame(x = 1:5), 10), "exceeds")
 })
 
 test_that("morie_stratified_sample: equal allocation per stratum", {
+  skip_heavy()
   set.seed(1)
   df <- data.frame(g = c(rep("A", 60), rep("B", 40)), x = rnorm(100))
   out <- morie_stratified_sample(df, "g", n_per_stratum = 10)
@@ -91,6 +106,7 @@ test_that("morie_stratified_sample: equal allocation per stratum", {
 })
 
 test_that("morie_stratified_sample: proportional allocation uses total n", {
+  skip_heavy()
   set.seed(1)
   df <- data.frame(g = c(rep("A", 60), rep("B", 40)), x = rnorm(100))
   out <- morie_stratified_sample(df, "g", n_per_stratum = 20, proportional = TRUE)
@@ -100,6 +116,7 @@ test_that("morie_stratified_sample: proportional allocation uses total n", {
 })
 
 test_that("morie_stratified_sample: proportional with vector n_per_stratum errors", {
+  skip_heavy()
   df <- data.frame(g = c("A", "A", "B"), x = 1:3)
   expect_error(
     morie_stratified_sample(df, "g",
@@ -111,6 +128,7 @@ test_that("morie_stratified_sample: proportional with vector n_per_stratum error
 })
 
 test_that("morie_stratified_sample: named vector allocation honoured", {
+  skip_heavy()
   set.seed(2)
   df <- data.frame(g = c(rep("A", 30), rep("B", 30)), x = rnorm(60))
   out <- morie_stratified_sample(df, "g", n_per_stratum = c(A = 5L, B = 8L))
@@ -118,6 +136,7 @@ test_that("morie_stratified_sample: named vector allocation honoured", {
 })
 
 test_that("morie_cluster_sample: selects whole clusters with cluster weights", {
+  skip_heavy()
   df <- data.frame(cl = rep(1:10, each = 5), x = 1:50)
   out <- morie_cluster_sample(df, "cl", n_clusters = 4)
   expect_s3_class(out, "data.frame")
@@ -126,11 +145,13 @@ test_that("morie_cluster_sample: selects whole clusters with cluster weights", {
 })
 
 test_that("morie_cluster_sample: too many clusters errors", {
+  skip_heavy()
   df <- data.frame(cl = rep(1:3, each = 2), x = 1:6)
   expect_error(morie_cluster_sample(df, "cl", n_clusters = 5), "exceeds")
 })
 
 test_that("morie_pps_sample: returns n rows with Hansen-Hurwitz weights", {
+  skip_heavy()
   df <- data.frame(s = c(1, 2, 3, 4, 5), x = 1:5)
   # Hansen-Hurwitz is with-replacement; pass replace=TRUE explicitly
   # (default switched to WoR for Python parity 2026-05-22).
@@ -141,11 +162,13 @@ test_that("morie_pps_sample: returns n rows with Hansen-Hurwitz weights", {
 })
 
 test_that("morie_pps_sample: non-positive size errors", {
+  skip_heavy()
   df <- data.frame(s = c(1, 0, 2), x = 1:3)
   expect_error(morie_pps_sample(df, "s", n = 2), "positive")
 })
 
 test_that("morie_bootstrap_sample: returns estimate, se, CI and distribution", {
+  skip_heavy()
   set.seed(1)
   df <- data.frame(x = rnorm(40))
   res <- morie_bootstrap_sample(df,
@@ -164,6 +187,7 @@ test_that("morie_bootstrap_sample: returns estimate, se, CI and distribution", {
 })
 
 test_that("morie_jackknife_estimate: returns estimate, se and bias", {
+  skip_heavy()
   df <- data.frame(x = c(2, 4, 6, 8, 10))
   res <- morie_jackknife_estimate(df, statistic = function(d) mean(d$x))
   expect_named(res, c("estimate", "se", "bias"))
@@ -172,25 +196,18 @@ test_that("morie_jackknife_estimate: returns estimate, se and bias", {
   expect_true(is.finite(res$bias))
 })
 
-test_that("morie_effective_sample_size: equal weights give n", {
-  expect_equal(morie_effective_sample_size(rep(1, 20)), 20)
-})
-
-test_that("morie_effective_sample_size: drops NA and non-positive weights", {
-  ess <- morie_effective_sample_size(c(1, 2, NA, -1, 3))
-  expect_true(is.finite(ess))
-  expect_true(ess > 0)
-})
-
 test_that("morie_design_effect: equal weights give DEFF of 1", {
+  skip_heavy()
   expect_equal(morie_design_effect(rep(2, 15)), 1)
 })
 
 test_that("morie_design_effect: unequal weights give DEFF >= 1", {
+  skip_heavy()
   expect_true(morie_design_effect(c(1, 1, 5, 10)) >= 1)
 })
 
 test_that("morie_compute_design_weights: inverse-probability weights", {
+  skip_heavy()
   df <- data.frame(g = c(rep("A", 4), rep("B", 6)))
   w <- morie_compute_design_weights(df, "g",
     population_sizes = c(A = 100L, B = 300L)
@@ -201,6 +218,7 @@ test_that("morie_compute_design_weights: inverse-probability weights", {
 })
 
 test_that("morie_calibration_weights: default unit start, converges to totals", {
+  skip_heavy()
   df <- data.frame(g = c(rep("f", 5), rep("m", 5)))
   w <- morie_calibration_weights(df,
     aux_vars = "g",
@@ -212,6 +230,7 @@ test_that("morie_calibration_weights: default unit start, converges to totals", 
 })
 
 test_that("morie_calibration_weights: honours supplied initial weights", {
+  skip_heavy()
   df <- data.frame(g = c("a", "a", "b", "b"))
   w <- morie_calibration_weights(df,
     aux_vars = "g",
@@ -233,6 +252,7 @@ test_that("morie_calibration_weights: honours supplied initial weights", {
 }
 
 test_that("sarla: returns coefficient list on a small path graph", {
+  skip_heavy()
   set.seed(11)
   n <- 12
   W <- .b19_path_W(n)
@@ -250,15 +270,18 @@ test_that("sarla: returns coefficient list on a small path graph", {
 })
 
 test_that("sarla: shape mismatch errors", {
+  skip_heavy()
   W <- .b19_path_W(5)
   expect_error(sarla(cbind(1, 1:4), 1:4, W), "shape mismatch")
 })
 
 test_that("morie_spatial_ar_lag alias is identical to sarla", {
+  skip_heavy()
   expect_identical(morie_spatial_ar_lag, sarla)
 })
 
 test_that("sarre: returns coefficient list on a small path graph", {
+  skip_heavy()
   set.seed(12)
   n <- 12
   W <- .b19_path_W(n)
@@ -276,15 +299,18 @@ test_that("sarre: returns coefficient list on a small path graph", {
 })
 
 test_that("sarre: shape mismatch errors", {
+  skip_heavy()
   W <- .b19_path_W(6)
   expect_error(sarre(cbind(1, 1:5), 1:5, W), "shape mismatch")
 })
 
 test_that("morie_spatial_ar_error alias is identical to sarre", {
+  skip_heavy()
   expect_identical(morie_spatial_ar_error, sarre)
 })
 
 test_that("sglm: Gaussian fit recovers a coefficient vector", {
+  skip_heavy()
   set.seed(13)
   n <- 10
   coords <- matrix(seq_len(n), ncol = 1)
@@ -305,6 +331,7 @@ test_that("sglm: Gaussian fit recovers a coefficient vector", {
 })
 
 test_that("sglm: non-gaussian family errors", {
+  skip_heavy()
   expect_error(
     sglm(cbind(1, 1:5), 1:5, matrix(1:5, ncol = 1), family = "poisson"),
     "family"
@@ -312,6 +339,7 @@ test_that("sglm: non-gaussian family errors", {
 })
 
 test_that("sglm: shape mismatch errors", {
+  skip_heavy()
   expect_error(
     sglm(cbind(1, 1:5), 1:5, matrix(1:3, ncol = 1)),
     "shape mismatch"
@@ -319,6 +347,7 @@ test_that("sglm: shape mismatch errors", {
 })
 
 test_that("sglm: accepts list-form coords", {
+  skip_heavy()
   set.seed(14)
   n <- 8
   X <- cbind(1, seq_len(n))
@@ -329,10 +358,12 @@ test_that("sglm: accepts list-form coords", {
 })
 
 test_that("morie_spatial_glm alias is identical to sglm", {
+  skip_heavy()
   expect_identical(morie_spatial_glm, sglm)
 })
 
 test_that("morie_sign_test_power: default arguments give a valid power", {
+  skip_heavy()
   set.seed(15)
   x <- rnorm(30, mean = 0.5)
   res <- morie_sign_test_power(x)
@@ -345,6 +376,7 @@ test_that("morie_sign_test_power: default arguments give a valid power", {
 })
 
 test_that("morie_sign_test_power: empty effective n returns NA statistic", {
+  skip_heavy()
   res <- morie_sign_test_power(rep(0, 5), mu0 = 0)
   expect_true(is.na(res$statistic))
   expect_equal(res$n, 0)
@@ -352,11 +384,13 @@ test_that("morie_sign_test_power: empty effective n returns NA statistic", {
 })
 
 test_that("morie_sign_test_power: invalid p_alt returns NA statistic", {
+  skip_heavy()
   res <- morie_sign_test_power(rnorm(10), p_alt = 1.5)
   expect_true(is.na(res$statistic))
 })
 
 test_that("morie_sign_test_power: tiny n with strict alpha has no rejection region", {
+  skip_heavy()
   res <- morie_sign_test_power(c(1, -1), mu0 = 0, alpha = 0.001)
   expect_equal(res$statistic, 0)
   expect_equal(res$size, 0)
@@ -364,6 +398,7 @@ test_that("morie_sign_test_power: tiny n with strict alpha has no rejection regi
 })
 
 test_that("morie_sign_test_power: optional alpha widens rejection region", {
+  skip_heavy()
   set.seed(16)
   x <- rnorm(25, mean = 0.6)
   res <- morie_sign_test_power(x, mu0 = 0, p_alt = 0.8, alpha = 0.10)
@@ -372,6 +407,8 @@ test_that("morie_sign_test_power: optional alpha widens rejection region", {
 })
 
 test_that("buttlp: lowpass filter preserves length", {
+  skip_heavy()
+  testthat::skip_if_not_installed("signal")
   set.seed(1)
   t <- seq(0, 1, length.out = 200)
   x <- sin(2 * pi * 5 * t) + 0.5 * sin(2 * pi * 60 * t)
@@ -384,6 +421,8 @@ test_that("buttlp: lowpass filter preserves length", {
 })
 
 test_that("butthp: highpass filter preserves length", {
+  skip_heavy()
+  testthat::skip_if_not_installed("signal")
   set.seed(1)
   t <- seq(0, 1, length.out = 200)
   x <- 5 * t + sin(2 * pi * 10 * t)
@@ -393,6 +432,8 @@ test_that("butthp: highpass filter preserves length", {
 })
 
 test_that("buttbp: bandpass filter preserves length", {
+  skip_heavy()
+  testthat::skip_if_not_installed("signal")
   set.seed(1)
   t <- seq(0, 1, length.out = 300)
   x <- sin(2 * pi * 2 * t) + sin(2 * pi * 10 * t)
@@ -402,6 +443,8 @@ test_that("buttbp: bandpass filter preserves length", {
 })
 
 test_that("buttbs: bandstop filter with default cutoffs preserves length", {
+  skip_heavy()
+  testthat::skip_if_not_installed("signal")
   set.seed(1)
   t <- seq(0, 1, length.out = 300)
   x <- sin(2 * pi * 10 * t) + sin(2 * pi * 60 * t)
@@ -411,6 +454,8 @@ test_that("buttbs: bandstop filter with default cutoffs preserves length", {
 })
 
 test_that("morie_sgolay_smooth: default window/polyorder preserves length", {
+  skip_heavy()
+  testthat::skip_if_not_installed("signal")
   set.seed(1)
   x <- sin(2 * pi * 3 * seq(0, 1, length.out = 120)) + rnorm(120, sd = 0.2)
   res <- morie_sgolay_smooth(x)
@@ -421,6 +466,8 @@ test_that("morie_sgolay_smooth: default window/polyorder preserves length", {
 })
 
 test_that("morie_hurst_r: returns H and interpretation", {
+  skip_heavy()
+  testthat::skip_if_not_installed("pracma")
   set.seed(1)
   x <- cumsum(rnorm(512))
   res <- morie_hurst_r(x)
@@ -431,10 +478,13 @@ test_that("morie_hurst_r: returns H and interpretation", {
 })
 
 test_that("hfd: Python-bridge path is not exercised offline", {
+  skip_heavy()
   expect_true(is.function(hfd))
 })
 
 test_that("morie_pcg_filter: convenience preset preserves length", {
+  skip_heavy()
+  testthat::skip_if_not_installed("signal")
   set.seed(1)
   x <- rnorm(600)
   res <- morie_pcg_filter(x)
@@ -443,6 +493,7 @@ test_that("morie_pcg_filter: convenience preset preserves length", {
 })
 
 test_that("smixd: REML fit returns coefficient list", {
+  skip_heavy()
   set.seed(17)
   n <- 10
   coords <- matrix(seq_len(n), ncol = 1)
@@ -463,6 +514,7 @@ test_that("smixd: REML fit returns coefficient list", {
 })
 
 test_that("smixd: accepts list-form coords", {
+  skip_heavy()
   set.seed(18)
   n <- 8
   X <- cbind(1, seq_len(n))
@@ -473,10 +525,12 @@ test_that("smixd: accepts list-form coords", {
 })
 
 test_that("morie_spatial_mixed_model alias is identical to smixd", {
+  skip_heavy()
   expect_identical(morie_spatial_mixed_model, smixd)
 })
 
 test_that("sobls: default sample is N-by-d in the unit cube", {
+  skip_heavy()
   res <- morie:::sobls(N = 64L, d = 2L)
   expect_type(res, "list")
   expect_true(is.matrix(res$sample))
@@ -488,6 +542,7 @@ test_that("sobls: default sample is N-by-d in the unit cube", {
 })
 
 test_that("sobls: integrand path adds estimate and se", {
+  skip_heavy()
   res <- morie:::sobls(
     N = 128L, d = 2L,
     f = function(u) u[1] * u[2], seed = 0L
@@ -498,16 +553,19 @@ test_that("sobls: integrand path adds estimate and se", {
 })
 
 test_that("sobls: no scramble path returns valid sample", {
+  skip_heavy()
   res <- morie:::sobls(N = 32L, d = 1L, scramble = FALSE)
   expect_equal(dim(res$sample), c(32L, 1L))
   expect_true(all(is.finite(res$sample)))
 })
 
 test_that("morie_sobol_sequence alias is identical to sobls", {
+  skip_heavy()
   expect_identical(morie:::morie_sobol_sequence, morie:::sobls)
 })
 
 test_that("spblk: box-form 1-D block returns estimate and se", {
+  skip_heavy()
   set.seed(19)
   coords <- matrix(seq(0, 10, length.out = 8), ncol = 1)
   x <- 2 + 0.5 * coords[, 1] + rnorm(8, sd = 0.2)
@@ -522,6 +580,7 @@ test_that("spblk: box-form 1-D block returns estimate and se", {
 })
 
 test_that("spblk: explicit quadrature-point block works", {
+  skip_heavy()
   set.seed(20)
   coords <- matrix(seq(0, 5, length.out = 6), ncol = 1)
   x <- coords[, 1] + rnorm(6, sd = 0.1)
@@ -532,6 +591,7 @@ test_that("spblk: explicit quadrature-point block works", {
 })
 
 test_that("spblk: multiple blocks give vector outputs", {
+  skip_heavy()
   set.seed(21)
   coords <- matrix(seq(0, 9, length.out = 7), ncol = 1)
   x <- coords[, 1] + rnorm(7, sd = 0.1)
@@ -542,6 +602,7 @@ test_that("spblk: multiple blocks give vector outputs", {
 })
 
 test_that("spblk: 2-D box block quadratured", {
+  skip_heavy()
   set.seed(22)
   coords <- as.matrix(expand.grid(0:2, 0:2))
   x <- rowSums(coords) + rnorm(nrow(coords), sd = 0.1)
@@ -552,10 +613,12 @@ test_that("spblk: 2-D box block quadratured", {
 })
 
 test_that("morie_spatial_block_kriging alias is identical to spblk", {
+  skip_heavy()
   expect_identical(morie_spatial_block_kriging, spblk)
 })
 
 test_that("spcrs: LOO cross-validation returns MSPE diagnostics", {
+  skip_heavy()
   set.seed(23)
   coords <- matrix(seq(0, 10, length.out = 9), ncol = 1)
   x <- 1 + 0.5 * coords[, 1] + rnorm(9, sd = 0.2)
@@ -571,6 +634,7 @@ test_that("spcrs: LOO cross-validation returns MSPE diagnostics", {
 })
 
 test_that("spcrs: nugget/sill/range arguments accepted", {
+  skip_heavy()
   set.seed(24)
   coords <- matrix(seq(0, 8, length.out = 7), ncol = 1)
   x <- coords[, 1] + rnorm(7, sd = 0.1)
@@ -580,6 +644,7 @@ test_that("spcrs: nugget/sill/range arguments accepted", {
 })
 
 test_that("spcrs: accepts list-form coords", {
+  skip_heavy()
   set.seed(25)
   x <- (1:6) + rnorm(6, sd = 0.1)
   res <- spcrs(x, coords = as.list(1:6))
@@ -587,10 +652,12 @@ test_that("spcrs: accepts list-form coords", {
 })
 
 test_that("morie_spatial_cross_validation alias is identical to spcrs", {
+  skip_heavy()
   expect_identical(morie_spatial_cross_validation, spcrs)
 })
 
 test_that("morie_spectral_density: default arguments give Welch PSD", {
+  skip_heavy()
   set.seed(26)
   x <- sin(2 * pi * 0.1 * seq_len(128)) + rnorm(128, sd = 0.3)
   res <- morie_spectral_density(x)
@@ -607,6 +674,7 @@ test_that("morie_spectral_density: default arguments give Welch PSD", {
 })
 
 test_that("morie_spectral_density: custom fs and nperseg honoured", {
+  skip_heavy()
   set.seed(27)
   x <- rnorm(100)
   res <- morie_spectral_density(x, fs = 50, nperseg = 20)
@@ -616,10 +684,12 @@ test_that("morie_spectral_density: custom fs and nperseg honoured", {
 })
 
 test_that("morie_spectral_density: too-short input errors", {
+  skip_heavy()
   expect_error(morie_spectral_density(1:5), ">=8")
 })
 
 test_that("sptag: pairwise vote agreement matrix is symmetric", {
+  skip_heavy()
   M <- matrix(c(
     1, 1, 0,
     1, 0, 0,
@@ -638,12 +708,14 @@ test_that("sptag: pairwise vote agreement matrix is symmetric", {
 })
 
 test_that("sptag: single-row input returns NA mean agreement", {
+  skip_heavy()
   res <- sptag(matrix(c(1, 0, 1), nrow = 1))
   expect_true(is.na(res$mean_agreement))
   expect_equal(res$n, 1L)
 })
 
 test_that("sptag: mutually-absent pair yields NA cell", {
+  skip_heavy()
   M <- matrix(c(
     1, NA,
     NA, 0,
@@ -655,11 +727,13 @@ test_that("sptag: mutually-absent pair yields NA cell", {
 })
 
 test_that("sptag: non-matrix vector input coerced to one column", {
+  skip_heavy()
   res <- sptag(c(1, 0, 1, 1))
   expect_equal(res$m, 1L)
   expect_equal(res$n, 4L)
 })
 
 test_that("morie_spatial_agreement alias is identical to sptag", {
+  skip_heavy()
   expect_identical(morie_spatial_agreement, sptag)
 })

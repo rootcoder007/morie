@@ -42,7 +42,7 @@ auditor's verdicts), \code{models} (who served).
 }
 \description{
 The model tier of the SIU mining pipeline, for reports that are not yet
-in the panel-reviewed corpus (see \code{morie_siu_reports()}; reviewed reports
+in the panel-reviewed corpus (see \code{\link[=morie_siu_reports]{morie_siu_reports()}}; reviewed reports
 never need this -- their answers are already verified). Modes mirror the
 original panel that built the corpus:
 }
@@ -69,6 +69,11 @@ re-reads the whole report for each -- slower, but it stops a model
 skimming once and hallucinating 60 answers.
 }
 \examples{
+\dontshow{if (morie_llm_probe_ollama()) withAutoprint(\{ # examplesIf}
+# Runs when a local Ollama server is reachable (free default).
+res <- morie_siu_panel(5161, mode = 2)
+res$fields["number_of_subject_officers"]
+\dontshow{\}) # examplesIf}
 \dontshow{if (morie_llm_probe_ollama()) withAutoprint(\{ # examplesIf}
 # Runs when a local Ollama server is reachable (free default).
 res <- morie_siu_panel(5161, mode = 2)

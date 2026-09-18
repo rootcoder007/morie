@@ -9,7 +9,8 @@
 \arguments{
 \item{df}{A list; the body reads \code{$OCC_DAY}, \code{$OCC_MONTH}, \code{$OCC_YEAR} from it.}
 
-\item{min_year}{Optional; may be \code{NULL}. Coerced to integer by the body, with \code{as.integer}. Defaults to \code{2014L}.}
+\item{min_year}{Optional; may be \code{NULL}. Coerced to integer by the body, with
+\code{as.integer}. Defaults to \code{2014L}.}
 }
 \value{
 A vector, from \code{sort}.

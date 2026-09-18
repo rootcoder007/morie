@@ -7,10 +7,15 @@
 .morie_forensics_flatten_nist(rec)
 }
 \arguments{
-\item{rec}{A list; the body reads \code{$@id}, \code{$byteSize}, \code{$description}, \code{$ediid}, \code{$identifier}, \code{$issued}, \code{$keyword}, \code{$landing_page}, \code{$landingPage}, \code{$license}, \code{$modified}, \code{$publisher}, \code{$rights}, \code{$size}, \code{$theme}, \code{$title} from it.}
+\item{rec}{A list; the body reads \code{$@id}, \code{$byteSize}, \code{$description},
+\code{$ediid}, \code{$identifier}, \code{$issued}, \code{$keyword},
+\code{$landing_page}, \code{$landingPage}, \code{$license}, \code{$modified},
+\code{$publisher}, \code{$rights}, \code{$size}, \code{$theme}, \code{$title} from it.}
 }
 \value{
-A list with \code{dataset_id}, \code{title}, \code{description}, \code{publisher}, \code{issued}, \code{modified}, \code{keyword}, \code{landing_page}, \code{size_bytes}, \code{license}.
+A list with \code{dataset_id}, \code{title}, \code{description},
+\code{publisher}, \code{issued}, \code{modified}, \code{keyword}, \code{landing_page},
+\code{size_bytes}, \code{license}.
 }
 \description{
 A step of the ingest_forensics implementation. Called by \code{morie_ingest_forensics_nist_rds}.

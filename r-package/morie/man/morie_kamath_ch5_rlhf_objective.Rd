@@ -23,13 +23,12 @@ morie_kamath_ch5_ppo_loss(phi, x, y, r_theta, beta, pi_ref = NULL)
 \item{y}{Per-prompt response name vectors.}
 
 \item{r_theta}{Function (x, y) -> reward.}
-
 }
 \value{
 List with \code{estimate}, \code{expected_reward}, \code{kl}, \code{penalty}.
 }
 \description{
-E[r] - beta KL(pi_theta || pi_ref), maximised.
+E\link{r} - beta KL(pi_theta || pi_ref), maximised.
 }
 \details{
 One core serves both Python modules exactly as km068 calls
@@ -37,6 +36,6 @@ km069 per prompt and negates the mean: km069 ->
 \code{morie_kamath_ch5_rlhf_objective}, km068 -> \code{morie_kamath_ch5_ppo_loss}.
 }
 \examples{
-morie_kamath_ch5_rlhf_objective(c(y1 = 0.6, y2 = 0.4), c(y1 = 0.5, 
+morie_kamath_ch5_rlhf_objective(c(y1 = 0.6, y2 = 0.4), c(y1 = 0.5,
     y2 = 0.5), c(1, 0), 0.1)
 }

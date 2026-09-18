@@ -22,7 +22,8 @@
 
 \item{interpretation}{Carried through into a list the body builds. Defaults to \code{""}.}
 
-\item{warnings}{Coerced to character by the body, with \code{as.character}. Defaults to \code{character()}.}
+\item{warnings}{Coerced to character by the body, with \code{as.character}. Defaults
+to \code{character()}.}
 
 \item{payload}{Carried through into a list the body builds. Defaults to \code{list()}.}
 }
@@ -30,11 +31,9 @@
 The value of \code{out}, as built in the body.
 }
 \description{
-\subsection{RichResult-style constructor for the R side}{
-
+RichResult-style constructor for the R side
 Returns a named list classed for morie\'s rich-output dispatch.
 Mirrors the structure of morie.fn._richresult.RichResult so that
 downstream \code{describe()} / \code{morie_print_rich()} consumers can render
 the same multi-section paragraph layout from R.
-}
 }

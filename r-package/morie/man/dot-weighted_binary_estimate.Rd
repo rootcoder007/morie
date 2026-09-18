@@ -15,7 +15,10 @@
 A list with \code{p}, \code{se}, \code{ci}, \code{n}, \code{n_eff}.
 }
 \description{
-A step of the study_core implementation. Called by \code{.run_descriptive_statistics_module_internal}, \code{.run_ebac_core_module_internal}, \code{.run_ebac_integrations_module_internal} and 2 others in the module.
+A step of the study_core implementation. Called by
+\code{.run_descriptive_statistics_module_internal},
+\code{.run_ebac_core_module_internal}, \code{.run_ebac_integrations_module_internal}
+and 2 others in the module.
 See the file header for the source the module follows.
 source it follows.
 }
