@@ -111,7 +111,7 @@ def _check_datasets() -> tuple[bool, str]:
 
         db_path = morie_db()
         if not db_path.exists():
-            return False, "morie.db not found -- reinstall morie"
+            return False, "morie.db not found -- it is fetched, not shipped: run `morie download-bootstrap`"
         size_mb = db_path.stat().st_size // (1024 * 1024)
         ds = list_datasets()
         cached = [d for d in ds if d["cached"]]
@@ -353,7 +353,7 @@ def _heal(results: dict[str, Any]) -> bool:
         elif label == "morie version":
             print("  [hint] run `morie update` to upgrade morie itself.")
         elif label == "Built-in datasets":
-            print("  [hint] reinstall to restore the built-in DB: pip install --force-reinstall morie")
+            print("  [hint] the built-in DB is downloaded, not shipped: run `morie download-bootstrap`.")
         elif label == "R (Rscript)":
             print("  [hint] install R from https://www.r-project.org/ (optional -- only the R bridge needs it).")
         else:

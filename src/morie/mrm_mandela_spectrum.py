@@ -104,7 +104,7 @@ def mrm_otis_mandela_spectrum(
         ...                     columns="contact_proxy",
         ...                     values="pct")
     """
-    df = data.copy()
+    df = pd.coerce_frame(data).copy()
     dur = pd.to_numeric(df[duration_col], errors="coerce")
     df["_dur"] = dur
     df["_long"] = (dur > threshold_days).fillna(False)
@@ -158,7 +158,8 @@ def mrm_otis_mandela_spectrum(
                     ids_m = df.loc[elig].groupby(id_col)["_dur"].sum()
                     cum_long = cum > threshold_days
                     # restrict cum_long to ids that had alert-proxy-active placements
-                    cum_long_proxy = cum_long.index.isin(ids_m.index) & cum_long.values
+                    in_proxy = cum_long.index.isin(ids_m.index)
+                    cum_long_proxy = [bool(a) and bool(b) for a, b in zip(in_proxy, list(cum_long.values))]
                     n_d = int(cum.size)
                     if proxy == "none":
                         n_m = int(cum_long.sum())
