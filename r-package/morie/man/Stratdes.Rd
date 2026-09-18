@@ -36,6 +36,6 @@ Cochran (1977), Sampling Techniques, 3rd edition, Sections
 allocation, and the Neyman/cost-optimal rules n_h prop. N_h S_h and
 n_h prop. N_h S_h/sqrt(c_h) under the linear cost function (5.17).
 Chapter 5 read from the scanned original. Cross-checked against the
-CRAN package samplingbook 1.2.4, whose stratasamp uses exactly these
+CRAN package samplingbook 1.2.5, whose stratasamp uses exactly these
 three weight rules.
 }

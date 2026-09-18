@@ -15,7 +15,7 @@ ExerEcgSt(x, qrs, fs, jofs = 0.06, thresh = 0.1)
 \item{thresh}{Carried through into a list the body builds. Defaults to \code{0.1}.}
 }
 \description{
-slope of the segment that follows (Section 1.2.4).  The 0.1 mV threshold is the conventional clinical figure, NOT a book value -- the payload says so.
+slope of the segment that follows (Section 1.2.5).  The 0.1 mV threshold is the conventional clinical figure, NOT a book value -- the payload says so.
 }
 \value{
 A list with \code{stdev}, \code{stslope}, \code{pattern}, \code{stdevmean}, \code{stslopemean}, \code{flagged}, \code{thresh}, \code{threshnote}, \code{jofs}, \code{fs}, \code{method}.

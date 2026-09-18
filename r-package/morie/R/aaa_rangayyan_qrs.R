@@ -662,7 +662,7 @@ EcgEmgCpl <- function(ecg, emg, qrs, fs) {
 }
 
 
-#' Section 1.2.4 waves and intervals.  Amplitudes are measured against
+#' Section 1.2.5 waves and intervals.  Amplitudes are measured against
 #' the
 #'
 #' PQ segment, not against zero: the PQ segment is the isoelectric
@@ -678,7 +678,7 @@ EcgEmgCpl <- function(ecg, emg, qrs, fs) {
 #' \code{fs}, \code{method}.
 #' @export
 EcgFeat <- function(x, qrs, fs) {
-  # Section 1.2.4 waves and intervals.  Amplitudes are measured against the
+  # Section 1.2.5 waves and intervals.  Amplitudes are measured against the
   # PQ segment, not against zero: the PQ segment is the isoelectric reference
   # the book names, and it absorbs any residual baseline offset.
   fs <- .morie_qrs_fs(fs)
@@ -761,7 +761,7 @@ EcgFeat <- function(x, qrs, fs) {
        qtdurmean = .morie_qrs_mean(qtdur), rampmean = .morie_qrs_mean(ramp),
        nbeats = length(q), fs = fs,
        method = paste0("ECG wave amplitudes and durations against the PQ ",
-                       "isoelectric reference, Rangayyan (2024) Section 1.2.4"))
+                       "isoelectric reference, Rangayyan (2024) Section 1.2.5"))
 }
 
 
@@ -783,7 +783,7 @@ EcgFeat <- function(x, qrs, fs) {
 #' @export
 EcgWaveShp <- function(qrsdur, stdev, rdur = NULL, sdur = NULL,
                        qpresent = NULL) {
-  # Sections 1.2.4 (ST deviation against the PQ reference) and 10.2.1 (the
+  # Sections 1.2.5 (ST deviation against the PQ reference) and 10.2.1 (the
   # incomplete LBBB/RBBB duration rules).  Only the duration-based parts of
   # the book's rules are computable from one measured QRS duration; the
   # lead-specific conditions are RETURNED as still-required checks rather
@@ -812,14 +812,14 @@ EcgWaveShp <- function(qrsdur, stdev, rdur = NULL, sdur = NULL,
        qabsent = if (is.null(qpresent)) NULL else !isTRUE(as.logical(qpresent)),
        stdev = stdev, stfinding = st, required = req,
        method = paste0("ECG waveshape rules for ischemia and bundle-branch ",
-                       "block, Rangayyan (2024) Sections 1.2.4 and 10.2.1"))
+                       "block, Rangayyan (2024) Sections 1.2.5 and 10.2.1"))
 }
 
 
 #' ST level at J + jofs relative to the PQ isoelectric level, and the
 #' slope
 #'
-#' of the segment that follows (Section 1.2.4).  The 0.1 mV threshold is
+#' of the segment that follows (Section 1.2.5).  The 0.1 mV threshold is
 #' the conventional clinical figure, NOT a book value -- the payload
 #' says so.
 #'
@@ -834,7 +834,7 @@ EcgWaveShp <- function(qrsdur, stdev, rdur = NULL, sdur = NULL,
 #' @export
 ExerEcgSt <- function(x, qrs, fs, jofs = 0.060, thresh = 0.1) {
   # ST level at J + jofs relative to the PQ isoelectric level, and the slope
-  # of the segment that follows (Section 1.2.4).  The 0.1 mV threshold is the
+  # of the segment that follows (Section 1.2.5).  The 0.1 mV threshold is the
   # conventional clinical figure, NOT a book value -- the payload says so.
   fs <- .morie_qrs_fs(fs)
   x <- .morie_qrs_check(x, 16L, "ECG")
@@ -877,7 +877,7 @@ ExerEcgSt <- function(x, qrs, fs, jofs = 0.060, thresh = 0.1) {
                            "verified here"),
        jofs = jofs, fs = fs,
        method = paste0("ST level and slope against the PQ isoelectric ",
-                       "reference, Rangayyan (2024) Section 1.2.4"))
+                       "reference, Rangayyan (2024) Section 1.2.5"))
 }
 
 
@@ -1830,7 +1830,7 @@ TWaveDet <- function(chans, qrs, fs, tdur = 0.160) {
 }
 
 
-#' Sections 1.2.4 and 8.11 describe VF but give NO detector and NO
+#' Sections 1.2.5 and 8.11 describe VF but give NO detector and NO
 #'
 #' threshold, and no external primary source was verified here.  The
 #' rule below is therefore stated as what it is: a two-part heuristic
@@ -1849,7 +1849,7 @@ TWaveDet <- function(chans, qrs, fs, tdur = 0.160) {
 #' \code{fs}, \code{method}.
 #' @export
 VfDetect <- function(x, fs, win = 4, conc = 0.60, crest = 4) {
-  # Sections 1.2.4 and 8.11 describe VF but give NO detector and NO
+  # Sections 1.2.5 and 8.11 describe VF but give NO detector and NO
   # threshold, and no external primary source was verified here.  The rule
   # below is therefore stated as what it is: a two-part heuristic from the
   # two properties the book DOES assert -- no discrete QRS complexes (so the
@@ -1903,7 +1903,7 @@ VfDetect <- function(x, fs, win = 4, conc = 0.60, crest = 4) {
        rate = rates, conc = conc, crestmax = crest, nwin = length(flags),
        fraction = sum(flags) / length(flags), win = win, fs = fs,
        method = paste0("VF heuristic from QRS absence and spectral ",
-                       "concentration; Rangayyan (2024) Sections 1.2.4 and ",
+                       "concentration; Rangayyan (2024) Sections 1.2.5 and ",
                        "8.11 describe VF but give no detector, and no ",
                        "external primary source was verified for this rule"))
 }

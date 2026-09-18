@@ -3,7 +3,7 @@
 % the formals.
 \name{EcgFeat}
 \alias{EcgFeat}
-\title{Section 1.2.4 waves and intervals.  Amplitudes are measured against}
+\title{Section 1.2.5 waves and intervals.  Amplitudes are measured against}
 \usage{
 EcgFeat(x, qrs, fs) 
 }

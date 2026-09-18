@@ -53,7 +53,7 @@ def ratioest(y, x, X=None, N=float("inf"), level=0.95):
     small-sample bias of both the estimator and this variance formula.
     Chapter 6 was NOT in the scanned excerpt available to this batch,
     so the standard published form is used; the finite-population
-    factor matches the ``samplingbook`` 1.2.4 convention (N - n)/N used
+    factor matches the ``samplingbook`` 1.2.5 convention (N - n)/N used
     throughout the sibling Cochran modules.
     """
     y = C.vec(y)

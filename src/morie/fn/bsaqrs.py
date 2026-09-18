@@ -710,7 +710,7 @@ def ecgfeat(x, qrs, fs):
     """P, QRS and T amplitudes and durations from a single-lead ECG.
 
     The waves and intervals are those summarised in Rangayyan (2024) Section
-    1.2.4: the P wave of atrial depolarisation, the QRS of ventricular
+    1.2.5: the P wave of atrial depolarisation, the QRS of ventricular
     depolarisation, the ST segment which is normally isoelectric and in line
     with the PQ segment, and the T wave of ventricular repolarisation.
 
@@ -813,7 +813,7 @@ def ecgfeat(x, qrs, fs):
         "qtdurmean": mean(qtdur), "rampmean": mean(ramp),
         "nbeats": len(q),
         "fs": fs,
-        "method": "ECG wave amplitudes and durations against the PQ isoelectric reference, Rangayyan (2024) Section 1.2.4",
+        "method": "ECG wave amplitudes and durations against the PQ isoelectric reference, Rangayyan (2024) Section 1.2.5",
     })
 
 
@@ -826,7 +826,7 @@ def ecgwaveshp(qrsdur, stdev, rdur=None, sdur=None, qpresent=None):
 
     Two findings from Rangayyan (2024) are applied.
 
-    Ischemia and infarction (Section 1.2.4): the ST segment is normally
+    Ischemia and infarction (Section 1.2.5): the ST segment is normally
     isoelectric and in line with the PQ segment; it may be elevated or
     depressed by myocardial ischemia (reduced coronary supply) or by
     myocardial infarction (dead, non-contracting tissue).  ST deviation is
@@ -897,7 +897,7 @@ def ecgwaveshp(qrsdur, stdev, rdur=None, sdur=None, qpresent=None):
         "stdev": stdev,
         "stfinding": st,
         "required": req,
-        "method": "ECG waveshape rules for ischemia and bundle-branch block, Rangayyan (2024) Sections 1.2.4 and 10.2.1",
+        "method": "ECG waveshape rules for ischemia and bundle-branch block, Rangayyan (2024) Sections 1.2.5 and 10.2.1",
     })
 
 
@@ -908,7 +908,7 @@ rangayyan_ecg_waveshape = ecgwaveshp  # pre-policy spelling
 def exerecgst(x, qrs, fs, jofs=0.060, thresh=0.1):
     """Exercise ECG analysis: ST deviation and ST slope per beat.
 
-    Rangayyan (2024) Section 1.2.4 states that the ST segment lies about 100
+    Rangayyan (2024) Section 1.2.5 states that the ST segment lies about 100
     to 120 ms after the QRS, is normally isoelectric and in line with the PQ
     segment, and may be elevated or depressed by ischemia or infarction.  That
     is the measurement this function makes: the level at J + jofs relative to
@@ -990,7 +990,7 @@ def exerecgst(x, qrs, fs, jofs=0.060, thresh=0.1):
         "threshnote": "0.1 mV is a conventional clinical figure, not from Rangayyan (2024); no primary source verified here",
         "jofs": jofs,
         "fs": fs,
-        "method": "ST level and slope against the PQ isoelectric reference, Rangayyan (2024) Section 1.2.4",
+        "method": "ST level and slope against the PQ isoelectric reference, Rangayyan (2024) Section 1.2.5",
     })
 
 
@@ -2437,7 +2437,7 @@ rangayyan_t_wave_detect = twavedet  # pre-policy spelling
 def vfdetect(x, fs, win=4.0, conc=0.60, crest=4.0):
     """Ventricular fibrillation detection from spectral concentration and QRS absence.
 
-    What the book supports: Rangayyan (2024) Section 1.2.4 states that
+    What the book supports: Rangayyan (2024) Section 1.2.5 states that
     ventricular dissociation and fibrillation are a state of disorganised
     contraction, and Section 8.11 analyses porcine ventricular fibrillation
     waveforms with the wavelet transform in a cardiopulmonary resuscitation
@@ -2543,7 +2543,7 @@ def vfdetect(x, fs, win=4.0, conc=0.60, crest=4.0):
         "fraction": sum(1 for f in flags if f) / float(len(flags)),
         "win": win,
         "fs": fs,
-        "method": "VF heuristic from QRS absence and spectral concentration; Rangayyan (2024) Sections 1.2.4 and 8.11 describe VF but give no detector, and no external primary source was verified for this rule",
+        "method": "VF heuristic from QRS absence and spectral concentration; Rangayyan (2024) Sections 1.2.5 and 8.11 describe VF but give no detector, and no external primary source was verified for this rule",
     })
 
 

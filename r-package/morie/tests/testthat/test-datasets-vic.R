@@ -27,7 +27,7 @@ test_that("an unknown key is rejected rather than silently empty", {
 
 test_that("the loader stays offline by default", {
   # Offline still means offline -- no download, no network. What changed
-  # is what offline RETURNS: rmoriedata >= 0.3.0 bundles Table 01 of each
+  # is what offline RETURNS: rmoriedata >= 1.2.5 bundles Table 01 of each
   # workbook as the slug vic_<key>, so the loader serves that instead of
   # the empty frame it used to. Without that bundle the old behaviour
   # stands, which is what the else branch asserts.

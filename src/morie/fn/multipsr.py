@@ -50,7 +50,7 @@ def twostage(Y, Nl, M, N, level=0.95):
     (subsampling / two-stage sampling).  Chapter 10 was NOT in the
     scanned excerpt available to this batch, so the estimator and
     variance are taken from the reference implementation in the CRAN
-    package ``samplingbook`` 1.2.4, function ``submean`` with
+    package ``samplingbook`` 1.2.5, function ``submean`` with
     ``method = "ratio"``, which computes exactly the expression above.
     """
     m = len(Y)
