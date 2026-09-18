@@ -1262,7 +1262,7 @@ def estimate_late(
 
 
 # ---------------------------------------------------------------------------
-# IRM -- Interactive Regression Model via DoubleML
+# IRM -- Interactive Regression Model (native cross-fitted DML)
 # ---------------------------------------------------------------------------
 
 
@@ -1275,7 +1275,7 @@ def estimate_irm(
     n_folds: int = 5,
     random_state: int = 42,
 ) -> dict[str, Any]:
-    """Estimate the ATE via the Interactive Regression Model (IRM) using DoubleML.
+    """Estimate the ATE via the Interactive Regression Model (IRM), native DML.
 
     The IRM extends the partially linear model by allowing treatment effect
     heterogeneity.  It models:
@@ -1325,7 +1325,7 @@ def estimate_irm(
 
 
 _DOUBLEML_RANDOM_STATE: int = 42
-"""Module-level seed for all DoubleML estimations.  Change at call-site if needed."""
+"""Module-level seed for the DML estimators.  Change at call-site if needed."""
 
 _DOUBLEML_N_FOLDS: int = 5
 """Number of cross-fitting folds.  Must be >= 2."""
@@ -1347,20 +1347,16 @@ def estimate_double_ml(
     """
     Estimate the Average Treatment Effect using Double Machine Learning (DML).
 
-    Uses :class:`doubleml.DoubleMLPLR` (Partially Linear Regression Model)
-    with Random Forest nuisance estimators for both the outcome regression
-    (``ml_l``) and the treatment model (``ml_m``).
+    Native Partially Linear Regression (``morie.fn.plr``): cross-fitted
+    ridge nuisances for the outcome regression and the treatment model,
+    partialling-out orthogonal score.
 
     Reproducibility
     ---------------
-    All stochastic operations are seeded deterministically:
-
-    1. ``numpy`` global seed is set to ``random_state`` immediately before
-       constructing the learners.
-    2. Both ``RandomForestRegressor`` instances receive ``random_state``.
-    3. The ``DoubleMLPLR`` object is constructed with ``n_folds`` and
-       ``n_rep`` passed explicitly so that the cross-fitting schedule is
-       fixed for a given seed.
+    The cross-fitting fold assignment is drawn from ``random_state`` with
+    the package's own RNG, so a given seed fixes the schedule; ``n_rep``
+    is accepted for signature compatibility and ignored (single
+    repetition).
 
     To change the seed for a sensitivity run, pass ``random_state=<int>``.
 

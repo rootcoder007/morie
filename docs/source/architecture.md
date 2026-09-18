@@ -8,8 +8,9 @@ reference and the {doc}`api/index`.
 
 ## The result-container spine
 
-MORIE's public API is **function-based**: ~559 `morie_*` functions with
-Python + R parity. Every result-emitting function returns a `RichResult`
+MORIE's public API is **function-based**: 4,851 `morie_*` entry points in R
+(12,046 exports in all), the same names in Python, plus 18,560 single-purpose
+callables under `morie.fn`, with Python + R parity. Every result-emitting function returns a `RichResult`
 — a `dict` subclass carrying a title, summary lines, tables, warnings, an
 interpretation, and the raw payload — so any result prints as a readable
 report and round-trips to JSON.
@@ -40,21 +41,24 @@ flowchart LR
 
 ## The data layer
 
-The `DatasetRegistry` (`morie/data.py`) decouples loaders from analysis
-code: a caller resolves a dataset *slug* to a `DataFrame` without knowing
-which physical store it came from. The same slug can be served from the
-bundled SQLite database shipped with the package, a local SQLite file, or
-a remote SQL endpoint — selected by configuration, not by the caller.
+`morie.datasets` decouples loaders from analysis code: a caller asks for a
+dataset by key (`morie list-datasets` prints the 69 keys) and gets MORIE's
+native `DataFrame` without knowing which physical store served it. The
+synthetic frame bundled in the wheel is the offline fallback; the real
+file is fetched from its source portal (Statistics Canada CKAN, TPS
+ArcGIS, SIU PDFs, CIHI) on first use and cached locally. The R arm reads
+the same corpus, one CSV per table with a signed manifest, from
+`rmoriedata`. No SQLite, no pandas: the frame is the package's own.
 
 ```{mermaid}
 flowchart LR
-  S["slug"] --> REG["DatasetRegistry"]
-  REG --> B["bundled SQLite"]
-  REG --> L["local SQLite"]
-  REG --> RM["remote SQL"]
-  B --> DF["DataFrame"]
-  L --> DF
-  RM --> DF
+  S["dataset key"] --> REG["morie.datasets"]
+  REG --> B["bundled synthetic CSV"]
+  REG --> P["source portal, cached"]
+  REG --> RD["rmoriedata corpus (R)"]
+  B --> DF["native DataFrame"]
+  P --> DF
+  RD --> DF
 ```
 
 ## The MRM framework

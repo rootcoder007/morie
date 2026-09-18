@@ -259,14 +259,487 @@ returned when the local mirror is absent so CI keeps running.
    :undoc-members:
    :show-inheritance:
 
+The MRM framework
+-----------------
+
+Multilevel Reconciliation Methodology entry points and their primitives.
+
+.. automodule:: morie.mrm_flagship
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_design
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_doe
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_primitives
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_mathstats
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_diagnostics
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_graphs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_otis
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_siu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_tps
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_uof
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_stockflow
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_mandela_spectrum
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_kulldorff
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.mrm_lisa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Federal SIU, crime feeds and forensics
+--------------------------------------
+
+.. automodule:: morie.siu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.siu_fetch
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.tps_fetch
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.tps_hawkes_jit
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.hawkes_spatial
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.cpd_all_analyze
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.nypd_all_analyze
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.run_crime_analysis
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.arsau_analyze
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.arsau_datasets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.laniyonu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.taphonomy
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.investigation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Datasets, ingestion and data hygiene
+------------------------------------
+
+.. automodule:: morie.datasets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.datasets_vic
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.dataset_dictionary
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.ingest
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.schema
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.variable_taxonomy
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.audit_variables
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.categorical_guard
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.validation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.bricklayer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.cpads
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Further estimators and diagnostics
+----------------------------------
+
+.. automodule:: morie.dml_clustered
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.ebac
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.fairness
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.missing
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.meta_analysis
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.ml
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.weights
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.inference
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.diagnostics
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.signal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.longitudinal_sim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.stat_bridge
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.semipar_bridge
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.envhealth
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.earth
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.entheo_dmt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.tox
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.crypto
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Reporting and output
+--------------------
+
+.. automodule:: morie.reporting
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.tables_pub
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.export
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.explain
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.viz
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.animate
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.notebook
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.eval
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.eval_pipeline
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Assistant, LLM and model tooling
+--------------------------------
+
+.. automodule:: morie.agent
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.chat
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.llm
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.perseus
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.perseus_relay
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.vertex
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.engine
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.engine_bridge
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.quant
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.quant_bridge
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.kv_cache
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.gguf_loader
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.pt2gguf
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.tokenizer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.polyglot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Runner and environment
+----------------------
+
+.. automodule:: morie.runner
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.modules
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.doctor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.selftest
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.emissions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.container
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.cheatsheet
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.tutorial
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.stat_commands
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Function namespace ``morie.fn``
 ---------------------------------
 
-The ``morie.fn`` namespace exposes 36,000+ individual callables,
+The ``morie.fn`` namespace exposes 18,560 individual callables,
 indexed by a registry and resolved lazily on first access. To keep the
 wheel small, the implementations and per-callable guides ship as two
 compressed archives (``_fnsrc.json.xz`` and ``describe_docs.json.xz``,
-~7 MB total) rather than ~73,000 loose files; the importer resolves
+~7 MB total) rather than tens of thousands of loose files; the importer resolves
 ``morie.fn.<name>`` from them transparently, and per-callable
 documentation is available at runtime via ``morie.fn.describe``. The
 full registry is the canonical catalogue:

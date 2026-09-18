@@ -48,7 +48,7 @@ Code quality
 ------------
 
 - Type annotations on all Python function signatures.
-- No hardcoded file paths; use ``DatasetRegistry``.
+- No hardcoded file paths; load data through ``morie.datasets``.
 - Row-level data from non-public sources must never be committed.
 
 Adding a new module
@@ -58,7 +58,7 @@ Adding a new module
 2. Add a branch in ``run_module()`` that calls an implementation function.
 3. Implement the analysis function in the appropriate module file
    (``causal.py``, ``investigation.py``, etc.).
-4. Add the module name to the R ``list_morie_modules()`` table in
+4. Add the module name to the R ``morie_list_morie_modules()`` table in
    ``r-package/morie/R/modules.R``.
 5. Add a page to ``docs/source/methods/`` if the module has significant logic.
 6. Write tests in ``tests/`` (Python) and ``r-package/morie/tests/testthat/`` (R).
@@ -66,5 +66,6 @@ Adding a new module
 License
 -------
 
-Contributions are accepted under ``GPL-2.0-only``. By submitting a pull
-request you agree to license your contribution under that licence.
+Contributions are accepted under ``AGPL-3.0-or-later`` (the licence of the
+Python and R packages). By submitting a pull request you agree to license
+your contribution under that licence.

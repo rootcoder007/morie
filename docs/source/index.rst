@@ -22,7 +22,7 @@ MORIE 森
    :alt: PyPI version
 
 .. image:: https://img.shields.io/badge/r--universe-rootcoder007-276DC3
-   :target: https://rootcoder007.r-universe.dev/morie
+   :target: https://rootcoder007.r-universe.dev/rmorie
    :alt: r-universe
 
 A dual-language (Python + R) multi-domain scientific computing toolkit for
@@ -44,9 +44,8 @@ Pick any one channel — each installs the current ``morie`` release:
    curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash
 
    # 2. PyPI (any platform with Python ≥3.10)
-   pip install morie                  # 60+ built-in datasets
+   pip install morie                  # 69 built-in datasets, 18,560 morie.fn callables
    pip install "morie[interactive]"   # + Terminal IDE (TUI)
-   pip install "morie[carbon]"        # + CodeCarbon emissions (Python ≤3.14 only)
 
    # 3. Homebrew (macOS / Linuxbrew)
    brew tap rootcoder007/morie
@@ -55,8 +54,10 @@ Pick any one channel — each installs the current ``morie`` release:
    # 4. Docker (zero local dependencies)
    docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
-   # 5. R package (CRAN-compatible, served from r-universe)
-   install.packages("morie", repos = "https://rootcoder007.r-universe.dev")
+   # 5. R package: rmorie (r-universe; its companions rmoriebricklayer
+   #    and rmoriedata are on CRAN)
+   install.packages("rmorie", repos = c("https://rootcoder007.r-universe.dev",
+                                        "https://cloud.r-project.org"))
 
 .. note::
 
@@ -83,7 +84,7 @@ Run your first analysis in seconds:
    # Self-diagnostics — checks LLM providers, datasets, R, Docker
    morie doctor
 
-   # List all 60+ built-in datasets
+   # List all 69 built-in datasets
    morie list-datasets
 
    # List all 23 analysis modules
@@ -102,19 +103,22 @@ From R:
 
 .. code-block:: r
 
-   library(morie)
+   library(rmorie)
 
-   # Load built-in dataset (DBI/RSQLite — no file paths needed)
-   cpads <- morie_load_dataset("cpads_2021")
+   # Load a built-in dataset by key (CSV corpus from rmoriedata; no file
+   # paths) and map the PUMF columns to the canonical analysis names
+   cpads <- morie_canonicalize_cpads_data(morie_load_dataset("ocp21"))
 
-   # List all 60+ built-in datasets
+   # List all built-in datasets
    morie_list_datasets()
 
-   # Browse dataset catalog
+   # Browse the dataset catalog
    morie_dataset_catalog()
 
-   # Estimate average treatment effect
-   ate <- estimate_ate(cpads, "outcome", "treatment", c("age", "sex"))
+   # Estimate an average treatment effect
+   ate <- morie_estimate_ate(cpads, treatment = "cannabis_any_use",
+                             outcome = "heavy_drinking_30d",
+                             covariates = c("age_group", "gender"))
 
 ----
 
@@ -187,13 +191,16 @@ for function reference.
   near-optimal distortion (Zandieh et al. 2026 ICLR).
 
 **Datasets**
-  60+ built-in datasets in a portable SQLite layer (Canadian
-  carceral, police, and oversight + epidemiological reference data).
+  69 built-in datasets (Canadian carceral, police, and oversight +
+  epidemiological reference data): every key has a loader that pulls
+  the real file from its source portal on first use and caches it, the
+  core tables also ship as synthetic samples in the wheel, and the R side
+  reads the same corpus from ``rmoriedata``.
   Auto dataset-profiling for arbitrary tabular input
   (``morie.dataset.profile_dataset``).
 
 **Function namespace ``morie.fn``**
-  36,000+ individual function files indexed by a registry, exposing
+  18,560 individual callables indexed by a registry, exposing
   short stable names for every estimator, every kernel,
   every weight matrix, every test. Use ``morie.fn.cheatsheet(name)``
   for a per-function help card.
@@ -235,17 +242,19 @@ Key design principles
 
 *Python + R parity.*
   Every statistical estimator is implemented in both languages with matching
-  APIs. Python uses scikit-learn conventions (``fit`` / ``predict``). R uses
-  S3 generics (``summary()``, ``plot()``, ``predict()``).
+  ``morie_*`` names and arguments, and the two arms are checked against each
+  other in the test suite. Neither arm depends on NumPy, pandas or an
+  external estimator package: the numerics run on the family's own cores.
 
 *Automated documentation.*
   Python API docs via Sphinx autodoc. R API docs via Roxygen2 → ``.. r:function::``
   (no manual writing). Run ``devtools::document()`` to regenerate.
 
 *Data governance built-in.*
-  Raw CPADS microdata lives in ``data/datasets/``. Wrangled cache in ``data/cache/``.
-  Synthetic data (``generate_synthetic_data()``) is labeled synthetic in all
-  outputs. ``morie verify`` (planned) will validate manifest output provenance.
+  Raw microdata is never committed: the real files are fetched from their
+  source portals and cached locally. Synthetic data
+  (``morie_generate_synthetic_data()``) is labeled synthetic in all
+  outputs, and ``morie verify`` validates module outputs after a run.
 
 *Statistically rigorous.*
   Target estimand is always an explicit parameter (ATE vs ATT vs CATE — never
@@ -283,9 +292,9 @@ researchers who need:
   application for Canadian carceral, police, and oversight data
   (Ontario OTIS, federal SIU, TPS).
 
-The package ships 60+ built-in datasets (Canadian carceral, police,
-and oversight + epidemiological reference data) in a portable SQLite
-layer.
+The package ships 69 built-in datasets (Canadian carceral, police,
+and oversight + epidemiological reference data), each with a loader for
+the real file; the core tables also ship as synthetic samples.
 
 MORIE is licensed under ``AGPL-3.0-or-later`` (Python and R). The AGPL
 is a strong copyleft license: a modified MORIE that is distributed, or

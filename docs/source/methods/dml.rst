@@ -3,13 +3,14 @@ Double Machine Learning (DML)
 
 Part of :doc:`index` — MORIE's statistical-methods reference.
 
-MORIE implements the Partially Linear Regression (PLR) model from
-Chernozhukov et al. (2018). The Python entry point wraps the
-:pypi:`DoubleML` package (optional extra: ``pip install morie[doubleml]``);
-the R package runs its own native PLR/IRM engine — including
-``morie_dml_clustered()`` for cluster-robust inference — with no
-DoubleML dependency, cross-validated against DoubleML in the test
-suite.
+MORIE implements the Partially Linear Regression (PLR) and Interactive
+Regression (IRM) models from Chernozhukov et al. (2018) natively in both
+languages: cross-fitting, the nuisance learners and the orthogonal scores
+run on the package's own cores (``morie.fn.plr``, ``morie.fn.irm``; the
+same code in R, including ``morie_dml_clustered()`` for cluster-robust
+inference). Nothing external is installed or imported; the estimates
+were cross-validated against the DoubleML reference implementation when
+the native engines were written.
 
 Partially Linear Regression
 ----------------------------
@@ -60,26 +61,27 @@ ensuring that first-order errors in :math:`\hat{\eta}` do not bias
 MORIE implementation
 --------------------
 
-**Python entry point**: :func:`morie.effects.estimate_ate`
+**Python entry points**: :func:`morie.causal.estimate_double_ml` and
+:func:`morie.effects.estimate_plr` (both call ``morie.fn.plr``).
 
-Default nuisance learners:
-
-- Outcome nuisance :math:`g_0`: :class:`sklearn.ensemble.RandomForestRegressor`
-- Propensity nuisance :math:`m_0`: :class:`sklearn.ensemble.RandomForestClassifier`
-
-Default: ``n_folds=5``, ``n_rep=1``.
+Nuisance learners: ridge regressions for both :math:`g_0` and
+:math:`m_0`, cross-fitted; the partialling-out score gives
+:math:`\hat\theta`. Default ``n_folds=5``.
 
 .. code-block:: python
 
-   from morie import estimate_ate
+   from morie.causal import estimate_double_ml
 
-   result = estimate_ate(
+   result = estimate_double_ml(
        df,
-       treatment="cannabis_any_use",
        outcome="heavy_drinking_30d",
+       treatment="cannabis_any_use",
        covariates=["age_group", "gender", "province_region", "mental_health"],
    )
-   print(result)  # {"ate": ..., "se": ..., "ci_lower": ..., "ci_upper": ...}
+   print(result)  # {"ate": ..., "se": ..., "ci_lower": ..., "ci_upper": ..., "pval": ..., "n_obs": ...}
+
+(:func:`morie.estimate_ate` is the IPW-weighted estimator, not DML; see
+:doc:`causal`.)
 
 Interactive Regression Model (IRM)
 ------------------------------------
@@ -112,7 +114,9 @@ with the doubly-robust score:
      + \frac{D_i \bigl(Y_i - \hat{g}_0(1, X_i)\bigr)}{\hat{m}_0(X_i)}
      - \frac{(1-D_i)\bigl(Y_i - \hat{g}_0(0, X_i)\bigr)}{1 - \hat{m}_0(X_i)}
 
-**Python entry point**: :func:`morie.causal.estimate_irm`
+**Python entry point**: :func:`morie.causal.estimate_irm` (native,
+``morie.fn.irm``): cross-fitted random-forest nuisances for
+:math:`g_0(d, X)` and :math:`m_0(X)`, Neyman-orthogonal ATE score.
 
 Partially Linear IV (PLIV) — LATE estimation
 ----------------------------------------------
@@ -143,12 +147,12 @@ estimating :math:`\hat{m}_0(Z, X)`.
 Nuisance learner defaults
 --------------------------
 
-- **PLR**, :math:`g_0` (outcome): :class:`sklearn.ensemble.RandomForestRegressor` (100 trees, max_depth=5).
-- **PLR**, :math:`m_0` (propensity): :class:`sklearn.ensemble.RandomForestClassifier` (100 trees, max_depth=5).
-- **IRM**, :math:`g_0(d, X)` (outcome × treatment): :class:`sklearn.ensemble.RandomForestRegressor`.
-- **IRM**, :math:`m_0(X)` (propensity): :class:`sklearn.ensemble.RandomForestClassifier`.
-- **PLIV**, :math:`g_0(X)` (outcome residual): :class:`sklearn.ensemble.RandomForestRegressor`.
-- **PLIV**, :math:`m_0(Z, X)` (first stage): :class:`sklearn.ensemble.RandomForestRegressor`.
+- **PLR**, :math:`g_0` and :math:`m_0`: native ridge regressions,
+  cross-fitted.
+- **IRM**, :math:`g_0(d, X)` and :math:`m_0(X)`: native random forests,
+  cross-fitted.
+- **PLIV**: native first stage; falls back to 2SLS when the first stage
+  is linear.
 
 References
 ----------

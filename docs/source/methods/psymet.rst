@@ -63,7 +63,7 @@ where :math:`\lambda_{g,i}` are first-factor loadings.
    from morie.psymet import crba, mcdo
    import pandas as pd
 
-   data = pd.read_excel("data/datasets/vsr/TKARONTOMAPQ.xlsx", sheet_name="MAPQII")
+   data = pd.read_excel("TKARONTOMAPQ.xlsx", sheet_name="MAPQII")  # your local copy
    result = crba(data)
    print(f"Alpha: {result.raw:.4f} [{result.ci_lo:.4f}, {result.ci_hi:.4f}]")
 
@@ -129,4 +129,4 @@ The Modified Attitudes on Psychedelics Questionnaire (MAPQ) is a
 
 KMO overall MSA: 0.787. Bartlett's :math:`\chi^2`: 612.22, df=190, p < 2.2e-16.
 
-Dataset: ``data/datasets/vsr/TKARONTOMAPQ.xlsx`` (short key: ``mapq``).
+Dataset: the TKARONTOMAPQ workbook (short key ``mapq`` in ``morie list-datasets``).

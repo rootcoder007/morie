@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate static-visibility artifacts for morie.fn from _lazy_map.json.
 
-morie.fn hosts ~36k lazily-loaded single-callable modules resolved at runtime
+morie.fn hosts ~18.5k lazily-loaded single-callable modules resolved at runtime
 via PEP-562 ``__getattr__`` (see fn/__init__.py). Runtime import stays ~0.05s
 because nothing is imported until accessed. The tradeoff: static tools (IDEs,
 type-checkers, import/dependency graphs, Sphinx autodoc) cannot see through the
@@ -11,7 +11,7 @@ appears as an isolated node.
 This script closes that gap at ZERO runtime cost by emitting:
 
   1. fn/__init__.pyi  -- a type stub declaring every callable as an attribute of
-     ``morie.fn``. Stubs are never executed, so type-checkers/IDEs see all ~36k
+     ``morie.fn``. Stubs are never executed, so type-checkers/IDEs see all ~18.5k
      names with no import penalty.
   2. docs/source/api/fn-catalog.rst -- a browsable catalogue of every callable
      (name + hosting module), so users can discover the full surface and know it
