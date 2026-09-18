@@ -35,11 +35,21 @@ A \code{morie_bootstrap_result}.
 }
 \description{
 Multiplies the residuals by random weights (Rademacher or Mammen)
-and refits OLS.
+and refits OLS. \code{sandwich::vcovBS} implements the standard
+wild bootstrap variance-covariance and
+\code{fwildclusterboot::boottest} adds cluster-wild
+\emph{p}-values; both are cross-referenced here. The inline
+implementation is retained because rmorie's API returns the
+resampled coefficient distribution (not just a vcov), which is
+what downstream MRM analyses consume.
 }
 \examples{
-n <- 30L
-X <- cbind(1, rnorm(n))
-y <- 1 + 0.5 * X[, 2] + rnorm(n)
-wild_bootstrap(y, X, statistic_idx = 2L, n_boot = 30L, weight_distribution = "rademacher")
+set.seed(1)
+X <- cbind(1, rnorm(50))
+y <- drop(X \%*\% c(1, 2)) + rnorm(50)
+str(wild_bootstrap(y, X, n_boot = 199L), max.level = 1)
+}
+\seealso{
+\code{sandwich::vcovBS}, \code{fwildclusterboot::boottest},
+\code{\link[=morie_did_wild_cluster_bootstrap]{morie_did_wild_cluster_bootstrap()}}.
 }

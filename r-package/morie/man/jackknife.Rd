@@ -17,11 +17,21 @@ jackknife(data, statistic, ci_level = 0.95)
 A \code{morie_jackknife_result}.
 }
 \description{
-Delete-one (leave-one-out) jackknife
+Computes the leave-one-out estimates, pseudovalues, influence
+values, and bias-corrected jackknife estimate. The
+\pkg{bootstrap} package's \code{bootstrap::jackknife} is the
+canonical CRAN reference; it is invoked when installed and the
+rmorie-shape result is reconstructed around it. Falls back to an
+inline loop otherwise.
 }
 \examples{
-set.seed(1)
-x <- rnorm(40)
-res <- jackknife(x, mean)
-res$se
+if (requireNamespace("bootstrap", quietly = TRUE) && requireNamespace("resample", quietly = TRUE)) {
+  set.seed(1)
+  x <- rnorm(40)
+  res <- jackknife(x, mean)
+  res$se
+}
+}
+\seealso{
+\code{bootstrap::jackknife}, \code{resample::jackknife}.
 }

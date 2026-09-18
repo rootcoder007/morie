@@ -126,3 +126,22 @@ def test_transfer_verify_spss_to_python():
                         code_book={1: "White", 2: "Black", 3: "Other", 4: "Unknown"})
     with pytest.raises(ValueError):
         transfer_verify(["Black", "Black", "Other", "White", "Black"], {"White": 3, "Black": 1, "Unknown": 1})
+
+
+def test_round_3_strict_false_forensics_identity_and_whitespace_hazards():
+    x = ["White", "White", "Black", "Indigenous", "White", "Black"]
+    r = marginals_verify(x, {"White": 2, "Black": 3, "Indigenous": 1}, strict=False)
+    assert r["ok"] is False and r["permutation"]["White"] == "Black" and "permuted" in r["message"]
+    t = transfer_verify(["Black", "White", "White", "Black", "Black"], {"White": 3, "Black": 2}, strict=False)
+    assert t["ok"] is False and t["marginals"]["permutation"]["White"] == "Black" and t["reasons"]
+    ident = relabel_forensics({1: "White", 2: "Black"}, {"White": "White", "Black": "Black"})
+    assert ident["matches"] == [] and "no permutation" in ident["verdict"]
+    a = audit_categories({"trailing": ["White ", "White", "Black", "Black"],
+                          "leading": [" White", "White", "Black", "Black"],
+                          "na_string": ["White", "NA", "Black", "Black"],
+                          "empty_str": ["", "White", "Black", "Black"],
+                          "unicode_ws": ["White\u00a0", "White", "Black", "Black"]})
+    h = {row["column"]: row["hazards"] for row in a}
+    assert "trailing whitespace" in h["trailing"] and "REFERENCE level" in h["leading"]
+    assert "sentinel" in h["na_string"] and "empty-string" in h["empty_str"]
+    assert "non-breaking" in h["unicode_ws"]

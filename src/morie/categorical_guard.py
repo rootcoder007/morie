@@ -131,10 +131,37 @@ def audit_categories(data: dict, cols=None, factor_levels: dict | None = None) -
                            "the CODE order; any positional relabel with labels in another "
                            "order rotates the groups. Decode by code (decode_labelled / "
                            "safe_relabel), never by position")
-        lc = [lab.lower() for lab in lv]
-        dups = [lab for lab in lv if lc.count(lab.lower()) > 1]
-        if dups:
-            hazards.append("case-variant duplicate labels: " + ", ".join(_squote(d) for d in dups))
+        inv = "\\s\u00a0\u1680\u2000-\u200b\u2028\u2029\u202f\u205f\u3000\ufeff"
+        padded = [lab for lab in lv if re.search("^[" + inv + "]|[" + inv + "]$", lab)]
+        if padded:
+            hazards.append("labels with leading/trailing whitespace (incl. non-breaking): "
+                           + ", ".join(_squote(p) for p in padded)
+                           + ": a space splits one category into two")
+        core = [re.sub("^[" + inv + "]+|[" + inv + "]+$", "", lab) for lab in lv]
+        dupc = [lab for lab, c in zip(lv, core) if core.count(c) > 1]
+        if dupc:
+            hazards.append("whitespace-variant duplicate labels: " + ", ".join(_squote(d) for d in dupc))
+        if any(c == "" for c in core):
+            hazards.append('empty-string label "": missingness stored as a category')
+        sentinels = {"NA", "N/A", "NAN", "NULL", "NONE", ".", "-", "?"}
+        sentinel = [lab for lab, c in zip(lv, core) if c.upper() in sentinels]
+        if sentinel:
+            hazards.append("missing-value sentinel stored as a label: "
+                           + ", ".join(_squote(x) for x in sentinel))
+        if lv and (core[0] == "" or lv[0] != core[0] or lv[0] in sentinel):
+            hazards.append("the REFERENCE level " + _squote(lv[0])
+                           + " is empty, a sentinel, or differs from a real label only by "
+                           "invisible characters: every model on this column is baselined on it")
+        lc = [c.lower() for c in core]
+        # a case-variant pair is two DIFFERENT trimmed labels that agree once
+        # lower-cased; a whitespace-only pair was reported above
+        groups = {}
+        for c, low in zip(core, lc):
+            groups.setdefault(low, set()).add(c)
+        case_keys = {k for k, g in groups.items() if len(g) > 1}
+        cv = [lab for lab, low in zip(lv, lc) if low in case_keys]
+        if cv:
+            hazards.append("case-variant duplicate labels: " + ", ".join(_squote(d) for d in cv))
         if cn in factor_levels:
             unused = [lab for lab in lv if lab not in obs]
             if unused:
@@ -181,7 +208,7 @@ def _permutations(labels):
     return [list(p) for p in itertools.permutations(labels)]
 
 
-def marginals_verify(x, published: dict, tolerance: float = 0) -> dict:
+def marginals_verify(x, published: dict, tolerance: float = 0, strict: bool = True) -> dict:
     """Recoded counts per label must equal the published counts; names a permutation otherwise."""
     if not published or any(not k for k in published):
         raise ValueError("morie_marginals_verify: `published` must be a non-empty named mapping")
@@ -189,8 +216,12 @@ def marginals_verify(x, published: dict, tolerance: float = 0) -> dict:
     obs = {lab: sum(1 for v in x if not _is_na(v) and v == lab) for lab in labs}
     extra = [v for v in _uniq(x) if v not in labs]
     if extra:
-        raise ValueError("morie_marginals_verify: labels present in the data but not in the "
-                         "published counts: " + ", ".join(_squote(e) for e in extra))
+        msg = ("morie_marginals_verify: labels present in the data but not in the "
+               "published counts: " + ", ".join(_squote(e) for e in extra))
+        if strict:
+            raise ValueError(msg)
+        return {"counts": obs, "published": {lab: published[lab] for lab in labs}, "ok": False,
+                "permutation": None, "message": msg}
     ok = all(abs(obs[lab] - published[lab]) <= tolerance for lab in labs)
     perm = None
     if not ok and len(labs) <= 7:
@@ -199,7 +230,8 @@ def marginals_verify(x, published: dict, tolerance: float = 0) -> dict:
             if p != labs and all(abs(relabelled[lab] - published[lab]) <= tolerance for lab in labs):
                 perm = dict(zip(labs, p))
                 break
-    out = {"counts": obs, "published": {lab: published[lab] for lab in labs}, "ok": ok, "permutation": perm}
+    out = {"counts": obs, "published": {lab: published[lab] for lab in labs}, "ok": ok,
+           "permutation": perm, "message": None}
     if not ok:
         detail = "; ".join(f"{lab}: observed {_num(obs[lab])}, published {_num(published[lab])}" for lab in labs)
         hint = ""
@@ -208,8 +240,10 @@ def marginals_verify(x, published: dict, tolerance: float = 0) -> dict:
             hint = (" The observed counts match the published ones if the labels are permuted ("
                     + ", ".join(f"{m} -> {perm[m]}" for m in moved)
                     + "): the labels are attached to the wrong groups.")
-        raise ValueError("morie_marginals_verify: recoded counts do not match the published counts. "
-                         + detail + "." + hint)
+        out["message"] = ("morie_marginals_verify: recoded counts do not match the published counts. "
+                          + detail + "." + hint)
+        if strict:
+            raise ValueError(out["message"])
     return out
 
 
@@ -355,6 +389,12 @@ def relabel_forensics(value_labels: dict, observed: dict, counts: dict | None = 
         mech["labels ordered by increasing frequency, assigned by code position"] = [L[i] for i in idx]
     rows = [{"mechanism": nm, "permutation": ", ".join(a + " -> " + b for a, b in zip(L, perm)),
              "matches": perm == obs} for nm, perm in mech.items()]
+    if obs == L:
+        for r in rows:
+            r["matches"] = False
+        return {"rows": rows, "matches": [],
+                "verdict": "The labels are in place: every label was seen under itself, so "
+                           "there is no permutation to explain."}
     hit = [r["mechanism"] for r in rows if r["matches"]]
     if hit:
         verdict = ("The observed permutation is reproduced EXACTLY by: " + "; ".join(hit)
@@ -370,7 +410,8 @@ def relabel_forensics(value_labels: dict, observed: dict, counts: dict | None = 
 
 
 def transfer_verify(imported, source_counts: dict, value_labels: dict | None = None,
-                    code_book: dict | None = None, tolerance: float = 0) -> dict:
+                    code_book: dict | None = None, tolerance: float = 0,
+                    strict: bool = True) -> dict:
     """Verify a categorical variable that crossed from SPSS/Stata/SAS.
     `value_labels` is what arrived with the file (pyreadstat), `code_book`
     what the source program's variable view says; `source_counts` its
@@ -381,7 +422,7 @@ def transfer_verify(imported, source_counts: dict, value_labels: dict | None = N
         want = {str(k): str(v) for k, v in code_book.items()}
         bad = sorted(k for k in set(got) | set(want) if got.get(k) != want.get(k))
         code_book_ok = not bad
-        if bad:
+        if bad and strict:
             raise ValueError("transfer_verify: the value labels that arrived disagree with the "
                              "source code book at code(s) " + ", ".join(bad) + ": arrived "
                              + ", ".join(k + "=" + str(got.get(k)) for k in bad) + "; source "
@@ -394,6 +435,12 @@ def transfer_verify(imported, source_counts: dict, value_labels: dict | None = N
         decoded = {"values": [None if _is_na(v) else str(v) for v in imported],
                    "levels": list(source_counts)}
         values = decoded["values"]
-    m = marginals_verify(values, source_counts, tolerance=tolerance)
-    return {"ok": bool(m["ok"]) and code_book_ok is not False, "decoded": decoded,
-            "marginals": m, "code_book_ok": code_book_ok}
+    m = marginals_verify(values, source_counts, tolerance=tolerance, strict=strict)
+    ok = bool(m["ok"]) and code_book_ok is not False
+    reasons = []
+    if code_book_ok is False:
+        reasons.append("value labels disagree with the source code book")
+    if not m["ok"]:
+        reasons.append(m["message"])
+    return {"ok": ok, "decoded": decoded, "marginals": m, "code_book_ok": code_book_ok,
+            "reasons": reasons}

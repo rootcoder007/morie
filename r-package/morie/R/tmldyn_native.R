@@ -123,7 +123,7 @@
 
 # Fit Q2 (E[Y | Abar(1), Lbar(1)]) on the rows in idx, with full
 # treatment-by-covariate and treatment-by-treatment interactions.
-#' Fit Q2 (E[Y | Abar(1), Lbar(1)]) on the rows in idx, with full
+#' Fit Q2 (E\[Y | Abar(1), Lbar(1)\]) on the rows in idx, with full
 #'
 #' treatment-by-covariate and treatment-by-treatment interactions.
 #'

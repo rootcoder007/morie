@@ -32,8 +32,20 @@ A \code{morie_permutation_test_result}.
 \description{
 Shuffles the combined samples \code{n_permutations} times to
 construct the null distribution of the chosen test statistic.
+\pkg{coin}'s \code{coin::oneway_test(distribution = "approximate")}
+implements the same test with a Monte-Carlo null; it is delegated
+to when \pkg{coin} is installed and \code{statistic} is the
+default \code{"mean_diff"} (the rmorie API allows arbitrary
+\code{f(g1, g2)} which coin does not expose, so a custom statistic
+falls back to the inline shuffle loop). The inline path keeps the
+full null distribution which downstream MRM code consumes.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-permutation_test(V, V)
+set.seed(1)
+str(permutation_test(rnorm(25), rnorm(25, 0.5),
+  n_permutations = 499L
+), max.level = 1)
+}
+\seealso{
+\code{coin::oneway_test}, \code{coin::independence_test}.
 }

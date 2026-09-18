@@ -28,9 +28,19 @@ paired_permutation_test(
 A \code{morie_permutation_test_result}.
 }
 \description{
-Paired permutation test (sign-flipping)
+Performs a sign-flipping paired permutation test on the paired
+differences. \code{coin::symmetry_test(distribution = "approximate")}
+is the canonical CRAN equivalent (cross-referenced); rmorie keeps
+the inline path because the rmorie API returns the full null
+distribution.
 }
 \examples{
-V <- c(1, 2, 3, 4, 5, 6, 7, 8)
-paired_permutation_test(V, V)
+set.seed(1)
+x <- rnorm(25)
+str(paired_permutation_test(x, x + rnorm(25, 0.3),
+  n_permutations = 499L
+), max.level = 1)
+}
+\seealso{
+\code{coin::symmetry_test}.
 }
