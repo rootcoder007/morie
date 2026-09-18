@@ -294,7 +294,7 @@ Martingale <- function(time, event, X, beta) {
 
 #' Deviance residuals from a fitted Cox model
 #'
-#' d_i = sign(M) sqrt(-2[M + delta log(delta - M)]), a symmetrizing transform of the
+#' d_i = sign(M) sqrt(-2\[M + delta log(delta - M)\]), a symmetrizing transform of the
 #' martingale residuals: roughly normal when the model holds.
 #'
 #' @param time observed follow-up times.
@@ -306,8 +306,8 @@ Martingale <- function(time, event, X, beta) {
 #' Martingale-based residuals for survival models. Biometrika 77(1), 147-160.
 #' @export
 #' @examples
-#' Devresid(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0), X = c(1,
-#' 2, 3, 4, 5, 6, 7, 8), beta = 0.5)
+#' Devresid(time = c(1, 2, 3, 4, 5, 6, 7, 8), event = c(0, 1, 0, 1, 1, 0, 1, 0),
+#'   X = c(1, 2, 3, 4, 5, 6, 7, 8), beta = 0.5)
 Devresid <- function(time, event, X, beta) {
   # d_i = sign(M) sqrt(-2[M + delta log(delta - M)]), a symmetrizing
   # transform of the martingale residuals: roughly normal when the model

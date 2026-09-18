@@ -12,7 +12,7 @@ PnaAgg(
 )
 }
 \arguments{
-\item{A}{square adjacency matrix; a non-zero A\link{i, j} makes j a
+\item{A}{square adjacency matrix; a non-zero A[i, j] makes j a
 neighbour of i}
 
 \item{X}{node features (n x f)}
@@ -29,6 +29,7 @@ n_columns)
 Principal Neighbourhood Aggregation (Corso et al. 2020, eq. 7)
 }
 \examples{
+set.seed(1)
 A <- matrix(c(0, 1, 0, 1, 0, 1, 0, 1, 0), 3, 3, byrow = TRUE)
 X <- matrix(rnorm(6), 3, 2)
 PnaAgg(A, X)

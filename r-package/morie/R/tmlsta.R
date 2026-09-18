@@ -9,7 +9,7 @@
 #' Formula: g_trunc = min(max(g, delta), 1 - delta); re-target at each
 #'   delta and report psi, se and max weight
 #'
-#' @param Y,A Outcome in [0, 1] and binary treatment.
+#' @param Y,A Outcome in \[0, 1\] and binary treatment.
 #' @param QAW,Q1W,Q0W Initial outcome predictions.
 #' @param g1W Initial propensity.
 #' @param gbounds Truncation levels to try.
@@ -22,9 +22,9 @@
 #'   6(1), Article 26, which this row cites.
 #' @export
 #' @examples
-#' Tmlestab(Y = c(1, 2, 3, 4, 5, 6, 7, 8), A = c(1, 2, 3, 4, 5, 6, 7, 8), QAW = c(1, 2,
-#' 3, 4, 5, 6, 7, 8), Q1W = c(1, 2, 3, 4, 5, 6, 7, 8), Q0W = c(1, 2, 3, 4, 5, 6, 7, 8),
-#' g1W = c(1, 2, 3, 4, 5, 6, 7, 8))
+#' Tmlestab(Y = c(1, 2, 3, 4, 5, 6, 7, 8), A = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   QAW = c(1, 2, 3, 4, 5, 6, 7, 8), Q1W = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   Q0W = c(1, 2, 3, 4, 5, 6, 7, 8), g1W = c(1, 2, 3, 4, 5, 6, 7, 8))
 Tmlestab <- function(Y, A, QAW, Q1W, Q0W, g1W, gbounds = NULL) {
   Y <- .t1_vec(Y)
   A <- .t1_vec(A)

@@ -448,7 +448,7 @@ bpr_auc_R <- function(W, H, pos, n_items)
 #'
 #' Mirrors morie.fn.bprMF.learn_bpr step for step, draw for draw.
 #' \code{regularizer_sign="paper"} reproduces the printed Figure 4
-#' update, whose \code{+lambda*Theta} term diverges; the default
+#' update, whose \code{+lambda&#42;Theta} term diverges; the default
 #' \code{"correct"} is the sign that actually ascends BPR-Opt.
 #'
 #' @param pos Named list of positive-item indices per user (0-based).
@@ -460,7 +460,7 @@ bpr_auc_R <- function(W, H, pos, n_items)
 #' @param iters Number of iterations.
 #' @param seed SplitMix64 seed (mirrors the Python arm).
 #' @param regularizer_sign \code{"correct"} (default) or \code{"paper"}.
-#' @param init_scale Initial parameter scale on [-init_scale, init_scale].
+#' @param init_scale Initial parameter scale on \[-init_scale, init_scale\].
 #' @return List with \code{estimate}, \code{W}, \code{H}, \code{k},
 #'   \code{bpr_opt_history}, \code{final_bpr_opt}, \code{auc},
 #'   \code{param_norm}, \code{regularizer_sign}, \code{method},
@@ -468,6 +468,14 @@ bpr_auc_R <- function(W, H, pos, n_items)
 #' @references Rendle, S. et al. (2009) UAI 2009, 452-461,
 #'   arXiv:1205.2618, Sec. 4.2 / Fig. 4.
 #' @export
+#' @examples
+#' set.seed(1)
+#' pos <- list("0" = c(0L, 1L), "1" = c(1L, 2L), "2" = c(0L, 3L),
+#'             "3" = c(2L, 4L))
+#' r <- bpr_learn_bpr_R(pos, n_users = 4, n_items = 5, k_dim = 3,
+#'                      iters = 200L)
+#' str(r, max.level = 1)
+#' @keywords internal
 bpr_learn_bpr_R <- function(pos, n_users, n_items, k_dim = 8L,
                             alpha = 0.05, lam = 0.01, iters = 2000L,
                             seed = 0L, regularizer_sign = "correct",

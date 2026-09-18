@@ -181,9 +181,13 @@ morie_burkov_logistic <- function(w, x, b) {
 }
 
 #' Binary cross-entropy for one example (Burkov Eq 1.9)
-#' @param y_hat Predicted probabilities in [0, 1].
+#' @param y_hat Predicted probabilities in \[0, 1\].
 #' @param y Targets, 0 or 1.
+#' @return A list with `losses`, `estimate`, `mean_loss`, `n`, `method`.
 #' @export
+#' @examples
+#' morie_burkov_binary_cross_entropy(0.5, 1)
+#' @keywords internal
 morie_burkov_binary_cross_entropy <- function(y_hat, y) {
   yh <- as.numeric(y_hat)
   y <- as.numeric(y)

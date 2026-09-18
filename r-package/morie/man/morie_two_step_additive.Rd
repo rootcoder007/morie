@@ -26,7 +26,7 @@ when NULL, at least 2.}
 
 \item{local_linear}{use the local-linear second stage.}
 
-\item{grid}{evaluation points on the rescaled \link{-1, 1} support.}
+\item{grid}{evaluation points on the rescaled [-1, 1] support.}
 }
 \value{
 list: grid, m_hat, mu_hat, theta, kappa, bandwidth,
@@ -63,6 +63,7 @@ partial an odd component out, and the damage lands on the OTHER
 components. Mirrors \code{morie.fn.hrzora}.
 }
 \examples{
+set.seed(1)
 x <- matrix(runif(800, -1, 1), ncol = 2)
 y <- 2 + sin(pi * x[, 1]) + x[, 2]^2 - 1 / 3 + rnorm(400) * 0.2
 morie_two_step_additive(x, y)$oracle_efficient

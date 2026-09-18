@@ -11,7 +11,7 @@
 #' Formula: W(t_i) = sum_\{j <= i\} Z_j / sqrt(n_grid), Z_j iid N(0, 1);
 #'   Cov(W(s), W(t)) = min(s, t).
 #'
-#' @param n_grid Number of grid steps on [0, 1].
+#' @param n_grid Number of grid steps on \[0, 1\].
 #' @param n_sim Number of simulated paths.
 #' @param seed Seed for the deterministic draws.
 #' @return List with \code{estimate} (empirical covariance),
@@ -21,7 +21,9 @@
 #'   Nonparametric Bayesian Inference, CUP, Example 11.5.
 #' @export
 #' @examples
+#' \donttest{
 #' Ghosalbmprior()
+#' }
 Ghosalbmprior <- function(n_grid = 200, n_sim = 400, seed = 42) {
   n_grid <- as.integer(n_grid)
   n_sim <- as.integer(n_sim)

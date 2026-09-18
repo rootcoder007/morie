@@ -15,7 +15,7 @@ morie_kamath_p_tuning_v2(prefixes_by_layer, inputs_by_layer)
 List with \code{K}, \code{V}, \code{prefix_len}, \code{n_trainable}.
 }
 \description{
-\link{P_K_l; K_l} and \link{P_V_l; V_l} at every layer.
+[P_K_l; K_l] and [P_V_l; V_l] at every layer.
 }
 \examples{
 morie_kamath_p_tuning_v2(list(list(matrix(c(1, 1), 1), matrix(c(2,

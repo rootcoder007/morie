@@ -9,7 +9,7 @@ morie_geron_autoencoder(X, bottleneck, center = TRUE)
 \arguments{
 \item{X}{Training data (n, d).}
 
-\item{bottleneck}{Code width in \link{1, d}.}
+\item{bottleneck}{Code width in [1, d].}
 
 \item{center}{Subtract feature means (this is what makes it PCA).}
 }

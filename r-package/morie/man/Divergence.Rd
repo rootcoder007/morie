@@ -22,7 +22,7 @@ A list with \code{divergence}, \code{covariance_term}, \code{mean_term},
 \code{additive_over_independent_features}, \code{method}.
 }
 \description{
-eq (10.115): D = (1/2) tr\link{(Ci - Cj)(Cj^-1 - Ci^-1)} + (1/2) tr[(Ci^-1
+eq (10.115): D = (1/2) tr[(Ci - Cj)(Cj^-1 - Ci^-1)] + (1/2) tr[(Ci^-1
 \itemize{
 \item Cj^-1)(mi - mj)(mi - mj)^T] The second term resembles eq (10.112)
 and vanishes for equal means; the FIRST does not, so unlike d_n the
@@ -36,3 +36,7 @@ it.
 \item Cj^-1)(mi - mj)(mi - mj)^T]: R:(Ci\%5E-1\%0A+\%20Cj\%5E-1)(mi\%20-\%20mj)(mi\%20-\%20mj)\%5ET
 }
 }
+\examples{
+Divergence(c(0, 0), c(0, 0), diag(2), diag(3, 2))
+}
+\keyword{internal}

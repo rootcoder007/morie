@@ -624,7 +624,7 @@ morie_geron_ridge_normal <- function(X, y, alpha, intercept_index = 0) {
 #' L1 (Lasso) penalty, subgradient and prox (Geron Ch 4, morie.fn hml1r)
 #'
 #' `skip_bias` zeroes the mask at the FIRST element of the row-major
-#' flattening, which for a matrix `theta` is entry [1, 1].
+#' flattening, which for a matrix `theta` is entry \[1, 1\].
 #'
 #' @param theta Coefficients.
 #' @param alpha Non-negative penalty.
@@ -1845,7 +1845,7 @@ morie_geron_voting_hard <- function(models, X, y_true = NULL) {
 
 #' Sinusoidal positional encoding (Geron Ch 16, morie.fn hmpe)
 #'
-#' PE[p, 2i] = sin(p / base^(2i/d)), PE[p, 2i+1] = cos(...). The
+#' PE\[p, 2i\] = sin(p / base^(2i/d)), PE\[p, 2i+1\] = cos(...). The
 #' `rotation_check` field is the max error of expressing PE(p + 1) as
 #' a fixed rotation of PE(p) -- the property that lets the encoding
 #' extrapolate past the training length. It should be ~1e-16.
@@ -1982,7 +1982,7 @@ morie_geron_value_function <- function(s, pi, gamma, P = NULL, R = NULL) {
 #' @param V Value table.
 #' @param s,r,s_next Equal-length transitions.
 #' @param alpha In (0, 1].
-#' @param gamma In [0, 1].
+#' @param gamma In \[0, 1\].
 #' @param terminal Optional logical vector; TRUE drops the bootstrap.
 #' @return List with `V`, `td_error`, `target`, `updates`, `alpha`,
 #'   `gamma`, `estimate`, `n`.
@@ -2036,7 +2036,7 @@ morie_geron_td_learning <- function(V, s, r, s_next, alpha = 0.1,
 #' @param r Reward.
 #' @param s_next 0-based next state.
 #' @param alpha In (0, 1].
-#' @param gamma In [0, 1].
+#' @param gamma In \[0, 1\].
 #' @param done Terminal.
 #' @return List with `Q`, `td_error`, `target`, `old_value`,
 #'   `new_value`, `max_next`, `estimate`, `n`.
@@ -2087,7 +2087,7 @@ morie_geron_q_learning <- function(Q, s, a, r, s_next, alpha, gamma,
 #'
 #' @param trajectory Numeric rewards, or a list of (state, action,
 #'   reward) triples.
-#' @param gamma Discount in [0, 1].
+#' @param gamma Discount in \[0, 1\].
 #' @param lam Trace decay; default gamma.
 #' @param normalize Standardise the returns.
 #' @return List with `returns`, `raw_returns`, `rewards`,
@@ -2798,7 +2798,7 @@ morie_geron_clip <- function(images, texts, tau = 0.07, normalize = TRUE,
 
 #' Classification + localization head (Geron Ch 14, morie.fn hmclc)
 #'
-#' The model returns [class scores..., x, y, w, h] per image. One head
+#' The model returns \[class scores..., x, y, w, h\] per image. One head
 #' is scored in nats and the other in squared pixels, so `alpha` is
 #' what makes the two comparable. Boxes are centre-form and converted
 #' to corners for the IoU.

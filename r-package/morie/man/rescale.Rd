@@ -2,7 +2,7 @@
 % Please edit documentation in R/tmlcou_native.R
 \name{rescale}
 \alias{rescale}
-\title{Map the outcome to \link{0,1} by an affine transform}
+\title{Map the outcome to [0,1] by an affine transform}
 \usage{
 rescale(y, lower = NULL, upper = NULL)
 }
@@ -18,8 +18,13 @@ A list with \code{scaled}, \code{lower}, \code{upper},
 \code{range}.
 }
 \description{
-Map the outcome to \link{0,1} by an affine transform
+Map the outcome to [0,1] by an affine transform
+}
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+rescale(V)
 }
 \references{
 Gruber, S. & van der Laan, M. J. (2010).
 }
+\keyword{internal}

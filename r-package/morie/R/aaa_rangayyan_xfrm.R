@@ -594,7 +594,7 @@ TwidPer <- function(npoints, n, k) {
        method = "Rangayyan (2024) eq. (3.89)")
 }
 
-#' Eq (3.90): y_p(n) = sum_k x_p(k) h_p[(n-k) mod N], defined only for
+#' Eq (3.90): y_p(n) = sum_k x_p(k) h_p\[(n-k) mod N\], defined only for
 #'
 #' equal periods.  Both routes -- the modular sum and the inverse DFT of
 #' X(k)H(k) -- are computed; their agreement is eq (3.87) at equal N.
@@ -606,6 +606,10 @@ TwidPer <- function(npoints, n, k) {
 #' @return A list with \code{y}, \code{via_dft}, \code{N}, \code{max_difference},
 #' \code{agrees}, \code{equals_linear}, \code{linear_length}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' CircConv(V, V)
+#' @keywords internal
 CircConv <- function(x, h, npoints = NULL) {
   # eq (3.90): y_p(n) = sum_k x_p(k) h_p[(n-k) mod N], defined only for
   # equal periods.  Both routes -- the modular sum and the inverse DFT of
@@ -670,7 +674,7 @@ CircConv <- function(x, h, npoints = NULL) {
        reconstruction_error = max(abs(ev + od - xs)))
 }
 
-#' Eq (3.92): x_e(n) = 0.5 [x(n) + x(-n)].  x(-n) must exist, so the
+#' Eq (3.92): x_e(n) = 0.5 \[x(n) + x(-n)\].  x(-n) must exist, so the
 #'
 #' index grid has to be symmetric; reflecting a causal sequence about 0
 #' instead computes x/2, which is something else entirely.
@@ -679,6 +683,10 @@ CircConv <- function(x, h, npoints = NULL) {
 #' @param n Passed to \code{.morie_rg_evenodd}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' S <- c("a", "b", "c")
+#' EvenPart(S)
+#' @keywords internal
 EvenPart <- function(x, n = NULL) {
   # eq (3.92): x_e(n) = 0.5 [x(n) + x(-n)].  x(-n) must exist, so the
   # index grid has to be symmetric; reflecting a causal sequence about 0
@@ -686,7 +694,7 @@ EvenPart <- function(x, n = NULL) {
   c(.morie_rg_evenodd(x, n), method = "Rangayyan (2024) eq. (3.92)")
 }
 
-#' Eq (3.93): x_o(n) = 0.5 [x(n) - x(-n)]; forced to 0 at the origin
+#' Eq (3.93): x_o(n) = 0.5 \[x(n) - x(-n)\]; forced to 0 at the origin
 #'
 #' A step of the rangayyan_xfrm implementation. No other function in the package calls it.
 #' See the file header for the source the module follows.
@@ -696,6 +704,10 @@ EvenPart <- function(x, n = NULL) {
 #' @param n Passed to \code{.morie_rg_evenodd}.
 #' @return A vector, from \code{c}.
 #' @export
+#' @examples
+#' S <- c("a", "b", "c")
+#' OddPart(S)
+#' @keywords internal
 OddPart <- function(x, n = NULL) {
   # eq (3.93): x_o(n) = 0.5 [x(n) - x(-n)]; forced to 0 at the origin.
   c(.morie_rg_evenodd(x, n), method = "Rangayyan (2024) eq. (3.93)")

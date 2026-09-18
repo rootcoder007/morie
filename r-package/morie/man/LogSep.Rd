@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_cep.R
 \name{LogSep}
 \alias{LogSep}
-\title{Eq (4.59): log\link{y} = log\link{x} + log\link{p}, for x != 0 and p != 0.  The}
+\title{Eq (4.59): log[y] = log[x] + log[p], for x != 0 and p != 0.  The}
 \usage{
 LogSep(x, p)
 }
@@ -19,3 +19,8 @@ A list with \code{log_y}, \code{log_x}, \code{log_p}, \code{sum},
 book states that side condition, so a zero is rejected rather than
 giving -Inf; a negative factor needs the complex-log route.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+LogSep(V, V)
+}
+\keyword{internal}

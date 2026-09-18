@@ -52,7 +52,7 @@
 # VECTOR arrives, which is every call site
 .tmlcou_expit <- function(x) ifelse(x > -700, 1 / (1 + exp(-x)), 0)
 
-#' Map the outcome to [0,1] by an affine transform
+#' Map the outcome to \[0,1\] by an affine transform
 #'
 #' @param y Outcome vector.
 #' @param lower Lower bound (default: minimum of \code{y}).
@@ -61,6 +61,10 @@
 #'   \code{range}.
 #' @references Gruber, S. & van der Laan, M. J. (2010).
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' rescale(V)
+#' @keywords internal
 rescale <- function(y, lower = NULL, upper = NULL) {
   v <- as.numeric(y)
   if (length(v) == 0L) stop("tmlcou: no outcomes given")

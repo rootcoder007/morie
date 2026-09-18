@@ -9,7 +9,7 @@ Fastm(X, h = NULL, n_starts = 500L, max_iter = 100L, n_keep = 10L)
 \arguments{
 \item{X}{n-by-p data matrix.}
 
-\item{h}{subset size; defaults to \link{(n + p + 1)/2}.}
+\item{h}{subset size; defaults to [(n + p + 1)/2].}
 
 \item{n_starts}{how many lexicographic elemental subsets to start from.}
 
@@ -48,9 +48,11 @@ n_starts, so both language arms visit the same candidates in the same
 sequence and return the same numbers, not merely numbers of equal quality.
 }
 \examples{
+\donttest{
 set.seed(1)
 X <- cbind(rnorm(40), rnorm(40))
 X[1:4, ] <- X[1:4, ] + 8   # four outliers
 Fastm(X)$estimate
+}
 }
 \keyword{internal}

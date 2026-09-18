@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_qrs.R
 \name{QrsDerivOp}
 \alias{QrsDerivOp}
-\title{Eq (4.14): y(n) = (1/8)\link{2 x(n) + x(n-1) - x(n-3) - 2 x(n-4)}.  The}
+\title{Eq (4.14): y(n) = (1/8)[2 x(n) + x(n-1) - x(n-3) - 2 x(n-4)].  The}
 \usage{
 QrsDerivOp(x)
 }
@@ -16,3 +16,8 @@ A list with \code{y}, \code{b}, \code{n}, \code{fsnote}, \code{method}.
 antisymmetric taps make it exactly zero on any constant or linear
 baseline.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+QrsDerivOp(V)
+}
+\keyword{internal}

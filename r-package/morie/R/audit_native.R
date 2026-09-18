@@ -23,7 +23,7 @@
 #' Informative censoring biases the curve and leaves no trace in the data.
 #'
 #' Intervals are on the log-log scale by default. A linear interval can
-#' leave [0, 1], and does so exactly in the tails, where the estimate is
+#' leave \[0, 1\], and does so exactly in the tails, where the estimate is
 #' least precise.
 #'
 #' @param time Observed follow-up times.

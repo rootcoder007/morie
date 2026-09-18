@@ -27,7 +27,7 @@
 #' @export
 .morie_wsm_need <- function(ok, msg) if (!isTRUE(ok)) stop(msg, call. = FALSE)
 
-#' Variance Var(X) = E[X^2] - E[X]^2 (Wasserman Ch 3, morie.fn wsmvar)
+#' Variance Var(X) = E\[X^2\] - E\[X\]^2 (Wasserman Ch 3, morie.fn wsmvar)
 #'
 #' @param x Numeric sample, at least one observation.
 #' @return List with `estimate` (population variance, divisor n),
@@ -123,7 +123,7 @@ morie_wasserman_expectation <- function(x, f) {
   )
 }
 
-#' Covariance Cov(X,Y) = E[XY] - E[X]E[Y] (Ch 4, wsmcov)
+#' Covariance Cov(X,Y) = E\[XY\] - E[X]E\[Y\] (Ch 4, wsmcov)
 #'
 #' @param x,y Paired numeric samples of equal length.
 #' @return List with `estimate` (population, divisor n),
@@ -676,10 +676,10 @@ morie_wasserman_cramer_rao <- function(theta, n, I) {
 
 #' Fisher information by numeric curvature (Ch 9, wsmfis)
 #'
-#' I(theta) = -E[d^2 log f / d theta^2], the second derivative taken as
+#' I(theta) = -E\[d^2 log f / d theta^2\], the second derivative taken as
 #' a central difference in theta and the expectation by trapezoid
 #' quadrature on `x_grid`. `f = NULL` selects the exponential model
-#' (exact information 1/theta^2) with a default grid over [0, 40 theta].
+#' (exact information 1/theta^2) with a default grid over \[0, 40 theta\].
 #'
 #' @param f Density f(x, theta) vectorised in x; NULL = exponential.
 #' @param theta Parameter value.
@@ -1214,7 +1214,7 @@ morie_wasserman_mutual_info <- function(x, y) {
 
 #' Odds ratio with Woolf interval (Ch 16, wsmodd)
 #'
-#' Table layout [[n11, n10], [n01, n00]]: row = exposure, column =
+#' Table layout [\[n11, n10\], \[n01, n00\]]: row = exposure, column =
 #' outcome. A zero cell is refused; a continuity correction is the
 #' caller's explicit decision, never a silent default.
 #'
@@ -1248,7 +1248,7 @@ morie_wasserman_odds_ratio <- function(table) {
 
 #' Relative risk with Katz interval (Ch 16, wsmrrr)
 #'
-#' @param table 2x2 matrix [[n11, n10], [n01, n00]] with positive rows
+#' @param table 2x2 matrix [\[n11, n10\], \[n01, n00\]] with positive rows
 #'   and event counts.
 #' @return List with `estimate` (RR), `risk_exposed`, `risk_unexposed`,
 #'   `log_rr`, `se`, `ci_lower`, `ci_upper`, `n`, `method`.
@@ -2592,7 +2592,7 @@ morie_wasserman_svm <- function(X, y, C = 1e6, max_iter = 1000L, tol = 1e-12) {
 #' Reports inf_T sup_F R alongside the maximin value; weak duality
 #' (maximin <= minimax) is checked, and equality flags a pure saddle.
 #'
-#' @param loss Risk matrix (m x k), R[i, j] = R(estimator_i, F_j).
+#' @param loss Risk matrix (m x k), R\[i, j\] = R(estimator_i, F_j).
 #' @param estimator Labels for the m rows.
 #' @param family Labels for the k columns.
 #' @return List with `estimate` (minimax risk), `minimax_estimator`,

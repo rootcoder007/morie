@@ -36,7 +36,7 @@ bpr_learn_bpr_R(
 
 \item{regularizer_sign}{\code{"correct"} (default) or \code{"paper"}.}
 
-\item{init_scale}{Initial parameter scale on \link{-init_scale, init_scale}.}
+\item{init_scale}{Initial parameter scale on [-init_scale, init_scale].}
 }
 \value{
 List with \code{estimate}, \code{W}, \code{H}, \code{k},
@@ -50,7 +50,16 @@ Mirrors morie.fn.bprMF.learn_bpr step for step, draw for draw.
 update, whose \code{+lambda*Theta} term diverges; the default
 \code{"correct"} is the sign that actually ascends BPR-Opt.
 }
+\examples{
+set.seed(1)
+pos <- list("0" = c(0L, 1L), "1" = c(1L, 2L), "2" = c(0L, 3L),
+            "3" = c(2L, 4L))
+r <- bpr_learn_bpr_R(pos, n_users = 4, n_items = 5, k_dim = 3,
+                     iters = 200L)
+str(r, max.level = 1)
+}
 \references{
 Rendle, S. et al. (2009) UAI 2009, 452-461,
 arXiv:1205.2618, Sec. 4.2 / Fig. 4.
 }
+\keyword{internal}

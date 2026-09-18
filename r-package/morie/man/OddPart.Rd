@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_xfrm.R
 \name{OddPart}
 \alias{OddPart}
-\title{Eq (3.93): x_o(n) = 0.5 \link{x(n) - x(-n)}; forced to 0 at the origin}
+\title{Eq (3.93): x_o(n) = 0.5 [x(n) - x(-n)]; forced to 0 at the origin}
 \usage{
 OddPart(x, n = NULL)
 }
@@ -19,3 +19,8 @@ A step of the rangayyan_xfrm implementation. No other function in the package ca
 See the file header for the source the module follows.
 the source it follows.
 }
+\examples{
+S <- c("a", "b", "c")
+OddPart(S)
+}
+\keyword{internal}

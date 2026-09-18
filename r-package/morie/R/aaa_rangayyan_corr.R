@@ -102,7 +102,7 @@ ContProj <- function(x, y, t = NULL, dt = 1) {
        method = "Rangayyan (2024) eq. (4.26)")
 }
 
-#' Eq (4.29): Theta_xy = E[x(n) y^T(n)], an N x N matrix carrying all
+#' Eq (4.29): Theta_xy = E\[x(n) y^T(n)\], an N x N matrix carrying all
 #'
 #' pairwise delays -- which is why the outer product appears in the
 #' Wiener and RLS normal equations.  Under stationarity the entries
@@ -117,6 +117,9 @@ ContProj <- function(x, y, t = NULL, dt = 1) {
 #' \code{toeplitz_deviation}, \code{relative_deviation}, \code{tol}, \code{toeplitz},
 #' \code{method}.
 #' @export
+#' @examples
+#' CcfOuter(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), order = 5L)
+#' @keywords internal
 CcfOuter <- function(x, y, order, tol = 1e-3) {
   # eq (4.29): Theta_xy = E[x(n) y^T(n)], an N x N matrix carrying all
   # pairwise delays -- which is why the outer product appears in the

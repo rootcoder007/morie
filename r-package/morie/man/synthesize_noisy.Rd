@@ -9,17 +9,22 @@ synthesize_noisy(X, fraction = 0.1, feature_values = NULL, seed = 0)
 \arguments{
 \item{X}{A vector; indexed elementwise.}
 
-\item{fraction}{The body requires: memb: fraction must lie in \link{0, 1}. Defaults to \code{0.1}.}
+\item{fraction}{The body requires: memb: fraction must lie in [0, 1]. Defaults to \code{0.1}.}
 
 \item{feature_values}{Optional; may be \code{NULL}. Passed to \code{is.null}.}
 
-\item{seed}{Passed to \code{.memb_rng}. Defaults to \code{0}.}
+\item{seed}{Coerced to numeric by the body, with \code{as.numeric}. Defaults to \code{0}.}
 }
 \value{
 The value of \code{out}, as built in the body.
 }
 \description{
-A step of the memb_native implementation. No other function in the package calls it.
+A step of the memb_native implementation. Called by \code{morie_memb}.
 See the file header for the source the module follows.
 source it follows.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+synthesize_noisy(V)
+}
+\keyword{internal}

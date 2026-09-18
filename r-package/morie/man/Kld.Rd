@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_class.R
 \name{Kld}
 \alias{Kld}
-\title{Eq (5.33): KLD(p1, p2) = sum_l p2(x_l) ln\link{p2(x_l) / p1(x_l)}}
+\title{Eq (5.33): KLD(p1, p2) = sum_l p2(x_l) ln[p2(x_l) / p1(x_l)]}
 \usage{
 Kld(p1, p2)
 }
@@ -26,3 +26,8 @@ symmetric, so swapping the arguments gives a different number; both
 are returned so the asymmetry is visible rather than a trap.  Their
 sum is exactly the divergence of eq (10.115).
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+Kld(V, V)
+}
+\keyword{internal}

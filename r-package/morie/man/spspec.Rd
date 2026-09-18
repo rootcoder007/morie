@@ -26,8 +26,8 @@ Z(s) = mu + sum_j A_j cos(w_j s + phi_j) with random amplitudes A_j
 and phases phi_j uniform on (0, 2pi), all mutually independent. The
 Y_j have zero mean because the integral of cos(a + phi) over a full
 period vanishes, and the covariance collapses to a cosine sum
-C(h) = sum_j sigma_j^2 cos(w_j h) with sigma_j^2 = E\link{A_j^2} / 2. So
-Var\link{Z(s)} = C(0) = sum_j sigma_j^2: the spectrum is a budget for the
+C(h) = sum_j sigma_j^2 cos(w_j h) with sigma_j^2 = E[A_j^2] / 2. So
+Var[Z(s)] = C(0) = sum_j sigma_j^2: the spectrum is a budget for the
 variance, which is the content of the representation.
 }
 \examples{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_corr.R
 \name{CcfOuter}
 \alias{CcfOuter}
-\title{Eq (4.29): Theta_xy = E\link{x(n) y^T(n)}, an N x N matrix carrying all}
+\title{Eq (4.29): Theta_xy = E[x(n) y^T(n)], an N x N matrix carrying all}
 \usage{
 CcfOuter(x, y, order, tol = 0.001)
 }
@@ -26,3 +26,7 @@ Wiener and RLS normal equations.  Under stationarity the entries
 depend only on i - j; that Toeplitz structure is MEASURED, and the
 deviation is the number to look at, not the boolean.
 }
+\examples{
+CcfOuter(x = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8), order = 5L)
+}
+\keyword{internal}

@@ -577,13 +577,18 @@ morie_geron_novelty_detection <- function(model, X_new, reference = NULL) {
 
 # ============================================================ hmnsp
 
-#' Next sentence prediction: BERT-style input assembly plus a linear [CLS] head (Geron
+#' Next sentence prediction: BERT-style input assembly plus a linear \[CLS\] head (Geron
 #' Ch 15, hmnsp)
 #' @param sent_A,sent_B Tokenised sentences.
 #' @param encoder Optional `encoder(tokens, segments) -> h`.
 #' @param w,b Head weights/bias.
 #' @param label Optional 0/1 label for the loss.
+#' @return A list with `tokens`, `segment_ids`, `cls_vector`, `logit`, `probability`, `prediction`, `loss`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_geron_next_sentence_prediction(V, V)
+#' @keywords internal
 morie_geron_next_sentence_prediction <- function(sent_A, sent_B, encoder = NULL, w = NULL, b = 0.0, label = NULL) {
   A <- as.character(sent_A)
   Bs <- as.character(sent_B)
@@ -2783,8 +2788,14 @@ morie_geron_revnet <- function(x, F, G) {
 #' (Geron Ch 19, hmrwd)
 #' @param s,a,s_next Transition or trajectory arrays.
 #' @param R Callable `R(s,a,s')` or a 2-D/3-D lookup table.
-#' @param gamma Discount in [0, 1].
+#' @param gamma Discount in \[0, 1\].
+#' @return A list with `rewards`, `total_reward`, `returns`, `discounted_return`, `gamma`, `estimate`, `n`, `method`.
 #' @export
+#' @examples
+#' tbl <- array(c(0, 0, 2, 0, 1, 0, 0, 2), dim = c(2, 2, 2))
+#' morie_geron_reward_function(c(0, 1, 1), c(0, 0, 1), c(1, 0, 1),
+#'     R = tbl, gamma = 0.5)
+#' @keywords internal
 morie_geron_reward_function <- function(s, a, s_next, R = NULL, gamma = 1.0) {
   .morie_gr_need(!is.null(R), "geron_reward_function: R is required")
   g <- as.numeric(gamma)

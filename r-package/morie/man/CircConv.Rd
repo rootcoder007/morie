@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_xfrm.R
 \name{CircConv}
 \alias{CircConv}
-\title{Eq (3.90): y_p(n) = sum_k x_p(k) h_p\link{(n-k) mod N}, defined only for}
+\title{Eq (3.90): y_p(n) = sum_k x_p(k) h_p[(n-k) mod N], defined only for}
 \usage{
 CircConv(x, h, npoints = NULL)
 }
@@ -22,3 +22,8 @@ A list with \code{y}, \code{via_dft}, \code{N}, \code{max_difference},
 equal periods.  Both routes -- the modular sum and the inverse DFT of
 X(k)H(k) -- are computed; their agreement is eq (3.87) at equal N.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+CircConv(V, V)
+}
+\keyword{internal}

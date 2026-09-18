@@ -22,7 +22,7 @@ directly), implied_semivariogram (C(0) - C(h)), sill, n_pairs.
 }
 \description{
 For a second-order stationary random field the covariance depends on
-the lag alone, C(h) = Cov\link{Z(s), Z(s+h)}, with C(0) = Var\link{Z(s)} the
+the lag alone, C(h) = Cov[Z(s), Z(s+h)], with C(0) = Var[Z(s)] the
 sill. It is estimated here by binning pairs on lag and averaging the
 centred cross-products.
 }
@@ -35,6 +35,7 @@ computed independently rather than derived from C, and the gap between
 the two is a diagnostic.
 }
 \examples{
+set.seed(1)
 spcovf(matrix(runif(200), 100, 2), rnorm(100), n_bins = 5)$sill
 }
 \references{

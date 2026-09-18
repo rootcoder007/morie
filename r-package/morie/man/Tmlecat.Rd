@@ -2,16 +2,16 @@
 % Please edit documentation in R/tmlcat.R
 \name{Tmlecat}
 \alias{Tmlecat}
-\title{Target E\link{Y_a} at every level of a categorical treatment}
+\title{Target E[Y_a] at every level of a categorical treatment}
 \usage{
 Tmlecat(Y, A, Q, G, ref = 1, gbound = 0.025, level = 0.95)
 }
 \arguments{
-\item{Y}{Outcome in \link{0, 1}.}
+\item{Y}{Outcome in [0, 1].}
 
 \item{A}{One-based treatment level of each observation.}
 
-\item{Q}{Initial E\link{Y | A = a, W}, one column per level.}
+\item{Q}{Initial E[Y | A = a, W], one column per level.}
 
 \item{G}{Initial P(A = a | W), rows summing to 1.}
 

@@ -1622,7 +1622,7 @@ morie_geron_one_cycle <- function(t, T, lr_max, lr_min, mom_max = 0.95, mom_min 
 #' L2 (ridge) regularization penalty (Geron Ch 11, morie.fn hml2r)
 #' @param theta Parameters.
 #' @param alpha Strength.
-#' @param skip_bias Exclude theta[1].
+#' @param skip_bias Exclude theta\[1\].
 #' @param eta Optional learning rate.
 #' @return List with penalty, gradient, l2_norm, shrink_factor, estimate, n, method.
 #' @export
@@ -1658,12 +1658,12 @@ morie_geron_l2_regularization <- function(theta, alpha, skip_bias = FALSE, eta =
 #' @param X,y Data.
 #' @param theta Coefficients.
 #' @param alpha L1 strength.
-#' @param skip_bias Exclude theta[1].
+#' @param skip_bias Exclude theta\[1\].
 #' @return List with cost, mse, penalty, gradient, n_zero, estimate, n, method.
 #' @export
 #' @examples
-#' morie_geron_lasso_cost_hmlaso(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6,
-#' 7, 8), theta = 0.5, alpha = 0.5)
+#' morie_geron_lasso_cost_hmlaso(X = c(1, 2, 3, 4, 5, 6, 7, 8), y = c(1, 2, 3, 4, 5, 6, 7, 8),
+#'   theta = 0.5, alpha = 0.5)
 morie_geron_lasso_cost_hmlaso <- function(X, y, theta, alpha, skip_bias = FALSE) {
   A <- as.matrix(X)
   storage.mode(A) <- "double"

@@ -1803,7 +1803,7 @@ HammingW <- function(N) {
        method = "Rangayyan (2024) Section 3.4 (Hamming window)")
 }
 
-#' W(n) = 0.5[1 - cos(2 pi n/(N-1))].  Reaches exactly zero at both
+#' W(n) = 0.5\[1 - cos(2 pi n/(N-1))\].  Reaches exactly zero at both
 #' ends,
 #'
 #' so overlapped Hann windows add to a constant at 50 per cent overlap
@@ -1816,6 +1816,9 @@ HammingW <- function(N) {
 #' \code{reaches_zero_at_the_ends}, \code{coherent_gain},
 #' \code{not_the_hann_filter_of_eq_3_100}, \code{symmetric}, \code{method}.
 #' @export
+#' @examples
+#' HannW(N = 5L)
+#' @keywords internal
 HannW <- function(N) {
   # w(n) = 0.5[1 - cos(2 pi n/(N-1))].  Reaches exactly zero at both ends,
   # so overlapped Hann windows add to a constant at 50 per cent overlap --

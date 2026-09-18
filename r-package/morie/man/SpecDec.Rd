@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_sp_fill.R
 \name{SpecDec}
 \alias{SpecDec}
-\title{Alpha = sum_x min(p,q) = 1 - TV(p,q); E\link{tokens} =}
+\title{Alpha = sum_x min(p,q) = 1 - TV(p,q); E[tokens] =}
 \usage{
 SpecDec(draft, target, gamma = 4L)
 }
@@ -24,3 +24,7 @@ token is resampled from the residual and still counts).  Leviathan,
 Kalman & Matias (2023).  NOT in Schabenberger & Gotway.
 Deterministic: the expectation, not a sampled run.
 }
+\examples{
+SpecDec(draft = c(0.5, 0.3, 0.2), target = c(0.4, 0.4, 0.2), gamma = 4L)
+}
+\keyword{internal}

@@ -186,7 +186,7 @@ MultModel <- function(x, p) {
        method = "Rangayyan (2024) eq. (4.58)")
 }
 
-#' Eq (4.59): log[y] = log[x] + log[p], for x != 0 and p != 0.  The
+#' Eq (4.59): log\[y\] = log\[x\] + log\[p\], for x != 0 and p != 0.  The
 #'
 #' book states that side condition, so a zero is rejected rather than
 #' giving -Inf; a negative factor needs the complex-log route.
@@ -196,6 +196,10 @@ MultModel <- function(x, p) {
 #' @return A list with \code{log_y}, \code{log_x}, \code{log_p}, \code{sum},
 #' \code{max_difference}, \code{additive}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' LogSep(V, V)
+#' @keywords internal
 LogSep <- function(x, p) {
   # eq (4.59): log[y] = log[x] + log[p], for x != 0 and p != 0.  The
   # book states that side condition, so a zero is rejected rather than
@@ -528,7 +532,7 @@ PCepSum <- function(x, h, square = FALSE) {
        method = "Rangayyan (2024) eq. (4.82)")
 }
 
-#' Eq (4.83): y_hat_p(n) = [y_hat(n) + y_hat(-n)]^2 -- the squared even
+#' Eq (4.83): y_hat_p(n) = \[y_hat(n) + y_hat(-n)\]^2 -- the squared even
 #'
 #' part of the complex cepstrum.  The odd part, where the phase lives,
 #' is annihilated by the folding, which is exactly why the power
@@ -539,6 +543,10 @@ PCepSum <- function(x, h, square = FALSE) {
 #' \code{max_residual}, \code{relative_residual}, \code{phase_lost}, \code{n},
 #' \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' PCepRel(V)
+#' @keywords internal
 PCepRel <- function(x) {
   # eq (4.83): y_hat_p(n) = [y_hat(n) + y_hat(-n)]^2 -- the squared even
   # part of the complex cepstrum.  The odd part, where the phase lives,

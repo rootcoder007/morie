@@ -47,7 +47,7 @@
 #'
 #' @param family one of "independence", "gaussian", "t", "clayton",
 #'   "gumbel", "frank", "joe", "plackett".
-#' @param u,v numeric vectors in [0, 1].
+#' @param u,v numeric vectors in \[0, 1\].
 #' @param theta copula parameter (rho for gaussian/t).
 #' @param nu degrees of freedom, t copula only.
 #' @return numeric vector of CDF values.

@@ -956,12 +956,16 @@ HrvFreq <- function(rr, fsr = 4, bands = "taskforce") {
 #' define
 #'
 #' them; the definitions are the Task Force ones, Circulation
-#' 93(5):1043- 1065, 1996, reference [84] of the book\'s Chapter 8.
+#' 93(5):1043- 1065, 1996, reference \[84\] of the book's Chapter 8.
 #'
 #' @param rr Numeric; combined arithmetically in the body.
 #' @return A list with \code{sdnn}, \code{rmssd}, \code{nn50}, \code{pnn50},
 #' \code{meannn}, \code{meanhr}, \code{n}, \code{units}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' HrvTime(V)
+#' @keywords internal
 HrvTime <- function(rr) {
   # SDNN, RMSSD and pNN50.  Section 2.2.5 motivates these but does not define
   # them; the definitions are the Task Force ones, Circulation 93(5):1043-
@@ -1523,7 +1527,7 @@ PWaveDet <- function(x, qrs, fs, template = NULL) {
 #' Section 2.2.4 for the physiology; the estimator is Arunachalam and
 #' Brown,
 #'
-#' Proc. IEEE EMBC 2009, pp. 5681-5684 (reference [52] of Chapter 2).
+#' Proc. IEEE EMBC 2009, pp. 5681-5684 (reference \[52\] of Chapter 2).
 #' Chest motion swings the cardiac electrical axis, so the R amplitude
 #' sampled once per beat is a respiratory signal without a respiration
 #' sensor.
@@ -1535,6 +1539,19 @@ PWaveDet <- function(x, qrs, fs, template = NULL) {
 #' @return A list with \code{edr}, \code{amp}, \code{times}, \code{resprate}, \code{fsr},
 #' \code{nbeats}, \code{method}.
 #' @export
+#' @examples
+#' set.seed(9)
+#' fs <- 200
+#' tv <- seq(0, 10, by = 1 / fs)
+#' ecg <- rep(0, length(tv))
+#' qrs <- round(seq(0.4, 9.8, by = 0.8) * fs)
+#' amp <- 1 + 0.2 * sin(2 * pi * 0.25 * (seq_along(qrs)) * 0.8)
+#' for (k in seq_along(qrs)) {
+#'   i <- qrs[k]
+#'   ecg[i:(i + 6)] <- amp[k] * c(0.1, 0.4, 1.2, -0.5, 0.1, 0.05, 0)
+#' }
+#' EdrSignal(ecg, qrs = qrs, fs = fs)
+#' @keywords internal
 EdrSignal <- function(x, qrs, fs, fsr = 4) {
   # Section 2.2.4 for the physiology; the estimator is Arunachalam and Brown,
   # Proc. IEEE EMBC 2009, pp. 5681-5684 (reference [52] of Chapter 2).  Chest
@@ -2187,7 +2204,7 @@ QrsHPassTf <- function(freq, fs = 200) {
 }
 
 
-#' Eq (4.12): p(n) = x(n-16) - (1/32)[y(n-1) + x(n) - x(n-32)], where
+#' Eq (4.12): p(n) = x(n-16) - (1/32)\[y(n-1) + x(n) - x(n-32)\], where
 #' the
 #'
 #' bracketed group is exactly y(n) of eq (4.10), so the running-sum
@@ -2196,6 +2213,10 @@ QrsHPassTf <- function(freq, fs = 200) {
 #' @param x A vector; its length is taken and its elements indexed.
 #' @return A list with \code{p}, \code{y}, \code{n}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' QrsHPassDf(V)
+#' @keywords internal
 QrsHPassDf <- function(x) {
   # eq (4.12): p(n) = x(n-16) - (1/32)[y(n-1) + x(n) - x(n-32)], where the
   # bracketed group is exactly y(n) of eq (4.10), so the running-sum state is
@@ -2245,7 +2266,7 @@ QrsHPassIo <- function(x) {
 }
 
 
-#' Eq (4.14): y(n) = (1/8)[2 x(n) + x(n-1) - x(n-3) - 2 x(n-4)].  The
+#' Eq (4.14): y(n) = (1/8)\[2 x(n) + x(n-1) - x(n-3) - 2 x(n-4)\].  The
 #'
 #' antisymmetric taps make it exactly zero on any constant or linear
 #' baseline.
@@ -2253,6 +2274,10 @@ QrsHPassIo <- function(x) {
 #' @param x A vector; its length is taken.
 #' @return A list with \code{y}, \code{b}, \code{n}, \code{fsnote}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' QrsDerivOp(V)
+#' @keywords internal
 QrsDerivOp <- function(x) {
   # eq (4.14): y(n) = (1/8)[2 x(n) + x(n-1) - x(n-3) - 2 x(n-4)].  The
   # antisymmetric taps make it exactly zero on any constant or linear

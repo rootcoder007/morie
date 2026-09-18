@@ -26,7 +26,7 @@
 #' Mirrors \code{morie.fn.ksr030}.
 #'
 #' @param s,t numeric time points.
-#' @param F optional CDF; the uniform on [0, 1] when NULL.
+#' @param F optional CDF; the uniform on \[0, 1\] when NULL.
 #' @return list: covariance, variance_s.
 #' @references Kosorok, M. R. (2008). Introduction to Empirical
 #'   Processes and Semiparametric Inference. Springer. Ch. 2.

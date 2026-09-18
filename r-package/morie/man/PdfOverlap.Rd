@@ -18,8 +18,13 @@ A list with \code{coefficient}, \code{overlap}, \code{distance},
 \code{reference}, \code{method}.
 }
 \description{
-bounded in \link{0, 1}.  This is what the Bhattacharyya DISTANCE is built
+bounded in [0, 1].  This is what the Bhattacharyya DISTANCE is built
 from, D_B = -ln BC, and what makes the error bound work: the overlap
 of the two class-conditional densities IS the region where the
 optimal classifier must make mistakes.  NOT FROM THIS BOOK.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+PdfOverlap(V, V)
+}
+\keyword{internal}

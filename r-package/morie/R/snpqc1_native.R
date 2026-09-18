@@ -341,15 +341,20 @@ morie_snpqc1_ibs_given_ibd <- function(x_count, y_count, correction = TRUE) {
   rbind(c(i0z0, i1z0, i2z0), c(0.0, i1z1, i2z1), c(0.0, 0.0, 1.0))
 }
 
-#' PLINK\'s method-of-moments IBD estimates for every pair. Returns
+#' PLINK's method-of-moments IBD estimates for every pair. Returns
 #'
-#' list(Z, pihat) where Z[[i]][[k]] is c(P(Z=0), P(Z=1), P(Z=2)) after
-#' the paper\'s bounding rules and pihat[i, k] = P(Z=2) + P(Z=1)/2.
+#' list(Z, pihat) where Z[\[i\]][\[k\]] is c(P(Z=0), P(Z=1), P(Z=2)) after
+#' the paper's bounding rules and pihat\[i, k\] = P(Z=2) + P(Z=1)/2.
 #'
 #' @param genotypes Passed to \code{.snpqc1_check}.
 #' @param correction Passed to \code{morie_snpqc1_ibs_given_ibd}. Defaults to \code{TRUE}.
 #' @return A list with \code{Z}, \code{pihat}.
 #' @export
+#' @examples
+#' if (morie_crypto_sodium_available()) {
+#'   morie_snpqc1_ibd_moments(genotypes = list(a = 1, b = 2))
+#' }
+#' @keywords internal
 morie_snpqc1_ibd_moments <- function(genotypes, correction = TRUE) {
   # PLINK's method-of-moments IBD estimates for every pair. Returns
   # list(Z, pihat) where Z[[i]][[k]] is c(P(Z=0), P(Z=1), P(Z=2))

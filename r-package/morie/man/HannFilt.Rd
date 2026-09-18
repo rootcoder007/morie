@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_rangayyan_filt.R
 \name{HannFilt}
 \alias{HannFilt}
-\title{Eq (3.100): y(n) = (1/4)\link{x(n) + 2x(n-1) + x(n-2)}.  Three taps in the}
+\title{Eq (3.100): y(n) = (1/4)[x(n) + 2x(n-1) + x(n-2)].  Three taps in the}
 \usage{
 HannFilt(x, n = NULL)
 }
@@ -19,3 +19,8 @@ A list with \code{y}, \code{value}, \code{index}, \code{n}, \code{taps},
 ratio 1:2:1.  It is a delaying smoother, not a symmetric one: the
 output lags the input by exactly one sample.
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+HannFilt(V)
+}
+\keyword{internal}

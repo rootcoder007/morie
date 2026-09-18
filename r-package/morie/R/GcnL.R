@@ -2,7 +2,7 @@
 #' Graph convolution with the renormalisation trick
 #'
 #' Adding the self-loop before normalising keeps the eigenvalues of the
-#' propagation operator inside [-1, 1], which is what stops repeated
+#' propagation operator inside \[-1, 1\], which is what stops repeated
 #' application from exploding.
 #'
 #' Formula: H' = relu(Dt^\{-1/2\} (A + I) Dt^\{-1/2\} X W),
@@ -17,6 +17,7 @@
 #'   arXiv:1609.02907
 #' @export
 #' @examples
+#' set.seed(1)
 #' A <- matrix(c(0, 1, 0, 1, 0, 1, 0, 1, 0), 3, 3, byrow = TRUE)
 #' X <- matrix(rnorm(6), 3, 2)
 #' W <- matrix(rnorm(4), 2, 2)

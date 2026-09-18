@@ -2,7 +2,7 @@
 #' Empirical covariance function of a second-order stationary field
 #'
 #' For a second-order stationary random field the covariance depends on
-#' the lag alone, C(h) = Cov[Z(s), Z(s+h)], with C(0) = Var[Z(s)] the
+#' the lag alone, C(h) = Cov\[Z(s), Z(s+h)\], with C(0) = Var\[Z(s)\] the
 #' sill. It is estimated here by binning pairs on lag and averaging the
 #' centred cross-products.
 #'
@@ -22,6 +22,7 @@
 #'   directly), implied_semivariogram (C(0) - C(h)), sill, n_pairs.
 #' @references Schabenberger & Gotway (2005), Secs 1.4.2, 2.4.
 #' @examples
+#' set.seed(1)
 #' spcovf(matrix(runif(200), 100, 2), rnorm(100), n_bins = 5)$sill
 #' @export
 spcovf <- function(coords, z, n_bins = 15, max_dist = NULL) {

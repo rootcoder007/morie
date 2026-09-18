@@ -10,12 +10,11 @@ morie_cramers_v(contingency_table)
 \item{contingency_table}{A numeric matrix of observed counts.}
 }
 \value{
-Numeric Cramer's V in the interval \link{0, 1}.
+Numeric Cramer's V in the interval [0, 1].
 }
 \description{
 Cramer's V for categorical association
 }
 \examples{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
+morie_cramers_v(matrix(c(10, 20, 30, 40), nrow = 2))
 }

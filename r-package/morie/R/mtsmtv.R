@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-#' Intersection of the MTS and the MTR bound on E[Y(d)]
+#' Intersection of the MTS and the MTR bound on E\[Y(d)\]
 #'
 #' Monotone treatment selection and monotone treatment response are
 #' separate assumptions, each of which alone identifies an interval

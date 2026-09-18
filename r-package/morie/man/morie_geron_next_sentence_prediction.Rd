@@ -2,7 +2,7 @@
 % Please edit documentation in R/geron_w4c_native.R
 \name{morie_geron_next_sentence_prediction}
 \alias{morie_geron_next_sentence_prediction}
-\title{Next sentence prediction: BERT-style input assembly plus a linear \link{CLS} head (Geron
+\title{Next sentence prediction: BERT-style input assembly plus a linear [CLS] head (Geron
 Ch 15, hmnsp)}
 \usage{
 morie_geron_next_sentence_prediction(
@@ -23,7 +23,15 @@ morie_geron_next_sentence_prediction(
 
 \item{label}{Optional 0/1 label for the loss.}
 }
+\value{
+A list with \code{tokens}, \code{segment_ids}, \code{cls_vector}, \code{logit}, \code{probability}, \code{prediction}, \code{loss}, \code{estimate}, \code{n}, \code{method}.
+}
 \description{
-Next sentence prediction: BERT-style input assembly plus a linear \link{CLS} head (Geron
+Next sentence prediction: BERT-style input assembly plus a linear [CLS] head (Geron
 Ch 15, hmnsp)
 }
+\examples{
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_geron_next_sentence_prediction(V, V)
+}
+\keyword{internal}

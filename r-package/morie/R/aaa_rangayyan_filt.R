@@ -404,7 +404,7 @@ MaTf <- function(b_k, z, N = NULL) {
        method = "Rangayyan (2024) eq. (3.99)")
 }
 
-#' Eq (3.100): y(n) = (1/4)[x(n) + 2x(n-1) + x(n-2)].  Three taps in the
+#' Eq (3.100): y(n) = (1/4)\[x(n) + 2x(n-1) + x(n-2)\].  Three taps in the
 #'
 #' ratio 1:2:1.  It is a delaying smoother, not a symmetric one: the
 #' output lags the input by exactly one sample.
@@ -414,6 +414,10 @@ MaTf <- function(b_k, z, N = NULL) {
 #' @return A list with \code{y}, \code{value}, \code{index}, \code{n}, \code{taps},
 #' \code{delay_samples}, \code{settled_from}, \code{dc_gain}, \code{method}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' HannFilt(V)
+#' @keywords internal
 HannFilt <- function(x, n = NULL) {
   # eq (3.100): y(n) = (1/4)[x(n) + 2x(n-1) + x(n-2)].  Three taps in the
   # ratio 1:2:1.  It is a delaying smoother, not a symmetric one: the

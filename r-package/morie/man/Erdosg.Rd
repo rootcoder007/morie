@@ -9,7 +9,7 @@ Erdosg(n, p)
 \arguments{
 \item{n}{Number of vertices (>= 1).}
 
-\item{p}{Edge probability in \link{0, 1}.}
+\item{p}{Edge probability in [0, 1].}
 }
 \value{
 List with \code{estimate}, \code{edges}, \code{density},
@@ -33,7 +33,7 @@ M edges; the two are asymptotically equivalent but not the same
 construction, and the usual name for G(n,p) is a misattribution.
 
 Alongside the realised graph the exact analytic quantities are
-returned: E\link{edges} = C(n,2) p, E\link{degree} = (n-1) p, the connectivity
+returned: E[edges] = C(n,2) p, E[degree] = (n-1) p, the connectivity
 threshold log(n)/n and the giant-component threshold 1/n.
 }
 \examples{

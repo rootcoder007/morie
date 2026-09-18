@@ -103,12 +103,16 @@ atoms <- function(v_min, v_max, n_atoms) {
   .distq_atoms(v_min, v_max, n_atoms)
 }
 
-#' E[Z] = sum_i z_i p_i
+#' E\[Z\] = sum_i z_i p_i
 #'
 #' @param probs Numeric vector of probabilities.
 #' @param z Numeric vector of atom positions.
 #' @return Scalar mean of the categorical distribution.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' distribution_mean(V, V)
+#' @keywords internal
 distribution_mean <- function(probs, z) {
   p <- as.numeric(probs)
   zz <- as.numeric(z)
@@ -240,7 +244,7 @@ greedy_action <- function(next_probs_by_action, z) {
 #' distributions.
 #'
 #' @param reward Sampled reward r.
-#' @param gamma Discount in [0, 1]. Ignored when \code{done = TRUE}.
+#' @param gamma Discount in \[0, 1\]. Ignored when \code{done = TRUE}.
 #' @param next_probs_by_action List of per-action next-state
 #'   distributions.
 #' @param current_probs Numeric vector: the current Q-network
@@ -252,6 +256,14 @@ greedy_action <- function(next_probs_by_action, z) {
 #'   \code{action}, \code{q_values}, \code{q_target}, \code{q_current},
 #'   \code{atoms}, \code{n_atoms}, \code{method}.
 #' @export
+#' @examples
+#' r <- c51_update(reward = 1, gamma = 0.9,
+#'                 next_probs_by_action = list(rep(0.2, 5),
+#'                                             c(0.1, 0.1, 0.2, 0.3, 0.3)),
+#'                 current_probs = rep(0.2, 5),
+#'                 v_min = -10, v_max = 10)
+#' str(r, max.level = 1)
+#' @keywords internal
 c51_update <- function(reward, gamma, next_probs_by_action, current_probs,
                        v_min, v_max, done = FALSE) {
   cur <- as.numeric(current_probs)

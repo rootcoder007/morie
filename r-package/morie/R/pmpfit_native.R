@@ -112,7 +112,7 @@ morie_pmpfit_predictive <- function(counts, alpha, theta) {
 
 #' Expected number of clusters under Pitman-Yor
 #'
-#' Computes E[K_n] by the exact recursion
+#' Computes E\[K_n\] by the exact recursion
 #' ek_\{i+1\} = ek_i + (theta + ek_i * alpha) / (theta + i).
 #' The DP's count grows like theta*log(n); a positive discount makes
 #' it grow like n^alpha.
@@ -124,6 +124,9 @@ morie_pmpfit_predictive <- function(counts, alpha, theta) {
 #'   `note`.
 #' @references Pitman, J. & Yor, M. (1997).
 #' @export
+#' @examples
+#' morie_pmpfit_expected(n = 5L, alpha = 0.5, theta = 0.5)
+#' @keywords internal
 morie_pmpfit_expected <- function(n, alpha, theta) {
   params <- morie_pmpfit_check(alpha, theta)
   a <- params$alpha

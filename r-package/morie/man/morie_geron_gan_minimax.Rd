@@ -9,7 +9,7 @@ morie_geron_gan_minimax(real, fake, D_real, D_fake, eps = 1e-12)
 \arguments{
 \item{real, fake}{Real and fake batches (used only for their sizes).}
 
-\item{D_real, D_fake}{Discriminator probabilities in \link{0, 1}.}
+\item{D_real, D_fake}{Discriminator probabilities in [0, 1].}
 
 \item{eps}{Clip guard in (0, 0.5).}
 }
@@ -19,12 +19,12 @@ List with \code{value}, \code{d_loss}, \code{g_loss_nonsaturating},
 }
 \description{
 V = mean log D(x) + mean log(1 - D(G(z))) after clipping to
-\link{eps, 1-eps}; the accuracy uses the UNCLIPPED probabilities.
+[eps, 1-eps]; the accuracy uses the UNCLIPPED probabilities.
 }
 \examples{
-x0 <- c(0.5, -0.3, 1.2)
-alpha_bar <- cumprod(rep(0.98, 10))
-morie_geron_ddpm_forward_process(x0, t = 5, alpha_bar = alpha_bar, seed = 1)
-morie_geron_gan_minimax(real = alpha_bar, fake = alpha_bar, D_real = alpha_bar, D_fake
-= alpha_bar)
+x <- matrix(c(1, 0, 0.5, 1), 2, byrow = TRUE)
+morie_geron_encoder_decoder_seq2seq(function(x) c(sum(x), 1),
+    function(yp, cc, t) as.numeric(yp) * 0.5 + cc[1]/t, c(1,
+        2, 3), 4)
+morie_geron_gan_minimax(real = x, fake = x, D_real = x, D_fake = x)
 }

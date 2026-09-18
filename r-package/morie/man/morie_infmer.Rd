@@ -20,11 +20,15 @@ A list with \code{output}, \code{selected_queries}, \code{n_selected},
 \code{sparsity_scores}, \code{complexity}.
 }
 \description{
-Informer\'s ProbSparse self-attention (Zhou et al. 2021). q: numeric
-matrix \link{L_Q, d} (queries) k: numeric matrix \link{L_K, d} (keys) v:
-numeric matrix \link{L_K, d_v} (values) c: numeric sparsity constant
-(default 5) Returns named list: output : \link{L_Q, d_v} attended values
+Informer's ProbSparse self-attention (Zhou et al. 2021). q: numeric
+matrix [L_Q, d] (queries) k: numeric matrix [L_K, d] (keys) v:
+numeric matrix [L_K, d_v] (values) c: numeric sparsity constant
+(default 5) Returns named list: output : [L_Q, d_v] attended values
 selected_queries : 1-based integer vector of top-u query indices
 n_selected : integer length of that vector sparsity_scores : M(q_i,
 K) for every query complexity : full vs probsparse flop accounting
 }
+\examples{
+morie_infmer(q = 0.5, k = 5L, v = c(1, 2, 3, 4, 5, 6, 7, 8))
+}
+\keyword{internal}

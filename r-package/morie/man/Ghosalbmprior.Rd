@@ -7,7 +7,7 @@
 Ghosalbmprior(n_grid = 200, n_sim = 400, seed = 42)
 }
 \arguments{
-\item{n_grid}{Number of grid steps on \link{0, 1}.}
+\item{n_grid}{Number of grid steps on [0, 1].}
 
 \item{n_sim}{Number of simulated paths.}
 
@@ -31,7 +31,9 @@ Formula: W(t_i) = sum_\{j <= i\} Z_j / sqrt(n_grid), Z_j iid N(0, 1);
 Cov(W(s), W(t)) = min(s, t).
 }
 \examples{
+\donttest{
 Ghosalbmprior()
+}
 }
 \references{
 Ghosal & van der Vaart (2017), Fundamentals of

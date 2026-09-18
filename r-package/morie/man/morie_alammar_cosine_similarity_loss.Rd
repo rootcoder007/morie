@@ -29,7 +29,7 @@ morie_alammar_openclip_contrastive(I_emb, T_emb, tau = 0.07)
 \item{a, b}{Row-matched embedding matrices.}
 
 \item{y_true}{Cosine
-targets in \link{-1, 1}.}
+targets in [-1, 1].}
 
 \item{anchor, positive, negative}{Row-matched matrices.}
 
@@ -47,6 +47,27 @@ the same sentences.}
 
 \item{I_emb, T_emb}{Image and text towers, row-matched.}
 }
+\value{
+A list with \code{estimate}, \code{losses}, \code{similarities}, \code{n}, \code{method}.
+}
 \description{
 Contrastive and ranking losses of the SBERT/CLIP family
 }
+\examples{
+set.seed(1)
+A <- matrix(rnorm(12), 3, 4)
+B <- A + matrix(rnorm(12, 0, 0.2), 3, 4)
+r <- morie_alammar_cosine_similarity_loss(A, B, c(1, 1, -1))
+str(r, max.level = 1)
+morie_alammar_sbert_triplet_loss(anchor = c(1, 2, 3, 4, 5, 6, 7, 8),
+  positive = c(1, 2, 3, 4, 5, 6, 7, 8), negative = c(1, 2, 3, 4, 5, 6, 7, 8))
+morie_alammar_infonce_loss(anchor = c(1, 2, 3, 4, 5, 6, 7, 8),
+  positive = c(1, 2, 3, 4, 5, 6, 7, 8), negatives = c(1, 2, 3, 4, 5, 6, 7, 8))
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_alammar_multiple_negatives_ranking(V, V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_alammar_simcse_dropout_aug(V, V)
+V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+morie_alammar_openclip_contrastive(V, V)
+}
+\keyword{internal}

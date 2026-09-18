@@ -11,7 +11,7 @@ morie_geron_epsilon_greedy_alt(Q, s, epsilon, seed = 0)
 
 \item{s}{State index (0-based).}
 
-\item{epsilon}{Rate in \link{0, 1}.}
+\item{epsilon}{Rate in [0, 1].}
 
 \item{seed}{LCG seed.}
 }

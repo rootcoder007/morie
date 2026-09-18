@@ -429,8 +429,9 @@ morie_fauzi_gamma_kde <- function(x, grid = NULL, h = NULL,
 #' @references Fauzi and Maesono (2023), Eq. (2.2) and Sec. 5.3.2;
 #'   Nadaraya (1964); Azzalini, A. (1981), "A note on the estimation
 #'   of a distribution function and quantiles by a kernel method",
-#'   Biometrika 68:326-328 (reference [9] of the book).
+#'   Biometrika 68:326-328 (reference \[9\] of the book).
 #' @examples
+#' set.seed(1)
 #' morie_fauzi_kdfe(stats::rexp(200), grid = c(0.5, 1))$F_hat
 #' @export
 morie_fauzi_kdfe <- function(x, grid = NULL, h = NULL) {

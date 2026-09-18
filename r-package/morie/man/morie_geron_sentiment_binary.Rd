@@ -24,20 +24,19 @@ morie_geron_sentiment_binary(
 
 \item{pooling}{"mean", "max" or "sum".}
 
-\item{threshold}{Label cut in \link{0, 1}.}
+\item{threshold}{Label cut in [0, 1].}
 }
 \value{
 List with \code{probability}, \code{label}, \code{logit}, \code{pooled},
 \code{token_contributions}.
 }
 \description{
-p = sigmoid(w . pool(E\link{ids}) + b); mean pooling loses order, max acts
+p = sigmoid(w . pool(E[ids]) + b); mean pooling loses order, max acts
 as a keyword detector. Token ids are 0-based.
 }
 \examples{
-x <- matrix(c(0.5, -0.2, 0.1, 0.4), 2, 2)
-W1 <- matrix(0.1, 2, 4); b1 <- rep(0, 4)
-W2 <- matrix(0.1, 4, 2); b2 <- rep(0, 2)
-morie_geron_transformer_feedforward(x, W1, b1, W2, b2)
-morie_geron_sentiment_binary(token_ids = b1, E = b1, w = b1)
+set.seed(6)
+E <- matrix(rnorm(20), 5, 4)
+morie_geron_sentiment_binary(c(0L, 3L, 2L), E, w = c(0.5, -0.2, 0.1, 0.3),
+                             b = 0.1)
 }

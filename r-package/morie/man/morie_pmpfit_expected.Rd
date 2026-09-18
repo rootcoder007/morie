@@ -18,11 +18,15 @@ A list with \code{expected}, \code{n}, \code{alpha}, \code{theta}, \code{regime}
 \code{note}.
 }
 \description{
-Computes E\link{K_n} by the exact recursion
+Computes E[K_n] by the exact recursion
 ek_\{i+1\} = ek_i + (theta + ek_i * alpha) / (theta + i).
 The DP's count grows like theta*log(n); a positive discount makes
 it grow like n^alpha.
 }
+\examples{
+morie_pmpfit_expected(n = 5L, alpha = 0.5, theta = 0.5)
+}
 \references{
 Pitman, J. & Yor, M. (1997).
 }
+\keyword{internal}
