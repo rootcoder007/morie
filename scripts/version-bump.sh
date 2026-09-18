@@ -158,6 +158,14 @@ while IFS=, read -r file line status old_ver context; do
             SKIP_COUNT=$((SKIP_COUNT + 1)); continue ;;
     esac
 
+    # A dependency floor ("rmoriedata (>= 0.3.0)", "doubleml>=0.11.4") is
+    # somebody else's version, never ours: the 1.2.5 bump rewrote
+    # rmoriedata's floor to 1.2.5 and no installer could resolve it.
+    if [[ "$context" == *">="* || "$context" == *"=="* ]]; then
+        SKIP_COUNT=$((SKIP_COUNT + 1))
+        continue
+    fi
+
     SHOULD_PATCH=false
     if [[ "$status" == "CURRENT" ]]; then
         SHOULD_PATCH=true
