@@ -1,9 +1,9 @@
-# chrF: character n-gram F-score for machine translation.
-# Source: Popovic, M. (2015) "chrF: character n-gram F-score for
-# automatic MT evaluation", Proc. 10th Workshop on Statistical Machine
-# Translation (WMT15), 392-395.
+# Sources:
+#   Popovic, M. (2015) "chrF: character n-gram F-score for automatic MT
+#   evaluation", Proc. 10th Workshop on Statistical Machine Translation
+#   (WMT15), 392-395.
 
-#' .chrF_char_ngrams
+#' .chrf_char_ngrams
 #'
 #' A step of the chrF_native implementation. Called by \code{chrf_score}.
 #' See the file header for the source the module follows.
@@ -11,15 +11,17 @@
 #'
 #' @param s A vector; its length is taken.
 #' @param n Numeric; combined arithmetically in the body.
-#' @return The value of \code{substring}.
+#' @return The value of \code{out}, as built in the body.
 #' @export
-.chrF_char_ngrams <- function(s, n) {
+.chrf_char_ngrams <- function(s, n) {
   L <- nchar(s)
-  if (L < n) return(character(0))
-  substring(s, seq_len(L - n + 1L), seq_len(L - n + 1L) + n - 1L)
+  if (L < n) return(list())
+  out <- vector("list", L - n + 1L)
+  for (i in seq_len(L - n + 1L)) out[[i]] <- substr(s, i, i + n - 1L)
+  out
 }
 
-#' .chrF_word_ngrams
+#' .chrf_word_ngrams
 #'
 #' A step of the chrF_native implementation. Called by \code{chrf_score}.
 #' See the file header for the source the module follows.
@@ -27,33 +29,35 @@
 #'
 #' @param ws A vector; its length is taken and its elements indexed.
 #' @param n Numeric; combined arithmetically in the body.
-#' @return The value of \code{lapply}.
+#' @return The value of \code{out}, as built in the body.
 #' @export
-.chrF_word_ngrams <- function(ws, n) {
+.chrf_word_ngrams <- function(ws, n) {
   L <- length(ws)
   if (L < n) return(list())
-  lapply(seq_len(L - n + 1L), function(i) ws[seq.int(i, i + n - 1L)])
+  out <- vector("list", L - n + 1L)
+  for (i in seq_len(L - n + 1L)) out[[i]] <- ws[i:(i + n - 1L)]
+  out
 }
 
-#' .chrF_counts
+#' .chrf_counts
 #'
-#' A step of the chrF_native implementation. Called by \code{.chrF_pr}.
+#' A step of the chrF_native implementation. Called by \code{.chrf_pr}.
 #' See the file header for the source the module follows.
 #' source it follows.
 #'
 #' @param seq See Usage.
 #' @return The value of \code{d}, as built in the body.
 #' @export
-.chrF_counts <- function(seq) {
+.chrf_counts <- function(seq) {
   d <- list()
   for (g in seq) {
-    key <- paste(g, collapse = "\r")
-    d[[key]] <- if (is.null(d[[key]])) 1L else d[[key]] + 1L
+    key <- if (is.character(g)) g else paste(g, collapse = "\r")
+    d[[key]] <- (d[[key]] %||% 0L) + 1L
   }
   d
 }
 
-#' .chrF_pr
+#' .chrf_pr
 #'
 #' A step of the chrF_native implementation. Called by \code{chrf_score}.
 #' See the file header for the source the module follows.
@@ -63,16 +67,17 @@
 #' @param ref_grams A vector; its length is taken.
 #' @return A vector, from \code{c}.
 #' @export
-.chrF_pr <- function(hyp_grams, ref_grams) {
+.chrf_pr <- function(hyp_grams, ref_grams) {
   if (length(hyp_grams) == 0L || length(ref_grams) == 0L) return(NULL)
-  hc <- .chrF_counts(hyp_grams)
-  rc <- .chrF_counts(ref_grams)
-  m <- 0L
-  for (k in names(hc)) {
-    rv <- if (is.null(rc[[k]])) 0L else rc[[k]]
-    m <- m + min(hc[[k]], rv)
+  hc <- .chrf_counts(hyp_grams)
+  rc <- .chrf_counts(ref_grams)
+  match <- 0L
+  for (g in names(hc)) {
+    v <- hc[[g]]
+    rv <- if (is.null(rc[[g]])) 0L else rc[[g]]
+    match <- match + min(v, rv)
   }
-  c(m / length(hyp_grams), m / length(ref_grams))
+  c(match / as.numeric(length(hyp_grams)), match / as.numeric(length(ref_grams)))
 }
 
 #' chrf_score
@@ -157,6 +162,8 @@ chrf_score <- function(hypothesis, reference, n_char = 6L, beta = 2.0,
   best
 }
 
+chrF <- chrf_score
+
 #' morie_chrF
 #'
 #' A step of the chrF_native implementation. No other function in the package calls it.
@@ -171,86 +178,11 @@ chrf_score <- function(hypothesis, reference, n_char = 6L, beta = 2.0,
 #' @param word_order Passed to \code{chrf_score}. Defaults to \code{0L}.
 #' @return The value of \code{chrf_score}.
 #' @export
+#' @examples
+#' V <- c(1, 2, 3, 4, 5, 6, 7, 8)
+#' morie_chrF(V, V)
+#' @keywords internal
 morie_chrF <- function(hypothesis, reference, n_char = 6L, beta = 2.0,
                        remove_whitespace = TRUE, word_order = 0L) {
   chrf_score(hypothesis, reference, n_char, beta, remove_whitespace, word_order)
 }
-
-#' .chrf_char_ngrams
-#'
-#' A step of the chrF_native implementation. Called by \code{chrf_score}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param s A vector; its length is taken.
-#' @param n Numeric; combined arithmetically in the body.
-#' @return The value of \code{out}, as built in the body.
-#' @export
-.chrf_char_ngrams <- function(s, n) {
-  L <- nchar(s)
-  if (L < n) return(list())
-  out <- vector("list", L - n + 1L)
-  for (i in seq_len(L - n + 1L)) out[[i]] <- substr(s, i, i + n - 1L)
-  out
-}
-
-#' .chrf_word_ngrams
-#'
-#' A step of the chrF_native implementation. Called by \code{chrf_score}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param ws A vector; its length is taken and its elements indexed.
-#' @param n Numeric; combined arithmetically in the body.
-#' @return The value of \code{out}, as built in the body.
-#' @export
-.chrf_word_ngrams <- function(ws, n) {
-  L <- length(ws)
-  if (L < n) return(list())
-  out <- vector("list", L - n + 1L)
-  for (i in seq_len(L - n + 1L)) out[[i]] <- ws[i:(i + n - 1L)]
-  out
-}
-
-#' .chrf_counts
-#'
-#' A step of the chrF_native implementation. Called by \code{.chrf_pr}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param seq See Usage.
-#' @return The value of \code{d}, as built in the body.
-#' @export
-.chrf_counts <- function(seq) {
-  d <- list()
-  for (g in seq) {
-    key <- if (is.character(g)) g else paste(g, collapse = "\r")
-    d[[key]] <- (d[[key]] %||% 0L) + 1L
-  }
-  d
-}
-
-#' .chrf_pr
-#'
-#' A step of the chrF_native implementation. Called by \code{chrf_score}.
-#' See the file header for the source the module follows.
-#' source it follows.
-#'
-#' @param hyp_grams A vector; its length is taken.
-#' @param ref_grams A vector; its length is taken.
-#' @return A vector, from \code{c}.
-#' @export
-.chrf_pr <- function(hyp_grams, ref_grams) {
-  if (length(hyp_grams) == 0L || length(ref_grams) == 0L) return(NULL)
-  hc <- .chrf_counts(hyp_grams)
-  rc <- .chrf_counts(ref_grams)
-  match <- 0L
-  for (g in names(hc)) {
-    v <- hc[[g]]
-    rv <- if (is.null(rc[[g]])) 0L else rc[[g]]
-    match <- match + min(v, rv)
-  }
-  c(match / as.numeric(length(hyp_grams)), match / as.numeric(length(ref_grams)))
-}
-
-chrF <- chrf_score
