@@ -89,10 +89,38 @@ jobs:
         run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
         shell: Rscript {0}
 
-      - uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+      # A single failed source download wedges pak: pkgdepends stops in
+      # select_next_task() with "Cannot select new package installation
+      # task" instead of retrying, and the job dies before the package is
+      # even built. This is what took the macOS leg down on 130df3c5. One
+      # clean second attempt (warm cache, so it is cheap) clears it.
+      - id: deps
+        continue-on-error: true
+        uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           working-directory: r-package/morie
           cache-version: 2
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      # The observed failure was a corrupt binary, not a missing one:
+      #   Cannot extract '.../bayestestR_0.19.0.tgz', unknown archive type
+      # pak keeps that file, so a bare retry re-reads the same bad archive.
+      # Drop the caches and take a fresh cache key before trying again.
+      - name: Clear poisoned pak cache
+        if: steps.deps.outcome == 'failure'
+        shell: bash
+        run: |
+          R -q -e 'try(pak::cache_clean(), silent = TRUE); try(pkgcache::pkg_cache_delete_files(), silent = TRUE)' || true
+          rm -rf ~/Library/Caches/org.R-project.R/R/pkgcache \
+                 ~/.cache/R/pkgcache ~/.cache/R/pak \
+                 "${RUNNER_TEMP}/pkgcache" 2>/dev/null || true
+
+      - if: steps.deps.outcome == 'failure'
+        uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+        with:
+          working-directory: r-package/morie
+          cache-version: 3
           extra-packages: any::rcmdcheck
           needs: check
 
@@ -183,10 +211,33 @@ jobs:
         run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
         shell: Rscript {0}
 
-      - uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+      - id: deps_pg
+        continue-on-error: true
+        uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           working-directory: r-package/morie
           cache-version: 2
+          extra-packages: |
+            any::rcmdcheck
+            any::RPostgres
+            any::duckdb
+            any::withr
+          needs: check
+
+      - name: Clear poisoned pak cache
+        if: steps.deps_pg.outcome == 'failure'
+        shell: bash
+        run: |
+          R -q -e 'try(pak::cache_clean(), silent = TRUE); try(pkgcache::pkg_cache_delete_files(), silent = TRUE)' || true
+          rm -rf ~/Library/Caches/org.R-project.R/R/pkgcache \
+                 ~/.cache/R/pkgcache ~/.cache/R/pak \
+                 "${RUNNER_TEMP}/pkgcache" 2>/dev/null || true
+
+      - if: steps.deps_pg.outcome == 'failure'
+        uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
+        with:
+          working-directory: r-package/morie
+          cache-version: 3
           extra-packages: |
             any::rcmdcheck
             any::RPostgres
