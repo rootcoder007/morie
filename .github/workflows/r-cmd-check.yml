@@ -116,7 +116,11 @@ jobs:
         with:
           working-directory: r-package/morie
           cache-version: 2
-          extra-packages: any::rcmdcheck github::stan-dev/cmdstanr
+          # knitr is the declared VignetteBuilder and rmarkdown renders the
+          # vignettes; both live in Suggests, so the hard-only install on devel
+          # left R CMD build with "vignette builder 'knitr' not found". Name them
+          # explicitly so they are present whatever the dependency scope.
+          extra-packages: any::rcmdcheck any::knitr any::rmarkdown github::stan-dev/cmdstanr
           # R-devel has no binaries, so every dependency is built from source
           # there. Installing all 133 Suggests that way took the cell to 182
           # minutes and then starved the runner, while every other cell -- which
@@ -169,7 +173,11 @@ jobs:
         with:
           working-directory: r-package/morie
           cache-version: 3
-          extra-packages: any::rcmdcheck github::stan-dev/cmdstanr
+          # knitr is the declared VignetteBuilder and rmarkdown renders the
+          # vignettes; both live in Suggests, so the hard-only install on devel
+          # left R CMD build with "vignette builder 'knitr' not found". Name them
+          # explicitly so they are present whatever the dependency scope.
+          extra-packages: any::rcmdcheck any::knitr any::rmarkdown github::stan-dev/cmdstanr
           dependencies: ${{ matrix.config.r == 'devel' && '"hard"' || '"all"' }}
           needs: ${{ matrix.config.r == 'devel' && '' || 'check' }}
 
