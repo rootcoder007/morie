@@ -38,14 +38,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # CRAN serves the macOS R 4.6 binary tree zstd-compressed and pak's
-          # extractor only handles gzip, so every 4.6 macOS dependency install
-          # dies with "unknown archive type" -- verified on bayestestR and Boom,
-          # and the 4.5 tree is still gzip. Source builds are not an option here
-          # (Boom, torch and xgboost would all have to compile). Run macOS on
-          # release, as rmorie does, until pak can read zstd; 4.6.1 stays covered
-          # by the ubuntu and windows legs.
-          - { os: macos-latest,   r: 'release' }
+          - { os: macos-latest,   r: '4.6.1' }
           # Use windows-latest so the runner image tracks GitHub's most-
           # recently-patched Windows image (currently windows-2022, moving
           # to windows-2025-vs2026 by 2026-06-15). Pinning to a specific
@@ -101,7 +94,16 @@ jobs:
       # task" instead of retrying, and the job dies before the package is
       # even built. This is what took the macOS leg down on 130df3c5. One
       # clean second attempt (warm cache, so it is cheap) clears it.
+      # CRAN now ships macOS binaries zstd-compressed (R 4.6 NEWS: "binary
+      # packages can have the extensions .tar.bz2, .tar.xz, .tar.zst and
+      # .tar.zstd"). pak's installer only unpacks gzip, so on macOS every
+      # dependency install dies with "Cannot extract ... unknown archive
+      # type" -- seen on bayestestR and Boom, and neither a cache purge nor a
+      # per-package source override fixes it, because the whole tree is zstd.
+      # Base R reads these archives natively, so macOS installs dependencies
+      # with base R and leaves pak to the platforms where it works.
       - id: deps
+        if: runner.os != 'macOS'
         continue-on-error: true
         uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
@@ -110,12 +112,20 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - name: Install dependencies with base R (macOS, zstd-capable)
+        if: runner.os == 'macOS'
+        working-directory: r-package/morie
+        shell: Rscript {0}
+        run: |
+          install.packages(c("remotes", "rcmdcheck"))
+          remotes::install_deps(dependencies = TRUE, upgrade = "never")
+
       # The observed failure was a corrupt binary, not a missing one:
       #   Cannot extract '.../bayestestR_0.19.0.tgz', unknown archive type
       # pak keeps that file, so a bare retry re-reads the same bad archive.
       # Drop the caches and take a fresh cache key before trying again.
       - name: Clear poisoned pak cache
-        if: steps.deps.outcome == 'failure'
+        if: runner.os != 'macOS' && steps.deps.outcome == 'failure'
         shell: bash
         run: |
           R -q -e 'try(pak::cache_clean(), silent = TRUE); try(pkgcache::pkg_cache_delete_files(), silent = TRUE)' || true
@@ -123,7 +133,7 @@ jobs:
                  ~/.cache/R/pkgcache ~/.cache/R/pak \
                  "${RUNNER_TEMP}/pkgcache" 2>/dev/null || true
 
-      - if: steps.deps.outcome == 'failure'
+      - if: runner.os != 'macOS' && steps.deps.outcome == 'failure'
         uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           working-directory: r-package/morie
