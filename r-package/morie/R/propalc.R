@@ -16,7 +16,7 @@
 #'   5.3, Corollary 2, "stratification with proportional allocation of
 #'   the n_h", n_h/n = N_h/N. Chapter 5 read from the scanned original.
 #'   Cross-checked against the reference implementation in the CRAN
-#'   package samplingbook 1.2.5, whose stratasamp(type = "prop") sets
+#'   package samplingbook 1.2.4, whose stratasamp(type = "prop") sets
 #'   wh <- Nh/N.
 #' @export
 #' @examples

@@ -58,6 +58,11 @@ Survey + descriptive statistics
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: morie.subpop_design
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 .. automodule:: morie.survival
    :members:
    :undoc-members:

@@ -166,6 +166,23 @@ while IFS=, read -r file line status old_ver context; do
         continue
     fi
 
+    # A citation carries somebody else's numbering, never ours. "Rangayyan
+    # (2024) Section 1.2.5" is a book subsection and "samplingbook 1.2.4" is
+    # another package's release; both look exactly like our version string.
+    # The 1.2.4 and 1.2.5 bumps rewrote 30 such lines across the two trees,
+    # silently changing what the code claims its own sources say.
+    CITE_RE='(Section|Sections|Sec\.|Chapter|Ch\.|eq\.|eqs\.|samplingbook|Table|Figure|Theorem|Algorithm)'
+    prev_ctx=""
+    if [[ "$line" =~ ^[0-9]+$ && "$line" -gt 1 ]]; then
+        prev_ctx=$(sed -n "$((line - 1))p" "$file" 2>/dev/null || true)
+    fi
+    # The keyword may sit on the line above: docstrings wrap, and
+    # "Rangayyan (2024) Section\n 1.2.5" hides the word from this row.
+    if [[ "$context" =~ $CITE_RE || "$prev_ctx" =~ $CITE_RE ]]; then
+        SKIP_COUNT=$((SKIP_COUNT + 1))
+        continue
+    fi
+
     SHOULD_PATCH=false
     if [[ "$status" == "CURRENT" ]]; then
         SHOULD_PATCH=true

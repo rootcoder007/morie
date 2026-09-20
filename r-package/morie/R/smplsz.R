@@ -15,7 +15,7 @@
 #' @references Cochran (1977), Sampling Techniques, 3rd edition, Chapter
 #'   4: n_0 = z^2 S^2 / e^2 with the correction n = n_0/(1 + n_0/N).
 #'   Cross-checked against the reference implementation in the CRAN
-#'   package samplingbook 1.2.5, whose sample.size.mean computes
+#'   package samplingbook 1.2.4, whose sample.size.mean computes
 #'   S^2 / (e^2/q^2 + S^2/N) -- the same quantity rearranged.
 #' @export
 Nsamp <- function(e, S, N = Inf, level = 0.95) {

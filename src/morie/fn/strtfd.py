@@ -52,7 +52,7 @@ def stratdes(Nh, Sh, n, Ch=None, kind="neyman"):
     n_h prop. N_h S_h/sqrt(c_h) under the linear cost function (5.17).
     Chapter 5 read from the scanned original.  Cross-checked against
     the reference implementation in the CRAN package ``samplingbook``
-    1.2.5, whose ``stratasamp`` uses exactly these three weight rules.
+    1.2.4, whose ``stratasamp`` uses exactly these three weight rules.
     """
     Nh = C.vec(Nh)
     Sh = C.vec(Sh)

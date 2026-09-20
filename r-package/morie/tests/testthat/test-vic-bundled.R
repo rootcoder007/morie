@@ -5,7 +5,7 @@
 # if the bundling regresses, not one that passes on an empty result.
 
 test_that("morie_datasets_vic_table offline returns the bundled sample", {
-  skip_if_not_installed("rmoriedata", minimum_version = "1.2.5")
+  skip_if_not_installed("rmoriedata", minimum_version = "1.3.0")
   skip_if(is.null(.morie_vic_bundled("criminal_incidents")),
           "rmoriedata build does not carry the vic_* slugs")
 
@@ -20,7 +20,7 @@ test_that("morie_datasets_vic_table offline returns the bundled sample", {
 })
 
 test_that("the fallback covers more than one key", {
-  skip_if_not_installed("rmoriedata", minimum_version = "1.2.5")
+  skip_if_not_installed("rmoriedata", minimum_version = "1.3.0")
   skip_if(is.null(.morie_vic_bundled("lga_victim_reports")),
           "rmoriedata build does not carry the vic_* slugs")
 
