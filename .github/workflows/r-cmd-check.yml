@@ -117,7 +117,16 @@ jobs:
           working-directory: r-package/morie
           cache-version: 2
           extra-packages: any::rcmdcheck github::stan-dev/cmdstanr
-          needs: check
+          # R-devel has no binaries, so every dependency is built from source
+          # there. Installing all 133 Suggests that way took the cell to 182
+          # minutes and then starved the runner, while every other cell -- which
+          # gets binaries -- finishes inside the hour. On devel, install hard
+          # dependencies only: _R_CHECK_FORCE_SUGGESTS_ is already false, so the
+          # check skips the Suggests-dependent tests instead of erroring, and the
+          # cell still does its real job of proving the package configures,
+          # compiles and checks under R-devel.
+          dependencies: ${{ matrix.config.r == 'devel' && '"hard"' || '"all"' }}
+          needs: ${{ matrix.config.r == 'devel' && '' || 'check' }}
 
       - name: Install dependencies with base R (macOS, zstd-capable)
         if: runner.os == 'macOS'
@@ -161,7 +170,8 @@ jobs:
           working-directory: r-package/morie
           cache-version: 3
           extra-packages: any::rcmdcheck github::stan-dev/cmdstanr
-          needs: check
+          dependencies: ${{ matrix.config.r == 'devel' && '"hard"' || '"all"' }}
+          needs: ${{ matrix.config.r == 'devel' && '' || 'check' }}
 
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
         run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
