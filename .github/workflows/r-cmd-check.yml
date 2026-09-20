@@ -38,7 +38,14 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: macos-latest,   r: '4.6.1' }
+          # CRAN serves the macOS R 4.6 binary tree zstd-compressed and pak's
+          # extractor only handles gzip, so every 4.6 macOS dependency install
+          # dies with "unknown archive type" -- verified on bayestestR and Boom,
+          # and the 4.5 tree is still gzip. Source builds are not an option here
+          # (Boom, torch and xgboost would all have to compile). Run macOS on
+          # release, as rmorie does, until pak can read zstd; 4.6.1 stays covered
+          # by the ubuntu and windows legs.
+          - { os: macos-latest,   r: 'release' }
           # Use windows-latest so the runner image tracks GitHub's most-
           # recently-patched Windows image (currently windows-2022, moving
           # to windows-2025-vs2026 by 2026-06-15). Pinning to a specific
@@ -100,15 +107,7 @@ jobs:
         with:
           working-directory: r-package/morie
           cache-version: 2
-          # CRAN ships the macOS R 4.6 binaries zstd-compressed, and pak's
-          # extractor only knows gzip, so every install of a CRAN macOS 4.6
-          # binary dies with "Cannot extract ... unknown archive type". It is
-          # not a flake: clearing the cache and redownloading produced the
-          # identical failure. bayestestR is pure R (no compiled objects), so
-          # taking it from source costs seconds and sidesteps the archive
-          # format entirely. `pkg=?source` is the documented pkgdepends form
-          # for setting params on a transitively-required dependency.
-          extra-packages: any::rcmdcheck bayestestR=?source
+          extra-packages: any::rcmdcheck
           needs: check
 
       # The observed failure was a corrupt binary, not a missing one:
@@ -129,15 +128,7 @@ jobs:
         with:
           working-directory: r-package/morie
           cache-version: 3
-          # CRAN ships the macOS R 4.6 binaries zstd-compressed, and pak's
-          # extractor only knows gzip, so every install of a CRAN macOS 4.6
-          # binary dies with "Cannot extract ... unknown archive type". It is
-          # not a flake: clearing the cache and redownloading produced the
-          # identical failure. bayestestR is pure R (no compiled objects), so
-          # taking it from source costs seconds and sidesteps the archive
-          # format entirely. `pkg=?source` is the documented pkgdepends form
-          # for setting params on a transitively-required dependency.
-          extra-packages: any::rcmdcheck bayestestR=?source
+          extra-packages: any::rcmdcheck
           needs: check
 
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
@@ -233,20 +224,11 @@ jobs:
         with:
           working-directory: r-package/morie
           cache-version: 2
-          # CRAN ships the macOS R 4.6 binaries zstd-compressed, and pak's
-          # extractor only knows gzip, so every install of a CRAN macOS 4.6
-          # binary dies with "Cannot extract ... unknown archive type". It is
-          # not a flake: clearing the cache and redownloading produced the
-          # identical failure. bayestestR is pure R (no compiled objects), so
-          # taking it from source costs seconds and sidesteps the archive
-          # format entirely. `pkg=?source` is the documented pkgdepends form
-          # for setting params on a transitively-required dependency.
           extra-packages: |
             any::rcmdcheck
             any::RPostgres
             any::duckdb
             any::withr
-            bayestestR=?source
           needs: check
 
       - name: Clear poisoned pak cache
@@ -263,20 +245,11 @@ jobs:
         with:
           working-directory: r-package/morie
           cache-version: 3
-          # CRAN ships the macOS R 4.6 binaries zstd-compressed, and pak's
-          # extractor only knows gzip, so every install of a CRAN macOS 4.6
-          # binary dies with "Cannot extract ... unknown archive type". It is
-          # not a flake: clearing the cache and redownloading produced the
-          # identical failure. bayestestR is pure R (no compiled objects), so
-          # taking it from source costs seconds and sidesteps the archive
-          # format entirely. `pkg=?source` is the documented pkgdepends form
-          # for setting params on a transitively-required dependency.
           extra-packages: |
             any::rcmdcheck
             any::RPostgres
             any::duckdb
             any::withr
-            bayestestR=?source
           needs: check
 
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
