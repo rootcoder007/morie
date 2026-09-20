@@ -191,7 +191,20 @@ jobs:
           # Drop --as-cran (too strict pre-CRAN; we'll re-enable for the
           # CRAN-submission PR). Keep --no-manual since we don't ship
           # vignettes/PDFs in CI.
-          args: 'c("--no-manual")'
+          #
+          # The devel cell is scoped differently on purpose. R-devel ships no
+          # binaries, so installing all 133 Suggests there means building them
+          # from source: that is what took the cell to 182 minutes and starved
+          # the runner. With hard dependencies only it finishes in minutes, but
+          # examples and tests then fail for a reason that says nothing about
+          # R-devel -- an example touching an optional backend stops with
+          # "morie requires package 'DBI'", and tests cannot library(testthat).
+          # So on devel the cell checks what it is actually for: that the
+          # package configures, compiles, installs and its Rd parse under the
+          # next R. Examples, tests and vignettes are exercised in full on the
+          # other four cells, which get binaries and the complete Suggests set.
+          args: ${{ matrix.config.r == 'devel' && 'c("--no-manual", "--no-examples", "--no-tests", "--no-vignettes")' || 'c("--no-manual")' }}
+          build_args: ${{ matrix.config.r == 'devel' && 'c("--no-manual", "--no-build-vignettes")' || '"--no-manual"' }}
           error-on: '"error"'
 
       # Post-check QA (lintr / covr / goodpractice) was folded INTO this
