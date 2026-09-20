@@ -199,4 +199,6 @@ Remotes:
     rootcoder007/rmorie-bricklayer,
   rootcoder007/rmoriedata,
   synth-inference/synthdid
+Additional_repositories:
+  https://stan-dev.r-universe.dev
 Config/roxygen2/version: 8.0.0
