@@ -282,7 +282,7 @@ File,Line,Status,Version,Context
 ./r-package/morie/DESCRIPTION,38,STALE_OR_DEP,4.3.0,"Note: Tested on R 4.3.0; 4.4.x; 4.5.2; 4.5.3 (CRAN). Use CRAN R on Apple"
 ./r-package/morie/DESCRIPTION,38,STALE_OR_DEP,4.3.0,"Note: Tested on R 4.3.0; 4.4.x; 4.5.2; 4.5.3 (CRAN). Use CRAN R on Apple"
 ./r-package/morie/DESCRIPTION,46,STALE_OR_DEP,0.3.8,"rmoriebricklayer (>= 0.3.8);"
-./r-package/morie/DESCRIPTION,47,STALE_OR_DEP,0.3.2,"rmoriedata (>= 0.3.2);"
+./r-package/morie/DESCRIPTION,47,STALE_OR_DEP,0.3.2,"rmoriedata (>= 0.3.2)"
 ./r-package/morie/DESCRIPTION,175,STALE_OR_DEP,3.0.0,"testthat (>= 3.0.0);"
 ./r-package/morie/DESCRIPTION,202,STALE_OR_DEP,8.0.0,"Config/roxygen2/version: 8.0.0"
 ./r-package/morie/NEWS.md,1,STALE_OR_DEP,1.2.5,"# morie 1.2.5 - 2026-09-18"

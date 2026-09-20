@@ -44,8 +44,7 @@ Imports:
   graphics,
   Rcpp,
   rmoriebricklayer (>= 0.3.8),
-  rmoriedata (>= 0.3.2),
-  here
+  rmoriedata (>= 0.3.2)
 LinkingTo: Rcpp, RcppArmadillo, rmoriebricklayer
 SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
 Suggests:
@@ -99,6 +98,7 @@ Suggests:
   grf,
   gstat,
   harmonicmeanp,
+  here,
   HonestDiD,
   httr2,
   iml,
