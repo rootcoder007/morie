@@ -64,7 +64,6 @@ Suggests:
   CausalImpact,
   CBPS,
   changepoint,
-  cmdstanr,
   cmprsk,
   coin,
   copula,
