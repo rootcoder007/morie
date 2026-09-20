@@ -49,6 +49,13 @@ jobs:
           - { os: ubuntu-latest,  r: 'oldrel-1' }
 
     env:
+      # R-devel has no binary packages, so that cell compiles the whole
+      # dependency tree from source. At the workflow-wide -j4 the runner was
+      # starved and lost contact with the server ("The hosted runner lost
+      # communication with the server"), which shows as a red check even
+      # though the cell is allow_failure. Two jobs keeps the peak inside the
+      # 16 GB runner; every other cell keeps -j4.
+      MAKEFLAGS: ${{ matrix.config.r == 'devel' && '-j2' || '-j4' }}
       _R_CHECK_FORCE_SUGGESTS_: false
       R_KEEP_PKG_SOURCE: yes
       # CRAN requires \donttest (not \dontrun) for examples a user could
@@ -204,6 +211,13 @@ jobs:
           --health-retries 5
 
     env:
+      # R-devel has no binary packages, so that cell compiles the whole
+      # dependency tree from source. At the workflow-wide -j4 the runner was
+      # starved and lost contact with the server ("The hosted runner lost
+      # communication with the server"), which shows as a red check even
+      # though the cell is allow_failure. Two jobs keeps the peak inside the
+      # 16 GB runner; every other cell keeps -j4.
+      MAKEFLAGS: ${{ matrix.config.r == 'devel' && '-j2' || '-j4' }}
       _R_CHECK_FORCE_SUGGESTS_: false
       R_KEEP_PKG_SOURCE: yes
       # CRAN requires \donttest (not \dontrun) for examples a user could
