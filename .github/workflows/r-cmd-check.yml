@@ -116,8 +116,19 @@ jobs:
         if: runner.os == 'macOS'
         working-directory: r-package/morie
         shell: Rscript {0}
+        env:
+          # DESCRIPTION carries GitHub Remotes:, so install_deps queries
+          # api.github.com. Without an explicit token remotes picks up the
+          # credential actions/checkout stores for git, which the REST API
+          # rejects with "HTTP error 401. Bad credentials".
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           install.packages(c("remotes", "rcmdcheck"))
+          # r-universe carries binaries for the two sibling packages, so take
+          # them from there rather than building the GitHub sources.
+          install.packages(c("rmoriebricklayer", "rmoriedata"),
+                           repos = c("https://rootcoder007.r-universe.dev",
+                                     "https://cloud.r-project.org"))
           remotes::install_deps(dependencies = TRUE, upgrade = "never")
 
       # The observed failure was a corrupt binary, not a missing one:
