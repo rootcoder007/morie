@@ -44,8 +44,4 @@ than relying on the primary-overlap join.
 df <- data.frame(EVENT_ID = 1:3, HOOD_140 = c("082", "001", "075"))
 morie_tps_add_hood_158_from_140(df)
 \dontshow{\}) # examplesIf}
-\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-df <- data.frame(EVENT_ID = 1:3, HOOD_140 = c("082", "001", "075"))
-morie_tps_add_hood_158_from_140(df)
-\dontshow{\}) # examplesIf}
 }

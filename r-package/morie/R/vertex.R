@@ -66,15 +66,6 @@ morie_vertex_resolve_config <- function() {
 #' tok <- morie_vertex_access_token()
 #' \dontshow{\}) # examplesIf}
 #' }
-#' @examples
-#' \dontrun{
-#' \dontshow{if (morie:::.vertex_examples_ok()) withAutoprint(\{ # examplesIf}
-#' # Runs only when a Google Cloud project is configured; Vertex is an
-#' # OPTIONAL fallback -- the default LLM path is local Ollama (see
-#' # morie_siu_panel / morie_llm_* helpers).
-#' tok <- morie_vertex_access_token()
-#' \dontshow{\}) # examplesIf}
-#' }
 #' @export
 morie_vertex_access_token <- function(cfg = NULL) {
   if (is.null(cfg)) cfg <- morie_vertex_resolve_config()

@@ -35,15 +35,4 @@ morie_cache_store(
 file.remove(db)
 }
 \dontshow{\}) # examplesIf}
-\dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-\donttest{
-db <- tempfile(fileext = ".db")
-morie_cache_store(
-  data = data.frame(x = rnorm(50), y = rnorm(50)),
-  table_name = "demo",
-  db_path = db
-)
-file.remove(db)
-}
-\dontshow{\}) # examplesIf}
 }

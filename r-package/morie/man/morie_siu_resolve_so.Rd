@@ -28,7 +28,4 @@ cannot answer, the reading panel (\code{\link[=morie_siu_panel]{morie_siu_panel(
 \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 morie_siu_resolve_so(drid = 5038)
 \dontshow{\}) # examplesIf}
-\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-morie_siu_resolve_so(drid = 5038)
-\dontshow{\}) # examplesIf}
 }

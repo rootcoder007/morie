@@ -544,11 +544,6 @@ morie_datasets_tps_police_divisions <- function(offline = TRUE,
 #' @examplesIf requireNamespace("rmoriedata", quietly = TRUE)
 #' df <- morie_datasets_tps_psdp_resolved("assault", offline = TRUE)
 #' names(df)
-#' @examples
-#' \dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-#' df <- morie_datasets_tps_psdp_resolved("assault", offline = TRUE)
-#' names(df)
-#' \dontshow{\}) # examplesIf}
 #' @export
 morie_datasets_tps_psdp_resolved <- function(
     layer_key,

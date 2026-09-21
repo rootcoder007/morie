@@ -27,8 +27,4 @@ records exactly which snapshot it consumed.
 d <- morie_mrm_load_si_dataset("otis_b01")
 d$provenance$n_rows
 \dontshow{\}) # examplesIf}
-\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-d <- morie_mrm_load_si_dataset("otis_b01")
-d$provenance$n_rows
-\dontshow{\}) # examplesIf}
 }

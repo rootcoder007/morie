@@ -55,7 +55,4 @@ boosted-trees result; the backend is flagged in the output.
 \dontshow{if (requireNamespace("xgboost", quietly = TRUE) || requireNamespace("gbm", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 morie_xgboost_objective(x = rnorm(50), y = rnorm(50))
 \dontshow{\}) # examplesIf}
-\dontshow{if (requireNamespace("xgboost", quietly = TRUE) || requireNamespace("gbm", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-morie_xgboost_objective(x = rnorm(50), y = rnorm(50))
-\dontshow{\}) # examplesIf}
 }
