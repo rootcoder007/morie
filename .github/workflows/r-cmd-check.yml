@@ -203,7 +203,7 @@ jobs:
           # package configures, compiles, installs and its Rd parse under the
           # next R. Examples, tests and vignettes are exercised in full on the
           # other four cells, which get binaries and the complete Suggests set.
-          args: ${{ matrix.config.r == 'devel' && 'c("--no-manual", "--no-examples", "--no-tests", "--no-vignettes")' || 'c("--no-manual")' }}
+          args: ${{ matrix.config.r == 'devel' && 'c("--no-manual", "--no-examples", "--no-tests", "--ignore-vignettes")' || 'c("--no-manual")' }}
           build_args: ${{ matrix.config.r == 'devel' && 'c("--no-manual", "--no-build-vignettes")' || '"--no-manual"' }}
           error-on: '"error"'
 

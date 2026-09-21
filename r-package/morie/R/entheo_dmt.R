@@ -51,7 +51,7 @@
 #' @keywords internal
 #' @return A character scalar: the resolved DMT-data root directory.
 #' @examples
-#' tryCatch(rmorie:::.morie_entheo_dmt_root(), error = function(e) NULL)
+#' tryCatch(morie:::.morie_entheo_dmt_root(), error = function(e) NULL)
 .morie_entheo_dmt_root <- function() {
   cand <- Sys.getenv("MORIE_DMT_IMAGING_ROOT", "")
   if (!nzchar(cand)) {
