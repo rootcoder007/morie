@@ -40,6 +40,7 @@ jobs:
                   R.version["arch"], R.version["os"])))
           repos <- c(
             runiverse = "https://rootcoder007.r-universe.dev",
+            standev = "https://stan-dev.r-universe.dev",
             P3M = "https://packagemanager.posit.co/cran/__linux__/bookworm/latest",
             CRAN = "https://cloud.r-project.org")
           # rmoriedata is in DESCRIPTION Imports (a HARD dependency), so
@@ -49,7 +50,7 @@ jobs:
           # It is published on the r-universe repo already listed above.
           pkgs <- c("here", "Rcpp", "RcppArmadillo",
                     "rmoriedata", "rmoriebricklayer",
-                    "testthat", "pkgload", "rcmdcheck")
+                    "testthat", "pkgload", "rcmdcheck", "cmdstanr")
           install.packages(pkgs, repos = repos, Ncpus = 2)
           missing <- setdiff(pkgs, rownames(installed.packages()))
           if (length(missing) > 0) stop("failed to install: ",

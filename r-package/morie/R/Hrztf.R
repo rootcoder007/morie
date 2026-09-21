@@ -9,7 +9,7 @@
 #' T_n evaluated at an observation.  Page 219: T_n(y) "is replaced with
 #'
 #' an arbitrarily large negative number if y < y2 and an arbitrarily
-#' large positive number if y > y1".  Inside [y2, y1] the grid values
+#' large positive number if y > y1".  Inside \[y2, y1\] the grid values
 #' are interpolated.
 #'
 #' @param yv Numeric; combined arithmetically in the body.

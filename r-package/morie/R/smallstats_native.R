@@ -34,8 +34,8 @@ NULL
 #'
 #' Hurst exponent via simple rescaled-range (R/S) analysis -- an exact
 #' replica of pracma::hurstexp()$Hs: pad odd-length series to even,
-#' truncate to the length in [0.99*N, N] with the most divisors >= 50
-#' (pracma\'s block-optimal OptN), then compute the whole-series
+#' truncate to the length in \[0.99*N, N\] with the most divisors >= 50
+#' (pracma's block-optimal OptN), then compute the whole-series
 #' statistic log(R/S) / log(n).
 #'
 #' @param x A vector; its length is taken and its elements indexed.
@@ -43,8 +43,7 @@ NULL
 #' @return A numeric value.
 #' @export
 #' @examples
-#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2,
-#' 2.6, 3.4, 3.9))
+#' X <- cbind(1, c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9), c(0.4, 1.1, 0.9, 1.8, 2.2, 2.6, 3.4, 3.9))
 #' res <- .morie_hurst_rs(x = X)
 #' res
 .morie_hurst_rs <- function(x, d = 50L) {

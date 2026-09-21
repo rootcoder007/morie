@@ -402,7 +402,7 @@ morie_sample_acf <- function(y, max_lag = 20) {
        method = "Sample autocorrelation function (divide-by-n convention)")
 }
 
-#' R is indexed from 1 for lag 0, so r[k + 1] is lag k
+#' R is indexed from 1 for lag 0, so r\[k + 1\] is lag k
 #'
 #' A step of the k05_tranche1 implementation. Called by \code{morie_sample_pacf}.
 #' See the file header for the source the module follows.

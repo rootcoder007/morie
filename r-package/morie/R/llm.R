@@ -64,6 +64,23 @@ GEMINI_BASE_URL <- "https://generativelanguage.googleapis.com/v1beta/openai"
 #' @export
 .morie_llm_gemini_key  <- function() { v <- .morie_llm_env("GEMINI_API_KEY")
 if (nzchar(v)) v else NULL }
+#' Internal helper: resolve the Ollama model to use
+#'
+#' No hardcoded model name -- models are pulled per-machine and upstream tags
+#' get retired (llama3.2, gemma3), so an assumed default errors on most
+#' servers. Resolution order: (1) \code{OLLAMA_MODEL} if the user named one;
+#' (2) otherwise ask the server what it actually serves and use the first
+#' model. Returns \code{NA_character_} when neither is available so callers
+#' can raise a clear "pull a model or set OLLAMA_MODEL" error.
+#' @noRd
+.morie_llm_ollama_default_model <- function(base = .morie_llm_ollama_base()) {
+  env <- .morie_llm_env("OLLAMA_MODEL")
+  if (nzchar(env)) return(env)
+  if (.morie_llm_no_net()) return(NA_character_)
+  m <- morie_llm_ollama_models(base)
+  if (nrow(m) && !is.na(m$name[1L]) && nzchar(m$name[1L])) m$name[1L]
+  else NA_character_
+}
 #' .morie_llm_openai_key
 #'
 #' A step of the llm implementation. Called by \code{morie_llm_ask},

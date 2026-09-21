@@ -55,6 +55,9 @@ jobs:
         with:
           working-directory: r-package/morie
           cache-version: 2
+          # cmdstanr is a Suggests served by stan-dev's r-universe, not CRAN;
+          # pak does not read Additional_repositories, so name the source.
+          extra-packages: github::stan-dev/cmdstanr
           needs: check
 
       - name: Install the R morie package (provides morie_run_morie_modules)

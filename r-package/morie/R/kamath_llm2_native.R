@@ -2865,7 +2865,7 @@ morie_kamath_ch8_bleu_n_geom_mean <- function(p_n, N = NULL) {
 }
 
 #' @rdname morie_kamath_ch8_bleu_n_geom_mean
-#' @param BP Brevity penalty in [0, 1].
+#' @param BP Brevity penalty in \[0, 1\].
 #' @export
 morie_kamath_ch8_bleu_final <- function(BP, p_n, N = NULL) {
   bp <- as.numeric(BP)

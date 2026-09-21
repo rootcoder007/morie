@@ -56,7 +56,7 @@ jobs:
         with:
           working-directory: r-package/morie
           cache-version: 2
-          extra-packages: any::covr any::xml2
+          extra-packages: any::covr any::xml2 github::stan-dev/cmdstanr
           needs: coverage
 
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
@@ -110,7 +110,7 @@ jobs:
         with:
           working-directory: r-package/morie
           cache-version: 2
-          extra-packages: any::lintr
+          extra-packages: any::lintr github::stan-dev/cmdstanr
 
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
         run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")

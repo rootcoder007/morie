@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_schab_gn_shared.R
 \name{.schab_gn_weights}
 \alias{.schab_gn_weights}
-\title{OLS is R = phi I, so the weights are 1. WLS uses Cressie\'s (1985)}
+\title{OLS is R = phi I, so the weights are 1. WLS uses Cressie's (1985)}
 \usage{
 .schab_gn_weights(kind, fitted, counts)
 }
@@ -17,6 +17,6 @@
 The value of \code{ifelse}.
 }
 \description{
-approximation (4.33), Var\link{gamma_hat(h_m)} = 2 gamma^2 / |N(h_m)|,
+approximation (4.33), Var[gamma_hat(h_m)] = 2 gamma^2 / |N(h_m)|,
 whose reciprocal is the weight in (4.34).
 }

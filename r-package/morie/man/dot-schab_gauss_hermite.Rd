@@ -14,11 +14,11 @@ A list with \code{nodes}, \code{weights}.
 }
 \description{
 Jacobi matrix (zero diagonal, sqrt(k) off-diagonal for the
-probabilists\' Hermite system); weights are the squared first
+probabilists' Hermite system); weights are the squared first
 eigenvector components. Written out rather than taken from a package
 so this arm runs the same arithmetic as the Python one -- both need
 only a symmetric eigensolver. The weights sum to 1, so sum(w * g(x))
-is E\link{g(X)} for X ~ N(0, 1).
+is E[g(X)] for X ~ N(0, 1).
 }
 \examples{
 res <- .schab_gauss_hermite(n = 3L)

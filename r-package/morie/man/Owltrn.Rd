@@ -35,6 +35,20 @@ which the outcome is the weight and the observed treatment is the
 label. The surrogate is theirs -- the weighted HINGE loss with a
 ridge penalty, a linear-kernel weighted SVM,
 \eqn{in_b (1/n) sum w_i max(0, 1 - A_i x_i primeb) + lam ||b_slope||^2},
+minimized by full-batch subgradient descent on the Pegasos step
+schedule \code{eta_t = 1 / (lam t)}: a fixed iteration count, no
+sampling and no tolerance test. The intercept is not penalized.
+}
+\details{
+The cheaper surrogate -- weighted least squares of the label on the
+covariates -- has the right population minimiser but is not robust
+to leverage. On a design where the high-weight units sit near the
+decision boundary and the low-weight ones sit far from it, the
+squared loss lets the far units outvote the informative ones and
+returns the exactly INVERTED rule. That happened on this module primes
+own anchor fixture, which is why the hinge is used.
+
+The rule is \code{d(x) = 1{x primeb > 0}}. NEGATIVE outcomes break the
 equivalence, because a negative weight rewards misclassification;
 the standard fix is to shift \code{Y} by its minimum. That shift is
 NOT innocuous -- it changes the relative weights and so can change

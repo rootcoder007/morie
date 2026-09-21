@@ -49,6 +49,9 @@
 #' \env{MORIE_DMT_IMAGING_ROOT}. Returns NULL if absent on disk.
 #' Parity with Python ``DATASET_ROOT`` / ``_require_root``.
 #' @keywords internal
+#' @return A character scalar: the resolved DMT-data root directory.
+#' @examples
+#' tryCatch(rmorie:::.morie_entheo_dmt_root(), error = function(e) NULL)
 .morie_entheo_dmt_root <- function() {
   cand <- Sys.getenv("MORIE_DMT_IMAGING_ROOT", "")
   if (!nzchar(cand)) {

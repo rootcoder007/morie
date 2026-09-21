@@ -300,9 +300,10 @@ NULL
 
 ## Half-away-from-zero. Deliberately not round(): both languages round
 ## half to even but disagree about which values are exactly half.
-#' Half-away-from-zero. Deliberately not round(): both languages round
+#' Round half away from zero
 #'
-#' # half to even but disagree about which values are exactly half.
+#' Deliberately not round(): both languages round half to even but
+#' disagree about which values are exactly half.
 #'
 #' @param v Numeric; passed to \code{abs}.
 #' @return A numeric value.
@@ -632,11 +633,11 @@ NULL
 ## Zhang-Stephens empirical-Bayes generalised Pareto fit. Fixed grid of
 ## 30 + floor(sqrt(N)) points weighted by the profile likelihood -- no
 ## optimiser, so the arms cannot land on different local optima.
-#' Zhang-Stephens empirical-Bayes generalised Pareto fit. Fixed grid
-#' of
+#' Zhang-Stephens empirical-Bayes generalised Pareto fit
 #'
-#' # 30 + floor(sqrt(N)) points weighted by the profile likelihood -- no
-#' # optimiser, so the arms cannot land on different local optima.
+#' Fixed grid of 30 + floor(sqrt(N)) points weighted by the profile
+#' likelihood -- no optimiser, so the arms cannot land on different local
+#' optima.
 #'
 #' @param x A vector; its length is taken and its elements indexed.
 #' @return A list with \code{k}, \code{sigma}.

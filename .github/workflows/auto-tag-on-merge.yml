@@ -142,7 +142,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2.13.0
         with:
           working-directory: r-package/morie
-          extra-packages: any::testthat any::survey any::DBI any::RSQLite any::jsonlite
+          extra-packages: any::testthat any::survey any::DBI any::RSQLite any::jsonlite github::stan-dev/cmdstanr
           needs: check
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
         run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")

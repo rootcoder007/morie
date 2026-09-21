@@ -2,7 +2,7 @@
 % Please edit documentation in R/tmldyk_native.R
 \name{.tmle_ate_bounded}
 \alias{.tmle_ate_bounded}
-\title{Underlying TMLE on the bounded-outcome scale (rescaled to \link{0,1})}
+\title{Underlying TMLE on the bounded-outcome scale (rescaled to [0,1])}
 \usage{
 .tmle_ate_bounded(yv, a, W, g, Q1, Q0, lower, upper)
 }

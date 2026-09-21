@@ -2,8 +2,7 @@
 % Please edit documentation in R/aaa_s04core.R
 \name{.s4_gpdfit}
 \alias{.s4_gpdfit}
-\title{Zhang-Stephens empirical-Bayes generalised Pareto fit. Fixed grid
-of}
+\title{Zhang-Stephens empirical-Bayes generalised Pareto fit}
 \usage{
 .s4_gpdfit(x)
 }
@@ -14,17 +13,10 @@ of}
 A list with \code{k}, \code{sigma}.
 }
 \description{
-Zhang-Stephens empirical-Bayes generalised Pareto fit. Fixed grid
-of
+Fixed grid of 30 + floor(sqrt(N)) points weighted by the profile
+likelihood -- no optimiser, so the arms cannot land on different local
+optima.
 }
-\section{30 + floor(sqrt(N)) points weighted by the profile likelihood -- no}{
-
-}
-
-\section{optimiser, so the arms cannot land on different local optima.}{
-
-}
-
 \examples{
 x <- c(1.2, 2.4, 3.1, 4.8, 5.3, 6.7, 7.1, 8.9)
 res <- .s4_gpdfit(x = x)

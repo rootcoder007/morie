@@ -2,7 +2,7 @@
 % Please edit documentation in R/k03wided.R
 \name{.k03_lcg}
 \alias{.k03_lcg}
-\title{One MINSTD step. Exact in double precision (a * m < 2^53), so both}
+\title{One MINSTD linear congruential step}
 \usage{
 .k03_lcg(state)
 }
@@ -13,9 +13,6 @@
 A numeric value.
 }
 \description{
-One MINSTD step. Exact in double precision (a * m < 2^53), so both
+Exact in double precision (a * m < 2^53), so both language arms
+produce bit-identical initial weights.
 }
-\section{language arms produce bit-identical initial weights.}{
-
-}
-
