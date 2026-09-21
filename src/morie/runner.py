@@ -463,14 +463,14 @@ def build_parser() -> argparse.ArgumentParser:
     except ImportError:
         pass
 
-    # ── ingest: pull open-data feeds (CKAN, TPS ArcGIS, SIU PDFs) ──────
+    # ── ingest: pull open-data feeds (CKAN, TPS ArcGIS, SIU PDFs, A2AJ) ─
     ingest_cmd = subparsers.add_parser(
         "ingest",
-        help="Pull open-data feeds (CKAN portals, TPS ArcGIS layers, SIU PDFs)",
+        help="Pull open-data feeds (CKAN portals, TPS ArcGIS layers, SIU PDFs, A2AJ legal data)",
     )
     ingest_cmd.add_argument(
         "portal",
-        choices=["ckan", "tps", "siu"],
+        choices=["ckan", "tps", "siu", "a2aj"],
         help="Which portal adapter to invoke",
     )
     ingest_cmd.add_argument(
@@ -1007,8 +1007,10 @@ def _main_impl() -> int:
             from .ingest.tps import cli as _cli
         elif portal == "siu":
             from .ingest.siu import cli as _cli
+        elif portal == "a2aj":
+            from .ingest.a2aj import cli as _cli
         else:
-            print(f"unknown portal {portal!r}; valid: ckan, tps, siu")
+            print(f"unknown portal {portal!r}; valid: ckan, tps, siu, a2aj")
             return 2
         return _cli(portal_args)
 

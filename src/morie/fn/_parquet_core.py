@@ -529,13 +529,56 @@ def _read_footer(fh):
     return _TReader(fh.read(n)).struct()
 
 
+def _read_levels(page, p, maxlevel, n, encoding):
+    """One RLE level run (v1 data page: 4-byte length, then the run)."""
+    if encoding == _E_BIT_PACKED:
+        raise ValueError("BIT_PACKED levels not implemented")
+    if encoding != _E_RLE:
+        return [maxlevel] * n, p
+    ln = struct.unpack_from("<I", page, p)[0]
+    p += 4
+    levels, _ = _read_rle_hybrid(page, p, _bit_width(maxlevel), n, p + ln)
+    return levels, p + ln
+
+
+def _assemble_lists(slots, repdef):
+    """Fold (rep, def, value) slots into one list-or-None per row.
+
+    `repdef` is the definition level of the REPEATED node: a slot whose
+    definition level is below repdef - 1 is a null list, exactly
+    repdef - 1 is an empty list, and anything at or above repdef is an
+    element (None when it stops short of the leaf's max level, which
+    the caller has already encoded as value None).
+    """
+    rows = []
+    for rep, d, v in slots:
+        if rep == 0:
+            if d < repdef - 1:
+                rows.append(None)
+            elif d == repdef - 1:
+                rows.append([])
+            else:
+                rows.append([v])
+        else:
+            rows[-1].append(v)
+    return rows
+
+
 def _column_values(fh, chunk_meta, num_rows):
-    """Decode one column chunk to a list of length num_rows."""
+    """Decode one column chunk to a list of length num_rows.
+
+    A flat column gives one scalar (or None) per row. A LIST column
+    (maxrep 1) gives one Python list per row, None for a null list and
+    [] for an empty one, with None inside the list for a null element.
+    """
     ptype = chunk_meta[1]
     codec = chunk_meta[4]
     total_values = chunk_meta[5]
     data_off = chunk_meta[9]
     dict_off = chunk_meta.get(11)
+    maxdef = chunk_meta.get("_maxdef", 1)
+    maxrep = chunk_meta.get("_maxrep", 0)
+    repdef = chunk_meta.get("_repdef", 0)
 
     start = dict_off if dict_off else data_off
     if dict_off and data_off and data_off < dict_off:
@@ -549,7 +592,9 @@ def _column_values(fh, chunk_meta, num_rows):
     pos = 0
     dictionary = None
     values = []
-    while len(values) < total_values and pos < len(blob):
+    slots = []          # (rep, def, value) triples for a LIST column
+    got = 0             # level slots consumed, which is what total_values counts
+    while got < total_values and pos < len(blob):
         r = _TReader(blob, pos)
         head = r.struct()
         pos = r.pos
@@ -576,23 +621,18 @@ def _column_values(fh, chunk_meta, num_rows):
         encoding = dph[2]
         p = 0
 
-        # Definition levels. A flat OPTIONAL column has max level 1;
-        # REQUIRED has 0 and writes nothing.
-        if chunk_meta.get("_maxdef", 1):
-            width = _bit_width(chunk_meta.get("_maxdef", 1))
-            if dph[3] == _E_RLE:
-                ln = struct.unpack_from("<I", page, p)[0]
-                p += 4
-                defs, _ = _read_rle_hybrid(page, p, width, n, p + ln)
-                p += ln
-            elif dph[3] == _E_BIT_PACKED:
-                raise ValueError("BIT_PACKED levels not implemented")
-            else:
-                defs = [1] * n
+        # Repetition levels come first and only exist under a REPEATED
+        # node; then definition levels. A flat OPTIONAL column has max
+        # definition level 1; REQUIRED has 0 and writes nothing.
+        reps = [0] * n
+        if maxrep:
+            reps, p = _read_levels(page, p, maxrep, n, dph[4])
+        if maxdef:
+            defs, p = _read_levels(page, p, maxdef, n, dph[3])
         else:
-            defs = [1] * n
+            defs = [0] * n
 
-        present = sum(1 for d in defs if d)
+        present = sum(1 for d in defs if d == maxdef)
         if encoding in (_E_PLAIN_DICTIONARY, _E_RLE_DICTIONARY):
             if dictionary is None:
                 raise ValueError("dictionary-encoded page with no "
@@ -610,11 +650,77 @@ def _column_values(fh, chunk_meta, num_rows):
                 "RLE_DICTIONARY" % encoding)
 
         it = iter(vals)
-        values.extend(next(it) if d else None for d in defs)
+        got += n
+        if maxrep:
+            slots.extend((r, d, next(it) if d == maxdef else None)
+                         for r, d in zip(reps, defs))
+        else:
+            values.extend(next(it) if d == maxdef else None for d in defs)
 
+    if maxrep:
+        values = _assemble_lists(slots, repdef)
     if len(values) < num_rows:
         values.extend([None] * (num_rows - len(values)))
     return values[:num_rows]
+
+
+def _schema_leaves(schema):
+    """Walk the flattened schema tree into one entry per leaf column.
+
+    Supported shapes are a flat leaf and the three-level LIST group
+    (LIST group -> REPEATED "list" group -> one element leaf). Anything
+    else raises rather than decoding to a wrong row count.
+    """
+    root = schema[0]
+    leaves = []
+    # stack entries: [children_left, maxdef, maxrep, repdef, list_name]
+    stack = [[root.get(5) or 0, 0, 0, 0, None]]
+    for el in schema[1:]:
+        while stack and stack[-1][0] == 0:
+            stack.pop()
+        if not stack:
+            raise ValueError("schema has more elements than the root declares")
+        parent = stack[-1]
+        parent[0] -= 1
+        _, pdef, prep, prepdef, list_name = parent
+        rep = el.get(3, _REQUIRED)
+        name = el[4].decode("utf-8")
+        maxdef = pdef + (1 if rep != _REQUIRED else 0)
+        maxrep = prep + (1 if rep == _REPEATED else 0)
+        repdef = maxdef if rep == _REPEATED else prepdef
+        nchild = el.get(5) or 0
+        if nchild:
+            logical = el.get(10) or {}
+            is_list = el.get(6) == 3 or 3 in logical
+            if rep == _REPEATED and list_name is not None and nchild == 1:
+                stack.append([1, maxdef, maxrep, repdef, list_name])
+                continue
+            if is_list and rep != _REPEATED and list_name is None \
+                    and nchild == 1:
+                stack.append([1, maxdef, maxrep, repdef, name])
+                continue
+            raise ValueError(
+                "nested schema not implemented: group field %r has "
+                "%d children" % (name, nchild))
+        if maxrep > 1 or (maxrep == 1 and list_name is None):
+            raise ValueError(
+                "repeated column %r not implemented; decoding it as "
+                "flat would silently change the row count" % name)
+        leaves.append({
+            "name": list_name if list_name is not None else name,
+            "type": el.get(1),
+            "typelen": el.get(2),
+            "converted": el.get(6),
+            "maxdef": maxdef,
+            "maxrep": maxrep,
+            "repdef": repdef,
+        })
+    return leaves
+
+
+def _map_list(col, fn):
+    """Apply a per-element converter to a LIST column, keeping nulls."""
+    return [None if row is None else fn(row) for row in col]
 
 
 def read_parquet(path, columns=None):
@@ -635,26 +741,9 @@ def read_parquet(path, columns=None):
         num_rows = meta[3]
         row_groups = meta.get(4) or []
 
-        # schema[0] is the root; one element per leaf follows. Flat only.
-        leaves = []
-        for el in schema[1:]:
-            if el.get(5):                                # num_children
-                raise ValueError(
-                    "nested schema not implemented: group field %r has "
-                    "%d children" % (el[4].decode(), el[5]))
-            rep = el.get(3, _REQUIRED)
-            if rep == _REPEATED:
-                raise ValueError(
-                    "repeated column %r not implemented; decoding it as "
-                    "flat would silently change the row count"
-                    % el[4].decode())
-            leaves.append({
-                "name": el[4].decode("utf-8"),
-                "type": el.get(1),
-                "typelen": el.get(2),
-                "converted": el.get(6),
-                "maxdef": 1 if rep == _OPTIONAL else 0,
-            })
+        # schema[0] is the root; the rest is a depth-first tree with one
+        # column chunk per leaf. Flat leaves and LIST<primitive> only.
+        leaves = _schema_leaves(schema)
 
         wanted = list(range(len(leaves)))
         if columns is not None:
@@ -673,8 +762,15 @@ def read_parquet(path, columns=None):
                 chunk = rg[1][i]
                 cm = dict(chunk[3])
                 cm["_maxdef"] = leaf["maxdef"]
+                cm["_maxrep"] = leaf["maxrep"]
+                cm["_repdef"] = leaf["repdef"]
                 cm["_typelen"] = leaf["typelen"]
                 col.extend(_column_values(fh, cm, rg[3]))
+            if leaf["maxrep"]:
+                def _elems(row, _t=leaf["type"], _c=leaf["converted"]):
+                    return _apply_logical(_convert(row, _t, _c), _t, _c)
+                data[leaf["name"]] = _map_list(col, _elems)
+                continue
             col = _convert(col, leaf["type"], leaf["converted"])
             data[leaf["name"]] = _apply_logical(col, leaf["type"],
                                                 leaf["converted"])
@@ -720,7 +816,7 @@ def _infer(values):
     if seen == {"int"}:
         lo = min((v for v in values if v is not None), default=0)
         hi = max((v for v in values if v is not None), default=0)
-        if -(2 ** 31) <= lo and hi < 2 ** 31:
+        if lo >= -(2 ** 31) and hi < 2 ** 31:
             return _INT32, None
         return _INT64, None
     if seen <= {"int", "float"}:
@@ -909,6 +1005,7 @@ def _demo():
     """Round-trip check: write, read back, compare cell by cell."""
     import os
     import tempfile
+
     from ._frame_core import DataFrame
 
     df = DataFrame({

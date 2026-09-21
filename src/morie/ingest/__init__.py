@@ -15,6 +15,12 @@ Currently shipped:
   - :mod:`morie.ingest.bigquery` — Google BigQuery public-data adapter
                                    (lazy import; needs the ``bigquery``
                                    extra).
+  - :mod:`morie.ingest.a2aj`     — A2AJ Canadian Legal Data: court and
+                                   tribunal decisions, statutes and
+                                   regulations (api.a2aj.ca, Hugging Face
+                                   Parquet), citation network edges.
+  - :mod:`morie.ingest.canlii`   — CanLII REST API (needs a free key):
+                                   the courts A2AJ does not carry.
 
 Each sub-module exposes:
 
@@ -35,9 +41,9 @@ from __future__ import annotations
 # NOTE: ``bigquery`` is intentionally NOT eager-imported here — the
 # Google SDK is a heavy optional dependency and the submodule's
 # top-level only imports lazy-friendly things (pandas + TYPE_CHECKING).
-from . import chicago, ckan, siu, tps  # noqa: F401  re-exported for ergonomic access
+from . import a2aj, canlii, chicago, ckan, siu, tps  # noqa: F401  re-exported for ergonomic access
 
-__all__ = ["ckan", "tps", "siu", "chicago", "bigquery"]
+__all__ = ["ckan", "tps", "siu", "chicago", "bigquery", "a2aj", "canlii"]
 
 
 def __getattr__(name: str):  # pragma: no cover — trivial PEP 562 stub

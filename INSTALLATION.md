@@ -407,6 +407,10 @@ print(fields["conclusion"])
 
 # Any CKAN portal (Canada, UK, EU, Ontario, ...)
 hits = md.ckan_search("https://open.canada.ca/data", "alcohol", rows=5)
+
+# Canadian court decisions and legislation (A2AJ Canadian Legal Data)
+cases = md.a2aj_search("right to housing", dataset=["SCC", "ONCA"])
+scc   = md.a2aj_load("SCC", columns=["citation_en", "document_date_en", "cases_cited_en"])
 ```
 
 Every helper returns a plain `pandas.DataFrame` — no bespoke result type, no boilerplate.
@@ -469,9 +473,14 @@ The agent reads morie's own source + documentation and answers in plain English.
 
 ## Pulling open data with `morie ingest`
 
-morie ships three open-data adapters:
+morie ships four open-data adapters:
 
 ```bash
+# A2AJ Canadian Legal Data (api.a2aj.ca): coverage, search, one document
+morie ingest a2aj coverage
+morie ingest a2aj search "right to housing" --dataset SCC,ONCA --size 20
+morie ingest a2aj fetch "2023 SCC 17" --end-char 2000
+
 # CKAN portals (open.canada.ca, data.gov.uk, data.europa.eu, ...)
 morie ingest ckan --portal https://open.canada.ca/data \
                   --search "alcohol"

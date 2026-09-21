@@ -68,9 +68,10 @@ Datasets
    API (``--survey csads_2021|csads_2023|csus_2019|csus_2023|all``,
    ``--limit``).
 
-``ingest {ckan,tps,siu}``
+``ingest {ckan,tps,siu,a2aj}``
    Pull open-data feeds: CKAN portals, Toronto Police Service ArcGIS
-   layers, SIU director's-report PDFs.
+   layers, SIU director's-report PDFs, and A2AJ Canadian Legal Data
+   (``a2aj coverage``, ``a2aj search QUERY``, ``a2aj fetch CITATION``).
 
 ``profile-dataset --csv PATH``
    Infer measurement levels and variable roles for any tabular file

@@ -507,6 +507,30 @@ def ckan_package(portal: str, package_id: str) -> dict[str, pd.DataFrame]:
 
 
 # ----------------------------------------------------------------------
+# A2AJ — Canadian court decisions, statutes and regulations
+# ----------------------------------------------------------------------
+
+
+def a2aj_search(query: str, *, doc_type: str = "cases", dataset: str | list[str] | None = None,
+                size: int = 10) -> pd.DataFrame:
+    """Search A2AJ Canadian Legal Data (api.a2aj.ca); at most 50 hits.
+
+    ``dataset`` restricts to court codes such as ``"SCC"`` or
+    ``["SCC", "ONCA"]``; see :func:`morie.ingest.a2aj.coverage`.
+    """
+    from .ingest.a2aj import search
+
+    return search(query, doc_type=doc_type, dataset=dataset, size=size)
+
+
+def a2aj_load(dataset: str, *, doc_type: str = "cases", columns: list[str] | None = None) -> pd.DataFrame:
+    """One court's (or law collection's) full A2AJ dataset, from its Parquet file."""
+    from .ingest.a2aj import load
+
+    return load(dataset, doc_type, columns=columns)
+
+
+# ----------------------------------------------------------------------
 # Forensics — US federal forensic open-data
 # ----------------------------------------------------------------------
 

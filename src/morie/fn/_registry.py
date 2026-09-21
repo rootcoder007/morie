@@ -1813,6 +1813,20 @@ _r(
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
+    "a2aj_search",
+    "a2aj_search",
+    "Data",
+    "Search A2AJ Canadian case law and legislation",
+    "The life of the law has not been logic: it has been experience. -- Oliver Wendell Holmes Jr.",
+)
+_r(
+    "a2aj_load",
+    "a2aj_load",
+    "Data",
+    "Load one court's A2AJ dataset",
+    "Justice delayed is justice denied. -- William E. Gladstone",
+)
+_r(
     "clist",
     "clist",
     "Data",

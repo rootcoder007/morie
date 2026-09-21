@@ -435,6 +435,16 @@ Datasets, ingestion and data hygiene
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: morie.ingest.a2aj
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: morie.ingest.canlii
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 .. automodule:: morie.schema
    :members:
    :undoc-members:
