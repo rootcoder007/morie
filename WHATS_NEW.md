@@ -7,6 +7,27 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
+## 1.3.1 (2026-09-21)
+
+- **Canadian legal data.** `morie.ingest.a2aj` wraps the A2AJ Canadian
+  Legal Data corpus (about 226,000 court and tribunal decisions and
+  27,000 statutes and regulations): `coverage()`, `search()`, `fetch()`,
+  per-court Parquet `download()` / `load()`, `citation_edges()` and
+  `gaps()`. `morie.ingest.canlii` wraps CanLII's REST API (free key in
+  `CANLII_API_KEY`) for the courts A2AJ does not carry: the Human Rights
+  Tribunal of Ontario, the BC Human Rights Tribunal, the Ontario Superior
+  Court, Alberta, Quebec and the remaining provinces. `morie ingest a2aj
+  {coverage,search,fetch}` on the command line; `md.a2aj_search()` and
+  `md.a2aj_load()` in `morie.datasets`. The R arm has the same surface as
+  `morie_ingest_a2aj_*()` and `morie_ingest_canlii_*()`.
+- **Native Parquet reader decodes LIST columns** (Python and R): one list
+  per row, `None`/`NULL` for a null list. The A2AJ citation fields are
+  stored this way. Other nesting is still refused rather than silently
+  mis-counted.
+- **R arm:** twelve roxygen blocks carried two `@examples` sections, so
+  their Rd pages ran every example twice; the 1.3.0 NEWS entry was
+  missing.
+
 ## 1.1.7 (2026-07-25)
 
 - **The module pipeline now fails when modules fail.** `execute_pipeline()`

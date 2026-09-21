@@ -53,7 +53,7 @@ fi
 
 # Whitelist of known-legacy MORIE versions safe to overwrite.
 # Extend this when you find a stale stamp the regular CURRENT pass missed.
-KNOWN_LEGACY_VERSIONS=("0.3.0" "0.2.0")
+KNOWN_LEGACY_VERSIONS=("0.2.0")
 
 # Files whose version strings are HISTORY, never a current stamp.
 #
@@ -62,7 +62,7 @@ KNOWN_LEGACY_VERSIONS=("0.3.0" "0.2.0")
 # always wrong: it renames a shipped release and turns true sentences false.
 # On 2026-07-25 this script did exactly that, retitling the 1.1.4 section as
 # 1.1.7 while keeping 1.1.4's date. Add entries here rather than patching.
-NEVER_PATCH_RE='(^|/)(NEWS\.md|CHANGELOG\.md|WHATS_NEW\.md|.*_tracker\.md)$'
+NEVER_PATCH_RE='(^|/)(NEWS\.md|CHANGELOG\.md|WHATS_NEW\.md|.*_tracker\.md|uv\.lock)$'
 
 # 1. Establish the TRUE current version before touching anything.
 #
@@ -161,7 +161,7 @@ while IFS=, read -r file line status old_ver context; do
     # A dependency floor ("rmoriedata (>= 0.3.0)", "doubleml>=0.11.4") is
     # somebody else's version, never ours: the 1.2.5 bump rewrote
     # rmoriedata's floor to 1.2.5 and no installer could resolve it.
-    if [[ "$context" == *">="* || "$context" == *"=="* ]]; then
+    if [[ "$context" == *">="* || "$context" == *"=="* || "$context" == *"minimum_version"* ]]; then
         SKIP_COUNT=$((SKIP_COUNT + 1))
         continue
     fi
@@ -171,7 +171,7 @@ while IFS=, read -r file line status old_ver context; do
     # another package's release; both look exactly like our version string.
     # The 1.2.4 and 1.2.5 bumps rewrote 30 such lines across the two trees,
     # silently changing what the code claims its own sources say.
-    CITE_RE='(Section|Sections|Sec\.|Chapter|Ch\.|eq\.|eqs\.|samplingbook|Table|Figure|Theorem|Algorithm)'
+    CITE_RE='(Section|Sections|Sec\.|section|sections|sec\.|Chapter|Ch\.|chapter|eq\.|eqs\.|samplingbook|Table|Figure|Theorem|Algorithm)'
     prev_ctx=""
     if [[ "$line" =~ ^[0-9]+$ && "$line" -gt 1 ]]; then
         prev_ctx=$(sed -n "$((line - 1))p" "$file" 2>/dev/null || true)
