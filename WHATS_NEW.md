@@ -7,6 +7,13 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
+## 1.3.2 (2026-09-21)
+
+- **Clustering.** `predict.morie_cluster()` computes the n x k centroid
+  distances directly instead of an (n + k)^2 distance matrix (6 s and
+  2.8 GB at n = 10,000, out of memory at 20,000); `morie_cluster()` gains
+  `iter_max`.
+
 ## 1.3.1 (2026-09-21)
 
 - **Canadian legal data.** `morie.ingest.a2aj` wraps the A2AJ Canadian
