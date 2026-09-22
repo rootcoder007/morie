@@ -139,7 +139,7 @@ def maf(genotypes):
     return out
 
 
-def _log_fact(n, cache={0: 0.0}):
+def _log_fact(n, cache={0: 0.0}):  # noqa: B006  -- memo table, deliberate
     if n in cache:
         return cache[n]
     v = math.lgamma(n + 1.0)

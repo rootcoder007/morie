@@ -7,11 +7,10 @@ symbols are unchanged.
 """
 
 from math import cos, exp, fsum, pi, sin
-from math import cos, fsum, log, pi, sin, sqrt
+from math import log, sqrt
 from . import _array_core as np
 from . import _stats_core as stats
 from ._rgcore import aslist
-from ._rgcore import aslist, gridint
 from ._rgcore import gridint
 from ._richresult import RichResult
 

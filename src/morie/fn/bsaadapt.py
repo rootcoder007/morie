@@ -8,13 +8,12 @@ symbols are unchanged.
 
 from __future__ import annotations
 from math import cos, fsum, log, log10, pi, sin, sqrt
-from math import cos, fsum, log, pi, sin, sqrt
 from . import _array_core as np
 from . import _stats_core as stats
 from ._containers import SignalResult
 from ._rgcore import aslist
 from ._richresult import RichResult
-from ._richresult import RichResult, with_describe_pointer
+from ._richresult import with_describe_pointer
 from ._sci_core import toeplitz
 
 __all__ = [

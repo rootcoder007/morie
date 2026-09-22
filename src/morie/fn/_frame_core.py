@@ -371,8 +371,13 @@ class Series:
     def _clean(self):
         return [float(v) for v in self._data if not _isnan(v)]
 
-    def sum(self):
-        return _math.fsum(self._clean())
+    def sum(self, skipna=True, min_count=0):
+        if not skipna and any(_isnan(v) for v in self._data):
+            return _NAN
+        vals = self._clean()
+        if len(vals) < min_count:
+            return _NAN
+        return _math.fsum(vals)
 
     def count(self):
         # pandas counts non-missing values of any dtype; going through
@@ -446,6 +451,194 @@ class Series:
                 acc += v
                 out.append(acc)
         return Series(out, index=list(self.index), name=self.name)
+
+    def duplicated(self, keep="first"):
+        vals = list(self._data)
+        seen = {}
+        for v in vals:
+            key = "__nan__" if _isnan(v) else v
+            seen[key] = seen.get(key, 0) + 1
+        out = []
+        running = {}
+        for v in vals:
+            key = "__nan__" if _isnan(v) else v
+            running[key] = running.get(key, 0) + 1
+            if keep == "first":
+                out.append(running[key] > 1)
+            elif keep == "last":
+                out.append(running[key] < seen[key])
+            else:
+                out.append(seen[key] > 1)
+        return Series(out, index=list(self.index), name=self.name)
+
+    def rolling(self, window, min_periods=None, center=False):
+        return _Rolling(self, int(window), min_periods, center)
+
+    def expanding(self, min_periods=1):
+        return _Expanding(self, int(min_periods))
+
+    def _cumulative(self, op, start):
+        out, acc = [], start
+        for v in self._data:
+            if _isnan(v):
+                out.append(_NAN)
+            else:
+                acc = v if acc is None else op(acc, v)
+                out.append(acc)
+        return Series(out, index=list(self.index), name=self.name)
+
+    def cumprod(self):
+        return self._cumulative(lambda a, b: a * b, 1.0)
+
+    def cummax(self):
+        return self._cumulative(lambda a, b: a if a >= b else b, None)
+
+    def cummin(self):
+        return self._cumulative(lambda a, b: a if a <= b else b, None)
+
+    def _moments(self):
+        v = [float(x) for x in self._data if not _isnan(x)]
+        n = len(v)
+        if n == 0:
+            return 0, 0.0, 0.0, 0.0, 0.0
+        m = sum(v) / n
+        m2 = sum((x - m) ** 2 for x in v) / n
+        m3 = sum((x - m) ** 3 for x in v) / n
+        m4 = sum((x - m) ** 4 for x in v) / n
+        return n, m, m2, m3, m4
+
+    def skew(self):
+        """Unbiased sample skewness, as pandas (NaN below three values)."""
+        n, _, m2, m3, _ = self._moments()
+        if n < 3 or m2 == 0:
+            return _NAN
+        g1 = m3 / m2 ** 1.5
+        return ((n * (n - 1)) ** 0.5 / (n - 2)) * g1
+
+    def kurt(self):
+        """Unbiased excess kurtosis, as pandas (NaN below four values)."""
+        n, _, m2, _, m4 = self._moments()
+        if n < 4 or m2 == 0:
+            return _NAN
+        g2 = m4 / (m2 * m2) - 3.0
+        return ((n + 1) * g2 + 6.0) * (n - 1) / ((n - 2) * (n - 3))
+
+    kurtosis = kurt
+
+    def first_valid_index(self):
+        for i, v in zip(self.index, self._data):
+            if not _isnan(v):
+                return i
+        return None
+
+    def last_valid_index(self):
+        for i, v in zip(reversed(list(self.index)), reversed(list(self._data))):
+            if not _isnan(v):
+                return i
+        return None
+
+    def argmax(self):
+        best, bi = None, None
+        for k, v in enumerate(self._data):
+            if not _isnan(v) and (best is None or v > best):
+                best, bi = v, k
+        if bi is None:
+            raise ValueError("attempt to get argmax of an empty or all-NA sequence")
+        return bi
+
+    def argmin(self):
+        best, bi = None, None
+        for k, v in enumerate(self._data):
+            if not _isnan(v) and (best is None or v < best):
+                best, bi = v, k
+        if bi is None:
+            raise ValueError("attempt to get argmin of an empty or all-NA sequence")
+        return bi
+
+    def ffill(self):
+        out, last = [], _NAN
+        for v in self._data:
+            if not _isnan(v):
+                last = v
+            out.append(last)
+        return Series(out, index=list(self.index), name=self.name)
+
+    def bfill(self):
+        out, nxt = [], _NAN
+        for v in reversed(list(self._data)):
+            if not _isnan(v):
+                nxt = v
+            out.append(nxt)
+        return Series(out[::-1], index=list(self.index), name=self.name)
+
+    def interpolate(self, method="linear"):
+        """Linear interpolation between valid neighbours; leading NaN stay,
+        trailing NaN take the last valid value (pandas limit_direction="forward")."""
+        if method != "linear":
+            raise ValueError("only method='linear' is supported")
+        vals = [float(v) if not _isnan(v) else _NAN for v in self._data]
+        n = len(vals)
+        out = list(vals)
+        prev = None
+        i = 0
+        while i < n:
+            if not _isnan(vals[i]):
+                prev = i
+                i += 1
+                continue
+            j = i
+            while j < n and _isnan(vals[j]):
+                j += 1
+            if prev is not None and j < n:
+                gap = j - prev
+                for k in range(i, j):
+                    out[k] = vals[prev] + (vals[j] - vals[prev]) * (k - prev) / gap
+            elif prev is not None:
+                for k in range(i, j):
+                    out[k] = vals[prev]
+            i = j
+        return Series(out, index=list(self.index), name=self.name)
+
+    def nlargest(self, n=5):
+        pairs = [(i, v) for i, v in zip(self.index, self._data) if not _isnan(v)]
+        pairs.sort(key=lambda t: t[1], reverse=True)
+        pairs = pairs[:int(n)]
+        return Series([v for _, v in pairs], index=[i for i, _ in pairs], name=self.name)
+
+    def nsmallest(self, n=5):
+        pairs = [(i, v) for i, v in zip(self.index, self._data) if not _isnan(v)]
+        pairs.sort(key=lambda t: t[1])
+        pairs = pairs[:int(n)]
+        return Series([v for _, v in pairs], index=[i for i, _ in pairs], name=self.name)
+
+    def between(self, left, right, inclusive="both"):
+        lo_ok = (lambda v: v >= left) if inclusive in ("both", "left") else (lambda v: v > left)
+        hi_ok = (lambda v: v <= right) if inclusive in ("both", "right") else (lambda v: v < right)
+        out = [bool(not _isnan(v) and lo_ok(v) and hi_ok(v)) for v in self._data]
+        return Series(out, index=list(self.index), name=self.name)
+
+    def where(self, cond, other=_NAN):
+        c = list(cond.tolist() if hasattr(cond, "tolist") else cond)
+        oth = list(other.tolist() if hasattr(other, "tolist") else
+                   [other] * len(self._data))
+        out = [v if bool(ci) else o for v, ci, o in zip(self._data, c, oth)]
+        return Series(out, index=list(self.index), name=self.name)
+
+    def mask(self, cond, other=_NAN):
+        c = list(cond.tolist() if hasattr(cond, "tolist") else cond)
+        return self.where([not bool(ci) for ci in c], other)
+
+    @property
+    def is_monotonic_increasing(self):
+        v = [x for x in self._data]
+        return all(not _isnan(a) and not _isnan(b) and a <= b for a, b in zip(v, v[1:])) \
+            if len(v) > 1 else not any(_isnan(x) for x in v) or len(v) == 0
+
+    @property
+    def is_monotonic_decreasing(self):
+        v = [x for x in self._data]
+        return all(not _isnan(a) and not _isnan(b) and a >= b for a, b in zip(v, v[1:])) \
+            if len(v) > 1 else not any(_isnan(x) for x in v) or len(v) == 0
 
     def diff(self, periods=1):
         d = [_NAN] * min(periods, len(self._data))
@@ -599,12 +792,16 @@ class Series:
     def nunique(self):
         return len({v for v in self._data if not _isnan(v)})
 
-    def value_counts(self, normalize=False, sort=True):
+    def value_counts(self, normalize=False, sort=True, dropna=True):
         counts = {}
+        n_na = 0
         for v in self._data:
             if _isnan(v):
+                n_na += 1
                 continue
             counts[v] = counts.get(v, 0) + 1
+        if not dropna and n_na:
+            counts[_NAN] = n_na
         items = list(counts.items())
         if sort:
             items.sort(key=lambda kv: (-kv[1], str(kv[0])))
@@ -612,10 +809,11 @@ class Series:
         return Series([v / tot if normalize else v for _, v in items],
                       index=[k for k, _ in items], name=self.name)
 
-    def sort_values(self, ascending=True):
-        pairs = sorted(zip(self.index, self._data),
-                       key=lambda kv: (kv[1] != kv[1], kv[1]),
-                       reverse=not ascending)
+    def sort_values(self, ascending=True, na_position="last"):
+        live = [(i, v) for i, v in zip(self.index, self._data) if not _isnan(v)]
+        nas = [(i, v) for i, v in zip(self.index, self._data) if _isnan(v)]
+        live.sort(key=lambda kv: kv[1], reverse=not ascending)
+        pairs = nas + live if na_position == "first" else live + nas
         return Series([v for _, v in pairs], index=[i for i, _ in pairs],
                       name=self.name)
 
@@ -844,6 +1042,69 @@ class _DtAccessor:
 
 
 # ===================================================== DataFrame
+
+class _Rolling:
+    """Series.rolling(window): NaN until min_periods valid values."""
+
+    def __init__(self, series, window, min_periods, center):
+        self._s, self._w = series, window
+        self._min = window if min_periods is None else int(min_periods)
+        self._center = center
+
+    def _apply(self, fn):
+        vals = list(self._s._data)
+        n = len(vals)
+        out = []
+        for i in range(n):
+            if self._center:
+                lo, hi = i - self._w // 2, i - self._w // 2 + self._w
+            else:
+                lo, hi = i - self._w + 1, i + 1
+            window = [vals[j] for j in range(max(lo, 0), min(hi, n)) if not _isnan(vals[j])]
+            out.append(fn(window) if len(window) >= self._min and window else _NAN)
+        return Series(out, index=list(self._s.index), name=self._s.name)
+
+    def mean(self):
+        return self._apply(lambda w: _math.fsum(w) / len(w))
+
+    def sum(self):
+        return self._apply(_math.fsum)
+
+    def min(self):
+        return self._apply(min)
+
+    def max(self):
+        return self._apply(max)
+
+    def median(self):
+        return self._apply(lambda w: Series(w).median())
+
+    def std(self, ddof=1):
+        return self._apply(lambda w: Series(w).std(ddof=ddof) if len(w) > ddof else _NAN)
+
+    def var(self, ddof=1):
+        return self._apply(lambda w: Series(w).var(ddof=ddof) if len(w) > ddof else _NAN)
+
+    def count(self):
+        return self._apply(len)
+
+    def apply(self, fn, raw=False):
+        del raw
+        return self._apply(lambda w: fn(w))
+
+
+class _Expanding(_Rolling):
+    def __init__(self, series, min_periods):
+        super().__init__(series, len(series._data) or 1, min_periods, False)
+
+    def _apply(self, fn):
+        vals = list(self._s._data)
+        out = []
+        for i in range(len(vals)):
+            window = [v for v in vals[:i + 1] if not _isnan(v)]
+            out.append(fn(window) if len(window) >= self._min and window else _NAN)
+        return Series(out, index=list(self._s.index), name=self._s.name)
+
 
 class DataFrame:
     def __init__(self, data=None, index=None, columns=None):
@@ -1180,7 +1441,9 @@ class DataFrame:
                           for c, vals in self._cols.items()},
                          index=list(self.index))
 
-    def sort_values(self, by, ascending=True):
+    def sort_values(self, by, ascending=True, na_position="last"):
+        """pandas: NaN keys go last (or first) whichever way the sort runs;
+        reversing the (is_nan, value) key put them FIRST on descending."""
         if not isinstance(by, (list, tuple)):
             by = [by]
         if not isinstance(ascending, (list, tuple)):
@@ -1188,8 +1451,10 @@ class DataFrame:
         order = list(range(self.shape[0]))
         for col, asc in list(zip(by, ascending))[::-1]:
             vals = self._cols[col]
-            order.sort(key=lambda i: (vals[i] != vals[i], vals[i]),
-                       reverse=not asc)
+            live = [i for i in order if not _isnan(vals[i])]
+            nas = [i for i in order if _isnan(vals[i])]
+            live.sort(key=lambda i: vals[i], reverse=not asc)
+            order = nas + live if na_position == "first" else live + nas
         return self._take(order)
 
     def sort_index(self, ascending=True):
@@ -1220,7 +1485,39 @@ class DataFrame:
     def set_index(self, col):
         out = self.drop(columns=[col])
         out.index = list(self._cols[col])
+        out.index_name = col  # reset_index() restores the column under its name
         return out
+
+    def melt(self, id_vars=None, value_vars=None, var_name="variable",
+             value_name="value"):
+        """Wide to long: one row per (id, variable) pair, variables in
+        column order, as pandas."""
+        ids = [id_vars] if isinstance(id_vars, str) else list(id_vars or [])
+        vv = [value_vars] if isinstance(value_vars, str) else list(
+            value_vars or [c for c in self._cols if c not in ids])
+        out = {c: [] for c in ids}
+        out[var_name], out[value_name] = [], []
+        for var in vv:
+            for i in range(self.shape[0]):
+                for c in ids:
+                    out[c].append(self._cols[c][i])
+                out[var_name].append(var)
+                out[value_name].append(self._cols[var][i])
+        return DataFrame(out)
+
+    def sample(self, n=None, frac=None, replace=False, random_state=None, axis=0):
+        del axis
+        from . import _array_core as _ac
+        rng = _ac.random.default_rng(random_state)
+        total = self.shape[0]
+        k = int(round(total * frac)) if frac is not None else (1 if n is None else int(n))
+        if replace:
+            rows = [int(v) for v in rng.integers(0, total, k).tolist()] if k else []
+        else:
+            if k > total:
+                raise ValueError("Cannot take a larger sample than population when replace=False")
+            rows = [int(v) for v in rng.permutation(total).tolist()[:k]]
+        return self._take(rows)
 
     def select_dtypes(self, include=None, exclude=None):
         dt = self.dtypes.to_dict()
@@ -1322,10 +1619,14 @@ class DataFrame:
     def median(self, numeric_only=True):
         return self._reduce(lambda s: s.median(), numeric_only)
 
-    def min(self, numeric_only=True):
+    def min(self, numeric_only=True, axis=0):
+        if axis in (1, "columns"):
+            return self._row_reduce(lambda vals: min(vals) if vals else _NAN)
         return self._reduce(lambda s: s.min(), numeric_only)
 
-    def max(self, numeric_only=True):
+    def max(self, numeric_only=True, axis=0):
+        if axis in (1, "columns"):
+            return self._row_reduce(lambda vals: max(vals) if vals else _NAN)
         return self._reduce(lambda s: s.max(), numeric_only)
 
     def count(self):
@@ -1510,17 +1811,32 @@ class DataFrame:
                           for i in range(len(rows))},
                          index=list(self._cols.keys()))
 
-    def pivot_table(self, values, index, columns, aggfunc="mean",
+    def pivot_table(self, values, index, columns=None, aggfunc="mean",
                     fill_value=None, dropna=True, margins=False):
+        agg = {"mean": lambda v: _math.fsum(v) / len(v),
+               "sum": _math.fsum, "count": len, "median": lambda v: Series(v).median(),
+               "min": min, "max": max}[aggfunc] if isinstance(aggfunc, str) else aggfunc
+        if columns is None:
+            # index only: one column named after `values`
+            gb1 = {}
+            for i in range(self.shape[0]):
+                v = self._cols[values][i]
+                if dropna and _isnan(v):
+                    continue
+                gb1.setdefault(self._cols[index][i], []).append(v)
+            rows = sorted(gb1)
+            out = DataFrame({values: [agg(gb1[r]) for r in rows]}, index=rows)
+            out.index_name = index
+            return out
         gb = {}
         for i in range(self.shape[0]):
+            v = self._cols[values][i]
+            if dropna and _isnan(v):
+                continue
             key = (self._cols[index][i], self._cols[columns][i])
-            gb.setdefault(key, []).append(self._cols[values][i])
+            gb.setdefault(key, []).append(v)
         rows = sorted({k[0] for k in gb})
         cols = sorted({k[1] for k in gb})
-        agg = {"mean": lambda v: _math.fsum(v) / len(v),
-               "sum": _math.fsum, "count": len,
-               "min": min, "max": max}[aggfunc]
         # fill_value replaces empty cells, as in pandas; without it the caller
         # got a TypeError for passing a keyword this native version lacked.
         empty = _NAN if fill_value is None else fill_value
@@ -2037,7 +2353,23 @@ class _SeriesOwnGroupBy:
                       index=list(self._order), name=self._s.name)
 
     def agg(self, spec):
+        if isinstance(spec, (list, tuple)):
+            # a list of aggregations: one column per name, as pandas
+            parts = {str(getattr(h, "__name__", h)): self._agg(_agg_fn(h)) for h in spec}
+            first = next(iter(parts.values()))
+            out = DataFrame({k: list(v._data) for k, v in parts.items()},
+                            index=list(first.index))
+            out.index_name = getattr(first, "index_name", None)
+            return out
         return self._agg(_agg_fn(spec))
+
+    aggregate = agg
+
+    def first(self):
+        return self._agg(_agg_fn("first"))
+
+    def last(self):
+        return self._agg(_agg_fn("last"))
 
     def apply(self, fn):
         return self._agg(fn)
@@ -2160,7 +2492,26 @@ class _GroupBySeries:
         return Series(out, index=list(gb._df.index), name=self._col)
 
     def agg(self, spec):
+        if isinstance(spec, (list, tuple)):
+            # a list of aggregations: one column per name, as pandas
+            parts = {str(getattr(h, "__name__", h)): self._agg(_agg_fn(h)) for h in spec}
+            first = next(iter(parts.values()))
+            out = DataFrame({k: list(v._data) for k, v in parts.items()},
+                            index=list(first.index))
+            out.index_name = getattr(first, "index_name", None)
+            return out
         return self._agg(_agg_fn(spec))
+
+    aggregate = agg
+
+    def first(self):
+        return self._agg(_agg_fn("first"))
+
+    def last(self):
+        return self._agg(_agg_fn("last"))
+
+    def size(self):
+        return self._agg(lambda s: len(s._data))
 
     def apply(self, fn):
         return self._agg(lambda s: fn(s))
@@ -2416,7 +2767,8 @@ def cut(x, bins, labels=None, right=True, include_lowest=False):
                 ok = lo_e <= v < hi_e or (
                     i == len(edges) - 2 and v == hi_e)
             if ok:
-                placed = (labels[i] if labels is not None
+                placed = (float(i) if labels is False else
+                          labels[i] if labels is not None
                           else "(%g, %g]" % (lo_e, hi_e) if right
                           else "[%g, %g)" % (lo_e, hi_e))
                 break

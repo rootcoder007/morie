@@ -86,6 +86,39 @@ class StandardScaler:
                           for j, v in enumerate(r)] for r in Xd])
 
 
+class MinMaxScaler:
+    """Scale each column to feature_range, as sklearn (a constant column
+    maps to the lower bound)."""
+
+    def __init__(self, feature_range=(0.0, 1.0)):
+        self.feature_range = feature_range
+
+    def fit(self, X, y=None):
+        del y
+        Xd = _X2d(X)
+        d = len(Xd[0])
+        self.data_min_ = [min(r[j] for r in Xd) for j in range(d)]
+        self.data_max_ = [max(r[j] for r in Xd) for j in range(d)]
+        lo, hi = self.feature_range
+        self.scale_ = [(hi - lo) / (mx - mn) if mx > mn else 1.0
+                       for mn, mx in zip(self.data_min_, self.data_max_)]
+        self.min_ = [lo - mn * sc for mn, sc in zip(self.data_min_, self.scale_)]
+        return self
+
+    def transform(self, X):
+        Xd = _X2d(X)
+        return _ac.marr([[v * self.scale_[j] + self.min_[j] for j, v in enumerate(r)]
+                         for r in Xd])
+
+    def fit_transform(self, X, y=None):
+        return self.fit(X).transform(X)
+
+    def inverse_transform(self, X):
+        Xd = _X2d(X)
+        return _ac.marr([[(v - self.min_[j]) / self.scale_[j] for j, v in enumerate(r)]
+                         for r in Xd])
+
+
 class LabelEncoder:
     def fit(self, y):
         vals = list(y.tolist() if hasattr(y, "tolist") else y)

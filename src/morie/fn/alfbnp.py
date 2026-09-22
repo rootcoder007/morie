@@ -238,7 +238,7 @@ def af3_sample(n_atoms=None, denoiser=None, clean=None, steps=20,
         coefs = _fit_linear_denoiser(ref, sig[:-1], z, ridge=float(ridge))
         route = "fitted a linear denoiser by denoising score matching"
 
-        def denoise(x, s, _i=[0]):
+        def denoise(x, s, _i=[0]):  # noqa: B006  -- call counter, deliberate
             c = coefs[min(_i[0], len(coefs) - 1)]
             _i[0] += 1
             return [[c * v for v in p] for p in x]

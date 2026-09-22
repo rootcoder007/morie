@@ -23,9 +23,3 @@ queryingtransformer = qformer_attend
 # public names resolved by fn/_lazy_map.json
 blip_qformer = qformer_attend
 blipqformer = qformer_attend
-
-
-def cheatsheet() -> str:
-    import importlib
-
-    return importlib.import_module("morie.fn.blip2v").cheatsheet()

@@ -13,7 +13,7 @@ from . import _array_core as np
 from ._containers import DescriptiveResult
 from ._rgcore import aslist
 from ._richresult import RichResult
-from ._richresult import RichResult, with_describe_pointer
+from ._richresult import with_describe_pointer
 from .bsacorr import rangayyan_acf_estimate
 
 __all__ = [

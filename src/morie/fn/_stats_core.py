@@ -205,8 +205,111 @@ def _rng_from(random_state):
     return _ac.random.default_rng(random_state)
 
 
+def _scalar(v):
+    if hasattr(v, "tolist"):
+        v = v.tolist()
+    while isinstance(v, (list, tuple)):
+        v = v[0]
+    return float(v)
+
+
+def _edge_wrap(name, fn):
+    """scipy's answers at the edges, for every distribution at once.
+
+    Applied to each subclass's cdf/sf/pdf/pmf/ppf/isf/logpdf/logcdf/logsf
+    by _Dist.__init_subclass__: NaN in is NaN out; ppf/isf outside [0, 1]
+    is NaN and at 0/1 is the support bound (discrete: lower - 1 at 0);
+    cdf/sf/pdf/logpdf at +-inf are their limits; a discrete pmf off the
+    integer support is 0 and a discrete cdf floors its argument; a
+    domain error from the body (x outside the support) is pdf 0, logpdf
+    -inf, cdf/sf at the nearer bound. Before this, ppf(1.0) returned the
+    bisection cap (chi2: 13.0, t: 55.0), logpdf outside the support
+    raised, and geom.cdf(-1) was -0.43.
+    """
+    def wrapped(self, x, *args, **kw):
+        def one(v):
+            v = float(v)
+            if v != v:
+                return _math.nan
+            if name in ("ppf", "isf"):
+                if v < 0.0 or v > 1.0:
+                    return _math.nan
+                if v in (0.0, 1.0):
+                    lo, hi = self._bounds(*args, **kw)
+                    at_lo = (v == 0.0) == (name == "ppf")
+                    if at_lo:
+                        return lo - 1.0 if self._discrete else lo
+                    return hi
+            elif v in (_math.inf, -_math.inf):
+                up = v > 0
+                if name == "cdf":
+                    return 1.0 if up else 0.0
+                if name == "sf":
+                    return 0.0 if up else 1.0
+                if name in ("pdf", "pmf"):
+                    return 0.0
+                if name == "logpdf":
+                    return -_math.inf
+                if name == "logcdf":
+                    return 0.0 if up else -_math.inf
+                if name == "logsf":
+                    return -_math.inf if up else 0.0
+            elif self._discrete and name in ("cdf", "sf", "pmf", "logcdf", "logsf"):
+                lo, hi = self._bounds(*args, **kw)
+                if name == "pmf":
+                    if v != _math.floor(v) or v < lo or v > hi:
+                        return 0.0
+                else:
+                    if v < lo:
+                        return {"cdf": 0.0, "sf": 1.0, "logcdf": -_math.inf, "logsf": 0.0}[name]
+                    v = float(_math.floor(v))
+            try:
+                return _scalar(fn(self, v, *args, **kw))
+            except (ValueError, OverflowError, ZeroDivisionError):
+                lo, hi = self._bounds(*args, **kw)
+                if name in ("pdf", "pmf"):
+                    return 0.0
+                if name == "logpdf":
+                    return -_math.inf
+                if name == "cdf":
+                    return 0.0 if v < lo else 1.0
+                if name == "sf":
+                    return 1.0 if v < lo else 0.0
+                if name == "logcdf":
+                    return -_math.inf if v < lo else 0.0
+                if name == "logsf":
+                    return 0.0 if v < lo else -_math.inf
+                return _math.nan
+        return _maybe_map(one, x)
+    wrapped.__name__ = fn.__name__
+    wrapped.__doc__ = fn.__doc__
+    wrapped._edge_wrapped = True
+    return wrapped
+
+
 class _Dist:
     """Common frozen/unfrozen scipy-like surface."""
+
+    def fit(self, data, *args, **kw):
+        """Maximum-likelihood parameters. Closed forms exist for norm,
+        expon, uniform, laplace, poisson, geom; the others raise."""
+        raise NotImplementedError(
+            f"{type(self).__name__[1:].lower()}.fit() is not available in the "
+            "native core; use norm/expon/uniform/laplace, or fit by hand")
+
+    _support = (-_math.inf, _math.inf)
+    _discrete = False
+
+    def _bounds(self, *args, **kw):
+        """(lower, upper) of the support for these parameters."""
+        return self._support
+
+    def __init_subclass__(cls, **kw):
+        super().__init_subclass__(**kw)
+        for name in ("cdf", "sf", "pdf", "pmf", "ppf", "isf", "logpdf", "logcdf", "logsf"):
+            fn = cls.__dict__.get(name)
+            if callable(fn) and not getattr(fn, "_edge_wrapped", False):
+                setattr(cls, name, _edge_wrap(name, fn))
 
     def __call__(self, *args, **kw):
         return self.__class__(*args, **kw)
@@ -250,7 +353,12 @@ class _Dist:
         return _maybe_map(one, q)
 
     def logpdf(self, x, *args, **kw):
-        return _maybe_map(lambda v: _math.log(self.pdf(v, *args, **kw)), x)
+        def one(v):
+            p = _scalar(self.pdf(v, *args, **kw))
+            if p != p:
+                return _math.nan
+            return _math.log(p) if p > 0 else -_math.inf
+        return _maybe_map(one, x)
     def logcdf(self, x, *a, **k):
         c = self.cdf(x, *a, **k)
         if isinstance(c, float):
@@ -293,6 +401,12 @@ class _Norm(_Dist):
                                            else 1.0)
         return _maybe_map(lambda v: d.loc + d.scale * _norm_ppf(v), q)
 
+    @staticmethod
+    def fit(data, *args, **kw):
+        v = [float(x) for x in _flatten(data)]
+        m = _math.fsum(v) / len(v)
+        return (m, _math.sqrt(_math.fsum((x - m) ** 2 for x in v) / len(v)))
+
     def rvs(self, size=None, random_state=None):
         # Box-Muller through the generator; random_state may itself be a
         # generator (default_rng() used to hand one to SplitMix64's seed
@@ -301,6 +415,7 @@ class _Norm(_Dist):
 
 
 class _Chi2(_Dist):
+    _support = (0.0, _math.inf)
     def __init__(self, df=1.0):
         self.df = float(df)
 
@@ -376,6 +491,7 @@ class _T(_Dist):
 
 
 class _F(_Dist):
+    _support = (0.0, _math.inf)
     def __init__(self, dfn=1.0, dfd=1.0):
         self.dfn, self.dfd = float(dfn), float(dfd)
 
@@ -410,6 +526,7 @@ class _F(_Dist):
 
 
 class _Gamma(_Dist):
+    _support = (0.0, _math.inf)
     def __init__(self, a=1.0, loc=0.0, scale=1.0):
         self.a, self.loc, self.scale = float(a), float(loc), float(scale)
 
@@ -444,6 +561,7 @@ class _Gamma(_Dist):
 
 
 class _Beta(_Dist):
+    _support = (0.0, 1.0)
     @staticmethod
     def var(a, b):
         """Variance ab / ((a+b)^2 (a+b+1)) (Johnson, Kotz &
@@ -481,6 +599,11 @@ class _Beta(_Dist):
 
 
 class _Binom(_Dist):
+    _discrete = True
+    def _bounds(self, n=None, p=None):
+        nn = n if n is not None else getattr(self, "_n", None)
+        return (0.0, float(nn) if nn is not None else _math.inf)
+
     # supports both scipy call styles: binom.pmf(k, n, p) and the
     # frozen form binom(n, p).pmf(k)
     def __init__(self, n=None, p=None):
@@ -572,6 +695,8 @@ class _Binom(_Dist):
 
 
 class _Poisson(_Dist):
+    _support = (0.0, _math.inf)
+    _discrete = True
     # supports both scipy call styles: poisson.pmf(k, mu) and the
     # frozen form poisson(mu).pmf(k)
     def __init__(self, mu=None):
@@ -659,6 +784,16 @@ class _Uniform(_Dist):
     def __init__(self, loc=0.0, scale=1.0):
         self.loc, self.scale = float(loc), float(scale)
 
+    @staticmethod
+    def fit(data, *args, **kw):
+        v = [float(x) for x in _flatten(data)]
+        return (_bi.min(v), _bi.max(v) - _bi.min(v))
+
+    def _bounds(self, loc=None, scale=None):
+        lo = self.loc if loc is None else float(loc)
+        sc = self.scale if scale is None else float(scale)
+        return (lo, lo + sc)
+
     def pdf(self, x, loc=None, scale=None):
         lo = self.loc if loc is None else float(loc)
         sc = self.scale if scale is None else float(scale)
@@ -680,6 +815,15 @@ class _Uniform(_Dist):
 class _Expon(_Dist):
     def __init__(self, loc=0.0, scale=1.0):
         self.loc, self.scale = float(loc), float(scale)
+
+    @staticmethod
+    def fit(data, *args, **kw):
+        v = [float(x) for x in _flatten(data)]
+        lo = _bi.min(v)
+        return (lo, _math.fsum(v) / len(v) - lo)
+
+    def _bounds(self, loc=None, scale=None):
+        return ((self.loc if loc is None else float(loc)), _math.inf)
 
     def pdf(self, x, loc=None, scale=None):
         lo = self.loc if loc is None else float(loc)
@@ -809,6 +953,8 @@ def pearsonr(x, y):
     x, y = _flatten(x), _flatten(y)
     n = len(x)
     r = _pearson_r(x, y)
+    if r != r:
+        return _TestResult(r, _math.nan)  # a constant input: undefined, as scipy
     if n < 3 or abs(r) == 1.0:
         return _TestResult(r, 0.0 if abs(r) == 1.0 else 1.0)
     tstat = r * _math.sqrt((n - 2) / (1.0 - r * r))
@@ -855,10 +1001,42 @@ def kendalltau(x, y):
     n1, n2 = tie_term(x), tie_term(y)
     denom = _math.sqrt((n0 - n1) * (n0 - n2))
     tau = (conc - disc) / denom if denom > 0 else float("nan")
-    # normal approximation for p (scipy uses exact for small n w/o ties;
-    # asymptotic matches to ~1e-3 there)
+    if n < 2 or tau != tau:
+        return _TestResult(tau, _math.nan)
+    if n1 == 0 and n2 == 0 and n <= 50:
+        # exact: the number of permutations of n items with k discordant
+        # pairs (Mahonian numbers), two-sided as scipy
+        counts = [1.0]
+        for m in range(2, n + 1):
+            new = [0.0] * (len(counts) + m - 1)
+            run = 0.0
+            for k in range(len(new)):
+                run += counts[k] if k < len(counts) else 0.0
+                if k - m >= 0:
+                    run -= counts[k - m]
+                new[k] = run
+            counts = new
+        total = _math.factorial(n)
+        d = _bi.min(conc, disc)
+        p_low = _math.fsum(counts[:d + 1]) / total
+        return _TestResult(tau, _bi.min(1.0, 2.0 * p_low))
+    # asymptotic with the tie-corrected variance (Kendall 1970; scipy)
+    def tie_sizes(v):
+        c = {}
+        for u in v:
+            c[u] = c.get(u, 0) + 1
+        return [k for k in c.values() if k > 1]
+    tx_, ty_ = tie_sizes(x), tie_sizes(y)
     v0 = n * (n - 1) * (2 * n + 5)
-    z = 3.0 * (conc - disc) / _math.sqrt(v0 / 2.0) if v0 > 0 else 0.0
+    vt = _math.fsum(k * (k - 1) * (2 * k + 5) for k in tx_)
+    vu = _math.fsum(k * (k - 1) * (2 * k + 5) for k in ty_)
+    v1 = (_math.fsum(k * (k - 1) for k in tx_) * _math.fsum(k * (k - 1) for k in ty_)) \
+        / (2.0 * n * (n - 1))
+    v2 = (_math.fsum(k * (k - 1) * (k - 2) for k in tx_)
+          * _math.fsum(k * (k - 1) * (k - 2) for k in ty_)) \
+        / (9.0 * n * (n - 1) * (n - 2)) if n > 2 else 0.0
+    var = (v0 - vt - vu) / 18.0 + v1 + v2
+    z = (conc - disc) / _math.sqrt(var) if var > 0 else 0.0
     p = 2.0 * norm.sf(abs(z))
     return _TestResult(tau, _bi.min(1.0, p))
 
@@ -881,8 +1059,21 @@ def linregress(x, y=None):
         stderr = _math.sqrt(resid / (n - 2) / sxx)
     else:
         p, stderr = 0.0, 0.0
-    return _TestResult(slope, p, slope=slope, intercept=intercept,
-                       rvalue=r, stderr=stderr)
+    intercept_stderr = stderr * _math.sqrt(_math.fsum(a * a for a in x) / n) \
+        if n > 2 else 0.0
+    return _LinregressResult(slope, intercept, r, p, stderr, intercept_stderr)
+
+
+class _LinregressResult(tuple):
+    """(slope, intercept, rvalue, pvalue, stderr) with attribute access,
+    the shape scipy returns and every caller unpacks."""
+
+    def __new__(cls, slope, intercept, rvalue, pvalue, stderr, intercept_stderr=0.0):
+        obj = super().__new__(cls, (slope, intercept, rvalue, pvalue, stderr))
+        obj.slope, obj.intercept, obj.rvalue = slope, intercept, rvalue
+        obj.pvalue, obj.stderr, obj.intercept_stderr = pvalue, stderr, intercept_stderr
+        obj.statistic = slope
+        return obj
 
 
 # ---------------------------------------------------- descriptive
@@ -1062,6 +1253,23 @@ def wilcoxon(x, y=None, correction=False, **kw):
     for v in d:
         counts[abs(v)] = counts.get(abs(v), 0) + 1
     tie = _math.fsum(c ** 3 - c for c in counts.values())
+    if n == 0:
+        return _TestResult(_math.nan, _math.nan)
+    if n <= 50:
+        # exact: enumerate the distribution of W+ over the 2^n sign
+        # assignments by a subset-sum walk on doubled ranks (mid-ranks
+        # with ties are half-integers), as scipy's method="auto" does
+        r2 = [int(round(2.0 * r)) for r in ranks]
+        total = sum(r2)
+        dist = [0.0] * (total + 1)
+        dist[0] = 1.0
+        for r in r2:
+            for w in range(total, r - 1, -1):
+                dist[w] += dist[w - r]
+        scale = 2.0 ** n
+        w2 = int(round(2.0 * stat))
+        p_low = _math.fsum(dist[:w2 + 1]) / scale
+        return _TestResult(stat, _bi.min(1.0, 2.0 * p_low))
     sig = _math.sqrt(n * (n + 1) * (2 * n + 1) / 24.0 - tie / 48.0)
     corr = 0.5 * (1 if correction else 0)
     z = (stat - mu + corr) / sig
@@ -1439,9 +1647,9 @@ def ks_2samp(a, b, alternative="two-sided"):
 
     The one-sided p-value is Smirnov's asymptotic exp(-2 n_e D^2); the
     two-sided one is the Kolmogorov series in the effective sample size
-    n_e = n1 n2 / (n1 + n2).  Both are asymptotic, so ``exact`` is False
-    throughout -- with ties present no exact two-sample p-value is
-    available at all, and the number of ties is reported for that reason.
+    n_e = n1 n2 / (n1 + n2), used above n1 n2 = 10000; below that the
+    exact Smirnov distribution is used whether or not there are ties, as
+    scipy does (it is conservative with ties, whose count is reported).
     """
     _ks_check_alt(alternative)
     x, y = sorted(_flatten(a)), sorted(_flatten(b))
@@ -1462,14 +1670,14 @@ def ks_2samp(a, b, alternative="two-sided"):
     en = n1 * n2 / (n1 + n2)
     if alternative in ("greater", "less"):
         d = dplus if alternative == "greater" else dminus
-        if n1 * n2 < 10000 and ties == 0:
+        if n1 * n2 <= 10000:
             pv = 1.0 - _ks_psmirnov(d, n1, n2, two_sided=False)
             is_exact = True
         else:
             pv = _math.exp(-2.0 * en * d * d)
     else:
         d = _bi.max(dplus, dminus)
-        if n1 * n2 < 10000 and ties == 0:
+        if n1 * n2 <= 10000:
             pv = 1.0 - _ks_psmirnov(d, n1, n2)
             is_exact = True
         else:
@@ -1700,6 +1908,8 @@ class gaussian_kde:
     def evaluate(self, points):
         if hasattr(points, "tolist"):
             points = points.tolist()
+        if isinstance(points, (int, float)):
+            points = [float(points)]
         if not isinstance(points[0], (list, tuple)):
             pts = [[float(v) for v in points]]
         else:
@@ -1743,6 +1953,13 @@ class _Logistic(_Dist):
 
 
 class _Laplace(_Dist):
+    @staticmethod
+    def fit(data, *args, **kw):
+        v = sorted(float(x) for x in _flatten(data))
+        n = len(v)
+        med = v[n // 2] if n % 2 else 0.5 * (v[n // 2 - 1] + v[n // 2])
+        return (med, _math.fsum(abs(x - med) for x in v) / n)
+
     def pdf(self, x, loc=0.0, scale=1.0):
         def one(v):
             return _math.exp(-abs(v - loc) / scale) / (2.0 * scale)
@@ -1781,6 +1998,7 @@ class _Cauchy(_Dist):
 
 
 class _LogNorm(_Dist):
+    _support = (0.0, _math.inf)
     """scipy parametrization: lognorm(s, loc=0, scale=exp(mu))."""
 
     def pdf(self, x, s, loc=0.0, scale=1.0):
@@ -1807,6 +2025,7 @@ class _LogNorm(_Dist):
 
 
 class _WeibullMin(_Dist):
+    _support = (0.0, _math.inf)
     def pdf(self, x, c, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
@@ -1828,6 +2047,8 @@ class _WeibullMin(_Dist):
 
 
 class _NBinom(_Dist):
+    _support = (0.0, _math.inf)
+    _discrete = True
     def ppf(self, q, n, p):
         # walk the cdf; the mean n(1-p)/p bounds how far a quantile can sit
         kmax = int(20 * (n * (1.0 - p) / p + 1.0) + 50)
@@ -1867,6 +2088,8 @@ def _ppf_discrete(cdf_at, q, kmin, kmax):
 
 
 class _Geom(_Dist):
+    _support = (1.0, _math.inf)
+    _discrete = True
     def ppf(self, q, p):
         # support k >= 1, as scipy: ceil(log(1 - q) / log(1 - p))
         def one(v):
@@ -1893,6 +2116,12 @@ class _Geom(_Dist):
 
 
 class _HyperGeom(_Dist):
+    _discrete = True
+    def _bounds(self, M=None, n=None, N=None):
+        if None in (M, n, N):
+            return (0.0, _math.inf)
+        return (float(max(0, N - (M - n))), float(min(n, N)))
+
     def ppf(self, q, M, n, N):
         kmin = _bi.max(0, N - (M - n))
         kmax = _bi.min(n, N)
@@ -1920,6 +2149,14 @@ class _HyperGeom(_Dist):
 
 class _GenExtreme(_Dist):
     """scipy genextreme: c > 0 = reversed-Weibull tail, c=0 Gumbel."""
+
+    def _bounds(self, c, loc=0.0, scale=1.0):
+        c, loc, scale = float(c), float(loc), float(scale)
+        if c > 0:
+            return (-_math.inf, loc + scale / c)
+        if c < 0:
+            return (loc + scale / c, _math.inf)
+        return (-_math.inf, _math.inf)
 
     def cdf(self, x, c, loc=0.0, scale=1.0):
         def one(v):
@@ -2286,6 +2523,7 @@ kstwo = _KSTwo()
 
 
 class _HalfCauchy(_Dist):
+    _support = (0.0, _math.inf)
     def pdf(self, x, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
@@ -2307,6 +2545,7 @@ class _HalfCauchy(_Dist):
 
 
 class _Pareto(_Dist):
+    _support = (1.0, _math.inf)
     def pdf(self, x, b, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
@@ -2326,6 +2565,7 @@ class _Pareto(_Dist):
 
 
 class _GenPareto(_Dist):
+    _support = (0.0, _math.inf)
     def pdf(self, x, c, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
@@ -2371,43 +2611,86 @@ def _chi2_quantile_grid(df, npts):
     return tuple(chi2.ppf((i + 0.5) / npts, df) for i in range(npts))
 
 
+def _nct_cdf(t, df, delta, itrmax=1000, errmax=1e-12):
+    """P(T <= t) for the noncentral t: Lenth (1989) AS 243, the series
+    of incomplete-beta terms R's pnt() and scipy's nctdtr use. Replaces
+    a 200-point quadrature over chi-square quantiles that was off by
+    about 1e-4, which is visible in a power calculation.
+    """
+    if t != t or df != df or delta != delta:
+        return _math.nan
+    if df <= 0:
+        return _math.nan
+    if t < 0:
+        return 1.0 - _nct_cdf(-t, df, -delta, itrmax, errmax)
+    if t == _math.inf:
+        return 1.0
+    x = t * t / (t * t + df)
+    if x <= 0.0:
+        return _norm_cdf(-delta)
+    lam = delta * delta
+    p = 0.5 * _math.exp(-0.5 * lam)
+    q = _math.sqrt(2.0 / _math.pi) * p * delta
+    s_ = 0.5 - p
+    a = 0.5
+    b = 0.5 * df
+    rxb = (1.0 - x) ** b
+    albeta = 0.5 * _math.log(_math.pi) + _math.lgamma(b) - _math.lgamma(0.5 + b)
+    xodd = _betainc(a, b, x)
+    godd = 2.0 * rxb * _math.exp(a * _math.log(x) - albeta)
+    xeven = 1.0 - rxb
+    geven = b * x * rxb
+    tnc = p * xodd + q * xeven
+    for j in range(1, itrmax + 1):
+        a += 1.0
+        xodd -= godd
+        xeven -= geven
+        godd *= x * (a + b - 1.0) / a
+        geven *= x * (a + b - 0.5) / (a + 0.5)
+        p *= lam / (2.0 * j)
+        q *= lam / (2.0 * j + 1.0)
+        s_ -= p
+        tnc += p * xodd + q * xeven
+        if s_ < errmax or (p * xodd + q * xeven) < errmax * tnc and j > 10:
+            break
+    tnc += _norm_cdf(-delta)
+    return _bi.min(1.0, _bi.max(0.0, tnc))
+
+
 class _NCT(_Dist):
-    """Noncentral t via cdf integration of the defining integral."""
+    """Noncentral t (Lenth 1989, AS 243)."""
 
     def cdf(self, x, df, nc):
-        grid = _chi2_quantile_grid(float(df), 200)
-
-        def one(v):
-            # Algorithm: P(T<=t) = P(Z <= (t*sqrt(W/df) - nc)) averaged
-            # over W ~ chi2(df); Gauss-Legendre on W quantiles
-            total = 0.0
-            for w in grid:
-                total += _norm_cdf(v * _math.sqrt(w / df) - nc)
-            return total / len(grid)
-        return _maybe_map(one, x)
+        return _maybe_map(lambda v: _nct_cdf(v, float(df), float(nc)), x)
 
     def sf(self, x, df, nc):
-        c = self.cdf(x, df, nc)
-        if isinstance(c, float):
-            return 1.0 - c
-        return 1.0 - c
+        return _maybe_map(lambda v: 1.0 - _nct_cdf(v, float(df), float(nc)), x)
 
     def pdf(self, x, df, nc):
+        # f(x) = (df / x) [F(x sqrt(1 + 2/df); df + 2, nc) - F(x; df, nc)]
+        # (Johnson, Kotz & Balakrishnan 1995, eq. 31.15); at x = 0 the
+        # closed form of the density.
+        df, nc = float(df), float(nc)
+
         def one(v):
-            h = 1e-5 * _bi.max(abs(v), 1.0)
-            lo = self.cdf(v - h, df, nc)
-            hi = self.cdf(v + h, df, nc)
-            return (hi - lo) / (2.0 * h)
+            if v != v:
+                return _math.nan
+            if v == 0.0:
+                return _math.exp(_math.lgamma((df + 1.0) / 2.0) - _math.lgamma(df / 2.0)
+                                 - 0.5 * _math.log(_math.pi * df) - 0.5 * nc * nc)
+            return (df / v) * (_nct_cdf(v * _math.sqrt(1.0 + 2.0 / df), df + 2.0, nc)
+                               - _nct_cdf(v, df, nc))
         return _maybe_map(one, x)
 
     def ppf(self, q, df, nc):
         def one(p):
-            return _ppf_from_cdf(lambda v: self.cdf(v, df, nc), p,
-                                 -1e3, 1e3)
+            return _ppf_from_cdf(lambda v: _nct_cdf(v, float(df), float(nc)), p,
+                                 -1e4, 1e4)
         return _maybe_map(one, q)
 
 
 class _NCF(_Dist):
+    _support = (0.0, _math.inf)
     """Noncentral F via chi2 mixture average."""
 
     def cdf(self, x, dfn, dfd, nc):
@@ -2784,3 +3067,83 @@ mvn = _MVN()
 
 
 winsorize = _MStats.winsorize    # scipy.stats.mstats import site
+
+
+# ---------------------------------------------------- more scipy.stats surface
+
+class _ModeResult(tuple):
+    def __new__(cls, mode, count):
+        obj = super().__new__(cls, (mode, count))
+        obj.mode, obj.count = mode, count
+        return obj
+
+
+def mode(a, axis=0, nan_policy="propagate", keepdims=False):
+    """Most common value (smallest on ties) and its count, as scipy."""
+    del axis, keepdims
+    v = _flatten(a)
+    if nan_policy == "omit":
+        v = [x for x in v if x == x]
+    elif any(x != x for x in v):
+        return _ModeResult(_math.nan, 0)
+    if not v:
+        return _ModeResult(_math.nan, 0)
+    counts = {}
+    for x in v:
+        counts[x] = counts.get(x, 0) + 1
+    best = _bi.max(counts.values())
+    return _ModeResult(_bi.min(k for k, c in counts.items() if c == best), best)
+
+
+def power_divergence(f_obs, f_exp=None, ddof=0, axis=0, lambda_=None):
+    """Cressie-Read power divergence; lambda_=1 (default) is Pearson's
+    chi-square, 0 the log-likelihood ratio (G-test), -1/2 Freeman-Tukey,
+    -1 modified log-likelihood, -2 Neyman."""
+    del axis
+    names = {"pearson": 1.0, "log-likelihood": 0.0, "freeman-tukey": -0.5,
+             "mod-log-likelihood": -1.0, "neyman": -2.0, "cressie-read": 2.0 / 3.0}
+    lam = 1.0 if lambda_ is None else (names[lambda_] if isinstance(lambda_, str) else float(lambda_))
+    obs = [float(v) for v in _flatten(f_obs)]
+    k = len(obs)
+    exp_ = [float(v) for v in _flatten(f_exp)] if f_exp is not None else [_math.fsum(obs) / k] * k
+    if lam == 0.0:
+        stat = 2.0 * _math.fsum(o * _math.log(o / e) for o, e in zip(obs, exp_) if o > 0)
+    elif lam == -1.0:
+        stat = 2.0 * _math.fsum(e * _math.log(e / o) for o, e in zip(obs, exp_) if o > 0)
+    else:
+        stat = 2.0 / (lam * (lam + 1.0)) * _math.fsum(o * ((o / e) ** lam - 1.0)
+                                                      for o, e in zip(obs, exp_))
+    df = k - 1 - ddof
+    return _TestResult(stat, chi2.sf(stat, df) if df > 0 else _math.nan)
+
+
+def combine_pvalues(pvalues, method="fisher", weights=None):
+    """Fisher's or Stouffer's combination of independent p-values."""
+    ps = [float(v) for v in _flatten(pvalues)]
+    k = len(ps)
+    if method == "fisher":
+        stat = -2.0 * _math.fsum(_math.log(v) for v in ps)
+        return _TestResult(stat, chi2.sf(stat, 2 * k))
+    if method == "stouffer":
+        w = [1.0] * k if weights is None else [float(v) for v in _flatten(weights)]
+        z = _math.fsum(wi * _norm_ppf(1.0 - v) for wi, v in zip(w, ps)) \
+            / _math.sqrt(_math.fsum(wi * wi for wi in w))
+        return _TestResult(z, 1.0 - _norm_cdf(z))
+    raise ValueError("method must be 'fisher' or 'stouffer'")
+
+
+def entropy(pk, qk=None, base=None, axis=0):
+    """Shannon entropy of a distribution (normalised), or the relative
+    entropy (Kullback-Leibler divergence) against qk."""
+    del axis
+    p_ = [float(v) for v in _flatten(pk)]
+    tot = _math.fsum(p_)
+    p_ = [v / tot for v in p_]
+    if qk is None:
+        h = -_math.fsum(v * _math.log(v) for v in p_ if v > 0)
+    else:
+        q_ = [float(v) for v in _flatten(qk)]
+        qt = _math.fsum(q_)
+        q_ = [v / qt for v in q_]
+        h = _math.fsum(v * _math.log(v / w) for v, w in zip(p_, q_) if v > 0)
+    return h / _math.log(base) if base else h

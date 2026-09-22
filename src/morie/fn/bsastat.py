@@ -8,18 +8,13 @@ symbols are unchanged.
 
 from __future__ import annotations
 from math import cos, fsum, log, log10, pi, sin, sqrt
-from math import cos, fsum, log, pi, sin, sqrt
-from math import fsum
-from math import fsum, sqrt
 from math import inf
-from math import inf, log
-from math import inf, sqrt
 from . import _array_core as np
 from . import _stats_core as stats
 from ._rgcore import aslist
 from ._rgcore import checkpdf, pdfint
 from ._richresult import RichResult
-from ._richresult import RichResult, with_describe_pointer
+from ._richresult import with_describe_pointer
 
 __all__ = [
     'corrcoef',

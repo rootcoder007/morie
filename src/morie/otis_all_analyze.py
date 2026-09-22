@@ -144,7 +144,7 @@ def analyze_b01(df: pd.DataFrame | None = None) -> RichResult:
     reasons = [c for c in df.columns if c.startswith("SegReason_")]
     reason_rows = []
     for r in reasons:
-        n_yes = int((df[r] == True).sum() if df[r].dtype == bool else (df[r] == 1).sum())
+        n_yes = int(df[r].sum() if df[r].dtype == bool else (df[r] == 1).sum())
         if n_yes > 0:
             reason_rows.append([r.replace("SegReason_", ""), n_yes, f"{100 * n_yes / df.shape[0]:.1f}%"])
     reason_rows.sort(key=lambda r: -r[1])
@@ -154,7 +154,7 @@ def analyze_b01(df: pd.DataFrame | None = None) -> RichResult:
     alert_rows = []
     for a in alerts:
         if a in df.columns:
-            n_yes = int((df[a] == True).sum() if df[a].dtype == bool else (df[a] == 1).sum())
+            n_yes = int(df[a].sum() if df[a].dtype == bool else (df[a] == 1).sum())
             alert_rows.append([a, n_yes, f"{100 * n_yes / df.shape[0]:.1f}%"])
 
     return RichResult(
@@ -3515,7 +3515,7 @@ def analyze_ruhela_master(*, include_per_row: bool = False) -> RichResult:
         c_chi = analyze_c_chi2()
         d_chi = analyze_d_chi2()
         doob_rows: list = []
-        for label, r in [("c-series", c_doob), ("d-series", d_doob)]:
+        for label, r in [("c-series", c_chi), ("d-series", d_chi)]:
             if r.tables and r.tables[0].get("rows"):
                 # Pick the χ² rows
                 for row in r.tables[0]["rows"][:3]:

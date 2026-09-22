@@ -1516,6 +1516,18 @@ def clip(x, lo, hi):
     return one(float(a))
 
 
+class AxisError(ValueError, IndexError):
+    """numpy.exceptions.AxisError: an axis that the array does not have."""
+
+
+def _check_axis(a, axis):
+    if axis is None:
+        return
+    nd = len(a.shape)
+    if not isinstance(axis, int) or axis >= nd or axis < -nd:
+        raise AxisError(f"axis {axis} is out of bounds for array of dimension {nd}")
+
+
 def _nan_ext(it, ext):
     """numpy max/min: a NaN anywhere in the input is the answer.
 
@@ -1557,17 +1569,31 @@ def _nan_argsorted(f):
     return idx + [i for i, v in enumerate(f) if v != v]
 
 
-def _ieee(fn):
+def _ieee(fn, even=False):
     """numpy semantics for a math.* function: a domain error is nan, an
-    overflow is inf, and nan/inf inputs pass through instead of raising."""
+    overflow is inf (signed like the input, or +inf for an even function
+    such as cosh), and nan/inf inputs pass through instead of raising."""
     def one(v):
         try:
             return fn(v)
         except ValueError:
             return _NAN
         except OverflowError:
-            return _INF if v > 0 else -_INF
+            return _INF if (even or v > 0) else -_INF
     return one
+
+
+def _ieee_log2(v):
+    """numpy's log2: log2(0) is -inf and log2(x < 0) is nan."""
+    if v > 0:
+        return _math.log2(v)
+    return -_INF if v == 0 else _NAN
+
+
+def _ieee_log10(v):
+    if v > 0:
+        return _math.log10(v)
+    return -_INF if v == 0 else _NAN
 
 
 def _ieee_div(x, y):
@@ -1756,6 +1782,7 @@ def matmul(a, b):
 # --------------------------------------------------------------- reductions
 
 def sum(x, axis=None, dtype=None, keepdims=False):  # noqa: A001
+    _check_axis(asarray(x), axis)
     del dtype
     if isinstance(x, ndlist):
         return ndlist(marr(b).sum(axis=axis, keepdims=keepdims)
@@ -1764,21 +1791,25 @@ def sum(x, axis=None, dtype=None, keepdims=False):  # noqa: A001
 
 
 def mean(x, axis=None, dtype=None, keepdims=False):
+    _check_axis(asarray(x), axis)
     del dtype
     return asarray(x).mean(axis=axis, keepdims=keepdims)
 
 
 def std(x, axis=None, ddof=0, dtype=None, keepdims=False):
+    _check_axis(asarray(x), axis)
     del dtype, keepdims
     return asarray(x).std(axis=axis, ddof=ddof)
 
 
 def var(x, axis=None, ddof=0, dtype=None, keepdims=False):
+    _check_axis(asarray(x), axis)
     del dtype, keepdims
     return asarray(x).var(axis=axis, ddof=ddof)
 
 
 def max(x, axis=None, keepdims=False):  # noqa: A001
+    _check_axis(asarray(x), axis)
     if isinstance(x, ndlist):
         return ndlist(marr(b).max(axis=axis, keepdims=keepdims)
                       for b in x)
@@ -1787,6 +1818,7 @@ def max(x, axis=None, keepdims=False):  # noqa: A001
 
 
 def min(x, axis=None, keepdims=False):  # noqa: A001
+    _check_axis(asarray(x), axis)
     del keepdims
     return asarray(x).min(axis=axis)
 
@@ -1840,7 +1872,10 @@ def unique(x, return_inverse=False, return_counts=False,
         uniq = sorted(set(vals), key=str)
     else:
         vals = a._flat()
-        uniq = sorted(set(vals))
+        # numpy: one NaN, sorted last
+        uniq = sorted({v for v in vals if v == v})
+        if any(v != v for v in vals):
+            uniq.append(_NAN)
     if not (return_inverse or return_counts or return_index):
         return oarr(uniq) if isinstance(a, oarr) else marr(uniq)
     pos = {v: i for i, v in enumerate(uniq)}
@@ -2128,7 +2163,7 @@ class _SplitMix64:
                     return [float(x) for x in v]
                 return [float(v)]
             lo, hi = _vals(low), _vals(high)
-            n = max(len(lo), len(hi))
+            n = _bi.max(len(lo), len(hi))  # the module max() is the axis reducer
             if size is not None:
                 n = int(size[0]) if isinstance(size, (tuple, list)) \
                     else int(size)
@@ -2206,7 +2241,7 @@ class _SplitMix64:
                 # rng.normal(array_of_n, scale) silently returned ONE float
                 # instead of n draws -- simulate_biased_crime_data built a
                 # 6000-row frame whose risk_score column had length 1.
-                size = max(len(lv), len(sv))
+                size = _bi.max(len(lv), len(sv))  # the module max() is the axis reducer
             z = self.normal(0.0, 1.0, size)
             if len(getattr(z, "shape", (0,))) == 2:
                 nr, nc = z.shape
@@ -2286,38 +2321,6 @@ class _SplitMix64:
 
     def standard_gamma(self, shape, size=None):
         return self.gamma(shape, 1.0, size)
-
-    def gamma(self, shape, scale=1.0, size=None):
-        a = float(shape)
-
-        def one():
-            # Marsaglia, G. & Tsang, W. W. (2000) "A simple method for
-        # generating gamma variables", ACM Transactions on Mathematical
-        # Software 26(3), 363-372, doi:10.1145/358407.358414.
-        # Boost for a < 1 is their section 6.
-            aa = a if a >= 1.0 else a + 1.0
-            d = aa - 1.0 / 3.0
-            c = 1.0 / _math.sqrt(9.0 * d)
-            while True:
-                x = self.normal()
-                v = (1.0 + c * x) ** 3
-                if v <= 0:
-                    continue
-                u = _pymax(self._u(), 1e-300)
-                if _math.log(u) < 0.5 * x * x + d - d * v \
-                        + d * _math.log(v):
-                    g = d * v
-                    if a < 1.0:
-                        g *= _pymax(self._u(), 1e-300) ** (1.0 / a)
-                    return g * float(scale)
-        return self._fill(one, size)
-
-    def beta(self, a, b, size=None):
-        def one():
-            x = self.gamma(a)
-            y = self.gamma(b)
-            return x / (x + y)
-        return self._fill(one, size)
 
     def binomial(self, n, p, size=None):
         # numpy broadcasts an array-valued p (or n) against size:
@@ -3111,11 +3114,22 @@ linalg.eigvalsh = _LinalgExt.eigvalsh
 linalg.cond = _LinalgExt.cond
 
 
-def prod(x):
-    out = 1.0
-    for v in asarray(x)._flat():
-        out *= v
-    return float(out)
+def prod(x, axis=None, keepdims=False):
+    _check_axis(asarray(x), axis)
+    def _p(vals):
+        out = 1.0
+        for v in vals:
+            out *= v
+        return float(out)
+    a = asarray(x)
+    if axis is not None and len(a.shape) == 2:
+        if axis in (0, -2):
+            out = marr([_p(a.data[i][j] for i in range(a.shape[0]))
+                        for j in range(a.shape[1])])
+        else:
+            out = marr([_p(row) for row in a.data])
+        return _keepdims_wrap(out, axis, keepdims)
+    return _keepdims_wrap(_p(a._flat()), axis, keepdims)
 
 
 def outer(a, b):
@@ -3222,7 +3236,7 @@ def ones_like(x, dtype=None):
 
 tanh = _uf(_math.tanh)
 sinh = _uf(_ieee(_math.sinh))
-cosh = _uf(_ieee(_math.cosh))
+cosh = _uf(_ieee(_math.cosh, even=True))
 sin = _uf(_ieee(_math.sin))
 cos = _uf(_ieee(_math.cos))
 tan = _uf(_ieee(_math.tan))
@@ -3253,8 +3267,8 @@ def round(x, decimals=0):  # noqa: A001
 
 
 around = round
-log2 = _uf(_ieee(_math.log2))
-log10 = _uf(_ieee(_math.log10))
+log2 = _uf(_ieee_log2)
+log10 = _uf(_ieee_log10)
 expm1 = _uf(_ieee(_math.expm1))
 isnan = _uf(lambda v: 1.0 if v != v else 0.0)
 
@@ -3288,6 +3302,7 @@ def cumsum(x, axis=None):
 
 
 def argmax(x, axis=None):
+    _check_axis(asarray(x), axis)
     a = asarray(x)
     if axis is None or len(a.shape) == 1:
         return _nan_argext(a._flat(), _bi.max)
@@ -3299,6 +3314,7 @@ def argmax(x, axis=None):
 
 
 def argmin(x, axis=None):
+    _check_axis(asarray(x), axis)
     a = asarray(x)
     if axis is None or len(a.shape) == 1:
         return _nan_argext(a._flat(), _bi.min)
@@ -3360,20 +3376,43 @@ uint8 = _DTypeNarrow("uint8")
 bool_ = bool
 
 
-def median(x):
-    f = sorted(asarray(x)._flat())
+def _median_nanaware(vals):
+    vals = list(vals)
+    if not vals:
+        _warnings.warn("Mean of empty slice", RuntimeWarning, stacklevel=3)
+        return _NAN
+    for v in vals:
+        if v != v:
+            return _NAN
+    f = sorted(vals)
     n = len(f)
-    if n == 0:
-        raise ValueError("median of empty array")
     mid = n // 2
-    if n % 2:
-        return f[mid]
-    return 0.5 * (f[mid - 1] + f[mid])
+    return f[mid] if n % 2 else 0.5 * (f[mid - 1] + f[mid])
+
+
+def median(x, axis=None, keepdims=False):
+    """numpy.median: NaN propagates, an empty input is NaN, axis honoured."""
+    _check_axis(asarray(x), axis)
+    a = asarray(x)
+    if axis is not None and len(a.shape) == 2:
+        if axis in (0, -2):
+            out = marr([_median_nanaware(a.data[i][j] for i in range(a.shape[0]))
+                        for j in range(a.shape[1])])
+        else:
+            out = marr([_median_nanaware(row) for row in a.data])
+        return _keepdims_wrap(out, axis, keepdims)
+    return _keepdims_wrap(_median_nanaware(a._flat()), axis, keepdims)
 
 
 def percentile(x, q, axis=None):
-    """Linear-interpolation percentile (numpy default method)."""
+    """Linear-interpolation percentile (numpy default method).
+
+    A NaN anywhere in the reduced slice makes the answer NaN, as in
+    numpy; nanpercentile() is the skipping form.
+    """
     a = asarray(x)
+    if axis is None and any(v != v for v in a._flat()):
+        return marr([nan] * len(list(q))) if isinstance(q, (list, tuple, marr)) else nan
     if axis is not None and len(a.shape) == 2:
         if axis in (0, -2):
             cols = [[a.data[r][c] for r in range(a.shape[0])]
@@ -4232,6 +4271,9 @@ def nanmean(x, axis=None, keepdims=False):
                       lambda v: _fsum(v) / len(v) if v else nan),
             axis, keepdims)
     f = _nan_filter(x)
+    if not f:
+        _warnings.warn("Mean of empty slice", RuntimeWarning, stacklevel=2)
+        return _keepdims_wrap(_NAN, axis, keepdims)
     return _keepdims_wrap(float(_fsum(f) / len(f)), axis, keepdims)
 
 
@@ -4283,7 +4325,11 @@ def nanmedian(x, axis=None, keepdims=False):
     if axis is not None and len(asarray(x).shape) == 2:
         return _keepdims_wrap(_nan_axis(x, axis, lambda v: _median_of(v)),
                               axis, keepdims)
-    return median(_nan_filter(x))
+    f = _nan_filter(x)
+    if not f:
+        _warnings.warn("All-NaN slice encountered", RuntimeWarning, stacklevel=2)
+        return nan
+    return median(f)
 
 
 def nanargmax(x):
@@ -4524,7 +4570,7 @@ def square(x):
 
 
 def exp2(x):
-    return asarray(x)._map(lambda v: 2.0 ** v)
+    return _map_unary(x, _ieee(lambda v: 2.0 ** v))
 
 
 def hypot(a, b):
@@ -4532,7 +4578,37 @@ def hypot(a, b):
 
 
 def rint(x):
-    return asarray(x)._map(lambda v: float(_bi.round(v)))
+    return _map_unary(x, _ieee(lambda v: float(_bi.round(v))))
+
+
+def trunc(x):
+    return _map_unary(x, _ieee(lambda v: float(_math.trunc(v))))
+
+
+def negative(x):
+    return _map_unary(x, lambda v: -v)
+
+
+def reciprocal(x):
+    return _map_unary(x, lambda v: _ieee_div(1.0, v))
+
+
+def cbrt(x):
+    return _map_unary(x, lambda v: _math.copysign(_bi.abs(v) ** (1.0 / 3.0), v)
+                      if v == v else v)
+
+
+def ravel(x):
+    return marr(list(asarray(x)._flat()))
+
+
+def transpose(x, axes=None):
+    del axes
+    a = asarray(x)
+    if len(a.shape) == 2:
+        return marr([[a.data[i][j] for i in range(a.shape[0])]
+                     for j in range(a.shape[1])])
+    return a
 
 
 def geomspace(a, b, n):
@@ -5257,8 +5333,20 @@ def roll(a, shift, axis=None):
     return marr(f[-s:] + f[:-s])
 
 
+def _ieee_pow(x, y):
+    """numpy power: a negative base to a fractional exponent is nan, not
+    a complex number; overflow is inf."""
+    try:
+        r = x ** y
+    except OverflowError:
+        return _INF
+    except ZeroDivisionError:
+        return _INF
+    return _NAN if isinstance(r, complex) else r
+
+
 def power(a, b):
-    return asarray(a)._zip(b, lambda x, y: x ** y)
+    return asarray(a)._zip(b, _ieee_pow)
 
 
 def gradient(f, *varargs):
@@ -5284,7 +5372,17 @@ def gradient(f, *varargs):
 
 
 def arctanh(x):
-    return _map_unary(x, _math.atanh)
+    # numpy: |x| > 1 is nan, |x| == 1 is +-inf, not a ValueError
+    return _map_unary(x, _ieee(lambda v: _math.atanh(v) if _bi.abs(v) != 1.0
+                                else _math.copysign(_INF, v)))
+
+
+def arcsinh(x):
+    return _map_unary(x, _ieee(_math.asinh))
+
+
+def arccosh(x):
+    return _map_unary(x, _ieee(_math.acosh))
 
 
 def arctan2(y, x):
@@ -5327,16 +5425,17 @@ def trapz(y, x=None, dx=1.0):
 
 
 def ptp(a, axis=None):
+    """numpy.ptp: max - min, NaN if any NaN in the slice."""
     x = asarray(a)
+    def _p(vals):
+        vals = list(vals)
+        return _nan_ext(vals, _bi.max) - _nan_ext(vals, _bi.min)
     if axis is None or len(x.shape) == 1:
-        f = x._flat()
-        return _bi.max(f) - _bi.min(f)
-    if axis == 0:
-        return marr([_bi.max(x.data[i][j] for i in range(x.shape[0]))
-                     - _bi.min(x.data[i][j]
-                               for i in range(x.shape[0]))
+        return _p(x._flat())
+    if axis in (0, -2):
+        return marr([_p(x.data[i][j] for i in range(x.shape[0]))
                      for j in range(x.shape[1])])
-    return marr([_bi.max(row) - _bi.min(row) for row in x.data])
+    return marr([_p(row) for row in x.data])
 
 
 def pad(a, pad_width, mode="constant", constant_values=0.0):

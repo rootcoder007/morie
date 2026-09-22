@@ -9,14 +9,13 @@ symbols are unchanged.
 from __future__ import annotations
 from math import atan, ceil, tan
 from math import atan2, cos, exp, fsum, pi, sin
-from math import fsum
-from math import fsum, log
+from math import log
 from math import log10
 from . import _array_core as np
 from . import _stats_core as stats
 from ._rgcore import aslist
 from ._richresult import RichResult
-from ._richresult import RichResult, with_describe_pointer
+from ._richresult import with_describe_pointer
 from ._sci_core import integrate
 
 __all__ = [

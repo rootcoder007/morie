@@ -25,9 +25,3 @@ e_gcn = run_egnn
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).
 egcn = e_gcn
-
-
-def cheatsheet() -> str:
-    import importlib
-
-    return importlib.import_module("morie.fn.egnnL").cheatsheet()
