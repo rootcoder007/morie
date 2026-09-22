@@ -5,14 +5,23 @@
 \title{.layer_weights}
 \usage{
 .layer_weights(raw)
+
+.layer_weights(raw)
 }
 \arguments{
 \item{raw}{A vector; its length is taken.}
 }
 \value{
 A vector, from \code{as.numeric}.
+
+A vector, from \code{as.numeric}.
 }
 \description{
+A step of the elmo_native implementation. Called by \code{.elmo_mix},
+\code{.elmo_representation}.
+See the file header for the source the module follows.
+source it follows.
+
 A step of the elmo_native implementation. Called by \code{.elmo_mix},
 \code{.elmo_representation}.
 See the file header for the source the module follows.

@@ -88,6 +88,7 @@
 #' update weighted.mean
 #' @importFrom stats dist optim pbeta pgamma rchisq runif
 #' @importFrom utils str
+#' @importFrom methods new
 #' @importFrom Rcpp sourceCpp
 #' @useDynLib morie, .registration = TRUE
 "_PACKAGE"

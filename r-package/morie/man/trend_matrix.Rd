@@ -2,12 +2,9 @@
 % Please edit documentation in R/prphet_native.R
 \name{trend_matrix}
 \alias{trend_matrix}
-\alias{morie_prphet_trend_matrix}
 \title{Design columns for k, m and each delta_j}
 \usage{
 trend_matrix(t, cps)
-
-morie_prphet_trend_matrix(t, cps)
 }
 \arguments{
 \item{t}{Numeric vector of times.}

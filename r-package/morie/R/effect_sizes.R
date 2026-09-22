@@ -1000,3 +1000,100 @@ bootstrap_effect_size_ci <- function(func, ..., n_boot = 2000L,
     sum(vapply(arrs, length, integer(1)))
   )
 }
+
+# -- restored: morie-only definition kept through the rmorie sync --
+#' Cohen's d for independent samples
+#'
+#' @param x,y Numeric vectors (NA dropped).
+#' @param confidence Confidence level for CI. Default 0.95.
+#' @return A `morie_effect_size`.
+#' @examples
+#' set.seed(1)
+#' x <- rnorm(30)
+#' y <- rnorm(30, mean = 0.6)
+#' r <- cohens_d(x, y)
+#' r$estimate
+#' @export
+cohens_d <- function(x, y, confidence = 0.95) {
+  x <- .arr(x)
+  y <- .arr(y)
+  nx <- length(x)
+  ny <- length(y)
+  if (nx < 2L || ny < 2L) {
+    stop("cohens_d: need at least 2 finite observations per group; ",
+         "got nx=", nx, ", ny=", ny, call. = FALSE)
+  }
+  sp <- sqrt(((nx - 1) * var(x) + (ny - 1) * var(y)) / (nx + ny - 2))
+  d  <- if (sp > 0) (mean(x) - mean(y)) / sp else 0
+  se <- sqrt((nx + ny) / (nx * ny) + d^2 / (2 * (nx + ny - 2)))
+  z  <- qnorm((1 + confidence) / 2)
+  effect_size_result("Cohen's d", d, d - z * se, d + z * se, se, nx + ny)
+}
+
+# -- restored: morie-only definition kept through the rmorie sync --
+#' Cramer's V for a contingency table
+#'
+#' @param contingency_table Numeric matrix or table.
+#' @param confidence Confidence level. Default 0.95.
+#' @return A `morie_effect_size`.
+#' @examples
+#' tbl <- matrix(c(20, 10, 5, 25), nrow = 2)
+#' r <- cramers_v(tbl)
+#' r$estimate
+#' @export
+cramers_v <- function(contingency_table, confidence = 0.95) {
+  tbl <- as.matrix(contingency_table)
+  storage.mode(tbl) <- "double"
+  cs   <- suppressWarnings(chisq.test(tbl, correct = FALSE))
+  chi2 <- as.numeric(cs$statistic)
+  n    <- sum(tbl)
+  k    <- min(dim(tbl)) - 1
+  v    <- if (n * k > 0) sqrt(chi2 / (n * k)) else 0
+  # Bias-corrected V (Bergsma 2013).
+  v_bc <- max(0, v^2 - k * (nrow(tbl) - 1) / (n - 1))
+  v_bc <- if (v_bc > 0) sqrt(v_bc) else 0
+  effect_size_result("Cramer's V", v, n = as.integer(n),
+                      extra = list(bias_corrected_v = v_bc))
+}
+
+# -- restored: morie-only definition kept through the rmorie sync --
+#' Eta-squared from ANOVA sums of squares
+#'
+#' @param ss_effect Sum of squares for the effect.
+#' @param ss_total  Total sum of squares.
+#' @return A `morie_effect_size`.
+#' @examples
+#' r <- eta_squared(10, 20)
+#' r$estimate
+#' @export
+eta_squared <- function(ss_effect, ss_total) {
+  eta2 <- if (ss_total > 0) ss_effect / ss_total else 0
+  effect_size_result("Eta-squared", eta2)
+}
+
+# -- restored: morie-only definition kept through the rmorie sync --
+#' Hedges' g -- bias-corrected Cohen's d
+#'
+#' Applies J = 1 - 3 / (4 * df - 1).
+#'
+#' @inheritParams cohens_d
+#' @return A `morie_effect_size`.
+#' @examples
+#' set.seed(1)
+#' x <- rnorm(30, mean = 0)
+#' y <- rnorm(30, mean = 0.6)
+#' r <- hedges_g(x, y)
+#' r$estimate
+#' @export
+hedges_g <- function(x, y, confidence = 0.95) {
+  x <- .arr(x)
+  y <- .arr(y)
+  d_res <- cohens_d(x, y, confidence)
+  df_val <- length(x) + length(y) - 2
+  J <- if (df_val > 1) 1 - 3 / (4 * df_val - 1) else 1
+  g  <- d_res$estimate * J
+  se <- if (!is.na(d_res$se)) d_res$se * J else 0
+  z  <- qnorm((1 + confidence) / 2)
+  effect_size_result("Hedges' g", g, g - z * se, g + z * se, se,
+                      d_res$n, extra = list(correction_factor = J))
+}

@@ -5,6 +5,8 @@
 \title{.tmldyn_lstsq}
 \usage{
 .tmldyn_lstsq(X, yv, ridge = 1e-08)
+
+.tmldyn_lstsq(X, yv, ridge = 1e-08)
 }
 \arguments{
 \item{X}{A matrix; the body checks with \code{is.matrix}.}
@@ -15,8 +17,15 @@
 }
 \value{
 A matrix, from \code{solve}.
+
+A matrix, from \code{solve}.
 }
 \description{
+A step of the tmldyn_native implementation. Called by \code{.fit_q1}, \code{.fit_q2},
+\code{.project}.
+See the file header for the source the module follows.
+source it follows.
+
 A step of the tmldyn_native implementation. Called by \code{.fit_q1}, \code{.fit_q2},
 \code{.project}.
 See the file header for the source the module follows.

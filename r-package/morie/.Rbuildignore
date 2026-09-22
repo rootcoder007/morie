@@ -24,3 +24,4 @@
 ^docs$
 ^NOTICE$
 ^\.mailmap$
+^data/private$

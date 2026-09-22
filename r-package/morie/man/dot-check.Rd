@@ -5,6 +5,8 @@
 \title{.check}
 \usage{
 .check(scores, priority)
+
+.check(scores, priority)
 }
 \arguments{
 \item{scores}{Passed to \code{.slvgrf_vec}.}
@@ -13,8 +15,15 @@
 }
 \value{
 A list with \code{g}, \code{s}.
+
+A list with \code{g}, \code{s}.
 }
 \description{
+A step of the slvgrf_native implementation. Called by \code{qini_curve},
+\code{rate_test}, \code{toc_curve}.
+See the file header for the source the module follows.
+source it follows.
+
 A step of the slvgrf_native implementation. Called by \code{qini_curve},
 \code{rate_test}, \code{toc_curve}.
 See the file header for the source the module follows.

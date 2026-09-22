@@ -2,12 +2,9 @@
 % Please edit documentation in R/prphet_native.R
 \name{piecewise_trend}
 \alias{piecewise_trend}
-\alias{morie_prphet_piecewise_trend}
 \title{Evaluate the piecewise-linear trend (Eq. 4 of Taylor & Letham 2018)}
 \usage{
 piecewise_trend(t, k_rate, m_off, deltas, cps)
-
-morie_prphet_piecewise_trend(t, k_rate, m_off, deltas, cps)
 }
 \arguments{
 \item{t}{Numeric vector of times.}

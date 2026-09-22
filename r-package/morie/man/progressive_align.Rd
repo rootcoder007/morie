@@ -13,6 +13,16 @@ progressive_align(
   use_fft = TRUE,
   ...
 )
+
+progressive_align(
+  seqs,
+  scoring,
+  tree = NULL,
+  seq_type = "aa",
+  s_op = 2.4,
+  use_fft = TRUE,
+  ...
+)
 }
 \arguments{
 \item{seqs}{A vector; its length is taken and its elements indexed.}
@@ -31,9 +41,15 @@ progressive_align(
 }
 \value{
 A vector, from \code{unlist}.
+
+The value of \code{out}, as built in the body.
 }
 \description{
 A step of the mafft_native implementation. Called by \code{mafft_alignment}, \code{morie_mafft}.
+See the file header for the source the module follows.
+source it follows.
+
+A step of the mafft_native implementation. Called by \code{mafft_alignment}.
 See the file header for the source the module follows.
 source it follows.
 }

@@ -5,14 +5,22 @@
 \title{.airl_key}
 \usage{
 .airl_key(s)
+
+.airl_key(s)
 }
 \arguments{
 \item{s}{A vector; its length is taken.}
 }
 \value{
 One of two values, depending on the branch taken.
+
+One of two values, depending on the branch taken.
 }
 \description{
+A step of the airl_native implementation. No other function in the package calls it.
+See the file header for the source the module follows.
+source it follows.
+
 A step of the airl_native implementation. No other function in the package calls it.
 See the file header for the source the module follows.
 source it follows.

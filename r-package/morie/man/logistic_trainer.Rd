@@ -5,6 +5,8 @@
 \title{logistic_trainer}
 \usage{
 logistic_trainer(l2 = 0.001, epochs = 300L, lr = 0.5, seed = 0)
+
+logistic_trainer(l2 = 0.001, epochs = 300L, lr = 0.5, seed = 0)
 }
 \arguments{
 \item{l2}{Numeric; combined arithmetically in the body. Defaults to \code{0.001}.}
@@ -17,9 +19,15 @@ logistic_trainer(l2 = 0.001, epochs = 300L, lr = 0.5, seed = 0)
 }
 \value{
 The value of \code{train}, as built in the body.
+
+The value of \code{function}.
 }
 \description{
 A step of the memb_native implementation. Called by \code{memb}, \code{morie_memb}.
+See the file header for the source the module follows.
+source it follows.
+
+A step of the memb_native implementation. Called by \code{memb}.
 See the file header for the source the module follows.
 source it follows.
 }

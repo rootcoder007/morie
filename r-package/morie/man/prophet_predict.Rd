@@ -2,7 +2,6 @@
 % Please edit documentation in R/prphet_native.R
 \name{prophet_predict}
 \alias{prophet_predict}
-\alias{morie_prphet_predict}
 \title{Forecast at new times, reusing the fitted coefficients}
 \usage{
 prophet_predict(
@@ -12,17 +11,9 @@ prophet_predict(
   holidays = NULL,
   holiday_window = c(0, 0)
 )
-
-morie_prphet_predict(
-  fit,
-  t_new,
-  seasonalities = NULL,
-  holidays = NULL,
-  holiday_window = c(0, 0)
-)
 }
 \arguments{
-\item{fit}{A fit object as returned by \code{\link{morie_prphet}}.}
+\item{fit}{A fit object as returned by \code{\link{morie_prphet_fit}}.}
 
 \item{t_new}{Numeric vector of new times.}
 
