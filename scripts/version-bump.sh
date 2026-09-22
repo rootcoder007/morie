@@ -171,7 +171,7 @@ while IFS=, read -r file line status old_ver context; do
     # another package's release; both look exactly like our version string.
     # The 1.2.4 and 1.2.5 bumps rewrote 30 such lines across the two trees,
     # silently changing what the code claims its own sources say.
-    CITE_RE='(Section|Sections|Sec\.|section|sections|sec\.|Chapter|Ch\.|chapter|eq\.|eqs\.|samplingbook|Table|Figure|Theorem|Algorithm)'
+    CITE_RE='(Section|Sections|Sec\.|Sec|section|sections|sec\.|Chapter|Ch\.|chapter|eq\.|eqs\.|samplingbook|Table|Figure|Theorem|Algorithm)'
     prev_ctx=""
     if [[ "$line" =~ ^[0-9]+$ && "$line" -gt 1 ]]; then
         prev_ctx=$(sed -n "$((line - 1))p" "$file" 2>/dev/null || true)
