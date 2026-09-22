@@ -5572,6 +5572,15 @@ class _RandomNS(_Random):
     def __init__(self):
         self._global = RandomState(0)
 
+    def __getattr__(self, name):
+        # numpy.random.<distribution>(...) for every method the Generator
+        # has (negative_binomial, standard_t, ...): the explicit wrappers
+        # below cover the common ones, this covers the rest on the global
+        # stream. __getattr__ only runs for names not found normally.
+        if name.startswith("_"):
+            raise AttributeError(name)
+        return getattr(object.__getattribute__(self, "_global"), name)
+
     def seed(self, s=None):
         self._global = RandomState(s if s is not None else 0)
 

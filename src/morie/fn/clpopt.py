@@ -371,4 +371,4 @@ def linprog(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
 
 
 def cheatsheet() -> str:
-    return "standard_form(c, A_ub, b_ub, A_eq, b_eq, upper) -> Convert an inequality-form program to :math:`Ax = b,\ x \ge 0`."
+    return "standard_form(c, A_ub, b_ub, A_eq, b_eq, upper) -> Convert an inequality-form program to :math:`Ax = b,\\ x \\ge 0`."

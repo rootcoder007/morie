@@ -234,3 +234,12 @@ def test_every_fn_module_has_cheatsheet():
         if not re.search(r"^def cheatsheet\(|^cheatsheet\s*=", f.read_text(), re.M):
             missing.append(f.stem)
     assert not missing, missing[:20]
+
+
+def test_module_level_random_has_generator_surface():
+    np.random.seed(3)
+    out = np.random.negative_binomial(3, 0.4, size=10).tolist()
+    assert len(out) == 10 and all(v >= 0 for v in out)
+    assert len(np.random.standard_t(4, size=5).tolist()) == 5
+    with pytest.raises(AttributeError):
+        np.random.no_such_distribution
