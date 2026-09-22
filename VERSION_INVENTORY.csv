@@ -1663,7 +1663,7 @@ File,Line,Status,Version,Context
 ./r-package/morie/R/tmlvts.R,21,STALE_OR_DEP,2.1.1,"#'   var.psi <- var(IC)/n of the CRAN package tmle 2.1.1 (Gruber & van der"
 ./r-package/morie/R/tps_hawkes_advanced.R,147,STALE_OR_DEP,0.9.5.6,"# v0.9.5.6+: scipy.stats.lomax convention."
 ./r-package/morie/R/tps_hawkes_advanced.R,169,STALE_OR_DEP,0.9.5.6,"lomax = 1 - (psi[2] / (u + psi[2])) ^ psi[1];  # v0.9.5.6+: scipy"
-./r-package/morie/R/tps_statphysics.R,682,STALE_OR_DEP,0.9.5.6,"# the denominator but still increment n). v0.9.5.6+ uses strict `>`"
+./r-package/morie/R/tps_statphysics.R,616,STALE_OR_DEP,0.9.5.6,"# the denominator but still increment n). v0.9.5.6+ uses strict `>`"
 ./r-package/morie/R/trupek_native.R,8,STALE_OR_DEP,6.1.1,"# bookkeeping is Algorithm BTR (6.1.1); the interesting part is the"
 ./r-package/morie/R/trupek_native.R,14,STALE_OR_DEP,6.3.1,"#             convergence (Theorem 6.3.1)."
 ./r-package/morie/R/trupek_native.R,19,STALE_OR_DEP,7.5.1,"#             7.5.1): CG on the model; stopping at the first iterate that"

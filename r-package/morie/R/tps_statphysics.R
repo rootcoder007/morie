@@ -1,4 +1,36 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
+#' srr probability-distributions (PD) standards
+#'
+#' rmorie fits heavy-tailed distributions to crime data (Hill-MLE
+#' power-law / Levy-flight exponents, Pareto tails) as part of its
+#' statistical-physics-of-crime module. The applicable PD standards are
+#' addressed here; the general-representation and analytic-manipulation
+#' standards (which assume a distribution-object package such as
+#' `distributional`) are declared NA in `srr-stats-standards.R`.
+#'
+#' @srrstats {PD1.0} The choice and usage of each distribution is
+#'   justified with primary references (e.g. Brockmann et al. 2006 for
+#'   Levy flights; Bettencourt et al. for urban scaling), given in the
+#'   `@references` of the respective functions.
+#' @srrstats {PD3.2} Parameter estimation via optimisation (Hill maximum
+#'   likelihood, non-linear scaling fits) documents the estimator and its
+#'   settings, including any defaults.
+#' @srrstats {PD3.3} Return objects from fitted distributions include the
+#'   fitting information (estimated exponent, the estimator used, and the
+#'   sample size / support used in the fit).
+#' @srrstats {PD4.0} The numeric outputs of the distribution-fitting
+#'   functions are tested for numeric equality, not merely their
+#'   structure (see `test-tps_statphysics.R`).
+#' @srrstats {PD4.1} Tests cover the estimated distribution parameters.
+#' @srrstats {PD4.2} Tests cover derived quantities (scaling exponents,
+#'   tail indices).
+#' @srrstats {PD4.3} Numeric tests use explicit tolerances.
+#' @srrstats {PD4.4} Edge cases (short samples, degenerate support) are
+#'   handled and tested.
+#' @noRd
+NULL
+
 #' Statistical physics of crime for TPS data
 #'
 #' R port of \code{morie.tps_statphysics}. Implements the four canonical
@@ -70,21 +102,8 @@ NULL
 # Internal helpers (NOT exported)
 # ---------------------------------------------------------------------------
 
-#' .tps_sp_result
-#'
-#' A step of the tps_statphysics implementation. Called by
-#' \code{morie_tps_criminal_network_graph}, \code{morie_tps_inspection_game_phase},
-#' \code{morie_tps_levy_flight_alpha} and 4 others in the module.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param title Carried through into a list the body builds.
-#' @param summary_lines Carried through into a list the body builds. Defaults to \code{list()}.
-#' @param warnings Carried through into a list the body builds. Defaults to \code{character(0)}.
-#' @param interpretation Carried through into a list the body builds. Defaults to \code{""}.
-#' @param payload Carried through into a list the body builds. Defaults to \code{list()}.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Tps Sp Result
+#' @noRd
 .tps_sp_result <- function(title, summary_lines = list(),
                             warnings = character(0),
                             interpretation = "",
@@ -101,18 +120,8 @@ NULL
   out
 }
 
-#' .tps_sp_round
-#'
-#' A step of the tps_statphysics implementation. Called by
-#' \code{morie_tps_inspection_game_phase}, \code{morie_tps_levy_flight_alpha},
-#' \code{morie_tps_lotka_volterra_police_crime} and 3 others in the module.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param x Passed to \code{is.finite}.
-#' @param k Passed to \code{round}. Defaults to \code{3L}.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Tps Sp Round
+#' @noRd
 .tps_sp_round <- function(x, k = 3L) {
   if (!is.finite(x)) return(NA_real_)
   round(x, k)
@@ -122,19 +131,8 @@ NULL
 # port delegates to morie.tps_render.project_xy; in R we approximate
 # with a midpoint cos-lat factor so this module does not hard-depend on
 # the renderer port.
-#' Cosine-corrected planar projection on the Toronto bbox. The Python
-#'
-#' port delegates to morie.tps_render.project_xy; in R we approximate
-#' with a midpoint cos-lat factor so this module does not hard-depend on
-#' the renderer port.
-#'
-#' @param lat Numeric; combined arithmetically in the body.
-#' @param lon Numeric; combined arithmetically in the body.
-#' @param lat_ref Numeric; combined arithmetically in the body. Defaults to \code{(43.55 + 43.9)/2}.
-#' @param lon_ref Numeric; combined arithmetically in the body. Defaults to \code{(-79.65
-#' + -79.1)/2}.
-#' @return A list with \code{x}, \code{y}.
-#' @export
+#' Internal helper: Tps Sp Project Xy
+#' @noRd
 .tps_sp_project_xy <- function(lat, lon,
                                  lat_ref = (43.55 + 43.90) / 2,
                                  lon_ref = (-79.65 + -79.10) / 2) {
@@ -146,19 +144,8 @@ NULL
   )
 }
 
-#' .tps_sp_toronto_grid
-#'
-#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param nx Passed to \code{seq}. Defaults to \code{90L}.
-#' @param ny Passed to \code{seq}. Defaults to \code{60L}.
-#' @return A list with \code{gx}, \code{gy}.
-#' @export
-#' @examples
-#' res <- .tps_sp_toronto_grid()
-#' res
+#' Internal helper: Tps Sp Toronto Grid
+#' @noRd
 .tps_sp_toronto_grid <- function(nx = 90L, ny = 60L) {
   prj <- .tps_sp_project_xy(c(43.55, 43.90), c(-79.65, -79.10))
   gx <- seq(min(prj$x) - 1, max(prj$x) + 1, length.out = nx)
@@ -167,18 +154,8 @@ NULL
 }
 
 # Periodic-shift roll equivalent to NumPy np.roll along one axis.
-#' Periodic-shift roll equivalent to NumPy np.roll along one axis
-#'
-#' A step of the tps_statphysics implementation. Called by \code{.tps_sp_grad},
-#' \code{.tps_sp_lap}, \code{.tps_sp_local_max3x3} and 1 others in the module.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param M A matrix; indexed by row and column.
-#' @param shift Numeric; combined arithmetically in the body.
-#' @param axis Passed to \code{==}.
-#' @return One of two values, depending on the branch taken.
-#' @export
+#' Internal helper: Tps Sp Roll
+#' @noRd
 .tps_sp_roll <- function(M, shift, axis) {
   d <- dim(M)
   if (axis == 1L) {
@@ -191,17 +168,8 @@ NULL
 }
 
 # Periodic 5-point Laplacian.
-#' Periodic 5-point Laplacian
-#'
-#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param F_ Numeric; combined arithmetically in the body.
-#' @param dx Numeric; passed to \code{max}.
-#' @param dy Numeric; passed to \code{max}.
-#' @return A numeric value.
-#' @export
+#' Internal helper: Tps Sp Lap
+#' @noRd
 .tps_sp_lap <- function(F_, dx, dy) {
   (.tps_sp_roll(F_,  1L, 1L) + .tps_sp_roll(F_, -1L, 1L) +
    .tps_sp_roll(F_,  1L, 2L) + .tps_sp_roll(F_, -1L, 2L) -
@@ -209,17 +177,8 @@ NULL
 }
 
 # Central-difference gradient with periodic wrap (gx, gy).
-#' Central-difference gradient with periodic wrap (gx, gy)
-#'
-#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param F_ Passed to \code{.tps_sp_roll}.
-#' @param dx Numeric; combined arithmetically in the body.
-#' @param dy Numeric; combined arithmetically in the body.
-#' @return A list with \code{gx}, \code{gy}.
-#' @export
+#' Internal helper: Tps Sp Grad
+#' @noRd
 .tps_sp_grad <- function(F_, dx, dy) {
   list(
     gx = (.tps_sp_roll(F_, -1L, 2L) - .tps_sp_roll(F_, 1L, 2L)) / (2 * dx),
@@ -228,16 +187,8 @@ NULL
 }
 
 # Pointwise 3x3 local-maximum filter.
-#' Pointwise 3x3 local-maximum filter
-#'
-#' A step of the tps_statphysics implementation. Called by
-#' \code{morie_tps_sdb_reaction_diffusion}, \code{morie_tps_sdb_turing_demo}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param F_ Passed to \code{.tps_sp_roll}.
-#' @return The value of \code{out}, as built in the body.
-#' @export
+#' Internal helper: Tps Sp Local Max3x3
+#' @noRd
 .tps_sp_local_max3x3 <- function(F_) {
   out <- F_
   for (di in c(-1L, 0L, 1L)) {
@@ -250,18 +201,8 @@ NULL
 }
 
 # 2-D histogram on prescribed bin edges (rows = y, cols = x).
-#' 2-D histogram on prescribed bin edges (rows = y, cols = x)
-#'
-#' A step of the tps_statphysics implementation. Called by \code{morie_tps_sdb_reaction_diffusion}.
-#' See the file header for the source the module follows.
-#' the source it follows.
-#'
-#' @param x Passed to \code{findInterval}.
-#' @param y Passed to \code{findInterval}.
-#' @param gx A vector; its length is taken.
-#' @param gy A vector; its length is taken.
-#' @return The value of \code{H}, as built in the body.
-#' @export
+#' Internal helper: Tps Sp Hist2d
+#' @noRd
 .tps_sp_hist2d <- function(x, y, gx, gy) {
   ix <- findInterval(x, gx, rightmost.closed = TRUE)
   iy <- findInterval(y, gy, rightmost.closed = TRUE)
@@ -283,19 +224,8 @@ NULL
 # Write one PNG under the caller-supplied fig_dir and return its path
 # for the result's Figure line; with fig_dir = NULL nothing is written
 # and the returned note says exactly that (no silent claims).
-#' Write one PNG under the caller-supplied fig_dir and return its path
-#'
-#' for the result\'s Figure line; with fig_dir = NULL nothing is written
-#' and the returned note says exactly that (no silent claims).
-#'
-#' @param fig_dir Optional; may be \code{NULL}. Passed to \code{is.null}.
-#' @param name Passed to \code{file.path}.
-#' @param draw Accepted by the signature and not used anywhere in the body.
-#' @param save_fig A flag; the body branches on it. Defaults to \code{TRUE}.
-#' @param width Defaults to \code{1140}.
-#' @param height Defaults to \code{620}.
-#' @return The value of \code{path}, as built in the body.
-#' @export
+#' Internal helper: Tps Sp Fig
+#' @noRd
 .tps_sp_fig <- function(fig_dir, name, draw, save_fig = TRUE,
                         width = 1140, height = 620) {
   if (!isTRUE(save_fig)) return("(skipped)")
@@ -304,6 +234,10 @@ NULL
   path <- file.path(fig_dir, name)
   grDevices::png(path, width = width, height = height, res = 110)
   on.exit(grDevices::dev.off(), add = TRUE)
+  # CRAN: restore par() before the device closes (draw callbacks set mfrow).
+  # after = FALSE prepends, so the restore runs BEFORE the dev.off above.
+  oldpar <- graphics::par(no.readonly = TRUE)
+  on.exit(graphics::par(oldpar), add = TRUE, after = FALSE)
   draw()
   path
 }
@@ -657,7 +591,7 @@ morie_tps_levy_flight_alpha <- function(category = "Assault",
   df <- df[df$LAT_WGS84 >= 43.55 & df$LAT_WGS84 <= 43.90 &
            df$LONG_WGS84 >= -79.65 & df$LONG_WGS84 <= -79.10, ,
            drop = FALSE]
-  dt <- as.POSIXct(df$OCC_DATE, tz = "UTC")
+  dt <- .morie_tps_parse_datetime(df$OCC_DATE)
   df <- df[order(dt), , drop = FALSE]
   if (nrow(df) < 200L) {
     return(.tps_sp_result(
@@ -1277,6 +1211,8 @@ morie_tps_criminal_network_graph <- function(category = "Assault",
   diag(co) <- 0L
   n_edges <- sum(co > 0) %/% 2L
   max_w <- max(co)
+  sizes <- as.numeric(top[match(nodes, names(top))])
+  sizes[is.na(sizes) | sizes <= 0] <- 1
 
   fig_note <- .tps_sp_fig(fig_dir, sprintf("network_%s.png", category),
     save_fig = save_fig, width = 900, height = 900, draw = function() {
